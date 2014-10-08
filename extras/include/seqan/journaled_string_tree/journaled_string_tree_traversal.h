@@ -1436,8 +1436,8 @@ _traverseBranchWithAlt(JstTraverser<TContainer, TState, JstTraverserConfig<TCont
         SEQAN_ASSERT_GEQ(top(traverser._branchStack)._branchProxyId, 0u);
         SEQAN_ASSERT_LT(top(traverser._branchStack)._branchProxyId, length(stringSet(container(traverser))));
 
-        TJournalStringIterator targetIt;
-        targetIt._journalStringPtr = &value(stringSet(container(traverser)), top(traverser._branchStack)._branchProxyId);
+        TJournalStringIterator targetIt = begin(value(stringSet(container(traverser)), top(traverser._branchStack)._branchProxyId), Standard());
+//        targetIt._journalStringPtr = &value(stringSet(container(traverser)), top(traverser._branchStack)._branchProxyId);
 
         // It might be necessary to select from the host position instead of the virtual mapping.
         if (deltaType(traverser._traverserCore._branchNodeIt) == DELTA_TYPE_DEL)
@@ -1521,7 +1521,7 @@ void _traverseBranchWithAlt(JstTraverser<TContainer, TState, JstTraverserConfig<
             TIndel & indel = deltaValue(traverser._traverserCore._branchNodeIt, DeltaTypeSV());
             top(traverser._branchStack)._proxyEndPosDiff = indel.i1;
             top(traverser._branchStack)._proxyEndPosDiff -= static_cast<int>(length(indel.i2));
-            contextSizeRight += length(indel.i2);
+            contextSizeRight += length(indel.i2) - 1;
             if (indel.i1 > 1)
                 top(traverser._branchStack)._mappedHostPos += indel.i1 - 1;  // Moves right by the size of the deletion.
             break;
@@ -1546,8 +1546,7 @@ void _traverseBranchWithAlt(JstTraverser<TContainer, TState, JstTraverserConfig<
         if (top(traverser._branchStack)._branchProxyId > length(stringSet(container(traverser))))  // No valid proxy can be found.
             continue;
 
-        TJournalStringIterator targetIt;
-        targetIt._journalStringPtr = &value(stringSet(container(traverser)), top(traverser._branchStack)._branchProxyId);
+        TJournalStringIterator targetIt = begin(value(stringSet(container(traverser)), top(traverser._branchStack)._branchProxyId), Standard());
 
         // It might be necessary to select from the host position instead of the virtual mapping.
         if (deltaType(traverser._traverserCore._branchNodeIt) == DELTA_TYPE_DEL)
@@ -1751,7 +1750,7 @@ _execProducerThread(TConcurrentQueue & queue,
         traverser._traverserCore._masterIt += notify(externalAlg, delegate, traverser, StateTraverseMaster());
     }
     // Synchronize master coverage in the end.
-    _updateMergePoints(traverser._traverserCore._mergePointStack, position(contextBegin(traverser, StateTraverseMaster())));
+    _updateMergePoints(traverser._traverserCore._mergePointStack, _clippedContextBeginPosition(traverser, StateTraverseMaster()));
     transform(traverser._traverserCore._activeMasterCoverage, traverser._traverserCore._activeMasterCoverage,
               traverser._traverserCore._mergePointStack._mergeCoverage,
               FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());
@@ -1933,16 +1932,16 @@ _execTraversal(JstTraverser<TContainer, TState, JstTraverserConfig<TContextPosit
 #ifdef PROFILE_JST_TRAVERSAL
                 double timeBranch1 = sysTime();
 #endif
-                std::cerr << "[LOG] coverage: " << mappedCov << std::endl;
-                switch(deltaType(traverser._traverserCore._branchNodeIt))
-                {
-                case DELTA_TYPE_SNP: std::cerr << "[LOG] deltaValue: " << deltaValue(traverser._traverserCore._branchNodeIt, DeltaTypeSnp()) << std::endl; break;
-                case DELTA_TYPE_DEL: std::cerr << "[LOG] deltaValue: " << deltaValue(traverser._traverserCore._branchNodeIt, DeltaTypeDel()) << std::endl; break;
-                case DELTA_TYPE_INS: std::cerr << "[LOG] deltaValue: " << deltaValue(traverser._traverserCore._branchNodeIt, DeltaTypeIns()) << std::endl; break;
-                case DELTA_TYPE_SV: std::cerr << "[LOG] deltaValue: " << deltaValue(traverser._traverserCore._branchNodeIt, DeltaTypeSV()) << std::endl; break;
-                }
-                std::cerr << "[LOG] deltaPosition: " << deltaPosition(traverser._traverserCore._branchNodeIt) << std::endl;
-                
+//                std::cerr << "[LOG] coverage: " << mappedCov << std::endl;
+//                switch(deltaType(traverser._traverserCore._branchNodeIt))
+//                {
+//                case DELTA_TYPE_SNP: std::cerr << "[LOG] deltaValue: " << deltaValue(traverser._traverserCore._branchNodeIt, DeltaTypeSnp()) << std::endl; break;
+//                case DELTA_TYPE_DEL: std::cerr << "[LOG] deltaValue: " << deltaValue(traverser._traverserCore._branchNodeIt, DeltaTypeDel()) << std::endl; break;
+//                case DELTA_TYPE_INS: std::cerr << "[LOG] deltaValue: " << deltaValue(traverser._traverserCore._branchNodeIt, DeltaTypeIns()) << std::endl; break;
+//                case DELTA_TYPE_SV: std::cerr << "[LOG] deltaValue: " << deltaValue(traverser._traverserCore._branchNodeIt, DeltaTypeSV()) << std::endl; break;
+//                }
+//                std::cerr << "[LOG] deltaPosition: " << deltaPosition(traverser._traverserCore._branchNodeIt) << std::endl;
+
                 _recordMergePointEnds(traverser, traverser._traverserCore._branchNodeIt);
                 _traverseBranchWithAlt(traverser, externalAlg, delegate);
 #ifdef PROFILE_JST_TRAVERSAL
@@ -1989,7 +1988,7 @@ _execTraversal(JstTraverser<TContainer, TState, JstTraverserConfig<TContextPosit
 #endif
     }
     // Synchronize master coverage in the end.
-    _updateMergePoints(traverser._traverserCore._mergePointStack, position(contextBegin(traverser, StateTraverseMaster())));
+    _updateMergePoints(traverser._traverserCore._mergePointStack, _clippedContextBeginPosition(traverser, StateTraverseMaster()));
     transform(traverser._traverserCore._activeMasterCoverage, traverser._traverserCore._activeMasterCoverage,
               traverser._traverserCore._mergePointStack._mergeCoverage,
               FunctorNested<FunctorBitwiseAnd, FunctorIdentity, FunctorBitwiseNot>());

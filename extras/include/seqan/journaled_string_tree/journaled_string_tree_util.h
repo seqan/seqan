@@ -548,11 +548,11 @@ _mapVirtualToVirtual(TIter & target,
             setPosition(target, hostToVirtualPosition(*target._journalStringPtr, _physicalOriginPosition(source)));
             return;
         }
-        TPosition srcHostPos = _physicalOriginPosition(source);
+        TPosition srcHostPos = _physicalOriginPosition(source) - 1;
         if(srcHostPos > deltaPosition(branchNodeIt))  // Case b): Source is right of branch node begin and the physical position is bigger than the branch node position.
         {
             setPosition(target, hostToVirtualPosition(*target._journalStringPtr, srcHostPos) +
-                        _localEntryPosition(source));
+                                (_virtualPosition(source) - hostToVirtualPosition(*source._journalStringPtr, srcHostPos)));
         }
         else  // Case c): Map the host position of the common branch node.
         {

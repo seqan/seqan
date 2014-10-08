@@ -207,7 +207,6 @@ struct GlobalJstConfig
     static const unsigned COVERAGE_CONFIG = TConfig_::COVERAGE_CONFIG;
 };
 
-
 template <typename TContextPosition_, typename TFullContext_>
 struct JstTraversalSpecConfig
 {
@@ -313,20 +312,21 @@ class JstTraversalTestCommon2 : public JstTraversalTest<T>
 {};
 
 typedef
-    TagList<JstTraversalConfig<5, 4, 0>,
-    TagList<JstTraversalConfig<5, 4, 1>,
-    TagList<JstTraversalConfig<5, 4, 2>,
-    TagList<JstTraversalConfig<5, 4, 3>,
-    TagList<JstTraversalConfig<5, 4, 4>,
-    TagList<JstTraversalConfig<5, 4, 5>,
-    TagList<JstTraversalConfig<6, 5, 3> ,
-    TagList<JstTraversalConfig<7, 5, 3>,
-    TagList<JstTraversalConfig<9, 6, 1>,
-    TagList<JstTraversalConfig<9, 6, 3>,
-    TagList<JstTraversalConfig<9, 6, 4>,
-    TagList<JstTraversalConfig<9, 6, 5>,
-    JstConfigGenerator_<4, 3, 5>::Type
-    > > > > > > > > > > > >
+//    TagList<JstTraversalConfig<5, 4, 0>,
+//    TagList<JstTraversalConfig<5, 4, 1>,
+//    TagList<JstTraversalConfig<5, 4, 2>,
+//    TagList<JstTraversalConfig<5, 4, 3>,
+//    TagList<JstTraversalConfig<5, 4, 4>,
+//    TagList<JstTraversalConfig<5, 4, 5>,
+//    TagList<JstTraversalConfig<6, 5, 3> ,
+//    TagList<JstTraversalConfig<7, 5, 3>,
+//    TagList<JstTraversalConfig<9, 6, 1>,
+//    TagList<JstTraversalConfig<9, 6, 3>,
+//    TagList<JstTraversalConfig<9, 6, 4>,
+//    TagList<JstTraversalConfig<9, 6, 5>,
+//    JstConfigGenerator_<4, 3, 5>::Type
+//    > > > > > > > > > > > >
+      TagList<JstTraversalConfig<3, 3, 5> >
     JstTestCases;
 
 typedef TagList<JstTraversalSpecConfig<ContextPositionLeft, True> > JstTraversalSpec1;
