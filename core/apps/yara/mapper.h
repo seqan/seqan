@@ -48,14 +48,17 @@ using namespace seqan;
 
 struct Options
 {
-    typedef std::string             TString;
-    typedef std::vector<TString>    TList;
+    typedef std::string                     TString;
+    typedef std::vector<TString>            TList;
+    typedef FileFormat<BamFileOut>::Type    TOutputFormat;
 
     CharString          contigsIndexFile;
     Pair<CharString>    readsFile;
     CharString          outputFile;
+    TOutputFormat       outputFormat;
     bool                outputSecondary;
     bool                outputHeader;
+    bool                uncompressedBam;
     CharString          readGroup;
 
     MappingMode         mappingMode;
@@ -82,6 +85,7 @@ struct Options
     Options() :
         outputSecondary(false),
         outputHeader(true),
+        uncompressedBam(false),
         readGroup("none"),
         mappingMode(STRATA),
         errorRate(0.05f),
@@ -440,15 +444,21 @@ inline void openOutputFile(Mapper<TSpec, TConfig> & me)
 
     if (empty(me.options.outputFile))
     {
-//#if SEQAN_HAS_ZLIB
-//        if (options.bamFormat)
-//            opened = open(me.outputFile, std::cout, Bam(), OPEN_WRONLY);
-//        else
-//#endif
-            opened = open(me.outputFile, std::cout, Sam());
+        // Output to cout.
+        if (me.options.uncompressedBam)
+        {
+            // Turn off BAM compression.
+            setFormat(me.outputFile, me.options.outputFormat);
+            opened = _open(me.outputFile, std::cout, Nothing(), False());
+        }
+        else
+        {
+            opened = open(me.outputFile, std::cout, me.options.outputFormat);
+        }
     }
     else
     {
+        // Output to file.
         opened = open(me.outputFile, toCString(me.options.outputFile), OPEN_WRONLY | OPEN_CREATE);
     }
 
