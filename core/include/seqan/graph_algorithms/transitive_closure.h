@@ -80,26 +80,26 @@ template <typename TSpec, typename TMatrix>
 void transitiveClosure(TMatrix& closure,
                        Graph<TSpec> const & g)
 {
-	typedef typename Size<TMatrix>::Type TSize;
+    typedef typename Size<TMatrix>::Type TSize;
 
-	// Initialize first closure matrix
-	getAdjacencyMatrix(g,closure);
-	TSize len = (TSize) std::sqrt((double) length(closure));
-	for (TSize diag=0;diag < len;++diag) assignValue(closure, diag*len+diag,1);
+    // Initialize first closure matrix
+    getAdjacencyMatrix(g,closure);
+    TSize len = (TSize) std::sqrt((double) length(closure));
+    for (TSize diag=0;diag < len;++diag) assignValue(closure, diag*len+diag,1);
 
-	// Transitive Closure
-	TMatrix local = closure;
-	for (TSize k=0;k<len;++k) {
-		for(TSize i=0;i<len;++i) {
-			for(TSize j=0;j<len;++j) {
-				bool t_ij = static_cast<int>(getValue(closure, i*len+j)) > 0;
+    // Transitive Closure
+    TMatrix local = closure;
+    for (TSize k=0;k<len;++k) {
+        for(TSize i=0;i<len;++i) {
+            for(TSize j=0;j<len;++j) {
+                bool t_ij = static_cast<int>(getValue(closure, i*len+j)) > 0;
                 bool t_ik = static_cast<int>(getValue(closure, i*len+k)) > 0;
                 bool t_kj = static_cast<int>(getValue(closure, k*len+j)) > 0;
-				assignValue(local, i*len+j, t_ij || (t_ik && t_kj));
-			}
-		}
-		closure = local;
-	}
+                assignValue(local, i*len+j, t_ij || (t_ik && t_kj));
+            }
+        }
+        closure = local;
+    }
 }
 
 }  // namespace seqan

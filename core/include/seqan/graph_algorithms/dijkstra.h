@@ -85,7 +85,7 @@ namespace seqan {
  * @see dagShortestPath
  * @see bellmanFordAlgorithm
  */
-  
+
 template <typename TSpec, typename TVertexDescriptor, typename TWeightMap,
           typename TPredecessorMap, typename TDistanceMap>
 void dijkstra(TPredecessorMap & predecessor,
@@ -94,50 +94,50 @@ void dijkstra(TPredecessorMap & predecessor,
               TVertexDescriptor const source,
               TWeightMap const & weight)
 {
-	typedef Graph<TSpec> TGraph;
-	typedef typename Value<TDistanceMap>::Type TDistVal;
-	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
-	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
+    typedef Graph<TSpec> TGraph;
+    typedef typename Value<TDistanceMap>::Type TDistVal;
+    typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
+    typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
 
-	// Initialization
-	resizeVertexMap(g,predecessor);
-	resizeVertexMap(g,distance);
+    // Initialization
+    resizeVertexMap(g,predecessor);
+    resizeVertexMap(g,distance);
 
-	// S is initially empty
-	String<bool> setS;
-	resize(setS, getIdUpperBound(_getVertexIdManager(g)), false);
+    // S is initially empty
+    String<bool> setS;
+    resize(setS, getIdUpperBound(_getVertexIdManager(g)), false);
 
-	// Set-up the priority queue
-	typedef Pair<TVertexDescriptor, TDistVal> TKeyValue;
-	typedef HeapTree<TKeyValue, std::less<TDistVal>, KeyedHeap<> > TKeyedHeap;
-	TKeyedHeap priorityQueue;
-	TDistVal infDist = _getInfinityDistance(weight);
-	TVertexDescriptor nilVertex = getNil<typename VertexDescriptor<TGraph>::Type>();
-	TVertexIterator it(g);
-	for(;!atEnd(it);goNext(it)) {
-		assignProperty(predecessor, value(it), nilVertex);
-		assignProperty(distance, value(it), infDist);
-		heapInsert(priorityQueue, TKeyValue(value(it), infDist));
-	}
-	assignProperty(distance, source, 0);
-	heapChangeValue(priorityQueue, source, 0);
+    // Set-up the priority queue
+    typedef Pair<TVertexDescriptor, TDistVal> TKeyValue;
+    typedef HeapTree<TKeyValue, std::less<TDistVal>, KeyedHeap<> > TKeyedHeap;
+    TKeyedHeap priorityQueue;
+    TDistVal infDist = _getInfinityDistance(weight);
+    TVertexDescriptor nilVertex = getNil<typename VertexDescriptor<TGraph>::Type>();
+    TVertexIterator it(g);
+    for(;!atEnd(it);goNext(it)) {
+        assignProperty(predecessor, value(it), nilVertex);
+        assignProperty(distance, value(it), infDist);
+        heapInsert(priorityQueue, TKeyValue(value(it), infDist));
+    }
+    assignProperty(distance, source, 0);
+    heapChangeValue(priorityQueue, source, 0);
 
-	// Run Dijkstra
-	while (!empty(priorityQueue)) {
-		// Extract min
-		TVertexDescriptor u = heapExtractRoot(priorityQueue).i1;
-		assignProperty(setS, u, true);
-		TOutEdgeIterator itout(g, u);
-		for(;!atEnd(itout);++itout) {
-			TVertexDescriptor v = targetVertex(itout);
-			if (property(setS, v) == true) continue;
-			if (getProperty(distance, v) > getProperty(distance,u) + getProperty(weight,value(itout))) {
-				assignProperty(distance, v, getProperty(distance,u) + getProperty(weight,value(itout)));
-				assignProperty(predecessor, v, u);
-				heapChangeValue(priorityQueue, v, getProperty(distance,u) + getProperty(weight,value(itout)));
-			}
-		}
-	}
+    // Run Dijkstra
+    while (!empty(priorityQueue)) {
+        // Extract min
+        TVertexDescriptor u = heapExtractRoot(priorityQueue).i1;
+        assignProperty(setS, u, true);
+        TOutEdgeIterator itout(g, u);
+        for(;!atEnd(itout);++itout) {
+            TVertexDescriptor v = targetVertex(itout);
+            if (property(setS, v) == true) continue;
+            if (getProperty(distance, v) > getProperty(distance,u) + getProperty(weight,value(itout))) {
+                assignProperty(distance, v, getProperty(distance,u) + getProperty(weight,value(itout)));
+                assignProperty(predecessor, v, u);
+                heapChangeValue(priorityQueue, v, getProperty(distance,u) + getProperty(weight,value(itout)));
+            }
+        }
+    }
 }
 
 }  // namespace seqan

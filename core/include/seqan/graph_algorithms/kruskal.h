@@ -96,32 +96,32 @@ void kruskalsAlgorithm(TEdges & edges,
                        TVertexDescriptor const,
                        TWeightMap const & weight)
 {
-	typedef Graph<TSpec> TGraph;
-	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
-	typedef typename Value<TWeightMap>::Type TWeight;
+    typedef Graph<TSpec> TGraph;
+    typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
+    typedef typename Value<TWeightMap>::Type TWeight;
 
-	typedef Pair<TVertexDescriptor, TVertexDescriptor> TVertexPair;
-	typedef Pair<TWeight, TVertexPair> TWeightEdgePair;
-	typedef String<TWeightEdgePair>  TEdgeList;
-	typedef typename Iterator<TEdgeList>::Type TEdgeListIter;
-	TEdgeList edgeList;
+    typedef Pair<TVertexDescriptor, TVertexDescriptor> TVertexPair;
+    typedef Pair<TWeight, TVertexPair> TWeightEdgePair;
+    typedef String<TWeightEdgePair>  TEdgeList;
+    typedef typename Iterator<TEdgeList>::Type TEdgeListIter;
+    TEdgeList edgeList;
 
-	// Initialization
-	reserve(edges, 2 * (numVertices(g) - 1));
+    // Initialization
+    reserve(edges, 2 * (numVertices(g) - 1));
     UnionFind<TVertexDescriptor> unionFind;
     resizeVertexMap(g, unionFind);
-	
-	// Sort the edges
-	TEdgeIterator itE(g);
-	for(;!atEnd(itE);goNext(itE)) appendValue(edgeList, TWeightEdgePair(getProperty(weight, getValue(itE)), TVertexPair(sourceVertex(itE),targetVertex(itE))));
-	std::sort(begin(edgeList, Standard() ), end(edgeList, Standard() ), LessPairI1_<TWeight, TVertexPair>() );
 
-	// Process each edge
-	TEdgeListIter itEdgeList = begin(edgeList, Standard());
-	TEdgeListIter itEdgeListEnd = end(edgeList, Standard());
-	for (; itEdgeList != itEdgeListEnd; goNext(itEdgeList)) {
-		TVertexDescriptor x = value(itEdgeList).i2.i1;
-		TVertexDescriptor y = value(itEdgeList).i2.i2;
+    // Sort the edges
+    TEdgeIterator itE(g);
+    for(;!atEnd(itE);goNext(itE)) appendValue(edgeList, TWeightEdgePair(getProperty(weight, getValue(itE)), TVertexPair(sourceVertex(itE),targetVertex(itE))));
+    std::sort(begin(edgeList, Standard() ), end(edgeList, Standard() ), LessPairI1_<TWeight, TVertexPair>() );
+
+    // Process each edge
+    TEdgeListIter itEdgeList = begin(edgeList, Standard());
+    TEdgeListIter itEdgeListEnd = end(edgeList, Standard());
+    for (; itEdgeList != itEdgeListEnd; goNext(itEdgeList)) {
+        TVertexDescriptor x = value(itEdgeList).i2.i1;
+        TVertexDescriptor y = value(itEdgeList).i2.i2;
 
         if (findSet(unionFind, x) == findSet(unionFind, y))
             continue;
@@ -129,7 +129,7 @@ void kruskalsAlgorithm(TEdges & edges,
         appendValue(edges, x);
         appendValue(edges, y);
         joinSets(unionFind, findSet(unionFind, x), findSet(unionFind, y));
-	}
+    }
 }
 
 }  // namespace seqan

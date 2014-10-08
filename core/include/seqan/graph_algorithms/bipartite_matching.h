@@ -67,48 +67,48 @@ bipartiteMatching(String<TEdges> & edges,
                   Graph<TSpec> const & g,
                   TVertexMap const & vertMap)
 {
-	typedef Graph<TSpec> TGraph;
-	typedef typename Size<TGraph>::Type TSize;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIter;
+    typedef Graph<TSpec> TGraph;
+    typedef typename Size<TGraph>::Type TSize;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIter;
 
-	clear(edges);
-	TVertexDescriptor source = addVertex(g);
-	TVertexDescriptor target = addVertex(g);
-	TVertexIter itV(g);
-	for(;!atEnd(itV); goNext(itV)) {
-		if ((value(itV) != source) && (value(itV) != target)) {
-			if (getProperty(vertMap, value(itV)) == false) {
-				addEdge(g, source, value(itV));
-			} else {
-				addEdge(g, value(itV), target);
-			}
-		}
-	}
+    clear(edges);
+    TVertexDescriptor source = addVertex(g);
+    TVertexDescriptor target = addVertex(g);
+    TVertexIter itV(g);
+    for(;!atEnd(itV); goNext(itV)) {
+        if ((value(itV) != source) && (value(itV) != target)) {
+            if (getProperty(vertMap, value(itV)) == false) {
+                addEdge(g, source, value(itV));
+            } else {
+                addEdge(g, value(itV), target);
+            }
+        }
+    }
 
-	// Use Ford-Fulkerson to determine a matching
-	String<TSize> capMap;	
-	resizeEdgeMap(g,capMap);
-	typedef typename Iterator<String<TSize> >::Type TCapIter;
-	TCapIter capIt = begin(capMap);
-	TCapIter capItEnd = end(capMap);
-	for(;capIt != capItEnd; ++capIt) value(capIt) = 1;
-	String<TSize> flow;	
-	TSize valF = fordFulkersonAlgorithm(g, source, target, capMap, flow);
+    // Use Ford-Fulkerson to determine a matching
+    String<TSize> capMap;
+    resizeEdgeMap(g,capMap);
+    typedef typename Iterator<String<TSize> >::Type TCapIter;
+    TCapIter capIt = begin(capMap);
+    TCapIter capItEnd = end(capMap);
+    for(;capIt != capItEnd; ++capIt) value(capIt) = 1;
+    String<TSize> flow;
+    TSize valF = fordFulkersonAlgorithm(g, source, target, capMap, flow);
 
-	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
-	TEdgeIterator itEdge(g);
-	for(;!atEnd(itEdge);goNext(itEdge)) {
-		if (getProperty(flow, getValue(itEdge)) == 1) {
-			TVertexDescriptor sV = sourceVertex(itEdge);
-			TVertexDescriptor tV = targetVertex(itEdge);
-			if ((sV != source) && (tV != target)) appendValue(edges, TEdges(sV, tV));
-		}
-	}
-	removeVertex(g, source);
-	removeVertex(g, target);
+    typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
+    TEdgeIterator itEdge(g);
+    for(;!atEnd(itEdge);goNext(itEdge)) {
+        if (getProperty(flow, getValue(itEdge)) == 1) {
+            TVertexDescriptor sV = sourceVertex(itEdge);
+            TVertexDescriptor tV = targetVertex(itEdge);
+            if ((sV != source) && (tV != target)) appendValue(edges, TEdges(sV, tV));
+        }
+    }
+    removeVertex(g, source);
+    removeVertex(g, target);
 
-	return valF;
+    return valF;
 }
 
 }  // namespace seqan
