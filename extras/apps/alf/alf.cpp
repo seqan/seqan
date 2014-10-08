@@ -43,7 +43,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/file.h>
+#include <seqan/seq_io.h>
 #include <seqan/misc/edit_environment.h>
 #include <seqan/arg_parse.h>
 #include <seqan/alignment_free.h>
@@ -160,27 +160,10 @@ int main(int argc, const char * argv[])
     TStringSet mySequenceSet;  // mySequenceSet stores all sequences from the multi-fasta file
     if (inFile != "")  // read in file
     {
-        MultiSeqFile multiSeqFile;
-        open(multiSeqFile.concat, inFile, OPEN_RDONLY);
-        AutoSeqFormat format;
-        guessFormat(multiSeqFile.concat, format);
-        split(multiSeqFile, format);
-        unsigned seqCount = length(multiSeqFile);
-        StringSet<String<Dna5Q> > seqs;
+        SeqFileIn seqFile;
+        open(seqFile, toCString(inFile));
         StringSet<CharString> seqIDs;
-        reserve(mySequenceSet, seqCount, Exact());
-        reserve(seqIDs, seqCount, Exact());
-        String<Dna5Q> seq;
-        TText sequenceTmp;
-        CharString qual;
-        CharString id;
-        for (unsigned i = 0; i < seqCount; ++i)
-        {
-            assignSeq(sequenceTmp, multiSeqFile[i], format);        // read sequence
-            assignSeqId(id, multiSeqFile[i], format);       // read sequence id
-            appendValue(mySequenceSet, sequenceTmp, Generous());
-            appendValue(seqIDs, id, Generous());
-        }
+        readRecords(seqIDs, mySequenceSet, seqFile);
     }
 
     // Dispatch to alignment free comparisons with different scores.
