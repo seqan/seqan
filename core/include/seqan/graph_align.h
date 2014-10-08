@@ -43,6 +43,7 @@
 
 // Seqan
 #include <seqan/score.h>
+#include <seqan/align/fragment.h>
 #include <seqan/graph_types.h>
 #include <seqan/graph_algorithms.h>
 

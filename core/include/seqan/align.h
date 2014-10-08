@@ -71,6 +71,8 @@
 // Gaps & Gaps Iterator Data Structures
 // ============================================================================
 
+#include <seqan/align/fragment.h>
+
 #include <seqan/align/gaps_base.h>
 #include <seqan/align/gaps_iterator_base.h>
 
