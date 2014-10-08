@@ -63,15 +63,15 @@ namespace seqan {
  * @fn breadthFirstSearch
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Implements a breadth-first search on a graph.
- * 
+ *
  * @signature void breadthFirstSearch(predecessor, distance, g, source);
- * 
+ *
  * @param[out] predecessor A property map.  The predecessor map stores implicitly the breadth-first tree.
  * @param[out] distance    A property map.  The distance map indicates at what depth a vertex was discovered.
  * @param[in]  g           Undirected Graph, Directed Graph
  * @param[in]  source      A vertex descriptor.  The breadth-first search is started from this vertex.
  *                         Types: VertexDescriptor
- * 
+ *
  * Breadth-first search computes the distance from source to all reachable vertices.  It also produces a breath-first
  * tree where each node has a predecessor/parent.
  *
@@ -84,52 +84,52 @@ namespace seqan {
  * @see depthFirstSearch
  */
 template <typename TSpec, typename TVertexDescriptor, typename TPredecessorMap, typename TDistanceMap>
-void breadthFirstSearch(TPredecessorMap & predecessor, 
+void breadthFirstSearch(TPredecessorMap & predecessor,
                         TDistanceMap & distance,
                         Graph<TSpec> const & g,
                         TVertexDescriptor const source)
 {
-	typedef Graph<TSpec> TGraph;
-	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
-	typedef typename Value<TPredecessorMap>::Type TPredVal;
-	typedef typename Value<TDistanceMap>::Type TDistVal;
+    typedef Graph<TSpec> TGraph;
+    typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
+    typedef typename Value<TPredecessorMap>::Type TPredVal;
+    typedef typename Value<TDistanceMap>::Type TDistVal;
 
-	// Initialization
-	resizeVertexMap(g,predecessor);
-	resizeVertexMap(g,distance);
-	TPredVal nilPred = getNil<typename VertexDescriptor<TGraph>::Type>();
-	TDistVal infDist = _getInfinityDistance(distance);
-	
-	String<bool> tokenMap;
-	resizeVertexMap(g, tokenMap);
-	TVertexIterator it(g);
-	for(;!atEnd(it);goNext(it)) {
-		assignProperty(tokenMap, getValue(it), false);
-		assignProperty(distance, getValue(it), infDist);
-		assignProperty(predecessor, getValue(it), nilPred);
-	}
-	assignProperty(tokenMap, source, true);
-	assignProperty(distance, source, 0);
-	assignProperty(predecessor, source, nilPred);
-	std::deque<TVertexDescriptor> queue;
-	queue.push_back(source);
-	
-	// Bfs
-	while (!queue.empty()) {
-		TVertexDescriptor u = queue.front();
-		queue.pop_front();
-		typedef typename Iterator<Graph<TSpec>, OutEdgeIterator>::Type TOutEdgeIterator;
-		TOutEdgeIterator itout(g,u);
-		for(;!atEnd(itout);goNext(itout)) {
-			TVertexDescriptor v = targetVertex(itout);
-			if (getProperty(tokenMap, v) == false) {
-				assignProperty(tokenMap, v, true);
-				assignProperty(distance, v, getProperty(distance,u) + 1);
-				assignProperty(predecessor, v, u);
-				queue.push_back(v);
-			}
-		}
-	}
+    // Initialization
+    resizeVertexMap(g,predecessor);
+    resizeVertexMap(g,distance);
+    TPredVal nilPred = getNil<typename VertexDescriptor<TGraph>::Type>();
+    TDistVal infDist = _getInfinityDistance(distance);
+
+    String<bool> tokenMap;
+    resizeVertexMap(g, tokenMap);
+    TVertexIterator it(g);
+    for(;!atEnd(it);goNext(it)) {
+        assignProperty(tokenMap, getValue(it), false);
+        assignProperty(distance, getValue(it), infDist);
+        assignProperty(predecessor, getValue(it), nilPred);
+    }
+    assignProperty(tokenMap, source, true);
+    assignProperty(distance, source, 0);
+    assignProperty(predecessor, source, nilPred);
+    std::deque<TVertexDescriptor> queue;
+    queue.push_back(source);
+
+    // Bfs
+    while (!queue.empty()) {
+        TVertexDescriptor u = queue.front();
+        queue.pop_front();
+        typedef typename Iterator<Graph<TSpec>, OutEdgeIterator>::Type TOutEdgeIterator;
+        TOutEdgeIterator itout(g,u);
+        for(;!atEnd(itout);goNext(itout)) {
+            TVertexDescriptor v = targetVertex(itout);
+            if (getProperty(tokenMap, v) == false) {
+                assignProperty(tokenMap, v, true);
+                assignProperty(distance, v, getProperty(distance,u) + 1);
+                assignProperty(predecessor, v, u);
+                queue.push_back(v);
+            }
+        }
+    }
 }
 
 }  // namespace seqan

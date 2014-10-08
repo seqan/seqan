@@ -62,42 +62,42 @@ namespace seqan {
 template <typename TSpec, typename TVertexDescriptor, typename TTokenMap, typename TPredecessorMap, typename TDiscoveryTimeMap, typename TFinishingTimeMap, typename TVal>
 void
 _dfsVisit(Graph<TSpec> const& g,
-		   TVertexDescriptor const u,
-		   TTokenMap& tokenMap,
-		   TPredecessorMap& predecessor,
-		   TDiscoveryTimeMap& disc,
-		   TFinishingTimeMap& finish,
-		   TVal& time)
+           TVertexDescriptor const u,
+           TTokenMap& tokenMap,
+           TPredecessorMap& predecessor,
+           TDiscoveryTimeMap& disc,
+           TFinishingTimeMap& finish,
+           TVal& time)
 {
-	typedef typename Iterator<Graph<TSpec>, AdjacencyIterator>::Type TAdjacencyIterator;
+    typedef typename Iterator<Graph<TSpec>, AdjacencyIterator>::Type TAdjacencyIterator;
 
-	assignProperty(tokenMap, u, true);
-	++time;
-	assignProperty(disc, u, time);
-	TAdjacencyIterator itad(g,u);
-	for(;!atEnd(itad);goNext(itad)) {
-		TVertexDescriptor v = getValue(itad);
-		if (getProperty(tokenMap, v) == false) {
-			assignProperty(predecessor, v, u);
-			_dfsVisit(g, v, tokenMap, predecessor, disc, finish, time);
-		}
-	}
-	++time;
-	assignProperty(finish, u, time);
+    assignProperty(tokenMap, u, true);
+    ++time;
+    assignProperty(disc, u, time);
+    TAdjacencyIterator itad(g,u);
+    for(;!atEnd(itad);goNext(itad)) {
+        TVertexDescriptor v = getValue(itad);
+        if (getProperty(tokenMap, v) == false) {
+            assignProperty(predecessor, v, u);
+            _dfsVisit(g, v, tokenMap, predecessor, disc, finish, time);
+        }
+    }
+    ++time;
+    assignProperty(finish, u, time);
 }
-  
+
 /*!
  * @fn depthFirstSearch
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Implements a depth-first search on a graph.
- * 
+ *
  * @signature void depthFirstSearch(predecessor, discovery, finish, g);
- * 
+ *
  * @param[out] predecessor A property map.Predecessor subgraph produced by the depth-first search.
  * @param[out] discovery   A property map.The discovery time of a vertex v.
  * @param[out] finish      A property map.The time when v's adjacency list has been fully explored.
  * @param[in]  g           A graph. Types: Undirected Graph, Directed Graph
- * 
+ *
  * In contrast to a breadth-first search the depth-first search is repeated from multiple sources if the graph is not
  * connected.  Hence, depth-first search produces a depth-first forest.  To ensure each vertex ends up in exactly one
  * tree we need not just a distance but a discovery and finishing time.
@@ -107,7 +107,7 @@ _dfsVisit(Graph<TSpec> const& g,
  * @include demos/graph_algorithms/depth_first_search.cpp
  *
  * @include demos/graph_algorithms/depth_first_search.cpp.stdout
- * 
+ *
  * @see breadthFirstSearch
  */
 template <typename TSpec, typename TPredecessorMap, typename TDiscoveryTimeMap, typename TFinishingTimeMap>
@@ -116,35 +116,35 @@ void depthFirstSearch(TPredecessorMap & predecessor,
                       TFinishingTimeMap & finish,
                       Graph<TSpec> const & g)
 {
-	typedef Graph<TSpec> TGraph;
-	typedef typename Size<TGraph>::Type TSize;
-	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Value<TPredecessorMap>::Type TPredVal;
+    typedef Graph<TSpec> TGraph;
+    typedef typename Size<TGraph>::Type TSize;
+    typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef typename Value<TPredecessorMap>::Type TPredVal;
 
-	// Initialization
-	resizeVertexMap(g,predecessor);
-	resizeVertexMap(g,disc);
-	resizeVertexMap(g,finish);
-	TPredVal nilPred = getNil<TVertexDescriptor>();
+    // Initialization
+    resizeVertexMap(g,predecessor);
+    resizeVertexMap(g,disc);
+    resizeVertexMap(g,finish);
+    TPredVal nilPred = getNil<TVertexDescriptor>();
 
-	String<bool> tokenMap;
-	resizeVertexMap(g, tokenMap);
-	TVertexIterator it(g);
-	for(;!atEnd(it);goNext(it)) {
-		assignProperty(tokenMap, getValue(it), false);
-		assignProperty(predecessor, getValue(it), nilPred);
-	}
+    String<bool> tokenMap;
+    resizeVertexMap(g, tokenMap);
+    TVertexIterator it(g);
+    for(;!atEnd(it);goNext(it)) {
+        assignProperty(tokenMap, getValue(it), false);
+        assignProperty(predecessor, getValue(it), nilPred);
+    }
 
-	TSize time = 0;
+    TSize time = 0;
 
-	goBegin(it);
-	for(;!atEnd(it);goNext(it)) {
-		TVertexDescriptor u = getValue(it);
-		if (getProperty(tokenMap, u) == false) {
-			_dfsVisit(g, u, tokenMap, predecessor, disc, finish, time);
-		}
-	}
+    goBegin(it);
+    for(;!atEnd(it);goNext(it)) {
+        TVertexDescriptor u = getValue(it);
+        if (getProperty(tokenMap, u) == false) {
+            _dfsVisit(g, u, tokenMap, predecessor, disc, finish, time);
+        }
+    }
 }
 
 }  // namespace seqan

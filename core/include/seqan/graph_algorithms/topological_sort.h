@@ -63,12 +63,12 @@ namespace seqan {
  * @fn topologicalSort
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Performs a topological sort on a directed acyclic graph (DAG).
- * 
+ *
  * @signature void topologicalSort(g, topSort);
- * 
+ *
  * @param[in]  g       A directed acyclic graph. Types: Directed Graph
  * @param[out] topSort A topological ordering of the vertices. Types: String.
- * 
+ *
  * A topological sort is a linear ordering of all its vertices such that if the graph contains an edge (u,v) then u
  * appears before v in the ordering.
  *
@@ -82,36 +82,36 @@ template <typename TSpec, typename TVertexDescriptor>
 void topologicalSort(String<TVertexDescriptor> & topSort,
                      Graph<TSpec> const & g)
 {
-	typedef typename Size<Graph<TSpec> >::Type TSize;
+    typedef typename Size<Graph<TSpec> >::Type TSize;
 
-	// Variable definition.
-	String<TSize> predMap;
-	String<TSize> discoveryTimeMap;
-	String<TSize> finishingTimeMap;
-	
-	// Perform DFS.
-	depthFirstSearch(predMap, discoveryTimeMap, finishingTimeMap, g);
+    // Variable definition.
+    String<TSize> predMap;
+    String<TSize> discoveryTimeMap;
+    String<TSize> finishingTimeMap;
+
+    // Perform DFS.
+    depthFirstSearch(predMap, discoveryTimeMap, finishingTimeMap, g);
     SEQAN_ASSERT_EQ(numVertices(g), length(predMap));
     SEQAN_ASSERT_EQ(numVertices(g), length(discoveryTimeMap));
     SEQAN_ASSERT_EQ(numVertices(g), length(finishingTimeMap));
 
-	// Order vertices.
-	typedef ::std::pair<TSize, TVertexDescriptor> TTimeVertexPair;
-	std::priority_queue<TTimeVertexPair> q;
-	typedef typename Iterator<Graph<TSpec>, VertexIterator>::Type TVertexIterator;
-	TVertexIterator it(g);
-	for (; !atEnd(it); goNext(it))
-		q.push(std::make_pair(getProperty(finishingTimeMap, getValue(it)), getValue(it)));
+    // Order vertices.
+    typedef ::std::pair<TSize, TVertexDescriptor> TTimeVertexPair;
+    std::priority_queue<TTimeVertexPair> q;
+    typedef typename Iterator<Graph<TSpec>, VertexIterator>::Type TVertexIterator;
+    TVertexIterator it(g);
+    for (; !atEnd(it); goNext(it))
+        q.push(std::make_pair(getProperty(finishingTimeMap, getValue(it)), getValue(it)));
 
-	// Create topological order.
-	resize(topSort, numVertices(g));
-	TSize count = 0;
-	while (!q.empty())
+    // Create topological order.
+    resize(topSort, numVertices(g));
+    TSize count = 0;
+    while (!q.empty())
     {
-		assignValue(topSort, count, q.top().second);
-		q.pop();
-		++count;
-	}
+        assignValue(topSort, count, q.top().second);
+        q.pop();
+        ++count;
+    }
     SEQAN_ASSERT_EQ(length(topSort), numVertices(g));
 }
 

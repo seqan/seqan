@@ -96,39 +96,39 @@ bool bellmanFordAlgorithm(TPredecessorMap & predecessor,
                           TVertexDescriptor const source,
                           TWeightMap const & weight)
 {
-	typedef typename Size<Graph<TSpec> >::Type TSize;
+    typedef typename Size<Graph<TSpec> >::Type TSize;
 
-	// Initialization
-	typedef typename Iterator<Graph<TSpec>, VertexIterator>::Type TVertexIterator;
-	typedef typename Iterator<Graph<TSpec>, OutEdgeIterator>::Type TOutEdgeIterator;
-	resizeVertexMap(g,predecessor);
-	resizeVertexMap(g,distance);
-	_initializeSingleSource(predecessor, distance, g, source, weight);
+    // Initialization
+    typedef typename Iterator<Graph<TSpec>, VertexIterator>::Type TVertexIterator;
+    typedef typename Iterator<Graph<TSpec>, OutEdgeIterator>::Type TOutEdgeIterator;
+    resizeVertexMap(g,predecessor);
+    resizeVertexMap(g,distance);
+    _initializeSingleSource(predecessor, distance, g, source, weight);
 
-	// Run Bellman-Ford
-	for(TSize i=0; i<numVertices(g) - 1; ++i) {
-		TVertexIterator it(g);
-		for(;!atEnd(it);goNext(it)) {
-			TVertexDescriptor u = getValue(it);
-			TOutEdgeIterator itout(g, u);
-			for(;!atEnd(itout);++itout) {
-				_relax(g,weight,predecessor, distance, u, getValue(itout));
-			}
-		}
-	}
+    // Run Bellman-Ford
+    for(TSize i=0; i<numVertices(g) - 1; ++i) {
+        TVertexIterator it(g);
+        for(;!atEnd(it);goNext(it)) {
+            TVertexDescriptor u = getValue(it);
+            TOutEdgeIterator itout(g, u);
+            for(;!atEnd(itout);++itout) {
+                _relax(g,weight,predecessor, distance, u, getValue(itout));
+            }
+        }
+    }
 
-	TVertexIterator it(g);
-	for(;!atEnd(it);goNext(it)) {
-		TVertexDescriptor u = getValue(it);
-		TOutEdgeIterator itout(g, u);
-		for(;!atEnd(itout);++itout) {
-			TVertexDescriptor v = targetVertex(g, getValue(itout));
-			if (getProperty(distance, v) > getProperty(distance,u) + getProperty(weight,getValue(itout))) {
-				return false;
-			}
-		}
-	}
-	return true;
+    TVertexIterator it(g);
+    for(;!atEnd(it);goNext(it)) {
+        TVertexDescriptor u = getValue(it);
+        TOutEdgeIterator itout(g, u);
+        for(;!atEnd(itout);++itout) {
+            TVertexDescriptor v = targetVertex(g, getValue(itout));
+            if (getProperty(distance, v) > getProperty(distance,u) + getProperty(weight,getValue(itout))) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 }  // namespace seqan

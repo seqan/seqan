@@ -58,7 +58,7 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 // Function stronglyConnectedComponents()
 // ----------------------------------------------------------------------------
-  
+
 /*!
  * @fn stronglyConnectedComponents
  * @headerfile <seqan/graph_algorithms.h>
@@ -83,65 +83,65 @@ typename Size<Graph<TSpec> >::Type
 stronglyConnectedComponents(TComponents & components,
                             Graph<TSpec> const & g_source)
 {
-	// Initialization
-	typedef Graph<TSpec> TGraph;
-	typedef typename Size<TGraph>::Type TSize;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
-	typedef typename Value<TComponents>::Type TCompVal;
-	resizeVertexMap(g_source,components);
-	String<TSize> predMap;
-	String<TSize> discoveryTimeMap;
-	String<TSize> finishingTimeMap;
+    // Initialization
+    typedef Graph<TSpec> TGraph;
+    typedef typename Size<TGraph>::Type TSize;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
+    typedef typename Value<TComponents>::Type TCompVal;
+    resizeVertexMap(g_source,components);
+    String<TSize> predMap;
+    String<TSize> discoveryTimeMap;
+    String<TSize> finishingTimeMap;
 
-	// Dfs
-	depthFirstSearch(predMap, discoveryTimeMap, finishingTimeMap, g_source);
+    // Dfs
+    depthFirstSearch(predMap, discoveryTimeMap, finishingTimeMap, g_source);
 
-	Graph<TSpec> g;
-	transpose(g_source, g);
+    Graph<TSpec> g;
+    transpose(g_source, g);
 
-	// Second Dfs
-	String<TSize> predecessor;
-	String<TSize> disc;
-	String<TSize> finish;
-	resizeVertexMap(g,predecessor);
-	resizeVertexMap(g,disc);
-	resizeVertexMap(g,finish);
-	TCompVal nilPred = getNil<TVertexDescriptor>();
-	String<bool> tokenMap;
-	resizeVertexMap(g, tokenMap);
-	TVertexIterator it(g);
-	for(;!atEnd(it);goNext(it)) {
-		assignProperty(components, getValue(it), nilPred);
-		assignProperty(tokenMap, getValue(it), false);
-		assignProperty(predecessor, getValue(it), nilPred);
-	}
+    // Second Dfs
+    String<TSize> predecessor;
+    String<TSize> disc;
+    String<TSize> finish;
+    resizeVertexMap(g,predecessor);
+    resizeVertexMap(g,disc);
+    resizeVertexMap(g,finish);
+    TCompVal nilPred = getNil<TVertexDescriptor>();
+    String<bool> tokenMap;
+    resizeVertexMap(g, tokenMap);
+    TVertexIterator it(g);
+    for(;!atEnd(it);goNext(it)) {
+        assignProperty(components, getValue(it), nilPred);
+        assignProperty(tokenMap, getValue(it), false);
+        assignProperty(predecessor, getValue(it), nilPred);
+    }
 
-	// Order vertices
-	typedef ::std::pair<TSize, TVertexDescriptor> TTimeVertexPair;
-	std::priority_queue<TTimeVertexPair> q;
-	goBegin(it);
-	for(;!atEnd(it);++it) {
-		q.push(std::make_pair(getProperty(finishingTimeMap, getValue(it)), getValue(it)));
-	}
+    // Order vertices
+    typedef ::std::pair<TSize, TVertexDescriptor> TTimeVertexPair;
+    std::priority_queue<TTimeVertexPair> q;
+    goBegin(it);
+    for(;!atEnd(it);++it) {
+        q.push(std::make_pair(getProperty(finishingTimeMap, getValue(it)), getValue(it)));
+    }
 
-	TSize time = 0;
-	TSize label = 0;
-	while(!q.empty()) {
-		TVertexDescriptor u = q.top().second;
-		q.pop();
-		if (getProperty(tokenMap, u) == false) {
-			_dfsVisit(g, u, tokenMap, predecessor, disc, finish, time);
-			TVertexIterator it_label(g);
-			for(;!atEnd(it_label);goNext(it_label)) {
-				if ((getProperty(tokenMap, getValue(it_label)) == true) &&
-					(getProperty(components, getValue(it_label)) == nilPred)) {
-					assignProperty(components, getValue(it_label), label);
-				}
-			}
-			++label;
-		}
-	}
+    TSize time = 0;
+    TSize label = 0;
+    while(!q.empty()) {
+        TVertexDescriptor u = q.top().second;
+        q.pop();
+        if (getProperty(tokenMap, u) == false) {
+            _dfsVisit(g, u, tokenMap, predecessor, disc, finish, time);
+            TVertexIterator it_label(g);
+            for(;!atEnd(it_label);goNext(it_label)) {
+                if ((getProperty(tokenMap, getValue(it_label)) == true) &&
+                    (getProperty(components, getValue(it_label)) == nilPred)) {
+                    assignProperty(components, getValue(it_label), label);
+                }
+            }
+            ++label;
+        }
+    }
 
     return label;
 }

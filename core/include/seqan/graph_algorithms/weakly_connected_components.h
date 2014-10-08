@@ -63,17 +63,17 @@ namespace seqan {
  * @fn weaklyConnectedComponents
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Compute weakly connected components of a directed graph.
- * 
+ *
  * @signature TSize weaklyConnectedComponents(components, g);
- * 
+ *
  * @param[out] components
  *               A property map.  Each vertex is mapped to a component id.  If two vertices share the same id they
  *               are in the same component.
  * @param[in]  g A @link DirectedGraph @endlink to use for the input.
- * 
+ *
  * @return TSize The number of weakly connected components  (Metafunction: @link Graph#Size @endlink of the type
  *               of <tt>g</tt>).
- * 
+ *
  * The running time is <tt>O(n a(n, n))</tt> where <tt>a</tt> is the inverse Ackermann function and thus almost linear.
  * The union find data structure is used since the graph implementations do not allow the efficient iteration of
  * in-edges.
@@ -82,15 +82,15 @@ template <typename TSpec, typename TComponents>
 typename Size<Graph<TSpec> >::Type
 weaklyConnectedComponents(TComponents & components,
                           Graph<TSpec> const & g)
-                          
-{
-	typedef Graph<TSpec> TGraph;
-	typedef typename Size<TGraph>::Type TSize;
-	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
-	typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 
-	// Initialization.
+{
+    typedef Graph<TSpec> TGraph;
+    typedef typename Size<TGraph>::Type TSize;
+    typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
+    typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+
+    // Initialization.
     UnionFind<TVertexDescriptor> unionFind;
     resizeVertexMap(g, unionFind);
 
