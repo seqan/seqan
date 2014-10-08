@@ -882,11 +882,11 @@ void _analyzeChains(String<TMSplazerChain> & queryChains)
         if (!queryChains[i].isEmpty)
         {
             resizeVertexMap(queryChains[i].graph, queryChains[i].distMap);
-            dagShortestPath(queryChains[i].graph,
+            dagShortestPath(queryChains[i].predMap,
+                            queryChains[i].distMap,
+                            queryChains[i].graph,
                             queryChains[i].startVertex,
-                            weightMap,
-                            queryChains[i].predMap,
-                            queryChains[i].distMap);
+                            weightMap);
         }
         // else
         // std::cerr << " Chain for query " << i << ", is empty!" << std::endl;//", queryID: " << queryIDs[i] <<

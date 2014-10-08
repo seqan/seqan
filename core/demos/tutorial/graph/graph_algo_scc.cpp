@@ -36,7 +36,7 @@ int main() {
 
 // FRAGMENT(connected-components)
 	String<unsigned int> component;
-	stronglyConnectedComponents(g, component);
+	stronglyConnectedComponents(component, g);
 
 // FRAGMENT(output-connected-components)
 	std::cout << "Strongly Connected Components: " << std::endl;

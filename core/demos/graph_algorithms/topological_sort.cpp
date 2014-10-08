@@ -25,7 +25,7 @@ int main()
     
     // Get vertex descriptor in topological sort order.
     String<TVertexDescriptor> order;
-    topologicalSort(g, order);
+    topologicalSort(order, g);
 
     // Write the result to stdout.
     std::cout << "Topological sort: \n";

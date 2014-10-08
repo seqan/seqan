@@ -23,7 +23,7 @@ int main() {
     String<unsigned int> distMap;
 
     // Dijkstra from vertex 0 (single source shortest paths)
-    dijkstra(g, 0, weightMap, predMap, distMap);
+    dijkstra(predMap, distMap, g, 0, weightMap);
 
     // Output distances of shortest paths
     Iterator<TGraph, VertexIterator>::Type it(g);
