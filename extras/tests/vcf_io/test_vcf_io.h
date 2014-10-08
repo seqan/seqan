@@ -317,7 +317,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_header)
     vcfHeader[17].value = "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">";
 
     std::string tmpPath = (std::string)SEQAN_TEMP_FILENAME() + ".vcf";
-    std::ofstream file(tmpPath);
+    std::ofstream file(tmpPath.c_str());
     seqan::DirectionIterator<std::ofstream, seqan::Output>::Type iter = directionIterator(file, seqan::Output());
     writeRecord(iter, vcfHeader, vcfIOContext, seqan::Vcf());
     file.close();
@@ -332,8 +332,8 @@ SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_record)
     std::string goldPath = (std::string)SEQAN_PATH_TO_ROOT() + "/extras/tests/vcf_io/example_records.vcf";
     std::string tmpPath = (std::string)SEQAN_TEMP_FILENAME() + ".vcf";
 
-    std::ifstream file(goldPath);
-    std::ofstream fileOut(tmpPath);
+    std::ifstream file(goldPath.c_str());
+    std::ofstream fileOut(tmpPath.c_str());
 
     seqan::DirectionIterator<std::ifstream, seqan::Input>::Type iter = directionIterator(file, seqan::Input());
     seqan::DirectionIterator<std::ofstream, seqan::Output>::Type iterOut = directionIterator(fileOut, seqan::Output());

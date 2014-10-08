@@ -286,8 +286,8 @@ int main(int argc, char const ** argv)
         return res == seqan::ArgumentParser::PARSE_ERROR;
 
     // Open input file.
-    seqan::SequenceStream inStream(toCString(options.inFilename));
-    if (!isGood(inStream))
+    seqan::SeqFileIn seqFile;
+    if (!open(seqFile, toCString(options.inFilename)))
     {
         std::cerr << "ERROR: Could not open file " << options.inFilename << " for reading.\n";
         return 1;
@@ -298,13 +298,9 @@ int main(int argc, char const ** argv)
     seqan::CharString id;
     seqan::Dna5String seq;
     seqan::CharString quals;
-    while (!atEnd(inStream))
+    while (!atEnd(seqFile))
     {
-        if (readRecord(id, seq, quals, inStream) != 0)
-        {
-            std::cerr << "ERROR: Could not read from " << options.inFilename << ".\n";
-            return 1;
-        }
+        readRecord(id, seq, quals, seqFile);
         if (empty(quals))  // Fill with Q40 if there are no qualities.
             resize(quals, length(seq), '!' + 40);
 
