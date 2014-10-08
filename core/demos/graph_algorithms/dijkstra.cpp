@@ -24,7 +24,7 @@ int main()
     // Run Dijkstra's algorithm from vertex 0.
     String<unsigned> predMap;
     String<unsigned> distMap;
-    dijkstra(g, 0, weightMap, predMap, distMap);
+    dijkstra(predMap, distMap, g, 0, weightMap);
 
     // Print results to stdout.
     std::cout << "Single-Source Shortest Paths: \n";
@@ -54,7 +54,7 @@ int main()
     // Run Dijkstra's algorithm from vertex 0.
     clear(predMap);
     clear(distMap);
-    dijkstra(cargoG, 0, intMap, predMap, distMap);
+    dijkstra(predMap, distMap, cargoG, 0, intMap);
 
     // Print result to stdout.
     std::cout << "\nSingle-Source Shortest Paths: \n";

@@ -27,7 +27,7 @@ int main()
     String<unsigned int> predMap;
     String<unsigned int> discoveryTimeMap;
     String<unsigned int> finishingTimeMap;
-    depthFirstSearch(g, predMap, discoveryTimeMap, finishingTimeMap);
+    depthFirstSearch(predMap, discoveryTimeMap, finishingTimeMap, g);
 
     // Write the result to stdout.
     std::cout << "Depth-First search: \n";

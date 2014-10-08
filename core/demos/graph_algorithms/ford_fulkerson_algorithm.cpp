@@ -27,7 +27,7 @@ int main()
     // Run the Ford-Fulkerson algorithm for maximum flow computation from source
     // vertex 0 to sink vertex 3.  valF is the value of the flow.
     String<unsigned int> flow;
-    unsigned valF = fordFulkersonAlgorithm(g, 0, 3, capMap, flow);
+    unsigned valF = fordFulkersonAlgorithm(flow, g, 0, 3, capMap);
 
     // Print the result to stdout.
     std::cout << "Ford-Fulkerson (Value of the flow = " << valF << ")\n";

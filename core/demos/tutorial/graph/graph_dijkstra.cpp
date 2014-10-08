@@ -62,7 +62,7 @@ int main ()
 	String<TVertexDescriptor> predMap;
 	String<TSize> distMap;
 // FRAGMENT(dijkstra)
-	dijkstra(g,vertHannover,cargoMap,predMap,distMap);
+	dijkstra(predMap, distMap, g, vertHannover, cargoMap);
 
 // FRAGMENT(dijkstra-output)
 	TVertexIterator itV2(g);
