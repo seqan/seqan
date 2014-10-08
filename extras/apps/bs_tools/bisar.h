@@ -855,8 +855,8 @@ template <typename TAlignedRead, typename TMInfo, typename TFragStore, typename 
 inline int
 _compareAlignedReadAndMateInfo2(TAlignedRead const &a, TMInfo const &b, TFragStore const &fragStore, TOptions &options)
 {
-    if (a.contigId < b.contigId) return -1;
-    if (a.contigId > b.contigId) return 1;
+    if ((__int32)a.contigId < b.contigId) return -1;
+    if ((__int32)a.contigId > b.contigId) return 1;
 
     typename TFragStore::TContigPos posA = _min(a.beginPos, a.endPos);
     if (posA < b.beginPos - options.intervalOffset)
@@ -965,7 +965,7 @@ postProcessMain(TOptions &options, TModel const &)
     typedef StringSet<TContigGaps>                                                  TSetContigGaps;
 
     typedef typename Value<typename TFragmentStore::TMatePairStore>::Type           TMatePairStoreElement;
-    typedef MatchMateInfo_<TContigPos, TId>                                         TMatchMateInfo;
+    typedef MatchMateInfo_<TId>                                                     TMatchMateInfo;
     typedef String<TMatchMateInfo>                                                  TMatchMateInfos;
 
     // Initialize aligment scores
