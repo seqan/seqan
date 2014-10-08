@@ -174,7 +174,7 @@ template <typename TIndexSpec, typename TSpec>
 void loadContigs(Indexer<TIndexSpec, TSpec> & me, Options const & options)
 {
     if (options.verbose)
-        std::cout << "Loading reference:\t\t\t" << std::flush;
+        std::cerr << "Loading reference:\t\t\t" << std::flush;
 
     start(me.timer);
     open(me.contigsFile, toCString(options.contigsFile));
@@ -204,7 +204,7 @@ void loadContigs(Indexer<TIndexSpec, TSpec> & me, Options const & options)
         throw RuntimeError("Maximum contig length exceeded.");
 
     if (options.verbose)
-        std::cout << me.timer << std::endl;
+        std::cerr << me.timer << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -215,7 +215,7 @@ template <typename TIndexSpec, typename TSpec>
 void saveContigs(Indexer<TIndexSpec, TSpec> & me, Options const & options)
 {
     if (options.verbose)
-        std::cout << "Dumping reference:\t\t\t" << std::flush;
+        std::cerr << "Dumping reference:\t\t\t" << std::flush;
 
     start(me.timer);
     if (!save(me.contigs, toCString(options.contigsIndexFile)))
@@ -223,7 +223,7 @@ void saveContigs(Indexer<TIndexSpec, TSpec> & me, Options const & options)
     stop(me.timer);
 
     if (options.verbose)
-        std::cout << me.timer << std::endl;
+        std::cerr << me.timer << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -236,7 +236,7 @@ void buildIndex(Indexer<TIndexSpec, TSpec> & me, Options const & options)
     typedef typename Indexer<TIndexSpec, TSpec>::TIndex TIndex;
 
     if (options.verbose)
-        std::cout << "Building reference index:\t\t" << std::flush;
+        std::cerr << "Building reference index:\t\t" << std::flush;
 
     start(me.timer);
 
@@ -276,7 +276,7 @@ void buildIndex(Indexer<TIndexSpec, TSpec> & me, Options const & options)
     stop(me.timer);
 
     if (options.verbose)
-        std::cout << me.timer << std::endl;
+        std::cerr << me.timer << std::endl;
 }
 
 // ----------------------------------------------------------------------------
@@ -287,7 +287,7 @@ template <typename TIndexSpec, typename TSpec>
 void saveIndex(Indexer<TIndexSpec, TSpec> & me, Options const & options)
 {
     if (options.verbose)
-        std::cout << "Dumping reference index:\t\t" << std::flush;
+        std::cerr << "Dumping reference index:\t\t" << std::flush;
 
     start(me.timer);
     if (!save(me.index, toCString(options.contigsIndexFile)))
@@ -295,7 +295,7 @@ void saveIndex(Indexer<TIndexSpec, TSpec> & me, Options const & options)
     stop(me.timer);
 
     if (options.verbose)
-        std::cout << me.timer << std::endl;
+        std::cerr << me.timer << std::endl;
 }
 
 // ----------------------------------------------------------------------------
