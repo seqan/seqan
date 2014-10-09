@@ -113,27 +113,35 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS FILE", true));
     setValidValues(parser, 1, SeqFileIn::getFileFormatExtensions());
-    setHelpText(parser, 1, "Either one single-end or two paired-end / mate-pairs read files.");
+    setHelpText(parser, 1, "Either one single-end or two paired-end / mate-pair read files.");
 
     addOption(parser, ArgParseOption("v", "verbose", "Displays global statistics."));
-    addOption(parser, ArgParseOption("vv", "vverbose", "Displays diagnostic output per batch of reads."));
+    addOption(parser, ArgParseOption("vv", "vverbose", "Displays extensive statistics for each batch of reads."));
 
     // Setup output options.
     addSection(parser, "Output Options");
 
-    addOption(parser, ArgParseOption("o", "output-file", "Specify an output file. \
-                                     Default: use the reads filename prefix.",
+    addOption(parser, ArgParseOption("o", "output-file", "Specify an output file. Default: write the file to standard output.",
                                      ArgParseOption::OUTPUTFILE));
     setValidValues(parser, "output-file", BamFileOut::getFileFormatExtensions());
+
+    addOption(parser, ArgParseOption("f", "output-format", "Specify an output format. Note: when specifying the option \
+                                                            --output-file, the output format is taken from the filename \
+                                                            extension.", ArgParseOption::STRING));
+    setValidValues(parser, "output-format", getExtensionsWithoutLeadingDot(BamFileOut::getFileFormatExtensions()));
+    setDefaultValue(parser, "output-format", "sam");
+
+#if SEQAN_HAS_ZLIB
+    addOption(parser, ArgParseOption("u", "uncompressed-bam", "Turn off the compression of BAM written to standard output."));
+#endif
 
     addOption(parser, ArgParseOption("rg", "read-group", "Specify a read group for all reads in the SAM/BAM file.",
                                      ArgParseOption::STRING));
     setDefaultValue(parser, "read-group", options.readGroup);
 
-    addOption(parser, ArgParseOption("nh", "no-header", "Do not output SAM/BAM header. Default: output header."));
-
-    addOption(parser, ArgParseOption("os", "output-secondary", "Output suboptimal alignments as secondary alignments. \
-                                                                Default: output suboptimal alignments inside XA tag."));
+    addOption(parser, ArgParseOption("os", "output-secondary", "Output secondary alignments as separate SAM/BAM records. \
+                                                                Default: output secondary alignments inside the XA tag \
+                                                                of the primary alignment."));
 
     addOption(parser, ArgParseOption("or", "output-rabema", "Output a SAM/BAM file usable as a gold standard for the \
                                                              Read Alignment BEnchMArk (RABEMA)."));
@@ -142,14 +150,16 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     // Setup mapping options.
     addSection(parser, "Mapping Options");
 
-    addOption(parser, ArgParseOption("e", "error-rate", "Consider alignments within this error rate.", ArgParseOption::INTEGER));
+    addOption(parser, ArgParseOption("e", "error-rate", "Ignore alignments above this percentual number of errors.",
+                                     ArgParseOption::INTEGER));
     setMinValue(parser, "error-rate", "0");
     setMaxValue(parser, "error-rate", "10");
     setDefaultValue(parser, "error-rate", 100.0 * options.errorRate);
 
-    addOption(parser, ArgParseOption("s", "strata-rate", "Consider suboptimal alignments within this error rate from \
-                                                          the optimal one. Please, either specify a strata-rate much \
-                                                          smaller than error-rate, or choose the option all.",
+    addOption(parser, ArgParseOption("s", "strata-rate", "Report suboptimal alignments within this percentual number \
+                                                          of errors from the optimal alignment. Note: Either specify \
+                                                          --strata-rate much smaller than --error-rate, or better use \
+                                                          the option --all to consider all alignments within error-rate.",
                                                           ArgParseOption::INTEGER));
     setMinValue(parser, "strata-rate", "0");
     setMaxValue(parser, "strata-rate", "10");
@@ -162,17 +172,19 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     hideOption(getOption(parser, "quick"));
 
     // Setup paired-end mapping options.
-    addSection(parser, "Paired-End / Mate-Pairs Options");
+    addSection(parser, "Paired-End / Mate-Pair Mapping Options");
 
-    addOption(parser, ArgParseOption("ll", "library-length", "Mean template length.", ArgParseOption::INTEGER));
+    addOption(parser, ArgParseOption("ll", "library-length", "Expected library length.", ArgParseOption::INTEGER));
     setMinValue(parser, "library-length", "1");
     setDefaultValue(parser, "library-length", options.libraryLength);
 
-    addOption(parser, ArgParseOption("le", "library-error", "Deviation from the mean template length.", ArgParseOption::INTEGER));
+    addOption(parser, ArgParseOption("le", "library-error", "Deviation from the expected library length.",
+                                     ArgParseOption::INTEGER));
     setMinValue(parser, "library-error", "0");
     setDefaultValue(parser, "library-error", options.libraryError);
 
-    addOption(parser, ArgParseOption("lo", "library-orientation", "Expected orientation of segments in the template.", ArgParseOption::STRING));
+    addOption(parser, ArgParseOption("lo", "library-orientation", "Expected orientation of the segments in the library.",
+                                     ArgParseOption::STRING));
     setValidValues(parser, "library-orientation", options.libraryOrientationList);
     setDefaultValue(parser, "library-orientation", options.libraryOrientationList[options.libraryOrientation]);
 
@@ -188,7 +200,8 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setDefaultValue(parser, "threads", options.threadsCount);
 #endif
 
-    addOption(parser, ArgParseOption("r", "reads-batch", "Number of reads to process in one batch.", ArgParseOption::INTEGER));
+    addOption(parser, ArgParseOption("rb", "reads-batch", "Specify the number of reads to process in one batch.",
+                                     ArgParseOption::INTEGER));
     setMinValue(parser, "reads-batch", "1000");
     setMaxValue(parser, "reads-batch", "1000000");
     setDefaultValue(parser, "reads-batch", options.readsCount);
@@ -227,26 +240,33 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
     // Parse output file.
     getOptionValue(options.outputFile, parser, "output-file");
-    if (!isSet(parser, "output-file"))
+
+    // Parse output format.
+    CharString outputFormat;
+    if (getOptionValue(outputFormat, parser, "output-format"))
     {
-        options.outputFile = trimExtension(options.readsFile.i1);
-        appendValue(options.outputFile, '.');
-        append(options.outputFile, "sam");
+        addLeadingDot(outputFormat);
+        guessFormatFromFilename(outputFormat, options.outputFormat);
     }
+    else
+        assign(options.outputFormat, Sam());
+
+#if SEQAN_HAS_ZLIB
+    getOptionValue(options.uncompressedBam, parser, "uncompressed-bam");
+#endif
 
     // Parse output options.
     getOptionValue(options.readGroup, parser, "read-group");
-    options.outputHeader = !isSet(parser, "no-header");
     getOptionValue(options.outputSecondary, parser, "output-secondary");
     getOptionValue(options.rabema, parser, "output-rabema");
 
     // Parse mapping options.
-    unsigned errorRate;
+        unsigned errorRate;
     if (getOptionValue(errorRate, parser, "error-rate"))
         options.errorRate = errorRate / 100.0;
 
     unsigned strataRate;
-    getOptionValue(strataRate, parser, "strata-rate");
+    if (getOptionValue(strataRate, parser, "strata-rate"))
         options.strataRate = strataRate / 100.0;
 
     if (isSet(parser, "all"))
