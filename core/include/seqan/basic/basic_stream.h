@@ -893,6 +893,14 @@ write(TTarget &target, const char *ptr, TSize n)
     target.write(ptr, n);
 }
 
+// ostream shortcut, source is pointer (e.g. readRawPod)
+template <typename TTarget, typename TSize>
+inline SEQAN_FUNC_ENABLE_IF(Is< OutputStreamConcept<TTarget> >, void)
+write(TTarget &target, char *ptr, TSize n)
+{
+    target.write(ptr, n);
+}
+
 // chunked, source is pointer (e.g. readRawPod)
 template <typename TTarget, typename TIValue, typename TSize>
 inline SEQAN_FUNC_ENABLE_IF(And< Not<IsSameType<typename Chunk<TTarget>::Type, Nothing> >,
@@ -1031,7 +1039,8 @@ inline SEQAN_FUNC_ENABLE_IF(And< Is<ContainerConcept<TContainer> >,
                                  IsContiguous<TContainer> >, void)
 write(TTarget &target, TContainer &cont)
 {
-    write(target, begin(cont, Standard()), length(cont));
+    typename Iterator<TContainer, Standard>::Type iter = begin(cont, Standard());
+    write(target, iter, length(cont));
 }
 
 
