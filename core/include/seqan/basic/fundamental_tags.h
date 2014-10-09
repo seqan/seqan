@@ -724,6 +724,12 @@ inline void assign(TagSelector<TTagList> &selector, TTag const &)
 }
 
 template <typename TTagList>
+inline void assign(TagSelector<TTagList> &selector, TagSelector<TTagList> &other)
+{
+    selector.tagId = other.tagId;
+}
+
+template <typename TTagList>
 inline void assign(TagSelector<TTagList> &selector, TagSelector<TTagList> const &other)
 {
     selector.tagId = other.tagId;
