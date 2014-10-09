@@ -128,9 +128,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     addOption(parser, ArgParseOption("f", "output-format", "Specify an output format. Note: when specifying the option \
                                                             --output-file, the output format is taken from the filename \
                                                             extension.", ArgParseOption::STRING));
-    std::vector<std::string> extensions = BamFileOut::getFileFormatExtensions();
-    forEach(extensions, [](std::string & extension) { extension.erase(0, 1); });
-    setValidValues(parser, "output-format", extensions);
+    setValidValues(parser, "output-format", getExtensionsWithoutLeadingDot(BamFileOut::getFileFormatExtensions()));
     setDefaultValue(parser, "output-format", "sam");
 
 #if SEQAN_HAS_ZLIB
@@ -249,7 +247,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     CharString outputFormat;
     if (getOptionValue(outputFormat, parser, "output-format"))
     {
-        insert(outputFormat, 0, ".");
+        addLeadingDot(outputFormat);
         guessFormatFromFilename(outputFormat, options.outputFormat);
     }
     else

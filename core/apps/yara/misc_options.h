@@ -99,6 +99,41 @@ trimExtension(TString & string)
 }
 
 // ----------------------------------------------------------------------------
+// Function addLeadingDot()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+inline void addLeadingDot(TString & string)
+{
+    insert(string, 0, ".");
+}
+
+// ----------------------------------------------------------------------------
+// Function stripLeadingDot()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+inline void stripLeadingDot(TString & string)
+{
+    string.erase(0, 1);
+}
+
+// ----------------------------------------------------------------------------
+// Function getExtensionsWithoutLeadingDot()
+// ----------------------------------------------------------------------------
+
+template <typename TStrings>
+inline TStrings getExtensionsWithoutLeadingDot(TStrings const & strings)
+{
+    typedef typename Value<TStrings>::Type  TString;
+
+    TStrings extensions = strings;
+    forEach(extensions, [](TString & extension) { stripLeadingDot(extension); });
+
+    return extensions;
+}
+
+// ----------------------------------------------------------------------------
 // Function getExtension()
 // ----------------------------------------------------------------------------
 
