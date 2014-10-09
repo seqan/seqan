@@ -149,7 +149,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 		_skew7GlobalSlicedMulti(TLimitsString const &limits)
 		{
-			typename Iterator<TLimitsString const>::Type it = begin(limits), itEnd = end(limits);
+			typename Iterator<TLimitsString const, Standard>::Type it = begin(limits, Standard()), itEnd = end(limits, Standard());
 
 			n4 = n2 = n1 = n24 = 0;
 
@@ -181,7 +181,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			resize(off[2], length(limits) - 1);
 			resize(off[4], length(limits) - 1);
 
-			it = begin(limits);
+			it = begin(limits, Standard());
 			old = *it; ++it;
 
 			TSize seqNo = 0;
