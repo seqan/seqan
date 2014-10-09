@@ -74,7 +74,7 @@ for @Class.Index@ based substring searches.
 ..tag.FinderMlr:Binary search with mlr-heuristic.
 ...remarks:Exact string matching using a suffix array binary search with the mlr-heuristic.
 
-..tag.EsaFindLcpe:Binary search using lcp values.
+..tag.FinderLcpe:Binary search using lcp values.
 ...remarks:Exact string matching using a suffix array binary search and a lcp-interval tree.
 
 ..tag.FinderSTree:Suffix tree search.
@@ -108,7 +108,7 @@ for @Class.Index@ based substring searches.
  * @tag IndexFindAlgorithm#QGramFindLookup
  * @brief q-gram search. Finds q-grams in a @link IndexQGram @endlink index using the hash table.
  *
- * @tag IndexFindAlgorithm#EsaFindLcpe
+ * @tag IndexFindAlgorithm#FinderLcpe
  * @brief Binary search using lcp values.
  *
  *
