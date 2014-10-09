@@ -1339,12 +1339,13 @@ SEQAN_DEFINE_TEST(test_parse_non_const_cstring)
 {
     // Call parse() with (char **) and not (char const **) to test that this works as well.
     ArgumentParser parser;
-    setupStringParser(parser);
-    setDefaultValue(parser, "string", "default-string-value");
+    setupIntegerParser(parser);
+    setDefaultValue(parser, "integer", "2");
+    setMaxValue(parser, "integer", "3");
 
-    CharString defaultValue;
-    SEQAN_ASSERT(getOptionValue(defaultValue, parser, "string"));
-    SEQAN_ASSERT_EQ(defaultValue, "default-string-value");
+    int defaultValue;
+    SEQAN_ASSERT(getOptionValue(defaultValue, parser, "integer"));
+    SEQAN_ASSERT_EQ(defaultValue, 2);
 
     char buffer1[100];
     strncpy(buffer1, "program_name", 100);
@@ -1358,13 +1359,13 @@ SEQAN_DEFINE_TEST(test_parse_non_const_cstring)
     std::stringstream error_stream;
     std::stringstream outputStream;
 
-    SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, error_stream), ArgumentParser::PARSE_OK);
+    SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, std::cout), ArgumentParser::PARSE_OK);
     SEQAN_ASSERT_EQ(error_stream.str(), "");
     SEQAN_ASSERT_EQ(outputStream.str(), "");
 
-    CharString value;
-    SEQAN_ASSERT(getOptionValue(value, parser, "string"));
-    SEQAN_ASSERT_EQ(value, "this-is-a-string-value");
+    int value;
+    SEQAN_ASSERT(getOptionValue(value, parser, "integer"));
+    SEQAN_ASSERT_EQ(value, 1);
 }
 
 } // namespace seqan
