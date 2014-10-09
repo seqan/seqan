@@ -723,7 +723,7 @@ public:
                             waitFor(job.readyEvent);
                     }
 
-                    SEQAN_ASSERT(job.fileOfs == destFileOfs);
+                    SEQAN_ASSERT_EQ(job.fileOfs, destFileOfs);
 
                     // reset buffer pointers
                     this->setg( 
