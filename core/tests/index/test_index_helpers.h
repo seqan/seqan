@@ -615,10 +615,15 @@ typedef
     TagList<Index<String<Dna5, Packed<> >, FMIndex<> >,
     TagList<Index<CharString, FMIndex<> >,
     TagList<Index<StringSet<DnaString>, FMIndex<> >,
-    TagList<Index<StringSet<CharString>, FMIndex<> >,
+    TagList<Index<StringSet<CharString>, FMIndex<> >
+    > > > > > >
+    FMIndexTypes;
+
+typedef
     TagList<Index<CharString, IndexSa<> >,
-    TagList<Index<CharString, IndexEsa<> >
-    > > > > > > > >
+    TagList<Index<CharString, IndexEsa<> >,
+    FMIndexTypes
+    > >
     IndexTypes;
 
 // --------------------------------------------------------------------------
