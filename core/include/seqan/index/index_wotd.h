@@ -335,8 +335,9 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 // default finder
 
 	template < typename TText, typename TSpec >
-	struct DefaultFinder< Index<TText, IndexWotd<TSpec> > > {
-        typedef FinderSTree Type;	// standard suffix array finder is mlr-heuristic
+	struct DefaultFinder< Index<TText, IndexWotd<TSpec> > >
+    {
+        typedef FinderSTree Type;	// standard wotd finder is tree based search
     };
 
 //////////////////////////////////////////////////////////////////////////////
