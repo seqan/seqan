@@ -85,7 +85,6 @@ namespace seqan {
  * @see dagShortestPath
  * @see bellmanFordAlgorithm
  */
-
 template <typename TSpec, typename TVertexDescriptor, typename TWeightMap,
           typename TPredecessorMap, typename TDistanceMap>
 void dijkstra(TPredecessorMap & predecessor,

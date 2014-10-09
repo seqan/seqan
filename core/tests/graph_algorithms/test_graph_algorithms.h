@@ -1128,7 +1128,7 @@ void Test_HmmAlgorithms() {
 	// Algorithms
 	String<Dna> sequence = "AC";
 	String<TVertexDescriptor> path;
-	viterbiAlgorithm(hmm, sequence, path);
+	viterbiAlgorithm(path, hmm, sequence);
 	forwardAlgorithm(hmm, sequence);
 	backwardAlgorithm(hmm, sequence);
 }

@@ -64,10 +64,10 @@ namespace seqan {
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Performs a topological sort on a directed acyclic graph (DAG).
  *
- * @signature void topologicalSort(g, topSort);
+ * @signature void topologicalSort(topSort, g);
  *
- * @param[in]  g       A directed acyclic graph. Types: Directed Graph
  * @param[out] topSort A topological ordering of the vertices. Types: String.
+ * @param[in]  g       A directed acyclic graph. Types: Directed Graph
  *
  * A topological sort is a linear ordering of all its vertices such that if the graph contains an edge (u,v) then u
  * appears before v in the ordering.

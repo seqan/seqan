@@ -83,6 +83,7 @@ namespace seqan {
  *
  * @see depthFirstSearch
  */
+
 template <typename TSpec, typename TVertexDescriptor, typename TPredecessorMap, typename TDistanceMap>
 void breadthFirstSearch(TPredecessorMap & predecessor,
                         TDistanceMap & distance,

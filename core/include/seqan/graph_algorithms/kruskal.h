@@ -76,11 +76,11 @@ struct LessPairI1_ : public ::std::unary_function<Pair<TWeight, TPair>, bool>
  *
  * @signature void kruskalsAlgorithm(edges, g, source, weight);
  *
+ * @param[out] edges A String of vertex descriptors that represent edges.  Each consecutive pair is an edge with the
+ *                   two end points.
  * @param[in] g      An undirected graph. Types: Undirected Graph
  * @param[in] source A source vertex. Types: VertexDescriptor
  * @param[in] weight Edge weights.
- * @param[out] edges A String of vertex descriptors that represent edges.  Each consecutive pair is an edge with the
- *                   two end points.
  *
  * @section Example
  *
