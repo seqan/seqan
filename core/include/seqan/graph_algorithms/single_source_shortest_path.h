@@ -184,7 +184,7 @@ _relax(Graph<TSpec> const& g,
  *                         It determines a shortest-paths tree.
  * @param[out] distance    A property map.  Indicates for each vertex th distance from the source.
  *                         do exist.
- * @param[out] g           A directed acyclic graph. Types: Directed Graph
+ * @param[in]  g           A directed acyclic graph. Types: Directed Graph
  * @param[in]  source      A source vertex. Types: VertexDescriptor
  * @param[in]  weight      A weight map.  In a directed acyclic graph edge weights can be negative because no cycles
  *

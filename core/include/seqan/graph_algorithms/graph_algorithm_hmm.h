@@ -33,15 +33,28 @@
 #ifndef SEQAN_HEADER_GRAPH_ALGORITHM_HMM_H
 #define SEQAN_HEADER_GRAPH_ALGORITHM_HMM_H
 
-namespace SEQAN_NAMESPACE_MAIN
+namespace seqan
 {
 
-//////////////////////////////////////////////////////////////////////////////
-// Basic HMM algorithms
-//////////////////////////////////////////////////////////////////////////////
+// ============================================================================
+// Forwards
+// ============================================================================
 
+// ============================================================================
+// Tags, Classes, Enums
+// ============================================================================
 
-//////////////////////////////////////////////////////////////////////////////
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+// ============================================================================
+// Functions
+// ============================================================================
+
+// --------------------------------------------------------------------------
+// Function viterbiAlgorithm()
+// --------------------------------------------------------------------------
 
 /*!
  * @defgroup HmmAlgorithms HMM Algorithms
@@ -53,11 +66,11 @@ namespace SEQAN_NAMESPACE_MAIN
  * @headerfile <seqan/graph_algorithms.h>
  * @brief Implements the Viterbi algorithm for Hidden Markov Models.
  *
- * @signature TCargo viterbiAlgorithm(hmm, seq, path);
+ * @signature TCargo viterbiAlgorithm(path, hmm, seq);
  *
+ * @param[out] path The state path;  String of vertex descriptors.
  * @param[in]  hmm  The @link HmmGraph @endlink to use.
  * @param[in]  seq  Input sequence.
- * @param[out] path The state path;  String of vertex descriptors.
  *
  * @return TCargo Probability of the path, the type parameter <tt>TCargo</tt> from type of <tt>hmm</tt>.
  *
@@ -73,33 +86,12 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see HmmAlgorithms#forwardAlgorithm
  * @see HmmAlgorithms#backwardAlgorithm
  */
-
-/**
-.Function.viterbiAlgorithm:
-..cat:Graph
-..summary:Implements the Viterbi algorithm
-..description:
-The Viterbi algorithm computes the most likely sequence of hidden states of the Hidden Markov Model $hmm$ given the sequence $seq$ using dynamic programming.
-The result is the most likely sequence of hidden states and returned in $path$.
-..signature:TProbability viterbiAlgorithm(hmm, seq, path);
-..param.hmm:In-parameter:Input HMM.
-...type:Spec.Hmm
-..param.seq:In-parameter:Input sequence.
-..param.path:Out-parameter:State path.
-..returns:Probability of the path, the type parameter $TCargo$ from type of $hmm$.
-..see:Function.forwardAlgorithm
-..see:Function.backwardAlgorithm
-..remarks:
-See the @http://en.wikipedia.org/wiki/Viterbi_algorithm|Wikipedia article on the Viterbi algorithm@ for an introduction to the algorithm itself.
-..include:seqan/graph_algorithms.h
-*/
 template<typename TAlphabet, typename TProbability, typename TSpec, typename TSequence, typename TPath>
 inline TProbability
-viterbiAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
-                 TSequence const& seq,
-                 TPath& path)
+viterbiAlgorithm(TPath & path,
+                 Graph<Hmm<TAlphabet, TProbability, TSpec> > const & hmm,
+                 TSequence const & seq)
 {
-    SEQAN_CHECKPOINT
     typedef Graph<Hmm<TAlphabet, TProbability, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TSize;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
@@ -253,8 +245,9 @@ viterbiAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
     return value(vMat, (len+1) * numRows + eState);
 }
 
-
-//////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+// Function forwardAlgorithm()
+// --------------------------------------------------------------------------
 
 template<typename TAlphabet, typename TProbability, typename TSpec, typename TSequence, typename TForwardMatrix>
 inline TProbability
@@ -348,8 +341,6 @@ _forwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
     return value(fMat, (len+1) * numRows + eState);
 }
 
-//////////////////////////////////////////////////////////////////////////////
-
 /*!
  * @fn HmmAlgorithms#forwardAlgorithm
  * @headerfile <seqan/graph_algorithms.h>
@@ -372,33 +363,19 @@ _forwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
  * @see HmmAlgorithms#viterbiAlgorithm
  * @see HmmAlgorithms#backwardAlgorithm
  */
-
-/**
-.Function.forwardAlgorithm
-..cat:Graph
-..summary:Implements the forward algorithm.
-..description:Given a Hidden Markov Model $hmm$, the forward algorithm computes the probability of the sequence $seq$.
-..signature:TProbability forwardAlgorithm(hmm, seq);
-..param.hmm:In-parameter:Input HMM.
-...type:Spec.Hmm
-..param.seq:In-parameter:Input sequence.
-..returns:Probability of the sequence $seq$, $TProbability$ is the type parameter $TCargo$ of the type of $hmm$.
-..see:Function.viterbiAlgorithm
-..see:Function.backwardAlgorithm
-..remarks:See the @http://en.wikipedia.org/wiki/Forward_algorithm|Wikipedia article on the Foward algorithm@ for an introduction to the algorithm itself.
-..include:seqan/graph_algorithms.h
-*/
 template<typename TAlphabet, typename TProbability, typename TSpec, typename TSequence>
-inline TProbability
-forwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
-                 TSequence const& seq)
+TProbability
+forwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const & hmm,
+                 TSequence const & seq)
 {
     SEQAN_CHECKPOINT
     String<TProbability> fMat;
     return _forwardAlgorithm(hmm, seq, fMat);
 }
 
-//////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+// Function backwardAlgorithm()
+// --------------------------------------------------------------------------
 
 template<typename TAlphabet, typename TProbability, typename TSpec, typename TSequence, typename TBackwardMatrix>
 inline TProbability
@@ -533,10 +510,6 @@ _backwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
     return value(bMat, bState);
 }
 
-
-
-//////////////////////////////////////////////////////////////////////////////
-
 /*!
  * @fn HmmAlgorithms#backwardAlgorithm
  * @headerfile <seqan/graph_algorithms.h>
@@ -557,33 +530,19 @@ _backwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
  * @see HmmAlgorithms#viterbiAlgorithm
  * @see HmmAlgorithms#forwardAlgorithm
  */
-
-/**
-.Function.backwardAlgorithm
-..cat:Graph
-..summary:Implements the backward algorithm.
-..description:Execute the backward algorithm on the Hidden Markov Model $hmm$ to get the probability of $seq$.
-..signature:TProbability backwardAlgorithm(hmm, seq);
-..param.hmm:In-parameter:Input HMM.
-...type:Spec.Hmm
-..param.seq:In-parameter:Input sequence.
-..returns:Probability of the sequence $seq$.  $TProbability$ is the type parameter $TCargo$ of the type of $hmm$.
-..see:Function.viterbiAlgorithm
-..see:Function.forwardAlgorithm
-..remarks:See the @http://en.wikipedia.org/wiki/Forward-backward_algorithm|Wikipedia article on the Forward-backward algorithm@ for an introduction to the algorithm.
-..include:seqan/graph_algorithms.h
-*/
 template<typename TAlphabet, typename TProbability, typename TSpec, typename TSequence>
-inline TProbability
-backwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
-                  TSequence const& seq)
+TProbability
+backwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const & hmm,
+                  TSequence const & seq)
 {
     SEQAN_CHECKPOINT
     String<TProbability> bMat;
     return _backwardAlgorithm(hmm, seq, bMat);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+// Function generateSequence()
+// --------------------------------------------------------------------------
 
 /*!
  * @fn HmmAlgorithms#generateSequence
@@ -592,9 +551,9 @@ backwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
  *
  * @signature void generateSequence(hmm, seq, states, numSeq, maxLen);
  *
- * @param[in] hmm     The @link HmmGraph @endlink to use.
  * @param[out] seq    A @link StringSet @endlink of alphabet sequences.
  * @param[out] states A @link ContainerConcept @endlink object of state sequences.
+ * @param[in]  hmm    The @link HmmGraph @endlink to use.
  * @param[in]  numSeq The number of sequences to generate.
  * @param[in]  maxLen The maximum length of the sequences.  The sequences might be shorter if the ends tate is reached
  *                    before maxLen.
@@ -603,32 +562,12 @@ backwardAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
  *
  * Because of silent states, generated alphabet and state sequences might have different lengths.
  */
-
-/**
-.Function.generateSequence:
-..cat:Graph
-..summary:Generates random state and alphabet sequences of a given HMM.
-..signature:generateSequence(hmm, sequences, states, numSeq, maxLength)
-..param.hmm:In-parameter:Input HMM.
-...type:Spec.Hmm
-..param.sequences:The StringSet of alphabet sequences.
-...type:Class.StringSet
-..param.sequences:The StringSet of state sequences.
-...type:Class.StringSet
-..param.numSeq:The number of sequences to generate.
-..param.maxLength:The maximum length of the sequences.
-...remarks:Sequences might be shorter if the end state is reached prior to maxLength.
-..remarks: Because of silent states, generated alphabet and state sequences might have different length.
-..returns:void
-..include:seqan/graph_algorithms.h
-*/
 template<typename TAlphabet, typename TProbability, typename TSpec,typename TSequenceSet, typename TStateSeqSet, typename TSize>
-inline void
-generateSequence(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
-                 TSequenceSet& sequences,
-                 TStateSeqSet& states,
-                 TSize numSeq,
-                 TSize maxLength)
+void generateSequence(TSequenceSet & sequences,
+                      TStateSeqSet & states,
+                      Graph<Hmm<TAlphabet, TProbability, TSpec> > const & hmm,
+                      TSize numSeq,
+                      TSize maxLength)
 {
     SEQAN_CHECKPOINT
     typedef Graph<Hmm<TAlphabet, TProbability, TSpec> > TGraph;
@@ -698,8 +637,6 @@ generateSequence(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
 template<typename TAlphabet, typename TProbability, typename TSpec,typename TSequenceSet, typename TSize>
 inline void
 generateSequence(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
@@ -714,14 +651,9 @@ generateSequence(Graph<Hmm<TAlphabet, TProbability, TSpec> > const& hmm,
     generateSequence(hmm, sequences, states, numSeq, maxLength);
 }
 
-
-
-//////////////////////////////////////////////////////////////////////////////
-// Training algorithms
-//////////////////////////////////////////////////////////////////////////////
-
-
-//////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+// Function estimationWithStates()
+// --------------------------------------------------------------------------
 
 template<typename TAlphabet, typename TProbability, typename TSpec,typename TEmissionCounter, typename TTransitionCounter>
 inline void
@@ -813,7 +745,9 @@ estimationWithStates(Graph<Hmm<TAlphabet, TProbability, TSpec> >& hmm,
     _parameterEstimator(hmm,emissionCounter, transitionCounter);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
+// --------------------------------------------------------------------------
+// Function baumWelchAlgorithm()
+// --------------------------------------------------------------------------
 
 template<typename TAlphabet, typename TProbability, typename TSpec>
 inline void
@@ -841,8 +775,6 @@ _fillHmmUniform(Graph<Hmm<TAlphabet, TProbability, TSpec> >& hmm)
         }
     }
 }
-
-///////////////////////////////////////////////////////////////////////////////////////
 
 template<typename TAlphabet, typename TProbability, typename TSpec, typename TRNG>
 inline void
@@ -888,8 +820,6 @@ _fillHmmRandom(Graph<Hmm<TAlphabet, TProbability, TSpec> >& hmm,
     }
 }
 
-///////////////////////////////////////////////////////////////////////////////////////
-
 template<typename TAlphabet, typename TProbability, typename TSpec, typename TRNG>
 inline void
 randomizeHmm(Graph<Hmm<TAlphabet, TProbability, TSpec> >& hmm,
@@ -899,8 +829,6 @@ randomizeHmm(Graph<Hmm<TAlphabet, TProbability, TSpec> >& hmm,
     //_fillHmmRandom(hmm, rng);
     _fillHmmUniform(hmm);
 }
-
-///////////////////////////////////////////////////////////////////////////////////////
 
 template <typename TAlphabet, typename TProbability, typename TSpec, typename TSequence, typename TSize>
 inline TProbability
@@ -1011,8 +939,6 @@ _baumWelchAlgorithm(Graph<Hmm<TAlphabet, TProbability, TSpec > >& hmm,
     }
     return lastTotalModelProb;
 }
-
-///////////////////////////////////////////////////////////////////////////////////////
 
 template <typename TAlphabet, typename TProbability, typename TSpec, typename TSequence>
 inline TProbability
@@ -1252,6 +1178,6 @@ msaToProfileHmm(String<TAlignmentChar> const& matr,
 */
 
 
-}// namespace SEQAN_NAMESPACE_MAIN
+}  // namespace seqan
 
 #endif //#ifndef SEQAN_HEADER_...
