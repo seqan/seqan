@@ -509,7 +509,7 @@ int main(int argc, char const ** argv)
     // Step 1: Open input file
     BamOnlyFileIn bamFileIn;
     bool success;
-    if (!empty(options.inFile))
+    if (options.inFile != "-")
         success = open(bamFileIn, toCString(options.inFile));
     else
         success = open(bamFileIn, std::cin);
