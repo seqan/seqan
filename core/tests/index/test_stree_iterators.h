@@ -627,7 +627,7 @@ void testFind()
 
 SEQAN_DEFINE_TEST(testFind_Esa_Mlr)
 {
-	testFind<EsaFindMlr>();
+	testFind<FinderMlr>();
 }
 
 SEQAN_DEFINE_TEST(testMultipleStrings_Ticket1109)
