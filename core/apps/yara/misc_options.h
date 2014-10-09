@@ -99,6 +99,41 @@ trimExtension(TString & string)
 }
 
 // ----------------------------------------------------------------------------
+// Function addLeadingDot()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+inline void addLeadingDot(TString & string)
+{
+    insert(string, 0, ".");
+}
+
+// ----------------------------------------------------------------------------
+// Function stripLeadingDot()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+inline void stripLeadingDot(TString & string)
+{
+    string.erase(0, 1);
+}
+
+// ----------------------------------------------------------------------------
+// Function getExtensionsWithoutLeadingDot()
+// ----------------------------------------------------------------------------
+
+template <typename TStrings>
+inline TStrings getExtensionsWithoutLeadingDot(TStrings const & strings)
+{
+    typedef typename Value<TStrings>::Type  TString;
+
+    TStrings extensions = strings;
+    forEach(extensions, [](TString & extension) { stripLeadingDot(extension); });
+
+    return extensions;
+}
+
+// ----------------------------------------------------------------------------
 // Function getExtension()
 // ----------------------------------------------------------------------------
 
@@ -185,9 +220,9 @@ void setDateAndVersion(ArgumentParser & parser)
     setCategory(parser, "Read Mapping");
 
 #ifdef SEQAN_REVISION
-    setVersion(parser, "0.9.0 [" + std::string(SEQAN_REVISION) + "]");
+    setVersion(parser, "0.9.1 [" + std::string(SEQAN_REVISION) + "]");
 #else
-    setVersion(parser, "0.9.0");
+    setVersion(parser, "0.9.1");
 #endif
 #ifdef SEQAN_DATE
     setDate(parser, SEQAN_DATE);
