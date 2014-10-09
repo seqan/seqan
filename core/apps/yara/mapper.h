@@ -57,7 +57,6 @@ struct Options
     CharString          outputFile;
     TOutputFormat       outputFormat;
     bool                outputSecondary;
-    bool                outputHeader;
     bool                uncompressedBam;
     CharString          readGroup;
 
@@ -84,7 +83,6 @@ struct Options
 
     Options() :
         outputSecondary(false),
-        outputHeader(true),
         uncompressedBam(false),
         readGroup("none"),
         mappingMode(STRATA),
@@ -470,16 +468,10 @@ inline void openOutputFile(Mapper<TSpec, TConfig> & me)
     resize(sequenceLengths(context(me.outputFile)), length(me.contigs.seqs));
     transform(sequenceLengths(context(me.outputFile)), me.contigs.seqs, [&](TContigSeq const & seq) { return length(seq); });
 
-    if (me.options.outputHeader)
-    {
-        BamHeader header;
-
-        // Fill header.
-        fillHeader(header, me.options);
-
-        // Write header.
-        writeRecord(me.outputFile, header);
-    }
+    // Write header.
+    BamHeader header;
+    fillHeader(header, me.options);
+    writeRecord(me.outputFile, header);
 }
 
 // ----------------------------------------------------------------------------

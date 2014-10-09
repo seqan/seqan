@@ -139,8 +139,6 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
                                      ArgParseOption::STRING));
     setDefaultValue(parser, "read-group", options.readGroup);
 
-    addOption(parser, ArgParseOption("nh", "no-header", "Do not output the SAM/BAM header. Default: output the header."));
-
     addOption(parser, ArgParseOption("os", "output-secondary", "Output secondary alignments as separate SAM/BAM records. \
                                                                 Default: output secondary alignments inside the XA tag \
                                                                 of the primary alignment."));
@@ -259,7 +257,6 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 
     // Parse output options.
     getOptionValue(options.readGroup, parser, "read-group");
-    options.outputHeader = !isSet(parser, "no-header");
     getOptionValue(options.outputSecondary, parser, "output-secondary");
     getOptionValue(options.rabema, parser, "output-rabema");
 
