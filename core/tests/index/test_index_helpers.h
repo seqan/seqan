@@ -630,7 +630,7 @@ typedef
 // Trie Index Types
 // --------------------------------------------------------------------------
 
-typedef IndexTypes TrieIndexTypes;
+typedef FMIndexTypes TrieIndexTypes;
 
 // ========================================================================== 
 // Test Classes
