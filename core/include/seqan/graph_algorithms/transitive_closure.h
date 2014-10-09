@@ -68,7 +68,7 @@ namespace seqan {
  *
  * @param[out] closure A matrix which indicates the closure.  Entry (i,j) in this matrix indicates whether there is a
  *                     path from i to j in the graph or not.  Types: Matrix
- * @param[in]   g      A directed graph.  Types: Directed Graph
+ * @param[in]  g       A directed graph.  Types: Directed Graph
  *
  * @section Example
  *
@@ -77,7 +77,7 @@ namespace seqan {
  * @include demos/graph_algorithms/transitive_closure.cpp.stdout
  */
 template <typename TSpec, typename TMatrix>
-void transitiveClosure(TMatrix& closure,
+void transitiveClosure(TMatrix & closure,
                        Graph<TSpec> const & g)
 {
     typedef typename Size<TMatrix>::Type TSize;
