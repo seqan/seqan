@@ -71,10 +71,10 @@ namespace SEQAN_NAMESPACE_MAIN
 for @Class.Index@ based substring searches.
 ..cat:Index
 
-..tag.EsaFindMlr:Binary search with mlr-heuristic.
+..tag.FinderMlr:Binary search with mlr-heuristic.
 ...remarks:Exact string matching using a suffix array binary search with the mlr-heuristic.
 
-..tag.EsaFindLcpe:Binary search using lcp values.
+..tag.FinderLcpe:Binary search using lcp values.
 ...remarks:Exact string matching using a suffix array binary search and a lcp-interval tree.
 
 ..tag.FinderSTree:Suffix tree search.
@@ -108,13 +108,13 @@ for @Class.Index@ based substring searches.
  * @tag IndexFindAlgorithm#QGramFindLookup
  * @brief q-gram search. Finds q-grams in a @link IndexQGram @endlink index using the hash table.
  *
- * @tag IndexFindAlgorithm#EsaFindLcpe
+ * @tag IndexFindAlgorithm#FinderLcpe
  * @brief Binary search using lcp values.
  *
  *
  * Exact string matching using a suffix array binary search and a lcp-interval tree.
  *
- * @tag IndexFindAlgorithm#EsaFindMlr
+ * @tag IndexFindAlgorithm#FinderMlr
  * @brief Binary search with mlr-heuristic.
  *
  * Exact string matching using a suffix array binary search with the mlr-heuristic.
@@ -124,8 +124,8 @@ for @Class.Index@ based substring searches.
     struct FinderLcpe_;    // Suffix Array finder using an enhanced LCP-Table
     struct FinderSTree_;    // Suffix Array finder using an enhanced LCP-Table
 
-    typedef Tag<FinderMlr_> const EsaFindMlr;
-    typedef Tag<FinderLcpe_> const EsaFindLcpe;
+    typedef Tag<FinderMlr_> const FinderMlr;
+    typedef Tag<FinderLcpe_> const FinderLcpe;
     typedef Tag<FinderSTree_> const FinderSTree;
 
 	template <typename TSpec = void>
