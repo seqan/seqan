@@ -41,7 +41,7 @@ using namespace seqan;
 
 // ========================================================================== 
 // Test Classes
-// ========================================================================== 
+// ==========================================================================
 
 // --------------------------------------------------------------------------
 // Class IndexFinderTest
@@ -71,6 +71,13 @@ SEQAN_TYPED_TEST(IndexFinderTest, FindFirstChar)
 {
     SEQAN_ASSERT(find(this->finder, prefix(concat(this->text), 1u)));
     SEQAN_ASSERT(find(this->finder, (const char*)"A"));
+}
+
+SEQAN_TYPED_TEST(IndexFinderTest, DefaultFinder)
+{
+    typedef Index<StringSet<CharString const>, IndexSa<> > TIndex;
+    Finder<TIndex> finder;
+    find(finder, "needle");
 }
 
 // ==========================================================================
