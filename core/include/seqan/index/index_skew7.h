@@ -566,8 +566,8 @@ namespace SEQAN_NAMESPACE_MAIN
 		//typedef typename Iterator<TBuffer, Standard>::Type TBufferIter;
 		typedef typename Iterator<TText const, Standard>::Type TValueIter;
 
-		SEQAN_ASSERT(IsContiguous<TText>::VALUE == true);
-		SEQAN_ASSERT(IsContiguous<TSA>::VALUE == true);
+		SEQAN_ASSERT(AllowsFastRandomAccess<TText>::VALUE == true);
+		SEQAN_ASSERT(AllowsFastRandomAccess<TSA>::VALUE == true);
 
         #ifdef SEQAN_DEBUG_INDEX
             std::cerr << "--- CREATE SUFFIX ARRAY ---" << std::endl;

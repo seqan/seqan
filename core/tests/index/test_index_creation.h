@@ -49,6 +49,58 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
+SEQAN_DEFINE_TEST(testIndexModifiedStringReverseEsa)
+{
+    typedef String<AminoAcid> TString;
+    typedef ModifiedString<TString, ModReverse> TReverse;
+    typedef Index<TReverse> TIndex;
+
+    TString org("ACGXN");
+    TReverse rev(org);
+
+    TIndex index(rev);
+    Iterator<TIndex, TopDown<> >::Type iter(index);
+}
+
+SEQAN_DEFINE_TEST(testIndexModifiedStringReverseFM)
+{
+    typedef String<AminoAcid> TString;
+    typedef ModifiedString<TString, ModReverse> TReverse;
+    typedef Index<TReverse, FMIndex<> > TIndex;
+
+    TString org("ACGXN");
+    TReverse rev(org);
+
+    TIndex index(rev);
+    Iterator<TIndex, TopDown<> >::Type iter(index);
+}
+
+SEQAN_DEFINE_TEST(testIndexModifiedStringViewEsa)
+{
+    typedef String<AminoAcid> TString;
+    typedef ModifiedString<TString, FunctorConvert<AminoAcid, char> > TConvert;
+    typedef Index<TConvert> TIndex;
+
+    TString org("ACGXN");
+    TConvert conv(org);
+
+    TIndex index(conv);
+    Iterator<TIndex, TopDown<> >::Type iter(index);
+}
+
+SEQAN_DEFINE_TEST(testIndexModifiedStringViewFM)
+{
+    typedef String<AminoAcid> TString;
+    typedef ModifiedString<TString, FunctorConvert<AminoAcid, char> > TConvert;
+    typedef Index<TConvert, FMIndex<> > TIndex;
+
+    TString org("ACGXN");
+    TConvert conv(org);
+
+    TIndex index(conv);
+    Iterator<TIndex, TopDown<> >::Type iter(index);
+}
+
 SEQAN_DEFINE_TEST(testIndexCreation)
 {
         typedef String<char> TText;
