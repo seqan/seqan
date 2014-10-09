@@ -32,6 +32,7 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
+#include <vector>
 #include <seqan/basic.h>
 #include <seqan/index.h>
 
@@ -47,10 +48,11 @@ using namespace seqan;
 // Class IndexFinderTest
 // --------------------------------------------------------------------------
 
-template <typename TIndex>
-class IndexFinderTest : public IndexTest<TIndex>
+template <typename TIndex_>
+class IndexFinderTest : public IndexTest<TIndex_>
 {
 public:
+    typedef TIndex_             TIndex;
     typedef IndexTest<TIndex>   TBase;
     typedef Finder<TIndex>      TFinder;
 
@@ -75,9 +77,25 @@ SEQAN_TYPED_TEST(IndexFinderTest, FindFirstChar)
 
 SEQAN_TYPED_TEST(IndexFinderTest, DefaultFinder)
 {
-    typedef Index<StringSet<CharString const>, IndexSa<> > TIndex;
+    typedef typename TestFixture::TIndex TIndex;
     Finder<TIndex> finder;
     find(finder, "needle");
+}
+
+SEQAN_TYPED_TEST(IndexFinderTest, StdString)
+{
+    typedef Index<std::string, IndexSa<> > TIndex;
+    std::string str;
+    TIndex index(str);
+    Iterator<TIndex, TopDown<> >::Type iter(index);
+}
+
+SEQAN_TYPED_TEST(IndexFinderTest, StdVector)
+{
+    typedef Index<std::vector<char>, IndexSa<> > TIndex;
+    std::vector<char> vec;
+    TIndex index(vec);
+    Iterator<TIndex, TopDown<> >::Type iter(index);
 }
 
 // ==========================================================================
