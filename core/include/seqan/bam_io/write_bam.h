@@ -165,9 +165,9 @@ _writeBamRecord(TTarget & target,
                 BamAlignmentRecord const & record,
                 Bam const & /*tag*/)
 {
-    typedef typename Iterator<String<CigarElement<> > const, Standard>::Type __restrict__   TCigarIter;
-    typedef typename Iterator<IupacString const, Standard>::Type __restrict__               TSeqIter;
-    typedef typename Iterator<CharString const, Standard>::Type __restrict__                TQualIter;
+    typedef typename Iterator<String<CigarElement<> > const, Standard>::Type SEQAN_RESTRICT TCigarIter;
+    typedef typename Iterator<IupacString const, Standard>::Type SEQAN_RESTRICT             TSeqIter;
+    typedef typename Iterator<CharString const, Standard>::Type SEQAN_RESTRICT              TQualIter;
 
     // bin_mq_nl
     unsigned l = 0;

@@ -174,7 +174,7 @@ _isPipe(const char * fileName)
 {
 #ifdef PLATFORM_WINDOWS
     struct _stat buf;
-    if (_stat(value.c_str(), &buf) == 0)
+    if (_stat(fileName, &buf) == 0)
         if ((buf.st_mode & _S_IFMT) == _S_IFCHR)
             return true;
 #else

@@ -657,10 +657,10 @@ public:
             else if (dir == std::ios_base::beg)
             {
                 // random seek
-                off_t destFileOfs = ofs >> 16;
+                std::streampos destFileOfs = ofs >> 16;
 
                 // are we in the same block?
-                if (currentJobId >= 0 && jobs[currentJobId].fileOfs == destFileOfs)
+                if (currentJobId >= 0 && jobs[currentJobId].fileOfs == (off_t)destFileOfs)
                 {
                     DecompressionJob &job = jobs[currentJobId];
 
@@ -687,7 +687,7 @@ public:
                     {
                         popFront(currentJobId, runningQueue);
 
-                        if (jobs[currentJobId].fileOfs == destFileOfs)
+                        if (jobs[currentJobId].fileOfs == (off_t)destFileOfs)
                             break;
 
                         // push back useless job
@@ -723,7 +723,7 @@ public:
                             waitFor(job.readyEvent);
                     }
 
-                    SEQAN_ASSERT_EQ(job.fileOfs, destFileOfs);
+                    SEQAN_ASSERT_EQ(job.fileOfs, (off_t)destFileOfs);
 
                     // reset buffer pointers
                     this->setg( 
@@ -886,7 +886,7 @@ public:
 	basic_bgzf_ostream(ostream_reference ostream_)
 	: 
 		bgzf_ostreambase_type(ostream_),
-		ostream_type(this->rdbuf())
+		ostream_type(bgzf_ostreambase_type::rdbuf())
 	{}
 
 	/// flush inner buffer and zipper buffer
@@ -947,7 +947,7 @@ public:
 	basic_bgzf_istream(istream_reference istream_)
 	  : 
 		bgzf_istreambase_type(istream_),
-		istream_type(this->rdbuf()),
+		istream_type(bgzf_istreambase_type::rdbuf()),
 		m_is_gzip(false),
 		m_gbgzf_data_size(0)
 	{};
