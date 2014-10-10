@@ -47,6 +47,25 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Class IntervalsIOContext
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class IntervalsIOContext
+ * @implements DefaultConstructible
+ * @implements Assignable
+ * @headerfile <seqan/intervals_io.h>
+ * @brief I/O context for .intervals file.
+ *
+ * @signature class IntervalsIOContext;
+ */
+
+struct IntervalsIOContext
+{
+    CharString buffer;
+};
+
 /*!
  * @defgroup IntervalsFileIO Intervals File I/O
  * @brief Support for intervals file.
@@ -86,23 +105,27 @@ typedef Tag<Intervals_> Intervals;
  *
  * @signature void readRecord(region, buffer, iter, tag);
  *
- * @param[out]    region The @link GenomicRegion @endlink to write interval to.
- * @param[in,out] buffer A @link CharString @endlink to use as a buffer.
- * @param[in,out] iter   A @link ForwardIteratorConcept forward iterator @endlink to read from.
- * @param[in]     tag    The tag @link IntervalsFileIO#Intervals Intervals @endlink for the format.
+ * @param[out]    region  The @link GenomicRegion @endlink to write interval to.
+ * @param[in,out] context A @link IntervalsIOContext @endlink with buffers.
+ * @param[in,out] iter    A @link ForwardIteratorConcept forward iterator @endlink to read from.
+ * @param[in]     tag     The tag @link IntervalsFileIO#Intervals Intervals @endlink for the format.
+ *
+ * @throw IOError in case of problems.
  */
 
 template <typename TForwardIter>
 void readRecord(GenomicRegion & record,
-                CharString & buffer,
+                IntervalsIOContext & context,
                 TForwardIter & iter,
                 Intervals const & /*tag*/)
 {
-    clear(buffer);
+    clear(context.buffer);
     // Read next line until the first whitespace (could be '\r' or '\n').
-    readUntil(buffer, iter, IsWhitespace());
-    // Parse buffer into GenomicRegion.
-    parse(record, buffer);
+    readUntil(context.buffer, iter, IsWhitespace());
+    // Parse context.buffer into GenomicRegion.
+    parse(record, context.buffer);
+    if (record.endPos == record.INVALID_POS)  // only one position
+        record.endPos = record.beginPos + 1;
     // Skip remaining line.
     skipLine(iter);
 }
@@ -116,22 +139,24 @@ void readRecord(GenomicRegion & record,
  * @headerfile <seqan/intervals_io.h>
  * @brief Write out a @link GenomicRegion @endlink to an intervals file.
  *
- * @signature void writeRecord(target, buffer, region, tag);
+ * @signature void writeRecord(target, context, region, tag);
  *
- * @param[in,out] target An @link OutputIteratorConcept output iterator @endlink to write to.
- * @param[in,out] buffer A @link CharString @endlink to use as a buffer.
- * @param[in]     region The @link GenomicRegion @endlink to write out.
- * @param[in]     tag    The tag @link IntervalsFileIO#Intervals Intervals @endlink for the format.
+ * @param[in,out] target  An @link OutputIteratorConcept output iterator @endlink to write to.
+ * @param[in,out] context A @link IntervalsIOContext @endlink with buffers.
+ * @param[in]     region  The @link GenomicRegion @endlink to write out.
+ * @param[in]     tag     The tag @link IntervalsFileIO#Intervals Intervals @endlink for the format.
+ *
+ * @throw IOError in case of problems.
  */
 
 template <typename TTarget>
 void writeRecord(TTarget & target,
-                 CharString & buffer,
+                 IntervalsIOContext & context,
                  GenomicRegion const & region,
                  Intervals const & /*tag*/)
 {
-    region.toString(buffer);
-    write(target, buffer);
+    region.toString(context.buffer);
+    write(target, context.buffer);
     write(target, "\n");
 }
 
