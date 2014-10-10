@@ -121,14 +121,14 @@ connectedComponents(TComponents & components,
 
     // Initialize Union-Find data structure.
     UnionFind<TVertexDescriptor> uf;
-    resizeVertexMap(g, uf);
+    resizeVertexMap(uf, g);
 
     // Use Union-Find data structure to compute connected components.
     for (typename Iterator<Graph<TSpec>, EdgeIterator>::Type it(g); !atEnd(it); goNext(it))
         joinSets(uf, findSet(uf, sourceVertex(it)), findSet(uf, targetVertex(it)));
 
     // Build final component map.
-    resizeVertexMap(g, components);
+    resizeVertexMap(components, g);
     unsigned c = 0;
     std::map<TVertexDescriptor, unsigned> reprToComponent;
     for (typename Iterator<Graph<TSpec>, VertexIterator>::Type it(g); !atEnd(it); goNext(it))

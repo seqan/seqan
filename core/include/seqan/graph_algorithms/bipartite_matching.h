@@ -88,7 +88,7 @@ bipartiteMatching(String<TEdges> & edges,
 
     // Use Ford-Fulkerson to determine a matching
     String<TSize> capMap;
-    resizeEdgeMap(g,capMap);
+    resizeEdgeMap(capMap, g);
     typedef typename Iterator<String<TSize> >::Type TCapIter;
     TCapIter capIt = begin(capMap);
     TCapIter capItEnd = end(capMap);

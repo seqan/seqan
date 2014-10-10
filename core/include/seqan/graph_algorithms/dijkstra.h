@@ -99,8 +99,8 @@ void dijkstra(TPredecessorMap & predecessor,
     typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
 
     // Initialization
-    resizeVertexMap(g,predecessor);
-    resizeVertexMap(g,distance);
+    resizeVertexMap(predecessor, g);
+    resizeVertexMap(distance, g);
 
     // S is initially empty
     String<bool> setS;

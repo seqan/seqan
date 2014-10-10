@@ -106,7 +106,7 @@ weaklyConnectedComponents(TComponents & components,
     // Build a map from graph vertex descriptor to component id.
     TSize nextId = 0;
     clear(components);
-    resizeVertexMap(g, components, setCount);  // setCount is sentinel value
+    resizeVertexMap(components, g, setCount);  // setCount is sentinel value
     for (TVertexIterator itV(g); !atEnd(itV); goNext(itV)) {
         if (getProperty(components, findSet(unionFind, *itV)) == setCount)
             assignProperty(components, findSet(unionFind, *itV), nextId++);

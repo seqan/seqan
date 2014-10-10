@@ -101,8 +101,8 @@ bool bellmanFordAlgorithm(TPredecessorMap & predecessor,
     // Initialization
     typedef typename Iterator<Graph<TSpec>, VertexIterator>::Type TVertexIterator;
     typedef typename Iterator<Graph<TSpec>, OutEdgeIterator>::Type TOutEdgeIterator;
-    resizeVertexMap(g,predecessor);
-    resizeVertexMap(g,distance);
+    resizeVertexMap(predecessor, g);
+    resizeVertexMap(distance, g);
     _initializeSingleSource(predecessor, distance, g, source, weight);
 
     // Run Bellman-Ford

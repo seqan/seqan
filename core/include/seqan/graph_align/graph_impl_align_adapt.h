@@ -303,7 +303,7 @@ _createNodeAttributes(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 	SEQAN_CHECKPOINT
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
 	typedef typename Id<TGraph>::Type TIdType;
-	resizeVertexMap(g, nodeMap);
+	resizeVertexMap(nodeMap, g);
 
 	unsigned int scaling = 20 / length(value(g.data_sequence));
 	if (scaling == 0) scaling = 1;
@@ -343,7 +343,7 @@ _createEdgeAttributes(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 					  TEdgeAttributes& edgeMap)
 {
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
-	resizeEdgeMap(g, edgeMap);
+	resizeEdgeMap(edgeMap, g);
 
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TConstEdIter;
 	TConstEdIter itEd(g);

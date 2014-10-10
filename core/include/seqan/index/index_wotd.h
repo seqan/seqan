@@ -483,8 +483,8 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 	template < typename TText, typename TIndexSpec, typename TPropertyMap >
 	inline void
 	resizeVertexMap(
-		Index<TText, IndexWotd<TIndexSpec> > const& index,
-		TPropertyMap & pm)
+		TPropertyMap & pm,
+		Index<TText, IndexWotd<TIndexSpec> > const& index)
 	{
 		resize(pm, length(indexDir(index)), Generous());
 	}

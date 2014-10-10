@@ -169,8 +169,8 @@ int _readNewickTree(TTree & tree,
             
             // Read child.
             TVertexDescriptor x = addChild(tree, v);
-            resizeVertexMap(tree, vertexLabels);
-            resizeVertexMap(tree, branchLabels);
+            resizeVertexMap(vertexLabels, tree);
+            resizeVertexMap(branchLabels, tree);
             res = _readNewickTree(tree, vertexLabels, branchLabels, reader, x);
             if (res != 0)
                 return res;
@@ -266,8 +266,8 @@ int read2(String<Graph<Tree<> > > & forest,
         // Allocate root.
         createRoot(back(forest));
         TVertexDescriptor v = root(back(forest));
-        resizeVertexMap(back(forest), back(vertexLabels));
-        resizeVertexMap(back(forest), back(branchLabels));
+        resizeVertexMap(back(vertexLabels), back(forest));
+        resizeVertexMap(back(branchLabels), back(forest));
         // Read tree.
         res = _readNewickTree(back(forest), back(vertexLabels), back(branchLabels), reader, v);
         if (res != 0)

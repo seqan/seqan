@@ -19,7 +19,7 @@ int main()
     // Fill external edge weight map.
     unsigned weights[] = {10, 5, 1, 2, 4, 3, 9, 2, 7, 6};
     String<unsigned> weightMap;
-    assignEdgeMap(g, weightMap, weights);
+    assignEdgeMap(weightMap, g, weights);
 
     // Run Dijkstra's algorithm from vertex 0.
     String<unsigned> predMap;
@@ -49,7 +49,7 @@ int main()
 
     // Fill internal edge weight map.
     InternalMap<TEdgeCargo> intMap;
-    assignEdgeMap(cargoG, intMap, weights);
+    assignEdgeMap(intMap, cargoG, weights);
 
     // Run Dijkstra's algorithm from vertex 0.
     clear(predMap);

@@ -101,9 +101,9 @@ void primsAlgorithm(TPredecessorMap & predecessor,
     String<TWeight> key;
     TPred nilPred = getNil<typename VertexDescriptor<TGraph>::Type>();
     TWeight infWeight = _getInfinityDistance(weight);
-    resizeVertexMap(g,predecessor);
-    resizeVertexMap(g,tokenMap);
-    resizeVertexMap(g,key);
+    resizeVertexMap(predecessor, g);
+    resizeVertexMap(tokenMap, g);
+    resizeVertexMap(key, g);
 
     TVertexIterator it(g);
     while(!atEnd(it)) {
@@ -158,8 +158,8 @@ void primsAlgorithmSpaceEfficient(TPredecessorMap & predecessor,
     String<bool> tokenMap;
     TPred nilPred = getNil<typename VertexDescriptor<TGraph>::Type>();
     TWeight infWeight = _getInfinityDistance(weight);
-    resizeVertexMap(g,predecessor);
-    resizeVertexMap(g,tokenMap);
+    resizeVertexMap(predecessor, g);
+    resizeVertexMap(tokenMap, g);
 
     TVertexIterator it(g);
     for(;!atEnd(it);goNext(it)) {

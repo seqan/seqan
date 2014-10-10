@@ -109,7 +109,7 @@ void kruskalsAlgorithm(TEdges & edges,
     // Initialization
     reserve(edges, 2 * (numVertices(g) - 1));
     UnionFind<TVertexDescriptor> unionFind;
-    resizeVertexMap(g, unionFind);
+    resizeVertexMap(unionFind, g);
 
     // Sort the edges
     TEdgeIterator itE(g);
