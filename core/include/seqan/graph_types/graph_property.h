@@ -91,8 +91,7 @@ void resizeVertexMap(TPropertyMap & pm, Graph<TSpec> const & g, TPrototype const
  * @brief Initializes an edge map
  * @signature void resizeEdgeMap(pm, g[, prototype]);
  * @param[in,out] pm        An External or Internal Property Map. Types: @link ExternalPropertyMap @endlink,
- *                          @link InternalMap @endlink, @link InternalPointerMap @endlink, @link InternalRawMap
- *                          @endlink.
+ *                          @link InternalMap @endlink, @link InternalPointerMap @endlink.
  * @param[in]     g         A Graph.
  * @param[in]     prototype An optional prototype that is used for initializing the property map.
  */
@@ -542,110 +541,6 @@ getProperty(InternalPointerMap<TValue TClass::*, TPMember> &,
 }
 
 // --------------------------------------------------------------------------
-// Class InternalRawMap
-// --------------------------------------------------------------------------
-
-/*!
- * @class InternalRawMap
- * @brief An internal property map using raw pointer to members.
- * @signature template <typename TClass, typename TValue>
- *            class TValue TClass:: * const
- * @tparam TClass The class.
- * @tparam TValue The value type.
- * @remarks
- *
- * Internal property maps are used to access internal edge cargos.
- */
-
-// --------------------------------------------------------------------------
-// Function InternalRawMap#Value()
-// --------------------------------------------------------------------------
-
-template <typename TClass, typename TValue>
-struct Value<TValue TClass::*>
-{
-    typedef TValue Type;
-};
-
-template <typename TClass, typename TValue>
-struct Value<TValue TClass::* const>
-{
-    typedef TValue const Type;
-};
-
-// --------------------------------------------------------------------------
-// Function InternalRawMap#resizeEdgeMap()
-// --------------------------------------------------------------------------
-
-template <typename TSpec, typename TClass, typename TValue>
-void resizeEdgeMap(Graph<TSpec> const &, TValue TClass::*)
-{}
-
-// --------------------------------------------------------------------------
-// Function InternalRawMap#property()
-// --------------------------------------------------------------------------
-
-/*!
- * @fn InternalRawMap#assignProperty:
- * @brief Assigns a property to an item in the property map.
- * @signature void assignProperty(pm, d, val)
- * @param pm  The property map
- * @param d   A vertex or edge descriptor that identifies the item in the property map.
- *            Types: @link VertexDescriptor @endlink, @link Graph#EdgeDescriptor @endlink
- * @param val The new value, where thg type of the new value must match the value type of the property map.
- */
-
-template <typename TClass, typename TValue, typename TEdgeDescriptor>
-void assignProperty(TValue TClass::* ptr_to_member,
-                    TEdgeDescriptor const e,
-                    TValue const val)
-{
-    SEQAN_CHECKPOINT
-        (cargo(e)).*ptr_to_member = val;
-}
-
-// --------------------------------------------------------------------------
-// Function InternalRawMap#property()
-// --------------------------------------------------------------------------
-
-/*!
- * @fn InternalRawMap#property
- * @brief Accesses the property of an item in the property map.
- * @signature TRef property(pm, d)
- * @param pm  The property map.
- * @param d   A vertex or edge descriptor that identifies the item in the property map.
- *            Types: @link VertexDescriptor @endlink, @link Graph#EdgeDescriptor @endlink
- * @return TRef Reference to the item in the property map of type @link Reference @endlink.
- */
-template <typename TClass, typename TValue, typename TEdgeDescriptor>
-TValue & property(TValue TClass::* const ptr_to_member,
-                  TEdgeDescriptor const e)
-{
-    return (cargo(e)).*ptr_to_member;
-}
-
-// --------------------------------------------------------------------------
-// Function InternalRawMap#getProperty()
-// --------------------------------------------------------------------------
-
-/*!
- * @fn InternalRawMap#getProperty
- * @brief Get method for an item's property.
- * @signature TValue getProperty(pm, d)
- * @param pm  The property map.
- * @param d   A vertex or edge descriptor that identifies the item in the property map.
- *            Types: @link VertexDescriptor @endlink, @link Graph#EdgeDescriptor @endlink
- * @return TValue Reference to the item in the property map of type @link GetValue @endlink.
- */
-
-template <typename TClass, typename TValue, typename TEdgeDescriptor>
-TValue getProperty(TValue TClass::* const ptr_to_member,
-                   TEdgeDescriptor const e)
-{
-    return (getCargo(e)).*ptr_to_member;
-}
-
-// --------------------------------------------------------------------------
 // Function Graph#assignVertexMap()
 // --------------------------------------------------------------------------
 
@@ -686,7 +581,7 @@ void assignVertexMap(TPropertyMap & pm,
  * @signature void assignEdgeMap(g, pm, prop)
  *
  * @param[in]  pm   An External or Internal Property Map. Types: @link ExternalPropertyMap @endlink, @link InternalMap @endlink,
- *                  @link InternalPointerMap @endlink, @link InternalRawMap @endlink
+ *                  @link InternalPointerMap @endlink.
  * @param[out] prop An array with properties that are to be assigned to the items in the property map.
  * @param[in]  g    A Graph.
  *

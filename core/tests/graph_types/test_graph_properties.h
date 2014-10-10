@@ -177,16 +177,6 @@ void Test_Property() {
 	SEQAN_ASSERT(getProperty(eMap6, e2) == 'd');
 	SEQAN_ASSERT(property(eMap6, e2) == 'd');
 	
-	// Third Variant: Raw pointer to member
-	char TPair:: * pseudo_map = &TPair::i1;
-	assignProperty(pseudo_map, e1, 'z');
-	assignProperty(pseudo_map, e2, 'w');
-	SEQAN_ASSERT(getProperty(pseudo_map, e1) == 'z');
-	SEQAN_ASSERT(getProperty(pseudo_map, e2) == 'w');
-	property(pseudo_map,e1)='k';
-	SEQAN_ASSERT(getProperty(pseudo_map, e1) == 'k');
-
-
 	// Test shortcuts
 	unsigned int weights[] = {4,8};
 	Graph<Directed<void> > g10;
