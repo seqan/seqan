@@ -81,9 +81,6 @@ public:
     typedef TTraits_ TTraits;
     typedef std::basic_streambuf<TValue, TTraits_> TBase;
 
-    using typename TBase::pos_type;
-    using typename TBase::off_type;
-
     using TBase::eback;
     using TBase::gptr;
     using TBase::egptr;
@@ -127,7 +124,8 @@ public:
     }
 
     template <typename TOffset>
-    std::streampos seekoff(TOffset ofs, std::ios_base::seekdir way, std::ios_base::openmode which)
+    typename TTraits::pos_type
+    seekoff(TOffset ofs, std::ios_base::seekdir way, std::ios_base::openmode which)
     {
         return this->seekoff(ofs, way, which);
     }
@@ -156,13 +154,13 @@ public:
             if (SEQAN_UNLIKELY(left == 0))
             {
                 // if chunking isn't available try to seek
-                pos_type res = seekoff(ofs,
-                                       std::ios_base::cur,
-                                       (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
+                typename TTraits::pos_type res = seekoff(ofs,
+                                                         std::ios_base::cur,
+                                                         (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
 
                 // if seek doesn't work manually skip characters (when reading)
                 if (IsSameType<TDirection, Input>::VALUE)
-                    if (res == pos_type(off_type(-1)))
+                    if (res == typename TTraits::pos_type(typename TTraits::off_type(-1)))
                         for (; ofs != 0; --ofs)
                             this->sbumpc();
 
