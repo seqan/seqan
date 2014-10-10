@@ -101,6 +101,31 @@ SEQAN_DEFINE_TEST(testIndexModifiedStringViewFM)
     Iterator<TIndex, TopDown<> >::Type iter(index);
 }
 
+SEQAN_DEFINE_TEST(testIssue519)
+{
+    // Originally from Sascha on Trac
+    // Bug in SAQSort: For StringSets, the sorting method gives a wrong order.
+    CharString text = "bananamama";
+    CharString text2 = "bananajoe";
+    CharString text3 = "joesmama";
+
+    StringSet<CharString> strSet;
+    appendValue(strSet, text); appendValue(strSet, text2); appendValue(strSet, text3);
+    Index<StringSet<CharString>, IndexEsa<> > index1(strSet);
+    Index<StringSet<CharString>, IndexEsa<> > index2(strSet);
+
+    indexCreate(index1, EsaSA(), Skew7());
+    indexCreate(index2, EsaSA(), SAQSort());
+
+    SEQAN_ASSERT_EQ(indexSA(index1), indexSA(index2));
+
+//    Iterator<String<SAValue<StringSet<CharString> >::Type> >::Type iterSet = begin(indexSA(index2));
+//    std::cout << "Suffix Array: " << std::endl;
+//    for(; iterSet != end(indexSA(index2)); ++iterSet)
+//        std::cout << getSeqNo(*iterSet) << "," << getSeqOffset(*iterSet) << "\t"
+//                  << suffix(getValue(strSet, getSeqNo(*iterSet)), getSeqOffset(*iterSet)) << std::endl;
+}
+
 SEQAN_DEFINE_TEST(testIndexCreation)
 {
         typedef String<char> TText;
