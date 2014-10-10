@@ -277,8 +277,11 @@ parse(GenomicRegion & region, CharString const & regionString)
         SEQAN_THROW(ParseError("GenomicRegion: Begin postition less than 1"));
 
     region.beginPos--;                      // Adjust to 0-based.
-    if (atEnd(reader))
+    if (atEnd(reader))  // just one position
+    {
+        region.endPos = region.INVALID_POS;
         return;
+    }
 
     skipOne(reader, EqualsChar<'-'>());     // Skip '-'.
 
