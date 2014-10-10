@@ -355,7 +355,11 @@ struct AssertFunctor
 template <typename T>
 struct Demangler
 {
+#ifdef PLATFORM_GCC
+    char *data_begin;
+#else
     const char *data_begin;
+#endif
 
     Demangler()
     {
