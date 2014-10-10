@@ -94,6 +94,57 @@ namespace seqan {
  * @see PropertyMapConcept#Reference
  */
 
+/*!
+ * @fn PropertyMapConcept#assignProperty
+ * @brief Assigns a property to an item in the property map.
+ *
+ * @signature void assignProperty(pm, d, val);
+ *
+ * @param[in,out] pm  The property map
+ * @param[in]     d   A vertex or edge descriptor that identifies the item in the property map.
+ * @param[in]     val The new value, where the type of the new value must match the value type of the property map.
+ */
+
+/*!
+ * @fn PropertyMapConcept#property
+ * @brief Accesses the property of an item in the property map.
+ *
+ * @signature TReference property(pm, d);
+ *
+ * @param[in,out] pm  The property map.
+ * @param[in]     d   A vertex or edge descriptor that identifies the item in the property map.
+ *
+ * @return TReference Reference to the item in the property map of type @link Reference @endlink.
+ */
+
+/*!
+ * @fn PropertyMapConcept#getProperty
+ * @brief Get method for an item's property.
+ *
+ * @signature TGetValue getProperty(pm, d);
+ *
+ * @param[in,out] pm  The property map.
+ * @param[in]     d   A vertex or edge descriptor that identifies the item in the property map.
+ *
+ * @return TGetValue Get-value to the item in the property map of type @link PropertyMapConcept#GetValue
+ *                   GetValue @endlink.
+ */
+
+/*!
+ * @fn PropertyMapConcept#resize
+ * @brief Resize a sequence.
+ *
+ * @signature void resize(pm, len[, val]);
+ *
+ * @param[in,out] seq Sequence to resize.
+ * @param[in]     len Length to resize <tt>seq</tt> to.
+ * @param[in]     val When increasing the size, <tt>val</tt> is used to fill new entries.  When omitted,
+ *                    <tt>TValue()</tt> is used where <tt>TValue</tt> is the @link ContainerConcept#Value @endlink
+ *                    type of the sequence.
+ *
+ * @see StringConcept#resize
+ */
+
 SEQAN_CONCEPT(PropertyMapConcept, (TPropertyMap))
 {
 public:

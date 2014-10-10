@@ -65,7 +65,7 @@ namespace seqan {
 /*!
  * @fn Graph#resizeVertexMap
  * @brief Initializes a vertex map.
- * @signature void resizeVertexMap(pm, g, [, prototype])
+ * @signature void resizeVertexMap(pm, g[, prototype]);
  *
  * @param[in,out] pm        A @link PropertyMapConcept property map @endlink.
  * @param[in]     g         A Graph.
@@ -94,7 +94,7 @@ resizeVertexMap(TPropertyMap & pm, Graph<TSpec> const & g, TPrototype const & pr
 /*!
  * @fn Graph#resizeEdgeMap
  * @brief Initializes an edge map.
- * @signature void resizeEdgeMap(pm, g[, prototype]);
+ * @signature void resizeEdgeMap(pm, g[, prototype]);;
  * @param[in,out] pm        A @link PropertyMapConcept property map @endlink.
  * @param[in]     g         A Graph.
  * @param[in]     prototype An optional prototype that is used for initializing the property map.
@@ -122,7 +122,7 @@ resizeEdgeMap(TPropertyMap & pm, Graph<TSpec> const & g, TPrototype const & prot
 /*!
  * @fn Graph#assignVertexMap
  * @brief Initializes a vertex map with values of an array.
- * @signature void assignVertexMap(g, pm, prop)
+ * @signature void assignVertexMap(g, pm, prop);
  *
  * @param[out] pm   A @link PropertyMapConcept property map @endlink.
  * @param[in]  g    A Graph.
@@ -152,7 +152,7 @@ assignVertexMap(TPropertyMap & pm,
 /*!
  * @fn Graph#assignEdgeMap
  * @brief Initializes a vertex map with values of an array.
- * @signature void assignEdgeMap(g, pm, prop)
+ * @signature void assignEdgeMap(g, pm, prop);
  *
  * @param[in]  pm   An @link PropertyMapConcept property map @endlink.
  * @param[out] prop An array with properties that are to be assigned to the items in the property map.
@@ -179,16 +179,6 @@ assignEdgeMap(TPropertyMap & pm,
 // Class PropertyMapConcept#assignProperty
 // --------------------------------------------------------------------------
 
-/*!
- * @fn PropertyMapConcept#assignProperty
- * @brief Assigns a property to an item in the property map.
- * @signature void assignProperty(pm, d, val)
- * @param pm  The property map
- * @param d   A vertex or edge descriptor that identifies the item in the property map.
- *            Types: @link VertexDescriptor @endlink, @link Graph#EdgeDescriptor @endlink
- * @param val The new value, where the type of the new value must match the value type of the property map.
- */
-
 template <typename TPropertyMap, typename TDescriptor, typename TValue>
 SEQAN_FUNC_ENABLE_IF(Is<PropertyMapConcept<TPropertyMap> >, void)
 assignProperty(TPropertyMap & pm, TDescriptor const d, TValue const val)
@@ -199,16 +189,6 @@ assignProperty(TPropertyMap & pm, TDescriptor const d, TValue const val)
 // --------------------------------------------------------------------------
 // Class PropertyMapConcept#property
 // --------------------------------------------------------------------------
-
-/*!
- * @fn PropertyMapConcept#property
- * @brief Accesses the property of an item in the property map.
- * @signature TRef property(pm, d)
- * @param pm  The property map.
- * @param d   A vertex or edge descriptor that identifies the item in the property map.
- *            Types: @link VertexDescriptor @endlink, @link Graph#EdgeDescriptor @endlink
- * @return TRef Reference to the item in the property map of type @link Reference @endlink.
- */
 
 template <typename TPropertyMap, typename TDescriptor>
 SEQAN_FUNC_ENABLE_IF(Is<PropertyMapConcept<TPropertyMap> >,
@@ -229,16 +209,6 @@ property(TPropertyMap const & pm, TDescriptor const d)
 // --------------------------------------------------------------------------
 // Class PropertyMapConcept#getProperty
 // --------------------------------------------------------------------------
-
-/*!
- * @fn PropertyMapConcept#getProperty
- * @brief Get method for an item's property.
- * @signature TValue getProperty(pm, d)
- * @param pm  The property map.
- * @param d   A vertex or edge descriptor that identifies the item in the property map.
- *            Types: @link VertexDescriptor @endlink, @link Graph#EdgeDescriptor @endlink
- * @return TValue Reference to the item in the property map of type @link GetValue @endlink.
- */
 
 template <typename TPropertyMap, typename TDescriptor>
 SEQAN_FUNC_ENABLE_IF(Is<PropertyMapConcept<TPropertyMap> >,
