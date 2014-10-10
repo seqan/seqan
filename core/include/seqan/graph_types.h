@@ -64,7 +64,8 @@
 #include <seqan/graph_types/graph_iterator_edge.h>
 
 // Graph property maps
-#include <seqan/graph_types/graph_property.h>
+#include <seqan/graph_types/property_map_generic.h>
+#include <seqan/graph_types/property_map_internal.h>
 
 // Specializations
 #include <seqan/graph_types/graph_impl_oracle.h>	// Oracle
