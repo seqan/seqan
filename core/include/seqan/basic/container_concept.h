@@ -356,7 +356,7 @@ struct ContainerConcept :
 ..include:seqan/basic.h
 */
 
-SEQAN_CONCEPT_REFINE(StringConcept, (TString), (ContainerConcept))
+SEQAN_CONCEPT_REFINE(StringConcept, (TString), (ContainerConcept)(PropertyMapConcept))
 {
     typedef typename Value<TString>::Type                 TValue;
     typedef typename Size<TString>::Type                  TSize;
