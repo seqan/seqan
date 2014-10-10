@@ -355,7 +355,11 @@ struct AssertFunctor
 template <typename T>
 struct Demangler
 {
+#ifdef PLATFORM_GCC
     char *data_begin;
+#else
+    const char *data_begin;
+#endif
 
     Demangler()
     {
@@ -400,7 +404,7 @@ inline void _demangle(Demangler<T> & me, T const & t)
 // ----------------------------------------------------------------------------
 
 template <typename T>
-inline char * toCString(Demangler<T> const & me)
+inline const char * toCString(Demangler<T> const & me)
 {
     return me.data_begin;
 }
