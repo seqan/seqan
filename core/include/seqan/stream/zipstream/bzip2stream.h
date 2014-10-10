@@ -238,7 +238,7 @@ public:
 		)
 	: 
 		bzip2_ostreambase_type(ostream_,block_size_100k_, verbosity_, work_factor_,buffer_size_), 
-		ostream_type(this->rdbuf())
+		ostream_type(bzip2_ostreambase_type::rdbuf())
 	{
 
 	};
@@ -277,7 +277,7 @@ public:
 		)
 	  : 
 		bzip2_istreambase_type(istream_,verbosity_, small_, read_buffer_size_, input_buffer_size_), 
-		istream_type(this->rdbuf())
+		istream_type(bzip2_istreambase_type::rdbuf())
 	{};
 };
 
