@@ -144,8 +144,6 @@ void resizeEdgeMap(InternalPropertyMap<TPropMap, INSTANCE> &, Graph<TSpec> const
 // Function InternalPropertyMap#resize()
 // --------------------------------------------------------------------------
 
-// TODO(holtgrew): resize() should be added to the concept.
-
 template <typename TPropertyMap, TPropertyMap INSTANCE, typename TSize, typename TPrototype>
 void resize(InternalPropertyMap<TPropertyMap, INSTANCE> &, TSize, TPrototype)
 {}
