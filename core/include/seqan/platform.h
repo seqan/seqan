@@ -88,4 +88,13 @@
 #define SEQAN_RESTRICT
 #endif
 
+// C++ branch hints
+#ifndef SEQAN_LIKELY
+#define SEQAN_LIKELY(x) (x)
+#endif
+
+#ifndef SEQAN_UNLIKELY
+#define SEQAN_UNLIKELY(x) (x)
+#endif
+
 #endif

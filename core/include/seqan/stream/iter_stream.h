@@ -124,7 +124,7 @@ public:
     }
 
     template <typename TOffset>
-    typename TTraits::pos_type
+    typename std::streampos
     seekoff(TOffset ofs, std::ios_base::seekdir way, std::ios_base::openmode which)
     {
         return this->seekoff(ofs, way, which);

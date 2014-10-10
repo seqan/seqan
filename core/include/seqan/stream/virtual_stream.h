@@ -185,10 +185,19 @@ struct VirtualStreamFactoryContext_;
 
 // a compressed stream lives in the VirtualStreamContext_ and provides a basic_streambuf
 
+// base class
+template <typename TValue>
+struct VirtualStreamContextBase_
+{
+    std::basic_streambuf<TValue> *streamBuf;
+    VirtualStreamContextBase_(): streamBuf() {}
+    virtual ~VirtualStreamContextBase_() {}
+};
+
 // generic subclass with virtual destructor
 template <typename TValue, typename TDirection, typename TFormatTag = void>
 struct VirtualStreamContext_:
-    VirtualStreamContext_<TValue, TDirection>
+    VirtualStreamContextBase_<TValue>
 {
     typename VirtualStreamSwitch_<TValue, TDirection, TFormatTag>::Type stream;
 
@@ -203,22 +212,13 @@ struct VirtualStreamContext_:
 // special case: no compression, we simply forward the file stream
 template <typename TValue, typename TDirection>
 struct VirtualStreamContext_<TValue, TDirection, Nothing>:
-    VirtualStreamContext_<TValue, TDirection>
+    VirtualStreamContextBase_<TValue>
 {
     template <typename TObject>
     VirtualStreamContext_(TObject &object)
     {
         this->streamBuf = object.rdbuf();
     }
-};
-
-// base class
-template <typename TValue, typename TDirection>
-struct VirtualStreamContext_<TValue, TDirection>
-{
-    std::basic_streambuf<TValue> *streamBuf;
-    VirtualStreamContext_(): streamBuf() {}
-    virtual ~VirtualStreamContext_() {}
 };
 
 // --------------------------------------------------------------------------
@@ -237,7 +237,7 @@ public:
 //    typedef FileStream<char, TDirection>                            TFile;                  // if a real file should be opened
     typedef BufferedStream<TStream, TDirection>                     TBufferedStream;        // if input stream is not buffered
     typedef std::basic_streambuf<TValue>                            TStreamBuffer;          // the streambuf to use
-    typedef VirtualStreamContext_<TValue, TDirection>               TVirtualStreamContext;  // the owner of the streambuf
+    typedef VirtualStreamContextBase_<TValue>                       TVirtualStreamContext;  // the owner of the streambuf
     typedef typename FileFormat<VirtualStream>::Type                TFormat;                // detected format
 
     TFile                   file;
@@ -403,7 +403,7 @@ struct Value<VirtualStreamFactoryContext_<TVirtualStream> >
 // --------------------------------------------------------------------------
 
 template <typename TValue, typename TDirection, typename TTraits, typename TFormat>
-inline VirtualStreamContext_<TValue, TDirection> *
+inline VirtualStreamContextBase_<TValue> *
 tagApply(VirtualStreamFactoryContext_<VirtualStream<TValue, TDirection, TTraits> > &ctx, Tag<TFormat>)
 {
     return new VirtualStreamContext_<TValue, TDirection, Tag<TFormat> >(ctx.stream);

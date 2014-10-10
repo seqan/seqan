@@ -240,10 +240,10 @@ readRecord(BamAlignmentRecord & record,
            TForwardIter & iter,
            Bam const & /* tag */)
 {
-    typedef typename Iterator<CharString, Standard>::Type                           TCharIter;
-    typedef typename Iterator<String<CigarElement<> >, Standard>::Type __restrict__ TCigarIter;
-    typedef typename Iterator<IupacString, Standard>::Type __restrict__             TSeqIter;
-    typedef typename Iterator<CharString, Standard>::Type __restrict__              TQualIter;
+    typedef typename Iterator<CharString, Standard>::Type                             TCharIter;
+    typedef typename Iterator<String<CigarElement<> >, Standard>::Type SEQAN_RESTRICT TCigarIter;
+    typedef typename Iterator<IupacString, Standard>::Type SEQAN_RESTRICT             TSeqIter;
+    typedef typename Iterator<CharString, Standard>::Type SEQAN_RESTRICT              TQualIter;
 
     // Read size and data of the remaining block in one chunk (fastest).
     __int32 remainingBytes = _readBamRecordWithoutSize(context.buffer, iter);
