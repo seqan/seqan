@@ -298,7 +298,7 @@ struct Is<Convertible<T, T> > :
 
 template <typename T>
 struct Is<Convertible<T, T const> > :
-    Is<Assignable<T> > {};
+    Is<Assignable<typename RemoveConst<T>::Type> > {};
 
 template <typename T, typename S>
 struct Is<Convertible<T, S> > :
@@ -307,7 +307,7 @@ struct Is<Convertible<T, S> > :
 
 template <typename T, typename S>
 struct Is<Convertible<T, S const> > :
-    Is<Convertible<T, S> > {};
+    Is<Convertible<T, typename RemoveConst<S>::Type> > {};
 
 /*!
  * @concept CopyConstructibleConcept

@@ -127,7 +127,7 @@ public:
     typename std::streampos
     seekoff(TOffset ofs, std::ios_base::seekdir way, std::ios_base::openmode which)
     {
-        return this->seekoff(ofs, way, which);
+        return TBase::seekoff(ofs, way, which);
     }
 
     template <typename TOffset, typename TDirection>
