@@ -76,7 +76,7 @@ struct CompressionContext<GZFile>
 
     CompressionContext()
     {
-        bzero(&strm, sizeof(z_stream));
+        memset(&strm, 0, sizeof(z_stream));
     }
 };
 
