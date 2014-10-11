@@ -782,7 +782,7 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     int sumwindows = 0;
 
     bool positionStatsOnly = (options.outputSNP == "" && options.outputPosition != "");
-    TPosIterator inspectPosIt, inspectPosItEnd;
+    TPosIterator inspectPosIt = TPosIterator(), inspectPosItEnd = TPosIterator();
 
     bool firstCall = true;
 
@@ -792,7 +792,7 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     for(unsigned i=0; i < length(genomes); ++i)
     {
         //std::cout << genomeNames[i] << "\n";
-        if(!empty(positions))
+        if (!empty(positions))
         {
             inspectPosIt = begin(positions[i],Standard());
             inspectPosItEnd = end(positions[i],Standard());

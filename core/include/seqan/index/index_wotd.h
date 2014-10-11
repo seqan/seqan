@@ -349,10 +349,8 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 		TSize		parentRepLen;	// representative length of parent node
 		TSize		edgeLen;		// length of edge above current node
 
-		VertexWotdOriginal_() {}
-		VertexWotdOriginal_(MinimalCtor):
-			parentRepLen(0),
-			edgeLen(0) 
+		VertexWotdOriginal_() : node(0), parentRepLen(0), edgeLen(0) {}
+		VertexWotdOriginal_(MinimalCtor) : node(0), parentRepLen(0), edgeLen(0)
 		{
 			_setSizeInval(node);
 		}
@@ -366,19 +364,27 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 		Pair<TSize> range;			// current SA interval of hits
 		TSize		parentRight;	// right boundary of parent node's range (allows to go right)
 
-		VertexWotdModified_() {}
+		VertexWotdModified_()
+			node(0),
+			parentRepLen(0),
+			edgeLen(0),
+			range(0,0),
+			parentRight(0)
+        {}
 		VertexWotdModified_(MinimalCtor):
 			node(0),
 			parentRepLen(0),
 			edgeLen(0),
 			range(0,0),
-			parentRight(0) {}
+			parentRight(0)
+        {}
 		VertexWotdModified_(Pair<TSize> const &otherRange, TSize otherParentRight):
 			node(0),
 			parentRepLen(0),
 			edgeLen(0),
 			range(otherRange),
-			parentRight(otherParentRight) {}
+			parentRight(otherParentRight)
+        {}
 	};
 
 //////////////////////////////////////////////////////////////////////////////
