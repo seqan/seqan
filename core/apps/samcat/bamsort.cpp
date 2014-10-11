@@ -32,7 +32,13 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
+#ifdef _OPENMP
 #define _GLIBCXX_PARALLEL
+#else
+#if SEQAN_IGNORE_MISSING_OPENMP != 1
+#pragma message("OpenMP not found! Parallelization will be limited in bamsort.")
+#endif
+#endif
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -44,10 +50,6 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-
-#if !defined(_OPENMP) && SEQAN_IGNORE_MISSING_OPENMP != 1
-#pragma message("OpenMP not found! Parallelization will be limited in bamsort.")
-#endif
 
 using namespace seqan;
 
