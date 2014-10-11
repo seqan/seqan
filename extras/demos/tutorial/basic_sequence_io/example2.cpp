@@ -7,19 +7,23 @@ int main()
     seqan::CharString id;
     seqan::Dna5String seq;
 
-    seqan::SequenceStream seqStream("example.fa");
-    if (!isGood(seqStream))
+    seqan::SeqFileIn seqFileIn;
+    if (!open(seqFileIn, "example.fa"))
     {
         std::cerr << "ERROR: Could not open the file.\n";
         return 1;
     }
-    if (readRecord(id, seq, seqStream) != 0)
+
+    try
     {
-        std::cerr << "ERROR: Could not read from example.fa!\n";
+        readRecord(id, seq, seqFileIn);
+        std::cout << id << '\t' << seq << '\n';
+    }
+    catch (std::runtime_error &e)
+    {
+        std::cout << "ERROR: " << e.what() << std::endl;
         return 1;
     }
-
-    std::cout << id << '\t' << seq << '\n';
 
     return 0;
 }

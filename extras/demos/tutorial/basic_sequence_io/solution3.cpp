@@ -13,23 +13,24 @@ int main(int argc, char const ** argv)
     seqan::CharString id;
     seqan::Dna5String seq;
 
-    seqan::SequenceStream seqStream(argv[1]);
-    if (!isGood(seqStream))
+    seqan::SeqFileIn seqFileIn;
+    if (!open(seqFileIn, argv[1]))
     {
         std::cerr << "ERROR: Could not open the file.\n";
         return 1;
     }
-
-    while (!atEnd(seqStream))
+    try
     {
-        if (readRecord(id, seq, seqStream) != 0)
+        while (!atEnd(seqFileIn))
         {
-            std::cerr << "ERROR: Could not read from example.fa!\n";
-            return 1;
+            readRecord(id, seq, seqFileIn);
+            std::cout << id << '\t' << seq << '\n';
         }
-
-        std::cout << id << '\t' << seq << '\n';
     }
-
+    catch (std::runtime_error &e)
+    {
+        std::cout << "ERROR: " << e.what() << std::endl;
+        return 1;
+    }
     return 0;
 }
