@@ -3,33 +3,35 @@
 
 int main()
 {
-    // Open input stream, BamStream can read SAM and BAM files.
-    seqan::BamStream bamStreamIn("example.sam");
-    if (!isGood(bamStreamIn))
+    // Open input file, BamFileIn can read SAM and BAM files.
+    seqan::BamFileIn bamFileIn;
+    if (!open(bamFileIn, "example.sam"))
     {
-        std::cerr << "ERROR: Could not open example.sam!\n";
+        std::cerr << "ERROR: Could not open example.sam!" << std::endl;
         return 1;
     }
-    // Open output stream, "-" means stdin on if reading, else stdout.
-    seqan::BamStream bamStreamOut("-", seqan::BamStream::WRITE);
-    // Copy header.  The header is automatically written out before
-    // the first record.
-    bamStreamOut.header = bamStreamIn.header;
+    // Open output file, BamFileOut accepts also an ostream and a format tag.
+    seqan::BamFileOut bamFileOut(std::cout, seqan::Sam());
 
-    seqan::BamAlignmentRecord record;
-    while (!atEnd(bamStreamIn))
+    try
     {
-        if (readRecord(record, bamStreamIn) != 0)
+        // Copy header.
+        seqan::BamHeader header;
+        readRecord(header, bamFileIn);
+        writeRecord(bamFileOut, header);
+
+        seqan::BamAlignmentRecord record;
+        while (!atEnd(bamFileIn))
         {
-            std::cerr << "ERROR: Could not read record!\n";
-            return 1;
-        }
-        if (writeRecord(bamStreamOut, record) != 0)
-        {
-            std::cerr << "ERROR: Could not write record!\n";
-            return 1;
+            readRecord(record, bamFileIn);
+            writeRecord(bamFileOut, record);
         }
     }
-    
+    catch (std::runtime_error &e)
+    {
+        std::cout << "ERROR: " << e.what() << std::endl;
+        return 1;
+    }
+
     return 0;
 }

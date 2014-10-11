@@ -2191,11 +2191,11 @@ operator>>(TStream & source,
 // Function assignValueById
 // ----------------------------------------------------------------------------
 
-template<typename TValue, typename TSpec, typename TId>
+template<typename TValue, typename TSpec, typename TId, typename TValue2>
 inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TId> >, void)
 assignValueById(String<TValue, TSpec> & me,
                 TId id,
-                TValue const & obj)
+                TValue2 const & obj)
 {
     if (length(me) <= id)
         resize(me, id + 1, TValue());
