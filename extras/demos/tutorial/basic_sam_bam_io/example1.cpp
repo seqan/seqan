@@ -3,20 +3,21 @@
 
 int main()
 {
-    // Open input stream, BamStream can read SAM and BAM files.
-    seqan::BamStream bamStreamIn("example.sam");
-    // Open output stream, "-" means stdin on if reading, else stdout.
-    seqan::BamStream bamStreamOut("-", seqan::BamStream::WRITE);
-    // Copy header.  The header is automatically written out before
-    // the first record.
-    bamStreamOut.header = bamStreamIn.header;
+    // Open input file, BamFileIn can read SAM and BAM files.
+    seqan::BamFileIn bamFileIn("example.sam");
+    // Open output file, BamFileOut accepts also an ostream and a format tag.
+    seqan::BamFileOut bamFileOut(std::cout, seqan::Sam());
+    // Copy header.
+    seqan::BamHeader header;
+    readRecord(header, bamFileIn);
+    writeRecord(bamFileOut, header);
 
     seqan::BamAlignmentRecord record;
-    while (!atEnd(bamStreamIn))
+    while (!atEnd(bamFileIn))
     {
-        readRecord(record, bamStreamIn);
-        writeRecord(bamStreamOut, record);
+        readRecord(record, bamFileIn);
+        writeRecord(bamFileOut, record);
     }
-    
+
     return 0;
 }
