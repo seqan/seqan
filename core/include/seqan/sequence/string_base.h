@@ -2202,6 +2202,21 @@ assignValueById(String<TValue, TSpec> & me,
     assignValue(me, id, obj);
 }
 
+// ----------------------------------------------------------------------------
+// Function getValueById
+// ----------------------------------------------------------------------------
+
+template<typename TValue, typename TSpec, typename TId>
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TId> >, TValue)
+getValueById(String<TValue, TSpec> & me,
+             TId id)
+{
+    if (id < length(me))
+        return getValue(me, id);
+    else
+        return TValue();
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_SEQUENCE_STRING_ARRAY_BASE_H_
