@@ -996,7 +996,7 @@ inline void fillCorrection(TCorrection &newCorrection,
 {
     //TValue empty=maxValue(readLength);
     //fill Correction struct
-    newCorrection.nextCorrection = maxValue(newCorrection.nextCorrection);  // it will be the last correction in the linked list
+    newCorrection.nextCorrection = maxValue<unsigned>();  // it will be the last correction in the linked list
 #ifndef FIONA_CONSENSUS_REDUCE_MEMORY
     newCorrection.correctReadId = correctReadId;        // only for debugging purposes
     newCorrection.correctPos = correctPos;
