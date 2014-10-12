@@ -917,6 +917,8 @@ int endTestSuite()
         }
 
         rmdir(StaticData::tempFileNames()[i].c_str());
+        if (closedir(dpdf) != 0)
+            std::cerr << "WARNING: Could not delete directory " << StaticData::tempFileNames()[i] << "\n";
 #endif  // #ifdef PLATFORM_WINDOWS
     }
 
