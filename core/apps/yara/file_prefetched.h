@@ -52,25 +52,12 @@ template <typename TFile, typename TRecords, typename TThreading = Serial>
 struct PrefetchedFile
 {
     TFile       file;
-    TRecords    records;
     __uint64    maxRecords;
-
-    PrefetchedFile() :
-        file(),
-        records(),
-        maxRecords()
-    {}
 
     PrefetchedFile(__uint64 maxRecords) :
         file(),
-        records(),
         maxRecords(maxRecords)
     {}
-
-    void operator()()
-    {
-        readRecords(records, file, maxRecords);
-    }
 };
 
 // ----------------------------------------------------------------------------
@@ -80,15 +67,22 @@ struct PrefetchedFile
 template <typename TFile, typename TRecords>
 struct PrefetchedFile<TFile, TRecords, Parallel>
 {
-    typedef PrefetchedFile<TFile, TRecords, Serial> TWorker;
-
-    TWorker             _worker;
-    Thread<TWorker>     reader;
+    TFile           file;
+    TRecords        records;
+    __uint64        maxRecords;
+    std::thread     reader;
 
     PrefetchedFile(__uint64 maxRecords) :
-        _worker(maxRecords),
-        reader(_worker)
+        file(),
+        records(),
+        maxRecords(maxRecords),
+        reader()
     {}
+
+    ~PrefetchedFile()
+    {
+        close(*this);
+    }
 };
 
 // ============================================================================
@@ -106,19 +100,6 @@ inline bool open(PrefetchedFile<TFile, TRecords, TThreading> & me, const char * 
 }
 
 // ----------------------------------------------------------------------------
-// Function open<Parallel>()
-// ----------------------------------------------------------------------------
-// Prefetches the first batch of records.
-
-template <typename TFile, typename TRecords>
-inline bool open(PrefetchedFile<TFile, TRecords, Parallel> & me, const char * fileName)
-{
-    bool status = open(me.reader.worker, fileName);
-    run(me.reader);
-    return status;
-}
-
-// ----------------------------------------------------------------------------
 // Function open<Pair<TFile>, Serial>()
 // ----------------------------------------------------------------------------
 
@@ -126,18 +107,6 @@ template <typename TFile, typename TRecords, typename TThreading>
 inline bool open(PrefetchedFile<Pair<TFile>, TRecords, TThreading> & me, const char * fileName1, const char * fileName2)
 {
     return open(me.file, fileName1, fileName2);
-}
-
-// ----------------------------------------------------------------------------
-// Function open<Pair<TFile>, Parallel>()
-// ----------------------------------------------------------------------------
-
-template <typename TFile, typename TRecords>
-inline bool open(PrefetchedFile<Pair<TFile>, TRecords, Parallel> & me, const char * fileName1, const char * fileName2)
-{
-    bool status = open(me.reader.worker, fileName1, fileName2);
-    run(me.reader);
-    return status;
 }
 
 // ----------------------------------------------------------------------------
@@ -151,17 +120,6 @@ inline void close(PrefetchedFile<TFile, TRecords, TThreading> & me)
 }
 
 // ----------------------------------------------------------------------------
-// Function close<Parallel>()
-// ----------------------------------------------------------------------------
-
-template <typename TFile, typename TRecords>
-inline void close(PrefetchedFile<TFile, TRecords, Parallel> & me)
-{
-    close(me.reader);
-    close(me.reader.worker);
-}
-
-// ----------------------------------------------------------------------------
 // Function readRecords<Serial>()
 // ----------------------------------------------------------------------------
 
@@ -172,6 +130,63 @@ inline void readRecords(TRecords & records, PrefetchedFile<TFile, TRecords, TThr
 }
 
 // ----------------------------------------------------------------------------
+// Function _prefetchRecords<Parallel>()
+// ----------------------------------------------------------------------------
+// Prefetches the first batch of records.
+
+template <typename TFile, typename TRecords>
+inline void _prefetchRecords(PrefetchedFile<TFile, TRecords, Parallel> & me)
+{
+    me.reader = std::thread([&me]() { readRecords(me.records, me.file, me.maxRecords); });
+}
+
+// ----------------------------------------------------------------------------
+// Function open<Parallel>()
+// ----------------------------------------------------------------------------
+// Prefetches the first batch of records.
+
+template <typename TFile, typename TRecords>
+inline bool open(PrefetchedFile<TFile, TRecords, Parallel> & me, const char * fileName)
+{
+    if (open(me.file, fileName))
+    {
+        _prefetchRecords(me);
+        return true;
+    }
+
+    return false;
+}
+
+// ----------------------------------------------------------------------------
+// Function open<Pair<TFile>, Parallel>()
+// ----------------------------------------------------------------------------
+
+template <typename TFile, typename TRecords>
+inline bool open(PrefetchedFile<Pair<TFile>, TRecords, Parallel> & me, const char * fileName1, const char * fileName2)
+{
+    if (open(me.file, fileName1, fileName2))
+    {
+        _prefetchRecords(me);
+        return true;
+    }
+
+    return false;
+}
+
+// ----------------------------------------------------------------------------
+// Function close<Parallel>()
+// ----------------------------------------------------------------------------
+
+template <typename TFile, typename TRecords>
+inline void close(PrefetchedFile<TFile, TRecords, Parallel> & me)
+{
+    if (me.reader.joinable())
+        me.reader.join();
+
+    close(me.file);
+}
+
+// ----------------------------------------------------------------------------
 // Function readRecords<Parallel>()
 // ----------------------------------------------------------------------------
 
@@ -179,13 +194,14 @@ template <typename TFile, typename TRecords>
 inline void readRecords(TRecords & records, PrefetchedFile<TFile, TRecords, Parallel> & me)
 {
     // Wait the current batch of records.
-    waitFor(me.reader);
+    if (me.reader.joinable())
+        me.reader.join();
 
     // Return the current batch of records.
-    swap(records, me.reader.worker.records);
+    swap(records, me.records);
 
     // Read the next batch of records.
-    run(me.reader);
+    _prefetchRecords(me);
 }
 
 // ----------------------------------------------------------------------------
