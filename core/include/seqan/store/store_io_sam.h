@@ -224,12 +224,15 @@ template <typename TAlignedRead, typename TMInfo, typename TFragStore>
 inline int
 _compareAlignedReadAndMateInfo(TAlignedRead const &a, TMInfo const &b, TFragStore const &fragStore)
 {
-    if (a.contigId < b.contigId) return -1;
-    if (a.contigId > b.contigId) return 1;
+    typedef typename TAlignedRead::TId  TId;
+    typedef typename TAlignedRead::TPos TPos;
 
-    typename TFragStore::TContigPos posA = _min(a.beginPos, a.endPos);
-    if (posA < b.beginPos) return -1;
-    if (posA > b.beginPos) return 1;
+    if (a.contigId < (TId)b.contigId) return -1;
+    if (a.contigId > (TId)b.contigId) return 1;
+
+    TPos posA = _min(a.beginPos, a.endPos);
+    if (posA < (TPos)b.beginPos) return -1;
+    if (posA > (TPos)b.beginPos) return 1;
     
     bool reversedA = (a.endPos < a.beginPos);
     if (!reversedA &&  b.reversed) return -1;
