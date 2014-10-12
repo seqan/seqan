@@ -5559,7 +5559,7 @@ int main(int argc, const char* argv[])
         if (options.verbosity >= 1)
             std::cerr << std::endl << "Number of families at nodes:" << nfamilies << std::endl;
 		if (options.verbosity >= 1 && options.cycle > 1)
-			std::cerr << std::endl << "Relative change: " << ((float) (nfamprev - nfamilies)) / nfamprev << std::endl;
+			std::cerr << std::endl << "Relative change: " << ((float) (nfamprev - nfamilies)) / (nfamprev == 0u ? 1 : nfamprev) << std::endl;
 
 //		if (options.acceptedMismatches > 0) --options.acceptedMismatches;
 
