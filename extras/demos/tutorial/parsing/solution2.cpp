@@ -5,37 +5,26 @@
 
 // The following few lines are the actual solution to the assignment.
 
-struct HexNumChars_;
-typedef seqan::Tag<HexNumChars_> HexNumChars;
-
-inline int
-_charCompare(int const c, HexNumChars const & /* tag*/)
-{
-    return isdigit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
-}
-
-template <typename TStream, typename TPass, typename TBuffer>
-inline int
-readHexNumber(TBuffer & buffer, seqan::RecordReader<TStream, TPass> & reader)
-{
-    return seqan::_readHelper(buffer, reader, HexNumChars(), false);
-}
+typedef seqan::OrFunctor<seqan::IsInRange<'0', '9'>,
+        seqan::OrFunctor<seqan::IsInRange<'a', 'f'>,
+                         seqan::IsInRange<'A', 'F'> > > IsHexDigit;
 
 // This main routine is only some driver code that reads from stdin.
 
 int main()
 {
-    seqan::RecordReader<std::istream, seqan::SinglePass<> > reader(std::cin);
+    // We will read from std::cin via an iterator.
+    typedef seqan::DirectionIterator<std::istream, seqan::Input>::Type TReader;
+
+    // Create iterator to read from standard input.
+    TReader reader = directionIterator(std::cin, seqan::Input());
+
+    seqan::CharString buffer;
 
     while (!atEnd(reader))
     {
-        seqan::CharString buffer;
-        int res = readHexNumber(buffer, reader);
-        if (res != 0 && res != seqan::EOF_BEFORE_SUCCESS)
-        {
-            std::cerr << "ERROR: Could not read from standard input.\n";
-            return 1;
-        }
+        clear(buffer);
+        readUntil(buffer, reader, seqan::NotFunctor<IsHexDigit>());
 
         // Print hexadecimal number back to the user.
         std::cout << "RECOGNIZED " << buffer << '\n';
