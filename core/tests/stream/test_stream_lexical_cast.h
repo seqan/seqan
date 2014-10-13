@@ -221,6 +221,41 @@ void _test2b(TTest const & s)
 }
 
 template <typename TTest>
+void _test2b_bogus(TTest const & s)
+{
+    using namespace seqan;
+
+    int i       = 0;
+    short sh    = 0;
+    long l      = 0;
+    // unsigned int ui = 0;
+
+//    float f     = 0;
+//    double d    = 0;
+
+    SEQAN_ASSERT_EQ(lexicalCast2(i, s), true);
+    SEQAN_ASSERT_EQ(i,  -5);
+
+    SEQAN_ASSERT_EQ(lexicalCast2(sh, s), true);
+    SEQAN_ASSERT_EQ(sh, -5);
+
+    SEQAN_ASSERT_EQ(lexicalCast2(l, s), true);
+    SEQAN_ASSERT_EQ(l,  -5l);
+
+    // Casting string representing negative number to unsigned has ambiguous behaviour.  Thus, it is disabled right now.
+    // SEQAN_ASSERT_EQ(lexicalCast2(ui, s), 0);
+    // SEQAN_ASSERT_EQ(ui, 0u);
+
+// On Mac OS X 10.9 there is a problem with macport distributed clang compilers. Their behavior without C++11 enabled is as defined in C++11
+// They fail and return 0.
+//    SEQAN_ASSERT_EQ(lexicalCast2(f, s), true);
+//    SEQAN_ASSERT_EQ(f,  -5.4f);
+//
+//    SEQAN_ASSERT_EQ(lexicalCast2(d, s), true);
+//    SEQAN_ASSERT_EQ(d,  -5.4);
+}
+
+template <typename TTest>
 void _test2c(TTest const & s)
 {
     using namespace seqan;
@@ -266,7 +301,7 @@ SEQAN_DEFINE_TEST(test_stream_lexical_cast_2_stdstring)
     _test2c(s);
 
     s = "-5.4foobar";
-    _test2b(s); //TODO(h4nn3s): this should run through on _test2c, not _test2b
+    _test2b_bogus(s);
 }
 
 SEQAN_DEFINE_TEST(test_stream_lexical_cast_2_chararray)
@@ -285,7 +320,7 @@ SEQAN_DEFINE_TEST(test_stream_lexical_cast_2_chararray)
     _test2c(s);
 
     strcpy(s, "-5.4foobar");
-    _test2b(s); //TODO(h4nn3s): this should run through on _test2c, not _test2b
+    _test2b_bogus(s);
 }
 
 SEQAN_DEFINE_TEST(test_stream_lexical_cast_2_seqanstring)
@@ -302,5 +337,6 @@ SEQAN_DEFINE_TEST(test_stream_lexical_cast_2_seqanstring)
     _test2c(s);
 
     s = "-5.4foobar"; 
-    _test2b(s); //TODO(h4nn3s): this should run through on _test2c, not _test2b
+    _test2b_bogus(s);
+
 }
