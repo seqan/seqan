@@ -12,15 +12,15 @@ int main(int argc, char const ** argv)
     if (!stream.good())
         return 1;
     
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(stream);
+    typedef seqan::DirectionIterator<std::fstream, seqan::Input>::Type TReader;
+    TReader reader = directionIterator(stream, seqan::Input());
+
     seqan::StringSet<seqan::CharString> result;
     
     while (!atEnd(reader))
     {
         resize(result, length(result) + 1);
-        int res = readLine(back(result), reader);
-        if (res != 0)
-            return 1;
+        readLine(back(result), reader);
     }
 
     return 0;
