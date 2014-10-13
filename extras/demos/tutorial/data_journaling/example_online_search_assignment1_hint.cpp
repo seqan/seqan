@@ -27,7 +27,7 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & /*journalSet*/,
     }
     // First read sequence for reference sequence.
     readRecord(tempSeqId, tempSeq, databaseFile);
-    
+
     // [B] Set the reference sequence to the Journal Set
 
     // Read remaining sequences.
