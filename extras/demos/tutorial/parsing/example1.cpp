@@ -9,29 +9,23 @@ int main()
 {
     // Define string and record reader types.  We will read from std::cin which
     // is of type std::istream.  We use a single-pass record reader.
-    typedef seqan::RecordReader<std::istream, seqan::SinglePass<> > TRecordReader;
-
-    int res = 0;  // Used to store I/O results.
+    typedef seqan::DirectionIterator<std::istream, seqan::Input>::Type TReader;
 
     // Create RecordReader reading from standard input.
-    TRecordReader reader(std::cin);
+    TReader reader = directionIterator(std::cin, seqan::Input());
 
     // Read the file line by line.
     while (!atEnd(reader))
     {
         // Read first column: The key.
         seqan::CharString key;
-        res = readUntilChar(key, reader, '\t');
-        if (res != 0)
-            return 1;
+        readUntil(key, reader, seqan::IsTab());
 
-        goNext(reader);  // Skip TAB.
+        skipOne(reader, seqan::IsTab());    // Skip TAB.
 
         // Read second column: The value.
         seqan::CharString value;
-        res = readLine(value, reader);  // EOL will not be stored in value.
-        if (res != 0)
-            return 1;
+        readLine(value, reader);    // EOL will not be stored in value.
 
         // Print ${key} -> ${value}.
         std::cout << key << " -> " << value << std::endl;
