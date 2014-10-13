@@ -196,17 +196,11 @@ struct Reference<Range<TIterator> const>:
 template <typename TIterator>
 struct Iterator<Range<TIterator>, Standard>
 {
-    typedef TIterator Type;
+    typedef typename If< Is< IntegerConcept<TIterator> >, Iter<TIterator, CountingIterator>, TIterator>::Type Type;
 };
 
 template <typename TIterator>
-struct Iterator<Range<TIterator> const, Standard>
-{
-    typedef TIterator Type;
-};
-
-//template <typename TIterator>
-//struct Iterator<Range<TIterator> const>: public Iterator<Range<TIterator> > {};
+struct Iterator<Range<TIterator> const, Standard> : Iterator<Range<TIterator>, Standard> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Difference
