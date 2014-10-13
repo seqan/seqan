@@ -239,7 +239,7 @@ int main()
     // Open the stream to the file containing the sequences.
     CharString seqDatabasePath = "/path/to/your/fasta/file/sequences.fasta";
     SeqFileIn databaseFile(toCString(seqDatabasePath));
-    
+
     // Reading each sequence and journal them.
     TJournaledSet journalSet;
     JoinConfig<GlobalAlign<JournaledCompact> > joinConfig;
@@ -250,7 +250,6 @@ int main()
     TSequence pattern = "GTGGT";
     std::cout << "Search for: " << pattern << ":\n";
     searchPattern(hitSet, journalSet, pattern);
-
 
     // FRAGMENT(printResult)
     if (empty(hitSet[0]))
