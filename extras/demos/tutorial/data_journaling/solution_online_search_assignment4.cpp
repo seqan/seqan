@@ -202,10 +202,10 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
     typedef typename Host<TString>::Type THost;
     
     clear(journalSet);
-    
+
     String<char> seqId;
     THost sequence;
-    
+
     // No sequences in the fasta file!
     if (atEnd(databaseFile))
     {
@@ -214,10 +214,10 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
     }
     // First read sequence for reference sequence.
     readRecord(seqId, sequence, databaseFile);
-    
+
     // We have to create the global reference sequence otherwise we loose the information after this function terminates.
     createHost(journalSet, sequence);
-    
+
     // If there are more
     while (!atEnd(databaseFile))
     {
