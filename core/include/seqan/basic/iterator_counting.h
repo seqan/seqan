@@ -40,14 +40,14 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
-// Tags, Classes, Enums
+// Tags
 // ============================================================================
 
 struct CountingIterator;
+
+// ============================================================================
+// Classes
+// ============================================================================
 
 template <typename TIncrementable>
 class Iter<TIncrementable, CountingIterator>
@@ -97,6 +97,9 @@ struct Difference<Iter<TIncrementable, CountingIterator> > : Difference<TIncreme
 // Function position()
 // ----------------------------------------------------------------------------
 
+///.Function.position.param.iterator.type:Spec.Position Iterator
+///.Function.position.class:Spec.Position Iterator
+
 template <typename TIncrementable>
 inline typename Position<TIncrementable>::Type &
 position(Iter<TIncrementable, CountingIterator> & me)
@@ -114,6 +117,9 @@ position(Iter<TIncrementable, CountingIterator> const & me)
 // ----------------------------------------------------------------------------
 // Function setPosition()
 // ----------------------------------------------------------------------------
+
+///.Function.setPosition.param.iterator.type:Spec.Position Iterator
+///.Function.setPosition.class:Spec.Position Iterator
 
 template <typename TIncrementable, typename TPosition>
 inline void
@@ -151,22 +157,21 @@ assignValue(Iter<TIncrementable, CountingIterator> & me, TValue _value)
     setPosition(me, _value);
 }
 
-//// ----------------------------------------------------------------------------
-//// Function operator==()
-//// ----------------------------------------------------------------------------
-//
-//template <typename TContainer>
-//inline bool
-//operator==(Iter<TContainer, PositionIterator> const & left,
-//           Iter<TContainer, PositionIterator> const & right)
-//{
-//    SEQAN_CHECKPOINT;
-//    return position(left) == position(right);
-//}
-//
-//// ----------------------------------------------------------------------------
-//// Function operator!=()
-//// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// Function operator==()
+// ----------------------------------------------------------------------------
+
+template <typename TIncrementable>
+inline bool
+operator==(Iter<TIncrementable, CountingIterator> const & left,
+           Iter<TIncrementable, CountingIterator> const & right)
+{
+    return position(left) == position(right);
+}
+
+// ----------------------------------------------------------------------------
+// Function operator!=()
+// ----------------------------------------------------------------------------
 
 template <typename TIncrementable>
 inline bool
@@ -176,53 +181,49 @@ operator!=(Iter<TIncrementable, CountingIterator> const & left,
     return position(left) != position(right);
 }
 
-//// ----------------------------------------------------------------------------
-//// Function operator<()
-//// ----------------------------------------------------------------------------
-//
-//template <typename TContainer>
-//inline bool
-//operator<(Iter<TContainer, PositionIterator> const & left,
-//          Iter<TContainer, PositionIterator> const & right)
-//{
-//    SEQAN_CHECKPOINT;
-//    return position(left) < position(right);
-//}
-//
-//template <typename TContainer>
-//inline bool
-//operator>(Iter<TContainer, PositionIterator> const & left,
-//          Iter<TContainer, PositionIterator> const & right)
-//{
-//    SEQAN_CHECKPOINT;
-//    return position(left) > position(right);
-//}
-//
-//// ----------------------------------------------------------------------------
-//// Function operator<=()
-//// ----------------------------------------------------------------------------
-//
-//template <typename TContainer>
-//inline bool
-//operator<=(Iter<TContainer, PositionIterator> const & left,
-//           Iter<TContainer, PositionIterator> const & right)
-//{
-//    SEQAN_CHECKPOINT;
-//    return position(left) <= position(right);
-//}
-//
-//// ----------------------------------------------------------------------------
-//// Function operator>=()
-//// ----------------------------------------------------------------------------
-//
-//template <typename TContainer>
-//inline bool
-//operator>=(Iter<TContainer, PositionIterator> const & left,
-//           Iter<TContainer, PositionIterator> const & right)
-//{
-//    SEQAN_CHECKPOINT;
-//    return position(left) >= position(right);
-//}
+// ----------------------------------------------------------------------------
+// Function operator<()
+// ----------------------------------------------------------------------------
+
+template <typename TIncrementable>
+inline bool
+operator<(Iter<TIncrementable, CountingIterator> const & left,
+          Iter<TIncrementable, CountingIterator> const & right)
+{
+    return position(left) < position(right);
+}
+
+template <typename TIncrementable>
+inline bool
+operator>(Iter<TIncrementable, CountingIterator> const & left,
+          Iter<TIncrementable, CountingIterator> const & right)
+{
+    return position(left) > position(right);
+}
+
+// ----------------------------------------------------------------------------
+// Function operator<=()
+// ----------------------------------------------------------------------------
+
+template <typename TIncrementable>
+inline bool
+operator<=(Iter<TIncrementable, CountingIterator> const & left,
+           Iter<TIncrementable, CountingIterator> const & right)
+{
+    return position(left) <= position(right);
+}
+
+// ----------------------------------------------------------------------------
+// Function operator>=()
+// ----------------------------------------------------------------------------
+
+template <typename TIncrementable>
+inline bool
+operator>=(Iter<TIncrementable, CountingIterator> const & left,
+           Iter<TIncrementable, CountingIterator> const & right)
+{
+    return position(left) >= position(right);
+}
 
 // ----------------------------------------------------------------------------
 // Function goNext()
@@ -250,140 +251,127 @@ goPrevious(Iter<TIncrementable, CountingIterator> & me)
 // Function operator+()
 // ----------------------------------------------------------------------------
 
-//template <typename TContainer, typename TIntegral>
-//inline Iter<TContainer, PositionIterator>
-//operator+(Iter<TContainer, PositionIterator> const & left,
-//          TIntegral right)
-//{
-//    SEQAN_CHECKPOINT;
-//    return Iter<TContainer, PositionIterator>(container(left), position(left) + right);
-//}
-//
-//// for <anonymous enum> types
-//template <typename TContainer>
-//inline Iter<TContainer, PositionIterator>
-//operator+(Iter<TContainer, PositionIterator> const & left,
-//          int right)
-//{
-//    SEQAN_CHECKPOINT;
-//    return Iter<TContainer, PositionIterator>(container(left), position(left) + right);
-//}
-//
-//template <typename TContainer, typename TIntegral>
-//inline Iter<TContainer, PositionIterator>
-//operator+(TIntegral left,
-//          Iter<TContainer, PositionIterator> const & right)
-//{
-//    SEQAN_CHECKPOINT;
-//    return Iter<TContainer, PositionIterator>(container(right), position(right) + left);
-//}
-//
-//// for <anonymous enum> types
-//template <typename TContainer>
-//inline Iter<TContainer, PositionIterator>
-//operator+(int left,
-//          Iter<TContainer, PositionIterator> const & right)
-//{
-//    SEQAN_CHECKPOINT;
-//    return Iter<TContainer, PositionIterator>(container(right), position(right) + left);
-//}
+template <typename TIncrementable, typename TIntegral>
+inline Iter<TIncrementable, CountingIterator>
+operator+(Iter<TIncrementable, CountingIterator> const & left,
+          TIntegral right)
+{
+    return Iter<TIncrementable, CountingIterator>(container(left), position(left) + right);
+}
+
+// for <anonymous enum> types
+template <typename TIncrementable>
+inline Iter<TIncrementable, CountingIterator>
+operator+(Iter<TIncrementable, CountingIterator> const & left,
+          int right)
+{
+    return Iter<TIncrementable, CountingIterator>(container(left), position(left) + right);
+}
+
+template <typename TIncrementable, typename TIntegral>
+inline Iter<TIncrementable, CountingIterator>
+operator+(TIntegral left,
+          Iter<TIncrementable, CountingIterator> const & right)
+{
+    return Iter<TIncrementable, CountingIterator>(container(right), position(right) + left);
+}
+
+// for <anonymous enum> types
+template <typename TIncrementable>
+inline Iter<TIncrementable, CountingIterator>
+operator+(int left,
+          Iter<TIncrementable, CountingIterator> const & right)
+{
+    return Iter<TIncrementable, CountingIterator>(container(right), position(right) + left);
+}
 
 // ----------------------------------------------------------------------------
 // Function operator+=()
 // ----------------------------------------------------------------------------
 
-//template <typename TContainer, typename TIntegral>
-//inline Iter<TContainer, PositionIterator> &
-//operator+=(Iter<TContainer, PositionIterator> & left,
-//           TIntegral right)
-//{
-//    SEQAN_CHECKPOINT;
-//    setPosition(left, position(left) + right);
-//    return left;
-//}
-//
-//// for <anonymous enum> types
-//template <typename TContainer>
-//inline Iter<TContainer, PositionIterator> &
-//operator+=(Iter<TContainer, PositionIterator> & left,
-//           int right)
-//{
-//    SEQAN_CHECKPOINT;
-//    setPosition(left, position(left) + right);
-//    return left;
-//}
+template <typename TIncrementable, typename TIntegral>
+inline Iter<TIncrementable, CountingIterator> &
+operator+=(Iter<TIncrementable, CountingIterator> & left,
+           TIntegral right)
+{
+    setPosition(left, position(left) + right);
+    return left;
+}
+
+// for <anonymous enum> types
+template <typename TIncrementable>
+inline Iter<TIncrementable, CountingIterator> &
+operator+=(Iter<TIncrementable, CountingIterator> & left,
+           int right)
+{
+    setPosition(left, position(left) + right);
+    return left;
+}
 
 // ----------------------------------------------------------------------------
 // Function operator-()
 // ----------------------------------------------------------------------------
 
-//template <typename TContainer, typename TIntegral>
-//inline Iter<TContainer, PositionIterator>
-//operator-(Iter<TContainer, PositionIterator> const & left,
-//          TIntegral right)
-//{
-//    SEQAN_CHECKPOINT;
-//    return Iter<TContainer, PositionIterator>(container(left), position(left) - right);
-//}
-//
-//// for <anonymous enum> types
-//template <typename TContainer>
-//inline Iter<TContainer, PositionIterator>
-//operator-(Iter<TContainer, PositionIterator> const & left,
-//          int right)
-//{
-//    SEQAN_CHECKPOINT;
-//    return Iter<TContainer, PositionIterator>(container(left), position(left) - right);
-//}
-//
-//template <typename TContainer>
-//inline typename Difference<TContainer>::Type
-//operator-(Iter<TContainer, PositionIterator> const & left,
-//          Iter<TContainer, PositionIterator> const & right)
-//{
-//    SEQAN_CHECKPOINT;
-//    return position(left) - position(right);
-//}
+template <typename TIncrementable, typename TIntegral>
+inline Iter<TIncrementable, CountingIterator>
+operator-(Iter<TIncrementable, CountingIterator> const & left,
+          TIntegral right)
+{
+    return Iter<TIncrementable, CountingIterator>(container(left), position(left) - right);
+}
+
+// for <anonymous enum> types
+template <typename TIncrementable>
+inline Iter<TIncrementable, CountingIterator>
+operator-(Iter<TIncrementable, CountingIterator> const & left,
+          int right)
+{
+    return Iter<TIncrementable, CountingIterator>(container(left), position(left) - right);
+}
+
+template <typename TIncrementable>
+inline typename Difference<TIncrementable>::Type
+operator-(Iter<TIncrementable, CountingIterator> const & left,
+          Iter<TIncrementable, CountingIterator> const & right)
+{
+    return position(left) - position(right);
+}
 
 // ----------------------------------------------------------------------------
 // Function operator-=()
 // ----------------------------------------------------------------------------
 
-//template <typename TContainer, typename TIntegral>
-//inline Iter<TContainer, PositionIterator> &
-//operator-=(Iter<TContainer, PositionIterator> & left,
-//           TIntegral right)
-//{
-//    SEQAN_CHECKPOINT;
-//    setPosition(left, position(left) - right);
-//    return left;
-//}
-//
-//// for <anonymous enum> types
-//template <typename TContainer>
-//inline Iter<TContainer, PositionIterator> &
-//operator-=(Iter<TContainer, PositionIterator> & left,
-//           int right)
-//{
-//    SEQAN_CHECKPOINT;
-//    setPosition(left, position(left) - right);
-//    return left;
-//}
+template <typename TIncrementable, typename TIntegral>
+inline Iter<TIncrementable, CountingIterator> &
+operator-=(Iter<TIncrementable, CountingIterator> & left,
+           TIntegral right)
+{
+    setPosition(left, position(left) - right);
+    return left;
+}
+
+// for <anonymous enum> types
+template <typename TIncrementable>
+inline Iter<TIncrementable, CountingIterator> &
+operator-=(Iter<TIncrementable, CountingIterator> & left,
+           int right)
+{
+    setPosition(left, position(left) - right);
+    return left;
+}
 
 // ----------------------------------------------------------------------------
 // Function assign()
 // ----------------------------------------------------------------------------
 
-//// Conversion assignment.
-//template <typename TTargetContainer, typename TSource>
-//inline void
-//assign(Iter<TTargetContainer, PositionIterator> & target,
-//       TSource const & source)
-//{
-//    SEQAN_CHECKPOINT;
-//    target.data_container = _toPointer(container(source));
-//    target.data_position = position(source);
-//}
+// Conversion assignment.
+template <typename TIncrementable, typename TSource>
+inline void
+assign(Iter<TIncrementable, CountingIterator> & target,
+       TSource const & source)
+{
+    setPosition(target, position(source));
+}
 
 }  // namespace seqan
 
