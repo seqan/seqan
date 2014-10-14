@@ -197,6 +197,12 @@ public:
     { 
         return value(*this, pos); 
     }
+
+    ModifiedString & operator= (THost & other)
+    {
+        _host = &other;
+        return *this;
+    }
 };
 
 // ==========================================================================
@@ -878,6 +884,61 @@ getObjectId(ModifiedString<THost, TSpec> const & me)
 {
     return getObjectId(host(me));
 }
+
+// --------------------------------------------------------------------------
+// Function open()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec >
+inline bool
+open(ModifiedString<THost, TSpec> & /**/, const char * /**/, int /**/)
+{
+    return true; // NOOP; this has to be done manually right now
+}
+
+template <typename THost, typename TSpec, typename TSpec2>
+inline bool
+open(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > & /**/,
+     const char * /**/,
+     int /**/)
+{
+    return true; // NOOP; this has to be done manually right now
+}
+
+
+// --------------------------------------------------------------------------
+// Function save()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec >
+inline bool
+save(ModifiedString<THost, TSpec> & /**/, const char * /**/, int /**/) 
+{
+    return true; // NOOP; this has to be done manually right now
+}
+
+template <typename THost, typename TSpec, typename TSpec2>
+inline bool
+save(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > & /**/,
+     const char * /**/,
+     int /**/)
+{
+    return true; // NOOP; this has to be done manually right now
+}
+
+// --------------------------------------------------------------------------
+// Function save()
+// --------------------------------------------------------------------------
+
+// template <typename THost, typename TSpec >
+// inline void
+// clear(ModifiedString<THost, TSpec> & /**/, const char * /**/, int /**/) 
+// {
+//     // if host is writable, maybe this should clear the host?
+//     // or should it reset it pointer?
+//     // NOOP for now
+// }
+
 
 }  // namespace seqan
 
