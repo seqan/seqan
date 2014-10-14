@@ -261,28 +261,12 @@ operator+(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left, TInt
     return Iter<TIncrementable, CountingIteratorImpl_<TSpec> >(container(left), position(left) + right);
 }
 
-// for <anonymous enum> types
-//template <typename TSpec, typename TIncrementable>
-//inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> >
-//operator+(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left, int right)
-//{
-//    return Iter<TIncrementable, CountingIteratorImpl_<TSpec> >(container(left), position(left) + right);
-//}
-
 template <typename TIncrementable, typename TSpec, typename TIntegral>
 inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TIntegral> >, Iter<TIncrementable, CountingIteratorImpl_<TSpec> >)
 operator+(TIntegral left, Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & right)
 {
     return Iter<TIncrementable, CountingIteratorImpl_<TSpec> >(container(right), position(right) + left);
 }
-
-// for <anonymous enum> types
-//template <typename TSpec, typename TIncrementable>
-//inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> >
-//operator+(int left, Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & right)
-//{
-//    return Iter<TIncrementable, CountingIteratorImpl_<TSpec> >(container(right), position(right) + left);
-//}
 
 // ----------------------------------------------------------------------------
 // Function operator+=()
@@ -296,15 +280,6 @@ operator+=(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & left, TIntegral
     return left;
 }
 
-// for <anonymous enum> types
-//template <typename TSpec, typename TIncrementable>
-//inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> > &
-//operator+=(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & left, int right)
-//{
-//    setPosition(left, position(left) + right);
-//    return left;
-//}
-
 // ----------------------------------------------------------------------------
 // Function operator-()
 // ----------------------------------------------------------------------------
@@ -315,14 +290,6 @@ operator-(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left, TInt
 {
     return Iter<TIncrementable, CountingIteratorImpl_<TSpec> >(container(left), position(left) - right);
 }
-
-// for <anonymous enum> types
-//template <typename TSpec, typename TIncrementable>
-//inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> >
-//operator-(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left, int right)
-//{
-//    return Iter<TIncrementable, CountingIteratorImpl_<TSpec> >(container(left), position(left) - right);
-//}
 
 template <typename TSpec, typename TIncrementable>
 inline typename Difference<TIncrementable>::Type
@@ -343,15 +310,6 @@ operator-=(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & left, TIntegral
     setPosition(left, position(left) - right);
     return left;
 }
-
-// for <anonymous enum> types
-//template <typename TSpec, typename TIncrementable>
-//inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> > &
-//operator-=(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & left, int right)
-//{
-//    setPosition(left, position(left) - right);
-//    return left;
-//}
 
 // ----------------------------------------------------------------------------
 // Function assign()
