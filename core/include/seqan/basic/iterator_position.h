@@ -268,35 +268,6 @@ moveValue(Iter<TContainer, PositionIterator> const & me, TValue const & _value)
 }
 
 // ----------------------------------------------------------------------------
-// Function operator+()
-// ----------------------------------------------------------------------------
-
-template <typename TContainer, typename TIntegral>
-inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TIntegral> >, Iter<TContainer, PositionIterator>)
-operator+(Iter<TContainer, PositionIterator> const & left, TIntegral right)
-{
-    return Iter<TContainer, PositionIterator>(container(left), position(left) + right);
-}
-
-template <typename TContainer, typename TIntegral>
-inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TIntegral> >, Iter<TContainer, PositionIterator>)
-operator+(TIntegral left, Iter<TContainer, PositionIterator> const & right)
-{
-    return Iter<TContainer, PositionIterator>(container(right), position(right) + left);
-}
-
-// ----------------------------------------------------------------------------
-// Function operator-()
-// ----------------------------------------------------------------------------
-
-template <typename TContainer, typename TIntegral>
-inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TIntegral> >, Iter<TContainer, PositionIterator>)
-operator-(Iter<TContainer, PositionIterator> const & left, TIntegral right)
-{
-    return Iter<TContainer, PositionIterator>(container(left), position(left) - right);
-}
-
-// ----------------------------------------------------------------------------
 // Function assign()
 // ----------------------------------------------------------------------------
 
