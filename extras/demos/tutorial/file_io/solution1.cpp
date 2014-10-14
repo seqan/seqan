@@ -7,28 +7,48 @@
 // This template function reads the contents from the given Stream in and
 // writes it out to std::cout
 
-template <typename TStream>
-int doReading(TStream & in)
+    std::ifstream in("in.txt", std::ios::binary | std::ios::in);
+    std::ofstream out("out.txt", std::ios::binary | std::ios::out);
+
+    // Create iterators to read and write.
+    typedef seqan::DirectionIterator<std::ifstream, seqan::Input>::Type TReader;
+    typedef seqan::DirectionIterator<std::ofstream, seqan::Output>::Type TWriter;
+
+    TReader reader = directionIterator(in, seqan::Input());
+    TWriter writer = directionIterator(out, seqan::Output());
+
+    seqan::CharString buffer;
+
+    while (!atEnd(reader))
+    {
+        read(buffer, reader, 1000);
+        write(writer, buffer);
+    }
+
+
+template <typename TReader>
+void doReading(TReader & reader)
 {
     seqan::CharString buffer;
-    resize(buffer, 1000);
+    reserve(buffer, 1000);
 
-    while (!seqan::streamEof(in) && (seqan::streamError(in) == 0))
+    while (!atEnd(reader))
     {
-        int num = seqan::streamReadBlock(&buffer[0], in, length(buffer));
-        seqan::streamWriteBlock(std::cout, &buffer[0], num);
+        clear(buffer);
+        read(buffer, reader, capacity(buffer));
+        write(std::cout, buffer);
     }
-    
+
     return 0;
 }
 
 // This template function writes out "Hello World!\n" to the given Stream.
 
-template <typename TStream>
-int doWriting(TStream & out)
+template <typename TWriter>
+void doWriting(TWriter & writer)
 {
     seqan::CharString buffer = "Hello World!\n";
-    return (seqan::streamWriteBlock(out, &buffer[0], length(buffer)) != length(buffer));
+    write(writer, buffer);
 }
 
 // The main function parses the command line, opens the files in the
