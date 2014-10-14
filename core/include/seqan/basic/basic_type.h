@@ -100,7 +100,7 @@ struct Reference<T const>
 template <typename T>
 struct Size
 {
-    typedef typename If< Is< IntegerConcept<T> >, T, size_t>::Type Type;
+    typedef size_t Type;
 };
 
 template <typename T>
