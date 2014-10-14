@@ -1,11 +1,12 @@
 #include <seqan/basic.h>
 #include <seqan/gff_io.h>
+#include <seqan/misc/misc_name_store_cache.h>
 
 int main()
 {
-    // Open input stream
-    seqan::GffStream gffIn("example.gff");
-    if (!isGood(gffIn))
+    // Open input gff file.
+    seqan::GffFileIn gffIn;
+    if (!open(gffIn, "example.gff"))
     {
         std::cerr << "ERROR: Could not open example.gff\n";
         return 1;
@@ -14,34 +15,32 @@ int main()
     // Array of counters and sequence names.
     seqan::String<unsigned> counters;
     seqan::StringSet<seqan::CharString> seqNames;
+    seqan::NameStoreCache<seqan::StringSet<seqan::CharString> > cache(seqNames);
 
     // Read the file record by record.
     seqan::GffRecord record;
-    while (!atEnd(gffIn))
+
+    try
     {
-        if (readRecord(record, gffIn) != 0)
+        while (!atEnd(gffIn))
         {
-            std::cerr << "ERROR: Problem reading from example.gff\n";
-            return 1;
-        }
+            readRecord(record, gffIn);
+            unsigned rID = nameToId(cache, record.ref);
 
-        // Resize counters and write seqNames if necessary.
-        if ((int)length(counters) <= record.rID)
-        {
-            resize(counters, record.rID + 1, 0);
-            resize(seqNames, record.rID + 1);
+            // Resize counters if necessary and increment counter.
+            assignValueById(counters, rID, getValueById(counters, rID) + 1);
         }
-        if (counters[record.rID] == 0)
-            seqNames[record.rID] = record.ref;
-
-        // Register record with counters.
-        counters[record.rID] += 1;
+    }
+    catch (std::runtime_error &e)
+    {
+        std::cout << "ERROR: " << e.what() << std::endl;
+        return 1;
     }
 
     // Print result.
     std::cout << "RECORDS ON CONTIGS\n";
     for (unsigned i = 0; i < length(seqNames); ++i)
-        if (counters[i] > 0u)
+        if (counters[i] != 0u)
             std::cout << seqNames[i] << '\t' << counters[i] << '\n';
     
     return 0;
