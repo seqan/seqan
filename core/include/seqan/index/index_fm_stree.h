@@ -57,7 +57,7 @@ struct HistoryStackFM_
     TAlphabet   lastChar;
 
     SEQAN_HOST_DEVICE
-    HistoryStackFM_() : repLen(0), lastChar() {}
+    HistoryStackFM_() {}
 
     template <typename TSize_, typename TAlphabet_>
     SEQAN_HOST_DEVICE
