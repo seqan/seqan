@@ -255,7 +255,7 @@ goPrevious(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & me)
 // ----------------------------------------------------------------------------
 
 template <typename TIncrementable, typename TSpec, typename TIntegral>
-inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> >
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TIntegral> >, Iter<TIncrementable, CountingIteratorImpl_<TSpec> >)
 operator+(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left, TIntegral right)
 {
     return Iter<TIncrementable, CountingIteratorImpl_<TSpec> >(container(left), position(left) + right);
@@ -270,7 +270,7 @@ operator+(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left, TInt
 //}
 
 template <typename TIncrementable, typename TSpec, typename TIntegral>
-inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> >
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TIntegral> >, Iter<TIncrementable, CountingIteratorImpl_<TSpec> >)
 operator+(TIntegral left, Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & right)
 {
     return Iter<TIncrementable, CountingIteratorImpl_<TSpec> >(container(right), position(right) + left);
@@ -289,7 +289,7 @@ operator+(TIntegral left, Iter<TIncrementable, CountingIteratorImpl_<TSpec> > co
 // ----------------------------------------------------------------------------
 
 template <typename TIncrementable, typename TSpec, typename TIntegral>
-inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> > &
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TIntegral> >, Iter<TIncrementable, CountingIteratorImpl_<TSpec> > &)
 operator+=(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & left, TIntegral right)
 {
     setPosition(left, position(left) + right);
@@ -310,7 +310,7 @@ operator+=(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & left, TIntegral
 // ----------------------------------------------------------------------------
 
 template <typename TIncrementable, typename TSpec, typename TIntegral>
-inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> >
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TIntegral> >, Iter<TIncrementable, CountingIteratorImpl_<TSpec> >)
 operator-(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left, TIntegral right)
 {
     return Iter<TIncrementable, CountingIteratorImpl_<TSpec> >(container(left), position(left) - right);
@@ -337,7 +337,7 @@ operator-(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left,
 // ----------------------------------------------------------------------------
 
 template <typename TIncrementable, typename TSpec, typename TIntegral>
-inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> > &
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TIntegral> >, Iter<TIncrementable, CountingIteratorImpl_<TSpec> > &)
 operator-=(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & left, TIntegral right)
 {
     setPosition(left, position(left) - right);

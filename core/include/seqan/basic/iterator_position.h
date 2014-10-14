@@ -128,6 +128,7 @@ public:
         TBase(position_),
         data_container(_toPointer(container_))
     {}
+
     Iter(Iter const & other_) :
         TBase(static_cast<TBase const &>(other_)),
         data_container(other_.data_container)
@@ -271,7 +272,7 @@ moveValue(Iter<TContainer, PositionIterator> const & me, TValue const & _value)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TIntegral>
-inline Iter<TContainer, PositionIterator>
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TIntegral> >, Iter<TContainer, PositionIterator>)
 operator+(Iter<TContainer, PositionIterator> const & left, TIntegral right)
 {
     return Iter<TContainer, PositionIterator>(container(left), position(left) + right);
@@ -286,7 +287,7 @@ operator+(Iter<TContainer, PositionIterator> const & left, TIntegral right)
 //}
 
 template <typename TContainer, typename TIntegral>
-inline Iter<TContainer, PositionIterator>
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TIntegral> >, Iter<TContainer, PositionIterator>)
 operator+(TIntegral left, Iter<TContainer, PositionIterator> const & right)
 {
     return Iter<TContainer, PositionIterator>(container(right), position(right) + left);
@@ -305,7 +306,7 @@ operator+(TIntegral left, Iter<TContainer, PositionIterator> const & right)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TIntegral>
-inline Iter<TContainer, PositionIterator>
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TIntegral> >, Iter<TContainer, PositionIterator>)
 operator-(Iter<TContainer, PositionIterator> const & left, TIntegral right)
 {
     return Iter<TContainer, PositionIterator>(container(left), position(left) - right);
