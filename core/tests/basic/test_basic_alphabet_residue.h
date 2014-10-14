@@ -65,7 +65,7 @@ inline void testResidueConcepts()
     SEQAN_CONCEPT_ASSERT((OrderedAlphabetConcept<Rna5>));
     SEQAN_CONCEPT_ASSERT((OrderedAlphabetConcept<Iupac>));
     SEQAN_CONCEPT_ASSERT((OrderedAlphabetConcept<AminoAcid>));
-    SEQAN_CONCEPT_ASSERT((OrderedAlphabetConcept<Ascii>));
+    SEQAN_CONCEPT_ASSERT((OrderedAlphabetConcept<char>));
     // SEQAN_CONCEPT_ASSERT((OrderedAlphabetConcept<Finite<10> >));
 
     SEQAN_CONCEPT_ASSERT((FiniteOrderedAlphabetConcept<Dna>));
@@ -76,7 +76,7 @@ inline void testResidueConcepts()
     SEQAN_CONCEPT_ASSERT((FiniteOrderedAlphabetConcept<Rna5>));
     SEQAN_CONCEPT_ASSERT((FiniteOrderedAlphabetConcept<Iupac>));
     SEQAN_CONCEPT_ASSERT((FiniteOrderedAlphabetConcept<AminoAcid>));
-    SEQAN_CONCEPT_ASSERT((FiniteOrderedAlphabetConcept<Ascii>));
+    SEQAN_CONCEPT_ASSERT((FiniteOrderedAlphabetConcept<char>));
     // SEQAN_CONCEPT_ASSERT((FiniteOrderedAlphabetConcept<Finite<10> >));
 
     SEQAN_CONCEPT_ASSERT((AlphabetWithUnknownValueConcept<Dna5>));
