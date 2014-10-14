@@ -66,7 +66,7 @@ inline void testAlphabetConcepts()
     SEQAN_CONCEPT_ASSERT((AlphabetConcept<Rna5>));
     SEQAN_CONCEPT_ASSERT((AlphabetConcept<Iupac>));
     SEQAN_CONCEPT_ASSERT((AlphabetConcept<AminoAcid>));
-    SEQAN_CONCEPT_ASSERT((AlphabetConcept<Ascii>));
+    SEQAN_CONCEPT_ASSERT((AlphabetConcept<char>));
     // SEQAN_CONCEPT_ASSERT((AlphabetConcept<Finite<10> >));
 }
 
@@ -93,7 +93,7 @@ inline void testOrderedAlphabetConcepts()
     SEQAN_CONCEPT_ASSERT((OrderedAlphabetConcept<Rna5>));
     SEQAN_CONCEPT_ASSERT((OrderedAlphabetConcept<Iupac>));
     SEQAN_CONCEPT_ASSERT((OrderedAlphabetConcept<AminoAcid>));
-    SEQAN_CONCEPT_ASSERT((OrderedAlphabetConcept<Ascii>));
+    SEQAN_CONCEPT_ASSERT((OrderedAlphabetConcept<char>));
     // SEQAN_CONCEPT_ASSERT((OrderedAlphabetConcept<Finite<10> >));
 }
 
@@ -116,7 +116,7 @@ inline void testFiniteOrderedAlphabetConcepts()
     SEQAN_CONCEPT_ASSERT((FiniteOrderedAlphabetConcept<Rna5>));
     SEQAN_CONCEPT_ASSERT((FiniteOrderedAlphabetConcept<Iupac>));
     SEQAN_CONCEPT_ASSERT((FiniteOrderedAlphabetConcept<AminoAcid>));
-    SEQAN_CONCEPT_ASSERT((FiniteOrderedAlphabetConcept<Ascii>));
+    SEQAN_CONCEPT_ASSERT((FiniteOrderedAlphabetConcept<char>));
     // SEQAN_CONCEPT_ASSERT((FiniteOrderedAlphabetConcept<Finite<10> >));
 }
 
