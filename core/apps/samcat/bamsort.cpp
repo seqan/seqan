@@ -434,7 +434,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
 
     addDescription(parser, "(c) Copyright in 2014 by David Weese.");
 
-    addOption(parser, ArgParseOption("o", "output", "Output file name.", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "output", "Output file name.", ArgParseOption::OUTPUT_FILE));
     setValidValues(parser, "output", BamOnlyFileOut::getFileFormatExtensions());
 
     // We require one argument.

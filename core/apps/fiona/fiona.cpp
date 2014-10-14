@@ -5103,7 +5103,7 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
     addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "IN"));
     setValidValues(parser, 0, "fa fasta fq fastq");
     setHelpText(parser, 0, "An input file with reads to be corrected.");
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::OUTPUTFILE, "OUT"));
+    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::OUTPUT_FILE, "OUT"));
     setValidValues(parser, 1, "fa fasta fq fastq");
     setHelpText(parser, 1, "An output file to store the corrected reads.");
 

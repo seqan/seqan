@@ -487,7 +487,7 @@ window.searchData = [
   {title:'Dna5',text:'',akas:'',subentries:'',loc:'class_Dna_53.html',langEntity:'class'},
   {title:'reverse',text:'',akas:'',subentries:'',loc:'global_function_reverse.html',langEntity:'global_function'},
   {title:'InputIteratorConcept',text:'',akas:'',subentries:'interface_function operator++(suffix),interface_function operator++(prefix),interface_function operator->,interface_function goNext',loc:'concept_InputIteratorConcept.html',langEntity:'concept'},
-  {title:'ArgParseArgument::ArgumentType',text:'',akas:'',subentries:'member_variable STRING,member_variable INTEGER,member_variable INT64,member_variable DOUBLE,member_variable INPUTFILE,member_variable OUTPUTFILE',loc:'enum_ArgParseArgument_58_58ArgumentType.html',langEntity:'enum'},
+  {title:'ArgParseArgument::ArgumentType',text:'',akas:'',subentries:'member_variable STRING,member_variable INTEGER,member_variable INT64,member_variable DOUBLE,member_variable INPUTFILE,member_variable OUTPUT_FILE',loc:'enum_ArgParseArgument_58_58ArgumentType.html',langEntity:'enum'},
   {title:'LogProb',text:'',akas:'',subentries:'',loc:'class_LogProb.html',langEntity:'class'},
   {title:'calculateCovariance',text:'',akas:'',subentries:'',loc:'global_function_calculateCovariance.html',langEntity:'global_function'},
   {title:'LessThanComparableConcept',text:'',akas:'',subentries:'member_function operator<',loc:'concept_LessThanComparableConcept.html',langEntity:'concept'},

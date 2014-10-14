@@ -996,7 +996,7 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
 
     addSection(parser, "Input / Output");
     addOption(parser, seqan::ArgParseOption("o", "out-gsi", "Path to write the resulting GSI file to.",
-                                            seqan::ArgParseArgument::OUTPUTFILE, "GSI"));
+                                            seqan::ArgParseArgument::OUTPUT_FILE, "GSI"));
     setValidValues(parser, "out-gsi", "gsi gsi.gz");
     setRequired(parser, "out-gsi", true);
     addOption(parser, seqan::ArgParseOption("r", "reference", "Path to load reference FASTA from.",

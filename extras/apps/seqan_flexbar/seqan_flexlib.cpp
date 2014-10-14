@@ -122,7 +122,7 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
     {
         seqan::ArgParseOption outputOpt = seqan::ArgParseOption(
             "o", "output", "Name of the output file.",
-            seqan::ArgParseOption::OUTPUTFILE, "OUTPUT");
+            seqan::ArgParseOption::OUTPUT_FILE, "OUTPUT");
         setValidValues(outputOpt, SeqFileOut::getFileFormatExtensions());
         addOption(parser, outputOpt);
     }
@@ -130,7 +130,7 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
     {
         seqan::ArgParseOption outputOpt = seqan::ArgParseOption(
             "o", "output", "Prefix and file ending of output files (prefix$.fa - $: placeholder which will be determined by the program.).",
-            seqan::ArgParseOption::OUTPUTPREFIX, "OUTPUT");
+            seqan::ArgParseOption::OUTPUT_PREFIX, "OUTPUT");
         setValidValues(outputOpt, SeqFileOut::getFileFormatExtensions());
         addOption(parser, outputOpt);
     }

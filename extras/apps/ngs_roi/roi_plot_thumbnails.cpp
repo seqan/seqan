@@ -316,7 +316,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     setRequired(parser, "input-file");
 
     addOption(parser, seqan::ArgParseOption("o", "output-prefix", "Prefix of output file.",
-                                            seqan::ArgParseOption::OUTPUTFILE));
+                                            seqan::ArgParseOption::OUTPUT_FILE));
     setRequired(parser, "output-prefix");
 
     // -----------------------------------------------------------------------

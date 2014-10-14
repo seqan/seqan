@@ -692,7 +692,7 @@ parseCommandLine(RoiIntersectOptions & options, int argc, char const ** argv)
     extensions.insert(extensions.end(), extensionsGff.begin(), extensionsGff.end());
     setValidValues(parser, "in-features", extensions);
 
-    addOption(parser, seqan::ArgParseOption("or", "out-roi", "ROI file to write.", seqan::ArgParseOption::OUTPUTFILE, "ROI"));
+    addOption(parser, seqan::ArgParseOption("or", "out-roi", "ROI file to write.", seqan::ArgParseOption::OUTPUT_FILE, "ROI"));
     setRequired(parser, "out-roi");
     setValidValues(parser, "out-roi", "roi");
 

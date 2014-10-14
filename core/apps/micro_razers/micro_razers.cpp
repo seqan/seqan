@@ -234,7 +234,7 @@ int main(int argc, const char *argv[])
     // Define options
 
     addSection(parser, "Main Options:");
-    addOption(parser, ArgParseOption("o", "output", "Change output filename. (use - to dump to stdout in razers format) Default: <\\fIREADS FILE\\fP>.razers.", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "output", "Change output filename. (use - to dump to stdout in razers format) Default: <\\fIREADS FILE\\fP>.razers.", ArgParseOption::OUTPUT_FILE));
     setValidValues(parser, "output", ".razers .sam");
 #ifndef NO_PARAM_CHOOSER
     addOption(parser, ArgParseOption("rr", "recognition-rate",  "set the percent recognition rate", ArgParseOption::DOUBLE));

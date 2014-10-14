@@ -77,7 +77,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     setHelpText(parser, 0, "A sequence file containing reads or genome.");
     setValidValues(parser, 0, SeqFileIn::getFileFormatExtensions());
 
-    addOption(parser, ArgParseOption("o", "output-file", "Name of output file.", ArgParseArgument::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "output-file", "Name of output file.", ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "o", SeqFileOut::getFileFormatExtensions());
     setRequired(parser, "output-file", true);
     addOption(parser, ArgParseOption("ga", "ga-conversion", "Convert Gs to As, instead of Cs to Ts."));

@@ -171,7 +171,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     setRequired(parser, "input-file");
 
     addOption(parser, seqan::ArgParseOption("of", "output-file", "Output file with regions of interest.",
-                                            seqan::ArgParseOption::OUTPUTFILE));
+                                            seqan::ArgParseOption::OUTPUT_FILE));
     setValidValues(parser, "output-file", seqan::RoiFileIn::getFileFormatExtensions());
     setRequired(parser, "output-file");
 

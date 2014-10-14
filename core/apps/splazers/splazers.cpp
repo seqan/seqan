@@ -325,7 +325,7 @@ int main(int argc, const char *argv[])
     setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");
 
 	addSection(parser, "Main Options:");
-    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <\\fIREADS FILE\\fP>.result.", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <\\fIREADS FILE\\fP>.result.", ArgParseOption::OUTPUT_FILE));
 	addOption(parser, ArgParseOption("f",  "forward",           "only compute forward matches"));
 	addOption(parser, ArgParseOption("r",  "reverse",           "only compute reverse complement matches"));
     addOption(parser, ArgParseOption("i", "percent-identity", "Percent identity threshold.", ArgParseOption::DOUBLE));
@@ -360,7 +360,7 @@ int main(int argc, const char *argv[])
     setMinValue(parser, "min-clipped-len", "1");
 	addOption(parser, ArgParseOption("qih", "quality-in-header","quality string in fasta header"));
 
-	addOption(parser, ArgParseOption("ou", "outputUnmapped",    "output filename for unmapped reads", ArgParseOption::OUTPUTFILE));
+	addOption(parser, ArgParseOption("ou", "outputUnmapped",    "output filename for unmapped reads", ArgParseOption::OUTPUT_FILE));
     
 	addOption(parser, ArgParseOption("v",  "verbose",           "verbose mode"));
 	addOption(parser, ArgParseOption("vv", "vverbose",          "very verbose mode"));

@@ -358,7 +358,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
                                             seqan::ArgParseOption::STRING, "METHOD"));
     setValidValues(parser, "method", "nw gotoh sw lcs");
     setDefaultValue(parser, "method", "gotoh");
-    addOption(parser, seqan::ArgParseOption("o", "outfile", "Output filename.", seqan::ArgParseOption::OUTPUTFILE, "OUT"));
+    addOption(parser, seqan::ArgParseOption("o", "outfile", "Output filename.", seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
     setDefaultValue(parser, "outfile", "out.fasta");
     std::vector<std::string> outFileNames = getFileFormatExtensions(Fasta());
     outFileNames.push_back(".msf");

@@ -157,7 +157,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     setValidValues(parser, 2, SeqFileIn::getFileFormatExtensions());
 
     addSection(parser, "Options");
-    addOption(parser, ArgParseOption("o", "output-file", "Mapping output file.", ArgParseArgument::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "output-file", "Mapping output file.", ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "output-file", BamFileOut::getFileFormatExtensions());
     setRequired(parser, "output-file", true);
 

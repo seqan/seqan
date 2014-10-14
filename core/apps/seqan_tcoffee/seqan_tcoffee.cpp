@@ -337,7 +337,7 @@ _setUpArgumentParser(ArgumentParser & parser)
     setValidValues(parser, "alphabet", "protein dna rna");
     setDefaultValue(parser, "alphabet", "protein");
 
-    addOption(parser, ArgParseOption("o", "outfile", "Name of the output file.", ArgParseArgument::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "outfile", "Name of the output file.", ArgParseArgument::OUTPUT_FILE));
     setDefaultValue(parser, "outfile", "out.fasta");
     std::vector<std::string> outputFormats = getFileFormatExtensions(Fasta());
     outputFormats.push_back(".msf");

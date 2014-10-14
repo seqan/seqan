@@ -712,7 +712,7 @@ void setUpArgumentParser(ArgumentParser & parser, DFIOptions const &)
     setMaxValue(parser, "entropy", "1");
 
     addSection(parser, "Input/Output Options");
-    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <stdout>.", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <stdout>.", ArgParseOption::OUTPUT_FILE));
     setValidValues(parser, "output", "txt");
     addOption(parser, ArgParseOption("a", "alphabet", "Specify database alphabet.", ArgParseOption::STRING));
     setValidValues(parser, "alphabet", "dna protein char");

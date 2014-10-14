@@ -122,7 +122,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     addSection(parser, "Output Options");
 
     addOption(parser, ArgParseOption("o", "output-file", "Specify an output file. Default: write the file to standard output.",
-                                     ArgParseOption::OUTPUTFILE));
+                                     ArgParseOption::OUTPUT_FILE));
     setValidValues(parser, "output-file", BamFileOut::getFileFormatExtensions());
 
     addOption(parser, ArgParseOption("f", "output-format", "Specify an output format. Note: when specifying the option \

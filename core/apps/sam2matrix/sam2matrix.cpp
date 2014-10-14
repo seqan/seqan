@@ -103,7 +103,7 @@ parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
                                      "file. If not specified the names of the mapping files are taken", 
                                      ArgParseOption::STRING, "STRING", true));
 
-    addOption(parser, ArgParseOption("o", "out", "Output file.", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "out", "Output file.", ArgParseOption::OUTPUT_FILE));
     setRequired(parser, "o");
     setValidValues(parser, "o", ".tsv");
 
