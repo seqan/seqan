@@ -594,7 +594,7 @@ struct IntegerFormatString_<False, 2, T>
     typedef short Type;
 };
 template <typename T>
-const char IntegerFormatString_<False, 2, T>::VALUE[] = "%hi%n";
+const char IntegerFormatString_<False, 2, T>::VALUE[] = "%hi";
 
 
 template <typename T>
@@ -604,7 +604,7 @@ struct IntegerFormatString_<True, 2, T>
     typedef unsigned short Type;
 };
 template <typename T>
-const char IntegerFormatString_<True, 2, T>::VALUE[] = "%hu%n";
+const char IntegerFormatString_<True, 2, T>::VALUE[] = "%hu";
 
 
 template <typename T>
@@ -614,7 +614,7 @@ struct IntegerFormatString_<False, 4, T>
     typedef int Type;
 };
 template <typename T>
-const char IntegerFormatString_<False, 4, T>::VALUE[] = "%i%n";
+const char IntegerFormatString_<False, 4, T>::VALUE[] = "%i";
 
 
 template <typename T>
@@ -624,27 +624,60 @@ struct IntegerFormatString_<True, 4, T>
     typedef unsigned Type;
 };
 template <typename T>
-const char IntegerFormatString_<True, 4, T>::VALUE[] = "%u%n";
+const char IntegerFormatString_<True, 4, T>::VALUE[] = "%u";
 
+
+// helper for the case: typedef long __int64;
+template <typename TIsUnsigned, typename T>
+struct LongFormatString_;
 
 template <typename T>
-struct IntegerFormatString_<False, 8, T>
+struct LongFormatString_<False, T>
+{
+    static const char VALUE[];
+    typedef long Type;
+};
+template <typename T>
+const char LongFormatString_<False, T>::VALUE[] = "%li";
+
+template <typename T>
+struct LongFormatString_<True, T>
+{
+    static const char VALUE[];
+    typedef unsigned long Type;
+};
+template <typename T>
+const char LongFormatString_<True, T>::VALUE[] = "%lu";
+
+// helper for the case: typedef long long __int64;
+template <typename TIsUnsigned, typename T>
+struct Int64FormatString_;
+
+template <typename T>
+struct Int64FormatString_<False, T>
 {
     static const char VALUE[];
     typedef __int64 Type;
 };
 template <typename T>
-const char IntegerFormatString_<False, 8, T>::VALUE[] = "%lli%n";
-
+const char Int64FormatString_<False, T>::VALUE[] = "%lli";
 
 template <typename T>
-struct IntegerFormatString_<True, 8, T>
+struct Int64FormatString_<True, T>
 {
     static const char VALUE[];
     typedef __uint64 Type;
 };
 template <typename T>
-const char IntegerFormatString_<True, 8, T>::VALUE[] = "%llu%n";
+const char Int64FormatString_<True, T>::VALUE[] = "%llu";
+
+
+template <typename TIsUnsigned, typename T>
+struct IntegerFormatString_<TIsUnsigned, 8, T> :
+    If<IsSameType<__uint64, unsigned long>,
+       LongFormatString_<TIsUnsigned, T>,
+       Int64FormatString_<TIsUnsigned, T> >::Type {};
+
 
 // ============================================================================
 // Functions
@@ -1086,9 +1119,8 @@ appendNumber(TTarget & target, TInteger i)
 
     // 1 byte has at most 3 decimal digits (plus 2 for '-' and the NULL character)
     char buffer[sizeof(TInteger) * 3 + 2];
-    int offset;
     size_t len = snprintf(buffer, sizeof(buffer),
-                          TInt::VALUE, static_cast<typename TInt::Type>(i), &offset);
+                          TInt::VALUE, static_cast<typename TInt::Type>(i));
     char *bufPtr = buffer;
     write(target, bufPtr, len);
     return len;
@@ -1140,8 +1172,7 @@ appendNumber(TTarget & target, double source)
 
 template <typename TTarget, typename TValue>
 inline typename Size<TTarget>::Type
-appendNumber(TTarget & target, FormattedNumber<TValue> const &
-source)
+appendNumber(TTarget & target, FormattedNumber<TValue> const & source)
 {
     char buffer[100];
     size_t len = snprintf(buffer, sizeof(buffer), source.format, source.value);
