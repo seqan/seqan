@@ -37,9 +37,9 @@
 #include <seqan/basic.h>
 #include <seqan/stream.h>
 
-#include <seqan/intervals_io.h>
+#include <seqan/simple_intervals_io.h>
 
-SEQAN_DEFINE_TEST(test_intervals_io_read_records)
+SEQAN_DEFINE_TEST(test_simple_intervals_io_read_records)
 {
     // Input file contents and input iterator.
     std::string input = "chr1:2489281-2489282\n"
@@ -48,17 +48,17 @@ SEQAN_DEFINE_TEST(test_intervals_io_read_records)
         directionIterator(input, seqan::Input());
 
     // Buffers and record.
-    seqan::IntervalsIOContext context;
+    seqan::SimpleIntervalsIOContext context;
     seqan::GenomicRegion region;
 
     // Read and check first record.
-    readRecord(region, context, it, seqan::Intervals());
+    readRecord(region, context, it, seqan::SimpleIntervals());
     SEQAN_ASSERT_EQ(region.seqName, "chr1");
     SEQAN_ASSERT_EQ(region.beginPos, 2489280);
     SEQAN_ASSERT_EQ(region.endPos, 2489282);
 
     // Read and check second record.
-    readRecord(region, context, it, seqan::Intervals());
+    readRecord(region, context, it, seqan::SimpleIntervals());
     SEQAN_ASSERT_EQ(region.seqName, "chr4");
     SEQAN_ASSERT_EQ(region.beginPos, 2489840);
     SEQAN_ASSERT_EQ(region.endPos, 2489841);
@@ -67,7 +67,7 @@ SEQAN_DEFINE_TEST(test_intervals_io_read_records)
     SEQAN_ASSERT(atEnd(it));
 }
 
-SEQAN_DEFINE_TEST(test_intervals_io_write_records)
+SEQAN_DEFINE_TEST(test_simple_intervals_io_write_records)
 {
     // Output buffer and output iterator.
     seqan::CharString out;
@@ -76,85 +76,85 @@ SEQAN_DEFINE_TEST(test_intervals_io_write_records)
 
     // Buffer and record.
     seqan::GenomicRegion region;
-    seqan::IntervalsIOContext context;
+    seqan::SimpleIntervalsIOContext context;
 
     // Write out first record.
     region.seqName = "chr1";
     region.beginPos = 2489280;
     region.endPos = 2489282;
-    writeRecord(it, context, region, seqan::Intervals());
+    writeRecord(it, context, region, seqan::SimpleIntervals());
 
     // Write out second record.
     region.seqName = "chr4";
     region.beginPos = 2489840;
     region.endPos = 2489841;
-    writeRecord(it, context, region, seqan::Intervals());
+    writeRecord(it, context, region, seqan::SimpleIntervals());
 
     seqan::CharString expected = "chr1:2489281-2489282\n"
                                  "chr4:2489841\n";
     SEQAN_ASSERT_EQ(expected, out);
 }
 
-SEQAN_DEFINE_TEST(test_intervals_io_smart_file_read)
+SEQAN_DEFINE_TEST(test_simple_intervals_io_smart_file_read)
 {
     // Input file contents and input iterator.
     std::istringstream input("chr1:2489281-2489282\n"
                              "chr4:2489841\n");
-    seqan::IntervalsFileIn intervalsIn(input);
+    seqan::SimpleIntervalsFileIn simple_intervalsIn(input);
 
     // Buffers and record.
-    seqan::IntervalsIOContext context;
+    seqan::SimpleIntervalsIOContext context;
     seqan::GenomicRegion region;
 
     // Read and check first record.
-    readRecord(region, intervalsIn);
+    readRecord(region, simple_intervalsIn);
     SEQAN_ASSERT_EQ(region.seqName, "chr1");
     SEQAN_ASSERT_EQ(region.beginPos, 2489280);
     SEQAN_ASSERT_EQ(region.endPos, 2489282);
 
     // Read and check second record.
-    readRecord(region, intervalsIn);
+    readRecord(region, simple_intervalsIn);
     SEQAN_ASSERT_EQ(region.seqName, "chr4");
     SEQAN_ASSERT_EQ(region.beginPos, 2489840);
     SEQAN_ASSERT_EQ(region.endPos, 2489841);
 
     // We should be at the end of the file.
-    SEQAN_ASSERT(atEnd(intervalsIn));
+    SEQAN_ASSERT(atEnd(simple_intervalsIn));
 }
 
-SEQAN_DEFINE_TEST(test_intervals_io_smart_file_write)
+SEQAN_DEFINE_TEST(test_simple_intervals_io_smart_file_write)
 {
     // Output buffer and output iterator.
     std::ostringstream output;
-    seqan::IntervalsFileOut intervalsOut(output, seqan::Intervals());
+    seqan::SimpleIntervalsFileOut simple_intervalsOut(output, seqan::SimpleIntervals());
 
     // Buffer and record.
     seqan::GenomicRegion region;
-    seqan::IntervalsIOContext context;
+    seqan::SimpleIntervalsIOContext context;
 
     // Write out first record.
     region.seqName = "chr1";
     region.beginPos = 2489280;
     region.endPos = 2489282;
-    writeRecord(intervalsOut, region);
+    writeRecord(simple_intervalsOut, region);
 
     // Write out second record.
     region.seqName = "chr4";
     region.beginPos = 2489840;
     region.endPos = 2489841;
-    writeRecord(intervalsOut, region);
+    writeRecord(simple_intervalsOut, region);
 
     seqan::CharString expected = "chr1:2489281-2489282\n"
                                  "chr4:2489841\n";
     SEQAN_ASSERT_EQ(expected, output.str());
 }
 
-SEQAN_BEGIN_TESTSUITE(test_intervals_io)
+SEQAN_BEGIN_TESTSUITE(test_simple_intervals_io)
 {
-	SEQAN_CALL_TEST(test_intervals_io_read_records);
-	SEQAN_CALL_TEST(test_intervals_io_write_records);
+	SEQAN_CALL_TEST(test_simple_intervals_io_read_records);
+	SEQAN_CALL_TEST(test_simple_intervals_io_write_records);
 
-	SEQAN_CALL_TEST(test_intervals_io_smart_file_read);
-	SEQAN_CALL_TEST(test_intervals_io_smart_file_write);
+	SEQAN_CALL_TEST(test_simple_intervals_io_smart_file_read);
+	SEQAN_CALL_TEST(test_simple_intervals_io_smart_file_write);
 }
 SEQAN_END_TESTSUITE

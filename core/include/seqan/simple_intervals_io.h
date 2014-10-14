@@ -34,8 +34,8 @@
 // Facade header for the intervals_io module.
 // ==========================================================================
 
-#ifndef SEQAN_INTERVALS_IO_H_
-#define SEQAN_INTERVALS_IO_H_
+#ifndef SEQAN_SIMPLE_INTERVALS_IO_H_
+#define SEQAN_SIMPLE_INTERVALS_IO_H_
 
 // ===========================================================================
 // Prerequisites
@@ -48,7 +48,7 @@
 // Module Contents
 // ===========================================================================
 
-#include <seqan/intervals_io/intervals_io.h>    // read/write record functions, tags
-#include <seqan/intervals_io/intervals_file.h>  // SmartFile
+#include <seqan/simple_intervals_io/simple_intervals_io.h>    // read/write record functions, tags
+#include <seqan/simple_intervals_io/simple_intervals_file.h>  // SmartFile
 
-#endif  // SEQAN_INTERVALS_IO_H_
+#endif  // SEQAN_SIMPLE_INTERVALS_IO_H_
