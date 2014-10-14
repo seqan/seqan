@@ -191,6 +191,8 @@ bool performEstimation(LibraryInfo & libInfo, BamFileIn & bamFileIn)
             ++count;
         }
     }
+    if (count == 0u)  // prevent div-by-zero below
+        count = 1;
     libInfo.stdDev = sqrt(libInfo.stdDev / count);
     libInfo.maxNormalISize = static_cast<unsigned>(libInfo.median + 3 * libInfo.stdDev);
 
