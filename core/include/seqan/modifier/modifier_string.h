@@ -905,7 +905,6 @@ open(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > & /*
     return true; // NOOP; this has to be done manually right now
 }
 
-
 // --------------------------------------------------------------------------
 // Function save()
 // --------------------------------------------------------------------------
@@ -925,20 +924,6 @@ save(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > & /*
 {
     return true; // NOOP; this has to be done manually right now
 }
-
-// --------------------------------------------------------------------------
-// Function save()
-// --------------------------------------------------------------------------
-
-// template <typename THost, typename TSpec >
-// inline void
-// clear(ModifiedString<THost, TSpec> & /**/, const char * /**/, int /**/) 
-// {
-//     // if host is writable, maybe this should clear the host?
-//     // or should it reset it pointer?
-//     // NOOP for now
-// }
-
 
 }  // namespace seqan
 
