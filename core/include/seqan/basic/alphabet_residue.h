@@ -818,17 +818,6 @@ inline void assign(char & c_target, AminoAcid const & source)
 // ----------------------------------------------------------------------------
 
 template <>
-struct CompareTypeImpl<Dna, __uint8>
-{
-    typedef Dna Type;
-};
-
-inline void assign(Dna & target, __uint8 c_source)
-{
-    target.value = TranslateTableByteToDna_<>::VALUE[c_source];
-}
-
-template <>
 struct CompareTypeImpl<Dna, char>
 {
     typedef Dna Type;
@@ -883,17 +872,6 @@ inline void assign(Dna & target, Iupac const & source)
 // ----------------------------------------------------------------------------
 // Dna5
 // ----------------------------------------------------------------------------
-
-template <>
-struct CompareTypeImpl<Dna5, __uint8>
-{
-    typedef Dna5 Type;
-};
-
-inline void assign(Dna5 & target, __uint8 c_source)
-{
-    target.value = TranslateTableByteToDna5_<>::VALUE[c_source];
-}
 
 template <>
 struct CompareTypeImpl<Dna5, char>
@@ -952,17 +930,6 @@ inline void assign(Dna5 & target, Dna const & c_source)
 // ----------------------------------------------------------------------------
 
 template <>
-struct CompareTypeImpl<Rna, __uint8>
-{
-    typedef Rna Type;
-};
-
-inline void assign(Rna & target, __uint8 c_source)
-{
-    target.value = TranslateTableByteToDna_<>::VALUE[c_source];
-}
-
-template <>
 struct CompareTypeImpl<Rna, char>
 {
     typedef Rna Type;
@@ -998,17 +965,6 @@ inline void assign(Rna & target, Rna5 const & c_source)
 // ---------------------------------------------------------------------------
 // Rna5
 // ---------------------------------------------------------------------------
-
-template <>
-struct CompareTypeImpl<Rna5, __uint8>
-{
-    typedef Rna5 Type;
-};
-
-inline void assign(Rna5 & target, __uint8 c_source)
-{
-    target.value = TranslateTableByteToDna5_<>::VALUE[c_source];
-}
 
 template <>
 struct CompareTypeImpl<Rna5, char>
@@ -1048,17 +1004,6 @@ inline void assign(Rna5 & target, Rna const & c_source)
 // ---------------------------------------------------------------------------
 
 template <>
-struct CompareTypeImpl<Iupac, __uint8>
-{
-    typedef Iupac Type;
-};
-
-inline void assign(Iupac & target, __uint8 c_source)
-{
-    target.value = TranslateTableByteToIupac_<>::VALUE[c_source];
-}
-
-template <>
 struct CompareTypeImpl<Iupac, char>
 {
     typedef Iupac Type;
@@ -1093,17 +1038,6 @@ inline void assign(Iupac & target, Dna5 const & source)
 // ---------------------------------------------------------------------------
 // Amino Acid
 // ---------------------------------------------------------------------------
-
-template <>
-struct CompareTypeImpl<AminoAcid, __uint8>
-{
-    typedef AminoAcid Type;
-};
-
-inline void assign(AminoAcid & target, __uint8 c_source)
-{
-    target.value = TranslateTableByteToAA_<>::VALUE[c_source];
-}
 
 template <>
 struct CompareTypeImpl<AminoAcid, char>
@@ -1203,18 +1137,6 @@ inline void assign(DnaQ & target, Dna5 const & source)
 {
     assign(target, (Dna) source);
 }
-
-template <>
-struct CompareTypeImpl<DnaQ, __uint8>
-{
-    typedef Dna Type;
-};
-
-inline void assign(DnaQ & target, __uint8 c_source)
-{
-    assign(target, (Dna) c_source);
-}
-
 template <>
 struct CompareTypeImpl<DnaQ, char>
 {
@@ -1546,17 +1468,6 @@ struct CompareTypeImpl<Dna5, DnaQ>
 inline void assign(Dna5 & target, DnaQ const & source)
 {
     assign(target, (Dna5Q)source);
-}
-
-template <>
-struct CompareTypeImpl<Dna5Q, __uint8>
-{
-    typedef Dna5 Type;
-};
-
-inline void assign(Dna5Q & target, __uint8 c_source)
-{
-    assign(target, (Dna5)c_source);
 }
 
 template <>

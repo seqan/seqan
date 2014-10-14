@@ -130,9 +130,6 @@ template <typename TRedSpec, typename TSpec = void>
 struct TranslateTableAAToRedAA_;
 
 template <typename TRedSpec, typename TSpec = void>
-struct TranslateTableByteToRedAA_;
-
-template <typename TRedSpec, typename TSpec = void>
 struct TranslateTableRedAAToChar_;
 
 // ============================================================================

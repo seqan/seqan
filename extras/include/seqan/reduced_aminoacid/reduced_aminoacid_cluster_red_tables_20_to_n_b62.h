@@ -72,12 +72,6 @@ struct TranslateTableAAToRedAA_<ClusterReduction<19, 20, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<19, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 18 ------------------------------
 template <typename TSpec>
 struct TranslateTableRedAAToChar_<ClusterReduction<18, 20, Blosum62>, TSpec>
@@ -95,12 +89,6 @@ template <typename TSpec>
 struct TranslateTableAAToRedAA_<ClusterReduction<18, 20, Blosum62>, TSpec>
 {
     static const char VALUE[24];
-};
-
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<18, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
 };
 
 // ---------------------------------- N = 17 ------------------------------
@@ -122,12 +110,6 @@ struct TranslateTableAAToRedAA_<ClusterReduction<17, 20, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<17, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 16 ------------------------------
 template <typename TSpec>
 struct TranslateTableRedAAToChar_<ClusterReduction<16, 20, Blosum62>, TSpec>
@@ -145,12 +127,6 @@ template <typename TSpec>
 struct TranslateTableAAToRedAA_<ClusterReduction<16, 20, Blosum62>, TSpec>
 {
     static const char VALUE[24];
-};
-
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<16, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
 };
 
 // ---------------------------------- N = 15 ------------------------------
@@ -172,12 +148,6 @@ struct TranslateTableAAToRedAA_<ClusterReduction<15, 20, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<15, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 14 ------------------------------
 template <typename TSpec>
 struct TranslateTableRedAAToChar_<ClusterReduction<14, 20, Blosum62>, TSpec>
@@ -195,12 +165,6 @@ template <typename TSpec>
 struct TranslateTableAAToRedAA_<ClusterReduction<14, 20, Blosum62>, TSpec>
 {
     static const char VALUE[24];
-};
-
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<14, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
 };
 
 // ---------------------------------- N = 13 ------------------------------
@@ -222,12 +186,6 @@ struct TranslateTableAAToRedAA_<ClusterReduction<13, 20, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<13, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 12 ------------------------------
 template <typename TSpec>
 struct TranslateTableRedAAToChar_<ClusterReduction<12, 20, Blosum62>, TSpec>
@@ -245,12 +203,6 @@ template <typename TSpec>
 struct TranslateTableAAToRedAA_<ClusterReduction<12, 20, Blosum62>, TSpec>
 {
     static const char VALUE[24];
-};
-
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<12, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
 };
 
 // ---------------------------------- N = 11 ------------------------------
@@ -272,12 +224,6 @@ struct TranslateTableAAToRedAA_<ClusterReduction<11, 20, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<11, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 10 ------------------------------
 template <typename TSpec>
 struct TranslateTableRedAAToChar_<ClusterReduction<10, 20, Blosum62>, TSpec>
@@ -295,12 +241,6 @@ template <typename TSpec>
 struct TranslateTableAAToRedAA_<ClusterReduction<10, 20, Blosum62>, TSpec>
 {
     static const char VALUE[24];
-};
-
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<10, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
 };
 
 // ---------------------------------- N = 9 ------------------------------
@@ -322,12 +262,6 @@ struct TranslateTableAAToRedAA_<ClusterReduction<9, 20, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<9, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 8 ------------------------------
 template <typename TSpec>
 struct TranslateTableRedAAToChar_<ClusterReduction<8, 20, Blosum62>, TSpec>
@@ -345,12 +279,6 @@ template <typename TSpec>
 struct TranslateTableAAToRedAA_<ClusterReduction<8, 20, Blosum62>, TSpec>
 {
     static const char VALUE[24];
-};
-
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<8, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
 };
 
 // ---------------------------------- N = 7 ------------------------------
@@ -372,12 +300,6 @@ struct TranslateTableAAToRedAA_<ClusterReduction<7, 20, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<7, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 6 ------------------------------
 template <typename TSpec>
 struct TranslateTableRedAAToChar_<ClusterReduction<6, 20, Blosum62>, TSpec>
@@ -395,12 +317,6 @@ template <typename TSpec>
 struct TranslateTableAAToRedAA_<ClusterReduction<6, 20, Blosum62>, TSpec>
 {
     static const char VALUE[24];
-};
-
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<6, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
 };
 
 // ---------------------------------- N = 5 ------------------------------
@@ -422,12 +338,6 @@ struct TranslateTableAAToRedAA_<ClusterReduction<5, 20, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<5, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 4 ------------------------------
 template <typename TSpec>
 struct TranslateTableRedAAToChar_<ClusterReduction<4, 20, Blosum62>, TSpec>
@@ -445,12 +355,6 @@ template <typename TSpec>
 struct TranslateTableAAToRedAA_<ClusterReduction<4, 20, Blosum62>, TSpec>
 {
     static const char VALUE[24];
-};
-
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<4, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
 };
 
 // ---------------------------------- N = 3 ------------------------------
@@ -472,12 +376,6 @@ struct TranslateTableAAToRedAA_<ClusterReduction<3, 20, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<3, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 2 ------------------------------
 template <typename TSpec>
 struct TranslateTableRedAAToChar_<ClusterReduction<2, 20, Blosum62>, TSpec>
@@ -495,12 +393,6 @@ template <typename TSpec>
 struct TranslateTableAAToRedAA_<ClusterReduction<2, 20, Blosum62>, TSpec>
 {
     static const char VALUE[24];
-};
-
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<2, 20, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
 };
 
 // ---------------------------------- N = 19 ------------------------------
@@ -562,30 +454,6 @@ char const TranslateTableAAToRedAA_<
     12, 13, 14, 15, 16, 17, 18,  9,  0,  0,  0,  0
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<19, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-    15, 16, 17, 18,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 18 ------------------------------
 
 template <typename TVoidSpec>
@@ -642,30 +510,6 @@ char const TranslateTableAAToRedAA_<
 {
      0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11,
     10, 12, 13, 14, 15, 16, 17,  9,  0,  0,  0,  0
-};
-
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<18, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-    15, 16, 17,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
 };
 
 // ---------------------------------- N = 17 ------------------------------
@@ -725,30 +569,6 @@ char const TranslateTableAAToRedAA_<
     10, 11, 12, 13, 14, 15, 16,  9,  0,  0,  0,  0
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<17, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-    15, 16,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 16 ------------------------------
 
 template <typename TVoidSpec>
@@ -803,30 +623,6 @@ char const TranslateTableAAToRedAA_<
 {
      0,  1,  2,  3,  4,  5,  5,  6,  7,  8,  9,  1,
      9, 10, 11, 12, 13, 14, 15,  8,  0,  0,  0,  0
-};
-
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<16, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-    15,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
 };
 
 // ---------------------------------- N = 15 ------------------------------
@@ -884,30 +680,6 @@ char const TranslateTableAAToRedAA_<
      9, 10, 11, 12, 13, 14, 10,  8,  0,  0,  0,  0
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<15, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 14 ------------------------------
 
 template <typename TVoidSpec>
@@ -960,30 +732,6 @@ char const TranslateTableAAToRedAA_<
 {
      0,  1,  2,  3,  4,  5,  5,  6,  7,  8,  8,  1,
      8,  9, 10, 11, 12, 13,  9,  8,  0,  0,  0,  0
-};
-
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<14, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
 };
 
 // ---------------------------------- N = 13 ------------------------------
@@ -1039,30 +787,6 @@ char const TranslateTableAAToRedAA_<
      7,  8,  9, 10, 11, 12,  8,  7,  0,  0,  0,  0
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<13, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 12 ------------------------------
 
 template <typename TVoidSpec>
@@ -1113,30 +837,6 @@ char const TranslateTableAAToRedAA_<
 {
      0,  1,  2,  2,  3,  1,  1,  4,  5,  6,  6,  1,
      6,  7,  8,  9, 10, 11,  7,  6,  0,  0,  0,  0
-};
-
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<12, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
 };
 
 // ---------------------------------- N = 11 ------------------------------
@@ -1190,30 +890,6 @@ char const TranslateTableAAToRedAA_<
      6,  7,  8,  9, 10,  7,  7,  6,  0,  0,  0,  0
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<11, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 10 ------------------------------
 
 template <typename TVoidSpec>
@@ -1262,30 +938,6 @@ char const TranslateTableAAToRedAA_<
 {
      0,  1,  2,  2,  3,  1,  1,  4,  5,  6,  6,  1,
      6,  7,  8,  2,  9,  7,  7,  6,  0,  0,  0,  0
-};
-
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<10, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
 };
 
 // ---------------------------------- N = 9 ------------------------------
@@ -1337,30 +989,6 @@ char const TranslateTableAAToRedAA_<
      5,  6,  7,  1,  8,  6,  6,  5,  0,  0,  0,  0
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<9, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 8 ------------------------------
 
 template <typename TVoidSpec>
@@ -1407,30 +1035,6 @@ char const TranslateTableAAToRedAA_<
 {
      0,  1,  1,  1,  2,  1,  1,  3,  4,  5,  5,  1,
      5,  6,  7,  1,  0,  6,  6,  5,  0,  0,  0,  0
-};
-
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<8, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
 };
 
 // ---------------------------------- N = 7 ------------------------------
@@ -1480,30 +1084,6 @@ char const TranslateTableAAToRedAA_<
      4,  5,  6,  1,  0,  5,  5,  4,  0,  0,  0,  0
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<7, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 6 ------------------------------
 
 template <typename TVoidSpec>
@@ -1548,30 +1128,6 @@ char const TranslateTableAAToRedAA_<
 {
      0,  1,  1,  1,  2,  1,  1,  3,  1,  2,  2,  1,
      2,  4,  5,  1,  0,  4,  4,  2,  0,  0,  0,  0
-};
-
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<6, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
 };
 
 // ---------------------------------- N = 5 ------------------------------
@@ -1619,30 +1175,6 @@ char const TranslateTableAAToRedAA_<
      2,  3,  4,  1,  0,  3,  3,  2,  0,  0,  0,  0
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<5, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 4 ------------------------------
 
 template <typename TVoidSpec>
@@ -1685,30 +1217,6 @@ char const TranslateTableAAToRedAA_<
 {
      0,  1,  1,  1,  2,  1,  1,  1,  1,  2,  2,  1,
      2,  3,  1,  1,  0,  3,  3,  2,  0,  0,  0,  0
-};
-
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<4, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
 };
 
 // ---------------------------------- N = 3 ------------------------------
@@ -1754,30 +1262,6 @@ char const TranslateTableAAToRedAA_<
      0,  2,  1,  1,  0,  2,  2,  0,  0,  0,  0,  0
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<3, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 2 ------------------------------
 
 template <typename TVoidSpec>
@@ -1818,30 +1302,6 @@ char const TranslateTableAAToRedAA_<
 {
      0,  1,  1,  1,  0,  1,  1,  1,  1,  0,  0,  1,
      0,  0,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0
-};
-
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<2, 20, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
 };
 
 // ============================================================================

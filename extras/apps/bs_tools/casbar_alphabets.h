@@ -101,33 +101,6 @@ char const TranslateTableDnaMToDna_<T>::VALUE[6] =
     0,   1,   2,   3,   1,   2      //
 };
 
-template <typename T = void>
-struct TranslateTableByteToDnaM_
-{
-    static char const VALUE[256];
-};
-
-template <typename T>
-char const TranslateTableByteToDnaM_<T>::VALUE[256] =
-{
-    0,   1,   2,   3,   4,   5,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //0
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //1
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //2
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //3
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //4
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //5
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //6
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //7
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //8
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //9
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //10
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //11
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //12
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //13
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //14
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0  //15
-};
-
 // ============================================================================
 // Assignment / Conversion Functions
 // ============================================================================
@@ -136,17 +109,6 @@ inline void assign(char & c_target,
                    DnaM const & source)
 {
     c_target = TranslateTableDnaMToChar_<>::VALUE[source.value];
-}
-
-template <>
-struct CompareType<DnaM, __uint8>
-{
-    typedef DnaM Type;
-};
-
-inline void assign(DnaM & target, __uint8 c_source)
-{
-    target.value = TranslateTableByteToDnaM_<>::VALUE[c_source];
 }
 
 template <>
