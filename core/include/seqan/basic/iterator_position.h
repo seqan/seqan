@@ -278,28 +278,12 @@ operator+(Iter<TContainer, PositionIterator> const & left, TIntegral right)
     return Iter<TContainer, PositionIterator>(container(left), position(left) + right);
 }
 
-// for <anonymous enum> types
-//template <typename TContainer>
-//inline Iter<TContainer, PositionIterator>
-//operator+(Iter<TContainer, PositionIterator> const & left, int right)
-//{
-//    return Iter<TContainer, PositionIterator>(container(left), position(left) + right);
-//}
-
 template <typename TContainer, typename TIntegral>
 inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TIntegral> >, Iter<TContainer, PositionIterator>)
 operator+(TIntegral left, Iter<TContainer, PositionIterator> const & right)
 {
     return Iter<TContainer, PositionIterator>(container(right), position(right) + left);
 }
-
-// for <anonymous enum> types
-//template <typename TContainer>
-//inline Iter<TContainer, PositionIterator>
-//operator+(int left, Iter<TContainer, PositionIterator> const & right)
-//{
-//    return Iter<TContainer, PositionIterator>(container(right), position(right) + left);
-//}
 
 // ----------------------------------------------------------------------------
 // Function operator-()
@@ -311,14 +295,6 @@ operator-(Iter<TContainer, PositionIterator> const & left, TIntegral right)
 {
     return Iter<TContainer, PositionIterator>(container(left), position(left) - right);
 }
-
-// for <anonymous enum> types
-//template <typename TContainer>
-//inline Iter<TContainer, PositionIterator>
-//operator-(Iter<TContainer, PositionIterator> const & left, int right)
-//{
-//    return Iter<TContainer, PositionIterator>(container(left), position(left) - right);
-//}
 
 // ----------------------------------------------------------------------------
 // Function assign()
