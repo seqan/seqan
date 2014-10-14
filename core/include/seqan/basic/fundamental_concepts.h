@@ -691,7 +691,7 @@ struct Is< SignedIntegerConcept<T> >
         typename IfC< IsSameType<T, short>::VALUE,              True,
         typename IfC< IsSameType<T, int>::VALUE,                True,
         typename IfC< IsSameType<T, long>::VALUE,               True,
-        typename IfC< IsSameType<T, long long>::VALUE,          True,
+        typename IfC< IsSameType<T, long long>::VALUE,          True,   // for the __int64 != long long
         typename IfC< IsSameType<T, __int64>::VALUE,            True,
         False
         >::Type>::Type>::Type>::Type>::Type>::Type Type;
@@ -707,7 +707,7 @@ struct Is< UnsignedIntegerConcept<T> >
         typename IfC< IsSameType<T, unsigned short>::VALUE,     True,
         typename IfC< IsSameType<T, unsigned int>::VALUE,       True,
         typename IfC< IsSameType<T, unsigned long>::VALUE,      True,
-        typename IfC< IsSameType<T, unsigned long long>::VALUE, True,
+        typename IfC< IsSameType<T, unsigned long long>::VALUE, True,   // for the __uint64 != unsigned long long
         typename IfC< IsSameType<T, __uint64>::VALUE,           True,
         False
         >::Type>::Type>::Type>::Type>::Type>::Type Type;
