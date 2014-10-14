@@ -316,10 +316,10 @@ int main(int argc, const char *argv[])
     setDate(parser, "Apr 2011" );
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
-    setValidValues(parser, 0, seqan::SeqFileIn::getFileFormatExtensions());
+    setValidValues(parser, 0, seqan::SeqFileIn::getFileExtensions());
     setHelpText(parser, 0, "A reference genome file.");
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS", true));
-    std::vector<std::string> exts = seqan::SeqFileIn::getFileFormatExtensions();
+    std::vector<std::string> exts = seqan::SeqFileIn::getFileExtensions();
     exts.push_back(".sam");
     setValidValues(parser, 1, exts);
     setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");

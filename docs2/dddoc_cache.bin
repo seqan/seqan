@@ -25075,17 +25075,17 @@ ag3
 ag3
 ag4
 ag3
-aS'.Function.ArgumentParser#getFileFormatExtensions'
+aS'.Function.ArgumentParser#getFileExtensions'
 p1952
 aS'..class:Class.ArgumentParser'
 p1953
 aS'..summary:Returns file format extensions given a format tag.'
 p1954
-aS'..signature:getFileFormatExtensions(formatTag)'
+aS'..signature:getFileExtensions(formatTag)'
 p1955
-aS'..signature:getFileFormatExtensions(formatTagList)'
+aS'..signature:getFileExtensions(formatTagList)'
 p1956
-aS'..signature:getFileFormatExtensions(formatTagSelector)'
+aS'..signature:getFileExtensions(formatTagSelector)'
 p1957
 aS'..param.format:A single file format, e.g. @Tag.File Format.tag.Fastq@ or @Tag.Sam@.'
 p1958

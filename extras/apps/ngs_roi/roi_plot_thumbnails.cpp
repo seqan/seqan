@@ -312,7 +312,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     addOption(parser, seqan::ArgParseOption("if", "input-file", "ROI to plot.",
                                             seqan::ArgParseOption::INPUT_FILE));
-    setValidValues(parser, "input-file", seqan::RoiFileIn::getFileFormatExtensions());
+    setValidValues(parser, "input-file", seqan::RoiFileIn::getFileExtensions());
     setRequired(parser, "input-file");
 
     addOption(parser, seqan::ArgParseOption("o", "output-prefix", "Prefix of output file.",

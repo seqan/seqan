@@ -348,7 +348,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     addSection(parser, "Main Options");
     addOption(parser, seqan::ArgParseOption("s", "seq", "FASTA file with two sequences.", seqan::ArgParseOption::INPUT_FILE, "IN"));
     setRequired(parser, "seq");
-    setValidValues(parser, "seq", getFileFormatExtensions(Fasta()));
+    setValidValues(parser, "seq", getFileExtensions(Fasta()));
     addOption(parser, seqan::ArgParseOption("a", "alphabet", "Sequence alphabet.", seqan::ArgParseOption::STRING, "ALPHABET"));
     setValidValues(parser, "alphabet", "protein dna rna text");
     setDefaultValue(parser, "alphabet", "protein");
@@ -360,7 +360,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     setDefaultValue(parser, "method", "gotoh");
     addOption(parser, seqan::ArgParseOption("o", "outfile", "Output filename.", seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
     setDefaultValue(parser, "outfile", "out.fasta");
-    std::vector<std::string> outFileNames = getFileFormatExtensions(Fasta());
+    std::vector<std::string> outFileNames = getFileExtensions(Fasta());
     outFileNames.push_back(".msf");
     setValidValues(parser, "outfile", outFileNames);
 

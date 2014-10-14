@@ -539,15 +539,15 @@ template <typename T>
 char const * MagicHeader<Nothing, T>::VALUE = NULL;
 
 // --------------------------------------------------------------------------
-// Metafunction FileFormatExtensions
+// Metafunction FileExtensions
 // --------------------------------------------------------------------------
 
 /*!
- * @mfn FileFormatExtensions
+ * @mfn FileExtensions
  * @headerfile <seqan/basic.h>
  * @brief Returns an array of file format extension strings for file foramt tag.
  *
- * @signature FileFormatExtensions<TFormat[, TDummy]>::VALUE;
+ * @signature FileExtensions<TFormat[, TDummy]>::VALUE;
  *
  * @tparam TTag   The file format tag to use for the query.
  * @tparam TDummy Implementation detail, defaults to <tt>void</tt> and is ignored.
@@ -557,18 +557,18 @@ char const * MagicHeader<Nothing, T>::VALUE = NULL;
  * <tt>TTag</tt> is @link Nothing @endlink.  In this case, <tt>VALUE</tt> is <tt>{""}</tt>.
  */
 
-// TODO(weese:) rename FileFormatExtensions to FileTypeExtensions or FileExtensions
+// TODO(weese:) rename FileExtensions to FileTypeExtensions or FileExtensions
 template <typename TFormat, typename T = void>
-struct FileFormatExtensions;
+struct FileExtensions;
 
 template <typename T>
-struct FileFormatExtensions<Nothing, T>
+struct FileExtensions<Nothing, T>
 {
     static char const * VALUE[1];
 };
 
 template <typename T>
-char const * FileFormatExtensions<Nothing, T>::VALUE[1] =
+char const * FileExtensions<Nothing, T>::VALUE[1] =
 {
     ""  // default output extension
 };

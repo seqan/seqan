@@ -1005,7 +1005,7 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
     setValidValues(parser, "reference", "fa fasta");
     addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the \"perfect\" SAM/BAM file from.",
                                             seqan::ArgParseArgument::INPUT_FILE, "BAM"));
-    setValidValues(parser, "in-bam", BamFileIn::getFileFormatExtensions());
+    setValidValues(parser, "in-bam", BamFileIn::getFileExtensions());
 
     addSection(parser, "Gold Standard Parameters");
     addOption(parser, seqan::ArgParseOption("", "oracle-mode",

@@ -683,12 +683,12 @@ parseCommandLine(RoiIntersectOptions & options, int argc, char const ** argv)
 
     addOption(parser, seqan::ArgParseOption("ir", "in-roi", "ROI file to read.", seqan::ArgParseOption::INPUT_FILE, "ROI"));
     setRequired(parser, "in-roi");
-    setValidValues(parser, "in-roi", seqan::RoiFileIn::getFileFormatExtensions());
+    setValidValues(parser, "in-roi", seqan::RoiFileIn::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("if", "in-features", "BED, GFF, or GTF file to read.", seqan::ArgParseOption::INPUT_FILE, "FILE"));
     setRequired(parser, "in-features");
-    std::vector<std::string> extensions = seqan::BedFileIn::getFileFormatExtensions();
-    std::vector<std::string> extensionsGff = seqan::GffFileIn::getFileFormatExtensions();
+    std::vector<std::string> extensions = seqan::BedFileIn::getFileExtensions();
+    std::vector<std::string> extensionsGff = seqan::GffFileIn::getFileExtensions();
     extensions.insert(extensions.end(), extensionsGff.begin(), extensionsGff.end());
     setValidValues(parser, "in-features", extensions);
 

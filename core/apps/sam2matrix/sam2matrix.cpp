@@ -92,11 +92,11 @@ parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
 
     addOption(parser, ArgParseOption("m", "mapping", "File containing the mappings.", ArgParseOption::INPUT_FILE, 
                                      "FILE", true));
-    setValidValues(parser, "mapping", BamFileIn::getFileFormatExtensions());
+    setValidValues(parser, "mapping", BamFileIn::getFileExtensions());
     setRequired(parser, "mapping");
     addOption(parser, ArgParseOption("r", "reads", "File containing the reads contained in the mapping file(s).", 
                                      ArgParseOption::INPUT_FILE, "FILE"));
-    setValidValues(parser, "reads", SeqFileIn::getFileFormatExtensions());
+    setValidValues(parser, "reads", SeqFileIn::getFileExtensions());
     setRequired(parser, "reads");
 
     addOption(parser, ArgParseOption("rf", "reference", "Name of the file used as reference of the corresponding sam "

@@ -1107,7 +1107,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     setValidValues(parser, 0, ".fa .fasta");
     setHelpText(parser, 0, "A reference genome file.");
 
-    std::vector<std::string> alignmentFormats(BamFileIn::getFileFormatExtensions());
+    std::vector<std::string> alignmentFormats(BamFileIn::getFileExtensions());
     alignmentFormats.push_back(".gff");
     addArgument(parser, ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "ALIGNMENTS", true));
     setValidValues(parser, 1, alignmentFormats);

@@ -1456,11 +1456,11 @@ inline void setHelpText(ArgumentParser & me,
 }
 
 // ----------------------------------------------------------------------------
-// Function getFileFormatExtensions()
+// Function getFileExtensions()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn ArgumentParser#getFileFormatExtensions
+ * @fn ArgumentParser#getFileExtensions
  * @headerfile <seqan/arg_parse.h>
  * @brief Returns file format extension given a format tag.
  *
@@ -1476,12 +1476,12 @@ inline void setHelpText(ArgumentParser & me,
  */
 
 /**
-.Function.ArgumentParser#getFileFormatExtensions
+.Function.ArgumentParser#getFileExtensions
 ..class:Class.ArgumentParser
 ..summary:Returns file format extensions given a format tag.
-..signature:getFileFormatExtensions(formatTag)
-..signature:getFileFormatExtensions(formatTagList)
-..signature:getFileFormatExtensions(formatTagSelector)
+..signature:getFileExtensions(formatTag)
+..signature:getFileExtensions(formatTagList)
+..signature:getFileExtensions(formatTagSelector)
 ..param.format:A single file format, e.g. @Tag.File Format.tag.Fastq@ or @Tag.Sam@.
 ...type:Tag.Tag
 ..param.formatTagList:A list of file formats.
@@ -1494,10 +1494,10 @@ inline void setHelpText(ArgumentParser & me,
 
 template <typename T>
 inline std::vector<std::string>
-getFileFormatExtensions(T const formatTag)
+getFileExtensions(T const formatTag)
 {
     std::vector<std::string> extensions;
-    _getFileFormatExtensions(extensions, formatTag);
+    _getFileExtensions(extensions, formatTag);
     return extensions;
 }
 
