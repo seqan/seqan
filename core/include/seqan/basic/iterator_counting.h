@@ -43,14 +43,17 @@ namespace seqan {
 // Tags
 // ============================================================================
 
-struct CountingIterator;
+template <typename TSpec = void>
+struct CountingIteratorImpl_;
+
+typedef CountingIteratorImpl_<void> CountingIterator;
 
 // ============================================================================
 // Classes
 // ============================================================================
 
-template <typename TIncrementable>
-class Iter<TIncrementable, CountingIterator>
+template <typename TSpec, typename TIncrementable>
+class Iter<TIncrementable, CountingIteratorImpl_<TSpec> >
 {
 public:
     TIncrementable data_position;
@@ -77,17 +80,17 @@ public:
 // Metafunctions
 // ============================================================================
 
-template <typename TIncrementable>
-struct Size<Iter<TIncrementable, CountingIterator> > : Size<TIncrementable> {};
+template <typename TSpec, typename TIncrementable>
+struct Size<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > > : Size<TIncrementable> {};
 
-template <typename TIncrementable>
-struct Position<Iter<TIncrementable, CountingIterator> > : Position<TIncrementable> {};
+template <typename TSpec, typename TIncrementable>
+struct Position<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > > : Position<TIncrementable> {};
 
-template <typename TIncrementable>
-struct Reference<Iter<TIncrementable, CountingIterator> > : Reference<TIncrementable> {};
+template <typename TSpec, typename TIncrementable>
+struct Reference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > > : Reference<TIncrementable> {};
 
-template <typename TIncrementable>
-struct Difference<Iter<TIncrementable, CountingIterator> > : Difference<TIncrementable> {};
+template <typename TSpec, typename TIncrementable>
+struct Difference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > > : Difference<TIncrementable> {};
 
 // ============================================================================
 // Functions
@@ -100,16 +103,16 @@ struct Difference<Iter<TIncrementable, CountingIterator> > : Difference<TIncreme
 ///.Function.position.param.iterator.type:Spec.Position Iterator
 ///.Function.position.class:Spec.Position Iterator
 
-template <typename TIncrementable>
+template <typename TSpec, typename TIncrementable>
 inline typename Position<TIncrementable>::Type &
-position(Iter<TIncrementable, CountingIterator> & me)
+position(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & me)
 {
     return me.data_position;
 }
 
-template <typename TIncrementable>
+template <typename TSpec, typename TIncrementable>
 inline typename Position<TIncrementable>::Type const &
-position(Iter<TIncrementable, CountingIterator> const & me)
+position(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & me)
 {
     return me.data_position;
 }
@@ -121,9 +124,9 @@ position(Iter<TIncrementable, CountingIterator> const & me)
 ///.Function.setPosition.param.iterator.type:Spec.Position Iterator
 ///.Function.setPosition.class:Spec.Position Iterator
 
-template <typename TIncrementable, typename TPosition>
+template <typename TIncrementable, typename TSpec, typename TPosition>
 inline void
-setPosition(Iter<TIncrementable, CountingIterator> & me, TPosition position_)
+setPosition(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & me, TPosition position_)
 {
     me.data_position = position_;
 }
@@ -132,16 +135,16 @@ setPosition(Iter<TIncrementable, CountingIterator> & me, TPosition position_)
 // Function value()
 // ----------------------------------------------------------------------------
 
-template <typename TIncrementable>
-inline typename Reference<Iter<TIncrementable, CountingIterator> >::Type
-value(Iter<TIncrementable, CountingIterator> & me)
+template <typename TSpec, typename TIncrementable>
+inline typename Reference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >::Type
+value(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & me)
 {
     return position(me);
 }
 
-template <typename TIncrementable>
-inline typename Reference<Iter<TIncrementable, CountingIterator> >::Type
-value(Iter<TIncrementable, CountingIterator> const & me)
+template <typename TSpec, typename TIncrementable>
+inline typename Reference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >::Type
+value(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & me)
 {
     return position(me);
 }
@@ -150,9 +153,9 @@ value(Iter<TIncrementable, CountingIterator> const & me)
 // Function assignValue()
 // ----------------------------------------------------------------------------
 
-template <typename TIncrementable, typename TValue>
+template <typename TIncrementable, typename TSpec, typename TValue>
 inline void
-assignValue(Iter<TIncrementable, CountingIterator> & me, TValue _value)
+assignValue(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & me, TValue _value)
 {
     setPosition(me, _value);
 }
@@ -161,10 +164,10 @@ assignValue(Iter<TIncrementable, CountingIterator> & me, TValue _value)
 // Function operator==()
 // ----------------------------------------------------------------------------
 
-template <typename TIncrementable>
+template <typename TSpec, typename TIncrementable>
 inline bool
-operator==(Iter<TIncrementable, CountingIterator> const & left,
-           Iter<TIncrementable, CountingIterator> const & right)
+operator==(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left,
+           Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & right)
 {
     return position(left) == position(right);
 }
@@ -173,10 +176,10 @@ operator==(Iter<TIncrementable, CountingIterator> const & left,
 // Function operator!=()
 // ----------------------------------------------------------------------------
 
-template <typename TIncrementable>
+template <typename TSpec, typename TIncrementable>
 inline bool
-operator!=(Iter<TIncrementable, CountingIterator> const & left,
-           Iter<TIncrementable, CountingIterator> const & right)
+operator!=(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left,
+           Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & right)
 {
     return position(left) != position(right);
 }
@@ -185,18 +188,18 @@ operator!=(Iter<TIncrementable, CountingIterator> const & left,
 // Function operator<()
 // ----------------------------------------------------------------------------
 
-template <typename TIncrementable>
+template <typename TSpec, typename TIncrementable>
 inline bool
-operator<(Iter<TIncrementable, CountingIterator> const & left,
-          Iter<TIncrementable, CountingIterator> const & right)
+operator<(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left,
+          Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & right)
 {
     return position(left) < position(right);
 }
 
-template <typename TIncrementable>
+template <typename TSpec, typename TIncrementable>
 inline bool
-operator>(Iter<TIncrementable, CountingIterator> const & left,
-          Iter<TIncrementable, CountingIterator> const & right)
+operator>(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left,
+          Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & right)
 {
     return position(left) > position(right);
 }
@@ -205,10 +208,10 @@ operator>(Iter<TIncrementable, CountingIterator> const & left,
 // Function operator<=()
 // ----------------------------------------------------------------------------
 
-template <typename TIncrementable>
+template <typename TSpec, typename TIncrementable>
 inline bool
-operator<=(Iter<TIncrementable, CountingIterator> const & left,
-           Iter<TIncrementable, CountingIterator> const & right)
+operator<=(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left,
+           Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & right)
 {
     return position(left) <= position(right);
 }
@@ -217,10 +220,10 @@ operator<=(Iter<TIncrementable, CountingIterator> const & left,
 // Function operator>=()
 // ----------------------------------------------------------------------------
 
-template <typename TIncrementable>
+template <typename TSpec, typename TIncrementable>
 inline bool
-operator>=(Iter<TIncrementable, CountingIterator> const & left,
-           Iter<TIncrementable, CountingIterator> const & right)
+operator>=(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left,
+           Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & right)
 {
     return position(left) >= position(right);
 }
@@ -229,9 +232,9 @@ operator>=(Iter<TIncrementable, CountingIterator> const & left,
 // Function goNext()
 // ----------------------------------------------------------------------------
 
-template <typename TIncrementable>
+template <typename TSpec, typename TIncrementable>
 inline void
-goNext(Iter<TIncrementable, CountingIterator> & me)
+goNext(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & me)
 {
     setPosition(me, position(me) + 1);
 }
@@ -240,9 +243,9 @@ goNext(Iter<TIncrementable, CountingIterator> & me)
 // Function goPrevious()
 // ----------------------------------------------------------------------------
 
-template <typename TIncrementable>
+template <typename TSpec, typename TIncrementable>
 inline void
-goPrevious(Iter<TIncrementable, CountingIterator> & me)
+goPrevious(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & me)
 {
     setPosition(me, position(me) - 1);
 }
@@ -251,88 +254,80 @@ goPrevious(Iter<TIncrementable, CountingIterator> & me)
 // Function operator+()
 // ----------------------------------------------------------------------------
 
-template <typename TIncrementable, typename TIntegral>
-inline Iter<TIncrementable, CountingIterator>
-operator+(Iter<TIncrementable, CountingIterator> const & left,
-          TIntegral right)
+template <typename TIncrementable, typename TSpec, typename TIntegral>
+inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> >
+operator+(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left, TIntegral right)
 {
-    return Iter<TIncrementable, CountingIterator>(container(left), position(left) + right);
+    return Iter<TIncrementable, CountingIteratorImpl_<TSpec> >(container(left), position(left) + right);
 }
 
 // for <anonymous enum> types
-template <typename TIncrementable>
-inline Iter<TIncrementable, CountingIterator>
-operator+(Iter<TIncrementable, CountingIterator> const & left,
-          int right)
-{
-    return Iter<TIncrementable, CountingIterator>(container(left), position(left) + right);
-}
+//template <typename TSpec, typename TIncrementable>
+//inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> >
+//operator+(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left, int right)
+//{
+//    return Iter<TIncrementable, CountingIteratorImpl_<TSpec> >(container(left), position(left) + right);
+//}
 
-template <typename TIncrementable, typename TIntegral>
-inline Iter<TIncrementable, CountingIterator>
-operator+(TIntegral left,
-          Iter<TIncrementable, CountingIterator> const & right)
+template <typename TIncrementable, typename TSpec, typename TIntegral>
+inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> >
+operator+(TIntegral left, Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & right)
 {
-    return Iter<TIncrementable, CountingIterator>(container(right), position(right) + left);
+    return Iter<TIncrementable, CountingIteratorImpl_<TSpec> >(container(right), position(right) + left);
 }
 
 // for <anonymous enum> types
-template <typename TIncrementable>
-inline Iter<TIncrementable, CountingIterator>
-operator+(int left,
-          Iter<TIncrementable, CountingIterator> const & right)
-{
-    return Iter<TIncrementable, CountingIterator>(container(right), position(right) + left);
-}
+//template <typename TSpec, typename TIncrementable>
+//inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> >
+//operator+(int left, Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & right)
+//{
+//    return Iter<TIncrementable, CountingIteratorImpl_<TSpec> >(container(right), position(right) + left);
+//}
 
 // ----------------------------------------------------------------------------
 // Function operator+=()
 // ----------------------------------------------------------------------------
 
-template <typename TIncrementable, typename TIntegral>
-inline Iter<TIncrementable, CountingIterator> &
-operator+=(Iter<TIncrementable, CountingIterator> & left,
-           TIntegral right)
+template <typename TIncrementable, typename TSpec, typename TIntegral>
+inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> > &
+operator+=(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & left, TIntegral right)
 {
     setPosition(left, position(left) + right);
     return left;
 }
 
 // for <anonymous enum> types
-template <typename TIncrementable>
-inline Iter<TIncrementable, CountingIterator> &
-operator+=(Iter<TIncrementable, CountingIterator> & left,
-           int right)
-{
-    setPosition(left, position(left) + right);
-    return left;
-}
+//template <typename TSpec, typename TIncrementable>
+//inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> > &
+//operator+=(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & left, int right)
+//{
+//    setPosition(left, position(left) + right);
+//    return left;
+//}
 
 // ----------------------------------------------------------------------------
 // Function operator-()
 // ----------------------------------------------------------------------------
 
-template <typename TIncrementable, typename TIntegral>
-inline Iter<TIncrementable, CountingIterator>
-operator-(Iter<TIncrementable, CountingIterator> const & left,
-          TIntegral right)
+template <typename TIncrementable, typename TSpec, typename TIntegral>
+inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> >
+operator-(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left, TIntegral right)
 {
-    return Iter<TIncrementable, CountingIterator>(container(left), position(left) - right);
+    return Iter<TIncrementable, CountingIteratorImpl_<TSpec> >(container(left), position(left) - right);
 }
 
 // for <anonymous enum> types
-template <typename TIncrementable>
-inline Iter<TIncrementable, CountingIterator>
-operator-(Iter<TIncrementable, CountingIterator> const & left,
-          int right)
-{
-    return Iter<TIncrementable, CountingIterator>(container(left), position(left) - right);
-}
+//template <typename TSpec, typename TIncrementable>
+//inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> >
+//operator-(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left, int right)
+//{
+//    return Iter<TIncrementable, CountingIteratorImpl_<TSpec> >(container(left), position(left) - right);
+//}
 
-template <typename TIncrementable>
+template <typename TSpec, typename TIncrementable>
 inline typename Difference<TIncrementable>::Type
-operator-(Iter<TIncrementable, CountingIterator> const & left,
-          Iter<TIncrementable, CountingIterator> const & right)
+operator-(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left,
+          Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & right)
 {
     return position(left) - position(right);
 }
@@ -341,34 +336,31 @@ operator-(Iter<TIncrementable, CountingIterator> const & left,
 // Function operator-=()
 // ----------------------------------------------------------------------------
 
-template <typename TIncrementable, typename TIntegral>
-inline Iter<TIncrementable, CountingIterator> &
-operator-=(Iter<TIncrementable, CountingIterator> & left,
-           TIntegral right)
+template <typename TIncrementable, typename TSpec, typename TIntegral>
+inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> > &
+operator-=(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & left, TIntegral right)
 {
     setPosition(left, position(left) - right);
     return left;
 }
 
 // for <anonymous enum> types
-template <typename TIncrementable>
-inline Iter<TIncrementable, CountingIterator> &
-operator-=(Iter<TIncrementable, CountingIterator> & left,
-           int right)
-{
-    setPosition(left, position(left) - right);
-    return left;
-}
+//template <typename TSpec, typename TIncrementable>
+//inline Iter<TIncrementable, CountingIteratorImpl_<TSpec> > &
+//operator-=(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & left, int right)
+//{
+//    setPosition(left, position(left) - right);
+//    return left;
+//}
 
 // ----------------------------------------------------------------------------
 // Function assign()
 // ----------------------------------------------------------------------------
 
 // Conversion assignment.
-template <typename TIncrementable, typename TSource>
+template <typename TIncrementable, typename TSpec, typename TSource>
 inline void
-assign(Iter<TIncrementable, CountingIterator> & target,
-       TSource const & source)
+assign(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & target, TSource const & source)
 {
     setPosition(target, position(source));
 }

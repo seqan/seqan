@@ -47,7 +47,7 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-struct PositionIterator;
+typedef CountingIteratorImpl_<Nothing> PositionIterator;
 
 /*!
  * @class PositionIterator
@@ -106,7 +106,7 @@ struct PositionIterator;
 
 template <typename TContainer>
 class Iter<TContainer, PositionIterator> :
-    Iter<typename Position<TContainer>::Type, CountingIterator>
+    public Iter<typename Position<TContainer>::Type, CountingIterator>
 {
 public:
     typedef Iter<typename Position<TContainer>::Type, CountingIterator> TBase;
@@ -229,16 +229,14 @@ value(Iter<TContainer, PositionIterator> const & me)
 
 template <typename TContainer, typename TValue>
 inline void
-assignValue(Iter<TContainer, PositionIterator> & me,
-            TValue const & _value)
+assignValue(Iter<TContainer, PositionIterator> & me, TValue const & _value)
 {
     assignValue(container(me), position(me), _value);
 }
 
 template <typename TContainer, typename TValue>
 inline void
-assignValue(Iter<TContainer, PositionIterator> const & me,
-            TValue const & _value)
+assignValue(Iter<TContainer, PositionIterator> const & me, TValue const & _value)
 {
     assignValue(container(me), position(me), _value);
 }
@@ -256,16 +254,14 @@ inline void moveValue(T const & me, TPos pos, TValue const & _value);
 
 template <typename TContainer, typename TValue>
 inline void
-moveValue(Iter<TContainer, PositionIterator> & me,
-          TValue const & _value)
+moveValue(Iter<TContainer, PositionIterator> & me, TValue const & _value)
 {
     moveValue(container(me), position(me), _value);
 }
 
 template <typename TContainer, typename TValue>
 inline void
-moveValue(Iter<TContainer, PositionIterator> const & me,
-          TValue const & _value)
+moveValue(Iter<TContainer, PositionIterator> const & me, TValue const & _value)
 {
     moveValue(container(me), position(me), _value);
 }
@@ -276,37 +272,33 @@ moveValue(Iter<TContainer, PositionIterator> const & me,
 
 template <typename TContainer, typename TIntegral>
 inline Iter<TContainer, PositionIterator>
-operator+(Iter<TContainer, PositionIterator> const & left,
-          TIntegral right)
+operator+(Iter<TContainer, PositionIterator> const & left, TIntegral right)
 {
     return Iter<TContainer, PositionIterator>(container(left), position(left) + right);
 }
 
 // for <anonymous enum> types
-template <typename TContainer>
-inline Iter<TContainer, PositionIterator>
-operator+(Iter<TContainer, PositionIterator> const & left,
-          int right)
-{
-    return Iter<TContainer, PositionIterator>(container(left), position(left) + right);
-}
+//template <typename TContainer>
+//inline Iter<TContainer, PositionIterator>
+//operator+(Iter<TContainer, PositionIterator> const & left, int right)
+//{
+//    return Iter<TContainer, PositionIterator>(container(left), position(left) + right);
+//}
 
 template <typename TContainer, typename TIntegral>
 inline Iter<TContainer, PositionIterator>
-operator+(TIntegral left,
-          Iter<TContainer, PositionIterator> const & right)
+operator+(TIntegral left, Iter<TContainer, PositionIterator> const & right)
 {
     return Iter<TContainer, PositionIterator>(container(right), position(right) + left);
 }
 
 // for <anonymous enum> types
-template <typename TContainer>
-inline Iter<TContainer, PositionIterator>
-operator+(int left,
-          Iter<TContainer, PositionIterator> const & right)
-{
-    return Iter<TContainer, PositionIterator>(container(right), position(right) + left);
-}
+//template <typename TContainer>
+//inline Iter<TContainer, PositionIterator>
+//operator+(int left, Iter<TContainer, PositionIterator> const & right)
+//{
+//    return Iter<TContainer, PositionIterator>(container(right), position(right) + left);
+//}
 
 // ----------------------------------------------------------------------------
 // Function operator-()
@@ -314,20 +306,18 @@ operator+(int left,
 
 template <typename TContainer, typename TIntegral>
 inline Iter<TContainer, PositionIterator>
-operator-(Iter<TContainer, PositionIterator> const & left,
-          TIntegral right)
+operator-(Iter<TContainer, PositionIterator> const & left, TIntegral right)
 {
     return Iter<TContainer, PositionIterator>(container(left), position(left) - right);
 }
 
 // for <anonymous enum> types
-template <typename TContainer>
-inline Iter<TContainer, PositionIterator>
-operator-(Iter<TContainer, PositionIterator> const & left,
-          int right)
-{
-    return Iter<TContainer, PositionIterator>(container(left), position(left) - right);
-}
+//template <typename TContainer>
+//inline Iter<TContainer, PositionIterator>
+//operator-(Iter<TContainer, PositionIterator> const & left, int right)
+//{
+//    return Iter<TContainer, PositionIterator>(container(left), position(left) - right);
+//}
 
 // ----------------------------------------------------------------------------
 // Function assign()
@@ -336,8 +326,7 @@ operator-(Iter<TContainer, PositionIterator> const & left,
 // Conversion assignment.
 template <typename TTargetContainer, typename TSource>
 inline void
-assign(Iter<TTargetContainer, PositionIterator> & target,
-       TSource const & source)
+assign(Iter<TTargetContainer, PositionIterator> & target, TSource const & source)
 {
     setContainer(target, container(source));
     setPosition(target, position(source));
