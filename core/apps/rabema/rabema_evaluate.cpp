@@ -1075,10 +1075,10 @@ parseCommandLine(RabemaEvaluationOptions & options, int argc, char const ** argv
 
     addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the read mapper SAM or BAM output from.",
                                             seqan::ArgParseArgument::INPUT_FILE, "BAM"));
-    setValidValues(parser, "in-bam", BamFileIn::getFileFormatExtensions());
+    setValidValues(parser, "in-bam", BamFileIn::getFileExtensions());
     setRequired(parser, "in-bam");
     addOption(parser, seqan::ArgParseOption("", "out-tsv", "Path to write the statistics to as TSV.",
-                                            seqan::ArgParseArgument::OUTPUTFILE, "TSV"));
+                                            seqan::ArgParseArgument::OUTPUT_FILE, "TSV"));
     setValidValues(parser, "out-tsv", "rabema_report_tsv");
 
     addOption(parser, seqan::ArgParseOption("", "dont-check-sorting",

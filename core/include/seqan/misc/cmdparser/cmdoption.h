@@ -60,7 +60,7 @@ struct OptionType
         List = 64,                  // option is a list of values
         Hidden = 128,               // hide this option from the help screen
         INPUT_FILE = 256,            // this option is an input file .. is implicitly also a string, since paths/filenames are strings
-        OUTPUTFILE = 512            // this option is an output file .. is implicitly also a string, since paths/filenames are strings
+        OUTPUT_FILE = 512            // this option is an output file .. is implicitly also a string, since paths/filenames are strings
     };
 };
 
@@ -104,7 +104,7 @@ Although not suggested the short-name can contain more than 1 character.
 ...table:$OptionType::List$|64|Option is a list of values
 ...table:$OptionType::Hidden$|128|Hide this option from the help screen
 ...table:$OptionType::INPUT_FILE$|256|Argument is an input file
-...table:$OptionType::OUTPUTFILE$|512|Argument is an output file
+...table:$OptionType::OUTPUT_FILE$|512|Argument is an output file
 ..param.defaultValue:The default value of this option.
 ...default:No default value.
 */
@@ -259,7 +259,7 @@ addArgumentText(CommandLineOption const & opt, CharString const & text)
 inline bool
 isStringOption(CommandLineOption const & me)
 {
-    return (me.optionType & (OptionType::String | OptionType::INPUT_FILE | OptionType::OUTPUTFILE)) != 0;
+    return (me.optionType & (OptionType::String | OptionType::INPUT_FILE | OptionType::OUTPUT_FILE)) != 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -457,7 +457,7 @@ isInputFile(CommandLineOption const & me)
 inline bool
 isOutputFile(CommandLineOption const & me)
 {
-    return (me.optionType & OptionType::OUTPUTFILE) != 0;
+    return (me.optionType & OptionType::OUTPUT_FILE) != 0;
 }
 
 // ----------------------------------------------------------------------------

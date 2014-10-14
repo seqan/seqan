@@ -66,6 +66,6 @@ The reason for this are incorrectly called bases at the end of the reads.
 .. tip::
 
     KNIME needs to know the input and output ports of a node.
-    Therefore we must specify them using ``ArgParseArgument::INPUT_FILE`` or ``ArgParseArgument::OUTPUTFILE`` as can be seen in the 'knime_node' app.
+    Therefore we must specify them using ``ArgParseArgument::INPUT_FILE`` or ``ArgParseArgument::OUTPUT_FILE`` as can be seen in the 'knime_node' app.
     In addition, KNIME needs to know the valid file endings, which you can specify with :dox:`ArgParseArgument#setValidValues`, which is also shown in the example.
 

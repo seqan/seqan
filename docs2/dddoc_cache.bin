@@ -23540,7 +23540,7 @@ p1689
 ag21
 aS'addOption(parser, ArgParseOption("o", "outputFile", "Name of the multi-FASTA input.",'
 p1690
-aS'                                 ArgParseArgument(ArgParseArgument::OUTPUTFILE, "OUT")));'
+aS'                                 ArgParseArgument(ArgParseArgument::OUTPUT_FILE, "OUT")));'
 p1691
 aS'setRequired(parser, "o");'
 p1692
@@ -25075,17 +25075,17 @@ ag3
 ag3
 ag4
 ag3
-aS'.Function.ArgumentParser#getFileFormatExtensions'
+aS'.Function.ArgumentParser#getFileExtensions'
 p1952
 aS'..class:Class.ArgumentParser'
 p1953
 aS'..summary:Returns file format extensions given a format tag.'
 p1954
-aS'..signature:getFileFormatExtensions(formatTag)'
+aS'..signature:getFileExtensions(formatTag)'
 p1955
-aS'..signature:getFileFormatExtensions(formatTagList)'
+aS'..signature:getFileExtensions(formatTagList)'
 p1956
-aS'..signature:getFileFormatExtensions(formatTagSelector)'
+aS'..signature:getFileExtensions(formatTagSelector)'
 p1957
 aS'..param.format:A single file format, e.g. @Tag.File Format.tag.Fastq@ or @Tag.Sam@.'
 p1958
@@ -81339,7 +81339,7 @@ aS'...table:$ArgParseArgument::DOUBLE$|A float'
 p6297
 aS'...table:$ArgParseArgument::INPUTFILE$|An input file'
 p6298
-aS'...table:$ArgParseArgument::OUTPUTFILE$|An output file'
+aS'...table:$ArgParseArgument::OUTPUT_FILE$|An output file'
 p6299
 aS' ..param.argumentLabel:Defines a user defined argument label for the help output. If this option is'
 p6300
@@ -82775,7 +82775,7 @@ aS'..class:Class.ArgParseArgument'
 p6524
 aS'..summary:Returns the file extension for the given file argument.'
 p6525
-aS'..description:Only valid when argument is an INPUTFILE or OUTPUTFILE.'
+aS'..description:Only valid when argument is an INPUTFILE or OUTPUT_FILE.'
 p6526
 aS'..cat:Miscellaenous'
 p6527
