@@ -224,12 +224,15 @@ template <typename TAlignedRead, typename TMInfo, typename TFragStore>
 inline int
 _compareAlignedReadAndMateInfo(TAlignedRead const &a, TMInfo const &b, TFragStore const &fragStore)
 {
-    if (a.contigId < b.contigId) return -1;
-    if (a.contigId > b.contigId) return 1;
+    typedef typename TAlignedRead::TId  TId;
+    typedef typename TAlignedRead::TPos TPos;
 
-    typename TFragStore::TContigPos posA = _min(a.beginPos, a.endPos);
-    if (posA < b.beginPos) return -1;
-    if (posA > b.beginPos) return 1;
+    if (a.contigId < (TId)b.contigId) return -1;
+    if (a.contigId > (TId)b.contigId) return 1;
+
+    TPos posA = _min(a.beginPos, a.endPos);
+    if (posA < (TPos)b.beginPos) return -1;
+    if (posA > (TPos)b.beginPos) return 1;
     
     bool reversedA = (a.endPos < a.beginPos);
     if (!reversedA &&  b.reversed) return -1;
@@ -723,9 +726,13 @@ _fillHeader(BamHeader & header,
 
     for (TId id = 0; lit != litEnd; ++lit, ++id)
     {
-        appendValue(pgRecord.tags, TTag("ID", id + 1));
+        CharString buffer;
+        appendNumber(buffer, id + 1);
+        appendValue(pgRecord.tags, TTag("ID", buffer));
         appendValue(pgRecord.tags, TTag("LB", store.libraryNameStore[id]));
-        appendValue(pgRecord.tags, TTag("PI", (int)store.libraryStore[id].mean));
+        clear(buffer);
+        appendNumber(buffer, (int)store.libraryStore[id].mean);
+        appendValue(pgRecord.tags, TTag("PI", buffer));
         // Sample name needs to be included into fragment store.
         appendValue(pgRecord.tags, TTag("SM", "none"));
     }

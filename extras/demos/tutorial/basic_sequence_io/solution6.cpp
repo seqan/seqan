@@ -10,23 +10,27 @@ int main(int argc, char const ** argv)
         return 1;
     }
 
-    seqan::SequenceStream seqStream(argv[1], seqan::SequenceStream::WRITE);
-    if (!isGood(seqStream))
+    seqan::SeqFileOut seqFileOut;
+    if (!open(seqFileOut, argv[1]))
     {
         std::cerr << "ERROR: Could not open the file.\n";
         return 1;
     }
 
-    seqan::StringSet<seqan::CharString> ids;
-    appendValue(ids, "seq1");
-    appendValue(ids, "seq2");
-    seqan::StringSet<seqan::Dna5String> seqs;
-    appendValue(seqs, "CGAT");
-    appendValue(seqs, "TTTT");
-
-    if (writeAll(seqStream, ids, seqs) != 0)
+    try
     {
-        std::cerr << "ERROR: Could not write to file!\n";
+        seqan::StringSet<seqan::CharString> ids;
+        appendValue(ids, "seq1");
+        appendValue(ids, "seq2");
+        seqan::StringSet<seqan::Dna5String> seqs;
+        appendValue(seqs, "CGAT");
+        appendValue(seqs, "TTTT");
+
+        writeRecords(seqFileOut, ids, seqs);
+    }
+    catch (std::runtime_error &e)
+    {
+        std::cout << "ERROR: " << e.what() << std::endl;
         return 1;
     }
 

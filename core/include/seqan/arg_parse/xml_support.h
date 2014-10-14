@@ -94,7 +94,7 @@ TSequence xmlEscape(TSequence const & original)
         else if (value(ch) == '>')
             append(escaped, "&gt;");
         else
-            append(escaped, *ch);
+            appendValue(escaped, *ch);
     }
     return escaped;
 }

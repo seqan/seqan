@@ -151,9 +151,14 @@ int main(int argc, const char * argv[])
     TSize numberOfContigs = 0;
     // TSize numberOfReads = 0;
 
-    FILE * strmReads = fopen(toCString(options.assembly), "rb");
-    read(strmReads, fragStore, Amos());
-    fclose(strmReads);
+    ifstream strmReads;
+    if (!open(strmReads, toCString(options.assembly)))
+    {
+        cout << "Could not open " << options.assembly << endl;
+        return 1;
+    }
+    read(fragStore, strmReads, Amos());
+    close(strmReads);
     numberOfContigs = length(fragStore.contigStore);
     // numberOfReads = length(fragStore.readStore);
 

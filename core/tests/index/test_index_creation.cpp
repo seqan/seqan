@@ -55,6 +55,11 @@ using namespace seqan;
 
 SEQAN_BEGIN_TESTSUITE(test_index)
 {
-	SEQAN_CALL_TEST(testIndexCreation);
+    SEQAN_CALL_TEST(testIndexModifiedStringReverseEsa);
+    SEQAN_CALL_TEST(testIndexModifiedStringReverseFM);
+    SEQAN_CALL_TEST(testIndexModifiedStringViewEsa);
+    SEQAN_CALL_TEST(testIndexModifiedStringViewFM);
+    SEQAN_CALL_TEST(testIssue519);
+    SEQAN_CALL_TEST(testIndexCreation);
 }
 SEQAN_END_TESTSUITE

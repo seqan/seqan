@@ -298,7 +298,7 @@ struct Is<Convertible<T, T> > :
 
 template <typename T>
 struct Is<Convertible<T, T const> > :
-    Is<Assignable<T> > {};
+    Is<Assignable<typename RemoveConst<T>::Type> > {};
 
 template <typename T, typename S>
 struct Is<Convertible<T, S> > :
@@ -307,7 +307,7 @@ struct Is<Convertible<T, S> > :
 
 template <typename T, typename S>
 struct Is<Convertible<T, S const> > :
-    Is<Convertible<T, S> > {};
+    Is<Convertible<T, typename RemoveConst<S>::Type> > {};
 
 /*!
  * @concept CopyConstructibleConcept
@@ -687,13 +687,14 @@ struct Is< SignedIntegerConcept<T> >
 {
     typedef
         // Explicitely unsigned.
-        typename IfC< IsSameType<T, signed char>::VALUE,     True,
-        typename IfC< IsSameType<T, short>::VALUE,           True,
-        typename IfC< IsSameType<T, int>::VALUE,             True,
-        typename IfC< IsSameType<T, long>::VALUE,            True,
-        typename IfC< IsSameType<T, __int64>::VALUE,         True,
+        typename IfC< IsSameType<T, signed char>::VALUE,        True,
+        typename IfC< IsSameType<T, short>::VALUE,              True,
+        typename IfC< IsSameType<T, int>::VALUE,                True,
+        typename IfC< IsSameType<T, long>::VALUE,               True,
+        typename IfC< IsSameType<T, long long>::VALUE,          True,   // for the __int64 != long long
+        typename IfC< IsSameType<T, __int64>::VALUE,            True,
         False
-        >::Type>::Type>::Type>::Type>::Type Type;
+        >::Type>::Type>::Type>::Type>::Type>::Type Type;
         enum { VALUE = Type::VALUE };
 };
 
@@ -702,13 +703,14 @@ struct Is< UnsignedIntegerConcept<T> >
 {
     typedef
         // Explicitely unsigned.
-        typename IfC< IsSameType<T, unsigned char>::VALUE,   True,
-        typename IfC< IsSameType<T, unsigned short>::VALUE,  True,
-        typename IfC< IsSameType<T, unsigned int>::VALUE,    True,
-        typename IfC< IsSameType<T, unsigned long>::VALUE,   True,
-        typename IfC< IsSameType<T, __uint64>::VALUE,        True,
+        typename IfC< IsSameType<T, unsigned char>::VALUE,      True,
+        typename IfC< IsSameType<T, unsigned short>::VALUE,     True,
+        typename IfC< IsSameType<T, unsigned int>::VALUE,       True,
+        typename IfC< IsSameType<T, unsigned long>::VALUE,      True,
+        typename IfC< IsSameType<T, unsigned long long>::VALUE, True,   // for the __uint64 != unsigned long long
+        typename IfC< IsSameType<T, __uint64>::VALUE,           True,
         False
-        >::Type>::Type>::Type>::Type>::Type Type;
+        >::Type>::Type>::Type>::Type>::Type>::Type Type;
         enum { VALUE = Type::VALUE };
 };
 

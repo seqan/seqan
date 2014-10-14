@@ -217,12 +217,10 @@ struct LF
     typename Fibre<LF, FibreSentinels>::Type    sentinels;
     typename Value<LF>::Type                    sentinelSubstitute;
 
-    LF() :
-        sentinelSubstitute(0)
+    LF()
     {}
 
-    LF(TText const & text) :
-        sentinelSubstitute(0)
+    LF(TText const & text) : sentinels(), sentinelSubstitute(0)
     {
         createLF(text);
     }

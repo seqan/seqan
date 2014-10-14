@@ -148,7 +148,7 @@ public:
 
     ConcurrentQueue(TSize maxSize):
         TBase(),
-        less(this->cs)
+        less(TBase::cs)
     {
         reserve(this->data, maxSize, Exact());
         _setLength(this->data, maxSize);

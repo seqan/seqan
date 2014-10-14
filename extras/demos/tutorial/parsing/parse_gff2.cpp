@@ -30,141 +30,85 @@ struct Gff2Record
     {}
 };
 
-void clear(Gff2Record & record)
-{
-    clear(record.seqName);
-    clear(record.source);
-    clear(record.feature);
-    clear(record.attributes);
-    clear(record.comments);
-}
-
 // FRAGMENT(read-record)
-template <typename TStream, typename TPass>
-int readRecord(Gff2Record & record, RecordReader<TStream, TPass> & reader, Gff2 const & /*tag*/)
+template <typename TReader>
+inline void
+readRecord(Gff2Record & record, CharString & buffer, TReader & reader, Gff2 const & /*tag*/)
 {
-    clear(record);
-    CharString buffer;
-    char c = '\0';
-    int res = 0;
-
     // GFF2 records look like this:
     //
     // <seqname> <source> <feature> <start> <end> <score> <strand> <frame> [attributes] [comments]
 
     // <seqname>
-    res = readUntilChar(record.seqName, reader, '\t');
-    if (res != 0)
-        return res;
-    if (goNext(reader))
-        return EOF_BEFORE_SUCCESS;
+    clear(record.seqName);
+    readUntil(record.seqName, reader, IsTab());
+    skipOne(reader, IsTab());
 
     // <source>
-    res = readUntilChar(record.source, reader, '\t');
-    if (res != 0)
-        return res;
-    if (goNext(reader))
-        return EOF_BEFORE_SUCCESS;
+    clear(record.source);
+    readUntil(record.source, reader, IsTab());
+    skipOne(reader, IsTab());
 
     // <feature>
-    res = readUntilChar(record.feature, reader, '\t');
-    if (res != 0)
-        return res;
-    if (goNext(reader))
-        return EOF_BEFORE_SUCCESS;
+    clear(record.feature);
+    readUntil(record.feature, reader, IsTab());
+    skipOne(reader, IsTab());
 
     // <start>
     clear(buffer);
-    res = readUntilChar(buffer, reader, '\t');
-    if (res != 0)
-        return res;
-    if (!lexicalCast2<unsigned>(record.end, buffer))
-        return 1;  // Could not cast!
-    if (goNext(reader))
-        return EOF_BEFORE_SUCCESS;
+    readUntil(buffer, reader, IsTab());
+    lexicalCast(record.end, buffer);
+    skipOne(reader, IsTab());
 
     // <end>
     clear(buffer);
-    res = readUntilChar(buffer, reader, '\t');
-    if (res != 0)
-        return res;
-    if (!lexicalCast2<unsigned>(record.end, buffer))
-        return 1;  // Could not cast!
-    if (goNext(reader))
-        return EOF_BEFORE_SUCCESS;
+    readUntil(buffer, reader, IsTab());
+    lexicalCast(record.end, buffer);
+    skipOne(reader, IsTab());
 
     // <score>
     clear(buffer);
-    res = readUntilChar(buffer, reader, '\t');
-    if (res != 0)
-        return res;
-    record.hasScore = (buffer != '.');
-    if (record.hasScore && !lexicalCast2<double>(record.score, buffer))
-        return 1;  // Could not cast!
-    if (goNext(reader))
-        return EOF_BEFORE_SUCCESS;
+    readUntil(buffer, reader, IsTab());
+    record.hasScore = (buffer != ".");
+    if (record.hasScore)
+        lexicalCast(record.score, buffer);
+    skipOne(reader, IsTab());
 
     // <strand>
-    clear(buffer);
-    res = readUntilChar(buffer, reader, '\t');
-    if (res != 0)
-        return res;
-    if (length(buffer) != 1u)
-        return 1;  // More than one char or none.
-    c = front(buffer);
-    if (c != '.' && c != '+' && c != '-')
-        return 1;  // Invalid strand.
-    record.strand = c;
-    if (goNext(reader))
-        return EOF_BEFORE_SUCCESS;
+    readOne(record.strand, reader, OrFunctor<OrFunctor<EqualsChar<'-'>, EqualsChar<'+'> >, EqualsChar<'.'> >());
+    skipOne(reader, IsTab());
 
     // <frame>
-    clear(buffer);
-    res = readUntilChar(buffer, reader, '\t');
-    if (res != 0)
-        return res;
-    if (length(buffer) != 1u)
-        return 1;  // More than one char or none.
-    c = front(buffer);
-    if (c != '.' && c != '0' && c != '1' && c != '2')
-        return 1;  // Invalid frame.
-    record.frame = c;
-    if (goNext(reader))
-        return EOF_BEFORE_SUCCESS;
+    readOne(record.frame, reader, OrFunctor<EqualsChar<'.'>, IsInRange<'0', '2'> >());
+    skipOne(reader, IsTab());
 
     // <attributes>
-    res = readUntilTabOrLineBreak(record.attributes, reader);
-    if (res != 0 && res != EOF_BEFORE_SUCCESS)
-        return res;
-    if (atEnd(reader))
-        return 0;
-    if (value(reader) == '\t')
+    clear(record.attributes);
+    clear(record.comments);
+    readUntil(record.attributes, reader, OrFunctor<IsTab, IsNewline>());
+    if (atEnd(reader) || IsNewline()(value(reader)))
     {
-        if (goNext(reader))
-            return EOF_BEFORE_SUCCESS;
+        skipLine(reader);
+        return;
     }
+    skipOne(reader, IsTab());
 
     // <comment>
-    res = readLine(record.seqName, reader);
-    if (res != 0 && res != EOF_BEFORE_SUCCESS)
-        return res;
-    return 0;
+    readLine(record.comments, reader);
 }
 
 // FRAGMENT(read-batch)
-template <typename TGff2Records, typename TStream, typename TPass>
-int read2(TGff2Records & records, RecordReader<TStream, TPass> & reader, Gff2 const & /*tag*/)
+template <typename TGff2Records, typename TReader>
+inline void
+readRecords(TGff2Records & records, TReader & reader, Gff2 const & /*tag*/)
 {
     Gff2Record record;
+    CharString buffer;
     while (!atEnd(reader))
     {
-        clear(record);
-        int res = readRecord(record, reader, Gff2());
-        if (res != 0)
-            return res;
+        readRecord(record, buffer, reader, Gff2());
         appendValue(records, record);
     }
-    return 0;
 }
 
 // FRAGMENT(main)
@@ -173,16 +117,14 @@ int main(int argc, char const ** argv)
     // Handle command line arguments, open files.
     if (argc != 2)
         return 1;
-    std::fstream stream(argv[1], std::ios::binary | std::ios::in);
+    std::ifstream stream(argv[1], std::ios::binary | std::ios::in);
     if (!stream.good())
         return 1;
 
     // Read file.
-    RecordReader<std::fstream, SinglePass<> > reader(stream);
+    seqan::DirectionIterator<std::ifstream, seqan::Input>::Type reader = directionIterator(stream, Input());
     String<Gff2Record> gffRecords;
-    int res = read2(gffRecords, reader, Gff2());
-    if (res != 0)
-        return res;
+    readRecords(gffRecords, reader, Gff2());
 
     // Write out some of the data to stdout.
     for (unsigned i = 0; i < length(gffRecords); ++i)

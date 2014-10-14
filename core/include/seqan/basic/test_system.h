@@ -75,6 +75,8 @@ public:
     virtual void setUp() {}
     virtual void runTest() = 0;
     virtual void tearDown() {}
+
+    virtual ~Test() {}
 };
 
 // --------------------------------------------------------------------------

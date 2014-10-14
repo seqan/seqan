@@ -103,7 +103,8 @@ void catBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions con
     }
 
     // Step 2: Remove duplicate header entries and write merged header
-    removeDuplicates(header);
+    if (length(inFiles) > 1)
+        removeDuplicates(header);
     writeRecord(writer, header);
 
     // Step 3: Read and output alignment records
@@ -240,7 +241,6 @@ int main(int argc, char const ** argv)
     if (!empty(options.outFile))
         success = open(writer, toCString(options.outFile));
     else
-    {
         // write to stdout
 #if SEQAN_HAS_ZLIB
         if (options.bamFormat)
@@ -248,7 +248,6 @@ int main(int argc, char const ** argv)
         else
 #endif
             success = open(writer, std::cout, Sam());
-    }
 
     if (!success)
     {

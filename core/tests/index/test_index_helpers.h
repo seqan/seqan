@@ -617,13 +617,20 @@ typedef
     TagList<Index<StringSet<DnaString>, FMIndex<> >,
     TagList<Index<StringSet<CharString>, FMIndex<> >
     > > > > > >
+    FMIndexTypes;
+
+typedef
+    TagList<Index<CharString, IndexSa<> >,
+    TagList<Index<CharString, IndexEsa<> >,
+    FMIndexTypes
+    > >
     IndexTypes;
 
 // --------------------------------------------------------------------------
 // Trie Index Types
 // --------------------------------------------------------------------------
 
-typedef IndexTypes TrieIndexTypes;
+typedef FMIndexTypes TrieIndexTypes;
 
 // ========================================================================== 
 // Test Classes

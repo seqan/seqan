@@ -270,7 +270,8 @@ namespace SEQAN_NAMESPACE_MAIN
         Event       xmitDone;
 
         aiocb_win32():
-            xmitDone(mutex);
+            xmitDone(mutex)
+        {}
     };
 
 	template <typename TSpec>

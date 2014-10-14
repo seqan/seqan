@@ -342,6 +342,14 @@ struct DefaultOpenMode<SmartFile<TFileType, TDirection, TSpec>, TDummy> :
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Helper Function _throwIf().
+// ----------------------------------------------------------------------------
+
+// Helper functions that reduce number of "uncaught exception" false positives in static analysis tools.
+template <typename TException> void _throwIf(TException const & e, True const & /*tag*/) { SEQAN_THROW(e); }
+template <typename TException> void _throwIf(TException const & /*e*/, False const & /*tag*/) { /*nop*/ }
+
+// ----------------------------------------------------------------------------
 // Function directionIterator()
 // ----------------------------------------------------------------------------
 
@@ -454,7 +462,7 @@ _checkThatStreamOutputFormatIsSet(SmartFile<TFileType, Output, TSpec> const &, T
 // Function open()
 // --------------------------------------------------------------------------
 
-// TODO(holtgrew): Complete me, the combination of formats etc are a bit hard to grasp quickly.
+// TODO(holtgrew): Complete documentation, the combination of formats etc are a bit hard to grasp quickly.
 
 /*!
  * @fn SmartFile#open
@@ -470,15 +478,13 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
 {
     if (!open(file.stream, stream, compressionFormat))
     {
-        if (TThrowExceptions::VALUE)
-            SEQAN_THROW(UnknownFileFormat());
+        _throwIf(UnknownFileFormat(), TThrowExceptions());
         return false;
     }
 
     if (!guessFormat(file))
     {
-        if (TThrowExceptions::VALUE)
-            SEQAN_THROW(UnknownFileFormat());
+        _throwIf(UnknownFileFormat(), TThrowExceptions());
         return false;
     }
 
@@ -524,8 +530,7 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
 {
     if (!open(file.stream, fileName, openMode))
     {
-        if (TThrowExceptions::VALUE)
-            SEQAN_THROW(FileOpenError(fileName));
+        _throwIf(FileOpenError(fileName), TThrowExceptions());
         return false;
     }
 
@@ -533,8 +538,8 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
     {
         if (!guessFormat(file))
         {
-            if (TThrowExceptions::VALUE)                        // read from a pipe (without file extension)
-                SEQAN_THROW(UnknownFileFormat());
+            // read from a pipe (without file extension)
+            _throwIf(UnknownFileFormat(), TThrowExceptions());
             return false;
         }
     }
@@ -544,8 +549,7 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
         if (!guessFormatFromFilename(basename, file.format))    // read/write from/to a file (with extension)
         {
             close(file.stream);
-            if (TThrowExceptions::VALUE)
-                SEQAN_THROW(UnknownExtensionError(fileName));
+            _throwIf(UnknownExtensionError(fileName), TThrowExceptions());
             return false;
         }
     }

@@ -126,7 +126,6 @@ void _appendTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString
             for (size_t i = 0; i != len; ++i)
                 if (buffer[i] == ',')
                     ++nEntries;
-                    std::cout<<buffer<<std::endl;
 
             // Write out array length.
             appendRawPod(target, (__uint32)nEntries);

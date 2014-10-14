@@ -3,11 +3,13 @@
 
 int main()
 {
-    seqan::BamStream bamInStream("example.bam");
+    seqan::BamFileIn bamFileIn("example.bam");
+    seqan::BamHeader header;
+    readRecord(header, bamFileIn);
 
-    for (unsigned i = 0; i < length(bamInStream.header.sequenceInfos); ++i)
-        std::cout << bamInStream.header.sequenceInfos[i].i1 << '\t'
-                  << bamInStream.header.sequenceInfos[i].i2 << '\n';
+    for (unsigned i = 0; i < length(nameStore(context(bamFileIn))); ++i)
+        std::cout << nameStore(context(bamFileIn))[i] << '\t'
+                  << sequenceLengths(context(bamFileIn))[i] << '\n';
 
     return 0;
 }

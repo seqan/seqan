@@ -69,7 +69,9 @@ _buildLeafString(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 		//	while ((j < lenRoot) && (findVertex(const_cast<TGraph&>(g), seqId, j) == nilVertex)) ++j;
 		//	nextVertex = addVertex(const_cast<TGraph&>(g), seqId, i, j-i);
 		//}
-		appendValue(alignSeq, TVertexString(nextVertex), Generous());
+		TVertexString vs;
+		appendValue(vs, nextVertex);
+		appendValue(alignSeq, vs, Generous());
 		i += fragmentLength(g, nextVertex);
 	}
 }
