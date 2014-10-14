@@ -83,8 +83,8 @@ typedef SmartFile<Gff, Output>  GffFileOut;
 // Metafunction SmartFileContext
 // ----------------------------------------------------------------------------
 
-template <typename TDirection, typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Gff, TDirection, TSpec>, TStorageSpec>
+template <typename TSpec, typename TStorageSpec>
+struct SmartFileContext<SmartFile<Gff, Input, TSpec>, TStorageSpec>
 {
     typedef CharString Type;
 };

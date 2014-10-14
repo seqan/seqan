@@ -51,7 +51,6 @@
 
 #include <seqan/bed_io/bed_record.h>
 
-#include <seqan/bed_io/bed_io_context.h>
 #include <seqan/bed_io/read_bed.h>
 #include <seqan/bed_io/write_bed.h>
 
