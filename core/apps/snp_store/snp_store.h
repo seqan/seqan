@@ -1026,7 +1026,7 @@ int readMatchesFromGFF_Batch(
                             }
                             appendValue(tmpCigarStr,TCigar('I',pos2));
                             for(unsigned f = 0; f < pos2; ++f)
-                                append(temp_read,'A');  // will be replaced with correct base in "mutations" loop
+                                appendValue(temp_read, 'A');  // will be replaced with correct base in "mutations" loop
                             skipOne(fileIter);
                             rLen += pos2;
                             hasIndel = true;

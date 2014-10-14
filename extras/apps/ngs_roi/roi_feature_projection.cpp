@@ -222,7 +222,7 @@ struct IntersectWithGffConfig
             bedRecord.ref  = gffRecord.ref;
             bedRecord.beginPos = gffRecord.beginPos;
             bedRecord.endPos = gffRecord.endPos;
-            bedRecord.score = 0;
+            bedRecord.score = "0";
             bedRecord.strand = (gffRecord.strand == '-') ? '-' : '+';  // '.' becomes '+'
 
             // Build BED record name.  We cannot rely on the GFF/GTF record having an ID so we simply construct one.

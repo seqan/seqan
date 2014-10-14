@@ -188,7 +188,7 @@ int main(int argc, const char *argv[])
         {
 			TName tmpName = "label = \"";
 			append(tmpName, names[i], Generous());
-			append(tmpName, '"');
+			appendValue(tmpName, '"');
 			names[i] = tmpName;
 		}
 

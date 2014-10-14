@@ -726,9 +726,13 @@ _fillHeader(BamHeader & header,
 
     for (TId id = 0; lit != litEnd; ++lit, ++id)
     {
-        appendValue(pgRecord.tags, TTag("ID", id + 1));
+        CharString buffer;
+        appendNumber(buffer, id + 1);
+        appendValue(pgRecord.tags, TTag("ID", buffer));
         appendValue(pgRecord.tags, TTag("LB", store.libraryNameStore[id]));
-        appendValue(pgRecord.tags, TTag("PI", (int)store.libraryStore[id].mean));
+        clear(buffer);
+        appendNumber(buffer, (int)store.libraryStore[id].mean);
+        appendValue(pgRecord.tags, TTag("PI", buffer));
         // Sample name needs to be included into fragment store.
         appendValue(pgRecord.tags, TTag("SM", "none"));
     }

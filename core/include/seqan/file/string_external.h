@@ -525,6 +525,7 @@ you should think of using @Tag.ExternalConfig@.
 		
 	    ExtStringFwdIterator():
 			extString(NULL),
+			dirty(true),
 			pageNo(0),
 			pageOfs(0),
             prefetch(0),
@@ -532,6 +533,7 @@ you should think of using @Tag.ExternalConfig@.
 
 		ExtStringFwdIterator(const TIterator &I):
 			extString(I.extString),
+			dirty(true),
 			pageNo(I.pageNo),
 			pageOfs(I.pageOfs),
             prefetch(I.prefetch),
@@ -539,6 +541,7 @@ you should think of using @Tag.ExternalConfig@.
 
 	    explicit ExtStringFwdIterator(TExtString *_extString, TSize _offset):
 			extString(_extString),
+			dirty(true),
 			pageNo(_offset / PAGESIZE),
 			pageOfs(_offset % PAGESIZE),
             prefetch(0),
@@ -546,12 +549,14 @@ you should think of using @Tag.ExternalConfig@.
 
 		explicit ExtStringFwdIterator(TExtString *_extString, TSize _pageNo, TSize _pageOfs):
 			extString(_extString),
+			dirty(true),
 			pageNo(_pageNo),
 			pageOfs(_pageOfs),
             prefetch(0),
 			begin(NULL) {}
 
-		~ExtStringFwdIterator() {
+		~ExtStringFwdIterator()
+		{
 			invalidate();
 		}
 
@@ -1214,15 +1219,11 @@ you should think of using @Tag.ExternalConfig@.
         int                 lastDiskPage;       // the last page on disk and in mem 
         unsigned            lastDiskPageSize;   // can be smaller than PAGESIZE
 
-		String(TSize size = 0):
-            file(NULL),
-			data_size(0)
+		String(TSize size = 0) :
+            file(NULL), _temporary(true), _ownFile(false), data_size(0),
+			lastDiskPage(0),     // the last two values need not to be initialized here
+			lastDiskPageSize(0)  // because of "write before read"
         {
-            _temporary = true;
-            _ownFile = false;
-            lastDiskPage = 0;       // actually, these values need not to be initialized
-            lastDiskPageSize = 0;   // here, because of "write before read"
-
 			resize(*this, size);
         }
 
@@ -1277,29 +1278,29 @@ Instead of giving $file$ or $fileName$ to the constructor, you could also use th
 or @Function.openTemp@ afterwards to reach the same behaviour.
 */
         explicit
-        String(TFile &_file)
+        String(TFile &_file) :
+            file(NULL), _temporary(true), _ownFile(false), data_size(0), lastDiskPage(0), lastDiskPageSize(0)
         {
             open(*this, _file);
         }
 
         explicit
-        String(const char *fileName, int openMode = DefaultOpenMode<TFile>::VALUE):
-            file(NULL)
+        String(const char *fileName, int openMode = DefaultOpenMode<TFile>::VALUE) :
+            file(NULL), _temporary(true), _ownFile(false), data_size(0), lastDiskPage(0), lastDiskPageSize(0)
         {
             open(*this, fileName, openMode);
         }
 
         // copy the contents from another string
         String(String const & source):
-            file(NULL),
-            data_size(0)
+            file(NULL), _temporary(true), _ownFile(false), data_size(0), lastDiskPage(0), lastDiskPageSize(0)
 		{
             assign(*this, source);
 		}
+
         template <typename TSource>
-        String(TSource const & source):
-            file(NULL),
-            data_size(0)
+        String(TSource const & source) :
+            file(NULL), _temporary(true), _ownFile(false), data_size(0), lastDiskPage(0), lastDiskPageSize(0)
         {
             assign(*this, source);
         }

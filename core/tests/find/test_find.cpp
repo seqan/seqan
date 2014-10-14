@@ -361,8 +361,8 @@ void Test_OnlineAlgMulti(bool order_by_begin_position) {
     clear(finderPos);
     clear(keywordIndex);
     while (find(fdDna, ptDna)) {
-        append(finderPos,position(fdDna));
-        append(keywordIndex,position(ptDna));
+        appendValue(finderPos, position(fdDna));
+        appendValue(keywordIndex, position(ptDna));
         SEQAN_ASSERT_EQ(position(fdDna), beginPosition(fdDna));
         SEQAN_ASSERT_EQ(endPosition(fdDna), beginPosition(fdDna) + length(fdDna));
         SEQAN_ASSERT_EQ(length(fdDna), length(kywDna[position(ptDna)]));
@@ -614,7 +614,7 @@ void Test_OnlineAlgWildcards() {
     Pattern<String<char>, TAlgorithmSpec> pattern(needle);
     clear(pos);
     while (find(finder, pattern))
-        append(pos,position(finder));
+        appendValue(pos, position(finder));
 
     SEQAN_ASSERT_EQ(pos[0], 7u);
     SEQAN_ASSERT_EQ(pos[1], 33u);
