@@ -52,13 +52,13 @@ namespace seqan {
 // ============================================================================
 
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<Murphy10, TSpec>
+struct TranslateTableRedAAToChar_<Murphy10, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<Murphy10, TSpec>
+struct TranslateTableCharToRedAA_<Murphy10, TSpec>
 {
     static const char VALUE[256];
 };
@@ -78,7 +78,7 @@ struct TranslateTableByteToRedAA_<Murphy10, TSpec>
 // ---------------------------------- N = 10 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<Murphy10, TVoidSpec>::VALUE[10] =
+char const TranslateTableRedAAToChar_<Murphy10, TVoidSpec>::VALUE[10] =
 {
     'A', // A
     'R', // R K
@@ -93,7 +93,7 @@ char const TranslateTableRedAAToAscii_<Murphy10, TVoidSpec>::VALUE[10] =
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<Murphy10, TVoidSpec>::VALUE[256] =
+char const TranslateTableCharToRedAA_<Murphy10, TVoidSpec>::VALUE[256] =
 {
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,

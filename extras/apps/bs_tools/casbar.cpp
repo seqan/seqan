@@ -1024,7 +1024,7 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     setRequired(parser, "bed", true);
 
     addOption(parser, ArgParseOption("mu", "multi", "Keep non-unique reads."));
-    addOption(parser, ArgParseOption("sqo", "solexa-qual-offset", "Base qualities are encoded as Ascii value - 64 (instead of Ascii - 33)."));
+    addOption(parser, ArgParseOption("sqo", "solexa-qual-offset", "Base qualities are encoded as char value - 64 (instead of char - 33)."));
     hideOption(parser, "sqo");
     addOption(parser, ArgParseOption("mp", "max-pile", "Maximal number of matches allowed to pile up at the same genome position.", ArgParseArgument::INTEGER));
     setMinValue(parser, "max-pile", "0");

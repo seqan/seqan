@@ -45,22 +45,22 @@ struct BitsPerValue<DnaM>
 // ============================================================================
 
 template <typename T = void>
-struct TranslateTableDnaMToAscii_
+struct TranslateTableDnaMToChar_
 {
     static char const VALUE[6];
 };
 
 template <typename T>
-char const TranslateTableDnaMToAscii_<T>::VALUE[6] = {'A', 'C', 'G', 'T', 'D', 'H'};
+char const TranslateTableDnaMToChar_<T>::VALUE[6] = {'A', 'C', 'G', 'T', 'D', 'H'};
 
 template <typename T = void>
-struct TranslateTableAsciiToDnaM_
+struct TranslateTableCharToDnaM_
 {
     static char const VALUE[256];
 };
 
 template <typename T>
-char const TranslateTableAsciiToDnaM_<T>::VALUE[256] =
+char const TranslateTableCharToDnaM_<T>::VALUE[256] =
 {
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //0
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //1
@@ -135,7 +135,7 @@ char const TranslateTableByteToDnaM_<T>::VALUE[256] =
 inline void assign(char & c_target,
                    DnaM const & source)
 {
-    c_target = TranslateTableDnaMToAscii_<>::VALUE[source.value];
+    c_target = TranslateTableDnaMToChar_<>::VALUE[source.value];
 }
 
 template <>
@@ -157,7 +157,7 @@ struct CompareType<DnaM, char>
 
 inline void assign(DnaM & target, char c_source)
 {
-    target.value = TranslateTableAsciiToDnaM_<>::VALUE[(unsigned char) c_source];
+    target.value = TranslateTableCharToDnaM_<>::VALUE[(unsigned char) c_source];
 }
 
 
@@ -211,13 +211,13 @@ struct BitsPerValue<DnaMR>
 // ============================================================================
 
 template <typename T = void>
-struct TranslateTableDnaMRToAscii_
+struct TranslateTableDnaMRToChar_
 {
     static char const VALUE[11];
 };
 
 template <typename T>
-char const TranslateTableDnaMRToAscii_<T>::VALUE[11] = {'A', 'C', 'G', 'T', 'a', 'c', 'g', 't', 'R', 'V', 'X'};
+char const TranslateTableDnaMRToChar_<T>::VALUE[11] = {'A', 'C', 'G', 'T', 'a', 'c', 'g', 't', 'R', 'V', 'X'};
 
 
 

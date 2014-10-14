@@ -390,44 +390,44 @@ void TestConversion()
 
 SEQAN_DEFINE_TEST(test_basic_conversions)
 {
-	TestConversion<Ascii, Dna>();
-	TestConversion<Ascii, Dna5>();
-	TestConversion<Ascii, Rna>();
-	TestConversion<Ascii, Rna5>();
-	TestConversion<Ascii, Iupac>();
-	TestConversion<Ascii, AminoAcid>();
+	TestConversion<char, Dna>();
+	TestConversion<char, Dna5>();
+	TestConversion<char, Rna>();
+	TestConversion<char, Rna5>();
+	TestConversion<char, Iupac>();
+	TestConversion<char, AminoAcid>();
 
-	TestConversion<Dna, Ascii>();
+	TestConversion<Dna, char>();
 	TestConversion<Dna, __uint8>();
 	TestConversion<Dna, Unicode>();
 	TestConversion<Dna, int>();
 	TestConversion<Dna, Dna5>();
 	TestConversion<Dna, Iupac>();
 
-	TestConversion<Dna5, Ascii>();
+	TestConversion<Dna5, char>();
 	TestConversion<Dna5, __uint8>();
 	TestConversion<Dna5, Unicode>();
 	TestConversion<Dna5, Dna>();
 	TestConversion<Dna5, Iupac>();
 
-	TestConversion<Rna, Ascii>();
+	TestConversion<Rna, char>();
 	TestConversion<Rna, __uint8>();
 	TestConversion<Rna, Unicode>();
 	TestConversion<Rna, int>();
 	TestConversion<Rna, Rna5>();
 
-	TestConversion<Rna5, Ascii>();
+	TestConversion<Rna5, char>();
 	TestConversion<Rna5, __uint8>();
 	TestConversion<Rna5, Unicode>();
 	TestConversion<Rna5, Rna>();
 
-	TestConversion<Iupac, Ascii>();
+	TestConversion<Iupac, char>();
 	TestConversion<Iupac, __uint8>();
 	TestConversion<Iupac, Unicode>();
 	TestConversion<Iupac, Dna>();
 	TestConversion<Iupac, Dna5>();
 
-	TestConversion<AminoAcid, Ascii>();
+	TestConversion<AminoAcid, char>();
 	TestConversion<AminoAcid, __uint8>();
 	TestConversion<AminoAcid, Unicode>();
 

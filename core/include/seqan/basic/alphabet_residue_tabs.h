@@ -48,13 +48,13 @@ namespace seqan {
 // --------------------------------------------------------------------------
 
 template <typename T = void>
-struct TranslateTableDna5ToAscii_
+struct TranslateTableDna5ToChar_
 {
     static char const VALUE[5];
 };
 
 template <typename T>
-char const TranslateTableDna5ToAscii_<T>::VALUE[5] = {'A', 'C', 'G', 'T', 'N'};
+char const TranslateTableDna5ToChar_<T>::VALUE[5] = {'A', 'C', 'G', 'T', 'N'};
 
 
 template <typename T = void>
@@ -67,13 +67,13 @@ template <typename T>
 char const TranslateTableDna5ToIupac_<T>::VALUE[5] = {0x01, 0x02, 0x04, 0x08, 0x0f};
 
 template <typename T = void>
-struct TranslateTableAsciiToDna_
+struct TranslateTableCharToDna_
 {
     static char const VALUE[256];
 };
 
 template <typename T>
-char const TranslateTableAsciiToDna_<T>::VALUE[256] = 
+char const TranslateTableCharToDna_<T>::VALUE[256] = 
 {
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //0
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //1
@@ -104,13 +104,13 @@ char const TranslateTableAsciiToDna_<T>::VALUE[256] =
 
 
 template <typename T = void>
-struct TranslateTableAsciiToDna5_
+struct TranslateTableCharToDna5_
 {
     static char const VALUE[256];
 };
 
 template <typename T>
-char const TranslateTableAsciiToDna5_<T>::VALUE[256] = 
+char const TranslateTableCharToDna5_<T>::VALUE[256] = 
 {
     4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //0
     4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //1
@@ -198,13 +198,13 @@ char const TranslateTableByteToDna5_<T>::VALUE[256] =
 // --------------------------------------------------------------------------
 
 template <typename T = void>
-struct TranslateTableRna5ToAscii_
+struct TranslateTableRna5ToChar_
 {
     static char const VALUE[5];
 };
 
 template <typename T>
-char const TranslateTableRna5ToAscii_<T>::VALUE[5] = {'A', 'C', 'G', 'U', 'N'}; 
+char const TranslateTableRna5ToChar_<T>::VALUE[5] = {'A', 'C', 'G', 'U', 'N'}; 
 
 // other tables identical to Dna(5)
 
@@ -213,13 +213,13 @@ char const TranslateTableRna5ToAscii_<T>::VALUE[5] = {'A', 'C', 'G', 'U', 'N'};
 // --------------------------------------------------------------------------
 
 template <typename T = void>
-struct TranslateTableIupacToAscii_
+struct TranslateTableIupacToChar_
 {
     static char const VALUE[16];
 };
 
 template <typename T>
-char const TranslateTableIupacToAscii_<T>::VALUE[16] = 
+char const TranslateTableIupacToChar_<T>::VALUE[16] = 
 {        //TGCA
     '=', //0000=0 = or U
     'A', //0001=1
@@ -294,13 +294,13 @@ char const TranslateTableIupacToDna5_<T>::VALUE[16] =
 };
 
 template <typename T = void>
-struct TranslateTableAsciiToIupac_
+struct TranslateTableCharToIupac_
 {
     static char const VALUE[256];
 };
 
 template <typename T>
-char const TranslateTableAsciiToIupac_<T>::VALUE[256] = 
+char const TranslateTableCharToIupac_<T>::VALUE[256] = 
 {
     15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,
     15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,
@@ -357,12 +357,12 @@ char const TranslateTableByteToIupac_<T>::VALUE[256] =
 // --------------------------------------------------------------------------
 
 template <typename T = void>
-struct TranslateTableAAToAscii_
+struct TranslateTableAAToChar_
 {
     static char const VALUE[24];
 };
 template <typename T>
-char const TranslateTableAAToAscii_<T>::VALUE[24] = 
+char const TranslateTableAAToChar_<T>::VALUE[24] = 
 {
     'A', // 0 Ala Alanine                 
     'R', // 1 Arg Arginine                
@@ -391,13 +391,13 @@ char const TranslateTableAAToAscii_<T>::VALUE[24] =
 };
 
 template <typename T = void>
-struct TranslateTableAsciiToAA_
+struct TranslateTableCharToAA_
 {
     static char const VALUE[256];
 };
 
 template <typename T>
-char const TranslateTableAsciiToAA_<T>::VALUE[256] = 
+char const TranslateTableCharToAA_<T>::VALUE[256] = 
 {
     22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //0
     22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //1

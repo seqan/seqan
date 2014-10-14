@@ -72,7 +72,7 @@ inline void testAlphabetConcepts()
     // TODO(holtgrew): This has to be checked in aggregate module
     // SEQAN_CONCEPT_ASSERT((AlphabetConcept<Pair<int, double> >));
 
-    SEQAN_CONCEPT_ASSERT((AlphabetConcept<Ascii>));
+    SEQAN_CONCEPT_ASSERT((AlphabetConcept<char>));
 }
 
 // Test the conformance to the OrderedAlphabet concept for (1) built-in types, (2) aggregates, (3) simple types.
