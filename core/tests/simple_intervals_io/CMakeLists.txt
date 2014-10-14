@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/intervals_io/CMakeLists.txt
+# File: /core/tests/simple_intervals_io/CMakeLists.txt
 #
-# CMakeLists.txt file for the intervals_io module tests.
+# CMakeLists.txt file for the simple_intervals_io module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_core_tests_intervals_io)
-message (STATUS "Configuring core/tests/intervals_io")
+project (seqan_core_tests_simple_intervals_io)
+message (STATUS "Configuring core/tests/simple_intervals_io")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -29,11 +29,11 @@ include_directories (${SEQAN_INCLUDE_DIRS})
 add_definitions (${SEQAN_DEFINITIONS})
 
 # Update the list of file names below if you add source files to your test.
-add_executable (test_intervals_io
-                test_intervals_io.cpp)
+add_executable (test_simple_intervals_io
+                test_simple_intervals_io.cpp)
 
 # Add dependencies found by find_package (SeqAn).
-target_link_libraries (test_intervals_io ${SEQAN_LIBRARIES})
+target_link_libraries (test_simple_intervals_io ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
@@ -42,4 +42,4 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 # Register with CTest
 # ----------------------------------------------------------------------------
 
-add_test (NAME test_test_intervals_io COMMAND $<TARGET_FILE:test_intervals_io>)
+add_test (NAME test_test_simple_intervals_io COMMAND $<TARGET_FILE:test_simple_intervals_io>)

@@ -31,11 +31,13 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Reading and writing of .intervals file record plus tags.
+// SmartFile for .intervals format
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_INTERVALS_IO_INTERVALS_IO_H_
-#define CORE_INCLUDE_SEQAN_INTERVALS_IO_INTERVALS_IO_H_
+#ifndef CORE_INCLUDE_SEQAN_SIMPLE_INTERVALS_IO_SIMPLE_INTERVALS_FILE_H_
+#define CORE_INCLUDE_SEQAN_SIMPLE_INTERVALS_IO_SIMPLE_INTERVALS_FILE_H_
+
+#include <seqan/simple_intervals_io/simple_intervals_io.h>
 
 namespace seqan {
 
@@ -48,47 +50,80 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class IntervalsIOContext
+// Typedef SimpleIntervalsFileIn
 // ----------------------------------------------------------------------------
 
 /*!
- * @class IntervalsIOContext
- * @implements DefaultConstructible
- * @implements Assignable
- * @headerfile <seqan/intervals_io.h>
- * @brief I/O context for .intervals file.
+ * @class SimpleIntervalsFileIn
+ * @extends SmartFile
+ * @headerfile <seqan/ucsc_io.h>
+ * @brief @link SmartFile @endlink for reading .intervals files.
  *
- * @signature class IntervalsIOContext;
+ * @signature typedef SmartFile<SimpleIntervals, Input> SimpleIntervalsFileIn;
  */
+typedef SmartFile<SimpleIntervals, Input>   SimpleIntervalsFileIn;
 
-struct IntervalsIOContext
-{
-    CharString buffer;
-};
+// ----------------------------------------------------------------------------
+// Typedef SimpleIntervalsFileOut
+// ----------------------------------------------------------------------------
 
 /*!
- * @defgroup IntervalsFileIO Intervals File I/O
- * @brief Support for intervals file.
+ * @class SimpleIntervalsFileInOut
+ * @extends SmartFile
+ * @headerfile <seqan/ucsc_io.h>
+ * @brief @link SmartFile @endlink for reading .intervals files.
  *
- * The file contains format in the format <tt>CHR:POS</tt> or <tt>CHR:BEGIN-END</tt> in 1-based coordinates.
+ * @signature typedef SmartFile<SimpleIntervals, Output> SimpleIntervalsFileOut;
  */
+typedef SmartFile<SimpleIntervals, Output> SimpleIntervalsFileOut;
 
-// ----------------------------------------------------------------------------
-// Tag Intervals
-// ----------------------------------------------------------------------------
-
-/*!
- * @tag IntervalsFileIO#Intervals
- * @headerfile <seqan/intervals_io.h>
- * @brief Tag for the intervals file format.
- */
-
-struct Intervals_;
-typedef Tag<Intervals_> Intervals;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction MagicHeader
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct MagicHeader<SimpleIntervals, T> : public MagicHeader<Nothing, T> {};
+
+// ----------------------------------------------------------------------------
+// Metafunction FileFormatExtensions
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct FileFormatExtensions<SimpleIntervals, T>
+{
+    static char const * VALUE[1];  // default is one extension
+};
+
+template <typename T>
+char const * FileFormatExtensions<SimpleIntervals, T>::VALUE[1] =
+{
+    ".intervals"      // default output extension
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction SmartFileContext
+// ----------------------------------------------------------------------------
+
+template <typename TDirection, typename TSpec, typename TStorageSpec>
+struct SmartFileContext<SmartFile<SimpleIntervals, TDirection, TSpec>, TStorageSpec>
+{
+    typedef SimpleIntervalsIOContext Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction FileFormats
+// ----------------------------------------------------------------------------
+
+template <typename TDirection, typename TSpec>
+struct FileFormat<SmartFile<SimpleIntervals, TDirection, TSpec> >
+{
+    typedef SimpleIntervals Type;
+};
 
 // ============================================================================
 // Functions
@@ -99,67 +134,43 @@ typedef Tag<Intervals_> Intervals;
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn IntervalsFileIO#readRecord
- * @headerfile <seqan/intervals_io.h>
- * @brief Read an intervals record.
+ * @fn SimpleIntervalsFileIn#readRecord
+ * @brief Reading records from a SimpleIntervalsFileIn.
  *
- * @signature void readRecord(region, buffer, iter, tag);
+ * @signature void readRecord(record, file);
  *
- * @param[out]    region  The @link GenomicRegion @endlink to write interval to.
- * @param[in,out] context A @link IntervalsIOContext @endlink with buffers.
- * @param[in,out] iter    A @link ForwardIteratorConcept forward iterator @endlink to read from.
- * @param[in]     tag     The tag @link IntervalsFileIO#Intervals Intervals @endlink for the format.
+ * @param[out] record The resulting @link GenomicRegion @endlink.
+ * @param[out] file   The SimpleIntervalsFileIn to read from.
  *
  * @throw IOError in case of problems.
  */
-
-template <typename TForwardIter>
-void readRecord(GenomicRegion & record,
-                IntervalsIOContext & context,
-                TForwardIter & iter,
-                Intervals const & /*tag*/)
+template <typename TSpec>
+void readRecord(GenomicRegion & record, SmartFile<SimpleIntervals, Input, TSpec> & file)
 {
-    clear(context.buffer);
-    // Read next line until the first whitespace (could be '\r' or '\n').
-    readUntil(context.buffer, iter, IsWhitespace());
-    // Parse context.buffer into GenomicRegion.
-    parse(record, context.buffer);
-    if (record.endPos == record.INVALID_POS)  // only one position
-        record.endPos = record.beginPos + 1;
-    // Skip remaining line.
-    skipLine(iter);
+    readRecord(record, context(file), file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord()
+// Function write()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn IntervalsFileIO#writeRecord
- * @headerfile <seqan/intervals_io.h>
- * @brief Write out a @link GenomicRegion @endlink to an intervals file.
+ * @fn SimpleIntervalsFileIn#writeRecord
+ * @brief Writing records to a SimpleIntervalsFileIn.
  *
- * @signature void writeRecord(target, context, region, tag);
+ * @signature void readRecord(record, file);
  *
- * @param[in,out] target  An @link OutputIteratorConcept output iterator @endlink to write to.
- * @param[in,out] context A @link IntervalsIOContext @endlink with buffers.
- * @param[in]     region  The @link GenomicRegion @endlink to write out.
- * @param[in]     tag     The tag @link IntervalsFileIO#Intervals Intervals @endlink for the format.
+ * @param[out] file   The SimpleIntervalsFileIn to write to.
+ * @param[out] record The @link GenomicReegion @endlink to write out.
  *
  * @throw IOError in case of problems.
  */
-
-template <typename TTarget>
-void writeRecord(TTarget & target,
-                 IntervalsIOContext & context,
-                 GenomicRegion const & region,
-                 Intervals const & /*tag*/)
+template <typename TSpec>
+void writeRecord(SmartFile<SimpleIntervals, Output, TSpec> & file, GenomicRegion & record)
 {
-    region.toString(context.buffer);
-    write(target, context.buffer);
-    write(target, "\n");
+    writeRecord(file.iter, context(file), record, file.format);
 }
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_INTERVALS_IO_INTERVALS_IO_H_
+#endif  // #ifndef CORE_INCLUDE_SEQAN_SIMPLE_INTERVALS_IO_SIMPLE_INTERVALS_FILE_H_
