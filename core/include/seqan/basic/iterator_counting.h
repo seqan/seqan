@@ -81,16 +81,28 @@ public:
 // ============================================================================
 
 template <typename TSpec, typename TIncrementable>
-struct Size<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > > : Size<TIncrementable> {};
+struct Size<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >
+{
+    typedef TIncrementable Type;
+};
 
 template <typename TSpec, typename TIncrementable>
-struct Position<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > > : Position<TIncrementable> {};
+struct Position<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >
+{
+    typedef TIncrementable Type;
+};
 
 template <typename TSpec, typename TIncrementable>
-struct Reference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > > : Reference<TIncrementable> {};
+struct Reference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >
+{
+    typedef TIncrementable Type;
+};
 
 template <typename TSpec, typename TIncrementable>
-struct Difference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > > : Difference<TIncrementable> {};
+struct Difference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >
+{
+    typedef typename MakeSigned<TIncrementable>::Type Type;
+};
 
 // ============================================================================
 // Functions
@@ -104,14 +116,14 @@ struct Difference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > > : Differ
 ///.Function.position.class:Spec.Position Iterator
 
 template <typename TSpec, typename TIncrementable>
-inline typename Position<TIncrementable>::Type &
+inline typename Position<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >::Type &
 position(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & me)
 {
     return me.data_position;
 }
 
 template <typename TSpec, typename TIncrementable>
-inline typename Position<TIncrementable>::Type const &
+inline typename Position<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >::Type const &
 position(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & me)
 {
     return me.data_position;
@@ -298,7 +310,7 @@ operator-(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left, TInt
 }
 
 template <typename TSpec, typename TIncrementable>
-inline typename Difference<TIncrementable>::Type
+inline typename Difference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >::Type
 operator-(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & left,
           Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & right)
 {

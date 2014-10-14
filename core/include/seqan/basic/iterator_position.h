@@ -167,6 +167,18 @@ public:
 // Metafunctions
 // ============================================================================
 
+template <typename TContainer>
+struct Size<Iter<TContainer, PositionIterator> > : Size<TContainer> {};
+
+template <typename TContainer>
+struct Position<Iter<TContainer, PositionIterator> > : Position<TContainer> {};
+
+template <typename TContainer>
+struct Reference<Iter<TContainer, PositionIterator> > : Reference<TContainer> {};
+
+template <typename TContainer>
+struct Difference<Iter<TContainer, PositionIterator> > : Difference<TContainer> {};
+
 // ============================================================================
 // Functions
 // ============================================================================
