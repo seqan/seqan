@@ -115,16 +115,16 @@ struct MagicHeader<Raw, T> :
     MagicHeader<Nothing, T> {};
 
 // --------------------------------------------------------------------------
-// Metafunction FileFormatExtensions
+// Metafunction FileExtensions
 // --------------------------------------------------------------------------
 
 template <typename T>
-struct FileFormatExtensions<Fasta, T>
+struct FileExtensions<Fasta, T>
 {
     static char const * VALUE[2];
 };
 template <typename T>
-char const * FileFormatExtensions<Fasta, T>::VALUE[2] =
+char const * FileExtensions<Fasta, T>::VALUE[2] =
 {
     ".fa",      // default output extension
     ".fasta"
@@ -136,12 +136,12 @@ char const * FileFormatExtensions<Fasta, T>::VALUE[2] =
 
 
 template <typename T>
-struct FileFormatExtensions<Fastq, T>
+struct FileExtensions<Fastq, T>
 {
     static char const * VALUE[2];
 };
 template <typename T>
-char const * FileFormatExtensions<Fastq, T>::VALUE[2] =
+char const * FileExtensions<Fastq, T>::VALUE[2] =
 {
     ".fq",      // default output extension
     ".fastq"
@@ -149,12 +149,12 @@ char const * FileFormatExtensions<Fastq, T>::VALUE[2] =
 
 
 template <typename T>
-struct FileFormatExtensions<Raw, T>
+struct FileExtensions<Raw, T>
 {
     static char const * VALUE[1];
 };
 template <typename T>
-char const * FileFormatExtensions<Raw, T>::VALUE[1] =
+char const * FileExtensions<Raw, T>::VALUE[1] =
 {
     ".txt"      // default output extension
 //    ".seq"

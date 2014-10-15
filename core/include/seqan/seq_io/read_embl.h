@@ -73,16 +73,16 @@ template <typename T>
 char const MagicHeader<Embl, T>::VALUE[3] = { 'I','D',' ' };  // typical Embl header
 
 // --------------------------------------------------------------------------
-// Metafunction FileFormatExtensions
+// Metafunction FileExtensions
 // --------------------------------------------------------------------------
 
 template <typename T>
-struct FileFormatExtensions<Embl, T>
+struct FileExtensions<Embl, T>
 {
     static char const * VALUE[1];
 };
 template <typename T>
-char const * FileFormatExtensions<Embl, T>::VALUE[1] =
+char const * FileExtensions<Embl, T>::VALUE[1] =
 {
     ".embl",     // default output extension
 };

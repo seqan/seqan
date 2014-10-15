@@ -316,16 +316,16 @@ int main(int argc, const char *argv[])
     setDate(parser, "Apr 2011" );
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
-    setValidValues(parser, 0, seqan::SeqFileIn::getFileFormatExtensions());
+    setValidValues(parser, 0, seqan::SeqFileIn::getFileExtensions());
     setHelpText(parser, 0, "A reference genome file.");
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS", true));
-    std::vector<std::string> exts = seqan::SeqFileIn::getFileFormatExtensions();
+    std::vector<std::string> exts = seqan::SeqFileIn::getFileExtensions();
     exts.push_back(".sam");
     setValidValues(parser, 1, exts);
     setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");
 
 	addSection(parser, "Main Options:");
-    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <\\fIREADS FILE\\fP>.result.", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <\\fIREADS FILE\\fP>.result.", ArgParseOption::OUTPUT_FILE));
 	addOption(parser, ArgParseOption("f",  "forward",           "only compute forward matches"));
 	addOption(parser, ArgParseOption("r",  "reverse",           "only compute reverse complement matches"));
     addOption(parser, ArgParseOption("i", "percent-identity", "Percent identity threshold.", ArgParseOption::DOUBLE));
@@ -360,7 +360,7 @@ int main(int argc, const char *argv[])
     setMinValue(parser, "min-clipped-len", "1");
 	addOption(parser, ArgParseOption("qih", "quality-in-header","quality string in fasta header"));
 
-	addOption(parser, ArgParseOption("ou", "outputUnmapped",    "output filename for unmapped reads", ArgParseOption::OUTPUTFILE));
+	addOption(parser, ArgParseOption("ou", "outputUnmapped",    "output filename for unmapped reads", ArgParseOption::OUTPUT_FILE));
     
 	addOption(parser, ArgParseOption("v",  "verbose",           "verbose mode"));
 	addOption(parser, ArgParseOption("vv", "vverbose",          "very verbose mode"));

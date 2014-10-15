@@ -151,7 +151,7 @@ parseArgs(SakOptions & options,
     addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "IN"));
 
     // Only FASTA and FASTQ files are allowed as input.
-    setValidValues(parser, 0, seqan::SeqFileIn::getFileFormatExtensions());
+    setValidValues(parser, 0, seqan::SeqFileIn::getFileExtensions());
 
     // TODO(holtgrew): I want a custom help text!
     // addOption(parser, seqan::ArgParseOption("h", "help", "This helpful screen."));
@@ -163,8 +163,8 @@ parseArgs(SakOptions & options,
     addSection(parser, "Output Options");
     addOption(parser, seqan::ArgParseOption("o", "out-path",
                                             "Path to the resulting file.  If omitted, result is printed to stdout in FastQ format.",
-                                            seqan::ArgParseOption::OUTPUTFILE, "FASTX"));
-    setValidValues(parser, "out-path", seqan::SeqFileOut::getFileFormatExtensions());
+                                            seqan::ArgParseOption::OUTPUT_FILE, "FASTX"));
+    setValidValues(parser, "out-path", seqan::SeqFileOut::getFileExtensions());
     addOption(parser, seqan::ArgParseOption("rc", "revcomp", "Reverse-complement output."));
     addOption(parser, seqan::ArgParseOption("l", "max-length", "Maximal number of sequence characters to write out.",
                                             seqan::ArgParseOption::INTEGER, "LEN"));
