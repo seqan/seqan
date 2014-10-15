@@ -109,21 +109,18 @@ public:
     template <typename TOtherString, typename TOtherSpec>
     StringSet(StringSet<TOtherString, TOtherSpec> &other)
     {
-        _initStringSetLimits(*this);
         assign(*this, other);
     }
 
     template <typename TOtherString, typename TOtherSpec>
     StringSet(StringSet<TOtherString, TOtherSpec> const &other)
     {
-        _initStringSetLimits(*this);
         assign(*this, other);
     }
 
     template <typename TOtherSpec>
     StringSet(String<TString, TOtherSpec> const &other)
     {
-        _initStringSetLimits(*this);
         assign(*this, other);
     }
 
