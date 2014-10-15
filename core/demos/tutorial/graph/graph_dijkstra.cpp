@@ -58,7 +58,7 @@ int main ()
 
 // FRAGMENT(dijkstra-containers)
 	typedef Size<TGraph>::Type TSize;
-	InternalMap<TCargo> cargoMap;
+	InternalPropertyMap<TCargo> cargoMap;
 	String<TVertexDescriptor> predMap;
 	String<TSize> distMap;
 // FRAGMENT(dijkstra)
