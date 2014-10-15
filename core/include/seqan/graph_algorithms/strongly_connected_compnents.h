@@ -89,7 +89,7 @@ stronglyConnectedComponents(TComponents & components,
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
     typedef typename Value<TComponents>::Type TCompVal;
-    resizeVertexMap(g_source,components);
+    resizeVertexMap(components, g_source);
     String<TSize> predMap;
     String<TSize> discoveryTimeMap;
     String<TSize> finishingTimeMap;
@@ -104,12 +104,12 @@ stronglyConnectedComponents(TComponents & components,
     String<TSize> predecessor;
     String<TSize> disc;
     String<TSize> finish;
-    resizeVertexMap(g,predecessor);
-    resizeVertexMap(g,disc);
-    resizeVertexMap(g,finish);
+    resizeVertexMap(predecessor, g);
+    resizeVertexMap(disc, g);
+    resizeVertexMap(finish, g);
     TCompVal nilPred = getNil<TVertexDescriptor>();
     String<bool> tokenMap;
-    resizeVertexMap(g, tokenMap);
+    resizeVertexMap(tokenMap, g);
     TVertexIterator it(g);
     for(;!atEnd(it);goNext(it)) {
         assignProperty(components, getValue(it), nilPred);

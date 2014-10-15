@@ -460,7 +460,7 @@ _subTreeSearch(TGuideTree& guideTree,
 	// Number of subsequent leaves for each node
 	typedef typename Iterator<TGuideTree, BfsIterator>::Type TBfsIterator;
 	String<TSize> numLeaves;
-	resizeVertexMap(guideTree, numLeaves);
+	resizeVertexMap(numLeaves, guideTree);
 
 	// All vertices in reversed bfs order
 	typedef String<TVertexDescriptor> TVertexString;

@@ -21,7 +21,7 @@ int main()
     // Create external property map for the vertex names and assign to graph.
     String<char> nameMap;
     char names[] = {'r', 's', 't', 'u', 'v', 'w', 'x', 'y'};
-    assignVertexMap(g, nameMap, names);
+    assignVertexMap(nameMap, g, names);
 
     // Perform a BFS search starting from vertex with descriptor 1.
     String<unsigned int> predMap;

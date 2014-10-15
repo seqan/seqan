@@ -224,7 +224,7 @@ _addNodeAnnotation(TStringSet &,
 {
 SEQAN_CHECKPOINT
 
-	resizeVertexMap(ali_g, pm);
+	resizeVertexMap(pm, ali_g);
 
 	typedef typename Value<TAnnoString>::Type TAnnotation;
 	typedef typename Id<TAnnotation>::Type TId;
