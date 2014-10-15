@@ -246,15 +246,15 @@ struct SmartFile
     }
 
     /*!
-     * @fn SmartFile::getFileFormatExtensions
+     * @fn SmartFile::getFileExtensions
      * @brief Static function that returns a list of allowed file format extension.
      *
-     * @signature TExtensionVector getFileFormatExtensions()
+     * @signature TExtensionVector getFileExtensions()
      *
      * @return TExtensionVector A <tt>std::vector&lt;std::string&gt;</tt> with the allowed file extensions.
      */
     static std::vector<std::string>
-    getFileFormatExtensions()
+    getFileExtensions()
     {
         std::vector<std::string> extensions;
 
@@ -679,14 +679,14 @@ _getCompressionExtensions(
     typedef Tag<TFormat_> TFormat;
 
     std::vector<std::string> compressionExtensions;
-    _getFileFormatExtensions(compressionExtensions, compress, primaryExtensionOnly);
+    _getFileExtensions(compressionExtensions, compress, primaryExtensionOnly);
 
-    unsigned len = (primaryExtensionOnly)? 1 : sizeof(FileFormatExtensions<TFormat>::VALUE) / sizeof(char*);
+    unsigned len = (primaryExtensionOnly)? 1 : sizeof(FileExtensions<TFormat>::VALUE) / sizeof(char*);
     for (unsigned i = 0; i < len; ++i)
         for (unsigned j = 0; j < compressionExtensions.size(); ++j)
         {
             size_t jj = (j == 0)? compressionExtensions.size() - 1 : j - 1;    // swap first and last compression extension
-            appendValue(stringSet, (std::string)FileFormatExtensions<TFormat>::VALUE[i] + compressionExtensions[jj]);
+            appendValue(stringSet, (std::string)FileExtensions<TFormat>::VALUE[i] + compressionExtensions[jj]);
         }
 }
 
@@ -699,7 +699,7 @@ _getCompressionExtensions(
     bool primaryExtensionOnly,
     Tag<TCompression_>)
 {
-    _getFileFormatExtensions(stringSet, formatTag, primaryExtensionOnly);
+    _getFileExtensions(stringSet, formatTag, primaryExtensionOnly);
 }
 
 template <typename TStringSet, typename TFormat_, typename TCompressionFormats>
@@ -748,26 +748,26 @@ _getCompressionExtensions(
 }
 
 // ----------------------------------------------------------------------------
-// Function getFileFormatExtensions()
+// Function getFileExtensions()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn SmartFile#getFileFormatExtensions
+ * @fn SmartFile#getFileExtensions
  * @brief Static function that returns a list of allowed file format extension.
  *
- * @signature TExtensionVector getFileFormatExtensions(smartFile)
+ * @signature TExtensionVector getFileExtensions(smartFile)
  *
  * @param[in] smartFile The SmartFile to query.
  * @return TExtensionVector A <tt>std::vector&lt;std::string&gt;</tt> with the allowed file extensions.
  *
- * This is a shortcut to @link SmartFile#getFileFormatExtensions @endlink.
+ * This is a shortcut to @link SmartFile#getFileExtensions @endlink.
  */
 
 template <typename TFileType, typename TDirection, typename TSpec>
 static std::vector<std::string>
-getFileFormatExtensions(SmartFile<TFileType, TDirection, TSpec> const & file)
+getFileExtensions(SmartFile<TFileType, TDirection, TSpec> const & file)
 {
-    return file.getFileFormatExtensions();
+    return file.getFileExtensions();
 }
 
 }  // namespace seqan

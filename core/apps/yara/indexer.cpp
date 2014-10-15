@@ -119,7 +119,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & /* options */)
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIREFERENCE FILE\\fP>");
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "REFERENCE FILE"));
-    setValidValues(parser, 0, SeqFileIn::getFileFormatExtensions());
+    setValidValues(parser, 0, SeqFileIn::getFileExtensions());
     setHelpText(parser, 0, "A reference genome file.");
 
     addOption(parser, ArgParseOption("v", "verbose", "Displays verbose output."));
@@ -127,7 +127,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & /* options */)
     addSection(parser, "Output Options");
 
     addOption(parser, ArgParseOption("o", "output-prefix", "Specify a filename prefix for the reference genome index. \
-                                     Default: use the filename prefix of the reference genome.", ArgParseOption::OUTPUTPREFIX));
+                                     Default: use the filename prefix of the reference genome.", ArgParseOption::OUTPUT_PREFIX));
 
     addOption(parser, ArgParseOption("td", "tmp-dir", "Specify a temporary directory where to construct the index. \
                                      Default: use the output directory.", ArgParseOption::STRING));

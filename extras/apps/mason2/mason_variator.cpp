@@ -1705,7 +1705,7 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
     setValidValues(parser, "out-fasta", "fasta fa");
 
     addOption(parser, seqan::ArgParseOption("", "out-breakpoints", "TSV file to write breakpoints in variants to.",
-                                            seqan::ArgParseOption::OUTPUTFILE, "TSV"));
+                                            seqan::ArgParseOption::OUTPUT_FILE, "TSV"));
     setValidValues(parser, "out-breakpoints", "tsv txt");
 
     addOption(parser, seqan::ArgParseOption("", "haplotype-name-sep", "Haplotype name separator in output FASTA.",
@@ -1806,7 +1806,7 @@ parseCommandLine(MasonVariatorOptions & options, int argc, char const ** argv)
 
     addOption(parser, seqan::ArgParseOption("", "meth-fasta-out", "Path to write methylation levels to as FASTA.  "
                                             "Only written if \\fB-of\\fP/\\fB--out-fasta\\fP is given.",
-                                            seqan::ArgParseOption::OUTPUTFILE, "FILE"));
+                                            seqan::ArgParseOption::OUTPUT_FILE, "FILE"));
     setValidValues(parser, "meth-fasta-out", "fa fasta");
 
 

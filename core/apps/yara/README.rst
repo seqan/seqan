@@ -101,7 +101,7 @@ To increase the number of mapped reads, increase the error rate e.g. to 6%:
 
 ::
 
-  $ yara_mapper --error-rate 6 REF.fasta READS.fastq
+  $ yara_mapper --error-rate 6 REF READS.fastq
 
 
 Website
