@@ -83,29 +83,29 @@
  * @macro AssertMacros#SEQAN_FAIL
  * @headerfile <seqan/basic.h>
  * @brief Force abortion of program, regardless of debugging settings.
- * 
+ *
  * @signature SEQAN_FAIL(msg[, args]);
- * 
+ *
  * @param[in] msg  A format string.
  * @param[in] args An optional list of arguments that are used for filling msg.
- * 
+ *
  * @section Remarks
- * 
+ *
  * Use this if something really unexpected happens inside your functions and there is no way to report this through the
  * API.  A good example would be logic errors, e.g. invalid values.
- * 
+ *
  * @section Examples
- * 
+ *
  * In the following example, the <tt>SEQAN_FAIL</tt> is there if a possible value is added to <tt>MyEnum</tt> but the
  * function <tt>foo</tt> is not updated accordingly.
- * 
+ *
  * @code{.cpp}
  * enum MyEnum
  * {
  *   VALUE_ONE,
  *   VALUE_TWO
  * };
- *  
+ *
  * bool foo(MyEnum x)
  * {
  *     switch (x)
@@ -117,7 +117,7 @@
  *         // do something
  *         return true;
  *     }
- *  
+ *
  *     SEQAN_FAIL("Logic error. Should never reach here. x == %d.", x);
  *     return false;
  * }
@@ -167,34 +167,34 @@ bool foo(MyEnum x) {
  * @macro AssertMacros#SEQAN_CHECK
  * @headerfile <seqan/basic.h>
  * @brief Force abortion of program if a condition is not met, regardless of debugging settings.
- * 
+ *
  * @signature SEQAN_CHECK(condition, msg[, args]);
  *
  * @param[in] condition An expression that is checked.
  * @param[in] msg       A format string.
  * @param[in] args      An optional list of arguments.
- * 
+ *
  * @section Remarks
- * 
+ *
  * Use this if something really unexpected happens inside your functions and there is no way to report this through the
  * API.  A good example would be logic errors, e.g. invalid values.
- * 
+ *
  * @section Examples
- * 
+ *
  * In the following example, the <tt>SEQAN_CHECK</tt> stops program execution if a value is added to <tt>MyEnum</tt> but
  * the function <tt>foo</tt> is not updated accordingly.
- * 
+ *
  * @code{.cpp}
  * enum MyEnum
  * {
  *   VALUE_ONE,
  *   VALUE_TWO
  * };
- *  
+ *
  * bool foo(MyEnum x)
  * {
  *     SEQAN_CHECK((x == VALUE_ONE || x == VALUE_TWO), "Invalid value for x == %d.", x);
- *  
+ *
  *     switch (x)
  *     {
  *     case VALUE_ONE:
@@ -204,7 +204,7 @@ bool foo(MyEnum x) {
  *         // do something
  *         return true;
  *     }
- *  
+ *
  *     return false;  // Should never reach here, checked above with SEQAN_CHECK.
  * }
  * @endcode
@@ -690,7 +690,7 @@ struct StaticData
                       << __FILE__ << "\"" << std::endl;
             exit(1);
         }
-        
+
         static char buffer[1024];
         strncpy(&buffer[0], file, pos);
         buffer[pos - 1] = '\0';
@@ -1963,12 +1963,17 @@ SEQAN_CALL_TEST(test_name);
 // This macro expands to code to call a given test.
 #define SEQAN_CALL_TEST(test_name)                                      \
     do {                                                                \
-        ::seqan::ClassTest::beginTest(# test_name);                      \
+        ::seqan::ClassTest::beginTest(# test_name);                     \
         try {                                                           \
             SEQAN_TEST_ ## test_name<true>();                           \
-        } catch (::seqan::ClassTest::AssertionFailedException e) {       \
+        } catch (::seqan::ClassTest::AssertionFailedException e) {      \
             /* Swallow exception, go on with next test. */              \
             (void) e;  /* Get rid of unused variable warning. */        \
+        } catch (...) {                                                 \
+            ::seqan::ClassTest::StaticData::thisTestOk() = false;       \
+            ::seqan::ClassTest::StaticData::errorCount() += 1;          \
+            std::cerr << __FILE__ << ":" << __LINE__ << " Uncaught "    \
+                      << "assertion in test!\n";                        \
         }                                                               \
         ::seqan::ClassTest::endTest();                                  \
     } while (false)
@@ -2024,24 +2029,24 @@ SEQAN_DEFINE_TEST(test_skipped)
  * @macro AssertMacros#SEQAN_ASSERT
  * @headerfile <seqan/basic.h>
  * @brief Test that the given expression can be coerced to <tt>true</tt>.
- * 
+ *
  * @signature SEQAN_ASSERT(expression);
  * @signature SEQAN_ASSERT_MSG(expression, message[, parameters]);
  *
  * @param[in] expression An expression to check for being true.
  * @param[in] message    A format string.
  * @param[in] parameters An optional list of parameters.
- * 
+ *
  * @section Remarks
- * 
+ *
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
  * parameters. Otherwise, simply use the equivalent SEQAN_ASSERT @call.
- * 
+ *
  * See SEQAN_CHECK and SEQAN_FAIL for (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT(0);  // will fail
  * SEQAN_ASSERT(1);  // will run through
@@ -2053,24 +2058,24 @@ SEQAN_DEFINE_TEST(test_skipped)
  * @macro AssertMacros#SEQAN_ASSERT_NOT
  * @headerfile <seqan/basic.h>
  * @brief Test that the given expression can be coerced to <tt>false</tt>.
- * 
+ *
  * @signature SEQAN_ASSERT_NOT(expression)
  * @signature SEQAN_ASSERT_NOT_MSG(expression, message[, parameters])
- * 
+ *
  * @param[in] expression An expression to check for being false.
  * @param[in] message    A format string.
  * @param[in] parameters An optional list of parameters.
- * 
+ *
  * @section Remarks
- * 
+ *
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
  * parameters.  Otherwise, simply use the equivalent SEQAN_ASSERT call.
- * 
+ *
  * See SEQAN_CHECK and SEQAN_FAIL for (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_NOT(0);  // will run through
  * SEQAN_ASSERT_NOT(1);  // will fail
@@ -2082,25 +2087,25 @@ SEQAN_DEFINE_TEST(test_skipped)
  * @macro AssertMacros#SEQAN_ASSERT_EQ
  * @headerfile <seqan/basic.h>
  * @brief Test that two given expressions are equal, as defined by the matching call to the <tt>operator=(,)</tt>.
- 
+
  * @signature SEQAN_ASSERT_EQ(expression1, expression2);
  * @signature SEQAN_ASSERT_EQ_MSG(expression1, expression2, comment[, parameters]);
- * 
+ *
  * @param[in] expression1 The first expression.
  * @param[in] expression2 The second expression.
  * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
  *                        on failure.
  * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
  *                        <tt>comment</tt>.
- * 
+ *
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
  * parameters.  Otherwise, simply use the equivalent SEQAN_ASSERT call.
- * 
+ *
  * See SEQAN_CHECK and SEQAN_FAIL for (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_EQ(0, false);  // will run through
  * SEQAN_ASSERT_EQ(1, false);  // will fail
@@ -2113,25 +2118,25 @@ SEQAN_DEFINE_TEST(test_skipped)
  * @macro AssertMacros#SEQAN_ASSERT_NEQ
  * @headerfile <seqan/basic.h>
  * @brief Test that two given expressions are not equal, as defined by the matching call to the <tt>operator!=(,)</tt>.
- * 
+ *
  * @signature SEQAN_ASSERT_NEQ(expression1, expression2);
  * @signature SEQAN_ASSERT_NEQ_MSG(expression1, expression2, comment[, parameters]);
- * 
+ *
  * @param[in] expression1 The first expression.
  * @param[in] expression2 The second expression.
  * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
  *                        on failure.
  * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
  *                        <tt>comment</tt>.
- * 
+ *
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
  * parameters.  Otherwise, simply use the equivalent SEQAN_ASSERT call.
- * 
+ *
  * See SEQAN_CHECK and SEQAN_FAIL for (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_NEQ(0, false);  // will fail
  * SEQAN_ASSERT_NEQ(1, false);  // will run through
@@ -2145,25 +2150,25 @@ SEQAN_DEFINE_TEST(test_skipped)
  * @headerfile <seqan/basic.h>
  * @brief Test that the two given expressions are in the less-than relation as defined by the matching call to
  *        operator<(,).
- * 
+ *
  * @signature SEQAN_ASSERT_LT(expression1, expression2);
  * @signature SEQAN_ASSERT_LT(expression1, expression2, comment[, parameters]);
- * 
+ *
  * @param[in] expression1 The first expression.
  * @param[in] expression2 The second expression.
  * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
  *                        on failure.
  * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
  *                        <tt>comment</tt>.
- * 
+ *
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
  * parameters.  Otherwise, simply use the equivalent SEQAN_ASSERT call.
- * 
+ *
  * See SEQAN_CHECK and SEQAN_FAIL for (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_LT(0, 1);  // will run through
  * SEQAN_ASSERT_LT(1, 1);  // will not run through
@@ -2173,10 +2178,10 @@ SEQAN_DEFINE_TEST(test_skipped)
 
 /*!
  * @macro AssertMacros#SEQAN_ASSERT_LEQ
- * 
+ *
  * @brief Test that the two given expressions are in the less-than-or-equal
  *        relation as defined by the matching call to operator<=(,).
- * 
+ *
  * @signature SEQAN_ASSERT_LEQ(expression1, expression2)
  * @signature SEQAN_ASSERT_LEQ_MSG(expression1, expression2, comment[,
  *            parameters])
@@ -2191,14 +2196,14 @@ SEQAN_DEFINE_TEST(test_skipped)
  * The main advantage of this macro is that it prints the values of its argument
  * on failures. Note that the <tt>operator&lt;&lt;</tt> to the type of
  * <tt>std::cerr</tt> has to be defined for the type of both expression
- * parameters. Otherwise, simply use the equivalent  SEQAN_ASSERT 
+ * parameters. Otherwise, simply use the equivalent  SEQAN_ASSERT
  * call.
- * 
+ *
  * See  SEQAN_CHECK  and  SEQAN_FAIL  for
  * (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_LEQ(1, 1);  // will run through
  * SEQAN_ASSERT_LEQ(1, 2);  // will not run through
@@ -2208,31 +2213,31 @@ SEQAN_DEFINE_TEST(test_skipped)
 
 /*!
  * @macro AssertMacros#SEQAN_ASSERT_GT
- * 
+ *
  * @brief Test that the two given expressions are in the greather-than relation
  *        as defined by the matching call to operator>(,).
- * 
+ *
  * @signature SEQAN_ASSERT_GT(expression1, expression2);
  * @signature SEQAN_ASSERT_GT_MSG(expression1, expression2, comment[, parameters]);
- * 
+ *
  * @param[in] expression1 The first expression.
  * @param[in] expression2 The second expression.
  * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
  *                        on failure.
  * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
  *                        <tt>comment</tt>.
- * 
+ *
  * The main advantage of this macro is that it prints the values of its argument
  * on failures. Note that the <tt>operator&lt;&lt;</tt> to the type of
  * <tt>std::cerr</tt> has to be defined for the type of both expression
- * parameters. Otherwise, simply use the equivalent  SEQAN_ASSERT 
+ * parameters. Otherwise, simply use the equivalent  SEQAN_ASSERT
  * call.
- * 
+ *
  * See  SEQAN_CHECK  and  SEQAN_FAIL  for
  * (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_GT(2, 1);  // will run through
  * SEQAN_ASSERT_GT(1, 1);  // will not run through
@@ -2242,28 +2247,28 @@ SEQAN_DEFINE_TEST(test_skipped)
 
 /*!
  * @macro AssertMacros#SEQAN_ASSERT_GEQ
- * 
+ *
  * @brief Test that the two given expressions are in the greater-than-or-equal
  *        relation as defined by the matching call to operator>=(,).
- * 
+ *
  * @signature SEQAN_ASSERT_GEQ(expression1, expression2);
  * @signature SEQAN_ASSERT_GEQ_MSG(expression1, expression2, comment[, parameters]);
- * 
+ *
  * @param[in] expression1 The first expression.
  * @param[in] expression2 The second expression.
  * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
  *                        on failure.
  * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
  *                        <tt>comment</tt>.
- * 
+ *
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
  * parameters.  Otherwise, simply use the equivalent SEQAN_ASSERT call.
- * 
+ *
  * See SEQAN_CHECK and SEQAN_FAIL for (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_GEQ(1, 1);  // will run through
  * SEQAN_ASSERT_GEQ(0, 1);  // will not run through
@@ -2273,12 +2278,12 @@ SEQAN_DEFINE_TEST(test_skipped)
 
 /*!
  * @macro AssertMacros#SEQAN_ASSERT_IN_DELTA
- * 
+ *
  * @brief Test that a value <tt>y</tt> lies within an <tt>delta</tt> environment of a value <tt>x</tt>.
- * 
+ *
  * @signature SEQAN_ASSERT_IN_DELTA(x, y, delta);
  * @signature SEQAN_ASSERT_IN_DELTA_MSG(x, y, delta, comment[, parameters]);
- * 
+ *
  * @param[in] x           The value to center the environment in.
  * @param[in] y           The value to check whether it falls within the environment.
  * @param[in] delta       The environment size.
@@ -2286,20 +2291,70 @@ SEQAN_DEFINE_TEST(test_skipped)
  *                        on failure.
  * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
  *                        <tt>comment</tt>.
- * 
+ *
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
  * parameters.  Otherwise, simply use the equivalent SEQAN_ASSERT call.
- * 
+ *
  * See SEQAN_CHECK and SEQAN_FAIL for (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_IN_DELTA(0, 0, 0.1);  // will run through
  * SEQAN_ASSERT_IN_DELTA(1, -2, 1);  // will fail
  * SEQAN_ASSERT_IN_DELTA(1, "foo");  // will not compile
  * SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
+ * @endcode
+ */
+
+/*!
+ * @macro AssertMacros#SEQAN_ASSERT_THROWS
+ * @headerfile <seqan/basic.h>
+ * @brief Test that an exception of the given type is thrown.
+ *
+ * @signature SEQAN_ASSERT_THROWS(expression, exceptionType);
+ * @signature SEQAN_ASSERT_THROWS_MSG(expression, exceptionType, message[, parameters]);
+ *
+ * @param[in] expression    An expression to check for being true.
+ * @param[in] exceptionType The exception type to check for.
+ * @param[in] message       A format string.
+ * @param[in] parameters    An optional list of parameters.
+ *
+ * @see AssertMacros#SEQAN_ASSERT_DOES_NOT_THROW
+ *
+ * @section Examples
+ *
+ * @code{.cpp}
+ * int x = 10;
+ * SEQAN_ASSERT_THROWS(x = 10, std::runtime_error);  // will fail
+ * SEQAN_ASSERTS((throw std::runtime_error("msg")),
+ *               std::runtime_error);  // will run through
+ * @endcode
+ */
+
+/*!
+ * @macro AssertMacros#SEQAN_ASSERT_DOES_NOT_THROW
+ * @headerfile <seqan/basic.h>
+ * @brief Test that no exception is thrown.
+ *
+ * @signature SEQAN_ASSERT_THROWS(expression, exceptionType);
+ * @signature SEQAN_ASSERT_THROWS_MSG(expression, exceptionType, message[, parameters]);
+ *
+ * @param[in] expression    An expression to check for being true.
+ * @param[in] exceptionType The exception type to check for.
+ * @param[in] message       A format string.
+ * @param[in] parameters    An optional list of parameters.
+ *
+ * @see AssertMacros#SEQAN_ASSERT_THROWS
+ *
+ * @section Examples
+ *
+ * @code{.cpp}
+ * int x = 10;
+ * SEQAN_ASSERT_DOES_NOT_THROW(x = 10, std::runtime_error);  // will run through
+ * SEQAN_ASSERT_DOES_NOT_THROW((throw std::runtime_error("msg")),
+ *                             std::runtime_error);  // will fail
  * @endcode
  */
 
@@ -2692,7 +2747,6 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
     } while (false)
 
 
-// TODO(holtgrew): Rename to SEQAN_ASSERT once that name is free.;
 // Trueness assertion with a comment.
 //
 // Usage:  SEQAN_ASSERT(false);
@@ -2705,7 +2759,6 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
     } while (false)
 
 
-// TODO(holtgrew): Rename to SEQAN_ASSERT once that name is free.;
 // Trueness assertion with a comment.
 #define SEQAN_ASSERT_MSG(_arg1, ...)                               \
     do {                                                                \
@@ -2723,7 +2776,7 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_NOT(_arg1)                                       \
     do {                                                              \
         if (!::seqan::ClassTest::testFalse(__FILE__, __LINE__,        \
-                                           (_arg1), # _arg1)) {        \
+                                           (_arg1), # _arg1)) {       \
             ::seqan::ClassTest::fail();                               \
         }                                                             \
     } while (false)
@@ -2733,12 +2786,171 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_NOT_MSG(_arg1, ...)                              \
     do {                                                              \
         if (!::seqan::ClassTest::testFalse(__FILE__, __LINE__,        \
-                                           (_arg1), # _arg1,           \
-                                           __VA_ARGS__)) {          \
+                                           (_arg1), # _arg1,          \
+                                           __VA_ARGS__)) {            \
             ::seqan::ClassTest::fail();                               \
         }                                                             \
     } while (false)
 
+// Throws assertion without a comment.
+#define SEQAN_ASSERT_THROWS(_expr, _type)                             \
+     do {                                                             \
+         bool SEQAN_caught = false;                                   \
+         try                                                          \
+         {                                                            \
+             _expr;                                                   \
+         }                                                            \
+         catch (_type const & err)                                    \
+         {                                                            \
+             SEQAN_caught = true;                                     \
+         }                                                            \
+         catch (...)                                                  \
+         {                                                            \
+             ::seqan::ClassTest::testFalse(                           \
+                 __FILE__, __LINE__,                                  \
+                 (true), #_expr,                                      \
+                 "Caught exception of wrong type!");                  \
+             ::seqan::ClassTest::fail();                              \
+         }                                                            \
+         if (!SEQAN_caught)                                           \
+         {                                                            \
+             ::seqan::ClassTest::testFalse(                           \
+                 __FILE__, __LINE__,                                  \
+                 (true), #_expr,                                      \
+                 "Expected assertion but caught none.");              \
+             ::seqan::ClassTest::fail();                              \
+         }                                                            \
+     } while (false)
+
+// Throws assertion with a comment.
+#define SEQAN_ASSERT_THROWS_MSG(_expr, _type, ...)                    \
+     do {                                                             \
+         bool SEQAN_caught = false;                                   \
+         try                                                          \
+         {                                                            \
+             _expr;                                                   \
+         }                                                            \
+         catch (_type const & err)                                    \
+         {                                                            \
+             SEQAN_caught = true;                                     \
+         }                                                            \
+         catch (...)                                                  \
+         {                                                            \
+             ::seqan::ClassTest::testFalse(                           \
+                 __FILE__, __LINE__,                                  \
+                 (true), #_expr,                                      \
+                 __VA_ARGS__);                                        \
+             ::seqan::ClassTest::fail();                              \
+         }                                                            \
+         if (!SEQAN_caught)                                           \
+         {                                                            \
+             ::seqan::ClassTest::testFalse(                           \
+                 __FILE__, __LINE__,                                  \
+                 (true), #_expr,                                      \
+                 __VA_ARGS__);                                        \
+             ::seqan::ClassTest::fail();                              \
+         }                                                            \
+     } while (false)
+
+// Throws assertion without a comment, checking message.
+#define SEQAN_ASSERT_THROWS_CHECK_WHAT(_expr, _type, _message)        \
+     do {                                                             \
+         bool SEQAN_caught = false;                                   \
+         try                                                          \
+         {                                                            \
+             _expr;                                                   \
+         }                                                            \
+         catch (_type const & err)                                    \
+         {                                                            \
+            if(std::string(err.what()) != _message)                                 \
+                SEQAN_FAIL("Got correct exception but wrong message: '%s' != '%s'", \
+                           err.what(), _message);                                   \
+             SEQAN_caught = true;                                     \
+         }                                                            \
+         catch (...)                                                  \
+         {                                                            \
+             ::seqan::ClassTest::testFalse(                           \
+                 __FILE__, __LINE__,                                  \
+                 (true), #_expr,                                      \
+                 "Caught exception of wrong type!");                  \
+             ::seqan::ClassTest::fail();                              \
+         }                                                            \
+         if (!SEQAN_caught)                                           \
+         {                                                            \
+             ::seqan::ClassTest::testFalse(                           \
+                 __FILE__, __LINE__,                                  \
+                 (true), #_expr,                                      \
+                 "Expected assertion but caught none.");              \
+             ::seqan::ClassTest::fail();                              \
+         }                                                            \
+     } while (false)
+
+// Throws assertion with a comment, checking message.
+#define SEQAN_ASSERT_THROWS_CHECK_WHAT_MSG(_expr, _type, ...)         \
+     do {                                                             \
+         bool SEQAN_caught = false;                                   \
+         try                                                          \
+         {                                                            \
+             _expr;                                                   \
+         }                                                            \
+         catch (_type const & err)                                    \
+         {                                                            \
+            if(std::string(err.what()) != _message)                                 \
+                SEQAN_FAIL("Got correct exception but wrong message: '%s' != '%s'", \
+                           err.what(), _message);                                   \
+             SEQAN_caught = true;                                     \
+         }                                                            \
+         catch (...)                                                  \
+         {                                                            \
+             ::seqan::ClassTest::testFalse(                           \
+                 __FILE__, __LINE__,                                  \
+                 (true), #_expr,                                      \
+                 __VA_ARGS__);                                        \
+             ::seqan::ClassTest::fail();                              \
+         }                                                            \
+         if (!SEQAN_caught)                                           \
+         {                                                            \
+             ::seqan::ClassTest::testFalse(                           \
+                 __FILE__, __LINE__,                                  \
+                 (true), #_expr,                                      \
+                 __VA_ARGS__);                                        \
+             ::seqan::ClassTest::fail();                              \
+         }                                                            \
+     } while (false)
+
+// Does-not-throw exception with a comment.
+#define SEQAN_ASSERT_DOES_NOT_THROW(_expr)                            \
+     do {                                                             \
+         try                                                          \
+         {                                                            \
+             _expr;                                                   \
+         }                                                            \
+         catch (...)                                                  \
+         {                                                            \
+             ::seqan::ClassTest::testFalse(                           \
+                 __FILE__, __LINE__,                                  \
+                 (true), #_expr,                                      \
+                 "Expected no exception, but caught one!");           \
+             ::seqan::ClassTest::fail();                              \
+         }                                                            \
+     } while (false)
+
+// Does-not-throw exception with a comment.
+#define SEQAN_ASSERT_DOES_NOT_THROW_MSG(_expr, ...)                   \
+     do {                                                             \
+         try                                                          \
+         {                                                            \
+             _expr;                                                   \
+         }                                                            \
+         catch (...)                                                  \
+         {                                                            \
+             ::seqan::ClassTest::testFalse(                           \
+                 __FILE__, __LINE__,                                  \
+                 (true), #_expr,                                      \
+                 __VA_ARGS__);                                        \
+             ::seqan::ClassTest::fail();                              \
+         }                                                            \
+     } while (false)
 
 #elif SEQAN_ENABLE_DEBUG && defined(__CUDA_ARCH__)
 
@@ -2759,6 +2971,10 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_NOT(_arg1) do { assert(!_arg1); } while (false)
 #define SEQAN_ASSERT_NOT_MSG(_arg1, ...) do { assert(!_arg1); } while (false)
 #define SEQAN_ASSERT_FAIL(...) do { assert(false); } while (false)
+#define SEQAN_ASSERT_THROWS(_expr, _exceptionType) do { _expr; } while (false)
+#define SEQAN_ASSERT_THROWS_MSG(_expr, _exceptionType, ...) do { _expr; } while (false)
+#define SEQAN_ASSERT_DOES_NOT_THROW(_expr) do { _expr; } while (false)
+#define SEQAN_ASSERT_DOES_NOT_THROW_MSG(_expr, ...) do { _expr; } while (false)
 
 #else
 
@@ -2779,6 +2995,10 @@ SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
 #define SEQAN_ASSERT_NOT(_arg1) do {} while (false)
 #define SEQAN_ASSERT_NOT_MSG(_arg1, ...) do {} while (false)
 #define SEQAN_ASSERT_FAIL(...) do {} while (false)
+#define SEQAN_ASSERT_THROWS(_expr, _exceptionType) do { _expr; } while (false)
+#define SEQAN_ASSERT_THROWS_MSG(_expr, _exceptionType, ...) do { _expr; } while (false)
+#define SEQAN_ASSERT_DOES_NOT_THROW(_expr) do { _expr; } while (false)
+#define SEQAN_ASSERT_DOES_NOT_THROW_MSG(_expr, ...) do { _expr; } while (false)
 
 #endif  // #if defined(SEQAN_ENABLE_DEBUG) && !defined(__CUDA_ARCH__)
 
@@ -2986,6 +3206,14 @@ template <typename T1>
 void SEQAN_ASSERT_NOT(T1 const & _arg1) {}
 template <typename T1>
 void SEQAN_ASSERT_NOT_MSG(T1 const & _arg1, const char * comment, ...) {}
+template <typename T1, typename T2>
+void SEQAN_ASSERT_THROWS(T1 const & _arg1T2 const & _arg2) {}
+template <typename T1, typename T2>
+void SEQAN_ASSERT_THROWS_MSG(T1 const & _arg1, T2 const & _arg2, const char * comment, ...) {}
+template <typename T1>
+void SEQAN_ASSERT_DOES_NOT_THROW(T1 const & _arg1) {}
+template <typename T1>
+void SEQAN_ASSERT_DOES_NOT_THROW_MSG(T1 const & _arg1, const char * comment, ...) {}
 
 #endif // #if SEQAN_ENABLE_DEBUG
 
@@ -3001,17 +3229,17 @@ void SEQAN_ASSERT_NOT_MSG(T1 const & _arg1, const char * comment, ...) {}
  * @macro SEQAN_PATH_TO_ROOT
  * @headerfile <seqan/basic.h>
  * @brief Return path to the checkout root directory (i.e. containing core/extras).
- * 
+ *
  * @signature TCharPtr SEQAN_PATH_TO_ROOT()
- * 
+ *
  * @return TCharPtr <tt>char const *</tt>, string with the path to the parent directory of the tests directory.
- * 
+ *
  * This only works when using the SeqAn SVN checkout!
- * 
+ *
  * The pointed to string is initialized on program startup by the code generated by SEQAN_BEGIN_TESTSUITE.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * CharString buffer = SEQAN_PATH_TO_ROOT();
  * append(buffer, "/core/tests/files/example.txt");
@@ -3057,18 +3285,18 @@ fclose(f);
  * @macro SEQAN_TEMP_FILENAME
  * @headerfile <seqan/basic.h>
  * @brief Generates the name to a temporary file.
- * 
+ *
  * @signature TCharType SEQAN_TEMP_FILENAME();
- * 
+ *
  * @return TCharType <tt>char const *</tt>, string with the path to a temporary file.
- * 
+ *
  * @section Remarks
- * 
+ *
  * The pointed to string is stored in a buffer and is overwritten by the next call to this macro. Copy it out if you
  * need it.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * const char *p = SEQAN_TEMP_FILENAME();
  * buffer char tempFilename[1000];
