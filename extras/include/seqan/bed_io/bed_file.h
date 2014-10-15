@@ -47,7 +47,32 @@ namespace seqan {
 // Typedefs
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Typedef BedFileIn
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class BedFileIn
+ * @extends SmartFile
+ * @headerfile <seqan/ucsc_io.h>
+ * @brief @link SmartFile @endlink for reading BED files.
+ *
+ * @signature typedef SmartFile<Bed, Input> BedFileIn;
+ */
 typedef SmartFile<Bed, Input>   BedFileIn;
+
+// ----------------------------------------------------------------------------
+// Typedef BedFileOut
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class BedFileInOut
+ * @extends SmartFile
+ * @headerfile <seqan/ucsc_io.h>
+ * @brief @link SmartFile @endlink for writing BED files.
+ *
+ * @signature typedef SmartFile<Bed, Output> BedFileOut;
+ */
 typedef SmartFile<Bed, Output>  BedFileOut;
 
 // ============================================================================
@@ -78,7 +103,17 @@ struct FileFormat<SmartFile<Bed, TDirection, TSpec> >
 // Function readRecord(); BedRecord
 // ----------------------------------------------------------------------------
 
-// convient BedFile variant
+/*!
+ * @fn BedFileIn#readRecord
+ * @brief Reading records from a BedFileIn.
+ *
+ * @signature void readRecord(record, file);
+ *
+ * @param[out] record The resulting @link BedRecord @endlink.
+ * @param[out] file   The BedFileIn to read from.
+ *
+ * @throw IOError in case of problems.
+ */
 template <typename TRecordSpec, typename TSpec>
 inline void
 readRecord(BedRecord<TRecordSpec> & record, SmartFile<Bed, Input, TSpec> & file)
@@ -90,6 +125,17 @@ readRecord(BedRecord<TRecordSpec> & record, SmartFile<Bed, Input, TSpec> & file)
 // Function write(); BedRecord
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BedFileIn#writeRecord
+ * @brief Writing records to a BedFileIn.
+ *
+ * @signature void readRecord(record, file);
+ *
+ * @param[out] file   The BedFileIn to write to.
+ * @param[out] record The @link BedRecord @endlink to write out.
+ *
+ * @throw IOError in case of problems.
+ */
 template <typename TSpec, typename TRecordSpec>
 inline void
 writeRecord(SmartFile<Bed, Output, TSpec> & file, BedRecord<TRecordSpec> & record)

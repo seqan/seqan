@@ -1130,14 +1130,14 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * 
  * @return TDesc An object of type @link StringTreeConcept#VertexDescriptor @endlink that
  *               uniquely identifies the current node. The vertex descriptor can be used to
- *               store node specific values in an @link ExternalPropertyMap @endlink.
+ *               store node specific values in a @link PropertyMap property map @endlink.
  */
 
 /*!
  * @fn VSTreeIterator#assignProperty
  * @brief Assigns a property to an item in the property map.
  * @signature void assignProperty(pm, value(iterator), val)
- * @param[in,out] pm        An @link ExternalPropertyMap @endlink.
+ * @param[in,out] pm        A @link PropertyMapConcept property map @endlink.
  * @param[in]     iterator  An iterator of a string tree. Types: @link VSTreeIterator @endlink
  * @param[in]     val       The new value, where the type of the new value must match the value type of the property map.
 */
@@ -1155,7 +1155,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
  * @fn VSTreeIterator#getProperty
  * @brief Get method for an item's property.
  * @signature TValue getProperty(pm, value(iterator))
- * @param[in,out] pm        An @link ExternalPropertyMap @endlink.
+ * @param[in,out] pm        An @link PropertyMapConcept property map @endlink.
  * @param[in]     iterator  An iterator of a string tree. Types: @link VSTreeIterator @endlink
  * @return TValue Reference to the item in the property map of type @link GetValue @endlink.
  */

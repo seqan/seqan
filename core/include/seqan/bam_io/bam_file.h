@@ -147,13 +147,13 @@ _mapFileFormatToCompressionFormat(Bam)
 
 /*!
  * @fn BamFileIn#readRecord
- * @brief Read one @link BamAlignmentHeader @endlink or @link BamAlignmentRecord @endlink from a @link BamFileIn @endlink object.
+ * @brief Read one @link BamHeader @endlink or @link BamAlignmentRecord @endlink from a @link BamFileIn @endlink object.
  *
  * @signature int readRecord(header, bamFileIn);
  * @signature int readRecord(record, bamFileIn);
  *
- * @param[out]   header     The @link BamAlignmentHeader @endlink to read the header information into. Of type
- *                          @link BamAlignmentHeader @endlink.
+ * @param[out]   header     The @link BamHeader @endlink to read the header information into. Of type
+ *                          @link BamHeader @endlink.
  * @param[out]   record     The @link BamAlignmentRecord @endlink to read the next alignment record into. Of type
  *                          @link BamAlignmentRecord @endlink.
  * @param[in,out] bamFileIn The @link BamFileIn @endlink object to read from.
@@ -285,13 +285,13 @@ readBatch(TRecords & records, SmartFile<Bam, Input, TSpec> & file, TSize maxReco
 
 /*!
  * @fn BamFileOut#writeRecord
- * @brief Write one @link BamAlignmentHeader @endlink or @link BamAlignmentRecord @endlink to a @link BamFileOut @endlink object.
+ * @brief Write one @link BamHeader @endlink or @link BamAlignmentRecord @endlink to a @link BamFileOut @endlink object.
  *
  * @signature int writeRecord(bamFileOut, header);
  * @signature int writeRecord(bamFileOut, record);
  *
  * @param[in,out] bamFileOut    The @link BamFileOut @endlink object to write to.
- * @param[in]     header        The @link BamAlignmentHeader @endlink to write out.
+ * @param[in]     header        The @link BamHeader @endlink to write out.
  * @param[in]     record        The @link BamAlignmentRecord @endlink to write out.
 */
 

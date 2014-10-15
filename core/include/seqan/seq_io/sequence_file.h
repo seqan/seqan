@@ -48,7 +48,32 @@ namespace seqan {
 // Typedefs
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Typedef SeqFileIn
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class SeqFileIn
+ * @extends SmartFile
+ * @headerfile <seqan/gff_io.h>
+ * @brief @link SmartFile @endlink for reading FASTA, FAST, and other sequence formats.
+ *
+ * @signature typedef SmartFile<Fastq, Input> SeqFileIn;
+ */
 typedef SmartFile<Fastq, Input>     SeqFileIn;
+
+// ----------------------------------------------------------------------------
+// Typedef SeqFileOut
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class SeqFileOut
+ * @extends SmartFile
+ * @headerfile <seqan/gff_io.h>
+ * @brief @link SmartFile @endlink for writing FASTA and FASTQ files.
+ *
+ * @signature typedef SmartFile<Fastq, Output> SeqFileOut;
+ */
 typedef SmartFile<Fastq, Output>    SeqFileOut;
 
 // --------------------------------------------------------------------------
@@ -65,23 +90,6 @@ typedef SmartFile<Fastq, Output>    SeqFileOut;
  * @signature typedef TagList<Fastq, TagList<Fasta, TagList<Raw> > > SeqFormats;
  * @signature typedef TagSelector<SeqFormat> AutoSeqFormat;
  */
-
-/**
-.Class.AutoSeqFormat
-..summary:Auto-detects and stores a file format.
-..cat:Input/Output
-..general:Class.TagSelector
-..signature:AutoSeqFormat
-..remarks:Currently, it is defined as $TagSelector<SeqFormats>$, with:
-...code:
-	typedef
-		TagList<Fastq,
-		TagList<Fasta,
-		TagList<QSeq,
-		TagList<Raw> > > > 						SeqFormats;
-..include:seqan/file.h
-*/
-
 typedef
     TagList<Fastq,
     TagList<Fasta,
@@ -158,6 +166,24 @@ struct FileFormat<SmartFile<Fastq, Output, TSpec> >
 // ----------------------------------------------------------------------------
 // Function read(); Without qualities
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn SeqFileIn#readRecord
+ * @brief Read one sequence from a SeqFileIn
+ *
+ * @signature void readRecord(meta, seq[, qual], seqFile);
+ *
+ * @param[out]    meta    A @link StringConcept string @endlink to read the meta/id field into.
+ * @param[out]    seq     A @link StringConcept string @endlink to read the sequence into.
+ * @param[out]    qual    An optional @link StringConcept string @endlink to read the qualities into.
+ * @param[in,out] seqFile The SeqFileIn to read from.
+ *
+ * @throws IOError if something went wrong.
+ *
+ * If the file contains base call qualities then these can be either (a) written into the given <tt>qual</tt>
+ * parameter if it is provided, (b) written to <tt>seq</tt> if <tt>seq</tt> is of the concept
+ * @link AlphabetWithQualitiesConcept @endlink, or (c) discarded.
+ */
 
 template <typename TSpec, typename TIdString, typename TSeqString>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename SmartFile<Fastq, Input, TSpec>::TStream> >,
@@ -257,6 +283,25 @@ inline void readRecords(TIdStringSet & meta,
 // ----------------------------------------------------------------------------
 // Function writeRecord(); Without qualities
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn SeqFileOut#writeRecord
+ * @brief Write out a string to a sequence file.
+ *
+ * @signature void writeRecord(seqFile, meta, seq[, qual]);
+ *
+ * @param[in,out] seqFile The SeqFileIn to write to.
+ * @param[out]    meta    A @link StringConcept string @endlink with the meta/id to write out.
+ * @param[out]    seq     A @link StringConcept string @endlink with the sequence to write out.
+ * @param[out]    qual    An optional @link StringConcept string @endlink 
+ *
+ * @throws IOError if something went wrong.
+ *
+ * Qualities are handled similar to @link SeqFileIn#readRecord @endlink.  Qualities are only written if
+ * the format of <tt>seqFile</tt> supports it.  When given, the qualities are written out from <tt>qual</tt>.
+ * Otherwise, they can be taken from <tt>seq</tt> if it is of concept @link AlphabetWithQualitiesConcept
+ * @endlink.  By default, quality values with score 40 (ASCII representation <tt>I</tt>), are written.
+ */
 
 template <typename TSpec, typename TIdString, typename TSeqString>
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Fastq, Output, TSpec>::TStream> >, void)

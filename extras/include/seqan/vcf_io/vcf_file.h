@@ -44,9 +44,30 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
+/*!
+ * @defgroup VcfFileIO
+ * @brief Tags and routines for VCF file I/O.
+ */
+
+/*!
+ * @tag VcfFileIO#Vcf
+ * @headerfile <seqan/vcf_io.h>
+ * @brief Tag for selecting the VCF format.
+ *
+ * @signature typedef Tag<Vcf_> Vcf;
+ */
 struct Vcf_;
 typedef Tag<Vcf_> Vcf;
 
+/*!
+ * @tag VcfFileIO#Bcf
+ * @headerfile <seqan/vcf_io.h>
+ * @brief Tag for selecting the BCF format.
+ *
+ * @signature typedef Tag<Bcf_> Bcf;
+ *
+ * @warning The BCF format is currently not supported in SeqAn.
+ */
 struct Bcf_;
 typedef Tag<Bcf_> Bcf;
 
@@ -54,7 +75,33 @@ typedef Tag<Bcf_> Bcf;
 // Typedefs
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Typedef VcfFileIn
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class VcfFileIn
+ * @extends SmartFile
+ * @headerfile <seqan/ucsc_io.h>
+ * @brief @link SmartFile @endlink for reading VCF files.
+ *
+ * @signature typedef SmartFile<Vcf, Input> VcfFileIn;
+ */
+
 typedef SmartFile<Vcf, Input>   VcfFileIn;
+
+// ----------------------------------------------------------------------------
+// Typedef VcfFileOut
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class VcfFileOut
+ * @extends SmartFile
+ * @headerfile <seqan/ucsc_io.h>
+ * @brief @link SmartFile @endlink for writing VCF files.
+ *
+ * @signature typedef SmartFile<Vcf, Output> VcfFileOut;
+ */
 typedef SmartFile<Vcf, Output>  VcfFileOut;
 
 // ============================================================================
@@ -160,6 +207,17 @@ _mapFileFormatToCompressionFormat(Bcf)
 // Function readRecord(); VcfRecord
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn VcfFileIn#readRecord
+ * @brief Reading records from a VcfFileIn.
+ *
+ * @signature void readRecord(record, file);
+ *
+ * @param[out] record The resulting @link VcfRecord @endlink.
+ * @param[out] file   The VcfFileIn to read from.
+ *
+ * @throw IOError in case of problems.
+ */
 template <typename TSpec>
 inline void
 readRecord(VcfHeader & record, SmartFile<Vcf, Input, TSpec> & file)
@@ -178,6 +236,17 @@ readRecord(VcfRecord & record, SmartFile<Vcf, Input, TSpec> & file)
 // Function writeRecord(); VcfRecord
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn VcfFileIn#writeRecord
+ * @brief Writing records to a VcfFileIn.
+ *
+ * @signature void readRecord(record, file);
+ *
+ * @param[out] file   The VcfFileIn to write to.
+ * @param[out] record The @link VcfRecord @endlink to write out.
+ *
+ * @throw IOError in case of problems.
+ */
 template <typename TSpec>
 inline void
 writeRecord(SmartFile<Vcf, Output, TSpec> & file, VcfHeader & record)

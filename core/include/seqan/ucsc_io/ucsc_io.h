@@ -150,8 +150,8 @@ char const * FileExtensions<Ucsc, T>::VALUE[2] =
  *
  * @param[out]    record       The @link UcscRecord @endlink to store results in.
  * @param[in,out] uscscContext The @link UcscIOContext @endlink to use during the rading.
- * @param[in,out] iter         The @link ForwadIteratorConcept forward iterator @endlink to read from.
- * @param[in]     tag          Fixed to @link Ucsc @endlink.
+ * @param[in,out] iter         The @link ForwardIteratorConcept forward iterator @endlink to read from.
+ * @param[in]     tag          Fixed to @link UcscFileIO#Ucsc @endlink.
  *
  * @throw IOError    in the case of I/O errors
  * @throw ParseError in the case of problems with parsing
@@ -295,7 +295,7 @@ void readRecord(UcscRecord & record,
  * @param[in,out] target @link OutputIteratorConcept Output iterator @endlink or @link ContainerConcept container
  *                       @endlink to write to.
  * @param[in]     record @link UcscRecord @endlink to write.
- * @param[in]     tag    Fixed to @link Ucsc @endlink.
+ * @param[in]     tag    Fixed to @link UcscFileIO#Ucsc @endlink.
  *
  * @throw IOError in case of I/O problems
  */

@@ -64,7 +64,7 @@ struct StreamIterator {};
  * @brief Buffer to use in stream.
  *
  * @signature template <typename TValue[, typenam TTraits]>
- *            StreamBuffer : public std::basic_streambuf<TValue, TTraits>;
+ *            class StreamBuffer : public std::basic_streambuf<TValue, TTraits>;
  *
  * @tparam TValue  The value type of the stream buffer.
  * @tparam TTraits The traits to use, defaults to <tt>std::char_traits&lt;TValue&gt;</tt>.
@@ -446,7 +446,7 @@ struct Size<Iter<TStream, StreamIterator<TDirection> > > : Size<TStream> {};
  * @sigature TDirIter directionIterator(stream, dirTag);
  *
  * @param[in] stream The @link Stream @endlink object to compute iterator for.
- * @param[in] dirTag Direction tag, one of the @link StreamDirectionTags @endlink.
+ * @param[in] dirTag Direction tag, one of the @link DirectionTags @endlink.
  */
 
 template <typename TStream, typename TDirection>
@@ -463,7 +463,7 @@ directionIterator(TStream &stream, TDirection const &)
  * @signature TDirIter directionIterator(streamBuf, dirTag);
  *
  * @param[in] streamBuf The @link ContainerConcept container @endlink object to compute iterator for.
- * @param[in] dirTag    Direction tag, one of the @link StreamDirectionTags @endlink.
+ * @param[in] dirTag    Direction tag, one of the @link DirectionTags @endlink.
  *
  * @return TDirIter The resulting @link ContainerConcept#DirectionIterator DirectionIterator @endlink.
  */
@@ -487,8 +487,8 @@ directionIterator(TContainer &cont, TDirection const &)
  *
  * @param[in] iter   The @link StreamIterator @endlink object to reserve chunks for.
  * @param[in] len    The length of the chunk to reserve.
- * @param[in] dirTag Direction tag, one of @link StreamDirectionTags#Input Input @endlink and @link
- *                   StreamDirectionTags#Input Output @endlink .
+ * @param[in] dirTag Direction tag, one of @link DirectionTags#Input Input @endlink and @link
+ *                   DirectionTags#Input Output @endlink .
  */
 
 template <typename TStream, typename TDirection, typename TSize>

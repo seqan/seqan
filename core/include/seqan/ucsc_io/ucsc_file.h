@@ -69,7 +69,7 @@ typedef SmartFile<Ucsc, Input>   UcscFileIn;
  * @class UcscFileInOut
  * @extends SmartFile
  * @headerfile <seqan/ucsc_io.h>
- * @brief @link SmartFile @endlink for reading UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
+ * @brief @link SmartFile @endlink for writing UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
  *
  * @signature typedef SmartFile<Ucsc, Output> UcscFileOut;
  */

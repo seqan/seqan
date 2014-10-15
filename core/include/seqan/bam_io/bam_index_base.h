@@ -89,9 +89,9 @@ class BamIndex;
  * You provide a region <tt>[pos, posEnd)</tt> on the reference <tt>refID</tt> that you want to jump to and the function
  * jumps to the first alignment in this region, if any.
  *
- * @signature bool jumpToRegion(stream, hasAlignments, bamIOContext, refID, pos, posEnd, index);
+ * @signature bool jumpToRegion(file, hasAlignments, bamIOContext, refID, pos, posEnd, index);
  *
- * @param[in,out] stream        The @link BgzfStream @endlink to jump with.
+ * @param[in,out] file          The @link BgfzFile @endlink to jump with.
  * @param[out]    hasAlignments A <tt>bool</tt> that is set true if the region <tt>[pos, posEnd)</tt> has any
  *                              alignments.
  * @param[in,out] bamIOContext  The @link BamIOContext @endlink to use for jumping.
@@ -113,9 +113,9 @@ class BamIndex;
  * @fn BamIndex#jumpToOrphans
  * @brief Seek to orphans block in BAM BGZF stream using an index.
  *
- * @signature bool jumpToOrphans(stream, hasAlignments, bamIOContext, index);
+ * @signature bool jumpToOrphans(file, hasAlignments, bamIOContext, index);
  *
- * @param[in,out] stream         The @link BgzfStream @endlink object to jump with.
+ * @param[in,out] file           The @link BgzfFile @endlink object to jump with.
  * @param[out]    hasAlignments  A reference to <tt>bool</tt> that is set to true if there are any orphans.
  * @param[in,out] bamIOContext   The @link BamIOContext @endlink to use for the state.
  * @param[in]     index          The BamIndex to use for jumping.
