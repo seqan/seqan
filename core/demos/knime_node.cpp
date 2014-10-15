@@ -88,10 +88,10 @@ parseCommandLine(KnimeNodeOptions & options, int argc, char const ** argv)
     
     // We require one argument.
     addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "IN"));
-    setValidValues(parser, 0, seqan::SeqFileIn::getFileFormatExtensions());
+    setValidValues(parser, 0, seqan::SeqFileIn::getFileExtensions());
     
-    addOption(parser, seqan::ArgParseOption("o", "outputFile", "Name of the multi-FASTA output.", seqan::ArgParseOption::OUTPUTFILE, "OUT"));
-    setValidValues(parser, "outputFile", seqan::SeqFileOut::getFileFormatExtensions());
+    addOption(parser, seqan::ArgParseOption("o", "outputFile", "Name of the multi-FASTA output.", seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
+    setValidValues(parser, "outputFile", seqan::SeqFileOut::getFileExtensions());
 	setDefaultValue(parser, "outputFile", "result.fastq");
     
     // The verbosity option should be used to help debugging
@@ -164,7 +164,7 @@ int main(int argc, char const ** argv)
         << '\n'
         << "VERBOSITY\t" << options.verbosity << '\n'
         << "INPUT_FILE\t" << options.inputFile << "\n\n"
-        << "OUTPUTFILE\t" << options.outputFile << "\n\n";
+        << "OUTPUT_FILE\t" << options.outputFile << "\n\n";
     }
     
     // Reading the input

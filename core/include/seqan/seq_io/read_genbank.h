@@ -82,16 +82,16 @@ template <typename T>
 char const MagicHeader<GenBank, T>::VALUE[6] = { 'L','O','C','U','S',' ' };  // typical GenBank header
 
 // --------------------------------------------------------------------------
-// Metafunction FileFormatExtensions
+// Metafunction FileExtensions
 // --------------------------------------------------------------------------
 
 template <typename T>
-struct FileFormatExtensions<GenBank, T>
+struct FileExtensions<GenBank, T>
 {
     static char const * VALUE[1];
 };
 template <typename T>
-char const * FileFormatExtensions<GenBank, T>::VALUE[1] =
+char const * FileExtensions<GenBank, T>::VALUE[1] =
 {
     ".gbk",     // default output extension
 };

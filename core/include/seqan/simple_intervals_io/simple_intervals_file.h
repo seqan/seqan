@@ -90,17 +90,17 @@ template <typename T>
 struct MagicHeader<SimpleIntervals, T> : public MagicHeader<Nothing, T> {};
 
 // ----------------------------------------------------------------------------
-// Metafunction FileFormatExtensions
+// Metafunction FileExtensions
 // ----------------------------------------------------------------------------
 
 template <typename T>
-struct FileFormatExtensions<SimpleIntervals, T>
+struct FileExtensions<SimpleIntervals, T>
 {
     static char const * VALUE[1];  // default is one extension
 };
 
 template <typename T>
-char const * FileFormatExtensions<SimpleIntervals, T>::VALUE[1] =
+char const * FileExtensions<SimpleIntervals, T>::VALUE[1] =
 {
     ".intervals"      // default output extension
 };

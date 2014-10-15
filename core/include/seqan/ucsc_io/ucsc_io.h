@@ -117,17 +117,17 @@ template <typename T>
 struct MagicHeader<Ucsc, T> : public MagicHeader<Nothing, T> {};
 
 // ----------------------------------------------------------------------------
-// Metafunction FileFormatExtensions
+// Metafunction FileExtensions
 // ----------------------------------------------------------------------------
 
 template <typename T>
-struct FileFormatExtensions<Ucsc, T>
+struct FileExtensions<Ucsc, T>
 {
     static char const * VALUE[2];  // default is one extension
 };
 
 template <typename T>
-char const * FileFormatExtensions<Ucsc, T>::VALUE[2] =
+char const * FileExtensions<Ucsc, T>::VALUE[2] =
 {
     ".txt",     // default output extension
     ".tsv"
