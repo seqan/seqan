@@ -1737,7 +1737,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 	if (empty(g)) return false;
 
 	// Connected Components
-	TSize numComponents = connectedComponents(g, component);
+	TSize numComponents = connectedComponents(component, g);
 
 	// Make a directed graph to represent the ordering of the components
 	// Note: Multiple vertices might have the same component
@@ -1784,7 +1784,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 	}
 	
 	// Make a topological sort of the component graph
-	topologicalSort(componentGraph, order);
+	topologicalSort(order, componentGraph);
 
 	//// Debug code
 	//std::cout << "Topological sort: " << std::endl;

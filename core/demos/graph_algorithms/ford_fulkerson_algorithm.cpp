@@ -22,12 +22,12 @@ int main()
     // Create external property map for the edge capacities and assign to the graph.
     String<unsigned int> capMap;
     unsigned capacity[] =    {16,  13,  12,  10,  20,  9,   4,   14,  7,   4};
-    assignEdgeMap(g, capMap, capacity);
+    assignEdgeMap(capMap, g, capacity);
 
     // Run the Ford-Fulkerson algorithm for maximum flow computation from source
     // vertex 0 to sink vertex 3.  valF is the value of the flow.
     String<unsigned int> flow;
-    unsigned valF = fordFulkersonAlgorithm(g, 0, 3, capMap, flow);
+    unsigned valF = fordFulkersonAlgorithm(flow, g, 0, 3, capMap);
 
     // Print the result to stdout.
     std::cout << "Ford-Fulkerson (Value of the flow = " << valF << ")\n";

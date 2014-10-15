@@ -217,9 +217,9 @@ createSetOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 	createTrie(g, terminalStateMap, keywords);
 
 	String<TVertexDescriptor> supplyState;
-	resizeVertexMap(g, supplyState);
+	resizeVertexMap(supplyState, g);
 	String<bool> visited;
-	resizeVertexMap(g, visited);
+	resizeVertexMap(visited, g);
 	arrayFill(begin(visited), end(visited), false);
 
 	TVertexDescriptor nil_ = getNil<TVertexDescriptor>();
