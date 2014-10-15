@@ -1123,7 +1123,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
 
     addOption(parser, ArgParseOption("mu", "multi", "Keep non-unique fragmentStore.alignedReadStore. Default: off."));
     addOption(parser, ArgParseOption("hq", "hide-qualities", "Only show coverage (no qualities) in SNP output file. Default: off."));
-    addOption(parser, ArgParseOption("sqo", "solexa-qual-offset", "Base qualities are encoded as char value - 64 (instead of char - 33)."));
+    addOption(parser, ArgParseOption("sqo", "solexa-qual-offset", "Base qualities are encoded as Ascii value - 64 (instead of Ascii - 33)."));
     addOption(parser, ArgParseOption("id", "indel-file", "Output file for called indels in gff format. Default: off.", ArgParseArgument::OUTPUTFILE));
     setValidValues(parser, "indel-file", ".gff");
     addOption(parser, ArgParseOption("m", "method", "Set method used for SNP calling either threshold based or Maq method.", ArgParseArgument::STRING));
