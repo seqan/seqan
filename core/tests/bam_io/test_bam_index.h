@@ -69,7 +69,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_index_bai)
     BamFileIn bamFile(toCString(bamFilename));
 
     BamHeader header;
-    readRecord(header, bamFile);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(header, bamFile));
 
     bool found = true;
     SEQAN_ASSERT(jumpToRegion(bamFile, found, 0, 1, 10, baiIndex));

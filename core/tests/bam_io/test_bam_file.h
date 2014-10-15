@@ -54,7 +54,7 @@ void testBamIOBamFileReadHeader(char const * pathFragment)
     seqan::BamFileIn bamIO(toCString(filePath));
     seqan::BamHeader header;
 
-    readRecord(header, bamIO);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(header, bamIO));
 
     SEQAN_ASSERT_EQ(length(header), 2u);
     SEQAN_ASSERT_EQ(header[0].type, seqan::BAM_HEADER_FIRST);
@@ -97,14 +97,14 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_file_issue_489)
     // Copy header.  The header is automatically written out before the first record.
 
     seqan::BamHeader header;
-    readRecord(header, bamFileIn);
-    writeRecord(bamFileOut, header);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(header, bamFileIn));
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(bamFileOut, header));
 
     seqan::BamAlignmentRecord record;
     while (!atEnd(bamFileIn))
     {
-        readRecord(record, bamFileIn);
-        writeRecord(bamFileOut, record);
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, bamFileIn));
+        SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(bamFileOut, record));
     }
     close(bamFileOut);  // flushes
 
@@ -124,13 +124,13 @@ void testBamIOBamFileReadRecords(char const * pathFragment)
     seqan::BamFileIn bamIO(toCString(filePath));
     seqan::BamHeader header;
 
-    readRecord(header, bamIO);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(header, bamIO));
 
     seqan::String<seqan::BamAlignmentRecord> alignments;
     while (!atEnd(bamIO))
     {
         resize(alignments, length(alignments) + 1);
-        readRecord(back(alignments), bamIO);
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(back(alignments), bamIO));
     }
     SEQAN_ASSERT_EQ(length(alignments), 3u);
 
@@ -214,7 +214,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_ex1)
     seqan::BamFileIn bamIO(toCString(filePath));
     seqan::BamHeader header;
 
-    readRecord(header, bamIO);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(header, bamIO));
 
     SEQAN_ASSERT_EQ(nameStore(context(bamIO))[0], "seq1");
     SEQAN_ASSERT_EQ(nameStore(context(bamIO))[1], "seq2");
@@ -226,7 +226,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_ex1)
     resize(counts, 2, 0);
     while (!atEnd(bamIO))
     {
-        readRecord(record, bamIO);
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, bamIO));
         ++counts[record.rID];
 //        seqan::CharString name = nameStore(context(bamIO))[record.rID];
 //        std::cout << "Chrom: " << name << " (" << record.rID << ")" << std::endl;
@@ -268,7 +268,7 @@ void testBamIOBamFileWriteHeader(char const * pathFragmentExpected)
     header[1].tags[0].i2 = "REFERENCE";
     header[1].tags[1].i1 = "LN";
     header[1].tags[1].i2 = "10000";
-    writeRecord(bamIO, header);
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(bamIO, header));
 
     // Force writing of header on flush.
     close(bamIO);
@@ -323,7 +323,7 @@ void testBamIOBamFileWriteRecords(char const * pathFragmentExpected)
     header[1].tags[0].i2 = "REFERENCE";
     header[1].tags[1].i1 = "LN";
     header[1].tags[1].i2 = "10000";
-    writeRecord(bamIO, header);
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(bamIO, header));
 
     // Construct first records.
     seqan::BamAlignmentRecord record;
@@ -345,7 +345,7 @@ void testBamIOBamFileWriteRecords(char const * pathFragmentExpected)
     record.tLen = 40;
     record.seq = "AAAAAAAAAA";
     record.qual = "!!!!!!!!!!";
-    writeRecord(bamIO, record);
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(bamIO, record));
 
     record.qName = "READ0";
     record.flag = 1;
@@ -364,7 +364,7 @@ void testBamIOBamFileWriteRecords(char const * pathFragmentExpected)
     record.tLen = 40;
     record.seq = "AAAAAAAAAA";
     record.qual = "!!!!!!!!!!";
-    writeRecord(bamIO, record);
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(bamIO, record));
 
     record.qName = "READ0";
     record.flag = 3;
@@ -383,7 +383,7 @@ void testBamIOBamFileWriteRecords(char const * pathFragmentExpected)
     record.tLen = seqan::BamAlignmentRecord::INVALID_LEN;
     record.seq = "AAAAAAAAAA";
     record.qual = "!!!!!!!!!!";
-    writeRecord(bamIO, record);
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(bamIO, record));
 
     // Force writing of everything.
     close(bamIO);
@@ -419,21 +419,21 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_file_size)
     SEQAN_ASSERT_EQ(position(bamFile), 0u);
 
     seqan::BamHeader header;
-    readRecord(header, bamFile);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(header, bamFile));
 
     SEQAN_ASSERT_EQ(position(bamFile), 51u);
 //    SEQAN_ASSERT_EQ(fileSize(bamFile), 226u);
 
     seqan::BamAlignmentRecord record;
-    readRecord(record, bamFile);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, bamFile));
 
     SEQAN_ASSERT_EQ(position(bamFile), 110u);
 
-    readRecord(record, bamFile);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, bamFile));
 
     SEQAN_ASSERT_EQ(position(bamFile), 169u);
 
-    readRecord(record, bamFile);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, bamFile));
 
     SEQAN_ASSERT_EQ(position(bamFile), 226u);
 }
@@ -448,21 +448,21 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_size)
     SEQAN_ASSERT_EQ(position(bamFile), 0u);
 
     seqan::BamHeader header;
-    readRecord(header, bamFile);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(header, bamFile));
 
 //    SEQAN_ASSERT_EQ(fileSize(bamFile), 181u);
     SEQAN_ASSERT_EQ(position(bamFile), 0x0051u);
 
     seqan::BamAlignmentRecord record;
-    readRecord(record, bamFile);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, bamFile));
 
     SEQAN_ASSERT_EQ(position(bamFile), 0x0096u);  // [block begin in bam file] << 16 + [local offset]
 
-    readRecord(record, bamFile);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, bamFile));
 
     SEQAN_ASSERT_EQ(position(bamFile), 0x00dbu);
 
-    readRecord(record, bamFile);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, bamFile));
 
     SEQAN_ASSERT_EQ(position(bamFile), 0x0120u);
 }
@@ -476,7 +476,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
     SEQAN_ASSERT_EQ(position(bamFile), 0u);
 
     seqan::BamHeader header;
-    readRecord(header, bamFile);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(header, bamFile));
 
     seqan::String<seqan::Pair<off_t, int> > recs;
 
@@ -484,14 +484,14 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
     while (!atEnd(bamFile))
     {
         off_t ofs = position(bamFile);
-        readRecord(record, bamFile);
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, bamFile));
         appendValue(recs, seqan::Pair<off_t, int>(ofs, record.beginPos));
     }
 
     for (size_t j = 0; j < length(recs); ++j)
     {
         setPosition(bamFile, recs[j].i1);
-        readRecord(record, bamFile);
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, bamFile));
         SEQAN_ASSERT_EQ(record.beginPos, recs[j].i2);
     }
 
@@ -499,7 +499,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
     {
         long j = random() % length(recs);
         setPosition(bamFile, recs[j].i1);
-        readRecord(record, bamFile);
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, bamFile));
         SEQAN_ASSERT_EQ(record.beginPos, recs[j].i2);
     }
 }

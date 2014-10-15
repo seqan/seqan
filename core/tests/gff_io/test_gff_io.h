@@ -54,7 +54,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
     CharString buffer;
 
     GffRecord record;
-    readRecord(record, buffer, iter);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter));
 
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
@@ -69,7 +69,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
     SEQAN_ASSERT_EQ(record.tagNames[1], "Name");
     SEQAN_ASSERT_EQ(record.tagValues[1], "sonichedgehog;hehe");
 
-    readRecord(record, buffer, iter);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter));
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "exon");
@@ -83,7 +83,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gff)
     SEQAN_ASSERT_EQ(record.tagNames[1], "Parent");
     SEQAN_ASSERT_EQ(record.tagValues[1], "mrn a0001");
 
-    readRecord(record, buffer, iter);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter));
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "exon");
@@ -118,9 +118,9 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_context_gff)
     unsigned count = 0;
     while (!atEnd(iter))
     {
-        readRecord(record, buffer, iter);
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter));
         record.ref = temp;
-        writeRecord(compare, record, Gff());
+        SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(compare, record, Gff()));
         appendValue(temp, 'A');
         ++count;
     }
@@ -146,7 +146,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf_pseudogenes)
     GffRecord record;
     CharString buffer;
 
-    readRecord(record, buffer, iter);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter));
     SEQAN_ASSERT_EQ(record.ref, "chrAL590842");
     SEQAN_ASSERT_EQ(record.source, "pgenes.org");
     SEQAN_ASSERT_EQ(record.type, "pseudogene (p)");
@@ -172,7 +172,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_gtf_pseudogenes)
     SEQAN_ASSERT_EQ(record.tagNames[6], "transcript_id");
     SEQAN_ASSERT_EQ(record.tagValues[6], "urn:lsid:pseudogene.org:632.Pseudogene:1");
 
-    readRecord(record, buffer, iter);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter));
     SEQAN_ASSERT_EQ(record.ref, "chrAL590842");
     SEQAN_ASSERT_EQ(record.source, "pgenes.org");
     SEQAN_ASSERT_EQ(record.type, "pseudogene (p)");
@@ -213,7 +213,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
     CharString buffer;
 
     GffRecord record;
-    readRecord(record, buffer, iter);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter));
     SEQAN_ASSERT_EQ(record.ref, "140");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "inter");
@@ -229,7 +229,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
     SEQAN_ASSERT_EQ(record.tagNames[2], "position");
     SEQAN_ASSERT_EQ(record.tagValues[2], "43");
 
-    readRecord(record, buffer, iter);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter));
     SEQAN_ASSERT_EQ(record.ref, "240");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "CDS");
@@ -243,7 +243,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_record_context_gtf)
     SEQAN_ASSERT_EQ(record.tagNames[1], "transcript_id");
     SEQAN_ASSERT_EQ(record.tagValues[1], "140.000.1");
 
-    readRecord(record, buffer, iter);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter));
     SEQAN_ASSERT_EQ(record.ref, "340");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "intron_CNS");
@@ -280,9 +280,9 @@ SEQAN_DEFINE_TEST(test_store_io_write_record_context_gtf)
     unsigned count = 0;
     while (!atEnd(iter))
     {
-        readRecord(record, buffer, iter);
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter));
         record.ref = temp;
-        writeRecord(outString, record, Gtf());
+        SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(outString, record, Gtf()));
         ++count;
         appendValue(temp, 'A');
     }
@@ -304,7 +304,7 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gff)
 
     GffRecord record;
 
-    readRecord(record, gffStream);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, gffStream));
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "mRNA");
@@ -318,7 +318,7 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gff)
     SEQAN_ASSERT_EQ(record.tagNames[1], "Name");
     SEQAN_ASSERT_EQ(record.tagValues[1], "sonichedgehog;hehe");
 
-    readRecord(record, gffStream);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, gffStream));
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "exon");
@@ -332,7 +332,7 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gff)
     SEQAN_ASSERT_EQ(record.tagNames[1], "Parent");
     SEQAN_ASSERT_EQ(record.tagValues[1], "mrn a0001");
 
-    readRecord(record, gffStream);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, gffStream));
     SEQAN_ASSERT_EQ(record.ref, "ctg123");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "exon");
@@ -358,7 +358,7 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gtf)
 
     GffRecord record;
 
-    readRecord(record, gffStream);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, gffStream));
     SEQAN_ASSERT_EQ(record.ref, "140");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "inter");
@@ -372,7 +372,7 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gtf)
     SEQAN_ASSERT_EQ(record.tagNames[1], "transcript_id");
     SEQAN_ASSERT_EQ(record.tagValues[1], "trans2");
 
-    readRecord(record, gffStream);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, gffStream));
     SEQAN_ASSERT_EQ(record.ref, "240");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "CDS");
@@ -386,7 +386,7 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_read_record_gtf)
     SEQAN_ASSERT_EQ(record.tagNames[1], "transcript_id");
     SEQAN_ASSERT_EQ(record.tagValues[1], "140.000.1");
 
-    readRecord(record, gffStream);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, gffStream));
     SEQAN_ASSERT_EQ(record.ref, "340");
     SEQAN_ASSERT_EQ(record.source, "");
     SEQAN_ASSERT_EQ(record.type, "intron_CNS");
@@ -416,8 +416,8 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_write_record_gff)
     GffRecord record;
     while (!atEnd(inStream))
     {
-        readRecord(record, inStream);
-        writeRecord(outStream, record);
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, inStream));
+        SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(outStream, record));
     }
 
     close(outStream);
@@ -440,8 +440,8 @@ SEQAN_DEFINE_TEST(test_store_io_gff_stream_write_record_gtf)
     GffRecord record;
     while (!atEnd(inStream))
     {
-        readRecord(record, inStream);
-        writeRecord(outStream, record);
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, inStream));
+        SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(outStream, record));
     }
 
     close(outStream);

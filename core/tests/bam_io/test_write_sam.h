@@ -69,7 +69,7 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_write_header)
 
     // Call code under test.
     String<char> buffer;
-    write(buffer, header, bamIOContext, Sam());
+    SEQAN_ASSERT_DOES_NOT_THROW(write(buffer, header, bamIOContext, Sam()));
 
     // Compare results.
     char const * EXPECTED =
@@ -105,7 +105,7 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_write_alignment)
 
     // Call code under test.
     String<char> buffer;
-    write(buffer, record, bamIOContext, Sam());
+    SEQAN_ASSERT_DOES_NOT_THROW(write(buffer, record, bamIOContext, Sam()));
 
     // Compare results.
     char const * EXPECTED = "READNAME\t18\tREF\t31\t8\t10M\t*\t0\t0\tCGATCGATAA\tIIIIIIIIII\n";

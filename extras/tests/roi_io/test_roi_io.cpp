@@ -46,7 +46,7 @@ SEQAN_DEFINE_TEST(test_roi_read_roi_record)
     seqan::RoiRecord record;
     seqan::RoiIOContext context;
 
-    readRecord(record, context, iter, seqan::Roi());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, context, iter, seqan::Roi()));
     SEQAN_ASSERT_EQ(record.ref, "I");
     SEQAN_ASSERT_EQ(record.beginPos, 0);
     SEQAN_ASSERT_EQ(record.endPos, 3);
@@ -80,7 +80,7 @@ SEQAN_DEFINE_TEST(test_roi_write_roi_record)
     appendValue(record.count, 4);
 
     seqan::String<char> outString;
-    writeRecord(outString, record, seqan::Roi());
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(outString, record, seqan::Roi()));
 
     seqan::String<char> expected = "I\t1\t3\tregion0\t3\t+\t4\t0.55\t33\t1,2,4\n";
 
@@ -96,7 +96,7 @@ SEQAN_DEFINE_TEST(test_roi_roi_file_read)
     seqan::RoiFileIn roiFileIn(toCString(inPath));
 
     seqan::RoiRecord record1;
-    readRecord(record1, roiFileIn);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record1, roiFileIn));
 
     SEQAN_ASSERT_EQ(record1.ref, "I");
     SEQAN_ASSERT_EQ(record1.beginPos, 0);
@@ -111,7 +111,7 @@ SEQAN_DEFINE_TEST(test_roi_roi_file_read)
     SEQAN_ASSERT_EQ(record1.count[2], 4u);
 
     seqan::RoiRecord record2;
-    readRecord(record2, roiFileIn);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record2, roiFileIn));
     SEQAN_ASSERT(atEnd(roiFileIn));
 
     SEQAN_ASSERT_EQ(record2.ref, "II");
@@ -145,7 +145,7 @@ SEQAN_DEFINE_TEST(test_roi_roi_file_write)
     appendValue(record1.count, 1);
     appendValue(record1.count, 2);
     appendValue(record1.count, 4);
-    writeRecord(roiFileOut, record1);
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(roiFileOut, record1));
 
     seqan::RoiRecord record2;
     record2.ref = "II";
@@ -158,7 +158,7 @@ SEQAN_DEFINE_TEST(test_roi_roi_file_write)
     appendValue(record2.count, 8);
     appendValue(record2.count, 9);
     appendValue(record2.count, 10);
-    writeRecord(roiFileOut, record2);
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(roiFileOut, record2));
 
     close(roiFileOut);
 

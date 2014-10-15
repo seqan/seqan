@@ -71,7 +71,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_header)
 
     // Call code under test.
     String<char> text;
-    write(text, header, bamIOContext, Bam());
+    SEQAN_ASSERT_DOES_NOT_THROW(write(text, header, bamIOContext, Bam()));
     
     // Compare results.
     CharString bamFilename;
@@ -117,7 +117,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_alignment)
 
     // Call code under test.
     String<char> text;
-    write(text, header, bamIOContext, Bam());
+    SEQAN_ASSERT_DOES_NOT_THROW(write(text, header, bamIOContext, Bam()));
 
     BamAlignmentRecord record;
     record.qName = "READNAME";
@@ -133,7 +133,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_alignment)
     record.qual = "IIIIIIIIII";
 
     // Call code under test.
-    write(text, record, bamIOContext, Bam());
+    SEQAN_ASSERT_DOES_NOT_THROW(write(text, record, bamIOContext, Bam()));
 
     CharString bamFilename;
     append(bamFilename, SEQAN_PATH_TO_ROOT());

@@ -52,13 +52,13 @@ SEQAN_DEFINE_TEST(test_simple_intervals_io_read_records)
     seqan::GenomicRegion region;
 
     // Read and check first record.
-    readRecord(region, context, it, seqan::SimpleIntervals());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(region, context, it, seqan::SimpleIntervals()));
     SEQAN_ASSERT_EQ(region.seqName, "chr1");
     SEQAN_ASSERT_EQ(region.beginPos, 2489280);
     SEQAN_ASSERT_EQ(region.endPos, 2489282);
 
     // Read and check second record.
-    readRecord(region, context, it, seqan::SimpleIntervals());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(region, context, it, seqan::SimpleIntervals()));
     SEQAN_ASSERT_EQ(region.seqName, "chr4");
     SEQAN_ASSERT_EQ(region.beginPos, 2489840);
     SEQAN_ASSERT_EQ(region.endPos, 2489841);
@@ -82,13 +82,13 @@ SEQAN_DEFINE_TEST(test_simple_intervals_io_write_records)
     region.seqName = "chr1";
     region.beginPos = 2489280;
     region.endPos = 2489282;
-    writeRecord(it, context, region, seqan::SimpleIntervals());
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(it, context, region, seqan::SimpleIntervals()));
 
     // Write out second record.
     region.seqName = "chr4";
     region.beginPos = 2489840;
     region.endPos = 2489841;
-    writeRecord(it, context, region, seqan::SimpleIntervals());
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(it, context, region, seqan::SimpleIntervals()));
 
     seqan::CharString expected = "chr1:2489281-2489282\n"
                                  "chr4:2489841\n";
@@ -107,13 +107,13 @@ SEQAN_DEFINE_TEST(test_simple_intervals_io_smart_file_read)
     seqan::GenomicRegion region;
 
     // Read and check first record.
-    readRecord(region, simple_intervalsIn);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(region, simple_intervalsIn));
     SEQAN_ASSERT_EQ(region.seqName, "chr1");
     SEQAN_ASSERT_EQ(region.beginPos, 2489280);
     SEQAN_ASSERT_EQ(region.endPos, 2489282);
 
     // Read and check second record.
-    readRecord(region, simple_intervalsIn);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(region, simple_intervalsIn));
     SEQAN_ASSERT_EQ(region.seqName, "chr4");
     SEQAN_ASSERT_EQ(region.beginPos, 2489840);
     SEQAN_ASSERT_EQ(region.endPos, 2489841);
@@ -136,13 +136,13 @@ SEQAN_DEFINE_TEST(test_simple_intervals_io_smart_file_write)
     region.seqName = "chr1";
     region.beginPos = 2489280;
     region.endPos = 2489282;
-    writeRecord(simple_intervalsOut, region);
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(simple_intervalsOut, region));
 
     // Write out second record.
     region.seqName = "chr4";
     region.beginPos = 2489840;
     region.endPos = 2489841;
-    writeRecord(simple_intervalsOut, region);
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(simple_intervalsOut, region));
 
     seqan::CharString expected = "chr1:2489281-2489282\n"
                                  "chr4:2489841\n";

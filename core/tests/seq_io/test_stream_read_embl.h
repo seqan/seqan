@@ -305,30 +305,30 @@ void testHelperReadEmblSingle(TFwdIterator & iter)
     // First record.
     
     // Read EMBL headers, split ID header, skip rest.
-    readRecord(k, v, iter, EmblHeader());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(k, v, iter, EmblHeader()));
     SEQAN_ASSERT_EQ(k, CharString("ID"));
     SEQAN_ASSERT_EQ(v, CharString("SC10H5 standard; DNA; PRO; 4870 BP."));
     while (nextIs(iter, EmblHeader()))
-        readRecord(k, v, iter, EmblHeader());
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(k, v, iter, EmblHeader()));
 
     // Read EMBL sequence.
     SEQAN_ASSERT(nextIs(iter, EmblSequence()));
     DnaString seq;
-    readRecord(seq, iter, EmblSequence());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(seq, iter, EmblSequence()));
     SEQAN_ASSERT_EQ(length(seq), 4870u);
 
     // Second record.
 
     // Read EMBL headers, split ID header, skip rest.
-    readRecord(k, v, iter, EmblHeader());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(k, v, iter, EmblHeader()));
     SEQAN_ASSERT_EQ(k, CharString("ID"));
     SEQAN_ASSERT_EQ(v, CharString("AB000263 standard; RNA; PRI; 368 BP."));
     while (nextIs(iter, EmblHeader()))
-        readRecord(k, v, iter, EmblHeader());
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(k, v, iter, EmblHeader()));
 
     // Read EMBL sequence.
     SEQAN_ASSERT(nextIs(iter, EmblSequence()));
-    readRecord(seq, iter, EmblSequence());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(seq, iter, EmblSequence()));
     SEQAN_ASSERT_EQ(length(seq), 368u);
 
     SEQAN_ASSERT(atEnd(iter));
@@ -342,11 +342,11 @@ void testHelperReadEmblRecord(TFwdIterator & iter)
     CharString id;
     Dna5String seq;
 
-    readRecord(id, seq, iter, Embl());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(id, seq, iter, Embl()));
     SEQAN_ASSERT_EQ(id, CharString("SC10H5 standard; DNA; PRO; 4870 BP."));
     SEQAN_ASSERT_EQ(length(seq), 4870u);
 
-    readRecord(id, seq, iter, Embl());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(id, seq, iter, Embl()));
     SEQAN_ASSERT_EQ(id, CharString("AB000263 standard; RNA; PRI; 368 BP."));
     SEQAN_ASSERT_EQ(length(seq), 368u);
 }

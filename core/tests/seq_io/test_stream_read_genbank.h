@@ -322,30 +322,30 @@ void testHelperReadGenBankSingle(TRecordReader & reader)
     // First record.
     
     // Read GENBANK headers, split ID header, skip rest.
-    readRecord(k, v, reader, GenBankHeader());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(k, v, reader, GenBankHeader()));
     SEQAN_ASSERT_EQ(k, CharString("LOCUS"));
     SEQAN_ASSERT_EQ(v, CharString("SCU49845     5028 bp    DNA             PLN       21-JUN-1999"));
     while (nextIs(reader, GenBankHeader()))
-        readRecord(k, v, reader, GenBankHeader());
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(k, v, reader, GenBankHeader()));
 
     // Read GENBANK sequence.
     SEQAN_ASSERT(nextIs(reader, GenBankSequence()));
     DnaString seq;
-    readRecord(seq, reader, GenBankSequence());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(seq, reader, GenBankSequence()));
     SEQAN_ASSERT_EQ(length(seq), 5028u);
 
     // Second record.
 
     // Read GENBANK headers, split ID header, skip rest.
-    readRecord(k, v, reader, GenBankHeader());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(k, v, reader, GenBankHeader()));
     SEQAN_ASSERT_EQ(k, CharString("LOCUS"));
     SEQAN_ASSERT_EQ(v, CharString("AB031069     2487 bp    mRNA            PRI       27-MAY-2000"));
     while (nextIs(reader, GenBankHeader()))
-        readRecord(k, v, reader, GenBankHeader());
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(k, v, reader, GenBankHeader()));
 
     // Read GENBANK sequence.
     SEQAN_ASSERT(nextIs(reader, GenBankSequence()));
-    readRecord(seq, reader, GenBankSequence());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(seq, reader, GenBankSequence()));
     SEQAN_ASSERT_EQ(length(seq), 2487u);
 
     SEQAN_ASSERT(atEnd(reader));
@@ -359,11 +359,11 @@ void testHelperReadGenBankRecord(TRecordReader & reader)
     CharString id;
     Dna5String seq;
 
-    readRecord(id, seq, reader, GenBank());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(id, seq, reader, GenBank()));
     SEQAN_ASSERT_EQ(id, CharString("U49845.1  GI:1293613"));
     SEQAN_ASSERT_EQ(length(seq), 5028u);
 
-    readRecord(id, seq, reader, GenBank());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(id, seq, reader, GenBank()));
     SEQAN_ASSERT_EQ(id, CharString("AB031069.1  GI:8100074"));
     SEQAN_ASSERT_EQ(length(seq), 2487u);
 }
