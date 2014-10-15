@@ -93,7 +93,7 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read_sequence)
     SEQAN_ASSERT_EQ(open(faiIndex, toCString(filePath)), true);
 
     seqan::Dna5String str;
-    readSequence(str, faiIndex, 0);
+    SEQAN_ASSERT_DOES_NOT_THROW(readSequence(str, faiIndex, 0));
     SEQAN_ASSERT_EQ(prefix(str, 20), "TTGCCCACTCCCTCTCTGCG");
     SEQAN_ASSERT_EQ(suffix(str, length(str) - 20), "CGCAGAGAGGGAGTGGGCAA");
 }
@@ -109,7 +109,7 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read_region)
         SEQAN_ASSERT_EQ(open(faiIndex, toCString(filePath)), true);
         
         seqan::Dna5String str;
-        readRegion(str, faiIndex, 0, 100, 110);
+        SEQAN_ASSERT_DOES_NOT_THROW(readRegion(str, faiIndex, 0, 100, 110));
         SEQAN_ASSERT_EQ(str, "GAGCGCGCAG");
     }
     // From integers, over the end of the sequence.
@@ -121,7 +121,7 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read_region)
         SEQAN_ASSERT_EQ(open(faiIndex, toCString(filePath)), true);
         
         seqan::Dna5String str;
-        readRegion(str, faiIndex, 0, 4708, 10000);
+        SEQAN_ASSERT_DOES_NOT_THROW(readRegion(str, faiIndex, 0, 4708, 10000));
         SEQAN_ASSERT_EQ(str, "GAGTGGGCAA");
     }
     // From GenomicRegion.
@@ -134,7 +134,9 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_fai_index_read_region)
         
         seqan::GenomicRegion region("gi|9632547|ref|NC_002077.1|:101-110");
         seqan::Dna5String str;
-        SEQAN_ASSERT_EQ(readRegion(str, faiIndex, region), true);
+        bool res = false;
+        SEQAN_ASSERT_DOES_NOT_THROW(res = readRegion(str, faiIndex, region));
+        SEQAN_ASSERT_EQ(res, true);
         SEQAN_ASSERT_EQ(str, "GAGCGCGCAG");
     }
 }

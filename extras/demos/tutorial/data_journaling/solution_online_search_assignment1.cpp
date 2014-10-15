@@ -6,41 +6,35 @@
 using namespace seqan;
 
 template <typename TString, typename TSpec>
-inline int
-loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
-            SeqFileIn & databaseFile,
-            JoinConfig<TSpec> const & joinConfig)
+void loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
+                 SeqFileIn & databaseFile,
+                 JoinConfig<TSpec> const & joinConfig)
 {
     typedef typename Host<TString>::Type THost;
-    // [A]
+
     clear(journalSet);
 
-    // Construct the temporary buffers for the read id and sequence.
-    String<char> tempSeqId;
+    String<char> seqId;
     THost sequence;
 
     // No sequences in the fasta file!
     if (atEnd(databaseFile))
-    {
-        std::cerr << "Empty FASTA file." << std::endl;
-        return -1;
-    }
-    // First read sequence for reference sequence.
-    readRecord(tempSeqId, sequence, databaseFile);
-    // [B]
-    createHost(journalSet, sequence);  // When using create we copy the reference instead of storing a pointer.
+        throw IOError("empty FASTA file");
 
-    // Read remaining sequences.
+    // First read sequence for reference sequence.
+    readRecord(seqId, sequence, databaseFile);
+
+    // We have to create the global reference sequence otherwise we loose the information after this function terminates.
+    createHost(journalSet, sequence);
+
+    // If there are more
     while (!atEnd(databaseFile))
     {
-        readRecord(tempSeqId, sequence, databaseFile);
-        // [C]
-        appendValue(journalSet, TString(sequence)); // First we append the sequence to the set.
-        join(journalSet, length(journalSet) - 1, joinConfig); // Second we join it to the set.
+        readRecord(seqId, sequence, databaseFile);
+        appendValue(journalSet, TString(sequence));
+        join(journalSet, length(journalSet) - 1, joinConfig);
     }
-    return 0;
 }
-
 
 int main()
 {
@@ -56,7 +50,20 @@ int main()
     // Reading each sequence and journal them.
     TJournaledSet journalSet;
     JoinConfig<GlobalAlign<JournaledCompact> > joinConfig;
-    loadAndJoin(journalSet, databaseFile, joinConfig);
+    try
+    {
+        loadAndJoin(journalSet, databaseFile, joinConfig);
+    }
+    catch (ParseError const & err)
+    {
+        std::cerr << "Problem with parsing the files: " << err.what();
+        return 1;
+    }
+    catch (IOError const & err)
+    {
+        std::cerr << "Problem during I/O: " << err.what();
+        return 1;
+    }
 
     return 0;
 }

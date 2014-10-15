@@ -58,7 +58,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_read_record_ucsc_known_genes)
     UcscRecord record;
     UcscIOContext ucscIOContext;
 
-    readRecord(record, ucscIOContext, iter, Ucsc());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, ucscIOContext, iter, Ucsc()));
     SEQAN_ASSERT_EQ(record.transName, "uc002yoz.1");
     SEQAN_ASSERT_EQ(record.contigName, "chr21");
     SEQAN_ASSERT(record.format == record.KNOWN_GENE);
@@ -74,7 +74,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_read_record_ucsc_known_genes)
     SEQAN_ASSERT_EQ(record.annotationBeginPos, 33031813u);
     SEQAN_ASSERT_EQ(record.annotationEndPos, 33026870u);
 
-    readRecord(record, ucscIOContext, iter, Ucsc());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, ucscIOContext, iter, Ucsc()));
     SEQAN_ASSERT_EQ(record.transName, "uc002ypa.3");
     SEQAN_ASSERT_EQ(record.contigName, "chr21");
     SEQAN_ASSERT(record.format == record.KNOWN_GENE);
@@ -96,8 +96,8 @@ SEQAN_DEFINE_TEST(test_ucsc_io_read_record_ucsc_known_genes)
 
     for (unsigned i = 0; i < 20; ++i)
     {
-        SEQAN_TEST_EXCEPTION(ParseError,
-                             seqan::readRecord(record, ucscIOContext, iter, Ucsc()));
+        SEQAN_ASSERT_THROWS(seqan::readRecord(record, ucscIOContext, iter, Ucsc()),
+                            ParseError);
         skipLine(iter);
     }
 }
@@ -116,25 +116,26 @@ SEQAN_DEFINE_TEST(test_ucsc_io_read_record_ucsc_known_isoforms)
     UcscRecord record;
     UcscIOContext ucscIOContext;
 
-    readRecord(record, ucscIOContext, iter, Ucsc());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, ucscIOContext, iter, Ucsc()));
     SEQAN_ASSERT_EQ(record.transName, "GENE1");
     SEQAN_ASSERT_EQ(record.contigName, "NM_001025288");
     SEQAN_ASSERT(record.format == record.KNOWN_ISOFORMS);
 
-    readRecord(record, ucscIOContext, iter, Ucsc());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, ucscIOContext, iter, Ucsc()));
     SEQAN_ASSERT_EQ(record.transName, "GENE2");
     SEQAN_ASSERT_EQ(record.contigName, "NM_134386");
     SEQAN_ASSERT(record.format == record.KNOWN_ISOFORMS);
 
-    readRecord(record, ucscIOContext, iter, Ucsc());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, ucscIOContext, iter, Ucsc()));
     SEQAN_ASSERT_EQ(record.transName, "GENE3");
     SEQAN_ASSERT_EQ(record.contigName, "NM_001030033");
     SEQAN_ASSERT(record.format == record.KNOWN_ISOFORMS);
 
     for (unsigned i = 0; i < 20; ++i)
     {
-        SEQAN_TEST_EXCEPTION(ParseError,
-                             seqan::readRecord(record, ucscIOContext, iter, Ucsc()));
+        SEQAN_ASSERT_THROWS(
+            seqan::readRecord(record, ucscIOContext, iter, Ucsc()),
+            ParseError);
         skipLine(iter);
     }
 }
@@ -153,8 +154,8 @@ SEQAN_DEFINE_TEST(test_ucsc_io_write_record_ucsc_known_genes)
     {
         UcscRecord record;
         UcscIOContext ucscIOContext;
-        readRecord(record, ucscIOContext, iter, Ucsc());
-        writeRecord(outString, record, Ucsc());
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, ucscIOContext, iter, Ucsc()));
+        SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(outString, record, Ucsc()));
     }
 
     SEQAN_ASSERT_EQ(mmapString, outString);
@@ -174,8 +175,8 @@ SEQAN_DEFINE_TEST(test_ucsc_io_write_record_ucsc_known_isoforms)
     CharString outString;
     while (!atEnd(iter))
     {
-        readRecord(record, ucscIOContext, iter, Ucsc());
-        writeRecord(outString, record, Ucsc());
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, ucscIOContext, iter, Ucsc()));
+        SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(outString, record, Ucsc()));
     }
 
     SEQAN_ASSERT_EQ(mmapString, outString);
@@ -229,7 +230,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_ucsc_file_in_read_record_ucsc_known_genes)
 
     for (unsigned i = 0; i < 20; ++i)
     {
-        SEQAN_TEST_EXCEPTION(ParseError, seqan::readRecord(record, ucscFileIn));
+        SEQAN_ASSERT_THROWS(seqan::readRecord(record, ucscFileIn), ParseError);
         skipLine(ucscFileIn.iter);
     }
 }
@@ -262,7 +263,7 @@ SEQAN_DEFINE_TEST(test_ucsc_io_ucsc_file_in_read_record_ucsc_known_isoforms)
 
     for (unsigned i = 0; i < 20; ++i)
     {
-        SEQAN_TEST_EXCEPTION(ParseError, seqan::readRecord(record, ucscFileIn));
+        SEQAN_ASSERT_THROWS(seqan::readRecord(record, ucscFileIn), ParseError);
         skipLine(ucscFileIn.iter);
     }
 }
@@ -282,8 +283,8 @@ SEQAN_DEFINE_TEST(test_ucsc_io_ucsc_file_out_write_record_ucsc_known_genes)
     while (!atEnd(ucscFileIn))
     {
         UcscRecord record;
-        readRecord(record, ucscFileIn);
-        writeRecord(ucscFileOut, record);
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, ucscFileIn));
+        SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(ucscFileOut, record));
     }
 
     SEQAN_ASSERT_EQ(mmapString, ss.str().c_str());
@@ -304,8 +305,8 @@ SEQAN_DEFINE_TEST(test_ucsc_io_ucsc_file_out_write_record_ucsc_known_isoforms)
     while (!atEnd(ucscFileIn))
     {
         UcscRecord record;
-        readRecord(record, ucscFileIn);
-        writeRecord(ucscFileOut, record);
+        SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, ucscFileIn));
+        SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(ucscFileOut, record));
     }
 
     SEQAN_ASSERT_EQ(mmapString, ss.str().c_str());

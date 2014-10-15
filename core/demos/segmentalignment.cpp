@@ -21,13 +21,25 @@ int main(int argc, const char *argv[])
     CharString id;
     TSequence seq;
 	TSequenceSet seqs;
-	for(int i = 1; i < argc; ++i)
+	try
     {
-        SeqFileIn seqFileIn(argv[i]);
-        readRecord(id, seq, seqFileIn);
-		appendValue(seqs, seq);
+        for(int i = 1; i < argc; ++i)
+        {
+            SeqFileIn seqFileIn(argv[i]);
+            readRecord(id, seq, seqFileIn);
+            appendValue(seqs, seq);
+        }
     }
-	
+    catch (ParseError const & err)
+    {
+        std::cerr << "Problem reading file: " << err.what() << "\n";
+        return 1;
+    }
+    catch (IOError const & err)
+    {
+        std::cerr << "Problem opening file: " << err.what() << "\n";
+        return 1;
+    }
 	
 	typedef Fragment<> TMatch;
 	String<TMatch> matches;

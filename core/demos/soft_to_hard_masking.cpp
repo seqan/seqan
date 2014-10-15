@@ -44,11 +44,11 @@
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
 
+using namespace seqan;
+
 template <typename TStream>
 void convertToHardMasked(TStream & stream, char const * filename)
 {
-    using namespace seqan;
-
     SeqFileIn inFile(filename);
 
     String<char> meta;
@@ -76,10 +76,23 @@ void convertToHardMasked(TStream & stream, char const * filename)
 
 int main(int argc, char const ** argv)
 {
-    for (int i = 1; i < argc; ++i)
+    try
     {
-        std::cerr << argv[i] << '\n';
-        convertToHardMasked(std::cout, argv[i]);
+        for (int i = 1; i < argc; ++i)
+        {
+            std::cerr << argv[i] << '\n';
+            convertToHardMasked(std::cout, argv[i]);
+        }
+    }
+    catch (FileOpenError const & err)
+    {
+        std::cerr << "Problem opening file: " << err.what() << "\n";
+        return 1;
+    }
+    catch (ParseError const & err)
+    {
+        std::cerr << "Problem reading file: " << err.what() << "\n";
+        return 1;
     }
 
     return 0;

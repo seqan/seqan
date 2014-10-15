@@ -120,15 +120,15 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_read_record_text_fasta)
     seqan::CharString id;
     seqan::Dna5String seq;
 
-    readRecord(id, seq, seqIO);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(id, seq, seqIO));
     SEQAN_ASSERT_EQ(id, "seq1");
     SEQAN_ASSERT_EQ(seq, "CGATCGATAAT");
 
-    readRecord(id, seq, seqIO);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(id, seq, seqIO));
     SEQAN_ASSERT_EQ(id, "seq2");
     SEQAN_ASSERT_EQ(seq, "CCTCTCTCTCCCT");
 
-    readRecord(id, seq, seqIO);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(id, seq, seqIO));
     SEQAN_ASSERT_EQ(id, "seq3");
     SEQAN_ASSERT_EQ(seq, "CCCCCCCC");
 
@@ -148,7 +148,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_read_all_text_fasta)
     seqan::StringSet<seqan::CharString> ids;
     seqan::StringSet<seqan::Dna5String> seqs;
 
-    readRecords(ids, seqs, seqIO);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecords(ids, seqs, seqIO));
     SEQAN_ASSERT_EQ(length(seqs), 3u);
     SEQAN_ASSERT_EQ(ids[0], "seq1");
     SEQAN_ASSERT_EQ(seqs[0], "CGATCGATAAT");
@@ -183,7 +183,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_record_text_fasta)
     appendValue(seqs, "CCTCTCTCTCCCT");
     appendValue(seqs, "CCCCCCCC");
 
-    writeRecords(seqIO, ids, seqs);
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecords(seqIO, ids, seqs));
 
     close(seqIO);  // Make sure we can read this later.
 
@@ -211,7 +211,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_all_text_fasta)
     appendValue(seqs, "CCTCTCTCTCCCT");
     appendValue(seqs, "CCCCCCCC");
 
-    writeRecords(seqIO, ids, seqs);
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecords(seqIO, ids, seqs));
 
     close(seqIO);  // Make sure we can read this later.
 
@@ -236,8 +236,8 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_record_text_fastq_no_qual)
     seqan::StringSet<seqan::CharString> ids;
     seqan::StringSet<seqan::Dna5QString> seqs;
 
-    readRecords(ids, seqs, seqIn);
-    writeRecords(seqOut, ids, seqs);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecords(ids, seqs, seqIn));
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecords(seqOut, ids, seqs));
 
     close(seqIn);
     close(seqOut);  // Make sure we can read this later.
@@ -268,7 +268,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_record_text_fastq_with_qual)
     appendValue(quals, "IIIIIIIIIIIII");
     appendValue(quals, "IIIIIIII");
 
-    writeRecords(seqIO, ids, seqs, quals);
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecords(seqIO, ids, seqs, quals));
 
     close(seqIO);  // Make sure we can read this later.
 
@@ -296,7 +296,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_all_text_fastq_no_qual)
     appendValue(seqs, "CCTCTCTCTCCCT");
     appendValue(seqs, "CCCCCCCC");
 
-    writeRecords(seqIO, ids, seqs);
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecords(seqIO, ids, seqs));
 
     close(seqIO);  // Make sure we can read this later.
 
@@ -328,7 +328,7 @@ SEQAN_DEFINE_TEST(test_seq_io_sequence_file_write_all_text_fastq_with_qual)
     appendValue(quals, "IIIIIIIIIIIII");
     appendValue(quals, "IIIIIIII");
 
-    writeRecords(seqIO, ids, seqs, quals);
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecords(seqIO, ids, seqs, quals));
 
     close(seqIO);  // Make sure we can read this later.
 

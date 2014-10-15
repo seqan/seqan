@@ -53,13 +53,13 @@ SEQAN_DEFINE_TEST(test_bed_read_bed3_record)
     seqan::CharString buffer;
 
     // Perform tests.
-    readRecord(record, buffer, iter, seqan::Bed());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter, seqan::Bed()));
     SEQAN_ASSERT_EQ(record.ref, "I");
     SEQAN_ASSERT_EQ(record.beginPos, 123);
     SEQAN_ASSERT_EQ(record.endPos, 456);
     SEQAN_ASSERT_EQ(record.data, "some data that is \tignored");
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter, seqan::Bed()));
     SEQAN_ASSERT_EQ(record.ref, "II");
     SEQAN_ASSERT_EQ(record.beginPos, 999);
     SEQAN_ASSERT_EQ(record.endPos, 1000);
@@ -80,14 +80,14 @@ SEQAN_DEFINE_TEST(test_bed_read_bed4_record)
 
     // Perform tests.
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter, seqan::Bed()));
     SEQAN_ASSERT_EQ(record.ref, "I");
     SEQAN_ASSERT_EQ(record.beginPos, 123);
     SEQAN_ASSERT_EQ(record.endPos, 456);
     SEQAN_ASSERT_EQ(record.name, "NAME");
     SEQAN_ASSERT_EQ(record.data, "some data that is \tignored");
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter, seqan::Bed()));
     SEQAN_ASSERT_EQ(record.ref, "II");
     SEQAN_ASSERT_EQ(record.beginPos, 999);
     SEQAN_ASSERT_EQ(record.endPos, 1000);
@@ -110,7 +110,7 @@ SEQAN_DEFINE_TEST(test_bed_read_bed5_record)
 
     // Perform tests.
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter, seqan::Bed()));
     SEQAN_ASSERT_EQ(record.ref, "I");
     SEQAN_ASSERT_EQ(record.beginPos, 123);
     SEQAN_ASSERT_EQ(record.endPos, 456);
@@ -118,7 +118,7 @@ SEQAN_DEFINE_TEST(test_bed_read_bed5_record)
     SEQAN_ASSERT_EQ(record.score, "3");
     SEQAN_ASSERT_EQ(record.data, "some data that is \tignored");
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter, seqan::Bed()));
     SEQAN_ASSERT_EQ(record.ref, "II");
     SEQAN_ASSERT_EQ(record.beginPos, 999);
     SEQAN_ASSERT_EQ(record.endPos, 1000);
@@ -142,7 +142,7 @@ SEQAN_DEFINE_TEST(test_bed_read_bed6_record)
 
     // Perform tests.
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter, seqan::Bed()));
     SEQAN_ASSERT_EQ(record.ref, "I");
     SEQAN_ASSERT_EQ(record.beginPos, 123);
     SEQAN_ASSERT_EQ(record.endPos, 456);
@@ -151,7 +151,7 @@ SEQAN_DEFINE_TEST(test_bed_read_bed6_record)
     SEQAN_ASSERT_EQ(record.strand, '-');
     SEQAN_ASSERT_EQ(record.data, "some data that is \tignored");
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter, seqan::Bed()));
     SEQAN_ASSERT_EQ(record.ref, "II");
     SEQAN_ASSERT_EQ(record.beginPos, 999);
     SEQAN_ASSERT_EQ(record.endPos, 1000);
@@ -176,7 +176,7 @@ SEQAN_DEFINE_TEST(test_bed_read_bed12_record)
 
     // Perform tests.
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter, seqan::Bed()));
     SEQAN_ASSERT_EQ(record.ref, "I");
     SEQAN_ASSERT_EQ(record.beginPos, 123);
     SEQAN_ASSERT_EQ(record.endPos, 456);
@@ -197,7 +197,7 @@ SEQAN_DEFINE_TEST(test_bed_read_bed12_record)
     SEQAN_ASSERT_EQ(record.blockBegins[2], 3);
     SEQAN_ASSERT_EQ(record.data, "some data that is \tignored");
 
-    readRecord(record, buffer, iter, seqan::Bed());
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record, buffer, iter, seqan::Bed()));
     SEQAN_ASSERT_EQ(record.ref, "II");
     SEQAN_ASSERT_EQ(record.beginPos, 999);
     SEQAN_ASSERT_EQ(record.endPos, 1000);
@@ -235,8 +235,8 @@ SEQAN_DEFINE_TEST(test_bed_write_bed3_record)
 
     // Write BED records to string stream.
     String<char> out;
-    writeRecord(out, record1, seqan::Bed());
-    writeRecord(out, record2, seqan::Bed());
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(out, record1, seqan::Bed()));
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(out, record2, seqan::Bed()));
 
     // Compar string stream to expected value.
     String<char> expected = "I\t123\t456\tsome data that is \tignored\n";
@@ -262,8 +262,8 @@ SEQAN_DEFINE_TEST(test_bed_write_bed4_record)
 
     // Write BED records to string stream.
     String<char> out;
-    writeRecord(out, record1, seqan::Bed());
-    writeRecord(out, record2, seqan::Bed());
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(out, record1, seqan::Bed()));
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(out, record2, seqan::Bed()));
 
     // Compar string stream to expected value.
     String<char> expected = "I\t123\t456\tNAME1\tsome data that is \tignored\n";
@@ -291,8 +291,8 @@ SEQAN_DEFINE_TEST(test_bed_write_bed5_record)
 
     // Write BED records to string stream.String<char> out;
     String<char> out;
-    writeRecord(out, record1, seqan::Bed());
-    writeRecord(out, record2, seqan::Bed());
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(out, record1, seqan::Bed()));
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(out, record2, seqan::Bed()));
 
     // Compar string stream to expected value.
     String<char> expected = "I\t123\t456\tNAME1\t5\tsome data that is \tignored\n";
@@ -322,8 +322,8 @@ SEQAN_DEFINE_TEST(test_bed_write_bed6_record)
 
     // Write BED records to string stream.
     String<char> out;
-    writeRecord(out, record1, seqan::Bed());
-    writeRecord(out, record2, seqan::Bed());
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(out, record1, seqan::Bed()));
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(out, record2, seqan::Bed()));
 
     // Compar string stream to expected value.
     String<char> expected = "I\t123\t456\tNAME1\t5\t-\tsome data that is \tignored\n";
@@ -373,8 +373,8 @@ SEQAN_DEFINE_TEST(test_bed_write_bed12_record)
 
     // Write BED records to string stream.
     String<char> out;
-    writeRecord(out, record1, seqan::Bed());
-    writeRecord(out, record2, seqan::Bed());
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(out, record1, seqan::Bed()));
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(out, record2, seqan::Bed()));
 
     // Compar string stream to expected value.
     String<char> expected =
@@ -391,7 +391,7 @@ SEQAN_DEFINE_TEST(test_bed_bed_file_read)
     seqan::BedFileIn bedStream(toCString(inPath));
 
     seqan::BedRecord<seqan::Bed3> record1;
-    readRecord(record1, bedStream);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record1, bedStream));
 
     SEQAN_ASSERT_EQ(record1.ref, "chr7");
     SEQAN_ASSERT_EQ(record1.beginPos, 127471196);
@@ -399,7 +399,7 @@ SEQAN_DEFINE_TEST(test_bed_bed_file_read)
     SEQAN_ASSERT_EQ(record1.data, "Pos1\t0\t+\t127471196\t127472363\t255,0,0");
 
     seqan::BedRecord<seqan::Bed3> record2;
-    readRecord(record2, bedStream);
+    SEQAN_ASSERT_DOES_NOT_THROW(readRecord(record2, bedStream));
     SEQAN_ASSERT(atEnd(bedStream));
 
     SEQAN_ASSERT_EQ(record2.ref, "chr8");
@@ -420,14 +420,14 @@ SEQAN_DEFINE_TEST(test_bed_bed_file_write)
     record1.beginPos = 127471196;
     record1.endPos = 127472363;
     record1.data = "Pos1\t0\t+\t127471196\t127472363\t255,0,0";
-    writeRecord(bedStream, record1);
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(bedStream, record1));
 
     seqan::BedRecord<seqan::Bed3> record2;
     record2.ref = "chr8";
     record2.beginPos = 127472363;
     record2.endPos = 127473530;
     record2.data = "Pos2\t0\t+\t127472363\t127473530\t255,0,0";
-    writeRecord(bedStream, record2);
+    SEQAN_ASSERT_DOES_NOT_THROW(writeRecord(bedStream, record2));
 
     close(bedStream);
 
