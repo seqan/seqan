@@ -33,8 +33,8 @@
 // Author: Tobias Rausch <rausch@embl.de>
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_H_
-#define CORE_INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_H_
+#ifndef CORE_INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_POINTER_H_
+#define CORE_INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_POINTER_H_
 
 namespace seqan {
 
@@ -47,76 +47,78 @@ namespace seqan {
 // ============================================================================
 
 // --------------------------------------------------------------------------
-// Class InternalPropertyMap
+// Class InternalPointerPropertyMap
 // --------------------------------------------------------------------------
 
 /*!
- * @class InternalPropertyMap InternalPropertyMap
+ * @class InternalPointerPropertyMap InternalPointerPropertyMap
  * @implements PropertyMapConcept
  * @headerfile <seqan/graph_types.h>
- * @brief An internal property map with direct access to members.
+ * @brief An internal property map using pointer to members.
  *
- * @signature template <typename TMember>
- *            class InternalPropertyMap;
+ * @signature template <typename TMemberPointer, TMemberPointer const MEMBER_POINTER>
+ *            class InternalPointerPropertyMap;
  *
- * @tparam TMember The member type.
+ * @tparam TMemberPointer  A pointer to a member type.
+ * @tparam MEMBER_POINTER  A pointer to a type member of type <tt>TMemberPointer</tt>.
  *
- * Internal property maps are used to access internal edge cargos.
+ * Internal property maps are used to access internal edge cargos that are structs or classes.
  */
 
-template <typename TMember>
-struct InternalPropertyMap
+template <typename TPointer, TPointer const MEMBER_POINTER>
+struct InternalPointerPropertyMap
 {};
 
-template <typename TMember>
-SEQAN_CONCEPT_IMPL((InternalPropertyMap<TMember>), (PropertyMapConcept));
+template <typename TPointer, TPointer const MEMBER_POINTER>
+SEQAN_CONCEPT_IMPL((InternalPointerPropertyMap<TPointer, MEMBER_POINTER>), (PropertyMapConcept));
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
 // --------------------------------------------------------------------------
-// Metafunction InternalPropertyMap#Value
+// Metafunction InternalPointerPropertyMap#Value
 // --------------------------------------------------------------------------
 
-template <typename TValue>
-struct Value<InternalPropertyMap<TValue> >
+template <typename TClass, typename TValue, TValue TClass::* MEMBER_POINTER>
+struct Value<InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER> >
 {
     typedef TValue Type;
 };
 
-template <typename TValue>
-struct Value<InternalPropertyMap<TValue> const> : Value<InternalPropertyMap<TValue> >
+template <typename TClass, typename TValue, TValue TClass::* MEMBER_POINTER>
+struct Value<InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER> const> :
+    Value<InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER> >
 {};
 
 // --------------------------------------------------------------------------
-// Metafunction InternalPropertyMap#GetValue
+// Metafunction InternalPointerPropertyMap#GetValue
 // --------------------------------------------------------------------------
 
-template <typename TValue>
-struct GetValue<InternalPropertyMap<TValue> >
+template <typename TClass, typename TValue, TValue TClass::* MEMBER_POINTER>
+struct GetValue<InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER> >
 {
     typedef TValue Type;
 };
 
-template <typename TValue>
-struct GetValue<InternalPropertyMap<TValue> const>
+template <typename TClass, typename TValue, TValue TClass::* MEMBER_POINTER>
+struct GetValue<InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER> const>
 {
     typedef TValue Type;
 };
 
 // --------------------------------------------------------------------------
-// Metafunction InternalPropertyMap#Reference
+// Metafunction InternalPointerPropertyMap#Reference
 // --------------------------------------------------------------------------
 
-template <typename TValue>
-struct Reference<InternalPropertyMap<TValue> const>
+template <typename TClass, typename TValue, TValue TClass::* MEMBER_POINTER>
+struct Reference<InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER> const>
 {
     typedef TValue const & Type;
 };
 
-template <typename TValue>
-struct Reference<InternalPropertyMap<TValue> >
+template <typename TClass, typename TValue, TValue TClass::* MEMBER_POINTER>
+struct Reference<InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER> >
 {
     typedef TValue & Type;
 };
@@ -129,49 +131,49 @@ struct Reference<InternalPropertyMap<TValue> >
 // Function Graph#resizeEdgeMap()
 // --------------------------------------------------------------------------
 
-// Overload for InternalPropertyMap.
+// Overload for InternalPointerPropertyMap.
 
-template <typename TPropMap, typename TSpec>
-void resizeEdgeMap(InternalPropertyMap<TPropMap> &, Graph<TSpec> const &)
+template <typename TPropMap, TPropMap const INSTANCE, typename TSpec>
+void resizeEdgeMap(InternalPointerPropertyMap<TPropMap, INSTANCE> &, Graph<TSpec> const &)
 {}
 
 // --------------------------------------------------------------------------
-// Function InternalPropertyMap#resize()
+// Function InternalPointerPropertyMap#resize()
 // --------------------------------------------------------------------------
 
-template <typename TPropertyMap, typename TSize, typename TPrototype>
-void resize(InternalPropertyMap<TPropertyMap> &, TSize, TPrototype)
+template <typename TPropertyMap, TPropertyMap INSTANCE, typename TSize, typename TPrototype>
+void resize(InternalPointerPropertyMap<TPropertyMap, INSTANCE> &, TSize, TPrototype)
 {}
 
 // --------------------------------------------------------------------------
-// Function InternalPropertyMap#assignProperty()
+// Function InternalPointerPropertyMap#assignProperty()
 // --------------------------------------------------------------------------
 
 /*!
- * @fn InternalPropertyMap#assignProperty:
+ * @fn InternalPointerPropertyMap#assignProperty:
  * @brief Assigns a property to an item in the property map.
  * @signature void assignProperty(pm, d, val)
  *
- * @param[in,out] pm  The InternalPropertyMap to assign into.
+ * @param[in,out] pm  The InternalPointerPropertyMap to assign into.
  * @param[in]     d   A vertex or edge descriptor that identifies the item in the property map.
  *                    Types: @link VertexDescriptor @endlink, @link Graph#EdgeDescriptor @endlink
  * @param[in]     val The new value, where thg type of the new value must match the value type of the property map.
  */
 
-template <typename TValue, typename TEdgeDescriptor>
-void assignProperty(InternalPropertyMap<TValue> &,
+template <typename TClass, typename TValue, TValue TClass::* MEMBER_POINTER, typename TEdgeDescriptor>
+void assignProperty(InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER> &,
                     TEdgeDescriptor const e,
                     TValue const val)
 {
-    cargo(e) = val;
+    (cargo(e)).*MEMBER_POINTER = val;
 }
 
 // --------------------------------------------------------------------------
-// Function InternalPropertyMap#property()
+// Function InternalPointerPropertyMap#property()
 // --------------------------------------------------------------------------
 
 /*!
- * @fn InternalPropertyMap#property:
+ * @fn InternalPointerPropertyMap#property:
  * @brief Accesses the property of an item in the property map.
  *
  * @signature TReference property(pm, d)
@@ -184,26 +186,28 @@ void assignProperty(InternalPropertyMap<TValue> &,
  *                    @link Reference @endlink.
  */
 
-template <typename TValue, typename TEdgeDescriptor>
-typename Reference<InternalPropertyMap<TValue> const>::Type
-property(InternalPropertyMap<TValue> const &, TEdgeDescriptor const e)
+template <typename TClass, typename TValue, TValue TClass::* MEMBER_POINTER, typename TEdgeDescriptor>
+typename Reference<InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER> >::Type
+property(InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER>&,
+         TEdgeDescriptor const e)
 {
-    return cargo(e);
+    return (cargo(e)).*MEMBER_POINTER;
 }
 
-template <typename TValue, typename TEdgeDescriptor>
-typename Reference<InternalPropertyMap<TValue> >::Type
-property(InternalPropertyMap<TValue>&, TEdgeDescriptor const e)
+template <typename TClass, typename TValue, TValue TClass::* MEMBER_POINTER, typename TEdgeDescriptor>
+typename Reference<InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER> const>::Type
+property(InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER> const &,
+         TEdgeDescriptor const e)
 {
-    return cargo(e);
+    return (cargo(e)).*MEMBER_POINTER;
 }
 
 // --------------------------------------------------------------------------
-// Function InternalPropertyMap#getProperty()
+// Function InternalPointerPropertyMap#getProperty()
 // --------------------------------------------------------------------------
 
 /*!
- * @fn InternalPropertyMap#getProperty
+ * @fn InternalPointerPropertyMap#getProperty
  * @brief Get method for an item's property.
  *
  * @signature TGetValue getProperty(pm, d)
@@ -215,13 +219,14 @@ property(InternalPropertyMap<TValue>&, TEdgeDescriptor const e)
  * @return TValue Get-value of the item in the property map of type @link InternalPropertymap#GetValue GetValue @endlink.
  */
 
-template <typename TValue, typename TEdgeDescriptor>
-typename GetValue<InternalPropertyMap<TValue> >::Type
-getProperty(InternalPropertyMap<TValue> const &, TEdgeDescriptor const e)
+template <typename TClass, typename TValue, TValue TClass::* MEMBER_POINTER, typename TEdgeDescriptor>
+typename GetValue<InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER> >::Type
+getProperty(InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER> const &,
+            TEdgeDescriptor const e)
 {
-    return getCargo(e);
+    return (getCargo(e)).*MEMBER_POINTER;
 }
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_H_
+#endif  // #ifndef CORE_INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_POINTER_H_
