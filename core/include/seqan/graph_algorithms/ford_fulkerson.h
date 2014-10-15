@@ -111,7 +111,7 @@ _getMinimumAug(Graph<TSpec> const & rG,
     // Build secondary predecessor map just containing the path
     TVertexDescriptor nilPred = getNil<typename VertexDescriptor<TGraph>::Type>();
     String<TVertexDescriptor> predMap;
-    resizeVertexMap(rG, predMap);
+    resizeVertexMap(predMap, rG);
     TIterator it = begin(predMap);
     for(;!atEnd(it);goNext(it)) {
         *it = nilPred;
@@ -173,7 +173,7 @@ fordFulkersonAlgorithm(TFlowMap & flow,
 
     // Initialization
     TVertexDescriptor nilPred = getNil<typename VertexDescriptor<TGraph>::Type>();
-    resizeEdgeMap(g,flow);
+    resizeEdgeMap(flow, g);
     TEdgeIterator itE(g);
     for(;!atEnd(itE);goNext(itE)) {
         assignProperty(flow, getValue(itE), 0);

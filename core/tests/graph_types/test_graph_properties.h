@@ -55,10 +55,10 @@ void Test_ExternalProperty() {
 	
 	// Test external property maps
 	String<int> dMap;
-	resizeVertexMap(g,dMap);
+	resizeVertexMap(dMap,g);
 
 	String<char> eMap;
-	resizeEdgeMap(g,eMap);
+	resizeEdgeMap(eMap,g);
 
 	assignProperty(dMap, v0, 3);
 	assignProperty(dMap, v1, 1);
@@ -83,7 +83,7 @@ void Test_ExternalProperty() {
 
 	char names[] = {'r', 's','t'};
 	String<char> nameMap;
-	assignVertexMap(g,nameMap, names);
+	assignVertexMap(nameMap, g, names);
 	SEQAN_ASSERT(getProperty(nameMap, v0) == 'r');
 	SEQAN_ASSERT(getProperty(nameMap, v1) == 's');
 }
@@ -111,8 +111,8 @@ void Test_Property() {
 	// First Variant: Explicit internal map with member Ids
 	InternalMap<TPair, 1> eMap1; // This property map is used to access the first member
 	InternalMap<TPair, 2> eMap2; // This property map is used to access the second member
-	resizeEdgeMap(g,eMap1);
-	resizeEdgeMap(g,eMap2);
+	resizeEdgeMap(eMap1, g);
+	resizeEdgeMap(eMap2, g);
 	assignProperty(eMap1, e1, 'a');
 	assignProperty(eMap2, e1, 20);
 	assignProperty(eMap1, e2, 'b');
@@ -147,7 +147,7 @@ void Test_Property() {
 	TEdgeDescriptor2 edge1 =addEdge(g2,v0,v0);
 	addEdge(g2,0,1);
 	InternalMap<unsigned int> edgeMap;
-	resizeEdgeMap(g2,edgeMap);
+	resizeEdgeMap(edgeMap,g2);
 	assignProperty(edgeMap, edge1 ,3);
 	SEQAN_ASSERT(getProperty(edgeMap, edge1) == 3);
 	SEQAN_ASSERT(property(edgeMap, edge1) == 3);
@@ -158,8 +158,8 @@ void Test_Property() {
 	// Second Variant: Pointer to member using a class
 	InternalPointerMap<char TPair:: *, &TPair::i1> eMap4;
 	InternalPointerMap<int TPair:: *, &TPair::i2> eMap5;
-	resizeEdgeMap(g,eMap4);
-	resizeEdgeMap(g,eMap5);
+	resizeEdgeMap(eMap4,g);
+	resizeEdgeMap(eMap5,g);
 	assignProperty(eMap4, e1, 'c');
 	assignProperty(eMap5, e1, 10);
 	assignProperty(eMap4, e2, 'd');
@@ -193,7 +193,7 @@ void Test_Property() {
 	addVertex(g10);addVertex(g10);addVertex(g10);
 	addEdge(g10,0,1);addEdge(g10,0,2);
 	String<int> weightMap;
-	assignEdgeMap(g10, weightMap, weights);
+	assignEdgeMap(weightMap, g10, weights);
 	SEQAN_ASSERT(getProperty(weightMap, findEdge(g10, 0, 1)) == 4);
 	SEQAN_ASSERT(getProperty(weightMap, findEdge(g10, 0, 2)) == 8);
 }

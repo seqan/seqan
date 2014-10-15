@@ -39,7 +39,7 @@ int main ()
 	typedef String<char> TCityName;
 	typedef String<TCityName> TProperties;
 	TProperties cityNames;
-	resizeVertexMap(g, cityNames);
+	resizeVertexMap(cityNames, g);
 
 // FRAGMENT(enter-properties)
 	assignProperty(cityNames, vertBerlin, "Berlin");

@@ -192,8 +192,8 @@ _createAcTrie(Pattern<TNeedle, AhoCorasick> & me)
 	// Create parent map
 	String<TVertexDescriptor> parentMap;
 	String<TAlphabet> parentCharMap;
-	resizeVertexMap(me.data_graph,parentMap);
-	resizeVertexMap(me.data_graph,parentCharMap);
+	resizeVertexMap(parentMap, me.data_graph);
+	resizeVertexMap(parentCharMap, me.data_graph);
 	for(TPosition i = 0;i<length(parentMap);++i) {
 		assignProperty(parentMap, i, nilVal);
 	}
@@ -206,7 +206,7 @@ _createAcTrie(Pattern<TNeedle, AhoCorasick> & me)
 
 	// Build AC
 	TVertexDescriptor root = getRoot(me.data_graph);
-	resizeVertexMap(me.data_graph,me.data_supplyMap);
+	resizeVertexMap(me.data_supplyMap, me.data_graph);
 	assignProperty(me.data_supplyMap, root, nilVal);
 
 	// Bfs Traversal

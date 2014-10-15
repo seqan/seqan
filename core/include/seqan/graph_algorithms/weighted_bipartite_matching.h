@@ -81,7 +81,7 @@ _weightedBipartiteMatching(Graph<TSpec>& g,
 
     // Find an initial labeling
     String<TCargo> label;
-    resizeVertexMap(g, label);
+    resizeVertexMap(label, g);
     TVertexIterator itV(g);
     for(;!atEnd(itV); goNext(itV)) {
         if (getProperty(vertMap, value(itV)) == true) value(label, value(itV)) = 0;
@@ -130,7 +130,7 @@ _weightedBipartiteMatching(Graph<TSpec>& g,
         clear(free);
         resize(free, getIdUpperBound(_getVertexIdManager(g)), true);
         clear(reverseMatchMap);
-        resizeVertexMap(g, reverseMatchMap);
+        resizeVertexMap(reverseMatchMap, g);
 
         // Find free vertex
         typedef typename Iterator<String<TEdges> >::Type TStringEdgeIter;

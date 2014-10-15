@@ -16,7 +16,7 @@ int main() {
     // One external property map: Weight map	
     unsigned int weights[] =    {10,  5,   1,   2,   4,   3,   9,   2,   7,   6};
     String<unsigned int> weightMap;
-    assignEdgeMap(g, weightMap, weights);
+    assignEdgeMap(weightMap, g, weights);
 
     // Out-parameters: Predecessor and distance map
     String<unsigned int> predMap;

@@ -96,13 +96,13 @@ void breadthFirstSearch(TPredecessorMap & predecessor,
     typedef typename Value<TDistanceMap>::Type TDistVal;
 
     // Initialization
-    resizeVertexMap(g,predecessor);
-    resizeVertexMap(g,distance);
+    resizeVertexMap(predecessor, g);
+    resizeVertexMap(distance, g);
     TPredVal nilPred = getNil<typename VertexDescriptor<TGraph>::Type>();
     TDistVal infDist = _getInfinityDistance(distance);
 
     String<bool> tokenMap;
-    resizeVertexMap(g, tokenMap);
+    resizeVertexMap(tokenMap, g);
     TVertexIterator it(g);
     for(;!atEnd(it);goNext(it)) {
         assignProperty(tokenMap, getValue(it), false);

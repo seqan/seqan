@@ -208,8 +208,8 @@ void dagShortestPath(TPredecessorMap & predecessor,
     typedef typename Iterator<String<TVertexDescriptor>, Rooted>::Type TStringIterator;
 
     // Initialization
-    resizeVertexMap(g,predecessor);
-    resizeVertexMap(g,distance);
+    resizeVertexMap(predecessor, g);
+    resizeVertexMap(distance, g);
 
     // Topological sort
     String<TVertexDescriptor> order;

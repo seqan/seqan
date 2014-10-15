@@ -22,7 +22,7 @@ int main()
     // weights since the edges are directed and there are no cycles.
     int weights[] = {3, 8, -4, 1, 7, 4, 2, -5, 6};
     String<int> weightMap;
-    assignEdgeMap(g,weightMap, weights);
+    assignEdgeMap(weightMap, g, weights);
 
     // Compute all-pairs shortest path.
     String<int> distMat;

@@ -123,13 +123,13 @@ void depthFirstSearch(TPredecessorMap & predecessor,
     typedef typename Value<TPredecessorMap>::Type TPredVal;
 
     // Initialization
-    resizeVertexMap(g,predecessor);
-    resizeVertexMap(g,disc);
-    resizeVertexMap(g,finish);
+    resizeVertexMap(predecessor, g);
+    resizeVertexMap(disc, g);
+    resizeVertexMap(finish, g);
     TPredVal nilPred = getNil<TVertexDescriptor>();
 
     String<bool> tokenMap;
-    resizeVertexMap(g, tokenMap);
+    resizeVertexMap(tokenMap, g);
     TVertexIterator it(g);
     for(;!atEnd(it);goNext(it)) {
         assignProperty(tokenMap, getValue(it), false);
