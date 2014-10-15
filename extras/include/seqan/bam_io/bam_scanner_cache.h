@@ -253,7 +253,6 @@ _recursivelyFindSegmentGraph(
 inline void
 readMultiRecords(String<BamAlignmentRecord> &records, BamFileIn &bamFile, BamScannerCache &cache)
 {
-    typedef BamScannerCache::TMapIter TMapIter;
     typedef BamScannerCacheSearchKey_::TFlag TFlag;
 
     if (empty(records))
