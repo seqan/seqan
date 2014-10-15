@@ -50,6 +50,8 @@
 // Sub Module Headers
 // --------------------------------------------------------------------------
 
+// The PropertyMapConcept.
+#include <seqan/basic/property_map_concept.h>
 // The container concept.
 #include <seqan/basic/container_concept.h>
 

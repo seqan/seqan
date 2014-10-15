@@ -39,7 +39,7 @@ int main ()
 	typedef String<char> TCityName;
 	typedef String<TCityName> TProperties;
 	TProperties cityNames;
-	resizeVertexMap(g, cityNames);
+	resizeVertexMap(cityNames, g);
 
 // FRAGMENT(enter-properties)
 	assignProperty(cityNames, vertBerlin, "Berlin");
@@ -62,7 +62,7 @@ int main ()
 	String<TVertexDescriptor> predMap;
 	String<TSize> distMap;
 // FRAGMENT(dijkstra)
-	dijkstra(g,vertHannover,cargoMap,predMap,distMap);
+	dijkstra(predMap, distMap, g, vertHannover, cargoMap);
 
 // FRAGMENT(dijkstra-output)
 	TVertexIterator itV2(g);
