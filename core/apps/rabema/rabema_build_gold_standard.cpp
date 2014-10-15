@@ -996,7 +996,7 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
 
     addSection(parser, "Input / Output");
     addOption(parser, seqan::ArgParseOption("o", "out-gsi", "Path to write the resulting GSI file to.",
-                                            seqan::ArgParseArgument::OUTPUTFILE, "GSI"));
+                                            seqan::ArgParseArgument::OUTPUT_FILE, "GSI"));
     setValidValues(parser, "out-gsi", "gsi gsi.gz");
     setRequired(parser, "out-gsi", true);
     addOption(parser, seqan::ArgParseOption("r", "reference", "Path to load reference FASTA from.",
@@ -1005,7 +1005,7 @@ parseCommandLine(BuildGoldStandardOptions & options, int argc, char const ** arg
     setValidValues(parser, "reference", "fa fasta");
     addOption(parser, seqan::ArgParseOption("b", "in-bam", "Path to load the \"perfect\" SAM/BAM file from.",
                                             seqan::ArgParseArgument::INPUT_FILE, "BAM"));
-    setValidValues(parser, "in-bam", BamFileIn::getFileFormatExtensions());
+    setValidValues(parser, "in-bam", BamFileIn::getFileExtensions());
 
     addSection(parser, "Gold Standard Parameters");
     addOption(parser, seqan::ArgParseOption("", "oracle-mode",

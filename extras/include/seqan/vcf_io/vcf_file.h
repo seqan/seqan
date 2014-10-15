@@ -87,29 +87,29 @@ template <typename T>
 unsigned char const MagicHeader<Bcf, T>::VALUE[5] = { 'B', 'C', 'F', '\2', '\1' };  // BCF2's magic header
 
 // ----------------------------------------------------------------------------
-// Class FileFormatExtensions
+// Class FileExtensions
 // ----------------------------------------------------------------------------
 
 template <typename T>
-struct FileFormatExtensions<Vcf, T>
+struct FileExtensions<Vcf, T>
 {
     static char const * VALUE[1];	// default is one extension
 };
 
 template <typename T>
-char const * FileFormatExtensions<Vcf, T>::VALUE[1] =
+char const * FileExtensions<Vcf, T>::VALUE[1] =
 {
     ".vcf"     // default output extension
 };
 
 template <typename T>
-struct FileFormatExtensions<Bcf, T>
+struct FileExtensions<Bcf, T>
 {
     static char const * VALUE[1];	// default is one extension
 };
 
 template <typename T>
-char const * FileFormatExtensions<Bcf, T>::VALUE[1] =
+char const * FileExtensions<Bcf, T>::VALUE[1] =
 {
     ".bcf"     // default output extension
 };

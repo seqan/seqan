@@ -109,7 +109,7 @@ void testInFileTypeParser(CommandLineParser & parser)
 
 void testOutFileTypeParser(CommandLineParser & parser)
 {
-    addOption(parser, CommandLineOption("o", "out", "set a output file", OptionType::Label | OptionType::OUTPUTFILE));
+    addOption(parser, CommandLineOption("o", "out", "set a output file", OptionType::Label | OptionType::OUTPUT_FILE));
 }
 
 SEQAN_DEFINE_TEST(test_int_short_argument)

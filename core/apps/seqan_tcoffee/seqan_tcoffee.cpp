@@ -331,15 +331,15 @@ _setUpArgumentParser(ArgumentParser & parser)
 
     addSection(parser, "Main Options:");
     addOption(parser, ArgParseOption("s", "seq", "Name of multi-fasta input file.", ArgParseArgument::INPUT_FILE));
-    setValidValues(parser, "seq", getFileFormatExtensions(Fasta()));  // allow only fasta files as input
+    setValidValues(parser, "seq", getFileExtensions(Fasta()));  // allow only fasta files as input
 
     addOption(parser, ArgParseOption("a", "alphabet", "The used sequence alphabet.", ArgParseArgument::STRING));
     setValidValues(parser, "alphabet", "protein dna rna");
     setDefaultValue(parser, "alphabet", "protein");
 
-    addOption(parser, ArgParseOption("o", "outfile", "Name of the output file.", ArgParseArgument::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "outfile", "Name of the output file.", ArgParseArgument::OUTPUT_FILE));
     setDefaultValue(parser, "outfile", "out.fasta");
-    std::vector<std::string> outputFormats = getFileFormatExtensions(Fasta());
+    std::vector<std::string> outputFormats = getFileExtensions(Fasta());
     outputFormats.push_back(".msf");
     setValidValues(parser, "outfile", outputFormats);
 
@@ -419,7 +419,7 @@ _setUpArgumentParser(ArgumentParser & parser)
             parser,
             ArgParseOption("i", "infile", "Name of the alignment file <\\fIFASTA FILE\\fP>",
                            ArgParseArgument::INPUT_FILE));
-    setValidValues(parser, "infile", getFileFormatExtensions(Fasta()));  // allow only fasta files as input
+    setValidValues(parser, "infile", getFileExtensions(Fasta()));  // allow only fasta files as input
 
 }
 
