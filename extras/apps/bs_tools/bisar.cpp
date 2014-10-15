@@ -148,17 +148,17 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     // We require ... arguments.
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "ALIGNMENTS"));
     setHelpText(parser, 0, "SAM input file containing three-letter read alignments (must be sorted by query names).");
-    setValidValues(parser, 0, BamFileIn::getFileFormatExtensions());
+    setValidValues(parser, 0, BamFileIn::getFileExtensions());
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "GENOME"));
     setHelpText(parser, 1, "A reference genome file.");
-    setValidValues(parser, 1, SeqFileIn::getFileFormatExtensions());
+    setValidValues(parser, 1, SeqFileIn::getFileExtensions());
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS", true));
     setHelpText(parser, 2, "Either one (single-end) or two (paired-end) read files.");
-    setValidValues(parser, 2, SeqFileIn::getFileFormatExtensions());
+    setValidValues(parser, 2, SeqFileIn::getFileExtensions());
 
     addSection(parser, "Options");
-    addOption(parser, ArgParseOption("o", "output-file", "Mapping output file.", ArgParseArgument::OUTPUTFILE));
-    setValidValues(parser, "output-file", BamFileOut::getFileFormatExtensions());
+    addOption(parser, ArgParseOption("o", "output-file", "Mapping output file.", ArgParseArgument::OUTPUT_FILE));
+    setValidValues(parser, "output-file", BamFileOut::getFileExtensions());
     setRequired(parser, "output-file", true);
 
     addOption(parser, ArgParseOption("e3", "max3-error", "Max. error rate in 3-letter alphabet.", ArgParseArgument::DOUBLE));

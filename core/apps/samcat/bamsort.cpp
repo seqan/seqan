@@ -434,12 +434,12 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
 
     addDescription(parser, "(c) Copyright in 2014 by David Weese.");
 
-    addOption(parser, ArgParseOption("o", "output", "Output file name.", ArgParseOption::OUTPUTFILE));
-    setValidValues(parser, "output", BamOnlyFileOut::getFileFormatExtensions());
+    addOption(parser, ArgParseOption("o", "output", "Output file name.", ArgParseOption::OUTPUT_FILE));
+    setValidValues(parser, "output", BamOnlyFileOut::getFileExtensions());
 
     // We require one argument.
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "INFILE"));
-    setValidValues(parser, 0, BamOnlyFileIn::getFileFormatExtensions());
+    setValidValues(parser, 0, BamOnlyFileIn::getFileExtensions());
     setHelpText(parser, 0, "Input BAM file (or - for stdin).");
 	addOption(parser, ArgParseOption("s", "sort-order", "Sort by either reference coordinate or query name.", ArgParseOption::STRING));
     setValidValues(parser, "sort-order", "coord qname");
