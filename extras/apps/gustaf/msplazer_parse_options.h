@@ -213,11 +213,11 @@ void _setupArgumentParser(ArgumentParser & parser)
 
     addSection(parser, "Output Options");
     addOption(parser,
-              ArgParseOption("gff", "gffOut", "Name of gff breakpoint output file.", ArgParseArgument::OUTPUTFILE));
+              ArgParseOption("gff", "gffOut", "Name of gff breakpoint output file.", ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "gff", "gff txt");
     setDefaultValue(parser, "gff", "breakpoints.gff");
     addOption(parser,
-              ArgParseOption("vcf", "vcfOut", "Name of vcf breakpoint output file.", ArgParseArgument::OUTPUTFILE));
+              ArgParseOption("vcf", "vcfOut", "Name of vcf breakpoint output file.", ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "vcf", "vcf txt");
     setDefaultValue(parser, "vcf", "breakpoints.vcf");
 
@@ -291,11 +291,11 @@ void _setupArgumentParser(ArgumentParser & parser)
      * Stellar output options are not supported bc. no Stellar output is supported
     addSection(parser, "Output Options");
 
-    addOption(parser, ArgParseOption("o", "out", "Name of output file.", ArgParseArgument::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "out", "Name of output file.", ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "o", "gff txt");
     setDefaultValue(parser, "o", "stellar.gff");
     addOption(parser, ArgParseOption("od", "outDisabled",
-                                     "Name of output file for disabled query sequences.", ArgParseArgument::OUTPUTFILE));
+                                     "Name of output file for disabled query sequences.", ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "outDisabled", "fa FASTA");
     setDefaultValue(parser, "od", "stellar.disabled.fasta");
     addOption(parser, ArgParseOption("t", "no-rt", "Suppress printing running time."));

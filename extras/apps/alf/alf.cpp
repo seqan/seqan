@@ -76,7 +76,7 @@ int main(int argc, const char * argv[])
     addOption(parser, seqan::ArgParseOption("i", "input-file", "Name of the multi-FASTA input file.", seqan::ArgParseArgument::INPUT_FILE));
     setValidValues(parser, "input-file", "fa fasta");
     setRequired(parser, "input-file");
-    addOption(parser, seqan::ArgParseOption("o", "output-file", "Name of the file to which the tab-delimtied matrix with pairwise scores will be written to.  Default is to write to stdout.", seqan::ArgParseArgument::OUTPUTFILE));
+    addOption(parser, seqan::ArgParseOption("o", "output-file", "Name of the file to which the tab-delimtied matrix with pairwise scores will be written to.  Default is to write to stdout.", seqan::ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "output-file", "alf.tsv");
 
     addSection(parser, "General Algorithm Parameters");
@@ -97,7 +97,7 @@ int main(int argc, const char * argv[])
     setDefaultValue(parser, "mismatches", "0");
     addOption(parser, seqan::ArgParseOption("mmw", "mismatch-weight", "Real-valued weight of counts for words with mismatches.", seqan::ArgParseArgument::DOUBLE, "WEIGHT"));
     setDefaultValue(parser, "mismatch-weight", "0.1");
-    addOption(parser, seqan::ArgParseOption("kwf", "k-mer-weights-file", "Print k-mer weights for every sequence to this file if given.", seqan::ArgParseArgument::OUTPUTFILE, "FILE.TXT"));
+    addOption(parser, seqan::ArgParseOption("kwf", "k-mer-weights-file", "Print k-mer weights for every sequence to this file if given.", seqan::ArgParseArgument::OUTPUT_FILE, "FILE.TXT"));
     setValidValues(parser, "k-mer-weights-file", "txt");
 
     addTextSection(parser, "Contact and References");

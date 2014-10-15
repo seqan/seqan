@@ -92,18 +92,18 @@ parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
 
     addOption(parser, ArgParseOption("m", "mapping", "File containing the mappings.", ArgParseOption::INPUT_FILE, 
                                      "FILE", true));
-    setValidValues(parser, "mapping", BamFileIn::getFileFormatExtensions());
+    setValidValues(parser, "mapping", BamFileIn::getFileExtensions());
     setRequired(parser, "mapping");
     addOption(parser, ArgParseOption("r", "reads", "File containing the reads contained in the mapping file(s).", 
                                      ArgParseOption::INPUT_FILE, "FILE"));
-    setValidValues(parser, "reads", SeqFileIn::getFileFormatExtensions());
+    setValidValues(parser, "reads", SeqFileIn::getFileExtensions());
     setRequired(parser, "reads");
 
     addOption(parser, ArgParseOption("rf", "reference", "Name of the file used as reference of the corresponding sam "
                                      "file. If not specified the names of the mapping files are taken", 
                                      ArgParseOption::STRING, "STRING", true));
 
-    addOption(parser, ArgParseOption("o", "out", "Output file.", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "out", "Output file.", ArgParseOption::OUTPUT_FILE));
     setRequired(parser, "o");
     setValidValues(parser, "o", ".tsv");
 

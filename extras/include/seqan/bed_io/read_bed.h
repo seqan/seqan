@@ -65,17 +65,17 @@ struct MagicHeader<Bed, T> :
     public MagicHeader<Nothing, T> {};
 
 // ----------------------------------------------------------------------------
-// Class FileFormatExtensions
+// Class FileExtensions
 // ----------------------------------------------------------------------------
 
 template <typename T>
-struct FileFormatExtensions<Bed, T>
+struct FileExtensions<Bed, T>
 {
     static char const * VALUE[1];	// default is one extension
 };
 
 template <typename T>
-char const * FileFormatExtensions<Bed, T>::VALUE[1] =
+char const * FileExtensions<Bed, T>::VALUE[1] =
 {
     ".bed"     // default output extension
 };
