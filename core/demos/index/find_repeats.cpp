@@ -4,10 +4,10 @@
 #include <seqan/index.h>
 #include <seqan/seq_io.h>
 
+using namespace seqan;
+
 int main()
 {
-    using namespace seqan;
-
     // Get path to file to search for repeats in.
     std::string path = (std::string)SEQAN_PATH_TO_ROOT() + "/core/demos/index/ref.fa";
 
@@ -15,7 +15,15 @@ int main()
     CharString id;
     Dna5String seq;
     SeqFileIn file(path.c_str());
-    readRecord(id, seq, file);
+    try
+    {
+        readRecord(id, seq, file);
+    }
+    catch (ParseError const & err)
+    {
+        std::cerr << "Problem reading file: " << err.what() << "\n";
+        return 1;
+    }
 
     // Find repeats and print them.
     String<Repeat<unsigned, unsigned> > repeats;

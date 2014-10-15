@@ -71,7 +71,15 @@ int main(int argc, char const ** argv)
 
     String<CharString> ids;
     String<String<Dna5Q> > seqs;
-    readRecords(ids, seqs, seqFileIn);
+    try
+    {
+        readRecords(ids, seqs, seqFileIn);
+    }
+    catch (IOError const & err)
+    {
+        std::cerr << "Problem reading file: " << err.what() << "\n";
+        return 1;
+    }
 
     // Sanity check on number to sample.
     if (num > length(seqs))

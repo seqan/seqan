@@ -6,10 +6,9 @@
 using namespace seqan;
 
 template <typename TString, typename TSpec>
-inline int
-loadAndJoin(StringSet<TString, Owner<JournaledSet> > & /*journalSet*/,
-            SeqFileIn & databaseFile,
-            JoinConfig<TSpec> const & /*joinConfig*/)
+void loadAndJoin(StringSet<TString, Owner<JournaledSet> > & /*journalSet*/,
+                 SeqFileIn & databaseFile,
+                 JoinConfig<TSpec> const & /*joinConfig*/)
 {
     typedef typename Host<TString>::Type THost;
 
@@ -21,10 +20,8 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & /*journalSet*/,
 
     // No sequences in the fasta file!
     if (atEnd(databaseFile))
-    {
-        std::cerr << "Empty FASTA file." << std::endl;
-        return -1;
-    }
+        throw IOError("empty FASTA file");
+
     // First read sequence for reference sequence.
     readRecord(tempSeqId, tempSeq, databaseFile);
 
@@ -36,7 +33,6 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & /*journalSet*/,
         readRecord(tempSeqId, tempSeq, databaseFile);
         // [C] Append and join the current read sequence.
     }
-    return 0;
 }
 
 

@@ -55,15 +55,26 @@ int runMummy(int argc, const char *argv[], unsigned seqCount, unsigned minLen)
 			continue;
 		}
 
-		if (argv[arg][0] != '-') {
-			SeqFileIn file;
-			if (!open(file, argv[arg])) {
-				cout << "Import of sequence " << argv[arg] << " failed." << endl;
-				return 1;
-			}
-			readRecords(meta, indexText(index), file);
+		if (argv[arg][0] != '-')
+		{
+		    try
+            {
+                SeqFileIn file(argv[arg]);
+                readRecords(meta, indexText(index), file);
+            }
+            catch (FileOpenError const & err)
+            {
+                std::cerr << "Problem opening file " << argv[arg] << ": "
+                          << err.what() << "\n";
+                return 1;
+            }
+            catch (ParseError const & err)
+            {
+                std::cerr << "Problem reading file " << argv[arg] << ": "
+                          << err.what() << "\n";
+                return 1;
+            }
             clear(meta);
-			close(file);
 			++seq;
 		}
 	}

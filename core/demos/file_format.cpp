@@ -24,13 +24,29 @@ int main()
 	String<char> fasta_tag;
 	String<Dna> fasta_seq;
 ///Read the meta-information and the sequence.
-	readRecord(fasta_tag, fasta_seq, in, Fasta());
+    try
+    {
+        readRecord(fasta_tag, fasta_seq, in, Fasta());
+    }
+    catch (ParseError const & err)
+    {
+        std::cerr << "Problem reading from file: " << err.what() << "\n";
+        return 1;
+    }
 	std::cout << fasta_tag << "\n";	//prints "a test file"
 	std::cout << fasta_seq << "\n";	//prints the sequence
 	fstrm.close();
 ///Open a file using a file reader string.
 	SeqFileIn sfin("testfile.fa");
-	readRecord(fasta_tag, fasta_seq, sfin);
+    try
+    {
+        readRecord(fasta_tag, fasta_seq, sfin);
+    }
+    catch (ParseError const & err)
+    {
+        std::cerr << "Problem reading from file: " << err.what() << "\n";
+        return 1;
+    }
 	std::cout << fasta_seq << "\n";			//prints the sequence
 	return 0;
 }

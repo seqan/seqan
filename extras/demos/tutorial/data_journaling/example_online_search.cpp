@@ -203,10 +203,9 @@ void searchPattern(StringSet<String<int> > & hitSet,
 
 // FRAGMENT(laodAndJoin)
 template <typename TString, typename TSpec>
-inline int
-loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
-            SeqFileIn & databaseFile,
-            JoinConfig<TSpec> const & joinConfig)
+void loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
+                 SeqFileIn & databaseFile,
+                 JoinConfig<TSpec> const & joinConfig)
 {
     typedef typename Host<TString>::Type THost;
 
@@ -217,10 +216,8 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
 
     // No sequences in the fasta file!
     if (atEnd(databaseFile))
-    {
-        std::cerr << "Empty FASTA file." << std::endl;
-        return -1;
-    }
+        throw IOError("empty FASTA file");
+
     // First read sequence for reference sequence.
     readRecord(seqId, sequence, databaseFile);
 
@@ -234,7 +231,6 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
         appendValue(journalSet, TString(sequence));
         join(journalSet, length(journalSet) - 1, joinConfig);
     }
-    return 0;
 }
 
 // FRAGMENT(main)
@@ -252,7 +248,20 @@ int main()
     // Reading each sequence and journal them.
     TJournaledSet journalSet;
     JoinConfig<GlobalAlign<JournaledCompact> > joinConfig;
-    loadAndJoin(journalSet, databaseFile, joinConfig);
+    try
+    {
+        loadAndJoin(journalSet, databaseFile, joinConfig);
+    }
+    catch (ParseError const & err)
+    {
+        std::cerr << "Problem with parsing the files: " << err.what();
+        return 1;
+    }
+    catch (IOError const & err)
+    {
+        std::cerr << "Problem during I/O: " << err.what();
+        return 1;
+    }
 
     // Define a pattern and start search.
     StringSet<String<int> > hitSet;
