@@ -338,14 +338,13 @@ readRecords(FragmentStore<TSpec, TConfig> & store,
     }
 }
 
-template <typename TSpec, typename TConfig, typename TNameStore,
-          typename TNameStoreCache, typename TStorageSpec>
+template <typename TFSSpec, typename TConfig, typename TDirection, typename TSpec>
 inline void 
-readRecords(FragmentStore<TSpec, TConfig> & store,
-            SmartFile<TNameStore, TNameStoreCache, TStorageSpec> & bamFile,
+readRecords(FragmentStore<TFSSpec, TConfig> & store,
+            SmartFile<Bam, TDirection, TSpec> & bamFile,
             FragStoreImportFlags const & importFlags)
 {
-    typedef FragmentStore<TSpec, TConfig>                   TFragmentStore;
+    typedef FragmentStore<TFSSpec, TConfig>                 TFragmentStore;
     typedef typename TFragmentStore::TContigNameStore       TContigNameStore;
     typedef NameStoreCache<TContigNameStore, CharString>    TContigNameStoreCache;
 
@@ -366,11 +365,10 @@ readRecords(FragmentStore<TSpec, TConfig> & store,
     std::swap(ctx.translateFile2GlobalRefId, context(bamFile).translateFile2GlobalRefId);
 }
 
-template <typename TSpec, typename TConfig, typename TNameStore,
-          typename TNameStoreCache, typename TStorageSpec>
+template <typename TFSSpec, typename TConfig, typename TDirection, typename TSpec>
 inline void
-readRecords(FragmentStore<TSpec, TConfig> & store,
-            SmartFile<TNameStore, TNameStoreCache, TStorageSpec> & bamFile)
+readRecords(FragmentStore<TFSSpec, TConfig> & store,
+            SmartFile<Bam, TDirection, TSpec> & bamFile)
 {
     readRecords(store, bamFile, FragStoreImportFlags());
 }
