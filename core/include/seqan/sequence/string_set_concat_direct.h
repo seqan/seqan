@@ -107,16 +107,20 @@ public:
     }
 
     template <typename TOtherString, typename TOtherSpec>
+    StringSet(StringSet<TOtherString, TOtherSpec> &other)
+    {
+        assign(*this, other);
+    }
+
+    template <typename TOtherString, typename TOtherSpec>
     StringSet(StringSet<TOtherString, TOtherSpec> const &other)
     {
-        _initStringSetLimits(*this);
         assign(*this, other);
     }
 
     template <typename TOtherSpec>
     StringSet(String<TString, TOtherSpec> const &other)
     {
-        _initStringSetLimits(*this);
         assign(*this, other);
     }
 
@@ -284,7 +288,8 @@ template <typename TString, typename TSpec, typename TString2, typename TSpec2>
 void assign(StringSet<TString, Owner<ConcatDirect<TSpec> > > & stringSet,
             StringSet<TString2, Owner<ConcatDirect<TSpec2> > > & other)
 {
-    assign(stringSet, reinterpret_cast<StringSet<TString2, Owner<ConcatDirect<TSpec2> > > const &> (other));
+    assign(concat(stringSet), concat(other));
+    assign(stringSetLimits(stringSet), stringSetLimits(other));
 }
 
 // --------------------------------------------------------------------------
