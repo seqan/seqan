@@ -1971,7 +1971,7 @@ SEQAN_CALL_TEST(test_name);
             (void) e;  /* Get rid of unused variable warning. */        \
         } catch (seqan::Exception const & e) {                          \
             ::std::cerr << "Unexpected exception of type "              \
-                        << toCString(Demangler<Exception>(e))           \
+                        << toCString(::seqan::Demangler<::seqan::Exception>(e)) \
                         << "; message: " << e.what() << "\n";           \
             ::seqan::ClassTest::StaticData::thisTestOk() = false;       \
             ::seqan::ClassTest::StaticData::errorCount() += 1;          \
