@@ -219,6 +219,7 @@ struct Breakpoint
         endSeqStrand(eStrand),
         startSeqPos(sPos),
         endSeqPos(ePos),
+        midPosStrand(false),
         dupTargetPos(maxValue<unsigned>()),
         dupMiddlePos(maxValue<unsigned>()),
         readStartPos(rsPos),

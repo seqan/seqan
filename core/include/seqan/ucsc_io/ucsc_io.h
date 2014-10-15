@@ -110,14 +110,14 @@ struct UcscIOContext
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class MagicHeader
+// Metafunction MagicHeader
 // ----------------------------------------------------------------------------
 
 template <typename T>
 struct MagicHeader<Ucsc, T> : public MagicHeader<Nothing, T> {};
 
 // ----------------------------------------------------------------------------
-// Class FileFormatExtensions
+// Metafunction FileFormatExtensions
 // ----------------------------------------------------------------------------
 
 template <typename T>

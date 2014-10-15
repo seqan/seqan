@@ -21,11 +21,11 @@ int main()
     // Create external property map with vertex labels.
     String<std::string> nameMap;
     std::string names[] = {"shirt", "tie", "jacket", "belt", "watch", "undershorts", "pants", "shoes", "socks"};
-    assignVertexMap(g, nameMap, names);
+    assignVertexMap(nameMap, g, names);
     
     // Get vertex descriptor in topological sort order.
     String<TVertexDescriptor> order;
-    topologicalSort(g, order);
+    topologicalSort(order, g);
 
     // Write the result to stdout.
     std::cout << "Topological sort: \n";

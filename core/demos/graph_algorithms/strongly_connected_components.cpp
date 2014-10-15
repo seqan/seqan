@@ -21,11 +21,11 @@ int main()
     // Create external property map with vertex names and assign to graph.
     String<char> nameMap;
     char names[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
-    assignVertexMap(g, nameMap, names);
+    assignVertexMap(nameMap, g, names);
 
     // Compute strongly connected components.
     String<unsigned int> component;
-    stronglyConnectedComponents(g, component);
+    stronglyConnectedComponents(component, g);
 
     // Print result to stdout.
     std::cout << "Strongly Connected Components: \n";

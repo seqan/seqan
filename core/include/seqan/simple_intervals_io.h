@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,31 +29,26 @@
 // DAMAGE.
 //
 // ==========================================================================
+// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// ==========================================================================
+// Facade header for the intervals_io module.
+// ==========================================================================
 
-// External STL
-#include <iostream>
-#include <fstream>
-#include <string>
+#ifndef SEQAN_SIMPLE_INTERVALS_IO_H_
+#define SEQAN_SIMPLE_INTERVALS_IO_H_
 
-// Seqan
-#include <seqan/graph_types.h>
+// ===========================================================================
+// Prerequisites
+// ===========================================================================
 
-// Test files
-#include "test_graph_basic.h"
-#include "test_graph_types.h"
-#include "test_graph_iterators.h"
-#include "test_graph_properties.h"
-#include "test_graph_derived.h"
-#include "test_graph_utils.h"
+#include <seqan/stream.h>
+#include <seqan/seq_io/genomic_region.h>
 
+// ===========================================================================
+// Module Contents
+// ===========================================================================
 
-SEQAN_BEGIN_TESTSUITE(test_graph_types) {
-    // Call Tests.
-    SEQAN_CALL_TEST(test_graph_basics);
-    SEQAN_CALL_TEST(test_graph_types);	
-    SEQAN_CALL_TEST(test_graph_iterators);
-    SEQAN_CALL_TEST(test_graph_properties);
-    SEQAN_CALL_TEST(test_graph_derived);
-    SEQAN_CALL_TEST(test_graph_utils);
-}
-SEQAN_END_TESTSUITE
+#include <seqan/simple_intervals_io/simple_intervals_io.h>    // read/write record functions, tags
+#include <seqan/simple_intervals_io/simple_intervals_file.h>  // SmartFile
+
+#endif  // SEQAN_SIMPLE_INTERVALS_IO_H_

@@ -130,20 +130,15 @@ namespace SEQAN_NAMESPACE_MAIN
         pthread_t   *hThread;
         Worker      worker;
 
-        Thread() :
-            hThread()
+        Thread() : data(), hThread(), worker()
         {}
 
         template <typename TArg>
-        Thread(TArg &arg):
-            hThread(),
-            worker(arg)
+        Thread(TArg & arg) : data(), hThread(), worker(arg)
         {}
 
         template <typename TArg>
-        Thread(TArg const &arg):
-            hThread(),
-            worker(arg)
+        Thread(TArg const & arg) : data(), hThread(), worker(arg)
         {}
 
         ~Thread() 

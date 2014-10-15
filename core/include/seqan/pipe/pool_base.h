@@ -1019,6 +1019,7 @@ namespace SEQAN_NAMESPACE_MAIN
             readAheadBuffers = _conf.readAheadBuffers;
             writeBackBuffers = _conf.writeBackBuffers;
             writeBackBuckets = _conf.writeBackBuffers;
+            _partiallyFilled = true;
             listeners = 0;
             reader = NULL;
             writer = NULL;

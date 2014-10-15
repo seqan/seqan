@@ -80,6 +80,8 @@ SEQAN_BEGIN_TESTSUITE(test_seq_io)
     SEQAN_CALL_TEST(test_seq_io_genomic_region_parse_chrom);
     SEQAN_CALL_TEST(test_seq_io_genomic_region_parse_chrom_begin);
     SEQAN_CALL_TEST(test_seq_io_genomic_region_parse_chrom_begin_end);
+    SEQAN_CALL_TEST(test_seq_io_genomic_region_to_string_interval);
+    SEQAN_CALL_TEST(test_seq_io_genomic_region_to_string_point);
 
     // Test FaiIndex.
     SEQAN_CALL_TEST(test_seq_io_genomic_fai_index_build);
