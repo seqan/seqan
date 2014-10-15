@@ -39,6 +39,9 @@
 #ifndef CORE_INCLUDE_SEQAN_SEQ_IO_GENOMIC_REGION_H_
 #define CORE_INCLUDE_SEQAN_SEQ_IO_GENOMIC_REGION_H_
 
+#include <seqan/sequence.h>
+#include <seqan/stream.h>  // for tokenization
+
 namespace seqan {
 
 // ============================================================================
@@ -99,117 +102,48 @@ inline void parse(GenomicRegion & region, CharString const & regionString);
  * // genomicRegion.rID == -1
  * @endcode
  *
- *
- * @fn GenomicRegion::GenomicRegion
- * @brief Constructor.
- * 
- * @signature GenomicRegion::GenomicRegion();
- * @signature GenomicRegion::GenomicRegion(str);
- * 
- * @param[in] str The string to parse region from. Types: CharString
- * 
- * The default constructor sets all integer members to <tt>-1</tt>, the <tt>seqName</tt> member is left empty.
  */
-
-/*!
- * @var CharString GenomicRegion::seqName;
- * @brief Name of the sequence the region lies on, default is the empty string.
- * 
- * @var __int32 GenomicRegion::rID;
- * @brief An optional field storing an integer.  Default is <tt>-1</tt>.
- * 
- * @var __int32 GenomicRegion::beginPos;
- * @brief Begin position of the range on the chromosome.  Default is <tt>-1</tt>.
- * 
- * @var __int32 GenomicRegion::endPos;
- * @brief End position of the range on the chromosome.  Default is <tt>-1</tt>.
- */
-
-/**
-.Class.GenomicRegion
-..cat:Input/Output
-..signature:GenomicRegion
-..summary:Store information about a genomic region.
-..description.text:
-A genomic region is a range on a chromosome.
-The chromosome is identified by its name (as text in @Memvar.GenomicRegion#seqName@, optionally also as an $integer$ in @Memvar.GenomicRegion#rID@).
-The range is stored as a half-open interval [@Memvar.GenomicRegion#beginPos@, @Memvar.GenomicRegion#endPos@).
-If @Memvar.GenomicRegion#beginPos@ is set to $-1$ then the range spans the whole chromosome.
-If @Memvar.GenomicRegion#beginPos@ is set to a value $>= 0$ and @Memvar.GenomicRegion#endPos@ is set ot $-1$, then the chromosome is selected from @Memvar.GenomicRegion#beginPos@ to the end.
-..description.text:
-Examples for genomic regions are $chr1$, $chr1:1,000$, $chr1:1,000-2,000$.
-..description.text:
-The textual description of a genomic region has one of the formats $NAME$, $NAME:START$, $NAME:START-END$.
-The positions in the textual representation $START$ and $END$ are one-based.
-However, the representation in the members of @Class.GenomicRegion@ is zero-based.
-..example.text:Construct a @Class.GenomicRegion@ object and fill it from different region strings.
-..example.code:
-seqan::GenomicRegion genomicRegion;
-
-parse(genomicRegion, "chr1");
-// genomicRegion.seqName == "chr1"
-// genomicRegion.rID == -1, genomicRegion.beginPos == -1, genomicRegion.beginPos == -1
-
-parse(genomicRegion, "chr1:1000");
-// genomicRegion.seqName == "chr1"
-// genomicRegion.beginPos == 999
-// genomicRegion.rID == -1, genomicRegion.beginPos == -1
-
-parse(genomicRegion, "chr1:1000-2000");
-// genomicRegion.seqName == "chr1"
-// genomicRegion.beginPos == 999
-// genomicRegion.beginPos == 2000
-// genomicRegion.rID == -1
-
-
-..include:seqan/seq_io.h
-
-.Memfunc.GenomicRegion#GenomicRegion
-..class:Class.GenomicRegion
-..summary:Constructor.
-..description:
-The default constructor sets all integer members to $-1$, the $seqName$ member is left empty.
-..signature:GenomicRegion()
-..signature:GenomicRegion(str)
-..param.str:The string to parse region from.
-...type:Shortcut.CharString
-
-.Memvar.GenomicRegion#seqName
-..class:Class.GenomicRegion
-..summary:Name of the sequence the region lies on, default is the empty string.
-..type:Shortcut.CharString
-
-.Memvar.GenomicRegion#rID
-..class:Class.GenomicRegion
-..summary:An optional field storing an integer. Default is $-1$.
-..type:nolink:$__int32$
-
-.Memvar.GenomicRegion#beginPos
-..class:Class.GenomicRegion
-..summary:Begin position of the range on the chromosome. Default is $-1$.
-..type:nolink:$__int32$
-
-.Memvar.GenomicRegion#endPos
-..class:Class.GenomicRegion
-..summary:End position of the range on the chromosome. Default is $-1$.
-..type:nolink:$__int32$
-*/
 
 struct GenomicRegion
 {
-    // Name of sequence.
+    /*!
+     * @var CharString GenomicRegion::seqName;
+     * @brief Name of the sequence the region lies on, default is the empty string.
+     */
     CharString seqName;
-    // Index of sequence in FASTA file.  -1 if not set.
+
+    /*!
+     * @var __int32 GenomicRegion::rID;
+     * @brief An optional field storing an integer.  Default is <tt>-1</tt>.
+     */
     unsigned rID;
-    // 0-based begin position.  -1 if not set.
+
+    /*!
+     * @var __int32 GenomicRegion::beginPos;
+     * @brief Begin position of the range on the chromosome.  Default is <tt>-1</tt>.
+     */
     unsigned beginPos;
-    // 0-based, C-style end position.  -1 if not set.
+
+    /*!
+     * @var __int32 GenomicRegion::endPos;
+     * @brief End position of the range on the chromosome.  Default is <tt>-1</tt>.
+     */
     unsigned endPos;
 
     enum { INVALID_ID = (unsigned)-1 };
     enum { INVALID_POS = (unsigned)-1 };
-//    static const unsigned INVALID_ID = -1;
-//    static const unsigned INVALID_POS = -1;
+
+    /*!
+     * @fn GenomicRegion::GenomicRegion
+     * @brief Constructor.
+     * 
+     * @signature GenomicRegion::GenomicRegion();
+     * @signature GenomicRegion::GenomicRegion(str);
+     * 
+     * @param[in] str The string to parse region from. Types: CharString
+     * 
+     * The default constructor sets all integer members to <tt>-1</tt>, the <tt>seqName</tt> member is left empty.
+     */
 
     GenomicRegion() :
         rID(INVALID_ID), beginPos(INVALID_POS), endPos(INVALID_POS)
@@ -219,6 +153,28 @@ struct GenomicRegion
         rID(INVALID_ID), beginPos(INVALID_POS), endPos(INVALID_POS)
     {
         parse(*this, str);
+    }
+
+    /*!
+     * @fn GenomicRegion::toString
+     * @brief Write string representation of interval to out.
+     */
+    template <typename TString>
+    void toString(TString & out) const
+    {
+        clear(out);
+        append(out, seqName);
+        appendValue(out, ':');
+        if (beginPos + 1 == endPos)
+        {
+            appendNumber(out, beginPos + 1);
+        }
+        else
+        {
+            appendNumber(out, beginPos + 1);
+            appendValue(out, '-');
+            appendNumber(out, endPos);
+        }
     }
 };
 
@@ -321,8 +277,11 @@ parse(GenomicRegion & region, CharString const & regionString)
         SEQAN_THROW(ParseError("GenomicRegion: Begin postition less than 1"));
 
     region.beginPos--;                      // Adjust to 0-based.
-    if (atEnd(reader))
+    if (atEnd(reader))  // just one position
+    {
+        region.endPos = region.INVALID_POS;
         return;
+    }
 
     skipOne(reader, EqualsChar<'-'>());     // Skip '-'.
 
