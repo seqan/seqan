@@ -22,13 +22,13 @@ int main()
     // Create external edge property map and assign to graph.
     unsigned weights[] =    {10, 5, 1, 2, 4, 3, 9, 2, 7, 6};
     String<unsigned> weightMap;
-    assignEdgeMap(g, weightMap, weights);
+    assignEdgeMap(weightMap, g, weights);
 
     // Run Bellman-Ford algorithm from vertex 0.  NB: Ford-Fulkerson also
     // detects negative cycles.
     String<unsigned int> predMap;
     String<unsigned int> distMap;
-    bool noNegativeCycle = bellmanFordAlgorithm(g,0,weightMap,predMap,distMap);
+    bool noNegativeCycle = bellmanFordAlgorithm(predMap, distMap, g, 0, weightMap);
 
     // Print result to stdout.
     std::cout << "Single-Source Shortest Paths: " << "\n"

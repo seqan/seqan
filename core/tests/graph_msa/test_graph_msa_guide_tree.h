@@ -136,7 +136,7 @@ Test_UpgmaGuideTree(int seed) {
 				}
 
                 String<size_t> _;
-                if (connectedComponents(distGraph, _)) {
+                if (connectedComponents(_, distGraph)) {
                     move(distGraph, distGraphCopy);
                     move(distMatrix, distMatrixCopy);
                 }

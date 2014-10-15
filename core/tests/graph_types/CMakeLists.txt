@@ -40,24 +40,19 @@ include_directories (${SEQAN_INCLUDE_DIRS})
 # Add definitions set by find_package (SeqAn).
 add_definitions (${SEQAN_DEFINITIONS})
 
-# Update the list of file names below if you add source files to your test.
-add_executable (test_graph_types
-               test_graph_types.cpp
-               test_graph_derived.h
-               test_graph_iterators.h
-               test_graph_properties.h
-               test_graph_types.h
-               test_graph_utils.h
-               test_graph_basic.h)
-
-# Add dependencies found by find_package (SeqAn).
-target_link_libraries (test_graph_types ${SEQAN_LIBRARIES})
-
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+
+# Add targets and register tests.
+set (SOURCES property_map derived iterators types utils)
+foreach (NAME ${SOURCES})
+  add_executable (test_graph_types_${NAME} test_graph_types_${NAME}.cpp)
+  target_link_libraries (test_graph_types_${NAME} ${SEQAN_LIBRARIES})
+  # Register with CTest
+  add_test (NAME test_test_graph_types_${NAME} COMMAND $<TARGET_FILE:test_graph_types_${NAME}>)
+endforeach ()
 
 # ----------------------------------------------------------------------------
 # Register with CTest
 # ----------------------------------------------------------------------------
 
-add_test (NAME test_test_graph_types COMMAND $<TARGET_FILE:test_graph_types>)

@@ -362,7 +362,7 @@ void _initialiseGraphMatePairsNoBreakends(QueryMatches<StellarMatch<TSequence, T
             if (!_checkMateMatches(queryMatches.matches[i], queryMatches.matches, chain, options))
                 cargo += options.noMateMatchesPen;
             TEdgeDescriptor edge = addEdge(chain.graph, chain.startVertex, i, cargo);
-            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            resizeEdgeMap(chain.breakpoints.slotLookupTable, chain.graph);
             assignProperty(chain.breakpoints, edge);
         }
         cargo = static_cast<int>(length(source(queryMatches.matches[i].row2))) -
@@ -370,7 +370,7 @@ void _initialiseGraphMatePairsNoBreakends(QueryMatches<StellarMatch<TSequence, T
         if (cargo < (options.initGapThresh + 1))
         {
             TEdgeDescriptor edge = addEdge(chain.graph, i, chain.endVertex, cargo);
-            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            resizeEdgeMap(chain.breakpoints.slotLookupTable, chain.graph);
             assignProperty(chain.breakpoints, edge);
         }
     }
@@ -435,7 +435,7 @@ void _initialiseGraphMatePairs(QueryMatches<StellarMatch<TSequence, TId> > & que
             if (!_checkMateMatches(queryMatches.matches[i], queryMatches.matches, chain, options))
                 cargo += options.noMateMatchesPen;
             TEdgeDescriptor edge = addEdge(chain.graph, chain.startVertex, i, cargo);
-            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            resizeEdgeMap(chain.breakpoints.slotLookupTable, chain.graph);
             if (cargo < (options.initGapThresh + 1))
                 assignProperty(chain.breakpoints, edge);
             else
@@ -462,7 +462,7 @@ void _initialiseGraphMatePairs(QueryMatches<StellarMatch<TSequence, TId> > & que
         if (cargo < (options.breakendThresh + 1))
         {
             TEdgeDescriptor edge = addEdge(chain.graph, i, chain.endVertex, cargo);
-            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            resizeEdgeMap(chain.breakpoints.slotLookupTable, chain.graph);
             if (cargo < (options.initGapThresh + 1))
                 assignProperty(chain.breakpoints, edge);
             else
