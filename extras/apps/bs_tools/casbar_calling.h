@@ -1081,7 +1081,8 @@ writeMeth(TVcfStream &vcfStream,
         record.rID = 0; // regarding temp vcfStream // refContext.genomeID;
         record.beginPos = refContext.pos;
         record.id = "snp";
-        record.ref = (Dna)refContext.refAllele;
+        resize(record.ref, 1);
+        record.ref[0] = (Dna)refContext.refAllele;
         CharString alt;
         if ((meth.genotype>>2) != refContext.refAllele && (meth.genotype%4) != refContext.refAllele)
         {

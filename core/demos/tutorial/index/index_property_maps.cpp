@@ -24,7 +24,7 @@ int main ()
 		else
 			depth = getProperty(propMap, nodeUp(myIterator)) + 1;
 
-		resizeVertexMap(myIndex, propMap);
+		resizeVertexMap(propMap, myIndex);
 		assignProperty(propMap, value(myIterator), depth);
 
 		++myIterator;

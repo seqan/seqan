@@ -306,7 +306,7 @@ void testJournaledStringInsertValue(TStringJournalSpec const &)
     CharString charStr = "test";
     String<char, Journaled<Alloc<void>, TStringJournalSpec> > journaledString(charStr);
 
-    insert(journaledString, 2, 'X');
+    insert(journaledString, 2, "X");
     std::stringstream tmp;
     tmp << journaledString;
     SEQAN_ASSERT_EQ("teXst", tmp.str());
@@ -739,7 +739,7 @@ void testJournaledStringBeginEndIteratorStandard(TStringJournalSpec const &)
     CharString charStr = "test";
     typedef String<char, Journaled<Alloc<void>, TStringJournalSpec> > TJournaledString;
     TJournaledString journaledString(charStr);
-    insert(journaledString, 2, 'X');
+    insert(journaledString, 2, "X");
 
     typedef typename Iterator<TJournaledString, Standard>::Type TIterator;
 
@@ -763,7 +763,7 @@ void testJournaledStringBeginEndIteratorRooted(TStringJournalSpec const &)
     CharString charStr = "test";
     typedef String<char, Journaled<Alloc<void>, TStringJournalSpec> > TJournaledString;
     TJournaledString journaledString(charStr);
-    insert(journaledString, 2, 'X');
+    insert(journaledString, 2, "X");
 
     typedef typename Iterator<TJournaledString, Rooted>::Type TIterator;
 
@@ -787,7 +787,7 @@ void testJournaledStringBeginEndConstIterator(TStringJournalSpec const &)
 {
     CharString charStr = "test";
     String<char, Journaled<Alloc<void>, TStringJournalSpec> > journaledString(charStr);
-    insert(journaledString, 2, 'X');
+    insert(journaledString, 2, "X");
 
     typedef String<char, Journaled<Alloc<void>, TStringJournalSpec> > TJournaledString;
 
