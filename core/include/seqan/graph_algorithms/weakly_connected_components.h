@@ -92,7 +92,7 @@ weaklyConnectedComponents(TComponents & components,
 
     // Initialization.
     UnionFind<TVertexDescriptor> unionFind;
-    resizeVertexMap(g, unionFind);
+    resizeVertexMap(unionFind, g);
 
     // Iterate over all edges, joining weakly connected components.
     for (TEdgeIterator itE(g); !atEnd(itE); goNext(itE))
