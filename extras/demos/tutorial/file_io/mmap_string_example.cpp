@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 
 int main(int argc, char const ** argv)
 {
