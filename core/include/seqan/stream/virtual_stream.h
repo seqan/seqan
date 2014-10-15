@@ -300,6 +300,22 @@ public:
     {
         return streamBuf;
     }
+
+    /*!
+     * @fn SmartFile::getFileExtensions
+     * @brief Static function that returns a list of allowed file format extension.
+     *
+     * @signature TExtensionVector getFileExtensions()
+     *
+     * @return TExtensionVector A <tt>std::vector&lt;std::string&gt;</tt> with the allowed file extensions.
+     */
+    static std::vector<std::string>
+    getFileExtensions()
+    {
+        std::vector<std::string> extensions;
+        _getFileExtensions(extensions, TFormat());
+        return extensions;
+    }
 };
 
 // ----------------------------------------------------------------------------
