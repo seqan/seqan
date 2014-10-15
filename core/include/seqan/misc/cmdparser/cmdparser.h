@@ -130,7 +130,7 @@ public:
         _fullWidth         = 0;
         _requiredArguments = 0;
         addOption(*this, CommandLineOption("h", "help", "displays this help message", OptionType::Boolean));
-        addOption(*this, CommandLineOption("", "write-ctd", "exports the app's interface description to a .ctd file", OptionType::OUTPUTFILE));
+        addOption(*this, CommandLineOption("", "write-ctd", "exports the app's interface description to a .ctd file", OptionType::OUTPUT_FILE));
     }
 
     // ----------------------------------------------------------------------------

@@ -92,29 +92,29 @@ struct MagicHeader<Gff, T> :
     public MagicHeader<Nothing, T> {};
 
 // ----------------------------------------------------------------------------
-// Class FileFormatExtensions
+// Class FileExtensions
 // ----------------------------------------------------------------------------
 
 template <typename T>
-struct FileFormatExtensions<Gff, T>
+struct FileExtensions<Gff, T>
 {
     static char const * VALUE[1];	// default is one extension
 };
 
 template <typename T>
-char const * FileFormatExtensions<Gff, T>::VALUE[1] =
+char const * FileExtensions<Gff, T>::VALUE[1] =
 {
     ".gff"     // default output extension
 };
 
 template <typename T>
-struct FileFormatExtensions<Gtf, T>
+struct FileExtensions<Gtf, T>
 {
     static char const * VALUE[1];	// default is one extension
 };
 
 template <typename T>
-char const * FileFormatExtensions<Gtf, T>::VALUE[1] =
+char const * FileExtensions<Gtf, T>::VALUE[1] =
 {
     ".gtf"     // default output extension
 };

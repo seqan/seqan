@@ -174,7 +174,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     addOption(parser, seqan::ArgParseOption(
             "o", "out-file", "Path to the output file.",
-            seqan::ArgParseArgument::OUTPUTFILE, "OUT.sam"));
+            seqan::ArgParseArgument::OUTPUT_FILE, "OUT.sam"));
     setValidValues(parser, "out-file", "sam");
     setRequired(parser, "out-file");
 
