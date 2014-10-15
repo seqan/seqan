@@ -160,6 +160,16 @@ public:
             } catch(::seqan::ClassTest::AssertionFailedException e) {
                 /* Swallow exception, go on with next test. */       
                 (void) e;  /* Get rid of unused variable warning. */
+            } catch (::seqan::Exception const & e) {
+                ::std::cerr << "Unexpected exception of type "
+                            << toCString(Demangler<Exception>(e))
+                            << "; message: " << e.what() << "\n";
+                ::seqan::ClassTest::StaticData::thisTestOk() = false;
+                ::seqan::ClassTest::StaticData::errorCount() += 1;
+            } catch (...) {
+                ::std::cerr << "Unexpected exception of unknown type\n";
+                ::seqan::ClassTest::StaticData::thisTestOk() = false;
+                ::seqan::ClassTest::StaticData::errorCount() += 1;
             }
             ::seqan::ClassTest::endTest();
         }
