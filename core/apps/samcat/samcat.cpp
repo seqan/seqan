@@ -178,12 +178,12 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
 
     addDescription(parser, "(c) Copyright in 2014 by David Weese.");
 
-    addOption(parser, ArgParseOption("o", "output", "Output file name.", ArgParseOption::OUTPUTFILE));
-    setValidValues(parser, "output", BamFileOut::getFileFormatExtensions());
+    addOption(parser, ArgParseOption("o", "output", "Output file name.", ArgParseOption::OUTPUT_FILE));
+    setValidValues(parser, "output", BamFileOut::getFileExtensions());
 
     // We require one argument.
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "INFILE", true));
-    setValidValues(parser, 0, BamFileIn::getFileFormatExtensions());
+    setValidValues(parser, 0, BamFileIn::getFileExtensions());
 #if SEQAN_HAS_ZLIB
     setHelpText(parser, 0, "Input SAM or BAM file (or - for stdin).");
     addOption(parser, ArgParseOption("b", "bam", "Use BAM format for standard output. Default: SAM."));

@@ -78,7 +78,7 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos);
  *
  * @section Examples
  *
- * In the following example, the types <tt>INPUT_FILE</tt>, <tt>OUTPUTFILE</tt>, and <tt>DOUBLE</tt> are used.
+ * In the following example, the types <tt>INPUT_FILE</tt>, <tt>OUTPUT_FILE</tt>, and <tt>DOUBLE</tt> are used.
  *
  * @include demos/arg_parse/argument_parser.cpp
  */
@@ -99,7 +99,7 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos);
  * @val ArgParseArgument::ArgumentType ArgParseArgument::INPUT_FILE;
  * @brief Argument is an input file.
  *
- * @val ArgParseArgument::ArgumentType ArgParseArgument::OUTPUTFILE;
+ * @val ArgParseArgument::ArgumentType ArgParseArgument::OUTPUT_FILE;
  * @brief Argument is an output file.
  */
 
@@ -140,7 +140,7 @@ ArgParseArgument.
 ...table:$ArgParseArgument::INT64|Argument is a 64 bit integer
 ...table:$ArgParseArgument::DOUBLE$|A float
 ...table:$ArgParseArgument::INPUT_FILE$|An input file
-...table:$ArgParseArgument::OUTPUTFILE$|An output file
+...table:$ArgParseArgument::OUTPUT_FILE$|An output file
  ..param.argumentLabel:Defines a user defined argument label for the help output. If this option is
  not set, ArgParseArgument will automatically define a label based on the ArgumentType.
 ..param.isListArgument:Defines if the argument can be given multiple times.
@@ -162,9 +162,9 @@ public:
         INT64,       // .. a 64 bit integer
         DOUBLE,      // .. a float
         INPUT_FILE,   // .. an inputfile (implicitly also a string)
-        OUTPUTFILE,  // .. an outputfile (implicitly also a string)
+        OUTPUT_FILE,  // .. an outputfile (implicitly also a string)
         INPUTPREFIX, // .. an inputprefix (implicitly also a string)
-        OUTPUTPREFIX // .. an outoutprefix (implicitly also a string)
+        OUTPUT_PREFIX // .. an outoutprefix (implicitly also a string)
     };
 
 
@@ -260,7 +260,7 @@ inline std::string _typeToString(ArgParseArgument const & me)
         typeName = "inputfile";
         break;
 
-    case ArgParseArgument::OUTPUTFILE:
+    case ArgParseArgument::OUTPUT_FILE:
         typeName = "outputfile";
         break;
 
@@ -268,7 +268,7 @@ inline std::string _typeToString(ArgParseArgument const & me)
         typeName = "inputprefix";
         break;
 
-    case ArgParseArgument::OUTPUTPREFIX:
+    case ArgParseArgument::OUTPUT_PREFIX:
         typeName = "outputprefix";
         break;
 
@@ -349,9 +349,9 @@ inline bool isStringArgument(ArgParseArgument const & me)
 {
     return (me._argumentType == ArgParseArgument::STRING) ||
            (me._argumentType == ArgParseArgument::INPUT_FILE) ||
-           (me._argumentType == ArgParseArgument::OUTPUTFILE) ||
+           (me._argumentType == ArgParseArgument::OUTPUT_FILE) ||
            (me._argumentType == ArgParseArgument::INPUTPREFIX) ||
-           (me._argumentType == ArgParseArgument::OUTPUTPREFIX) ;
+           (me._argumentType == ArgParseArgument::OUTPUT_PREFIX) ;
 }
 
 // ----------------------------------------------------------------------------
@@ -522,7 +522,7 @@ inline bool isInputFileArgument(ArgParseArgument const & me)
 
 inline bool isOutputFileArgument(ArgParseArgument const & me)
 {
-    return me._argumentType == ArgParseArgument::OUTPUTFILE;
+    return me._argumentType == ArgParseArgument::OUTPUT_FILE;
 }
 
 // ----------------------------------------------------------------------------
@@ -557,7 +557,7 @@ inline bool isOutputFileArgument(ArgParseArgument const & me)
 
 inline bool isOutputPrefixArgument(ArgParseArgument const & me)
 {
-    return me._argumentType == ArgParseArgument::OUTPUTPREFIX;
+    return me._argumentType == ArgParseArgument::OUTPUT_PREFIX;
 }
 
 // ----------------------------------------------------------------------------
@@ -816,7 +816,7 @@ inline void setMaxValue(ArgParseArgument & me, const std::string maxValue)
  * setValidValues(stringArg, values);  // one of {"four", "five"}
  * @endcode
  *
- * An example for an input file option.  Note that by changing <tt>INPUT_FILE</tt> to <tt>OUTPUTFILE</tt> below,
+ * An example for an input file option.  Note that by changing <tt>INPUT_FILE</tt> to <tt>OUTPUT_FILE</tt> below,
  * the example would be the same for output files.
  *
  * @code{.cpp}
@@ -1333,7 +1333,7 @@ inline unsigned numberOfAllowedValues(ArgParseArgument const & me)
  * @headerfile <seqan/arg_parse.h>
  * @brief Returns the file extension for the given file argument.
  *
- * Only valid when argument is an INPUT_FILE or OUTPUTFILE.
+ * Only valid when argument is an INPUT_FILE or OUTPUT_FILE.
  *
  * Halts the program if not an input or output file argument.
  *
@@ -1353,7 +1353,7 @@ inline unsigned numberOfAllowedValues(ArgParseArgument const & me)
 .Function.ArgParseArgument#getFileExtension
 ..class:Class.ArgParseArgument
 ..summary:Returns the file extension for the given file argument.
-..description:Only valid when argument is an INPUT_FILE or OUTPUTFILE.
+..description:Only valid when argument is an INPUT_FILE or OUTPUT_FILE.
 ..cat:Miscellaenous
 ..signature:std::string getFileExtension(argument[, pos]);
 ..param.argument:The @Class.ArgParseArgument@ object.
@@ -1369,7 +1369,7 @@ inline unsigned numberOfAllowedValues(ArgParseArgument const & me)
 inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos = 0)
 {
     if (me._argumentType != ArgParseArgument::INPUT_FILE &&
-        me._argumentType != ArgParseArgument::OUTPUTFILE)
+        me._argumentType != ArgParseArgument::OUTPUT_FILE)
         SEQAN_FAIL("Cannot get file extension from non-file argument/option.");
 
     // Short-circuit to override file extension if set.

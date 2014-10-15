@@ -187,7 +187,7 @@ void _setupParser(TParser & parser)
     addOption(parser, ArgParseOption("v", "verbose", "control the level of output files ", ArgParseArgument::INTEGER));
     setDefaultValue(parser, "verbose", "0");
     addSection(parser, "Output Option");
-    addOption(parser, ArgParseOption("r", "result", "File containing canonical label of input graphs", ArgParseArgument::OUTPUTFILE,"OUT"));
+    addOption(parser, ArgParseOption("r", "result", "File containing canonical label of input graphs", ArgParseArgument::OUTPUT_FILE,"OUT"));
 }
 
 // --------------------------------------------------------------------------

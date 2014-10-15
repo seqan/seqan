@@ -63,17 +63,17 @@ struct MagicHeader<Roi, T> :
     public MagicHeader<Nothing, T> {};
 
 // ----------------------------------------------------------------------------
-// Class FileFormatExtensions
+// Class FileExtensions
 // ----------------------------------------------------------------------------
 
 template <typename T>
-struct FileFormatExtensions<Roi, T>
+struct FileExtensions<Roi, T>
 {
     static char const * VALUE[1];	// default is one extension
 };
 
 template <typename T>
-char const * FileFormatExtensions<Roi, T>::VALUE[1] =
+char const * FileExtensions<Roi, T>::VALUE[1] =
 {
     ".roi"     // default output extension
 };

@@ -1107,7 +1107,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     setValidValues(parser, 0, ".fa .fasta");
     setHelpText(parser, 0, "A reference genome file.");
 
-    std::vector<std::string> alignmentFormats(BamFileIn::getFileFormatExtensions());
+    std::vector<std::string> alignmentFormats(BamFileIn::getFileExtensions());
     alignmentFormats.push_back(".gff");
     addArgument(parser, ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "ALIGNMENTS", true));
     setValidValues(parser, 1, alignmentFormats);
@@ -1115,7 +1115,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
 
     addDescription(parser, "SNP and Indel Calling in Mapped Read Data.");
     addSection(parser, "Main Options");
-    addOption(parser, ArgParseOption("o", "output", "SNP output file (mandatory).", ArgParseArgument::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "output", "SNP output file (mandatory).", ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "output", ".vcf");
     setRequired(parser, "output");
     addOption(parser, ArgParseOption("osc", "only-successful-candidates", "Output only successfully called SNP candidates. Default: Output all candidates."));
@@ -1124,7 +1124,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     addOption(parser, ArgParseOption("mu", "multi", "Keep non-unique fragmentStore.alignedReadStore. Default: off."));
     addOption(parser, ArgParseOption("hq", "hide-qualities", "Only show coverage (no qualities) in SNP output file. Default: off."));
     addOption(parser, ArgParseOption("sqo", "solexa-qual-offset", "Base qualities are encoded as Ascii value - 64 (instead of Ascii - 33)."));
-    addOption(parser, ArgParseOption("id", "indel-file", "Output file for called indels in gff format. Default: off.", ArgParseArgument::OUTPUTFILE));
+    addOption(parser, ArgParseOption("id", "indel-file", "Output file for called indels in gff format. Default: off.", ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "indel-file", ".gff");
     addOption(parser, ArgParseOption("m", "method", "Set method used for SNP calling either threshold based or Maq method.", ArgParseArgument::STRING));
     setValidValues(parser, "method", "thresh maq");
@@ -1140,7 +1140,7 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     setMinValue(parser, "force-call", "1");
     setDefaultValue(parser, "force-call", options.forceCallCount);
     addOption(parser, ArgParseOption("oa", "orientation-aware", "Distinguish between forward and reverse reads. Default: off."));
-//    addOption(parser, ArgParseOption("cnv", "output-cnv", "Name of CNV result file.", ArgParseArgument::OUTPUTFILE));
+//    addOption(parser, ArgParseOption("cnv", "output-cnv", "Name of CNV result file.", ArgParseArgument::OUTPUT_FILE));
 //    hideOption(parser, "cnv");
     addOption(parser, ArgParseOption("op", "output-positions", "Name of positions output file.", ArgParseArgument::STRING));
     hideOption(parser, "op");
