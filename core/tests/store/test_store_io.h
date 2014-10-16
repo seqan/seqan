@@ -46,7 +46,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
     // The file contains 13 annotations in total which will be checked line
     // after line.
     seqan::CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/core/tests/store/example.knownGene.txt");
+    append(ucscPath, "/core/tests/store/example_knownGene.txt");
 
     UcscFileIn fin(toCString(ucscPath));
     seqan::FragmentStore<> store;
@@ -165,7 +165,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
 SEQAN_DEFINE_TEST(test_store_io_write_ucsc_known_genes)
 {
     seqan::CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/core/tests/store/example.knownGene.txt");
+    append(ucscPath, "/core/tests/store/example_knownGene.txt");
 
     UcscFileIn fin(toCString(ucscPath));
     seqan::FragmentStore<> store;
@@ -178,7 +178,7 @@ SEQAN_DEFINE_TEST(test_store_io_write_ucsc_known_genes)
     close(fout);
 
     seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
-    append(goldPath, "/core/tests/store/example.knownGene.txt");
+    append(goldPath, "/core/tests/store/example_knownGene.txt");
 
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }

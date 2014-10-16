@@ -127,25 +127,7 @@ public:
      */
     __uint32 annotationEndPos;
 
-    /*!
-     * @enum UcscRecord::Format
-     * @brief Enum for selecting the represented table
-     *
-     * @var UcscRecord::Format KNOWN_GENE
-     * @brief UcscRecord represents record from the <tt>knownGenes.txt.gz</tt>
-     *
-     * @var UcscRecord::Format KNOWN_ISOFORMS
-     * @brief UcscRecord represents record from the <tt>knownIsoforms.txt.gz</tt>
-     */
-    enum Format { KNOWN_GENE, KNOWN_ISOFORMS };
-
-    /*!
-     * @var UcscRecord::Format UcscRecord::format
-     * @brief The records format, defaults to <tt>KNOWN_GENE</tt>.
-     */
-    Format format;
-
-    UcscRecord() : cdsBegin(0), cdsEnd(0), annotationBeginPos(0), annotationEndPos(0), format(KNOWN_GENE)
+    UcscRecord() : cdsBegin(0), cdsEnd(0), annotationBeginPos(0), annotationEndPos(0)
     {}
 };
 

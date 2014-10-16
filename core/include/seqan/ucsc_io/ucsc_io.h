@@ -143,6 +143,67 @@ char const * FileExtensions<UcscKnownIsoforms, T>::VALUE[1] =
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function guessFormatFromStream
+// ----------------------------------------------------------------------------
+
+template <typename TBuffer, typename TFormatSpec>
+inline bool
+_ucscCheckHeader(TBuffer const & header, Tag<Ucsc_<TFormatSpec> > /*format*/)
+{
+    // knownIsoforms files have 2 tab-separated columns
+    // knownGene files have 12
+
+    typename DirectionIterator<TBuffer const, Input>::Type reader = directionIterator(header, Input());
+
+    // skip comments
+    while (!atEnd(reader) && value(reader) == '#')
+        skipLine(reader);
+
+    unsigned columns = (IsSameType<TFormatSpec, UcscKnownIsoforms_>::VALUE)? 2 : 12;
+
+    for (unsigned i = 1; i != columns; ++i)
+    {
+        // skip to the i'th tab
+        skipUntil(reader, OrFunctor<IsNewline, IsTab>());
+
+        // check for premature end
+        if (atEnd(reader) || IsNewline()(value(reader)))
+            return false;
+
+        skipOne(reader);    // skip tab
+    }
+
+    // skip presumed last column
+    skipUntil(reader, OrFunctor<IsNewline, IsTab>());
+    return atEnd(reader) || IsNewline()(value(reader));
+}
+
+// read first bytes of a file/stream and compare with file format's magic header
+template <typename TStream, typename TFormatSpec>
+inline bool
+guessFormatFromStream(TStream &istream, Tag<Ucsc_<TFormatSpec> > const & format)
+{
+    String<char, Array<1000> > putbackBuf;
+    bool match = false;
+
+    SEQAN_ASSERT(istream.good());
+
+    // try to read and check header
+    size_t numRead = istream.readsome(&putbackBuf[0], capacity(putbackBuf));
+    _setLength(putbackBuf, numRead);
+    if (_ucscCheckHeader(putbackBuf, format))
+        match = true;
+
+    // unget all read characters
+    for (; numRead > 0; --numRead)
+        istream.unget();
+
+    SEQAN_ASSERT(istream.good());
+
+    return match;
+}
+
+// ----------------------------------------------------------------------------
 // Function readRecod
 // ----------------------------------------------------------------------------
 
