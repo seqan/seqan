@@ -47,6 +47,9 @@ namespace seqan {
 // Typedefs
 // ============================================================================
 
+typedef Tag<Ucsc_<> > Ucsc;
+
+
 // ----------------------------------------------------------------------------
 // Typedef UcscFileIn
 // ----------------------------------------------------------------------------
@@ -96,7 +99,11 @@ struct SmartFileContext<SmartFile<Ucsc, TDirection, TSpec>, TStorageSpec>
 template <typename TDirection, typename TSpec>
 struct FileFormat<SmartFile<Ucsc, TDirection, TSpec> >
 {
-    typedef Ucsc Type;
+    typedef TagSelector<
+                TagList<UcscKnownGene,
+                TagList<UcscKnownIsoforms
+                > >
+            > Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -114,6 +121,33 @@ struct FileFormat<SmartFile<Ucsc, TDirection, TSpec> >
  *
  * @throw IOError in case of problems.
  */
+
+// support for dynamically chosen file formats
+template <typename TForwardIter>
+inline void
+readRecord(UcscRecord & /* record */,
+           UcscIOContext & /* context */,
+           TForwardIter & /* iter */,
+           TagSelector<> const & /* format */)
+{
+    SEQAN_FAIL("UcscFileIn: File format not specified.");
+}
+
+template <typename TForwardIter, typename TTagList>
+inline void
+readRecord(UcscRecord & record,
+           UcscIOContext & context,
+           TForwardIter & iter,
+           TagSelector<TTagList> const & format)
+{
+    typedef typename TTagList::Type TFormat;
+
+    if (isEqual(format, TFormat()))
+        readRecord(record, context, iter, TFormat());
+    else
+        readRecord(record, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+}
+
 template <typename TSpec>
 void readRecord(UcscRecord & record, SmartFile<Ucsc, Input, TSpec> & file)
 {
@@ -121,7 +155,7 @@ void readRecord(UcscRecord & record, SmartFile<Ucsc, Input, TSpec> & file)
 }
 
 // ----------------------------------------------------------------------------
-// Function write(); UcscRecord
+// Function writeRecord(); UcscRecord
 // ----------------------------------------------------------------------------
 
 /*!
@@ -135,8 +169,34 @@ void readRecord(UcscRecord & record, SmartFile<Ucsc, Input, TSpec> & file)
  *
  * @throw IOError in case of problems.
  */
+
+// support for dynamically chosen file formats
+template <typename TTarget>
+inline void
+writeRecord(TTarget & /* target */,
+            UcscRecord const & /* record */,
+            TagSelector<> const & /* format */)
+{
+    SEQAN_FAIL("UcscFileOut: File format not specified.");
+}
+
+template <typename TTarget, typename TTagList>
+inline void
+writeRecord(TTarget & target,
+            UcscRecord const & record,
+            TagSelector<TTagList> const & format)
+{
+    typedef typename TTagList::Type TFormat;
+
+    if (isEqual(format, TFormat()))
+        writeRecord(target, record, TFormat());
+    else
+        writeRecord(target, record, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+}
+
 template <typename TSpec>
-void writeRecord(SmartFile<Ucsc, Output, TSpec> & file, UcscRecord & record)
+inline void
+writeRecord(SmartFile<Ucsc, Output, TSpec> & file, UcscRecord const & record)
 {
     writeRecord(file.iter, record, file.format);
 }

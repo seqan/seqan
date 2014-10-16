@@ -197,6 +197,7 @@ readRecord(BamHeader & header, SmartFile<Bam, Input, TSpec> & file)
 // Function readRecord(); BamAlignmentRecord
 // ----------------------------------------------------------------------------
 
+// support for dynamically chosen file formats
 template <typename TBuffer, typename TForwardIter>
 inline void
 _readBamRecord(TBuffer & /* rawRecord */, TForwardIter & /* iter */, TagSelector<> const & /* format */)
