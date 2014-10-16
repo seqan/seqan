@@ -289,7 +289,7 @@ inline bool _extendRight(Extender<THaystack, TNeedle, EditDistance, TSpec> & ext
     else if (lcp == length(haystackInfix))
     {
         needleErrors += length(needleInfix) - length(haystackInfix);
-        matchEnd = posAdd(matchEnd, length(needleInfix));
+        matchEnd = posAdd(matchEnd, lcp);
         return needleErrors <= maxErrors;
     }
     setBeginPosition(haystackInfix, beginPosition(haystackInfix) + lcp);
