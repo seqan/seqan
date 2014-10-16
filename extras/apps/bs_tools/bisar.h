@@ -940,8 +940,6 @@ postProcessMain(TOptions &options, TModel const &)
     typedef typename TFragmentStore::TReadNameStore             TReadNameStore;
     typedef NameStoreCache<TReadNameStore, CharString>          TReadNameStoreCache;
 
-    typedef typename TFragmentStore::TContigNameStore                               TContigNameStore;
-    typedef NameStoreCache<TContigNameStore, CharString>                            TContigNameStoreCache;
     typedef typename TFragmentStore::TContigStore                                   TContigStore;
     typedef typename Value<TContigStore>::Type                                      TContig;
     typedef typename TContig::TContigSeq                                            TContigSeq;
@@ -949,7 +947,6 @@ postProcessMain(TOptions &options, TModel const &)
     typedef typename TFragmentStore::TAlignedReadStore                              TAlignedReadStore;
     typedef typename Value<TAlignedReadStore>::Type                                 TAlignedRead;
 
-    typedef BamIOContext<TContigNameStore, TContigNameStoreCache>                   TBamIOContext;
     typedef typename TAlignedRead::TGapAnchors                                      TReadGapAnchors;
     typedef Gaps<TReadSeq, AnchorGaps<TReadGapAnchors> >                            TReadGaps;
     typedef typename TContig::TGapAnchors                                           TContigGapAnchors;
