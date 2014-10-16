@@ -48,7 +48,7 @@ int main()
     addEdges(cargoG, edges, numEdges);
 
     // Fill internal edge weight map.
-    InternalMap<TEdgeCargo> intMap;
+    InternalPropertyMap<TEdgeCargo> intMap;
     assignEdgeMap(intMap, cargoG, weights);
 
     // Run Dijkstra's algorithm from vertex 0.
