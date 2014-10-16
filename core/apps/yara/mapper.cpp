@@ -165,8 +165,8 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setMaxValue(parser, "strata-rate", "10");
     setDefaultValue(parser, "strata-rate", 100.0 * options.strataRate);
 
-    addOption(parser, ArgParseOption("a", "all", "Report all suboptimal alignments. Default: report alignments within \
-                                                  the specified strata rate."));
+    addOption(parser, ArgParseOption("a", "all", "Report all alignments within --error-rate. Default: report alignments \
+                                                  within --strata-rate."));
 
     addOption(parser, ArgParseOption("q", "quick", "Be quicker by loosely mapping a few very repetitive reads."));
     hideOption(getOption(parser, "quick"));
