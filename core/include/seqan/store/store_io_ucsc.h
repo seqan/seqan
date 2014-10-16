@@ -145,12 +145,12 @@ _storeOneAnnotation(
 //////////////////////////////////////////////////////////////////////////////
 // read a whole UCSC stream into FragmentStore
 
-template <typename TSpec, typename TConfig, typename TFile, typename TFormatSpec>
+template <typename TFSSpec, typename TConfig, typename TSpec>
 inline void
-readRecords(FragmentStore<TSpec, TConfig> & fragStore,
-            TFile & file,
-            Tag<Ucsc_<TFormatSpec> > const & tag)
+readRecords(FragmentStore<TFSSpec, TConfig> & fragStore,
+            SmartFile<Ucsc, Input, TSpec> & file)
 {
+    typedef SmartFile<Ucsc, Input, TSpec> TFile;
     typename DirectionIterator<TFile, Input>::Type iter = directionIterator(file, Input());
 
     if (atEnd(iter))
@@ -166,7 +166,7 @@ readRecords(FragmentStore<TSpec, TConfig> & fragStore,
 
     while (!atEnd(iter))
     {
-        readRecord(record, ctx, iter, tag);
+        readRecord(record, ctx, iter, format(file));
         _storeOneAnnotation(fragStore, record);
     }
     _storeClearAnnoBackLinks(fragStore.annotationStore);

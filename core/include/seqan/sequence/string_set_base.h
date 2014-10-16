@@ -1921,6 +1921,38 @@ concat(StringSet<TString, TSpec> const & constMe)
     return me.concat;
 }
 
+template <typename TStrings, typename TDelim>
+inline String<typename Value<typename Value<TStrings>::Type>::Type>
+concat(TStrings const & strings, TDelim const & delimiter, bool ignoreEmptyStrings = false)
+{
+    String<typename Value<typename Value<TStrings>::Type>::Type> tmp;
+
+    if (empty(strings))
+        return tmp;
+
+    if (ignoreEmptyStrings)
+    {
+        for (size_t i = 0; i < length(strings); ++i)
+        {
+            if (empty(strings[i]))
+                continue;
+            if (!empty(tmp))
+                append(tmp, delimiter);
+            append(tmp, strings[i]);
+        }
+    }
+    else
+    {
+        tmp = front(strings);
+        for (size_t i = 1; i < length(strings); ++i)
+        {
+            append(tmp, delimiter);
+            append(tmp, strings[i]);
+        }
+    }
+    return tmp;
+}
+
 // ----------------------------------------------------------------------------
 // Function prefixSums<TValue>()
 // ----------------------------------------------------------------------------
