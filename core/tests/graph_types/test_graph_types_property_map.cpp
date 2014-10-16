@@ -129,8 +129,8 @@ SEQAN_DEFINE_TEST(test_graph_types_property_map_external_assign_edge_map)
     SEQAN_ASSERT(getProperty(weightMap, findEdge(g10, 0, 2)) == 8);
 }
 
-// Test internal property maps.
-SEQAN_DEFINE_TEST(test_graph_types_property_internal_map)
+// Test internal pointer property maps.
+SEQAN_DEFINE_TEST(test_graph_types_property_internal_pointer_map)
 {
     using namespace seqan;
 
@@ -150,8 +150,8 @@ SEQAN_DEFINE_TEST(test_graph_types_property_internal_map)
     TEdgeDescriptor e2 = addEdge(g, v0, v1);
 
     // Second Variant: Pointer to member using a class
-    InternalPropertyMap<char TPair::*, & TPair::i1> eMap4;
-    InternalPropertyMap<int TPair::*, & TPair::i2> eMap5;
+    InternalPointerPropertyMap<char TPair::*, & TPair::i1> eMap4;
+    InternalPointerPropertyMap<int TPair::*, & TPair::i2> eMap5;
     resizeEdgeMap(eMap4, g);
     resizeEdgeMap(eMap5, g);
     assignProperty(eMap4, e1, 'c');
@@ -166,13 +166,13 @@ SEQAN_DEFINE_TEST(test_graph_types_property_internal_map)
     property(eMap5, e1) = 100;
     SEQAN_ASSERT(getProperty(eMap4, e1) == 'z');
     SEQAN_ASSERT(getProperty(eMap5, e1) == 100);
-    InternalPropertyMap<char TPair::*, & TPair::i1> const eMap6(eMap4);
+    InternalPointerPropertyMap<char TPair::*, & TPair::i1> const eMap6(eMap4);
     SEQAN_ASSERT(getProperty(eMap6, e1) == 'z');
     SEQAN_ASSERT(getProperty(eMap6, e2) == 'd');
     SEQAN_ASSERT(property(eMap6, e2) == 'd');
 }
 
-SEQAN_DEFINE_TEST(test_graph_types_property_internal_map_assign_edge_map_member_pointer)
+SEQAN_DEFINE_TEST(test_graph_types_property_internal_pointer_map_assign_edge_map_member)
 {
     using namespace seqan;
 
@@ -182,9 +182,7 @@ SEQAN_DEFINE_TEST(test_graph_types_property_internal_map_assign_edge_map_member_
 
     // Initialize graph.
     TGraph g10;
-    unsigned int weights1[] = {
-    4, 8
-    };
+    unsigned int weights1[] = {4, 8};
     unsigned int weights2[] = {5, 9};
 
     addVertex(g10);
@@ -194,8 +192,8 @@ SEQAN_DEFINE_TEST(test_graph_types_property_internal_map_assign_edge_map_member_
     addEdge(g10, 0, 1);
     addEdge(g10, 0, 2);
 
-    InternalPropertyMap<unsigned TPair::*, & TPair::i1> weightMap1;
-    InternalPropertyMap<unsigned TPair::*, & TPair::i2> weightMap2;
+    InternalPointerPropertyMap<unsigned TPair::*, & TPair::i1> weightMap1;
+    InternalPointerPropertyMap<unsigned TPair::*, & TPair::i2> weightMap2;
     assignEdgeMap(weightMap1, g10, weights1);
     assignEdgeMap(weightMap2, g10, weights2);
     SEQAN_ASSERT_EQ(getProperty(weightMap1, findEdge(g10, 0, 1)), 4u);
@@ -204,13 +202,74 @@ SEQAN_DEFINE_TEST(test_graph_types_property_internal_map_assign_edge_map_member_
     SEQAN_ASSERT_EQ(getProperty(weightMap2, findEdge(g10, 0, 2)), 9u);
 }
 
+// Test internal property maps.
+SEQAN_DEFINE_TEST(test_graph_types_property_internal_map)
+{
+    using namespace seqan;
+
+    // Graph typedefs.
+    typedef Directed<char>                 TEdges;
+    typedef Graph<TEdges>                  TGraph;
+    typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef EdgeDescriptor<TGraph>::Type   TEdgeDescriptor;
+
+    // Build graph.
+    TGraph g;
+    TVertexDescriptor v0 = addVertex(g);
+    TVertexDescriptor v1 = addVertex(g);
+    addVertex(g);
+    TEdgeDescriptor e1 = addEdge(g, 0, 2);
+    TEdgeDescriptor e2 = addEdge(g, v0, v1);
+
+    // Second Variant: Pointer to member using a class
+    InternalPropertyMap<char> eMap4;
+    resizeEdgeMap(eMap4, g);
+    assignProperty(eMap4, e1, 'c');
+    assignProperty(eMap4, e2, 'd');
+    SEQAN_ASSERT(getProperty(eMap4, e1) == 'c');
+    SEQAN_ASSERT(getProperty(eMap4, e2) == 'd');
+    property(eMap4, e1) = 'z';
+    SEQAN_ASSERT(getProperty(eMap4, e1) == 'z');
+    InternalPropertyMap<char> const eMap6(eMap4);
+    SEQAN_ASSERT(getProperty(eMap6, e1) == 'z');
+    SEQAN_ASSERT(getProperty(eMap6, e2) == 'd');
+    SEQAN_ASSERT(property(eMap6, e2) == 'd');
+}
+
+SEQAN_DEFINE_TEST(test_graph_types_property_internal_map_assign_edge_map)
+{
+    using namespace seqan;
+
+    // Create graph typedefs.
+    typedef Graph<Directed<unsigned> >                 TGraph;
+
+    // Initialize graph.
+    TGraph g10;
+    unsigned int weights1[] = {4, 8};
+
+    addVertex(g10);
+    addVertex(g10);
+    addVertex(g10);
+
+    addEdge(g10, 0, 1);
+    addEdge(g10, 0, 2);
+
+    InternalPropertyMap<unsigned> weightMap1;
+    assignEdgeMap(weightMap1, g10, weights1);
+    SEQAN_ASSERT_EQ(getProperty(weightMap1, findEdge(g10, 0, 1)), 4u);
+    SEQAN_ASSERT_EQ(getProperty(weightMap1, findEdge(g10, 0, 2)), 8u);
+}
+
 SEQAN_BEGIN_TESTSUITE(test_graph_types_property_map)
 {
     SEQAN_CALL_TEST(test_graph_types_property_map_external);
     SEQAN_CALL_TEST(test_graph_types_property_map_external_assign_vertex_map);
     SEQAN_CALL_TEST(test_graph_types_property_map_external_assign_edge_map);
 
+    SEQAN_CALL_TEST(test_graph_types_property_internal_pointer_map);
+    SEQAN_CALL_TEST(test_graph_types_property_internal_pointer_map_assign_edge_map_member);
+
     SEQAN_CALL_TEST(test_graph_types_property_internal_map);
-    SEQAN_CALL_TEST(test_graph_types_property_internal_map_assign_edge_map_member_pointer);
+    SEQAN_CALL_TEST(test_graph_types_property_internal_map_assign_edge_map);
 }
 SEQAN_END_TESTSUITE

@@ -873,7 +873,7 @@ void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > 
 template <typename TMSplazerChain>
 void _analyzeChains(String<TMSplazerChain> & queryChains)
 {
-    InternalMap<int> weightMap;
+    InternalPropertyMap<int> weightMap;
     // typedef typename TMSplazerChain::TGraph TGraph;
     // typedef typename Size<TGraph>::Type TGraphSize;
 

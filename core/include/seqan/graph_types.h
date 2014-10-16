@@ -66,6 +66,7 @@
 // Graph property maps
 #include <seqan/graph_types/property_map_generic.h>
 #include <seqan/graph_types/property_map_internal.h>
+#include <seqan/graph_types/property_map_internal_pointer.h>
 
 // Specializations
 #include <seqan/graph_types/graph_impl_oracle.h>	// Oracle
