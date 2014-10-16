@@ -983,6 +983,15 @@ write(TOValue * &optr, TIValue *iptr, TSize n)
     optr += n;
 }
 
+template <typename TOValue, typename TIValue, typename TSize>
+inline SEQAN_FUNC_ENABLE_IF(And< Is<CharConcept<TOValue> >,
+                                 Is<CharConcept<TIValue> > >, void)
+write(TOValue * optr, TIValue * &iptr, TSize n)
+{
+    std::memcpy(optr, iptr, n);
+    iptr += n;
+}
+
 // ----------------------------------------------------------------------------
 // Function write(TValue *)
 // ----------------------------------------------------------------------------
