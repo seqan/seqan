@@ -211,7 +211,6 @@ _fillAnnotationRecord(
     if (annotation.typeId != TFragmentStore::ANNO_MRNA)
         return false;
 
-    record.format = record.KNOWN_GENE;
     record.transName = getAnnoUniqueName(fragStore, id);
     if (annotation.contigId < length(fragStore.contigNameStore))
         record.contigName = fragStore.contigNameStore[annotation.contigId];
@@ -265,7 +264,6 @@ _fillAnnotationRecord(
     if (annotation.parentId == TAnnotation::INVALID_ID || annotation.parentId == 0)
         return false;
 
-    record.format = record.KNOWN_ISOFORMS;
     record.transName = getAnnoUniqueName(fragStore, annotation.parentId);
     record.contigName = getAnnoUniqueName(fragStore, id);
     return true;
