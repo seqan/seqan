@@ -781,9 +781,6 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
 {
     typedef FragmentStore<SnpStoreSpec_>                                        TFragmentStore;
     typedef typename TFragmentStore::TContigPos                                 TContigPos;
-    typedef typename TFragmentStore::TContigNameStore                           TContigNameStore;
-    typedef NameStoreCache<TContigNameStore, CharString>                        TContigNameStoreCache;
-    typedef BamIOContext<TContigNameStore, TContigNameStoreCache>               TBamIOContext;
 
     SEQAN_PROTIMESTART(load_time);
 
