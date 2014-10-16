@@ -173,7 +173,7 @@ inline bool guessFormatFromFilename(TFilename const & fileName, Tag<TFormat_> /*
     
     TLowcase lowcaseFileName(fileName);
     for (unsigned i = 0; i < sizeof(FileExtensions<TFormat>::VALUE) / sizeof(char*); ++i)
-        if (endsWith(lowcaseFileName, FileExtensions<TFormat>::VALUE[i]))
+        if (endsWith(lowcaseFileName, lowerString(FileExtensions<TFormat>::VALUE[i])))
             return true;
 
     return false;
@@ -189,7 +189,7 @@ getBasename(TFilename const & fileName, Tag<TFormat_> const & /*formatTag*/)
     
     TLowcase lowcaseFileName(fileName);
     for (unsigned i = 0; i < sizeof(FileExtensions<TFormat>::VALUE) / sizeof(char*); ++i)
-        if (endsWith(lowcaseFileName, FileExtensions<TFormat>::VALUE[i]))
+        if (endsWith(lowcaseFileName, lowerString(FileExtensions<TFormat>::VALUE[i])))
             return prefix(fileName, length(fileName) - length(FileExtensions<TFormat>::VALUE[i]));
 
     return prefix(fileName, length(fileName));

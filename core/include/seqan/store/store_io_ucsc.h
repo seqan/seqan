@@ -40,12 +40,14 @@ namespace SEQAN_NAMESPACE_MAIN {
 //////////////////////////////////////////////////////////////////////////////
 // add a UCSC record to FragmentStore
 
-template <typename TFragmentStore>
+template <typename TSpec, typename TConfig>
 inline void
-_storeOneAnnotationKnownGene(
-    TFragmentStore & fragStore,
-    UcscRecord const & record)
+_storeAnnotationRecord(
+    FragmentStore<TSpec, TConfig> & fragStore,
+    UcscRecord const & record,
+    UcscKnownGene)
 {
+    typedef FragmentStore<TSpec, TConfig>               TFragmentStore;
     typedef typename TFragmentStore::TAnnotationStore   TAnnotationStore;
     typedef typename Value<TAnnotationStore>::Type      TAnnotation;
     typedef typename TAnnotation::TId                   TId;
@@ -98,12 +100,14 @@ _storeOneAnnotationKnownGene(
         _adjustParent(fragStore.annotationStore[geneId], transcript);
 }
 
-template <typename TFragmentStore>
+template <typename TSpec, typename TConfig>
 inline void
-_storeOneAnnotationKnownIsoforms(
-    TFragmentStore & fragStore,
-    UcscRecord const & record)
+_storeAnnotationRecord(
+    FragmentStore<TSpec, TConfig> & fragStore,
+    UcscRecord const & record,
+    UcscKnownIsoforms const &)
 {
+    typedef FragmentStore<TSpec, TConfig>               TFragmentStore;
     typedef typename TFragmentStore::TAnnotationStore   TAnnotationStore;
     typedef typename Value<TAnnotationStore>::Type      TAnnotation;
     typedef typename TAnnotation::TId                   TId;
@@ -130,17 +134,33 @@ _storeOneAnnotationKnownIsoforms(
     _adjustParent(locus, transcript);
 }
 
-template <typename TFragmentStore>
+// support for dynamically chosen file formats
+template <typename TSpec, typename TConfig>
 inline void
-_storeOneAnnotation(
-    TFragmentStore & fragStore,
-    UcscRecord const & record)
+_storeAnnotationRecord(
+    FragmentStore<TSpec, TConfig> & /*store*/,
+    UcscRecord const & /*record*/,
+    TagSelector<> const & /*format*/)
 {
-    if (record.format == record.KNOWN_GENE)
-        _storeOneAnnotationKnownGene(fragStore, record);
-    else
-        _storeOneAnnotationKnownIsoforms(fragStore, record);
+    SEQAN_FAIL("AnnotationStore: File format not specified.");
 }
+
+template <typename TSpec, typename TConfig, typename TTagList>
+inline void
+_storeAnnotationRecord(
+    FragmentStore<TSpec, TConfig> & store,
+    UcscRecord const & record,
+    TagSelector<TTagList> const & format)
+{
+    typedef typename TTagList::Type TFormat;
+
+    if (isEqual(format, TFormat()))
+        _storeAnnotationRecord(store, record, TFormat());
+    else
+        _storeAnnotationRecord(store, record, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+}
+
+
 
 //////////////////////////////////////////////////////////////////////////////
 // read a whole UCSC stream into FragmentStore
@@ -167,7 +187,7 @@ readRecords(FragmentStore<TFSSpec, TConfig> & fragStore,
     while (!atEnd(iter))
     {
         readRecord(record, ctx, iter, format(file));
-        _storeOneAnnotation(fragStore, record);
+        _storeAnnotationRecord(fragStore, record, format(file));
     }
     _storeClearAnnoBackLinks(fragStore.annotationStore);
     _storeCreateAnnoBackLinks(fragStore.annotationStore);
@@ -177,15 +197,17 @@ readRecords(FragmentStore<TFSSpec, TConfig> & fragStore,
 //////////////////////////////////////////////////////////////////////////////
 // extract FragmentStore annotation into a UCSC record
 
-template <typename TFragmentStore, typename TAnnotation, typename TId>
+template <typename TRecord, typename TSpec, typename TConfig, typename TAnnotation, typename TId>
 inline bool
-_retrieveOneAnnotation(
-    UcscRecord & record,
-    TFragmentStore & fragStore,
+_fillAnnotationRecord(
+    TRecord & record,
+    FragmentStore<TSpec, TConfig> & fragStore,
     TAnnotation & annotation,
     TId id,
-    Ucsc)
+    UcscKnownGene)
 {
+    typedef FragmentStore<TSpec, TConfig> TFragmentStore;
+
     if (annotation.typeId != TFragmentStore::ANNO_MRNA)
         return false;
 
@@ -226,15 +248,17 @@ _retrieveOneAnnotation(
     return true;
 }
 
-template <typename TFragmentStore, typename TAnnotation, typename TId>
+template <typename TRecord, typename TSpec, typename TConfig, typename TAnnotation, typename TId>
 inline bool
-_retrieveOneAnnotation(
-    UcscRecord & record,
-    TFragmentStore & fragStore,
+_fillAnnotationRecord(
+    TRecord & record,
+    FragmentStore<TSpec, TConfig> & fragStore,
     TAnnotation & annotation,
     TId id,
-    UcscIsoforms)
+    UcscKnownIsoforms)
 {
+    typedef FragmentStore<TSpec, TConfig> TFragmentStore;
+
     if (annotation.typeId != TFragmentStore::ANNO_MRNA)
         return false;
 
@@ -250,27 +274,35 @@ _retrieveOneAnnotation(
 //////////////////////////////////////////////////////////////////////////////
 // write FragmentStore to a stream in UCSC format
 
-template <typename TTargetStream, typename TSpec, typename TConfig, typename TFormatSpec>
+template <typename TSpec, typename TFSSpec, typename TFSConfig, typename TFormat>
 inline void
-writeRecords(TTargetStream & target,
-             FragmentStore<TSpec, TConfig> & store,
-             Tag<Ucsc_<TFormatSpec> > const & format)
+writeRecords(SmartFile<Ucsc, Output, TSpec> & ucscFile,
+             FragmentStore<TFSSpec, TFSConfig> & store,
+             TFormat const & format)
 {
-    typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
+    typedef FragmentStore<TFSSpec, TFSConfig>                       TFragmentStore;
     typedef typename TFragmentStore::TAnnotationStore               TAnnotationStore;
     typedef typename Value<TAnnotationStore>::Type                  TAnnotation;
     typedef typename Iterator<TAnnotationStore, Standard>::Type     TAnnoIter;
     typedef typename Id<TAnnotation>::Type                          TId;
 
-    typename DirectionIterator<TTargetStream, Output>::Type iter = directionIterator(target, Output());
+    typename DirectionIterator<SmartFile<Ucsc, Output, TSpec>, Output>::Type iter = directionIterator(ucscFile, Output());
     UcscRecord record;
 
     TAnnoIter it = begin(store.annotationStore, Standard());
     TAnnoIter itEnd = end(store.annotationStore, Standard());
 
     for (TId id = 0; it != itEnd; ++it, ++id)
-        if (_retrieveOneAnnotation(record, store, *it, id, format))
+        if (_fillAnnotationRecord(record, store, *it, id, format))
             writeRecord(iter, record, format);
+}
+
+template <typename TSpec, typename TFSSpec, typename TFSConfig>
+inline void
+writeRecords(SmartFile<Ucsc, Output, TSpec> & ucscFile,
+             FragmentStore<TFSSpec, TFSConfig> & store)
+{
+    writeRecords(ucscFile, store, format(ucscFile));
 }
 
 } // namespace SEQAN_NAMESPACE_MAIN

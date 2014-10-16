@@ -387,10 +387,10 @@ _writeCommonGffGtfInfo(
     record.strand = orientation;
 }
 
-template <typename TSpec, typename TConfig, typename TAnnotation, typename TId>
+template <typename TRecord, typename TSpec, typename TConfig, typename TAnnotation, typename TId>
 inline bool
-_writeOneAnnotation(
-    GffRecord & record,
+_fillAnnotationRecord(
+    TRecord & record,
     FragmentStore<TSpec, TConfig> & store,
     TAnnotation & annotation,
     TId id,
@@ -432,10 +432,10 @@ _writeOneAnnotation(
     return true;
 }
 
-template <typename TSpec, typename TConfig, typename TAnnotation, typename TId>
+template <typename TRecord, typename TSpec, typename TConfig, typename TAnnotation, typename TId>
 inline bool
-_writeOneAnnotation(
-    GffRecord & record,
+_fillAnnotationRecord(
+    TRecord & record,
     FragmentStore<TSpec, TConfig> & store,
     TAnnotation & annotation,
     TId id,
@@ -505,6 +505,38 @@ _writeOneAnnotation(
     return true;
 }
 
+// support for dynamically chosen file formats
+template <typename TRecord, typename TSpec, typename TConfig, typename TAnnotation, typename TId>
+inline bool
+_fillAnnotationRecord(
+    TRecord & /*record*/,
+    FragmentStore<TSpec, TConfig> & /*store*/,
+    TAnnotation & /*annotation*/,
+    TId /*id*/,
+    TagSelector<> const & /*format*/)
+{
+    SEQAN_FAIL("AnnotationStore: File format not specified.");
+    return false;
+}
+
+template <typename TRecord, typename TSpec, typename TConfig, typename TAnnotation, typename TId, typename TTagList>
+inline bool
+_fillAnnotationRecord(
+    TRecord & record,
+    FragmentStore<TSpec, TConfig> & store,
+    TAnnotation & annotation,
+    TId id,
+    TagSelector<TTagList> const & format)
+{
+    typedef typename TTagList::Type TFormat;
+
+    if (isEqual(format, TFormat()))
+        return _fillAnnotationRecord(record, store, annotation, id, TFormat());
+    else
+        return _fillAnnotationRecord(record, store, annotation, id, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+}
+
+
 template <typename TTargetStream, typename TSpec, typename TConfig, typename TFormat>
 inline void
 _writeGffGtf(
@@ -526,27 +558,9 @@ _writeGffGtf(
 
     for (TId id = 0; it != itEnd; ++it, ++id)
     {
-        if (_writeOneAnnotation(record, store, *it, id, format))
+        if (_fillAnnotationRecord(record, store, *it, id, format))
             writeRecord(iter, record, format);
     }
-}
-
-template <typename TTargetStream, typename TSpec, typename TConfig>
-inline void
-writeRecords(TTargetStream & target,
-             FragmentStore<TSpec, TConfig> & store,
-             Gff format)
-{
-    _writeGffGtf(target, store, format);
-}
-
-template <typename TTargetStream, typename TSpec, typename TConfig>
-inline void
-writeRecords(TTargetStream & target,
-             FragmentStore<TSpec, TConfig> & store,
-             Gtf format)
-{
-    _writeGffGtf(target, store, format);
 }
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig>
@@ -554,10 +568,7 @@ inline void
 writeRecords(SmartFile<Gff, Output, TSpec> & gffFile,
              FragmentStore<TFSSpec, TFSConfig> & store)
 {
-    if (isEqual(format(gffFile), Gtf()))
-        _writeGffGtf(gffFile, store, Gtf());
-    else
-        _writeGffGtf(gffFile, store, Gff());
+    _writeGffGtf(gffFile, store, format(gffFile));
 }
 
 } // namespace SEQAN_NAMESPACE_MAIN
