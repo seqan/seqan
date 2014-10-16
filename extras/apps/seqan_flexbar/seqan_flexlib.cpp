@@ -72,8 +72,6 @@
 #include "demultiplex.h"
 #include "general_processing.h"
 
-typedef seqan::String<seqan::Dna5Q> Dna5QString;
-
 // Global variables are evil, this is for adaption and should be removed
 // after refactorization.
 FlexiProgram flexiProgram;
