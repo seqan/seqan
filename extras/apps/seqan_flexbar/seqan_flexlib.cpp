@@ -1174,53 +1174,6 @@ public:
 // ============================================================================
 
 /**
-.Function.loadSeqs:
-..summary:Function for loading the sequence files.
-..signature:loadSeqs(seqStream, ids, seqs, records)
-..param.ids:StringSet of String<Char> the IDs shall be stored in.
-...type:Class.StringSet
-..param.seqStream:SequenceStream object of the file.
-...type:Class.SequenceStream
-..param.seqs:StringSet of Dna5Q-Strings the sequences shall be stored in.
-...type:Class.StringSet
-..param.records:Unsigned int holding the number of records to be read in one block.
-...type:nolink:unsigned
-..returns:An integer: 1 on errors, 0 otherwise.
-...type:nolink:int
-..see:Class..SequenceStream
-*/
-
-template <typename TId, typename TString>
-inline void loadSeqs(seqan::SeqFileIn& file,
-                     seqan::StringSet<TId>& ids,
-                     seqan::StringSet<TString>& seqs,
-                     unsigned records)
-{
-    typedef typename seqan::Value<TString>::Type TValue;
-
-    seqan::String<TValue> seqBuffer;
-
-    // reuse the memory of context(file).buffer for seqBuffer (which has a different type but same sizeof(Alphabet))
-    std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
-    std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
-    seqBuffer.data_capacity = context(file).buffer[1].data_capacity;
-
-    unsigned counter = 0;
-    while (!atEnd(file) && counter < records)
-    {
-        readRecord(context(file).buffer[0], seqBuffer, file);
-        appendValue(ids, context(file).buffer[0]);
-        appendValue(seqs, seqBuffer);
-        ++counter;
-    }
-
-    std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
-    std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
-    context(file).buffer[1].data_capacity = seqBuffer.data_capacity;
-    seqBuffer.data_capacity = 0;
-}
-
-/**
 .Function.loadBarcodes:
 ..summary:Function for loading the barcode file.
 ..signature:loadBarcodes(path, params)
@@ -1272,7 +1225,7 @@ int loadBarcodes(char const * path, DemultiplexingParams& params)
 inline void loadMultiplex(seqan::SeqFileIn& multiplexFile, DemultiplexingParams& params, unsigned records)
 {
     seqan::StringSet<seqan::String<char> > ids;
-    loadSeqs(multiplexFile, ids, params.multiplex, records);
+    readRecords(ids, params.multiplex, multiplexFile, records);
 }
 
 /**
@@ -2618,7 +2571,7 @@ int flexbarMain(int argc, char const ** argv)
             appendValue(idSet, seqan::StringSet<seqan::CharString>());
             appendValue(seqSet, seqan::StringSet<Dna5QString>());
 
-            loadSeqs(programParams.fileStream1, idSet[0], seqSet[0], records);
+            readRecords(idSet[0], seqSet[0], programParams.fileStream1, records);
 
             programParams.readCount += length(idSet[0]);
             SEQAN_PROTIMESTART(processTime);            // START of processing time.
@@ -2670,8 +2623,8 @@ int flexbarMain(int argc, char const ** argv)
             appendValue(idSet2, seqan::StringSet<seqan::CharString>());
             appendValue(seqSet2, seqan::StringSet<Dna5QString>());
 
-            loadSeqs(programParams.fileStream1, idSet1[0], seqSet1[0], records);
-            loadSeqs(programParams.fileStream2, idSet2[0], seqSet2[0], records);
+            readRecords(idSet1[0], seqSet1[0], programParams.fileStream1, records);
+            readRecords(idSet2[0], seqSet2[0], programParams.fileStream2, records);
 
             programParams.readCount += length(idSet1[0]);
             SEQAN_PROTIMESTART(processTime); // START of processing time.

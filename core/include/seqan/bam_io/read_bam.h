@@ -280,7 +280,8 @@ readRecord(BamAlignmentRecord & record,
     TCigarIter cigEnd = end(record.cigar, Standard());
     for (TCigarIter cig = begin(record.cigar, Standard()); cig != cigEnd; ++cig)
     {
-        unsigned opAndCnt = *reinterpret_cast<unsigned * &>(it)++;
+        unsigned opAndCnt;
+        readRawPod(opAndCnt, it);
         SEQAN_ASSERT_LEQ(opAndCnt & 15, 8u);
         cig->operation = CIGAR_MAPPING[opAndCnt & 15];
         cig->count = opAndCnt >> 4;

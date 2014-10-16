@@ -181,6 +181,20 @@ readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, Input, TSpec> & 
 // Function readRecords(); Without qualities
 // ----------------------------------------------------------------------------
 
+template <typename TPtrA, typename TPtrB>
+inline void 
+swapPtr(TPtrA &a, TPtrB &b)
+{
+    union {
+        TPtrA a;
+        TPtrB b;
+    } tmp1, tmp2;
+    tmp1.a = a;
+    tmp2.b = b;
+    b = tmp1.b;
+    a = tmp2.a;
+}
+
 template <typename TIdStringSet, typename TSeqStringSet, typename TSpec>
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
@@ -193,8 +207,8 @@ inline void readRecords(TIdStringSet & meta,
     String<TValue> seqBuffer;
 
     // reuse the memory of context(file).buffer for seqBuffer (which has a different type but same sizeof(Alphabet))
-    std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
-    std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
+    swapPtr(seqBuffer.data_begin, context(file).buffer[1].data_begin);
+    swapPtr(seqBuffer.data_end, context(file).buffer[1].data_end);
     seqBuffer.data_capacity = context(file).buffer[1].data_capacity;
 
     for (; !atEnd(file) && maxRecords > 0; --maxRecords)
@@ -204,8 +218,8 @@ inline void readRecords(TIdStringSet & meta,
         appendValue(seq, seqBuffer);
     }
 
-    std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
-    std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
+    swapPtr(seqBuffer.data_begin, context(file).buffer[1].data_begin);
+    swapPtr(seqBuffer.data_end, context(file).buffer[1].data_end);
     context(file).buffer[1].data_capacity = seqBuffer.data_capacity;
     seqBuffer.data_capacity = 0;
 }
