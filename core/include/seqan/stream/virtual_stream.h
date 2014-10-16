@@ -300,6 +300,14 @@ public:
     {
         return streamBuf;
     }
+
+    static std::vector<std::string>
+    getFileExtensions()
+    {
+        std::vector<std::string> extensions;
+        _getFileExtensions(extensions, TFormat());
+        return extensions;
+    }
 };
 
 // ----------------------------------------------------------------------------

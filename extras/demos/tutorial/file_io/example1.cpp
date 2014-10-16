@@ -15,10 +15,12 @@ int main()
     TWriter writer = directionIterator(out, seqan::Output());
 
     seqan::CharString buffer;
+    reserve(buffer, 1000);
 
     while (!atEnd(reader))
     {
-        read(buffer, reader, 1000);
+        clear(buffer);
+        read(buffer, reader, capacity(buffer));
         write(writer, buffer);
     }
 
