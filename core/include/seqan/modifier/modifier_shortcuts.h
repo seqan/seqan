@@ -718,6 +718,28 @@ inline void toUpper(StringSet<TSequence, TSpec> const & stringSet)
 		toUpper(stringSet[seqNo]);
 }
 
+// --------------------------------------------------------------------------
+// Function lowerString()
+// --------------------------------------------------------------------------
+
+template <typename THost>
+inline ModifiedString<THost const, ModView<FunctorLowcase<typename Value<THost>::Type> > >
+lowerString(THost const & host)
+{
+    return ModifiedString<THost const, ModView<FunctorLowcase<typename Value<THost>::Type> > >(host);
+}
+
+// --------------------------------------------------------------------------
+// Function upperString()
+// --------------------------------------------------------------------------
+
+template <typename THost>
+inline ModifiedString<THost const, ModView<FunctorUpcase<typename Value<THost>::Type> > >
+upperString(THost const & host)
+{
+    return ModifiedString<THost const, ModView<FunctorUpcase<typename Value<THost>::Type> > >(host);
+}
+
 }
 
 #endif
