@@ -51,7 +51,7 @@ namespace seqan
 // Tag Ucsc
 // ----------------------------------------------------------------------------
 
-template <typename TSpec>
+template <typename TSpec = void>
 struct Ucsc_;
 
 /*!
@@ -68,7 +68,7 @@ struct Ucsc_;
  */
 
 struct UcscKnownGene_;
-typedef Tag<Ucsc_<UcscKnownGene_> > Ucsc;
+typedef Tag<Ucsc_<UcscKnownGene_> > UcscKnownGene;
 
 // ----------------------------------------------------------------------------
 // Tag Ucsc
@@ -77,13 +77,13 @@ typedef Tag<Ucsc_<UcscKnownGene_> > Ucsc;
 /*!
  * @tag UcscFileIO#UcscIsoforms
  * @headerfile <seqan/ucsc_io.h>
- * @brief UCSC Genome browser annotation file (aka knownGene format).
+ * @brief UCSC Genome browser isoform file (aka knownIsoforms format).
  *
- * @signature typedef Tag<Ucsc_<UcscKnownGene_> > const Ucsc;
+ * @signature typedef Tag<Ucsc_<UcscIsoforms_> > const UcscIsoforms;
  */
 
-struct UcscIsoforms_;
-typedef Tag<Ucsc_<UcscIsoforms_> > UcscIsoforms;
+struct UcscKnownIsoforms_;
+typedef Tag<Ucsc_<UcscKnownIsoforms_> > UcscKnownIsoforms;
 
 // ----------------------------------------------------------------------------
 // Class UcscIOContext
@@ -110,27 +110,32 @@ struct UcscIOContext
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction MagicHeader
-// ----------------------------------------------------------------------------
-
-template <typename T>
-struct MagicHeader<Ucsc, T> : public MagicHeader<Nothing, T> {};
-
-// ----------------------------------------------------------------------------
 // Metafunction FileExtensions
 // ----------------------------------------------------------------------------
 
 template <typename T>
-struct FileExtensions<Ucsc, T>
+struct FileExtensions<UcscKnownGene, T>
 {
-    static char const * VALUE[2];  // default is one extension
+    static char const * VALUE[1];  // default is one extension
 };
 
 template <typename T>
-char const * FileExtensions<Ucsc, T>::VALUE[2] =
+char const * FileExtensions<UcscKnownGene, T>::VALUE[1] =
 {
-    ".txt",     // default output extension
-    ".tsv"
+    "knownGene.txt"         // default output extension
+};
+
+
+template <typename T>
+struct FileExtensions<UcscKnownIsoforms, T>
+{
+    static char const * VALUE[1];  // default is one extension
+};
+
+template <typename T>
+char const * FileExtensions<UcscKnownIsoforms, T>::VALUE[1] =
+{
+    "knownIsoforms.txt"     // default output extension
 };
 
 // ============================================================================
@@ -158,84 +163,106 @@ char const * FileExtensions<Ucsc, T>::VALUE[2] =
  */
 template <typename TForwardIter>
 void readRecord(UcscRecord & record,
-                UcscIOContext & ucscIOContext,
+                UcscIOContext & /*ucscIOContext*/,
                 TForwardIter & iter,
-                Ucsc const & /*tag*/)
+                UcscKnownIsoforms const & /*tag*/)
 {
-    OrFunctor<IsWhitespace, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> > nextRecord;
+    OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, UcscKnownIsoforms> > nextRecord;
+    OrFunctor<IsNewline, AssertFunctor<NotFunctor<IsTab>, ParseError, UcscKnownIsoforms> > lastRecord;
 
     clear(record);
 
-    // read column 1: transcript name
-    // The letters until the first whitespace will be read.
-    // Then, we skip until we hit the first tab character.
-
-    readUntil(record.transName, iter, IsWhitespace());
-    if (!empty(record.transName) && record.transName[0] == '#')
-    {
+    // skip comments
+    while (!atEnd(iter) && value(iter) == '#')
         skipLine(iter);
-        return;
-    }
+
+    // read column 1: gene name (stored in .transName)
+    readUntil(record.transName, iter, nextRecord);
+    if (empty(record.transName))
+        SEQAN_THROW(EmptyFieldError("clusterId"));
+    insert(record.transName, 0, "GENE");    // prepend "GENE" for compatibility reasons
+    skipOne(iter, IsTab());
+
+    // read column 2: transcript name (stored in .contigName)
+    readUntil(record.contigName, iter, lastRecord);
+    if (empty(record.contigName))
+        SEQAN_THROW(EmptyFieldError("transcript"));
+    skipLine(iter);
+}
+
+template <typename TForwardIter>
+void readRecord(UcscRecord & record,
+                UcscIOContext & ucscIOContext,
+                TForwardIter & iter,
+                UcscKnownGene const & /*tag*/)
+{
+    OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, UcscKnownGene> > nextRecord;
+    OrFunctor<IsNewline, AssertFunctor<NotFunctor<IsTab>, ParseError, UcscKnownGene> > lastRecord;
+
+    clear(record);
+
+    CharString & buffer = ucscIOContext.buffer;
+
+    // skip comments
+    while (!atEnd(iter) && value(iter) == '#')
+        skipLine(iter);
+
+    // read column 1: transcript name
+    readUntil(record.transName, iter, nextRecord);
+    if (empty(record.transName))
+        SEQAN_THROW(EmptyFieldError("name"));
     skipOne(iter, IsTab());
 
     // read column 2: contig name
-    readUntil(record.contigName, iter, IsWhitespace());
+    readUntil(record.contigName, iter, nextRecord);
     if (empty(record.contigName))
-        throw ParseError("unexpected end of record.");
+        SEQAN_THROW(EmptyFieldError("chrom"));
+    skipOne(iter, IsTab());
 
     // read column 3: orientation
     char orientation;
-    readOne(orientation, iter);
-    if (IsNewline()(orientation))
-    {
-        record.format = record.KNOWN_ISOFORMS;
-        insert(record.transName, 0, "GENE");
-        return;
-    }
     readOne(orientation, iter, OrFunctor<EqualsChar<'+'>, EqualsChar<'-'> >());
     skipOne(iter, IsTab());
 
-    record.format = record.KNOWN_GENE;
-
     // read column 4: transcript begin position
-    clear(ucscIOContext.buffer);
-    readUntil(ucscIOContext.buffer, iter, nextRecord);
-    record.annotationBeginPos = lexicalCast<__uint32>(ucscIOContext.buffer);
+    clear(buffer);
+    readUntil(buffer, iter, nextRecord);
+    record.annotationBeginPos = lexicalCast<__uint32>(buffer);
     skipOne(iter, IsTab());
 
     // read column 5: transcript end position
-    clear(ucscIOContext.buffer);
-    readUntil(ucscIOContext.buffer, iter, nextRecord);
-    record.annotationEndPos = lexicalCast<__uint32>(ucscIOContext.buffer);
+    clear(buffer);
+    readUntil(buffer, iter, nextRecord);
+    record.annotationEndPos = lexicalCast<__uint32>(buffer);
     skipOne(iter, IsTab());
 
     // read column 6: CDS begin position
-    clear(ucscIOContext.buffer);
-    readUntil(ucscIOContext.buffer, iter, nextRecord);
-    record.cdsBegin = lexicalCast<__uint32>(ucscIOContext.buffer);
+    clear(buffer);
+    readUntil(buffer, iter, nextRecord);
+    record.cdsBegin = lexicalCast<__uint32>(buffer);
     skipOne(iter, IsTab());
 
     // read column 7: CDS end position
-    clear(ucscIOContext.buffer);
-    readUntil(ucscIOContext.buffer, iter, nextRecord);
-    record.cdsEnd = lexicalCast<__uint32>(ucscIOContext.buffer);
+    clear(buffer);
+    readUntil(buffer, iter, nextRecord);
+    record.cdsEnd = lexicalCast<__uint32>(buffer);
     skipOne(iter, IsTab());
 
     // read column 8: exon count
-    unsigned int exons;
-    clear(ucscIOContext.buffer);
-    readUntil(ucscIOContext.buffer, iter, nextRecord);
-    exons = lexicalCast<unsigned int>(ucscIOContext.buffer);
+    unsigned exons;
+    clear(buffer);
+    readUntil(buffer, iter, nextRecord);
+    lexicalCastWithException(exons, buffer);
     skipOne(iter, IsTab());
 
     // read column 9: exon begin positions
-    for (unsigned int i = 0; i < exons; ++i)
+    for (unsigned i = 0; i < exons; ++i)
     {
-        clear(ucscIOContext.buffer);
-        readUntil(ucscIOContext.buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
+        clear(buffer);
+        readUntil(buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, UcscKnownGene> >());
 
-        unsigned long long tempBegin;
-        tempBegin = lexicalCast<__uint32>(ucscIOContext.buffer);
+        __int32 tempBegin;
+        lexicalCastWithException(tempBegin, buffer);
         appendValue(record.exonBegin, tempBegin);
         skipOne(iter);
     }
@@ -244,46 +271,37 @@ void readRecord(UcscRecord & record,
     // read column 10: exon end positions
     for (unsigned int i = 0; i < exons; ++i)
     {
-        clear(ucscIOContext.buffer);
-        readUntil(ucscIOContext.buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, Ucsc> >());
+        clear(buffer);
+        readUntil(buffer, iter, OrFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<','> >, AssertFunctor<NotFunctor<IsNewline>, ParseError, UcscKnownGene> >());
 
-        unsigned long long tempEnd;
-        tempEnd =  lexicalCast<__uint32>(ucscIOContext.buffer);
+        __int32 tempEnd;
+        lexicalCastWithException(tempEnd, buffer);
         appendValue(record.exonEnds, tempEnd);
         skipOne(iter);
     }
     skipOne(iter, IsTab());
 
     // read column 11: protein name
-    readUntil(record.proteinName, iter, IsWhitespace());
+    readUntil(record.proteinName, iter, nextRecord);
     skipOne(iter, IsTab());
 
-    // skip column 12
+    // skip column 12: align id
+    skipUntil(iter, lastRecord);
     skipLine(iter);
 
     // adapt positions
     if (orientation == '-')
     {
-        __uint32 tmp = record.annotationBeginPos;
-        record.annotationBeginPos = record.annotationEndPos;
-        record.annotationEndPos = tmp;
-        tmp = record.cdsBegin;
-        record.cdsBegin = record.cdsEnd;
-        record.cdsEnd = tmp;
-        for (unsigned int i = 0; i < exons; ++i)
-        {
-            tmp = record.exonBegin[i];
-            record.exonBegin[i] = record.exonEnds[i];
-            record.exonEnds[i] = tmp;
-        }
+        std::swap(record.annotationBeginPos, record.annotationEndPos);
+        std::swap(record.cdsBegin, record.cdsEnd);
+        for (unsigned i = 0; i < exons; ++i)
+            std::swap(record.exonBegin[i], record.exonEnds[i]);
     }
 }
 
 // ----------------------------------------------------------------------------
 // Function writeRecord
 // ----------------------------------------------------------------------------
-
-// TODO(holtgrew): Dave/Enrico: please verify the type of target here
 
 /*!
  * @fn UcscFileIO#writeRecord
@@ -299,13 +317,14 @@ void readRecord(UcscRecord & record,
  *
  * @throw IOError in case of I/O problems
  */
-template <typename TTarget, typename TInnerTag>
+
+template <typename TTarget>
 void writeRecord(TTarget & target,
                  UcscRecord const & record,
-                 Tag<Ucsc_<TInnerTag> > const & /*tag*/)
+                 UcscKnownIsoforms const & /*tag*/)
 {
     unsigned suf = 0;
-    if (record.format == record.KNOWN_ISOFORMS && length(record.transName) >= 4 && prefix(record.transName, 4) == "GENE")
+    if (length(record.transName) >= 4 && prefix(record.transName, 4) == "GENE")
         suf = 4;
 
     // write column 1: transcript name
@@ -315,13 +334,23 @@ void writeRecord(TTarget & target,
     writeValue(target, '\t');
 
     // write column 2: contig name
-    write(target, suffix(record.contigName, suf));
+    write(target, record.contigName);
+    writeValue(target, '\n');
+}
 
-    if (record.format == record.KNOWN_ISOFORMS)
-    {
-        write(target, '\n');
-        return;
-    }
+template <typename TTarget>
+void writeRecord(TTarget & target,
+                 UcscRecord const & record,
+                 UcscKnownGene const & /*tag*/)
+{
+    // write column 1: transcript name
+    // The letters until the first whitespace will be write.
+    // Then, we skip until we hit the first tab character.
+    write(target, record.transName);
+    writeValue(target, '\t');
+
+    // write column 2: contig name
+    write(target, record.contigName);
     writeValue(target, '\t');
 
     // write column 3: orientation
@@ -330,7 +359,6 @@ void writeRecord(TTarget & target,
     if (record.annotationBeginPos < record.annotationEndPos)
     {
         writeValue(target, '+');
-
         transBeginPos = record.annotationBeginPos;
         transEndPos = record.annotationEndPos;
         cdsBeginPos = record.cdsBegin;
@@ -339,7 +367,6 @@ void writeRecord(TTarget & target,
     else
     {
         writeValue(target, '-');
-
         transEndPos = record.annotationBeginPos;
         transBeginPos = record.annotationEndPos;
         cdsEndPos = record.cdsBegin;
@@ -370,7 +397,7 @@ void writeRecord(TTarget & target,
     // write column 9: exon begin positions
     for (unsigned i = 0; i < length(record.exonBegin); ++i)
     {
-        appendNumber(target, _min(record.exonBegin[i], record.exonEnds[i]));
+        appendNumber(target, std::min(record.exonBegin[i], record.exonEnds[i]));
         writeValue(target, ',');
     }
     writeValue(target, '\t');
@@ -378,25 +405,17 @@ void writeRecord(TTarget & target,
     // write column 10: exon end positions
     for (unsigned i = 0; i < length(record.exonBegin); ++i)
     {
-        appendNumber(target, _max(record.exonBegin[i], record.exonEnds[i]));
+        appendNumber(target, std::max(record.exonBegin[i], record.exonEnds[i]));
         writeValue(target, ',');
     }
     writeValue(target, '\t');
 
     // write column 11: protein name
-    if (length(record.proteinName) > 0u)
-    {
-        write(target, record.proteinName);
-    }
-
+    write(target, record.proteinName);
     writeValue(target, '\t');
 
-    // skip column 12
-    if (length(record.transName) > 0u)
-    {
-        write(target, record.transName);
-    }
-
+    // write column 12: align id
+    write(target, record.transName);
     writeValue(target, '\n');
 }
 

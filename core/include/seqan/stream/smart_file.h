@@ -583,6 +583,7 @@ inline bool open(SmartFile<TFileType, TDirection, TSpec> & file,
 template <typename TFileType, typename TDirection, typename TSpec>
 inline bool close(SmartFile<TFileType, TDirection, TSpec> & file)
 {
+    setFormat(file, typename FileFormat<SmartFile<TFileType, TDirection, TSpec> >::Type());
     file.iter = typename DirectionIterator<SmartFile<TFileType, TDirection, TSpec>, TDirection>::Type();
     return close(file.stream);
 }
