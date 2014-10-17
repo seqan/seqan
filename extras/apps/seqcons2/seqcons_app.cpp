@@ -112,15 +112,14 @@ void SeqConsAppImpl::writeConsensus()
 {
     if (options.verbosity >= 1)
         std::cerr << "Writing consensus to " << options.outputFileConsensus << " ...";
-    seqan::SequenceStream out(options.outputFileConsensus.c_str(), seqan::SequenceStream::WRITE);
-    if (!isGood(out))
+    seqan::SeqFileOut seqFileOut;
+    if (!open(seqFileOut, options.outputFileConsensus.c_str()))
         throw std::runtime_error("Could not open consensus output file for writing.");
     for (unsigned contigID = 0; contigID < length(store.contigStore); ++contigID)
     {
         std::stringstream ss;
         ss << "consensus_" << contigID;
-        if (writeRecord(out, ss.str(), store.contigStore[contigID].seq) != 0)
-            throw std::runtime_error("Problem writing consensus sequence.");
+        writeRecord(seqFileOut, ss.str(), store.contigStore[contigID].seq);
     }
     if (options.verbosity >= 1)
         std::cerr << " OK\n";
@@ -130,10 +129,10 @@ void SeqConsAppImpl::writeAlignments()
 {
     if (options.verbosity >= 1)
         std::cerr << "Writing alignments to " << options.outputFileAlignment << " ...";
-    std::fstream out(options.outputFileAlignment.c_str(), std::ios::binary | std::ios::out);
 
     if (endsWithIgnoreCase(options.outputFileAlignment, ".txt"))
     {
+        std::fstream out(options.outputFileAlignment.c_str(), std::ios::binary | std::ios::out);
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
         for (unsigned contigID = 0; contigID < length(store.contigStore); ++contigID)
@@ -143,13 +142,15 @@ void SeqConsAppImpl::writeAlignments()
                 if (store.alignedReadStore[i].contigId == contigID)
                     endPos = std::max(endPos, (int)store.alignedReadStore[i].endPos);
             out << ">consensus_" << contigID << "\n";
-            printAlignment(out, seqan::Raw(), layout, store, /*contigID=*/contigID,
-                           /*beginPos=*/0, /*endPos=*/endPos, 0, 100);
+            printAlignment(out, layout, store, /*contigID=*/contigID, /*beginPos=*/0, /*endPos=*/endPos, 0, 100);
         }
     }
     else  // ends in .sam
     {
-        write(out, store, seqan::Sam());  // TODO(holtgrew): Should check errors but write() returns void.
+        seqan::BamFileOut out;
+        if (!open(out, options.outputFileAlignment.c_str()))
+            throw std::runtime_error("Could not open output file.");
+        writeRecords(out, store);
     }
     if (options.verbosity >= 1)
         std::cerr << " OK\n";
@@ -216,18 +217,25 @@ void SeqConsAppImpl::loadReads(char const * fileName)
     ns << "consensus_1";
     appendValue(store.contigNameStore, ns.str());
     // Load reads from sequence file.
-    seqan::SequenceStream in(fileName);
+    seqan::SeqFileIn seqFileIn;
     if (options.verbosity >= 1)
         std::cerr << "Loading reads from " << fileName << "...";
-    if (!isGood(in))
+    if (!open(seqFileIn, fileName))
         throw std::runtime_error("Problem opening input sequence file for reading.");
 
     int maxPos = 0;
     seqan::CharString id, seq;
-    while (!atEnd(in))
+    while (!atEnd(seqFileIn))
     {
-        if (readRecord(id, seq, in) != 0)
-            throw std::runtime_error("Problem reading from input sequence file.");
+        try
+        {
+            readRecord(id, seq, seqFileIn);
+        }
+        catch (seqan::ParseError const & e)
+        {
+            throw std::runtime_error(std::string("Problem reading from input sequence file: ") +
+                                     e.what());
+        }
         trimAfterSpace(id);
         __int64 readID = appendRead(store, seq, id);
         appendAlignedRead(store, readID, /*contigID=*/0, /*beginPos=*/0, (int)length(seq));
@@ -245,11 +253,17 @@ void SeqConsAppImpl::loadAlignments(char const * fileName)
 {
     if (options.verbosity >= 1)
         std::cerr << "  Loading alignments from " << fileName << "...";
-    std::fstream f(fileName, std::ios_base::binary | std::ios::in);
-    if (!f.good())
+    seqan::BamFileIn bamFileIn;
+    if (!open(bamFileIn, fileName))
         throw std::runtime_error("Problem opening input alignment file for reading.");
-    if (read(f, store, seqan::Sam()) != 0)
-        throw std::runtime_error("Problem reading input alignment file.");
+    try
+    {
+        readRecords(store, bamFileIn);
+    }
+    catch (seqan::ParseError const & e)
+    {
+        throw std::runtime_error(e.what());
+    }
     if (options.verbosity >= 1)
         std::cerr << "OK\n";
 }

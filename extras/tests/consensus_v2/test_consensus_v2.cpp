@@ -87,8 +87,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_coordinates)
     seqan::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
-    printAlignment(ss, seqan::Raw(), layout, store, /*contigID=*/0,
-                   /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
+    printAlignment(ss, layout, store, /*contigID=*/0, /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
     
     char const * EXPECTED =
             "AATGGATGGCAAAATAGTTGTTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTTAGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCTAGCTAATATTATGT-----\n"
@@ -158,8 +157,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_contig_ids)
     {
         layoutAlignment(layout, store);
         std::stringstream ss;
-        printAlignment(ss, seqan::Raw(), layout, store, /*contigID=*/0,
-                       /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
+        printAlignment(ss, layout, store, /*contigID=*/0, /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
 
         char const * EXPECTED = 
                 "AATGGATGGCAAAATAGTTGTTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTTAGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCTAGCTAATAT----------\n"
@@ -175,8 +173,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_contig_ids)
     {
         layoutAlignment(layout, store);
         std::stringstream ss;
-        printAlignment(ss, seqan::Raw(), layout, store, /*contigID=*/1,
-                       /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
+        printAlignment(ss, layout, store, /*contigID=*/1, /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
 
 
         char const * EXPECTED = 
@@ -232,8 +229,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_no_contig_ids)
     seqan::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
-    printAlignment(ss, seqan::Raw(), layout, store, /*contigID=*/0,
-                   /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
+    printAlignment(ss, layout, store, /*contigID=*/0, /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
     
     char const * EXPECTED =
             "AATGGATGGCAAAATAGTTGTTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTTAGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCTAGCTAATATTATGT-----\n"
@@ -287,8 +283,7 @@ SEQAN_DEFINE_TEST(test_consensus_consensus_alignment_global_alignment)
     seqan::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
-    printAlignment(ss, seqan::Raw(), layout, store, /*contigID=*/0,
-                   /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
+    printAlignment(ss, layout, store, /*contigID=*/0, /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
     
     char const * EXPECTED =
             "GAATACATCTCTAAAGAGCTT-GATGCTAATTTAGTCAAATTTTCAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCT---------------------------------------------\n"
