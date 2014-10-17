@@ -447,7 +447,9 @@ public:
                            int stepNo,
                            AniseOptions const & options) :
             fragStore(fragStore), mateInfos(mateInfos), records(records), stepNo(stepNo), options(options)
-    {}
+    {
+        (void)this->stepNo;  // only used during debugging
+    }
 
     RepeatSeparationResult run();
 

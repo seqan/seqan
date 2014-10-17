@@ -163,6 +163,7 @@ public:
             options(options)
     {
         fillReadInfo();
+        (void)this->featureMap;  // TODO(holtgrew): Remove, unused.
     }
 
     void run(FeatureReadSet & out);

@@ -75,6 +75,7 @@ public:
             numThreads(numThreads), chunkSize(chunkSize), maxBufferSize(0)
     {
         (void)this->bamIOContext;  // used only for debugging
+        (void)this->orientation;  // TODO(holtgrew): Remove, unused.
         init();
     }
 

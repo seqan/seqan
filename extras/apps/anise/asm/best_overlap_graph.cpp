@@ -484,6 +484,8 @@ bool BogPathSplitter::isLong(BogPath const & path)
 
 void BogPathSplitter::run()
 {
+    (void)filter;  // TODO(holtgrew): remove variable, is unused
+
     // We look for paths whose first/last node are node mapped to the same path by pathForRead.  This is caused by the
     // path stopping at a read that is already incorporated in a previous, possibly longer path.  If it turns out that
     // the current path is not long enough for splitting then we remove the leading/trailing node again.  If we can
