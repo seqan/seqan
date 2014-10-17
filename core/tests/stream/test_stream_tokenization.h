@@ -50,7 +50,12 @@ char const * EXAMPLE_STR1 = "This is a string ....foobar AAAACCCGGGTTT\n\
 Tetstetetstststetststetststetsstetetstetststetstdtetstestst    \r\n\
 etstetetstststetststetststV           tststetstdtetsteststetstedetstet\r\n\
 etstetetstststetststetststetsstetetstetststetstdtetsteststetstedetst|t\r\n\
-\n\v\n\r\nACGTACGTACGTACGATACGATCTnn\n\nACGT*";
+\n\
+\v\n\
+\r\n\
+ACGTACGTACGTACGATACGATCTnn\n\
+\n\
+ACGT*";
 
 void createFile(CharString &fileName, char const *text)
 {
@@ -125,7 +130,7 @@ struct TokenizationContext<std::fstream>
     {
         CharString fileName;
         createFile(fileName, text);
-        file.open(toCString(fileName));
+        open(file, toCString(fileName));
         SEQAN_ASSERT(file.is_open());
         iter = std::istreambuf_iterator<char>(file);
     }
@@ -141,7 +146,7 @@ struct TokenizationContext<std::ifstream>
     {
         CharString fileName;
         createFile(fileName, text);
-        file.open(toCString(fileName));
+        open(file, toCString(fileName));
         SEQAN_ASSERT(file.is_open());
         iter = std::istreambuf_iterator<char>(file);
     }
@@ -157,7 +162,7 @@ struct TokenizationContext<Iter<TStream, StreamIterator<Input> > >
     {
         CharString fileName;
         createFile(fileName, text);
-        file.open(toCString(fileName));
+        open(file, toCString(fileName));
         SEQAN_ASSERT(file.is_open());
         iter = Iter<TStream, StreamIterator<Input> >(file);
     }
