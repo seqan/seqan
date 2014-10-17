@@ -59,8 +59,8 @@ struct OptionType
         Label = 32,                 // automatically print a label for the argument(s) on the help screen
         List = 64,                  // option is a list of values
         Hidden = 128,               // hide this option from the help screen
-        INPUTFILE = 256,            // this option is an input file .. is implicitly also a string, since paths/filenames are strings
-        OUTPUTFILE = 512            // this option is an output file .. is implicitly also a string, since paths/filenames are strings
+        INPUT_FILE = 256,            // this option is an input file .. is implicitly also a string, since paths/filenames are strings
+        OUTPUT_FILE = 512            // this option is an output file .. is implicitly also a string, since paths/filenames are strings
     };
 };
 
@@ -103,8 +103,8 @@ Although not suggested the short-name can contain more than 1 character.
 ...table:$OptionType::Label$|32|Automatically print a label for the argument(s) on the help screen
 ...table:$OptionType::List$|64|Option is a list of values
 ...table:$OptionType::Hidden$|128|Hide this option from the help screen
-...table:$OptionType::INPUTFILE$|256|Argument is an input file
-...table:$OptionType::OUTPUTFILE$|512|Argument is an output file
+...table:$OptionType::INPUT_FILE$|256|Argument is an input file
+...table:$OptionType::OUTPUT_FILE$|512|Argument is an output file
 ..param.defaultValue:The default value of this option.
 ...default:No default value.
 */
@@ -259,7 +259,7 @@ addArgumentText(CommandLineOption const & opt, CharString const & text)
 inline bool
 isStringOption(CommandLineOption const & me)
 {
-    return (me.optionType & (OptionType::String | OptionType::INPUTFILE | OptionType::OUTPUTFILE)) != 0;
+    return (me.optionType & (OptionType::String | OptionType::INPUT_FILE | OptionType::OUTPUT_FILE)) != 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -435,7 +435,7 @@ isOptionList(CommandLineOption const & me)
 inline bool
 isInputFile(CommandLineOption const & me)
 {
-    return (me.optionType & OptionType::INPUTFILE) != 0;
+    return (me.optionType & OptionType::INPUT_FILE) != 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -457,7 +457,7 @@ isInputFile(CommandLineOption const & me)
 inline bool
 isOutputFile(CommandLineOption const & me)
 {
-    return (me.optionType & OptionType::OUTPUTFILE) != 0;
+    return (me.optionType & OptionType::OUTPUT_FILE) != 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -532,25 +532,6 @@ argumentText(CommandLineOption const & me)
 }
 
 // ----------------------------------------------------------------------------
-// Helper Function _writeOptName()
-// ----------------------------------------------------------------------------
-
-template <typename TStream>
-inline void
-_writeOptName(TStream & target, CommandLineOption const & me)
-{
-    //IOREV _notio_ irrelevant for iorev
-    streamPut(target, empty(me.shortName) ? "" : "-");
-    streamPut(target, me.shortName);
-    streamPut(target, (empty(me.shortName) || empty(me.longName)) ? "" : ", ");
-    if (!empty(me.longName))
-    {
-        streamPut(target, "--");
-        streamPut(target, me.longName);
-    }
-}
-
-// ----------------------------------------------------------------------------
 // Function write()                                           CommandLineOption
 // ----------------------------------------------------------------------------
 
@@ -566,27 +547,14 @@ _writeOptName(TStream & target, CommandLineOption const & me)
 */
 
 template <typename TStream>
-inline void
-write(TStream & target, CommandLineOption const & me)
-{
-    //IOREV _nodoc_ this specialization is not documented
-    streamPut(target, '\t');
-    _writeOptName(target, me);
-    streamPut(target, '\t');
-    streamPut(target, '\t');
-    streamPut(target, me.helpText);
-}
-
-// ----------------------------------------------------------------------------
-// operator<<()                                               CommandLineOption
-// ----------------------------------------------------------------------------
-
-template <typename TStream>
 inline TStream &
-operator<<(TStream & target, CommandLineOption const & source)
+operator<<(TStream & target, CommandLineOption const & me)
 {
-    //IOREV _nodoc_ this specialization is not documented
-    write(target, source);
+    if (!empty(me.shortName))
+        target << "-" << me.shortName;
+    target << ((empty(me.shortName) || empty(me.longName)) ? "" : ", ");
+    if (!empty(me.longName))
+        target << "--" << me.longName;
     return target;
 }
 

@@ -61,7 +61,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
  
 	template <typename TSpec /* = void */>
-	struct Async;
+	struct Async {};
 
 
 #ifdef PLATFORM_WINDOWS
@@ -266,7 +266,12 @@ namespace SEQAN_NAMESPACE_MAIN
 
     struct aiocb_win32 {
         OVERLAPPED  overlapped;
+        Mutex       mutex;
         Event       xmitDone;
+
+        aiocb_win32():
+            xmitDone(mutex)
+        {}
     };
 
 	template <typename TSpec>
@@ -302,7 +307,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 	template <typename TSpec>
-    inline typename Size<File<Async<TSpec> > >::Type size(File<Async<TSpec> > &me) {
+    inline typename Size<File<Async<TSpec> > >::Type length(File<Async<TSpec> > &me) {
         return me.size();
     }
 
@@ -933,6 +938,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			ts.tv_nsec = (timeoutMilliSec % 1000) * 1000;
 			SEQAN_PROTIMESTART(tw);
 			result = aio_suspend(&cblist, 1, &ts);
+			(void)result;  // never used
 			SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
 		}
 

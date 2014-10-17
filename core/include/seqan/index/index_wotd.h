@@ -107,6 +107,60 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * TODO(holtgrew): Ask David.
  */
+
+//////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn IndexWotd#indexSA
+ * @headerfile <seqan/index.h>
+ * @brief Shortcut for <tt>getFibre(.., WotdSA)</tt>.
+ *
+ * @signature TSa indexSA(index);
+ *
+ * @param[in] index The @link IndexWotd @endlink object holding the fibre.
+ *
+ * @return TSa A reference to the @link WOTDIndexFibres#WotdSA @endlink fibre (partially sorted suffix array).
+ */
+ 
+/*!
+ * @fn IndexWotd#indexDir
+ * @headerfile <seqan/index.h>
+ * @brief Shortcut for <tt>getFibre(.., WotdDir())</tt>.
+ * @signature TFibre indexDir(index);
+ * 
+ * @param[in] index The @link IndexWotd @endlink object holding the fibre.
+ * 
+ * @return TFibre A reference to the @link WOTDIndexFibres#WotdDir @endlink fibre (tree structure).
+ */
+
+/*!
+ * @fn IndexWotd#saAt
+ * @headerfile <seqan/index.h>
+ * @note Advanced functionality, not commonly used.
+ * @brief Shortcut for <tt>value(indexSA(..), ..)</tt>.
+ *
+ * @signature TValue saAt(position, index);
+ *
+ * @param[in] index The @link IndexWotd @endlink object holding the fibre.
+ * @param[in] position A position in the array on which the value should be accessed.
+ *
+ * @return TValue A reference or proxy to the value in the @link WOTDIndexFibres#WotdSA @endlink fibre.
+ *                To be more precise, a reference to a position containing a value of type
+ *                @link SAValue @endlink is returned (or a proxy).
+ */
+
+/*!
+ * @fn IndexWotd#dirAt
+ * @headerfile <seqan/index.h>
+ * @brief Shortcut for <tt>value(indexDir(index), position)</tt>.
+ *
+ * @signature TFibre dirAt(position, index);
+ * 
+ * @param[in] index    The @link IndexWotd @endlink object holding the fibre.
+ * @param[in] position A position in the array on which the value should be accessed.
+ * 
+ * @return TFibre A reference to the @link WOTDIndexFibres#WotdDir @endlink fibre.
+ */
+
 	typedef FibreText		WotdText;
 	typedef FibreRawText	WotdRawText;
 	typedef FibreSA         WotdSA;
@@ -135,6 +189,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 /*!
  * @class IndexWotd
  * @extends Index
+ * @implements StringTreeConcept
  * @headerfile <seqan/index.h>
  * @brief An index based on a lazy suffix tree (see Giegerich et al., "Efficient implementation of lazy suffix
  *        trees").
@@ -257,6 +312,11 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
     };
 */
 
+template <typename TText, typename TSpec>
+SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> >), (StringTreeConcept));
+
+template <typename TText, typename TSpec>
+SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept));
 
 //////////////////////////////////////////////////////////////////////////////
 // default fibre creators
@@ -275,8 +335,9 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 // default finder
 
 	template < typename TText, typename TSpec >
-	struct DefaultFinder< Index<TText, IndexWotd<TSpec> > > {
-        typedef FinderSTree Type;	// standard suffix array finder is mlr-heuristic
+	struct DefaultFinder< Index<TText, IndexWotd<TSpec> > >
+    {
+        typedef FinderSTree Type;	// standard wotd finder is tree based search
     };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -288,10 +349,8 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 		TSize		parentRepLen;	// representative length of parent node
 		TSize		edgeLen;		// length of edge above current node
 
-		VertexWotdOriginal_() {}
-		VertexWotdOriginal_(MinimalCtor):
-			parentRepLen(0),
-			edgeLen(0) 
+		VertexWotdOriginal_() : node(0), parentRepLen(0), edgeLen(0) {}
+		VertexWotdOriginal_(MinimalCtor) : node(0), parentRepLen(0), edgeLen(0)
 		{
 			_setSizeInval(node);
 		}
@@ -305,19 +364,27 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 		Pair<TSize> range;			// current SA interval of hits
 		TSize		parentRight;	// right boundary of parent node's range (allows to go right)
 
-		VertexWotdModified_() {}
-		VertexWotdModified_(MinimalCtor):
+		VertexWotdModified_() :
 			node(0),
 			parentRepLen(0),
 			edgeLen(0),
 			range(0,0),
-			parentRight(0) {}
-		VertexWotdModified_(Pair<TSize> const &otherRange, TSize otherParentRight):
+			parentRight(0)
+        {}
+		VertexWotdModified_(MinimalCtor) :
+			node(0),
+			parentRepLen(0),
+			edgeLen(0),
+			range(0,0),
+			parentRight(0)
+        {}
+		VertexWotdModified_(Pair<TSize> const &otherRange, TSize otherParentRight) :
 			node(0),
 			parentRepLen(0),
 			edgeLen(0),
 			range(otherRange),
-			parentRight(otherParentRight) {}
+			parentRight(otherParentRight)
+        {}
 	};
 
 //////////////////////////////////////////////////////////////////////////////
@@ -423,8 +490,8 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 	template < typename TText, typename TIndexSpec, typename TPropertyMap >
 	inline void
 	resizeVertexMap(
-		Index<TText, IndexWotd<TIndexSpec> > const& index,
-		TPropertyMap & pm)
+		TPropertyMap & pm,
+		Index<TText, IndexWotd<TIndexSpec> > const& index)
 	{
 		resize(pm, length(indexDir(index)), Generous());
 	}
@@ -1151,7 +1218,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
  * @param[out] sa  The resulting list in which all <i>q</i>-grams are sorted alphabetically. 
  * @param[out] dir The resulting array that indicates at which position in index the corresponding <i>q</i>-grams
  *                 can be found.
- * @param[in] text The sequence. Types: @link SequenceConcept @endlink
+ * @param[in] text The sequence. Types: @link ContainerConcept @endlink
  * 
  * The resulting <tt>index</tt> contains the sorted list of qgrams.  For each possible <i>q</i>-gram pos contains
  * the first position in index that corresponds to this <i>q</i>-gram.

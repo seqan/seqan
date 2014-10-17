@@ -43,7 +43,6 @@
 #include <seqan/basic.h>
 #include <seqan/modifier.h>
 #include <seqan/sequence.h>
-#include <seqan/stream.h>
 #include <seqan/seq_io.h>
 
 // --------------------------------------------------------------------------
@@ -60,9 +59,6 @@ struct SakOptions
 
     // Path to output file.
     seqan::CharString outPath;
-
-    // Whether or not to print FASTQ to output.
-    seqan::AutoSeqStreamFormat outFormat;
 
     // Set if one sequence is to be retrieved.
     seqan::String<__uint64> seqIndices;
@@ -103,53 +99,33 @@ struct SakOptions
 template <typename TNum>
 bool parseRange(TNum & beginPos, TNum & endPos, seqan::CharString const & rangeStr)
 {
-    seqan::Stream<seqan::CharArray<char const *> > stream(begin(rangeStr, seqan::Standard()),
-                                                          end(rangeStr, seqan::Standard()));
-    seqan::RecordReader<seqan::Stream<seqan::CharArray<char const *> >, seqan::SinglePass<> > reader(stream);
+    seqan::DirectionIterator<seqan::CharString const, seqan::Input>::Type reader = directionIterator(rangeStr, seqan::Input());
 
     // Parse out begin position.
     seqan::CharString buffer;
-    while (!atEnd(reader) && value(reader) != '-')
-    {
-        if (!isdigit(value(reader)) && value(reader) != ',')
-            return false;  // Error parsing.
-
-        if (isdigit(value(reader)))
-            appendValue(buffer, value(reader));
-        goNext(reader);
-    }
-    if (empty(buffer))
-        return false;
-
-    if (!lexicalCast2(beginPos, buffer))
+    readUntil(buffer, reader, seqan::EqualsChar<'-'>(), seqan::EqualsChar<','>());
+    if (!lexicalCast(beginPos, buffer))
         return false;
 
     if (atEnd(reader))
-        return true;
+        return false;
 
-    goNext(reader);  // Skip '-'.
+    skipOne(reader);    // Skip '-'.
 
     // Parse out end position.
     clear(buffer);
-    while (!atEnd(reader))
-    {
-        if (!isdigit(value(reader)) && value(reader) != ',')
-            return false;  // Error parsing.
+    readUntil(buffer, reader, seqan::False(), seqan::EqualsChar<','>());
 
-        if (isdigit(value(reader)))
-            appendValue(buffer, value(reader));
-        goNext(reader);
-    }
     if (empty(buffer))
+    {
+        endPos = seqan::maxValue<TNum>();
+        return true;
+    }
+
+    if (!lexicalCast(endPos, buffer))
         return false;
 
-    if (!lexicalCast2(endPos, buffer))
-        return false;
-
-    if (endPos < beginPos)
-        return false;
-
-    return true;
+    return (beginPos <= endPos);
 }
 
 // --------------------------------------------------------------------------
@@ -159,7 +135,7 @@ bool parseRange(TNum & beginPos, TNum & endPos, seqan::CharString const & rangeS
 seqan::ArgumentParser::ParseResult
 parseArgs(SakOptions & options,
           int argc,
-          char const ** argv)
+          char ** argv)
 {
     seqan::ArgumentParser parser("sak");
     setShortDescription(parser, "Slicing and dicing of FASTA/FASTQ files..");
@@ -167,15 +143,15 @@ parseArgs(SakOptions & options,
     setDate(parser, "November 2012");
     setCategory(parser, "Utilities");
 
-    addUsageLine(parser, "[\\fIOPTIONS\\fP] [\\B-o\\fP \\fIOUT.{fa,fq}\\fP] \\fIIN.{fa,fq}\\fP");
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] [\\fB-o\\fP \\fIOUT.{fa,fq}\\fP] \\fIIN.{fa,fq}\\fP");
     addDescription(parser, "\"It slices, it dices and it makes the laundry!\"");
-    addDescription(parser, "Rewrite of the original SAK tool by Manuel Holtgrewe.");
+    addDescription(parser, "Original SAK tool by David Weese. Rewrite by Manuel Holtgrewe.");
 
     // The only argument is the input file.
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "IN"));
+    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "IN"));
 
     // Only FASTA and FASTQ files are allowed as input.
-    setValidValues(parser, 0, getFileFormatExtensions(seqan::AutoSeqStreamFormat()));
+    setValidValues(parser, 0, seqan::SeqFileIn::getFileExtensions());
 
     // TODO(holtgrew): I want a custom help text!
     // addOption(parser, seqan::ArgParseOption("h", "help", "This helpful screen."));
@@ -186,10 +162,9 @@ parseArgs(SakOptions & options,
 
     addSection(parser, "Output Options");
     addOption(parser, seqan::ArgParseOption("o", "out-path",
-                                            "Path to the resulting file.  If omitted, result is printed to stdout. "
-                                            "Use files ending in \\fI.fq\\fP or \\fI.\\fP to write out FASTQ.",
-                                            seqan::ArgParseOption::OUTPUTFILE, "FASTX"));
-    setValidValues(parser, "out-path", getFileFormatExtensions(seqan::AutoSeqStreamFormat()));
+                                            "Path to the resulting file.  If omitted, result is printed to stdout in FastQ format.",
+                                            seqan::ArgParseOption::OUTPUT_FILE, "FASTX"));
+    setValidValues(parser, "out-path", seqan::SeqFileOut::getFileExtensions());
     addOption(parser, seqan::ArgParseOption("rc", "revcomp", "Reverse-complement output."));
     addOption(parser, seqan::ArgParseOption("l", "max-length", "Maximal number of sequence characters to write out.",
                                             seqan::ArgParseOption::INTEGER, "LEN"));
@@ -239,8 +214,6 @@ parseArgs(SakOptions & options,
 
     seqan::CharString tmp;
     getOptionValue(tmp, parser, "out-path");
-    if (!guessFormatFromFilename(tmp, options.outFormat))
-        assign(options.outFormat, seqan::Fasta());
 
     if (isSet(parser, "out-path"))
         getOptionValue(options.outPath, parser, "out-path");
@@ -256,7 +229,7 @@ parseArgs(SakOptions & options,
         for (unsigned i = 0; i < seqan::length(sequenceIds); ++i)
         {
             unsigned idx = 0;
-            if (!seqan::lexicalCast2(idx, sequenceIds[i]))
+            if (!seqan::lexicalCast(idx, sequenceIds[i]))
             {
                 std::cerr << "ERROR: Invalid sequence index " << sequenceIds[i] << "\n";
                 return seqan::ArgumentParser::PARSE_ERROR;
@@ -321,7 +294,7 @@ char const * yesNo(bool b)
 // Function main()
 // ---------------------------------------------------------------------------
 
-int main(int argc, char const ** argv)
+int main(int argc, char ** argv)
 {
     double startTime = 0;
 
@@ -341,7 +314,6 @@ int main(int argc, char const ** argv)
                   << "VERBOSITY    " << options.verbosity << "\n"
                   << "IN           " << options.inFastxPath << "\n"
                   << "OUT          " << options.outPath << "\n"
-                  << "FASTQ OUT    " << yesNo(isEqual(options.outFormat, seqan::Fastq())) << "\n"
                   << "INFIX BEGIN  " << options.seqInfixBegin << "\n"
                   << "INFIX END    " << options.seqInfixEnd << "\n"
                   << "MAX LEN      " << options.maxLength << "\n"
@@ -357,28 +329,18 @@ int main(int argc, char const ** argv)
     // -----------------------------------------------------------------------
     // Open Files.
     // -----------------------------------------------------------------------
-    std::ostream * outPtr = &std::cout;
-    std::fstream inStream;
+    seqan::SeqFileIn inFile;
+    seqan::SeqFileOut outFile;
+
     if (!empty(options.inFastxPath))
-    {
-        inStream.open(toCString(options.inFastxPath), std::ios::binary | std::ios::in);
-        if (!inStream.good())
-        {
-            std::cerr << "ERROR: Could not open input file " << options.inFastxPath << "\n";
-            return 1;
-        }
-    }
-    std::fstream outStream;
+        open(inFile, toCString(options.inFastxPath));
+    else
+        open(inFile, std::cin);
+
     if (!empty(options.outPath))
-    {
-        outStream.open(toCString(options.outPath), std::ios::binary | std::ios::out);
-        if (!outStream.good())
-        {
-            std::cerr << "ERROR: Could not open output file " << options.outPath << "\n";
-            return 1;
-        }
-        outPtr = &outStream;
-    }
+        open(outFile, toCString(options.outPath));
+    else
+        open(outFile, std::cout, seqan::Fastq());
 
     // Compute index of last sequence to write if any.
     __uint64 endIdx = seqan::maxValue<__uint64>();
@@ -395,42 +357,15 @@ int main(int argc, char const ** argv)
     // Read and Write Filtered.
     // -----------------------------------------------------------------------
     startTime = seqan::sysTime();
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(inStream);
-    seqan::AutoSeqStreamFormat tagSelector;
-    if (!guessStreamFormat(reader, tagSelector))
-    {
-        std::cerr << "ERROR: Could not determine input format!\n";
-        return 1;
-    }
 
     unsigned idx = 0;
     __uint64 charsWritten = 0;
     seqan::CharString id;
     seqan::CharString seq;
     seqan::CharString quals;
-    while (!atEnd(reader) && charsWritten < options.maxLength && idx < endIdx)
+    while (!atEnd(inFile) && charsWritten < options.maxLength && idx < endIdx)
     {
-        // TODO(weese): There should be a uniform read interface that make this case distinction obsolete!
-        if (isEqual(tagSelector, seqan::Fasta()))
-        {
-            // FASTA.
-            if (readRecord(id, seq, reader, seqan::Fasta()) != 0)
-            {
-                std::cerr << "ERROR: Reading record!\n";
-                return 1;
-            }
-            if (isEqual(options.outFormat, seqan::Fastq()))
-                resize(quals, length(seq), 'I');
-        }
-        else
-        {
-            // FASTQ
-            if (readRecord(id, seq, quals, reader, seqan::Fastq()) != 0)
-            {
-                std::cerr << "ERROR: Reading record!\n";
-                return 1;
-            }
-        }
+        readRecord(id, seq, quals, inFile);
 
         // Check whether to write out sequence.
         bool writeOut = false;
@@ -496,48 +431,10 @@ int main(int argc, char const ** argv)
                 infixBegin = length(seq) - infixBegin;
                 std::swap(infixEnd, infixBegin);
 
-                if (isEqual(options.outFormat, seqan::Fastq()))
-                {
-                    if (writeRecord(*outPtr, id, infix(seqCopy, infixBegin, infixEnd),
-                                    infix(quals, infixBegin, infixEnd), seqan::Fastq(),
-                                    options.seqOutOptions) != 0)
-                    {
-                        std::cerr << "ERROR: Writing record!\n";
-                        return 1;
-                    }
-                }
-                else
-                {
-                    if (writeRecord(*outPtr, id, infix(seqCopy, infixBegin, infixEnd), seqan::Fasta(),
-                                    options.seqOutOptions) != 0)
-                    {
-                        std::cerr << "ERROR: Writing record!\n";
-                        return 1;
-                    }
-                }
+                writeRecord(outFile, id, infix(seqCopy, infixBegin, infixEnd), infix(quals, infixBegin, infixEnd));
             }
             else
-            {
-                if (isEqual(options.outFormat, seqan::Fastq()))
-                {
-                    if (writeRecord(*outPtr, id, infix(seq, infixBegin, infixEnd),
-                                    infix(quals, infixBegin, infixEnd), seqan::Fastq(),
-                                    options.seqOutOptions) != 0)
-                    {
-                        std::cerr << "ERROR: Writing record!\n";
-                        return 1;
-                    }
-                }
-                else
-                {
-                    if (writeRecord(*outPtr, id, infix(seq, infixBegin, infixEnd), seqan::Fasta(),
-                                    options.seqOutOptions) != 0)
-                    {
-                        std::cerr << "ERROR: Writing record!\n";
-                        return 1;
-                    }
-                }
-            }
+                writeRecord(outFile, id, infix(seq, infixBegin, infixEnd), infix(quals, infixBegin, infixEnd));
         }
 
         // Advance counter idx.

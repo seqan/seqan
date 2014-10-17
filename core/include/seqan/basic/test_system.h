@@ -75,6 +75,8 @@ public:
     virtual void setUp() {}
     virtual void runTest() = 0;
     virtual void tearDown() {}
+
+    virtual ~Test() {}
 };
 
 // --------------------------------------------------------------------------
@@ -151,21 +153,13 @@ public:
                 testName += (*it)->typeName;
             }
             ::seqan::ClassTest::beginTest(testName.c_str());
-            try
-            {
+            try {
                 (*it)->instance->setUp();
                 (*it)->instance->runTest();
                 (*it)->instance->tearDown();
-            }
-            catch (seqan::ClassTest::AssertionFailedException & /* e */)
-            {
-                /* Swallow exception, go on with next test. */
-            }
-            catch (std::exception const & e)
-            {
-                std::cerr << e.what() << std::endl;
-                seqan::ClassTest::StaticData::thisTestOk() = false;
-                seqan::ClassTest::StaticData::errorCount() += 1;
+            } catch(::seqan::ClassTest::AssertionFailedException e) {
+                /* Swallow exception, go on with next test. */       
+                (void) e;  /* Get rid of unused variable warning. */
             }
             ::seqan::ClassTest::endTest();
         }
@@ -356,6 +350,54 @@ public:
                                                                         \
     template <typename SEQAN_TParam>                                    \
     void SEQAN_TEST_NAME_(testCaseName, testName)<SEQAN_TParam>::runTest()
+
+// --------------------------------------------------------------------------
+// Macro SEQAN_TEST_EXCEPTION()
+// --------------------------------------------------------------------------
+
+#define SEQAN_TEST_EXCEPTION(_exception_type, command)                              \
+    do                                                                              \
+    {                                                                               \
+        bool caughtException = false;                                               \
+        try                                                                         \
+        {                                                                           \
+            command;                                                                \
+        }                                                                           \
+        catch(_exception_type& ex)                                                  \
+        {                                                                           \
+            caughtException = true;                                                 \
+        }                                                                           \
+        catch(...)                                                                  \
+        {                                                                           \
+            SEQAN_FAIL("Wrong exception thrown: %s", #_exception_type);             \
+        }                                                                           \
+        if (!caughtException)                                                       \
+            SEQAN_FAIL("No exception thrown!");                                     \
+    } while(false)
+
+#define SEQAN_TEST_EXCEPTION_WITH_MESSAGE(_exception_type, command, _message)       \
+    do                                                                              \
+    {                                                                               \
+        bool caughtException = false;                                               \
+        try                                                                         \
+        {                                                                           \
+            command;                                                                \
+        }                                                                           \
+        catch(_exception_type& ex)                                                  \
+        {                                                                           \
+            if(std::string(ex.what()) != _message)                                  \
+                SEQAN_FAIL("Got correct exception but wrong message: '%s' != '%s'", \
+                           ex.what(), _message);                                    \
+            caughtException = true;                                                 \
+        }                                                                           \
+        catch(...)                                                                  \
+        {                                                                           \
+            SEQAN_FAIL("Wrong exception thrown: %s", #_exception_type);             \
+        }                                                                           \
+        if (!caughtException)                                                       \
+            SEQAN_FAIL("No exception thrown!");                                     \
+    } while(false)
+
 
 }  // namespace seqan
 

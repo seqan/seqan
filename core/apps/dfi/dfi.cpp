@@ -26,6 +26,7 @@
 #include <seqan/arg_parse.h>
 //#include <seqan/misc/misc_cmdparser.h>
 #include <seqan/index.h>
+#include <seqan/seq_io.h>
 #include <../../extras/include/seqan/math.h>
 #include <string>
 #include <iostream>
@@ -241,22 +242,16 @@ bool loadDatasets(
 	resize(ds, length(fileNames) + 1);
 	ds[0] = 0;
 
-	CharString seq;
-	MultiFasta multiFasta;
+	SeqFileIn seqFile;
+    StringSet<CharString> ids;
 	for(unsigned s = 0; s < length(fileNames); ++s)
 	{
-		if (!open(multiFasta.concat, toCString(fileNames[s]), OPEN_RDONLY)) return false;
-		AutoSeqFormat format;
-		guessFormat(multiFasta.concat, format);
-		split(multiFasta, format);		
-		unsigned seqCount = length(multiFasta);
-		
-		ds[s + 1] = ds[s] + seqCount;
-		resize(seqs, ds[s + 1]);
-		for(unsigned i = 0; i < seqCount; ++i)
-			assignSeq(seqs[ds[s] + i], multiFasta[i], format);
-
-		close(multiFasta.concat);
+		if (!open(seqFile, toCString(fileNames[s])))
+            return false;
+        readRecords(ids, seqs, seqFile);
+		close(seqFile);
+        ds[s + 1] = length(seqs);
+        clear(ids);
 	}
 	return (back(ds) > 0);
 }
@@ -685,8 +680,8 @@ void setUpArgumentParser(ArgumentParser & parser, DFIOptions const &)
     setDate(parser, SEQAN_DATE);
 #endif
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "DATABASE", true));
-    setValidValues(parser, 0, "fa fasta fq fastq txt");
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "DATABASE", true));
+    setValidValues(parser, 0, SeqFileIn::getFileExtensions());
     setHelpText(parser, 0, "Database files in Fasta/Fastq or text format (lines are strings).");
 
 	addUsageLine(parser, "[\\fIOPTIONS\\fP] --minmax <\\fImin_1\\fP> <\\fImax_1\\fP> ... --minmax <\\fImin_m\\fP> <\\fImax_m\\fP> <\\fIdatabase 1\\fP> ... <\\fIdatabase m\\fP>");
@@ -717,7 +712,7 @@ void setUpArgumentParser(ArgumentParser & parser, DFIOptions const &)
     setMaxValue(parser, "entropy", "1");
 
     addSection(parser, "Input/Output Options");
-    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <stdout>.", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <stdout>.", ArgParseOption::OUTPUT_FILE));
     setValidValues(parser, "output", "txt");
     addOption(parser, ArgParseOption("a", "alphabet", "Specify database alphabet.", ArgParseOption::STRING));
     setValidValues(parser, "alphabet", "dna protein char");

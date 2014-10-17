@@ -64,14 +64,37 @@ typedef Tag<GenBankHeader_> GenBankHeader;
 struct GenBankSequence_;
 typedef Tag<GenBankSequence_> GenBankSequence;
 
-enum GenBankErrorCodes_
-{
-    IOERR_GENBANK_WRONG_RECORD = 2048
-};
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
+
+// --------------------------------------------------------------------------
+// Metafunction MagicHeader
+// --------------------------------------------------------------------------
+
+template <typename T>
+struct MagicHeader<GenBank, T>
+{
+    static char const VALUE[6];
+};
+template <typename T>
+char const MagicHeader<GenBank, T>::VALUE[6] = { 'L','O','C','U','S',' ' };  // typical GenBank header
+
+// --------------------------------------------------------------------------
+// Metafunction FileExtensions
+// --------------------------------------------------------------------------
+
+template <typename T>
+struct FileExtensions<GenBank, T>
+{
+    static char const * VALUE[1];
+};
+template <typename T>
+char const * FileExtensions<GenBank, T>::VALUE[1] =
+{
+    ".gbk",     // default output extension
+};
 
 // ============================================================================
 // Functions
@@ -86,55 +109,35 @@ enum GenBankErrorCodes_
  * @headerfile <seqan/seq_io.h>
  * @brief Split a GenBank header field/value.
  *
- * @signature void splitGenBankHeader(key, value, lines);
+ * @signature void readGenBankHeader(key, value, iter);
  *
- * @param[out] key   A @link SequenceConcept @endlink object to write the key to.
- * @param[out] value A @link SequenceConcept @endlink object to write the value to.
- * @param[in]  line  A @link SequenceConcept @endlink object with the line.
+ * @param[out] key   A @link ContainerConcept @endlink object to write the key to.
+ * @param[out] value A @link ContainerConcept @endlink object to write the value to.
+ * @param[in]  iter  Input iterator.
  */
 
-/**
-.Function.splitGenBankHeader
-..cat:Input/Output
-..signature:splitGenBankHeader(key, value, lines)
-..summary:Split an GenBank header field/value.
-..remarks:You can only call this on a whole top-level field such as $SOURCE$, possibly including the following subfields! You cannot split out subfield values.
-..param.key:The 2-character header type.
-..param.value:The line's value.
-..param.line:The lines with the header field to split.
-..returns:$void$
-..include:seqan/stream.h
-..see:Function.splitEmblHeader
-*/
+// readGenBankHeader() for GenBank header records.
 
-template <typename TKey, typename TValue, typename TLine>
+template <typename TKey, typename TValue, typename TFwdIterator>
 inline void
-splitGenBankHeader(TKey & key, TValue & value, TLine const & lines)
+readRecord(TKey & key, TValue & val, TFwdIterator & iter, GenBankHeader)
 {
-    splitEmblHeader(key, value, lines);
     clear(key);
+    clear(val);
 
-    enum State { IN_KEY, IN_SPACE, IN_VALUE };
-    State state = IN_KEY;
+    readUntil(key, iter, IsWhitespace());
 
-    typedef typename Iterator<TLine const, Rooted>::Type TIterator;
-    TIterator it = begin(lines, Rooted());
-    for (; !atEnd(it); goNext(it))
+    if (IsBlank()(value(iter)))
     {
-        if (state == IN_KEY)
-        {
-            if (isblank(*it))
-                state = IN_SPACE;
-            else
-                appendValue(key, *it);
-        }
-        else if (state == IN_SPACE && !isblank(*it))
-        {
-            break;
-        }
+        skipUntil(iter, NotFunctor<IsBlank>());
+        readLine(val, iter);
     }
 
-    value = suffix(lines, position(it));
+    while (IsBlank()(value(iter)))
+    {
+        appendValue(val, '\n');
+        readLine(val, iter);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -143,155 +146,100 @@ splitGenBankHeader(TKey & key, TValue & value, TLine const & lines)
 
 // nextIs() for GenBank header records.
 
-template <typename TStream, typename TSpec>
+template <typename TFwdIterator>
 inline bool
-nextIs(RecordReader<TStream, TSpec> & reader, GenBankHeader const & /*tag*/)
+nextIs(TFwdIterator & iter, GenBankHeader)
 {
-    return !atEnd(reader) && value(reader) != 'O' && !isblank(value(reader));
+    return !atEnd(iter) && value(iter) != 'O' && !IsWhitespace()(value(iter));
 }
 
 // nextIs() for GenBank sequence records.
 
-template <typename TStream, typename TSpec>
+template <typename TFwdIterator>
 inline bool
-nextIs(RecordReader<TStream, TSpec> & reader, GenBankSequence const & /*tag*/)
+nextIs(TFwdIterator & iter, GenBankSequence)
 {
-    return !atEnd(reader) && value(reader) == 'O';
+    return !atEnd(iter) && value(iter) == 'O';
 }
 
 // ----------------------------------------------------------------------------
 // Function readRecord()
 // ----------------------------------------------------------------------------
 
-// readRecord() for GenBank header records.
-
-// Normalize in-field line endings to '\n'.
-
-template <typename TTarget, typename TStream, typename TSpec>
-inline int
-readRecord(TTarget & result, RecordReader<TStream, SinglePass<TSpec> > & reader,
-           GenBankHeader const & tag)
-{
-    if (atEnd(reader))
-        return EOF_BEFORE_SUCCESS;
-    if (!nextIs(reader, tag))
-        return IOERR_GENBANK_WRONG_RECORD;
-    clear(result);
-
-    int res = readLine(result, reader);
-    if (res != 0)
-        return res;
-    while (!atEnd(reader) && isblank(value(reader)))
-    {
-        appendValue(result, '\n');
-        res = readLine(result, reader);
-        if (res != 0)
-            return res;
-    }
-
-    return 0;
-}
-
 // readRecord() for GenBank sequences records.
 
 // Read all sequence, eat/ignore '//' line.
 
-template <typename TTarget, typename TStream, typename TSpec>
-inline int
-readRecord(TTarget & result, RecordReader<TStream, SinglePass<TSpec> > & reader,
-           GenBankSequence const & tag)
+template <typename TSeqString, typename TFwdIterator>
+inline void
+readRecord(TSeqString & seq, TFwdIterator & iter, GenBankSequence)
 {
-    if (atEnd(reader))
-        return EOF_BEFORE_SUCCESS;
-    if (!nextIs(reader, tag))
-        return IOERR_GENBANK_WRONG_RECORD;
-    clear(result);
+    typedef typename Value<TSeqString>::Type TSeqAlphabet;
+    typedef OrFunctor<OrFunctor<IsBlank, IsDigit>,
+                      AssertFunctor<IsInAlphabet<TSeqAlphabet>, ParseError, Embl> > TSeqAsserter;
 
-    // Skip 'ORIGIN' line.
-    CharString buffer;
-    int res = readLine(buffer, reader);
-    if (res != 0)
-        return res;
-    if (!startsWith(buffer, "ORIGIN"))
-        return IOERR_GENBANK_WRONG_RECORD;
+    IsNewline isNewline;
+    TSeqAsserter asserter;
 
-    // Read sequence.
-    for (; !atEnd(reader); goNext(reader))
+    if (!atEnd(iter) && value(iter) == 'O')
+        skipLine(iter);
+
+    clear(seq);
+    for (; !atEnd(iter); skipLine(iter))
     {
-        if (isspace(value(reader)) || isdigit(value(reader)))
-            continue;  // Skip blanks.
-        // If we found a slash, look for the next one.
-        if (value(reader) == '/')
+        if (value(iter) == '/')
         {
-            if (goNext(reader))  // Returns true if at end.
-                break;
-            if (value(reader) == '/')
-            {
-                skipLine(reader);
-                return 0;  // OK, found complete terminator.
-            }
+            skipLine(iter);
+            break;
         }
 
-        // Otherwise, append the just found character to buffer.
-        appendValue(result, value(reader));
+        readUntil(seq, iter, isNewline, asserter);
     }
-
-    return EOF_BEFORE_SUCCESS;
 }
 
 // readRecord() for GenBank id/seq pairs.
 
-template <typename TId, typename TSequence, typename TStream, typename TSpec>
-inline int
-readRecord(TId & id,
-           TSequence & sequence,
-           RecordReader<TStream, SinglePass<TSpec> > & reader,
-           GenBank const & /*tag*/)
+template <typename TIdString, typename TSeqString, typename TFwdIterator>
+inline void
+readRecord(TIdString & meta, TSeqString & seq, TFwdIterator & iter, GenBank)
 {
-    CharString buffer;
-    while (nextIs(reader, GenBankHeader()))
+    IsWhitespace isWhite;
+    IsBlank isBlank;
+    String<char, Array<20> > key;
+
+    // extract meta from "ID" line
+    clear(meta);
+    for (; !atEnd(iter); skipLine(iter))
     {
-        int res = readRecord(buffer, reader, GenBankHeader());
-        if (res != 0)
-            return res;
-        if (startsWith(buffer, "VERSION"))
+        if (isBlank(value(iter)))
+            continue;
+
+        AssertFunctor<NotFunctor<CountDownFunctor<True, 20> >, ParseError, Embl> asserter;
+
+        clear(key);
+        readUntil(key, iter, isWhite, asserter);
+
+        if (key == "VERSION")
         {
-            CharString k;
-            splitGenBankHeader(k, id, buffer);
+            skipUntil(iter, NotFunctor<IsBlank>());
+            readUntil(meta, iter, IsNewline());
+        }
+        else if (key == "ORIGIN")
+        {
+            skipLine(iter);
+            break;
         }
     }
-    clear(sequence);
-    int res = readRecord(sequence, reader, GenBankSequence());
-    if (res != 0)
-        return res;
-    
-    return 0;
+
+    readRecord(seq, iter, GenBankSequence());
 }
 
-// ----------------------------------------------------------------------------
-// Function read2()
-// ----------------------------------------------------------------------------
-
-template <typename TIdString, typename TIdSpec, typename TSeqString, typename TSeqSpec,
-          typename TStream, typename TSpec>
-int read2(StringSet<TIdString, TIdSpec> & sequenceIds,
-          StringSet<TSeqString, TSeqSpec> & sequences,
-          RecordReader<TStream, SinglePass<TSpec> > & reader,
-          GenBank const & tag)
+template <typename TIdString, typename TSeqString, typename TQualString, typename TFwdIterator>
+inline void
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator & iter, GenBank)
 {
-    TIdString id;
-    TSeqString seq;
-
-    while (!atEnd(reader))
-    {
-        int res = readRecord(id, seq, reader, tag);
-        if (res != 0)
-            return res;
-        appendValue(sequenceIds, id);
-        appendValue(sequences, seq);
-    }
-
-    return 0;
+    clear(qual);
+    readRecord(meta, seq, iter, GenBank());
 }
 
 }  // namespace seqan

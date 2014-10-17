@@ -37,16 +37,16 @@ def main(source_base, binary_base):
 
     path_to_program = []
     path_to_program.append(app_tests.autolocateBinary(
-      binary_base, 'extras/apps/seqan_flexbar', 'sflexQC'))
+      binary_base, 'bin', 'sflexQC'))
 
     path_to_program.append(app_tests.autolocateBinary(
-      binary_base, 'extras/apps/seqan_flexbar', 'sflexFilter'))
+      binary_base, 'bin', 'sflexFilter'))
     
     path_to_program.append(app_tests.autolocateBinary(
-      binary_base, 'extras/apps/seqan_flexbar', 'sflexAR'))
+      binary_base, 'bin', 'sflexAR'))
     
     path_to_program.append(app_tests.autolocateBinary(
-      binary_base, 'extras/apps/seqan_flexbar', 'sflexDMulti'))
+      binary_base, 'bin', 'sflexDMulti'))
 
     # ============================================================
     # Built TestConf list.
@@ -89,7 +89,7 @@ def main(source_base, binary_base):
         program=path_to_program[2],
         redir_stdout=ph.outFile('out.stdout'),
         args=[ph.inFile('testsample.fq'), '-a', 
-        ph.inFile('adapter.fasta'), 
+        ph.inFile('adapter.fa'), 
         '-o', ph.outFile('ar_test.fq'), '-ni'],
         to_diff=[(ph.inFile('ar_test.stdout'),
                   ph.outFile('out.stdout')),
@@ -101,24 +101,24 @@ def main(source_base, binary_base):
         program=path_to_program[3],
         redir_stdout=ph.outFile('out.stdout'),
         args=[ph.inFile('testsample_multiplex.fq'), '-b', 
-        ph.inFile('barcodes.fasta'), 
-        '-o', ph.outFile('test_de_multi.fastq'), '-ni'],
+        ph.inFile('barcodes.fa'), 
+        '-o', ph.outFile('test_de_multi.fq'), '-ni'],
         to_diff=[(ph.inFile('gold_de_multi.stdout'),
                   ph.outFile('out.stdout')),
-                 (ph.inFile('gold_de_multi_Sample-1.fastq'),
-                  ph.outFile('test_de_multi_Sample-1.fastq')),
-                 (ph.inFile('gold_de_multi_Sample26.fastq'),
-                  ph.outFile('test_de_multi_Sample26.fastq')),
-                 (ph.inFile('gold_de_multi_Sample-2.fastq'),
-                  ph.outFile('test_de_multi_Sample-2.fastq')),
-                 (ph.inFile('gold_de_multi_Sample0.fastq'),
-                  ph.outFile('test_de_multi_Sample0.fastq')),
-                 (ph.inFile('gold_de_multi_Sample1458.fastq'),
-                  ph.outFile('test_de_multi_Sample1458.fastq')),
-                 (ph.inFile('gold_de_multi_Sample37.fastq'),
-                  ph.outFile('test_de_multi_Sample37.fastq')),
-                 (ph.inFile('gold_de_multi_unidentified.fastq'),
-                  ph.outFile('test_de_multi_unidentified.fastq'))])
+                 (ph.inFile('gold_de_multi_Sample-1.fq'),
+                  ph.outFile('test_de_multi_Sample-1.fq')),
+                 (ph.inFile('gold_de_multi_Sample26.fq'),
+                  ph.outFile('test_de_multi_Sample26.fq')),
+                 (ph.inFile('gold_de_multi_Sample-2.fq'),
+                  ph.outFile('test_de_multi_Sample-2.fq')),
+                 (ph.inFile('gold_de_multi_Sample0.fq'),
+                  ph.outFile('test_de_multi_Sample0.fq')),
+                 (ph.inFile('gold_de_multi_Sample1458.fq'),
+                  ph.outFile('test_de_multi_Sample1458.fq')),
+                 (ph.inFile('gold_de_multi_Sample37.fq'),
+                  ph.outFile('test_de_multi_Sample37.fq')),
+                 (ph.inFile('gold_de_multi_unidentified.fq'),
+                  ph.outFile('test_de_multi_unidentified.fq'))])
     conf_list.append(conf)
 
     # ============================================================

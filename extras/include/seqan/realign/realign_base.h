@@ -461,7 +461,7 @@ public:
                     seqan::AlignedReadLayout layout;
                     layoutAlignment(layout, store);
                     std::stringstream ss;
-                    printAlignment(std::cerr, seqan::Raw(), layout, store, front(store.alignedReadStore).contigId,
+                    printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
                                    0, 1000, 0, 100);
                     swap(store.alignedReadStore, contigAlignedReads);
 
@@ -1033,17 +1033,15 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
         return;
     }
 
-    // Do not realign the reference if it is included in the realignment.
-    TAlignedReadIter itEnd = end(contigAlignedReads, Standard());
-    if (options.includeReference)
-        --itEnd;
-
     // The currently extracted part from the sequence and the read as profile (ord values stored in read[i].count[0].
     TProfileString profilePart;
 
     // Remove each read from the profile, realign it to the profile, and update the profile.
+    TAlignedReadIter itEnd = end(contigAlignedReads, Standard());
     for (TAlignedReadIter it = begin(contigAlignedReads, Standard()); it != itEnd; ++it)
     {
+        if (options.includeReference && it->readId + 1 == length(store.readSeqStore))
+            continue;  // do not subtract reference pseudo-read
         // Ignore reads that do not overlap with the window.
         if (windowBegin != windowEnd && !_overlap(windowBegin, windowEnd, it->beginPos, it->endPos))
             continue;
@@ -1126,7 +1124,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             seqan::AlignedReadLayout layout;
             layoutAlignment(layout, store);
             std::stringstream ss;
-            printAlignment(std::cerr, seqan::Raw(), layout, store, front(store.alignedReadStore).contigId,
+            printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
                            0, 1000, 0, 100);
             swap(store.alignedReadStore, contigAlignedReads);
 
@@ -1153,7 +1151,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             seqan::AlignedReadLayout layout;
             layoutAlignment(layout, store);
             std::stringstream ss;
-            printAlignment(std::cerr, seqan::Raw(), layout, store, front(store.alignedReadStore).contigId,
+            printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
                            0, 1000, 0, 100);
             swap(store.alignedReadStore, contigAlignedReads);
         }
@@ -1300,7 +1298,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             seqan::AlignedReadLayout layout;
             layoutAlignment(layout, store);
             std::stringstream ss;
-            printAlignment(std::cerr, seqan::Raw(), layout, store, front(store.alignedReadStore).contigId,
+            printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
                            0, 1000, 0, 100);
             swap(store.alignedReadStore, contigAlignedReads);
 
@@ -1344,7 +1342,7 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             seqan::AlignedReadLayout layout;
             layoutAlignment(layout, store);
             std::stringstream ss;
-            printAlignment(std::cerr, seqan::Raw(), layout, store, front(store.alignedReadStore).contigId,
+            printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
                            0, 1000, 0, 100);
             swap(store.alignedReadStore, contigAlignedReads);
 

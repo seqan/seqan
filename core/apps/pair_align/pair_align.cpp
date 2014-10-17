@@ -19,10 +19,8 @@ Lesser General Public License for more details.
 #include <seqan/align.h>
 #include <seqan/modifier.h>
 #include <seqan/arg_parse.h>
-
-#include <iostream>
-#include <fstream>
-
+#include <seqan/seq_io.h>
+#include <seqan/stream.h>
 
 using namespace seqan;
 
@@ -38,7 +36,6 @@ struct Options
     seqan::CharString outputFile;
     seqan::CharString alphabet;
     seqan::CharString method;
-    int outputFormat;
     int gop;
     int gex;
     seqan::CharString matrix;
@@ -61,20 +58,22 @@ bool _loadSequences(TSeqSet& sequences,
                     TNameSet& fastaIDs,
                     const char *fileName)
 {
-    MultiFasta multiFasta;
-    if (!open(multiFasta.concat, fileName, OPEN_RDONLY)) return false;
-    AutoSeqFormat format;
-    guessFormat(multiFasta.concat, format); 
-    split(multiFasta, format);
-    unsigned seqCount = length(multiFasta);
-    resize(sequences, seqCount, Exact());
-    resize(fastaIDs, seqCount, Exact());
-    for(unsigned i = 0; i < seqCount; ++i) 
+    SeqFileIn inFile;
+    if (!open(inFile, fileName))
     {
-        assignSeqId(fastaIDs[i], multiFasta[i], format);
-        assignSeq(sequences[i], multiFasta[i], format);
+        std::cerr << "Could not open file " << fileName << " for reading!" << std::endl;
+        return false;
     }
-    return (seqCount > 0);
+
+    readRecords(fastaIDs, sequences, inFile);
+
+    if (length(fastaIDs) > 2u)  // Limit number of sequences to 2.
+    {
+        resize(fastaIDs, 2, Exact());
+        resize(sequences, 2, Exact());
+        return true;
+    }
+    return (length(fastaIDs) == 2u);
 }
 
 // TODO(holtgrew): Make publically available.
@@ -88,7 +87,7 @@ globalAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////////
 
-template<typename TAlphabet, typename TAlignConfig, typename TScore, typename TSeqFile, typename TMethod, typename TDiag, typename TOutputFormat, typename TOutfile>
+template<typename TAlphabet, typename TAlignConfig, typename TScore, typename TSeqFile, typename TMethod, typename TDiag, typename TOutfile>
 inline void
 pairwise_align(TScore const& sc,
                TSeqFile& seqfile,
@@ -96,9 +95,10 @@ pairwise_align(TScore const& sc,
                TDiag low,
                TDiag high,
                bool banded,
-               TOutputFormat outputFormat,
                TOutfile& outfile) 
 {
+    typedef VirtualStream<char, Output> TOutputStream;
+
     // Load the 2 sequences
     typedef String<TAlphabet> TSequence;
     StringSet<TSequence, Owner<> > sequenceSet;
@@ -126,15 +126,17 @@ pairwise_align(TScore const& sc,
     
     // Alignment output
     std::cout << "Alignment score: " << aliScore << std::endl;
-    if (outputFormat == 0) {
-        FILE* strmWrite = fopen(outfile.c_str(), "w");
-        write(strmWrite, gAlign, sequenceNames, FastaFormat());
-        fclose(strmWrite);
-    } else if (outputFormat == 1) {
-        FILE* strmWrite = fopen(outfile.c_str(), "w");
-        write(strmWrite, gAlign, sequenceNames, MsfFormat());
-        fclose(strmWrite);
+    TOutputStream outputFile;
+    if (!open(outputFile, toCString(outfile)))
+    {
+        std::cerr << "Could not open " << outfile << " for writing!" << std::endl;
+        return;
     }
+
+    if (guessFormatFromFilename(outfile, Fasta()))
+        write(outputFile, gAlign, sequenceNames, FastaFormat());
+    else
+        write(outputFile, gAlign, sequenceNames, MsfFormat());
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -212,41 +214,41 @@ _initAlignParams(Options const & options, TScore& sc) {
     if (!empty(config))
     {
         if (config == "tttt")
-            pairwise_align<TAlphabet, AlignConfig<true, true, true, true> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<true, true, true, true> >(sc, seqfile, method, low, high, banded, outfile);
         else if (config == "tttf")
-            pairwise_align<TAlphabet, AlignConfig<true, true, true, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<true, true, true, false> >(sc, seqfile, method, low, high, banded, outfile);
         else if (config == "ttft")
-            pairwise_align<TAlphabet, AlignConfig<true, true, false, true> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<true, true, false, true> >(sc, seqfile, method, low, high, banded, outfile);
         else if (config == "ttff")
-            pairwise_align<TAlphabet, AlignConfig<true, true, false, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<true, true, false, false> >(sc, seqfile, method, low, high, banded, outfile);
         else if (config == "tftt")
-            pairwise_align<TAlphabet, AlignConfig<true, false, true, true> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<true, false, true, true> >(sc, seqfile, method, low, high, banded, outfile);
         else if (config == "tftf")
-            pairwise_align<TAlphabet, AlignConfig<true, false, true, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<true, false, true, false> >(sc, seqfile, method, low, high, banded, outfile);
         else if (config == "tfft")
-            pairwise_align<TAlphabet, AlignConfig<true, false, false, true> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<true, false, false, true> >(sc, seqfile, method, low, high, banded, outfile);
         else if (config == "tfff")
-            pairwise_align<TAlphabet, AlignConfig<true, false, false, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<true, false, false, false> >(sc, seqfile, method, low, high, banded, outfile);
         else if (config == "fttt")
-            pairwise_align<TAlphabet, AlignConfig<false, true, true, true> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<false, true, true, true> >(sc, seqfile, method, low, high, banded, outfile);
         else if (config == "fttf")
-            pairwise_align<TAlphabet, AlignConfig<false, true, true, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<false, true, true, false> >(sc, seqfile, method, low, high, banded, outfile);
         else if (config == "ftft")
-            pairwise_align<TAlphabet, AlignConfig<false, true, false, true> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<false, true, false, true> >(sc, seqfile, method, low, high, banded, outfile);
         else if (config == "ftff")
-            pairwise_align<TAlphabet, AlignConfig<false, true, false, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<false, true, false, false> >(sc, seqfile, method, low, high, banded, outfile);
         else if (config == "fftt")
-            pairwise_align<TAlphabet, AlignConfig<false, false, true, true> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<false, false, true, true> >(sc, seqfile, method, low, high, banded, outfile);
         else if (config == "fftf")
-            pairwise_align<TAlphabet, AlignConfig<false, false, true, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<false, false, true, false> >(sc, seqfile, method, low, high, banded, outfile);
         else if (config == "ffft")
-            pairwise_align<TAlphabet, AlignConfig<false, false, false, true> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<false, false, false, true> >(sc, seqfile, method, low, high, banded, outfile);
         else if (config == "ffff")
-            pairwise_align<TAlphabet, AlignConfig<false, false, false, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+            pairwise_align<TAlphabet, AlignConfig<false, false, false, false> >(sc, seqfile, method, low, high, banded, outfile);
     }
     else
     {
-        pairwise_align<TAlphabet, AlignConfig<false, false, false, false> >(sc, seqfile, method, low, high, banded, options.outputFormat, outfile);
+        pairwise_align<TAlphabet, AlignConfig<false, false, false, false> >(sc, seqfile, method, low, high, banded, outfile);
     }
 }
 
@@ -258,7 +260,7 @@ _initScoreMatrix(Options const & options, Dna5 const) {
     if (!empty(options.matrix))
     {
         Score<int, ScoreMatrix<> > sc;
-        loadScoreMatrix(sc, options.matrix);
+        loadScoreMatrix(sc, toCString(options.matrix));
         _initAlignParams<Dna5>(options, sc);
     }
     else
@@ -276,7 +278,7 @@ _initScoreMatrix(Options const & options, char const) {
     if (!empty(options.matrix))
     {
         Score<int, ScoreMatrix<> > sc;
-        loadScoreMatrix(sc, options.matrix);
+        loadScoreMatrix(sc, toCString(options.matrix));
         _initAlignParams<char>(options, sc);
     }
     else
@@ -294,7 +296,7 @@ _initScoreMatrix(Options const & options, Rna5 const) {
     if (!empty(options.matrix))
     {    
         Score<int, ScoreMatrix<> > sc;
-        loadScoreMatrix(sc, options.matrix);
+        loadScoreMatrix(sc, toCString(options.matrix));
         _initAlignParams<Rna5>(options, sc);
     }
     else
@@ -312,7 +314,7 @@ _initScoreMatrix(Options const & options, AminoAcid const) {
     if (!empty(options.matrix))
     {
         Score<int, ScoreMatrix<> > sc;
-        loadScoreMatrix(sc, options.matrix);
+        loadScoreMatrix(sc, toCString(options.matrix));
         _initAlignParams<AminoAcid>(options, sc);
     }
     else
@@ -334,19 +336,19 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     // Set short description, version, and date.
     setShortDescription(parser, "Pairwise alignment");
     setVersion(parser, "1.1");
-    setDate(parser, "November 2012");
+    setDate(parser, "September 2014");
 
     // Define usage line and long description.
-    addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fB-s\\fP \\fIIN.fa\\fP");
+    addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fB-s\\fP \\fIIN\\fP");
 	setCategory(parser, "Sequence Alignment");
     addDescription(parser,
                    "The program allows to align two sequences using dyamic programming alignment algorithms while "
                    "tweaking various parameters.");
 
     addSection(parser, "Main Options");
-    addOption(parser, seqan::ArgParseOption("s", "seq", "FASTA file with two sequences.", seqan::ArgParseOption::INPUTFILE, "IN.fa"));
+    addOption(parser, seqan::ArgParseOption("s", "seq", "FASTA file with two sequences.", seqan::ArgParseOption::INPUT_FILE, "IN"));
     setRequired(parser, "seq");
-    setValidValues(parser, "seq", "fasta fa");
+    setValidValues(parser, "seq", getFileExtensions(Fasta()));
     addOption(parser, seqan::ArgParseOption("a", "alphabet", "Sequence alphabet.", seqan::ArgParseOption::STRING, "ALPHABET"));
     setValidValues(parser, "alphabet", "protein dna rna text");
     setDefaultValue(parser, "alphabet", "protein");
@@ -356,13 +358,11 @@ parseCommandLine(Options & options, int argc, char const ** argv)
                                             seqan::ArgParseOption::STRING, "METHOD"));
     setValidValues(parser, "method", "nw gotoh sw lcs");
     setDefaultValue(parser, "method", "gotoh");
-    addOption(parser, seqan::ArgParseOption("o", "outfile", "Output filename.", seqan::ArgParseOption::OUTPUTFILE, "OUT"));
+    addOption(parser, seqan::ArgParseOption("o", "outfile", "Output filename.", seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
     setDefaultValue(parser, "outfile", "out.fasta");
-	setValidValues(parser, "outfile", "fa fasta msf");
-	//TODO(rmaerker): We removed this option. The file format is derived from the outfile format.
-    //addOption(parser, seqan::ArgParseOption("f", "format", "Output format.", seqan::ArgParseOption::STRING));
-    //setValidValues(parser, "format", "fa fasta msf");
-    //setDefaultValue(parser, "format", "fasta");
+    std::vector<std::string> outFileNames = getFileExtensions(Fasta());
+    outFileNames.push_back(".msf");
+    setValidValues(parser, "outfile", outFileNames);
 
     addSection(parser, "Scoring Options");
     addOption(parser, seqan::ArgParseOption("g", "gop", "Gap open penalty.", seqan::ArgParseOption::INTEGER, "INT"));
@@ -401,12 +401,6 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     getOptionValue(options.inputFile, parser, "seq");
     getOptionValue(options.outputFile, parser, "outfile");
-	// Guess file format based on extension of file.
-	CharString tmp = options.outputFile;
-	if (endsWith(tmp, ".fa") || endsWith(tmp, "fasta"))
-	    options.outputFormat = 0;
-	else if (endsWith(tmp, ".msf"))
-	    options.outputFormat = 1;
 
     getOptionValue(options.alphabet, parser, "alphabet");
     getOptionValue(options.method, parser, "method");

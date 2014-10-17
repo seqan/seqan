@@ -69,7 +69,9 @@ _buildLeafString(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 		//	while ((j < lenRoot) && (findVertex(const_cast<TGraph&>(g), seqId, j) == nilVertex)) ++j;
 		//	nextVertex = addVertex(const_cast<TGraph&>(g), seqId, i, j-i);
 		//}
-		appendValue(alignSeq, TVertexString(nextVertex), Generous());
+		TVertexString vs;
+		appendValue(vs, nextVertex);
+		appendValue(alignSeq, vs, Generous());
 		i += fragmentLength(g, nextVertex);
 	}
 }
@@ -359,7 +361,7 @@ heaviestMatching(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 	//std::fstream strm;
 	//strm.open("Z:\\my_graph.dot", std::ios_base::out | std::ios_base::trunc);
-	//write(strm,matchGraph,DotDrawing());
+	//writeRecords(strm,matchGraph,DotDrawing());
 	//strm.close();
 
 	TCargo val = weightedBipartiteMatching(matchGraph, vertexMap, weights, edges);

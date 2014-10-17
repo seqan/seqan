@@ -86,47 +86,43 @@ Note: If edges do not store ids external property maps do not work.
 template<typename TAlphabet, typename TCargo, typename TSpec>
 class Graph<Hmm<TAlphabet, TCargo, TSpec> > 
 {
-	public:
-		typedef typename VertexDescriptor<Graph>::Type TVertexDescriptor_;
-		
-		//HMM Model
-		Graph<Directed<TCargo, TSpec> > data_model;
+public:
+    typedef typename VertexDescriptor<Graph>::Type TVertexDescriptor_;
 
-		//Emission probabilities
-		String<TCargo> data_emission;
+    // HMM Model
+    Graph<Directed<TCargo, TSpec> > data_model;
 
-		//Silent state map
-		String<bool> data_silent;
+    // Emission probabilities
+    String<TCargo> data_emission;
 
-		//Begin and end state
-		TVertexDescriptor_ data_begin;
-		TVertexDescriptor_ data_end;
+    // Silent state map
+    String<bool> data_silent;
 
-	
-//____________________________________________________________________________
+    // Begin and end state
+    TVertexDescriptor_ data_begin;
+    TVertexDescriptor_ data_end;
 
-		Graph() {
-		}
+    Graph() : data_begin(), data_end()
+    {}
 
+    ~Graph()
+    {
+        clear(*this);
+    }
 
-		~Graph() {
-			SEQAN_CHECKPOINT
-			clear(*this);
-		}
+    Graph(Graph const & _other)
+    {
+        _copyGraph(_other, *this);
+    }
 
-		Graph(Graph const & _other) 
-		{
-			SEQAN_CHECKPOINT
-			_copyGraph(_other, *this);	
-		}
-	
-		Graph const& operator = (Graph const & _other) {
-			SEQAN_CHECKPOINT
-			if (this == &_other) return *this;
-			clear(*this);
-			_copyGraph(_other, *this);
-			return *this;
-		}
+    Graph const& operator = (Graph const & _other)
+    {
+        if (this == &_other)
+            return *this;
+        clear(*this);
+        _copyGraph(_other, *this);
+        return *this;
+    }
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -527,12 +523,10 @@ findEdge(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TFile, typename TAlphabet, typename TCargo, typename TSpec, typename TIDString>
+template <typename TFile, typename TAlphabet, typename TCargo, typename TSpec>
 inline void
 write(TFile & target,
-	  Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,
-	  TIDString const &,
-	  Raw)
+	  Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g)
 {
 //IOREV _nodoc_
 	typedef Graph<Hmm<TAlphabet, TCargo, TSpec> > TGraph;
@@ -544,64 +538,64 @@ write(TFile & target,
 	typedef typename Iterator<String<TCargo> const, Standard>::Type TEmisIter;
 
 	// Alphabet
-	streamPut(target,"Alphabet:\n");
-	streamPut(target,'{');
+	write(target, "Alphabet:\n");
+	writeValue(target, '{');
 	for(TSize counter = 0; counter<alph_size-1;++counter) {
-		streamPut(target,TAlphabet(counter));
-		streamPut(target,',');
+		writeValue(target,TAlphabet(counter));
+		writeValue(target, ',');
 	}
-	streamPut(target,TAlphabet(alph_size-1));
-	streamPut(target,'}');
-	streamPut(target,'\n');
+	writeValue(target,TAlphabet(alph_size-1));
+	writeValue(target, '}');
+	writeValue(target, '\n');
 
 	// States
-	streamPut(target,"States:\n");
-	streamPut(target,'{');
+	write(target, "States:\n");
+	writeValue(target, '{');
 	TIterConst it = begin(_getVertexString(g), Standard());
 	TIterConst itEnd = end(_getVertexString(g), Standard());
 	bool first = true;
 	for(TSize pos = 0;it!=itEnd;goNext(it), ++pos) {
 		if (!idInUse(_getVertexIdManager(g), pos)) continue;
-		if (!first) streamPut(target,',');
+		if (!first) writeValue(target, ',');
 		else first = false;
-		streamPut(target, (int)pos);	
-		if (isSilent(g, pos)) streamPut(target," (Silent)");
+		appendNumber(target, (int)pos);	
+		if (isSilent(g, pos)) write(target, " (Silent)");
 	}
-	streamPut(target,'}');
-	streamPut(target,'\n');
+	writeValue(target, '}');
+	writeValue(target, '\n');
 
 	// Begin and end state
-	streamPut(target,"Begin state: ");
-	streamPut(target, (int)getBeginState(g));
-	streamPut(target,'\n');
-	streamPut(target,"End state: ");
-	streamPut(target, (int)getEndState(g));
-	streamPut(target,'\n');
+	write(target, "Begin state: ");
+	appendNumber(target, (int)getBeginState(g));
+	writeValue(target, '\n');
+	write(target, "End state: ");
+	appendNumber(target, (int)getEndState(g));
+	writeValue(target, '\n');
 
 	// Transition probabilities
-	streamPut(target,"Transition probabilities:\n");
+	write(target, "Transition probabilities:\n");
 	itEnd = end(_getVertexString(g));
 	it = begin(_getVertexString(g));
 	for(TSize pos = 0;it!=itEnd;goNext(it), ++pos) {
 		if (!idInUse(_getVertexIdManager(g), pos)) continue;
 		TEdgeStump* current = getValue(it);
-		streamPut(target, (int)pos);
-		streamPut(target," -> ");
+		appendNumber(target, (int)pos);
+		write(target, " -> ");
 		first = true;
 		while(current!=0) {
-			if (!first) streamPut(target, ',');
+			if (!first) writeValue(target, ',');
 			else first = false;
-			streamPut(target, (int)getTarget(current));
-			streamPut(target," (");
-			streamPut(target, (double)cargo(current));
-			streamPut(target,") ");
+			appendNumber(target, (int)getTarget(current));
+			write(target, " (");
+			write(target, (double)cargo(current));
+			write(target, ") ");
 			current=getNextT(current);
 		}
-		streamPut(target, '\n');
+		writeValue(target, '\n');
 	}
 
 	// Emission probabilities
-	streamPut(target,"Emission probabilities:\n");
+	write(target, "Emission probabilities:\n");
 	TEmisIter itEmis = begin(g.data_emission, Standard());
 	itEnd = end(_getVertexString(g), Standard());
 	it = begin(_getVertexString(g), Standard());	
@@ -609,20 +603,20 @@ write(TFile & target,
 	for(TSize pos = 0;it!=itEnd;++it, ++pos) {
 		if (!idInUse(_getVertexIdManager(g), pos)) continue;
 		if (isSilent(g, pos)) continue;
-		if (!first) streamPut(target,'\n');
+		if (!first) writeValue(target, '\n');
 		else first = false;
-		streamPut(target, (int)pos);
-		streamPut(target,": ");
+		appendNumber(target, (int)pos);
+		write(target, ": ");
 		bool my_first = true;
 		itEmis = begin(g.data_emission, Standard());
 		itEmis += pos * alph_size;
 		for(TSize counter = 0; counter < alph_size; ++itEmis, ++counter) {
-			if (!my_first) streamPut(target, ',');
+			if (!my_first) writeValue(target, ',');
 			else my_first = false;
-			streamPut(target, TAlphabet(counter));
-			streamPut(target," (");
-			streamPut(target, (double)*itEmis);
-			streamPut(target,") ");
+			writeValue(target, TAlphabet(counter));
+			write(target, " (");
+			appendNumber(target, (double)*itEmis);
+			write(target, ") ");
 			
 		}
 	}
@@ -1051,7 +1045,7 @@ getEmissionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 /*!
- * @fn HmmGraph#emissionsProbability
+ * @fn HmmGraph#emissionProbability
  * @brief Returns a reference to the emissions probability.
  *
  * @signature TCargo emissionProbability(hmm, state, symbol);

@@ -67,8 +67,6 @@
 #include <signal.h>
 #endif  // #ifdef PLATFORM_WINDOWS
 
-#include <assert.h>
-
 /*!
  * @defgroup AssertMacros Assertion and Check Macros
  * @brief The assertion and check macros provided by SeqAn.
@@ -919,6 +917,8 @@ int endTestSuite()
         }
 
         rmdir(StaticData::tempFileNames()[i].c_str());
+        if (closedir(dpdf) != 0)
+            std::cerr << "WARNING: Could not delete directory " << StaticData::tempFileNames()[i] << "\n";
 #endif  // #ifdef PLATFORM_WINDOWS
     }
 
@@ -1927,7 +1927,7 @@ SEQAN_END_TESTSUITE
     }
 
 /*!
- * @macro TestSystemMacros#SEQAN_CALL_TESTS
+ * @macro TestSystemMacros#SEQAN_CALL_TEST
  * @headerfile <seqan/basic.h>
  * @brief Expand to calling a test.
  *

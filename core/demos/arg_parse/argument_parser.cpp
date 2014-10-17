@@ -2,7 +2,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/file.h>      // For printing SeqAn Strings.
+#include <seqan/stream.h>      // For printing SeqAn Strings.
 
 #include <seqan/arg_parse.h>
 
@@ -30,8 +30,8 @@ int main(int argc, char const ** argv)
             "txt output file.");
 
     // Add positional arguments and set their valid file types.
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "IN"));
-    addArgument(parser, ArgParseArgument(ArgParseArgument::OUTPUTFILE, "OUT"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "IN"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::OUTPUT_FILE, "OUT"));
     setValidValues(parser, 0, "FASTA fa");
     setValidValues(parser, 1, "txt");
 

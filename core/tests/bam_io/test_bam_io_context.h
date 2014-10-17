@@ -47,9 +47,10 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_io_context_standalone)
 {
     using namespace seqan;
 
-    CharString ns;
-    NameStoreCache<CharString> nsc(ns);
-    BamIOContext<CharString> bamIOContext(ns, nsc);
+    typedef String<CharString> TStrings;
+    TStrings ns;
+    NameStoreCache<TStrings> nsc(ns);
+    BamIOContext<TStrings, NameStoreCache<TStrings>, Dependent<> > bamIOContext(ns, nsc);
     SEQAN_ASSERT_EQ(&ns, &nameStore(bamIOContext));
     SEQAN_ASSERT_EQ(&nsc, &nameStoreCache(bamIOContext));
 }

@@ -1,6 +1,6 @@
 // FRAGMENT(includes)
 #define SEQAN_PROFILE // enable time measurements
-#include <seqan/file.h>
+#include <seqan/seq_io.h>
 #include <iostream>
 
 using namespace seqan;
@@ -10,38 +10,25 @@ int main (int argc, char const * argv[])
 {
 	SEQAN_PROTIMESTART(loadTime);
 
-	MultiSeqFile multiSeqFile;
-	if (argc < 2 || !open(multiSeqFile.concat, argv[1], OPEN_RDONLY))
+	SeqFileIn seqFile;
+	if (argc < 2 || !open(seqFile, argv[1]))
 		return 1;
 
-// FRAGMENT(guess_and_split)
-	AutoSeqFormat format;
-	guessFormat(multiSeqFile.concat, format);
-	split(multiSeqFile, format);
-
-// FRAGMENT(reserve)
-	unsigned seqCount = length(multiSeqFile);
+// FRAGMENT(read_sequences)
 	StringSet<String<Dna5Q> > seqs;
 	StringSet<CharString> seqIDs;
-
-	reserve(seqs, seqCount, Exact());
-	reserve(seqIDs, seqCount, Exact());
-
-// FRAGMENT(read_sequences)
 	String<Dna5Q> seq;
 	CharString qual;
 	CharString id;
 
-	for (unsigned i = 0; i < seqCount; ++i)
+    size_t seqCount = 0;
+	for (; !atEnd(seqFile); ++seqCount)
 	{
-		assignSeq(seq, multiSeqFile[i], format);    // read sequence
-		assignQual(qual, multiSeqFile[i], format);  // read ascii quality values
-		assignSeqId(id, multiSeqFile[i], format);   // read sequence id
+		readRecord(id, seq, qual, seqFile);     // read record
 
 		// convert ascii to values from 0..62
 		// store dna and quality together in Dna5Q
-		for (unsigned j = 0; j < length(qual) && j < length(seq); ++j)
-			assignQualityValue(seq[j], (int)(ordValue(qual[j]) - 33));
+        assignQualities(seq, qual);
 
 		// we use reserve and append, as assign is not supported
 		// by StringSet<..., Owner<ConcatDirect<> > >

@@ -75,7 +75,7 @@ SEQAN_DEFINE_TEST(test_realign_one_read_no_gaps)
         std::cout << "BEFORE REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     reAlignment(store, /*contigID=*/0, 1, 10, false, 0, 0, DEBUG_REALIGNMENT);
@@ -85,14 +85,14 @@ SEQAN_DEFINE_TEST(test_realign_one_read_no_gaps)
         std::cout << "AFTER REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
     seqan::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
-    printAlignment(ss, seqan::Raw(), layout, store, 0, 0, 120, 0, 20);
+    printAlignment(ss, layout, store, 0, 0, 120, 0, 20);
 
     const char * EXPECTED =
             "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATT-------------------\n"
@@ -126,7 +126,7 @@ SEQAN_DEFINE_TEST(test_realign_one_read_with_gaps)
         std::cout << "BEFORE REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     reAlignment(store, /*contigID=*/0, 1, 10, false, 0, 0, DEBUG_REALIGNMENT);
@@ -136,14 +136,14 @@ SEQAN_DEFINE_TEST(test_realign_one_read_with_gaps)
         std::cout << "AFTER REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
     seqan::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
-    printAlignment(ss, seqan::Raw(), layout, store, 0, 0, 120, 0, 20);
+    printAlignment(ss, layout, store, 0, 0, 120, 0, 20);
 
     const char * EXPECTED =
             "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATT-------------------\n"
@@ -174,7 +174,7 @@ SEQAN_DEFINE_TEST(test_realign_two_reads_stacked_at_beginning)
         std::cout << "BEFORE REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 200, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 200, 0, 1000);
     }
 
     reAlignment(store, /*contigID=*/0, 1, 10, false, 0, 0, DEBUG_REALIGNMENT);
@@ -184,14 +184,14 @@ SEQAN_DEFINE_TEST(test_realign_two_reads_stacked_at_beginning)
         std::cout << "AFTER REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 200, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 200, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
     seqan::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
-    printAlignment(ss, seqan::Raw(), layout, store, 0, 0, 200, 0, 20);
+    printAlignment(ss, layout, store, 0, 0, 200, 0, 20);
 
     const char * EXPECTED =
             "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTCTCCTCTCTC-----------------------------------------------------------------------------------------\n"
@@ -240,7 +240,7 @@ SEQAN_DEFINE_TEST(test_realign_simple_case)
         std::cout << "BEFORE REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     reAlignment(store, /*contigID=*/0, 1, 10, false, 0, 0, DEBUG_REALIGNMENT);
@@ -250,14 +250,14 @@ SEQAN_DEFINE_TEST(test_realign_simple_case)
         std::cout << "AFTER REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
     seqan::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
-    printAlignment(ss, seqan::Raw(), layout, store, 0, 0, 400, 0, 20);
+    printAlignment(ss, layout, store, 0, 0, 400, 0, 20);
 
     const char * EXPECTED =
 "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTATCTTTTTTGAGATGGAGTCTTGCTCTGTCGCCCAGGCTGGAGTGCAATGGCGCAATCTCGACTCTCTGCAACCTCCACCTGTCCGGTTCAAGTGATTCTCCTGTCTCAGCCTCCCGAGTAGCTGGGATTACAGGTGCCCGCCACCATGC---------------------------------------------------------------------------------------------\n"
@@ -314,7 +314,7 @@ SEQAN_DEFINE_TEST(test_realign_simple_gaps)
         std::cout << "BEFORE REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     reAlignment(store, /*contigID=*/0, 1, 10, false, 0, 0, DEBUG_REALIGNMENT);
@@ -324,14 +324,14 @@ SEQAN_DEFINE_TEST(test_realign_simple_gaps)
         std::cout << "AFTER REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
     seqan::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
-    printAlignment(ss, seqan::Raw(), layout, store, 0, 0, 400, 0, 20);
+    printAlignment(ss, layout, store, 0, 0, 400, 0, 20);
 
     const char * EXPECTED =
             "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAAAAAGAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTTAACTTATGTACATGTTTATCTTTTTTGAGATGGAGTCTTGCTCTGTCGCCCAGGCTGGAGTGCAATGGCGCAATCTCGACTCTCTGCAACCTCCACCTGTCCGGTTCAAGTGATTCTCCTGTCTCAGCCTCCCGAGTAGCTGGGATTACAGGTGCCCGCCACCATGC---------------------------------------------------------------------------------------------\n"
@@ -372,7 +372,7 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert)
         std::cout << "BEFORE REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     reAlignment(store, /*contigID=*/0, 1, 10, false, 0, 0, DEBUG_REALIGNMENT);
@@ -382,14 +382,14 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert)
         std::cout << "AFTER REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
     seqan::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
-    printAlignment(ss, seqan::Raw(), layout, store, 0, 0, 200, 0, 20);
+    printAlignment(ss, layout, store, 0, 0, 200, 0, 20);
 
     const char * EXPECTED =
             "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAA----AATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTT------------------------------------------------------------\n"
@@ -431,7 +431,7 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert_window)
         std::cout << "BEFORE REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // The window comfortably starts before the insert and ends behind it.
@@ -442,14 +442,14 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert_window)
         std::cout << "AFTER REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
     seqan::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
-    printAlignment(ss, seqan::Raw(), layout, store, 0, 0, 200, 0, 20);
+    printAlignment(ss, layout, store, 0, 0, 200, 0, 20);
 
     const char * EXPECTED =
             "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAA----AATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTT------------------------------------------------------------\n"
@@ -491,7 +491,7 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert_window_tight_left)
         std::cout << "BEFORE REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     reAlignment(store, /*contigID=*/0, 1, 10, false, 58, 139, DEBUG_REALIGNMENT);
@@ -501,14 +501,14 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert_window_tight_left)
         std::cout << "AFTER REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
     seqan::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
-    printAlignment(ss, seqan::Raw(), layout, store, 0, 0, 200, 0, 20);
+    printAlignment(ss, layout, store, 0, 0, 200, 0, 20);
 
     const char * EXPECTED =
             "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAA----AATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTT------------------------------------------------------------\n"
@@ -547,7 +547,7 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert_window_tight_right)
         std::cout << "BEFORE REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     reAlignment(store, /*contigID=*/0, 1, 10, false, 50, 130, DEBUG_REALIGNMENT);
@@ -557,14 +557,14 @@ SEQAN_DEFINE_TEST(test_realign_simple_insert_window_tight_right)
         std::cout << "AFTER REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
     seqan::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
-    printAlignment(ss, seqan::Raw(), layout, store, 0, 0, 200, 0, 20);
+    printAlignment(ss, layout, store, 0, 0, 200, 0, 20);
 
     const char * EXPECTED =
             "AACTAAATGCATCCATGTATGCCACAGTGTATACTCTGGAATACTATACAGTAGTTAA----AATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTT------------------------------------------------------------\n"
@@ -615,7 +615,7 @@ SEQAN_DEFINE_TEST(test_realign_tricky_insert_window_cuts)
         std::cout << "BEFORE REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     reAlignment(store, /*contigID=*/0, 1, 10, false, /*begin=*/0, /*end=*/35, DEBUG_REALIGNMENT);
@@ -625,14 +625,14 @@ SEQAN_DEFINE_TEST(test_realign_tricky_insert_window_cuts)
         std::cout << "AFTER REALIGNMENT\n";
         seqan::AlignedReadLayout layout;
         layoutAlignment(layout, store);
-        printAlignment(std::cout, seqan::Raw(), layout, store, 0, 0, 400, 0, 1000);
+        printAlignment(std::cout, layout, store, 0, 0, 400, 0, 1000);
     }
 
     // Get ASCII art representation of realignment and compare to expected.
     seqan::AlignedReadLayout layout;
     layoutAlignment(layout, store);
     std::stringstream ss;
-    printAlignment(ss, seqan::Raw(), layout, store, 0, 0, 200, 0, 20);
+    printAlignment(ss, layout, store, 0, 0, 200, 0, 20);
 
     const char * EXPECTED =
 "AACTAAATGCATCCATGTATGCCACAGT-GT-----------------CTCTGGAATACTATACAGTAGTTAAAATGTGGTATAGCTGAAAGTACAGTACCGAAATGCCATTGCAGAGTAGTAAGACCCCACTTCTATTAAATGAAAAGTT-------------------------------------------------\n"

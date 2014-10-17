@@ -50,24 +50,19 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 /*!
- * @defgroup GffIO GFF I/O
+ * @defgroup GffFileIO GFF and GTF File I/O
  * @brief I/O functionality for the GFF and GTF file formats.
+ *
+ * Both the GFF and the GTF file format are represendted by @link GffRecord @endlink in SeqAn.  The tags and functions
+ * in this group can be used for I/O of both formats to and from @link GffRecord @endlink objects.
  */
 
 /*!
- * @tag GffIO#Gff
+ * @tag GffFileIO#Gff
  * @brief Tag for selecting the GFF format.
  *
  * @signature typedef Tag<TagGff_> Gff;
  */
-
-/**
-.Tag.File Format.tag.Gff:
-    Gff annotation file.
-..include:seqan/gff_io.h
-*/
-
-// TODO(singer): const should be non const, but is const elsewhere
 struct TagGff_;
 typedef Tag<TagGff_> Gff;
 
@@ -76,21 +71,53 @@ typedef Tag<TagGff_> Gff;
 // ----------------------------------------------------------------------------
 
 /*!
- * @tag GffIO#Gtf
+ * @tag GffFileIO#Gtf
  * @brief Tag for selecting the GTF format.
  *
  * @signature typedef Tag<TagGtf_> Gtf;
  */
-
-/**
-.Tag.File Format.tag.Gtf:
-    Gtf annotation file.
-..include:seqan/gff_io.h
-*/
-
-// TODO(singer): const should be non const, but is const elsewhere
 struct TagGtf_;
 typedef Tag<TagGtf_> Gtf;
+
+// ----------------------------------------------------------------------------
+// Class MagicHeader
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct MagicHeader<Gtf, T> :
+    public MagicHeader<Nothing, T> {};
+
+template <typename T>
+struct MagicHeader<Gff, T> :
+    public MagicHeader<Nothing, T> {};
+
+// ----------------------------------------------------------------------------
+// Class FileExtensions
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct FileExtensions<Gff, T>
+{
+    static char const * VALUE[1];	// default is one extension
+};
+
+template <typename T>
+char const * FileExtensions<Gff, T>::VALUE[1] =
+{
+    ".gff"     // default output extension
+};
+
+template <typename T>
+struct FileExtensions<Gtf, T>
+{
+    static char const * VALUE[1];	// default is one extension
+};
+
+template <typename T>
+char const * FileExtensions<Gtf, T>::VALUE[1] =
+{
+    ".gtf"     // default output extension
+};
 
 // ----------------------------------------------------------------------------
 // Class GffRecord
@@ -98,176 +125,109 @@ typedef Tag<TagGtf_> Gtf;
 
 /*!
  * @class GffRecord
+ * @implements DefaultConstructibleConcept
+ * @implements AssignableConcept
  * @headerfile <seqan/gff_io.h>
- * @brief Represent a record from a Gff file.
+ * @brief Represent a record from a GFF or GTF file.
  *
  * @signature class GffRecord;
- *
- * @var __int32 GffRecord::INVALID_POS;
- * @brief Static member with invalid/sentinel position value.
- *
- * @var __int32 GffRecord::INVALID_IDX;
- * @brief Static member with invalid/sentinel rID value.
- *
- * @fn GffRecord::INVALID_SCORE
- * @brief Returns invalid score (NaN float value).
- *
- * @signature float GffRecord::INVALID_SCORE();
- * 
- * @var CharString GffRecord::ref;
- * @brief The sequence name of the record.
- *
- * @var __int32 GffRecord::rID;
- * @brief Integer representing ref, defaults to INVALID_IDX.
- * 
- * @var CharString GffRecord::source;
- * @brief The source of the record.
- * 
- * @var CharString GffRecord::type;
- * @brief The type of the record.
- * 
- * @var __int32 GffRecord::beginPos;
- * @brief The begin position of the record.
- * 
- * @var __int32 GffRecord::endPos;
- * @brief The end position of the record.
- * 
- * @var float GffRecord::score;
- * @brief The score of the record.
- * 
- * @var char GffRecord::strand;
- * @brief The strand the record belongs to.
- * 
- * @var char GffRecord::phase;
- * @brief The phase of the record.
- * 
- * @section Remarks
- * 
- * For features of type "CDS", the phase indicates where the feature begins with reference to the reading frame.  The
- * phase is one of the integers 0, 1, or 2, indicating the number of bases that should be removed from the beginning of
- * this feature to reach the first base of the next codon
- * 
- * @var TCharStringSet GffRecord::tagName;
- * @brief The names of the attributes of the record, StringSet of CharString.
- * 
- * @section Remarks
- * 
- * For each value there is a name associated in GffRecord::tagName.
- *
- * @var TCharStringSet GffRecord::tagValue;
- * @brief The values of the attributes of the record, StringSet of CharString.
- * 
- * @section Remarks
- * 
- * For each name there is a value associated in GffRecord::tagValue.
  */
-
-/**
-.Class.GffRecord
-..cat:BAM I/O
-..summary:Represent a record from a Gff file.
-..include:seqan/gff_io.h
-
-.Memvar.GffRecord#INVALID_POS
-..class:Class.GffRecord
-..summary:Static member with invalid/sentinel position value.
-..type:nolink:$__uint32$
-
-.Memvar.GffRecord#INVALID_SCORE
-..class:Class.GffRecord
-..summary:Static member with invalid score value.
-..type:nolink:$float$
-
-.Memvar.GffRecord#ref
-..class:Class.GffRecord
-..summary:The sequence id of the record.
-..type:Shortcut.CharString
-
-.Memvar.GffRecord#source
-..class:Class.GffRecord
-..summary:The source of the record.
-..type:Shortcut.CharString
-
-.Memvar.GffRecord#type
-..class:Class.GffRecord
-..summary:The type of the record.
-..type:Shortcut.CharString
-
-.Memvar.GffRecord#beginPos
-..class:Class.GffRecord
-..summary:The begin position of the record.
-..type:nolink:$__uint32$
-
-.Memvar.GffRecord#endPos
-..class:Class.GffRecord
-..summary:The end position of the record.
-..type:nolink:$__uint32$
-
-.Memvar.GffRecord#score
-..class:Class.GffRecord
-..summary:The score of the record.
-..type:nolink:$float$
-
-.Memvar.GffRecord#strand
-..class:Class.GffRecord
-..summary:The strand the record belongs to.
-..type:nolink:$char$
-
-.Memvar.GffRecord#phase
-..class:Class.GffRecord
-..summary:The phase of the record.
-..remarks:For features of type "CDS", the phase indicates where the feature begins with reference to the reading frame. The phase is one of the integers 0, 1, or 2, indicating the number of bases that should be removed from the beginning of this feature to reach the first base of the next codon
-..type:nolink:$char$
-
-.Memvar.GffRecord#tagName
-..class:Class.GffRecord
-..summary:The names of the attributes of the record.
-..type:Class.StringSet
-..remarks:For each name there is a value associated in $Memvar.GffRecord#tagValue$
-
-.Memvar.GffRecord#tagValue
-..class:Class.GffRecord
-..summary:The values of the attributes of the record.
-..type:Class.StringSet
-..remarks:For each value there is a name associated in $Memvar.GffRecord#tagName$
-*/
-
 struct GffRecord
 {
+    /*!
+     * @var __int32 GffRecord::INVALID_IDX;
+     * @brief Static member with invalid/sentinel rID value.
+     */
     static __int32 const INVALID_POS = 2147483647;  // TODO(singer): Should be MaxValue<__int32>::VALUE, but that is not a constant expression :(
-    static __int32 const INVALID_IDX = -1;
 
-    // The member descriptions are taken from: http://gmod.org/wiki/GFF
+    /*!
+     * @var CharString GffRecord::ref;
+     * @brief The sequence name of the record.
+     *
+     * The ID of the landmark used to establish the coordinate system for the current feature, most often the
+     * contig/chromosome name.
+     */
+    CharString ref;
 
-    // TODO(singer): Maybe use a I/O context object and store ids as integers
-    // The ID of the landmark used to establish the coordinate system for the current feature.
-    String<char> ref;
-    int rID;
+    /*!
+     * @var CharString GffRecord::source;
+     * @brief The source of the record.
+     *
+     * The source is a free text qualifier intended to describe the algorithm or operating procedure that generated this
+     * feature.
+     */
+    CharString source;
 
-    // The source is a free text qualifier intended to describe the algorithm or operating procedure that generated this feature.
-    String<char> source;
+    /*!
+     * @var CharString GffRecord::type;
+     * @brief The type of the record.
+     */
+    CharString type;
 
-    // The type of the feature
-    String<char> type;
+    /*!
+     * @var TCharStringSet GffRecord::tagNames;
+     * @brief The names of the attributes of the record, StringSet of CharString.
+     *
+     * For each value there is a name associated in @link GffRecord::tagNames tagNames @endlink.
+     */
+    StringSet<CharString> tagNames;
 
-    // A list of feature attributes in the format tag=value.
-    StringSet<String<char> > tagName;
-    StringSet<String<char> > tagValue;
+    /*!
+     * @var TCharStringSet GffRecord::tagValues;
+     * @brief The values of the attributes of the record, StringSet of CharString.
+     *
+     * @section Remarks
+     *
+     * For each name there is a value associated in GffRecord::tagValues.
+     */
+    StringSet<CharString> tagValues;
 
-    // The start and end of the feature, in 1-based integer coordinates, relative to the landmark given in column 1
+    /*!
+     * @var __int32 GffRecord::beginPos;
+     * @brief The begin position of the record.
+     */
     __uint32 beginPos;
+
+    /*!
+     * @var __int32 GffRecord::endPos;
+     * @brief The end position of the record.
+     *
+     * GFF and GTF use 1-based positions in text, but they are stored as 0-based coordinates.
+     */
     __uint32 endPos;
 
-    // The score of the feature
+    /*!
+     * @var float GffRecord::score;
+     * @brief The score of the record.
+     */
     float score;
 
-    // The strand of the feature. + for positive strand (relative to the landmark), - for minus strand, and . for features that are not stranded.
+    /*!
+     * @var char GffRecord::strand;
+     * @brief The strand the record belongs to.
+     *
+     * The strand of the feature. + for positive strand (relative to the landmark), - for minus strand, and . for
+     * features that are not stranded.
+     */
     char strand;
 
-    // For features of type "CDS", the phase indicates where the feature begins with reference to the reading frame.
-    // The phase is one of the integers 0, 1, or 2, indicating the number of bases that should be removed from the beginning of this feature to reach the first base of the next codon.
+    /*!
+     * @var char GffRecord::phase;
+     * @brief The phase of the record.
+     *
+     * For features of type "CDS", the phase indicates where the feature begins with reference to the reading frame.
+     * The phase is one of the integers 0, 1, or 2, indicating the number of bases that should be removed from the
+     * beginning of this feature to reach the first base of the next codon.
+     */
     char phase;
 
+    // TODO(holtgrew): C++11 will have a nan() function, use this instead then.
+    /*!
+     * @fn GffRecord::INVALID_SCORE
+     * @brief Returns invalid score (NaN float value).
+     *
+     * The term <tt>x != x</tt> (for <tt>float x</tt> is only true if <tt>x</tt> is a NaN.
+     */
     static float INVALID_SCORE()
     {
         union
@@ -280,7 +240,7 @@ struct GffRecord
     }
 
     GffRecord() :
-        rID(INVALID_IDX), beginPos(-1), endPos(-1), score(INVALID_SCORE()),
+        beginPos(-1), endPos(-1), score(INVALID_SCORE()),
         strand('.'), phase('.')
     {}
 };
@@ -297,81 +257,62 @@ struct GffRecord
 // Function _parseReadGffKeyValue
 // ----------------------------------------------------------------------------
 
-template <typename TReader, typename TKeyString, typename TValueString>
-inline int
-_parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TReader & reader)
+template <typename TForwardIter, typename TKeyString, typename TValueString>
+inline void
+_parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & iter)
 {
-    char c = value(reader);
-    if (c == ' ' || c == '\t' || c == '\n' || c == '=')
-        return 1;  // Key cannot be empty.
-
-    for (; !atEnd(reader); goNext(reader))
+    //TODO(singer): AssertList functor would be need
+    char c = value(iter);
+    if (IsWhitespace()(c) || c == '=')
     {
-        c = value(reader);
-        if (c == ' ' || c == '\t' || c == '\n' || c == '=' || c == ';')
+        throw std::runtime_error("The key field of an attribute is empty!");
+        return;  // Key cannot be empty.
+    }
+
+    for (; !atEnd(iter); goNext(iter))
+    {
+        c = value(iter);
+        if (IsNewline()(c) || c == ' ' || c == '=' || c == ';')
             break;
         appendValue(key, c);
     }
-    if (!atEnd(reader) && value(reader) == ';')
+    if (!atEnd(iter) && value(iter) == ';')
     {
-        goNext(reader);
-        return 0;
-    }
-    if (!atEnd(reader) && (value(reader) == '\r' || value(reader) == '\n'))
-        return 0;
-
-    if (skipWhitespaces(reader) != 0)
-        return 1;
-
-    if (value(reader) == '=')
-    {
-        goNext(reader);
-        if (skipBlanks(reader) != 0)
-            return 1;
-
-        if (atEnd(reader))
-            return 1;
+        skipOne(iter);
+        return;
     }
 
-    if (value(reader) == '"')
+    if (IsNewline()(value(iter)))
+        return;
+
+    skipUntil(iter, NotFunctor<IsWhitespace>());
+
+    if (value(iter) == '=')
+    {
+        skipOne(iter);
+        skipUntil(iter, NotFunctor<IsWhitespace>());
+    }
+
+    if (value(iter) == '"')
     {
         // Handle the case of a string literal.
+        skipOne(iter);
+        skipUntil(iter, NotFunctor<IsWhitespace>());
+        readUntil(outValue, iter, OrFunctor<EqualsChar<'"'>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
+        skipOne(iter);
 
-        goNext(reader);
-        // Append all characters in the literal to outValue until the first i
-        // line break or the closing '"'.
-        for (; !atEnd(reader); goNext(reader))
-        {
-            if (value(reader) == '\n')
-                return 1;
-
-            if (value(reader) == '"')
-            {
-                goNext(reader);
-                break;
-            }
-            appendValue(outValue, value(reader));
-        }
         // Go over the trailing semicolon and any trailing space.
-        while (!atEnd(reader) && (value(reader) == ';' || value(reader) == ' '))
-            goNext(reader);
+        skipUntil(iter, NotFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<' '> > >());
     }
     else
     {
-        // Handle the non literal case.
-
         // Read until the first semicolon, return at whitespace.
-        for (; !atEnd(reader); goNext(reader))
-        {
-            if (value(reader) == ';' || value(reader) == '\n' || value(reader) == '\r')
-                break;
-            appendValue(outValue, value(reader));
-        }
+        readUntil(outValue, iter, OrFunctor<EqualsChar<';'>, IsNewline>());
+
         // Skip semicolon and spaces if any.
-        while (!atEnd(reader) && (value(reader) == ';' || value(reader) == ' '))
-            goNext(reader);
+        skipUntil(iter, NotFunctor<OrFunctor<EqualsChar<';'>, EqualsChar<' '> > >());
     }
-    return 0;
+    return;
 }
 
 // ----------------------------------------------------------------------------
@@ -381,288 +322,131 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TReader & reade
 /*!
  * @fn GffRecord#clear
  * @brief Reset a @link GffRecord @endlink object.
- * 
+ *
  * @signature void clear(record);
- * 
+ *
  * @param[in,out] record The GffRecord to reset.
  */
-
-/**
-.Function.GffRecord#clear
-..class:Class.GffRecord
-..cat:Input/Output
-..signature:clear(record)
-..param.record:The @Class.GffRecord@ to reset.
-...type:Class.GffRecord
-..summary:Reset a @Class.GffRecord@ object.
-..include:seqan/gff_io.h
-*/
-
 inline void clear(GffRecord & record)
 {
+    record.beginPos = -1;
+    record.endPos = -1;
+    record.score = record.INVALID_SCORE();
+    record.strand = '.';
+    record.phase = '.';
+
     clear(record.ref);
     clear(record.source);
     clear(record.type);
-    clear(record.tagName);
-    clear(record.tagValue);
+    clear(record.tagNames);
+    clear(record.tagValues);
 }
 
 // ----------------------------------------------------------------------------
 // Function readRecord
 // ----------------------------------------------------------------------------
 
+// TODO(holtgrew): Add variant with tags?
+
 /*!
- * @fn GffIO#readRecord
+ * @fn GffFileIO#readRecord
  * @brief Read one GFF/GTF record from a SinglePassRecordReader.
  *
- * @signature int readRecord(record, reader[, context[, tag]]);
+ * @signature void readRecord(record, context, iter);
  *
  * @param[out]    record  The GffRecord to write the results to.
- * @param[in,out] reader  The SinglePassRecordReader to use for reading.
- * @param[in,out] context The GffIOContext to use for reading.  If present then ref will be translated to rID using the
- *                        reference name store from context.
- * @param[in]     tag     The format to read from, one of Gtf and Gff.  Note that the parser transparently parses both
- *                        GFF and GTF.
+ * @param[in,out] context A CharString to use for buffers.
+ * @param[in,out] iter    A @link ForwardIteratorConcept forward iterator @endlink to use for reading.
  *
- * @return int A status code, 0 on success, a different value on failures.
+ * @throws IOError if something went wrong.
  */
-
-/**
-.Function.GffRecord#readRecord
-..class:Class.GffRecord
-..cat:Input/Output
-..summary:Read one gff record.
-..signature:readRecord(record, reader)
-..param.record:The gff record.
-...type:Class.GffRecord
-..param.reader: The record reader object.
-...type:Class.RecordReader
-..include:seqan/gff_io.h
-*/
-
-template <typename TStream, typename TRecordReaderSpec>
-inline int
-_readGffRecord(GffRecord & record, RecordReader<TStream, TRecordReaderSpec> & reader)
+template <typename TFwdIterator>
+void readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
 {
+    IsNewline isNewline;
+
     clear(record);
 
+    skipUntil(iter, NotFunctor<OrFunctor<EqualsChar<'#'>, IsWhitespace> >());  //skip commments and empty lines
+
     // read column 1: seqid
-    // The letters until the first whitespace will be read.
-    // Then, we skip until we hit the first tab character.
-    if (readUntilTabOrLineBreak(record.ref, reader))
-        return 1;
-    record.rID = GffRecord::INVALID_IDX;
-
-    if (!empty(record.ref) && record.ref[0] == '#')
-    {
-        if (skipLine(reader))
-            return 1;
-
-        return 1;
-    }
-    if (skipWhitespaces(reader))
-        return 1;
+    readUntil(record.ref, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
+    skipOne(iter);
 
     // read column 2: source
-    if (readUntilTabOrLineBreak(record.source, reader))
-        return 1;
+    readUntil(record.source, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
 
     if (record.source == ".")
         clear(record.source);
 
-    if (skipWhitespaces(reader))
-        return 1;
+    skipOne(iter);
 
     // read column 3: type
-    if (readUntilTabOrLineBreak(record.type, reader))
-        return 1;
-
-    if (skipWhitespaces(reader))
-        return 1;
+    readUntil(record.type, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
+    skipOne(iter);
 
     // read column 4: begin position
-    String<char> temp;
-    if (readDigits(temp, reader))
-        return 1;
-
-    if (length(temp) > 0u)
-    {
-        if (!lexicalCast2(record.beginPos, temp))
-            return 1;
-
-        --record.beginPos;  // Translate from 1-based to 0-based.
-    }
-    else
-    {
-        record.beginPos = GffRecord::INVALID_POS;
-        if (skipUntilWhitespace(reader))
-            return 1;
-    }
-    if (skipBlanks(reader))
-        return 1;
+    clear(buffer);
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
+    record.beginPos = lexicalCast<__uint32>(buffer);
+    --record.beginPos;  // Translate from 1-based to 0-based.
+    skipOne(iter);
 
     // read column 5: end position
-    clear(temp);
-    if (readDigits(temp, reader))
-        return 1;
+    clear(buffer);
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
+    record.endPos = lexicalCast<__uint32>(buffer);
+    skipOne(iter);
 
-    if (length(temp) > 0u)
-    {
-        if (!lexicalCast2(record.endPos, temp))
-            return 1;
-    }
-    else
-    {
-        record.endPos = GffRecord::INVALID_POS;
-        if (skipUntilWhitespace(reader))
-            return 1;
-    }
-    if (skipBlanks(reader))
-        return 1;
-
+    //check if end < begin
+    if (record.endPos < record.beginPos)
+        SEQAN_THROW(ParseError("Begin position of GFF/GTF record is larger than end position!"));
 
     // read column 6: score
-    clear(temp);
-    readFloat(temp, reader);
-
-    if (length(temp) > 0u)
-    {
-        if (temp != ".")
-        {
-            if (!lexicalCast2(record.score, temp))
-                return 1;
-        }
-        else
-        {
-            record.score = GffRecord::INVALID_SCORE();
-            if (skipUntilWhitespace(reader))
-                return 1;
-        }
-    }
-    else
-    {
-        return 1;
-    }
-
-    if (skipBlanks(reader))
-        return 1;
+    clear(buffer);
+    readUntil(buffer, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
+    if (buffer != ".")
+        record.score = lexicalCast<float>(buffer);
+    skipOne(iter, IsTab());
 
     // read column 7: strand
-    clear(temp);
-    if (readUntilTabOrLineBreak(temp, reader))
-        return 1;
-
-    if (temp[0] != '-' && temp[0] != '+')
-    {
-        record.strand = '.';
-    }
-    else
-    {
-        record.strand = temp[0];
-    }
-
-    if (skipBlanks(reader))
-        return 1;
+    readOne(record.strand, iter, OrFunctor<OrFunctor<EqualsChar<'-'>, EqualsChar<'+'> >, EqualsChar<'.'> >());
+    skipOne(iter, IsTab());
 
     // read column 8: phase
-    clear(temp);
-    if (readUntilTabOrLineBreak(temp, reader))
-        return 1;
-
-    if (temp != "0" && temp != "1" && temp != "2")
-    {
-        record.phase = '.';
-    }
-    else
-    {
-        record.phase = temp[0];
-    }
-
-    if (skipBlanks(reader))
-        return 1;
+    readOne(record.phase, iter, OrFunctor<EqualsChar<'.'>, IsInRange<'0', '2'> >());
 
     // It's fine if there are no attributes and the line ends here.
-    if (atEnd(reader))
-        return 0;
-    if (value(reader) == '\n' || value(reader) == '\r')
-        return skipLine(reader);
+    if (atEnd(iter) || isNewline(value(iter)))
+    {
+        skipLine(iter);
+        return;
+    }
+    skipOne(iter, IsTab());
 
     // read column 9: attributes
-    while (!atEnd(reader))
+    while (!atEnd(iter))
     {
 
-        String<char> _key;
-        String<char> _value;
+        CharString _key;
+        CharString _value;
         // Read next key/value pair.
-        if (_parseReadGffKeyValue(_value, _key, reader) != 0)
-            return 1;
+        _parseReadGffKeyValue(_value, _key, iter);
 
-        appendValue(record.tagName, _key);
-        appendValue(record.tagValue, _value);
+        appendValue(record.tagNames, _key);
+        appendValue(record.tagValues, _value);
 
         clear(_key);
         clear(_value);
 
         // At end of line:  Skip EOL and break.
-        if (!atEnd(reader) && (value(reader) == '\r' || value(reader) == '\n'))
+        if (!atEnd(iter) && isNewline(value(iter)))
         {
-            if (skipLine(reader) != 0)
-                return 1;
-
+            skipOne(iter);
             break;
         }
     }
-    return 0;
-}
-
-template <typename TRecordReader>
-inline int
-readRecord(GffRecord & record, TRecordReader & reader, Gff /*tag*/)
-{
-    return _readGffRecord(record, reader);
-}
-
-template <typename TRecordReader>
-inline int
-readRecord(GffRecord & record, TRecordReader & reader, Gtf /*tag*/)
-{
-    return _readGffRecord(record, reader);
-}
-
-// TODO(singer): Needs proper documentation!!! Check the length of the stores!!!
-template <typename TRecordReader, typename TContextSpec, typename TContextSpec2>
-inline int
-_readGffRecord(GffRecord & record, TRecordReader & reader, GffIOContext<TContextSpec, TContextSpec2> & context)
-{
-    // Read record with string ref from GFF file.
-    int res = _readGffRecord(record, reader);
-    if (res != 0)
-        return res;
-
-    // Translate ref to rID using the context.  If there is no such sequence name in the context yet then we add it.
-    unsigned idx = 0;
-    if (!getIdByName(nameStore(context), record.ref, idx, nameStoreCache(context)))
-    {
-        idx = length(nameStore(context));
-        appendName(nameStore(context), record.ref, nameStoreCache(context));
-    }
-    record.rID = idx;
-
-    return 0;
-}
-
-template <typename TRecordReader, typename TContextSpec, typename TContextSpec2>
-inline int
-readRecord(GffRecord & record, TRecordReader & reader, GffIOContext<TContextSpec, TContextSpec2> & context, Gff /*tag*/)
-{
-    return _readGffRecord(record, reader, context);
-}
-
-template <typename TRecordReader, typename TContextSpec, typename TContextSpec2>
-inline int
-readRecord(GffRecord & record, TRecordReader & reader, GffIOContext<TContextSpec, TContextSpec2> & context, Gtf /*tag*/)
-{
-    return _readGffRecord(record, reader, context);
+    return;
 }
 
 // ----------------------------------------------------------------------------
@@ -674,66 +458,54 @@ readRecord(GffRecord & record, TRecordReader & reader, GffIOContext<TContextSpec
 // Returns false on success.
 
 template <typename TTargetStream, typename TString>
-inline bool
+inline void
 _writeInQuotes(TTargetStream & target, TString & temp)
 {
     // TODO(jsinger): What about escaping quote chars '"'?
-    if (streamWriteChar(target, '"') || streamWriteBlock(target, begin(temp, Standard()), length(temp)) < length(temp) ||
-        streamWriteChar(target, '"'))
-        return true;
-
-    return false;
+    writeValue(target, '"');
+    write(target, temp);
+    writeValue(target, '"');
 }
 
-template <typename TTargetStream, typename TString, typename TMustBeQuotedFunctor>
-inline bool
-_writePossiblyInQuotes(TTargetStream & target, TString & source, TMustBeQuotedFunctor const &func)
+template <typename TTarget, typename TString, typename TMustBeQuotedFunctor>
+inline void
+_writePossiblyInQuotes(TTarget& target, TString & source, TMustBeQuotedFunctor const &func)
 {
     // TODO(jsinger): What about escaping quote chars '"'?
-    typedef typename Iterator<TString, Standard>::Type TIter;
-
+    typedef typename Iterator<TString>::Type TIter;
     TIter itEnd = end(source, Standard());
     for (TIter it = begin(source, Standard()); it != itEnd; ++it)
     {
         // we have a problem if the string contains a '"' or a line break
-        if (*it == '\n' || *it == '"')
-            return 1;
+        if (value(it) =='\n' || value(it) == '"')
+            throw std::runtime_error("Attribute contains illegal character!");
 
         if (func(*it))
-            return _writeInQuotes(target, source);
+        {
+            _writeInQuotes(target, source);
+            return;
+        }
     }
-    return (streamWriteBlock(target, begin(source, Standard()), length(source)) < length(source));
+    write(target, source);
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord
+// Function writeRecord()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn GffIO#writeRecord
- * @brief Writes on GFF/GTF record to a stream.
+ * @fn GffFileIO#writeRecord
+ * @brief Writes a @link GffRecord @endlink to a stream as GFF or GTF.
  *
- * @signature int writeRecord(stream, record[, context[, tag]]);
+ * @signature void writeRecord(stream, record, tag);
  *
- * @param[in,out] stream  The @link StreamConcept @endlink to write to.
- * @param[in]     record  The @link GffRecord @endlink to write.
- * @param[in]     context Optional @link GffIOContext @endlink to use for reference ids.
+ * @param[in,out] stream  The @link OutputIteratorConcept output iterator @endlink to write to.
+ * @param[in]     record  The @link GffRecord @endlink to write out.
+ * @param[in]     tag     A tag to select the file format, either @link GffFileIO#Gff @link or @link GffFileIO#Gtf
+ *                        @endlink.
  *
- * @return int A status code, 0 on success, a different value on errors.
+ * @throws IOError if something went wrong.
  */
-
-/**
-.Function.GffRecord#writeRecord
-..class:Class.GffRecord
-..cat:Input/Output
-..summary:Writes one gff record to a stream.
-..signature:writeRecord(TSreamm stream, GffRecord record)
-..param.stream:The output stream.
-...type:Concept.StreamConcept
-..param.record:The gff record.
-...type:Class.GffRecord
-..include:seqan/gff_io.h
-*/
 
 template <typename TFormatTag>
 struct GffRecordKeyMustBeQuoted_;
@@ -777,172 +549,116 @@ struct GffRecordValueMustBeQuoted_<Gtf>
     }
 };
 
+template <typename TTarget>
+inline void
+_writeAdditionalSeperator(TTarget const & /*target*/, Gff)
+{
+    return;
+}
+
+template <typename TTarget>
+inline void
+_writeAdditionalSeperator(TTarget & target, Gtf)
+{
+    writeValue(target, ' ');
+    return;
+}
 
 
-template <typename TStream, typename TTag>
-inline int
-_writeAttributes(TStream & stream, GffRecord const & record, TTag)
+template <typename TTarget, typename TTag>
+inline void
+_writeAttributes(TTarget & target, GffRecord const & record, TTag const & tag)
 {
     const char separatorBetweenTagAndValue = (IsSameType<TTag, Gff>::VALUE)? '=' : ' ';
-    for (unsigned i = 0; i < length(record.tagName); ++i)
+    for (unsigned i = 0; i < length(record.tagNames); ++i)
     {
         if (i != 0)
         {
-            if (streamWriteChar(stream, ';'))
-                return 1;
+            writeValue(target, ';');
 
             // In GTF files a space follows the semicolon
-            if (IsSameType<TTag, Gtf>::VALUE && streamWriteChar(stream, ' '))
-                return 1;
-        }
+            _writeAdditionalSeperator(target, tag);
+       }
 
-        if (_writePossiblyInQuotes(stream, record.tagName[i], GffRecordKeyMustBeQuoted_<TTag>()))
-            return 1;
+        _writePossiblyInQuotes(target, record.tagNames[i], GffRecordKeyMustBeQuoted_<TTag>());
 
-        if (!empty(record.tagValue[i]))
+        if (!empty(record.tagValues[i]))
         {
-            if (streamWriteChar(stream, separatorBetweenTagAndValue))
-                return 1;
-
-            if (_writePossiblyInQuotes(stream, record.tagValue[i], GffRecordValueMustBeQuoted_<TTag>()))
-                return 1;
+            writeValue(target, separatorBetweenTagAndValue);
+            _writePossiblyInQuotes(target, record.tagValues[i], GffRecordValueMustBeQuoted_<TTag>());
         }
     }
-    
-    // In GTF files each (especially the last) attribute must end with a semi-colon
-    if (IsSameType<TTag, Gtf>::VALUE && !empty(record.tagName) && streamWriteChar(stream, ';'))
-        return 1;
 
-    return 0;
+    // In GTF files each (especially the last) attribute must end with a semi-colon
+    if (IsSameType<TTag, Gtf>::VALUE && !empty(record.tagNames))
+        writeValue(target, ';');
+
+    return;
 }
 
-template <typename TStream, typename TSeqId, typename TTag>
-inline int
-_writeRecordImpl(TStream & stream, GffRecord const & record, TSeqId const & ref, TTag tag)
+template <typename TTarget, typename TFormat>
+inline void
+writeRecord(TTarget & target, GffRecord const & record, Tag<TFormat> const & tag)
 {
     // ignore empty annotations, i.e. annotations that are 'guessed' by implicit information from their children (in GFF)
-    if (empty(ref))
-        return 0;
+    if (empty(record.ref))
+        return;
 
     // write column 1: seqid
-    if (streamWriteBlock(stream, begin(ref, Standard()), length(ref)) != length(ref))
-        return 1;
-
-    if (streamWriteChar(stream, '\t'))
-        return 1;
+    //typename Iterator<TSeqId const, Rooted>::Type itRef = begin(record.ref);
+    write(target, record.ref);
+    writeValue(target, '\t');
 
     // write column 2: source
     if (empty(record.source))
-    {
-        if (streamWriteChar(stream, '.'))
-            return 1;
-    }
+        writeValue(target, '.');
     else
-    {
-        if (streamWriteBlock(stream, begin(record.source, Standard()), length(record.source)) != length(record.source))
-            return 1;
-    }
-
-    if (streamWriteChar(stream, '\t'))
-        return 1;
+        write(target, record.source);
+    writeValue(target, '\t');
 
     // write column 3: type
-    if (streamWriteBlock(stream, begin(record.type, Standard()), length(record.type)) != length(record.type))
-        return 1;
-
-    if (streamWriteChar(stream, '\t'))
-        return 1;
+    write(target, record.type);
+    writeValue(target, '\t');
 
     // write column 4: begin position
     if (record.beginPos != (unsigned)-1)
-    {
-        if (streamPut(stream, record.beginPos + 1))
-            return 1;
-    }
+        appendNumber(target, record.beginPos + 1);
     else
-    {
-        if (streamWriteChar(stream, '.'))
-            return 1;
-    }
-
-    if (streamWriteChar(stream, '\t'))
-        return 1;
-
+        throw std::runtime_error("No start position!");
+    writeValue(target, '\t');
 
     // write column 5: end position
-    if (record.endPos != (unsigned)-1)
-    {
-        if (streamPut(stream, record.endPos))
-            return 1;
-    }
+    if (record.endPos != (unsigned)-1 && record.beginPos <= record.endPos)
+        appendNumber(target, record.endPos);
     else
-    {
-        if (streamWriteChar(stream, '.'))
-            return 1;
-    }
-
-    if (streamWriteChar(stream, '\t'))
-        return 1;
+        throw std::runtime_error("No end position!");
+    writeValue(target, '\t');
 
     // write column 6: score
     if (record.score != record.score)
-    {
-        if (streamWriteChar(stream, '.'))
-            return 1;
-    }
+        writeValue(target, '.');
     else
-    {
-        if (streamPut(stream, record.score))
-            return 1;
-    }
-
-    if (streamWriteChar(stream, '\t'))
-        return 1;
+        writeValue(target, record.score);
+    writeValue(target, '\t');
 
     // write column 7: strand
-    if (streamWriteChar(stream, record.strand))
-        return 1;
-
-    if (streamWriteChar(stream, '\t'))
-        return 1;
+    writeValue(target, record.strand);
+    writeValue(target, '\t');
 
     // write column 8: phase
-    if (streamWriteChar(stream, record.phase))
-        return 1;
-
-    if (streamWriteChar(stream, '\t'))
-        return 1;
+    writeValue(target, record.phase);
+    writeValue(target, '\t');
 
     // write column 9: attributes
     // only until length - 1, because there is no semicolon at the end of the line
 
-    _writeAttributes(stream, record, tag);
+    _writeAttributes(target, record, tag);
 
-    if (streamWriteChar(stream, '\n'))
-        return 1;
-
-    return 0;
-}
-
-template <typename TStream, typename TTag>
-inline int
-writeRecord(TStream & stream, GffRecord const & record, TTag const tag)
-{
-    return _writeRecordImpl(stream, record, record.ref, tag);
-}
-
-template <typename TStream, typename TContextSpec, typename TContextSpec2, typename TTag>
-inline int
-writeRecord(TStream & stream, GffRecord const & record, GffIOContext<TContextSpec, TContextSpec2> & context, TTag const tag)
-{
-    if (record.rID != GffRecord::INVALID_IDX)
-    {
-        String<char> tempSeqId = nameStore(context)[record.rID];
-        return _writeRecordImpl(stream, record, tempSeqId, tag);
-    }
-    return _writeRecordImpl(stream, record, record.ref, tag);
+    writeValue(target, '\n');
+    return;
 }
 
 }  // namespace seqan
 
 #endif  // CORE_INCLUDE_SEQAN_GFF_IO_GFF_IO_BASE_H_
+

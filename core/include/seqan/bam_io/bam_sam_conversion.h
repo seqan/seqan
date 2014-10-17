@@ -61,13 +61,13 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TBuffer>
-struct AssignTagsSamToBamOneTagHelper_
+struct AppendTagsSamToBamOneTagHelper_
 {
     TTarget     &target;
     TBuffer     buffer;
     char        typeC;
 
-    AssignTagsSamToBamOneTagHelper_(TTarget &target, TBuffer buffer, char typeC):
+    AppendTagsSamToBamOneTagHelper_(TTarget &target, TBuffer buffer, char typeC):
         target(target),
         buffer(buffer),
         typeC(typeC)
@@ -79,40 +79,23 @@ struct AssignTagsSamToBamOneTagHelper_
         if (BamTypeChar<Type>::VALUE != typeC)
             return false;
 
-        union {
-            char raw[sizeof(Type)];
-            Type i;
-        } tmp;
-
-        if (IsSignedInteger<Type>::VALUE)
-            tmp.i = static_cast<Type>(lexicalCast<__int64>(buffer));    // avoid textual interpretation of char types
-        else if (IsUnsignedInteger<Type>::VALUE)
-            tmp.i = static_cast<Type>(lexicalCast<__uint64>(buffer));
-        else
-            tmp.i = lexicalCast<Type>(buffer);
-        append(target, toRange(&tmp.raw[0], &tmp.raw[sizeof(Type)]));
+        appendRawPod(target, lexicalCast<Type>(buffer));
         return true;
     }
 };
 
-template <typename TTarget, typename TRecordReader>
-void _assignTagsSamToBamOneTag(TTarget & target, TRecordReader & reader, CharString & buffer)
+template <typename TTarget, typename TForwardIter>
+void _appendTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString & buffer)
 {
-    SEQAN_ASSERT_NOT(atEnd(reader));
-    int res = readNChars(target, reader, 2);  // Read tag name.
-    (void)res;  // If run without assertions.
-    SEQAN_ASSERT_EQ(res, 0);
-    SEQAN_ASSERT_NOT(atEnd(reader));
+    write(target, iter, 2);
 
     clear(buffer);
-    res = readNChars(buffer, reader, 3);  // Read ':<type>:'.
-    SEQAN_ASSERT_EQ(res, 0);
+    write(buffer, iter, 3);
     SEQAN_ASSERT_EQ(buffer[0], ':');
     SEQAN_ASSERT_EQ(buffer[2], ':');
+
     char typeC = buffer[1];
     appendValue(target, typeC);
-
-    SEQAN_ASSERT_NOT(atEnd(reader));
 
     switch (typeC)
     {
@@ -120,8 +103,7 @@ void _assignTagsSamToBamOneTag(TTarget & target, TRecordReader & reader, CharStr
         case 'H':
             // BAM string
             // TODO(holtgrew): Could test on even length in case of 'H'.
-            res = readUntilTabOrLineBreak(target, reader);
-            SEQAN_ASSERT(res == 0 || res == EOF_BEFORE_SUCCESS);
+            readUntil(target, iter, OrFunctor<IsTab, IsNewline>());
             appendValue(target, '\0');
             break;
 
@@ -130,55 +112,46 @@ void _assignTagsSamToBamOneTag(TTarget & target, TRecordReader & reader, CharStr
             // BAM array
 
             // Read type.
-            clear(buffer);
-            res = readNChars(buffer, reader, 1);
-            SEQAN_ASSERT_EQ(res, 0);
-            typeC = buffer[0];
+            readOne(typeC, iter);
             appendValue(target, typeC);
 
             // Read array contents.
             clear(buffer);
-            res = readUntilTabOrLineBreak(buffer, reader);
-            SEQAN_ASSERT(res == 0 || res == EOF_BEFORE_SUCCESS);
+            readUntil(buffer, iter, OrFunctor<IsTab, IsNewline>());
 
             size_t len = length(buffer);
-            union {
-                char raw[4];
-                unsigned nEntries;
-            } tmp;
 
             // Count number of entries (== number of commas after type character).
-            tmp.nEntries = 0;
+            __uint32 nEntries = 0;
             for (size_t i = 0; i != len; ++i)
                 if (buffer[i] == ',')
-                    ++tmp.nEntries;
+                    ++nEntries;
 
             // Write out array length.
-            for (int i = 0; i < 4; ++i)
-                appendValue(target, tmp.raw[i]);
+            appendRawPod(target, (__uint32)nEntries);
 
             // Write out array values.
-            typedef typename Infix<CharString>::Type TBufferInfix;
-            size_t startPos = 0;
-            for (unsigned i = 0; i < tmp.nEntries; ++i)
+            size_t startPos = 1;
+            for (unsigned i = 0; i < nEntries; ++i)
             {
                 SEQAN_ASSERT_LT(startPos, len);
-                if (buffer[startPos] == ',')
-                    ++startPos;
 
                 // search end of current entry
                 size_t endPos = startPos;
                 for (; endPos < len; ++endPos)
-                    if (buffer[endPos] == ',' || buffer[endPos] == '\t')
+                    if (buffer[endPos] == ',')
+                    {
+                        buffer[endPos] = '\0';
                         break;
+                    }
 
-                AssignTagsSamToBamOneTagHelper_<TTarget, TBufferInfix> func(target,
-                                                                            infix(buffer, startPos, endPos),
-                                                                            typeC);
+                AppendTagsSamToBamOneTagHelper_<TTarget, char*> func(target,
+                                                                     toCString(buffer) + startPos,
+                                                                     typeC);
                 if (!tagApply(func, BamTagTypes()))
                     SEQAN_ASSERT_FAIL("Invalid tag type: %c!", typeC);
 
-                startPos = endPos;
+                startPos = endPos + 1;
             }
             break;
         }
@@ -187,10 +160,9 @@ void _assignTagsSamToBamOneTag(TTarget & target, TRecordReader & reader, CharStr
         {
             // BAM simple value
             clear(buffer);
-            res = readUntilTabOrLineBreak(buffer, reader);
-            SEQAN_ASSERT(res == 0 || res == EOF_BEFORE_SUCCESS);
+            readUntil(buffer, iter, OrFunctor<IsTab, IsNewline>());
 
-            AssignTagsSamToBamOneTagHelper_<TTarget, CharString&> func(target, buffer, typeC);
+            AppendTagsSamToBamOneTagHelper_<TTarget, CharString&> func(target, buffer, typeC);
             if (!tagApply(func, BamTagTypes()))
                 SEQAN_ASSERT_FAIL("Invalid tag type: %c!", typeC);
         }
@@ -224,32 +196,31 @@ void _assignTagsSamToBamOneTag(TTarget & target, TRecordReader & reader, CharStr
 */
 
 template <typename TTarget, typename TSource>
-void assignTagsSamToBam(TTarget & target, TSource const & source)
+void appendTagsSamToBam(TTarget & target, TSource const & source)
 {
     // Handle case of empty source sequence.
     if (empty(source))
         return;
 
-    typedef typename Iterator<TSource const, Standard>::Type TSourceIter;
-    TSourceIter it = begin(source, Standard());
-    TSourceIter itEnd = end(source, Standard());
-
-    typedef Stream<CharArray<char const *> > TStream;
-    typedef RecordReader<TStream, SinglePass<> > TRecordReader;
-
-    TStream stream(it, itEnd);
-    TRecordReader reader(stream);
+    typedef typename Iterator<TSource const, Rooted>::Type TSourceIter;
+    TSourceIter it = begin(source, Rooted());
 
     CharString buffer;
 
-    while (!atEnd(reader))
+    while (!atEnd(it))
     {
-        if (value(reader) == '\t')
-            goNext(reader);
-        SEQAN_ASSERT_NOT(atEnd(reader));
+        if (value(it) == '\t')
+            skipOne(it);
 
-        _assignTagsSamToBamOneTag(target, reader, buffer);
+        _appendTagsSamToBamOneTag(target, it, buffer);
     }
+}
+
+template <typename TTarget, typename TSource>
+void assignTagsSamToBam(TTarget & target, TSource const & source)
+{
+    clear(target);
+    appendTagsSamToBam(target, source);
 }
 
 // ----------------------------------------------------------------------------
@@ -259,13 +230,10 @@ void assignTagsSamToBam(TTarget & target, TSource const & source)
 template <typename TTarget, typename TSourceIter>
 struct AssignTagsBamToSamOneTagHelper_
 {
-    typedef String<char, Array<32> > TBuffer;
-
     TTarget     &target;
     TSourceIter &it;
     char        typeC;
-    TBuffer     buffer;
-    
+
     AssignTagsBamToSamOneTagHelper_(TTarget &target, TSourceIter &it, char typeC):
         target(target),
         it(it),
@@ -278,39 +246,33 @@ struct AssignTagsBamToSamOneTagHelper_
         if (BamTypeChar<Type>::VALUE != typeC)
             return false;
 
-        union {
-            char raw[sizeof(Type)];
-            Type i;
-        } tmp;
-        
-        for (unsigned i = 0; i < sizeof(Type); ++i)
-        {
-            SEQAN_ASSERT_NOT(atEnd(it));
-            tmp.raw[i] = *it++;
-        }
-        clear(buffer);
-        if (IsSignedInteger<Type>::VALUE)
-            lexicalCast2(buffer, static_cast<__int64>(tmp.i));    // avoid textual interpretation of char types
-        else if (IsUnsignedInteger<Type>::VALUE)
-            lexicalCast2(buffer, static_cast<__uint64>(tmp.i));
-        else
-            lexicalCast2(buffer, tmp.i);
-        append(target, buffer);
+        appendNumber(target, reinterpret_cast<Type const &>(*it));
+        it += sizeof(Type);
+        return true;
+    }
+
+    bool operator() (char)
+    {
+        if (BamTypeChar<char>::VALUE != typeC)
+            return false;
+
+        writeValue(target, getValue(it));
+        ++it;
         return true;
     }
 };
 
 template <typename TTarget, typename TSourceIter>
-void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
+void _appendTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
 {   
     // Copy tag name.
     SEQAN_ASSERT_NOT(atEnd(it));
-    appendValue(target, *it++);
+    writeValue(target, *it++);
     SEQAN_ASSERT_NOT(atEnd(it));
-    appendValue(target, *it++);
+    writeValue(target, *it++);
 
     // Add ':'.
-    appendValue(target, ':');
+    writeValue(target, ':');
     
     char typeC = *it++;
     char c = FunctorLowcase<char>()(typeC);
@@ -318,12 +280,12 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
     // The only integer type supported is a 32bit signed int (SAM Format Spec, 28 Feb 2014, Section 1.5)
     // This sucks as this projection is not identically reversible
     if (c == 'c' || c == 's' || c == 'i')
-        appendValue(target, 'i');
+        writeValue(target, 'i');
     else
-        appendValue(target, typeC);
+        writeValue(target, typeC);
 
     // Add ':'.
-    appendValue(target, ':');
+    writeValue(target, ':');
 
     switch (typeC)
     {
@@ -333,7 +295,7 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
             SEQAN_ASSERT_NOT(atEnd(it));
             while (*it != '\0')
             {
-                appendValue(target, *it);
+                writeValue(target, *it);
                 ++it;
                 SEQAN_ASSERT_NOT(atEnd(it));
             }
@@ -344,7 +306,7 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
         {
             // BAM array
             typeC = *it++;
-            appendValue(target, typeC);
+            writeValue(target, typeC);
             AssignTagsBamToSamOneTagHelper_<TTarget, TSourceIter> func(target, it, typeC);
             
             // Read array length.
@@ -359,7 +321,7 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
             }
             for (unsigned i = 0; i < tmp.len; ++i)
             {
-                appendValue(target, ',');
+                writeValue(target, ',');
                 if (!tagApply(func, BamTagTypes()))
                     SEQAN_ASSERT_FAIL("Invalid tag type: %c!", typeC);
             }
@@ -404,25 +366,29 @@ void _assignTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
 */
 
 template <typename TTarget, typename TSource>
-void assignTagsBamToSam(TTarget & target, TSource const & source)
+inline void
+appendTagsBamToSam(TTarget & target, TSource const & source)
 {
-    // Handle case of empty source sequence.
     if (empty(source))
-        clear(target);
-
-    clear(target);
+        return;
 
     typedef typename Iterator<TSource const, Rooted>::Type TSourceIter;
     TSourceIter it = begin(source, Rooted());
 
-    bool first = true;
-    while (!atEnd(it))
+    while (true)
     {
-        if (!first)
-            appendValue(target, '\t');
-        first = false;
-        _assignTagsBamToSamOneTag(target, it);
+        _appendTagsBamToSamOneTag(target, it);
+        if (atEnd(it))
+            return;
+        writeValue(target, '\t');
     }
+}
+
+template <typename TTarget, typename TSource>
+void assignTagsBamToSam(TTarget & target, TSource const & source)
+{
+    clear(target);
+    appendTagsBamToSam(target, source);
 }
 
 }  // namespace seqan

@@ -64,8 +64,7 @@ struct SVGFile
 	friend inline void svgWriteHeader(SVGFile &svg);
 	friend inline void svgWriteFooter(SVGFile &svg);
 	
-	template <typename TFileName>
-	friend inline bool open(SVGFile &svg, TFileName const &fileName);
+	friend inline bool open(SVGFile &svg, char const * fileName);
 	friend inline bool close(SVGFile &svg);
 	
 	SVGFile():
@@ -118,6 +117,12 @@ private:
 		appendValue(style, "style=\"stroke:darkred;stroke-width:3;\" marker-end=\"url(#startMarkerReverse)\"");
 		appendValue(style, "style=\"stroke:salmon;stroke-width:1;\" marker-end=\"url(#startMarkerReverse)\"");
 	}
+};
+
+template <>
+struct DirectionIterator<SVGFile, Output>
+{
+    typedef SVGFile* Type;
 };
 
 inline void svgResize(SVGFile &svg, int width, int height)
@@ -173,8 +178,7 @@ inline void svgWriteFooter(SVGFile &svg)
 }
 
 
-template <typename TFileName>
-inline bool open(SVGFile &svg, TFileName const &fileName)
+inline bool open(SVGFile &svg, char const * fileName)
 {
 	svg.file.open(fileName, std::ios_base::out);
 	if (!svg.file.is_open()) return false;
@@ -192,35 +196,44 @@ inline bool close(SVGFile &svg)
 	return true;
 }
 
-template <typename TChar>
-inline void
-streamPut(SVGFile & svg, TChar character)
+SVGFile *
+directionIterator(SVGFile & svg, Output)
 {
-//IOREV
-	if (convert<char>(character) == '\n')
+    return &svg;
+}
+
+
+template <typename TCharacter>
+inline void
+writeValue(SVGFile *svg, TCharacter character)
+{
+    char x = static_cast<char>(character);
+	if (x == '\n')
 	{
-		++svg.cursor.i2;
-		svg.cursor.i1 = 0;
-	} else if (convert<char>(character) == '\t')
+		++svg->cursor.i2;
+		svg->cursor.i1 = 0;
+	}
+    else if (x == '\t')
 	{
-		svg.cursor.i1 = (svg.cursor.i1 & ~7) + 8;
-	} else
+		svg->cursor.i1 = (svg->cursor.i1 & ~7) + 8;
+	}
+    else
 	{
-		if (convert<char>(character) != ' ')
+		if (x != ' ')
 		{
-			svg.file << "<g transform=\"translate(" << svg.cursor.i1*20+10 << ',' << svg.cursor.i2*20+10 << ")\"><text y=\"0.3em\" " << svg.style[svg.text] << '>';
-			streamPut(svg.file, convert<char>(character));
-			svg.file << "</text></g>" << std::endl;
+			svg->file << "<g transform=\"translate(" << svg->cursor.i1*20+10 << ',' << svg->cursor.i2*20+10
+                      << ")\"><text y=\"0.3em\" " << svg->style[svg->text] << '>';
+			svg->file << x;
+			svg->file << "</text></g>" << std::endl;
 		}
-		++svg.cursor.i1;
+		++svg->cursor.i1;
 	}
 }
 
-template <typename TFormatTag, typename TContigGaps, typename TContigName>
+template <typename TContigGaps, typename TContigName>
 inline void _printContig(
 	SVGFile &svg, 
-	Tag<TFormatTag> const &format,
-	AlignedReadLayout &, 
+	AlignedReadLayout &,
 	TContigGaps &contigGaps,
 	TContigName const &contigName)
 {
@@ -259,18 +272,17 @@ inline void _printContig(
 			}
 		}
 	}
-	streamPut(svg, '\n');
+	writeValue(&svg, '\n');
 	
 	int savedStyle = svg.text;
 	svg.text = svg.readText;
-	write(svg, contigGaps, "", format);
+	svg << contigGaps;
 	svg.text = savedStyle;
 }
 
-template <typename TFormatTag, typename TContigGaps, typename TReadGaps, typename TAlignedRead, typename TLine>
+template <typename TContigGaps, typename TReadGaps, typename TAlignedRead, typename TLine>
 inline void _printRead(
 	SVGFile &svg, 
-	Tag<TFormatTag> const &,
 	AlignedReadLayout &layout, 
 	TContigGaps &contigGaps,
 	TReadGaps &readGaps,
@@ -362,7 +374,7 @@ inline void _printRead(
 			if (!inGap && convert<Dna5>(*cit) != convert<Dna5>(*it))
 			{
 				svg.file << "<g transform=\"translate(" << xEnd + 10 << ',' << line << ")\"><text y=\"0.3em\" " << svg.style[svg.readText] << '>';
-				streamPut(svg.file, convert<char>(*it));
+				writeValue(&svg, convert<char>(*it));
 				svg.file << "</text></g>" << std::endl;
 				x += 20;
 				arrow = 0;
@@ -377,8 +389,11 @@ inline void _printRead(
 			{
 				arrow = 2;
 				xEnd -= 10;
-			} else
+			}
+            else
+            {
 				xEnd -= 5;
+            }
 		}
 		svg.file << first << x << "\" y1=\"" << line << second << xEnd;
 		svg.file << "\" y2=\"" << line << "\" " << svg.style[style + arrow + lastWasGap] << " />" << std::endl;
@@ -395,27 +410,27 @@ inline SVGFile &
 operator << (SVGFile & target, 
 			 TSource  source)
 {
-SEQAN_CHECKPOINT
-	write(target, source);
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
 	return target;
 }
 */
 
-inline SVGFile &
-operator << (SVGFile & target, char source)
-{
-SEQAN_CHECKPOINT
-	write(target, source);
-	return target;
-}
-
-inline SVGFile &
-operator << (SVGFile & target, char const *source)
-{
-SEQAN_CHECKPOINT
-	write(target, source);
-	return target;
-}
+//inline SVGFile &
+//operator << (SVGFile & target, char source)
+//{
+//  typename DirectionIterator<SVGFile, Output>::Type it = directionIterator(target, Output());
+//  write(it, source);
+//	return target;
+//}
+//
+//inline SVGFile &
+//operator << (SVGFile & target, char const *source)
+//{
+//  typename DirectionIterator<SVGFile, Output>::Type it = directionIterator(target, Output());
+//  write(it, source);
+//	return target;
+//}
 
 
 template <typename TStringSet, typename TTrace, typename TIndexPair>

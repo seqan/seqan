@@ -1,6 +1,6 @@
 ///A tutorial about the use of the reverse modifier.
 #include <iostream>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/modifier.h>
 
 using namespace seqan;

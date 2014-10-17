@@ -7,8 +7,8 @@ int main()
     seqan::CharString id;
     seqan::Dna5String seq;
 
-    seqan::SequenceStream seqStream("example.fa");
-    readRecord(id, seq, seqStream);
+    seqan::SeqFileIn seqFileIn("example.fa");
+    readRecord(id, seq, seqFileIn);
     std::cout << id << '\t' << seq << '\n';
 
     return 0;

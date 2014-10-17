@@ -325,25 +325,18 @@ template <typename TString, typename TReadNames, typename TReadNameCache, typena
 bool loadFastqFile(TString & inFastqFile, TReadNames & readNames, TReadNameCache & readNameCache,
                    TReadSeqs & readSeqs, TNamesSuffix const & namesSuffix)
 {
-    MultiFasta multiFasta;
-    if (!open(multiFasta.concat, toCString(inFastqFile), OPEN_RDONLY)) return false;
-        
-    AutoSeqFormat format;
-    guessFormat(multiFasta.concat, format);
-    split(multiFasta, format);
-    unsigned seqCount = length(multiFasta);
+    SeqFileIn seqFile;
+    if (!open(seqFile, toCString(inFastqFile))) return false;
 
     String<Dna5Q>	seq;
 	CharString		qual;
 	CharString      seqId;
     
     // Scan fastq file.
-    for (unsigned i = 0; i < seqCount; ++i) 
+    while (!atEnd(seqFile))
 	{
-        assignSeqId(seqId, multiFasta[i], format);
-		assignSeq(seq, multiFasta[i], format);
-		assignQual(qual, multiFasta[i], format);
-        
+        readRecord(seqId, seq, qual, seqFile);
+
         // Truncate fastq seqId.
         CharString seqIdTruncated(seqId);
         trimSeqHeaderToId(seqIdTruncated);
@@ -354,14 +347,11 @@ bool loadFastqFile(TString & inFastqFile, TReadNames & readNames, TReadNameCache
         appendName(readNames, seqIdTruncated, readNameCache);
         appendValue(readSeqs, seq);
     }
-    
-    close(multiFasta.concat);
-    
     return true;
 }
 
-template <typename TStreamOrReader, typename TSeqString, typename TSpec, typename TFormat>
-int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
+template <typename TSeqString, typename TSpec, typename TFormat>
+int doWork(BamFileIn & reader, BamFileIn & greader,
            StringSet<CharString> & seqIds, StringSet<TSeqString, TSpec> & seqs,
            Options const & options, TFormat const & tag)
 {
@@ -447,11 +437,7 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
         // Read header.
         if (options.verbosity >= 2)
             std::cerr << "Reading gold standard header" << std::endl;
-        if (readRecord(header, context, greader, tag) != 0)
-        {
-            std::cerr << "Could not read gold standard header!" << std::endl;
-            return 1;
-        }
+        readRecord(header, greader);
         
         // Initialize mapping from record.rID to seq id from reference.
         String<unsigned> rIdToSeqId;
@@ -471,12 +457,8 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
         
         while (!atEnd(greader))
         {
-            if (readRecord(record, context, greader, tag) != 0)
-            {
-                std::cerr << "Could not read gold standard alignment! lineNo=" << line << std::endl;
-                return 1;
-            }
-            
+            readRecord(record, greader);
+
             // Update mapping from SAM rID to index of sequence in reference sequences.
             if (oldNumRefs != length(refNames))
             {
@@ -591,11 +573,7 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
     // Read header.
     if (options.verbosity >= 2)
         std::cerr << "Reading header" << std::endl;
-    if (readRecord(header, context, reader, tag) != 0)
-    {
-        std::cerr << "Could not read header!" << std::endl;
-        return 1;
-    }
+    readRecord(header, reader);
 
     // Initialize mapping from record.rID to seq id from reference.
     String<unsigned> rIdToSeqId;
@@ -623,14 +601,10 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
     String<BamAlignmentRecord> chunk;
     // Pre-read first record.
     BamAlignmentRecord record;
-    if (readRecord(record, context, reader, tag) != 0)
-    {
-        std::cerr << "Could not read alignment! lineNo=" << line << std::endl;
-        return 1;
-    }
+    readRecord(record, reader);
     trimSeqHeaderToId(record.qName);  // Some mappers create invalid query names.
     if (options.verbosity >= 3)
-        write2(std::cerr, record, context, Sam());
+        write(std::cerr, record, context, Sam());
 
     bool done = false;
     while (!done)
@@ -645,14 +619,10 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
             ++line;
             if (line % 100000 == 0) std::cerr << '.' << std::flush;
 
-            if (readRecord(record, context, reader, tag) != 0)
-            {
-                std::cerr << "Could not read alignment! lineNo=" << line << std::endl;
-                return 1;
-            }
+            readRecord(record, reader);
             trimSeqHeaderToId(record.qName);  // Some mappers create invalid query names.
             if (options.verbosity >= 3)
-                write2(std::cerr, record, context, Sam());
+                write(std::cerr, record, context, Sam());
 
             // Update mapping from SAM rID to index of sequence in reference sequences.
             if (oldNumRefs != length(refNames))
@@ -758,14 +728,14 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
                 if (mate == i)
                 {
                     std::cerr << "WARNING: Could not find any mate for record\n";
-                    write2(std::cerr, chunk[i], context, Sam());
+                    write(std::cerr, chunk[i], context, Sam());
                     if (options.verbosity >= 3)
                     {
                         std::cerr << "Chunk (of same-query name records is\n,--\n";
                         for (unsigned k = 0; k < length(chunk); ++k)
                         {
                             std::cerr << "| ";
-                            write2(std::cerr, chunk[k], context, Sam());
+                            write(std::cerr, chunk[k], context, Sam());
                         }
                         std::cerr << "`--\n";
                     }
@@ -821,7 +791,7 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
                 if (empty(record.cigar))
                 {
                     std::cerr << "ERROR: Realigning is disabled by CIGAR string missing in record!\n";
-                    write2(std::cerr, record, context, Sam());
+                    write(std::cerr, record, context, Sam());
                     return 1;
                 }
                 if (record.cigar[0].operation == 'S')
@@ -1256,6 +1226,8 @@ int doWork(TStreamOrReader & reader, TStreamOrReader & greader,
         std::cout << stats.mismatchHisto[i] << '\t';
         std::cout << stats.insertHisto[i] << '\t';
         std::cout << stats.deletionHisto[i] << '\t';
+        if (reads == 0.0)  // prevent div-by-zero below
+            reads = 1.0;
         std::cout << (stats.mismatchHisto[i] + stats.insertHisto[i] + stats.deletionHisto[i]) / (double)reads << '\t';
         std::cout << pow(10.0, stats.avrgQuality[i] / -10.0) << '\t';
         std::cout << stats.avrgQuality[i] << std::endl;
@@ -1358,64 +1330,38 @@ int main(int argc, char const ** argv)
         std::cerr << "Reading references from " << options.refFile << std::endl;
     StringSet<CharString> seqIds;
     StringSet<Dna5String> seqs;
-    String<char, MMap<> > seqMMapString;
-    if (!open(seqMMapString, toCString(options.refFile), OPEN_RDONLY))
+    SeqFileIn seqFileIn;
+    if (!open(seqFileIn, toCString(options.refFile)))
     {
         std::cerr << "Could not open " << options.refFile << std::endl;
         return 1;
     }
     double start = sysTime();
-    RecordReader<String<char, MMap<> >, DoublePass<StringReader> > refReader(seqMMapString);
-    if (read2(seqIds, seqs, refReader, Fasta()) != 0)
-    {
-        std::cerr << "Could not read reference from " << options.refFile << std::endl;
-        return 1;
-    }
+    readRecords(seqIds, seqs, seqFileIn);
     std::cerr << "Loading reference took" << sysTime() - start << std::endl;
 
-    // Open SAM/BAM file and do work.
-    if (options.inFormat == FORMAT_SAM)
+    std::cerr << "Opening SAM/BAM file " << options.inFile << std::endl;
+    BamFileIn bamFileIn;
+    if (!open(bamFileIn, toCString(options.inFile)))
     {
-        if (options.verbosity >= 2)
-            std::cerr << "Opening SAM file " << options.inFile << std::endl;
-        String<char, MMap<> > samMMapString;
-        if (!open(samMMapString, toCString(options.inFile), OPEN_RDONLY))
-        {
-            std::cerr << "Could not open " << options.inFile << std::endl;
-            return 1;
-        }
-        RecordReader<String<char, MMap<> >, SinglePass<StringReader> > samReader(samMMapString);
-        
-        if (options.goldStandard)
-        {
-            String<char, MMap<> > goldMMapString;
-            if (!open(goldMMapString, toCString(options.goldStandardFile), OPEN_RDONLY))
-            {
-                std::cerr << "Could not open " << options.goldStandardFile << std::endl;
-                return 1;
-            }
-            RecordReader<String<char, MMap<> >, SinglePass<StringReader> > goldReader(goldMMapString);
-            return doWork(samReader, goldReader, seqIds, seqs, options, Sam());
-        }
-        else
-        {
-            return doWork(samReader, samReader, seqIds, seqs, options, Sam());
-        }
-    }
-    else  // options.inFormat == FORMAT_BAM
-    {
-        if (options.verbosity >= 2)
-            std::cerr << "Opening BAM file " << options.inFile << std::endl;
-        Stream<Bgzf> bamStream;
-        if (!open(bamStream, toCString(options.inFile), "r"))
-        {
-            std::cerr << "Could not open " << options.inFile << std::endl;
-            return 1;
-        }
-        return doWork(bamStream, bamStream, seqIds, seqs, options, Bam());
+        std::cerr << "Could not open " << options.inFile << std::endl;
+        return 1;
     }
 
-    return 0;
+    if (options.goldStandard)
+    {
+        BamFileIn goldFileIn;
+        if (!open(goldFileIn, toCString(options.goldStandardFile)))
+        {
+            std::cerr << "Could not open " << options.goldStandardFile << std::endl;
+            return 1;
+        }
+        return doWork(bamFileIn, goldFileIn, seqIds, seqs, options, Sam());
+    }
+    else
+    {
+        return doWork(bamFileIn, bamFileIn, seqIds, seqs, options, Sam());
+    }
 }
 
 #else

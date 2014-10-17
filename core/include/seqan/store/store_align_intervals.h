@@ -318,31 +318,37 @@ extractAlignIntervals(TIntervals & contigIntervals, TAlignedReadStoreElement & a
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //// merge intervals (for sortet intervals; i1 <= i2 <= (i+1)1 <= (i+1)2 )
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 template<typename TIntervals>
 inline void
 mergeIntervals(TIntervals & intervals, const unsigned & thresholdGaps)
 {
-	typedef typename Position<TIntervals>::Type 	TPos;
-	typedef typename Value<TIntervals>::Type 	TInterval;
-	
-	TPos j;
-	TInterval newInterval;
-	for (TPos i = 0; i < length(intervals) - 1; ++i)
-	{
-		j = i;
-		while ( (j < length(intervals) - 1) && (getValue(intervals, j).i2 + thresholdGaps >= getValue(intervals, j + 1).i1 - 1) )		// merges intervals, if the no. of gaps inbetween is smaller than threshold 
-		{
-			++j;
-		}
-		
-		if ( j != i)
-		{
-			newInterval.i1 = getValue(intervals, i).i1;
-			newInterval.i2 = getValue(intervals, j).i2;
-			replace(intervals, i, j + 1, newInterval);       
-		}
-		
-	}
+    typedef typename Position<TIntervals>::Type  TPos;
+    typedef typename Value<TIntervals>::Type     TInterval;
+
+    TPos j;
+    TInterval newInterval;
+    for (TPos i = 0; i < length(intervals) - 1; ++i)
+    {
+        j = i;
+
+        // merge intervals, if the no. of gaps inbetween is smaller than threshold
+        while ((j < length(intervals) - 1) &&
+               (getValue(intervals, j).i2 + thresholdGaps >= getValue(intervals, j + 1).i1 - 1))
+        {
+            ++j;
+        }
+
+        if (j != i)  // means j > i
+        {
+            newInterval.i1 = getValue(intervals, i).i1;
+            newInterval.i2 = getValue(intervals, j).i2;
+
+            // replace [i, j+1) in intervals by newInterval
+            erase(intervals, i + 1, j + 1);
+            intervals[i] = newInterval;
+        }
+    }
 }
 
 

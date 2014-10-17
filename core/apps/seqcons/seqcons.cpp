@@ -54,15 +54,15 @@ seqan::ArgumentParser::ParseResult parseCommandLine(ConsensusOptions & consOpt, 
 
 
 	addSection(parser, "Main Options:");
-	addOption(parser, ArgParseOption("r", "reads", "file with reads", ArgParseArgument::INPUTFILE, "<FASTA reads file>"));
+	addOption(parser, ArgParseOption("r", "reads", "file with reads", ArgParseArgument::INPUT_FILE, "<FASTA reads file>"));
     setValidValues(parser, "reads", "fa fasta");
-	addOption(parser, ArgParseOption("a", "afg", "message file", ArgParseArgument::INPUTFILE, "<AMOS afg file>"));
+	addOption(parser, ArgParseOption("a", "afg", "message file", ArgParseArgument::INPUT_FILE, "<AMOS afg file>"));
     setValidValues(parser, "afg", "afg");
-	addOption(parser, ArgParseOption("s", "sam", "Sam file", ArgParseArgument::INPUTFILE, "<Sam file>"));
+	addOption(parser, ArgParseOption("s", "sam", "Sam file", ArgParseArgument::INPUT_FILE, "<Sam file>"));
     setValidValues(parser, "s", "sam");
-	addOption(parser, ArgParseOption("c", "contigs", "FASTA file with contigs, ignored if not Sam input", ArgParseArgument::INPUTFILE, "<FASTA contigs file>"));
+	addOption(parser, ArgParseOption("c", "contigs", "FASTA file with contigs, ignored if not Sam input", ArgParseArgument::INPUT_FILE, "<FASTA contigs file>"));
     setValidValues(parser, "contigs", "fa fasta");
-	addOption(parser, ArgParseOption("o", "outfile", "output filename", ArgParseArgument::OUTPUTFILE, "<Filename>"));
+	addOption(parser, ArgParseOption("o", "outfile", "output filename", ArgParseArgument::OUTPUT_FILE, "<Filename>"));
 	setValidValues(parser, "outfile", "afg seqan cgb sam");
 	setDefaultValue(parser, "outfile", "align.sam");
 
@@ -163,13 +163,12 @@ int loadFiles(TFragmentStore & fragStore, TSize & numberOfContigs, ConsensusOpti
         std::fstream strmReads(consOpt.readsfile.c_str(), std::fstream::in | std::fstream::binary);
 		bool moveToFront = false;
 		if (consOpt.noalign) moveToFront = true;
-		if (_convertSimpleReadFile(strmReads, fragStore, consOpt.readsfile, moveToFront) != 0)
-			return 1;
+		_convertSimpleReadFile(strmReads, fragStore, consOpt.readsfile, moveToFront);
 		numberOfContigs = 1;
 	} else if (!empty(consOpt.afgfile)) {
 		// Load Amos message file
         std::fstream strmReads(consOpt.afgfile.c_str(), std::fstream::in | std::fstream::binary);
-		read(strmReads, fragStore, Amos());	
+		read(fragStore, strmReads, Amos());
 		numberOfContigs = length(fragStore.contigStore);
 	} else if (!empty(consOpt.samfile)) {
         // Possibly load contigs into fragment store.
@@ -180,8 +179,8 @@ int loadFiles(TFragmentStore & fragStore, TSize & numberOfContigs, ConsensusOpti
             }
         }
 		// Load Sam message file
-        std::fstream strmReads(consOpt.samfile.c_str(), std::fstream::in | std::fstream::binary);
-		read(strmReads, fragStore, Sam());
+        BamFileIn bamFileIn(consOpt.samfile.c_str());
+		readRecords(fragStore, bamFileIn);
 		numberOfContigs = length(fragStore.contigStore);
 	} else {
 		return 1;
@@ -196,37 +195,36 @@ int writeOutput(TFragmentStore /*const*/ & fragStore, ConsensusOptions const & c
 {
 //IOREV
     std::cerr << "Writing output..." << std::endl;
-	if (consOpt.output == 0) {
-		// Write old SeqAn multi-read alignment format
-		FILE* strmWrite = fopen(consOpt.outfile.c_str(), "w");
-		write(strmWrite, fragStore, FastaReadFormat());	
-		fclose(strmWrite);
-	} else if (consOpt.output == 1) {
-		// Write Amos
-		FILE* strmWrite = fopen(consOpt.outfile.c_str(), "w");
-		write(strmWrite, fragStore, Amos());	
-		fclose(strmWrite);
-	} else if (consOpt.output == 2) {
-		FILE* strmWrite = fopen(consOpt.outfile.c_str(), "w");
-		_writeCeleraFrg(strmWrite, fragStore);	
-		fclose(strmWrite);
-	} else if (consOpt.output == 3) {
-		FILE* strmWrite = fopen(consOpt.outfile.c_str(), "w");
-		_writeCeleraCgb(strmWrite, fragStore);	
-		fclose(strmWrite);
-	} else if (consOpt.output == 4) {
+	if (consOpt.output < 4)
+    {
+		std::ofstream strmWrite(consOpt.outfile.c_str());
+        if (!strmWrite.good())
+            return 1;
+        if (consOpt.output == 0)
+            // Write old SeqAn multi-read alignment format
+            write(strmWrite, fragStore, FastaReadFormat());
+        else if (consOpt.output == 1)
+            // Write Amos
+            write(strmWrite, fragStore, Amos());
+        else if (consOpt.output == 2)
+            _writeCeleraFrg(strmWrite, fragStore);
+        else if (consOpt.output == 3)
+            _writeCeleraCgb(strmWrite, fragStore);
+        strmWrite.close();
+	}
+    else if (consOpt.output == 4)
+    {
 		// Write out resulting MSA in a Sam file.
-		FILE* strmWrite = fopen(consOpt.outfile.c_str(), "w");
-		write(strmWrite, fragStore, Sam());
-		fclose(strmWrite);
+		BamFileOut bamFileOut;
+        if (!open(bamFileOut, consOpt.outfile.c_str()))
+            return 1;
+		writeRecords(bamFileOut, fragStore);
 		// Write out resulting consensus sequence.
-		char buffer[10*1024];
-		buffer[0] = '\0';
-		strcat(buffer, consOpt.outfile.c_str());
-		strcat(buffer, ".consensus.fasta");
-		strmWrite = fopen(buffer, "w");
-		writeContigs(strmWrite, fragStore, Fasta());
-		fclose(strmWrite);
+		std::string fname = consOpt.outfile + ".consensus.fasta";
+		SeqFileOut seqFileOut;
+        if (!open(seqFileOut, fname.c_str()))
+            return 1;
+		writeContigs(seqFileOut, fragStore);
 	}
     return 0;
 }

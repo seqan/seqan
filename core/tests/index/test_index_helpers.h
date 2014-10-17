@@ -38,7 +38,7 @@
 #define TESTS_INDEX_TEST_INDEX_HELPERS_H
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/index.h>
 #include <seqan/random.h>
 
@@ -617,13 +617,20 @@ typedef
     TagList<Index<StringSet<DnaString>, FMIndex<> >,
     TagList<Index<StringSet<CharString>, FMIndex<> >
     > > > > > >
+    FMIndexTypes;
+
+typedef
+    TagList<Index<CharString, IndexSa<> >,
+    TagList<Index<CharString, IndexEsa<> >,
+    FMIndexTypes
+    > >
     IndexTypes;
 
 // --------------------------------------------------------------------------
 // Trie Index Types
 // --------------------------------------------------------------------------
 
-typedef IndexTypes TrieIndexTypes;
+typedef FMIndexTypes TrieIndexTypes;
 
 // ========================================================================== 
 // Test Classes

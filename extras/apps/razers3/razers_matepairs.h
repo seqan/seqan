@@ -108,15 +108,24 @@ inline bool _qgramDisableBuckets(Index<TMPReadSet, IndexQGram<TShape> > & index)
 // Load multi-Fasta sequences
 template <typename TFSSpec, typename TFSConfig, typename TRazerSOptions>
 bool loadReads(
-    FragmentStore<TFSSpec, TFSConfig> & store,
-    const char                          * fileNameL,        // left mates file
+    FragmentStore<TFSSpec, TFSConfig>   & store,
+	SeqFileIn                           & leftMates,        // left mates file
     const char                          * fileNameR,        // right mates file
     TRazerSOptions & options)
 {
     bool countN = !(options.matchN || options.outputFormat == 1);
 
-    SequenceStream seqStreamL(fileNameL);
-    SequenceStream seqStreamR(fileNameR);
+    SeqFileIn rightMates;
+
+    bool success;
+    if (!isEqual(fileNameR, "-"))
+        success = open(rightMates, fileNameR);
+    else
+        success = open(rightMates, std::cin);
+
+    if (!success)
+        return false;
+
 
     String<__uint64>    qualSum;
     String<Dna5Q>       seq[2];
@@ -127,27 +136,19 @@ bool loadReads(
     unsigned kickoutcount = 0;
     unsigned maxReadLength = 0;
 
-    while (!atEnd(seqStreamL) && !atEnd(seqStreamR))
+	while (!atEnd(leftMates) && !atEnd(rightMates))
     {
         ++seqCount;
         
-        if (readRecord(seqId[0], seq[0], qual[0], seqStreamL) != 0)
-        {
-            std::cerr << "Read error in file " << fileNameL << std::endl;
-            return false;
-        }
-        if (readRecord(seqId[1], seq[1], qual[1], seqStreamR) != 0)
-        {
-            std::cerr << "Read error in file " << fileNameR << std::endl;
-            return false;
-        }
+        readRecord(seqId[0], seq[0], qual[0], leftMates);
+        readRecord(seqId[1], seq[1], qual[1], rightMates);
 
         if (options.readNaming == 0 || options.readNaming == 3)
         {
             if (!options.fullFastaId)
             {
-                cropSequenceId(seqId[0]);  // read Fasta id up to the first whitespace
-                cropSequenceId(seqId[1]);
+                cropAfterFirst(seqId[0], IsWhitespace());   // read Fasta id up to the first whitespace
+                cropAfterFirst(seqId[1], IsWhitespace());   // read Fasta id up to the first whitespace
             }
             if (options.readNaming == 0)
             {
@@ -211,7 +212,7 @@ bool loadReads(
     }
 
 
-    if (atEnd(seqStreamL) != atEnd(seqStreamR))
+    if (atEnd(leftMates) != atEnd(rightMates))
     {
         if (options._debugLevel > 1)
         {
@@ -409,7 +410,7 @@ void compactPairMatches(
     TFragmentStore & store,            // all but aligned reads up to the global writeback
     TMatches & matches,                // aligned read only
     TCounts &,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     TFilterL & filterL,
     TFilterR & filterR,
     CompactMatchesMode        compactMode)
@@ -1021,7 +1022,7 @@ template <
 int _mapMatePairReads(
     FragmentStore<TFSSpec, TFSConfig> & store,
     TCounts & cnts,
-    RazerSOptions<TSpec> & options,
+    RazerSCoreOptions<TSpec> & options,
     TShape const & shape,
     RazerSMode<TAlignMode, TGapMode, TScoreMode, TMatchNPolicy>  const & mode,
     TFilterSpec)

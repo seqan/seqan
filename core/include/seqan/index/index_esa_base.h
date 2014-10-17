@@ -304,6 +304,18 @@ TA
 ///.Metafunction.VertexDescriptor.param.T.type:Spec.IndexEsa
 ///.Metafunction.VertexDescriptor.class:Spec.IndexEsa
 
+/*!
+ * @mfn StringTreeConcept#VertexDescriptor
+ * @headerfile <seqan/index.h>
+ * @brief Returns the type of an object that represents a string tree node.
+ *
+ * @signature VertexDescriptor<TIndex>::Type;
+ *
+ * @tparam TIndex The index type.
+ *
+ * @return Type The resulting vertex descriptor type.
+ */
+
 	template < typename TText, typename TSpec >
 	struct VertexDescriptor< Index<TText, IndexEsa<TSpec> > > {
 		typedef typename Size< Index<TText, IndexEsa<TSpec> > >::Type TSize;
@@ -472,6 +484,7 @@ information of the suffix tree) are provided.
 /*!
  * @class IndexEsa
  * @extends Index
+ * @implements StringTreeConcept
  * @headerfile <seqan/index.h>
  * @brief An index based on an enhanced suffix array.
  * 

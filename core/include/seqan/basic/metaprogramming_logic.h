@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // Logic types and operations for metaprogramming.
 //
@@ -121,13 +121,35 @@ std::cout << IsSameType<False,False::Type>::VALUE << std::endl; // 1
 struct True
 {
     typedef True Type;
-	static const bool VALUE = true;
+    static const bool VALUE = true;
+
+    operator bool () const
+    {
+        return true;
+    }
+
+    template <typename TValue>
+    bool operator() (TValue const &) const
+    {
+        return true;
+    }
 };
 
 struct False
 {
     typedef False Type;
-	static const bool VALUE = false;
+    static const bool VALUE = false;
+
+    operator bool () const
+    {
+        return false;
+    }
+
+    template <typename TValue>
+    bool operator() (TValue const &) const
+    {
+        return false;
+    }
 };
 
 // ============================================================================
@@ -616,7 +638,6 @@ struct AndC<true, true> : True {};
 ..include:seqan/basic.h
 */
 
-// TODO(holtgrew): Inherit from T1/T2 to follow pattern for Or<>, And<>?
 template <typename TCondition, typename T1, typename T2>
 struct If : If<typename TCondition::Type, T1, T2>{};
 
@@ -631,6 +652,40 @@ struct If<False, T1, T2>
 {
     typedef T2 Type;
 };
+
+
+
+template <typename TArgT, typename TArgF>
+inline TArgT SEQAN_FORWARD_ARG
+ifSwitch(True, TArgT SEQAN_FORWARD_ARG argTrue, TArgF const &)
+{
+    return SEQAN_FORWARD(TArgT, argTrue);
+}
+
+template <typename TArgT, typename TArgF>
+inline TArgF SEQAN_FORWARD_ARG
+ifSwitch(False, TArgT const &, TArgF SEQAN_FORWARD_ARG argFalse)
+{
+    return SEQAN_FORWARD(TArgF, argFalse);
+}
+
+#ifndef SEQAN_CXX11_STANDARD
+
+template <typename TArgT, typename TArgF>
+inline TArgT const &
+ifSwitch(True, TArgT const & argTrue, TArgF const &)
+{
+    return SEQAN_FORWARD(TArgT, argTrue);
+}
+
+template <typename TArgT, typename TArgF>
+inline TArgF const &
+ifSwitch(False, TArgT const &, TArgF const & argFalse)
+{
+    return SEQAN_FORWARD(TArgF, argFalse);
+}
+
+#endif
 
 // ----------------------------------------------------------------------------
 // Metafunction IfC
@@ -674,7 +729,6 @@ struct If<False, T1, T2>
 ..include:seqan/basic.h
 */
 
-// TODO(holtgrew): Inherit from T1/T2 to follow pattern for Or<>, And<>?
 template <bool FLAG, typename T1, typename T2>
 struct IfC
 {

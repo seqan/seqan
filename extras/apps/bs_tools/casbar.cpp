@@ -33,10 +33,10 @@
 // ==========================================================================
 
 //#define SEQAN_ENABLE_PARALLELISM
-  
+
 //#define CALL_PROFILE
 //#define SNPSTORE_DEBUG
- 
+
 #include <seqan/platform.h>
 #include <seqan/sequence.h>
 #include <seqan/file.h>
@@ -80,66 +80,56 @@ using namespace seqan;
 template <typename TGenomeSet, typename TGenomeNames>
 bool loadGenomes(TGenomeSet &genomes, StringSet<CharString> &fileNameList, ::std::map<CharString,unsigned> &gIdStringToIdNumMap, TGenomeNames & genomeNames)
 {
-    unsigned gSeqNo = 0;
-    unsigned filecount = 0;
-    CharString temp;
+    clear(genomes);
     clear(genomeNames);
-    while(filecount < length(fileNameList))
+
+    seqan::CharString id, seq;
+    for (unsigned filecount = 0; filecount < length(fileNameList); ++filecount)
     {
-        clear(temp);
-        MultiFasta multiFasta;
-        if (!open(multiFasta.concat, toCString(fileNameList[filecount]), OPEN_RDONLY)) return false;
-        split(multiFasta, Fasta());
-        
-        unsigned seqCount = length(multiFasta);
-        if(length(genomes) < gSeqNo+seqCount) 
-            resize(genomes,gSeqNo+seqCount);
-        for(unsigned i = 0; i < seqCount; ++i)
+        seqan::SeqFileIn seqFileIn;
+        if (!open(seqFileIn, toCString(fileNameList[filecount])))
+            return false;
+
+        unsigned seqCount = 0;
+        for (; !atEnd(seqFileIn); ++seqCount)
         {
-            assignSeq(genomes[gSeqNo+i], multiFasta[i], Fasta());       // read Genome sequence
-            assignSeqId(temp, multiFasta[i], Fasta());
-            for (unsigned pos = 0; pos < length(temp); ++pos)
-            {
-                if(temp[pos]=='\t' || temp[pos]=='\b' || temp[pos]==' ')
-                {
-                    resize(temp,pos);
-                    break;
-                }
-            }
-            gIdStringToIdNumMap.insert(::std::make_pair(temp,gSeqNo+i)); // keeps the whole fasta ID including white spaces
-            appendValue(genomeNames,temp);
+            readRecord(id, seq, seqFileIn);
+            cropAfterFirst(id, IsBlank());
+
+            gIdStringToIdNumMap.insert(std::make_pair(id, length(genomes)));
+
+            appendValue(genomes, seq);
+            appendValue(genomeNames, id);
         }
-        gSeqNo += seqCount;
-        ++filecount;
     }
-    resize(genomes,gSeqNo);
-    return (gSeqNo > 0);
+
+    return !empty(genomes);
 }
 
 // transform global cooridnates to coordinates relative to chromosomal segment
 template<typename TFragmentStore, typename TContigPos, typename TOptions>
-void 
+void
 transformCoordinates(TFragmentStore &fragmentStore, TContigPos startCoord, TOptions&)
 {
     typedef typename TFragmentStore::TAlignedReadStore          TMatches;
     //typedef typename Value<TMatches>::Type                      TMatch;
     typedef typename Iterator<TMatches,Standard>::Type          TMatchIt;
-    
+
     TMatchIt mIt        = begin(fragmentStore.alignedReadStore,Standard());
     TMatchIt mItEnd     = end(fragmentStore.alignedReadStore,Standard());
-    
+
     while(mIt != mItEnd)
     {
         (*mIt).endPos -= startCoord;
         (*mIt).beginPos -= startCoord;
         ++mIt;
     }
-    
+
 }
 
 // copy matches relevant for next window
 template<typename TFragmentStore, typename TSetContigAnchorGaps, typename TSize, typename TContigPos, typename TOptions>
-void 
+void
 copyNextWindowMatchesAndReads(TFragmentStore &fragmentStore,
                               TSetContigAnchorGaps &setContigAnchorGaps,
                               typename TFragmentStore::TReadSeqStore &tmpReads,
@@ -161,10 +151,10 @@ copyNextWindowMatchesAndReads(TFragmentStore &fragmentStore,
 
     SEQAN_ASSERT_EQ(length(fragmentStore.readSeqStore),length(fragmentStore.alignQualityStore));
 
-    ::std::sort(begin(fragmentStore.alignedReadStore, Standard()), end(fragmentStore.alignedReadStore, Standard()), LessGPos<TMatch>());    
+    ::std::sort(begin(fragmentStore.alignedReadStore, Standard()), end(fragmentStore.alignedReadStore, Standard()), LessGPos<TMatch>());
 
     if(options._debugLevel > 1 )::std::cout << "Copying matches overlapping more than one window ... \n";
-    
+
     TMatchIt mIt        = end(fragmentStore.alignedReadStore,Standard());
     TMatchIt mItBegin   = begin(fragmentStore.alignedReadStore,Standard());
     --mIt;
@@ -178,7 +168,7 @@ copyNextWindowMatchesAndReads(TFragmentStore &fragmentStore,
     int maxCoord = minValue<int>();
     //CharString str = "discBef";
     //_dumpMatches(fragmentStore, str);
-    
+
     //std::cout << " max hit length = " << options.maxHitLength << std::endl;
     // look for matches that are inside our window of interest, copy corresponding matches,reads,qualities
     while(mIt >= mItBegin && _min((*mIt).beginPos,(*mIt).endPos) + (TContigPos)options.maxHitLength + (TContigPos)options.windowBuff >= currentWindowEnd )
@@ -205,9 +195,9 @@ copyNextWindowMatchesAndReads(TFragmentStore &fragmentStore,
         options.minCoord = minCoord;
     if (maxCoord != minValue<int>())
         options.maxCoord = maxCoord;
-   
+
     if(options._debugLevel > 1)
-        std::cout << length(tmpMatches)<<" matches left over from previous window.\n"; 
+        std::cout << length(tmpMatches)<<" matches left over from previous window.\n";
 }
 
 
@@ -216,7 +206,7 @@ template<typename TMatch>
 char
 orientation(TMatch & match)
 {
-    if(match.endPos > match.beginPos) 
+    if(match.endPos > match.beginPos)
         return 'F';
     else
         return 'R';
@@ -225,9 +215,9 @@ orientation(TMatch & match)
 // discard reads stacking up, give preference to high quality reads
 template<typename TFragmentStore, typename TSize, typename TOptions>
 void
-applyPileupCorrection(TFragmentStore    &fragmentStore, 
-                      TSize                         arrayBeginPos, 
-                      TSize                         arrayEndPos, 
+applyPileupCorrection(TFragmentStore    &fragmentStore,
+                      TSize                         arrayBeginPos,
+                      TSize                         arrayEndPos,
                       TOptions                      &options)
 {
     typedef StringSet<String<Dna5Q>, Owner<ConcatDirect<> > >    TFalseType;
@@ -241,26 +231,26 @@ applyPileupCorrection(TFragmentStore    &fragmentStore,
     //typedef typename Value<TGenomeSet>::Type            TGenome;
     typedef typename TFragmentStore::TContigPos         TContigPos;
     typedef typename Iterator<TMatches,Standard>::Type  TMatchIterator;
-    
+
     if(IsSameType<TReads, TFalseType >::VALUE)
         std::cout << "Hier stimmt was nciht. strinsetspec concat direct\n";
-    
+
     if(options._debugLevel > 0) std::cout << arrayEndPos - arrayBeginPos  << " matches subject to pile up correction." << std::endl;
 
-    if(options.orientationAware) 
+    if(options.orientationAware)
         ::std::sort(iter(fragmentStore.alignedReadStore, arrayBeginPos, Standard()),
-                    iter(fragmentStore.alignedReadStore, arrayEndPos, Standard()), 
-                    LessGStackOaMQ<TMatches,TMatchQualities>(fragmentStore.alignQualityStore)); 
+                    iter(fragmentStore.alignedReadStore, arrayEndPos, Standard()),
+                    LessGStackOaMQ<TMatches,TMatchQualities>(fragmentStore.alignQualityStore));
     else
         ::std::sort(iter(fragmentStore.alignedReadStore, arrayBeginPos, Standard()),
-                    iter(fragmentStore.alignedReadStore, arrayEndPos, Standard()), 
+                    iter(fragmentStore.alignedReadStore, arrayEndPos, Standard()),
                     LessGStackMQ<TMatches,TMatchQualities>(fragmentStore.alignQualityStore));
-    
-    
+
+
     TMatchIterator matchIt          = iter(fragmentStore.alignedReadStore, arrayBeginPos, Standard());
     TMatchIterator matchRangeEnd    = iter(fragmentStore.alignedReadStore, arrayEndPos, Standard());
     TMatchIterator matchItKeep      = matchIt;
-    
+
     while(matchIt != matchRangeEnd)
     {
         TContigPos currentBegin = _min((*matchIt).beginPos,(*matchIt).endPos);
@@ -268,11 +258,11 @@ applyPileupCorrection(TFragmentStore    &fragmentStore,
         unsigned currentSeqno = (*matchIt).contigId;
         char currentOrientation = orientation(*matchIt);
         unsigned currPile = 0;
-        while(matchIt != matchRangeEnd 
-              && (*matchIt).contigId == currentSeqno 
-              && _min((*matchIt).beginPos,(*matchIt).endPos) == currentBegin 
-              && _max((*matchIt).beginPos,(*matchIt).endPos) == currentEnd 
-              && (!options.orientationAware || orientation(*matchIt) == currentOrientation) 
+        while(matchIt != matchRangeEnd
+              && (*matchIt).contigId == currentSeqno
+              && _min((*matchIt).beginPos,(*matchIt).endPos) == currentBegin
+              && _max((*matchIt).beginPos,(*matchIt).endPos) == currentEnd
+              && (!options.orientationAware || orientation(*matchIt) == currentOrientation)
               && currPile < options.maxPile)
         {
             *matchItKeep = *matchIt;
@@ -281,22 +271,22 @@ applyPileupCorrection(TFragmentStore    &fragmentStore,
             ++matchItKeep;
         }
         //if(matchRangeEnd > matchItEnd) ::std::cerr <<"neeeeeeee\n";
-        while(matchIt != matchRangeEnd 
-              && (*matchIt).contigId == currentSeqno 
-              && _min((*matchIt).beginPos,(*matchIt).endPos) == currentBegin 
-              && _max((*matchIt).beginPos,(*matchIt).endPos) == currentEnd 
+        while(matchIt != matchRangeEnd
+              && (*matchIt).contigId == currentSeqno
+              && _min((*matchIt).beginPos,(*matchIt).endPos) == currentBegin
+              && _max((*matchIt).beginPos,(*matchIt).endPos) == currentEnd
               && (!options.orientationAware || orientation(*matchIt) == currentOrientation))
             ++matchIt;
-        
+
     }
-    
+
     if(options._debugLevel > 0) std::cout << matchIt - matchItKeep << " matches discarded." << std::endl;
     resize(fragmentStore.alignedReadStore,matchItKeep - begin(fragmentStore.alignedReadStore,Standard()));
-    
+
     //  ::std::cout << "numMatches = " << length(fragmentStore.alignedReadStore) << ::std::endl;
     SEQAN_ASSERT_LEQ(length(fragmentStore.alignedReadStore), length(fragmentStore.alignQualityStore));
     SEQAN_ASSERT_EQ(length(fragmentStore.readSeqStore), length(fragmentStore.alignQualityStore));
-    
+
     //  str="pileAft";
     //  _dumpMatches(fragmentStore,str);
 }
@@ -305,7 +295,7 @@ applyPileupCorrection(TFragmentStore    &fragmentStore,
 // used for prioritization in pile up correction
 template<typename TFragmentStore, typename TSize, typename TOptions>
 void
-addReadQualityToMatches(TFragmentStore  &fragmentStore, 
+addReadQualityToMatches(TFragmentStore  &fragmentStore,
                         TSize                           arrayBeginPos,
                         TSize                           arrayEndPos,
                         TOptions &)
@@ -314,12 +304,12 @@ addReadQualityToMatches(TFragmentStore  &fragmentStore,
     typedef typename TFragmentStore::TReadSeqStore          TReads;
     typedef typename Value<TReads>::Type                    TRead;
     typedef typename Iterator<TMatches, Standard>::Type     TIterator;
-    
+
     TIterator it = iter(fragmentStore.alignedReadStore, arrayBeginPos, Standard());
     TIterator itEnd = iter(fragmentStore.alignedReadStore, arrayEndPos, Standard());
-    
+
     int avgRQ;
-    for (; it != itEnd; ++it) 
+    for (; it != itEnd; ++it)
     {
         TRead const &read = fragmentStore.readSeqStore[(*it).readId];
         avgRQ = 0;
@@ -330,7 +320,7 @@ addReadQualityToMatches(TFragmentStore  &fragmentStore,
         if((char)(avgRQ/length(read))<(fragmentStore.alignQualityStore[(*it).id]).score)
 
             (fragmentStore.alignQualityStore[(*it).id]).score = (char)(avgRQ/length(read));
-    } 
+    }
 }
 
 // checks whether an alignment has indels
@@ -340,7 +330,7 @@ bool alignmentHasIndel(Align<TValue,TSpec> &align)
     typedef Align<TValue,TSpec>  TAlign;
     typedef typename Row<TAlign>::Type      TAlignRow;
     typedef typename Iterator<TAlignRow>::Type  TAlignIterator;
-    
+
     bool hasIndel = false;
     for(unsigned i = 0; !hasIndel && i < length(rows(align)); ++i)
     {
@@ -377,7 +367,7 @@ clipReads(TFragmentStore    &fragmentStore,
     typedef typename Iterator<TMatches, Standard>::Type     TIterator;
     typedef typename TFragmentStore::TContigSeq         TContigSeq;             // TGenome
     typedef typename Position<TContigSeq>::Type         TContigPos;
-    
+
     TIterator it = iter(fragmentStore.alignedReadStore, arrayBeginPos, Standard());
     TIterator itEnd = iter(fragmentStore.alignedReadStore, arrayEndPos, Standard());
     Align<TRead, ArrayGaps> align;
@@ -385,12 +375,12 @@ clipReads(TFragmentStore    &fragmentStore,
 #ifdef SNPSTORE_DEBUG
     bool extraV = true;
 #endif
-    
+
     Score<int> scoreType = Score<int>(0, -999, -1001, -1000);
     if(length(readClips) < (arrayEndPos-arrayBeginPos)) ::std::cout << length(readClips) << " readclips but " << (arrayEndPos-arrayBeginPos) << " many reads.\n";
     TContigSeq &currGenome = fragmentStore.contigStore[0].seq;
     int kickout = 0;
-    for (; it != itEnd; ++it) 
+    for (; it != itEnd; ++it)
     {
         TMatch &m = *it;
         TRead &read = fragmentStore.readSeqStore[m.readId];
@@ -399,7 +389,7 @@ clipReads(TFragmentStore    &fragmentStore,
         TContigPos beginPos = (m.beginPos < m.endPos ) ? m.beginPos : m.endPos;
         TContigPos endPos = (m.beginPos > m.endPos ) ? m.beginPos : m.endPos;
         TAlignQuality &aliQ = fragmentStore.alignQualityStore[m.id];
-        
+
 #ifdef SNPSTORE_DEBUG
         TContigPos beginBefore = beginPos;
 #endif
@@ -413,7 +403,7 @@ clipReads(TFragmentStore    &fragmentStore,
             ::std::cout << "clipLeft = " << clipLeft << " clipRight = "<<clipRight << "\n";
             ::std::cout << "read=" << read << std::endl;
             ::std::cout << "beginPos=" << beginPos << std::endl;
-            ::std::cout << "endPos=" << endPos << std::endl; 
+            ::std::cout << "endPos=" << endPos << std::endl;
 #endif
             clipLeft = length(read);
             clipRight = 0;
@@ -424,7 +414,7 @@ clipReads(TFragmentStore    &fragmentStore,
             ::std::cout << "clipLeft = " << clipLeft << " clipRight = "<<clipRight << "\n";
             ::std::cout << "read=" << read << std::endl;
             ::std::cout << "beginPos=" << beginPos << std::endl;
-            ::std::cout << "endPos=" << endPos << std::endl; 
+            ::std::cout << "endPos=" << endPos << std::endl;
 #endif
         if(clipLeft > 0 || clipRight > 0)
         {
@@ -440,29 +430,29 @@ clipReads(TFragmentStore    &fragmentStore,
             }
             // adjust read sequence
             read = infix(read,clipLeft,length(read)-clipRight);
-            
+
             // upate avg read quality
             int avgRQ = 0;
             for(unsigned i = 0; i < length(read); ++i)
                 avgRQ += (int) getQualityValue(read[i]);
             aliQ.score = (char)(avgRQ/length(read));
             //      if(extraV) ::std::cout << "aliQ.score = " << (int)aliQ.score << ::std::endl;
-            
-            
+
+
             //do semi-global alignment
             assignSource(row(align, 0), read);
             assignSource(row(align, 1), infix(currGenome, beginPos, endPos));
             if ((*it).endPos < (*it).beginPos)
                 reverseComplement(source(row(align, 1)));
-            
-            int score = globalAlignment(align, scoreType, AlignConfig<false,true,true,false>(), Gotoh());       
+
+            int score = globalAlignment(align, scoreType, AlignConfig<false,true,true,false>(), Gotoh());
             aliQ.errors = (unsigned) round((float)-score/1000);
-            
+
 #ifdef SNPSTORE_DEBUG
             if(extraV) ::std::cout << align << std::endl;
-            if(extraV) ::std::cout << "aliQ.errors = " << (int) aliQ.errors << std::endl; 
+            if(extraV) ::std::cout << "aliQ.errors = " << (int) aliQ.errors << std::endl;
 #endif
-            
+
             // transform first and last read character to genomic positions
             if(aliQ.pairScore == 1)
             {
@@ -473,12 +463,12 @@ clipReads(TFragmentStore    &fragmentStore,
                 //              if(isGap(row(align,1),viewPosReadFirst))
                 //              {
                 //                  std::cout << "bgein gap --> do nothing " << std::endl;
-                //                  
+                //
                 //              }
-                
+
                 if(isGap(row(align,1),viewPosReadLast))
                 {
-                    genomePosReadLast--;                    
+                    genomePosReadLast--;
                 }
 #ifdef SNPSTORE_DEBUG
                 if(extraV)
@@ -497,7 +487,7 @@ clipReads(TFragmentStore    &fragmentStore,
                     beginPos = endPos - genomePosReadLast - 1;
                     endPos = endPos - genomePosReadFirst;
                 }
-                
+
                 if(!alignmentHasIndel(align)) aliQ.pairScore = 0;
             }
             else
@@ -513,7 +503,7 @@ clipReads(TFragmentStore    &fragmentStore,
                     beginPos += clipRight;
                 }
             }
-            
+
             // set genomic positions
             if(m.beginPos < m.endPos) // forward
             {
@@ -538,24 +528,24 @@ clipReads(TFragmentStore    &fragmentStore,
                 ::std::cout << "endPos=" << endPos << std::endl;
 #endif
             }
-            
-            
+
+
         }
     }
-    if(options._debugLevel > 0) 
+    if(options._debugLevel > 0)
         ::std::cout << kickout <<" reads too short after clipping, discarding!\n";
-    
+
 }
 
 template<typename TTmpReads, typename TTmpMatches, typename TTmpQualities, typename TStr>
 void
 _dumpMatches(TTmpReads & reads, TTmpMatches & matches, TTmpQualities & qualities, TStr str)
 {
-    
+
     std::cout << "Length of matches = " << length(matches)  << "\n";
     std::cout << "Length of reads   = " << length(reads)  << "\n";
     std::cout << "Length of matchqs = " << length(qualities)  << "\n";
-    
+
     for(unsigned i = 0 ; i < length(matches); ++i)
     {
         char ori = (matches[i].beginPos < matches[i].endPos) ? 'F' : 'R';
@@ -572,7 +562,7 @@ _dumpMatches(TTmpReads & reads, TTmpMatches & matches, TTmpQualities & qualities
             std::cout << "--"<<str<<"AvgQ     = " << (int) qualities[matches[i].id].score << "\n";
         }
         std::cout << "--"<<str<<"Readseq  = " << reads[matches[i].readId] << std::flush << "\n";
-        
+
     }
 }
 
@@ -598,17 +588,16 @@ assignIntervalsToContigs(TContigIntervals &contigIntervals, TFragmentStore &frag
     }
 }
 
-template<typename TVcfStream, typename TBedStream, typename TSpec, typename TContigId, typename TReaders, typename TContexts, typename TRecords, typename TContigIntervals, typename TOptions, typename TMethOptions>
+template <typename TSpec, typename TContigId, typename TBamFileIns, typename TRecords, typename TContigIntervals, typename TOptions, typename TMethOptions>
 inline bool
-detectSNPsForContig(TVcfStream &vcfStream,
-                    TBedStream &bedStream, 
-                    FragmentStore<TSpec> &fragmentStore1, 
-                    TContigId &currContigId, 
-                    TReaders &recordReaders, 
-                    TContexts &contexts, 
-                    TRecords &records, 
-                    TContigIntervals &contigIntervals,  
-                    TOptions &options, 
+detectSNPsForContig(seqan::VcfFileOut & vcfFileOut,
+                    seqan::BedFileOut & bedFileOut,
+                    FragmentStore<TSpec> &fragmentStore1,
+                    TContigId &currContigId,
+                    TBamFileIns & bamFileIns,
+                    TRecords &records,
+                    TContigIntervals &contigIntervals,
+                    TOptions &options,
                     TMethOptions &methOptions)
 {
     typedef          FragmentStore<TSpec>               TFragmentStore;
@@ -621,15 +610,15 @@ detectSNPsForContig(TVcfStream &vcfStream,
     typedef typename Value<TContigStore>::Type          TContig;
 
     typedef String<String<typename TFragmentStore::TContigGapAnchor> >      TSetContigAnchorGaps;
-    
+
     if (!empty(methOptions.intervals) && empty(contigIntervals[currContigId])) return 0;
     unsigned currInterval = 0;
 
     // parse matches batch by batch
     TContigPos currentWindowBegin = 0;
     if(options._debugLevel > 0) ::std::cout << "Scanning genome #" << currContigId << " ..." << ::std::endl;
-    
-    // containers for those matches that overlap two windows    
+
+    // containers for those matches that overlap two windows
     TAlignedReadStore tmpMatches;
     TAlignQualityStore tmpQualities;
     TReadStore tmpRs;
@@ -637,7 +626,7 @@ detectSNPsForContig(TVcfStream &vcfStream,
     TSetContigAnchorGaps tmpSetContigAnchorGaps;
     options.minCoord = MaxValue<unsigned>::VALUE;
     options.maxCoord = 0;
-    
+
     // snp calling is done for all positions between windowBegin and windowEnd
     // bs_change
     if (!empty(methOptions.intervals))
@@ -647,10 +636,10 @@ detectSNPsForContig(TVcfStream &vcfStream,
     }
     while(currentWindowBegin <  (TContigPos)length(fragmentStore1.contigStore[currContigId].seq))
     {
-        TContigPos currentWindowEnd = currentWindowBegin + options.windowSize; 
+        TContigPos currentWindowEnd = currentWindowBegin + options.windowSize;
         if(currentWindowEnd > (TContigPos)length(fragmentStore1.contigStore[currContigId].seq)) currentWindowEnd = (TContigPos)length(fragmentStore1.contigStore[currContigId].seq);
         // bs_change
-        if (!empty(methOptions.intervals) && currentWindowEnd > contigIntervals[currContigId][currInterval].i2) 
+        if (!empty(methOptions.intervals) && currentWindowEnd > contigIntervals[currContigId][currInterval].i2)
         {
             currentWindowEnd = contigIntervals[currContigId][currInterval].i2;
             //std::cout << "currInterval startPos: " << contigIntervals[currContigId][currInterval].i1 << "  endPos: " << contigIntervals[currContigId][currInterval].i2 << std::endl;
@@ -659,10 +648,10 @@ detectSNPsForContig(TVcfStream &vcfStream,
 
         if(options._debugLevel > 0)
             std::cout << "Sequence number " << currContigId << " window " << currentWindowBegin << ".." << currentWindowEnd << "\n";
-       
-        TFragmentStore fragmentStoreTmp;  // Use temp. fragmentStore to store only current reads and to use only infix of contig seq for realigning etc. 
+
+        TFragmentStore fragmentStoreTmp;  // Use temp. fragmentStore to store only current reads and to use only infix of contig seq for realigning etc.
         TSetContigAnchorGaps setContigAnchorGaps;
-        
+
         // add the matches that were overlapping with this and the last window (copied in order to avoid 2 x makeGlobal)
         if(!empty(tmpMatches))
         {
@@ -672,7 +661,7 @@ detectSNPsForContig(TVcfStream &vcfStream,
             resize(fragmentStoreTmp.readSeqStore,length(tmpMatches));
             resize(fragmentStoreTmp.readStore,length(tmpMatches));
             resize(setContigAnchorGaps, length(tmpMatches));
-            
+
             arrayMoveForward(begin(tmpQualities,Standard()), end(tmpQualities,Standard()), begin(fragmentStoreTmp.alignQualityStore,Standard()));
             arrayMoveForward(begin(tmpMatches,Standard()), end(tmpMatches,Standard()), begin(fragmentStoreTmp.alignedReadStore,Standard()));
             arrayMoveForward(begin(tmpReads,Standard()), end(tmpReads,Standard()), begin(fragmentStoreTmp.readSeqStore,Standard()));
@@ -681,8 +670,8 @@ detectSNPsForContig(TVcfStream &vcfStream,
 #ifdef SNPSTORE_DEBUG
             CharString strstr = "afterCopyInFrag";
             _dumpMatches(fragmentStoreTmp,strstr);
-#endif  
-        }     
+#endif
+        }
         TContig contig;
         contig.seq = fragmentStore1.contigStore[currContigId].seq;
         appendValue(fragmentStoreTmp.contigStore, contig);
@@ -693,9 +682,9 @@ detectSNPsForContig(TVcfStream &vcfStream,
         for(unsigned j = 0; j < length(options.readFNames); ++j)
         {
             unsigned sizeBefore = length(fragmentStoreTmp.alignedReadStore);
-            
-            int result = readMatchesFromSamBam(setContigAnchorGaps, *recordReaders[j], contexts[j], records[j], fragmentStoreTmp, fragmentStore1,
-                                               currContigId, currentWindowBegin, currentWindowEnd, options);                       
+
+            int result = readMatchesFromSamBam(setContigAnchorGaps, *bamFileIns[j], records[j], fragmentStoreTmp, fragmentStore1,
+                                               currContigId, currentWindowBegin, currentWindowEnd, options);
 
             if(result == CALLSNPS_GFF_FAILED)
             {
@@ -704,11 +693,11 @@ detectSNPsForContig(TVcfStream &vcfStream,
             }
             if(result > 0) return result;
             if(options._debugLevel > 0) std::cout << "parsed reads of file " << j << "\n";
-            
+
             // store average quality of each read if mapq is 0 or if average quality is < mapq
             // addReadQualityToMatches(fragmentStoreTmp,sizeBefore,(unsigned)length(fragmentStoreTmp.alignedReadStore),options); // bs_change: we will deal with real mapqs
             // do pile up correction if lane-based. lane-specific pileup correction not really used
-            if(options.maxPile != 0 && options.laneSpecificMaxPile) 
+            if(options.maxPile != 0 && options.laneSpecificMaxPile)
                 applyPileupCorrection(fragmentStoreTmp,sizeBefore,(unsigned)length(fragmentStoreTmp.alignedReadStore),options);
         }
         SEQAN_ASSERT_EQ(length(fragmentStoreTmp.alignedReadStore), length(setContigAnchorGaps));
@@ -716,15 +705,15 @@ detectSNPsForContig(TVcfStream &vcfStream,
         if (options._debugLevel > 1)  // number of reads currently in memory
             std::cerr << lengthSum(fragmentStoreTmp.readSeqStore) << " bps of " << length(fragmentStoreTmp.readSeqStore) << " reads in memory." << ::std::endl;
         //sumreads +=  length(fragmentStoreTmp.readSeqStore);  // total count of reads
-        
+
         // do merged pile up correction
         if(options.maxPile != 0 && !options.laneSpecificMaxPile)
             applyPileupCorrection(fragmentStoreTmp,(unsigned)0,(unsigned)length(fragmentStoreTmp.alignedReadStore),options);
-        
+
         // these were set while parsing matches, first and last position of parsed matches
         TContigPos startCoord = _max((int)options.minCoord-options.realignAddBorder,0);// can be < currentWindowBegin
-        TContigPos endCoord = _min(options.maxCoord+options.realignAddBorder,length(fragmentStore1.contigStore[currContigId].seq)); // can be > currentWindoEnd 
-         
+        TContigPos endCoord = _min(options.maxCoord+options.realignAddBorder,length(fragmentStore1.contigStore[currContigId].seq)); // can be > currentWindoEnd
+
         if(!empty(fragmentStoreTmp.alignedReadStore))
         {
             //initial values of min and max coords for next round are set here
@@ -736,7 +725,7 @@ detectSNPsForContig(TVcfStream &vcfStream,
                 clear(tmpReads);
                 clear(tmpSetContigAnchorGaps);
                 copyNextWindowMatchesAndReads(fragmentStoreTmp, setContigAnchorGaps, tmpReads, tmpRs, tmpMatches, tmpQualities, tmpSetContigAnchorGaps, currContigId, currentWindowEnd, options);
-            }   
+            }
 #ifdef SNPSTORE_DEBUG
             std::cout << "Min = " << options.minCoord << " Max = " << options.maxCoord << std::endl;
             std::cout << "startCoord = " << startCoord << " endCoord = " << endCoord << std::endl;
@@ -744,25 +733,25 @@ detectSNPsForContig(TVcfStream &vcfStream,
 #endif
             // Aligned read coordinates are relative to current chromosomal window (segment)
             transformCoordinates(fragmentStoreTmp,startCoord,options);
-            // set the current contig segment as contig sequence 
+            // set the current contig segment as contig sequence
             fragmentStoreTmp.contigStore[0].seq = infix(fragmentStore1.contigStore[currContigId].seq,startCoord,endCoord);
-            
+
             if(options.realign)
             {
-                doCheckRealignCall(fragmentStoreTmp, startCoord, currentWindowBegin, currentWindowEnd, setContigAnchorGaps, vcfStream, bedStream, methOptions, options);
+                doCheckRealignCall(fragmentStoreTmp, startCoord, currentWindowBegin, currentWindowEnd, setContigAnchorGaps, vcfFileOut, bedFileOut, methOptions, options);
             }
             else
             {
                 // Convert gaps of pairwise matches to msa
                 //std::cout << "convertPairWiseToGlobalAlignment..." << std::endl;
-#ifdef CALL_PROFILE 
+#ifdef CALL_PROFILE
                 double timeStamp = sysTime();
-#endif 
+#endif
                 convertPairWiseToGlobalAlignment(fragmentStoreTmp, setContigAnchorGaps);
 #ifdef CALL_PROFILE
                 Times::instance().time_convertPWToGlobal += (sysTime() - timeStamp);
 #endif
-                doSnpAndMethCalling(fragmentStoreTmp,  startCoord, currentWindowBegin, currentWindowEnd, false, vcfStream, bedStream, methOptions, options);    //bs
+                doSnpAndMethCalling(fragmentStoreTmp,  startCoord, currentWindowBegin, currentWindowEnd, false, vcfFileOut, bedFileOut, methOptions, options);    //bs
             }
         }
         if (!empty(methOptions.intervals) && currentWindowEnd == contigIntervals[currContigId][currInterval].i2)   // Reached end off current interval
@@ -770,9 +759,9 @@ detectSNPsForContig(TVcfStream &vcfStream,
             if (currInterval < length(contigIntervals[currContigId])-1)   // If existent, go to next interval within the current contig
             {
                 currentWindowBegin = contigIntervals[currContigId][currInterval+1].i1;
-                clear(tmpReads); 
-                clear(tmpRs); 
-                clear(tmpMatches); 
+                clear(tmpReads);
+                clear(tmpRs);
+                clear(tmpMatches);
                 clear(tmpQualities);
                 clear(tmpSetContigAnchorGaps);
             }
@@ -780,7 +769,7 @@ detectSNPsForContig(TVcfStream &vcfStream,
             ++currInterval;
         }
         else currentWindowBegin = currentWindowEnd;
-    } 
+    }
     return 0;
 }
 
@@ -789,23 +778,20 @@ detectSNPsForContig(TVcfStream &vcfStream,
 // Main read mapper function
 template <typename TMethOptions>
 int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
-{ 
+{
     typedef FragmentStore<SnpStoreSpec_>                                        TFragmentStore;
     typedef typename TFragmentStore::TContigPos                                 TContigPos;
-    typedef typename TFragmentStore::TContigNameStore                           TContigNameStore;
-    typedef NameStoreCache<TContigNameStore, CharString>                        TContigNameStoreCache;
-    typedef BamIOContext<TContigNameStore, TContigNameStoreCache>               TBamIOContext;
-    
+
     SEQAN_PROTIMESTART(load_time);
-    
+
     // Load genomes in FragmentStore
-    TFragmentStore      fragmentStore1; 
+    TFragmentStore      fragmentStore1;
     StringSet<CharString> genomeFileNameList; // possible for later to load multiple files
     appendValue(genomeFileNameList,options.genomeFName);
     loadContigs(fragmentStore1, genomeFileNameList);
     refresh(fragmentStore1.contigNameStoreCache);
 
-  
+
     // Assign intervals to analyze to string which can be accessed by contigId
     String<String<Interval<TContigPos> > > contigIntervals;
     if(!empty(methOptions.intervals)) assignIntervalsToContigs(contigIntervals, fragmentStore1, methOptions);
@@ -817,189 +803,179 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
     resize(contigTempFileNamesVcf, length(fragmentStore1.contigStore));
     resize(contigTempFileNamesBed, length(fragmentStore1.contigStore));
 
-#ifndef SEQAN_ENABLE_PARALLELISM
+    // TODO(holtgrew): The new's below are not paired with delete's, thus there are leaks!
+
+#if !defined(SEQAN_ENABLE_PARALLELISM)
     // For each contig we need own record readers (for each given sam file)
-    vector< ::std::fstream* > readFileStreams;
-    readFileStreams.resize(length(options.readFNames));
-    String<RecordReader<std::fstream, SinglePass< > >* > recordReaders;
-    String<TBamIOContext > contexts;
-    String<BamAlignmentRecord> records; 
-    resize(recordReaders, length(options.readFNames));
-    resize(contexts, length(options.readFNames));
-    resize(records, length(options.readFNames));
+    std::vector<seqan::BamFileIn *> bamFileIns(length(options.readFNames));
+    std::vector<seqan::BamAlignmentRecord> records(bamFileIns.size());
     for (unsigned i = 0; i < length(options.readFNames); ++i)
     {
-        readFileStreams[i] = new fstream(toCString(options.readFNames[i]), ios_base::in | ios::binary);
-        if(!(*(readFileStreams[i])).is_open())
+        bamFileIns[i] = new seqan::BamFileIn;
+        if (!open(*bamFileIns[i], toCString(options.readFNames[i])))
         {
             ::std::cerr << "Failed to open read file " << options.readFNames[i] << ::std::endl;
             return CALLSNPS_GFF_FAILED;
         }
-        recordReaders[i] = new RecordReader<std::fstream,SinglePass< > >(*readFileStreams[i]);
-        contexts[i] = TBamIOContext(fragmentStore1.contigNameStore, fragmentStore1.contigNameStoreCache);
-        // Read header.
-        BamHeader header;
-        readRecord(header, contexts[i], *recordReaders[i], Sam()); 
-        clear(records[i].qName);
-    }
-#endif
 
+        // Read header.
+        seqan::BamHeader header;
+        readRecord(header, *bamFileIns[i]);
+    }
+#endif  // #if !defined(SEQAN_ENABLE_PARALLELISM)
     bool abort = false;
-#ifdef SEQAN_ENABLE_PARALLELISM
+#if defined(SEQAN_ENABLE_PARALLELISM)
     SEQAN_OMP_PRAGMA(parallel for schedule(dynamic, 1)) // TODO Check if guided is faster
-#endif
+#endif  // #if defined(SEQAN_ENABLE_PARALLELISM)
+
     for (int currContigId = 0; currContigId < (int)length(fragmentStore1.contigStore); ++currContigId)
     {
-#ifdef SEQAN_ENABLE_PARALLELISM
-        // For each contig we need own record readers (for each given sam file)
-        vector< ::std::fstream* > readFileStreams;
-        readFileStreams.resize(length(options.readFNames));
-        String<RecordReader<std::fstream, SinglePass< > >* > recordReaders;
-        String<TBamIOContext > contexts;
-        String<BamAlignmentRecord> records; 
-        resize(recordReaders, length(options.readFNames));
-        resize(contexts, length(options.readFNames));
-        resize(records, length(options.readFNames));
+#if defined(SEQAN_ENABLE_PARALLELISM)
+        // For each contig we need our own BamFileIn (for each given sam file)
+        std::vector<seqan::BamFileIn *> bamFileIns(length(options.readFNames));
+        std::vector<seqan::BamAlignmentRecord> records(bamFileIns.size());
+
         for (unsigned i = 0; i < length(options.readFNames); ++i)
         {
-            readFileStreams[i] = new fstream(toCString(options.readFNames[i]), ios_base::in | ios::binary);
-            if(!(*(readFileStreams[i])).is_open())
+            bamFileIns[i] = new seqan::BamFileIn;
+            if (!open(*bamFileIns[i], toCString(options.readFNames[i])))
             {
                 ::std::cerr << "Failed to open read file " << options.readFNames[i] << ::std::endl;
                 abort = true;
             }
             else
             {
-                recordReaders[i] = new RecordReader<std::fstream,SinglePass< > >(*readFileStreams[i]);
-                contexts[i] = TBamIOContext(fragmentStore1.contigNameStore, fragmentStore1.contigNameStoreCache);
                 // Read header.
-                BamHeader header;
-                readRecord(header, contexts[i], *recordReaders[i], Sam()); 
-                clear(records[i].qName);
+                seqan::BamHeader header;
+                readRecord(header, *bamFileIns[i]);
             }
         }
-#endif
+#endif  // #if defined(SEQAN_ENABLE_PARALLELISM)
+
         if (!abort)
         {
         // Temp. contig output
-            CharString tempFileNameVcf; 
-            CharString tempFileNameBed; 
-            append(tempFileNameVcf, SEQAN_TEMP_FILENAME());      
-            append(tempFileNameBed, SEQAN_TEMP_FILENAME()); 
+            CharString tempFileNameVcf;
+            CharString tempFileNameBed;
+            append(tempFileNameVcf, SEQAN_TEMP_FILENAME());
+            append(tempFileNameBed, SEQAN_TEMP_FILENAME());
             //std::cout << "temp file Name: " << tempFileNameVcf << std::endl;
             stringstream ss;
             ss << currContigId;
             append(tempFileNameVcf, ss.str());
             append(tempFileNameBed, ss.str());
+            append(tempFileNameVcf, ".vcf");
+            append(tempFileNameBed, ".bed");
             contigTempFileNamesVcf[currContigId] = tempFileNameVcf;
             contigTempFileNamesBed[currContigId] = tempFileNameBed;
-            VcfStream tempVcfStream(toCString(tempFileNameVcf), VcfStream::WRITE);
-            appendValue(tempVcfStream.header.sequenceNames, fragmentStore1.contigNameStore[currContigId]);
-            appendValue(tempVcfStream.header.sampleNames, "NA00001");
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("fileformat", "VCFv4.1"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("fileDate", "20090805"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("source", "temporary file snp_meth_store"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("reference", "file:///seq/references/1000GenomesPilot-NCBI36.fasta"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("contig", "<ID=21,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species=\"Homo sapiens\",taxonomy=x>"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("phasing", "partial"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("INFO", "<ID=NS,Number=1,Type=Integer,Description=\"Number of Samples With Data\">"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("INFO", "<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("INFO", "<ID=AF,Number=A,Type=Float,Description=\"Allele Frequency\">"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("INFO", "<ID=AA,Number=1,Type=String,Description=\"Ancestral Allele\">"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("INFO", "<ID=DB,Number=0,Type=Flag,Description=\"dbSNP membership, build 129\">"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("INFO", "<ID=H2,Number=0,Type=Flag,Description=\"HapMap2 membership\">"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("FILTER", "<ID=q10,Description=\"Quality below 10\">"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("FILTER", "<ID=s50,Description=\"Less than 50% of samples have data\">"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("ID", "<ID=GT,Number=1,Type=String,Description=\"Genotype\">"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("ID", "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("ID", "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">"));
-            appendValue(tempVcfStream.header.headerRecords, VcfHeaderRecord("ID", "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">"));
-            BedStream tempBedStream(toCString(tempFileNameBed), BedStream::WRITE);
-            addSequenceName(tempBedStream, fragmentStore1.contigNameStore[currContigId]);   
-            detectSNPsForContig(tempVcfStream, tempBedStream, fragmentStore1, currContigId, recordReaders, contexts, records, contigIntervals, options, methOptions); 
-        }
-    }   
 
-    if (abort) return CALLSNPS_GFF_FAILED;
+            seqan::VcfFileOut vcfFileOut(toCString(tempFileNameVcf));
+            seqan::VcfHeader vcfHeader;
+
+            appendName(contigNamesCache(context(vcfFileOut)), fragmentStore1.contigNameStore[currContigId]);
+            appendName(sampleNamesCache(context(vcfFileOut)), "NA00001");
+
+            appendValue(vcfHeader, VcfHeaderRecord("fileformat", "VCFv4.1"));
+            appendValue(vcfHeader, VcfHeaderRecord("fileDate", "20090805"));
+            appendValue(vcfHeader, VcfHeaderRecord("source", "temporary file snp_meth_store"));
+            appendValue(vcfHeader, VcfHeaderRecord("reference", "file:///seq/references/1000GenomesPilot-NCBI36.fasta"));
+            appendValue(vcfHeader, VcfHeaderRecord("contig", "<ID=21,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species=\"Homo sapiens\",taxonomy=x>"));
+            appendValue(vcfHeader, VcfHeaderRecord("phasing", "partial"));
+            appendValue(vcfHeader, VcfHeaderRecord("INFO", "<ID=NS,Number=1,Type=Integer,Description=\"Number of Samples With Data\">"));
+            appendValue(vcfHeader, VcfHeaderRecord("INFO", "<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">"));
+            appendValue(vcfHeader, VcfHeaderRecord("INFO", "<ID=AF,Number=A,Type=Float,Description=\"Allele Frequency\">"));
+            appendValue(vcfHeader, VcfHeaderRecord("INFO", "<ID=AA,Number=1,Type=String,Description=\"Ancestral Allele\">"));
+            appendValue(vcfHeader, VcfHeaderRecord("INFO", "<ID=DB,Number=0,Type=Flag,Description=\"dbSNP membership, build 129\">"));
+            appendValue(vcfHeader, VcfHeaderRecord("INFO", "<ID=H2,Number=0,Type=Flag,Description=\"HapMap2 membership\">"));
+            appendValue(vcfHeader, VcfHeaderRecord("FILTER", "<ID=q10,Description=\"Quality below 10\">"));
+            appendValue(vcfHeader, VcfHeaderRecord("FILTER", "<ID=s50,Description=\"Less than 50% of samples have data\">"));
+            appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=GT,Number=1,Type=String,Description=\"Genotype\">"));
+            appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">"));
+            appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">"));
+            appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">"));
+            writeRecord(vcfFileOut, vcfHeader);
+
+            seqan::BedFileOut bedFileOut(toCString(tempFileNameBed));
+            //XXX addSequenceName(tempBedStream, fragmentStore1.contigNameStore[currContigId]);
+            detectSNPsForContig(vcfFileOut, bedFileOut, fragmentStore1, currContigId, bamFileIns, records, contigIntervals, options, methOptions);
+        }
+    }
+
+    if (abort)
+        return CALLSNPS_GFF_FAILED;
 
     // Prepare VCF output
-    VcfStream vcfStream(toCString(options.vcfOut), VcfStream::WRITE);
-    appendValue(vcfStream.header.sampleNames, "NA00001");
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("fileformat", "VCFv4.1"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("fileDate", "20090805"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("source", "snp_meth_store"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("reference", "file:///seq/references/1000GenomesPilot-NCBI36.fasta"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("contig", "<ID=21,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species=\"Homo sapiens\",taxonomy=x>"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("phasing", "partial"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("INFO", "<ID=NS,Number=1,Type=Integer,Description=\"Number of Samples With Data\">"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("INFO", "<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("INFO", "<ID=AF,Number=A,Type=Float,Description=\"Allele Frequency\">"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("INFO", "<ID=AA,Number=1,Type=String,Description=\"Ancestral Allele\">"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("INFO", "<ID=DB,Number=0,Type=Flag,Description=\"dbSNP membership, build 129\">"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("INFO", "<ID=H2,Number=0,Type=Flag,Description=\"HapMap2 membership\">"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("FILTER", "<ID=q10,Description=\"Quality below 10\">"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("FILTER", "<ID=s50,Description=\"Less than 50% of samples have data\">"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("ID", "<ID=GT,Number=1,Type=String,Description=\"Genotype\">"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("ID", "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("ID", "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">"));
-    appendValue(vcfStream.header.headerRecords, VcfHeaderRecord("ID", "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">"));
+    seqan::VcfFileOut vcfFileOut(toCString(options.vcfOut));
+    seqan::VcfHeader vcfHeader;
+
+    appendName(sampleNamesCache(context(vcfFileOut)), "NA00001");
+    appendValue(vcfHeader, VcfHeaderRecord("fileformat", "VCFv4.1"));
+    appendValue(vcfHeader, VcfHeaderRecord("fileDate", "20090805"));
+    appendValue(vcfHeader, VcfHeaderRecord("source", "snp_meth_store"));
+    appendValue(vcfHeader, VcfHeaderRecord("reference", "file:///seq/references/1000GenomesPilot-NCBI36.fasta"));
+    appendValue(vcfHeader, VcfHeaderRecord("contig", "<ID=21,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species=\"Homo sapiens\",taxonomy=x>"));
+    appendValue(vcfHeader, VcfHeaderRecord("phasing", "partial"));
+    appendValue(vcfHeader, VcfHeaderRecord("INFO", "<ID=NS,Number=1,Type=Integer,Description=\"Number of Samples With Data\">"));
+    appendValue(vcfHeader, VcfHeaderRecord("INFO", "<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">"));
+    appendValue(vcfHeader, VcfHeaderRecord("INFO", "<ID=AF,Number=A,Type=Float,Description=\"Allele Frequency\">"));
+    appendValue(vcfHeader, VcfHeaderRecord("INFO", "<ID=AA,Number=1,Type=String,Description=\"Ancestral Allele\">"));
+    appendValue(vcfHeader, VcfHeaderRecord("INFO", "<ID=DB,Number=0,Type=Flag,Description=\"dbSNP membership, build 129\">"));
+    appendValue(vcfHeader, VcfHeaderRecord("INFO", "<ID=H2,Number=0,Type=Flag,Description=\"HapMap2 membership\">"));
+    appendValue(vcfHeader, VcfHeaderRecord("FILTER", "<ID=q10,Description=\"Quality below 10\">"));
+    appendValue(vcfHeader, VcfHeaderRecord("FILTER", "<ID=s50,Description=\"Less than 50% of samples have data\">"));
+    appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=GT,Number=1,Type=String,Description=\"Genotype\">"));
+    appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">"));
+    appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">"));
+    appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">"));
+    writeRecord(vcfFileOut, vcfHeader);
+
     // Prepare BED output
-    BedStream bedStream(toCString(options.bedOut), BedStream::WRITE);
+    seqan::BedFileOut bedFileOut;
+    if (!open(bedFileOut, toCString(options.bedOut)))
+    {
+        std::cerr << "Could not open output BED file.\n";
+        return 1;
+    }
 
    // Append content of temp files to final output in contig order
     for (unsigned i = 0; i < length(fragmentStore1.contigStore); ++i)
     {
         // VCF
-        VcfStream tempVcfStream(toCString(contigTempFileNamesVcf[i]), VcfStream::READ);
-        if (!isGood(tempVcfStream))
+        seqan::VcfFileIn vcfFileIn;
+        if (!open(vcfFileIn, toCString(contigTempFileNamesVcf[i])))
         {
             std::cerr << "ERROR: Could not open temporary vcf file: " << contigTempFileNamesVcf[i] << "\n";
             return 1;
         }
-        VcfRecord vcfRecord;
-        while (!atEnd(tempVcfStream))        
-        { 
-            if (readRecord(vcfRecord, tempVcfStream) != 0)
-            {
-                std::cerr << "ERROR: Problem reading from temporary vcf file: " << contigTempFileNamesVcf[i] << "\n";
-                return 1;
-            }
-            if (vcfRecord.rID >= (int)length(vcfStream.header.sequenceNames))
-                appendValue(vcfStream.header.sequenceNames, fragmentStore1.contigNameStore[i]);
-            if (writeRecord(vcfStream, vcfRecord) != 0)
-            {
-                std::cerr << "ERROR: Problem writing to vcf.\n";
-                return 1;
-            }
+
+        seqan::VcfHeader vcfHeader;
+        readRecord(vcfHeader, vcfFileIn);
+
+        seqan::VcfRecord vcfRecord;
+        while (!atEnd(vcfFileIn))
+        {
+            readRecord(vcfRecord, vcfFileIn);
+            if (vcfRecord.rID >= (int)length(contigNames(context(vcfFileOut))))
+                appendName(contigNamesCache(context(vcfFileOut)), fragmentStore1.contigNameStore[i]);
+            writeRecord(vcfFileOut, vcfRecord);
         }
         remove(toCString(contigTempFileNamesVcf[i]));  // Delete temp. files
+
         // BED
-        BedStream tempBedStream(toCString(contigTempFileNamesBed[i]), BedStream::READ);
-        if (!isGood(tempBedStream))
+        seqan::BedFileIn bedFileIn;
+        if (!open(bedFileIn, toCString(contigTempFileNamesBed[i])))
         {
             std::cerr << "ERROR: Could not open temporary bed file: " << contigTempFileNamesBed[i] << "\n";
             return 1;
         }
-        BedRecord<Bed6> bedRecord;
-        while (!atEnd(tempBedStream))
+
+        seqan::BedRecord<seqan::Bed6> bedRecord;
+        while (!atEnd(bedFileIn))
         {
-            if (readRecord(bedRecord, tempBedStream) != 0)
-            {
-                std::cerr << "bedRecord: rID: " << bedRecord.rID << "  beginPos: " << bedRecord.beginPos << "  name: " << bedRecord.name << "  score: " << bedRecord.score << "  strand: " << bedRecord.strand << "  data: " << bedRecord.data[0] << std::endl;
-                std::cerr << "ERROR: Problem reading from temporary bed file: " << contigTempFileNamesBed[i] << "\n";
-                return 1;
-            }
-            // If record is on a sequence that is not known to bedStream yet then we
-            // have to make it known there.
-            if (bedRecord.rID >= (int)length(bedStream.sequenceNames))
-                addSequenceName(bedStream, bedRecord.ref);
-            if (writeRecord(bedStream, bedRecord) != 0)
-            {
-                std::cerr << "ERROR: Problem writing to bed file.\n";
-                return 1;
-            }
+            readRecord(bedRecord, bedFileIn);
+            writeRecord(bedFileOut, bedRecord);
         }
-        remove(toCString(contigTempFileNamesBed[i])); 
+        remove(toCString(contigTempFileNamesBed[i]));
     }
 
     methOptions.statsCGMethylated = methOptions.statsCGMethylated/methOptions.countCG;
@@ -1029,19 +1005,19 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     addDescription(parser, "SNP and methylation level calling in mapped bisulfite read data.");
 
     // We require two arguments.
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "GENOME"));
-    setValidValues(parser, 0, ".fasta .fa");
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "GENOME"));
+    setValidValues(parser, 0, SeqFileIn::getFileExtensions());
     setHelpText(parser, 0, "A reference genome file.");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "ALIGNMENTS"));
-    setValidValues(parser, 1, ".sam");
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "ALIGNMENTS"));
+    setValidValues(parser, 1, BamFileIn::getFileExtensions());
     setHelpText(parser, 1, "SAM input file containing four-letter read alignments (must be sorted by coordinates).");
 
     addSection(parser, "Options");
-    addOption(parser, ArgParseOption("o", "output", "Output file for SNPs.", ArgParseArgument::OUTPUTFILE));
-    setValidValues(parser, "output", ".vcf");
+    addOption(parser, ArgParseOption("o", "output", "Output file for SNPs.", ArgParseArgument::OUTPUT_FILE));
+    setValidValues(parser, "output", VcfFileOut::getFileExtensions());
     setRequired(parser, "output", true);
-    addOption(parser, ArgParseOption("b", "bed", "Bed output file for methylation level calls.", ArgParseArgument::OUTPUTFILE));
-    setValidValues(parser, "bed", ".bed");
+    addOption(parser, ArgParseOption("b", "bed", "Bed output file for methylation level calls.", ArgParseArgument::OUTPUT_FILE));
+    setValidValues(parser, "bed", BedFileOut::getFileExtensions());
     setRequired(parser, "bed", true);
 
     addOption(parser, ArgParseOption("mu", "multi", "Keep non-unique reads."));
@@ -1054,10 +1030,10 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     addOption(parser, ArgParseOption("mc", "min-coverage", "Minimal required number of reads covering a candidate position.", ArgParseArgument::INTEGER));
     setMinValue(parser, "min-coverage", "1");
     setDefaultValue(parser, "min-coverage", options.minCoverage);
-    addOption(parser, ArgParseOption("eb", "exclude-border", "Exclude read positions within eb base pairs of read borders for SNP calling.", ArgParseArgument::INTEGER)); 
+    addOption(parser, ArgParseOption("eb", "exclude-border", "Exclude read positions within eb base pairs of read borders for SNP calling.", ArgParseArgument::INTEGER));
     setDefaultValue(parser, "exclude-border", options.excludeBorderPos);
-    addOption(parser, ArgParseOption("su", "suboptimal", "Keep suboptimal reads."));  
-    addOption(parser, ArgParseOption("re", "realign", "Realign reads around indel candidates.")); 
+    addOption(parser, ArgParseOption("su", "suboptimal", "Keep suboptimal reads."));
+    addOption(parser, ArgParseOption("re", "realign", "Realign reads around indel candidates."));
     hideOption(parser, "re");
     addOption(parser, ArgParseOption("cq", "corrected-quality", "New quality calibration factor.", ArgParseArgument::DOUBLE));
     hideOption(parser, "cq");
@@ -1123,7 +1099,7 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     setMinValue(parser, "del-rate", "0");
     setMaxValue(parser, "del-rate", "1");
     hideOption(parser, "dr");
-    addOption(parser, ArgParseOption("der", "del-error-rate", "Deletion error rate.", ArgParseArgument::DOUBLE)); 
+    addOption(parser, ArgParseOption("der", "del-error-rate", "Deletion error rate.", ArgParseArgument::DOUBLE));
     setMinValue(parser, "del-error-rate", "0");
     setMaxValue(parser, "del-error-rate", "1");
     hideOption(parser, "der");
@@ -1161,7 +1137,7 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     // Extract option values.
     // Options:
     getOptionValue(options.vcfOut, parser, "output");
-    getOptionValue(options.bedOut, parser, "bed"); 
+    getOptionValue(options.bedOut, parser, "bed");
     options.keepMultiReads = isSet(parser, "multi");
     if (isSet(parser, "solexa-qual-offset"))
         options.asciiQualOffset = 64;
@@ -1222,7 +1198,7 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
         methOptions.betaSampling = true;
     else
         methOptions.betaSampling = false;
-  
+
     getOptionValue(methOptions.minScoreToCallSnp, parser, "min-score");
     getOptionValue(methOptions.minProbToCallSnp, parser, "min-prob");
 
@@ -1247,14 +1223,14 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
         options._debugLevel = max(options._debugLevel, 1);
     if (isSet(parser, "very-verbose"))
         options._debugLevel = max(options._debugLevel, 2);
-    
+
     getArgumentValue(options.genomeFName, parser, 0);
     unsigned countFiles = getArgumentValueCount(parser, 1);
     resize(options.readFNames, countFiles);
     for (unsigned i = 0; i < countFiles; ++i)
         getArgumentValue(options.readFNames[i], parser, 1, i);
 
-    if(options.windowSize > 1000000) 
+    if(options.windowSize > 1000000)
         options.windowSize = 10000;
 
     return ArgumentParser::PARSE_OK;
@@ -1272,7 +1248,7 @@ int main(int argc, char const ** argv)
     // Otherwise, exit with code 0 (e.g. help was printed).
     if (res != ArgumentParser::PARSE_OK)
         return res == ArgumentParser::PARSE_ERROR;
-    
+
     for(int arg = 0; arg < argc; ++arg) {
         options.programCall << argv[arg] << " ";
     }
@@ -1280,9 +1256,9 @@ int main(int argc, char const ** argv)
     //////////////////////////////////////////////////////////////////////////////
     // check for variants
 
-#ifdef CALL_PROFILE 
+#ifdef CALL_PROFILE
     double timeStamp = sysTime();
-#endif  
+#endif
     int result = detectSNPs(options, methOptions);
     if (result > 0)
     {
@@ -1300,8 +1276,8 @@ int main(int argc, char const ** argv)
 
     if (options._debugLevel > 0)
     {
-        std::cout << "CounteBViolated: " << methOptions.counteBViolated << std::endl; 
-        std::cout << "CountPlanB (Newton, error bound violated or f'' > 0: sampling applied): " << methOptions.countPlanB << std::endl; 
+        std::cout << "CounteBViolated: " << methOptions.counteBViolated << std::endl;
+        std::cout << "CountPlanB (Newton, error bound violated or f'' > 0: sampling applied): " << methOptions.countPlanB << std::endl;
         std::cout << "CountNoPlanB: " << methOptions.countNoPlanB << std::endl;
         std::cout << "CountCovTooLow: " << methOptions.countCovTooLow << std::endl;
         std::cout << "CountScoreTooLow: " << methOptions.countScoreTooLow << std::endl;

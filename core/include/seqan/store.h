@@ -36,17 +36,17 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/align.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/parallel.h>
+#include <seqan/seq_io.h>
 #include <seqan/bam_io.h>
+#include <seqan/gff_io.h>
+#include <seqan/ucsc_io.h>
 #include <seqan/misc/misc_name_store_cache.h>
 
 #include <sstream>
 #include <algorithm>
 #include <set>
-
-#include <seqan/gff_io.h>
-#include <seqan/stream.h>
 
 //////////////////////////////////////////////////////////////////////////////
 // FRAGMENT STORE SUB-CONTAINERS

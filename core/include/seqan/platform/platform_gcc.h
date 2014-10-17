@@ -173,4 +173,9 @@ typedef uint8_t __uint8;   // nolint
 #  endif
 #endif
 
+#define SEQAN_LIKELY(expr)    __builtin_expect(!!(expr), 1)
+#define SEQAN_UNLIKELY(expr)  __builtin_expect(!!(expr), 0)
+
+#define SEQAN_RESTRICT  __restrict__
+
 #endif  // #ifndef PLATFORM_GCC

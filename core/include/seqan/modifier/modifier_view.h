@@ -105,6 +105,9 @@ template <typename TFunctor>
 struct ModViewCargo
 {
     TFunctor	func;
+
+    ModViewCargo() : func()
+    {}
 };
 
 template <typename THost, typename TFunctor>
@@ -118,17 +121,16 @@ public:
 
     mutable typename Value<ModifiedIterator>::Type tmp_value;
 
-    ModifiedIterator():
-        tmp_value()
+    ModifiedIterator() : _host(), tmp_value()
     {}
 
     template <typename TOtherHost>
-    ModifiedIterator(ModifiedIterator<TOtherHost, ModView<TFunctor> > & origin):
+    ModifiedIterator(ModifiedIterator<TOtherHost, ModView<TFunctor> > & origin) :
         _host(origin._host), _cargo(origin._cargo), tmp_value()
     {}
 
     explicit
-    ModifiedIterator(THost const & host):
+    ModifiedIterator(THost const & host) :
         _host(host), tmp_value()
     {}
 
@@ -156,8 +158,7 @@ public:
     mutable typename Value<ModifiedString>::Type tmp_value;
 
     // Default constructor.
-    ModifiedString():
-        tmp_value()
+    ModifiedString() : _host(), tmp_value()
     {}
 
     // Construct with the actual host.
@@ -169,7 +170,7 @@ public:
     // Construct with the functor.
     explicit
     ModifiedString(TFunctor const & functor):
-        tmp_value()
+        _host(), tmp_value()
     {
         cargo(*this).func = functor;
     }

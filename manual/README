@@ -1,0 +1,30 @@
+Building the SeqAn Manual
+=========================
+
+It is best to install the dependencies in a virtualenv environment.  You can
+find out more here:
+
+* http://virtualenv.readthedocs.org/en/latest/
+
+Installing Prerequisites
+------------------------
+
+There is a file `requirements.txt` in the `manual` folder.  You can use the
+`pip` command to install these packages.
+
+    # pip install -r manual/requirements.txt
+
+Building the Manual
+----------------
+
+    # cd manual
+    # make html
+
+Trouble-Shooting
+----------------
+
+If you get a problem with the UTF-8 localtes (e.g. on Mac Os X), then you have
+to add the following two lines to your `~/.bash_profile`.
+
+    export LC_ALL=en_US.UTF-8
+    export LANG=en_US.UTF-8

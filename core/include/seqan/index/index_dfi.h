@@ -105,7 +105,87 @@ To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterato
  * use a @link TopDownHistoryIterator @endlink of this index.
  */
 
-	template < 
+/*! 
+ * @defgroup DfiIndexFibres Dfi Index Fibres
+ * @brief Tag to select a specific fibre (e.g. table, object, ...) of an @link
+ *        IndexDfi @endlink index.
+ * 
+ * These tags can be used to get @link Fibre @endlink of an @link IndexDfi @endlink.
+ * 
+ * @see Fibre
+ * @see Index#getFibre
+ * @see IndexDfi
+ * 
+ * @tag DfiIndexFibres#DfiDir
+ * @brief The child table.
+ * 
+ * @tag DfiIndexFibres#DfiRawSA
+ * @brief The raw suffix array.
+ * 
+ * @tag DfiIndexFibres#DfiText
+ * @brief The original text the index should be based on.
+ * 
+ * @tag DfiIndexFibres#DfiRawText
+ * @brief The raw text the index is really based on.
+ * 
+ * @tag DfiIndexFibres#DfiSA
+ * @brief The suffix array.
+ */
+
+//////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn IndexDfi#indexSA
+ * @headerfile <seqan/index.h>
+ * @brief Shortcut for <tt>getFibre(.., DfiSA)</tt>.
+ *
+ * @signature TSa indexSA(index);
+ *
+ * @param[in] index The @link IndexDfi @endlink object holding the fibre.
+ *
+ * @return TSa A reference to the @link DfiIndexFibres#DfiSA @endlink fibre (partially sorted suffix array).
+ */
+ 
+/*!
+ * @fn IndexDfi#indexDir
+ * @headerfile <seqan/index.h>
+ * @brief Shortcut for <tt>getFibre(.., DfiDir())</tt>.
+ * @signature TFibre indexDir(index);
+ * 
+ * @param[in] index The @link IndexDfi @endlink object holding the fibre.
+ * 
+ * @return TFibre A reference to the @link DfiIndexFibres#DfiDir @endlink fibre (tree structure).
+ */
+
+/*!
+ * @fn IndexDfi#saAt
+ * @headerfile <seqan/index.h>
+ * @note Advanced functionality, not commonly used.
+ * @brief Shortcut for <tt>value(indexSA(..), ..)</tt>.
+ *
+ * @signature TValue saAt(position, index);
+ *
+ * @param[in] index The @link IndexDfi @endlink object holding the fibre.
+ * @param[in] position A position in the array on which the value should be accessed.
+ *
+ * @return TValue A reference or proxy to the value in the @link DfiIndexFibres#DfiSA @endlink fibre.
+ *                To be more precise, a reference to a position containing a value of type
+ *                @link SAValue @endlink is returned (or a proxy).
+ */
+
+/*!
+ * @fn IndexDfi#dirAt
+ * @headerfile <seqan/index.h>
+ * @brief Shortcut for <tt>value(indexDir(index), position)</tt>.
+ *
+ * @signature TFibre dirAt(position, index);
+ * 
+ * @param[in] index    The @link IndexDfi @endlink object holding the fibre.
+ * @param[in] position A position in the array on which the value should be accessed.
+ * 
+ * @return TFibre A reference to the @link DfiIndexFibres#DfiDir @endlink fibre.
+ */
+
+    	template <
 		typename TPredHull = DfiPredDefault_<true>,
 		typename TPred = DfiPredDefault_<true>
 	>

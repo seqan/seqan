@@ -113,11 +113,11 @@ int main(int argc, char const ** argv)
 
     std::cerr << "Loading Reference Index " << options.fastaInFile << " ...";
     seqan::FaiIndex faiIndex;
-    if (read(faiIndex, toCString(options.fastaInFile)) != 0)
+    if (!open(faiIndex, toCString(options.fastaInFile)))
     {
         std::cerr << " FAILED (not fatal, we can just build it)\n";
         std::cerr << "Building Index        " << options.fastaInFile << ".fai ...";
-        if (build(faiIndex, toCString(options.fastaInFile)) != 0)
+        if (!build(faiIndex, toCString(options.fastaInFile)))
         {
             std::cerr << "Could not build FAI index.\n";
             return 1;
@@ -126,7 +126,7 @@ int main(int argc, char const ** argv)
         seqan::CharString faiPath = options.fastaInFile;
         append(faiPath, ".fai");
         std::cerr << "Reference Index       " << faiPath << " ...";
-        if (write(faiIndex, toCString(faiPath)) != 0)
+        if (!save(faiIndex, toCString(faiPath)))
         {
             std::cerr << "Could not write FAI index we just built.\n";
             return 1;
@@ -139,9 +139,8 @@ int main(int argc, char const ** argv)
     }
 
     std::cerr << "Opening output File " << options.methFastaOutFile << " ...";
-    seqan::SequenceStream outStream;
-    open(outStream, toCString(options.methFastaOutFile), seqan::SequenceStream::WRITE);
-    if (!isGood(outStream))
+    seqan::SeqFileOut outStream;
+    if (!open(outStream, toCString(options.methFastaOutFile)))
     {
         std::cerr << "\nERROR: Could not open output file.\n";
         return 1;
@@ -162,29 +161,17 @@ int main(int argc, char const ** argv)
         levels.clear();
 
         std::cerr << "Simulating for " << sequenceName(faiIndex, i) << " ...";
-        if (readSequence(contig, faiIndex, i) != 0)
-        {
-            std::cerr << "\nERROR: Could not load sequence !\n";
-            return 1;
-        }
+        readSequence(contig, faiIndex, i);
 
         methSim.run(levels, contig);
 
         std::stringstream ssTop;
         ssTop << sequenceName(faiIndex, i) << "/TOP";
-        if (writeRecord(outStream, ssTop.str().c_str(), levels.forward) != 0)
-        {
-            std::cerr << "\nERROR: Problem writing to output file.\n";
-            return 1;
-        }
+        writeRecord(outStream, ssTop.str().c_str(), levels.forward);
 
         std::stringstream ssBottom;
         ssBottom << sequenceName(faiIndex, i) << "/BOT";
-        if (writeRecord(outStream, ssBottom.str().c_str(), levels.reverse) != 0)
-        {
-            std::cerr << "\nERROR: Problem writing to output file.\n";
-            return 1;
-        }
+        writeRecord(outStream, ssBottom.str().c_str(), levels.reverse);
 
         std::cerr << " OK\n";
     }

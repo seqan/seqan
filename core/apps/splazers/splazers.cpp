@@ -70,63 +70,40 @@ using namespace std;
 using namespace seqan;
 
 
-//////////////////////////////////////////////////////////////////////////////
-// Read a list of genome file names
-template<typename TSpec>
-int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFileNames, RazerSOptions<TSpec> &options)
+template <typename TOptions>
+int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFileNames, TOptions const & options)
 {
-//IOREV
 	ifstream file;
 	file.open(toCString(filename),ios_base::in | ios_base::binary);
 	if(!file.is_open())
 		return RAZERS_GENOME_FAILED;
 
-    RecordReader<std::ifstream, SinglePass<> > reader(file);
-
-	clear(genomeFileNames);
-	if (value(reader) != '>' && value(reader) != '@')	//if file does not start with a fasta header --> list of multiple reference genome files
+    DirectionIterator<std::fstream, Input>::Type reader(file);
+    clear(genomeFileNames);
+    // if file does not start with a fasta header --> list of multiple reference genome files
+	if (!atEnd(reader) && value(reader) != '>' && value(reader) != '@')
 	{
 		if(options._debugLevel >=1)
 			cout << endl << "Reading multiple genome files:" <<endl;
 		
-/*		//locations of genome files are relative to list file's location
-		string tempGenomeFile(filename);
-		size_t lastPos = tempGenomeFile.find_last_of('/') + 1;
-		if (lastPos == tempGenomeFile.npos) lastPos = tempGenomeFile.find_last_of('\\') + 1;
-		if (lastPos == tempGenomeFile.npos) lastPos = 0;
-		string filePrefix = tempGenomeFile.substr(0,lastPos);*/
-
 		unsigned i = 1;
-        while (!atEnd(reader))
+        CharString line;
+		while(!atEnd(reader))
 		{
-            if (skipWhitespaces(reader) != 0)
-                return 1;
-            CharString filePath;
-            int res = readGraphs(filePath, reader);
-            if (res != 0 && res != EOF_BEFORE_SUCCESS)
-                return 1;
-			appendValue(genomeFileNames, filePath);
-			//CharString currentGenomeFile(filePrefix);
-            //CharString filePath;
-            //int res = readGraphs(filePath, reader);
-            //if (res != 0 && res != EOF_BEFORE_SUCCESS)
-            //    return 1;
-			//append(currentGenomeFile, filePath);x
-			//appendValue(genomeFileNames,currentGenomeFile);
+            readLine(line, reader);
+            cropOuter(line, IsWhitespace());
+			appendValue(genomeFileNames, line);
 			if(options._debugLevel >=2)
-				cout <<"Genome file #"<< i <<": " << genomeFileNames[length(genomeFileNames)-1] << endl;
+				cout <<"Genome file #"<< i <<": " << back(genomeFileNames) << endl;
 			++i;
-            res = skipWhitespaces(reader);
-            if (res != 0 && res != EOF_BEFORE_SUCCESS)
-                return 1;
 		}
 		if(options._debugLevel >=1)
 			cout << i-1 << " genome files total." <<endl;
 	}
 	else		//if file starts with a fasta header --> regular one-genome-file input
 		appendValue(genomeFileNames, filename, Exact());
+	file.close();
 	return 0;
-
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -138,7 +115,6 @@ int mapReads(
 	CharString & errorPrbFileName,
 	RazerSOptions<TSpec> &options)
 {
-	MultiFasta				genomeSet;
 	TReadSet				readSet;
 	TReadRegions			readRegions;
 	StringSet<CharString>	genomeNames;	// genome names, taken from the Fasta file
@@ -339,11 +315,17 @@ int main(int argc, const char *argv[])
     setVersion(parser, "1.1");
     setDate(parser, "Apr 2011" );
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "READS", true));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
+    setValidValues(parser, 0, seqan::SeqFileIn::getFileExtensions());
+    setHelpText(parser, 0, "A reference genome file.");
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS", true));
+    std::vector<std::string> exts = seqan::SeqFileIn::getFileExtensions();
+    exts.push_back(".sam");
+    setValidValues(parser, 1, exts);
+    setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");
 
 	addSection(parser, "Main Options:");
-    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <\\fIREADS FILE\\fP>.result.", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <\\fIREADS FILE\\fP>.result.", ArgParseOption::OUTPUT_FILE));
 	addOption(parser, ArgParseOption("f",  "forward",           "only compute forward matches"));
 	addOption(parser, ArgParseOption("r",  "reverse",           "only compute reverse complement matches"));
     addOption(parser, ArgParseOption("i", "percent-identity", "Percent identity threshold.", ArgParseOption::DOUBLE));
@@ -378,7 +360,7 @@ int main(int argc, const char *argv[])
     setMinValue(parser, "min-clipped-len", "1");
 	addOption(parser, ArgParseOption("qih", "quality-in-header","quality string in fasta header"));
 
-	addOption(parser, ArgParseOption("ou", "outputUnmapped",    "output filename for unmapped reads", ArgParseOption::OUTPUTFILE));
+	addOption(parser, ArgParseOption("ou", "outputUnmapped",    "output filename for unmapped reads", ArgParseOption::OUTPUT_FILE));
     
 	addOption(parser, ArgParseOption("v",  "verbose",           "verbose mode"));
 	addOption(parser, ArgParseOption("vv", "vverbose",          "very verbose mode"));
@@ -638,7 +620,6 @@ int main(int argc, const char *argv[])
 		options.maxPrefixErrors = (int)(options.minMatchLen * options.errorRate);
 //	if(options.maxSuffixErrors == -1)
 //		options.maxSuffixErrors = (int)(options.minMatchLen * options.errorRate);
-
 
 	//////////////////////////////////////////////////////////////////////////////
 	// get read length

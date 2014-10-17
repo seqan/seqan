@@ -49,9 +49,9 @@ void IntersectBed::pushBed(TBedRecord const & bedRecord)
     }
 
     // Handle contig transition, we can unconditionally update rId.
-    if (bedRecord.rID != rId)
+    if (bedRecord.ref != ref)
         finishContig();
-    rId = bedRecord.rID;
+    ref = bedRecord.ref;
 
     // Register new BED record.
     bedRecords.push_back(bedRecord);
@@ -65,7 +65,6 @@ void IntersectBed::writeEmptyBed(seqan::BedRecord<seqan::Bed6> const & bedRecord
 {
     seqan::RoiRecord roiRecord;
     roiRecord.ref = bedRecord.ref;
-    roiRecord.rID = bedRecord.rID;
     roiRecord.beginPos = bedRecord.beginPos;
     roiRecord.endPos = bedRecord.endPos;
     roiRecord.strand = bedRecord.strand;
@@ -75,7 +74,7 @@ void IntersectBed::writeEmptyBed(seqan::BedRecord<seqan::Bed6> const & bedRecord
     for (int i = 0; i < (int)roiRecord.len; ++i)
         appendValue(roiRecord.count, 0);
 
-    writeRecord(out, roiRecord, seqan::Roi());
+    writeRecord(roiFileOut, roiRecord);
 }
 
 // ----------------------------------------------------------------------------
@@ -190,7 +189,7 @@ void IntersectBed::cleanRoiRecords()
         if (options.mode == IntersectBedOptions::DIFF && back(roiRecords.front().data)[0] == '.')
         {
             clear(roiRecords.front().data);
-            writeRecord(out, roiRecords.front(), seqan::Roi());
+            writeRecord(roiFileOut, roiRecords.front());
         }
         roiRecords.pop_front();
     }
@@ -209,10 +208,10 @@ void IntersectBed::pushRoi(TRoiRecord const & roiRecord)
         writeRecord(std::cerr, roiRecord, seqan::Roi());
     }
 
-    // Handle contig transition, we can unconditionally update rId.
-    if (roiRecord.rID != rId)
+    // Handle contig transition, we can unconditionally update ref.
+    if (roiRecord.ref != ref)
         finishContig();
-    rId = roiRecord.rID;
+    ref = roiRecord.ref;
 
     // Complete processing all BED records that cannot overlap with roiRecord.  After removing each BED record, remove
     // all ROI records that do not overlap with first BED record any more.
@@ -367,7 +366,6 @@ void IntersectBed::writeRois(seqan::String<bool> const & bitmap,
         clear(record);
 
         record.ref = bedRecord.ref;
-        record.rID = bedRecord.rID;
         record.beginPos = beginPos + pairs[i].i1;
         record.endPos = beginPos + pairs[i].i2;
         record.len = record.endPos - record.beginPos;
@@ -381,11 +379,7 @@ void IntersectBed::writeRois(seqan::String<bool> const & bitmap,
             record.count[k] = counts[j];
         }
 
-        if (writeRecord(out, record, seqan::Roi()) != 0)
-        {
-            std::cerr << "ERROR: Could not write ROI record!\n";
-            exit(1);
-        }
+        writeRecord(roiFileOut, record);
     }
 }
 

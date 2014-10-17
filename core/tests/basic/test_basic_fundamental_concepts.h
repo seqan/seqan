@@ -40,6 +40,8 @@
 #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONCEPTS_H_
 #define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONCEPTS_H_
 
+using namespace seqan;
+
 // ============================================================================
 // Test Fundamental Concepts
 // ============================================================================
@@ -95,13 +97,13 @@ namespace seqan
 {
 
     SEQAN_CONCEPT(TestConceptA_, (T)){};
-
     SEQAN_CONCEPT(TestConceptB_, (T)){};
+    SEQAN_CONCEPT_REFINE(TestConceptC_, (T), (TestConceptA_)) {};
 
     struct TestConceptModelA_ {};
 
     template <>
-    SEQAN_CONCEPT_IMPL((TestConceptA_)(TestConceptB_), TestConceptModelA_);
+    SEQAN_CONCEPT_IMPL((TestConceptModelA_), (TestConceptA_)(TestConceptB_));
 
     template <typename T1, typename T2>
     struct TestConceptModelBSpec_{};
@@ -109,9 +111,30 @@ namespace seqan
     template <typename T, typename TSpec>
     struct TestConceptModelB_{};
 
+    template <typename T, typename TSpec>
+    struct TestConceptModelC_{};
+
     template <typename T, typename TSpec1, typename TSpec2>
-    SEQAN_CONCEPT_IMPL((TestConceptA_)(TestConceptB_), TestConceptModelB_<T, TestConceptModelBSpec_<TSpec1, TSpec2> >);
+    SEQAN_CONCEPT_IMPL((TestConceptModelB_<T, TestConceptModelBSpec_<TSpec1, TSpec2> >), (TestConceptA_)(TestConceptB_));
+
+    template <typename T, typename TSpec1, typename TSpec2>
+    SEQAN_CONCEPT_IMPL((TestConceptModelC_<T, TestConceptModelBSpec_<TSpec1, TSpec2> >), (TestConceptC_));
+
+
+    template <typename T1, typename T2>
+    struct Peter {};
+
+    template <typename T1, typename T2>
+    struct Klaus {};
+
+    template <typename T1, typename T2>
+    SEQAN_CONCEPT_IMPL((Peter<T1, T2>), (ContainerConcept));
+
+    template <typename T1, typename T2>
+    SEQAN_CONCEPT_IMPL((Klaus<T1, T2>), (StringConcept));
+
 }
+
 
 SEQAN_DEFINE_TEST(test_basic_concepts_concept_impl)
 {
@@ -132,6 +155,30 @@ SEQAN_DEFINE_TEST(test_basic_concepts_concept_impl)
     SEQAN_STATIC_ASSERT_MSG(Is< TestConceptA_<TModelB> >::VALUE, "Type is not marked to be a TestConceptA_");
     SEQAN_STATIC_ASSERT_MSG(Is< TestConceptB_<TModelB> >::VALUE, "Type is not marked to be a TestConceptB_");
 
+}
+
+void myAssert(seqan::False)
+{
+    SEQAN_FAIL("failed.");
+}
+
+void myAssert(seqan::True) {}
+
+SEQAN_DEFINE_TEST(test_basic_concepts_concept_refine)
+{
+    SEQAN_CONCEPT_ASSERT((seqan::TestConceptC_<seqan::TestConceptModelC_<double, seqan::TestConceptModelBSpec_<int, bool> > >));
+    SEQAN_CONCEPT_ASSERT((seqan::TestConceptA_<seqan::TestConceptModelC_<double, seqan::TestConceptModelBSpec_<int, bool> > >));
+
+    typedef seqan::Is<seqan::TestConceptC_<seqan::TestConceptModelC_<double, seqan::TestConceptModelBSpec_<int, bool> > > >::Type TBool1;
+    typedef seqan::Is<seqan::TestConceptA_<seqan::TestConceptModelC_<double, seqan::TestConceptModelBSpec_<int, bool> > > >::Type TBool2;
+
+    myAssert(TBool1());
+    myAssert(TBool2());
+
+    SEQAN_CONCEPT_ASSERT((seqan::ContainerConcept<seqan::String<double> >));
+    SEQAN_CONCEPT_ASSERT((seqan::ContainerConcept<seqan::Segment<CharString, InfixSegment> >));
+    SEQAN_CONCEPT_ASSERT((seqan::StringConcept<seqan::String<double> >));
+    myAssert(Not<Is<      seqan::StringConcept<seqan::Segment<CharString, InfixSegment> > > >::Type());   // should fail
 }
 
 #endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONCEPTS_H_

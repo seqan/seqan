@@ -179,24 +179,22 @@ _convertSolexaQual2PhredQual(TValue sq)
 
 //compute average position dependent error distribution (assumes solexa qualtiy values in prb.txt format)
 template<typename TFile, typename TDistribution>
-int
+void
 qualityDistributionFromPrbFile(TFile & file, TDistribution & avg, ParamChooserOptions & pm_options)
 {
 //IOREV see comments in other paramChooser.h
 	typedef typename Value<TDistribution>::Type TFloat;
-
-    seqan::RecordReader<TFile, seqan::SinglePass<> > reader(file);
 
 	String<TFloat> qualitySum;
 	String<int> count;
 	resize(qualitySum,pm_options.totalN,(TFloat)0.0);
 	resize(count,pm_options.totalN,0);
 
+    typename DirectionIterator<TFile, Input>::Type reader(file);
     if (atEnd(reader))
-        return 0;  // Nothing to read.
+        return;
 
-    if (skipWhitespaces(reader) != 0)
-        return 1;
+    skipUntil(reader, NotFunctor<IsWhitespace>());
 
 	int kickout = 0;
 	String<int> tempReadQual;
@@ -213,16 +211,9 @@ qualityDistributionFromPrbFile(TFile & file, TDistribution & avg, ParamChooserOp
             for (int i = 0; i < 4; ++i)
             {
                 clear(buffer);
-                double tmp = 0;
-
-                if (skipBlanks(reader) != 0)
-                    return 1;
-                int res = readFloat(buffer, reader);
-                if (res != 0 && !((res == EOF_BEFORE_SUCCESS) && (pos + 1 == pm_options.totalN)))
-                    return 1;
-                if (!lexicalCast2(tmp, buffer))
-                    return 1;
-                quals[i] = (int)tmp;
+                skipUntil(reader, NotFunctor<IsWhitespace>());
+                readUntil(buffer, reader, IsWhitespace());
+                quals[i] = (int) lexicalCast<double>(buffer);
             }
 
 			int qual = std::max(std::max(quals[0], quals[1]), std::max(quals[2], quals[3]));
@@ -239,9 +230,7 @@ qualityDistributionFromPrbFile(TFile & file, TDistribution & avg, ParamChooserOp
 		if((int)(avgReadQual/pm_options.totalN) < pm_options.qualityCutoff) 
 		{
 			++kickout;
-            int res = skipLine(reader);
-            if (res != 0 && res != EOF_BEFORE_SUCCESS)
-                return 1;
+            skipLine(reader);
 			continue;
 		}
 		else{
@@ -253,10 +242,7 @@ qualityDistributionFromPrbFile(TFile & file, TDistribution & avg, ParamChooserOp
 			}
 		}
 //		::std::cout << ::std::endl;
-			
-        int res = skipLine(reader);
-        if (res != 0 && res != EOF_BEFORE_SUCCESS)
-            return 1;
+        skipLine(reader);
 	}
 	if (pm_options.verbose)
     {
@@ -271,210 +257,116 @@ qualityDistributionFromPrbFile(TFile & file, TDistribution & avg, ParamChooserOp
  		f = _convertSolexaQual2ErrProb(f);
 		avg[t] = f;
 	}
-
-    return 0;
 }
 
 
-template<typename TFile, typename TDistribution>
-int
+template <typename TFile, typename TDistribution>
+void
 qualityDistributionFromFastQFile(TFile & file, TDistribution & avg, ParamChooserOptions & pm_options)
 {
-//IOREV see comments in other paramChooser.h
-	typedef typename Value<TDistribution>::Type TFloat;
+//IOREV _duplicate_ this should use the existing fastq implementation
+    typedef typename Value<TDistribution>::Type TFloat;
 
-	String<int> qualitySum, count;
-	resize(qualitySum,pm_options.totalN,0);
-	resize(count,pm_options.totalN,0);
+    String<int> qualitySum, count;
+    resize(qualitySum, pm_options.totalN, 0);
+    resize(count, pm_options.totalN, 0);
 
-    seqan::RecordReader<TFile, seqan::SinglePass<> > reader(file);
-
-    if (atEnd(reader))
-        return 1;
-
-    seqan::CharString id, seq, qual;
+    SeqFileIn reader(file);
+    CharString fastaId, seq, qual;
     while (!atEnd(reader))
     {
-        if (readRecord(id, seq, qual, reader, seqan::Fastq()) != 0)
-        {
-            std::cerr << "ERROR reading FASTQ file!\n";
-            return 1;
-        }
+        readRecord(fastaId, seq, qual, reader);
 
-        if (length(qual) < pm_options.totalN)
+        for (unsigned i = 0; i != pm_options.totalN && i != length(qual); ++i)
         {
-            std::cerr << "ERROR: Expected at least " << pm_options.totalN << " bases, but have " << length(qual) << "\n";
-            return 1;
-        }
-
-        for (unsigned i = 0; i < pm_options.totalN; ++i)
-        {
-            qualitySum[i] += (qual[i] - 33);  // Solexa qualities.
-            ++count[i];
+            qualitySum[i] += qual[i] - 33;
+            count[i]++;
         }
     }
-
-	if(pm_options.verbose)
-        ::std::cout << " Readcount = " << count[0] << std::endl;
-
-	resize(avg,pm_options.totalN,(TFloat)0.0);
-	for(unsigned t = 0; t < pm_options.totalN; ++t)
-	{
-		TFloat f = (TFloat) qualitySum[t] / (TFloat)count[t];
-		if (pm_options.solexaQual) f = _convertSolexaQual2PhredQual(f);
-		f = _convertPhredQual2ErrProb(f);
-		avg[t] = f;
-	}
-
-    return 0;
-}
-
-template<typename TFile, typename TDistribution>
-int
-qualityDistributionFromFastQIntFile(TFile & file, TDistribution & avg, ParamChooserOptions & pm_options)
-{
-//IOREV see comments in other paramChooser.h
-	typedef typename Value<TDistribution>::Type TFloat;
-
-	String<int> qualitySum, count;
-	resize(qualitySum,pm_options.totalN,0);
-	resize(count,pm_options.totalN,0);
-
-    seqan::RecordReader<TFile, seqan::SinglePass<> > reader(file);
-    if (atEnd(reader) != 0)
-        return 1;
-
-    seqan::CharString buffer;
-	while (!atEnd(reader))
-	{
-        if (skipLine(reader) != 0 || skipLine(reader) != 0 || skipLine(reader) != 0)
-            return 1;
-
-        for (unsigned i = 0; i != pm_options.totalN && !atEnd(reader); ++i)
-        {
-            clear(buffer);
-            double tmp = 0;
-
-            if (skipBlanks(reader) != 0)
-                return 1;
-            int res = readFloat(buffer, reader);
-            if (res != 0 && !((res == EOF_BEFORE_SUCCESS) && (i + 1 == pm_options.totalN)))
-                return 1;
-            if (!lexicalCast2(tmp, buffer))
-                return 1;
-
-            qualitySum[i] += (int)tmp;
-            ++count[i];
-        }
-        int res = skipLine(reader);
-        if (res != 0 && res != EOF_BEFORE_SUCCESS)
-            return 1;
-	}
     if (pm_options.verbose)
-        ::std::cout << " Readcount = " << count[0] << std::endl;
+        std::cout << " Readcount = " << count[0] << std::endl;
 
-	resize(avg,pm_options.totalN,(TFloat)0.0);
-	for(unsigned t = 0; t < pm_options.totalN; ++t)
-	{
-		TFloat f = (TFloat) qualitySum[t] / (TFloat)count[t];
-		if (pm_options.solexaQual)	f = _convertSolexaQual2PhredQual(f);
-		f = _convertPhredQual2ErrProb(f);
-		avg[t] = f;
-	}
-
-    return 0;
+    resize(avg, pm_options.totalN, (TFloat)0.0);
+    for (unsigned t = 0; t < pm_options.totalN; ++t)
+    {
+        TFloat f = (TFloat) qualitySum[t] / (TFloat)count[t];
+        if (pm_options.solexaQual)
+            f = _convertSolexaQual2PhredQual(f);
+        f = _convertPhredQual2ErrProb(f);
+        avg[t] = f;
+    }
 }
-
 
 // find all *_prb.txt files in directory prbPath and compute average position dependent quality distribution
 // compute average over all averages and store in errorDistribution
-template<typename TPath, typename TError>
+template <typename TPath, typename TError>
 void
 getAvgFromPrbDirectory(TPath prbPath, TError & errorDistribution, ParamChooserOptions & pm_options)
 {
-	typedef typename Value<TError>::Type TFloat;
+    typedef typename Value<TError>::Type TFloat;
 
-	resize(errorDistribution,pm_options.totalN,(TFloat)0.0);
-	
-	String< ::std::string > files;
-	getDir(prbPath,files);
-	unsigned countPrbs = 0;
-	for (unsigned int i = 0;i < length(files);i++) 
-	{
-		if(suffix(files[i],length(files[i])-6) == ".fastq")
-		{
-			::std::cout << "Processing "<< files[i] << "..." << std::endl;
-			TError avg_act;
-			resize(avg_act,pm_options.totalN);
-			::std::fstream filestrm;
-			::std::stringstream sstrm;
-			sstrm << prbPath << files[i];
-			filestrm.open(sstrm.str().c_str(),::std::ios_base::in);
-			qualityDistributionFromFastQFile(filestrm,avg_act,pm_options);
-			filestrm.close();
-			for(unsigned j=0; j < pm_options.totalN; ++j)
-			{
-//				::std::cout << " " << avg_act[j];
-				errorDistribution[j] += avg_act[j];
-			}
-			++countPrbs;
-			continue;
-		}
-		if(suffix(files[i],length(files[i])-9) == ".fastqint")
-		{
-			::std::cout << "Processing "<< files[i] << "..." << std::endl;
-			TError avg_act;
-			resize(avg_act,pm_options.totalN);
-			::std::fstream filestrm;
-			::std::stringstream sstrm;
-			sstrm << prbPath << files[i];
-			filestrm.open(sstrm.str().c_str(),::std::ios_base::in);
-			qualityDistributionFromFastQIntFile(filestrm,avg_act,pm_options);
-			filestrm.close();
-			for(unsigned j=0; j < pm_options.totalN; ++j)
-			{
-				::std::cout << " " << avg_act[j];
-				errorDistribution[j] += avg_act[j];
-			}
-			++countPrbs;
-			continue;
-		}
-		if(suffix(files[i],length(files[i])-8) == "_prb.txt")
-		{
-			::std::cout << "Processing "<< files[i] << "..." << std::endl;
-			TError avg_act;
-			resize(avg_act,pm_options.totalN);
-			::std::fstream filestrm;
-			::std::stringstream sstrm;
-			sstrm << prbPath << files[i];
-			filestrm.open(sstrm.str().c_str(),::std::ios_base::in);
-			qualityDistributionFromPrbFile(filestrm,avg_act,pm_options);
-			filestrm.close();
-			for(unsigned j=0; j < pm_options.totalN; ++j)
-			{
-//				::std::cout << " " << avg_act[j];
-				errorDistribution[j] += avg_act[j];
-			}
-			++countPrbs;
-			continue;
-		}
-	}
-	for(unsigned j=0; j < pm_options.totalN; ++j)
-		errorDistribution[j] /= (TFloat)countPrbs;
-	::std::cout << "Writing average error probabilities to " << pm_options.fprefix[0] << "_errorProb.dat" << std::endl;
-	::std::fstream out;
-	::std::stringstream avgOut;
-	avgOut << pm_options.fprefix[0] << "_errorProb.dat";
-	out.open(avgOut.str().c_str(),::std::ios_base::out);
-	if(!out.is_open()) ::std::cout << "Couldn't write to file "<<avgOut.str()<<std::endl;
-	else
-		for(unsigned j=0; j < pm_options.totalN; ++j)
-			out << errorDistribution[j] << std::endl;
-	out.close();
+    resize(errorDistribution, pm_options.totalN, (TFloat)0.0);
 
-	
+    String<std::string> files;
+    getDir(prbPath, files);
+    unsigned countPrbs = 0;
+    for (unsigned int i = 0; i < length(files); i++)
+    {
+        if (suffix(files[i], length(files[i]) - 6) == ".fastq")
+        {
+            std::cout << "Processing " << files[i] << "..." << std::endl;
+            TError avg_act;
+            resize(avg_act, pm_options.totalN);
+            std::fstream filestrm;
+            std::stringstream sstrm;
+            sstrm << prbPath << files[i];
+            filestrm.open(sstrm.str().c_str(), std::ios_base::in);
+            qualityDistributionFromFastQFile(filestrm, avg_act, pm_options);
+            filestrm.close();
+            for (unsigned j = 0; j < pm_options.totalN; ++j)
+            {
+//				std::cout << " " << avg_act[j];
+                errorDistribution[j] += avg_act[j];
+            }
+            ++countPrbs;
+            continue;
+        }
+        if (suffix(files[i], length(files[i]) - 8) == "_prb.txt")
+        {
+            std::cout << "Processing " << files[i] << "..." << std::endl;
+            TError avg_act;
+            resize(avg_act, pm_options.totalN);
+            std::fstream filestrm;
+            std::stringstream sstrm;
+            sstrm << prbPath << files[i];
+            filestrm.open(sstrm.str().c_str(), std::ios_base::in);
+            qualityDistributionFromPrbFile(filestrm, avg_act, pm_options);
+            filestrm.close();
+            for (unsigned j = 0; j < pm_options.totalN; ++j)
+            {
+//				std::cout << " " << avg_act[j];
+                errorDistribution[j] += avg_act[j];
+            }
+            ++countPrbs;
+            continue;
+        }
+    }
+    for (unsigned j = 0; j < pm_options.totalN; ++j)
+        errorDistribution[j] /= (TFloat)countPrbs;
+    std::cout << "Writing average error probabilities to " << pm_options.fprefix[0] << "_errorProb.dat" << std::endl;
+    std::fstream out;
+    std::stringstream avgOut;
+    avgOut << pm_options.fprefix[0] << "_errorProb.dat";
+    out.open(avgOut.str().c_str(), std::ios_base::out);
+    if (!out.is_open())
+        std::cout << "Couldn't write to file " << avgOut.str() << std::endl;
+    else
+        for (unsigned j = 0; j < pm_options.totalN; ++j)
+            out << errorDistribution[j] << std::endl;
+    out.close();
+
+
 }
-
 
 //////////////////////////////////////////////////////////////////////////////
 // Returns the approximated minimum coverage of a one-gapped shape with weight q, span s at threshold t
@@ -490,35 +382,34 @@ inline TValueS getMinCov(TValueQ q, TValueS s, TValueT t)
 	return mincov;
 }
 
-
-// Returns number of newly read shapes, not status code.
-template<typename TShapes, typename TFile>
-int
-parseShapesFromFile(TShapes & shapeStrings,
-			TFile & file,
-			ParamChooserOptions &)
+template <typename TShape, typename TIter>
+inline void
+readShape(TShape &shape, TIter &iter)
 {
-//IOREV see comments in other paramChooser.h
-    seqan::RecordReader<TFile, seqan::SinglePass<> > reader(file);
+    typedef AssertFunctor<OrFunctor<EqualsChar<'0'>, EqualsChar<'1'> >, ParseError> TShapeAsserter;
 
-    int res = 0;
-    while (!atEnd(reader))
-    {
-        if (skipWhitespaces(reader) != 0)
-            break;
-        seqan::CharString shape;
-        res = readDigits(shape, reader);
-        if (res != 0 && res != EOF_BEFORE_SUCCESS)
-            break;
-        appendValue(shapeStrings, shape);
-        res = skipLine(reader);
-        if (res != 0 && res != EOF_BEFORE_SUCCESS)
-            break;
-    }
-
-	return length(shapeStrings);
+    clear(shape);
+    readUntil(shape, iter, IsWhitespace(), TShapeAsserter());
 }
 
+template <typename TShapes, typename TFile>
+int
+parseShapesFromFile(TShapes & shapeStrings,
+                    TFile & file,
+                    ParamChooserOptions &)
+{
+    DirectionIterator<std::fstream, Input>::Type reader(file);
+    skipUntil(reader, NotFunctor<IsWhitespace>());
+
+    CharString shape;
+    while (!atEnd(reader))
+    {
+        readShape(shape, reader);
+        appendValue(shapeStrings, shape);
+        skipUntil(reader, NotFunctor<IsWhitespace>());
+    }
+    return length(shapeStrings);
+}
 
 template<typename TError>
 void
@@ -902,194 +793,165 @@ numGaps(TShape & currShape)
 
 //////////////////////////////////////////////////////////////////////////////
 // Get parameters q and t optimal for given loss rate
-template<typename TFile, typename TSpec>
+template <typename TFile, typename TSpec>
 bool
-parseGappedParams(RazerSOptions<TSpec> & r_options,TFile & file, ParamChooserOptions & pm_options)
+parseGappedParams(RazerSOptions<TSpec> & r_options, TFile & file, ParamChooserOptions & pm_options)
 {
-	typedef float TFloat;
-	String<CharString> shapes;
-	resize(shapes,14); //best shape for each possible value of q
-	String<unsigned> thresholds;
-	resize(thresholds,14); //corresponding t
-	String<unsigned> measure;
-	resize(measure,14); //potential matches 
-	String<TFloat> lossrates;
-	resize(lossrates,14); //lossrates
-	double extrapolFactor = 1.0; // no extrapolation
-	unsigned errorsWanted = (int)(pm_options.optionErrorRate * pm_options.totalN);
-	if(pm_options.extrapolate)
-	{
-		extrapolFactor = (double)pm_options.totalN/pm_options.extrapolN;
-		errorsWanted = pm_options.extrapolK;
-	}
-
-    seqan::RecordReader<TFile, seqan::SinglePass<> > reader(file);
-    if (atEnd(reader))
+    typedef float TFloat;
+    String<CharString> shapes;
+    resize(shapes, 14); //best shape for each possible value of q
+    String<unsigned> thresholds;
+    resize(thresholds, 14); //corresponding t
+    String<unsigned> measure;
+    resize(measure, 14); //potential matches
+    String<TFloat> lossrates;
+    resize(lossrates, 14); //lossrates
+    double extrapolFactor = 1.0; // no extrapolation
+    unsigned errorsWanted = (int)(pm_options.optionErrorRate * pm_options.totalN);
+    if (pm_options.extrapolate)
     {
-		if(pm_options.verbose) ::std::cerr << "Loss rate file is empty!" << ::std::endl;
-		return false;
+        extrapolFactor = (double)pm_options.totalN / pm_options.extrapolN;
+        errorsWanted = pm_options.extrapolK;
     }
 
-    // Skip header lines.
-    if (value(reader) == 'e')
-        if (skipLine(reader) != 0 || skipLine(reader) != 0)
-            return false;
-	
-	bool atLeastOneFound = false;
-    int res = 0;
-    seqan::CharString buffer;
+    DirectionIterator<std::fstream, Input>::Type reader(file);
+
+    if (atEnd(reader))
+    {
+        if (pm_options.verbose)
+            std::cerr << "Loss rate file is empty!" << std::endl;
+        return false;
+    }
+    if (*reader == 's' || *reader == 'e') //header line
+    {
+        skipLine(reader);
+        skipLine(reader);
+    }
+
+    bool atLeastOneFound = false;
+    CharString buffer;
+    CharString currShape;
     while (!atEnd(reader))
-	{
-		unsigned numErrors = 0;
+    {
         clear(buffer);
-        if (readDigits(buffer, reader) != 0)
-            return false;
-        if (!lexicalCast2(numErrors, buffer))
-            return false;
-        if (skipWhitespaces(reader) != 0)
-            return false;
-		if(numErrors != errorsWanted)
-		{
-            res = skipLine(reader);
-            if (res != 0 && res != EOF_BEFORE_SUCCESS)
-                return false;
-			continue;
-		}
-
-		CharString currShape;
-        if (readDigits(currShape, reader) != 0)
-            return false;
-		if((pm_options.chooseUngappedOnly && numGaps(currShape)>0) || (pm_options.chooseOneGappedOnly && numGaps(currShape)>1))
-		{
-            res = skipLine(reader);
-            if (res != 0 && res != EOF_BEFORE_SUCCESS)
-                return false;
-			continue;
-		}
-        if (skipWhitespaces(reader) != 0)
-            return false;
-        clear(buffer);
-        if (readDigits(buffer, reader) != 0)
-            return false;
-        unsigned tmp = 0;
-        if (!lexicalCast2(tmp, buffer))
-            return false;
-		unsigned currThreshold = (unsigned)(tmp * extrapolFactor); //when extrapolating from shorter read lengths, threshold can be at least linearly increased
-        if (skipWhitespaces(reader) != 0)
-            return false;
-
-		TFloat currLossrate = 0;
-        clear(buffer);
-        if (readFloat(buffer, reader) != 0)
-            return false;
-        if (!lexicalCast2(currLossrate, buffer))
-            return false;
-
-        if (skipWhitespaces(reader) != 0)
-            return false;
-
-		unsigned currMeasure = 0; // potential matches measured on simulated reads
-        clear(buffer);
-        res = readDigits(buffer, reader);
-        if (res != 0 && res != EOF_BEFORE_SUCCESS)
-            return false;
-        if (!lexicalCast2(currMeasure, buffer))
-            return false;
-
-		//std::cout << numErrors << "\t" << currShape << "\t" << currThreshold << "\t" << currLossrate << "\t" << currMeasure << std::endl;
-		if(currThreshold >= pm_options.minThreshold && currLossrate <= pm_options.optionLossRate /*&& val > bestSoFar*/)
-		{
-			
-			unsigned weight = 0;
-			for(unsigned pos = 0; pos < length(currShape) ; ++pos)
-				if(currShape[pos] == '1')
-					++weight;
-			if(length(shapes[weight-1]) > 0)  // if this is not the first shape with weight weight
-			{
-				// compare currShape to the best one found so far
-				if( currMeasure <= measure[weight-1])
-
-				{
-					if(currMeasure == measure[weight-1])
-					{
-						bool undecided = false;
-						//next measure: threshold
-						if(thresholds[weight-1] > currThreshold) 
-						{
-                            res = skipLine(reader);
-                            if (res != 0 && res != EOF_BEFORE_SUCCESS)
-                                return false;
-							continue;
-						}
-						else if(thresholds[weight-1] == currThreshold) undecided = true;
-
-						//if still undecided: next measure: span
-						if(undecided && length(shapes[weight-1]) > length(currShape))
-						{
-                            res = skipLine(reader);
-                            if (res != 0 && res != EOF_BEFORE_SUCCESS)
-                                return false;
-							continue;
-						}
-						else if(undecided && length(shapes[weight-1]) < length(currShape)) undecided = false;
-
-						//if still undecided: next measure: lossrate
-						if(undecided && lossrates[weight-1] < currLossrate)
-						{
-                            res = skipLine(reader);
-                            if (res != 0 && res != EOF_BEFORE_SUCCESS)
-                                return false;
-							continue;
-						}
-					}
-					shapes[weight-1] = currShape;
-					measure[weight-1] = currMeasure;
-					thresholds[weight-1] = currThreshold;
-					lossrates[weight-1] = currLossrate;
-					atLeastOneFound = true;
-				}
-				
-			}
-			else
-			{
-				shapes[weight-1] = currShape;
-				measure[weight-1] = currMeasure;
-				thresholds[weight-1] = currThreshold;
-				lossrates[weight-1] = currLossrate;
-				atLeastOneFound = true;
-			
-			}
-		}
-        res = skipLine(reader);
-        if (res != 0 && res != EOF_BEFORE_SUCCESS)
-            return false;
-        
+        readUntil(buffer, reader, IsWhitespace());
+        unsigned numErrors = lexicalCast<unsigned>(buffer);
+        skipUntil(reader, NotFunctor<IsWhitespace>());
+        if (numErrors != errorsWanted)
+        {
+            skipLine(reader);
+            continue;
         }
-	if(!atLeastOneFound)
-	{
-		if(pm_options.verbose) ::std::cerr << ::std::endl <<"!!! Something wrong with file? !!!" << ::std::endl;
-		return false;
-	}
-	int i;
-	for(i = pm_options.maxWeight-1; i > 0; --i )
-		if(length(shapes[i]) > 0)  // if a shape of weight i+1 has been found
-			break;
-	if(i==0)
-	{
-		if(pm_options.verbose) ::std::cerr << ::std::endl << "!!! Something wrong with file? !!!" << ::std::endl;
-		return false;
-	}
-	if (thresholds[i] == 1 && length(shapes[i-1])>0 && thresholds[i-1] > 2)
-		--i; 
-	pm_options.chosenLossRate = lossrates[i];
-	assign(r_options.shape, shapes[i]);
-	r_options.threshold = thresholds[i];
-	// suggest a suitable combination of q and t
-	
-	return true;
+
+        readShape(currShape, reader);
+        if ((pm_options.chooseUngappedOnly && numGaps(currShape) > 0) || (pm_options.chooseOneGappedOnly && numGaps(currShape) > 1))
+        {
+            skipLine(reader);
+            continue;
+        }
+        skipUntil(reader, NotFunctor<IsWhitespace>());
+
+        clear(buffer);
+        readUntil(buffer, reader, IsWhitespace());
+        unsigned currThreshold = (unsigned)(lexicalCast<unsigned>(buffer) * extrapolFactor); //when extrapolating from shorter read lengths, threshold can be at least linearly increased
+        skipUntil(reader, NotFunctor<IsWhitespace>());
+
+        clear(buffer);
+        readUntil(buffer, reader, IsWhitespace());
+        TFloat currLossrate = lexicalCast<double>(buffer);
+        skipUntil(reader, NotFunctor<IsWhitespace>());
+
+        clear(buffer);
+        readUntil(buffer, reader, IsWhitespace());
+        unsigned currMeasure = lexicalCast<unsigned>(buffer); // potential matches measured on simulated reads
+
+        //std::cout << numErrors << "\t" << currShape << "\t" << currThreshold << "\t" << currLossrate << "\t" << currMeasure << std::endl;
+        if (currThreshold >= pm_options.minThreshold && currLossrate <= pm_options.optionLossRate /*&& val > bestSoFar*/)
+        {
+
+            unsigned weight = 0;
+            for (unsigned pos = 0; pos < length(currShape); ++pos)
+                if (currShape[pos] == '1')
+                    ++weight;
+            if (length(shapes[weight - 1]) > 0)  // if this is not the first shape with weight weight
+            {
+                // compare currShape to the best one found so far
+                if (currMeasure <= measure[weight - 1])
+                {
+                    if (currMeasure == measure[weight - 1])
+                    {
+                        bool undecided = false;
+                        //next measure: threshold
+                        if (thresholds[weight - 1] > currThreshold)
+                        {
+                            skipLine(reader);
+                            continue;
+                        }
+                        else if (thresholds[weight - 1] == currThreshold)
+                            undecided = true;
+
+                        //if still undecided: next measure: span
+                        if (undecided && length(shapes[weight - 1]) > length(currShape))
+                        {
+                            skipLine(reader);
+                            continue;
+                        }
+                        else if (undecided && length(shapes[weight - 1]) < length(currShape))
+                            undecided = false;
+
+                        //if still undecided: next measure: lossrate
+                        if (undecided && lossrates[weight - 1] < currLossrate)
+                        {
+                            skipLine(reader);
+                            continue;
+                        }
+                    }
+                    shapes[weight - 1] = currShape;
+                    measure[weight - 1] = currMeasure;
+                    thresholds[weight - 1] = currThreshold;
+                    lossrates[weight - 1] = currLossrate;
+                    atLeastOneFound = true;
+                }
+
+            }
+            else
+            {
+                shapes[weight - 1] = currShape;
+                measure[weight - 1] = currMeasure;
+                thresholds[weight - 1] = currThreshold;
+                lossrates[weight - 1] = currLossrate;
+                atLeastOneFound = true;
+
+            }
+        }
+        skipLine(reader);
+
+    }
+    if (!atLeastOneFound)
+    {
+        if (pm_options.verbose)
+            std::cerr << std::endl << "!!! Something wrong with file? !!!" << std::endl;
+        return false;
+    }
+    int i;
+    for (i = pm_options.maxWeight - 1; i > 0; --i)
+        if (length(shapes[i]) > 0) // if a shape of weight i+1 has been found
+            break;
+    if (i == 0)
+    {
+        if (pm_options.verbose)
+            std::cerr << std::endl << "!!! Something wrong with file? !!!" << std::endl;
+        return false;
+    }
+    if (thresholds[i] == 1 && length(shapes[i - 1]) > 0 && thresholds[i - 1] > 2)
+        --i;
+    pm_options.chosenLossRate = lossrates[i];
+    assign(r_options.shape, shapes[i]);
+    r_options.threshold = thresholds[i];
+    // suggest a suitable combination of q and t
+
+    return true;
 }
-
-
 
 // extrapolate if n is large
 template <typename TOptions>
@@ -1199,19 +1061,17 @@ chooseParams(RazerSOptions<TSpec> & r_options, ParamChooserOptions & pm_options)
 				return false;
 			}
 			unsigned count = 0;
-            seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(file);
-            for (; !atEnd(reader) && count < pm_options.totalN; ++count)
+            DirectionIterator<std::fstream, Input>::Type reader(file);
+            CharString buffer;
+            while (!atEnd(reader) && count < pm_options.totalN)
             {
-                seqan::CharString buffer;
-                if (skipWhitespaces(reader) != 0)
-                    break;
-                int res = readFloat(buffer, reader);
-                if (res != 0 && res != EOF_BEFORE_SUCCESS)
-                    break;
-                if (!lexicalCast2(errorDistribution[count], buffer))
-                    break;
+                clear(buffer);
+                skipUntil(reader, NotFunctor<IsWhitespace>());
+                readUntil(buffer, reader, IsWhitespace());
+                lexicalCastWithException(errorDistribution[count], buffer); // + (TFloat) 1.0/maxN;
+                ++count;
             }
-			file.close();
+            file.close();
 			if(count != pm_options.totalN + 1)
 			{
 				::std::cerr << "Error distribution file must contain at least " << pm_options.totalN << " probability values (one value per line)." << std::endl;

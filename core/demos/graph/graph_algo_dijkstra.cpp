@@ -16,14 +16,14 @@ int main() {
     // One external property map: Weight map	
     unsigned int weights[] =    {10,  5,   1,   2,   4,   3,   9,   2,   7,   6};
     String<unsigned int> weightMap;
-    assignEdgeMap(g, weightMap, weights);
+    assignEdgeMap(weightMap, g, weights);
 
     // Out-parameters: Predecessor and distance map
     String<unsigned int> predMap;
     String<unsigned int> distMap;
 
     // Dijkstra from vertex 0 (single source shortest paths)
-    dijkstra(g, 0, weightMap, predMap, distMap);
+    dijkstra(predMap, distMap, g, 0, weightMap);
 
     // Output distances of shortest paths
     Iterator<TGraph, VertexIterator>::Type it(g);

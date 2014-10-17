@@ -83,4 +83,18 @@
 #define SEQAN_CXX11_STL
 #endif
 
+// C++ restrict keyword, see e.g. platform_gcc.h
+#ifndef SEQAN_RESTRICT
+#define SEQAN_RESTRICT
+#endif
+
+// C++ branch hints
+#ifndef SEQAN_LIKELY
+#define SEQAN_LIKELY(x) (x)
+#endif
+
+#ifndef SEQAN_UNLIKELY
+#define SEQAN_UNLIKELY(x) (x)
+#endif
+
 #endif

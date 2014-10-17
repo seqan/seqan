@@ -391,7 +391,7 @@ typedef ReverseComplementString<Rna5String>::Type	Rna5StringReverseComplement;
  * @signature void complement(stringSet);
  * 
  * @param[in,out] stringSet The StringSet to complement.
- * @param[in,out] sequence  The SequenceConcept to complement.
+ * @param[in,out] sequence  The ContainerConcept to complement.
  *
  * Complementing only works for alphabets where a <tt>FunctorComplement&lt;T&gt;</tt> is implemented.  SeqAn comes with
  * such definitions for Dna, Dna5, Rna, Rna5.
@@ -482,7 +482,7 @@ complementString(THost const & host)
  * @signature void reverseComplement(stringSet);
  * 
  * @param[in,out] stringSet The StringSet to complement.
- * @param[in,out] sequence  The SequenceConcept to complement.
+ * @param[in,out] sequence  The ContainerConcept to complement.
  *
  * StringSet objects are reverse-complemented element-wise, i.e. the order of the sequences stays the same but the
  * sequences in the StringSet themselves are reverse-complemented.
@@ -592,7 +592,7 @@ reverseComplementString(THost const & host)
  * @signature void toLower(sequence);
  * @signature void toLower(stringSet);
  *
- * @param[in,out] sequence  The SequenceConcept to convert to lower-case.
+ * @param[in,out] sequence  The ContainerConcept to convert to lower-case.
  * @param[in,out] stringSet The StringSet to convert to lower-case.
  */
 
@@ -661,7 +661,7 @@ inline void toLower(StringSet<TSequence, TSpec> const & stringSet)
  * @signature void toUpper(sequence);
  * @signature void toUpper(stringSet);
  *
- * @param[in,out] sequence  The SequenceConcept to convert to upper-case.
+ * @param[in,out] sequence  The ContainerConcept to convert to upper-case.
  * @param[in,out] stringSet The StringSet to convert to upper-case.
  */
 
@@ -716,6 +716,28 @@ inline void toUpper(StringSet<TSequence, TSpec> const & stringSet)
 	unsigned seqCount = length(stringSet);
 	for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
 		toUpper(stringSet[seqNo]);
+}
+
+// --------------------------------------------------------------------------
+// Function lowerString()
+// --------------------------------------------------------------------------
+
+template <typename THost>
+inline ModifiedString<THost const, ModView<FunctorLowcase<typename Value<THost>::Type> > >
+lowerString(THost const & host)
+{
+    return ModifiedString<THost const, ModView<FunctorLowcase<typename Value<THost>::Type> > >(host);
+}
+
+// --------------------------------------------------------------------------
+// Function upperString()
+// --------------------------------------------------------------------------
+
+template <typename THost>
+inline ModifiedString<THost const, ModView<FunctorUpcase<typename Value<THost>::Type> > >
+upperString(THost const & host)
+{
+    return ModifiedString<THost const, ModView<FunctorUpcase<typename Value<THost>::Type> > >(host);
 }
 
 }

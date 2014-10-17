@@ -134,8 +134,8 @@ SEQAN_DEFINE_TEST(sliding_window_test)
 {
 	// No error checking, we assume the file exists (it's a constant test file).
     seqan::CharString buffer = SEQAN_PATH_TO_ROOT();
-    append(buffer, "/extras/apps/seqan_flexbar/test_data/testsample.fq");
-	seqan::SequenceStream inStream(toCString(buffer));
+    append(buffer, "/extras/apps/seqan_flexbar/tests/testsample.fq");
+	seqan::SeqFileIn inStream(toCString(buffer), seqan::OPEN_RDONLY);
 	seqan::String<char> id;
 	seqan::String<seqan::Dna5Q> seq;
 
@@ -147,13 +147,11 @@ SEQAN_DEFINE_TEST(sliding_window_test)
 	Mean m = Mean(5);
 	while (!atEnd(inStream))
 	{
-		if (seqan::readRecord(id, seq, inStream) == 0)
-		{
-			unsigned len = length(seq);
-			unsigned res = trimRead(seq, 20, m);
-			SEQAN_ASSERT_EQ(expected[i++], res);	 // Check if returned number of trimmed bases is correct.
-			SEQAN_ASSERT_EQ(res, len - length(seq)); // Check if we really trimmed so many bases.
-		}
+        readRecord(id, seq, inStream);
+        unsigned len = length(seq);
+        unsigned res = trimRead(seq, 20, m);
+        SEQAN_ASSERT_EQ(expected[i++], res);	 // Check if returned number of trimmed bases is correct.
+        SEQAN_ASSERT_EQ(res, len - length(seq)); // Check if we really trimmed so many bases.
 	}
 }
 
@@ -163,8 +161,8 @@ SEQAN_DEFINE_TEST(cut_tail_test)
 					   0, 2, 1, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 52, 0};
 
     seqan::CharString buffer = SEQAN_PATH_TO_ROOT();
-    append(buffer, "/extras/apps/seqan_flexbar/test_data/testsample.fq");
-	seqan::SequenceStream inStream(toCString(buffer));
+    append(buffer, "/extras/apps/seqan_flexbar/tests/testsample.fq");
+	seqan::SeqFileIn inStream(toCString(buffer), seqan::OPEN_RDONLY);
 	seqan::String<char> id;
 	seqan::String<seqan::Dna5Q> seq;
 
@@ -172,13 +170,11 @@ SEQAN_DEFINE_TEST(cut_tail_test)
 	Tail t;
 	while (!atEnd(inStream))
 	{
-		if (seqan::readRecord(id, seq, inStream) == 0)
-		{
-			unsigned len = length(seq);
-			unsigned res = trimRead(seq, 20, t);
-			SEQAN_ASSERT_EQ(expected[i++], res);     // Check if returned number of trimmed bases is correct.
-			SEQAN_ASSERT_EQ(res, len - length(seq)); // Check if we really trimmed so many bases.
-		}
+        readRecord(id, seq, inStream);
+        unsigned len = length(seq);
+        unsigned res = trimRead(seq, 20, t);
+        SEQAN_ASSERT_EQ(expected[i++], res);     // Check if returned number of trimmed bases is correct.
+        SEQAN_ASSERT_EQ(res, len - length(seq)); // Check if we really trimmed so many bases.
 	}
 }
 
@@ -188,8 +184,8 @@ SEQAN_DEFINE_TEST(cut_bwa_test)
 					   0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 51, 0};
 
     seqan::CharString buffer = SEQAN_PATH_TO_ROOT();
-    append(buffer, "/extras/apps/seqan_flexbar/test_data/testsample.fq");
-	seqan::SequenceStream inStream(toCString(buffer));
+    append(buffer, "/extras/apps/seqan_flexbar/tests/testsample.fq");
+	seqan::SeqFileIn inStream(toCString(buffer), seqan::OPEN_RDONLY);
 	seqan::String<char> id;
 	seqan::String<seqan::Dna5Q> seq;
 
@@ -197,13 +193,11 @@ SEQAN_DEFINE_TEST(cut_bwa_test)
 	BWA b;
 	while (!atEnd(inStream))
 	{
-		if (seqan::readRecord(id, seq, inStream) == 0)
-		{
-			unsigned len = length(seq);
-			unsigned res = trimRead(seq, 20, b);
-			SEQAN_ASSERT_EQ(expected[i++], res);     // Check if returned number of trimmed bases is correct.
-			SEQAN_ASSERT_EQ(res, len - length(seq)); // Check if we really trimmed so many bases.
-		}
+        readRecord(id, seq, inStream);
+        unsigned len = length(seq);
+        unsigned res = trimRead(seq, 20, b);
+        SEQAN_ASSERT_EQ(expected[i++], res);     // Check if returned number of trimmed bases is correct.
+        SEQAN_ASSERT_EQ(res, len - length(seq)); // Check if we really trimmed so many bases.
 	}
 }
 

@@ -40,7 +40,7 @@ using namespace seqan;
 // Test Classes
 // ========================================================================== 
 
-SEQAN_TYPED_TEST_CASE(IndexTest, IndexTypes);
+SEQAN_TYPED_TEST_CASE(IndexTest, FMIndexTypes);
 
 // ==========================================================================
 // Index Tests

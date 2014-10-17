@@ -1,6 +1,7 @@
 // FRAGMENT(includes)
 #include <iostream>
 #include <seqan/find_motif.h>
+#include <seqan/stream.h>
 
 using namespace seqan;
 

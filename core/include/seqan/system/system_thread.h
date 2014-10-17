@@ -130,28 +130,21 @@ namespace SEQAN_NAMESPACE_MAIN
         pthread_t   *hThread;
         Worker      worker;
 
-        Thread() :
-            hThread()
+        Thread() : data(), hThread(), worker()
         {}
 
         template <typename TArg>
-        Thread(TArg &arg):
-            hThread(),
-            worker(arg)
+        Thread(TArg & arg) : data(), hThread(), worker(arg)
         {}
 
         template <typename TArg>
-        Thread(TArg const &arg):
-            hThread(),
-            worker(arg)
+        Thread(TArg const & arg) : data(), hThread(), worker(arg)
         {}
 
         ~Thread() 
         {
-            if (*this) {
-                cancel();
-                wait();
-            }
+            if (*this)
+                close();
         }
 
         inline bool open()
@@ -160,7 +153,7 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         inline bool close() {
-            return cancel() && wait() && !(hThread == NULL);
+            return cancel() && wait() && !(hThread = NULL);
         }
 
         inline bool cancel() {
@@ -168,11 +161,11 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         inline bool wait() {
-            return !(pthread_join(data, NULL));
+            return !(pthread_join(data, NULL)) && !(hThread = NULL);
         }
 
         inline bool wait(void* &retVal) {
-            return !(pthread_join(data, &retVal));
+            return !(pthread_join(data, &retVal)) && !(hThread = NULL);
         }
 
         inline bool detach() {

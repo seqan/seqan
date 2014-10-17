@@ -110,12 +110,12 @@ parseArgs(FxBamCoverageOptions & options,
 
     // Two input files: Genome, and mapping.
     addOption(parser, seqan::ArgParseOption("r", "in-reference", "Path to the reference file.",
-                                            seqan::ArgParseArgument::INPUTFILE, "IN.fa"));
+                                            seqan::ArgParseArgument::INPUT_FILE, "IN.fa"));
     setValidValues(parser, "in-reference", "fasta fa");
     setRequired(parser, "in-reference");
 
     addOption(parser, seqan::ArgParseOption("m", "in-mapping", "Path to the mapping file to analyze.",
-                                            seqan::ArgParseArgument::INPUTFILE));
+                                            seqan::ArgParseArgument::INPUT_FILE));
     setValidValues(parser, "in-mapping", "sam bam");
     setRequired(parser, "in-mapping");
 
@@ -131,7 +131,7 @@ parseArgs(FxBamCoverageOptions & options,
     setDefaultValue(parser, "window-size", "10000");
 
     addSection(parser, "Output Options");
-    addOption(parser, seqan::ArgParseOption("o", "out-path", "Path to the resulting file.  If omitted, result is printed to stdout.", seqan::ArgParseArgument::OUTPUTFILE, "TSV"));
+    addOption(parser, seqan::ArgParseOption("o", "out-path", "Path to the resulting file.  If omitted, result is printed to stdout.", seqan::ArgParseArgument::OUTPUT_FILE, "TSV"));
     setRequired(parser, "out-path");
     setValidValues(parser, "out-path", "bam_coverage_tsv");
 
@@ -216,11 +216,7 @@ int main(int argc, char const ** argv)
         unsigned numBins = (sequenceLength(faiIndex, i) + options.windowSize - 1) / options.windowSize;
         resize(bins[i], numBins);
         seqan::Dna5String contigSeq;
-        if (readSequence(contigSeq, faiIndex, i) != 0)
-        {
-            std::cerr << "\nERROR: Could not read sequence " << sequenceName(faiIndex, i) << " from file!\n";
-            return 1;
-        }
+        readSequence(contigSeq, faiIndex, i);
 
         for (unsigned bin = 0; bin < numBins; ++bin)
         {
@@ -231,6 +227,8 @@ int main(int argc, char const ** argv)
                 bins[i][bin].length = length(contigSeq) - bin * options.windowSize;
             for (unsigned pos = bin * options.windowSize; pos < length(contigSeq) && pos < (bin + 1) * options.windowSize; ++pos, ++binSize)
                 cgCounter += (contigSeq[pos] == 'C' || contigSeq[pos] == 'G');
+            if (binSize == 0u)  // prevent div-by-zero below
+                binSize = 1;
             bins[i][bin].cgContent = 1.0 * cgCounter / binSize;
         }
         std::cerr << "DONE\n";
@@ -245,28 +243,24 @@ int main(int argc, char const ** argv)
               << "\n"
               << "Computing Coverage...";
 
-    seqan::BamStream bamStream(toCString(options.inBamPath));
-    if (!isGood(bamStream))
+    seqan::BamFileIn bamFile;
+    if (!open(bamFile, toCString(options.inBamPath)))
     {
         std::cerr << "Could not open " << options.inBamPath << "!\n";
         return 1;
     }
 
     seqan::BamAlignmentRecord record;
-    while (!atEnd(bamStream))
+    while (!atEnd(bamFile))
     {
-        if (readRecord(record, bamStream) != 0)
-        {
-            std::cerr << "ERROR: Could not read record from BAM file!\n";
-            return 1;
-        }
+        readRecord(record, bamFile);
 
         if (hasFlagUnmapped(record) || hasFlagSecondary(record) || record.rID == seqan::BamAlignmentRecord::INVALID_REFID)
             continue;  // Skip these records.
 
         int contigId = 0;
-        seqan::CharString const & contigName = nameStore(bamStream.bamIOContext)[record.rID];
-        if (!getIdByName(faiIndex, contigName, contigId))
+        seqan::CharString const & contigName = nameStore(context(bamFile))[record.rID];
+        if (!getIdByName(contigId, faiIndex, contigName))
         {
             std::cerr << "ERROR: Alignment to unknown contig " << contigId << "!\n";
             return 1;

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <seqan/graph_msa.h>
 #include <seqan/index.h>
+#include <seqan/seq_io.h>
 
 using namespace seqan;
 using namespace std;
@@ -16,10 +17,16 @@ int main(int argc, const char *argv[])
 		std::cout << "Usage: ./segmentalignment <seq1.fa> <seq2.fa> ...\n\n";
 		return 1;
 	}
-	
+
+    CharString id;
+    TSequence seq;
 	TSequenceSet seqs;
 	for(int i = 1; i < argc; ++i)
-		appendValue(seqs, String<Dna, FileReader<Fasta> >(argv[i]));
+    {
+        SeqFileIn seqFileIn(argv[i]);
+        readRecord(id, seq, seqFileIn);
+		appendValue(seqs, seq);
+    }
 	
 	
 	typedef Fragment<> TMatch;

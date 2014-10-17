@@ -72,13 +72,13 @@
 //
 // The resulting sequence is written to stream.
 
-int simulateGenome(seqan::SequenceStream & stream, MasonSimulateGenomeOptions const & options);
+int simulateGenome(seqan::SeqFileOut & stream, MasonSimulateGenomeOptions const & options);
 
 // ----------------------------------------------------------------------------
 // Function simulateGenome()
 // ----------------------------------------------------------------------------
 
-// Open the file with the given name in a SequenceStream and then call the simulateGenome function from above.
+// Open the file with the given name in a SeqFileOut and then call the simulateGenome function from above.
 
 int simulateGenome(char const * filename, MasonSimulateGenomeOptions const & options);
 

@@ -75,7 +75,7 @@ typedef
     TagList<Index<StringSet<CharString>, NaiveWTFMIndex>,
     TagList<Index<StringSet<DnaString>,  NaiveTLFMIndex>
     > > > > >
-    FMIndexTypes;
+    FMIndexTypes2;
 
 // ========================================================================== 
 // Test Classes
@@ -88,7 +88,7 @@ typedef
 template <typename TFMIndex>
 class LFTest : public FibreTest<TFMIndex, FibreLF> {};
 
-SEQAN_TYPED_TEST_CASE(LFTest, FMIndexTypes);
+SEQAN_TYPED_TEST_CASE(LFTest, FMIndexTypes2);
 
 // --------------------------------------------------------------------------
 // Class CSATest
@@ -97,7 +97,7 @@ SEQAN_TYPED_TEST_CASE(LFTest, FMIndexTypes);
 template <typename TFMIndex>
 class CSATest : public FibreTest<TFMIndex, FibreSA> {};
 
-SEQAN_TYPED_TEST_CASE(CSATest, FMIndexTypes);
+SEQAN_TYPED_TEST_CASE(CSATest, FMIndexTypes2);
 
 // ==========================================================================
 // LFTable Tests

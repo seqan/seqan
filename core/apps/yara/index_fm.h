@@ -38,13 +38,18 @@
 #ifndef APP_YARA_INDEX_FM_H_
 #define APP_YARA_INDEX_FM_H_
 
+namespace seqan {
+
+// ============================================================================
+// Functions
+// ============================================================================
+
 // ----------------------------------------------------------------------------
 // Function indexRequire()
 // ----------------------------------------------------------------------------
-// This function is overloaded to avoid building the index except for Wotd Dir.
+// This function is overloaded to avoid compiling the code building the index.
 
 #ifndef YARA_INDEXER
-namespace seqan {
 template <typename TText, typename TSSetSpec, typename TSpec, typename TConfig, typename TFibre>
 inline bool indexRequire(Index<StringSet<TText, TSSetSpec>,  FMIndex<TSpec, TConfig> > & index, Tag<TFibre> const fibre)
 {
@@ -53,7 +58,6 @@ inline bool indexRequire(Index<StringSet<TText, TSSetSpec>,  FMIndex<TSpec, TCon
 
     return true;
 }
-}
 #endif
 
 // ----------------------------------------------------------------------------
@@ -61,7 +65,6 @@ inline bool indexRequire(Index<StringSet<TText, TSSetSpec>,  FMIndex<TSpec, TCon
 // ----------------------------------------------------------------------------
 // This function is overloaded to avoid saving the text.
 
-namespace seqan {
 template <typename TText, typename TSSetSpec, typename TSpec, typename TConfig>
 inline bool save(Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > const & index,
                  const char * fileName, int openMode)
@@ -76,14 +79,12 @@ inline bool save(Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > co
 
     return true;
 }
-}
 
 // ----------------------------------------------------------------------------
 // Function open()
 // ----------------------------------------------------------------------------
 // This function is overloaded to avoid loading the text.
 
-namespace seqan {
 template <typename TText, typename TSSetSpec, typename TSpec, typename TConfig>
 inline bool open(Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > & index,
                  const char * fileName, int openMode)
@@ -100,53 +101,11 @@ inline bool open(Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > & 
 
     return true;
 }
-}
-
-// ----------------------------------------------------------------------------
-// Function assign()                                                  [FMIndex]
-// ----------------------------------------------------------------------------
-// This function is overloaded to avoid the text.
-
-namespace seqan {
-template <typename TText, typename TSSetSpec, typename TSpec, typename TConfig, typename TText2, typename TSSetSpec2,
-          typename TOccSpec2, typename TSpec2>
-inline void
-assign(Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > & index,
-       Index<StringSet<TText2, TSSetSpec2>, FMIndex<TOccSpec2, TSpec2> > const & source)
-{
-    assign(indexLF(index), indexLF(source));
-    assign(indexSA(index), indexSA(source));
-
-    // Set the CSA pointer to LF.
-    setFibre(indexSA(index), indexLF(index), FibreLF());
-}
-}
-
-// ----------------------------------------------------------------------------
-// Function view()
-// ----------------------------------------------------------------------------
-// This function is overloaded to avoid the text.
-
-namespace seqan {
-template <typename TText, typename TSSetSpec, typename TSpec, typename TConfig>
-typename View<Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > >::Type
-view(Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > & index)
-{
-    typename View<Index<StringSet<TText, TSSetSpec>, FMIndex<TSpec, TConfig> > >::Type indexView;
-
-    indexLF(indexView) = view(indexLF(index));
-    indexSA(indexView) = view(indexSA(index));
-
-    return indexView;
-}
-}
 
 // ----------------------------------------------------------------------------
 // Function _getNodeByChar()
 // ----------------------------------------------------------------------------
 // This function is overloaded for Dna5 and Dna5Q to let Ns always mismatch.
-
-namespace seqan {
 
 template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec>
 SEQAN_HOST_DEVICE inline bool
@@ -191,18 +150,7 @@ _getNodeByCharImpl(Iter<Index<TText, FMIndex<TOccSpec, TIndexSpec> >, VSTree<Top
 
     return _range.i1 < _range.i2;
 }
+
 }
 
-// ----------------------------------------------------------------------------
-// Function ordEqual()
-// ----------------------------------------------------------------------------
-// This function is overloaded to avoid casting TValue2 to Dna.
-
-namespace seqan {
-template <typename TValue2>
-SEQAN_HOST_DEVICE inline bool ordEqual(Dna const & left, TValue2 const & right)
-{
-    return ordValue(left) == ordValue(right);
-}
-}
 #endif  // #ifndef APP_YARA_INDEX_FM_H_

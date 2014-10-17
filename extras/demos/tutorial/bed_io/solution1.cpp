@@ -3,37 +3,32 @@
 
 int main()
 {
-    // Open input stream
-    seqan::BedStream bedIn("example.bed");
-    if (!isGood(bedIn))
+    // Open input bed file.
+    seqan::BedFileIn bedIn;
+    if (!open(bedIn, "example.bed"))
     {
         std::cerr << "ERROR: Could not open example.bed\n";
         return 1;
     }
-    // Open output stream, filename "-" means stdout.
-    seqan::BedStream bedOut("-", seqan::BedStream::WRITE);
+    // Open output bed file and link to stdout.
+    seqan::BedFileOut bedOut(std::cout, seqan::Bed());
 
     // Read the file record by record.
     seqan::BedRecord<seqan::Bed3> record;
-    while (!atEnd(bedIn))
+
+    try
     {
-        if (readRecord(record, bedIn) != 0)
+        while (!atEnd(bedIn))
         {
-            std::cerr << "ERROR: Problem reading from example.bed\n";
-            return 1;
-        }
-
-        // If record is on a sequence that is not known to bedOut yet then we
-        // have to make it known there.
-        if (record.rID >= (int)length(bedOut.sequenceNames))
-            addSequenceName(bedOut, record.ref);
-
-        if (writeRecord(bedOut, record) != 0)
-        {
-            std::cerr << "ERROR: Problem writing to stdout.\n";
-            return 1;
+            readRecord(record, bedIn);
+            writeRecord(bedOut, record);
         }
     }
-    
+    catch (std::runtime_error &e)
+    {
+        std::cout << "ERROR: " << e.what() << std::endl;
+        return 1;
+    }
+
     return 0;
 }

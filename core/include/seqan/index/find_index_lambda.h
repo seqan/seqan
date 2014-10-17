@@ -115,7 +115,7 @@ _findBacktracking(TIndexIt indexIt,
             if (IsSameType<TDistance, EditDistance>::VALUE)
             {
                 _findBacktracking(indexIt, needle, needleIt + 1,
-                                  errors + 1, threshold, delegate, TDistance());
+                                  static_cast<TThreshold>(errors + 1), threshold, delegate, TDistance());
             }
 
             if (goDown(indexIt))
@@ -125,13 +125,13 @@ _findBacktracking(TIndexIt indexIt,
                     // Mismatch.
                     TThreshold delta = !ordEqual(parentEdgeLabel(indexIt), value(needleIt));
                     _findBacktracking(indexIt, needle, needleIt + 1,
-                                      errors + delta, threshold, delegate, TDistance());
+                                      static_cast<TThreshold>(errors + delta), threshold, delegate, TDistance());
 
                     // Deletion.
                     if (IsSameType<TDistance, EditDistance>::VALUE)
                     {
-                        _findBacktracking(indexIt, needle, needleIt, errors + 1,
-                                          threshold, delegate, TDistance());
+                        _findBacktracking(indexIt, needle, needleIt,
+                                          static_cast<TThreshold>(errors + 1), threshold, delegate, TDistance());
                     }
                 }
                 while (goRight(indexIt));

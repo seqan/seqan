@@ -40,7 +40,7 @@
 #include <seqan/file.h>
 #include <seqan/store.h>
 #include <seqan/bam_io.h>
-#include <seqan/score.h> 
+#include <seqan/score.h>
 
 #include "bisar_score_data.h"
 #include "bisar_score.h"
@@ -65,7 +65,7 @@ struct AppOptions
     double max4Error;        // max. allowed real error rate
     double max3Error;        // max. allowed error rate in 3 letter alphabet (corresponding to mapper settings)
     double maxScore;
-    unsigned maxBasePenalty;    // limit the penalty for a single base 
+    unsigned maxBasePenalty;    // limit the penalty for a single base
 
     int minScore;
     bool outputSingleMates;
@@ -100,7 +100,7 @@ struct AppOptions
         maxScore(1000000),  // TODO: what would be reasonable?
         maxBasePenalty(-3),  // scaled to single penalties
         minScore(0),
-        outputSingleMates(true),    // Output also read whose mate didn't map & if no match mate pair found, output mates single 
+        outputSingleMates(true),    // Output also read whose mate didn't map & if no match mate pair found, output mates single
         scoreMatch(10.0),           // at the moment only used for pseudoWorstScore
         scoreMismatch(0.01),
         simpleScore(true),
@@ -146,21 +146,21 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     addDescription(parser, "This program reads three-letter mappings of bisulfite reads and computes local pairwise four-letter realignments using an advanced statistical alignment model.");
 
     // We require ... arguments.
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "ALIGNMENTS"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "ALIGNMENTS"));
     setHelpText(parser, 0, "SAM input file containing three-letter read alignments (must be sorted by query names).");
-    setValidValues(parser, 0, ".sam");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "GENOME"));
+    setValidValues(parser, 0, BamFileIn::getFileExtensions());
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "GENOME"));
     setHelpText(parser, 1, "A reference genome file.");
-    setValidValues(parser, 1, ".fa .fasta");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "READS", true));
+    setValidValues(parser, 1, SeqFileIn::getFileExtensions());
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS", true));
     setHelpText(parser, 2, "Either one (single-end) or two (paired-end) read files.");
-    setValidValues(parser, 2, ".fastq .fq");
+    setValidValues(parser, 2, SeqFileIn::getFileExtensions());
 
     addSection(parser, "Options");
-    addOption(parser, ArgParseOption("o", "output-file", "Mapping output file.", ArgParseArgument::OUTPUTFILE));
-    setValidValues(parser, "o", ".sam");
+    addOption(parser, ArgParseOption("o", "output-file", "Mapping output file.", ArgParseArgument::OUTPUT_FILE));
+    setValidValues(parser, "output-file", BamFileOut::getFileExtensions());
     setRequired(parser, "output-file", true);
-  
+
     addOption(parser, ArgParseOption("e3", "max3-error", "Max. error rate in 3-letter alphabet.", ArgParseArgument::DOUBLE));
     setMinValue(parser, "max3-error", "0");
     setMaxValue(parser, "max3-error", "100");
@@ -226,13 +226,13 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
 
     getArgumentValue(options.samFileName, parser, 0);
     getArgumentValue(options.refFileName, parser, 1);
- 
+
     if (1 == getArgumentValueCount(parser, 2))
         getArgumentValue(options.readFileName, parser, 2, 0);
     else if (2 == getArgumentValueCount(parser, 2))
     {
         getArgumentValue(options.readFileName, parser, 2, 0);
-        getArgumentValue(options.readFileName2, parser, 2, 1);  
+        getArgumentValue(options.readFileName2, parser, 2, 1);
     }
     else
     {
@@ -287,7 +287,7 @@ int main(int argc, char const ** argv)
     if (res != ArgumentParser::PARSE_OK)
         return res == ArgumentParser::PARSE_ERROR;
 
-#ifdef POST_PRO_PROFILE 
+#ifdef POST_PRO_PROFILE
     double timeStamp = sysTime();
 #endif
     if (!options.simpleScore)

@@ -103,7 +103,7 @@ public:
     TTextIterator   textEnd;
 
     RankDictionaryTest() :
-        alphabetSize(ValueSize<TValue>::VALUE)
+        alphabetSize(ValueSize<TValue>::VALUE), text(), textBegin(), textEnd()
     {}
 
     void setUp()
