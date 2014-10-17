@@ -290,7 +290,7 @@ SEQAN_TYPED_TEST(OutputStreamTest, Open)
 
     SEQAN_ASSERT(open(this->stream, toCString(ctx.inputFilename), OPEN_WRONLY|OPEN_APPEND));
     iter = directionIterator(this->stream, Output());
-    SEQAN_ASSERT_EQ(position(iter), ctx.filesize);
+    SEQAN_ASSERT_EQ((unsigned)position(iter), ctx.filesize);
 }
 
 // --------------------------------------------------------------------------
@@ -330,10 +330,10 @@ SEQAN_TYPED_TEST(InputStreamTest, Tell)
     typename DirectionIterator<TStream, Input>::Type iter = directionIterator(this->stream, Input());
 
     setPosition(iter, 23);
-    SEQAN_ASSERT_EQ(position(iter), 23u);
+    SEQAN_ASSERT_EQ((unsigned)position(iter), 23u);
 
     setPosition(iter, 46);
-    SEQAN_ASSERT_EQ(position(iter), 46u);
+    SEQAN_ASSERT_EQ((unsigned)position(iter), 46u);
 }
 
 SEQAN_TYPED_TEST(OutputStreamTest, Tell)
@@ -346,10 +346,10 @@ SEQAN_TYPED_TEST(OutputStreamTest, Tell)
     typename DirectionIterator<TStream, Output>::Type iter = directionIterator(this->stream, Output());
 
     setPosition(iter, 23);
-    SEQAN_ASSERT_EQ(position(iter), 23u);
+    SEQAN_ASSERT_EQ((unsigned)position(iter), 23u);
 
     setPosition(iter, 46);
-    SEQAN_ASSERT_EQ(position(iter), 46u);
+    SEQAN_ASSERT_EQ((unsigned)position(iter), 46u);
 }
 
 // ==========================================================================
