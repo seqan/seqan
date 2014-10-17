@@ -497,7 +497,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
     }
 
     seqan::Rng<> rng(/*seed=*/1);
-    seqan::Pdf<seqan::Uniform<long> > pdf(0, length(recs));
+    seqan::Pdf<seqan::Uniform<long> > pdf(0, length(recs) - 1);
 
     for (size_t i = 0; i < 10000; ++i)
     {
