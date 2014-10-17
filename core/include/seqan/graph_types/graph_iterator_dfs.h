@@ -111,7 +111,7 @@ public:
 	String<TVertexDescriptor_> data_stack;
 	
 	void _init() {
-		resizeVertexMap(*data_host,data_tokenMap);
+        resizeVertexMap(data_tokenMap, *data_host);
 		typedef typename Iterator<String<bool>, Rooted>::Type TIter;
 		TIter it = begin(data_tokenMap);
 		for(;!atEnd(it);goNext(it)) {

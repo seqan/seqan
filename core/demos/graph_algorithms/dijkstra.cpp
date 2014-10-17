@@ -19,12 +19,12 @@ int main()
     // Fill external edge weight map.
     unsigned weights[] = {10, 5, 1, 2, 4, 3, 9, 2, 7, 6};
     String<unsigned> weightMap;
-    assignEdgeMap(g, weightMap, weights);
+    assignEdgeMap(weightMap, g, weights);
 
     // Run Dijkstra's algorithm from vertex 0.
     String<unsigned> predMap;
     String<unsigned> distMap;
-    dijkstra(g, 0, weightMap, predMap, distMap);
+    dijkstra(predMap, distMap, g, 0, weightMap);
 
     // Print results to stdout.
     std::cout << "Single-Source Shortest Paths: \n";
@@ -48,13 +48,13 @@ int main()
     addEdges(cargoG, edges, numEdges);
 
     // Fill internal edge weight map.
-    InternalMap<TEdgeCargo> intMap;
-    assignEdgeMap(cargoG, intMap, weights);
+    InternalPropertyMap<TEdgeCargo> intMap;
+    assignEdgeMap(intMap, cargoG, weights);
 
     // Run Dijkstra's algorithm from vertex 0.
     clear(predMap);
     clear(distMap);
-    dijkstra(cargoG, 0, intMap, predMap, distMap);
+    dijkstra(predMap, distMap, cargoG, 0, intMap);
 
     // Print result to stdout.
     std::cout << "\nSingle-Source Shortest Paths: \n";

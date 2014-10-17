@@ -85,7 +85,7 @@ public:
     typedef seqan::RoiRecord              TRoiRecord;
 
     // Resulting ROI file is written to out.
-    std::ofstream & out;
+    seqan::RoiFileOut & roiFileOut;
 
     // Configuration for BED intersection.
     IntersectBedOptions options;
@@ -95,12 +95,12 @@ public:
     // Currently active ROI records, sorted by coordinate (push order).
     std::list<TRoiRecord> roiRecords;
 
-    // ID of current reference.
-    int rId;
+    // name of current reference.
+    seqan::CharString ref;
 
     // Construct BED intersection object with out stream.
-    IntersectBed(std::ofstream & out, IntersectBedOptions const & options) :
-            out(out), options(options), rId(seqan::minValue<int>())
+    IntersectBed(seqan::RoiFileOut & roiFileOut, IntersectBedOptions const & options) :
+            roiFileOut(roiFileOut), options(options)
     {}
 
     // Destructor; simply write out remaining data.

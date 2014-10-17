@@ -481,6 +481,35 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
 	}
 
 //////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn IndexQGram#indexSA
+ * @headerfile <seqan/index.h>
+ * @brief Shortcut for <tt>getFibre(.., QGramSA)</tt>.
+ *
+ * @signature TSa indexSA(index);
+ *
+ * @param[in] index The @link IndexQGram @endlink object holding the fibre.
+ *
+ * @return TSa A reference to the @link QGramIndexFibres#QGramSA @endlink fibre (q-gram positions).
+ */
+ 
+/*!
+ * @fn IndexQGram#saAt
+ * @headerfile <seqan/index.h>
+ * @note Advanced functionality, not commonly used.
+ * @brief Shortcut for <tt>value(indexSA(..), ..)</tt>.
+ *
+ * @signature TValue saAt(position, index);
+ *
+ * @param[in] index The @link IndexQGram @endlink object holding the fibre.
+ * @param[in] position A position in the array on which the value should be accessed.
+ *
+ * @return TValue A reference or proxy to the value in the @link QGramIndexFibres#QGramSA @endlink fibre.
+ *                To be more precise, a reference to a position containing a value of type
+ *                @link SAValue @endlink is returned (or a proxy).
+ */
+  
+//////////////////////////////////////////////////////////////////////////////
 /**
 .Function.indexDir
 ..summary:Shortcut for $getFibre(.., QGramDir)$.
@@ -498,7 +527,7 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
  * @brief Shortcut for <tt>getFibre(.., QGramDir())</tt>.
  * @signature TFibre indexDir(index);
  * 
- * @param[in] index The IndexQGram object holding the fibre.
+ * @param[in] index The @link IndexQGram @endlink object holding the fibre.
  * 
  * @return TFibre A reference to the @link QGramIndexFibres#QGramDir @endlink fibre (q-gram directory).
  */
@@ -571,7 +600,7 @@ Consider to use the @Spec.OpenAddressing@ q-gram index for longer q-grams if you
  * 
  * @signature TFibre indexCounts(index);
  * 
- * @param[in] index The IndexQGram object holding the fibre.
+ * @param[in] index The @link IndexQGram @endlink object holding the fibre.
  * 
  * @return TFibre A reference to the @link QGramIndexFibres#QGramCounts @endlink fibre (counts array).
  */
@@ -2918,7 +2947,7 @@ If the type of $index$ is $TIndex$ the return type is $Infix<Fibre<TIndex, QGram
  * @param[in] shape A @link Shape @endlink object.
  * 
  * @return TSAInfix All positions where the q-gram stored in <tt>shape</tt> occurs in the text (see @link
- *                 QGramIndexFibres#QGramText @endlink).  Tupes: @link SequenceConcept#Infix @endlink<@link Fibre
+ *                 QGramIndexFibres#QGramText @endlink).  Tupes: @link ContainerConcept#Infix @endlink<@link Fibre
  *                 @endlink<TIndex, QGramSA>::Type>::Type>.
  * 
  * The necessary index tables are built on-demand via @link Index#indexRequire @endlink if index is not <tt>const</tt>.

@@ -1,6 +1,6 @@
 #include <seqan/align.h>
 #include <seqan/basic.h>
-#include <seqan/file.h>  // for printing Seqan strings
+#include <seqan/stream.h>  // for printing Seqan strings
 
 using namespace seqan;
 

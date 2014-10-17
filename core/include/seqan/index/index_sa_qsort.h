@@ -106,18 +106,20 @@ namespace SEQAN_NAMESPACE_MAIN
 			TIter itB = begin(getValue(_text, getSeqNo(b)), Standard()) + getSeqOffset(b);
 			TIter itAEnd = end(getValue(_text, getSeqNo(a)), Standard());
 			TIter itBEnd = end(getValue(_text, getSeqNo(b)), Standard());
-			if (itAEnd - itA <= itBEnd - itB) {
+			if (itAEnd - itA < itBEnd - itB) {
 				for(; itA != itAEnd; ++itA, ++itB) {
 					if (ordLess(*itA, *itB)) return true;
 					if (ordLess(*itB, *itA)) return false;
 				}
-				return false;
+				return true;
 			} else {
 				for(; itB != itBEnd; ++itB, ++itA) {
 					if (ordLess(*itA, *itB)) return true;
 					if (ordLess(*itB, *itA)) return false;
 				}
-				return true;
+                if (itA != itAEnd)
+                    return false;
+				return getSeqNo(a) > getSeqNo(b);
 			}
 		}	
 	};

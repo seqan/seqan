@@ -49,62 +49,12 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-/**
-.Class.RoiIOContext
-..cat:ROI I/O
-..signature:RoiIOContext<TNameStore[, TNameStoreCache]>
-..summary:The I/O context to use for ROI I/O.
-..param.TNameStore:The name store class.
-..param.TNameStoreCache:The name store cache class.
-...default:@Class.NameStoreCache@<TNameStore>
-..include:bam_io.h
-..example.text:Creating a @Class.RoiIOContext@ for a raw @Class.StringSet@ of @Shortcut.CharString@.
-..example.code:
-StringSet<CharString> nameStore;
-NameStoreCache<StringSet<CharString> > nameStoreCache(nameStore);
-RoiIOContext<StringSet<CharString> > bamIOContext(nameStore, nameStoreCache);
-// ...
-..example.text:Using a @Class.RoiIOContext@ with a @Class.FragmentStore@.
-..example.code:
-typedef FragmentStore<>::TContigNameStore         TNameStore;
-typedef NameStoreCache<TNameStore>                TNameStoreCache;
-FragmentStore<> store;
-// Optionally, do something with store.
-typedef RoiIOContext<TNameStore, TNameStoreCache> TRoiIOContext;
-TRoiIOContext bamIOContext(store.contigNameStore, store.contigNameStoreCache);
-// ...
-
-.Memfunc.RoiIOContext#RoiIOContext
-..class:Class.RoiIOContext
-..signature:RoiIOContext()
-..summary:Constructor.
-..remarks:Only the default constructor is provided.
-
-.Typedef.RoiIOContext#TNameStore
-..class:Class.RoiIOContext
-..summary:The name store class.
-
-.Typedef.RoiIOContext#TNameStoreCache
-..class:Class.RoiIOContext
-..summary:The name store cache class.
-*/
-
-template <typename TNameStore_, typename TNameStoreCache_ = NameStoreCache<TNameStore_> >
 class RoiIOContext
 {
 public:
-    typedef TNameStore_ TNameStore;
-    typedef TNameStoreCache_ TNameStoreCache;
-
-    TNameStore * _nameStore;
-    TNameStoreCache * _nameStoreCache;
-
-    RoiIOContext() : _nameStore(0), _nameStoreCache(0)
-    {}
-
-    RoiIOContext(TNameStore & nameStore, TNameStoreCache & nameStoreCache) :
-            _nameStore(&nameStore), _nameStoreCache(&nameStoreCache)
-    {}
+    // Just two buffers needed for reading.
+    CharString buffer;
+    CharString castBuffer;
 };
 
 // ============================================================================
@@ -114,73 +64,6 @@ public:
 // ============================================================================
 // Functions
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// Function nameStore()
-// ----------------------------------------------------------------------------
-
-/**
-.Function.nameStore
-..class:Class.RoiIOContext
-..cat:ROI I/O
-..summary:Return reference to name store from @Class.RoiIOContext@.
-..signature:nameStore(context)
-..param.context:The @Class.RoiIOContext@ to query.
-...type:Class.RoiIOContext
-..see:Typedef.RoiIOContext#TNameStore
-..include:seqan/bam_io.h
-*/
-
-// TODO(holtgrew): Rename to referenceNameStore
-template <typename TNameStore, typename TNameStoreCache>
-TNameStore &
-nameStore(RoiIOContext<TNameStore, TNameStoreCache> & context)
-{
-    SEQAN_ASSERT(context._nameStore != 0);
-    return *context._nameStore;
-}
-
-template <typename TNameStore, typename TNameStoreCache>
-TNameStore const &
-nameStore(RoiIOContext<TNameStore, TNameStoreCache> const & context)
-{
-    SEQAN_ASSERT(context._nameStore != 0);
-    return *context._nameStore;
-}
-
-// ----------------------------------------------------------------------------
-// Function nameStoreCache()
-// ----------------------------------------------------------------------------
-
-/**
-.Function.nameStoreCache
-..class:Class.RoiIOContext
-..cat:ROI I/O
-..summary:Return reference to name store cache from @Class.RoiIOContext@.
-..signature:nameStoreCache(context)
-..param.context:The @Class.RoiIOContext@ to query.
-...type:Class.RoiIOContext
-..see:Typedef.RoiIOContext#TNameStoreCache
-..include:seqan/bam_io.h
-..see:Function.nameStore
-*/
-
-// TODO(holtgrew): Rename to referenceNameStoreCache
-template <typename TNameStore, typename TNameStoreCache>
-TNameStoreCache &
-nameStoreCache(RoiIOContext<TNameStore, TNameStoreCache> & context)
-{
-    SEQAN_ASSERT(context._nameStoreCache != 0);
-    return *context._nameStoreCache;
-}
-
-template <typename TNameStore, typename TNameStoreCache>
-TNameStoreCache const &
-nameStoreCache(RoiIOContext<TNameStore, TNameStoreCache> const & context)
-{
-    SEQAN_ASSERT(context._nameStoreCache != 0);
-    return *context._nameStoreCache;
-}
 
 }  // namespace seqan
 

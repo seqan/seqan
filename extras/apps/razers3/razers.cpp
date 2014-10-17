@@ -112,7 +112,6 @@ int mapReads(
     RazerSOptions<TSpec> & options)
 {
     FragmentStore<MyFragStoreConfig>    store;          // stores all of the tables
-    MultiFasta                          genomeSet;
     String<String<unsigned short> >     stats;      // needed for mapping quality calculation
 
     // dump configuration in verbose mode
@@ -183,7 +182,7 @@ int mapReads(
 #ifdef RAZERS_MATEPAIRS
     if (length(readFileNames) == 2)
     {
-        if (!loadReads(store, toCString(readFileNames[0]), toCString(readFileNames[1]), options))
+        if (!loadReads(store, options.readFile, toCString(readFileNames[1]), options))
         {
             //if (!loadReads(readSet, readQualities, readNames, readFileNames[0], readFileNames[1], options)) {
             cerr << "Failed to load reads" << endl;
@@ -193,7 +192,7 @@ int mapReads(
     else
 #endif
     {
-        if (!loadReads(store, toCString(readFileNames[0]), options))
+        if (!loadReads(store, options.readFile, options))
         {
             cerr << "Failed to load reads" << endl;
             return RAZERS_READS_FAILED;
@@ -233,7 +232,7 @@ int mapReads(
     //////////////////////////////////////////////////////////////////////////////
     // Step 3: Find matches using SWIFT
     loadContigs(store, genomeFileNames, false); // add filenames to the contig store (they are loaded on-demand)
-    int error = _mapReads(store, stats, options);
+    int error = _mapReads(store, stats, (RazerSCoreOptions<TSpec>&)options);
     if (error != 0)
     {
         switch (error)
@@ -302,7 +301,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
     setAppName(parser, "razers3");
     setShortDescription(parser, "Faster, fully sensitive read mapping");
     setCategory(parser, "Read Mapping");
-    options.version = "3.2";
+    options.version = "3.3";
 #ifdef SEQAN_REVISION
     options.version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
 #endif
@@ -312,18 +311,11 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
 	setVersion(parser, options.version);
 
     // Need genome and reads (hg18.fa reads.fq)
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
-	std::vector<std::string> seqExts = getFileFormatExtensions(seqan::AutoSeqFormat());
-#ifdef SEQAN_HAS_ZLIB
-    seqExts.push_back(".gz");
-#endif
-#ifdef SEQAN_HAS_BZIP2
-    seqExts.push_back(".bz2");
-#endif
-    setValidValues(parser, 0, seqExts);
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
+    setValidValues(parser, 0, seqan::SeqFileIn::getFileExtensions());
     setHelpText(parser, 0, "A reference genome file.");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "READS", true));
-    setValidValues(parser, 1, seqExts);
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS", true));
+    setValidValues(parser, 1, seqan::SeqFileIn::getFileExtensions());
     setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIREADS FILE\\fP>");
@@ -337,9 +329,10 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
                            "See \\fIhttp://www.seqan.de/projects/razers\\fP for more information.");
 
     addDescription(parser, "Input to RazerS 3 is a reference genome file and either one file with single-end reads "
-                           "or two files containing left or right mates of paired-end reads. ");
+                           "or two files containing left or right mates of paired-end reads. Use - to read single-end "
+                           "reads from stdin.");
 
-    addDescription(parser, "(c) Copyright 2009-2013 by David Weese.");
+    addDescription(parser, "(c) Copyright 2009-2014 by David Weese.");
 
     addSection(parser, "Main Options");
     addOption(parser, ArgParseOption("i", "percent-identity", "Percent identity threshold.", ArgParseOption::DOUBLE));
@@ -359,8 +352,8 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
     addOption(parser, ArgParseOption("", "unique", "Output only unique best matches (-m 1 -dr 0 -pa)."));
     addOption(parser, ArgParseOption("tr", "trim-reads", "Trim reads to given length. Default: off.", ArgParseOption::INTEGER));
     setMinValue(parser, "trim-reads", "14");
-    addOption(parser, ArgParseOption("o", "output", "Mapping result filename. Default: <\\fIREADS FILE\\fP>.razers.", ArgParseOption::OUTPUTFILE));
-    setValidValues(parser, "output", ".razers .eland .fa .fasta .gff .sam .afg");
+    addOption(parser, ArgParseOption("o", "output", "Mapping result filename (use - to dump to stdout in razers format). Default: <\\fIREADS FILE\\fP>.razers.", ArgParseOption::OUTPUT_FILE));
+    setValidValues(parser, "output", ".razers .eland .fa .fasta .gff .sam .bam .afg");
     addOption(parser, ArgParseOption("v", "verbose", "Verbose mode."));
     addOption(parser, ArgParseOption("vv", "vverbose", "Very verbose mode."));
 
@@ -497,6 +490,7 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
 	addListItem(parser, ".eland", "Eland format");
 	addListItem(parser, ".gff", "GFF format");
 	addListItem(parser, ".sam", "SAM format");
+	addListItem(parser, ".bam", "BAM format");
 	addListItem(parser, ".afg", "Amos AFG format");
 
     addText(parser, "By default, reads and contigs are referred by their Fasta ids given in the input files. "
@@ -649,18 +643,18 @@ extractOptions(
     CharString tmp = options.output;
     toLower(tmp);
 
-    if (endsWith(tmp, ".razers"))
-        options.outputFormat = 0;
-    else if (endsWith(tmp, ".fa") || endsWith(tmp, ".fasta"))
+    if (endsWith(tmp, ".fa") || endsWith(tmp, ".fasta"))
         options.outputFormat = 1;
     else if (endsWith(tmp, ".eland"))
         options.outputFormat = 2;
     else if (endsWith(tmp, ".gff"))
         options.outputFormat = 3;
-    else if (endsWith(tmp, ".sam"))
+    else if (endsWith(tmp, ".sam") || endsWith(tmp, ".bam"))
         options.outputFormat = 4;
     else if (endsWith(tmp, ".afg"))
         options.outputFormat = 5;
+    else
+        options.outputFormat = 0;   // default is ".razers"
 
     // don't append /L/R in SAM mode
     if (!isSet(parser, "read-naming") && options.outputFormat == 4)
@@ -788,9 +782,21 @@ int main(int argc, const char * argv[])
     omp_set_num_threads(options.threadCount == 0 ? 1 : options.threadCount);
 #endif  // #ifdef _OPENMP
 
+	//////////////////////////////////////////////////////////////////////////////
+	// open left reads file
+
+    bool success;
+    if (!isEqual(readFileNames[0], "-"))
+        success = open(options.readFile, toCString(readFileNames[0]));
+    else
+        success = open(options.readFile, std::cin);
+
+    if (!success)
+        return RAZERS_READS_FAILED;
+
     //////////////////////////////////////////////////////////////////////////////
     // get read length
-    int readLength = estimateReadLength(toCString(readFileNames[0]));
+    int readLength = estimateReadLength(options.readFile);
     if (readLength == RAZERS_READS_FAILED)
     {
         cerr << "Failed to open reads file " << readFileNames[0] << endl;

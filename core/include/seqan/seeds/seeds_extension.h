@@ -171,8 +171,8 @@ enum ExtensionDirection
  * @signature void extendSeed(seed, database, query, direction, scoringScheme, scoreDropOff, xDropTag);
  *
  * @param[in,out] seed          The Seed to extend.
- * @param[in]     database      The database (horizontal) @link SequenceConcept sequence @endlink.
- * @param[in]     query         The query (vertical) @link SequenceConcept sequence @endlink.
+ * @param[in]     database      The database (horizontal) @link ContainerConcept sequence @endlink.
+ * @param[in]     query         The query (vertical) @link ContainerConcept sequence @endlink.
  * @param[in]     direction     The extension direction.  Type: @link ExtensionDirection @endlink.
  * @param[in]     scoringScheme The @link Score @endlink object to use for scoring alignments and gaps.
  * @param[in]     scoreDropOff  The score drop after which the extension should stop.  The extension stops if this

@@ -65,6 +65,9 @@
 // Basic tag-related code.
 #include <seqan/basic/fundamental_tags.h>
 
+// Functions and metafunctions to use contiguous chunks of memory
+#include <seqan/basic/fundamental_chunking.h>
+
 // Definition of assign(), set(), move().
 #include <seqan/basic/fundamental_transport.h>
 

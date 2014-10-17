@@ -15,7 +15,7 @@ message (STATUS "Configuring core/apps/sak")
 # ----------------------------------------------------------------------------
 
 # Search SeqAn and select dependencies.
-set (SEQAN_FIND_DEPENDENCIES NONE)
+set (SEQAN_FIND_DEPENDENCIES ZLIB BZip2)
 find_package (SeqAn REQUIRED)
 
 # ----------------------------------------------------------------------------

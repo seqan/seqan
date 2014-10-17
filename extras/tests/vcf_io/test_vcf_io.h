@@ -41,86 +41,88 @@
 #include <seqan/sequence.h>
 #include <seqan/vcf_io.h>
 
+
 SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_header)
 {
     seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
     append(vcfPath, "/extras/tests/vcf_io/example.vcf");
 
-    std::fstream inF(toCString(vcfPath), std::ios::in | std::ios::binary);
-    SEQAN_ASSERT(inF.good());
+    seqan::String<char, seqan::MMap<> > mmapString;
+    SEQAN_ASSERT(open(mmapString, toCString(vcfPath)));
+    seqan::Iterator<seqan::String<char, seqan::MMap<> >, seqan::Rooted>::Type iter = begin(mmapString);
 
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(inF);
+    seqan::VcfIOContext<> vcfIOContext;
     seqan::VcfHeader vcfHeader;
-    seqan::VcfIOContext vcfIOContext(vcfHeader.sequenceNames, vcfHeader.sampleNames);
 
-    SEQAN_ASSERT_EQ(read(vcfHeader, reader, vcfIOContext, seqan::Vcf()), 0);
+    readRecord(vcfHeader, vcfIOContext, iter, seqan::Vcf());
 
-    SEQAN_ASSERT_EQ(length(vcfHeader.headerRecords), 18u);
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[0].key, "fileformat");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[0].value, "VCFv4.1");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[1].key, "fileDate");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[1].value, "20090805");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[2].key, "source");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[2].value, "myImputationProgramV3.1");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[3].key, "reference");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[3].value, "file:///seq/references/1000GenomesPilot-NCBI36.fasta");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[4].key, "contig");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[4].value, "<ID=20,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species=\"Homo sapiens\",taxonomy=x>");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[5].key, "phasing");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[5].value, "partial");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[6].key, "INFO");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[6].value, "<ID=NS,Number=1,Type=Integer,Description=\"Number of Samples With Data\">");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[7].key, "INFO");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[7].value, "<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[8].key, "INFO");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[8].value, "<ID=AF,Number=A,Type=Float,Description=\"Allele Frequency\">");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[9].key, "INFO");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[9].value, "<ID=AA,Number=1,Type=String,Description=\"Ancestral Allele\">");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[10].key, "INFO");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[10].value, "<ID=DB,Number=0,Type=Flag,Description=\"dbSNP membership, build 129\">");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[11].key, "INFO");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[11].value, "<ID=H2,Number=0,Type=Flag,Description=\"HapMap2 membership\">");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[12].key, "FILTER");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[12].value, "<ID=q10,Description=\"Quality below 10\">");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[13].key, "FILTER");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[13].value, "<ID=s50,Description=\"Less than 50% of samples have data\">");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[14].key, "FORMAT");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[14].value, "<ID=GT,Number=1,Type=String,Description=\"Genotype\">");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[15].key, "FORMAT");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[15].value, "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[16].key, "FORMAT");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[16].value, "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[17].key, "FORMAT");
-    SEQAN_ASSERT_EQ(vcfHeader.headerRecords[17].value, "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">");
+    SEQAN_ASSERT_EQ(length(vcfHeader), 18u);
+    SEQAN_ASSERT_EQ(vcfHeader[0].key, "fileformat");
+    SEQAN_ASSERT_EQ(vcfHeader[0].value, "VCFv4.1");
+    SEQAN_ASSERT_EQ(vcfHeader[1].key, "fileDate");
+    SEQAN_ASSERT_EQ(vcfHeader[1].value, "20090805");
+    SEQAN_ASSERT_EQ(vcfHeader[2].key, "source");
+    SEQAN_ASSERT_EQ(vcfHeader[2].value, "myImputationProgramV3.1");
+    SEQAN_ASSERT_EQ(vcfHeader[3].key, "reference");
+    SEQAN_ASSERT_EQ(vcfHeader[3].value, "file:///seq/references/1000GenomesPilot-NCBI36.fasta");
+    SEQAN_ASSERT_EQ(vcfHeader[4].key, "contig");
+    SEQAN_ASSERT_EQ(vcfHeader[4].value, "<ID=20,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species=\"Homo sapiens\",taxonomy=x>");
+    SEQAN_ASSERT_EQ(vcfHeader[5].key, "phasing");
+    SEQAN_ASSERT_EQ(vcfHeader[5].value, "partial");
+    SEQAN_ASSERT_EQ(vcfHeader[6].key, "INFO");
+    SEQAN_ASSERT_EQ(vcfHeader[6].value, "<ID=NS,Number=1,Type=Integer,Description=\"Number of Samples With Data\">");
+    SEQAN_ASSERT_EQ(vcfHeader[7].key, "INFO");
+    SEQAN_ASSERT_EQ(vcfHeader[7].value, "<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">");
+    SEQAN_ASSERT_EQ(vcfHeader[8].key, "INFO");
+    SEQAN_ASSERT_EQ(vcfHeader[8].value, "<ID=AF,Number=A,Type=Float,Description=\"Allele Frequency\">");
+    SEQAN_ASSERT_EQ(vcfHeader[9].key, "INFO");
+    SEQAN_ASSERT_EQ(vcfHeader[9].value, "<ID=AA,Number=1,Type=String,Description=\"Ancestral Allele\">");
+    SEQAN_ASSERT_EQ(vcfHeader[10].key, "INFO");
+    SEQAN_ASSERT_EQ(vcfHeader[10].value, "<ID=DB,Number=0,Type=Flag,Description=\"dbSNP membership, build 129\">");
+    SEQAN_ASSERT_EQ(vcfHeader[11].key, "INFO");
+    SEQAN_ASSERT_EQ(vcfHeader[11].value, "<ID=H2,Number=0,Type=Flag,Description=\"HapMap2 membership\">");
+    SEQAN_ASSERT_EQ(vcfHeader[12].key, "FILTER");
+    SEQAN_ASSERT_EQ(vcfHeader[12].value, "<ID=q10,Description=\"Quality below 10\">");
+    SEQAN_ASSERT_EQ(vcfHeader[13].key, "FILTER");
+    SEQAN_ASSERT_EQ(vcfHeader[13].value, "<ID=s50,Description=\"Less than 50% of samples have data\">");
+    SEQAN_ASSERT_EQ(vcfHeader[14].key, "FORMAT");
+    SEQAN_ASSERT_EQ(vcfHeader[14].value, "<ID=GT,Number=1,Type=String,Description=\"Genotype\">");
+    SEQAN_ASSERT_EQ(vcfHeader[15].key, "FORMAT");
+    SEQAN_ASSERT_EQ(vcfHeader[15].value, "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">");
+    SEQAN_ASSERT_EQ(vcfHeader[16].key, "FORMAT");
+    SEQAN_ASSERT_EQ(vcfHeader[16].value, "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">");
+    SEQAN_ASSERT_EQ(vcfHeader[17].key, "FORMAT");
+    SEQAN_ASSERT_EQ(vcfHeader[17].value, "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">");
 
-    SEQAN_ASSERT_EQ(length(vcfHeader.sequenceNames), 1u);
-    SEQAN_ASSERT_EQ(vcfHeader.sequenceNames[0], "20");
+    SEQAN_ASSERT_EQ(length(contigNames(vcfIOContext)), 1u);
+    SEQAN_ASSERT_EQ(contigNames(vcfIOContext)[0], "20");
 
-    SEQAN_ASSERT_EQ(length(vcfHeader.sampleNames), 3u);
-    SEQAN_ASSERT_EQ(vcfHeader.sampleNames[0], "NA00001");
-    SEQAN_ASSERT_EQ(vcfHeader.sampleNames[1], "NA00002");
-    SEQAN_ASSERT_EQ(vcfHeader.sampleNames[2], "NA00003");
+    SEQAN_ASSERT_EQ(length(sampleNames(vcfIOContext)), 3u);
+    SEQAN_ASSERT_EQ(sampleNames(vcfIOContext)[0], "NA00001");
+    SEQAN_ASSERT_EQ(sampleNames(vcfIOContext)[1], "NA00002");
+    SEQAN_ASSERT_EQ(sampleNames(vcfIOContext)[2], "NA00003");
 }
+
 
 SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
 {
     seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
-    append(vcfPath, "/extras/tests/vcf_io/example.vcf");
+    append(vcfPath, "/extras/tests/vcf_io/example_records_with_errors.vcf");
 
-    std::fstream inF(toCString(vcfPath), std::ios::in | std::ios::binary);
-    SEQAN_ASSERT(inF.good());
+    seqan::String<char, seqan::MMap<> > mmapString;
+    open(mmapString, toCString(vcfPath));
+    seqan::Iterator<seqan::String<char, seqan::MMap<> >, seqan::Rooted>::Type iter = begin(mmapString);
 
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(inF);
+    seqan::VcfIOContext<> vcfIOContext;
     seqan::VcfHeader vcfHeader;
-    seqan::VcfIOContext vcfIOContext(vcfHeader.sequenceNames, vcfHeader.sampleNames);
 
-    SEQAN_ASSERT_EQ(read(vcfHeader, reader, vcfIOContext, seqan::Vcf()), 0);
+    resize(sampleNames(vcfIOContext), 3);
 
     seqan::String<seqan::VcfRecord> records;
-    while (!atEnd(reader))
+    seqan::VcfRecord record;
+    for (unsigned i = 0; i < 3; ++i)
     {
-        seqan::VcfRecord record;
-        SEQAN_ASSERT_EQ(readRecord(record, reader, vcfIOContext, seqan::Vcf()), 0);
+        readRecord(record, vcfIOContext, iter, seqan::Vcf());
         appendValue(records, record);
     }
 
@@ -158,67 +160,76 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
     SEQAN_ASSERT_EQ(records[2].info, "NS=2;DP=10;AF=0.333,0.667;AA=T;DB");
     SEQAN_ASSERT_EQ(records[2].format, "GT:GQ:DP:HQ");
     SEQAN_ASSERT_EQ(length(records[2].genotypeInfos), 3u);
+
+    for (unsigned i = 0; i < 25; ++i)
+    {
+        SEQAN_TEST_EXCEPTION(seqan::ParseError,
+                             seqan::readRecord(record, vcfIOContext, iter, seqan::Vcf()));
+        seqan::skipLine(iter);
+    }
 }
 
-SEQAN_DEFINE_TEST(test_vcf_io_vcf_stream_read_record)
+SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_read_record)
 {
     seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
     append(vcfPath, "/extras/tests/vcf_io/example.vcf");
 
-    seqan::VcfStream vcfStream(toCString(vcfPath));
-    SEQAN_ASSERT(isGood(vcfStream));
+    seqan::VcfFileIn vcfStream(toCString(vcfPath));
+    seqan::VcfHeader header;
 
-    SEQAN_ASSERT_EQ(length(vcfStream.header.headerRecords), 18u);
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[0].key, "fileformat");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[0].value, "VCFv4.1");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[1].key, "fileDate");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[1].value, "20090805");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[2].key, "source");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[2].value, "myImputationProgramV3.1");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[3].key, "reference");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[3].value, "file:///seq/references/1000GenomesPilot-NCBI36.fasta");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[4].key, "contig");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[4].value, "<ID=20,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species=\"Homo sapiens\",taxonomy=x>");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[5].key, "phasing");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[5].value, "partial");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[6].key, "INFO");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[6].value, "<ID=NS,Number=1,Type=Integer,Description=\"Number of Samples With Data\">");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[7].key, "INFO");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[7].value, "<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[8].key, "INFO");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[8].value, "<ID=AF,Number=A,Type=Float,Description=\"Allele Frequency\">");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[9].key, "INFO");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[9].value, "<ID=AA,Number=1,Type=String,Description=\"Ancestral Allele\">");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[10].key, "INFO");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[10].value, "<ID=DB,Number=0,Type=Flag,Description=\"dbSNP membership, build 129\">");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[11].key, "INFO");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[11].value, "<ID=H2,Number=0,Type=Flag,Description=\"HapMap2 membership\">");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[12].key, "FILTER");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[12].value, "<ID=q10,Description=\"Quality below 10\">");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[13].key, "FILTER");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[13].value, "<ID=s50,Description=\"Less than 50% of samples have data\">");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[14].key, "FORMAT");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[14].value, "<ID=GT,Number=1,Type=String,Description=\"Genotype\">");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[15].key, "FORMAT");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[15].value, "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[16].key, "FORMAT");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[16].value, "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[17].key, "FORMAT");
-    SEQAN_ASSERT_EQ(vcfStream.header.headerRecords[17].value, "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">");
+    readRecord(header, vcfStream);
 
-    SEQAN_ASSERT_EQ(length(vcfStream.header.sequenceNames), 1u);
-    SEQAN_ASSERT_EQ(vcfStream.header.sequenceNames[0], "20");
+    SEQAN_ASSERT_EQ(length(header), 18u);
+    SEQAN_ASSERT_EQ(header[0].key, "fileformat");
+    SEQAN_ASSERT_EQ(header[0].value, "VCFv4.1");
+    SEQAN_ASSERT_EQ(header[1].key, "fileDate");
+    SEQAN_ASSERT_EQ(header[1].value, "20090805");
+    SEQAN_ASSERT_EQ(header[2].key, "source");
+    SEQAN_ASSERT_EQ(header[2].value, "myImputationProgramV3.1");
+    SEQAN_ASSERT_EQ(header[3].key, "reference");
+    SEQAN_ASSERT_EQ(header[3].value, "file:///seq/references/1000GenomesPilot-NCBI36.fasta");
+    SEQAN_ASSERT_EQ(header[4].key, "contig");
+    SEQAN_ASSERT_EQ(header[4].value, "<ID=20,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species=\"Homo sapiens\",taxonomy=x>");
+    SEQAN_ASSERT_EQ(header[5].key, "phasing");
+    SEQAN_ASSERT_EQ(header[5].value, "partial");
+    SEQAN_ASSERT_EQ(header[6].key, "INFO");
+    SEQAN_ASSERT_EQ(header[6].value, "<ID=NS,Number=1,Type=Integer,Description=\"Number of Samples With Data\">");
+    SEQAN_ASSERT_EQ(header[7].key, "INFO");
+    SEQAN_ASSERT_EQ(header[7].value, "<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">");
+    SEQAN_ASSERT_EQ(header[8].key, "INFO");
+    SEQAN_ASSERT_EQ(header[8].value, "<ID=AF,Number=A,Type=Float,Description=\"Allele Frequency\">");
+    SEQAN_ASSERT_EQ(header[9].key, "INFO");
+    SEQAN_ASSERT_EQ(header[9].value, "<ID=AA,Number=1,Type=String,Description=\"Ancestral Allele\">");
+    SEQAN_ASSERT_EQ(header[10].key, "INFO");
+    SEQAN_ASSERT_EQ(header[10].value, "<ID=DB,Number=0,Type=Flag,Description=\"dbSNP membership, build 129\">");
+    SEQAN_ASSERT_EQ(header[11].key, "INFO");
+    SEQAN_ASSERT_EQ(header[11].value, "<ID=H2,Number=0,Type=Flag,Description=\"HapMap2 membership\">");
+    SEQAN_ASSERT_EQ(header[12].key, "FILTER");
+    SEQAN_ASSERT_EQ(header[12].value, "<ID=q10,Description=\"Quality below 10\">");
+    SEQAN_ASSERT_EQ(header[13].key, "FILTER");
+    SEQAN_ASSERT_EQ(header[13].value, "<ID=s50,Description=\"Less than 50% of samples have data\">");
+    SEQAN_ASSERT_EQ(header[14].key, "FORMAT");
+    SEQAN_ASSERT_EQ(header[14].value, "<ID=GT,Number=1,Type=String,Description=\"Genotype\">");
+    SEQAN_ASSERT_EQ(header[15].key, "FORMAT");
+    SEQAN_ASSERT_EQ(header[15].value, "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">");
+    SEQAN_ASSERT_EQ(header[16].key, "FORMAT");
+    SEQAN_ASSERT_EQ(header[16].value, "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">");
+    SEQAN_ASSERT_EQ(header[17].key, "FORMAT");
+    SEQAN_ASSERT_EQ(header[17].value, "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">");
 
-    SEQAN_ASSERT_EQ(length(vcfStream.header.sampleNames), 3u);
-    SEQAN_ASSERT_EQ(vcfStream.header.sampleNames[0], "NA00001");
-    SEQAN_ASSERT_EQ(vcfStream.header.sampleNames[1], "NA00002");
-    SEQAN_ASSERT_EQ(vcfStream.header.sampleNames[2], "NA00003");
+    SEQAN_ASSERT_EQ(length(contigNames(context(vcfStream))), 1u);
+    SEQAN_ASSERT_EQ(contigNames(context(vcfStream))[0], "20");
+
+    SEQAN_ASSERT_EQ(length(sampleNames(context(vcfStream))), 3u);
+    SEQAN_ASSERT_EQ(sampleNames(context(vcfStream))[0], "NA00001");
+    SEQAN_ASSERT_EQ(sampleNames(context(vcfStream))[1], "NA00002");
+    SEQAN_ASSERT_EQ(sampleNames(context(vcfStream))[2], "NA00003");
 
     seqan::String<seqan::VcfRecord> records;
     while (!atEnd(vcfStream))
     {
         seqan::VcfRecord record;
-        SEQAN_ASSERT_EQ(readRecord(record, vcfStream), 0);
+        readRecord(record, vcfStream);
         appendValue(records, record);
     }
 
@@ -260,185 +271,140 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_stream_read_record)
 
 SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_header)
 {
-    seqan::CharString tmpPath(SEQAN_TEMP_FILENAME());
-    std::fstream outF(toCString(tmpPath), std::ios::out | std::ios::binary);
-    SEQAN_ASSERT(outF.good());
-
+    seqan::VcfIOContext<> vcfIOContext;
     seqan::VcfHeader vcfHeader;
-    appendValue(vcfHeader.sequenceNames, "20");
-    appendValue(vcfHeader.sampleNames, "NA00001");
-    appendValue(vcfHeader.sampleNames, "NA00002");
-    appendValue(vcfHeader.sampleNames, "NA00003");
+    appendName(contigNamesCache(vcfIOContext), "20");
+    appendName(sampleNamesCache(vcfIOContext), "NA00001");
+    appendName(sampleNamesCache(vcfIOContext), "NA00002");
+    appendName(sampleNamesCache(vcfIOContext), "NA00003");
 
-    resize(vcfHeader.headerRecords, 18);
-    vcfHeader.headerRecords[0].key = "fileformat";
-    vcfHeader.headerRecords[0].value = "VCFv4.1";
-    vcfHeader.headerRecords[1].key = "fileDate";
-    vcfHeader.headerRecords[1].value = "20090805";
-    vcfHeader.headerRecords[2].key = "source";
-    vcfHeader.headerRecords[2].value = "myImputationProgramV3.1";
-    vcfHeader.headerRecords[3].key = "reference";
-    vcfHeader.headerRecords[3].value = "file:///seq/references/1000GenomesPilot-NCBI36.fasta";
-    vcfHeader.headerRecords[4].key = "contig";
-    vcfHeader.headerRecords[4].value = "<ID=20,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species=\"Homo sapiens\",taxonomy=x>";
-    vcfHeader.headerRecords[5].key = "phasing";
-    vcfHeader.headerRecords[5].value = "partial";
-    vcfHeader.headerRecords[6].key = "INFO";
-    vcfHeader.headerRecords[6].value = "<ID=NS,Number=1,Type=Integer,Description=\"Number of Samples With Data\">";
-    vcfHeader.headerRecords[7].key = "INFO";
-    vcfHeader.headerRecords[7].value = "<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">";
-    vcfHeader.headerRecords[8].key = "INFO";
-    vcfHeader.headerRecords[8].value = "<ID=AF,Number=A,Type=Float,Description=\"Allele Frequency\">";
-    vcfHeader.headerRecords[9].key = "INFO";
-    vcfHeader.headerRecords[9].value = "<ID=AA,Number=1,Type=String,Description=\"Ancestral Allele\">";
-    vcfHeader.headerRecords[10].key = "INFO";
-    vcfHeader.headerRecords[10].value = "<ID=DB,Number=0,Type=Flag,Description=\"dbSNP membership, build 129\">";
-    vcfHeader.headerRecords[11].key = "INFO";
-    vcfHeader.headerRecords[11].value = "<ID=H2,Number=0,Type=Flag,Description=\"HapMap2 membership\">";
-    vcfHeader.headerRecords[12].key = "FILTER";
-    vcfHeader.headerRecords[12].value = "<ID=q10,Description=\"Quality below 10\">";
-    vcfHeader.headerRecords[13].key = "FILTER";
-    vcfHeader.headerRecords[13].value = "<ID=s50,Description=\"Less than 50% of samples have data\">";
-    vcfHeader.headerRecords[14].key = "FORMAT";
-    vcfHeader.headerRecords[14].value = "<ID=GT,Number=1,Type=String,Description=\"Genotype\">";
-    vcfHeader.headerRecords[15].key = "FORMAT";
-    vcfHeader.headerRecords[15].value = "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">";
-    vcfHeader.headerRecords[16].key = "FORMAT";
-    vcfHeader.headerRecords[16].value = "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">";
-    vcfHeader.headerRecords[17].key = "FORMAT";
-    vcfHeader.headerRecords[17].value = "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">";
+    resize(vcfHeader, 18);
+    vcfHeader[0].key = "fileformat";
+    vcfHeader[0].value = "VCFv4.1";
+    vcfHeader[1].key = "fileDate";
+    vcfHeader[1].value = "20090805";
+    vcfHeader[2].key = "source";
+    vcfHeader[2].value = "myImputationProgramV3.1";
+    vcfHeader[3].key = "reference";
+    vcfHeader[3].value = "file:///seq/references/1000GenomesPilot-NCBI36.fasta";
+    vcfHeader[4].key = "contig";
+    vcfHeader[4].value = "<ID=20,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species=\"Homo sapiens\",taxonomy=x>";
+    vcfHeader[5].key = "phasing";
+    vcfHeader[5].value = "partial";
+    vcfHeader[6].key = "INFO";
+    vcfHeader[6].value = "<ID=NS,Number=1,Type=Integer,Description=\"Number of Samples With Data\">";
+    vcfHeader[7].key = "INFO";
+    vcfHeader[7].value = "<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">";
+    vcfHeader[8].key = "INFO";
+    vcfHeader[8].value = "<ID=AF,Number=A,Type=Float,Description=\"Allele Frequency\">";
+    vcfHeader[9].key = "INFO";
+    vcfHeader[9].value = "<ID=AA,Number=1,Type=String,Description=\"Ancestral Allele\">";
+    vcfHeader[10].key = "INFO";
+    vcfHeader[10].value = "<ID=DB,Number=0,Type=Flag,Description=\"dbSNP membership, build 129\">";
+    vcfHeader[11].key = "INFO";
+    vcfHeader[11].value = "<ID=H2,Number=0,Type=Flag,Description=\"HapMap2 membership\">";
+    vcfHeader[12].key = "FILTER";
+    vcfHeader[12].value = "<ID=q10,Description=\"Quality below 10\">";
+    vcfHeader[13].key = "FILTER";
+    vcfHeader[13].value = "<ID=s50,Description=\"Less than 50% of samples have data\">";
+    vcfHeader[14].key = "FORMAT";
+    vcfHeader[14].value = "<ID=GT,Number=1,Type=String,Description=\"Genotype\">";
+    vcfHeader[15].key = "FORMAT";
+    vcfHeader[15].value = "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">";
+    vcfHeader[16].key = "FORMAT";
+    vcfHeader[16].value = "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">";
+    vcfHeader[17].key = "FORMAT";
+    vcfHeader[17].value = "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">";
 
-    seqan::VcfIOContext vcfIOContext(vcfHeader.sequenceNames, vcfHeader.sampleNames);
-    SEQAN_ASSERT_EQ(write(outF, vcfHeader, vcfIOContext, seqan::Vcf()), 0);
-    outF.close();
+    std::string tmpPath = (std::string)SEQAN_TEMP_FILENAME() + ".vcf";
+    std::ofstream file(tmpPath.c_str());
+    seqan::DirectionIterator<std::ofstream, seqan::Output>::Type iter = directionIterator(file, seqan::Output());
+    writeRecord(iter, vcfHeader, vcfIOContext, seqan::Vcf());
+    file.close();
 
-    seqan::CharString goldPath(SEQAN_PATH_TO_ROOT());
-    append(goldPath, "/extras/tests/vcf_io/vcf_header.vcf");
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
+    std::string goldPath = (std::string)SEQAN_PATH_TO_ROOT() + "/extras/tests/vcf_io/vcf_header.vcf";
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(tmpPath.c_str(), goldPath.c_str()));
 }
+
 
 SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_record)
 {
-    seqan::CharString tmpPath(SEQAN_TEMP_FILENAME());
-    std::fstream outF(toCString(tmpPath), std::ios::out | std::ios::binary);
-    SEQAN_ASSERT(outF.good());
+    std::string goldPath = (std::string)SEQAN_PATH_TO_ROOT() + "/extras/tests/vcf_io/example_records.vcf";
+    std::string tmpPath = (std::string)SEQAN_TEMP_FILENAME() + ".vcf";
+
+    std::ifstream file(goldPath.c_str());
+    std::ofstream fileOut(tmpPath.c_str());
+
+    seqan::DirectionIterator<std::ifstream, seqan::Input>::Type iter = directionIterator(file, seqan::Input());
+    seqan::DirectionIterator<std::ofstream, seqan::Output>::Type iterOut = directionIterator(fileOut, seqan::Output());
 
     seqan::VcfHeader vcfHeader;
-    appendValue(vcfHeader.sequenceNames, "20");
-    appendValue(vcfHeader.sampleNames, "NA00001");
-    appendValue(vcfHeader.sampleNames, "NA00002");
-    appendValue(vcfHeader.sampleNames, "NA00003");
+    seqan::VcfIOContext<> vcfIOContext;
+    resize(sampleNames(vcfIOContext), 3);
 
-    resize(vcfHeader.headerRecords, 18);
-    vcfHeader.headerRecords[0].key = "fileformat";
-    vcfHeader.headerRecords[0].value = "VCFv4.1";
-    vcfHeader.headerRecords[1].key = "fileDate";
-    vcfHeader.headerRecords[1].value = "20090805";
-    vcfHeader.headerRecords[2].key = "source";
-    vcfHeader.headerRecords[2].value = "myImputationProgramV3.1";
-    vcfHeader.headerRecords[3].key = "reference";
-    vcfHeader.headerRecords[3].value = "file:///seq/references/1000GenomesPilot-NCBI36.fasta";
-    vcfHeader.headerRecords[4].key = "contig";
-    vcfHeader.headerRecords[4].value = "<ID=20,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species=\"Homo sapiens\",taxonomy=x>";
-    vcfHeader.headerRecords[5].key = "phasing";
-    vcfHeader.headerRecords[5].value = "partial";
-    vcfHeader.headerRecords[6].key = "INFO";
-    vcfHeader.headerRecords[6].value = "<ID=NS,Number=1,Type=Integer,Description=\"Number of Samples With Data\">";
-    vcfHeader.headerRecords[7].key = "INFO";
-    vcfHeader.headerRecords[7].value = "<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">";
-    vcfHeader.headerRecords[8].key = "INFO";
-    vcfHeader.headerRecords[8].value = "<ID=AF,Number=A,Type=Float,Description=\"Allele Frequency\">";
-    vcfHeader.headerRecords[9].key = "INFO";
-    vcfHeader.headerRecords[9].value = "<ID=AA,Number=1,Type=String,Description=\"Ancestral Allele\">";
-    vcfHeader.headerRecords[10].key = "INFO";
-    vcfHeader.headerRecords[10].value = "<ID=DB,Number=0,Type=Flag,Description=\"dbSNP membership, build 129\">";
-    vcfHeader.headerRecords[11].key = "INFO";
-    vcfHeader.headerRecords[11].value = "<ID=H2,Number=0,Type=Flag,Description=\"HapMap2 membership\">";
-    vcfHeader.headerRecords[12].key = "FILTER";
-    vcfHeader.headerRecords[12].value = "<ID=q10,Description=\"Quality below 10\">";
-    vcfHeader.headerRecords[13].key = "FILTER";
-    vcfHeader.headerRecords[13].value = "<ID=s50,Description=\"Less than 50% of samples have data\">";
-    vcfHeader.headerRecords[14].key = "FORMAT";
-    vcfHeader.headerRecords[14].value = "<ID=GT,Number=1,Type=String,Description=\"Genotype\">";
-    vcfHeader.headerRecords[15].key = "FORMAT";
-    vcfHeader.headerRecords[15].value = "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">";
-    vcfHeader.headerRecords[16].key = "FORMAT";
-    vcfHeader.headerRecords[16].value = "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">";
-    vcfHeader.headerRecords[17].key = "FORMAT";
-    vcfHeader.headerRecords[17].value = "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">";
+    seqan::VcfRecord record;
+    while (!atEnd(iter))
+    {
+        readRecord(record, vcfIOContext, iter, seqan::Vcf());
+        writeRecord(iterOut, record, vcfIOContext, seqan::Vcf());
+    }
+    fileOut.close();
 
-    seqan::VcfIOContext vcfIOContext(vcfHeader.sequenceNames, vcfHeader.sampleNames);
-
-    seqan::VcfRecord vcfRecord;
-    vcfRecord.rID = 0;
-    vcfRecord.beginPos = 14369;
-    vcfRecord.id = "rs6054257";
-    vcfRecord.ref = "G";
-    vcfRecord.alt = "A";
-    vcfRecord.qual = 29;
-    vcfRecord.filter = "PASS";
-    vcfRecord.info = "NS=3;DP=14;AF=0.5;DB;H2";
-    vcfRecord.format = "GT:GQ:DP:HQ";
-    appendValue(vcfRecord.genotypeInfos, "0|0:48:1:51,51");
-    appendValue(vcfRecord.genotypeInfos, "1|0:48:8:51,51");
-    appendValue(vcfRecord.genotypeInfos, "1/1:43:5:.,.");
-    SEQAN_ASSERT_EQ(writeRecord(outF, vcfRecord, vcfIOContext, seqan::Vcf()), 0);
-    outF.close();
-
-    seqan::CharString goldPath(SEQAN_PATH_TO_ROOT());
-    append(goldPath, "/extras/tests/vcf_io/vcf_record.vcf");
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(tmpPath.c_str(), goldPath.c_str()));
 }
 
-SEQAN_DEFINE_TEST(test_vcf_io_vcf_stream_write_record)
+SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_write_record)
 {
-    seqan::CharString tmpPath(SEQAN_TEMP_FILENAME());
-    seqan::VcfStream vcfStream(toCString(tmpPath), seqan::VcfStream::WRITE);
-    SEQAN_ASSERT(isGood(vcfStream));
+    std::string tmpPath = (std::string)SEQAN_TEMP_FILENAME() + ".vcf";
+    seqan::VcfFileOut vcfStream(tmpPath.c_str());
 
     // Build header.
-    appendValue(vcfStream.header.sequenceNames, "20");
-    appendValue(vcfStream.header.sampleNames, "NA00001");
-    appendValue(vcfStream.header.sampleNames, "NA00002");
-    appendValue(vcfStream.header.sampleNames, "NA00003");
+    appendName(contigNamesCache(context(vcfStream)), "20");
+    appendName(sampleNamesCache(context(vcfStream)), "NA00001");
+    appendName(sampleNamesCache(context(vcfStream)), "NA00002");
+    appendName(sampleNamesCache(context(vcfStream)), "NA00003");
 
-    resize(vcfStream.header.headerRecords, 18);
-    vcfStream.header.headerRecords[0].key = "fileformat";
-    vcfStream.header.headerRecords[0].value = "VCFv4.1";
-    vcfStream.header.headerRecords[1].key = "fileDate";
-    vcfStream.header.headerRecords[1].value = "20090805";
-    vcfStream.header.headerRecords[2].key = "source";
-    vcfStream.header.headerRecords[2].value = "myImputationProgramV3.1";
-    vcfStream.header.headerRecords[3].key = "reference";
-    vcfStream.header.headerRecords[3].value = "file:///seq/references/1000GenomesPilot-NCBI36.fasta";
-    vcfStream.header.headerRecords[4].key = "contig";
-    vcfStream.header.headerRecords[4].value = "<ID=20,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species=\"Homo sapiens\",taxonomy=x>";
-    vcfStream.header.headerRecords[5].key = "phasing";
-    vcfStream.header.headerRecords[5].value = "partial";
-    vcfStream.header.headerRecords[6].key = "INFO";
-    vcfStream.header.headerRecords[6].value = "<ID=NS,Number=1,Type=Integer,Description=\"Number of Samples With Data\">";
-    vcfStream.header.headerRecords[7].key = "INFO";
-    vcfStream.header.headerRecords[7].value = "<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">";
-    vcfStream.header.headerRecords[8].key = "INFO";
-    vcfStream.header.headerRecords[8].value = "<ID=AF,Number=A,Type=Float,Description=\"Allele Frequency\">";
-    vcfStream.header.headerRecords[9].key = "INFO";
-    vcfStream.header.headerRecords[9].value = "<ID=AA,Number=1,Type=String,Description=\"Ancestral Allele\">";
-    vcfStream.header.headerRecords[10].key = "INFO";
-    vcfStream.header.headerRecords[10].value = "<ID=DB,Number=0,Type=Flag,Description=\"dbSNP membership, build 129\">";
-    vcfStream.header.headerRecords[11].key = "INFO";
-    vcfStream.header.headerRecords[11].value = "<ID=H2,Number=0,Type=Flag,Description=\"HapMap2 membership\">";
-    vcfStream.header.headerRecords[12].key = "FILTER";
-    vcfStream.header.headerRecords[12].value = "<ID=q10,Description=\"Quality below 10\">";
-    vcfStream.header.headerRecords[13].key = "FILTER";
-    vcfStream.header.headerRecords[13].value = "<ID=s50,Description=\"Less than 50% of samples have data\">";
-    vcfStream.header.headerRecords[14].key = "FORMAT";
-    vcfStream.header.headerRecords[14].value = "<ID=GT,Number=1,Type=String,Description=\"Genotype\">";
-    vcfStream.header.headerRecords[15].key = "FORMAT";
-    vcfStream.header.headerRecords[15].value = "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">";
-    vcfStream.header.headerRecords[16].key = "FORMAT";
-    vcfStream.header.headerRecords[16].value = "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">";
-    vcfStream.header.headerRecords[17].key = "FORMAT";
-    vcfStream.header.headerRecords[17].value = "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">";
+    seqan::VcfHeader header;
+    resize(header, 18);
+    header[0].key = "fileformat";
+    header[0].value = "VCFv4.1";
+    header[1].key = "fileDate";
+    header[1].value = "20090805";
+    header[2].key = "source";
+    header[2].value = "myImputationProgramV3.1";
+    header[3].key = "reference";
+    header[3].value = "file:///seq/references/1000GenomesPilot-NCBI36.fasta";
+    header[4].key = "contig";
+    header[4].value = "<ID=20,length=62435964,assembly=B36,md5=f126cdf8a6e0c7f379d618ff66beb2da,species=\"Homo sapiens\",taxonomy=x>";
+    header[5].key = "phasing";
+    header[5].value = "partial";
+    header[6].key = "INFO";
+    header[6].value = "<ID=NS,Number=1,Type=Integer,Description=\"Number of Samples With Data\">";
+    header[7].key = "INFO";
+    header[7].value = "<ID=DP,Number=1,Type=Integer,Description=\"Total Depth\">";
+    header[8].key = "INFO";
+    header[8].value = "<ID=AF,Number=A,Type=Float,Description=\"Allele Frequency\">";
+    header[9].key = "INFO";
+    header[9].value = "<ID=AA,Number=1,Type=String,Description=\"Ancestral Allele\">";
+    header[10].key = "INFO";
+    header[10].value = "<ID=DB,Number=0,Type=Flag,Description=\"dbSNP membership, build 129\">";
+    header[11].key = "INFO";
+    header[11].value = "<ID=H2,Number=0,Type=Flag,Description=\"HapMap2 membership\">";
+    header[12].key = "FILTER";
+    header[12].value = "<ID=q10,Description=\"Quality below 10\">";
+    header[13].key = "FILTER";
+    header[13].value = "<ID=s50,Description=\"Less than 50% of samples have data\">";
+    header[14].key = "FORMAT";
+    header[14].value = "<ID=GT,Number=1,Type=String,Description=\"Genotype\">";
+    header[15].key = "FORMAT";
+    header[15].value = "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">";
+    header[16].key = "FORMAT";
+    header[16].value = "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">";
+    header[17].key = "FORMAT";
+    header[17].value = "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">";
+
+    // Write header
+    writeRecord(vcfStream, header);
 
     // Write first record.
     {
@@ -455,7 +421,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_stream_write_record)
         appendValue(vcfRecord.genotypeInfos, "0|0:48:1:51,51");
         appendValue(vcfRecord.genotypeInfos, "1|0:48:8:51,51");
         appendValue(vcfRecord.genotypeInfos, "1/1:43:5:.,.");
-        SEQAN_ASSERT_EQ(writeRecord(vcfStream, vcfRecord), 0);
+        writeRecord(vcfStream, vcfRecord);
     }
 
     // Write second record.
@@ -473,7 +439,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_stream_write_record)
         appendValue(vcfRecord.genotypeInfos, "0|0:49:3:58,50");
         appendValue(vcfRecord.genotypeInfos, "0|1:3:5:65,3");
         appendValue(vcfRecord.genotypeInfos, "0/0:41:3");
-        SEQAN_ASSERT_EQ(writeRecord(vcfStream, vcfRecord), 0);
+        writeRecord(vcfStream, vcfRecord);
     }
 
     // Write third record.
@@ -491,14 +457,14 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_stream_write_record)
         appendValue(vcfRecord.genotypeInfos, "1|2:21:6:23,27");
         appendValue(vcfRecord.genotypeInfos, "2|1:2:0:18,2");
         appendValue(vcfRecord.genotypeInfos, "2/2:35:4");
-        SEQAN_ASSERT_EQ(writeRecord(vcfStream, vcfRecord), 0);
+        writeRecord(vcfStream, vcfRecord);
     }
 
     close(vcfStream);
 
     seqan::CharString goldPath(SEQAN_PATH_TO_ROOT());
     append(goldPath, "/extras/tests/vcf_io/example.vcf");
-    SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(tmpPath.c_str(), toCString(goldPath)));
 }
 
 #endif  // SEQAN_EXTRAS_TESTS_VCF_TEST_VCF_IO_H_

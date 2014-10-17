@@ -41,6 +41,26 @@
 
 namespace seqan {
 
+// ============================================================================
+// Forwards
+// ============================================================================
+
+// TODO(holtgrew): Document all the other concepts as well.
+
+/*!
+ * @concept NumberConcept
+ * @headerfile <seqan/basic.h>
+ * @brief Concept for numbers.
+ */
+
+SEQAN_CONCEPT(FundamentalConcept, (T));
+SEQAN_CONCEPT(IntegralConcept, (T));
+SEQAN_CONCEPT(NumberConcept, (T));
+SEQAN_CONCEPT(CharConcept, (T));
+SEQAN_CONCEPT(IntegerConcept, (T));
+SEQAN_CONCEPT(SignedIntegerConcept, (T));
+SEQAN_CONCEPT(UnsignedIntegerConcept, (T));
+
 // ---------------------------------------------------------------------------
 // ==> boost/concept_check.hpp <==
 // ---------------------------------------------------------------------------
@@ -215,6 +235,79 @@ private:
     T a;
     T b;
 };
+
+template <typename T>
+struct Is<Assignable<T> > :
+    Is<FundamentalConcept<T> > {};
+
+
+/*!
+ * @concept ConvertibleConcept
+ * @brief A type that can be converted into another.
+ *
+ * @headerfile <seqan/basic.h>
+ * 
+ * @signature Convertible<T, S>
+ * 
+ * Expects instances of type <tt>S</tt> to be assignable to instances of type <tt>T</tt>.
+ * 
+ * @section Valid Expressions
+ * 
+ * @code{.cpp}
+ * t = s;  // t, s are of type T, S
+ * @endcode
+ *
+ * @see AssignableConcept
+ */
+
+/*!
+ * @fn ConvertibleConcept::operator=
+ * @brief C++ built-in assignment operator.
+ *
+ * The C++ standard requires the assignment operator to be a member function.
+ *
+ * @signature T & T::operator=(S const & other);
+ */
+
+SEQAN_CONCEPT(Convertible,(T)(S))
+{
+    SEQAN_CONCEPT_USAGE(Convertible)
+    {
+#if !defined(_ITERATOR_)    // back_insert_iterator broken for VC++ STL
+        t = s;              // require assignment operator
+#endif
+        constConstraints(s);
+    }
+private:
+    void constConstraints(const S& x)
+    {
+#if !defined(_ITERATOR_)    // back_insert_iterator broken for VC++ STL
+        t = x;              // const required for argument to assignment
+#else
+        ignoreUnusedVariableWarning(x);
+#endif
+    }
+private:
+    T t;
+    S s;
+};
+
+template <typename T>
+struct Is<Convertible<T, T> > :
+    Is<Assignable<T> > {};
+
+template <typename T>
+struct Is<Convertible<T, T const> > :
+    Is<Assignable<typename RemoveConst<T>::Type> > {};
+
+template <typename T, typename S>
+struct Is<Convertible<T, S> > :
+    And< Is< FundamentalConcept<T> >,
+         Is< FundamentalConcept<S> > > {};
+
+template <typename T, typename S>
+struct Is<Convertible<T, S const> > :
+    Is<Convertible<T, typename RemoveConst<S>::Type> > {};
 
 /*!
  * @concept CopyConstructibleConcept
@@ -573,29 +666,35 @@ private:
 
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-SEQAN_CONCEPT(IntegerConcept, (T));
-SEQAN_CONCEPT(SignedIntegerConcept, (T));
-SEQAN_CONCEPT(UnsignedIntegerConcept, (T));
-
-// ============================================================================
 // Test fulfilled concepts
 // ============================================================================
+
+template <typename T>
+struct Is< CharConcept<T> >
+{
+    typedef
+        // Explicitely unsigned.
+        typename IfC< IsSameType<T, char>::VALUE,           True,
+        typename IfC< IsSameType<T, signed char>::VALUE,    True,
+        typename IfC< IsSameType<T, unsigned short>::VALUE, True,
+        False
+        >::Type>::Type>::Type Type;
+        enum { VALUE = Type::VALUE };
+};
 
 template <typename T>
 struct Is< SignedIntegerConcept<T> >
 {
     typedef
         // Explicitely unsigned.
-        typename IfC< IsSameType<T, signed char>::VALUE,     True,
-        typename IfC< IsSameType<T, short>::VALUE,           True,
-        typename IfC< IsSameType<T, int>::VALUE,             True,
-        typename IfC< IsSameType<T, long>::VALUE,            True,
-        typename IfC< IsSameType<T, __int64>::VALUE,         True,
+        typename IfC< IsSameType<T, signed char>::VALUE,        True,
+        typename IfC< IsSameType<T, short>::VALUE,              True,
+        typename IfC< IsSameType<T, int>::VALUE,                True,
+        typename IfC< IsSameType<T, long>::VALUE,               True,
+        typename IfC< IsSameType<T, long long>::VALUE,          True,   // for the __int64 != long long
+        typename IfC< IsSameType<T, __int64>::VALUE,            True,
         False
-        >::Type>::Type>::Type>::Type>::Type Type;
+        >::Type>::Type>::Type>::Type>::Type>::Type Type;
         enum { VALUE = Type::VALUE };
 };
 
@@ -604,13 +703,14 @@ struct Is< UnsignedIntegerConcept<T> >
 {
     typedef
         // Explicitely unsigned.
-        typename IfC< IsSameType<T, unsigned char>::VALUE,   True,
-        typename IfC< IsSameType<T, unsigned short>::VALUE,  True,
-        typename IfC< IsSameType<T, unsigned int>::VALUE,    True,
-        typename IfC< IsSameType<T, unsigned long>::VALUE,   True,
-        typename IfC< IsSameType<T, __uint64>::VALUE,        True,
+        typename IfC< IsSameType<T, unsigned char>::VALUE,      True,
+        typename IfC< IsSameType<T, unsigned short>::VALUE,     True,
+        typename IfC< IsSameType<T, unsigned int>::VALUE,       True,
+        typename IfC< IsSameType<T, unsigned long>::VALUE,      True,
+        typename IfC< IsSameType<T, unsigned long long>::VALUE, True,   // for the __uint64 != unsigned long long
+        typename IfC< IsSameType<T, __uint64>::VALUE,           True,
         False
-        >::Type>::Type>::Type>::Type>::Type Type;
+        >::Type>::Type>::Type>::Type>::Type>::Type Type;
         enum { VALUE = Type::VALUE };
 };
 
@@ -630,6 +730,41 @@ struct Is< IntegerConcept<T> >
 };
 
 template <typename T>
+struct Is< NumberConcept<T> >
+{
+    typedef
+        typename IfC< IsSameType<T, float>::VALUE,              True,
+        typename IfC< IsSameType<T, double>::VALUE,             True,
+        typename IfC< IsSameType<T, long double>::VALUE,        True,
+        typename IfC< Is< IntegerConcept<T> >::VALUE,           True,
+        False
+        >::Type>::Type>::Type>::Type Type;
+        enum { VALUE = Type::VALUE };
+};
+
+template <typename T>
+struct Is< IntegralConcept<T> >
+{
+    typedef
+        typename IfC< IsSameType<T, bool>::VALUE,               True,
+        typename IfC< Is< IntegerConcept<T> >::VALUE,           True,
+        False
+        >::Type>::Type Type;
+        enum { VALUE = Type::VALUE };
+};
+
+template <typename T>
+struct Is< FundamentalConcept<T> >
+{
+    typedef
+        typename IfC< IsSameType<T, bool>::VALUE,               True,
+        typename IfC< Is< NumberConcept<T> >::VALUE,            True,
+        False
+        >::Type>::Type Type;
+        enum { VALUE = Type::VALUE };
+};
+
+template <typename T>
 struct Is< SignedIntegerConcept<T const> > : Is< SignedIntegerConcept<typename RemoveConst<T>::Type> > {};
 
 template <typename T>
@@ -638,6 +773,11 @@ struct Is< UnsignedIntegerConcept<T const> > : Is< UnsignedIntegerConcept<typena
 template <typename T>
 struct Is< IntegerConcept<T const> > : Is< IntegerConcept<typename RemoveConst<T>::Type> > {};
 
+template <typename T>
+struct Is< NumberConcept<T const> > : Is< NumberConcept<typename RemoveConst<T>::Type> > {};
+
+template <typename T>
+struct Is< FundamentalConcept<T const> > : Is< FundamentalConcept<typename RemoveConst<T>::Type> > {};
 
 /**
 .Metafunction.IsSignedInteger:

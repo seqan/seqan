@@ -144,11 +144,11 @@ struct Alloc {};
 
 /*!
  * @class String
- * @implements SequenceConcept
+ * @implements StringConcept
  * @implements TextConcept
  * @implements SegmentableConcept
  * @headerfile <seqan/sequence.h>
- * @brief @link SequenceConcept Sequence @endlink container class.
+ * @brief @link StringConcept Sequence @endlink container class.
  *
  * @signature template <typename TValue, typename TSpec>
  *            class String<TValue, TSpec>;
@@ -157,7 +157,7 @@ struct Alloc {};
  * @tparam TSpec  The tag for selecting the string specialization.
  *
  * The String class is for storing sequences and thus at the core of the sequence analysis library SeqAn.  They
- * are models for the @link SequenceConcept sequence concept @endlink but extend the sequence concept by allowing
+ * are models for the @link StringConcept sequence concept @endlink but extend the sequence concept by allowing
  * implicit conversion of other sequence into strings as long as the element conversion works:
  *
  * @snippet demos/sequence/string.cpp initializing strings
@@ -197,7 +197,7 @@ struct Alloc {};
  * @signature String::String()
  * @signature String::String(other)
  *
- * @param[in] other The source for the copy constructor.  Can be of any @link SequenceConcept sequence @endlink type
+ * @param[in] other The source for the copy constructor.  Can be of any @link StringConcept sequence @endlink type
  *                  as long as <tt>other</tt>'s elements are convertible to the value type of this string.
  *
  * Default and copy constructor are implemented.
@@ -315,7 +315,7 @@ The $String$ class provides the default constructor and copy constructor.
 Additionally, you can construct a string from any sequence.
 ..param.other:Another $String$ object of the same type.
 ..param.seq:A sequence to copy into the $String$.
-...type:Concept.SequenceConcept
+...type:Concept.StringConcept
 ..remarks:
 The third variant (construction from sequence) first reserves the necessary space and then copies over the characters from $seq$.
 During this copying, the source characters are implicitely casted/converted into the alphabet of the String.
@@ -368,6 +368,14 @@ struct Spec<String<TValue, TSpec> const>:
 };
 
 // ----------------------------------------------------------------------------
+// Metafunction Chunk
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+struct Chunk<String<TValue, TSpec> >:
+    Chunk<typename Iterator<String<TValue, TSpec>, Rooted>::Type> {};
+
+// ----------------------------------------------------------------------------
 // Metafunction IsSequence
 // ----------------------------------------------------------------------------
 
@@ -376,6 +384,16 @@ struct Spec<String<TValue, TSpec> const>:
 
 template <typename TValue, typename TSpec>
 struct IsSequence<String<TValue, TSpec> > : True {};
+
+// ----------------------------------------------------------------------------
+// Concept StringConcept
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+SEQAN_CONCEPT_IMPL((String<TValue, TSpec>), (StringConcept));         // resizable container
+
+template <typename TValue, typename TSpec>
+SEQAN_CONCEPT_IMPL((String<TValue, TSpec> const), (ContainerConcept));  // read-only container
 
 // ----------------------------------------------------------------------------
 // Internal Metafunction TempCopy_
@@ -813,6 +831,9 @@ struct ClearSpaceExpandStringBase_
         typename Size<T>::Type removed_size = end - start;
         typename Size<T>::Type new_length = old_length - removed_size + size;
 
+        SEQAN_ASSERT_LEQ(start, end);
+        SEQAN_ASSERT_LEQ(start, old_length);
+
         typename Size<T>::Type old_capacity = capacity(seq);
         typename Value<T>::Type * old_array = _reallocateStorage(seq, new_length, TExpand());
         typename Value<T>::Type * seq_array = begin(seq);
@@ -846,6 +867,9 @@ struct ClearSpaceExpandStringBase_
         typename Size<T>::Type old_length = length(seq);
         typename Size<T>::Type removed_size = end - start;
         typename Size<T>::Type need_length = old_length - removed_size + size;
+
+        SEQAN_ASSERT_LEQ(start, end);
+        SEQAN_ASSERT_LEQ(start, old_length);
 
         typename Size<T>::Type new_length = need_length;
         typename Size<T>::Type length_to_copy = old_length;
@@ -2052,32 +2076,6 @@ operator>=(TLeftValue * left,
 }
 
 // ----------------------------------------------------------------------------
-// Function operator<<() for streams.
-// ----------------------------------------------------------------------------
-
-template <typename TStream, typename TValue, typename TSpec>
-inline TStream &
-operator<<(TStream & target,
-           String<TValue, TSpec> const & source)
-{
-    write(target, source);
-    return target;
-}
-
-// ----------------------------------------------------------------------------
-// Function operator>>() for streams.
-// ----------------------------------------------------------------------------
-
-template <typename TStream, typename TValue, typename TSpec>
-inline TStream &
-operator>>(TStream & source,
-           String<TValue, TSpec> & target)
-{
-    read(source, target);
-    return source;
-}
-
-// ----------------------------------------------------------------------------
 // Function beginPosition()
 // ----------------------------------------------------------------------------
 
@@ -2109,6 +2107,115 @@ operator>>(TStream & source,
  * 
  * @return TPos Length of the string.
  */
+
+// ----------------------------------------------------------------------------
+// Function reserveChunk()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec, typename TSize>
+inline void reserveChunk(String<TValue, TSpec> &str, TSize size, Output)
+{
+    reserve(str, length(str) + size);
+}
+
+template <typename TValue, typename TSpec, typename TSize>
+inline void reserveChunk(String<TValue, TSpec> const &, TSize, Input)
+{}
+
+// ----------------------------------------------------------------------------
+// Function getChunk()
+// ----------------------------------------------------------------------------
+
+template <typename TChunk, typename TValue, typename TSpec>
+inline void
+getChunk(TChunk &result, String<TValue, TSpec> &cont, Output)
+{
+    return assignRange(result, end(cont, Standard()), begin(cont, Standard()) + capacity(cont));
+}
+
+// ----------------------------------------------------------------------------
+// Function advanceChunk()
+// ----------------------------------------------------------------------------
+
+// extend target string size
+template <typename TValue, typename TSpec, typename TSize>
+inline void advanceChunk(String<TValue, TSpec> &str, TSize size)
+{
+    _setLength(str, length(str) + size);
+}
+
+template <typename TValue, typename TStringSpec, typename TSpec, typename TSize>
+inline void advanceChunk(Iter<String<TValue, TStringSpec>, TSpec> &iter, TSize size)
+{
+    typedef String<TValue, TStringSpec> TContainer;
+    typedef Iter<TContainer, TSpec> TIter;
+
+    iter += size;
+
+    TContainer &cont = container(iter);
+    typename Position<TIter>::Type pos = position(iter);
+
+    if (pos > length(cont))
+        _setLength(cont, pos);
+}
+
+// ----------------------------------------------------------------------------
+// Function operator<<() for streams.
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TValue, typename TSpec>
+inline TStream &
+operator<<(TStream & target,
+           String<TValue, TSpec> const & source)
+{
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
+    return target;
+}
+
+// ----------------------------------------------------------------------------
+// Function operator>>() for streams.
+// ----------------------------------------------------------------------------
+
+template <typename TStream, typename TValue, typename TSpec>
+inline TStream &
+operator>>(TStream & source,
+           String<TValue, TSpec> & target)
+{
+    typename DirectionIterator<TStream, Input>::Type it = directionIterator(source, Input());;
+    read(it, target);
+    return source;
+}
+
+// ----------------------------------------------------------------------------
+// Function assignValueById
+// ----------------------------------------------------------------------------
+
+template<typename TValue, typename TSpec, typename TId, typename TValue2>
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TId> >, void)
+assignValueById(String<TValue, TSpec> & me,
+                TId id,
+                TValue2 const & obj)
+{
+    if (length(me) <= id)
+        resize(me, id + 1, TValue());
+    assignValue(me, id, obj);
+}
+
+// ----------------------------------------------------------------------------
+// Function getValueById
+// ----------------------------------------------------------------------------
+
+template<typename TValue, typename TSpec, typename TId>
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TId> >, TValue)
+getValueById(String<TValue, TSpec> & me,
+             TId id)
+{
+    if (id < length(me))
+        return getValue(me, id);
+    else
+        return TValue();
+}
 
 }  // namespace seqan
 

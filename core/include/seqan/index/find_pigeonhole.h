@@ -171,7 +171,7 @@ namespace seqan
  *
  * @tparam TSpec Specifies the type of pigeonhole filter.
  * @tparam THaystack The type of the sequence that should be searched.
- *                   Types: @link SequenceConcept @endlink
+ *                   Types: @link ContainerConcept @endlink
  *
  * Provides a fast filter algorithm that uses the pigeonhole lemma, i.e. if a pattern matches with k errors in the text,
  * every partition into k+1 parts contains one part that matches without error.
@@ -592,7 +592,8 @@ inline bool _pigeonholeProcessQGram(
     for(; occ != occEnd; ++occ)
     {
         posLocalize(ndlPos, *occ, stringSetLimits(index));
-        hit.hstkPos = finder.curPos - getSeqOffset(ndlPos);		// bucket begin in haystack
+        hit.hstkPos = finder.curPos;
+        hit.hstkPos -= getSeqOffset(ndlPos);                    // bucket begin in haystack
         hit.ndlSeqNo = getSeqNo(ndlPos);						// needle seq. number
         if (Pigeonhole<TSpec>::ONE_PER_DIAGONAL)
         {
@@ -1183,7 +1184,8 @@ windowFindNext(
 				for(; occ != occEnd; ++occ)
 				{
 					posLocalize(ndlPos, *occ, stringSetLimits(index));
-					hit.hstkPos = finder.curPos - getSeqOffset(ndlPos);	// bucket begin in haystack
+					hit.hstkPos = finder.curPos;
+                    hit.hstkPos -= getSeqOffset(ndlPos);                    // bucket begin in haystack
 					hit.ndlSeqNo = getSeqNo(ndlPos);						// needle seq. number
 
 					if (Pigeonhole<TSpec>::ONE_PER_DIAGONAL)

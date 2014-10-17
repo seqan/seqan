@@ -107,14 +107,14 @@ parseCommandLine(JoinMatesOptions & options, int argc, char const ** argv)
         "-rc -o adeno_modified_reads_joinedMates.fa");
 
     // We require two arguments.
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "FASTA/FASTQ FILE(S)", true));
+    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "FASTA/FASTQ FILE(S)", true));
     setValidValues(parser, 0, "fa fasta fq fastq");
     /*
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "FASTA/FASTQ FILE 2"));
+    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "FASTA/FASTQ FILE 2"));
     setValidValues(parser, 1, "fasta fa fastq fq");
     */
 
-    addOption(parser, seqan::ArgParseOption("o", "outPath", "Set name of output FASTA/FASTQ file(s).", seqan::ArgParseOption::OUTPUTFILE, "FASTA/FASTQ", true));
+    addOption(parser, seqan::ArgParseOption("o", "outPath", "Set name of output FASTA/FASTQ file(s).", seqan::ArgParseOption::OUTPUT_FILE, "FASTA/FASTQ", true));
     setValidValues(parser, "o", "fasta fa fq fastq");
     setDefaultValue(parser, "o", "joined_mates.fa");
     addOption(parser, seqan::ArgParseOption("rc", "revcompl", "Disable reverse complementing second input file."));
@@ -216,57 +216,58 @@ _importSequences(seqan::CharString const & fileNameL,
                  seqan::String<unsigned> & readJoinPositions
                  )
 {
-    seqan::SequenceStream l(toCString(fileNameL));
-    seqan::SequenceStream r(toCString(fileNameR));
-    if (!isGood(l) || !isGood(r))
+    try
     {
-        std::cerr << "Failed to open file." << std::endl;
+        seqan::SeqFileIn l(toCString(fileNameL));
+        seqan::SeqFileIn r(toCString(fileNameR));
+
+        TSequence seq;
+        TSequence seqL;
+        TSequence seqR;
+        TId id;
+        TId sId;
+        seqan::CharString qual;
+        seqan::CharString qualL;
+        seqan::CharString qualR;
+        unsigned counter = 0;
+        while (!atEnd(l) || !atEnd(r))
+        {
+            readRecord(id, seqL, qualL, l);
+            readRecord(id, seqR, qualR, r);
+
+            appendValue(readJoinPositions, length(seqL));
+            if (revCompl)
+            {
+                reverseComplement(seqR);
+                reverse(qualR);
+            }
+            append(seq, seqL);
+            append(seq, seqR);
+            append(qual, qualL);
+            append(qual, qualR);
+            appendValue(seqs, seq, seqan::Generous());
+            appendValue(quals, qual, seqan::Generous());
+            appendValue(ids, id, seqan::Generous());
+
+            _getShortId(sId, id);
+            if (!_checkUniqueId(sId, id, ids, sIds))
+                ++counter;
+            appendValue(sIds, sId);
+            clear(seq);
+            clear(qual);
+        }
+    }
+    catch (seqan::FileOpenError const & openErr)
+    {
+        std::cerr << "Error: Problem opening the file (" << openErr.what() << ")\n";
+        return false;
+    }
+    catch (seqan::IOError const & ioErr)
+    {
+        std::cerr << "Error: Problem reading from the file (" << ioErr.what() << ")\n";
         return false;
     }
 
-    TSequence seq;
-    TSequence seqL;
-    TSequence seqR;
-    TId id;
-    TId sId;
-    seqan::CharString qual;
-    seqan::CharString qualL;
-    seqan::CharString qualR;
-    unsigned counter = 0;
-    while (!atEnd(l) || !atEnd(r))
-    {
-        if (readRecord(id, seqL, qualL, l) != 0)
-        {
-            std::cerr << "Problem reading from first input file." << std::endl;
-            return false;
-        }
-        if (readRecord(id, seqR, qualR, r) != 0)
-        {
-            std::cerr << "Problem reading from first input file." << std::endl;
-            return false;
-        }
-
-        appendValue(readJoinPositions, length(seqL));
-        if (revCompl)
-        {
-            reverseComplement(seqR);
-            reverse(qualR);
-        }
-        append(seq, seqL);
-        append(seq, seqR);
-        append(qual, qualL);
-        append(qual, qualR);
-        appendValue(seqs, seq, seqan::Generous());
-        appendValue(quals, qual, seqan::Generous());
-        appendValue(ids, id, seqan::Generous());
-
-        _getShortId(sId, id);
-        if (!_checkUniqueId(sId, id, ids, sIds))
-            ++counter;
-        appendValue(sIds, sId);
-        clear(seq);
-        clear(qual);
-    }
     return true;
 }
 
@@ -285,10 +286,10 @@ _importSequences(seqan::CharString const & fileName,
                  )
 {
     typedef typename seqan::Position<TSequence>::Type TPos;
-    seqan::SequenceStream f(toCString(fileName));
-    if (!isGood(f))
+    seqan::SeqFileIn f;
+    if (!open(f, toCString(fileName)))
     {
-        std::cerr << "Failed to open file." << std::endl;
+        std::cerr << "Failed to open file.\n";
         return false;
     }
 
@@ -304,9 +305,13 @@ _importSequences(seqan::CharString const & fileName,
     TPos splitPos;
     while (!atEnd(f))
     {
-        if (readRecord(id, seq, qual, f) != 0)
+        try
         {
-            std::cerr << "Problem reading from first input file." << std::endl;
+            readRecord(id, seq, qual, f);
+        }
+        catch (seqan::IOError const & ioErr)
+        {
+            std::cerr << "Problem reading from first input file (" << ioErr.what() << ")\n";
             return false;
         }
 
@@ -353,15 +358,19 @@ int _writeSequences(seqan::CharString & outPath,
                 seqan::StringSet<seqan::CharString> const & sIds,
                 seqan::StringSet<seqan::CharString> const & quals)
 {
-    seqan::SequenceStream seqStream(toCString(outPath), seqan::SequenceStream::WRITE);
-    if (!isGood(seqStream))
+    try
     {
-        std::cerr << "Error: Could not open output file!" << std::endl;
+        seqan::SeqFileOut seqFile(toCString(outPath));
+        writeRecords(seqFile, sIds, seqs, quals);
+    }
+    catch (seqan::FileOpenError const & openErr)
+    {
+        std::cerr << "Error: Could not open output file (" << openErr.what() << ")\n";
         return 1;
     }
-    if (writeAll(seqStream, sIds, seqs, quals) != 0)
+    catch (seqan::IOError const & ioErr)
     {
-        std::cerr << "Error: Could not write to file!" << std::endl;
+        std::cerr << "Error: Could not write to file (" << ioErr.what() << ")\n";
         return 1;
     }
     return 0;
@@ -379,29 +388,34 @@ int _writeSequences(seqan::CharString & outPath1,
                 seqan::StringSet<seqan::CharString> const & mateQuals
                 )
 {
-    seqan::SequenceStream f1(toCString(outPath1), seqan::SequenceStream::WRITE);
-    seqan::SequenceStream f2(toCString(outPath2), seqan::SequenceStream::WRITE);
-    // seqan::SequenceStream outStream(toCString(outPath), seqan::SequenceStream::WRITE);
-    if (!isGood(f1) || !isGood(f2))
+    try
     {
-        std::cerr << "Error: Could not open output file!" << std::endl;
+        seqan::SeqFileOut f1(toCString(outPath1));
+        seqan::SeqFileOut f2(toCString(outPath2));
+        for (unsigned i = 0; i < length(seqs); ++i)
+        {
+            TSequence mateSeq = mateSeqs[i];
+            seqan::CharString mateQual = mateQuals[i];
+            if (revCompl)
+            {
+                reverseComplement(mateSeq);
+                reverse(mateQual);
+            }
+            writeRecord(f1, sIds[i], seqs[i], quals[i]);
+            writeRecord(f2, sIds[i], mateSeq, mateQual);
+        }
+    }
+    catch (seqan::FileOpenError const & openErr)
+    {
+        std::cerr << "Error: Could not open file (" << openErr.what() << ")\n";
         return 1;
     }
-    for (unsigned i = 0; i < length(seqs); ++i)
+    catch (seqan::IOError const & ioErr)
     {
-        TSequence mateSeq = mateSeqs[i];
-        seqan::CharString mateQual = mateQuals[i];
-        if (revCompl)
-        {
-            reverseComplement(mateSeq);
-            reverse(mateQual);
-        }
-        if (writeRecord(f1, sIds[i], seqs[i], quals[i]) != 0 || writeRecord(f2, sIds[i], mateSeq, mateQual) != 0)
-        {
-            std::cerr << "Error: Could not write to file!" << std::endl;
-            return 1;
-        }
+        std::cerr << "Error: Could not write to file (" << ioErr.what() << ")\n";
+        return 1;
     }
+
     return 0;
 }
 

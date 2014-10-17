@@ -49,7 +49,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_index_bai)
     append(baiFilename, "/core/tests/bam_io/small.bam.bai");
 
     BamIndex<Bai> baiIndex;
-    SEQAN_ASSERT_EQ(read(baiIndex, toCString(baiFilename)), 0);
+    SEQAN_ASSERT(open(baiIndex, toCString(baiFilename)));
 
     SEQAN_ASSERT_EQ(length(baiIndex._binIndices), 1u);
     SEQAN_ASSERT_EQ(baiIndex._binIndices[0].size(), 2u);
@@ -66,22 +66,17 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_index_bai)
     append(bamFilename, SEQAN_PATH_TO_ROOT());
     append(bamFilename, "/core/tests/bam_io/small.bam");
 
-    Stream<Bgzf> stream;
-    open(stream, toCString(bamFilename), "r");
+    BamFileIn bamFile(toCString(bamFilename));
 
-    StringSet<CharString> nameStore;
-    NameStoreCache<StringSet<CharString> > nameStoreCache(nameStore);
-    BamIOContext<StringSet<CharString> > bamIOContext(nameStore, nameStoreCache);
-    
     BamHeader header;
-    SEQAN_ASSERT_EQ(readRecord(header, bamIOContext, stream, Bam()), 0);
+    readRecord(header, bamFile);
 
     bool found = true;
-    SEQAN_ASSERT(jumpToRegion(stream, found, bamIOContext, 0, 1, 10, baiIndex));
+    SEQAN_ASSERT(jumpToRegion(bamFile, found, 0, 1, 10, baiIndex));
     SEQAN_ASSERT(found);
-    SEQAN_ASSERT(jumpToRegion(stream, found, bamIOContext, 0, 2, 100, baiIndex));
+    SEQAN_ASSERT(jumpToRegion(bamFile, found, 0, 2, 100, baiIndex));
     SEQAN_ASSERT(found);
-    SEQAN_ASSERT_NOT(jumpToRegion(stream, found, bamIOContext, 1, 1, 10, baiIndex));
+    SEQAN_ASSERT_NOT(jumpToRegion(bamFile, found, 1, 1, 10, baiIndex));
     SEQAN_ASSERT_NOT(found);
 }
 

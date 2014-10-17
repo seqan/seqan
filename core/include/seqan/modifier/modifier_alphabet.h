@@ -85,6 +85,18 @@ struct ValueSize<ModifiedAlphabet<THost, TSpec> >
     : ValueSize<THost>
 {};
 
+// ----------------------------------------------------------------------------
+// Concept Convertible
+// ----------------------------------------------------------------------------
+
+template <typename THost, typename TSpec, typename TSource>
+struct Is< Convertible<ModifiedAlphabet<THost, TSpec>, TSource> > :
+    Is< Convertible<THost, TSource> > {};
+
+template <typename TTarget, typename THost, typename TSpec>
+struct Is< Convertible<TTarget, ModifiedAlphabet<THost, TSpec> > > :
+    Is< Convertible<TTarget, THost> > {};
+
 //////////////////////////////////////////////////////////////////////////////
 // conversions
 //////////////////////////////////////////////////////////////////////////////

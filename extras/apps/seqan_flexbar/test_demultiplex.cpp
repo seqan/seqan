@@ -58,40 +58,38 @@ using namespace seqan;
 // Used for loading the sequences. Needed for the io-test.
 int loadSeqs(char const * path, StringSet<String<char> >& ids, StringSet<String<Dna5Q> >& seqs)
 {
-	SequenceStream seqStream(path, SequenceStream::READ);
+	SeqFileIn seqFile;
 	unsigned records = 1000;									//number of records to be read
-	resize(ids, records);
-	resize(seqs, records);
-	
-	if (!isGood(seqStream))
+
+	if (!open(seqFile, path))
 	{
 		std::cerr << "Error while opening the sequence-file.\n";
 		return 1;
 	}
-	
-	if (readBatch(ids, seqs, seqStream, records) != 0)
-	{
-		std::cerr << "Error while reading the sequences.\n";
-		return 1;
-	}
+
+    String<char> meta;
+    String<Dna5Q> seq;
+    unsigned counter = 0;
+    while (!atEnd(seqFile) && counter < records)
+    {
+        readRecord(meta, seq, seqFile);
+        appendValue(ids, meta);
+        appendValue(seqs, seq);
+        ++counter;
+    }
 	return 0;
 }
 // Used for loading the sequences. Needed for the io-test.
 int loadBarcodes(char const * path, StringSet<String<char> >& bcids, StringSet<String<Dna> >& bcs)
 {
-	SequenceStream bcStream(path, SequenceStream::READ);
+	SeqFileIn bcFile;
 	
-	if (!isGood (bcStream))
+	if (!open(bcFile, path, OPEN_RDONLY))
 	{
 		std::cerr << "Error while opening barcode-file.\n";
 		return 1;
 	}
-
-	if (readAll(bcids, bcs, bcStream) != 0)
-	{
-		std::cerr << "Error while reading the barcodes.\n";
-		return 1;
-	}
+    readRecords(bcids, bcs, bcFile);
 	return 0;
 }
 // Checks the correctness of the check function which checks the size of the barcodes and reads.
@@ -518,9 +516,9 @@ SEQAN_DEFINE_TEST(Input_test)
 	StringSet<String<Dna> > bcs;
 
 	CharString seqpath = SEQAN_PATH_TO_ROOT();
-    append(seqpath, "/extras/apps/seqan_flexbar/test_data/seqs.fasta");
+    append(seqpath, "/extras/apps/seqan_flexbar/tests/seqs.fa");
 	String<char> bcpath = SEQAN_PATH_TO_ROOT();
-    append(bcpath, "/extras/apps/seqan_flexbar/test_data/barcodes.fasta");
+    append(bcpath, "/extras/apps/seqan_flexbar/tests/barcodes.fa");
 
 	SEQAN_ASSERT_EQ(0, loadSeqs(toCString(seqpath), ids, seqs));
 	SEQAN_ASSERT_EQ(0, loadBarcodes(toCString(bcpath), bcids, bcs));

@@ -35,7 +35,7 @@
 // module fulfills the requirements.
 // ==========================================================================
 #include <seqan/basic.h>
-// #include <seqan/file.h>
+// #include <seqan/stream.h>
 
 #include "test_sequence.h"
 // #include "test_segment_beta.h"

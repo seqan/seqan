@@ -754,12 +754,10 @@ findEdge(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TFile, typename TStringSet, typename TCargo, typename TSpec, typename TIDString>
+template <typename TFile, typename TStringSet, typename TCargo, typename TSpec>
 inline void
 write(TFile & target,
-	  Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
-	  TIDString const &,
-	  Raw)
+	  Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
 {
 //IOREV _nodoc_ specialization not documented (at least not obviously)
 	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
@@ -771,39 +769,39 @@ write(TFile & target,
 
 	String<char> align;
 	if (!convertAlignment(g, align)) {
-		streamPut(target,"Adjacency list:\n");
+		write(target,"Adjacency list:\n");
 		TIterConst it = begin(g.data_align.data_vertex, Standard());
 		TIterConst itEnd = end(g.data_align.data_vertex, Standard());
 		TVertexDescriptor pos = 0;
 		for(;it!=itEnd; ++it, ++pos) {
 			if (!idInUse(g.data_align.data_id_managerV, pos)) continue;
 			TVertexDescriptor sourceV = pos;
-			streamPut(target, (int)sourceV);
+			appendNumber(target, (int)sourceV);
 			TSegment seg = getProperty(g.data_fragment, sourceV);
-			streamPut(target," (SeqId:");
-			streamPut(target, (int)seg.data_seq_id);
-			streamPut(target," ,Begin:");
-			streamPut(target, (int)seg.data_begin);
-			streamPut(target," ,Length:");
-			streamPut(target, (int)seg.data_length);
-			streamPut(target,") -> ");
+			write(target," (SeqId:");
+			appendNumber(target, (int)seg.data_seq_id);
+			write(target," ,Begin:");
+			appendNumber(target, (int)seg.data_begin);
+			write(target," ,Length:");
+			appendNumber(target, (int)seg.data_length);
+			write(target,") -> ");
 			TEdgeStump* current = *it;
 			while(current!=0) {
 				TVertexDescriptor adjV = getTarget(current);
 				if (adjV != sourceV) {
-					streamPut(target, (int)adjV);
-					streamPut(target, ',');
+					appendNumber(target, (int)adjV);
+					writeValue(target, ',');
 					current=getNextS(current);
 				} else {
 					adjV = getSource(current);
-					streamPut(target, (int)adjV);
-					streamPut(target, ',');
+					appendNumber(target, (int)adjV);
+					writeValue(target, ',');
 					current=getNextT(current);
 				}
 			}
-			streamPut(target, '\n');
+			writeValue(target, '\n');
 		}
-		streamPut(target,"Edge list:\n");
+		write(target,"Edge list:\n");
 		it = begin(g.data_align.data_vertex, Standard());
 		pos = 0;
 		for(;it!=itEnd; ++it, ++pos) {
@@ -812,16 +810,13 @@ write(TFile & target,
 			while(current!=0) {
 				TVertexDescriptor targetV = getTarget(current);
 				if (sourceV != targetV) {
-					streamPut(target,"Source: ");
-					streamPut(target, (int)sourceV);
-					streamPut(target, ',');
-					streamPut(target,"Target: ");
-					streamPut(target, (int)targetV);
-					streamPut(target, ' ');
-					streamPut(target,"(Id: ");
-					streamPut(target, (int)_getId(current));
-					streamPut(target, ')');
-					streamPut(target, '\n');
+					write(target,"Source: ");
+					appendNumber(target, (int)sourceV);
+					write(target, ",Target: ");
+					appendNumber(target, (int)targetV);
+					write(target, " (Id: ");
+					appendNumber(target, (int)_getId(current));
+					write(target, ")\n");
 					current=getNextS(current);
 				} else {
 					current=getNextT(current);
@@ -835,7 +830,7 @@ write(TFile & target,
 		TSize baseCount=0;
 		TSize leftSpace=6;
 		TSize xPos = 0;
-		streamPut(target,"Alignment matrix:\n");
+		write(target,"Alignment matrix:\n");
 		while (xPos < colLen) {
 			TSize windowSize = 50;
 			if ((xPos + windowSize)>colLen) windowSize = colLen - xPos;
@@ -844,39 +839,40 @@ write(TFile & target,
 			TSize offset=0;
 			// Larger numbers need to be further left
 			if (baseCount != 0) offset = (unsigned int) floor(log((double)baseCount) / log((double)10));
-			for(TSize j = 0;j<leftSpace-offset;++j) streamPut(target, ' ');
-			streamPut(target, (int)baseCount);
+			for(TSize j = 0;j<leftSpace-offset;++j) writeValue(target, ' ');
+			appendNumber(target, (int)baseCount);
 			baseCount+=windowSize;
-			streamPut(target, ' ');
+			writeValue(target, ' ');
 			for(TSize col = 1;col<=windowSize;++col) {
-				if ((col % 10)==0) streamPut(target, ':');
-				else if ((col % 5)==0) streamPut(target, '.');
-				else streamPut(target, ' ');
+				if ((col % 10)==0) writeValue(target, ':');
+				else if ((col % 5)==0) writeValue(target, '.');
+				else writeValue(target, ' ');
 			}
-			streamPut(target, ' ');
-			streamPut(target, '\n');
+			write(target, " \n");
 
 			// Print sequences
 			for(TSize row=0;row<2*nseq-1;++row) {
-				for(TSize col = 0;col<leftSpace+2;++col) streamPut(target, ' ');
+				for(TSize col = 0;col<leftSpace+2;++col)
+                    writeValue(target, ' ');
 				if ((row % 2)==0) {
 					for(TSize col = xPos;col<xPos+windowSize;++col) 
-						streamPut(target, align[(row/2)*colLen+col]);
+						writeValue(target, align[(row/2)*colLen+col]);
 				} else {
 					for(TSize col = xPos;col<xPos+windowSize;++col) {
 						if ((align[((row-1)/2)*colLen + col] != gapValue<char>()) &&
 							(align[((row+1)/2)*colLen + col] != gapValue<char>()) &&
 							(align[((row-1)/2)*colLen + col] == align[((row+1)/2)*colLen + col])) 
-							streamPut(target, '|');
-						else streamPut(target, ' ');
+							writeValue(target, '|');
+						else
+                            writeValue(target, ' ');
 					}
 				}
-				streamPut(target, '\n');
+				writeValue(target, '\n');
 			}
-			streamPut(target, '\n');
+			writeValue(target, '\n');
 			xPos+=windowSize;
 		}
-		streamPut(target, '\n');
+		writeValue(target, '\n');
 	}
 }
 
@@ -894,6 +890,8 @@ write(TFile & file,
 	typedef Graph<TSpec> TGraph;
 	typedef typename Size<TGraph>::Type TSize;
 
+    typename DirectionIterator<TFile, Output>::Type target = directionIterator(file, Output());
+
 	String<char> align;
 	if (convertAlignment(g, align)) {	
 		TSize nseq = length(stringSet(g));
@@ -901,15 +899,15 @@ write(TFile & file,
 		typedef typename Iterator<String<char>, Standard>::Type TIter;
 		TIter it = begin(align, Standard());
 		for(TSize i = 0; i<nseq; ++i) {
-			streamPut(file, '>');
-			streamPut(file,names[i]);
-			streamPut(file, '\n');
+			writeValue(target, '>');
+			write(target,names[i]);
+			writeValue(target, '\n');
 			TSize col = 0;
 			while(col < colLen) {
 				TSize max = ((colLen - col) < 60) ? colLen - col : 60;
 				for(TSize finger = 0; finger<max; ++finger, ++col, ++it) 
-					streamPut(file, *it);
-				streamPut(file, '\n');
+					writeValue(target, *it);
+				writeValue(target, '\n');
 			}
 		}
 	}
@@ -931,54 +929,53 @@ write(TFile & file,
 	typedef Graph<TSpec> TGraph;
 	typedef typename Size<TGraph>::Type TSize;
 
+    typename DirectionIterator<TFile, Output>::Type target = directionIterator(file, Output());
+
 	String<char> align;
 	if (convertAlignment(g, align)) {	
 		TSize nseq = length(stringSet(g));
 		TSize colLen = length(align) / nseq;
 	
-		streamPut(file,"PileUp\n");
-		streamPut(file, '\n');
-		streamPut(file," MSF: ");
-		streamPut(file, (unsigned)colLen);
-		streamPut(file," Type: P");
-		streamPut(file," Check: 0 ..");
-		streamPut(file, '\n');
-		streamPut(file, '\n');
+		write(target,"PileUp\n");
+		writeValue(target, '\n');
+		write(target," MSF: ");
+		appendNumber(target, (unsigned)colLen);
+		write(target," Type: P Check: 0 ..\n\n");
 		TSize offset = 0;
 		for(TSize i = 0; i<nseq; ++i) {
-			streamPut(file," Name: ");
-			streamPut(file,names[i]);
-			streamPut(file," oo  Len:  ");
+			write(target," Name: ");
+			write(target,names[i]);
+			write(target," oo  Len:  ");
 			TSize len = length(names[i]);
 			if (len > offset) offset = len;
-			streamPut(file, (unsigned)colLen);
-			streamPut(file," Check: 0");
-			streamPut(file," Weight: 1.00");
-			streamPut(file, '\n');
+			appendNumber(target, (unsigned)colLen);
+			write(target," Check: 0");
+			write(target," Weight: 1.00");
+			writeValue(target, '\n');
 		}
 		offset += 5;
-		streamPut(file, '\n');
-		streamPut(file,"//\n");
-		streamPut(file, '\n');
-		streamPut(file, '\n');
+		writeValue(target, '\n');
+		write(target, "//\n");
+		writeValue(target, '\n');
+		writeValue(target, '\n');
 		TSize col = 0;
 		while(col < colLen) {
 			TSize max = 0;
 			for(TSize i = 0; i<nseq; ++i) {
 				max = ((colLen - col) < 50) ? colLen - col : 50;
-				streamPut(file,names[i]);
+				write(target,names[i]);
 				for(TSize j = 0; j<offset - length(names[i]); ++j) 
-					streamPut(file, ' ');
+					writeValue(target, ' ');
 				for(TSize finger = col; finger<col+max; ++finger) {
-					if ((finger - col) % 10 == 0) streamPut(file, ' ');
-					if (align[i*colLen + finger] == '-') streamPut(file, '.');
-					else streamPut(file, align[i*colLen + finger]);
+					if ((finger - col) % 10 == 0) writeValue(target, ' ');
+					if (align[i*colLen + finger] == '-') writeValue(target, '.');
+					else writeValue(target, align[i*colLen + finger]);
 				}
-				streamPut(file, '\n');
+				writeValue(target, '\n');
 			}
 			col += max;
-			streamPut(file, '\n');
-			streamPut(file, '\n');
+			writeValue(target, '\n');
+			writeValue(target, '\n');
 		}
 	}
 }
@@ -991,7 +988,7 @@ _writeCargo(TFile & file,
 			 Graph<Alignment<TStringSet, void, TSpec> > const&,
 			 TEdge const&)
 {
-	streamPut(file, 0);
+	appendNumber(file, 0);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1001,7 +998,7 @@ _writeCargo(TFile & file,
 			 Graph<Alignment<TStringSet, TCargo, TSpec> > const&,
 			 TEdge const& edge)
 {
-	streamPut(file, (int)getCargo(edge));
+	appendNumber(file, (int)getCargo(edge));
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1022,54 +1019,47 @@ write(TFile & file,
 	typedef typename EdgeType<TGraph>::Type TEdgeStump;
 	typedef typename Iterator<String<TEdgeStump*> const, Rooted>::Type TIterConst;
 
+    typename DirectionIterator<TFile, Output>::Type target = directionIterator(file, Output());
+
 	TStringSet& str = stringSet(g);
 	TSize nseq = length(str);
 
-	streamPut(file,"{DATA Data\n");
-	streamPut(file,"\t[__GLOBAL__] tracks=");
-	streamPut(file, nseq);
-	streamPut(file, '\n');
+	write(target, "{DATA Data\n");
+	write(target, "\t[__GLOBAL__] tracks=");
+	appendNumber(target, nseq);
+	writeValue(target, '\n');
 	for(TSize i = 0; i<nseq; ++i) {
-		streamPut(file,"\tfasta_id=\"");
-		streamPut(file,names[i]);
-		streamPut(file,"\" sequence=\"");
-		streamPut(file,str[i]);
-		streamPut(file,"\" track=");
-		streamPut(file, i);
-		streamPut(file," type=\"");
-		streamPut(file,"DNA");
-		streamPut(file,"\": ");
-		streamPut(file, 0);
-		streamPut(file, ' ');
-		streamPut(file, length(str[i])- 1);
-		streamPut(file, '\n');
+		write(target, "\tfasta_id=\"");
+		write(target,names[i]);
+		write(target, "\" sequence=\"");
+		write(target,str[i]);
+		write(target, "\" track=");
+		appendNumber(target, i);
+		write(target, " type=\"DNA\": 0 ");
+		appendNumber(target, length(str[i])- 1);
+		writeValue(target, '\n');
 	}
-	streamPut(file,"}\n");
+	write(target, "}\n");
 	for(TSize i = 0; i<nseq; ++i) {
-		streamPut(file,"{DATA ");
-		streamPut(file, i);
-		//streamPut(file,names[i]);
-		streamPut(file,"-seqlen\n");
-		streamPut(file,"\t[__GLOBAL__]\n");
-		streamPut(file,"\tlength=");
-		streamPut(file, length(str[i]));
-		streamPut(file,":\t");
-		streamPut(file, 0);
-		streamPut(file, ' ');
-		streamPut(file, length(str[i])- 1);
-		streamPut(file, '\n');
-		streamPut(file,"}\n");
+		write(target, "{DATA ");
+		appendNumber(target, i);
+		//write(target,names[i]);
+		write(target, "-seqlen\n\t[__GLOBAL__]\n\tlength=");
+		appendNumber(target, length(str[i]));
+		write(target, ":\t0 ");
+		appendNumber(target, length(str[i])- 1);
+		write(target, "\n}\n");
 	}
 	for(TSize i=0; i<nseq; ++i) {
 		for(TSize j=i+1; j<nseq; ++j) {
-			streamPut(file,"{DATA ");
-			streamPut(file, i);
-			//streamPut(file,names[i]);
-			streamPut(file,"-vs-");
-			streamPut(file, j);
-			//streamPut(file,names[j]);
-			streamPut(file, '\n');
-			streamPut(file,"\t[__GLOBAL__]\n");
+			write(target, "{DATA ");
+			appendNumber(target, i);
+			//write(target,names[i]);
+			write(target, "-vs-");
+			appendNumber(target, j);
+			//write(target,names[j]);
+			writeValue(target, '\n');
+			write(target, "\t[__GLOBAL__]\n");
 			for(TIterConst it = begin(g.data_align.data_vertex);!atEnd(it);goNext(it)) {
 				TVertexDescriptor sourceV = position(it);
 				TId id1 = sequenceId(g, sourceV);
@@ -1085,41 +1075,41 @@ write(TFile & file,
 								current=getNextS(current);
 								continue;
 						}
-						streamPut(file,"\t");
-						streamPut(file,"source=");
-						streamPut(file, (int)sourceV);		
-						streamPut(file, ' ');
-						streamPut(file,"target=");
-						streamPut(file, (int)targetV);
-						streamPut(file, ' ');
-						streamPut(file,"edgeId=");
-						streamPut(file, (int)_getId(current));
-						streamPut(file, ' ');
-						streamPut(file,"cargo=");
-						_writeCargo(file,g,current);
-						streamPut(file, ' ');
-						streamPut(file,"label=");
-						streamPut(file,label(g,sourceV));
-						streamPut(file, ' ');
-						streamPut(file,"labelOpp=");
-						streamPut(file,label(g,targetV));
-						streamPut(file, ':');
-						streamPut(file, '\t');
-						streamPut(file, (int)fragmentBegin(g, sourceV));
-						streamPut(file, ' ');
-						streamPut(file, (int)fragmentBegin(g, targetV));
-						streamPut(file, ' ');
-                        streamPut(file, (int)(fragmentBegin(g, sourceV) + fragmentLength(g, sourceV)));
-						streamPut(file, ' ');
-                        streamPut(file, (int)(fragmentBegin(g, targetV) + fragmentLength(g, targetV)));
-						streamPut(file, '\n');
+						write(target, "\t");
+						write(target, "source=");
+						appendNumber(target, (int)sourceV);
+						writeValue(target, ' ');
+						write(target, "target=");
+						appendNumber(target, (int)targetV);
+						writeValue(target, ' ');
+						write(target, "edgeId=");
+						appendNumber(target, (int)_getId(current));
+						writeValue(target, ' ');
+						write(target, "cargo=");
+						_writeCargo(target,g,current);
+						writeValue(target, ' ');
+						write(target, "label=");
+						write(target,label(g,sourceV));
+						writeValue(target, ' ');
+						write(target, "labelOpp=");
+						write(target,label(g,targetV));
+						writeValue(target, ':');
+						writeValue(target, '\t');
+						appendNumber(target, (int)fragmentBegin(g, sourceV));
+						writeValue(target, ' ');
+						appendNumber(target, (int)fragmentBegin(g, targetV));
+						writeValue(target, ' ');
+                        appendNumber(target, (int)(fragmentBegin(g, sourceV) + fragmentLength(g, sourceV)));
+						writeValue(target, ' ');
+                        appendNumber(target, (int)(fragmentBegin(g, targetV) + fragmentLength(g, targetV)));
+						writeValue(target, '\n');
 						current=getNextS(current);
 					} else {
 						current=getNextT(current);
 					}
 				}
 			}
-			streamPut(file,"}\n");	
+			write(target, "}\n");	
 		}
 	}
 }
@@ -1747,7 +1737,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 	if (empty(g)) return false;
 
 	// Connected Components
-	TSize numComponents = connectedComponents(g, component);
+	TSize numComponents = connectedComponents(component, g);
 
 	// Make a directed graph to represent the ordering of the components
 	// Note: Multiple vertices might have the same component
@@ -1794,7 +1784,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 	}
 	
 	// Make a topological sort of the component graph
-	topologicalSort(componentGraph, order);
+	topologicalSort(order, componentGraph);
 
 	//// Debug code
 	//std::cout << "Topological sort: " << std::endl;

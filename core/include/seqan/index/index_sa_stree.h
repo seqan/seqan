@@ -182,6 +182,13 @@ struct EdgeLabel<Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TSpec> > >
     typedef typename Value<Index<TText, IndexSa<TIndexSpec> > >::Type Type;
 };
 
+template < typename TText, typename TIndexSpec >
+struct DefaultFinder< Index<TText, IndexSa<TIndexSpec> > >
+{
+    typedef FinderMlr Type;	// standard suffix array finder is mlr-heuristic
+};
+
+
 // ============================================================================
 // Functions
 // ============================================================================

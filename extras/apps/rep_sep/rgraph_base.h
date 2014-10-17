@@ -80,7 +80,7 @@ void addColumn(GraphCargo<TColumnAlphabet, TAlignedReadStoreElement,TPosition> &
 {
 	typedef typename GraphCargo<TColumnAlphabet,TAlignedReadStoreElement,TPosition>::TColumnInfo TCargoColumnInfo;
 	TCargoColumnInfo col_info(pos,col);
-    append(me.spanned_columns, col_info);
+    appendValue(me.spanned_columns, col_info);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -129,7 +129,7 @@ bool hasMultipleComponents(ReadGraph<TColumnAlphabet, TAlignedReadStoreElement, 
     typedef String<TSize> TComponentMap;
 
     TComponentMap components;
-    TSize component_count = connectedComponents(me.graph,components);
+    TSize component_count = connectedComponents(components, me.graph);
 
     return (component_count > 1);
 }

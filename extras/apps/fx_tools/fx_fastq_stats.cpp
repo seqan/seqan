@@ -249,10 +249,10 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
                    "each column/position with statistics on the nucleotides and qualities.");
 
     addSection(parser, "Input / Output");
-    addOption(parser, seqan::ArgParseOption("i", "input", "Input FASTQ file.", seqan::ArgParseOption::INPUTFILE, "INPUT"));
+    addOption(parser, seqan::ArgParseOption("i", "input", "Input FASTQ file.", seqan::ArgParseOption::INPUT_FILE, "INPUT"));
     setValidValues(parser, "input", "fastq fq");
     setRequired(parser, "input");
-    addOption(parser, seqan::ArgParseOption("o", "output", "Output TSV file.", seqan::ArgParseOption::OUTPUTFILE, "OUTPUT"));
+    addOption(parser, seqan::ArgParseOption("o", "output", "Output TSV file.", seqan::ArgParseOption::OUTPUT_FILE, "OUTPUT"));
     setRequired(parser, "output");
     setValidValues(parser, "output", "fq_stats_tsv");
 
@@ -286,8 +286,8 @@ int main(int argc, char const ** argv)
         return res == seqan::ArgumentParser::PARSE_ERROR;
 
     // Open input file.
-    seqan::SequenceStream inStream(toCString(options.inFilename));
-    if (!isGood(inStream))
+    seqan::SeqFileIn seqFile;
+    if (!open(seqFile, toCString(options.inFilename)))
     {
         std::cerr << "ERROR: Could not open file " << options.inFilename << " for reading.\n";
         return 1;
@@ -298,13 +298,9 @@ int main(int argc, char const ** argv)
     seqan::CharString id;
     seqan::Dna5String seq;
     seqan::CharString quals;
-    while (!atEnd(inStream))
+    while (!atEnd(seqFile))
     {
-        if (readRecord(id, seq, quals, inStream) != 0)
-        {
-            std::cerr << "ERROR: Could not read from " << options.inFilename << ".\n";
-            return 1;
-        }
+        readRecord(id, seq, quals, seqFile);
         if (empty(quals))  // Fill with Q40 if there are no qualities.
             resize(quals, length(seq), '!' + 40);
 

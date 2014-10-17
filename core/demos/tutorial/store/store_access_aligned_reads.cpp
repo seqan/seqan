@@ -11,8 +11,8 @@ int main ()
 
     TStore store;
     loadContigs(store, "ex1.fa");
-    std::ifstream file("ex1.sam");
-    read(file, store, Sam());
+    BamFileIn file("ex1.sam");
+    readRecords(store, file);
 
     SEQAN_ASSERT_GEQ(length(store.alignedReadStore), 5u);
 

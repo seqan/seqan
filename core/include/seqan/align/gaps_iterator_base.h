@@ -60,6 +60,19 @@ typedef Tag<Position__> Position_;
 // Tags, Classes, Enums
 // ============================================================================
 
+/*!
+ * @class GapsIterator
+ * @implements RandomAccessIteratorConcept
+ *
+ * @brief Iterator class for @link Gaps @endlink.
+ *
+ * @signature template <typename TGaps, typename TSpec>
+ *            class Iter<TGaps, GapsIterator<TSpec> >;
+ *
+ * @tparam TGaps The @link Gaps @endlink object for the iterator.
+ * @tparam TSpec The specializing tag.
+ */
+
 template <typename TSpec>
 struct GapsIterator;
 
@@ -219,6 +232,15 @@ operator--(Iter<TGaps, GapsIterator<TSpec> > & it, int)
 // Function insertGap()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn GapsIterator#insertGap
+ * @brief Insert gap at the current position.
+ *
+ * @signature void insertGap(it);
+ *
+ * @param[in,out] it The iterator to insert gaps at.
+ */
+
 // Forward to insertGaps() which has to be implemented by the specific gap
 // iterator.
 
@@ -230,8 +252,99 @@ insertGap(Iter<TGaps, GapsIterator<TSpec> > & it)
 }
 
 // ----------------------------------------------------------------------------
+// Function isCharacter()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn GapsIterator#isCharacter
+ * @brief Query an iterator for being at a character
+ *
+ * @signature bool isCharacter(it);
+ *
+ * @param[in] it Iterator to query for pointing at a character.
+ *
+ * @return bool <tt>true</tt> if <tt>it</tt> is at a character and <tt>false</tt> otherwise.
+ */
+
+template <typename TGaps, typename TSpec>
+bool isCharacter(Iter<TGaps, GapsIterator<TSpec> > const & it)
+{
+	return !isGap(it);
+}
+
+// ----------------------------------------------------------------------------
+// Function countCharacters()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn GapsIterator#countCharacters
+ * @brief Count characters at iterator.
+ *
+ * @signature TSize countCharacters(it);
+ *
+ * @param[in] it Iterator for counting characters at.
+ *
+ * @return TSize Number of characters.
+ */
+
+// ----------------------------------------------------------------------------
+// Function isGap()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn GapsIterator#isGap
+ * @brief Query an iterator for being at a gap
+ *
+ * @signature bool isGap(it);
+ *
+ * @param[in] it Iterator to query for pointing at a gap.
+ *
+ * @return bool <tt>true</tt> if <tt>it</tt> is at a gap and <tt>false</tt> otherwise.
+ */
+
+// ----------------------------------------------------------------------------
+// Function countGaps()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn GapsIterator#countGaps
+ * @brief Count gaps at iterator.
+ *
+ * @signature TSize countGaps(it);
+ *
+ * @param[in] it Iterator for counting gaps at.
+ *
+ * @return TSize Number of gaps.
+ */
+
+// ----------------------------------------------------------------------------
+// Function insertGaps()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn GapsIterator#insertGaps
+ * @brief Insert gaps at the current position.
+ *
+ * @signature void insertGaps(it, num);
+ *
+ * @param[in,out] it  Remove gap at the given position (if any).
+ * @param[in]     num Number of gaps to insert.
+ */
+
+// ----------------------------------------------------------------------------
 // Function removeGap()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn GapsIterator#removeGap
+ * @brief Insert gap at the current position.
+ *
+ * @signature TSize removeGap(it);
+ *
+ * @param[in,out] it Remove gap at the given position (if any).
+ *
+ * @return TSize Number of removed gaps.
+ */
 
 // Forward to removeGaps() which has to be implemented by the specific gap
 // iterator.
@@ -242,6 +355,22 @@ removeGap(Iter<TGaps, GapsIterator<TSpec> > & it)
 {
 	return removeGaps(it, 1);
 }
+
+// ----------------------------------------------------------------------------
+// Function removeGaps()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn GapsIterator#removeGaps
+ * @brief Remove gaps from the current position.
+ *
+ * @signature TSize removeGaps(it, num);
+ *
+ * @param[in,out] it  Remove gap at the given position (if any).
+ * @param[in]     num Number of gaps to remove.
+ *
+ * @return TSize Number of removed gaps.
+ */
 
 // ----------------------------------------------------------------------------
 // Function assignValue()

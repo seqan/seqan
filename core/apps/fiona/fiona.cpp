@@ -576,72 +576,23 @@ namespace seqan
     {
         //StringSet<String<Dna5, Packed<> >, Owner<ConcatDirect<> > > reads;
 
-        MultiSeqFile multiSeqFile;
-        if (!open(multiSeqFile.concat, toCString(fileName), OPEN_RDONLY))
+        SeqFileIn seqFile;
+        if (!open(seqFile, toCString(fileName)))
             return false;
-
-        // guess file format and split into sequence fractions
-        AutoSeqFormat format;
-        guessFormat(multiSeqFile.concat, format);
-        split(multiSeqFile, format);
-
-        // reserve space in fragment store
-        unsigned seqOfs = length(store.readStore);
-        unsigned seqCount = length(multiSeqFile);
-        reserve(store.readStore, seqOfs + seqCount);
-        reserve(store.readSeqStore, seqOfs + seqCount);
-        // reserve(store.readNameStore, seqOfs + seqCount);
 
         // read sequences
     //    String<Dna5Q> seq;
     //    CharString qual;
-        // CharString _id;
 
+        CharString _id;
         String<Dna5> seq;
+        unsigned i = 0;
 
-        for (unsigned i = 0; i < seqCount; ++i)
+        while (!atEnd(seqFile))
         {
-            assignSeq(seq, multiSeqFile[i], format);    // read sequence
-    //        assignQual(qual, multiSeqFile[i], format);  // read ascii quality values
-            // assignSeqId(_id, multiSeqFile[i], format);  // read sequence id
-
-            // convert ascii to values from 0..62
-            // store dna and quality together in Dna5Q
-            // TODO: support different ASCII represenations of quality values
-    //        assignQualities(seq, qual);
+            readRecord(_id, seq, seqFile);
 //            appendRead(store, seq/*, _id*/);
             appendValue(store.readSeqStore, seq);
-            if (options.verbosity >= 1 && i % 100000 == 0)
-                std::cout<<'.'<<std::flush;
-        }
-//        store.readSeqStore = reads;
-        return true;
-    }
-
-    // Copy from store_io.h, could/should go into library.
-    template <typename TFSSpec, typename TFSConfig, typename TFileName>
-    bool loadReadsNoNames2(FragmentStore<TFSSpec, TFSConfig> &, TFileName &fileName, FionaOptions const & options)
-    {
-        StringSet<String<Dna5, Packed<> >, Owner<ConcatDirect<> > > reads;
-        SequenceStream seqStream(toCString(fileName));
-        if (!isGood(seqStream))
-        {
-            std::cerr << "ERROR: Could not open " << fileName << " for reading.\n";
-            return false;
-        }
-
-        CharString id;
-        Dna5String seq;
-        unsigned i=0;
-        while (!atEnd(seqStream))
-        {
-            // Read record from input (for the id only).
-            if (readRecord(id, seq, seqStream) != 0)
-            {
-                std::cerr << "ERROR: Could not read record from " << fileName << "\n";
-                return 1;
-            }
-            appendValue(reads, seq);
             if (options.verbosity >= 1 && ++i % 100000 == 0)
                 std::cout<<'.'<<std::flush;
         }
@@ -1045,7 +996,7 @@ inline void fillCorrection(TCorrection &newCorrection,
 {
     //TValue empty=maxValue(readLength);
     //fill Correction struct
-    newCorrection.nextCorrection = maxValue(newCorrection.nextCorrection);  // it will be the last correction in the linked list
+    newCorrection.nextCorrection = maxValue<unsigned>();  // it will be the last correction in the linked list
 #ifndef FIONA_CONSENSUS_REDUCE_MEMORY
     newCorrection.correctReadId = correctReadId;        // only for debugging purposes
     newCorrection.correctPos = correctPos;
@@ -3388,7 +3339,7 @@ _comparePrefixesWithEditDistance(
         if (len1 == 0)
             return 0;
         
-        seq2._end = seq2._begin + _min(len2, len1 + state.leftClip);
+        seq2.end = seq2.begin + _min(len2, len1 + state.leftClip);
         iter = begin(seq2, Rooted());
         if (_patternInitSmallStateBanded(iter, seq1, state))
             for (; !atEnd(iter) && _findMyersSmallPatternsBanded(iter, seq1, state, True()); goNext(iter))
@@ -3397,7 +3348,7 @@ _comparePrefixesWithEditDistance(
     }
     else
     {
-        seq1._end = seq1._begin + _min(len1, len2 + state.leftClip);
+        seq1.end = seq1.begin + _min(len1, len2 + state.leftClip);
         iter = begin(seq1, Rooted());
         if (_patternInitSmallStateBanded(iter, seq2, state))
             for (; !atEnd(iter) && _findMyersSmallPatternsBanded(iter, seq2, state, True()); goNext(iter))
@@ -3432,7 +3383,7 @@ _comparePrefixesWithEditDistanceReverse(
         if (len1 == 0)
             return 0;
         
-        seq2._begin = seq2._end - _min(len2, len1 + state.leftClip);
+        seq2.begin = seq2.end - _min(len2, len1 + state.leftClip);
 
         TRev rseq1(seq1);
         TRev rseq2(seq2);
@@ -3444,7 +3395,7 @@ _comparePrefixesWithEditDistanceReverse(
     }
     else
     {
-        seq1._begin = seq1._end - _min(len1, len2 + state.leftClip);
+        seq1.begin = seq1.end - _min(len1, len2 + state.leftClip);
 
         TRev rseq1(seq1);
         TRev rseq2(seq2);
@@ -4898,10 +4849,10 @@ unsigned correctReads(
         TFileSize mapSize = (TFileSize)sizeof(TSAValue) * (bktEnd - mapOfs);
 
         TSAValue *mapPtr = (TSAValue*)mapFileSegment(mapping, (TFileSize)sizeof(TSAValue) * mapOfs, mapSize, MAP_COPYONWRITE | MAP_RDWR);
-        indexSA(myIndex)._begin = mapPtr + (bktBegin - mapOfs);
-        indexSA(myIndex)._end   = mapPtr + (bktEnd   - mapOfs);
+        indexSA(myIndex).begin = mapPtr + (bktBegin - mapOfs);
+        indexSA(myIndex).end   = mapPtr + (bktEnd   - mapOfs);
 #else
-		indexSA(myIndex) = infix(indexSA(qgramIndex), bktBegin, bktEnd);
+		indexSA(myIndex) = toRange(infix(indexSA(qgramIndex), bktBegin, bktEnd));
 #endif
 
 		cargo(myIndex).replen_min = options.fromLevel;
@@ -5040,16 +4991,22 @@ template <typename TFragmentStore>
 int writeOutput(unsigned & numCorrected, TFragmentStore const & store, FionaOptions const & options)
 {
     // Write out the corrected reads and stream through input file for getting the read ids.
-    SequenceStream inStream(toCString(options.inputFilename));
+    SeqFileIn inFile;
     std::cerr << "Opening input " << options.inputFilename << "\n";
-    if (!isGood(inStream))
+    if (!open(inFile, toCString(options.inputFilename)))
     {
         std::cerr << "ERROR: Could not open " << options.inputFilename << " for reading.\n";
         return 1;
     }
-    SequenceStream outStream(toCString(options.outputFilename), SequenceStream::WRITE, SequenceStream::FASTA);
+    bool success;
+    SeqFileOut outFile;
+    if (options.outputFilename != "-")
+        success = open(outFile, toCString(options.outputFilename));
+    else
+        success = open(outFile, std::cout, Fasta());
     std::cerr << "Opening output " << options.outputFilename << "\n";
-    if (!isGood(inStream))
+
+    if (!success)
     {
         std::cerr << "ERROR: Could not open " << options.outputFilename << " for writing.\n";
         return 1;
@@ -5061,16 +5018,12 @@ int writeOutput(unsigned & numCorrected, TFragmentStore const & store, FionaOpti
 
     numCorrected = 0;
     // disable linebreak in output file
-    outStream.outputOptions.lineLength = 0;
+    context(outFile).options.lineLength = 0;
 
     for (unsigned i = 0; i < length(store.readSeqStore); ++i)
     {
         // Read record from input (for the id only).
-        if (readRecord(id, seq, inStream) != 0)
-        {
-            std::cerr << "ERROR: Could not read record from " << options.inputFilename << "\n";
-            return 1;
-        }
+        readRecord(id, seq, inFile);
 
         // Overwrite the sequence from the input file with the corrected read sequence.
         seq = store.readSeqStore[i];
@@ -5107,11 +5060,7 @@ int writeOutput(unsigned & numCorrected, TFragmentStore const & store, FionaOpti
         }
 
         // Write out the FASTA record to the output file.
-        if (writeRecord(outStream, id, seq) != 0)
-        {
-            std::cerr << "ERROR: Could not write record to " << options.outputFilename << "\n";
-            return 1;
-        }
+        writeRecord(outFile, id, seq);
     }
 
     std::cerr << "Wrote " << length(store.readSeqStore) << " sequences\n";
@@ -5151,10 +5100,10 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
                    "The reads are read from the file \\fIIN.{fq,fa}\\fP and are written to \\fIOUT.fa\\fP.");
 
     // Fiona gets two parameters:  The paths to the input and the output files.
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUTFILE, "IN"));
+    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "IN"));
     setValidValues(parser, 0, "fa fasta fq fastq");
     setHelpText(parser, 0, "An input file with reads to be corrected.");
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::OUTPUTFILE, "OUT"));
+    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::OUTPUT_FILE, "OUT"));
     setValidValues(parser, 1, "fa fasta fq fastq");
     setHelpText(parser, 1, "An output file to store the corrected reads.");
 
@@ -5610,7 +5559,7 @@ int main(int argc, const char* argv[])
         if (options.verbosity >= 1)
             std::cerr << std::endl << "Number of families at nodes:" << nfamilies << std::endl;
 		if (options.verbosity >= 1 && options.cycle > 1)
-			std::cerr << std::endl << "Relative change: " << ((float) (nfamprev - nfamilies)) / nfamprev << std::endl;
+			std::cerr << std::endl << "Relative change: " << ((float) (nfamprev - nfamilies)) / (nfamprev == 0u ? 1 : nfamprev) << std::endl;
 
 //		if (options.acceptedMismatches > 0) --options.acceptedMismatches;
 

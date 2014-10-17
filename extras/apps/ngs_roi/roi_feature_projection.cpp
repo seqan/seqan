@@ -108,23 +108,23 @@ struct RoiIntersectOptions
 class RoiIntersectApp
 {
 public:
-    typedef seqan::RecordReader<std::ifstream, seqan::SinglePass<> > TRecordReader;
-
     // The configuration for the application.
     RoiIntersectOptions const & options;
 
-    // Input file streams.
-    std::ifstream inIntervals, inRoi;
-    std::ofstream outRoi;
+    // Stream for reading GFF and BED files.
+    std::ifstream inIntervals;
+    // ROI input and output.
+    seqan::RoiFileIn  roiFileIn;
+    seqan::RoiFileOut roiFileOut;
 
     RoiIntersectApp(RoiIntersectOptions const & options) : options(options)
     {}
 
     // App object's main routine.  Contains mostly console I/O.
-    int run();
+    void run();
 
     // Called by run() for the actual work step.
-    int doStreaming();
+    void doStreaming();
 };
 
 // --------------------------------------------------------------------------
@@ -132,18 +132,11 @@ public:
 // --------------------------------------------------------------------------
 
 // Helper function: Make the given record (must have int rId and int beginPos members) a sentinel (> all others).
+
 template <typename TRecord>
 void makeSentinel(TRecord & record)
 {
     clear(record.ref);
-    record.rID = seqan::maxValue<int>();
-    record.beginPos = seqan::maxValue<int>();
-}
-
-void makeSentinel(seqan::GffRecord & record)
-{
-    clear(record.ref);
-    record.rID = seqan::maxValue<int>();
     record.beginPos = seqan::maxValue<int>();
 }
 
@@ -151,18 +144,31 @@ void makeSentinel(seqan::GffRecord & record)
 
 struct IntersectWithBedConfig
 {
-    typedef seqan::StringSet<seqan::CharString> TNameStore;
-    typedef seqan::BedIOContext<TNameStore>     TBedIOContext;
+    // BedFileIn to use for reading.
+    seqan::BedFileIn bedFileIn; 
 
-    IntersectWithBedConfig(RoiIntersectOptions const & /*options*/)
+    IntersectWithBedConfig(std::ifstream & inStream,
+                           RoiIntersectOptions const & /*options*/) :
+        bedFileIn(inStream)
     {}
 
-    template <typename TStream, typename TReaderSpec>
-    int readRecord(seqan::BedRecord<seqan::Bed6> & record,
-                   seqan::RecordReader<TStream, TReaderSpec> & reader,
-                   TBedIOContext & bedIOContext)
+    bool atEnd()
     {
-        return seqan::readRecord(record, reader, bedIOContext, seqan::Bed());
+        return seqan::atEnd(bedFileIn);
+    }
+
+    void skipComments()
+    {
+        while (!seqan::atEnd(bedFileIn) && *bedFileIn.iter == '#')
+            skipLine(bedFileIn.iter);
+    }
+
+    void readRecord(seqan::BedRecord<seqan::Bed6> & record)
+    {
+        if (!seqan::atEnd(bedFileIn))
+            seqan::readRecord(record, bedFileIn);
+        else
+            makeSentinel(record);
     }
 };
 
@@ -170,8 +176,8 @@ struct IntersectWithBedConfig
 
 struct IntersectWithGffConfig
 {
-    typedef seqan::StringSet<seqan::CharString> TNameStore;
-    typedef seqan::GffIOContext<TNameStore>     TBedIOContext;
+    // GffFileIn to use for reading.
+    seqan::GffFileIn gffFileIn;
 
     // running number of read GFF records.
     int gffID;
@@ -184,21 +190,29 @@ struct IntersectWithGffConfig
     // Buffer for the current GFF record.
     seqan::GffRecord gffRecord;
 
-    IntersectWithGffConfig(RoiIntersectOptions const & options) : gffID(0), gffType(options.gffType)
+    IntersectWithGffConfig(std::ifstream & inStream,
+                           RoiIntersectOptions const & options) :
+        gffFileIn(inStream), gffID(0), gffType(options.gffType)
     {}
 
-    template <typename TStream, typename TReaderSpec>
-    int readRecord(seqan::BedRecord<seqan::Bed6> & bedRecord,
-                   seqan::RecordReader<TStream, TReaderSpec> & reader,
-                   TBedIOContext & gffIOContext)
+    bool atEnd()
+    {
+        return seqan::atEnd(gffFileIn);
+    }
+
+    void skipComments()
+    {
+        while (!seqan::atEnd(gffFileIn) && *gffFileIn.iter == '#')
+            skipLine(gffFileIn.iter);
+    }
+
+    void readRecord(seqan::BedRecord<seqan::Bed6> & bedRecord)
     {
         // Read GFF record.  When GFF record type filtering is active then we skip over records with the incorrect type.
         // We make bedRecord a sentinel if there is no GFF record with a valid type left.
-        while (!atEnd(reader))
+        while (!seqan::atEnd(gffFileIn))
         {
-            int res = 0;
-            if ((res = seqan::readRecord(gffRecord, reader, gffIOContext, seqan::Gff())) != 0)
-                return res;
+            seqan::readRecord(gffRecord, gffFileIn);
 
             if (!empty(gffType) && gffRecord.type != gffType)
                 continue;  // Read next.
@@ -206,10 +220,9 @@ struct IntersectWithGffConfig
             // Convert GFF to BED.
             clear(bedRecord);
             bedRecord.ref  = gffRecord.ref;
-            bedRecord.rID = gffRecord.rID;
             bedRecord.beginPos = gffRecord.beginPos;
             bedRecord.endPos = gffRecord.endPos;
-            bedRecord.score = 0;
+            bedRecord.score = "0";
             bedRecord.strand = (gffRecord.strand == '-') ? '-' : '+';  // '.' becomes '+'
 
             // Build BED record name.  We cannot rely on the GFF/GTF record having an ID so we simply construct one.
@@ -218,11 +231,10 @@ struct IntersectWithGffConfig
             ss << "ggf_" << (gffID++) << "_" << bedRecord.ref << ":" << bedRecord.beginPos << "-" << bedRecord.endPos;
             bedRecord.name = ss.str();
 
-            return 0;
+            return;
         }
 
         makeSentinel(bedRecord);
-        return 0;
     }
 };
 
@@ -230,31 +242,34 @@ struct IntersectWithGffConfig
 // BED records.  The names for the I/O contexts and record readers are prefixed for BED even if we actually read from
 // GFF and convert to BED afterwards.
 
+template <typename TRecord>
+inline bool isSentinel(TRecord const & record)
+{
+    return empty(record.ref);
+}
+
+template <typename TRecordL, typename TRecordR>
+inline bool ltRecord(TRecordL const & recordL, TRecordR const & recordR)
+{
+    if (isSentinel(recordR))
+        return true;
+    if (isSentinel(recordL))
+        return false;
+    return ((recordL.ref < recordR.ref) ||
+            (recordL.ref == recordR.ref && recordL.beginPos < recordR.beginPos));
+}
+
 template <typename TConfig>
 class IntersectDriver
 {
 public:
-    // Names store for the reference names.
-    typedef seqan::StringSet<seqan::CharString> TNameStore;
-
     // TConfig defines some types and we have an instance for reading BED records and converting GFF records to BED
     // records when reading.
     TConfig config;
 
-    // The reference name store and a cache for this store.
-    TNameStore refNames;
-    seqan::NameStoreCache<TNameStore> refNamesCache;
-
-    // File stream for writing ROI to.
-    std::ofstream & outRoi;
-
-    // I/O contexts for translating reference names to ids.
-    typename TConfig::TBedIOContext bedIOContext;
-    seqan::RoiIOContext<TNameStore> roiIOContext;
-
-    // Record readers for reading the files.
-    seqan::RecordReader<std::ifstream, seqan::SinglePass<> > bedReader;
-    seqan::RecordReader<std::ifstream, seqan::SinglePass<> > roiReader;
+    // Files for reading/writing ROI.
+    seqan::RoiFileOut & roiFileOut;
+    seqan::RoiFileIn & roiFileIn;
 
     // BED and ROI records.
     seqan::BedRecord<seqan::Bed6> bedRecord;
@@ -263,60 +278,34 @@ public:
     // Options for intersecting.
     RoiIntersectOptions const & options;
 
-    IntersectDriver(std::ofstream & outRoi, std::ifstream & bedStream, std::ifstream & roiStream,
+    IntersectDriver(seqan::RoiFileOut & roiFileOut,
+                    std::ifstream & inStream,
+                    seqan::RoiFileIn & roiFileIn,
                     RoiIntersectOptions const & options) :
-            config(options), refNamesCache(refNames), outRoi(outRoi), bedIOContext(refNames, refNamesCache),
-            roiIOContext(refNames, refNamesCache), bedReader(bedStream), roiReader(roiStream),
-            options(options)
+        config(inStream, options), roiFileOut(roiFileOut),
+        roiFileIn(roiFileIn), options(options)
     {}
 
-    int run()
+    void run()
     {
-        // TODO(holtgrew): What happens if there are no records for one contig?
+        // Read and write header.
+        seqan::RoiHeader roiHeader;
+        readRecord(roiHeader, roiFileIn);
+        clear(roiHeader.extraColumns);  // extra data is removed in projection
+        writeRecord(roiFileOut, roiHeader);
 
-        // Write header.
-        outRoi << "##ref\t"
-               << "begin_pos\t"
-               << "end_pos\t"
-               << "region_name\t"
-               << "length\t"
-               << "strand\t"
-               << "max_count\t"
-               << "counts\n";
+        // Skip comments, then read first record through driver.
+        config.skipComments();
+        config.readRecord(bedRecord);
 
-        // Read first records.
-        while (!atEnd(bedReader) && value(bedReader) == '#')
-            if (skipLine(bedReader) != 0)
-            {
-                std::cerr << "ERROR: Could not skip header/comment line in BED.\n";
-                return 1;
-            }
-        if (atEnd(bedReader))
-        {
-            makeSentinel(bedRecord);
-        }
-        else if (config.readRecord(bedRecord, bedReader, bedIOContext) != 0)
-        {
-            std::cerr << "ERROR: Problem reading from BED file!\n";
-            return 1;
-        }
-        while (!atEnd(roiReader) && value(roiReader) == '#')
-            if (skipLine(roiReader) != 0)
-            {
-                std::cerr << "ERROR: Could not skip header/comment line in ROI.\n";
-                return 1;
-            }
-        if (atEnd(roiReader))
-        {
-            makeSentinel(roiRecord);
-        }
-        else if (readRecord(roiRecord, roiReader, roiIOContext, seqan::Roi()) != 0)
-        {
-            std::cerr << "ERROR: Problem reading from ROI file!\n";
-            return 1;
-        }
+        // Skip comments, then read first record through ROI file.
+        readRoiRecordOrMakeSentinel(roiRecord);
 
-        // The algorithm objects.
+        // Check for both files being empty / returning sentinels.
+        if (isSentinel(bedRecord) && isSentinel(roiRecord))
+            return;  // both empty, done already
+
+        // Setup the algorithm objects.
         IntersectBedOptions intersectOptions;
         switch (options.mode)
         {
@@ -336,13 +325,14 @@ public:
                 SEQAN_FAIL("Cannot reach here!");
         }
         intersectOptions.verbosity = options.verbosity;
+
         // We create two IntersectBed objects, one for each forward and reverse strand.  The forward IntersectBed object is
         // also used in non-strand-specific mode.
-        IntersectBed intersectBedF(outRoi, intersectOptions);
-        IntersectBed intersectBedR(outRoi, intersectOptions);
+        IntersectBed intersectBedF(roiFileOut, intersectOptions);
+        IntersectBed intersectBedR(roiFileOut, intersectOptions);
 
         // Stream over all BED and ROI records.
-        while (bedRecord.rID != seqan::maxValue<int>() || roiRecord.rID != seqan::maxValue<int>())
+        while (!isSentinel(bedRecord) || !isSentinel(roiRecord))
         {
             if (options.verbosity >= 3)
             {
@@ -355,7 +345,7 @@ public:
             }
 
             // Push smaller, prefering ROI over BED on ties.
-            if (bedRecord.rID < roiRecord.rID || (bedRecord.rID == roiRecord.rID && bedRecord.beginPos < roiRecord.beginPos))
+            if (ltRecord(bedRecord, roiRecord))
             {
                 if (!options.strandSpecific || bedRecord.strand == '+')
                     intersectBedF.pushBed(bedRecord);
@@ -364,17 +354,9 @@ public:
                 clear(bedRecord);
 
                 // Read next records
-                if (atEnd(bedReader))
-                {
-                    makeSentinel(bedRecord);
-                    if (options.verbosity >= 2)
-                        std::cerr << "BED record is a sentinel now!\n";
-                }
-                else if (config.readRecord(bedRecord, bedReader, bedIOContext) != 0)
-                {
-                    std::cerr << "ERROR: Problem reading from BED file!\n";
-                    return 1;
-                }
+                config.readRecord(bedRecord);
+                if (isSentinel(bedRecord) && options.verbosity >= 2)
+                    std::cerr << "BED record is a sentinel now!\n";
             }
             else
             {
@@ -385,21 +367,19 @@ public:
                 clear(roiRecord);
 
                 // Read next record.
-                if (atEnd(roiReader))
-                {
-                    makeSentinel(roiRecord);
-                    if (options.verbosity >= 2)
-                        std::cerr << "ROI record is a sentinel now!\n";
-                }
-                else if (readRecord(roiRecord, roiReader, roiIOContext, seqan::Roi()) != 0)
-                {
-                    std::cerr << "ERROR: Problem reading from ROI file!\n";
-                    return 1;
-                }
+                readRoiRecordOrMakeSentinel(roiRecord);
+                if (isSentinel(roiRecord) && options.verbosity >= 2)
+                    std::cerr << "ROI record is a sentinel now!\n";
             }
         }
+    }
 
-        return 0;
+    void readRoiRecordOrMakeSentinel(seqan::RoiRecord & roiRecord)
+    {
+        if (!atEnd(roiFileIn))
+            readRecord(roiRecord, roiFileIn);
+        else
+            makeSentinel(roiRecord);
     }
 };
 
@@ -407,40 +387,17 @@ public:
 // Class GroupByDriver
 // --------------------------------------------------------------------------
 
-// Helper function.
-
-seqan::Pair<int, int> position(seqan::GffRecord const & record)
-{
-    return seqan::Pair<int, int>(record.rID, record.beginPos);
-}
-
-seqan::Pair<int, int> position(seqan::RoiRecord const & record)
-{
-    return seqan::Pair<int, int>(record.rID, record.beginPos);
-}
-
 // Code for the intersection with grouping of GFF records.
 
 class GroupByDriver
 {
 public:
-    // Names store for the reference names.
-    typedef seqan::StringSet<seqan::CharString> TNameStore;
-
-    // The reference name store and a cache for this store.
-    TNameStore refNames;
-    seqan::NameStoreCache<TNameStore> refNamesCache;
-
     // File stream for writing ROI to.
-    std::ofstream & outRoi;
-
-    // I/O contexts for translating reference names to ids.
-    seqan::GffIOContext<TNameStore> gffIOContext;
-    seqan::RoiIOContext<TNameStore> roiIOContext;
+    seqan::RoiFileOut & roiFileOut;
 
     // Record readers for reading the files.
-    seqan::RecordReader<std::ifstream, seqan::SinglePass<> > gffReader;
-    seqan::RecordReader<std::ifstream, seqan::SinglePass<> > roiReader;
+    seqan::GffFileIn gffFileIn;
+    seqan::RoiFileIn & roiFileIn;
 
     // BED and ROI records.
     seqan::GffRecord gffRecord;
@@ -449,52 +406,41 @@ public:
     // Options for intersecting.
     RoiIntersectOptions const & options;
 
-    GroupByDriver(std::ofstream & outRoi, std::ifstream & bedStream, std::ifstream & roiStream,
-                  RoiIntersectOptions const & options) :
-            refNamesCache(refNames), outRoi(outRoi), gffIOContext(refNames, refNamesCache),
-            roiIOContext(refNames, refNamesCache), gffReader(bedStream), roiReader(roiStream),
-            options(options)
+    GroupByDriver(seqan::RoiFileOut & roiFileOut, std::ifstream & gffStream,
+                  seqan::RoiFileIn & roiFileIn, RoiIntersectOptions const & options) :
+            roiFileOut(roiFileOut), gffFileIn(gffStream), roiFileIn(roiFileIn), options(options)
     {}
 
     // Actually running the intersection with grouping.
-    int run()
+    void run()
     {
         // The current reference name.
         seqan::CharString ref;
 
-        // Write header.
-        outRoi << "##ref\t"
-               << "begin_pos\t"
-               << "end_pos\t"
-               << "region_name\t"
-               << "length\t"
-               << "strand\t"
-               << "max_count\t"
-               << "counts\n";
-
-        // TODO(holtgrew): What happens if there are no records for one contig?
+        // Read Roi header and write out again.
+        seqan::RoiHeader roiHeader;
+        readRecord(roiHeader, roiFileIn);
+        writeRecord(roiFileOut, roiHeader);
 
         // Initialize objects that we will use for the overlapping and output generation.
-        ProjectSplicedRoi workerF(outRoi, options.gffGroupBy, options.verbosity);
-        ProjectSplicedRoi workerR(outRoi, options.gffGroupBy, options.verbosity);
+        ProjectSplicedRoi workerF(roiFileOut, options.gffGroupBy, options.verbosity);
+        ProjectSplicedRoi workerR(roiFileOut, options.gffGroupBy, options.verbosity);
 
         // Read first records.
-        if (initializeRecords() != 0)
-            return 1;
+        initializeRecords();
         if (options.verbosity >= 2)
         {
             std::cerr << "FIRST GFF RECORD REF = " << ref << "\n  ";
             writeRecord(std::cerr, gffRecord, seqan::Gff());
         }
 
-        typedef seqan::RecordReader<std::ifstream, seqan::SinglePass<> > TGffReader;
-        typedef seqan::Position<TGffReader>::Type TGffReaderPos;
-        TGffReaderPos chromBegin = position(gffReader);
+        typedef seqan::Position<seqan::GffFileIn>::Type TGffFileInPos;
+        TGffFileInPos chromBegin = position(gffFileIn);
 
-        while (gffRecord.rID != seqan::maxValue<int>())
+        while (isSentinel(gffRecord))
         {
             // First pass: Register all GFF records with worker and reset position to chromosome begin afterwards.
-            if (roiRecord.rID != seqan::maxValue<int>())
+            if (isSentinel(roiRecord))
                 ref = std::min(gffRecord.ref, roiRecord.ref);
             else
                 ref = gffRecord.ref;  // case where ROI is already at end
@@ -502,7 +448,7 @@ public:
                 std::cerr << "FIRST PASS REF=" << ref << "\n";
             workerF.beginContig();
             workerR.beginContig();
-            chromBegin = position(gffReader);
+            chromBegin = position(gffFileIn);
             seqan::GffRecord firstGffRecord = gffRecord;
             while (gffRecord.ref == ref)
             {
@@ -514,25 +460,13 @@ public:
                         workerR.updateRanges(gffRecord);
                 }
 
-                if (atEnd(gffReader))
-                {
-                    makeSentinel(gffRecord);
-                    if (options.verbosity >= 2)
-                        std::cerr << "GFF record is a sentinel now.\n";
-                }
-                else if (readRecord(gffRecord, gffReader, gffIOContext, seqan::Gff()) != 0)
-                {
-                    std::cerr << "ERROR: Problem reading GFF.\n";
-                    return 1;
-                }
+                readGffRecordOrMakeSentinel(gffRecord);
+                if (isSentinel(gffRecord) && options.verbosity >= 2)
+                    std::cerr << "GFF record is a sentinel now.\n";
             }
-            if (!atEnd(gffReader))
+            if (!seqan::atEnd(gffFileIn))
                 SEQAN_ASSERT_GT(gffRecord.ref, ref);
-            if (setPosition(gffReader, chromBegin) != 0)
-            {
-                std::cerr << "ERROR: Could not reset file pointer for second pass!\n";
-                return 1;
-            }
+            setPosition(gffFileIn, chromBegin);
             gffRecord = firstGffRecord;
 
             if (options.verbosity >= 2)
@@ -553,11 +487,11 @@ public:
                 }
 
                 // Push smaller, prefering ROI over GFF on ties.
-                if (roiRecord.rID == seqan::maxValue<int>() ||
+                if (isSentinel(roiRecord) ||
                     std::make_pair(gffRecord.ref, (int)gffRecord.beginPos) <
                     std::make_pair(roiRecord.ref, roiRecord.beginPos))
                 {
-                    if (gffRecord.rID == seqan::maxValue<int>())
+                    if (isSentinel(gffRecord))
                         break;  // Break out of outer loop, termination criterion.
 
                     if (!empty(options.gffType) && gffRecord.type == options.gffType)
@@ -573,22 +507,11 @@ public:
                     std::pair<seqan::CharString, __uint32> oldPos(gffRecord.ref, gffRecord.beginPos);
 
                     // Read next records
-                    if (atEnd(gffReader))
-                    {
-                        makeSentinel(gffRecord);
-                        if (options.verbosity >= 3)
-                            std::cerr << "GFF record is a sentinel now!\n";
-                    }
-                    else if (readRecord(gffRecord, gffReader, gffIOContext, seqan::Gff()) != 0)
-                    {
-                        std::cerr << "ERROR: Problem reading from GFF file!\n";
-                        return 1;
-                    }
+                    readGffRecordOrMakeSentinel(gffRecord);
+                    if (isSentinel(gffRecord) && options.verbosity >= 3)
+                        std::cerr << "GFF record is a sentinel now!\n";
                     if (std::make_pair(gffRecord.ref, gffRecord.beginPos) < oldPos)
-                    {
-                        std::cerr << "ERROR: GFF file is not sorted properly!\n";
-                        return 1;
-                    }
+                        throw std::runtime_error("ERROR: GFF file is not sorted properly!");
                 }
                 else
                 {
@@ -602,72 +525,60 @@ public:
                     std::pair<seqan::CharString, int> oldPos(roiRecord.ref, roiRecord.beginPos);
 
                     // Read next record.
-                    if (atEnd(roiReader))
-                    {
-                        makeSentinel(roiRecord);
-                        if (options.verbosity >= 2)
-                            std::cerr << "ROI record is a sentinel now!\n";
-                    }
-                    else if (readRecord(roiRecord, roiReader, roiIOContext, seqan::Roi()) != 0)
-                    {
-                        std::cerr << "ERROR: Problem reading from ROI file!\n";
-                        return 1;
-                    }
+                    readRoiRecordOrMakeSentinel(roiRecord);
+                    if (isSentinel(roiRecord) &&options.verbosity >= 2)
+                        std::cerr << "ROI record is a sentinel now!\n";
                     if (std::make_pair(roiRecord.ref, roiRecord.beginPos) < oldPos)
-                    {
-                        std::cerr << "ERROR: ROI file is not sorted properly!\n";
-                        return 1;
-                    }
+                        throw std::runtime_error("ERROR: ROI file is not sorted properly!");
                 }
             }
         }
 
         // Finish reading ROI file to check for sortedness.
-        while (!atEnd(roiReader))
+        while (!seqan::atEnd(roiFileIn))
         {
             std::pair<seqan::CharString, int> oldPos(roiRecord.ref, roiRecord.beginPos);
 
-            if (readRecord(roiRecord, roiReader, roiIOContext, seqan::Roi()) != 0)
-            {
-                std::cerr << "ERROR: Problem reading from ROI file!\n";
-                return 1;
-            }
+            readRecord(roiRecord, roiFileIn);
 
             if (std::make_pair(roiRecord.ref, roiRecord.beginPos) < oldPos)
-            {
-                std::cerr << "ERROR: ROI file is not sorted properly!\n";
-                return 1;
-            }
+                throw std::runtime_error("ERROR: ROI file is not sorted properly!\n");
         }
-
-        return 0;
     }
 
-    int initializeRecords()
+    void readRoiRecordOrMakeSentinel(seqan::RoiRecord & record)
+    {
+        if (seqan::atEnd(roiFileIn))
+            makeSentinel(record);
+        else
+            readRecord(record, roiFileIn);
+    }
+
+    void readGffRecordOrMakeSentinel(seqan::GffRecord & record)
+    {
+        if (seqan::atEnd(gffFileIn))
+            makeSentinel(record);
+        else
+            readRecord(record, gffFileIn);
+    }
+
+    void initializeRecords()
     {
         // TODO(holtgrew): Check for sortedness here as well.
 
         // Read first records.
-        while (!atEnd(gffReader) && value(gffReader) == '#')
-            if (skipLine(gffReader) != 0)
-            {
-                std::cerr << "ERROR: Could not skip header/comment line in GFF.\n";
-                return 1;
-            }
-        if (atEnd(gffReader))
+        while (!seqan::atEnd(gffFileIn) && *gffFileIn.iter == '#')
+            skipLine(gffFileIn.iter);
+        if (atEnd(gffFileIn))
         {
             makeSentinel(gffRecord);
         }
         else
         {
             bool found = false;
-            while (!atEnd(gffReader))
+            while (!seqan::atEnd(gffFileIn))
             {
-                if (readRecord(gffRecord, gffReader, gffIOContext, seqan::Gff()) != 0)
-                {
-                    std::cerr << "ERROR: Problem reading from GFF file!\n";
-                    return 1;
-                }
+                readRecord(gffRecord, gffFileIn);
                 if (empty(options.gffType) || (options.gffType == gffRecord.type))
                 {
                     found = true;
@@ -677,23 +588,12 @@ public:
             if (!found)
                 makeSentinel(gffRecord);
         }
-        while (!atEnd(roiReader) && value(roiReader) == '#')
-            if (skipLine(roiReader) != 0)
-            {
-                std::cerr << "ERROR: Could not skip header/comment line in ROI.\n";
-                return 1;
-            }
-        if (atEnd(roiReader))
-        {
+        while (!seqan::atEnd(roiFileIn) && *roiFileIn.iter == '#')
+            skipLine(roiFileIn.iter);
+        if (atEnd(roiFileIn))
             makeSentinel(roiRecord);
-        }
-        else if (readRecord(roiRecord, roiReader, roiIOContext, seqan::Roi()) != 0)
-        {
-            std::cerr << "ERROR: Problem reading from ROI file!\n";
-            return 1;
-        }
-
-        return 0;
+        else
+            readRecord(roiRecord, roiFileIn);
     }
 };
 
@@ -781,22 +681,25 @@ parseCommandLine(RoiIntersectOptions & options, int argc, char const ** argv)
 
     addSection(parser, "Input / Output");
 
-    addOption(parser, seqan::ArgParseOption("ir", "in-roi", "ROI file to read.", seqan::ArgParseOption::INPUTFILE, "ROI"));
+    addOption(parser, seqan::ArgParseOption("ir", "in-roi", "ROI file to read.", seqan::ArgParseOption::INPUT_FILE, "ROI"));
     setRequired(parser, "in-roi");
-    setValidValues(parser, "in-roi", "roi");
+    setValidValues(parser, "in-roi", seqan::RoiFileIn::getFileExtensions());
 
-    addOption(parser, seqan::ArgParseOption("if", "in-features", "BED, GFF, or GTF file to read.", seqan::ArgParseOption::INPUTFILE, "FILE"));
+    addOption(parser, seqan::ArgParseOption("if", "in-features", "BED, GFF, or GTF file to read.", seqan::ArgParseOption::INPUT_FILE, "FILE"));
     setRequired(parser, "in-features");
-    setValidValues(parser, "in-features", "bed gff gtf");
+    std::vector<std::string> extensions = seqan::BedFileIn::getFileExtensions();
+    std::vector<std::string> extensionsGff = seqan::GffFileIn::getFileExtensions();
+    extensions.insert(extensions.end(), extensionsGff.begin(), extensionsGff.end());
+    setValidValues(parser, "in-features", extensions);
 
-    addOption(parser, seqan::ArgParseOption("or", "out-roi", "ROI file to write.", seqan::ArgParseOption::OUTPUTFILE, "ROI"));
+    addOption(parser, seqan::ArgParseOption("or", "out-roi", "ROI file to write.", seqan::ArgParseOption::OUTPUT_FILE, "ROI"));
     setRequired(parser, "out-roi");
     setValidValues(parser, "out-roi", "roi");
 
     addOption(parser, seqan::ArgParseOption("g", "genome",
                                             "Path to FASTA file with genome; optional.  When given, this is used for "
                                             "computing the overall region's C+G content.",
-                                            seqan::ArgParseOption::INPUTFILE, "FASTA"));
+                                            seqan::ArgParseOption::INPUT_FILE, "FASTA"));
     setValidValues(parser, "genome", "fasta fa");
 
     // -----------------------------------------------------------------------
@@ -920,27 +823,27 @@ parseCommandLine(RoiIntersectOptions & options, int argc, char const ** argv)
 // Member Function RoiIntersectApp::doStreaming()
 // --------------------------------------------------------------------------
 
-int RoiIntersectApp::doStreaming()
+void RoiIntersectApp::doStreaming()
 {
     if (empty(options.gffGroupBy))
     {
         // Grouping is not ative, project against BED (or GFF/GTF reduced to BED information).
         if (options.inputIntervalsFileExt == "bed" || options.inputIntervalsFileExt == ".bed")
         {
-            IntersectDriver<IntersectWithBedConfig> driver(outRoi, inIntervals, inRoi, options);
-            return driver.run();
+            IntersectDriver<IntersectWithBedConfig> driver(roiFileOut, inIntervals, roiFileIn, options);
+            driver.run();
         }
         else
         {
-            IntersectDriver<IntersectWithGffConfig> driver(outRoi, inIntervals, inRoi, options);
-            return driver.run();
+            IntersectDriver<IntersectWithGffConfig> driver(roiFileOut, inIntervals, roiFileIn, options);
+            driver.run();
         }
     }
     else
     {
         // Group By is active, project with grouping.
-        GroupByDriver driver(outRoi, inIntervals, inRoi, options);
-        return driver.run();
+        GroupByDriver driver(roiFileOut, inIntervals, roiFileIn, options);
+        driver.run();
     }
 }
 
@@ -948,7 +851,7 @@ int RoiIntersectApp::doStreaming()
 // Member Function RoiIntersectApp::run()
 // --------------------------------------------------------------------------
 
-int RoiIntersectApp::run()
+void RoiIntersectApp::run()
 {
     if (options.verbosity >= 1)
     {
@@ -965,32 +868,21 @@ int RoiIntersectApp::run()
         std::cerr << "INPUT INTERVALS \t" << options.inputIntervalsFile << " ...";
     inIntervals.open(toCString(options.inputIntervalsFile), std::ios::binary | std::ios::in);
     if (!inIntervals.good())
-    {
-        std::cerr << "\nERROR: Could not open file!\n";
-        return 1;
-    }
+        throw std::runtime_error("ERROR: Could not open file!");
     if (options.verbosity >= 1)
         std::cerr << " OK\n";
 
     if (options.verbosity >= 1)
         std::cerr << "INPUT ROI \t" << options.inputRoiFile << " ...";
-    inRoi.open(toCString(options.inputRoiFile), std::ios::binary | std::ios::in);
-    if (!inRoi.good())
-    {
-        std::cerr << "\nERROR: Could not open file!\n";
-        return 1;
-    }
+    if (!open(roiFileIn, toCString(options.inputRoiFile)))
+        throw std::runtime_error("ERROR: Could not open file!");
     if (options.verbosity >= 1)
         std::cerr << " OK\n";
 
     if (options.verbosity >= 1)
         std::cerr << "OUTPUT ROI\t" << options.outputRoiFile << " ...";
-    outRoi.open(toCString(options.outputRoiFile), std::ios::binary | std::ios::out);
-    if (!inRoi.good())
-    {
-        std::cerr << "\nERROR: Could not open file!\n";
-        return 1;
-    }
+    if (!open(roiFileOut, toCString(options.outputRoiFile)))
+        throw std::runtime_error("\nERROR: Could not open file!");
     if (options.verbosity >= 1)
         std::cerr << " OK\n\n";
 
@@ -998,17 +890,13 @@ int RoiIntersectApp::run()
         std::cerr << "__PROCESSING FILES___________________________________________________________\n"
                   << "\n"
                   << "STREAMING ...";
-    if (doStreaming() != 0)
-        return 1;
+    doStreaming();
 
     if (options.verbosity >= 1)
         std::cerr << " OK\n\n";
 
     if (options.verbosity >= 1)
         std::cerr << "DONE.\n";
-
-    return 0;
-
 }
 
 // --------------------------------------------------------------------------
@@ -1031,5 +919,13 @@ int main(int argc, char const ** argv)
         return res == seqan::ArgumentParser::PARSE_ERROR;
 
     RoiIntersectApp app(options);
-    return app.run();
+    try
+    {
+        app.run();
+    }
+    catch (std::runtime_error const & err)
+    {
+        return 1;
+    }
+    return 0;
 }

@@ -112,7 +112,7 @@ struct FindPrefix;
  *
  * @tparam THaystack The given haystack type.
  *
- * @return Type The Finder specialization.  By default, this is <tt>void</tt> and <tt>EsaFindMlr</tt> is an @link Index
+ * @return Type The Finder specialization.  By default, this is <tt>void</tt> and <tt>FinderMlr</tt> is an @link Index
  *              @endlink.
  */
 
@@ -122,7 +122,7 @@ struct FindPrefix;
 ..summary:Default @Class.Finder@ specialization type.
 ..signature:DefaultFinder<THaystack>::Type
 ..param.THaystack:The given haystack type.
-..returns:Is $void$ by default and @Tag.Index Find Algorithm.EsaFindMlr@ if $THaystack$ is an @Class.Index@.
+..returns:Is $void$ by default and @Tag.Index Find Algorithm.FinderMlr@ if $THaystack$ is an @Class.Index@.
 ..include:seqan/find.h
 */
 template < typename TObject >

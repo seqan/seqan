@@ -1,9 +1,8 @@
 #include <iostream>
 #include <fstream>
 
-#include <seqan/bam_io.h>
 #include <seqan/sequence.h>
-#include <seqan/stream.h>
+#include <seqan/bam_io.h>
 
 int main(int argc, char const ** argv)
 {
@@ -14,8 +13,9 @@ int main(int argc, char const ** argv)
     }
 
     // Open BGZF Stream for reading.
-    seqan::Stream<seqan::Bgzf> inStream;
-    if (!open(inStream, argv[1], "r"))
+    typedef seqan::VirtualStream<char, seqan::Input> TInStream;
+    TInStream inStream;
+    if (!open(inStream, argv[1]))
     {
         std::cerr << "ERROR: Could not open " << argv[1] << " for reading.\n";
         return 1;
@@ -31,18 +31,11 @@ int main(int argc, char const ** argv)
 
     // Read header.
     seqan::BamHeader header;
-    if (readRecord(header, context, inStream, seqan::Bam()) != 0)
-    {
-        std::cerr << "ERROR: Could not read header from BAM file " << argv[1] << "\n";
-        return 1;
-    }
+    seqan::DirectionIterator<TInStream, seqan::Input>::Type reader = directionIterator(inStream, seqan::Input());
+    readRecord(header, context, reader, seqan::Bam());
 
     // Write out header again.
-    if (write2(std::cout, header, context, seqan::Sam()) != 0)
-    {
-        std::cerr << "ERROR: Could not write header to stdout.\n";
-        return 1;
-    }
+    write(std::cout, header, context, seqan::Sam());
 
     return 0;
 }

@@ -37,7 +37,7 @@
 #include <cstdio>
 #include <vector>
 
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/pipe.h>
 #include <seqan/system.h>
 #include <seqan/index.h>

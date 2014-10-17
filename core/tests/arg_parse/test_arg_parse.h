@@ -140,12 +140,12 @@ void setupStringParser(ArgumentParser & parser)
 
 void setupInputFileParser(ArgumentParser & parser)
 {
-    addOption(parser, ArgParseOption("i", "in", "set an input file", ArgParseArgument::INPUTFILE));
+    addOption(parser, ArgParseOption("i", "in", "set an input file", ArgParseArgument::INPUT_FILE));
 }
 
 void setupOutputFileParser(ArgumentParser & parser)
 {
-    addOption(parser, ArgParseOption("o", "out", "set an output file", ArgParseArgument::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "out", "set an output file", ArgParseArgument::OUTPUT_FILE));
 }
 
 SEQAN_DEFINE_TEST(test_unset_value)
@@ -755,7 +755,7 @@ SEQAN_DEFINE_TEST(test_input_file_auto_file_ext_option)
     {
         ArgumentParser parser;
 
-        addOption(parser, ArgParseOption("short", "long", "help text", ArgParseOption::INPUTFILE));
+        addOption(parser, ArgParseOption("short", "long", "help text", ArgParseOption::INPUT_FILE));
         setValidValues(parser, "long", ".fa .TXT");
 
         SEQAN_ASSERT_NOT(hasOption(parser, "short-file-ext"));
@@ -772,7 +772,7 @@ SEQAN_DEFINE_TEST(test_input_file_auto_file_ext_option)
     {
         ArgumentParser parser;
 
-        addOption(parser, ArgParseOption("short", "long", "help text", ArgParseOption::INPUTFILE,
+        addOption(parser, ArgParseOption("short", "long", "help text", ArgParseOption::INPUT_FILE,
                                          "label", false, 2));
         setValidValues(parser, "long", ".fa .TXT");
 
@@ -790,7 +790,7 @@ SEQAN_DEFINE_TEST(test_input_file_auto_file_ext_option)
     {
         ArgumentParser parser;
 
-        addOption(parser, ArgParseOption("short", "long", "help text", ArgParseOption::INPUTFILE,
+        addOption(parser, ArgParseOption("short", "long", "help text", ArgParseOption::INPUT_FILE,
                                          "label", true));
         setValidValues(parser, "long", ".fa .TXT");
 
@@ -1066,7 +1066,7 @@ SEQAN_DEFINE_TEST(test_argument_auto_file_ext_option)
     // No list, one value.
     {
         ArgumentParser parser;
-        addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+        addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
         setValidValues(parser, 0, "fa TXT");
 
         SEQAN_ASSERT(hasOption(parser, "arg-1-file-ext"));
@@ -1083,7 +1083,7 @@ SEQAN_DEFINE_TEST(test_argument_auto_file_ext_option)
     // List, one value.
     {
         ArgumentParser parser;
-        addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "LABEL", true));
+        addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "LABEL", true));
         setValidValues(parser, 0, "fa TXT");
 
         SEQAN_ASSERT(hasOption(parser, "arg-1-file-ext"));
@@ -1099,7 +1099,7 @@ SEQAN_DEFINE_TEST(test_argument_auto_file_ext_option)
     {
         ArgumentParser parser;
         addArgument(parser, ArgParseArgument(ArgParseArgument::DOUBLE));
-        addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+        addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
         setValidValues(parser, 1, "fa TXT");
 
         SEQAN_ASSERT(hasOption(parser, "arg-2-file-ext"));
@@ -1311,7 +1311,6 @@ SEQAN_DEFINE_TEST(test_long_short_flag_name)
 
 SEQAN_DEFINE_TEST(test_default_value)
 {
-
     ArgumentParser parser;
     setupStringParser(parser);
     setDefaultValue(parser, "string", "default-string-value");
@@ -1335,6 +1334,39 @@ SEQAN_DEFINE_TEST(test_default_value)
     SEQAN_ASSERT_EQ(value, "this-is-a-string-value");
 }
 
+
+SEQAN_DEFINE_TEST(test_parse_non_const_cstring)
+{
+    // Call parse() with (char **) and not (char const **) to test that this works as well.
+    ArgumentParser parser;
+    setupIntegerParser(parser);
+    setDefaultValue(parser, "integer", "2");
+    setMaxValue(parser, "integer", "3");
+
+    int defaultValue;
+    SEQAN_ASSERT(getOptionValue(defaultValue, parser, "integer"));
+    SEQAN_ASSERT_EQ(defaultValue, 2);
+
+    char buffer1[100];
+    strncpy(buffer1, "program_name", 100);
+    char buffer2[100];
+    strncpy(buffer2, "-i", 100);
+    char buffer3[100];
+    strncpy(buffer3, "1", 100);
+    int argc = 3;
+    char * argv[3] = {&buffer1[0], &buffer2[0], &buffer3[0]};
+
+    std::stringstream error_stream;
+    std::stringstream outputStream;
+
+    SEQAN_ASSERT_EQ(parse(parser, argc, argv, outputStream, std::cout), ArgumentParser::PARSE_OK);
+    SEQAN_ASSERT_EQ(error_stream.str(), "");
+    SEQAN_ASSERT_EQ(outputStream.str(), "");
+
+    int value;
+    SEQAN_ASSERT(getOptionValue(value, parser, "integer"));
+    SEQAN_ASSERT_EQ(value, 1);
+}
 
 } // namespace seqan
 

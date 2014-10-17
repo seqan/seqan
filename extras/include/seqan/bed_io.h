@@ -42,7 +42,7 @@
 // ===========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/sequence.h>
 
 // ===========================================================================
@@ -51,10 +51,9 @@
 
 #include <seqan/bed_io/bed_record.h>
 
-#include <seqan/bed_io/bed_io_context.h>
 #include <seqan/bed_io/read_bed.h>
 #include <seqan/bed_io/write_bed.h>
 
-#include <seqan/bed_io/bed_stream.h>
+#include <seqan/bed_io/bed_file.h>
 
 #endif  // EXTRAS_INCLUDE_SEQAN_BED_IO_H_

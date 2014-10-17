@@ -46,15 +46,11 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
     // The file contains 13 annotations in total which will be checked line
     // after line.
     seqan::CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/core/tests/store/example_known_genes.tsv");
+    append(ucscPath, "/core/tests/store/example_knownGene.txt");
 
-    std::fstream f(toCString(ucscPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(f.good());
-
+    UcscFileIn fin(toCString(ucscPath));
     seqan::FragmentStore<> store;
-
-    read(f, store, seqan::Ucsc());
-    f.close();
+    readRecords(store, fin);
 
     Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
     it = begin(store, AnnotationTree<>());
@@ -169,22 +165,20 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
 SEQAN_DEFINE_TEST(test_store_io_write_ucsc_known_genes)
 {
     seqan::CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/core/tests/store/example_known_genes.tsv");
+    append(ucscPath, "/core/tests/store/example_knownGene.txt");
 
-    std::fstream fin(toCString(ucscPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(fin.good());
-
+    UcscFileIn fin(toCString(ucscPath));
     seqan::FragmentStore<> store;
-    read(fin, store, seqan::Ucsc());
+    readRecords(store, fin);
 
     seqan::CharString outPath  = SEQAN_TEMP_FILENAME();
-    append(outPath, ".tsv");
-    std::fstream fout(toCString(outPath), std::ios::binary | std::ios::out);
-    write(fout, store, seqan::Ucsc());
-    fout.close();
+    append(outPath, ".knownGene.txt");
+    UcscFileOut fout(toCString(outPath));
+    writeRecords(fout, store);
+    close(fout);
 
     seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
-    append(goldPath, "/core/tests/store/example_known_genes.tsv");
+    append(goldPath, "/core/tests/store/example_knownGene.txt");
 
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }
@@ -192,17 +186,14 @@ SEQAN_DEFINE_TEST(test_store_io_write_ucsc_known_genes)
 SEQAN_DEFINE_TEST(test_store_io_read_gff)
 {
     seqan::CharString gffPath = SEQAN_PATH_TO_ROOT();
-    append(gffPath, "/core/tests/store/example_gff.tsv");
+    append(gffPath, "/core/tests/store/example.gff");
 
-    std::fstream f(toCString(gffPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(f.good());
-
+    GffFileIn f(toCString(gffPath));
     typedef typename seqan::FragmentStore<>::TAnnotationStoreElement::TId TId;
 
     seqan::FragmentStore<> store;
 
-    read(f, store, seqan::Gff());
-    f.close();
+    readRecords(store, f);
 
     Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
     it = begin(store, AnnotationTree<>());
@@ -241,41 +232,32 @@ SEQAN_DEFINE_TEST(test_store_io_read_gff)
 
 SEQAN_DEFINE_TEST(test_store_io_write_gff)
 {
-    seqan::CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/core/tests/store/example_gff.tsv");
+    seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
+    append(goldPath, "/core/tests/store/example.gff");
 
-    std::fstream fin(toCString(ucscPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(fin.good());
-
+    GffFileIn fin(toCString(goldPath));
     seqan::FragmentStore<> store;
-    read(fin, store, seqan::Gff());
+    readRecords(store, fin);
 
     seqan::CharString outPath = SEQAN_TEMP_FILENAME();
-    append(outPath, ".tsv");
-    std::fstream fout(toCString(outPath), std::ios::binary | std::ios::out);
-    write(fout, store, seqan::Gff());
-    fout.close();
-
-    seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
-    append(goldPath, "/core/tests/store/example_gff.tsv");
+    append(outPath, ".gff");
+    GffFileOut fout(toCString(outPath));
+    writeRecords(fout, store);
+    close(fout);
 
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }
 
 SEQAN_DEFINE_TEST(test_store_io_read_gtf)
 {
-    seqan::CharString gffPath = SEQAN_PATH_TO_ROOT();
-    append(gffPath, "/core/tests/store/example_gtf.tsv");
-
-    std::fstream f(toCString(gffPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(f.good());
-
     typedef typename seqan::FragmentStore<>::TAnnotationStoreElement::TId TId;
 
-    seqan::FragmentStore<> store;
+    seqan::CharString gtfPath = SEQAN_PATH_TO_ROOT();
+    append(gtfPath, "/core/tests/store/example.gtf");
 
-    read(f, store, seqan::Gtf());
-    f.close();
+    GffFileIn fin(toCString(gtfPath));
+    seqan::FragmentStore<> store;
+    readRecords(store, fin);
 
     Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
     it = begin(store, AnnotationTree<>());
@@ -386,23 +368,18 @@ SEQAN_DEFINE_TEST(test_store_io_read_gtf)
 
 SEQAN_DEFINE_TEST(test_store_io_write_gtf)
 {
-    seqan::CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/core/tests/store/example_gtf.tsv");
+    seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
+    append(goldPath, "/core/tests/store/example.gtf");
 
-    std::fstream fin(toCString(ucscPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(fin.good());
-
+    GffFileIn fin(toCString(goldPath));
     seqan::FragmentStore<> store;
-    read(fin, store, seqan::Gtf());
+    readRecords(store, fin);
 
     seqan::CharString outPath = SEQAN_TEMP_FILENAME();
-    append(outPath, ".tsv");
-    std::fstream fout(toCString(outPath), std::ios::binary | std::ios::out);
-    write(fout, store, seqan::Gtf());
-    fout.close();
-
-    seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
-    append(goldPath, "/core/tests/store/example_gtf.tsv");
+    append(outPath, ".gtf");
+    GffFileOut fout(toCString(outPath));
+    writeRecords(fout, store);
+    close(fout);
 
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }
@@ -417,17 +394,16 @@ SEQAN_DEFINE_TEST(test_store_io_sam)
     loadContigs(store, toCString(goldPathRef));
 
     // 2. LOAD SAM ALIGNMENTS
-    std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.sam.copy";
-    std::ifstream inFile(toCString(goldPathSam));
-    read(inFile, store, Sam());
+    std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.copy.sam";
+    BamFileIn inFile(toCString(goldPathSam));
+    readRecords(store, inFile);
   
     // 3. WRITE SAM ALIGNMENTS
-    std::string testPathSam = SEQAN_TEMP_FILENAME();
-    std::ofstream outFile(toCString(testPathSam));
-    SEQAN_ASSERT(outFile.good());
-    write(outFile, store, Sam());
-    outFile.close();
-  
+    std::string testPathSam = (std::string)SEQAN_TEMP_FILENAME() + ".sam";
+    BamFileOut outFile(toCString(testPathSam));
+    writeRecords(outFile, store);
+    close(outFile);
+
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(goldPathSam), toCString(testPathSam)));
 }
 
@@ -440,33 +416,27 @@ SEQAN_DEFINE_TEST(test_store_io_sam2)
     loadContigs(store, toCString(goldPathRef));
 
     // 2. LOAD SAM ALIGNMENTS
-    std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.sam.copy";
-    std::ifstream inFile(toCString(goldPathSam));
-    read(inFile, store, Sam());
+    std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.copy.sam";
+    BamFileIn inFile(toCString(goldPathSam));
+    readRecords(store, inFile);
 
     // 3. WRITE SAM ALIGNMENTS
-    std::string testPathSam = SEQAN_TEMP_FILENAME();
-    std::ofstream outFile(toCString(testPathSam));
-    SEQAN_ASSERT(outFile.good());
-    write(outFile, store, Sam());
-    outFile.close();
+    std::string testPathSam = (std::string)SEQAN_TEMP_FILENAME() + ".sam";
+    BamFileOut outFile(toCString(testPathSam));
+    writeRecords(outFile, store);
+    close(outFile);
 
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(goldPathSam), toCString(testPathSam)));
 }
 
-template <typename TFragStore, typename TFormat>
-void _appendReadAlignments(TFragStore &store, char const *fileName, TFormat format)
+template <typename TFragStore>
+void _appendReadAlignments(TFragStore &store, char const *fileName)
 {
     using namespace seqan;
 
-    typedef typename FragmentStore<>::TNameStore TNameStore;
-    typedef NameStoreCache<TNameStore>           TNameStoreCache;
-
-    BamIOContext<TNameStore, TNameStoreCache> bamIOContext(store.contigNameStore, store.contigNameStoreCache);
-
     std::string str = (std::string)SEQAN_PATH_TO_ROOT() + fileName;
-    std::ifstream inFile(str.c_str());
-    read(inFile, store, format);
+    BamFileIn inFile(str.c_str());
+    readRecords(store, inFile);
   }
   
 template <typename TFragStore>
@@ -477,8 +447,8 @@ void _writeStore(TFragStore &store, std::string const &outPath, char const *suff
 
     std::string outPathTxt = outPath + suffix;
     std::ofstream file(toCString(outPathTxt));
-    printAlignment(file, Raw(), layout, store, 0, 0, 1030, 0, 36);
-    printAlignment(file, Raw(), layout, store, 1, 0, 1030, 0, 36);
+    printAlignment(file, layout, store, 0, 0, 1030, 0, 36);
+    printAlignment(file, layout, store, 1, 0, 1030, 0, 36);
     file.close();
 
     std::string goldPathTxt = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.splitmerge" + suffix;
@@ -497,19 +467,19 @@ SEQAN_DEFINE_TEST(test_store_io_split_sam)
 
     std::string outPath = (std::string)SEQAN_TEMP_FILENAME();
 
-    _appendReadAlignments(store, "/core/tests/store/ex1_a1.sam", Sam());
+    _appendReadAlignments(store, "/core/tests/store/ex1_a1.sam");
     _writeStore(store, outPath, ".1.txt");
-    _appendReadAlignments(store, "/core/tests/store/ex1_a2.sam", Sam());
+    _appendReadAlignments(store, "/core/tests/store/ex1_a2.sam");
     _writeStore(store, outPath, ".2.txt");
-    _appendReadAlignments(store, "/core/tests/store/ex1_a3.sam", Sam());
+    _appendReadAlignments(store, "/core/tests/store/ex1_a3.sam");
     _writeStore(store, outPath, ".3.txt");
-    _appendReadAlignments(store, "/core/tests/store/ex1_b.sam", Sam());
+    _appendReadAlignments(store, "/core/tests/store/ex1_b.sam");
     _writeStore(store, outPath, ".4.txt");
 
     std::string outPathSam = outPath + ".sam";
-    std::ofstream outFile(outPathSam.c_str());
-    write(outFile, store, Sam());
-    outFile.close();
+    BamFileOut outFile(outPathSam.c_str());
+    writeRecords(outFile, store);
+    close(outFile);
 
     std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.splitmerge.sam";
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathSam), toCString(goldPathSam)));
@@ -523,56 +493,33 @@ SEQAN_DEFINE_TEST(test_store_io_read_bam)
     FragmentStore<> store;
 
     // 1. LOAD CONTIGS
-    CharString fastaFileName = SEQAN_PATH_TO_ROOT();
-    append(fastaFileName, "/core/tests/store/ex1.fa");
-
+    std::string fastaFileName = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.fa";
     loadContigs(store, toCString(fastaFileName));
 
     // 2. LOAD BAM ALIGNMENTS
-    CharString bamFileName = SEQAN_PATH_TO_ROOT();
-    append(bamFileName, "/core/tests/store/ex1.bam");
+    std::string bamFileName = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.bam";
 
     // Read reference Sam from file.
     {
-        Stream<Bgzf> stream;
-        SEQAN_ASSERT(open(stream, toCString(bamFileName), "r"));
-        read(stream, store, Bam());
+        BamFileIn inFile(toCString(bamFileName));
+        readRecords(store, inFile);
     }
 
-    // AlignedReadLayout layout;
-    // layoutAlignment(layout, store);
-    // printAlignment(std::cout, Raw(), layout, store, 0, 0, 1000, 0, 1000);
+//    AlignedReadLayout layout;
+//    layoutAlignment(layout, store);
+//    printAlignment(std::cout, layout, store, 0, 0, 1000, 0, 1000);
 
     // 3. WRITE SAM ALIGNMENTS
-    CharString outFileName = SEQAN_TEMP_FILENAME();
+    std::string outFileName = (std::string)SEQAN_TEMP_FILENAME() + ".sam";
     // Write Sam to temp file.
-    {
-        std::ofstream samFileOut(toCString(outFileName));
-        SEQAN_ASSERT(samFileOut.good());
-        write(samFileOut, store, Sam());
-    }
+    BamFileOut outFile(toCString(outFileName));
+    writeRecords(outFile, store);
+    close(outFile);
 
     // 4. COMPARE BOTH SAM FILES
     CharString samFileName = SEQAN_PATH_TO_ROOT();
-    append(samFileName, "/core/tests/store/ex1.sam.copy");
-    MultiSeqFile sam1;
-    open(sam1.concat, toCString(samFileName));
-    split(sam1, Raw());
-    MultiSeqFile sam2;
-    open(sam2.concat, toCString(outFileName));
-    split(sam2, Raw());
-
-    SEQAN_ASSERT(!empty(sam1));
-    SEQAN_ASSERT(!empty(sam2));
-    for (unsigned i = 0; i < length(sam1); ++i)
-    {
-        if (sam1[i] != sam2[i])
-        {
-            std::cout << "    \t" << sam1[i] << std::endl;
-            std::cout << " != \t" << sam2[i] << std::endl;
-            SEQAN_ASSERT_FAIL("Files differ in line %d.", i);
-        }
-    }
+    append(samFileName, "/core/tests/store/ex1.copy.sam");
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(samFileName), toCString(outFileName)));
 }
 
 #endif  // #if SEQAN_HAS_ZLIB
@@ -582,26 +529,26 @@ SEQAN_DEFINE_TEST(test_store_io_read_bam)
 SEQAN_DEFINE_TEST(test_store_io_read_amos)
 {
     // Get path to input file.
-    seqan::CharString inPath = SEQAN_PATH_TO_ROOT();
-    append(inPath, "/core/tests/store/toy.amos");
+    std::string inPath = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/toy.amos";
     // Get path to temporary file.
-    seqan::CharString outPathSam = SEQAN_TEMP_FILENAME();
-    seqan::CharString outPathFasta = SEQAN_TEMP_FILENAME();
+    std::string outPathSam = (std::string)SEQAN_TEMP_FILENAME() + ".sam";
+    std::string outPathFasta = (std::string)SEQAN_TEMP_FILENAME() + ".fa";
 
     // Read in AMOS.
     seqan::FragmentStore<> store;
     std::fstream fAmosIn(toCString(inPath), std::ios::binary | std::ios::in);
     SEQAN_ASSERT(fAmosIn.good());
-    int res = read(fAmosIn, store, seqan::Amos());
+    int res = read(store, fAmosIn, seqan::Amos());
     SEQAN_ASSERT_EQ(res, 0);
 
     // Write out contigs and SAM file.
-    std::fstream fSamOut(toCString(outPathSam), std::ios::binary | std::ios::out);
-    write(fSamOut, store, seqan::Sam());
-    fSamOut.close();
-    std::fstream fFastaOut(toCString(outPathFasta), std::ios::binary | std::ios::out);
-    writeContigs(fFastaOut, store, seqan::Fasta());
-    fFastaOut.close();
+    BamFileOut fSamOut(toCString(outPathSam));
+    writeRecords(fSamOut, store);
+    close(fSamOut);
+
+    SeqFileOut fFastaOut(toCString(outPathFasta));
+    writeContigs(fFastaOut, store);
+    close(fFastaOut);
 
     // Compare result.
     SEQAN_ASSERT_EQ(length(store.contigNameStore), 2u);
@@ -624,30 +571,48 @@ SEQAN_DEFINE_TEST(test_store_io_read_amos)
 SEQAN_DEFINE_TEST(test_store_io_write_amos)
 {
     // Get path to input files.
-    seqan::CharString inPathSam = SEQAN_PATH_TO_ROOT();
-    append(inPathSam, "/core/tests/store/ex1.sam.copy");
-    seqan::CharString inPathFasta = SEQAN_PATH_TO_ROOT();
-    append(inPathFasta, "/core/tests/store/ex1.fa");
+    std::string inPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.copy.sam";
+    std::string inPathFasta = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/ex1.fa";
     // Get path to temporary file.
-    seqan::CharString outPathAmos = SEQAN_TEMP_FILENAME();
+    std::string outPathAmos = SEQAN_TEMP_FILENAME();
 
     // Read in SAM and FASTA.
     seqan::FragmentStore<> store;
-    std::fstream fFastaIn(toCString(inPathFasta), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(fFastaIn.good());
-    loadContigs(store, inPathFasta);
-    std::fstream fSamIn(toCString(inPathSam), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(fSamIn.good());
-    read(fSamIn, store, seqan::Sam());
+    loadContigs(store, toCString(inPathFasta));
+    BamFileIn fSamIn(toCString(inPathSam));
+    readRecords(store, fSamIn);
 
     // Write out AMOS file.
     std::fstream fAmosOut(toCString(outPathAmos), std::ios::binary | std::ios::out);
-    int res = write(fAmosOut, store, seqan::Amos());
-    SEQAN_ASSERT_EQ(res, 0);
+    write(fAmosOut, store, seqan::Amos());
     fAmosOut.close();
 
     // Compare result.
     seqan::CharString goldPathAmos = SEQAN_PATH_TO_ROOT();
     append(goldPathAmos, "/core/tests/store/sam_to_amos_result.amos");
+    SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathAmos), toCString(goldPathAmos)));
+}
+
+// Read SAM and write out as AMOS.  The resulting AMOS file is compared to a gold standard file.
+SEQAN_DEFINE_TEST(test_store_io_readwrite_amos)
+{
+    // Get path to input files.
+    std::string goldPathAmos = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/store/toy.amos";
+    // Get path to temporary file.
+    std::string outPathAmos = SEQAN_TEMP_FILENAME();
+
+    // Read in AMOS.
+    seqan::FragmentStore<> store;
+    std::fstream fAmosIn(toCString(goldPathAmos), std::ios::binary | std::ios::in);
+    SEQAN_ASSERT(fAmosIn.good());
+    int res = read(store, fAmosIn, seqan::Amos());
+    SEQAN_ASSERT_EQ(res, 0);
+
+    // Write out AMOS file.
+    std::fstream fAmosOut(toCString(outPathAmos), std::ios::binary | std::ios::out);
+    write(fAmosOut, store, seqan::Amos());
+    fAmosOut.close();
+
+    // Compare result.
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathAmos), toCString(goldPathAmos)));
 }

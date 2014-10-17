@@ -124,5 +124,11 @@ int main(int argc, char *argv[])
     search(it, fragStore.readSeqStore, fragStore, ReverseTag());
     clear(fmIndex);
     clear(it);
+
+    reverse(text);
+    reverse(fragStore.readSeqStore);
+    BamFileOut bamFile(argv[3]);
+    writeRecords(bamFile, fragStore);
+
     return 0;
 }

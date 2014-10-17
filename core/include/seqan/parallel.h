@@ -45,6 +45,16 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
+#ifdef PLATFORM_WINDOWS
+#include <windows.h>
+#else
+#include <pthread.h>
+#include <errno.h>
+#endif
+
+#include <seqan/system/system_critical_section.h>   // Suspendable Queue
+#include <seqan/system/system_condition.h>          // Suspendable Queue
+
 // ----------------------------------------------------------------------------
 // STL
 // ----------------------------------------------------------------------------
@@ -85,5 +95,8 @@
 // Thread-safe / lock-free container operations.
 #include <seqan/parallel/parallel_sequence.h>
 #include <seqan/parallel/parallel_queue.h>
+#include <seqan/parallel/parallel_queue_suspendable.h>
+#include <seqan/parallel/parallel_resource_pool.h>
+#include <seqan/parallel/parallel_serializer.h>
 
 #endif  // SEQAN_PARALLEL_H_

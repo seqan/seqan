@@ -62,13 +62,13 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     addOption(parser, seqan::ArgParseOption("j", "int64", "set a 64 bit integer option", seqan::ArgParseArgument::INT64));
     addOption(parser, seqan::ArgParseOption("s", "string", "set a string option", seqan::ArgParseArgument::STRING, "", true));
     setValidValues(parser, "s", "a b c");
-    addOption(parser, seqan::ArgParseOption("f", "in", "set an input file", seqan::ArgParseArgument::INPUTFILE));
+    addOption(parser, seqan::ArgParseOption("f", "in", "set an input file", seqan::ArgParseArgument::INPUT_FILE));
     setValidValues(parser, "f", "fasta");
-    addOption(parser, seqan::ArgParseOption("o", "out", "set an output file", seqan::ArgParseArgument::OUTPUTFILE));
+    addOption(parser, seqan::ArgParseOption("o", "out", "set an output file", seqan::ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "o", "sam");
     addOption(parser, seqan::ArgParseOption("ip", "input-prefix-option", "set an input prefix", seqan::ArgParseArgument::INPUTPREFIX));
     setValidValues(parser, "ip", "btx");
-    addOption(parser, seqan::ArgParseOption("op", "output-prefix-option", "set an output prefix", seqan::ArgParseArgument::OUTPUTPREFIX));
+    addOption(parser, seqan::ArgParseOption("op", "output-prefix-option", "set an output prefix", seqan::ArgParseArgument::OUTPUT_PREFIX));
     setValidValues(parser, "output-prefix-option", "blub");
     addOption(parser, seqan::ArgParseOption("hi", "hidden", "a hidden option - will be advanced in the ctd", seqan::ArgParseArgument::STRING));
 
@@ -80,7 +80,7 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
     setHelpText(parser, 1, "String Argument");
     addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::STRING, "DOC"));
     setHelpText(parser, 2, "Documentated Argument with \\fBformating\\fP");
-    addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::OUTPUTFILE, "OUTPUT-FILE"));
+    addArgument(parser, seqan::ArgParseArgument(ArgParseArgument::OUTPUT_FILE, "OUTPUT-FILE"));
     setHelpText(parser, 3, "Testing output file arguments");
 
     // export ctd

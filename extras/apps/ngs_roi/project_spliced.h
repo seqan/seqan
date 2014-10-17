@@ -83,7 +83,7 @@ public:
     typedef seqan::Pair<int, int> TIntPair;
 
     // Resulting ROI file is written to out.
-    std::ofstream & out;
+    seqan::RoiFileOut & roiFileOut;
 
     // The names of the groups that we have seen so far.
     TNameStore groupNames;
@@ -106,8 +106,9 @@ public:
 
     int verbosity;
 
-    ProjectSplicedRoi(std::ofstream & out, seqan::CharString const & groupBy, int verbosity) :
-            out(out), groupNamesCache(groupNames), groupBy(groupBy), currentGroup(0), verbosity(verbosity)
+    ProjectSplicedRoi(seqan::RoiFileOut & roiFileOut, seqan::CharString const & groupBy, int verbosity) :
+            roiFileOut(roiFileOut), groupNamesCache(groupNames), groupBy(groupBy), currentGroup(0),
+            verbosity(verbosity)
     {}
 
     // Write remaining to output file.

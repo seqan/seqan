@@ -33,6 +33,7 @@
 // ==========================================================================
 // Memory map a whole file and use it as a string.
 // ==========================================================================
+// NOTE(esiragusa): this file is deprecated.
 
 #ifndef SEQAN_HEADER_STRING_MMAP_H
 #define SEQAN_HEADER_STRING_MMAP_H
@@ -745,6 +746,14 @@ SEQAN_CHECKPOINT
 			closeAndResize(me.mapping, finalLen);
 		}
 		return true;
+    }
+
+
+	template < typename TValue, typename TConfig >
+    inline void
+    shrinkToFit(String<TValue, MMap<TConfig> > &me)
+    {
+        _remap(me, length(me));
     }
 
 //////////////////////////////////////////////////////////////////////////////

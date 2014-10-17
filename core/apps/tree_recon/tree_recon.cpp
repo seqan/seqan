@@ -22,79 +22,61 @@ Lesser General Public License for more details.
 #include <seqan/stream.h>
 
 #include <iostream>
-#include <fstream>
 
 
 using namespace seqan;
 
 //////////////////////////////////////////////////////////////////////////////////
 
-template<typename TFile, typename TMat, typename TNames>
-inline int
-_readPhylipMatrix(TFile& file,
-                  TMat& matrix,
-                  TNames& names)
+template <typename TMat, typename TNames, typename TForwardIter>
+void readPhylipMatrix(TMat & matrix,
+                      TNames & names,
+                      TForwardIter & iter)
 {
-//IOREV can probably stay here since its too unimportant for the rest of seqan
     //typedef typename Value<TFile>::Type TValue;
-    //typedef typename Value<TMat>::Type TDistance;
+    typedef typename Value<TMat>::Type TFloat;
     typedef typename Size<TMat>::Type TSize;
     //typedef typename Value<TNames>::Type TName;
     typedef typename Iterator<TMat, Standard>::Type TMatIter;
 
-    RecordReader<TFile, SinglePass<> > reader(file);
+    if (atEnd(iter))
+        throw UnexpectedEnd();
 
     // Parse the file and convert the internal ids.
-    if (atEnd(reader))
-        return 1;
     CharString buffer;
-    while (!atEnd(reader))
+    while (!atEnd(iter))
     {
         clear(buffer);
-        if (skipWhitespaces(reader) != 0)
-            return 1;  // Could not skip whitespaces.
-        if (readDigits(buffer, reader) != 0)
-            return 1;  // Could not read.
-        TSize nseq = 0;
-        if (!lexicalCast2(nseq, buffer))
-            return 1;  // Could not convert.
-        if (skipLine(reader) != 0)
-            return 1;  // Could not skip line.
 
+        // Read "<blanks><num>\n"
+        skipUntil(iter, NotFunctor<IsBlank>());
+        readUntil(buffer, iter, OrFunctor<NotFunctor<IsGraph>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Nothing> >());
+        TSize nseq = lexicalCast<TSize>(buffer);
+        skipLine(iter);
+
+        // Allocate memory in matrix and names.
         resize(matrix, nseq * nseq);
         resize(names, nseq);
 
         TMatIter it = begin(matrix, Standard());
         for (TSize row = 0; row < nseq; ++row)
         {
-            if (readGraphs(names[row], reader) != 0)  // read name
-                return 1;
-            if (skipWhitespaces(reader) != 0)  // skip whitespace
-                return 1;
+            readUntil(names[row], iter, NotFunctor<IsGraph>());
+            skipUntil(iter, OrFunctor<NotFunctor<IsSpace>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Nothing> >());
+
             for (TSize col = 0; col < nseq; ++col, ++it)
             {
                 clear(buffer);
-                int res = readFloat(buffer, reader);
-                if (res != 0 && res != EOF_BEFORE_SUCCESS)
-                    return 1;  // Could not read.
-                if (!lexicalCast2(*it, buffer))
-                    return 1;  // Could not convert.
+                readUntil(buffer, iter, NotFunctor<IsGraph>());
+                *it = lexicalCast<TFloat>(buffer);
 
-                // Handling of allowing EOF without NL at end of file.
-                if (res != EOF_BEFORE_SUCCESS)
-                    res = skipWhitespaces(reader);
-                if (res != 0)
-                {
-                    if (res != EOF_BEFORE_SUCCESS)
-                        return 1;
-                    if (col + 1 == nseq && row + 1 == nseq)
-                        break;
-                }
+                if (col + 1 < nseq)
+                    skipUntil(iter, OrFunctor<NotFunctor<IsSpace>, AssertFunctor<NotFunctor<IsNewline>, ParseError, Nothing> >());
+                else
+                    skipLine(iter);
             }
         }
     }
-
-    return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -117,10 +99,10 @@ int main(int argc, const char *argv[])
     addDescription(parser, "Reconstruct phylogenetic tree from Phylip matrix \\fIIN.DIST\\fP.");
 
 	addSection(parser, "Input / Output");
-    addOption(parser, seqan::ArgParseOption("m", "matrix", "Name Phylip distance matrix file.  Must contain at least three species.", seqan::ArgParseArgument::INPUTFILE, "FILE"));
+    addOption(parser, seqan::ArgParseOption("m", "matrix", "Name Phylip distance matrix file.  Must contain at least three species.", seqan::ArgParseArgument::INPUT_FILE, "FILE"));
     setRequired(parser, "matrix");
     setValidValues(parser, "matrix", "dist");
-	addOption(parser, seqan::ArgParseOption("o", "out-file", "Path to write output to.", seqan::ArgParseArgument::OUTPUTFILE, "FILE"));
+	addOption(parser, seqan::ArgParseOption("o", "out-file", "Path to write output to.", seqan::ArgParseArgument::OUTPUT_FILE, "FILE"));
     setDefaultValue(parser, "out-file", "tree.dot");
     setValidValues(parser, "out-file", "dot newick");
 
@@ -168,54 +150,63 @@ int main(int argc, const char *argv[])
 	// Read the distance matrix
 	String<TName> names;
 	String<TDistanceValue> matrix;
-	FILE* strmMat = fopen(infile.c_str(), "rb");
-    if (strmMat == 0)
-    {
-        std::cerr << "Could not open file " << infile.c_str() << std::endl;
-        return 1;
-    }
-	if (_readPhylipMatrix(strmMat, matrix, names) != 0)
-	{
-	    std::cerr << "Could not read from " << infile.c_str() << std::endl;
-	    return 1;
-	}
-	fclose(strmMat);
+    VirtualStream<char, Input> inPhylip(infile.c_str());
+    DirectionIterator<VirtualStream<char, Input>, Input>::Type iter(directionIterator(inPhylip, Input()));
+	readPhylipMatrix(matrix, names, iter);
 
 	// Create the tree
 	Graph<Tree<TDistanceValue> > tree;
-	if (build == 0) njTree(matrix, tree);
-	else if (build == 1) upgmaTree(matrix, tree, UpgmaMin());
-	else if (build == 2) upgmaTree(matrix, tree, UpgmaMax());
-	else if (build == 3) upgmaTree(matrix, tree, UpgmaAvg());
-	else if (build == 4) upgmaTree(matrix, tree, UpgmaWeightAvg());
-	
-	if (format == "dot") {
+    switch (build)
+    {
+        case 0:
+            njTree(matrix, tree);
+            break;
+        case 1:
+            upgmaTree(matrix, tree, UpgmaMin());
+            break;
+        case 2:
+            upgmaTree(matrix, tree, UpgmaMax());
+            break;
+        case 3:
+            upgmaTree(matrix, tree, UpgmaAvg());
+            break;
+        case 4:
+            upgmaTree(matrix, tree, UpgmaWeightAvg());
+            break;
+        default:
+            SEQAN_FAIL("unknown build method.");
+    }
+
+    VirtualStream<char, Output> oStream(outfile.c_str());
+
+	if (format == "dot")
+    {
 		TSize nameLen = length(names);
 		resize(names, numVertices(tree));
 		// Add the label prefix for leaves
-		for(TSize i = 0;i < nameLen; ++i) {
+		for (TSize i = 0;i < nameLen; ++i)
+        {
 			TName tmpName = "label = \"";
 			append(tmpName, names[i], Generous());
-			append(tmpName, '"');
+			appendValue(tmpName, '"');
 			names[i] = tmpName;
 		}
+
 		// Append emty names for internal vertices
-		for(;nameLen < length(names); ++nameLen) {
+		for (; nameLen < length(names); ++nameLen)
 			names[nameLen] = "label = \"\"";
-		}
 
 		// Write the result
-		FILE* strmDot;
-		strmDot = fopen(outfile.c_str(), "w");
-		write(strmDot, tree, names, DotDrawing());
-		fclose(strmDot);
-	} else if (format == "newick") {
-		FILE* strmDot;
-		strmDot = fopen(outfile.c_str(), "w");
-		// If nj tree collapse the root
-		if (build == 0) write(strmDot, tree, names, true, NewickFormat());
-		else write(strmDot, tree, names, false, NewickFormat());
-		fclose(strmDot);
+        writeRecords(oStream, tree, names, DotDrawing());
 	}
+    else if (format == "newick")
+    {
+		// If nj tree collapse the root
+		if (build == 0)
+            writeRecords(oStream, tree, names, true, NewickFormat());
+		else
+            writeRecords(oStream, tree, names, false, NewickFormat());
+	}
+
 	return 0;
 }

@@ -30,16 +30,16 @@ int main ()
 	addEdge(g, vertHamburg, vertMainz, 521);
 
 // FRAGMENT(main-graph-io)
-	FILE* strmWrite = fopen("graph.dot", "w");
-	write(strmWrite, g, DotDrawing());
-	fclose(strmWrite);
+	std::ofstream dotFile("graph.dot");
+	writeRecords(dotFile, g, DotDrawing());
+    dotFile.close();
 
 
 // FRAGMENT(definition-property-map)
 	typedef String<char> TCityName;
 	typedef String<TCityName> TProperties;
 	TProperties cityNames;
-	resizeVertexMap(g, cityNames);
+	resizeVertexMap(cityNames, g);
 
 // FRAGMENT(enter-properties)
 	assignProperty(cityNames, vertBerlin, "Berlin");
@@ -58,11 +58,11 @@ int main ()
 
 // FRAGMENT(dijkstra-containers)
 	typedef Size<TGraph>::Type TSize;
-	InternalMap<TCargo> cargoMap;
+	InternalPropertyMap<TCargo> cargoMap;
 	String<TVertexDescriptor> predMap;
 	String<TSize> distMap;
 // FRAGMENT(dijkstra)
-	dijkstra(g,vertHannover,cargoMap,predMap,distMap);
+	dijkstra(predMap, distMap, g, vertHannover, cargoMap);
 
 // FRAGMENT(dijkstra-output)
 	TVertexIterator itV2(g);

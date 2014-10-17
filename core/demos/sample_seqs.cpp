@@ -40,7 +40,7 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/random.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/seq_io.h>
 
 const unsigned SEED = 42;
@@ -62,35 +62,33 @@ int main(int argc, char const ** argv)
 
     // Open file.
     std::cerr << "Opening file..." << std::endl;
-    MultiSeqFile multiSeqFile;
-    if (!open(multiSeqFile.concat, argv[1], OPEN_RDONLY))
+    SeqFileIn seqFileIn;
+    if (!open(seqFileIn, argv[1]))
     {
         std::cerr << "Could not open file " << argv[1] << "\n";
         return 1;
     }
 
-    // Guess format, split files, now, the length is available.
-    std::cerr << "Splitting records..." << std::endl;
-    AutoSeqFormat format;
-    guessFormat(multiSeqFile.concat, format);
-    split(multiSeqFile, format);
+    String<CharString> ids;
+    String<String<Dna5Q> > seqs;
+    readRecords(ids, seqs, seqFileIn);
 
     // Sanity check on number to sample.
-    if (num > length(multiSeqFile))
+    if (num > length(seqs))
     {
         std::cerr << "Request to sample more reads than there actually are!" << std::endl;
         return 0;
     }
-    if (2 * num > length(multiSeqFile))
+    if (2 * num > length(seqs))
     {
-        std::cerr << "WARNING There are " << length(multiSeqFile)
+        std::cerr << "WARNING There are " << length(seqs)
                   << " reads, we want to sample " << num
                   << ", it make quite some time!" << std::endl;
     }
 
     // Now, sample reads to pick.
     Rng<MersenneTwister> rng(SEED);
-    Pdf<Uniform<unsigned> > pdf(0, length(multiSeqFile) - 1);
+    Pdf<Uniform<unsigned> > pdf(0, length(seqs) - 1);
     std::cerr << "Sampling ids..." << std::endl;
     std::set<unsigned> sampledIds;
     while (sampledIds.size() < num)
@@ -100,17 +98,10 @@ int main(int argc, char const ** argv)
     }
 
     // Finally, sample reads.
-    CharString id, qual;
-    String<Dna5Q> seq;
+    SeqFileOut seqFileOut(std::cout, Fastq());
     std::set<unsigned>::iterator it = sampledIds.begin();
     for(; it != sampledIds.end(); ++it)
-    {
-        assignSeq(seq, multiSeqFile[*it], format);
-        assignQual(qual, multiSeqFile[*it], format);
-        assignSeqId(id, multiSeqFile[*it], format);
-        assignQualities(seq, qual);
-        writeRecord(std::cout, id, seq, Fastq());
-    }
+        writeRecord(seqFileOut, ids[*it], seqs[*it]);
 
     return 0;
 }

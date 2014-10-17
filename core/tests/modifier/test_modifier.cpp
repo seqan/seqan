@@ -30,7 +30,7 @@
 //
 // ==========================================================================
 
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/modifier.h>
 #include <seqan/sequence.h>
 

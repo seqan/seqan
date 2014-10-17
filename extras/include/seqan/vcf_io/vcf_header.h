@@ -99,21 +99,8 @@ namespace seqan {
 ..summary:The meta information records (@Class.String@ of @Class.VcfHeaderRecord@).
 */
 
-class VcfHeader
-{
-public:
-    typedef StringSet<CharString> TNameStore_;
-
-    // The names of the sequences.
-    TNameStore_ sequenceNames;
-    // The names of the samples.
-    TNameStore_ sampleNames;
-    // Records for the meta information lines.
-    String<VcfHeaderRecord> headerRecords;
-
-    VcfHeader()
-    {}
-};
+// Records for the meta information lines.
+typedef String<VcfHeaderRecord> VcfHeader;
 
 // ============================================================================
 // Metafunctions
@@ -145,13 +132,6 @@ public:
 ...type:Class.VcfHeader
 ..include:seqan/vcf_io.h
 */
-
-inline void clear(VcfHeader & header)
-{
-    clear(header.sequenceNames);
-    clear(header.sampleNames);
-    clear(header.headerRecords);
-}
 
 }  // namespace seqan
 

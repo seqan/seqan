@@ -20,7 +20,7 @@ int main() {
 // FRAGMENT(vertex-map)
 	String<char> nameMap;
 	char names[] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
-	assignVertexMap(g,nameMap, names);
+	assignVertexMap(nameMap, g, names);
 
 // FRAGMENT(iterate-dfs)
     TVertexDescriptor start = 0;
@@ -36,7 +36,7 @@ int main() {
 
 // FRAGMENT(connected-components)
 	String<unsigned int> component;
-	stronglyConnectedComponents(g, component);
+	stronglyConnectedComponents(component, g);
 
 // FRAGMENT(output-connected-components)
 	std::cout << "Strongly Connected Components: " << std::endl;

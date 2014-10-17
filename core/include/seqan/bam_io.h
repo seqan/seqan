@@ -30,6 +30,7 @@
 //
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // Facade header for module bam_io.
 // ==========================================================================
@@ -65,22 +66,8 @@
 
 #include <seqan/bam_io/read_sam.h>
 #include <seqan/bam_io/write_sam.h>
-
-// BAM I/O is only available when ZLIB is available (and thus the BGz Stream).
-#if SEQAN_HAS_ZLIB
 #include <seqan/bam_io/read_bam.h>
 #include <seqan/bam_io/write_bam.h>
-#endif  // #if SEQAN_HAS_ZLIB
-
-// ===========================================================================
-// BAM Index Related.
-// ===========================================================================
-
-// BAM indices are only available when ZLIB is available.
-#if SEQAN_HAS_ZLIB
-#include <seqan/bam_io/bam_index_base.h>
-#include <seqan/bam_io/bam_index_bai.h>
-#endif  // #if SEQAN_HAS_ZLIB
 
 // ===========================================================================
 // Utility Routines.
@@ -92,18 +79,16 @@
 // Easy BAM / SAM I/O.
 // ===========================================================================
 
-#include <seqan/bam_io/xam_reader.h>
-#if SEQAN_HAS_ZLIB
-#include <seqan/bam_io/bam_reader.h>
-#endif  // #if SEQAN_HAS_ZLIB
-#include <seqan/bam_io/sam_reader.h>
+#include <seqan/bam_io/bam_file.h>
 
-#include <seqan/bam_io/xam_writer.h>
-#if SEQAN_HAS_ZLIB
-#include <seqan/bam_io/bam_writer.h>
-#endif  // #if SEQAN_HAS_ZLIB
-#include <seqan/bam_io/sam_writer.h>
+// ===========================================================================
+// BAM Index Related.
+// ===========================================================================
 
-#include <seqan/bam_io/bam_stream.h>
+// BAM indices are only available when ZLIB is available.
+#if SEQAN_HAS_ZLIB
+#include <seqan/bam_io/bam_index_base.h>
+#include <seqan/bam_io/bam_index_bai.h>
+#endif  // #if SEQAN_HAS_ZLIB
 
 #endif  // CORE_INCLUDE_SEQAN_BAM_IO_H_

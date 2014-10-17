@@ -73,38 +73,31 @@ using namespace seqan;
 template<typename TSpec>
 int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFileNames, RazerSOptions<TSpec> &options)
 {
-//IOREV
 	ifstream file;
 	file.open(toCString(filename),ios_base::in | ios_base::binary);
 	if(!file.is_open())
 		return RAZERS_GENOME_FAILED;
 
-	clear(genomeFileNames);
-	char c = _streamGet(file);
-	if (c != '>' && c != '@')	//if file does not start with a fasta header --> list of multiple reference genome files
+    DirectionIterator<std::fstream, Input>::Type reader(file);
+    if (!atEnd(reader))
+        return 0;
+
+    clear(genomeFileNames);
+	if (*reader == '>' && *reader != '@')	//if file does not start with a fasta header --> list of multiple reference genome files
 	{
 		if(options._debugLevel >=1)
 			cout << endl << "Reading multiple genome files:" <<endl;
 		
-/*		//locations of genome files are relative to list file's location
-		string tempGenomeFile(filename);
-		size_t lastPos = tempGenomeFile.find_last_of('/') + 1;
-		if (lastPos == tempGenomeFile.npos) lastPos = tempGenomeFile.find_last_of('\\') + 1;
-		if (lastPos == tempGenomeFile.npos) lastPos = 0;
-		string filePrefix = tempGenomeFile.substr(0,lastPos);*/
-
 		unsigned i = 1;
-		while(!_streamEOF(file))
-		{ 
-			_parseSkipWhitespace(file, c);
-			appendValue(genomeFileNames,_parseReadFilepath(file,c));
-			//CharString currentGenomeFile(filePrefix);
-			//append(currentGenomeFile,_parseReadFilepath(file,c));
-			//appendValue(genomeFileNames,currentGenomeFile);
+        CharString line;
+		while(!atEnd(reader))
+		{
+            readLine(line, reader);
+            cropOuter(line, IsWhitespace());
+			appendValue(genomeFileNames, line);
 			if(options._debugLevel >=2)
-				cout <<"Genome file #"<< i <<": " << genomeFileNames[length(genomeFileNames)-1] << endl;
+				cout <<"Genome file #"<< i <<": " << back(genomeFileNames) << endl;
 			++i;
-			_parseSkipWhitespace(file, c);
 		}
 		if(options._debugLevel >=1)
 			cout << i-1 << " genome files total." <<endl;
@@ -113,7 +106,6 @@ int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFil
 		appendValue(genomeFileNames, filename, Exact());
 	file.close();
 	return 0;
-
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -125,7 +117,6 @@ int mapReads(
 	CharString & errorPrbFileName,
 	RazerSOptions<TSpec> &options)
 {
-	MultiFasta				genomeSet;
 	TReadSet				readSet;
 	StringSet<CharString>	genomeNames;	// genome names, taken from the Fasta file
 	StringSet<CharString>	readNames;		// read names, taken from the Fasta file
@@ -175,7 +166,7 @@ int mapReads(
 #ifdef RAZERS_MATEPAIRS
 	if (length(readFileNames) == 2)
 	{
-		if (!loadReads(readSet, readNames, toCString(readFileNames[0]), toCString(readFileNames[1]), options)) {
+		if (!loadReads(readSet, readNames, options.readFile, toCString(readFileNames[1]), options)) {
 		//if (!loadReads(readSet, readQualities, readNames, readFileNames[0], readFileNames[1], options)) {
 			cerr << "Failed to load reads" << endl;
 			return RAZERS_READS_FAILED;
@@ -184,7 +175,7 @@ int mapReads(
 	else
 #endif
 	{
-		if (!loadReads(readSet, readNames, toCString(readFileNames[0]), options)) {
+		if (!loadReads(readSet, readNames, options.readFile, options)) {
 		//if (!loadReads(readSet, readQualities, readNames, readFileNames[0], readFileNames[1], options)) {
 			cerr << "Failed to load reads" << endl;
 			return RAZERS_READS_FAILED;
@@ -249,19 +240,19 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     setShortDescription(parser, "Fast Read Mapping with Sensitivity Control");
     setCategory(parser, "Read Mapping");
 #ifdef SEQAN_REVISION
-	setVersion(parser, "1.2 [" + std::string(SEQAN_REVISION) + "]");
+	setVersion(parser, "1.3 [" + std::string(SEQAN_REVISION) + "]");
 #else
-	setVersion(parser, "1.2");
+	setVersion(parser, "1.3");
 #endif
 #ifdef SEQAN_DATE
 	setDate(parser, SEQAN_DATE);
 #endif
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
-    setValidValues(parser, 0, getFileFormatExtensions(seqan::AutoSeqFormat()));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
+    setValidValues(parser, 0, seqan::SeqFileIn::getFileExtensions());
     setHelpText(parser, 0, "A reference genome file.");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "READS", true));
-    setValidValues(parser, 1, getFileFormatExtensions(seqan::AutoSeqFormat()));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS", true));
+    setValidValues(parser, 1, seqan::SeqFileIn::getFileExtensions());
     setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIREADS FILE\\fP>");
@@ -275,7 +266,8 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
                            "See \\fIhttp://www.seqan.de/projects/razers\\fP for more information.");
 
     addDescription(parser, "Input to RazerS is a reference genome file and either one file with single-end reads "
-                           "or two files containing left or right mates of paired-end reads. ");
+                           "or two files containing left or right mates of paired-end reads. Use - to read single-end "
+                           "reads from stdin.");
 
     addDescription(parser, "(c) Copyright 2009 by David Weese.");
 
@@ -308,8 +300,8 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> const & option
     addOption(parser, ArgParseOption("", "unique", "Output only unique best matches (-m 1 -dr 0 -pa)."));
     addOption(parser, ArgParseOption("tr", "trim-reads", "Trim reads to given length. Default: off.", ArgParseOption::INTEGER));
     setMinValue(parser, "trim-reads", "14");
-    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <\\fIREADS FILE\\fP>.razers.", ArgParseOption::OUTPUTFILE));
-    setValidValues(parser, "output", "razers eland fa fasta gff");
+    addOption(parser, ArgParseOption("o", "output", "Change output filename (use - to dump to stdout in razers format). Default: <\\fIREADS FILE\\fP>.razers.", ArgParseOption::OUTPUT_FILE));
+    setValidValues(parser, "output", ".razers .eland .fa .fasta .gff");
     addOption(parser, ArgParseOption("v", "verbose", "Verbose mode."));
     addOption(parser, ArgParseOption("vv", "vverbose", "Very verbose mode."));
 
@@ -539,14 +531,14 @@ extractOptions(
     CharString tmp = options.output;
     toLower(tmp);
 
-    if (endsWith(tmp, ".razers"))
-        options.outputFormat = 0;
-    else if (endsWith(tmp, ".fa") || endsWith(tmp, ".fasta"))
+    if (endsWith(tmp, ".fa") || endsWith(tmp, ".fasta"))
         options.outputFormat = 1;
     else if (endsWith(tmp, ".eland"))
         options.outputFormat = 2;
     else if (endsWith(tmp, ".gff"))
         options.outputFormat = 3;
+    else
+        options.outputFormat = 0;   // default is ".razers"
 
 	if (isSet(parser, "shape"))
 	{
@@ -627,10 +619,22 @@ int main(int argc, const char *argv[])
         cerr << "Exiting ..." << endl;
         return RAZERS_INVALID_OPTIONS;
     }
-	
+
+	//////////////////////////////////////////////////////////////////////////////
+	// open left reads file
+
+    bool success;
+    if (!isEqual(readFileNames[0], "-"))
+        success = open(options.readFile, toCString(readFileNames[0]));
+    else
+        success = open(options.readFile, std::cin);
+
+    if (!success)
+        return RAZERS_READS_FAILED;
+
 	//////////////////////////////////////////////////////////////////////////////
 	// get read length
-	int readLength = estimateReadLength(toCString(readFileNames[0]));
+	int readLength = estimateReadLength(options.readFile);
 	if (readLength == RAZERS_READS_FAILED)
 	{
 		cerr << "Failed to open reads file " << readFileNames[0] << endl;

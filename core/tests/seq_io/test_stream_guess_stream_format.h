@@ -50,10 +50,10 @@ SEQAN_DEFINE_TEST(test_stream_guess_stream_format_auto_fasta)
 
     typedef RecordReader<std::fstream, SinglePass<void> > TRecordReader;
     TRecordReader reader(*file);
-    AutoSeqStreamFormat tagSelect;
+    AutoSeqFormat tagSelect;
 
     SEQAN_ASSERT(guessStreamFormat(reader, tagSelect));
-    SEQAN_ASSERT_EQ(value(tagSelect), +(Find<AutoSeqStreamFormat, Fasta>::VALUE));
+    SEQAN_ASSERT_EQ(value(tagSelect), +(Find<AutoSeqFormat, Fasta>::VALUE));
 
     file->close();
 }
@@ -67,10 +67,10 @@ SEQAN_DEFINE_TEST(test_stream_guess_stream_format_auto_fastq)
 
     typedef RecordReader<std::fstream, SinglePass<void> > TRecordReader;
     TRecordReader reader(*file);
-    AutoSeqStreamFormat tagSelect;
+    AutoSeqFormat tagSelect;
 
     SEQAN_ASSERT(guessStreamFormat(reader, tagSelect));
-    SEQAN_ASSERT_EQ(value(tagSelect), +(Find<AutoSeqStreamFormat, Fastq>::VALUE));
+    SEQAN_ASSERT_EQ(value(tagSelect), +(Find<AutoSeqFormat, Fastq>::VALUE));
 
     file->close();
 }
@@ -84,7 +84,7 @@ SEQAN_DEFINE_TEST(test_stream_guess_stream_format_auto_bogus)
 
     typedef RecordReader<std::fstream, SinglePass<void> > TRecordReader;
     TRecordReader reader(*file);
-    AutoSeqStreamFormat tagSelect;
+    AutoSeqFormat tagSelect;
 
     SEQAN_ASSERT_NOT(guessStreamFormat(reader, tagSelect));
     SEQAN_ASSERT_EQ(tagSelect.tagId, -1);

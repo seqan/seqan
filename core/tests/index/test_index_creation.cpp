@@ -42,7 +42,7 @@
 #include <seqan/basic.h>
 #include <seqan/align.h>
 #include <seqan/find.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/index.h>
 #include <seqan/sequence.h>
 #include <seqan/pipe.h>
@@ -55,6 +55,11 @@ using namespace seqan;
 
 SEQAN_BEGIN_TESTSUITE(test_index)
 {
-	SEQAN_CALL_TEST(testIndexCreation);
+    SEQAN_CALL_TEST(testIndexModifiedStringReverseEsa);
+    SEQAN_CALL_TEST(testIndexModifiedStringReverseFM);
+    SEQAN_CALL_TEST(testIndexModifiedStringViewEsa);
+    SEQAN_CALL_TEST(testIndexModifiedStringViewFM);
+    SEQAN_CALL_TEST(testIssue519);
+    SEQAN_CALL_TEST(testIndexCreation);
 }
 SEQAN_END_TESTSUITE

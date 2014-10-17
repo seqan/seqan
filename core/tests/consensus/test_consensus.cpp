@@ -38,7 +38,7 @@
 SEQAN_BEGIN_TESTSUITE(test_consensus)
 {
     SEQAN_CALL_TEST(test_consensus_realign_one_contig_small);
-#if 0
+
     SEQAN_CALL_TEST(test_consensus_consensus_score_sequence_entry_consensus_score);
     SEQAN_CALL_TEST(test_consensus_consensus_score_sequence_entry_fractional_score);
     SEQAN_CALL_TEST(test_consensus_consensus_score_sequence_entry_weightedconsensus_score);
@@ -63,10 +63,9 @@ SEQAN_BEGIN_TESTSUITE(test_consensus)
     SEQAN_CALL_TEST(test_consensus_value_fractional_score);
     SEQAN_CALL_TEST(test_consensus_value_weightedconsensus_score);
 
-    SEQAN_CALL_TEST(test_consensus_write_celera_cgb);
-    SEQAN_CALL_TEST(test_consensus_write_celera_frg);
-    SEQAN_CALL_TEST(test_consensus_write_fasta_read_format);
-    SEQAN_CALL_TEST(test_consensus_convert_simple_read_file);
-#endif  // #if 0
+//    SEQAN_CALL_TEST(test_consensus_write_celera_cgb);
+//    SEQAN_CALL_TEST(test_consensus_write_celera_frg);
+//    SEQAN_CALL_TEST(test_consensus_write_fasta_read_format);
+//    SEQAN_CALL_TEST(test_consensus_convert_simple_read_file);
 }
 SEQAN_END_TESTSUITE

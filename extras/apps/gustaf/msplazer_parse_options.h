@@ -154,14 +154,14 @@ void _setupArgumentParser(ArgumentParser & parser)
 
     addSection(parser, "GUSTAF Options");
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 1"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "FASTA FILE 1"));
     setValidValues(parser, 0, "fa fasta fq fastq");  // allow only fasta/q files as input
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 2", true));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "FASTA FILE 2", true));
     setValidValues(parser, 1, "fa fasta fq fastq");  // allow only fasta/q files as input
     setHelpText(parser, 1, "Either one (single-end) or two (paired-end) read files.");
 
 
-    addSection(parser, "Main Options");  // addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 3"));
+    addSection(parser, "Main Options");  // addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "FASTA FILE 3"));
     // setValidValues(parser, 2, "fa fasta");  // allow only fasta files as input
 
     addOption(parser,
@@ -208,16 +208,16 @@ void _setupArgumentParser(ArgumentParser & parser)
     // set min values?
 
     addSection(parser, "Input Options");
-    addOption(parser, ArgParseOption("m", "matchfile", "File of (stellar) matches", ArgParseArgument::INPUTFILE, "FILE"));
+    addOption(parser, ArgParseOption("m", "matchfile", "File of (stellar) matches", ArgParseArgument::INPUT_FILE, "FILE"));
     setValidValues(parser, "m", "gff GFF");
 
     addSection(parser, "Output Options");
     addOption(parser,
-              ArgParseOption("gff", "gffOut", "Name of gff breakpoint output file.", ArgParseArgument::OUTPUTFILE));
+              ArgParseOption("gff", "gffOut", "Name of gff breakpoint output file.", ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "gff", "gff txt");
     setDefaultValue(parser, "gff", "breakpoints.gff");
     addOption(parser,
-              ArgParseOption("vcf", "vcfOut", "Name of vcf breakpoint output file.", ArgParseArgument::OUTPUTFILE));
+              ArgParseOption("vcf", "vcfOut", "Name of vcf breakpoint output file.", ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "vcf", "vcf txt");
     setDefaultValue(parser, "vcf", "breakpoints.vcf");
 
@@ -291,11 +291,11 @@ void _setupArgumentParser(ArgumentParser & parser)
      * Stellar output options are not supported bc. no Stellar output is supported
     addSection(parser, "Output Options");
 
-    addOption(parser, ArgParseOption("o", "out", "Name of output file.", ArgParseArgument::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "out", "Name of output file.", ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "o", "gff txt");
     setDefaultValue(parser, "o", "stellar.gff");
     addOption(parser, ArgParseOption("od", "outDisabled",
-                                     "Name of output file for disabled query sequences.", ArgParseArgument::OUTPUTFILE));
+                                     "Name of output file for disabled query sequences.", ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "outDisabled", "fa FASTA");
     setDefaultValue(parser, "od", "stellar.disabled.fasta");
     addOption(parser, ArgParseOption("t", "no-rt", "Suppress printing running time."));

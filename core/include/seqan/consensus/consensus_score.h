@@ -116,7 +116,7 @@ public:
 ..summary:Wrapper for a pointer to a sequence and a position in this sequence.
 ..description:This is used for unified interfaces for position dependent and independent scores.
 ..param.TSequence:The underlying sequence of the alignments or gaps.
-...type:Concept.SequenceConcept
+...type:Concept.ContainerConcept
 ..see:Metafunction.Score#SequenceEntryForScore
 ..see:Function.Score#sequenceEntryForScore
 ..include:seqan/consensus.h
