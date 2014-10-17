@@ -343,71 +343,8 @@ struct AssertFunctor
 };
 
 // ============================================================================
-// Classes
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Class Demangler
-// ----------------------------------------------------------------------------
-// Holds the name of a given C++ type T.
-// NOTE(esiragusa): this class could become a subclass of CStyle String...
-
-template <typename T>
-struct Demangler
-{
-#ifdef PLATFORM_GCC
-    char *data_begin;
-#else
-    const char *data_begin;
-#endif
-
-    Demangler()
-    {
-        T t;
-        _demangle(*this, t);
-    }
-
-    Demangler(T const & t)
-    {
-        _demangle(*this, t);
-    }
-
-    ~Demangler()
-    {
-#ifdef PLATFORM_GCC
-        free(data_begin);
-#endif
-    }
-};
-
-// ============================================================================
 // Functions
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// Function _demangle(Demangler)
-// ----------------------------------------------------------------------------
-
-template <typename T>
-inline void _demangle(Demangler<T> & me, T const & t)
-{
-#ifdef PLATFORM_GCC
-    int status;
-    me.data_begin = abi::__cxa_demangle(typeid(t).name(), NULL, NULL, &status);
-#else
-    me.data_begin = typeid(t).name();
-#endif
-}
-
-// ----------------------------------------------------------------------------
-// Function toCString(Demangler)
-// ----------------------------------------------------------------------------
-
-template <typename T>
-inline const char * toCString(Demangler<T> const & me)
-{
-    return me.data_begin;
-}
 
 // ----------------------------------------------------------------------------
 // Function globalExceptionHandler()
