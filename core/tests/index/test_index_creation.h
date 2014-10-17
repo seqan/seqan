@@ -35,6 +35,8 @@
 #ifndef TESTS_INDEX_TEST_INDEX_CREATION_H
 #define TESTS_INDEX_TEST_INDEX_CREATION_H
 
+#include <seqan/random.h>
+
 #define SEQAN_PROFILE
 //#define SEQAN_DEBUG
 //#define SEQAN_DEBUG_INDEX
@@ -128,6 +130,8 @@ SEQAN_DEFINE_TEST(testIssue519)
 
 SEQAN_DEFINE_TEST(testIndexCreation)
 {
+    Rng<> rng(/*seed=*/1);
+
         typedef String<char> TText;
         typedef String<unsigned> TArray;
 
@@ -171,7 +175,8 @@ SEQAN_DEFINE_TEST(testIndexCreation)
 
             std::cout << "*** RUN " << i << " ***";
 
-            int size = rand() % maxSize;
+            Pdf<Uniform<int> > pdf(0, maxSize);
+            int size = pickRandomNumber(rng, pdf);
             TI = 0;
 
 //___randomize_text___________________________________________________________

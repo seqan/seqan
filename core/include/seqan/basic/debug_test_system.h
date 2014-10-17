@@ -793,8 +793,10 @@ const char * tempFileName()
 
 #else  // ifdef PLATFORM_WINDOWS_VS
     strcpy(fileNameBuffer, "/tmp/SEQAN.XXXXXXXXXXXXXXXXXXXX");
+    mode_t cur_umask = umask(S_IRWXO | S_IRWXG);  // to silence Coverity warning
     int _tmp = mkstemp(fileNameBuffer);
     (void) _tmp;
+    umask(cur_umask);
     unlink(fileNameBuffer);
     mkdir(fileNameBuffer, 0777);
 

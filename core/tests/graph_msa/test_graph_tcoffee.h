@@ -184,12 +184,11 @@ void Test_ExternalLibraries() {
 	//std::cout << g << std::endl;
 
 	// T-Coffee lib format
-    char fileName[1024];
-    strcpy(fileName, SEQAN_TEMP_FILENAME());
+    std::string fileName = SEQAN_TEMP_FILENAME();
 
 	// Writing
 	std::fstream strm;
-	strm.open(fileName, std::ios_base::out | std::ios_base::trunc);
+	strm.open(fileName.c_str(), std::ios_base::out | std::ios_base::trunc);
 	write(strm, g, nameSet, TCoffeeLib());
 	strm.close();
 	//_debugRefinedMatches(g);
@@ -199,24 +198,24 @@ void Test_ExternalLibraries() {
 	clear(seqSet);
 	clear(nameSet);
 	std::fstream strmRead;
-	strmRead.open(fileName, std::ios_base::in | std::ios_base::binary);
+	strmRead.open(fileName.c_str(), std::ios_base::in | std::ios_base::binary);
 	read(strmRead,seqSet,nameSet,TCoffeeLib());
 	strmRead.close();
 	std::cout << g << std::endl;
 
 
 	// Blast format
-    strcpy(fileName, SEQAN_TEMP_FILENAME());
+    fileName = SEQAN_TEMP_FILENAME();
 
 	// Writing
 	std::fstream strm2;
-	strm2.open(fileName, std::ios_base::out | std::ios_base::trunc);
+	strm2.open(fileName.c_str(), std::ios_base::out | std::ios_base::trunc);
 	write(strm2, g, nameSet, BlastLib());
 	strm2.close();
 
 	// Reading
 	std::fstream strmRead2;
-	strmRead2.open(fileName, std::ios_base::in | std::ios_base::binary);
+	strmRead2.open(fileName.c_str(), std::ios_base::in | std::ios_base::binary);
 	clearVertices(g);
 	clear(matches);
 	clear(scores);
@@ -235,9 +234,9 @@ void Test_ExternalLibraries() {
 	// Blast lib format
 
 	// Writing
-    strcpy(fileName, SEQAN_TEMP_FILENAME());
+    fileName = SEQAN_TEMP_FILENAME();
 	std::fstream strmBlast;
-	strmBlast.open(fileName, std::ios_base::out | std::ios_base::trunc);
+	strmBlast.open(fileName.c_str(), std::ios_base::out | std::ios_base::trunc);
 	write(strmBlast, g, nameSet, BlastLib());
 	strmBlast.close();
 	//_debugRefinedMatches(g);
@@ -247,7 +246,7 @@ void Test_ExternalLibraries() {
 	clear(g);
 	assignStringSet(g, seqSet);
 	std::fstream strmBlastLib;
-	strmBlastLib.open(fileName, std::ios_base::in | std::ios_base::binary);
+	strmBlastLib.open(fileName.c_str(), std::ios_base::in | std::ios_base::binary);
 	clear(matches);
 	clear(scores);
 	read(strmBlastLib, matches, scores, nameSet,BlastLib());

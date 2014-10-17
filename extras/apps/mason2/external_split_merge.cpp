@@ -81,8 +81,10 @@ void IdSplitter::open()
         std::string pathTpl = tmpdir;
         pathTpl += "/MASON_XXXXXX";
 
+        mode_t cur_umask = umask(S_IRWXO | S_IRWXG);  // to silence Coverity warning
         int fd = mkstemp(&pathTpl[0]);
         files.push_back(new std::fstream(pathTpl.c_str(), std::ios::binary | std::ios::in | std::ios::out));
+        umask(cur_umask);
         remove(pathTpl.c_str());
         ::close(fd);
 #endif
