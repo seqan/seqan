@@ -60,11 +60,15 @@ public:
 // FileStream Specs
 // --------------------------------------------------------------------------
 
+#ifdef PLATFORM_WINDOWS
+typedef TagList<Async<> > FileStreamSpecs;
+#else
 typedef
     TagList<Async<>,
     TagList<MMap<>
     > >
     FileStreamSpecs;
+#endif
 
 SEQAN_TYPED_TEST_CASE(FileStreamTest, FileStreamSpecs);
 
@@ -306,7 +310,7 @@ SEQAN_TYPED_TEST(FileStreamTest, WriteLarge)
     f.exceptions(std::ios::failbit | std::ios::badbit);
 
     f.seekg(0, std::ios::end);
-    SEQAN_ASSERT_EQ(f.tellg(), FILE_SIZE);
+    SEQAN_ASSERT_EQ((unsigned)f.tellg(), FILE_SIZE);
     f.seekg(0);
 
     f.read(begin(buffer, Standard()), FILE_SIZE);

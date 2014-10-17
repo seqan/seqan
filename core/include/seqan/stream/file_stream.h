@@ -60,7 +60,11 @@ template <typename TValue, typename TSpec>
 inline void
 free(Buffer<TValue, TSpec> & me)
 {
+#ifdef PLATFORM_WINDOWS
+    VirtualFree(me.begin, 0, MEM_RELEASE);
+#else
     ::free(me.begin);
+#endif
 }
 
 template <typename TValue, typename TSpec>
@@ -80,8 +84,11 @@ reserve(Buffer<TValue, TSpec> & me, TSize newCapacity)
         return;
 
     free(me);
+#ifdef PLATFORM_WINDOWS
+    me.begin = me.end = (TValue *) VirtualAlloc(NULL, newCapacity * sizeof(TValue), MEM_COMMIT, PAGE_READWRITE);
+#else
     me.begin = me.end = (TValue *) valloc(newCapacity * sizeof(TValue));
-
+#endif
     if (me.begin == NULL)
     {
         _setCapacity(me, 0);
