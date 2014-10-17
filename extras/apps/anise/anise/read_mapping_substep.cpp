@@ -660,7 +660,7 @@ private:
 
             // This lambda contains the code for on thread, grabs site ids from gen.
             std::mutex mutex;
-            int const MIN_NEW_MAPPED = 5;
+            int const MIN_NEW_MAPPED = 2;
             int maxNewMapped = 0, sumNewMapped = 0;
             auto checkLoop = [&]() {
                 int siteID = -1;

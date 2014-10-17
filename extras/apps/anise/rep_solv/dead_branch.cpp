@@ -189,10 +189,10 @@ void DeadBranchRemover::dfsLeft(lemon::SmartGraph::NodeMap<int> & maxStep)
     // For all out arcs of t.
     lemon::SmartGraph::NodeMap<bool> reached(graph.graph, false);
     reached[graph.t] = true;
-    for (lemon::SmartGraph::OutArcIt arc(graph.graph, graph.t); arc != lemon::INVALID; ++arc)
+    for (lemon::SmartGraph::InArcIt arc(graph.graph, graph.t); arc != lemon::INVALID; ++arc)
     {
-        SEQAN_ASSERT_EQ(graph.graph.id(graph.graph.source(arc)), graph.graph.id(graph.t));
-        dfsLeftRec(reached, maxStep, graph.graph.target(arc));
+        SEQAN_ASSERT_EQ(graph.graph.id(graph.graph.target(arc)), graph.graph.id(graph.t));
+        dfsLeftRec(reached, maxStep, graph.graph.source(arc));
     }
 }
 
@@ -212,12 +212,12 @@ int DeadBranchRemover::dfsLeftRec(lemon::SmartGraph::NodeMap<bool> & reached,
     maxStep[u] = contigBirthStep.at(graph.contig[u].id);
 
     // Get maximal birth step of child.
-    for (lemon::SmartGraph::OutArcIt arc(graph.graph, u); arc != lemon::INVALID; ++arc)
+    for (lemon::SmartGraph::InArcIt arc(graph.graph, u); arc != lemon::INVALID; ++arc)
     {
-        SEQAN_ASSERT_EQ(graph.graph.id(graph.graph.source(arc)), graph.graph.id(u));
+        SEQAN_ASSERT_EQ(graph.graph.id(graph.graph.target(arc)), graph.graph.id(u));
         if (graph.link[arc].rightID != graph.contig[u].id)
             continue;  // skip, link has wrong direction
-        maxStep[u] = std::max(maxStep[u], dfsLeftRec(reached, maxStep, graph.graph.target(arc)));
+        maxStep[u] = std::max(maxStep[u], dfsLeftRec(reached, maxStep, graph.graph.source(arc)));
     }
 
     if (options.verbosity >= 2)

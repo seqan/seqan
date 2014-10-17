@@ -510,6 +510,19 @@ void RepeatSeparator::run(FeatureReadSet & outReadSet,
         outReadSet.print(std::cerr);
     }
 
+    // Insert pseudo super reads into outRead set for contigs that have no super read (since they had no feature).
+    std::vector<bool> hasSuperRead(length(inStore.contigStore), false);
+    unsigned readID = 0;
+    for (auto & read : outReadSet.reads)
+    {
+        hasSuperRead.at(read.contigID) = true;
+        read.id = readID++;
+    }
+    for (unsigned i = 0; i < length(inStore.contigStore); ++i)
+        if (!hasSuperRead.at(i))
+            outReadSet.reads.push_back(Read(readID++, i, 0, length(inStore.contigStore[i])));
+    std::sort(outReadSet.reads.begin(), outReadSet.reads.end(),
+              [](Read const & lhs, Read const & rhs) { return (lhs.id < rhs.id); });
     // Distribute yet unplaced reads from atomicReads to outReadSet.
     distributeUnplacedReads(outReadSet, atomicReadSet);
 

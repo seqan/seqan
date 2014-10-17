@@ -53,8 +53,9 @@ class DirectedTreeHeuristic
 {
 public:
     DirectedTreeHeuristic(lemon::SmartGraph::NodeMap<bool> & doRemove,
-                          ContigGraph const & graph) :
-            doRemove(doRemove), graph(graph)
+                          ContigGraph const & graph,
+                          Options const & options) :
+            doRemove(doRemove), graph(graph), options(options)
     {}
 
     unsigned run();
@@ -74,10 +75,17 @@ private:
 
     lemon::SmartGraph::NodeMap<bool> & doRemove;
     ContigGraph const & graph;
+    Options const & options;
 };
 
 unsigned DirectedTreeHeuristic::run()
 {
+    if (options.verbosity >= 2)
+    {
+        std::cerr << "INPUT TO DIRECTED TREE HEURISTIC\n";
+        graph.print(std::cerr);
+    }
+
     lemon::SmartGraph::NodeMap<bool> reachedR(graph.graph, false), reachedL(graph.graph, false);
     dfsRight(reachedR);
     dfsLeft(reachedL);
@@ -99,7 +107,8 @@ unsigned DirectedTreeHeuristic::run()
 void DirectedTreeHeuristic::dfsRight(lemon::SmartGraph::NodeMap<bool> & reached)
 {
     reached[graph.s] = true;
-    // std::cerr << "reached right\t" << graph.contig[graph.s].id << "\n";
+    if (options.verbosity >= 2)
+        std::cerr << "dth reached right\t" << graph.contig[graph.s].id << "\n";
     for (lemon::SmartGraph::OutArcIt arc(graph.graph, graph.s); arc != lemon::INVALID; ++arc)
     {
         SEQAN_ASSERT_EQ(graph.graph.id(graph.graph.source(arc)), graph.graph.id(graph.s));
@@ -111,12 +120,16 @@ void DirectedTreeHeuristic::dfsRight(lemon::SmartGraph::NodeMap<bool> & reached)
 
 void DirectedTreeHeuristic::dfsRightRec(lemon::SmartGraph::NodeMap<bool> & reached, lemon::SmartGraph::Node u)
 {
+    if (options.verbosity >= 2)
+        std::cerr << "doRemove[u] == " << doRemove[u] << ", u == graph.t == " << (u == graph.t)
+                  << ", reached[u] == " << reached[u] << "\n";  
     if (doRemove[u])
         return;  // break recursion if to be removed, link does not exist.
     if (u == graph.t || reached[u])
         return;  // break recursion at s and reached nodes
     reached[u] = true;
-    // std::cerr << "reached right\t" << graph.contig[u].id << "\n";
+    if (options.verbosity >= 2)
+        std::cerr << "dth reached right\t" << graph.contig[u].id << "\n";
 
     // Iterate over left-to-right edges.
     for (lemon::SmartGraph::OutArcIt arc(graph.graph, u); arc != lemon::INVALID; ++arc)
@@ -124,7 +137,8 @@ void DirectedTreeHeuristic::dfsRightRec(lemon::SmartGraph::NodeMap<bool> & reach
         SEQAN_ASSERT_EQ(graph.graph.id(graph.graph.source(arc)), graph.graph.id(u));
         if (graph.link[arc].leftID != graph.contig[u].id)
             continue;  // skip, link has wrong direction
-        // std::cerr << "traversing " << graph.link[arc].leftID << " -- " << graph.link[arc].rightID << "\n";
+        if (options.verbosity >= 2)
+            std::cerr << "dth right traversing " << graph.link[arc].leftID << " -- " << graph.link[arc].rightID << "\n";
         dfsRightRec(reached, graph.graph.target(arc));
     }
 }
@@ -132,33 +146,39 @@ void DirectedTreeHeuristic::dfsRightRec(lemon::SmartGraph::NodeMap<bool> & reach
 void DirectedTreeHeuristic::dfsLeft(lemon::SmartGraph::NodeMap<bool> & reached)
 {
     reached[graph.t] = true;
-    // std::cerr << "reached left\t" << graph.contig[graph.t].id << "\n";
-    for (lemon::SmartGraph::OutArcIt arc(graph.graph, graph.t); arc != lemon::INVALID; ++arc)
+    if (options.verbosity >= 2)
+        std::cerr << "dth reached left\t" << graph.contig[graph.t].id << "\n";
+    for (lemon::SmartGraph::InArcIt arc(graph.graph, graph.t); arc != lemon::INVALID; ++arc)
     {
-        SEQAN_ASSERT_EQ(graph.graph.id(graph.graph.source(arc)), graph.graph.id(graph.t));
+        SEQAN_ASSERT_EQ(graph.graph.id(graph.graph.target(arc)), graph.graph.id(graph.t));
         if (graph.link[arc].rightID != graph.contig[graph.t].id)
             continue;  // skip, link has wrong direction
-        dfsLeftRec(reached, graph.graph.target(arc));
+        dfsLeftRec(reached, graph.graph.source(arc));
     }
 }
 
 void DirectedTreeHeuristic::dfsLeftRec(lemon::SmartGraph::NodeMap<bool> & reached, lemon::SmartGraph::Node u)
 {
+    if (options.verbosity >= 2)
+        std::cerr << "doRemove[u] == " << doRemove[u] << ", u == graph.t == " << (u == graph.t)
+                  << ", reached[u] == " << reached[u] << "\n";  
     if (doRemove[u])
         return;  // break recursion if to be removed, link does not exist.
     if (u == graph.t || reached[u])
         return;  // break recursion at t and reached nodes
     reached[u] = true;
-    // std::cerr << "reached left\t" << graph.contig[u].id << "\n";
+    if (options.verbosity >= 2)
+      std::cerr << "dth reached left\t" << graph.contig[u].id << "\n";
 
     // Iterate over right-to-left edges.
-    for (lemon::SmartGraph::OutArcIt arc(graph.graph, u); arc != lemon::INVALID; ++arc)
+    for (lemon::SmartGraph::InArcIt arc(graph.graph, u); arc != lemon::INVALID; ++arc)
     {
-        SEQAN_ASSERT_EQ(graph.graph.id(graph.graph.source(arc)), graph.graph.id(u));
+        SEQAN_ASSERT_EQ(graph.graph.id(graph.graph.target(arc)), graph.graph.id(u));
         if (graph.link[arc].rightID != graph.contig[u].id)
             continue;  // skip, link has wrong direction
-        // std::cerr << "traversing " << graph.link[arc].leftID << " -- " << graph.link[arc].rightID << "\n";
-        dfsLeftRec(reached, graph.graph.target(arc));
+        if (options.verbosity >= 2)
+            std::cerr << "dth left traversing " << graph.link[arc].rightID << " -- " << graph.link[arc].leftID << "\n";
+        dfsLeftRec(reached, graph.graph.source(arc));
     }
 }
 
@@ -169,9 +189,10 @@ void DirectedTreeHeuristic::dfsLeftRec(lemon::SmartGraph::NodeMap<bool> & reache
 // ----------------------------------------------------------------------------
 
 unsigned directedTreeGrowing(lemon::SmartGraph::NodeMap<bool> & doRemove,
-                             ContigGraph const & graph)
+                             ContigGraph const & graph,
+                             Options const & options)
 {
-    DirectedTreeHeuristic helper(doRemove, graph);
+    DirectedTreeHeuristic helper(doRemove, graph, options);
     return helper.run();
 }
 

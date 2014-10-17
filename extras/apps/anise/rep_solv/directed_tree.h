@@ -67,7 +67,8 @@ class ContigGraph;
 // Returns number of unreached nodes.
 
 unsigned directedTreeGrowing(lemon::SmartGraph::NodeMap<bool> & doRemove,
-                             ContigGraph const & graph);
+                             ContigGraph const & graph,
+                             Options const & options);
 
 }  // namespace rep_solv
 

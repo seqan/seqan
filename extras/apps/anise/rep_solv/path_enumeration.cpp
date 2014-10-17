@@ -730,6 +730,7 @@ void PathEnumerator::addCompletingArcs(WeightedDAG & dag) const
     // Compute which node is a left or right end.
     lemon::ListDigraph::NodeMap<bool> leftEnd(dag.graph, true), rightEnd(dag.graph, true);
     for (lemon::ListDigraph::ArcIt arc(dag.graph); arc != lemon::INVALID; ++arc)
+    for (lemon::ListDigraph::ArcIt arc(dag.graph); arc != lemon::INVALID; ++arc)
     {
         leftEnd[dag.graph.source(arc)] = false;
         rightEnd[dag.graph.target(arc)] = false;
@@ -775,6 +776,8 @@ void PathEnumerator::addCompletingArcs(WeightedDAG & dag) const
 
     // Check that there is an s-t-path in the DAG.
     lemon::Bfs<lemon::ListDigraph> checkBfs(dag.graph);
+    //if (!checkBfs.run(dag.s, dag.t))
+    //    std::cerr << "\nWARNING: Could not find s-t path.\n";
     SEQAN_CHECK(checkBfs.run(dag.s, dag.t), "There must be an s-t-path!");
 }
 

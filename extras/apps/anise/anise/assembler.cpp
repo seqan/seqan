@@ -1131,6 +1131,11 @@ void RepeatResolutionDriver::performContigRemoval(rep_solv::ContigGraph & contig
         }
 
     // Build a new contig graph without dead branches and branches into the "wrong" direction.
+    if (options.verbosity >= 2)
+    {
+        std::cerr << "(pre) Read set before removing\n";
+        readSet.print(std::cerr);
+    }
     removeContigs(contigGraph, inGraph, doRemove);
     removeReads(readSet, repSepResult.readSet, removeContigMap);
     std::for_each(readSet.reads.begin(), readSet.reads.end(), [&oldToNew](rep_sep::Read & read) {
@@ -1229,7 +1234,7 @@ std::vector<bool> RepeatResolutionDriver::computePurgeMap(rep_solv::ContigGraph 
                 doRemove[u] = true;
             }
     // Execute directed tree growing heuristic.
-    unsigned numUnreached = directedTreeGrowing(doRemove, graph);
+    unsigned numUnreached = directedTreeGrowing(doRemove, graph, repSolvOptions);
     if (options.verbosity >= 2)
         std::cerr << "Directed tree heuristic: " << numUnreached << " unreachable nodes\n";
     // Write doRemove into removeContigMap.
