@@ -183,7 +183,7 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
     if (logging)
         std::cerr << "# vertices: " << numVertices(distances) << "\n"
                   << "# edges: " << numEdges(distances) << "\n";
-    unsigned numClusters = connectedComponents(distances, seqToCluster);
+    unsigned numClusters = connectedComponents(seqToCluster, distances);
     if (logging)
         std::cerr << "# clusters: " << numClusters << std::endl
                   << "# components: " << numComponents << std::endl;
@@ -453,8 +453,7 @@ void ConsensusBuilder_<TFragmentStore>::run(TFragmentStore & store,
                 if (store.alignedReadStore[i].contigId == contigID)
                     endPos = std::max(endPos, (int)store.alignedReadStore[i].endPos);
             std::cerr << ">contig_" << contigID << "\n";
-            printAlignment(std::cerr, seqan::Raw(), layout, store, /*contigID=*/contigID,
-                           /*beginPos=*/0, /*endPos=*/endPos, 0, 30);
+            printAlignment(std::cerr, layout, store, /*contigID=*/contigID, /*beginPos=*/0, /*endPos=*/endPos, 0, 30);
         }
     }
 
@@ -476,8 +475,7 @@ void ConsensusBuilder_<TFragmentStore>::run(TFragmentStore & store,
                 if (store.alignedReadStore[i].contigId == contigID)
                     endPos = std::max(endPos, (int)store.alignedReadStore[i].endPos);
             std::cerr << ">contig_" << contigID << "\n";
-            printAlignment(std::cerr, seqan::Raw(), layout, store, /*contigID=*/contigID,
-                           /*beginPos=*/0, /*endPos=*/endPos, 0, 30);
+            printAlignment(std::cerr, layout, store, /*contigID=*/contigID, /*beginPos=*/0, /*endPos=*/endPos, 0, 30);
         }
     }
 }
