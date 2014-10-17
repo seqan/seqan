@@ -313,7 +313,7 @@ inline void writeValue(std::basic_ostream<TValue, TTraits> &ostream, TValue2 val
 template <typename TValue, typename TTraits>
 inline bool atEnd(std::istreambuf_iterator<TValue, TTraits> const &it)
 {
-    return *it == TTraits::eof();
+    return it == std::istreambuf_iterator<TValue, TTraits>();
 }
 
 // ----------------------------------------------------------------------------
