@@ -108,16 +108,14 @@ public:
 	TVertexDescriptor_ data_first_slot;
 
 
-	Iter()	
-	{
-		SEQAN_CHECKPOINT
-	}
+	Iter() : data_vertex_it(), data_edge_it(), data_first_slot()
+	{}
 	
 	Iter(TGraph const& _graph) : 
 		data_vertex_it(_graph),
-		data_edge_it(_graph, getIdLowerBound(_getVertexIdManager(_graph)))  
+		data_edge_it(_graph, getIdLowerBound(_getVertexIdManager(_graph)))  ,
+		data_first_slot()
 	{
-		SEQAN_CHECKPOINT
 		while((atEnd(data_edge_it)) && (!atEnd(data_vertex_it))) 
 		{
 				goNext(data_vertex_it);
@@ -126,10 +124,6 @@ public:
 					data_edge_it = TOutEdgeIterator_(hostGraph(*this), value(data_vertex_it));			
 		}
 		data_first_slot = value(data_vertex_it);
-	}
-
-	~Iter() {
-		SEQAN_CHECKPOINT
 	}
 
 	Iter(Iter const& _iter) : 

@@ -250,8 +250,8 @@ The m-tuples are substrings of the input stream beginning at positions $i$, with
         TOutValue   tmp;
         bool        last;
         
-        Pipe(TInput& _in):
-            in(_in) {}
+        Pipe(TInput & _in) : in(_in), _size(0), _rest(0), idxMod(0), last(false)
+        {}
         
         inline void prepare()
         {

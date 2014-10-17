@@ -147,7 +147,8 @@ public:
               _endPositionH(endPositionH(other)),
               _endPositionV(endPositionV(other)),
               _lowerDiagonal(lowerDiagonal(other)),
-              _upperDiagonal(upperDiagonal(other))
+              _upperDiagonal(upperDiagonal(other)),
+              _score(0)
     {
         SEQAN_ASSERT_GEQ(_upperDiagonal, _lowerDiagonal);
     }

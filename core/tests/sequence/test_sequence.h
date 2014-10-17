@@ -54,7 +54,7 @@ struct CountingChar
     static unsigned numConstruct;   // number of constructor calls
     static unsigned numDeconstruct; // number of destructor calls
 
-    CountingChar()
+    CountingChar() : value()
     {
         numConstruct += 1;
     }

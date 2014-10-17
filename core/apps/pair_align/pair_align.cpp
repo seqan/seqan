@@ -65,7 +65,15 @@ bool _loadSequences(TSeqSet& sequences,
         return false;
     }
 
-    readRecords(fastaIDs, sequences, inFile);
+    try
+    {
+        readRecords(fastaIDs, sequences, inFile);
+    }
+    catch (seqan::ParseError const & e)
+    {
+        std::cerr << "ERROR: Problem parsing input file: " << e.what() << "\n";
+        return false;
+    }
 
     if (length(fastaIDs) > 2u)  // Limit number of sequences to 2.
     {

@@ -787,8 +787,9 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 	template <typename InType, typename TLimitsString, typename Result = typename Value<TLimitsString>::Type>
 	struct FunctorGlobalize : public ::std::unary_function<InType,Result>
 	{
-		TLimitsString const *limits;
-		FunctorGlobalize() {}
+		TLimitsString const * limits;
+
+		FunctorGlobalize() : limits() {}
 		FunctorGlobalize(TLimitsString const &_limits) : limits(&_limits) {}
 
 		inline Result operator()(InType const &x) const

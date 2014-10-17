@@ -137,19 +137,15 @@ public:
 
 //____________________________________________________________________________
 
-	Pattern() {
-	}
+	Pattern() : data_keywordIndex(0), data_needleLength(0)
+	{}
 
 	template <typename TNeedle2>
-	Pattern(TNeedle2 const & ndl)
+	Pattern(TNeedle2 const & ndl) : data_keywordIndex(0), data_needleLength(0)
 	{
-		SEQAN_CHECKPOINT
 		setHost(*this, ndl);
 	}
 
-	~Pattern() {
-		SEQAN_CHECKPOINT
-	}
 //____________________________________________________________________________
 };
 

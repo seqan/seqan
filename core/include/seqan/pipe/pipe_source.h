@@ -78,16 +78,16 @@ namespace SEQAN_NAMESPACE_MAIN
 		typename Value<TInput>::Type val;
 
 		Pipe(typename RemoveConst_<TInput>::Type &_cont):
-			in(_cont) {}
+			in(_cont), cur(), val() {}
 
 		Pipe(TInput const &_cont):
-			in(_cont) {}
+			in(_cont), cur(), val() {}
 
-        inline typename Value<TInput>::Type const & operator*() {
-            return val = getValue(cur);
-        }
+        inline typename Value<TInput>::Type const & operator*()
+        { return val = getValue(cur); }
     
-        inline Pipe& operator++() {
+        inline Pipe& operator++()
+        {
             ++cur;
             return *this;
         }

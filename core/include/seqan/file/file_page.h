@@ -312,6 +312,9 @@ struct MMap;
         TFilePos            filePos;
         TSize               size;
         FilePageRequestMode mode;
+
+        FilePageRequest() : filePos(0), size(0), mode(MODE_RDONLY)
+        {}
     };
 
 	//////////////////////////////////////////////////////////////////////////////

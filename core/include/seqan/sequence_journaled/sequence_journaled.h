@@ -109,34 +109,31 @@ public:
     // The journaled string's size.
     TSize _length;
 
-    String() {
-        SEQAN_CHECKPOINT;
-    }
+    String() : _length(0)
+    {}
 
     // Note: Defining both, constructors from same type and other for clarity.
     
-    String(THost & host)
+    String(THost & host) : _length(0)
     {
         SEQAN_CHECKPOINT;
         setHost(*this, host);
     }
 
-    String(String const & other)
+    String(String const & other) : _length(0)
     {
         SEQAN_CHECKPOINT;
         set(*this, other);
     }
 
     template <typename TString>
-	String(TString const & other)
+	String(TString const & other) : _length(0)
     {
         SEQAN_CHECKPOINT;
         assign(*this, other);
     }
 
-    inline
-    String &
-    operator=(String const & other)
+    String & operator=(String const & other)
     {
         if (this != &other)
             set(*this, other);
@@ -144,16 +141,13 @@ public:
     }
 
     template <typename TString>
-    inline
-    String &
-    operator=(TString const & other)
+    String & operator=(TString const & other)
     {
         SEQAN_CHECKPOINT;
         assign(*this, other);
         return *this;
     }
 
-    inline
     typename Reference<String>::Type
     operator[](TPosition pos)
     {
@@ -161,7 +155,6 @@ public:
         return value(*this, pos);
     }
 
-    inline
     typename Reference<String const>::Type
     operator[](TPosition pos) const
     {

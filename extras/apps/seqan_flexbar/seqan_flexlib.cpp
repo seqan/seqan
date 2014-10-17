@@ -768,7 +768,8 @@ struct DemultiplexingParams
         approximate(false),
         hardClip(false),
         run(false),
-        runx(false)
+        runx(false),
+        exclude(false)
     {};
 };
 /**

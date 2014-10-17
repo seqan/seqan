@@ -66,7 +66,8 @@ struct Options
 
     Options() :
             verbosity(1), numThreads(1), chunkSize(0), logAll(false), minUnclippedBases(0), maxErrorRate(0),
-            maxErrorCount(0), indels(true), padding(5), bandwidth(2 * padding), checkSorting(true)
+            maxErrorCount(0), indels(true), padding(5), bandwidth(2 * padding), checkSorting(true),
+            maxChunks(0)
     {}
 };
 
@@ -886,7 +887,15 @@ int main(int argc, char const ** argv)
         return 1;
     }
     BamHeader header;
-    readRecord(header, inPre);
+    try
+    {
+        readRecord(header, inPre);
+    }
+    catch (seqan::ParseError const & e)
+    {
+        std::cerr << "ERROR: Problem parsing pre SAM/BAM header.\n";
+        return 1;
+    }
 
     seqan::BamFileIn inPostBam(inPre);
     seqan::SeqFileIn inPostFastq;
@@ -911,8 +920,16 @@ int main(int argc, char const ** argv)
 
     if (postBam)
     {
-        BamHeader header;
-        readRecord(header, inPostBam);
+        try
+        {
+            BamHeader header;
+            readRecord(header, inPostBam);
+        }
+        catch (seqan::ParseError const & e)
+        {
+            std::cerr << "ERROR: Problem parsing post SAM/BAM header\n";
+            return 1;
+        }
     }
 
     // Read genome and compute mapping from SAM record reference ids to seqs index.
@@ -928,7 +945,15 @@ int main(int argc, char const ** argv)
 
     StringSet<CharString> ids;
     StringSet<Dna5String> seqs;
-    readRecords(ids, seqs, inGenome);
+    try
+    {
+        readRecords(ids, seqs, inGenome);
+    }
+    catch (seqan::ParseError const & e)
+    {
+        std::cerr << "ERROR: Problem reading genome file.\n";
+        return 1;
+    }
 
     String<unsigned> idMap;
     resize(idMap, length(nameStore(context(inPre))), maxValue<unsigned>());
@@ -1011,7 +1036,15 @@ int main(int argc, char const ** argv)
                     break;
                 
                 // Read next record into chunk.
-                readRecord(recordPre, inPre);
+                try
+                {
+                    readRecord(recordPre, inPre);
+                }
+                catch (seqan::IOError const & e)
+                {
+                    error = true;
+                    continue;
+                }
 
                 if (hasFlagSecondary(recordPre))
                     continue;  // Skip, this happens for bwasw input.
@@ -1028,17 +1061,25 @@ int main(int argc, char const ** argv)
                 // read post-records as long as they are less than the last pre-record
                 while (!stop && (empty(recordPost.qName) || strnum_cmp(toCString(recordPre.qName), toCString(recordPost.qName)) > 0))
                 {
-                    if (postBam)
+                    try
                     {
-                        readRecord(recordPost, inPostBam);
-                        stats[tid].numUnmappedPost += hasFlagUnmapped(recordPost);
-                        stop = atEnd(inPostBam);
+                        if (postBam)
+                        {
+                            readRecord(recordPost, inPostBam);
+                            stats[tid].numUnmappedPost += hasFlagUnmapped(recordPost);
+                            stop = atEnd(inPostBam);
+                        }
+                        else
+                        {
+                            readRecord(recordPost.qName, recordPost.seq, inPostFastq);
+                            trimSeqHeaderToId(recordPost.qName);
+                            stop = atEnd(inPostFastq);
+                        }
                     }
-                    else
+                    catch (seqan::IOError const & e)
                     {
-                        readRecord(recordPost.qName, recordPost.seq, inPostFastq);
-                        trimSeqHeaderToId(recordPost.qName);
-                        stop = atEnd(inPostFastq);
+                        error = true;
+                        continue;
                     }
                     stats[tid].numUnmappedPre++;
                 }

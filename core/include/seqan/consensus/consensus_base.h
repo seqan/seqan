@@ -164,10 +164,10 @@ public:
 	std::string outfile;				// Output file name
 	
 	// Initialization
-	ConsensusOptions() 
-	{
-		sc = Score<int>(2,-6,-4,-9);
-	}
+	ConsensusOptions() :
+	    method(0), rmethod(0), bandwidth(0), overlaps(0), matchlength(0), quality(0),
+	    window(0), output(0), noalign(false), moveToFront(0), include(0), sc(2, -6, -4, -9)
+	{}
 };
 
 

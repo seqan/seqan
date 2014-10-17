@@ -332,15 +332,26 @@ int main(int argc, char ** argv)
     seqan::SeqFileIn inFile;
     seqan::SeqFileOut outFile;
 
+    bool openRes = false;
     if (!empty(options.inFastxPath))
-        open(inFile, toCString(options.inFastxPath));
+        openRes = open(inFile, toCString(options.inFastxPath));
     else
-        open(inFile, std::cin);
+        openRes = open(inFile, std::cin);
+    if (!res)
+    {
+        std::cerr << "ERROR: Problem opening input file.\n";
+        return 1;
+    }
 
     if (!empty(options.outPath))
-        open(outFile, toCString(options.outPath));
+        openRes = open(outFile, toCString(options.outPath));
     else
-        open(outFile, std::cout, seqan::Fastq());
+        openRes = open(outFile, std::cout, seqan::Fastq());
+    if (!openRes)
+    {
+        std::cerr << "ERROR: Problem opening output file.\n";
+        return 1;
+    }
 
     // Compute index of last sequence to write if any.
     __uint64 endIdx = seqan::maxValue<__uint64>();
@@ -365,7 +376,15 @@ int main(int argc, char ** argv)
     seqan::CharString quals;
     while (!atEnd(inFile) && charsWritten < options.maxLength && idx < endIdx)
     {
-        readRecord(id, seq, quals, inFile);
+        try
+        {
+            readRecord(id, seq, quals, inFile);
+        }
+        catch (seqan::ParseError const & e)
+        {
+            std::cerr << "ERROR: Problem reading file: " << e.what() << "\n";
+            return 1;
+        }
 
         // Check whether to write out sequence.
         bool writeOut = false;

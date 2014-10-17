@@ -129,12 +129,12 @@ public:
     TCargo_ _cargo;
 
     // Default constructor.
-    ModifiedString()
+    ModifiedString() : _host(), _cargo()
     {}
 
     // Construct with the actual host.
     explicit
-    ModifiedString(typename Parameter_<THost>::Type host) : _host(_toPointer(host))
+    ModifiedString(typename Parameter_<THost>::Type host) : _host(_toPointer(host)), _cargo()
     {}
 
     // Constructor for creating a ModifiedString with const host from a non-const host.
@@ -142,7 +142,7 @@ public:
     explicit
     ModifiedString(THost_ & host,
                    SEQAN_CTOR_ENABLE_IF(IsConstructible<THost, THost_>)) :
-            _host(_toPointer(host))
+            _host(_toPointer(host)), _cargo()
     {
         ignoreUnusedVariableWarning(dummy);
     }
@@ -156,7 +156,7 @@ public:
                    SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<
                                             typename RemoveReference<THost>::Type,
                                             typename RemoveReference<THost_>::Type >)) :
-            _host(std::forward<THost_>(host))
+            _host(std::forward<THost_>(host)), _cargo()
     {
         ignoreUnusedVariableWarning(dummy);
     }
@@ -168,7 +168,7 @@ public:
     explicit
     ModifiedString(THost_ & host,
                    SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_>)) :
-            _host(host)
+            _host(host), _cargo()
     {
         ignoreUnusedVariableWarning(dummy);
     }
@@ -177,7 +177,7 @@ public:
     explicit
     ModifiedString(THost_ const & host,
                    SEQAN_CTOR_ENABLE_IF(IsAnInnerHost<THost, THost_ const>)) :
-            _host(host)
+            _host(host), _cargo()
     {
         ignoreUnusedVariableWarning(dummy);
     }

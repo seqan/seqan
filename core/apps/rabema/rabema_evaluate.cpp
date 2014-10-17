@@ -870,7 +870,7 @@ compareAlignedReadsToReference(RabemaStats & result,
         {
             readRecord(samRecord, bamFileIn);
         }
-        catch (IOError const & ioErr)
+        catch (seqan::ParseError const & ioErr)
         {
             std::cerr << "ERROR: Could not read first SAM/BAM record.\n";
             return 1;
@@ -883,7 +883,7 @@ compareAlignedReadsToReference(RabemaStats & result,
         {
             readRecord(gsiRecord, gsiIter, Gsi());
         }
-        catch (IOError const & ioErr)
+        catch (seqan::ParseError const & ioErr)
         {
             std::cerr << "ERROR: Could not read first GSI record.\n";
             return 1;
@@ -944,7 +944,7 @@ compareAlignedReadsToReference(RabemaStats & result,
             {
                 readRecord(samRecord, bamFileIn);
             }
-            catch (IOError const & ioErr)
+            catch (seqan::ParseError const & ioErr)
             {
                 std::cerr << "ERROR: Could not read SAM/BAM record.\n";
                 return 1;
@@ -981,7 +981,7 @@ compareAlignedReadsToReference(RabemaStats & result,
             {
                 readRecord(gsiRecord, gsiIter, Gsi());
             }
-            catch (IOError const & ioErr)
+            catch (seqan::ParseError const & ioErr)
             {
                 std::cerr << "ERROR: Could not read GSI record.\n";
                 return 1;
@@ -1328,7 +1328,7 @@ int main(int argc, char const ** argv)
         {
             readSequence(refSeqs[i], faiIndex, i);
         }
-        catch (IOError const & ioErr)
+        catch (seqan::ParseError const & ioErr)
         {
             std::cerr << "ERROR: Could not read sequence " << faiIndex.seqNameStore[i] << ".\n";
             return 0;
@@ -1353,7 +1353,7 @@ int main(int argc, char const ** argv)
         readRecord(gsiHeader, inGsiIter, Gsi());
         std::cerr << " OK\n";
     }
-    catch (IOError const & ioErr)
+    catch (seqan::ParseError const & ioErr)
     {
         std::cerr << "Could not read GSI header(" << ioErr.what() << ").\n";
         return 1;
@@ -1373,7 +1373,7 @@ int main(int argc, char const ** argv)
         readRecord(bamHeader, bamFileIn);
         std::cerr << " OK\n";
     }
-    catch (IOError const & ioErr)
+    catch (seqan::ParseError const & ioErr)
     {
         std::cerr << "Could not read SAM header (" << ioErr.what() << ").\n";
         return 1;

@@ -455,7 +455,9 @@ namespace SEQAN_NAMESPACE_MAIN
         BufferHandler(TPool &_pool):
             pool(_pool),
             chain(_min(_pool.writeBackBuffers, _pool.pages())),
-			pageSize(_pool.pageSize) {}
+			pageSize(_pool.pageSize),
+			writePageNo(0),
+			_pages(0) {}
 
         BufferHandler(TPool &_pool, size_t _requestedBufferSize, size_t _writeBackBuffers = 1):
             pool(_pool),
@@ -778,16 +780,15 @@ namespace SEQAN_NAMESPACE_MAIN
 
 		typedef SizeType				size_type;
 
-        Pool(const PoolParameters &_conf = PoolParameters()):
-            file(NULL)
+        Pool(const PoolParameters &_conf = PoolParameters()) :
+            file(NULL), undefinedValue()
         {
 			_init(_conf);
             _setSize(0);
         }
         
 		Pool(HandlerArgs const &args, PoolParameters const &_conf = PoolParameters()):
-            file(NULL),
-			handlerArgs(args)
+            file(NULL), handlerArgs(args), undefinedValue()
         {
 			_init(_conf);
             _setSize(0);
@@ -795,7 +796,7 @@ namespace SEQAN_NAMESPACE_MAIN
         
         template < typename TInput, typename TPipeSpec >
         Pool(Pipe<TInput, TPipeSpec> &, const PoolParameters &_conf = PoolParameters()):
-            file(NULL)
+            file(NULL), undefinedValue()
         {
 			_init(_conf);
             _setSize(0);
@@ -803,15 +804,14 @@ namespace SEQAN_NAMESPACE_MAIN
         
         template < typename TInput, typename TPipeSpec >
 		Pool(Pipe<TInput, TPipeSpec> &, HandlerArgs const &args, PoolParameters const &_conf = PoolParameters()):
-            file(NULL),
-			handlerArgs(args)
+            file(NULL), handlerArgs(args), undefinedValue()
         {
 			_init(_conf);
             _setSize(0);
         }
         
         Pool(File &_file, const PoolParameters &_conf = PoolParameters()):
-            file(_file)
+            file(_file), undefinedValue()
         {
 			_init(_conf);
             _ownFile = false;
@@ -820,7 +820,8 @@ namespace SEQAN_NAMESPACE_MAIN
 			_setSize(::seqan::length(file) / sizeof(TValue));
         }
         
-        Pool(const char *fileName, const PoolParameters &_conf = PoolParameters())
+        Pool(const char *fileName, const PoolParameters &_conf = PoolParameters()) :
+            file(NULL), undefinedValue()
         {
 			_init(_conf);
             _temporary = false;
@@ -832,7 +833,8 @@ namespace SEQAN_NAMESPACE_MAIN
                 _setSize(0);
         }
         
-        ~Pool() {
+        ~Pool()
+        {
             endRead();
             endWrite();
             if (_temporary) 
