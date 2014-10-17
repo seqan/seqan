@@ -389,7 +389,7 @@ compactMatches(String<StellarMatch<TSequence, TId> > & matches, TSize numMatches
 template<typename TSource, typename TId, typename TSize, typename TSize1>
 inline bool
 _insertMatch(QueryMatches<StellarMatch<TSource, TId> > & queryMatches,
-			 StellarMatch<TSource, TId> match,
+			 StellarMatch<TSource, TId> const & match,
 			 TSize minLength,
 			 TSize1 disableThresh,
 			 TSize1 & compactThresh,

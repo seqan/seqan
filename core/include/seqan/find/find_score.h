@@ -96,34 +96,23 @@ public:
 	TScoreValue			data_maxscore;  //score of the needle matching itself (needed for banding FindPrefix)
 
 public: 
-	Pattern(): 
-		data_limit(0)
-	{ 
-SEQAN_CHECKPOINT
-	}
+	Pattern() : data_limit(0), data_maxscore(0)
+	{}
 
-	Pattern(TNeedle & _needle, 
-			TScore const & _score_func, 
-			TScoreValue _limit = 0): 
-		data_score(_score_func),
-		data_limit(_limit)
+	Pattern(TNeedle & _needle, TScore const & _score_func, TScoreValue _limit = 0) : 
+		data_score(_score_func), data_limit(_limit), data_maxscore(0)
 	{ 
-SEQAN_CHECKPOINT
 		setHost(*this, _needle);
 	}
 
-	Pattern(TNeedle & _needle,
-			TScoreValue _limit = 0): 
-		data_limit(_limit)
+	Pattern(TNeedle & _needle, TScoreValue _limit = 0): 
+		data_limit(_limit), data_maxscore(0)
 	{ 
-SEQAN_CHECKPOINT
 		setHost(*this, _needle);
 	}
 
-	Pattern(TScoreValue _limit): 
-		data_limit(_limit)
+	Pattern(TScoreValue _limit) : data_limit(_limit), data_maxscore(0)
 	{ 
-SEQAN_CHECKPOINT
 		create(data_score);
 	}
 
@@ -134,14 +123,11 @@ SEQAN_CHECKPOINT
 		data_limit( other.data_limit ),
 		data_tab( other.data_tab ),
 		data_maxscore( other.data_maxscore)
-	{
-SEQAN_CHECKPOINT
-	}
+	{}
 
 	inline Pattern & 
 	operator = (Pattern const & other) 
 	{ 
-SEQAN_CHECKPOINT
 		this->data_host = other.data_host;
 		this->data_score = other.data_score;
 		this->data_limit = other.data_limit;
@@ -190,7 +176,6 @@ template <typename TNeedle, typename TScore, typename TSpec, typename TFindBegin
 inline typename Host<Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > >::Type & 
 host(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > & me)
 {
-SEQAN_CHECKPOINT
 	return value(me.data_host);
 }
 
@@ -198,7 +183,6 @@ template <typename TNeedle, typename TScore, typename TSpec, typename TFindBegin
 inline typename Host<Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > const>::Type & 
 host(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> >  const & me)
 {
-SEQAN_CHECKPOINT
 	return value(me.data_host);
 }
 
@@ -230,7 +214,6 @@ template <typename TNeedle, typename TScore, typename TSpec, typename TFindBegin
 inline TScore const & 
 scoringScheme(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > & me)
 {
-SEQAN_CHECKPOINT
 	return me.data_score;
 }
 
@@ -242,7 +225,6 @@ inline void
 setScoringScheme(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > & me, 
 				 TScore2 & score)
 {
-SEQAN_CHECKPOINT
 	me.data_score = score;
 	clear(me.data_tab);
 }
@@ -251,7 +233,6 @@ inline void
 setScoringScheme(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > & me, 
 				 TScore2 const & score)
 {
-SEQAN_CHECKPOINT
 	me.data_score = score;
 	clear(me.data_tab);
 }
@@ -284,7 +265,6 @@ template <typename TNeedle, typename TScore, typename TSpec, typename TFindBegin
 inline typename Value<TScore>::Type 
 scoreLimit(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > const & me)
 {
-SEQAN_CHECKPOINT
 	return me.data_limit;
 }
 
@@ -319,7 +299,6 @@ inline void
 setScoreLimit(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > & me, 
 			  TScoreValue _limit)
 {
-SEQAN_CHECKPOINT
 	me.data_limit = _limit;
 }
 

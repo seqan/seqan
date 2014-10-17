@@ -782,7 +782,7 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     int sumwindows = 0;
 
     bool positionStatsOnly = (options.outputSNP == "" && options.outputPosition != "");
-    TPosIterator inspectPosIt = TPosIterator(), inspectPosItEnd = TPosIterator();
+    TPosIterator inspectPosIt, inspectPosItEnd;
 
     bool firstCall = true;
 
@@ -792,14 +792,10 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
     for(unsigned i=0; i < length(genomes); ++i)
     {
         //std::cout << genomeNames[i] << "\n";
-        if (!empty(positions))
-        {
-            inspectPosIt = begin(positions[i],Standard());
-            inspectPosItEnd = end(positions[i],Standard());
-            if(inspectPosIt == inspectPosItEnd )
-                if(positionStatsOnly)
-                    continue;
-        }
+        inspectPosIt = begin(positions[i], Standard());
+        inspectPosItEnd = end(positions[i], Standard());
+        if (inspectPosIt == inspectPosItEnd && positionStatsOnly)
+            continue;
         // parse matches batch by batch
         TContigPos currentWindowBegin = 0;
         if(options._debugLevel > 0) ::std::cout << "Scanning genome #" << i << " ..." << ::std::endl;

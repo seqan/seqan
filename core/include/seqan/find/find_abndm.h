@@ -141,27 +141,24 @@ public:
     Pattern<TNeedle,MyersUkkonen> verifier;
 //////////////////////////////////////////////////////////////////////////////
 
-    Pattern() {}
+    Pattern() :
+        blockCount(0), last(0), needleLength(0), haystackLength(0), limit(1), cP(0), findNext(false)
+    {}
 
     template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl)
-        : limit(1),cP(0),verifier(ndl,-1)
+    Pattern(TNeedle2 const & ndl) :
+        blockCount(0), last(0), needleLength(0), haystackLength(0), limit(1), cP(0), findNext(false),
+        verifier(ndl,-1)
 	{
-            setHost(*this, ndl);
+        setHost(*this, ndl);
 	}
 
     template <typename TNeedle2>
-    Pattern(TNeedle2 const & ndl, int _limit = -1)
-		: limit(- _limit)
-		, cP(0)
-		, verifier(ndl,_limit)
+    Pattern(TNeedle2 const & ndl, int _limit = -1) :
+        limit(- _limit), cP(0), verifier(ndl,_limit)
 	{
-		SEQAN_CHECKPOINT
 		setHost(*this, ndl);
 	}
-
-
-
 };
 
 //////////////////////////////////////////////////////////////////////////////

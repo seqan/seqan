@@ -390,7 +390,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	struct FractionHeader_ {
 		TSize	begin, end;
 		TSize	size;
-		FractionHeader_() {}
+		FractionHeader_() : begin(0), end(0), size(0) {}
 		FractionHeader_(TSize _begin, TSize _end, TSize _size):
 			begin(_begin), end(_end), size(_size) {}
 	};

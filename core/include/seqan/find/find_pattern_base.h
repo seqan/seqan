@@ -89,15 +89,16 @@ public:
 	TNeedlePosition data_begin_position;
 	TNeedlePosition data_end_position;
 
-	Pattern() {}
+	Pattern() : data_begin_position(), data_end_position()
+	{}
 
 	template <typename TNeedle_>
-	Pattern(TNeedle_ & ndl):
-		data_host(ndl) {}
+	Pattern(TNeedle_ & ndl) : data_host(ndl), data_begin_position(), data_end_position()
+	{}
 
 	template <typename TNeedle_>
-	Pattern(TNeedle_ const & ndl):
-		data_host(ndl) {}
+	Pattern(TNeedle_ const & ndl) : data_host(ndl), data_begin_position(), data_end_position()
+	{}
 
 };
 //////////////////////////////////////////////////////////////////////////////

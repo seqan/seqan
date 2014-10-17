@@ -254,21 +254,14 @@ public:
 
 	TElement * data_element;
 
-	SkiplistNext()
+	SkiplistNext() : data_element(0)
 	{}
-	SkiplistNext(NonMinimalCtor)
-		: data_element(0)
+
+	SkiplistNext(NonMinimalCtor) : data_element(0)
 	{}
-	SkiplistNext(SkiplistNext const & other)
-		: data_element(other.data_element)
+
+	SkiplistNext(SkiplistNext const & other) : data_element(other.data_element)
 	{}
-	~SkiplistNext()
-	{}
-	SkiplistNext const & operator = (SkiplistNext const & other)
-	{
-		data_element = other.data_element;
-		return *this;
-	}
 };
 
 //////////////////////////////////////////////////////////////////////////////

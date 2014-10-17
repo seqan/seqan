@@ -233,6 +233,11 @@ namespace SEQAN_NAMESPACE_MAIN
 			fastaIdQual = false;
 			minClippedLen = 0;
 
+			FP = 0;
+			TP = 0;
+			timeLoadFiles = 0.0;
+			timeMapReads = 0.0;
+			timeDumpResults = 0;
 		}
 	};
 

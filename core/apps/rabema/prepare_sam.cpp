@@ -219,7 +219,7 @@ int main(int argc, char const ** argv)
     {
         readRecord(header, bamFileIn);
     }
-    catch (IOError const & ioErr)
+    catch (ParseError const & ioErr)
     {
         std::cerr << "ERROR: Could not read header from SAM file (" << ioErr.what() << ").\n";
         return 1;
@@ -236,7 +236,7 @@ int main(int argc, char const ** argv)
     {
         writeRecord(bamFileOut, header);
     }
-    catch (IOError const & ioErr)
+    catch (ParseError const & ioErr)
     {
         std::cerr << "ERROR writing SAM header!\n";
         return 1;
@@ -251,7 +251,7 @@ int main(int argc, char const ** argv)
         {
             readRecord(record, bamFileIn);
         }
-        catch (IOError const & ioError)
+        catch (ParseError const & ioError)
         {
             std::cerr << "ERROR reading SAM record!\n";
             return 1;

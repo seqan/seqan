@@ -269,7 +269,7 @@ namespace SEQAN_NAMESPACE_MAIN
         Mutex       mutex;
         Event       xmitDone;
 
-        aiocb_win32():
+        aiocb_win32() :
             xmitDone(mutex)
         {}
     };

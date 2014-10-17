@@ -351,6 +351,21 @@ struct RazerSCoreOptions
 #ifdef RAZERS_OPENADDRESSING
         loadFactor = 1.6;
 #endif
+
+        lossRate = 0.0;
+        minScore = 0;
+        countFiltration = 0;
+        countVerification = 0;
+        timeLoadFiles = 0.0;
+        timeMapReads = 0.0;
+        timeDumpResults = 0.0;
+        timeBuildQGramIndex = 0.0;
+        timeCompactMatches = 0.0;
+        timeMaskDuplicates = 0.0;
+        timeFsCopy = 0.0;
+        timeFiltration = 0.0;
+        timeVerification = 0.0;
+        maqMapping = false;
     }
 
 };

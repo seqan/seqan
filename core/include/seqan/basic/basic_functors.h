@@ -158,11 +158,10 @@ struct CountFunctor
     __uint64 count;
     TFunctor func;
 
-    CountFunctor()
+    CountFunctor() : count(0)
     {}
 
-    CountFunctor(TFunctor const &func):
-        func(func)
+    CountFunctor(TFunctor const & func) : count(0), func(func)
     {}
 
     template <typename TValue>

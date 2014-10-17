@@ -111,14 +111,14 @@ namespace SEQAN_NAMESPACE_MAIN
 		TSize		size;
 
 		VectorSet_():
-			size(0)	
+			obj(), size(0)	
 		{
 			_autoSize(*this);
 			clear(*this);
 		}
 
 		VectorSet_(TSize _vectorSize):
-			size(0)	
+			obj(), size(0)	
 		{
 			resize(vector, _vectorSize);
 			clear(*this);
