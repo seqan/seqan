@@ -300,6 +300,14 @@ public:
     {
         return streamBuf;
     }
+
+    static std::vector<std::string>
+    getFileExtensions()
+    {
+        std::vector<std::string> extensions;
+        _getFileExtensions(extensions, TFormat());
+        return extensions;
+    }
 };
 
 // ----------------------------------------------------------------------------
@@ -603,6 +611,7 @@ close(VirtualStream<TValue, TDirection, TTraits> &stream)
     delete stream.context;
     stream.context = NULL;
     stream.streamBuf = NULL;
+    assign(stream.format, typename FileFormat<VirtualStream<TValue, TDirection, TTraits> >::Type());
     return !stream.file.is_open() || close(stream.file);
 }
 

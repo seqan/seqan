@@ -21,12 +21,12 @@ int main()
     // Create external property map for the vertex names and assign to graph.
     String<char> nameMap;
     char names[] = {'r', 's', 't', 'u', 'v', 'w', 'x', 'y'};
-    assignVertexMap(g,nameMap, names);
+    assignVertexMap(nameMap, g, names);
 
     // Perform a BFS search starting from vertex with descriptor 1.
     String<unsigned int> predMap;
     String<unsigned int> distMap;
-    breadthFirstSearch(g, 1, predMap, distMap);
+    breadthFirstSearch(predMap, distMap, g, 1);
 
     // Write the result to stdout.
     std::cout << "Breadth-First search: \n";
@@ -35,7 +35,7 @@ int main()
     while (!atEnd(it))
     {
         std::cout << "Vertex " << getProperty(nameMap, getValue(it)) << ": ";
-        if (getProperty(distMap, getValue(it))== _getInfinityDistance(distMap))
+        if (getProperty(distMap, getValue(it)) == _getInfinityDistance(distMap))
             SEQAN_FAIL("Should never reach here!");
         else
             std::cout << "Level = " << getProperty(distMap, getValue(it));

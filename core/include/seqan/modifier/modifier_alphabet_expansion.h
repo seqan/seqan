@@ -99,26 +99,24 @@ public:
 	TData data;
 
 	ModifiedAlphabet() 
-	{
-	}
+	{}
+
 	ModifiedAlphabet(ModifiedAlphabet const & other)
 		: data(_internalOrdValue(other))
-	{
-	}
+	{}
+
 	template <typename TOther>
 	ModifiedAlphabet(TOther const & other_data)
 		: data(_internalOrdValue(convert<ModifiedAlphabet>(other_data)))
-	{
-	}
-	~ModifiedAlphabet()
-	{
-	}
+	{}
+
 	ModifiedAlphabet const & 
 	operator = (ModifiedAlphabet const & other)
 	{
 		data = other.data;
 		return *this;
 	}
+
 	template <typename TOther>
 	ModifiedAlphabet const & 
 	operator = (TOther const & other_data)

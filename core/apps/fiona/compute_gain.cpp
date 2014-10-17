@@ -813,7 +813,7 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     setValidValues(parser, "post", "fastq fq fastq.gz fq.gz fasta fa fasta.gz fa.gz");
 
     addOption(parser, seqan::ArgParseOption("", "correction-log", "Write log about introduced/removed errors to this file.",
-                                            seqan::ArgParseOption::OUTPUTFILE, "OUT.txt"));
+                                            seqan::ArgParseOption::OUTPUT_FILE, "OUT.txt"));
     addOption(parser, seqan::ArgParseOption("", "log-all", "Log all not only introduced/removed errors."));
 
     addOption(parser, seqan::ArgParseOption("", "no-check-sorting", "No checking for reads being sorted."));

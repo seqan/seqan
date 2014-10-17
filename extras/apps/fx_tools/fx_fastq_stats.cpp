@@ -252,7 +252,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     addOption(parser, seqan::ArgParseOption("i", "input", "Input FASTQ file.", seqan::ArgParseOption::INPUT_FILE, "INPUT"));
     setValidValues(parser, "input", "fastq fq");
     setRequired(parser, "input");
-    addOption(parser, seqan::ArgParseOption("o", "output", "Output TSV file.", seqan::ArgParseOption::OUTPUTFILE, "OUTPUT"));
+    addOption(parser, seqan::ArgParseOption("o", "output", "Output TSV file.", seqan::ArgParseOption::OUTPUT_FILE, "OUTPUT"));
     setRequired(parser, "output");
     setValidValues(parser, "output", "fq_stats_tsv");
 

@@ -2191,15 +2191,30 @@ operator>>(TStream & source,
 // Function assignValueById
 // ----------------------------------------------------------------------------
 
-template<typename TValue, typename TSpec, typename TId>
+template<typename TValue, typename TSpec, typename TId, typename TValue2>
 inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TId> >, void)
 assignValueById(String<TValue, TSpec> & me,
                 TId id,
-                TValue const & obj)
+                TValue2 const & obj)
 {
     if (length(me) <= id)
         resize(me, id + 1, TValue());
     assignValue(me, id, obj);
+}
+
+// ----------------------------------------------------------------------------
+// Function getValueById
+// ----------------------------------------------------------------------------
+
+template<typename TValue, typename TSpec, typename TId>
+inline SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<TId> >, TValue)
+getValueById(String<TValue, TSpec> & me,
+             TId id)
+{
+    if (id < length(me))
+        return getValue(me, id);
+    else
+        return TValue();
 }
 
 }  // namespace seqan

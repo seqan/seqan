@@ -681,7 +681,7 @@ void setUpArgumentParser(ArgumentParser & parser, DFIOptions const &)
 #endif
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "DATABASE", true));
-    setValidValues(parser, 0, SeqFileIn::getFileFormatExtensions());
+    setValidValues(parser, 0, SeqFileIn::getFileExtensions());
     setHelpText(parser, 0, "Database files in Fasta/Fastq or text format (lines are strings).");
 
 	addUsageLine(parser, "[\\fIOPTIONS\\fP] --minmax <\\fImin_1\\fP> <\\fImax_1\\fP> ... --minmax <\\fImin_m\\fP> <\\fImax_m\\fP> <\\fIdatabase 1\\fP> ... <\\fIdatabase m\\fP>");
@@ -712,7 +712,7 @@ void setUpArgumentParser(ArgumentParser & parser, DFIOptions const &)
     setMaxValue(parser, "entropy", "1");
 
     addSection(parser, "Input/Output Options");
-    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <stdout>.", ArgParseOption::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "output", "Change output filename. Default: <stdout>.", ArgParseOption::OUTPUT_FILE));
     setValidValues(parser, "output", "txt");
     addOption(parser, ArgParseOption("a", "alphabet", "Specify database alphabet.", ArgParseOption::STRING));
     setValidValues(parser, "alphabet", "dna protein char");

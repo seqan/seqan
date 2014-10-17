@@ -94,8 +94,8 @@ computeGenotypePriors(TMethOptions &methOptions, TOptions &options)
 
 
 // Prob. function
-struct Naive_;
-typedef Tag<Naive_> Naive;
+struct NaiveMult_;
+typedef Tag<NaiveMult_> NaiveMult;
 
 struct LogFunction_;
 typedef Tag<LogFunction_> LogFunction;

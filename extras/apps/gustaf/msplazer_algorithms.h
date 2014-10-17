@@ -205,7 +205,7 @@ void _initialiseGraphNoBreakend(QueryMatches<StellarMatch<TSequence, TId> > & qu
         {
             cargo += chain.matchDistanceScores[i];
             TEdgeDescriptor edge = addEdge(chain.graph, chain.startVertex, i, cargo);
-            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            resizeEdgeMap(chain.breakpoints.slotLookupTable, chain.graph);
             assignProperty(chain.breakpoints, edge);
         }
         cargo = static_cast<int>(length(source(queryMatches.matches[i].row2))) -
@@ -213,7 +213,7 @@ void _initialiseGraphNoBreakend(QueryMatches<StellarMatch<TSequence, TId> > & qu
         if (cargo < (options.initGapThresh + 1))
         {
             TEdgeDescriptor edge = addEdge(chain.graph, i, chain.endVertex, cargo);
-            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            resizeEdgeMap(chain.breakpoints.slotLookupTable, chain.graph);
             assignProperty(chain.breakpoints, edge);
         }
     }
@@ -256,7 +256,7 @@ void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches
         {
             cargo += chain.matchDistanceScores[i];
             TEdgeDescriptor edge = addEdge(chain.graph, chain.startVertex, i, cargo);
-            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            resizeEdgeMap(chain.breakpoints.slotLookupTable, chain.graph);
             if (cargo < (options.initGapThresh + 1))
                 assignProperty(chain.breakpoints, edge);
             else
@@ -283,7 +283,7 @@ void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches
         if (cargo < (options.breakendThresh + 1))
         {
             TEdgeDescriptor edge = addEdge(chain.graph, i, chain.endVertex, cargo);
-            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            resizeEdgeMap(chain.breakpoints.slotLookupTable, chain.graph);
             if (cargo < (options.initGapThresh + 1))
                 assignProperty(chain.breakpoints, edge);
             else
@@ -501,7 +501,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                 //std::cout << "Breakpoint " << bp << std::endl;
                 // Insert breakpoint
                 TEdgeDescriptor edge = addEdge(graph, m1, m2, cargo);
-                resizeEdgeMap(graph, queryBreakpoints.slotLookupTable);
+                resizeEdgeMap(queryBreakpoints.slotLookupTable, graph);
                 // if match1 and match2 are from different mates and BP is indel check for artificial bp
                 //if (bp.svtype == TBreakpoint::DELETION && _artificialBP(stMatch1, stMatch2, chain, msplazerOptions))
                 if (_artificialBP(stMatch1, stMatch2, chain))
@@ -790,7 +790,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                     else if (edge == 0)
                     {
                         edge = addEdge(graph, m1, m2, cargo);
-                        resizeEdgeMap(graph, queryBreakpoints.slotLookupTable);
+                        resizeEdgeMap(queryBreakpoints.slotLookupTable, graph);
 
                         if (artificialBP)
                             assignProperty(queryBreakpoints, edge);
@@ -873,7 +873,7 @@ void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > 
 template <typename TMSplazerChain>
 void _analyzeChains(String<TMSplazerChain> & queryChains)
 {
-    InternalMap<int> weightMap;
+    InternalPropertyMap<int> weightMap;
     // typedef typename TMSplazerChain::TGraph TGraph;
     // typedef typename Size<TGraph>::Type TGraphSize;
 
@@ -881,12 +881,12 @@ void _analyzeChains(String<TMSplazerChain> & queryChains)
     {
         if (!queryChains[i].isEmpty)
         {
-            resizeVertexMap(queryChains[i].graph, queryChains[i].distMap);
-            dagShortestPath(queryChains[i].graph,
+            resizeVertexMap(queryChains[i].distMap, queryChains[i].graph);
+            dagShortestPath(queryChains[i].predMap,
+                            queryChains[i].distMap,
+                            queryChains[i].graph,
                             queryChains[i].startVertex,
-                            weightMap,
-                            queryChains[i].predMap,
-                            queryChains[i].distMap);
+                            weightMap);
         }
         // else
         // std::cerr << " Chain for query " << i << ", is empty!" << std::endl;//", queryID: " << queryIDs[i] <<

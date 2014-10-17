@@ -246,15 +246,15 @@ struct SmartFile
     }
 
     /*!
-     * @fn SmartFile::getFileFormatExtensions
+     * @fn SmartFile::getFileExtensions
      * @brief Static function that returns a list of allowed file format extension.
      *
-     * @signature TExtensionVector getFileFormatExtensions()
+     * @signature TExtensionVector getFileExtensions()
      *
      * @return TExtensionVector A <tt>std::vector&lt;std::string&gt;</tt> with the allowed file extensions.
      */
     static std::vector<std::string>
-    getFileFormatExtensions()
+    getFileExtensions()
     {
         std::vector<std::string> extensions;
 
@@ -340,6 +340,14 @@ struct DefaultOpenMode<SmartFile<TFileType, TDirection, TSpec>, TDummy> :
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Helper Function _throwIf().
+// ----------------------------------------------------------------------------
+
+// Helper functions that reduce number of "uncaught exception" false positives in static analysis tools.
+template <typename TException> void _throwIf(TException const & e, True const & /*tag*/) { SEQAN_THROW(e); }
+template <typename TException> void _throwIf(TException const & /*e*/, False const & /*tag*/) { /*nop*/ }
 
 // ----------------------------------------------------------------------------
 // Function directionIterator()
@@ -454,7 +462,7 @@ _checkThatStreamOutputFormatIsSet(SmartFile<TFileType, Output, TSpec> const &, T
 // Function open()
 // --------------------------------------------------------------------------
 
-// TODO(holtgrew): Complete me, the combination of formats etc are a bit hard to grasp quickly.
+// TODO(holtgrew): Complete documentation, the combination of formats etc are a bit hard to grasp quickly.
 
 /*!
  * @fn SmartFile#open
@@ -470,15 +478,13 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
 {
     if (!open(file.stream, stream, compressionFormat))
     {
-        if (TThrowExceptions::VALUE)
-            SEQAN_THROW(UnknownFileFormat());
+        _throwIf(UnknownFileFormat(), TThrowExceptions());
         return false;
     }
 
     if (!guessFormat(file))
     {
-        if (TThrowExceptions::VALUE)
-            SEQAN_THROW(UnknownFileFormat());
+        _throwIf(UnknownFileFormat(), TThrowExceptions());
         return false;
     }
 
@@ -524,8 +530,7 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
 {
     if (!open(file.stream, fileName, openMode))
     {
-        if (TThrowExceptions::VALUE)
-            SEQAN_THROW(FileOpenError(fileName));
+        _throwIf(FileOpenError(fileName), TThrowExceptions());
         return false;
     }
 
@@ -533,8 +538,8 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
     {
         if (!guessFormat(file))
         {
-            if (TThrowExceptions::VALUE)                        // read from a pipe (without file extension)
-                SEQAN_THROW(UnknownFileFormat());
+            // read from a pipe (without file extension)
+            _throwIf(UnknownFileFormat(), TThrowExceptions());
             return false;
         }
     }
@@ -544,8 +549,7 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
         if (!guessFormatFromFilename(basename, file.format))    // read/write from/to a file (with extension)
         {
             close(file.stream);
-            if (TThrowExceptions::VALUE)
-                SEQAN_THROW(UnknownExtensionError(fileName));
+            _throwIf(UnknownExtensionError(fileName), TThrowExceptions());
             return false;
         }
     }
@@ -579,6 +583,7 @@ inline bool open(SmartFile<TFileType, TDirection, TSpec> & file,
 template <typename TFileType, typename TDirection, typename TSpec>
 inline bool close(SmartFile<TFileType, TDirection, TSpec> & file)
 {
+    setFormat(file, typename FileFormat<SmartFile<TFileType, TDirection, TSpec> >::Type());
     file.iter = typename DirectionIterator<SmartFile<TFileType, TDirection, TSpec>, TDirection>::Type();
     return close(file.stream);
 }
@@ -675,14 +680,14 @@ _getCompressionExtensions(
     typedef Tag<TFormat_> TFormat;
 
     std::vector<std::string> compressionExtensions;
-    _getFileFormatExtensions(compressionExtensions, compress, primaryExtensionOnly);
+    _getFileExtensions(compressionExtensions, compress, primaryExtensionOnly);
 
-    unsigned len = (primaryExtensionOnly)? 1 : sizeof(FileFormatExtensions<TFormat>::VALUE) / sizeof(char*);
+    unsigned len = (primaryExtensionOnly)? 1 : sizeof(FileExtensions<TFormat>::VALUE) / sizeof(char*);
     for (unsigned i = 0; i < len; ++i)
         for (unsigned j = 0; j < compressionExtensions.size(); ++j)
         {
             size_t jj = (j == 0)? compressionExtensions.size() - 1 : j - 1;    // swap first and last compression extension
-            appendValue(stringSet, (std::string)FileFormatExtensions<TFormat>::VALUE[i] + compressionExtensions[jj]);
+            appendValue(stringSet, (std::string)FileExtensions<TFormat>::VALUE[i] + compressionExtensions[jj]);
         }
 }
 
@@ -695,7 +700,7 @@ _getCompressionExtensions(
     bool primaryExtensionOnly,
     Tag<TCompression_>)
 {
-    _getFileFormatExtensions(stringSet, formatTag, primaryExtensionOnly);
+    _getFileExtensions(stringSet, formatTag, primaryExtensionOnly);
 }
 
 template <typename TStringSet, typename TFormat_, typename TCompressionFormats>
@@ -744,26 +749,26 @@ _getCompressionExtensions(
 }
 
 // ----------------------------------------------------------------------------
-// Function getFileFormatExtensions()
+// Function getFileExtensions()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn SmartFile#getFileFormatExtensions
+ * @fn SmartFile#getFileExtensions
  * @brief Static function that returns a list of allowed file format extension.
  *
- * @signature TExtensionVector getFileFormatExtensions(smartFile)
+ * @signature TExtensionVector getFileExtensions(smartFile)
  *
  * @param[in] smartFile The SmartFile to query.
  * @return TExtensionVector A <tt>std::vector&lt;std::string&gt;</tt> with the allowed file extensions.
  *
- * This is a shortcut to @link SmartFile#getFileFormatExtensions @endlink.
+ * This is a shortcut to @link SmartFile#getFileExtensions @endlink.
  */
 
 template <typename TFileType, typename TDirection, typename TSpec>
 static std::vector<std::string>
-getFileFormatExtensions(SmartFile<TFileType, TDirection, TSpec> const & file)
+getFileExtensions(SmartFile<TFileType, TDirection, TSpec> const & file)
 {
-    return file.getFileFormatExtensions();
+    return file.getFileExtensions();
 }
 
 }  // namespace seqan

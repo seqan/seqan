@@ -222,7 +222,7 @@ struct IntersectWithGffConfig
             bedRecord.ref  = gffRecord.ref;
             bedRecord.beginPos = gffRecord.beginPos;
             bedRecord.endPos = gffRecord.endPos;
-            bedRecord.score = 0;
+            bedRecord.score = "0";
             bedRecord.strand = (gffRecord.strand == '-') ? '-' : '+';  // '.' becomes '+'
 
             // Build BED record name.  We cannot rely on the GFF/GTF record having an ID so we simply construct one.
@@ -683,16 +683,16 @@ parseCommandLine(RoiIntersectOptions & options, int argc, char const ** argv)
 
     addOption(parser, seqan::ArgParseOption("ir", "in-roi", "ROI file to read.", seqan::ArgParseOption::INPUT_FILE, "ROI"));
     setRequired(parser, "in-roi");
-    setValidValues(parser, "in-roi", seqan::RoiFileIn::getFileFormatExtensions());
+    setValidValues(parser, "in-roi", seqan::RoiFileIn::getFileExtensions());
 
     addOption(parser, seqan::ArgParseOption("if", "in-features", "BED, GFF, or GTF file to read.", seqan::ArgParseOption::INPUT_FILE, "FILE"));
     setRequired(parser, "in-features");
-    std::vector<std::string> extensions = seqan::BedFileIn::getFileFormatExtensions();
-    std::vector<std::string> extensionsGff = seqan::GffFileIn::getFileFormatExtensions();
+    std::vector<std::string> extensions = seqan::BedFileIn::getFileExtensions();
+    std::vector<std::string> extensionsGff = seqan::GffFileIn::getFileExtensions();
     extensions.insert(extensions.end(), extensionsGff.begin(), extensionsGff.end());
     setValidValues(parser, "in-features", extensions);
 
-    addOption(parser, seqan::ArgParseOption("or", "out-roi", "ROI file to write.", seqan::ArgParseOption::OUTPUTFILE, "ROI"));
+    addOption(parser, seqan::ArgParseOption("or", "out-roi", "ROI file to write.", seqan::ArgParseOption::OUTPUT_FILE, "ROI"));
     setRequired(parser, "out-roi");
     setValidValues(parser, "out-roi", "roi");
 

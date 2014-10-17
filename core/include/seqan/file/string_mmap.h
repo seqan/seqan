@@ -748,6 +748,14 @@ SEQAN_CHECKPOINT
 		return true;
     }
 
+
+	template < typename TValue, typename TConfig >
+    inline void
+    shrinkToFit(String<TValue, MMap<TConfig> > &me)
+    {
+        _remap(me, length(me));
+    }
+
 //////////////////////////////////////////////////////////////////////////////
 
 

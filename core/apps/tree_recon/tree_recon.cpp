@@ -102,7 +102,7 @@ int main(int argc, const char *argv[])
     addOption(parser, seqan::ArgParseOption("m", "matrix", "Name Phylip distance matrix file.  Must contain at least three species.", seqan::ArgParseArgument::INPUT_FILE, "FILE"));
     setRequired(parser, "matrix");
     setValidValues(parser, "matrix", "dist");
-	addOption(parser, seqan::ArgParseOption("o", "out-file", "Path to write output to.", seqan::ArgParseArgument::OUTPUTFILE, "FILE"));
+	addOption(parser, seqan::ArgParseOption("o", "out-file", "Path to write output to.", seqan::ArgParseArgument::OUTPUT_FILE, "FILE"));
     setDefaultValue(parser, "out-file", "tree.dot");
     setValidValues(parser, "out-file", "dot newick");
 
@@ -188,7 +188,7 @@ int main(int argc, const char *argv[])
         {
 			TName tmpName = "label = \"";
 			append(tmpName, names[i], Generous());
-			append(tmpName, '"');
+			appendValue(tmpName, '"');
 			names[i] = tmpName;
 		}
 

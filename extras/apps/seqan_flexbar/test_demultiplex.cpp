@@ -61,7 +61,7 @@ int loadSeqs(char const * path, StringSet<String<char> >& ids, StringSet<String<
 	SeqFileIn seqFile;
 	unsigned records = 1000;									//number of records to be read
 
-	if (!open(seqFile, path, OPEN_RDONLY))
+	if (!open(seqFile, path))
 	{
 		std::cerr << "Error while opening the sequence-file.\n";
 		return 1;
@@ -516,9 +516,9 @@ SEQAN_DEFINE_TEST(Input_test)
 	StringSet<String<Dna> > bcs;
 
 	CharString seqpath = SEQAN_PATH_TO_ROOT();
-    append(seqpath, "/extras/apps/seqan_flexbar/test_data/seqs.fa");
+    append(seqpath, "/extras/apps/seqan_flexbar/tests/seqs.fa");
 	String<char> bcpath = SEQAN_PATH_TO_ROOT();
-    append(bcpath, "/extras/apps/seqan_flexbar/test_data/barcodes.fa");
+    append(bcpath, "/extras/apps/seqan_flexbar/tests/barcodes.fa");
 
 	SEQAN_ASSERT_EQ(0, loadSeqs(toCString(seqpath), ids, seqs));
 	SEQAN_ASSERT_EQ(0, loadBarcodes(toCString(bcpath), bcids, bcs));

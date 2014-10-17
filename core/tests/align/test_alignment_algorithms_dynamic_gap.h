@@ -54,7 +54,7 @@ bool _validateAlignment(TAlignment const & align,
 
     SEQAN_ASSERT_EQ(length(row(align,0)), length(row(align, 1)));
 
-    if (length(row(align, 0)) == 0u && length(row(align, 1) == 0u))
+    if (length(row(align, 0)) == 0u && length(row(align, 1)) == 0u)
         return true;
 
     TRowIterator itH = begin(row(align, 0), Standard());

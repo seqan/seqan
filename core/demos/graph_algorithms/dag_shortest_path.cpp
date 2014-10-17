@@ -21,12 +21,12 @@ int main()
     // Create external edge property map with edge weights.
     int weights[] = {3, 5, 6, 2, 2, 4, 7, 1, -1, -2};
     String<int> weightMap;
-    assignEdgeMap(g, weightMap, weights);
+    assignEdgeMap(weightMap, g, weights);
 
     // Run DAG shortest path computation from vertex with descriptor 1.
     String<unsigned> predMap;
     String<unsigned> distMap;
-    dagShortestPath(g, 1, weightMap,predMap,distMap);
+    dagShortestPath(predMap,distMap, g, 1, weightMap);
 
     // Print result to stdout.
     std::cout << "Single-Source Shortest Paths in DAG: \n";

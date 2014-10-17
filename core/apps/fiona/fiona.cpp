@@ -996,7 +996,7 @@ inline void fillCorrection(TCorrection &newCorrection,
 {
     //TValue empty=maxValue(readLength);
     //fill Correction struct
-    newCorrection.nextCorrection = maxValue(newCorrection.nextCorrection);  // it will be the last correction in the linked list
+    newCorrection.nextCorrection = maxValue<unsigned>();  // it will be the last correction in the linked list
 #ifndef FIONA_CONSENSUS_REDUCE_MEMORY
     newCorrection.correctReadId = correctReadId;        // only for debugging purposes
     newCorrection.correctPos = correctPos;
@@ -5103,7 +5103,7 @@ parseCommandLine(FionaOptions & options, int argc, char const ** argv)
     addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::INPUT_FILE, "IN"));
     setValidValues(parser, 0, "fa fasta fq fastq");
     setHelpText(parser, 0, "An input file with reads to be corrected.");
-    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::OUTPUTFILE, "OUT"));
+    addArgument(parser, seqan::ArgParseArgument(seqan::ArgParseArgument::OUTPUT_FILE, "OUT"));
     setValidValues(parser, 1, "fa fasta fq fastq");
     setHelpText(parser, 1, "An output file to store the corrected reads.");
 
@@ -5559,7 +5559,7 @@ int main(int argc, const char* argv[])
         if (options.verbosity >= 1)
             std::cerr << std::endl << "Number of families at nodes:" << nfamilies << std::endl;
 		if (options.verbosity >= 1 && options.cycle > 1)
-			std::cerr << std::endl << "Relative change: " << ((float) (nfamprev - nfamilies)) / nfamprev << std::endl;
+			std::cerr << std::endl << "Relative change: " << ((float) (nfamprev - nfamilies)) / (nfamprev == 0u ? 1 : nfamprev) << std::endl;
 
 //		if (options.acceptedMismatches > 0) --options.acceptedMismatches;
 

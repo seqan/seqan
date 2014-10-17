@@ -821,7 +821,7 @@ struct LessSplicedScoreGPos : public ::std::binary_function < TReadMatch, TReadM
 template < typename TMatches >
 void maskDuplicates(TMatches &matches)
 {
-	//typedef typename Value<TMatches>::Type					TMatch;
+	typedef typename Value<TMatches>::Type					TMatch;
 	typedef typename Iterator<TMatches, Standard>::Type		TIterator;
 	
 	//////////////////////////////////////////////////////////////////////////////

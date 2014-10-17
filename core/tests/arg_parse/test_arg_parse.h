@@ -145,7 +145,7 @@ void setupInputFileParser(ArgumentParser & parser)
 
 void setupOutputFileParser(ArgumentParser & parser)
 {
-    addOption(parser, ArgParseOption("o", "out", "set an output file", ArgParseArgument::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "out", "set an output file", ArgParseArgument::OUTPUT_FILE));
 }
 
 SEQAN_DEFINE_TEST(test_unset_value)

@@ -60,7 +60,7 @@ SEQAN_CONCEPT(StringTreeConcept, (TIndex))
     SEQAN_CONCEPT_USAGE(StringTreeConcept)
     {
         // property map interface
-        resizeVertexMap(index, pm);
+        resizeVertexMap(pm, index);
 
         // capacity
         TTopDownIterator iter = begin(index, TopDown<>());
@@ -1175,30 +1175,21 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 //////////////////////////////////////////////////////////////////////////////
 // property map interface
 
-/**
-.Function.resizeVertexMap:
-..cat:Index
-..signature:resizeVertexMap(index, pm)
-..param.index:An index with a suffix tree interface.
-...type:Spec.IndexEsa
-..include:seqan/index.h
-*/
-
 /*!
  * @fn StringTreeConcept#resizeVertexMap
  * @headerfile <seqan/index.h>
  * @brief Initializes a vertex map.
  * 
- * @signature void resizeVertexMap(index, pm);
+ * @signature void resizeVertexMap(pm, index);
  * 
- * @param[in]     index An index with a string tree interface. Types: @link IndexEsa @endlink, @link IndexWotd @endlink
  * @param[in,out] pm    An External Property Map.
+ * @param[in]     index An index with a string tree interface. Types: @link IndexEsa @endlink, @link IndexWotd @endlink
  */
 	template < typename TText, typename TSpec, typename TPropertyMap >
 	inline void
 	resizeVertexMap(
-		Index<TText, TSpec> const& index, 
-		TPropertyMap & pm)
+		TPropertyMap & pm,
+		Index<TText, TSpec> const & index)
 	{
 		resize(pm, 2 * length(index), Generous());
 	}
