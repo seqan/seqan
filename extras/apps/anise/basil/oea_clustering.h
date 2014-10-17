@@ -112,15 +112,15 @@ struct OeaClusterRecord
                      int leftWeight = 0, int rightWeight = 0, int totalWeight = 0) :
             centerPos(centerPos), leftWeight(leftWeight), rightWeight(rightWeight), totalWeight(totalWeight)
     {
-        region.seqId = rID;
+        region.rID = rID;
         region.beginPos = beginPos;
         region.endPos = endPos;
     }
 
     bool operator<(OeaClusterRecord const & other) const
     {
-        return std::make_pair(std::make_pair(region.seqId, region.beginPos), region.endPos) <
-            std::make_pair(std::make_pair(other.region.seqId, other.region.beginPos), other.region.endPos);
+        return std::make_pair(std::make_pair(region.rID, region.beginPos), region.endPos) <
+            std::make_pair(std::make_pair(other.region.rID, other.region.beginPos), other.region.endPos);
     }
 
     // Returns geometric mean of +1 pseudocounts of the left and right weight.

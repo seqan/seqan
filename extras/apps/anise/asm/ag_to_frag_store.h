@@ -191,13 +191,13 @@ public:
              StringSet<String<unsigned> > const & inVertexMap,
              String<unsigned> const & vertexLengths)
     {
-        // { std::ofstream af("aba.dot"); write(af, inGraph, DotDrawing()); }
+        // { std::ofstream af("aba.dot"); writeRecords(af, inGraph, DotDrawing()); }
 
         // Build Enredo graph from inGraph for cycle enumeration.
         TEnredoGraph eg;
         _buildEnredoGraph(eg, inGraph, vertexLengths);
 
-        // { std::ofstream ef("eg.dot"); write(ef, eg, DotDrawing()); }
+        // { std::ofstream ef("eg.dot"); writeRecords(ef, eg, DotDrawing()); }
 
         // Enumerate all small undirected cycles in Enredo graph.
         StringSet<String<unsigned> > smallCycles;  // vertices in eg
@@ -281,7 +281,7 @@ public:
         SEQAN_ASSERT_EQ(numVertices(outGraph), numVertices(inGraph));
         SEQAN_ASSERT_EQ(lengthSum(outVertexMap), lengthSum(inVertexMap));
 
-        // { std::ofstream af("contracted.dot"); write(af, outGraph, DotDrawing()); }
+        // { std::ofstream af("contracted.dot"); writeRecords(af, outGraph, DotDrawing()); }
     }
 
     void _buildEnredoGraph(TEnredoGraph & eg, TGraph const & inGraph, String<unsigned> const & vertexLengths)
@@ -320,7 +320,7 @@ public:
         String<unsigned> treeEdges;
         String<unsigned> edgeWeights;
         resize(edgeWeights, numEdges(graph), 1);
-        kruskalsAlgorithm(graph, /*ignored*/0, edgeWeights, treeEdges);
+        kruskalsAlgorithm(treeEdges, graph, /*ignored*/0, edgeWeights);
 
         // Build set of edges in the MST.
         std::set<std::pair<unsigned, unsigned> > treeSet;
@@ -437,7 +437,7 @@ public:
 
         // Obtain topological sorting of vertices.
         String<unsigned> tmpOrder;
-        topologicalSort(const_cast<TEnredoGraph &>(eg), tmpOrder);
+        topologicalSort(tmpOrder, const_cast<TEnredoGraph &>(eg));
         // for (unsigned i = 0; i < length(tmpOrder); ++i)
         //     std::cerr << "tmpOrder[" << i << "]\t=\t" << tmpOrder[i] << "\n";
         std::vector<std::pair<unsigned, unsigned> > order;
@@ -569,8 +569,8 @@ public:
             if (!_runRound(outGraph, outVertexMap, tmpVertexLengths, tmpGraph, tmpVertexMap, vertexLengths, ag))
                 return;  // outGraph, outVertexMap untouched, return
 #if DEBUG_INCONSISTENT_LEN 
-            { std::stringstream ss; ss << "round_" << round << "_in.dot"; std::ofstream of(ss.str().c_str()); write(of, tmpGraph, DotDrawing()); }
-            { std::stringstream ss; ss << "round_" << round << "_out.dot"; std::ofstream of(ss.str().c_str()); write(of, outGraph, DotDrawing()); }
+            { std::stringstream ss; ss << "round_" << round << "_in.dot"; std::ofstream of(ss.str().c_str()); writeRecords(of, tmpGraph, DotDrawing()); }
+            { std::stringstream ss; ss << "round_" << round << "_out.dot"; std::ofstream of(ss.str().c_str()); writeRecords(of, outGraph, DotDrawing()); }
 #endif  // #if DEBUG_INCONSISTENT_LEN 
             tmpGraph = outGraph;
             tmpVertexMap = outVertexMap;
@@ -1249,13 +1249,13 @@ void removeEdgesBetweenPartitionEntries(Graph<Alignment<TStringSet, TScore> > & 
 // Note that this function relies on the "all mated, adjacent reads" assumption.
 
 template <typename TFragmentStore, typename TSequence, typename TCargo, typename TSetSpec, typename TSpec>
-bool alignmentGraphToFragmentStore(TFragmentStore & store,
-                                   seqan::Graph<seqan::Alignment<seqan::StringSet<TSequence, TSetSpec>, TCargo, TSpec> > const & g,
-                                   seqan::Graph<seqan::Undirected<double> > const & distances,
-                                   seqan::String<unsigned> const & component,
-                                   seqan::String<unsigned> const & order,
-                                   unsigned numComponents,
-                                   bool logging)
+bool alignmentGraphToFragmentStore2(TFragmentStore & store,
+                                    seqan::Graph<seqan::Alignment<seqan::StringSet<TSequence, TSetSpec>, TCargo, TSpec> > const & g,
+                                    seqan::Graph<seqan::Undirected<double> > const & distances,
+                                    seqan::String<unsigned> const & component,
+                                    seqan::String<unsigned> const & order,
+                                    unsigned numComponents,
+                                    bool logging)
 {
     // std::cerr << ">>>>>>>>>>>>\n<<<<<<<<<<<<<<<<\n";
     // NOTE: seqToCluster is indexed by POSITION in the read set of g and not by the ID.
@@ -1293,7 +1293,7 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
     if (logging)
         std::cerr << "# vertices: " << numVertices(distances) << "\n"
                   << "# edges: " << numEdges(distances) << "\n";
-    unsigned numClusters = connectedComponents(distances, seqToCluster);
+    unsigned numClusters = connectedComponents(seqToCluster, distances);
     if (logging)
         std::cerr << "# clusters: " << numClusters << std::endl
                   << "# components: " << numComponents << std::endl;
@@ -1441,10 +1441,10 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
 }
 
 template <typename TFragmentStore, typename TSequence, typename TCargo, typename TSetSpec, typename TSpec>
-bool alignmentGraphToFragmentStore(TFragmentStore & store,
-                                   seqan::Graph<seqan::Alignment<seqan::StringSet<TSequence, TSetSpec>, TCargo, TSpec> > const & g,
-                                   seqan::Graph<seqan::Undirected<double> > const & distances,
-                                   bool logging)
+bool alignmentGraphToFragmentStore2(TFragmentStore & store,
+                                    seqan::Graph<seqan::Alignment<seqan::StringSet<TSequence, TSetSpec>, TCargo, TSpec> > const & g,
+                                    seqan::Graph<seqan::Undirected<double> > const & distances,
+                                    bool logging)
 {
     using namespace seqan;
 	typedef std::map<unsigned, unsigned> TComponentLength;
@@ -1461,7 +1461,7 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
         return false;
     unsigned numComponents = length(order);
 
-    return alignmentGraphToFragmentStore(store, g, distances, component, order, numComponents, logging);
+    return alignmentGraphToFragmentStore2(store, g, distances, component, order, numComponents, logging);
 }
 
 // ---------------------------------------------------------------------------
@@ -1477,7 +1477,7 @@ void alignmentGraphToSmoothFragmentStore(FragmentStore<TSpec, TConfig> & store,
 {
     {
         seqan::FragmentStore<void, MyStoreConfig_> store;
-        bool b = alignmentGraphToFragmentStore(store, ag, distances, logging);
+        bool b = alignmentGraphToFragmentStore2(store, ag, distances, logging);
         (void)b;
         SEQAN_ASSERT(b);
 
@@ -1499,7 +1499,7 @@ void alignmentGraphToSmoothFragmentStore(FragmentStore<TSpec, TConfig> & store,
             if (logging)
             {
                 std::cerr << "FRAGMENT STORE\n";
-                printAlignment(std::cout, seqan::Raw(), layout, store, idx, l, r, 0, 1000);
+                printAlignment(std::cout, layout, store, idx, l, r, 0, 1000);
             }
         }
     }
@@ -1512,7 +1512,7 @@ void alignmentGraphToSmoothFragmentStore(FragmentStore<TSpec, TConfig> & store,
     SEQAN_ASSERT_EQ(lengthSum(vertexMap), numVertices(ag));
     if (DEBUG_INCONSISTENT_LEN)
     {
-        { std::ofstream f3("aba.2.dot"); write(f3, aba, DotDrawing()); }
+        { std::ofstream f3("aba.2.dot"); writeRecords(f3, aba, DotDrawing()); }
         for (unsigned i = 0; i < length(vertexMap); ++i)
             for (unsigned j = 0; j < length(vertexMap[i]); ++j)
                 if (sequenceId(ag, vertexMap[i][j]) == 8)
@@ -1527,7 +1527,7 @@ void alignmentGraphToSmoothFragmentStore(FragmentStore<TSpec, TConfig> & store,
     SEQAN_ASSERT_EQ(lengthSum(vertexMap2), numVertices(ag));
     if (DEBUG_INCONSISTENT_LEN)
     {
-        { std::ofstream f4("aba2.2.dot"); write(f4, aba2, DotDrawing()); }
+        { std::ofstream f4("aba2.2.dot"); writeRecords(f4, aba2, DotDrawing()); }
         for (unsigned i = 0; i < length(vertexMap2); ++i)
             for (unsigned j = 0; j < length(vertexMap2[i]); ++j)
                 if (sequenceId(ag, vertexMap2[i][j]) == 8)
@@ -1543,7 +1543,7 @@ void alignmentGraphToSmoothFragmentStore(FragmentStore<TSpec, TConfig> & store,
     SEQAN_ASSERT_EQ(lengthSum(vertexMap3), numVertices(ag));
     if (DEBUG_INCONSISTENT_LEN)
     {
-        { std::ofstream f4("aba3.2.dot"); write(f4, aba3, DotDrawing()); }
+        { std::ofstream f4("aba3.2.dot"); writeRecords(f4, aba3, DotDrawing()); }
         for (unsigned i = 0; i < length(vertexMap3); ++i)
             for (unsigned j = 0; j < length(vertexMap3[i]); ++j)
                 if (sequenceId(ag, vertexMap3[i][j]) == 8)
@@ -1558,7 +1558,7 @@ void alignmentGraphToSmoothFragmentStore(FragmentStore<TSpec, TConfig> & store,
     SEQAN_ASSERT_EQ(lengthSum(vertexMap4), numVertices(ag));
     if (DEBUG_INCONSISTENT_LEN)
     {
-        { std::ofstream f4("aba4.2.dot"); write(f4, aba4, DotDrawing()); }
+        { std::ofstream f4("aba4.2.dot"); writeRecords(f4, aba4, DotDrawing()); }
         for (unsigned i = 0; i < length(vertexMap4); ++i)
             for (unsigned j = 0; j < length(vertexMap4[i]); ++j)
                 if (sequenceId(ag, vertexMap4[i][j]) == 8)
@@ -1570,7 +1570,7 @@ void alignmentGraphToSmoothFragmentStore(FragmentStore<TSpec, TConfig> & store,
 
     // Remove edges from ag that are in different vertices in the aba4.
     removeEdgesBetweenPartitionEntries(ag, vertexMap4);
-    // write(std::cout, ag, Raw());
+    // writeRecords(std::cout, ag, Raw());
 
     // -----------------------------------------------------------------------
     // Build custom topological order of AG vertices.
@@ -1582,7 +1582,7 @@ void alignmentGraphToSmoothFragmentStore(FragmentStore<TSpec, TConfig> & store,
             abaMap[vertexMap4[i][j]] = i;
     // Obtain topological order of ABA vertices.
     String<unsigned> abaOrder;
-    topologicalSort(aba4, abaOrder);
+    topologicalSort(abaOrder, aba4);
     String<unsigned> abaOrderMap;
     resize(abaOrderMap, length(abaOrder));
     for (unsigned i = 0; i < length(abaOrder); ++i)
@@ -1636,7 +1636,7 @@ void alignmentGraphToSmoothFragmentStore(FragmentStore<TSpec, TConfig> & store,
         order[i] = i;
     numComponents = finalOrderMap.size();
 
-    bool b = alignmentGraphToFragmentStore(store, ag, distances, component, order, numComponents, false);
+    bool b = alignmentGraphToFragmentStore2(store, ag, distances, component, order, numComponents, false);
     (void)b;
     SEQAN_ASSERT(b);
 

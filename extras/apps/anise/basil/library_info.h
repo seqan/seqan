@@ -172,8 +172,8 @@ BamLibraryEstimator::run(BamLibraryInfo & result, char const * path)
     TVecISize vecISize;
 
     // Open SAM/BAM stream.
-    seqan::BamStream bamStream;
-    if (open(bamStream, path) != 0 || !isGood(bamStream))
+    seqan::BamFileIn bamFileIn;
+    if (!open(bamFileIn, path))
     {
         std::cerr << "ERROR: Could not open SAM/BAM file " << path << "\n";
         return 1;
@@ -188,9 +188,13 @@ BamLibraryEstimator::run(BamLibraryInfo & result, char const * path)
 
     // Count.
     seqan::BamAlignmentRecord record;
-    for (int i = 0; !atEnd(bamStream) && (numRecords == 0 || i < numRecords); ++i)
+    for (int i = 0; !atEnd(bamFileIn) && (numRecords == 0 || i < numRecords); ++i)
     {
-        if (readRecord(record, bamStream) != 0)
+        try
+        {
+            readRecord(record, bamFileIn);
+        }
+        catch (seqan::ParseError const & e)
         {
             std::cerr << "Error reading SAM/BAM file.\n";
             return 1;

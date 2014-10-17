@@ -41,7 +41,7 @@
 
 // TODO(holtgrew): Forwards for seqan::stuff
 #include <seqan/sequence.h>
-#include <seqan/graph_types/graph_impl_fragment.h>
+#include <seqan/align/fragment.h>
 
 #include "asm/options.h"
 

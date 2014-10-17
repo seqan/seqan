@@ -119,8 +119,8 @@ void ReadMappingData::mapBatch(seqan::StringSet<seqan::Dna5String> & contigs,
 class ReadLoader
 {
 public:
-    // Reference to the SequenceStream to load sequences from.
-    seqan::SequenceStream & readsIn;
+    // Reference to the SeqFileIn to load sequences from.
+    seqan::SeqFileIn & readsIn;
 
     // The number of reads read from readsIn and the previous number of read reads.
     int numReadReads;
@@ -132,7 +132,7 @@ public:
     // Whether or not we are done here.
     std::atomic<bool> _done;
 
-    ReadLoader(seqan::SequenceStream & readsIn) :
+    ReadLoader(seqan::SeqFileIn & readsIn) :
             readsIn(readsIn), numReadReads(0), prevNumReadReads(0), _done(false)
     {}
 
@@ -158,8 +158,14 @@ std::unique_ptr<ReadMappingData> ReadLoader::loadNextBatch(int batchSize)
     prevNumReadReads = numReadReads;
     for (int i = 0, j = 0; j < batchSize * 2 && !atEnd(readsIn); ++i, ++numReadReads)
     {
-        if (readRecord(id, seq, qual, readsIn) != 0)
+        try
+        {
+            readRecord(id, seq, qual, readsIn);
+        }
+        catch (seqan::ParseError const & e)
+        {
             throw AniseIOException() << "Problem reading reads.";
+        }
         appendValue(result->globalReadIds, prevNumReadReads + i);
         appendValue(result->reads, seq);
         appendValue(result->quals, qual);
@@ -276,14 +282,20 @@ void ReadMappingContigsData::load(std::vector<std::unique_ptr<SiteContextData>> 
 
         // Load contigs.
         std::string path = tmpMgr.fileName(SCAFFOLD_SEQS_TOKEN, SCAFFOLD_SEQS_EXT, siteID, appState.stepNo);
-        seqan::SequenceStream contigsIn(path.c_str());
-        if (!isGood(contigsIn))
+        seqan::SeqFileIn contigsIn;
+        if (!open(contigsIn, path.c_str()))
             throw AniseIOException() << "Problem opening scaffold seqs file " << path;
 
         for (int contigID = 0; !atEnd(contigsIn); ++contigID)
         {
-            if (readRecord(id, seq, contigsIn) != 0)
+            try
+            {
+                readRecord(id, seq, contigsIn);
+            }
+            catch (seqan::ParseError const & e)
+            {
                 throw AniseIOException() << "Problem reading from scaffold seqs file " << path;
+            }
             trimAfterSpace(id);
 
             // std::cerr << "SEQ\t" << seq << "\n";
@@ -512,8 +524,16 @@ void ResultDistributor::run(ReadMappingData & results,
                         siteID, appState.stepNo);
             // Write to SAM file.
             for (auto const & record : out)
-                if (write2(f, record, contexts[siteID]->context, seqan::Sam()) != 0)
+            {
+                try
+                {
+                    write(f, record, contexts[siteID]->context, seqan::Sam());
+                }
+                catch (seqan::IOError const & e)
+                {
                     throw std::runtime_error("Problem writing to reads SAM file.");
+                }
+            }
         }
     }
 }
@@ -616,8 +636,8 @@ private:
     {
         // Open orphans input file.
         std::string inPath = tmpMgr.fileName("orphans", ".fq");
-        seqan::SequenceStream inReads(inPath.c_str());
-        if (!isGood(inReads))
+        seqan::SeqFileIn inReads;
+        if (!open(inReads, inPath.c_str()))
             throw AniseIOException() << "Could not open orphans file for reading " << inPath;
         ReadLoader loader(inReads);
 

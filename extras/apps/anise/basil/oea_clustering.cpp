@@ -68,7 +68,7 @@ struct OeaClusterWithSupport : OeaClusterRecord
 template <typename TStream>
 TStream & operator<<(TStream & stream, OeaClusterWithSupport const & cluster)
 {
-    stream << "(refId=" << cluster.region.seqId << ", center=" << cluster.centerPos
+    stream << "(refId=" << cluster.region.rID << ", center=" << cluster.centerPos
            << ", beginPos=" << cluster.region.beginPos << ", endPos=" << cluster.region.endPos
            << ", supportLeft.size()=" << cluster.supportLeft.size() << " [";
     std::copy(cluster.supportLeft.begin(), cluster.supportLeft.end(),
@@ -885,7 +885,7 @@ public:
     {
         std::vector<unsigned> selectedIds;
         // TODO(holtgrew): totalWeight for cluster weight or pseudocount geometric mean?
-        chainingFilter.push(buffer.size(), cluster.region.seqId, cluster.region.beginPos, cluster.region.endPos,
+        chainingFilter.push(buffer.size(), cluster.region.rID, cluster.region.beginPos, cluster.region.endPos,
                             cluster.totalWeight, std::back_inserter(selectedIds));
         buffer.push_back(cluster);
 

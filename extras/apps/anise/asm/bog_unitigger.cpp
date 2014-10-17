@@ -34,7 +34,7 @@
 
 #include "bog_unitigger.h"
 
-#include <seqan/file.h>
+#include <seqan/stream.h>
 
 #include <lemon/smart_graph.h>
 #include <lemon/connectivity.h>

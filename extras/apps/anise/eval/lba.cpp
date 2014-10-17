@@ -154,17 +154,17 @@ parseCommandLine(LbaOptions & options, int argc, char const ** argv)
     addSection(parser, "Input / Output");
 
     addOption(parser, seqan::ArgParseOption("i0", "in-first", "First FASTA file with reference.",
-                                            seqan::ArgParseOption::INPUTFILE, "FASTA"));
+                                            seqan::ArgParseOption::INPUT_FILE, "FASTA"));
     setValidValues(parser, "in-first", "fasta fa");
     setRequired(parser, "in-first");
 
     addOption(parser, seqan::ArgParseOption("i1", "in-second", "Second FASTA file with reference.",
-                                            seqan::ArgParseOption::INPUTFILE, "FASTA"));
+                                            seqan::ArgParseOption::INPUT_FILE, "FASTA"));
     setValidValues(parser, "in-second", "fasta fa");
     setRequired(parser, "in-second");
 
     addOption(parser, seqan::ArgParseOption("o", "out", "Alignment out file.",
-                                            seqan::ArgParseOption::INPUTFILE, "TXT"));
+                                            seqan::ArgParseOption::INPUT_FILE, "TXT"));
     setValidValues(parser, "out", "txt");
 
     // ----------------------------------------------------------------------
@@ -546,17 +546,14 @@ int main(int argc, char const ** argv)
     // Load both sequences.
     seqan::CharString idH, idV;
     seqan::Dna5String seqH, seqV;
-    seqan::SequenceStream seqIn(options.inSeq0.c_str());
-    if (!isGood(seqIn))
+    seqan::SeqFileIn seqFileIn;
+    if (!open(seqFileIn, options.inSeq0.c_str()))
         throw std::runtime_error("Could not open input file -i0");
-    if (readRecord(idH, seqH, seqIn) != 0)
-        throw std::runtime_error("Problem reading from input file -i0");
+    readRecord(idH, seqH, seqFileIn);
 
-    open(seqIn, options.inSeq1.c_str());
-    if (!isGood(seqIn))
+    if (!open(seqFileIn, options.inSeq1.c_str()))
         throw std::runtime_error("Could not open input file -i1");
-    if (readRecord(idV, seqV, seqIn) != 0)
-        throw std::runtime_error("Problem reading from input file -i1");
+    readRecord(idV, seqV, seqFileIn);
 
     // Get sequence ids from meta line and print in verbose mode.
     trimAfterSpace(idH);

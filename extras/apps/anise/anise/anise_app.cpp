@@ -124,28 +124,28 @@ seqan::ArgumentParser::ParseResult parseCommandLine(AniseOptions & options, int 
     addSection(parser, "Input / Output");
 
     addOption(parser, seqan::ArgParseOption("ir", "input-reference", "Input FASTA file with reference.",
-                                            seqan::ArgParseOption::INPUTFILE, "IN.fa"));
+                                            seqan::ArgParseOption::INPUT_FILE, "IN.fa"));
     setValidValues(parser, "input-reference", "fa fasta");
     setRequired(parser, "input-reference");
 
     addOption(parser, seqan::ArgParseOption("iv", "input-vcf", "Input VCF file with insert site candidates.",
-                                            seqan::ArgParseOption::INPUTFILE, "IN.vcf"));
+                                            seqan::ArgParseOption::INPUT_FILE, "IN.vcf"));
     setValidValues(parser, "input-vcf", "vcf");
     setRequired(parser, "input-vcf");
 
     addOption(parser, seqan::ArgParseOption("im", "input-mapping", "Input SAM/BAM mapping file.",
-                                            seqan::ArgParseOption::INPUTFILE, "IN.{sam,bam}"));
+                                            seqan::ArgParseOption::INPUT_FILE, "IN.{sam,bam}"));
     setValidValues(parser, "input-mapping", "sam bam");
     setRequired(parser, "input-mapping");
 
     addOption(parser, seqan::ArgParseOption("of", "output-fasta", "Output FASTA with contigs",
-                                            seqan::ArgParseOption::OUTPUTFILE, "OUT.fa"));
+                                            seqan::ArgParseOption::OUTPUT_FILE, "OUT.fa"));
     setValidValues(parser, "output-fasta", "fa fasta");
     setRequired(parser, "output-fasta");
 
     addOption(parser, seqan::ArgParseOption("om", "output-mapping", "Output SAM/BAM file with mapping fo reads "
                                             "to contigs in \\fB--output-fasta\\fP.",
-                                            seqan::ArgParseOption::OUTPUTFILE, "OUT.sam"));
+                                            seqan::ArgParseOption::OUTPUT_FILE, "OUT.sam"));
     setValidValues(parser, "output-mapping", "sam bam");
 
     addOption(parser, seqan::ArgParseOption("", "output-debug-dir",
@@ -616,13 +616,13 @@ void AniseAppImpl::checkInput()
 
     // Read / build FAI Index.
     seqan::FaiIndex faiIndex;
-    if (read(faiIndex, toCString(options.inputReference)) != 0)
+    if (!open(faiIndex, toCString(options.inputReference)))
     {
-        if (build(faiIndex, toCString(options.inputReference)) != 0)
+        if (!build(faiIndex, toCString(options.inputReference)))
             throw std::runtime_error("Could not build FAI index.");
         seqan::CharString faiPath = options.inputReference;
         append(faiPath, ".fai");
-        if (write(faiIndex, toCString(faiPath)) != 0)
+        if (save(faiIndex, toCString(faiPath)) != 0)
             throw std::runtime_error("Could not write FAI index.");
     }
 
@@ -631,24 +631,26 @@ void AniseAppImpl::checkInput()
         faiSeqIds.insert(toCString(sequenceName(faiIndex, i)));
 
     // Open BAM Input File.
-    seqan::BamStream bamStream;
-    open(bamStream, toCString(options.inputMapping));
-    if (!isGood(bamStream))
+    seqan::BamFileIn bamFileIn;
+    if (!open(bamFileIn, toCString(options.inputMapping)))
         throw std::runtime_error("Could not open BAM file.");
+    seqan::BamHeader bamHeader;
+    readRecord(bamHeader, bamFileIn);
 
     std::set<std::string> bamSeqIds;
-    for (unsigned i = 0; i < length(bamStream.header.sequenceInfos); ++i)
-        bamSeqIds.insert(toCString(bamStream.header.sequenceInfos[i].i1));
+    for (unsigned i = 0; i < length(nameStore(context(bamFileIn))); ++i)
+        bamSeqIds.insert(toCString(nameStore(context(bamFileIn))[i]));
 
     // Open VCF input file.
-    seqan::VcfStream vcfStream;
-    open(vcfStream, toCString(options.inputVcf));
-    if (!isGood(vcfStream))
+    seqan::VcfFileIn vcfFileIn;
+    if (!open(vcfFileIn, toCString(options.inputVcf)))
         throw std::runtime_error("Could not open input VCF file.");
+    seqan::VcfHeader vcfHeader;
+    readRecord(vcfHeader, vcfFileIn);
 
     std::set<std::string> vcfSeqIds;
-    for (unsigned i = 0; i < length(vcfStream.header.sequenceNames); ++i)
-        vcfSeqIds.insert(toCString(vcfStream.header.sequenceNames[i]));
+    for (unsigned i = 0; i < length(contigNames(context(vcfFileIn))); ++i)
+        vcfSeqIds.insert(toCString(contigNames(context(vcfFileIn))[i]));
 
     if (faiSeqIds.size() != bamSeqIds.size() || vcfSeqIds.size() != bamSeqIds.size() ||
         !std::equal(faiSeqIds.begin(), faiSeqIds.end(), bamSeqIds.begin()) ||

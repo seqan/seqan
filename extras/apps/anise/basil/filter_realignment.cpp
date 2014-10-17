@@ -156,7 +156,11 @@ void RealignmentFilterImpl::realignRecords(std::atomic<unsigned> & atomic)
 #ifdef BASIL_DEBUG
         std::cerr << "Reading region " << sequenceName(faiIndex, shadow.rID) << ":" << (beginPos + 1) << "-" << endPos << "\n";
 #endif  // #ifdef BASIL_DEBUG
-        if (readRegion(refSeq, faiIndex, shadow.rID, beginPos, endPos) != 0)
+        try
+        {
+            readRegion(refSeq, faiIndex, shadow.rID, beginPos, endPos);
+        }
+        catch (seqan::ParseError const & e)
         {
             std::cerr << "ERROR: Could not read region from FASTA file/FAI Index\n";
             exit(1);
@@ -313,7 +317,7 @@ void RealignmentFilterImpl::processBuffer(std::vector<seqan::BamAlignmentRecord 
 
 void RealignmentFilterImpl::init()
 {
-    if (read(faiIndex, toCString(refFilename)) != 0)
+    if (!open(faiIndex, toCString(refFilename)))
         throw BamFilterException("Problem reading FAI index.");
 }
 

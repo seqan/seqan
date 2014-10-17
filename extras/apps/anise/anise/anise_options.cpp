@@ -34,7 +34,7 @@
 
 #include "anise_options.h"
 
-#include <seqan/file.h>
+#include <seqan/stream.h>
 
 namespace   // anonymous namespace
 {

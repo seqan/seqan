@@ -471,7 +471,7 @@ void ContigSplitterImpl::printStore(std::ostream & out, TFragmentStore & store) 
         }
 
         out << ">multi-read-alignment: contig_" << i << "\n";
-        printAlignment(out, seqan::Raw(), layout, store, i, l, r, 0, 1000);
+        printAlignment(out, layout, store, i, l, r, 0, 1000);
     }
 }
 
@@ -797,7 +797,7 @@ void printStore(std::ostream & out, TFragmentStore const & storeC)
         }
 
         out << ">multi-read-alignment: contig_" << i << "\n";
-        printAlignment(out, seqan::Raw(), layout, store, i, l, r, 0, 1000);
+        printAlignment(out, layout, store, i, l, r, 0, 1000);
     }
 }
 

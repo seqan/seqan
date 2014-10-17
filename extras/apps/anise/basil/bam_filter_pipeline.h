@@ -165,8 +165,8 @@ public:
 
     // Return the BamIOContext of the _bamStream.
     TBamIOContext & bamIOContext();
-    // Return the internal BamStream.
-    seqan::BamStream const & bamStream();
+    // Return the internal BamFileIn.
+    seqan::BamFileIn const & bamFileIn();
 
     // Set a callback that is called regularly after having read some records.
     void setProgressCallback(std::function<void()> fun);

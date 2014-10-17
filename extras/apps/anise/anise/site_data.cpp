@@ -105,14 +105,19 @@ private:
 void ScaffoldLoader::loadSequences(Scaffold & scaffold)
 {
     std::string path = tmpMgr.fileName(SCAFFOLD_SEQS_TOKEN, SCAFFOLD_SEQS_EXT, siteID, stepNo);
-    seqan::SequenceStream ss;
-    open(ss, path.c_str());
-    if (!isGood(ss))
+    seqan::SeqFileIn ss;
+    if (!open(ss, path.c_str()))
         throw AniseIOException() << "Could not open scaffold seqs file " << path << " for reading.";
     if (atEnd(ss))
         return;  // empty scaffold
-    if (readAll(scaffold.refNames, scaffold.seqs, ss) != 0)
+    try
+    {
+        readRecords(scaffold.refNames, scaffold.seqs, ss);
+    }
+    catch (seqan::ParseError const & e)
+    {
         throw AniseIOException() << "Problem reading from " << path;
+    }
 
     // Parse out spans_insert info.
     resize(scaffold.scaffoldInfos, length(scaffold.refNames));
@@ -184,12 +189,17 @@ void ScaffoldSaver::saveSequences(Scaffold const & scaffold) const
     }
 
     std::string path = tmpMgr.fileName(SCAFFOLD_SEQS_TOKEN, SCAFFOLD_SEQS_EXT, siteID, stepNo);
-    seqan::SequenceStream ss;
-    open(ss, path.c_str(), seqan::SequenceStream::WRITE);
-    if (!isGood(ss))
+    seqan::SeqFileOut ss;
+    if (!open(ss, path.c_str()))
         throw AniseIOException() << "Could not open scaffold seqs file " << path << " for writing.";
-    if (writeAll(ss, refNames, seqs) != 0)
+    try
+    {
+        writeRecords(ss, refNames, seqs);
+    }
+    catch (seqan::IOError const & e)
+    {
         throw AniseIOException() << "Problem writing to " << path;
+    }
 }
 
 }  // anonymous namespace
@@ -217,8 +227,8 @@ void Scaffold::save(TemporaryFileManager & tmpMgr, int siteID, int stepNo) const
 void ReadSet::load(TemporaryFileManager & manager, int siteID, int stepNo, Scaffold const & scaffold)
 {
     std::string path = manager.fileName(READS_TOKEN, READS_EXT, siteID, stepNo);
-    seqan::BamStream bamStream;
-    if (open(bamStream, path.c_str()) != 0)
+    seqan::BamFileIn bamFileIn;
+    if (!open(bamFileIn, path.c_str()))
         throw AniseIOException() << "Could not open read set SAM file " << path << " for reading.";
 
     // TODO(holtgrew): Check that the reference name are consistent with scaffold.
@@ -229,10 +239,16 @@ void ReadSet::load(TemporaryFileManager & manager, int siteID, int stepNo, Scaff
     std::set<seqan::CharString> seenL, seenR;
 
     seqan::BamAlignmentRecord record;
-    while (!atEnd(bamStream))
+    while (!atEnd(bamFileIn))
     {
-        if (readRecord(record, bamStream) != 0)
+        try
+        {
+            readRecord(record, bamFileIn);
+        }
+        catch (seqan::ParseError const & e)
+        {
             throw AniseIOException() << "Problem reading record from " << path;
+        }
         if (hasFlagSecondary(record))
             continue;  // Skip secondary records.
         if ((hasFlagFirst(record) && seenL.count(record.qName)) ||
@@ -284,27 +300,22 @@ void ReadSet::save(TemporaryFileManager & manager, int siteID, int stepNo, Scaff
     SEQAN_ASSERT_EQ(length(seqs) % 2u, 0u);
 
     std::string path = manager.fileName(READS_TOKEN, READS_EXT, siteID, stepNo);
-    seqan::BamStream bamStream;
-    if (open(bamStream, path.c_str(), seqan::BamStream::WRITE) != 0)
+    seqan::BamFileOut bamFileOut;
+    if (!open(bamFileOut, path.c_str()))
         throw AniseIOException() << "Could not open read set SAM file " << path << " for writing.";
 
     auto trimmedNames = scaffold.refNames;
     for (unsigned i = 0; i < length(trimmedNames); ++i)
         trimAfterSpace(trimmedNames[i]);
 
-    // Fill sequence infos in header.
-    resize(bamStream.header.sequenceInfos, length(scaffold.seqs));
-    for (unsigned i = 0; i < length(scaffold.seqs); ++i)
-    {
-        bamStream.header.sequenceInfos[i].i1 = trimmedNames[i];
-        bamStream.header.sequenceInfos[i].i2 = length(scaffold.seqs[i]);
-    }
+    // Build header.
+    seqan::BamHeader bamHeader;
 
     // Fill header records.
     seqan::BamHeaderRecord hd;
     hd.type = seqan::BAM_HEADER_FIRST;
     setTagValue("VN", "1.5", hd);
-    appendValue(bamStream.header.records, hd);
+    appendValue(bamHeader, hd);
 
     for (unsigned i = 0; i < length(scaffold.seqs); ++i)
     {
@@ -314,13 +325,15 @@ void ReadSet::save(TemporaryFileManager & manager, int siteID, int stepNo, Scaff
         std::stringstream ss;
         ss << length(scaffold.seqs[i]);
         setTagValue("LN", ss.str().c_str(), sq);
-        appendValue(bamStream.header.records, sq);
+        appendValue(bamHeader, sq);
     }
 
     seqan::BamHeaderRecord co;
     co.type = seqan::BAM_HEADER_COMMENT;
     setTagValue("  ", "Temporary read set file file created by ANISE.", co);
-    appendValue(bamStream.header.records, co);
+    appendValue(bamHeader, co);
+
+    writeRecord(bamFileOut, bamHeader);
 
     // Do not write out records of mates with one or more reads that are unaligned and have been mapped too many
     // steps before.  We first collect their names.
@@ -340,8 +353,17 @@ void ReadSet::save(TemporaryFileManager & manager, int siteID, int stepNo, Scaff
 
     // Write out alignment records.
     for (auto const & record : bamRecords)
-        if (!toRemove.count(record.qName) && writeRecord(bamStream, record) != 0)
-            throw AniseIOException() << "Problem writing record to " << path;
+        if (!toRemove.count(record.qName))
+        {
+            try
+            {
+                writeRecord(bamFileOut, record);
+            }
+            catch (seqan::IOError const & e)
+            {
+                throw AniseIOException() << "Problem writing record to " << path;
+            }
+        }
 
     // Write out records for records for removed reads.  By keeping these in, subsequent mappings will be ignored.
     seqan::BamAlignmentRecord removedRecord;
@@ -351,8 +373,14 @@ void ReadSet::save(TemporaryFileManager & manager, int siteID, int stepNo, Scaff
     for (auto const & name : removedReads)
     {
         removedRecord.qName = name;
-        if (writeRecord(bamStream, removedRecord) != 0)
+        try
+        {
+            writeRecord(bamFileOut, removedRecord);
+        }
+        catch (seqan::IOError const & e)
+        {
             throw AniseIOException() << "Problem writing record to " << path;
+        }
     }
 }
 

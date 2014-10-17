@@ -193,19 +193,17 @@ public:
         appState.load(tmpMgr);
 
         // Open output stream.
-        seqan::SequenceStream outSeqs;
-        open(outSeqs, toCString(options.outputFasta), seqan::SequenceStream::WRITE);
-        if (!isGood(outSeqs))
+        seqan::SeqFileOut outSeqs;
+        if (!open(outSeqs, toCString(options.outputFasta)))
             throw StreamingException() << "Could not open output FASTA file " << toCString(options.outputFasta);
 
         // Open output SAM stream and build the header.
-        seqan::BamStream outMapping;
+        seqan::BamFileOut outMapping;
         if (!empty(options.outputMapping))
         {
-            open(outMapping, toCString(options.outputMapping), seqan::BamStream::WRITE);
-            if (!isGood(outMapping))
+            if (!open(outMapping, toCString(options.outputMapping)))
                 throw StreamingException() << "Could not open output mapping file " << toCString(options.outputMapping);
-            outMapping.header = buildBamHeader();
+            writeRecord(outMapping, buildBamHeader());
         }
 
         // Merge the output.
@@ -266,8 +264,14 @@ public:
                 appendValue(refNames, ss.str());
             }
             resize(maskedSeqs, length(refNames));
-            if (writeAll(outSeqs, refNames, maskedSeqs) != 0)
+            try
+            {
+                writeRecords(outSeqs, refNames, maskedSeqs);
+            }
+            catch (seqan::IOError const & e)
+            {
                 throw std::runtime_error("Problem writing to sequences out file.");
+            }
 
             // Remove orphan BAM pairs.
             eraseIf(siteData.readSet.bamRecords, [](seqan::BamAlignmentRecord const & arg) {
@@ -380,7 +384,7 @@ private:
     }
 
     // Write out BAM records after updating reference id.
-    void writeBamRecords(seqan::BamStream & out,
+    void writeBamRecords(seqan::BamFileOut & out,
                          std::vector<seqan::BamAlignmentRecord> & records,
                          int contigOffset)
     {
@@ -409,8 +413,16 @@ private:
                       });
 
         for (auto const & record : records)
-            if (writeRecord(out, record) != 0)
+        {
+            try
+            {
+                writeRecord(out, record);
+            }
+            catch (seqan::IOError const & e)
+            {
                 throw std::runtime_error("Problem writing to output mapping file.");
+            }
+        }
     }
 
     // Load the scaffolds for each site and write them to the output file.
@@ -426,13 +438,13 @@ private:
         hd.type = seqan::BAM_HEADER_FIRST;
         setTagValue("VN", "1.4", hd);
         setTagValue("SO", "coordinate", hd);
-        appendValue(bamHeader.records, hd);
+        appendValue(bamHeader, hd);
         seqan::BamHeaderRecord pg;
         pg.type = seqan::BAM_HEADER_PROGRAM;
         setTagValue("ID", "anise", pg);
         setTagValue("PN", "anise", pg);
         setTagValue("CL", options.commandLine.c_str(), pg);
-        appendValue(bamHeader.records, pg);
+        appendValue(bamHeader, pg);
 
         seqan::StringSet<seqan::CharString> ids, seqs;
         for (int siteID = 0; siteID < appState.numSites; ++siteID)
@@ -445,23 +457,22 @@ private:
 
             // Open scaffold seqs file.
             std::string path = tmpMgr.fileName(SCAFFOLD_SEQS_TOKEN, SCAFFOLD_SEQS_EXT, siteID, siteState.stepNo);
-            seqan::SequenceStream inSeqs;
-            open(inSeqs, path.c_str());
-            if (atEnd(inSeqs))
-                continue;  // Ignore if no usable assembly in first place.
-            if (!isGood(inSeqs))
+            seqan::SeqFileIn inSeqs;
+            if (!open(inSeqs, path.c_str()))
                 throw StreamingException() << "Could not open temporary scaffold seqs file " << path.c_str();
-            if (readAll(ids, seqs, inSeqs) != 0)
+            try
+            {
+                readRecords(ids, seqs, inSeqs);
+            }
+            catch (seqan::IOError const & e)
+            {
                 throw StreamingException() << "Could not read from temporary scaffold seqs file " << path.c_str();
+            }
 
             // Fill sequenceInfos and @SQ headers.
             for (unsigned i = 0; i < limitRID(length(ids)); ++i)
             {
                 trimAfterSpace(ids[i]);
-
-                resize(bamHeader.sequenceInfos, length(bamHeader.sequenceInfos) + 1);
-                back(bamHeader.sequenceInfos).i1 = ids[i];
-                back(bamHeader.sequenceInfos).i2 = length(seqs[i]);
 
                 seqan::BamHeaderRecord sq;
                 sq.type = seqan::BAM_HEADER_REFERENCE;
@@ -469,7 +480,7 @@ private:
                 std::stringstream ss;
                 ss << length(seqs[i]);
                 setTagValue("LN", ss.str().c_str(), sq);
-                appendValue(bamHeader.records, sq);
+                appendValue(bamHeader, sq);
             }
 
             // Advance progress bar.

@@ -51,9 +51,9 @@ namespace  // anonymous
 bool leftOf(seqan::GenomicRegion const & lhs,
             seqan::GenomicRegion const & rhs)
 {
-    if (lhs.seqId < rhs.seqId)
+    if (lhs.rID < rhs.rID)
         return true;
-    if (lhs.seqId > rhs.seqId)
+    if (lhs.rID > rhs.rID)
         return false;
     if (lhs.endPos <= rhs.beginPos)
         return true;
@@ -71,7 +71,7 @@ bool leftOf(seqan::GenomicRegion const & lhs,
 bool doOverlap(seqan::GenomicRegion const & lhs,
                seqan::GenomicRegion const & rhs)
 {
-    if (lhs.seqId != rhs.seqId)
+    if (lhs.rID != rhs.rID)
         return false;
     return (lhs.beginPos < rhs.endPos && rhs.beginPos < lhs.endPos);
 }
@@ -103,7 +103,7 @@ public:
 
     bool _isInCluster(OeaClusterRecord const & oea, ClippingClusterRecord const & clipping)
     {
-        return (oea.region.seqId == clipping.region.seqId &&
+        return (oea.region.rID == clipping.region.rID &&
                 oea.region.beginPos <= clipping.region.beginPos &&
                 oea.region.endPos >= clipping.region.endPos);
     }
@@ -167,7 +167,7 @@ void ClusterMatchingImpl::run(std::vector<std::pair<OeaClusterRecord, ClippingCl
         for (TOeaIter itOea = itOeaEnd++; itOeaEnd != oeaClusters.end(); ++itOeaEnd, ++itOea)
             if (!_doOverlap(*itOea, *itOeaEnd))
                 break;
-        // std::cerr << "OEA interval: (size = " << (itOeaEnd - itOeaBegin) << ") " << itOeaBegin->region.seqId << "\t"
+        // std::cerr << "OEA interval: (size = " << (itOeaEnd - itOeaBegin) << ") " << itOeaBegin->region.rID << "\t"
         //           << (itOeaBegin->region.beginPos + 1) << "\t" << (itOeaEnd - 1)->region.endPos << "\n";
         // for (TOeaIter it = itOeaBegin; it != itOeaEnd; ++it)
         //     std::cerr << "OEA\t" << *it << "\n";

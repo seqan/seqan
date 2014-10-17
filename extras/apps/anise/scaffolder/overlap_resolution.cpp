@@ -39,7 +39,7 @@
 #include <string>
 
 #include <seqan/sequence.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 
 #include "asm/overlapper.h"
 

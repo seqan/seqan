@@ -149,19 +149,18 @@ private:
     // Returns true if the orphans exist.
     bool orphansFastqExists(std::string const & path);
 
-    // The BamStream to use for reading the reads and the BamIndex to use for jumping.
-    seqan::BamStream bamStream;
+    // The BamFileIn to use for reading the reads and the BamIndex to use for jumping.
+    seqan::BamFileIn bamFileIn;
     seqan::BamIndex<seqan::Bai> bamIndex;
-    // The SequenceStream to use for writing orphans.
-    seqan::SequenceStream orphansStream;
+    // The SeqFileOut to use for writing orphans.
+    seqan::SeqFileOut orphansFileOut;
     // The options to use.
     AniseOptions const & options;
 };
 
 bool OrphanExtractor::orphansFastqExists(std::string const & path)
 {
-    open(orphansStream, path.c_str(), seqan::SequenceStream::READ);
-    return isGood(orphansStream);
+    return open(orphansFileOut, path.c_str());
 }
 
 size_t OrphanExtractor::createFastq(TemporaryFileManager & tmpMgr)
@@ -173,28 +172,28 @@ size_t OrphanExtractor::createFastq(TemporaryFileManager & tmpMgr)
         return seqan::maxValue<size_t>();  // OK, exists
 
     // Open orphans file for writing.
-    open(orphansStream, path.c_str(), seqan::SequenceStream::WRITE);
-    if (!isGood(orphansStream))
+    if (!open(orphansFileOut, path.c_str()))
         throw std::runtime_error("Could not open orphans FASTQ file for writing!");
 
     // Open BAM and BAI file.
-    open(bamStream, toCString(options.inputMapping));
-    if (!isGood(bamStream))
+    if (!open(bamFileIn, toCString(options.inputMapping)))
         throw std::runtime_error("Could not open input mapping for orphans extraction!");
     seqan::CharString baiFilename = options.inputMapping;
     append(baiFilename, ".bai");
     seqan::BamIndex<seqan::Bai> bamIndex;
-    if (read(bamIndex, toCString(baiFilename)) != 0)
+    if (open(bamIndex, toCString(baiFilename)))
         throw std::runtime_error("Could not open BAI file for orphans extraction!");
 
     // Jump to orphans.
-    if (!jumpToOrphans(bamStream, bamIndex))
+    bool hasAlignments = false;
+    if (!jumpToOrphans(bamFileIn, hasAlignments, bamIndex))
         throw std::runtime_error("Could not jump to orphans in BAM file.");
+    (void)hasAlignments;
 
     // Computation for progress display and progress bar for this.
     unsigned const MIB = 1024 * 1024;
-    __int64 pos = positionInFile(bamStream) / MIB;
-    __int64 size = fileSize(bamStream) / MIB;
+    __int64 pos = position(bamFileIn) / MIB;
+    __int64 size = fileSize(bamFileIn) / MIB;
     unsigned const MAX_BATCH_SIZE = 1000;
     unsigned batchSize = 0;
     ProgressBar pb(std::cerr, pos, size, (options.verbosity == AniseOptions::NORMAL));
@@ -203,23 +202,28 @@ size_t OrphanExtractor::createFastq(TemporaryFileManager & tmpMgr)
 
     // Actually read the orphans.
     seqan::BamAlignmentRecord recordL, recordR;
-    while (!atEnd(bamStream))
+    while (!atEnd(bamFileIn))
     {
         // Read pair of orphans.
-        if (readRecord(recordL, bamStream) != 0)
-            throw std::runtime_error("Could not read first mate record from BAM file.");
-        if (!hasFlagUnmapped(recordL) || !hasFlagNextUnmapped(recordL))
-            throw std::runtime_error("First mate record is not an orphans!");
-        if (readRecord(recordR, bamStream) != 0)
-            throw std::runtime_error("Could not read second mate record from BAM file.");
-        if (!hasFlagUnmapped(recordR) || !hasFlagNextUnmapped(recordR))
-            throw std::runtime_error("Second mate record is not an orphans!");
+        try
+        {
+            readRecord(recordL, bamFileIn);
+            if (!hasFlagUnmapped(recordL) || !hasFlagNextUnmapped(recordL))
+                throw std::runtime_error("First mate record is not an orphans!");
+            readRecord(recordR, bamFileIn);
+            if (!hasFlagUnmapped(recordR) || !hasFlagNextUnmapped(recordR))
+                throw std::runtime_error("Second mate record is not an orphans!");
+        }
+        catch (seqan::ParseError const & e)
+        {
+            throw std::runtime_error("Could not read record from BAM file.");
+        }
 
         // Update progress bar.
         if (++batchSize > MAX_BATCH_SIZE)
         {
             batchSize = 0;
-            pos = positionInFile(bamStream);
+            pos = position(bamFileIn);
             pb.advanceTo(pos / MIB);
         }
 
@@ -240,10 +244,15 @@ size_t OrphanExtractor::createFastq(TemporaryFileManager & tmpMgr)
         }
 
         // Write out left and right mate of orphan pair.
-        if (writeRecord(orphansStream, recordL.qName, recordL.seq, recordL.qual) != 0)
-            throw std::runtime_error("Could not write first mate to orphans FASTQ file.");
-        if (writeRecord(orphansStream, recordR.qName, recordR.seq, recordR.qual) != 0)
-            throw std::runtime_error("Could not write second mate to orphans FASTQ file.");
+        try
+        {
+            writeRecord(orphansFileOut, recordL.qName, recordL.seq, recordL.qual);
+            writeRecord(orphansFileOut, recordR.qName, recordR.seq, recordR.qual);
+        }
+        catch (seqan::ParseError const & e)
+        {
+            throw std::runtime_error("Could not write to orphans FASTQ file.");
+        }
 
         numOrphans += 2;
     }
@@ -252,7 +261,7 @@ size_t OrphanExtractor::createFastq(TemporaryFileManager & tmpMgr)
     pb.finish();
 
     // Manually close orphans stream to protect against crashes later that might have kep the stream unflushed.
-    close(orphansStream);
+    close(orphansFileOut);
     
     return numOrphans;
 }
@@ -286,8 +295,8 @@ private:
     // Write tags with original rID, position, and cigar string.
     void updateRecordTags(seqan::BamAlignmentRecord & record) const;
 
-    // The BamStream to use for reading the records.
-    seqan::BamStream bamStream;
+    // The BamFileIn to use for reading the records.
+    seqan::BamFileIn bamFileIn;
     // The class to use for reading the BAI files.
     seqan::BamIndex<seqan::Bai> bamIndex;
     // The configuration, used for the BAM path.
@@ -296,15 +305,14 @@ private:
 
 AlignmentExtractor::AlignmentExtractor(AniseOptions const & options) : options(options)
 {
-    // Open BamStream.
-    open(bamStream, toCString(options.inputMapping));
-    if (!isGood(bamStream))
+    // Open bamFileIn.
+    if (!open(bamFileIn, toCString(options.inputMapping)))
         throw std::runtime_error("Could not open BAM mapping file for reading.");
 
     // Read BAI file.
     std::string baiPath = toCString(options.inputMapping);
     baiPath.append(".bai");
-    if (read(bamIndex, baiPath.c_str()) != 0)
+    if (!open(bamIndex, baiPath.c_str()))
         throw std::runtime_error("Could not read BAI file.");
 }
 
@@ -324,11 +332,11 @@ void AlignmentExtractor::run(ReadSet & readSet, AssemblySiteState const & siteSt
 void AlignmentExtractor::jumpToRegion(AssemblySiteState const & siteState)
 {
     int pos = std::max(0, siteState.pos - options.maxFragmentSize());
-    int endPos = bamStream.header.sequenceInfos[siteState.rID].i2;;
+    int endPos = sequenceLengths(context(bamFileIn))[siteState.rID];
     if (siteState.pos + 2 * options.maxFragmentSize() < endPos)
         endPos = siteState.pos + 2 * options.maxFragmentSize();
     bool hasAlignments = false;
-    if (!seqan::jumpToRegion(bamStream, hasAlignments, siteState.rID, pos, endPos, bamIndex))
+    if (!seqan::jumpToRegion(bamFileIn, hasAlignments, siteState.rID, pos, endPos, bamIndex))
         throw std::runtime_error("Could not jump in alignment file.");
     if (!hasAlignments)
     {
@@ -343,10 +351,16 @@ void AlignmentExtractor::firstPass(ReadSet & readSet, std::set<seqan::CharString
 {
     (void)range;  // TODO(holtgrew): Will be needed again when we update beginpos
     seqan::BamAlignmentRecord record;
-    while (!atEnd(bamStream))
+    while (!atEnd(bamFileIn))
     {
-        if (readRecord(record, bamStream) != 0)
+        try
+        {
+            readRecord(record, bamFileIn);
+        }
+        catch (seqan::ParseError const & e)
+        {
             throw std::runtime_error("Problem reading from BAM file.");
+        }
         updateRecordTags(record);
         if (record.rID == seqan::BamAlignmentRecord::INVALID_REFID || record.rID != siteState.rID ||
             record.beginPos > siteState.pos + options.maxFragmentSize())
@@ -451,10 +465,16 @@ void AlignmentExtractor::secondPass(ReadSet & readSet, std::set<seqan::CharStrin
     // TODO(holtgrew): Require minimal clipping size?
     // TODO(holtgrew): Allow only one clipped mate?
     seqan::BamAlignmentRecord record;
-    while (!atEnd(bamStream))
+    while (!atEnd(bamFileIn))
     {
-        if (readRecord(record, bamStream) != 0)
+        try
+        {
+            readRecord(record, bamFileIn);
+        }
+        catch (seqan::ParseError const & e)
+        {
             throw std::runtime_error("Problem reading from BAM file.");
+        }
         updateRecordTags(record);
         if (record.rID == seqan::BamAlignmentRecord::INVALID_REFID || record.rID != siteState.rID ||
             record.beginPos > siteState.pos + options.maxFragmentSize())
@@ -559,7 +579,7 @@ void AlignmentExtractor::updateRecordTags(seqan::BamAlignmentRecord & record) co
 
     seqan::BamTagsDict tagsDict(record.tags);
     setTagValue(tagsDict, KEY_BIRTH_STEP, 0);  // mapped in step 0
-    setTagValue(tagsDict, KEY_ORIG_REF, toCString(bamStream.header.sequenceInfos[record.rID].i1));  // original ref
+    setTagValue(tagsDict, KEY_ORIG_REF, toCString(nameStore(context(bamFileIn))[record.rID]));
     setTagValue(tagsDict, KEY_ORIG_STRAND, label[!!hasFlagRC(record)]);
     setTagValue(tagsDict, KEY_ORIG_POS, record.beginPos + 1);  // original pos
     setTagValue(tagsDict, KEY_ORIG_CIGAR, ss.str().c_str());  // original CIGAR string
@@ -618,8 +638,8 @@ private:
     OrphanExtractor orphanExtractor;
     // Used for reading the reference sequence.
     seqan::FaiIndex faiIndex;
-    // The VcfStream to use for reading VCF records.
-    seqan::VcfStream vcfStream;
+    // The VcfFileIn to use for reading VCF records.
+    seqan::VcfFileIn vcfFileIn;
 };
 
 void PreparationStepImpl::run()
@@ -650,26 +670,32 @@ void PreparationStepImpl::run()
 unsigned PreparationStepImpl::prepareExtraction()
 {
     // Count VCF records.
-    open(vcfStream, toCString(options.inputVcf));
-    if (!isGood(vcfStream))
+    if (!open(vcfFileIn, toCString(options.inputVcf)))
         throw std::runtime_error("Could not open input VCF file for site extraction.");
     unsigned numSites = 0;
     seqan::VcfRecord record;
-    for (; !atEnd(vcfStream); ++numSites)
-        if (readRecord(record, vcfStream) != 0)
+    for (; !atEnd(vcfFileIn); ++numSites)
+    {
+        try
+        {
+            readRecord(record, vcfFileIn);
+        }
+        catch (seqan::ParseError const & e)
+        {
             throw std::runtime_error("Problem reading from VCF file.");
+        }
+    }
 
     // Open VCF file.
-    open(vcfStream, toCString(options.inputVcf));
-    if (!isGood(vcfStream))
+    if (!open(vcfFileIn, toCString(options.inputVcf)))
         throw std::runtime_error("Could not open input VCF file for site extraction.");
 
     // Build index for FASTA file and write out to disk.
-    if (read(faiIndex, toCString(options.inputReference)) != 0)
+    if (!open(faiIndex, toCString(options.inputReference)))
     {
-        if (build(faiIndex, toCString(options.inputReference)) != 0)
+        if (!build(faiIndex, toCString(options.inputReference)))
             throw std::runtime_error("Could read FASTA file.");
-        if (write(faiIndex) != 0)
+        if (!save(faiIndex))
             throw std::runtime_error("Could not write out FAI file.");
     }
 
@@ -683,7 +709,7 @@ void PreparationStepImpl::extractSites(unsigned numSites)
     pb.setLabel("  extracted sites");
     pb.updateDisplay();
 
-    // Mutex to use for access to vcfStream and index of current site.
+    // Mutex to use for access to vcfFileIn and index of current site.
     std::mutex mutex;
     std::atomic<int> nextSiteID(0);
 
@@ -694,16 +720,22 @@ void PreparationStepImpl::extractSites(unsigned numSites)
         // This VcfRecord is used by this thread.
         seqan::VcfRecord record;
 
-        while (!atEnd(vcfStream))
+        while (!atEnd(vcfFileIn))
         {
             int siteID = -1;
             // Read the record and get site ID.
             {
                 std::lock_guard<std::mutex> lock(mutex);
-                if (atEnd(vcfStream))
+                if (atEnd(vcfFileIn))
                     return;
-                if (readRecord(record, vcfStream) != 0)
+                try
+                {
+                    readRecord(record, vcfFileIn);
+                }
+                catch (seqan::ParseError const & e)
+                {
                     throw std::runtime_error("Problem reading from VCF file.");
+                }
                 siteID = nextSiteID.fetch_add(1);
             }
 
@@ -765,7 +797,7 @@ AssemblySiteState PreparationStepImpl::createInitialSiteState(seqan::VcfRecord c
 {
     AssemblySiteState result(siteID);
     result.rID = record.rID;
-    result.refName = toCString(vcfStream.header.sequenceNames[record.rID]);
+    result.refName = toCString(contigNames(context(vcfFileIn))[record.rID]);
     result.pos = record.beginPos;
     result.stepNo = 0;
     result.active = true;
@@ -797,11 +829,15 @@ std::pair<int, int> PreparationStepImpl::extractInitialRefSeqs(Scaffold & scaffo
 
     // Get left and right contig sequence.
     resize(scaffold.seqs, 2);
-    int res = 0;
-    if ((res = readRegion(scaffold.seqs[0], faiIndex, siteState.rID, leftBeginPos, leftEndPos)) != 0)
-        throw std::runtime_error("Problem reading left scaffold seq.");
-    if ((res = readRegion(scaffold.seqs[1], faiIndex, siteState.rID, rightBeginPos, rightEndPos)) != 0)
-        throw std::runtime_error("Problem reading right scaffold seq.");
+    try
+    {
+        readRegion(scaffold.seqs[0], faiIndex, siteState.rID, leftBeginPos, leftEndPos);
+        readRegion(scaffold.seqs[1], faiIndex, siteState.rID, rightBeginPos, rightEndPos);
+    }
+    catch (seqan::ParseError const & e)
+    {
+        throw std::runtime_error("Problem reading scaffold seq.");
+    }
 
     return std::make_pair(leftBeginPos, rightEndPos);
 }

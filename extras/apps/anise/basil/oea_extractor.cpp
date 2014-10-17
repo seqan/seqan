@@ -85,7 +85,7 @@ private:
     OeaExtractorOptions options;
 
     // Input and output BAM stream.
-    seqan::BamStream outStream;
+    seqan::BamFileOut bamFileOut;
 };
 
 seqan::ArgumentParser::ParseResult OeaExtractorApp::parseCommandLine(int argc, char const ** argv)
@@ -114,13 +114,13 @@ seqan::ArgumentParser::ParseResult OeaExtractorApp::parseCommandLine(int argc, c
 
     // Define OeaExtractorOptions -- Input / Output Related
     addSection(parser, "Input / Output Options");
-    addOption(parser, seqan::ArgParseOption("im", "input-mapping", "SAM/BAM file to use as the input.", seqan::ArgParseOption::INPUTFILE, "IN"));
+    addOption(parser, seqan::ArgParseOption("im", "input-mapping", "SAM/BAM file to use as the input.", seqan::ArgParseOption::INPUT_FILE, "IN"));
     setRequired(parser, "input-mapping");
     setValidValues(parser, "input-mapping", "sam bam");
-    addOption(parser, seqan::ArgParseOption("om", "output-oeas", "SAM/BAM file to write to", seqan::ArgParseOption::OUTPUTFILE, "OUT"));
+    addOption(parser, seqan::ArgParseOption("om", "output-oeas", "SAM/BAM file to write to", seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
     setRequired(parser, "output-oeas");
     setValidValues(parser, "output-oeas", "sam bam");
-    addOption(parser, seqan::ArgParseOption("of", "output-orphans", "FASTA file to write to", seqan::ArgParseOption::OUTPUTFILE, "OUT"));
+    addOption(parser, seqan::ArgParseOption("of", "output-orphans", "FASTA file to write to", seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
     setRequired(parser, "output-orphans");
     setValidValues(parser, "output-orphans", "fq fastq");
 
@@ -170,14 +170,14 @@ void OeaExtractorApp::runPipeline()
 
     // Setup BamReader with progress callback.
     BamReader bamReader(bamReaderOptions);
-    outStream.header = bamReader.bamStream().header;
+    bamFileOut.header = bamReader.bamFileIn().header;
     // Setup progress indicator.
     unsigned long long const MIB = 1024 * 1024;
-    progress.reset(new ProgressBar(std::cerr, 0, fileSize(bamReader.bamStream()) / MIB,
+    progress.reset(new ProgressBar(std::cerr, 0, fileSize(bamReader.bamFileIn()) / MIB,
                                    (options.verbosity == 1)));
     progress->setLabel(toCString(bamReaderOptions.bamFileName));
     progress->updateDisplay();
-    auto callback = [&bamReader,&progress,MIB] { progress->advanceTo(positionInFile(bamReader.bamStream()) / MIB); };
+    auto callback = [&bamReader,&progress,MIB] { progress->advanceTo(position(bamReader.bamFileIn()) / MIB); };
     bamReader.setProgressCallback(callback);
     int BUFFER_SIZE = 2;
     BamFilter bamFilter(bamReader.bamIOContext(), bamFilterOptions);
@@ -224,19 +224,25 @@ void OeaExtractorApp::runPipeline()
         setTagValue(tagsDict, "NS", toCString(shadow->seq));
         setTagValue(tagsDict, "NQ", toCString(shadow->qual));
 
-        if (writeRecord(outStream, *anchor) != 0)
+        try
+        {
+            writeRecord(bamFileOut, *anchor);
+        }
+        catch (seqan::IOError const & e)
+        {
             throw OeaExtractorAppException("Problem writing SAM record.");
+        }
         first = true;
     };
 
-    // Consume records and write them to outStream.
+    // Consume records and write them to bamFileOut.
     threads.push_back(std::thread(
             [&]() {
                 TQueue::QueueResult res;
                 std::vector<seqan::BamAlignmentRecord *> buffer;
                 while ((res = pipeline.backQueue().pop(buffer)) == TQueue::OK)
                 {
-                    // Write to outStream.
+                    // Write to bamFileOut.
                     for (auto ptr : buffer)
                     {
                         writePairRecord(*ptr);
@@ -285,8 +291,7 @@ int OeaExtractorApp::run(int argc, char const ** argv)
 
     if (options.verbosity >= 1)
         std::cerr << "Extracting OEA alignments...\n";
-    open(outStream, toCString(options.outputOeaFile), seqan::BamStream::WRITE);
-    if (!isGood(outStream))
+    if (!open(bamFileOut, toCString(options.outputOeaFile)))
         throw OeaExtractorAppException("Could not open output OEA file for writing.");
     runPipeline();
 

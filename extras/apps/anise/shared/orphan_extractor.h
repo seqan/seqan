@@ -75,11 +75,11 @@ private:
     // Create the orphans.fq file.  Returns seqan::maxValue<size_t>() if exists already.
     size_t createFastq();
 
-    // The BamStream to use for reading the reads and the BamIndex to use for jumping.
-    seqan::BamStream bamStream;
+    // The BamFileIn to use for reading the reads and the BamIndex to use for jumping.
+    seqan::BamFileIn bamFileIn;
     seqan::BamIndex<seqan::Bai> bamIndex;
     // The SequenceStream to use for writing orphans.
-    seqan::SequenceStream orphansStream;
+    seqan::SeqFileOut orphansFileOut;
 
     // The options to use.
     std::string bamInFile;
@@ -92,28 +92,28 @@ size_t OrphanExtractor::createFastq()
     size_t numOrphans = 0;
 
     // Open orphans file for writing.
-    open(orphansStream, fastqOutFile.c_str(), seqan::SequenceStream::WRITE);
-    if (!isGood(orphansStream))
+    if (!open(orphansFileOut, fastqOutFile.c_str()))
         throw std::runtime_error("Could not open orphans FASTQ file for writing!");
 
     // Open BAM and BAI file.
-    open(bamStream, bamInFile.c_str());
-    if (!isGood(bamStream))
+    if (!open(bamFileIn, bamInFile.c_str()))
         throw std::runtime_error("Could not open input mapping for orphans extraction!");
     seqan::CharString baiFilename = bamInFile;
     append(baiFilename, ".bai");
     seqan::BamIndex<seqan::Bai> bamIndex;
-    if (read(bamIndex, toCString(baiFilename)) != 0)
+    if (!open(bamIndex, toCString(baiFilename)))
         throw std::runtime_error("Could not open BAI file for orphans extraction!");
 
     // Jump to orphans.
-    if (!jumpToOrphans(bamStream, bamIndex))
+    bool hasAlignments = false;
+    if (!jumpToOrphans(bamFileIn, hasAlignments, bamIndex))
         throw std::runtime_error("Could not jump to orphans in BAM file.");
+    (void)hasAlignments;
 
     // Computation for progress display and progress bar for this.
     unsigned const MIB = 1024 * 1024;
-    __int64 pos = positionInFile(bamStream) / MIB;
-    __int64 size = fileSize(bamStream) / MIB;
+    __int64 pos = position(bamFileIn) / MIB;
+    __int64 size = fileSize(bamFileIn) / MIB;
     unsigned const MAX_BATCH_SIZE = 1000;
     unsigned batchSize = 0;
     ProgressBar pb(std::cerr, pos, size, verbosity == 1);
@@ -122,15 +122,20 @@ size_t OrphanExtractor::createFastq()
 
     // Actually read the orphans.
     seqan::BamAlignmentRecord recordL, recordR;
-    while (!atEnd(bamStream))
+    while (!atEnd(bamFileIn))
     {
         // Read pair of orphans.
-        if (readRecord(recordL, bamStream) != 0)
-            throw std::runtime_error("Could not read first mate record from BAM file.");
+        try
+        {
+            readRecord(recordL, bamFileIn);
+            readRecord(recordR, bamFileIn);
+        }
+        catch (seqan::ParseError const & e)
+        {
+            throw std::runtime_error("Could not read second mate record from BAM file.");
+        }
         if (!hasFlagUnmapped(recordL) || !hasFlagNextUnmapped(recordL))
             throw std::runtime_error("First mate record is not an orphans!");
-        if (readRecord(recordR, bamStream) != 0)
-            throw std::runtime_error("Could not read second mate record from BAM file.");
         if (!hasFlagUnmapped(recordR) || !hasFlagNextUnmapped(recordR))
             throw std::runtime_error("Second mate record is not an orphans!");
 
@@ -138,7 +143,7 @@ size_t OrphanExtractor::createFastq()
         if (++batchSize > MAX_BATCH_SIZE)
         {
             batchSize = 0;
-            pos = positionInFile(bamStream);
+            pos = position(bamFileIn);
             pb.advanceTo(pos / MIB);
         }
 
@@ -159,10 +164,15 @@ size_t OrphanExtractor::createFastq()
         }
 
         // Write out left and right mate of orphan pair.
-        if (writeRecord(orphansStream, recordL.qName, recordL.seq, recordL.qual) != 0)
-            throw std::runtime_error("Could not write first mate to orphans FASTQ file.");
-        if (writeRecord(orphansStream, recordR.qName, recordR.seq, recordR.qual) != 0)
-            throw std::runtime_error("Could not write second mate to orphans FASTQ file.");
+        try
+        {
+            writeRecord(orphansFileOut, recordL.qName, recordL.seq, recordL.qual);
+            writeRecord(orphansFileOut, recordR.qName, recordR.seq, recordR.qual);
+        }
+        catch (seqan::IOError const & e)
+        {
+            throw std::runtime_error("Could not write second to orphans FASTQ file.");
+        }
 
         numOrphans += 2;
     }
@@ -171,7 +181,7 @@ size_t OrphanExtractor::createFastq()
     pb.finish();
 
     // Manually close orphans stream to protect against crashes later that might have kep the stream unflushed.
-    close(orphansStream);
+    close(orphansFileOut);
     
     return numOrphans;
 }

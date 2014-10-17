@@ -202,13 +202,13 @@ seqan::ArgumentParser::ParseResult BasilOptions::parseCommandLine(int argc, char
 
     // Define BasilOptions -- Input / Output Related
     addSection(parser, "Input / Output BasilOptions");
-    addOption(parser, seqan::ArgParseOption("ir", "input-reference", "FASTA file with the reference. Required when using", seqan::ArgParseOption::INPUTFILE, "REF.fa"));
+    addOption(parser, seqan::ArgParseOption("ir", "input-reference", "FASTA file with the reference. Required when using", seqan::ArgParseOption::INPUT_FILE, "REF.fa"));
     setRequired(parser, "input-reference");
     setValidValues(parser, "input-reference", "fasta fa");
-    addOption(parser, seqan::ArgParseOption("im", "input-mapping", "SAM/BAM file to use as the input.", seqan::ArgParseOption::INPUTFILE, "IN"));
+    addOption(parser, seqan::ArgParseOption("im", "input-mapping", "SAM/BAM file to use as the input.", seqan::ArgParseOption::INPUT_FILE, "IN"));
     setRequired(parser, "input-mapping");
     setValidValues(parser, "input-mapping", "sam bam");
-    addOption(parser, seqan::ArgParseOption("ov", "out-vcf", "VCF file to write variations to. Use \"-\" for stdout.", seqan::ArgParseOption::OUTPUTFILE, "OUT"));
+    addOption(parser, seqan::ArgParseOption("ov", "out-vcf", "VCF file to write variations to. Use \"-\" for stdout.", seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
     setDefaultValue(parser, "out-vcf", "-");
     setValidValues(parser, "out-vcf", "vcf");
     addOption(parser, seqan::ArgParseOption("", "output-debug-dir", "Directory for debug output files.  Created if required.", seqan::ArgParseOption::STRING, "PATH"));
@@ -482,13 +482,13 @@ void BasilAppImpl::prepare()
         throw BasilAppException("Could not estimate library info!");
 
     seqan::FaiIndex faiIndex;
-    if (read(faiIndex, toCString(options.referenceFile)) != 0)
+    if (!open(faiIndex, toCString(options.referenceFile)))
     {
         if (options.verbosity >= BasilOptions::NORMAL)
             std::cerr << "Building FAI index...\n";
-        if (build(faiIndex, toCString(options.referenceFile)) != 0)
+        if (!build(faiIndex, toCString(options.referenceFile)))
             throw BasilAppException("Problem building FAI index.");
-        if (write(faiIndex) != 0)
+        if (!save(faiIndex))
             throw BasilAppException("Could not write FAI index to file.");
     }
 
@@ -591,11 +591,11 @@ void BasilAppImpl::execute(std::vector<OeaClusterRecord> & oeaClusters,
     BamReader bamReader(bamReaderOptions);
     // Setup progress indicator.
     unsigned long long const MIB = 1024 * 1024;
-    progress.reset(new ProgressBar(std::cerr, 0, fileSize(bamReader.bamStream()) / MIB,
+    progress.reset(new ProgressBar(std::cerr, 0, fileSize(bamReader.bamFileIn()) / MIB,
                                    (options.verbosity == BasilOptions::NORMAL)));
     progress->setLabel(toCString(bamReaderOptions.bamFileName));
     progress->updateDisplay();
-    auto callback = [&bamReader,&progress,MIB] { progress->advanceTo(positionInFile(bamReader.bamStream()) / MIB); };
+    auto callback = [&bamReader,&progress,MIB] { progress->advanceTo(position(bamReader.bamFileIn()) / MIB); };
     bamReader.setProgressCallback(callback);
 
     // Build the filter pipeline.
@@ -691,43 +691,44 @@ void BasilAppImpl::finalize(std::vector<std::pair<OeaClusterRecord, ClippingClus
 
 void BasilAppImpl::writeResultVcf(std::vector<std::pair<OeaClusterRecord, ClippingClusterRecord> > const & records)
 {
-    seqan::VcfStream vcfStream;
-    open(vcfStream, toCString(options.outVcfFile), seqan::VcfStream::WRITE);
-    if (!isGood(vcfStream))
+    seqan::VcfFileOut vcfFileOut;
+    if (!open(vcfFileOut, toCString(options.outVcfFile)))
         throw BasilAppException("Could not open VCF file.");
 
     seqan::FaiIndex faiIndex;
-    if (read(faiIndex, toCString(options.referenceFile)) != 0)
+    if (!open(faiIndex, toCString(options.referenceFile)))
         throw BasilAppException("Could not load FAI index from file.");
 
     // -----------------------------------------------------------------------
     // Write Header
     // -----------------------------------------------------------------------
-    
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord("fileformat", "VCFv4.1"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord("source", "BASIL"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord("reference", options.referenceFile));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+
+    seqan::VcfHeader header;
+
+    appendValue(header, seqan::VcfHeaderRecord("fileformat", "VCFv4.1"));
+    appendValue(header, seqan::VcfHeaderRecord("source", "BASIL"));
+    appendValue(header, seqan::VcfHeaderRecord("reference", options.referenceFile));
+    appendValue(header, seqan::VcfHeaderRecord(
             "INFO", "<ID=IMPRECISE,Number=0,Type=Flag,Description=\"Imprecise structural variation\">"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    appendValue(header, seqan::VcfHeaderRecord(
             "INFO", "<ID=SVTYPE,Number=1,Type=String,Description=\"Type of structural variant\">"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    appendValue(header, seqan::VcfHeaderRecord(
             "INFO", "<ID=OEA_ONLY,Number=0,Type=Flag,Description=\"Breakpoint support by OEA signature only\">"));
 
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    appendValue(header, seqan::VcfHeaderRecord(
             "ALT", "<ID=INS,Description=\"Insertion of novel sequence\">"));
 
-    // appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    // appendValue(header, seqan::VcfHeaderRecord(
     //         "FORMAT", "<ID=GT,Number=1,Type=String,Description=\"Genotype\">"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    appendValue(header, seqan::VcfHeaderRecord(
             "FORMAT", "<ID=GSCORE,Number=1,Type=String,Description=\"Sum of Geometric score means (see BASIL documentation)\">"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    appendValue(header, seqan::VcfHeaderRecord(
             "FORMAT", "<ID=CLEFT,Number=1,Type=String,Description=\"Clipped alignments supporting call from left side.\">"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    appendValue(header, seqan::VcfHeaderRecord(
             "FORMAT", "<ID=CRIGHT,Number=1,Type=String,Description=\"Clipped alignments supporting call from right side.\">"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    appendValue(header, seqan::VcfHeaderRecord(
             "FORMAT", "<ID=OEALEFT,Number=1,Type=String,Description=\"One-end anchored alignments supporting call from left side.\">"));
-    appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord(
+    appendValue(header, seqan::VcfHeaderRecord(
             "FORMAT", "<ID=OEARIGHT,Number=1,Type=String,Description=\"One-end anchored alignments supporting call from right side.\">"));
 
     // Copy over sequence names.
@@ -740,13 +741,13 @@ void BasilAppImpl::writeResultVcf(std::vector<std::pair<OeaClusterRecord, Clippi
         ss << sequenceLength(faiIndex, i);
         append(contigStr, ss.str());
         append(contigStr, ">");
-        appendValue(vcfStream.header.headerRecords, seqan::VcfHeaderRecord("contig", contigStr));
-        appendName(*vcfStream._context.sequenceNames,
-                   sequenceName(faiIndex, i),
-                   vcfStream._context.sequenceNamesCache);
+        appendValue(header, seqan::VcfHeaderRecord("contig", contigStr));
+        appendName(contigNamesCache(context(vcfFileOut)), sequenceName(faiIndex, i));
     }
 
-    appendName(*vcfStream._context.sampleNames, options.individualName);
+    appendName(sampleNamesCache(context(vcfFileOut)), options.individualName);
+
+    writeRecord(vcfFileOut, header);
 
     // -----------------------------------------------------------------------
     // Write Records
@@ -757,18 +758,24 @@ void BasilAppImpl::writeResultVcf(std::vector<std::pair<OeaClusterRecord, Clippi
     for (TIterator it = records.begin(); it != records.end(); ++it)
     {
         seqan::VcfRecord vcfRecord;
-        if (it->second.region.seqId == -1)
+        if (it->second.region.rID == -1)
         {
-            vcfRecord.rID = it->first.region.seqId;
+            vcfRecord.rID = it->first.region.rID;
             vcfRecord.beginPos = it->first.region.beginPos + (it->first.region.endPos - it->first.region.beginPos) / 2;
         }
         else
         {
-            vcfRecord.rID = it->second.region.seqId;
+            vcfRecord.rID = it->second.region.rID;
             vcfRecord.beginPos = it->second.region.beginPos + (it->second.region.endPos - it->second.region.beginPos) / 2;
         }
-        if (readRegion(vcfRecord.ref, faiIndex, vcfRecord.rID, vcfRecord.beginPos, vcfRecord.beginPos + 1) != 0)
+        try
+        {
+            readRegion(vcfRecord.ref, faiIndex, vcfRecord.rID, vcfRecord.beginPos, vcfRecord.beginPos + 1);
+        }
+        catch (seqan::IOError const & e)
+        {
             throw BasilAppException("Could not read reference character!");
+        }
 
         vcfRecord.alt = "<INS>";
         std::stringstream idSS;
@@ -776,7 +783,7 @@ void BasilAppImpl::writeResultVcf(std::vector<std::pair<OeaClusterRecord, Clippi
         vcfRecord.id = idSS.str();
         vcfRecord.filter = "PASS";
         vcfRecord.info = "IMPRECISE;SVTYPE=INS";
-        if (it->second.region.seqId == -1)
+        if (it->second.region.rID == -1)
             append(vcfRecord.info, ";OEA_ONLY");
         vcfRecord.format = "GSCORE:CLEFT:CRIGHT:OEALEFT:OEARIGHT";
         
@@ -789,8 +796,14 @@ void BasilAppImpl::writeResultVcf(std::vector<std::pair<OeaClusterRecord, Clippi
            << it->first.rightWeight;
         append(vcfRecord.genotypeInfos[0], ss.str());
 
-        if (writeRecord(vcfStream, vcfRecord) != 0)
+        try
+        {
+            writeRecord(vcfFileOut, vcfRecord);
+        }
+        catch (seqan::IOError const & e)
+        {
             throw BasilAppException("ERROR: Problem writing to VCF file!");
+        }
     }
 }
 

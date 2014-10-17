@@ -155,7 +155,7 @@ void CoverageAlgorithm::advanceTo(int toPos)
 void CoverageAlgorithm::pushInterval()
 {
     seqan::GenomicRegion region;
-    region.seqId = rID;
+    region.rID = rID;
     region.beginPos = beginPos;
     region.endPos = pos;
     appendValue(result, region);
@@ -249,8 +249,8 @@ void HighCoverageFilterImpl::advance(std::vector<seqan::BamAlignmentRecord *> & 
         // Advance current high coverage region until record overlaps with the current one or the record is in front of
         // the coverage region.
         while (currentCoverageRegion < (int)length(highCoverageRegions) &&
-               std::make_pair(record->rID, record->beginPos) >= std::make_pair(highCoverageRegions[currentCoverageRegion].seqId,
-                                                                               highCoverageRegions[currentCoverageRegion].endPos))
+               std::make_pair(record->rID, record->beginPos) >= std::make_pair((int)highCoverageRegions[currentCoverageRegion].rID,
+                                                                               (int)highCoverageRegions[currentCoverageRegion].endPos))
             ++currentCoverageRegion;
 
         // Discard record if it overlaps with current region (if any).

@@ -50,9 +50,9 @@ class BamReaderImpl
 {
 public:
     BamReaderImpl(BamReaderOptions const & options) :
-            done(false), options(options), _bamStream(toCString(options.bamFileName)), recordsRead(0)
+            done(false), options(options), recordsRead(0)
     {
-        if (!isGood(_bamStream))
+        if (!open(_bamFileIn, toCString(options.bamFileName)))
             throw BamFilterException("Could not open BAM file!");
     }
 
@@ -61,13 +61,13 @@ public:
     void read(std::vector<seqan::BamAlignmentRecord *> & out);
 
     TBamIOContext & bamIOContext();
-    seqan::BamStream const & bamStream();
+    seqan::BamFileIn const & bamFileIn();
     void setProgressCallback(std::function<void()> fun);
 
 private:
     bool done;  // true if read first orphan
     BamReaderOptions options;
-    seqan::BamStream _bamStream;
+    seqan::BamFileIn _bamFileIn;
     std::function<void()> progressCallback;
 
     unsigned recordsRead;
@@ -75,17 +75,17 @@ private:
 
 bool BamReaderImpl::atEnd() const
 {
-    return (done || seqan::atEnd(_bamStream));
+    return (done || seqan::atEnd(_bamFileIn));
 }
 
 TBamIOContext & BamReaderImpl::bamIOContext()
 {
-    return _bamStream.bamIOContext;
+    return context(_bamFileIn);
 }
 
-seqan::BamStream const & BamReaderImpl::bamStream()
+seqan::BamFileIn const & BamReaderImpl::bamFileIn()
 {
-    return _bamStream;
+    return _bamFileIn;
 }
 
 void BamReaderImpl::setProgressCallback(std::function<void()> fun)
@@ -100,8 +100,14 @@ void BamReaderImpl::read(std::vector<seqan::BamAlignmentRecord *> & out)
     for (unsigned i = 0; i < options.chunkSize && !atEnd(); ++i, ++recordsRead)
     {
         std::unique_ptr<seqan::BamAlignmentRecord> record(new seqan::BamAlignmentRecord);
-        if (readRecord(*record, _bamStream) != 0)
+        try
+        {
+            readRecord(*record, _bamFileIn);
+        }
+        catch (seqan::ParseError const & e)
+        {
             throw BamFilterException("Problem reading BAM record.");
+        }
 
         // static int j = 0;
         // printf("%d creations\n", ++j);
@@ -148,9 +154,9 @@ TBamIOContext & BamReader::bamIOContext()
     return impl->bamIOContext();
 }
 
-seqan::BamStream const & BamReader::bamStream()
+seqan::BamFileIn const & BamReader::bamFileIn()
 {
-    return impl->bamStream();
+    return impl->bamFileIn();
 }
 
 void BamReader::setProgressCallback(std::function<void()> fun)
