@@ -72,8 +72,6 @@
 #include "demultiplex.h"
 #include "general_processing.h"
 
-typedef seqan::String<seqan::Dna5Q> Dna5QString;
-
 // Global variables are evil, this is for adaption and should be removed
 // after refactorization.
 FlexiProgram flexiProgram;
@@ -122,16 +120,16 @@ void ArgumentParserBuilder::addGeneralOptions(seqan::ArgumentParser & parser)
     {
         seqan::ArgParseOption outputOpt = seqan::ArgParseOption(
             "o", "output", "Name of the output file.",
-            seqan::ArgParseOption::OUTPUTFILE, "OUTPUT");
-        setValidValues(outputOpt, SeqFileOut::getFileFormatExtensions());
+            seqan::ArgParseOption::OUTPUT_FILE, "OUTPUT");
+        setValidValues(outputOpt, SeqFileOut::getFileExtensions());
         addOption(parser, outputOpt);
     }
     else
     {
         seqan::ArgParseOption outputOpt = seqan::ArgParseOption(
             "o", "output", "Prefix and file ending of output files (prefix$.fa - $: placeholder which will be determined by the program.).",
-            seqan::ArgParseOption::OUTPUTPREFIX, "OUTPUT");
-        setValidValues(outputOpt, SeqFileOut::getFileFormatExtensions());
+            seqan::ArgParseOption::OUTPUT_PREFIX, "OUTPUT");
+        setValidValues(outputOpt, SeqFileOut::getFileExtensions());
         addOption(parser, outputOpt);
     }
 
@@ -216,13 +214,13 @@ void ArgumentParserBuilder::addDemultiplexingOptions(seqan::ArgumentParser & par
     seqan::ArgParseOption barcodeFileOpt = seqan::ArgParseOption(
         "b", "barcodes", "FastA file containing the used barcodes and their IDs. Necessary for demutiplexing.",
         seqan::ArgParseArgument::INPUT_FILE, "BARCODE_FILE");
-    setValidValues(barcodeFileOpt, SeqFileIn::getFileFormatExtensions());
+    setValidValues(barcodeFileOpt, SeqFileIn::getFileExtensions());
     addOption(parser, barcodeFileOpt);
 
     seqan::ArgParseOption multiplexFileOpt = seqan::ArgParseOption(
         "x", "multiplex", "FastA/FastQ file containing the barcode for each read.",
         seqan::ArgParseArgument::INPUT_FILE, "MULTIPLEX_FILE");
-    setValidValues(multiplexFileOpt, SeqFileIn::getFileFormatExtensions());
+    setValidValues(multiplexFileOpt, SeqFileIn::getFileExtensions());
     addOption(parser, multiplexFileOpt);
     
     addOption(parser, seqan::ArgParseOption(
@@ -248,7 +246,7 @@ void ArgumentParserBuilder::addAdapterTrimmingOptions(seqan::ArgumentParser & pa
         "a", "adapters", "FastA file containing the two adapter sequences. "
         "The adapters according to the layout: 5'-adapter1-read-adapter2-3'.",
         seqan::ArgParseArgument::INPUT_FILE, "ADAPTER_FILE");
-    setValidValues(adapterFileOpt, SeqFileIn::getFileFormatExtensions());
+    setValidValues(adapterFileOpt, SeqFileIn::getFileExtensions());
     addOption(parser, adapterFileOpt);
 
     seqan::ArgParseOption noAdapterOpt = seqan::ArgParseOption(
@@ -362,7 +360,7 @@ void FilteringParserBuilder::addHeader(seqan::ArgumentParser & parser)
     seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
-    setValidValues(fileArg, SeqFileIn::getFileFormatExtensions());
+    setValidValues(fileArg, SeqFileIn::getFileExtensions());
     addArgument(parser, fileArg);
     setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
 }
@@ -414,7 +412,7 @@ void AdapterRemovalParserBuilder::addHeader(seqan::ArgumentParser & parser)
     seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
-    setValidValues(fileArg, SeqFileIn::getFileFormatExtensions());
+    setValidValues(fileArg, SeqFileIn::getFileExtensions());
     addArgument(parser, fileArg);
     setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
 }
@@ -467,7 +465,7 @@ void DemultiplexingParserBuilder::addHeader(seqan::ArgumentParser & parser)
     seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
-    setValidValues(fileArg, SeqFileIn::getFileFormatExtensions());
+    setValidValues(fileArg, SeqFileIn::getFileExtensions());
     addArgument(parser, fileArg);
     setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
 }
@@ -520,7 +518,7 @@ void QualityControlParserBuilder::addHeader(seqan::ArgumentParser & parser)
     seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
-    setValidValues(fileArg, SeqFileIn::getFileFormatExtensions());
+    setValidValues(fileArg, SeqFileIn::getFileExtensions());
     addArgument(parser, fileArg);
     setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
 }
@@ -579,7 +577,7 @@ void AllStepsParserBuilder::addHeader(seqan::ArgumentParser & parser)
     seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
-    setValidValues(fileArg, SeqFileIn::getFileFormatExtensions());
+    setValidValues(fileArg, SeqFileIn::getFileExtensions());
     addArgument(parser, fileArg);
     setHelpText(parser, 0, "Either one (single-end) or two (paired-end) read files.");
 }
@@ -992,7 +990,7 @@ public:
     // file extensions of the SeqFileOut and used for all stored files.
     OutputStreams(seqan::CharString const & base, bool /*noQuality*/) : basePath(base)
     {
-        std::vector<std::string> tmpExtensions = seqan::SeqFileOut::getFileFormatExtensions();
+        std::vector<std::string> tmpExtensions = seqan::SeqFileOut::getFileExtensions();
         for (unsigned i = 0; i < length(tmpExtensions); ++i)
         {
             if (endsWith(basePath, tmpExtensions[i]))
@@ -1176,53 +1174,6 @@ public:
 // ============================================================================
 
 /**
-.Function.loadSeqs:
-..summary:Function for loading the sequence files.
-..signature:loadSeqs(seqStream, ids, seqs, records)
-..param.ids:StringSet of String<Char> the IDs shall be stored in.
-...type:Class.StringSet
-..param.seqStream:SequenceStream object of the file.
-...type:Class.SequenceStream
-..param.seqs:StringSet of Dna5Q-Strings the sequences shall be stored in.
-...type:Class.StringSet
-..param.records:Unsigned int holding the number of records to be read in one block.
-...type:nolink:unsigned
-..returns:An integer: 1 on errors, 0 otherwise.
-...type:nolink:int
-..see:Class..SequenceStream
-*/
-
-template <typename TId, typename TString>
-inline void loadSeqs(seqan::SeqFileIn& file,
-                     seqan::StringSet<TId>& ids,
-                     seqan::StringSet<TString>& seqs,
-                     unsigned records)
-{
-    typedef typename seqan::Value<TString>::Type TValue;
-
-    seqan::String<TValue> seqBuffer;
-
-    // reuse the memory of context(file).buffer for seqBuffer (which has a different type but same sizeof(Alphabet))
-    std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
-    std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
-    seqBuffer.data_capacity = context(file).buffer[1].data_capacity;
-
-    unsigned counter = 0;
-    while (!atEnd(file) && counter < records)
-    {
-        readRecord(context(file).buffer[0], seqBuffer, file);
-        appendValue(ids, context(file).buffer[0]);
-        appendValue(seqs, seqBuffer);
-        ++counter;
-    }
-
-    std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
-    std::swap(reinterpret_cast<char* &>(seqBuffer.data_end), context(file).buffer[1].data_end);
-    context(file).buffer[1].data_capacity = seqBuffer.data_capacity;
-    seqBuffer.data_capacity = 0;
-}
-
-/**
 .Function.loadBarcodes:
 ..summary:Function for loading the barcode file.
 ..signature:loadBarcodes(path, params)
@@ -1274,7 +1225,7 @@ int loadBarcodes(char const * path, DemultiplexingParams& params)
 inline void loadMultiplex(seqan::SeqFileIn& multiplexFile, DemultiplexingParams& params, unsigned records)
 {
     seqan::StringSet<seqan::String<char> > ids;
-    loadSeqs(multiplexFile, ids, params.multiplex, records);
+    readRecords(ids, params.multiplex, multiplexFile, records);
 }
 
 /**
@@ -2620,7 +2571,7 @@ int flexbarMain(int argc, char const ** argv)
             appendValue(idSet, seqan::StringSet<seqan::CharString>());
             appendValue(seqSet, seqan::StringSet<Dna5QString>());
 
-            loadSeqs(programParams.fileStream1, idSet[0], seqSet[0], records);
+            readRecords(idSet[0], seqSet[0], programParams.fileStream1, records);
 
             programParams.readCount += length(idSet[0]);
             SEQAN_PROTIMESTART(processTime);            // START of processing time.
@@ -2672,8 +2623,8 @@ int flexbarMain(int argc, char const ** argv)
             appendValue(idSet2, seqan::StringSet<seqan::CharString>());
             appendValue(seqSet2, seqan::StringSet<Dna5QString>());
 
-            loadSeqs(programParams.fileStream1, idSet1[0], seqSet1[0], records);
-            loadSeqs(programParams.fileStream2, idSet2[0], seqSet2[0], records);
+            readRecords(idSet1[0], seqSet1[0], programParams.fileStream1, records);
+            readRecords(idSet2[0], seqSet2[0], programParams.fileStream2, records);
 
             programParams.readCount += length(idSet1[0]);
             SEQAN_PROTIMESTART(processTime); // START of processing time.

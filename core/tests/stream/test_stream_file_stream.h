@@ -185,8 +185,7 @@ SEQAN_TYPED_TEST(FileStreamTest, Eof)
 
     char buffer[100];
     FileStream<char, Input, typename TestFixture::TSpec> stream2;
-    stream2.exceptions(std::ios::failbit);
-//    stream2.exceptions(std::ios::failbit | std::ios::badbit);
+    stream2.exceptions(std::ios::badbit);
     SEQAN_ASSERT(open(stream2, toCString(tempFilename)));
     stream2.read(buffer, strlen(STR));
     SEQAN_ASSERT_NOT(stream2.eof());

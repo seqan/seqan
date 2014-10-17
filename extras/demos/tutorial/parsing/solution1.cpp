@@ -3,35 +3,30 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
-// Read "<key>\t<value>" map from stdin.  Write out as "<key> -> <value>".
+// Read "<key>,<value>" map from stdin.  Write out as "<key> -> <value>".
 
 int main()
 {
-    // Define string and record reader types.  We will read from std::cin which
-    // is of type std::istream.  We use a single-pass record reader.
-    typedef seqan::RecordReader<std::istream, seqan::SinglePass<> > TRecordReader;
+    // We will read from std::cin via an iterator.
+    typedef seqan::DirectionIterator<std::istream, seqan::Input>::Type TReader;
 
-    int res = 0;  // Used to store I/O results.
+    // Create iterator to read from standard input.
+    TReader reader = directionIterator(std::cin, seqan::Input());
 
-    // Create RecordReader reading from standard input.
-    TRecordReader reader(std::cin);
+    seqan::CharString key, value;
 
     // Read the file line by line.
     while (!atEnd(reader))
     {
         // Read first column: The key.
-        seqan::CharString key;
-        res = readUntilChar(key, reader, ',');
-        if (res != 0)
-            return 1;
+        clear(key);
+        readUntil(key, reader, seqan::EqualsChar<','>());
 
-        goNext(reader);  // Skip comma.
+        skipOne(reader, seqan::EqualsChar<','>());  // Skip comma.
 
         // Read second column: The value.
-        seqan::CharString value;
-        res = readLine(value, reader);  // EOL will not be stored in value.
-        if (res != 0)
-            return 1;
+        clear(value);
+        readLine(value, reader);    // EOL will not be stored in value.
 
         // Print ${key} -> ${value}.
         std::cout << key << " -> " << value << std::endl;

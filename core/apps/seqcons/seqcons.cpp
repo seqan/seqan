@@ -62,7 +62,7 @@ seqan::ArgumentParser::ParseResult parseCommandLine(ConsensusOptions & consOpt, 
     setValidValues(parser, "s", "sam");
 	addOption(parser, ArgParseOption("c", "contigs", "FASTA file with contigs, ignored if not Sam input", ArgParseArgument::INPUT_FILE, "<FASTA contigs file>"));
     setValidValues(parser, "contigs", "fa fasta");
-	addOption(parser, ArgParseOption("o", "outfile", "output filename", ArgParseArgument::OUTPUTFILE, "<Filename>"));
+	addOption(parser, ArgParseOption("o", "outfile", "output filename", ArgParseArgument::OUTPUT_FILE, "<Filename>"));
 	setValidValues(parser, "outfile", "afg seqan cgb sam");
 	setDefaultValue(parser, "outfile", "align.sam");
 

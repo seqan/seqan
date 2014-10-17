@@ -539,15 +539,15 @@ template <typename T>
 char const * MagicHeader<Nothing, T>::VALUE = NULL;
 
 // --------------------------------------------------------------------------
-// Metafunction FileFormatExtensions
+// Metafunction FileExtensions
 // --------------------------------------------------------------------------
 
 /*!
- * @mfn FileFormatExtensions
+ * @mfn FileExtensions
  * @headerfile <seqan/basic.h>
  * @brief Returns an array of file format extension strings for file foramt tag.
  *
- * @signature FileFormatExtensions<TFormat[, TDummy]>::VALUE;
+ * @signature FileExtensions<TFormat[, TDummy]>::VALUE;
  *
  * @tparam TTag   The file format tag to use for the query.
  * @tparam TDummy Implementation detail, defaults to <tt>void</tt> and is ignored.
@@ -557,18 +557,18 @@ char const * MagicHeader<Nothing, T>::VALUE = NULL;
  * <tt>TTag</tt> is @link Nothing @endlink.  In this case, <tt>VALUE</tt> is <tt>{""}</tt>.
  */
 
-// TODO(weese:) rename FileFormatExtensions to FileTypeExtensions or FileExtensions
+// TODO(weese:) rename FileExtensions to FileTypeExtensions or FileExtensions
 template <typename TFormat, typename T = void>
-struct FileFormatExtensions;
+struct FileExtensions;
 
 template <typename T>
-struct FileFormatExtensions<Nothing, T>
+struct FileExtensions<Nothing, T>
 {
     static char const * VALUE[1];
 };
 
 template <typename T>
-char const * FileFormatExtensions<Nothing, T>::VALUE[1] =
+char const * FileExtensions<Nothing, T>::VALUE[1] =
 {
     ""  // default output extension
 };
@@ -594,7 +594,7 @@ struct IntegerFormatString_<False, 2, T>
     typedef short Type;
 };
 template <typename T>
-const char IntegerFormatString_<False, 2, T>::VALUE[] = "%hi%n";
+const char IntegerFormatString_<False, 2, T>::VALUE[] = "%hi";
 
 
 template <typename T>
@@ -604,7 +604,7 @@ struct IntegerFormatString_<True, 2, T>
     typedef unsigned short Type;
 };
 template <typename T>
-const char IntegerFormatString_<True, 2, T>::VALUE[] = "%hu%n";
+const char IntegerFormatString_<True, 2, T>::VALUE[] = "%hu";
 
 
 template <typename T>
@@ -614,7 +614,7 @@ struct IntegerFormatString_<False, 4, T>
     typedef int Type;
 };
 template <typename T>
-const char IntegerFormatString_<False, 4, T>::VALUE[] = "%i%n";
+const char IntegerFormatString_<False, 4, T>::VALUE[] = "%i";
 
 
 template <typename T>
@@ -624,27 +624,60 @@ struct IntegerFormatString_<True, 4, T>
     typedef unsigned Type;
 };
 template <typename T>
-const char IntegerFormatString_<True, 4, T>::VALUE[] = "%u%n";
+const char IntegerFormatString_<True, 4, T>::VALUE[] = "%u";
 
+
+// helper for the case: typedef long __int64;
+template <typename TIsUnsigned, typename T>
+struct LongFormatString_;
 
 template <typename T>
-struct IntegerFormatString_<False, 8, T>
+struct LongFormatString_<False, T>
+{
+    static const char VALUE[];
+    typedef long Type;
+};
+template <typename T>
+const char LongFormatString_<False, T>::VALUE[] = "%li";
+
+template <typename T>
+struct LongFormatString_<True, T>
+{
+    static const char VALUE[];
+    typedef unsigned long Type;
+};
+template <typename T>
+const char LongFormatString_<True, T>::VALUE[] = "%lu";
+
+// helper for the case: typedef long long __int64;
+template <typename TIsUnsigned, typename T>
+struct Int64FormatString_;
+
+template <typename T>
+struct Int64FormatString_<False, T>
 {
     static const char VALUE[];
     typedef __int64 Type;
 };
 template <typename T>
-const char IntegerFormatString_<False, 8, T>::VALUE[] = "%lli%n";
-
+const char Int64FormatString_<False, T>::VALUE[] = "%lli";
 
 template <typename T>
-struct IntegerFormatString_<True, 8, T>
+struct Int64FormatString_<True, T>
 {
     static const char VALUE[];
     typedef __uint64 Type;
 };
 template <typename T>
-const char IntegerFormatString_<True, 8, T>::VALUE[] = "%llu%n";
+const char Int64FormatString_<True, T>::VALUE[] = "%llu";
+
+
+template <typename TIsUnsigned, typename T>
+struct IntegerFormatString_<TIsUnsigned, 8, T> :
+    If<IsSameType<__uint64, unsigned long>,
+       LongFormatString_<TIsUnsigned, T>,
+       Int64FormatString_<TIsUnsigned, T> >::Type {};
+
 
 // ============================================================================
 // Functions
@@ -950,6 +983,15 @@ write(TOValue * &optr, TIValue *iptr, TSize n)
     optr += n;
 }
 
+template <typename TOValue, typename TIValue, typename TSize>
+inline SEQAN_FUNC_ENABLE_IF(And< Is<CharConcept<TOValue> >,
+                                 Is<CharConcept<TIValue> > >, void)
+write(TOValue * optr, TIValue * &iptr, TSize n)
+{
+    std::memcpy(optr, iptr, n);
+    iptr += n;
+}
+
 // ----------------------------------------------------------------------------
 // Function write(TValue *)
 // ----------------------------------------------------------------------------
@@ -1086,9 +1128,8 @@ appendNumber(TTarget & target, TInteger i)
 
     // 1 byte has at most 3 decimal digits (plus 2 for '-' and the NULL character)
     char buffer[sizeof(TInteger) * 3 + 2];
-    int offset;
     size_t len = snprintf(buffer, sizeof(buffer),
-                          TInt::VALUE, static_cast<typename TInt::Type>(i), &offset);
+                          TInt::VALUE, static_cast<typename TInt::Type>(i));
     char *bufPtr = buffer;
     write(target, bufPtr, len);
     return len;
@@ -1140,8 +1181,7 @@ appendNumber(TTarget & target, double source)
 
 template <typename TTarget, typename TValue>
 inline typename Size<TTarget>::Type
-appendNumber(TTarget & target, FormattedNumber<TValue> const &
-source)
+appendNumber(TTarget & target, FormattedNumber<TValue> const & source)
 {
     char buffer[100];
     size_t len = snprintf(buffer, sizeof(buffer), source.format, source.value);

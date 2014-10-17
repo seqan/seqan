@@ -278,6 +278,23 @@ public:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Function swap()
+// ----------------------------------------------------------------------------
+
+template <typename TSequence, typename TGapAnchors>
+void swap(Gaps<TSequence, AnchorGaps<TGapAnchors> > & lhs,
+          Gaps<TSequence, AnchorGaps<TGapAnchors> > & rhs)
+{
+    swap(lhs.data_source, rhs.data_source);
+    swap(lhs.data_gaps, rhs.data_gaps);
+
+    std::swap(lhs.data_cutBegin, rhs.data_cutBegin);
+    std::swap(lhs.data_cutEnd, rhs.data_cutEnd);
+    std::swap(lhs.data_viewCutBegin, rhs.data_viewCutBegin);
+    std::swap(lhs.data_viewCutEnd, rhs.data_viewCutEnd);
+}
+
+// ----------------------------------------------------------------------------
 // Helper Function _reinitAnchorGaps()
 // ----------------------------------------------------------------------------
 

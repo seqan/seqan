@@ -131,7 +131,7 @@ parseArgs(FxBamCoverageOptions & options,
     setDefaultValue(parser, "window-size", "10000");
 
     addSection(parser, "Output Options");
-    addOption(parser, seqan::ArgParseOption("o", "out-path", "Path to the resulting file.  If omitted, result is printed to stdout.", seqan::ArgParseArgument::OUTPUTFILE, "TSV"));
+    addOption(parser, seqan::ArgParseOption("o", "out-path", "Path to the resulting file.  If omitted, result is printed to stdout.", seqan::ArgParseArgument::OUTPUT_FILE, "TSV"));
     setRequired(parser, "out-path");
     setValidValues(parser, "out-path", "bam_coverage_tsv");
 
@@ -227,6 +227,8 @@ int main(int argc, char const ** argv)
                 bins[i][bin].length = length(contigSeq) - bin * options.windowSize;
             for (unsigned pos = bin * options.windowSize; pos < length(contigSeq) && pos < (bin + 1) * options.windowSize; ++pos, ++binSize)
                 cgCounter += (contigSeq[pos] == 'C' || contigSeq[pos] == 'G');
+            if (binSize == 0u)  // prevent div-by-zero below
+                binSize = 1;
             bins[i][bin].cgContent = 1.0 * cgCounter / binSize;
         }
         std::cerr << "DONE\n";

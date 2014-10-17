@@ -5,15 +5,13 @@
 
 using namespace seqan;
 
-template <typename TString, typename TStream, typename TSpec>
+template <typename TString, typename TSpec>
 inline int
 loadAndJoin(StringSet<TString, Owner<JournaledSet> > & /*journalSet*/,
-            TStream & stream,
+            SeqFileIn & databaseFile,
             JoinConfig<TSpec> const & /*joinConfig*/)
 {
     typedef typename Host<TString>::Type THost;
-    // Define the RecordReader.
-    RecordReader<std::ifstream, SinglePass<> > reader(stream);
 
     // [A] Ensure the Journal Set is not occupied by other sequences.
 
@@ -22,27 +20,20 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & /*journalSet*/,
     THost tempSeq;
 
     // No sequences in the fasta file!
-    if (atEnd(reader))
+    if (atEnd(databaseFile))
     {
         std::cerr << "Empty FASTA file." << std::endl;
         return -1;
     }
     // First read sequence for reference sequence.
-    if (readRecord(tempSeqId, tempSeq, reader, Fasta()) != 0)
-    {
-        std::cerr << "ERROR reading FASTA." << std::endl;
-        return 1;
-    }
+    readRecord(tempSeqId, tempSeq, databaseFile);
+
     // [B] Set the reference sequence to the Journal Set
 
     // Read remaining sequences.
-    while (!atEnd(reader))
+    while (!atEnd(databaseFile))
     {
-        if (readRecord(tempSeqId, tempSeq, reader, Fasta()) != 0)
-        {
-            std::cerr << "ERROR reading FASTA." << std::endl;
-            return 1;
-        }
+        readRecord(tempSeqId, tempSeq, databaseFile);
         // [C] Append and join the current read sequence.
     }
     return 0;
@@ -57,17 +48,11 @@ int main()
     typedef StringSet< TJournal, Owner<JournaledSet> > TJournaledSet;
 
     // Open the stream to the file containing the sequences.
-    String<char> seqDatabasePath = "/path/to/your/fasta/file/sequences.fasta";
-    std::ifstream databaseFile(toCString(seqDatabasePath), std::ios_base::in);
-    if(!databaseFile.good())
-    {
-        std::cerr << "Cannot open file <" << seqDatabasePath << ">!" << std::endl;
-    }
-
+    CharString seqDatabasePath = "/path/to/your/fasta/file/sequences.fasta";
+    SeqFileIn databaseFile(toCString(seqDatabasePath));
+    
     // Reading each sequence and journal them.
     // [D] Construct Journaled Set and call loadAndJoin
-
-    databaseFile.close();
 
     return 0;
 }

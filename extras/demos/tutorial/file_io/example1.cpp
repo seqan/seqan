@@ -4,16 +4,24 @@
 
 int main()
 {
-    std::fstream in("in.txt", std::ios::binary | std::ios::in);
-    std::fstream out("out.txt", std::ios::binary | std::ios::out);
+    std::ifstream in("in.txt", std::ios::binary | std::ios::in);
+    std::ofstream out("out.txt", std::ios::binary | std::ios::out);
+
+    // Create iterators to read and write.
+    typedef seqan::DirectionIterator<std::ifstream, seqan::Input>::Type TReader;
+    typedef seqan::DirectionIterator<std::ofstream, seqan::Output>::Type TWriter;
+
+    TReader reader = directionIterator(in, seqan::Input());
+    TWriter writer = directionIterator(out, seqan::Output());
 
     seqan::CharString buffer;
-    resize(buffer, 1000);
+    reserve(buffer, 1000);
 
-    while (!seqan::streamEof(in) && seqan::streamError(in) == 0)
+    while (!atEnd(reader))
     {
-        int num = seqan::streamReadBlock(&buffer[0], in, length(buffer));
-        seqan::streamWriteBlock(out, &buffer[0], num);
+        clear(buffer);
+        read(buffer, reader, capacity(buffer));
+        write(writer, buffer);
     }
 
     return 0;

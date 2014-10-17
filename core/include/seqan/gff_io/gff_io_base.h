@@ -92,29 +92,29 @@ struct MagicHeader<Gff, T> :
     public MagicHeader<Nothing, T> {};
 
 // ----------------------------------------------------------------------------
-// Class FileFormatExtensions
+// Class FileExtensions
 // ----------------------------------------------------------------------------
 
 template <typename T>
-struct FileFormatExtensions<Gff, T>
+struct FileExtensions<Gff, T>
 {
     static char const * VALUE[1];	// default is one extension
 };
 
 template <typename T>
-char const * FileFormatExtensions<Gff, T>::VALUE[1] =
+char const * FileExtensions<Gff, T>::VALUE[1] =
 {
     ".gff"     // default output extension
 };
 
 template <typename T>
-struct FileFormatExtensions<Gtf, T>
+struct FileExtensions<Gtf, T>
 {
     static char const * VALUE[1];	// default is one extension
 };
 
 template <typename T>
-char const * FileFormatExtensions<Gtf, T>::VALUE[1] =
+char const * FileExtensions<Gtf, T>::VALUE[1] =
 {
     ".gtf"     // default output extension
 };
@@ -400,7 +400,7 @@ void readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
 
     //check if end < begin
     if (record.endPos < record.beginPos)
-        throw std::runtime_error("The begin position of the record is larger than the end position!");
+        SEQAN_THROW(ParseError("Begin position of GFF/GTF record is larger than end position!"));
 
     // read column 6: score
     clear(buffer);
@@ -414,7 +414,7 @@ void readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
     skipOne(iter, IsTab());
 
     // read column 8: phase
-    readOne(record.phase, iter, OrFunctor<OrFunctor<EqualsChar<'0'>, EqualsChar<'1'> >, OrFunctor<EqualsChar<'2'>, EqualsChar<'.'> > >());
+    readOne(record.phase, iter, OrFunctor<EqualsChar<'.'>, IsInRange<'0', '2'> >());
 
     // It's fine if there are no attributes and the line ends here.
     if (atEnd(iter) || isNewline(value(iter)))

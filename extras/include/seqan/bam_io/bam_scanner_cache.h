@@ -250,22 +250,19 @@ _recursivelyFindSegmentGraph(
 }
 
 
-inline int
-readMultiRecords(String<BamAlignmentRecord> &records, BamStream &bamStream, BamScannerCache &cache)
+inline void
+readMultiRecords(String<BamAlignmentRecord> &records, BamFileIn &bamFile, BamScannerCache &cache)
 {
-    typedef BamScannerCache::TMapIter TMapIter;
     typedef BamScannerCacheSearchKey_::TFlag TFlag;
 
     if (empty(records))
         resize(records, 1);
 
-    while (!atEnd(bamStream))
+    while (!atEnd(bamFile))
     {
         // read next record
         BamAlignmentRecord &record = records[0];
-        int result = readRecord(record, bamStream);
-        if (result != 0)
-            return result;
+        readRecord(record, bamFile);
 
         // is this a single-end read or single alignment?
         if (!hasFlagMultiple(record) ||
@@ -275,7 +272,7 @@ readMultiRecords(String<BamAlignmentRecord> &records, BamStream &bamStream, BamS
             record.pNext == BamAlignmentRecord::INVALID_POS)
         {
             resize(records, 1);
-            return 0;
+            return;
         }
 
         if (record.rID < record.rNextId || (record.rID == record.rNextId && record.beginPos < record.pNext))
@@ -299,7 +296,7 @@ readMultiRecords(String<BamAlignmentRecord> &records, BamStream &bamStream, BamS
 //                if (hasFlagLast(records[0]))
 //                    std::swap(records[0], records[1]);
 //            }
-            return 0;
+            return;
         }
         else
         {
@@ -308,13 +305,12 @@ readMultiRecords(String<BamAlignmentRecord> &records, BamStream &bamStream, BamS
             if (records[0].beginPos != records[0].pNext)
             {
                 std::cerr << "WARNING: Mate could not be found for:\n";
-                write2(std::cerr, records[0], bamStream.bamIOContext, seqan::Sam());
+                write(std::cerr, records[0], context(bamFile), seqan::Sam());
             }
             insertRecord(cache, records[0]);
         }
     }
     clear(records);
-    return 0;
 }
 
 }  // namespace seqan;

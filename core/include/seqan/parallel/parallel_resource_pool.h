@@ -65,7 +65,7 @@ struct ResourcePool
     ~ResourcePool()
     {
         unlockWriting(recycled);
-        TValue *ptr;
+        TValue *ptr = NULL;
         unsigned count = 0;
         while (popBack(ptr, recycled))
         {
@@ -88,7 +88,7 @@ template <typename TValue>
 inline TValue *
 aquireValue(ResourcePool<TValue> & me)
 {
-    TValue *ptr;
+    TValue *ptr = NULL;
     if (!popBack(ptr, me.recycled))
         return NULL;
 

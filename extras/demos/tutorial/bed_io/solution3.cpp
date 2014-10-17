@@ -5,31 +5,26 @@
 
 int main()
 {
-    seqan::BedStream out("-", seqan::BedStream::WRITE);
-
-    // Add sequence names.
-    addSequenceName(out, "chr7");
+    seqan::BedFileOut out(std::cout, seqan::Bed());
 
     // Write out the records.
     seqan::BedRecord<seqan::Bed6> record;
 
-    record.rID = 0;
+    record.ref = "chr7";
     record.beginPos = 127471195;
     record.endPos = 127472363;
     record.name = "Pos1";
     record.score = "0";
     record.strand = '+';
-    if (writeRecord(out, record) != 0)
-        std::cerr << "ERROR: Problem writing output file.";
+    writeRecord(out, record);
 
-    record.rID = 0;
+    record.ref = "chr7";
     record.beginPos = 127472362;
     record.endPos = 127473530;
     record.name = "Pos2";
     record.score = "0";
     record.strand = '+';
-    if (writeRecord(out, record) != 0)
-        std::cerr << "ERROR: Problem writing output file.";
+    writeRecord(out, record);
     
     return 0;
 }

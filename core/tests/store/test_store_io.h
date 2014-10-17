@@ -46,12 +46,11 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
     // The file contains 13 annotations in total which will be checked line
     // after line.
     seqan::CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/core/tests/store/example_known_genes.tsv");
+    append(ucscPath, "/core/tests/store/example_knownGene.txt");
 
-    std::fstream fin(toCString(ucscPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(fin.good());
+    UcscFileIn fin(toCString(ucscPath));
     seqan::FragmentStore<> store;
-    readRecords(store, fin, seqan::Ucsc());
+    readRecords(store, fin);
 
     Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
     it = begin(store, AnnotationTree<>());
@@ -166,22 +165,20 @@ SEQAN_DEFINE_TEST(test_store_io_read_ucsc_known_genes)
 SEQAN_DEFINE_TEST(test_store_io_write_ucsc_known_genes)
 {
     seqan::CharString ucscPath = SEQAN_PATH_TO_ROOT();
-    append(ucscPath, "/core/tests/store/example_known_genes.tsv");
+    append(ucscPath, "/core/tests/store/example_knownGene.txt");
 
-    std::fstream fin(toCString(ucscPath), std::ios::binary | std::ios::in);
-    SEQAN_ASSERT(fin.good());
-
+    UcscFileIn fin(toCString(ucscPath));
     seqan::FragmentStore<> store;
-    readRecords(store, fin, seqan::Ucsc());
+    readRecords(store, fin);
 
     seqan::CharString outPath  = SEQAN_TEMP_FILENAME();
-    append(outPath, ".tsv");
-    std::fstream fout(toCString(outPath), std::ios::binary | std::ios::out);
-    writeRecords(fout, store, seqan::Ucsc());
-    fout.close();
+    append(outPath, ".knownGene.txt");
+    UcscFileOut fout(toCString(outPath));
+    writeRecords(fout, store);
+    close(fout);
 
     seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
-    append(goldPath, "/core/tests/store/example_known_genes.tsv");
+    append(goldPath, "/core/tests/store/example_knownGene.txt");
 
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }

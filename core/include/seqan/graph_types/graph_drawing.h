@@ -118,7 +118,7 @@ _createTrieNodeAttributes(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
 {
 	SEQAN_CHECKPOINT
 	typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
-	resizeVertexMap(g, nodeMap);
+	resizeVertexMap(nodeMap, g);
 	typedef typename Iterator<TGraph, VertexIterator>::Type TConstIter;
 	TConstIter it(g);
 	for(;!atEnd(it);++it) {
@@ -154,7 +154,7 @@ _createNodeAttributes(Graph<TSpec> const& g,
 					  TNodeAttributes& nodeMap)
 {
     typedef Graph<TSpec> TGraph;
-	resizeVertexMap(g, nodeMap);
+	resizeVertexMap(nodeMap, g);
 
 	typedef typename Iterator<TGraph, VertexIterator>::Type TConstIter;
 	TConstIter it(g);
@@ -179,7 +179,7 @@ _createNodeAttributes(Graph<TSpec> const& g,
 					  TNameMap const& nameMap)
 {
     typedef Graph<TSpec> TGraph;
-	resizeVertexMap(g, nodeMap);
+	resizeVertexMap(nodeMap, g);
 
 	typedef typename Iterator<TGraph, VertexIterator>::Type TConstIter;
 	TConstIter it(g);
@@ -202,7 +202,7 @@ _createEmptyEdgeAttributes(Graph<TSpec> const& g,
 						   TEdgeAttributes& edgeMap)
 {
 	typedef Graph<TSpec> TGraph;
-	resizeEdgeMap(g, edgeMap);
+	resizeEdgeMap(edgeMap, g);
 
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TConstEdIter;
 	TConstEdIter itEd(g);
@@ -251,7 +251,7 @@ _createEdgeAttributes(Graph<Tree<TCargo, TSpec> > const& g,
 					  TEdgeAttributes& edgeMap)
 {
 	typedef Graph<Tree<TCargo, TSpec> > TGraph;
-	resizeEdgeMap(g, edgeMap);
+	resizeEdgeMap(edgeMap, g);
 
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TConstEdIter;
 	TConstEdIter itEd(g);
@@ -273,7 +273,7 @@ _createEdgeAttributes(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
 {
 	SEQAN_CHECKPOINT
 	typedef Graph<Automaton<TAlphabet, TCargo, TSpec> > TGraph;
-	resizeEdgeMap(g, edgeMap);
+	resizeEdgeMap(edgeMap, g);
 
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TConstEdIter;
 	TConstEdIter itEd(g);
@@ -295,7 +295,7 @@ _createEdgeAttributes(Graph<Automaton<TAlphabet, TCargo, WordGraph<TSpec> > > co
 {
 	SEQAN_CHECKPOINT
 	typedef Graph<Automaton<TAlphabet, TCargo, WordGraph<TSpec> > > TGraph;
-	resizeEdgeMap(g, edgeMap);
+	resizeEdgeMap(edgeMap, g);
 
 	typedef typename Iterator<TGraph, EdgeIterator>::Type TConstEdIter;
 	TConstEdIter itEd(g);
@@ -619,7 +619,7 @@ _addNode(Graph<TSpec>& g,
 	if (nodeIdMap.find(node_id) == nodeIdMap.end()) {
 		TVertexDescriptor _id = addVertex(g);
 		nodeIdMap.insert(std::make_pair(node_id, _id));
-		resizeVertexMap(g, nodeMap);
+		resizeVertexMap(nodeMap, g);
 		assignProperty(nodeMap, _id, attr_list);
 	}
 }
@@ -638,7 +638,7 @@ _addEdge(Graph<Directed<TCargo, TSpec> >& g,
 	typedef Graph<Directed<TCargo, TSpec> > TGraph;
 	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	TEdgeDescriptor e = addEdge(g, sourceV, targetV);
-	resizeEdgeMap(g, edgeMap);
+	resizeEdgeMap(edgeMap, g);
 	assignProperty(edgeMap, e, attr_list);
 }
 
@@ -656,7 +656,7 @@ _addEdge(Graph<Undirected<TCargo, TSpec> >& g,
 	typedef Graph<Undirected<TCargo, TSpec> > TGraph;
 	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	TEdgeDescriptor e = addEdge(g, sourceV, targetV);
-	resizeEdgeMap(g, edgeMap);
+	resizeEdgeMap(edgeMap, g);
 	assignProperty(edgeMap, e, attr_list);
 }
 
@@ -674,7 +674,7 @@ _addEdge(Graph<Tree<TCargo, TSpec> >& g,
 	typedef Graph<Tree<TCargo, TSpec> > TGraph;
 	typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
 	TEdgeDescriptor e = addEdge(g, sourceV, targetV);
-	resizeEdgeMap(g, edgeMap);
+	resizeEdgeMap(edgeMap, g);
 	assignProperty(edgeMap, e, attr_list);
 }
 
@@ -734,7 +734,7 @@ _addEdge(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
 		}
 	}
 	TEdgeDescriptor e = addEdge(g, sourceV, targetV, _getInternalLabel(g, label));
-	resizeEdgeMap(g, edgeMap);
+	resizeEdgeMap(edgeMap, g);
 	assignProperty(edgeMap, e, attr_list);
 }
 

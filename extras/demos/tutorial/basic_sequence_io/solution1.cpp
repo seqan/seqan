@@ -13,8 +13,8 @@ int main(int argc, char const ** argv)
     seqan::CharString id;
     seqan::Dna5String seq;
 
-    seqan::SequenceStream seqStream(argv[1]);
-    readRecord(id, seq, seqStream);
+    seqan::SeqFileIn seqFileIn(argv[1]);
+    readRecord(id, seq, seqFileIn);
     std::cout << id << '\t' << seq << '\n';
 
     return 0;

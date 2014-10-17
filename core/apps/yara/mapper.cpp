@@ -112,7 +112,7 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setHelpText(parser, 0, "An indexed reference genome.");
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS FILE", true));
-    setValidValues(parser, 1, SeqFileIn::getFileFormatExtensions());
+    setValidValues(parser, 1, SeqFileIn::getFileExtensions());
     setHelpText(parser, 1, "Either one single-end or two paired-end / mate-pair read files.");
 
     addOption(parser, ArgParseOption("v", "verbose", "Displays global statistics."));
@@ -122,13 +122,13 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     addSection(parser, "Output Options");
 
     addOption(parser, ArgParseOption("o", "output-file", "Specify an output file. Default: write the file to standard output.",
-                                     ArgParseOption::OUTPUTFILE));
-    setValidValues(parser, "output-file", BamFileOut::getFileFormatExtensions());
+                                     ArgParseOption::OUTPUT_FILE));
+    setValidValues(parser, "output-file", BamFileOut::getFileExtensions());
 
     addOption(parser, ArgParseOption("f", "output-format", "Specify an output format. Note: when specifying the option \
                                                             --output-file, the output format is taken from the filename \
                                                             extension.", ArgParseOption::STRING));
-    setValidValues(parser, "output-format", getExtensionsWithoutLeadingDot(BamFileOut::getFileFormatExtensions()));
+    setValidValues(parser, "output-format", getExtensionsWithoutLeadingDot(BamFileOut::getFileExtensions()));
     setDefaultValue(parser, "output-format", "sam");
 
 #if SEQAN_HAS_ZLIB
@@ -165,8 +165,8 @@ void setupArgumentParser(ArgumentParser & parser, Options const & options)
     setMaxValue(parser, "strata-rate", "10");
     setDefaultValue(parser, "strata-rate", 100.0 * options.strataRate);
 
-    addOption(parser, ArgParseOption("a", "all", "Report all suboptimal alignments. Default: report alignments within \
-                                                  the specified strata rate."));
+    addOption(parser, ArgParseOption("a", "all", "Report all alignments within --error-rate. Default: report alignments \
+                                                  within --strata-rate."));
 
     addOption(parser, ArgParseOption("q", "quick", "Be quicker by loosely mapping a few very repetitive reads."));
     hideOption(getOption(parser, "quick"));

@@ -1,8 +1,8 @@
 // FRAGMENT(includes)
 #include <iostream>
 
+#include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/file.h>
 #include <seqan/stream.h>
 
 using namespace seqan;
@@ -40,220 +40,180 @@ struct BlastnTabAlignmentRecord
     {}
 };
 
-template <typename TStream>
-int write(TStream & stream, BlastnTabAlignmentRecord & record)
+template <typename TWriter>
+inline void
+writeRecord(TWriter & writer, BlastnTabAlignmentRecord & record)
 {
-    streamPut(stream, "query name: ");
-    streamPut(stream, record.queryName);
-    streamPut(stream, "\nsubject name: ");
-    streamPut(stream, record.subjectName);
-    streamPut(stream, "\nidentity: ");
-    streamPut(stream, record.identity);
-    streamPut(stream, "\nalignment length: ");
-    streamPut(stream, record.alignmentLength);
-    streamPut(stream, "\nmismatches: ");
-    streamPut(stream, record.mismatches);
-    streamPut(stream, "\ngap opens: ");
-    streamPut(stream, record.gapOpens);
-    streamPut(stream, "\nquery begin: ");
-    streamPut(stream, record.queryBegin);
-    streamPut(stream, "\nquery end: ");
-    streamPut(stream, record.queryEnd);
-    streamPut(stream, "\nsubject begin: ");
-    streamPut(stream, record.subjectBegin);
-    streamPut(stream, "\nsubject end: ");
-    streamPut(stream, record.subjectEnd);
-    streamPut(stream, "\nevalue: ");
-    streamPut(stream, record.eValue);
-    streamPut(stream, "\nbit score: ");
-    streamPut(stream, record.bitScore);
-    int res = streamPut(stream, "\n\n");
-    return res;
-}
-
-void clear(BlastnTabAlignmentRecord & record)
-{
-    clear(record.queryName);
-    clear(record.subjectName);
+    write(writer, "query name: ");
+    write(writer, record.queryName);
+    write(writer, "\nsubject name: ");
+    write(writer, record.subjectName);
+    write(writer, "\nidentity: ");
+    appendNumber(writer, record.identity);
+    write(writer, "\nalignment length: ");
+    appendNumber(writer, record.alignmentLength);
+    write(writer, "\nmismatches: ");
+    appendNumber(writer, record.mismatches);
+    write(writer, "\ngap opens: ");
+    appendNumber(writer, record.gapOpens);
+    write(writer, "\nquery begin: ");
+    appendNumber(writer, record.queryBegin);
+    write(writer, "\nquery end: ");
+    appendNumber(writer, record.queryEnd);
+    write(writer, "\nsubject begin: ");
+    appendNumber(writer, record.subjectBegin);
+    write(writer, "\nsubject end: ");
+    appendNumber(writer, record.subjectEnd);
+    write(writer, "\nevalue: ");
+    appendNumber(writer, record.eValue);
+    write(writer, "\nbit score: ");
+    appendNumber(writer, record.bitScore);
+    write(writer, "\n\n");
 }
 
 // FRAGMENT(next-is)
-template <typename TStream, typename TSpec>
+template <typename TReader>
 inline bool
-nextIs(RecordReader<TStream, SinglePass<TSpec> > & reader, BlastnTabComment const & /*tag*/)
+nextIs(TReader & reader, BlastnTabComment const & /*tag*/)
 {
     return !atEnd(reader) && value(reader) == '#';
 }
 
-template <typename TStream, typename TSpec>
+template <typename TReader>
 inline bool
-nextIs(RecordReader<TStream, SinglePass<TSpec> > & reader, BlastnTabAlignment const & /*tag*/)
+nextIs(TReader & reader, BlastnTabAlignment const & /*tag*/)
 {
     return !atEnd(reader) && value(reader) != '#';
 }
 
 // FRAGMENT(read-record)
-template <typename TCharSequence, typename TStream, typename TSpec>
-inline int
-readRecord(TCharSequence & buffer, RecordReader<TStream, SinglePass<TSpec> > const & reader, BlastnTabComment const & /*tag*/)
+template <typename TCharSequence, typename TReader>
+inline void
+readRecord(TCharSequence & buffer, TReader const & reader, BlastnTabComment const & /*tag*/)
 {
     SEQAN_ASSERT(nextIs(reader, BlastnTabComment()));
     clear(buffer);
-    return readLine(buffer, reader);
+    readLine(buffer, reader);
 }
 
-template <typename TStream, typename TSpec>
-inline bool
-readRecord(BlastnTabAlignmentRecord & record, RecordReader<TStream, SinglePass<TSpec> > & reader, BlastnTabAlignment const & /*tag*/)
+template <typename TReader>
+inline void
+readRecord(BlastnTabAlignmentRecord & record, CharString & buffer, TReader & reader, BlastnTabAlignment const & /*tag*/)
 {
     SEQAN_ASSERT(nextIs(reader, BlastnTabAlignment()));
-    int res = 0;
-    CharString buffer;
-    clear(record);
 
     // Read query name.
-    res = readUntilChar(record.queryName, reader, '\t');
-    if (res != 0)
-        return res;
-    goNext(reader);
+    clear(record.queryName);
+    readUntil(record.queryName, reader, IsTab());
+    skipOne(reader, IsTab());
 
     // Read subject name.
-    res = readUntilChar(record.subjectName, reader, '\t');
-    if (res != 0)
-        return res;
-    goNext(reader);
+    clear(record.subjectName);
+    readUntil(record.subjectName, reader, IsTab());
+    skipOne(reader, IsTab());
     
     // Read identity.
-    clear(buffer);
-    res = readUntilChar(buffer, reader, '\t');
-    if (res != 0)
-        return res;
-    if (!lexicalCast2<double>(record.identity, buffer))
-        return 1;  // Could not cast identity to double.
-    goNext(reader);
+    readUntil(buffer, reader, IsTab());
+    lexicalCast(record.identity, buffer);
+    skipOne(reader, IsTab());
 
     // Read alignment length.
     clear(buffer);
-    res = readUntilChar(buffer, reader, '\t');
-    if (res != 0)
-        return res;
-    if (!lexicalCast2<unsigned>(record.alignmentLength, buffer))
-        return 1;  // Could not cast alignment length to unsigned.
-    goNext(reader);
+    readUntil(buffer, reader, IsTab());
+    lexicalCast(record.alignmentLength, buffer);
+    skipOne(reader, IsTab());
 
     // Read mismatches.
     clear(buffer);
-    res = readUntilChar(buffer, reader, '\t');
-    if (res != 0)
-        return res;
-    if (!lexicalCast2<unsigned>(record.mismatches, buffer))
-        return 1;  // Could not cast mismatches to unsigned.
-    goNext(reader);
+    readUntil(buffer, reader, IsTab());
+    lexicalCast(record.mismatches, buffer);
+    skipOne(reader, IsTab());
 
     // Read gap opens.
     clear(buffer);
-    res = readUntilChar(buffer, reader, '\t');
-    if (res != 0)
-        return res;
-    if (!lexicalCast2<unsigned>(record.gapOpens, buffer))
-        return 1;  // Could not cast gap opens to unsigned.
-    goNext(reader);
+    readUntil(buffer, reader, IsTab());
+    lexicalCast(record.gapOpens, buffer);
+    skipOne(reader, IsTab());
 
     // Read query begin.
     clear(buffer);
-    res = readUntilChar(buffer, reader, '\t');
-    if (res != 0)
-        return res;
-    if (!lexicalCast2<unsigned>(record.queryBegin, buffer))
-        return 1;  // Could not cast query begin to unsigned.
-    goNext(reader);
+    readUntil(buffer, reader, IsTab());
+    lexicalCast(record.queryBegin, buffer);
+    skipOne(reader, IsTab());
 
     // Read query end.
     clear(buffer);
-    res = readUntilChar(buffer, reader, '\t');
-    if (res != 0)
-        return res;
-    if (!lexicalCast2<unsigned>(record.queryEnd, buffer))
-        return 1;  // Could not cast query end to unsigned.
-    goNext(reader);
+    readUntil(buffer, reader, IsTab());
+    lexicalCast(record.queryEnd, buffer);
+    skipOne(reader, IsTab());
 
     // Read subject begin.
     clear(buffer);
-    res = readUntilChar(buffer, reader, '\t');
-    if (res != 0)
-        return res;
-    if (!lexicalCast2<unsigned>(record.subjectBegin, buffer))
-        return 1;  // Could not cast subject begin to unsigned.
-    goNext(reader);
+    readUntil(buffer, reader, IsTab());
+    lexicalCast(record.subjectBegin, buffer);
+    skipOne(reader, IsTab());
 
     // Read subject end.
     clear(buffer);
-    res = readUntilChar(buffer, reader, '\t');
-    if (res != 0)
-        return res;
-    if (!lexicalCast2<unsigned>(record.subjectEnd, buffer))
-        return 1;  // Could not cast subject end to unsigned.
-    goNext(reader);
+    readUntil(buffer, reader, IsTab());
+    lexicalCast(record.subjectEnd, buffer);
+    skipOne(reader, IsTab());
 
     // Read evalue.
     clear(buffer);
-    res = readUntilChar(buffer, reader, '\t');
-    if (res != 0)
-        return res;
-    if (!lexicalCast2<double>(record.eValue, buffer))
-        return 1;  // Could not cast evalue to double.
-    goNext(reader);
+    readUntil(buffer, reader, IsTab());
+    lexicalCast(record.eValue, buffer);
+    skipOne(reader, IsTab());
 
     // Read bit score, up to end of the line.
     clear(buffer);
-    res = readLine(buffer, reader);
-    if (res != 0)
-        return res;
-    if (!lexicalCast2<double>(record.bitScore, buffer))
-        return 1;  // Could not cast bit score to double.
-    
-    return 0;
+    readLine(buffer, reader);
+    lexicalCast(record.bitScore, buffer);
 }
 
 // FRAGMENT(skip-record)
-template <typename TStream, typename TSpec>
-inline int
-skipRecord(RecordReader<TStream, SinglePass<TSpec> > & reader, BlastnTabComment const & /*tag*/)
+template <typename TReader>
+inline void
+skipRecord(TReader & reader, BlastnTabComment const & /*tag*/)
 {
-    return skipLine(reader);
+    skipLine(reader);
 }
 
-template <typename TStream, typename TPass>
-inline int
-skipRecord(RecordReader<TStream, TPass> & reader, BlastnTabAlignment const & /*tag*/)
+template <typename TReader>
+inline void
+skipRecord(TReader & reader, BlastnTabAlignment const & /*tag*/)
 {
-    return skipLine(reader);
+    skipLine(reader);
 }
 
 // FRAGMENT(batch-read)
-template <typename TBlastnTabRecords, typename TStream, typename TSpec>
-int read(TBlastnTabRecords & records, RecordReader<TStream, SinglePass<TSpec> > & reader, BlastnTab const & /*tag*/)
+template <typename TBlastnTabRecords, typename TReader>
+inline void
+readRecords(TBlastnTabRecords & records, TReader & reader, BlastnTab const & /*tag*/)
 {
     BlastnTabAlignmentRecord record;
+    CharString buffer;
     while (!atEnd(reader))
     {
         if (nextIs(reader, BlastnTabComment()))
         {
             skipRecord(reader, BlastnTabComment());
-            continue;
         }
-        if (!nextIs(reader, BlastnTabAlignment()))
-            return 1;
-        if (readRecord(record, reader, BlastnTabAlignment()) != 0)
-            return 1;
-        appendValue(records, record);
+        else if (nextIs(reader, BlastnTabAlignment()))
+        {
+            readRecord(record, buffer, reader, BlastnTabAlignment());
+            appendValue(records, record);
+        }
+        else
+        {
+            SEQAN_THROW(ParseError("Unknown BLAST record type"));
+        }
     }
-    return 0;
 }
             
 
 // FRAGMENT(main)
-int main(int argc, char const ** argv)
+int main(int argc, char const * argv[])
 {
     // Process command line arguments, open file.
     if (argc != 2)
@@ -262,7 +222,7 @@ int main(int argc, char const ** argv)
         std::cerr << "USAGE: tutorial_parse_blastn INPUT.txt" << std::endl;
         return 1;
     }
-    std::fstream stream(argv[1], std::ios::binary | std::ios::in);
+    std::ifstream stream(argv[1], std::ios::binary | std::ios::in);
     if (!stream.good())
     {
         std::cerr << "Could not open file " << argv[1] << std::endl;
@@ -270,18 +230,13 @@ int main(int argc, char const ** argv)
     }
 
     // Read file.
-    RecordReader<std::fstream, SinglePass<> > reader(stream);
+    seqan::DirectionIterator<std::ifstream, seqan::Input>::Type reader = directionIterator(stream, Input());
     String<BlastnTabAlignmentRecord> records;
-    int res = read(records, reader, BlastnTab());
-    if (res != 0)
-    {
-        std::cerr << "Could not read BLASTN records." << std::endl;
-        return 1;
-    }
+    readRecords(records, reader, BlastnTab());
 
     // Write read records.
     for (unsigned i = 0; i < length(records); ++i)
-        write(std::cout, records[i]);
+        writeRecord(std::cout, records[i]);
 
     return 0;
 }

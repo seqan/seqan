@@ -246,7 +246,7 @@ int main()
     typedef StringSet< TJournal, Owner<JournaledSet> > TJournaledSet;
 
     // Open the stream to the file containing the sequences.
-    String<char> seqDatabasePath = "/Users/rahn_r/Downloads/sequences.fasta";
+    CharString seqDatabasePath = "/path/to/your/fasta/file/sequences.fasta";
     SeqFileIn databaseFile(toCString(seqDatabasePath));
 
     // Reading each sequence and journal them.
