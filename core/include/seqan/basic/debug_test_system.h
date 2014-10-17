@@ -1963,12 +1963,22 @@ SEQAN_CALL_TEST(test_name);
 // This macro expands to code to call a given test.
 #define SEQAN_CALL_TEST(test_name)                                      \
     do {                                                                \
-        ::seqan::ClassTest::beginTest(# test_name);                      \
+        ::seqan::ClassTest::beginTest(# test_name);                     \
         try {                                                           \
             SEQAN_TEST_ ## test_name<true>();                           \
-        } catch (::seqan::ClassTest::AssertionFailedException e) {       \
+        } catch (::seqan::ClassTest::AssertionFailedException e) {      \
             /* Swallow exception, go on with next test. */              \
             (void) e;  /* Get rid of unused variable warning. */        \
+        } catch (seqan::Exception const & e) {                          \
+            ::std::cerr << "Unexpected exception of type "              \
+                        << toCString(::seqan::Demangler<::seqan::Exception>(e)) \
+                        << "; message: " << e.what() << "\n";           \
+            ::seqan::ClassTest::StaticData::thisTestOk() = false;       \
+            ::seqan::ClassTest::StaticData::errorCount() += 1;          \
+        } catch (...) {                                                 \
+            ::std::cerr << "Unexpected exception of unknown type\n";    \
+            ::seqan::ClassTest::StaticData::thisTestOk() = false;       \
+            ::seqan::ClassTest::StaticData::errorCount() += 1;          \
         }                                                               \
         ::seqan::ClassTest::endTest();                                  \
     } while (false)
