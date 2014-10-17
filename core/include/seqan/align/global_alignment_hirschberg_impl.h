@@ -66,12 +66,11 @@ public:
 	int score;
 
 	HirschbergSet_()
-		: x1(0),x2(0),y1(0),y2(0)
-	{
-	}
+		: x1(0), x2(0), y1(0), y2(0), score(0)
+	{}
 
 	HirschbergSet_(int a1,int a2,int b1,int b2,int sc)
-		: x1(a1),x2(a2),y1(b1),y2(b2),score(sc)
+		: x1(a1), x2(a2), y1(b1), y2(b2), score(sc)
 	{
 		SEQAN_ASSERT_LEQ(a1, a2);
 		SEQAN_ASSERT_LEQ(b1, b2);

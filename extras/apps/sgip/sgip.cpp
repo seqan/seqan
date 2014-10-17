@@ -94,6 +94,7 @@ struct SgipOption
     SgipOption()
     {
         algorithm = "greedy";
+        autoMetric = false;
         activeFile = FIRST;
         searchingType = HEURISTIC;
         showHelp = 0;

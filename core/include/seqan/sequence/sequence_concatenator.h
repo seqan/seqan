@@ -105,7 +105,7 @@ class ConcatenatorManyToOne
 {
 public:
     TStringSet * set;
-    ConcatenatorManyToOne() {}
+    ConcatenatorManyToOne() : set(NULL) {}
     ConcatenatorManyToOne(TStringSet & _set) : set(&_set) {}
 
     template <typename TPos>

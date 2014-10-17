@@ -239,26 +239,23 @@ class Pattern<TNeedle, Pex<TVerification, TMultiFinder > >:
 
    unsigned needleLength;
 
-   Pattern() {}
+   Pattern() :
+       limit(1), lastFPos(0), lastFNdl(0), findNext(false), patternNeedsInit(true)
+   {}
 
    template <typename TNeedle2>
-   Pattern(TNeedle2 const & ndl)
-     : limit(1)
+   Pattern(TNeedle2 const & ndl) :
+       limit(1), lastFPos(0), lastFNdl(0), findNext(false), patternNeedsInit(true)
    {
      setHost(*this, ndl);
    }
 
    template <typename TNeedle2>
-   Pattern(TNeedle2 const & ndl, int _limit = -1)
-     : limit(- _limit)
+   Pattern(TNeedle2 const & ndl, int _limit = -1) :
+       limit(-_limit), lastFPos(0), lastFNdl(0), findNext(false), patternNeedsInit(true)
    {
-SEQAN_CHECKPOINT
      setHost(*this, ndl);
    }
-
-   ~Pattern() {
-     SEQAN_CHECKPOINT
-    }
 };
 
 //////////////////////////////////////////////////////////////////////////////

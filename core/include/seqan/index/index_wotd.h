@@ -268,7 +268,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 		Index():
 			interSentinelNodes(false) {}
 
-		Index(Index &other):
+		Index(Index &other) :
 			text(other.text),
 			sa(other.sa),
 			dir(other.dir),
@@ -279,7 +279,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 			sentinelBound(other.sentinelBound),
 			interSentinelNodes(other.interSentinelNodes) {}
 
-		Index(Index const &other):
+		Index(Index const &other) :
 			text(other.text),
 			sa(other.sa),
 			dir(other.dir),
@@ -291,13 +291,17 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 			interSentinelNodes(other.interSentinelNodes) {}
 
 		template <typename TText_>
-		Index(TText_ &_text):
+		Index(TText_ &_text) :
 			text(_text),
+			sentinelOcc(0),
+			sentinelBound(0),
 			interSentinelNodes(false) {}
 
 		template <typename TText_>
 		Index(TText_ const &_text):
 			text(_text),
+			sentinelOcc(0),
+			sentinelBound(0),
 			interSentinelNodes(false) {}
 	};
 /*

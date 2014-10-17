@@ -229,7 +229,7 @@ public:
     BamHeaderRecordType type;
     String<Pair<TTagName, TTagValue> > tags;
 
-    BamHeaderRecord() {}
+    BamHeaderRecord() : type(BAM_HEADER_FIRST) {}
 };
 
 // ----------------------------------------------------------------------------

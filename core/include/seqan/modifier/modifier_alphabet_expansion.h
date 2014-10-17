@@ -98,7 +98,7 @@ public:
 	typedef typename IntegralForValue<ModifiedAlphabet>::Type TData;
 	TData data;
 
-	ModifiedAlphabet() 
+	ModifiedAlphabet() : data()
 	{}
 
 	ModifiedAlphabet(ModifiedAlphabet const & other)

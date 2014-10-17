@@ -63,10 +63,13 @@ typedef StringSet<TRead const, Dependent<> >	TMPReadSet;
 
 template <typename TShape>
 struct Cargo< Index<TMPReadSet, TShape> > {
-	typedef struct {
+	struct Type {
 		double		abundanceCut;
 		int			_debugLevel;
-	} Type;
+
+		Type() : abundanceCut(0), _debugLevel(0)
+        {}
+	};
 };
 
 #ifdef RAZERS_PRUNE_QGRAM_INDEX

@@ -92,7 +92,8 @@ struct AppOptions
     AppOptions() :
         order("coord"),
         maxMem(512 << 20),      // default memory to use is 512MB
-        numRecords(0)
+        numRecords(0),
+        verbose(false)
     {}
 };
 

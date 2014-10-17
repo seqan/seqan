@@ -368,6 +368,7 @@ public:
         DecompressionJob() :
             inputBuffer(BGZF_MAX_BLOCK_SIZE, 0),
             buffer(MAX_PUTBACK + BGZF_MAX_BLOCK_SIZE / sizeof(char_type), 0),
+            fileOfs(),
             size(0),
             readyEvent(cs),
             ready(true)
@@ -376,6 +377,7 @@ public:
         DecompressionJob(DecompressionJob const &other) :
             inputBuffer(other.inputBuffer),
             buffer(other.buffer),
+            fileOfs(other.fileOfs),
             size(other.size),
             readyEvent(cs),
             ready(other.ready)

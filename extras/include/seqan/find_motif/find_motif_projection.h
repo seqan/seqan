@@ -130,7 +130,8 @@ public:
 		has_exact_substitutions(false),
 		projection_size(0),
 		bucket_threshold(0),
-		num_of_trials(0)
+		num_of_trials(0),
+		score(0)
 	{
     SEQAN_CHECKPOINT;
 	}
@@ -150,7 +151,8 @@ public:
 		has_exact_substitutions(is_exact_),
 		projection_size(k_),
 		bucket_threshold(s_),
-		num_of_trials(tr_)
+		num_of_trials(tr_),
+		score(0)
 	{
     SEQAN_CHECKPOINT;
 	}
@@ -167,7 +169,8 @@ public:
 		has_exact_substitutions(is_exact_),
 		projection_size(0),
 		bucket_threshold(0),
-		num_of_trials(0)
+		num_of_trials(0),
+		score(0)
 	{
     SEQAN_CHECKPOINT;
 
@@ -201,7 +204,8 @@ public:
 		has_exact_substitutions(other_.has_exact_substitutions),
 		projection_size(other_.projection_size),
 		bucket_threshold(other_.bucket_threshold),
-		num_of_trials(other_.num_of_trials)
+		num_of_trials(other_.num_of_trials),
+		score(0)
 	{
     SEQAN_CHECKPOINT;
 	}

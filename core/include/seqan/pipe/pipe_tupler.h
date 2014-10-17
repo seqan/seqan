@@ -256,7 +256,11 @@ namespace SEQAN_NAMESPACE_MAIN
         template <typename TLimitsString_>
         Pipe(TInput& _in, TLimitsString_ &_limits):  // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
             in(_in),
-			limits(_limits) {}
+			limits(_limits),
+			tmp(),
+			seqLength(),
+			lastTuples()
+		{}
 
         inline typename Value<Pipe>::Type const & operator*() const
         {
