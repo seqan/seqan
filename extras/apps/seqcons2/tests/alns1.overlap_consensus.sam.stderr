@@ -1,0 +1,40 @@
+SeqCons
+=======
+
+__OPTIONS____________________________________________________________________
+
+VERBOSITY              	NORMAL
+OPERATION              	overlap MSA + consensus
+
+INPUT FILE             	alns1.sam
+OUTPUT READS           	alns1.overlap_consensus.sam
+OUTPUT CONSENSUS       	alns1.overlap_consensus.fa
+
+OVERLAP MIN LENGTH     	20
+OVERLAP MAX ERR-RATE   	5
+OVERLAP MIN COUNT      	3
+OVERLAP WINDOW SIZE    	20
+
+K-MER SIZE             	20
+K-MER MAX OCCURENCES   	200
+
+REALIGNMENT BANDWIDTH  	10
+REALIGNMENT ENVIRONMENT	20
+
+__LOADING DATA_______________________________________________________________
+
+  Loading alignments from alns1.sam...OK
+
+__COMPUTATION________________________________________________________________
+
+Performing consensus computation... OK
+Performing realignment... OK
+
+__WRITING RESULT_____________________________________________________________
+
+Writing consensus to alns1.overlap_consensus.fa ... OK
+Writing alignments to alns1.overlap_consensus.sam ... OK
+
+Overall time: 0.992092 s
+
+Done.  Have a nice day.

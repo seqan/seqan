@@ -266,7 +266,7 @@ getValueById(StringSet<TString, Owner<TSpec> >& me,
 {
     SEQAN_CHECKPOINT;
     if (id < (TId) length(me)) return value(me, id);
-    static TString tmp = "";
+    static TString tmp = TString();
     return tmp;
 }
 
@@ -276,7 +276,7 @@ getValueById(StringSet<TString, Owner<TSpec> > const & me,
             TId const id)
 {
     if (id < (TId) length(me)) return value(me, id);
-    static TString tmp = "";
+    static TString tmp = TString();
     return tmp;
 }
 

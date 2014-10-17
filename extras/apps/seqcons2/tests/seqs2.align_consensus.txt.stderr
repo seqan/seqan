@@ -1,0 +1,39 @@
+SeqCons
+=======
+
+__OPTIONS____________________________________________________________________
+
+VERBOSITY              	NORMAL
+OPERATION              	global MSA + consensus
+
+INPUT FILE             	seqs2.fa
+OUTPUT READS           	seqs2.align_consensus.txt
+OUTPUT CONSENSUS       	
+
+OVERLAP MIN LENGTH     	20
+OVERLAP MAX ERR-RATE   	5
+OVERLAP MIN COUNT      	3
+OVERLAP WINDOW SIZE    	20
+
+K-MER SIZE             	20
+K-MER MAX OCCURENCES   	200
+
+REALIGNMENT BANDWIDTH  	10
+REALIGNMENT ENVIRONMENT	20
+
+__LOADING DATA_______________________________________________________________
+
+Loading reads from seqs2.fa...OK
+
+__COMPUTATION________________________________________________________________
+
+Performing consensus computation... OK
+Performing realignment... OK
+
+__WRITING RESULT_____________________________________________________________
+
+Writing alignments to seqs2.align_consensus.txt ... OK
+
+Overall time: 0.489169 s
+
+Done.  Have a nice day.
