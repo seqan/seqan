@@ -199,7 +199,7 @@ public:
 
         CompressionJob &job = jobs[currentJobId];
         job.outputBuffer = aquireValue(serializer);
-		this->setp(&(job.buffer[0]), &(job.buffer[job.buffer.size() - 1]));
+		this->setp(&job.buffer[0], &job.buffer[0] + (job.buffer.size() - 1));
     }
 
     ~basic_bgzf_streambuf()
@@ -244,7 +244,7 @@ public:
         if (compressBuffer(w))
         {
             CompressionJob &job = jobs[currentJobId];
-            this->setp(&(job.buffer[0]), &(job.buffer[job.buffer.size() - 1]));
+            this->setp(&job.buffer[0], &job.buffer[0] + (job.buffer.size() - 1));
             return c;
         }
         else
@@ -264,7 +264,7 @@ public:
         if ((w != 0 || flushEmptyBuffer) && compressBuffer(w))
         {
             CompressionJob &job = jobs[currentJobId];
-            this->setp(&(job.buffer[0]), &(job.buffer[job.buffer.size() - 1]));
+            this->setp(&job.buffer[0], &job.buffer[0] + (job.buffer.size() - 1));
         }
         else
         {
@@ -438,7 +438,7 @@ public:
                     {
                         // read header
                         streamBuf->serializer.istream.read(
-                            (char*)&(job.inputBuffer[0]),
+                            (char*)&job.inputBuffer[0],
                             BGZF_BLOCK_HEADER_LENGTH);
 
                         if (!streamBuf->serializer.istream.good())
@@ -451,7 +451,7 @@ public:
                         }
 
                         // check header
-                        if (!_bgzfCheckHeader(&(job.inputBuffer[0])))
+                        if (!_bgzfCheckHeader(&job.inputBuffer[0]))
                         {
                             streamBuf->serializer.fileOfs = -1;
                             streamBuf->serializer.error = new IOError("Invalid BGZF block header.");
@@ -459,11 +459,11 @@ public:
                         }
 
                         // extract length of compressed data
-                        tailLen = _bgzfUnpack16(&(job.inputBuffer[16])) + 1u - BGZF_BLOCK_HEADER_LENGTH;
+                        tailLen = _bgzfUnpack16(&job.inputBuffer[0] + 16) + 1u - BGZF_BLOCK_HEADER_LENGTH;
 
                         // read compressed data and tail
                         streamBuf->serializer.istream.read(
-                            (char*)&(job.inputBuffer[BGZF_BLOCK_HEADER_LENGTH]),
+                            (char*)&job.inputBuffer[0] + BGZF_BLOCK_HEADER_LENGTH,
                             tailLen);
                         
                         if (!streamBuf->serializer.istream.good())
@@ -499,7 +499,7 @@ public:
                 {
                     // decompress block
                     job.size = _decompressBlock(
-                        &job.buffer[MAX_PUTBACK], capacity(job.buffer),
+                        &job.buffer[0] + MAX_PUTBACK, capacity(job.buffer),
                         &job.inputBuffer[0], BGZF_BLOCK_HEADER_LENGTH + tailLen, compressionCtx);
 
                     // signal that job is ready
@@ -597,12 +597,12 @@ public:
             DecompressionJob &job = jobs[currentJobId];
 
             // restore putback buffer
-            this->setp(&(job.buffer[0]), &(job.buffer[job.buffer.size() - 1]));
+            this->setp(&job.buffer[0], &job.buffer[0] + (job.buffer.size() - 1));
             if (putback != 0)
                 std::copy(
                     &putbackBuffer[0],
-                    &putbackBuffer[putback],
-                    &job.buffer[MAX_PUTBACK - putback]);
+                    &putbackBuffer[0] + putback,
+                    &job.buffer[0] + (MAX_PUTBACK - putback));
 
             // wait for the end of decompression
             {
@@ -615,9 +615,9 @@ public:
 
             // reset buffer pointers
             this->setg( 
-                  &job.buffer[MAX_PUTBACK - putback],       // beginning of putback area
-                  &job.buffer[MAX_PUTBACK],                 // read position
-                  &job.buffer[MAX_PUTBACK + size]);         // end of buffer
+                  &job.buffer[0] + (MAX_PUTBACK - putback),     // beginning of putback area
+                  &job.buffer[0] + MAX_PUTBACK,                 // read position
+                  &job.buffer[0] + (MAX_PUTBACK + size));       // end of buffer
 
             if (job.size == -1)
                 return EOF;
@@ -650,7 +650,7 @@ public:
                           this->gptr() + ofs,       // read position
                           this->egptr());           // end of buffer
 
-                    return pos_type((job.fileOfs << 16) + (this->gptr() - &job.buffer[MAX_PUTBACK]));
+                    return pos_type((job.fileOfs << 16) + ((this->gptr() - &job.buffer[MAX_PUTBACK])));
                 }
                 
             }
@@ -666,9 +666,9 @@ public:
 
                     // reset buffer pointers
                     this->setg(
-                          this->eback(),                                // beginning of putback area
-                          &job.buffer[MAX_PUTBACK + (ofs & 0xffff)],    // read position
-                          this->egptr());                               // end of buffer
+                          this->eback(),                                        // beginning of putback area
+                          &job.buffer[0] + (MAX_PUTBACK + (ofs & 0xffff)),      // read position
+                          this->egptr());                                       // end of buffer
                     return ofs;
                 }
 
@@ -727,9 +727,9 @@ public:
 
                     // reset buffer pointers
                     this->setg( 
-                          &job.buffer[MAX_PUTBACK],                     // no putback area
-                          &job.buffer[MAX_PUTBACK + (ofs & 0xffff)],    // read position
-                          &job.buffer[MAX_PUTBACK + job.size]);         // end of buffer
+                          &job.buffer[0] + MAX_PUTBACK,                     // no putback area
+                          &job.buffer[0] + (MAX_PUTBACK + (ofs & 0xffff)),  // read position
+                          &job.buffer[0] + (MAX_PUTBACK + job.size));       // end of buffer
                     return ofs;
                 }
             }

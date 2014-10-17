@@ -112,8 +112,8 @@ struct BamInStream
 
 // compare strings lexicographically and runs of digits as numerically
 inline int
-numericalStrCmp(const unsigned char * __restrict__ a,
-                const unsigned char * __restrict__ b)
+numericalStrCmp(const unsigned char * SEQAN_RESTRICT a,
+                const unsigned char * SEQAN_RESTRICT b)
 {
     IsDigit isDigit;
     while (*a && *b)
