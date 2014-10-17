@@ -103,7 +103,7 @@ public:
 
     StringSet()
     {
-        _initStringSetLimits(*this);
+        clear(*this);
     }
 
     template <typename TOtherString, typename TOtherSpec>
@@ -320,16 +320,6 @@ inline void assignValue(
 }
 
 // --------------------------------------------------------------------------
-// Function _initStringSetLimits
-// --------------------------------------------------------------------------
-
-template <typename TString, typename TSpec>
-inline void _initStringSetLimits(StringSet<TString, TSpec> & me)
-{
-    appendValue(me.limits, 0);
-}
-
-// --------------------------------------------------------------------------
 // Function _validStringSetLimits
 // --------------------------------------------------------------------------
 
@@ -434,6 +424,7 @@ inline void clear(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > & me)
     SEQAN_CHECKPOINT;
     clear(me.concat);
     resize(me.limits, 1, Exact());
+    me.limits[0] = 0;
 }
 
 // --------------------------------------------------------------------------
