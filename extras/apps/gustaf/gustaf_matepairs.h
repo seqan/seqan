@@ -57,9 +57,8 @@ _importSequences(CharString const & fileNameL,
                  String<unsigned> & readJoinPositions
                  )
 {
-    SequenceStream l(toCString(fileNameL));
-    SequenceStream r(toCString(fileNameR));
-    if (!isGood(l) || !isGood(r))
+    seqan::SeqFileIn l, r;
+    if (!open(l, toCString(fileNameL)) || !open(r, toCString(fileNameR)))
     {
         std::cerr << "Failed to open file." << std::endl;
         return false;
@@ -127,65 +126,57 @@ _importSequences(CharString const & fileNameL,
                  String<unsigned> & readJoinPositions
                  )
 {
-    MultiSeqFile leftMates;
-    MultiSeqFile rightMates;
-    if (!open(leftMates.concat, toCString(fileNameL), OPEN_RDONLY))
+    seqan::SeqFileIn leftMates, rightMates;
+    if (!open(leftMates, toCString(fileNameL)))
     {
         std::cerr << "Failed to open " << fileNameL << " file." << std::endl;
         return false;
     }
-    if (!open(rightMates.concat, toCString(fileNameR), OPEN_RDONLY))
+    if (!open(rightMates, toCString(fileNameR)))
     {
         std::cerr << "Failed to open " << fileNameR << " file." << std::endl;
         return false;
     }
 
-    AutoSeqFormat formatL;
-    guessFormat(leftMates.concat, formatL);
-    split(leftMates, formatL);
-
-    AutoSeqFormat formatR;
-    guessFormat(rightMates.concat, formatR);
-    split(rightMates, formatR);
-
-    unsigned seqCount = length(leftMates);
-    SEQAN_ASSERT_EQ_MSG(seqCount, length(rightMates), "Unequal number of left and right mates!");
-    if (seqCount != length(leftMates))
-    {
-        std::cerr << "Unequal number of left and right mates!" << std::endl;
-        return false;
-    }
-
-    resize(readJoinPositions, seqCount);
-    reserve(seqs, seqCount, Exact());
-    reserve(ids, seqCount, Exact());
-    reserve(sIds, seqCount, Exact());
-
     TSequence seq;
     TSequence seqL;
     TSequence seqR;
-    TId id;
+    TId idL;
+    TId idR;
     TId sId;
-    unsigned counter = 0;
-    for (unsigned i = 0; i < seqCount; ++i)
+    unsigned seqCount = 0, counter = 0;
+    for (unsigned i = 0; !atEnd(leftMates) && !atEnd(rightMates); ++i, ++seqCount)
     {
-        assignSeq(seqL, leftMates[i], formatL);
-        assignSeq(seqR, rightMates[i], formatR);
+        try
+        {
+            readRecord(idL, seqL, leftMates);
+            readRecord(idR, seqR, rightMates);
+        }
+        catch (seqan::IOError const & ioErr)
+        {
+            std::cerr << "Problem reading mates (" << ioErr.what() << ")\n";
+            return false;
+        }
+
         if (revCompl)
             reverseComplement(seqR);
-        readJoinPositions[i] = length(seqL);
+        appendValue(readJoinPositions, length(seqL));
         append(seq, seqL);
         append(seq, seqR);
         // Note: saving ID of right(!) mate per default
-        assignSeqId(id, rightMates[i], formatR);
         appendValue(seqs, seq, Generous());
-        appendValue(ids, id, Generous());
+        appendValue(ids, idR, Generous());
 
-        _getShortId(sId, id);
-        if (!_checkUniqueId(sId, id, ids, sIds))
+        _getShortId(sId, idR);
+        if (!_checkUniqueId(sId, idR, ids, sIds))
             ++counter;
         appendValue(sIds, sId);
         clear(seq);
+    }
+    if (!atEnd(leftMates) || !atEnd(rightMates))
+    {
+        std::cerr << "Unequal number of left and right mates!\n";
+        return false;
     }
 
     std::cout << "Loaded " << seqCount << " mate pair sequence" << ((seqCount > 1) ? "s." : ".") << std::endl;
@@ -371,7 +362,7 @@ void _initialiseGraphMatePairsNoBreakends(QueryMatches<StellarMatch<TSequence, T
             if (!_checkMateMatches(queryMatches.matches[i], queryMatches.matches, chain, options))
                 cargo += options.noMateMatchesPen;
             TEdgeDescriptor edge = addEdge(chain.graph, chain.startVertex, i, cargo);
-            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            resizeEdgeMap(chain.breakpoints.slotLookupTable, chain.graph);
             assignProperty(chain.breakpoints, edge);
         }
         cargo = static_cast<int>(length(source(queryMatches.matches[i].row2))) -
@@ -379,7 +370,7 @@ void _initialiseGraphMatePairsNoBreakends(QueryMatches<StellarMatch<TSequence, T
         if (cargo < (options.initGapThresh + 1))
         {
             TEdgeDescriptor edge = addEdge(chain.graph, i, chain.endVertex, cargo);
-            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            resizeEdgeMap(chain.breakpoints.slotLookupTable, chain.graph);
             assignProperty(chain.breakpoints, edge);
         }
     }
@@ -444,7 +435,7 @@ void _initialiseGraphMatePairs(QueryMatches<StellarMatch<TSequence, TId> > & que
             if (!_checkMateMatches(queryMatches.matches[i], queryMatches.matches, chain, options))
                 cargo += options.noMateMatchesPen;
             TEdgeDescriptor edge = addEdge(chain.graph, chain.startVertex, i, cargo);
-            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            resizeEdgeMap(chain.breakpoints.slotLookupTable, chain.graph);
             if (cargo < (options.initGapThresh + 1))
                 assignProperty(chain.breakpoints, edge);
             else
@@ -471,7 +462,7 @@ void _initialiseGraphMatePairs(QueryMatches<StellarMatch<TSequence, TId> > & que
         if (cargo < (options.breakendThresh + 1))
         {
             TEdgeDescriptor edge = addEdge(chain.graph, i, chain.endVertex, cargo);
-            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            resizeEdgeMap(chain.breakpoints.slotLookupTable, chain.graph);
             if (cargo < (options.initGapThresh + 1))
                 assignProperty(chain.breakpoints, edge);
             else

@@ -51,7 +51,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, Simple>;
  * 
- * @tparam TNeedle The needle type.  Types: @link SequenceConcept @endlink.
+ * @tparam TNeedle The needle type.  Types: @link ContainerConcept @endlink.
  * 
  * This specialization should only be used if no other is applicable.
  */

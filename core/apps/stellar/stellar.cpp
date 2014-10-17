@@ -21,8 +21,10 @@
 // Author: Birte Kehr <birte.kehr@fu-berlin.de>
 // ==========================================================================
 
-#include <seqan/index.h>
 #include <seqan/arg_parse.h>
+#include <seqan/index.h>
+#include <seqan/seq_io.h>
+
 #include "stellar.h"
 #include "stellar_output.h"
 
@@ -235,30 +237,22 @@ _importSequences(CharString const & fileName,
                  StringSet<TSequence> & seqs,
                  StringSet<TId> & ids)
 {
-    MultiSeqFile multiSeqFile;
-    if (!open(multiSeqFile.concat, toCString(fileName), OPEN_RDONLY))
+    SeqFileIn inSeqs;
+    if (!open(inSeqs, (toCString(fileName))))
     {
         std::cerr << "Failed to open " << name << " file." << std::endl;
         return false;
     }
-
-    AutoSeqFormat format;
-    guessFormat(multiSeqFile.concat, format);
-    split(multiSeqFile, format);
-
-    unsigned seqCount = length(multiSeqFile);
-    reserve(seqs, seqCount, Exact());
-    reserve(ids, seqCount, Exact());
 
     std::set<TId> uniqueIds; // set of short IDs (cut at first whitespace)
     bool idsUnique = true;
 
     TSequence seq;
     TId id;
-    for (unsigned i = 0; i < seqCount; ++i)
+    unsigned seqCount = 0;
+    for (; !atEnd(inSeqs); ++seqCount)
     {
-        assignSeq(seq, multiSeqFile[i], format);
-        assignSeqId(id, multiSeqFile[i], format);
+        readRecord(id, seq, inSeqs);
 
         idsUnique &= _checkUniqueId(uniqueIds, id);
 
@@ -506,9 +500,9 @@ void _setParser(ArgumentParser & parser)
                    "sequences from file 2 as queries.");
     addDescription(parser, "(c) 2010-2012 by Birte Kehr");
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 1"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "FASTA FILE 1"));
     setValidValues(parser, 0, "fa fasta");  // allow only fasta files as input
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "FASTA FILE 2"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "FASTA FILE 2"));
     setValidValues(parser, 1, "fa fasta");  // allow only fasta files as input
 
     addSection(parser, "Main Options");
@@ -570,11 +564,11 @@ void _setParser(ArgumentParser & parser)
 
     addSection(parser, "Output Options");
 
-    addOption(parser, ArgParseOption("o", "out", "Name of output file.", ArgParseArgument::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "out", "Name of output file.", ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "o", "gff txt");
     setDefaultValue(parser, "o", "stellar.gff");
     addOption(parser, ArgParseOption("od", "outDisabled",
-                                     "Name of output file for disabled query sequences.", ArgParseArgument::OUTPUTFILE));
+                                     "Name of output file for disabled query sequences.", ArgParseArgument::OUTPUT_FILE));
     setValidValues(parser, "outDisabled", "fa fasta");
     setDefaultValue(parser, "od", "stellar.disabled.fasta");
     addOption(parser, ArgParseOption("t", "no-rt", "Suppress printing running time."));

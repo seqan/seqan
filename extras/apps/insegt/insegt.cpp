@@ -81,20 +81,20 @@ parseCommandLine(InsegtOptions & options, int argc, char const ** argv)
     // We require two arguments.
     addDescription(parser, "Input to INSEGT is a SAM file containing the alignments and"
                           " a file containing the annotations of the reference genome, either in GFF or GTF format.");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
     setValidValues(parser, 0, "sam");
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
     setValidValues(parser, 1, "gff gtf");
     // Define Options -- Section Modification Options
 
     addSection(parser, "Options: ");
-    addOption(parser, ArgParseOption("ro", "read-output", "Output filename for read-output, which contains the mapped annotations followed by their parent annotation.", ArgParseArgument::OUTPUTFILE)); 
+    addOption(parser, ArgParseOption("ro", "read-output", "Output filename for read-output, which contains the mapped annotations followed by their parent annotation.", ArgParseArgument::OUTPUT_FILE)); 
     //setDefaultValue(parser, "read-output", "readOutput.gff");
     setValidValues(parser, "read-output", "gff");
-    addOption(parser, ArgParseOption("ao", "anno-output", "Output filename for anno-output, which contains the annotations similar to the GFF input and additionally the counts of the mapped reads and the normalized expression levels in RPKM.", ArgParseArgument::OUTPUTFILE)); 
+    addOption(parser, ArgParseOption("ao", "anno-output", "Output filename for anno-output, which contains the annotations similar to the GFF input and additionally the counts of the mapped reads and the normalized expression levels in RPKM.", ArgParseArgument::OUTPUT_FILE)); 
     //setDefaultValue(parser, "anno-output", "annoOutput.gff");
     setValidValues(parser, "anno-output", "gff");
-    addOption(parser, ArgParseOption("to", "tuple-output", "Output filename for tuple-output, which contains exon tuples connected by reads or matepairs.", ArgParseArgument::OUTPUTFILE)); 
+    addOption(parser, ArgParseOption("to", "tuple-output", "Output filename for tuple-output, which contains exon tuples connected by reads or matepairs.", ArgParseArgument::OUTPUT_FILE)); 
     //setDefaultValue(parser, "tuple-output", "tupleOutput.gff");
     setValidValues(parser, "tuple-output", "gff");
     // Check for gene fusions: currently disabled for KNIME
@@ -141,9 +141,13 @@ parseCommandLine(InsegtOptions & options, int argc, char const ** argv)
     getArgumentValue(options.nameSAM, parser, 0);
     getArgumentValue(options.nameGFF, parser, 1);
     if (endsWith(options.nameGFF, ".gff"))
+    {
         options.gtf = false;
+    }
     else if (endsWith(options.nameGFF, ".gtf"))
+    {
         options.gtf = true;
+    }
     else 
     {
         std::cerr << "ERROR: Input format of annotation file must be either GFF or GTF!\n";

@@ -566,8 +566,8 @@ namespace SEQAN_NAMESPACE_MAIN
 		//typedef typename Iterator<TBuffer, Standard>::Type TBufferIter;
 		typedef typename Iterator<TText const, Standard>::Type TValueIter;
 
-		SEQAN_ASSERT(IsContiguous<TText>::VALUE == true);
-		SEQAN_ASSERT(IsContiguous<TSA>::VALUE == true);
+		SEQAN_ASSERT(AllowsFastRandomAccess<TText>::VALUE == true);
+		SEQAN_ASSERT(AllowsFastRandomAccess<TSA>::VALUE == true);
 
         #ifdef SEQAN_DEBUG_INDEX
             std::cerr << "--- CREATE SUFFIX ARRAY ---" << std::endl;
@@ -734,10 +734,10 @@ namespace SEQAN_NAMESPACE_MAIN
 					{_n24-_n[5]    , _n124-_n[5]   , _n[4]-_n[5] , _n[4]-_n[5] , _n24-_n[5]  , 0             , _n124-_n[5]   },  // 5
 					{_n124-_n[6]   , _n24-_n[6]    , _n124-_n[6] , _n[4]-_n[6] , _n[4]-_n[6] , _n24-_n[6]    , 0             }}; // 6
 
-				TSAIter pos[7] = {begin(SA0)      , begin(SA124)      , begin(SA124)      , 
-								  begin(SA3)      , begin(SA124)      , begin(SA5)        , begin(SA6)      };
-				TSAIter max[7] = {begin(SA0)+_n[0], begin(SA124)+_n124, begin(SA124)+_n124,
-								  begin(SA3)+_n[3], begin(SA124)+_n124, begin(SA5)+_n[5]  , begin(SA6)+_n[6]};
+				TSAIter pos[7] = {begin(SA0, Standard())      , begin(SA124, Standard())      , begin(SA124, Standard())      ,
+								  begin(SA3, Standard())      , begin(SA124, Standard())      , begin(SA5, Standard())        , begin(SA6, Standard())      };
+				TSAIter max[7] = {begin(SA0, Standard())+_n[0], begin(SA124, Standard())+_n124, begin(SA124, Standard())+_n124,
+								  begin(SA3, Standard())+_n[3], begin(SA124, Standard())+_n124, begin(SA5, Standard())+_n[5]  , begin(SA6, Standard())+_n[6]};
 				TValueIter spos[7];
 				TSize tpos[7];
 				bool islast[7];
@@ -761,7 +761,7 @@ namespace SEQAN_NAMESPACE_MAIN
 						TSize j	  = SEQAN_GET_ISKEW7(ii);
 
 						tpos[a]   = ii;
-						spos[a]   = begin(s) + j;
+						spos[a]   = begin(s, Standard()) + j;
 						islast[a] = (j + 7 >= n);
 
 					} else {
@@ -770,7 +770,7 @@ namespace SEQAN_NAMESPACE_MAIN
 						TSize j   = *(pos[a]);
 
 						tpos[a]   = j / 7;
-						spos[a]   = begin(s) + j;
+						spos[a]   = begin(s, Standard()) + j;
 						islast[a] = (j + 7 >= n);
 
 					}
@@ -796,7 +796,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 					// add the least suffix to SA and get the next of the corresponding stream
 					a = rank[0];
-					SA[k++] = spos[a] - begin(s);
+					SA[k++] = spos[a] - begin(s, Standard());
 					if (a == 1 || a == 2 || a == 4)
 						pos[4] = pos[2] = ++pos[1];
 					else
@@ -812,7 +812,7 @@ namespace SEQAN_NAMESPACE_MAIN
 							TSize j   = SEQAN_GET_ISKEW7(ii);
 
 							tpos[a]   = ii;
-							spos[a]   = begin(s) + j;
+							spos[a]   = begin(s, Standard()) + j;
 							islast[a] = (j + 7 >= n);
 
 						} else {
@@ -820,7 +820,7 @@ namespace SEQAN_NAMESPACE_MAIN
 							TSize j   = *(pos[a]);
 
 							tpos[a]   = j / 7;
-							spos[a]   = begin(s) + j;
+							spos[a]   = begin(s, Standard()) + j;
 							islast[a] = (j + 7 >= n);
 
 						}

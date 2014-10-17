@@ -24,7 +24,7 @@ def main(source_base, binary_base):
     """Main entry point of the script."""
 
     print 'Executing test for micro_razers'
-    print '========================='
+    print '==============================='
     print
     
     ph = app_tests.TestPathHelper(
@@ -56,9 +56,9 @@ def main(source_base, binary_base):
         redir_stdout=ph.outFile('se-adeno-reads36_1_default.stdout'),
         args=[ph.inFile('adeno-genome.fa'),
               ph.inFile('adeno-reads36_1.fa'),
-              '-o', ph.outFile('se-adeno-reads36_1_default.out' )],
-        to_diff=[(ph.inFile('se-adeno-reads36_1_default.out' ),
-                  ph.outFile('se-adeno-reads36_1_default.out' )),
+              '-o', ph.outFile('se-adeno-reads36_1_default.razers' )],
+        to_diff=[(ph.inFile('se-adeno-reads36_1_default.razers' ),
+                  ph.outFile('se-adeno-reads36_1_default.razers' )),
                  (ph.inFile('se-adeno-reads36_1_default.stdout' ),
                   ph.outFile('se-adeno-reads36_1_default.stdout' ))])
     conf_list.append(conf)
@@ -71,11 +71,24 @@ def main(source_base, binary_base):
             args=['-sL', str(sl), 
                   ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads36_1.fa'),
-                  '-o', ph.outFile('se-adeno-reads36_1_sl%d.out' % sl)],
-            to_diff=[(ph.inFile('se-adeno-reads36_1_sl%d.out' % sl),
-                      ph.outFile('se-adeno-reads36_1_sl%d.out' % sl)),
+                  '-o', ph.outFile('se-adeno-reads36_1_sl%d.razers' % sl)],
+            to_diff=[(ph.inFile('se-adeno-reads36_1_sl%d.razers' % sl),
+                      ph.outFile('se-adeno-reads36_1_sl%d.razers' % sl)),
                      (ph.inFile('se-adeno-reads36_1_sl%d.stdout' % sl),
                       ph.outFile('se-adeno-reads36_1_sl%d.stdout' % sl))])
+        conf_list.append(conf)
+    
+        conf = app_tests.TestConf(
+            program=path_to_program,
+            redir_stdout=ph.outFile('se-adeno-reads36_1_sl%d_sam.stdout' % sl),
+            args=['-sL', str(sl), 
+                  ph.inFile('adeno-genome.fa'),
+                  ph.inFile('adeno-reads36_1.fa'),
+                  '-o', ph.outFile('se-adeno-reads36_1_sl%d.sam' % sl)],
+            to_diff=[(ph.inFile('se-adeno-reads36_1_sl%d.sam' % sl),
+                      ph.outFile('se-adeno-reads36_1_sl%d.sam' % sl)),
+                     (ph.inFile('se-adeno-reads36_1_sl%d_sam.stdout' % sl),
+                      ph.outFile('se-adeno-reads36_1_sl%d_sam.stdout' % sl))])
         conf_list.append(conf)
     
         # allow error in seed
@@ -85,9 +98,9 @@ def main(source_base, binary_base):
             args=['-sL', str(sl), '-sE',
                   ph.inFile('adeno-genome.fa'),
                   ph.inFile('adeno-reads36_1.fa'),
-                  '-o', ph.outFile('se-adeno-reads36_1_sl%d_se.out' % sl)],
-            to_diff=[(ph.inFile('se-adeno-reads36_1_sl%d_se.out' % sl),
-                      ph.outFile('se-adeno-reads36_1_sl%d_se.out' % sl)),
+                  '-o', ph.outFile('se-adeno-reads36_1_sl%d_se.razers' % sl)],
+            to_diff=[(ph.inFile('se-adeno-reads36_1_sl%d_se.razers' % sl),
+                      ph.outFile('se-adeno-reads36_1_sl%d_se.razers' % sl)),
                      (ph.inFile('se-adeno-reads36_1_sl%d_se.stdout' % sl),
                       ph.outFile('se-adeno-reads36_1_sl%d_se.stdout' % sl))])
         conf_list.append(conf)
@@ -100,9 +113,9 @@ def main(source_base, binary_base):
         args=['-sL', str(18), '-m', str(20), '-pa',
               ph.inFile('adeno-genome.fa'),
               ph.inFile('adeno-reads36_1.fa'),
-              '-o', ph.outFile('se-adeno-reads36_1_sl18_m20_pa.out' )],
-        to_diff=[(ph.inFile('se-adeno-reads36_1_sl18_m20_pa.out' ),
-                  ph.outFile('se-adeno-reads36_1_sl18_m20_pa.out' )),
+              '-o', ph.outFile('se-adeno-reads36_1_sl18_m20_pa.razers' )],
+        to_diff=[(ph.inFile('se-adeno-reads36_1_sl18_m20_pa.razers' ),
+                  ph.outFile('se-adeno-reads36_1_sl18_m20_pa.razers' )),
                  (ph.inFile('se-adeno-reads36_1_sl18_m20_pa.stdout' ),
                   ph.outFile('se-adeno-reads36_1_sl18_m20_pa.stdout' ))])
     conf_list.append(conf)

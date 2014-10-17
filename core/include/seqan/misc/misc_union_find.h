@@ -39,8 +39,6 @@
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
-#include <seqan/graph_types.h>
-
 // TODO(holtgrew): Comprehensive tests. Currently, there are *some* tests in the tests for graph_algorithm.
 
 namespace seqan {
@@ -48,6 +46,8 @@ namespace seqan {
 // ============================================================================
 // Forwards
 // ============================================================================
+
+template <typename TSpec> class Graph;
 
 // ============================================================================
 // Classes, Structs, Enums, Tags
@@ -317,10 +317,10 @@ resize(UnionFind<TValue> & unionFind,
  * @fn UnionFind#resizeVertexMap
  * @brief Resize Union-Find data structure to appropriate size for a vertex map.
  *
- * @signature TSize resizeVertexMap(g, uf);
+ * @signature TSize resizeVertexMap(uf, g);
  *
- * @param[in]     g  The graph to use for getting the vertex number.
  * @param[in,out] uf The Union-Find object to resize.
+ * @param[in]     g  The graph to use for getting the vertex number.
  *
  * @return TSize New size of the vertex map  (Metafunction: @link UnionFind#Size @endlink).
  */
@@ -330,10 +330,9 @@ resize(UnionFind<TValue> & unionFind,
 ///.Function.resizeVertexMap.remarks:If $pm$ is of type @Class.UnionFind@ then the $prototype$ parameter is not available.
 
 template <typename TSpec, typename TValue>
-inline
 typename Size<UnionFind<TValue> >::Type
-resizeVertexMap(Graph<TSpec> const & g,
-                UnionFind<TValue> & unionFind)
+resizeVertexMap(UnionFind<TValue> & unionFind,
+                Graph<TSpec> const & g)
 {
     clear(unionFind);
     return resize(unionFind, numVertices(g));

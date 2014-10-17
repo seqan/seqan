@@ -39,7 +39,7 @@
 
 
 #include <seqan/sequence.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/align.h>
 
 using namespace std;

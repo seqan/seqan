@@ -525,6 +525,7 @@ you should think of using @Tag.ExternalConfig@.
 		
 	    ExtStringFwdIterator():
 			extString(NULL),
+			dirty(true),
 			pageNo(0),
 			pageOfs(0),
             prefetch(0),
@@ -532,6 +533,7 @@ you should think of using @Tag.ExternalConfig@.
 
 		ExtStringFwdIterator(const TIterator &I):
 			extString(I.extString),
+			dirty(true),
 			pageNo(I.pageNo),
 			pageOfs(I.pageOfs),
             prefetch(I.prefetch),
@@ -539,6 +541,7 @@ you should think of using @Tag.ExternalConfig@.
 
 	    explicit ExtStringFwdIterator(TExtString *_extString, TSize _offset):
 			extString(_extString),
+			dirty(true),
 			pageNo(_offset / PAGESIZE),
 			pageOfs(_offset % PAGESIZE),
             prefetch(0),
@@ -546,12 +549,14 @@ you should think of using @Tag.ExternalConfig@.
 
 		explicit ExtStringFwdIterator(TExtString *_extString, TSize _pageNo, TSize _pageOfs):
 			extString(_extString),
+			dirty(true),
 			pageNo(_pageNo),
 			pageOfs(_pageOfs),
             prefetch(0),
 			begin(NULL) {}
 
-		~ExtStringFwdIterator() {
+		~ExtStringFwdIterator()
+		{
 			invalidate();
 		}
 
@@ -1214,15 +1219,11 @@ you should think of using @Tag.ExternalConfig@.
         int                 lastDiskPage;       // the last page on disk and in mem 
         unsigned            lastDiskPageSize;   // can be smaller than PAGESIZE
 
-		String(TSize size = 0):
-            file(NULL),
-			data_size(0)
+		String(TSize size = 0) :
+            file(NULL), _temporary(true), _ownFile(false), data_size(0),
+			lastDiskPage(0),     // the last two values need not to be initialized here
+			lastDiskPageSize(0)  // because of "write before read"
         {
-            _temporary = true;
-            _ownFile = false;
-            lastDiskPage = 0;       // actually, these values need not to be initialized
-            lastDiskPageSize = 0;   // here, because of "write before read"
-
 			resize(*this, size);
         }
 
@@ -1277,29 +1278,29 @@ Instead of giving $file$ or $fileName$ to the constructor, you could also use th
 or @Function.openTemp@ afterwards to reach the same behaviour.
 */
         explicit
-        String(TFile &_file)
+        String(TFile &_file) :
+            file(NULL), _temporary(true), _ownFile(false), data_size(0), lastDiskPage(0), lastDiskPageSize(0)
         {
             open(*this, _file);
         }
 
         explicit
-        String(const char *fileName, int openMode = DefaultOpenMode<TFile>::VALUE):
-            file(NULL)
+        String(const char *fileName, int openMode = DefaultOpenMode<TFile>::VALUE) :
+            file(NULL), _temporary(true), _ownFile(false), data_size(0), lastDiskPage(0), lastDiskPageSize(0)
         {
             open(*this, fileName, openMode);
         }
 
         // copy the contents from another string
         String(String const & source):
-            file(NULL),
-            data_size(0)
+            file(NULL), _temporary(true), _ownFile(false), data_size(0), lastDiskPage(0), lastDiskPageSize(0)
 		{
             assign(*this, source);
 		}
+
         template <typename TSource>
-        String(TSource const & source):
-            file(NULL),
-            data_size(0)
+        String(TSource const & source) :
+            file(NULL), _temporary(true), _ownFile(false), data_size(0), lastDiskPage(0), lastDiskPageSize(0)
         {
             assign(*this, source);
         }
@@ -1413,7 +1414,9 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
                 // TODO(weese): Throw an I/O exception
                 if (!waitResult)
-                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                               _pageFrameStatusString(pf.status),
+                               strerror(errno));
 
                 pf.pageNo = -1;                             // cut back link
                 return;
@@ -1435,7 +1438,9 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
                 // TODO(weese): Throw an I/O exception
                 if (!waitResult)
-                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                               _pageFrameStatusString(pf.status),
+                               strerror(errno));
 			} else
 				pager[pf.pageNo] = pf.dataStatus;			// restore original data status
 
@@ -1449,13 +1454,15 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
 			inline bool operator() (TPageFrame &pf)
             {
-                PageFrameStatus oldStatus = pf.status;
+                PageFrameState oldStatus = pf.status;
                 bool inProgress;
                 bool waitResult = waitFor(pf, 0, inProgress);
 
                 // TODO(weese): Throw an I/O exception
                 if (!waitResult)
-                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                               _pageFrameStatusString(pf.status),
+                               strerror(errno));
 
                 if (!inProgress && (oldStatus != READY))
                 {
@@ -1480,12 +1487,14 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
                     pf, 
                     _max(pf.priority, newLevel));    		// update lru order
 
-                PageFrameStatus oldStatus = pf.status;
+                PageFrameState oldStatus = pf.status;
 				bool waitResult = waitFor(pf);              // wait for I/O transfer to complete
 
                 // TODO(weese): Throw an I/O exception
                 if (!waitResult)
-                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                               _pageFrameStatusString(pf.status),
+                               strerror(errno));
 
 				if (oldStatus != READY)
                     if (pf.pageNo >= lastDiskPage)
@@ -1534,7 +1543,9 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
                 // TODO(weese): Throw an I/O exception
                 if (!waitResult)
-                    SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(pf), strerror(errno));
+                    SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                               _pageFrameStatusString(pf.status),
+                               strerror(errno));
 
 				return pf;
 			}
@@ -1768,7 +1779,9 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
             bool waitResult = waitFor(*f);              // wait for I/O transfer to complete
 
             if (!waitResult)
-                SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(*f), strerror(errno));
+                SEQAN_FAIL("%s operation could not be completed: \"%s\"",
+                           _pageFrameStatusString(f->status),
+                           strerror(errno));
         }
 	}
 
@@ -1915,7 +1928,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
 
 		me._temporary = false;
 		if ((me._ownFile = open(me.file, fileName, openMode)))
-            me.data_size = size(me.file) / sizeof(TValue);
+            me.data_size = length(me.file) / sizeof(TValue);
         else
             me.data_size = 0;
 
@@ -1952,7 +1965,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
         me._temporary = false;
         me._ownFile = false;
         if (me.file)
-            me.data_size = size(me.file) / sizeof(TValue);
+            me.data_size = length(me.file) / sizeof(TValue);
         else
             me.data_size = 0;
 

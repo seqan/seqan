@@ -61,11 +61,23 @@
 // Iterator concept.
 #include <seqan/basic/iterator_concept.h>
 
-// Iterator for adapting iterators to Rooted Iterators.
-#include <seqan/basic/iterator_adaptor.h>
+// PropertyMap concept.
+#include <seqan/basic/property_map_concept.h>
+
+// Container concept.
+#include <seqan/basic/container_concept.h>
+
+// Counting iterator.
+#include <seqan/basic/iterator_counting.h>
 
 // Positional iterator.
 #include <seqan/basic/iterator_position.h>
+
+// Makes a container out of begin/end iterators
+#include <seqan/basic/iterator_range.h>
+
+// Iterator for adapting iterators to Rooted Iterators.
+#include <seqan/basic/iterator_adaptor.h>
 
 // Adaption between STL iterators and SeqAn iterators.
 #include <seqan/basic/iterator_adapt_std.h>

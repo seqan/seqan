@@ -1,7 +1,7 @@
 // FRAGMENT(create-string)
 #include <iostream>
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 
 using namespace seqan;
 

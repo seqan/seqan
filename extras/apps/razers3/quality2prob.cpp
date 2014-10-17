@@ -35,9 +35,12 @@ int main(int argc, const char * argv[])
 
     //////////////////////////////////////////////////////////////////////////////
     // Load reads
-
-    if (!loadReads(store, toCString(getArgumentValue(parser, 0)), options) && (stop = true))
+    SeqFileIn seqFileIn;
+    if (!open(seqFileIn, toCString(getArgumentValue(parser, 0))) || !loadReads(store, seqFileIn, options))
+    {
         std::cerr << "Failed to load reads." << std::endl;
+        stop = true;
+    }
 
     // something went wrong
     if (stop)

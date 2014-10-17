@@ -1,64 +1,44 @@
 #include <iostream>
 #include <fstream>
 
-#include <seqan/bam_io.h>
 #include <seqan/sequence.h>
-#include <seqan/stream.h>
+#include <seqan/bam_io.h>
 
-int main(int argc, char const ** argv)
+int main(int argc, char const * argv[])
 {
-    if (argc != 2)
+    if (argc != 3)
     {
-        std::cerr << "USAGE: " << argv[0] << " IN.bam\n";
+        std::cerr << "USAGE: " << argv[0] << " IN.[sam|bam] OUT.[sam|bam]\n";
         return 1;
     }
 
-    // Open BGZF Stream for reading.
-    seqan::Stream<seqan::Bgzf> inStream;
-    if (!open(inStream, argv[1], "r"))
+    // Open BamFileIn for reading.
+    seqan::BamFileIn inFile;
+    if (!open(inFile, argv[1]))
     {
         std::cerr << "ERROR: Could not open " << argv[1] << " for reading.\n";
         return 1;
     }
 
-    // Setup name store, cache, and BAM I/O context.
-    typedef seqan::StringSet<seqan::CharString> TNameStore;
-    typedef seqan::NameStoreCache<TNameStore>   TNameStoreCache;
-    typedef seqan::BamIOContext<TNameStore>     TBamIOContext;
-    TNameStore      nameStore;
-    TNameStoreCache nameStoreCache(nameStore);
-    TBamIOContext   context(nameStore, nameStoreCache);
+    // Open BamFileOut for writing. Give inFile to share its BamIoContext
+    seqan::BamFileOut outFile(inFile);
+    if (!open(outFile, argv[2]))
+    {
+        std::cerr << "ERROR: Could not open " << argv[2] << " for writing.\n";
+        return 1;
+    }
 
     // Read header.
     seqan::BamHeader header;
-    if (readRecord(header, context, inStream, seqan::Bam()) != 0)
-    {
-        std::cerr << "ERROR: Could not read header from BAM file " << argv[1] << "\n";
-        return 1;
-    }
-
-    // Write out header again.
-    if (write2(std::cout, header, context, seqan::Sam()) != 0)
-    {
-        std::cerr << "ERROR: Could not write header to stdout.\n";
-        return 1;
-    }
+    readRecord(header, inFile);
+    writeRecord(outFile, header);
 
     // Copy over the alignment records.
     seqan::BamAlignmentRecord record;
-    while (!atEnd(inStream))
+    while (!atEnd(inFile))
     {
-        if (readRecord(record, context, inStream, seqan::Bam()) != 0)
-        {
-            std::cerr << "ERROR: Could not read record from BAM File " << argv[1] << "\n";
-            return 1;
-        }
-
-        if (write2(std::cout, record, context, seqan::Sam()) != 0)
-        {
-            std::cerr << "ERROR: Could not write record to stdout.\n";
-            return 1;
-        }
+        readRecord(record, inFile);
+        writeRecord(outFile, record);
     }
 
     return 0;

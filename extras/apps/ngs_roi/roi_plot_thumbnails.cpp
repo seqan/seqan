@@ -311,12 +311,12 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     addSection(parser, "Input / Output Parameters");
 
     addOption(parser, seqan::ArgParseOption("if", "input-file", "ROI to plot.",
-                                            seqan::ArgParseOption::INPUTFILE));
-    setValidValues(parser, "input-file", "roi");
+                                            seqan::ArgParseOption::INPUT_FILE));
+    setValidValues(parser, "input-file", seqan::RoiFileIn::getFileExtensions());
     setRequired(parser, "input-file");
 
     addOption(parser, seqan::ArgParseOption("o", "output-prefix", "Prefix of output file.",
-                                            seqan::ArgParseOption::OUTPUTFILE));
+                                            seqan::ArgParseOption::OUTPUT_FILE));
     setRequired(parser, "output-prefix");
 
     // -----------------------------------------------------------------------
@@ -429,23 +429,18 @@ int main(int argc, char const ** argv)
 
     if (options.verbosity >= 1)
          std::cerr << "Opening " << options.inputFileName << " ...";
-    std::fstream inRoi(toCString(options.inputFileName), std::ios::binary | std::ios::in);
-    if (!inRoi.good())
+    seqan::RoiFileIn roiFileIn;
+    if (!open(roiFileIn, toCString(options.inputFileName)))
 	{
 		std::cerr << "\nERROR: Could not open " << options.inputFileName << "\n";
         return 1;
 	}
     if (options.verbosity >= 1)
         std::cerr << " OK\n";
-    seqan::RecordReader<std::fstream, seqan::SinglePass<> > reader(inRoi);
-    while (!atEnd(reader) && value(reader) == '#')
-    {
-        if (skipLine(reader) != 0)
-        {
-            std::cerr << "ERROR: Could not skip over header in " << options.inputFileName << "\n";
-            return 1;
-        }
-    }
+
+    // Read header (actually, skip it).
+    seqan::RoiHeader roiHeader;
+    readRecord(roiHeader, roiFileIn);
 
     // -----------------------------------------------------------------------
     // Create plot grids.
@@ -459,15 +454,11 @@ int main(int argc, char const ** argv)
     Plotter plotter(options);
 
     seqan::RoiRecord record;
-    for (int i = 0; (options.maxRois == 0 || i < options.maxRois) && !atEnd(reader); ++i)
+    for (int i = 0; (options.maxRois == 0 || i < options.maxRois) && !atEnd(roiFileIn); ++i)
     {
         if (options.verbosity >= 2)
             std::cerr << " " << i << "(" << length(record.count) << ", " << plotter.gridNo << ")";
-        if (readRecord(record, reader, seqan::Roi()) != 0)
-        {
-            std::cerr << "ERROR: Problem reading ROI file!\n";
-            return 1;
-        }
+        readRecord(record, roiFileIn);
 
         plotter.plotGrid(record.count);
     }

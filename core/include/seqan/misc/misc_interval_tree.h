@@ -140,10 +140,8 @@ public:
 .Memfunc.IntervalAndCargo#IntervalAndCargo:
 ..signature:IntervalAndCargo()
      */
-    IntervalAndCargo()
-    {
-SEQAN_CHECKPOINT
-    }
+    IntervalAndCargo() : i1(), i2(), cargo()
+    {}
 
     /**
 .Memfunc.IntervalAndCargo#IntervalAndCargo:
@@ -227,9 +225,8 @@ public:
 ..class:Class.PointAndCargo
 ..signature:PointAndCargo(point, cargo)
     */
-	PointAndCargo() {
-SEQAN_CHECKPOINT
-	}
+	PointAndCargo() : point(), cargo()
+	{}
 
     /**
 .Memfunc.PointAndCargo#PointAndCargo
@@ -243,9 +240,7 @@ SEQAN_CHECKPOINT
     */
 	PointAndCargo(TValue point, TCargo cargo):
 		point(point), cargo(cargo)
-	{
-SEQAN_CHECKPOINT
-	}
+	{}
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -1280,7 +1275,7 @@ createIntervalTree(TGraph & g,
 	reserve(pm,length(intervals));
 
 	TVertexDescriptor root = addVertex(g);
-	resizeVertexMap(g,pm);
+	resizeVertexMap(pm, g);
 
     if (length(intervals) > 0u) {
         TValue center =	_calcIntervalTreeRootCenter(intervals);
@@ -1322,7 +1317,7 @@ createIntervalTree(TGraph & g,
 	reserve(pm,length(intervals));
 	
 	TVertexDescriptor root = addVertex(g);
-	resizeVertexMap(g,pm);
+	resizeVertexMap(pm, g);
 	
     if (length(intervals) > 0u) {
 	    TInterval a;
@@ -1538,7 +1533,7 @@ SEQAN_CHECKPOINT
 	if(!empty(S_left))
 	{
 		TVertexDescriptor vd = addVertex(g);
-		resizeVertexMap(g,pm);
+		resizeVertexMap(pm, g);
 		addEdge(g,knot,vd);
 		TValue next_center = _calcIntervalTreeNodeCenterLeft(S_left,last_center,center,tag);
 		_createIntervalTree(g,pm,S_left,vd,center,next_center,length(S_left),tag);
@@ -1547,7 +1542,7 @@ SEQAN_CHECKPOINT
 	if(!empty(S_right))
 	{
 		TVertexDescriptor vd = addVertex(g);
-		resizeVertexMap(g,pm);
+		resizeVertexMap(pm, g);
 		addEdge(g,knot,vd);
 		TValue next_center = _calcIntervalTreeNodeCenterRight(S_right,last_center,center,tag);
 		_createIntervalTree(g,pm,S_right,vd,center,next_center,length(S_right),tag);
@@ -1669,7 +1664,7 @@ SEQAN_CHECKPOINT
 	if(empty(pm))
 	{
 		TVertexDescriptor vd = addVertex(g);
-		resizeVertexMap(g,pm);
+		resizeVertexMap(pm, g);
 		_setIntervalTreeNode(property(pm,vd),(rightBoundary(interval)+leftBoundary(interval))/2,interval);
 		return;
 		
@@ -1688,7 +1683,7 @@ SEQAN_CHECKPOINT
 		{
 			if(atEnd(it)){
 				TVertexDescriptor vd = addVertex(g);
-				resizeVertexMap(g,pm);
+				resizeVertexMap(pm, g);
 				addEdge(g,act_knot,vd);
 				_setIntervalTreeNode(property(pm,vd),(rightBoundary(interval)+leftBoundary(interval))/(TValue)2.0,interval);
 				break;
@@ -1700,7 +1695,7 @@ SEQAN_CHECKPOINT
 					goNext(it);
 					if(atEnd(it)){
 						TVertexDescriptor vd = addVertex(g);
-						resizeVertexMap(g,pm);
+						resizeVertexMap(pm, g);
 						addEdge(g,act_knot,vd);
 						_setIntervalTreeNode(property(pm,vd),(rightBoundary(interval)+leftBoundary(interval))/(TValue)2.0,interval);
 						break;
@@ -1714,7 +1709,7 @@ SEQAN_CHECKPOINT
 			{
 				if(atEnd(it)){
 					TVertexDescriptor vd = addVertex(g);
-					resizeVertexMap(g,pm);
+					resizeVertexMap(pm, g);
 					addEdge(g,act_knot,vd);
 					_setIntervalTreeNode(property(pm,vd),(rightBoundary(interval)+leftBoundary(interval))/2,interval);
 					break;
@@ -1727,7 +1722,7 @@ SEQAN_CHECKPOINT
 						goNext(it);
 						if(atEnd(it)){
 							TVertexDescriptor vd = addVertex(g);
-							resizeVertexMap(g,pm);
+							resizeVertexMap(pm, g);
 							addEdge(g,act_knot,vd);
 							_setIntervalTreeNode(property(pm,vd),(rightBoundary(interval)+leftBoundary(interval))/2,interval);
 							break;

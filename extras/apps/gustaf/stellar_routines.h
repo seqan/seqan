@@ -623,30 +623,21 @@ _importSequences(CharString const & fileName,
                  StringSet<TSequence> & seqs,
                  StringSet<TId> & ids)
 {
-    MultiSeqFile multiSeqFile;
-    if (!open(multiSeqFile.concat, toCString(fileName), OPEN_RDONLY))
+    seqan::SeqFileIn seqFileIn;
+    if (!open(seqFileIn, toCString(fileName)))
     {
-        std::cerr << "Failed to open " << name << " file." << std::endl;
+        std::cerr << "Failed to open " << name << " file.\n";
         return false;
     }
     StringSet<TId> sQueryIds;
 
-    AutoSeqFormat format;
-    guessFormat(multiSeqFile.concat, format);
-    split(multiSeqFile, format);
-
-    unsigned seqCount = length(multiSeqFile);
-    reserve(seqs, seqCount, Exact());
-    reserve(ids, seqCount, Exact());
-
     TSequence seq;
     TId id;
     TId sId;
-    unsigned counter = 0;
-    for (unsigned i = 0; i < seqCount; ++i)
+    unsigned seqCount = 0, counter = 0;
+    for (; !atEnd(seqFileIn); ++seqCount)
     {
-        assignSeq(seq, multiSeqFile[i], format);
-        assignSeqId(id, multiSeqFile[i], format);
+        readRecord(id, seq, seqFileIn);
         appendValue(seqs, seq, Generous());
 
         _getShortId(sId, id);

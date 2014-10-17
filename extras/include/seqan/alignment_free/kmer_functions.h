@@ -316,9 +316,8 @@ void countKmers(String<unsigned> & kmerCounts, String<TValueBG> & backgroundFreq
     // Normalise the background counts to obtain the nucleotide frequencies (Bernoulli model of DNA sequences).
     TIteratorTStringBG itBackground = begin(backgroundFrequencies);
     for (; itBackground < end(backgroundFrequencies); ++itBackground)
-    {
-        value(itBackground) /= ((TValueBG) sumBG);
-    }
+        if (sumBG != 0)
+            value(itBackground) /= ((TValueBG) sumBG);
 }
 
 /*

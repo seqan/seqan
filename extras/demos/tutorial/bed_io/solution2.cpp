@@ -1,11 +1,12 @@
 #include <seqan/basic.h>
 #include <seqan/bed_io.h>
+#include <seqan/misc/misc_name_store_cache.h>
 
 int main()
 {
-    // Open input stream
-    seqan::BedStream bedIn("example.bed");
-    if (!isGood(bedIn))
+    // Open input bed file.
+    seqan::BedFileIn bedIn;
+    if (!open(bedIn, "example.bed"))
     {
         std::cerr << "ERROR: Could not open example.bed\n";
         return 1;
@@ -14,34 +15,32 @@ int main()
     // Array of counters and sequence names.
     seqan::String<unsigned> counters;
     seqan::StringSet<seqan::CharString> seqNames;
+    seqan::NameStoreCache<seqan::StringSet<seqan::CharString> > cache(seqNames);
 
     // Read the file record by record.
     seqan::BedRecord<seqan::Bed3> record;
-    while (!atEnd(bedIn))
+
+    try
     {
-        if (readRecord(record, bedIn) != 0)
+        while (!atEnd(bedIn))
         {
-            std::cerr << "ERROR: Problem reading from example.bed\n";
-            return 1;
-        }
+            readRecord(record, bedIn);
+            unsigned rID = nameToId(cache, record.ref);
 
-        // Resize counters and write seqNames if necessary.
-        if ((int)length(counters) <= record.rID)
-        {
-            resize(counters, record.rID + 1, 0);
-            resize(seqNames, record.rID + 1);
+            // Resize counters if necessary and increment counter.
+            assignValueById(counters, rID, getValueById(counters, rID) + 1);
         }
-        if (counters[record.rID] == 0)
-            seqNames[record.rID] = record.ref;
-
-        // Register record with counters.
-        counters[record.rID] += 1;
+    }
+    catch (std::runtime_error &e)
+    {
+        std::cout << "ERROR: " << e.what() << std::endl;
+        return 1;
     }
 
     // Print result.
     std::cout << "RECORDS ON CONTIGS\n";
     for (unsigned i = 0; i < length(seqNames); ++i)
-        if (counters[i] > 0u)
+        if (counters[i] != 0u)
             std::cout << seqNames[i] << '\t' << counters[i] << '\n';
     
     return 0;

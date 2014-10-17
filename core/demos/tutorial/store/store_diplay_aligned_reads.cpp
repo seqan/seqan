@@ -9,17 +9,17 @@ int main ()
 {
     FragmentStore<> store;
     loadContigs(store, "ex1.fa");
-    std::ifstream file("ex1.sam");
-    read(file, store, Sam());
+    BamFileIn file("ex1.sam");
+    readRecords(store, file);
 
 // FRAGMENT(ascii)
     AlignedReadLayout layout;
     layoutAlignment(layout, store);
-    printAlignment(std::cout, Raw(), layout, store, 1, 0, 150, 0, 36);
+    printAlignment(std::cout, layout, store, 1, 0, 150, 0, 36);
 
 // FRAGMENT(svg)
     SVGFile svg("layout.svg");
-    printAlignment(svg, Raw(), layout, store, 1, 0, 150, 0, 36);
+    printAlignment(svg, layout, store, 1, 0, 150, 0, 36);
 
     return 0;
 }

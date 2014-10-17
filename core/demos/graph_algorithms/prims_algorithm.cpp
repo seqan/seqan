@@ -22,13 +22,13 @@ int main()
     unsigned int weights[] = {4, 8, 8, 11, 7, 2, 4, 9, 14, 7, 6, 10, 1, 2};
     char names[] = {'a', 'b', 'c', 'd', 'i', 'e', 'h', 'g', 'f'};
     String<int> weightMap;
-    assignEdgeMap(g, weightMap, weights);
+    assignEdgeMap(weightMap, g, weights);
     String<char> nameMap;
-    assignVertexMap(g,nameMap, names);
+    assignVertexMap(nameMap, g, names);
 
     // Run Prim's algorithm.
     String<TVertexDescriptor> predMap;
-    primsAlgorithm(g, 0, weightMap, predMap);
+    primsAlgorithm(predMap, g, 0, weightMap);
 
     // Print result to stdout.
     std::cout << "Minimum Spanning Tree (Prim's algorithm): \n";

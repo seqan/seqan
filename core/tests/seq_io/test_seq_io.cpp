@@ -33,47 +33,45 @@
 // ==========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
+
+#include <seqan/seq_io.h>
 
 #include "test_seq_io_generic.h"
+#include "test_stream_write_fasta.h"
 
-#include "test_sequence_stream.h"
 #include "test_genomic_region.h"
 #include "test_fai_index.h"
-#include "test_stream_record_reader_fasta.h"
-#include "test_stream_record_reader_fastq.h"
-#include "test_stream_guess_stream_format.h"
-#include "test_stream_write_fasta.h"
+
+#include "test_sequence_file.h"
+//#include "test_stream_record_reader_fasta.h"
+//#include "test_stream_record_reader_fastq.h"
+//#include "test_stream_guess_stream_format.h"
 #include "test_stream_read_embl.h"
 #include "test_stream_read_genbank.h"
-#include "test_stream_read_auto_format.h"
+//#include "test_stream_read_auto_format.h"
 
 SEQAN_BEGIN_TESTSUITE(test_seq_io)
 {
-    // Test simple readFasta() function.
-    SEQAN_CALL_TEST(test_seq_io_read_fasta);
-
     // Test recognition of supported file types.
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_recognize_file_type_text_fasta);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_recognize_file_type_gz_fasta);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_recognize_file_type_bz2_fasta);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_recognize_file_type_gz_fasta);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_recognize_file_type_bz2_fasta);
 
     // Test recognition of supported file formats.
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_recognize_file_format_text_fasta);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_recognize_file_format_text_fastq);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_recognize_file_format_text_fasta);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_recognize_file_format_text_fastq);
 
     // Test reading with different interfaces.
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_read_record_text_fasta);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_read_batch_text_fasta);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_read_all_text_fasta);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_read_record_text_fasta);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_read_all_text_fasta);
 
     // Test writing with different interfaces.
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_write_record_text_fasta);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_write_all_text_fasta);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_write_record_text_fastq_no_qual);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_write_record_text_fastq_with_qual);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_write_all_text_fastq_no_qual);
-    SEQAN_CALL_TEST(test_seq_io_sequence_stream_write_all_text_fastq_with_qual);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_write_record_text_fasta);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_write_all_text_fasta);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_write_record_text_fastq_no_qual);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_write_record_text_fastq_with_qual);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_write_all_text_fastq_no_qual);
+    SEQAN_CALL_TEST(test_seq_io_sequence_file_write_all_text_fastq_with_qual);
 
     // Test parsing for GenomicRegion.
     SEQAN_CALL_TEST(test_seq_io_genomic_region_default_constructed);
@@ -82,6 +80,8 @@ SEQAN_BEGIN_TESTSUITE(test_seq_io)
     SEQAN_CALL_TEST(test_seq_io_genomic_region_parse_chrom);
     SEQAN_CALL_TEST(test_seq_io_genomic_region_parse_chrom_begin);
     SEQAN_CALL_TEST(test_seq_io_genomic_region_parse_chrom_begin_end);
+    SEQAN_CALL_TEST(test_seq_io_genomic_region_to_string_interval);
+    SEQAN_CALL_TEST(test_seq_io_genomic_region_to_string_point);
 
     // Test FaiIndex.
     SEQAN_CALL_TEST(test_seq_io_genomic_fai_index_build);
@@ -99,80 +99,76 @@ SEQAN_BEGIN_TESTSUITE(test_seq_io)
      * last case an additional test for concat-direct-strings is performed. */
 
     // Tests for FASTA
-    SEQAN_CALL_TEST(test_stream_record_reader_fasta_single_fstream);
-    SEQAN_CALL_TEST(test_stream_record_reader_fasta_double_fstream);
-    SEQAN_CALL_TEST(test_stream_record_reader_fasta_batch_single_fstream);
-    SEQAN_CALL_TEST(test_stream_record_reader_fasta_batch_double_fstream);
-    SEQAN_CALL_TEST(test_stream_record_reader_fasta_single_mmap);
-    SEQAN_CALL_TEST(test_stream_record_reader_fasta_double_mmap);
-    SEQAN_CALL_TEST(test_stream_record_reader_fasta_batch_single_mmap);
-    SEQAN_CALL_TEST(test_stream_record_reader_fasta_batch_single_concat_mmap);
-    SEQAN_CALL_TEST(test_stream_record_reader_fasta_batch_double_mmap);
-    SEQAN_CALL_TEST(test_stream_record_reader_fasta_batch_double_concat_mmap);
-
-    // Tests for FASTQ
-    SEQAN_CALL_TEST(test_stream_record_reader_fastq_single_fstream);
-    SEQAN_CALL_TEST(test_stream_record_reader_fastq_double_fstream);
-    SEQAN_CALL_TEST(test_stream_record_reader_fastq_batch_single_fstream);
-    SEQAN_CALL_TEST(test_stream_record_reader_fastq_batch_double_fstream);
-    SEQAN_CALL_TEST(test_stream_record_reader_fastq_single_mmap);
-    SEQAN_CALL_TEST(test_stream_record_reader_fastq_double_mmap);
-    SEQAN_CALL_TEST(test_stream_record_reader_fastq_batch_single_mmap);
-    SEQAN_CALL_TEST(test_stream_record_reader_fastq_batch_single_concat_mmap);
-    SEQAN_CALL_TEST(test_stream_record_reader_fastq_batch_double_mmap);
-    SEQAN_CALL_TEST(test_stream_record_reader_fastq_batch_double_concat_mmap);
-    SEQAN_CALL_TEST(test_stream_record_reader_fastq_check_stream_format);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fasta_single_fstream);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fasta_double_fstream);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fasta_batch_single_fstream);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fasta_batch_double_fstream);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fasta_single_mmap);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fasta_double_mmap);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fasta_batch_single_mmap);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fasta_batch_single_concat_mmap);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fasta_batch_double_mmap);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fasta_batch_double_concat_mmap);
+//
+//    // Tests for FASTQ
+//    SEQAN_CALL_TEST(test_stream_record_reader_fastq_single_fstream);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fastq_double_fstream);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fastq_batch_single_fstream);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fastq_batch_double_fstream);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fastq_single_mmap);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fastq_double_mmap);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fastq_batch_single_mmap);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fastq_batch_single_concat_mmap);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fastq_batch_double_mmap);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fastq_batch_double_concat_mmap);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fastq_check_stream_format);
 
     // Tests for EMBL
     SEQAN_CALL_TEST(test_stream_read_embl_single_char_array_stream);
     SEQAN_CALL_TEST(test_stream_read_embl_record_char_array_stream);
-    SEQAN_CALL_TEST(test_stream_read_embl_batch_char_array_stream);
     SEQAN_CALL_TEST(test_stream_read_embl_single_mmap);
     SEQAN_CALL_TEST(test_stream_read_embl_single_batch_mmap);
-    SEQAN_CALL_TEST(test_stream_read_embl_single_batch_concat_mmap);
 
     // Tests for GenBank
     SEQAN_CALL_TEST(test_stream_read_genbank_single_char_array_stream);
     SEQAN_CALL_TEST(test_stream_read_genbank_record_char_array_stream);
-    SEQAN_CALL_TEST(test_stream_read_genbank_batch_char_array_stream);
     SEQAN_CALL_TEST(test_stream_read_genbank_single_mmap);
     SEQAN_CALL_TEST(test_stream_read_genbank_single_batch_mmap);
-    SEQAN_CALL_TEST(test_stream_read_genbank_single_batch_concat_mmap);
 
-    // TODO Tests for other formats once they are supported
-
-    // Tests for file format auto-detection
-    SEQAN_CALL_TEST(test_stream_guess_stream_format_auto_fasta);
-    SEQAN_CALL_TEST(test_stream_guess_stream_format_auto_fastq);
-    SEQAN_CALL_TEST(test_stream_guess_stream_format_auto_bogus);
-
-    // Tests for reading with automatic file format detection.
-    SEQAN_CALL_TEST(test_stream_read_record_auto_format_quals_fasta);
-    SEQAN_CALL_TEST(test_stream_read_record_auto_format_quals_fastq);
-    SEQAN_CALL_TEST(test_stream_read_record_auto_format_no_quals_fasta);
-    SEQAN_CALL_TEST(test_stream_read_record_auto_format_no_quals_fastq);
-
-    SEQAN_CALL_TEST(test_stream_read_auto_format_quals_fasta);
-    SEQAN_CALL_TEST(test_stream_read_auto_format_quals_fastq);
-    SEQAN_CALL_TEST(test_stream_read_auto_format_no_quals_fasta);
-    SEQAN_CALL_TEST(test_stream_read_auto_format_no_quals_fastq);
-
-    // Tests for FASTA with Amino Acid alphabet.
-    SEQAN_CALL_TEST(test_stream_record_reader_fasta_protein_single_fstream);
-    SEQAN_CALL_TEST(test_stream_record_reader_fasta_annotated_protein_single_fstream);
-
-    /* Tests for writing file formats.
-     * Only fstream used as a representative */
-
-    // Tests for FASTA
-    SEQAN_CALL_TEST(test_stream_write_record_fasta_default);
-    SEQAN_CALL_TEST(test_stream_write_record_fasta_no_empty_lines);
-    SEQAN_CALL_TEST(test_stream_write_record_fasta_nolinebreaks);
-    SEQAN_CALL_TEST(test_stream_write_record_fastq_default_separate_qual);
-    SEQAN_CALL_TEST(test_stream_write_record_fastq_default_qual_in_seq);
-    SEQAN_CALL_TEST(test_stream_write_record_fastq_linebreaks_qualmeta);
-    SEQAN_CALL_TEST(test_stream_write2_fasta_default);
-    SEQAN_CALL_TEST(test_stream_write2_fastq_default_separate_qual);
-    SEQAN_CALL_TEST(test_stream_write2_fastq_default_qual_in_seq);
+//    // TODO Tests for other formats once they are supported
+//
+//    // Tests for file format auto-detection
+//    SEQAN_CALL_TEST(test_stream_guess_stream_format_auto_fasta);
+//    SEQAN_CALL_TEST(test_stream_guess_stream_format_auto_fastq);
+//    SEQAN_CALL_TEST(test_stream_guess_stream_format_auto_bogus);
+//
+//    // Tests for reading with automatic file format detection.
+//    SEQAN_CALL_TEST(test_stream_read_record_auto_format_quals_fasta);
+//    SEQAN_CALL_TEST(test_stream_read_record_auto_format_quals_fastq);
+//    SEQAN_CALL_TEST(test_stream_read_record_auto_format_no_quals_fasta);
+//    SEQAN_CALL_TEST(test_stream_read_record_auto_format_no_quals_fastq);
+//
+//    SEQAN_CALL_TEST(test_stream_read_auto_format_quals_fasta);
+//    SEQAN_CALL_TEST(test_stream_read_auto_format_quals_fastq);
+//    SEQAN_CALL_TEST(test_stream_read_auto_format_no_quals_fasta);
+//    SEQAN_CALL_TEST(test_stream_read_auto_format_no_quals_fastq);
+//
+//    // Tests for FASTA with Amino Acid alphabet.
+//    SEQAN_CALL_TEST(test_stream_record_reader_fasta_protein_single_fstream);
+//    SEQAN_CALL_TEST(test_stream_record_reader_fasta_annotated_protein_single_fstream);
+//
+//    /* Tests for writing file formats.
+//     * Only fstream used as a representative */
+//
+//    // Tests for FASTA
+//    SEQAN_CALL_TEST(test_stream_write_record_fasta_default);
+//    SEQAN_CALL_TEST(test_stream_write_record_fasta_no_empty_lines);
+//    SEQAN_CALL_TEST(test_stream_write_record_fasta_nolinebreaks);
+//    SEQAN_CALL_TEST(test_stream_write_record_fastq_default_separate_qual);
+//    SEQAN_CALL_TEST(test_stream_write_record_fastq_default_qual_in_seq);
+//    SEQAN_CALL_TEST(test_stream_write_record_fastq_linebreaks_qualmeta);
+//    SEQAN_CALL_TEST(test_stream_write2_fasta_default);
+//    SEQAN_CALL_TEST(test_stream_write2_fastq_default_separate_qual);
+//    SEQAN_CALL_TEST(test_stream_write2_fastq_default_qual_in_seq);
 }
 SEQAN_END_TESTSUITE

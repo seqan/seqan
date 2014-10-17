@@ -3,36 +3,31 @@
 
 int main()
 {
-    // Open input stream
-    seqan::GffStream gffIn("example.gff");
-    if (!isGood(gffIn))
+    // Open input stream.
+    seqan::GffFileIn gffIn;
+    if (!open(gffIn, "example.gff"))
     {
         std::cerr << "ERROR: Could not open example.gff\n";
         return 1;
     }
-    // Open output stream, filename "-" means stdout.
-    seqan::GffStream gffOut("-", seqan::GffStream::WRITE);
+    // Open output stream. If target is a ostream we must specify the format.
+    seqan::GffFileOut gffOut(std::cout, seqan::Gff());
 
     // Read the file record by record.
     seqan::GffRecord record;
-    while (!atEnd(gffIn))
+
+    try
     {
-        if (readRecord(record, gffIn) != 0)
+        while (!atEnd(gffIn))
         {
-            std::cerr << "ERROR: Problem reading from example.gff\n";
-            return 1;
+            readRecord(record, gffIn);
+            writeRecord(gffOut, record);
         }
-
-        // If record is on a sequence that is not known to gffOut yet then we
-        // have to make it known there.
-        if (record.rID >= (int)length(gffOut.sequenceNames))
-            addSequenceName(gffOut, record.ref);
-
-        if (writeRecord(gffOut, record) != 0)
-        {
-            std::cerr << "ERROR: Problem writing to stdout.\n";
-            return 1;
-        }
+    }
+    catch (std::runtime_error &e)
+    {
+        std::cout << "ERROR: " << e.what() << std::endl;
+        return 1;
     }
     
     return 0;

@@ -55,6 +55,25 @@
 // ==========================================================================
 
 // --------------------------------------------------------------------------
+// Class MyGffRecord
+// --------------------------------------------------------------------------
+
+// Subclass of GffRecord that has an rID member.
+
+class MyGffRecord : public seqan::GffRecord
+{
+public:
+    int rID;
+
+    static const int INVALID_IDX;
+
+    MyGffRecord() : seqan::GffRecord(), rID(seqan::maxValue<int>())
+    {}
+};
+
+const int MyGffRecord::INVALID_IDX = seqan::maxValue<int>();
+
+// --------------------------------------------------------------------------
 // Class SplicingInstruction
 // --------------------------------------------------------------------------
 
@@ -106,10 +125,10 @@ public:
     VcfMaterializer vcfMat;
 
     // Input GFF/GTF stream.
-    seqan::GffStream gffStream;
+    seqan::GffFileIn gffFileIn;
 
     // Output sequence stream.
-    seqan::SequenceStream outStream;
+    seqan::SeqFileOut seqFileOut;
 
     MasonSplicingApp(MasonSplicingOptions const & _options) :
             options(_options), rng(options.seed),
@@ -127,12 +146,10 @@ public:
         {
             vcfMat.init();
 
-            open(outStream, toCString(options.outputFileName), seqan::SequenceStream::WRITE);
-            if (!isGood(outStream))
+            if (!open(seqFileOut, toCString(options.outputFileName)))
                 throw MasonIOException("Could not open output file.");
 
-            open(gffStream, toCString(options.inputGffFile));
-            if (!isGood(gffStream))
+            if (!open(gffFileIn, toCString(options.inputGffFile)))
                 throw MasonIOException("Could not open GFF/GTF file.");
         }
         catch (MasonIOException e)
@@ -147,7 +164,7 @@ public:
                   << "\n";
 
         // Read first GFF record.
-        seqan::GffRecord record;
+        MyGffRecord record;
         _readFirstRecord(record);
         if (record.rID == seqan::maxValue<int>())
             return 0;  // at end, could not read any, done
@@ -174,7 +191,7 @@ public:
             std::cerr << "Splicing for " << refName << " ...";
 
             // Read GFF records for this contig.
-            seqan::GffRecord firstGffRecord = record;
+            MyGffRecord firstGffRecord = record;
             while (record.rID == firstGffRecord.rID)
             {
                 if (empty(options.gffType) || (record.type == options.gffType))
@@ -187,13 +204,18 @@ public:
                                                                            record.endPos, record.strand));
                 }
 
-                if (atEnd(gffStream))
+                if (atEnd(gffFileIn))
                 {
                     record.rID = seqan::maxValue<int>();
                     break;
                 }
-                if (readRecord(record, gffStream) != 0)
-                    throw MasonIOException("Could not read record from GFF/GTF file");
+
+                readRecord(record, gffFileIn);
+                // Translate ref to idx from VCF.
+                unsigned idx = 0;
+                if (!getIdByName(idx, vcfMat.faiIndex, record.ref))
+                    throw MasonIOException("Reference name from GFF/GTF not in VCF!");
+                record.rID = idx;
             }
 
             // ---------------------------------------------------------------
@@ -207,7 +229,7 @@ public:
             int rID = 0, hID = 0;  // reference and haplotype id
             // Get index of the gff record's reference in the VCF file.
             unsigned idx = 0;
-            if (!getIdByName(vcfMat.faiIndex, refName, idx))
+            if (!getIdByName(idx, vcfMat.faiIndex, refName))
             {
                 std::stringstream ss;
                 ss << "Reference from GFF file " << refName << " unknown in FASTA/FAI file.";
@@ -306,8 +328,7 @@ public:
                 ss << tNames[tID];
                 if (!empty(options.matOptions.vcfFileName))
                     ss << options.haplotypeNameSep << (hID + 1);
-                if (writeRecord(outStream, ss.str(), transcript) != 0)
-                    throw MasonIOException("Problem writing to output file.");
+                writeRecord(seqFileOut, ss.str(), transcript);
             }
 
             // Search next range.
@@ -322,21 +343,21 @@ public:
     void _appendTranscriptNames(seqan::String<unsigned> & tIDs,  // transcript ids to write out
                                 seqan::StringSet<seqan::CharString> & nameStore,
                                 seqan::NameStoreCache<seqan::StringSet<seqan::CharString> > & cache,
-                                seqan::GffRecord const & record)
+                                MyGffRecord const & record)
     {
         clear(tIDs);
 
         seqan::CharString groupNames;
-        for (unsigned i = 0; i < length(record.tagName); ++i)
-            if (record.tagName[i] == options.gffGroupBy)
-                groupNames = record.tagValue[i];
+        for (unsigned i = 0; i < length(record.tagNames); ++i)
+            if (record.tagNames[i] == options.gffGroupBy)
+                groupNames = record.tagValues[i];
         if (empty(groupNames))
             return;  // Record has no group names.
 
         // Write out the ids of the transcripts that the record belongs to as indices in nameStore.
         unsigned idx = 0;
         seqan::StringSet<seqan::CharString> ss;
-        splitString(ss, groupNames, ',');
+        strSplit(ss, groupNames, seqan::EqualsChar<','>());
         for (unsigned i = 0; i < length(ss); ++i)
         {
             if (empty(ss[i]))
@@ -353,15 +374,21 @@ public:
         }
     }
 
-    void _readFirstRecord(seqan::GffRecord & record)
+    void _readFirstRecord(MyGffRecord & record)
     {
-        record.rID = seqan::GffRecord::INVALID_IDX;  // uninitialized
+        record.rID = record.INVALID_IDX;  // uninitialized
 
         bool found = false;
-        while (!found && !atEnd(gffStream))
+        while (!found && !atEnd(gffFileIn))
         {
-            if (readRecord(record, gffStream) != 0)
-                throw MasonIOException("Problem reading first record from GFF/GTF file.");
+            readRecord(record, gffFileIn);
+
+            // Translate ref to idx from VCF.
+            unsigned idx = 0;
+            if (!getIdByName(idx, vcfMat.faiIndex, record.ref))
+                throw MasonIOException("Reference name from GFF/GTF not in VCF!");
+            record.rID = idx;
+
             if (empty(options.gffType) || (options.gffType == record.type))
             {
                 found = true;

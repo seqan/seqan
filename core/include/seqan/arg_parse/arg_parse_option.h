@@ -561,11 +561,11 @@ inline std::string getOptionName(ArgParseOption const & me)
 template <typename TStream>
 inline void write(TStream & target, ArgParseOption const & me)
 {
-    streamPut(target, '\t');
-    streamPut(target, getOptionName(me));
-    streamPut(target, '\t');
-    streamPut(target, '\t');
-    streamPut(target, me._helpText);
+    writeValue(target, '\t');
+    write(target, getOptionName(me));
+    writeValue(target, '\t');
+    writeValue(target, '\t');
+    write(target, me._helpText);
 }
 
 // ----------------------------------------------------------------------------
@@ -577,8 +577,8 @@ inline void write(TStream & target, ArgParseOption const & me)
 template <typename TStream>
 inline TStream & operator<<(TStream & target, ArgParseOption const & source)
 {
-
-    write(target, source);
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
     return target;
 }
 

@@ -48,14 +48,17 @@
 // Code for debugging and testing (assertions, test system) and profiling.
 #include <seqan/basic/basic_debug.h>
 
-// Basic exceptions.
-#include <seqan/basic/basic_exception.h>
-
 // C++ Metaprogramming Support Code, generally independent of SeqAn.
 #include <seqan/basic/basic_metaprogramming.h>
 
+// Basic functors.
+#include <seqan/basic/basic_functors.h>
+
 // Fundamental meta and global functions.  This is what makes SeqAn SeqAn.
 #include <seqan/basic/basic_fundamental.h>
+
+// Basic exceptions.
+#include <seqan/basic/basic_exception.h>
 
 // More advanced debug system constructs.
 // TODO(holtgrew): Move into basic_debug subsystem, some stuff from metaprogramming and fundamental required, those should not depend on debug system.
@@ -64,11 +67,8 @@
 // SeqAn Concept Checking Library (ported from Boost).
 #include <seqan/basic/basic_concept.h>
 
-// Alphabet concept and biological implementations.
-#include <seqan/basic/basic_alphabet.h>
-
-// Aggregate data types (pairs, triples, tuples).
-#include <seqan/basic/basic_aggregate.h>
+// Container concept and supporting code.
+#include <seqan/basic/basic_container.h>
 
 // Memory allocation code.
 #include <seqan/basic/basic_allocator.h>
@@ -85,11 +85,17 @@
 // Iterator concept and implementation.
 #include <seqan/basic/basic_iterator.h>
 
+// Functions to efficiently move data between containers/iterators/streams
+#include <seqan/basic/basic_stream.h>
+
+// Alphabet concept and biological implementations.
+#include <seqan/basic/basic_alphabet.h>
+
 // Proxy class and supporting code.
 #include <seqan/basic/basic_proxy.h>
 
-// Container concept and supporting code.
-#include <seqan/basic/basic_container.h>
+// Aggregate data types (pairs, triples, tuples).
+#include <seqan/basic/basic_aggregate.h>
 
 // Remaining code with cyclic dependencies.
 #include <seqan/basic/basic_tangle.h>
@@ -99,6 +105,7 @@
 
 // Basic device metafunctions.
 #include <seqan/basic/basic_device.h>
+
 
 
 #endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_H_

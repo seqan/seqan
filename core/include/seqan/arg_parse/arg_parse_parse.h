@@ -83,6 +83,7 @@ namespace seqan {
 //
 // Putting things into its a class allows us to structure the parsing in a fine way.
 
+template <typename TChar>
 class ArgumentParserHelper_
 {
 public:
@@ -92,7 +93,7 @@ public:
     ArgumentParser & parser;
     // The argc and argv from the main() method.
     int argc;
-    const char ** argv;
+    TChar ** argv;
 
     // The parser's state is stored in the following variables.
 
@@ -102,7 +103,7 @@ public:
     // The index of the current positional argument.
     TArgumentPosition currentArgument;
 
-    ArgumentParserHelper_(ArgumentParser & parser, int argc, const char * argv[])
+    ArgumentParserHelper_(ArgumentParser & parser, int argc, TChar * argv[])
             : parser(parser), argc(argc), argv(argv), seenDashDash(false), currentArgument(0)
     {}
 
@@ -123,7 +124,12 @@ public:
 
         for (int argi = 1; argi < argc; ++argi)
         {
-            if (seenDashDash || strlen(argv[argi]) == 0 || argv[argi][0] != '-')
+            // after "--" ever arg is treated as argument (not as option), e.g. "rm -rf -- --file-name"
+            // "-" is a treated as argument as for a filename arguments it represents stdin
+            // everything else that begins with "-" is an option
+
+            size_t argLen = strlen(argv[argi]);
+            if (seenDashDash || argLen == 0 || ((argv[argi][0] != '-') || (argLen == 1))) //
                 // Handle as position argument if we have seen "--" or does not start with dash.
                 handleArgument(argv[argi]);
             else if (strcmp(argv[argi], "--") == 0)
@@ -271,16 +277,17 @@ private:
 };
 
 // Parser driver function.
-inline ArgumentParser::ParseResult parse(ArgumentParser & me,
-                                         int argc,
-                                         const char * argv[],
-                                         std::ostream & outputStream,
-                                         std::ostream & errorStream)
+template <typename TChar>
+ArgumentParser::ParseResult parse(ArgumentParser & me,
+                                  int argc,
+                                  TChar * argv[],
+                                  std::ostream & outputStream,
+                                  std::ostream & errorStream)
 {
     SEQAN_TRY
     {
         // Perform the parsing without any valid value checking on the argument values.
-        ArgumentParserHelper_ parserHelper(me, argc, argv);
+        ArgumentParserHelper_<TChar> parserHelper(me, argc, argv);
         parserHelper.parseArgs();
 
         // Copy the file extensions from the "--${NAME}-file-ext" options to "--${NAME}".
@@ -341,7 +348,7 @@ inline ArgumentParser::ParseResult parse(ArgumentParser & me,
         printHelp(me, outputStream, format);
         return ArgumentParser::PARSE_EXPORT_HELP;
     }
-    else if (argc == 1 && (me.argumentList.size() > 0 || !_allRequiredSet(me)))
+    else if (argc == 1 && !(_allRequiredSet(me) && _allArgumentsSet(me)))
     {
         // print short help and exit
         printShortHelp(me, errorStream);
@@ -364,9 +371,10 @@ inline ArgumentParser::ParseResult parse(ArgumentParser & me,
     return ArgumentParser::PARSE_ERROR;
 }
 
-inline ArgumentParser::ParseResult parse(ArgumentParser & me,
-                                         int argc,
-                                         const char * argv[])
+template <typename TChar>
+ArgumentParser::ParseResult parse(ArgumentParser & me,
+                                  int argc,
+                                  TChar * argv[])
 {
     return parse(me, argc, argv, std::cout, std::cerr);
 }

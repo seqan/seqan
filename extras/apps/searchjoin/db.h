@@ -224,11 +224,11 @@ struct DbParser
     CharString  _id;
     CharString  _text;
 
-    const char  delim;
+    EqualsChar<','> delim;
+//    AssertFunctor<TFunctor, ParseError> asserter(functor);
 
     DbParser(TDb & db) :
-        db(db),
-        delim(',')
+        db(db)
     {}
 };
 
@@ -240,13 +240,11 @@ struct DbParser<TDb, Query>
     CharString  _text;
     CharString  _errors;
 
-    const char  delim;
-    const char  delim2;
+    EqualsChar<':'> delim;
+    EqualsChar<','> delim2;
 
     DbParser(TDb & db) :
-        db(db),
-        delim(':'),
-        delim2(',')
+        db(db)
     {}
 };
 
@@ -384,22 +382,23 @@ struct Host<Db<TText, TSpec> >
 // Function parseLine()                                              [DbParser]
 // ----------------------------------------------------------------------------
 
-template <typename TDb, typename TSpec, typename TReader>
-inline bool
-parseLine(DbParser<TDb, TSpec> & parser, TReader & reader)
+template <typename TDb, typename TSpec, typename TInputIt>
+inline void
+parseLine(DbParser<TDb, TSpec> & parser, TInputIt & inputIt)
 {
     _clearBuffers(parser);
-
-    return _parseId(parser, reader) && _parseText(parser, reader);
+    _parseId(parser, inputIt);
+    _parseText(parser, inputIt);
 }
 
-template <typename TDb, typename TReader>
-inline bool
-parseLine(DbParser<TDb, Query> & parser, TReader & reader)
+template <typename TDb, typename TInputIt>
+inline void
+parseLine(DbParser<TDb, Query> & parser, TInputIt & inputIt)
 {
     _clearBuffers(parser);
-
-    return _parseId(parser, reader) && _parseText(parser, reader) && _parseErrors(parser, reader);
+    _parseId(parser, inputIt);
+    _parseText(parser, inputIt);
+    _parseErrors(parser, inputIt);
 }
 
 // ----------------------------------------------------------------------------
@@ -427,74 +426,62 @@ _clearBuffers(DbParser<TDb, Query> & parser)
 // Function _parseId()                                               [DbParser]
 // ----------------------------------------------------------------------------
 
-template <typename TDb, typename TSpec, typename TReader>
-inline bool
-_parseId(DbParser<TDb, TSpec> & parser, TReader & reader)
+template <typename TDb, typename TSpec, typename TInputIt>
+inline void
+_parseId(DbParser<TDb, TSpec> & parser, TInputIt & inputIt)
 {
     // Read id.
-    if (readUntilChar(parser._id, reader, parser.delim) != 0)
-        return false;
+    readUntil(parser._id, inputIt, parser.delim);
 
     // Add id to database.
     appendValue(parser.db.ids, parser._id);
 
     // Skip delim.
-    goNext(reader);
-
-    return true;
+    skipOne(inputIt);
 }
 
 // ----------------------------------------------------------------------------
 // Function _parseText()                                             [DbParser]
 // ----------------------------------------------------------------------------
 
-template <typename TDb, typename TSpec, typename TReader>
-inline bool
-_parseText(DbParser<TDb, TSpec> & parser, TReader & reader)
+template <typename TDb, typename TSpec, typename TInputIt>
+inline void
+_parseText(DbParser<TDb, TSpec> & parser, TInputIt & inputIt)
 {
     // Read text.
-    if (readLine(parser._text, reader) != 0)
-        return false;
+    readLine(parser._text, inputIt);
 
     // Add text to database.
     appendValue(parser.db.text, parser._text);
-
-    return true;
 }
 
-template <typename TDb, typename TReader>
-inline bool
-_parseText(DbParser<TDb, Query> & parser, TReader & reader)
+template <typename TDb, typename TInputIt>
+inline void
+_parseText(DbParser<TDb, Query> & parser, TInputIt & inputIt)
 {
     // Read text.
-    if (readUntilChar(parser._text, reader, parser.delim2) != 0)
-        return false;
+    readUntil(parser._text, inputIt, parser.delim2);
 
     // Add text to database.
     appendValue(parser.db.text, parser._text);
 
     // Skip delim.
-    goNext(reader);
-
-    return true;
+    skipOne(inputIt);
 }
 
 // ----------------------------------------------------------------------------
 // Function _parseErrors()                                           [DbParser]
 // ----------------------------------------------------------------------------
 
-template <typename TDb, typename TReader>
-inline bool
-_parseErrors(DbParser<TDb, Query> & parser, TReader & reader)
+template <typename TDb, typename TInputIt>
+inline void
+_parseErrors(DbParser<TDb, Query> & parser, TInputIt & inputIt)
 {
     // Read errors.
-    if (readLine(parser._errors, reader) != 0)
-        return false;
+    readLine(parser._errors, inputIt);
 
     // Add errors to database.
     appendValue(parser.db.errors, std::atoi(toCString(parser._errors)));
-
-    return true;
 }
 
 // ----------------------------------------------------------------------------
@@ -504,21 +491,21 @@ _parseErrors(DbParser<TDb, Query> & parser, TReader & reader)
 template <typename TText, typename TSpec, typename TFileName>
 bool load(Db<TText, TSpec> & db, TFileName const & fileName)
 {
-    typedef Db<TText, TSpec>                        TDb;
-    typedef DbParser<TDb, TSpec>                    TDbParser;
-    typedef typename Size<TText>::Type              TTextSize;
+    typedef Db<TText, TSpec>                                        TDb;
+    typedef DbParser<TDb, TSpec>                                    TDbParser;
+    typedef typename Size<TText>::Type                              TTextSize;
 
-    typedef std::fstream                            TStream;
-    typedef RecordReader<TStream, SinglePass<> >    TRecordReader;
+    typedef std::ifstream                                           TInputStream;
+    typedef typename DirectionIterator<TInputStream, Input>::Type   TInputIt;
+
+    TInputStream inputFile;
 
     // Open file.
-    TStream file(toCString(fileName), std::ios::binary | std::ios::in);
-
-    if (!file.is_open())
+    if (!open(inputFile, toCString(fileName), OPEN_RDONLY))
         return false;
 
-    // Instantiate a record reader.
-    TRecordReader reader(file);
+    // Instantiate an input iterator on the file.
+    TInputIt inputIt = directionIterator(inputFile, Input());
 
     // Instantiate a parser.
     TDbParser parser(db);
@@ -528,10 +515,9 @@ bool load(Db<TText, TSpec> & db, TFileName const & fileName)
     db.maxLength = MinValue<TTextSize>::VALUE;
 
     // Read the file.
-    while (!atEnd(reader))
+    while (!atEnd(inputIt))
     {
-        if (!parseLine(parser, reader))
-            return false;
+        parseLine(parser, inputIt);
 
         // Update min/max text length.
         TTextSize textLength = length(back(db.text));
@@ -540,7 +526,7 @@ bool load(Db<TText, TSpec> & db, TFileName const & fileName)
     }
 
     // Compute average text length.
-    db.avgLength = length(db.text.concat) / length(db.text);
+    db.avgLength = length(db.text) ? length(db.text.concat) / length(db.text) : 0;
 
     _updateErrors(db);
 
@@ -579,7 +565,6 @@ void _updateErrors(Db<TText, Query> & db)
 template <typename TText, typename TSeedLength>
 void split(Db<TText, Query> & dbShort, Db<TText, Query> & dbLong, Db<TText, Query> /*const*/ & db, TSeedLength seedLength)
 {
-
     typedef Db<TText, Query>                                  TDb;
     typedef typename Size<TDb>::Type                          TDbSize;
     typedef typename Value<TText>::Type                       TTextReference;

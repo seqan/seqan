@@ -205,7 +205,7 @@ void _initialiseGraphNoBreakend(QueryMatches<StellarMatch<TSequence, TId> > & qu
         {
             cargo += chain.matchDistanceScores[i];
             TEdgeDescriptor edge = addEdge(chain.graph, chain.startVertex, i, cargo);
-            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            resizeEdgeMap(chain.breakpoints.slotLookupTable, chain.graph);
             assignProperty(chain.breakpoints, edge);
         }
         cargo = static_cast<int>(length(source(queryMatches.matches[i].row2))) -
@@ -213,7 +213,7 @@ void _initialiseGraphNoBreakend(QueryMatches<StellarMatch<TSequence, TId> > & qu
         if (cargo < (options.initGapThresh + 1))
         {
             TEdgeDescriptor edge = addEdge(chain.graph, i, chain.endVertex, cargo);
-            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            resizeEdgeMap(chain.breakpoints.slotLookupTable, chain.graph);
             assignProperty(chain.breakpoints, edge);
         }
     }
@@ -256,7 +256,7 @@ void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches
         {
             cargo += chain.matchDistanceScores[i];
             TEdgeDescriptor edge = addEdge(chain.graph, chain.startVertex, i, cargo);
-            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            resizeEdgeMap(chain.breakpoints.slotLookupTable, chain.graph);
             if (cargo < (options.initGapThresh + 1))
                 assignProperty(chain.breakpoints, edge);
             else
@@ -283,7 +283,7 @@ void _initialiseGraph(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches
         if (cargo < (options.breakendThresh + 1))
         {
             TEdgeDescriptor edge = addEdge(chain.graph, i, chain.endVertex, cargo);
-            resizeEdgeMap(chain.graph, chain.breakpoints.slotLookupTable);
+            resizeEdgeMap(chain.breakpoints.slotLookupTable, chain.graph);
             if (cargo < (options.initGapThresh + 1))
                 assignProperty(chain.breakpoints, edge);
             else
@@ -501,7 +501,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                 //std::cout << "Breakpoint " << bp << std::endl;
                 // Insert breakpoint
                 TEdgeDescriptor edge = addEdge(graph, m1, m2, cargo);
-                resizeEdgeMap(graph, queryBreakpoints.slotLookupTable);
+                resizeEdgeMap(queryBreakpoints.slotLookupTable, graph);
                 // if match1 and match2 are from different mates and BP is indel check for artificial bp
                 //if (bp.svtype == TBreakpoint::DELETION && _artificialBP(stMatch1, stMatch2, chain, msplazerOptions))
                 if (_artificialBP(stMatch1, stMatch2, chain))
@@ -790,7 +790,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                     else if (edge == 0)
                     {
                         edge = addEdge(graph, m1, m2, cargo);
-                        resizeEdgeMap(graph, queryBreakpoints.slotLookupTable);
+                        resizeEdgeMap(queryBreakpoints.slotLookupTable, graph);
 
                         if (artificialBP)
                             assignProperty(queryBreakpoints, edge);
@@ -873,7 +873,7 @@ void _chainQueryMatches(StringSet<QueryMatches<StellarMatch<TSequence, TId> > > 
 template <typename TMSplazerChain>
 void _analyzeChains(String<TMSplazerChain> & queryChains)
 {
-    InternalMap<int> weightMap;
+    InternalPropertyMap<int> weightMap;
     // typedef typename TMSplazerChain::TGraph TGraph;
     // typedef typename Size<TGraph>::Type TGraphSize;
 
@@ -881,12 +881,12 @@ void _analyzeChains(String<TMSplazerChain> & queryChains)
     {
         if (!queryChains[i].isEmpty)
         {
-            resizeVertexMap(queryChains[i].graph, queryChains[i].distMap);
-            dagShortestPath(queryChains[i].graph,
+            resizeVertexMap(queryChains[i].distMap, queryChains[i].graph);
+            dagShortestPath(queryChains[i].predMap,
+                            queryChains[i].distMap,
+                            queryChains[i].graph,
                             queryChains[i].startVertex,
-                            weightMap,
-                            queryChains[i].predMap,
-                            queryChains[i].distMap);
+                            weightMap);
         }
         // else
         // std::cerr << " Chain for query " << i << ", is empty!" << std::endl;//", queryID: " << queryIDs[i] <<
@@ -1081,6 +1081,96 @@ bool _translDelSupport(TBreakpoint & bp, TBreakpoint & tempBP, bool & foundNewBP
     return false;
 }
 
+// Returns true if a 3rd breakpoint (newDelBP) is inferred.
+template <typename TBreakpoint>
+inline bool _invDelClassification(TBreakpoint & bp, TBreakpoint & tempBP, TBreakpoint & newInvBP, unsigned const & bpPosRange)
+{
+    bool newInv = false;
+    if (bp.svtype != TBreakpoint::INVERSION || tempBP.svtype != TBreakpoint::INVERSION)
+        return false;
+    if (bp.startSeqId != tempBP.startSeqId)
+        return false;
+
+    bool startPosSameRange = _posInSameRange(bp.startSeqPos, tempBP.startSeqPos, bpPosRange);
+    bool endPosSameRange = _posInSameRange(bp.endSeqPos, tempBP.endSeqPos, bpPosRange);
+
+    // Case 1: new bp is outer inv inv(v,z), old (tempBP) is inner inv inv(w,z)||inv(v,w)
+    // inv(v,w)
+    if (startPosSameRange && (tempBP.endSeqPos < bp.endSeqPos))
+    {
+        // Change new bp from inv(v,z) to deletion del(w,z)
+        bp.svtype = TBreakpoint::DELETION;
+        bp.startSeqPos = tempBP.endSeqPos;
+        bp.startSeqStrand = bp.endSeqStrand;
+        return false;
+    }
+    // inv(w,z)
+    if (endPosSameRange && (bp.startSeqPos < tempBP.startSeqPos))
+    {
+        // Change new bp from inv(v,z) to deletion del(w,z)
+        bp.svtype = TBreakpoint::DELETION;
+        bp.endSeqPos = tempBP.startSeqPos;
+        bp.endSeqStrand = bp.startSeqStrand;
+        return false;
+    }
+    // Case 2: new bp is inner inv inv(w,z)||inv(v,w), old (tempBP) is outer inv inv(v,z)
+    // inv(v,w)
+    if (startPosSameRange && (bp.endSeqPos < tempBP.endSeqPos))
+    {
+        // Change old bp from inv(v,z) to deletion del(w,z)
+        tempBP.svtype = TBreakpoint::DELETION;
+        tempBP.startSeqPos = bp.endSeqPos;
+        tempBP.startSeqStrand = tempBP.endSeqStrand;
+        return false;
+    }
+    // inv(w,z)
+    if (endPosSameRange && (bp.startSeqPos < tempBP.startSeqPos))
+    {
+        // Change old bp from inv(v,z) to deletion del(w,z)
+        tempBP.svtype = TBreakpoint::DELETION;
+        tempBP.endSeqPos = bp.startSeqPos;
+        tempBP.endSeqStrand = tempBP.startSeqStrand;
+        return false;
+    }
+    // Case 3: new bp inv(v,w) and old bp inv(u,z) are overlapping, i.e. there are 2 adjacent dels
+    // Either i) v < u < w < z, then bp becomes del(v,u), tempBP del(w,z), newInvBP inv(u,w)
+    // or     ii)u < v < z < w, then bp becomes del(z,w), tempBP del(u,v), newInvBP inv(v,z)
+    // i)
+    if (_checkMatchOverlap(bp.startSeqPos, bp.endSeqPos, tempBP.startSeqPos, tempBP.endSeqPos))
+    {
+        newInvBP.svtype = TBreakpoint::INVERSION;
+        newInvBP.startSeqPos = tempBP.startSeqPos;
+        newInvBP.endSeqPos = bp.endSeqPos;
+        newInvBP.startSeqStrand = tempBP.startSeqStrand;
+        newInvBP.endSeqStrand = bp.endSeqStrand;
+        bp.svtype = TBreakpoint::DELETION;
+        bp.endSeqPos = newInvBP.startSeqPos;
+        bp.endSeqStrand = bp.startSeqStrand;
+        tempBP.svtype = TBreakpoint::DELETION;
+        tempBP.startSeqPos = newInvBP.endSeqPos;
+        tempBP.startSeqStrand = tempBP.endSeqStrand;
+        return true;
+    }
+    // ii)
+    if (_checkMatchOverlap(tempBP.startSeqPos, tempBP.endSeqPos, bp.startSeqPos, bp.endSeqPos))
+    {
+        newInvBP.svtype = TBreakpoint::INVERSION;
+        newInvBP.startSeqPos = bp.startSeqPos;
+        newInvBP.endSeqPos = tempBP.endSeqPos;
+        newInvBP.startSeqStrand = bp.startSeqStrand;
+        newInvBP.endSeqStrand = tempBP.endSeqStrand;
+        bp.svtype = TBreakpoint::DELETION;
+        bp.startSeqPos = newInvBP.endSeqPos;
+        bp.startSeqStrand = bp.endSeqStrand;
+        tempBP.svtype = TBreakpoint::DELETION;
+        tempBP.endSeqPos = newInvBP.startSeqPos;
+        tempBP.endSeqStrand = tempBP.startSeqStrand;
+        return true;
+    }
+
+    return newInv;
+}
+
 template <typename TBreakpoint>
 inline bool _insertBreakend(String<TBreakpoint> & countedBE, TBreakpoint & be, unsigned const & bpPosRange)
 {
@@ -1154,6 +1244,8 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
 {
     String<unsigned> toBeErased;
     bool newBP = true;
+    bool newInv = false;
+    TBreakpoint newInvBP = bp;
     // Compare new breakpoint to breakpoints in the set, add supportIDs if similar or create new, more complex
     // breakpoint if supporting breakpoint
     for (unsigned i = 0; i < length(countedBP); ++i)
@@ -1192,6 +1284,15 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
 
         else if (_translDelSupport(bp, tempBP, newBP, bpPosRange))
             appendValue(toBeErased, i);
+
+        // Special case: both breakpoints are nested inversions. Then, it is more likely that there is actually a
+        // combination of an inversion with 1 (or 2) adjacent deletion(s).
+        // If one includes the other, we keep the inner inversion and infer an deletion of the remaining region.
+        // If both overlap, then the overlapping region is the inversion, the remaining regions are inferred dels.
+        // In this case, we need to create a third bp
+        else if (_invDelClassification(bp, tempBP, newInvBP, bpPosRange))
+            newInv = true;
+
     }
     // Erase obsolete bps in descending order
     for (unsigned i = 0; i < length(toBeErased); ++i)
@@ -1209,6 +1310,10 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
         }
         appendValue(countedBP, bp);
     }
+    // Append new deletion breakpoint if appl./insert new deletion bc. there could be one already in the set?
+    if (newInv)
+        appendValue(countedBP, newInvBP);
+        // _insertBreakpoint(countedBP, newDelbp, bpPosRange, similarBPId++?);
 }
 // Insert Breakpoint into string of breakpoints if it is not already in the set. Returns true if breakpoint was new and
 // has been inserted or false if breakpoint was already in the set (and just has been counted).

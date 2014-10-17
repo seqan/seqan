@@ -11,8 +11,8 @@ template<typename TProfileChar>
 inline void
 addToProfileChar(TProfileChar &profileChar, bool &top, Dna5 const &readBase, double &qual, double &mapq)
 {
-    typedef typename ValueSize<TProfileChar>::Type TSize; 
-    
+    typedef typename ValueSize<TProfileChar>::Type TSize;
+
     double e = pow(10, -qual/10.0);
     double pm = 1.0 - pow(10, -mapq/10.0);
     if (mapq > 254.5) pm = 1.0;
@@ -20,26 +20,26 @@ addToProfileChar(TProfileChar &profileChar, bool &top, Dna5 const &readBase, dou
     {
         if (readBase == 'N')
             for (TSize i = 0; i < 4; ++i)
-                profileChar.count[i] += (1.0/4.0)*pm;   // Not equal distr. ! 
+                profileChar.count[i] += (1.0/4.0)*pm;   // Not equal distr. !
         else
         {
             profileChar.count[ordValue(readBase)] += (1.0-e)*pm;
             for (TSize i = 0; i < 4; ++i)
                 if (i != static_cast<TSize>(ordValue(readBase)))
-                    profileChar.count[i] += (e/3.0)*pm;         
+                    profileChar.count[i] += (e/3.0)*pm;
         }
     }
     else
     {
         if (readBase == 'N')
             for (TSize i = 4; i < 8; ++i)
-                profileChar.count[i] += (1.0/4.0)*pm; 
+                profileChar.count[i] += (1.0/4.0)*pm;
         else
         {
             profileChar.count[ordValue(readBase)+4] += (1.0-e)*pm;
             for (TSize i = 4; i < 8; ++i)
                 if (i != static_cast<TSize>(ordValue(readBase)+4))
-                    profileChar.count[i] += (e/3.0)*pm; 
+                    profileChar.count[i] += (e/3.0)*pm;
         }
     }
     ++profileChar.count[9]; // Count (non-gap) bases
@@ -69,26 +69,26 @@ removeFromProfileChar(TProfileChar &profileChar, bool &top, Dna5 const &readBase
     {
         if (readBase == 'N')
             for (TSize i = 0; i < 4; ++i)
-                profileChar.count[i] -= (1.0/4.0)*pm; 
+                profileChar.count[i] -= (1.0/4.0)*pm;
         else
         {
             profileChar.count[ordValue(readBase)] -= (1.0-e)*pm;
             for (TSize i = 0; i < 4; ++i)
                 if (i != static_cast<TSize>(ordValue(readBase)))
-                    profileChar.count[i] -= (e/3.0)*pm; 
+                    profileChar.count[i] -= (e/3.0)*pm;
         }
     }
     else
     {
         if (readBase == 'N')
             for (TSize i = 4; i < 8; ++i)
-                profileChar.count[i] -= (1.0/4.0)*pm; 
+                profileChar.count[i] -= (1.0/4.0)*pm;
         else
         {
             profileChar.count[ordValue(readBase)+4] -= (1.0-e)*pm;
             for (TSize i = 4; i < 8; ++i)
                 if (i != static_cast<TSize>(ordValue(readBase)+4))
-                    profileChar.count[i] -= (e/3.0)*pm; 
+                    profileChar.count[i] -= (e/3.0)*pm;
         }
     }
     --profileChar.count[9];     // Count (non-gap) bases
@@ -110,7 +110,7 @@ insertGap(String<TAlignedReads, TSpec>& alignedReadStoreTmp,
           int &numGapsTop,
           int &numGapsBottom,
           TFragmentStore& fragmentStoreOrig,   // Needed to get original strand to separate gap counts
-		  TGapPos const gapPos) 
+		  TGapPos const gapPos)
 {
 	typedef String<TAlignedReads, TSpec> TAlignedReadStore;
 	typedef typename Iterator<TAlignedReadStore, Standard>::Type TAlignIter;
@@ -119,22 +119,22 @@ insertGap(String<TAlignedReads, TSpec>& alignedReadStoreTmp,
     numGapsBottom = 0;
 	TAlignIter alignIt = begin(alignedReadStoreTmp, Standard());
 	TAlignIter alignItEnd = end(alignedReadStoreTmp, Standard());
-	for(;alignIt != alignItEnd; ++alignIt) 
-    {   
+	for(;alignIt != alignItEnd; ++alignIt)
+    {
         if (alignIt->id == length(fragmentStoreOrig.alignedReadStore))    // Ref
             insertGap(*alignIt, gapPos);
         else if (fragmentStoreOrig.alignedReadStore[alignIt->id].beginPos <  fragmentStoreOrig.alignedReadStore[alignIt->id].endPos) // Top
             numGapsTop += (int)(insertGap(*alignIt, gapPos) * (1.0 -pow(10, -fragmentStoreOrig.alignQualityStore[alignIt->id].score/10.0)));
-        else                                                // Bottom            
+        else                                                // Bottom
             numGapsBottom += (int)(insertGap(*alignIt, gapPos) * (1.0 -pow(10, -fragmentStoreOrig.alignQualityStore[alignIt->id].score/10.0)));
     }
 }
 
-// Perform one realignment round. 
+// Perform one realignment round.
 // TODO(holtgrew): Rename to reflect this more clearly.
 // TODO(holtgrew): TConsensus/consensus are profiles, really.
 template<typename TFragSpec, typename TConfig, typename TAlignedRead, typename TSpec, typename TConsensus, typename TBandwidth, typename TOptions, typename TModel>
-void 
+void
 reAlign(double &profileScore,
         FragmentStore<TFragSpec, TConfig>& fragStore,
 		String<TAlignedRead, TSpec>& contigReads,
@@ -145,7 +145,7 @@ reAlign(double &profileScore,
         double & timeBeforeAlign,
         double & timeAlign,
         double & timeAfterAlign,
-        TModel const & 
+        TModel const &
         )
 {
     //std::cout << " Do reAlign() ... " << std::endl;
@@ -194,7 +194,7 @@ reAlign(double &profileScore,
 		TConsIter itCons = begin(consensus, Standard());
 		TConsIter itConsEnd = end(consensus, Standard());
 
-		// Initialize the consensus of the band. -> part of the whole profile where current read mapped   
+		// Initialize the consensus of the band. -> part of the whole profile where current read mapped
 		clear(myRead);
 		resize(myRead, length(fragStore.readSeqStore[alignIt->readId]), TProfileChar());
 		resize(bandConsensus, 2 * bandwidth + (alignIt->endPos - alignIt->beginPos), Generous());
@@ -210,8 +210,8 @@ reAlign(double &profileScore,
 		int leftDiag = (alignIt->beginPos - bandOffset) - bandwidth;
 		int rightDiag = leftDiag + 2 * bandwidth;
 		//int increaseBand = 0;
-		int increaseBandLeft = 0;   
-		int increaseBandRight = 0;  
+		int increaseBandLeft = 0;
+		int increaseBandRight = 0;
 		int removedBeginPos = 0;
 		int removedEndPos = 0;
 		for (TReadPos iPos = bandOffset; iPos < alignIt->beginPos && itCons != itConsEnd && bandConsIt != bandConsItEnd; ++itCons, ++bandConsIt, ++itConsPos, ++iPos)
@@ -229,7 +229,7 @@ reAlign(double &profileScore,
 		TReadPos old = 0;
 		int diff = 0;
 		TReadPos clippedBeginPos = 0;
-		TReadPos clippedEndPos = 0;  
+		TReadPos clippedEndPos = 0;
 		SEQAN_ASSERT_LT(itRead, itReadEnd);
 		if ((itGaps != itGapsEnd) && (itGaps->gapPos == 0)) {
 			old = itGaps->seqPos;
@@ -240,7 +240,7 @@ reAlign(double &profileScore,
 			SEQAN_ASSERT_LT(itRead, itReadEnd);
 		}
 		for (; itGaps != itGapsEnd && itCons != itConsEnd; ++itGaps) {
-			// limit should never be larger than read length 
+			// limit should never be larger than read length
 			TReadPos limit = itGaps->seqPos;
 			SEQAN_ASSERT_LT(itGaps->seqPos, (TReadPos)length(fragStore.readSeqStore[alignIt->readId]));
 			int newDiff = (itGaps->gapPos - limit);
@@ -261,20 +261,20 @@ reAlign(double &profileScore,
                 else
                 {
                     removeFromProfileChar(*itCons, (Dna5)(*itRead));
-                }    
+                }
 				if (!empty(*itCons)) {
-					*bandConsIt = *itCons; 
+					*bandConsIt = *itCons;
 					++bandConsIt;
 					++itConsPos;
 					removedEndPos = 0;
-				} 
-				else 
+				}
+				else
 				{
-					if (itConsPosBegin != itConsPos) 
+					if (itConsPosBegin != itConsPos)
 					{
                         ++increaseBandLeft; // insertion --> increaseBandLeft, read has character here, consensus doesnt
 						++removedEndPos;
-					} 
+					}
 					else ++removedBeginPos; // begin gaps
 					removeGap(contigReads, itConsPos);
 				}
@@ -293,10 +293,10 @@ reAlign(double &profileScore,
                 }
 
 				if (!empty(*itCons)) {
-					*bandConsIt = *itCons; 
+					*bandConsIt = *itCons;
 					++bandConsIt;
 					++itConsPos;
-				} 
+				}
 				else
 				    removeGap(contigReads, itConsPos);  //++increaseBandRight;}
 				++itCons;
@@ -316,20 +316,20 @@ reAlign(double &profileScore,
                 }
                 else
                     removeFromProfileChar(*itCons, (Dna5)(*itRead));
-				if (!empty(*itCons)) 
+				if (!empty(*itCons))
 				{
-					*bandConsIt = *itCons; 
+					*bandConsIt = *itCons;
 					++bandConsIt;
 					++itConsPos;
 					removedEndPos = 0;
-				} 
-				else 
+				}
+				else
 				{  // only gaps left in this column after removing myRead
-					if (itConsPosBegin != itConsPos) 
+					if (itConsPosBegin != itConsPos)
 					{
                         ++increaseBandLeft; // insertion --> increaseBandLeft, read is longer than consensus here
-                        ++removedEndPos; 
-					} 
+                        ++removedEndPos;
+					}
 					else ++removedBeginPos;
 					removeGap(contigReads, itConsPos);
 				}
@@ -340,9 +340,9 @@ reAlign(double &profileScore,
 			}
 		}
 		bool singleton = (itConsPosBegin == itConsPos);
-		increaseBandLeft -= removedEndPos; 
+		increaseBandLeft -= removedEndPos;
         //increaseBand = increaseBandLeft + increaseBandRight;
-        
+
 		// Go further up to the bandwidth
 		for (TReadPos iPos = 0; ((itCons != itConsEnd) && (iPos < (TReadPos) bandwidth)) && bandConsIt != bandConsItEnd; ++itCons, ++iPos, ++bandConsIt)
             *bandConsIt = *itCons;
@@ -361,13 +361,13 @@ reAlign(double &profileScore,
         double tBegAlign = sysTime();
 		leftDiag -= removedBeginPos;
 		rightDiag -= removedBeginPos;
-   
+
         // TODO precompute als this....
         double const *seqErrorFreqs;
         double const *delErrorFreqs;
         double const *insErrorFreqs;
-        if (options.nonSimpleSubstErrors) seqErrorFreqs = SeqErrorFreqs<double, BsNonSimple>::getData(); 
-        else seqErrorFreqs = SeqErrorFreqs<double, BsSimple>::getData(); 
+        if (options.nonSimpleSubstErrors) seqErrorFreqs = SeqErrorFreqs<double, BsNonSimple>::getData();
+        else seqErrorFreqs = SeqErrorFreqs<double, BsSimple>::getData();
         if (options.nonSimpleInsErrors) insErrorFreqs = InsErrorFreqs<double, BsNonSimple>::getData();
         else insErrorFreqs = InsErrorFreqs<double, BsSimple>::getData();
         double scalingFactorDelErrors;
@@ -376,7 +376,7 @@ reAlign(double &profileScore,
             delErrorFreqs = DelErrorFreqs<double, BsNonSimple>::getData();
             scalingFactorDelErrors = 1.0; //options.scalingFactorDelErrorsNonSimple;
         }
-        else 
+        else
         {
             delErrorFreqs = DelErrorFreqs<double, BsSimple>::getData();
             scalingFactorDelErrors = options.scalingFactorDelErrorsSimple;
@@ -438,26 +438,26 @@ reAlign(double &profileScore,
 			do {
 				--fragIt;
 				int gapLen = fragIt->begin1 - consPos;  // Number of gaps in profile before next fragment starts
-				if (firstMatch) gapLen = 0; 
+				if (firstMatch) gapLen = 0;
 				// While we havn't reached the next fragment in the current profile yet (-> gaps in read)
-				while (consPos < (TReadPos)fragIt->begin1) { 
+				while (consPos < (TReadPos)fragIt->begin1) {
 					SEQAN_ASSERT_LT(bandIt, bandItEnd);
 					SEQAN_ASSERT_LT(newConsIt, end(newConsensus,Standard()));
 					if (isRef) (*bandIt).count[8] = -1;
                     else
                     {
-                        if (!firstMatch && top) (*bandIt).count[10] += (1.0-mapE);  // Update gap counts for current gap 
-                        else if (!firstMatch) (*bandIt).count[11] += (1.0-mapE);    
+                        if (!firstMatch && top) (*bandIt).count[10] += (1.0-mapE);  // Update gap counts for current gap
+                        else if (!firstMatch) (*bandIt).count[11] += (1.0-mapE);
                     }
 					*newConsIt = *bandIt;   // Fill new profile with updated old profile columns at read gap poitions
 					++newConsIt;
-					++bandIt; 
-					++consPos; 
+					++bandIt;
+					++consPos;
 					++alignPos;
 				}
 				// We are already at the next fragment begin position in the profile, but there read bases left
-                // While we haven't reached the next fragment begin position in the read with readPos (-> gaps in profile) 
-				while (readPos < (TReadPos)fragIt->begin2) { 
+                // While we haven't reached the next fragment begin position in the read with readPos (-> gaps in profile)
+				while (readPos < (TReadPos)fragIt->begin2) {
 					SEQAN_ASSERT_LT(readPos, (TReadPos)length(fragStore.readSeqStore[alignIt->readId]));
 					SEQAN_ASSERT_LT(newConsIt, end(newConsensus,Standard()));
                     // Append new gap anchor to read gaps presenting given length
@@ -487,7 +487,7 @@ reAlign(double &profileScore,
 					++readPos; ++alignPos;
 				}
                 // For each position in the current fragment
-				for (TSize i = 0; i<fragIt->len; ++i, ++bandIt, ++consPos, ++readPos, ++alignPos, ++newConsIt) { 
+				for (TSize i = 0; i<fragIt->len; ++i, ++bandIt, ++consPos, ++readPos, ++alignPos, ++newConsIt) {
 				    SEQAN_ASSERT_LT(bandIt, bandItEnd);
 					SEQAN_ASSERT_LT(readPos, (TReadPos)length(fragStore.readSeqStore[alignIt->readId]));
 					SEQAN_ASSERT_LT(newConsIt, end(newConsensus,Standard()));
@@ -543,7 +543,7 @@ reAlign(double &profileScore,
 			diff -= clippedEndPos;
 			appendValue(alignIt->gaps, TGapAnchor(clippedBeginPos + readPos + clippedEndPos, clippedBeginPos + readPos + clippedEndPos + diff), Generous() );
 		}
-		for (; bandIt != bandItEnd; ++bandIt, ++newConsIt) 
+		for (; bandIt != bandItEnd; ++bandIt, ++newConsIt)
 		{
 			SEQAN_ASSERT_LT(newConsIt, end(newConsensus,Standard()));
 			*newConsIt = *bandIt;
@@ -575,7 +575,7 @@ reAlign(double &profileScore,
 ..include:seqan/consensus.h
 */
 template<typename TSpec, typename TConfig, typename TId, typename TBandwidth, typename TOptions, typename TModel>
-void 
+void
 reAlign(FragmentStore<TSpec, TConfig> & fragStore,
 		TId const contigId,
 		TBandwidth const bandwidth,
@@ -606,8 +606,8 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
 	alignIt = lowerBoundAlignedReads(fragStore.alignedReadStore, contigId, SortContigId());
 	alignItEnd = upperBoundAlignedReads(fragStore.alignedReadStore, contigId, SortContigId());
 
-    
-    if(true) 
+
+    if(true)
     {
         std::cout << "Before realigning " << std::endl;
         TContigGaps contigGaps2(fragStore.contigStore[0].seq, fragStore.contigStore[0].gaps);
@@ -617,7 +617,7 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
         //std::cout << " genomeLen = " << genomeLen << std::endl;
         AlignedReadLayout layout;
         layoutAlignment(layout, fragStore);
-        printAlignment(std::cout, Raw(), layout, fragStore, 0, (TContigPos)0, (TContigPos)200, 0, 300);
+        printAlignment(std::cout, layout, fragStore, 0, (TContigPos)0, (TContigPos)200, 0, 300);
 
         if (maxPos2 == 855 || maxPos2 == 424 || maxPos2 == 696)
         {
@@ -630,10 +630,10 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
             append(name, str);
             append(name, ".svg");
             SVGFile svg(toCString(name));
-            printAlignment(svg, Raw(), layout, fragStore, 0, (TContigPos)0, (TContigPos)200, 0, 300);
+            printAlignment(svg, layout, fragStore, 0, (TContigPos)0, (TContigPos)200, 0, 300);
         }
     }
-    
+
 	// Copy all reads belonging to this contig and reverse complement them if necessary.
 	TAlignedReadStore contigReads;  // TODO(holtgrew): Rather contigAlignedReads?
 	TReadPos maxPos = 0;
@@ -667,7 +667,7 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
 		TId dummyMatchId = length(fragStore.alignedReadStore);
 		appendRead(fragStore, fragStore.contigStore[contigId].seq);
 		appendValue(fragStore.readNameStore, fragStore.contigNameStore[contigId], Generous());
-        
+
 		TAlignedElement el;
 		el.id = dummyMatchId;
 		el.readId = dummyReadId;
@@ -682,7 +682,7 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
 
 	// Create the consensus sequence
 	typedef ProfileChar<DnaMR, double>                              TProfileChar;   // A, C, G, T, C (G from reverse strand), T (A from reverse strand), N, R (ref. ord value)
-    typedef typename ValueSize<TProfileChar>::Type                  TSizeP; 
+    typedef typename ValueSize<TProfileChar>::Type                  TSizeP;
 	typedef String<TProfileChar>                                    TProfileString;
 	typedef typename Iterator<TProfileString, Standard>::Type       TConsIter;
 	//TSizeP gapPos = ValueSize<DnaMR>::VALUE;
@@ -705,11 +705,11 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
         if (!isRef) top = (fragStore.alignedReadStore[contigReadsIt->id].beginPos < fragStore.alignedReadStore[contigReadsIt->id].endPos);
         double mapE = 0.0; // ?
         if (!isRef) mapE = pow(10, -fragStore.alignQualityStore[contigReadsIt->id].score/10.0);
- 
+
 		contigReadsIt->beginPos -= minPos;  // Me: adjust read positions to min observed postion
 		contigReadsIt->endPos -= minPos;
 		itCons = begin(consensus, Standard() );
-		itCons += contigReadsIt->beginPos;  // Me: jump to first position of curr. read in consensus/profile 
+		itCons += contigReadsIt->beginPos;  // Me: jump to first position of curr. read in consensus/profile
 
 		typedef typename Iterator<TReadSeq, Standard>::Type TReadIter;
 		TReadIter itRead = begin(fragStore.readSeqStore[contigReadsIt->readId], Standard() );
@@ -731,14 +731,14 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
 		for(;itGaps != itGapsEnd; ++itGaps) {   // Me: for each gap anchor
 			TReadPos limit = itGaps->seqPos;
 			int newDiff = (itGaps->gapPos - limit);     // Me: sum of gaps up to this position
-			SEQAN_ASSERT_LEQ(itGaps->gapPos, (int)length(consensus));  
+			SEQAN_ASSERT_LEQ(itGaps->gapPos, (int)length(consensus));
 			// changed LT -> LEQ: in case of gap at end of contig, last gapAnchor gapPos is same as length of gaps (could this cause problems somewhere else?)
 			if (diff > newDiff) {
 				limit -= (diff - newDiff);
 				clippedEnd = true;
 			}
             // Me: for each seq. position before next gap, increase count for corresponding base
-			for(;old < limit && itRead != itReadEnd && itCons != itConsEnd; ++old, ++itRead) 
+			for(;old < limit && itRead != itReadEnd && itCons != itConsEnd; ++old, ++itRead)
 			{
 				SEQAN_ASSERT_LT(itRead, itReadEnd);
 				if (!isRef)
@@ -752,9 +752,9 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
                     addToProfileChar(value(itCons++), (Dna5)(*itRead));
                 }
 			}
-			for(;diff < newDiff; ++diff)    // Me: increase count for each gap 
+			for(;diff < newDiff; ++diff)    // Me: increase count for each gap
             {
-                if (isRef) value(itCons).count[8] = -1;  
+                if (isRef) value(itCons).count[8] = -1;
                 else
                 {
 			        if (top) (value(itCons)).count[10] += (1.0-mapE);
@@ -763,7 +763,7 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
                 ++itCons;
             }
 		}
-		if (!clippedEnd) 
+		if (!clippedEnd)
 		{
 			for( ; itRead!=itReadEnd && itCons != itConsEnd;++itRead) // Me: count bases behind last gap
             {
@@ -886,7 +886,7 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
         std::cout << std::endl;
     }
     */
-    if(true) 
+    if(true)
     {
         std::cout << "After realigning " << std::endl;
         TContigGaps contigGaps3(fragStore.contigStore[0].seq, fragStore.contigStore[0].gaps);
@@ -896,7 +896,7 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
         //std::cout << " genomeLen = " << genomeLen << std::endl;
         AlignedReadLayout layout;
         layoutAlignment(layout, fragStore);
-        printAlignment(std::cout, Raw(), layout, fragStore, 0, (TContigPos)0, (TContigPos)200, 0, 300);
+        printAlignment(std::cout, layout, fragStore, 0, (TContigPos)0, (TContigPos)200, 0, 300);
 
         if (maxPos3 == 851 || maxPos3 == 422|| maxPos3 == 692)
         {
@@ -909,11 +909,11 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
             append(name, str);
             append(name, ".svg");
             SVGFile svg(toCString(name));
-            printAlignment(svg, Raw(), layout, fragStore, 0, (TContigPos)0, (TContigPos)200, 0, 300);
+            printAlignment(svg, layout, fragStore, 0, (TContigPos)0, (TContigPos)200, 0, 300);
         }
     }
-    
-	if (includeReference) 
+
+	if (includeReference)
 		appendValue(fragStore.alignedReadStore, contigReads[length(contigReads) - 1]); // Because we need the beginPos for case of gaps at the beginning
 }
 

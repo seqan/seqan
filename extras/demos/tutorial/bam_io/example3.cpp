@@ -1,9 +1,9 @@
-#include <seqan/stream.h>
+#include <seqan/bam_io.h>
 
 int main()
 {
-    seqan::Stream<seqan::Bgzf> stream;
-    if (!open(stream, "filename.bam", "w"))
+    seqan::BamFileOut file;
+    if (!open(file, "filename.bam"))
         return 1;  // Could not open for writing.
     
     return 0;

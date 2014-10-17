@@ -254,7 +254,6 @@ struct Event :
     {
         if (!hEvent) return true;
 
-        Mutex::lock();
         return pthread_cond_wait(hEvent, Mutex::hMutex) == 0;
     }
 
@@ -265,7 +264,6 @@ struct Event :
             timespec ts;
             ts.tv_sec = timeoutMilliSec / 1000;
             ts.tv_nsec = (timeoutMilliSec % 1000) * 1000;
-            Mutex::lock();
             int result = pthread_cond_timedwait(hEvent, Mutex::hMutex, &ts);
             inProgress = (result == ETIMEDOUT);
             return result == 0 || inProgress;

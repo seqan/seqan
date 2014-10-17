@@ -20,7 +20,7 @@ int main()
 
     // Compute transitive closure.
     String<bool> closure;
-    transitiveClosure(g,closure);
+    transitiveClosure(closure, g);
 
     // Print result to stdout.
     TSize len = static_cast<TSize>(std::sqrt((double) length(closure)));

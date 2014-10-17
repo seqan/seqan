@@ -34,7 +34,7 @@
 
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 
 #include "test_gff_io.h"
 
@@ -42,18 +42,13 @@
 SEQAN_BEGIN_TESTSUITE(test_gff_io)
 {
     // GFF tests
-	SEQAN_CALL_TEST(test_store_io_read_record_gff);
 	SEQAN_CALL_TEST(test_store_io_read_record_context_gff);
-	SEQAN_CALL_TEST(test_store_io_read_record_context_empty_trailing_attribute_gff);
-	SEQAN_CALL_TEST(test_store_io_write_record_gff);
 	SEQAN_CALL_TEST(test_store_io_write_record_context_gff);
 
 	// GTF tests
-	SEQAN_CALL_TEST(test_store_io_read_record_gtf);
 	SEQAN_CALL_TEST(test_store_io_read_record_context_gtf);
     SEQAN_CALL_TEST(test_store_io_read_record_gtf_pseudogenes);
-	SEQAN_CALL_TEST(test_store_io_write_record_gtf);
-	SEQAN_CALL_TEST(test_store_io_write_record_context_gtf);
+    SEQAN_CALL_TEST(test_store_io_write_record_context_gtf);
 
     // Tests for GffStream.
     SEQAN_CALL_TEST(test_store_io_gff_stream_read_record_gff);

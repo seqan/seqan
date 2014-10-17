@@ -56,7 +56,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //	inline void _findFirstIndex(
 //		Finder< Index<TText, TSpec>, TSpecFinder > &finder,
 //		TPattern const &pattern,
-//		EsaFindMlr const)
+//		FinderMlr const)
 //	{
 //		Index<TText, TSpec> &index = haystack(finder);
 //		indexRequire(index, EsaSA());

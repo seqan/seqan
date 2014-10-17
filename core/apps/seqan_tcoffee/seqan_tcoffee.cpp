@@ -15,14 +15,12 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 Lesser General Public License for more details.
 ==========================================================================*/
 
-#include <fstream>
-#include <iostream>
-
 #include <seqan/basic.h>
 #include <seqan/graph_msa.h>
 #include <seqan/modifier.h>
 #include <seqan/arg_parse.h>
 #include <seqan/seq_io.h>
+#include <seqan/stream.h>
 
 using namespace seqan;
 
@@ -41,15 +39,13 @@ template <typename TSeqSet, typename TNameSet>
 bool
 _loadSequences(TSeqSet& sequences, TNameSet& fastaIDs, const char *fileName)
 {
-    std::fstream inF(fileName, std::ios::binary | std::ios::in);
-    if (!inF.good())
+    SeqFileIn inFile;
+    if (!open(inFile, fileName))
+    {
+        std::cerr << "Could not open " << fileName << "for reading!" << std::endl;
         return false;
-    RecordReader<std::fstream, SinglePass<> > reader(inF);
-
-    clear(sequences);
-    clear(fastaIDs);
-    if (read2(fastaIDs, sequences, reader, Fasta()) != 0)
-        return false;
+    }
+    readRecords(fastaIDs, sequences, inFile);
     return (length(fastaIDs) > 0u);
 }
 
@@ -62,6 +58,8 @@ customizedMsaAlignment(MsaOptions<TAlphabet, TScore> const& msaOpt)
     typedef String<TAlphabet> TSequence;
     StringSet<TSequence, Owner<> > sequenceSet;
     StringSet<String<char> > sequenceNames;
+    typedef VirtualStream<char, Output> TOutStream;
+
     _loadSequences(sequenceSet, sequenceNames, msaOpt.seqfile.c_str());
 
     // Alignment of the sequences
@@ -71,19 +69,16 @@ customizedMsaAlignment(MsaOptions<TAlphabet, TScore> const& msaOpt)
     globalMsaAlignment(gAlign, sequenceSet, sequenceNames, msaOpt);
 
     // Alignment output
-    if (msaOpt.outputFormat == 0)
+    TOutStream outStream;
+    if (!open(outStream, toCString(msaOpt.outfile)))
     {
-        FILE* strmWrite = fopen(msaOpt.outfile.c_str(), "w");
-        write(strmWrite, gAlign, sequenceNames, FastaFormat());
-        fclose(strmWrite);
+        std::cerr << "Can't open " << msaOpt.outfile << " for writing!" << std::endl;
+        return;
     }
-    else if (msaOpt.outputFormat == 1)
-    {
-        FILE* strmWrite = fopen(msaOpt.outfile.c_str(), "w");
-        write(strmWrite, gAlign, sequenceNames, MsfFormat());
-        fclose(strmWrite);
-    }
-
+    if (guessFormatFromFilename(msaOpt.outfile, Fasta()))
+        write(outStream, gAlign, sequenceNames, FastaFormat());
+    else
+        write(outStream, gAlign, sequenceNames, MsfFormat());
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -135,15 +130,7 @@ _initMsaParams(ArgumentParser& parser, TScore& scMat)
     // Set main options
     getOptionValue(msaOpt.seqfile, parser, "seq");
     getOptionValue(msaOpt.outfile, parser, "outfile");
-    
-    // replace with autodetect
-    if(endsWith(msaOpt.outfile,".fasta")){
-        msaOpt.outputFormat = 0;
-    }
-    if(endsWith(msaOpt.outfile,".msf")){
-        msaOpt.outputFormat = 1;
-    }
-    
+
     String<char> optionVal;
     
  /*   getOptionValue(optionVal, parser, "format");
@@ -278,7 +265,7 @@ _initScoreMatrix(ArgumentParser& parser, Dna5 const)
     if (isSet(parser, "matrix"))
     {
         Score<int, ScoreMatrix<> > sc;
-        loadScoreMatrix(sc, matrix);
+        loadScoreMatrix(sc, toCString(matrix));
         _initMsaParams<Dna5>(parser, sc);
     }
     else
@@ -298,7 +285,7 @@ _initScoreMatrix(ArgumentParser& parser, Rna5 const)
     if (isSet(parser, "matrix"))
     {
         Score<int, ScoreMatrix<> > sc;
-        loadScoreMatrix(sc, matrix);
+        loadScoreMatrix(sc, toCString(matrix));
         _initMsaParams<Rna5>(parser, sc);
     }
     else
@@ -318,7 +305,7 @@ _initScoreMatrix(ArgumentParser& parser, AminoAcid const)
     if (isSet(parser, "matrix"))
     {
         Score<int, ScoreMatrix<> > sc;
-        loadScoreMatrix(sc, matrix);
+        loadScoreMatrix(sc, toCString(matrix));
         _initMsaParams<AminoAcid>(parser, sc);
     }
     else
@@ -332,7 +319,7 @@ void
 _setUpArgumentParser(ArgumentParser & parser)
 {
     _addVersion(parser);
-    setDate(parser, "July 2012");
+    setDate(parser, "September 2014");
     setAppName(parser,"seqan_tcoffee");
     setCategory(parser, "Sequence Alignment");
     
@@ -343,16 +330,18 @@ _setUpArgumentParser(ArgumentParser & parser)
     addDescription(parser, "(c) Copyright 2009 by Tobias Rausch");
 
     addSection(parser, "Main Options:");
-    addOption(parser, ArgParseOption("s", "seq", "Name of multi-fasta input file.", ArgParseArgument::INPUTFILE));
-    setValidValues(parser, "seq", "fa FA Fa fasta FASTA Fasta");  // allow only fasta files as input
+    addOption(parser, ArgParseOption("s", "seq", "Name of multi-fasta input file.", ArgParseArgument::INPUT_FILE));
+    setValidValues(parser, "seq", getFileExtensions(Fasta()));  // allow only fasta files as input
 
     addOption(parser, ArgParseOption("a", "alphabet", "The used sequence alphabet.", ArgParseArgument::STRING));
     setValidValues(parser, "alphabet", "protein dna rna");
     setDefaultValue(parser, "alphabet", "protein");
 
-    addOption(parser, ArgParseOption("o", "outfile", "Name of the output file.", ArgParseArgument::OUTPUTFILE));
+    addOption(parser, ArgParseOption("o", "outfile", "Name of the output file.", ArgParseArgument::OUTPUT_FILE));
     setDefaultValue(parser, "outfile", "out.fasta");
-    setValidValues(parser, "outfile", "fasta msf"); 
+    std::vector<std::string> outputFormats = getFileExtensions(Fasta());
+    outputFormats.push_back(".msf");
+    setValidValues(parser, "outfile", outputFormats);
 
 
   //  addOption(parser, ArgParseOption("f", "format", "Format of the output.", ArgParseArgument::STRING));
@@ -371,7 +360,7 @@ _setUpArgumentParser(ArgumentParser & parser)
     addOption(parser,
               ArgParseOption("l", "libraries", "Name of match file. "
                              "To select multiple files recall this option with different arguments.",
-                             ArgParseArgument::INPUTFILE, "", true));
+                             ArgParseArgument::INPUT_FILE, "", true));
     
     setValidValues(parser, "l", "blast mums aln lib");  // allow blast, mummer aln and tcoffee lib files
 
@@ -382,16 +371,16 @@ _setUpArgumentParser(ArgumentParser & parser)
       addOption(parser,
               ArgParseOption("mu", "mummer", "Name of \\fIMUMmer\\fP match file. "
                              "To select multiple \\fIMUMmer\\fP files recall this option with different arguments.",
-                             ArgParseArgument::INPUTFILE, "", true));
+                             ArgParseArgument::INPUT_FILE, "", true));
     addOption(parser,
               ArgParseOption("al", "aln", "Name of \\fIFASTA\\fP align file."
                              "To select multiple \\fIFASTA\\fP files recall this option with different arguments.",
-                             ArgParseArgument::INPUTFILE, "", true));
+                             ArgParseArgument::INPUT_FILE, "", true));
     addOption(
             parser,
             ArgParseOption("li", "lib", "Name of \\fIT-Coffee\\fP library. "
                            "To select multiple \\fIT-Coffee\\fP libraries recall this option with different arguments.",
-                           ArgParseArgument::INPUTFILE, "", true));
+                           ArgParseArgument::INPUT_FILE, "", true));
      */
 
     addSection(parser, "Scoring Options:");
@@ -429,8 +418,8 @@ _setUpArgumentParser(ArgumentParser & parser)
     addOption(
             parser,
             ArgParseOption("i", "infile", "Name of the alignment file <\\fIFASTA FILE\\fP>",
-                           ArgParseArgument::INPUTFILE));
-            setValidValues(parser, "infile", "fa FA Fa fasta FASTA");  // allow only fasta files as input
+                           ArgParseArgument::INPUT_FILE));
+    setValidValues(parser, "infile", getFileExtensions(Fasta()));  // allow only fasta files as input
 
 }
 

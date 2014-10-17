@@ -57,7 +57,7 @@ template <typename TType, typename TTestType> struct IsAnInnerHost;
 
 /*!
  * @class ModifiedString
- * @implements SequenceConcept
+ * @implements ContainerConcept
  * @headerfile <seqan/modifier.h>
  * @brief Allows you to generate modified versions of a string in a non-inplace way.
  *
@@ -196,6 +196,12 @@ public:
     operator[](TPos pos) const 
     { 
         return value(*this, pos); 
+    }
+
+    ModifiedString & operator= (THost & other)
+    {
+        _host = _toPointer(other);
+        return *this;
     }
 };
 
@@ -344,8 +350,6 @@ struct Difference< ModifiedString<THost, TSpec> >:
 // Metafunction Iterator
 // --------------------------------------------------------------------------
 
-// TODO(holtgrew): Should the result of Iterator<> be a const iterator for const ModifiedString objects?
-
 ///.Metafunction.Iterator.param.T.type:Class.ModifiedString
 ///.Metafunction.Iterator.class:Class.ModifiedString
 
@@ -354,24 +358,38 @@ struct Iterator<ModifiedString<THost, TSpec>, Standard>
 {
     typedef ModifiedIterator<typename Iterator<THost, Standard>::Type, TSpec> Type;
 };
-
-template <typename THost, typename TSpec >
-struct Iterator<ModifiedString<THost, TSpec> const, Standard>
-{
-    typedef ModifiedIterator<typename Iterator<THost, Standard>::Type, TSpec> Type;
-};
-
 template <typename THost, typename TSpec>
 struct Iterator<ModifiedString<THost, TSpec>, Rooted>
 {
     typedef ModifiedIterator<typename Iterator<THost, Rooted>::Type, TSpec> Type;
 };
 
+// TODO(holtgrew): Should the result of Iterator<> be a const iterator for const ModifiedString objects?
+//          weese: I chose more lenient variant (A), i.e. constness is not propagated upwards.
+
+// VARIANT A: const ModifiedString does not propagate its constness upwards
+template <typename THost, typename TSpec >
+struct Iterator<ModifiedString<THost, TSpec> const, Standard>
+{
+    typedef ModifiedIterator<typename Iterator<THost, Standard>::Type, TSpec> Type;
+};
 template <typename THost, typename TSpec >
 struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
 {
     typedef ModifiedIterator<typename Iterator<THost, Rooted>::Type, TSpec> Type;
 };
+
+// VARIANT B: const ModifiedString propagates its constness upwards
+//template <typename THost, typename TSpec >
+//struct Iterator<ModifiedString<THost, TSpec> const, Standard>
+//{
+//    typedef ModifiedIterator<typename Iterator<THost const, Standard>::Type, TSpec> Type;
+//};
+//template <typename THost, typename TSpec >
+//struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
+//{
+//    typedef ModifiedIterator<typename Iterator<THost const, Rooted>::Type, TSpec> Type;
+//};
 
 // --------------------------------------------------------------------------
 // Metafunction Host
@@ -380,26 +398,34 @@ struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
 ///.Metafunction.Host.param.T.type:Class.ModifiedString
 ///.Metafunction.Host.class:Class.ModifiedString
 
+template <typename T>
+struct ConvertArrayToPointer
+{
+    typedef T Type;
+};
+
+template <typename T, int SIZE>
+struct ConvertArrayToPointer<T[SIZE]>
+{
+    typedef T* Type;
+};
+
 template <typename THost, typename TSpec >
 struct Host<ModifiedString<THost, TSpec> > {
-    typedef THost Type;
+    typedef typename ConvertArrayToPointer<THost>::Type Type;
 };
 
+// VARIANT A: const ModifiedString does not propagate its constness upwards
 template <typename THost, typename TSpec >
 struct Host<ModifiedString<THost, TSpec> const > {
-    typedef THost Type;
+    typedef typename ConvertArrayToPointer<THost>::Type Type;
 };
 
-// special case: fixed size array
-template <typename TValue, size_t SIZE, typename TSpec >
-struct Host<ModifiedString<TValue [SIZE], TSpec> > {
-    typedef TValue * Type;
-};
-
-template <typename TValue, size_t SIZE, typename TSpec >
-struct Host<ModifiedString<TValue [SIZE], TSpec> const > {
-    typedef TValue const * Type;
-};
+// VARIANT B: const ModifiedString propagates its constness upwards
+//template <typename THost, typename TSpec >
+//struct Host<ModifiedString<THost, TSpec> const > {
+//    typedef typename ConvertArrayToPointer<THost const>::Type Type;
+//};
 
 // --------------------------------------------------------------------------
 // Metafunction Parameter_
@@ -441,6 +467,16 @@ struct Pointer_<ModifiedString<THost, TSpec> const > : Pointer_<ModifiedString<T
 template <typename THost, typename TSpec >
 struct IsSequence<ModifiedString<THost, TSpec> > : True
 {};
+
+// ----------------------------------------------------------------------------
+// Concept ContainerConcept
+// ----------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+SEQAN_CONCEPT_IMPL((ModifiedString<THost, TSpec>), (ContainerConcept));
+
+template <typename THost, typename TSpec>
+SEQAN_CONCEPT_IMPL((ModifiedString<THost, TSpec> const), (ContainerConcept));
 
 // --------------------------------------------------------------------------
 // Metafunction AllowsFastRandomAccess
@@ -520,14 +556,14 @@ template <typename THost, typename TSpec>
 inline typename Host<ModifiedString<THost, TSpec> >::Type &
 host(ModifiedString<THost, TSpec> & me)
 {
-    return _dereference<typename Host<ModifiedString<THost, TSpec> >::Type &>(me._host);
+    return _referenceCast<typename Host<ModifiedString<THost, TSpec> >::Type &>(me._host);
 }
 
 template <typename THost, typename TSpec>
 inline typename Host<ModifiedString<THost, TSpec> const>::Type &
 host(ModifiedString<THost, TSpec> const & me)
 {
-    return _dereference<typename Host<ModifiedString<THost, TSpec> const>::Type &>(me._host);
+    return _referenceCast<typename Host<ModifiedString<THost, TSpec> const>::Type &>(me._host);
 }
 
 // --------------------------------------------------------------------------
@@ -813,7 +849,8 @@ template < typename TStream, typename THost, typename TSpec >
 inline TStream &
 operator<<(TStream & target, ModifiedString<THost, TSpec> const & source)
 {
-    write(target, source);
+    typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
+    write(it, source);
     return target;
 }
 
@@ -825,7 +862,8 @@ template < typename TStream, typename THost, typename TSpec >
 inline TStream &
 operator>>(TStream & source, ModifiedString<THost, TSpec> & target)
 {
-    read(source, target);
+    typename DirectionIterator<TStream, Input>::Type it = directionIterator(source, Input());;
+    read(it, target);
     return source;
 }
 
@@ -845,6 +883,46 @@ inline void const *
 getObjectId(ModifiedString<THost, TSpec> const & me) 
 {
     return getObjectId(host(me));
+}
+
+// --------------------------------------------------------------------------
+// Function open()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec >
+inline bool
+open(ModifiedString<THost, TSpec> &, const char *, int)
+{
+    return true; // NOOP; this has to be done manually right now
+}
+
+template <typename THost, typename TSpec, typename TSpec2>
+inline bool
+open(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > &,
+     const char *,
+     int)
+{
+    return true; // NOOP; this has to be done manually right now
+}
+
+// --------------------------------------------------------------------------
+// Function save()
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec >
+inline bool
+save(ModifiedString<THost, TSpec> &, const char *, int)
+{
+    return true; // NOOP; this has to be done manually right now
+}
+
+template <typename THost, typename TSpec, typename TSpec2>
+inline bool
+save(StringSet<ModifiedString<THost, TSpec>, Owner<ConcatDirect<TSpec2> > > &,
+     const char *,
+     int)
+{
+    return true; // NOOP; this has to be done manually right now
 }
 
 }  // namespace seqan

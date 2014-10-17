@@ -122,7 +122,7 @@ namespace seqan {
 ..type:nolink:$TCount$
 */
 
-template <typename TOperation_ = char, typename TCount_ = unsigned>
+template <typename TOperation_ = char, typename TCount_ = unsigned short>
 struct CigarElement
 {
     typedef TOperation_ TOperation;
@@ -612,7 +612,7 @@ alignAndGetCigarString(
 template <typename TCigarString, typename TNum>
 inline void _getClippedLength(TCigarString const & cigar, TNum & sum)
 {
-    typedef typename Iterator<TCigarString, Standard>::Type TCigarIter;
+    typedef typename Iterator<TCigarString const, Standard>::Type TCigarIter;
 
     TCigarIter it = begin(cigar, Standard());
     TCigarIter itEnd = end(cigar, Standard());

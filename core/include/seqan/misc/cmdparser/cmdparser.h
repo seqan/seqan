@@ -36,7 +36,7 @@
 #include <sstream>
 #include <seqan/map.h>
 #include <seqan/sequence.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 #include <seqan/misc/cmdparser/cmdoption.h>
 #include <seqan/misc/cmdparser/cmdparser_type_support.h>
 
@@ -130,7 +130,7 @@ public:
         _fullWidth         = 0;
         _requiredArguments = 0;
         addOption(*this, CommandLineOption("h", "help", "displays this help message", OptionType::Boolean));
-        addOption(*this, CommandLineOption("", "write-ctd", "exports the app's interface description to a .ctd file", OptionType::OUTPUTFILE));
+        addOption(*this, CommandLineOption("", "write-ctd", "exports the app's interface description to a .ctd file", OptionType::OUTPUT_FILE));
     }
 
     // ----------------------------------------------------------------------------
@@ -485,14 +485,14 @@ requiredArguments(CommandLineParser & me, unsigned count)
 // Function _printStringSet()
 // ----------------------------------------------------------------------------
 
-template <typename TStringSet, typename TStream>
+template <typename TStringSet>
 inline void
-_printStringSet(TStringSet const & set, TStream & target)
+_printStringSet(TStringSet const & set, std::ostream & target)
 {
     for (unsigned r = 0; r < length(set); ++r)
     {
-        streamPut(target, set[r]);
-        streamPut(target, '\n');
+        target << set[r];
+        target << '\n';
     }
 }
 
@@ -504,29 +504,29 @@ template <typename TStream>
 inline void
 _printUsage(CommandLineParser const & me, TStream & target)
 {
-    streamPut(target, "Usage: ");
+    target << "Usage: ";
     if (empty(me._usageText))
     {
-        streamPut(target, me._appName);
-        streamPut(target, " [OPTION]... ");
+        target << me._appName;
+        target << " [OPTION]... ";
         for (unsigned r = 0; r < me._requiredArguments; ++r)
         {
-            streamPut(target, "<ARG");
-            streamPut(target, r + 1);
-            streamPut(target, "> ");
+            target << "<ARG";
+            target << r + 1;
+            target << "> ";
         }
-        streamPut(target, '\n');
+        target << '\n';
     }
     else
     {
         for (unsigned r = 0; r < length(me._usageText); ++r)
         {
             if (r)
-                streamPut(target, "       ");
-            streamPut(target, me._appName);
-            streamPut(target, ' ');
-            streamPut(target, me._usageText[r]);
-            streamPut(target, '\n');
+                target << "       ";
+            target << me._appName;
+            target << ' ';
+            target << me._usageText[r];
+            target << '\n';
         }
     }
 }
@@ -535,9 +535,8 @@ _printUsage(CommandLineParser const & me, TStream & target)
 // Function _printTitle()
 // ----------------------------------------------------------------------------
 
-template <typename TStream>
 inline void
-_printTitle(CommandLineParser const & me, TStream & target)
+_printTitle(CommandLineParser const & me, std::ostream & target)
 {
     _printStringSet(me._titleText, target);
 }
@@ -563,9 +562,7 @@ printShortHelp(CommandLineParser const & me, TStream & target)
 {
     _printTitle(me, target);
     _printUsage(me, target);
-    streamPut(target, "Try '");
-    streamPut(target, me._appName);
-    streamPut(target, " --help' for more information.\n");
+    target << "Try '" << me._appName << " --help' for more information.\n";
 }
 
 /*
@@ -611,14 +608,13 @@ shortHelp(CommandLineParser const & me)
 ..include:seqan/misc/misc_cmdparser.h
 */
 
-template <typename TStream>
 inline void
-printHelp(CommandLineParser const & me, TStream & target)
+printHelp(CommandLineParser const & me, std::ostream & target)
 {
     _printTitle(me, target);
-    streamPut(target, '\n');
+    target << '\n';
     _printUsage(me, target);
-    streamPut(target, '\n');
+    target << '\n';
 
     for (unsigned o = 0; o < length(me.optionMap); ++o)
     {
@@ -630,51 +626,51 @@ printHelp(CommandLineParser const & me, TStream & target)
         {
             unsigned s = 0;
             for (; s < me._paddingLeft; ++s)
-                streamPut(target, ' ');
+                target << ' ';
 
             unsigned t1 = s + me._shortWidth;                           // first tab
             unsigned t2 = _max(t1 + me._longWidth, me._fullWidth) + 1;  // second tab (one extra space looks better)
 
             if (!empty(opt.shortName))
             {
-                streamPut(target, '-');
-                streamPut(target, opt.shortName);
+                target << '-';
+                target << opt.shortName;
                 s += 1 + length(opt.shortName);
                 if (!empty(opt.longName))
                 {
-                    streamPut(target, ',');
+                    target << ',';
                     ++s;
                 }
                 else
                 {
-                    streamPut(target, argumentText(opt));
+                    target << argumentText(opt);
                     s += length(argumentText(opt));
                 }
             }
 
             for (; s < t1; ++s)
-                streamPut(target, ' ');
+                target << ' ';
 
             if (!empty(opt.longName))
             {
-                streamPut(target, "--");
-                streamPut(target, opt.longName);
-                streamPut(target, argumentText(opt));
+                target << "--";
+                target << opt.longName;
+                target << argumentText(opt);
                 s += 2 + length(opt.longName) + length(argumentText(opt));
             }
 
             for (; s < t2; ++s)
-                streamPut(target, ' ');
+                target << ' ';
         }
 
-        streamPut(target, opt.helpText);
+        target << opt.helpText;
 
         if (isOptionMandatory(opt))
-            streamPut(target, "*");
+            target << "*";
 
-        streamPut(target, '\n');
+        target << '\n';
     }
-    streamPut(target, '\n');
+    target << '\n';
 }
 
 /*
@@ -857,20 +853,13 @@ inline void
 _reportInvalidType(CommandLineParser const & me, CommandLineOption const & opt,
                    CharString const & val, TErrorStream & estream)
 {
-    streamPut(estream, me._appName);
-    streamPut(estream, ": \"");
-    streamPut(estream, val);
-    streamPut(estream, "\" is not a valid ");
-
+    estream << me._appName << ": \"" << val  << "\" is not a valid ";
     // there should be no other situation then those two
     if (isIntOption(opt))
-        streamPut(estream, "integer");
+        estream << "integer";
     else if (isDoubleOption(opt))
-        streamPut(estream, "double");
-
-    streamPut(estream, " value for '");
-    _writeOptName(estream, opt);
-    streamPut(estream, "'\n");
+        estream << "double";
+    estream << " value for '" << opt << "'\n";
 }
 
 // ----------------------------------------------------------------------------
@@ -882,12 +871,7 @@ inline void
 _reportMissingArgument(CommandLineParser const & me,
                        CommandLineOption const & opt, TErrorStream & estream)
 {
-    streamPut(estream, me._appName);
-    streamPut(estream, ": \'");
-    _writeOptName(estream, opt);
-    streamPut(estream, "\' requires ");
-    streamPut(estream, opt.argumentsPerOption);
-    streamPut(estream, " value(s)\n");
+    estream << me._appName << ": \'" << opt << "\' requires " << opt.argumentsPerOption << " value(s)\n";
 }
 
 // ----------------------------------------------------------------------------
@@ -899,10 +883,7 @@ inline void
 _reportInvalidOption(CommandLineParser const & me, CharString const & option,
                      TErrorStream & estream)
 {
-    streamPut(estream, me._appName);
-    streamPut(estream, ": invalid option '");
-    streamPut(estream, option);
-    streamPut(estream, "\'\n");
+    estream << me._appName << ": invalid option '" << option << "\'\n";
 }
 
 // ----------------------------------------------------------------------------
@@ -914,14 +895,9 @@ inline void
 _reportValueNotInRange(CommandLineOption const & opt, CharString const & val,
                        TErrorStream & estream)
 {
-    _writeOptName(estream, opt);
-    streamPut(estream, ": given argument \"");
-    streamPut(estream, val);
-    streamPut(estream, "\" is not in the required range [");
-    streamPut(estream, (opt.minValue != "" ? opt.minValue : "-inf"));
-    streamPut(estream, ":");
-    streamPut(estream, (opt.maxValue != "" ? opt.maxValue : "+inf"));
-    streamPut(estream, "]\n");
+    estream << opt << ": given argument \"" << val << "\" is not in the required range [";
+    estream << (opt.minValue != "" ? opt.minValue : "-inf");
+    estream << ":" << (opt.maxValue != "" ? opt.maxValue : "+inf") << "]\n";
 }
 
 // ----------------------------------------------------------------------------
@@ -935,21 +911,16 @@ _reportInvalidValue(CommandLineOption const & opt, CharString const & val,
 {
     typedef Iterator<StringSet<CharString> const, Rooted>::Type TStringSetIter;
 
-    _writeOptName(estream, opt);
-    streamPut(estream, ": given argument \"");
-    streamPut(estream, val);
-    streamPut(estream, "\" is not a valid value [");
-    for (TStringSetIter valid = begin(opt.validValues);; )
-    {
-        streamPut(estream, *valid);
+    estream << opt << ": given argument \"" << val << "\" is not a valid value [";
 
-        goNext(valid);
-        if (valid == end(opt.validValues))
-            break;
-        else
-            streamPut(estream, ", ");
+    TStringSetIter valid = begin(opt.validValues);
+    if (valid != end(opt.validValues))
+    {
+        estream << *valid;
+        for (++valid; valid != end(opt.validValues); ++valid)
+            estream << ", " << *valid;
     }
-    streamPut(estream, "]\n");
+    estream << "]\n";
 }
 
 // ----------------------------------------------------------------------------
@@ -961,21 +932,18 @@ inline void
 _reportInvalidFileType(CommandLineOption const & opt, CharString const & val,
                        TErrorStream & estream)
 {
-    _writeOptName(estream, opt);
-    streamPut(estream, ": given argument \"");
-    streamPut(estream, val);
-    streamPut(estream, "\" is not a valid file type [");
-    for (Iterator<StringSet<CharString> const, Rooted>::Type valid = begin(opt.validValues);; )
-    {
-        streamPut(estream, *valid);
+    typedef Iterator<StringSet<CharString> const, Rooted>::Type TStringSetIter;
 
-        goNext(valid);
-        if (valid == end(opt.validValues))
-            break;
-        else
-            streamPut(estream, ", ");
+    estream << opt << ": given argument \"" << val << "\" is not a valid file type [";
+
+    TStringSetIter valid = begin(opt.validValues);
+    if (valid != end(opt.validValues))
+    {
+        estream << *valid;
+        for (++valid; valid != end(opt.validValues); ++valid)
+            estream << ", " << *valid;
     }
-    streamPut(estream, "]\n");
+    estream << "]\n";
 }
 
 // ----------------------------------------------------------------------------

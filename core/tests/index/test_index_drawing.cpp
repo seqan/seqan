@@ -42,7 +42,7 @@ SEQAN_DEFINE_TEST(test_index_drawing_esa_dot)
     seqan::Index<seqan::CharString> stree(myString);
     
     std::stringstream sstream;
-    write(sstream, stree, seqan::DotDrawing());
+    writeRecords(sstream, stree, seqan::DotDrawing());
     
     std::stringstream expected;
     expected << "digraph G {\n"
@@ -57,17 +57,17 @@ SEQAN_DEFINE_TEST(test_index_drawing_esa_dot)
              << "edge [fontname = \"Times-Italic\", arrowsize = 0.75, fontsize = 16];\n"
              << "\n"
              << "/* Edges */\n"
-             << "\"[0:-1)\" [style = dashed];\n"
+             << "\"[0:6)\" [style = dashed];\n"
              << "\"[0:3)\";\n"
-             << "\"[0:-1)\" -> \"[0:3)\" [label = \"a\"];\n"
+             << "\"[0:6)\" -> \"[0:3)\" [label = \"a\"];\n"
              << "\"[1:3)\";\n"
              << "\"[0:3)\" -> \"[1:3)\" [label = \"na\"];\n"
              << "\"[2:3)\";\n"
              << "\"[1:3)\" -> \"[2:3)\" [label = \"na\"];\n"
              << "\"[3:4)\";\n"
-             << "\"[0:-1)\" -> \"[3:4)\" [label = \"banana\"];\n"
+             << "\"[0:6)\" -> \"[3:4)\" [label = \"banana\"];\n"
              << "\"[4:6)\";\n"
-             << "\"[0:-1)\" -> \"[4:6)\" [label = \"na\"];\n"
+             << "\"[0:6)\" -> \"[4:6)\" [label = \"na\"];\n"
              << "\"[5:6)\";\n"
              << "\"[4:6)\" -> \"[5:6)\" [label = \"na\"];\n"
              << "\n"

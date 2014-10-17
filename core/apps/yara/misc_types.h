@@ -41,38 +41,6 @@
 using namespace seqan;
 
 // ============================================================================
-// Yara Limits
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Class YaraBits
-// ----------------------------------------------------------------------------
-
-template <typename TSpec = void>
-struct YaraBits
-{
-    static const unsigned CONTIG_ID   = 8;
-    static const unsigned CONTIG_SIZE = 30;
-    static const unsigned READ_ID     = 21;
-    static const unsigned READ_SIZE   = 14;
-    static const unsigned ERRORS      = 6;
-};
-
-// ----------------------------------------------------------------------------
-// Class YaraLimits
-// ----------------------------------------------------------------------------
-
-template <typename TSpec = void>
-struct YaraLimits
-{
-    static const unsigned CONTIG_ID   = Power<2, YaraBits<TSpec>::CONTIG_ID>::VALUE - 1;
-    static const unsigned CONTIG_SIZE = Power<2, YaraBits<TSpec>::CONTIG_SIZE>::VALUE - 1;
-    static const unsigned READ_ID     = Power<2, YaraBits<TSpec>::READ_ID>::VALUE - 1;
-    static const unsigned READ_SIZE   = Power<2, YaraBits<TSpec>::READ_SIZE>::VALUE - 1;
-    static const unsigned ERRORS      = Power<2, YaraBits<TSpec>::ERRORS>::VALUE - 1;
-};
-
-// ============================================================================
 // String Types
 // ============================================================================
 
@@ -80,11 +48,11 @@ struct YaraLimits
 // String Spec
 // ----------------------------------------------------------------------------
 
-//#ifndef YARA_INDEXER
-//typedef MMap<>  YaraStringSpec;
-//#else
+#ifndef YARA_INDEXER
+typedef MMap<>  YaraStringSpec;
+#else
 typedef Alloc<> YaraStringSpec;
-//#endif
+#endif
 
 // ============================================================================
 // Index Types
@@ -263,6 +231,42 @@ appendValue(StringSet<TString, Owner<ConcatDirect<__uint32> > > & me, TSource co
     appendValue(me.limits, lengthSum(me) + length(obj), tag);
     append(me.concat, obj, tag);
 }
+}
+
+// ----------------------------------------------------------------------------
+// Reads SeqsStore Config
+// ----------------------------------------------------------------------------
+
+typedef SeqConfig<void>         YaraReadsConfig;
+
+//struct YaraReadsConfig
+//{
+//    typedef Dna5                    TAlphabet;
+//    typedef Alloc<>                 TSeqSpec;
+//    typedef Owner<ConcatDirect<> >  TSeqsSpec;
+//    typedef Owner<ConcatDirect<> >  TSeqNamesSpec;
+//};
+
+// ----------------------------------------------------------------------------
+// Contigs SeqsStore Config
+// ----------------------------------------------------------------------------
+
+struct YaraContigsConfig
+{
+    typedef Dna5                            TAlphabet;
+    typedef Packed<YaraStringSpec>          TSeqSpec;
+    typedef Owner<ConcatDirect<> >          TSeqsSpec;
+    typedef Owner<ConcatDirect<__uint32> >  TSeqNamesSpec;
+};
+
+namespace seqan {
+template <typename TStorageSpec>
+struct SmartFileContext<SmartFile<Bam, Output, YaraContigs>, TStorageSpec>
+{
+    typedef StringSet<CharString, Owner<ConcatDirect<__uint32> > >  TNameStore;
+    typedef NameStoreCache<TNameStore>                              TNameStoreCache;
+    typedef BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> Type;
+};
 }
 
 #endif  // #ifndef APP_YARA_MISC_TYPES_H_

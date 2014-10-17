@@ -42,33 +42,16 @@
 using namespace seqan;
 
 // ============================================================================
-// Functions
+// Functors
 // ============================================================================
 
-// ----------------------------------------------------------------------------
-// Functor EqualsChar
-// ----------------------------------------------------------------------------
-// TODO(esiragusa): remove this when new tokenization gets into develop.
-
-template <char VALUE>
-struct EqualsChar
-{
-    template <typename TValue>
-    bool operator() (TValue const & val) const
-    {
-        return val == VALUE;
-    }
-};
-
-// ----------------------------------------------------------------------------
-// Composite Functors
-// ----------------------------------------------------------------------------
-// TODO(esiragusa): remove this when new tokenization gets into develop.
-
 typedef EqualsChar<'.'>        IsDot;
-typedef EqualsChar<' '>        IsSpace;
 typedef EqualsChar<'/'>        IsSlash;
 typedef EqualsChar<'\\'>       IsBackSlash;
+
+// ============================================================================
+// Functions
+// ============================================================================
 
 // ----------------------------------------------------------------------------
 // Function setEnv()
@@ -113,6 +96,41 @@ inline typename Prefix<TString>::Type
 trimExtension(TString & string)
 {
     return prefix(string, lastOf(string, IsDot()));
+}
+
+// ----------------------------------------------------------------------------
+// Function addLeadingDot()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+inline void addLeadingDot(TString & string)
+{
+    insert(string, 0, ".");
+}
+
+// ----------------------------------------------------------------------------
+// Function stripLeadingDot()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+inline void stripLeadingDot(TString & string)
+{
+    string.erase(0, 1);
+}
+
+// ----------------------------------------------------------------------------
+// Function getExtensionsWithoutLeadingDot()
+// ----------------------------------------------------------------------------
+
+template <typename TStrings>
+inline TStrings getExtensionsWithoutLeadingDot(TStrings const & strings)
+{
+    typedef typename Value<TStrings>::Type  TString;
+
+    TStrings extensions = strings;
+    forEach(extensions, [](TString & extension) { stripLeadingDot(extension); });
+
+    return extensions;
 }
 
 // ----------------------------------------------------------------------------
@@ -202,9 +220,9 @@ void setDateAndVersion(ArgumentParser & parser)
     setCategory(parser, "Read Mapping");
 
 #ifdef SEQAN_REVISION
-    setVersion(parser, "0.8.1 [" + std::string(SEQAN_REVISION) + "]");
+    setVersion(parser, "0.9.1 [" + std::string(SEQAN_REVISION) + "]");
 #else
-    setVersion(parser, "0.8.1");
+    setVersion(parser, "0.9.1");
 #endif
 #ifdef SEQAN_DATE
     setDate(parser, SEQAN_DATE);
@@ -221,132 +239,6 @@ void setDescription(ArgumentParser & parser)
     addDescription(parser, "See \\fIhttp://www.seqan.de/projects/yara\\fP for more information.");
     addDescription(parser, "(c) Copyright 2011-2014 by Enrico Siragusa <enrico.siragusa@fu-berlin.de>.");
     addDescription(parser, "(c) Copyright 2013 by NVIDIA Corporation.");
-}
-
-// ----------------------------------------------------------------------------
-// Function setIndexType()
-// ----------------------------------------------------------------------------
-
-template <typename TOptions>
-void setIndexType(ArgumentParser & parser, TOptions const & options)
-{
-    addOption(parser, ArgParseOption("x", "index", "Select the genome index type.", ArgParseOption::STRING));
-    setValidValues(parser, "index", options.indexTypeList);
-    setDefaultValue(parser, "index", options.indexTypeList[options.genomeIndexType]);
-}
-
-// ----------------------------------------------------------------------------
-// Function getIndexType()
-// ----------------------------------------------------------------------------
-
-template <typename TOptions>
-void getIndexType(TOptions & options, ArgumentParser const & parser)
-{
-    getOptionValue(options.genomeIndexType, parser, "index", options.indexTypeList);
-}
-
-// ----------------------------------------------------------------------------
-// Function setIndexPrefix()
-// ----------------------------------------------------------------------------
-
-void setIndexPrefix(ArgumentParser & parser)
-{
-    addOption(parser, ArgParseOption("xp", "index-prefix", "Specify a filename prefix for the reference genome index. \
-                                     Default: use the filename prefix of the reference genome.", ArgParseOption::STRING));
-}
-
-// ----------------------------------------------------------------------------
-// Function getIndexPrefix()
-// ----------------------------------------------------------------------------
-
-template <typename TOptions>
-void getIndexPrefix(TOptions & options, ArgumentParser const & parser)
-{
-    getOptionValue(options.genomeIndexFile, parser, "index-prefix");
-    if (!isSet(parser, "index-prefix"))
-        options.genomeIndexFile = trimExtension(options.genomeFile);
-}
-
-// ----------------------------------------------------------------------------
-// Function getInputType()
-// ----------------------------------------------------------------------------
-
-template <typename TOptions, typename TString>
-void getInputType(TOptions & options, TString const & inputFile)
-{
-    TString inputExtension = getExtension(inputFile);
-    typename TOptions::TString inputTypeExtension(toCString(inputExtension));
-    getOptionEnum(options.inputType, inputTypeExtension, options.inputTypeList);
-}
-
-// ----------------------------------------------------------------------------
-// Function getOutputFormat()
-// ----------------------------------------------------------------------------
-
-template <typename TOptions, typename TString>
-void getOutputFormat(TOptions & options, TString const & outputFile)
-{
-    TString outputExtension = getExtension(outputFile);
-    typename TOptions::TString outputFormatExtension(toCString(outputExtension));
-    getOptionEnum(options.outputFormat, outputFormatExtension, options.outputFormatList);
-}
-
-// ----------------------------------------------------------------------------
-// Function setOutputFile()
-// ----------------------------------------------------------------------------
-
-template <typename TOptions>
-void setOutputFile(ArgumentParser & parser, TOptions const & options)
-{
-    addOption(parser, ArgParseOption("o", "output-file", "Specify an output file. \
-                                     Default: use the reads filename prefix.",
-                                     ArgParseOption::OUTPUTFILE));
-    setValidValues(parser, "output-file", options.outputFormatList);
-}
-
-// ----------------------------------------------------------------------------
-// Function getOutputFile()
-// ----------------------------------------------------------------------------
-
-template <typename TString, typename TOptions, typename TSuffix>
-void getOutputFile(TString & file,
-                   TOptions const & options,
-                   ArgumentParser const & parser,
-                   TString const & from,
-                   TSuffix const & suffix)
-{
-    getOptionValue(file, parser, "output-file");
-    if (!isSet(parser, "output-file"))
-    {
-        file = trimExtension(from);
-        append(file, suffix);
-        appendValue(file, '.');
-        append(file, options.outputFormatList[options.outputFormat]);
-    }
-}
-
-// ----------------------------------------------------------------------------
-// Function setTmpFolder()
-// ----------------------------------------------------------------------------
-
-void setTmpFolder(ArgumentParser & parser)
-{
-    addOption(parser, ArgParseOption("t", "tmp-folder", "Specify a temporary folder where to construct the index. \
-                                     Default: use the genome folder.", ArgParseOption::STRING));
-}
-
-// ----------------------------------------------------------------------------
-// Function getTmpFolder()
-// ----------------------------------------------------------------------------
-
-template <typename TOptions>
-void getTmpFolder(TOptions const & options, ArgumentParser const & parser)
-{
-    CharString tmpFolder;
-    getOptionValue(tmpFolder, parser, "tmp-folder");
-    if (!isSet(parser, "tmp-folder"))
-        tmpFolder = getPath(options.genomeFile);
-    setEnv("TMPDIR", tmpFolder);
 }
 
 #endif  // #ifndef APP_YARA_MISC_OPTIONS_H_

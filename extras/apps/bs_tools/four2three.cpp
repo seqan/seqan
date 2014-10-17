@@ -57,7 +57,7 @@ struct AppOptions
         ctConversion(true)
     {}
 };
- 
+
 ArgumentParser::ParseResult
 parseCommandLine(AppOptions & options, int argc, char const ** argv)
 {
@@ -73,12 +73,12 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \"\\fISEQUENCE FILE\\fP\"");
     addDescription(parser, "This program converts four-letter sequences into three-letter sequences for bisulfite sequence analysis.");
 
-    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTFILE, "SEQUENCES"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "SEQUENCES"));
     setHelpText(parser, 0, "A sequence file containing reads or genome.");
-    setValidValues(parser, 0, ".fa .fasta .fastq .fq");
+    setValidValues(parser, 0, SeqFileIn::getFileExtensions());
 
-    addOption(parser, ArgParseOption("o", "output-file", "Name of output file.", ArgParseArgument::OUTPUTFILE));
-    setValidValues(parser, "o", ".fa .fasta .fastq .fq");
+    addOption(parser, ArgParseOption("o", "output-file", "Name of output file.", ArgParseArgument::OUTPUT_FILE));
+    setValidValues(parser, "o", SeqFileOut::getFileExtensions());
     setRequired(parser, "output-file", true);
     addOption(parser, ArgParseOption("ga", "ga-conversion", "Convert Gs to As, instead of Cs to Ts."));
 
@@ -99,7 +99,7 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     // Only extract  options if the program will continue after parseCommandLine()
     if (res != ArgumentParser::PARSE_OK)
         return res;
-            
+
     getArgumentValue(options.inputFileName, parser, 0);
     getOptionValue(options.outputFileName, parser, "output-file");
 

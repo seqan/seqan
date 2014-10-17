@@ -65,7 +65,7 @@ int main() {
 ///Viterbi algorithm
 	String<Dna> sequence = "CTTCATGTGAAAGCAGACGTAAGTCA";
 	String<TVertexDescriptor> path;
-	TProbability p = viterbiAlgorithm(hmm, sequence, path);
+	TProbability p = viterbiAlgorithm(path, hmm, sequence);
 	std::cout << "Viterbi algorithm" << std::endl;
 	std::cout << "Probability of best path: " << p << std::endl;
 	std::cout << "Sequence: " << std::endl;

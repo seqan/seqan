@@ -71,10 +71,10 @@ namespace SEQAN_NAMESPACE_MAIN
 for @Class.Index@ based substring searches.
 ..cat:Index
 
-..tag.EsaFindMlr:Binary search with mlr-heuristic.
+..tag.FinderMlr:Binary search with mlr-heuristic.
 ...remarks:Exact string matching using a suffix array binary search with the mlr-heuristic.
 
-..tag.EsaFindLcpe:Binary search using lcp values.
+..tag.FinderLcpe:Binary search using lcp values.
 ...remarks:Exact string matching using a suffix array binary search and a lcp-interval tree.
 
 ..tag.FinderSTree:Suffix tree search.
@@ -108,13 +108,13 @@ for @Class.Index@ based substring searches.
  * @tag IndexFindAlgorithm#QGramFindLookup
  * @brief q-gram search. Finds q-grams in a @link IndexQGram @endlink index using the hash table.
  *
- * @tag IndexFindAlgorithm#EsaFindLcpe
+ * @tag IndexFindAlgorithm#FinderLcpe
  * @brief Binary search using lcp values.
  *
  *
  * Exact string matching using a suffix array binary search and a lcp-interval tree.
  *
- * @tag IndexFindAlgorithm#EsaFindMlr
+ * @tag IndexFindAlgorithm#FinderMlr
  * @brief Binary search with mlr-heuristic.
  *
  * Exact string matching using a suffix array binary search with the mlr-heuristic.
@@ -124,8 +124,8 @@ for @Class.Index@ based substring searches.
     struct FinderLcpe_;    // Suffix Array finder using an enhanced LCP-Table
     struct FinderSTree_;    // Suffix Array finder using an enhanced LCP-Table
 
-    typedef Tag<FinderMlr_> const EsaFindMlr;
-    typedef Tag<FinderLcpe_> const EsaFindLcpe;
+    typedef Tag<FinderMlr_> const FinderMlr;
+    typedef Tag<FinderLcpe_> const FinderLcpe;
     typedef Tag<FinderSTree_> const FinderSTree;
 
 	template <typename TSpec = void>
@@ -1483,7 +1483,9 @@ I	ISSISSIPPI*/
 ..include:seqan/index.h
 */
 
-/*!
+// TODO(weese): I disabled the doc, as we don't want to encourage users to use it
+
+/*
  * @fn IndexEsa#rawsaAt
  * @headerfile <seqan/index.h>
  * @note Advanced functionality, not commonly used.
@@ -1648,12 +1650,12 @@ I	ISSISSIPPI*/
  * @headerfile <seqan/index.h>
  * @brief Shortcut for <tt>value(indexBwt(..), ..)</tt>.
  * 
- * @signature TReference bwtAt(position, index);
+ * @signature TValue bwtAt(position, index);
  * 
  * @param[in] index    The @link IndexEsa @endlink object holding the fibre.
  * @param[in] position A position in the array on which the value should be accessed.
  * 
- * @return TReference A reference or proxy to the value.
+ * @return TValue A reference or proxy to the value.
  */
 
 	template <typename TPos, typename TIndex>
@@ -1797,11 +1799,11 @@ I	ISSISSIPPI
 ..returns:A reference to the @Tag.ESA Index Fibres.EsaRawText@ fibre (concatenated input text).
 ..include:seqan/index.h
 */
-//TODO(singer) The RawText Fibre exist for more then the Esa index
+
 /*!
- * @fn IndexEsa#indexRawText
+ * @fn Index#indexRawText
  * @headerfile <seqan/index.h>
- * @brief Shortcut for <tt>$getFibre(.., EsaRawText)</tt>.
+ * @brief Shortcut for <tt>$getFibre(.., FibreRawText)</tt>.
  *
  * @signature TFibre indexRawText(position, index);
  *
@@ -1908,6 +1910,7 @@ I	ISSISSIPPI*/
 */
 
 // TODO(singer): should this be documented? 
+// TODO(weese): better not, we don't want to encourage users to use it
 /*
  * @fn Index#indexRawSA
  * @headerfile <seqan/index.h>
@@ -2019,7 +2022,7 @@ I	ISSISSIPPI*/
 ..returns:A reference to the @Tag.ESA Index Fibres.EsaBwt@ fibre (Burrows-Wheeler table).
 ..include:seqan/index.h
 */
-/*
+/*!
  * @fn IndexEsa#indexBwt
  * @headerfile <seqan/index.h>
  * @brief Shortcut for <tt>getFibre(.., EsaBwt)</tt>.
@@ -2028,7 +2031,7 @@ I	ISSISSIPPI*/
  *
  * @param[in] index The @link IndexEsa @endlink object holding the fibre.
  *
- * @return TBwt A reference to the @link IndexEsaFibres.EsaBwt @endlink fibre (Burrows-Wheeler table).
+ * @return TBwt A reference to the @link IndexEsaFibres#EsaBwt @endlink fibre (Burrows-Wheeler table).
  */
 
 	template <typename TText, typename TSpec>

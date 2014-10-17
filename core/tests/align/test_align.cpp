@@ -33,9 +33,10 @@
 // ==========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/file.h>
+#include <seqan/stream.h>
 
 #include "test_align_stream.h"
+#include "test_align_fragment.h"
 #include "test_align_gaps.h"
 #include "test_align_gaps_iterator.h"
 
@@ -62,24 +63,8 @@
 #include "test_align_alignment_operations.h"
 #include "test_evaluate_alignment.h"
 
-SEQAN_DEFINE_TEST(test)
-{
-    using namespace seqan;
-    DnaString seqH = "TTTTAGCTTGCCTACCCCGTGAGTTCTGCACTCCAACGGCTATCGTAGTAAGGGGCTAAGATCCCGACTAGGAGGTGAAACACCGATGGATAGGTTACCAAAGTGATTTCACTCTATCCTCCCGTTCTTCATTCCCCAGGCAGTGACCTAAGACATCACCCAGTGGTGGCATTCCTGGAGAG";
-    DnaString seqV = "TTTTAGCTTGCCTACCCCGTGAGTTCTGCACTCCAACGGCTATCGTAGTAAGGGGCTCAGATCCCGACTAGGAGGTGAACACCGATGGATAGGTTACCAAAGGATTTCACGCTATCTTCCCGTTCTTCAATCCCCAGGCAGTGACCTAAGACATCTACCCAGGTGGTGGCATTCCTGGAGG";
-
-    Gaps<DnaString> gapsH(seqH);
-    Gaps<DnaString> gapsV(seqV);
-
-    globalAlignment(gapsH, gapsV, Score<int, EditDistance>(), AlignConfig<true, false, false, true>(), Gotoh());
-    std::cout << gapsH << std::endl;
-
-    std::cout << "\n" << gapsV << std::endl;
-}
-
 SEQAN_BEGIN_TESTSUITE(test_align)
 {
-//    SEQAN_CALL_TEST(test);
     // -----------------------------------------------------------------------
     // Test Gaps Data Structures.
     // -----------------------------------------------------------------------
@@ -140,6 +125,12 @@ SEQAN_BEGIN_TESTSUITE(test_align)
     // TODO(holtgrew): Extend anchor gaps such that this works.
     // SEQAN_CALL_TEST(test_align_gaps_anchor_gaps_source_is_nothing);
     SEQAN_CALL_TEST(test_align_gaps_anchor_gaps_clear);
+
+    // -----------------------------------------------------------------------
+    // Test for Fragment
+    // -----------------------------------------------------------------------
+
+    SEQAN_CALL_TEST(test_align_fragment);
 
     // -----------------------------------------------------------------------
     // Test Gaps Iterators.
