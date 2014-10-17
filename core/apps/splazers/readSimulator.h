@@ -30,37 +30,40 @@
 #include <seqan/sequence.h>
 #include <seqan/find.h>
 #include <seqan/modifier.h>
+#include <seqan/random.h>
 
 
 namespace SEQAN_NAMESPACE_MAIN
 {
 
-#define TEMP_RAND_MAX (RAND_MAX + 1.0)
-
 template <typename TOperation, typename TAlphabet>
 inline TAlphabet
-sample(TOperation m, TAlphabet base)
+sample(Rng<> & rng, TOperation m, TAlphabet base)
 {
-	Dna ret;
-	do
-		ret = (Dna)(int)((double)ValueSize<Dna>::VALUE * (double)rand() / TEMP_RAND_MAX);
-	while (ret == base && m == SEQAN_MISMATCH);
-	return ret;
+    Pdf<Uniform<int> > pdf(0, 2);
+
+    int ret = Dna(pickRandomNumber(rng, pdf));
+    if (m == SEQAN_MISMATCH && ret >= ordValue(base))
+        ret += 1;
+    return Dna(ret);
 }
 
 template < typename TGenome >
-void simulateGenome(TGenome &genome, int size)
+void simulateGenome(Rng<> & rng,
+                    TGenome &genome, int size)
 {
 //	mtRandInit(); 
 	resize(genome, size);
 	for(int i = 0; i < size; ++i)
-		genome[i] = sample(0, (Dna)0);
+		genome[i] = sample(rng, 0, (Dna)0);
 }
 
 
 template<typename TPosString>
 void
-fillupStartpos(TPosString & sortedStartPos, 
+fillupStartpos(
+    Rng<> & rng,
+    TPosString & sortedStartPos, 
 	int numReads,
 	int readLength,
 	int maxErrors,			// how many errors they may have
@@ -79,14 +82,15 @@ fillupStartpos(TPosString & sortedStartPos,
 
 
 	// sample positions
+	Pdf<Uniform<double> > pdf(0, 1);
 	for (int i = 0; i < numReads; ++i)
-		sortedStartPos[i] = (int)((seqLength - fragmentSize - maxErrors + 1.0) * rand() / TEMP_RAND_MAX);
+		sortedStartPos[i] = (int)((seqLength - fragmentSize - maxErrors + 1.0) * pickRandomNumber(rng, pdf));
 
 	std::sort(begin(sortedStartPos),end(sortedStartPos));
 
 	// sample orientations
 	for (int i = 0; i < numReads; ++i)
-		if ((double)rand() / TEMP_RAND_MAX >= forwardProb)
+	    if (pickRandomNumber(rng, pdf) >= forwardProb)
 			sortedStartPos[i] |= REVCOMP;
 
 	if (libSize > 0)
@@ -96,7 +100,7 @@ fillupStartpos(TPosString & sortedStartPos,
 		for(int i=0;i<numReads;++i)
 		{
 			int leftPos = sortedStartPos[i] & ~REVCOMP;
-			int lSize = fragmentSize - (int)((2.0 * libError + 1.0) * (double)rand() / TEMP_RAND_MAX);
+			int lSize = fragmentSize - (int)((2.0 * libError + 1.0) * pickRandomNumber(rng, pdf));
 			int rightPos = leftPos + lSize - readLength;
 			if ((sortedStartPos[i] & REVCOMP) == 0)
 			{
@@ -110,8 +114,6 @@ fillupStartpos(TPosString & sortedStartPos,
 		}
 		numReads*=2;
 	}
-
-	
 }
 
 
@@ -155,8 +157,8 @@ void simulateReads(
 	int readLength = length(errorDist)/4;
 	const int REVCOMP = 1 << (sizeof(int)*8-1);
 	//int KJ = 2*maxErrors;
-	
-	srand ( time(NULL) );
+
+    Rng<> rng(time(NULL));  // seed with time
 	
 	String<int> bucketCounter;
 	resize(bucketCounter,maxErrors,0);
@@ -214,7 +216,7 @@ void simulateReads(
 		// Sample a read
 		if(samplePosCounter >= length(sortedStartPos))//get new start positions
 		{
-			fillupStartpos(sortedStartPos, numReads, readLength, maxErrors,	libSize, libError, seqLength, forwardProb);
+			fillupStartpos(rng, sortedStartPos, numReads, readLength, maxErrors,	libSize, libError, seqLength, forwardProb);
 			samplePosCounter = 0;
 		}
 		int  startPos = sortedStartPos[samplePosCounter] & ~REVCOMP;
@@ -238,9 +240,11 @@ void simulateReads(
 		int trueLength = 0;
 		bool successful = false;
 
+		Pdf<Uniform<double> > pdf(0, 1);
+
 		while(pos < maxEnd) {
 			// lastOp = currOp;
-			double prob = (double)rand()/TEMP_RAND_MAX;
+			double prob = pickRandomNumber(rng, pdf);
 			//	std::cout << "prob = " << prob << "\t";
 			int m;
 			for(m = 0; m < 4; ++m)
@@ -272,7 +276,7 @@ void simulateReads(
 			{
 				++countErrors;
 				if(currOp != SEQAN_INSERT)
-					read[trueLength] = sample(currOp,readTemplate[pos]);
+					read[trueLength] = sample(rng, currOp,readTemplate[pos]);
 			}
 			if(currOp != SEQAN_INSERT) ++trueLength; //if read nucleotide is not deleted
 			if(currOp != SEQAN_DELETE) ++pos; //if read nucleotide is not an insert

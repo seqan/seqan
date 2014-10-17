@@ -159,10 +159,9 @@ SEQAN_DEFINE_TEST(test_statistics_statistics)
 	MarkovModel<TAlphabet> mmNew(1);
 
 
-	char buffer[1024];
-	strcpy(buffer, SEQAN_PATH_TO_ROOT());
-	strcat(buffer, "/extras/tests/statistics/zscore_human_mm.3");
-	FILE *fd = fopen(buffer,"r");
+    std::string buffer = SEQAN_PATH_TO_ROOT();
+    buffer +="/extras/tests/statistics/zscore_human_mm.3";
+	FILE *fd = fopen(buffer.c_str(), "r");
 	read(fd, mm);
 	fclose(fd);
 	StringSet<TSequence> X;
