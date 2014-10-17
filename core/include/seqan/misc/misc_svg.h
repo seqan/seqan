@@ -64,8 +64,7 @@ struct SVGFile
 	friend inline void svgWriteHeader(SVGFile &svg);
 	friend inline void svgWriteFooter(SVGFile &svg);
 	
-	template <typename TFileName>
-	friend inline bool open(SVGFile &svg, TFileName const &fileName);
+	friend inline bool open(SVGFile &svg, char const * fileName);
 	friend inline bool close(SVGFile &svg);
 	
 	SVGFile():
@@ -179,8 +178,7 @@ inline void svgWriteFooter(SVGFile &svg)
 }
 
 
-template <typename TFileName>
-inline bool open(SVGFile &svg, TFileName const &fileName)
+inline bool open(SVGFile &svg, char const * fileName)
 {
 	svg.file.open(fileName, std::ios_base::out);
 	if (!svg.file.is_open()) return false;

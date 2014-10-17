@@ -42,9 +42,13 @@ class MessagePrinter(object):
             return  # Is ignored.
         # Print location and error message.
         location = (token.file_name, token.lineno + 1, token.column)
-        location_str = termcolor.colored('%s:%d:%d:' % location, 'white', attrs=['bold'])
-        error_str = termcolor.colored('%s:' % level, 'red', attrs=['bold'])
-        msg = termcolor.colored(msg, 'white', attrs=['bold'])
+        if sys.stderr.isatty():
+            location_str = termcolor.colored('%s:%d:%d:' % location, 'white', attrs=['bold'])
+            error_str = termcolor.colored('%s:' % level, 'red', attrs=['bold'])
+            msg = termcolor.colored(msg, 'white', attrs=['bold'])
+        else:
+            location_str = '%s:%d:%d:' % location
+            error_str = '%s:' % level
         print >>sys.stderr, '%s %s %s' % (location_str, error_str, msg)
         # Increase error counter.
         self.counts[level] += 1
@@ -56,7 +60,10 @@ class MessagePrinter(object):
         if token.lineno >= len(lines):
             return  # Invalid line number.
         print >>sys.stderr, '%s' % lines[token.lineno].rstrip()
-        print >>sys.stderr, token.column * ' ' + termcolor.colored('^', 'green', attrs=['bold'])
+        if sys.stderr.isatty():
+            print >>sys.stderr, token.column * ' ' + termcolor.colored('^', 'green', attrs=['bold'])
+        else:
+            print >>sys.stderr, token.column * ' ' + '^'
 
     def printParserError(self, e):
         """Print user-friendly error message for ParserError e."""

@@ -199,6 +199,22 @@ public:
 	}
 };
 
+// ----------------------------------------------------------------------------
+// Function swap()
+// ----------------------------------------------------------------------------
+
+template <typename TSequence>
+void swap(Gaps<TSequence, ArrayGaps> & lhs, Gaps<TSequence, ArrayGaps> & rhs)
+{
+    swap(lhs._source, rhs._source);
+    swap(lhs._array, rhs._array);
+
+    std::swap(lhs._sourceBeginPos, rhs._sourceBeginPos);
+    std::swap(lhs._sourceEndPos, rhs._sourceEndPos);
+    std::swap(lhs._clippingBeginPos, rhs._clippingBeginPos);
+    std::swap(lhs._clippingEndPos, rhs._clippingEndPos);
+}
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
