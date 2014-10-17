@@ -453,7 +453,7 @@ public:
             TBsSubstitutionMatrix &bsSubstitutionMatrix,
             TValue const * &seqErrorFreqs,
             TValue const * &insErrorFreqs,
-            TValue const * &delErrorFreqs)
+            TValue const * &delErrorFreqs) : lambda(0.0)
     {
         computeBsScores((*this).data, bsSubstitutionMatrix.data_tab, seqErrorFreqs, TBsCase(), TSegment());
 

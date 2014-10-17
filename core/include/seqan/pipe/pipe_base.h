@@ -934,8 +934,8 @@ SEQAN_CHECKPOINT
         TIterator       cur;
 
         template < typename TObject >
-        Handler(TObject &_object):
-            handler(_object) {}
+        Handler(TObject &_object) :
+            handler(_object), cur() {}
 
         inline bool begin()
         {
@@ -1110,10 +1110,12 @@ SEQAN_CHECKPOINT
 		TPair		pos;
 		unsigned	residue;
 
-		PairDecrementer_() {}
-		PairDecrementer_(TLimits const &_limits) { setHost(*this, _limits); }
+		PairDecrementer_() : it(), itEnd(), old(), pos(), residue() {}
+		PairDecrementer_(TLimits const &_limits) : it(), itEnd(), old(), pos(), residue()
+		{ setHost(*this, _limits); }
 
-		inline operator TPair () const {
+		inline operator TPair () const
+		{
 			return pos;
 		}
 

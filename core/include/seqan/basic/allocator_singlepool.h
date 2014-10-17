@@ -111,16 +111,11 @@ struct Allocator<SinglePool<SIZE, TParentAllocator> >
     char * data_current_free;
     Holder<TParentAllocator, Tristate> data_parent_allocator;
 
-    Allocator()
-    {
-        data_recycled_blocks = data_current_end = data_current_free = 0;
-        //dont need to initialize data_current_begin
-    }
+    Allocator() : data_recycled_blocks(), data_current_begin(), data_current_end(), data_current_free()
+    {}
 
-    Allocator(size_t reserve_item_count)
+    Allocator(size_t reserve_item_count) : data_recycled_blocks()
     {
-        data_recycled_blocks = 0;
-
         size_t storage_size = std::max(reserve_item_count * SIZE_PER_ITEM, STORAGE_SIZE_MIN);
         allocate(parentAllocator(*this), data_current_begin, storage_size);
         data_current_end = data_current_begin + storage_size;
@@ -147,11 +142,12 @@ struct Allocator<SinglePool<SIZE, TParentAllocator> >
         data_current_free = data_current_begin;
     }
 
-    //Dummy copy
-    Allocator(Allocator const &)
+    // Dummy copy
+    Allocator(Allocator const &) :
+        data_recycled_blocks(), data_current_begin(), data_current_end(),
+        data_current_free()
     {
         data_recycled_blocks = data_current_end = data_current_free = 0;
-        //dont need to initialize data_current_begin
     }
 
     inline Allocator &

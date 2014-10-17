@@ -223,7 +223,8 @@ namespace SEQAN_NAMESPACE_MAIN
         TSize N;
         
         Pipe(Bundle5< TInput0, TInput3, TInput5, TInput6, TInput124 > _in):
-            in(_in) {}
+            first(0), in(_in), N(0)
+        {}
 
         template <typename T1, typename T2, typename T3>
         inline static void _copy(TSkewDCStream &dst, Triple<T1,T2,T3, Pack> const &src)
@@ -367,8 +368,8 @@ namespace SEQAN_NAMESPACE_MAIN
 		TLimitsString const &limits;
         
         Pipe(Bundle5< TInput0, TInput3, TInput5, TInput6, TInput124 > _in, TLimitsString const &_limits):
-            in(_in),
-			limits(_limits) {}
+            in(_in), limits(_limits)
+		{}
 
         template <typename T1, typename T2, typename T3>
         inline static void _copy(TSkewDCStream &dst, Triple<T1,T2,T3, Pack> const &src)

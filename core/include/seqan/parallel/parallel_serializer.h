@@ -78,6 +78,7 @@ public:
 
     Serializer() :
         first(NULL),
+        last(NULL),
         stop(false)
     {}
 
@@ -86,6 +87,7 @@ public:
     Serializer(TArg &arg, TSize maxItems = 1024) :
         worker(arg),
         first(NULL),
+        last(NULL),
         pool(maxItems),
         stop(false)
     {}

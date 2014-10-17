@@ -439,33 +439,41 @@ struct SwiftParameters
         TRepeatString   data_repeats;
         TRepeatIterator curRepeat, endRepeat;
 
-        Finder():
-            _needReinit(true) { }
+        Finder() :
+            data_iterator(), haystackEnd(), _needReinit(true), curHit(), endHit(),
+            startPos(), curPos(), endPos(), windowStart(), dotPos(), dotPos2(),
+            curRepeat(), endRepeat()
+        {}
 
-        Finder(THaystack &haystack):
-            data_iterator(begin(haystack, Rooted())),
-            _needReinit(true) { }
+        Finder(THaystack & haystack) :
+            data_iterator(begin(haystack, Rooted())), haystackEnd(), _needReinit(true), curHit(), endHit(),
+            startPos(), curPos(), endPos(), windowStart(), dotPos(), dotPos2(), curRepeat(), endRepeat()
+        {}
 
         template <typename TRepeatSize, typename TPeriodSize>
-        Finder(THaystack &haystack, TRepeatSize minRepeatLen, TPeriodSize maxPeriod):
-            data_iterator(begin(haystack, Rooted())),
-            _needReinit(true)
+        Finder(THaystack &haystack, TRepeatSize minRepeatLen, TPeriodSize maxPeriod) :
+            data_iterator(begin(haystack, Rooted())), haystackEnd(), _needReinit(true), curHit(), endHit(),
+            startPos(), curPos(), endPos(), windowStart(), dotPos(), dotPos2(), curRepeat(), endRepeat()
         {
             findRepeats(data_repeats, haystack, minRepeatLen, maxPeriod);
         }
 
-        Finder(TIterator &iter):
-            data_iterator(iter),
-            _needReinit(true) { }
+        Finder(TIterator &iter) :
+            data_iterator(iter), haystackEnd(), _needReinit(true), curHit(), endHit(),
+            startPos(), curPos(), endPos(), windowStart(), dotPos(), dotPos2(), curRepeat(), endRepeat()
+        {}
 
-        Finder(TIterator const &iter):
-            data_iterator(iter),
-            _needReinit(true) { }
+        Finder(TIterator const & iter):
+            data_iterator(iter), haystackEnd(), _needReinit(true), curHit(), endHit(),
+            startPos(), curPos(), endPos(), windowStart(), dotPos(), dotPos2(), curRepeat(), endRepeat()
+        {}
 
-        Finder(Finder const &orig):
+        Finder(Finder const & orig):
             data_iterator(orig.data_iterator),
             haystackEnd(orig.haystackEnd),
             _needReinit(orig._needReinit),
+            curHit(),
+            endHit(),
             hits(orig.hits),
             startPos(orig.startPos),
             curPos(orig.curPos),
@@ -473,7 +481,9 @@ struct SwiftParameters
             windowStart(orig.windowStart),
             dotPos(orig.dotPos),
             dotPos2(orig.dotPos2),
-            data_repeats(orig.data_repeats)
+            data_repeats(orig.data_repeats),
+            curRepeat(),
+            endRepeat()
         {
             curHit = begin(hits, Standard()) + (orig.curHit - begin(orig.hits, Standard()));
             endHit = end(hits, Standard());
@@ -606,10 +616,12 @@ struct SwiftParameters
         {
             clear(*this);
         }
+
         Pattern(TIndex &_index): data_host(_index)
         {
             clear(*this);
         }
+
         Pattern(TIndex const &_index): data_host(_index)
         {
             clear(*this);
@@ -1459,6 +1471,9 @@ clear(Pattern<TIndex, Swift<TSpec> > & me)
     me.maxPatternLength = 0;
     me._currentErrorRate = -1;
     me._currentMinLengthForAll = -1;
+    me.curSeqNo = 0;
+    me.curBeginPos = 0;
+    me.curEndPos = 0;
     clear(me.bucketParams);
     clear(me.buckets);
 }

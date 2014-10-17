@@ -132,13 +132,12 @@ public:
 
 	bool needReinit; //true: call "smithWaterman", false: call "smithWatermanGetNext" 
 
-	LocalAlignmentFinder() : needReinit(true)
+	LocalAlignmentFinder() : bestEndPos(0), bestBeginPos(0), needReinit(true)
 	{}
 
     // TODO(holtgrew): Remove and replace all occurrences with default constructor.
     template<typename TAlign>
-	LocalAlignmentFinder(TAlign const &)
-	    : needReinit(true)
+	LocalAlignmentFinder(TAlign const &) : bestEndPos(0), bestBeginPos(0), needReinit(true)
 	{}
 };
 

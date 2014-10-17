@@ -92,7 +92,8 @@ struct ContigInterval
     size_t last;
 
     // Default constructor so it can be used in containers.
-    ContigInterval() {}
+    ContigInterval() : contigId(0), isForward(false), first(0), last(0)
+    {}
 
     // Constructor for the record.
     ContigInterval(size_t _contigId, bool _isForward, size_t _first, size_t _last) :
@@ -797,7 +798,7 @@ int matchesToErrorFunction(TErrorCurves & errorCurves,
         {
             readRecord(record, inBam);
         }
-        catch (seqan::IOError const & ioErr)
+        catch (seqan::ParseError const & ioErr)
         {
             std::cerr << "ERROR reading SAM/BAM record(" << ioErr.what() << ")!\n";
             return 1;
@@ -863,7 +864,7 @@ int matchesToErrorFunction(TErrorCurves & errorCurves,
             {
                 readSequence(contig, faiIndex, faiRefId);
             }
-            catch (seqan::IOError const & ioErr)
+            catch (seqan::ParseError const & ioErr)
             {
                 std::cerr << "Could not load sequence " << contigNameStore[record.rID]
                           << " from FASTA file with FAI (" << ioErr.what() << ").\n";
@@ -1180,7 +1181,7 @@ int main(int argc, char const ** argv)
     {
         readRecord(bamHeader, inBam);
     }
-    catch (IOError const & ioErr)
+    catch (seqan::ParseError const & ioErr)
     {
         std::cerr << "Could not read BAM header (" << ioErr.what() << ").\n";
         return 1;

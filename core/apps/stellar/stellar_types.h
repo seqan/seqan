@@ -95,9 +95,8 @@ struct QueryMatches {
 	bool disabled;
 	TSize lengthAdjustment;
 
-	QueryMatches() {
-		disabled = false;
-	}
+	QueryMatches() : disabled(false), lengthAdjustment(0)
+	{}
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -123,10 +122,12 @@ struct StellarMatch {
 	TPos end2;
 	TRow row2;
 
-	StellarMatch() {}
+	StellarMatch() : id(), orientation(false), begin1(0), end1(0), begin2(0), end2(0)
+	{}
 
-	template<typename TAlign, typename TId>
-	StellarMatch(TAlign & _align, TId _id, bool _orientation) {
+	template <typename TAlign, typename TId>
+	StellarMatch(TAlign & _align, TId _id, bool _orientation)
+	{
 		id = _id;
 		orientation = _orientation;
 		row1 = row(_align, 0);
