@@ -127,6 +127,7 @@ template <
 	typename TGenomeSet,
 	typename TDistr >
 void simulateReads(
+            Rng<> & rng,
 	TReadSet &readSet,		// generated read sequences
 	TReadIDs &readIDs,		// corresponding Fasta ids
 	TGenomeSet &genomeSet,	// source genome sequences
@@ -158,8 +159,6 @@ void simulateReads(
 	const int REVCOMP = 1 << (sizeof(int)*8-1);
 	//int KJ = 2*maxErrors;
 
-    Rng<> rng(time(NULL));  // seed with time
-	
 	String<int> bucketCounter;
 	resize(bucketCounter,maxErrors,0);
 	
