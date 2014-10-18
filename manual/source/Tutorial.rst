@@ -66,6 +66,9 @@ Tutorial
    Tutorial/Parsing
 
    Tutorial/FragmentStore
+   Tutorial/ConsensusAlignment
+   Tutorial/Realignment
+
    Tutorial/SimpleRnaSeq
    Tutorial/SimpleReadMapping
    Tutorial/MiniBowtie
@@ -246,6 +249,13 @@ Read the following tutorials to learn how to write your own I/O routines.
   This tutorial shows how to use the fragment store which is a database for read mapping, sequence assembly or gene annotation.
   It supports to read/write multiple read alignments in SAM or AMOS format and access and modify them.
   It supports to read/write gene annotations in GFF/GTF and UCSC format, to create custom annotation types, and to traverse and modify the annotation tree.
+
+:ref:`tutorial-consensus-alignment`
+  This tutorial describes how to compute consensus alignments from NGS reads or other nucleic sequence, such as transcripts.
+  The DNA sequences are stored in a fragment store, such that rough alignment information is available.
+
+:ref:`tutorial-realignment`
+  This tutorial describes how to use SeqAn's realignment module for refining multi-read alignment (or other sequences) stored in a fragment store.
 
 :ref:`tutorial-simple-rna-seq`
   In this tutorial you will learn how to implement a simple RNA-Seq based gene quantification tool, that computes RPKM expression levels based on a given genome annotation and RNA-Seq read alignments.
