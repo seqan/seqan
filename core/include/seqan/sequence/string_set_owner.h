@@ -98,14 +98,14 @@ public:
     bool            limitsValid;        // is true if limits contains the cumulative sum of the sequence lengths
     TConcatenator   concat;
 
-    StringSet():
+    StringSet() :
         limitsValid(true)
     {
-        appendValue(limits, 0);
+        _initStringSetLimits(*this);
     }
 
     template <typename TOtherString, typename TOtherSpec>
-    StringSet(StringSet<TOtherString, TOtherSpec> const &other):
+    StringSet(StringSet<TOtherString, TOtherSpec> const &other) :
         limitsValid(true)
     {
         _initStringSetLimits(*this);
@@ -113,7 +113,7 @@ public:
     }
 
     template <typename TOtherSpec>
-    StringSet(String<TString, TOtherSpec> const &other):
+    StringSet(String<TString, TOtherSpec> const &other) :
         limitsValid(true)
     {
         _initStringSetLimits(*this);
