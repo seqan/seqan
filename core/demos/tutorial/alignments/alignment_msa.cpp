@@ -7,18 +7,26 @@ using namespace seqan;
 
 int main()
 {
+    char const * strings[4] = {
+        "DPKKPRGKMSSYAFFVQTSREEHKKKHPDASVNFSEFSKKCSERWKTMSAKEKGKFEDMA"
+        "KADKARYEREMKTYIPPKGE",
+        "RVKRPMNAFIVWSRDQRRKMALENPRMRNSEISKQLGYQWKMLTEAEKWPFFQEAQKLQA"
+        "MHREKYPNYKYRPRRKAKMLPK",
+        "FPKKPLTPYFRFFMEKRAKYAKLHPEMSNLDLTKILSKKYKELPEKKKMKYIQDFQREKQ"
+        "EFERNLARFREDHPDLIQNAKK",
+        "HIKKPLNAFMLYMKEMRANVVAESTLKESAAINQILGRRWHALSREEQAKYYELARKERQ"
+        "LHMQLYPGWSARDNYGKKKKRKREK"
+    };
+
 //FRAGMENT(init)
-	typedef String<AminoAcid> TSequence;
-	StringSet<TSequence> seq;
-	appendValue(seq,"DPKKPRGKMSSYAFFVQTSREEHKKKHPDASVNFSEFSKKCSERWKTMSAKEKGKFEDMAKADKARYEREMKTYIPPKGE");
-	appendValue(seq,"RVKRPMNAFIVWSRDQRRKMALENPRMRNSEISKQLGYQWKMLTEAEKWPFFQEAQKLQAMHREKYPNYKYRPRRKAKMLPK");
-	appendValue(seq,"FPKKPLTPYFRFFMEKRAKYAKLHPEMSNLDLTKILSKKYKELPEKKKMKYIQDFQREKQEFERNLARFREDHPDLIQNAKK");
-	appendValue(seq,"HIKKPLNAFMLYMKEMRANVVAESTLKESAAINQILGRRWHALSREEQAKYYELARKERQLHMQLYPGWSARDNYGKKKKRKREK");
+    Align<String<AminoAcid> > align;
+    resize(rows(align), 4);
+    for (int i = 0; i < 4; ++i)
+        assignSource(row(align, i), strings[i]);
 
 //FRAGMENT(alignment)
-	Graph<Alignment<StringSet<TSequence, Dependent<> > > > aliG(seq);
-	globalMsaAlignment(aliG, Blosum62(-1, -11));
-	std::cout << aliG << std::endl;
-	
-	return 0;
+    globalMsaAlignment(align, Blosum62(-1, -11));
+    std::cout << align << "\n";
+
+    return 0;
 }
