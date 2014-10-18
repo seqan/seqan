@@ -37,7 +37,7 @@ int main()
     std::cout << "Initial Alignment\n\n";
     AlignedReadLayout layout;
     layoutAlignment(layout, store);
-    printAlignment(std::cout, Raw(), layout, store, /*contigID=*/0,
+    printAlignment(std::cout, layout, store, /*contigID=*/0,
                    /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
 
     // Compute consensus alignment.
@@ -47,7 +47,7 @@ int main()
     // Print final consensus alignment.
     std::cout << "\n\nFinal Consensus Alignment\n\n";
     layoutAlignment(layout, store);
-    printAlignment(std::cout, Raw(), layout, store, /*contigID=*/0,
+    printAlignment(std::cout, layout, store, /*contigID=*/0,
                    /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
 
     return 0;

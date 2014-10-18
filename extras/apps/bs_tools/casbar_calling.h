@@ -310,10 +310,10 @@ getSingleBaseProbHaploR(TProb &singleProb, Dna i, DnaM h, TErrorProb &e, bool & 
 }
 
 
-// For Naive multiplication of lHoods
+// For NaiveMult multiplication of lHoods
 template<typename TConstants, typename TValue>
 inline void
-addFactorToConstants(TConstants &constants, TValue &pC, TValue &pCm, TValue &pOther, unsigned &r, Naive const &)
+addFactorToConstants(TConstants &constants, TValue &pC, TValue &pCm, TValue &pOther, unsigned &r, NaiveMult const &)
 {
     SEQAN_ASSERT_NEQ(pC, 0.0);
     SEQAN_ASSERT_NEQ(pCm, 0.0);
@@ -337,12 +337,12 @@ template<typename TConstants, typename TValue>
 inline void
 addFactorToConstants(TConstants &constants, TValue &pC, TValue &pCm, TValue &pOther, unsigned &r, LogFunction const &)
 {
-    addFactorToConstants(constants, pC, pCm, pOther, r, Naive());
+    addFactorToConstants(constants, pC, pCm, pOther, r, NaiveMult());
 }
 
 template<typename TConstantSet, typename TStrand>
 inline void
-adjustConstantsSize(TConstantSet &constantSet, TStrand strand, Naive const &)
+adjustConstantsSize(TConstantSet &constantSet, TStrand strand, NaiveMult const &)
 {
     if (strand == 'F')
     {
@@ -371,7 +371,7 @@ template<typename TConstantSet, typename TStrand>
 inline void
 adjustConstantsSize(TConstantSet &constantSet, TStrand strand, LogFunction const &)
 {
-    adjustConstantsSize(constantSet, strand, Naive());
+    adjustConstantsSize(constantSet, strand, NaiveMult());
 }
 
 template<typename TCoeffs>
@@ -633,18 +633,18 @@ verifyBeta(TLHood &lHood, TBeta &beta, TFunctor &functor, TEvalMethod const &)
 // NSpace
 template<typename TBeta, typename TLHood, typename TConstants, typename TMethOptions>
 inline void
-getMaximizingBeta(TBeta &beta, TLHood &lHood, TConstants &constants, TBeta /*&guess*/, TMethOptions &/*methOptions*/, Sampling const &, Naive const &)
+getMaximizingBeta(TBeta &beta, TLHood &lHood, TConstants &constants, TBeta /*&guess*/, TMethOptions &/*methOptions*/, Sampling const &, NaiveMult const &)
 {
 #ifdef CALL_PROFILE
     double timeStamp = sysTime();
 #endif
-    FctNaive_0N<long double> fctNaive(constants);
+    FctNaive_0N<long double> fctNaiveMult(constants);
 
     TLHood maxlHood = 0.0;
     TBeta betaMax = 0.0;
     for (TBeta currBeta = 0.0; currBeta <= 1.0; currBeta+=0.01)       // TODO: choose betas dependend guess and not equally distributed
     {
-        TLHood currlHood =  fctNaive(currBeta);
+        TLHood currlHood =  fctNaiveMult(currBeta);
         //std::cout << "curr Beta: " << currBeta << "  CurrlHood: " << currlHood << std::endl;
         if (currlHood > maxlHood)
         {
@@ -681,7 +681,7 @@ getMaximizingBeta(TBeta &beta, TLHood &lHood, TConstants &constants, TBeta &gues
     long double f_2R = boost::math::get<1>(tupleR);
     if (f_2R >= 0)
     {
-        getMaximizingBeta(beta, lHood, constants, guess, methOptions, Sampling(), Naive());
+        getMaximizingBeta(beta, lHood, constants, guess, methOptions, Sampling(), NaiveMult());
         ++methOptions.countPlanB;
     }
     else
@@ -830,7 +830,7 @@ getBetasAndLHoods(TBetas &betas, TLHoods &lHoods, TConstantSet &constantSet, TCo
 
 template<typename TConstantSet, typename TLHoods, typename TCounts>
 inline void
-setUpConstants(TConstantSet &constantSet, TLHoods &lHoods, TCounts &countF, TCounts &countR, Naive const &)
+setUpConstants(TConstantSet &constantSet, TLHoods &lHoods, TCounts &countF, TCounts &countR, NaiveMult const &)
 {
     clear(lHoods);
     resize(lHoods, 4*4, 1.0, Exact());
@@ -876,7 +876,7 @@ template<typename TConstantSet, typename TLHoods, typename TCounts>
 inline void
 setUpConstants(TConstantSet &constantSet, TLHoods &lHoods, TCounts &countF, TCounts &countR, LogFunction const &)
 {
-    setUpConstants(constantSet, lHoods, countF, countR, Naive());
+    setUpConstants(constantSet, lHoods, countF, countR, NaiveMult());
 }
 
 
@@ -930,12 +930,12 @@ getCandidateProbs(TProbs &postProbs, TBetas &betas,
     String<long double> lHoods;  // likelihoods to observe observed data under assumption of given genotypes
     String<String<String<long double> > > constantSet;
 
-    // Naive and Sampling Method
-    if (methOptions.betaSampling)           // sampling, naive, NSpace
+    // NaiveMult and Sampling Method
+    if (methOptions.betaSampling)           // sampling, NaiveMult, NSpace
     {
-        setUpConstants(constantSet, lHoods, countF, countR, Naive());
-        constructConstantsAndLHoods(constantSet, lHoods, qualF, qualR, mapqsF, mapqsR, originStringF, originStringR, countF, countR, methOptions, refContext, Naive());
-        getBetasAndLHoods(betas, lHoods, constantSet, countF, countR, methOptions, Sampling(), Naive(), refContext.pos);
+        setUpConstants(constantSet, lHoods, countF, countR, NaiveMult());
+        constructConstantsAndLHoods(constantSet, lHoods, qualF, qualR, mapqsF, mapqsR, originStringF, originStringR, countF, countR, methOptions, refContext, NaiveMult());
+        getBetasAndLHoods(betas, lHoods, constantSet, countF, countR, methOptions, Sampling(), NaiveMult(), refContext.pos);
         computePostProbs(postProbs, lHoods, refContext, options, methOptions);
     }
     else  // Newton, logFunction, NSpace
