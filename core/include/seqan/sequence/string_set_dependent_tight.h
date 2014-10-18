@@ -128,8 +128,8 @@ public:
         _initStringSetLimits(*this);
     }
 
-    template <typename TDefault> :
-    StringSet(StringSet<TString, Owner<TDefault> > const & _other)
+    template <typename TDefault>
+    StringSet(StringSet<TString, Owner<TDefault> > const & _other) :
         lastId(0),
         limitsValid(true)
     {
