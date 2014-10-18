@@ -121,19 +121,19 @@ public:
     bool            limitsValid;        // is true if limits contains the cumulative sum of the sequence lengths
     TConcatenator   concat;
 
-    StringSet()
-        : lastId(0), limitsValid(true)
+    StringSet() :
+        lastId(0),
+        limitsValid(true)
     {
-        SEQAN_CHECKPOINT;
-        appendValue(limits, 0);
+        _initStringSetLimits(*this);
     }
 
-    template <typename TDefault>
+    template <typename TDefault> :
     StringSet(StringSet<TString, Owner<TDefault> > const & _other)
-        : lastId(0), limitsValid(true)
+        lastId(0),
+        limitsValid(true)
     {
-        SEQAN_CHECKPOINT;
-        appendValue(limits, 0);
+        _initStringSetLimits(*this);
         for (unsigned int i = 0; i < length(_other); ++i)
             appendValue(*this, _other[i]);
     }
