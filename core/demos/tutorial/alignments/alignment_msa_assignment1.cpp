@@ -7,17 +7,24 @@ using namespace seqan;
 
 int main()
 {
-	typedef String<AminoAcid> TSequence;
-	Align<TSequence> align;
-	resize(rows(align), 4);
-	assignSource(row(align, 0),"DPKKPRGKMSSYAFFVQTSREEHKKKHPDASVNFSEFSKKCSERWKTMSAKEKGKFEDMAKADKARYEREMKTYIPPKGE");
-	assignSource(row(align, 1),"RVKRPMNAFIVWSRDQRRKMALENPRMRNSEISKQLGYQWKMLTEAEKWPFFQEAQKLQAMHREKYPNYKYRPRRKAKMLPK");
-	assignSource(row(align, 2),"FPKKPLTPYFRFFMEKRAKYAKLHPEMSNLDLTKILSKKYKELPEKKKMKYIQDFQREKQEFERNLARFREDHPDLIQNAKK");
-	assignSource(row(align, 3),"HIKKPLNAFMLYMKEMRANVVAESTLKESAAINQILGRRWHALSREEQAKYYELARKERQLHMQLYPGWSARDNYGKKKKRKREK");
+    char const * strings[4] = {
+        "DPKKPRGKMSSYAFFVQTSREEHKKKHPDASVNFSEFSKKCSERWKTMSAKEKGKFEDMA"
+        "KADKARYEREMKTYIPPKGE",
+        "RVKRPMNAFIVWSRDQRRKMALENPRMRNSEISKQLGYQWKMLTEAEKWPFFQEAQKLQA"
+        "MHREKYPNYKYRPRRKAKMLPK",
+        "FPKKPLTPYFRFFMEKRAKYAKLHPEMSNLDLTKILSKKYKELPEKKKMKYIQDFQREKQ"
+        "EFERNLARFREDHPDLIQNAKK",
+        "HIKKPLNAFMLYMKEMRANVVAESTLKESAAINQILGRRWHALSREEQAKYYELARKERQ"
+        "LHMQLYPGWSARDNYGKKKKRKREK"
+    };
 
-//FRAGMENT(alignment)
-	globalMsaAlignment(align, Blosum80(-1, -11));
-	std::cout << align << std::endl;
-	
-	return 0;
+    Align<String<AminoAcid> > align;
+    resize(rows(align), 4);
+    for (int i = 0; i < 4; ++i)
+        assignSource(row(align, i), strings[i]);
+
+    globalMsaAlignment(align, Blosum80(-1, -11));
+    std::cout << align << "\n";
+
+    return 0;
 }
