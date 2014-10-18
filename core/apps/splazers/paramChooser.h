@@ -642,8 +642,9 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
 	//StringSet<Dna5String> testReads;
 	StringSet<CharString> dummyIDs;
 	resize(testGenome, 1);
-	simulateGenome(testGenome[0], 500000);					// generate 1Mbp genomic sequence
-	simulateReads(
+	Rng<> rng(/*seed=*/time(NULL));
+	simulateGenome(rng, testGenome[0], 500000);					// generate 1Mbp genomic sequence
+	simulateReads(rng,
 		testReads, dummyIDs, testGenome, 
 		50000, maxErrors+1, logErrorDistribution, 0, 0, 0.5, true);	// generate 50K reads
 
