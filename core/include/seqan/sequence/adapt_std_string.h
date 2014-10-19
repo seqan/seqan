@@ -278,7 +278,7 @@ value(std::basic_string<TChar, TCharTraits, TAlloc> const & me,
 ///.Function.length.class:Adaption.std::basic_string
 
 template <typename TChar, typename TCharTraits, typename TAlloc>
-inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type
+inline typename std::basic_string<TChar, TCharTraits, TAlloc>::size_type
 length(std::basic_string<TChar, TCharTraits, TAlloc> const & me)
 {
     SEQAN_CHECKPOINT;

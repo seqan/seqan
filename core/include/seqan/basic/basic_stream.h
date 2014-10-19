@@ -59,7 +59,7 @@ template <typename TValue, typename TTraits>
 inline bool atEnd(std::istreambuf_iterator<TValue, TTraits> const &it);
 
 template <typename TChar, typename TCharTraits, typename TAlloc>
-inline typename Size< std::basic_string<TChar, TCharTraits, TAlloc> >::Type
+inline typename std::basic_string<TChar, TCharTraits, TAlloc>::size_type
 length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
 
 /*!
