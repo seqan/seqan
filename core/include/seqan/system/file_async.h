@@ -274,13 +274,13 @@ namespace SEQAN_NAMESPACE_MAIN
 
         aiocb_win32(aiocb_win32 & other, Move) :
             overlapped(other.overlapped),
-            xmitDone(other, Move())
+			xmitDone(other.xmitDone, Move())
         {}
 
 #ifdef SEQAN_CXX11_STANDARD
         aiocb_win32(aiocb_win32 && other) :
             overlapped(other.overlapped),
-            xmitDone(other, Move())
+			xmitDone(other.xmitDone, Move())
         {}
 #endif
 
