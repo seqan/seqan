@@ -264,19 +264,33 @@ namespace SEQAN_NAMESPACE_MAIN
     // (SeqAn adaption)
     //////////////////////////////////////////////////////////////////////////////
 
-    struct aiocb_win32 {
+    struct aiocb_win32
+    {
         OVERLAPPED  overlapped;
-        Mutex       mutex;
         Event       xmitDone;
 
-        aiocb_win32() :
-            xmitDone(mutex)
+        aiocb_win32()
         {}
+
+        aiocb_win32(aiocb_win32 & other, Move) :
+            overlapped(other.overlapped),
+            xmitDone(other, Move())
+        {}
+
+#ifdef SEQAN_CXX11_STANDARD
+        aiocb_win32(aiocb_win32 && other) :
+            overlapped(other.overlapped),
+            xmitDone(other, Move())
+        {}
+#endif
 
 	private:
 		aiocb_win32(aiocb_win32 const &)
 		{}
     };
+
+    template <>
+    struct HasMoveConstructor<aiocb_win32> : True {};
 
 	template <typename TSpec>
     struct AsyncRequest<File<Async<TSpec> > >
@@ -743,21 +757,35 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 */
 
-    struct aiocbWrapper : public aiocb
+    struct AiocbWrapper : public aiocb
     {
-        aiocbWrapper()
+        AiocbWrapper()
         {}
 
+        AiocbWrapper(AiocbWrapper & other, Move) :
+            aiocb(other)
+        {}
+
+#ifdef SEQAN_CXX11_STANDARD
+        AiocbWrapper(AiocbWrapper && other) :
+            aiocb(other)
+        {}
+#endif
+
     private:
-        aiocbWrapper(aiocbWrapper const &)
+        AiocbWrapper(AiocbWrapper const &)
         {}
     };
+
+    template <>
+    struct HasMoveConstructor<AiocbWrapper> : True {};
+
 
 	template <typename TSpec>
     struct AsyncRequest<File<Async<TSpec> > >
     {
 //IOREV _doc_ 
-		typedef aiocbWrapper Type;
+		typedef AiocbWrapper Type;
     };
 /*
 	template <typename TSpec>
