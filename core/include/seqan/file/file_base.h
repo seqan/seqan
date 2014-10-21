@@ -746,10 +746,10 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 */
 
     template < typename File, typename TValue, typename TSize, typename TPos,
-               typename AsyncRequest >
+               typename TAsyncRequest >
     inline bool
 	asyncWriteAt(File & me, TValue const *memPtr, TSize const count, TPos const fileOfs,
-        AsyncRequest &)
+        TAsyncRequest &)
     {
 //IOREV _stub_ see general discussion about AsynRequest
         return writeAt(me, memPtr, count, fileOfs);
