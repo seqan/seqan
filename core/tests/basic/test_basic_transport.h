@@ -65,12 +65,21 @@ struct TransportObj_
     {
     }
 
-    TransportObj_(TransportObj_ & other, seqan::Move())
+    TransportObj_(TransportObj_ & other, seqan::Move)
             : id(nextId++), assignedFrom(-1), setFrom(-1), movedFrom(other.id)
     {
         bool b = IsSameType<TSpec, MoveYes>::Type::VALUE;
         SEQAN_ASSERT(b);
     }
+
+#ifdef SEQAN_CXX11_STANDARD
+    TransportObj_(TransportObj_ && other)
+            : id(nextId++), assignedFrom(-1), setFrom(-1), movedFrom(other.id)
+    {
+        bool b = IsSameType<TSpec, MoveYes>::Type::VALUE;
+        SEQAN_ASSERT(b);
+    }
+#endif
 
     TransportObj_ &
     operator=(TransportObj_ const & other)

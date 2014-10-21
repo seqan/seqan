@@ -60,23 +60,24 @@ struct Event        // this class mustn't exceed the size of HANDLE (needed by w
         SEQAN_DO_SYS2(open(initial), "Could not create Event");
     }
 
+    // Move constructors
+    Event(Event & other, Move) :
+        hEvent(other.hEvent)
+    {
+        other.hEvent = NULL;
+    }
+
+#ifdef SEQAN_CXX11_STANDARD
+    Event(Event && other) :
+        hEvent(other.hEvent)
+    {
+        other.hEvent = NULL;
+    }
+#endif
+
     ~Event()
     {
         if (*this) SEQAN_DO_SYS2(close(), "Could not destroy Event");
-    }
-
-    // TODO(weese): Use rvalue refs instead
-    Event(Event const & origin)
-    {
-        // resource sharing is not yet supported (performance reason)
-        // it needs a reference counting technique
-        if (origin)
-        {
-            hEvent = origin.hEvent;
-            const_cast<Event &>(origin).hEvent = NULL;
-        }
-        else
-            hEvent = NULL;
     }
 
     inline Event & operator=(Event const & origin)
@@ -138,6 +139,13 @@ struct Event        // this class mustn't exceed the size of HANDLE (needed by w
         return hEvent != NULL;
     }
 
+private:
+
+    Event(Event const &) :
+        hEvent(NULL)
+    {
+        // we only support move construction (no copy-construction)
+    }
 };
 
 
@@ -191,27 +199,26 @@ struct Event :
         SEQAN_DO_SYS(open(initial));
     }
 
+    // Move constructors
+    Event(Event & other, Move) :
+        Mutex(other, Move()),
+        hEvent(other.hEvent)
+    {
+        other.hEvent = NULL;
+    }
+
+#ifdef SEQAN_CXX11_STANDARD
+    Event(Event && other) :
+        hEvent(other.hEvent)
+    {
+        other.hEvent = NULL;
+    }
+#endif
+
     ~Event()
     {
         if (*this)
             SEQAN_DO_SYS(close());
-    }
-
-    // TODO(weese): Change c'tor the rvalue refs
-    //Event(Event const &&origin):
-    Event(Event const & origin) :
-        Mutex()
-    {
-        // resource sharing is not yet supported (performance reason)
-        // it needs a reference counting technique
-        if (origin)
-        {
-            data = origin.data;
-            const_cast<Event &>(origin).hEvent = NULL;
-            hEvent = &data;
-        }
-        else
-            hEvent = NULL;
     }
 
     inline Event & operator=(Event const & origin)
@@ -285,10 +292,20 @@ struct Event :
         return hEvent != NULL;
     }
 
+private:
+
+    Event(Event const &) :
+        Mutex(),
+        hEvent(NULL)
+    {
+        // we only support move construction (no copy-construction)
+    }
 };
 
 #endif
 
+template <>
+struct HasMoveConstructor<Event> : True {};
 
 //////////////////////////////////////////////////////////////////////////////
 // global event functions

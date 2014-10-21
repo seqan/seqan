@@ -47,7 +47,7 @@ namespace SEQAN_NAMESPACE_MAIN {
 // TagAllocateAligned_
 
 struct TagAllocateAligned_;       	// "core/include/seqan/file/file_async.h"(283)
-//struct aiocb;
+struct AiocbWrapper;
 
 //////////////////////////////////////////////////////////////////////////////
 // TYPEDEFS
@@ -77,17 +77,17 @@ template <typename TSpec, typename TValue, typename TSize> inline void allocate(
 //____________________________________________________________________________
 // asyncReadAt
 
-template <typename TSpec, typename TValue, typename TSize, typename TPos > bool asyncReadAt(File<Async<TSpec> > & me, TValue *memPtr, TSize const count, TPos const fileOfs, aiocb &request);       	// "core/include/seqan/file/file_async.h"(136)
+template <typename TSpec, typename TValue, typename TSize, typename TPos > bool asyncReadAt(File<Async<TSpec> > & me, TValue *memPtr, TSize const count, TPos const fileOfs, AiocbWrapper &request);       	// "core/include/seqan/file/file_async.h"(136)
 
 //____________________________________________________________________________
 // asyncWriteAt
 
-template <typename TSpec, typename TValue, typename TSize, typename TPos > bool asyncWriteAt(File<Async<TSpec> > & me, const TValue *memPtr, TSize const count, TPos const fileOfs, aiocb &request);       	// "core/include/seqan/file/file_async.h"(160)
+template <typename TSpec, typename TValue, typename TSize, typename TPos > bool asyncWriteAt(File<Async<TSpec> > & me, const TValue *memPtr, TSize const count, TPos const fileOfs, AiocbWrapper &request);       	// "core/include/seqan/file/file_async.h"(160)
 
 //____________________________________________________________________________
 // cancel
 
-template <typename TSpec> inline bool cancel(File<Async<TSpec> > & me, aiocb &request);       	// "core/include/seqan/file/file_async.h"(242)
+template <typename TSpec> inline bool cancel(File<Async<TSpec> > & me, AiocbWrapper &request);       	// "core/include/seqan/file/file_async.h"(242)
 
 //____________________________________________________________________________
 // deallocate
@@ -98,7 +98,7 @@ template <typename TSpec, typename TValue, typename TSize> inline void deallocat
 //____________________________________________________________________________
 // error
 
-inline int error(aiocb const &request);       	// "core/include/seqan/file/file_async.h"(246)
+inline int error(AiocbWrapper const &request);       	// "core/include/seqan/file/file_async.h"(246)
 
 //____________________________________________________________________________
 // fileExists
@@ -118,8 +118,8 @@ template <typename TSpec> inline bool flush(File<Async<TSpec> > & me);       	//
 //____________________________________________________________________________
 // printRequest
 
-inline void printRequest(aiocb &request, const char *_hint);       	// "core/include/seqan/file/file_async.h"(125)
-inline void printRequest(aiocb &request);       	// "core/include/seqan/file/file_async.h"(125)
+inline void printRequest(AiocbWrapper &request, const char *_hint);       	// "core/include/seqan/file/file_async.h"(125)
+inline void printRequest(AiocbWrapper &request);       	// "core/include/seqan/file/file_async.h"(125)
 
 //____________________________________________________________________________
 // read
@@ -129,24 +129,24 @@ template <typename TSpec, typename TValue, typename TSize > inline bool read(Fil
 //____________________________________________________________________________
 // release
 
-template <typename TSpec> inline void release(File<Async<TSpec> > & me, aiocb const &request);       	// "core/include/seqan/file/file_async.h"(255)
+template <typename TSpec> inline void release(File<Async<TSpec> > & me, AiocbWrapper const &request);       	// "core/include/seqan/file/file_async.h"(255)
 
 //____________________________________________________________________________
 // _returnValue
 
-inline int _returnValue(aiocb &request);       	// "core/include/seqan/file/file_async.h"(250)
+inline int _returnValue(AiocbWrapper &request);       	// "core/include/seqan/file/file_async.h"(250)
 
 //____________________________________________________________________________
 // waitFor
 
-inline bool waitFor(aiocb &request);       	// "core/include/seqan/file/file_async.h"(189)
-inline bool waitFor(aiocb &request, long timeoutMilliSec, bool &inProgress);       	// "core/include/seqan/file/file_async.h"(204)
+inline bool waitFor(AiocbWrapper &request);       	// "core/include/seqan/file/file_async.h"(189)
+inline bool waitFor(AiocbWrapper &request, long timeoutMilliSec, bool &inProgress);       	// "core/include/seqan/file/file_async.h"(204)
 
 //____________________________________________________________________________
 // waitForAny
 
-template <typename TSize > inline TSize waitForAny(aiocb const * const contexts[], TSize count);       	// "core/include/seqan/file/file_async.h"(223)
-template <typename TSize > inline TSize waitForAny(aiocb const * const contexts[], TSize count, long timeoutMilliSec);       	// "core/include/seqan/file/file_async.h"(231)
+template <typename TSize > inline TSize waitForAny(AiocbWrapper const * const contexts[], TSize count);       	// "core/include/seqan/file/file_async.h"(223)
+template <typename TSize > inline TSize waitForAny(AiocbWrapper const * const contexts[], TSize count, long timeoutMilliSec);       	// "core/include/seqan/file/file_async.h"(231)
 
 //____________________________________________________________________________
 // write
