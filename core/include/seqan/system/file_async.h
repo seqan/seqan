@@ -272,6 +272,10 @@ namespace SEQAN_NAMESPACE_MAIN
         aiocb_win32() :
             xmitDone(mutex)
         {}
+
+	private:
+		aiocb_win32(aiocb_win32 const &)
+		{}
     };
 
 	template <typename TSpec>
