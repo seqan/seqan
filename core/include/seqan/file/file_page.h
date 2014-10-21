@@ -371,6 +371,16 @@ struct MMap;
             next(other.next)
         {}
 
+#ifdef SEQAN_CXX11_STANDARD
+		Buffer(Buffer && other) :
+			TBase(other),
+			dirty(other.dirty),
+			pageNo(other.pageNo),
+			request(other.request, Move()),
+			status(other.status),
+			next(other.next)
+		{}
+#endif
 	private:
 		Buffer(Buffer const &)
 		{}
@@ -428,7 +438,20 @@ struct MMap;
             dirty(other.dirty)
         {}
 
-        template <typename TPos>
+#ifdef SEQAN_CXX11_STANDARD
+		Buffer(Buffer && other) :
+			begin(other.begin),
+			end(other.end),
+			request(other.request, Move()),
+			status(other.status),
+			dataStatus(other.dataStatus),
+			lruEntry(other.lruEntry),
+			priority(other.priority),
+			pageNo(other.pageNo),
+			dirty(other.dirty)
+		{}
+#endif		
+		template <typename TPos>
         inline TValue &
         operator[] (TPos i)
         {
