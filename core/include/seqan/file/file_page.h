@@ -361,7 +361,11 @@ struct MMap;
             pageNo(MaxValue<unsigned>::VALUE),
 			status(READY),
 			next(NULL) {}
-    };
+
+	private:
+		Buffer(Buffer const &)
+		{}
+	};
 
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -414,6 +418,10 @@ struct MMap;
         {
             return begin[i];
         }
+
+	private:
+		Buffer(Buffer const &)
+		{}
 	};
 
     template < typename TValue,
