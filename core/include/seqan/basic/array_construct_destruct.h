@@ -307,7 +307,7 @@ struct ValueConstructor_
     static inline void
     construct(TIterator it,
               TParam & param_,
-              Move const & tag,
+              Move const &,
               False)
     {
         typedef typename Value<TIterator>::Type    TValue;
