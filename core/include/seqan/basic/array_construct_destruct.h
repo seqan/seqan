@@ -295,11 +295,35 @@ struct ValueConstructor_
     static inline void
     construct(TIterator it,
               TParam & param_,
-              Move const & tag)
+              Move const & tag,
+              True)
     {
         typedef typename Value<TIterator>::Type    TValue;
         typedef typename RemoveConst<TValue>::Type TNonConstValue;
         new( (void*) & value(it) ) TNonConstValue(param_, tag);
+    }
+
+    template <typename TIterator, typename TParam>
+    static inline void
+    construct(TIterator it,
+              TParam & param_,
+              Move const &,
+              False)
+    {
+        typedef typename Value<TIterator>::Type    TValue;
+        typedef typename RemoveConst<TValue>::Type TNonConstValue;
+        new( (void*) & value(it) ) TNonConstValue(param_);
+    }
+
+    template <typename TIterator, typename TParam>
+    static inline void
+    construct(TIterator it,
+              TParam & param_,
+              Move const & tag)
+    {
+        typedef typename Value<TIterator>::Type    TValue;
+        typedef typename RemoveConst<TValue>::Type TNonConstValue;
+        construct(it, param_, tag, typename HasMoveConstructor<TNonConstValue>::Type());
     }
 #endif
 };
@@ -661,7 +685,7 @@ _arrayConstructMoveDefault(TSource1 source_begin,
 #ifdef SEQAN_CXX11_STANDARD
         valueConstruct(target_begin, std::move<decltype(*source_begin)>(*source_begin));
 #else
-        valueConstruct(target_begin, value(source_begin));
+        valueConstruct(target_begin, value(source_begin), Move());
 #endif
         ++source_begin;
         ++target_begin;

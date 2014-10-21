@@ -143,6 +143,17 @@ public:
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
     }
     
+#ifdef SEQAN_CXX11_STANDARD
+    String(String && source, Move const &)
+        : data_begin(0),
+          data_end(0),
+          data_capacity(0)
+    {
+        move(*this, source);
+        SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
+    }
+#endif
+
     template <typename TSource, typename TSize>
     String(TSource & source, TSize limit)
             : data_begin(0),
@@ -234,6 +245,14 @@ struct DefaultOverflowImplicit<String<TValue, Alloc<TSpec> > const>
 
 template <typename TValue, typename TSpec>
 struct IsContiguous<String<TValue, Alloc<TSpec> > > :
+    True {};
+
+// ----------------------------------------------------------------------------
+// Metafunction HasMoveConstructor
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+struct HasMoveConstructor<String<TValue, Alloc<TSpec> > > :
     True {};
 
 // ============================================================================

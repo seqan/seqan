@@ -263,7 +263,28 @@ enum FileSeekMode {
 //////////////////////////////////////////////////////////////////////////////
 // result type of asynch. functions
 // you have to call release(AsyncRequest<T>) after a finished *event based* transfer
-struct AsyncDummyRequest {};
+struct AsyncDummyRequest
+{
+    AsyncDummyRequest()
+    {}
+    
+    AsyncDummyRequest(AsyncDummyRequest &, Move)
+    {}
+
+#ifdef SEQAN_CXX11_STANDARD
+    AsyncDummyRequest(AsyncDummyRequest &&)
+    {}
+#endif
+
+private:
+    AsyncDummyRequest(AsyncDummyRequest const &)
+    {}
+};
+
+template <>
+struct HasMoveConstructor<AsyncDummyRequest> : True {};
+
+
 
 /*!
  * @class AsyncRequest

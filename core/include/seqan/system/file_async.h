@@ -264,15 +264,33 @@ namespace SEQAN_NAMESPACE_MAIN
     // (SeqAn adaption)
     //////////////////////////////////////////////////////////////////////////////
 
-    struct aiocb_win32 {
+    struct aiocb_win32
+    {
         OVERLAPPED  overlapped;
-        Mutex       mutex;
         Event       xmitDone;
 
-        aiocb_win32() :
-            xmitDone(mutex)
+        aiocb_win32()
         {}
+
+        aiocb_win32(aiocb_win32 & other, Move) :
+            overlapped(other.overlapped),
+			xmitDone(other.xmitDone, Move())
+        {}
+
+#ifdef SEQAN_CXX11_STANDARD
+        aiocb_win32(aiocb_win32 && other) :
+            overlapped(other.overlapped),
+			xmitDone(other.xmitDone, Move())
+        {}
+#endif
+
+	private:
+		aiocb_win32(aiocb_win32 const &)
+		{}
     };
+
+    template <>
+    struct HasMoveConstructor<aiocb_win32> : True {};
 
 	template <typename TSpec>
     struct AsyncRequest<File<Async<TSpec> > >
@@ -739,11 +757,35 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 */
 
+    struct AiocbWrapper : public aiocb
+    {
+        AiocbWrapper()
+        {}
+
+        AiocbWrapper(AiocbWrapper & other, Move) :
+            aiocb(other)
+        {}
+
+#ifdef SEQAN_CXX11_STANDARD
+        AiocbWrapper(AiocbWrapper && other) :
+            aiocb(other)
+        {}
+#endif
+
+    private:
+        AiocbWrapper(AiocbWrapper const &)
+        {}
+    };
+
+    template <>
+    struct HasMoveConstructor<AiocbWrapper> : True {};
+
+
 	template <typename TSpec>
     struct AsyncRequest<File<Async<TSpec> > >
     {
 //IOREV _doc_ 
-		typedef aiocb Type;
+		typedef AiocbWrapper Type;
     };
 /*
 	template <typename TSpec>
@@ -758,7 +800,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //    enum { AsyncIOSignal_ = SIGIO };
 
-	inline void printRequest(aiocb &request, const char *_hint)
+	inline void printRequest(AiocbWrapper &request, const char *_hint)
     {
 //IOREV _nodoc_ _notinlined_
 		std::cerr << std::hex;
@@ -773,14 +815,14 @@ namespace SEQAN_NAMESPACE_MAIN
 		std::cerr << std::dec;
 	}
 
-    inline void printRequest(aiocb &request)
+    inline void printRequest(AiocbWrapper &request)
     {
         printRequest(request, NULL);
     }
 
     template < typename TSpec, typename TValue, typename TSize, typename TPos >
     bool asyncReadAt(File<Async<TSpec> > & me, TValue *memPtr, TSize const count, TPos const fileOfs,
-        aiocb &request)
+        AiocbWrapper &request)
     {
 //IOREV _doc_ _notinlined_
         SEQAN_PROTIMESTART(tw);
@@ -825,7 +867,7 @@ namespace SEQAN_NAMESPACE_MAIN
     
     template < typename TSpec, typename TValue, typename TSize, typename TPos >
     bool asyncWriteAt(File<Async<TSpec> > & me, const TValue *memPtr, TSize const count, TPos const fileOfs,
-        aiocb &request)
+        AiocbWrapper &request)
     {
 //IOREV _doc_ _notinlined_
         SEQAN_PROTIMESTART(tw);
@@ -885,7 +927,7 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////
     // queue specific functions
 
-	inline bool waitFor(aiocb &request)
+	inline bool waitFor(AiocbWrapper &request)
     {
 //IOREV _doc_ 
 /*		#ifdef SEQAN_VVERBOSE
@@ -916,7 +958,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		return (result == 0) && (nbytes == (ssize_t)request.aio_nbytes);
 	}
 
-	inline bool waitFor(aiocb &request, long timeoutMilliSec, bool &inProgress)
+	inline bool waitFor(AiocbWrapper &request, long timeoutMilliSec, bool &inProgress)
     {
 //IOREV _doc_ 
 /*		#ifdef SEQAN_VVERBOSE
@@ -971,7 +1013,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 	template < typename TSize >
-	inline TSize waitForAny(aiocb const * const contexts[], TSize count) {
+	inline TSize waitForAny(AiocbWrapper const * const contexts[], TSize count) {
 //IOREV _nodoc_ 
         SEQAN_PROTIMESTART(tw);
 		bool result = aio_suspend(contexts, count, NULL);
@@ -980,7 +1022,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 	template < typename TSize >
-	inline TSize waitForAny(aiocb const * const contexts[], TSize count, long timeoutMilliSec) {
+	inline TSize waitForAny(AiocbWrapper const * const contexts[], TSize count, long timeoutMilliSec) {
 //IOREV _nodoc_ 
         timespec ts;
         ts.tv_sec = timeoutMilliSec / 1000;
@@ -992,7 +1034,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 	template <typename TSpec>
-    inline bool cancel(File<Async<TSpec> > & me, aiocb &request) {
+    inline bool cancel(File<Async<TSpec> > & me, AiocbWrapper &request) {
 //IOREV _doc_ 
 /*		#ifdef SEQAN_VVERBOSE
 			printRequest(request, "aio_cancel():");
@@ -1000,18 +1042,18 @@ namespace SEQAN_NAMESPACE_MAIN
 */      return aio_cancel(me.handleAsync, &request) == 0;
     }
 
-    inline int error(aiocb const & request) {
+    inline int error(AiocbWrapper const & request) {
 //IOREV _nodoc_ 
         return aio_error(&request);
     }
 
-    inline int _returnValue(aiocb & request) {
+    inline int _returnValue(AiocbWrapper & request) {
 //IOREV _nodoc_ 
         return aio_return(&request);
     }
 
 	template <typename TSpec>
-    inline void release(File<Async<TSpec> > & /*me*/, aiocb const & /*request*/) {
+    inline void release(File<Async<TSpec> > & /*me*/, AiocbWrapper const & /*request*/) {
 //IOREV _nodoc_ 
     }
 

@@ -361,8 +361,33 @@ struct MMap;
             pageNo(MaxValue<unsigned>::VALUE),
 			status(READY),
 			next(NULL) {}
-    };
 
+        Buffer(Buffer & other, Move) :
+            TBase(other),
+            dirty(other.dirty),
+            pageNo(other.pageNo),
+            request(other.request, Move()),
+            status(other.status),
+            next(other.next)
+        {}
+
+#ifdef SEQAN_CXX11_STANDARD
+		Buffer(Buffer && other) :
+			TBase(other),
+			dirty(other.dirty),
+			pageNo(other.pageNo),
+			request(other.request, Move()),
+			status(other.status),
+			next(other.next)
+		{}
+#endif
+	private:
+		Buffer(Buffer const &)
+		{}
+	};
+
+    template <typename TValue, typename TFile>
+    struct HasMoveConstructor<Buffer<TValue, PageFrame<TFile, Dynamic> > > : True {};
 
 	//////////////////////////////////////////////////////////////////////////////
 	// page frame of static size
@@ -401,7 +426,32 @@ struct MMap;
             clear(*this);
         }
 
-        template <typename TPos>
+		Buffer(Buffer & other, Move):
+            begin(other.begin),
+            end(other.end),
+            request(other.request, Move()),
+            status(other.status),
+            dataStatus(other.dataStatus),
+            lruEntry(other.lruEntry),
+            priority(other.priority),
+            pageNo(other.pageNo),
+            dirty(other.dirty)
+        {}
+
+#ifdef SEQAN_CXX11_STANDARD
+		Buffer(Buffer && other) :
+			begin(other.begin),
+			end(other.end),
+			request(other.request, Move()),
+			status(other.status),
+			dataStatus(other.dataStatus),
+			lruEntry(other.lruEntry),
+			priority(other.priority),
+			pageNo(other.pageNo),
+			dirty(other.dirty)
+		{}
+#endif		
+		template <typename TPos>
         inline TValue &
         operator[] (TPos i)
         {
@@ -414,7 +464,17 @@ struct MMap;
         {
             return begin[i];
         }
+
+	private:
+		Buffer(Buffer const &)
+		{}
 	};
+
+    template < typename TValue,
+               typename TFile,
+               size_t PAGESIZE_ >
+    struct HasMoveConstructor<Buffer<TValue, PageFrame<TFile, Fixed<PAGESIZE_> > > > : True {};
+
 
     template < typename TValue,
                typename TFile,
