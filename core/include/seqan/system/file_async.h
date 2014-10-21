@@ -739,11 +739,21 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 */
 
+    struct aiocbWrapper : public aiocb
+    {
+        aiocbWrapper()
+        {}
+
+    private:
+        aiocbWrapper(aiocbWrapper const &)
+        {}
+    };
+
 	template <typename TSpec>
     struct AsyncRequest<File<Async<TSpec> > >
     {
 //IOREV _doc_ 
-		typedef aiocb Type;
+		typedef aiocbWrapper Type;
     };
 /*
 	template <typename TSpec>
