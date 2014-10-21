@@ -46,6 +46,8 @@
 #include <fstream>
 #include <sstream>
 
+#include <seqan/platform.h>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #ifndef PLATFORM_WINDOWS
