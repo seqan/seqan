@@ -417,26 +417,26 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_file_size)
 
     seqan::BamFileIn bamFile(toCString(filePath));
 
-    SEQAN_ASSERT_EQ(position(bamFile), 0u);
+	SEQAN_ASSERT_EQ((int)position(bamFile), 0);
 
     seqan::BamHeader header;
     readRecord(header, bamFile);
 
-    SEQAN_ASSERT_EQ(position(bamFile), 51u);
+	SEQAN_ASSERT_EQ((int)position(bamFile), 51);
 //    SEQAN_ASSERT_EQ(fileSize(bamFile), 226u);
 
     seqan::BamAlignmentRecord record;
     readRecord(record, bamFile);
 
-    SEQAN_ASSERT_EQ(position(bamFile), 110u);
+	SEQAN_ASSERT_EQ((int)position(bamFile), 110);
 
     readRecord(record, bamFile);
 
-    SEQAN_ASSERT_EQ(position(bamFile), 169u);
+	SEQAN_ASSERT_EQ((int)position(bamFile), 169);
 
     readRecord(record, bamFile);
 
-    SEQAN_ASSERT_EQ(position(bamFile), 226u);
+	SEQAN_ASSERT_EQ((int)position(bamFile), 226);
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_size)
@@ -446,26 +446,26 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_size)
 
     seqan::BamFileIn bamFile(toCString(filePath));
 
-    SEQAN_ASSERT_EQ(position(bamFile), 0u);
+    SEQAN_ASSERT_EQ((int)position(bamFile), 0);
 
     seqan::BamHeader header;
     readRecord(header, bamFile);
 
 //    SEQAN_ASSERT_EQ(fileSize(bamFile), 181u);
-    SEQAN_ASSERT_EQ(position(bamFile), 0x0051u);
+	SEQAN_ASSERT_EQ((int)position(bamFile), 0x0051);
 
     seqan::BamAlignmentRecord record;
     readRecord(record, bamFile);
 
-    SEQAN_ASSERT_EQ(position(bamFile), 0x0096u);  // [block begin in bam file] << 16 + [local offset]
+	SEQAN_ASSERT_EQ((int)position(bamFile), 0x0096);  // [block begin in bam file] << 16 + [local offset]
 
     readRecord(record, bamFile);
 
-    SEQAN_ASSERT_EQ(position(bamFile), 0x00dbu);
+	SEQAN_ASSERT_EQ((int)position(bamFile), 0x00db);
 
     readRecord(record, bamFile);
 
-    SEQAN_ASSERT_EQ(position(bamFile), 0x0120u);
+	SEQAN_ASSERT_EQ((int)position(bamFile), 0x0120);
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
@@ -474,7 +474,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
 
     seqan::BamFileIn bamFile(filePath.c_str());
 
-    SEQAN_ASSERT_EQ(position(bamFile), 0u);
+    SEQAN_ASSERT_EQ((int)position(bamFile), 0);
 
     seqan::BamHeader header;
     readRecord(header, bamFile);
