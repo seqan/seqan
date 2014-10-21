@@ -236,6 +236,14 @@ template <typename TValue, typename TSpec>
 struct IsContiguous<String<TValue, Alloc<TSpec> > > :
     True {};
 
+// ----------------------------------------------------------------------------
+// Metafunction HasMoveConstructor
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TSpec>
+struct HasMoveConstructor<String<TValue, Alloc<TSpec> > > :
+    True {};
+
 // ============================================================================
 // Functions
 // ============================================================================

@@ -61,6 +61,21 @@ namespace SEQAN_NAMESPACE_MAIN
             SEQAN_DO_SYS2(open(initial), "Could not create Mutex");
         }
 
+        // Move constructors
+        Mutex(Mutex & other, Move) :
+            hMutex(other.hMutex)
+        {
+            other.hMutex = NULL;
+        }
+
+#ifdef SEQAN_CXX11_STANDARD
+        Mutex(Mutex && other) :
+            hMutex(other.hMutex)
+        {
+            other.hMutex = NULL;
+        }
+#endif
+
         ~Mutex() {
             if (*this)
                 SEQAN_DO_SYS2(close(), "Could not destroy Mutex");
@@ -90,9 +105,9 @@ namespace SEQAN_NAMESPACE_MAIN
 
     private:
 
-        Mutex(Mutex const &) {
-            // resource copying is not yet supported (performance reason)
-            // it needs a reference counting technique
+        Mutex(Mutex const &)
+        {
+            // we only support move construction (no copy-construction)
         }
     };
     
@@ -110,6 +125,21 @@ namespace SEQAN_NAMESPACE_MAIN
         Mutex(bool initial) {
             SEQAN_DO_SYS(open(initial));
         }
+
+        // Move constructors
+        Mutex(Mutex & other, Move) :
+            hMutex(other.hMutex)
+        {
+            other.hMutex = NULL;
+        }
+
+#ifdef SEQAN_CXX11_STANDARD
+        Mutex(Mutex && other) :
+            hMutex(other.hMutex)
+        {
+            other.hMutex = NULL;
+        }
+#endif
 
         ~Mutex() {
             if (*this)
@@ -145,15 +175,17 @@ namespace SEQAN_NAMESPACE_MAIN
 
     private:
 
-        Mutex(Mutex const &) {
-            // resource copying is not yet supported (performance reason)
-            // it needs a reference counting technique
+        Mutex(Mutex const &)
+        {
+            // we only support move construction (no copy-construction)
         }
 
     };
     
 #endif
 
+    template <>
+    struct HasMoveConstructor<Mutex> : True {};
 
 	//////////////////////////////////////////////////////////////////////////////
 	// global mutex functions
