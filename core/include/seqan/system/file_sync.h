@@ -130,7 +130,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         bool open(char const *fileName, int openMode = DefaultOpenMode<File>::VALUE) 
 		{
-            handle = _open(fileName, _getOFlag(openMode), _S_IREAD | _S_IWRITE);
+            handle = ::_open(fileName, _getOFlag(openMode), _S_IREAD | _S_IWRITE);
 			if (handle == -1) {
 				if (!(openMode & OPEN_QUIET))
 					::std::cerr << "Open failed on file " << fileName << ". (" << ::strerror(errno) << ")" << ::std::endl;
@@ -158,7 +158,7 @@ namespace SEQAN_NAMESPACE_MAIN
 				return false;
 			}
             bool result = open(fileName, openMode | OPEN_TEMPORARY);
-			free(fileName);
+			::free(fileName);
 			return result;
         }
 
@@ -175,7 +175,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		{
             SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
             SEQAN_PROTIMESTART(tw);
-		    int result = _read(handle, buffer, count);
+		    int result = ::_read(handle, buffer, count);
             SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
             return result;
 		}
@@ -184,7 +184,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		{
             SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
             SEQAN_PROTIMESTART(tw);
-		    int result = _write(handle, buffer, count);
+		    int result = ::_write(handle, buffer, count);
             SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
             return result;
 		}
