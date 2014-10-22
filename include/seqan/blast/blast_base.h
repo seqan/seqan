@@ -320,10 +320,10 @@ qNumFrames(BlastFormat<f,p,g> const & /**/)
     using TFormat = BlastFormat<f,p,g>;
     return (qHasFrames(TFormat())
             ? 6
-            : 1);
-//             : (qHasRevComp(TFormat())
-//                 ? 2
-//                 : 1));
+//             : 1);
+            : (qHasRevComp(TFormat())
+                ? 2
+                : 1));
 }
 
 // ----------------------------------------------------------------------------
