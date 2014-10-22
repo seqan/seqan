@@ -621,7 +621,7 @@ _goToGapAnchorIterator(T & me, TPos pos)
 	typedef typename Position<TGapAnchor>::Type     TAnchorPos;
 	typedef typename MakeSigned<TAnchorPos>::Type   TAnchorSPos;
 
-	if (_helperIsNegative(pos, typename IsSameType<TPos, typename MakeSigned_<TPos>::Type>::Type()))
+	if (isNegative(pos))
 		me.anchorIdx = -1;
 	else
 	{

@@ -1592,32 +1592,6 @@ operator--(Iter<TPackedString, Packed<THostspec> > & me)
     return me;
 }
 
-// ----------------------------------------------------------------------------
-// Helper Function _helperIsNegative()
-// ----------------------------------------------------------------------------
-
-// to remove '... < 0 is always false' warning
-template <typename T>
-inline bool
-_isNegative(T, False)
-{
-    return false;
-}
-
-template <typename T>
-inline bool
-_isNegative(T t, True)
-{
-    return t < 0;
-}
-
-template <typename T>
-inline bool
-_isNegative(T t)
-{
-    return _isNegative(t, typename IsSameType<T, typename MakeSigned_<T>::Type>::Type());
-}
-
 // --------------------------------------------------------------------------
 // Function operator+() for (iter, integral)
 // --------------------------------------------------------------------------
@@ -1629,7 +1603,7 @@ operator+(Iter<TPackedString, Packed<THostspec> > const & iter,
 {
     typedef PackedTraits_<TPackedString> TTraits;
 
-    if (_isNegative(delta))
+    if (isNegative(delta))
         return iter - (-(typename MakeSigned<TIntegral>::Type)delta);
 
     TIntegral ofs = (TIntegral)iter.localPos + delta;
@@ -1645,7 +1619,7 @@ operator+(TIntegral const & delta,
 {
     typedef PackedTraits_<TPackedString> TTraits;
 
-    if (_isNegative(delta))
+    if (isNegative(delta))
         return iter - (-(typename MakeSigned<TIntegral>::Type)delta);
 
     TIntegral ofs = (TIntegral)iter.localPos + delta;
@@ -1665,7 +1639,7 @@ operator+=(Iter<TPackedString, Packed<THostspec> > & iter,
 {
     typedef PackedTraits_<TPackedString> TTraits;
 
-    if (_isNegative(delta))
+    if (isNegative(delta))
         return iter -= -(typename MakeSigned<TIntegral>::Type)delta;
 
     TIntegral ofs = (TIntegral)iter.localPos + delta;
@@ -1685,7 +1659,7 @@ operator-(Iter<TPackedString, Packed<THostspec> > const & iter,
 {
     typedef PackedTraits_<TPackedString> TTraits;
 
-    if (_isNegative(delta))
+    if (isNegative(delta))
         return iter + (-(typename MakeSigned<TIntegral>::Type)delta);
 
     TIntegral ofs = delta + (TIntegral)(TTraits::VALUES_PER_HOST_VALUE - 1) - (TIntegral)iter.localPos;
@@ -1705,7 +1679,7 @@ operator-=(Iter<TPackedString, Packed<THostspec> > & iter,
 {
     typedef PackedTraits_<TPackedString> TTraits;
 
-    if (_isNegative(delta))
+    if (isNegative(delta))
         return iter += -(typename MakeSigned<TIntegral>::Type)delta;
 
     TIntegral ofs = delta + (TIntegral)(TTraits::VALUES_PER_HOST_VALUE - 1) - (TIntegral)iter.localPos;
