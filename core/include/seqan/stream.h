@@ -31,6 +31,7 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 // Facade header for the stream module.
 // ==========================================================================
@@ -46,11 +47,14 @@
 #include <fstream>
 #include <sstream>
 
-#include <seqan/platform.h>
-
 #include <sys/types.h>
 #include <sys/stat.h>
-#ifndef PLATFORM_WINDOWS
+
+#ifdef WIN32
+#ifndef ZLIB_WINAPI
+//#define ZLIB_WINAPI
+#endif
+#else
 #include <unistd.h>
 #endif
 
