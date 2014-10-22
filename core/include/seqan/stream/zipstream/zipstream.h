@@ -35,11 +35,6 @@
 #ifndef INCLUDED_utility_io_zipstream_HPP
 #define INCLUDED_utility_io_zipstream_HPP
 
-#ifdef WIN32
-#ifndef ZLIB_WINAPI
-#define ZLIB_WINAPI
-#endif
-#endif
 
 // Zlib headers
 #include <zlib.h>

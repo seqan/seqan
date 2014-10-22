@@ -21,11 +21,6 @@ Author: David Weese, dave.weese@gmail.com, 2014             (extension to parall
 #ifndef BGZFSTREAM_HPP
 #define BGZFSTREAM_HPP
 
-#ifdef WIN32
-#ifndef ZLIB_WINAPI
-#define ZLIB_WINAPI
-#endif
-#endif
 
 #include <vector>
 #include <iostream>
