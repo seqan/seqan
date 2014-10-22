@@ -279,7 +279,7 @@ void SeqConsAppImpl::performConsensusAlignment(bool useContigID, bool usePositio
     if (options.verbosity >= 3)
         caOptions.verbosity = 3;
 
-    caOptions.overlapMaxErrorRate = options.overlapMaxErrorRate;
+    caOptions.overlapMaxErrorRate = (int)options.overlapMaxErrorRate;
     caOptions.overlapMinLength = options.overlapMinLength;
     caOptions.overlapMinCount = options.overlapMinCount;
     caOptions.posDelta = options.overlapWindowSize;
