@@ -472,8 +472,6 @@ struct SwiftParameters
             data_iterator(orig.data_iterator),
             haystackEnd(orig.haystackEnd),
             _needReinit(orig._needReinit),
-            curHit(),
-            endHit(),
             hits(orig.hits),
             startPos(orig.startPos),
             curPos(orig.curPos),
@@ -481,9 +479,7 @@ struct SwiftParameters
             windowStart(orig.windowStart),
             dotPos(orig.dotPos),
             dotPos2(orig.dotPos2),
-            data_repeats(orig.data_repeats),
-            curRepeat(),
-            endRepeat()
+            data_repeats(orig.data_repeats)
         {
             curHit = begin(hits, Standard()) + (orig.curHit - begin(orig.hits, Standard()));
             endHit = end(hits, Standard());
