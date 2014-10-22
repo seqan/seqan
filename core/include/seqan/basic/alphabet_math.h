@@ -272,8 +272,6 @@ minValue(T /*tag*/)
     return infimumValueImpl(_tag);
 }
 
-}  // namespace seqan
-
 // ----------------------------------------------------------------------------
 // Function isNegative()
 // ----------------------------------------------------------------------------
@@ -299,5 +297,7 @@ isNegative(T t)
 {
     return isNegative(t, typename IsSameType<T, typename MakeSigned_<T>::Type>::Type());
 }
+
+}  // namespace seqan
 
 #endif  // #ifndef SEQAN_BASIC_ALPHABET_MATH_H_
