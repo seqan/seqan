@@ -366,7 +366,7 @@ goFurther(Iter<TGaps, GapsIterator<ArrayGaps> > & it,
     // TODO(holtgrew): Handle going backwards more efficiently.
     if (delta == TDifference(0))
         return;
-    if ((int)delta < 0)
+    if (isNegative(delta))
     {
         typedef typename MakeSigned<TDifference>::Type TSignedDifference;
         for (; -static_cast<TSignedDifference>(delta); ++delta)

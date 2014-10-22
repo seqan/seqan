@@ -272,6 +272,32 @@ minValue(T /*tag*/)
     return infimumValueImpl(_tag);
 }
 
+// ----------------------------------------------------------------------------
+// Function isNegative()
+// ----------------------------------------------------------------------------
+
+// to remove '... < 0 is always false' warning
+template <typename T>
+inline bool
+isNegative(T, False)
+{
+    return false;
+}
+
+template <typename T>
+inline bool
+isNegative(T t, True)
+{
+    return t < 0;
+}
+
+template <typename T>
+inline bool
+isNegative(T t)
+{
+    return isNegative(t, typename IsSameType<T, typename MakeSigned_<T>::Type>::Type());
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_BASIC_ALPHABET_MATH_H_

@@ -35,16 +35,11 @@
 #ifndef SEQAN_STREAM_STREAM_COMPRESSOR_H_
 #define SEQAN_STREAM_STREAM_COMPRESSOR_H_
 
-/*
-#ifdef WIN32
-#ifndef ZLIB_WINAPI
-#define ZLIB_WINAPI
-#endif
-#endif
-*/
 
 #if SEQAN_HAS_ZLIB
+// Zlib headers
 #include <zlib.h>
+#include "zipstream/zutil.h"
 #endif
 
 #include <algorithm>    // copy
