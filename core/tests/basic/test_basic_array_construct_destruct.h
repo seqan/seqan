@@ -110,8 +110,12 @@ struct CDStruct
     }
 };
 
+namespace seqan {
+
 template <>
-struct seqan::HasMoveConstructor<CDStruct> : True {};
+struct HasMoveConstructor<CDStruct> : True {};
+
+}
 
 void move(CDStruct & target, CDStruct const & source)
 {
