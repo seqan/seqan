@@ -105,7 +105,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
     private:
 
-        Mutex(Mutex const &)
+        Mutex(Mutex const &) :
+            hMutex(NULL)
         {
             // we only support move construction (no copy-construction)
         }
@@ -120,9 +121,11 @@ namespace SEQAN_NAMESPACE_MAIN
         pthread_mutex_t data, *hMutex;
 
         Mutex():
-            hMutex(NULL) {}
+            hMutex(NULL)
+        {}
 
-        Mutex(bool initial) {
+        Mutex(bool initial)
+        {
             SEQAN_DO_SYS(open(initial));
         }
 
@@ -175,7 +178,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
     private:
 
-        Mutex(Mutex const &)
+        Mutex(Mutex const &) :
+            hMutex(NULL)
         {
             // we only support move construction (no copy-construction)
         }

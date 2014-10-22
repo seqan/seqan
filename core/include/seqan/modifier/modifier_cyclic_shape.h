@@ -613,7 +613,7 @@ template<typename THost, typename TSpec, typename TDelta>
 inline ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > &
 operator+=(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > >&me, TDelta delta)
 {
-    if (_isNegative(delta))
+    if (isNegative(delta))
     {
         me -= -(typename MakeSigned<TDelta>::Type)delta;
     }
@@ -637,7 +637,7 @@ template<typename THost, typename TSpec, typename TDelta>
 inline ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > > &
 operator-=(ModifiedIterator<THost, ModCyclicShape<CyclicShape<TSpec> > >&me, TDelta delta)
 {
-    if (_isNegative(delta))
+    if (isNegative(delta))
     {
         me += -(typename MakeSigned<TDelta>::Type)delta;
     }
