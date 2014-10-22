@@ -418,8 +418,9 @@ struct MSplazerChain
     // bool transl/dupl;
 
     MSplazerChain(TScoreAlloc & _scores) :
-        matchDistanceScores(_scores), mateJoinPosition(0), isEmpty(false), isPartial(false),
-        startVertex(), endVertex()
+        startVertex(), endVertex(),
+        matchDistanceScores(_scores), mateJoinPosition(0),
+        isEmpty(false), isPartial(false)
     {}
 };
 
