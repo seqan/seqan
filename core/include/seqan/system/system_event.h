@@ -141,7 +141,8 @@ struct Event        // this class mustn't exceed the size of HANDLE (needed by w
 
 private:
 
-    Event(Event const &)
+    Event(Event const &) :
+        hEvent(NULL)
     {
         // we only support move construction (no copy-construction)
     }
@@ -293,7 +294,9 @@ struct Event :
 
 private:
 
-    Event(Event const &)
+    Event(Event const &) :
+        Mutex(),
+        hEvent(NULL)
     {
         // we only support move construction (no copy-construction)
     }

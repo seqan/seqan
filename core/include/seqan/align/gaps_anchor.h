@@ -736,25 +736,6 @@ assignSource(Gaps<TSequence, AnchorGaps<TGapAnchor> > & gaps, TSequence2 const &
 }
 
 // ----------------------------------------------------------------------------
-// Helper Function _helperIsNegative()
-// ----------------------------------------------------------------------------
-
-// to remove '... < 0 is always false' warning
-template <typename T>
-inline bool
-_helperIsNegative(T, False)
-{
-    return false;
-}
-
-template <typename T>
-inline bool
-_helperIsNegative(T t, True)
-{
-    return t < 0;
-}
-
-// ----------------------------------------------------------------------------
 // Function positionGapToSeq()
 // ----------------------------------------------------------------------------
 
@@ -873,7 +854,7 @@ positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition p
     TPosition           seqPos;
     int                 anchorIdx;
 
-    if (_helperIsNegative(pos, typename IsSameType<TPosition, typename MakeSigned_<TPosition>::Type>::Type()))
+    if (isNegative(pos))
         anchorIdx = -1;
     else
     {
@@ -985,7 +966,7 @@ positionSeqToGap(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition p
     TPosition           gapPos;
     int                 anchorIdx;
 
-    if (_helperIsNegative(pos, typename IsSameType<TPosition, typename MakeSigned_<TPosition>::Type>::Type()))
+    if (isNegative(pos))
         anchorIdx = -1;
     else
     {

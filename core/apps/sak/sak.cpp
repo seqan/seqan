@@ -337,7 +337,7 @@ int main(int argc, char ** argv)
         openRes = open(inFile, toCString(options.inFastxPath));
     else
         openRes = open(inFile, std::cin);
-    if (!res)
+    if (!openRes)
     {
         std::cerr << "ERROR: Problem opening input file.\n";
         return 1;

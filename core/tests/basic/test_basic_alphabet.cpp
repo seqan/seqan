@@ -35,6 +35,7 @@
 // ==========================================================================
 
 #include <seqan/basic/basic_debug.h>
+#include <seqan/basic/basic_metaprogramming.h>
 #include <seqan/basic/basic_alphabet.h>
 
 #include "test_basic_fundamental_helpers.h"
