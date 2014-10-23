@@ -290,6 +290,9 @@ SEQAN_TYPED_TEST(OutputStreamTest, Open)
 
     SEQAN_ASSERT(open(this->stream, toCString(ctx.inputFilename), OPEN_WRONLY|OPEN_APPEND));
     iter = directionIterator(this->stream, Output());
+    SEQAN_ASSERT_EQ((unsigned)position(iter), 0u);
+
+    goFurther(iter, ctx.filesize);
     SEQAN_ASSERT_EQ((unsigned)position(iter), ctx.filesize);
 }
 
