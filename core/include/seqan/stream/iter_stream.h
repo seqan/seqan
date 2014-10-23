@@ -148,7 +148,10 @@ public:
             if (ofs == 0)
                 return;
 
-            this->underflow();
+            if (IsSameType<TDirection, Input>::VALUE)
+                this->underflow();
+            else
+                this->overflow();
             left = chunkSize(dir);
 
             if (SEQAN_UNLIKELY(left == 0))
@@ -698,6 +701,27 @@ atEnd(Iter<TStream, StreamIterator<Input> > const & iter)
             return false;
         else
             return TStreamBuffer::TTraits::eq_int_type(buf->sgetc(), TStreamBuffer::TTraits::eof());
+    }
+}
+
+template <typename TStream>
+inline bool
+atEnd(Iter<TStream, StreamIterator<Output> > const & iter)
+{
+    typedef typename Value<Iter<TStream, StreamIterator<Input> > >::Type TValue;
+    typedef StreamBuffer<TValue> TStreamBuffer;
+
+    if (SEQAN_UNLIKELY(iter.streamBuf == NULL))
+    {
+        return true;
+    }
+    else
+    {
+        TStreamBuffer *buf = static_cast<TStreamBuffer*>(iter.streamBuf);
+        if (SEQAN_LIKELY(buf->pptr() < buf->epptr()))
+            return false;
+        else
+            return TStreamBuffer::TTraits::eq_int_type(buf->overflow(), TStreamBuffer::TTraits::eof());
     }
 }
 
