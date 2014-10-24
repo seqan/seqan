@@ -134,7 +134,7 @@ inline void
 signal(Condition &cond)
 {
 #ifdef PLATFORM_WINDOWS
-    WakeConditionVariable(&cond.data_cond);
+    WakeAllConditionVariable(&cond.data_cond);
 #else
     int result = pthread_cond_broadcast(&cond.data_cond);
     ignoreUnusedVariableWarning(result);
