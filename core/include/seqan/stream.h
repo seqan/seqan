@@ -50,7 +50,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #ifndef ZLIB_WINAPI
 //#define ZLIB_WINAPI
 #endif
