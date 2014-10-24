@@ -248,6 +248,12 @@ public:
 	{	
 		this->flush(); this->rdbuf()->flush(); return *this;
 	};
+
+#ifdef _WIN32
+private:
+    void _Add_vtordisp1() { } // Required to avoid VC++ warning C4250
+    void _Add_vtordisp2() { } // Required to avoid VC++ warning C4250
+#endif
 };
 
 template<
@@ -279,6 +285,11 @@ public:
 		bzip2_istreambase_type(istream_,verbosity_, small_, read_buffer_size_, input_buffer_size_), 
 		istream_type(bzip2_istreambase_type::rdbuf())
 	{};
+#ifdef _WIN32
+private:
+    void _Add_vtordisp1() { } // Required to avoid VC++ warning C4250
+    void _Add_vtordisp2() { } // Required to avoid VC++ warning C4250
+#endif
 };
 
 typedef basic_bzip2_ostream<char> bzip2_ostream;
