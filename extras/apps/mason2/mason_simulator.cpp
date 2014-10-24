@@ -1190,7 +1190,7 @@ public:
 
         // Set lower bound on fragment size in case of Illumina reads.
         if (options.seqOptions.sequencingTechnology == SequencingOptions::ILLUMINA)
-            options.fragSamplerOptions.fragSizeLowerBound = 1.5 * options.illuminaOptions.readLength;
+            options.fragSamplerOptions.fragSizeLowerBound = (int)(1.5 * options.illuminaOptions.readLength);
 
         // Initialize VCF materialization (reference FASTA and input VCF).
         std::cerr << "Opening reference and variants file ...";

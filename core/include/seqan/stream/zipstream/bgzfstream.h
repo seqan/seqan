@@ -903,9 +903,12 @@ public:
         this->rdbuf()->addFooter();
     }
 
-
 private:
     static void put_long(ostream_reference out_, unsigned long x_);
+#ifdef _WIN32
+    void _Add_vtordisp1() { } // Required to avoid VC++ warning C4250
+    void _Add_vtordisp2() { } // Required to avoid VC++ warning C4250
+#endif
 };
 
 /* \brief A zipper istream
@@ -968,6 +971,12 @@ protected:
 	int check_header();
 	bool m_is_gzip;
 	unsigned long m_gbgzf_data_size;
+
+#ifdef _WIN32
+private:
+    void _Add_vtordisp1() { } // Required to avoid VC++ warning C4250
+    void _Add_vtordisp2() { } // Required to avoid VC++ warning C4250
+#endif
 };
 
 /// A typedef for basic_bgzf_ostream<char>

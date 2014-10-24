@@ -200,7 +200,7 @@ guessFormatFromStream(TStream &istream, Tag<TFormat_>)
 
     SEQAN_ASSERT(istream.good());
 
-    if (MagicHeader<TFormat>::VALUE == NULL)
+    if ((char *)MagicHeader<TFormat>::VALUE == NULL)
         return true;
 
     bool match = true;
