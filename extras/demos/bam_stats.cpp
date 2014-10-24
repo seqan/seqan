@@ -1226,8 +1226,8 @@ int doWork(BamFileIn & reader, BamFileIn & greader,
         std::cout << stats.mismatchHisto[i] << '\t';
         std::cout << stats.insertHisto[i] << '\t';
         std::cout << stats.deletionHisto[i] << '\t';
-        if (reads == 0.0)  // prevent div-by-zero below
-            reads = 1.0;
+        if (reads == 0)  // prevent div-by-zero below
+            reads = 1;
         std::cout << (stats.mismatchHisto[i] + stats.insertHisto[i] + stats.deletionHisto[i]) / (double)reads << '\t';
         std::cout << pow(10.0, stats.avrgQuality[i] / -10.0) << '\t';
         std::cout << stats.avrgQuality[i] << std::endl;

@@ -533,6 +533,9 @@ _processFilePage(FilePageTable<TValue, TDirection, TSpec> & pager, TPageFrame & 
             // TODO: put me into ready chain
             page.state = UNUSED;
             break;
+
+        default:
+            SEQAN_FAIL("Unknown page state: %i", page.state);
         }
     }
     return true;

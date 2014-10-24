@@ -535,6 +535,11 @@ private:
 	/// @details set to false during reset_state()
 	bool m_zip_stream_finalized;
 
+#ifdef _WIN32
+private:
+    void _Add_vtordisp1() { } // Required to avoid VC++ warning C4250
+    void _Add_vtordisp2() { } // Required to avoid VC++ warning C4250
+#endif
 }; // basic_zip_ostream
 
 
@@ -635,6 +640,11 @@ protected:
 	uLong m_gzip_crc;
 	uLong m_gzip_data_size;
 
+#ifdef _WIN32
+private:
+    void _Add_vtordisp1() { } // Required to avoid VC++ warning C4250
+    void _Add_vtordisp2() { } // Required to avoid VC++ warning C4250
+#endif
 }; // basic_zip_istream
 
 
