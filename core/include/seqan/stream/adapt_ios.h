@@ -195,6 +195,12 @@ struct Chunk<std::basic_streambuf<TValue, TTraits> >
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TTraits, typename TDummy>
+struct DefaultOpenMode<std::basic_fstream<TValue, TTraits>, TDummy>
+{
+    enum { VALUE = OPEN_RDWR | OPEN_CREATE | OPEN_APPEND };
+};
+
+template <typename TValue, typename TTraits, typename TDummy>
 struct DefaultOpenMode<std::basic_ifstream<TValue, TTraits>, TDummy>
 {
     enum { VALUE = OPEN_RDONLY };
@@ -269,9 +275,7 @@ _getSTLStyleOpenMode(int openMode)
     if (openMode & OPEN_WRONLY)
     {
         flags |= std::ios_base::out;
-        if (openMode & OPEN_APPEND)
-            flags |= std::ios_base::app;
-        else
+        if (!(openMode & OPEN_APPEND))
             flags |= std::ios_base::trunc;
     }
 
@@ -314,6 +318,12 @@ template <typename TValue, typename TTraits>
 inline bool atEnd(std::istreambuf_iterator<TValue, TTraits> const &it)
 {
     return it == std::istreambuf_iterator<TValue, TTraits>();
+}
+
+template <typename TValue, typename TTraits>
+inline bool atEnd(std::ostreambuf_iterator<TValue, TTraits> const &it)
+{
+    return it == std::ostreambuf_iterator<TValue, TTraits>();
 }
 
 // ----------------------------------------------------------------------------
