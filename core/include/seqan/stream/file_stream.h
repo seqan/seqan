@@ -134,6 +134,16 @@ struct FilePage
     PageFrameState          state;
     PageFrameState          targetState;
     PageCompletionState     completionState;
+
+	FilePage() :
+		next(NULL),
+		lockCount(0),
+		filePos(0),
+		size(0),
+		state(UNUSED),
+		targetState(UNUSED),
+		completionState(IS_PREPROCESSED)
+	{}
 };
 
 template <typename TValue, typename TSpec>
