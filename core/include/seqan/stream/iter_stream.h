@@ -163,16 +163,18 @@ public:
 
                 // if seek doesn't work manually skip characters (when reading)
 				if (res == typename TTraits::pos_type(typename TTraits::off_type(-1)))
+				{
 					if (IsSameType<TDirection, Input>::VALUE)
 					{
 						for (; ofs != 0; --ofs)
 							this->sbumpc();
 					}
-					else if (IsSameType<TDirection, Output>::VALUE)
-					{ 
+					if (IsSameType<TDirection, Output>::VALUE)
+					{
 						for (; ofs != 0; --ofs)
 							this->sputc('\0');
 					}
+				}
                 return;
             }
         }
