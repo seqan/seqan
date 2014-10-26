@@ -84,15 +84,6 @@ struct CDStruct
         moveConstructions += 1;
     }
 
-#ifdef SEQAN_CXX11_STANDARD
-    CDStruct(CDStruct && other)
-            : copiedFrom(-1), movedFrom(other.id), assignedFrom(-1), setFrom(-1)
-    {
-        lastOther = &other;
-        moveConstructions += 1;
-    }
-#endif
-
     CDStruct & operator=(CDStruct const & other)
     {
         lastOther = &other;
@@ -102,6 +93,14 @@ struct CDStruct
         assignedFrom = other.id;
         setFrom = -1;
         return *this;
+    }
+
+#ifdef SEQAN_CXX11_STANDARD
+    CDStruct(CDStruct && other)
+            : copiedFrom(-1), movedFrom(other.id), assignedFrom(-1), setFrom(-1)
+    {
+        lastOther = &other;
+        moveConstructions += 1;
     }
 
 	CDStruct & operator=(CDStruct && other)
@@ -114,6 +113,7 @@ struct CDStruct
 		setFrom = -1;
 		return *this;
 	}
+#endif
 	
 	~CDStruct()
     {
