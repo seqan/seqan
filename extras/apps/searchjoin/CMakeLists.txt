@@ -33,12 +33,12 @@ add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
 add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 
 # Update the list of file names below if you add source files to your application.
-add_executable (search search.cpp finder.h db.h verifier.h writer.h)
-add_executable (join join.cpp finder.h db.h verifier.h writer.h)
+add_executable (s4_search search.cpp finder.h db.h verifier.h writer.h)
+add_executable (s4_join join.cpp finder.h db.h verifier.h writer.h)
 
 # Add dependencies found by find_package (SeqAn).
-target_link_libraries (search ${SEQAN_LIBRARIES})
-target_link_libraries (join ${SEQAN_LIBRARIES})
+target_link_libraries (s4_search ${SEQAN_LIBRARIES})
+target_link_libraries (s4_join ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
@@ -53,7 +53,7 @@ if (NOT SEQAN_PREFIX_SHARE_DOC)
 endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install searchjoin in ${PREFIX}/bin directory
-install (TARGETS join #search
+install (TARGETS s4_search s4_join
          DESTINATION bin)
 
 # Install non-binary files for the package to "." for app builds and

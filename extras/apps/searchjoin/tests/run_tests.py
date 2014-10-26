@@ -42,10 +42,10 @@ def main(source_base, binary_base):
     # ============================================================
 
     path_to_join = app_tests.autolocateBinary(
-      binary_base, 'bin', 'join')
+      binary_base, 'bin', 's4_join')
 
     path_to_search = app_tests.autolocateBinary(
-      binary_base, 'bin', 'search')
+      binary_base, 'bin', 's4_search')
 
     # ============================================================
     # Built TestConf list.
