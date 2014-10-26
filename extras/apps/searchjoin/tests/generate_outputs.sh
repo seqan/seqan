@@ -5,8 +5,8 @@
 
 # Paths to binaries
 BIN=~/Documents/Code/SeqAn/build/Release/bin
-SEARCH=$BIN/search
-JOIN=$BIN/join
+SEARCH=$BIN/s4_search
+JOIN=$BIN/s4_join
 
 # Threads
 THREADS="4"
