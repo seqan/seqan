@@ -217,6 +217,11 @@ _readBamRecordWithoutSize(TBuffer & rawRecord, TForwardIter & iter)
 {
     __int32 recordLen = 0;
     readRawPod(recordLen, iter);
+
+    // fail, if we read "BAM\1" (did you miss to call readRecord(header, bamFile) first?)
+    if (recordLen == 0x014D4142)
+        SEQAN_THROW(ParseError("Unexpected BAM header encountered."));
+
     clear(rawRecord);
     write(rawRecord, iter, (size_t)recordLen);
     return recordLen;
@@ -228,6 +233,11 @@ _readBamRecord(TBuffer & rawRecord, TForwardIter & iter, Bam)
 {
     __int32 recordLen = 0;
     readRawPod(recordLen, iter);
+    
+    // fail, if we read "BAM\1" (did you miss to call readRecord(header, bamFile) first?)
+    if (recordLen == 0x014D4142)
+        SEQAN_THROW(ParseError("Unexpected BAM header encountered."));
+
     clear(rawRecord);
     appendRawPod(rawRecord, recordLen);
     write(rawRecord, iter, (size_t)recordLen);
