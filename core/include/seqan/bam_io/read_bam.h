@@ -217,6 +217,8 @@ _readBamRecordWithoutSize(TBuffer & rawRecord, TForwardIter & iter)
 {
     __int32 recordLen = 0;
     readRawPod(recordLen, iter);
+    SEQAN_ASSERT_NEQ_MSG(recordLen, 0x014D4142, "You forgot to read in the BamHeader.");    // fail, if we read "BAM\1"
+
     clear(rawRecord);
     write(rawRecord, iter, (size_t)recordLen);
     return recordLen;
@@ -228,6 +230,7 @@ _readBamRecord(TBuffer & rawRecord, TForwardIter & iter, Bam)
 {
     __int32 recordLen = 0;
     readRawPod(recordLen, iter);
+    SEQAN_ASSERT_NEQ_MSG(recordLen, 0x014D4142, "You forgot to read in the BamHeader.");    // fail, if we read "BAM\1"
     clear(rawRecord);
     appendRawPod(rawRecord, recordLen);
     write(rawRecord, iter, (size_t)recordLen);
