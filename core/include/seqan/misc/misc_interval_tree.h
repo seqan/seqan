@@ -55,8 +55,7 @@
 #include <seqan/graph_types.h>
 
 
-namespace SEQAN_NAMESPACE_MAIN
-{
+namespace SEQAN_NAMESPACE_MAIN {
 //////////////////////////////////////////////////////////////////////////////
 // Graph - Interval Tree Types
 //////////////////////////////////////////////////////////////////////////////
@@ -111,7 +110,7 @@ namespace SEQAN_NAMESPACE_MAIN
 ...metafunction:Metafunction.Cargo
 ..include:seqan/misc/misc_interval_tree.h
 */
-template<typename TValue = int, typename TCargo = int>
+template <typename TValue = int, typename TCargo = int>
 class IntervalAndCargo
 {
 public:
@@ -120,27 +119,28 @@ public:
 ..class:Class.PointAndCargo
 ..summary:The first element in the interval of type i1.
      */
-	TValue i1;
+    TValue i1;
 
     /**
 .Memvar.IntervalAndCargo#i2:
 ..class:Class.PointAndCargo
 ..summary:The last element in the interval of type i2.
      */
-	TValue i2;
+    TValue i2;
 
     /**
 .Memvar.IntervalAndCargo#cargo:
 ..class:Class.PointAndCargo
 ..summary:The stored cargo of type TCargo.
      */
-	TCargo cargo;
+    TCargo cargo;
 
     /**
 .Memfunc.IntervalAndCargo#IntervalAndCargo:
 ..signature:IntervalAndCargo()
      */
-    IntervalAndCargo() : i1(), i2(), cargo()
+    IntervalAndCargo() :
+        i1(), i2(), cargo()
     {}
 
     /**
@@ -152,11 +152,12 @@ public:
 ..param.i2:The last element in the interval of type TValue.
 ..param.cargo:The cargo value of type TCargo.
      */
-	IntervalAndCargo(TValue i1, TValue i2, TCargo cargo):
-		i1(i1), i2(i2), cargo(cargo)
-	{
-SEQAN_CHECKPOINT
-	}
+    IntervalAndCargo(TValue i1, TValue i2, TCargo cargo) :
+        i1(i1), i2(i2), cargo(cargo)
+    {
+        SEQAN_CHECKPOINT
+    }
+
 };
 
 
@@ -203,30 +204,32 @@ SEQAN_CHECKPOINT
 ...metafunction:Metafunction.Value
 ..include:seqan/misc/misc_interval_tree.h
 */
-template<typename TValue=int, typename TCargo=int>
-class PointAndCargo {
+template <typename TValue = int, typename TCargo = int>
+class PointAndCargo
+{
 public:
     /**
 .Memvar.PointAndCargo#point:
 ..class:Class.PointAndCargo
 ..summary:The stored point of type TValue.
      */
-	TValue point;
+    TValue point;
 
     /**
 .Memvar.PointAndCargo#cargo:
 ..class:Class.PointAndCargo
 ..summary:The stored cargo of type TCargo.
      */
-	TCargo cargo;
+    TCargo cargo;
 
     /**
 .Memfunc.PointAndCargo#PointAndCargo
 ..class:Class.PointAndCargo
 ..signature:PointAndCargo(point, cargo)
     */
-	PointAndCargo() : point(), cargo()
-	{}
+    PointAndCargo() :
+        point(), cargo()
+    {}
 
     /**
 .Memfunc.PointAndCargo#PointAndCargo
@@ -238,9 +241,9 @@ public:
 ..param.cargo:
 ...summary:The cargo to store of type TCargo.
     */
-	PointAndCargo(TValue point, TCargo cargo):
-		point(point), cargo(cargo)
-	{}
+    PointAndCargo(TValue point, TCargo cargo) :
+        point(point), cargo(cargo)
+    {}
 };
 
 ///////////////////////////////////////////////////////////////////////////
@@ -312,7 +315,7 @@ struct StoreIntervals {};
 ..class:Class.IntervalTreeNode
 ..summary:Sorted list of pointers to intervals, sorted in descending according to their right boundary points.
  */
-template<typename TInterval, typename TSpec=StorePointsOnly>
+template <typename TInterval, typename TSpec = StorePointsOnly>
 class IntervalTreeNode;
 
 /*!
@@ -347,16 +350,18 @@ class IntervalTreeNode;
 ..param.TInterval:The interval type to store in the node.
 ..include:seqan/misc/misc_interval_tree.h
  */
-template<typename TInterval>
-class IntervalTreeNode<TInterval, StoreIntervals> {
+template <typename TInterval>
+class IntervalTreeNode<TInterval, StoreIntervals>
+{
 public:
-	typedef typename Value<TInterval>::Type TValue;
+    typedef typename Value<TInterval>::Type TValue;
 
-	TValue center;
-	String<TInterval> list1;
-	String<TInterval> list2;
+    TValue center;
+    String<TInterval> list1;
+    String<TInterval> list2;
 
-    IntervalTreeNode() : center()
+    IntervalTreeNode() :
+        center()
     {}
 };
 
@@ -384,7 +389,7 @@ public:
  *
  * @var TString StorePointsOnlyIntervalTreeNode::list2;
  * @brief Points with cargo sorted by the end points.
- */ 
+ */
 
 /**
 .Spec.Points Only Tree Node
@@ -395,15 +400,16 @@ public:
 ..param.TInterval:The interval type to store in the node.
 ..include:seqan/misc/misc_interval_tree.h
  */
-template<typename TInterval>
-class IntervalTreeNode<TInterval, StorePointsOnly> {
+template <typename TInterval>
+class IntervalTreeNode<TInterval, StorePointsOnly>
+{
 public:
-	typedef typename Cargo<TInterval>::Type TCargo;
-	typedef typename Value<TInterval>::Type TValue;
+    typedef typename Cargo<TInterval>::Type TCargo;
+    typedef typename Value<TInterval>::Type TValue;
 
-	TValue center;
-	String<PointAndCargo<TValue,TCargo> > list1;
-	String<PointAndCargo<TValue,TCargo> > list2;
+    TValue center;
+    String<PointAndCargo<TValue, TCargo> > list1;
+    String<PointAndCargo<TValue, TCargo> > list2;
 
     /**
 .Memfunc.IntervalTreeNode#IntervalTreeNode:
@@ -411,18 +417,20 @@ public:
 ..summary:Default constructor.
 ..signature:IntervalTreeNode()
      */
-    IntervalTreeNode() : center()
+    IntervalTreeNode() :
+        center()
     {
-SEQAN_CHECKPOINT
+        SEQAN_CHECKPOINT
     }
 
-	IntervalTreeNode(IntervalTreeNode const & other):
-		center(other.center),
-		list1(other.list1),
-		list2(other.list2)
-	{
-SEQAN_CHECKPOINT
-	}
+    IntervalTreeNode(IntervalTreeNode const & other) :
+        center(other.center),
+        list1(other.list1),
+        list2(other.list2)
+    {
+        SEQAN_CHECKPOINT
+    }
+
 };
 
 
@@ -509,15 +517,15 @@ template <typename TValue = int, typename TCargo = unsigned int>
 class IntervalTree
 {
 public:
-	typedef Graph<Directed<void,WithoutEdgeId> > TGraph;
-	typedef IntervalAndCargo<TValue,TCargo> TInterval;
-	typedef IntervalTreeNode<TInterval> TNode;
-	typedef String<TNode> TPropertyMap;
+    typedef Graph<Directed<void, WithoutEdgeId> > TGraph;
+    typedef IntervalAndCargo<TValue, TCargo> TInterval;
+    typedef IntervalTreeNode<TInterval> TNode;
+    typedef String<TNode> TPropertyMap;
 
-	TGraph g;
-	TPropertyMap pm;
-	size_t interval_counter;
-	
+    TGraph g;
+    TPropertyMap pm;
+    size_t interval_counter;
+
 /**
 .Memfunc.IntervalTree#IntervalTree:
 ..class:Class.IntervalTree
@@ -539,77 +547,78 @@ public:
 ...default:@Tag.IntervalTree Centers.tag.ComputeCenter@
 ..remarks:center of root node is computed by _calcIntervalTreeRootCenter
 */
-	
-	IntervalTree()
-	{
-SEQAN_CHECKPOINT
-		interval_counter = 0;
-	}
-	
-	template<typename TIterator,typename TCargoIterator>
-	IntervalTree(TIterator interval_begins,
-				 TIterator interval_ends, 
-				 TCargoIterator interval_cargos, 
-				 size_t len)	
-	{
-SEQAN_CHECKPOINT
-		String<TInterval> intervals;
-		resize(intervals,len);
-		size_t i = 0;
-		while(i<len)
-		{
-			intervals[i].i1 = value(interval_begins);
-			++interval_begins;
-			intervals[i].i2 = value(interval_ends);
-			++interval_ends;
-			intervals[i].cargo = value(interval_cargos);
-			++interval_cargos;
-			++i;
-		}
-		createIntervalTree(*this, intervals);
-	}
 
-	template<typename TIterator>
-	IntervalTree(TIterator interval_begins,
-				 TIterator interval_ends,
-				 size_t len)
-	{
-SEQAN_CHECKPOINT
-		String<TInterval> intervals;
-		resize(intervals,len);
-		size_t i = 0;
-		while(i<len)
-		{
-			intervals[i].i1 = value(interval_begins);
-			++interval_begins;
-			intervals[i].i2 = value(interval_ends);
-			++interval_ends;
-			intervals[i].cargo = i;
-			++i;
-		}
-		createIntervalTree(*this, intervals);
-	}
-	
-	IntervalTree(String<TInterval> intervals)	
-	{
-SEQAN_CHECKPOINT
-		createIntervalTree(*this, intervals);
-	}
+    IntervalTree()
+    {
+        SEQAN_CHECKPOINT
+            interval_counter = 0;
+    }
 
-	template <typename TTagSpec>
-	IntervalTree(String<TInterval> intervals, Tag<TTagSpec> const tag)
-	{
-SEQAN_CHECKPOINT
-		interval_counter = length(intervals);
-		createIntervalTree(g,pm,intervals,tag);
-	}
+    template <typename TIterator, typename TCargoIterator>
+    IntervalTree(TIterator interval_begins,
+                 TIterator interval_ends,
+                 TCargoIterator interval_cargos,
+                 size_t len)
+    {
+        SEQAN_CHECKPOINT
+        String<TInterval> intervals;
+        resize(intervals, len);
+        size_t i = 0;
+        while (i < len)
+        {
+            intervals[i].i1 = value(interval_begins);
+            ++interval_begins;
+            intervals[i].i2 = value(interval_ends);
+            ++interval_ends;
+            intervals[i].cargo = value(interval_cargos);
+            ++interval_cargos;
+            ++i;
+        }
+        createIntervalTree(*this, intervals);
+    }
 
-	IntervalTree(String<TInterval> intervals, TValue center)	
-	{
-SEQAN_CHECKPOINT
-		interval_counter = length(intervals);
-		createIntervalTree(g,pm,intervals,center);
-	}
+    template <typename TIterator>
+    IntervalTree(TIterator interval_begins,
+                 TIterator interval_ends,
+                 size_t len)
+    {
+        SEQAN_CHECKPOINT
+        String<TInterval> intervals;
+        resize(intervals, len);
+        size_t i = 0;
+        while (i < len)
+        {
+            intervals[i].i1 = value(interval_begins);
+            ++interval_begins;
+            intervals[i].i2 = value(interval_ends);
+            ++interval_ends;
+            intervals[i].cargo = i;
+            ++i;
+        }
+        createIntervalTree(*this, intervals);
+    }
+
+    IntervalTree(String<TInterval> intervals)
+    {
+        SEQAN_CHECKPOINT
+            createIntervalTree(*this, intervals);
+    }
+
+    template <typename TTagSpec>
+    IntervalTree(String<TInterval> intervals, Tag<TTagSpec> const tag)
+    {
+        SEQAN_CHECKPOINT
+            interval_counter = length(intervals);
+        createIntervalTree(g, pm, intervals, tag);
+    }
+
+    IntervalTree(String<TInterval> intervals, TValue center)
+    {
+        SEQAN_CHECKPOINT
+            interval_counter = length(intervals);
+        createIntervalTree(g, pm, intervals, center);
+    }
+
 };
 
 
@@ -664,18 +673,18 @@ typedef Tag<TagComputeCenter_> const ComputeCenter;
 ..see:Function.getRightBoundary
 */
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TValue &
 leftBoundary(IntervalAndCargo<TValue, TCargo> & interval)
 {
-	return interval.i1;
+    return interval.i1;
 }
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TValue const &
 leftBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
 {
-	return interval.i1;
+    return interval.i1;
 }
 
 /*!
@@ -703,18 +712,18 @@ leftBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
 ..see:Function.getLeftBoundary
 */
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TValue &
 rightBoundary(IntervalAndCargo<TValue, TCargo> & interval)
 {
-	return interval.i2;
+    return interval.i2;
 }
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TValue const &
 rightBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
 {
-	return interval.i2;
+    return interval.i2;
 }
 
 /*!
@@ -742,11 +751,11 @@ rightBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
 ..see:Function.rightBoundary
 */
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TValue
 getLeftBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
 {
-	return interval.i1;
+    return interval.i1;
 }
 
 /*!
@@ -774,13 +783,12 @@ getLeftBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
 ..see:Function.leftBoundary
 */
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TValue
 getRightBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
 {
-	return interval.i2;
+    return interval.i2;
 }
-
 
 /*!
  * @fn IntervalAndCargo#cargo
@@ -789,7 +797,7 @@ getRightBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
  * @signature TCargo cargo(interval);
  *
  * @param[in] interval The IntervalAndCargo to query for its cargo.
- * 
+ *
  * @return TCargo Reference to the cargo member.
  */
 
@@ -802,18 +810,18 @@ getRightBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
 ..see:Function.getCargo
 */
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TCargo const &
 cargo(IntervalAndCargo<TValue, TCargo> const & interval)
 {
-	return interval.cargo;
+    return interval.cargo;
 }
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TCargo &
 cargo(IntervalAndCargo<TValue, TCargo> & interval)
 {
-	return interval.cargo;
+    return interval.cargo;
 }
 
 /*!
@@ -823,10 +831,10 @@ cargo(IntervalAndCargo<TValue, TCargo> & interval)
  * @signature TCargo getCargo(interval);
  *
  * @param[in] interval The IntervalAndCargo to query for its cargo.
- * 
+ *
  * @return TCargo Copy of the cargo member.
  */
- 
+
 /**
 .Function.getCargo
 ..signature:getCargo(me)
@@ -836,13 +844,12 @@ cargo(IntervalAndCargo<TValue, TCargo> & interval)
 ..see:Function.cargo
 */
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TCargo
-getCargo(IntervalAndCargo<TValue,TCargo> const & interval)
+getCargo(IntervalAndCargo<TValue, TCargo> const & interval)
 {
-	return interval.cargo;
+    return interval.cargo;
 }
-
 
 /////////////////// Metafunctions //////////////////////
 
@@ -855,10 +862,10 @@ getCargo(IntervalAndCargo<TValue,TCargo> const & interval)
 
 ///.Metafunction.Value.param.T.type:Class.IntervalAndCargo
 ///.Metafunction.Value.class:Class.IntervalAndCargo
-template<typename TValue,typename TCargo>
-struct Value<IntervalAndCargo<TValue,TCargo> >
+template <typename TValue, typename TCargo>
+struct Value<IntervalAndCargo<TValue, TCargo> >
 {
-	typedef TValue Type;
+    typedef TValue Type;
 };
 
 /*!
@@ -870,10 +877,10 @@ struct Value<IntervalAndCargo<TValue,TCargo> >
 
 ///.Metafunction.Cargo.param.T.type:Class.IntervalAndCargo
 ///.Metafunction.Cargo.class:Class.IntervalAndCargo
-template<typename TValue,typename TCargo>
+template <typename TValue, typename TCargo>
 struct Cargo<IntervalAndCargo<TValue, TCargo> >
 {
-	typedef TCargo Type;
+    typedef TCargo Type;
 };
 
 
@@ -899,18 +906,18 @@ struct Cargo<IntervalAndCargo<TValue, TCargo> >
 ..param.point.type:Class.PointAndCargo
  */
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TValue const &
 leftBoundary(PointAndCargo<TValue, TCargo> const & point)
 {
-	return point.point;
+    return point.point;
 }
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TValue &
 leftBoundary(PointAndCargo<TValue, TCargo> & point)
 {
-	return point.point;
+    return point.point;
 }
 
 /*!
@@ -931,20 +938,19 @@ leftBoundary(PointAndCargo<TValue, TCargo> & point)
 ..param.point.type:Class.PointAndCargo
  */
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TValue const &
 rightBoundary(PointAndCargo<TValue, TCargo> const & point)
 {
-	return point.point;
+    return point.point;
 }
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TValue &
 rightBoundary(PointAndCargo<TValue, TCargo> & point)
 {
-	return point.point;
+    return point.point;
 }
-
 
 /**
 .Function.getLeftBoundary
@@ -953,7 +959,7 @@ rightBoundary(PointAndCargo<TValue, TCargo> & point)
 ..param.point.type:Class.PointAndCargo
  */
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TValue
 getLeftBoundary(PointAndCargo<TValue, TCargo> const & point)
 {
@@ -978,11 +984,11 @@ getLeftBoundary(PointAndCargo<TValue, TCargo> const & point)
 ..param.point.type:Class.PointAndCargo
  */
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TValue
-getRightBoundary(PointAndCargo<TValue,TCargo> const & point)
+getRightBoundary(PointAndCargo<TValue, TCargo> const & point)
 {
-	return point.point;
+    return point.point;
 }
 
 /*!
@@ -992,7 +998,7 @@ getRightBoundary(PointAndCargo<TValue,TCargo> const & point)
  * @signature TCargo cargo(point);
  *
  * @param[in] point The PointAndCargo to query for its cargo.
- * 
+ *
  * @return TCargo Reference to the cargo member.
  */
 
@@ -1004,18 +1010,18 @@ getRightBoundary(PointAndCargo<TValue,TCargo> const & point)
 ..param.point.type:Class.PointAndCargo
  */
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TCargo const &
-cargo(PointAndCargo<TValue,TCargo> const & point)
+cargo(PointAndCargo<TValue, TCargo> const & point)
 {
-	return point.cargo;
+    return point.cargo;
 }
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TCargo &
-cargo(PointAndCargo<TValue,TCargo> & point)
+cargo(PointAndCargo<TValue, TCargo> & point)
 {
-	return point.cargo;
+    return point.cargo;
 }
 
 /*!
@@ -1025,7 +1031,7 @@ cargo(PointAndCargo<TValue,TCargo> & point)
  * @signature TCargo getCargo(point);
  *
  * @param[in] point The PointAndCargo to query for its cargo.
- * 
+ *
  * @return TCargo Copy of the cargo member.
  */
 
@@ -1038,11 +1044,11 @@ cargo(PointAndCargo<TValue,TCargo> & point)
 ..see:Function.getCargo
 */
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 TCargo
-getCargo(PointAndCargo<TValue,TCargo> const & point)
+getCargo(PointAndCargo<TValue, TCargo> const & point)
 {
-	return point.cargo;
+    return point.cargo;
 }
 
 ////////////////// Metafunctions //////////////////
@@ -1056,10 +1062,10 @@ getCargo(PointAndCargo<TValue,TCargo> const & point)
 
 ///.Metafunction.Value.param.T.type:Class.PointAndCargo
 ///.Metafunction.Value.class:Class.PointAndCargo
-template<typename TValue,typename TCargo>
-struct Value<PointAndCargo<TValue,TCargo> >
+template <typename TValue, typename TCargo>
+struct Value<PointAndCargo<TValue, TCargo> >
 {
-	typedef TValue Type;
+    typedef TValue Type;
 };
 
 /*!
@@ -1071,10 +1077,10 @@ struct Value<PointAndCargo<TValue,TCargo> >
 
 ///.Metafunction.Cargo.param.T.type:Class.PointAndCargo
 ///.Metafunction.Cargo.class:Class.PointAndCargo
-template<typename TValue,typename TCargo>
-struct Cargo<PointAndCargo<TValue,TCargo> >
+template <typename TValue, typename TCargo>
+struct Cargo<PointAndCargo<TValue, TCargo> >
 {
-	typedef TCargo Type;
+    typedef TCargo Type;
 };
 
 
@@ -1082,17 +1088,14 @@ struct Cargo<PointAndCargo<TValue,TCargo> >
 template <typename TPair>
 bool _less_compI1_ITree(TPair const & p1, TPair const & p2)
 {
-    return (leftBoundary(p1) < leftBoundary(p2));
+    return leftBoundary(p1) < leftBoundary(p2);
 }
-
 
 template <typename TPair>
 bool _greater_compI2_ITree(TPair const & p1, TPair const & p2)
 {
-    return (rightBoundary(p1) > rightBoundary(p2));
+    return rightBoundary(p1) > rightBoundary(p2);
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////
 ///////////////////// IntervalTreeNode functions //////////////////////////
@@ -1103,43 +1106,41 @@ bool _greater_compI2_ITree(TPair const & p1, TPair const & p2)
 
 
 // internal set node functions
-template<typename TValue, typename TInterval>
+template <typename TValue, typename TInterval>
 void
 _setIntervalTreeNode(IntervalTreeNode<TInterval, StoreIntervals> & knot, TValue center, TInterval const & interval)
 {
-	knot.center = center;
-	appendValue(knot.list1, interval);
-	appendValue(knot.list2, interval);
+    knot.center = center;
+    appendValue(knot.list1, interval);
+    appendValue(knot.list2, interval);
 }
 
 // append intervals to lists in node knot
-template<typename TInterval>
+template <typename TInterval>
 void
-_appendIntervalTreeNodeLists(IntervalTreeNode<TInterval, StoreIntervals> & knot,TInterval const & interval)
+_appendIntervalTreeNodeLists(IntervalTreeNode<TInterval, StoreIntervals> & knot, TInterval const & interval)
 {
-	appendValue(knot.list1, interval);
-	appendValue(knot.list2, interval);
+    appendValue(knot.list1, interval);
+    appendValue(knot.list2, interval);
 }
 
-
 //internal set node functions
-template<typename TValue, typename TInterval>
+template <typename TValue, typename TInterval>
 void
 _setIntervalTreeNode(IntervalTreeNode<TInterval, StorePointsOnly> & knot, TValue center, TInterval const & interval)
 {
-	knot.center = center;
-	appendValue(knot.list1,PointAndCargo<TValue,typename Cargo<TInterval>::Type>(leftBoundary(interval),cargo(interval)));
-	appendValue(knot.list2,PointAndCargo<TValue,typename Cargo<TInterval>::Type>(rightBoundary(interval),cargo(interval)));
+    knot.center = center;
+    appendValue(knot.list1, PointAndCargo<TValue, typename Cargo<TInterval>::Type>(leftBoundary(interval), cargo(interval)));
+    appendValue(knot.list2, PointAndCargo<TValue, typename Cargo<TInterval>::Type>(rightBoundary(interval), cargo(interval)));
 }
 
-
-template<typename TInterval>
+template <typename TInterval>
 void
 _appendIntervalTreeNodeLists(IntervalTreeNode<TInterval, StorePointsOnly> & knot, TInterval const & interval)
 {
-	appendValue(knot.list1,PointAndCargo<typename Value<TInterval>::Type,typename Cargo<TInterval>::Type>(leftBoundary(interval),cargo(interval)));
-	appendValue(knot.list2,PointAndCargo<typename Value<TInterval>::Type,typename Cargo<TInterval>::Type>(rightBoundary(interval),cargo(interval)));
-	
+    appendValue(knot.list1, PointAndCargo<typename Value<TInterval>::Type, typename Cargo<TInterval>::Type>(leftBoundary(interval), cargo(interval)));
+    appendValue(knot.list2, PointAndCargo<typename Value<TInterval>::Type, typename Cargo<TInterval>::Type>(rightBoundary(interval), cargo(interval)));
+
 
 }
 
@@ -1154,10 +1155,10 @@ _appendIntervalTreeNodeLists(IntervalTreeNode<TInterval, StorePointsOnly> & knot
 
 ///.Metafunction.Value.param.T.type:Class.IntervalTreeNode
 ///.Metafunction.Value.class:Class.IntervalTreeNode
-template<typename TInterval, typename TSpec>
-struct Value<IntervalTreeNode<TInterval,TSpec> >
+template <typename TInterval, typename TSpec>
+struct Value<IntervalTreeNode<TInterval, TSpec> >
 {
-	typedef typename Value<TInterval>::Type Type;
+    typedef typename Value<TInterval>::Type Type;
 };
 
 /*!
@@ -1169,10 +1170,10 @@ struct Value<IntervalTreeNode<TInterval,TSpec> >
 
 ///.Metafunction.Cargo.param.T.type:Class.IntervalTreeNode
 ///.Metafunction.Cargo.class:Class.IntervalTreeNode
-template<typename TInterval, typename TSpec>
-struct Cargo<IntervalTreeNode<TInterval,TSpec> >
+template <typename TInterval, typename TSpec>
+struct Cargo<IntervalTreeNode<TInterval, TSpec> >
 {
-	typedef typename Cargo<TInterval>::Type Type;
+    typedef typename Cargo<TInterval>::Type Type;
 };
 
 
@@ -1193,26 +1194,26 @@ struct Cargo<IntervalTreeNode<TInterval,TSpec> >
 ..returns:Returns the type of the lists in @Class.IntervalTreeNode@ objects.
 ..include:seqan/misc/misc_interval_tree.h
  */
-template<typename T>
+template <typename T>
 struct ListType;
 
 
 ///.Metafunction.ListType.param.T.type:Class.IntervalTreeNode
 ///.Metafunction.ListType.class:Class.IntervalTreeNode
-template<typename TInterval>
-struct ListType<IntervalTreeNode<TInterval,StorePointsOnly> >
+template <typename TInterval>
+struct ListType<IntervalTreeNode<TInterval, StorePointsOnly> >
 {
-	typedef String<PointAndCargo<typename Value<TInterval>::Type,typename Cargo<TInterval>::Type> > Type;
+    typedef String<PointAndCargo<typename Value<TInterval>::Type, typename Cargo<TInterval>::Type> > Type;
 
 };
 
 
 ///.Metafunction.ListType.param.T.type:Class.IntervalTreeNode
 ///.Metafunction.ListType.class:Class.IntervalTreeNode
-template<typename TInterval>
-struct ListType<IntervalTreeNode<TInterval,StoreIntervals> >
+template <typename TInterval>
+struct ListType<IntervalTreeNode<TInterval, StoreIntervals> >
 {
-	typedef String<IntervalAndCargo<typename Value<TInterval>::Type,typename Cargo<TInterval>::Type> > Type;
+    typedef String<IntervalAndCargo<typename Value<TInterval>::Type, typename Cargo<TInterval>::Type> > Type;
 
 };
 
@@ -1225,11 +1226,11 @@ struct ListType<IntervalTreeNode<TInterval,StoreIntervals> >
 /*!
  * @fn IntervalTree#createIntervalTree
  * @brief Create an interval tree.
- * 
+ *
  * @signature void createIntervalTree(intervalTree, intervals[, tag]);
  * @signature void createIntervalTree(g, pm, intervals[, tag]);
  * @signature void createIntervalTree(g, pm, intervals, center[, tag]]);
- * 
+ *
  * @param[in,out] intervalTree An interval tree Types: IntervalTree
  * @param[in,out] g            DirectedGraph to create interval tree in. Types: @link Graph @endlink.
  * @param[in,out] pm           Property map to use for the created interval tree.
@@ -1259,313 +1260,306 @@ struct ListType<IntervalTreeNode<TInterval,StoreIntervals> >
 ..remarks:center of root node is computed by _calcIntervalTreeRootCenter
 ..include:seqan/misc/misc_interval_tree.h
  */
- 
+
 template <typename TGraph, typename TPropertyMap, typename TIntervals, typename TSpec>
-inline void 
+inline void
 createIntervalTree(TGraph & g,
-				   TPropertyMap & pm, 
-				   TIntervals & intervals,
-				   Tag<TSpec> const tag)
+                   TPropertyMap & pm,
+                   TIntervals & intervals,
+                   Tag<TSpec> const tag)
 {
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Value<TIntervals>::Type TInterval;
-	typedef typename Value<TInterval>::Type TValue;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef typename Value<TIntervals>::Type TInterval;
+    typedef typename Value<TInterval>::Type TValue;
 
-	reserve(g.data_vertex,length(intervals));
-	reserve(pm,length(intervals));
+    reserve(g.data_vertex, length(intervals));
+    reserve(pm, length(intervals));
 
-	TVertexDescriptor root = addVertex(g);
-	resizeVertexMap(pm, g);
+    TVertexDescriptor root = addVertex(g);
+    resizeVertexMap(pm, g);
 
-    if (length(intervals) > 0u) {
-        TValue center =	_calcIntervalTreeRootCenter(intervals);
+    if (length(intervals) > 0u)
+    {
+        TValue center = _calcIntervalTreeRootCenter(intervals);
 
-        std::sort(begin(intervals, Standard()),end(intervals, Standard()),_less_compI1_ITree<TInterval>);
+        std::sort(begin(intervals, Standard()), end(intervals, Standard()), _less_compI1_ITree<TInterval>);
 
         String<TInterval *> interval_pointers;
         // interval tree stores pointers to intervals, not original intervals
         _makePointerInterval(intervals, interval_pointers);
 
-        _createIntervalTree(g,pm,interval_pointers,root,(TValue)0.0,center,length(intervals),tag);
+        _createIntervalTree(g, pm, interval_pointers, root, (TValue)0.0, center, length(intervals), tag);
         reserve(pm, length(pm), Exact());
         reserve(g.data_vertex, length(g.data_vertex), Exact());
     }
 }
 
 template <typename TGraph, typename TPropertyMap, typename TIntervals>
-inline void 
-createIntervalTree(TGraph & g, 
-				   TPropertyMap & pm, 
-				   TIntervals & intervals)
+inline void
+createIntervalTree(TGraph & g,
+                   TPropertyMap & pm,
+                   TIntervals & intervals)
 {
-	createIntervalTree(g, pm, intervals, ComputeCenter());
+    createIntervalTree(g, pm, intervals, ComputeCenter());
 }
 
 template <typename TGraph, typename TPropertyMap, typename TIntervals, typename TSpec>
-inline void 
+inline void
 createIntervalTree(TGraph & g,
                    TPropertyMap & pm,
-				   TIntervals & intervals,
-				   typename Value<typename Value<TIntervals>::Type>::Type center,
-				   Tag<TSpec> const tag)
+                   TIntervals & intervals,
+                   typename Value<typename Value<TIntervals>::Type>::Type center,
+                   Tag<TSpec> const tag)
 {
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Value<TIntervals>::Type TInterval;
-	typedef typename Value<typename Value<TIntervals>::Type>::Type TValue;
-	
-	reserve(g.data_vertex,length(intervals));
-	reserve(pm,length(intervals));
-	
-	TVertexDescriptor root = addVertex(g);
-	resizeVertexMap(pm, g);
-	
-    if (length(intervals) > 0u) {
-	    TInterval a;
-	    typename Iterator<TIntervals, Standard>::Type begin_ = begin(intervals, Standard());
-	    typename Iterator<TIntervals, Standard>::Type end_ = end(intervals, Standard());
-	    std::sort(begin_, end_ ,_less_compI1_ITree<TInterval>);
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef typename Value<TIntervals>::Type TInterval;
+    typedef typename Value<typename Value<TIntervals>::Type>::Type TValue;
 
-	    String<TInterval const*> interval_pointers;
-	    _makePointerInterval(intervals,interval_pointers);
+    reserve(g.data_vertex, length(intervals));
+    reserve(pm, length(intervals));
 
-	    if(length(intervals)==1) // if there is just one interval ->  center = center of this interval
-		    center = (rightBoundary(intervals[0])-leftBoundary(intervals[0]))/(TValue)2.0;
+    TVertexDescriptor root = addVertex(g);
+    resizeVertexMap(pm, g);
 
-	    _createIntervalTree(g, pm, interval_pointers, root, (TValue)0.0, center, length(intervals), tag);
-		
-	    reserve(pm, length(pm), Exact());
-	    reserve(g.data_vertex, length(g.data_vertex), Exact());
+    if (length(intervals) > 0u)
+    {
+        TInterval a;
+        typename Iterator<TIntervals, Standard>::Type begin_ = begin(intervals, Standard());
+        typename Iterator<TIntervals, Standard>::Type end_ = end(intervals, Standard());
+        std::sort(begin_, end_, _less_compI1_ITree<TInterval>);
+
+        String<TInterval const *> interval_pointers;
+        _makePointerInterval(intervals, interval_pointers);
+
+        if (length(intervals) == 1) // if there is just one interval ->  center = center of this interval
+            center = (rightBoundary(intervals[0]) - leftBoundary(intervals[0])) / (TValue)2.0;
+
+        _createIntervalTree(g, pm, interval_pointers, root, (TValue)0.0, center, length(intervals), tag);
+
+        reserve(pm, length(pm), Exact());
+        reserve(g.data_vertex, length(g.data_vertex), Exact());
     }
 }
 
 // ComputeCenter tag as default construction method
 template <typename TGraph, typename TPropertyMap, typename TIntervals>
 inline void
-createIntervalTree(TGraph & g, TPropertyMap & pm, 
-				   TIntervals & intervals, 
-				   typename Value<typename Value<TIntervals>::Type>::Type center)
+createIntervalTree(TGraph & g, TPropertyMap & pm,
+                   TIntervals & intervals,
+                   typename Value<typename Value<TIntervals>::Type>::Type center)
 {
-	createIntervalTree(g, pm, intervals, center, ComputeCenter());
+    createIntervalTree(g, pm, intervals, center, ComputeCenter());
 }
 
-
-template <typename TValue,typename TCargo, typename TIntervals, typename TSpec>
+template <typename TValue, typename TCargo, typename TIntervals, typename TSpec>
 inline void
-createIntervalTree(IntervalTree<TValue,TCargo> & it,
-				   TIntervals & intervals,
-				   Tag<TSpec> const tag)
-{
-	it.interval_counter = length(intervals);
-	createIntervalTree(it.g, it.pm, intervals, tag);
-}
-
-template <typename TValue,typename TCargo, typename TIntervals>
-inline void 
 createIntervalTree(IntervalTree<TValue, TCargo> & it,
-				   TIntervals & intervals)
+                   TIntervals & intervals,
+                   Tag<TSpec> const tag)
 {
-	createIntervalTree(it, intervals, ComputeCenter());
+    it.interval_counter = length(intervals);
+    createIntervalTree(it.g, it.pm, intervals, tag);
 }
 
+template <typename TValue, typename TCargo, typename TIntervals>
+inline void
+createIntervalTree(IntervalTree<TValue, TCargo> & it,
+                   TIntervals & intervals)
+{
+    createIntervalTree(it, intervals, ComputeCenter());
+}
 
 //////////////////////////////////////////////////////////////////////////////
 //remembers minimum and maximum of point values in intervals and sets the center
 //of each node to min+(max-min)/2
-template<typename TGraph, typename TPropertyMap, typename TIntervalPointer, typename TValue>
+template <typename TGraph, typename TPropertyMap, typename TIntervalPointer, typename TValue>
 inline void
-_createIntervalTree(TGraph & g, TPropertyMap & pm, 
-				   String<TIntervalPointer*> & intervals,
-				   typename VertexDescriptor<TGraph>::Type & knot, 
-				   TValue, 
-				   TValue center, 
-				   typename VertexDescriptor<TGraph>::Type len,
-				   Tag<TagComputeCenter_> const tag)
+_createIntervalTree(TGraph & g, TPropertyMap & pm,
+                    String<TIntervalPointer *> & intervals,
+                    typename VertexDescriptor<TGraph>::Type & knot,
+                    TValue,
+                    TValue center,
+                    typename VertexDescriptor<TGraph>::Type len,
+                    Tag<TagComputeCenter_> const tag)
 {
-	//  Rekursionsanker
-	if (len == 1)
+    //  Rekursionsanker
+    if (len == 1)
     {
-		_setIntervalTreeNode(value(pm, knot), center, *intervals[0]);
-		return;
-	}
+        _setIntervalTreeNode(value(pm, knot), center, *intervals[0]);
+        return;
+    }
 
-	typedef typename Value<TPropertyMap>::Type TNode;
-	typedef typename ListType<TNode>::Type TList;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef String<TIntervalPointer*> TIntervalPointers;
+    typedef typename Value<TPropertyMap>::Type TNode;
+    typedef typename ListType<TNode>::Type TList;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef String<TIntervalPointer *> TIntervalPointers;
 
-	// one list of interval pointers for the intervals to the left of center
-	TIntervalPointers S_left;
-	// one list of interval pointers for the intervals to the right of center
-	TIntervalPointers S_right;
+    // one list of interval pointers for the intervals to the left of center
+    TIntervalPointers S_left;
+    // one list of interval pointers for the intervals to the right of center
+    TIntervalPointers S_right;
 
-	TValue min1 = maxValue<TValue>();
-	TValue min2 = maxValue<TValue>();
-	TValue max1 = minValue<TValue>();
-	TValue max2 = minValue<TValue>();
+    TValue min1 = maxValue<TValue>();
+    TValue min2 = maxValue<TValue>();
+    TValue max1 = minValue<TValue>();
+    TValue max2 = minValue<TValue>();
 
-	value(pm,knot).center = center;
-	
- 
-	typedef typename Iterator<TIntervalPointers,Standard>::Type TIntervalIterator;
-	TIntervalIterator it = begin(intervals,Standard());
-	TIntervalIterator it_end = end(intervals,Standard());
-	
-	// walk through intervals
-	while(it != it_end)
-	{
-		// interval belongs to the left list
-		if((**it).i2<=center)
-		{
-			appendValue(S_left,*it, Generous());
-			 //remember right most and left most point in left list
-			if((**it).i2 > max1)
-				max1 = (**it).i2;
-			if((**it).i1 < min1)
-				min1 = (**it).i1;
-		}
-		else
-		{
-			// interval belongs to the right list
-			if((**it).i1>center)
-			{
-				appendValue(S_right,(*it), Generous());
-				 //remember right most and left most point in right list
-				if((**it).i2 > max2)
-					max2 = (**it).i2;
-				if ((**it).i1 < min2)
-					min2 = (**it).i1;
-			}
-			else // interval belongs to this node
-			{
-				_appendIntervalTreeNodeLists(value(pm,knot), **it);
-			}
-		}
+    value(pm, knot).center = center;
+
+
+    typedef typename Iterator<TIntervalPointers, Standard>::Type TIntervalIterator;
+    TIntervalIterator it = begin(intervals, Standard());
+    TIntervalIterator it_end = end(intervals, Standard());
+
+    // walk through intervals
+    while (it != it_end)
+    {
+        // interval belongs to the left list
+        if ((**it).i2 <= center)
+        {
+            appendValue(S_left, *it, Generous());
+            //remember right most and left most point in left list
+            if ((**it).i2 > max1)
+                max1 = (**it).i2;
+            if ((**it).i1 < min1)
+                min1 = (**it).i1;
+        }
+        else
+        {
+            // interval belongs to the right list
+            if ((**it).i1 > center)
+            {
+                appendValue(S_right, (*it), Generous());
+                //remember right most and left most point in right list
+                if ((**it).i2 > max2)
+                    max2 = (**it).i2;
+                if ((**it).i1 < min2)
+                    min2 = (**it).i1;
+            }
+            else // interval belongs to this node
+            {
+                _appendIntervalTreeNodeLists(value(pm, knot), **it);
+            }
+        }
         ++it;
-	}
+    }
 
 //	std::sort(begin(value(pm,knot).list1),end(value(pm,knot).list1),_less_compI1_ITree<typename Value<TList>::Type>);
-	std::sort(begin(value(pm,knot).list2),end(value(pm,knot).list2),_greater_compI2_ITree<typename Value<TList>::Type>);
+    std::sort(begin(value(pm, knot).list2), end(value(pm, knot).list2), _greater_compI2_ITree<typename Value<TList>::Type>);
 
-	// build subtree to the left
-	if(!empty(S_left))
-	{
-		TVertexDescriptor vd = addVertex(g);
-		resize(pm, vd+1); 
-		addEdge(g,knot,vd);
-		_createIntervalTree(g,pm,S_left,vd,center,min1+(max1-min1)/2,length(S_left),tag);
-	}
-	// build subtree to the right
-	if(!empty(S_right))
-	{
-		TVertexDescriptor vd = addVertex(g);
-		resize(pm, vd+1); 
-		addEdge(g,knot,vd);
-		_createIntervalTree(g,pm,S_right,vd,center,min2+(max2-min2)/2,length(S_right),tag);
-	}
+    // build subtree to the left
+    if (!empty(S_left))
+    {
+        TVertexDescriptor vd = addVertex(g);
+        resize(pm, vd + 1);
+        addEdge(g, knot, vd);
+        _createIntervalTree(g, pm, S_left, vd, center, min1 + (max1 - min1) / 2, length(S_left), tag);
+    }
+    // build subtree to the right
+    if (!empty(S_right))
+    {
+        TVertexDescriptor vd = addVertex(g);
+        resize(pm, vd + 1);
+        addEdge(g, knot, vd);
+        _createIntervalTree(g, pm, S_right, vd, center, min2 + (max2 - min2) / 2, length(S_right), tag);
+    }
 }
-
-
-
 
 //////////////////////////////////////////////////////////////////////////////
-//createIntervalTree for all specs except CompCenter, the center value of each 
-//node is determined by functions _calcIntervalTreeNodeCenterLeft and 
+//createIntervalTree for all specs except CompCenter, the center value of each
+//node is determined by functions _calcIntervalTreeNodeCenterLeft and
 //_calcIntervalTreeNodeCenterRight
-template<typename TGraph, typename TPropertyMap, typename TSpec, typename TInterval, typename TValue>
+template <typename TGraph, typename TPropertyMap, typename TSpec, typename TInterval, typename TValue>
 inline void
-_createIntervalTree(TGraph & g, TPropertyMap & pm, 
-				   String<TInterval*> & intervals, 
-				   typename VertexDescriptor<TGraph>::Type & knot, 
-				   TValue last_center, TValue center, 
-				   typename VertexDescriptor<TGraph>::Type len,
-				   Tag<TSpec> const tag)
+_createIntervalTree(TGraph & g, TPropertyMap & pm,
+                    String<TInterval *> & intervals,
+                    typename VertexDescriptor<TGraph>::Type & knot,
+                    TValue last_center, TValue center,
+                    typename VertexDescriptor<TGraph>::Type len,
+                    Tag<TSpec> const tag)
 {
-SEQAN_CHECKPOINT
-	// Rekursionsanker
-	if(len==1){
-		_setIntervalTreeNode(value(pm,knot),center,*value(intervals,0));
-		return;
-	}
+    SEQAN_CHECKPOINT
+    // Rekursionsanker
+    if (len == 1)
+    {
+        _setIntervalTreeNode(value(pm, knot), center, *value(intervals, 0));
+        return;
+    }
 
-	typedef typename Value<TPropertyMap>::Type TNode;
-	typedef typename ListType<TNode>::Type TList;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef String<TInterval*> TIntervalPointers;
-	
-	// one list of interval pointers for the intervals to the left of center
-	TIntervalPointers S_left;
-	// one list of interval pointers for the intervals to the right of center
-	TIntervalPointers S_right;
-		
-	value(pm,knot).center = center;
-	
-	typedef typename Iterator<TIntervalPointers,Standard>::Type TIntervalIterator;
-	TIntervalIterator it = begin(intervals,Standard());
-	TIntervalIterator it_end = end(intervals,Standard());
-	
-	// walk through intervals
-	while(it != it_end)
-	{
-		// interval belongs to the left list
-		if((**it).i2<=center)
-		{
-			appendValue(S_left,*it, Generous());
-		}
-		else
-		{	// interval belongs to the right list
-			if((**it).i1>center)
-			{
-				appendValue(S_right,(*it), Generous());
-			}
-			else
-			{
-				// interval belongs to the current node
-				_appendIntervalTreeNodeLists(value(pm,knot),**it);
-			}
-		}
+    typedef typename Value<TPropertyMap>::Type TNode;
+    typedef typename ListType<TNode>::Type TList;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef String<TInterval *> TIntervalPointers;
+
+    // one list of interval pointers for the intervals to the left of center
+    TIntervalPointers S_left;
+    // one list of interval pointers for the intervals to the right of center
+    TIntervalPointers S_right;
+
+    value(pm, knot).center = center;
+
+    typedef typename Iterator<TIntervalPointers, Standard>::Type TIntervalIterator;
+    TIntervalIterator it = begin(intervals, Standard());
+    TIntervalIterator it_end = end(intervals, Standard());
+
+    // walk through intervals
+    while (it != it_end)
+    {
+        // interval belongs to the left list
+        if ((**it).i2 <= center)
+        {
+            appendValue(S_left, *it, Generous());
+        }
+        else
+        {   // interval belongs to the right list
+            if ((**it).i1 > center)
+                appendValue(S_right, (*it), Generous());
+            else
+                // interval belongs to the current node
+                _appendIntervalTreeNodeLists(value(pm, knot), **it);
+        }
         ++it;
-	}
+    }
 
 //	std::sort(begin(value(pm,knot).list1),end(value(pm,knot).list1),_less_compI1_ITree<typename Value<TList>::Type>);
-	std::sort(begin(value(pm,knot).list2),end(value(pm,knot).list2),_greater_compI2_ITree<typename Value<TList>::Type>);
+    std::sort(begin(value(pm, knot).list2), end(value(pm, knot).list2), _greater_compI2_ITree<typename Value<TList>::Type>);
 
-	// build subtree to the left
-	if(!empty(S_left))
-	{
-		TVertexDescriptor vd = addVertex(g);
-		resizeVertexMap(pm, g);
-		addEdge(g,knot,vd);
-		TValue next_center = _calcIntervalTreeNodeCenterLeft(S_left,last_center,center,tag);
-		_createIntervalTree(g,pm,S_left,vd,center,next_center,length(S_left),tag);
-	}
-	// build subtree to the right
-	if(!empty(S_right))
-	{
-		TVertexDescriptor vd = addVertex(g);
-		resizeVertexMap(pm, g);
-		addEdge(g,knot,vd);
-		TValue next_center = _calcIntervalTreeNodeCenterRight(S_right,last_center,center,tag);
-		_createIntervalTree(g,pm,S_right,vd,center,next_center,length(S_right),tag);
-	}
+    // build subtree to the left
+    if (!empty(S_left))
+    {
+        TVertexDescriptor vd = addVertex(g);
+        resizeVertexMap(pm, g);
+        addEdge(g, knot, vd);
+        TValue next_center = _calcIntervalTreeNodeCenterLeft(S_left, last_center, center, tag);
+        _createIntervalTree(g, pm, S_left, vd, center, next_center, length(S_left), tag);
+    }
+    // build subtree to the right
+    if (!empty(S_right))
+    {
+        TVertexDescriptor vd = addVertex(g);
+        resizeVertexMap(pm, g);
+        addEdge(g, knot, vd);
+        TValue next_center = _calcIntervalTreeNodeCenterRight(S_right, last_center, center, tag);
+        _createIntervalTree(g, pm, S_right, vd, center, next_center, length(S_right), tag);
+    }
 }
-
 
 // fill the container interval_pointers with pointers to the corresponding objects in intervals.
 // this is done to avoid copying and passing the whole IntervalAndCargo objects during interval tree construction
-template<typename TIntervals, typename TIntervalPointers>
+template <typename TIntervals, typename TIntervalPointers>
 void
 _makePointerInterval(TIntervals & intervals, TIntervalPointers & interval_pointers)
 {
-	typedef typename Iterator<TIntervals, Standard>::Type TIntervalIterator;
-	typedef typename Iterator<TIntervalPointers, Standard>::Type TIntervalPointerIterator;
+    typedef typename Iterator<TIntervals, Standard>::Type TIntervalIterator;
+    typedef typename Iterator<TIntervalPointers, Standard>::Type TIntervalPointerIterator;
 
     resize(interval_pointers, length(intervals));
-	if (empty(intervals))
+    if (empty(intervals))
         return;
 
-	TIntervalIterator it = begin(intervals, Standard());
-	TIntervalIterator itEnd = end(intervals, Standard());
-	TIntervalPointerIterator iit = begin(interval_pointers, Standard());
+    TIntervalIterator it = begin(intervals, Standard());
+    TIntervalIterator itEnd = end(intervals, Standard());
+    TIntervalPointerIterator iit = begin(interval_pointers, Standard());
 
     for (; it != itEnd; ++it, ++iit)
         *iit = it;
@@ -1573,50 +1567,52 @@ _makePointerInterval(TIntervals & intervals, TIntervalPointers & interval_pointe
 
 // if the center of the root is not given, it is placed in the "ComputeCenter way": in the middle of minValue and maxValue
 // where minValue is the minimum left boundary and maxValue is the maximum right boundary of all intervals
-template<typename TIntervals>
+template <typename TIntervals>
 typename Value<typename Value<TIntervals>::Type>::Type
 _calcIntervalTreeRootCenter(TIntervals & intervals)
 {
     SEQAN_CHECKPOINT;
 
     SEQAN_ASSERT_GT(length(intervals), 0u);
-	
-	typedef typename Value<typename Value<TIntervals>::Type>::Type TValue;
-	typedef typename Iterator<TIntervals,Standard>::Type TIntervalIterator;
 
-	TIntervalIterator it = begin(intervals);
-	TIntervalIterator it_end = end(intervals);
+    typedef typename Value<typename Value<TIntervals>::Type>::Type TValue;
+    typedef typename Iterator<TIntervals, Standard>::Type TIntervalIterator;
 
-	TValue min = maxValue<TValue>();
-	TValue max = minValue<TValue>();
+    TIntervalIterator it = begin(intervals);
+    TIntervalIterator it_end = end(intervals);
+
+    TValue min = maxValue<TValue>();
+    TValue max = minValue<TValue>();
 
     // get min and max
-	while(it != it_end)
-	{
-		if(leftBoundary(*it)<min) min = leftBoundary(*it);
-		if(rightBoundary(*it)>max) max = rightBoundary(*it);
-	  SEQAN_ASSERT_LEQ(min, max);
-		++it;
-	}
+    while (it != it_end)
+    {
+        if (leftBoundary(*it) < min)
+            min = leftBoundary(*it);
+        if (rightBoundary(*it) > max)
+            max = rightBoundary(*it);
+        SEQAN_ASSERT_LEQ(min, max);
+        ++it;
+    }
 
-	SEQAN_ASSERT_LEQ(min, max);
-	
+    SEQAN_ASSERT_LEQ(min, max);
+
     // return middle between max and min
-	return (min+(max-min)/(TValue)2.0);
+    return min + (max - min) / (TValue)2.0;
 
 }
 
 /*!
  * @fn IntervalTree#addInterval
- * 
+ *
  * @headerfile <seqan/misc/misc_interval_tree.h>
- * 
+ *
  * @brief Adds an interval to an interval tree.
- * 
+ *
  * @signature void addInterval(intervalTree, interval);
  * @signature void addInterval(intervalTree, begin, end[, cargo]);
  * @signature void addInterval(graph, propertyMap, interval);
- * 
+ *
  * @param[in,out] intervalTree The interval tree to add the interval to. Types: @link IntervalTree @endlink.
  * @param[in]     interval     The interval to be added to the interval tree.
  * @param[in]     begin        Begin position of interval of type TValue.
@@ -1648,149 +1644,156 @@ _calcIntervalTreeRootCenter(TIntervals & intervals)
 ..include:seqan/misc/misc_interval_tree.h
 */
 
-template<typename TGraph, typename TPropertyMap, typename TInterval>
+template <typename TGraph, typename TPropertyMap, typename TInterval>
 void
 addInterval(TGraph & g, TPropertyMap & pm, TInterval interval)
 {
-SEQAN_CHECKPOINT
+    SEQAN_CHECKPOINT
 
-	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Value<TPropertyMap>::Type TProperty;
-	typedef typename Value<TInterval>::Type TValue;
-	typedef typename ListType<TProperty>::Type TList;
-	
+    typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef typename Value<TPropertyMap>::Type TProperty;
+    typedef typename Value<TInterval>::Type TValue;
+    typedef typename ListType<TProperty>::Type TList;
 
-	if(empty(pm))
-	{
-		TVertexDescriptor vd = addVertex(g);
-		resizeVertexMap(pm, g);
-		_setIntervalTreeNode(property(pm,vd),(rightBoundary(interval)+leftBoundary(interval))/2,interval);
-		return;
-		
-	}
-	// start at root
-	TVertexDescriptor act_knot = 0;
-	TProperty act_prop = property(pm,act_knot);
-	TProperty next_prop;
-	
+
+    if (empty(pm))
+    {
+        TVertexDescriptor vd = addVertex(g);
+        resizeVertexMap(pm, g);
+        _setIntervalTreeNode(property(pm, vd), (rightBoundary(interval) + leftBoundary(interval)) / 2, interval);
+        return;
+
+    }
+    // start at root
+    TVertexDescriptor act_knot = 0;
+    TProperty act_prop = property(pm, act_knot);
+    TProperty next_prop;
+
     // look for the right node to add interval to
-	while(true)
-	{
-		TOutEdgeIterator it(g, act_knot);
-		act_prop = property(pm,act_knot);
-		if(act_prop.center < leftBoundary(interval)) // interval to the left of current node?
-		{
-			if(atEnd(it)){
-				TVertexDescriptor vd = addVertex(g);
-				resizeVertexMap(pm, g);
-				addEdge(g,act_knot,vd);
-				_setIntervalTreeNode(property(pm,vd),(rightBoundary(interval)+leftBoundary(interval))/(TValue)2.0,interval);
-				break;
-			}
-			else{
-				next_prop = property(pm,targetVertex(it));
-				if(next_prop.center <= act_prop.center)
-				{
-					goNext(it);
-					if(atEnd(it)){
-						TVertexDescriptor vd = addVertex(g);
-						resizeVertexMap(pm, g);
-						addEdge(g,act_knot,vd);
-						_setIntervalTreeNode(property(pm,vd),(rightBoundary(interval)+leftBoundary(interval))/(TValue)2.0,interval);
-						break;
-					}
-				}
-			}
-			act_knot = targetVertex(it);
-		}
-		else{
-			if(rightBoundary(interval) <= act_prop.center) // interval to the right of current node?
-			{
-				if(atEnd(it)){
-					TVertexDescriptor vd = addVertex(g);
-					resizeVertexMap(pm, g);
-					addEdge(g,act_knot,vd);
-					_setIntervalTreeNode(property(pm,vd),(rightBoundary(interval)+leftBoundary(interval))/2,interval);
-					break;
-				}
-				else
-				{
-					next_prop = property(pm,targetVertex(it));
-					if(next_prop.center >= act_prop.center)
-					{
-						goNext(it);
-						if(atEnd(it)){
-							TVertexDescriptor vd = addVertex(g);
-							resizeVertexMap(pm, g);
-							addEdge(g,act_knot,vd);
-							_setIntervalTreeNode(property(pm,vd),(rightBoundary(interval)+leftBoundary(interval))/2,interval);
-							break;
-						}
-					}
-				}
-				act_knot = targetVertex(it);
-			}
-			else{ // need to create new node for interval
-				_appendIntervalTreeNodeLists(property(pm, act_knot),interval);
-				std::sort(begin(property(pm,act_knot).list1),end(property(pm,act_knot).list1),_less_compI1_ITree<typename Value<TList>::Type>);
-				std::sort(begin(property(pm,act_knot).list2),end(property(pm,act_knot).list2),_greater_compI2_ITree<typename Value<TList>::Type>);
-				break;
-			}
-		}
-	}
+    while (true)
+    {
+        TOutEdgeIterator it(g, act_knot);
+        act_prop = property(pm, act_knot);
+        if (act_prop.center < leftBoundary(interval)) // interval to the left of current node?
+        {
+            if (atEnd(it))
+            {
+                TVertexDescriptor vd = addVertex(g);
+                resizeVertexMap(pm, g);
+                addEdge(g, act_knot, vd);
+                _setIntervalTreeNode(property(pm, vd), (rightBoundary(interval) + leftBoundary(interval)) / (TValue)2.0, interval);
+                break;
+            }
+            else
+            {
+                next_prop = property(pm, targetVertex(it));
+                if (next_prop.center <= act_prop.center)
+                {
+                    goNext(it);
+                    if (atEnd(it))
+                    {
+                        TVertexDescriptor vd = addVertex(g);
+                        resizeVertexMap(pm, g);
+                        addEdge(g, act_knot, vd);
+                        _setIntervalTreeNode(property(pm, vd), (rightBoundary(interval) + leftBoundary(interval)) / (TValue)2.0, interval);
+                        break;
+                    }
+                }
+            }
+            act_knot = targetVertex(it);
+        }
+        else
+        {
+            if (rightBoundary(interval) <= act_prop.center) // interval to the right of current node?
+            {
+                if (atEnd(it))
+                {
+                    TVertexDescriptor vd = addVertex(g);
+                    resizeVertexMap(pm, g);
+                    addEdge(g, act_knot, vd);
+                    _setIntervalTreeNode(property(pm, vd), (rightBoundary(interval) + leftBoundary(interval)) / 2, interval);
+                    break;
+                }
+                else
+                {
+                    next_prop = property(pm, targetVertex(it));
+                    if (next_prop.center >= act_prop.center)
+                    {
+                        goNext(it);
+                        if (atEnd(it))
+                        {
+                            TVertexDescriptor vd = addVertex(g);
+                            resizeVertexMap(pm, g);
+                            addEdge(g, act_knot, vd);
+                            _setIntervalTreeNode(property(pm, vd), (rightBoundary(interval) + leftBoundary(interval)) / 2, interval);
+                            break;
+                        }
+                    }
+                }
+                act_knot = targetVertex(it);
+            }
+            else  // need to create new node for interval
+            {
+                _appendIntervalTreeNodeLists(property(pm, act_knot), interval);
+                std::sort(begin(property(pm, act_knot).list1), end(property(pm, act_knot).list1), _less_compI1_ITree<typename Value<TList>::Type>);
+                std::sort(begin(property(pm, act_knot).list2), end(property(pm, act_knot).list2), _greater_compI2_ITree<typename Value<TList>::Type>);
+                break;
+            }
+        }
+    }
 
 }
 
-template<typename TValue, typename TCargo, typename TInterval>
+template <typename TValue, typename TCargo, typename TInterval>
 void
-addInterval(IntervalTree<TValue,TCargo> & itree, TInterval interval)
+addInterval(IntervalTree<TValue, TCargo> & itree, TInterval interval)
 {
-SEQAN_CHECKPOINT
+    SEQAN_CHECKPOINT
 
-	++itree.interval_counter;
-	addInterval(itree.g,itree.pm,interval);
+    ++ itree.interval_counter;
+    addInterval(itree.g, itree.pm, interval);
 
 }
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 void
-addInterval(IntervalTree<TValue,TCargo> & itree, TValue begin, TValue end, TCargo cargo)
+addInterval(IntervalTree<TValue, TCargo> & itree, TValue begin, TValue end, TCargo cargo)
 {
-SEQAN_CHECKPOINT
+    SEQAN_CHECKPOINT
 
-	IntervalAndCargo<TValue,TCargo> interval;
-	interval.i1 = begin;
-	interval.i2 = end;
-	interval.cargo = cargo;
-	++itree.interval_counter;
-	addInterval(itree.g,itree.pm,interval);
+    IntervalAndCargo<TValue, TCargo> interval;
+    interval.i1 = begin;
+    interval.i2 = end;
+    interval.cargo = cargo;
+    ++itree.interval_counter;
+    addInterval(itree.g, itree.pm, interval);
 
 }
 
-template<typename TValue, typename TCargo>
+template <typename TValue, typename TCargo>
 void
-addInterval(IntervalTree<TValue,TCargo> & itree, TValue begin, TValue end)
+addInterval(IntervalTree<TValue, TCargo> & itree, TValue begin, TValue end)
 {
-SEQAN_CHECKPOINT
+    SEQAN_CHECKPOINT
 
-	IntervalAndCargo<TValue,TCargo> interval;
-	interval.i1 = begin;
-	interval.i2 = end;
-	interval.cargo = itree.interval_counter;
-	++itree.interval_counter;
-	addInterval(itree.g,itree.pm,interval);
+    IntervalAndCargo<TValue, TCargo> interval;
+    interval.i1 = begin;
+    interval.i2 = end;
+    interval.cargo = itree.interval_counter;
+    ++itree.interval_counter;
+    addInterval(itree.g, itree.pm, interval);
 
 }
 
 /*!
  * @fn IntervalTree#findIntervals
  * @brief Find all intervals that contain the query point or overlap with the query interval.
- * 
+ *
  * @signature void findIntervals(intervalTree, query, result);
  * @signature void findIntervals(intervalTree, queryBegin, queryEnd, result);
  * @signature void findIntervals(graph, propertyMap, query, result);
- * 
+ *
  * @param[in]  intervalTree An IntervalTree.
  * @param[in]  graph        The directed @link Graph graph @endlink that contains the topography of the interval tree.
  * @param[in]  propertyMap  The property map containing the node properties of the interval tree.
@@ -1825,100 +1828,104 @@ findIntervals(
     TValue query,
     String<TCargo> & result)
 {
-SEQAN_CHECKPOINT
+    SEQAN_CHECKPOINT
 
     typedef Graph<TSpec> const TGraph;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Value<TPropertyMap>::Type TProperty;
-	typedef typename Value<TProperty>::Type TPropertyValue;
-	typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
-    
-    resize(result,0);
-    if (empty(g)) return;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef typename Value<TPropertyMap>::Type TProperty;
+    typedef typename Value<TProperty>::Type TPropertyValue;
+    typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
 
-	// start at root
-	TVertexDescriptor act_knot = 0;
-	TProperty act_prop = property(pm,act_knot);
-	TProperty next_prop;
-		
-	while(true)
-	{
-        typename Iterator<Graph<TSpec> , OutEdgeIterator>::Type it7;
-        Iter<Graph<TSpec>, GraphIterator<InternalOutEdgeIterator<OutEdgeIterator> > > it5(g,act_knot);
+    resize(result, 0);
+    if (empty(g))
+        return;
+
+    // start at root
+    TVertexDescriptor act_knot = 0;
+    TProperty act_prop = property(pm, act_knot);
+    TProperty next_prop;
+
+    while (true)
+    {
+        typename Iterator<Graph<TSpec>, OutEdgeIterator>::Type it7;
+        Iter<Graph<TSpec>, GraphIterator<InternalOutEdgeIterator<OutEdgeIterator> > > it5(g, act_knot);
         TOutEdgeIterator it4;
-		TOutEdgeIterator it(g, act_knot);
-		act_prop = property(pm,act_knot);
-		if(act_prop.center < (TPropertyValue)query) // look in current node and right subtree
-		{
-			unsigned int i = 0;
-			while(i < length(act_prop.list2) && rightBoundary(value(act_prop.list2,i)) > (TPropertyValue)query)
-			{
-				appendValue(result,cargo(value(act_prop.list2,i)), Generous());
-				++i;	
-			}
-			if(atEnd(it)) break;
-			else{
-				next_prop = property(pm,targetVertex(it));
-				if(next_prop.center <= act_prop.center)
-				{
-					goNext(it);
-					if(atEnd(it)) break;
-				}
-			}
-			act_knot = targetVertex(it);
-		}
-		else{
-			if((TPropertyValue)query < act_prop.center) // look in current node and left subtree
-			{
-				unsigned int i = 0;
-				while(i < length(act_prop.list1) && leftBoundary(value(act_prop.list1,i)) <= (TPropertyValue)query)
-				{
-					appendValue(result,cargo(value(act_prop.list1,i)), Generous());
-					++i;
-				}
-				if(atEnd(it)) break;
-				else
-				{
-					next_prop = property(pm,targetVertex(it));
-					if(next_prop.center >= act_prop.center)
-					{
-						goNext(it);
-						if(atEnd(it)) break;
-					}
-				}
-				act_knot = targetVertex(it);
-			}
-			else{ // look in current node only, as query is center
-				for(unsigned int i = 0; i < length(act_prop.list1); ++i)
-                    appendValue(result, cargo(value(act_prop.list1,i)), Generous());
-				break;
-			}
-		}
-	}
+        TOutEdgeIterator it(g, act_knot);
+        act_prop = property(pm, act_knot);
+        if (act_prop.center < (TPropertyValue)query) // look in current node and right subtree
+        {
+            unsigned int i = 0;
+            while (i<length(act_prop.list2) && rightBoundary(value(act_prop.list2, i))>(TPropertyValue) query)
+            {
+                appendValue(result, cargo(value(act_prop.list2, i)), Generous());
+                ++i;
+            }
+            if (atEnd(it))
+                break;
+
+            next_prop = property(pm, targetVertex(it));
+            if (next_prop.center <= act_prop.center)
+            {
+                goNext(it);
+                if (atEnd(it))
+                    break;
+            }
+            act_knot = targetVertex(it);
+        }
+        else
+        {
+            if ((TPropertyValue)query < act_prop.center) // look in current node and left subtree
+            {
+                unsigned int i = 0;
+                while (i < length(act_prop.list1) && leftBoundary(value(act_prop.list1, i)) <= (TPropertyValue)query)
+                {
+                    appendValue(result, cargo(value(act_prop.list1, i)), Generous());
+                    ++i;
+                }
+                if (atEnd(it))
+                    break;
+
+                next_prop = property(pm, targetVertex(it));
+                if (next_prop.center >= act_prop.center)
+                {
+                    goNext(it);
+                    if (atEnd(it))
+                        break;
+                }
+                act_knot = targetVertex(it);
+            }
+            else  // look in current node only, as query is center
+            {
+                for (unsigned int i = 0; i < length(act_prop.list1); ++i)
+                    appendValue(result, cargo(value(act_prop.list1, i)), Generous());
+                break;
+            }
+        }
+    }
 
 }
 
 template <typename TValue, typename TCargo>
 inline void
 findIntervals(
-    IntervalTree<TValue,TCargo> const & it,
+    IntervalTree<TValue, TCargo> const & it,
     TValue query,
     String<TCargo> & result)
 {
-SEQAN_CHECKPOINT
-	findIntervals(it.g,it.pm,query,result);
+    SEQAN_CHECKPOINT
+        findIntervals(it.g, it.pm, query, result);
 }
 
 template <typename TValue, typename TCargo>
 inline void
 findIntervals(
-    IntervalTree<TValue,TCargo> const & tree,
+    IntervalTree<TValue, TCargo> const & tree,
     TValue query_begin,
     TValue query_end,
     String<TCargo> & result)
 {
-SEQAN_CHECKPOINT
-	findIntervals(tree.g,tree.pm,query_begin,query_end,result);
+    SEQAN_CHECKPOINT
+        findIntervals(tree.g, tree.pm, query_begin, query_end, result);
 }
 
 template <typename TSpec, typename TPropertyMap, typename TValue, typename TCargo>
@@ -1931,115 +1938,116 @@ findIntervals(
     String<TCargo> & result)
 {
     typedef Graph<TSpec> const TGraph;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 
-    resize(result,0);
+    resize(result, 0);
 
-	// start at root
-	TVertexDescriptor act_knot = 0;
-	findIntervals(g, pm, act_knot, query_begin, query_end, result);
+    // start at root
+    TVertexDescriptor act_knot = 0;
+    findIntervals(g, pm, act_knot, query_begin, query_end, result);
 }
-
 
 template <
     typename TSpec,
     typename TPropertyMap,
     typename TVertexDescriptor,
     typename TValue,
-    typename TCargo >
+    typename TCargo>
 inline void
 findIntervals(
     Graph<TSpec> const & g,
     TPropertyMap const & pm,
     TVertexDescriptor & act_knot,
-    TValue query_begin, 
-    TValue query_end, 
+    TValue query_begin,
+    TValue query_end,
     String<TCargo> & result)
 {
-SEQAN_CHECKPOINT
+    SEQAN_CHECKPOINT
 
-	typedef typename Value<TPropertyMap>::Type TProperty;
-	typedef typename Iterator<Graph<TSpec>, OutEdgeIterator>::Type TOutEdgeIterator;
+    typedef typename Value<TPropertyMap>::Type TProperty;
+    typedef typename Iterator<Graph<TSpec>, OutEdgeIterator>::Type TOutEdgeIterator;
 
-    if (empty(g)) return;
+    if (empty(g))
+        return;
 
-    TProperty act_prop = property(pm,act_knot);
-	TProperty next_prop;
-		
-	while (true)
-	{
-		TOutEdgeIterator it(g, act_knot);
-		act_prop = property(pm,act_knot);
-		//
-		if (act_prop.center < query_begin) // query interval is to the right of node center
-		{
-			unsigned int i = 0;
-			while(i < length(act_prop.list2) && rightBoundary(value(act_prop.list2,i)) > query_begin)
-			{
-				appendValue(result,cargo(value(act_prop.list2,i)), Generous());
-				++i;	
-			}
-			if(atEnd(it)) break;
-			else{
-				next_prop = property(pm,targetVertex(it));
-				if(next_prop.center <= act_prop.center)
-				{
-					goNext(it);
-					if(atEnd(it)) break;
-				}
-			}
-			act_knot = targetVertex(it);
-		}
-		else
+    TProperty act_prop = property(pm, act_knot);
+    TProperty next_prop;
+
+    while (true)
+    {
+        TOutEdgeIterator it(g, act_knot);
+        act_prop = property(pm, act_knot);
+        //
+        if (act_prop.center < query_begin) // query interval is to the right of node center
         {
-			if (query_end <= act_prop.center) // query interval is to the left of node center
-			{
-				unsigned int i = 0;
-				while (i < length(act_prop.list1) && leftBoundary(value(act_prop.list1,i)) < query_end)
-				{
-					appendValue(result,cargo(value(act_prop.list1,i)), Generous());
-					++i;
-				}
+            unsigned int i = 0;
+            while (i<length(act_prop.list2) && rightBoundary(value(act_prop.list2, i))> query_begin)
+            {
+                appendValue(result, cargo(value(act_prop.list2, i)), Generous());
+                ++i;
+            }
+            if (atEnd(it))
+                break;
 
-				if (atEnd(it))
+            next_prop = property(pm, targetVertex(it));
+            if (next_prop.center <= act_prop.center)
+            {
+                goNext(it);
+                if (atEnd(it))
+                    break;
+            }
+            act_knot = targetVertex(it);
+        }
+        else
+        {
+            if (query_end <= act_prop.center) // query interval is to the left of node center
+            {
+                unsigned int i = 0;
+                while (i < length(act_prop.list1) && leftBoundary(value(act_prop.list1, i)) < query_end)
+                {
+                    appendValue(result, cargo(value(act_prop.list1, i)), Generous());
+                    ++i;
+                }
+
+                if (atEnd(it))
                     break;
 
-                next_prop = property(pm,targetVertex(it));
-                if(next_prop.center >= act_prop.center)
+                next_prop = property(pm, targetVertex(it));
+                if (next_prop.center >= act_prop.center)
                 {
                     goNext(it);
                     if (atEnd(it))
                         break;
                 }
-				act_knot = targetVertex(it);
-			}
-			else
-            {//node center is contained in query interval
-				for(unsigned int i = 0; i < length(act_prop.list1); ++i)
-                    appendValue(result, cargo(value(act_prop.list1,i)), Generous());
-				
-				while(!atEnd(it))
-				{
-					TVertexDescriptor next_knot = targetVertex(it);
-					findIntervals(g,pm, next_knot, query_begin, query_end, result);
-					goNext(it);
-				}
-				break;
+                act_knot = targetVertex(it);
+            }
+            else
+            { //node center is contained in query interval
+                for (unsigned int i = 0; i < length(act_prop.list1); ++i)
+                    appendValue(result, cargo(value(act_prop.list1, i)), Generous());
 
-				//break; //dont break! continue in both subtrees!!
-			}
-		}
-	}
+                while (!atEnd(it))
+                {
+                    TVertexDescriptor next_knot = targetVertex(it);
+                    findIntervals(g, pm, next_knot, query_begin, query_end, result);
+                    goNext(it);
+                }
+                break;
+
+                //break; //dont break! continue in both subtrees!!
+            }
+        }
+    }
 }
 
 /*!
  * @fn IntervalTree#findIntervalsExcludeTouching
  * @brief Find all intervals that contain the query point, exclude intervals that touch the query, i.e. where the query
  *        point equals the start or end point.
- * 
+ *
  * @signature void findIntervalsExcludeTouching(intervalTree, query, result);
  * @signature void findIntervalsExcludeTouching(graph, propertyMap, query, result);
- * 
+ *
  * @param[in] intervalTree An interval tree Types: IntervalTree
  * @param[in] graph        The directed graph that contains the topography of the interval tree.
  * @param[in] query        The TValue to query here.
@@ -2073,96 +2081,100 @@ findIntervalsExcludeTouching(
     TValue query,
     String<TCargo> & result)
 {
-SEQAN_CHECKPOINT
+    SEQAN_CHECKPOINT
 
     typedef Graph<TSpec> const TGraph;
-	typedef typename Iterator<TGraph, OutEdgeIterator >::Type TOutEdgeIterator;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	typedef typename Value<TPropertyMap>::Type TProperty;
-	
-	resize(result,0);
-    if (empty(g)) return;
+    typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef typename Value<TPropertyMap>::Type TProperty;
 
-	// start at root
-	TVertexDescriptor act_knot = 0;
-	TProperty act_prop = property(pm,act_knot);
-	TProperty next_prop;
-		
-	while(true)
-	{
-		TOutEdgeIterator it(g, act_knot);
-		act_prop = property(pm,act_knot);
-		if( (TValue) act_prop.center < query) // look in current node and right subtree
-		{
-			int i = 0;
-			while(i < (int) length(act_prop.list2) && (TValue) rightBoundary(value(act_prop.list2,i)) > query)
-			{
-				appendValue(result,cargo(value(act_prop.list2,i)), Generous());
-				++i;	
-			}
-			if(atEnd(it)) break;
-			else{
-				next_prop = property(pm,targetVertex(it));
-				if(next_prop.center <= act_prop.center)
-				{
-					goNext(it);
-					if(atEnd(it)) break;
-				}
-			}
-			act_knot = targetVertex(it);
-		}
-		else{
-			if(query < (TValue) act_prop.center) // look in current node and left subtree
-			{
-				int i = 0;
-				while(i < (int) length(act_prop.list1) && (TValue) leftBoundary(value(act_prop.list1,i)) < query)
-				{
-					appendValue(result,cargo(value(act_prop.list1,i)), Generous());
-					++i;
-				}
-				if(atEnd(it)) break;
-				else
-				{
-					next_prop = property(pm,targetVertex(it));
-					if(next_prop.center >= act_prop.center)
-					{
-						goNext(it);
-						if(atEnd(it)) break;
-					}
-				}
-				act_knot = targetVertex(it);
-			}
-			else{ // look in current node only
-				int i = 0;
-				while(i < (int) length(act_prop.list1) && (TValue) leftBoundary(value(act_prop.list1,i)) < query)
-				{
-					appendValue(result,cargo(value(act_prop.list1,i)), Generous());
-					++i;
-				}
-				break;
-			}
-		}
-	}
+    resize(result, 0);
+    if (empty(g))
+        return;
+
+    // start at root
+    TVertexDescriptor act_knot = 0;
+    TProperty act_prop = property(pm, act_knot);
+    TProperty next_prop;
+
+    while (true)
+    {
+        TOutEdgeIterator it(g, act_knot);
+        act_prop = property(pm, act_knot);
+        if ((TValue) act_prop.center < query) // look in current node and right subtree
+        {
+            int i = 0;
+            while (i < (int)length(act_prop.list2) && (TValue)rightBoundary(value(act_prop.list2, i)) > query)
+            {
+                appendValue(result, cargo(value(act_prop.list2, i)), Generous());
+                ++i;
+            }
+            if (atEnd(it))
+                break;
+
+            next_prop = property(pm, targetVertex(it));
+            if (next_prop.center <= act_prop.center)
+            {
+                goNext(it);
+                if (atEnd(it))
+                    break;
+            }
+            act_knot = targetVertex(it);
+        }
+        else
+        {
+            if (query < (TValue) act_prop.center) // look in current node and left subtree
+            {
+                int i = 0;
+                while (i < (int)length(act_prop.list1) && (TValue)leftBoundary(value(act_prop.list1, i)) < query)
+                {
+                    appendValue(result, cargo(value(act_prop.list1, i)), Generous());
+                    ++i;
+                }
+                if (atEnd(it))
+                    break;
+
+                next_prop = property(pm, targetVertex(it));
+                if (next_prop.center >= act_prop.center)
+                {
+                    goNext(it);
+                    if (atEnd(it))
+                        break;
+                }
+                act_knot = targetVertex(it);
+            }
+            else  // look in current node only
+            {
+                int i = 0;
+                while (i < (int)length(act_prop.list1) && (TValue)leftBoundary(value(act_prop.list1, i)) < query)
+                {
+                    appendValue(result, cargo(value(act_prop.list1, i)), Generous());
+                    ++i;
+                }
+                break;
+            }
+        }
+    }
 
 }
 
 template <typename TValue, typename TCargo>
 inline void
 findIntervalsExcludeTouching(
-    IntervalTree<TValue,TCargo> const & tree,
+    IntervalTree<TValue, TCargo> const & tree,
     TValue query,
     String<TCargo> & result)
 {
-SEQAN_CHECKPOINT
-	findIntervalsExcludeTouching(tree.g,tree.pm,query,result);
+    SEQAN_CHECKPOINT
+        findIntervalsExcludeTouching(tree.g, tree.pm, query, result);
 }
 
 /*!
  * @fn IntervalTree#removeInterval
  * @brief Removes an interval from the interval tree.
- * 
+ *
  * @signature bool removeInterval(intervalTree, iBegin, iEnd, iId);
- * 
+ *
  * @param[in,out] intervalTree An interval tree Types: IntervalTree
  * @param[in]     iBegin       The begin position of the interval to be removed.
  * @param[in]     iEnd         The end position of the interval to be removed.
@@ -2189,68 +2201,71 @@ template <
     typename TPropertyMap,
     typename TVertexDescriptor,
     typename TValue,
-    typename TCargo >
+    typename TCargo>
 inline bool
 removeInterval(
     Graph<TSpec> & g,
-    TPropertyMap & pm, 
-    TVertexDescriptor & act_knot, 
-    TValue i_begin, 
+    TPropertyMap & pm,
+    TVertexDescriptor & act_knot,
+    TValue i_begin,
     TValue i_end,
     TCargo i_id)
 {
-SEQAN_CHECKPOINT
+    SEQAN_CHECKPOINT
 
-	typedef typename Value<TPropertyMap>::Type TProperty;
-	typedef typename ListType<TProperty>::Type TList;
-	typedef typename Iterator<TList, Standard>::Type TListIterator;
-	typedef typename Iterator<Graph<TSpec>, OutEdgeIterator>::Type TOutEdgeIterator;
+    typedef typename Value<TPropertyMap>::Type TProperty;
+    typedef typename ListType<TProperty>::Type TList;
+    typedef typename Iterator<TList, Standard>::Type TListIterator;
+    typedef typename Iterator<Graph<TSpec>, OutEdgeIterator>::Type TOutEdgeIterator;
 
-    if (empty(g)) return false;
+    if (empty(g))
+        return false;
 
-    TProperty act_prop = property(pm,act_knot);
-	TProperty next_prop;
-		
-	while(true)
-	{
-		TOutEdgeIterator it(g, act_knot);
-		act_prop = property(pm,act_knot);
-		//
-		if(act_prop.center < i_begin) // interval is to the right of node center
-		{
-			if(atEnd(it)) break;
-			else{
-				next_prop = property(pm,targetVertex(it));
-				if(next_prop.center <= act_prop.center)
-				{
-					goNext(it);
-					if(atEnd(it)) break;
-				}
-			}
-			act_knot = targetVertex(it);
-		}
-		else{
-			if(i_end < act_prop.center) // interval is to the left of node center
-			{
-				if(atEnd(it)) break;
-				else
-				{
-					next_prop = property(pm,targetVertex(it));
-					if(next_prop.center >= act_prop.center)
-					{
-						goNext(it);
-						if(atEnd(it)) break;
-					}
-				}
-				act_knot = targetVertex(it);
-			}
-			else{//node center is contained in interval, this is where we should find the interval to be removed
-                // remove from list1
-                TProperty& change_prop = property(pm,act_knot);
+    TProperty act_prop = property(pm, act_knot);
+    TProperty next_prop;
+
+    while (true)
+    {
+        TOutEdgeIterator it(g, act_knot);
+        act_prop = property(pm, act_knot);
+        //
+        if (act_prop.center < i_begin) // interval is to the right of node center
+        {
+            if (atEnd(it))
+                break;
+
+            next_prop = property(pm, targetVertex(it));
+            if (next_prop.center <= act_prop.center)
+            {
+                goNext(it);
+                if (atEnd(it))
+                    break;
+            }
+            act_knot = targetVertex(it);
+        }
+        else
+        {
+            if (i_end < act_prop.center) // interval is to the left of node center
+            {
+                if (atEnd(it))
+                    break;
+
+                next_prop = property(pm, targetVertex(it));
+                if (next_prop.center >= act_prop.center)
+                {
+                    goNext(it);
+                    if (atEnd(it))
+                        break;
+                }
+                act_knot = targetVertex(it);
+            }
+            else //node center is contained in interval, this is where we should find the interval to be removed
+            {   // remove from list1
+                TProperty & change_prop = property(pm, act_knot);
                 bool foundInLeft = false;
-                TListIterator list_it_keep = begin(change_prop.list1,Standard());
-                TListIterator list_it = begin(change_prop.list1,Standard());
-				while(list_it != end(change_prop.list1,Standard()))
+                TListIterator list_it_keep = begin(change_prop.list1, Standard());
+                TListIterator list_it = begin(change_prop.list1, Standard());
+                while (list_it != end(change_prop.list1, Standard()))
                 {
                     //std::cout << "Element: " << getLeftBoundary(*list_it) << ".." << getRightBoundary(*list_it) << " " << cargo(*list_it) << std::endl;
                     if (getLeftBoundary(*list_it) == i_begin && cargo(*list_it) == i_id)
@@ -2264,10 +2279,10 @@ SEQAN_CHECKPOINT
                     ++list_it; ++list_it_keep;
                 }
 
-	            bool foundInRight = false;
-                list_it_keep = begin(change_prop.list2,Standard());
-                list_it = begin(change_prop.list2,Standard());
-				while(list_it != end(change_prop.list2,Standard()))
+                bool foundInRight = false;
+                list_it_keep = begin(change_prop.list2, Standard());
+                list_it = begin(change_prop.list2, Standard());
+                while (list_it != end(change_prop.list2, Standard()))
                 {
                     //std::cout << "Element: " << getLeftBoundary(*list_it) << ".." << getRightBoundary(*list_it) << " " << cargo(*list_it) << std::endl;
                     if (getRightBoundary(*list_it) == i_end && cargo(*list_it) == i_id)
@@ -2281,20 +2296,20 @@ SEQAN_CHECKPOINT
                     ++list_it; ++list_it_keep;
 
                 }
-                
+
 
                 // TODO: if node is empty and does not have child nodes --> remove node.
                 // keeping these empty leaf nodes just takes space unnecessarily
-				if(foundInRight && foundInLeft)
+                if (foundInRight && foundInLeft)
                 {
-                    resize(change_prop.list2, length(change_prop.list2)-1);
-                    resize(change_prop.list1, length(change_prop.list1)-1);
+                    resize(change_prop.list2, length(change_prop.list2) - 1);
+                    resize(change_prop.list1, length(change_prop.list1) - 1);
                     return true;
                 }
 
-			}
-		}
-	}
+            }
+        }
+    }
     return false;
 }
 
@@ -2302,7 +2317,7 @@ template <
     typename TSpec,
     typename TPropertyMap,
     typename TValue,
-    typename TCargo >
+    typename TCargo>
 inline bool
 removeInterval(
     Graph<TSpec> & g,
@@ -2311,47 +2326,44 @@ removeInterval(
     TValue i_end,
     TCargo i_id)
 {
-SEQAN_CHECKPOINT
+    SEQAN_CHECKPOINT
 
-	typedef typename VertexDescriptor<Graph<TSpec> >::Type TVertexDescriptor;
+    typedef typename VertexDescriptor<Graph<TSpec> >::Type TVertexDescriptor;
 
-	// start looking at root
-	TVertexDescriptor act_knot = 0;
-	return removeInterval(g, pm, act_knot, i_begin, i_end, i_id);
+    // start looking at root
+    TVertexDescriptor act_knot = 0;
+    return removeInterval(g, pm, act_knot, i_begin, i_end, i_id);
 }
 
 template <typename TValue, typename TCargo>
 inline bool
 removeInterval(
-    IntervalTree<TValue,TCargo> & tree,
+    IntervalTree<TValue, TCargo> & tree,
     TValue i_begin,
     TValue i_end,
     TCargo i_id)
 {
-SEQAN_CHECKPOINT
+    SEQAN_CHECKPOINT
 
-	return removeInterval(tree.g, tree.pm, i_begin, i_end, i_id);
+    return removeInterval(tree.g, tree.pm, i_begin, i_end, i_id);
     // we do not decrease the interval_counter of tree, as it would mix up interval IDs
 }
-
-
-
 
 /////////////////// Metafunctions ///////////////////////
 
 ///.Metafunction.Value.param.T.type:Class.IntervalTree
-template<typename TValue, typename TCargo>
-struct Value<IntervalTree<TValue,TCargo> >
+template <typename TValue, typename TCargo>
+struct Value<IntervalTree<TValue, TCargo> >
 {
-	typedef TValue Type;
+    typedef TValue Type;
 };
 
 
 ///.Metafunction.Cargo.param.T.type:Class.IntervalTree
-template<typename TValue, typename TCargo>
-struct Cargo<IntervalTree<TValue,TCargo> >
+template <typename TValue, typename TCargo>
+struct Cargo<IntervalTree<TValue, TCargo> >
 {
-	typedef TCargo Type;
+    typedef TCargo Type;
 };
 
 }  // namespace SEQAN_NAMESPACE_MAIN
