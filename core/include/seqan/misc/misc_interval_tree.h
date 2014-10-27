@@ -1966,12 +1966,12 @@ SEQAN_CHECKPOINT
     TProperty act_prop = property(pm,act_knot);
 	TProperty next_prop;
 		
-	while(true)
+	while (true)
 	{
 		TOutEdgeIterator it(g, act_knot);
 		act_prop = property(pm,act_knot);
 		//
-		if(act_prop.center < query_begin) // query interval is to the right of node center
+		if (act_prop.center < query_begin) // query interval is to the right of node center
 		{
 			unsigned int i = 0;
 			while(i < length(act_prop.list2) && rightBoundary(value(act_prop.list2,i)) > query_begin)
@@ -1990,28 +1990,31 @@ SEQAN_CHECKPOINT
 			}
 			act_knot = targetVertex(it);
 		}
-		else{
-			if(query_end <= act_prop.center) // query interval is to the left of node center
+		else
+        {
+			if (query_end <= act_prop.center) // query interval is to the left of node center
 			{
 				unsigned int i = 0;
-				while(i < length(act_prop.list1) && leftBoundary(value(act_prop.list1,i)) < query_end)
+				while (i < length(act_prop.list1) && leftBoundary(value(act_prop.list1,i)) < query_end)
 				{
 					appendValue(result,cargo(value(act_prop.list1,i)), Generous());
 					++i;
 				}
-				if(atEnd(it)) break;
-				else
-				{
-					next_prop = property(pm,targetVertex(it));
-					if(next_prop.center >= act_prop.center)
-					{
-						goNext(it);
-						if(atEnd(it)) break;
-					}
-				}
+
+				if (atEnd(it))
+                    break;
+
+                next_prop = property(pm,targetVertex(it));
+                if(next_prop.center >= act_prop.center)
+                {
+                    goNext(it);
+                    if (atEnd(it))
+                        break;
+                }
 				act_knot = targetVertex(it);
 			}
-			else{//node center is contained in query interval
+			else
+            {//node center is contained in query interval
 				for(unsigned int i = 0; i < length(act_prop.list1); ++i)
                     appendValue(result, cargo(value(act_prop.list1,i)), Generous());
 				
