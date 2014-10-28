@@ -46,23 +46,17 @@ namespace SEQAN_NAMESPACE_MAIN
 .Tag.WOTD Index Fibres
 ..summary:Tag to select a specific fibre (e.g. table, object, ...) of an @Spec.IndexWotd@ index.
 ..remarks:These tags can be used to get @Metafunction.Fibre.Fibres@ of an WOTD based @Spec.IndexWotd@.
-..remarks:TODO(holtgrew): Ask David.
 ..cat:Index
 
 ..tag.WotdText:The original text the index should be based on.
-...remarks:TODO(holtgrew): Ask David.
 
 ..tag.WotdRawText:The raw text the index is really based on.
-...remarks:TODO(holtgrew): Ask David.
 
 ..tag.WotdSA:The suffix array.
-...remarks:TODO(holtgrew): Ask David.
 
 ..tag.WotdRawSA:The raw suffix array.
-...remarks:TODO(holtgrew): Ask David.
 
 ..tag.WotdDir:The child table.
-...remarks:TODO(holtgrew): Ask David.
 
 ..see:Metafunction.Fibre
 ..see:Function.getFibre
@@ -76,8 +70,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * These tags can be used to get @link Fibre @endlink of an @link IndexWotd @endlink.
  * 
- * TODO(holtgrew): Ask David.
- * 
  * @see Fibre
  * @see Index#getFibre
  * @see IndexWotd
@@ -85,27 +77,17 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tag WOTDIndexFibres#WotdDir
  * @brief The child table.
  * 
- * TODO(holtgrew): Ask David.
- * 
  * @tag WOTDIndexFibres#WotdRawSA
  * @brief The raw suffix array.
- * 
- * TODO(holtgrew): Ask David.
  * 
  * @tag WOTDIndexFibres#WotdText
  * @brief The original text the index should be based on.
  * 
- * TODO(holtgrew): Ask David.
- * 
  * @tag WOTDIndexFibres#WotdRawText
  * @brief The raw text the index is really based on.
  * 
- * TODO(holtgrew): Ask David.
- * 
  * @tag WOTDIndexFibres#WotdSA
  * @brief The suffix array.
- * 
- * TODO(holtgrew): Ask David.
  */
 
 //////////////////////////////////////////////////////////////////////////////
@@ -542,14 +524,14 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 //////////////////////////////////////////////////////////////////////////////
 
 	template < typename TSize >
-	inline bool _isRoot(VertexWotdOriginal_<TSize> const &value) {
-//IOREV_notio_
+	inline bool _isRoot(VertexWotdOriginal_<TSize> const &value)
+    {
 		return value.node == 0;
 	}
 
 	template < typename TSize >
-	inline bool _isRoot(VertexWotdModified_<TSize> const &value) {
-//IOREV_notio_
+	inline bool _isRoot(VertexWotdModified_<TSize> const &value)
+    {
 		return value.node == 0; 
 	}
 
@@ -559,7 +541,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 		Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree<TSpec> > const &it,
 		VSTreeIteratorTraits<TDfsOrder, False> const)
 	{
-//IOREV_notio_
 		typedef Index<TText, IndexWotd<TIndexSpec> > TIndex;
 		TIndex const &index = container(it);
 		return (dirAt(value(it).node, index) & index.LEAF) != 0;
@@ -571,7 +552,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 		Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree<TSpec> > const &it,
 		VSTreeIteratorTraits<TDfsOrder, True> const)
 	{
-//IOREV_notio_
 		typedef Index<TText, IndexWotd<TIndexSpec> >	TIndex;
 
 		TIndex const &index = container(it);
@@ -1022,7 +1002,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 	inline void
 	_wotdCountChars(TBuckets &buckets, TText const &text)
 	{
-	SEQAN_CHECKPOINT
 		typedef typename Iterator<TText const, Standard>::Type TTextIterator;
 
 		TTextIterator itText = begin(text, Standard());
@@ -1036,7 +1015,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 	inline void
 	_wotdCountChars(TBuckets &buckets, StringSet<TText, TSpec> const &stringSet)
 	{
-	SEQAN_CHECKPOINT
 		typedef typename Iterator<TText const, Standard>::Type TTextIterator;
 
 		for(unsigned seqNo = 0; seqNo < length(stringSet); ++seqNo) 
@@ -1057,9 +1035,8 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 		TText const &text, 
 		TSA &sa,
 		TSize prefixLen)
-	{
-	SEQAN_CHECKPOINT
-		typedef typename Iterator<TText const, Standard>::Type	TTextIterator;
+    {
+        typedef typename Iterator<TText const, Standard>::Type	TTextIterator;
 		typedef typename Iterator<TSA, Standard>::Type          TSAIterator;
 		typedef typename Size<TText>::Type						TTextSize;
 
@@ -1089,7 +1066,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 		TSA const &sa,
 		TSize prefixLen)
 	{
-	SEQAN_CHECKPOINT
 		typedef typename Iterator<TText const, Standard>::Type	TTextIterator;
 		typedef typename Iterator<TSA const, Standard>::Type	TSAIterator;
 		typedef typename Size<TText>::Type						TTextSize;
@@ -1125,7 +1101,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 		TSA const &sa,
 		TSize prefixLen)
 	{
-	SEQAN_CHECKPOINT
 		typedef typename Iterator<TText const, Standard>::Type	TTextIterator;
 		typedef typename Iterator<TSA const, Standard>::Type	TSAIterator;
 		typedef typename Size<TText>::Type						TTextSize;
@@ -1169,7 +1144,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 	inline typename Size<TBuckets>::Type
 	_wotdCummulativeSum(TBounds &bounds, TBuckets const &buckets, TSize offset)
 	{
-	SEQAN_CHECKPOINT
 		typedef typename Iterator<TBounds, Standard>::Type          TBoundIterator;
 		typedef typename Iterator<TBuckets const, Standard>::Type   TBucketsIterator;
 
@@ -1233,7 +1207,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 	typename Size<TIndex>::Type
 	_sortFirstWotdBucket(TIndex &index)
 	{
-	SEQAN_CHECKPOINT
 		typedef typename Fibre<TIndex, WotdText >::Type		TText;
 		typedef typename Fibre<TIndex, WotdSA >::Type			TSA;
 		typedef typename TIndex::TCounter						TCounter;
@@ -1278,7 +1251,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 	typename Size< Index<StringSet<TText, TSpec>, TIndexSpec> >::Type
 	_sortFirstWotdBucket(Index<StringSet<TText, TSpec>, TIndexSpec> &index)
 	{
-	SEQAN_CHECKPOINT
 		typedef Index<StringSet<TText, TSpec>, TIndexSpec>		TIndex;
 		typedef typename Fibre<TIndex, WotdSA >::Type			TSA;
 		typedef typename TIndex::TCounter						TCounter;
@@ -1341,7 +1313,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 		TEndPos right,
 		TSize prefixLen)
 	{
-	SEQAN_CHECKPOINT
 		typedef Index<TText, IndexWotd<WotdOriginal> >              TIndex;
 		typedef typename Fibre<TIndex, WotdSA >::Type               TSA;
 		typedef typename TIndex::TCounter                           TCounter;
@@ -1456,7 +1427,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 		TEndPos right,
 		TSize prefixLen)
 	{
-	SEQAN_CHECKPOINT
 		typedef typename Fibre<TIndex, WotdText >::Type             TText;
 		typedef typename Fibre<TIndex, WotdSA >::Type               TSA;
 		typedef typename TIndex::TCounter                           TCounter;
@@ -1523,7 +1493,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 		TEndPos right,
 		TSize prefixLen)
 	{
-	SEQAN_CHECKPOINT
 		typedef Index<StringSet<TText, TSpec>, TIndexSpec>			TIndex;
 		typedef typename Fibre<TIndex, WotdSA >::Type				TSA;
 		typedef typename TIndex::TCounter							TCounter;
@@ -1606,7 +1575,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 	typename Size<TText>::Type 
 	_bucketLcp(TSA const &sa, TText const &text)
 	{
-	SEQAN_CHECKPOINT
 		typedef typename Iterator<TText const, Standard>::Type	TTextIterator;
 		typedef typename Iterator<TSA const, Standard>::Type	TSAIterator;
 		typedef typename Value<TText>::Type						TValue;
@@ -1640,7 +1608,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 	typename Size<TText>::Type 
 	_bucketLcp(TSA const &sa, TText const &text, TSize prefixLen)
 	{
-	SEQAN_CHECKPOINT
 		typedef typename Iterator<TText const, Standard>::Type	TTextIterator;
 		typedef typename Iterator<TSA const, Standard>::Type	TSAIterator;
 		typedef typename Value<TText>::Type						TValue;
@@ -1672,7 +1639,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 	typename Size<TText>::Type 
 	_bucketLcp(TSA const &sa, StringSet<TText, TSpec> const &stringSet, TSize prefixLen)
 	{
-	SEQAN_CHECKPOINT
 		typedef typename Iterator<TText const, Standard>::Type	TTextIterator;
 		typedef typename Iterator<TSA const, Standard>::Type	TSAIterator;
 		typedef typename Value<TText>::Type						TValue;
@@ -1742,7 +1708,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 		Index<TText, IndexWotd<WotdOriginal> > &index,
 		TPos dirOfs)
 	{
-	SEQAN_CHECKPOINT
 		typedef Index<TText, IndexWotd<WotdOriginal> >		TIndex;
 		typedef typename Fibre<TIndex, WotdDir>::Type		TDir;
 		typedef typename Iterator<TDir, Standard>::Type		TDirIterator;
@@ -1801,9 +1766,8 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 		Index<TText, IndexWotd<TSpec> > &index,
 		TSize dirOfs,
 		TSize lcp)
-	{
-	SEQAN_CHECKPOINT
-		typedef Index<TText, IndexWotd<TSpec> >			TIndex;
+    {
+        typedef Index<TText, IndexWotd<TSpec> >			TIndex;
 		typedef typename Fibre<TIndex, WotdDir>::Type		TDir;
 		typedef typename Iterator<TDir, Standard>::Type		TDirIterator;
 		typedef typename Size<TDir>::Type					TDirSize;
