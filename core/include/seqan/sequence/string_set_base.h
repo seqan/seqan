@@ -1377,7 +1377,7 @@ _countNonZeroValues(String<TValue, TSpec> const & me, TPos i)
 // Returns the length of the longest string in the set.
 
 template <typename TString, typename TSpec, typename TParallel>
-inline typename Size<StringSet<TString, TSpec> const>::Type
+inline typename Size<TString>::Type
 maxLength(StringSet<TString, TSpec> const & me, Tag<TParallel> const & tag)
 {
     typedef StringSet<TString, TSpec>               TStringSet;
@@ -1387,7 +1387,7 @@ maxLength(StringSet<TString, TSpec> const & me, Tag<TParallel> const & tag)
 }
 
 template <typename TString, typename TSpec>
-inline typename Size<StringSet<TString, TSpec> const>::Type
+inline typename Size<TString>::Type
 maxLength(StringSet<TString, TSpec> const & me)
 {
     return maxLength(me, Serial());
