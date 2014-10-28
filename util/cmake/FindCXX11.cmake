@@ -19,7 +19,6 @@ enable_language(CXX)
 check_cxx_compiler_flag("-std=c++11" CXX11_FOUND)
 if (CXX11_FOUND)
   set (CXX11_CXX_FLAGS "-std=c++11")
-  set (CXX11_STL_FOUND 1)
 
   # Tested on Mac OS X 10.8.2 with XCode 4.6 Command Line Tools
   # Clang requires this to find the correct c++11 headers
