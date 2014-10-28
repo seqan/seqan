@@ -217,7 +217,7 @@ if it is traversed. For details see Giegerich et al., "Efficient implementation 
 
 		typedef typename Value<Index>::Type					TValue;
 		typedef typename Value<TDir>::Type					TDirValue;
-		typedef typename Size<TText>::Type					TSize;
+		typedef typename Size<Index>::Type					TSize;
 		typedef String<TSize, Alloc<> >						TCounter;
 		typedef String<typename Value<TSA>::Type, Alloc<> >	TTempSA;
 		typedef typename Cargo<Index>::Type					TCargo;
