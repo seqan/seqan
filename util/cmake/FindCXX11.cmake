@@ -6,6 +6,10 @@ set(__FIND_CXX11_CMAKE__ TRUE)
 # Visual Studio 2008 (vs9) doesn't seem to support C++11 directly (only as TR1)
 if (MSVC AND MSVC_VERSION GREATER 1500)
   set(CXX11_FOUND 1)
+  # Visual Studio 2012 (vs11) doesn't support C++11 STL.
+  if (MSVC_VERSION GREATER 1600)
+    set(CXX11_STL_FOUND 1)
+  endif (MSVC_VERSION GREATER 1600)
   return ()
 endif (MSVC AND MSVC_VERSION GREATER 1500)
 
@@ -15,6 +19,7 @@ enable_language(CXX)
 check_cxx_compiler_flag("-std=c++11" CXX11_FOUND)
 if (CXX11_FOUND)
   set (CXX11_CXX_FLAGS "-std=c++11")
+  set (CXX11_STL_FOUND 1)
 
   # Tested on Mac OS X 10.8.2 with XCode 4.6 Command Line Tools
   # Clang requires this to find the correct c++11 headers
@@ -31,3 +36,5 @@ else (CXX11_FOUND)
 
 endif (CXX11_FOUND)
 
+# By default, C++11 compiler support implies the C++11 STL.
+set(CXX11_STL_FOUND ${CXX11_FOUND})
