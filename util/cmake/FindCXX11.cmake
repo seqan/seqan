@@ -6,6 +6,10 @@ set(__FIND_CXX11_CMAKE__ TRUE)
 # Visual Studio 2008 (vs9) doesn't seem to support C++11 directly (only as TR1)
 if (MSVC AND MSVC_VERSION GREATER 1500)
   set(CXX11_FOUND 1)
+  # Visual Studio 2010 (vs10) doesn't support C++11 STL.
+  if (MSVC_VERSION GREATER 1600)
+    set(CXX11_STL_FOUND 1)
+  endif (MSVC_VERSION GREATER 1600)
   return ()
 endif (MSVC AND MSVC_VERSION GREATER 1500)
 
@@ -31,3 +35,5 @@ else (CXX11_FOUND)
 
 endif (CXX11_FOUND)
 
+# By default, C++11 compiler support implies the C++11 STL.
+set(CXX11_STL_FOUND ${CXX11_FOUND})

@@ -17,13 +17,13 @@ message (STATUS "Configuring core/apps/yara")
 # Search C++11.
 find_package(CXX11 REQUIRED)
 
-# Stop here if C++11 was not found.
-if (NOT CXX11_FOUND)
+# Stop here if there is no C++11 with STL.
+if (NOT (CXX11_FOUND AND CXX11_STL_FOUND))
     message (STATUS "  C++11 compiler required to build yara.")
     return ()
-endif (NOT CXX11_FOUND)
+endif (NOT (CXX11_FOUND AND CXX11_STL_FOUND))
 
-# Disable OpenMP 2.0 in MSVC.
+# Disable parallelism in MSVC as it supports only OpenMP 2.0.
 if (MSVC)
   set (SEQAN_FIND_DEPENDENCIES ZLIB BZIP2)
 else ()
