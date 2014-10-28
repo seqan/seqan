@@ -1239,14 +1239,14 @@ SEQAN_CONCEPT_IMPL((FileStream<TValue, Bidirectional, TSpec>), (BidirectionalStr
 // Function open()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TDirection, typename TSpec, typename TFilename, typename TFlags>
+template <typename TValue, typename TDirection, typename TSpec>
 inline bool
-open(FilePageTable<TValue, TDirection, TSpec> & pager, TFilename const & filename, TFlags flags)
+open(FilePageTable<TValue, TDirection, TSpec> & pager, const char * fileName, int flags)
 {
     clear(pager);
     if (IsSameType<TSpec, MMap<> >::VALUE && (flags & OPEN_WRONLY))
         flags |= OPEN_RDWR;
-    bool result = open(pager.file, filename, flags);
+    bool result = open(pager.file, fileName, flags);
     pager.fileSize = (result) ? length(pager.file) / sizeof(TValue) : 0ul;
     return result;
 }
