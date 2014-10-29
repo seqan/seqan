@@ -277,7 +277,7 @@ struct BlastRecord
 
     TQId            qId;
     TPos            qLength;
-    std::list<TBlastMatch>  matches;
+    std::vector<TBlastMatch>  matches;
 
     BlastRecord() :
         qId(TQId()), qLength(0), matches()
