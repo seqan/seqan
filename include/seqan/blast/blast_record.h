@@ -288,7 +288,7 @@ struct BlastRecord
     {}
 
     BlastRecord(TQId && _qId) :
-        qId(std::move(_qId)), qLength(0)
+        qId(std::move(_qId)), qLength(0), matches()
     {}
 };
 
