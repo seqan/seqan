@@ -530,10 +530,10 @@ writeMatch(TStream & stream, TBlastMatch const & match,
 
     _untranslatePositions(effectiveQStart, effectiveQEnd, match.qFrameShift,
                           match.qLength, QHasRevComp<TFormat>(),
-                          QHasFrames<TFormat>());
+                          QIsTranslated<TFormat>());
     _untranslatePositions(effectiveSStart, effectiveSEnd, match.sFrameShift,
                           match.sLength, SHasRevComp<TFormat>(),
-                          SHasFrames<TFormat>());
+                          SIsTranslated<TFormat>());
 
     return writeMatch(stream,
                       TFormat(),

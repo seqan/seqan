@@ -284,11 +284,11 @@ using QHasRevComp = typename std::conditional<qHasRevComp(TFormat()),
                                               False>::type;
 
 // ----------------------------------------------------------------------------
-// qHasFrames()
+// qIsTranslated()
 // ----------------------------------------------------------------------------
 
 constexpr bool
-qHasFrames(BlastFormatProgram const p)
+qIsTranslated(BlastFormatProgram const p)
 {
     return ((p==BlastFormatProgram::BLASTX) || (p==BlastFormatProgram::TBLASTX))
             ? true
@@ -297,7 +297,7 @@ qHasFrames(BlastFormatProgram const p)
 
 template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
 constexpr bool
-qHasFrames(BlastFormat<f,p,g> const & /**/)
+qIsTranslated(BlastFormat<f,p,g> const & /**/)
 {
     return ((p==BlastFormatProgram::BLASTX) || (p==BlastFormatProgram::TBLASTX))
             ? true
@@ -305,7 +305,7 @@ qHasFrames(BlastFormat<f,p,g> const & /**/)
 }
 
 template <typename TFormat>
-using QHasFrames = typename std::conditional<qHasFrames(TFormat()),
+using QIsTranslated = typename std::conditional<qIsTranslated(TFormat()),
                                              True,
                                              False>::type;
 
@@ -318,7 +318,7 @@ constexpr uint8_t
 qNumFrames(BlastFormat<f,p,g> const & /**/)
 {
     using TFormat = BlastFormat<f,p,g>;
-    return (qHasFrames(TFormat())
+    return (qIsTranslated(TFormat())
             ? 6
 //             : 1);
             : (qHasRevComp(TFormat())
@@ -356,11 +356,11 @@ using SHasRevComp = typename std::conditional<sHasRevComp(TFormat()),
                                               False>::type;
 
 // ----------------------------------------------------------------------------
-// sHasFrames()
+// sIsTranslated()
 // ----------------------------------------------------------------------------
 
 constexpr bool
-sHasFrames(BlastFormatProgram const p)
+sIsTranslated(BlastFormatProgram const p)
 {
     return ((p==BlastFormatProgram::TBLASTX) ||
             (p==BlastFormatProgram::TBLASTN))
@@ -370,7 +370,7 @@ sHasFrames(BlastFormatProgram const p)
 
 template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
 constexpr bool
-sHasFrames(BlastFormat<f,p,g> const & /**/)
+sIsTranslated(BlastFormat<f,p,g> const & /**/)
 {
     return ((p==BlastFormatProgram::TBLASTX) ||
             (p==BlastFormatProgram::TBLASTN))
@@ -379,7 +379,7 @@ sHasFrames(BlastFormat<f,p,g> const & /**/)
 }
 
 template <typename TFormat>
-using SHasFrames = typename std::conditional<sHasRevComp(TFormat()),
+using SIsTranslated = typename std::conditional<sHasRevComp(TFormat()),
                                              True,
                                              False>::type;
 
@@ -392,7 +392,7 @@ constexpr uint8_t
 sNumFrames(BlastFormat<f,p,g> const & /**/)
 {
     using TFormat = BlastFormat<f,p,g>;
-    return (sHasFrames(TFormat())
+    return (sIsTranslated(TFormat())
             ? 6
             : (sHasRevComp(TFormat())
                 ? 2

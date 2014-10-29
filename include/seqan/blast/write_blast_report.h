@@ -306,16 +306,16 @@ _writeAlignmentBlock(TStream                 & stream,
     TPos            effSEnd     = m.sEnd;
 
     _untranslatePositions(effQStart, effQEnd, m.qFrameShift, m.qLength,
-                          QHasRevComp<TFormat>(), QHasFrames<TFormat>());
+                          QHasRevComp<TFormat>(), QIsTranslated<TFormat>());
     _untranslatePositions(effSStart, effSEnd, m.sFrameShift, m.sLength,
-                          SHasRevComp<TFormat>(), SHasFrames<TFormat>());
+                          SHasRevComp<TFormat>(), SIsTranslated<TFormat>());
 
     int8_t const     qStep = _step(m.qFrameShift,
                                    QHasRevComp<TFormat>(),
-                                   QHasFrames<TFormat>());
+                                   QIsTranslated<TFormat>());
     int8_t const     sStep = _step(m.sFrameShift,
                                    SHasRevComp<TFormat>(),
-                                   SHasFrames<TFormat>());
+                                   SIsTranslated<TFormat>());
     int8_t const  qStepOne = _step(m.qFrameShift,
                                    QHasRevComp<TFormat>(),
                                    False());
