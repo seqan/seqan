@@ -80,7 +80,9 @@ endif (MSVC)
 # ---------------------------------------------------------------------------
 
 if (MINGW)
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=i586")
+	if ("${CMAKE_SIZEOF_VOID_P}" EQUAL "4")
+	    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=i586")
+	endif ("${CMAKE_SIZEOF_VOID_P}" EQUAL "4")
 endif (MINGW)
 
 # ---------------------------------------------------------------------------
