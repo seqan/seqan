@@ -89,7 +89,7 @@ if (WIN32)
 		if (CMAKE_GENERATOR MATCHES "^Visual Studio .*")
 		  string (REGEX REPLACE "^Visual Studio ([0-9]+).*$" "\\1" SEQAN_CONTRIB_VARIANT ${CMAKE_GENERATOR})
 		  set (SEQAN_CONTRIB_VARIANT "vs${SEQAN_CONTRIB_VARIANT}")
-		elseif (CMAKE_GENERATOR STREQUAL "MinGW Makefiles")
+		elseif (MINGW)
 		  set (SEQAN_CONTRIB_VARIANT mingw)
 		endif (CMAKE_GENERATOR MATCHES "^Visual Studio .*")
 
