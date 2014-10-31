@@ -70,6 +70,8 @@ include (SeqAnUsabilityAnalyzer)
 # Set target system to be Windows Vista and later.
 if (MSVC)
   add_definitions (/bigobj /D_WIN32_WINNT=0x0600 /DWINVER=0x0600)
+elseif (MINGW)
+  add_definitions (-D_WIN32_WINNT=0x0600 -DWINVER=0x0600)
 endif (MSVC)
 
 # ---------------------------------------------------------------------------
@@ -80,7 +82,9 @@ endif (MSVC)
 # ---------------------------------------------------------------------------
 
 if (MINGW)
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=i586")
+	if ("${CMAKE_SIZEOF_VOID_P}" EQUAL "4")
+	    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=i586")
+	endif ("${CMAKE_SIZEOF_VOID_P}" EQUAL "4")
 endif (MINGW)
 
 # ---------------------------------------------------------------------------
