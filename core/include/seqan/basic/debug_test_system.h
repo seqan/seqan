@@ -53,6 +53,7 @@
 #include <set>
 #include <vector>
 #include <string>
+#include <typeinfo>
 
 #ifdef PLATFORM_WINDOWS
 #include <Windows.h>    // DeleteFile()
