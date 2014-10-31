@@ -55,7 +55,7 @@
 struct SeqConsOptions
 {
     // Verbosity level, 0 -- quiet, 1 -- normal, 2 -- verbose, 3 -- very verbose
-    int verbosity { 1 };
+    int verbosity;
 
     // The operation to perform.
     enum Operation
@@ -69,7 +69,7 @@ struct SeqConsOptions
     };
 
     // The operation to perform.
-    Operation operation { NOP };
+    Operation operation;
 
     // -----------------------------------------------------------------------
     // I/O Options
@@ -86,37 +86,48 @@ struct SeqConsOptions
     // -----------------------------------------------------------------------
 
     // Minimal overlap length.
-    int overlapMinLength { 20 };
+    int overlapMinLength;
     // Maximal error rate in percent for a read.
-    double overlapMaxErrorRate { 5 };
+    double overlapMaxErrorRate;
     // Minimal number of overlap for a read.
-    int overlapMinCount { 3 };
+    int overlapMinCount;
     // Window size to look for overlaps when positions are considered.
-    int overlapWindowSize { 20 };
+    int overlapWindowSize;
 
     // -----------------------------------------------------------------------
     // K-mer Filter Options
     // -----------------------------------------------------------------------
 
     // K-mer length to use for identifying overlap candidates.
-    int kMerSize { 20 };
+    int kMerSize;
     // K-mers with a higher number of occurences are ignored.
-    int kMerMaxOcc { 200 };
+    int kMerMaxOcc;
 
     // -----------------------------------------------------------------------
     // Realignment Options
     // -----------------------------------------------------------------------
 
     // The bandwidth to use in the banded alignment when realigning.
-    int reAlignmentBandwidth { 10 };
+    int reAlignmentBandwidth;
     // The environment for profile extraction.
-    int reAlignmentEnvironment { 20 };
+    int reAlignmentEnvironment;
 
     // -----------------------------------------------------------------------
     // Member Functions
     // -----------------------------------------------------------------------
 
-    SeqConsOptions() = default;
+    SeqConsOptions() :
+        verbosity(1),
+        operation(NOP),
+        overlapMinLength(20),
+        overlapMaxErrorRate(5),
+        overlapMinCount(3),
+        overlapWindowSize(20),
+        kMerSize(20),
+        kMerMaxOcc(200),
+        reAlignmentBandwidth(10),
+        reAlignmentEnvironment(20)
+    {}
 
     // Check whether the combination of operation and input file is valid.  Throws an exception in the case that it is
     // not.
