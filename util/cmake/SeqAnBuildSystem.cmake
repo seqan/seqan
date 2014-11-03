@@ -432,9 +432,9 @@ macro (seqan_setup_cuda_vars)
     else ()
       # Disable only Thrust warnings.
       string (REGEX REPLACE "-Wall" ""
-              SEQAN_CXX_FLAGS ${SEQAN_CXX_FLAGS})
+              SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS}")
       string (REGEX REPLACE "-pedantic" ""
-              SEQAN_CXX_FLAGS ${SEQAN_CXX_FLAGS})
+              SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS}")
       if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
         set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -Wno-unused-parameter")
       endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
@@ -696,9 +696,9 @@ macro (seqan_register_tests)
 
     # Remove NDEBUG definition for tests.
     string (REGEX REPLACE "-DNDEBUG" ""
-            CMAKE_CXX_FLAGS_RELWITHDEBINFO ${CMAKE_CXX_FLAGS_RELWITHDEBINFO})
+            CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
     string (REGEX REPLACE "-DNDEBUG" ""
-            CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
+            CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 
     # Conditionally enable coverage mode by setting the appropriate flags.
     if (MODEL STREQUAL "NightlyCoverage")
