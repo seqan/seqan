@@ -98,6 +98,7 @@
 #include <seqan/index/index_sa_mm.h>
 #include <seqan/index/index_sa_qsort.h>
 #include <seqan/index/index_sa_bwtwalk.h>
+#include <seqan/index/index_sa_bpr_qsort.h>   // helpers
 #include <seqan/index/index_sa_bpr.h>         // parallel bucket pointer refinement alg. (Schuermann et al.)
 
 #include <seqan/index/pump_extender3.h>
@@ -121,7 +122,6 @@
 
 #include <seqan/index/index_childtab.h>
 #include <seqan/index/index_bwt.h>
-#include <seqan/index/index_bwt_bcr_qsort.h>  // helpers
 #include <seqan/index/index_bwt_bcr.h>        // parallel BWT construction (Bauer, Cox, Rosone)
 
 // ==========================================================================

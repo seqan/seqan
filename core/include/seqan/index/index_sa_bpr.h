@@ -695,7 +695,7 @@ TText getOrdererdAlphabet(const String<long> & bkt, const StringSet<TText> & s,
 // Theirfore it uses the sizes of the different Buckets
 //
 template <typename TText>
-TText getOrdererdAlphabet(const String<long> & bkt, const TText & s,
+TText getOrdererdAlphabet(const String<long> & bkt, const TText & /*s*/,
                           const unsigned short & d)
 {
     typedef typename AlphabetType<TText>::Type TAlphabet;

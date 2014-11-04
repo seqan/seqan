@@ -198,12 +198,6 @@ void createBwt(TBWT & BWT, StringSet<TText> & text,
     String<TValueSize> tempQIndex; //q+1
     resize(tempQIndex, count, Exact()); //Q+1
 
-    double countTime = 0;
-    double insertTime = 0;
-    double getPosTime = 0;
-    double getSortTime = 0;
-    double getSort2Time = 0;
-
     String<String<unsigned> > tempBucketInsertCount;
     resize(tempBucketInsertCount, omp_get_max_threads(), Exact());
     for (unsigned int i = 0; i < length(tempBucketInsertCount); ++i)
@@ -231,14 +225,6 @@ void createBwt(TBWT & BWT, StringSet<TText> & text,
             {
                 threadBktInsertCount[bucketIndex] = 0;
             }
-
-#if /*(SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING) &&*/ SEQAN_ENABLE_PARALLELISM
-            double begin_count_time = 0;
-            if (omp_get_thread_num() == 0)
-            {
-                begin_count_time = omp_get_wtime();
-            }
-#endif
 
             //count characters per bucket for each position
             SEQAN_OMP_PRAGMA(for schedule(dynamic))
@@ -291,18 +277,6 @@ void createBwt(TBWT & BWT, StringSet<TText> & text,
                     }
                 }
             }
-
-#if /*(SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING) &&*/ SEQAN_ENABLE_PARALLELISM
-            if (omp_get_thread_num() == 0)
-            {
-                countTime += omp_get_wtime() - begin_count_time;
-            }
-            double begin_getpos_time = 0;
-            if (omp_get_thread_num() == 0)
-            {
-                begin_getpos_time = omp_get_wtime();
-            }
-#endif
 
             //get insert positions
             SEQAN_OMP_PRAGMA(for schedule(guided))
@@ -391,18 +365,6 @@ void createBwt(TBWT & BWT, StringSet<TText> & text,
                 }
             }
 
-#if /*(SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING) &&*/ SEQAN_ENABLE_PARALLELISM
-            if (omp_get_thread_num() == 0)
-            {
-                getPosTime += omp_get_wtime() - begin_getpos_time;
-            }
-            double begin_sort_time = 0;
-            if (omp_get_thread_num() == 0)
-            {
-                begin_sort_time = omp_get_wtime();
-            }
-#endif
-
             //Sort qIndex (and tempQ and pos)
             SEQAN_OMP_PRAGMA(single nowait)
             {
@@ -412,18 +374,6 @@ void createBwt(TBWT & BWT, StringSet<TText> & text,
 
             //Wait for Quicksort tasks to finish
             SEQAN_OMP_PRAGMA(barrier)
-
-#if /*(SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING) &&*/ SEQAN_ENABLE_PARALLELISM
-            if (omp_get_thread_num() == 0)
-            {
-                getSortTime += omp_get_wtime() - begin_sort_time;
-            }
-            double begin_sort2_time = 0;
-            if (omp_get_thread_num() == 0)
-            {
-                begin_sort2_time = omp_get_wtime();
-            }
-#endif
 
             SEQAN_OMP_PRAGMA(for nowait)
             for (long bucketIndex = 0; bucketIndex < bucketCount; ++bucketIndex)
@@ -439,19 +389,6 @@ void createBwt(TBWT & BWT, StringSet<TText> & text,
 
             //Wait for Quicksort tasks to finish
             SEQAN_OMP_PRAGMA(barrier)
-
-#if /*(SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING) &&*/ SEQAN_ENABLE_PARALLELISM
-            if (omp_get_thread_num() == 0)
-            {
-                getSort2Time += omp_get_wtime() - begin_sort2_time;
-            }
-
-            double begin_insert_time = 0;
-            if (omp_get_thread_num() == 0)
-            {
-                begin_insert_time = omp_get_wtime();
-            }
-#endif
 
             //Now insert the new characters into the buckets
             SEQAN_OMP_PRAGMA(for schedule(guided))
@@ -492,24 +429,8 @@ void createBwt(TBWT & BWT, StringSet<TText> & text,
                 sortBwtBucket(currentBucket, currentBucketVolume, currentBuffer, endBucketIndex - startBucketIndex);
                 currentBucketVolume += endBucketIndex - startBucketIndex;
             }
-
-#if /*(SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING) &&*/ SEQAN_ENABLE_PARALLELISM
-            if (omp_get_thread_num() == 0)
-            {
-                insertTime += omp_get_wtime() - begin_insert_time;
-            }
-#endif
-
         }
     }
-
-#if /*(SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING) &&*/ SEQAN_ENABLE_PARALLELISM
-    std::cout << " countTime:   " << countTime << std::endl;
-    std::cout << " getPosTime:   " << getPosTime << std::endl;
-    std::cout << " getSortTime:   " << getSortTime << std::endl;
-    std::cout << " getSort2Time:   " << getSort2Time << std::endl;
-    std::cout << " insertValue:   " << insertTime << std::endl;
-#endif
 
     int index = 0;
     int sentinelIndex = 0;
@@ -536,10 +457,6 @@ void preallocateMemory(const TText & text, const TBucketCount bucketCount, const
 
     typedef typename Size<TText>::Type TValueSize;
     const TAlphabetSize alphabetSizeWithDollar = alphabetSize + 1;
-
-#if (SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING) && SEQAN_ENABLE_PARALLELISM
-    double beginAllocTime = omp_get_wtime();
-#endif
 
     String<unsigned> bucketCapacity;
     resize(bucketCapacity, bucketCount, 0);
@@ -572,10 +489,6 @@ void preallocateMemory(const TText & text, const TBucketCount bucketCount, const
     }
 
     clear(bucketCapacity);
-
-#if (SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING) && SEQAN_ENABLE_PARALLELISM
-    std::cout << " AllocTime:   " << omp_get_wtime() - beginAllocTime << std::endl;
-#endif
 }
 
 /*
