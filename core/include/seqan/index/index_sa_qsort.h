@@ -388,6 +388,63 @@ inline void createSuffixArray(
 // function createGappedSuffixArray
 // --------------------------------------------------------------------------
 
+/*!
+ * @fn createGappedSuffixArray
+ * @headerfile <seqan/index.h>
+ * @brief Creates a gapped suffix array from a given text and a suffix modifier (e.g. a cyclic shape).
+ *
+ * @signature void createGappedSuffixArray(suffixArray, text, modCargo, modifierTag[, algoTag]);
+ *
+ * @param[out] suffixArray The resulting gapped suffix array.
+ * @param[in]  text    A given text. Types: @link ContainerConcept @endlink
+ * @param[in]  modCargo The Cargo of the Suffix modifier, i.e. a CyclicShape.
+ * @param[in]  modfierTag The Suffix modifier class, e.g. ModCyclicShape<TShape>.
+ * @param[in]  algoTag A tag that identifies the algorithm which is used for creation, e.g. SAQSort.
+ *
+ * This function should not be called directly and the documentation will be changed accordingly later on.
+ * The suffix array must have the correct size. Here is the typical usage:
+ *
+ * @code{.cpp}
+ * typedef CyclicShape<FixedShape<0,GappedShape<HardwiredShape<1,2> >,0> > TShape; // 1101
+ * typedef ModifiedString<typename Suffix<CharString>::Type, ModCyclicShape<TShape> > TSuffix;
+ *
+ * CharString string = ".a..b..c....a.";
+ * String<int> sa;
+ * resize(sa, length(string));
+ *
+ * createGappedSuffixArray(sa,
+ *                         string,
+ *                         TShape(),
+ *                         ModCyclicShape<TShape>(),
+ *                         SAQSort());
+ * for (unsigned i=0; i< length(sa); ++i)
+ * {
+ *     std::cout << i << "\t" << sa[i] << "\t" <<
+ *     TSuffix(suffix(string, sa[i]), TShape()) <<
+ *     std::endl;
+ * }
+ * @endcode
+ * @code{.console}
+ * 0	13	.
+ *  1	10	...
+ *  2	5	.....a.
+ *  3	2	....c....
+ *  4	8	...a.
+ *  5	9	..a.
+ *  6	11	.a
+ *  7	0	.a.b.c...a.
+ *  8	3	.b.c...a
+ *  9	6	.c....
+ *  10	12	a.
+ *  11	1	a.b.....a.
+ *  12	4	b.c...a.
+ *  13	7	c...a
+ * @endcode
+ */
+
+// todo(meiers): Once the GappedIndex class is there, write a documentation for requireIndex etc.
+// Moreover, write a tutorial for gapped suffix arrays.
+
 template <typename TSA, typename TText, typename TCargo, typename TMod>
 inline void createGappedSuffixArray(
     TSA &SA,
