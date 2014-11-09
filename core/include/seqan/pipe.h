@@ -66,6 +66,7 @@
 #include <seqan/pipe/pipe_shifter.h>
 #include <seqan/pipe/pipe_source.h>
 #include <seqan/pipe/pipe_tupler.h>
+#include <seqan/pipe/pipe_gapped_tupler.h>
 
 //____________________________________________________________________________
 // pools
