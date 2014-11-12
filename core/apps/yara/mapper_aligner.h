@@ -142,7 +142,7 @@ template <typename TContigGaps, typename TReadGaps, typename TErrors>
 inline int _align(TContigGaps & contigGaps, TReadGaps & readGaps, TErrors errors, AffineGaps)
 {
     return globalAlignment(contigGaps, readGaps,
-                           Score<int>(0, -999, -1001, -1000),           // Match, mismatch, extend, open.
+                           Score<int>(0, -1000, -999, -1001),           // Match, mismatch, extend, open.
                            AlignConfig<true, false, false, true>(),     // Top, left, right, bottom.
                            -(int)errors, (int)errors, Gotoh()) / -999;
 }
