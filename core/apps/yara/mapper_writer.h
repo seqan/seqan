@@ -136,6 +136,7 @@ inline void fillHeader(BamHeader & header, TOptions const & options)
     BamHeaderRecord rgRecord;
     rgRecord.type = BAM_HEADER_READ_GROUP;
     appendValue(rgRecord.tags, TTag("ID", options.readGroup));
+    appendValue(rgRecord.tags, TTag("SM", options.readGroup));
 //    appendValue(rgRecord.tags, TTag("PI", options.libraryLength));
     appendValue(rgRecord.tags, TTag("PG", "Yara"));
     appendValue(header, rgRecord);
