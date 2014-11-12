@@ -1128,6 +1128,11 @@ void MasonSimulatorOptions::addOptions(seqan::ArgumentParser & parser) const
                                             seqan::ArgParseOption::OUTPUT_FILE, "OUT"));
     setValidValues(parser, "out-alignment", "sam bam");
 
+    // Bias extension (Oliver Stolpe 2014-11-12)
+    addOption(parser, seqan::ArgParseOption("", "exome-bias-file", "Tab separated file with contig name and weight.",
+                                            seqan::ArgParseOption::INPUT_FILE, "IN"));
+    setValidValues(parser, "exome-bias-file", "tsv");
+
     // Add options of the component options.
     matOptions.addOptions(parser);
     methOptions.addOptions(parser);
@@ -1226,6 +1231,8 @@ void MasonSimulatorOptions::getOptionValues(seqan::ArgumentParser const & parser
     getOptionValue(outFileNameLeft, parser, "out");
     getOptionValue(outFileNameRight, parser, "out-right");
     getOptionValue(outFileNameSam, parser, "out-alignment");
+    // Bias extension (Oliver Stolpe 2014-11-12)
+    getOptionValue(biasTsvInFile, parser, "exome-bias-file");
 
     // Get options for the other components that we use.
     methOptions.getOptionValues(parser);

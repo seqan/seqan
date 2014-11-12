@@ -46,6 +46,8 @@
 #include "mason_types.h"
 #include "vcf_materialization.h"
 #include "external_split_merge.h"
+// Read routine for bias extension (Oliver Stolpe 2014-11-12)
+#include "bias_weight_tsv.h"
 
 // ==========================================================================
 // Forwards
@@ -859,6 +861,9 @@ public:
     std::vector<seqan::BamFileOut *> bamFileOuts;
     std::vector<seqan::SeqFileOut *> seqFileOuts;
 
+    // Bias weights to contig ID mapping (Oliver Stolpe 2014-11-12)
+    std::map<seqan::CharString,float> biasWeightRecords;
+
     // ----------------------------------------------------------------------
     // File Output
     // ----------------------------------------------------------------------
@@ -1128,16 +1133,84 @@ public:
             writeRecord(*bamFileOuts[i], bamHeader);
     }
 
+    // Read bias vector when available (extension by Oliver Stolpe 2014-11-12)
+    int _readBiasVector()
+    {
+        // fill bias vector with 1.0 for the case we don't have a file provided
+        // (default case)
+        contigPicker.biasVector.resize(numSeqs(vcfMat.faiIndex));
+        for (unsigned i = 0; i < numSeqs(vcfMat.faiIndex); ++i)
+        {
+            contigPicker.biasVector[i] = 1.0;
+        }
+
+        // if file is available, read file and overwrite values in bias vector
+        if (!empty(options.biasTsvInFile))
+        {
+            std::fstream inF(toCString(options.biasTsvInFile), std::ios::in | std::ios::binary);
+            
+            if (!inF.good())
+            {
+                std::cerr << "ERROR: Could not open " << options.biasTsvInFile << "\n";
+                return 1;
+            }
+
+            seqan::DirectionIterator<std::fstream, seqan::Input>::Type inputIter = 
+                directionIterator(inF, seqan::Input());
+
+            BiasWeightRecord record;
+
+            // read file line by line
+            while (!atEnd(inputIter))
+            {
+                // allow comments
+                if (*inputIter == '#')
+                {
+                    skipLine(inputIter);
+                    continue;
+                }
+
+                if (readRecord(record, inputIter, BiasWeightTsv()) != 0)
+                {
+                    std::cerr << "ERROR: Problem reading from " << options.biasTsvInFile << "\n";
+                    return 1;
+                }
+                
+                // store record in map for faster search
+                biasWeightRecords[record.contigId] = record.weight;
+            }
+
+            // iterate over fai index sequence names and replace the weight if they exist in the map
+            std::map<seqan::CharString, float>::iterator it;
+            for (unsigned i = 0; i < numSeqs(vcfMat.faiIndex); ++i)
+            {
+                it = biasWeightRecords.find(sequenceName(vcfMat.faiIndex, i));
+                if (it != biasWeightRecords.end())
+                {
+                    contigPicker.biasVector[i] = it->second;
+                }
+            }
+        }
+
+        return 0;
+    }
+
     // Configure contigPicker.
     void _initContigPicker()
     {
+        // Bias vector (Oliver Stolpe 2014-11-12)
+        std::cerr << "Initializing bias vector ...";
+        _readBiasVector();
+        std::cerr << " OK\n";
+
         std::cerr << "Initializing fragment-to-contig distribution ...";
+
         // Contig picker.
         contigPicker.numHaplotypes = vcfMat.numHaplotypes;
         contigPicker.lengthSums.clear();
         for (unsigned i = 0; i < numSeqs(vcfMat.faiIndex); ++i)
         {
-            contigPicker.lengthSums.push_back(sequenceLength(vcfMat.faiIndex, i));
+            contigPicker.lengthSums.push_back(sequenceLength(vcfMat.faiIndex, i) * contigPicker.biasVector[i]);
             if (i > 0u)
                 contigPicker.lengthSums[i] += contigPicker.lengthSums[i - 1];
         }

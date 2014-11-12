@@ -85,6 +85,9 @@ public:
     // The number of haplotypes.
     int numHaplotypes;
 
+    // The vector of bias weights (Oliver Stolpe 2014-11-12)
+    std::vector<float> biasVector;
+
     ContigPicker(TRng & rng) : rng(rng)
     {}
 
