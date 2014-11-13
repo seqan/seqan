@@ -66,7 +66,7 @@ typedef StringSet<String<Dna5, Packed<YaraStringSpec> >, Owner<ConcatDirect<> > 
 typedef StringSet<String<Dna>, Owner<ConcatDirect<> > >                             YaraContigsFM;
 
 // ----------------------------------------------------------------------------
-// FM Index Fibres
+// FMIndex Fibres
 // ----------------------------------------------------------------------------
 
 struct YaraFMIndexConfig
@@ -81,7 +81,7 @@ typedef FMIndex<void, YaraFMIndexConfig>        YaraIndexSpec;
 typedef Index<YaraContigsFM, YaraIndexSpec>     YaraIndex;
 
 // ----------------------------------------------------------------------------
-// FM Index Size
+// FMIndex Size
 // ----------------------------------------------------------------------------
 
 namespace seqan {
@@ -141,7 +141,7 @@ struct Size<LF<YaraContigsFM, TSpec, TConfig> >
 }
 
 // ----------------------------------------------------------------------------
-// Rank Dictionary Size
+// RankDictionary Size
 // ----------------------------------------------------------------------------
 
 namespace seqan {
@@ -165,7 +165,7 @@ struct Size<RankDictionary<bool, Naive<TSpec> > >
 }
 
 // ----------------------------------------------------------------------------
-// Rank Dictionary Fibre Specs
+// RankDictionary Fibre Specs
 // ----------------------------------------------------------------------------
 
 namespace seqan {
