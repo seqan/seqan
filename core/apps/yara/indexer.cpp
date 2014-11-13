@@ -189,7 +189,7 @@ void loadContigs(Indexer<TIndexSpec, TSpec> & me, Options const & options)
 
     try
     {
-        readRecords(me.contigs, me.contigsFile);
+        readRecords(me.contigs, me.contigsFile, Iupac());
     }
     catch (BadAlloc const & /* e */)
     {
@@ -268,7 +268,7 @@ void buildIndex(Indexer<TIndexSpec, TSpec> & me, Options const & options)
 //    catch (PageFrameError const & /* e */)
     {
         throw RuntimeError("Insufficient disk space to index the reference. \
-                            Specify a bigger temporary folder using the options --tmp-folder.");
+                            Specify a bigger temporary folder using the options --tmp-dir.");
     }
 
     // NOTE(esiragusa): the contigs should be already saved.
