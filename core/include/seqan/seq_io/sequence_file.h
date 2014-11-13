@@ -156,7 +156,7 @@ struct FileFormat<SmartFile<Fastq, Output, TSpec> >
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function read(); Without qualities
+// Function readRecord(); Qualities in seq string
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIdString, typename TSeqString>
@@ -167,18 +167,32 @@ readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, Input, TSpec> & 
     readRecord(meta, seq, file.iter, file.format);
 }
 
+// ----------------------------------------------------------------------------
+// Function readRecord(); No qualities in seq string
+// ----------------------------------------------------------------------------
+
 template <typename TSpec, typename TIdString, typename TSeqString>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename SmartFile<Fastq, Input, TSpec>::TStream> >,
                                 HasQualities<typename Value<TSeqString>::Type> >, void)
 readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, Input, TSpec> & file)
 {
-
     readRecord(meta, seq, context(file).buffer[2], file.iter, file.format);
     assignQualities(seq, context(file).buffer[2]);
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecords(); Without qualities
+// Function readRecord(); With separate qualities
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Fastq, Input, TSpec>::TStream> >, void)
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, SmartFile<Fastq, Input, TSpec> & file)
+{
+    readRecord(meta, seq, qual, file.iter, file.format);
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecords()
 // ----------------------------------------------------------------------------
 
 template <typename TPtrA, typename TPtrB>
@@ -195,16 +209,14 @@ swapPtr(TPtrA &a, TPtrB &b)
     a = tmp2.a;
 }
 
-template <typename TIdStringSet, typename TSeqStringSet, typename TSpec>
+template <typename TIdStringSet, typename TSeqStringSet, typename TSpec, typename TSeqFileInAlphabet>
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         SmartFile<Fastq, Input, TSpec> & file,
-                        __uint64 maxRecords = MaxValue<__uint64>::VALUE)
+                        __uint64 maxRecords = MaxValue<__uint64>::VALUE,
+                        TSeqFileInAlphabet = Iupac())
 {
-    typedef typename Value<TSeqStringSet>::Type TSeqString;
-    typedef typename Value<TSeqString>::Type TValue;
-
-    String<TValue> seqBuffer;
+    String<TSeqFileInAlphabet> seqBuffer;
 
     // reuse the memory of context(file).buffer for seqBuffer (which has a different type but same sizeof(Alphabet))
     swapPtr(seqBuffer.data_begin, context(file).buffer[1].data_begin);
@@ -225,30 +237,34 @@ inline void readRecords(TIdStringSet & meta,
 }
 
 // ----------------------------------------------------------------------------
-// Function read(); With qualities
+// Function readRecords(); Without alphabet conversion
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Fastq, Input, TSpec>::TStream> >, void)
-readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, SmartFile<Fastq, Input, TSpec> & file)
+template <typename TIdStringSet, typename TSeqStringSet, typename TSpec>
+inline void readRecords(TIdStringSet & meta,
+                        TSeqStringSet & seq,
+                        SmartFile<Fastq, Input, TSpec> & file,
+                        __uint64 maxRecords = MaxValue<__uint64>::VALUE)
 {
-    readRecord(meta, seq, qual, file.iter, file.format);
+    typedef typename Value<TSeqStringSet>::Type     TSeqString;
+    typedef typename Value<TSeqString>::Type        TSeqAlphabet;
+
+    readRecords(meta, seq, file, maxRecords, TSeqAlphabet());
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecords(); With qualities
+// Function readRecords(); With separate qualities
 // ----------------------------------------------------------------------------
 
-template <typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet, typename TSpec>
+template <typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet, typename TSpec, typename TSeqFileInAlphabet>
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         TQualStringSet & qual,
                         SmartFile<Fastq, Input, TSpec> & file,
-                        __uint64 maxRecords = MaxValue<__uint64>::VALUE)
+                        __uint64 maxRecords = MaxValue<__uint64>::VALUE,
+                        TSeqFileInAlphabet = Iupac())
 {
-    typedef typename Value<TSeqStringSet>::Type TSeqString;
-
-    TSeqString seqBuffer;
+    String<TSeqFileInAlphabet> seqBuffer;
 
     // reuse the memory of context(file).buffer for seqBuffer (which has a different type but same sizeof(Alphabet))
     std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
@@ -269,7 +285,24 @@ inline void readRecords(TIdStringSet & meta,
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord(); Without qualities
+// Function readRecords(); With separate qualities; Without alphabet conversion
+// ----------------------------------------------------------------------------
+
+template <typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet, typename TSpec>
+inline void readRecords(TIdStringSet & meta,
+                        TSeqStringSet & seq,
+                        TQualStringSet & qual,
+                        SmartFile<Fastq, Input, TSpec> & file,
+                        __uint64 maxRecords = MaxValue<__uint64>::VALUE)
+{
+    typedef typename Value<TSeqStringSet>::Type     TSeqString;
+    typedef typename Value<TSeqString>::Type        TSeqAlphabet;
+
+    readRecords(meta, seq, qual, file, maxRecords, TSeqAlphabet());
+}
+
+// ----------------------------------------------------------------------------
+// Function writeRecord()
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIdString, typename TSeqString>
@@ -282,7 +315,7 @@ writeRecord(SmartFile<Fastq, Output, TSpec> & file,
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord(); With qualities
+// Function writeRecord(); With separate qualities
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
@@ -296,7 +329,7 @@ writeRecord(SmartFile<Fastq, Output, TSpec> & file,
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecords(); Without qualities
+// Function writeRecords()
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIdStringSet, typename TSeqStringSet>
@@ -310,7 +343,7 @@ writeRecords(SmartFile<Fastq, Output, TSpec> & file,
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecords(); With qualities
+// Function writeRecords(); With separate qualities
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet>
