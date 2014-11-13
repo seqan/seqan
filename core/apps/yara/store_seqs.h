@@ -153,22 +153,36 @@ inline bool save(SeqStore<TSpec, TConfig> const & me, TFileName const & fileName
 template <typename TSpec, typename TConfig>
 void swap(SeqStore<TSpec, TConfig> & a, SeqStore<TSpec, TConfig> & b)
 {
-    using std::swap;
-
-    swap(a.seqs, b.seqs);
-    swap(a.names, b.names);
+    std::swap(a.seqs, b.seqs);
+    std::swap(a.names, b.names);
 }
 
 // ----------------------------------------------------------------------------
 // Function readRecords()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TConfig, typename TFileSpec>
+template <typename TSpec, typename TConfig, typename TFileSpec, typename TAlphabetSpec>
 inline void readRecords(SeqStore<TSpec, TConfig> & me,
                         SmartFile<Fastq, Input, TFileSpec> & fileIn,
-                        __uint64 maxRecords = MaxValue<__uint64>::VALUE)
+                        TAlphabetSpec const & alphabet = Iupac())
 {
-    readRecords(me.names, me.seqs, fileIn, maxRecords);
+    readRecords(me.names, me.seqs, fileIn, alphabet);
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecords(); Without alphabet conversion
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TConfig, typename TFileSpec>
+inline void readRecords(SeqStore<TSpec, TConfig> & me,
+                        SmartFile<Fastq, Input, TFileSpec> & fileIn)
+{
+    typedef SeqStore<TSpec, TConfig>    TSeqStore;
+    typedef typename TSeqStore::TSeqs   TSeqs;
+    typedef typename Value<TSeqs>::Type TSeq;
+    typedef typename Value<TSeq>::Type  TSeqAlphabet;
+
+    readRecords(me, fileIn, TSeqAlphabet());
 }
 
 // ----------------------------------------------------------------------------
