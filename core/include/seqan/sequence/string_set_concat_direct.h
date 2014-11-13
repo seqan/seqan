@@ -50,7 +50,7 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-template <typename TDelimiter = void>
+template <typename TSpec = void>
 struct ConcatDirect;                    // contains 1 string (the concatenation of n strings)
 
 // TODO(holtgrew): Change name of specialization to ConcatDirect Owner StringSet?
@@ -91,8 +91,8 @@ a single integer value between 0 and the sum of string lengths minus 1.
 ..class:Spec.ConcatDirect
 ..summary:The concatenation string. Concatenates all sequences of the StringSet without gaps.
 */
-template <typename TString, typename TDelimiter>
-class StringSet<TString, Owner<ConcatDirect<TDelimiter> > >
+template <typename TString, typename TSpec>
+class StringSet<TString, Owner<ConcatDirect<TSpec> > >
 {
 public:
     typedef typename StringSetLimits<StringSet>::Type   TLimits;
@@ -353,9 +353,9 @@ inline void _refreshStringSetLimits(StringSet<TString, Owner<ConcatDirect<TSpec>
 // Function appendValue()
 // --------------------------------------------------------------------------
 
-template <typename TString, typename TString2, typename TExpand >
+template <typename TString, typename TString2, typename TSpec, typename TExpand>
 inline void appendValue(
-    StringSet<TString, Owner<ConcatDirect<void> > > & me,
+    StringSet<TString, Owner<ConcatDirect<TSpec> > > & me,
     TString2 const & obj,
     Tag<TExpand> tag)
 {
@@ -363,30 +363,18 @@ inline void appendValue(
     append(me.concat, obj, tag);
 }
 
-template <typename TString, typename TDelimiter, typename TString2, typename TExpand >
-inline void appendValue(
-    StringSet<TString, Owner<ConcatDirect<TDelimiter> > > & me,
-    TString2 const & obj,
-    Tag<TExpand> tag)
-{
-    appendValue(me.limits, lengthSum(me) + length(obj) + 1, tag);
-    append(me.concat, obj, tag);
-    appendValue(me.concat, TDelimiter(), tag);
-}
-
-
 // --------------------------------------------------------------------------
 // Function insertValue()
 // --------------------------------------------------------------------------
 
-template <typename TString, typename TDelimiter, typename TPos, typename TSequence, typename TExpand >
+template <typename TString, typename TSpec, typename TPos, typename TSequence, typename TExpand >
 inline void insertValue(
-    StringSet<TString, Owner<ConcatDirect<TDelimiter> > > & me,
+    StringSet<TString, Owner<ConcatDirect<TSpec> > > & me,
     TPos pos,
     TSequence const & seq,
     Tag<TExpand> tag)
 {
-    typedef StringSet<TString, Owner<ConcatDirect<TDelimiter> > > TStringSet;
+    typedef StringSet<TString, Owner<ConcatDirect<TSpec> > > TStringSet;
     typedef typename Size<TStringSet>::Type TSize;
     typedef typename StringSetLimits<TStringSet>::Type TLimits;
     typedef typename Value<TLimits>::Type TLimitValue;
@@ -403,13 +391,13 @@ inline void insertValue(
 // Function erase()
 // --------------------------------------------------------------------------
 
-template <typename TString, typename TDelimiter, typename TPos >
+template <typename TString, typename TSpec, typename TPos >
 inline void erase(
-    StringSet<TString, Owner<ConcatDirect<TDelimiter> > > & me,
+    StringSet<TString, Owner<ConcatDirect<TSpec> > > & me,
     TPos pos,
     TPos pos_end)
 {
-    typedef StringSet<TString, Owner<ConcatDirect<TDelimiter> > > TStringSet;
+    typedef StringSet<TString, Owner<ConcatDirect<TSpec> > > TStringSet;
     typedef typename Size<TStringSet>::Type TSize;
     typedef typename StringSetLimits<TStringSet>::Type TLimits;
     typedef typename Value<TLimits>::Type TLimitValue;
@@ -431,10 +419,9 @@ inline void erase(
 // Function clear()
 // --------------------------------------------------------------------------
 
-template <typename TString, typename TDelimiter >
-inline void clear(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > & me)
+template <typename TString, typename TSpec >
+inline void clear(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me)
 {
-    SEQAN_CHECKPOINT;
     clear(me.concat);
     resize(me.limits, 1, Exact());
 }
@@ -443,9 +430,9 @@ inline void clear(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > & me)
 // Function length()
 // --------------------------------------------------------------------------
 
-template <typename TString, typename TDelimiter>
-SEQAN_HOST_DEVICE inline typename Size<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > >::Type
-length(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const & me)
+template <typename TString, typename TSpec>
+SEQAN_HOST_DEVICE inline typename Size<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
+length(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me)
 {
     return length(me.limits) - 1;
 }
@@ -484,16 +471,16 @@ reserve(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me,
 // Function prefix()
 // --------------------------------------------------------------------------
 
-template <typename TString, typename TDelimiter, typename TPosition >
-inline typename Prefix<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > >::Type
-prefix(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > & me, TPosition pos)
+template <typename TString, typename TSpec, typename TPosition >
+inline typename Prefix<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
+prefix(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TPosition pos)
 {
     return infix(me.concat, stringSetLimits(me)[getSeqNo(pos, stringSetLimits(me))], posGlobalize(pos, stringSetLimits(me)));
 }
 
-template <typename TString, typename TDelimiter, typename TPosition >
-inline typename Prefix<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const>::Type
-prefix(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const & me, TPosition pos)
+template <typename TString, typename TSpec, typename TPosition >
+inline typename Prefix<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type
+prefix(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPosition pos)
 {
     return infix(me.concat, stringSetLimits(me)[getSeqNo(pos, stringSetLimits(me))], posGlobalize(pos, stringSetLimits(me)));
 }
@@ -502,16 +489,16 @@ prefix(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const & me, TPositi
 // Function suffix()
 // --------------------------------------------------------------------------
 
-template <typename TString, typename TDelimiter, typename TPosition >
-inline typename Suffix<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > >::Type
-suffix(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > & me, TPosition pos)
+template <typename TString, typename TSpec, typename TPosition >
+inline typename Suffix<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
+suffix(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TPosition pos)
 {
     return infix(me.concat, posGlobalize(pos, stringSetLimits(me)), stringSetLimits(me)[getSeqNo(pos, stringSetLimits(me)) + 1]);
 }
 
-template <typename TString, typename TDelimiter, typename TPosition >
-inline typename Suffix<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const>::Type
-suffix(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const & me, TPosition pos)
+template <typename TString, typename TSpec, typename TPosition >
+inline typename Suffix<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type
+suffix(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPosition pos)
 {
     return infix(me.concat, posGlobalize(pos, stringSetLimits(me)), stringSetLimits(me)[getSeqNo(pos, stringSetLimits(me)) + 1]);
 }
@@ -520,16 +507,16 @@ suffix(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const & me, TPositi
 // Function infix()
 // --------------------------------------------------------------------------
 
-template <typename TString, typename TDelimiter, typename TPosBegin, typename TPosEnd >
-inline typename Infix<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > >::Type
-infix(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > & me, TPosBegin posBegin, TPosEnd posEnd)
+template <typename TString, typename TSpec, typename TPosBegin, typename TPosEnd >
+inline typename Infix<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
+infix(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TPosBegin posBegin, TPosEnd posEnd)
 {
     return infix(me.concat, posGlobalize(posBegin, stringSetLimits(me)), posGlobalize(posEnd, stringSetLimits(me)));
 }
 
-template <typename TString, typename TDelimiter, typename TPosBegin, typename TPosEnd >
-inline typename Infix<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const>::Type
-infix(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const & me, TPosBegin posBegin, TPosEnd posEnd)
+template <typename TString, typename TSpec, typename TPosBegin, typename TPosEnd >
+inline typename Infix<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type
+infix(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPosBegin posBegin, TPosEnd posEnd)
 {
     return infix(me.concat, posGlobalize(posBegin, stringSetLimits(me)), posGlobalize(posEnd, stringSetLimits(me)));
 }
@@ -538,16 +525,16 @@ infix(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const & me, TPosBegi
 // Function infixWithLength()
 // --------------------------------------------------------------------------
 
-template <typename TString, typename TDelimiter, typename TPosition, typename TSize >
-inline typename Infix<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > >::Type
-infixWithLength(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > & me, TPosition pos, TSize length)
+template <typename TString, typename TSpec, typename TPosition, typename TSize >
+inline typename Infix<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type
+infixWithLength(StringSet<TString, Owner<ConcatDirect<TSpec> > > & me, TPosition pos, TSize length)
 {
     return infixWithLength(me.concat, posGlobalize(pos, stringSetLimits(me)), length);
 }
 
-template <typename TString, typename TDelimiter, typename TPosition, typename TSize >
-inline typename Infix<StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const>::Type
-infixWithLength(StringSet<TString, Owner<ConcatDirect<TDelimiter> > > const & me, TPosition pos, TSize length)
+template <typename TString, typename TSpec, typename TPosition, typename TSize >
+inline typename Infix<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>::Type
+infixWithLength(StringSet<TString, Owner<ConcatDirect<TSpec> > > const & me, TPosition pos, TSize length)
 {
     return infixWithLength(me.concat, posGlobalize(pos, stringSetLimits(me)), length);
 }
@@ -629,9 +616,9 @@ value(StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec>
 // Function length()
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename TAlloc, typename TDelimiter>
-inline typename Size<StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TDelimiter> > > >::Type
-length(StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TDelimiter> > > const & me)
+template <typename TValue, typename TAlloc, typename TSpec>
+inline typename Size<StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > >::Type
+length(StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > const & me)
 {
     return length(me.limits) - 1;
 }
@@ -640,16 +627,16 @@ length(StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TDeli
 // Function back()
 // --------------------------------------------------------------------------
 
-template <typename TValue, typename TAlloc, typename TDelimiter>
-inline typename Reference<StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TDelimiter> > > const>::Type
-back(StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TDelimiter> > > const & me)
+template <typename TValue, typename TAlloc, typename TSpec>
+inline typename Reference<StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > const>::Type
+back(StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > const & me)
 {
     return value(me, length(me) - 1);
 }
 
-template <typename TValue, typename TAlloc, typename TDelimiter>
-inline typename Reference<StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TDelimiter> > > >::Type
-back(StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TDelimiter> > > & me)
+template <typename TValue, typename TAlloc, typename TSpec>
+inline typename Reference<StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > >::Type
+back(StringSet<thrust::device_vector<TValue, TAlloc>, Owner<ConcatDirect<TSpec> > > & me)
 {
     return value(me, length(me) - 1);
 }
