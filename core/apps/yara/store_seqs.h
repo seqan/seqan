@@ -163,12 +163,30 @@ void swap(SeqStore<TSpec, TConfig> & a, SeqStore<TSpec, TConfig> & b)
 // Function readRecords()
 // ----------------------------------------------------------------------------
 
+template <typename TSpec, typename TConfig, typename TFileSpec, typename TSeqFileInAlphabet>
+inline void readRecords(SeqStore<TSpec, TConfig> & me,
+                        SmartFile<Fastq, Input, TFileSpec> & fileIn,
+                        __uint64 maxRecords = MaxValue<__uint64>::VALUE,
+                        TSeqFileInAlphabet = Iupac())
+{
+    readRecords(me.names, me.seqs, fileIn, maxRecords, TSeqFileInAlphabet());
+}
+
+// ----------------------------------------------------------------------------
+// Function readRecords(); Without alphabet conversion
+// ----------------------------------------------------------------------------
+
 template <typename TSpec, typename TConfig, typename TFileSpec>
 inline void readRecords(SeqStore<TSpec, TConfig> & me,
                         SmartFile<Fastq, Input, TFileSpec> & fileIn,
                         __uint64 maxRecords = MaxValue<__uint64>::VALUE)
 {
-    readRecords(me.names, me.seqs, fileIn, maxRecords);
+    typedef SeqStore<TSpec, TConfig>    TSeqStore;
+    typedef typename TSeqStore::TSeqs   TSeqs;
+    typedef typename Value<TSeqs>::Type TSeq;
+    typedef typename Value<TSeq>::Type  TSeqAlphabet;
+
+    readRecords(me, fileIn, maxRecords, TSeqAlphabet());
 }
 
 // ----------------------------------------------------------------------------
