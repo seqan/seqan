@@ -172,9 +172,12 @@ inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, THitsIterator const
     typedef typename Position<THit>::Type               THitRange;
     typedef unsigned char                               THitErrors;
 
+    typedef typename Traits::TMatch                     TMatch;
+
     typedef typename Traits::TSA                        TSA;
     typedef typename Size<TSA>::Type                    TSAPos;
     typedef typename Value<TSA>::Type                   TSAValue;
+
 
     // Get hit id.
     THitId hitId = position(hitsIt, me.hits);
@@ -208,7 +211,7 @@ inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, THitsIterator const
         TContigsPos contigEnd = posAdd(contigBegin, seedLength);
 
         // Get absolute number of errors.
-        TErrors maxErrors = getReadErrors(me.options, length(readSeq));
+        TErrors maxErrors = getReadErrors<TMatch>(me.options, length(readSeq));
 
         extend(me.extender,
                readSeq,
@@ -239,10 +242,12 @@ inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, TReadSeqsIterator c
     typedef typename Traits::TRanks                     TRanks;
     typedef typename Reference<TRanks const>::Type      TRank;
 
+    typedef typename Traits::TMatch                     TMatch;
+
     // Get readId.
     TReadId readId = position(it);
     TReadSeqSize readLength = length(me.readSeqs[readId]);
-    TReadSeqSize readStrata = getReadStrata(me.options, readLength);
+    TReadSeqSize readStrata = getReadStrata<TMatch>(me.options, readLength);
 
     TReadId fwdSeqId = getFirstMateFwdSeqId(me.readSeqs, readId);
     TReadId revSeqId = getFirstMateRevSeqId(me.readSeqs, readId);

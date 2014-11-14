@@ -64,7 +64,6 @@ struct Options;
 #include "misc_timer.h"
 #include "misc_tags.h"
 #include "misc_types.h"
-#include "misc_options.h"
 #include "index_fm.h"
 #include "bits_reads.h"
 #include "bits_hits.h"
@@ -74,6 +73,7 @@ struct Options;
 #include "bits_bucket.h"
 #include "find_verifier.h"
 #include "find_extender.h"
+#include "misc_options.h"
 #include "mapper_collector.h"
 #include "mapper_classifier.h"
 #include "mapper_ranker.h"
@@ -281,7 +281,6 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getOptionValue(options.libraryLength, parser, "library-length");
     getOptionValue(options.libraryError, parser, "library-error");
     getOptionValue(options.libraryOrientation, parser, "library-orientation", options.libraryOrientationList);
-//    getOptionValue(options.anchorOne, parser, "anchor");
 
 #ifdef _OPENMP
     getOptionValue(options.threadsCount, parser, "threads");
@@ -303,21 +302,73 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     }
     eraseBack(options.commandLine);
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return ArgumentParser::PARSE_OK;
 }
 
 // ----------------------------------------------------------------------------
 // Function configureMapper()
 // ----------------------------------------------------------------------------
 
-//template <typename TExecSpace, typename TThreading, typename TOutputFormat, typename TSequencing, typename TStrategy>
-//void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing)
-//{
-//    if (options.anchorOne)
-//        spawnMapper(options, threading, sequencing, strategy, AnchorOne());
-//    else
-//        spawnMapper(options, threading, sequencing, strategy, AnchorBoth());
-//}
+template <typename TContigsLen, typename TThreading, typename TSequencing, typename TStrategy>
+void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing,
+                     TStrategy const & strategy)
+{
+    if (options.maxContigSetLengthSum < MaxValue<__uint32>::VALUE)
+    {
+        if (options.maxContigSetLength < MaxValue<__uint8>::VALUE)
+        {
+            spawnMapper<__uint8, TContigsLen, __uint32>(options, threading, sequencing, strategy);
+        }
+        else if (options.maxContigSetLength < MaxValue<__uint16>::VALUE)
+        {
+            spawnMapper<__uint16, TContigsLen, __uint32>(options, threading, sequencing, strategy);
+        }
+        else
+        {
+            throw RuntimeError("Maximum number of contigs exceeded.");
+        }
+    }
+#ifdef YARA_LARGE_CONTIGS
+    else
+    {
+        if (options.maxContigSetLength < MaxValue<__uint8>::VALUE)
+        {
+            spawnMapper<__uint8, TContigsLen, __uint64>(options, threading, sequencing, strategy);
+        }
+        else if (options.maxContigSetLength < MaxValue<__uint16>::VALUE)
+        {
+            spawnMapper<__uint16, TContigsLen, __uint64>(options, threading, sequencing, strategy);
+        }
+        else
+        {
+            throw RuntimeError("Maximum number of contigs exceeded.");
+        }
+    }
+#else
+    else
+    {
+        throw RuntimeError("Maximum contigs lengthsum exceeded.");
+    }
+#endif
+}
+
+template <typename TThreading, typename TSequencing, typename TStrategy>
+void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing,
+                     TStrategy const & strategy)
+{
+    if (options.maxContigLength < MaxValue<__uint32>::VALUE)
+    {
+        configureMapper<__uint32>(options, threading, sequencing, strategy);
+    }
+    else
+    {
+#ifdef YARA_LARGE_CONTIGS
+        configureMapper<__uint64>(options, threading, sequencing, strategy);
+#else
+        throw RuntimeError("Maximum contig length exceeded.");
+#endif
+    }
+}
 
 template <typename TThreading, typename TSequencing>
 void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing)
@@ -325,10 +376,10 @@ void configureMapper(Options const & options, TThreading const & threading, TSeq
     switch (options.mappingMode)
     {
     case STRATA:
-        return spawnMapper(options, threading, sequencing, Strata());
+        return configureMapper(options, threading, sequencing, Strata());
 
     case ALL:
-        return spawnMapper(options, threading, sequencing, All());
+        return configureMapper(options, threading, sequencing, All());
 
     default:
         return;
@@ -366,17 +417,15 @@ int main(int argc, char const ** argv)
 
     ArgumentParser::ParseResult res = parseCommandLine(options, parser, argc, argv);
 
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    if (res != ArgumentParser::PARSE_OK)
+        return res == ArgumentParser::PARSE_ERROR;
 
     try
     {
+        if (!openContigsLimits(options))
+            throw RuntimeError("Error while opening reference file.");
+
         configureMapper(options);
-    }
-    catch (BadAlloc const & /* e */)
-    {
-        std::cerr << "Insufficient memory." << std::endl;
-        return 1;
     }
     catch (Exception const & e)
     {
