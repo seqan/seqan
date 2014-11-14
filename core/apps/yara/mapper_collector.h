@@ -143,13 +143,14 @@ inline void _collectSeedsImpl(SeedsCollector<TSpec, Traits> & me, TReadSeqsItera
 template <typename TSpec, typename Traits, typename TReadSeqId>
 inline void _getSeeds(SeedsCollector<TSpec, Traits> & me, TReadSeqId readSeqId)
 {
+    typedef typename Traits::TMatch                         TMatch;
     typedef typename Traits::TReadSeqs                      TReadSeqs;
     typedef typename StringSetPosition<TReadSeqs>::Type     TPos;
     typedef typename Value<TReadSeqs>::Type                 TReadSeq;
     typedef typename Size<TReadSeq>::Type                   TSize;
 
     TSize readLength = length(me.readSeqs[readSeqId]);
-    TSize readErrors = getReadErrors(me.options, readLength);
+    TSize readErrors = getReadErrors<TMatch>(me.options, readLength);
     TSize seedErrors = getSeedErrors(me.ctx, readSeqId);
     TSize seedsCount = static_cast<TSize>(std::ceil((readErrors + 1) / (seedErrors + 1.0)));
     TSize seedsLength = readLength / seedsCount;

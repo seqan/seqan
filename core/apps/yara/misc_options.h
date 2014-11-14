@@ -212,6 +212,86 @@ void getOptionValue(TOption & option,
 }
 
 // ----------------------------------------------------------------------------
+// Function getReadErrors()
+// ----------------------------------------------------------------------------
+// Returns the absolute number of errors for a given read sequence.
+
+template <typename TMatch, typename TOptions, typename TReadSeqSize>
+inline TReadSeqSize getReadErrors(TOptions const & options, TReadSeqSize readSeqLength)
+{
+    return std::min((TReadSeqSize)(readSeqLength * options.errorRate),
+                    (TReadSeqSize)MemberLimits<TMatch, Errors>::VALUE);
+}
+
+// ----------------------------------------------------------------------------
+// Function getReadStrata()
+// ----------------------------------------------------------------------------
+// Returns the absolute number of strata for a given read sequence.
+
+template <typename TMatch, typename TOptions, typename TReadSeqSize>
+inline TReadSeqSize getReadStrata(TOptions const & options, TReadSeqSize readSeqLength)
+{
+    return std::min((TReadSeqSize)(readSeqLength * options.strataRate),
+                    (TReadSeqSize)MemberLimits<TMatch, Errors>::VALUE);
+}
+
+// ----------------------------------------------------------------------------
+// Function saveContigsLimits()
+// ----------------------------------------------------------------------------
+
+template <typename TOptions>
+bool saveContigsLimits(TOptions const & options)
+{
+    String<__uint64> limits;
+
+    appendValue(limits, options.maxContigLength);
+    appendValue(limits, options.maxContigSetLength);
+    appendValue(limits, options.maxContigSetLengthSum);
+
+    CharString contigsLimitFile(options.contigsIndexFile);
+    append(contigsLimitFile, ".txt.size");
+
+    return save(limits, toCString(contigsLimitFile));
+}
+
+// ----------------------------------------------------------------------------
+// Function openContigsLimits()
+// ----------------------------------------------------------------------------
+
+template <typename TOptions>
+bool openContigsLimits(TOptions & options)
+{
+    String<__uint64> limits;
+
+    CharString contigsLimitFile(options.contigsIndexFile);
+    append(contigsLimitFile, ".txt.size");
+
+    if (!open(limits, toCString(contigsLimitFile), OPEN_RDONLY))
+        return false;
+
+    if (length(limits) != 3)
+        return false;
+
+    options.maxContigLength = limits[0];
+    options.maxContigSetLength = limits[1];
+    options.maxContigSetLengthSum = limits[2];
+
+    return true;
+}
+
+// ----------------------------------------------------------------------------
+// Function setContigsLimits()
+// ----------------------------------------------------------------------------
+
+template <typename TOptions, typename TSeqs>
+void setContigsLimits(TOptions & options, TSeqs & seqs)
+{
+    options.maxContigLength = maxLength(seqs);
+    options.maxContigSetLength = length(seqs);
+    options.maxContigSetLengthSum = lengthSum(seqs);
+}
+
+// ----------------------------------------------------------------------------
 // Function setDateAndVersion()
 // ----------------------------------------------------------------------------
 
