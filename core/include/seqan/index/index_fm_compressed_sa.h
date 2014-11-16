@@ -111,7 +111,7 @@ struct Fibre<CompressedSA<TText, TSpec, TConfig>, FibreSparseString>
     typedef typename SAValue<TText>::Type               TSAValue_;
     typedef typename DefaultIndexStringSpec<TCSA>::Type TSASpec_;
     typedef String<TSAValue_, TSASpec_>                 TSA_;
-    typedef SparseString<TSA_, TSpec>                   Type;
+    typedef SparseString<TSA_, TConfig>                 Type;
 };
 
 template <typename TText, typename TSpec, typename TConfig>
