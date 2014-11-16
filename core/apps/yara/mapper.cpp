@@ -235,6 +235,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
         options.singleEnd = false;
         break;
     default:
+        std::cerr << getAppName(parser) << ": Too many arguments!" << std::endl;
         return ArgumentParser::PARSE_ERROR;
     }
 
@@ -429,7 +430,7 @@ int main(int argc, char const ** argv)
     }
     catch (Exception const & e)
     {
-        std::cerr << e.what() << std::endl;
+        std::cerr << getAppName(parser) << ": " << e.what() << std::endl;
         return 1;
     }
 
