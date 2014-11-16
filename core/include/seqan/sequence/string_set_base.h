@@ -177,7 +177,9 @@ template <typename TString, typename TSpec>
 struct StringSetLimits<StringSet<TString, TSpec> >
 {
     typedef typename Size<TString>::Type TSize_;
-    typedef String<TSize_> Type;
+    typedef typename Spec<TString>::Type TSpec_;
+
+    typedef String<TSize_, TSpec_>       Type;
 };
 
 // --------------------------------------------------------------------------
