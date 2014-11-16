@@ -213,13 +213,14 @@ for @Class.Index@ based substring searches.
         typedef Alloc<> Type;
     };
 
-    template < typename TValue, typename TSpec >
-    struct DefaultIndexStringSpec< String<TValue, External<TSpec> > > {
-        typedef External<TSpec> Type;
+    template <typename TValue, typename TSpec>
+    struct DefaultIndexStringSpec<String<TValue, TSpec> >
+    {
+        typedef TSpec   Type;
     };
 
-	template < typename TString, typename TSpec >
-	struct DefaultIndexStringSpec< StringSet<TString, TSpec> >:
+	template <typename TString, typename TSpec>
+	struct DefaultIndexStringSpec<StringSet<TString, TSpec> > :
 		DefaultIndexStringSpec<TString> {};
 
 //////////////////////////////////////////////////////////////////////////////
