@@ -92,6 +92,14 @@ typedef Tag<FibreSparseString_> const FibreSparseString;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Metafunction DefaultIndexStringSpec
+// ----------------------------------------------------------------------------
+
+template <typename TText, typename TSpec, typename TConfig>
+struct DefaultIndexStringSpec<CompressedSA<TText, TSpec, TConfig> > :
+    DefaultIndexStringSpec<TText> {};
+
+// ----------------------------------------------------------------------------
 // Metafunction Fibre
 // ----------------------------------------------------------------------------
 

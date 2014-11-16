@@ -131,10 +131,12 @@ struct Value<LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> const> :
 template <typename TText, typename TSpec, typename TConfig>
 struct Fibre<LF<TText, TSpec, TConfig>, FibrePrefixSums>
 {
-    typedef typename Size<LF<TText, TSpec, TConfig> >::Type    TSize_;
-//    typedef typename Value<LF<TText, TSpec, TConfig> >::Type   TValue_;
-//    typedef Tuple<TSize_, ValueSize<TValue_>::VALUE>                Type;
-    typedef String<TSize_>                                          Type;
+//    typedef typename Value<LF<TText, TSpec, TConfig> >::Type  TValue_;
+//    typedef Tuple<TSize_, ValueSize<TValue_>::VALUE>          Type;
+
+    typedef typename Size<LF<TText, TSpec, TConfig> >::Type TSize_;
+    typedef typename DefaultIndexStringSpec<TText>::Type    TSpec_;
+    typedef String<TSize_,  TSpec_>                         Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -144,7 +146,7 @@ struct Fibre<LF<TText, TSpec, TConfig>, FibrePrefixSums>
 template <typename TText, typename TSpec, typename TConfig>
 struct Fibre<LF<TText, TSpec, TConfig>, FibreBwt>
 {
-    typedef typename Value<LF<TText, TSpec, TConfig> >::Type   TValue_;
+    typedef typename Value<LF<TText, TSpec, TConfig> >::Type        TValue_;
     typedef RankDictionary<TValue_, typename TConfig::TValuesSpec>  Type;
 };
 
@@ -171,7 +173,7 @@ struct Fibre<LF<StringSet<TText, TSSetSpec>, TSpec, TConfig>, FibreSentinels>
 template <typename TText, typename TSpec, typename TConfig>
 struct Fibre<LF<TText, TSpec, TConfig>, FibreTempBwt>
 {
-    typedef typename Value<LF<TText, TSpec, TConfig> >::Type   TValue_;
+    typedef typename Value<LF<TText, TSpec, TConfig> >::Type        TValue_;
     typedef String<TValue_, External<ExternalConfigLarge<> > >      Type;
 };
 
