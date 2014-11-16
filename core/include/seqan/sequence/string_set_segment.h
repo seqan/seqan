@@ -152,6 +152,21 @@ struct StringSetPositions<StringSet<THost, TSpec> >
 };
 
 // --------------------------------------------------------------------------
+// Metafunction StringSetLimits
+// --------------------------------------------------------------------------
+
+template <typename THost, typename TSpec>
+struct StringSetLimits<StringSet<THost, Segment<TSpec> > >
+{
+    typedef typename Size<THost>::Type  TSize_;
+    typedef String<TSize_>              Type;
+};
+
+//template <typename THost, typename TSpec>
+//struct StringSetLimits<StringSet<THost, Segment<TSpec> > > :
+//    StringSetLimits<THost> {};
+
+// --------------------------------------------------------------------------
 // Metafunction Value
 // --------------------------------------------------------------------------
 
