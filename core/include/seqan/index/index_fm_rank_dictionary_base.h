@@ -102,13 +102,23 @@ struct RankDictionary;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Metafunction RankDictionaryFibreSpec
+// ----------------------------------------------------------------------------
+
+template <typename TRankDictionary>
+struct RankDictionaryFibreSpec : DefaultIndexStringSpec<TRankDictionary> {};
+
+// ----------------------------------------------------------------------------
 // Metafunction Size
 // ----------------------------------------------------------------------------
  
 template <typename TValue, typename TSpec>
 struct Size<RankDictionary<TValue, TSpec> >
 {
-    typedef typename Size<String<TValue, TSpec> >::Type Type;
+    typedef RankDictionary<TValue, TSpec>                               TRankDictionary_;
+    typedef typename RankDictionaryFibreSpec<TRankDictionary_>::Type    TSpec_;
+
+    typedef typename Size<String<TValue, TSpec_> >::Type                Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -124,16 +134,6 @@ struct Value<RankDictionary<TValue, TSpec> >
 template <typename TValue, typename TSpec>
 struct Value<RankDictionary<TValue, TSpec> const> :
     Value<RankDictionary<TValue, TSpec> > {};
-
-// ----------------------------------------------------------------------------
-// Metafunction RankDictionaryFibreSpec
-// ----------------------------------------------------------------------------
-
-template <typename TRankDictionary>
-struct RankDictionaryFibreSpec
-{
-    typedef Alloc<> Type;
-};
 
 // ============================================================================
 // Functions
