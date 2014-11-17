@@ -170,7 +170,7 @@ inline void _extendHitImpl(HitsExtender<TSpec, Traits> & me, THitsIterator const
     typedef typename Value<THits>::Type                 THit;
     typedef typename Id<THit>::Type                     THitId;
     typedef typename Position<THit>::Type               THitRange;
-    typedef unsigned char                               THitErrors;
+    typedef TReadSeqSize                                THitErrors;
 
     typedef typename Traits::TMatch                     TMatch;
 
