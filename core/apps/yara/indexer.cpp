@@ -377,8 +377,8 @@ void runYaraIndexer(Options & options)
     YaraIndexer<> indexer(options);
 
     loadContigs(indexer);
-    saveContigs(indexer);
     setContigsLimits(options, indexer.contigs.seqs);
+    saveContigs(indexer);
     saveIndex(indexer);
 }
 
