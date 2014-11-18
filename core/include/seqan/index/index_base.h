@@ -219,6 +219,12 @@ for @Class.Index@ based substring searches.
         typedef TSpec   Type;
     };
 
+    template <typename TValue, typename TSpec>
+    struct DefaultIndexStringSpec<String<TValue, Packed<TSpec> > >
+    {
+        typedef TSpec   Type;
+    };
+
 	template <typename TString, typename TSpec>
 	struct DefaultIndexStringSpec<StringSet<TString, TSpec> > :
 		DefaultIndexStringSpec<TString> {};
