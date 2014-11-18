@@ -94,10 +94,10 @@ struct View<CompressedSA<TText, TSpec, TConfig> >
 // Metafunction View                                           [RankDictionary]
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec>
-struct View<RankDictionary<TValue, TwoLevels<TSpec> > >
+template <typename TValue, typename TSpec, typename TConfig>
+struct View<RankDictionary<TValue, Levels<TSpec, TConfig> > >
 {
-    typedef RankDictionary<TValue, TwoLevels<View<TSpec> > >        Type;
+    typedef RankDictionary<TValue, Levels<View<TSpec>, TConfig> >        Type;
 };
 
 template <typename TValue, typename TSpec>
@@ -372,7 +372,7 @@ struct Fibre<LF<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TC
 // ----------------------------------------------------------------------------
 
 // NOTE(esiragusa): Single text sentinel rank dictionary is an integer.
-//template <typename TText, typename TViewSpec, typename TSpec>
+//template <typename TText, typename TViewSpec, typename TSpec, typename TConfig>
 //struct Fibre<LF<ContainerView<TText, TViewSpec>, TSpec>, FibreSentinels>
 //{
 //    typedef typename Fibre<LF<TText, TSpec, TConfig>, FibreSentinels>::Type   Type;
@@ -394,16 +394,16 @@ struct Fibre<LF<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>, TSpec, TC
 // Metafunction Fibre                                     [RankDictionary View]
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec>
-struct Fibre<RankDictionary<TValue, TwoLevels<View<TSpec> > >, FibreRanks>
+template <typename TValue, typename TSpec, typename TConfig>
+struct Fibre<RankDictionary<TValue, Levels<View<TSpec>, TConfig> >, FibreRanks>
 {
-    typedef typename View<typename Fibre<RankDictionary<TValue, TwoLevels<TSpec> >, FibreRanks>::Type>::Type    Type;
+    typedef typename View<typename Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreRanks>::Type>::Type    Type;
 };
 
-template <typename TValue, typename TSpec>
-struct Fibre<RankDictionary<TValue, TwoLevels<View<TSpec> > > const, FibreRanks>
+template <typename TValue, typename TSpec, typename TConfig>
+struct Fibre<RankDictionary<TValue, Levels<View<TSpec>, TConfig> > const, FibreRanks>
 {
-    typedef typename View<typename Fibre<RankDictionary<TValue, TwoLevels<TSpec> > const, FibreRanks>::Type>::Type  Type;
+    typedef typename View<typename Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> > const, FibreRanks>::Type>::Type  Type;
 };
 
 template <typename TValue, typename TSpec>
@@ -559,7 +559,7 @@ getFibre(Index<ContainerView<TText, TViewSpec>, TSpec> & index, FibreRawText)
     return concat(getFibre(index, FibreText()));
 }
 
-template <typename TText, typename TViewSpec, typename TSpec>
+template <typename TText, typename TViewSpec, typename TSpec, typename TConfig>
 SEQAN_HOST_DEVICE inline typename Fibre<Index<ContainerView<TText, TViewSpec>, TSpec> const, FibreRawText>::Type &
 getFibre(Index<ContainerView<TText, TViewSpec>, TSpec> const & index, FibreRawText)
 {
@@ -714,7 +714,7 @@ void setFibre(CompressedSA<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>
 // ----------------------------------------------------------------------------
 // NOTE(esiragusa): view() of a generic Index is not useful and potentially dangerous.
 
-//template <typename TText, typename TSpec>
+//template <typename TText, typename TSpec, typename TConfig>
 //Index<ContainerView<TText>, TSpec>
 //view(Index<TText, TSpec> & index)
 //{
@@ -729,7 +729,7 @@ void setFibre(CompressedSA<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>
 // Function view()                                                    [IndexSa]
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TSpec>
+template <typename TText, typename TSpec, typename TConfig>
 typename View<Index<TText, IndexSa<TSpec> > >::Type
 view(Index<TText, IndexSa<TSpec> > & index)
 {
@@ -745,7 +745,7 @@ view(Index<TText, IndexSa<TSpec> > & index)
 // Function view()                                                   [IndexEsa]
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TSpec>
+template <typename TText, typename TSpec, typename TConfig>
 typename View<Index<TText, IndexEsa<TSpec> > >::Type
 view(Index<TText, IndexEsa<TSpec> > & index)
 {
@@ -799,11 +799,11 @@ view(LF<TText, TSpec, TConfig> & lf)
 // Function view()                                             [RankDictionary]
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec>
-typename View<RankDictionary<TValue, TwoLevels<TSpec> > >::Type
-view(RankDictionary<TValue, TwoLevels<TSpec> > & dict)
+template <typename TValue, typename TSpec, typename TConfig>
+typename View<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type
+view(RankDictionary<TValue, Levels<TSpec, TConfig> > & dict)
 {
-    typename View<RankDictionary<TValue, TwoLevels<TSpec> > >::Type dictView;
+    typename View<RankDictionary<TValue, Levels<TSpec, TConfig> > >::Type dictView;
 
     getFibre(dictView, FibreRanks()) = view(getFibre(dict, FibreRanks()));
     dictView._length = dict._length;
@@ -811,7 +811,7 @@ view(RankDictionary<TValue, TwoLevels<TSpec> > & dict)
     return dictView;
 }
 
-template <typename TValue, typename TSpec>
+template <typename TValue, typename TSpec, typename TConfig>
 typename View<RankDictionary<TValue, Naive<TSpec> > >::Type
 view(RankDictionary<TValue, Naive<TSpec> > & dict)
 {
@@ -842,7 +842,7 @@ view(CompressedSA<TText, TSpec, TConfig> & sa)
 // Function view()                                               [SparseString]
 // ----------------------------------------------------------------------------
 
-template <typename TString, typename TSpec>
+template <typename TString, typename TSpec, typename TConfig>
 typename View<SparseString<TString, TSpec> >::Type
 view(SparseString<TString, TSpec> & sparseString)
 {

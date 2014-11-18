@@ -64,21 +64,22 @@ namespace seqan {
  *        @link CompressedSA @endlink.
  *
  * @typedef FMIndexConfig::TValuesSpec
- * @signature typedef WaveletTree<TSpec> TValuesSpec;
+ * @signature typedef WaveletTree<TSpec, TConfig> TValuesSpec;
  * @brief The <tt>TValuesSpec</tt> determines the type of the occurrence table. In the default @link FMIndexConfig
  *        @endlink object the type of <tt>TValuesSpec</tt> is a wavelet tree (@link WaveletTree @endlink).
  *
  * @typedef FMIndexConfig::TSentinelsSpec
- * @signature typedef TwoLevels<TSpec> TSentinelsSpec;
+ * @signature typedef Levels<TSpec, TConfig> TSentinelsSpec;
  * @brief The <tt>TSentinelsSpec</tt> determines the type of the sentinels in the @link FMIndex @endlink.  In the
  *        default @link FMIndexConfig @endlink object the type of <tt>TSentinelsSpec</tt> is a two level
  *        @link RankDictionary @endlink.
  */
-template <typename TSpec = void>
+template <typename TText, typename TSpec = void>
 struct FMIndexConfig
 {
-    typedef WaveletTree<TSpec>      TValuesSpec;
-    typedef TwoLevels<TSpec>        TSentinelsSpec;
+    typedef typename LengthSum<TText>::Type                         TLengthSum;
+    typedef WaveletTree<TSpec, WaveletTreeConfig<TLengthSum> >      TBwtSpec;
+    typedef Levels<TSpec, LevelsConfig<TLengthSum> >                TSentinelsSpec;
 
     static const unsigned SAMPLING = 10;
 };
@@ -87,7 +88,7 @@ struct FMIndexConfig
 // Forwards
 // ============================================================================
 
-template <typename TSpec = void, typename TConfig = FMIndexConfig<TSpec> >
+template <typename TText, typename TSpec = void, typename TConfig = FMIndexConfig<TText, TSpec> >
 class FMIndex;
 
 // ============================================================================

@@ -111,14 +111,11 @@ struct RankDictionaryFibreSpec : DefaultIndexStringSpec<TRankDictionary> {};
 // ----------------------------------------------------------------------------
 // Metafunction Size
 // ----------------------------------------------------------------------------
- 
-template <typename TValue, typename TSpec>
-struct Size<RankDictionary<TValue, TSpec> >
-{
-    typedef RankDictionary<TValue, TSpec>                               TRankDictionary_;
-    typedef typename RankDictionaryFibreSpec<TRankDictionary_>::Type    TSpec_;
 
-    typedef typename Size<String<TValue, TSpec_> >::Type                Type;
+template <typename TValue, template <typename, typename> class TRankDictionary, typename TSpec, typename TConfig>
+struct Size<RankDictionary<TValue, TRankDictionary<TSpec, TConfig> > >
+{
+    typedef typename TConfig::TSize Type;
 };
 
 // ----------------------------------------------------------------------------

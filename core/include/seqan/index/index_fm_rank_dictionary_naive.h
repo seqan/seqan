@@ -42,10 +42,23 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Tag NaiveConfig
+// ----------------------------------------------------------------------------
+
+//template <typename TSize>
+//struct LevelsConfig<TSize, 0>
+
+template <typename TSize_ = size_t>
+struct NaiveConfig
+{
+    typedef TSize_  TSize;
+};
+
+// ----------------------------------------------------------------------------
 // Tag Naive
 // ----------------------------------------------------------------------------
 
-template <typename TSpec = void>
+template <typename TSpec = void, typename TConfig = NaiveConfig<> >
 struct Naive {};
 
 // ============================================================================
@@ -56,10 +69,10 @@ struct Naive {};
 // Metafunction Fibre
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec>
-struct Fibre<RankDictionary<TValue, Naive<TSpec> >, FibreRanks>
+template <typename TValue, typename TSpec, typename TConfig>
+struct Fibre<RankDictionary<TValue, Naive<TSpec, TConfig> >, FibreRanks>
 {
-    typedef RankDictionary<TValue, Naive<TSpec> >                       TRankDictionary_;
+    typedef RankDictionary<TValue, Naive<TSpec, TConfig> >              TRankDictionary_;
     typedef typename Size<TRankDictionary_>::Type                       TSize_;
     typedef typename RankDictionaryFibreSpec<TRankDictionary_>::Type    TRankDictionaryFibreSpec_;
 
@@ -74,8 +87,8 @@ struct Fibre<RankDictionary<TValue, Naive<TSpec> >, FibreRanks>
 // Class Naive RankDictionary
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec>
-struct RankDictionary<TValue, Naive<TSpec> >
+template <typename TValue, typename TSpec, typename TConfig>
+struct RankDictionary<TValue, Naive<TSpec, TConfig> >
 {
     // ------------------------------------------------------------------------
     // Fibres
@@ -104,11 +117,11 @@ struct RankDictionary<TValue, Naive<TSpec> >
 // Function getRank()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline typename Size<RankDictionary<bool, Naive<TSpec> > const>::Type
-getRank(RankDictionary<bool, Naive<TSpec> > const & dict, TPos pos, bool c = true)
+template <typename TSpec, typename TConfig, typename TPos>
+SEQAN_HOST_DEVICE inline typename Size<RankDictionary<bool, Naive<TSpec, TConfig> > const>::Type
+getRank(RankDictionary<bool, Naive<TSpec, TConfig> > const & dict, TPos pos, bool c = true)
 {
-    typedef RankDictionary<bool, Naive<TSpec> > const                       TRankDictionary;
+    typedef RankDictionary<bool, Naive<TSpec, TConfig> > const                       TRankDictionary;
     typedef typename Fibre<TRankDictionary, FibreRanks>::Type               TFibreRanks;
     typedef typename Iterator<TFibreRanks, Standard>::Type                  TFibreRanksIterator;
 
@@ -125,11 +138,11 @@ getRank(RankDictionary<bool, Naive<TSpec> > const & dict, TPos pos, bool c = tru
 // Function getValue()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline typename Value<RankDictionary<bool, Naive<TSpec> > >::Type
-getValue(RankDictionary<bool, Naive<TSpec> > & dict, TPos pos)
+template <typename TSpec, typename TConfig, typename TPos>
+SEQAN_HOST_DEVICE inline typename Value<RankDictionary<bool, Naive<TSpec, TConfig> > >::Type
+getValue(RankDictionary<bool, Naive<TSpec, TConfig> > & dict, TPos pos)
 {
-    typedef RankDictionary<bool, Naive<TSpec> > const                       TRankDictionary;
+    typedef RankDictionary<bool, Naive<TSpec, TConfig> > const                       TRankDictionary;
     typedef typename Fibre<TRankDictionary, FibreRanks>::Type               TFibreRanks;
     typedef typename Iterator<TFibreRanks, Standard>::Type                  TFibreRanksIterator;
 
@@ -142,11 +155,11 @@ getValue(RankDictionary<bool, Naive<TSpec> > & dict, TPos pos)
     return ranksIt != ranksEnd && value(ranksIt) == pos;
 }
 
-template <typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline typename Value<RankDictionary<bool, Naive<TSpec> > const>::Type
-getValue(RankDictionary<bool, Naive<TSpec> > const & dict, TPos pos)
+template <typename TSpec, typename TConfig, typename TPos>
+SEQAN_HOST_DEVICE inline typename Value<RankDictionary<bool, Naive<TSpec, TConfig> > const>::Type
+getValue(RankDictionary<bool, Naive<TSpec, TConfig> > const & dict, TPos pos)
 {
-    typedef RankDictionary<bool, Naive<TSpec> > const                       TRankDictionary;
+    typedef RankDictionary<bool, Naive<TSpec, TConfig> > const                       TRankDictionary;
     typedef typename Fibre<TRankDictionary, FibreRanks>::Type               TFibreRanks;
     typedef typename Iterator<TFibreRanks, Standard>::Type                  TFibreRanksIterator;
 
@@ -163,8 +176,8 @@ getValue(RankDictionary<bool, Naive<TSpec> > const & dict, TPos pos)
 // Function setValue()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec, typename TPos, typename TChar>
-inline void setValue(RankDictionary<TValue, Naive<TSpec> > & dict, TPos pos, TChar c)
+template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar>
+inline void setValue(RankDictionary<TValue, Naive<TSpec, TConfig> > & dict, TPos pos, TChar c)
 {
 //    SEQAN_ASSERT_GT(pos, (TPos)back(dict.ranks));
 
@@ -178,8 +191,8 @@ inline void setValue(RankDictionary<TValue, Naive<TSpec> > & dict, TPos pos, TCh
 // ----------------------------------------------------------------------------
 // NOTE(esiragusa): Better not to have appendValue() - it is not efficient - and thus neither length().
 
-template <typename TSpec, typename TChar, typename TExpand>
-inline void appendValue(RankDictionary<bool, Naive<TSpec> > & dict, TChar c, Tag<TExpand> const tag)
+template <typename TSpec, typename TConfig, typename TChar, typename TExpand>
+inline void appendValue(RankDictionary<bool, Naive<TSpec, TConfig> > & dict, TChar c, Tag<TExpand> const tag)
 {
     if (c == false) return;
 
@@ -193,16 +206,16 @@ inline void appendValue(RankDictionary<bool, Naive<TSpec> > & dict, TChar c, Tag
 // Function updateRanks()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec>
-inline void updateRanks(RankDictionary<TValue, Naive<TSpec> > & /* dict */) {}
+template <typename TValue, typename TSpec, typename TConfig>
+inline void updateRanks(RankDictionary<TValue, Naive<TSpec, TConfig> > & /* dict */) {}
 
 // ----------------------------------------------------------------------------
 // Function length()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec>
-inline typename Size<RankDictionary<TValue, Naive<TSpec> > >::Type
-length(RankDictionary<TValue, Naive<TSpec> > const & dict)
+template <typename TValue, typename TSpec, typename TConfig>
+inline typename Size<RankDictionary<TValue, Naive<TSpec, TConfig> > >::Type
+length(RankDictionary<TValue, Naive<TSpec, TConfig> > const & dict)
 {
     return length(dict.ranks);
 }
@@ -211,9 +224,9 @@ length(RankDictionary<TValue, Naive<TSpec> > const & dict)
 // Function reserve()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TSpec, typename TSize, typename TExpand>
-inline typename Size<RankDictionary<TValue, Naive<TSpec> > >::Type
-reserve(RankDictionary<TValue, Naive<TSpec> > & dict, TSize newCapacity, Tag<TExpand> const tag)
+template <typename TValue, typename TSpec, typename TConfig, typename TSize, typename TExpand>
+inline typename Size<RankDictionary<TValue, Naive<TSpec, TConfig> > >::Type
+reserve(RankDictionary<TValue, Naive<TSpec, TConfig> > & dict, TSize newCapacity, Tag<TExpand> const tag)
 {
    return reserve(dict.ranks, newCapacity, tag);
 }
@@ -223,9 +236,9 @@ reserve(RankDictionary<TValue, Naive<TSpec> > & dict, TSize newCapacity, Tag<TEx
 // ----------------------------------------------------------------------------
 // NOTE(esiragusa): disabled because LF::_createBwt() resizes the rank dict to the bwt length.
 
-template <typename TValue, typename TSpec, typename TSize, typename TExpand>
-inline typename Size<RankDictionary<TValue, Naive<TSpec> > >::Type
-resize(RankDictionary<TValue, Naive<TSpec> > & dict, TSize /* newLength */, Tag<TExpand> const /* tag */)
+template <typename TValue, typename TSpec, typename TConfig, typename TSize, typename TExpand>
+inline typename Size<RankDictionary<TValue, Naive<TSpec, TConfig> > >::Type
+resize(RankDictionary<TValue, Naive<TSpec, TConfig> > & dict, TSize /* newLength */, Tag<TExpand> const /* tag */)
 {
     return length(dict);
 //    return resize(dict.ranks, newLength, tag);

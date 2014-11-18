@@ -104,11 +104,15 @@ typedef Tag<FibreTempBwt_>      const FibreTempBwt;
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TSpec, typename TConfig>
-struct Size<LF<TText, TSpec, TConfig> > : LengthSum<TText> {};
+struct Size<LF<TText, TSpec, TConfig> >
+{
+    typedef typename TConfig::TLengthSum    Type;
+};
 
 // ----------------------------------------------------------------------------
 // Metafunction Value
 // ----------------------------------------------------------------------------
+// TODO(esiragusa): define Value<LF> == Size<LF> because LF[pos-i] = pos-j
 
 template <typename TText, typename TSpec, typename TConfig>
 struct Value<LF<TText, TSpec, TConfig> > : Value<TText> {};
@@ -147,7 +151,7 @@ template <typename TText, typename TSpec, typename TConfig>
 struct Fibre<LF<TText, TSpec, TConfig>, FibreBwt>
 {
     typedef typename Value<LF<TText, TSpec, TConfig> >::Type        TValue_;
-    typedef RankDictionary<TValue_, typename TConfig::TValuesSpec>  Type;
+    typedef RankDictionary<TValue_, typename TConfig::TBwtSpec>     Type;
 };
 
 // ----------------------------------------------------------------------------
