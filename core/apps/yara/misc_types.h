@@ -146,8 +146,8 @@ struct YaraFMConfig
     // LF's RankDictionary Config.
     typedef Levels<void, TMe>                           Bwt;
     typedef typename If<IsSameType<TSize, __uint8>,
-                        Levels<void, TMe>,
-                        Naive<void, TMe> >::Type        Sentinels;
+                        Naive<void, TMe>,
+                        Levels<void, TMe> >::Type       Sentinels;
 
     // RankDictionary Config.
     typedef TAlloc                                      Fibre;
