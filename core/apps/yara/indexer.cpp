@@ -250,10 +250,9 @@ void saveContigs(YaraIndexer<TSpec, TConfig> & me)
 template <typename TContigsLen, typename TContigsSize, typename TContigsSum, typename TSpec, typename TConfig>
 void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 {
-    typedef typename YaraFMIndexContigs<TContigsLen, TContigsSize, TContigsSum>::Type   TIndexContigs;
-    typedef YaraFMIndexConfig<TContigsLen, TContigsSize, TContigsSum>                   TIndexConfig;
-    typedef FMIndex<void, TIndexConfig>                                                 TIndexSpec;
-    typedef Index<TIndexContigs, TIndexSpec>                                            TIndex;
+    typedef YaraFMConfig<TContigsLen, TContigsSize, TContigsSum>    TIndexConfig;
+    typedef FMIndex<void, TIndexConfig>                             TIndexSpec;
+    typedef Index<typename TIndexConfig::Text, TIndexSpec>          TIndex;
 
     if (me.options.verbose)
         std::cerr << "Building reference index:\t\t" << std::flush;

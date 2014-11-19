@@ -78,37 +78,30 @@ struct Value<Limits<T1, T2>, 2>
 // FMIndex Config
 // ----------------------------------------------------------------------------
 
-template <typename TSize, typename TLen, typename TSum>
-struct YaraFMIndexConfig
+template <typename TSize, typename TLen, typename TSum, typename TAlloc = Alloc<> >
+struct YaraFMConfig
 {
-    typedef TSum                              TLengthSum;
-    typedef Levels<void, LevelsConfig<TSum> > TBwtSpec;
-    typedef Levels<void, LevelsConfig<TSum> > TSentinelsSpec;
+    typedef YaraFMConfig<TSize, TLen, TSum, TAlloc>    TMe;
 
+    // Text.
+    typedef Owner<ConcatDirect<TMe> >                   TSSetSpec_;
+    typedef StringSet<String<Dna, TAlloc>, TSSetSpec_>  Text;
+
+    // LF LengthSum.
+    typedef TSum                    LengthSum;
+
+    // LF's RankDictionary Config.
+    typedef Levels<void, TMe>                           Bwt;
+    typedef typename If<IsSameType<TSize, __uint8>,
+                        Levels<void, TMe>,
+                        Naive<void, TMe> >::Type        Sentinels;
+
+    // RankDictionary Config.
+    typedef TAlloc                  Fibre;
+    typedef TSum                    Size;
+
+    // Sparse SA sampling rate.
     static const unsigned SAMPLING = 10;
-};
-
-template <typename TSize, typename TSum>
-struct YaraFMIndexConfig<__uint8, TSize, TSum>
-{
-    typedef TSum                              TLengthSum;
-    typedef Levels<void, LevelsConfig<TSum> > TBwtSpec;
-    typedef Naive<void, NaiveConfig<TSum> >   TSentinelsSpec;
-
-    static const unsigned SAMPLING = 10;
-};
-
-// ----------------------------------------------------------------------------
-// FMIndex Contigs
-// ----------------------------------------------------------------------------
-
-template <typename TSize, typename TLen, typename TSum, typename TSpec = Alloc<> >
-struct YaraFMIndexContigs
-{
-    typedef YaraFMIndexConfig<TSize, TLen, TSum>        TConfig_;
-    typedef Owner<ConcatDirect<TConfig_> >              TSSetSpec_;
-
-    typedef StringSet<String<Dna, TSpec>, TSSetSpec_>   Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -117,7 +110,7 @@ struct YaraFMIndexContigs
 
 namespace seqan {
 template <typename TValue, typename TSpec, typename TSize, typename TLen, typename TSum>
-struct SAValue<StringSet<String<TValue, TSpec>, Owner<ConcatDirect<YaraFMIndexConfig<TSize, TLen, TSum> > > > >
+struct SAValue<StringSet<String<TValue, TSpec>, Owner<ConcatDirect<YaraFMConfig<TSize, TLen, TSum> > > > >
 {
     typedef Pair<TSize, TLen, Pack>   Type;
 };
@@ -128,18 +121,18 @@ struct SAValue<StringSet<String<TValue, TSpec>, Owner<ConcatDirect<YaraFMIndexCo
 // ----------------------------------------------------------------------------
 // TODO(esiragusa): remove this crap once the CSA gets refactored.
 
-namespace seqan {
-template <typename TText, typename TSpec, typename TSize, typename TLen, typename TSum>
-struct Fibre<CompressedSA<TText, TSpec, YaraFMIndexConfig<TSize, TLen, TSum> >, FibreSparseString>
-{
-    typedef Pair<TSize, TLen, Pack>                         TSAValue_;
-    typedef typename DefaultIndexStringSpec<TText>::Type    TSASpec_;
-    typedef String<TSAValue_, TSASpec_>                     TSA_;
-    typedef YaraFMIndexConfig<TSize, TLen, TSum>            TConfig_;
-
-    typedef SparseString<TSA_, TConfig_>                    Type;
-};
-}
+//namespace seqan {
+//template <typename TText, typename TSpec, typename TSize, typename TLen, typename TSum>
+//struct Fibre<CompressedSA<TText, TSpec, YaraFMConfig<TSize, TLen, TSum> >, FibreSparseString>
+//{
+//    typedef Pair<TSize, TLen, Pack>                         TSAValue_;
+//    typedef typename DefaultIndexStringSpec<TText>::Type    TSASpec_;
+//    typedef String<TSAValue_, TSASpec_>                     TSA_;
+//    typedef YaraFMConfig<TSize, TLen, TSum>                 TConfig_;
+//
+//    typedef SparseString<TSA_, TConfig_>                    Type;
+//};
+//}
 
 // ----------------------------------------------------------------------------
 // SparseString Size
@@ -147,8 +140,8 @@ struct Fibre<CompressedSA<TText, TSpec, YaraFMIndexConfig<TSize, TLen, TSum> >, 
 // TODO(esiragusa): remove this crap once the CSA gets refactored.
 
 namespace seqan {
-template <typename TString, typename TSize, typename TLen, typename TSum>
-struct Size<SparseString<TString, YaraFMIndexConfig<TSize, TLen, TSum> > >
+template <typename TString, typename TSize, typename TLen, typename TSum, typename TAlloc>
+struct Size<SparseString<TString, YaraFMConfig<TSize, TLen, TSum, TAlloc> > >
 {
     typedef TSum Type;
 };
