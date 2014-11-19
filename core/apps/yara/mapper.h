@@ -122,6 +122,7 @@ template <typename TThreading_       = Parallel,
           typename TContigsLen_      = __uint8,
           typename TContigsSize_     = __uint32,
           typename TContigsSum_      = __uint32,
+          typename TAlloc_           = MMap<>,
           unsigned BUCKETS_          = 3>
 struct ReadMapperConfig
 {
@@ -131,6 +132,7 @@ struct ReadMapperConfig
     typedef TContigsLen_        TContigsLen;
     typedef TContigsSize_       TContigsSize;
     typedef TContigsSum_        TContigsSum;
+    typedef TAlloc_             TAlloc;
 
     static const unsigned BUCKETS = BUCKETS_;
 };
@@ -148,18 +150,17 @@ struct MapperTraits
     typedef typename TConfig::TContigsLen                           TContigsLen;
     typedef typename TConfig::TContigsSize                          TContigsSize;
     typedef typename TConfig::TContigsSum                           TContigsSum;
+    typedef typename TConfig::TAlloc                                TAlloc;
 
-    typedef MMap<>                                                  TAlloc;
     typedef SeqStore<void, YaraContigsConfig<TAlloc> >              TContigs;
     typedef typename TContigs::TSeqs                                TContigSeqs;
     typedef typename TContigs::TSeqNames                            TContigNames;
     typedef typename Value<TContigSeqs>::Type                       TContig;
     typedef typename StringSetPosition<TContigSeqs>::Type           TContigsPos;
 
-    typedef typename YaraFMIndexContigs<TContigsLen, TContigsSize, TContigsSum, TAlloc>::Type TIndexContigs;
-    typedef YaraFMIndexConfig<TContigsLen, TContigsSize, TContigsSum> TIndexConfig;
+    typedef YaraFMConfig<TContigsLen, TContigsSize, TContigsSum, TAlloc> TIndexConfig;
     typedef FMIndex<void, TIndexConfig>                             TIndexSpec;
-    typedef Index<TIndexContigs, TIndexSpec>                        TIndex;
+    typedef Index<typename TIndexConfig::Text, TIndexSpec>          TIndex;
     typedef typename Size<TIndex>::Type                             TIndexSize;
     typedef typename Fibre<TIndex, FibreSA>::Type                   TSA;
 
