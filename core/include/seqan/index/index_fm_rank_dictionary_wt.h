@@ -44,21 +44,21 @@ namespace seqan {
 // Tags
 // ==========================================================================
 
-// ----------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 // Tag WaveletTreeConfig
-// ----------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 
-template <typename TSize_ = size_t, unsigned LEVELS_ = 1, unsigned ARITY_ = 2>
-struct WaveletTreeConfig : LevelsConfig<TSize_, LEVELS_>
+template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS = 1, unsigned ARITY_ = 2>
+struct WTRDConfig : LevelsRDConfig<TSize, TFibre, LEVELS>
 {
     static const unsigned ARITY = ARITY_;
 };
 
-// ----------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 // Tag WaveletTree
-// ----------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 
-template <typename TSpec = void, typename TConfig = WaveletTreeConfig<> >
+template <typename TSpec = void, typename TConfig = WTRDConfig<> >
 struct WaveletTree {};
 
 struct FibreTreeStructure_;

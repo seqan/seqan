@@ -77,9 +77,9 @@ namespace seqan {
 template <typename TText, typename TSpec = void>
 struct FMIndexConfig
 {
-    typedef typename LengthSum<TText>::Type                         TLengthSum;
-    typedef WaveletTree<TSpec, WaveletTreeConfig<TLengthSum> >      TBwtSpec;
-    typedef Levels<TSpec, LevelsConfig<TLengthSum> >                TSentinelsSpec;
+    typedef typename LengthSum<TText>::Type             LengthSum;
+    typedef WaveletTree<TSpec, WTRDConfig<LengthSum> >  Bwt;
+    typedef Levels<TSpec, LevelsRDConfig<LengthSum> >   Sentinels;
 
     static const unsigned SAMPLING = 10;
 };

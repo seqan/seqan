@@ -159,7 +159,7 @@ template <typename TFibreValues, typename TSpec>
 struct Fibre<SparseString<TFibreValues, TSpec>, FibreIndicators>
 {
     // NOTE(esiragusa): CompressedSA propagates down TConfig as TSpec.
-    typedef RankDictionary<bool, Levels<TSpec> > Type;
+    typedef RankDictionary<bool, Levels<void, TSpec> > Type;
 };
 
 // ----------------------------------------------------------------------------

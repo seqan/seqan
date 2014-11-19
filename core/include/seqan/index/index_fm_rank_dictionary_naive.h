@@ -42,23 +42,10 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Tag NaiveConfig
-// ----------------------------------------------------------------------------
-
-//template <typename TSize>
-//struct LevelsConfig<TSize, 0>
-
-template <typename TSize_ = size_t>
-struct NaiveConfig
-{
-    typedef TSize_  TSize;
-};
-
-// ----------------------------------------------------------------------------
 // Tag Naive
 // ----------------------------------------------------------------------------
 
-template <typename TSpec = void, typename TConfig = NaiveConfig<> >
+template <typename TSpec = void, typename TConfig = RDConfig<> >
 struct Naive {};
 
 // ============================================================================
@@ -72,11 +59,11 @@ struct Naive {};
 template <typename TValue, typename TSpec, typename TConfig>
 struct Fibre<RankDictionary<TValue, Naive<TSpec, TConfig> >, FibreRanks>
 {
-    typedef RankDictionary<TValue, Naive<TSpec, TConfig> >              TRankDictionary_;
-    typedef typename Size<TRankDictionary_>::Type                       TSize_;
-    typedef typename RankDictionaryFibreSpec<TRankDictionary_>::Type    TRankDictionaryFibreSpec_;
+    typedef RankDictionary<TValue, Naive<TSpec, TConfig> >          TRankDictionary_;
+    typedef typename Size<TRankDictionary_>::Type                   TSize_;
+    typedef typename DefaultIndexStringSpec<TRankDictionary_>::Type TFibreSpec_;
 
-    typedef String<TSize_, TRankDictionaryFibreSpec_>   Type;
+    typedef String<TSize_, TFibreSpec_>                             Type;
 };
 
 // ============================================================================

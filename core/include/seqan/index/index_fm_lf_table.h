@@ -106,7 +106,7 @@ typedef Tag<FibreTempBwt_>      const FibreTempBwt;
 template <typename TText, typename TSpec, typename TConfig>
 struct Size<LF<TText, TSpec, TConfig> >
 {
-    typedef typename TConfig::TLengthSum    Type;
+    typedef typename TConfig::LengthSum    Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -150,8 +150,8 @@ struct Fibre<LF<TText, TSpec, TConfig>, FibrePrefixSums>
 template <typename TText, typename TSpec, typename TConfig>
 struct Fibre<LF<TText, TSpec, TConfig>, FibreBwt>
 {
-    typedef typename Value<LF<TText, TSpec, TConfig> >::Type        TValue_;
-    typedef RankDictionary<TValue_, typename TConfig::TBwtSpec>     Type;
+    typedef typename Value<LF<TText, TSpec, TConfig> >::Type    TValue_;
+    typedef RankDictionary<TValue_, typename TConfig::Bwt>      Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -167,7 +167,7 @@ struct Fibre<LF<TText, TSpec, TConfig>, FibreSentinels>
 template <typename TText, typename TSSetSpec, typename TSpec, typename TConfig>
 struct Fibre<LF<StringSet<TText, TSSetSpec>, TSpec, TConfig>, FibreSentinels>
 {
-    typedef RankDictionary<bool, typename TConfig::TSentinelsSpec>  Type;
+    typedef RankDictionary<bool, typename TConfig::Sentinels>   Type;
 };
 
 // ----------------------------------------------------------------------------
