@@ -188,7 +188,11 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     CharString tmpDir;
     getOptionValue(tmpDir, parser, "tmp-dir");
     if (!isSet(parser, "tmp-dir"))
+    {
         tmpDir = getPath(options.contigsIndexFile);
+        if (empty(tmpDir))
+            getCwd(tmpDir);
+    }
     setEnv("TMPDIR", tmpDir);
 
     return ArgumentParser::PARSE_OK;
