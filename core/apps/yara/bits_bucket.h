@@ -145,8 +145,6 @@ inline void bucket(StringSet<TString, Owner<ConcatDirect<TSpec > > > & me, TKeyG
     typedef Adder<TKeyGetter, 1u>                                TNextKey;
     typedef KeyCounter<TLimits, TNextKey, TThreading>            TCounter;
 
-    if (empty(concat(me))) return;
-
     // Shift the counts by one.
     TNextKey nextKey(key);
 
@@ -173,8 +171,6 @@ inline void bucket(StringSet<THost, Segment<TSpec> > & me, TKeyGetter const & ke
     typedef typename StringSetLimits<TStringSet>::Type           TLimits;
     typedef Adder<TKeyGetter, 1u>                                TNextKey;
     typedef KeyCounter<TLimits, TNextKey, TThreading>            TCounter;
-
-    if (empty(host(me))) return;
 
     // Shift the key counts by one.
     TNextKey nextKey(key);
