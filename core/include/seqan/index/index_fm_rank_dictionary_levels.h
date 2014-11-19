@@ -88,13 +88,12 @@ struct RankDictionaryEntry_;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Tag LevelsConfig
+// Tag LevelsRDConfig
 // ----------------------------------------------------------------------------
 
-template <typename TSize_ = size_t, unsigned LEVELS_ = 1>
-struct LevelsConfig
+template <typename TSize = size_t, typename TFibre = Alloc<>, unsigned LEVELS_ = 1>
+struct LevelsRDConfig : RDConfig<TSize, TFibre>
 {
-    typedef TSize_                  TSize;
     static const unsigned LEVELS =  LEVELS_;
 };
 
@@ -102,7 +101,7 @@ struct LevelsConfig
 // Tag Levels
 // ----------------------------------------------------------------------------
 
-template <typename TSpec = void, typename TConfig = LevelsConfig<> >
+template <typename TSpec = void, typename TConfig = LevelsRDConfig<> >
 struct Levels {};
 
 // ============================================================================
@@ -194,11 +193,11 @@ struct RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >
 template <typename TValue, typename TSpec, typename TConfig>
 struct Fibre<RankDictionary<TValue, Levels<TSpec, TConfig> >, FibreRanks>
 {
-    typedef RankDictionary<TValue, Levels<TSpec, TConfig> >             TRankDictionary_;
-    typedef RankDictionaryEntry_<TValue, Levels<TSpec, TConfig> >       TRankDictionaryEntry_;
-    typedef typename RankDictionaryFibreSpec<TRankDictionary_>::Type    TRankDictionaryFibreSpec_;
+    typedef RankDictionary<TValue, Levels<TSpec, TConfig> >         TRankDictionary_;
+    typedef RankDictionaryEntry_<TValue, Levels<TSpec, TConfig> >   TEntry_;
+    typedef typename DefaultIndexStringSpec<TRankDictionary_>::Type TFibreSpec_;
 
-    typedef String<TRankDictionaryEntry_, TRankDictionaryFibreSpec_>    Type;
+    typedef String<TEntry_, TFibreSpec_>                            Type;
 };
 
 // ============================================================================

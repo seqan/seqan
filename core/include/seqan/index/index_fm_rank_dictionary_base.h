@@ -56,12 +56,21 @@ namespace seqan {
  * @brief The string set containing a bit string for each character.
  */
 
-
-
 struct FibreRanks_;
 
 typedef Tag<FibreRanks_>
 const FibreRanks;
+
+// ----------------------------------------------------------------------------
+// Tag RDConfig
+// ----------------------------------------------------------------------------
+
+template <typename TSize = size_t, typename TFibre = Alloc<> >
+struct RDConfig
+{
+    typedef TFibre  Fibre;
+    typedef TSize   Size;
+};
 
 // ============================================================================
 // Classes
@@ -102,11 +111,14 @@ struct RankDictionary;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction RankDictionaryFibreSpec
+// Metafunction DefaultIndexStringSpec
 // ----------------------------------------------------------------------------
 
-template <typename TRankDictionary>
-struct RankDictionaryFibreSpec : DefaultIndexStringSpec<TRankDictionary> {};
+template <typename TValue, template <typename, typename> class TRankDictionary, typename TSpec, typename TConfig>
+struct DefaultIndexStringSpec<RankDictionary<TValue, TRankDictionary<TSpec, TConfig> > >
+{
+    typedef typename TConfig::Fibre Type;
+};
 
 // ----------------------------------------------------------------------------
 // Metafunction Size
@@ -115,7 +127,7 @@ struct RankDictionaryFibreSpec : DefaultIndexStringSpec<TRankDictionary> {};
 template <typename TValue, template <typename, typename> class TRankDictionary, typename TSpec, typename TConfig>
 struct Size<RankDictionary<TValue, TRankDictionary<TSpec, TConfig> > >
 {
-    typedef typename TConfig::TSize Type;
+    typedef typename TConfig::Size  Type;
 };
 
 // ----------------------------------------------------------------------------
