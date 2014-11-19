@@ -162,8 +162,8 @@ struct YaraFMConfig
 // ----------------------------------------------------------------------------
 
 namespace seqan {
-template <typename TValue, typename TSpec, typename TSize, typename TLen, typename TSum>
-struct SAValue<StringSet<String<TValue, TSpec>, Owner<ConcatDirect<YaraFMConfig<TSize, TLen, TSum> > > > >
+template <typename TValue, typename TSpec, typename TSize, typename TLen, typename TSum, typename TAlloc>
+struct SAValue<StringSet<String<TValue, TSpec>, Owner<ConcatDirect<YaraFMConfig<TSize, TLen, TSum, TAlloc> > > > >
 {
     typedef Pair<TSize, TLen, Pack>   Type;
 };
