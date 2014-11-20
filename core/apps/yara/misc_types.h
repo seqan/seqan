@@ -170,6 +170,20 @@ struct SAValue<StringSet<String<TValue, TSpec>, Owner<ConcatDirect<YaraFMConfig<
 }
 
 // ----------------------------------------------------------------------------
+// SparseString FibreIndicators
+// ----------------------------------------------------------------------------
+// NOTE(esiragusa): CompressedSA propagates down TConfig as TSpec.
+// TODO(esiragusa): remove this crap once the CSA gets refactored.
+
+namespace seqan {
+template <typename TValue, typename TAlloc, typename TSpec>
+struct Fibre<SparseString<String<TValue, TAlloc>, TSpec>, FibreIndicators>
+{
+    typedef RankDictionary<bool, Levels<void, TSpec> > Type;
+};
+}
+
+// ----------------------------------------------------------------------------
 // SparseString Size
 // ----------------------------------------------------------------------------
 // TODO(esiragusa): remove this crap once the CSA gets refactored.
