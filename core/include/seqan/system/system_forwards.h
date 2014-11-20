@@ -54,11 +54,6 @@ struct Event;       	// "core/include/seqan/system/system_event.h"(18)
 struct Mutex;       	// "core/include/seqan/system/system_mutex.h"(16)
 
 //____________________________________________________________________________
-// Semaphore
-
-struct Semaphore;       	// "core/include/seqan/system/system_sema.h"(16)
-
-//____________________________________________________________________________
 // Thread
 
 template <typename Worker> struct Thread;       	// "core/include/seqan/system/system_thread.h"(18)
