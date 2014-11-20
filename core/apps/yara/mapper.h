@@ -52,9 +52,9 @@ struct Options
     typedef std::vector<TString>            TList;
     typedef FileFormat<BamFileOut>::Type    TOutputFormat;
 
-    __uint64            maxContigLength;
-    __uint64            maxContigSetLength;
-    __uint64            maxContigSetLengthSum;
+    __uint64            contigsSize;
+    __uint64            contigsMaxLength;
+    __uint64            contigsSum;
 
     CharString          contigsIndexFile;
     Pair<CharString>    readsFile;
@@ -85,9 +85,9 @@ struct Options
     CharString          version;
 
     Options() :
-        maxContigLength(),
-        maxContigSetLength(),
-        maxContigSetLengthSum(),
+        contigsSize(),
+        contigsMaxLength(),
+        contigsSum(),
         outputSecondary(false),
         uncompressedBam(false),
         readGroup("none"),
@@ -119,8 +119,8 @@ struct Options
 template <typename TThreading_       = Parallel,
           typename TSequencing_      = SingleEnd,
           typename TStrategy_        = Strata,
-          typename TContigsLen_      = __uint8,
-          typename TContigsSize_     = __uint32,
+          typename TContigsSize_     = __uint8,
+          typename TContigsLen_      = __uint32,
           typename TContigsSum_      = __uint32,
           typename TAlloc_           = MMap<>,
           unsigned BUCKETS_          = 3>
@@ -129,8 +129,8 @@ struct ReadMapperConfig
     typedef TThreading_         TThreading;
     typedef TSequencing_        TSequencing;
     typedef TStrategy_          TStrategy;
-    typedef TContigsLen_        TContigsLen;
     typedef TContigsSize_       TContigsSize;
+    typedef TContigsLen_        TContigsLen;
     typedef TContigsSum_        TContigsSum;
     typedef TAlloc_             TAlloc;
 
@@ -147,8 +147,8 @@ struct MapperTraits
     typedef typename TConfig::TThreading                            TThreading;
     typedef typename TConfig::TSequencing                           TSequencing;
     typedef typename TConfig::TStrategy                             TStrategy;
-    typedef typename TConfig::TContigsLen                           TContigsLen;
     typedef typename TConfig::TContigsSize                          TContigsSize;
+    typedef typename TConfig::TContigsLen                           TContigsLen;
     typedef typename TConfig::TContigsSum                           TContigsSum;
     typedef typename TConfig::TAlloc                                TAlloc;
 
@@ -158,7 +158,7 @@ struct MapperTraits
     typedef typename Value<TContigSeqs>::Type                       TContig;
     typedef typename StringSetPosition<TContigSeqs>::Type           TContigsPos;
 
-    typedef YaraFMConfig<TContigsLen, TContigsSize, TContigsSum, TAlloc> TIndexConfig;
+    typedef YaraFMConfig<TContigsSize, TContigsLen, TContigsSum, TAlloc> TIndexConfig;
     typedef FMIndex<void, TIndexConfig>                             TIndexSpec;
     typedef Index<typename TIndexConfig::Text, TIndexSpec>          TIndex;
     typedef typename Size<TIndex>::Type                             TIndexSize;
@@ -1150,14 +1150,14 @@ inline void runMapper(Mapper<TSpec, TConfig> & me)
 // Function spawnMapper()
 // ----------------------------------------------------------------------------
 
-template <typename TContigsLen, typename TContigsSize, typename TContigsSum,
+template <typename TContigsSize, typename TContigsLen, typename TContigsSum,
           typename TThreading, typename TSequencing, typename TStrategy>
 inline void spawnMapper(Options const & options,
                         TThreading const & /* tag */,
                         TSequencing const & /* tag */,
                         TStrategy const & /* tag */)
 {
-    typedef ReadMapperConfig<TThreading, TSequencing, TStrategy, TContigsLen, TContigsSize, TContigsSum>  TConfig;
+    typedef ReadMapperConfig<TThreading, TSequencing, TStrategy, TContigsSize, TContigsLen, TContigsSum>  TConfig;
 
     Mapper<void, TConfig> mapper(options);
     runMapper(mapper);

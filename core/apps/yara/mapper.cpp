@@ -310,64 +310,54 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 // Function configureMapper()
 // ----------------------------------------------------------------------------
 
-template <typename TContigsLen, typename TThreading, typename TSequencing, typename TStrategy>
-void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing,
-                     TStrategy const & strategy)
+template <typename TContigsSize, typename TContigsLen, typename TThreading, typename TSequencing, typename TStrategy>
+void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
 {
-    if (options.maxContigSetLengthSum < MaxValue<__uint32>::VALUE)
+    if (me.options.contigsSum <= MaxValue<__uint32>::VALUE)
     {
-        if (options.maxContigSetLength < MaxValue<__uint8>::VALUE)
-        {
-            spawnMapper<__uint8, TContigsLen, __uint32>(options, threading, sequencing, strategy);
-        }
-        else if (options.maxContigSetLength < MaxValue<__uint16>::VALUE)
-        {
-            spawnMapper<__uint16, TContigsLen, __uint32>(options, threading, sequencing, strategy);
-        }
-        else
-        {
-            throw RuntimeError("Maximum number of contigs exceeded.");
-        }
+        configureMapper<TContigsSize, TContigsLen, __uint32>(options, threading, sequencing, strategy);
     }
+    else
+    {
 #ifdef YARA_LARGE_CONTIGS
-    else
-    {
-        if (options.maxContigSetLength < MaxValue<__uint8>::VALUE)
-        {
-            spawnMapper<__uint8, TContigsLen, __uint64>(options, threading, sequencing, strategy);
-        }
-        else if (options.maxContigSetLength < MaxValue<__uint16>::VALUE)
-        {
-            spawnMapper<__uint16, TContigsLen, __uint64>(options, threading, sequencing, strategy);
-        }
-        else
-        {
-            throw RuntimeError("Maximum number of contigs exceeded.");
-        }
-    }
+        configureMapper<TContigsSize, TContigsLen, __uint64>(options, threading, sequencing, strategy);
 #else
-    else
-    {
         throw RuntimeError("Maximum contigs lengthsum exceeded.");
-    }
 #endif
+    }
 }
 
-template <typename TThreading, typename TSequencing, typename TStrategy>
-void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing,
-                     TStrategy const & strategy)
+template <typename TContigsSize, typename TThreading, typename TSequencing, typename TStrategy>
+void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
 {
-    if (options.maxContigLength < MaxValue<__uint32>::VALUE)
+    if (me.options.contigsMaxLength <= MaxValue<__uint32>::VALUE)
     {
-        configureMapper<__uint32>(options, threading, sequencing, strategy);
+        configureMapper<TContigsSize, __uint32>(options, threading, sequencing, strategy);
     }
     else
     {
 #ifdef YARA_LARGE_CONTIGS
-        configureMapper<__uint64>(options, threading, sequencing, strategy);
+        configureMapper<TContigsSize, __uint64>(options, threading, sequencing, strategy);
 #else
         throw RuntimeError("Maximum contig length exceeded.");
 #endif
+    }
+}
+
+template <typename TThreading, typename TSequencing, typename TStrategy>
+void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
+{
+    if (me.options.contigsSize <= MaxValue<__uint8>::VALUE)
+    {
+        configureMapper<__uint8>(options, threading, sequencing, strategy);
+    }
+    else if (me.options.contigsSize <= MaxValue<__uint16>::VALUE)
+    {
+        configureMapper<__uint16>(options, threading, sequencing, strategy);
+    }
+    else
+    {
+        throw RuntimeError("Maximum number of contigs exceeded.");
     }
 }
 

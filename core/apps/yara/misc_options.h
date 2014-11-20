@@ -279,9 +279,9 @@ bool saveContigsLimits(TOptions const & options)
 {
     String<__uint64> limits;
 
-    appendValue(limits, options.maxContigLength);
-    appendValue(limits, options.maxContigSetLength);
-    appendValue(limits, options.maxContigSetLengthSum);
+    appendValue(limits, options.contigsMaxLength);
+    appendValue(limits, options.contigsSize);
+    appendValue(limits, options.contigsSum);
 
     CharString contigsLimitFile(options.contigsIndexFile);
     append(contigsLimitFile, ".txt.size");
@@ -307,9 +307,9 @@ bool openContigsLimits(TOptions & options)
     if (length(limits) != 3)
         return false;
 
-    options.maxContigLength = limits[0];
-    options.maxContigSetLength = limits[1];
-    options.maxContigSetLengthSum = limits[2];
+    options.contigsMaxLength = limits[0];
+    options.contigsSize = limits[1];
+    options.contigsSum = limits[2];
 
     return true;
 }
@@ -321,9 +321,9 @@ bool openContigsLimits(TOptions & options)
 template <typename TOptions, typename TSeqs>
 void setContigsLimits(TOptions & options, TSeqs & seqs)
 {
-    options.maxContigLength = maxLength(seqs);
-    options.maxContigSetLength = length(seqs);
-    options.maxContigSetLengthSum = lengthSum(seqs);
+    options.contigsMaxLength = maxLength(seqs);
+    options.contigsSize = length(seqs);
+    options.contigsSum = lengthSum(seqs);
 }
 
 // ----------------------------------------------------------------------------
