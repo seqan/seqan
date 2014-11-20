@@ -77,7 +77,6 @@
 
 #include <seqan/system/system_base.h>
 #include <seqan/system/system_mutex.h>
-#include <seqan/system/system_sema.h>
 #include <seqan/system/system_event.h>
 #include <seqan/system/system_critical_section.h>
 #include <seqan/system/system_condition.h>
