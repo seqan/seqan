@@ -74,21 +74,21 @@ namespace seqan {
  *        default @link FMIndexConfig @endlink object the type of <tt>TSentinelsSpec</tt> is a two level
  *        @link RankDictionary @endlink.
  */
-template <typename TText, typename TSpec = void>
+template <typename TSpec = void, typename TLengthSum = size_t>
 struct FMIndexConfig
 {
-    typedef typename LengthSum<TText>::Type             LengthSum;
+    typedef TLengthSum                                  LengthSum;
     typedef WaveletTree<TSpec, WTRDConfig<LengthSum> >  Bwt;
     typedef Levels<TSpec, LevelsRDConfig<LengthSum> >   Sentinels;
 
-    static const unsigned SAMPLING = 10;
+    static const unsigned SAMPLING =                    10;
 };
 
 // ============================================================================
 // Forwards
 // ============================================================================
 
-template <typename TText, typename TSpec = void, typename TConfig = FMIndexConfig<TText, TSpec> >
+template <typename TSpec = void, typename TConfig = FMIndexConfig<TSpec> >
 class FMIndex;
 
 // ============================================================================
