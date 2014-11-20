@@ -147,7 +147,7 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
 template <typename TValue, typename TSpec, typename TConfig>
 struct Fibre<RankDictionary<TValue, WaveletTree<TSpec, TConfig> >, FibreRanks>
 {
-    typedef StringSet<RankDictionary<bool, Levels<TSpec, TConfig> > > Type;
+    typedef String<RankDictionary<bool, Levels<TSpec, TConfig> > > Type;
 };
 
 template <typename TValue, typename TSpec, typename TConfig>
