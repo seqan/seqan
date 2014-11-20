@@ -76,16 +76,16 @@ struct Options
     CharString      contigsFile;
     CharString      contigsIndexFile;
 
-    __uint64        maxContigLength;
-    __uint64        maxContigSetLength;
-    __uint64        maxContigSetLengthSum;
+    __uint64        contigsSize;
+    __uint64        contigsMaxLength;
+    __uint64        contigsSum;
 
     bool            verbose;
 
     Options() :
-        maxContigLength(),
-        maxContigSetLength(),
-        maxContigSetLengthSum(),
+        contigsSize(),
+        contigsMaxLength(),
+        contigsSum(),
         verbose(false)
     {}
 };
@@ -134,18 +134,6 @@ void setupArgumentParser(ArgumentParser & parser, Options const & /* options */)
 
     addOption(parser, ArgParseOption("v", "verbose", "Displays verbose output."));
 
-    addOption(parser, ArgParseOption("", "max-contigs-length", "Enforce the maximum length of any contig.", ArgParseOption::INT64));
-    setMinValue(parser, "max-contigs-length", "0");
-    hideOption(getOption(parser, "max-contigs-length"));
-
-    addOption(parser, ArgParseOption("", "max-contigs-count", "Enforce the maximum number of contigs.", ArgParseOption::INT64));
-    setMinValue(parser, "max-contigs-count", "0");
-    hideOption(getOption(parser, "max-contigs-count"));
-
-    addOption(parser, ArgParseOption("", "max-contigs-lengthsum", "Enforce the maximum length of all contigs.", ArgParseOption::INT64));
-    setMinValue(parser, "max-contigs-lengthsum", "0");
-    hideOption(getOption(parser, "max-contigs-lengthsum"));
-
     addSection(parser, "Output Options");
 
     addOption(parser, ArgParseOption("o", "output-prefix", "Specify a filename prefix for the reference genome index. \
@@ -177,12 +165,6 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getOptionValue(options.contigsIndexFile, parser, "output-prefix");
     if (!isSet(parser, "output-prefix"))
         options.contigsIndexFile = trimExtension(options.contigsFile);
-
-    // Parse hidden limits.
-    getOptionValue(options.maxContigLength, parser, "max-contigs-length");
-    getOptionValue(options.maxContigSetLength, parser, "max-contigs-count");
-    getOptionValue(options.maxContigSetLengthSum, parser, "max-contigs-lengthsum");
-    options.maxContigSetLengthSum = std::max(options.maxContigSetLengthSum, options.maxContigLength);
 
     // Parse and set temp dir.
     CharString tmpDir;
@@ -251,10 +233,10 @@ void saveContigs(YaraIndexer<TSpec, TConfig> & me)
 // Function saveIndex()
 // ----------------------------------------------------------------------------
 
-template <typename TContigsLen, typename TContigsSize, typename TContigsSum, typename TSpec, typename TConfig>
+template <typename TContigsSize, typename TContigsLen, typename TContigsSum, typename TSpec, typename TConfig>
 void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 {
-    typedef YaraFMConfig<TContigsLen, TContigsSize, TContigsSum>    TIndexConfig;
+    typedef YaraFMConfig<TContigsSize, TContigsLen, TContigsSum>    TIndexConfig;
     typedef FMIndex<void, TIndexConfig>                             TIndexSpec;
     typedef Index<typename TIndexConfig::Text, TIndexSpec>          TIndex;
 
@@ -312,62 +294,54 @@ void saveIndex(YaraIndexer<TSpec, TConfig> & me)
         std::cerr << me.timer << std::endl;
 }
 
-template <typename TContigsLen, typename TSpec, typename TConfig>
+template <typename TContigsSize, typename TContigsLen, typename TSpec, typename TConfig>
 void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 {
-    if (me.options.maxContigSetLengthSum < MaxValue<__uint32>::VALUE)
+    if (me.options.contigsSum <= MaxValue<__uint32>::VALUE)
     {
-        if (me.options.maxContigSetLength < MaxValue<__uint8>::VALUE)
-        {
-            saveIndex<__uint8, TContigsLen, __uint32>(me);
-        }
-        else if (me.options.maxContigSetLength < MaxValue<__uint16>::VALUE)
-        {
-            saveIndex<__uint16, TContigsLen, __uint32>(me);
-        }
-        else
-        {
-            throw RuntimeError("Maximum number of contigs exceeded.");
-        }
+        saveIndex<TContigsSize, TContigsLen, __uint32>(me);
     }
+    else
+    {
 #ifdef YARA_LARGE_CONTIGS
-    else
-    {
-        if (me.options.maxContigSetLength < MaxValue<__uint8>::VALUE)
-        {
-            saveIndex<__uint8, TContigsLen, __uint64>(me);
-        }
-        else if (me.options.maxContigSetLength < MaxValue<__uint16>::VALUE)
-        {
-            saveIndex<__uint16, TContigsLen, __uint64>(me);
-        }
-        else
-        {
-            throw RuntimeError("Maximum number of contigs exceeded.");
-        }
-    }
+        saveIndex<TContigsSize, TContigsLen, __uint64>(me);
 #else
+        throw RuntimeError("Maximum contigs lengthsum exceeded.");
+#endif
+    }
+}
+
+template <typename TContigsSize, typename TSpec, typename TConfig>
+void saveIndex(YaraIndexer<TSpec, TConfig> & me)
+{
+    if (me.options.contigsMaxLength <= MaxValue<__uint32>::VALUE)
+    {
+        saveIndex<TContigsSize, __uint32>(me);
+    }
     else
     {
-        throw RuntimeError("Maximum contigs lengthsum exceeded.");
-    }
+#ifdef YARA_LARGE_CONTIGS
+        saveIndex<TContigsSize, __uint64>(me);
+#else
+        throw RuntimeError("Maximum contig length exceeded.");
 #endif
+    }
 }
 
 template <typename TSpec, typename TConfig>
 void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 {
-    if (me.options.maxContigLength < MaxValue<__uint32>::VALUE)
+    if (me.options.contigsSize <= MaxValue<__uint8>::VALUE)
     {
-        saveIndex<__uint32>(me);
+        saveIndex<__uint8>(me);
+    }
+    else if (me.options.contigsSize <= MaxValue<__uint16>::VALUE)
+    {
+        saveIndex<__uint16>(me);
     }
     else
     {
-#ifdef YARA_LARGE_CONTIGS
-        saveIndex<__uint64>(me);
-#else
-        throw RuntimeError("Maximum contig length exceeded.");
-#endif
+        throw RuntimeError("Maximum number of contigs exceeded.");
     }
 }
 
