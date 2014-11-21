@@ -110,6 +110,13 @@ class StringSet;
 // ============================================================================
 
 // --------------------------------------------------------------------------
+// Metafunction StringSpec
+// --------------------------------------------------------------------------
+
+template <typename TString, typename TSpec>
+struct StringSpec<StringSet<TString, TSpec> > : StringSpec<TString> {};
+
+// --------------------------------------------------------------------------
 // Metafunction Concatenator
 // --------------------------------------------------------------------------
 
@@ -210,7 +217,7 @@ struct StringSetLimits<StringSet<TString, TSpec> >
 {
     typedef StringSet<TString, TSpec>               TStringSet_;
     typedef typename LengthSum<TStringSet_>::Type   Value_;
-    typedef typename Spec<TString>::Type            TSpec_;
+    typedef typename StringSpec<TStringSet_>::Type  TSpec_;
 
     typedef String<Value_, TSpec_>                  Type;
 };
