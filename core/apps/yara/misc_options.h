@@ -319,7 +319,7 @@ bool openContigsLimits(TOptions & options)
 // ----------------------------------------------------------------------------
 
 template <typename TOptions, typename TSeqs>
-void setContigsLimits(TOptions & options, TSeqs & seqs)
+void setContigsLimits(TOptions & options, TSeqs const & seqs)
 {
     options.contigsMaxLength = maxLength(seqs);
     options.contigsSize = length(seqs);
