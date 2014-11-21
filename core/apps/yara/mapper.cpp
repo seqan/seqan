@@ -313,14 +313,14 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 template <typename TContigsSize, typename TContigsLen, typename TThreading, typename TSequencing, typename TStrategy>
 void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
 {
-    if (me.options.contigsSum <= MaxValue<__uint32>::VALUE)
+    if (options.contigsSum <= MaxValue<__uint32>::VALUE)
     {
-        configureMapper<TContigsSize, TContigsLen, __uint32>(options, threading, sequencing, strategy);
+        spawnMapper<TContigsSize, TContigsLen, __uint32>(options, threading, sequencing, strategy);
     }
     else
     {
 #ifdef YARA_LARGE_CONTIGS
-        configureMapper<TContigsSize, TContigsLen, __uint64>(options, threading, sequencing, strategy);
+        spawnMapper<TContigsSize, TContigsLen, __uint64>(options, threading, sequencing, strategy);
 #else
         throw RuntimeError("Maximum contigs lengthsum exceeded.");
 #endif
@@ -330,7 +330,7 @@ void configureMapper(Options const & options, TThreading const & threading, TSeq
 template <typename TContigsSize, typename TThreading, typename TSequencing, typename TStrategy>
 void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
 {
-    if (me.options.contigsMaxLength <= MaxValue<__uint32>::VALUE)
+    if (options.contigsMaxLength <= MaxValue<__uint32>::VALUE)
     {
         configureMapper<TContigsSize, __uint32>(options, threading, sequencing, strategy);
     }
@@ -347,11 +347,11 @@ void configureMapper(Options const & options, TThreading const & threading, TSeq
 template <typename TThreading, typename TSequencing, typename TStrategy>
 void configureMapper(Options const & options, TThreading const & threading, TSequencing const & sequencing, TStrategy const & strategy)
 {
-    if (me.options.contigsSize <= MaxValue<__uint8>::VALUE)
+    if (options.contigsSize <= MaxValue<__uint8>::VALUE)
     {
         configureMapper<__uint8>(options, threading, sequencing, strategy);
     }
-    else if (me.options.contigsSize <= MaxValue<__uint16>::VALUE)
+    else if (options.contigsSize <= MaxValue<__uint16>::VALUE)
     {
         configureMapper<__uint16>(options, threading, sequencing, strategy);
     }
