@@ -368,6 +368,40 @@ struct Spec<String<TValue, TSpec> const>:
 };
 
 // ----------------------------------------------------------------------------
+// Metafunction StringSpec
+// ----------------------------------------------------------------------------
+
+/**
+.Metafunction.StringSpec
+..cat:Fundamental
+..summary:The @Class.String@ @Metafunction.Spec@ of a class.
+..signature:StringSpec<T>::Type
+..param.T:Type for which the @Class.String@ @Metafunction.Spec@ is determined.
+..returns.param.Type:StringSpec of $T$.
+..remarks:
+The StringSpec of a SeqAn type is the @Metafunction.Spec@ of the @Class.String@ on which the type depends.
+For example, the StringSpec of $Index<String<char, MMap<> > >$ and $typename Infix<String<char, MMap<> > >::Type$ is $MMap<>$.
+..remarks:
+For types not dependent, composed by or related to @Class.String@, this metafunction returns $Alloc<>$.
+..include:seqan/string.h
+*/
+
+template <typename T>
+struct StringSpec
+{
+    typedef Alloc<> Type;
+};
+
+template <typename T>
+struct StringSpec<T const> : StringSpec<T> {};
+
+template <typename TValue, typename TSpec>
+struct StringSpec<String<TValue, TSpec> >
+{
+    typedef TSpec   Type;
+};
+
+// ----------------------------------------------------------------------------
 // Metafunction Chunk
 // ----------------------------------------------------------------------------
 
