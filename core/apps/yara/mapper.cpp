@@ -335,7 +335,7 @@ void configureMapper(Options const & options, TThreading const & threading, TSeq
 #ifdef YARA_LARGE_CONTIGS
         configureMapper<TContigsSize, __uint64>(options, threading, sequencing, strategy);
 #else
-        throw RuntimeError("Maximum contig length exceeded. Recompile with -DYARA_LARGE_CONTIGS.");
+        throw RuntimeError("Maximum contig length exceeded. Recompile with -DYARA_LARGE_CONTIGS=ON.");
 #endif
     }
 }
@@ -356,7 +356,7 @@ void configureMapper(Options const & options, TThreading const & threading, TSeq
 #ifdef YARA_LARGE_CONTIGS
         configureMapper<__uint32>(options, threading, sequencing, strategy);
 #else
-        throw RuntimeError("Maximum number of contigs exceeded. Recompile with -DYARA_LARGE_CONTIGS.");
+        throw RuntimeError("Maximum number of contigs exceeded. Recompile with -DYARA_LARGE_CONTIGS=ON.");
 #endif
     }
 }
