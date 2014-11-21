@@ -319,7 +319,7 @@ void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 #ifdef YARA_LARGE_CONTIGS
         saveIndex<TContigsSize, __uint64>(me);
 #else
-        throw RuntimeError("Maximum contig length exceeded. Recompile with -DYARA_LARGE_CONTIGS.");
+        throw RuntimeError("Maximum contig length exceeded. Recompile with -DYARA_LARGE_CONTIGS=ON.");
 #endif
     }
 }
@@ -340,7 +340,7 @@ void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 #ifdef YARA_LARGE_CONTIGS
         saveIndex<__uint32>(me);
 #else
-        throw RuntimeError("Maximum number of contigs exceeded. Recompile with -DYARA_LARGE_CONTIGS.");
+        throw RuntimeError("Maximum number of contigs exceeded. Recompile with -DYARA_LARGE_CONTIGS=ON.");
 #endif
     }
 }
