@@ -729,7 +729,7 @@ void setFibre(CompressedSA<StringSet<ContainerView<TText, TViewSpec>, TSSetSpec>
 // Function view()                                                    [IndexSa]
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TSpec, typename TConfig>
+template <typename TText, typename TSpec>
 typename View<Index<TText, IndexSa<TSpec> > >::Type
 view(Index<TText, IndexSa<TSpec> > & index)
 {
@@ -745,7 +745,7 @@ view(Index<TText, IndexSa<TSpec> > & index)
 // Function view()                                                   [IndexEsa]
 // ----------------------------------------------------------------------------
 
-template <typename TText, typename TSpec, typename TConfig>
+template <typename TText, typename TSpec>
 typename View<Index<TText, IndexEsa<TSpec> > >::Type
 view(Index<TText, IndexEsa<TSpec> > & index)
 {
