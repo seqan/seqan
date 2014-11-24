@@ -110,6 +110,13 @@ class StringSet;
 // ============================================================================
 
 // --------------------------------------------------------------------------
+// Metafunction StringSpec
+// --------------------------------------------------------------------------
+
+template <typename TString, typename TSpec>
+struct StringSpec<StringSet<TString, TSpec> > : StringSpec<TString> {};
+
+// --------------------------------------------------------------------------
 // Metafunction Concatenator
 // --------------------------------------------------------------------------
 
@@ -156,6 +163,38 @@ struct Concatenator<StringSet<TString, TSpec> >
 };
 
 // --------------------------------------------------------------------------
+// Metafunction LengthSum
+// --------------------------------------------------------------------------
+
+/*!
+ * @mfn StringSet#LengthSum
+ * @brief Length sum type type in string set.
+ *
+ * @signature LengthSum<TStringSet>::Type
+ *
+ * @tparam TStringSet The @link StringSet @endlink to query for its length sum type.
+ *
+ * @return Type The resulting length sum type.
+ */
+
+// TODO(holtgrew): Complete documentation, part of TextConcept?
+
+template <typename TString>
+struct LengthSum
+{
+    typedef typename Size<TString>::Type Type;
+};
+
+template <typename TString, typename TSpec>
+struct LengthSum<StringSet<TString, TSpec> >
+{
+    typedef typename Size<TString>::Type Type;
+};
+
+template <typename T>
+struct LengthSum<T const> : LengthSum<T> {};
+
+// --------------------------------------------------------------------------
 // Metafunction StringSetLimits
 // --------------------------------------------------------------------------
 
@@ -176,8 +215,11 @@ struct StringSetLimits<TString const>
 template <typename TString, typename TSpec>
 struct StringSetLimits<StringSet<TString, TSpec> >
 {
-    typedef typename Size<TString>::Type TSize_;
-    typedef String<TSize_> Type;
+    typedef StringSet<TString, TSpec>               TStringSet_;
+    typedef typename LengthSum<TStringSet_>::Type   Value_;
+    typedef typename StringSpec<TStringSet_>::Type  TSpec_;
+
+    typedef String<Value_, TSpec_>                  Type;
 };
 
 // --------------------------------------------------------------------------
@@ -213,41 +255,6 @@ struct StringSetPosition<StringSet<TString, TSpec> >
                  typename Size<TString>::Type,
                  Pack> Type;
 };
-
-// --------------------------------------------------------------------------
-// Metafunction LengthSum
-// --------------------------------------------------------------------------
-
-/*!
- * @mfn StringSet#LengthSum
- * @brief Length sum type type in string set.
- *
- * @signature LengthSum<TStringSet>::Type
- *
- * @tparam TStringSet The @link StringSet @endlink to query for its length sum type.
- *
- * @return Type The resulting length sum type.
- */
-
-// TODO(holtgrew): Complete documentation, part of TextConcept?
-
-template <typename TString>
-struct LengthSum
-{
-    typedef typename Size<TString>::Type Type;
-};
-
-template <typename TString, typename TSpec>
-struct LengthSum<StringSet<TString, TSpec> >
-{
-    typedef StringSet<TString, TSpec>                   TStringSet;
-    typedef typename StringSetLimits<TStringSet>::Type  TLimits;
-    typedef typename Value<TLimits>::Type               Type;
-};
-
-template <typename T>
-struct LengthSum<T const> :
-    public LengthSum<T> {};
 
 // --------------------------------------------------------------------------
 // Metafunction GetSequenceNo

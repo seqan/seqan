@@ -291,11 +291,22 @@ struct Spec<Segment<THost, TSpec> >
 {
     typedef TSpec Type;
 };
+
 template <typename THost, typename TSpec>
 struct Spec<Segment<THost, TSpec> const>
 {
     typedef TSpec Type;
 };
+
+// ----------------------------------------------------------------------------
+// Metafunction StringSpec
+// ----------------------------------------------------------------------------
+
+template <typename T>
+struct StringSpec;
+
+template <typename THost, typename TSpec>
+struct StringSpec<Segment<THost, TSpec> > : StringSpec<THost> {};
 
 //////////////////////////////////////////////////////////////////////////////
 

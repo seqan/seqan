@@ -41,197 +41,54 @@
 using namespace seqan;
 
 // ============================================================================
-// String Types
+// Tags
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// String Spec
+// Tag Limits
 // ----------------------------------------------------------------------------
 
-#ifndef YARA_INDEXER
-typedef MMap<>  YaraStringSpec;
-#else
-typedef Alloc<> YaraStringSpec;
-#endif
+template <typename T1 = void, typename T2 = void>
+struct Limits {};
+
+// ----------------------------------------------------------------------------
+// Metafunction Value
+// ----------------------------------------------------------------------------
+
+namespace seqan
+{
+template <typename T1, typename T2>
+struct Value<Limits<T1, T2>, 1>
+{
+    typedef T1 Type;
+};
+
+template <typename T1, typename T2>
+struct Value<Limits<T1, T2>, 2>
+{
+    typedef T2 Type;
+};
+}
 
 // ============================================================================
-// Index Types
+// StringSet
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Index Text Type
-// ----------------------------------------------------------------------------
-
-typedef StringSet<String<Dna5, Packed<YaraStringSpec> >, Owner<ConcatDirect<> > >   YaraContigs;
-typedef StringSet<String<Dna>, Owner<ConcatDirect<> > >                             YaraContigsFM;
-
-// ----------------------------------------------------------------------------
-// FM Index Fibres
-// ----------------------------------------------------------------------------
-
-struct YaraFMIndexConfig
-{
-    typedef TwoLevels<void>    TValuesSpec;
-    typedef Naive<void>        TSentinelsSpec;
-
-    static const unsigned SAMPLING = 10;
-};
-
-typedef FMIndex<void, YaraFMIndexConfig>        YaraIndexSpec;
-typedef Index<YaraContigsFM, YaraIndexSpec>     YaraIndex;
-
-// ----------------------------------------------------------------------------
-// FM Index Size
+// Metafunction LengthSum
 // ----------------------------------------------------------------------------
 
 namespace seqan {
-template <>
-struct Size<YaraIndex>
+template <typename TString, typename TSum>
+struct LengthSum<StringSet<TString, Owner<ConcatDirect<Limits<TSum> > > > >
 {
-    typedef __uint32 Type;
+    typedef TSum Type;
 };
 }
 
-// ----------------------------------------------------------------------------
-// Default Index Fibre Specs
-// ----------------------------------------------------------------------------
-
-namespace seqan {
-template <>
-struct DefaultIndexStringSpec<YaraContigsFM>
-{
-    typedef YaraStringSpec Type;
-};
-
-template <>
-struct DefaultIndexStringSpec<CompressedSA<YaraContigsFM, void, YaraFMIndexConfig> >
-{
-    typedef YaraStringSpec Type;
-};
-}
-
-// ----------------------------------------------------------------------------
-// Suffix Array Value Type
-// ----------------------------------------------------------------------------
-
-namespace seqan {
-template <>
-struct StringSetPosition<YaraContigs>
-{
-    typedef Pair<__uint8, __uint32, Pack> Type;
-};
-
-template <>
-struct StringSetPosition<YaraContigsFM>
-{
-    typedef Pair<__uint8, __uint32, Pack> Type;
-};
-}
-
-// ----------------------------------------------------------------------------
-// FibreLF Size
-// ----------------------------------------------------------------------------
-
-namespace seqan {
-template <typename TSpec, typename TConfig>
-struct Size<LF<YaraContigsFM, TSpec, TConfig> >
-{
-    typedef __uint32 Type;
-};
-}
-
-// ----------------------------------------------------------------------------
-// Rank Dictionary Size
-// ----------------------------------------------------------------------------
-
-namespace seqan {
-template <typename TSpec>
-struct Size<RankDictionary<Dna, TwoLevels<TSpec> > >
-{
-    typedef __uint32 Type;
-};
-
-template <typename TSpec>
-struct Size<RankDictionary<bool, TwoLevels<TSpec> > >
-{
-    typedef __uint32 Type;
-};
-
-template <typename TSpec>
-struct Size<RankDictionary<bool, Naive<TSpec> > >
-{
-    typedef __uint32 Type;
-};
-}
-
-// ----------------------------------------------------------------------------
-// Rank Dictionary Fibre Specs
-// ----------------------------------------------------------------------------
-
-namespace seqan {
-template <typename TSpec>
-struct RankDictionaryFibreSpec<RankDictionary<Dna, TwoLevels<TSpec> > >
-{
-    typedef YaraStringSpec Type;
-};
-
-template <typename TSpec>
-struct RankDictionaryFibreSpec<RankDictionary<bool, TwoLevels<TSpec> > >
-{
-    typedef YaraStringSpec Type;
-};
-
-template <typename TSpec>
-struct RankDictionaryFibreSpec<RankDictionary<bool, Naive<TSpec> > >
-{
-    typedef YaraStringSpec Type;
-};
-}
-
-// ----------------------------------------------------------------------------
-// CSA Size
-// ----------------------------------------------------------------------------
-// TODO(esiragusa): Overload Size<CSA> instead of Size<SparseString>
-
-namespace seqan {
-template <typename TValueString>
-struct Size<SparseString<TValueString, void> >
-{
-    typedef __uint32    Type;
-};
-}
-
-// ----------------------------------------------------------------------------
-// ContigSeqs StringSetLimits
-// ----------------------------------------------------------------------------
-
-namespace seqan {
-template <>
-struct StringSetLimits<YaraContigs>
-{
-    typedef String<__uint32>    Type;
-};
-}
-
-// ----------------------------------------------------------------------------
-// ContigNames StringSetLimits
-// ----------------------------------------------------------------------------
-
-namespace seqan {
-template <typename TString>
-struct StringSetLimits<StringSet<TString, Owner<ConcatDirect<__uint32> > > >
-{
-    typedef String<__uint32>    Type;
-};
-
-template <typename TString, typename TSource, typename TExpand>
-inline void
-appendValue(StringSet<TString, Owner<ConcatDirect<__uint32> > > & me, TSource const & obj, Tag<TExpand> tag)
-{
-    appendValue(me.limits, lengthSum(me) + length(obj), tag);
-    append(me.concat, obj, tag);
-}
-}
+// ============================================================================
+// SeqStore Config
+// ============================================================================
 
 // ----------------------------------------------------------------------------
 // Reads SeqsStore Config
@@ -239,33 +96,103 @@ appendValue(StringSet<TString, Owner<ConcatDirect<__uint32> > > & me, TSource co
 
 typedef SeqConfig<void>         YaraReadsConfig;
 
-//struct YaraReadsConfig
-//{
-//    typedef Dna5                    TAlphabet;
-//    typedef Alloc<>                 TSeqSpec;
-//    typedef Owner<ConcatDirect<> >  TSeqsSpec;
-//    typedef Owner<ConcatDirect<> >  TSeqNamesSpec;
-//};
-
 // ----------------------------------------------------------------------------
 // Contigs SeqsStore Config
 // ----------------------------------------------------------------------------
 
+template <typename TSpec = Alloc<> >
 struct YaraContigsConfig
 {
-    typedef Dna5                            TAlphabet;
-    typedef Packed<YaraStringSpec>          TSeqSpec;
-    typedef Owner<ConcatDirect<> >          TSeqsSpec;
-    typedef Owner<ConcatDirect<__uint32> >  TSeqNamesSpec;
+    typedef Dna5                                    TAlphabet;
+    typedef Packed<TSpec>                           TSeqSpec;
+    typedef Owner<ConcatDirect<Limits<__uint64> > > TSeqsSpec;
+    typedef Owner<ConcatDirect<Limits<__uint32> > > TSeqNamesSpec;
 };
 
+// ----------------------------------------------------------------------------
+// SmartFile Context
+// ----------------------------------------------------------------------------
+
 namespace seqan {
-template <typename TStorageSpec>
-struct SmartFileContext<SmartFile<Bam, Output, YaraContigs>, TStorageSpec>
+template <typename TString, typename TSpec, typename TStorageSpec>
+struct SmartFileContext<SmartFile<Bam, Output, StringSet<TString, Owner<ConcatDirect<TSpec> > > >, TStorageSpec>
 {
-    typedef StringSet<CharString, Owner<ConcatDirect<__uint32> > >  TNameStore;
+    typedef StringSet<CharString, Owner<ConcatDirect<TSpec> > >     TNameStore;
     typedef NameStoreCache<TNameStore>                              TNameStoreCache;
     typedef BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> Type;
+};
+}
+
+// ============================================================================
+// FMIndex
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// FMIndex Config
+// ----------------------------------------------------------------------------
+
+template <typename TSize, typename TLen, typename TSum, typename TAlloc = Alloc<> >
+struct YaraFMConfig
+{
+    typedef YaraFMConfig<TSize, TLen, TSum, TAlloc>     TMe;
+
+    // Text.
+    typedef Owner<ConcatDirect<TMe> >                   TSSetSpec_;
+    typedef StringSet<String<Dna, TAlloc>, TSSetSpec_>  Text;
+
+    // LF LengthSum.
+    typedef TSum                                        LengthSum;
+
+    // LF's RankDictionary Config.
+    typedef Levels<void, TMe>                           Bwt;
+    typedef typename If<IsSameType<TSize, __uint8>,
+                        Naive<void, TMe>,
+                        Levels<void, TMe> >::Type       Sentinels;
+
+    // RankDictionary Config.
+    typedef TAlloc                                      Fibre;
+    typedef TSum                                        Size;
+
+    // Sparse SA sampling rate.
+    static const unsigned SAMPLING =                    10;
+};
+
+// ----------------------------------------------------------------------------
+// FMIndex SAValue
+// ----------------------------------------------------------------------------
+
+namespace seqan {
+template <typename TValue, typename TSpec, typename TSize, typename TLen, typename TSum, typename TAlloc>
+struct SAValue<StringSet<String<TValue, TSpec>, Owner<ConcatDirect<YaraFMConfig<TSize, TLen, TSum, TAlloc> > > > >
+{
+    typedef Pair<TSize, TLen, Pack>   Type;
+};
+}
+
+// ----------------------------------------------------------------------------
+// SparseString FibreIndicators
+// ----------------------------------------------------------------------------
+// NOTE(esiragusa): CompressedSA propagates down TConfig as TSpec.
+// TODO(esiragusa): remove this crap once the CSA gets refactored.
+
+namespace seqan {
+template <typename TValue, typename TAlloc, typename TSpec>
+struct Fibre<SparseString<String<TValue, TAlloc>, TSpec>, FibreIndicators>
+{
+    typedef RankDictionary<bool, Levels<void, TSpec> > Type;
+};
+}
+
+// ----------------------------------------------------------------------------
+// SparseString Size
+// ----------------------------------------------------------------------------
+// TODO(esiragusa): remove this crap once the CSA gets refactored.
+
+namespace seqan {
+template <typename TString, typename TSize, typename TLen, typename TSum, typename TAlloc>
+struct Size<SparseString<TString, YaraFMConfig<TSize, TLen, TSum, TAlloc> > >
+{
+    typedef TSum Type;
 };
 }
 

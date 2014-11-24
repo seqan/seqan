@@ -124,7 +124,7 @@ template <typename TSpec = void>
 struct Match
 {
     typename Member<Match, ReadId>::Type        readId       : MemberBits<Match, ReadId>::VALUE;
-    typename Member<Match, ContigId>::Type      contigId; // : MemberBits<Match, ContigId>::VALUE;
+    typename Member<Match, ContigId>::Type      contigId     : MemberBits<Match, ContigId>::VALUE;
     bool                                        isRev        : 1;
     typename Member<Match, ContigBegin>::Type   contigBegin  : MemberBits<Match, ContigSize>::VALUE;
     typename Member<Match, ContigEnd>::Type     contigEnd    : MemberBits<Match, ReadSize>::VALUE;
@@ -157,13 +157,13 @@ struct Member<Match<TSpec>, ReadId>
 template <typename TSpec>
 struct Member<Match<TSpec>, ContigId>
 {
-    typedef __uint8     Type;
+    typedef __uint16    Type;
 };
 
-template <typename TSpec>
-struct Member<Match<TSpec>, ContigSize>
+template <typename TContigsLen, typename TContigsSum>
+struct Member<Match<Limits<TContigsLen, TContigsSum> >, ContigSize>
 {
-    typedef __uint32    Type;
+    typedef TContigsSum  Type;
 };
 
 template <typename TSpec>
@@ -190,28 +190,28 @@ struct MemberBits<Match<TSpec>, ReadId>
     static const unsigned VALUE = 21;
 };
 
-template <typename TSpec>
-struct MemberBits<Match<TSpec>, ContigId>
+template <typename TContigsLen>
+struct MemberBits<Match<Limits<TContigsLen, __uint8> >, ContigId>
 {
     static const unsigned VALUE = 8;
 };
 
-template <typename TSpec>
-struct MemberBits<Match<TSpec>, ContigSize>
+template <typename TContigsLen>
+struct MemberBits<Match<Limits<TContigsLen, __uint64> >, ContigSize>
 {
-    static const unsigned VALUE = 30;
+    static const unsigned VALUE = 48;
 };
 
 template <typename TSpec>
 struct MemberBits<Match<TSpec>, ReadSize>
 {
-    static const unsigned VALUE = 14;
+    static const unsigned VALUE = 13;
 };
 
 template <typename TSpec>
 struct MemberBits<Match<TSpec>, Errors>
 {
-    static const unsigned VALUE = 6;
+    static const unsigned VALUE = 5;
 };
 }
 

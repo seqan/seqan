@@ -98,7 +98,7 @@ void write(TTarget & target,
     write(target, context.buffer);
 
     // Write references.
-    __int32 nRef = std::max(length(nameStore(context)), length(sequenceLengths(context)));
+    __int32 nRef = _max(length(nameStore(context)), length(sequenceLengths(context)));
     appendRawPod(target, nRef);
 
     for (__int32 i = 0; i < nRef; ++i)

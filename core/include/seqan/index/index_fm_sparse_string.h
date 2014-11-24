@@ -85,6 +85,13 @@ typedef Tag<FibreIndicators_>   const FibreIndicators;
 // ==========================================================================
 
 // ----------------------------------------------------------------------------
+// Metafunction Size
+// ----------------------------------------------------------------------------
+
+template <typename TFibreValues, typename TSpec>
+struct Size<SparseString<TFibreValues, TSpec> > : Size<TFibreValues> {};
+
+// ----------------------------------------------------------------------------
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
@@ -151,7 +158,8 @@ struct Fibre<SparseString<TFibreValues, TSpec>, FibreValues>
 template <typename TFibreValues, typename TSpec>
 struct Fibre<SparseString<TFibreValues, TSpec>, FibreIndicators>
 {
-    typedef RankDictionary<bool, TwoLevels<TSpec> > Type;
+    // NOTE(esiragusa): the CSA TConfig is not passed to the RD.
+    typedef RankDictionary<bool, Levels<TSpec> > Type;
 };
 
 // ----------------------------------------------------------------------------

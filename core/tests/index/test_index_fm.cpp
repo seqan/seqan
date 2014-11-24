@@ -47,22 +47,31 @@ using namespace seqan;
 // FMIndex Configs
 // --------------------------------------------------------------------------
 
-struct WTFMIndexConfig : FMIndexConfig<void> {};
+template <typename TSpec = void, typename TLengthSum = size_t>
+struct WTFMIndexConfig : FMIndexConfig<TSpec, TLengthSum> {};
 
-struct NaiveWTFMIndexConfig : FMIndexConfig<void>
+template <typename TSpec = void, typename TLengthSum = size_t>
+struct SmallWTFMIndexConfig : FMIndexConfig<TSpec, TLengthSum>
 {
-    typedef Naive<void>             TSentinelsSpec;
+    typedef TLengthSum                              LengthSum;
+    typedef Naive<TSpec, RDConfig<TLengthSum> >     Sentinels;
 };
 
-struct NaiveTLFMIndexConfig : FMIndexConfig<void>
+template <typename TSpec = void, typename TLengthSum = size_t>
+struct SmallLVFMIndexConfig : FMIndexConfig<TSpec, TLengthSum>
 {
-    typedef TwoLevels<void>         TValuesSpec;
-    typedef Naive<void>             TSentinelsSpec;
+    typedef TLengthSum                                  LengthSum;
+    typedef Levels<TSpec, LevelsRDConfig<LengthSum> >   Bwt;
+    typedef Naive<TSpec, RDConfig<LengthSum> >          Sentinels;
 };
 
-typedef FMIndex<void, WTFMIndexConfig>          WTFMIndex;
-typedef FMIndex<void, NaiveWTFMIndexConfig>     NaiveWTFMIndex;
-typedef FMIndex<void, NaiveTLFMIndexConfig>     NaiveTLFMIndex;
+// --------------------------------------------------------------------------
+// FMIndex Specs
+// --------------------------------------------------------------------------
+
+typedef FMIndex<void, WTFMIndexConfig<> >       WTFMIndex;
+typedef FMIndex<void, SmallWTFMIndexConfig<> >  SmallWTFMIndex;
+typedef FMIndex<void, SmallLVFMIndexConfig<> >  SmallLVFMIndex;
 
 // --------------------------------------------------------------------------
 // FMIndex Types
@@ -72,8 +81,8 @@ typedef
     TagList<Index<DnaString, WTFMIndex>,
     TagList<Index<CharString, WTFMIndex>,
     TagList<Index<StringSet<CharString>, WTFMIndex>,
-    TagList<Index<StringSet<CharString>, NaiveWTFMIndex>,
-    TagList<Index<StringSet<DnaString>,  NaiveTLFMIndex>
+    TagList<Index<StringSet<CharString>, SmallWTFMIndex>,
+    TagList<Index<StringSet<DnaString>, SmallLVFMIndex>
     > > > > >
     FMIndexTypes2;
 

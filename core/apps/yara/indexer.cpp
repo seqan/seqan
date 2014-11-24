@@ -57,8 +57,8 @@
 #include "misc_timer.h"
 #include "misc_tags.h"
 #include "misc_types.h"
-#include "misc_options.h"
 #include "bits_matches.h"
+#include "misc_options.h"
 #include "index_fm.h"
 
 using namespace seqan;
@@ -73,30 +73,40 @@ using namespace seqan;
 
 struct Options
 {
-    CharString contigsFile;
-    CharString contigsIndexFile;
+    CharString      contigsFile;
+    CharString      contigsIndexFile;
 
-    bool    verbose;
+    __uint64        contigsSize;
+    __uint64        contigsMaxLength;
+    __uint64        contigsSum;
+
+    bool            verbose;
 
     Options() :
+        contigsSize(),
+        contigsMaxLength(),
+        contigsSum(),
         verbose(false)
     {}
 };
 
 // ----------------------------------------------------------------------------
-// Class Indexer
+// Class YaraIndexer
 // ----------------------------------------------------------------------------
 
-template <typename TIndexSpec, typename TSpec = void>
-struct Indexer
+template <typename TSpec = void, typename TConfig = void>
+struct YaraIndexer
 {
-    typedef SeqStore<void, YaraContigsConfig>       TContigs;
-    typedef Index<YaraContigsFM, TIndexSpec>        TIndex;
+    typedef SeqStore<TSpec, YaraContigsConfig<> >   TContigs;
 
+    Options const &     options;
     TContigs            contigs;
     SeqFileIn           contigsFile;
-    TIndex              index;
     Timer<double>       timer;
+
+    YaraIndexer(Options const & options) :
+        options(options)
+    {}
 };
 
 // ============================================================================
@@ -142,7 +152,7 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
 {
     ArgumentParser::ParseResult res = parse(parser, argc, argv);
 
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != ArgumentParser::PARSE_OK)
         return res;
 
     // Parse verbose output option.
@@ -160,32 +170,30 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     CharString tmpDir;
     getOptionValue(tmpDir, parser, "tmp-dir");
     if (!isSet(parser, "tmp-dir"))
+    {
         tmpDir = getPath(options.contigsIndexFile);
+        if (empty(tmpDir))
+            getCwd(tmpDir);
+    }
     setEnv("TMPDIR", tmpDir);
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return ArgumentParser::PARSE_OK;
 }
 
 // ----------------------------------------------------------------------------
 // Function loadContigs()
 // ----------------------------------------------------------------------------
 
-template <typename TIndexSpec, typename TSpec>
-void loadContigs(Indexer<TIndexSpec, TSpec> & me, Options const & options)
+template <typename TSpec, typename TConfig>
+void loadContigs(YaraIndexer<TSpec, TConfig> & me)
 {
-    if (options.verbose)
+    if (me.options.verbose)
         std::cerr << "Loading reference:\t\t\t" << std::flush;
 
     start(me.timer);
-    open(me.contigsFile, toCString(options.contigsFile));
 
-    // Compute file size.
-//    me.contigsFile.seekg(0, std::ios::end);
-//    unsigned fileSize = me.contigsFile.tellg();
-//    me.contigsFile.seekg(0, std::ios::beg);
-
-    // Reserve space for contigs.
-//    reserve(me.contigs, fileSize);
+    if (!open(me.contigsFile, toCString(me.options.contigsFile)))
+        throw RuntimeError("Error while opening the reference file.");
 
     try
     {
@@ -195,15 +203,10 @@ void loadContigs(Indexer<TIndexSpec, TSpec> & me, Options const & options)
     {
         throw RuntimeError("Insufficient memory to load the reference.");
     }
+
     stop(me.timer);
 
-    if (length(me.contigs.seqs) > MemberLimits<Match<TSpec>, ContigId>::VALUE)
-        throw RuntimeError("Maximum number of contigs exceeded.");
-
-    if (maxLength(me.contigs.seqs) > MemberLimits<Match<TSpec>, ContigSize>::VALUE)
-        throw RuntimeError("Maximum contig length exceeded.");
-
-    if (options.verbose)
+    if (me.options.verbose)
         std::cerr << me.timer << std::endl;
 }
 
@@ -211,53 +214,56 @@ void loadContigs(Indexer<TIndexSpec, TSpec> & me, Options const & options)
 // Function saveContigs()
 // ----------------------------------------------------------------------------
 
-template <typename TIndexSpec, typename TSpec>
-void saveContigs(Indexer<TIndexSpec, TSpec> & me, Options const & options)
+template <typename TSpec, typename TConfig>
+void saveContigs(YaraIndexer<TSpec, TConfig> & me)
 {
-    if (options.verbose)
-        std::cerr << "Dumping reference:\t\t\t" << std::flush;
+    if (me.options.verbose)
+        std::cerr << "Saving reference:\t\t\t" << std::flush;
 
     start(me.timer);
-    if (!save(me.contigs, toCString(options.contigsIndexFile)))
-        throw RuntimeError("Error while dumping reference file.");
+    if (!saveContigsLimits(me.options) || !save(me.contigs, toCString(me.options.contigsIndexFile)))
+        throw RuntimeError("Error while saving the reference.");
     stop(me.timer);
 
-    if (options.verbose)
+    if (me.options.verbose)
         std::cerr << me.timer << std::endl;
 }
 
 // ----------------------------------------------------------------------------
-// Function buildIndex()
+// Function saveIndex()
 // ----------------------------------------------------------------------------
 
-template <typename TIndexSpec, typename TSpec>
-void buildIndex(Indexer<TIndexSpec, TSpec> & me, Options const & options)
+template <typename TContigsSize, typename TContigsLen, typename TContigsSum, typename TSpec, typename TConfig>
+void saveIndex(YaraIndexer<TSpec, TConfig> & me)
 {
-    typedef typename Indexer<TIndexSpec, TSpec>::TIndex TIndex;
+    typedef YaraFMConfig<TContigsSize, TContigsLen, TContigsSum>    TIndexConfig;
+    typedef FMIndex<void, TIndexConfig>                             TIndexSpec;
+    typedef Index<typename TIndexConfig::Text, TIndexSpec>          TIndex;
 
-    if (options.verbose)
+    if (me.options.verbose)
         std::cerr << "Building reference index:\t\t" << std::flush;
 
     start(me.timer);
 
+    // Randomly replace Ns with A, C, G, T.
+    randomizeNs(me.contigs);
+
+    // IndexFM is built on the reversed contigs.
+    reverse(me.contigs);
+
+    TIndex index;
+
+    // This assignment *copies* the contigs to the index as the types differ.
+    setValue(index.text, me.contigs.seqs);
+
+    // Clear the contigs - the index now owns its own copy.
+    clear(me.contigs);
+    shrinkToFit(me.contigs);
+
     try
     {
-        // Randomize Ns in contigs.
-        randomizeNs(me.contigs);
-
-        // IndexFM is built on the reversed contigs.
-        reverse(me.contigs);
-
-        // Set the index text.
-        // NOTE(esiragusa): this assignment implicitly assigns and converts the contigs to the index contigs.
-        setValue(me.index.text, me.contigs.seqs);
-
-        // Clears the contigs.
-        // NOTE(esiragusa): the index now owns its own contigs.
-        shrinkToFit(me.contigs.seqs);
-
-        // Iterator instantiation calls automatic index construction.
-        typename Iterator<TIndex, TopDown<> >::Type it(me.index);
+        // Iterator instantiation triggers index construction.
+        typename Iterator<TIndex, TopDown<> >::Type it(index);
         ignoreUnusedVariableWarning(it);
     }
     catch (BadAlloc const & /* e */)
@@ -271,44 +277,86 @@ void buildIndex(Indexer<TIndexSpec, TSpec> & me, Options const & options)
                             Specify a bigger temporary folder using the options --tmp-dir.");
     }
 
-    // NOTE(esiragusa): the contigs should be already saved.
-//    reverse(me.contigs);
     stop(me.timer);
 
-    if (options.verbose)
+    if (me.options.verbose)
         std::cerr << me.timer << std::endl;
-}
 
-// ----------------------------------------------------------------------------
-// Function saveIndex()
-// ----------------------------------------------------------------------------
-
-template <typename TIndexSpec, typename TSpec>
-void saveIndex(Indexer<TIndexSpec, TSpec> & me, Options const & options)
-{
-    if (options.verbose)
-        std::cerr << "Dumping reference index:\t\t" << std::flush;
+    if (me.options.verbose)
+        std::cerr << "Saving reference index:\t\t\t" << std::flush;
 
     start(me.timer);
-    if (!save(me.index, toCString(options.contigsIndexFile)))
-        throw RuntimeError("Error while dumping reference index file.");
+    if (!save(index, toCString(me.options.contigsIndexFile)))
+        throw RuntimeError("Error while saving the reference index file.");
     stop(me.timer);
 
-    if (options.verbose)
+    if (me.options.verbose)
         std::cerr << me.timer << std::endl;
 }
 
+template <typename TContigsSize, typename TContigsLen, typename TSpec, typename TConfig>
+void saveIndex(YaraIndexer<TSpec, TConfig> & me)
+{
+    if (me.options.contigsSum <= MaxValue<__uint32>::VALUE)
+    {
+        saveIndex<TContigsSize, TContigsLen, __uint32>(me);
+    }
+    else
+    {
+        saveIndex<TContigsSize, TContigsLen, __uint64>(me);
+    }
+}
+
+template <typename TContigsSize, typename TSpec, typename TConfig>
+void saveIndex(YaraIndexer<TSpec, TConfig> & me)
+{
+    if (me.options.contigsMaxLength <= MaxValue<__uint32>::VALUE)
+    {
+        saveIndex<TContigsSize, __uint32>(me);
+    }
+    else
+    {
+#ifdef YARA_LARGE_CONTIGS
+        saveIndex<TContigsSize, __uint64>(me);
+#else
+        throw RuntimeError("Maximum contig length exceeded. Recompile with -DYARA_LARGE_CONTIGS=ON.");
+#endif
+    }
+}
+
+template <typename TSpec, typename TConfig>
+void saveIndex(YaraIndexer<TSpec, TConfig> & me)
+{
+    if (me.options.contigsSize <= MaxValue<__uint8>::VALUE)
+    {
+        saveIndex<__uint8>(me);
+    }
+    else if (me.options.contigsSize <= MaxValue<__uint16>::VALUE)
+    {
+        saveIndex<__uint16>(me);
+    }
+    else
+    {
+#ifdef YARA_LARGE_CONTIGS
+        saveIndex<__uint32>(me);
+#else
+        throw RuntimeError("Maximum number of contigs exceeded. Recompile with -DYARA_LARGE_CONTIGS=ON.");
+#endif
+    }
+}
+
 // ----------------------------------------------------------------------------
-// Function runIndexer()
+// Function runYaraIndexer()
 // ----------------------------------------------------------------------------
 
-template <typename TIndexSpec, typename TSpec>
-void runIndexer(Indexer<TIndexSpec, TSpec> & me, Options const & options)
+void runYaraIndexer(Options & options)
 {
-    loadContigs(me, options);
-    saveContigs(me, options);
-    buildIndex(me, options);
-    saveIndex(me, options);
+    YaraIndexer<> indexer(options);
+
+    loadContigs(indexer);
+    setContigsLimits(options, indexer.contigs.seqs);
+    saveContigs(indexer);
+    saveIndex(indexer);
 }
 
 // ----------------------------------------------------------------------------
@@ -323,22 +371,16 @@ int main(int argc, char const ** argv)
 
     ArgumentParser::ParseResult res = parseCommandLine(options, parser, argc, argv);
 
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    if (res != ArgumentParser::PARSE_OK)
+        return res == ArgumentParser::PARSE_ERROR;
 
     try
     {
-        Indexer<YaraIndexSpec, YaraStringSpec> indexer;
-        runIndexer(indexer, options);
-    }
-    catch (BadAlloc const & /* e */)
-    {
-        std::cerr << "Insufficient memory." << std::endl;
-        return 1;
+        runYaraIndexer(options);
     }
     catch (Exception const & e)
     {
-        std::cerr << e.what() << std::endl;
+        std::cerr << getAppName(parser) << ": " << e.what() << std::endl;
         return 1;
     }
 
