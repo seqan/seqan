@@ -101,6 +101,17 @@ inline void clear(SeqStore<TSpec, TConfig> & me)
 }
 
 // ----------------------------------------------------------------------------
+// Function shrinkToFit()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TConfig>
+inline void shrinkToFit(SeqStore<TSpec, TConfig> & me)
+{
+    shrinkToFit(me.seqs);
+    shrinkToFit(me.names);
+}
+
+// ----------------------------------------------------------------------------
 // Function reserve()
 // ----------------------------------------------------------------------------
 

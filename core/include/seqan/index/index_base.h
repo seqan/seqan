@@ -174,7 +174,8 @@ for @Class.Index@ based substring searches.
 // ----------------------------------------------------------------------------
 // Metafunction DefaultIndexStringSpec
 // ----------------------------------------------------------------------------
-//////////////////////////////////////////////////////////////////////////////
+//NOTE(esiragusa): Deprecated in favor of StringSpec.
+
 /**
 .Metafunction.DefaultIndexStringSpec:
 ..cat:Index
@@ -187,7 +188,6 @@ for @Class.Index@ based substring searches.
 ..include:seqan/index.h
 */
 
-//TODO(singer): Does not belong here but to the text concept
 /*!
  * @mfn Index#DefaultIndexStringSpec
  * @headerfile <seqan/index.h>
@@ -207,20 +207,10 @@ for @Class.Index@ based substring searches.
  * Most of the @link Index @endlink fibres are strings. The @link String
  * @endlink specialization type is chosen by this meta-function.
  */	
-    // default which should actually never been used
-    template < typename TIndex >
-    struct DefaultIndexStringSpec {
-        typedef Alloc<> Type;
-    };
 
-    template < typename TValue, typename TSpec >
-    struct DefaultIndexStringSpec< String<TValue, External<TSpec> > > {
-        typedef External<TSpec> Type;
-    };
+    template <typename TObject>
+    struct DefaultIndexStringSpec : StringSpec<TObject> {};
 
-	template < typename TString, typename TSpec >
-	struct DefaultIndexStringSpec< StringSet<TString, TSpec> >:
-		DefaultIndexStringSpec<TString> {};
 
 //////////////////////////////////////////////////////////////////////////////
 /**
@@ -676,9 +666,8 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 	struct SAValue< Index<TText, TSpec> >:
 		SAValue<TText> {};
 
-    template < typename TObject, typename TSpec >
-	struct DefaultIndexStringSpec< Index<TObject, TSpec> >:
-		DefaultIndexStringSpec<TObject> {};
+    template <typename TText, typename TSpec>
+	struct StringSpec<Index<TText, TSpec> > : StringSpec<TText> {};
 
 //////////////////////////////////////////////////////////////////////////////
 // value and size type of an index
@@ -729,7 +718,7 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 	struct Fibre< Index<TObject, TSpec>, Tag<TFibre> const > {
 		typedef String< 
 			typename Size< Index<TObject, TSpec> >::Type,
-			typename DefaultIndexStringSpec< Index<TObject, TSpec> >::Type 
+			typename StringSpec< Index<TObject, TSpec> >::Type
 		> Type;
 	};
 
@@ -765,7 +754,7 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 	struct Fibre< Index<TText, TSpec>, FibreSA> {
 		typedef String<
 			typename SAValue< Index<TText, TSpec> >::Type,
-			typename DefaultIndexStringSpec< Index<TText, TSpec> >::Type 
+			typename StringSpec< Index<TText, TSpec> >::Type
 		> Type;
 	};
 
@@ -777,7 +766,7 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
     {
 		typedef String<
             typename Size<TText>::Type,
-			typename DefaultIndexStringSpec<Index<StringSet<TText, TSSetSpec>, TSpec> >::Type
+			typename StringSpec<Index<StringSet<TText, TSSetSpec>, TSpec> >::Type
 		> Type;
 	};
 
@@ -850,7 +839,7 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
 	struct Fibre< Index<TText, TSpec>, FibreBwt> {
 		typedef String <
 			typename Value< Index<TText, TSpec> >::Type,
-			typename DefaultIndexStringSpec< Index<TText, TSpec> >::Type
+			typename StringSpec< Index<TText, TSpec> >::Type
 		> Type;
 	};
 

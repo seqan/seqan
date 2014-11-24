@@ -50,7 +50,7 @@ using namespace seqan;
 
 //namespace seqan {
 //template <typename TValue>
-//struct Size<RankDictionary<TValue, TwoLevels<unsigned> > >
+//struct Size<RankDictionary<TValue, Levels<unsigned> > >
 //{
 //    typedef unsigned    Type;
 //};
@@ -66,9 +66,9 @@ using namespace seqan;
 
 typedef
     TagList<RankDictionary<bool,            Naive<> >,
-    TagList<RankDictionary<bool,            TwoLevels<> >,
-    TagList<RankDictionary<Dna,             TwoLevels<> >,
-    TagList<RankDictionary<char,            TwoLevels<> >,
+    TagList<RankDictionary<bool,            Levels<> >,
+    TagList<RankDictionary<Dna,             Levels<> >,
+    TagList<RankDictionary<char,            Levels<> >,
     TagList<RankDictionary<Dna,             WaveletTree<> >,
     TagList<RankDictionary<Dna5,            WaveletTree<> >,
     TagList<RankDictionary<DnaQ,            WaveletTree<> >,
@@ -229,7 +229,7 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
 //    typedef Alloc<unsigned>                             TTextSpec;
 //    typedef String<TAlphabet, TTextSpec>                TText;
 //
-//    typedef TwoLevels<TAlphabet, unsigned>              TRankDictionarySpec;
+//    typedef Levels<TAlphabet, unsigned>              TRankDictionarySpec;
 //    typedef RankDictionary<TRankDictionarySpec>         TRankDictionary;
 //
 //    TRankSupport rs;
@@ -258,7 +258,7 @@ SEQAN_TYPED_TEST(RankDictionaryTest, GetRank)
 //    typedef Alloc<unsigned>                             TTextSpec;
 //    typedef String<TAlphabet, TTextSpec>                TText;
 //
-//    typedef TwoLevels<TAlphabet, unsigned>              TRankDictionarySpec;
+//    typedef Levels<TAlphabet, unsigned>              TRankDictionarySpec;
 //    typedef RankDictionary<TRankDictionarySpec>         TRankDictionary;
 //
 ////    TText text = "ACGTNACGTNACGTNACGTNA";

@@ -168,6 +168,26 @@ public:
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Metafunction StringSpec
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
+struct Spec<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >
+{
+    typedef TJournalSpec Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction StringSpec
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
+struct StringSpec<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >
+{
+    typedef TBufferSpec Type;
+};
+
+// ----------------------------------------------------------------------------
 // Metafunction Host
 // ----------------------------------------------------------------------------
 

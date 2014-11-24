@@ -49,6 +49,12 @@ typedef EqualsChar<'.'>        IsDot;
 typedef EqualsChar<'/'>        IsSlash;
 typedef EqualsChar<'\\'>       IsBackSlash;
 
+#ifdef PLATFORM_WINDOWS
+    typedef IsBackSlash        IsPathDelimited;
+#else
+    typedef IsSlash            IsPathDelimited;
+#endif
+
 // ============================================================================
 // Functions
 // ============================================================================
@@ -58,13 +64,47 @@ typedef EqualsChar<'\\'>       IsBackSlash;
 // ----------------------------------------------------------------------------
 
 template <typename TString, typename TValue>
-bool setEnv(TString & key, TValue & value)
+bool setEnv(TString const & key, TValue & value)
 {
 #ifdef PLATFORM_WINDOWS
     return !_putenv_s(toCString(key), toCString(value));
 #else
     return !setenv(toCString(key), toCString(value), true);
 #endif
+}
+
+// ----------------------------------------------------------------------------
+// Function getCwd()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+void getCwd(TString & string)
+{
+    char cwd[1000];
+
+#ifdef PLATFORM_WINDOWS
+    _getcwd(cwd, 1000);
+#else
+    getcwd(cwd, 1000);
+#endif
+
+    assign(string, cwd);
+}
+
+// ----------------------------------------------------------------------------
+// Function firstOf()
+// ----------------------------------------------------------------------------
+
+template <typename TString, typename TFunctor>
+inline typename Iterator<TString const, Standard>::Type
+firstOf(TString const & string, TFunctor const & f)
+{
+    typedef typename Iterator<TString const, Standard>::Type TIter;
+
+    TIter it = begin(string, Standard());
+    skipUntil(it, f);
+
+    return it;
 }
 
 // ----------------------------------------------------------------------------
@@ -75,16 +115,13 @@ template <typename TString, typename TFunctor>
 inline typename Iterator<TString const, Standard>::Type
 lastOf(TString const & string, TFunctor const & f)
 {
-    typedef typename Iterator<TString const, Standard>::Type TIterator;
+    typedef ModifiedString<TString const, ModReverse>        TStringRev;
+    typedef typename Iterator<TStringRev, Standard>::Type    TIterRev;
 
-    TIterator itBegin = begin(string, Standard());
-    TIterator itEnd = end(string, Standard());
+    TStringRev revString(string);
+    TIterRev revIt = firstOf(revString, f);
 
-    for (TIterator it = itEnd; it != itBegin; )
-        if (f(value(--it)))
-            return it;
-
-    return itEnd;
+    return end(string) - position(revIt, revString);
 }
 
 // ----------------------------------------------------------------------------
@@ -92,10 +129,49 @@ lastOf(TString const & string, TFunctor const & f)
 // ----------------------------------------------------------------------------
 
 template <typename TString>
-inline typename Prefix<TString>::Type
-trimExtension(TString & string)
+inline typename Prefix<TString const>::Type
+trimExtension(TString const & string)
 {
-    return prefix(string, lastOf(string, IsDot()));
+    return prefix(string, firstOf(string, IsDot()));
+}
+
+// ----------------------------------------------------------------------------
+// Function getExtension()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+inline typename Suffix<TString const>::Type
+getExtension(TString const & string)
+{
+    return suffix(string, firstOf(string, IsDot()) + 1);
+}
+
+// ----------------------------------------------------------------------------
+// Function getPath()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+inline typename Prefix<TString const>::Type
+getPath(TString const & string)
+{
+    typedef typename Iterator<TString const, Standard>::Type TIter;
+
+    TIter it = lastOf(string, IsPathDelimited());
+
+    if (it != begin(string, Standard())) --it;
+
+    return prefix(string, it);
+}
+
+// ----------------------------------------------------------------------------
+// Function getFilename()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+inline typename Suffix<TString const>::Type
+getFilename(TString const & string)
+{
+    return suffix(string, lastOf(string, IsPathDelimited()));
 }
 
 // ----------------------------------------------------------------------------
@@ -131,47 +207,6 @@ inline TStrings getExtensionsWithoutLeadingDot(TStrings const & strings)
     forEach(extensions, [](TString & extension) { stripLeadingDot(extension); });
 
     return extensions;
-}
-
-// ----------------------------------------------------------------------------
-// Function getExtension()
-// ----------------------------------------------------------------------------
-
-template <typename TString>
-inline typename Suffix<TString>::Type
-getExtension(TString & string)
-{
-    return suffix(string, lastOf(string, IsDot()) + 1);
-}
-
-// ----------------------------------------------------------------------------
-// Function getPath()
-// ----------------------------------------------------------------------------
-
-template <typename TString>
-inline typename Prefix<TString const>::Type
-getPath(TString const & string)
-{
-#ifdef PLATFORM_WINDOWS
-    return prefix(string, lastOf(string, IsBackSlash()));
-#else
-    return prefix(string, lastOf(string, IsSlash()));
-#endif
-}
-
-// ----------------------------------------------------------------------------
-// Function getFilename()
-// ----------------------------------------------------------------------------
-
-template <typename TString>
-inline typename Suffix<TString>::Type
-getFilename(TString & string)
-{
-#ifdef PLATFORM_WINDOWS
-    return suffix(string, lastOf(string, IsBackSlash()));
-#else
-    return suffix(string, lastOf(string, IsSlash()));
-#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -212,6 +247,86 @@ void getOptionValue(TOption & option,
 }
 
 // ----------------------------------------------------------------------------
+// Function getReadErrors()
+// ----------------------------------------------------------------------------
+// Returns the absolute number of errors for a given read sequence.
+
+template <typename TMatch, typename TOptions, typename TReadSeqSize>
+inline TReadSeqSize getReadErrors(TOptions const & options, TReadSeqSize readSeqLength)
+{
+    return std::min((TReadSeqSize)(readSeqLength * options.errorRate),
+                    (TReadSeqSize)MemberLimits<TMatch, Errors>::VALUE);
+}
+
+// ----------------------------------------------------------------------------
+// Function getReadStrata()
+// ----------------------------------------------------------------------------
+// Returns the absolute number of strata for a given read sequence.
+
+template <typename TMatch, typename TOptions, typename TReadSeqSize>
+inline TReadSeqSize getReadStrata(TOptions const & options, TReadSeqSize readSeqLength)
+{
+    return std::min((TReadSeqSize)(readSeqLength * options.strataRate),
+                    (TReadSeqSize)MemberLimits<TMatch, Errors>::VALUE);
+}
+
+// ----------------------------------------------------------------------------
+// Function saveContigsLimits()
+// ----------------------------------------------------------------------------
+
+template <typename TOptions>
+bool saveContigsLimits(TOptions const & options)
+{
+    String<__uint64> limits;
+
+    appendValue(limits, options.contigsMaxLength);
+    appendValue(limits, options.contigsSize);
+    appendValue(limits, options.contigsSum);
+
+    CharString contigsLimitFile(options.contigsIndexFile);
+    append(contigsLimitFile, ".txt.size");
+
+    return save(limits, toCString(contigsLimitFile));
+}
+
+// ----------------------------------------------------------------------------
+// Function openContigsLimits()
+// ----------------------------------------------------------------------------
+
+template <typename TOptions>
+bool openContigsLimits(TOptions & options)
+{
+    String<__uint64> limits;
+
+    CharString contigsLimitFile(options.contigsIndexFile);
+    append(contigsLimitFile, ".txt.size");
+
+    if (!open(limits, toCString(contigsLimitFile), OPEN_RDONLY))
+        return false;
+
+    if (length(limits) != 3)
+        return false;
+
+    options.contigsMaxLength = limits[0];
+    options.contigsSize = limits[1];
+    options.contigsSum = limits[2];
+
+    return true;
+}
+
+// ----------------------------------------------------------------------------
+// Function setContigsLimits()
+// ----------------------------------------------------------------------------
+
+template <typename TOptions, typename TSeqs>
+void setContigsLimits(TOptions & options, TSeqs const & seqs)
+{
+    options.contigsMaxLength = maxLength(seqs);
+    options.contigsSize = length(seqs);
+    options.contigsSum = lengthSum(seqs);
+}
+
+// ----------------------------------------------------------------------------
 // Function setDateAndVersion()
 // ----------------------------------------------------------------------------
 
@@ -220,9 +335,9 @@ void setDateAndVersion(ArgumentParser & parser)
     setCategory(parser, "Read Mapping");
 
 #ifdef SEQAN_REVISION
-    setVersion(parser, "0.9.1 [" + std::string(SEQAN_REVISION) + "]");
+    setVersion(parser, "0.9.2 [" + std::string(SEQAN_REVISION) + "]");
 #else
-    setVersion(parser, "0.9.1");
+    setVersion(parser, "0.9.2");
 #endif
 #ifdef SEQAN_DATE
     setDate(parser, SEQAN_DATE);

@@ -133,8 +133,10 @@ struct Member<StringSet<THost, Segment<TSpec> >, HostMember_>
 template <typename THost>
 struct StringSetPositions
 {
-    typedef typename Position<THost>::Type                  TPos;
-    typedef String<TPos>                                    Type;
+    typedef typename Position<THost>::Type                  TPos_;
+    typedef typename StringSpec<THost>::Type                TSpec_;
+
+    typedef String<TPos_, TSpec_>                           Type;
 };
 
 template <typename THost>
@@ -146,9 +148,11 @@ struct StringSetPositions<THost const>
 template <typename THost, typename TSpec>
 struct StringSetPositions<StringSet<THost, TSpec> >
 {
-    typedef StringSet<THost, TSpec>                         TStringSet;
-    typedef typename StringSetPosition<TStringSet>::Type    TPos;
-    typedef String<TPos>                                    Type;
+    typedef StringSet<THost, TSpec>                         TStringSet_;
+    typedef typename StringSetPosition<TStringSet_>::Type   TPos_;
+    typedef typename StringSpec<TStringSet_>::Type          TSpec_;
+
+    typedef String<TPos_, TSpec_>                           Type;
 };
 
 // --------------------------------------------------------------------------

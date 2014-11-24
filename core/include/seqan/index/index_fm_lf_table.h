@@ -104,11 +104,15 @@ typedef Tag<FibreTempBwt_>      const FibreTempBwt;
 // ----------------------------------------------------------------------------
 
 template <typename TText, typename TSpec, typename TConfig>
-struct Size<LF<TText, TSpec, TConfig> > : LengthSum<TText> {};
+struct Size<LF<TText, TSpec, TConfig> >
+{
+    typedef typename TConfig::LengthSum    Type;
+};
 
 // ----------------------------------------------------------------------------
 // Metafunction Value
 // ----------------------------------------------------------------------------
+// TODO(esiragusa): define Value<LF> == Size<LF> because LF[pos-i] = pos-j
 
 template <typename TText, typename TSpec, typename TConfig>
 struct Value<LF<TText, TSpec, TConfig> > : Value<TText> {};
@@ -131,10 +135,12 @@ struct Value<LF<StringSet<TText, TSSetSpec>, TSpec, TConfig> const> :
 template <typename TText, typename TSpec, typename TConfig>
 struct Fibre<LF<TText, TSpec, TConfig>, FibrePrefixSums>
 {
-    typedef typename Size<LF<TText, TSpec, TConfig> >::Type    TSize_;
-//    typedef typename Value<LF<TText, TSpec, TConfig> >::Type   TValue_;
-//    typedef Tuple<TSize_, ValueSize<TValue_>::VALUE>                Type;
-    typedef String<TSize_>                                          Type;
+//    typedef typename Value<LF<TText, TSpec, TConfig> >::Type  TValue_;
+//    typedef Tuple<TSize_, ValueSize<TValue_>::VALUE>          Type;
+
+    typedef typename Size<LF<TText, TSpec, TConfig> >::Type TSize_;
+    typedef typename DefaultIndexStringSpec<TText>::Type    TSpec_;
+    typedef String<TSize_,  TSpec_>                         Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -144,8 +150,8 @@ struct Fibre<LF<TText, TSpec, TConfig>, FibrePrefixSums>
 template <typename TText, typename TSpec, typename TConfig>
 struct Fibre<LF<TText, TSpec, TConfig>, FibreBwt>
 {
-    typedef typename Value<LF<TText, TSpec, TConfig> >::Type   TValue_;
-    typedef RankDictionary<TValue_, typename TConfig::TValuesSpec>  Type;
+    typedef typename Value<LF<TText, TSpec, TConfig> >::Type    TValue_;
+    typedef RankDictionary<TValue_, typename TConfig::Bwt>      Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -161,7 +167,7 @@ struct Fibre<LF<TText, TSpec, TConfig>, FibreSentinels>
 template <typename TText, typename TSSetSpec, typename TSpec, typename TConfig>
 struct Fibre<LF<StringSet<TText, TSSetSpec>, TSpec, TConfig>, FibreSentinels>
 {
-    typedef RankDictionary<bool, typename TConfig::TSentinelsSpec>  Type;
+    typedef RankDictionary<bool, typename TConfig::Sentinels>   Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -171,7 +177,7 @@ struct Fibre<LF<StringSet<TText, TSSetSpec>, TSpec, TConfig>, FibreSentinels>
 template <typename TText, typename TSpec, typename TConfig>
 struct Fibre<LF<TText, TSpec, TConfig>, FibreTempBwt>
 {
-    typedef typename Value<LF<TText, TSpec, TConfig> >::Type   TValue_;
+    typedef typename Value<LF<TText, TSpec, TConfig> >::Type        TValue_;
     typedef String<TValue_, External<ExternalConfigLarge<> > >      Type;
 };
 

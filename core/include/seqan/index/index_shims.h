@@ -957,7 +957,7 @@ I	ISSISSIPPI
     {
 		String<TValue, External< ExternalConfigLarge<> > > extString;
 		if (!open(extString, fileName, openMode & ~OPEN_CREATE)) return false;
-		assign(value, back(extString));
+        if (!empty(extString)) assign(value, front(extString));
 		return true;
 	}
     

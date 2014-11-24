@@ -52,6 +52,10 @@ struct Options
     typedef std::vector<TString>            TList;
     typedef FileFormat<BamFileOut>::Type    TOutputFormat;
 
+    __uint64            contigsSize;
+    __uint64            contigsMaxLength;
+    __uint64            contigsSum;
+
     CharString          contigsIndexFile;
     Pair<CharString>    readsFile;
     CharString          outputFile;
@@ -70,7 +74,6 @@ struct Options
     unsigned            libraryError;
     LibraryOrientation  libraryOrientation;
     TList               libraryOrientationList;
-//    bool                anchorOne;
 
     unsigned            readsCount;
     unsigned            threadsCount;
@@ -82,6 +85,9 @@ struct Options
     CharString          version;
 
     Options() :
+        contigsSize(),
+        contigsMaxLength(),
+        contigsSum(),
         outputSecondary(false),
         uncompressedBam(false),
         readGroup("none"),
@@ -110,16 +116,23 @@ struct Options
 // Mapper Configuration
 // ----------------------------------------------------------------------------
 
-template <typename TThreading_      = Parallel,
-          typename TSequencing_     = SingleEnd,
-          typename TStrategy_       = Strata,
-          unsigned BUCKETS_         = 3>
+template <typename TThreading_       = Parallel,
+          typename TSequencing_      = SingleEnd,
+          typename TStrategy_        = Strata,
+          typename TContigsSize_     = __uint8,
+          typename TContigsLen_      = __uint32,
+          typename TContigsSum_      = __uint32,
+          typename TAlloc_           = MMap<>,
+          unsigned BUCKETS_          = 3>
 struct ReadMapperConfig
 {
-    typedef TThreading_     TThreading;
-    typedef TSequencing_    TSequencing;
-    typedef TStrategy_      TStrategy;
-//    typedef TAnchoring_     TAnchoring;
+    typedef TThreading_         TThreading;
+    typedef TSequencing_        TSequencing;
+    typedef TStrategy_          TStrategy;
+    typedef TContigsSize_       TContigsSize;
+    typedef TContigsLen_        TContigsLen;
+    typedef TContigsSum_        TContigsSum;
+    typedef TAlloc_             TAlloc;
 
     static const unsigned BUCKETS = BUCKETS_;
 };
@@ -134,14 +147,20 @@ struct MapperTraits
     typedef typename TConfig::TThreading                            TThreading;
     typedef typename TConfig::TSequencing                           TSequencing;
     typedef typename TConfig::TStrategy                             TStrategy;
-//    typedef typename TConfig::TAnchoring                            TAnchoring;
+    typedef typename TConfig::TContigsSize                          TContigsSize;
+    typedef typename TConfig::TContigsLen                           TContigsLen;
+    typedef typename TConfig::TContigsSum                           TContigsSum;
+    typedef typename TConfig::TAlloc                                TAlloc;
 
-    typedef SeqStore<void, YaraContigsConfig>                       TContigs;
+    typedef SeqStore<void, YaraContigsConfig<TAlloc> >              TContigs;
     typedef typename TContigs::TSeqs                                TContigSeqs;
+    typedef typename TContigs::TSeqNames                            TContigNames;
     typedef typename Value<TContigSeqs>::Type                       TContig;
     typedef typename StringSetPosition<TContigSeqs>::Type           TContigsPos;
 
-    typedef Index<YaraContigsFM, YaraIndexSpec>                     TIndex;
+    typedef YaraFMConfig<TContigsSize, TContigsLen, TContigsSum, TAlloc> TIndexConfig;
+    typedef FMIndex<void, TIndexConfig>                             TIndexSpec;
+    typedef Index<typename TIndexConfig::Text, TIndexSpec>          TIndex;
     typedef typename Size<TIndex>::Type                             TIndexSize;
     typedef typename Fibre<TIndex, FibreSA>::Type                   TSA;
 
@@ -149,7 +168,7 @@ struct MapperTraits
     typedef typename If<IsSameType<TSequencing, PairedEnd>,
                         Pair<SeqFileIn>, SeqFileIn>::Type           TReadsFileIn;
     typedef PrefetchedFile<TReadsFileIn, TReads, TThreading>        TReadsFile;
-    typedef SmartFile<Bam, Output, YaraContigs>                     TOutputFile;
+    typedef SmartFile<Bam, Output, TContigNames>                    TOutputFile;
 
     typedef typename TReads::TSeqs                                  TReadSeqs;
     typedef typename Value<TReadSeqs>::Type                         TReadSeq;
@@ -170,7 +189,8 @@ struct MapperTraits
     typedef StringSet<TSeedsCount, Owner<ConcatDirect<> > >         TRanks;
     typedef Tuple<TRanks, TConfig::BUCKETS>                         TRanksBuckets;
 
-    typedef Match<void>                                             TMatch;
+    typedef Limits<TContigsLen, TContigsSum>                        TMatchSpec;
+    typedef Match<TMatchSpec>                                       TMatch;
     typedef String<TMatch>                                          TMatches;
     typedef StringSet<TMatches, Segment<TMatches> >                 TMatchesSet;
     typedef ConcurrentAppender<TMatches>                            TMatchesAppender;
@@ -266,30 +286,6 @@ struct Mapper
 // ============================================================================
 // Functions
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// Function getReadErrors()
-// ----------------------------------------------------------------------------
-// Returns the absolute number of errors for a given read sequence.
-
-template <typename TReadSeqSize>
-inline TReadSeqSize getReadErrors(Options const & options, TReadSeqSize readSeqLength)
-{
-    return std::min((TReadSeqSize)(readSeqLength * options.errorRate),
-                    (TReadSeqSize)MemberLimits<Match<void>, Errors>::VALUE);
-}
-
-// ----------------------------------------------------------------------------
-// Function getReadStrata()
-// ----------------------------------------------------------------------------
-// Returns the absolute number of strata for a given read sequence.
-
-template <typename TReadSeqSize>
-inline TReadSeqSize getReadStrata(Options const & options, TReadSeqSize readSeqLength)
-{
-    return std::min((TReadSeqSize)(readSeqLength * options.strataRate),
-                    (TReadSeqSize)MemberLimits<Match<void>, Errors>::VALUE);
-}
 
 // ----------------------------------------------------------------------------
 // Function configureThreads()
@@ -395,11 +391,13 @@ inline void closeReads(Mapper<TSpec, TConfig> & me)
 template <typename TSpec, typename TConfig>
 inline void loadReads(Mapper<TSpec, TConfig> & me)
 {
+    typedef typename MapperTraits<TSpec, TConfig>::TMatch   TMatch;
+
     start(me.timer);
 
     readRecords(me.reads, me.readsFile);
 
-    if (maxLength(me.reads.seqs, typename TConfig::TThreading()) > MemberLimits<Match<void>, ReadSize>::VALUE)
+    if (maxLength(me.reads.seqs, typename TConfig::TThreading()) > MemberLimits<TMatch, ReadSize>::VALUE)
         throw RuntimeError("Maximum read length exceeded.");
 
     // Append reverse complemented reads.
@@ -811,6 +809,7 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     typedef typename TTraits::TMatchesSet                   TMatchesSet;
     typedef typename Iterator<TMatchesSet, Standard>::Type  TMatchesIt;
     typedef typename Value<TMatchesSet>::Type               TMatches;
+    typedef typename TTraits::TMatch                        TMatch;
     typedef PairsSelector<TSpec, TTraits>                   TPairsSelector;
     typedef typename Size<TReadSeqs>::Type                  TReadId;
 
@@ -835,13 +834,13 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
 
         TReadId readId = getMember(front(matches), ReadId());
 
-        return countMatchesInStrata(matches, getReadStrata(me.options, length(readSeqs[readId])));
+        return countMatchesInStrata(matches, getReadStrata<TMatch>(me.options, length(readSeqs[readId])));
     },
     typename TTraits::TThreading());
 
     // Initialize primary matches.
     resize(me.primaryMatches, getReadsCount(readSeqs), Exact());
-    forEach(me.primaryMatches, setInvalid<void>, typename TTraits::TThreading());
+    forEach(me.primaryMatches, setInvalid<typename TTraits::TMatchSpec>, typename TTraits::TThreading());
 
     // Try to pair mates.
     if (IsSameType<typename TConfig::TSequencing, PairedEnd>::VALUE)
@@ -885,7 +884,7 @@ inline void rankMatches(Mapper<TSpec, TConfig> & me, TReadSeqs const & readSeqs)
     unsigned long mappedReads = 0;
     if (me.options.verbose > 0)
     {
-        transform(me.ctx.mapped, me.primaryMatches, isValid<void>, typename TTraits::TThreading());
+        transform(me.ctx.mapped, me.primaryMatches, isValid<typename TTraits::TMatchSpec>, typename TTraits::TThreading());
         mappedReads = count(me.ctx.mapped, true, typename TTraits::TThreading());
         me.stats.mappedReads += mappedReads;
     }
@@ -1151,13 +1150,14 @@ inline void runMapper(Mapper<TSpec, TConfig> & me)
 // Function spawnMapper()
 // ----------------------------------------------------------------------------
 
-template <typename TThreading, typename TSequencing, typename TStrategy>
+template <typename TContigsSize, typename TContigsLen, typename TContigsSum,
+          typename TThreading, typename TSequencing, typename TStrategy>
 inline void spawnMapper(Options const & options,
                         TThreading const & /* tag */,
                         TSequencing const & /* tag */,
                         TStrategy const & /* tag */)
 {
-    typedef ReadMapperConfig<TThreading, TSequencing, TStrategy>    TConfig;
+    typedef ReadMapperConfig<TThreading, TSequencing, TStrategy, TContigsSize, TContigsLen, TContigsSum>  TConfig;
 
     Mapper<void, TConfig> mapper(options);
     runMapper(mapper);
