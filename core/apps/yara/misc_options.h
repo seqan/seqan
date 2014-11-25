@@ -39,6 +39,10 @@
 #include <seqan/sequence.h>
 #include <seqan/arg_parse.h>
 
+#ifdef PLATFORM_WINDOWS
+#include <direct.h>
+#endif
+
 using namespace seqan;
 
 // ============================================================================
