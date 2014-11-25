@@ -194,9 +194,10 @@
 // ----------------------------------------------------------------------------
 
 #include <seqan/index/index_view.h>
-#ifdef PLATFORM_CUDA
-#include <seqan/index/index_device.h>
-#endif
+// NOTE(esiragusa): CUDA FM-index is broken.
+//#ifdef PLATFORM_CUDA
+//#include <seqan/index/index_device.h>
+//#endif
 
 // ==========================================================================
 // Finder interface.
