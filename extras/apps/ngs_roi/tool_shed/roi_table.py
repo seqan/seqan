@@ -26,15 +26,26 @@ import os.path
 import sys
 
 import Cheetah.Template
-
+import shutil
 import ngs_roi.app
 import ngs_roi.argparse
 import ngs_roi.io
 
-
 # Main template.
 PAGE_TPL = """
 <html>
+<!-- Table sorter from
+http://tablesorter.com/docs/#Download
+-->
+<script type="text/javascript" src="js/jquery-latest.js"></script> 
+<script type="text/javascript" src="js/jquery.tablesorter.js"></script> 
+<link rel="stylesheet" type="text/css" href="css/tablesorter.style.css" />
+<script type="text/javascript" id="js">\$(document).ready(function() {
+  // call the tablesorter plugin
+  \$("\#ROItable").tablesorter();
+}); 
+</script>
+
   <head><title>ROI Table</title></head>
   <body>
     <h1>ROI Table</h1>
@@ -46,7 +57,8 @@ PAGE_TPL = """
 
 # Template for a table.
 TABLE_TPL = """
-<table border="1">
+<table id='ROItable' border="1">
+  <thead>
   <tr>
     <th>plot</th>
     <th>chr</th>
@@ -60,6 +72,8 @@ TABLE_TPL = """
     <th>$key</th>
     #end for
   </tr>
+  </thead>
+  <tbody>
   #for id, roi in enumerate($records)
   <tr>
     <td><div style="width:${args.plot_width}; margin:2px; height:${args.plot_height+1}; background:url(thumbnail_${imgId($id)}.png) -${imgX($id)} -${imgY($id)};"></div></td>
@@ -75,6 +89,7 @@ TABLE_TPL = """
     #end for
   </tr>
   #end for
+  </tbody>
 </table>
 """
 
@@ -152,6 +167,17 @@ class TableApp(ngs_roi.app.App):
         # Create table.
         print >>sys.stderr, 'Creating table...'
         self.createHtml(self.args.out_file, keys, records)
+
+        # copy css and js
+        print >> sys.stderr, 'Copying css and js directories to %s ' % self.args.out_dir
+        try :
+           shutil.copytree(os.path.dirname(ngs_roi.app.__file__) + "/../css", self.args.out_dir + "/css", symlinks=False, ignore=None)
+        except OSError :
+            print sys.stderr, "already copied the css directory"
+        try :
+           shutil.copytree(os.path.dirname(ngs_roi.app.__file__) + "/../js", self.args.out_dir + "/js", symlinks=False, ignore=None)
+        except OSError :
+            print sys.stderr, "already copied the js directory"
         return 0
 
     def createHtml(self, file_name, keys, records):
