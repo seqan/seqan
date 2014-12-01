@@ -386,7 +386,7 @@ jumpToRegion(SmartFile<Bam, Input, TSpec> & bamFile,
 
 // TODO(holtgrew): Parameter order, see jumpToRegion()!
 
-template <typename TSpec, typename TNameStore, typename TNameStoreCache>
+template <typename TSpec>
 bool jumpToOrphans(SmartFile<Bam, Input, TSpec> & bamFile,
                    bool & hasAlignments,
                    BamIndex<Bai> const & index)
@@ -430,7 +430,7 @@ bool jumpToOrphans(SmartFile<Bam, Input, TSpec> & bamFile,
     // Jump back to the first alignment.
     if (offset != MaxValue<__uint64>::VALUE)
     {
-        setPosition(bamFile, offset, SEEK_SET);
+        setPosition(bamFile, offset);
         if (res != 0)
             return false;  // Error while seeking.
     }
