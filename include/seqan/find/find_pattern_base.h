@@ -448,18 +448,7 @@ setNeedle(Pattern<TNeedle, TSpec> &obj, TNeedle const &ndl) {
  * @return TScoringScheme The scoring scheme of the pattern.
  */
 
-/**.Function.scoringScheme
-..cat:Searching
-..summary:The @glos:Scoring Scheme|scoring scheme@ used for finding or aligning.
-..signature:scoringScheme(obj)
-..class:Class.Pattern
-..param.obj:Object that holds a @glos:Scoring Scheme|scoring scheme@
-...type:Class.Pattern
-..returns:The @glos:Scoring Scheme|scoring scheme@ used in $obj$
-...default:@Shortcut.EditDistanceScore@
-..see:glos:Scoring Scheme|scoring scheme
-..see:Metafunction.ScoringScheme
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TNeedle, typename TSpec>
 inline typename ScoringScheme<Pattern<TNeedle, TSpec> >::Type 
@@ -488,17 +477,7 @@ SEQAN_CHECKPOINT
  * @param[in]     score   The scoring scheme to set.
  */
 
-/**.Function.setScoringScheme
-..cat:Searching
-..summary:Sets the @glos:Scoring Scheme|scoring scheme@ used for finding or aligning.
-..signature:setScoringScheme(obj, score)
-..class:Class.Pattern
-..param.obj:Object that holds a @glos:Scoring Scheme|scoring scheme@.
-...type:Class.Pattern
-..param.score:The new @glos:Scoring Scheme|scoring scheme@ used by $obj$.
-..see:glos:Scoring Scheme|scoring scheme
-..see:Function.scoringScheme
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TNeedle, typename TSpec, typename TScore2>
 inline void
