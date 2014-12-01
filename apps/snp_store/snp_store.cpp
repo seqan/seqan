@@ -448,7 +448,7 @@ clipReads(TFragmentStore    &fragmentStore,
                 reverseComplement(source(row(align, 1)));
 
             int score = globalAlignment(align, scoreType, AlignConfig<false,true,true,false>(), Gotoh());
-            aliQ.errors = (unsigned) round((float)-s1000);
+            aliQ.errors = (unsigned) round((float)-score/1000);
 
 #ifdef SNPSTORE_DEBUG
             if(extraV) ::std::cout << align << std::endl;
