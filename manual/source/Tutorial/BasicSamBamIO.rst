@@ -143,7 +143,7 @@ A First Working Example
 The following example shows an example of a program that reads the file with the path ``example.sam`` and prints its contents back to the user on stdout.
 If you want to try out this program then create a file with the sample SAM content from above and adjust the path ``"example.sam"`` in the program below to the path to your SAM file (e.g. ``"path/to/my_example.sam"``).
 
-.. includefrags:: extras/demos/tutorial/basic_sam_bam_io/example1.cpp
+.. includefrags:: demos/tutorial/basic_sam_bam_io/example1.cpp
 
 The program instantiates a :dox:`BamFileIn` object for reading and a :dox:`BamFileOut` for writing.
 Note that both classes automatically guess the file type from the file name.
@@ -199,7 +199,7 @@ Assignment 1
    Solution
       .. container:: foldable
 
-         .. includefrags:: extras/demos/tutorial/basic_sam_bam_io/solution1.cpp
+         .. includefrags:: demos/tutorial/basic_sam_bam_io/solution1.cpp
 
 The Class :dox:`BamAlignmentRecord`
 -----------------------------------
@@ -270,7 +270,7 @@ For example, the following loop sums up the length of the sequences that did not
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/basic_sam_bam_io/solution2.cpp
+        .. includefrags:: demos/tutorial/basic_sam_bam_io/solution2.cpp
 
 The Classes :dox:`BamHeader` and :dox:`BamHeaderRecord`
 -------------------------------------------------------
@@ -286,7 +286,7 @@ Note that the ``@SQ`` header lines in the header and the ``sequenceInfos`` field
 
 The following example program prints the sequences and lengths from a BAM file.
 
-.. includefrags:: extras/demos/tutorial/basic_sam_bam_io/example2.cpp
+.. includefrags:: demos/tutorial/basic_sam_bam_io/example2.cpp
 
 Note that this is only guaranteed to work for BAM files because this information is not mandatory in SAM files and might be missing.
 When writing files, you have to fill the ``sequenceInfos`` string appropriately before writing any record.
@@ -300,7 +300,7 @@ When writing files, you have to fill the ``sequenceInfos`` string appropriately 
     The sequences in the FASTA file are the same but their order may have changed.
     For example, because the FASTA file from the mapping step has been generated from the chromosomes by concatenation in a different order than the currently present one.
 
-    .. includefrags:: extras/demos/tutorial/basic_sam_bam_io/example3.cpp
+    .. includefrags:: demos/tutorial/basic_sam_bam_io/example3.cpp
 
 Assignment 3
 """"""""""""
@@ -347,7 +347,7 @@ Assignment 3
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/basic_sam_bam_io/solution3.cpp
+        .. includefrags:: demos/tutorial/basic_sam_bam_io/solution3.cpp
 
 
 Accessing the Tags
@@ -451,7 +451,7 @@ Assignment 4
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/basic_sam_bam_io/solution4.cpp
+        .. includefrags:: demos/tutorial/basic_sam_bam_io/solution4.cpp
 
 Congratulations, you have now learned to read and write SAM and BAM files.
 
