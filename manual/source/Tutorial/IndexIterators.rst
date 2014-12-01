@@ -23,10 +23,7 @@ Prerequisites
 Virtual String Tree Iterator
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The search procedure of :dox:`IndexEsa`, :dox:`IndexWotd`, :dox:`IndexDfi` and :dox:`FMIndex` are suffix array based.
-This can be utilized in form of a common iterator interface.
-This common interface is the Virtual String Tree Iterator (:dox:`VSTreeIterator VSTree Iterator`) in SeqAn, which lets you access the :dox:`IndexEsa`, :dox:`IndexWotd` and :dox:`IndexDfi` as if using a suffix tree (:ref:`glossary-suffix-tree` definition) and the :dox:`FMIndex` as if using a prefix trie.
-
+SeqAn provides a common interface, called the Virtual String Tree Iterator (:dox:`VSTreeIterator VSTree Iterator`), which lets you traverse the :dox:`IndexEsa`, :dox:`IndexWotd` and :dox:`IndexDfi` as a suffix tree (:ref:`glossary-suffix-tree` definition), the :dox:`IndexQGram` as a suffix trie, and the :dox:`FMIndex` as a prefix trie.
 In the first part of this tutorial we will concentrate on the :dox:`TopDownIterator TopDown Iterator` which is one of the two index iterator specializations (besides the :dox:`BottomUpIterator BottomUp Iterator`).
 The second part will then deal with the DFS.
 
