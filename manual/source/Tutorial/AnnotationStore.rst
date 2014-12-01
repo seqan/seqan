@@ -338,7 +338,7 @@ Assignment 4
        #. Output the average number of mRNAs for genes.
        #. Output the average number of exons for mRNAs.
        #. Additionally output the average exon length.
-       #. Test your program also on large data, e.g. the annotation of the mouse genome [raw-attachment:Mus_musculus.NCBIM37.61.gtf.zip:wiki:Tutorial/SimpleRnaSeq Mus_musculus.NCBIM37.61.gtf.zip] (don't forget to unzip first).
+       #. Test your program also on large data, e.g. the annotation of the mouse genome `sim40mio_onlyY.sam.zip <http://ftp.seqan.de/manual_files/seqan-1.4/sim40mio_onlyY.sam.zip>`_ (don't forget to unzip first).
 
      Solution
       Click **more...** to see one possible solution.

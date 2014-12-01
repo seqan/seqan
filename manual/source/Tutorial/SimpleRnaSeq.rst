@@ -421,7 +421,7 @@ Output the gene names and their RPKM values separated by tabs as follows:
 
 .. todo: Move the files to somewhere else.
 
-Download and decompress the attached mouse annotation ([raw-attachment:Mus_musculus.NCBIM37.61.gtf.zip Mus_musculus.NCBIM37.61.gtf.zip]) and the alignment file of RNA-Seq reads aligned to chromosome Y ([raw-attachment:sim40mio_onlyY.sam.zip sim40mio_onlyY.sam.zip]).
+Download and decompress the attached mouse annotation (`Mus_musculus.NCBIM37.61.gtf.zip <http://ftp.seqan.de/manual_files/seqan-1.4/Mus_musculus.NCBIM37.61.gtf.zip>`_ and the alignment file of RNA-Seq reads aligned to chromosome Y (`sim40mio_onlyY.sam.zip <http://ftp.seqan.de/manual_files/seqan-1.4/sim40mio_onlyY.sam.zip>`_).
 Test your program and compare your output with the output above.
 
 Assignment 5
