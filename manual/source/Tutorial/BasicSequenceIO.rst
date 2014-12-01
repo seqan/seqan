@@ -29,7 +29,7 @@ A First Working Example
 Let us start out with a minimal working example.
 The following small program will read the file ``example.fa`` (which we will create later) from the current directory and print out the identifier and the sequence of the first record.
 
-.. includefrags:: extras/demos/tutorial/basic_sequence_io/example1.cpp
+.. includefrags:: demos/tutorial/basic_sequence_io/example1.cpp
 
 We call the :dox:`SeqFileIn::SeqFileIn SeqFileIn constructor` with the path to the file we want to read.
 Successively, we call the function :dox:`SeqFileIn#readRecord` to read the first record from the file.
@@ -84,7 +84,7 @@ Assignment 1
    Solution ::
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution1.cpp
+        .. includefrags:: demos/tutorial/basic_sequence_io/solution1.cpp
 
 Handling Errors
 ---------------
@@ -98,7 +98,7 @@ Therefore, it is sufficient to catch them to handle errors properly.
 
 The program will now read as follows:
 
-.. includefrags:: extras/demos/tutorial/basic_sequence_io/example2.cpp
+.. includefrags:: demos/tutorial/basic_sequence_io/example2.cpp
 
 Assignment 2
 """"""""""""
@@ -114,7 +114,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution2.cpp
+        .. includefrags:: demos/tutorial/basic_sequence_io/solution2.cpp
 
 
 Reading Files
@@ -191,7 +191,7 @@ Assignment 3
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution3.cpp
+        .. includefrags:: demos/tutorial/basic_sequence_io/solution3.cpp
 
 After completing Assignment 3, you should be able to run your program on the example file we created above and see the following output:
 
@@ -242,7 +242,7 @@ Assignment 4
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution4.cpp
+        .. includefrags:: demos/tutorial/basic_sequence_io/solution4.cpp
 
 Writing Files
 -------------
@@ -252,7 +252,7 @@ We can write sequence files with the :dox:`SeqFileOut` class.
 Create a new SeqAn app ``basic_seq_io_example2`` in your sandbox and change the C++ file ``basic_seq_io_example2.cpp`` in this application to have the content below.
 This program already has all the bells and whistles for error checking.
 
-.. includefrags:: extras/demos/tutorial/basic_sequence_io/example3.cpp
+.. includefrags:: demos/tutorial/basic_sequence_io/example3.cpp
 
 The first lines are similar to those in the solution to Assignment 4.
 However, instead of reading records, we write one record.
@@ -293,7 +293,7 @@ Assignment 5
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution5.cpp
+        .. includefrags:: demos/tutorial/basic_sequence_io/solution5.cpp
 
 As for reading, there are two functions for writing sequence files: :dox:`SeqFileOut#writeRecord` and :dox:`SeqFileOut#writeRecords`.
 
@@ -342,7 +342,7 @@ Assignment 6
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution6.cpp
+        .. includefrags:: demos/tutorial/basic_sequence_io/solution6.cpp
 
 Compressed Files
 ----------------
