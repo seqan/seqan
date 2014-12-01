@@ -9,8 +9,7 @@ Basic Sequence I/O
 ==================
 
 Learning Objective
-  You will learn how to read and write sequence files (FASTA and FASTQ) using a simple, high-level API in the SeqAn library.
-  This includes reading and writing compressed files.
+  You will learn how to read and write compressed or uncompressed sequence files, e.g. FASTQ and FASTQ.
 
 Difficulty
   Basic
@@ -21,15 +20,8 @@ Duration
 Prerequisites
   :ref:`tutorial-sequences`
 
-This tutorial explains how to read and write sequence files using the :dox:`SequenceStream` class.
-
-The SeqAn library's I/O functionality (i.e. reading from and writing to files) is organized in layers and :dox:`SequenceStream` is in the highest layer: It provides an easy-to-use API for reading and writing sequence files, automatically compressing and decompressing data, and support for different sequence formats.
-This flexibility comes at a slight cost of performance, compared to using the more low-level APIs.
-
-The lower layers are responsible for providing raw file I/O functionality and adding parsing functionality.
-Their usage is not part of this tutorial and is explainend in the Tutorials :ref:`tutorial-file-io`, :ref:`tutorial-sequence-file-io`, and :ref:`tutorial-parsing`.
-
-After completing the tutorial, you will be able to read and write sequence files in the formats supported by the :dox:`SequenceStream` class.
+This tutorial explains how to read and write sequence files using the :dox:`SeqFileIn` and :dox:`SeqFileOut` classes.
+These classes provide an easy-to-use API for accessing sequence files in different file formats, either compressed or uncompressed.
 
 A First Working Example
 -----------------------
@@ -37,21 +29,19 @@ A First Working Example
 Let us start out with a minimal working example.
 The following small program will read the file ``example.fa`` (which we will create later) from the current directory and print out the identifier and the sequence of the first record.
 
-.. includefrags:: demos/tutorial/basic_sequence_io/example1.cpp
+.. includefrags:: extras/demos/tutorial/basic_sequence_io/example1.cpp
 
-We use the :dox:`SequenceStream::SequenceStream SequenceStream constructor` with one parameter, the path to the file we want to read.
-This will open the file and guess the file format from the file contents.
-The class will read the first some thousand characters and try to guess what format the file is.
-Note that you can also pass ``"-"`` as the file name.
-This will open the standard input when reading and the standard output when writing.
+We call the :dox:`SeqFileIn::SeqFileIn SeqFileIn constructor` with the path to the file we want to read.
+Successively, we call the function :dox:`SeqFileIn#readRecord` to read the first record from the file.
+Note that :dox:`SeqFileIn#readRecord` always consumes the next record from the file.
 
-After construction, the ``seqStream`` object is ready for reading.
-We use the function :dox:`SequenceStream#readRecord` to read the first record from the file.
-:dox:`SequenceStream#readRecord` always reads the next record in the file.
+We do not have to close the file manually.
+The :dox:`SeqFileIn` object will automatically close any open files when it goes out of scope and it is destructred.
+If you want to force a file to be closed, you can use the function :dox:`SeqFileIn#close`.
 
 .. tip::
 
-   FASTA/FASTQ and Record-Based Files
+   FASTA/FASTQ and record-based files
 
    Most files in bioinformatics have a record-based structure.
    Often, a file format requires or allows for a header that contains information about the file format.
@@ -60,12 +50,6 @@ We use the function :dox:`SequenceStream#readRecord` to read the first record fr
    The FASTA and FASTQ formats do not have a header but only contain lists of records.
    For example, a FASTQ record contains the sequence id, the sequence characters, and a quality value for each character.
 
-Note that we do not have to close the file manually.
-The :dox:`SequenceStream` object will automatically close any open files when it goes out of scope and it is destructred.
-If you want to force a file to be closed, you can use the function :dox:`SequenceStream#close`.
-
-Adding Error Handling
----------------------
 
 Now, create a new FASTA file named ``example.fa`` in a directory of your choice with the following content:
 
@@ -79,7 +63,7 @@ Now, create a new FASTA file named ``example.fa`` in a directory of your choice 
     TTTTTTT
 
 Then, copy the program above into new application ``basic_seq_io_example``, adjust the path ``"example.fa"`` to the just created FASTA file, compile the program, and run it.
-For example, if you stored the file ``example.fa`` in ``/home/username/example.fa``, you replace the line ``seqan::SequenceStream seqStream("example.fa");`` from above with ``seqan::SequenceStream seqStream("/home/username/example.fa");``.
+For example, if you stored the file ``example.fa`` in ``/home/username/example.fa``, you replace the line ``seqan::SeqFileIn seqFileIn("example.fa");`` from above with ``seqan::SeqFileIn seqFileIn("/home/username/example.fa");``.
 You should see the following output:
 
 .. code-block:: console
@@ -100,27 +84,21 @@ Assignment 1
    Solution ::
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/basic_sequence_io/solution1.cpp
+        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution1.cpp
 
-Our program is very simple but there is one large problem.
-Anything can go wrong during file I/O and have not used any means to handle such errors.
-Possible errors include: the file permissions forbid a certain operations, the file does not exist, there is a disk reading error, a file read from a remote location gets deleted while we are reading from it, or there is a physical error in the hard disk.
+Handling Errors
+---------------
 
-Let us add some error handling.
-At the very least, we should detect errors.
-If possible, we should try to recover from the error (sometimes it is possible to return default values instead of loading values from a file) or otherwise stop the current task in an organized fashion and notify the user about the problem.
+Our program does not handle yet possible I/O errors.
+These include: the file permissions forbid a certain operations, the file does not exist, there is a disk reading error, a file read from a remote location gets deleted while we are reading from it, or there is a physical error in the hard disk.
+The :dox:`SeqFileIn::SeqFileIn SeqFileIn constructor` and :dox:`SeqFileIn#readRecord` throw :dox:`IOError` exceptions on failure.
+Therefore, it is sufficient to catch them to handle errors properly.
 
-We can use the Function :dox:`SequenceStream#isGood` to check whether the :dox:`SequenceStream` object is ready for any more reading.
-After the creation of the object, this function indicates whether the file could be opened successfully by returning ``true``.
-The function :dox:`SequenceStream#readRecord` returns an ``int`` that indicates whether the reading was successful.
-If everything went fine, it returns ``0``, and a different value otherwise.
-
-Note that :dox:`SequenceStream#isGood` queries the state of the stream and returns a ``bool`` indicating whether the stream is ready for reading/writing (``true`` for "is good" and ``false`` for "is not good").
-:dox:`SequenceStream#readRecord`, on the other hand, returns an ``int`` indicating whether there was any error (``0`` for "is good" and a non-\ ``0`` value for "is not good", as it is customary in Unix programming).
+.. COMMENT Conversely, function :dox:`SeqFileIn#open` returns a ``bool`` to indicate whether the file was opened successfully or not.
 
 The program will now read as follows:
 
-.. includefrags:: demos/tutorial/basic_sequence_io/example2.cpp
+.. includefrags:: extras/demos/tutorial/basic_sequence_io/example2.cpp
 
 Assignment 2
 """"""""""""
@@ -131,12 +109,70 @@ Assignment 2
      Review
 
    Objective
-     Change your program from above to perform these checks, too.
+     Change the above program to catch IOError exceptions.
 
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/basic_sequence_io/solution2.cpp
+        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution2.cpp
+
+
+Reading Files
+-------------
+
+There are three use cases for reading sequences:
+
+#. we want to read the file **record by record**;
+#. we want to read a **batch of records** into memory, e.g. 100k records at a time;
+#. we want to read **all records** from the file into memory.
+
+These use cases are supported by the functions :dox:`SeqFileIn#readRecord` and :dox:`SeqFileIn#readRecords`.
+These functions are available in two variants:
+
+#. the first variant accepts only the sequence identifier and sequence characters, besides the :dox:`SeqFileIn` object;
+#. the second variant accepts an additional :dox:`CharString` for a PHRED base quality string.
+
+If the second variant is used on a file not containing any qualities, the quality strings are returned empty.
+Note that invalid characters in the file will be signaled by :dox:`SeqFileIn#readRecord` via parsing exceptions.
+
+.. tip::
+
+    When :dox:`DnaQ` or :dox:`Dna5Q` :dox:`String Strings` are used, then you should use the variant without qualities.
+    The qualities are simply stored directly in the sequence characters.
+
+..COMMENT For example, for :dox:`Dna` and :dox:`Rna` this means a conversion of the invalid character to ``'A'``, and for :dox:`Dna5 Dna5 and `dox:Rna5 Rna5` this means a conversion to ``'N'``.
+
+Here is an example for using :dox:`SeqFileIn#readRecord`:
+
+.. code-block:: cpp
+
+   seqan::CharString id;
+   seqan::Dna5String seq;
+   seqan::CharString qual;
+
+   seqan::SeqFileIn seqFileIn("in.fq");
+
+   readRecord(id, seq, seqFileIn);
+   readRecord(id, seq, qual, seqFileIn);
+
+The function :dox:`SeqFileIn#readRecords` use :dox:`StringSet` instead of :dox:`String`.
+By default, it reads all remaining records.
+Optionally, one can specify a batch of records to be read, e.g. 10 records.
+
+.. code-block:: cpp
+
+   seqan::StringSet<seqan::CharString> ids;
+   seqan::StringSet<seqan::Dna5String> seqs;
+   seqan::StringSet<seqan::CharString> quals;
+
+   seqan::SeqFileIn seqFileIn("in.fq");
+
+   readRecords(ids, seqs, seqFileIn, 10);
+   readRecords(ids, seqs, quals, seqFileIn, 10);
+
+   readRecords(ids, seqs, seqFileIn);
+   readRecords(ids, seqs, quals, seqFileIn);
+
 
 Assignment 3
 """"""""""""
@@ -150,12 +186,12 @@ Assignment 3
      Change your program from above to loop over all sequences and print them in the same fashion.
 
    Hint
-     You can use the function :dox:`SequenceStream#atEnd` to check whether a :dox:`SequenceStream` object is at the end of the file.
+     You can use the function :dox:`SeqFileIn#atEnd` to check whether a :dox:`SeqFileIn` object is at the end of the file.
 
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/basic_sequence_io/solution3.cpp
+        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution3.cpp
 
 After completing Assignment 3, you should be able to run your program on the example file we created above and see the following output:
 
@@ -166,62 +202,6 @@ After completing Assignment 3, you should be able to run your program on the exa
     seq2    CGATCGATC
     seq3    TTTTTTT
 
-The Interface for Reading
--------------------------
-
-There are three major usage patterns for sequence I/O:
-
-#. We want to read **all records** from the file into memory, for example for building an index.
-#. We want to read the file into memory **record by record**, so the memory usage is minimal.
-   We could then perform some computation on each record, e.g. search it in an index.
-#. We want to read a **batch of records** into memory, e.g. 100k records at a time.
-   Then, we perform some computation on the records, for example in parallel with 4 threads on 25k records each.
-
-These use cases are supported by the functions :dox:`SequenceStream#readAll`, :dox:`SequenceStream#readRecord`, and :dox:`SequenceStream#readBatch`.
-
-Each of these functions is available in two variants.
-The first accepting only the sequence identifier and sequence characters besides the :dox:`SequenceStream` object and the second also accepting the a :dox:`CharString` for the PHRED base qualities.
-If a file does not contain any qualities and the function variant with quality values is used then the quality strings are returned as empty.
-When writing a file with qualities and the function variant without quality values is used then the qualities are written out as ``'I'``, i.e. PHRED score 40.
-
-When :dox:`DnaQ` or :dox:`Dna5Q` are used, then you should use the function variant without a parameter for qualities.
-The qualities are simply stored directly in the sequence characters.
-
-As to be expected, when there are characters in the file that are not valid characters in the :dox:`String` then the alphabet-dependent conversion is performed.
-For example, for :dox:`Dna` and :dox:`Rna` this means a conversion of the invalid character to ``'A'``, and for :dox:`Dna5 Dna5 and [dox:Rna5 Rna5` this means a conversion to ``'N'``.
-
-Here is an example for using :dox:`SequenceStream#readRecord`:
-
-.. code-block:: cpp
-
-   seqan::CharString id;
-   seqan::Dna5String seq;
-   seqan::CharString qual;
-   int res = 0;
-
-   seqan::SequenceStream seqStream("in.fq");
-
-   res = readRecord(id, seq, seqStream);
-   res = readRecord(id, seq, qual, seqStream);
-
-The functions :dox:`SequenceStream#readAll` and :dox:`SequenceStream#readBatch` use :dox:`StringSet` instead of :dox:`String`.
-The function :dox:`SequenceStream#readBatch` reads up to the given number of records.
-It is not an error if there are less records.
-
-.. code-block:: cpp
-
-   seqan::StringSet<seqan::CharString> ids;
-   seqan::StringSet<seqan::Dna5String> seqs;
-   seqan::StringSet<seqan::CharString> quals;
-   int res = 0;
-
-   seqan::SequenceStream seqStream("in.fq");
-
-   res = readAll(ids, seqs, seqStream);
-   res = readAll(ids, seqs, quals, seqStream);
-
-   res = readBatch(ids, seqs, seqStream, 10);
-   res = readBatch(ids, seqs, quals, seqStream, 10);
 
 Assignment 4
 """"""""""""
@@ -232,7 +212,7 @@ Assignment 4
      Application
 
    Objective
-     Change your result of Assignment 3 to use the variant of :dox:`SequenceStream#readRecord` that also reads in the qualities and writes them next to the sequences.
+     Change your result of Assignment 3 to use the variant of :dox:`SeqFileIn#readRecord` that also reads in the qualities and writes them next to the sequences.
      Create the following FASTQ file ``example.fq``.
 
      ::
@@ -262,27 +242,27 @@ Assignment 4
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/basic_sequence_io/solution4.cpp
+        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution4.cpp
 
-The Interface for Writing
--------------------------
+Writing Files
+-------------
 
-Now that you know how to read sequence files, writing them will come easy to you.
-We can open files for writing by giving ``seqan::SequenceStream::WRITE`` as the second parameter to the :dox:`SequenceStream::SequenceStream SequenceStream constructor`.
+We can write sequence files with the :dox:`SeqFileOut` class.
+
 Create a new SeqAn app ``basic_seq_io_example2`` in your sandbox and change the C++ file ``basic_seq_io_example2.cpp`` in this application to have the content below.
 This program already has all the bells and whistles for error checking.
 
-.. includefrags:: demos/tutorial/basic_sequence_io/example3.cpp
+.. includefrags:: extras/demos/tutorial/basic_sequence_io/example3.cpp
 
 The first lines are similar to those in the solution to Assignment 4.
-However, instead of opening the file using ``seqan::SequenceStream seqStream(argv[1]);``, we use ``seqan::SequenceStream seqStream(argv[1], seqan::SequenceStream::WRITE);``.
-this opens the file with the name in ``argv[1]`` for writing instead of for reading.
-Also, instead of reading records, we write one record.
+However, instead of reading records, we write one record.
 
 The program writes out one sequence with id "seq1" and the contents "CGAT" to the file given on the command line.
-Note that :dox:`SequenceStream` will guess the format from the file name.
+Note that :dox:`SeqFileOut` will guess the format from the file name.
 A file ending in ``.fa`` and ``.fasta`` mean FASTA, ``.fq`` and ``.fastq`` means FASTQ.
-Optionally, you can force to use any file format with the third parameter to the :dox:`SequenceStream::SequenceStream SequenceStream constructor`.
+
+.. COMMENT Optionally, you can force to use any file format with the third parameter to the :dox:`SequenceStream::SequenceStream SequenceStream constructor`.
+.. COMMENT When writing a file with qualities and the function variant without quality values is used then the qualities are written out as ``'I'``, i.e. PHRED score 40.
 
 Let us try out the program from above:
 
@@ -313,16 +293,16 @@ Assignment 5
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/basic_sequence_io/solution5.cpp
+        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution5.cpp
 
-There are two functions for writing to sequence files using :dox:`SequenceStream`.
-One, :dox:`SequenceStream#writeRecord`, for writing one sequence record from :dox:`String Strings`, and another one, :dox:`SequenceStream#writeAll`, for writing all sequences from :dox:`StringSet StringSets`.
+As for reading, there are two functions for writing sequence files: :dox:`SeqFileOut#writeRecord` and :dox:`SeqFileOut#writeRecords`.
 
-Again, they come in one variant with and another variant without base qualities.
+Again, both functions come in two variants: with or without base qualities.
 When writing to a FASTQ file using the function without qualities, the PHRED score 40 is written for each character (``'I'``) and when writing to a FASTA file with the variant with qualities, the qualities are ignored.
+
 When using :dox:`DnaQ` or :dox:`Dna5Q`, the variant without qualities parameter writes out the qualities stored in the sequence characters themselves.
 
-Here is an example for using :dox:`SequenceStream#writeRecord`:
+Here is an example for using :dox:`SeqFileOut#writeRecord`:
 
 .. code-block:: cpp
 
@@ -330,12 +310,12 @@ Here is an example for using :dox:`SequenceStream#writeRecord`:
    seqan::Dna5String seq;
    seqan::CharString qual;
 
-   seqan::SequenceStream seqStream("out.fq", seqan::SequenceStream::WRITE);
+   seqan::SeqFileOut seqFileOut("out.fq");
 
-   res = writeRecord(seqStream, id, seq);
-   res = writeRecord(seqStream, id, seq, qual);
+   writeRecord(seqFileOut, id, seq);
+   writeRecord(seqFileOut, id, seq, qual);
 
-And here is an example for using :dox:`SequenceStream#writeAll`:
+And here is an example for using :dox:`SeqFileOut#writeRecords`:
 
 .. code-block:: cpp
 
@@ -343,10 +323,10 @@ And here is an example for using :dox:`SequenceStream#writeAll`:
    seqan::StringSet<seqan::Dna5String> seqs;
    seqan::StringSet<seqan::CharString> quals;
 
-   seqan::SequenceStream seqStream("out.fq", seqan::SequenceStream::WRITE);
+   seqan::SeqFileOut seqFileOut("out.fq");
 
-   res = writeAll(seqStream, ids, seqs);
-   res = writeAll(seqStream, ids, seqs, quals);
+   writeRecords(seqFileOut, ids, seqs);
+   writeRecords(seqFileOut, ids, seqs, quals);
 
 Assignment 6
 """"""""""""
@@ -362,27 +342,19 @@ Assignment 6
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/basic_sequence_io/solution6.cpp
+        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution6.cpp
 
 Compressed Files
 ----------------
 
-Using compressed files is simple.
-When opening a file for reading, :dox:`SequenceStream` will automatically detect whether the file is compressed or not, the same it detects the sequence file format for you.
+All above examples and your solutions to the assignments **already have compression support built-in**, if the compression libraries are available!
 If you run into problems here, make sure that you have zlib and/or libbz2 installed (see `Dependencies on Compression Libraries`_ below).
 
-When opening a file for writing, :dox:`SequenceStream` will infer the compression type (gzip, bzip2, or plain text only) and the file format (FASTA or FASTQ) from the file ending.
-First, the file type is guessed: A file ending in ``.gz`` means "gzip-compressed", one ending in ``.bz2`` means "bzip2-compressed".
-Then, the ``.gz`` or ``.bz2`` suffix is ignored when guessing the file format.
-A path ending in ``.fa`` and ``.fasta`` mean FASTA, ``.fq`` and ``.fastq`` mean FASTQ.
-Since the suffixes ``.gz`` and ``.bz2`` are ignored, ``.fa.gz``, ``.fa.bz2``, ... mean FASTA too and ``.fq.gz``, .\ ``fq.bz2``, ... mean FASTQ.
-
-File type detection from standard input is currently limited to either gzip-compressed or plain-text data.
-
-Note that you can also use additional parameters in the :dox:`SequenceStream::SequenceStream SequenceStream constructor` to force a certain file type and file format when writing.
-You can also force a certain file type and format when reading but this is only helpful in the few instances where the automatic detection fails.
-
-This means that all the examples and your solutions to the assignments from above **already have compression support built-in**, if the compression libraries are available.
+When opening files, :dox:`SeqFileIn` and :dox:`SeqFileOut` will automatically detect whether the file is compressed or not.
+The compression type (e.g. gzip, bzip2, or plain text) as well as the file format (e.g. FASTA or FASTQ) is inferred from the file ending.
+A file ending in ``.gz`` means "gzip-compressed", one ending in ``.bz2`` means "bzip2-compressed".
+A file ending in ``.fa`` and ``.fasta`` mean FASTA, ``.fq`` and ``.fastq`` mean FASTQ.
+Clearly, ``.fa.gz``, ``.fa.bz2``, ... mean compressed FASTA and ``.fq.gz``, .\ ``fq.bz2``, ... mean compressed FASTQ.
 
 Dependencies on Compression Libraries
 -------------------------------------
