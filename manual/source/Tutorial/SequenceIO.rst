@@ -9,7 +9,7 @@ Sequence I/O
 ============
 
 Learning Objective
-  You will learn how to read and write compressed or uncompressed sequence files in FASTA, FASTQ, EMBL or GenBank format.
+  You will learn how to read and write sequence files in FASTA, FASTQ, EMBL or GenBank format.
 
 Difficulty
   Basic
@@ -18,40 +18,19 @@ Duration
   30 min
 
 Prerequisites
-  :ref:`tutorial-sequences`
+  :ref:`tutorial-sequences`, :ref:`tutorial-input-output-overview`
 
 This tutorial explains how to read and write sequence files using the :dox:`SeqFileIn` and :dox:`SeqFileOut` classes.
-These classes provide an easy-to-use API for accessing sequence files in different file formats, either compressed or uncompressed.
-
-A First Working Example
------------------------
-
-Let us start out with a minimal working example.
-The following small program will read the file ``example.fa`` (which we will create later) from the current directory and print out the identifier and the sequence of the first record.
-
-.. includefrags:: demos/tutorial/basic_sequence_io/example1.cpp
-
-We call the :dox:`SeqFileIn::SeqFileIn SeqFileIn constructor` with the path to the file we want to read.
-Successively, we call the function :dox:`SeqFileIn#readRecord` to read the first record from the file.
-Note that :dox:`SeqFileIn#readRecord` always consumes the next record from the file.
-
-We do not have to close the file manually.
-The :dox:`SeqFileIn` object will automatically close any open files when it goes out of scope and it is destructred.
-If you want to force a file to be closed, you can use the function :dox:`SeqFileIn#close`.
-
-.. tip::
-
-   FASTA/FASTQ and record-based files
-
-   Most files in bioinformatics have a record-based structure.
-   Often, a file format requires or allows for a header that contains information about the file format.
-   Then, the file contains a list of records, one after another.
-
-   The FASTA and FASTQ formats do not have a header but only contain lists of records.
-   For example, a FASTQ record contains the sequence id, the sequence characters, and a quality value for each character.
+These classes provide an API for accessing sequence files in different file formats, either compressed or uncompressed.
 
 
-Now, create a new FASTA file named ``example.fa`` in a directory of your choice with the following content:
+FASTA/FASTQ Format
+-------------------
+
+FASTA/FASTQ are record-based files.
+For example, a FASTQ record contains the sequence id, the sequence characters, and a quality value for each character.
+
+Create a new FASTA file named ``example.fa`` in a directory of your choice with the following content:
 
 ::
 
@@ -62,8 +41,26 @@ Now, create a new FASTA file named ``example.fa`` in a directory of your choice 
     >seq3
     TTTTTTT
 
-Then, copy the program above into new application ``basic_seq_io_example``, adjust the path ``"example.fa"`` to the just created FASTA file, compile the program, and run it.
+
+A First Working Example
+-----------------------
+
+Let us start out with a minimal working example.
+The following small program will read the file ``example.fa`` just created and print out the identifier and the sequence of the first record.
+
+.. includefrags:: demos/tutorial/seq_io/example1.cpp
+
+We call the :dox:`SeqFileIn::SeqFileIn SeqFileIn constructor` with the path to the file to read.
+Successively, we call the function :dox:`SeqFileIn#readRecord` to read the first record from the file.
+Note that :dox:`SeqFileIn#readRecord` always moves ahead to the next record in the file.
+
+We do not have to close the file manually.
+The :dox:`SeqFileIn` object will automatically close any open files when it goes out of scope and it is destructred.
+If you want to force a file to be closed, you can use the function :dox:`SeqFileIn#close`.
+
+Copy the program above into new application ``basic_seq_io_example``, adjust the path ``"example.fa"`` to the just created FASTA file, compile the program, and run it.
 For example, if you stored the file ``example.fa`` in ``/home/username/example.fa``, you replace the line ``seqan::SeqFileIn seqFileIn("example.fa");`` from above with ``seqan::SeqFileIn seqFileIn("/home/username/example.fa");``.
+
 You should see the following output:
 
 .. code-block:: console
@@ -84,7 +81,7 @@ Assignment 1
    Solution ::
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/basic_sequence_io/solution1.cpp
+        .. includefrags:: demos/tutorial/seq_io/solution1.cpp
 
 Handling Errors
 ---------------
@@ -98,7 +95,7 @@ Therefore, it is sufficient to catch them to handle errors properly.
 
 The program will now read as follows:
 
-.. includefrags:: demos/tutorial/basic_sequence_io/example2.cpp
+.. includefrags:: demos/tutorial/seq_io/example2.cpp
 
 Assignment 2
 """"""""""""
@@ -114,7 +111,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/basic_sequence_io/solution2.cpp
+        .. includefrags:: demos/tutorial/seq_io/solution2.cpp
 
 
 Reading Files
@@ -139,8 +136,6 @@ Note that invalid characters in the file will be signaled by :dox:`SeqFileIn#rea
 
     When :dox:`DnaQ` or :dox:`Dna5Q` :dox:`String Strings` are used, then you should use the variant without qualities.
     The qualities are simply stored directly in the sequence characters.
-
-..COMMENT For example, for :dox:`Dna` and :dox:`Rna` this means a conversion of the invalid character to ``'A'``, and for :dox:`Dna5 Dna5 and `dox:Rna5 Rna5` this means a conversion to ``'N'``.
 
 Here is an example for using :dox:`SeqFileIn#readRecord`:
 
@@ -191,7 +186,7 @@ Assignment 3
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/basic_sequence_io/solution3.cpp
+        .. includefrags:: demos/tutorial/seq_io/solution3.cpp
 
 After completing Assignment 3, you should be able to run your program on the example file we created above and see the following output:
 
@@ -242,7 +237,7 @@ Assignment 4
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/basic_sequence_io/solution4.cpp
+        .. includefrags:: demos/tutorial/seq_io/solution4.cpp
 
 Writing Files
 -------------
@@ -252,7 +247,7 @@ We can write sequence files with the :dox:`SeqFileOut` class.
 Create a new SeqAn app ``basic_seq_io_example2`` in your sandbox and change the C++ file ``basic_seq_io_example2.cpp`` in this application to have the content below.
 This program already has all the bells and whistles for error checking.
 
-.. includefrags:: demos/tutorial/basic_sequence_io/example3.cpp
+.. includefrags:: demos/tutorial/seq_io/example3.cpp
 
 The first lines are similar to those in the solution to Assignment 4.
 However, instead of reading records, we write one record.
@@ -293,7 +288,7 @@ Assignment 5
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/basic_sequence_io/solution5.cpp
+        .. includefrags:: demos/tutorial/seq_io/solution5.cpp
 
 As for reading, there are two functions for writing sequence files: :dox:`SeqFileOut#writeRecord` and :dox:`SeqFileOut#writeRecords`.
 
@@ -342,23 +337,12 @@ Assignment 6
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/basic_sequence_io/solution6.cpp
+        .. includefrags:: demos/tutorial/seq_io/solution6.cpp
 
 Compressed Files
 ----------------
 
 All above examples and your solutions to the assignments **already have compression support built-in**, if the compression libraries are available!
-If you run into problems here, make sure that you have zlib and/or libbz2 installed (see `Dependencies on Compression Libraries`_ below).
-
-When opening files, :dox:`SeqFileIn` and :dox:`SeqFileOut` will automatically detect whether the file is compressed or not.
-The compression type (e.g. gzip, bzip2, or plain text) as well as the file format (e.g. FASTA or FASTQ) is inferred from the file ending.
-A file ending in ``.gz`` means "gzip-compressed", one ending in ``.bz2`` means "bzip2-compressed".
-A file ending in ``.fa`` and ``.fasta`` mean FASTA, ``.fq`` and ``.fastq`` mean FASTQ.
-Clearly, ``.fa.gz``, ``.fa.bz2``, ... mean compressed FASTA and ``.fq.gz``, .\ ``fq.bz2``, ... mean compressed FASTQ.
-
-Dependencies on Compression Libraries
--------------------------------------
-
 For accessing compressed files, you need to have zlib installed for reading ``.gz`` files and libbz2 for reading ``.bz2`` files.
 
 If you are using Linux or Mac Os X and you followed the :ref:`tutorial-getting-started` tutorial closely then you should have already installed the necessary libraries.

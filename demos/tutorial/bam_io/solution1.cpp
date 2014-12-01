@@ -1,38 +1,37 @@
 #include <iostream>
-#include <fstream>
+#include <seqan/bam_io.h>
 
-#include <seqan/sequence.h>
-#include <seqan/stream.h>
-
-int main(int argc, char const ** argv)
+int main()
 {
-    if (argc != 3)
+    // Open input file, BamFileIn can read SAM and BAM files.
+    seqan::BamFileIn bamFileIn;
+    if (!open(bamFileIn, "example.sam"))
     {
-        std::cerr << "USAGE: " << argv[0] << " IN.bam OUT.bin\n";
+        std::cerr << "ERROR: Could not open example.sam!" << std::endl;
         return 1;
     }
+    // Open output file, BamFileOut accepts also an ostream and a format tag.
+    seqan::BamFileOut bamFileOut(std::cout, seqan::Sam());
 
-    // Open BGZF file for reading.
-    typedef seqan::VirtualStream<char, seqan::Input> TInStream;
-    TInStream inStream;
-    if (!open(inStream, argv[1]))
+    try
     {
-        std::cerr << "ERROR: Could not open " << argv[1] << " for reading.\n";
+        // Copy header.
+        seqan::BamHeader header;
+        readRecord(header, bamFileIn);
+        writeRecord(bamFileOut, header);
+
+        seqan::BamAlignmentRecord record;
+        while (!atEnd(bamFileIn))
+        {
+            readRecord(record, bamFileIn);
+            writeRecord(bamFileOut, record);
+        }
+    }
+    catch (std::runtime_error &e)
+    {
+        std::cout << "ERROR: " << e.what() << std::endl;
         return 1;
     }
-
-    // Open std::fstream for writing.
-    std::fstream outStream(argv[2], std::ios::binary | std::ios::out);
-    if (!outStream.good())
-    {
-        std::cerr << "ERROR: Could not open " << argv[2] << " for writing.\n";
-        return 1;
-    }
-
-    // Copy over data.
-    seqan::DirectionIterator<TInStream, seqan::Input>::Type reader = directionIterator(inStream, seqan::Input());
-    while (!seqan::atEnd(reader))
-        read(outStream, reader, 1000);
 
     return 0;
 }
