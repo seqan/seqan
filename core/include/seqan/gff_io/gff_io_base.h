@@ -226,6 +226,8 @@ struct GffRecord
      * @fn GffRecord::INVALID_SCORE
      * @brief Returns invalid score (NaN float value).
      *
+     * @signature static float GffRecord::INVALID_SCORE();
+     *
      * The term <tt>x != x</tt> (for <tt>float x</tt> is only true if <tt>x</tt> is a NaN.
      */
     static float INVALID_SCORE()
@@ -350,7 +352,7 @@ inline void clear(GffRecord & record)
 
 /*!
  * @fn GffFileIO#readRecord
- * @brief Read one GFF/GTF record from a SinglePassRecordReader.
+ * @brief Read one GFF/GTF record from a forward iterator.
  *
  * @signature void readRecord(record, context, iter);
  *
@@ -501,8 +503,8 @@ _writePossiblyInQuotes(TTarget& target, TString & source, TMustBeQuotedFunctor c
  *
  * @param[in,out] stream  The @link OutputIteratorConcept output iterator @endlink to write to.
  * @param[in]     record  The @link GffRecord @endlink to write out.
- * @param[in]     tag     A tag to select the file format, either @link GffFileIO#Gff @link or @link GffFileIO#Gtf
- *                        @endlink.
+ * @param[in]     tag     A tag to select the file format, either @link GffFileIO#Gff @endlink or
+ *                        @link GffFileIO#Gtf @endlink.
  *
  * @throws IOError if something went wrong.
  */

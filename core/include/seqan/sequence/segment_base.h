@@ -167,7 +167,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @snippet demos/sequence/segment.cpp basic operations
  *
  * You can get the type of the infix/prefix/suffix of a sequence using @link ContainerConcept#Infix @endlink,
- * @link ContainerConcept#Prefix @endlink, and @link ContainerConcept#Suffix @endlink.  These metafunctions will
+ * @link StringConcept#Prefix @endlink, and @link StringConcept#Suffix @endlink.  These metafunctions will
  * "flatten" the type such that using these metafunctions, the infix of an infix is an infix and not
  * an Infix Segment with an Infix Segment as its host.  Instead, it will again be an Infix Segment
  * of the host of the inner type.
@@ -213,7 +213,7 @@ Infix: CGCG
  * @param[in] seg The Segment to query for its begin position.
  *
  * @return TPos The begin position of the segment.  TPos is the position type of the Segment as returned by
- *              @link ContainerConcept#Position Position @endlink.
+ *              @link StringConcept#Position Position @endlink.
  */
 
 /*!

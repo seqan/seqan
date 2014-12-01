@@ -158,6 +158,10 @@ struct GenomicRegion
     /*!
      * @fn GenomicRegion::toString
      * @brief Write string representation of interval to out.
+     *
+     * @signature void GenomicRegion::toString(out) const;
+     *
+     * @param[out] out The @link StringConcept string @endlink to write to.
      */
     template <typename TString>
     void toString(TString & out) const
@@ -199,18 +203,6 @@ struct GenomicRegion
  * @param[in,out] genomicRegion The @link GenomicRegion @endlink object to reset.  Types: GenomicRegion
  */
 
-/**
-.Function.GenomicRegion#clear
-..cat:Input/Output
-..class:Class.GenomicRegion
-..summary:Reset a @Class.GenomicRegion@ object to the same state after default construction.
-..signature:reset(genomicRegion)
-..param.genomicRegion:The @Class.GenomicRegion@ object to reset.
-...type:Class.GenomicRegion
-..returns:$void$, where $true$ indicates sucess
-..include:seqan/seq_io.h
-*/
-
 inline void
 clear(GenomicRegion & region)
 {
@@ -235,28 +227,14 @@ clear(GenomicRegion & region)
  *                           Types: GenomicRegion
  * 
  * @return bool true indicates successful parsing.
+ *
+ * @throw ParseError in case of parsing problems.
  */
-
-/**
-.Function.GenomicRegion#parse
-..cat:Input/Output
-..class:Class.GenomicRegion
-..summary:Parse genomic region string store results in @Class.GenomicRegion@.
-..signature:parse(genomicRegion, regionString)
-..param.genomicRegion:The @Class.GenomicRegion@ object to write the results to.
-...type:Class.GenomicRegion
-..param.regionString:The region string to prse.
-...type:Shortcut.CharString
-..returns:$bool$, where $true$ indicates sucess
-..example.text:See the example for parsing in the @Class.GenomicRegion@.
-..include:seqan/seq_io.h
-*/
 
 // Parse regionString and write to region.  region.rID will not be set but
 // region.seqName will be.  Return true on success.
 
-inline void
-parse(GenomicRegion & region, CharString const & regionString)
+void parse(GenomicRegion & region, CharString const & regionString)
 {
     DirectionIterator<CharString const, Input>::Type reader = directionIterator(regionString, Input());
 
