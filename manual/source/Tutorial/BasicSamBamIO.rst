@@ -9,7 +9,7 @@ Basic SAM and BAM I/O
 =====================
 
 Learning Objective
-  In this tutorial, you will learn how to use the high-level interface :dox:`BamStream` class to read and write SAM and BAM files.
+  In this tutorial, you will learn how to read and write SAM and BAM files.
 
 Difficulty
   Average
@@ -20,7 +20,7 @@ Duration
 Prerequisites
   :ref:`tutorial-sequences`, :ref:`tutorial-basic-sequence-io`, Exposure to the SAM format
 
-This tutorial deals with how to easily read and write SAM and BAM files using the :dox:`BamStream` class.
+This tutorial deals with how to easily read and write SAM and BAM files using the :dox:`BamFileIn` and :dox:`BamFileOut` classes.
 It starts out with a quick reminder on the structure of SAM (and also BAM) files and will then continue with how to read and write SAM/BAM files and access the tags of a record.
 
 .. important::
@@ -143,27 +143,28 @@ A First Working Example
 The following example shows an example of a program that reads the file with the path ``example.sam`` and prints its contents back to the user on stdout.
 If you want to try out this program then create a file with the sample SAM content from above and adjust the path ``"example.sam"`` in the program below to the path to your SAM file (e.g. ``"path/to/my_example.sam"``).
 
-.. includefrags:: demos/tutorial/basic_sam_bam_io/example1.cpp
+.. includefrags:: extras/demos/tutorial/basic_sam_bam_io/example1.cpp
 
-The program first opens a :dox:`BamStream` for reading, then one for writing.
-Note that :dox:`BamStream` automatically guesses the file type from the file contents when reading and from the file name when writing.
-You can also force a format using :dox:`BamStream::BamStream BamStream's constructor`.
-You can read from stdin and write to stdout using ``"-"`` as the file name.
+The program instantiates a :dox:`BamFileIn` object for reading and a :dox:`BamFileOut` for writing.
+Note that both classes automatically guess the file type from the file name.
 
-The header is automatically read when a :dox:`BamStream` is opened.
-After the header has been read, it is copied over into the output stream.
-Then, the input stream is read record by record and written out to the output stream.
-Note that the header is written out automatically before the first alignment record is written.
-
+First, we read the BAM header with :dox:`BamFileIn#readRecord` and we write it with :dox:`BamFileOut#writeRecord`.
+Then, we read each record from the input file and write it to the output file.
 The alignment records are read into :dox:`BamAlignmentRecord` objects which we will focus on below.
 
-Note that the example above is missing error handling.
-This means that if the input format is ill-formed, error return codes are not handled appropriately and the program might do something unexpected in the case of an error.
+.. COMMENT You can also force a format using :dox:`BamStream::BamStream BamStream's constructor`.
+.. COMMENT You can read from stdin and write to stdout using ``"-"`` as the file name.
 
-For example, if the file contains trailing empty lines, the program will loop indefinitely as can be seen in the shell output below:
+Error Handling
+--------------
 
-.. code-block:: console
+We now introduce error handling when reading or writing files.
+The functions :dox:`BamFileIn#readRecord` and :dox:`BamFileOut#writeRecord` throw exceptions on errors.
+In Assignment 1, we will add error handling to the program.
 
+.. COMMENT For example, the following file contains trailing empty lines, the program will loop indefinitely as can be seen in the shell output below:
+
+.. COMMENT
    # tutorial_basic_sam_bam_io_example1
    @HD     VN:1.3  SO:coordinate
    @SQ     SN:ref  LN:45
@@ -178,11 +179,6 @@ For example, if the file contains trailing empty lines, the program will loop in
 	   83      *       *       *       *       *       0       *       *       *
    ...
 
-We can fix this problem by introducing error handling.
-The :dox:`BamStream#readRecord` call returns a status code different from ``0``, indicating an error because an empty line does not form a valid SAM record line.
-However, it stops processing as soon as an errernous record is detected which makes the call to :dox:`BamStream#atEnd` return ``false`` and run in an infinite loop
-
-In Assignment 1, we will add error handling to the program.
 
 Assignment 1
 """"""""""""
@@ -198,13 +194,12 @@ Assignment 1
      Add error handling using the hints below.
 
    Hints
-      The functions :dox:`BamStream#readRecord` and :dox:`BamStream#writeRecord` return a status code ``int``, ``0`` on success, ``1`` on errors.
-      The function :dox:`BamStream#isGood` checks whether the state of a :dox:`BamStream` is errorneous.
+      The functions :dox:`BamFileIn#readRecord` and :dox:`BamFileOut#writeRecord` throw exceptions on errors.
 
    Solution
       .. container:: foldable
 
-         .. includefrags:: demos/tutorial/basic_sam_bam_io/solution1.cpp
+         .. includefrags:: extras/demos/tutorial/basic_sam_bam_io/solution1.cpp
 
 The Class :dox:`BamAlignmentRecord`
 -----------------------------------
@@ -275,7 +270,7 @@ For example, the following loop sums up the length of the sequences that did not
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/basic_sam_bam_io/solution2.cpp
+        .. includefrags:: extras/demos/tutorial/basic_sam_bam_io/solution2.cpp
 
 The Classes :dox:`BamHeader` and :dox:`BamHeaderRecord`
 -------------------------------------------------------
@@ -291,7 +286,7 @@ Note that the ``@SQ`` header lines in the header and the ``sequenceInfos`` field
 
 The following example program prints the sequences and lengths from a BAM file.
 
-.. includefrags:: demos/tutorial/basic_sam_bam_io/example2.cpp
+.. includefrags:: extras/demos/tutorial/basic_sam_bam_io/example2.cpp
 
 Note that this is only guaranteed to work for BAM files because this information is not mandatory in SAM files and might be missing.
 When writing files, you have to fill the ``sequenceInfos`` string appropriately before writing any record.
@@ -305,7 +300,7 @@ When writing files, you have to fill the ``sequenceInfos`` string appropriately 
     The sequences in the FASTA file are the same but their order may have changed.
     For example, because the FASTA file from the mapping step has been generated from the chromosomes by concatenation in a different order than the currently present one.
 
-    .. includefrags:: demos/tutorial/basic_sam_bam_io/example3.cpp
+    .. includefrags:: extras/demos/tutorial/basic_sam_bam_io/example3.cpp
 
 Assignment 3
 """"""""""""
@@ -352,7 +347,7 @@ Assignment 3
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/basic_sam_bam_io/solution3.cpp
+        .. includefrags:: extras/demos/tutorial/basic_sam_bam_io/solution3.cpp
 
 
 Accessing the Tags
@@ -456,7 +451,7 @@ Assignment 4
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/basic_sam_bam_io/solution4.cpp
+        .. includefrags:: extras/demos/tutorial/basic_sam_bam_io/solution4.cpp
 
 Congratulations, you have now learned to read and write SAM and BAM files.
 
