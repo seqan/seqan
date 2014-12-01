@@ -34,8 +34,8 @@
 // Interface functions for unbanded local alignment.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_UNBANDED_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_UNBANDED_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_UNBANDED_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_UNBANDED_H_
 
 namespace seqan {
 
@@ -390,4 +390,4 @@ TScoreValue localAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> &
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_UNBANDED_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_UNBANDED_H_

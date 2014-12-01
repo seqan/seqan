@@ -34,8 +34,8 @@
 // Bit-packed tuple specialization.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_TUPLE_BIT_PACKED_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_TUPLE_BIT_PACKED_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_TUPLE_BIT_PACKED_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_TUPLE_BIT_PACKED_H_
 
 namespace seqan {
 
@@ -569,4 +569,4 @@ inline bool operator!=(Tuple<TValue, SIZE, BitPacked<> > & left,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_TUPLE_BIT_PACKED_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_TUPLE_BIT_PACKED_H_

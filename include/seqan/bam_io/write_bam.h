@@ -35,8 +35,8 @@
 // Code for writing BAM.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_BAM_IO_WRITE_BAM_H_
-#define CORE_INCLUDE_SEQAN_BAM_IO_WRITE_BAM_H_
+#ifndef INCLUDE_SEQAN_BAM_IO_WRITE_BAM_H_
+#define INCLUDE_SEQAN_BAM_IO_WRITE_BAM_H_
 
 namespace seqan {
 
@@ -283,4 +283,4 @@ void write(TTarget & target,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_WRITE_BAM_H_
+#endif  // #ifndef INCLUDE_SEQAN_BAM_IO_WRITE_BAM_H_

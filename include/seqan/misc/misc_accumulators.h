@@ -38,8 +38,8 @@
 // analysis algorithms than then Boost one.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_MISC_MISC_ACCUMULATORS_H_
-#define CORE_INCLUDE_SEQAN_MISC_MISC_ACCUMULATORS_H_
+#ifndef INCLUDE_SEQAN_MISC_MISC_ACCUMULATORS_H_
+#define INCLUDE_SEQAN_MISC_MISC_ACCUMULATORS_H_
 
 #include <seqan/sequence.h>
 
@@ -450,4 +450,4 @@ count(Accumulator<TValue, AccuAverage> const & acc)
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_MISC_MISC_ACCUMULATORS_H_
+#endif  // #ifndef INCLUDE_SEQAN_MISC_MISC_ACCUMULATORS_H_

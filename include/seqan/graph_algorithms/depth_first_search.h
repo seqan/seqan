@@ -34,8 +34,8 @@
 // Implementation of Depth-First-Search algorithm.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_DEPTH_FIRST_SEARCH_H_
-#define CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_DEPTH_FIRST_SEARCH_H_
+#ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_DEPTH_FIRST_SEARCH_H_
+#define INCLUDE_SEQAN_GRAPH_ALGORITHMS_DEPTH_FIRST_SEARCH_H_
 
 namespace seqan {
 
@@ -149,4 +149,4 @@ void depthFirstSearch(TPredecessorMap & predecessor,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_DEPTH_FIRST_SEARCH_H_
+#endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_DEPTH_FIRST_SEARCH_H_

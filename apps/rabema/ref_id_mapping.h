@@ -30,8 +30,8 @@
 
 // TODO(holtgrew): Consider for inclusion in SeqAn library.
 
-#ifndef SEQAN_CORE_APPS_RABEMA_REF_ID_MAPPING_H_
-#define SEQAN_CORE_APPS_RABEMA_REF_ID_MAPPING_H_
+#ifndef SEQAN_APPS_RABEMA_REF_ID_MAPPING_H_
+#define SEQAN_APPS_RABEMA_REF_ID_MAPPING_H_
 
 #include <seqan/store.h>
 #include <seqan/sequence.h>
@@ -94,4 +94,4 @@ void rebuildMapping(RefIdMapping & mapping,
     }
 }
 
-#endif  // #ifndef SEQAN_CORE_APPS_RABEMA_REF_ID_MAPPING_H_
+#endif  // #ifndef SEQAN_APPS_RABEMA_REF_ID_MAPPING_H_

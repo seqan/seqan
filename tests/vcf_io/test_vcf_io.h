@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_TESTS_VCF_TEST_VCF_IO_H_
-#define SEQAN_EXTRAS_TESTS_VCF_TEST_VCF_IO_H_
+#ifndef SEQAN_TESTS_VCF_TEST_VCF_IO_H_
+#define SEQAN_TESTS_VCF_TEST_VCF_IO_H_
 
 #include <iostream>
 
@@ -45,7 +45,7 @@
 SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_header)
 {
     seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
-    append(vcfPath, "/extras/tests/vcf_io/example.vcf");
+    append(vcfPath, "/tests/vcf_io/example.vcf");
 
     seqan::String<char, seqan::MMap<> > mmapString;
     SEQAN_ASSERT(open(mmapString, toCString(vcfPath)));
@@ -107,7 +107,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_header)
 SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
 {
     seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
-    append(vcfPath, "/extras/tests/vcf_io/example_records_with_errors.vcf");
+    append(vcfPath, "/tests/vcf_io/example_records_with_errors.vcf");
 
     seqan::String<char, seqan::MMap<> > mmapString;
     open(mmapString, toCString(vcfPath));
@@ -172,7 +172,7 @@ SEQAN_DEFINE_TEST(test_vcf_io_read_vcf_record)
 SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_read_record)
 {
     seqan::CharString vcfPath = SEQAN_PATH_TO_ROOT();
-    append(vcfPath, "/extras/tests/vcf_io/example.vcf");
+    append(vcfPath, "/tests/vcf_io/example.vcf");
 
     seqan::VcfFileIn vcfStream(toCString(vcfPath));
     seqan::VcfHeader header;
@@ -322,14 +322,14 @@ SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_header)
     writeRecord(iter, vcfHeader, vcfIOContext, seqan::Vcf());
     file.close();
 
-    std::string goldPath = (std::string)SEQAN_PATH_TO_ROOT() + "/extras/tests/vcf_io/vcf_header.vcf";
+    std::string goldPath = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/vcf_io/vcf_header.vcf";
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(tmpPath.c_str(), goldPath.c_str()));
 }
 
 
 SEQAN_DEFINE_TEST(test_vcf_io_write_vcf_record)
 {
-    std::string goldPath = (std::string)SEQAN_PATH_TO_ROOT() + "/extras/tests/vcf_io/example_records.vcf";
+    std::string goldPath = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/vcf_io/example_records.vcf";
     std::string tmpPath = (std::string)SEQAN_TEMP_FILENAME() + ".vcf";
 
     std::ifstream file(goldPath.c_str());
@@ -463,8 +463,8 @@ SEQAN_DEFINE_TEST(test_vcf_io_vcf_file_write_record)
     close(vcfStream);
 
     seqan::CharString goldPath(SEQAN_PATH_TO_ROOT());
-    append(goldPath, "/extras/tests/vcf_io/example.vcf");
+    append(goldPath, "/tests/vcf_io/example.vcf");
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(tmpPath.c_str(), toCString(goldPath)));
 }
 
-#endif  // SEQAN_EXTRAS_TESTS_VCF_TEST_VCF_IO_H_
+#endif  // SEQAN_TESTS_VCF_TEST_VCF_IO_H_

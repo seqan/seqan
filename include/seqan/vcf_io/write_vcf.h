@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_WRITE_VCF_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_WRITE_VCF_H_
+#ifndef SEQAN_INCLUDE_SEQAN_VCF_WRITE_VCF_H_
+#define SEQAN_INCLUDE_SEQAN_VCF_WRITE_VCF_H_
 
 namespace seqan {
 
@@ -224,4 +224,4 @@ writeRecord(TTarget & target,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_WRITE_VCF_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_VCF_WRITE_VCF_H_

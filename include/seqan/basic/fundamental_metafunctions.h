@@ -37,8 +37,8 @@
 // defined for many types.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_METAFUNCTIONS_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_METAFUNCTIONS_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_METAFUNCTIONS_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_METAFUNCTIONS_H_
 
 #include <seqan/basic/basic_metaprogramming.h>
 
@@ -420,4 +420,4 @@ struct MinLength
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_METAFUNCTIONS_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_METAFUNCTIONS_H_

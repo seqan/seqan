@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNER_INTERFACE_H_
-#define EXTRAS_INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNER_INTERFACE_H_
+#ifndef INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNER_INTERFACE_H_
+#define INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNER_INTERFACE_H_
 
 #include <seqan/realign.h>
 #include <seqan/store.h>
@@ -147,4 +147,4 @@ void consensusAlignment(FragmentStore<TSpec, TConfig> & store,
 
 }  // namespace seqan
 
-#endif  // #ifndef EXTRAS_INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNER_INTERFACE_H_
+#endif  // #ifndef INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNER_INTERFACE_H_

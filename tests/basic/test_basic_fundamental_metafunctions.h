@@ -34,8 +34,8 @@
 // Tests for fundamental metafunctions.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_METAFUNCTIONS_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_METAFUNCTIONS_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_METAFUNCTIONS_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_METAFUNCTIONS_H_
 
 // Test availability of the symbol Value<T, I>.
 SEQAN_DEFINE_TEST(test_basic_fundamental_metafunctions_value)
@@ -126,4 +126,4 @@ SEQAN_DEFINE_TEST(test_basic_fundamental_metafunctions_deepest_spec)
 }
 
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_METAFUNCTIONS_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_METAFUNCTIONS_H_

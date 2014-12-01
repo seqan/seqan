@@ -34,8 +34,8 @@
 // Facade header for basic/aggregate submodule.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_AGGREGATE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_AGGREGATE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_AGGREGATE_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_AGGREGATE_H_
 
 // --------------------------------------------------------------------------
 // Prerequisites
@@ -59,4 +59,4 @@
 #include <seqan/basic/tuple_base.h>
 #include <seqan/basic/tuple_bit_compressed.h>
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_AGGREGATE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_AGGREGATE_H_

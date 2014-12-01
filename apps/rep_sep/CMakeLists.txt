@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/apps/rep_sep/CMakeLists.txt
+# File: /apps/rep_sep/CMakeLists.txt
 #
 # CMakeLists.txt file for rep_sep.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (extras_apps_rep_sep)
-message (STATUS "Configuring extras/apps/rep_sep")
+message (STATUS "Configuring apps/rep_sep")
 
 # ----------------------------------------------------------------------------
 # Dependencies

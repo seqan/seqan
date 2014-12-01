@@ -34,8 +34,8 @@
 // Extras for the align module
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_ALIGN_EXTEND_H
-#define SEQAN_EXTRAS_ALIGN_EXTEND_H
+#ifndef SEQAN_ALIGN_EXTEND_H
+#define SEQAN_ALIGN_EXTEND_H
 
 #include <seqan/basic.h>
 #include <seqan/align.h>

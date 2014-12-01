@@ -229,20 +229,20 @@ Example:
 ---------------------------------------------------------------------------
 
 There are small example files in the folder 
-seqan-trunk/extras/apps/insegt/example/ containing alignments and 
+seqan-trunk/apps/insegt/example/ containing alignments and 
 annotations. In the following you can see how to use INSEGT with default 
 paramters to analyze the alignments of the reads using the given annotations:
 
- 1) ./extras/apps/insegt/insegt \
-        ../../seqan-trunk/extras/apps/insegt/example/alignments.sam \
-        ../../seqan-trunk/extras/apps/insegt/example/annotations.gff 
+ 1) ./apps/insegt/insegt \
+        ../../seqan-trunk/apps/insegt/example/alignments.sam \
+        ../../seqan-trunk/apps/insegt/example/annotations.gff 
 
 This computes all tuple up to the length 2 and outputs them. To only output 
 tuple with a min. count of 2 you can use the option -c:
 
- 2) ./extras/apps/insegt/insegt -c 2 \
-        ../../seqan-trunk/extras/apps/insegt/example/alignments.sam \
-        ../../seqan-trunk/extras/apps/insegt/example/annotations.gff 
+ 2) ./apps/insegt/insegt -c 2 \
+        ../../seqan-trunk/apps/insegt/example/alignments.sam \
+        ../../seqan-trunk/apps/insegt/example/annotations.gff 
 
 
 ---------------------------------------------------------------------------

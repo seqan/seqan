@@ -112,7 +112,7 @@ A First Working Example
 The following example shows an example of a program that reads the file with the path ``example.bed`` and prints its contents back to the user on stdout.
 If you want to try out this program then create a file with the sample BED content from above and adjust the path ``"example.bed"`` in the program below to the path to your BED file (e.g. ``"path/to/my_example.bed"``).
 
-.. includefrags:: extras/demos/tutorial/bed_io/example1.cpp
+.. includefrags:: demos/tutorial/bed_io/example1.cpp
 
 The program first opens a :dox:`BedStream` for reading, then one for writing.
 You can read from stdin and write to stdout using ``"-"`` as the file name.
@@ -173,7 +173,7 @@ Assignment 1
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/bed_io/solution1.cpp
+        .. includefrags:: demos/tutorial/bed_io/solution1.cpp
 
 The Class :dox:`BedRecord`
 --------------------------
@@ -239,7 +239,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/bed_io/solution2.cpp
+        .. includefrags:: demos/tutorial/bed_io/solution2.cpp
 
         The output is
 
@@ -271,7 +271,7 @@ Assignment 3
    Solution
     .. container:: foldable
 
-       .. includefrags:: extras/demos/tutorial/bed_io/solution3.cpp
+       .. includefrags:: demos/tutorial/bed_io/solution3.cpp
 
 Next Steps
 ----------

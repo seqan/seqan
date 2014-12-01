@@ -35,8 +35,8 @@
 // Facade header for module bam_io.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_BAM_IO_H_
-#define CORE_INCLUDE_SEQAN_BAM_IO_H_
+#ifndef INCLUDE_SEQAN_BAM_IO_H_
+#define INCLUDE_SEQAN_BAM_IO_H_
 
 // ===========================================================================
 // Prerequisites.
@@ -94,4 +94,4 @@
 #include <seqan/bam_io/bam_index_bai.h>
 #endif  // #if SEQAN_HAS_ZLIB
 
-#endif  // CORE_INCLUDE_SEQAN_BAM_IO_H_
+#endif  // INCLUDE_SEQAN_BAM_IO_H_

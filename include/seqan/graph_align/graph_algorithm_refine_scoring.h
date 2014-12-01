@@ -33,8 +33,8 @@
 // Author: Anne-Katrin Emde <anne-katrin.emde@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_REFINE_SCORING_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_REFINE_SCORING_H_
+#ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_REFINE_SCORING_H_
+#define SEQAN_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_REFINE_SCORING_H_
 
 namespace seqan {
 
@@ -49,4 +49,4 @@ _getRefinedMatchScore(TScoreValue const &, TStringSet const &, TAlign const &, T
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_REFINE_SCORING_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALIGN_GRAPH_IMPL_REFINE_SCORING_H_

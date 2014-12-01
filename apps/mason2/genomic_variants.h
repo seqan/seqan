@@ -43,8 +43,8 @@
 
 // TODO(holtgrew): Could put the coordinate system into types. This would add static checking on coordinate system.
 
-#ifndef EXTRAS_APPS_MASON2_GENOMIC_VARIANTS_H_
-#define EXTRAS_APPS_MASON2_GENOMIC_VARIANTS_H_
+#ifndef APPS_MASON2_GENOMIC_VARIANTS_H_
+#define APPS_MASON2_GENOMIC_VARIANTS_H_
 
 #include <seqan/align.h>
 #include <seqan/misc/misc_interval_tree.h>
@@ -577,4 +577,4 @@ public:
 // Functions
 // ============================================================================
 
-#endif  // #ifndef EXTRAS_APPS_MASON2_GENOMIC_VARIANTS_H_
+#endif  // #ifndef APPS_MASON2_GENOMIC_VARIANTS_H_

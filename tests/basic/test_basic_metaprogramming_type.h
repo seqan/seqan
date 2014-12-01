@@ -39,8 +39,8 @@
 // generated for the static const bool member which causes linker errors.  The plus before the constant is there
 // to suppress bool/integer comparison warnings with MSVC++.
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_TYPE_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_TYPE_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_TYPE_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_TYPE_H_
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_same_type)
 {
@@ -148,4 +148,4 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_class_identifier)
     SEQAN_ASSERT_NEQ(ClassIdentifier_<int>::getID(), ClassIdentifier_<bool>::getID());
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_TYPE_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_TYPE_H_

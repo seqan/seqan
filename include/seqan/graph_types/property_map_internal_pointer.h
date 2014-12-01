@@ -33,8 +33,8 @@
 // Author: Tobias Rausch <rausch@embl.de>
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_POINTER_H_
-#define CORE_INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_POINTER_H_
+#ifndef INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_POINTER_H_
+#define INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_POINTER_H_
 
 namespace seqan {
 
@@ -229,4 +229,4 @@ getProperty(InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER> const &
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_POINTER_H_
+#endif  // #ifndef INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_POINTER_H_

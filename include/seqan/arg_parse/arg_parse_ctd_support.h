@@ -33,8 +33,8 @@
 // Author: Stephan Aiche <stephan.aiche@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_CTD_SUPPORT_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_CTD_SUPPORT_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_CTD_SUPPORT_H_
+#define SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_CTD_SUPPORT_H_
 
 #include <seqan/sequence.h>
 
@@ -567,4 +567,4 @@ writeCTD(ArgumentParser const & me)
 
 } // namespace seqan
 
-#endif // SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_CTD_SUPPORT_H_
+#endif // SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_CTD_SUPPORT_H_

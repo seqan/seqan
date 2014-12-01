@@ -34,8 +34,8 @@
 // Tests for hosted type interface.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_HOSTED_TYPE_INTERFACE_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_HOSTED_TYPE_INTERFACE_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_HOSTED_TYPE_INTERFACE_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_HOSTED_TYPE_INTERFACE_H_
 
 // Test existence of metafunction Host<>.
 SEQAN_DEFINE_TEST(test_basic_hosted_type_interface_metafunction_host)
@@ -43,4 +43,4 @@ SEQAN_DEFINE_TEST(test_basic_hosted_type_interface_metafunction_host)
     typedef seqan::Host<int> THost SEQAN_UNUSED_TYPEDEF;
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_HOSTED_TYPE_INTERFACE_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_HOSTED_TYPE_INTERFACE_H_

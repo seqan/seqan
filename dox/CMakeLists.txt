@@ -16,8 +16,8 @@ if (PYTHONINTERP_FOUND)
     ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/../util/bin/dox.py
     -b ${CMAKE_CURRENT_SOURCE_DIR}/../core
     -b ${CMAKE_CURRENT_SOURCE_DIR}/../extras
-    -i ${CMAKE_CURRENT_SOURCE_DIR}/../core/include/seqan
-    -i ${CMAKE_CURRENT_SOURCE_DIR}/../extras/include/seqan
+    -i ${CMAKE_CURRENT_SOURCE_DIR}/../include/seqan
+    -i ${CMAKE_CURRENT_SOURCE_DIR}/../include/seqan
     -i ${CMAKE_CURRENT_SOURCE_DIR}/pages
     --image-dir ${CMAKE_CURRENT_SOURCE_DIR}/../docs2/images)
 endif (PYTHONINTERP_FOUND)

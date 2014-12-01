@@ -34,8 +34,8 @@
 // Tests for fundamental conversion code.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONVERSION_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONVERSION_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONVERSION_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONVERSION_H_
 
 // Test default implementation of Convert<> metafunction.
 SEQAN_DEFINE_TEST(test_basic_fundamental_convert_metafunction)
@@ -56,4 +56,4 @@ SEQAN_DEFINE_TEST(test_basic_fundamental_convert_function)
     SEQAN_ASSERT_EQ(convert<int>(3u), 3);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONVERSION_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONVERSION_H_

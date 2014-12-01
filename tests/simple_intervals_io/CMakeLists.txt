@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/simple_intervals_io/CMakeLists.txt
+# File: /tests/simple_intervals_io/CMakeLists.txt
 #
 # CMakeLists.txt file for the simple_intervals_io module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_simple_intervals_io)
-message (STATUS "Configuring core/tests/simple_intervals_io")
+message (STATUS "Configuring tests/simple_intervals_io")
 
 # ----------------------------------------------------------------------------
 # Dependencies

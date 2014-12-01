@@ -38,8 +38,8 @@
 
 // TODO(holtgrew): Integrate into SeqAn (with tests) or give as an example on how to extend SeqAn in your own code.
 
-#ifndef SEQAN_CORE_APPS_FIND_FIND_MYERS_UKKONEN_READS_H_
-#define SEQAN_CORE_APPS_FIND_FIND_MYERS_UKKONEN_READS_H_
+#ifndef SEQAN_APPS_FIND_FIND_MYERS_UKKONEN_READS_H_
+#define SEQAN_APPS_FIND_FIND_MYERS_UKKONEN_READS_H_
 
 #include <seqan/sequence.h>
 #include <seqan/find.h>
@@ -311,4 +311,4 @@ inline bool setEndPosition(Finder<THaystack, void> & finder,
 
 }  // namespace seqan
 
-#endif  // SEQAN_CORE_APPS_FIND_MYERS_UKKONEN_READS_H_
+#endif  // SEQAN_APPS_FIND_MYERS_UKKONEN_READS_H_

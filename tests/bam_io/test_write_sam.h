@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_TESTS_BAM_IO_TEST_WRITE_SAM_H_
-#define CORE_TESTS_BAM_IO_TEST_WRITE_SAM_H_
+#ifndef TESTS_BAM_IO_TEST_WRITE_SAM_H_
+#define TESTS_BAM_IO_TEST_WRITE_SAM_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -113,4 +113,4 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_write_alignment)
     SEQAN_ASSERT_EQ(CharString(EXPECTED), buffer);
 }
 
-#endif  // CORE_TESTS_BAM_IO_TEST_WRITE_SAM_H_
+#endif  // TESTS_BAM_IO_TEST_WRITE_SAM_H_

@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/align/CMakeLists.txt
+# File: /tests/align/CMakeLists.txt
 #
 # CMakeLists.txt file for the align module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_align)
-message (STATUS "Configuring core/tests/align")
+message (STATUS "Configuring tests/align")
 
 # ----------------------------------------------------------------------------
 # Dependencies

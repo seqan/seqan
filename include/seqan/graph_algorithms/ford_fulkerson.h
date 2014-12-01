@@ -34,8 +34,8 @@
 // Implementation of the Ford-Fulkerson algorithm.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_FORD_FULKERSON_H_
-#define CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_FORD_FULKERSON_H_
+#ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_FORD_FULKERSON_H_
+#define INCLUDE_SEQAN_GRAPH_ALGORITHMS_FORD_FULKERSON_H_
 
 namespace seqan {
 
@@ -217,4 +217,4 @@ fordFulkersonAlgorithm(TFlowMap & flow,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_FORD_FULKERSON_H_
+#endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_FORD_FULKERSON_H_

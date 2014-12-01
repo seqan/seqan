@@ -34,8 +34,8 @@
 // Code for writing SAM.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_BAM_IO_WRITE_SAM_H_
-#define CORE_INCLUDE_SEQAN_BAM_IO_WRITE_SAM_H_
+#ifndef INCLUDE_SEQAN_BAM_IO_WRITE_SAM_H_
+#define INCLUDE_SEQAN_BAM_IO_WRITE_SAM_H_
 
 namespace seqan {
 
@@ -216,4 +216,4 @@ inline void write(TTarget & target,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_WRITE_SAM_H_
+#endif  // #ifndef INCLUDE_SEQAN_BAM_IO_WRITE_SAM_H_

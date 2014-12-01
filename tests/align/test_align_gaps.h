@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GAPS_H_
-#define SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GAPS_H_
+#ifndef SEQAN_TESTS_ALIGN_TEST_ALIGN_GAPS_H_
+#define SEQAN_TESTS_ALIGN_TEST_ALIGN_GAPS_H_
 
 #include <sstream>
 
@@ -1784,4 +1784,4 @@ SEQAN_DEFINE_TEST(test_align_gaps_anchor_gaps_clear)
     SEQAN_ASSERT_EQ(gaps.data_viewCutEnd,   0);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GAPS_H_
+#endif  // #ifndef SEQAN_TESTS_ALIGN_TEST_ALIGN_GAPS_H_

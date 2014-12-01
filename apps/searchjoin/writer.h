@@ -34,8 +34,8 @@
 // This file contains the Writer class.
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_APPS_SEARCHJOIN_WRITER_H_
-#define SEQAN_EXTRAS_APPS_SEARCHJOIN_WRITER_H_
+#ifndef SEQAN_APPS_SEARCHJOIN_WRITER_H_
+#define SEQAN_APPS_SEARCHJOIN_WRITER_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -201,4 +201,4 @@ inline bool close(Writer<TDb, TDb, Join> & writer)
     return close(writer.outputFile);
 }
 
-#endif  // #ifndef SEQAN_EXTRAS_APPS_SEARCHJOIN_WRITER_H_
+#endif  // #ifndef SEQAN_APPS_SEARCHJOIN_WRITER_H_

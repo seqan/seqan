@@ -37,8 +37,8 @@
 // These functions can be called with alignmentFreeComparison().
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGNMENT_FREE_AF_D2_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGNMENT_FREE_AF_D2_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_AF_D2_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_AF_D2_H_
 
 namespace seqan {
 
@@ -121,4 +121,4 @@ _alignmentFreeCompareCounts(TValue & result,
 
 }  // namespace seqan
 
-#endif  // SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGNMENT_FREE_AF_D2_H_
+#endif  // SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_AF_D2_H_

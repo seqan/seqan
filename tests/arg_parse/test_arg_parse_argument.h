@@ -34,8 +34,8 @@
 // Tests for arg_parse/arg_parse_argument.h.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARG_PARSE_ARGUMENT_H_
-#define SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARG_PARSE_ARGUMENT_H_
+#ifndef SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_ARGUMENT_H_
+#define SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_ARGUMENT_H_
 
 #include <seqan/basic.h>
 
@@ -221,4 +221,4 @@ SEQAN_DEFINE_TEST(test_argument_valid_values)
                          "the given path 'not-a-validfile.qxt' does not have one of the valid file extensions [*.txt, *.fasta]; the file extension was overridden to be '.fa'");
 }
 
-#endif // SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARG_PARSE_ARGUMENT_H_
+#endif // SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_ARGUMENT_H_

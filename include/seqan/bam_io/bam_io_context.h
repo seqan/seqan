@@ -34,8 +34,8 @@
 // Class BamIOContext, accessor functions.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_IO_CONTEXT_H_
-#define CORE_INCLUDE_SEQAN_BAM_IO_BAM_IO_CONTEXT_H_
+#ifndef INCLUDE_SEQAN_BAM_IO_BAM_IO_CONTEXT_H_
+#define INCLUDE_SEQAN_BAM_IO_BAM_IO_CONTEXT_H_
 
 namespace seqan {
 
@@ -336,4 +336,4 @@ setNameStoreCache(BamIOContext<TNameStore, TNameStoreCache, Dependent<> > & cont
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_IO_CONTEXT_H_
+#endif  // #ifndef INCLUDE_SEQAN_BAM_IO_BAM_IO_CONTEXT_H_

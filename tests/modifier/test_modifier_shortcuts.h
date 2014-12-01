@@ -32,8 +32,8 @@
 // Tests for modifier/modifier_shortcuts.h
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_MODIFIER_TEST_MODIFIER_SHORTCUTS_H_
-#define SEQAN_CORE_TESTS_MODIFIER_TEST_MODIFIER_SHORTCUTS_H_
+#ifndef SEQAN_TESTS_MODIFIER_TEST_MODIFIER_SHORTCUTS_H_
+#define SEQAN_TESTS_MODIFIER_TEST_MODIFIER_SHORTCUTS_H_
 
 #include <seqan/basic.h>
 #include <seqan/modifier.h>
@@ -317,4 +317,4 @@ SEQAN_DEFINE_TEST(test_modifer_shortcuts_to_upper_in_place_string_set)
     SEQAN_ASSERT_EQ(EXPECTED_STRING2, strSet[1]);
 }
 
-#endif  // SEQAN_CORE_TESTS_MODIFIER_TEST_MODIFIER_SHORTCUTS_H_
+#endif  // SEQAN_TESTS_MODIFIER_TEST_MODIFIER_SHORTCUTS_H_

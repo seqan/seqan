@@ -34,8 +34,8 @@
 // Common typedefs for Mason plus Exceptions.
 // ==========================================================================
 
-#ifndef EXTRAS_APPS_MASON2_MASON_TYPES_H_
-#define EXTRAS_APPS_MASON2_MASON_TYPES_H_
+#ifndef APPS_MASON2_MASON_TYPES_H_
+#define APPS_MASON2_MASON_TYPES_H_
 
 #include <stdexcept>
 #include <seqan/random.h>
@@ -77,4 +77,4 @@ public:
 // Functions
 // ============================================================================
 
-#endif  // #ifndef EXTRAS_APPS_MASON2_MASON_TYPES_H_
+#endif  // #ifndef APPS_MASON2_MASON_TYPES_H_

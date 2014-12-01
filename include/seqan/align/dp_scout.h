@@ -47,8 +47,8 @@
 // see dp_scout_xdrop.h for an example.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_TEST_ALIGNMENT_DP_SCOUT_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_TEST_ALIGNMENT_DP_SCOUT_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_TEST_ALIGNMENT_DP_SCOUT_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_TEST_ALIGNMENT_DP_SCOUT_H_
 
 namespace seqan {
 
@@ -287,4 +287,4 @@ terminateScout(DPScout_<TDPCell, Terminator_<TSpec> > & scout)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_TEST_ALIGNMENT_DP_SCOUT_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_TEST_ALIGNMENT_DP_SCOUT_H_

@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/arg_parse/CMakeLists.txt
+# File: /tests/arg_parse/CMakeLists.txt
 #
 # CMakeLists.txt file for the arg_parse module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_arg_parse)
-message (STATUS "Configuring core/tests/arg_parse")
+message (STATUS "Configuring tests/arg_parse")
 
 # ----------------------------------------------------------------------------
 # Dependencies

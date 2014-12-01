@@ -34,8 +34,8 @@
 // Facade header for module align_split.
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGN_SPLIT_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGN_SPLIT_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_SPLIT_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_SPLIT_H_
 
 // ===========================================================================
 // Prerequisites.
@@ -52,4 +52,4 @@
 #include <seqan/align_split/dp_scout_split.h>
 #include <seqan/align_split/align_split_interface.h>
 
-#endif  // SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGN_SPLIT_H_
+#endif  // SEQAN_INCLUDE_SEQAN_ALIGN_SPLIT_H_

@@ -36,8 +36,8 @@
 
 // TODO(holtgrew): What about move construction? Useful for pairs of strings and such. Tricky to implement since ints have no move constructor, for example.
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_TRIPLE_BASE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_TRIPLE_BASE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_TRIPLE_BASE_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_TRIPLE_BASE_H_
 
 namespace seqan {
 
@@ -578,4 +578,4 @@ operator!=(Triple<L1, L2, L3, LPack> const & _left,
 }
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_TRIPLE_BASE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_TRIPLE_BASE_H_

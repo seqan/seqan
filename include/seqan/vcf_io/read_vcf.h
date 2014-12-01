@@ -33,8 +33,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_READ_VCF_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_READ_VCF_H_
+#ifndef SEQAN_INCLUDE_SEQAN_VCF_READ_VCF_H_
+#define SEQAN_INCLUDE_SEQAN_VCF_READ_VCF_H_
 
 namespace seqan {
 
@@ -324,4 +324,4 @@ readRecord(VcfRecord & record,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_READ_VCF_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_VCF_READ_VCF_H_

@@ -32,8 +32,8 @@
 // Author: Stephan Aiche <stephan.aiche@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_ARG_PARSE_TEST_EXTENSIONS_H_
-#define SEQAN_CORE_TESTS_ARG_PARSE_TEST_EXTENSIONS_H_
+#ifndef SEQAN_TESTS_ARG_PARSE_TEST_EXTENSIONS_H_
+#define SEQAN_TESTS_ARG_PARSE_TEST_EXTENSIONS_H_
 
 #include <seqan/basic/debug_test_system.h>
 #include <string>
@@ -50,4 +50,4 @@ void failExceptionTest()
 
 }  // namespace seqan
 
-#endif // SEQAN_CORE_TESTS_ARG_PARSE_TEST_EXTENSIONS_H_
+#endif // SEQAN_TESTS_ARG_PARSE_TEST_EXTENSIONS_H_

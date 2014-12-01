@@ -37,8 +37,8 @@
 // are overridden for some classes.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BUILTIN_FUNCTIONS_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BUILTIN_FUNCTIONS_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BUILTIN_FUNCTIONS_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_BUILTIN_FUNCTIONS_H_
 
 namespace seqan {
 
@@ -266,4 +266,4 @@ namespace seqan {
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BUILTIN_FUNCTIONS_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BUILTIN_FUNCTIONS_H_

@@ -36,8 +36,8 @@
 
 // TODO(holtgrew): I think the interface is not completely specified here. Also, we could maybe have more generic implementations for operators?
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
 
 namespace seqan {
 
@@ -430,4 +430,4 @@ position(Iter<TContainer, TSpec> const & me,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_

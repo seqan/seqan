@@ -34,8 +34,8 @@
 // Facade header for the basic/smart_pointer sub module.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_SMART_POINTER_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_SMART_POINTER_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_SMART_POINTER_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_SMART_POINTER_H_
 
 // --------------------------------------------------------------------------
 // Dependencies
@@ -56,4 +56,4 @@
 
 #include <seqan/basic/volatile_ptr.h>
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_SMART_POINTER_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_SMART_POINTER_H_

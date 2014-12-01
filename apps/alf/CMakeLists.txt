@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/apps/alf/CMakeLists.txt
+# File: /apps/alf/CMakeLists.txt
 #
 # CMakeLists.txt file for ALF.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (extras_apps_alf)
-message (STATUS "Configuring extras/apps/alf")
+message (STATUS "Configuring apps/alf")
 
 # ----------------------------------------------------------------------------
 # Dependencies

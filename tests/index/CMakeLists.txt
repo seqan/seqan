@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/index/CMakeLists.txt
+# File: /tests/index/CMakeLists.txt
 #
 # CMakeLists.txt file for the index module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_index)
-message (STATUS "Configuring core/tests/index")
+message (STATUS "Configuring tests/index")
 
 # ----------------------------------------------------------------------------
 # Dependencies

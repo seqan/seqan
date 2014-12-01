@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/apps/searchjoin/CMakeLists.txt
+# File: /apps/searchjoin/CMakeLists.txt
 #
 # CMakeLists.txt file for searchjoin.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_apps_searchjoin)
-message (STATUS "Configuring extras/apps/searchjoin")
+message (STATUS "Configuring apps/searchjoin")
 
 # ----------------------------------------------------------------------------
 # Dependencies

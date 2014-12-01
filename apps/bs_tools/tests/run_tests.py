@@ -14,7 +14,7 @@ import os.path
 import sys
 
 # Automagically add util/py_lib to PYTHONPATH environment variable.
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..',
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
                                     '..', '..', 'util', 'py_lib'))
 sys.path.insert(0, path)
 
@@ -32,16 +32,16 @@ def main(source_base, binary_base):
     ##############################################################
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
-        'extras/apps/bs_tools/tests')  # tests dir
+        'apps/bs_tools/tests')  # tests dir
 
     # ============================================================
     # Auto-detect the binary path.
     # ============================================================
 
     path_to_bisar = app_tests.autolocateBinary(
-      binary_base, 'extras/apps/bs_tools', 'bisar')
+      binary_base, 'apps/bs_tools', 'bisar')
     path_to_casbar = app_tests.autolocateBinary(
-      binary_base, 'extras/apps/bs_tools', 'casbar')
+      binary_base, 'apps/bs_tools', 'casbar')
 
     # ============================================================
     # Built TestConf list.
@@ -52,7 +52,7 @@ def main(source_base, binary_base):
     conf_list = []
     ph.outFile('-')  # To ensure that the out path is set.
     transforms = [
-        app_tests.ReplaceTransform(os.path.join(ph.source_base_path, 'extras/apps/bs_tools/tests') + os.sep, '', right=True),
+        app_tests.ReplaceTransform(os.path.join(ph.source_base_path, 'apps/bs_tools/tests') + os.sep, '', right=True),
         app_tests.ReplaceTransform(ph.temp_dir + os.sep, '', right=True),
         app_tests.RegexpReplaceTransform(r'\tVN:[^\t]*', r'\tVN:VERSION', right=True, left=True)
         ]

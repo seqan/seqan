@@ -34,8 +34,8 @@
 // Code for Dna(5) to AminoAcid Translation - Conversion Tables
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_TRANSLATION_TRANSLATION_TABLES_H_
-#define EXTRAS_INCLUDE_SEQAN_TRANSLATION_TRANSLATION_TABLES_H_
+#ifndef INCLUDE_SEQAN_TRANSLATION_TRANSLATION_TABLES_H_
+#define INCLUDE_SEQAN_TRANSLATION_TRANSLATION_TABLES_H_
 
 namespace seqan {
 
@@ -881,4 +881,4 @@ char const TranslateTableDnaToAminoAcid_<
 
 }
 
-#endif // EXTRAS_INCLUDE_SEQAN_TRANSLATION_TRANSLATION_TABLES_H_
+#endif // INCLUDE_SEQAN_TRANSLATION_TRANSLATION_TABLES_H_

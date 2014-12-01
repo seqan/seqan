@@ -4,10 +4,10 @@
 
 # We use the current trunk version of 2011-10-13 (r10463) for building the
 # reference.
-RAZERS=../../../../build/Release/core/apps/razers2/razers2
-RABEMA_PREPARE=../../../../build/Release/core/apps/rabema/rabema_prepare_sam
-RABEMA_BUILD=../../../../build/Release/core/apps/rabema/rabema_build_gold_standard
-RABEMA_EVALUATE=../../../../build/Release/core/apps/rabema/rabema_evaluate
+RAZERS=../../../../build/Release/apps/razers2/razers2
+RABEMA_PREPARE=../../../../build/Release/apps/rabema/rabema_prepare_sam
+RABEMA_BUILD=../../../../build/Release/apps/rabema/rabema_build_gold_standard
+RABEMA_EVALUATE=../../../../build/Release/apps/rabema/rabema_evaluate
 
 # ============================================================
 # Map reads for gold standard and with too low error rate.

@@ -162,4 +162,4 @@ Workshop Assignment 1
 
       .. container:: foldable
 
-         .. includefrags:: core/demos/tutorial/sequences_in_depth/assignment_exact_generous_solution.cpp
+         .. includefrags:: demos/tutorial/sequences_in_depth/assignment_exact_generous_solution.cpp

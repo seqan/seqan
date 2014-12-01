@@ -37,8 +37,8 @@
 // TODO(holtgrew): Perform some benchmarks and use a better malloc, e.g. tcmalloc and see whether our allocator infrastructure is worth keeping around.
 // TODO(holtgrew): Rename to allocator_base.h?
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALLOCATOR_INTERFACE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALLOCATOR_INTERFACE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALLOCATOR_INTERFACE_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_ALLOCATOR_INTERFACE_H_
 
 namespace seqan {
 
@@ -431,4 +431,4 @@ deallocate(
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALLOCATOR_INTERFACE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALLOCATOR_INTERFACE_H_

@@ -34,8 +34,8 @@
 // General purpose allocator.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALLOCATOR_SIMPLE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALLOCATOR_SIMPLE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALLOCATOR_SIMPLE_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_ALLOCATOR_SIMPLE_H_
 
 #include <seqan/basic/allocator_interface.h>
 
@@ -271,4 +271,4 @@ deallocate(Allocator<SimpleAlloc<TParentAllocator> > & me,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALLOCATOR_SIMPLE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALLOCATOR_SIMPLE_H_

@@ -7,7 +7,7 @@ using namespace seqan;
 int main()
 {
     CharString path = SEQAN_PATH_TO_ROOT();
-    append(path, "/core/demos/seq_io/example.fa");
+    append(path, "/demos/seq_io/example.fa");
     
     FaiIndex faiIndex;
 

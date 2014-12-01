@@ -34,8 +34,8 @@
 // Defines basic file access functions.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_FILE_BASE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_FILE_BASE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_FILE_BASE_H_
+#define SEQAN_INCLUDE_SEQAN_FILE_BASE_H_
 
 /* IOREV
  * _doc_
@@ -895,4 +895,4 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 	}
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_FILE_BASE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_FILE_BASE_H_

@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/apps/rabema/CMakeLists.txt
+# File: /apps/rabema/CMakeLists.txt
 #
 # CMakeLists.txt file for Rabema.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (core_apps_rabema)
-message (STATUS "Configuring core/apps/rabema")
+message (STATUS "Configuring apps/rabema")
 
 # ----------------------------------------------------------------------------
 # Dependencies

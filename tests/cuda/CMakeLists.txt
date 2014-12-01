@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/cuda/CMakeLists.txt
+# File: /tests/cuda/CMakeLists.txt
 #
 # CMakeLists.txt file for the cuda module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_cuda)
-message (STATUS "Configuring core/tests/cuda")
+message (STATUS "Configuring tests/cuda")
 
 # ----------------------------------------------------------------------------
 # Dependencies

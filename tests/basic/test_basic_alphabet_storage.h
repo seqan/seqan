@@ -38,8 +38,8 @@
 // fulfillment.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_STORAGE_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_STORAGE_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_STORAGE_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_STORAGE_H_
 
 struct LongStruct_
 {
@@ -95,4 +95,4 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_storage_bytes_per_value_metafunction)
     SEQAN_ASSERT_EQ(+BytesPerValue<LongStruct_>::VALUE, 16);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_STORAGE_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_STORAGE_H_

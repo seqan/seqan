@@ -39,8 +39,8 @@
 // biases for PCR or fragment selection.
 // ==========================================================================
 
-#ifndef EXTRAS_APPS_MASON2_FRAGMENT_GENERATION_H_
-#define EXTRAS_APPS_MASON2_FRAGMENT_GENERATION_H_
+#ifndef APPS_MASON2_FRAGMENT_GENERATION_H_
+#define APPS_MASON2_FRAGMENT_GENERATION_H_
 
 #include <sstream>
 #include <fstream>
@@ -397,4 +397,4 @@ void NormalFragmentSamplerImpl::_generate(Fragment & frag, int rId, unsigned con
     }
 }
 
-#endif  // #ifndef EXTRAS_APPS_MASON2_FRAGMENT_GENERATION_H_
+#endif  // #ifndef APPS_MASON2_FRAGMENT_GENERATION_H_

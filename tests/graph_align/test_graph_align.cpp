@@ -41,7 +41,7 @@
 
 // Test path
 #define TEST_PATH "projects/tests/graph_align/"
-#define LIB_PATH "core/include/seqan/graph_align/"
+#define LIB_PATH "include/seqan/graph_align/"
 
 // SeqAn Includes
 #include <seqan/graph_align.h>

@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/modifier_cyclic_shape/CMakeLists.txt
+# File: /tests/modifier_cyclic_shape/CMakeLists.txt
 #
 # CMakeLists.txt file for the modifier_cyclic_shape module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_modifier_cyclic_shape)
-message (STATUS "Configuring core/tests/modifier_cyclic_shape")
+message (STATUS "Configuring tests/modifier_cyclic_shape")
 
 # ----------------------------------------------------------------------------
 # Dependencies

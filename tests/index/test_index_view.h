@@ -32,8 +32,8 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_TESTS_INDEX_VIEW_H_
-#define EXTRAS_TESTS_INDEX_VIEW_H_
+#ifndef TESTS_INDEX_VIEW_H_
+#define TESTS_INDEX_VIEW_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -147,4 +147,4 @@ SEQAN_DEFINE_TEST(test_index_view_basic)
     compareTreeIterators(index, indexView);
 }
 
-#endif  // EXTRAS_TESTS_INDEX_VIEW_H_
+#endif  // TESTS_INDEX_VIEW_H_

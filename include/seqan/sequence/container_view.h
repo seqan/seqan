@@ -33,8 +33,8 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_SEQUENCE_CONTAINER_VIEW_H
-#define SEQAN_EXTRAS_SEQUENCE_CONTAINER_VIEW_H
+#ifndef SEQAN_SEQUENCE_CONTAINER_VIEW_H
+#define SEQAN_SEQUENCE_CONTAINER_VIEW_H
 
 namespace seqan {
 
@@ -690,4 +690,4 @@ operator<<(TStream & target, ContainerView<TContainer, TSpec> const & source)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_SEQUENCE_CONTAINER_VIEW_H
+#endif  // #ifndef SEQAN_SEQUENCE_CONTAINER_VIEW_H

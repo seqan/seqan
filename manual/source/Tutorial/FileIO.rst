@@ -92,7 +92,7 @@ Also, we could add adaptions of other file and stream data types to the :dox:`St
 
 The following example shows how to use the :dox:`StreamConcept` global interface functions to copy the contents of the file ``in.txt`` to the file ``out.txt``.
 
-.. includefrags:: extras/demos/tutorial/file_io/example1.cpp
+.. includefrags:: demos/tutorial/file_io/example1.cpp
 
 Assignment 1
 """"""""""""
@@ -120,7 +120,7 @@ Assignment 1
    Solution ::
     .. container:: foldable
 
-       .. includefrags:: extras/demos/tutorial/file_io/solution1.cpp
+       .. includefrags:: demos/tutorial/file_io/solution1.cpp
 
 Char Arrays As Streams
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -169,23 +169,23 @@ The following example shows (1) how to conditionally enable zlib and bzlib suppo
 In the header of the program, we include the zlib and bzlib headers if the correct preprocessor symbols are set.
 Also, we'll include the required SeqAn headers.
 
-.. includefrags:: extras/demos/tutorial/file_io/stream_compression_formats.cpp
+.. includefrags:: demos/tutorial/file_io/stream_compression_formats.cpp
    :fragment: header
 
 The first routine demonstrates how to open a ``.gz`` file and write its contents to stdout with full error handling.
 Note that writing char-by-char is probably not the best idea in a real-world program.
 
-.. includefrags:: extras/demos/tutorial/file_io/stream_compression_formats.cpp
+.. includefrags:: demos/tutorial/file_io/stream_compression_formats.cpp
    :fragment: open-gz
 
 The next routine demonstrates how to open a ``.bz2`` file and write its contents to stdout, again with full error handling.
 
-.. includefrags:: extras/demos/tutorial/file_io/stream_compression_formats.cpp
+.. includefrags:: demos/tutorial/file_io/stream_compression_formats.cpp
    :fragment: open-bz2
 
 And finally, the code that calls the functions from above.
 
-.. includefrags:: extras/demos/tutorial/file_io/stream_compression_formats.cpp
+.. includefrags:: demos/tutorial/file_io/stream_compression_formats.cpp
    :fragment: main
 
 Now, let's test the program.
@@ -200,13 +200,13 @@ Note that the :dox:`BZ2FileStream` fails when reading from the file, not when op
    # echo 'bar' > test.txt
    # bzip2 test.txt
    # echo 'bz' > test.txt
-   # ./extras/demos/tutorial/stream/tutorial_stream_compression_formats test.txt
+   # ./demos/tutorial/stream/tutorial_stream_compression_formats test.txt
    ERROR: GZip file has the wrong format!
    ERROR: Reading byte from BZ2 file.
-   # ./extras/demos/tutorial/stream/tutorial_stream_compression_formats test.txt.gz
+   # ./demos/tutorial/stream/tutorial_stream_compression_formats test.txt.gz
    foo
    ERROR: Reading byte from BZ2 file.
-   # ./extras/demos/tutorial/stream/tutorial_stream_compression_formats test.txt.bz2
+   # ./demos/tutorial/stream/tutorial_stream_compression_formats test.txt.bz2
    ERROR: GZip file has the wrong format!
    bar
 
@@ -229,7 +229,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/file_io/solution2.cpp
+        .. includefrags:: demos/tutorial/file_io/solution2.cpp
 
 Memory Mapped Files
 -------------------
@@ -241,14 +241,14 @@ In SeqAn, you access memory mapped files using the :dox:`MMapString` specializat
 After opening the mapped string using :dox:`File#open`, you can access its contents as if you were manipulating a normal :dox:`String`.
 The following shows a simple example:
 
-.. includefrags:: extras/demos/tutorial/file_io/mmap_string_example.cpp
+.. includefrags:: demos/tutorial/file_io/mmap_string_example.cpp
 
 An example execution of the program:
 
 .. code-block:: console
 
    # echo 'foo' > test.txt
-   # ./extras/demos/tutorial/stream/tutorial_mmap_string_example test.txt
+   # ./demos/tutorial/stream/tutorial_mmap_string_example test.txt
    This is the first mapped string!
    foo
 

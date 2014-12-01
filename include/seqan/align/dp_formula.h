@@ -36,8 +36,8 @@
 
 // TODO(holtgrew): Documentation in this header necessary or internal only?
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_
 
 namespace seqan {
 
@@ -221,4 +221,4 @@ _doComputeScore(DPCell_<TScoreValue, TGapCosts> & activeCell,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_FORMULA_H_

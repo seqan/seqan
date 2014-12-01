@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/stream/CMakeLists.txt
+# File: /tests/stream/CMakeLists.txt
 #
 # CMakeLists.txt file for the stream module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_stream)
-message (STATUS "Configuring core/tests/stream")
+message (STATUS "Configuring tests/stream")
 
 # ----------------------------------------------------------------------------
 # Dependencies

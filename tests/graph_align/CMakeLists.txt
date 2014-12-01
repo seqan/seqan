@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/graph_align/CMakeLists.txt
+# File: /tests/graph_align/CMakeLists.txt
 #
 # CMakeLists.txt file for the graph_align module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_graph_align)
-message (STATUS "Configuring core/tests/graph_align")
+message (STATUS "Configuring tests/graph_align")
 
 # ----------------------------------------------------------------------------
 # Dependencies

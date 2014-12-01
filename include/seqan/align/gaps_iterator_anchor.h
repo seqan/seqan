@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPS_ITERATOR_ANCHOR_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPS_ITERATOR_ANCHOR_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ITERATOR_ANCHOR_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ITERATOR_ANCHOR_H_
 
 namespace seqan {
 
@@ -747,4 +747,4 @@ operator+(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & lhs, TDif
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPS_ITERATOR_ANCHOR_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ITERATOR_ANCHOR_H_

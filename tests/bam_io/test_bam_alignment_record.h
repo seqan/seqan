@@ -34,8 +34,8 @@
 // Some basic tests for BamAlignmentRecord and related functions.
 // ==========================================================================
 
-#ifndef CORE_TESTS_BAM_IO_TEST_BAM_ALIGNMENT_RECORD_H_
-#define CORE_TESTS_BAM_IO_TEST_BAM_ALIGNMENT_RECORD_H_
+#ifndef TESTS_BAM_IO_TEST_BAM_ALIGNMENT_RECORD_H_
+#define TESTS_BAM_IO_TEST_BAM_ALIGNMENT_RECORD_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -199,4 +199,4 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_alignment_record_has_flag_supplementary)
     SEQAN_ASSERT_NOT(hasFlagSupplementary(record));
 }
 
-#endif  // CORE_TESTS_BAM_IO_TEST_BAM_ALIGNMENT_RECORD_H_
+#endif  // TESTS_BAM_IO_TEST_BAM_ALIGNMENT_RECORD_H_

@@ -34,8 +34,8 @@
 // Packed triple specialization.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_TRIPLE_PACKED_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_TRIPLE_PACKED_H_
+#ifndef SEQAN_INCLUDE_SEQAN_TRIPLE_PACKED_H_
+#define SEQAN_INCLUDE_SEQAN_TRIPLE_PACKED_H_
 
 namespace seqan {
 
@@ -208,4 +208,4 @@ inline void moveValueI3(Triple<T1, T2, T3, Pack> & triple, T const & _i)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_TRIPLE_PACKED_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_TRIPLE_PACKED_H_

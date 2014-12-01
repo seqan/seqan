@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_TESTS_BAM_IO_TEST_READ_BAM_H_
-#define CORE_TESTS_BAM_IO_TEST_READ_BAM_H_
+#ifndef TESTS_BAM_IO_TEST_READ_BAM_H_
+#define TESTS_BAM_IO_TEST_READ_BAM_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -51,8 +51,8 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_read_header)
     // File has same contents as in the SAM test.
     CharString bamFilename;
     append(bamFilename, SEQAN_PATH_TO_ROOT());
-    //append(bamFilename, "/core/tests/bam_io/small.bam");
-    append(bamFilename, "/core/tests/bam_io/test_small.bam");
+    //append(bamFilename, "/tests/bam_io/small.bam");
+    append(bamFilename, "/tests/bam_io/test_small.bam");
 
     String<char, MMap<> > in;
     open(in, toCString(bamFilename));
@@ -106,8 +106,8 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_read_alignment)
 
     CharString bamFilename;
     append(bamFilename, SEQAN_PATH_TO_ROOT());
-    //append(bamFilename, "/core/tests/bam_io/small.bam");
-    append(bamFilename, "/core/tests/bam_io/test_small.bam");
+    //append(bamFilename, "/tests/bam_io/small.bam");
+    append(bamFilename, "/tests/bam_io/test_small.bam");
     
     String<char, MMap<> > in;
     open(in, toCString(bamFilename));
@@ -159,4 +159,4 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_read_alignment)
     // TODO(holtgrew): Check more alignments?
 }
 
-#endif  // CORE_TESTS_BAM_IO_TEST_READ_BAM_H_
+#endif  // TESTS_BAM_IO_TEST_READ_BAM_H_

@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/find_swift/CMakeLists.txt
+# File: /tests/find_swift/CMakeLists.txt
 #
 # CMakeLists.txt file for the find_swift module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_find_swift)
-message (STATUS "Configuring core/tests/find_swift")
+message (STATUS "Configuring tests/find_swift")
 
 # ----------------------------------------------------------------------------
 # Dependencies

@@ -35,8 +35,8 @@
 // module.
 // ==========================================================================
 
-#ifndef CORE_TESTS_SEQUENCE_TEST_SEQUENCE_H_
-#define CORE_TESTS_SEQUENCE_TEST_SEQUENCE_H_
+#ifndef TESTS_SEQUENCE_TEST_SEQUENCE_H_
+#define TESTS_SEQUENCE_TEST_SEQUENCE_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -1695,4 +1695,4 @@ SEQAN_TYPED_TEST(StringTestCommon, Value)
 
     testConstructDeconstruct(str);
 }
-#endif  // CORE_TESTS_SEQUENCE_TEST_SEQUENCE_H_
+#endif  // TESTS_SEQUENCE_TEST_SEQUENCE_H_

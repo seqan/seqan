@@ -45,8 +45,8 @@
 
 // TODO(holtgrew): Add RnaQ and Rna5Q? Can we create a tag/type for Dna and Rna that is then differentiated with one additional tag?
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_H_
 
 namespace seqan {
 
@@ -1667,4 +1667,4 @@ assign(unsigned char & c_target,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_H_

@@ -34,8 +34,8 @@
 // Implementation of Single-Source-Shortest-Path algorithm.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_SINGLE_SOURCE_SHORTEST_PATH_H_
-#define CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_SINGLE_SOURCE_SHORTEST_PATH_H_
+#ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_SINGLE_SOURCE_SHORTEST_PATH_H_
+#define INCLUDE_SEQAN_GRAPH_ALGORITHMS_SINGLE_SOURCE_SHORTEST_PATH_H_
 
 namespace seqan {
 
@@ -230,4 +230,4 @@ void dagShortestPath(TPredecessorMap & predecessor,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_SINGLE_SOURCE_SHORTEST_PATH_H_
+#endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_SINGLE_SOURCE_SHORTEST_PATH_H_

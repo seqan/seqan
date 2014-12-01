@@ -34,8 +34,8 @@
 
 // TODO(holtgrew): Should be called _globalAlignmentScore()!
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_MYERS_IMPL_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_MYERS_IMPL_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_MYERS_IMPL_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_MYERS_IMPL_H_
 
 namespace seqan {
 
@@ -198,4 +198,4 @@ _globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_MYERS_IMPL_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_MYERS_IMPL_H_

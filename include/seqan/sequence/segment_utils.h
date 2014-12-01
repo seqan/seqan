@@ -34,8 +34,8 @@
 // Utility Functions for Sequences.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_SEQUENCE_SEQ_UTILS_H_
-#define CORE_INCLUDE_SEQAN_SEQUENCE_SEQ_UTILS_H_
+#ifndef INCLUDE_SEQAN_SEQUENCE_SEQ_UTILS_H_
+#define INCLUDE_SEQAN_SEQUENCE_SEQ_UTILS_H_
 
 namespace seqan {
 
@@ -151,4 +151,4 @@ inline bool startsWith(TLhs const & lhs, TRhs const & rhs)
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_SEQUENCE_SEQ_UTILS_H_
+#endif  // #ifndef INCLUDE_SEQAN_SEQUENCE_SEQ_UTILS_H_

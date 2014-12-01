@@ -34,8 +34,8 @@
 // Bit-packed pair specialization.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_PAIR_BIT_PACKED_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_PAIR_BIT_PACKED_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_PAIR_BIT_PACKED_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_PAIR_BIT_PACKED_H_
 
 namespace seqan {
 
@@ -198,4 +198,4 @@ inline void moveValueI2(Pair<T1, T2, BitPacked<BITSIZE1, BITSIZE2> > & pair, T &
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_PAIR_BIT_PACKED_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_PAIR_BIT_PACKED_H_

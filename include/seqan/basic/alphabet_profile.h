@@ -34,8 +34,8 @@
 // Profile alphabet character code.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALPHABET_PROFILE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALPHABET_PROFILE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_PROFILE_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_PROFILE_H_
 
 #include <seqan/misc/misc_memset.h>
 
@@ -392,4 +392,4 @@ operator<<(TStream & os, ProfileChar<TValue, TCount, TSpec> const & rhs)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALPHABET_PROFILE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_PROFILE_H_

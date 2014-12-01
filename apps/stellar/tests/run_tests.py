@@ -15,7 +15,7 @@ import os.path
 import sys
 
 # Automagically add util/py_lib to PYTHONPATH environment variable.
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..',
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
                                     '..', '..', 'util', 'py_lib'))
 sys.path.insert(0, path)
 
@@ -30,14 +30,14 @@ def main(source_base, binary_base):
 
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
-        'core/apps/stellar/tests')  # tests dir
+        'apps/stellar/tests')  # tests dir
 
     # ============================================================
     # Auto-detect the binary path.
     # ============================================================
 
     path_to_program = app_tests.autolocateBinary(
-      binary_base, 'core/apps/stellar', 'stellar')
+      binary_base, 'apps/stellar', 'stellar')
 
     # ============================================================
     # Built TestConf list.
@@ -52,7 +52,7 @@ def main(source_base, binary_base):
     # make it more canonical and host independent.
     ph.outFile('-')  # To ensure that the out path is set.
     transforms = [
-        app_tests.ReplaceTransform(os.path.join(ph.source_base_path, 'core/apps/stellar/tests') + os.sep, '', right=True),
+        app_tests.ReplaceTransform(os.path.join(ph.source_base_path, 'apps/stellar/tests') + os.sep, '', right=True),
         app_tests.ReplaceTransform(ph.temp_dir + os.sep, '', right=True),
         app_tests.NormalizeScientificExponentsTransform(),
         ]

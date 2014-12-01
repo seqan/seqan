@@ -22,8 +22,8 @@
 // I/O functionality for GSI Records.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_APPS_RABEMA_IO_GSI_H_
-#define SEQAN_CORE_APPS_RABEMA_IO_GSI_H_
+#ifndef SEQAN_APPS_RABEMA_IO_GSI_H_
+#define SEQAN_APPS_RABEMA_IO_GSI_H_
 
 // ============================================================================
 // Forwards
@@ -387,4 +387,4 @@ void writeRecord(TStream & stream, GsiRecord const & record, Gsi const & /*tag*/
            << record.lastPos << '\n';
 }
 
-#endif  // #ifndef SEQAN_CORE_APPS_RABEMA_IO_GSI_H_
+#endif  // #ifndef SEQAN_APPS_RABEMA_IO_GSI_H_

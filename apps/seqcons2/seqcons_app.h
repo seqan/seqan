@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_APPS_SEQCONS2_SEQCONS_APP_H_
-#define EXTRAS_APPS_SEQCONS2_SEQCONS_APP_H_
+#ifndef APPS_SEQCONS2_SEQCONS_APP_H_
+#define APPS_SEQCONS2_SEQCONS_APP_H_
 
 #include <memory>
 
@@ -72,4 +72,4 @@ private:
 // Functions
 // ============================================================================
 
-#endif  // #ifndef EXTRAS_APPS_SEQCONS2_SEQCONS_APP_H_
+#endif  // #ifndef APPS_SEQCONS2_SEQCONS_APP_H_

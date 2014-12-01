@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_BED_IO_BED_RECORD_H_
-#define CORE_INCLUDE_SEQAN_BED_IO_BED_RECORD_H_
+#ifndef INCLUDE_SEQAN_BED_IO_BED_RECORD_H_
+#define INCLUDE_SEQAN_BED_IO_BED_RECORD_H_
 
 namespace seqan {
 
@@ -636,4 +636,4 @@ void clear(BedRecord<TSpec> & record)
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BED_IO_BED_RECORD_H_
+#endif  // #ifndef INCLUDE_SEQAN_BED_IO_BED_RECORD_H_

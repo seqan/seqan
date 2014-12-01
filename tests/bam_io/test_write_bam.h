@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_TESTS_BAM_IO_TEST_WRITE_BAM_H_
-#define CORE_TESTS_BAM_IO_TEST_WRITE_BAM_H_
+#ifndef TESTS_BAM_IO_TEST_WRITE_BAM_H_
+#define TESTS_BAM_IO_TEST_WRITE_BAM_H_
 
 #include <iomanip>
 
@@ -76,7 +76,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_header)
     // Compare results.
     CharString bamFilename;
     append(bamFilename, SEQAN_PATH_TO_ROOT());
-    append(bamFilename, "/core/tests/bam_io/header_uncompressed.bam");
+    append(bamFilename, "/tests/bam_io/header_uncompressed.bam");
     
     String<char, MMap<> > EXPECTED;
     open(EXPECTED, toCString(bamFilename));
@@ -137,7 +137,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_alignment)
 
     CharString bamFilename;
     append(bamFilename, SEQAN_PATH_TO_ROOT());
-    append(bamFilename, "/core/tests/bam_io/alignment_uncompressed.bam");
+    append(bamFilename, "/tests/bam_io/alignment_uncompressed.bam");
 
     String<char, MMap<> > EXPECTED;
     open(EXPECTED, toCString(bamFilename));
@@ -153,4 +153,4 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_write_alignment)
     SEQAN_ASSERT_EQ(text, EXPECTED);
 }
 
-#endif  // CORE_TESTS_BAM_IO_TEST_WRITE_BAM_H_
+#endif  // TESTS_BAM_IO_TEST_WRITE_BAM_H_

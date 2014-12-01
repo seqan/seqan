@@ -8,7 +8,7 @@
 # They can be used to compare against the output of new tree_recon programs.
 
 # Output was generated on 2011-10-20 (r10627).
-TREE_RECON=../../../../build/Debug/core/apps/tree_recon/tree_recon
+TREE_RECON=../../../../build/Debug/apps/tree_recon/tree_recon
 
 # Run with defaults for all non-mandatory options.
 for i in 1 2 3; do

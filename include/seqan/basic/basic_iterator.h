@@ -34,8 +34,8 @@
 // Facade header for basic_iterator submodule.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_ITERATOR_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_ITERATOR_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ITERATOR_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ITERATOR_H_
 
 // --------------------------------------------------------------------------
 // Dependencies
@@ -86,4 +86,4 @@
 #include <seqan/basic/proxy_base.h>
 #include <seqan/basic/proxy_iterator.h>
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_ITERATOR_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ITERATOR_H_

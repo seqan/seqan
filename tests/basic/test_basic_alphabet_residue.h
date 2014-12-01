@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_RESIDUE_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_RESIDUE_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_RESIDUE_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_RESIDUE_H_
 
 // TODO(holtgrew): Tests for Finite.
 
@@ -845,4 +845,4 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_amino_acid)
     }
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_ALPHABET_RESIDUE_TYPE_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_ALPHABET_RESIDUE_TYPE_H_

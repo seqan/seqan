@@ -37,8 +37,8 @@
 // and loops.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_CONTROL_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_CONTROL_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_CONTROL_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_CONTROL_H_
 
 namespace seqan {
 
@@ -397,4 +397,4 @@ class LoopReverse<Worker, 0>
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_CONTROL_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_CONTROL_H_

@@ -35,8 +35,8 @@
 // gives the variation size.
 // ==========================================================================
 
-#ifndef EXTRAS_APPS_MASON2_VARIATION_SIZE_TSV_H_
-#define EXTRAS_APPS_MASON2_VARIATION_SIZE_TSV_H_
+#ifndef APPS_MASON2_VARIATION_SIZE_TSV_H_
+#define APPS_MASON2_VARIATION_SIZE_TSV_H_
 
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
@@ -139,4 +139,4 @@ int readRecord(VariationSizeRecord & record, TForwardIterator & iter,
     return 0;
 }
 
-#endif  // #ifndef EXTRAS_APPS_MASON2_VARIATION_SIZE_TSV_H_
+#endif  // #ifndef APPS_MASON2_VARIATION_SIZE_TSV_H_

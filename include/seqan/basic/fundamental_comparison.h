@@ -34,8 +34,8 @@
 // Basic comparison code.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_FUNDAMENTAL_COMPARISON_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_FUNDAMENTAL_COMPARISON_H_
+#ifndef SEQAN_INCLUDE_SEQAN_FUNDAMENTAL_COMPARISON_H_
+#define SEQAN_INCLUDE_SEQAN_FUNDAMENTAL_COMPARISON_H_
 
 namespace seqan {
 
@@ -175,4 +175,4 @@ SEQAN_HOST_DEVICE inline bool ordGreater(TValue1 const & left, TValue2 const & r
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_FUNDAMENTAL_COMPARISON_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_FUNDAMENTAL_COMPARISON_H_

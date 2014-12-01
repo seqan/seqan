@@ -33,8 +33,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPS_ITERATOR_ARRAY_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPS_ITERATOR_ARRAY_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ITERATOR_ARRAY_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ITERATOR_ARRAY_H_
 
 namespace seqan {
 
@@ -738,4 +738,4 @@ operator+(Iter<TGaps, GapsIterator<ArrayGaps> > const & lhs, TDifference d)
 
 }  // namespace seqan
 
-#endif  // SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPS_ITERATOR_ARRAY_H_
+#endif  // SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ITERATOR_ARRAY_H_

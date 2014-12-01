@@ -208,7 +208,7 @@ Assignment 1
 
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/string_sets/assignment_1_solution.cpp
+        .. includefrags:: demos/tutorial/string_sets/assignment_1_solution.cpp
 
 Assignment 2
 ^^^^^^^^^^^^
@@ -259,7 +259,7 @@ Assignment 2
 
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/string_sets/assignment_2_solution.cpp
+        .. includefrags:: demos/tutorial/string_sets/assignment_2_solution.cpp
 
 Workshop Assignment 4
 ^^^^^^^^^^^^^^^^^^^^^
@@ -276,11 +276,11 @@ Workshop Assignment 4
      #. Build a StringSet of readList. Reuse the Rooted iterator above.
      #. Iterate over the StringSet and print out the values.
 
-     .. includefrags:: core/demos/tutorial/string_sets/assignment_3b_workshop_solution.cpp
+     .. includefrags:: demos/tutorial/string_sets/assignment_3b_workshop_solution.cpp
 
    Solution
      Click **more...** to see the solution.
 
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/string_sets/assignment_4_workshop_solution.cpp
+        .. includefrags:: demos/tutorial/string_sets/assignment_4_workshop_solution.cpp

@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/tests/alignment_free/CMakeLists.txt
+# File: /tests/alignment_free/CMakeLists.txt
 #
 # CMakeLists.txt file for the alignment_free module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_tests_alignment_free)
-message (STATUS "Configuring extras/tests/alignment_free")
+message (STATUS "Configuring tests/alignment_free")
 
 # ----------------------------------------------------------------------------
 # Dependencies

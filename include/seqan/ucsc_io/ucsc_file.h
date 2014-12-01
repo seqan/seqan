@@ -34,8 +34,8 @@
 // Smart file for reading/writing files in UCSC format.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_UCSC_IO_UCSC_FILE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_UCSC_IO_UCSC_FILE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_UCSC_IO_UCSC_FILE_H_
+#define SEQAN_INCLUDE_SEQAN_UCSC_IO_UCSC_FILE_H_
 
 namespace seqan {
 
@@ -203,4 +203,4 @@ writeRecord(SmartFile<Ucsc, Output, TSpec> & file, UcscRecord const & record)
 
 }  // namespace seqan
 
-#endif // SEQAN_CORE_INCLUDE_SEQAN_UCSC_IO_UCSC_FILE_H_
+#endif // SEQAN_INCLUDE_SEQAN_UCSC_IO_UCSC_FILE_H_

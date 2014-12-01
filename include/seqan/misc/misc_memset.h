@@ -32,8 +32,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_MISC_MISC_MEMSET_H_
-#define CORE_INCLUDE_SEQAN_MISC_MISC_MEMSET_H_
+#ifndef INCLUDE_SEQAN_MISC_MISC_MEMSET_H_
+#define INCLUDE_SEQAN_MISC_MISC_MEMSET_H_
 
 #include <seqan/basic/basic_metaprogramming.h>
 
@@ -225,4 +225,4 @@ memset(void* ptr)
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_MISC_MISC_MEMSET_H_
+#endif  // #ifndef INCLUDE_SEQAN_MISC_MISC_MEMSET_H_

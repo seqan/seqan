@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_APPS_MASON2_VCF_MATERIALIZATION_H_
-#define EXTRAS_APPS_MASON2_VCF_MATERIALIZATION_H_
+#ifndef APPS_MASON2_VCF_MATERIALIZATION_H_
+#define APPS_MASON2_VCF_MATERIALIZATION_H_
 
 #include <stdexcept>
 
@@ -181,4 +181,4 @@ private:
 // Functions
 // ============================================================================
 
-#endif  // #ifndef EXTRAS_APPS_MASON2_VCF_MATERIALIZATION_H_
+#endif  // #ifndef APPS_MASON2_VCF_MATERIALIZATION_H_

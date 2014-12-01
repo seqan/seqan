@@ -32,8 +32,8 @@
 // Author: Stephan Aiche <stephan.aiche@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_ARGUMENT_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_ARGUMENT_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_ARGUMENT_H_
+#define SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_ARGUMENT_H_
 
 #include <seqan/arg_parse/arg_parse_exceptions.h>
 #include <seqan/arg_parse/arg_parse_type_support.h>
@@ -1409,4 +1409,4 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos = 
 
 } // namespace seqan
 
-#endif // SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_ARGUMENT_H_
+#endif // SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_ARGUMENT_H_

@@ -32,8 +32,8 @@
 // Author: Stephan Aiche <stephan.aiche@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_PARSE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_PARSE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_PARSE_H_
+#define SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_PARSE_H_
 
 #include <seqan/arg_parse/arg_parse_option.h>
 #include <seqan/arg_parse/argument_parser.h>
@@ -381,4 +381,4 @@ ArgumentParser::ParseResult parse(ArgumentParser & me,
 
 } // namespace seqan
 
-#endif // SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_PARSE_H_
+#endif // SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_PARSE_H_

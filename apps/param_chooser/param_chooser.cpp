@@ -37,7 +37,7 @@
 #include <seqan/file.h>
 #include <seqan/find_motif.h>
 
-#include "../../../core/apps/splazers/paramChooser.h"
+#include "../../../apps/splazers/paramChooser.h"
 
 
 

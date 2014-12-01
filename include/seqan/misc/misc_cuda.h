@@ -33,8 +33,8 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_MISC_CUDA_MISC_H_
-#define SEQAN_EXTRAS_MISC_CUDA_MISC_H_
+#ifndef SEQAN_MISC_CUDA_MISC_H_
+#define SEQAN_MISC_CUDA_MISC_H_
 
 //#include <cuda_runtime.h>
 //#include <thrust/version.h>
@@ -293,4 +293,4 @@ void syncThreads()
 
 }
 
-#endif  // SEQAN_EXTRAS_MISC_CUDA_MISC_H_
+#endif  // SEQAN_MISC_CUDA_MISC_H_

@@ -33,8 +33,8 @@
 // Author: Andreas Gogol-Doering <andreas.doering@mdc-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_MISC_TEST_MISG_EDIT_ENVIRONMENT_H_
-#define SEQAN_CORE_TESTS_MISC_TEST_MISG_EDIT_ENVIRONMENT_H_
+#ifndef SEQAN_TESTS_MISC_TEST_MISG_EDIT_ENVIRONMENT_H_
+#define SEQAN_TESTS_MISC_TEST_MISG_EDIT_ENVIRONMENT_H_
 
 #include <sstream>
 
@@ -132,4 +132,4 @@ SEQAN_DEFINE_TEST(test_misc_edit_environment_string_enumerator_iterator_edit)
     SEQAN_ASSERT(it2 == begin(editEnumerator, Standard()));
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_MISC_TEST_MISG_EDIT_ENVIRONMENT_H_
+#endif  // #ifndef SEQAN_TESTS_MISC_TEST_MISG_EDIT_ENVIRONMENT_H_

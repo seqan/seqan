@@ -34,8 +34,8 @@
 // Adapts traceback to a journaled string using SortedArray specialization.
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_SET_JOURNAL_ALIGNMENT_TRACEBACK_ADAPTOR_H_
-#define EXTRAS_INCLUDE_SEQAN_JOURNALED_SET_JOURNAL_ALIGNMENT_TRACEBACK_ADAPTOR_H_
+#ifndef INCLUDE_SEQAN_JOURNALED_SET_JOURNAL_ALIGNMENT_TRACEBACK_ADAPTOR_H_
+#define INCLUDE_SEQAN_JOURNALED_SET_JOURNAL_ALIGNMENT_TRACEBACK_ADAPTOR_H_
 
 namespace seqan {
 
@@ -123,4 +123,4 @@ _adaptTraceSegmentsTo(String<TValue, Journaled<THostSpec, SortedArray, TBuffSpec
 
 }  // namespace seqan
 
-#endif  // #ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_SET_JOURNAL_ALIGNMENT_TRACEBACK_ADAPTOR_H_
+#endif  // #ifndef INCLUDE_SEQAN_JOURNALED_SET_JOURNAL_ALIGNMENT_TRACEBACK_ADAPTOR_H_

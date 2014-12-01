@@ -34,8 +34,8 @@
 // Positional iterator implementation.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_POSITION_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_POSITION_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_POSITION_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_POSITION_H_
 
 namespace seqan {
 
@@ -294,4 +294,4 @@ assign(Iter<TTargetContainer, PositionIterator> & target, TSource const & source
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_POSITION_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_POSITION_H_

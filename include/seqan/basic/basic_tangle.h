@@ -34,8 +34,8 @@
 
 // TODO(holtgrew): This header contains code that does not clearly belongs somewhere else.
 
-#ifndef CORE_INCLUDE_SEQAN_BASIC_BASIC_TANGLE_H_
-#define CORE_INCLUDE_SEQAN_BASIC_BASIC_TANGLE_H_
+#ifndef INCLUDE_SEQAN_BASIC_BASIC_TANGLE_H_
+#define INCLUDE_SEQAN_BASIC_BASIC_TANGLE_H_
 
 namespace seqan {
 
@@ -186,4 +186,4 @@ unknownValueImpl(T *)
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BASIC_BASIC_TANGLE_H_
+#endif  // #ifndef INCLUDE_SEQAN_BASIC_BASIC_TANGLE_H_

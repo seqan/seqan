@@ -37,8 +37,8 @@
 // prototypes for common metafunctions like Value<>, functions assign() etc.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_FUNDAMENTAL_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_FUNDAMENTAL_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_FUNDAMENTAL_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_FUNDAMENTAL_H_
 
 // --------------------------------------------------------------------------
 // Prerequisites
@@ -85,4 +85,4 @@
 // Hosted type.
 #include <seqan/basic/hosted_type_interface.h>
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_HOSTED_TYPE_INTERFACE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_HOSTED_TYPE_INTERFACE_H_

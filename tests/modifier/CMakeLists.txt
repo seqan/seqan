@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/modifier/CMakeLists.txt
+# File: /tests/modifier/CMakeLists.txt
 #
 # CMakeLists.txt file for the modifier module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_modifier)
-message (STATUS "Configuring core/tests/modifier")
+message (STATUS "Configuring tests/modifier")
 
 # ----------------------------------------------------------------------------
 # Dependencies

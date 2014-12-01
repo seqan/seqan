@@ -40,8 +40,8 @@
 // Then, we test the shorter interfaces with one input value only.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GLOBAL_ALIGNMENT_BANDED_H_
-#define SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GLOBAL_ALIGNMENT_BANDED_H_
+#ifndef SEQAN_TESTS_ALIGN_TEST_ALIGN_GLOBAL_ALIGNMENT_BANDED_H_
+#define SEQAN_TESTS_ALIGN_TEST_ALIGN_GLOBAL_ALIGNMENT_BANDED_H_
 
 #include <sstream>
 
@@ -1231,4 +1231,4 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_banded_shorter_interfaces_gotoh)
     }
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GLOBAL_ALIGNMENT_BANDED_H_
+#endif  // #ifndef SEQAN_TESTS_ALIGN_TEST_ALIGN_GLOBAL_ALIGNMENT_BANDED_H_

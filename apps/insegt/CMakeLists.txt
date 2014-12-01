@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/apps/insegt/CMakeLists.txt
+# File: /apps/insegt/CMakeLists.txt
 #
 # CMakeLists.txt file for insegt.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (extras_apps_insegt)
-message (STATUS "Configuring extras/apps/insegt")
+message (STATUS "Configuring apps/insegt")
 
 # ----------------------------------------------------------------------------
 # Dependencies

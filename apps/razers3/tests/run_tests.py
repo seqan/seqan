@@ -14,7 +14,7 @@ import os.path
 import sys
 
 # Automagically add util/py_lib to PYTHONPATH environment variable.
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..',
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
                                     '..', '..', 'util', 'py_lib'))
 sys.path.insert(0, path)
 
@@ -49,7 +49,7 @@ def main(source_base, binary_base, num_threads=1):
 
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
-        'extras/apps/razers3/tests')  # tests dir
+        'apps/razers3/tests')  # tests dir
 
     # ============================================================
     # Auto-detect the binary path.
@@ -71,7 +71,7 @@ def main(source_base, binary_base, num_threads=1):
     # make it more canonical and host independent.
     ph.outFile('-')  # To ensure that the out path is set.
     transforms = [
-        app_tests.ReplaceTransform(os.path.join(ph.source_base_path, 'extras/apps/razers3/tests') + os.sep, '', right=True),
+        app_tests.ReplaceTransform(os.path.join(ph.source_base_path, 'apps/razers3/tests') + os.sep, '', right=True),
         app_tests.ReplaceTransform(ph.temp_dir + os.sep, '', right=True),
         ]
 

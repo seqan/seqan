@@ -32,8 +32,8 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_FUNCS_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_FUNCS_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_FUNCS_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_FUNCS_H_
 
 
 namespace seqan {
@@ -84,4 +84,4 @@ _translateCharToDna5(unsigned char c)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_FUNCS_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ALPHABET_RESIDUE_FUNCS_H_

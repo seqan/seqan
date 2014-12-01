@@ -15,7 +15,7 @@ import shutil
 import sys
 
 # Automagically add util/py_lib to PYTHONPATH environment variable.
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..',
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
                                     '..', '..', 'util', 'py_lib'))
 sys.path.insert(0, path)
 
@@ -30,18 +30,18 @@ def main(source_base, binary_base):
     
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
-        'core/apps/rabema/tests')  # tests dir
+        'apps/rabema/tests')  # tests dir
 
     # ============================================================
     # Auto-detect the binary path.
     # ============================================================
 
     path_to_prepare = app_tests.autolocateBinary(
-      binary_base, 'core/apps/rabema', 'rabema_prepare_sam')
+      binary_base, 'apps/rabema', 'rabema_prepare_sam')
     path_to_build = app_tests.autolocateBinary(
-      binary_base, 'core/apps/rabema', 'rabema_build_gold_standard')
+      binary_base, 'apps/rabema', 'rabema_build_gold_standard')
     path_to_evaluate = app_tests.autolocateBinary(
-      binary_base, 'core/apps/rabema', 'rabema_evaluate')
+      binary_base, 'apps/rabema', 'rabema_evaluate')
 
     # ============================================================
     # Copy Files To Temp Dir.

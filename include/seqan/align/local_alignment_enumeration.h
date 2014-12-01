@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_ENUMERATION_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_ENUMERATION_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_ENUMERATION_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_ENUMERATION_H_
 
 namespace seqan {
 
@@ -340,4 +340,4 @@ The score of the previously computed alignment.
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_ENUMERATION_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_ENUMERATION_H_

@@ -33,8 +33,8 @@
 // Author: Anne-Katrin Emde <anne-katrin.emde@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_FRAGMENT_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_FRAGMENT_H_
+#ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_FRAGMENT_H_
+#define SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_FRAGMENT_H_
 
 namespace seqan {
 
@@ -204,4 +204,4 @@ SEQAN_CHECKPOINT
 
 }  // namespace
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_FRAGMENT_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_FRAGMENT_H_

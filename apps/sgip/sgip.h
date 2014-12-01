@@ -19,8 +19,8 @@
 // Author: Jialu Hu <Jialu.Hu@fu-berlin.de>
 // ===========================================================================
 
-#ifndef EXTRAS_APPS_SGIP_SGIP_H_
-#define EXTRAS_APPS_SGIP_SGIP_H_
+#ifndef APPS_SGIP_SGIP_H_
+#define APPS_SGIP_SGIP_H_
 
 #include <iostream>
 #include <fstream>
@@ -101,4 +101,4 @@ inline bool _createGraph(seqan::Graph<TSpec> & graph, SivaLab const, char const 
     return true;
 }
 
-#endif  // #ifndef EXTRAS_APPS_SGIP_SGIP_H_
+#endif  // #ifndef APPS_SGIP_SGIP_H_

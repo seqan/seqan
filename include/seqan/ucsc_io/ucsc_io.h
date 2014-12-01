@@ -33,8 +33,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_UCSC_UCSC_IO_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_UCSC_UCSC_IO_H_
+#ifndef SEQAN_INCLUDE_SEQAN_UCSC_UCSC_IO_H_
+#define SEQAN_INCLUDE_SEQAN_UCSC_UCSC_IO_H_
 
 namespace seqan
 {
@@ -482,4 +482,4 @@ void writeRecord(TTarget & target,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_UCSC_UCSC_IO_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_UCSC_UCSC_IO_H_

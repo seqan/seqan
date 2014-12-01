@@ -34,8 +34,8 @@
 // Implements additional tests for the packed string.
 // ==========================================================================
 
-#ifndef CORE_TESTS_SEQUENCE_TEST_STRING_PACKED_EXTENSION_H_
-#define CORE_TESTS_SEQUENCE_TEST_STRING_PACKED_EXTENSION_H_
+#ifndef TESTS_SEQUENCE_TEST_STRING_PACKED_EXTENSION_H_
+#define TESTS_SEQUENCE_TEST_STRING_PACKED_EXTENSION_H_
 
 #include <sstream>
 
@@ -682,4 +682,4 @@ SEQAN_DEFINE_TEST(String_Packed_Extension)
     testStringPackedExtensionBitScanReverse();
 }
 
-#endif // CORE_TESTS_SEQUENCE_TEST_STRING_PACKED_EXTENSION_H_
+#endif // TESTS_SEQUENCE_TEST_STRING_PACKED_EXTENSION_H_

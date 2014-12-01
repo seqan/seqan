@@ -35,8 +35,8 @@
 // size.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALLOCATOR_CHUNKPOOL_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALLOCATOR_CHUNKPOOL_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALLOCATOR_CHUNKPOOL_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_ALLOCATOR_CHUNKPOOL_H_
 
 #include <seqan/basic/allocator_interface.h>
 
@@ -273,4 +273,4 @@ deallocate(Allocator<ChunkPool<SIZE, MAX_COUNT, TParentAllocator> > & me,
 
 }  // namespace seqan
 
-#endif  // SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALLOCATOR_CHUNKPOOL_H_
+#endif  // SEQAN_INCLUDE_SEQAN_BASIC_ALLOCATOR_CHUNKPOOL_H_

@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/random/CMakeLists.txt
+# File: /tests/random/CMakeLists.txt
 #
 # CMakeLists.txt file for the random module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_random)
-message (STATUS "Configuring core/tests/random")
+message (STATUS "Configuring tests/random")
 
 # ----------------------------------------------------------------------------
 # Dependencies

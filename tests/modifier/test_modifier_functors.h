@@ -32,8 +32,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_TEST_MODIFIER_FUNCTORS_H_
-#define SEQAN_CORE_TESTS_TEST_MODIFIER_FUNCTORS_H_
+#ifndef SEQAN_TESTS_TEST_MODIFIER_FUNCTORS_H_
+#define SEQAN_TESTS_TEST_MODIFIER_FUNCTORS_H_
 
 #include <seqan/basic.h>
 #include <seqan/modifier.h>
@@ -78,4 +78,4 @@ SEQAN_DEFINE_TEST(test_modifier_functors_dna_complement)
     }
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_TEST_MODIFIER_FUNCTORS_H_
+#endif  // #ifndef SEQAN_TESTS_TEST_MODIFIER_FUNCTORS_H_

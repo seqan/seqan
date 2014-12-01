@@ -33,8 +33,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPPED_VALUE_TYPE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPPED_VALUE_TYPE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPPED_VALUE_TYPE_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_GAPPED_VALUE_TYPE_H_
 
 namespace seqan {
 
@@ -95,4 +95,4 @@ struct GappedValueType<SimpleType<TValue, TSpec> >
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPPED_VALUE_TYPE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPPED_VALUE_TYPE_H_

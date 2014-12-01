@@ -34,8 +34,8 @@
 // Tests for arg_parse/arg_parse_option.h.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARG_PARSE_OPTION_H_
-#define SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARG_PARSE_OPTION_H_
+#ifndef SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_OPTION_H_
+#define SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_OPTION_H_
 
 #include <seqan/basic.h>
 
@@ -50,4 +50,4 @@ SEQAN_DEFINE_TEST(test_option)
     ArgParseOption opt("s", "string", "this is a flag");
 }
 
-#endif // SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARG_PARSE_OPTION_H_
+#endif // SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_OPTION_H_

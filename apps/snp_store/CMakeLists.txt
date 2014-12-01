@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/apps/snp_store/CMakeLists.txt
+# File: /apps/snp_store/CMakeLists.txt
 #
 # CMakeLists.txt file for SNP Store.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (core_apps_snp_store)
-message (STATUS "Configuring core/apps/snp_store")
+message (STATUS "Configuring apps/snp_store")
 
 # ----------------------------------------------------------------------------
 # Dependencies

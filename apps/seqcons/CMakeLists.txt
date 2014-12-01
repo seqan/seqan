@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/apps/seqcons/CMakeLists.txt
+# File: /apps/seqcons/CMakeLists.txt
 #
 # CMakeLists.txt file for SeqCons.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (core_apps_seqcons)
-message (STATUS "Configuring core/apps/seqcons")
+message (STATUS "Configuring apps/seqcons")
 
 # ----------------------------------------------------------------------------
 # Dependencies

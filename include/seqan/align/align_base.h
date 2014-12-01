@@ -35,8 +35,8 @@
 // Gap objects, one for each row of the alignment.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGN_BASE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGN_BASE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_BASE_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_BASE_H_
 
 namespace seqan {
 
@@ -855,4 +855,4 @@ inline bool operator!=(Align<TSource, TSpec> const & lhs,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGN_BASE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_BASE_H_

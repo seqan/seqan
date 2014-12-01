@@ -25,8 +25,8 @@
 
 // Taken from bcftool's kfunc.c
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_RANDOM_RANDOM_BETA_KFUNC_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_RANDOM_RANDOM_BETA_KFUNC_H_
+#ifndef SEQAN_INCLUDE_SEQAN_RANDOM_RANDOM_BETA_KFUNC_H_
+#define SEQAN_INCLUDE_SEQAN_RANDOM_RANDOM_BETA_KFUNC_H_
 
 #include <cmath>
 #define SEQAN_M_SQRT2 1.41421356237309504880
@@ -184,4 +184,4 @@ inline double kf_betai(double a, double b, double x)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_RANDOM_RANDOM_BETA_KFUNC_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_RANDOM_RANDOM_BETA_KFUNC_H_

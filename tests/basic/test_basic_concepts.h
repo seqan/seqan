@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_TESTS_BASIC_TEST_BASIC_CONCEPTS_H_
-#define CORE_TESTS_BASIC_TEST_BASIC_CONCEPTS_H_
+#ifndef TESTS_BASIC_TEST_BASIC_CONCEPTS_H_
+#define TESTS_BASIC_TEST_BASIC_CONCEPTS_H_
 
 
 //#include <boost/concept_check.hpp>
@@ -87,4 +87,4 @@ SEQAN_DEFINE_TEST(test_basic_concepts_integer_concept)
     // BOOST_CONCEPT_ASSERT((boost::Integer<double>));
 }
 
-#endif  // #ifndef CORE_TESTS_BASIC_TEST_BASIC_CONCEPTS_H_
+#endif  // #ifndef TESTS_BASIC_TEST_BASIC_CONCEPTS_H_

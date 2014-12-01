@@ -42,8 +42,8 @@
 // ==========================================================================
 
 
-#ifndef EXTRAS_INCLUDE_SEQAN_SEQ_IO_READ_GENBANK_H_
-#define EXTRAS_INCLUDE_SEQAN_SEQ_IO_READ_GENBANK_H_
+#ifndef INCLUDE_SEQAN_SEQ_IO_READ_GENBANK_H_
+#define INCLUDE_SEQAN_SEQ_IO_READ_GENBANK_H_
 
 namespace seqan {
 
@@ -244,4 +244,4 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, TFwdIterator 
 
 }  // namespace seqan
 
-#endif  // #ifndef EXTRAS_INCLUDE_SEQAN_SEQ_IO_READ_GENBANK_H_
+#endif  // #ifndef INCLUDE_SEQAN_SEQ_IO_READ_GENBANK_H_

@@ -4,8 +4,8 @@
 
 # We use the current trunk version of 2011-10-13 (r10463) for building the
 # reference.
-DFI=../../../../build/Release/core/apps/dfi/dfi
-DFI=../../../../build/make.linux/core/apps/dfi/dfi
+DFI=../../../../build/Release/apps/dfi/dfi
+DFI=../../../../build/make.linux/apps/dfi/dfi
 
 set1=( 25.H_sapiens.fa  human_ucsc.fa  bbe.fa CompWindows.fa )
 set2=( 59.M_musculus.fa dros_promos.fa kjv.fa CompNonWindows.fa )

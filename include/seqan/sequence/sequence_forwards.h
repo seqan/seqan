@@ -50,17 +50,17 @@ namespace SEQAN_NAMESPACE_MAIN
 // TODO(holtgrew): Still required since we dropped support for VS2003?
 // Workaround (copied from generated forwards) for VS 2003.
 #if defined(_MSC_VER) && (_MSC_VER < 1400)
-template <unsigned int SPACE > struct Block;        // "core/include/seqan/sequence\string_stack.h"(48)
-template <typename THostspec > struct Packed;           // "core/include/seqan/sequence\string_packed.h"(33)
-template <typename TValue, typename TSpec > class String;           // "core/include/seqan/sequence\string_base.h"(54)
-template <typename TString, typename TSpec > class StringSet;           // "core/include/seqan/sequence\sequence_multiple.h"(98)
+template <unsigned int SPACE > struct Block;        // "include/seqan/sequence\string_stack.h"(48)
+template <typename THostspec > struct Packed;           // "include/seqan/sequence\string_packed.h"(33)
+template <typename TValue, typename TSpec > class String;           // "include/seqan/sequence\string_base.h"(54)
+template <typename TString, typename TSpec > class StringSet;           // "include/seqan/sequence\sequence_multiple.h"(98)
 
-template <typename TValue, typename THostspec, typename TTag> inline typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type end(String<TValue, Packed<THostspec> > & me, Tag<TTag> const tag_);           // "core/include/seqan/sequence\string_packed.h"(470)
-template <typename TValue, typename THostspec, typename TTag> inline typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type end(String<TValue, Packed<THostspec> > const & me, Tag<TTag> const tag_);           // "core/include/seqan/sequence\string_packed.h"(478)
-template <typename TValue, unsigned int SPACE, typename TSpec> inline typename Iterator<String<TValue, Block<SPACE> >, Tag<TSpec> const >::Type end(String<TValue, Block<SPACE> > & me, Tag<TSpec> const);           // "core/include/seqan/sequence\string_stack.h"(209)
-template <typename TValue, unsigned int SPACE, typename TSpec> inline typename Iterator<String<TValue, Block<SPACE> > const, Tag<TSpec> const>::Type end(String<TValue, Block<SPACE> > const & me, Tag<TSpec> const);        // "core/include/seqan/sequence\string_stack.h"(217)
-template <typename TString, typename TSpec, typename TTag> inline typename Iterator< StringSet< TString, TSpec >, Tag<TTag> const>::Type end(StringSet< TString, TSpec > & me, Tag<TTag> const tag);        // "core/include/seqan/sequence\sequence_multiple.h"(1398)
-template <typename TString, typename TSpec, typename TTag> inline typename Iterator< StringSet< TString, TSpec > const, Tag<TTag> const>::Type end(StringSet< TString, TSpec > const & me, Tag<TTag> const tag);        // "core/include/seqan/sequence\sequence_multiple.h"(1405)
+template <typename TValue, typename THostspec, typename TTag> inline typename Iterator<String<TValue, Packed<THostspec> >, Tag<TTag> const>::Type end(String<TValue, Packed<THostspec> > & me, Tag<TTag> const tag_);           // "include/seqan/sequence\string_packed.h"(470)
+template <typename TValue, typename THostspec, typename TTag> inline typename Iterator<String<TValue, Packed<THostspec> > const, Tag<TTag> const>::Type end(String<TValue, Packed<THostspec> > const & me, Tag<TTag> const tag_);           // "include/seqan/sequence\string_packed.h"(478)
+template <typename TValue, unsigned int SPACE, typename TSpec> inline typename Iterator<String<TValue, Block<SPACE> >, Tag<TSpec> const >::Type end(String<TValue, Block<SPACE> > & me, Tag<TSpec> const);           // "include/seqan/sequence\string_stack.h"(209)
+template <typename TValue, unsigned int SPACE, typename TSpec> inline typename Iterator<String<TValue, Block<SPACE> > const, Tag<TSpec> const>::Type end(String<TValue, Block<SPACE> > const & me, Tag<TSpec> const);        // "include/seqan/sequence\string_stack.h"(217)
+template <typename TString, typename TSpec, typename TTag> inline typename Iterator< StringSet< TString, TSpec >, Tag<TTag> const>::Type end(StringSet< TString, TSpec > & me, Tag<TTag> const tag);        // "include/seqan/sequence\sequence_multiple.h"(1398)
+template <typename TString, typename TSpec, typename TTag> inline typename Iterator< StringSet< TString, TSpec > const, Tag<TTag> const>::Type end(StringSet< TString, TSpec > const & me, Tag<TTag> const tag);        // "include/seqan/sequence\sequence_multiple.h"(1405)
 #endif  // defined(_MSC_VER) && (_MSC_VER < 1400)
 
 // ==========================================================================

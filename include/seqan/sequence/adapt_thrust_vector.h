@@ -37,8 +37,8 @@
 // NOTE(esiragusa): This adaption is not tested. Anything beside assign might
 // not work as expected.
 
-#ifndef SEQAN_EXTRAS_SEQUENCE_ADAPT_THRUST_VECTOR_H_
-#define SEQAN_EXTRAS_SEQUENCE_ADAPT_THRUST_VECTOR_H_
+#ifndef SEQAN_SEQUENCE_ADAPT_THRUST_VECTOR_H_
+#define SEQAN_SEQUENCE_ADAPT_THRUST_VECTOR_H_
 
 namespace seqan {
 
@@ -880,4 +880,4 @@ view(thrust::device_vector<TContainer, TAlloc> & container)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_SEQUENCE_ADAPT_THRUST_VECTOR_H_
+#endif  // #ifndef SEQAN_SEQUENCE_ADAPT_THRUST_VECTOR_H_

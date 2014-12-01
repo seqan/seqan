@@ -34,8 +34,8 @@
 // Tests for quality related functions and metafunctions.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_QUALITIES_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_QUALITIES_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_QUALITIES_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_QUALITIES_H_
 
 // ---------------------------------------------------------------------------
 // Test Metafunctions.  Test the default implementations where possible.
@@ -87,4 +87,4 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_qualities_convert_quality)
     SEQAN_ASSERT_EQ(c1, 'B');
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_QUALITIES_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_QUALITIES_H_

@@ -34,8 +34,8 @@
 // Basic definitions for the stream module.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_STREAM_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_STREAM_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_STREAM_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_STREAM_H_
 
 namespace seqan {
 
@@ -1312,4 +1312,4 @@ operator<<(TStream & target,
 
 }  // namespace seqean
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_STREAM_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_STREAM_H_

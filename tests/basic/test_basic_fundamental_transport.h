@@ -34,8 +34,8 @@
 // Tests for the default implementations of the transport functions.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_TRANSPORT_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_TRANSPORT_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_TRANSPORT_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_TRANSPORT_H_
 
 SEQAN_DEFINE_TEST(test_basic_fundamental_transport_assign)
 {
@@ -64,4 +64,4 @@ SEQAN_DEFINE_TEST(test_basic_fundamental_transport_set)
     SEQAN_ASSERT_EQ(dest, 1);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_TRANSPORT_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_TRANSPORT_H_

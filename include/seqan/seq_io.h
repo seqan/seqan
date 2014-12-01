@@ -34,8 +34,8 @@
 // Facade header for module seq_io.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_SEQ_IO_H_
-#define CORE_INCLUDE_SEQAN_SEQ_IO_H_
+#ifndef INCLUDE_SEQAN_SEQ_IO_H_
+#define INCLUDE_SEQAN_SEQ_IO_H_
 
 // ===========================================================================
 // Prerequisites.
@@ -71,4 +71,4 @@
 
 #include <seqan/seq_io/fai_index.h>
 
-#endif  // CORE_INCLUDE_SEQAN_SEQ_IO_H_
+#endif  // INCLUDE_SEQAN_SEQ_IO_H_

@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_AGGREGATE_CONCEPT_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_AGGREGATE_CONCEPT_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_AGGREGATE_CONCEPT_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_AGGREGATE_CONCEPT_H_
 
 namespace seqan {
 
@@ -173,4 +173,4 @@ struct MakePacked
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_AGGREGATE_CONCEPT_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_AGGREGATE_CONCEPT_H_

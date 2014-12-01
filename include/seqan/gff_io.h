@@ -34,8 +34,8 @@
 // Facade header for module gff_io.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GFF_IO_H_
-#define CORE_INCLUDE_SEQAN_GFF_IO_H_
+#ifndef INCLUDE_SEQAN_GFF_IO_H_
+#define INCLUDE_SEQAN_GFF_IO_H_
 
 // ===========================================================================
 // Prerequisites.
@@ -53,4 +53,4 @@
 #include <seqan/gff_io/gff_io_base.h>
 #include <seqan/gff_io/gff_file.h>
 
-#endif  // CORE_INCLUDE_SEQAN_GFF_IO_H_
+#endif  // INCLUDE_SEQAN_GFF_IO_H_

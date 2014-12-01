@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_TEST_BASIC_ALPHABET_PROFILE_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_TEST_BASIC_ALPHABET_PROFILE_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_TEST_BASIC_ALPHABET_PROFILE_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_TEST_BASIC_ALPHABET_PROFILE_H_
 
 // --------------------------------------------------------------------------
 // Check Concept Conformance
@@ -148,4 +148,4 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_profile_empty)
 
 // TODO(holtgrew): Test assign(), convertImpl(), operator<<, conversions.
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_PROFILE_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_PROFILE_H_

@@ -35,8 +35,8 @@
 // ==========================================================================
 
 
-#ifndef EXTRAS_INCLUDE_SEQAN_TRANSLATION_TRANSLATION_H_
-#define EXTRAS_INCLUDE_SEQAN_TRANSLATION_TRANSLATION_H_
+#ifndef INCLUDE_SEQAN_TRANSLATION_TRANSLATION_H_
+#define INCLUDE_SEQAN_TRANSLATION_TRANSLATION_H_
 
 namespace seqan {
 
@@ -681,4 +681,4 @@ translate(TTarget & target,
 
 }
 
-#endif // EXTRAS_INCLUDE_SEQAN_TRANSLATION_TRANSLATION_H_
+#endif // INCLUDE_SEQAN_TRANSLATION_TRANSLATION_H_

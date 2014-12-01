@@ -34,8 +34,8 @@
 // Tests for fundamental comparison code.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_COMPARISON_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_COMPARISON_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_COMPARISON_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_COMPARISON_H_
 
 // Test for the CompareType default implementation.
 
@@ -74,4 +74,4 @@ SEQAN_DEFINE_TEST(test_basic_fundamental_comparison_compare_type)
     SEQAN_ASSERT((+SameType_<typename seqan::CompareType<int const, unsigned const>::Type, long>::VALUE));
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_COMPARISON_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_COMPARISON_H_

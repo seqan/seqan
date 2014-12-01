@@ -35,8 +35,8 @@
 // alignment.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_META_INFO_H_
-#define CORE_INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_META_INFO_H_
+#ifndef INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_META_INFO_H_
+#define INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_META_INFO_H_
 
 namespace seqan {
 
@@ -264,4 +264,4 @@ _setupAndRunBandedChainAlignment(StringSet<String<TTraceSegment>, TStringSetSpec
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_META_INFO_H_
+#endif  // #ifndef INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_META_INFO_H_

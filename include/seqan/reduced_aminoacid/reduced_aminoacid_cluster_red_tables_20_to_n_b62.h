@@ -34,8 +34,8 @@
 // Reduced Versions of the 22-letter amino acid alphabet
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_REDUCED_AMINOACID_CLUSTER_RED_TABLES_20_to_n_B62_H_
-#define SEQAN_EXTRAS_REDUCED_AMINOACID_CLUSTER_RED_TABLES_20_to_n_B62_H_
+#ifndef SEQAN_REDUCED_AMINOACID_CLUSTER_RED_TABLES_20_to_n_B62_H_
+#define SEQAN_REDUCED_AMINOACID_CLUSTER_RED_TABLES_20_to_n_B62_H_
 
 namespace seqan {
 
@@ -1850,4 +1850,4 @@ char const TranslateTableByteToRedAA_<
 
 } // namespace
 
-#endif // SEQAN_EXTRAS_REDUCED_AMINOACID_CLUSTER_RED_TABLES_20_to_n_B62_H_
+#endif // SEQAN_REDUCED_AMINOACID_CLUSTER_RED_TABLES_20_to_n_B62_H_

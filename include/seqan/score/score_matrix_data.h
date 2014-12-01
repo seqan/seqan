@@ -51,8 +51,8 @@
 
 // TODO(holtgrew): Maybe also set gap penalties when setting matrices?
 
-#ifndef SEQAN_SCORE_SCORE_MATRIX_DATA_H_
-#define SEQAN_SCORE_SCORE_MATRIX_DATA_H_
+#ifndef SEQAN_SSCORE_MATRIX_DATA_H_
+#define SEQAN_SSCORE_MATRIX_DATA_H_
 
 namespace seqan {
 
@@ -1022,4 +1022,4 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecVtml200> {
 
 }  // namespace SEQAN_NAMESPACE_MAIN
 
-#endif  // SEQAN_SCORE_SCORE_MATRIX_DATA_H_
+#endif  // SEQAN_SSCORE_MATRIX_DATA_H_

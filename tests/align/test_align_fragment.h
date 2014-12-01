@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_FRAGMENT_H_
-#define SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_FRAGMENT_H_
+#ifndef SEQAN_TESTS_ALIGN_TEST_ALIGN_FRAGMENT_H_
+#define SEQAN_TESTS_ALIGN_TEST_ALIGN_FRAGMENT_H_
 
 #include <seqan/align.h>
 
@@ -164,4 +164,4 @@ SEQAN_DEFINE_TEST(test_align_reversable_fragment)
 	SEQAN_ASSERT_EQ(id2, 0u);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_FRAGMENT_H_
+#endif  // #ifndef SEQAN_TESTS_ALIGN_TEST_ALIGN_FRAGMENT_H_

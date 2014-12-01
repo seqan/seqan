@@ -34,8 +34,8 @@
 // Implements a fast version of the iterator over journal strings.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_SEQUENCE_JOURNALED_SEQUENCE_JOURNALED_ITERATOR_FAST_H_
-#define CORE_INCLUDE_SEQAN_SEQUENCE_JOURNALED_SEQUENCE_JOURNALED_ITERATOR_FAST_H_
+#ifndef INCLUDE_SEQAN_SEQUENCE_JOURNALED_SEQUENCE_JOURNALED_ITERATOR_FAST_H_
+#define INCLUDE_SEQAN_SEQUENCE_JOURNALED_SEQUENCE_JOURNALED_ITERATOR_FAST_H_
 
 namespace seqan
 {
@@ -402,4 +402,4 @@ operator==(Iter<TJournaledString, JournaledStringIterSpec<CommonSegmentIterator>
 
 }
 
-#endif // CORE_INCLUDE_SEQAN_SEQUENCE_JOURNALED_SEQUENCE_JOURNALED_ITERATOR_FAST_H_
+#endif // INCLUDE_SEQAN_SEQUENCE_JOURNALED_SEQUENCE_JOURNALED_ITERATOR_FAST_H_

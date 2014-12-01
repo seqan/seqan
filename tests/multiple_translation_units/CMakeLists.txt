@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/tests/multiple_translation_units/CMakeLists.txt
+# File: /tests/multiple_translation_units/CMakeLists.txt
 #
 # CMakeLists.txt file for the multiple_translation_units module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_tests_multiple_translation_units)
-message (STATUS "Configuring extras/tests/multiple_translation_units")
+message (STATUS "Configuring tests/multiple_translation_units")
 
 # ----------------------------------------------------------------------------
 # Dependencies

@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/tests/reduced_aminoacid/CMakeLists.txt
+# File: /tests/reduced_aminoacid/CMakeLists.txt
 #
 # CMakeLists.txt file for the reduced_aminoacid module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_tests_reduced_aminoacid)
-message (STATUS "Configuring extras/tests/reduced_aminoacid")
+message (STATUS "Configuring tests/reduced_aminoacid")
 
 # ----------------------------------------------------------------------------
 # Dependencies

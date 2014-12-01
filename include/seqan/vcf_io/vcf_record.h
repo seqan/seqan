@@ -34,8 +34,8 @@
 
 // TODO(holtgrew): Get out more than just strings...
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_IO_VCF_RECORD_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_IO_VCF_RECORD_H_
+#ifndef SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_RECORD_H_
+#define SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_RECORD_H_
 
 namespace seqan {
 
@@ -293,4 +293,4 @@ inline void clear(VcfRecord & record)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_IO_VCF_RECORD_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_RECORD_H_

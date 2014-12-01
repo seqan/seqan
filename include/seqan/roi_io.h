@@ -34,8 +34,8 @@
 // Facade header for module roi_io.
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_ROI_IO_H_
-#define EXTRAS_INCLUDE_SEQAN_ROI_IO_H_
+#ifndef INCLUDE_SEQAN_ROI_IO_H_
+#define INCLUDE_SEQAN_ROI_IO_H_
 
 // ===========================================================================
 // Prerequisites.
@@ -56,4 +56,4 @@
 #include <seqan/roi_io/write_roi.h>
 #include <seqan/roi_io/roi_file.h>
 
-#endif  // EXTRAS_INCLUDE_SEQAN_ROI_IO_H_
+#endif  // INCLUDE_SEQAN_ROI_IO_H_

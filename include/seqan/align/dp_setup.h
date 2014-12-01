@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_SETUP_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_SETUP_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_SETUP_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_DP_SETUP_H_
 
 namespace seqan {
 
@@ -371,4 +371,4 @@ _setUpAndRunAlignment(String<TTraceSegment, TSpec> & traceSegments,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_SETUP_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_SETUP_H_

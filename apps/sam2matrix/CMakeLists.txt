@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/apps/sam2matrix/CMakeLists.txt
+# File: /apps/sam2matrix/CMakeLists.txt
 #
 # CMakeLists.txt file for sam2matrix.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_apps_sam2matrix)
-message (STATUS "Configuring core/apps/sam2matrix")
+message (STATUS "Configuring apps/sam2matrix")
 
 # ----------------------------------------------------------------------------
 # Dependencies

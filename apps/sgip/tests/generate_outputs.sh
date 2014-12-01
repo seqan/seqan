@@ -2,7 +2,7 @@
 #
 # Output generation script for sgip
 
-SGIP=../../../../build/Debug/extras/apps/sgip/sgip
+SGIP=../../../../build/Debug/apps/sgip/sgip
 DIRR01=../example/r01
 DIRSRG=../example/srg
 DIRISO=../example/Iso_Data/

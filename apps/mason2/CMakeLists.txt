@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/mason2/CMakeLists.txt
+# File: /mason2/CMakeLists.txt
 #
 # CMakeLists.txt file for mason2.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_apps_mason2)
-message (STATUS "Configuring extras/apps/mason2")
+message (STATUS "Configuring apps/mason2")
 
 # ----------------------------------------------------------------------------
 # Dependencies

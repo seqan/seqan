@@ -32,8 +32,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_STORE_STORE_IO_UCSC_H
-#define SEQAN_CORE_INCLUDE_STORE_STORE_IO_UCSC_H
+#ifndef SEQAN_INCLUDE_STORE_STORE_IO_UCSC_H
+#define SEQAN_INCLUDE_STORE_STORE_IO_UCSC_H
 
 namespace SEQAN_NAMESPACE_MAIN {
 
@@ -305,4 +305,4 @@ writeRecords(SmartFile<Ucsc, Output, TSpec> & ucscFile,
 
 } // namespace SEQAN_NAMESPACE_MAIN
 
-#endif //#ifndef SEQAN_CORE_INCLUDE_STORE_STORE_IO_UCSC_H
+#endif //#ifndef SEQAN_INCLUDE_STORE_STORE_IO_UCSC_H

@@ -39,8 +39,8 @@
 // Boost concepts and ConceptC++ concepts).
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_CONCEPT_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_CONCEPT_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_CONCEPT_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_CONCEPT_H_
 
 // --------------------------------------------------------------------------
 // Prerequisites
@@ -64,4 +64,4 @@
 // Fundamental concepts such as Assignable.
 #include <seqan/basic/fundamental_concepts.h>
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_CONCEPT_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_CONCEPT_H_

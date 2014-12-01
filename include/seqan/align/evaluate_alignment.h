@@ -34,8 +34,8 @@
 // Compute alignment score given a pairwise alignment.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_ALIGN_EVALUATE_ALIGNMENT_H_
-#define CORE_INCLUDE_SEQAN_ALIGN_EVALUATE_ALIGNMENT_H_
+#ifndef INCLUDE_SEQAN_ALIGN_EVALUATE_ALIGNMENT_H_
+#define INCLUDE_SEQAN_ALIGN_EVALUATE_ALIGNMENT_H_
 
 namespace seqan {
 
@@ -265,4 +265,4 @@ TScoreVal computeAlignmentStats(Align<TGaps, TAlignSpec> const & align,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_ALIGN_EVALUATE_ALIGNMENT_H_
+#endif  // #ifndef INCLUDE_SEQAN_ALIGN_EVALUATE_ALIGNMENT_H_

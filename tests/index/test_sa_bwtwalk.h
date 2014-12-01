@@ -115,7 +115,7 @@ SEQAN_DEFINE_TEST(testBWTWalk)
 //#  endif
 //#endif
 
-    std::string path = (std::string)SEQAN_PATH_TO_ROOT() + "/core/tests/index/m_tuberculosis_h37rv.fa";
+    std::string path = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/index/m_tuberculosis_h37rv.fa";
     
 	SeqFileIn inputFile(path.c_str());
 	CharString text, id;

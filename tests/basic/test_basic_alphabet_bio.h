@@ -34,8 +34,8 @@
 // Tests for bio alphabet functions and metafunctions.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_BIO_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_BIO_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_BIO_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_BIO_H_
 
 // We only test that the default implementations forward to *Impl.
 
@@ -71,4 +71,4 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_bio_unknown_value_function)
     SEQAN_ASSERT_EQ(seqan::unknownValue<MyBioType_>().value, -2);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_BIO_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_BIO_H_

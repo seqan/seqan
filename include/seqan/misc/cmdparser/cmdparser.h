@@ -30,8 +30,8 @@
 //
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_MISC_CMDPARSER_CMDPARSER_H_
-#define CORE_INCLUDE_SEQAN_MISC_CMDPARSER_CMDPARSER_H_
+#ifndef INCLUDE_SEQAN_MISC_CMDPARSER_CMDPARSER_H_
+#define INCLUDE_SEQAN_MISC_CMDPARSER_CMDPARSER_H_
 
 #include <sstream>
 #include <seqan/map.h>
@@ -1607,4 +1607,4 @@ setValidValues(CommandLineParser & me, CharString const & name,
 
 } // end seqan
 
-#endif // CORE_INCLUDE_SEQAN_MISC_CMDPARSER_CMDPARSER_H_
+#endif // INCLUDE_SEQAN_MISC_CMDPARSER_CMDPARSER_H_

@@ -39,8 +39,8 @@
 
 // TODO(holtgrew): Rename to "LogSpaceValue"?
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_MATH_LOG_SPACE_VALUE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_MATH_LOG_SPACE_VALUE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_MATH_LOG_SPACE_VALUE_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_MATH_LOG_SPACE_VALUE_H_
 
 namespace seqan {
 
@@ -495,4 +495,4 @@ operator<<(TStream & stream, LogProb<TValue, TSpec> const & rhs)
     
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_MATH_LOG_SPACE_VALUE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_MATH_LOG_SPACE_VALUE_H_

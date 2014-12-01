@@ -32,8 +32,8 @@
 // Author: Kathrin Trappe <kathrin.trappe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_APPS_GUSTAF_MSPLAZER_ALGORITHMS_H_
-#define SEQAN_EXTRAS_APPS_GUSTAF_MSPLAZER_ALGORITHMS_H_
+#ifndef SEQAN_APPS_GUSTAF_MSPLAZER_ALGORITHMS_H_
+#define SEQAN_APPS_GUSTAF_MSPLAZER_ALGORITHMS_H_
 
 #include "msplazer.h"
 // #include <seqan/PathEnumeration.h>

@@ -32,8 +32,8 @@
 // Author: Sascha Meiers <meiers@inf.fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_MODIFIER_CYCLIC_SHAPE_TEST_MODIFIER_CYCLIC_SHAPE_H_
-#define SEQAN_CORE_TESTS_MODIFIER_CYCLIC_SHAPE_TEST_MODIFIER_CYCLIC_SHAPE_H_
+#ifndef SEQAN_TESTS_MODIFIER_CYCLIC_SHAPE_TEST_MODIFIER_CYCLIC_SHAPE_H_
+#define SEQAN_TESTS_MODIFIER_CYCLIC_SHAPE_TEST_MODIFIER_CYCLIC_SHAPE_H_
 
 #include <seqan/basic.h>
 #include <seqan/stream.h>
@@ -230,4 +230,4 @@ SEQAN_DEFINE_TEST(test_modifier_cyclic_shape_iterator_fixed_infix_charstring)
 }
 
 
-#endif  // SEQAN_CORE_TESTS_MODIFIER_CYCLIC_SHAPE_TEST_MODIFIER_CYCLIC_SHAPE_H_
+#endif  // SEQAN_TESTS_MODIFIER_CYCLIC_SHAPE_TEST_MODIFIER_CYCLIC_SHAPE_H_

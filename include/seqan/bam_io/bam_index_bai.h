@@ -58,8 +58,8 @@
    THE SOFTWARE.
 */
 
-#ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_INDEX_BAI_H_
-#define CORE_INCLUDE_SEQAN_BAM_IO_BAM_INDEX_BAI_H_
+#ifndef INCLUDE_SEQAN_BAM_IO_BAM_INDEX_BAI_H_
+#define INCLUDE_SEQAN_BAM_IO_BAM_INDEX_BAI_H_
 
 namespace seqan {
 
@@ -863,4 +863,4 @@ buildIndex(BamIndex<Bai> & index, char const * filename)
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_INDEX_BAI_H_
+#endif  // #ifndef INCLUDE_SEQAN_BAM_IO_BAM_INDEX_BAI_H_

@@ -32,8 +32,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_BAM_IO_CIGAR_H_
-#define CORE_INCLUDE_SEQAN_BAM_IO_CIGAR_H_
+#ifndef INCLUDE_SEQAN_BAM_IO_CIGAR_H_
+#define INCLUDE_SEQAN_BAM_IO_CIGAR_H_
 
 namespace seqan {
 
@@ -725,4 +725,4 @@ cigarToGapAnchorContig(TCigarString const & cigar, TGaps & gaps)
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_CIGAR_H_
+#endif  // #ifndef INCLUDE_SEQAN_BAM_IO_CIGAR_H_

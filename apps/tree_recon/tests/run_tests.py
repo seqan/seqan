@@ -13,7 +13,7 @@ import os.path
 import sys
 
 # Automagically add util/py_lib to PYTHONPATH environment variable.
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..',
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
                                     '..', '..', 'util', 'py_lib'))
 sys.path.insert(0, path)
 
@@ -28,14 +28,14 @@ def main(source_base, binary_base):
     
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
-        'core/apps/tree_recon/tests')  # tests dir
+        'apps/tree_recon/tests')  # tests dir
 
     # ============================================================
     # Auto-detect the binary path.
     # ============================================================
 
     path_to_program = app_tests.autolocateBinary(
-      binary_base, 'core/apps/tree_recon', 'tree_recon')
+      binary_base, 'apps/tree_recon', 'tree_recon')
 
     # ============================================================
     # Built TestConf list.

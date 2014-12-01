@@ -44,11 +44,11 @@
 #endif
 
 
-//#include "../../../extras/apps/rep_sep/utils.h"
-//#include "../../../extras/apps/rep_sep/assembly_parser.h"
-//#include "../../../extras/apps/rep_sep/column_scanner.h"
-//#include "../../../extras/apps/rep_sep/rgraph.h"
-//#include "../../../extras/apps/rep_sep/rep_sep.h"
+//#include "../../../apps/rep_sep/utils.h"
+//#include "../../../apps/rep_sep/assembly_parser.h"
+//#include "../../../apps/rep_sep/column_scanner.h"
+//#include "../../../apps/rep_sep/rgraph.h"
+//#include "../../../apps/rep_sep/rep_sep.h"
 
 #include "snp_store.h"
 #include <iostream>
@@ -448,7 +448,7 @@ clipReads(TFragmentStore    &fragmentStore,
                 reverseComplement(source(row(align, 1)));
 
             int score = globalAlignment(align, scoreType, AlignConfig<false,true,true,false>(), Gotoh());
-            aliQ.errors = (unsigned) round((float)-score/1000);
+            aliQ.errors = (unsigned) round((float)-s1000);
 
 #ifdef SNPSTORE_DEBUG
             if(extraV) ::std::cout << align << std::endl;

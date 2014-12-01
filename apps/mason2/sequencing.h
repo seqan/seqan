@@ -34,8 +34,8 @@
 // Simulator for the sequencing process.
 // ==========================================================================
 
-#ifndef EXTRAS_APPS_MASON2_SEQUENCING_H_
-#define EXTRAS_APPS_MASON2_SEQUENCING_H_
+#ifndef APPS_MASON2_SEQUENCING_H_
+#define APPS_MASON2_SEQUENCING_H_
 
 #include <stdexcept>
 
@@ -389,4 +389,4 @@ inline std::pair<int, int> appendOperation(TCigarString & cigar, char op)
     return std::make_pair((op != 'D'), (op != 'I'));
 }
 
-#endif  // #ifndef EXTRAS_APPS_MASON2_SEQUENCING_H_
+#endif  // #ifndef APPS_MASON2_SEQUENCING_H_

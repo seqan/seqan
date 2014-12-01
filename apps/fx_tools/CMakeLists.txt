@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/apps/fx_tools/CMakeLists.txt
+# File: /apps/fx_tools/CMakeLists.txt
 #
 # CMakeLists.txt file for fx_tools.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_apps_fx_tools)
-message (STATUS "Configuring extras/apps/fx_tools")
+message (STATUS "Configuring apps/fx_tools")
 
 # ----------------------------------------------------------------------------
 # Dependencies

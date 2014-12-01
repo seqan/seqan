@@ -34,8 +34,8 @@
 // Tests for the logic part of the metaprogramming library.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_LOGIC_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_LOGIC_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_LOGIC_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_LOGIC_H_
 
 // --------------------------------------------------------------------------
 // Helper metafunction to check for type equalness.
@@ -177,4 +177,4 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_logic_if_c)
     SEQAN_ASSERT_EQ((TestTypeEq<If<False, True, False>::Type, False>::VALUE), true);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_LOGIC_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_LOGIC_H_

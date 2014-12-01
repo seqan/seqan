@@ -4,8 +4,8 @@ Functors and functions for likelihood function evaluation
 
 ==========================================================================*/
 
-#ifndef CORE_APPS_BS_TOOLS_CASBAR_UTIL_H__
-#define CORE_APPS_BS_TOOLS_CASBAR_UTIL_H__
+#ifndef APPS_BS_TOOLS_CASBAR_UTIL_H__
+#define APPS_BS_TOOLS_CASBAR_UTIL_H__
 
 #include <iostream>
 #include <fstream>

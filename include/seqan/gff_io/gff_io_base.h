@@ -32,8 +32,8 @@
 // Author: Jochen Singer <jochen.singer@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GFF_IO_GFF_IO_BASE_H_
-#define CORE_INCLUDE_SEQAN_GFF_IO_GFF_IO_BASE_H_
+#ifndef INCLUDE_SEQAN_GFF_IO_GFF_IO_BASE_H_
+#define INCLUDE_SEQAN_GFF_IO_GFF_IO_BASE_H_
 
 namespace seqan {
 
@@ -660,5 +660,5 @@ writeRecord(TTarget & target, GffRecord const & record, Tag<TFormat> const & tag
 
 }  // namespace seqan
 
-#endif  // CORE_INCLUDE_SEQAN_GFF_IO_GFF_IO_BASE_H_
+#endif  // INCLUDE_SEQAN_GFF_IO_GFF_IO_BASE_H_
 

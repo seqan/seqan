@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/tests/find_motif/CMakeLists.txt
+# File: /tests/find_motif/CMakeLists.txt
 #
 # CMakeLists.txt file for the find_motif module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_tests_find_motif)
-message (STATUS "Configuring extras/tests/find_motif")
+message (STATUS "Configuring tests/find_motif")
 
 # ----------------------------------------------------------------------------
 # Dependencies

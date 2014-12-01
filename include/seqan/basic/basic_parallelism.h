@@ -37,8 +37,8 @@
 // It mainly defines the macro SEQAN_ENABLE_PARALLELISM.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_PARALLELISM_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_PARALLELISM_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_PARALLELISM_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_PARALLELISM_H_
 
 /*!
  * @macro SEQAN_ENABLE_PARALLELISM
@@ -91,4 +91,4 @@ int main(int argc, char ** argv)
 #endif  // defined(_OPENMP)
 #endif  // !defined(SEQAN_ENABLE_PARALLELISM)
 
-#endif  // SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_PARALLELISM_H_
+#endif  // SEQAN_INCLUDE_SEQAN_BASIC_BASIC_PARALLELISM_H_

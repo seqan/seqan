@@ -34,8 +34,8 @@
 // Facade header for the basic/metaprogramming submodule.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_METAPROGRAMMING_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_METAPROGRAMMING_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_METAPROGRAMMING_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_METAPROGRAMMING_H_
 
 #include <cstdlib>
 
@@ -63,4 +63,4 @@
 // Metaprogramming for conditional enabling/disabling of code.
 #include <seqan/basic/metaprogramming_enable_if.h>
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_H_

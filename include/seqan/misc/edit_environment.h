@@ -38,8 +38,8 @@
 // TODO(holtgrew): It would be nice if the maximal distance would be given as a run time parameter.
 // TODO(holtgrew): Document iterator?
 
-#ifndef SEQAN_CORE_INCLUDE_MISC_EDIT_ENVIRONMENT_H_
-#define SEQAN_CORE_INCLUDE_MISC_EDIT_ENVIRONMENT_H_
+#ifndef SEQAN_INCLUDE_MISC_EDIT_ENVIRONMENT_H_
+#define SEQAN_INCLUDE_MISC_EDIT_ENVIRONMENT_H_
 
 namespace seqan {
 
@@ -1315,6 +1315,6 @@ operator!=(
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_MISC_EDIT_ENVIRONMENT_H_
+#endif  // #ifndef SEQAN_INCLUDE_MISC_EDIT_ENVIRONMENT_H_
 
 //  LocalWords:  StringEnumerator

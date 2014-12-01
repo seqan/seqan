@@ -34,8 +34,8 @@
 // Tests for array construction / destruction code.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_CONSTRUCT_DESTRUCT_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_CONSTRUCT_DESTRUCT_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_CONSTRUCT_DESTRUCT_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_CONSTRUCT_DESTRUCT_H_
 
 // ==========================================================================
 // Helper Code
@@ -817,4 +817,4 @@ SEQAN_DEFINE_TEST(test_basic_array_construct_destruct_array_clear_space_pointer)
     }
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ARRAY_CONSTRUCT_DESTRUCT_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ARRAY_CONSTRUCT_DESTRUCT_H_

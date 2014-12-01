@@ -34,8 +34,8 @@
 
 // TODO(holtgrew): More tests.
 
-#ifndef SEQAN_CORE_TESTS_INDEX_TEST_INDEX_REPEATS_H_
-#define SEQAN_CORE_TESTS_INDEX_TEST_INDEX_REPEATS_H_
+#ifndef SEQAN_TESTS_INDEX_TEST_INDEX_REPEATS_H_
+#define SEQAN_TESTS_INDEX_TEST_INDEX_REPEATS_H_
 
 #include <seqan/index.h>
 
@@ -131,4 +131,4 @@ SEQAN_DEFINE_TEST(test_index_repeats_period_1_no_ns)
     SEQAN_ASSERT_EQ(repeats[2].period, 1u);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_INDEX_TEST_INDEX_REPEATS_H_
+#endif  // #ifndef SEQAN_TESTS_INDEX_TEST_INDEX_REPEATS_H_

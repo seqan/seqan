@@ -10,9 +10,9 @@ int main()
 {
     // Build paths to reference and to alignment.
     std::string refPath = SEQAN_PATH_TO_ROOT();
-    refPath.append("/extras/demos/tutorial/realign/ref.fa");
+    refPath.append("/demos/tutorial/realign/ref.fa");
     std::string samPath = SEQAN_PATH_TO_ROOT();
-    samPath.append("/extras/demos/tutorial/realign/reads.sam");
+    samPath.append("/demos/tutorial/realign/reads.sam");
 
     // Declare fragment store.
     FragmentStore<> store;

@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/apps/tree_recon/CMakeLists.txt
+# File: /apps/tree_recon/CMakeLists.txt
 #
 # CMakeLists.txt file for tree_recon.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (core_apps_tree_recon)
-message (STATUS "Configuring core/apps/tree_recon")
+message (STATUS "Configuring apps/tree_recon")
 
 # ----------------------------------------------------------------------------
 # Dependencies

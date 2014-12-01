@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/apps/yara/CMakeLists.txt
+# File: /apps/yara/CMakeLists.txt
 #
 # CMakeLists.txt file for yara.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_apps_yara)
-message (STATUS "Configuring core/apps/yara")
+message (STATUS "Configuring apps/yara")
 
 # ----------------------------------------------------------------------------
 # Dependencies

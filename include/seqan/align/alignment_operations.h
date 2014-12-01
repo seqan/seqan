@@ -34,8 +34,8 @@
 // Operations on alignments such as integration
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGNMENT_OPERATIONS_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGNMENT_OPERATIONS_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGNMENT_OPERATIONS_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_ALIGNMENT_OPERATIONS_H_
 
 namespace seqan {
 
@@ -156,4 +156,4 @@ void integrateAlign(Align<TSource, TSpec1> & align,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGNMENT_OPERATIONS_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGNMENT_OPERATIONS_H_

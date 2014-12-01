@@ -37,8 +37,8 @@
 
 // TODO(holtgrew): Where is the documentation, shouldnt it be here?
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALPHABET_BIO_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALPHABET_BIO_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_BIO_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_BIO_H_
 
 namespace seqan {
 
@@ -98,4 +98,4 @@ unknownValue()
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALPHABET_BIO_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_BIO_H_

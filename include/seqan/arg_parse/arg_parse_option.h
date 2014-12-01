@@ -32,8 +32,8 @@
 // Author: Stephan Aiche <stephan.aiche@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_OPTION_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_OPTION_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_OPTION_H_
+#define SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_OPTION_H_
 
 #include <string>
 #include <vector>
@@ -584,4 +584,4 @@ inline TStream & operator<<(TStream & target, ArgParseOption const & source)
 
 } // namespace seqan
 
-#endif // SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_OPTION_H_
+#endif // SEQAN_INCLUDE_SEQAN_ARG_PARSE_ARG_PARSE_OPTION_H_

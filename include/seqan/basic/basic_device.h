@@ -32,8 +32,8 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_BASIC_DEVICE_H
-#define SEQAN_EXTRAS_BASIC_DEVICE_H
+#ifndef SEQAN_BASIC_DEVICE_H
+#define SEQAN_BASIC_DEVICE_H
 
 namespace seqan {
 
@@ -149,4 +149,4 @@ struct CtaSize
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_BASIC_DEVICE_H
+#endif  // #ifndef SEQAN_BASIC_DEVICE_H

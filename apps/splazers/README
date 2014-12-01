@@ -50,7 +50,7 @@ SVN version of SplazerS and SeqAn with:
   3)  cd seqan-trunk/build/
   4)  cmake .. -DCMAKE_BUILD_TYPE=Release
   5)  make splazers
-  6)  ./core/apps/splazers/splazers --help
+  6)  ./apps/splazers/splazers --help
 
 Alternatively, you can download the latest SeqAn snapshot and build SplazerS
 with:
@@ -92,7 +92,7 @@ same number of reads, corresponding to left and right mates.
 
 Important: If the splazers binary does not reside in the same directory
 as the gapped_params folder, then please specify its location with the 
--pd option, e.g. -pd seqan-trunk/core/apps/splazers/gapped_params. If 
+-pd option, e.g. -pd seqan-trunk/apps/splazers/gapped_params. If 
 SplazerS does not know where the gapped_params folder is, it will still 
 run but may produce suboptimal results and take longer than necessary.
 

@@ -32,8 +32,8 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INDEX_ITER_VSTREE_FACTORY_H
-#define SEQAN_EXTRAS_INDEX_ITER_VSTREE_FACTORY_H
+#ifndef SEQAN_INDEX_ITER_VSTREE_FACTORY_H
+#define SEQAN_INDEX_ITER_VSTREE_FACTORY_H
 
 namespace seqan {
 
@@ -322,4 +322,4 @@ getObject(Factory<Iter<TIndex, VSTree<TopDown<ParentLinks<TSpec> > > > > & facto
 
 }
 
-#endif  // #ifndef SEQAN_EXTRAS_INDEX_ITER_VSTREE_FACTORY_H
+#endif  // #ifndef SEQAN_INDEX_ITER_VSTREE_FACTORY_H

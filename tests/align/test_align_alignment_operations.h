@@ -32,8 +32,8 @@
 // Author: Birte Kehr <birte.kehr@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_ALIGMENT_OPERATIONS_H_
-#define SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_ALIGMENT_OPERATIONS_H_
+#ifndef SEQAN_TESTS_ALIGN_TEST_ALIGN_ALIGMENT_OPERATIONS_H_
+#define SEQAN_TESTS_ALIGN_TEST_ALIGN_ALIGMENT_OPERATIONS_H_
 
 SEQAN_DEFINE_TEST(test_align_integrate_align)
 {
@@ -260,4 +260,4 @@ SEQAN_DEFINE_TEST(test_align_integrate_align_infix_of_infix)
                         CharString("-----NNGGNNAA--CGATCGATT--"));
     }
 }
-#endif  // #ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_ALIGMENT_OPERATIONS_H_
+#endif  // #ifndef SEQAN_TESTS_ALIGN_TEST_ALIGN_ALIGMENT_OPERATIONS_H_

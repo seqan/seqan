@@ -34,8 +34,8 @@
 // Implementation of the Floyd-Warshall algorithm.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_FLOYD_WARSHALL_H_
-#define CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_FLOYD_WARSHALL_H_
+#ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_FLOYD_WARSHALL_H_
+#define INCLUDE_SEQAN_GRAPH_ALGORITHMS_FLOYD_WARSHALL_H_
 
 namespace seqan {
 
@@ -119,4 +119,4 @@ void floydWarshallAlgorithm(TMatrix & distMatrix,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_FLOYD_WARSHALL_H_
+#endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_FLOYD_WARSHALL_H_

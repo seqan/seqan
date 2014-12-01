@@ -32,8 +32,8 @@
 // Author: Andreas Gogol-Doering <andreas.doering@mdc-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_HEADER_FIND_SCORE_H
-#define SEQAN_HEADER_FIND_SCORE_H
+#ifndef SEQAN_HEADER_FIND_SH
+#define SEQAN_HEADER_FIND_SH
 
 namespace SEQAN_NAMESPACE_MAIN
 {

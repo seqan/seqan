@@ -34,8 +34,8 @@
 // Facade header for the basic_container submodule.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_CONTAINER_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_CONTAINER_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_CONTAINER_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_CONTAINER_H_
 
 // --------------------------------------------------------------------------
 // Dependencies
@@ -56,4 +56,4 @@
 // Container concept.
 #include <seqan/basic/container_concept.h>
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_CONTAINER_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_CONTAINER_H_

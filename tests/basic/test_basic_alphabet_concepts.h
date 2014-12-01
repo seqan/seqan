@@ -37,8 +37,8 @@
 // checks pass.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_CONCEPTS_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_CONCEPTS_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_CONCEPTS_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_CONCEPTS_H_
 
 // Test the conformance to the Alphabet concept for (1) built-in types, (2) aggregates, (3) simple types.
 
@@ -123,4 +123,4 @@ inline void testAlphabetWithUnknownValueConcept()
     SEQAN_CONCEPT_ASSERT((AlphabetWithUnknownValueConcept<char>));
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_CONCEPTS_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_CONCEPTS_H_

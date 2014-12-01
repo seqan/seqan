@@ -13,7 +13,7 @@ int main()
 {
     // Build path to serialized MarkovModel.
     CharString mmPath = SEQAN_PATH_TO_ROOT();
-    append(mmPath, "/extras/demos/statistics/zscore_example_mm.3");
+    append(mmPath, "/demos/statistics/zscore_example_mm.3");
 
     // Open the file.
     FILE * mmFile = fopen(toCString(mmPath), "rb");

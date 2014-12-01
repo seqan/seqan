@@ -40,8 +40,8 @@
 // TODO(holtgrew): Extend this with C+G biases in sequencing.
 // TODO(holtgrew): Extend this with bisulphite models.
 
-#ifndef EXTRAS_APPS_MASON2_INDIVIDUAL_GENOME_H_
-#define EXTRAS_APPS_MASON2_INDIVIDUAL_GENOME_H_
+#ifndef APPS_MASON2_INDIVIDUAL_GENOME_H_
+#define APPS_MASON2_INDIVIDUAL_GENOME_H_
 
 #include <memory>
 
@@ -166,4 +166,4 @@ public:
 // Functions
 // ============================================================================
 
-#endif  // #ifndef EXTRAS_APPS_MASON2_INDIVIDUAL_GENOME_H_
+#endif  // #ifndef APPS_MASON2_INDIVIDUAL_GENOME_H_

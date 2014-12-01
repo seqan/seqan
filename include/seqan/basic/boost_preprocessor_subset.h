@@ -39,8 +39,8 @@
 // probably a bad idea to repeat this.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_SEQAN_PREPROCESSOR_SUBSET_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_SEQAN_PREPROCESSOR_SUBSET_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_SEQAN_PREPROCESSOR_SUBSET_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_SEQAN_PREPROCESSOR_SUBSET_H_
 
 // --------------------------------------------------------------------------
 // ==> boost/preprocessor/tuple/rem.hpp <==
@@ -5135,4 +5135,4 @@
 #define SEQAN_DO_JOIN2( X, Y ) X##Y
 
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_SEQAN_PREPROCESSOR_SUBSET_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_SEQAN_PREPROCESSOR_SUBSET_H_

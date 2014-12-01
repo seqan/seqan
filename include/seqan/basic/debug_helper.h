@@ -34,8 +34,8 @@
 // Helper code for debugging and testing.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_DEBUG_HELPER_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_DEBUG_HELPER_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_DEBUG_HELPER_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_DEBUG_HELPER_H_
 
 #include <cstdio>
 #include <fstream>
@@ -240,4 +240,4 @@ _compareTextFilesAlt(const char * file1, const char * file2)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_DEBUG_HELPER_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_DEBUG_HELPER_H_

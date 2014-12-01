@@ -43,7 +43,7 @@ Assuming that you have checked out the repository already, all prerequisites are
     # cd build/Debug
     # cmake ../.. -DCMAKE_BUILD_TYPE=Debug
     # make test_basic
-    # ./core/tests/basic/test_basic
+    # ./tests/basic/test_basic
     ... the tests for module basic will run ...
 
 Documentation Resources

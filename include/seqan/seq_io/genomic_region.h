@@ -36,8 +36,8 @@
 // genome, e.g. chr1, chr1:15,000, chr1:100,000-200,000.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_SEQ_IO_GENOMIC_REGION_H_
-#define CORE_INCLUDE_SEQAN_SEQ_IO_GENOMIC_REGION_H_
+#ifndef INCLUDE_SEQAN_SEQ_IO_GENOMIC_REGION_H_
+#define INCLUDE_SEQAN_SEQ_IO_GENOMIC_REGION_H_
 
 #include <seqan/sequence.h>
 #include <seqan/stream.h>  // for tokenization
@@ -296,4 +296,4 @@ parse(GenomicRegion & region, CharString const & regionString)
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_SEQ_IO_GENOMIC_REGION_H_
+#endif  // #ifndef INCLUDE_SEQAN_SEQ_IO_GENOMIC_REGION_H_

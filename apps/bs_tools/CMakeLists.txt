@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/apps/bs_tools/CMakeLists.txt
+# File: /apps/bs_tools/CMakeLists.txt
 #
 # CMakeLists.txt file for bs_tools.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_apps_bs_tools)
-message (STATUS "Configuring extras/apps/bs_tools")
+message (STATUS "Configuring apps/bs_tools")
 
 # ----------------------------------------------------------------------------
 # Dependencies

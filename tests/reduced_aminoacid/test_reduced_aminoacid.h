@@ -34,8 +34,8 @@
 // Tests for reduced_aminoacid module
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_TESTS_REDUCED_ALPHABET_H_
-#define SEQAN_EXTRAS_TESTS_REDUCED_ALPHABET_H_
+#ifndef SEQAN_TESTS_REDUCED_ALPHABET_H_
+#define SEQAN_TESTS_REDUCED_ALPHABET_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -107,4 +107,4 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10)
     }
 }
 
-#endif  // SEQAN_EXTRAS_TESTS_REDUCED_ALPHABET_H_
+#endif  // SEQAN_TESTS_REDUCED_ALPHABET_H_

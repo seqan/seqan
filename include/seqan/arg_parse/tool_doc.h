@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_ARG_PARSE_TOOL_DOC_H_
-#define SEQAN_CORE_INCLUDE_ARG_PARSE_TOOL_DOC_H_
+#ifndef SEQAN_INCLUDE_ARG_PARSE_TOOL_DOC_H_
+#define SEQAN_INCLUDE_ARG_PARSE_TOOL_DOC_H_
 
 #include <iterator>
 
@@ -1673,4 +1673,4 @@ void ManToolDocPrinter_::print(std::ostream & stream, ToolDoc const & doc)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_MISC_TOOL_DOC_H_
+#endif  // #ifndef SEQAN_INCLUDE_MISC_TOOL_DOC_H_

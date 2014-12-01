@@ -34,8 +34,8 @@
 // Facade header for module bed_io.
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_BED_IO_H_
-#define EXTRAS_INCLUDE_SEQAN_BED_IO_H_
+#ifndef INCLUDE_SEQAN_BED_IO_H_
+#define INCLUDE_SEQAN_BED_IO_H_
 
 // ===========================================================================
 // Prerequisites.
@@ -56,4 +56,4 @@
 
 #include <seqan/bed_io/bed_file.h>
 
-#endif  // EXTRAS_INCLUDE_SEQAN_BED_IO_H_
+#endif  // INCLUDE_SEQAN_BED_IO_H_

@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_TESTS_SEQ_IO_TEST_GENOMIC_REGION_H_
-#define CORE_TESTS_SEQ_IO_TEST_GENOMIC_REGION_H_
+#ifndef TESTS_SEQ_IO_TEST_GENOMIC_REGION_H_
+#define TESTS_SEQ_IO_TEST_GENOMIC_REGION_H_
 
 #include <seqan/seq_io.h>
 
@@ -129,4 +129,4 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_region_to_string_point)
     SEQAN_ASSERT_EQ(buffer, "chr1:1001");
 }
 
-#endif  // #ifndef CORE_TESTS_SEQ_IO_TEST_GENOMIC_REGION_H_
+#endif  // #ifndef TESTS_SEQ_IO_TEST_GENOMIC_REGION_H_

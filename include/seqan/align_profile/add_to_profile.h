@@ -35,8 +35,8 @@
 // sequence alignment to the profile.
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGN_PROFILE_ADD_TO_PROFILE_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGN_PROFILE_ADD_TO_PROFILE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_PROFILE_ADD_TO_PROFILE_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_PROFILE_ADD_TO_PROFILE_H_
 
 namespace seqan {
 
@@ -170,4 +170,4 @@ void addToProfile(String<ProfileChar<TChar, TValue, TSpec> > & profile,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGN_PROFILE_ADD_TO_PROFILE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_PROFILE_ADD_TO_PROFILE_H_

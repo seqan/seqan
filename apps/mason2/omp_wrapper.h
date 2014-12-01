@@ -38,8 +38,8 @@
 #include <omp.h>
 #endif   // #ifdef _OPENMP
 
-#ifndef EXTRAS_APPS_MASON2_OMP_WRAPPER_H_
-#define EXTRAS_APPS_MASON2_OMP_WRAPPER_H_
+#ifndef APPS_MASON2_OMP_WRAPPER_H_
+#define APPS_MASON2_OMP_WRAPPER_H_
 
 // ============================================================================
 // Forwards
@@ -125,4 +125,4 @@ private:
 // Functions
 // ============================================================================
 
-#endif  // #ifndef EXTRAS_APPS_MASON2_OMP_WRAPPER_H_
+#endif  // #ifndef APPS_MASON2_OMP_WRAPPER_H_

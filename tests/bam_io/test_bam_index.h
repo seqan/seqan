@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_TESTS_BAM_IO_TEST_BAM_INDEX_H_
-#define CORE_TESTS_BAM_IO_TEST_BAM_INDEX_H_
+#ifndef TESTS_BAM_IO_TEST_BAM_INDEX_H_
+#define TESTS_BAM_IO_TEST_BAM_INDEX_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -46,7 +46,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_index_bai)
 
     CharString baiFilename;
     append(baiFilename, SEQAN_PATH_TO_ROOT());
-    append(baiFilename, "/core/tests/bam_io/small.bam.bai");
+    append(baiFilename, "/tests/bam_io/small.bam.bai");
 
     BamIndex<Bai> baiIndex;
     SEQAN_ASSERT(open(baiIndex, toCString(baiFilename)));
@@ -64,7 +64,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_index_bai)
     // File has same contents as in the SAM test.
     CharString bamFilename;
     append(bamFilename, SEQAN_PATH_TO_ROOT());
-    append(bamFilename, "/core/tests/bam_io/small.bam");
+    append(bamFilename, "/tests/bam_io/small.bam");
 
     BamFileIn bamFile(toCString(bamFilename));
 
@@ -80,4 +80,4 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_index_bai)
     SEQAN_ASSERT_NOT(found);
 }
 
-#endif  // CORE_TESTS_BAM_IO_TEST_BAM_INDEX_H_
+#endif  // TESTS_BAM_IO_TEST_BAM_INDEX_H_

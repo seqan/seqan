@@ -35,8 +35,8 @@
 // MyersBitVector, MyersHirschberg.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_SPECIALIZED_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_SPECIALIZED_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_SPECIALIZED_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_SPECIALIZED_H_
 
 namespace seqan {
 
@@ -196,4 +196,4 @@ int globalAlignmentScore(StringSet<TString, TSpec> const & strings,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_SPECIALIZED_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GLOBAL_ALIGNMENT_SPECIALIZED_H_

@@ -36,8 +36,8 @@
 // Smith-Waterman algorithm with declumping.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_WATERMAN_EGGERT_IMPL_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_WATERMAN_EGGERT_IMPL_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_WATERMAN_EGGERT_IMPL_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_WATERMAN_EGGERT_IMPL_H_
 
 namespace seqan {
 
@@ -764,4 +764,4 @@ _smithWatermanGetNext(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_WATERMAN_EGGERT_IMPL_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_WATERMAN_EGGERT_IMPL_H_

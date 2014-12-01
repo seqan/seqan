@@ -34,8 +34,8 @@
 // generic SIMD interface for SSE4/AVX
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_
 
 #ifdef __SSE4_1__
 //#include <immintrin.h>
@@ -327,4 +327,4 @@ inline print(std::ostream &stream, TSimdVector const &vector)
 
 } // namespace seqan
 
-#endif // SEQAN_EXTRAS_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_
+#endif // SEQAN_INCLUDE_SEQAN_BASIC_SIMD_VECTOR_H_

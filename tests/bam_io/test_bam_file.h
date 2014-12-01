@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_TESTS_BAM_IO_TEST_EASY_BAM_IO_H_
-#define CORE_TESTS_BAM_IO_TEST_EASY_BAM_IO_H_
+#ifndef TESTS_BAM_IO_TEST_EASY_BAM_IO_H_
+#define TESTS_BAM_IO_TEST_EASY_BAM_IO_H_
 
 #include <sstream>
 
@@ -74,19 +74,19 @@ void testBamIOBamFileReadHeader(char const * pathFragment)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_read_header)
 {
-    testBamIOBamFileReadHeader("/core/tests/bam_io/small.sam");
+    testBamIOBamFileReadHeader("/tests/bam_io/small.sam");
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_header)
 {
-    testBamIOBamFileReadHeader("/core/tests/bam_io/small.bam");
+    testBamIOBamFileReadHeader("/tests/bam_io/small.bam");
 }
 
 // Issue 489 reports a problems with reading/writing comment lines in SAM header.
 SEQAN_DEFINE_TEST(test_bam_io_sam_file_issue_489)
 {
     seqan::CharString inFilePath = SEQAN_PATH_TO_ROOT();
-    append(inFilePath, "/core/tests/bam_io/sam_with_comments.sam");
+    append(inFilePath, "/tests/bam_io/sam_with_comments.sam");
 
     seqan::CharString tmpPath = SEQAN_TEMP_FILENAME();
     append(tmpPath, ".sam");
@@ -199,18 +199,18 @@ void testBamIOBamFileReadRecords(char const * pathFragment)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_read_records)
 {
-    testBamIOBamFileReadRecords("/core/tests/bam_io/small.sam");
+    testBamIOBamFileReadRecords("/tests/bam_io/small.sam");
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_records)
 {
-    testBamIOBamFileReadRecords("/core/tests/bam_io/small.bam");
+    testBamIOBamFileReadRecords("/tests/bam_io/small.bam");
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_ex1)
 {
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/core/tests/bam_io/ex1.bam");
+    append(filePath, "/tests/bam_io/ex1.bam");
 
     seqan::BamFileIn bamIO(toCString(filePath));
     seqan::BamHeader header;
@@ -283,12 +283,12 @@ void testBamIOBamFileWriteHeader(char const * pathFragmentExpected)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_write_header)
 {
-    testBamIOBamFileWriteHeader("/core/tests/bam_io/header.sam");
+    testBamIOBamFileWriteHeader("/tests/bam_io/header.sam");
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_write_header)
 {
-    testBamIOBamFileWriteHeader("/core/tests/bam_io/header.bam");
+    testBamIOBamFileWriteHeader("/tests/bam_io/header.bam");
 }
 
 // ---------------------------------------------------------------------------
@@ -398,12 +398,12 @@ void testBamIOBamFileWriteRecords(char const * pathFragmentExpected)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_write_records)
 {
-    testBamIOBamFileWriteRecords("/core/tests/bam_io/small.sam");
+    testBamIOBamFileWriteRecords("/tests/bam_io/small.sam");
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_write_records)
 {
-    testBamIOBamFileWriteRecords("/core/tests/bam_io/small.bam");
+    testBamIOBamFileWriteRecords("/tests/bam_io/small.bam");
 }
 
 // ---------------------------------------------------------------------------
@@ -413,7 +413,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_write_records)
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_file_size)
 {
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/core/tests/bam_io/small.sam");
+    append(filePath, "/tests/bam_io/small.sam");
 
     seqan::BamFileIn bamFile(toCString(filePath));
 
@@ -442,7 +442,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_file_size)
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_size)
 {
     seqan::CharString filePath = SEQAN_PATH_TO_ROOT();
-    append(filePath, "/core/tests/bam_io/small.bam");
+    append(filePath, "/tests/bam_io/small.bam");
 
     seqan::BamFileIn bamFile(toCString(filePath));
 
@@ -470,7 +470,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_size)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
 {
-    std::string filePath = (std::string)SEQAN_PATH_TO_ROOT() + "/extras/apps/ngs_roi/example/example.bam";
+    std::string filePath = (std::string)SEQAN_PATH_TO_ROOT() + "/apps/ngs_roi/example/example.bam";
 
     seqan::BamFileIn bamFile(filePath.c_str());
 
@@ -508,4 +508,4 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
     }
 }
 
-#endif  // #ifndef CORE_TESTS_BAM_IO_TEST_EASY_BAM_IO_H_
+#endif  // #ifndef TESTS_BAM_IO_TEST_EASY_BAM_IO_H_

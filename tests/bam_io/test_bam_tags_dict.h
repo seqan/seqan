@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_TESTS_BAM_IO_TEST_BAM_TAGS_DICT_DICT_H_
-#define CORE_TESTS_BAM_IO_TEST_BAM_TAGS_DICT_DICT_H_
+#ifndef TESTS_BAM_IO_TEST_BAM_TAGS_DICT_DICT_H_
+#define TESTS_BAM_IO_TEST_BAM_TAGS_DICT_DICT_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -573,4 +573,4 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_erase_tag)
     }
 }
 
-#endif  // CORE_TESTS_BAM_IO_TEST_BAM_TAGS_DICT_DICT_H_
+#endif  // TESTS_BAM_IO_TEST_BAM_TAGS_DICT_DICT_H_

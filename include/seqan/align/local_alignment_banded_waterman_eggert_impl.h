@@ -35,8 +35,8 @@
 // Author: Birte Kehr <birte.kehr@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_BANDED_WATERMAN_EGGERT_IMPL_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_BANDED_WATERMAN_EGGERT_IMPL_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_BANDED_WATERMAN_EGGERT_IMPL_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_BANDED_WATERMAN_EGGERT_IMPL_H_
 
 namespace seqan {
 
@@ -598,4 +598,4 @@ _localAlignmentNext(LocalAlignmentFinder<TScoreValue> & finder,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_BANDED_WATERMAN_EGGERT_IMPL_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_BANDED_WATERMAN_EGGERT_IMPL_H_

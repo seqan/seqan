@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/tests/align_split/CMakeLists.txt
+# File: /tests/align_split/CMakeLists.txt
 #
 # CMakeLists.txt file for the align_split module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_tests_align_split)
-message (STATUS "Configuring extras/tests/align_split")
+message (STATUS "Configuring tests/align_split")
 
 # ----------------------------------------------------------------------------
 # Dependencies

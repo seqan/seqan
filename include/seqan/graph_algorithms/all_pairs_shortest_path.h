@@ -34,8 +34,8 @@
 // Implementation of All-Pairs-Shortest-Path algorithm.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_ALL_PAIRS_SHORTEST_PATH_H_
-#define CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_ALL_PAIRS_SHORTEST_PATH_H_
+#ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_ALL_PAIRS_SHORTEST_PATH_H_
+#define INCLUDE_SEQAN_GRAPH_ALGORITHMS_ALL_PAIRS_SHORTEST_PATH_H_
 
 namespace seqan {
 
@@ -199,4 +199,4 @@ void allPairsShortestPath(TMatrix & distMatrix,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_ALL_PAIRS_SHORTEST_PATH_H_
+#endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_ALL_PAIRS_SHORTEST_PATH_H_

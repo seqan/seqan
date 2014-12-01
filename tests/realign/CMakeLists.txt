@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/tests/realign/CMakeLists.txt
+# File: /tests/realign/CMakeLists.txt
 #
 # CMakeLists.txt file for the realign module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (extras_tests_realign)
-message (STATUS "Configuring extras/tests/realign")
+message (STATUS "Configuring tests/realign")
 
 # ----------------------------------------------------------------------------
 # Dependencies

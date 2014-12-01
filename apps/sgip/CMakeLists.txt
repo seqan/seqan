@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/apps/sgip/CMakeLists.txt
+# File: /apps/sgip/CMakeLists.txt
 #
 # CMakeLists.txt file for SGIP.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (extras_apps_sgip)
-message (STATUS "Configuring extras/apps/sgip")
+message (STATUS "Configuring apps/sgip")
 
 # ----------------------------------------------------------------------------
 # Dependencies

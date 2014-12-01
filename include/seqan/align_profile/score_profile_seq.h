@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_PROFILE_SCORE_PROFILE_SEQ_H_
-#define SEQAN_EXTRAS_INCLUDE_PROFILE_SCORE_PROFILE_SEQ_H_
+#ifndef SEQAN_INCLUDE_PROFILE_SPROFILE_SEQ_H_
+#define SEQAN_INCLUDE_PROFILE_SPROFILE_SEQ_H_
 
 namespace seqan {
 
@@ -640,4 +640,4 @@ score(Score<TValue, ProfileSeqFracScore> const & me,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_INCLUDE_PROFILE_SCORE_PROFILE_SEQ_H_
+#endif  // #ifndef SEQAN_INCLUDE_PROFILE_SPROFILE_SEQ_H_

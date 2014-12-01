@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/basic/CMakeLists.txt
+# File: /tests/basic/CMakeLists.txt
 #
 # CMakeLists.txt file for the basic module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_basic)
-message (STATUS "Configuring core/tests/basic")
+message (STATUS "Configuring tests/basic")
 
 # ----------------------------------------------------------------------------
 # Dependencies

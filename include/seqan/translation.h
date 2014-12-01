@@ -35,8 +35,8 @@
 // ==========================================================================
 
 
-#ifndef EXTRAS_INCLUDE_SEQAN_TRANSLATION_H_
-#define EXTRAS_INCLUDE_SEQAN_TRANSLATION_H_
+#ifndef INCLUDE_SEQAN_TRANSLATION_H_
+#define INCLUDE_SEQAN_TRANSLATION_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>

@@ -39,8 +39,8 @@
 // TODO(holtgrew): Rename *2 Metafunctions to *C metafunctions.
 // TODO(holtgrew): Document properly.
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_ENABLE_IF_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_ENABLE_IF_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_ENABLE_IF_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_ENABLE_IF_H_
 
 namespace seqan {
 
@@ -446,4 +446,4 @@ length(TContainer & cont)
 // Functions
 // ============================================================================
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_ENABLE_IF_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_ENABLE_IF_H_

@@ -34,8 +34,8 @@
 // Approximate string matching via backtracking on VSTrees
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_FIND_BACKTRACKING_H_
-#define SEQAN_EXTRAS_FIND_BACKTRACKING_H_
+#ifndef SEQAN_FIND_BACKTRACKING_H_
+#define SEQAN_FIND_BACKTRACKING_H_
 
 //#define SEQAN_DEBUG
 
@@ -1412,4 +1412,4 @@ find(Finder<Index<TText, TTextSpec>, Backtracking<TDistance, TBacktrackingSpec> 
 
 }
 
-#endif  // #ifndef SEQAN_EXTRAS_FIND_BACKTRACKING_H_
+#endif  // #ifndef SEQAN_FIND_BACKTRACKING_H_

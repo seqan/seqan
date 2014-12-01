@@ -19,34 +19,34 @@ We therefore defined the type :dox:`MultiSeqFile` as an alias for a :dox:`Concat
 
 In the next example we are going to open a sequence file, recognize its format, split the file into sequence fractions and import each sequence, its quality values and id.
 
-.. includefrags:: core/demos/howto/efficiently_import_sequences.cpp
+.. includefrags:: demos/howto/efficiently_import_sequences.cpp
    :fragment: includes
 
 First we associate our sequence file with the memory mapped string underlying the :dox:`ConcatDirectStringSet` using :dox:`MMapString#open`.
 
-.. includefrags:: core/demos/howto/efficiently_import_sequences.cpp
+.. includefrags:: demos/howto/efficiently_import_sequences.cpp
    :fragment: open_file
 
 Next we guess the file format of the single concatenation string and store the result in a :dox:`AutoSeqFormat` object, which is used subsequently to select the right import function.
 :dox:`split` expects a :dox:`ConcatDirectStringSet` and divides the underlying string into sequence fragments separated by a file format specific delimiter.
 
-.. includefrags:: core/demos/howto/efficiently_import_sequences.cpp
+.. includefrags:: demos/howto/efficiently_import_sequences.cpp
    :fragment: guess_and_split
 
 After calling :dox:`split` the ``multiSeqFile`` StringSet represents the sequence fragments and can be used to reserve memory for the StringSets that store sequences and ids.
 
-.. includefrags:: core/demos/howto/efficiently_import_sequences.cpp
+.. includefrags:: demos/howto/efficiently_import_sequences.cpp
    :fragment: reserve
 
 The main loop iterates over each sequence fragment and uses the functions :dox:`assignSeq`, :dox:`assignQual` and :dox:`assignSeqId` to extract sequence data, qualities and id.
 The quality values are encoded in ASCII and have to be converted into integer values between 0 and 62 before assigning it to a :dox:`Dna5Q` character via :dox:`AlphabetWithQualitiesConcept#assignQualityValue`.
 
-.. includefrags:: core/demos/howto/efficiently_import_sequences.cpp
+.. includefrags:: demos/howto/efficiently_import_sequences.cpp
    :fragment: read_sequences
 
 Finally we output the number of imported sequences, the overall runtime and the first 10 sequences in Fasta format.
 
-.. includefrags:: core/demos/howto/efficiently_import_sequences.cpp
+.. includefrags:: demos/howto/efficiently_import_sequences.cpp
    :fragment: output
 
 Program Output
@@ -57,7 +57,7 @@ Program Output
    $ cd build/Release
    $ make efficiently_import_sequences
    [...]
-   $ ./core/demos/howto/efficiently_import_sequences reads.fq
+   $ ./demos/howto/efficiently_import_sequences reads.fq
    Loading 1000000 sequences took 4.82109 seconds
 
    >HWI-EAS299_3_30MAPAAXX:6:1:1561:1481/1

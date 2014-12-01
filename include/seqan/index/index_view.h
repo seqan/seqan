@@ -34,8 +34,8 @@
 // This file contains Index specializations for Views.
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INDEX_VIEW_H_
-#define SEQAN_EXTRAS_INDEX_VIEW_H_
+#ifndef SEQAN_INDEX_VIEW_H_
+#define SEQAN_INDEX_VIEW_H_
 
 namespace seqan {
 
@@ -857,4 +857,4 @@ view(SparseString<TString, TSpec> & sparseString)
 
 }
 
-#endif  // #ifndef SEQAN_EXTRAS_INDEX_VIEW_H_
+#endif  // #ifndef SEQAN_INDEX_VIEW_H_

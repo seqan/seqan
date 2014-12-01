@@ -32,8 +32,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_SCANNER_CACHE_H_
-#define CORE_INCLUDE_SEQAN_BAM_IO_BAM_SCANNER_CACHE_H_
+#ifndef INCLUDE_SEQAN_BAM_IO_BAM_SCANNER_CACHE_H_
+#define INCLUDE_SEQAN_BAM_IO_BAM_SCANNER_CACHE_H_
 
 #ifdef SEQAN_CXX11_STANDARD
 #include <functional>
@@ -315,4 +315,4 @@ readMultiRecords(String<BamAlignmentRecord> &records, BamFileIn &bamFile, BamSca
 
 }  // namespace seqan;
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_SCANNER_CACHE_H_
+#endif  // #ifndef INCLUDE_SEQAN_BAM_IO_BAM_SCANNER_CACHE_H_

@@ -32,8 +32,8 @@
 // Author: Stephan Aiche <stephan.aiche@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARG_PARSE_H_
-#define SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARG_PARSE_H_
+#ifndef SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_H_
+#define SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -1370,4 +1370,4 @@ SEQAN_DEFINE_TEST(test_parse_non_const_cstring)
 
 } // namespace seqan
 
-#endif  // SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARG_PARSE_H_
+#endif  // SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_H_

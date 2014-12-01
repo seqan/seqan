@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_CONSENSUS_CONSENSUS_BUILDER_H_
-#define EXTRAS_INCLUDE_SEQAN_CONSENSUS_CONSENSUS_BUILDER_H_
+#ifndef INCLUDE_SEQAN_CONSENSUS_CONSENSUS_BUILDER_H_
+#define INCLUDE_SEQAN_CONSENSUS_CONSENSUS_BUILDER_H_
 
 #include <map>
 
@@ -490,4 +490,4 @@ void ConsensusBuilder_<TFragmentStore>::run(TFragmentStore & store,
 
 }  // namespace seqan
 
-#endif  // #ifndef EXTRAS_INCLUDE_SEQAN_CONSENSUS_CONSENSUS_BUILDER_H_
+#endif  // #ifndef INCLUDE_SEQAN_CONSENSUS_CONSENSUS_BUILDER_H_

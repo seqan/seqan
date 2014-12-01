@@ -32,8 +32,8 @@
 // Writing of alignment data structures to streams.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_STREAM_H_
-#define SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_STREAM_H_
+#ifndef SEQAN_TESTS_ALIGN_TEST_ALIGN_STREAM_H_
+#define SEQAN_TESTS_ALIGN_TEST_ALIGN_STREAM_H_
 
 #include <sstream>
 
@@ -117,4 +117,4 @@ SEQAN_DEFINE_TEST(test_align_stream_align_stream)
     SEQAN_ASSERT_EQ(expected.str(), ss.str());
 }
 
-#endif  // SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_STREAM_H_
+#endif  // SEQAN_TESTS_ALIGN_TEST_ALIGN_STREAM_H_

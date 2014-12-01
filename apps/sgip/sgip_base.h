@@ -19,8 +19,8 @@
 // Author: Jialu Hu <Jialu.Hu@fu-berlin.de>
 // ===========================================================================
 
-#ifndef EXTRAS_APPS_SGIP_SGIP_BASE_H_
-#define EXTRAS_APPS_SGIP_SGIP_BASE_H_
+#ifndef APPS_SGIP_SGIP_BASE_H_
+#define APPS_SGIP_SGIP_BASE_H_
 
 #include <iostream>
 #include <vector>
@@ -922,4 +922,4 @@ bool checkIsomorphic(seqan::Graph<TSpec> const & g1, seqan::Graph<TSpec> const &
     return true;
 }
 
-#endif  // #ifndef EXTRAS_APPS_SGIP_SGIP_BASE_H_
+#endif  // #ifndef APPS_SGIP_SGIP_BASE_H_

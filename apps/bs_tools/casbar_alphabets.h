@@ -4,8 +4,8 @@
 
 ==========================================================================*/
 
-#ifndef CORE_APPS_BS_TOOLS_CASBAR_ALPHABETS_H_
-#define CORE_APPS_BS_TOOLS_CASBAR_ALPHABETS_H_
+#ifndef APPS_BS_TOOLS_CASBAR_ALPHABETS_H_
+#define APPS_BS_TOOLS_CASBAR_ALPHABETS_H_
 
 #include <iostream>
 #include <fstream>

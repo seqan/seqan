@@ -38,8 +38,8 @@
 // Genome Res. 2003, 13: 721-731, doi:10.1101/gr.926603
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_IMPL_H_
-#define CORE_INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_IMPL_H_
+#ifndef INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_IMPL_H_
+#define INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_IMPL_H_
 
 namespace seqan
 {
@@ -1267,4 +1267,4 @@ _computeAlignment(TTraceSet & globalTraceSet,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_IMPL_H_
+#endif  // #ifndef INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_IMPL_H_

@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_TESTS_PARSE_LM_TEST_PARSE_LM_H_
-#define EXTRAS_TESTS_PARSE_LM_TEST_PARSE_LM_H_
+#ifndef TESTS_PARSE_LM_TEST_PARSE_LM_H_
+#define TESTS_PARSE_LM_TEST_PARSE_LM_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -230,4 +230,4 @@ SEQAN_DEFINE_TEST(test_parse_lm_parse_stellar_gff)
     SEQAN_ASSERT_EQ(store.cigarStore[1][2].count, 1u);
 }
 
-#endif  // EXTRAS_TESTS_PARSE_LM_TEST_PARSE_LM_H_
+#endif  // TESTS_PARSE_LM_TEST_PARSE_LM_H_

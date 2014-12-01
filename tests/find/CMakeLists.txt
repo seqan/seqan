@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/find/CMakeLists.txt
+# File: /tests/find/CMakeLists.txt
 #
 # CMakeLists.txt file for the find module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_find)
-message (STATUS "Configuring core/tests/find")
+message (STATUS "Configuring tests/find")
 
 # ----------------------------------------------------------------------------
 # Dependencies

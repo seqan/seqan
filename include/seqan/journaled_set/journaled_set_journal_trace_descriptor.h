@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_JOURNAL_TRACE_DESCRIPTOR_H_
-#define EXTRAS_INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_JOURNAL_TRACE_DESCRIPTOR_H_
+#ifndef INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_JOURNAL_TRACE_DESCRIPTOR_H_
+#define INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_JOURNAL_TRACE_DESCRIPTOR_H_
 
 namespace seqan {
 
@@ -473,4 +473,4 @@ _constructAndSetJournalTree(String<TValue, Journaled<THostSpec, SortedArray, TBu
 
 }  // namespace seqan
 
-#endif  // #ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_JOURNAL_TRACE_DESCRIPTOR_H_
+#endif  // #ifndef INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_JOURNAL_TRACE_DESCRIPTOR_H_

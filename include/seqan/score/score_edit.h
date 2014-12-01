@@ -34,8 +34,8 @@
 // Edit distance score class and supporting code.
 // ==========================================================================
 
-#ifndef SEQAN_SCORE_SCORE_EDIT_H_
-#define SEQAN_SCORE_SCORE_EDIT_H_
+#ifndef SEQAN_SSCORE_EDIT_H_
+#define SEQAN_SSCORE_EDIT_H_
 
 namespace seqan {
 
@@ -162,4 +162,4 @@ scoreGapOpen(Score<TValue, EditDistance> const &) {
 
 }  // namespace SEQAN_NAMESPACE_MAIN
 
-#endif  // SEQAN_SCORE_SCORE_EDIT_H_
+#endif  // SEQAN_SSCORE_EDIT_H_

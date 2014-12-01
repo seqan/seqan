@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_TESTS_BAM_IO_TEST_BAM_SAM_CONVERSION_H_
-#define CORE_TESTS_BAM_IO_TEST_BAM_SAM_CONVERSION_H_
+#ifndef TESTS_BAM_IO_TEST_BAM_SAM_CONVERSION_H_
+#define TESTS_BAM_IO_TEST_BAM_SAM_CONVERSION_H_
 
 // TODO(holtgrew): The code below is my feeble attempt to use SeqAn strings for binary stuff. Maybe pure C-style stuff is more appropriate?
 
@@ -422,4 +422,4 @@ SEQAN_DEFINE_TEST(test_assign_tags_sam_to_bam_type_Bf)
     SEQAN_ASSERT_EQ(expected, CharString(bamTags));
 }
 
-#endif  // CORE_TESTS_BAM_IO_TEST_BAM_SAM_CONVERSION_H_
+#endif  // TESTS_BAM_IO_TEST_BAM_SAM_CONVERSION_H_

@@ -34,8 +34,8 @@
 // Tests for the SeqAn math header.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_MATH_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_MATH_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_MATH_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_MATH_H_
 
 SEQAN_DEFINE_TEST(test_basic_math_int_pow)
 {
@@ -88,4 +88,4 @@ SEQAN_DEFINE_TEST(test_basic_math_abs)
     SEQAN_ASSERT_EQ(_abs(-1), 1);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_MATH_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_MATH_H_

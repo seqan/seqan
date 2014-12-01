@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_ENUMERATION_BANDED_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_ENUMERATION_BANDED_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_ENUMERATION_BANDED_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_ENUMERATION_BANDED_H_
 
 namespace seqan {
 
@@ -123,4 +123,4 @@ nextLocalAlignment(Align<TSequence, TAlignSpec> & align,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_ENUMERATION_BANDED_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_LOCAL_ALIGNMENT_ENUMERATION_BANDED_H_

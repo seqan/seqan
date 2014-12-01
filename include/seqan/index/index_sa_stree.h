@@ -34,8 +34,8 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INDEX_SA_STREE_H_
-#define SEQAN_EXTRAS_INDEX_SA_STREE_H_
+#ifndef SEQAN_INDEX_SA_STREE_H_
+#define SEQAN_INDEX_SA_STREE_H_
 
 //#define SEQAN_DEBUG
 
@@ -700,4 +700,4 @@ inline bool save(Index<TObject, IndexSa<TSpec> > & index, const char * fileName)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_INDEX_SA_STREE_H_
+#endif  // #ifndef SEQAN_INDEX_SA_STREE_H_

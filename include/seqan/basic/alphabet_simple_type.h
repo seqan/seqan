@@ -35,8 +35,8 @@
 // The SimpleType alphabet type is the base class for all residue types.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALPHABET_SIMPLE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALPHABET_SIMPLE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_SIMPLE_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_SIMPLE_H_
 
 namespace seqan {
 
@@ -1134,4 +1134,4 @@ ordValue(SimpleType<TValue, TSpec> const & c)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALPHABET_SIMPLE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_SIMPLE_H_

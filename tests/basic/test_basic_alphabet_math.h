@@ -34,8 +34,8 @@
 // Tests for math functions and metafunctions.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_MATH_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_MATH_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_MATH_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_MATH_H_
 
 // Test math-related metafunctions.  We only need to check that the
 // metafunctions exist.  The actual implementations are given for each type,
@@ -91,4 +91,4 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_math_max_value)
     SEQAN_ASSERT_EQ(maxValue(MyNumber_()).value,  1);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_MATH_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_MATH_H_

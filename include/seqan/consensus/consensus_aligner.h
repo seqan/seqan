@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNER_H_
-#define EXTRAS_INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNER_H_
+#ifndef INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNER_H_
+#define INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNER_H_
 
 #include <map>
 #include <vector>
@@ -183,4 +183,4 @@ inline void ConsensusAligner_<TFragmentStore>::run()
 
 }  // namespace seqan
 
-#endif  // #ifndef EXTRAS_INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNER_H_
+#endif  // #ifndef INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNER_H_

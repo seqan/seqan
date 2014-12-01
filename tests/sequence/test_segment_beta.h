@@ -35,8 +35,8 @@
 // module.
 // ==========================================================================
 
-#ifndef CORE_TESTS_SEQUENCE_TEST_INFIX_H_
-#define CORE_TESTS_SEQUENCE_TEST_INFIX_H_
+#ifndef TESTS_SEQUENCE_TEST_INFIX_H_
+#define TESTS_SEQUENCE_TEST_INFIX_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -9646,4 +9646,4 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 
 // TODO (singer): add tests to ensure that the underlying string of a segment is not modified. 
 
-#endif // CORE_TESTS_SEQUENCE_TEST_INFIX_H_
+#endif // TESTS_SEQUENCE_TEST_INFIX_H_

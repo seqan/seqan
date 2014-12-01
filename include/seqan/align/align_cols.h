@@ -35,8 +35,8 @@
 // rows of an alignment.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGN_COLS_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGN_COLS_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_COLS_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_COLS_H_
 
 namespace seqan {
 
@@ -475,4 +475,4 @@ operator==(AlignCols<TAlign> const & left,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGN_COLS_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_COLS_H_

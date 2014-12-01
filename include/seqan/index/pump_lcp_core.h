@@ -32,8 +32,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_HEADER_PUMP_LCP_CORE_H
-#define SEQAN_HEADER_PUMP_LCP_CORE_H
+#ifndef SEQAN_HEADER_PUMP_LCP_H
+#define SEQAN_HEADER_PUMP_LCP_H
 
 namespace SEQAN_NAMESPACE_MAIN
 {

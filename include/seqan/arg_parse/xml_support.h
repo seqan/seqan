@@ -32,8 +32,8 @@
 // Author: Stephan Aiche <stephan.aiche@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_ARG_PARSE_XML_SUPPORT_H_
-#define CORE_INCLUDE_SEQAN_ARG_PARSE_XML_SUPPORT_H_
+#ifndef INCLUDE_SEQAN_ARG_PARSE_XML_SUPPORT_H_
+#define INCLUDE_SEQAN_ARG_PARSE_XML_SUPPORT_H_
 
 namespace seqan {
 
@@ -101,4 +101,4 @@ TSequence xmlEscape(TSequence const & original)
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_ARG_PARSE_XML_SUPPORT_H_
+#endif  // #ifndef INCLUDE_SEQAN_ARG_PARSE_XML_SUPPORT_H_
