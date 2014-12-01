@@ -40,35 +40,7 @@ namespace SEQAN_NAMESPACE_MAIN
 // Functions
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.em:
-..summary:Represents the EM algorithm as used by MEME.
-..description.note:There are various known problems with the motif finding in SeqAn. We plan to fix this in an upcoming release.
-..cat:Motif Search
-..signature:em(profile,dataset_start,t,l,oops_model)
-..signature:em(profile,dataset_start,t,l,gamma,zoops_model)
-..signature:em(profile,dataset_start,t,l,lambda,tcm_model)
-..param.profile:A StringSet of @Class.FrequencyDistribution|frequency distributions@.
-...type:Class.StringSet
-..param.dataset_start:An iterator pointing to the first input sequence of a given dataset.
-...type:Concept.RandomAccessIteratorConcept
-..param.t:The number of input sequences.
-..param.l:The size of the motif.
-..param.oops_model:The oops_model object.
-...type:Tag.Oops
-..param.zoops_model:The zoops_model object.
-...type:Tag.Zoops
-..param.tcm_model:The tcm_model object.
-...type:Tag.Tcm
-..param.gamma:The probability of sequence having a motif occurrence.
-..param.lambda:The probability of starting a motif occurrence 
-...remarks:$lambda$ is calculated by dividing $gamma$ by the length of the corresponding sequence.
-..remarks:This version of EM is used in the MEME program of Bailey and Elkan. It is a Bayesian
-          variant of the basic EM which allows multiple occurrences of a motif in any sequence and can 
-		  therefore be performed on sequences of one of the model types @Tag.Oops@, @Tag.Zoops@ and 
-		  @Tag.Tcm@. We use the EM algorithm of MEME for the refinement step of PROJECTION.
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 //////////////////////////////////////////////////////////////////////////////
 //	Oops model

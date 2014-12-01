@@ -69,21 +69,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * wildcards.
  */
 
-/**
-.Spec.WildShiftAnd:
-..summary: Exact string matching with wildcards using bit parallelism. The Shift-And algorithm is applicable to search small patterns in texts using a small alphabet.
-..general:Class.Pattern
-..cat:Searching
-..signature:Pattern<TNeedle, WildShiftAnd>
-..param.TNeedle:The needle type.
-...type:Class.String
-..remarks.text:The supported wildcards are $*$ (zero or more occurrence), $+$ (one or more occurrences), $?$ (optional character), $.$ 
-(every character), character classes (e.g. $[a-z]$) and bounded repeats (e.g. ${n,m}$).
-..remarks.text:After the find-Method returned the Finder will point to the last position of the occurrence
-..remarks.text:We encourage the user to intialize the Pattern with a $String<char>$ (@Function.setHost@ or the C'tor).
-If you use for instance $String <Dna>$ instead you won't be able to specify wildcards
-..include:seqan/find.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 ///.Class.Pattern.param.TSpec.type:Spec.WildShiftAnd
 

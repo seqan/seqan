@@ -77,20 +77,7 @@ _roundToSignificantFigures(double num, int n)
  * @param[out] tree The guide tree.
  */
 
-/**
-.Function.njTree
-..summary:Computes a guide tree from a distance matrix.
-..cat:Graph
-..signature:
-njTree(mat, graph)
-..param.mat:A string of pairwise distance values, representing a square matrix.
-...type:Class.String
-...remarks: String must use double values because the algorithm recycles this string to store intermediate possibly fractional results.
-..param.graph:Out-parameter:The guide tree.
-...type:Spec.Tree
-..returns:void
-..include:seqan/graph_msa.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TValue, typename TStringSpec, typename TCargo, typename TSpec>
 inline void
 njTree(String<TValue, TStringSpec> const & matIn,
@@ -353,53 +340,32 @@ njTree(String<TValue, TStringSpec> const & matIn,
  * @signature typedef Tag<UpgmaAvg_> const UpgmaWeightAvg;
  */
 
-/**
-.Tag.Upgma Configurator:
-..cat:Alignments
-..summary:A tag to configure the guide tree construction.
-..include:seqan/graph_msa.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Tag.Upgma Configurator.value.UpgmaMin:
-	Uses the min operation in the upgma algorithm
-..include:seqan/graph_msa.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct UpgmaMin_;
 typedef Tag<UpgmaMin_> const UpgmaMin;
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Tag.Upgma Configurator.value.UpgmaMax:
-	Uses the max operation in the upgma algorithm
-..include:seqan/graph_msa.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct UpgmaMax_;
 typedef Tag<UpgmaMax_> const UpgmaMax;
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Tag.Upgma Configurator.value.UpgmaAvg:
-	Uses the average operation in the upgma algorithm
-..include:seqan/graph_msa.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct UpgmaAvg_;
 typedef Tag<UpgmaAvg_> const UpgmaAvg;
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Tag.Upgma Configurator.value.UpgmaWeightAvg:
-	Uses the weighted average operation in the upgma algorithm
-..include:seqan/graph_msa.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct UpgmaWeightAvg_;
 typedef Tag<UpgmaWeightAvg_> const UpgmaWeightAvg;
@@ -935,27 +901,7 @@ upgmaTree(Graph<Undirected<TValue, TSpec1> >& pairGraph,
  *                  Default: <tt>UpgmaWeightAvg</tt>.
  */
 
-/**
-.Function.upgmaTree
-..summary:Computes a guide tree from a distance matrix.
-..cat:Graph
-..signature:
-upgmaTree(mat, graph [,tag])
-upgmaTree(sparse_mat, graph [,tag])
-..param.mat:A string of pairwise distance values, representing a square matrix.
-...type:Class.String
-...remarks: String must use double values because the algorithm recycles this string to store intermediate possibly fractional results.
-..param.sparse_mat:An undirected graph where each edge corresponds to the distance between sequence i and sequence j.
-...type:Spec.Undirected Graph
-..param.graph:Out-parameter:The guide tree.
-...type:Spec.Tree
-..param.tag:Tag that indicates how to calculate cluster distances.
-...remarks:Possible values are UpgmaWeightAvg, UpgmaAvg, UpgmaMax, and UpgmaMin.
-...type:Tag.Upgma Configurator
-...default:UpgmaWeightAvg
-..returns:void
-..include:seqan/graph_msa.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TDistance, typename TCargo, typename TSpec>
 inline void
 upgmaTree(TDistance& dist, 

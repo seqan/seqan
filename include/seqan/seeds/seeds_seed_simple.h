@@ -74,28 +74,7 @@ namespace seqan {
  * @param[in] endPosV   The end position in the vertical position.
  */
 
-/**
-.Spec.Simple Seed
-..summary:Describes a seed with start and end position and diagonal upper and lower bounds.
-..cat:Seed Handling
-..general:Class.Seed
-..signature:Seed<Simple, TConfig>
-..param.TConfig:The configuration object used for the seed.
-...default:DefaultSeedConfig.
-
-.Memfunc.Simple Seed#Seed
-..class:Spec.Simple Seed
-..summary:Constructor
-..signature: Seed<Simple, TConfig> ()
-..signature: Seed<Simple, TConfig> (beginPosH, beginPosV, length)
-..signature: Seed<Simple, TConfig> (beginPosH, beginPosV, endPosH, endPosV)
-..param.beginPosH: Begin position in database (horizontal).
-..param.beginPosV: Begin position in query (vertical).
-..param.endPosH: End position in database (horizontal).
-..param.endPosV: End position in query (vertical).
-..param.length: Length of the seed.
-..include:seqan/seeds.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TConfiguration>
 class Seed<Simple, TConfiguration>

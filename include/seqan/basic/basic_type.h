@@ -170,16 +170,7 @@ struct Host
  * The definition of Cargo allows the addition of user-specified data into existing data structures.
  */
 
-/**
-.Metafunction.Cargo:
-..cat:Basic
-..summary:Type of additional data stored in an object. 
-..signature:Cargo<T>::Type
-..param.T:Type for which the cargo tyoe is determined.
-..returns.param.Type:Cargo of $T$.
-..remarks:The definition of Cargo allows the addition of user specific data to existing data structures.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Should this have a default implementation?
 
@@ -206,19 +197,7 @@ struct Cargo<T const> {
  * @return Type The resulting vertex descriptor type.
  */
 
-/**
-.Metafunction.VertexDescriptor:
-..cat:Graph
-..summary:Type of an object that represents a vertex descriptor.
-..signature:VertexDescriptor<T>::Type
-..param.T:Type T must be a graph. All graphs currently use ids as vertex descriptors.
-..returns.param.Type:VertexDescriptor type.
-..remarks.text:The vertex descriptor is a unique handle to a vertex in a graph.
-It is used in various graph functions, e.g., to add edges, to create OutEdge Iterators or to remove a vertex.
-It is also used to attach properties to vertices.
-..example.code:VertexDescriptor<Graph<> >::Type vD; //vD is a vertex descriptor
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Should this have a default implementation? For all graphs -- OK but for all types?
 
@@ -245,18 +224,7 @@ struct VertexDescriptor<T const>:
  * @return Type The resulting identifier type.
  */
     
-/**
-.Metafunction.Id:
-..cat:Graph
-..summary:Type of an object that represents an id.
-..signature:Id<T>::Type
-..param.T:Type for which a suitable id type is determined.
-..returns.param.Type:Id type.
-..remarks.text:The id type of a container is the type that is used to uniquely identify its elements.
-In most cases this type is unsigned int.
-..example.code:Id<Graph<> >::Type id; //id has type unsigned int
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Should this have a default implementation?
 
@@ -282,16 +250,7 @@ struct Id<T const> : Id<T> {};
  * @return Type The key type.
  */
 
-/**
-.Metafunction.Key:
-..cat:Graph
-..summary:Key type of a key to cargo mapping.
-..signature:Key<T>::Type
-..param.T:Type for which a key type is determined.
-..returns.param.Type:Key type.
-...default:The type $T$ itself.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Should this have a default implementation?
 
@@ -329,10 +288,7 @@ struct Object<T const>:
 // TODO(holtgrew): Move to alignments?
 // TODO(holtgrew): Is this default implementation what we want?
 
-/**
-.Metafunction.Source
-..cat:Alignments
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template < typename TSpec = void >
 struct Source
@@ -361,14 +317,7 @@ struct Source<T const>:
  * @return Type Either True or False.  True if the object can efficiently be copied.
  */
 
-/**
-.Metafunction.IsLightWeight:
-..cat:Metafunctions
-..summary:Determines whether an object can efficiently be passed by copy.
-..signature:IsLightWeight<T>::Type
-..param.T:A type.
-..returns.param.Type:@Tag.Logical Values.tag.True@ if the object is light-weight and can efficiently be copied, e.g. @Class.Segment@, otherwise @Tag.Logical Values.tag.False@.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct IsLightWeight:
@@ -376,16 +325,7 @@ struct IsLightWeight:
 
 //____________________________________________________________________________
 
-/**
-.Internal.Parameter_:
-..cat:Metafunctions
-..summary:Type for function parameters and return values.
-..signature:Parameter_<T>::Type
-..param.T:A type.
-..returns.param.Type:The parameter type for arguments of type $T$.
-...text:If $T$ is a pointer or array type, then $Parameter_<T>::Type$ is $T$, 
-otherwise $Parameter_<T>::Type$ is $T &$.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Really required?
 
@@ -407,18 +347,7 @@ struct Parameter_<T [I]>
     typedef T * Type;
 };
 
-/**
-.Internal._toParameter:
-..cat:Functions
-..summary:Transforms pointers to parameter types.
-..signature:_toParameter<T>(pointer)
-..param.pointer:A pointer.
-..param.T:A Type.
-...text:$object$ is transformed into the parameter type of $T$ that is given by @Internal.Parameter_@.
-...note:This type must be explicitely specified.
-..returns:To $TParameter$ transformed $object$.
-..see:Internal.Parameter_
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Really required?
 
@@ -445,17 +374,7 @@ SEQAN_HOST_DEVICE inline _toParameter(T const & _object)
 
 //____________________________________________________________________________
 
-/**
-.Internal.ConstParameter_:
-..cat:Metafunctions
-..summary:Type for constant function parameters and return values.
-..signature:ConstParameter_<T>::Type
-..param.T:A type.
-..returns.param.Type:The const parameter type for arguments of type $T$.
-...text:If $T$ is a pointer or array type, then $Parameter_<T>::Type$ is a pointer to a const array, 
-otherwise $Parameter_<T>::Type$ is $T const &$.
-..see:Internal.Parameter_
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Really required?
 
@@ -520,18 +439,7 @@ struct Member<TObject const, TSpec> :
 
 //____________________________________________________________________________
 
-/**
-.Internal.Pointer_:
-..cat:Metafunctions
-..summary:The associated pointer type.
-..signature:Pointer_<T>::Type
-..param.T:A type.
-..returns.param.Type:A pointer type for $T$.
-...text:if $T$ is already a pointer type, then $Pointer_<T>::Type$ is $T$,
-otherwise $Pointer_<T>::Type$ is $T *$.
-..see:Internal.Parameter_
-..see:Internal._toParameter
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Really required?
 
@@ -571,16 +479,7 @@ struct NonConstPointer_<T * const>
     typedef T * Type;
 };
 
-/**
-.Internal._toPointer:
-..cat:Functions
-..summary:Transforms types into pointers.
-..signature:_toPointer(object)
-..param.object:An object.
-..returns:$object$, transformed to a pointer. 
-...text:The type of the returned pointer is given by @Internal.Pointer_@.
-..see:Internal.Pointer_
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Really required?
 
@@ -648,16 +547,7 @@ _referenceCast(typename RemovePointer<T>::Type & ptr)
  * @return VALUE The length of <tt>T</tt>.
  */
 
-/**
-.Metafunction.LENGTH:
-..cat:Basic
-..summary:Number of elements in a fixed-size container.
-..signature:LENGTH<T>::VALUE
-..param.T:Type for which the number of elements is determined.
-..returns.param.VALUE:Number of elements.
-..remarks.text:The default return value is 1 for dynamic-size containers.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // SEQREV: elements-are-containers should probably not have a default implementation
 // TODO(holtgrew): Rather switch to static const unsigned VALUE = ?
@@ -684,18 +574,7 @@ struct LENGTH<T const>:
  * @return VALUE The number of relevant positions in a shape.
  */
 
-/**
-.Metafunction.WEIGHT:
-..cat:Index
-..summary:Number of relevant positions in a shape.
-..signature:WEIGHT<T>::Type
-..param.T:Shape type for which the number of relevant positions is determined.
-...type:Class.Shape
-..returns.param.VALUE:Number of relevant positions.
-..remarks.text:The default return value is the result of the @Metafunction.LENGTH@ function.
-For gapped shapes this is the number of '1's.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Should probably go to wherever shapes are defined.
 

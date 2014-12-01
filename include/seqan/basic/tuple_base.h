@@ -75,19 +75,7 @@ struct StoredTupleValue_< SimpleType<TValue, TSpec> >
  * @tparam TSpec  Specialization tag, optional;  defaults to void.
  */
 
-/**
-.Class.Tuple:
-..cat:Aggregates
-..concept:Concept.AggregateConcept
-..summary:A plain fixed-length string.
-..signature:Tuple<T, SIZE[, TSpec]>
-..param.T:The value type, that is the type of characters stored in the tuple.
-..param.SIZE:The size/length of the tuple.
-...remarks:In contrast to @Class.String@ the length of Tuple is fixed.
-..param.TSpec:The specializing type.
-...default:$void$, no packing (faster access).
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @fn Tuple::i

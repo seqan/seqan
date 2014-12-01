@@ -130,27 +130,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in]     openMode The open mode.
  */
 
-/**
-.Spec.MMap String:
-..cat:Strings
-..general:Class.String
-..summary:String that is stored in external memory. Uses memory mapping.
-..signature:String<TValue, MMap<> >
-..signature:String<TValue, MMap<TConfig> >
-..param.TValue:The value type, that is the type of the items/characters stored in the string.
-...remarks:Use @Metafunction.Value@ to get the value type for a given class.
-..param.TConfig:A structure to configure the memory mapped string.
-...type:Tag.ExternalConfig
-...type:Tag.ExternalConfigLarge
-...type:Tag.ExternalConfigSize
-...default:@Tag.ExternalConfig@
-..remarks:The MMap String enables to access sequences larger than the available physical memory (RAM) by using
-external memory (e.g. Hard disk, Network storage, ...) mapped into memory.
-The size of the string is limited by external memory and the logical address space (4GB on a 32bit OS).
-See the @Memfunc.External String#String@ constructor for more details.
-..remarks:This String also supports fast appending and removing of values at the end (see @Spec.Block String@, @Function.appendValue@)
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TValue,
                typename TConfig >
@@ -412,22 +392,7 @@ SEQAN_CHECKPOINT
  * @return bool <tt>true</tt> if the advise was successful, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.mmapAdvise
-..class:Spec.MMap String
-..cat:Sequences
-..summary:Call advise function for memory mapped files.
-..signature:mmapAdvise(mmapString, scheme[, beginPos, size])
-..param.mmapString:The @Spec.MMap String@ that contains the location in the advise call.
-...type:Spec.MMap String
-..param.scheme:The memory access scheme to use.
-...type:Enum.FileMappingAdvise
-..param.beginPos:Begin position in the string for the advise call.
-..param.size:Size of the range used for the advise call.
-..returns:$int$, return code 0 on success.
-..see:Enum.FileMappingAdvise
-..include:seqan/file.h
- */
+/*_DDDOC_PLACEHOLDER*/
     template <typename TValue, typename TConfig, typename TPos, typename TSize>
 	inline bool
 	mmapAdvise(String<TValue, MMap<TConfig> > &me, FileMappingAdvise advise, TPos beginPos, TSize size)

@@ -89,25 +89,7 @@ namespace seqan {
  * </dl>
  */
 
-/**
-.Class.AlignConfig:
-..cat:Alignments
-..summary:The AlignConfig class encapsulates how DP is carried out.
-It indicates at what ends gaps are free, the so-called free ends-space alignments.
-..signature:AlignConfig<bool TOP, bool LEFT, bool RIGHT, bool BOTTOM, TSpec>
-..param.TOP:If true then 0's in top row.
-...default:$false$
-..param.LEFT:If true then 0's in the left column.
-...default:$false$
-..param.RIGHT:If true then maximum is also searched in the last column.
-...default:$false$
-..param.BOTTOM:If true then maximum is also searched in the last row.
-...default:$false$
-..param.TSpec:The specializing type.
-...metafunction:Metafunction.Spec
-...default:$Default$, see @Tag.Default@.
-..include:seqan/align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <bool TOP = false, bool LEFT = false, bool RIGHT = false, bool BOTTOM = false, typename TSpec = Default>
 class AlignConfig

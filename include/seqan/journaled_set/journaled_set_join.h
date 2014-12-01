@@ -66,20 +66,7 @@ namespace seqan {
  *                           to compute the differences.
  */
 
-/**
-.Function.join:
-..summary:Joins a @Spec.Journaled String@ to a @Spec.Journaled Set@ by computing and journaling differences to the global
-reference sequence.
-..class:Spec.Journaled Set
-..cat:Sequences
-..signature:join(stringSet, pos[, joinConfig])
-..param.stringSet: The String Set that stores the sequences.
-...type:Spec.Journaled Set
-..param.pos: The position of the @Spec.Journaled String@ within the string set.
-..param.joinConfig: A @Class.JoinConfig@ object that specifies the method and the method's strategy to compute the differences.
-...type:Class.JoinConfig
-..include:seqan/journal_set.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // ----------------------------------------------------------------------------
 // Function join()                                                [GlobalAlign]

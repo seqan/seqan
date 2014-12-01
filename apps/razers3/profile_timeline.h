@@ -72,21 +72,7 @@ struct TimelineEntry_
         entryType(entryType_), isBegin(isBegin_), timestamp(timestamp_) {}
 };
 
-/**
-.Class.Timeline:
-..summary:Singlestate helper class for creating timelines for program execution.
-..cat:Debugging
-..signature:Timeline
-..remarks:This is useful for a coarse-graine overview of what your program is doing.
-
-At any given time, each thread in your program (currently only OpenMP threads are supported) executes one "active" task of a given type.
-Tasks can be nested, the innermost is the active ones.
-Task types are integers, 0 is reserved for "waiting".
-You can notify the beginning of a task with @Function.timelineBeginTask@ and the end with @Function.timelineEndTask@.
-Before you can use a task, you have to declare it with @Function.timelineAddTaskType@.
-
-Note that starting and ending comes at the overhead of a @Function.sysTime@ and possibly also resizing a string.
- */
+/*_DDDOC_PLACEHOLDER*/
 class Timeline
 {
 public:
@@ -124,18 +110,7 @@ private:
 // Functions
 // ============================================================================
 
-/**
-.Function.timelineAddTaskType:
-..summary:Adds a task description.
-..cat:Debugging
-..signature:timelineAddTaskType(shortName [, longName])
-..param.shortName:Short name for the task type.
-...type:Shortcut.CharString
-..param.longName:Optional long name for the task type.
-...type:Shortcut.CharString
-..param.return:The identifier of the task.
-...type:nolink:$unsigned$
- */
+/*_DDDOC_PLACEHOLDER*/
 inline
 unsigned
 timelineAddTaskType(CharString const & shortName, CharString const & longName)
@@ -151,16 +126,7 @@ timelineAddTaskType(CharString const & shortName)
     return timelineAddTaskType(shortName, shortName);
 }
 
-/**
-.Function.initTimeline:
-..summary:Initialize creation of timeline.
-..cat:Debugging
-..signature:initTimeline([threadCount])
-..param.threadCount:Maximal number of threads, by default the result of omp_get_max_threads() is used.
-..remarks:This must be called before the timeline can be used.
-
-Also, this must be called by one thread only!
- */
+/*_DDDOC_PLACEHOLDER*/
 inline
 void
 initTimeline(int threadCount)
@@ -178,13 +144,7 @@ initTimeline()
     initTimeline(omp_get_max_threads());
 }
 
-/**
-.Function.timelineBeginTask:
-..signature:timelineBeginTask(taskTypeNo)
-..param.taskTypeNo:The number of the task type that started.
-...type:nolink:$unsigned$
-..param.result:The timestamp registered for the starting point of the task.
- */
+/*_DDDOC_PLACEHOLDER*/
 inline
 double
 timelineBeginTask(unsigned taskTypeNo)
@@ -195,13 +155,7 @@ timelineBeginTask(unsigned taskTypeNo)
     return timestamp;
 }
 
-/**
-.Function.timelineEndTask:
-..signature:timelineEndTask(taskTypeNo)
-..param.taskTypeNo:The number of the task type that ended.
-...type:nolink:$unsigned$
-..param.result:The timestamp registered for the end point of the task.
- */
+/*_DDDOC_PLACEHOLDER*/
 inline
 double
 timelineEndTask(unsigned taskTypeNo)
@@ -212,17 +166,7 @@ timelineEndTask(unsigned taskTypeNo)
     return timestamp;
 }
 
-/**
-.Function.dumpTimeline:
-..summary:Write out results to the given path.
-..cat:Debugging
-..signature:dumpTimeline(path [, appendPid])
-..param.path:The path to dump the timeline to.
-...type:nolink:$char const *$
-..param.appendPid:Whether to append $".#pid#"$ to the filename.
-...type:nolink:$bool$
-...default:false
- */
+/*_DDDOC_PLACEHOLDER*/
 inline
 void
 dumpTimeline(char const * path, bool appendPid)

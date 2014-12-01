@@ -97,34 +97,7 @@ namespace seqan {
  * relationship between <tt>A</tt> and <tt>B</tt>.
  */
 
-/**
-.Class.Holder:
-..cat:Basic
-..summary:Manages relationship to another object.
-..signature:Holder<TValue, TSpec>
-..param.TValue:Type of the managed object.
-...metafunction:Metafunction.Value
-..param.TSpec:The specializing type.
-...metafunction:Metafunction.Spec
-...default:$Tristate$
-..remarks.text:The main purpose of this class is to facilitate the handling of
-member objects. If we want class $A$ to be dependent on or the owner of another object of class $B$, 
-then we add a data member of type $Holder<B>$ to $A$. 
-$Holder$ offers some useful access functions and stores the kind of relationship between $A$ and $B$.
-..include:seqan/basic.h
-
-.Memfunc.Holder:
-..class:Class.Holder
-..summary:Constructor
-..signature:Holder<TValue, TSpec>()
-..signature:Holder<TValue, TSpec>(holder)
-..signature:Holder<TValue, TSpec>(value)
-..param.holder:Another holder object.
-..param.value:An object of type $TValue$.
-..remarks.text:
-The default constructor creates a holder that is in state 'empty'.
-If a $value$ is passed to the constructor, the holder will be in state 'dependent'.
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // Tag for default Holder specialization.
 struct Tristate_;

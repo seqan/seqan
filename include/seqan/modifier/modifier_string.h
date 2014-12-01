@@ -96,27 +96,7 @@ template <typename TType, typename TTestType> struct IsAnInnerHost;
  * @include demos/modifier/modified_string_nested.cpp.stdout
  */
 
-/**
-.Class.ModifiedString:
-..summary:Allows to modify arbitrary strings by specializing what differs from an origin.
-..cat:Modifier
-..signature:ModifiedString<THost[, TSpec]>
-..param.THost:Original sequence type.
-...type:Concept.ContainerConcept
-..param.TSpec:The modifier type.
-...metafunction:Metafunction.Spec
-..implements:Concept.ContainerConcept
-..remarks:$THost$ can also be a modified string, so you can create custom strings by combining predefined ones.
-..example.file:demos/modifier/modified_string.cpp
-..example.text:The output is as follows:
-..example.output:
-TATACGCGAAAA
-AAAAGCGCATAT
-
-TATACGCGTTTT
-TTTTGCGCATAT
-..include:seqan/modifier.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename THost, typename TSpec = void>
 class ModifiedString

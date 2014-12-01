@@ -60,25 +60,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @aka substring
  */
 
-/**
-.Spec.InfixSegment:
-..cat:Segments
-..summary:An arbitrary segment.
-..general:Class.Segment
-..signature:Segment<THost, InfixSegment>
-..param.THost:Type of the whole sequence.
-...text:Instances of $Segment<THost, InfixSegment>$ are infixes of $THost$ objects.
-...remarks:Use @Metafunction.Host@ to get the host type for a given class.
-..remarks.note:Since the appropriate segment type depends on the host sequence type,
-    it is recommended to use the metafunction @Metafunction.Infix@ instead of explicitely
-    choose a specialization of @Class.Segment@.
-..see:Metafunction.Infix
-..example.file:demos/sequence/infix.cpp
-..example.text:The output is as follows:
-..example.output:
-Infix: CGCG
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename THost_>
 class Segment<THost_, InfixSegment>
@@ -100,32 +82,7 @@ public:
         SEQAN_ASSERT_LEQ(data_begin_position, data_end_position);
     }
 
-/**
-.Memfunc.InfixSegment#Segment:
-..class:Spec.InfixSegment
-..summary:Constructor
-..signature:Segment<THost, InfixSegment> ()
-..signature:Segment<THost, InfixSegment> (infix)
-..signature:Segment<THost, InfixSegment> (host [, begin, end])
-..param.infix:Other infix object. (copy constructor)
-..param.host:The whole sequence.
-..param.begin:Position/iterator in $host$ of the first item in segment.
-...type:Metafunction.Position.$Position<THost>::Type$
-...type:Metafunction.Iterator.$Iterator<THost>::Type$
-..param.end:Position/iterator behind the end of the segment.
-...type:Metafunction.Position.$Position<THost>::Type$
-...type:Metafunction.Iterator.$Iterator<THost>::Type$
-..remarks:
-...text:A Segment object cannot work without a host. If the object is default constructed,
-the host must be set by @Function.setHost@ before the segment can be used.
-...text:If a segment object is constructed by the copy constructor, the
-members of the new constructed object are set to the same values as the members in the
-source object; the host object is not modified.
-Note that this is a special case, since all other copy operations result in changes
-of the host object.
-...text:$begin$ and $end$ must be valid positions/iterators in $host$.
-...text:The predicate $begin <= end$ must be true.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     SEQAN_HOST_DEVICE
     Segment():
@@ -297,21 +254,7 @@ SEQAN_CHECKPOINT
 
 //____________________________________________________________________________
 
-/**
-.Function.setBegin:
-..class:Class.Segment
-..summary:Sets begin of object in host.
-..cat:Dependent Objects
-..signature:setBegin(object, new_begin)
-..param.object:An object.
-...type:Spec.InfixSegment
-...type:Spec.SuffixSegment
-..param.new_begin:iterator to the new first item in $host(object)$ that belongs of $object$.
-...type:Metafunction.Iterator
-..see:Function.begin
-..see:Function.beginPosition
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename THost_, typename TIterator>
 inline void
 setBegin(Segment<THost_, InfixSegment> & me, TIterator new_begin)
@@ -323,22 +266,7 @@ SEQAN_CHECKPOINT
 
 //____________________________________________________________________________
 
-/**
-.Function.setBeginPosition:
-..class:Class.Segment
-..summary:Sets begin position of object in host.
-..cat:Dependent Objects
-..signature:setBeginPosition(object, new_begin)
-..param.object:An object.
-...type:Spec.InfixSegment
-...type:Spec.SuffixSegment
-..param.new_begin:position of the new first item in $host(object)$ that belongs of $object$.
-...type:Metafunction.Position
-..see:Function.begin
-..see:Function.beginPosition
-..see:Function.setBegin
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename THost_, typename TPosition>
 inline void
@@ -392,22 +320,7 @@ SEQAN_CHECKPOINT
 
 //____________________________________________________________________________
 
-/**
-.Function.setEnd:
-..class:Class.Segment
-..summary:Sets end of object in host.
-..cat:Dependent Objects
-..signature:setEnd(object, new_end)
-..param.object:An object.
-...type:Spec.InfixSegment
-...type:Spec.PrefixSegment
-..param.new_end:Iterator behind the last item in $host(object)$ belongs of $object$.
-...type:Metafunction.Iterator
-..see:Function.end
-..see:Function.endPosition
-..see:Function.setBegin
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename THost_, typename TIterator>
 inline void
@@ -421,23 +334,7 @@ setEnd(Segment<THost_, InfixSegment> & me, TIterator new_end)
 //____________________________________________________________________________
 
 
-/**
-.Function.setEndPosition:
-..class:Class.Segment
-..summary:Sets begin position of object in host.
-..cat:Dependent Objects
-..signature:setEndPosition(object, new_end)
-..param.object:An object.
-...type:Spec.InfixSegment
-...type:Spec.PrefixSegment
-..param.new_end:position behind the last item in $host(object)$ that belongs of $object$.
-...type:Metafunction.Position
-..see:Function.end
-..see:Function.endPosition
-..see:Function.setBeginPosition
-..see:Function.setEnd
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename THost_, typename TPosition>
 inline void
@@ -462,22 +359,7 @@ SEQAN_CHECKPOINT
 
 //____________________________________________________________________________
 
-/**
-.Function.setHost:
-..class:Class.Segment
-..summary:Sets the host of an object.
-..cat:Dependent Objects
-..signature:setHost(object, host)
-..param.object:The object that will get a new host.
-...type:Class.Segment
-..param.host:The new host.
-..remarks:After this operation, $object$ depends on $host$.
-...text:Note that setting the host can invalidate $object$.
-For example, if one changes the host of a @Class.Segment@ object, it is possible
-that begin- and end-position of the segment does not fit into the new host sequence.
-..see:Function.host
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename THost_>
 inline void
 setHost(Segment<THost_, InfixSegment> & me, typename Parameter_<THost_>::Type _host)
@@ -496,19 +378,7 @@ SEQAN_CHECKPOINT
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Metafunction.Infix:
-..cat:Segments
-..class:Class.String
-..summary:Infix sequence type.
-..signature:Infix<T>::Type
-..remarks:Note that an infix of a @Class.Segment@ object is an @Spec.InfixSegment@ object having the same host type.
-..param.T:A sequence type.
-...type:Class.String
-..returns.param.Type:The infix type.
-..see:Spec.InfixSegment
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename THost>
 struct Infix
@@ -762,28 +632,7 @@ value(Segment<THost, TSpec> const & me,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.infix:
-..cat:Containers
-..class:Class.String
-..class:Adaption.char array
-..summary:Creates infix object.
-..signature:infix(host, begin, end)
-..param.host:The complete sequence.
-...type:Class.String
-...type:Adaption.char array
-..param.begin:Position or iterator of the first element of the segment.
-...type:Metafunction.Position
-...type:Metafunction.Iterator
-..param.end:Position or iterator behind the last element of the segment.
-...remarks:$end$ must have the same type as $begin$.
-..returns:The infix of $host$ between $begin$ and $end-1$.
-...remarks:The type of the infix is given by @Metafunction.Infix@.
-..remarks:Notational sugar.
-..see:Spec.InfixSegment
-..see.Metafunction.Infix
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TPosBegin, typename TPosEnd>
 SEQAN_HOST_DEVICE inline typename Infix<T>::Type
@@ -853,26 +702,7 @@ SEQAN_CHECKPOINT
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.infixWithLength:
-..cat:Containers
-..class:Class.String
-..class:Adaption.char array
-..summary:Creates infix object.
-..signature:infixWithLength(host, begin, length)
-..param.host:The complete sequence.
-...type:Class.String
-...type:Adaption.char array
-..param.begin:Position or iterator of the first element of the segment.
-...type:Metafunction.Position
-...type:Metafunction.Iterator
-..param.length:Length of the returned infix.
-..returns:The infix of $host$ between $begin$ and $begin+length-1$.
-...remarks:The type of the infix is given by @Metafunction.Infix@.
-..remarks:Notational sugar.
-..see:Spec.InfixSegment
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TPosBegin, typename TSize>
 SEQAN_HOST_DEVICE inline typename Infix<T>::Type

@@ -88,21 +88,7 @@ public:
 // Class LocalAlignmentFinder
 // ----------------------------------------------------------------------------
 
-/**
-.Class.LocalAlignmentFinder:
-..cat:Miscellaneous
-..summary:Stores the information necessary for local alignment dynamic programming.
-..signature:LocalAlignmentFinder<TScoreValue>
-..param.TScoreValue:The value type that is used for scoring the alignments.
-...remarks:Use @Metafunction.Value@ to get the value type for a given class.
-..see:Function.localAlignment
-.Memfunc.LocalAlignmentFinder#LocalAlignmentFinder
-..class:Class.LocalAlignmentFinder
-..summary:Constructor
-..signature:LocalAlignmentFinder(align)
-..param.align:An @Class.Align@ object that is already initialized with the sequences.
-..include:seqan/align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TScoreValue = int>
 class LocalAlignmentFinder

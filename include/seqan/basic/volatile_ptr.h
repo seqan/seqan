@@ -70,16 +70,7 @@ namespace seqan {
  * the component and set all pointers to <tt>NULL</tt>.
  */
 
-/**
-.Class.VolatilePtr
-..summary:Helper data structure for handling volatile data.
-..cat:Basic
-..signature:VolatilePtr<T>
-..param.T:The pointed-to type.
-..remarks:Allows you to handle volatile data (used by ext. string during swapping).
-..remarks:Imagine volatile pointers as nodes in an undirected graph.  When you assign one to another then they are connected.  All pointers in a connection component points to the same value.  By calling @Function.nukeCopies@ you can destroy the component and set all pointers to $NULL$.
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template < typename Type >
 struct VolatilePtr
@@ -219,15 +210,7 @@ struct VolatilePtr
  * @param[in] ptr One pointer of the connected component to reset.
  */
  
-/**
-.Function.nukeCopies
-..class:Class.VolatilePtr
-..cat:Basic
-..summary:Reset all pointers connected to a given one.
-..signature:nukeCopies(ptr)
-..param.ptr:One pointer of the connected component to reset.
-...type:Class.VolatilePtr
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Remove this version?
 template <typename TValue>

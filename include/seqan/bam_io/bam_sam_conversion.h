@@ -182,18 +182,7 @@ void _appendTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString
  * @see assignTagsBamToSam
  */
 
-/**
-.Function.assignTagsSamToBam
-..cat:BAM I/O
-..summary:Assign tags in SAM format to tags in BAM format.
-..signature:assignTagsSamToBam(bamTags, samTags)
-..param.bamTags:Destination BAM tags.
-...type:Shortcut.CharString
-..param.samTags:Source SAM tags.
-...type:Shortcut.CharString
-..returns:$void$
-..include:seqan/bam_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TTarget, typename TSource>
 void appendTagsSamToBam(TTarget & target, TSource const & source)
@@ -351,19 +340,7 @@ void _appendTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
  * @see assignTagsSamToBam
  */
 
-/**
-.Function.assignTagsBamToSam
-..cat:BAM I/O
-..summary:Assign tags in BAM format to tags in SAM format.
-..signature:assignTagsSamToBam(bamTags, samTags)
-..param.samTags:Destination SAM tags.
-...type:Shortcut.CharString
-..param.bamTags:Source BAM tags.
-...type:Shortcut.CharString
-..returns:$void$
-..include:seqan/bam_io.h
-..see:Function.assignTagsSamToBam
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TTarget, typename TSource>
 inline void

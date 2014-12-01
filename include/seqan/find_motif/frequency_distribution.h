@@ -38,25 +38,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Class.FrequencyDistribution:
-..summary:Holds a collection of objects of a specific type, where each object represents
-          the frequency (absolute or relative probability) of a particular residue which is a member
-		  of a fixed sequence alphabet.
-..description.note:There are various known problems with the motif finding in SeqAn. We plan to fix this in an upcoming release.
-..cat:Motif Search
-..signature:FrequencyDistribution<TValue[, TSpec]>
-..param.TValue:The type of sequence which is considered.
-...metafunction:Metafunction.Value
-...type:Spec.Dna
-...type:Spec.AminoAcid
-..param.TSpec:The type of probability distribution. 
-...metafunction:Metafunction.Spec
-...default: $double$
-...remarks: It is preferable to use $double$.
-..remarks:The number of objects in @Class.FrequencyDistribution@ equals the size of the sequence alphabet.
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec = double>
 class FrequencyDistribution
@@ -306,26 +288,7 @@ struct Value< FrequencyDistribution<TValue, TSpec> const>
 // Functions
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.absFreqOfLettersInSeq
-..class:Class.FrequencyDistribution
-..summary:Counts the number of times each residue of a fixed sequence alphabet occurs in a given sequence.
-..cat:Motif Search
-..signature:absFreqOfLettersInSeq(frequencies,begin,end)
-..param.frequencies:The @Class.FrequencyDistribution@ object which will hold the calculated frequencies.
-...type:Class.FrequencyDistribution
-..param.begin:An iterator pointing to the beginning of a given sequence which is either
-              a string of @Spec.Dna@ or a string of @Spec.AminoAcid@. 
-...type:Concept.RandomAccessIteratorConcept
-...type:Shortcut.DnaIterator
-...type:Shortcut.PeptideIterator
-..param.end:An iterator pointing to the end of a given sequence which is either
-            a string of @Spec.Dna@ or a string of @Spec.AminoAcid@.  
-...type:Concept.RandomAccessIteratorConcept
-...type:Shortcut.DnaIterator
-...type:Shortcut.PeptideIterator
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename TSpec, typename TSeqIter> 
 void 
@@ -342,22 +305,7 @@ absFreqOfLettersInSeq(FrequencyDistribution<TValue, TSpec> & fd,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.absFreqOfLettersInSetOfSeqs:
-..class:Class.FrequencyDistribution
-..summary:Counts the number of times each residue of a fixed sequence alphabet occurs in a given set of sequences.
-..cat:Motif Search
-..signature:absFreqOfLettersInSetOfSeqs(frequencies,begin,end)
-..param.frequencies:The @Class.FrequencyDistribution@ object which holds the calculated frequencies.
-...type:Class.FrequencyDistribution
-..param.begin:An iterator pointing to the first sequence of a given set of sequences which is considered. 
-...type:Concept.RandomAccessIteratorConcept
-..param.end:An iterator pointing to the last sequence of a given set of sequences which is considered. 
-...type:Concept.RandomAccessIteratorConcept
-..remarks.text:This function is similar to @Function.absFreqOfLettersInSeq@ except that the function is performed
-               on a set of sequences.
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename TSpec, typename TIter>
 void
@@ -374,18 +322,7 @@ absFreqOfLettersInSetOfSeqs(FrequencyDistribution<TValue, TSpec> & fd,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.addValue:
-..class:Class.FrequencyDistribution
-..summary:Adds a value of a specific type to each element of a given @Class.FrequencyDistribution@ object.
-..cat:Motif Search
-..signature:addValue(frequencies,value)
-..param.frequencies:The @Class.FrequencyDistribution@ object which holds the calculated frequencies.
-...type:Class.FrequencyDistribution
-..param.value:The value object which is added to each element of a @Class.FrequencyDistribution@ object.
-...remarks:The $value$ object should be identical in type to the elements of the @Class.FrequencyDistribution@ object.
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename TSpec, typename TType>
 void 
@@ -400,20 +337,7 @@ addValue(FrequencyDistribution<TValue, TSpec> & fd, TType const & val)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.backgroundFrequency:
-..class:Class.FrequencyDistribution
-..summary:Determines the background letter frequencies in a given dataset
-..cat:Motif Search
-..signature:backgroundFrequency(frequencies,begin,end)
-..param.frequencies:The @Class.FrequencyDistribution@ object which holds the calculated frequencies.
-...type:Class.FrequencyDistribution
-..param.begin:An iterator pointing to the first sequence of a given dataset (set of sequences) which is considered. 
-...type:Concept.RandomAccessIteratorConcept
-..param.end:An iterator pointing to the last sequence of a given dataset (set of sequences) which is considered. 
-...type:Concept.RandomAccessIteratorConcept
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename TSpec,typename TDatasetIter> 
 void 
@@ -466,21 +390,7 @@ clear(FrequencyDistribution<TValue, TSpec> & fd)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.convertResidueToFrequencyDist
-..class:Class.FrequencyDistribution
-..summary:Coverts a residue to a frequency distribution (profile).
-..cat:Motif Search
-..signature:convertResidueToFrequencyDist(frequencies,residue)
-..param.frequencies:The @Class.FrequencyDistribution@ object representing the profile for a specific residue.
-...type:Class.FrequencyDistribution
-..param.residue:The residue object which is considered.
-...type:Spec.Dna
-...type:Spec.AminoAcid
-..remarks:This function is used to convert a sequence pattern into a profile.
-..see:Function.convertPatternToProfile
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename TSpec>
 void 
@@ -542,16 +452,7 @@ length(FrequencyDistribution<TValue, TSpec> const & me)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.logarithmize
-..class:Class.FrequencyDistribution
-..summary:Logarithmizes each element of a given @Class.FrequencyDistribution@ object.
-..cat:Motif Search
-..signature:logarithmize(frequencies)
-..param.frequencies:The @Class.FrequencyDistribution@ object.
-...type:Class.FrequencyDistribution
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename TSpec>
 void 
@@ -594,16 +495,7 @@ normalize(FrequencyDistribution<TValue, TSpec> & fd)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.posOfMax:
-..class:Class.FrequencyDistribution
-..summary:Determines the residue position in a given @Class.FrequencyDistribution@ object with the maximum frequency.
-..cat:Motif Search
-..signature:posOfMax(frequencies)
-..param.frequencies:The @Class.FrequencyDistribution@ object.
-...type:Class.FrequencyDistribution
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename TSpec>
 typename Position< FrequencyDistribution<TValue, TSpec> >::Type
@@ -628,16 +520,7 @@ posOfMax(FrequencyDistribution<TValue, TSpec> & me)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.FrequencyDistribution#sum
-..class:Class.FrequencyDistribution
-..summary:Determines the sum of all frequencies in a given @Class.FrequencyDistribution@ object.
-..cat:Motif Search
-..signature:sum(frequencies)
-..param.frequencies:The @Class.FrequencyDistribution@ object.
-...type:Class.FrequencyDistribution
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename TSpec>
 TSpec 

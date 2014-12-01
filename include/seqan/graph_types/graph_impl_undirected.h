@@ -57,25 +57,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *                property maps do not work.
  */
 
-/**
-.Spec.Undirected Graph:
-..cat:Graph
-..general:Class.Graph
-..summary:An undirected graph that stores the edges in an adjacency list.
-..description:
-...image:undirectedGraph|An undirected graph with multiple components.
-..signature:Graph<Undirected<TCargo, TSpec> >
-..param.TCargo:The cargo type that can be attached to the edges.
-...metafunction:Metafunction.Cargo
-...remarks:Use @Metafunction.Cargo@ to get the cargo type of an undirected graph.
-...default:$void$
-..param.TSpec:The specializing type for the graph.
-...metafunction:Metafunction.Spec
-...remarks:Use WithoutEdgeId here to omit edge ids.
-Note: If edges do not store ids external property maps do not work.
-...default:$Default$, see @Tag.Default@.
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TCargo,typename TSpec>
 class Graph<Undirected<TCargo, TSpec> > 
 {

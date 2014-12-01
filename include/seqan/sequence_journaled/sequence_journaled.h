@@ -68,14 +68,7 @@ namespace seqan {
  * @tparam TBufferSpec  Specialization type for the buffer string.  Default: <tt>Alloc&lt;&gt;</tt>.
  */
 
-/**
-.Spec.Journaled String
-..cat:Sequences
-..general:Class.String
-..summary:Journaled versions of arbitrary underlying string.
-..signature:String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >
-..include:seqan/sequence_journaled.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename THostSpec, typename TJournalSpec = SortedArray, typename TBufferSpec = Alloc<void> >
 struct Journaled {};
@@ -202,11 +195,7 @@ struct StringSpec<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec>
  * @return Type The host type.
  */
 
-/**
-.Metafunction.Host
-..param.T.type:Spec.Journaled String
-..class:Spec.Journaled String
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 struct Host<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >
@@ -235,16 +224,7 @@ struct Host<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > con
  * @return Type The insertion buffer type.
  */
 
-/**
-.Metafunction.InsertionBuffer
-..cat:Sequences
-..summary:Return type of insertion buffer string for a journaled string.
-..class:Spec.Journaled String
-..signature:InsertionBuffer<T>::Type
-..param.T:The journaled string to get the insertion buffer type for.
-...type:Spec.Journaled String
-..include:sequan/sequence_journal.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct InsertionBuffer;
 
@@ -368,16 +348,7 @@ struct Value<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > co
  * @return Type the journal type.
  */
 
-/**
-.Metafunction.JournalType
-..cat:Sequences
-..summary:Metafunction for returning the type of the journal of a Journaled String.
-..signature:JournalType<T>::Type
-..class:Spec.Journaled String
-..param.T:The journaled string to get the journal type for.
-...type:Spec.Journaled String
-..include:seqan/string_journaled.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct JournalType;
 
@@ -560,13 +531,7 @@ set(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target,
  * @param[in]     str The string to set as the host.
  */
 
-/**
-.Function.setHost:
-..class:Spec.Journaled String
-..param.object.type:Spec.Journaled String
-..param.host.type:Class.String
-..include:seqan/sequence_journaled.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TSequence2>
 inline
 void
@@ -593,12 +558,7 @@ setHost(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journ
  * @return THost Reference to the host of <tt>js</tt>.
  */
 
-/**
-.Function.host:
-..class:Spec.Journaled String
-..param.object.type:Spec.Journaled String
-..include:seqan/sequence_journaled.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 inline
 typename Host<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >::Type &
@@ -630,12 +590,7 @@ host(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & jo
  * @param[in,out] js The JournaledString to clear.
  */
 
-/**
-.Function.clear:
-..class:Spec.Journaled String
-..param.object.type:Spec.Journaled String
-..include:seqan/sequence_journaled.h
- */
+/*_DDDOC_PLACEHOLDER*/
 // TODO(holtgrew): Behaviour is to clear the journal, not the string!
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 inline void
@@ -674,16 +629,7 @@ reset(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journal
  * @param[in,out] js The JournaledString to flatten.
  */ 
 
-/**
-.Function.flatten:
-..class:Spec.Journaled String  
-..cat:Sequences
-..summary:Apply the journal to the underlying string, destructively on the underlying string.
-..signature:flatten(journaledString)
-..param.journaledString:The journaled string to flatten.
-...type:Spec.Journaled String
-..include:seqan/sequence_journaled.h
- */
+/*_DDDOC_PLACEHOLDER*/
 // TODO(holtgrew): What about non-destructive version that creates a new copy and sets holder to it?
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 inline void
@@ -967,17 +913,7 @@ getValue(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const 
  * @return TPos Position in the host.
  */
 
-/**
-.Function.Journaled String#virtualToHostPosition
-..class:Spec.Journaled String
-..summary:Translates virtual (view) position to position in host.
-..signature:virtualToHostPosition(journaledString, pos)
-..param.journaledString:The journaled string to translate for.
-...type:Spec.Journaled String
-..param.pos:The position to translate.
-..returns:Corresponding host position.
-...type:Metafunction.Position
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // Note that if pos is in a gap, we return the position of the entry
 // after the gap in the host.
@@ -1008,17 +944,7 @@ virtualToHostPosition(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferS
  * @return TPos The virtual view position.
  */
 
-/**
-.Function.Journaled String#hostToVirtualPosition
-..class:Spec.Journaled String
-..summary:Translates position in host to virtual (view) position.
-..signature:hostToVirtualPosition(journaledString, pos)
-..param.journaledString:The journaled string to translate for.
-...type:Spec.Journaled String
-..param.pos:The position to translate.
-..returns:Corresponding virtual (view) position.
-...type:Metafunction.Position
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TPos>
 inline
@@ -1183,16 +1109,7 @@ getObjectId(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > con
  * @return bool Indicates whether the string has been modified.
  */
 
-/**
-.Function.Journaled String#isFlat
-..class:Spec.Journaled String
-..cat:Sequences
-..summary:Returns whether journaled string has modifications.
-..signature:isFlat(journaledString)
-..param.journaledString:The journaled string to query.
-...type:Spec.Journaled String
-..returns:$bool$ indicating whether the string has been modfieid.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Is the non-const version necessary?
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>

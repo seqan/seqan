@@ -51,14 +51,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TLess  The less-than comparator.  Default: <tt>std::less&lt;TValue&gt;</tt>.
  */
 
-/**
-.Spec.PriorityHeap
-..cat:Miscellaneous
-..general:Class.PriorityType
-..summary:Stores the priority data on a heap.
-..signature:PriorityType<TValue, TLess, PriorityHeap> >
-..include:seqan/misc.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template < typename TValue, typename TLess>
 class PriorityType<TValue,TLess,PriorityHeap>
 {
@@ -181,19 +174,7 @@ SEQAN_CHECKPOINT
  * @return TReference The result, reference to Value type.
  */
 
-/**
-.Function.PriorityType#top:
-..summary:Reference to the item with the highest priority.
-..cat:Content Manipulation
-..signature:top(object)
-..class:Class.PriorityType
-..param.object:A priority queue.
-...type:Class.PriorityType
-..remarks:To delete this item and adjust the priority queue use @Function.PriorityType#pop@.
-..see:Function.PriorityType#pop
-..see:Function.PriorityType#push
-..include:seqan/misc.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TLess>
 inline TValue & 
 top(PriorityType<TValue, TLess, PriorityHeap> & me)
@@ -241,16 +222,7 @@ SEQAN_CHECKPOINT
  * @param[in,out] pq The PriorityType to adjust.
  */
 
-/**
-.Function.adjustTop
-..cat:Miscellaneous
-..signature:adjustTop(object)
-..class:Class.PriorityType
-..summary:Adjusts the priority of the first item.
-..param.object
-...type:Class.PriorityType
-..include:seqan/misc.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TLess>
 inline void 
 adjustTop (PriorityType<TValue, TLess, PriorityHeap> & me)	// so könnte man es dann auch nennen
@@ -277,21 +249,7 @@ SEQAN_CHECKPOINT
  * @param[in]     element The element to push.
  */
 
-/**
-.Function.PriorityType#push:
-..summary:Inserts a new item and adjusts the priority queue if necessary.
-..cat:Content Manipulation
-..signature:push(object, element)
-..class:Class.PriorityType
-..param.object:A priority queue.
-...type:Class.PriorityType
-..param.element:The item to be inserted in the priority queue.
-...metafunction:Metafunction.Value
-..remarks:The result of this operation is stored in $object$.
-..see:Function.PriorityType#top
-..see:Function.PriorityType#pop
-..include:seqan/misc.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TLess>
 inline void 
 push (PriorityType<TValue, TLess, PriorityHeap> & me, TValue const & element)
@@ -342,19 +300,7 @@ SEQAN_CHECKPOINT
  * @param[in,out] pq      The PriorityType to pop from.
  */
 
-/**
-.Function.PriorityType#pop:
-..summary:Deletes item with the highest priority and adjusts the priority queue.
-..cat:Content Manipulation
-..signature:pop(object)
-..class:Class.PriorityType
-..param.object:A priority queue.
-...type:Class.PriorityType
-..remarks:This function only deletes this item, but does not return it. To access the item use @Function.PriorityType#top@.
-..see:Function.PriorityType#top
-..see:Function.PriorityType#push
-..include:seqan/misc.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TLess>
 inline void 
 pop (PriorityType<TValue, TLess, PriorityHeap> & me)

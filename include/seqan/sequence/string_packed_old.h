@@ -77,19 +77,7 @@ struct Packed2;
 template <typename TPackedContainer>
 struct PackedConsts_;
 
-/**
-.Spec.Packed String:
-..cat:Strings
-..general:Class.String
-..summary:A string that stores as many values in one machine word as possible.
-..signature:String<TValue, Packed2<THostspec> >
-..param.TValue:The value type, that is the type of the items/characters stored in the string.
-...remarks:Use @Metafunction.Value@ to get the value type for a given class.
-..param.THostspec:The specializing type.
-...remarks:This is the specialization of the host string that is used for storing the packed values.
-...default:@Spec.Alloc String.Alloc<>@
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*???TODO Optimierungsm�glichkeiten:
 - _clearSpace kopiert Zeichenweise im Packed-String, und nicht im Host-String

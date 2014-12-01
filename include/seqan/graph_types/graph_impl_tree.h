@@ -57,24 +57,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TSpec  Specializing type.  Default: <tt>Default</tt>.
  */
 
-/**
-.Spec.Tree:
-..cat:Graph
-..general:Class.Graph
-..summary:A Tree has a distinct root and directed edges. The source vertex of each edge is the parent vertex, 
-the target vertex of each edge is the child. Trees provide fast access to child vertices and the parent.
-..description:
-...image:treeGraph|A tree, where $0$ is the root vertex.
-..signature:Graph<Tree<TCargo, TSpec> >
-..param.TCargo:The cargo type that can be attached to the edges.
-...metafunction:Metafunction.Cargo
-...remarks:Use @Metafunction.Cargo@ to get the cargo type of the tree.
-...default:$void$
-..param.TSpec:The specializing type for the graph.
-...metafunction:Metafunction.Spec
-...default:$Default$, see @Tag.Default@.
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TCargo, typename TSpec>
 class Graph<Tree<TCargo, TSpec> > 
 {
@@ -883,19 +866,7 @@ isRoot(Graph<Tree<TCargo, TSpec> > const& g,
  * @param[in] v The descriptor of the vertex to query for.
  */
 
-/**
-.Function.Graph#isLeaf
-..class:Spec.Tree
-..cat:Graph
-..summary:Tests whether a given vertex is a leaf or not.
-..signature:isLeaf(g, v)
-..param.g:A tree.
-...type:Spec.Tree
-..param.v:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:True if vertex is a leaf.
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline bool
@@ -923,17 +894,7 @@ isLeaf(Graph<Tree<TCargo, TSpec> > const& g,
  * @return TSize The number of tree edges.  Faster than @link Graph#numEdges @endlink for trees.
  */
 
-/**
-.Function.numTreeEdges
-..class:Spec.Tree
-..cat:Graph
-..summary:Number of tree edges.
-..signature:numTreeEdges(g)
-..param.g:A tree.
-...type:Spec.Tree
-..returns:Number of tree edges. Faster than numEdges for trees.
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec>
 inline typename Size<Graph<Tree<TCargo, TSpec> > >::Type 
@@ -958,19 +919,7 @@ numTreeEdges(Graph<Tree<TCargo, TSpec> > const& g)
  * @return TSize The number of children.
  */
 
-/**
-.Function.numChildren:
-..class:Spec.Tree
-..cat:Graph
-..summary:Number of children of a given tree vertex.
-..signature:numChildren(g, v)
-..param.g:A tree.
-...type:Spec.Tree
-..param.v:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:Number of children
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline typename Size<Graph<Tree<TCargo, TSpec> > >::Type 
@@ -997,25 +946,7 @@ numChildren(Graph<Tree<TCargo, TSpec> > const& g,
  * @return TVertexDescriptor Vertex descriptor of the added vertex.
  */
 
-/**
-.Function.addChild
-..class:Spec.Tree
-..cat:Graph
-..summary:Adds a new child vertex to a parent vertex.
-Optionally a cargo can be attached to the parent-child edge.
-..signature:addChild(g, parent [, cargo])
-..param.g:A tree.
-...type:Spec.Tree
-..param.parent:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..param.cargo:A cargo object.
-...type:Metafunction.Cargo
-..returns:A new vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..see:Function.removeChild
-..see:Function.removeAllChildren
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline typename VertexDescriptor<Graph<Tree<TCargo, TSpec> > >::Type 
@@ -1057,23 +988,7 @@ addChild(Graph<Tree<TCargo, TSpec> >& g,
  * @param[in]     child  The descriptor of the child vertex.
  */
 
-/**
-.Function.removeChild
-..class:Spec.Tree
-..cat:Graph
-..summary:Removes a child from the tree given a parent.
-..signature:removeChild(g, parent, child)
-..param.g:A tree.
-...type:Spec.Tree
-..param.parent:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..param.child:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:void
-..see:Function.addChild
-..see:Function.removeAllChildren
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline void 
@@ -1099,21 +1014,7 @@ removeChild(Graph<Tree<TCargo, TSpec> >& g,
  * @param[in]     parent Descriptor of the vertex to remove children of.
  */
 
-/**
-.Function.removeAllChildren
-..class:Spec.Tree
-..cat:Graph
-..summary:Removes all children from the tree given a parent.
-..signature:removeChild(g, parent)
-..param.g:A tree.
-...type:Spec.Tree
-..param.parent:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:void
-..see:Function.addChild
-..see:Function.removeChild
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline void 
@@ -1147,21 +1048,7 @@ removeAllChildren(Graph<Tree<TCargo, TSpec> >& g,
  * @return TVertexDescriptor The descriptor of the child vertex.
  */
 
-/**
-.Function.childVertex
-..class:Spec.Tree
-..cat:Graph
-..summary:Returns the child vertex of an edge.
-..signature:childVertex(g, e)
-..param.g:A tree.
-...type:Spec.Tree
-..param.e:An edge descriptor.
-...type:Metafunction.EdgeDescriptor
-..returns:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..see:Function.parentVertex
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TCargo, typename TSpec, typename TEdgeDescriptor>
 inline typename VertexDescriptor<Graph<Tree<TCargo, TSpec> > >::Type 
 childVertex(Graph<Tree<TCargo, TSpec> > const&,
@@ -1187,24 +1074,7 @@ childVertex(Graph<Tree<TCargo, TSpec> > const&,
  * @return TVertexDescriptor The descriptor of the child vertex.
  */
 
-/**
-.Function.parentVertex
-..class:Spec.Tree
-..cat:Graph
-..summary:Returns the parent vertex of an edge or vertex.
-..signature:parentVertex(g, e)
-..signature:parentVertex(g, v)
-..param.g:A tree.
-...type:Spec.Tree
-..param.e:An edge descriptor.
-...type:Metafunction.EdgeDescriptor
-..param.v:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..see:Function.parentVertex
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TCargo, typename TSpec>
 inline typename VertexDescriptor<Graph<Tree<TCargo, TSpec> > >::Type 
 parentVertex(Graph<Tree<TCargo, TSpec> > const& g,
@@ -1238,20 +1108,7 @@ parentVertex(Graph<Tree<TCargo, TSpec> > const& g,
  * @param[out] group A @link String @endlink of leaf vertex descriptors.
  */
 
-/**
-.Function.collectLeaves
-..class:Spec.Tree
-..cat:Graph
-..summary:Returns all leaves underneath a given vertex.
-..signature:collectLeaves(g, subtree_root, group)
-..param.g:A tree.
-...type:Spec.Tree
-..param.subtree_root:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..param.group:A group of vertex descriptors
-...type:Class.String
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TCargo, typename TSpec, typename TVertexDescriptor, typename TGroup>
 inline void
 collectLeaves(Graph<Tree<TCargo, TSpec> > const& g,

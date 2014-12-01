@@ -59,27 +59,14 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature typedef Tag<LibraryDistance_> const KmerDistance;
  */
 
-/**
-.Tag.Distance Calculation:
-..cat:Alignments
-..summary:A tag to specify how to calculate distance matrices.
-..include:seqan/graph_msa.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
-/**
-.Tag.Distance Calculation.value.LibraryDistance:
-	Using the library itself and heaviest common subsequence to determine a distance matrix
-..include:seqan/graph_msa.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 struct LibraryDistance_;
 typedef Tag<LibraryDistance_> const LibraryDistance;
 
 
-/**
-.Tag.Distance Calculation.value.KmerDistance:
-	Using a simple kmer count to determine a distance matrix
-..include:seqan/graph_msa.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 struct KmerDistance_;
 typedef Tag<KmerDistance_> const KmerDistance;
 
@@ -217,29 +204,7 @@ getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
  */
  
 
-/**
-.Function.getDistanceMatrix
-..class:Spec.Alignment Graph
-..summary:Computes a pairwise distance matrix from an alignment graph.
-..cat:Graph
-..signature:
-getDistanceMatrix(graph, mat [, tag])
-getDistanceMatrix(graph, mat [, ktup] [, alphabet], KmerDistance)
-..param.graph:An alignment graph containing the sequences and possible alignment edges.
-...type:Spec.Alignment Graph
-..param.mat:Out-parameter:Pairwise distance matrix.
-...type:Class.String
-..param.ktup:Length of k-mers.
-...remarks:For KmerDistance the length of the k-mers.
-..param.alphabet:Alphabet
-...remarks:For KmerDistance the alphabet to use for k-mer counting (e.g., compressed alphabets).
-..param.tag:Distance tag
-...type:Tag.Distance Calculation
-...remarks:Possible values are LibraryDistance or KmerDistance.
-...default:KmerDistance
-..returns:void
-..include:seqan/graph_msa.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix>
 inline void 
 getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,

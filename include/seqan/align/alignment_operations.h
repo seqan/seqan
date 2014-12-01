@@ -79,21 +79,7 @@ namespace seqan {
  * @include demos/align/integrate_align.cpp.stdout
  */
 
-/**
-.Function.integrateAlign
-..summary:Integrates an alignment into another by copying the gaps.
-..cat:Alignments
-...type:Class.Align
-..signature:integrateAlign(align1, align2[, positions])
-..param.align1:Alignment object into which align2 is to be integrated.
-...type:Class.Align
-..param.align2:Alignment object that is to be integrated into align1.
-...type:Class.Align
-..param.positions:The integration positions in align1 for all rows (view positions).
-...type:Class.String
-..remarks:If the integration positions are not specified, the sources of align2 have to be @Metafunction.Infix@es of the sources of align1.
-..include:seqan/align.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSource1, typename TSpec1, typename TSource2, typename TSpec2, typename TPos> 
 void integrateAlign(Align<TSource1, TSpec1> & align,

@@ -42,27 +42,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // wotd tree index fibres
 
-/**
-.Tag.WOTD Index Fibres
-..summary:Tag to select a specific fibre (e.g. table, object, ...) of an @Spec.IndexWotd@ index.
-..remarks:These tags can be used to get @Metafunction.Fibre.Fibres@ of an WOTD based @Spec.IndexWotd@.
-..cat:Index
-
-..tag.WotdText:The original text the index should be based on.
-
-..tag.WotdRawText:The raw text the index is really based on.
-
-..tag.WotdSA:The suffix array.
-
-..tag.WotdRawSA:The raw suffix array.
-
-..tag.WotdDir:The child table.
-
-..see:Metafunction.Fibre
-..see:Function.getFibre
-..see:Spec.IndexWotd
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*! 
  * @defgroup WOTDIndexFibres WOTD Index Fibres
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of an @link
@@ -156,18 +136,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // wotd tree index
 
-/**
-.Spec.IndexWotd:
-..summary:This index represents a lazy suffix tree, meaning that a path from the tree of the index in only computed,
-if it is traversed. For details see Giegerich et al., "Efficient implementation of lazy suffix trees".
-..cat:Index
-..general:Class.Index
-..signature:Index<TText, IndexWotd<> >
-..param.TText:The text type.
-...type:Class.String
-..remarks:The fibres (see @Class.Index@ and @Metafunction.Fibre@) of this index are a partially sorted suffix array (see @Tag.WOTD Index Fibres.WotdSA@) and the wotd tree (see @Tag.WOTD Index Fibres.WotdDir@).
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class IndexWotd
  * @extends Index
@@ -1174,18 +1143,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 
 //////////////////////////////////////////////////////////////////////////////
 //TODO(singer): The function createWotdIndex in never defined!
-/**
-.Function.createWotdIndex:
-..summary:Builds a q-gram index on a sequence. 
-..cat:Index
-..signature:createWotdIndex(sa, dir, text)
-..class:Spec.IndexWotd
-..param.text:The sequence.
-..param.sa:The resulting list in which all q-grams are sorted alphabetically.
-..param.dir:The resulting array that indicates at which position in index the corresponding q-grams can be found.
-..returns:Index contains the sorted list of qgrams. For each possible q-gram pos contains the first position in index that corresponds to this q-gram. 
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexWotd#createWotdIndex
  * @headerfile <seqan/index.h>

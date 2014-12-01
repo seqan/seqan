@@ -74,42 +74,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> >), (StringTreeConcept));
 template <typename TText, typename TSpec>
 SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
-/**
-.Spec.VSTree Iterator:
-..cat:Index
-..summary:Abstract iterator for suffix trees.
-..signature:Iter<TContainer, VSTree<TSpec> >
-..general:Class.Iter
-..param.TContainer:Type of the container that can be iterated.
-...type:Spec.IndexEsa
-...metafunction:Metafunction.Container
-..param.TSpec:The specialization type.
-..remarks:This iterator is a pointer to a node in the suffix tree (given by the enhanced suffix array @Spec.IndexEsa@).
-Every node can uniquely be mapped to an interval of the suffix array containing all suffixes of the node's subtree.
-This interval and some extra information constitute the @Metafunction.VertexDescriptor@ returned by the @Function.value@ function of the iterator.
-..include:seqan/index.h
-..example
-...text:This code shows how an index can be used with iterators to achieve a pre-order tree like traversal
-in DFS of the text "tobeornottobe". In order to do so a Top-Down History iterator is used.
-...file:demos/index/index_iterator.cpp
-...output:
-
-be
-beornottobe
-e
-eornottobe
-nottobe
-o
-obe
-obeornottobe
-ornottobe
-ottobe
-rnottobe
-t
-tobe
-tobeornottobe
-ttobe
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class VSTreeIterator VSTree Iterator
  * @extends Iter
@@ -212,35 +177,7 @@ ttobe
 		typedef typename Infix< typename Fibre<TIndex, FibreText>::Type const >::Type Type;
 	};
 
-/**
-.Spec.TopDown Iterator:
-..cat:Index
-..general:Spec.VSTree Iterator
-..summary:Iterator for virtual trees that can go down and right beginning from the root.
-..signature:Iterator<TContainer, TopDown<TSpec> >::Type
-..signature:Iter<TContainer, VSTree< TopDown<TSpec> > >
-..param.TContainer:Type of the container that can be iterated.
-...type:Spec.IndexEsa
-...metafunction:Metafunction.Container
-..param.TSpec:The specialization type.
-..remarks:If not copy-constructed the @Spec.TopDown Iterator@ starts in the root node of the virtual tree.
-..remarks:Note that the virtual tree can either be a virtual suffix tree or a virtual prefix tree. The suffix tree is shown in Figure 1 and is implemented with the @Spec.IndexDfi@, @Spec.IndexEsa@ and @Spec.IndexWotd@. In contrast the @Spec.FMIndex@ implements a prefix trie shown in Figure 2.
-..include:seqan/index.h
-
-.Memfunc.TopDown Iterator#Iterator
-..class:Spec.TopDown Iterator
-..summary:Constructor
-..signature:Iterator(index[, vertexDesc])
-..signature:Iterator(iterator)
-..param.index:An index object.
-..param.vertexDesc:The vertex descriptor of a node the iterator should start in.
-The iterator starts in the root node by default.
-..param.iterator:Another TopDown iterator. (copy constructor)
-...type:Spec.TopDown Iterator
-...type:Spec.TopDownHistory Iterator
-..remarks:If not copy-constructed the @Spec.TopDown Iterator@ starts in the root node of the virtual tree.
-..remarks:Note that the virtual tree can either be a virtual suffix tree or a virtual prefix tree. The suffix tree is shown in Figure 1 and is implemented with the @Spec.IndexDfi@, @Spec.IndexEsa@ and @Spec.IndexWotd@. In contrast the @Spec.FMIndex@ implements a prefix trie shown in Figure 2.
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class TopDownIterator Top Down Iterator
  * @extends VSTreeIterator
@@ -342,38 +279,7 @@ The iterator starts in the root node by default.
 	};
 
 
-/**
-.Spec.TopDownHistory Iterator:
-..cat:Index
-..general:Spec.TopDown Iterator
-..summary:String tree iterator that can go down, right, and up. Supports depth-first search.
-..signature:Iterator<TContainer, TopDown< ParentLinks<TSpec> > >::Type
-..signature:Iter<TContainer, VSTree< TopDown< ParentLinks<TSpec> > > >
-..param.TContainer:Type of the container that can be iterated.
-...type:Spec.IndexEsa
-...metafunction:Metafunction.Container
-..implements:Concept.ForwardIteratorConcept
-..param.TSpec:The specialization type. Specifies the depth-first search mode.
-...type:Tag.DFS Order.tag.Preorder
-...type:Tag.DFS Order.tag.PreorderEmptyEdges
-...type:Tag.DFS Order.tag.Postorder
-...type:Tag.DFS Order.tag.PostorderEmptyEdges
-..remarks:If not copy-constructed the @Spec.TopDownHistory Iterator@ starts in the root node of the string tree.
-Depending on the depth-first search mode the root is not the first DFS node. To go to the first DFS node use @Function.goBegin@.
-..remarks:Note that the virtual tree can either be a virtual suffix tree or a virtual prefix tree. The suffix tree is shown in Figure 1 and is implemented with the @Spec.IndexDfi@, @Spec.IndexEsa@ and @Spec.IndexWotd@. In contrast the @Spec.FMIndex@ implements a prefix trie shown in Figure 2.
-..include:seqan/index.h
-
-.Memfunc.TopDownHistory Iterator#Iterator
-..class:Spec.TopDownHistory Iterator
-..summary:Constructor
-..signature:Iterator(index)
-..signature:Iterator(iterator)
-..param.index:An index object.
-..param.iterator:Another TopDownHistory iterator. (copy constructor)
-...type:Spec.TopDownHistory Iterator
-..remarks:If not copy-constructed the @Spec.TopDownHistory Iterator@ starts in the root node of the suffix tree.
-..remarks:Note that the virtual tree can either be a virtual suffix tree or a virtual prefix tree. The suffix tree is shown in Figure 1 and is implemented with the @Spec.IndexDfi@, @Spec.IndexEsa@ and @Spec.IndexWotd@. In contrast the @Spec.FMIndex@ implements a prefix trie shown in Figure 2.
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class TopDownHistoryIterator Top Down History Iterator
  * @implements ForwardIteratorConcept
@@ -509,30 +415,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 //    template <typename TIndex, class TSpec>
 //    SEQAN_CONCEPT_IMPL((ParentLinksConcepts), Iter<TIndex,VSTree<TopDown<ParentLinks<TSpec> > > >);
 
-/**
-.Spec.BottomUp Iterator:
-..cat:Index
-..general:Spec.VSTree Iterator
-..summary:Iterator for an efficient postorder depth-first search in a suffix tree.
-..signature:Iterator<TContainer, BottomUp<TSpec> >::Type
-..signature:Iter<TContainer, VSTree< BottomUp<TSpec> > >
-..param.TContainer:Type of the container that can be iterated.
-...type:Spec.IndexEsa
-...metafunction:Metafunction.Container
-..implements:Concept.ForwardIteratorConcept
-..param.TSpec:The specialization type.
-..include:seqan/index.h
-
-.Memfunc.BottomUp Iterator#Iterator
-..class:Spec.BottomUp Iterator
-..summary:Constructor
-..signature:Iterator(index)
-..signature:Iterator(iterator)
-..param.index:An index object.
-..param.iterator:Another BottomUp iterator. (copy constructor)
-...type:Spec.BottomUp Iterator
-..remarks:If not copy-constructed the @Spec.BottomUp Iterator@ starts in the first DFS node, which is the left-most leaf of the suffix tree.
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class BottomUpIterator Bottom Up Iterator
  * @implements ForwardIteratorConcept
@@ -778,23 +661,7 @@ Depending on the depth-first search mode the root is not the first DFS node. To 
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.repLength:
-..summary:Returns the length of the substring representing the path from root to $iterator$ node.
-..cat:Index
-..signature:repLength(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.VSTree Iterator
-..returns:The length of the sequence returned by @Function.representative@
-...type:Metafunction.Size|Size type of the underlying index
-..include:seqan/index.h
-..example
-...text:The following code shows a simple example how the function @Function.repLength@ is used.
-...file:demos/index/index_begin_range_goDown_representative_repLength.cpp
-...output:The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
-The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#repLength
  * @headerfile <seqan/index.h>
@@ -849,18 +716,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.nodeDepth:
-..summary:Returns the zero-based node depth of the $iterator$ node.
-..cat:Index
-..signature:nodeDepth(iterator)
-..class:Spec.TopDownHistory Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.TopDownHistory Iterator
-..returns:The length of the path from root to $iterator$ node, e.g. 0 is returned for the root node.
-...type:Metafunction.Size|Size type of the underlying index
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownHistoryIterator#nodeDepth
  * 
@@ -885,18 +741,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.parentRepLength:
-..summary:Returns the length of the substring representing the path from root to $iterator$'s parent node.
-..cat:Index
-..signature:parentRepLength(iterator)
-..class:Spec.TopDown Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.TopDown Iterator
-..returns:The length of the sequence returned by @Function.representative@ of the parent node.
-...type:Metafunction.Size|Size type of the underlying index
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownIterator#parentRepLength
  * @headerfile <seqan/index.h>
@@ -919,18 +764,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.emptyParentEdge:
-..summary:Returns $true$ iff the edge label from the $iterator$ node to its parent is empty.
-..cat:Index
-..signature:bool emptyParentEdge(iterator)
-..classSpec.TopDown Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.TopDown Iterator
-..returns:$true$ if @Function.parentEdgeLength@$ returns 0, otherwise $false$.
-...type:Metafunction.Size|Size type of the underlying index
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownIterator#emptyParentEdge
  * @headerfile <seqan/index.h>
@@ -958,21 +792,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.lca:
-..summary:Returns the last common ancestor of two tree nodes.
-..cat:Index
-..signature:bool lca(a, b, result)
-..class:Spec.TopDownHistory Iterator
-..param.a:The first node.
-...type:Spec.TopDownHistory Iterator
-..param.b:The second node.
-...type:Spec.TopDownHistory Iterator
-..param.result:A reference to the resulting lca node.
-...type:Spec.TopDownHistory Iterator
-..returns:$false$ if the lca of $a$ and $b$ is the root node, otherwise $true$.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownHistoryIterator#lca
  * @headerfile <seqan/index.h>
@@ -1031,19 +851,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.lcp:
-..summary:Returns the length of the longest-common-prefix of two suffix tree nodes.
-..cat:Index
-..signature:lcp(a, b)
-..class:Spec.TopDownHistory Iterator
-..param.a:The first node.
-...type:Spec.TopDownHistory Iterator
-..param.b:The second node.
-...type:Spec.TopDownHistory Iterator
-..returns:The lcp-length of $a$ and $b$.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*! 
  * @fn TopDownHistoryIterator#lcp
  * @headerfile <seqan/index.h>
@@ -1227,18 +1035,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.getOccurrence:
-..summary:Returns an occurrence of the @Function.representative@ substring or a q-gram in the index text.
-..cat:Index
-..signature:getOccurrence(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.VSTree Iterator
-..returns:A position where the @Function.representative@ of $iterator$ occurs in the text (see @Tag.ESA Index Fibres.EsaText@).
-If $iterator$'s container type is $TIndex$ the return type is $SAValue<TIndex>::Type$.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#getOccurrence
  * @headerfile <seqan/index.h>
@@ -1262,18 +1059,7 @@ If $iterator$'s container type is $TIndex$ the return type is $SAValue<TIndex>::
 
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.countOccurrences:
-..summary:Returns the number of occurrences of @Function.representative@ substring or a q-gram in the index text.
-..cat:Index
-..signature:countOccurrences(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.VSTree Iterator
-..returns:The number of positions where the @Function.representative@ of $iterator$ occurs in the text (see @Tag.ESA Index Fibres.EsaText@).
-If $iterator$'s container type is $TIndex$ the return type is $Size<TIndex>::Type$.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#countOccurrences
  * @headerfile <seqan/index.h>
@@ -1310,26 +1096,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Size<TIndex>::Typ
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.range:
-..summary:Returns the suffix array interval borders of occurrences of @Function.representative@ substring or a q-gram in the index text.
-..cat:Index
-..signature:range(iterator)
-..class:Spec.VSTree Iterator
-..class:Class.Index
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.VSTree Iterator
-..returns:All positions where a substring occurs in the text (see @Tag.ESA Index Fibres.EsaText@) 
-are stored in a contiguous range of the suffix array.
-$range$ returns begin and end position of this range for occurrences of @Function.representative@.
-If $iterator$'s container type is $TIndex$ the return type is $Pair<Size<TIndex>::Type>.
-..include:seqan/index.h
-..example
-...text:The following code shows a simple example how the function @Function.range@ is used.
-...file:demos/index/index_begin_range_goDown_representative_repLength.cpp
-...output:The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
-The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#range
  * @headerfile <seqan/index.h>
@@ -1368,18 +1135,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.getOccurrences:
-..summary:Returns all occurrences of the @Function.representative@ substring or a q-gram in the index text.
-..cat:Index
-..signature:getOccurrences(iterator)
-..classSpec.VSTree Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.VSTree Iterator
-..returns:All positions where the @Function.representative@ of $iterator$ occurs in the text (see @Tag.ESA Index Fibres.EsaText@).
-If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TIndex, EsaSA>::Type const>::Type$.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#getOccurrences
  * @headerfile <seqan/index.h>
@@ -1418,18 +1174,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.alignment:
-..summary:Returns an alignment of the occurrences of the @Function.representative@ substring in the index text.
-..cat:internal
-..signature:alignment(iterator)
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.VSTree Iterator
-..returns:A local alignment corresponding to the seed of the $iterator$.
-..remarks:The @Function.representative@ must uniquely occur in every sequence (e.g. in Mums), 
-otherwise the seed returned is one many.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#alignment
  * @brief Returns an alignment of the occurrences of the @link VSTreeIterator#representative @endlink substring in the index text.
@@ -1515,18 +1260,7 @@ otherwise the seed returned is one many.
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.getOccurrencesBwt:
-..summary:Returns the characters left beside all occurrence of the @Function.representative@ substring in the index text.
-..cat:Index
-..signature:getOccurrencesBwt(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.VSTree Iterator
-..returns:All positions where the @Function.representative@ of $iterator$ occurs in the text (see @Tag.ESA Index Fibres.EsaText@).
-If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TIndex, EsaBwt>::Type const>::Type$.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#getOccurrencesBwt
  * @headerfile <seqan/index.h>
@@ -1554,23 +1288,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.representative:
-..summary:Returns a substring representing the path from root to $iterator$ node.
-..cat:Index
-..signature:representative(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a string tree.
-...type:Spec.VSTree Iterator
-..returns:An @Spec.InfixSegment@ of the text of an index (see @Tag.ESA Index Fibres.EsaText@).
-If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TIndex, EsaText>::Type const>::Type$.
-..include:seqan/index.h
-..example
-...text:The following code shows a simple example how the @Function.range@ is used.
-...file:demos/index/index_begin_range_goDown_representative_repLength.cpp
-...output:The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
-The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#representative
  * @headerfile <seqan/index.h>
@@ -1600,38 +1318,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.countChildren:
-..summary:Count the number of children of a tree node.
-..cat:Index
-..signature:countChildren(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.VSTree Iterator
-..returns:The number of children of a tree node.
-If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Type$.
-..include:seqan/index.h
-..example.code:
- 
- // this code is in seqan/index/index_esa_stree.h
- 
- typedef Index< String<char> > TMyIndex;
- TMyIndex myIndex(myString);
- 
- Iterator< TMyIndex, TopDown<ParentLinks<PreorderEmptyEdges> > >::Type tdIterator(myIndex);
- Size<TMyIndex>::Type count;
- 
- while (!atEnd(tdIterator)) {
- // We print out the representatives of all nodes that have more than 3 children and the number of occurrences.
- count = countChildren(tdIterator);
- if (count >= 3)
- {
-     ::std::cout << "Representative " << representative(tdIterator) << " has " <<  count << " children  and " << countOccurrences(tdIterator) << " Occurrences " << ::std::endl;
- 
-     ++tdIterator;
- }
-
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#countChildren
  * @headerfile <seqan/index.h>
@@ -1793,17 +1480,7 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 	}
 
 
-/**
-.Function.nodePredicate:
-..summary:If $false$ this node will be skipped during the bottom-up traversal.
-..cat:Index
-..signature:bool nodePredicate(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.VSTree Iterator
-..returns:
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 //TODO(singer): Why only bottom-up???
 /*!
  * @fn VSTreeIterator#nodePredicate
@@ -1827,17 +1504,7 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 	}
 
 
-/**
-.Function.nodeHullPredicate:
-..summary:If $false$ this node and its subtree is concealed.
-..cat:Index
-..signature:bool nodeHullPredicate(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.VSTree Iterator
-..returns:
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#nodeHullPredicate
  * @headerfile <seqan/index.h>
@@ -1861,21 +1528,7 @@ If $iterator$'s container type is $TIndex$, the return type is $Size<TIndex>::Ty
 
 //____________________________________________________________________________
 
-/**
-.Function.goRoot:
-..summary:Move iterator to the root node.
-..cat:Index
-..signature:goRoot(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.TopDown Iterator
-..include:seqan/index.h
-..example
-...text:The following code shows a simple example how the @Function.range@ is used.
-...file:demos/index/index_begin_range_goDown_representative_repLength.cpp
-...output:The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
-The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#goRoot
  * @headerfile <seqan/index.h>
@@ -1897,40 +1550,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 
 //____________________________________________________________________________
 
-/**
-.Function.Index#begin
-..summary:Returns an iterator pointing to the root node of the virtual string tree/trie of an index. The only exception are @Tag.DFS Order.Postorder@ iterators, where begin returns an iterator pointing to the leftmost node in the tree/trie.
-..signature:begin(index, tag)
-..class:Class.Index
-..param.index:The index to be traversed
-...type:Spec.IndexEsa
-...type:Spec.IndexDfi
-...type:Spec.IndexWotd
-...type:Spec.FMIndex
-...type:Spec.IndexSa
-..param.tag:The specialisation of the iterator to be returned by the function.
-...type:Spec.VSTree Iterator
-..returns:Returns an iterator pointing to the root node of the virtual suffix tree of the index.
-...type:nolink:$The result of Iterator<Index<TText, TIndexSpec>, TSpec >::Type$
-..example
-...text:The following example shows the usage of the @Function.begin@ function. Note that in the first case @Function.begin@ returns an iterator pointing to the root node, while in the second case @Function.begin@ returns a pointer to the left most node.
-...file:demos/index/index_begin_atEnd_representative.cpp
-...output:
-A
-AA
-ATAA
-TA
-TAA
-TATAA
---------------------------------
-AA
-ATAA
-A
-TAA
-TATAA
-TA
-
-*/
+/*_DDDOC_PLACEHOLDER*/
 //TODO(singer): The summary is not entirely true!!!
 /*!
  * @fn StringTreeConcept#begin
@@ -2131,31 +1751,7 @@ TA
 	}
 
 
-/**
-.Function.goDown:
-..summary:Iterates down one edge or a path in a tree.
-..cat:Index
-..signature:bool goDown(iterator)
-..signature:bool goDown(iterator, char)
-..signature:bool goDown(iterator, text[, lcp])
-..class:Spec.TopDown Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.TopDown Iterator
-..param.char:$iterator$ goes down the edge beginning with $char$.
-..param.text:$iterator$ goes down the path representing $text$. If $text$ ends within an edge, $iterator$ will point to the child-end of this edge.
-..param.lcp:A reference of a size type. When $goDown$ returns, $lcp$ contains the length of the longest-common-prefix of $text$ and a path beginning at the $iterator$ node.
-...type:Class.String
-...type:Class.Segment
-..remarks:$goDown(iterator)$ goes down the leftmost edge in the suffix tree, i.e. the edge beginning with the lexicographically smallest character.
-..returns:$true$ if the edge or path to go down exists, otherwise $false$.
-...type:nolink:bool
-..include:seqan/index.h
-..example
-...text:The following code shows a simple example how the function @Function.goDown@ is used.
-...file:demos/index/index_begin_range_goDown_representative_repLength.cpp
-...output:The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
-The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
-*/
+/*_DDDOC_PLACEHOLDER*/
 //TODO(singer): The lcp stuff needs to be adapted
 /*!
  * @fn TopDownIterator#goDown
@@ -2471,36 +2067,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 	}
 
 		
-/**
-.Function.goUp:
-..summary:Iterates up one edge to the parent in a tree.
-..cat:Index
-..signature:goUp(iterator)
-..class:Spec.TopDownHistory Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.TopDownHistory Iterator
-..returns:$true$ if the iterator could be moved, otherwise $false$.
-...type:nolink:bool
-..include:seqan/index.h
-..example
-...text:The following code shows how the function @Function.goUp@ is used.
-...file:demos/index/index_iterator.cpp
-...output:be
-beornottobe
-e
-eornottobe
-nottobe
-o
-obe
-obeornottobe
-ornottobe
-ottobe
-rnottobe
-t
-tobe
-tobeornottobe
-ttobe
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownHistoryIterator#goUp
  * @headerfile <seqan/index.h>
@@ -2575,19 +2142,7 @@ ttobe
 			return false;
 	}
 
-/**
-.Function.nodeUp:
-..summary:Returns the vertex descriptor of the parent node.
-..cat:Index
-..signature:nodeUp(iterator)
-..class:Spec.TopDown Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.TopDown Iterator
-..returns:The vertex descriptor of the parent node. The type is $VertexDescriptor<TIndex>::Type$.
-If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($value(iterator)$) is returned.
-...type:Metafunction.VertexDescriptor
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownIterator#nodeUp
  * @headerfile <seqan/index.h>
@@ -2625,18 +2180,7 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
 		return it._parentDesc;
 	}
 
-/**
-.Function.goRight:
-..summary:Iterates to the next sibling in a tree.
-..cat:Index
-..signature:goRight(iterator)
-..class:Spec.TopDown Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.TopDown Iterator
-..returns:$true$ if the iterator could be moved, otherwise $false$.
-...type:nolink:bool
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownIterator#goRight
  * @headerfile <seqan/index.h>
@@ -2688,17 +2232,7 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
 			return false;
 	}
 
-/**
-.Function.parentEdgeLength:
-..summary:Returns the length of the edge from the $iterator$ node to its parent.
-..cat:Index
-..signature:parentEdgeLength(iterator)
-..class:Spec.TopDown Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.TopDown Iterator
-..returns:The returned value is equal to $length(parentEdgeLabel(iterator))$.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownIterator#parentEdgeLength
  * @headerfile <seqan/index.h>
@@ -2718,18 +2252,7 @@ If $iterator$ points at the root node, the vertex descriptor of $iterator$ ($val
 		return repLength(it) - parentRepLength(it);
 	}
 
-/**
-.Function.parentEdgeLabel:
-..summary:Returns a substring representing the edge from an $iterator$ node to its parent.
-..cat:Index
-..signature:parentEdgeLabel(iterator)
-..class:Spec.TopDown Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.TopDown Iterator
-..returns:An @Spec.InfixSegment@ of the text of an index (see @Tag.ESA Index Fibres.EsaText@).
-If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TIndex, EsaText>::Type const>::Type$.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownIterator#parentEdgeLabel
  * @headerfile <seqan/index.h>
@@ -2753,17 +2276,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 			parentEdgeLength(it));
 	}
 
-/**
-.Function.parentEdgeFirstChar:
-..summary:Returns the first character of the edge from an $iterator$ node to its parent.
-..cat:Index
-..signature:parentEdgeFirstChar(iterator)
-..class:Spec.TopDown Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.TopDown Iterator
-..returns:A single character of type $Value<TIndex>::Type$ which is identical to $Value<Fibre<TIndex, EsaRawText>::Type>::Type$.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 //TODO(singer): EsaRawText
 /*!
  * @fn TopDownIterator#parentEdgeFirstChar
@@ -2905,38 +2418,7 @@ If $iterator$'s container type is $TIndex$ the return type is $Infix<Fibre<TInde
 	}
 
 //..concept:Concept.ContainerConcept
-/**
-.Function.VSTree Iterator#atEnd
-..class:Spec.VSTree Iterator
-..concept:Concept.RootedIteratorConcept
-..cat:Iteration
-..summary:Determines whether an virtual string tree iterator is at the end position.
-..signature:bool atEnd(iterator)
-..param.iterator:An iterator.
-...type:Spec.BottomUp Iterator
-...type:Spec.TopDownHistory Iterator
-...concept:Concept.RootedIteratorConcept
-..returns:$true$ if $iterator$ points behind the last item of the container, otherwise $false$.
-..include:seqan/index.h
-..example
-...text:The following example shows the usage of the @Function.atEnd@ function. 
-...file:demos/index/index_begin_atEnd_representative.cpp
-...output:
-A
-AA
-ATAA
-TA
-TAA
-TATAA
---------------------------------
-AA
-ATAA
-A
-TAA
-TATAA
-TA
-
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @fn VSTreeIterator#atEnd
@@ -3025,27 +2507,7 @@ TA
 		return !value(it).range.i2;
 	}
 
-/**
-.Function.isRoot:
-..summary:Test whether a tree iterator points to the root node.
-..cat:Index
-..signature:bool isRoot(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a tree.
-...type:Spec.VSTree Iterator
-..returns:$true$ if $iterator$ points to the root of the tree, otherwise $false$.
-...type:nolink:bool
-..include:seqan/index.h
-..example
-...text:The following example shows the usage of the @Function.isRoot@ function. 
-...file:demos/index/index_begin_atEnd_representative_bottomUp.cpp
-...output:AA
-ATAA
-A
-TAA
-TATAA
-TA
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#isRoot
  * @headerfile <seqan/index.h>
@@ -3091,19 +2553,7 @@ TA
 		return _isSizeInval(value.range.i2);
 	}
 
-/**
-.Function.isRightTerminal:
-..summary:Test whether iterator points to a suffix.
-..cat:Index
-..signature:bool isRightTerminal(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.VSTree Iterator
-..returns:$true$ if $iterator$ points to the node representing a suffix, otherwise $false$.
-...type:nolink:bool
-..remarks:Every leaf is also a right terminal (see @Function.isLeaf@), but not vice versa.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 //TODO(singer): Note the case for trie or FM Index
 /*!
  * @fn VSTreeIterator#isRightTerminal
@@ -3132,19 +2582,7 @@ TA
 			== sequenceLength(getSeqNo(pos, limits), index));
 	}
 
-/**
-.Function.isLeftMaximal:
-..summary:Test whether the occurrences of an iterator's @Function.representative@ mutually differ in the character left of the hits.
-..cat:Index
-..signature:bool isLeftMaximal(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.VSTree Iterator
-..returns:$true$ if there are at least two different characters left of the occurrences, otherwise $false$.
-...type:nolink:bool
-..see:Function.getOccurrences
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#isLeftMaximal
  * @headerfile <seqan/index.h>
@@ -3198,18 +2636,7 @@ TA
 		return false;
 	}
 
-/**
-.Function.isPartiallyLeftExtensible:
-..summary:Test whether the characters left of the two occurrences of @Function.representative@ are equal.
-..cat:Index
-..signature:bool isPartiallyLeftExtensible(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.VSTree Iterator
-..returns:$true$ if there are at least two different characters left of the occurrences, otherwise $false$.
-..see:Function.getOccurrences
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#isPartiallyLeftExtensible
  * @headerfile <seqan/index.h>
@@ -3265,19 +2692,7 @@ TA
 		return isPartiallyLeftExtensible(it, set);
 	}
 
-/**
-.Function.isUnique:
-..summary:Test whether the @Function.representative@ occurs only once in every sequence.
-..cat:Index
-..signature:bool isUnique(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.VSTree Iterator
-..returns:$true$ if there are at least two different characters left of the occurrences, otherwise $false$.
-...type:nolink:bool
-..see:Function.getOccurrences
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#isUnique
  * @headerfile <seqan/index.h>
@@ -3326,29 +2741,7 @@ TA
 		return isUnique(it, set);
 	}
 
-/**
-.Function.getFrequency:
-..summary:Returns the number of sequences, which contain the @Function.representative@ as a substring.
-..cat:Index
-..signature:int getFrequency(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.VSTree Iterator
-..returns:The number of different sequences containing the @Function.representative@.
-..see:Function.getOccurrences
-..include:seqan/index.h
-..example
-...text:The following code how @Function.getFrequency@ is used. Note that the result of alternative 1 and 2 is the same, however alternative one copies a string which requires more memory.
-...file:demos/index/index_getOccurrences_getFrequency_range_getFibre.cpp
-...output:SSI occurs in 2 sequences.
-Hit in sequence 0 at position 5
-Hit in sequence 1 at position 4
-Hit in sequence 0 at position 2
-----------------------------
-Hit in sequence 0 at position 5
-Hit in sequence 1 at position 4
-Hit in sequence 0 at position 2
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#getFrequency
  * @headerfile <seqan/index.h>
@@ -3420,17 +2813,7 @@ Hit in sequence 0 at position 2
 		return getFrequency(it, set);
 	}
 
-/**
-.Function.childrenAreLeaves:
-..summary:Test whether iterator points to a node with only leaf-children.
-..cat:Index
-..signature:bool childrenAreLeaves(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a suffix tree.
-...type:Spec.VSTree Iterator
-..returns:$true$ if $iterator$ points to an inner node of the tree, whose children are leaves. Otherwise it is $false$.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#childrenAreLeaves
  * @headerfile <seqan/index.h>
@@ -3449,18 +2832,7 @@ Hit in sequence 0 at position 2
 		return countChildren(it) == countOccurrences(it);
 	}
 
-/**
-.Function.isLeaf:
-..summary:Test whether a tree iterator points to a leaf.
-..cat:Index
-..signature:bool isLeaf(iterator)
-..class:Spec.VSTree Iterator
-..param.iterator:An iterator of a tree.
-...type:Spec.VSTree Iterator
-..returns:$true$ if $iterator$ points to a leaf of the tree, otherwise $false$.
-...type:nolink:bool
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#isLeaf
  * @headerfile <seqan/index.h>

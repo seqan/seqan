@@ -62,16 +62,7 @@ namespace seqan {
  * @tparam TIterator The iterator to store internally.
  */
 
-/**
-.Spec.Iterator Proxy
-..cat:Proxies
-..general:Class.Proxy
-..summary:Proxy that is implemented by an iterator.
-..signature:Proxy<IteratorProxy<TIterator> >
-..param.TIterator:Iterator type.
-..remarks.text:The value type of an iterator proxy is the value type of the iterator $TIterator$.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Assignment works through operator=() but we also need set() and move()!
 // TODO(holtgrew): Proxy cannot work correctly for const containers, but should! RemoveConst_ removes the const of the values inside pointers and references.

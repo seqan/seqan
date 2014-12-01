@@ -85,14 +85,7 @@ typedef Tag<MeanStdDev_> MeanStdDev;
  * @param[in] sigma Standard deviation value for the beta distribution, <tt>double</tt>.
  */
 
-/**
-.Spec.Beta Pdf
-..signature:Pdf<Beta>
-..general:Class.Pdf
-..summary:Beta probability density function.
-..cat:Random
-..include:seqan/random.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <>
 class Pdf<Beta>
@@ -101,18 +94,7 @@ public:
     double _alpha;
     double _beta;
 
-/**
-.Memfunc.Beta Pdf#Pdf
-..class:Spec.Beta Pdf
-..summary:Constructor for beta Pdf.
-..description:Use the tags $AlphaBeta$ and $MeanStdDev$ to select the meaning of the two parameters.
-..signature:Pdf::Pdf(mu, sigma[, AlphaBeta()])
-..signature:Pdf::Pdf(mu, sigma, MeanStdDev())
-..param.mu:Mean of the beta distribution.
-...type:nolink:double
-..param.sigma:Standard deviation of the beta distribution.
-...type:nolink:double
-*/
+/*_DDDOC_PLACEHOLDER*/
     Pdf(double mu, double sigma, MeanStdDev const & /*tag*/)
             : _alpha(((1 - mu) / sigma / sigma - 1 / mu) * mu * mu),
               _beta(_alpha * (1 / mu - 1))

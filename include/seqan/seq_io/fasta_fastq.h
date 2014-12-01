@@ -55,11 +55,7 @@ namespace seqan {
 // Tag Fasta
 // --------------------------------------------------------------------------
 
-/**
-.Tag.File Format.tag.Fasta:
-    FASTA file format for sequences.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 struct TagFasta_;
 typedef Tag<TagFasta_> Fasta;
 
@@ -67,11 +63,7 @@ typedef Tag<TagFasta_> Fasta;
 // Tag Fastq
 // --------------------------------------------------------------------------
 
-/**
-.Tag.File Format.tag.Fastq:
-    FASTQ file format for sequences.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 struct TagFastq_;
 typedef Tag<TagFastq_> Fastq;
 
@@ -216,25 +208,7 @@ struct FastaIgnoreOrAssertFunctor_
  *        FASTQ only). Default is <tt>false</tt>.
  */
 
-/**
-.Class.SequenceOutputOptions
-..cat:Input/Output
-..summary:Configuration for writing sequence (FASTA/FASTQ) files.
-..description:
-This $struct$ is used for the configuration of writing out FASTA and FASTQ files.
-..include:seqan/seq_io.h
-
-.Memvar.SequenceOutputOptions#lineLength
-..class:Class.SequenceOutputOptions
-..type:nolink:$int$
-..summary:Length of the lines when writing out.
-..description:Set to $-1$ for default behaviour (no line break for FASTQ, line length of 70 for FASTA) and $0$ for disabling line breaks.
-
-.Memvar.SequenceOutputOptions#qualMeta
-..class:Class.SequenceOutputOptions
-..type:nolink:$bool$
-..summary:Whether or not to write the meta information into the $"+"$ line before the qualities (interpreted for FASTQ only). Default is $false$.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Would it be worth having two/three shortcuts for "short reads" and "genomic sequence" and faster or can the compiler optimize the creation away?
 
@@ -475,25 +449,7 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
  * @return int 0 on success, non-0 value on errors.
  */
 
-/**
-.Function.FASTA/FASTQ I/O#writeRecord
-..summary:Write one FASTA or FASTQ record.
-..signature:int writeRecord(target, id, seq, tag[, options])
-..signature:int writeRecord(target, id, seq, quals, tag[, options])
-..param.target:The target to write to.
-...type:Concept.StreamConcept
-..param.id:ID/Meta information line to write out.
-...type:Concept.ContainerConcept
-..param.seq:Sequence to write out.
-...type:Concept.ContainerConcept
-..param.quals:ASCII quality characters to write out.
-...type:Concept.ContainerConcept
-..param.tag:The format selector.
-...type:nolink:$Fasta$, $Fastq$
-..param.options:if not supplied defaults are chosen.
-...type:Class.SequenceOutputOptions
-..include:seqan/seq_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 
 // ----------------------------------------------------------------------------

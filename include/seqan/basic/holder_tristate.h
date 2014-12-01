@@ -85,21 +85,7 @@ template <typename TValue> inline size_t length(TValue * me);
  * If a holder object is in owner state when destructed, the owned object is destructed as well.
  */
 
-/**
-.Spec.Tristate Holder
-..cat:Holders
-..summary:Holder that can be empty, dependent, or owner.
-..signature:Holder<TValue, Tristate>
-..param.TValue:Type of the managed object.
-..general:Class.Holder
-..remarks.text:A tristate holder $A$ that holds an object $B$ has one of the following states:
-..remarks.text:- owner: $A$ is the owner of $B$. If $A$ is destroyed, $B$ will be destroyed automatically.
-..remarks.text:- dependent: $A$ depends on $B$. $B$ should not be destroyed as long as $A$ is used.
-..remarks.text:- empty: there is currently no object reference stored in the holder $A$.
-..remarks.text:The state of the holder can be determined by @Function.empty@ and @Function.dependent@.
-..remarks.text:If a holder object is in owner state when destructed, the owned object is destructed as well.
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): This is broken for const TValue since we use Value<Holder>::Type below.
 
@@ -626,25 +612,7 @@ _holderAllocatePointer(THolder & me, TValue * data)
 }
 #endif  // #if SEQAN_ENABLE_POINTER_HOLDER
 
-/**
-.Function.create
-..class:Class.Holder
-..summary:Makes an object to owner of its content.
-..cat:Dependent Objects
-..signature:create(holder [, object])
-..param.holder:A holder object.
-...type:Class.Holder
-..param.object:Object from which a copy is made and stored in $holder$. (optional)
-...type:Metafunction.Value.Value<Holder>::Type
-..remarks.text:After this operation, $holder$ will be in state 'owner'.
-If $object$ is specified, $holder$ will hold a copy of $object$ at the end of this function.
-If $object$ is not specified, the action depends on the former state of $holder$:
-..remarks.text:- If the state of $holder$ was 'empty', a new object is default constructed and stored into $holder$.
-..remarks.text:- If the state of $holder$ was 'dependent', a copy of the former object is made and stored into $holder$. 
-..remarks.text:- If the state of $holder$ was already 'owner', nothing happens.
-..see:Class.Holder
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline void
@@ -789,22 +757,7 @@ create(Holder<TValue, Tristate> & me,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.detach
-..class:Class.Holder
-..summary:Makes an object independent from other objects.
-..cat:Dependent Objects
-..signature:detach(object)
-..param.object:An object.
-...type:Class.Holder
-..remarks:
-After this function, $object$ does not depends from any other entity outside of $object$,
-like a @Function.source@ or a @Function.host@, and @Function.dependent.dependent(object)@ returns $false$ 
-..see:Function.source
-..see:Function.host
-..see:Function.create
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline void
@@ -818,20 +771,7 @@ detach(Holder<TValue, Tristate> & me)
 // Function setValue()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.setValue
-..class:Class.Holder
-..cat:Content Manipulation
-..summary:Makes holder dependent.
-..signature:setValue(holder, object)
-..param.holder:A holder object.
-...type:Class.Holder
-..param.object:Object from which $holder$ will be dependent.
-...type:Metafunction.Value.Value<Holder>::Type
-..remarks.text:After this operation, $holder$ will be dependent in state 'dependent'.
-..see:Class.Holder
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline void

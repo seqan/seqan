@@ -71,35 +71,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in] v     The descriptor of the vertex to start DFS preorder iteration.
  */
 
-/**
-.Spec.Dfs Preorder Iterator:
-..cat:Graph
-..summary:Depth-first search iterator for @Class.Graph@.
-..remarks:Preorder means that a vertex is enumerated before its adjacent vertices have been explored.
-..signature:Iterator<TGraph, DfsPreorder>
-..param.TGraph:A graph.
-...type:Class.Graph
-..general:Class.Iter
-..see:Spec.Vertex Iterator
-..see:Spec.Out-Edge Iterator
-..see:Spec.Edge Iterator
-..see:Spec.Adjacency Iterator
-..see:Spec.Bfs Iterator
-..include:seqan/graph_types.h
-
-.Memfunc.Dfs Preorder Iterator#Iter
-..summary:Constructor
-..class:Spec.Dfs Preorder Iterator
-..signature:Iter()
-..signature:Iter(graph, v)
-..signature:Iter(iter)
-..param.graph:The graph to iterate edges of.
-...type:Class.Graph
-..param.v:Vertex descriptor of vertex to start DFS from.
-...type:Metafunction.VertexDescriptor
-..param.iter:Other iterator to copy-construct from.
-...type:Spec.Dfs Preorder Iterator
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TGraph, typename TSpec>
 class Iter<TGraph, GraphIterator<InternalDfsIterator<TSpec> > > 
 {

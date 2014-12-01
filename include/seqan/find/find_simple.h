@@ -56,17 +56,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * This specialization should only be used if no other is applicable.
  */
 
-/**
-.Spec.Simple Finder:
-..summary:A brute force online searching algorithm.
-..general:Class.Pattern
-..cat:Searching
-..signature:Pattern<TNeedle, Simple>
-..param.TNeedle:The needle type.
-...type:Class.String
-..remarks:This specialization should only be used if no other is applicable.
-..include:seqan/find.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 ///.Class.Pattern.param.TSpec.type:Spec.Simple Finder
 

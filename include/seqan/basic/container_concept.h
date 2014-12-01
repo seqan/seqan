@@ -281,15 +281,7 @@ template <typename TContainer, typename TSpec> struct Iterator;
  * @endcode
  */
 
-/**
-.Concept.ContainerConcept
-..baseconcept:Concept.AssignableConcept
-..baseconcept:Concept.DefaultConstructibleConcept
-..baseconcept:Concept.CopyConstructibleConcept
-..signature:ContainerConcept
-..summary:Concept for mutable containers.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // mutable container concept
 template <typename TContainer>
@@ -349,12 +341,7 @@ struct ContainerConcept :
     }
 };
 
-/**
-.Concept.StringConcept
-..baseconcept:Concept.ContainerConcept
-..summary:Concept for sequences.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(StringConcept, (TString), (ContainerConcept)(PropertyMapConcept))
 {
@@ -410,20 +397,7 @@ SEQAN_CONCEPT_REFINE(StringConcept, (TString), (ContainerConcept)(PropertyMapCon
  * first element of the content array.
  */
 
-/**
-.Metafunction.IsContiguous:
-..cat:Sequences
-..summary:Determines whether a container stores its elements in a contiguous array.
-..signature:IsContiguous<T>::VALUE
-..param.T:Type that is tested for being a string.
-..returns.param.VALUE:$true$ if $T$ is a string, $false$ otherwise.
-..remarks:Definition: A sequence container is "contiguous", if its elements
-    are stored in a single contiguous array.
-    Examples for contiguous sequences are @Spec.Alloc String@ or @Adaption.char array@.
-..remarks:If an object $obj$ is a contiguous sequence, then $begin(obj)$ can be
-    converted to a pointer to the first element of the content array.
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct IsContiguous
 {

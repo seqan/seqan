@@ -197,37 +197,7 @@ inline const char * toCString(Demangler<T> const & me)
  * @endcode
  */
 
-/**
-.Macro.SEQAN_FAIL
-..cat:Assertions
-..summary:Force abortion of program, regardless of debugging settings.
-..signature:SEQAN_FAIL(msg[, args])
-..param.msg:A format string.
-..param.args:An optional list of arguments.
-..remarks:Use this if something really unexpected happens inside your functions and there is no way to report this through the API. A good example would be logic errors, e.g. invalid values.
-..example.text:In the following example, the $SEQAN_FAIL$ is there if a possible value is added to $MyEnum$ but the function $foo$ is not updated accordingly.
-..example.code:
-enum MyEnum {
-  VALUE_ONE,
-  VALUE_TWO
-};
-
-bool foo(MyEnum x) {
-    switch (x) {
-    case VALUE_ONE:
-        // do something
-        return true;
-    case VALUE_TWO:
-        // do something
-        return true;
-    }
-
-    SEQAN_FAIL("Logic error. Should never reach here. x == %d.", x);
-    return false;
-}
-..include:seqan/basic.h
-..see:Macro.SEQAN_CHECK
- */
+/*_DDDOC_PLACEHOLDER*/
 
 #define SEQAN_FAIL(...)                                                 \
     do {                                                                \
@@ -283,38 +253,7 @@ bool foo(MyEnum x) {
  * @endcode
  */
 
-/**
-.Macro.SEQAN_CHECK
-..cat:Assertions
-..summary:Force abortion of program if a condition is not met, regardless of debugging settings.
-..signature:SEQAN_CHECK(condition, msg[, args])
-..param.msg:A format string.
-..param.args:An optional list of arguments.
-..remarks:Use this if something really unexpected happens inside your functions and there is no way to report this through the API. A good example would be logic errors, e.g. invalid values.
-..example.text:In the following example, the $SEQAN_CHECK$ stops program execution if a value is added to $MyEnum$ but the function $foo$ is not updated accordingly.
-..example.code:
-enum MyEnum {
-  VALUE_ONE,
-  VALUE_TWO
-};
-
-bool foo(MyEnum x) {
-    SEQAN_CHECK((x == VALUE_ONE || x == VALUE_TWO), "Invalid value for x == %d.", x);
-
-    switch (x) {
-    case VALUE_ONE:
-        // do something
-        return true;
-    case VALUE_TWO:
-        // do something
-        return true;
-    }
-
-    return false;  // Should never reach here, checked above with SEQAN_CHECK.
-}
-..include:seqan/basic.h
-..see:Macro.SEQAN_FAIL
- */
+/*_DDDOC_PLACEHOLDER*/
 
 #define SEQAN_CHECK(_arg1, ...)                                         \
     do {                                                                \
@@ -367,20 +306,7 @@ bool foo(MyEnum x) {
  * @see TestSystemMacros#SEQAN_ENABLE_DEBUG
  */
 
-/**
-.Macro.SEQAN_ENABLE_TESTING
-..cat:Testing & Debugging
-..summary:Indicates whether testing is enabled.
-..signature:SEQAN_ENABLE_DEBUG
-..remarks:When enabled (set to 1), testing is enabled. This means the macros for the tests (@Macro.SEQAN_BEGIN_TESTSUITE@, @Macro.SEQAN_DEFINE_TEST@, @Macro.SEQAN_CALL_TEST@, and @Macro.SEQAN_END_TESTSUITE@) will be enabled. This makes failing assertions raise
- exceptions instead of call $abort()$ and enables checkpoints.
-..remarks:By default, this is set to 0.
-..remarks:If @Macro.SEQAN_ENABLE_CHECKPOINTS@ is not defined before including $<seqan/basic.h>$, then @Macro.SEQAN_ENABLE_CHECKPOINTS@ will be set to the value of @Macro.SEQAN_ENABLE_TESTING@ (after the default initialization to 0).
-..remarks:If you want to change this value, you have to define this value before including any SeqAn header.
-..remarks:If set to 1 then @Macro.SEQAN_ENABLE_TESTING@ is force-set to 0 as well.
-..see:Macro.SEQAN_ENABLE_DEBUG
-..see:Macro.SEQAN_ENABLE_CHECKPOINTS
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // Set default for SEQAN_ENABLE_TESTING.
 #ifndef SEQAN_ENABLE_TESTING
@@ -406,18 +332,7 @@ bool foo(MyEnum x) {
  * @see TestSystemMacros#SEQAN_ENABLE_TESTING
  */
 
-/**
-.Macro.SEQAN_ENABLE_DEBUG
-..cat:Testing & Debugging
-..summary:Indicates whether debugging is enabled.
-..signature:SEQAN_ENABLE_DEBUG
-..remarks:When enabled (set to 1), debugging is enabled. This means the assertion macros are expanded to actual code and not to nothing.
-..remarks:By default, this is set to 0 if $NDEBUG$ is defined and to 1 if $NDEBUG$ is not defined.
-..remarks:If you want to change this value, you have to define this value before including any SeqAn header.
-..remarks:Force-enabled if @Macro.SEQAN_ENABLE_TESTING@ is set to 1.
-..see:Macro.SEQAN_ENABLE_TESTING
-..see:Macro.SEQAN_ENABLE_CHECKPOINTS
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // Set default for SEQAN_ENABLE_DEBUG.
 #ifndef SEQAN_ENABLE_DEBUG
@@ -434,32 +349,7 @@ bool foo(MyEnum x) {
 #define SEQAN_ENABLE_DEBUG 1
 #endif  // #if SEQAN_ENABLE_TESTING
 
-/**
-.Macro.SEQAN_ENABLE_CHECKPOINTS
-..cat:Testing & Debugging
-..summary:Indicates whether checkpoints are enabled.
-..signature:SEQAN_ENABLE_CHECKPOINTS
-..remarks:When enabled (set to 1), checkpoints are enabled. This means the $SEQAN_CHECKPOINT$ macros are expanded to actual code and not to nothing.
-..remarks:By default, this is set to $SEQAN_ENABLE_TESTING$.
-..remarks:Checkpoints can come at large increases of running time in your tests. Disable them when your test run too slow.
-..remarks:If you want to change this value, you have to define this value before including any SeqAn header.
-..example.text:Disable checkpoints in a program.
-..example.code:
-// Disable SeqAn checkpoints in this program.
-#define SEQAN_ENABLE_CHECKPOINTS 0
-
-// Any SeqAn headers or headers including SeqAn headers have to come AFTER the
-// definition of SEQAN_ENABLE_CHECKPOINT above.
-#include <seqan/base.h>
-
-int main(int argc, char const ** argv)
-{
-    // Any call to SeqAn functions will NOT log any checkpoints.
-    return 0;
-}
-..see:Macro.SEQAN_ENABLE_DEBUG
-..see:Macro.SEQAN_ENABLE_TESTING
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // Allow disabling checkpoints independent of testing.
 #ifndef SEQAN_ENABLE_CHECKPOINTS
@@ -480,14 +370,7 @@ int main(int argc, char const ** argv)
  * @endcode
  */
 
-/**
-.Macro.SEQAN_TYPEDEF_FOR_DEBUG
-..cat:Testing & Debugging
-..summary: When using typedefs that are only used in debug mode then they have to be marked with macro.
-..signature:SEQAN_TYPEDEF_FOR_DEBUG
-..example.code:
-typedef int TInt SEQAN_TYPEDEF_FOR_DEBUG;
-*/
+/*_DDDOC_PLACEHOLDER*/
 #if !SEQAN_ENABLE_DEBUG
 #  if defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)))
 #    define SEQAN_TYPEDEF_FOR_DEBUG __attribute__((unused))
@@ -528,14 +411,7 @@ namespace seqan {
  * @param[in,out] stream A std::ostream where the information about the levels are streamed to.
  */
 
-/**
-.Function.printDebugLevel
-..cat:Testing & Debugging
-..summary:Print the current SeqAn debug level and the compiler flags to the given stream.
-..signature:printDebugLevel(stream)
-..param.stream:The stream to print to, e.g. $std::cout$.
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TStream>
 void printDebugLevel(TStream & stream)
 {
@@ -1874,23 +1750,7 @@ inline void fail()
  * @endcode
  */
 
-/**
-.Macro.SEQAN_DEFINE_TEST
-..summary:Expand to test definition.
-..cat:Testing & Debugging
-..signature:SEQAN_DEFINE_TEST(test_name)
-..param.test_name:The name of the test.
-..remarks:This macro expands to the definition of a $void$ function with $SEQAN_TEST_ + test_name$ as its name.
-..example.code:
-SEQAN_DEFINE_TEST(test_name)
-{
-   SEQAN_ASSERT_LT(0, 3);
-}
-..see:Macro.SEQAN_SKIP_TEST
-..see:Macro.SEQAN_CALL_TEST
-..see:Macro.SEQAN_BEGIN_TESTSUITE
-..see:Macro.SEQAN_END_TESTSUITE
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // This macro expands to function header for one test.
 #define SEQAN_DEFINE_TEST(test_name)                    \
@@ -1926,26 +1786,7 @@ SEQAN_DEFINE_TEST(test_name)
  * @endcode
  */
 
-/**
-.Macro.SEQAN_BEGIN_TESTSUITE
-..summary:Expand to a test suite beginning.
-..cat:Testing & Debugging
-..signature:SEQAN_BEGIN_TESTSUITE(name)
-..param.name:The name of the test suite.
-..remarks:This macro expands to a $main()$ function and some initialization code that sets up the test system.
-..example.code:
-#include <seqan/basic.h>
-
-SEQAN_BEGIN_TESTSUITE(test_foo)
-{
-    SEQAN_CALL_TEST(test_foo_my_test);
-}
-SEQAN_END_TESTSUITE
-..see:Macro.SEQAN_SKIP_TEST
-..see:Macro.SEQAN_DEFINE_TEST
-..see:Macro.SEQAN_CALL_TEST
-..see:Macro.SEQAN_END_TESTSUITE
- */
+/*_DDDOC_PLACEHOLDER*/
 
 #if SEQAN_ENABLE_TESTING
 // This macro expands to startup code for a test file.
@@ -1976,25 +1817,7 @@ SEQAN_END_TESTSUITE
  * @endcode
  */
 
-/**
-.Macro.SEQAN_END_TESTSUITE
-..summary:Expand to a test suite ending.
-..cat:Testing & Debugging
-..signature:SEQAN_END_TESTSUITE
-..remarks:This macro expands to finalization code for a test suite.
-..example.code:
-#include <seqan/basic.h>
-
-SEQAN_BEGIN_TESTSUITE(test_foo)
-{
-    SEQAN_CALL_TEST(test_foo_my_test);
-}
-SEQAN_END_TESTSUITE
-..see:Macro.SEQAN_SKIP_TEST
-..see:Macro.SEQAN_DEFINE_TEST
-..see:Macro.SEQAN_CALL_TEST
-..see:Macro.SEQAN_BEGIN_TESTSUITE
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // This macro expands to shutdown code for a test file.
 #define SEQAN_END_TESTSUITE                     \
@@ -2019,21 +1842,7 @@ SEQAN_END_TESTSUITE
  * @endcode
  */
 
-/**
-.Macro.SEQAN_CALL_TEST
-..summary:Expand to calling a test.
-..cat:Testing & Debugging
-..signature:SEQAN_CALL_TEST(test_name)
-..param.test_name:The name of the test.
-..remarks:This expects the test to be defined with @Macro.SEQAN_DEFINE_TEST@. This macro will expand to code that calls the code inside a try/catch block. Use this macro within a test suite, only.
-..example.code:
-// Within a test suite.
-SEQAN_CALL_TEST(test_name);
-..see:Macro.SEQAN_SKIP_TEST
-..see:Macro.SEQAN_DEFINE_TEST
-..see:Macro.SEQAN_BEGIN_TESTSUITE
-..see:Macro.SEQAN_END_TESTSUITE
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // This macro expands to code to call a given test.
 #define SEQAN_CALL_TEST(test_name)                                      \
@@ -2075,21 +1884,7 @@ SEQAN_CALL_TEST(test_name);
  * @endcode
  */
 
-/**
-.Macro.SEQAN_SKIP_TEST
-..cat:Testing & Debugging
-..summary:Force the test to return without failing and mark it as skipped.
-..signature:SEQAN_SKIP_TEST
-..example.code:
-SEQAN_DEFINE_TEST(test_skipped)
-{
-    SEQAN_SKIP_TEST;
-}
-..see:Macro.SEQAN_DEFINE_TEST
-..see:Macro.SEQAN_CALL_TEST
-..see:Macro.SEQAN_BEGIN_TESTSUITE
-..see:Macro.SEQAN_END_TESTSUITE
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // This macro returns from the current function and logs a "skipped"
 // event for the current test.
@@ -2388,208 +2183,7 @@ SEQAN_DEFINE_TEST(test_skipped)
  * @endcode
  */
 
-/**
-.Macro.SEQAN_ASSERT
-..cat:Assertions
-..summary:Test that the given expression can be coerced to $true$.
-..signature:SEQAN_ASSERT(expression)
-..signature:SEQAN_ASSERT_MSG(expression, message[, parameters])
-..remarks:The main advantage of this macro is that it prints the values of its argument on failures. Note that the $operator<<$ to the type of $std::cerr$ has to be defined for the type of both expression parameters. Otherwise, simply use the equivalent @Macro.SEQAN_ASSERT@ call.
-..remarks:See @Macro.SEQAN_CHECK@ and @Macro.SEQAN_FAIL@ for (conditionally) aborting your program regardless of debug settings.
-..example.code:
-SEQAN_ASSERT(0);  // will fail
-SEQAN_ASSERT(1);  // will run through
-SEQAN_ASSERT_MSG(0, "message %d", 2);  // Will fail with message.
-..see:Macro.SEQAN_ASSERT_NOT
-..see:Macro.SEQAN_ASSERT_EQ
-..see:Macro.SEQAN_ASSERT_NEQ
-..see:Macro.SEQAN_ASSERT_LEQ
-..see:Macro.SEQAN_ASSERT_GEQ
-..see:Macro.SEQAN_ASSERT_LT
-..see:Macro.SEQAN_ASSERT_GT
-..see:Macro.SEQAN_ASSERT_IN_DELTA
-..see:Macro.SEQAN_CHECK
-..see:Macro.SEQAN_FAIL
-
-.Macro.SEQAN_ASSERT_NOT
-..cat:Assertions
-..summary:Test that the given expression can be coerced to $false$.
-..signature:SEQAN_ASSERT(expression)
-..signature:SEQAN_ASSERT_MSG(expression, message[, parameters])
-..remarks:The main advantage of this macro is that it prints the values of its argument on failures. Note that the $operator<<$ to the type of $std::cerr$ has to be defined for the type of both expression parameters. Otherwise, simply use the equivalent @Macro.SEQAN_ASSERT@ call.
-..remarks:See @Macro.SEQAN_CHECK@ and @Macro.SEQAN_FAIL@ for (conditionally) aborting your program regardless of debug settings.
-..example.code:
-SEQAN_ASSERT_NOT(0);  // will run through
-SEQAN_ASSERT_NOT(1);  // will fail
-SEQAN_ASSERT_NOT_MSG(0, "msg %s", "test");  // will fail with message
-..see:Macro.SEQAN_ASSERT
-..see:Macro.SEQAN_ASSERT_EQ
-..see:Macro.SEQAN_ASSERT_NEQ
-..see:Macro.SEQAN_ASSERT_LEQ
-..see:Macro.SEQAN_ASSERT_GEQ
-..see:Macro.SEQAN_ASSERT_LT
-..see:Macro.SEQAN_ASSERT_GT
-..see:Macro.SEQAN_ASSERT_IN_DELTA
-..see:Macro.SEQAN_CHECK
-..see:Macro.SEQAN_FAIL
-
-.Macro.SEQAN_ASSERT_EQ
-..cat:Assertions
-..summary:Test that two given expressions are equal, as defined by the matching call to the $operator=(,)$.
-..signature:SEQAN_ASSERT_EQ(expression1, expression2)
-..signature:SEQAN_ASSERT_EQ_MSG(expression1, expression2, comment[, parameters])
-..remarks:The main advantage of this macro is that it prints the values of its argument on failures. Note that the $operator<<$ to the type of $std::cerr$ has to be defined for the type of both expression parameters. Otherwise, simply use the equivalent @Macro.SEQAN_ASSERT@ call.
-..remarks:See @Macro.SEQAN_CHECK@ and @Macro.SEQAN_FAIL@ for (conditionally) aborting your program regardless of debug settings.
-..example.code:
-SEQAN_ASSERT_EQ(0, false);  // will run through
-SEQAN_ASSERT_EQ(1, false);  // will fail
-SEQAN_ASSERT_EQ(1, "foo");  // will not compile
-SEQAN_ASSERT_EQ_MSG(1, false, "msg");  // will fail with message
-..see:Macro.SEQAN_ASSERT
-..see:Macro.SEQAN_ASSERT_NOT
-..see:Macro.SEQAN_ASSERT_NEQ
-..see:Macro.SEQAN_ASSERT_LEQ
-..see:Macro.SEQAN_ASSERT_GEQ
-..see:Macro.SEQAN_ASSERT_LT
-..see:Macro.SEQAN_ASSERT_GT
-..see:Macro.SEQAN_ASSERT_IN_DELTA
-..see:Macro.SEQAN_CHECK
-..see:Macro.SEQAN_FAIL
-
-.Macro.SEQAN_ASSERT_NEQ
-..cat:Assertions
-..summary:Test that two given expressions are not equal, as defined by the matching call to the $operator!=(,)$.
-..signature:SEQAN_ASSERT_NEQ(expression)
-..signature:SEQAN_ASSERT_NEQ_MSG(expression, message[, parameters])
-..remarks:The main advantage of this macro is that it prints the values of its argument on failures. Note that the $operator<<$ to the type of $std::cerr$ has to be defined for the type of both expression parameters. Otherwise, simply use the equivalent @Macro.SEQAN_ASSERT@ call.
-..remarks:See @Macro.SEQAN_CHECK@ and @Macro.SEQAN_FAIL@ for (conditionally) aborting your program regardless of debug settings.
-..example.code:
-SEQAN_ASSERT_NEQ(0, false);  // will fail
-SEQAN_ASSERT_NEQ(1, false);  // will run through
-SEQAN_ASSERT_NEQ(1, "foo");  // will not compile
-SEQAN_ASSERT_NEQ_MSG(1, false, "msg");  // will fail with message
-..see:Macro.SEQAN_ASSERT
-..see:Macro.SEQAN_ASSERT_NOT
-..see:Macro.SEQAN_ASSERT_EQ
-..see:Macro.SEQAN_ASSERT_LEQ
-..see:Macro.SEQAN_ASSERT_GEQ
-..see:Macro.SEQAN_ASSERT_LT
-..see:Macro.SEQAN_ASSERT_GT
-..see:Macro.SEQAN_ASSERT_IN_DELTA
-..see:Macro.SEQAN_CHECK
-..see:Macro.SEQAN_FAIL
-
-.Macro.SEQAN_ASSERT_LT
-..cat:Assertions
-..summary:Test that the two given expressions are in the less-than relation as defined by the matching call to operator<(,).
-..signature:SEQAN_ASSERT_LT(expression1, expression2)
-..signature:SEQAN_ASSERT_LT(expression1, expression2, comment[, parameters])
-..remarks:The main advantage of this macro is that it prints the values of its argument on failures. Note that the $operator<<$ to the type of $std::cerr$ has to be defined for the type of both expression parameters. Otherwise, simply use the equivalent @Macro.SEQAN_ASSERT@ call.
-..remarks:See @Macro.SEQAN_CHECK@ and @Macro.SEQAN_FAIL@ for (conditionally) aborting your program regardless of debug settings.
-..example.code:
-SEQAN_ASSERT_LT(0, 1);  // will run through
-SEQAN_ASSERT_LT(1, 1);  // will not run through
-SEQAN_ASSERT_LT_MSG(1, 1, "msg");  // will fail with message
-..see:Macro.SEQAN_ASSERT
-..see:Macro.SEQAN_ASSERT_NOT
-..see:Macro.SEQAN_ASSERT_EQ
-..see:Macro.SEQAN_ASSERT_NEQ
-..see:Macro.SEQAN_ASSERT_LEQ
-..see:Macro.SEQAN_ASSERT_GEQ
-..see:Macro.SEQAN_ASSERT_GT
-..see:Macro.SEQAN_ASSERT_IN_DELTA
-..see:Macro.SEQAN_CHECK
-..see:Macro.SEQAN_FAIL
-
-.Macro.SEQAN_ASSERT_LEQ
-..cat:Assertions
-..summary:Test that the two given expressions are in the less-than-or-equal relation as defined by the matching call to operator<=(,).
-..signature:SEQAN_ASSERT_LEQ(expression1, expression2)
-..signature:SEQAN_ASSERT_LEQ_MSG(expression1, expression2, comment[, parameters])
-..remarks:The main advantage of this macro is that it prints the values of its argument on failures. Note that the $operator<<$ to the type of $std::cerr$ has to be defined for the type of both expression parameters. Otherwise, simply use the equivalent @Macro.SEQAN_ASSERT@ call.
-..remarks:See @Macro.SEQAN_CHECK@ and @Macro.SEQAN_FAIL@ for (conditionally) aborting your program regardless of debug settings.
-..example.code:
-SEQAN_ASSERT_LEQ(1, 1);  // will run through
-SEQAN_ASSERT_LEQ(1, 2);  // will not run through
-SEQAN_ASSERT_LEQ_MSG(1, 2, "msg");  // will fail with message
-..see:Macro.SEQAN_ASSERT
-..see:Macro.SEQAN_ASSERT_NOT
-..see:Macro.SEQAN_ASSERT_EQ
-..see:Macro.SEQAN_ASSERT_NEQ
-..see:Macro.SEQAN_ASSERT_GEQ
-..see:Macro.SEQAN_ASSERT_LT
-..see:Macro.SEQAN_ASSERT_GT
-..see:Macro.SEQAN_ASSERT_IN_DELTA
-..see:Macro.SEQAN_CHECK
-..see:Macro.SEQAN_FAIL
-
-.Macro.SEQAN_ASSERT_GT
-..cat:Assertions
-..summary:Test that the two given expressions are in the greather-than relation as defined by the matching call to operator>(,).
-..signature:SEQAN_ASSERT_GT(expression1, expression2)
-..signature:SEQAN_ASSERT_GT_MSG(expression1, expression2, comment[, parameters])
-..remarks:The main advantage of this macro is that it prints the values of its argument on failures. Note that the $operator<<$ to the type of $std::cerr$ has to be defined for the type of both expression parameters. Otherwise, simply use the equivalent @Macro.SEQAN_ASSERT@ call.
-..remarks:See @Macro.SEQAN_CHECK@ and @Macro.SEQAN_FAIL@ for (conditionally) aborting your program regardless of debug settings.
-..example.code:
-SEQAN_ASSERT_GT(2, 1);  // will run through
-SEQAN_ASSERT_GT(1, 1);  // will not run through
-SEQAN_ASSERT_GT_MSG(1, 1, "msg");  // will fail with message
-..see:Macro.SEQAN_ASSERT
-..see:Macro.SEQAN_ASSERT_NOT
-..see:Macro.SEQAN_ASSERT_EQ
-..see:Macro.SEQAN_ASSERT_NEQ
-..see:Macro.SEQAN_ASSERT_LEQ
-..see:Macro.SEQAN_ASSERT_GEQ
-..see:Macro.SEQAN_ASSERT_LT
-..see:Macro.SEQAN_ASSERT_IN_DELTA
-..see:Macro.SEQAN_CHECK
-..see:Macro.SEQAN_FAIL
-
-.Macro.SEQAN_ASSERT_GEQ
-..cat:Assertions
-..summary:Test that the two given expressions are in the greater-than-or-equal relation as defined by the matching call to operator>=(,).
-..signature:SEQAN_ASSERT_GEQ(expression1, expression2)
-..signature:SEQAN_ASSERT_GEQ_MSG(expression1, expression2, comment[, parameters])
-..remarks:The main advantage of this macro is that it prints the values of its argument on failures. Note that the $operator<<$ to the type of $std::cerr$ has to be defined for the type of both expression parameters. Otherwise, simply use the equivalent @Macro.SEQAN_ASSERT@ call.
-..remarks:See @Macro.SEQAN_CHECK@ and @Macro.SEQAN_FAIL@ for (conditionally) aborting your program regardless of debug settings.
-..example.code:
-SEQAN_ASSERT_GEQ(1, 1);  // will run through
-SEQAN_ASSERT_GEQ(0, 1);  // will not run through
-SEQAN_ASSERT_GEQ_MSG(0, 1, "msg");  // will fail with message
-..see:Macro.SEQAN_ASSERT
-..see:Macro.SEQAN_ASSERT_NOT
-..see:Macro.SEQAN_ASSERT_EQ
-..see:Macro.SEQAN_ASSERT_NEQ
-..see:Macro.SEQAN_ASSERT_LEQ
-..see:Macro.SEQAN_ASSERT_LT
-..see:Macro.SEQAN_ASSERT_GT
-..see:Macro.SEQAN_ASSERT_IN_DELTA
-..see:Macro.SEQAN_CHECK
-..see:Macro.SEQAN_FAIL
-
-.Macro.SEQAN_ASSERT_IN_DELTA
-..cat:Assertions
-..summary:Test that the given expression can be coerced to $true$.
-..signature:SEQAN_ASSERT_IN_DELTA(x, y, delta)
-..signature:SEQAN_ASSERT_IN_DELTA_MSG(x, y, delta, comment[, parameters])
-..remarks:The main advantage of this macro is that it prints the values of its argument on failures. Note that the $operator<<$ to the type of $std::cerr$ has to be defined for the type of both expression parameters. Otherwise, simply use the equivalent @Macro.SEQAN_ASSERT@ call.
-..remarks:See @Macro.SEQAN_CHECK@ and @Macro.SEQAN_FAIL@ for (conditionally) aborting your program regardless of debug settings.
-..example.code:
-SEQAN_ASSERT_IN_DELTA(0, 0, 0.1);  // will run through
-SEQAN_ASSERT_IN_DELTA(1, -2, 1);  // will fail
-SEQAN_ASSERT_IN_DELTA(1, "foo");  // will not compile
-SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
-..see:Macro.SEQAN_ASSERT
-..see:Macro.SEQAN_ASSERT_NOT
-..see:Macro.SEQAN_ASSERT_EQ
-..see:Macro.SEQAN_ASSERT_NEQ
-..see:Macro.SEQAN_ASSERT_LEQ
-..see:Macro.SEQAN_ASSERT_GEQ
-..see:Macro.SEQAN_ASSERT_LT
-..see:Macro.SEQAN_ASSERT_GT
-..see:Macro.SEQAN_CHECK
-..see:Macro.SEQAN_FAIL
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // Force a test failure.
 //
@@ -3110,24 +2704,7 @@ void SEQAN_ASSERT_NOT_MSG(T1 const & _arg1, const char * comment, ...) {}
  */
 
 // TODO(holtgrew): Subject to change wiht restructuring.
-/**
-.Macro.SEQAN_PATH_TO_ROOT
-..cat:Testing & Debugging
-..summary:Return path to the checkout root directory (i.e. containing extras).
-..description.note:This only works when using the SeqAn SVN checkout!
-..returns:$char const *$, string with the path to the parent directory of the tests directory.
-..signature:SEQAN_PATH_TO_ROOT()
-..remarks:The pointed to string is initialized on program startup by the code generated by @Macro.SEQAN_BEGIN_TESTSUITE@.
-..example.code:
-const char *p = SEQAN_PATH_TO_ROOT);
-char buffer[1000];
-strcpy(buffer, p);
-strcat(buffer, "/tests/files/example.txt");
-FILE *f = fopen(buffer, "w");
-fprintf(f, "Test Data");
-fclose(f);
-..see:Macro.SEQAN_TEMP_FILENAME
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // Returns a const char * string with the path to the projects directory.
 #define SEQAN_PATH_TO_ROOT()                      \
@@ -3165,45 +2742,13 @@ fclose(f);
  * @see SEQAN_PATH_TO_ROOT
  */
 
-/**
-.Macro.SEQAN_TEMP_FILENAME
-..cat:Testing & Debugging
-..summary:Generates the name to a temporary file.
-..returns:$char const *$, string with the path to a temporary file.
-..signature:SEQAN_TEMP_FILENAME()
-..remarks:The pointed to string is stored in a buffer and is overwritten by the next call to this macro. Copy it out if you need it.
-..example.code:
-const char *p = SEQAN_TEMP_FILENAME();
-buffer char tempFilename[1000];
-strcpy(tempFilename, p);
-FILE *f = fopen(tempFilename, "w");
-fprintf(f, "Test Data");
-fclose(f);
-..see:Macro.SEQAN_PATH_TO_ROOT
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // Returns a temporary filename.
 #define SEQAN_TEMP_FILENAME() (::seqan::ClassTest::tempFileName())
 
 
-/**
-.Macro.SEQAN_VERIFY_CHECKPOINTS
-..cat:Testing & Debugging
-..summary:Verify check points for the given file name.
-..signature:SEQAN_VERIFY_CHECKPOINTS(path)
-..param.path:Path to the file to verify check points for. Relative to parent directory of tests.
-..example.code:
-SEQAN_VERIFY_CHECKPOINTS("include/seqan/basic_alphabet.h");
-..see:Macro.SEQAN_CHECKPOINT
-
-.Macro.SEQAN_CHECKPOINT
-..cat:Testing & Debugging
-..summary:Generate a check point.
-..signature:SEQAN_CHECKPOINT
-..remarks:Whever the code executes the instructions generated by this macro, the check point for this line will be set in global testing state. Use @Macro.SEQAN_VERIFY_CHECKPOINTS@ to verify whether all checkpoints have been reached in a file up to this point.
-SEQAN_CHECKPOINT;
-..see:Macro.SEQAN_VERIFY_CHECKPOINTS
- */
+/*_DDDOC_PLACEHOLDER*/
 
 #if SEQAN_ENABLE_CHECKPOINTS
 

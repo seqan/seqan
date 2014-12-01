@@ -46,10 +46,7 @@ namespace seqan {
 // Enums, Tags, Classes, Specializations
 // ===========================================================================
 
-/**
-.Adaption."thrust::device_vector"
-..summary:Adaption for Thrust device_vector class.
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // ===========================================================================
 // Metafunctions

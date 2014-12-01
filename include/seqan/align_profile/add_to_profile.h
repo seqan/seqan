@@ -80,13 +80,7 @@ namespace seqan {
 
 // TODO(holtgrew): Add example?
 
-/**
-.Function.addToProfile
-..cat:Alignments
-..summary:Profile-to-sequence alignment with sequence integration.
-..description:Align $seq$ to $profile$ and update $profile$ to reflect the represented multiple sequence alignment.
-..signature:void addToProfile(profile, seq[, lDiag, uDiag]);
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TChar, typename TValue, typename TSpec, typename TSpec2>
 void addToProfile(String<ProfileChar<TChar, TValue, TSpec> > & profile,

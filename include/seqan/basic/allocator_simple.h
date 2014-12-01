@@ -64,18 +64,7 @@ namespace seqan {
  * <tt>deallocate</tt> are used.
  */
 
-/**
-.Spec.Simple Allocator:
-..cat:Allocators
-..general:Class.Allocator
-..summary:General purpose allocator.
-..signature:Allocator< SimpleAlloc<ParentAllocator> >
-..param.ParentAllocator:An allocator that is by the simple allocator used to allocate memory.
-...default:@Tag.Default@
-...remarks:@Tag.Default@ used as allocator means that the default implementations
-of @Function.allocate@ and @Function.deallocate@ are used.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TParentAllocator = Default>
 struct SimpleAlloc;
@@ -167,21 +156,7 @@ parentAllocator(Allocator<SimpleAlloc<TParentAllocator> > & me)
  */
 
 // TODO(holtgrew): Using #-functions messes up search results.
-/**
-.Function.Allocator#clear
-..class:Class.Allocator
-..cat:Memory
-..summary:Deallocates all memory blocks.
-..signature:clear(allocator)
-..param.allocator:Allocator object.
-...type:Class.Allocator
-..remarks:This function deallocates all memory blocks 
-that was allocated using @Function.allocate@ for $allocator$.
-The memory is not pooled but directly passed back to the heap manager.
-..see:Function.allocate
-..see:Function.deallocate
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TParentAllocator>
 void
 clear(Allocator<SimpleAlloc<TParentAllocator> > & me)

@@ -79,30 +79,7 @@ typedef Tag<SortGapPos_> const SortGapPos;
  * @see AnchorGaps
  */
 
-/**
-.Class.GapAnchor
-..summary:Stores the position of an alignment character in sequence-space and in gap-space.
-..cat:Alignments
-..signature:GapAnchor<TPos>
-..param.TPos:Type to store gapped/ungapped positions.
-..remarks:Value types of the $gaps$ strings in @Class.ReadStoreElement@ and @Class.ContigStoreElement@.
-
-.Memfunc.GapAnchor#GapAnchor
-..summary:Constructor
-..signature:GapAnchor<TPos> ()
-..signature:GapAnchor<TPos> (TPos seqPos, TPos gapPos)
-..param.seqPos:Sequence character position in the ungapped sequence.
-..param.gapPos:Sequence character position in the gapped sequence.
-..remarks:Default constructor sets both positions to $0$.
-..class:Class.GapAnchor
-.Memvar.GapAnchor#seqPos
-..summary:Sequence character position in the ungapped sequence.
-..class:Class.GapAnchor
-.Memvar.GapAnchor#gapPos
-..summary:Sequence character position in the gapped sequence.
-..class:Class.GapAnchor
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // We store gap anchors only for the first text character behind a gap or a clipped sequence character
 

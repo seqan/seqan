@@ -82,39 +82,7 @@ namespace seqan {
  * Default constructor or construction with references to sequence and sample names.
  */
 
-/**
-.Class.VcfIOContext
-..cat:VCF I/O
-..signature:class VcfIOContext
-..summary:The I/O context to use for VCF I/O.
-..description:
-VcfIOContext objects store the names of (and provide a cache for) reference and sample names.
-@Class.StringSet@ of @Shortcut.CharString@ are used for the name stores.
-..include:seqan/vcf_io.h
-
-.Memfunc.VcfIOContext#VcfIOContext
-..class:Class.VcfIOContext
-..signature:VcfIOContext()
-..signature:VcfIOContext(sequenceNames, sampleNames)
-..summary:Constructor.
-..remarks:Default constructor or construction with references to sequence and sample names.
-
-.Memvar.VcfIOContext#sequenceNames
-..class:Class.VcfIOContext
-..summary:Names of the reference sequences.
-
-.Memvar.VcfIOContext#sequenceNamesCache
-..class:Class.VcfIOContext
-..summary:Name store cache for of the reference names.
-
-.Memvar.VcfIOContext#sampleNames
-..class:Class.VcfIOContext
-..summary:Names of the samples.
-
-.Memvar.VcfIOContext#sampleNamesCache
-..class:Class.VcfIOContext
-..summary:Name store cache for the sample names.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <
     typename TNameStore_ = StringSet<CharString>,

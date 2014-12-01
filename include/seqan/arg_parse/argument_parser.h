@@ -142,53 +142,7 @@ inline ArgParseArgument & getArgument(ArgumentParser & me, unsigned position);
  * @brief Parsing was successful, built-in <tt>--export-help</tt> option was used.
  */
 
-/**
-.Class.ArgumentParser
-..cat:Miscellaneous
-..summary:Stores multiple @Class.ArgParseOption@ objects and parses the command line arguments for these options.
-..signature:ArgumentParser
-..include:seqan/arg_parse.h
-..remarks:
-See the documentation of @Class.ToolDoc@ on how to format text.
-Where possible, formatting is added automatically for you.
-You have to use formatting in the following places: (1) usage lines, (2) option help texts, (3) description and additional text sections.
-..example.text:
-The following gives a simple example of how to use the @Class.ArgumentParser@.
-..example.code:
-ArgumentParser parser("alf");
-setShortDescription(parser, "Alignment free sequence comparison");
-setVersion(parser, "1.0");
-setDate(parser, "Jan 2010");
-
-addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fB-i\\fP \\fIIN\\fP \\fB-o\\fP \\fIOUT\\fP");
-
-addDescription(parser,
-               "ALF can be used to calculate the pairwise similarity of sequences "
-               "using alignment-free methods. All methods which are implemented are "
-               "based on k-mer counts.");
-
-addOption(parser, ArgParseOption("i", "inputFile", "Name of the multi-FASTA input.",
-                                 ArgParseArgument(ArgParseArgument::INPUT_FILE, "IN")));
-setRequired(parser, "i");
-
-addOption(parser, ArgParseOption("o", "outputFile", "Name of the multi-FASTA input.",
-                                 ArgParseArgument(ArgParseArgument::OUTPUT_FILE, "OUT")));
-setRequired(parser, "o");
-
-addTextSection(parser, "See Also");
-addText(parser, "http://www.seqan.de/projects/alf");
-..see:Class.ToolDoc
-..see:Class.ArgParseArgument
-..see:Class.ArgParseOption
-
-.Memfunc.ArgumentParser#ArgumentParser
-..class:Class.ArgumentParser
-..summary:Constructor
-..signature:ArgumentParser ()
-..signature:ArgumentParser (applicationName)
-..param.applicationName:A std::string containing the name of the application.
-..remarks:If the name of the application is not passed to the constructor it will be extracted from the command line.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 class ArgumentParser
 {
@@ -307,18 +261,7 @@ public:
  * @return bool <tt>true</tt> if there is such an option, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.ArgumentParser#hasOption
-..class:Class.ArgumentParser
-..summary:Returns whether a certain option is registered in the parser.
-..cat:Miscellaneous
-..signature:hasOption(parser, optionIdentifier)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.optionIdentifier:A @Shortcut.CharString@ that identifies the option.
-..returns:$true$ if the option is registered.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool hasOption(ArgumentParser const & me, std::string const & name)
 {
@@ -340,18 +283,7 @@ inline bool hasOption(ArgumentParser const & me, std::string const & name)
  * @param[in]     option The ArgParseOption to add to <tt>parser</tt>.
  */
 
-/**
-.Function.ArgumentParser#addOption
-..class:Class.ArgumentParser
-..summary:Adds a @Class.ArgParseOption@ object to the @Class.ArgumentParser@.
-..cat:Miscellaneous
-..signature:addOption(parser, option)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.option:The new @Class.ArgParseOption@ object that should be added.
-...type:Class.ArgParseOption
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void _copyValidValuesToFileExt(ArgumentParser & me, std::string const & name)
 {
@@ -418,18 +350,7 @@ inline void addOption(ArgumentParser & me, ArgParseOption const & opt)
  * @param[in]     arg    The ArgParseArgument to add to <tt>parser</tt>.
  */
 
-/**
-.Function.ArgumentParser#addArgument
-..class:Class.ArgumentParser
-..summary:Adds a @Class.ArgParseArgument@ object to the @Class.ArgumentParser@.
-..cat:Miscellaneous
-..signature:addArgument(parser, argument)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.arg:The new @Class.ArgParseArgument@ object that should be added.
-...type:Class.ArgParseArgument
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void _copyValidValuesToFileExt(ArgumentParser & me, unsigned no)
 {
@@ -524,18 +445,7 @@ inline ArgumentParser::TOptionMapSize _getOptionIndex(ArgumentParser const & me,
  * @return TOption Reference to the @link ArgParseOption @endlink with the given short or long name.
  */
 
-/**
-.Function.ArgumentParser#getOption
-..class:Class.ArgumentParser
-..summary:Returns a reference to the specified option.
-..cat:Miscellaneous
-..signature:getOption(parser, optionName)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.optionName:The identifier of the command line option.
-..returns: a reference to the specified @Class.ArgParseOption@ object.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline ArgParseOption & getOption(ArgumentParser & me, std::string const & name)
 {
@@ -565,21 +475,7 @@ inline ArgParseOption const & getOption(ArgumentParser const & me, std::string c
  * @param[in]     required Whether or not the option is required (<tt>bool</tt>, default to <tt>true</tt>).
  */
 
-/**
-.Function.ArgumentParser#setRequired
-..class:Class.ArgumentParser
-..summary:Sets whether or not the option defined by the parameter $name$ (which can be
- either the short or the long name) is mandatory.
-..remarks: Note that the empty string is, at least for string options, also a valid string.
-Hence setting an option to required does not guarantee that the returned string is not empty.
-..cat:Miscellaneous
-..signature:setRequired(parser, optionName [, required])
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.optionName:The identifier of the command line option.
-..param.required.remarks: The default value is true.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void setRequired(ArgumentParser & me, std::string const & name, bool required = true)
 {
@@ -603,20 +499,7 @@ inline void setRequired(ArgumentParser & me, std::string const & name, bool requ
  * @param[in]     hide   Whether or not to hide the flag (<tt>bool</tt>, defaults to <tt>true</tt>).
  */
 
-/**
-.Function.ArgumentParser#hideOption
-..class:Class.ArgumentParser
-..summary:Hides the ArgParseOption defined by the parameter $name$ (which can be
- either the short or the long name) from the help screen.
-..cat:Miscellaneous
-..signature:hideOption(parser, optionName [, hide])
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.optionName:The identifier of the command line option.
-..param.hide:The new visibility of the option. Default is false.
-...type:nolink:bool
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void hideOption(ArgumentParser & me, std::string const & name, bool hide)
 {
@@ -641,18 +524,7 @@ inline void hideOption(ArgumentParser & me, std::string const & name, bool hide)
  * @return TArgument Reference to the @link ArgParseArgument @endlink with the given position.
  */
 
-/**
-.Function.ArgumentParser#getArgument
-..class:Class.ArgumentParser
-..summary:Returns a reference to the specified argument.
-..cat:Miscellaneous
-..signature:getArgument(parser, argumentPosition)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.argumentPosition:The index of the argument in the argument list.
-..returns: a reference to the specified @Class.ArgParseArgument@ object.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline ArgParseArgument & getArgument(ArgumentParser & me, unsigned position)
 {
@@ -685,18 +557,7 @@ inline ArgParseArgument const & getArgument(ArgumentParser const & me, unsigned 
  * @return bool Whether or not the option was set on the command line or not.
  */
 
-/**
-.Function.ArgumentParser#isSet
-..class:Class.ArgumentParser
-..summary:Returns whether an option was set on the parsed command line.
-..cat:Miscellaneous
-..signature:isSet(parser,optionIdentifier)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.optionIdentifier:A std::string that identifies the option (either short or long name).
-..returns:$true$ if the option was set.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool isSet(ArgumentParser const & me, std::string const & name)
 {
@@ -721,17 +582,7 @@ inline bool isSet(ArgumentParser const & me, std::string const & name)
  * @return bool Whether or not the option has a default value.
  */
 
-/**
-.Function.ArgumentParser#hasDefault
-..summary:Returns whether an option has a default value or not.
-..cat:Miscellaneous
-..signature:hasDefault(parser,optionIdentifier)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.optionIdentifier:A std::string that identifies the option (either short or long name).
-..returns:$true$ if the option has a default value, $false$ otherwise.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool hasDefault(ArgumentParser const & me, std::string const & name)
 {
@@ -787,22 +638,7 @@ inline bool _allArgumentsSet(ArgumentParser const & me)
  *              <tt>dest</tt>.
  */
 
-/**
-.Function.ArgumentParser#getOptionValue
-..class:Class.ArgumentParser
-..summary:Retrieves the value of an option given either the short or long name.
-..cat:Miscellaneous
-..signature:getOptionValue(value, parser, optionIdentifier[, argNo])
-..param.value:The variable where the resulting value should be stored.
-...remarks:The type of $value$ must be compatible the option type.
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.optionIdentifier:A std::string that is either the short or long name of the option.
-..param.argNo:If the option is list, the $argNo$-th list element is returned.
-..returns: $true$ if the requested option is set and has the requested type, $false$ otherwise.
-..remarks:The value passed to the method (value) was only updated if the method returns $true$.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline bool getOptionValue(TValue & val,
@@ -860,19 +696,7 @@ inline bool getOptionValue(TValue & val,
  * @endcode
  */
 
-/**
-.Function.ArgumentParser#getOptionFileExtension
-..class:Class.ArgumentParser
-..summary:Returns the extension of a file option.
-..cat:Miscellaneous
-..signature:std::string getOptionFileExtension(parser, name[, argNo]);
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParsre
-..param.name:The name of the option.
-..param.argNo:An optional index for multi-value options.
-...type:nolink:$unsigned$
-..returns:A $std::string$ with the extension. Empty if no extension or empty value.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline std::string getOptionFileExtension(ArgumentParser const & me,
                                           std::string const & name,
@@ -900,18 +724,7 @@ inline std::string getOptionFileExtension(ArgumentParser const & me,
  * @return unsigned The number of values for the option with the given name.
  */
 
-/**
-.Function.ArgumentParser#getOptionValueCount
-..class:Class.ArgumentParser
-..summary:Returns the number of values stored in the specified option.
-..cat:Miscellaneous
-..signature:getOptionValueCount(parser, optionIdentifier)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.optionIdentifier:A std::string that is either the short or long name of the option.
-..returns: The number of values stored for this option.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline unsigned getOptionValueCount(ArgumentParser const & me, std::string const & name)
 {
@@ -936,18 +749,7 @@ inline unsigned getOptionValueCount(ArgumentParser const & me, std::string const
  * @return unsigned The number of values for the argument with the given position.
  */
 
-/**
-.Function.ArgumentParser#getArgumentValueCount
-..class:Class.ArgumentParser
-..summary:Returns the number of values stored in the specified option.
-..cat:Miscellaneous
-..signature:getArgumentValueCount(parser, argumentPosition)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.argumentPosition:The index of the argument in the argument list.
-..returns: The number of values stored for the specified argument.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline unsigned getArgumentValueCount(ArgumentParser const & me, unsigned argumentPosition)
 {
@@ -978,21 +780,7 @@ inline unsigned getArgumentValueCount(ArgumentParser const & me, unsigned argume
  * @return bool <tt>true</tt> if the retrieval was successful, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.ArgumentParser#getArgumentValue
-..class:Class.ArgumentParser
-..summary:Retrieves the value of an argument given by its position.
-..cat:Miscellaneous
-..signature:getArgumentValue(value, parser, argumentPosition[, argNo])
-..param.value:The variable where the resulting value should be stored.
-...remarks:The type of $value$ must be compatible the option type.
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.argumentPosition:The index of the argument in the argument list.
-..param.argNo:If the argument is a list, the $argNo$-th list element is returned.
-..returns: $true$ if the requested argument is set and has the requested type, $false$ otherwise.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline bool getArgumentValue(TValue & value,
@@ -1046,20 +834,7 @@ inline bool getArgumentValue(TValue & value,
  * @endcode
  */
 
-/**
-.Function.ArgumentParser#getArgumentFileExtension
-..class:Class.ArgumentParser
-..summary:Returns the extension of a file argument.
-..cat:Miscellaneous
-..signature:std::string argumentFileExtension(parser, argPos[, argNo]);
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParsre
-..param.argPos:The position of the argument.
-...type:nolink:$unsigned$
-..param.argNo:An optional index for multi-value arguments.
-...type:nolink:$unsigned$
-..returns:A $std::string$ with the extension. Empty if no extension or empty value.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline std::string getArgumentFileExtension(ArgumentParser const & me,
                                             unsigned argumentPosition,
@@ -1090,18 +865,7 @@ inline std::string getArgumentFileExtension(ArgumentParser const & me,
  * @return TVector The resulting values (<tt>std::vector&lt;std::string&gt;</tt>).
  */
 
-/**
-.Function.ArgumentParser#getOptionValues
-..class:Class.ArgumentParser
-..summary:Returns all values of an option given on the command line.
-..cat:Miscellaneous
-..signature:getOptionValues(parser, optionIdentifier)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.optionIdentifier:A std::string that is either the short or long name of the option.
-..returns: A $String<std::string>$ of option values.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline std::vector<std::string> const & getOptionValues(ArgumentParser const & me,
                                                         std::string const & name)
@@ -1127,18 +891,7 @@ inline std::vector<std::string> const & getOptionValues(ArgumentParser const & m
  * @return TVector The resulting values (<tt>std::vector&lt;std::string&gt;</tt>).
  */
 
-/**
-.Function.ArgumentParser#getArgumentValues
-..class:Class.ArgumentParser
-..summary:Returns all values of an option given on the command line.
-..cat:Miscellaneous
-..signature:getArgumentValues(parser, argumentPosition)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.argumentPosition:The index of the argument in the argument list.
-..returns: A $String<std::string>$ of argument values.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline std::vector<std::string> const & getArgumentValues(ArgumentParser const & me,
                                                           unsigned argumentPosition)
@@ -1165,17 +918,7 @@ inline std::vector<std::string> const & getArgumentValues(ArgumentParser const &
  * @param[in] v      The value to set (template parameter, must be streamable into a <tt>std::stringstream</tt>).
  */
 
-/**
-.Function.ArgumentParser#setDefaultValue
-..class:Class.ArgumentParser
-..summary:Set default value of an option of an ArgumentParser.
-..signature:setDefaultValue(parser, optionName, value)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.optionName:The identifier of the command line option.
-..param.value:The new default value.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline void setDefaultValue(ArgumentParser & me,
@@ -1202,17 +945,7 @@ inline void setDefaultValue(ArgumentParser & me,
  * @param[in]     v      The value to append (template parameter, must be streamable into a <tt>std::stringstream</tt>).
  */
 
-/**
-.Function.ArgumentParser#addDefaultValue
-..class:Class.ArgumentParser
-..summary:Add to the default values of an option of an ArgumentParser.
-..signature:addDefaultValue(parser, optionName, value)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.optionName:The identifier of the command line option.
-..param.value:The new default value.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline void addDefaultValue(ArgumentParser & me,
@@ -1245,19 +978,7 @@ inline void addDefaultValue(ArgumentParser & me,
  * The option/argument must have an integer or double type.
  */
 
-/**
-.Function.ArgumentParser#setMinValue
-..class:Class.ArgumentParser
-..summary:Set smallest allowed value for an option or argument of an ArgumentParser.
-..signature:setMinValue(parser,optionName,minValue)
-..signature:setMinValue(parser,argumentPosition,minValue)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.optionName:The identifier of the command line option.
-..param.argumentPosition:The index of the argument in the argument list.
-..param.minValue:A std::string containing a string representation of the minimum value of the @Class.ArgParseOption@.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void setMinValue(ArgumentParser & me,
                         std::string const & name,
@@ -1299,19 +1020,7 @@ inline void setMinValue(ArgumentParser & me,
  * The option/argument must have an integer or double type.
  */
 
-/**
-.Function.ArgumentParser#setMaxValue
-..class:Class.ArgumentParser
-..summary:Set largest allowed value for an option or argument of an ArgumentParser.
-..signature:setMaxValue(parser,optionName,maxValue)
-..signature:setMaxValue(parser,argumentPosition,minValue)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.optionName:The identifier of the command line option.
-..param.argumentPosition:The index of the argument in the argument list.
-..param.maxValue:A std::string containing a string representation of the maximum value of the @Class.ArgParseOption@.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void setMaxValue(ArgumentParser & me,
                         std::string const & name,
@@ -1350,20 +1059,7 @@ inline void setMaxValue(ArgumentParser & me,
  *                       or a <tt>std::vector&lt;std::string&gt;</tt> with the values.
  */
 
-/**
-.Function.ArgumentParser#setValidValues
-..class:Class.ArgumentParser
-..summary:Set valid values for an argument or option of an ArgumentParser.
-..signature:setValidValues(parser,optionName,values)
-..signature:setValidValues(parser,argumentPosition,values)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.optionName:The identifier of the command line option.
-..param.argumentPosition:The index of the argument in the argument list.
-..param.values:A $std::string$ containing all valid entries for the option.
-Alternatively you can pass a string containing all values separated by spaces.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void setValidValues(ArgumentParser & me,
                            std::string const & name,
@@ -1423,19 +1119,7 @@ inline void setValidValues(ArgumentParser & me,
  * @param[in]     text   The string to use for the help text (<tt>std::string</tt>).
  */
 
-/**
-.Function.ArgumentParser#setHelpText
-..class:Class.ArgumentParser
-..summary:Set help text of argument parser.
-..signature:setHelpText(parser,optionName,text)
-..signature:setHelpText(parser,argumentPosition,text)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.optionName:The identifier of the command line option.
-..param.argumentPosition:The index of the argument in the argument list.
-..param.text:A $std::string$ describing the option or argument.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void setHelpText(ArgumentParser & me,
                         std::string const & name,
@@ -1475,22 +1159,7 @@ inline void setHelpText(ArgumentParser & me,
  * @return TVector A <tt>std::vector&lt;std::string&gt;</tt> with the allowed file format extensions.
  */
 
-/**
-.Function.ArgumentParser#getFileExtensions
-..class:Class.ArgumentParser
-..summary:Returns file format extensions given a format tag.
-..signature:getFileExtensions(formatTag)
-..signature:getFileExtensions(formatTagList)
-..signature:getFileExtensions(formatTagSelector)
-..param.format:A single file format, e.g. @Tag.File Format.tag.Fastq@ or @Tag.Sam@.
-...type:Tag.Tag
-..param.formatTagList:A list of file formats.
-...type:Tag.TagList
-..param.formatTagSelector:A file format selector.
-...type:Class.TagSelector
-..returns:A $std::vector<std::string>$ of all extensions supported by a single format or all formats of a list or selector.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline std::vector<std::string>

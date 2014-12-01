@@ -97,22 +97,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * <tt>i</tt> begins with 0 and for <tt>omitFirst=true</tt> <tt>i</tt> begins with <tt>echoRepeats-1</tt>.
  */
 
-/**
-.Spec.Echoer:
-..cat:Pipelining
-..general:Class.Pipe
-..summary:Outputs tuples of the $echoRepeats$ last elements of the input stream.
-..signature:Pipe<TInput, Echoer<echoRepeats, omitFirst> >
-..param.TInput:The type of the pipeline module this module reads from.
-..param.echoRepeats:The tuple length.
-...remarks:The tuples contain elements $in[i]in[i-1]...in[i-(echoRepeats-1)]$.
-..param.omitFirst:Omit half filled tuples.
-..param.omitFirst:If $true$, the output stream is $echoRepeats-1$ elements shorter than the input stream.
-..param.omitFirst:If $false$, the lengths are identical and the tuple is filled with blanks (default constructed elements) for undefined entries.
-..remarks:The output type is a @Class.Tuple@ of input elements and length $echoRepeats$ (i.e. $Tuple<Value<TInput>::Type, echoRepeats>$).
-..remarks:The tuples are sequences of the form $in[i]in[i-1]in[i-2]..in[i-echoRepeats+1]$. For $omitFirst=false$ $i$ begins with 0 and for $omitFirst=true$ $i$ begins with $echoRepeats-1$.
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     //////////////////////////////////////////////////////////////////////////////
     // echoer class

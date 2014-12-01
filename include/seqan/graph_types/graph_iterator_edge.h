@@ -69,32 +69,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in] graph The @link Graph @endlink to iterate edges of.
  */
 
-/**
-.Spec.Edge Iterator:
-..cat:Graph
-..summary:Edge iterator for @Class.Graph@.
-..signature:Iterator<TGraph, EdgeIterator>
-..param.TGraph:A graph.
-...type:Class.Graph
-..general:Class.Iter
-..see:Spec.Vertex Iterator
-..see:Spec.Out-Edge Iterator
-..see:Spec.Adjacency Iterator
-..see:Spec.Bfs Iterator
-..see:Spec.Dfs Preorder Iterator
-..include:seqan/graph_types.h
-
-.Memfunc.Edge Iterator#Iter
-..summary:Constructor
-..class:Spec.Edge Iterator
-..signature:Iter()
-..signature:Iter(graph)
-..signature:Iter(iter)
-..param.graph:The graph to iterate edges of.
-...type:Class.Graph
-..param.iter:Other iterator to copy-construct from.
-...type:Spec.Edge Iterator
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TGraph, typename TSpec>
 class Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > > 

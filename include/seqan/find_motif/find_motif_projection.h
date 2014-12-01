@@ -52,26 +52,7 @@ TType _computeNumOfTrials(TType const & t, TType const & l, TType const & d, TTy
 // Projection
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Spec.Projection:
-..summary: Represents the PROJECTION algorithm of Buhler and Tompa.
-..description.note:There are various known problems with the motif finding in SeqAn. We plan to fix this in an upcoming release.
-..general:Class.MotifFinder
-..cat:Motif Search
-..signature:MotifFinder<TValue, Projection, TRng>
-..param.TValue:The type of sequences to be analyzed.
-...type:Spec.Dna
-...type:Spec.AminoAcid
-..remarks:The @Spec.Projection|Projection algorithm@ is a heuristic algorithm that does not guarantee
-          that the unknown motif will be found every time. We can increase the chance of success
-		  by performing a large number of independent trials to generate multiple guesses.
-		  In each trial, @Spec.Projection@ makes a preselection of sets of length-l patterns called l-mers
-		  which are likely to be a collection of motif instances (filtering step) and 
-		  refines them by some local searching techniques, e.g. @Function.em|EM algorithm@, Gibbs Sampling etc (refinement step).
-..param.TRng:The @Class.Rng@ specialization to use for random number generation.
-...default:$GetDefaultRng<MotifFinderClass>::Type$
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct Projection_;
 typedef Tag<Projection_> const Projection;
@@ -1186,20 +1167,7 @@ _computeLikelihoodRatioOfLMers(TStrings const & l_mers,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.determineConsensusSeq:
-..summary:Determines the consensus pattern of a given profile.
-..cat:Motif Search
-..signature:determineConsensusSeq(consensus_seq,profile,l)
-..param.consensus_seq:The consensus pattern.
-...type:Class.String
-...type:Shortcut.DnaString
-...type:Shortcut.Peptide
-..param.profile:A StringSet of @Class.FrequencyDistribution|frequency distributions@.
-...type:Class.StringSet
-..param.l:The size of the motif.
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TString, typename TProfile>
 void

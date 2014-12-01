@@ -92,34 +92,7 @@ typedef Tag<Output_> Output;
  * @brief Second member
  */
 
-/**
-.Class.Pair:
-..cat:Aggregates
-..concept:Concept.AggregateConcept
-..summary:Stores two arbitrary objects.
-..signature:Pair<T1[, T2[, TSpec]]>
-..param.T1:The type of the first object.
-..param.T2:The type of the second object.
-...default:$T1$
-..param.TSpec:The specializing type.
-...default:$void$, no packing (faster access).
-.Memfunc.Pair#Pair:
-..class:Class.Pair
-..summary:Constructor
-..signature:Pair<T1, T2[, TSpec]> ()
-..signature:Pair<T1, T2[, TSpec]> (pair)
-..signature:Pair<T1, T2[, TSpec]> (i1, i2)
-..param.pair:Other Pair object. (copy constructor)
-..param.i1:T1 object.
-..param.i2:T2 object.
-.Memvar.Pair#i1:
-..class:Class.Pair
-..summary:T1 object
-.Memvar.Pair#i2:
-..class:Class.Pair
-..summary:T2 object
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Should default specs be specialized with void or Default?
 // TODO(holtgrew): Move construction, will be a bit tricky, either with enable_if or with 4 base classes and all constructors are forwarded there.
@@ -202,19 +175,7 @@ struct LENGTH<Pair<T1, T2, TSpec> >
  * @return Type Result type.
  */
 
-/**
-.Metafunction.Value
-..class:Class.Pair
-..class:Class.Triple
-..class:Class.Tuple
-..signature:Value<TTuple, POSITION>::Type
-..param.TTuple:@Class.Pair@, @Class.Triple@, or @Class.Tuple@ to return value from.
-...type:Class.Pair
-...type:Class.Triple
-...type:Class.Tuple
-..param.POSITION:Position of the type to query.
-...type:nolink:$int$
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T1, typename T2, typename TSpec>
 struct Value<Pair<T1, T2, TSpec>, 1>

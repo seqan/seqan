@@ -62,13 +62,7 @@ namespace seqan {
  * reference to a holder type of <tt>Host&lt;T&gt;::Type &amp;</tt>.
  */
 
-/**
-.Concept.HostedConcept Type
-..summary:Concept for types that have a host.
-..remarks:The functions of this concept assume that the hosted object exports a function $_dataHost$ that returns a reference to a holder type of $Host<T>::Type &$.
-
-.Metafunction.Host.concept:Concept.HostedConcept Type
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // ============================================================================
 // Metafunctions
@@ -84,15 +78,7 @@ namespace seqan {
  * @return Type The Host type.
  */
 
-/**
-.Metafunction.Host
-..cat:Basic
-..summary:Type of the object a given object depends on.
-..signature:Host<T>::Type
-..param.T:Type for which the host type is determined.
-..returns.param.Type:Host type of $T$.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct Host;
@@ -116,17 +102,7 @@ struct Host;
  * @return bool <tt>true</tt> if the host is empty, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.emptyHost
-..cat:Dependent Object
-..summary:Query emptiness state of a hosted object.
-..signature:emptyHost(object)
-..param.object:The object query state of host of.
-..returns:$bool$, $true$ if the host is empty, $false$ otherwise.
-..see:Function.empty
-..concept:Concept.HostedConcept Type
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline bool
@@ -151,17 +127,7 @@ emptyHost(T const & me)
  * @return bool <tt>true</tt> if the host is dependent, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.dependentHost
-..cat:Dependent Object
-..summary:Query dependent state of a hosted object.
-..signature:clearHost(object)
-..param.object:The object query state of host of.
-..returns:$bool$, $true$ if the host is dependent, $false$ otherwise.
-..see:Function.dependent
-..concept:Concept.HostedConcept Type
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline bool
@@ -184,16 +150,7 @@ dependentHost(T const & me)
  * @param[in,out] object The object to clear the host of.
  */
 
-/**
-.Function.clearHost
-..cat:Dependent Object
-..summary:Clear the host of the given object.
-..signature:clearHost(object)
-..param.object:The object to clear the host of.
-..see:Function.clear
-..concept:Concept.HostedConcept Type
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline void
@@ -221,19 +178,7 @@ clearHost(T & me)
  * If <tt>host</tt> is given then it is used for copy creation.  Otherwise, the default constructor is used.
  */
 
-/**
-.Function.createHost
-..cat:Dependent Object
-..summary:Construct the host of the given object.
-..signature:createHost(object[, host])
-..param.object:The object to copy construct the host of.
-..param.host:The object to copy in host creation.
-...type:nolink:$Host<T>::Type const &$
-..remarks:If $host$ is given then it is used for copy creation.  Otherwise, the default constructor is used.
-..see:Function.create
-..concept:Concept.HostedConcept Type
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline void
@@ -347,18 +292,7 @@ setHost(T & me,
  * @param[in]     object The object to assign the host of.
  */
 
-/**
-.Function.assignHost
-..cat:Dependent Object
-..summary:Assign to the host of a given value.
-..signature:assignHost(object, host)
-..param.object:The object to assign the host of.
-..param.host:The object to assign as host.
-...type:nolink:$Host<T>::Type const &$
-..see:Function.assign
-..concept:Concept.HostedConcept Type
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename THost>
 inline void
@@ -383,18 +317,7 @@ assignHost(T & me,
  * @param[in,out] object The object to move-assign the host of.
  */
 
-/**
-.Function.moveHost
-..cat:Dependent Object
-..summary:Assign to the host of a given value.
-..signature:assignHost(object, host)
-..param.object:The object to move-assign the host of.
-..param.host:The object to move-assign as host.
-...type:nolink:$Host<T>::Type &$
-..see:Function.move
-..concept:Concept.HostedConcept Type
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename THost>
 inline void

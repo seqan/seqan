@@ -80,17 +80,7 @@ typedef Tag<AccuCount_> AccuCount;
  * Currently, this is only meant for accumulating integers.
  */
 
-/**
-.Class.Accumulator
-..cat:Miscellaneous
-..summary:Accumulator base class.
-..signature:Accumulator<TValue, TSpec>
-..param.TValue:The type of the values to accumulate.
-..param.TSpec:The specialization tag.
-..remarks:Accumulators are for computing statistics on streams of values.
-..remarks:Currently, this is only meant for accumulating integers.
-..include:seqan/misc/misc_accumulators.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec>
 struct Accumulator;
@@ -131,31 +121,7 @@ struct Accumulator;
  * @endcode
  */
 
-/**
-.Spec.Average Accumulator
-..general:Class.Accumulator
-..cat:Miscellaneous
-..summary:Accumulator for computing averages.
-..signature:Accumulator<TValue, TSpec>
-..param.TValue:The type of the values to compute the average of.
-..param.TSpec:The specialization tag.
-..remarks:The average of an empty sequence is defined to be 0.
-..example.text:This program shows how to use the Average Accumulator.
-..example.code:
-Accumulator<int, AccuAverage> acc;
-push(acc, 1);
-push(acc, 2);
-push(acc, 3);
-std::cout << "average: " << average(acc) << "\n"
-          << "sum:     " << sum(acc) << "\n"
-          << "count:   " << count(acc) << "\n";
-..example.text:The output is then:
-..example.code:
-average: 2
-sum:     6
-count:   3
-..include:seqan/misc/misc_accumulators.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 struct Accumulator<TValue, AccuAverage>
@@ -217,16 +183,7 @@ struct Value<Accumulator<TValue, AccuAverage> const > : Value<Accumulator<TValue
  * @return Type The result type.
  */
 
-/**
-.Metafunction.Result
-..cat:Miscellaneous
-..summary:Return the result of a computation.
-..signature:Result<T, TTag>::Type
-..param.T:The type to query
-..param.TTag:The type of the result to query.
-...remarks:E.g. $AccuAverage$, $AccuSum$, $AccuCount$.
-..include:seqan/misc/misc_accumulators.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TTag = void>
 struct Result;
@@ -293,17 +250,7 @@ struct Result<Accumulator<TValue, AccuAverage> const, AccuSum> : Result<Accumula
  * @param[in]     x   The value to include in the accumulation (@link IntegerConcept @endlink).
  */
 
-/**
-.Function.Accumulator#push
-..cat:Miscellaneous
-..summary:Adds a value to an accumulator.
-..signature:push(acc, x)
-..class:Class.Accumulator
-..param.acc:The accumulator to add the value to.
-...type:Class.Accumulator
-..param.x:The value to push.
-..returns:$void$
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // ----------------------------------------------------------------------------
 // Function clear()                                                 Accumulator
@@ -358,17 +305,7 @@ push(Accumulator<TValue, AccuAverage> & acc, TValue2 value)
  * @return TResult The average of the values (Metafunction: @link Accumulator#Result @endlink).
  */
 
-/**
-.Function.Accumulator#average
-..cat:Miscellaneous
-..summary:Return average from an accumulator.
-..signature:average(acc)
-..class:Spec.Average Accumulator
-..param.acc:The accumulator to return the average from.
-...type:Spec.Average Accumulator
-..returns:nolink:$double$
-..include:seqan/misc/misc_accumulators.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline typename Result<Accumulator<TValue, AccuAverage>, AccuAverage>::Type
@@ -395,17 +332,7 @@ average(Accumulator<TValue, AccuAverage> const & acc)
  * @return TResult The sum of the values (Metafunction: @link Accumulator#Result @endlink).
  */
 
-/**
-.Function.Accumulator#sum
-..cat:Miscellaneous
-..summary:Return sum from an accumulator.
-..signature:average(acc)
-..class:Spec.Average Accumulator
-..param.acc:The accumulator to return the sum from.
-...type:Spec.Average Accumulator
-..returns:@Metafunction.Value@$<typeof(acc)>::Type$
-..include:seqan/misc/misc_accumulators.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline typename Result<Accumulator<TValue, AccuAverage>, AccuSum>::Type
@@ -429,17 +356,7 @@ sum(Accumulator<TValue, AccuAverage> const & acc)
  * @return TResult The number of pushed values (Metafunction: @link Accumulator#Result @endlink).
  */
 
-/**
-.Function.Accumulator#count
-..cat:Miscellaneous
-..summary:Return sum from an accumulator.
-..signature:average(acc)
-..class:Spec.Average Accumulator
-..param.acc:The accumulator to return the sum from.
-...type:Spec.Average Accumulator
-..returns:@Metafunction.Value@$<typeof(acc)>::Type$
-..include:seqan/misc/misc_accumulators.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline typename Result<Accumulator<TValue, AccuAverage>, AccuCount>::Type

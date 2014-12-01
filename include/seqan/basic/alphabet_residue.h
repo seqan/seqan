@@ -90,23 +90,7 @@ template <typename T> struct BaseAlphabet;
  * @see DnaIterator
  */
 
-/**
-.Spec.Dna
-..cat:Alphabets
-..summary:Alphabet for DNA.
-..general:Class.SimpleType
-..signature:Dna
-..remarks:
-...text:The @Metafunction.ValueSize@ of $Dna$ is 4. 
-The nucleotides are enumerated this way: $'A' = 0, 'C' = 1, 'G' = 2, 'T' = 3$.
-...text:Objects of type $Dna$ can be converted to various other types and vice versa. 
-An object that has a value not in ${'A', 'C', 'G', 'T'}$ is converted to $'A'$.
-...text:$Dna$ is typedef for $SimpleType<char,Dna_>$, while $Dna_$ is a helper
-specialization tag class.
-..see:Metafunction.ValueSize
-..see:Spec.Dna5
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct Dna_ {};
 typedef SimpleType<unsigned char, Dna_> Dna;
@@ -148,23 +132,7 @@ struct BitsPerValue< Dna >
  * @see Dna
  */
 
-/**
-.Spec.Dna5:
-..cat:Alphabets
-..summary:Alphabet for DNA including 'N' character.
-..general:Class.SimpleType
-..signature:Dna5
-..remarks:
-...text:The @Metafunction.ValueSize@ of $Dna5$ is 5. 
-The nucleotides are enumerated this way: $'A' = 0, 'C' = 1, 'G' = 2, 'T' = 3$. 
-The 'N' character ("unkown nucleotide") is encoded by 4.
-...text:Objects of type $Dna5$ can be converted to various other types and vice versa. 
-An object that has a value not in ${'A', 'C', 'G', 'T'}$ is converted to $'N'$.
-...text:$Dna5$ is typedef for $SimpleType<char,Dna5_>$, while $Dna5_$ is a helper
-specialization tag class.
-..see:Metafunction.ValueSize
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct Dna5_ {};
 typedef SimpleType<unsigned char, Dna5_> Dna5;
@@ -214,23 +182,7 @@ unknownValueImpl(Dna5 *)
  * @see Dna
  */
 
-/**
-.Spec.DnaQ:
-..implements:Concept.AlphabetWithQualitiesConcept
-..cat:Alphabets
-..summary:Alphabet for DNA plus PHRED quality.
-..general:Class.SimpleType
-..signature:DnaQ
-..remarks:
-...text:The @Metafunction.ValueSize@ of $DnaQ$ is 4. 
-The nucleotides are enumerated this way: $'A' = 0, 'C' = 1, 'G' = 2, 'T' = 3$.
-...text:Objects of type $DnaQ$ can be converted to various other types and vice versa. 
-...text:$DnaQ$ is typedef for $SimpleType<char,DnaQ_>$, while $DnaQ_$ is a helper
-specialization tag class.
-...text:Note that the default quality value is set to 60.
-..see:Metafunction.ValueSize
-..see:Spec.Dna5Q
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 #ifndef SEQAN_DEFAULT_QUALITY
 #define SEQAN_DEFAULT_QUALITY 40
@@ -341,23 +293,7 @@ void assignQualityValue(char & q, DnaQ c)
  * @see DnaQ
  */
 
-/**
-.Spec.Dna5Q
-..implements:Concept.AlphabetWithQualitiesConcept
-..cat:Alphabets
-..summary:Alphabet for DNA plus PHRED quality including 'N' character.
-..general:Class.SimpleType
-..signature:Dna5Q
-..remarks:
-...text:The @Metafunction.ValueSize@ of $Dna5Q$ is 5. 
-The nucleotides are enumerated this way: $'A' = 0, 'C' = 1, 'G' = 2, 'T' = 3$. 
-The 'N' character ("unkown nucleotide") is encoded by 4.
-...text:Objects of type $Dna5$ can be converted to various other types and vice versa. 
-...text:$Dna5Q$ is typedef for $SimpleType<char,Dna5Q_>$, while $Dna5Q_$ is a helper
-specialization tag class.
-...text:Note that the default quality value is set to 40.
-..see:Metafunction.ValueSize
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct Dna5Q_ {};
 typedef SimpleType <unsigned char, Dna5Q_> Dna5Q;
@@ -489,23 +425,7 @@ void assignQualityValue(char & q, Dna5Q c)
  * @see RnaIterator
  */
 
-/**
-.Spec.Rna:
-..cat:Alphabets
-..summary:Alphabet for RNA.
-..general:Class.SimpleType
-..signature:Rna
-..remarks:
-...text:The @Metafunction.ValueSize@ of $Rna$ is 4. 
-The nucleotides are enumerated this way: $'A' = 0, 'C' = 1, 'G' = 2, 'U' = 3$.
-...text:Objects of type $Rna$ can be converted to various other types and vice versa. 
-An object that has a value not in ${'A', 'C', 'G', 'U'}$ is converted to $'A'$.
-...text:$Rna$ is typedef for $SimpleType<char,Rna_>$, while $Rna_$ is a helper
-specialization tag class.
-..see:Metafunction.ValueSize
-..see:Spec.Rna5
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct Rna_ {};
 typedef SimpleType<unsigned char, Rna_> Rna;
@@ -547,23 +467,7 @@ struct BitsPerValue<Rna>
  * @see Rna
  */
 
-/**
-.Spec.Rna5:
-..cat:Alphabets
-..summary:Alphabet for RNA including 'N' character.
-..general:Class.SimpleType
-..signature:Rna5
-..remarks:
-...text:The @Metafunction.ValueSize@ of $Rna5$ is 5. 
-The nucleotides are enumerated this way: $'A' = 0, 'C' = 1, 'G' = 2, 'U' = 3$. 
-The 'N' character ("unkown nucleotide") is encoded by 4.
-...text:Objects of type $Rna5$ can be converted to various other types and vice versa. 
-An object that has a value not in ${'A', 'C', 'G', 'U'}$ is converted to $'N'$.
-...text:$Rna5$ is typedef for $SimpleType<char,Rna5_>$, while $Rna5_$ is a helper
-specialization tag class.
-..see:Metafunction.ValueSize
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct Rna5_ {};
 typedef SimpleType<unsigned char, Rna5_> Rna5;
@@ -612,23 +516,7 @@ unknownValueImpl(Rna5 *)
  * @see IupacIterator
  */
 
-/**
-.Spec.Iupac:
-..cat:Alphabets
-..summary:Iupac code for DNA.
-..general:Class.SimpleType
-..signature:Iupac
-..remarks:
-...text:The @Metafunction.ValueSize@ of $Iupac$ is 16. 
-The nucleotides are enumerated from 0 to 19 in this order: 
-'U'=0, 'T', 'A', 'W', 'C', 'Y', 'M', 'H', 'G', 'K', 'R', 'D', 'S', 'B', 'V', 'N'=15. 
-...text:Objects of type $Iupac$ can be converted to various other types and vice versa. 
-Unkown values are converted to $'N'$.
-...text:$Iupac$ is typedef for $SimpleType<char,Iupac_>$, while $Iupac_$ is a helper
-specialization tag class.
-..see:Metafunction.ValueSize
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct Iupac_ {};
 typedef SimpleType<unsigned char, Iupac_> Iupac;
@@ -681,25 +569,7 @@ unknownValueImpl(Iupac *)
  * @see Peptide
  */
 
-/**
-.Spec.AminoAcid:
-..cat:Alphabets
-..summary:Iupac code for amino acids.
-..general:Class.SimpleType
-..signature:AminoAcid
-..remarks:
-...text:The @Metafunction.ValueSize@ of $AminoAcid$ is 24. 
-...text:The amino acids are enumerated from 0 to 15 in this order: 
-...text:'A'=0, 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'=19.
-...text:The remaining 4 symbols are:
-...text: 'B'=20 (Aspartic Acid, Asparagine), 'Z'=21 (Glutamic Acid, Glutamine), 'X'=22 (unknown), '*'=23 (terminator)
-...text:Objects of type $AminoAcid$ can be converted to $char$ and vice versa. 
-Unkown values are converted to $'X'$.
-...text:$AminoAcid$ is typedef for $SimpleType<char,AminoAcid_>$, while $AminoAcid_$ is a helper
-specialization tag class.
-..see:Metafunction.ValueSize
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct AminoAcid_ {};
 typedef SimpleType<unsigned char, AminoAcid_> AminoAcid;
@@ -741,18 +611,7 @@ unknownValueImpl(AminoAcid *)
  * @tparam SIZE   The ValueSize of the alphabet.
  */
 
-/**
-.Spec.Finite:
-..cat:Alphabets
-..summary:A finite alphabet of a fixed size.
-..general:Class.SimpleType
-..signature:SimpleType<TValue, Finite<SIZE> >
-..param.TValue:The type that is use to store the values.
-...default:$char$
-..param.SIZE:The @Metafunction.ValueSize@ of the alphabet.
-..see:Metafunction.ValueSize
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <unsigned SIZE>
 struct Finite;

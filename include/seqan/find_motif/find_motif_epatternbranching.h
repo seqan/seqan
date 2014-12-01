@@ -45,28 +45,7 @@ computeH(TType const & t, TType const & l, TType const & d, bool const & is_exac
 // EPatternBranching
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Spec.EPatternBranching:
-..summary: Represents the ePatternBranching algorithm of Davila and Rajasekaran.
-..description.note:There are various known problems with the motif finding in SeqAn. We plan to fix this in an upcoming release.
-..general:Class.MotifFinder
-..cat:Motif Search
-..signature:MotifFinder<TValue, EPatternBranching, TRng>
-..param.TValue:The type of sequences to be analyzed.
-...type:Spec.Dna
-...type:Spec.AminoAcid
-..remarks:The @Spec.EPatternBranching@ algorithm is an extended version of the
-          well-known PatternBranching algorithm which was developed by Price et al. 
-		  It is a heuristic algorithm such as @Spec.Projection@ and uses a pattern-based
-		  approach. The algorithm searches in the space of possible motifs. The basic concept
-		  of @Spec.EPatternBranching@ remains the same as in the original PatternBranching algorithm
-		  Starting from each l-mer $x$ in the input sequences the algorithm iteratively searches
-		  around the vicinities of $x$ and finds the best neighbors by applying a specific function
-		  called bestNeighbors. At the end of each step, it selects those patterns from the set
-		  of best neighbors that fulfill a particular condition and that are therefore qualified
-		  for being a motif instance.
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 ///.Class.MotifFinder.param.TSpec.type:Spec.EPatternBranching
 

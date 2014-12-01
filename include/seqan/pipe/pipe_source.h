@@ -57,15 +57,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TInput The type of container or iterator this module reads from.
  */
 
-/**
-.Spec.Source:
-..cat:Pipelining
-..general:Class.Pipe
-..summary:Pipelining adaptor for arbitrary containers or iterators.
-..signature:Pipe<TInput, Source<> >
-..param.TInput:The type of container or iterator this module reads from.
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 
 	//////////////////////////////////////////////////////////////////////////////

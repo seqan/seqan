@@ -75,15 +75,7 @@ namespace seqan
  * @return TResult The converted value (<tt>TResult</tt>).
  */
 
-/**
-.Class.FunctorUpcase
-..cat:Modifier
-..summary:Functor that returns the upper case character to a given character.
-..signature:FunctorUpcase<TValue>
-..param.TValue:The input value type.
-..remarks:This Functor is a derivation of the STL unary function.
-..include:seqan/modifier.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename InType, typename Result = InType>
 struct FunctorUpcase : public std::unary_function<InType, Result> 
@@ -119,15 +111,7 @@ struct FunctorUpcase : public std::unary_function<InType, Result>
  * @return TResult The converted value (<tt>TResult</tt>).
  */
 
-/**
-.Class.FunctorLowcase
-..cat:Modifier
-..summary:Functor that returns the lower case character to a given character.
-..signature:FunctorLowcase<TValue>
-..param.TValue:The input value type.
-..remarks:This Functor is a derivation of the STL unary function.
-..include:seqan/modifier.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename InType, typename Result = InType>
 struct FunctorLowcase : public std::unary_function<InType, Result> 
@@ -163,16 +147,7 @@ struct FunctorLowcase : public std::unary_function<InType, Result>
  * @return TOutType The converted value (<tt>TOutType</tt>).
  */
 
-/**
-.Class.FunctorConvert
-..cat:Modifier
-..summary:Functor that converts a $TInValue$ type to a $TOutValue$ type character.
-..signature:FunctorConvert<TInValue, TOutValue>
-..param.TInValue:The input value type.
-..param.TOutValue:The output value type.
-..remarks:This Functor is a derivation of the STL unary function.
-..include:seqan/modifier.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename InType, typename OutType>
 struct FunctorConvert : public std::unary_function<InType,OutType> 
@@ -246,19 +221,7 @@ signed char const TranslateTableIupacToIupacComplement_<T>::VALUE[16] = {0, 8, 4
  * @return TValue The converted value (<tt>TValue</tt>).
  */
 
-/**
-.Class.FunctorComplement:
-..cat:Modifier
-..summary:Functor that returns the complement nucleotide to a given nucleotide.
-..signature:FunctorComplement<TValue>
-..param.TValue:The input value type.
-...type:Spec.Dna
-...type:Spec.Dna5
-...type:Spec.Rna
-...type:Spec.Rna5
-..remarks:This Functor is a derivation of the STL unary function.
-..include:seqan/modifier.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <>
 struct FunctorComplement<char> : public std::unary_function<Dna5,Dna5> 

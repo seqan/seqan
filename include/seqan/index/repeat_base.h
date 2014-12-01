@@ -41,31 +41,7 @@
 
 namespace seqan {
 
-/**
-.Class.Repeat
-..summary:Store information about a repeat.
-..cat:Index
-..signature:Repeat<TPos, TPeriod>
-..param.TPos:Type to use for storing positions.
-...metafunction:Metafunction.Value
-..param.TPeriod:Type to use for storing the repeat period.
-...default:1
-...metafunction:Metafunction.Size
-..include:seqan/index.h
-..see:Function.findRepeats
-
-.Memvar.Repeat#beginPosition
-..summary:The begin position of the repeat of type $TPos$.
-..class:Class.Repeat
-
-.Memvar.Repeat#endPosition
-..summary:The end position of the repeat of type $TPos$.
-..class:Class.Repeat
-
-.Memvar.Repeat#period
-..summary:The period of the repeat of type $TSize$.
-..class:Class.Repeat
- */
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class Repeat
  * @headerfile <seqan/index.h>
@@ -181,34 +157,7 @@ namespace seqan {
 		return val == 'X';
 	}
 */
-/**
-.Function.findRepeats
-..summary:Search for repeats in a text.
-..cat:Index
-..signature:findRepeats(repeatString, text, minRepeatLength[, maxPeriod])
-..param.repeatString:A @Class.String@ of @Class.Repeat@ objects.
-..param.text:The text to search repeats in.
-...type:Class.String
-...type:Class.StringSet
-..param.minRepeatLength:The minimum length each reported repeat must have.
-..param.maxPeriod:Optionally, the maximal period that reported repeats can have.
-...default:1
-..remarks:Subsequences of undefined values/$N$s will always be reported.
-..example.text:The following demonstrates finding repeats of period 1.
-..example.code:
-String<Repeat<unsigned, unsigned> > repeats;
-Dna5String text = "CGATAAAACTNN";
-// repeat 0            AAAA
-// repeat 1                  NN
-
-findRepeats(repeats, text, 3);
-// ==> length(repeats) == 2
-// ==> repeats[0] == {beginPosition:  4, endPosition:  8, period: 1}
-// ==> repeats[1] == {beginPosition: 11, endPosition: 13, period: 1}
-..see:Function.unknownValue
-..include:seqan/index.h
-..see:Class.Repeat
- */
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn findRepeats
  * @headerfile <seqan/index.h>

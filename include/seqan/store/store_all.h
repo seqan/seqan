@@ -400,305 +400,7 @@ struct FragmentStoreConfig
  * @brief A 3' untranslated region ("three_prime_UTR").
  */
 
-/**
-.Class.FragmentStore
-..cat:Fragment Store
-..summary:Multi container to store contigs, reads, multiple read alignments and genome annotations.
-..signature:FragmentStore<>
-..signature:FragmentStore<TSpec[, TConfig]>
-..param.TSpec:The specializing type.
-...default:$void$
-..param.TConfig:The configuration struct.
-...default:$FragmentStoreConfig<TSpec>$
-..description:
-The FragmentStore is a data structure specifically designed for read mapping,
-genome assembly or gene annotation. These tasks typically require lots of data structures that
-are related to each other like: reads, mate-pairs, reference genome; pairwise alignments; genome annotation.
-..description:
-The FragmentStore subsumes all these data structures in an easy to use interface.
-It represents a multiple alignment of millions of reads or mate-pairs against a reference genome consisting 
-of multiple contigs. Additionally, regions of the reference genome can be annotated with features like 'gene', 
-'mRNA', 'exon', 'intro' or custom features. The FragmentStore supports I/O functions to read/write a read
-alignment in @Tag.File Format.tag.Sam@ or @Tag.File Format.tag.Amos@ format and to read/write annotations in @Tag.File Format.tag.Gff@/@Tag.File Format.tag.Gtf@ format.
-..description:
-The FragmentStore can be compared with a database where each table (called "store") is implemented as a
-@Class.String@ member of the FragmentStore class. The rows of each table (implemented as structs) are 
-referred by their ids which are their positions in the string and not stored explicitly. 
-The only exception is the @Memvar.FragmentStore#alignedReadStore@ whose elements of type @Class.AlignedReadStoreElement@
-contain an id-member as they may be rearranged in arbitrary order, e.g. by increasing genomic positions or by readId. 
-Many stores have an associated name store to store element names. Each name store is a @Class.StringSet@ that stores the
-element name at the position of its id. All stores are present in the FragmentStore and empty if unused. The concrete types,
-e.g. the position types or read/contig alphabet, can be easily changed by defining a custom config struct which is a template
-parameter of the FragmentStore class.
-
-..example:Load read alignments and a reference genome and display the multiple alignment in a genomic range:
-...file:demos/store/store_example.cpp
-...text:The staircase alignment looks as follows:
-...output:
-ATTTAAGAAATTACAAAATATAGTTGAAAGCTCTAACAATAGACTAAACCAAGCAGAAGAAAGAGGTTCAGAACTTGAAGACAAGTCTCTTATGAATTAA
-ATTTAA  AATTACAAAATATAGTTGAAAGCTCTAACAATAGA   AACCAAGCAGAAGAAAGAGGTTCAGAACTTGAAGA  AGTCTCTTATGAATTAA
-ATTTA GAAATTACAAAATATAGTTGAAAGCTCTAACAATA ACTAAACCAAGCAGAAGAAAGAGGTTCAGAACTTG AGACAAGTCTCTTATGAATTAA
-attta GAAATTACAAAATATAGTTGAAAGCTCTAACAATAG    AACCAAGCAGAAGAAAGAGGCTCAGAACTTGAAGA  AGTCTCTTATGAATTAA
-ATTTAA   ATTACAAAATATAGTTGAAAGATCTAACAATAGAC    CCAAGCAGAAGAAAGAGGTTCAGAACTTGAAGACAA     TTATGAATTAA
-ATTTAAGAA TTACAAAATATAGTTGAAAGCTCTAACAATAGACT     AAGCAGAAGAAAGAGGTTCAGAACTTGAAGACAAG     TATGAATTAA
-ATTTAAGAAA  ACAAAATATAGTTGAAAGCTCTAACAATAGACTAA     GCAGAAGAAAGAGGTTCAGAACTTGAAGACAAGTC    ATGAATTAA
-ATTTAAGAAA  ACAAAATATAGTTGAAAGCTCTAACAATAGACTAA      CAGAAGAAAGAGGTTCAGAACTTGAAGACAAGTCT    TGAATTAA
-ATTTAAGAAA  ACAAAATATAGTTGAAAGCTCTAACAATAGACTAA      CAGAAGAAAGAGGTTCANANNNTGANGACAAGTCT    TGAATTAA
-ATTTAAGAAATT CAAAATATAGTTGAAAGCTCTAACAATAGACTAAA       GAAGAAAGAGGTTCAGAACTTGAAGACAAGTCTCT   GAATTAA
-ATTTAAGAAAT   AAAATATAGTTGAAAGCTCTAACAATAGACTAAAC       AAGAAAGAGGTTCAGAACTTGAAGACAAGTCTCGT  GAATTAA
-ATTTAAGAAAT   AAAATATAGTTGAAAGCTCTAACAATAGACTAAAC       AAGAAAGAGGTTCAGAACTTGAAGACAAGTCTCTT   AATTAA
-ATTTAAGAAAT    AAATATAGTTGAAAGCTCTAACAATAGACTAAACC        GAAAGAGGTTCAGAACTTGAAGACAAGTCTCTTATG
-ATTTAAGAAATT   AAATATAGTTGAAAGCTCTAACAATAGACTAAACC          AAGAGGTTCAGAACTTGAAGACAAGTCTCTTATGA
-ATTTAAGAAATT    AATATAGTTGAAAGCTCTAACAATAGACTAAACCAA        AAGAGGTTCAGAACTTGAAGACAAGTCTCTTATGA
-ATTTAAGAAATTACA  ATATAGTTGAAAGCTCTAACAATAGACTAAACCAA          GAGGTTCAGAACTTGAAGACAAGTCTCTTATGAAT
-ATTTAAGAAATTACAA   ATAGTTGAAAGCTCTAACAATAGACTAAACCAAGC        GAGGTTCAGAACTTGAAGACAAGTCTCTTATGAAT
-ATTTAAGAAATTACAAAATA AGTTGAAAGCTCTAACAATAGACTAAACCAAGCAG       AGGTTCAGAACTTGAAGACAAGTCTCTTATGAATT
-ATTTAAGAAATTACAAAATAT  TTGAAAGCTCTAACAATAGACTAAACCAAGCAGAA      GGTTCAGAACTTGAAGACAAGTCTCTTATGAATTA
-ATTTAAGAAATTACAAAATATA   GAAAGCTCTAACAATAGACTAAACCAAGCAGAAGAAAGAG TTCAGAACTTGAAGACAAGTCTCTTATGAATTAA
-ATTTAAGAAATTACAAAATATAGTTGAA    CTAACAATAGACTAAACCAAGCAGAAGAAAGAGTT      CTTGAAGACAAGTCTCTTATGAATTAA
-ATTTAAGAAATTACAAAATATAGTTGAAA   CTAACAATAGACTAAACCAAGCAGAAGAAAGAGGTT      TTGAAGACAAGTCTCTTATGAATTAA
-ATTTAAGAAATTACAAAATATAGTTGAAAG   TAACAATAGACTAAACCAAGCAGAAGAAAGAGGTT       TGAAGACAAGTCTCTTATGAATTAA
-ATTTAAGAAATTACAAAATATAGTTGAAAGCTCT ACAATAGACTAAACCAAGCAGAAGAAAGAGGTTCA     TGAAGACAAGTCTCTTATGAATTAA
-  TTAAGAAATTACAAAATATAGTTGAAAGCTCTAAC    GACTAAACCAAGCAGAAGAAAGAGGTTCAGAACTT AAGACAAGTCTCTTATGAATTAA
-   TAAGAAATTACAAAATATAGTTGAAAGCTCTAACAATAGA                     GGTTCAGAACTTGAAGACAAGTCTCTTATGAATTA
-          TTACAAAATATAGTTGAAAGCTCTAACAATAGACT                   GGTTCAGAACTTGAAGACAAGTCTCTTATGAATTA
-                   ATAGTTGAAAGCTCTAACAATAGACTAAACCAAGC           GTTCAGAACTTGAAGACAAGTCTCTTATGAATTAA
-                          AAAGCTCTAACAATAGACTAAACCAAGCAGAAGAA      TCAGAACTTGAAGACAAGTCTCTTATGAATTAA
-                          AAAGCTCTAACAATAGACTAAACCAAGCAGAAGAA               NAAGACAAGTCTCTTATGAATTAA
-                           AAGCTCTAACAATAGACTAAACCAAGCAGAAGAAA              GAAGACAAGTCTCTTATGAATTAA
-                                 TAACAATAGACTAAACCAAGCAGAAGAAAGAGGTT               AGTCTCTTATGAATTAA
-                                 TAACAATAGACTAAACCAAGCAGAAGAAAGAGGTT                GTCTCTTATGAATTAA
-                                  AACAATAGACTAAACCAAGCAGAAGAAAGAGGTTC
-                                  AACAATAGACTAAACCAAGCAGAAGAAAGAGGTTC
-                                     AATAGACTAAACCAAGCAGAAGAAAGAGGTTCAGA
-                                     AATAGACTAAACCAAGCAGAAGAAAGAGGTTCAGA
-
-..example:
-...text:The following figures visualize the relations between the different stores:
-...image:FragmentStore|Stores that are involved in the representation of a multiple read alignment.
-...image:AnnotationStore|Stores that are involved in the representation of a genome alignment.
-..include:seqan/store.h
-
-
-.Typedef.FragmentStore#TReadStore
-..summary:Type of the @Memvar.FragmentStore#readStore@ member.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Typedef.FragmentStore#TReadSeqStore
-..summary:Type of the @Memvar.FragmentStore#readSeqStore@ member.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Typedef.FragmentStore#TMatePairStore
-..summary:Type of the @Memvar.FragmentStore#matePairStore@ member.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Typedef.FragmentStore#TLibraryStore
-..summary:Type of the @Memvar.FragmentStore#libraryStore@ member.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Typedef.FragmentStore#TContigFileStore
-..summary:Type of the @Memvar.FragmentStore#contigFileStore@ member.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Typedef.FragmentStore#TContigStore
-..summary:Type of the @Memvar.FragmentStore#contigStore@ member.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Typedef.FragmentStore#TAlignedReadStore
-..summary:Type of the @Memvar.FragmentStore#alignedReadStore@ member.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Typedef.FragmentStore#TAnnotationStore
-..summary:Type of the @Memvar.FragmentStore#annotationStore@ member.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Typedef.FragmentStore#TAlignQualityStore
-..summary:Type of the @Memvar.FragmentStore#alignQualityStore@ member.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Typedef.FragmentStore#TAlignedReadTagStore
-..summary:Type of the @Memvar.FragmentStore#alignedReadTagStore@ member.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Typedef.FragmentStore#TReadNameStore
-..summary:Type of the @Memvar.FragmentStore#readNameStore@ member.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Typedef.FragmentStore#TMatePairNameStore
-..summary:Type of the @Memvar.FragmentStore#matePairNameStore@ member.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Typedef.FragmentStore#TLibraryNameStore
-..summary:Type of the @Memvar.FragmentStore#libraryNameStore@ member.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Typedef.FragmentStore#TContigNameStore
-..summary:Type of the @Memvar.FragmentStore#contigNameStore@ member.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Typedef.FragmentStore#TAnnotationNameStore
-..summary:Type of the @Memvar.FragmentStore#annotationNameStore@ member.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Typedef.FragmentStore#TAnnotationTypeStore
-..summary:Type of the @Memvar.FragmentStore#annotationTypeStore@ member.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Typedef.FragmentStore#TAnnotationKeyStore
-..summary:Type of the @Memvar.FragmentStore#annotationKeyStore@ member.
-..class:Class.FragmentStore
-
-.Memvar.FragmentStore#readStore
-..summary:@Class.String@ that maps from $readId$ to $<matePairId>$.
-..remarks:Value type is @Class.ReadStoreElement@.
-..type:Typedef.FragmentStore#TReadStore
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Memvar.FragmentStore#readSeqStore
-..summary:@Class.StringSet@ that maps from $readId$ to $readSeq$.
-..type:Typedef.FragmentStore#TReadSeqStore
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Memvar.FragmentStore#matePairStore
-..summary:@Class.String@ that maps from $matePairId$ to $<readId[2], libId>$.
-..type:Typedef.FragmentStore#TMatePairStore
-..remarks:Value type is @Class.MatePairStoreElement@.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Memvar.FragmentStore#libraryStore
-..summary:@Class.String@ that maps from $libId$ to $<mean, std>$.
-..type:Typedef.FragmentStore#TLibraryStore
-..remarks:Value type is @Class.LibraryStoreElement@.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Memvar.FragmentStore#contigFileStore
-..summary:@Class.String@ that maps from $contigFileId$ to $<fileName, firstContigId>$.
-..type:Typedef.FragmentStore#TContigFileStore
-..remarks:Value type is @Class.ContigFile@.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Memvar.FragmentStore#contigStore
-..summary:@Class.String@ that maps from $contigId$ to $<contigSeq, contigGaps, contigFileId>$.
-..type:Typedef.FragmentStore#TContigStore
-..remarks:Value type is @Class.ContigStoreElement@.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Memvar.FragmentStore#alignedReadStore
-..summary:@Class.String@ that stores $<alignId, readId, contigId, pairMatchId, beginPos, endPos, gaps>$.
-..remarks:
-You can sort the $alignedReadStore$ using @Function.sortAlignedReads@.
-After sorting, you can use the functions @Function.lowerBoundAlignedReads@ and @Function.upperBoundAlignedReads@ to perform a binary search, e.g. for accessing only a subrange.
-..type:Typedef.FragmentStore#TAlignedReadStore
-..remarks:Value type is @Class.AlignedReadStoreElement@.
-..class:Class.FragmentStore
-..see:Function.lowerBoundAlignedReads
-..see:Function.upperBoundAlignedReads
-..see:Function.sortAlignedReads
-..include:seqan/store.h
-
-.Memvar.FragmentStore#annotationStore
-..summary:@Class.String@ that maps from $annoId$ to $<contigId, typeId, beginPos, endPos, parentId, lastChildId, nextSiblingId, values>$.
-..type:Typedef.FragmentStore#TAnnotationStore
-..remarks:Value type is @Class.AnnotationStoreElement@.
-..remarks:Instead of accesing this store directly, consider to use a high-level interface like the @Spec.AnnotationTree Iterator@.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Memvar.FragmentStore#alignQualityStore
-..summary:@Class.String@ that maps from $alignId$ to $<pairScore, score, errors>$.
-..type:Typedef.FragmentStore#TAlignQualityStore
-..remarks:Value type is @Class.AlignQualityStoreElement@.
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Memvar.FragmentStore#alignedReadTagStore
-..summary:@Class.StringSet@ that maps from $alignId$ to $alignTag$.
-..type:Typedef.FragmentStore#TAlignedReadTagStore
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Memvar.FragmentStore#readNameStore
-..summary:@Class.StringSet@ that maps from $readId$ to $readName$.
-..type:Typedef.FragmentStore#TReadNameStore
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Memvar.FragmentStore#matePairNameStore
-..summary:@Class.StringSet@ that maps from $contigId$ to $contigName$.
-..type:Typedef.FragmentStore#TMatePairNameStore
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Memvar.FragmentStore#libraryNameStore
-..summary:@Class.StringSet@ that maps from $libId$ to $libName$.
-..type:Typedef.FragmentStore#TLibraryNameStore
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Memvar.FragmentStore#contigNameStore
-..summary:@Class.StringSet@ that maps from $contigId$ to $contigName$.
-..type:Typedef.FragmentStore#TContigNameStore
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Memvar.FragmentStore#annotationNameStore
-..summary:@Class.StringSet@ that maps from $annoId$ to $annoName$.
-..type:Typedef.FragmentStore#TAnnotationNameStore
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Memvar.FragmentStore#annotationTypeStore
-..summary:@Class.StringSet@ that maps from $typeId$ to the type name of an annotation, e.g. "gene" or "exon". $typeId$ is a member of the @Class.AnnotationStoreElement@.
-..type:Typedef.FragmentStore#TAnnotationTypeStore
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-..remarks:There are @Enum.Predefined Annotation Types|predefined type ids@ for commonly used types, e.g. $ANNO_GENE$ or $ANNO_EXON$,
-which can be used to set the @Memvar.AnnotationStoreElement#typeId@ directly as a fast alternative to @Function.getType@ and @Function.setType@.
-.Memvar.FragmentStore#annotationKeyStore
-..summary:@Class.StringSet@ that maps from $keyId$ to the name of a key. The $keyId$ is used to address @Memvar.AnnotationStoreElement#values@ of an annotation.
-..type:Typedef.FragmentStore#TAnnotationKeyStore
-..class:Class.FragmentStore
-..include:seqan/store.h
-
-.Enum.Predefined Annotation Types
-..class:Class.FragmentStore
-..cat:Fragment Store
-..summary:Predefined annotation type ids.
-..remarks:The @Class.FragmentStore@ predefines some commonly used @Memvar.AnnotationStoreElement#typeId@ values.
-They can be used to compare or set the @Memvar.AnnotationStoreElement#typeId@ directly as a fast alternative to @Function.getType@ and @Function.setType@.
-..value.ANNO_ROOT:The root node ("<root>").
-..value.ANNO_GENE:A gene ("gene").
-..value.ANNO_MRNA:An mRNA sequence, aka transcript ("mRNA").
-..value.ANNO_CDS:A coding region ("CDS").
-..value.ANNO_EXON:An exon ("exon").
-..value.ANNO_FIVE_PRIME_UTR:A 5' untranslated region ("five_prime_UTR").
-..value.ANNO_INTRON:An intron ("intron").
-..value.ANNO_THREE_PRIME_UTR:A 3' untranslated region ("three_prime_UTR").
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 
 template <typename TSpec = void, typename TConfig = FragmentStoreConfig<TSpec> >
@@ -1282,17 +984,7 @@ annotationGetValueIdByKey (
  * This function clears the @link FragmentStore::contigStore @endlink and @link FragmentStore::contigNameStore @endlink.
  */
 
-/**
-.Function.clearContigs
-..class:Class.FragmentStore
-..summary:Removes all contigs from a fragment store.
-..cat:Fragment Store
-..signature:clearContigs(store)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..remarks:This function clears the @Memvar.FragmentStore#contigStore@ and @Memvar.FragmentStore#contigNameStore@.
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig>
 inline void
@@ -1320,17 +1012,7 @@ clearContigs(FragmentStore<TSpec, TConfig> &me)
  * FragmentStore::readNameStore @endlink.
  */
 
-/**
-.Function.clearReads
-..class:Class.FragmentStore
-..summary:Removes all reads from a fragment store.
-..cat:Fragment Store
-..signature:clearReads(store)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..remarks:This function clears the @Memvar.FragmentStore#readStore@, @Memvar.FragmentStore#readSeqStore@ and @Memvar.FragmentStore#readNameStore@.
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig>
 inline void
@@ -1365,26 +1047,7 @@ clearReads(FragmentStore<TSpec, TConfig> &me)
  */
  
 
-/**
-.Function.appendRead:
-..class:Class.FragmentStore
-..summary:Appends a read to a fragment store.
-..cat:Fragment Store
-..signature:appendRead(store, read[, matePairId])
-..signature:appendRead(store, read, name[, matePairId])
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..param.read:The read sequence.
-..param.name:The read name.
-...type:Shortcut.CharString
-..param.matePairId:Id of mate-pair this read is part of.
-...default:$INVALID_ID$, which corresponds to an unmated read.
-..returns:The $readId$ of the newly appended read.
-..remarks:This function appends a single read to the @Memvar.FragmentStore#readStore@ and @Memvar.FragmentStore#readSeqStore@.
-If name is given, it is appended to the @Memvar.FragmentStore#readNameStore@.
-..see:Function.getRead
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig, typename TRead, typename TId>
 inline typename Size<typename FragmentStore<TSpec, TConfig>::TReadStore>::Type
@@ -1462,17 +1125,7 @@ appendRead(
  *               FragmentStore::readStore @endlink.
  */
 
-/**
-.Function.getRead
-..summary:Returns the read with the given $readId$.
-..cat:Fragment Store
-..signature:getRead(store, readId)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..param.readId:The read id.
-..returns:The sequence of the read with id $readId$ from the @Memvar.FragmentStore#readSeqStore@.
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig, typename TId>
 inline typename Value<typename FragmentStore<TSpec, TConfig>::TReadSeqStore>::Type
@@ -1510,27 +1163,7 @@ getRead(
  * @see FragmentStore#appendRead
  */
 
-/**
-.Function.appendAlignedRead:
-..class:Class.FragmentStore
-..summary:Appends an aligned read entry to a fragment store.
-..cat:Fragment Store
-..signature:appendAlignedRead(store, readId, contigId, beginPos, endPos[, pairMatchId])
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..param.readId:The id of the read.
-..param.contigId:The id of the contig.
-..param.beginPos:The begin position of the alignment.
-..param.endPos:The end position of the alignment.
-..param.pairMatchId:Id of alignedRead pair.
-...default:$INVALID_ID$, which corresponds to an unmated read.
-..returns:The $alignedReadId$ of the aligned read.
-..remarks:This function appends a single aligned read to the @Memvar.FragmentStore#alignedReadStore@.
-Note that this really only adds a match.
-To generate a global alignment out of all of these matches, use @Function.convertMatchesToGlobalAlignment@.
-..see:Function.appendRead
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TSpec, typename TConfig, typename TReadId, typename TContigId, typename TPos, typename TPairMatchId>
 inline typename Size<typename FragmentStore<TSpec, TConfig>::TAlignedReadStore>::Type
 appendAlignedRead(
@@ -1591,26 +1224,7 @@ appendAlignedRead(
  * they are appended to @link FragmentStore::readNameStore @endlink.
  */
 
-/**
-.Function.appendMatePair
-..class:Class.FragmentStore
-..summary:Appends two paired-end reads to a fragment store.
-..cat:Fragment Store
-..signature:appendMatePair(store, readSeq1, readSeq2)
-..signature:appendMatePair(store, readSeq1, readSeq2, name1, name2)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..param.readSeq1:The read sequence of the first read.
-..param.readSeq2:The read sequence of the second read.
-..param.name1:The read name of the first read.
-..param.name2:The read name of the second read.
-..returns:The $matePairId$ of the newly appended mate-pair.
-..remarks:This function appends two reads to the @Memvar.FragmentStore#readStore@ and @Memvar.FragmentStore#readSeqStore@ 
-and a mate-pair entry between both of them to the @Memvar.FragmentStore#matePairStore@.
-If names are given, they are appended to the @Memvar.FragmentStore#readNameStore@.
-..see:Function.appendRead
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig, typename TRead>
 inline typename Size<typename FragmentStore<TSpec, TConfig>::TMatePairStore>::Type
@@ -1689,21 +1303,7 @@ appendMatePair(
  * by previously setting their id to INVALID_ID.
  */
 
-/**
-.Function.compactAlignedReads
-..class:Class.FragmentStore
-..summary:Removes invalid aligned reads and rename $alignId$ sequentially beginning with 0.
-..cat:Fragment Store
-..signature:compactAlignedReads(store)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..returns:The new size of the @Memvar.FragmentStore#alignedReadStore@.
-..remarks:This function removes all entries from @Memvar.FragmentStore#alignedReadStore@ whose $alignId$ equals to $INVALID_ID$ as well as orphan entries
-in @Memvar.FragmentStore#alignQualityStore@.
-Afterwards the alignIds are renamed sequentially beginning with 0.
-This function can be used to remove alignments which are selected by previously setting their id to $INVALID_ID$.
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // 1. remove aligned reads with invalid ids
 // 2. rename ids beginning with 0
@@ -1765,21 +1365,7 @@ compactAlignedReads(FragmentStore<TSpec, TConfig> &me)
  * orientation or a wrong insert size.
  */
 
-/**
-.Function.compactPairMatchIds
-..class:Class.FragmentStore
-..summary:Renames $pairMatchId$ sequentially beginning with 0.
-..cat:Fragment Store
-..signature:compactPairMatchIds(store)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..returns:The number of pair matches.
-..remarks:This function renames the $pairMatchId$ in the @Memvar.FragmentStore#alignedReadStore@ sequentially beginning with 0.
-Two read alignments can be identified to be a pair match if they have the same $pairMatchId$.
-Please note that paired reads not necessarily have to mapped as a pair match, 
-e.g. if they are on different contigs or have the same orientation or a wrong insert size.
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // rename pair match ids beginning with 0, returns the number of pair matches
 template <typename TSpec, typename TConfig>
@@ -1831,19 +1417,7 @@ compactPairMatchIds(FragmentStore<TSpec, TConfig> &me)
  * pair match.  The insert size of a pair match is the outer distance between the two matches.
  */
 
-/**
-.Function.calculateInsertSizes
-..summary:Calculates a string with insert sizes for each pair match.
-..cat:Fragment Store
-..signature:compactPairMatchIds(insertSizes, store)
-..param.insertSizes:The resulting string of insert sizes.
-...remarks:This string is accordingly resized and can be addressed by the $pairMatchId$.
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..remarks:This function calls @Function.compactPairMatchIds@ first and calculate the insert size for every pair match.
-The insert size of a pair match is the outer distance between the two matches.
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TLibSizeString, typename TSpec, typename TConfig>
 inline void
@@ -1892,17 +1466,7 @@ calculateInsertSizes(TLibSizeString &insertSizes, FragmentStore<TSpec, TConfig> 
  *             read is not paired.
  */
 
-/**
-.Function.getMateNo
-..summary:Returns the mate number of read for a given $readId$.
-..cat:Fragment Store
-..signature:getMateNo(store, readId)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..param.readId:The read id.
-..returns:The mate number (0..first mate, 1..second mate) of the read in its mate-pair or -1 if the read is not paired.
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig, typename TId>
 inline int
@@ -1941,18 +1505,7 @@ getMateNo(FragmentStore<TSpec, TConfig> const & me, TId readId)
  * Entries of reads without a mate contain <tt>INVALID_ID</tt>.
  */
 
-/**
-.Function.calculateMateIndices
-..summary:Calculates a string that maps the $readId$ of a read to the $readId$ of its mate.
-..cat:Fragment Store
-..signature:calculateMateIndices(mateIndices, store)
-..param.mateIndices:The resulting string of mate indices.
-...remarks:This string is accordingly resized and can be addressed by the $readId$.
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..remarks:Entries of reads without a mate contain $INVALID_ID$.
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // calculate index of the other mate for each pair match
 template <typename TMateIndexString, typename TSpec, typename TConfig>
@@ -1997,19 +1550,7 @@ calculateMateIndices(TMateIndexString & mateIndices, FragmentStore<TSpec, TConfi
  * alignment in the multiple sequence alignment and contigId the id of the reference contig.
  */
 
-/**
-.Class.AlignedReadLayout
-..summary:Stores a 2-dimensional visible layout of a multi-read alignment.
-..cat:Fragment Store
-..signature:AlignedReadLayout
-.Memvar.AlignedReadLayout#contigRows
-..class:Class.AlignedReadLayout
-..summary:2-D multi-read layout
-..remarks:Stores for a contig and a row the ids of aligned reads from left to right.
-$contigRows[contigId][row]$ stores the $alignId$ of all aligned reads from left to right assigned to the same row
-$row$ is the row of the alignment in the multiple sequence alignment and $contigId$ the id of the reference contig.
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 	
 struct AlignedReadLayout
 {
@@ -2035,20 +1576,7 @@ struct AlignedReadLayout
  * @see AlignedReadLayout#printAlignment
  */
 
-/**
-.Function.layoutAlignment
-..class:Class.AlignedReadLayout
-..summary:Calculates a visible layout of aligned reads.
-..cat:Fragment Store
-..signature:layoutAlignment(layout, store)
-..param.layout:The resulting layout structure.
-...type:Class.AlignedReadLayout
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..remarks:For each contig this function layouts all reads in rows from up to down reusing empty row spaces.
-..see:Function.printAlignment
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig>
 void layoutAlignment(AlignedReadLayout &layout, FragmentStore<TSpec, TConfig> &store)
@@ -2164,27 +1692,7 @@ inline void _printContig(
  * spaces.
  */
 
-/**
-.Function.printAlignment
-..class:Class.AlignedReadLayout
-..summary:Prints a window of the visible layout of reads into a outstream.
-..cat:Fragment Store
-..signature:printAlignment(stream, layout, store, contigId, posBegin, posEnd, lineBegin, lineEnd)
-..param.stream:A C++ outstream, e.g. std::cout.
-..param.layout:A layout structure created by a previous call of @Function.layoutAlignment@.
-...type:Class.AlignedReadLayout
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..param.contigId:The $contigId$ of the affected contig.
-..param.posBegin:Window begin position in gap-space.
-..param.posEnd:Window end position in gap-space.
-..param.lineBegin:Begin line of the window.
-..param.lineEnd:End line of the window.
-..remarks:The window coordinates ($beginPos$, ...) may be chosen bigger than the layout.
-The empty space is then filled with whitespaces.
-..see:Function.layoutAlignment
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TStream, typename TSpec, typename TConfig, typename TContigId, typename TPos, typename TNum>
 void printAlignment(
@@ -2332,21 +1840,7 @@ void printAlignment(
  * filled with the edit distance scores.
  */
 
-/**
-.Function.convertMatchesToGlobalAlignment
-..summary:Converts all matches to a multiple global alignment in gap-space.
-..cat:Fragment Store
-..signature:convertMatchesToGlobalAlignment(store, score)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..param.score:A score object used by @Function.globalAlignment@ in this function.
-..remarks:Before calling this function all $gaps$ structures in @Memvar.FragmentStore#alignedReadStore@ and @Memvar.FragmentStore#contigStore@ must be empty, i.e. there are no gaps in the alignments.
-This function iterates over entries in the @Memvar.FragmentStore#alignedReadStore@ and semi-global aligns each read to its contig segments given by begin and end position.
-Gaps introduced by these pair-wise alignments are then inserted to the affected contig and reads correspondingly.
-..remarks:The invariant that positions in the @Memvar.FragmentStore#alignedReadStore@ are in gap-space holds before (there were no gaps in alignments) and after calling this functions.
-..remarks:If the @Memvar.FragmentStore#alignQualityStore@ of the @Class.FragmentStore@ is empty when $convertMatchesToGlobalAlignment()$ is called then the @Memvar.FragmentStore#alignQualityStore@ is filled with the edit distance scores.
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig, typename TScore, typename TShrinkMatches>
 void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScore const & score, TShrinkMatches const &)
@@ -2689,19 +2183,7 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
  * After calling this functions all positions in the @link FragmentStore::alignedReadStore @endlink are in gap-space.
  */
 
-/**
-.Function.convertPairWiseToGlobalAlignment
-..summary:Converts pair-wise alignments to a multiple global alignment.
-..cat:Fragment Store
-..signature:convertPairWiseToGlobalAlignment(store, pairwiseContigGaps)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..param.pairwiseContigGaps:A string of anchored contig gaps for every pairwise alignment.
-..remarks:Before calling this function the $gaps$ structures in the @Memvar.FragmentStore#contigStore@ must be empty, i.e. there are no gaps in the contig.
-The pairwise alignment gaps of the reads are stored in the $gaps$ structure in the @Memvar.FragmentStore#alignedReadStore@, whereas the pairwise alignment gaps of the contig are stored in the $pairwiseContigGaps$ string.
-..remarks:After calling this functions all positions in the @Memvar.FragmentStore#alignedReadStore@ are in gap-space.
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 
 template <typename TFragmentStore>

@@ -126,58 +126,7 @@ struct EditEnvironment;
  *       <tt>DISTANCE &gt; 2</tt>.
  */
 
-/**
-.Class.StringEnumerator
-..cat:Miscellaneous
-..summary:Class to enumerate all strings within a given edit/Hamming distance.
-..signature:StringEnumerator<TString, TSpec>
-..param.TString:Type of the string to enumerate the environment of.
-..param.TSpec:Specialization.
-..example.text:
-..include:seqan/misc/edit_environment.h
-
-.Memfunc.StringEnumerator#StringEnumerator
-..class:Class.StringEnumerator
-..summary:Constructor
-..signature:StringEnumerator(string[, minDist])
-..param.string:The string to use as the center.
-...type:nolink:$TString$
-..param.minDist:The smallest distance to generate strings with.
-...type:nolink:$unsigned$
-...default:0
-
-.Memvar.StringEnumerator#trim
-..class:Class.StringEnumerator
-..summary:Indicate whether to ignore substitutions in first or last character of string in Levenshtein mode (optimization for approximate search).
-..signature:trim
-..remarks:
-This is useful when searching for such enumerated strings in large texts.
-Patterns with substitutions in the first base would also be found
-..default:$true$
-
-.Spec.Hamming StringEnumerator
-..general:Class.StringEnumerator
-..cat:Miscellaneous
-..summary:Enumerate all strings within a given edit distance of a "center string".
-..signature:StringEnumerator<TString, EditEnvironment<HammingDistance, DISTANCE> >
-..param.TString:Type of the string to enumerate the environment of.
-..param.DISTANCE:The maximal distance to generate strings with.
-...type:nolink:$unsigned$
-..remarks:See @Class.StringEnumerator@ for examples.
-..include:seqan/misc/edit_environment.h
-
-.Spec.Levenshtein StringEnumerator
-..general:Class.StringEnumerator
-..cat:Miscellaneous
-..summary:Enumerate all strings within a given edit distance of a "center string".
-..signature:StringEnumerator<TString, EditEnvironment<LevenshteinDistance, DISTANCE> >
-..param.TString:Type of the string to enumerate the environment of.
-..param.DISTANCE:The maximal distance to generate strings with.
-...type:nolink:$unsigned$
-..remarks:See @Class.StringEnumerator@ for examples.
-..remarks:Note that the @Function.length@ function does not work for $DISTANCE > 2$.
-..include:seqan/misc/edit_environment.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TObject, typename TSpec>
 class StringEnumerator

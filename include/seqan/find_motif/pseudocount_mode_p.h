@@ -40,19 +40,7 @@ namespace SEQAN_NAMESPACE_MAIN
 // PMode
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Spec.PMode:
-..summary: Represents the P computation scheme for handling "zero" probabilities.
-..general:Class.Pseudocount
-..cat:Motif Search
-..signature:Pseudocount<TValue, PMode>
-..param.TValue:The type of sequence which is considered.
-...type:Spec.Dna
-...type:Spec.AminoAcid
-..remarks:The P mode computation scheme distributes the pseudocounts among the various residue
-          according to their background probabilities.
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 ///.Class.Pseudocount.param.TSpec.type:Spec.PMode
 

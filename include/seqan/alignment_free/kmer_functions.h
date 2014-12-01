@@ -124,65 +124,7 @@ struct UnmaskedAlphabet_<const TAlphabet>
  * @see MarkovModel
  */ 
 
-/**
-.Function.countKmers:
-..cat:Alignment Free
-..summary:Counts kmers in a sequence. Optionally, a background model is returned.
-..signature:countKmers(kmerCounts, sequence, k)
-..signature:countKmers(kmerCounts, backgroundFrequencies, sequence, k)
-..signature:countKmers(kmerCounts, bgModel, sequence, k)
-..param.kmerCounts:String<unsigned> with kmer counts for every k-mer
-...type:Class.String
-..param.backgroundFrequencies:String of background frequencies representing the model
-...type:nolink:double
-..param.bgModel:Markov model
-...type:Class.MarkovModel
-..param.sequence:String (sequence) where k-mers are counted
-...type:Class.String
-..returns:String<unsigned> with kmer counts for every k-mer
-..see:Function.alignmentFreeComparison
-..see:Function.calculateProbability
-..see:Function.calculateVariance
-..see:Function.calculateCovariance
-..see:Function.stringToStringSet
-..see:Class.MarkovModel
-..remarks:
-...text:k-mers overlapping masked letters are not counted in case of Dna5Strings. A Bernoulli or Markov Model can be choosen as a background model.
-..include:seqan/alignment_free.h
-..example.text: Calculate the alignment free sequence similarity o two masked DNA sequences.
-..example.code:
-using namespace seqan;
-// Masked sequence, we do not want to count words overlapping 'N'
-Dna5String sequenceDna5 =
-    "TAGGTTTTCCGAAAAGGTAGCAACTTTACGTGATCAAACCTCTGACGGGGTTTTCCCCGTCGAAATTGGGTG"
-    "TTTCTTGTCTTGTTCTCACTTGGGGCATCTCCGTCAAGCCAAGAAAGTGCTCCCTGGATTCTGTTGCTAACG"
-    "AGTCTCCTCTGCATTCCTGCTTGACTGATTGGGCGGACGGGGTGTCCACCTGACGCTGAGTATCGCCGTCAC"
-    "GGTGCCACATGTCTTATCTATTCAGGGATCAGAATTTATTCAGGAAATCAGGAGATGCTACACTTGGGTTAT"
-    "CGAAGCTCCTTCCAAGGCGTAGCAAGGGCGACTGAGCGCGTAAGCTCTAGATCTCCTCGTGTTGCAACTACA"
-    "CGCGCGGGTCACTCGAAACACATAGTATGAACTTAACGACTGCTCGTACTGAACAATGCTGAGGCAGAAGAT"
-    "CGCAGACCAGGCATCCCACTGCTTGAAAAAACTATNNNNCTACCCGCCTTTTTATTATCTCATCAGATCAAG";
-
-String<unsigned> kmerCounts;
-unsigned k = 2;  // Count all 2-mers
-countKmers(kmerCounts, sequenceDna5, k);
-
-for(unsigned i = 0; i<16; ++i)       // Print the 2-mer counts
-    std::cout<<kmerCounts[i]<<"\n";  // 34 times AA; 30 times AC; 28 times AG; ...
-
-
-String<double> nucleotideFrequencies;  // Defines a Bernoulli model for DNA sequences.
-// Count all 2-mers and save the nucleotide frequencies
-countKmers(kmerCounts, nucleotideFrequencies, sequenceDna5, k);
-
-for(unsigned i = 0; i<4; ++i)          // Print the nucleotide frequencies
-    std::cout << nucleotideFrequencies[i] << "\n";
-// => p(A) = 0.238; p(C) = 0.254; p(G) = 0.238; p(T) = 0.27;
-
-MarkovModel<Dna, double>  backgroundModel(1);  // Markov model of order 1
-// Count all 2-mers and return a Markov model
-countKmers(kmerCounts, backgroundModel, sequenceDna5, k);
-std::cout<<backgroundModel.transition;  // Print the transition matrix of the markov model
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*
  * Function to count kmers, Ns are not considered
@@ -426,34 +368,7 @@ void countKmers(String<unsigned> & kmerCounts, MarkovModel<TAlphabetBG, TValue> 
  * @see countKmers
  */
 
-/**
-.Function.calculateProbability:
-..cat:Alignment Free
-..summary:Calculates the probability of a sequence given a Bernoulli model (String of background frequencies)
-..signature:calculateProbability(probability, sequence, backgroundFrequencies)
-..param.probability:Probability of the sequence given the model
-...type:nolink:double
-..param.sequence:Usually a DNA sequence
-...type:Class.String
-..param.backgroundFrequencies:String of background frequencies representing the model
-...type:nolink:double
-..returns:TValue probability; The probability to observe the sequence given the model
-..see:Function.calculateVariance
-..see:Function.alignmentFreeComparison
-..include:seqan/alignment_free.h
-..example.text: Calculate the probability for the word CCCAAGTTT with p(A)=p(T)=0.3 and p(C)=p(G)=0.2.
-..example.code:
-using namespace seqan;
-double p = 0.0;
-DnaString word = "CCCAAGTTT";
-String<double> model;
-resize(model, 4);
-model[0] = 0.3;  // p(A)
-model[1] = 0.2;  // p(C)
-model[2] = 0.2;  // p(G)
-model[3] = 0.3;  // p(T)
-calculateProbability(p, word, model);  // p = 3.888e-06
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TString, typename TStringBG>
 void calculateProbability(TValue & probability, TString const & sequence, TStringBG const & backgroundFrequencies)
@@ -536,60 +451,7 @@ void calculateProbability(TValue & probability, TString const & sequence, TStrin
  * @see calculateOverlapIndicator
  */
 
-/**
-.Function.calculateVariance:
-..cat:Alignment Free
-..summary:Calculates the variance for the number of word occurrences of a word in a sequence of length n given a background model.
-..signature:calculateVariance(variance, word, backgroundFrequencies, n)
-..signature:calculateVariance(variance, word, bgModel, n)
-..param.variance:Variance of the number of occurrences of the word in a sequence of length n given the model
-...type:nolink:double
-..param.word:Usually a DNA sequence
-...type:Class.String
-..param.backgroundFrequencies:String of background frequencies representing the model
-...type:nolink:double
-..param.bgModel:Markov model
-...type:Class.MarkovModel
-..param.n:Length of the sequence where the occurrences of word are counted
-...type:nolink:integer
-..returns:TValue variance; Variance of the number of occurrences of the word in a sequence of length n given the model
-..see:Function.calculateProbability
-..see:Function.calculateCovariance
-..see:Class.MarkovModel
-..see:Function.alignmentFreeComparison
-..include:seqan/alignment_free.h
-..remarks:
-...text:Calculates the variance for the number of word occurrences of a word in a sequence of length n given a background model (Markov model or Bernoulli model).
-The formula is obtained from Robin, S., Rodolphe, F., and Schbath, S. (2005). DNA, Words and Models. Cambridge University Press.
-See Jonathan Goeke et al (to appear) for details on the implementation.
-..example.text: Calculate the variance for the number of occurrences of CAAGTC in a sequence of length 10000bp with p(A)=p(T)=0.3 and p(C)=p(G)=0.2.
-..example.code:
-using namespace seqan;
-double var = 0.0;
-int n = 10000;
-DnaString word = "CAAGTC";
-String<double> model;
-resize(model, 4);
-model[0] = 0.3;  // p(A)
-model[1] = 0.2;  // p(C)
-model[2] = 0.2;  // p(G)
-model[3] = 0.3;  // p(T)
-calculateVariance(var, word, model, n);  // var = 2.16
-..example.text: Estimate a Markov model on a set of sequences and calculate the variance for the number of occurrences of the word CAAGTC in a sequence of length 10000bp.
-..example.code:
-using namespace seqan;
-double var = 0.0;
-int n = 10000;
-DnaString word = "CAAGTC";
-StringSet<DnaString> sequences;
-appendValue(sequences, "CAGAAAAAAACACTGATTAACAGGAATAAGCAGTTTACTTATTTTGGGCCTGGGACCCGTGTCTCTAATTTAATTAGGTGATCCCTGCGAAGTTTCTCCA");
-MarkovModel<Dna, double> model(0);  // Bernoulli model
-model.build(sequences);
-calculateVariance(var, word, model, n);  // var = 2.16
-MarkovModel<Dna, double> model1(1);  // First order Markov model
-model1.build(sequences);
-calculateVariance(var, word, model1, n);  // var = 1.69716
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TString, typename TStringBG>
 void calculateVariance(TValue & variance, TString const & word, TStringBG const & backgroundFrequencies, int const n)
@@ -717,66 +579,7 @@ void calculateVariance(TValue & variance, String<TAlphabet, TSpec> const & word,
  * @see calculateOverlapIndicator
  */
 
-/**
-.Function.calculateCovariance:
-..cat:Alignment Free
-..summary:Calculates the covariance for the number of word occurrences for two words in a sequence of length n, given a background model.
-..signature:calculateCovariance(covariance, word1, word2, backgroundFrequencies, n)
-..signature:calculateCovariance(covariance, word1, word2, bgModel, n)
-..param.covariance:Variance of the number of occurrences of the word in a sequence of length n given the model
-...type:nolink:double
-..param.word1:Usually a DNA sequence
-...type:Class.String
-..param.word2:Usually a DNA sequence
-...type:Class.String
-..param.backgroundFrequencies:String of background frequencies representing the model
-...type:nolink:double
-..param.bgModel:Markov model
-...type:Class.MarkovModel
-..param.n:Length of the sequence where the occurrences of word are counted
-...type:nolink:integer
-..returns:TValue covariance; Covariance of the number of occurrences of the word in a sequence of length n given the model
-..see:Function.calculateProbability
-..see:Function.calculateVariance
-..see:Class.MarkovModel
-..see:Function.alignmentFreeComparison
-..include:seqan/alignment_free.h
-..remarks:
-...text:Calculates the covariance for the number of word occurrences for two words in a sequence of length n given a background model (Markov model or Bernoulli model).
-The covariance is influenced by the property of words to overlap, for example, the words ATAT and TATA have a high covariance since they are likely to overlap.
-The formula is based on Robin, S., Rodolphe, F., and Schbath, S. (2005). DNA, Words and Models. Cambridge University Press.
-See Jonathan Goeke et al (to appear) for details on the implementation.
-..example.text: Calculate the covariance for the number of occurrences of ATATAT and TATATA in a sequence of length 10000bp with p(A)=p(T)=0.3 and p(C)=p(G)=0.2.
-..example.code:
-using namespace seqan;
-double covar = 0.0;
-int n = 10000;
-DnaString word1 = "ATATAT";
-DnaString word2 = "TATATA";
-String<double> model;
-resize(model, 4);
-model[0] = 0.3;  // p(A)
-model[1] = 0.2;  // p(C)
-model[2] = 0.2;  // p(G)
-model[3] = 0.3;  // p(T)
-calculateCovariance(covar, word1, word2, model, n);  // covar = 4.74
-..example.text: Estimate a Markov model on a set of sequences and calculate the covariance for the number of occurrences of ATATAT and TATATA in a sequence of length 10000bp.
-..example.code:
-using namespace seqan;
-double covar = 0.0;
-int n = 10000;
-DnaString word1 = "ATATAT";
-DnaString word2 = "TATATA";
-StringSet<DnaString> sequences;
-appendValue(sequences, "CAGCACTGATTAACAGGAATAAGCAGTTTACTTCTGTCAGAATATTGGGCATATATA"
-                       "CTGGGACCCGTGTAATACTCTAATTTAATTAGGTGATCCCTGCGAAGTCTCCA");
-MarkovModel<Dna, double> modelMM0(0);  // Bernoulli model
-modelMM0.build(sequences);
-calculateCovariance(covar, word1, word2, modelMM0, n);  // covar = 4.74
-MarkovModel<Dna, double> modelMM1(1);  // First order Markov model
-modelMM1.build(sequences);
-calculateCovariance(covar, word1, word2, modelMM1, n);  // covar = 13.1541
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TString, typename TStringBG>
 void calculateCovariance(TValue & covariance, TString const & word1, TString const & word2, TStringBG const & backgroundFrequencies, int const n)
@@ -912,45 +715,7 @@ void calculateCovariance(TValue & covariance, String<TAlphabet, TSpec> const & w
  * @see alignmentFreeComparison
  */
 
-/**
-.Function.calculatePeriodicity:
-..cat:Alignment Free
-..summary:Calculate word periodicity (indicator for overlaps)
-..signature:calculatePeriodicity(periodicity, word1, word2)
-..param.periodicity:String<int> giving the periodicity ("overlap indicator") of word1 and word2
-...type:Class.String
-..param.word1:String (for example a DNA sequence)
-...type:Class.String
-..param.word2:String (for example a DNA sequence)
-...type:Class.String
-..returns:String<int> periodicity, the word overlap indicator.
-..see:Function.calculateVariance
-..see:Function.calculateCovariance
-..see:Function.calculateOverlapIndicator
-..see:Function.alignmentFreeComparison
-..include:seqan/alignment_free.h
-..remarks:
-...text:Calculate word periodicity (indicator for overlaps) for two words.
-..example.text: Calculate the periodicity of two words (At which positions can they overlap?)
-..example.code:
-using namespace seqan;
-DnaString word1 = "ATATA";
-DnaString word2 = "TATAT";
-String<int> periodicity;
-calculatePeriodicity(periodicity, word1, word2);
-for(unsigned i = 0; i < length(periodicity); ++i)  // Print the periodicity
-    std::cout << periodicity[i] << "\t";
-
-// periodocity[0] = 1:
-// i =     01234
-// word1 = ATATA
-// word2 = -TATAT
-
-// periodocity[1] = 3:
-// i =     01234
-// word1 = ATATA
-// word2 = ---TATAT
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TString>
 void calculatePeriodicity(String<int> & periodicity, TString const & word1, TString const & word2)
 {
@@ -1015,41 +780,7 @@ void calculatePeriodicity(String<int> & periodicity, TString const & word1, TStr
  * @see alignmentFreeComparison
  */
 
-/**
-.Function.calculateOverlapIndicator:
-..cat:Alignment Free
-..summary:Calculate word overlaps: epsilon(word1,word2)= 1 where word2[j]=word1[j+p] for all j=1...(k-p)
-..signature:calculateOverlapIndicator(epsilon, word1, word2)
-..param.epsilon:String<int> giving the periodicity ("overlap indicator") of word1 and word2
-...type:Class.String
-..param.word1:String (for example a DNA sequence)
-...type:Class.String
-..param.word2:String (for example a DNA sequence)
-...type:Class.String
-..returns:String<int> epsilon, the word overlap indicator.
-..see:Function.calculateVariance
-..see:Function.calculateCovariance
-..see:Function.calculatePeriodicity
-..see:Function.alignmentFreeComparison
-..include:seqan/alignment_free.h
-..remarks:
-...text:Calculate the indicator for overlaps of two words.
-The formula is based on Robin, S., Rodolphe, F., and Schbath, S. (2005). DNA, Words and Models. Cambridge University Press.
-See Jonathan Goeke et al (to appear) for details on the implementation.
-..example.text: Calculate the overlap indicator (epsilon) for two words
-..example.code:
-using namespace seqan;
-DnaString word1 = "ATATA";
-DnaString word2 = "TATAT";
-String<int> epsilon;
-calculateOverlapIndicator(epsilon, word1, word2);
-for(unsigned i = 0; i < length(epsilon); ++i)
-    std::cout << epsilon[i] << "\t";
-// epsilon =         01010:
-// word1             ATATA
-// word2 overlap 1:  -TATAT
-// word2 overlap 2:  ---TATAT
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TString>
 void calculateOverlapIndicator(String<int> & epsilon, TString const & word1, TString const & word2)
 {
@@ -1113,44 +844,7 @@ void calculateOverlapIndicator(String<int> & epsilon, TString const & word1, TSt
  * @see countKmers
  */
 
-/**
-.Function.stringToStringSet:
-..cat:Alignment Free
-..summary:Transform a String into a StringSet containing this String.
-..signature:stringToStringSet(stringSet, string)
-..signature:stringToStringSet(dnaStringSet, dna5String)
-..param.stringSet:StringSet containing string
-...type:Class.StringSet
-..param.string:String
-...type:Class.String
-..param.dnaStringSet:StringSet<DnaString> created from dna5String by cutting out all Ns from dna5String.
-...type:Class.StringSet
-..param.dna5String:DNA5 String where all Ns should be removed, the remaining sequences will be stored in dnaStringSet
-...type:Shortcut.Dna5String
-..returns: Returns a StringSet consisting of string, in the case of Dna5 to Dna conversion all Ns will be removed from dna5String.
-..see:Class.MarkovModel
-..see:Function.alignmentFreeComparison
-...text:Transform a String into a StringSet containing this String.
-This function can be used to split a Dna5 string (containing Ns) into a Dna StringSet by cutting out any N.
-This function is helpful for createing a Markov model from a masked DNA sequence.
-..include:seqan/alignment_free.h
-..example.text: Transform a masked DNA sequence into a set of sequences with all masked parts removed.
-..example.code:
-using namespace seqan;
-Dna5String sequenceDna5 =
-    "NNNNNNTTTCCGAAAAGGTANNNNNGCAACTTTANNNCGTGATCAAAGTTTTCCCCGTCGAAATTGGGNNTG";
-StringSet<DnaString> sequencesDna;
-stringToStringSet(sequencesDna, sequenceDna5);
-// Print the masked sequence
-std::cout<<sequenceDna5<<"\n";
-// Print the sequence with the masked parts removed
-for(unsigned i = 0; i < length(sequencesDna); ++i)
-    std::cout<<sequencesDna[i]<<"\n";
-// sequencesDna[0] = "TTTCCGAAAAGTA"
-// sequencesDna[1] = "GCAACTTTA"
-// sequencesDna[2] = "CGTGATCAAAGTTTTCCCCGTCGAAATTGGG"
-// sequencesDna[3] = "TG"
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TString>
 void
@@ -1237,39 +931,7 @@ stringToStringSet(StringSet<String<Dna> > & dnaStringSet, String<Dna5> const & s
  * @see alignmentFreeComparison
  */
 
-/**
-.Function.cutNs:
-..cat:Alignment Free
-..summary:Cut out all masked sequences from a Dna5String.
-..see:Class.MarkovModel
-..see:Function.stringToStringSet
-..see:Function.alignmentFreeComparison
-..signature:cutNs(sequenceCut, sequence)
-..param.sequenceCut:Dna5String similar to sequence with all Ns cut out
-...type:Shortcut.Dna5String
-..param.sequence:Masked DNA sequence.
-...type:Shortcut.Dna5String
-..returns: Returns a Dna5String similar to the input sequence with all Ns cut out.
-..include:seqan/alignment_free.h
-..remarks:
-...text:This function concatenates the nonmasked parts of the sequence, thereby changing the word content.
-If you want to remove the masked parts of a sequence without concatenation, use stringToStringSet.
-..example.text: Transform a masked DNA sequence into an unmasked sequences with all masked parts cut out
-..example.code:
-using namespace seqan;
-Dna5String sequenceMasked =
-    "NNNNNNTTTCCGAAAAGGTANNNNNGCAACTTTANNNCGTGATCAAAGTTTTCCCCGTCGAAATTGGGNNTG";
-Dna5String sequenceMaskedPartsRemoved;
-cutNs(sequenceMaskedPartsRemoved, sequenceMasked);
-// Print the masked sequence
-std::cout<<sequenceMasked<<"\n";
-// Print the sequence with the masked parts removed
-std::cout<<sequenceMaskedPartsRemoved<<"\n";
-// sequenceMasked =
-// "NNNNNNTTTCCGAAAAGGTANNNNNGCAACTTTANNNCGTGATCAAAGTTTTCCCCGTCGAAATTGGGNNTG"
-// sequenceMaskedPartsRemoved =
-// "TTTCCGAAAAGGTAGCAACTTTACGTGATCAAAGTTTTCCCCGTCGAAATTGGGTG"
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void
 cutNs(String<Dna5> & sequenceCut, String<Dna5> const & sequence)

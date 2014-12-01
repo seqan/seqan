@@ -63,17 +63,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature typedef Tag<TagPrefixGreater_> const TagPrefixGreater;
  */
 
-/**
-.Tag.Prefix Order:
-..cat:Sequences
-..summary:Specify whether less-than or greather-than comparison is meant.
-..tag.TagPrefixLess:A prefix is smaller.
-...text:For example: $"abc" < "abcde"$.
-..tag.TagPrefixGreater:A prefix is greater.
-...text:For example: $"abc" > "abcde"$.
-..remarks:The default for all comparison functions is $TagPrefixLess$.
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 struct TagPrefixLess_ {};
 typedef Tag<TagPrefixLess_> const TagPrefixLess;
 
@@ -93,16 +83,7 @@ typedef Tag<TagPrefixGreater_> const TagPrefixGreater;
  * @return Type The prefix order tag type of T, see @link PrefixOrderTags @endlink.
  */
 
-/**
-.Metafunction.DefaultPrefixOrder:
-..hidefromindex
-..summary:The default prefix order.
-..signature:DefaultPrefixOrder<T>::Type
-..param.T:Type for which the prefix order is determined.
-..returns.param.Type:Prefix order tag for type of $T$.
-..see:Tag.Prefix Order
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct DefaultPrefixOrder
 {
@@ -173,55 +154,7 @@ struct DefaultPrefixOrder
  * @see Comparator
  */
 
-/**
-.Class.Lexical:
-..cat:Basic
-..summary:Comparator for lexical comparison.
-..signature:Lexical<TSpec>
-..param.TSpec:The specializing type.
-...metafunction:Metafunction.Spec
-...text:This type can be used for specializations of $Lexical$.
-...remarks:$TSpec$ is by default interpreted as size-type.
-...default:$size_t$
-..remarks:
-...text:This class implement comparator objects that perform (lexical) comparisons between two sequences.
-The result of the comparison is stored in the data members of the instance and can be
-accessed by some functions, for example @Function.isLess@ or @Function.isEqual@.
-...text:In most cases, there is no need for an explicite use of comparators,
-but sometimes this concept provide the opportunity to speed up the code.
-..example:
-...text:This program compares the strings $str1$ and $str2$:
-...code:if (isLess(str1, str2)) //first comparison
-{
-	//str1 < str2
-}
-else if (isGreater(str1, str2)) //second comparison
-{
-	//str1 > str2
-}
-else
-{
-	//str == str2
-}
-...text:Using a comparator, the same program only needs one comparison instead of two:
-...code:Lexical <> comparator(str1, str2); //comparison is executed here
-if (isLess(comparator))
-{
-	//str1 < str2
-}
-else if (lexGreater(comparator))
-{
-	//str1 > str2
-}
-else
-{
-	//str == str2
-}
-...text:The state of a default constructed $Lexical$ instance is undefined until
-it is set by a call of @Function.compare@.
-..see:Metafunction.Comparator
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec = size_t>
 struct Lexical
@@ -293,17 +226,7 @@ SEQAN_CHECKPOINT
  * Comparators are objects that can be used to compare other objects and store the result of comparisons.
  */
 
-/**
-.Metafunction.Comparator:
-..cat:Basic
-..summary:Type of comparator object
-..signature:Comparator<T>::Type
-..param.T:Type for which the comparator type is to be determined.
-..returns.param.Type:Comparator type
-..remarks:Comparators are objects that can be used to compare other objects and store the
-result of comparisons.
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct Comparator
 {
@@ -362,18 +285,7 @@ struct Spec<Lexical<TSpec> const>
  * @see Comparator
  */
 
-/**
-.Function.compare:
-..cat:Comparisons
-..summary:Compares two objects.
-..signature:compare(comparator, left, right)
-..param.left:The first objects.
-..param.right:The second objects that is compared to $left$.
-..param.comparator:Object that stores the results.
-...type:Class.Lexical
-..see:Metafunction.Comparator
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TLeft, typename TRight>
 inline void
@@ -470,21 +382,7 @@ compare(Lexical<TSpec> & lexical,
  * @return bool <tt>true</tt> if <tt>left</tt> equals <tt>right</tt>, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.isEqual:
-..cat:Comparisons
-..class:Class.Lexical
-..summary:Operator "==".
-..signature:isEqual(left, right)
-..signature:isEqual(comparator)
-..param.left:The first parameter.
-..param.right:The second parameter that is compared to $left$.
-..param.comparator:A comparator.
-...type:Class.Lexical
-..returns:$true$ if $left$ equals $right$, $false$ otherwise.
-..see:Metafunction.Comparator
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TLeft, typename TRight >
 inline bool
 isEqual(TLeft const & left,
@@ -521,21 +419,7 @@ SEQAN_CHECKPOINT
  * @return bool <tt>true</tt> if <tt>left</tt> does not equal <tt>right</tt>, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.isNotEqual:
-..cat:Comparisons
-..class:Class.Lexical
-..summary:Operator "!=".
-..signature:isNotEqual(left, right)
-..signature:isNotEqual(comparator)
-..param.left:The first parameter.
-..param.right:The second parameter that is compared to $left$.
-..param.comparator:A comparator.
-...type:Class.Lexical
-..returns:$true$ if $left$ is not equal to $right$, $false$ otherwise.
-..see:Metafunction.Comparator
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TLeft, typename TRight >
 inline bool
 isNotEqual(TLeft const & left,
@@ -572,28 +456,7 @@ SEQAN_CHECKPOINT
  * @return bool <tt>true</tt> if <tt>left</tt> is less than <tt>right</tt>, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.isLess:
-..cat:Comparisons
-..class:Class.Lexical
-..summary:Operator "<".
-..signature:isLess(left, right [, prefix_order_tag])
-..signature:isLess(comparator)
-..param.left:The first parameter.
-..param.right:The second parameter that is compared to $left$.
-..param.prefix_order_tag:Tag that specify whether prefixes are less or greater. (optional)
-...text:If omitted, the default tag is determined by @Metafunction.DefaultPrefixOrder@ for the type of $left$.
-...see:Tag.Prefix Order
-..param.comparator:A comparator.
-...type:Class.Lexical
-..returns:$true$ if $left$ is less than $right$, $false$ otherwise.
-..see:Metafunction.Comparator
-..remarks:
-...text:Sequences are compared in lexicographical order.
-..see:Tag.Prefix Order
-..see:Metafunction.DefaultPrefixOrder
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TLeft, typename TRight, typename TPrefixOrder >
 inline bool
 isLess(TLeft const & left,
@@ -656,28 +519,7 @@ SEQAN_CHECKPOINT
  * @return bool <tt>true</tt> if <tt>left</tt> is less than or equal to <tt>right</tt>, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.isLessOrEqual:
-..cat:Comparisons
-..class:Class.Lexical
-..summary:Operator "<=".
-..signature:isLessOrEqual(left, right [, prefix_order_tag])
-..signature:isLessOrEqual(comparator)
-..param.left:The first parameter.
-..param.right:The second parameter that is compared to $left$.
-..param.prefix_order_tag:Tag that specify whether prefixes are less or greater. (optional)
-...text:If omitted, the default tag is determined by @Metafunction.DefaultPrefixOrder@ for the type of $left$.
-...see:Tag.Prefix Order
-..param.comparator:A comparator.
-...type:Class.Lexical
-..returns:$true$ if $left$ is less than or equal to $right$, $false$ otherwise.
-..see:Metafunction.Comparator
-..remarks:
-...text:Sequences are compared in lexicographical order.
-..see:Tag.Prefix Order
-..see:Metafunction.DefaultPrefixOrder
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TLeft, typename TRight, typename TPrefixOrder >
 inline bool
@@ -741,28 +583,7 @@ SEQAN_CHECKPOINT
  * @return bool <tt>true</tt> if <tt>left</tt> is greater than <tt>right</tt>, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.isGreater:
-..cat:Comparisons
-..class:Class.Lexical
-..summary:Operator ">".
-..signature:isGreater(left, right [, prefix_order_tag])
-..signature:isGreater(comparator)
-..param.left:The first parameter.
-..param.right:The second parameter that is compared to $left$.
-..param.prefix_order_tag:Tag that specify whether prefixes are less or greater. (optional)
-...text:If omitted, the default tag is determined by @Metafunction.DefaultPrefixOrder@ for the type of $left$.
-...see:Tag.Prefix Order
-..param.comparator:A comparator.
-...type:Class.Lexical
-..returns:$true$ if $left$ is greater than $right$, $false$ otherwise.
-..see:Metafunction.Comparator
-..remarks:
-...text:Sequences are compared in lexicographical order.
-..see:Tag.Prefix Order
-..see:Metafunction.DefaultPrefixOrder
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TLeft, typename TRight, typename TPrefixOrder >
 inline bool
 isGreater(TLeft const & left,
@@ -825,28 +646,7 @@ SEQAN_CHECKPOINT
  * @return bool <tt>true</tt> if <tt>left</tt> is greater than or equal to <tt>right</tt>, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.isGreaterOrEqual:
-..cat:Comparisons
-..class:Class.Lexical
-..summary:Operator ">=".
-..signature:isGreaterOrEqual(left, right [, prefix_order_tag])
-..signature:isGreaterOrEqual(comparator)
-..param.left:The first parameter.
-..param.right:The second parameter that is compared to $left$.
-..param.prefix_order_tag:Tag that specify whether prefixes are less or greater. (optional)
-...text:If omitted, the default tag is determined by @Metafunction.DefaultPrefixOrder@ for the type of $left$.
-...see:Tag.Prefix Order
-..param.comparator:A comparator.
-...type:Class.Lexical
-..returns:$true$ if $left$ is greater than or equal to $right$, $false$ otherwise.
-..see:Metafunction.Comparator
-..remarks:
-...text:Sequences are compared in lexicographical order.
-..see:Tag.Prefix Order
-..see:Metafunction.DefaultPrefixOrder
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TLeft, typename TRight, typename TPrefixOrder >
 inline bool
@@ -912,22 +712,7 @@ SEQAN_CHECKPOINT
  * By definition, a sequence is a prefix of itself: <tt>isPrefix("abc", "abc")</tt> is <tt>true</tt>.
  */
 
-/**
-.Function.isPrefix:
-..cat:Comparisons
-..class:Class.Lexical
-..summary:Test whether a sequence is prefix of another sequence.
-..signature:isPrefix(left, right)
-..signature:isPrefix(comparator)
-..param.left:The first sequence, the putative prefix.
-..param.right:The second sequence.
-..param.comparator:A comparator.
-...type:Class.Lexical
-..returns:$true$ if $left$ is a prefix of $right$, $false$ otherwise.
-..see:Metafunction.Comparator
-..remarks:By definition, the whole sequence is a prefix of itself too: $isPrefix("abc", "abc") == true$.
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TLeft, typename TRight >
 inline bool
@@ -968,23 +753,7 @@ SEQAN_CHECKPOINT
  * By definition, a sequence is a prefix of itself: <tt>hasPrefix("abc", "abc")</tt> is <tt>true</tt>.
  */
 
-/**
-.Function.hasPrefix:
-..cat:Comparisons
-..class:Class.Lexical
-..summary:Test whether a sequence is prefix of another sequence.
-..signature:hasPrefix(left, right)
-..signature:hasPrefix(comparator)
-..param.left:The first sequence.
-..param.right:The second sequence, the putative prefix.
-..param.comparator:A comparator.
-...type:Class.Lexical
-..returns:$true$ if $right$ is a prefix of $left$, $false$ otherwise.
-..see:Metafunction.Comparator
-..see:Function.isPrefix
-..remarks:By definition, the whole sequence is a prefix of itself too: $hasPrefix("abc", "abc") == true$.
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TLeft, typename TRight >
 inline bool
@@ -1025,21 +794,7 @@ SEQAN_CHECKPOINT
  * By definition, a sequence is a prefix of itself: <tt>hasPrefix("abc", "abc")</tt> is <tt>true</tt>.
  */
 
-/**
-.Function.lcpLength:
-..summary:Length of longest common prefix.
-..cat:Comparisons
-..class:Class.Lexical
-..signature:lcpLength(left, right)
-..signature:lcpLength(comparator)
-..param.left:The first sequence.
-..param.right:The second sequence that is compared to $left$.
-..param.comparator:A comparator.
-...type:Class.Lexical
-..returns:The length of the longest common prefix of $left$ and $right$.
-..see:Metafunction.Comparator
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TLeft, typename TRight >
 inline typename Size<TLeft>::Type
 lcpLength(TLeft const & left, TRight const & right)

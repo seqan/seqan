@@ -43,30 +43,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	// shape with one gap
 	//////////////////////////////////////////////////////////////////////////////
 
-/**
-.Spec.OneGappedShape:
-..cat:Index
-..summary:A variable shape with one optional gap.
-..general:Class.Shape
-..signature:Shape<TValue, OneGappedShape>
-..param.TValue:The @Metafunction.Value@ type of the string the shape is applied to (e.g. $Dna$).
-..remarks:A OneGappedShape must be initialized first with a valid shape. To do so, call @Function.stringToShape@.
-..see:Spec.GenericShape
-..include:seqan/index.h
-.Memfunc.OneGappedShape#Shape:
-..class:Spec.OneGappedShape
-..summary:Constructor
-..signature:Shape<TValue, OneGappedShape> ()
-..signature:Shape<TValue, OneGappedShape> (shape)
-..signature:Shape<TValue, OneGappedShape> (bitmap)
-..signature:Shape<TValue, OneGappedShape> (blockLen1, gapLen, blockLen2)
-..param.shape:Other Shape object. (copy constructor)
-..param.bitmap:Bitmap string. Sequence of '0's and '1's.
-...see:Function.stringToShape
-..param.blockLen1:Number of '1's in the first block.
-..param.gapLen:Number of '0's in the second block.
-..param.blockLen2:Number of '1's in the third block.
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class OneGappedShape
  * @extends Shape

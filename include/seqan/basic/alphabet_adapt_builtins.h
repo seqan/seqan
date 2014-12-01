@@ -98,17 +98,7 @@ struct BitsPerValue<bool>
  * <tt>wchar_t const</tt>.
  */
 
-/**
-.Metafunction.IsCharType
-..cat:Alphabets
-..summary:Return whether the argument is $char$, $wchar_t$, $char const$, or $wchar_t const$.
-..signature:IsCharType<T>::Type
-..signature:IsCharType<T>::VALUE
-..param.T:Type to check type of.
-..remarks:This metafunction is used to enable and disable templated adaptions of arrays to sequences for builtin character types only.
-..remarks:The return value is $True$/$true$ for $char$, $wchar_t$, $char const$, and $wchar_t const$.
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct IsCharType;

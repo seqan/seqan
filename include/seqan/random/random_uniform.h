@@ -63,16 +63,7 @@ struct Uniform;
  * @tparam T The number type to use (integer or floating point).
  */
 
-/**
-.Spec.Uniform Pdf
-..signature:Pdf<Uniform<T> >
-..general:Class.Pdf
-..summary:Uniform distribution probability density function over a closed interval [min, max].
-..param.T:Type of the values the Pdf is defined on.
-..cat:Random
-..include:seqan/random.h
-..wiki:Tutorial/Randomness|Tutorial: Randomness
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 class Pdf<Uniform<T> >
@@ -91,16 +82,7 @@ public:
  * @param[in] max The largest value of the interval, of the Value type of the Pdf.
  */
 
-/**
-.Memfunc.Uniform Pdf#Pdf
-..class:Spec.Uniform Pdf
-..summary:Constructor for uniform Pdf.
-..signature:Pdf<Uniform<T> >(min, max)
-..param.min:Smallest value of interval.
-...type:nolink:T
-..param.max:Largest value of interval.
-...type:nolink:T
-*/
+/*_DDDOC_PLACEHOLDER*/
     Pdf(T min, T max)
             : _min(min), _max(max)
     {

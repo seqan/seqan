@@ -58,21 +58,7 @@ struct WordGraph;
  * @tparam TSpec     The specializing types.
  */
 
-/**
-.Spec.Word Graph:
-..cat:Graph
-..general:Spec.Automaton
-..summary:A special automaton that stores words instead of single characters along its edges.
-..signature:Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >
-..param.TAlphabet:The alphabet type that is used for the words.
-...metafunction:Metafunction.Alphabet
-...remarks:Use @Metafunction.Alphabet@ to get the value type of the words.
-...default:$char$
-..param.TSpec:The specializing type.
-...metafunction:Metafunction.Spec
-...default:$Default$, see @Tag.Default@.
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TSpec>
 class Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > 
 {

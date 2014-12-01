@@ -85,32 +85,7 @@ namespace seqan {
  * @param[in,out] record The VcfHeaderRecord to clear.
  */
 
-/**
-.Class.VcfHeaderRecord
-..cat:VCF I/O
-..signature:class VcfHeaderRecord
-..summary:Store key/value pair for VCF header records.
-..include:seqan/vcf_io.h
-
-.Memfunc.VcfHeaderRecord#VcfHeaderRecord
-..class:Class.VcfHeaderRecord
-..summary:Constructor
-..description:The default constructor and construction from key/value pair are provided.
-..signature:VcfHeaderRecord::VcfHeaderRecord()
-..signature:VcfHeaderRecord::VcfHeaderRecord(key, value)
-..param.key:Key of the header record.
-...type:Shortcut.CharString
-..param.key:Key of the header record.
-...type:Shortcut.CharString
-
-.Memvar.VcfHeaderRecord#key
-..class:Class.VcfHeaderRecord
-..summary:Key of the header record (@Shortcut.CharString@).
-
-.Memvar.VcfHeaderRecord#value
-..class:Class.VcfHeaderRecord
-..summary:Value of the header record (@Shortcut.CharString@).
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 class VcfHeaderRecord
 {
@@ -138,15 +113,7 @@ public:
 // Functions
 // ============================================================================
 
-/**
-.Function.VcfHeaderRecord#clear
-..class:Class.VcfHeaderRecord
-..summary:Clear a @Class.VcfHeaderRecord@.
-..signature:void clear(record)
-..param.record:@Class.VcfHeaderRecord@ to clear.
-...type:Class.VcfHeaderRecord
-..include:seqan/vcf_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void clear(VcfHeaderRecord & record)
 {

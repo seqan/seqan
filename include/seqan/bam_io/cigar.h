@@ -89,38 +89,7 @@ namespace seqan {
  * @brief The described operation.
  */
 
-/**
-.Class.CigarElement
-..cat:Fragment Store
-..summary:One entry of a CIGAR string.
-..signature:CigarElement<TOperation, TCount>
-..param.TOperation:Type to use for storing operations.
-...default:nolink:$char$
-..param.TCount:Type to use for storing counts.
-...default:nolink:$unsigned$
-..include:seqan/store.h
-
-.Memfunc.CigarElement#CigarElement
-..class:Class.CigarElement
-..summary:Constructor
-..signature:CigarElement()
-..signature:CigarElement(operation, count)
-..param.operation:The operation to use.
-...type:nolink:$TOperation$, typically $char$.
-..param.count:The operation count.
-...type:nolink:$Count$, typically $unsigned$.
-..remarks:The default constructor initialized both @Memvar.CigarElement#operation@ and @Memvar.CigarElement#count@ with $0$.
-
-.Memvar.CigarElement#operation
-..class:Class.CigarElement
-..summary:The described operation.
-..type:nolink:$TOperation$
-
-.Memvar.CigarElement#count
-..class:Class.CigarElement
-..summary:The number of operations.
-..type:nolink:$TCount$
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TOperation_ = char, typename TCount_ = unsigned>
 struct CigarElement

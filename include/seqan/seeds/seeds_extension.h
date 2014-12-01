@@ -83,16 +83,7 @@ namespace seqan {
  * @signature typedef Tag<GappedXDrop_> const GappedXDrop;
  */
 
-/**
-.Tag.Seed Extension
-..cat:Seed Handling
-..summary:The algorithms used to extend a seed.
-..see:Function.extendSeed
-..tag.MatchExtend:Extends a seed until a mismatch occurs.
-..tag.UngappedXDrop:Ungapped extension of a seed until score drops below a Value.
-..tag.GappedXDrop:Gapped extension of a seed until score drops below a Value. Only @Spec.Simple Seed@s.
-..include:seqan/seeds.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 struct MatchExtend_;
 typedef Tag<MatchExtend_> const MatchExtend;
 
@@ -130,17 +121,7 @@ typedef Tag<GappedXDrop_> const GappedXDrop;
  * @brief Perform extension to both directions.
  */
 
-/**
-.Enum.Extension Direction
-..cat:Seed Handling
-..summary:The direction in which a seed should be extended.
-..value.EXTEND_NONE:Perform no extension.
-..value.EXTEND_LEFT:Extend the seed to the left.
-..value.EXTEND_RIGHT:Extend the seed to the right.
-..value.EXTEND_BOTH:Extend the seed in both directions.
-..see:Function.extendSeed
-..include:seqan/seeds.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 enum ExtensionDirection
 {
@@ -195,32 +176,7 @@ enum ExtensionDirection
  * @see SeedExtensionTags
  */
 
-/**
-.Function.extendSeed
-..summary:Extends a seed.
-..cat:Seed Handling
-..signature:void extendSeed(seed, database, query, direction, MatchExtend);
-..signature:void extendSeed(seed, database, query, direction, scoreMatrix, scoreDropOff, {UngappedXDrop, GappedXDrop});
-..class:Class.Seed
-..param.seed: The seed to extend.
-...type:Class.Seed
-..param.query: The query sequence (vertical).
-...type:Class.String
-..param.database: The database sequence (horizontal).
-...type:Class.String
-..param.direction: Defines the direction in which the seed should be extended.
-...type:Enum.Extension Direction
-..param.scoreDropOff: The score drop after which the extension should stop. The extension stops if this value is exceeded.
-...remarks:Only used for the algorithms @Tag.Seed Extension.UngappedXDrop@ and @Tag.Seed Extension.GappedXDrop@
-..param.scoreMatrix: The scoring scheme.
-...type:Spec.Simple Score
-...remarks:Only used for the algorithms @Tag.Seed Extension.UngappedXDrop@ and @Tag.Seed Extension.GappedXDrop@
-..remarks:You can use the tags, @Tag.Seed Extension.MatchExtend@, @Tag.Seed Extension.UngappedXDrop@, and @Tag.Seed Extension.GappedXDrop@.
-..remarks:Note that the diagonals updated in $seed$ do not necessarily reflect the diagonals for the optimal extension but the diagonals used in all traces of the extension.
-However, they are guaranteed to include the optimal extension's trace.
-..example.text:The documentation of the class @Class.Seed@ contains an example for seed extension.
-..include:seqan/seeds.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // We need one specialization for each combination of the extension variants and seeds.  It is not worth to extract the
 // common parts for simple and chained seeds.

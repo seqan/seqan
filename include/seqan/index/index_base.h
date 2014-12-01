@@ -135,17 +135,7 @@ for @Class.Index@ based substring searches.
 // ----------------------------------------------------------------------------
 // Metafunction DefaultIndexSpec
 // ----------------------------------------------------------------------------
-/**
-.Metafunction.DefaultIndexSpec:
-..cat:Index
-..summary:Default @Class.Index@ specialization type.
-..signature:DefaultIndexSpec<TText>::Type
-..class:Class.Index
-..param.TText:The given text type.
-..returns:Can be @Spec.IndexEsa@ or $IndexQGram$, etc.
-..remarks:Currently @Spec.IndexEsa@ is default if $TText$ is a @Class.String@.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @mfn Index#DefaultIndexSpec
  * @headerfile <seqan/index.h>
@@ -176,17 +166,7 @@ for @Class.Index@ based substring searches.
 // ----------------------------------------------------------------------------
 //NOTE(esiragusa): Deprecated in favor of StringSpec.
 
-/**
-.Metafunction.DefaultIndexStringSpec:
-..cat:Index
-..summary:Default @Class.String@ specialization type of the @Metafunction.Fibre@ of an @Class.Index@. 
-..signature:DefaultIndexStringSpec<TIndex>::Type
-..class:Class.Index
-..param.TIndex:An @Class.Index@ Type.
-..returns:If the underlying text is a @Class.String@ or a set of Strings (see @Class.StringSet@) the String's spec. type is returned.
-..remarks:Most of the @Class.Index@ fibres are strings. The @Class.String@ specialization type is chosen by this meta-function.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @mfn Index#DefaultIndexStringSpec
@@ -213,79 +193,7 @@ for @Class.Index@ based substring searches.
 
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Class.Index:
-..summary:Contains preprocessing data of a fixed text. In combination with a @Class.Finder@ or a @Spec.VSTree Iterator@ it allows fast dictionary look-up and advanced computations.
-..cat:Index
-..signature:Index<TText[, TSpec]>
-..param.TText:The text type.
-...type:Class.String
-...type:Class.StringSet
-...metafunction:Metafunction.Host
-..param.TSpec:The index type.
-...type:Spec.IndexEsa
-...type:Spec.IndexWotd
-...type:Spec.IndexQGram
-...type:Spec.FMIndex
-...default:The result of @Metafunction.DefaultIndexSpec@: @Spec.IndexEsa@
-...metafunction:Metafunction.Spec
-..remarks:Indices allow fast dictionary look-ups and other advanced computations because they contain pre-computated
-information about the underlying text. These information are stored in so called fibres (see @Metafunction.Fibre@).
-..remarks:In order to search for a pattern one can use a @Class.Finder@ or a @Spec.VSTree Iterator@. The @Class.Finder@ 
-is especially useful when searching for exact matches while the @Spec.VSTree Iterator@ allows to iterate an index as if
-traversing a tree/trie.
-..remarks:These fibres are created on demand depending on the requirements of an algorithm.
-..include:seqan/index.h
-..example
-...text:The following code shows how to search for exact matches between the reference "tobeornottobe" and the
-pattern "to" with the means of a Finder.
-...file:demos/index/index_finder.cpp
-...output:Hit at position: 9
-Hit at position: 0
-...text:This code shows how an index can be used with iterators to achieve a pre-order tree like traversal
-in DFS of the text "tobeornottobe". In order to do so a Top-Down History iterator is used.
-...file:demos/index/index_iterator.cpp
-...output:
-
-be
-beornottobe
-e
-eornottobe
-nottobe
-o
-obe
-obeornottobe
-ornottobe
-ottobe
-rnottobe
-t
-tobe
-tobeornottobe
-ttobe
-...text:
-Note that you can also use specialised iterators such as:
-...code:Iterator<TIndex, TopDown<ParentLinks<PreOrder> > >::Type 
-...text:or
-...code:Iterator<TIndex, TopDown<ParentLinks<PostOrder> > >::Type
-...text:You can achieve a post-order traversal like this:
-...snippet:demos/index/index_iterator_short.cpp|iteration
-...output:beornottobe
-be
-eornottobe
-e
-nottobe
-obeornottobe
-obe
-ornottobe
-ottobe
-o
-rnottobe
-tobeornottobe
-tobe
-ttobe
-t
-
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template < 
         typename TObject, 
@@ -359,21 +267,7 @@ template <
 	struct Spec< Index<TObject, TSpec> > {
 		typedef TSpec Type;
 	};
-/**
-.Metafunction.Fibre:
-..summary:Type of a specific container member (fibre).
-..signature:Fibre<TContainer, TSpec>::Type
-..class:Class.Index
-..cat:Index
-..param.TContainer:The container type.
-...type:Class.Index
-..param.TSpec:Tag to specify the fibre.
-..returns:Fibre type.
-..remarks:Some containers, such as @Class.Index@, can be seen as a bundle consisting of various fibres. Because not every table is a fibre we did not call them tables, however, in many cases one can think of fibres as tables. The fibre interface was designed to unify the access to the members of the different fibres.
-To get a reference or the type of a specific fibre use @Function.getFibre@ or @Metafunction.Fibre@.		
-..remarks:A @Metafunction.Fibre@ does not need to be a real container. It can also be a view (see @Tag.ESA Index Fibres.EsaRawText@).
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @mfn Fibre
@@ -427,17 +321,7 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
 	};
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Metafunction.DefaultIndexCreator:
-..cat:Index
-..summary:Default algorithm to create a demanded and not yet existing @Metafunction.Fibre@.
-..signature:DefaultIndexCreator<TIndex, TFibre>::Type
-..class:Class.Index
-..param.TIndex:An @Class.Index@ Type.
-..param.TFibre:A tag specifying the fibre (e.g. @Tag.ESA Index Fibres.EsaSA@).
-..returns:A tag specifying the default algorithm to create the fibre with.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @mfn Index#DefaultIndexCreator
@@ -566,35 +450,7 @@ To get a reference or the type of a specific fibre use @Function.getFibre@ or @M
     typedef Tag<FibreBwt_> const       FibreBwt;
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Metafunction.SAValue:
-..cat:Index
-..summary:The default alphabet type of a suffix array, i.e. the type to store a position of a string or string set.
-..signature:SAValue<TObject>::Type
-..class:Class.Index
-..param.TObject:A string, string set, or index type.
-...type:Class.String
-...type:Class.StringSet
-...type:Class.Index
-..returns:A type to store a position. 
-...text:If $TObject$ is a @Class.String@, it is a single integer value. By default this is the @Metafunction.Size@ type of $TObject$.
-...text:If $TObject$ is a @Class.StringSet@, it could be a single integer too (called global position, see @Spec.ConcatDirect@) or a @Class.Pair@ (called local position, see @Spec.Owner@).
-Currently SeqAn defaults to a local position for @Class.StringSet@ classes (index_base.h).
-..example.code:template < typename TString, typename TSpec >
-struct SAValue< StringSet<TString, TSpec> > {
-	typedef Pair<
-		typename Size< StringSet<TString, TSpec> >::Type,
-		typename SAValue<TString>::Type,
-		Pack
-	> Type;
-};
-..remarks.note:SAValue is the return type of various function, e.g. @Function.position@ for the @Class.Index@ @Class.Finder@ class, @Function.getOccurrence@, @Function.getOccurrences@ etc.
-You should always use the type of this meta-function to store the return values.
-If you want to write algorithms for both variants (local and global positions) you 
-should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Function.getSeqNo@ and @Function.getSeqOffset@.
-..remarks.note:If $TObject$ is an @Class.Index@, @Metafunction.Position@ returns the same value as $SAValue$. You can change the position type of an index by overloading $SAValue$, not @Metafunction.Position@.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @mfn SAValue
@@ -884,27 +740,7 @@ should use the functions @Function.posLocalize@, @Function.posGlobalize@, @Funct
     }
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.getFibre:
-..summary:Returns a specific fibre of a container.
-..signature: TObject getFibre(index, fibreTag)
-..class:Class.Index
-..cat:Index
-..param.index:The index holding the fibre.
-...type:Class.Index
-..param.fibreTag:A tag that identifies the @Metafunction.Fibre@.
-...type:Tag.ESA Index Fibres
-...type:Tag.QGram Index Fibres
-...type:Tag.WOTD Index Fibres
-...type:Tag.FM Index Fibres
-..returns:A reference to the @Metafunction.Fibre@ object.
-..include:seqan/index.h
-..example
-...text:The following code shows a simple example how the function @Function.getFibre@ is used.
-...file:demos/index/index_begin_range_goDown_representative_repLength.cpp
-...output:The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
-The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @fn Index#getFibre
@@ -1082,25 +918,7 @@ The string ISSI occurs 2 times in MISSISSIPPI and has 4 characters.
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.Index#length
-..cat:Index
-..summary:The number of characters in the underlying text of the index is returned.
-..signature:length(index)
-..class:Class.Index
-..param.index:The index to return the number of characters of.
-...type:Class.Index
-..returns:The number of characters in the raw underlying text of the index is returned.
-...metafunction:Metafunction.Size
-..remarks:If the underlying text is a @Class.StringSet@ then the sum of all characters of the sequneces in the string
-set is returned.
-..include:seqan/index.h
-..example
-...text:The following code shows how @Function.length@ can be used on an index in order to determine the number of characters in the underlying text.
-...file:demos/index/index_length_countSequences.cpp
-...output:Hit at position: < 1 , 2 >
-Hit at position: < 0 , 0 >
- */
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @fn Index#length
@@ -1134,24 +952,7 @@ Hit at position: < 0 , 0 >
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.countSequences
-..cat:Index
-..summary:Return the number of sequences in an index' underlying text.
-..signature:countSequences(index)
-..class:Class.Index
-..param.index:The index to return the number of sequences of.
-...type:Class.Index
-..returns:The number of sequences in the index' underlying text.
-...metafunction:Metafunction.Size
-..include:seqan/index.h
-..example
-...text:The following code shows how @Function.countSequences@ can be used on an index in order to determine the number of sequences in the underlying text (which can be a @Class.StringSet@).
-...file:demos/index/index_length_countSequences.cpp
-...output:Hit at position: < 1 , 2 >
-Hit at position: < 0 , 0 >
-
- */
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @fn Index#countSequences
@@ -1243,59 +1044,7 @@ Hit at position: < 0 , 0 >
 
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.textAt:
-..summary:Shortcut for $value(indexText(..), ..)$.
-..cat:Index
-..signature:textAt(position, index)
-..class:Class.Index
-..param.position:A position in the array on which the value should be accessed.
-..param.index:The @Class.Index@ object holding the fibre.
-...type:Spec.IndexEsa
-..returns:A reference or proxy to the value.
-..include:seqan/index.h
-..example
-...text:The following code shows how the BWT of a text can be computed.
-...file:demos/index/index_textAt_indexText_saAt_indexRequire.cpp
-...output:BWT	Suffices
-P	PI
-S	SIPPI
-S	SISSIPPI
-M	MISSISSIPPI
-I	I
-P	PPI
-I	IPPI
-S	SSIPPI
-S	SSISSIPPI
-I	ISSIPPI
-I	ISSISSIPPI*/
-
-/*!
- * @fn Index#textAt
- * @headerfile <seqan/index.h>
- * @brief Shortcut for <tt>value(indexText(..), ..)</tt>.
- *
- * @signature TValue textAt(position, index);
- *
- * @param[in] index    The @link Index @endlink object. Types: @link Index @endlink
- * @param[in] position A position in the array on which the value should be accessed.
- *
- * @return TValue A reference or proxy to the value. The type is the result if the meta-function @link Reference
- *                @endlink.
- *
- * @note The result of this function when used on an <tt>Index&lt;TText, FMIndex&lt;TOccSpec, Compress&gt; &gt;</tt>
- *       is not defined.
- *
- * @section Examples
- *
- * The following code shows how the BWT of a text can be computed.
- *
- * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp
- *
- * The output is as follows:
- *
- * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp.stdout
- */
+/*_DDDOC_PLACEHOLDER*/
 
 	template <typename TPos, typename TIndex>
 	inline typename Reference<typename Fibre<TIndex, FibreRawText>::Type>::Type 
@@ -1349,18 +1098,7 @@ I	ISSISSIPPI*/
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.rawtextAt:
-..summary:Shortcut for $value(indexRawText(..), ..)$.
-..cat:Index
-..signature:rawtextAt(position, index)
-..class:Class.Index
-..param.position:A position in the array on which the value should be accessed.
-..param.index:The @Class.Index@ object holding the fibre.
-...type:Spec.IndexEsa
-..returns:A reference or proxy to the value.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Index#rawtextAt
  * @headerfile <seqan/index.h>
@@ -1388,67 +1126,7 @@ I	ISSISSIPPI*/
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.saAt:
-..summary:Shortcut for $value(indexSA(..), ..)$.
-..cat:Index
-..signature:saAt(position, index)
-..class:Class.Index
-..param.position:A position in the array on which the value should be accessed.
-..param.index:The @Class.Index@ object holding the fibre.
-...type:Spec.IndexEsa
-..returns:A reference or proxy to the value.
-..include:seqan/index.h
-..example
-...text:The following code shows how the BWT of a text can be computed.
-...file:demos/index/index_textAt_indexText_saAt_indexRequire.cpp
-...output:BWT	Suffices
-P	PI
-S	SIPPI
-S	SISSIPPI
-M	MISSISSIPPI
-I	I
-P	PPI
-I	IPPI
-S	SSIPPI
-S	SSISSIPPI
-I	ISSIPPI
-I	ISSISSIPPI*/
-/*!
- * @fn IndexEsa#saAt
- * @headerfile <seqan/index.h>
- * @note Advanced functionality, not commonly used.
- * @brief Shortcut for <tt>value(indexSA(..), ..)</tt>.
- *
- * @signature TValue saAt(position, index);
- *
- * @param[in] index The @link Index @endlink object holding the fibre.
- * @param[in] position A position in the array on which the value should be accessed.
- *
- * @return TValue A reference or proxy to the value in the suffix array. To be more precise, a reference to a
- *                position containing a value of type @link SAValue @endlink is returned (or a proxy). SAValue
- *
- * @section Examples
- *
- * The following code shows how the BWT of a text can be computed.
- *
- * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp
- *
- * @code{.output}
- * BWT	Suffices
- * P	PI
- * S	SIPPI
- * S	SISSIPPI
- * M	MISSISSIPPI
- * I	I
- * P	PPI
- * I	IPPI
- * S	SSIPPI
- * S	SSISSIPPI
- * I	ISSIPPI
- * I	ISSISSIPPI
- * @endcode
- */
+/*_DDDOC_PLACEHOLDER*/
 
 	template <typename TPos, typename TIndex>
 	SEQAN_HOST_DEVICE inline typename Reference<typename Fibre<TIndex, FibreSA>::Type>::Type saAt(TPos i, TIndex &index) {
@@ -1460,18 +1138,7 @@ I	ISSISSIPPI*/
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.rawsaAt:
-..summary:Shortcut for $value(indexRawSA(..), ..)$.
-..cat:Index
-..signature:saAt(position, index)
-..class:Class.Index
-..param.position:A position in the array on which the value should be accessed.
-..param.index:The @Class.Index@ object holding the fibre.
-...type:Spec.IndexEsa
-..returns:A reference or proxy to the value.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(weese): I disabled the doc, as we don't want to encourage users to use it
 
@@ -1518,18 +1185,7 @@ I	ISSISSIPPI*/
         return value(getFibre(index, FibreIsa()), i);
     }
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.IndexEsa#lcpAt:
-..summary:Shortcut for $value(indexLcp(..), ..)$.
-..cat:Index
-..signature:lcpAt(position, index)
-..class:Spec.IndexEsa
-..param.position:A position in the array on which the value should be accessed.
-..param.index:The @Spec.IndexEsa@ object holding the fibre.
-...type:Spec.IndexEsa
-..returns:A reference or proxy to the value.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexEsa#lcpAt
  * @headerfile <seqan/index.h>
@@ -1553,18 +1209,7 @@ I	ISSISSIPPI*/
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.IndexEsa#lcpeAt:
-..summary:Shortcut for $value(indexLcpe(..), ..)$.
-..cat:Index
-..signature:lcpeAt(position, index)
-..class:Spec.IndexEsa
-..param.position:A position in the array on which the value should be accessed.
-..param.index:The @Spec.IndexEsa@ object holding the fibre.
-...type:Spec.IndexEsa
-..returns:A reference or proxy to the value.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexEsa#lcpeAt
  * @headerfile <seqan/index.h>
@@ -1588,18 +1233,7 @@ I	ISSISSIPPI*/
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.IndexEsa#childAt:
-..summary:Shortcut for $value(indexChildtab(..), ..)$.
-..cat:Index
-..signature:childAt(position, index)
-..class:Spec.IndexEsa
-..param.position:A position in the array on which the value should be accessed.
-..param.index:The @Spec.IndexEsa@ object holding the fibre.
-...type:Spec.IndexEsa
-..returns:A reference or proxy to the value.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexEsa#childAt
  * @headerfile <seqan/index.h>
@@ -1623,18 +1257,7 @@ I	ISSISSIPPI*/
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.IndexEsa#bwtAt:
-..summary:Shortcut for $value(indexBwt(..), ..)$.
-..cat:Index
-..signature:bwtAt(position, index)
-..class:Spec.IndexEsa
-..param.position:A position in the array on which the value should be accessed.
-..param.index:The @Spec.IndexEsa@ object holding the fibre.
-...type:Spec.IndexEsa
-..returns:A reference or proxy to the value.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexEsa#bwtAt
  * @headerfile <seqan/index.h>
@@ -1683,32 +1306,7 @@ I	ISSISSIPPI*/
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.indexText:
-..summary:Shortcut for $getFibre(index, FibreText())$.
-..cat:Index
-..signature:indexText(index)
-..class:Class.Index
-..param.index:The @Class.Index@ object holding the fibre.
-...type:Class.Index
-..returns:A reference to the text fibre (original text).
-..include:seqan/index.h
-..example
-...text:The following code shows how the BWT of a text can be computed.
-...file:demos/index/index_textAt_indexText_saAt_indexRequire.cpp
-...output:BWT	Suffices
-P	PI
-S	SIPPI
-S	SISSIPPI
-M	MISSISSIPPI
-I	I
-P	PPI
-I	IPPI
-S	SSIPPI
-S	SSISSIPPI
-I	ISSIPPI
-I	ISSISSIPPI
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Index#indexText
  * @headerfile <seqan/index.h>
@@ -1778,17 +1376,7 @@ I	ISSISSIPPI
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.indexRawText:
-..summary:Shortcut for $getFibre(.., EsaRawText)$.
-..cat:Index
-..signature:indexRawText(index)
-..class:Class.Index
-..param.index:The @Class.Index@ object holding the fibre.
-...type:Spec.IndexEsa
-..returns:A reference to the @Tag.ESA Index Fibres.EsaRawText@ fibre (concatenated input text).
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @fn Index#indexRawText
@@ -1820,66 +1408,7 @@ I	ISSISSIPPI
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.indexSA:
-..summary:Shortcut for $getFibre(.., FibreSA)$.
-..cat:Index
-..signature:indexSA(index)
-..class:Class.Index
-..param.index:The @Class.Index@ object holding the fibre.
-...type:Class.Index
-..returns:A reference to the suffix array fibre.
-..include:seqan/index.h
-..example
-...text:The following code shows how the BWT of a text can be computed.
-...file:demos/index/index_textAt_indexText_saAt_indexRequire.cpp
-...output:BWT	Suffices
-P	PI
-S	SIPPI
-S	SISSIPPI
-M	MISSISSIPPI
-I	I
-P	PPI
-I	IPPI
-S	SSIPPI
-S	SSISSIPPI
-I	ISSIPPI
-I	ISSISSIPPI*/
-//TODO(singer) The function in not only defined for the esa index
-/*!
- * @fn IndexEsa#indexSA
- * @headerfile <seqan/index.h>
- * @brief Shortcut for <tt>getFibre(.., EsaSA)</tt>.
- *
- * @signature TSa indexSA(index);
- *
- * @param[in] index The @link Index @endlink object holding the fibre.
- *
- * @return TSa A reference to the suffix array fibre.
- *
- * @section Examples
- *
- * The following code shows how the BWT of a text can be computed.
- *
- * @include demos/index/index_textAt_indexText_saAt_indexRequire.cpp
- *
- * The output is as follows:
- *
- * @code{.output}
- * BWT	Suffices
- * P	PI
- * S	SIPPI
- * S	SISSIPPI
- * M	MISSISSIPPI
- * I	I
- * P	PPI
- * I	IPPI
- * S	SSIPPI
- * S	SSISSIPPI
- * I	ISSIPPI
- * I	ISSISSIPPI
- * @endcode
- */
+/*_DDDOC_PLACEHOLDER*/
 
 	template <typename TText, typename TSpec>
 	SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec>, FibreSA>::Type & indexSA(Index<TText, TSpec> &index) { return getFibre(index, FibreSA()); }
@@ -1887,17 +1416,7 @@ I	ISSISSIPPI*/
 	SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreSA>::Type & indexSA(Index<TText, TSpec> const &index) { return getFibre(index, FibreSA()); }
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.indexRawSA:
-..summary:Shortcut for $getFibre(.., EsaRawSA)$.
-..cat:Index
-..signature:indexRawSA(index)
-..class:Class.Index
-..param.index:The @Class.Index@ object holding the fibre.
-...type:Spec.IndexEsa
-..returns:A reference to the @Tag.ESA Index Fibres.EsaRawSA@ fibre (suffix array).
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(singer): should this be documented? 
 // TODO(weese): better not, we don't want to encourage users to use it
@@ -1943,17 +1462,7 @@ I	ISSISSIPPI*/
     SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreIsa>::Type & indexIsa(Index<TText, TSpec> const &index) { return getFibre(index, FibreIsa()); }
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.IndexEsa#indexLcp:
-..summary:Shortcut for $getFibre(.., EsaLcp)$.
-..cat:Index
-..signature:indexLcp(index)
-..class:Spec.IndexEsa
-..param.index:The @Spec.IndexEsa@ object holding the fibre.
-...type:Spec.IndexEsa
-..returns:A reference to the @Tag.ESA Index Fibres.EsaLcp@ fibre (lcp table).
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexEsa#indexLcp
  * @headerfile <seqan/index.h>
@@ -1972,17 +1481,7 @@ I	ISSISSIPPI*/
 	SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreLcp>::Type & indexLcp(Index<TText, TSpec> const &index) { return getFibre(index, FibreLcp()); }
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.IndexEsa#indexLcpe:
-..summary:Shortcut for $getFibre(.., EsaLcpe)$.
-..cat:Index
-..signature:indexLcpe(index)
-..class:Spec.IndexEsa
-..param.index:The @Spec.IndexEsa@ object holding the fibre.
-...type:Spec.IndexEsa
-..returns:A reference to the @Tag.IndexEsaFibres.EsaLcpe@ fibre (enhanced lcp table).
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexEsa#indexLcpe
  * @headerfile <seqan/index.h>
@@ -2001,17 +1500,7 @@ I	ISSISSIPPI*/
 	inline typename Fibre<Index<TText, TSpec> const, FibreLcpe>::Type & indexLcpe(Index<TText, TSpec> const &index) { return getFibre(index, FibreLcpe()); }
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.IndexEsa#indexBwt:
-..summary:Shortcut for $getFibre(.., EsaBwt)$.
-..cat:Index
-..signature:indexBwt(index)
-..class:Spec.IndexEsa
-..param.index:The @Spec.IndexEsa@ object holding the fibre.
-...type:Spec.IndexEsa
-..returns:A reference to the @Tag.ESA Index Fibres.EsaBwt@ fibre (Burrows-Wheeler table).
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexEsa#indexBwt
  * @headerfile <seqan/index.h>
@@ -2030,17 +1519,7 @@ I	ISSISSIPPI*/
 	SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreBwt>::Type & indexBwt(Index<TText, TSpec> const &index) { return getFibre(index, FibreBwt()); }
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.IndexEsa#indexChildtab:
-..summary:Shortcut for $getFibre(.., EsaChildtab)$.
-..cat:Index
-..signature:indexChildtab(index)
-..class:Spec.IndexEsa
-..param.index:The @Spec.IndexEsa@ object holding the fibre.
-...type:Spec.IndexEsa
-..returns:A reference to the @Tag.ESA Index Fibres.EsaChildtab@ fibre (child table).
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexEsa#indexChildtab
  * @headerfile <seqan/index.h>
@@ -2062,28 +1541,7 @@ I	ISSISSIPPI*/
 // ----------------------------------------------------------------------------
 // Function open
 // ----------------------------------------------------------------------------
-/**
-.Function.Index#open
-..class:Class.Index
-..summary:This functions opens an index from disk.
-..signature:open(index, fileName [, mode])
-..param.index:The index to be opened.
-...type:Class.Index
-..param.fileName:C-style character string containing the file name.
-..param.mode:The combination of flags defining how the file should be opened.
-...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
-...remarks:To create or overwrite a file add $OPEN_CREATE$.
-...remarks:To append a file if existing add $OPEN_APPEND$.
-...remarks:To circumvent problems, files are always opened in binary mode.
-...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/index.h
-..example
-...text:The following code shows how the function @Function.open@ is used with indices.
-...file:demos/index/index_open_save.cpp
-...output:1
-1
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Index#open
  * @headerfile <seqan/index.h>
@@ -2143,28 +1601,7 @@ I	ISSISSIPPI*/
  *
  * @include demos/index/index_open_save.cpp.stdout
  */
-/**
-.Function.Index#save
-..class:Class.Index
-..summary:This functions saves an index to disk.
-..signature:save(index, fileName [, mode])
-..param.index:The index to be saved to disk.
-...type:Class.Index
-..param.fileName:C-style character string containing the file name.
-..param.mode:The combination of flags defining how the file should be opened.
-...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
-...remarks:To create or overwrite a file add $OPEN_CREATE$.
-...remarks:To append a file if existing add $OPEN_APPEND$.
-...remarks:To circumvent problems, files are always opened in binary mode.
-...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/index.h
-..example
-...text:The following code shows how the function @Function.open@ is used with indices.
-...file:demos/index/index_open_save.cpp
-...output:1
-1
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 }
 

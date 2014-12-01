@@ -66,30 +66,14 @@ struct GeometricFairCoin {};
  * @signature Pdf::Pdf();
  */
 
-/**
-.Spec.Geometric Pdf
-..signature:Pdf<GeometricFairCoin>
-..general:Class.Pdf
-..summary:Geometric probability density function with $p=0.5$.
-
-This can be implemented efficiently not using any floating point arithmetics.
-Just bit operations are needed.
-..cat:Random
-..include:seqan/random.h
-..wiki:Tutorial/Randomness|Tutorial: Randomness
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <>
 class Pdf<GeometricFairCoin>
 {
 public:
 
-/**
-.Memfunc.Geometric Pdf#Pdf
-..class:Spec.Geometric Pdf
-..summary:Constructor for geometric Pdf.
-..signature:Pdf<GeometricFairCoin>()
-*/
+/*_DDDOC_PLACEHOLDER*/
     Pdf() { SEQAN_CHECKPOINT; }
 };
 

@@ -80,22 +80,7 @@ namespace seqan {
  * @endcode
  */
 
-/**
-.Function.atomicMax
-..summary:Lock-free implementation of $x = max(x, y)$.
-..cat:Atomic Operations
-..signature:atomicMax(x, y)
-..param.x:Integer to set to $max(x, y)$
-..param.y:Other integer.
-..remarks:This is equivalent to
-...code:
-atomic {
-    x = max(x, y);
-}
-...text:While lock-free, the function tries to update $x$ as long as $x < y$ in a loop and might run a long time if x is incremented continuously in another thread.
-..header:seqan/parallel.h
-..see:Function.atomicMin
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline void
@@ -131,22 +116,7 @@ atomicMax(T volatile & x, T y)
  * @endcode
  */
 
-/**
-.Function.atomicMin
-..summary:Lock-free implementation of $x = min(x, y)$.
-..cat:Atomic Operations
-..signature:atomicMin(x, y)
-..param.x:Integer to set to min(x, y)$
-..param.y:Other integer.
-..remarks:This is equivalent to
-...code:
-atomic {
-    x = min(x, y);
-}
-...text:While lock-free, the function tries to update $x$ as long as $x > y$ in a loop and might run a long time if x is incremented continuously in another thread.
-..header:seqan/parallel.h
-..see:Function.atomicMax
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline void

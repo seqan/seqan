@@ -47,14 +47,7 @@ namespace seqan {
 // Function arrayFill
 // ----------------------------------------------------------------------------
 
-/**
-.Function.arrayFill
-..signature:arrayFill(begin, end, value, parallelTag)
-..param.parallelTag:Tag to enable/disable parallelism.
-...type:Tag.Serial
-...type:Tag.Parallel
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator, typename TValue, typename TParallelTag>
 inline void 
@@ -92,21 +85,7 @@ arrayFill(TIterator begin_,
  * @see partialSum
  */
 
-/**
-.Function.sum
-..cat:Miscellaneous
-..summary:Returns the sum of all elements in a sequence.
-..signature:sum(seq[, parallelTag])
-..param.seq:A sequence of elements that should be summed.
-...remarks:The sequence alphabet must support the $operator+$ and conversion from zero.
-..param.parallelTag:Tag to enable/disable parallelism.
-...default:Tag.Serial
-...type:Tag.Serial
-...type:Tag.Parallel
-..returns:The sum of all contained elements.
-..see:Function.partialSum
-..include:seqan/parallel.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSequence>
 inline typename Value<TSequence>::Type
@@ -165,24 +144,7 @@ sum(TSequence const &seq)
  * @see sum
  */
 
-/**
-.Function.partialSum
-..cat:Miscellaneous
-..summary:Computes the partial sum of a sequence.
-..signature:partialSum(target, source[, parallelTag])
-..param.source:A sequence of elements that should be partially summed.
-...remarks:The sequence alphabet must support the $operator+$ and conversion from zero.
-..param.target:The resulting partial sum. This sequence will have the same length as $source$ and contains
-at position $i$ the sum of elements $source[0]$, $source[1]$, ..., $source[i]$.
-..param.parallelTag:Tag to enable/disable parallelism.
-...default:@Tag.Serial@
-...type:Tag.Serial
-...type:Tag.Parallel
-..returns:The sum of all elements in $source$.
-...remarks:The returned value equals the last value in target.
-..see:Function.sum
-..include:seqan/parallel.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TTarget, typename TSource, typename TParallelTag>
 inline typename Value<TSource>::Type

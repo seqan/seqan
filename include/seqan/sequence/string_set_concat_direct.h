@@ -75,22 +75,7 @@ struct ConcatDirect;                    // contains 1 string (the concatenation 
  * @brief The concatenation string.  Concatenates all sequences of the StringSet without gaps.
  */
 
-/**
-.Spec.ConcatDirect:
-..summary:A string set storing the concatenation of all strings within one string.
-..cat:Sequences
-..general:Spec.Owner
-..signature:StringSet<TString, Owner<ConcatDirect<> > >
-..param.TString:The string type.
-...type:Class.String
-..remarks:The strings are internally stored in a $TString$ object and the character position type is a
-a single integer value between 0 and the sum of string lengths minus 1.
-..remarks:The position type can be returned or modified by the meta-function @Metafunction.SAValue@ called with the @Class.StringSet@ type.
-..include:seqan/sequence.h
-.Memvar.ConcatDirect#concat:
-..class:Spec.ConcatDirect
-..summary:The concatenation string. Concatenates all sequences of the StringSet without gaps.
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TString, typename TSpec>
 class StringSet<TString, Owner<ConcatDirect<TSpec> > >
 {

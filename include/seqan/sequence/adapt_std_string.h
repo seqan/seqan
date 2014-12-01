@@ -44,10 +44,7 @@ namespace seqan {
 // Enums, Tags, Classes, Specializations
 // ===========================================================================
 
-/**
-.Adaption."std::basic_string"
-..summary:Adaption for STL strings.
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // ===========================================================================
 // Concepts

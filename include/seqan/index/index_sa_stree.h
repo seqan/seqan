@@ -57,17 +57,7 @@ struct SortedList;
 template <typename TSpec = void>
 struct IndexSa {};
 
-/**
-.Spec.IndexSa:
-..summary:An index based on a suffix array.
-..cat:Index
-..general:Class.Index
-..signature:Index<TText, IndexSa<> >
-..param.TText:The text type.
-...type:Class.String
-...type:Class.StringSet
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @class IndexSa

@@ -66,17 +66,7 @@ namespace seqan {
  * @param[in,out] rng       The random number generator to use.
  */
 
-/**
-.Function.shuffle
-..summary:Shuffle the given container.
-..cat:Random
-..include:seqan/random.h
-..signature:shuffle(container, rng)
-..param.container:Container to shuffle elements of.
-..param.rng:Random number generator to use.
-...type:Class.Rng
-..wiki:Tutorial/Randomness#Shuffling|Tutorial: Randomness
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TContainer, typename TRNG>
 void shuffle(TContainer & container, TRNG & rng)

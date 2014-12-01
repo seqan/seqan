@@ -67,20 +67,7 @@ typedef Tag<FibreTreeStructure_>    const FibreTreeStructure;
 // ==========================================================================
 // Metafunctions
 // ==========================================================================
-/**
-.Tag.WaveletTree Fibres
-..summary:Tag to select a specific fibre (e.g. table, object, ...) of a @Spec.WaveletTree@.
-..remarks:These tags can be used to get @Metafunction.Fibre.Fibres@ of a @Spec.WaveletTree@.
-..cat:Spec.WaveletTree
-
-..tag.FibreRanks:The string set containing a bit string for each node.
-
-..tag.FibreTreeStructure:The wavelet tree structure of the wavelet tree.
-
-..see:Metafunction.Fibre
-..see:Function.getFibre
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @defgroup WaveletTreeFibres WaveletTree Fibres
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link WaveletTree @endlink.
@@ -193,18 +180,7 @@ struct RankDictionaryBlock_<TValue, WaveletTree<TSpec, TConfig> >
 // Spec WaveletTree
 // ----------------------------------------------------------------------------
 
-/**
-.Spec.WaveletTree:
-..cat:Index
-..summary:A wavelet tree is a tree like binary encoding of a text.
-..signature:WaveletTree<TValue>
-..param.TValue:The value type of the wavelet tree.
-..include:seqan/index.h
-..remarks:The nodes of a wavelet tree consist of a bit string as well as a character c. In each level of the tree, 
-characters smaller than c are represented as a 0 while character greater or equal to c are represented with a 1.
-The characters represented by a 0 form the string to be represented by the left subtree while characters represented
-by a 1 form the string of the right subtree. Therefore, only the bit string of the root node represents all characters while all other nodes represent subsets.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TConfig>
 struct RankDictionary<TValue, WaveletTree<TSpec, TConfig> >
@@ -229,19 +205,7 @@ struct RankDictionary<TValue, WaveletTree<TSpec, TConfig> >
 // Function getFibre()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.RankDictionary#getFibre:
-..summary:Returns a specific fibre of a dictionary.
-..signature:getFibre(dictionary, fibreTag)
-..class:Class.RankDictionary
-..cat:Index
-..param.dictionary:The dictionary holding the fibre.
-...type:Class.RankDictionary
-..param.fibreTag:A tag that identifies the @Metafunction.Fibre@.
-...type:Tag.WaveletTree Fibres
-..returns:A reference to the @Metafunction.Fibre@ object.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TConfig>
 inline typename Fibre<RankDictionary<TValue, WaveletTree<TSpec, TConfig> >, FibreTreeStructure>::Type &
@@ -261,15 +225,7 @@ getFibre(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, Fibr
 // Function clear()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.RankDictionary#clear
-..class:Class.RankDictionary
-..summary:Clears the rank dictionary.
-..signature:clear(dictionary)
-..param.dictionary:The rank dictionary to be cleared.
-...type:Class.RankDictionary
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TConfig>
 inline void clear(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & dict)
@@ -282,16 +238,7 @@ inline void clear(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & dict)
 // Function empty()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.RankDictionary#empty
-..class:Class.RankDictionary
-..summary:Returns whether or not the rank dictionary is empty.
-..signature:empty(dictionary)
-..param.dictionary:The rank dictionary to be checked.
-...type:Class.RankDictionary
-..returns:$true$ if the dictionary is empty, $false$ otherwise.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TConfig>
 inline bool empty(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict)
@@ -303,16 +250,7 @@ inline bool empty(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & d
 // Function getValue()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.RankDictionary#getValue
-..summary:Returns the character of a specified position.
-..signature:getCharacter(dictionary, pos)
-..class:Class.RankDictionary
-..param.dictionary:The dictionary.
-...type:Class.RankDictionary
-..param.pos:The position
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos>
 inline TValue getValue(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & dict, TPos pos)
@@ -363,20 +301,7 @@ inline TValue getValue(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > cons
 // Function getRank()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.RankDictionary#getRank:
-..summary:Returns the rank (number of occurrences) of a specified character up to a specified position. 
-..signature:getRank(dictionary, pos, character)
-..class:Class.RankDictionary
-..cat:Index
-..param.dictionary:The dictionary.
-...type:Class.RankDictionary
-..param.character:The character of interest.
-..param.pos:The position (which is also included in the rank computation).
-..returns:The rank (number of occurrences) of a specified character up to a specified position. 
-...type:nolink:$unsigned$
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar>
 inline typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type
@@ -487,17 +412,7 @@ inline void updateRanks(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & d
 // ----------------------------------------------------------------------------
 // Function createRankDictionary()
 // ----------------------------------------------------------------------------
-/**
-.Function.RankDictionary#createRankDictionary
-..class:Class.RankDictionary
-..summary:This functions creates the dictionary.
-..signature:createRankDictionary(dictionary, text)
-..param.dictionary:The dictionary.
-...type:Class.RankDictionary
-..param.text:A text to be transfered into a wavelet tree.
-...type:Class.String
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TConfig, typename TText, typename TPrefixSums>
 inline void
@@ -522,23 +437,7 @@ createRankDictionary(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & dict
 // Function open()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.RankDictionary#open
-..class:Class.RankDictionary
-..summary:This functions loads a dictionary from disk.
-..signature:open(dictionary, fileName [, openMode])
-..param.dictionary:The dictionary.
-...type:Class.RankDictionary
-..param.fileName:C-style character string containing the file name.
-..param.openMode:The combination of flags defining how the file should be opened.
-...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
-...remarks:To create or overwrite a file add $OPEN_CREATE$.
-...remarks:To append a file if existing add $OPEN_APPEND$.
-...remarks:To circumvent problems, files are always opened in binary mode.
-...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TConfig>
 inline bool open(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & dict, const char * fileName, int openMode)
@@ -560,23 +459,7 @@ inline bool open(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & dict, co
 // Function save()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.RankDictionary#save
-..class:Class.RankDictionary
-..summary:This functions saves a dictionary to disk.
-..signature:open(dictionary, fileName [, openMode])
-..param.dictionary:The dictionary.
-...type:Class.RankDictionary
-..param.fileName:C-style character string containing the file name.
-..param.openMode:The combination of flags defining how the file should be opened.
-...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
-...remarks:To create or overwrite a file add $OPEN_CREATE$.
-...remarks:To append a file if existing add $OPEN_APPEND$.
-...remarks:To circumvent problems, files are always opened in binary mode.
-...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TConfig>
 inline bool save(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, const char * fileName, int openMode)

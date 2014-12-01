@@ -71,30 +71,8 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see OracleBfamPattern
  */
 
-/**
-.Spec.MultiBfam:
-..general:Class.Pattern
-..cat:Searching
-..summary:Multi-Pattern Backward Factor Automaton Matching.
-..signature:Pattern<TNeedle, MultiBfam<TAutomaton> >
-..param.TNeedle:The needle type.
-...type:Class.String
-..param.TAutomaton:A tag that specifies the used automaton.
-...default:@Spec.MultiBfam<Oracle>@
-..see:Spec.Bfam
-..include:seqan/find.h
-*/
-/**
-.Spec.MultiBfam<Oracle>:
-..general:Spec.MultiBfam
-..cat:Searching
-..summary:Multi-Pattern Backward Factor Automaton Matching using an oracle automaton.
-..signature:Pattern<TNeedle, MultiBfam<Oracle> >
-..param.TNeedle:The needle type.
-...type:Class.String
-..see:Spec.Bfam<Oracle>
-..include:seqan/find.h
-*/
+/*_DDDOC_PLACEHOLDER*/
+/*_DDDOC_PLACEHOLDER*/
 
 ///.Class.Pattern.param.TSpec.type:Spec.MultiBfam
 

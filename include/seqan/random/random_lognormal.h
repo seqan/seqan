@@ -66,18 +66,7 @@ typedef Tag<LogNormal_> LogNormal;
  *        for lognormal distributions.
  */
 
-/**
-.Tag.Lognormal Construction:
-..summary:Specify parameters for lognormal distribution construction.
-..cat:Random
-..include:seqan/random.h
-..tag.MuSigma:
-...summary:Tag to specify that the given parameters are mu and sigma of the underlying normal distribution for lognormal distributions.
-..tag.MeanStdDev:
-...summary:Tag to specify that the given parameters are mean an standard deviation of the lognormal distribution.
-..wiki:Tutorial/Randomness|Tutorial: Randomness
-..see:Spec.Log-Normal Pdf
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct MuSigma_;
 typedef Tag<MuSigma_> MuSigma;
@@ -115,15 +104,7 @@ typedef Tag<MeanStdDev_> MeanStdDev;
  * @param[in] stdDev Standard deviation of the log-normal distribution, double.
  */
 
-/**
-.Spec.Log-Normal Pdf
-..general:Class.Pdf
-..summary:Log-normal probability density function.
-..remark:Note that you can construct this either with mu/sigma of the underlying normal distribution (default) or with the mean and standard deviation of the log-normal distribution.
-..cat:Random
-..include:seqan/random.h
-..wiki:Tutorial/Randomness|Tutorial: Randomness
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <>
 class Pdf<LogNormal>
@@ -131,24 +112,7 @@ class Pdf<LogNormal>
 public:
     Pdf<Normal> _normalDist;
 
-/**
-.Memfunc.Log-Normal Pdf#Pdf
-..class:Spec.Log-Normal Pdf
-..summary:Constructor for log-normal Pdf.
-Log-normal PDFs can either be initialized by the mean and standard deviation of the underlying normal distribution or directly of the log-normal distribution.
-..signature:Pdf<LogNormal>(mu, sigma[, MuSigma()])
-..signature:Pdf<LogNormal>(mean, stdDev, MeanStdDev())
-..param.mu:Mean of the underlying normal distribution.
-...type:nolink:double
-..param.sigma:Standard deviation of the underlying normal distribution.
-...type:nolink:double
-..param.mean:Mean of the log-normal distribution.
-...type:nolink:double
-..param.stdDev:Standard deviation of the log-normal distribution.
-...type:nolink:double
-..see:Tag.Lognormal Construction.tag.MuSigma
-..see:Tag.Lognormal Construction.tag.MeanStdDev
-*/
+/*_DDDOC_PLACEHOLDER*/
     Pdf(double mu, double sigma, MuSigma const &)
             : _normalDist(mu, sigma)
     {

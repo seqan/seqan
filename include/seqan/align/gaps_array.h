@@ -98,16 +98,7 @@ typedef Tag<ArrayGaps_> ArrayGaps;
  * @param[in] seq   Sequence concept to construct the gaps for.
  */
 
-/**
-.Spec.ArrayGaps
-..cat:Alignments
-..general:Class.Gaps
-..summary:Stores length of gap- and non-gapped runs in an array.
-..signature:Gaps<TSequence, ArrayGaps>
-..param.TSequence:Type of the ungapped sequence.
-...metafunction:Metafunction.Source
-..include:seqan/align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSequence>
 class Gaps<TSequence, ArrayGaps>

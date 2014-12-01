@@ -51,15 +51,7 @@ namespace seqan {
  * @brief Tag for global sparse chaining.
  */
 
-/**
-.Tag.Global Chaining
-..summary:Tags for selecting the global chaining algorithm.
-..cat:Seed Handling
-..see:Function.chainSeedsGlobally
-..tag:SparseChaining:
-    Chaining as described in (Gusfield, 1997) section 13.3.
-..include:seqan/seeds.h
- */
+/*_DDDOC_PLACEHOLDER*/
 struct SparseChaining_;
 typedef Tag<SparseChaining_> SparseChaining;
 
@@ -106,12 +98,7 @@ typedef Tag<SparseChaining_> SparseChaining;
  */
 
 // TODO(holtgrew): Implement scored!
-/**
-.Function.chainSeedsGlobally
-..summary:Global chaining of seeds.
-..signature:chainSeedsGlobally(target, seedSet, tag)
-..include:seqan/seeds.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TTargetContainer, typename TSeedSpec, typename TSeedSetSpec>
 void
 chainSeedsGlobally(

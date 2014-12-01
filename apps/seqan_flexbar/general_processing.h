@@ -59,28 +59,7 @@ using namespace seqan;
 // Tags, Classes, Enums
 // ============================================================================
 
-/**
-.Class.GeneralStats:
-..summary:Struct holding information on general statistics.
-..include:seqan/generalProcessing.h
-.Memvar.GeneralStats#removedSeqs
-..class:Class.GeneralStats
-..summary:Number of deleted sequences due to N's
-..type:nolink:unsigned
-.Memvar.GeneralStats#uncalledBases
-..class:Class.GeneralStats
-..summary:Number of uncalled bases (possibly masked) in surviving sequences.
-..type:nolink:unsigned long
-.Memvar.GeneralStats#removedSeqsShort
-..class:Class.GeneralStats
-..summary:Number of deleted sequences due to shortness.
-..type:nolink:unsigned
-
-.Memfunc.GeneralStats#GeneralStats:
-..class:Class.GeneralStats
-..summary:Default Constructor
-..signature:GeneralStats(void)
-*/
+/*_DDDOC_PLACEHOLDER*/
 struct GeneralStats
 {
 	unsigned removedSeqs;       //Number of deleted sequences due to N's
@@ -94,24 +73,7 @@ struct GeneralStats
 // Functions
 // ============================================================================
 
-/**
-.Function.findN
-..summary:Function for finding N's in a single sequence, substituting them and/or deleting it, if
- the number of found N's is too high.
-..signature:findN(seq, allowed, substitute)
-..param.seq:The sequence.
-...type:nolink:String
-..param.allowed:Number of allowed N's per sequence.
-...type:nolink:unsigned
-..param.substitute:The (optional) substitute base for N's.
-...type:nolink:Dna5
-...type:nolink:Dna5Q
-...type:nolink:char
-..remarks:Alphabet of the given sequence must be Dna5 or Dna5Q, otherwise results will be wrong.
-..returns:The Number of found N's or substitutions. If too many N's were found, -1 is returned.
-...type:nolink:int
-..see:Function.processN
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TAlpha, typename TSub>
 int findN(String<TAlpha>& seq, unsigned allowed, TSub substitute)
 {
@@ -154,42 +116,7 @@ int findN(String<TAlpha>& seq, unsigned allowed)
     return c;                   //sequence not deleted, number of N's returned
 }
 
-/**
-.Function.processN
-..summary:Function for finding N's in all given sequences, substituting them and/or deleting them, if
- the number of found N's is too high.
-..signature:processN(seqs, ids, seqsRev, idsRev, multiplex, allowed, substitute, stats)
-..signature:processN(seqs, ids, seqsRev, idsRev, multiplex, allowed, stats)
-..signature:processN(seqs, ids, seqsRev, idsRev, allowed, substitute, stats)
-..signature:processN(seqs, ids, seqsRev, idsRev, allowed, stats)
-..signature:processN(seqs, ids, multiplex, allowed, substitute, stats)
-..signature:processN(seqs, ids, multiplex, allowed, stats)
-..signature:processN(seqs, ids, allowed, substitute, stats)
-..signature:processN(seqs, ids, allowed, stats)
-..param.seqs:The forward reads.
-...type:Class.StringSet
-..param.ids:The ids associated with the forward reads.
-...type:Class.StringSet
-..param.seqsRev:The backward reads.
-...type:Class.StringSet
-..param.idsRev:The ids associated with the backward reads.
-...type:Class.StringSet
-..param.multiplex:The multiplex barcodes of the reads.
-...type:Class.StringSet
-..param.allowed:Number of allowed N's per sequence.
-...type:nolink:unsigned
-..param.substitute:The (optional) substitute base for N's.
-...type:nolink:Dna5
-...type:nolink:Dna5Q
-...type:nolink:char
-..param.stats:The GeneralStats object holding general statistic data.
-...type:Class.GeneralStats
-..remarks:This function simply calls findN and performs the deletion of ids/sequences/barcodes if necessary
-..remarks:If the number of N's in one part of the sequence (e.g. the backward reads) is too hight, also the forward read
- will be deleted.
-..returns:void
-..see:Function.findN
-*/
+/*_DDDOC_PLACEHOLDER*/
 //single-end data with substitutions
 template<typename TSeqs, typename TIds, typename TSub>
 void processN(TSeqs& seqs, TIds& ids, unsigned allowed, TSub substitute, GeneralStats& stats)
@@ -559,33 +486,7 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& mult
 }
 
 
-/**
-.Function.preTrim
-..summary:Function for trimming the sequences and deleting too short ones before further processing.
-..signature:preTrim(seqs, ids, seqsRev, idsRev, multiplex, head, tail, min, stats)
-..signature:preTrim(seqs, ids, seqsRev, idsRev, head, tail, min, stats)
-..signature:preTrim(seqs, ids, multiplex, head, tail, min, stats)
-..signature:preTrim(seqs, ids, head, tail, min, stats)
-..param.seqs:The forward reads.
-...type:Class.StringSet
-..param.ids:The ids associated with the forward reads.
-...type:Class.StringSet
-..param.seqsRev:The backward reads.
-...type:Class.StringSet
-..param.idsRev:The ids associated with the backward reads.
-...type:Class.StringSet
-..param.multiplex:The multiplex barcodes of the reads.
-...type:Class.StringSet
-..param.head:Number of bases to be cut at the 5' end(s).
-...type:nolink:unsigned
-..param.tail:Number of bases to be cut at the 3' end(s).
-...type:nolink:unsigned
-..param.min:Minimum sequence length AFTER trimming.
-...type:nolink:unsigned
-..param.stats:The GeneralStats object holding general statistic data.
-...type:Class.GeneralStats
-..returns:void
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TSeqs, typename TIds> //Version for single end data
 void preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned tail, unsigned min, GeneralStats& stats)
 {

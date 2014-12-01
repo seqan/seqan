@@ -135,50 +135,7 @@ typedef Tag<ProfileSeqScore_> ProfileSeqScore;
  * assign the profile to this class.
  */
 
-/**
-.Spec.ProfileSeq Score
-..cat:Profile Alignment
-..general:Class.Score
-..summary:Score for profile-to-sequence alignments.
-..description:
-Using this @Class.Score@ specialization, you can use profiles for the horizontal and sequences for the vertical
-sequence in the pairwise DP alignment functions.
-..description:
-Scoring works as follows.
-The integer $SEQAN_CONSENSUS_UNITY$ and fractions thereof are used to express scores.
-Gap opens in the profile are scored proportional to the number of gaps in the profile with two times unity, gap extends
-with one times unity at the position.
-Gap opens in the sequence are scored with two times unity, gap extends in the sequence with unity.
-Alignments of profile characters to sequence characters are scored with the fraction of profile characters that
-match the sequence characters times unity.
-..signature:class Score<TValue, ProfileSeqScore>;
-..param.TValue:The integer type to use for representing scores.
-..example.text:
-The following example uses the ProfileSeq Score to align a sequence against a profile.
-Note that we print the gap state for each position since profiles cannot be printed to one stdout character.
-..example.file:demos/align_profile/profile_seq_score.cpp
-..example.output:
-score value = -2097152
-gaps in profile/sequence
-pos G   S
-0   0   0
-1   1   0
-2   0   0
-3   1   0
-4   0   0
-5   0   0
-..include:seqan/align_profile.h
-
-.Memfunc.ProfileSeq Score#Score
-..class:Spec.ProfileSeq Score
-..summary:Constructor.
-..signature:Score::Score();
-..signature:Score::Score(profile);
-..descripton:Can be default constructed or directly be initialized with a profile.
-When providing $profile$, the function @Function.ProfileSeq Score#assignProfile@ is automatically used to assign
-the profile to this class.
-..see:Function.ProfileSeq Score#assignProfile
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 class Score<TValue, ProfileSeqScore>
@@ -262,48 +219,7 @@ typedef Tag<ProfileSeqFracScore_> ProfileSeqFracScore;
  */
 
 
-/**
-.Spec.ProfileSeqFrac Score
-..cat:Profile Alignment
-..general:Class.Score
-..summary:Score for profile-to-sequence alignments.
-..description:
-Using this @Class.Score@ specialization, you can use profiles for the horizontal and sequences for the vertical
-sequence in the pairwise DP alignment functions.
-..description:
-Scoring works as follows.
-The integer $SEQAN_CONSENSUS_UNITY$ and fractions thereof are used to express scores.
-Gap opens in the profile are scored proportional to the number of gaps in the profile two times unity,
-gap extends are scored proportional to the number of gaps in the profile at the position.
-Gap opens in the sequence are scored with two times unity, gap extends with one times unity.
-..signature:class Score<TValue, ProfileSeqFracScore>;
-..param.TValue:The integer type to use for representing scores.
-..example.text:
-The following example uses the ProfileSeqFrac Score to align a sequence against a profile.
-Note that we print the gap state for each position since profiles cannot be printed to one stdout character.
-..example.file:demos/align_profile/profile_seq_frac_score.cpp
-..example.output:
-score value = -2097152
-gaps in profile/sequence
-pos G   S
-0   0   0
-1   1   0
-2   0   0
-3   1   0
-4   0   0
-5   0   0
-..include:seqan/align_profile.h
-
-.Memfunc.ProfileSeqFrac Score#Score
-..class:Spec.ProfileSeqFrac Score
-..summary:Constructor.
-..signature:Score::Score();
-..signature:Score::Score(profile);
-..descripton:Can be default constructed or directly be initialized with a profile.
-When providing $profile$, the function @Function.ProfileSeqFrac Score#assignProfile@ is automatically used to assign
-the profile to this class.
-..see:Function.ProfileSeqFrac Score#assignProfile
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 class Score<TValue, ProfileSeqFracScore>
@@ -391,15 +307,7 @@ sequenceEntryForScore(Score<TScoreValue, ProfileSeqScore> const & /*sScheme*/,
  * @param[in]  profile The profile to assign to the score.  @link AllocString @endlink of @link ProfileChar @endlink.
  */
 
-/**
-.Function.ProfileSeq Score#assignProfile
-..class:Spec.ProfileSeq Score
-..summary:Assign profile to ProfileSeg Score.
-..signature:void assignProfile(score, profile);
-..param.score:The @Spec.ProfileSeq Score@ object to assign the profile for.
-...type:Spec.ProfileSeq Score
-..param.profile:A string of @Class.ProfileChar@ with the profile to align against.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TString>
 inline void
@@ -531,15 +439,7 @@ sequenceEntryForScore(Score<TScoreValue, ProfileSeqFracScore> const & /*sScheme*
  * @param[in]  profile The profile to assign to the score.  @link AllocString @endlink of @link ProfileChar @endlink.
  */
 
-/**
-.Function.ProfileSeqFrac Score#assignProfile
-..class:Spec.ProfileSeqFrac Score
-..summary:Assign profile to ProfileSegFrac Score.
-..signature:void assignProfile(score, profile);
-..param.score:The @Spec.ProfileSeq Score@ object to assign the profile for.
-...type:Spec.ProfileSeqFrac Score
-..param.profile:A string of @Class.ProfileChar@ with the profile to align against.
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TString>
 inline void
 assignProfile(Score<TValue, ProfileSeqFracScore> & me,

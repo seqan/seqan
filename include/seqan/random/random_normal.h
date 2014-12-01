@@ -61,15 +61,7 @@ typedef Tag<Normal_> Normal;
  *            class Pdf<Normal>;
  */
 
-/**
-.Spec.Normal Pdf
-..signature:Pdf<Normal>
-..general:Class.Pdf
-..summary:Normal probability density function.
-..cat:Random
-..include:seqan/random.h
-..wiki:Tutorial/Randomness|Tutorial: Randomness
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <>
 class Pdf<Normal>
@@ -88,16 +80,7 @@ public:
  * @param[in] sigma Standard deviation of the normal distribution, double.
  */
 
-/**
-.Memfunc.Normal Pdf#Pdf
-..class:Spec.Normal Pdf
-..summary:Constructor for normal Pdf.
-..signature:Pdf<Normal>(mu, sigma)
-..param.mu:Mean of the normal distribution.
-...type:nolink:double
-..param.sigma:Standard deviation of the normal distribution.
-...type:nolink:double
-*/
+/*_DDDOC_PLACEHOLDER*/
     Pdf(double mu, double sigma)
             : _mu(mu), _sigma(sigma)
     {

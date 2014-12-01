@@ -54,16 +54,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TNeedle The type of the needle to search for.  Type: @link ContainerConcept @endlink.
  */
 
-/**
-.Spec.WuManber:
-..general:Class.Pattern
-..cat:Searching
-..summary:Online-algorithm for multi-pattern search.
-..signature:Pattern<TNeedle, WuManber>
-..param.TNeedle:The needle type.
-...type:Class.String
-..include:seqan/find.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 ///.Class.Pattern.param.TSpec.type:Spec.WuManber
 

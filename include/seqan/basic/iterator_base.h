@@ -62,18 +62,7 @@ namespace seqan {
  * @tparam TSpec      Type to use for specializing the <tt>Iter</tt> class.
  */
 
-/**
-.Class.Iter:
-..cat:Basic
-..summary:Iterator that is used to traverse containers.
-..signature:Iter<TContainer, TSpec>
-..param.TContainer:Type of the container that can be iterated by $Iter$.
-...metafunction:Metafunction.Container
-..param.TSpec:The specializing type.
-...metafunction:Metafunction.Spec
-..implements:Concept.IteratorAssociatedTypesConcept
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TContainer, typename TSpec>
 class Iter;
@@ -98,14 +87,7 @@ class Iter;
  *              container is complemented.
  */
 
-/**
-.Metafunction.IterComplementConst:
-..cat:Basic
-..summary:Complement the "constness" of the container of an iterator.
-..signature:IterComplementConst<TIterator>
-..param.TIterator:The iterator to toggle the constness of its container for.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator>
 struct IterComplementConst;
@@ -140,14 +122,7 @@ struct IterComplementConst<Iter<TContainer, TSpec> const>
  * @return Type The resulting Iter type with a const container.
  */
 
-/**
-.Metafunction.IterMakeConst:
-..cat:Basic
-..summary:Make the container of an Iter const.
-..signature:IterMakeConst<TIterator>
-..param.TIterator:The iterator make the container const for.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator>
 struct IterMakeConst;

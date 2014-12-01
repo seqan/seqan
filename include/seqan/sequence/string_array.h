@@ -67,19 +67,7 @@ namespace seqan {
  * Having static-sized strings is useful as members of structs for external memory algorithms, for example.
  */
 
-/**
-.Spec.Array String:
-..cat:Strings
-..general:Class.String
-..summary:Fast, static-size string.
-..remarks:This is useful as members of structs for external memory algorithms, for example.
-..signature:String<TValue, Array<CAPACITY> >
-..param.TValue:The value type, that is the type of the items/characters stored in the string.
-...remarks:Use @Metafunction.Value@ to get the value type for a given class.
-..param.CAPACITY:A positive integer that specifies the capacity of the string.
-...remarks:Note that the capacity of an Array String is fixed at compile-time.
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <size_t CAPACITY>
 struct Array;
@@ -263,9 +251,7 @@ reserve(String<TValue, Array<CAPACITY> > & me,
 // Function _setLength()
 // ----------------------------------------------------------------------------
 
-/**
-.Internal._setLength.param.object.type:Spec.Array String
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, size_t CAPACITY, typename TSize>
 inline void
 _setLength(String<TValue, Array<CAPACITY> > & me,

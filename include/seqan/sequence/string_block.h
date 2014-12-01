@@ -68,18 +68,7 @@ namespace seqan {
 template<size_t SPACE = 4096>
 struct Block;
 
-/**
-.Spec.Block String:
-..cat:Strings
-..general:Class.String
-..summary:String optimized for appendValue, back, and eraseBack (Stack behaviour).
-..signature:String<TValue, Block<size> >
-..param.TValue:The value type, that is the type of the items/characters stored in the string.
-...remarks:Use @Metafunction.Value@ to get the value type for a given class.
-..param.size:A positive integer that specifies the number of values in each allocated block.
-...remarks: Size should be a power of 2, e.g., 1024.
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TValue, size_t SPACE>
 class String<TValue, Block<SPACE> >
 {

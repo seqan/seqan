@@ -70,33 +70,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in] v     The descriptor of the vertex to iterate adjacent edges of.
  */
 
-/**
-.Spec.Adjacency Iterator:
-..cat:Graph
-..summary:Adjacency iterator for @Class.Graph@.
-..signature:Iterator<TGraph, AdjacencyIterator>
-..param.TGraph:A graph.
-...type:Class.Graph
-..general:Class.Iter
-..see:Spec.Vertex Iterator
-..see:Spec.Out-Edge Iterator
-..see:Spec.Edge Iterator
-..see:Spec.Bfs Iterator
-..include:seqan/graph_types.h
-
-.Memfunc.Adjacency Iterator#Iter
-..summary:Constructor
-..class:Spec.Adjacency Iterator
-..signature:Iter()
-..signature:Iter(graph, v)
-..signature:Iter(iter)
-..param.graph:The graph to iterate edges of.
-...type:Class.Graph
-..param.v:Vertex descriptor of vertex to iterate adjacent edges of.
-...type:Metafunction.VertexDescriptor
-..param.iter:Other iterator to copy-construct from.
-...type:Spec.Adjacency Iterator
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TGraph, typename TSpec>
 class Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > > 
 {

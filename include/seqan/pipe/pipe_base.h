@@ -68,23 +68,7 @@ namespace seqan {
  * @param[in] in Reference to an input pipe.
  */
 
-/**
-.Class.Pipe:
-..cat:Pipelining
-..summary:Pipes are pop-passive pipeline modules.
-..signature:Pipe<TInput, TSpec>
-..param.TInput:The type of the pipeline module this module reads from.
-...remarks:Use @Class.Bundle2@, @Class.Bundle3@, etc. to read from more than one module.
-..param.TSpec:The specializing type.
-..remarks:Use @Metafunction.Value@ to get the output type of a given Pipe (returns $Value<TInput>::Type$ by default).
-..remarks:Use @Metafunction.Size@ to get the size type of a given Pipe (returns $Size<TInput>::Type$ by default).
-.Memfunc.Pipe#Pipe:
-..class:Class.Pipe
-..summary:Constructor
-..signature:Pipe<TInput, TSpec> (in)
-..param.in:Reference to an input pipe.
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TInput, typename TSpec >
     struct Pipe {
@@ -120,22 +104,7 @@ namespace seqan {
  * @brief TInput2 reference
  */
 
-/**
-.Class.Bundle2:
-..cat:Aggregates
-..summary:Stores references to two arbitrary objects.
-..signature:Bundle2<TInput1, TInput2>
-..param.TInput1:The type of the first object.
-..param.TInput2:The type of the second object.
-..remarks:Primarily used as an adaptor for pipes with two sources.
-.Memvar.Bundle2#in1:
-..class:Class.Bundle2
-..summary:TInput1 reference
-.Memvar.Bundle2#in2:
-..class:Class.Bundle2
-..summary:TInput2 reference
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
     // pipe input adapter 2->1 pipe
     template < typename TInput1, typename TInput2 >
     struct Bundle2 {
@@ -161,18 +130,7 @@ namespace seqan {
  * @see Bundle2
  */
 
-/**
-.Function.bundle2
-..class:Class.Bundle2
-..cat:Pipelining
-..summary:Returns a bundle of two objects.
-..signature:bundle2(in1, in2)
-..param.in1:First object.
-..param.in2:Second object.
-..returns:A @Class.Bundle2@ with references to $in1$ and $in2$.
-..see:Class.Bundle2
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 	template < typename TInput1, typename TInput2 >
 	inline Bundle2< TInput1, TInput2 >
 	bundle2(TInput1 &_in1, TInput2 &_in2) {
@@ -204,26 +162,7 @@ namespace seqan {
  * @brief TInput3 reference
  */
 
-/**
-.Class.Bundle3:
-..cat:Aggregates
-..summary:Stores references to three arbitrary objects.
-..signature:Bundle3<TInput1, TInput2, TInput3>
-..param.TInput1:The type of the first object.
-..param.TInput2:The type of the second object.
-..param.TInput3:The type of the third object.
-..remarks:Primarily used as an adaptor for pipes with three sources.
-.Memvar.Bundle3#in1:
-..class:Class.Bundle3
-..summary:TInput1 reference
-.Memvar.Bundle3#in2:
-..class:Class.Bundle3
-..summary:TInput2 reference
-.Memvar.Bundle3#in3:
-..class:Class.Bundle3
-..summary:TInput3 reference
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
     // pipe input adapter 3->1 pipe
     template < typename TInput1, typename TInput2, typename TInput3 >
     struct Bundle3 {
@@ -252,19 +191,7 @@ namespace seqan {
  * @see Bundle3
  */
 
-/**
-.Function.bundle3
-..class:Class.Bundle3
-..cat:Pipelining
-..summary:Returns a bundle of three objects.
-..signature:bundle3(in1, in2, in3)
-..param.in1:First object.
-..param.in2:Second object.
-..param.in3:Third object.
-..returns:A @Class.Bundle3@ with references to $in1$, $in2$, and $in3$.
-..see:Class.Bundle3
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 	template < typename TInput1, typename TInput2, typename TInput3 >
 	inline Bundle3< TInput1, TInput2, TInput3 >
 	bundle3(TInput1 &_in1, TInput2 &_in2, TInput3 &_in3) {
@@ -305,34 +232,7 @@ namespace seqan {
  * @brief TInput5 reference
  */
 
-/**
-.Class.Bundle5:
-..cat:Aggregates
-..summary:Stores references to five arbitrary objects.
-..signature:Bundle5<TInput1, TInput2, TInput3, TInput4, TInput5>
-..param.TInput1:The type of the first object.
-..param.TInput2:The type of the second object.
-..param.TInput3:The type of the third object.
-..param.TInput4:The type of the fourth object.
-..param.TInput5:The type of the fifth object.
-..remarks:Primarily used as an adaptor for pipes with five sources.
-.Memvar.Bundle5#in1:
-..class:Class.Bundle5
-..summary:TInput1 reference
-.Memvar.Bundle5#in2:
-..class:Class.Bundle5
-..summary:TInput2 reference
-.Memvar.Bundle5#in3:
-..class:Class.Bundle5
-..summary:TInput3 reference
-.Memvar.Bundle5#in4:
-..class:Class.Bundle5
-..summary:TInput4 reference
-.Memvar.Bundle5#in5:
-..class:Class.Bundle5
-..summary:TInput5 reference
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
     // pipe input adapter 5->1 pipe
     template < typename TIn1, typename TIn2, typename TIn3, typename TIn4, typename TIn5 >
     struct Bundle5 {
@@ -365,21 +265,7 @@ namespace seqan {
  * @see Bundle5
  */
 
-/**
-.Function.bundle5
-..class:Class.Bundle5
-..cat:Pipelining
-..summary:Returns a bundle of five objects.
-..signature:bundle5(in1, in2, in3, in4, in5)
-..param.in1:First object.
-..param.in2:Second object.
-..param.in3:Third object.
-..param.in4:Fourth object.
-..param.in5:Fifth object.
-..returns:A @Class.Bundle5@ with references to $in1$, $in2$, $in3$, $in4$, and $in5$.
-..see:Class.Bundle5
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
     template < typename TIn1, typename TIn2, typename TIn3, typename TIn4, typename TIn5 >
 	inline Bundle5< TIn1, TIn2, TIn3, TIn4, TIn5 >
 	bundle5(TIn1 &_in1, TIn2 &_in2, TIn3 &_in3, TIn4 &_in4, TIn5 &_in5) {
@@ -578,20 +464,7 @@ SEQAN_CHECKPOINT
  * @see Pipe#pop
  */
 
-/**
-.Function.Pipe#front
-..class:Class.Pipe
-..cat:Pipelining
-..summary:Gets the first element of the remaining stream.
-..signature:front(object)
-..param.object:A pop-passive pipeline module.
-...type:Class.Pipe
-..returns:The first element of the remaining input stream.
-Return type is $Value<TObject>::Type$ for $object$ type $TObject$.
-..remarks:@Function.Pipe#front@ or @Function.pop@ can only be called within a read process surrounded by @Function.beginRead@ and @Function.endRead@.
-..see:Function.pop
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TInput, typename TSpec, typename TValue >
     inline typename Value< Pipe<TInput, TSpec> >::Type const &
@@ -616,21 +489,7 @@ SEQAN_CHECKPOINT
  * Pipe#front or Pipe#pop can only be called within a read process surrounded by beginRead and endRead.
  */
 
-/**
-.Function.pop:
-..class:Class.Pipe
-..cat:Pipelining
-..summary:Pops the first element of the remaining stream.
-..signature:pop(object[, ref])
-..param.object:A pop-passive pipeline module.
-...type:Class.Pipe
-..param.ref:Reference to the result. Result type is $Value<TObject>::Type$ for $object$ type $TObject$.
-...remarks:Returns the first element of the remaining input stream.
-..remarks:In contrast to @Function.Pipe#front@ this function also steps one element further.
-..remarks:@Function.Pipe#front@ or @Function.pop@ can only be called within a read process surrounded by @Function.beginRead@ and @Function.endRead@.
-..DISABLED.see:Function.top
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TInput, typename TSpec, typename TValue >
     inline void pop(Pipe<TInput, TSpec> &me, TValue &Ref_) {
@@ -717,22 +576,7 @@ SEQAN_CHECKPOINT
  * @see Pipe#endRead
  */
 
-/**
-.Function.beginRead
-..class:Class.Pipe
-..class:Class.Pool
-..cat:Pipelining
-..summary:Initiates a read process.
-..signature:beginRead(object)
-..param.object:A pop-passive pipeline module.
-...type:Class.Pipe
-...type:Class.Pool
-..returns:A $bool$ which is $true$ on success.
-..remarks:$beginRead$ rewinds the output stream, prepares $object$ for succeeding reads, and typically calls $beginRead$ of the input pipeline modules.
-..remarks:A read process must be terminated with @Function.endRead@. Nested read processes are not allowed.
-..see:Function.endRead
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TInput, typename TSpec >
 	inline bool beginRead(Pipe<TInput, TSpec> &me)
@@ -757,21 +601,7 @@ SEQAN_CHECKPOINT
  * @see Pipe#beginRead
  */
 
-/**
-.Function.endRead
-..class:Class.Pipe
-..class:Class.Pool
-..cat:Pipelining
-..summary:Terminates a read process.
-..signature:beginRead(object)
-..param.object:A pop-passive pipeline module.
-...type:Class.Pipe
-...type:Class.Pool
-..returns:A $bool$ which is $true$ on success.
-..remarks:$endRead$ closes the output stream, frees resources possibly allocated by @Function.beginRead@, and typically calls $endRead$ of the input pipeline modules.
-..see:Function.beginRead
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TInput, typename TSpec >
 	inline bool endRead(Pipe<TInput, TSpec> &me) {

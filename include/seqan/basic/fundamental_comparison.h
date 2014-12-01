@@ -96,34 +96,7 @@ template <typename TValue> SEQAN_HOST_DEVICE inline typename ValueSize<TValue>::
  * @see CompareType
  */
 
-/**
-.Metafunction.CompareType
-..cat:Basic
-..summary:Type to convert other types for comparisons.
-..signature:CompareType<T1, T2>::Type
-..param.T1:Type of the left operand of a comparison.
-..param.T2:Type of the right operand of a comparison.
-..return.type:The Type in which the arguments are converted in order to compare them.
-..remarks:Comparisons are for example operators like $==$ or $<$.
-..remarks:Do not implement, implement @Metafunction.CompareTypeImpl@ instead.
-..remarks.text:Note that there is no rule that guarantees that $CompareType<T1, T2>::Type$
-is the same as $CompareType<T2, T1>::Type$. It is also possible, that only one of these
-two types is defined.
-..see:Metafunction.CompareTypeImpl
-..remarks.text:This metafunction is used for the implementation of
-comparisons that involve @Class.SimpleType@.
-..include:seqan/basic.h
-
-.Metafunction.CompareTypeImpl
-..cat:Basic
-..summary:Implementation of @Metafunction.CompareType@.
-..signature:CompareType<T1, T2>::Type
-..param.T1:Type of the left operand of a comparison.
-..param.T2:Type of the right operand of a comparison.
-..return.type:The Type in which the arguments are converted in order to compare them.
-..see:Metafunction.CompareType
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // Given two types, the CompareType is a type that both types can be cast to
 // and where the results are then used to compare two values.

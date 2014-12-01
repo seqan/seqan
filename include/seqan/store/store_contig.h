@@ -116,68 +116,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Constant to represent an invalid.
  */
 
-/**
-.Class.ContigStoreElement
-..summary:Represents a single contig.
-..cat:Fragment Store
-..signature:ContigStoreElement<>
-..signature:ContigStoreElement<TContigSeq[, TGapAnchor[, TSpec]]>
-..param.TContigSeq:Type to store the contig sequence.
-..param.TGapAnchor:Type of a contig gap anchor.
-...type:Class.GapAnchor
-..param.TSpec:The specialization type.
-...default:$void$
-..remarks:Value type of the @Memvar.FragmentStore#contigStore@ string.
-
-.Typedef.ContigStoreElement#TContigSeq
-..summary:Type of the $seq$ member.
-..class:Class.ContigStoreElement
-.Typedef.ContigStoreElement#TGapAnchors
-..summary:Type of the $gaps$ member.
-..class:Class.ContigStoreElement
-.Typedef.ContigStoreElement#TPos
-..summary:Type of the $fileBeginPos$ and $fileEndPos$ members.
-..class:Class.ContigStoreElement
-.Typedef.ContigStoreElement#TSpec
-..summary:The specialization type.
-..class:Class.ContigStoreElement
-
-
-.Memfunc.ContigStoreElement#ContigStoreElement
-..summary:Constructor
-..signature:ContigStoreElement<> ()
-..signature:ContigStoreElement<TContigSeq[, TGapAnchor[, TSpec]]> ()
-..remarks:Sets $fileId$ to $INVALID_ID$ and $usage$, $fileBeginPos$ and $fileEndPos$ to $0$.
-..class:Class.ContigStoreElement
-.Memvar.ContigStoreElement#seq
-..summary:Contig sequence.
-..type:Typedef.ContigStoreElement#TContigSeq
-..class:Class.ContigStoreElement
-.Memvar.ContigStoreElement#gaps
-..summary:String of contig gap anchors. Can be used to create a $Spec.AnchorGaps$ alignment row.
-..type:Typedef.ContigStoreElement#TGapAnchors
-..class:Class.ContigStoreElement
-.Memvar.ContigStoreElement#usage
-..summary:Counts the number of locks, see @Function.lockContigs@.
-..class:Class.ContigStoreElement
-.Memvar.ContigStoreElement#fileId
-..summary:Refers to a file in the @Memvar.FragmentStore#contigFileStore@ or is $INVALID_ID$ if the contig has no file association.
-..type:Metafunction.Id
-..class:Class.ContigStoreElement
-.Memvar.ContigStoreElement#fileBeginPos
-..summary:Begin position of the contig sequence fragment in the file.
-..type:Typedef.ContigStoreElement#TPos
-..class:Class.ContigStoreElement
-.Memvar.ContigStoreElement#fileEndPos
-..summary:End position of the contig sequence fragment in the file.
-..type:Typedef.ContigStoreElement#TPos
-..class:Class.ContigStoreElement
-.Memvar.ContigStoreElement#INVALID_ID
-..summary:Constant to represent an invalid id.
-..type:Metafunction.Id
-..class:Class.ContigStoreElement
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TContigSeq_, typename TGapAnchor_, typename TSpec_ = void>
 struct ContigStoreElement
@@ -246,30 +185,7 @@ ContigStoreElement<TContigSeq_, TGapAnchor_, TSpec_>::INVALID_ID = MaxValue<type
  * @brief The contigId of the first sequence in the file.  Subsequent contig sequences have an increasing contigId.
  */
 
-/**
-.Class.ContigFile
-..summary:Represents a file containing contigs.
-..cat:Fragment Store
-..signature:ContigFile<>
-..signature:ContigFile<TSpec>
-..param.TSpec:The specialization type.
-...default:$void$
-..remarks:Value type of the @Memvar.FragmentStore#contigFileStore@ string.
-
-.Memvar.ContigFile#fileName
-..summary:Contig file name.
-..type:Shortcut.CharString
-..class:Class.ContigFile
-.Memvar.ContigFile#format
-..summary:Stores the contig file format, auto-detected in $Function.loadContigs$.
-..type:Class.AutoSeqFormat
-..class:Class.ContigFile
-.Memvar.ContigFile#firstContigId
-..summary:The $contigId$ of the first sequence in the file. Subsequent contig sequences have an increasing $contigId$.
-..type:Metafunction.Id
-..class:Class.ContigFile
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec_ = void>
 struct ContigFile

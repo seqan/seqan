@@ -40,27 +40,7 @@ namespace SEQAN_NAMESPACE_MAIN
 // Pms1
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Spec.Pms1:
-..summary: Represents the Pms1 algorithm developed by Rajasekaran et al.
-..description.note:There are various known problems with the motif finding in SeqAn. We plan to fix this in an upcoming release.
-..general:Class.MotifFinder
-..cat:Motif Search
-..signature:MotifFinder<TValue, Pms1, TRng>
-..param.TValue:The type of sequences to be analyzed.
-...type:Spec.Dna
-...type:Spec.AminoAcid
-..remarks:The exact @Spec.Pms1|Pms1 algorithm@ (Planted Motif Search 1) searches in the space
-          of possible motifs such as @Spec.EPatternBranching@. The procedure of the algorithm
-		  is quite simple. For every l-mer in each input sequence the algorithm generates
-		  all possible length-l patterns in the Hamming distance $d$-neighborhood of $x$.
-		  The neighbor sets for each sequence are then intersected so that at the end of the process
-		  we get a group of l-mers or a single l-mer that occur(s) in each input sequence with $d$
-		  substitutions.
-..param.TRng:The @Class.Rng@ specialization to use for random number generation.
-...default:$GetDefaultRng<MotifFinderClass>::Type$
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 ///.Class.MotifFinder.param.TSpec.type:Spec.Pms1
 

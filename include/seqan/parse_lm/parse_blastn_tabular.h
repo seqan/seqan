@@ -62,16 +62,7 @@ typedef Tag<BlastnTabular_> BlastnTabular;
 // Function readRecord()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.LocalMatchStore#readRecord
-..class:Class.LocalMatchStore
-..cat:Local Match Store
-..signature:readRecord(store, stream, BlastnTabular())
-..param.store:@Class.LocalMatchStore@ object to read into.
-...type:Class.LocalMatchStore
-..returns:$int$, 0 on success, non-0 on errors and EOF
-..include:seqan/parse_lm.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TLocalMatchStore, typename TForwardIter>
 inline void

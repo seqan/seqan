@@ -633,44 +633,7 @@ seqan::ArgumentParser initParser()
 // Class ProcessingParams
 // --------------------------------------------------------------------------
 
-/**
-.Class.ProcessingParams:
-..summary:Struct holding all general pre- and postprocessing parameters.
-.Memvar.ProcessingParams#substitute
-..class:Class.ProcessingParams
-..summary:Substitute Base for N's
-.Memvar.ProcessingParams#uncalled
-..class:Class.ProcessingParams
-..summary:Number of allowed N's per sequence.
-.Memvar.ProcessingParams#trimLeft
-..class:Class.ProcessingParams
-..summary:Number of bases to be cut from 5'-end before further processing.
-.Memvar.ProcessingParams#trimRight
-..class:Class.ProcessingParams
-..summary:Number of bases to be cut from 3'-end before further processing.
-.Memvar.ProcessingParams#minLen
-..class:Class.ProcessingParams
-..summary:Minimum length sequence length AFTER trimming at 5'- and 3'-end.
-.Memvar.ProcessingParams#finalMinLength
-..class:Class.ProcessingParams
-..summary:Minimum sequence length AFTER COMPLETE workflow. If a sequence (or it's mate)
- is shorter, it/they will be removed.
-.Memvar.ProcessingParams#finalLength
-..class:Class.ProcessingParams
-..summary:Sequence length all sequences will be trimmed to (cutting from 3'-end) to AFTER COMPLETE workflow.
-.Memvar.ProcessingParams#runPre
-..class:Class.ProcessingParams
-..summary:bool indicating that preprocessing actions shall be performed (true).
-.Memvar.ProcessingParams#runPost
-..class:Class.ProcessingParams
-..summary:bool indicating that postprocessing actions shall be performed (true).
-
-.Memfunc.ProcessingParams#ProcessingParams:
-..class:Class.ProcessingParams
-..summary:Default Constructor
-..signature:ProcessingParams(void)
-..remarks: finalLength is initialised with 0, because 0 indicates that no action shall be performed.
-*/
+/*_DDDOC_PLACEHOLDER*/
 struct ProcessingParams
 {
     seqan::Dna substitute;
@@ -695,10 +658,7 @@ struct ProcessingParams
         runPost(false) {};
 };
 
-/**
-.Class.TrimmingMode:
-..summary:Enum for storing the trimming mode selected by the user
-*/
+/*_DDDOC_PLACEHOLDER*/
 enum TrimmingMode
 {
     E_WINDOW,
@@ -706,50 +666,14 @@ enum TrimmingMode
     E_TAIL
 };
 
-/**
-.Class.MatchMode:
-..summary:Enum for storing the match options used for adapter trimming.
-*/
+/*_DDDOC_PLACEHOLDER*/
 enum MatchMode
 {
     E_AUTO,
     E_USER
 };
 
-/**
-.Class.DemultiplexingParams:
-..summary:Struct holding all demultiplexing parameters.
-.Memvar.DemultiplexingParams#barcodeFile
-..class:Class.DemultiplexingParams
-..summary:String holding the path to the barcode-file.
-.Memvar.DemultiplexParams#barcodes
-..class:Class.DemultiplexingParams
-..summary:StringSet holding the barcodes.
-.Memvar.DemultiplexParams#multiplexFile
-..class:Class.DemultiplexingParams
-..summary:String hilding the path to the multiplex-file.
-.Memvar.DemultiplexParams#multiplex
-..class:Class.DemultiplexingParams
-..summary:StringSet holding the multiplex barcodes.
-.Memvar.DemultiplexParams#approximate
-..class:Class.DemultiplexingParams
-..summary:bool indicating if approximate search shall be used (true).
-.Memvar.DemultiplexParams#hardClip
-..class:Class.DemultiplexingParams
-..summary:bool indicating if hardClip shall be used (true).
-.Memvar.DemultiplexParams#run
-..class:Class.DemultiplexingParams
-..summary:bool indicating if demultiplexing operations shall be performed (true).
-.Memvar.DemultiplexParams#runx
-..class:Class.DemultiplexingParams
-..summary:bool indicating if multiplex barcodes are used (true).
-.Memvar.DemultiplexParams#stats
-..class:Class.DemultiplexingParams
-..summary:DemultiplexStats-object holding interesting numbers about the demultiplexing process.
-.Memvar.DemultiplexParams#exclude
-..class:Class.DemultiplexingParams
-..summary:bool indicating if unidentified sequences shall be excluded from further processing (true).
-*/
+/*_DDDOC_PLACEHOLDER*/
 struct DemultiplexingParams
 {
     seqan::String<char> barcodeFile;
@@ -772,35 +696,7 @@ struct DemultiplexingParams
         exclude(false)
     {};
 };
-/**
-.Class.AdapterTrimmingParams:
-..summary:Struct holding all adapter trimming parameters.
-.Memvar.AdapterTrimmingParams#paired
-..class:Class.AdapterTrimmingParams
-..summary:bool indicating if paired-end data is used (true).
-.Memvar.AdapterTrimmingParams#noAdapter
-..class:Class.AdapterTrimmingParams
-..summary:bool indicating if no adapter file is provided (true).
-.Memvar.AdapterTrimmingParams#run
-..class:Class.AdapterTrimmingParams
-..summary:bool indicating if trimming operations shall be performed.
-.Memvar.AdapterTrimmingParams#adapter1
-..class:Class.AdapterTrimmingParams
-..summary:String holding the first adapter sequence.
-.Memvar.AdapterTrimmingParams#adapter2
-..class:Class.AdapterTrimmingParams
-..summary:String holding the second adapter sequence.
-.Memvar.AdapterTrimmingParams#mode
-..class:Class.AdapterTrimmingParams
-..summary:The Mode-object determining which trimming mode shall be used.
-.Memvar.AdapterTrimmingParams#mmode
-..class:Class.AdapterTrimmingParams
-..summary:Enum indicating which trimming mode is used. Necessary for casting mode.
-.Memvar.AdapterTrimmingParams#stats
-..class:Class.AdapterTrimmingParams
-..summary:AdapterTrimmingStats object holding interesting numbers about the trimmed process.
-..type:Class.AdapterTrimmingStats
- */
+/*_DDDOC_PLACEHOLDER*/
 struct AdapterTrimmingParams
 {
     bool paired;
@@ -814,27 +710,7 @@ struct AdapterTrimmingParams
     AdapterTrimmingParams() : paired(false), noAdapter(false), run(false), mmode(E_AUTO) {};
 };
 
-/**
-.Class.QualityTrimmingParams:
-..summary:Struct holding all quality trimming  parameters.
-.Memvar.QualityTrimmingParams#trim_mode
-..class:Class.QualityTrimmingParams
-..summary:The TrimmingMode-object, determining which algorithm shall be used.
-..type:Class.TrimmingMode
-.Memvar.QualityTrimmingParams#cutoff
-..class:Class.QualityTrimmingParams
-..summary:int holding the cutoff score.
-.Memvar.QualityTrimmingParams#min_length
-..class:Class.QualityTrimmingParams
-..summary:int holding the minimal length of a sequence after trimming.
-.Memvar.QualityTrimmingParams#run
-..class:Class.QualityTrimmingParams
-..summary:bool indicating if quality trimming operations shall be performed.
-.Memvar.QualityTrimmingParams#stats
-..class:Class.QualityTrimmingParams
-..summary:QualityTrimmingsStats object holding interesting numbers about the quality trimming process.
-..type:Class.QualityTrimmingStats
- */
+/*_DDDOC_PLACEHOLDER*/
 struct QualityTrimmingParams
 {
     TrimmingMode trim_mode;
@@ -845,30 +721,7 @@ struct QualityTrimmingParams
        QualityTrimmingParams() : trim_mode(E_WINDOW), cutoff(-1), min_length(1), run(false) {};
 };
 
-/**
-.Class.ProgramParams:
-..summary:Struct holding generall program paramters.
-.Memvar.ProgramParams#fileCount
-..class:Class.ProgramParams
-..summary:int holding the number of read files.
-.Memvar.ProgramParams#readCount
-..class:Class.ProgramParams
-..summary:int holding the total number of reads.
-.Memvar.ProgramParams#processTime
-..class:Class.ProgramParams
-..summary:double for storing the process time.
-.Memvar.ProgramParams#ioTime
-..class:Class.ProgramParams
-..summary:double for storing the I/O time.
-.Memvar.ProgramParams#fileStream1
-..class:Class.ProgramParams
-..summary:SequenceSteam object for the forward-reads file.
-..type:Class.SequenceStream
-.Memvar.ProgramParams#fileStream2
-..class:Class.ProgramParams
-..summary:SequenceSteam object for the backward-reads file.
-..type:Class.SequenceStream
-*/
+/*_DDDOC_PLACEHOLDER*/
 struct ProgramParams
 {
     int fileCount;
@@ -879,101 +732,7 @@ struct ProgramParams
     ProgramParams() : fileCount(0), readCount(0), processTime(0), ioTime(0) {};
 };
 
-/**
-.Class.OutputStreams:
-..summary:Class that dynamically manages output streams that write out sets of sequences.
-..see:Class.SequenceStream
-.Memvar.OutputStreams#pairedFileStreams
-..class:Class.OutputStreams
-..summary:map of one int and a pair of SequenceStream Pointers. Used for paired-end data.
-.Memvar.OutputStreams#fileStreams
-..class:Class.OutputStreams
-..summary:map of one int and a SequenceStream Pointer. Used for single-end data.
-.Memvar.OutputStreams#basePath
-..class:Class.OutputStreams
-..summary:CharString for storing the path.
-.Memvar.OutputStreams#extension
-..class:Class.OutputStreams
-..summary:CharString for storing the file extension.
-
-
-.Memfunc.OutputStreams#OutputStreams:
-..class:Class.OutputStreams
-..summary:Constructor
-..signature:OutputStreams(base, format, compress)
-..param.base:CharString holding of the directory path.
-...type:nolink:CharString
-..param.format:File format of the output files.
-...type:nolink:SeqIOFileFormat_::Type
-..param.compress:bool, indicating if the output shall be in gzip format (true)
-...type:nolink:bool
-
-.Memfunc.OutputStreams#exists:
-..class:Class.OutputStreams
-..summary:Checks if a key already exists in the map
-..signature:exists(key, map)
-..param.key:The key.
-...type:nolink:int
-..param.map:The map.
-...type:nolink:std::map
-..returns:A bool, true if the key exists, false otherwise.
-...type:nolink:bool
-
-.Memfunc.OutputStreams#addStream:
-..class:Class.OutputStreams
-..summary:Adds a new output stream to the collection of streams. Used for single-end data.
-..signature:addStream(filename, id)
-..param.filename:The name of the file to be created.
-...type:nolink:CharString
-..param.id:The associated id used to identify the stream.
-...type:nolink:int
-..returns:void
-
-.Memfunc.OutputStreams#addStreams:
-..class:Class.OutputStreams
-..summary:Adds two new output streams to the collection of streams. Used for paired-end data.
-..signature:addStreams(filename1, filename2, id)
-..param.filename1:The name of the forward-read file to be created.
-...type:nolink:CharString
-..param.filename1:The name of the backward-read file to be created.
-...type:nolink:CharString
-..param.id:The associated id used to identify the streams.
-...type:nolink:int
-..returns:void
-
-.Memfunc.OutputStreams#updateStreams:
-..class:Class.OutputStreams
-..summary:This method takes a String of integers and checks if these integers are
- already associated with a stream. If not, a new stream is added and the opened
- file is named according to the list of names. One or two files are created.
-..signature:updateStreams(map, names, pair)
-..param.map:The list of IDs for which the existence of a file shall be checked.
-...type:Class.StringSet
-..param.names:The list of names to be used when creating new files.
-...type:Class.StringSet
-..param.pair:Indicates whether one or two (a pair of files) shall be created.
-...type:nolink:bool
-..returns:void
-
-.Memfunc.OutputStreams#writeSeqs:
-..class:Class.OutputStreams
-..summary:Writes the sets of ids and sequences to their corresponding files.
-..signature:writeSeqs(ids, seqs, map, names)
-..signature:writeSeqs(ids, seqs, ids2, seqs2, map, names)
-..param.ids:A list of sets of sequence IDs for the forward-reads (as returned by readRecord etc.).
-...type:Class.StringSet
-..param.seqs:A StringSet of sets of forward-reads.
-...type:Class.StringSet
-..param.ids2:A list of sets of sequence IDs for the bacward-reads (as returned by readRecord etc.).
-...type:Class.StringSet
-..param.seqs2:A StringSet of sets of backward-reads.
-...type:Class.StringSet
-..param.map:A map of the sets of sequences to their corresponding output streams.
-...type:nolink:std::map
-..param.names:Names to be used when creating new streams.
-...type:Class.StringSet
-..returns:void    
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 //TODO(singer): THIS NEEDS TO BE REDONE/DELETED
 class OutputStreams
@@ -1174,19 +933,7 @@ public:
 // Functions
 // ============================================================================
 
-/**
-.Function.loadBarcodes:
-..summary:Function for loading the barcode file.
-..signature:loadBarcodes(path, params)
-..param.path:Path Pointer to the barcode file.
-...type:nolink:char const *
-..param.params:The DemultiplexingParams object the barcodes shall be written to.
-...type:Class.DemultiplexingParams
-..remarks:If approximate search has been selected, the loaded barcodes will be modified,
- resulting in a a bigger set, holding all barcode variations with 1 missmatch.
-..returns:An interger: 1 on errors, 0 otherwise.
-...type:nolink:int
-*/
+/*_DDDOC_PLACEHOLDER*/
 int loadBarcodes(char const * path, DemultiplexingParams& params)
 {
     seqan::SeqFileIn bcFile;
@@ -1210,36 +957,14 @@ int loadBarcodes(char const * path, DemultiplexingParams& params)
     return 0;
 }
 
-/**
-.Function.loadMultiplex:
-..summary:Function for loading the multiplex file.
-..signature:loadMultiplex(multiplexStream, params, records)
-..param.multiplexStream:SequenceStream object of the file.
-...type:Class.SequenceStream
-..param.params:The DemultiplexingParams-object the multiplex barcodes shall be written to.
-...type:Class.DemultiplexingParams
-..param.records:Unsigned int holding the number of records to be read in one block.
-...type:nolink:unsigned
-..returns:An interger: 1 on errors, 0 otherwise.
-...type:nolink:int
-*/
+/*_DDDOC_PLACEHOLDER*/
 inline void loadMultiplex(seqan::SeqFileIn& multiplexFile, DemultiplexingParams& params, unsigned records)
 {
     seqan::StringSet<seqan::String<char> > ids;
     readRecords(ids, params.multiplex, multiplexFile, records);
 }
 
-/**
-.Function.openStream:
-..summary:Function for opening a new sequenceStream.
-..signature:openStream(file, stream)
-..param.file:CharString of the file's path.
-...type:nolink:CharString
-..param.stream:sequenceStream to be opened.
-...type:Class.SequenceStream
-..returns:An interger: 1 on errors, 0 otherwise.
-...type:nolink:int
-*/
+/*_DDDOC_PLACEHOLDER*/
 int openStream(seqan::CharString const & file, seqan::SeqFileIn & inFile)
 {
     if (!open(inFile, seqan::toCString(file)))
@@ -1250,17 +975,7 @@ int openStream(seqan::CharString const & file, seqan::SeqFileIn & inFile)
     return 0;
 }
 
-/**
-.Function.loadDemultiplexingParams:
-..summary:Function for loading all demultiplexing parameters.
-..signature:loadDemultiplexingParams(parser, params)
-..param.parser:The SeqAn ArgumentParser object.
-...type:Class.ArgumentParser
-..param.params:The DemultiplexingParams object the paramters shall be written to.
-...type:Class.DemultiplexingParams
-..returns:An interger: 1 on errors, 0 otherwise.
-...type:nolink:int
-*/
+/*_DDDOC_PLACEHOLDER*/
 int loadDemultiplexingParams(seqan::ArgumentParser const& parser, DemultiplexingParams& params)
 {
     // APPROXIMATE/EXACT MATCHING---------------------    
@@ -1290,17 +1005,7 @@ int loadDemultiplexingParams(seqan::ArgumentParser const& parser, Demultiplexing
     return 0;
 }
 
-/**
-.Function.loadAdapterTrimmingParams:
-..summary:Function for loading all adapter trimming parameters.
-..signature:loadAdapterTrimmingParams(parser, params)
-..param.parser:The SeqAn ArgumentParser object.
-...type:Class.ArgumentParser
-..param.params:The AdapterTrimmingParams object the paramters shall be written to.
-...type:Class.AdapterTrimmingParams
-..returns:An interger: 1 on errors, 0 otherwise.
-...type:nolink:int
-*/
+/*_DDDOC_PLACEHOLDER*/
 int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmingParams & params)
 {
     // PAIRED-END ------------------------------
@@ -1362,17 +1067,7 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
     return 0;
 }
 
-/**
-.Function.loadQualityTrimmingParams:
-..summary:Function for loading all quality trimming parameters.
-..signature:loadQualityTrimmingParams(parser, params)
-..param.parser:The SeqAn ArgumentParser object.
-...type:Class.ArgumentParser
-..param.params:The QualityTrimmingParams object the paramters shall be written to.
-...type:Class.QualityTrimmingParams
-..returns:An interger: 1 on errors, 0 otherwise.
-...type:nolink:int
-*/
+/*_DDDOC_PLACEHOLDER*/
 int loadQualityTrimmingParams(seqan::ArgumentParser const & parser, QualityTrimmingParams & params)
 {
     // TRIMMING METHOD ----------------------------
@@ -1402,17 +1097,7 @@ int loadQualityTrimmingParams(seqan::ArgumentParser const & parser, QualityTrimm
     return 0;
 }
 
-/**
-.Function.loadProgramParams:
-..summary:Function for loading general parameters.
-..signature:loadProgramParams(parser, params)
-..param.parser:The SeqAn ArgumentParser object.
-...type:Class.ArgumentParser
-..param.params:The ProgramParams object the paramters shall be written to.
-...type:Class.ProgramParams
-..returns:An interger: 1 on errors, 0 otherwise.
-...type:nolink:int
-*/
+/*_DDDOC_PLACEHOLDER*/
 int loadProgramParams(seqan::ArgumentParser const & parser, ProgramParams & params)
 {
     params.fileCount = getArgumentValueCount(parser, 0);
@@ -1439,24 +1124,7 @@ int loadProgramParams(seqan::ArgumentParser const & parser, ProgramParams & para
     return 0;
 }
 
-/**
-.Function.checkParams:
-..summary:Function controlling the input paramters.
-..signature:checkParams(programParams, processingParams, demultiplexingParams, adapterTrimmingParams,
- qualityTrimmingParams)
-..param.programParams:The ProgramParams object.
-...type:Class.ProgramParams
-..param.programParams:The ProcessingParams object.
-...type:Class.ProcessingParams
-..param.demultiplexingParams:The DemultiplexingParams object.
-...type:Class.DemultiplexingParams
-..param.adapterTrimmingParams:The AdapterTrimmingParams object.
-...type:Class.AdapterTrimmingParams
-..param.qualityTrimmingParams:The QualityTrimmingParams object.
-...type:Class.QualityTrimmingParams
-..returns:An interger: 1 on errors, 0 otherwise.
-...type:nolink:int
-*/
+/*_DDDOC_PLACEHOLDER*/
 int checkParams(ProgramParams const & programParams, ProcessingParams const & processingParams,
     DemultiplexingParams const & demultiplexingParams, AdapterTrimmingParams const & adapterTrimmingParams,
     QualityTrimmingParams & qualityTrimmingParams)
@@ -1491,32 +1159,7 @@ int checkParams(ProgramParams const & programParams, ProcessingParams const & pr
 // PROGRAM STAGES ---------------------
 
 //Preprocessing Stage
-/**
-.Function.preprocessingStage
-..summary:Function for calling all preprocessing operations.
-..signature:preprocessingStage(seqs, ids, seqsRev, idsRev, demultiplexingParams,
- processingParams, parser, generalStats)
-..param.seqs:The forward reads.
-...type:Class.StringSet
-..param.ids:The ids associated with the forward reads.
-...type:Class.StringSet
-..param.seqsRev:The backward reads.
-...type:Class.StringSet
-..param.idsRev:The ids associated with the backward reads.
-...type:Class.StringSet
-..param.demultiplexingParams:The DemultiplexingParams object.
-...type:Class.DemultiplexingParams
-..param.processingParams:The processingParams object.
-...type:Class.ProcessingParams
-..param.parser:The parser object
-...type:Class.ArgumentParser
-..param.generalStats:The GeneralStats object holding general statistic data.
-...type:Class.GeneralStats
-..remarks:This function calls the desired instances of preTrim and processN.
-..returns:void
-..see:Function.processN
-..see:Function.preTrim
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TSeqs, typename TIds>
 void preprocessingStage(TSeqs& seqs, TIds& ids, DemultiplexingParams& demultiplexingParams,
     ProcessingParams& processingParams, seqan::ArgumentParser const & parser, GeneralStats& generalStats)
@@ -1621,26 +1264,7 @@ void preprocessingStage(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev,
     }
 }
 // DEMULTIPLEXING
-/**
-.Function.demultiplexingStage:
-..summary:Function for checking the parameters and calling the desired demultiplexing functions.
-..signature:demultiplexingStage(params, seqs, ids, esaFinder, map)
-..signature:demultiplexingStage(params, seqs, seqsRev, ids, idsRev, esaFinder,  map)
-..param.params:The DemultiplexingParams object.
-...type:Class.DemultiplexingParams
-..param.seqs:StringSet of forward-reads the operations shall be performed on.
-...type:Class.StringSet
-..param.seqsRev:StringSet of backward-reads the operations shall be performed on.
-...type:Class.StringSet
-..param.ids:StringSet of IDs of the forward-reads.
-...type:Class.StringSet
-..param.idsRev:StringSet of IDs of the backward-reads.
-...type:Class.StringSet
-..param.map:Map the information about the barcode groups shall be stored in.
-...type:nolink:std::map
-..returns:An interger: 1 on errors, 0 otherwise.
-...type:nolink:int
-*/
+/*_DDDOC_PLACEHOLDER*/
 //Version for single-end data
 template <typename TSeqsVec, typename TIdsVec, typename TFinder,typename TMap>
 int demultiplexingStage(DemultiplexingParams& params, TSeqsVec& seqs, TIdsVec& ids, TFinder& esaFinder, 
@@ -1765,25 +1389,7 @@ int demultiplexingStage(DemultiplexingParams& params, TSeqsVec& seqs, TSeqsVec& 
 }
 
 // ADAPTER TRIMMING
-/**
-.Function.adapterTrimmingStage:
-..summary:Function for checking the parameters and calling the desired adapter trimming functions.
-..signature:adapterTrimmingStage(params, seqSet1, idSet1, tagOpt)
-..signature:adapterTrimmingStage(params, seqSet1, idSet1, seqSet2, idSet2, tagOpt)
-..param.params:The AdapterTrimmingParams object.
-...type:Class.AdapterTrimmingParams
-..param.seqSet1:The set of forward reads.
-...type:Class.StringSet
-..param.idSet1:The set of IDs associated with the forward reads.
-...type:Class.StringSet
-..param.seqSet2:The set of backward reads.
-...type:Class.StringSet
-..param.idSet2:The set of IDs associated with the backward reads.
-...type:Class.StringSet
-..param.tagOpt:Bool incidating that reads with removed adapter shall be tagged (i.e their IDs).
-...type:nolink:bool
-..returns:void
- */
+/*_DDDOC_PLACEHOLDER*/
 //Version for single-end data
 template <typename TSeqs, typename TIds>
 void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet, TIds& idSet, bool tagOpt)
@@ -1853,23 +1459,7 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet1, TIds& i
 }
 
 // QUALITY TRIMMING
-/**
-.Function.qualityTrimmingStage:
-..summary:Function for checking the parameters and calling the desired quality trimming functions.
-..signature:qualityTrimmingStage(params, idSet, seqSet)
-..signature:qualityTrimmingStage(params, idSet, seqSet, idSet2, seqSet2)
-..param.params:The QualityTrimmingParams object.
-...type:Class.QualityTrimmingParams
-..param.idSet:The StringSet of IDs of forward-reads to be trimmed.
-...type:Class.StringSet
-..param.seqSet:The StringSet of forward-reads to be trimmed.
-...type:Class.StringSet
-..param.idSet2:The StringSet of IDs of backward-reads to be trimmed.
-...type:Class.StringSet
-..param.seqSet2:The StringSet of backward-reads to be trimmed.
-...type:Class.StringSet
-..returns:void
- */
+/*_DDDOC_PLACEHOLDER*/
 //Version for single-ende data
 template <typename TIds, typename TSeqs>
 void qualityTrimmingStage(QualityTrimmingParams& params, TIds& idSet, TSeqs& seqSet, bool tagOpt)
@@ -1999,20 +1589,7 @@ void postprocessingStage(TSeqSet& seqSet, TIdSet& idSet, TSeqSet& seqSet2, TIdSe
 }
 
 // END PROGRAM STAGES ---------------------
-/**
-.Function.printStatistics:
-..summary:Function for calculating and printing the statistics.
-..signature:printStatistics(programParams, demultiplexingParams, adapterTrimmingParams, qualityTrimmingParams)
-..param.programParams:The ProgramParams object.
-...type:Class.ProgramParams
-..param.demultiplexingParams:The DemultiplexingParams object.
-...type:Class.DemultiplexingParams
-..param.adapterTrimmingParams:The AdapterTrimmingParams object.
-...type:Class.AdapterTrimmingParams
-..param.qualityTrimmingParams:The QualityTrimmingParams object.
-...type:Class.QualityTrimmingParams
-..returns:void
- */
+/*_DDDOC_PLACEHOLDER*/
 void printStatistics(ProgramParams& programParams, GeneralStats& generalStats, DemultiplexingParams& demultiplexParams,
                 AdapterTrimmingParams& adapterParams, QualityTrimmingParams& qualityParams, bool timing)
 {

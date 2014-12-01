@@ -80,18 +80,7 @@ struct RDConfig
 // Class RankDictionary
 // ----------------------------------------------------------------------------
 
-/**
-.Class.RankDictionary:
-..cat:Index
-..summary:A rank dictionary is a data structure to store the rank of an element of a sequence at every position of the 
-sequence.
-..signature:RankDictionary<TValue, TSpec>
-..param.TSpec:The rank dictionary specialisation.
-...type:Spec.WaveletTree
-...type:Spec.SequenceBitMask
-...default:@Spec.WaveletTree@
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class RankDictionary
  * @headerfile <seqan/index.h>

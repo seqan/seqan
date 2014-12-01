@@ -72,20 +72,7 @@ inline bool testAllOnes(TValue const & val);
  * Only useful for small alphabets as small tuple sizes (|Sigma|^size &lt;= 2^64 as for Dna or AminoAcid m-grams).
  */
 
-/**
-.Spec.Bit Packed Tuple:
-..cat:Aggregates
-..general:Class.Tuple
-..summary:A plain fixed-length string. Saves memory by packing bits.
-..signature:Tuple<T, SIZE, BitPacked<> >
-..param.T:The value type, that is the type of characters stored in the tuple.
-..param.SIZE:The size/length of the tuple.
-...remarks:In contrast to @Class.String@ the length of Tuple is fixed.
-..notes:The characters are stored as a bit sequence in an ordinal type (char, ..., __int64).
-..remarks:Only useful for small alphabets and small tuple sizes (|Sigma|^size <= 2^64) as for @Spec.Dna@ or @Spec.AminoAcid@ m-grams)
-..see:Spec.Sampler
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <unsigned char SIZE>
 struct BitVector_

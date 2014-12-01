@@ -58,25 +58,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *                ids.  NB: if edges do not store ids then external property maps do not work.
  */
 
-/**
-.Spec.Directed Graph:
-..cat:Graph
-..general:Class.Graph
-..summary:A directed graph that stores the edges in an adjacency list.
-..description:
-...image:directedGraph|A directed graph.
-..signature:Graph<Directed<TCargo, TSpec> >
-..param.TCargo:The cargo type that can be attached to the edges.
-...metafunction:Metafunction.Cargo
-...remarks:Use @Metafunction.Cargo@ to get the cargo type of a directed graph.
-...default:$void$
-..param.TSpec:The specializing type for the graph.
-...metafunction:Metafunction.Spec
-...remarks:Use WithoutEdgeId here to omit edge ids.
-Note: If edges do not store ids external property maps do not work.
-...default:$Default$, see @Tag.Default@.
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TCargo, typename TSpec>
 class Graph<Directed<TCargo, TSpec> > 
 {
@@ -220,19 +202,7 @@ _copyGraph(Graph<Directed<TCargo, TSpec> > const& source,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.transpose
-..class:Class.Graph
-..cat:Graph
-..summary:Transposes a graph, either in-place or from source to dest.
-..signature:transpose(source [, dest])
-..param.source:Source graph.
-...type:Class.Graph
-..param.dest:Destination graph.
-...type:Class.Graph
-..returns:void
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec>
 inline void 
@@ -257,18 +227,7 @@ transpose(Graph<Directed<TCargo, TSpec> >& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.numEdges
-..class:Class.Graph
-..cat:Graph
-..summary:Number of edges in a graph.
-..signature:numEdges(g)
-..param.g:A graph.
-...type:Class.Graph
-..returns:Number of edges.
-..see:Function.numVertices
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec>
 inline typename Size<Graph<Directed<TCargo, TSpec> > >::Type 
@@ -280,18 +239,7 @@ numEdges(Graph<Directed<TCargo, TSpec> > const& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.numVertices
-..class:Class.Graph
-..cat:Graph
-..summary:Number of vertices in a graph.
-..signature:numVertices(g)
-..param.g:A graph.
-...type:Class.Graph
-..returns:Number of vertices.
-..see:Function.numEdges
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec>
 inline typename Size<Graph<Directed<TCargo, TSpec> > >::Type 
@@ -303,13 +251,7 @@ numVertices(Graph<Directed<TCargo, TSpec> > const& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.empty
-..class:Class.Graph
-..cat:Graph
-..param.object.type:Class.Graph
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec>
 inline bool 
@@ -321,19 +263,7 @@ empty(Graph<Directed<TCargo, TSpec> > const& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.clearEdges
-..class:Class.Graph
-..cat:Graph
-..summary:Removes all edges in a graph.
-..signature:clearEdges(g)
-..param.g:A graph.
-...type:Class.Graph
-..returns:void
-..see:Function.clearVertices
-..see:Function.clear
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec>
 inline void
@@ -353,19 +283,7 @@ clearEdges(Graph<Directed<TCargo, TSpec> >& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.clearVertices
-..class:Class.Graph
-..cat:Graph
-..summary:Removes all vertices in a graph.
-..signature:clearVertices(g)
-..param.g:A graph.
-...type:Class.Graph
-..returns:void
-..see:Function.clearEdges
-..see:Function.clear
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec>
 inline void
@@ -381,14 +299,7 @@ clearVertices(Graph<Directed<TCargo, TSpec> >& g)
 //////////////////////////////////////////////////////////////////////////////
 
 
-/**
-.Function.clear
-..class:Class.Graph
-..cat:Graph
-..param.object.type:Class.Graph
-..remarks:If $object$ is a @Class.Graph.graph@, then all vertices and all edges are removed.
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec>
 inline void 
@@ -400,21 +311,7 @@ clear(Graph<Directed<TCargo, TSpec> >& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.outDegree
-..class:Class.Graph
-..cat:Graph
-..summary:Number of outgoing edges for a given vertex.
-..signature:outDegree(g, vertex)
-..param.g:A graph.
-...type:Class.Graph
-..param.g:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:Number of out-edges.
-..see:Function.inDegree
-..see:Function.degree
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline typename Size<Graph<Directed<TCargo, TSpec> > >::Type 
@@ -438,21 +335,7 @@ outDegree(Graph<Directed<TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.inDegree
-..class:Class.Graph
-..cat:Graph
-..summary:Number of incoming edges for a given vertex.
-..signature:inDegree(g, vertex)
-..param.g:A graph.
-...type:Class.Graph
-..param.g:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:Number of in-edges.
-..see:Function.outDegree
-..see:Function.degree
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline typename Size<Graph<Directed<TCargo, TSpec> > >::Type 
@@ -482,21 +365,7 @@ inDegree(Graph<Directed<TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.degree
-..class:Class.Graph
-..cat:Graph
-..summary:Number of incident edges for a given vertex.
-..signature:degree(g, vertex)
-..param.g:A graph.
-...type:Class.Graph
-..param.g:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:Number of incident edges.
-..see:Function.outDegree
-..see:Function.inDegree
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename Size<Graph<Directed<TCargo, TSpec> > >::Type 
@@ -509,19 +378,7 @@ degree(Graph<Directed<TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.addVertex
-..class:Class.Graph
-..cat:Graph
-..summary:Adds a new vertex to the graph.
-..signature:addVertex(g)
-..param.g:A graph.
-...type:Class.Graph
-..returns:A new vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..see:Function.removeVertex
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec> 
 inline typename VertexDescriptor<Graph<Directed<TCargo, TSpec> > >::Type 
@@ -539,20 +396,7 @@ addVertex(Graph<Directed<TCargo, TSpec> >& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.removeVertex
-..class:Class.Graph
-..cat:Graph
-..summary:Removes a vertex.
-..signature:removeVertex(g, v)
-..param.g:A graph.
-...type:Class.Graph
-..param.v:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:void
-..see:Function.addVertex
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline void 
@@ -569,31 +413,7 @@ removeVertex(Graph<Directed<TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.addEdge
-..class:Class.Graph
-..cat:Graph
-..summary:Adds a new edge to the graph, either with or without cargo.
-..remarks:For automatons a label is required.
-..signature:addEdge(g, source, target [,cargo | ,label])
-..signature:addEdge(g, source, target [,label ,cargo])
-..param.g:A graph.
-...type:Class.Graph
-..param.source:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..param.target:A second vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..param.label:A label for the edge.
-...type:Metafunction.Alphabet
-...remarks:Can only be used with @Spec.Automaton@.
-..param.cargo:A cargo object.
-...type:Metafunction.Cargo
-..returns:A new edge descriptor.
-...type:Metafunction.EdgeDescriptor
-..see:Function.removeEdge
-..see:Function.addEdges
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline typename EdgeDescriptor<Graph<Directed<TCargo, TSpec> > >::Type 
@@ -640,29 +460,7 @@ addEdge(Graph<Directed<TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.removeEdge
-..class:Class.Graph
-..cat:Graph
-..summary:Removes an edge from the graph. For automatons a label is required.
-..signature:removeEdge(g, source, target [, label])
-..signature:removeEdge(g, e)
-..param.g:A graph.
-...type:Class.Graph
-..param.source:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..param.target:A second vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..param.label:A label for the edge.
-...type:Metafunction.Alphabet
-...remarks:Required to remove an edge in an @Spec.Automaton@.
-..param.e:An edge descriptor.
-...type:Metafunction.EdgeDescriptor
-..returns:void
-..see:Function.addEdge
-..see:Function.addEdges
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline void 
@@ -737,20 +535,7 @@ removeEdge(Graph<Directed<TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.removeOutEdges
-..class:Class.Graph
-..cat:Graph
-..summary:Removes the outgoing edges of a given vertex.
-..signature:removeOutEdges(g, v)
-..param.g:A graph.
-...type:Class.Graph
-..param.v:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:void
-..see:Function.removeInEdges
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline void 
@@ -770,20 +555,7 @@ removeOutEdges(Graph<Directed<TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.removeInEdges
-..class:Class.Graph
-..cat:Graph
-..summary:Removes the incoming edges of a given vertex.
-..signature:removeInEdges(g, v)
-..param.g:A graph.
-...type:Class.Graph
-..param.v:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:void
-..see:Function.removeOutEdges
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline void 
@@ -816,28 +588,7 @@ removeInEdges(Graph<Directed<TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.targetVertex
-..class:Class.Graph
-..cat:Graph
-..summary:Returns the target vertex of an edge.
-..remarks:In a tree the target vertex is always the child. 
-In an undirected graph the larger vertex descriptor of the two endpoints is the target.
-For an out-edge iterator the target is always the vertex the out-edge iterator has not been initialized with.
-..signature:targetVertex(g, e)
-..signature:targetVertex(it)
-..param.g:A graph.
-...type:Class.Graph
-..param.e:An edge descriptor.
-...type:Metafunction.EdgeDescriptor
-..param.it:An edge iterator.
-...type:Spec.Out-Edge Iterator
-...type:Spec.Edge Iterator
-..returns:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..see:Function.sourceVertex
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TEdgeDescriptor>
 inline typename VertexDescriptor<Graph<Directed<TCargo, TSpec> > >::Type 
@@ -850,29 +601,7 @@ targetVertex(Graph<Directed<TCargo, TSpec> > const&,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.sourceVertex
-..class:Class.Graph
-..cat:Graph
-..summary:Returns the source vertex of an edge.
-..remarks:In a tree the source vertex is always the parent. 
-In an undirected graph the smaller vertex descriptor is the source.
-Note: If source vertices are not stored in the EdgeStump this operation is expensive.
-Consider using sourceVertex directly on an edge iterator where this operation is fast!
-..signature:sourceVertex(g, e)
-..signature:sourceVertex(it)
-..param.g:A graph.
-...type:Class.Graph
-..param.e:An edge descriptor.
-...type:Metafunction.EdgeDescriptor
-..param.it:An edge iterator.
-...type:Spec.Out-Edge Iterator
-...type:Spec.Edge Iterator
-..returns:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..see:Function.targetVertex
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TEdgeDescriptor>
 inline typename VertexDescriptor<Graph<Directed<TCargo, TSpec> > >::Type 
@@ -899,19 +628,7 @@ sourceVertex(Graph<Directed<TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.getAdjacencyMatrix
-..class:Class.Graph
-..cat:Graph
-..summary:Returns an adjacency matrix representation of the graph.
-..signature:getAdjacencyMatrix(g, mat)
-..param.g:In-parameter: A graph.
-...type:Class.Graph
-..param.mat:Out-parameter: A matrix.
-...type:Class.Matrix
-..returns:void
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TMatrix>
 inline void
@@ -947,29 +664,7 @@ getAdjacencyMatrix(Graph<Directed<TCargo, TSpec> > const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 
-/**
-.Function.findEdge
-..class:Class.Graph
-..cat:Graph
-..summary:Finds an edge. 
-..remarks:In an automaton an edge is uniquely defined by a vertex and a label.
-In all other graphs two adjacent vertices uniquely define an edge.
-If there are multiple edges between two vertices the behaviour is undefined.
-..signature:findEdge(g, v, c)
-..signature:findEdge(g, v, w)
-..param.g:A graph.
-...type:Class.Graph
-..param.v:The source vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..param.c:An edge label.
-...type:Metafunction.Alphabet
-..param.w:The target vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:An edge descriptor or 0 if edge is not present. 
-Note: In automatons there is always a valid edge descriptor but the target may be nil.
-...type:Metafunction.EdgeDescriptor
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename EdgeDescriptor<Graph<Directed<TCargo, TSpec> > >::Type 
 findEdge(Graph<Directed<TCargo, TSpec> > const& g,

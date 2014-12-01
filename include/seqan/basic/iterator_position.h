@@ -77,32 +77,7 @@ typedef CountingIteratorImpl_<Nothing> PositionIterator;
  * @param[in] position  The position to create the iterator at, defauls to 0.
  */
 
-/**
-.Spec.Position Iterator
-..cat:Iterators
-..general:Class.Iter
-..summary:Adapts @Metafunction.Position|Position Iterator@ to @Concept.RootedIteratorConcept|Rooted Iterator@.
-..signature:Iter<TContainer, PositionIterator>
-..param.TContainer:Type of the container.
-...metafunction:Metafunction.Container
-..remarks
-...text:Position Iterators provide the concept @Concept.RootedIteratorConcept|Rooted Iterator@.
-..see:Metafunction.Position
-..include:seqan/basic.h
-
-.Memfunc.Position Iterator#Iter:
-..class:Spec.Position Iterator
-..summary:Constructor
-..signature:Iter()
-..signature:Iter(iter)
-..signature:Iter(container [, position])
-..param.iter:Another position iterator object.
-..param.container:The corresponding container object.
-...metafunction:Metafunction.Container
-..param.position:A position in $container$. (optional)
-...metafunction:Metafunction.Position
-...remarks.text:If this argument is omitted, the adaptor iterator is initialized to the @Function.beginPosition.begin position@ of $container$.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TContainer>
 class Iter<TContainer, PositionIterator> :

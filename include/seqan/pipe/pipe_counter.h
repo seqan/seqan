@@ -70,18 +70,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * The second output field begins with 0 and increases by 1 per element.
  */ 
 
-/**
-.Spec.Counter:
-..cat:Pipelining
-..general:Class.Pipe
-..summary:Extends the input stream by a second field which enumerates the elements.
-..signature:Pipe<TInput, Counter>
-..param.TInput:The type of the pipeline module this module reads from.
-..remarks:The output type is a @Class.Pair@ of input type and size type (i.e. $Pair<Value<TInput>::Type, Size<TInput>::Type>$).
-..remarks:The first output field is the original input stream.
-..remarks:The second output field begins with 0 and increases by 1 per element.
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     //////////////////////////////////////////////////////////////////////////////
     // counter class

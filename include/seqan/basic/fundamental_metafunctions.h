@@ -74,22 +74,7 @@ namespace seqan {
  * is int.
  */
 
-/**
-.Metafunction.Value:
-..cat:Fundamental
-..summary:Type of the items in the container or behind an iterator.
-..signature:Value<T[, I]>::Type
-..param.T:Type for which the value type is determined.
-..param.I:Index of the entry for which to retrieve the type.
-...remarks:This is only used for static-sized containers and aggregates.
-...type:nolink:$int$
-..returns.param.Type:Value type of $T$.
-..remarks.text:
-The value type of a container $T$ is the type of the elements in $T$.
-For example, the value type of a sequence of $int$ is $int$.
-..example.code:Value<String<char> >::Type c;  // c has type char
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, const int I = 0>
 struct Value;
@@ -115,20 +100,7 @@ struct Value;
  * confuse it with value that returns a reference to the value.
  */
 
-/**
-.Metafunction.GetValue:
-..cat:Fundamental
-..summary:Type for reading values. 
-..signature:GetValue<T>::Type
-..param.T:Type of container that holds a value.
-..returns.param.Type:GetValue type of $T$.
-..remarks.text:Depending on $T$, the $GetValue$-type can either be $Value<T>::Type &$ or $Value<T>::Type$.
-..text:$GetValue$ is the return type of @Function.getValue@ that allows a (read-only) access to objects.
-Do not confuse it with @Function.value@ that returns a @Metafunction.Reference.reference@ to the value.
-..see:Metafunction.Value
-..see:Function.getValue
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct GetValue;
@@ -149,17 +121,7 @@ struct GetValue;
  * @return Type Either <tt>Value&lt;T&gt;Type &amp;</tt> or a proxy object Proxy for <tt>T</tt>.
  */
 
-/**
-.Metafunction.Reference:
-..cat:Fundamental
-..summary:Reference type.
-..signature:Reference<T>::Type
-..param.T:A Type.
-..returns.param.Type:Either $Value<T>::Type &$ or a proxy object @Class.Proxy@ for $T$.
-..see:Metafunction.Value
-..see:Metafunction.GetValue
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct Reference;
@@ -180,16 +142,7 @@ struct Reference;
  * @returns Type Size type of <tt>T</tt>.
  */
 
-/**
-.Metafunction.Size:
-..cat:Fundamental
-..summary:Type of an object that is suitable to hold size information.
-..signature:Size<T>::Type
-..param.T:Type for which the size type is determined.
-..returns.param.Type:Size type of $T$.
-..remarks.text:In most cases this type is $size_t$.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct Size;
@@ -210,18 +163,7 @@ struct Size;
  * @returns Type Difference type of <tt>T</tt>.
  */
 
-/**
-.Metafunction.Difference:
-..cat:Fundamental
-..summary:Type of an object that stores the difference between two iterators.
-..signature:Difference<T>::Type
-..param.T:Type for which the difference type is determined.
-...type:Class.Iter
-..returns.param.Type:Difference type of $T$.
-..remarks.text:In most cases this type is $ptrdiff_t$.
-..see:Metafunction.Size
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct Difference;
@@ -242,18 +184,7 @@ struct Difference;
  * @returns Type position type of <tt>T</tt>.
  */
 
-/**
-.Metafunction.Position
-..cat:Fundamental
-..summary:Type of an object that represents a position in a container.
-..signature:Position<T>::Type
-..param.T:Type for which the position type is determined.
-...type:Class.Iter
-...type:Class.String
-..returns.param.Type:Position type of $T$.
-..see:Metafunction.Iterator
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct Position;
@@ -275,21 +206,7 @@ struct Position;
  * @returns Type Spec type of <tt>T</tt>.
  */
 
-/**
-.Metafunction.Spec
-..cat:Fundamental
-..summary:The spec of a class. 
-..signature:Spec<T>::Type
-..param.T:Type for which the spec is determined.
-..returns.param.Type:Spec of $T$.
-..remarks:
-The spec of a SeqAn type is the class that is used in template subclassing to specify the specialization. 
-For example, the spec of $String<char, Alloc<> >$ is $Alloc<>$.
-..remarks:
-There is a default specialization for this metafunction that returns $void$.
-Also, there is an implementation of Metafunction Spec for templates with one argument that returns this argument.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // Default case for types without Spec<>::Type specialization.
 
@@ -327,17 +244,7 @@ struct Spec<T const> : Spec<T>
  * @returns Type Size type of <tt>T</tt>.
  */
 
-/**
-.Metafunction.DeepestSpec:
-..cat:Fundamental
-..summary:The deepest spec of a class with nested template arguments.
-..signature:DeepestSpec<T>::Type
-..param.T:Type for which the deepest spec is determined.
-..returns.param.Type:Deepest spec of $T$.
-..remarks:The spec of a SeqAn type is the innermost class that is used in nested subclassing.
-For example, the deepest spec of $Iter<..., VSTree<BottomUp<Mums> > >$ is $Mums$.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // Default case if not specialized for T.
 

@@ -145,22 +145,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * with <tt>SIZE-1</tt>.
  */
 
-/**
-.Spec.Tupler:
-..cat:Pipelining
-..general:Class.Pipe
-..summary:Outputs tuples of the $SIZE$ consecutive elements of the input stream.
-..signature:Pipe<TInput, Tupler<SIZE, omitLast> >
-..param.TInput:The type of the pipeline module this module reads from.
-..param.SIZE:The tuple length.
-...remarks:The tuples contain elements $in[i]in[i+1]...in[i+(SIZE-1)]$.
-..param.omitLast:Omit half filled tuples.
-..param.omitLast:If $true$, the output stream is $SIZE-1$ elements shorter than the input stream.
-..param.omitLast:If $false$, the lengths are identical and the last tuples are filled with blanks (default constructed elements) for undefined entries.
-..remarks:The output type is a @Class.Tuple@ of input elements and length $SIZE$ (i.e. $Tuple<Value<TInput>::Type, SIZE>$).
-..remarks:The tuples are sequences of the form $in[i]in[i-1]in[i-2]..in[i-SIZE+1]$. For $omitLast=false$ $i$ begins with 0 and for $omitLast=true$ $i$ begins with $SIZE-1$.
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 	template <typename TInput, unsigned SIZE, bool omitLast, typename TPack>
     struct Pipe<TInput, Tupler<SIZE, omitLast, TPack> >

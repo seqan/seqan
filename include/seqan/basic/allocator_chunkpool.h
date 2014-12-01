@@ -50,27 +50,7 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-/**
-.Spec.Chunk Pool Allocator:
-..cat:Allocators
-..general:Class.Allocator
-..summary:Allocator that pools one or more consecutive memory blocks of a specific size.
-..signature:Allocator< ChunkPool<SIZE, MAX_COUNT, ParentAllocator> >
-..param.SIZE:Size of memory blocks that are pooled.
-...value:An unsigned integer with $SIZE >= sizeof(void *)$.
-..param.MAX_COUNT:Maximum number of consecutive memory blocks that are pooled.
-...default:26
-...remarks:Longer "chunks" are allocated and deallocated without pooling.
-..param.ParentAllocator:An allocator that is by the pool allocator used to allocate memory.
-...default:@Spec.Simple Allocator@
-...note:The multi pool allocator only supports @Function.clear@ if this function is also implemented for $ParentAllocator$.
-..remarks:A pool allocator allocates several memory blocks at once. 
-Freed blocks are not immediately deallocated but recycled in subsequential allocations.
-This way, the number of calls to the heap manager is reduced, and that speeds up memory management.
-...text:Note that memory blocks of size different than $SIZE$, $2*SIZE$, $3*SIZE$, ..., $MAX_COUNT * SIZE$ 
-are not pooled but immediately allocated and deallocated using $ParentAllocator$.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <
     size_t SIZE, 

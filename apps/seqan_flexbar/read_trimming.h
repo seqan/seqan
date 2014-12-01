@@ -59,24 +59,7 @@ struct Mean {
 	Mean(unsigned w) : window(w) {}
 };
 
-/**
-.Class.QualityTrimmingStats:
-..summary:Struct holding information about certain quality trimming statistics.
-.Memvar.QualityTrimmingStats#dropped_1
-..class:Class.QualityTrimmingStats
-..summary:Unsigned int holding the number of dropped forward reads
-..type:nolink:unsigned
-.Memvar.QualityTrimmingStats#dropped_2
-..class:Class.QualityTrimmingStats
-..summary:Unsigned int holding the number of dropped backward reads
-..type:nolink:unsigned
-
-.Memfunc.QualityTrimmingStats#clear:
-..class:Class.QualityTrimmingStats
-..summary:Resets the object.
-..signature:clear(void)
-..remarks:Both member variabels are set to 0.
-*/
+/*_DDDOC_PLACEHOLDER*/
 struct QualityTrimmingStats
 {
 	unsigned dropped_1, dropped_2;
@@ -100,17 +83,7 @@ struct QualityTrimmingStats
 // Functions
 // ============================================================================
 
-/**
-.Function.getQuality:
-..summary:Determines the quality at position i of the Dna5QString.
-..signature:loadSeqs(seq, i)
-..param.seq:The Dna5QString containing bases and qualities.
-...type:Class.String
-..param.i:The index of the base whose quality shall be returned.
-...type:nolink:unsigned
-..returns:Phred quality of the base at position i.
-
- */
+/*_DDDOC_PLACEHOLDER*/
 inline unsigned getQuality(const seqan::String<seqan::Dna5Q>& seq, unsigned i)
 {
 	return seqan::getQualityValue(seq[i]);
@@ -118,25 +91,7 @@ inline unsigned getQuality(const seqan::String<seqan::Dna5Q>& seq, unsigned i)
 
 // Trimming methods
 // ----------------------------------------------------------------------------
-/**
-.Function._trimRead:
-..summary:Funtion for finding the trimming position for a given read.
-..signature:_trimRead(seq, cutoff, spec)
-..param.seq:The sequence that shall be trimmed..
-...type:Class.String
-..param.cutoff:The minimum quality required..
-...type:nolink:unsigned
-..param.spec:Specialisation Tag
-...type:nolink:Taik
-...type:nolink:BWA
-...type:nolink:Mean
-..returns:The trimming position, i.e. the first base to be removed.
-...type:nolink:unsigned
-..remarks:This function has three specialisations: The "Tail" method simply cuts off as many low quality bases from
- the end as possible before finding a good base with good quality. The "BWA" method uses the formular 
- argmax_x sum_{i=x+1}^l {cutoff - q_i} to trim to argmax. The "Mean" method uses a sliding window to calculate
- mean qualities.
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq>
 unsigned _trimRead(const TSeq& seq, unsigned const cutoff, Tail const &)
 {
@@ -193,23 +148,7 @@ unsigned _trimRead(const TSeq& seq, unsigned const _cutoff, Mean const & spec)
 	return i;   // i now holds the start of the first window that turned bad.
 }
 
-/**
-.Function.trimRead:
-..summary: Interface that trims a sequence.
-..signature:trimRead(seq, qual, cutoff, spec)
-..param.seq:The sequence which shall be trimmed.
-...type:Class.String
-..param.qual:The quality scores of the sequence.
-...type:nolink:String
-..param.cutoff:The minimum quality required from a base.
-...type:nolink:unsigned
-..param.spec:The trimming algorithm used for trimming.
-...type:nolink:Tail
-...type:nolink:BWA
-...type:nolink:Mean
-..returns:The number of bases trimmed from the sequence.
-...type:nolink:unsigned
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq, typename TSpec>
 unsigned trimRead(TSeq& seq, unsigned const cutoff, TSpec const & spec)
 {
@@ -219,21 +158,7 @@ unsigned trimRead(TSeq& seq, unsigned const cutoff, TSpec const & spec)
 	erase(seq, cut_pos, length(seq));
     return ret;
 }
-/**
-.Function._trimReads:
-..summary:Trims a set of reads.
-..signature:_trimReads(seqSet, cutoff, spec)
-..param.seqSet: A collection of sequences that shall be trimmed.
-...type:Class.StringSet
-..param.cutoff:The minimum quality required from a base.
-...type:nolink:unsigned int
-..param.spec:The trimming algorithm used for trimming.
-...type:nolink:Tail
-...type:nolink:BWA
-...type:nolink:Mean
-..returns:The number of reads which had bases removed.
-...type:nolink:unsigned
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TSet, typename TIdSet, typename TSpec>
 unsigned _trimReads(TSet & seqSet, TIdSet& idSet, unsigned const cutoff, TSpec const & spec, bool tagOpt)
 {
@@ -257,29 +182,7 @@ unsigned _trimReads(TSet & seqSet, TIdSet& idSet, unsigned const cutoff, TSpec c
 	return trimmedReads;
 }
 
-/**
-.Function.dropReads:
-..summary:Drops reads which are too short. This is done in a way
- the pair structure is conserved.
-..signature:dropReads(idSet1, seqSet1, min_length, stats)
-..signature:dropReads(idSet1, seqSet1, idSet2, seqSet2, min_length, stats)
-..param.idSet1:Set of FastA-IDs for the set of forward reads.
-...type:Class.StringSet
-..param.seqSet1:Set containing the forward reads.
-...type:Class.StringSet
-..param.idSet2:Set of FastA-IDs for the set of backward reads.
-...type:Class.StringSet
-..param.seqSet2:Set containing the backward reads.
-...type:Class.StringSet
-..param.min_length:The minimum length required after trimming. Shorter sequences will be deleted.
-...type:nolink:unsigned
-..param.stats:QualityTrimmingStats object storing the number of dropped reads.
-...type:Class.QualityTrimmingStats
-..returns:void
-..remarks:In paired end case: If one read is marked for removal, while its sibling is not, the read will
- be replaced by a single 'N'. If both reads are marked for removal, they are removed.
- This way the relation between paired reads stays intact.
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TId, typename TSeq>
 unsigned dropReads(seqan::StringSet<TId> & idSet, seqan::StringSet<TSeq> & seqSet,
 		unsigned const min_length, QualityTrimmingStats& stats)
@@ -385,21 +288,7 @@ unsigned dropReads(seqan::StringSet<TId> & idSet1, seqan::StringSet<TSeq> & seqS
 	return 0;
 }
 
-/**
-.Function.trimBatch:
-..summary:Trims bad quality bases from a set of sequences.
-..signature:trimBatch(seqSet, cutoff, spec)
-..param.seqSet:StringSet containing the reads.
-...type:Class.StringSet
-..param.cutoff:The minimum quality required of a base.
-...type:nolink:unsigned int
-..param.spec:The trimming algorithm used for trimming.
-...type:nolink:Tail
-...type:nolink:BWA
-...type:nolink:Mean
-..returns:The number of sequences which had bases removed from.
-...type:nolink:unsigned
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq, typename TId, typename TSpec>
 unsigned trimBatch(seqan::StringSet<TSeq>& seqSet, seqan::StringSet<TId>& idSet, unsigned const cutoff,
     TSpec const& spec, bool tagOpt)
@@ -408,23 +297,7 @@ unsigned trimBatch(seqan::StringSet<TSeq>& seqSet, seqan::StringSet<TId>& idSet,
 	return trimmedReads;
 }
 
-/**
-.Function.trimPairBatch:
-..summary:Trims bad quality bases from two sets of sequences.
-..signature:trimPairBatch(seqSet1, seqSet2, cutoff, spec)
-..param.seqSet1:StringSet containing the forward reads of the paired sequences.
-...type:Class.StringSet
-..param.seqSet2:StringSet containing the backward reads of the paired sequences.
-...type:Class.StringSet
-..param.cutoff:The minimum quality required of a base.
-...type:nolink:unsigned int
-..param.spec:The trimming algorithm used for trimming.
-...type:nolink:Tail
-...type:nolink:BWA
-...type:nolink:Mean
-..returns:A pair of unsigned ints containing the number of reads which had bases removed from.
-...type:nolink:pair
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq, typename TId, typename TSpec>
 seqan::Pair<unsigned, unsigned> trimPairBatch(seqan::StringSet<TSeq>& seqSet1, seqan::StringSet<TId>& idSet1,
     seqan::StringSet<TSeq> & seqSet2, seqan::StringSet<TId>& idSet2, unsigned const cutoff,

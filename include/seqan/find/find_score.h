@@ -62,21 +62,7 @@ struct DPSearch {};
  * contains the right-most column of the dynamic programming matrix.
  */
 
-/**
-.Spec.DPSearch:
-..cat:Searching
-..general:Class.Pattern
-..summary:A dynamic programming algorithm for approximate string-matching with a user-definable scoring function.
-..signature:Pattern<TNeedle, DPSearch<TScore [, TSpec [, TFindBeginPatternSpec] ]> >
-..param.TNeedle:The needle type.
-...type:Class.String
-..param.TScore:The scoring function.
-...type:Class.Score
-..remarks.text:The algorithm is based on the Sellers/Needleman-Wunsch dynamic progamming algorithm. 
-The $Pattern$ object only contains the right-most column of the dynamic programming matrix.
-...note:At the moment, the algorithm only works on linear gap costs.
-..include:seqan/find.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 ///.Class.Pattern.param.TSpec.type:Class.Score
 

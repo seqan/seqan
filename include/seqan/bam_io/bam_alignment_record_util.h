@@ -192,28 +192,7 @@ inline unsigned countPaddings(String<CigarElement<> > const & cigarString)
 
 // TODO(holtgrew): Convert into full example.
 
-/**
-.Function.bamRecordToAlignment
-..class:Class.BamAlignmentRecord
-..cat:BAM I/O
-..summary:Convert @Class.BamAlignmentRecord@ to an @Class.Align@ object.
-..signature:bamRecordToAlignment(align, reference, record)
-..param.align:The alignment to create.
-...type:Class.Align
-..param.reference:String of Dna, Dna5, ... characters.
-...type:Class.String
-..param.record:The alignment record to convert.
-...type:Class.BamAlignmentRecord
-..returns:$void$
-..include:seqan/bam_io.h
-..example.code:
-StringSet<Dna5String> references;
-BamAlignment record;
-// Read references and record.
-Align<Dna5String> align;
-if (record.rID != BamAlignmentRecord::INVALID_REFID)
-    bamRecordToAlignment(align, references[record.refId], record);
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSource, typename TSpec, typename TReference>
 void

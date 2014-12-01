@@ -156,18 +156,7 @@ struct InternalValueSize_
  * @see IntegralForValue
  */
 
-/**
-.Metafunction.BytesPerValue:
-..cat:Basic
-..summary:Number of bytes needed to store a value.
-..signature:BytesPerValue<T>::VALUE
-..param.T:A class.
-..returns.param.VALUE:Number of bytes needed to store $T$.
-...default:$BitsPerValue / 8$, rounded up. For built-in types, this is the same as $sizeof(T)$.
-..see:Metafunction.ValueSize
-..see:Metafunction.BitsPerValue
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 struct BytesPerValue
@@ -227,27 +216,7 @@ struct BytesPerValue
  * @see BytesPerValue
  */
 
-/**
-.Metafunction.IntegralForValue:
-..cat:Basic
-..summary:Returns an itegral type that provides sufficient space to store a value.
-..signature:IntegralForValue<T>::Type
-..param.T:A class.
-..returns.param.Type:An integral type that can store $T$ values.
-..remarks:The type is the smallest unsigned integral type that has a size of at least @Metafunction.BytesPerValue@ bytes.
-...tableheader:bytes|integral type
-...table:1|$unsigned char$
-...table:2|$unsigned short$
-...table:3|$unsigned int$
-...table:4|$unsigned int$
-...table:5 and above|$__int64$
-..remarks:Note that the returned integral type cannot store $T$ values, if $T$ takes more than 8 bytes, 
-    since there exists no integral type that provides sufficient space to store types of this size.
-..see:Metafunction.ValueSize
-..see:Metafunction.BitsPerValue
-..see:Metafunction.BytesPerValue
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <int SIZE>
 struct IntegralForValueImpl_

@@ -45,10 +45,7 @@ namespace seqan {
 // Enums, Tags, Classes, Specializations
 // ===========================================================================
 
-/**
-.Adaption."std::vector"
-..summary:Adaption for STL vector class.
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // ===========================================================================
 // Concepts

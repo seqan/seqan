@@ -62,15 +62,7 @@ struct MersenneTwister {};
  *            class Rng<MersenneTwister>;
  */
 
-/**
-.Spec.Mersenne Twister Rng
-..general:Class.Rng
-..signature:Rng<MersenneTwister>
-..summary:Mersenne Twister 19937 Random Number Generator
-..cat:Random
-..include:seqan/random.h
-..wiki:Tutorial/Randomness|Tutorial: Randomness
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <>
 class Rng<MersenneTwister>
 {
@@ -86,14 +78,7 @@ public:
  * @param[in] seed The <tt>unsigned</tt> value to use for seeding, defaults to 0.
  */
 
-/**
-.Memfunc.Mersenne Twister Rng#Rng
-..class:Spec.Mersenne Twister Rng
-..summary:Constructor Mersenne Twister Rng.
-..signature:Rng<MersenneTwister>([seed])
-..param.seed:Seed for the initialization of the Mersenne Twister, defaults to 0.
-...type:nolink:double.
-*/
+/*_DDDOC_PLACEHOLDER*/
     Rng() : _mtRand(0lu)
     { SEQAN_CHECKPOINT; }
 
@@ -144,20 +129,7 @@ pickRandomNumber(Rng<MersenneTwister> & mt)
  * @param[in]     seed The <tt>unsigned</tt> to use for re-seeding, defaults to 0.
  */
 
-/**
-.Function.reSeed
-..class:Spec.Mersenne Twister Rng
-..summary:Reset and re-seed MersenneTwister
-..cat:Random
-..signature:reSeed(mt[, seed])
-..param.mt:The @Spec.Mersenne Twister Rng@ to reset.
-...type:Spec.Mersenne Twister Rng
-..param.seed:Optional seed to initialize the RNG with.
-...default:0
-...type:nolink:$__uint32$
-..include:seqan/random.h
-..wiki:Tutorial/Randomness|Tutorial: Randomness
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void
 reSeed(Rng<MersenneTwister> & mt, __uint32 const seed = 0)

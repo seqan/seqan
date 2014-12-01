@@ -42,28 +42,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	//////////////////////////////////////////////////////////////////////////////
 
 
-/**
-.Spec.Mums Iterator:
-..cat:Index
-..general:Spec.BottomUp Iterator
-..summary:Iterator to search for all maximum unique matches.
-..signature:Iterator<TContainer, Mums>::Type
-..signature:Iter<TContainer, VSTree< BottomUp<Mums> > >
-..param.TContainer:Type of an index that can be iterated with a bottom-up iterator.
-...type:Spec.IndexEsa
-...metafunction:Metafunction.Container
-..include:seqan/index.h
-
-.Memfunc.Mums Iterator#Iterator
-..class:Spec.Mums Iterator
-..summary:Constructor
-..signature:Iterator(index[, minLength])
-..signature:Iterator(iterator)
-..param.index:An index object.
-..param.minLength:Minimum length of the maximal unique matches, default value is 1.
-..param.iterator:Another Mums iterator. (copy constructor)
-...type:Spec.Mums Iterator
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class MumsIterator Mums Iterator
  * @extends BottomUpIterator
@@ -168,28 +147,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 	
-/**
-.Spec.MultiMems Iterator:
-..cat:Index
-..general:Spec.BottomUp Iterator
-..summary:Iterator to search for MultiMems.
-..signature:Iterator<TContainer, MultiMems>::Type
-..signature:Iter<TContainer, VSTree< BottomUp<MultiMems> > >
-..param.TContainer:Type of an index that can be iterated with a bottom-up iterator.
-...type:Spec.IndexEsa
-...metafunction:Metafunction.Container
-..include:seqan/index.h
-
-.Memfunc.MultiMems Iterator#Iterator
-..class:Spec.MultiMems Iterator
-..summary:Constructor
-..signature:Iterator(index[, minLength])
-..signature:Iterator(iterator)
-..param.index:An index object.
-..param.minLength:Minimum length of the multiple maximal exact matches, default value is 1.
-..param.iterator:Another MultiMems iterator. (copy constructor)
-...type:Spec.MultiMems Iterator
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class MultiMemsIterator Multi Mems Iterator
  * @extends BottomUpIterator

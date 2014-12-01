@@ -156,72 +156,7 @@ namespace seqan {
 /*
 with matrix calss matrices
 */
-/**
-.Class.MarkovModel:
-..summary:Gives a suitable representation of a Marcov Chain.
-..cat:MarkovModel
-..signature:MarkovModel<TAlphabet[, TFloat, TSpec]>
-..param.TAlphabet:The alphabet type
-..param.TFloat:The type of the exploited arrays
-..param.TSpec:The MarkovModel type
-.Memvar.MarkovModel#order:
-..class:Class.MarkovModel
-..summary:The MarkovModel order
-..type:nolink:int
-.Memvar.MarkovModel#transition
-..class:Class.MarkovModel
-..summary:The transition matrix.
-..type:Class.Matrix
-.Memvar.MarkovModel#stationaryDistribution
-..class:Class.MarkovModel
-..summary:The vector of character distribution
-..type:Class.String
-.Memfunc.MarkovModel#MarkovModel
-..class:Class.MarkovModel
-..summary:Constructor
-..signature:MarkovModel(order_)
-..param.order_:The order of the MarkovModel.
-.Memfunc.MarkovModel#build:
-..class:Class.MarkovModel
-..summary:Given a training set, computes the transition matrix, the character stationary distributions and the auxiliary information that give raise to an instance of MarkovModel
-..signature:build(strings)
-..param.strings:The training set.
-...type:Class.StringSet
-
-.Memfunc.MarkovModel#set:
-..class:Class.MarkovModel
-..summary: Given e transition matrix, sets it as transition matrix of the MarkovModel and computes (if it is not available) the  vector of character distributions and the auxiliary information
-..signature:set(iTransition)
-..signature:set(iTransition, iStationaryDistribution)
-..param.iTransition:The transition matrix.
-...type:Class.Matrix
-..param.iStationaryDistribution:The vector of character distributions.
-...type:Class.String
-
-.Memfunc.MarkovModel#emittedProbability:
-..class:Class.MarkovModel
-..summary:Computes the probability that a string (or a set of strings) is emitted by the MarkovModel.
-..signature:emittedProbability(string)
-..signature:emittedProbability(stringSet)
-..param.string:The string whose emission probability has to be computed.
-...type:Class.String
-..param.stringSet:The set of strings whose emission probability has to be computed.
-...type:Class.StringSet
-..returns:A TFloat representing the emission probability.
-
-.Memfunc.MarkovModel#write:
-..class:Class.MarkovModel
-..summary: Stores an instance of MarkovModel on a file
-..signature:write(file)
-..param.file:The file on which storing the MarkovModel.
-
-.Memfunc.MarkovModel#read:
-..class:Class.MarkovModel
-..summary: Loads an instance of MarkovModel from a file
-..signature:read(file)
-..param.file:The file from which loading the MarkovModel.
-..include:seqan/statistics.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TAlphabet, typename TFloat = double, typename TSpec = Default>
 class MarkovModel
 {

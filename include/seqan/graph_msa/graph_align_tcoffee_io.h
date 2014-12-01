@@ -77,33 +77,21 @@ typedef Tag<FastaAlign_> FastaAlign;
  * @signature typedef Tag<NewickFormat_> const NewickFormat;
  */
 
-/**
-.Tag.Alignment Graph Format.value.TCoffeeLib:
-	T-Coffee library format to read and write an alignment graph.
-..include:seqan/graph_msa.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct TCoffeeLib_;
 typedef Tag<TCoffeeLib_> const TCoffeeLib;
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Tag.Alignment Graph Format.value.BlastLib:
-	A blast library for matches for an alignment graph.
-..include:seqan/graph_msa.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct BlastLib_;
 typedef Tag<BlastLib_> const BlastLib;
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Tag.Alignment Graph Format.value.MummerLib:
-	A mummer library for matches for an alignment graph.
-..include:seqan/graph_msa.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct MummerLib_;
 typedef Tag<MummerLib_> const MummerLib;
@@ -111,11 +99,7 @@ typedef Tag<MummerLib_> const MummerLib;
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Tag.Alignment Graph Format.value.NewickFormat:
-	NewickFormat format to write a guide tree.
-..include:seqan/graph_msa.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct NewickFormat_;
 typedef Tag<NewickFormat_> const NewickFormat;

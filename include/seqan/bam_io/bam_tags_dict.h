@@ -111,41 +111,7 @@ struct Position<BamTagsDict>
  * @signature BamTagsDict::BamTagsDict();
  */
 
-/**
-.Class.BamTagsDict
-..cat:BAM I/O
-..cat:Fragment Store
-..signature:BamTagsDict
-..summary:Indexes start positions of BAM tags in a @Shortcut.CharString@ and provides a dict-like API.
-..example.code:
-CharString samStr = "AA:Z:value1\tAB:Z:value2\tAC:i:30";
-CharString bamStr;
-assignSamToBam(bamStr, samStr);
-BamTagsDict tags(bamStr);
-std::cerr << length(tags) << std::endl;  // #=> "3"
-for (unsigned i = 0; i < length(tags); ++i)
-{
-    std::cerr << getTagKey(tags, i) << " -> " << getTagValue(tags, i) << std::endl;
-    if (getTagValue(tags, i)[0] == 'i')  // is 32 bit integer
-    {
-        __int32 x = 0;
-        bool res = extractTagValue(x, tags, i);
-        SEQAN_ASSERT_MSG(res, "Not a valid integer at pos %u!", i);
-        std::cerr << "     " << x << std::endl;
-    }
-}
-// #=> "AA -> Zvalue1"
-// #=> "AB -> Zvalue2"
-// #-> "AC -> i<binary representation of 30>"
-#  #-> "      30"
-..include:seqan/bam_io.h
-
-.Memfunc.BamTagsDict#BamTagsDict
-..class:Class.BamTagsDict
-..signature:BamTagsDict()
-..summary:Constructor.
-..remarks:Only the default constructor is provided.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 class BamTagsDict
 {
@@ -206,17 +172,7 @@ host(BamTagsDict const & bamTags)
  * @return bool <tt>true</tt> if <tt>dict</tt> has an index and <tt>false</tt> otherwise.
  */
 
-/**
-.Function.BamTagsDict#hasIndex
-..class:Class.BamTagsDict
-..cat:Fragment Store
-..summary:Return $true$ if @Class.BamTagsDict@ has an index.
-..signature:hasIndex(bamTags)
-..param.bamTags:SAM Tags to query
-...type:Class.BamTagsDict
-..returns:$bool$
-..include:<seqan/store_ex.h>
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool
 hasIndex(BamTagsDict const & bamTags)
@@ -246,16 +202,7 @@ hasIndex(BamTagsDict const & bamTags)
 // Return sizeof() of the type identified with the given char.  Returns -2 if not
 // valid, -1 if of variable length.
 
-/**
-.Function.getBamTypeSize
-..class:Class.BamTagsDict
-..cat:BAM I/O
-..signature:getBamTypeSize(c)
-..summary:Return size of the type identified by $c$.
-..param.c:The BAM type identifier
-..returns:$int$ with the $sizeof()$ of the type, -1 for variable sized types, -2 for invalid parameters.
-..include:seqan/bam_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct GetBamTypeSizeHelper_
 {
@@ -310,17 +257,7 @@ getBamTypeSize(char c)
  * @param[in,out] bamTags The BamTagsDict object to build the index for.
  */
 
-/**
-.Function.BamTagsDict#buildIndex
-..class:Class.BamTagsDict
-..cat:Fragment Store
-..summary:Build index for a @Class.BamTagsDict@ object.
-..signature:buildIndex(bamTags)
-..param.bamTags:SAM Tags to build index for.
-...type:Class.BamTagsDict
-..returns:$void$
-..include:<seqan/bam_io.h>
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void
 buildIndex(BamTagsDict const & bamTags)
@@ -457,17 +394,7 @@ length(BamTagsDict const & tags)
  * @return char A <tt>char</tt> that identifies the tag type.
  */
 
-/**
-.Function.BamTagsDict#getTagType
-..class:Class.BamTagsDict
-..cat:BAM I/O
-..signature:getTagType(tagsDict, id)
-..summary:Get key of a tag by index.
-..param.tagsDict:The @Class.BamTagsDict@ to retrieve data from.
-..param.id:Index of the tag whose key to retrieve.
-..returns:$char$, the SAM/BAM identifier of the type.
-..include:seqan/bam_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TId>
 inline char
@@ -492,19 +419,7 @@ getTagType(BamTagsDict const & tags, TId id)
  * @return TKey An infix of a @link CharString @endlink.  Will be a two-character char sequence.
  */
 
-/**
-.Function.BamTagsDict#getTagKey
-..class:Class.BamTagsDict
-..cat:BAM I/O
-..signature:getTagKey(tagsDict, id)
-..summary:Return key of a tag by index.
-..param.tagsDict:The @Class.BamTagsDict@ to retrieve data from.
-...type:Class.BamTagsDict
-..param.id:Index of the tag whose key to retrieve.
-..returns:Infix of the underlying string.
-..remarks:See @Class.BamTagsDict@ for an example.
-..include:seqan/bam_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TId>
 inline Infix<Host<BamTagsDict const>::Type>::Type
@@ -530,19 +445,7 @@ getTagKey(BamTagsDict const & tags, TId id)
  * @return bool <tt>true</tt> if the key could be found and <tt>false</tt> otherwise.
  */
 
-/**
-.Function.BamTagsDict#findTagKey
-..summary:Find a tag by its key for a @Class.BamTagsDict@ object.
-..class:Class.BamTagsDict
-..signature:findTagKey(id, tagsDict, key)
-..param.id:Index of the tag with the given key.
-...type:nolink:$unsigned$
-..param.tagsDict:The @Class.BamTagsDict@ to retrieve data from.
-..param.key:Name of the key to find.
-...type:Shortcut.CharString
-..returns:$bool$, indicating whether such a key could be found.
-..include:seqan/bam_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TId, typename TKey>
 inline bool
@@ -579,23 +482,7 @@ findTagKey(TId & id, BamTagsDict const & tags, TKey const & key)
  * See @link BamTagsDict @endlink for an example.
  */
 
-/**
-.Function.BamTagsDict#extractTagValue
-..class:Class.BamTagsDict
-..cat:BAM I/O
-..signature:extractTagValue(dest, tags, id)
-..summary:Extract and cast "atomic" value from tags string with index $id$.
-..param.dest:The variable to write the value to.
-...remarks:The value is first copied in a variable of the type indicated in the BAM file. Then it is cast into the type of $dest$.
-..param.tags:@Class.BamTagsDict@ object.
-...type:Class.BamTagsDict
-..params.id:Index of the tag in the tag list.
-..returns:$bool$, indicating the success.
-..remarks:The function only works for atomic types such as $int$, not for $char*$ or arrays.
-..remarks:See @Class.BamTagsDict@ for an example.
-..see:Function.BamTagsDict#getTagValue
-..include:seqan/bam_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TResultType, typename TIter>
 struct ExtractTagValueHelper_
@@ -690,19 +577,7 @@ extractTagValue(TResultValue & val, BamTagsDict const & tags, TId id)
  * @see getBamTypeSize
  */
 
-/**
-.Function.getBamTypeChar
-..class:Class.BamTagsDict
-..cat:BAM I/O
-..summary:Return char identifying the type of the atomic argument.
-..signature:getBamTypeChar(T)
-..param.T:The type to get the BAM char for.
-..returns:$char$ describing the BAM type. One of $ACcSsIifZ$.
-..remarks:Note that this function is defined for the $__int16$, $__uint16$ etc. but not for the types $short$, $int$ etc. An exception are 8-bit characters/char, where it is defined for $__int8$, $__uint8$, and $char$ unless $char$ is equal to one of the other two types. This is important when used in @Function.BamTagsDict#setTagValue@ etc. since BAM gives type chars for printable characters, signed 8-bit numbers and unsigned 8-bit numbers.
-..remarks:If $__int8$ and $__uint8$ are not identical to $char$, we can make this decision from the type, otherwise we cannot and we will give the integer types a higher precedence.
-..remarks:In your programs, this should not make any difference, only the written SAM/BAM will differ.
-..include:seqan/bam_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 struct BamTypeChar<TValue const> :
@@ -785,49 +660,7 @@ inline char getBamTypeChar(T const &)
  * @see getBamTypeChar
  */
 
-/**
-.Function.BamTagsDict#setTagValue
-..class:Class.BamTagsDict
-..cat:BAM I/O
-..summary:Set the value of a tag through a @Class.BamTagsDict@.
-..signature:setTagValue(tags, key, val[, typeC])
-..param.tags:The dict to modify.
-...type:Class.BamTagsDict
-..param.key:The key of the tag.
-...type:Shortcut.CharString
-...remarks:Must be a string of length 2.
-..param.val:The value to set the the tag to.
-..param.typeC:BAM type char to use.
-...type:nolink:By default, the type is inflected using @Function.getBamTypeChar@.
-...remarks:For portability (so the generated files are the same on all platforms), use a signed/unsigned qualified type for $val$ or give $typeC$. Also see the remarks for @Function.getBamTypeChar@.
-..returns:$bool$ indicating the success. This function can fail if the key is not a valid tag id (e.g. does not have length 2) or if the type of $val$ is not an atomic value or a string (anything but $char *$, $char const *$, a character, integer or float type is invalid).
-..see:Function.getBamTypeChar
-..remarks:Note that $setTagValue$ does not cast the type, so $typeC$ only influences the type character written out but $val$ is written out in binary without modification.
-..include:seqan/bam_io.h
-..example.text:An example setting some atomic tag values.
-..example.code:
-CharString rawTagsText;
-BamTagsDict tags(rawTagsText);
-setTagValue(tags, "XA", 9);    // int
-setTagValue(tags, "XB", 9u);   // unsigned int
-setTagValue(tags, "XC", 'X');  // char
-..example.text:If $char$ is equal to $__int8$ or $__uint8$ then the last line produces an entry with type 'c' or 'C'. To make sure that the type char 'A' (for "printable character") is written to the file, give it explicitely:
-..example.code:
-setTagValue(tags, "XC", 'X', 'A');  // Overrwrite XC, enforce type 'printable character'.
-..example.text:Note that on most systems $int$s have a width of 32 bytes, but the C++ standard leaves this open. For all types but characters, you should not give an explicit type char but use one of the types with explicit width and signed/unsigned qualifier such as $__int32$, $__uint32$ etc.
-..example.code:
-// The following is not recommended since the type of $x$ is not "unsigned 32 bit int."
-__int32 x = -1;
-setTagValue(tags, "XB", x, 'I');
-// Instead, explicitely use an unsigned type if you need one.  Note that your compiler
-// might warn you about assigning -1 to an unsigned variable so you know that you are
-// probably doing something unintended.
-__uint32 y = -1;
-setTagValue(tags, "XB", y);
-
-// Do not do this!
-setTagValue(tags, "XA", 9, 'f');    // BOGUS since 9 is not a floating point number.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TBamValueSequence, typename TValue>
 struct ToBamTagValueHelper_
@@ -1010,19 +843,7 @@ appendTagValue(TDictOrString & tags, TKey const & key, TValue const & val)
  * @return bool <tt>true</tt> if the tag could be erased, <tt>false</tt> if the key wasn't present.
  */
 
-/**
-.Function.BamTagsDict#eraseTag
-..class:Class.BamTagsDict
-..summary:Erase tag from @Class.BamTagsDict@.
-..cat:BAM I/O
-..signature:eraseTag(tagsDict, key)
-..param.tags:The dict to erase from.
-...type:Class.BamTagsDict
-..param.key:The key of the entry to remove.
-...type:Shortcut.CharString
-..returns:$bool$, indicating whether the key was present.
-..include:seqan/bam_io.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TKey>
 inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TKey> >, bool)

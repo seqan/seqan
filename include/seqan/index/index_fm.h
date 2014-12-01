@@ -96,22 +96,7 @@ class FMIndex;
 // ============================================================================
 
 // FM index fibres
-/**
-.Tag.FM Index Fibres
-..summary:Tag to select a specific fibre of a @Spec.FMIndex@.
-..remarks:These tags can be used to get @Metafunction.Fibre.Fibres@ of a FM index.
-..cat:Index
-
-..tag.FibreSA:The compressed suffix array of the text.
-..tag.FibreText:The original text of the index.
-..tag.FibreLF:The lf table.
-..tag.FibreSALF:The lf table as well as the compressed suffix array.
-...remarks:This tag can only be used with the functions @Function.indexRequire@ or @Function.indexSupplied@.
-
-..see:Metafunction.Fibre
-..see:Function.getFibre
-..include:seqan/index_fm.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct FibreTempSA_;
 struct FibreLF_;
@@ -216,24 +201,7 @@ struct DefaultFinder<Index<TText, FMIndex<TSpec, TConfig> > >
 // Class FMIndex 
 // ----------------------------------------------------------------------------
 
-/**
-.Spec.FMIndex:
-..summary:An index based on the Burrows-Wheeler transform.
-..cat:Index
-..general:Class.Index
-..signature:Index<TText, FMIndex<TSpec, TConfig> >
-..param.TText:The text type.
-...type:Class.String
-...type:Class.StringSet
-..param.TOccSpec:Occurrence table specialisation. 
-...type:Tag.WT
-...type:Tag.SBM
-...remarks:The tags are really shortcuts for the different @Class.SentinelRankDictionary@s
-...default:Tag.WT
-..param.TSpec:FM index specialisation.
-...default:void
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @class FMIndex
@@ -304,19 +272,7 @@ inline bool empty(Index<TText, FMIndex<TSpec, TConfig> > const & index)
 // Function getFibre()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.FMIndex#getFibre:
-..summary:Returns a specific fibre of a fm index.
-..signature:getFibre(index, fibreTag)
-..class:Spec.FMIndex
-..cat:Index
-..param.index:The index holding the fibre.
-...type:Spec.FMIndex
-..param.fibreTag:A tag that identifies the @Metafunction.Fibre@.
-...type:Tag.FM Index Fibres
-..returns:A reference to the @Metafunction.Fibre@ object.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TText, typename TSpec, typename TConfig>
 SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type &
@@ -385,20 +341,7 @@ indexLF(Index<TText, FMIndex<TSpec, TConfig> > const & index)
  *                  @endlink&lt;@link Index @endlink&lt;TText, FMIndex&lt;TSpec, TConfig&gt; &gt; &gt;::Type
  */
 
-/**
-.Function.FMIndex#toSuffixPosition
-..class:Spec.FMIndex
-..summary:This function computes the position of a specified position in the suffix array (additionally containing 
-entries for the sentinels. The returned position correspond to the suffix array of the original text without sentinels.
-..signature:toSuffixPosition(fmIndex, pos, offset)
-..param.fmIndex:The FM index.
-...type:Spec.FMIndex
-..param.pos:The position in the suffix array of the fm index (with sentinels).
-...type:Concept.UnsignedIntegerConcept
-..param.offset:The number of sequences in the original text.
-...type:Concept.UnsignedIntegerConcept
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TText, typename TSpec, typename TConfig, typename TPos, typename TSize>
 inline typename SAValue<Index<TText, FMIndex<TSpec, TConfig> > >::Type
@@ -451,15 +394,7 @@ _findFirstIndex(Finder<Index<TText, FMIndex<TSpec, TConfig> >, TSpecFinder> & fi
 // Function indexCreate()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.FMIndex#indexCreate
-..summary:Creates a specific @Metafunction.Fibre@.
-..signature:indexCreate(index, fibreTag)
-..param.index:The index to be created.
-...type:Spec.FMIndex
-..param.fibreTag:The fibre of the index to be computed.
-...type:Tag.FM Index Fibres.tag.FibreSALF
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TText, typename TSpec, typename TConfig>
 inline bool indexCreate(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreSALF)
@@ -508,12 +443,7 @@ inline bool indexCreate(Index<TText, FMIndex<TSpec, TConfig> > & index)
 // Function indexSupplied()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.FMIndex#indexSupplied:
-..summary:Returns whether a specific @Metafunction.Fibre@ is present.
-..param.fibreTag:
-...type:Tag.FM Index Fibres
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TText, typename TSpec, typename TConfig>
 SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreSALF const)
 {
@@ -530,23 +460,7 @@ SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, FMIndex<TSpec, TConfig>
 // Function open()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.Index#open
-..class:Class.Index
-..summary:This functions loads a dictionary from disk.
-..signature:open(dictionary, fileName [, openMode])
-..param.dictionary:The dictionary.
-...type:Class.RankDictionary
-..param.fileName:C-style character string containing the file name.
-..param.openMode:The combination of flags defining how the file should be opened.
-...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
-...remarks:To create or overwrite a file add $OPEN_CREATE$.
-...remarks:To append a file if existing add $OPEN_APPEND$.
-...remarks:To circumvent problems, files are always opened in binary mode.
-...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // This function can be used to open a previously saved index.
 template <typename TText, typename TSpec, typename TConfig>
@@ -579,23 +493,7 @@ inline bool open(Index<TText, FMIndex<TSpec, TConfig> > & index, const char * fi
 // Function save()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.Index#save
-..class:Class.Index
-..summary:This functions saves an index to disk.
-..signature:save(index, fileName [, openMode])
-..param.index:The index.
-...type:Class.RankDictionary
-..param.fileName:C-style character string containing the file name.
-..param.openMode:The combination of flags defining how the file should be opened.
-...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
-...remarks:To create or overwrite a file add $OPEN_CREATE$.
-...remarks:To append a file if existing add $OPEN_APPEND$.
-...remarks:To circumvent problems, files are always opened in binary mode.
-...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TText, typename TSpec, typename TConfig>
 inline bool save(Index<TText, FMIndex<TSpec, TConfig> > const & index, const char * fileName, int openMode)

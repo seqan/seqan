@@ -149,58 +149,9 @@ namespace SEQAN_NAMESPACE_MAIN
  * swapped out before to free a page frame.
  */
 
-/**
-.Spec.External String:
-..cat:Strings
-..general:Class.String
-..summary:String that is stored in external memory.
-..signature:String<TValue, External<> >
-..signature:String<TValue, External<TConfig> >
-..param.TValue:The value type, that is the type of the items/characters stored in the string.
-...remarks:Use @Metafunction.Value@ to get the value type for a given class.
-..param.TConfig:A structure to configure the external string.
-...type:Tag.ExternalConfig
-...type:Tag.ExternalConfigLarge
-...type:Tag.ExternalConfigSize
-...default:@Tag.ExternalConfigLarge@
-..remarks:The External String enables to access sequences larger than the available internal memory (RAM)
-by using external memory (e.g. Hard disk, Network storage, ...) via a @Class.File@ object.
-Sequences of nearly arbitrary size can be accessed even larger than the logically addressable memory,
-i.e. they can in particular contain more than 2^32 elements on a 32bit system (see Tag.ExternalConfigLarge).
-See the @Memfunc.External String#String@ constructor for more details.
-..remarks:This String also supports fast appending and removing of values at the end (see @Spec.Block String@, @Function.appendValue@)
-..remarks:The External String implements a LRU mechanism to swap out pages.
-The External String's @Metafunction.Iterator@ detects a forward or backward iteration and asynchronously prefetches pages that
-certainly will be accessed and automatically swaps out pages that certainly won't be accessed any more in the iteration
-process.
-..remarks:The String is implemented like a virtual memory manager.
-It divides its character sequence into pages of a fixed length (e.g. 1MB) and maintains a
-page table with information for each page (e.g. resides in memory or was swapped out, is dirty and needs to be saved, ...).
-Besides the page table the String also contains a size-limited list of page frames. A page frame is reserved internal
-memory for a page. When accessing values of a page that is stored in external memory, the page is loaded to a page frame
-first. In case that there is no page frame free, another page is swapped out before to free a page frame.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
-/**
-.Tag.ExternalConfig:
-..cat:Strings
-..summary:Standard configuration for the @Spec.External String@.
-..signature:String<TValue, External< ExternalConfig<> > >
-..signature:String<TValue, External< ExternalConfig<TFile[, pageSize[, frames]]> > >
-..param.TFile:Type of file the External String will be based on.
-...type:Class.File
-..param.pageSize:A positive integer that specifies the number of values in one page.
-...remarks:This should be a power of 2, to speed up transfer and calculations.
-...default:2^20
-..param.frames:A positive integer that specifies the maximum number of pages that should reside in internal memory.
-...remarks:To enable prefetching and automatic swap-out, $frames$ should be greater than 1.
-...default:2
-..remarks:When using this configuration, the @Metafunction.Size@ type of the @Spec.External String@ is $unsigned int$.
-Thus, with this configuration at most 4.294.967.296 values can be stored in an @Spec.External String@ on a 32bit system.
-For a larger size type, use @Tag.ExternalConfigLarge@.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
     // standard external string
     // size is uint32
     template < typename TFile_ = File<>,				// default file type
@@ -214,26 +165,7 @@ For a larger size type, use @Tag.ExternalConfigLarge@.
         enum { FRAMES = FRAMES_ };
     };
 
-/**
-.Tag.ExternalConfigLarge:
-..cat:Strings
-..summary:Large size type configuration for the @Spec.External String@.
-..signature:String<TValue, External< ExternalConfigLarge<> > >
-..signature:String<TValue, External< ExternalConfigLarge<TFile[, pageSize[, frames]]> > >
-..param.TFile:Type of file the External String will be based on.
-...type:Class.File
-..param.pageSize:A positive integer that specifies the number of values in one page.
-...remarks:This should be a power of 2, to speed up transfer and calculations.
-...default:2^20
-..param.frames:A positive integer that specifies the maximum number of pages that should reside in internal memory.
-...remarks:To enable prefetching and automatic swap-out, $frames$ should be greater than 1.
-...default:2
-..remarks:When using this configuration, the @Metafunction.Size@ type of the @Spec.External String@ is the @Metafunction.Size@
-type of $TFile$. Normally this is a 64bit integer. For a smaller size type, use @Tag.ExternalConfig@.
-..remarks:Some data structures store size type values (e.g. suffix arrays in @Class.Index@). To save memory,
-you should think of using @Tag.ExternalConfig@.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
     // the same as ExternalConfig
     // but size type is size type of TFile_ (i.e. uint64)
     //
@@ -251,27 +183,7 @@ you should think of using @Tag.ExternalConfig@.
         enum { FRAMES = FRAMES_ };
     };
 
-/**
-.Tag.ExternalConfigSize:
-..cat:Strings
-..summary:Arbitrary size type configuration for the @Spec.External String@.
-..signature:String<TValue, External< ExternalConfigSize< TSize > > >
-..signature:String<TValue, External< ExternalConfigSize< TSize, TFile[, pageSize[, frames]]> > >
-..param.TSize:Size type the External String will return via @Metafunction.Size@.
-..param.TFile:Type of file the External String will be based on.
-...type:Class.File
-..param.pageSize:A positive integer that specifies the number of values in one page.
-...remarks:This should be a power of 2, to speed up transfer and calculations.
-...default:2^20
-..param.frames:A positive integer that specifies the maximum number of pages that should reside in internal memory.
-...remarks:To enable prefetching and automatic swap-out, $frames$ should be greater than 1.
-...default:2
-..remarks:When using this configuration, the @Metafunction.Size@ type of the @Spec.External String@ is the @Metafunction.Size@
-type of $TFile$. Normally this is a 64bit integer. For a smaller size type, use @Tag.ExternalConfig@.
-..remarks:Some data structures store size type values (e.g. suffix arrays in @Class.Index@). To save memory,
-you should think of using @Tag.ExternalConfig@.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
     // custom size type
     template < typename TSize_,
 		       typename TFile_ = File<>,				// default file type
@@ -1254,29 +1166,7 @@ you should think of using @Tag.ExternalConfig@.
  * openTemp afterwards to reach the same behaviour.
  */
 
-/**
-.Memfunc.External String#String:
-..class:Spec.External String
-..summary:Constructor
-..signature:String<TValue, External<TConfig> > ()
-..signature:String<TValue, External<TConfig> > (file)
-..signature:String<TValue, External<TConfig> > (fileName[, openMode])
-..param.file:The @Spec.External String@ will use the file associated with $file$.
-...remarks:You must ensure that $file$ is open, as the string won't call @Function.open@ and @Function.close@ on it.
-...type:Class.File
-..param.fileName:The @Spec.External String@ will @Function.open@ the file with the path $fileName$.
-..param.openMode:File mode for @Function.open@.
-..remarks:When a file or file name is given, this file will be used for the @Spec.External String@.
-If the file exists, this file will be used and determines the strings length and content.
-If the file doesn't exist, a new and empty file will be created and used for the string.
-In both cases, the string won't delete the file in the destructor.
-..remarks:
-When no file is given (default c'tor) the string will be empty and no file is used until the string 
-needs to swap out page frames. Then a temporary file will be used which will be deleted when the string is destroyed.
-..remarks:
-Instead of giving $file$ or $fileName$ to the constructor, you could also use the default constructor and call @Function.open@
-or @Function.openTemp@ afterwards to reach the same behaviour.
-*/
+/*_DDDOC_PLACEHOLDER*/
         explicit
         String(TFile &_file) :
             file(NULL), _temporary(true), _ownFile(false), data_size(0), lastDiskPage(0), lastDiskPageSize(0)
@@ -1794,13 +1684,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
  * @param[in,out] str The ExternalString to flush.
  */
 
-/**
-.Function.flush:
-..signature:flush(string)
-..param.string:An external string. All dirty pages are flushed to disk.
-...type:Spec.External String
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
     template < typename TValue, typename TConfig >
     inline void 
 	flush(String<TValue, External<TConfig> > &me) 
@@ -1910,13 +1794,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
  * @return bool <tt>true</tt> if the operation succeeded and <tt>false</tt> otherwise.
  */
 
-/**
-.Function.open:
-..signature:open(string, fileName[, openMode]))
-..param.string:A persistent string, e.g. a @Spec.External String@ or @Spec.MMap String@.
-...type:Spec.External String
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 	template < typename TValue, typename TConfig >
     inline bool 
@@ -1990,13 +1868,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
  * @return bool <tt>true</tt> if opening succeeded, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.openTemp:
-..signature:openTemp(string)
-..param.string:An external string.
-...type:Spec.External String
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 	template < typename TValue, typename TConfig >
     inline bool 
     openTemp(String<TValue, External<TConfig> > &me) 
@@ -2049,13 +1921,7 @@ or @Function.openTemp@ afterwards to reach the same behaviour.
  * @return bool <tt>true</tt> if the closing succeeded, <tt>false</tt> otherwise.
  */
     
-/**
-.Function.close:
-..signature:close(string)
-..param.string:An external string.
-...type:Spec.External String
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 	template < typename TValue, typename TConfig >
     inline bool 
     close(String<TValue, External<TConfig> > &me) 

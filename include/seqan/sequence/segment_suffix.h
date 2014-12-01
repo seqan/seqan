@@ -61,26 +61,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @aka substring
  */
 
-/**
-.Spec.SuffixSegment:
-..cat:Segments
-..summary:End part segment of a sequence.
-..general:Class.Segment
-..signature:Segment<THost, SuffixSegment>
-..param.THost:Type of the whole sequence.
-...text:Instances of $Segment<THost, SuffixSegment>$ are suffixes of $THost$ objects.
-...remarks:Use @Metafunction.Host@ to get the host type for a given class.
-..remarks.note:Since the appropriate segment type depends on the host sequence type,
-    it is recommended to use the metafunction @Metafunction.Suffix@ instead of explicitely
-    choose a specialization of @Class.Segment@.
-..see:Spec.InfixSegment
-..see:Metafunction.Suffix
-..example.file:demos/sequence/suffix.cpp
-..example.text:The output is as follows:
-..example.output:
-Suffix: AAAA
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct SuffixSegment {};
 
@@ -97,32 +78,7 @@ public:
 
 public:
 
-/**
-.Memfunc.SuffixSegment#Segment:
-..class:Spec.SuffixSegment
-..summary:Constructor
-..signature:Segment<THost, SuffixSegment> ()
-..signature:Segment<THost, SuffixSegment> (suffix)
-..signature:Segment<THost, SuffixSegment> (host [, begin])
-..param.suffix:Other suffix object. (copy constructor)
-..param.host:The whole sequence.
-..param.begin:Position in $host$ of the first item in segment. (optional)
-...default:$0$
-...type:Metafunction.Position.$Position<THost>::Type$
-...type:Metafunction.Iterator.$Iterator<THost>::Type$
-..remarks:
-...text:A Segment object cannot work without a host. If the object is default constructed,
-the host must be set by @Function.setHost@ before the segment can be used.
-...text:If a segment object is constructed by the copy constructor, the
-members of the new constructed object are set to the same values as the members in the
-source object; the host object is not modified.
-Note that this is a special case, since all other copy operations result in changes
-of the host object.
-...text:$begin$ must be a valid position/iterator in $host$.
-If $begin$ is omitted, the suffix segment corresponding to
-the whole sequence $host$ is constructed.
-This is the same segment that is returned by @Function.goBegin@.
-*/
+/*_DDDOC_PLACEHOLDER*/
     SEQAN_HOST_DEVICE
     Segment():
         data_host(),
@@ -372,20 +328,7 @@ _setLength(Segment<THost_, SuffixSegment> &, TSize)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Metafunction.Suffix:
-..cat:Segments
-..class:Class.String
-..summary:Suffix sequence type.
-..signature:Suffix<T>::Type
-..param.T:A sequence type.
-...type:Class.String
-..returns.param.Type:The suffix type.
-..see:Spec.SuffixSegment
-..see:Metafunction.Infix
-..see:Metafunction.Prefix
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct PrefixSegment;
 struct InfixSegment;
@@ -544,28 +487,7 @@ operator --(Segment<THost, SuffixSegment> & segment)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.suffix:
-..cat:Containers
-..class:Class.String
-..class:Adaption.char array
-..summary:Creates suffix object.
-..signature:suffix(host, begin)
-..remarks:Note that a suffix of a @Class.Segment@ object is an @Spec.SuffixSegment@ object having the same host type.
-..param.host:The complete sequence.
-...type:Class.String
-...type:Adaption.char array
-..param.begin:Position or iterator of the first element of the segment.
-...type:Metafunction.Position
-...type:Metafunction.Iterator
-..returns:The suffix of $host that begins at $begin$.
-...remarks:The type of the suffix is given by @Metafunction.Suffix@.
-..remarks:Notational sugar.
-..see:Spec.SuffixSegment
-..see:Function.infix
-..see.Metafunction.Suffix
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TPosBegin>
 inline typename Suffix<T>::Type

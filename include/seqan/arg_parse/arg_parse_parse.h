@@ -63,21 +63,7 @@ namespace seqan {
  * This function must be called before retrieving any options or arguments from the parser.
  */
 
-/**
-.Function.ArgumentParser#parse
-..summary:Parses the command line.
-..class:Class.ArgumentParser
-..cat:Miscellaneous
-..signature:parse(parser, argc, argv[, outputStream, errorStream])
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.argc:Count of the objects on the command line.
-..param.argv:Array of the different command line arguments ($const char *argv[]$).
-..param.errorStream:A stream where error messages are sent to.
-..remarks:Must be called before retrieving options or arguments.
-..returns:$true$ if all required arguments are set and parseable and neither the help nor version argument is set.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // Helper class for parsing command line arguments.
 //

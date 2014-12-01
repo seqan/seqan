@@ -44,29 +44,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Spec.Oracle:
-..cat:Graph
-..general:Class.Graph
-..summary:A factor oracle.
-..remarks:A factor oracle is a special automaton and thus, it is not implemented in its own class.
-It solely provides create functions where based upon a string an oracle is created.
-..signature:Graph<Automaton<TAlphabet, TCargo, TSpec> > 
-..param.TAlphabet:The alphabet type that is used for the transition labels.
-...metafunction:Metafunction.Alphabet
-...remarks:Use @Metafunction.Alphabet@ to get the type of the labels in an automaton.
-...default:$char$
-..param.TCargo:The cargo type that can be attached to the edges.
-...metafunction:Metafunction.Cargo
-...remarks:Use @Metafunction.Cargo@ to get the cargo type of an undirected graph.
-...default:$void$
-..param.TSpec:The specializing type for the graph.
-...metafunction:Metafunction.Spec
-...remarks:Use WithoutEdgeId here to omit edge ids.
-Note: If edges do not store ids external property maps do not work.
-...default:$Default$, see @Tag.Default@.
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 //////////////////////////////////////////////////////////////////////////////
 // INTERNAL FUNCTIONS
@@ -118,20 +96,7 @@ _addLetterToOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
  * @see Automaton#createOracleOnReverse
  */
 
-/**
-.Function.createOracle
-..class:Spec.Oracle
-..cat:Graph
-..summary:Creates a factor oracle.
-..signature:createOracle(g, text)
-..param.g:Out-parameter: An oracle.
-...type:Spec.Oracle
-..param.text:In-parameter: A string.
-...type:Class.String
-..returns:void
-..see:Function.createOracleOnReverse
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TText>
 inline void
 createOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
@@ -165,20 +130,7 @@ createOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
  * @see Automaton#createOracle
  */
 
-/**
-.Function.createOracleOnReverse
-..class:Spec.Oracle
-..cat:Graph
-..summary:Creates a factor oracle for the reversed string.
-..signature:createOracleOnReverse(g, text)
-..param.g:Out-parameter: An oracle.
-...type:Spec.Oracle
-..param.text:In-parameter: A string.
-...type:Class.String
-..returns:void
-..see:Function.createOracle
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TText>
 inline void
 createOracleOnReverse(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,

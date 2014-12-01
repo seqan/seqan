@@ -90,17 +90,7 @@ inline void _printMask(String <unsigned> const &  mask,unsigned start, unsigned 
  * @note The types of the needle and the haystack have to match.
  */
 
-/**
-.Spec.AbndmAlgo:
-..summary: Approximate Backward Nondeterministic Dawg Matching algorithm. Approximate string matching using bit parallelism.
-..general:Class.Pattern
-..cat:Searching
-..signature:Pattern<TNeedle, AbndmAlgo>
-..param.TNeedle:The needle type.
-...type:Class.String
-..remarks.text:The types of the needle and the haystack have to match.
-..include:seqan/find.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 ///.Class.Pattern.param.TSpec.type:Spec.AbndmAlgo
 

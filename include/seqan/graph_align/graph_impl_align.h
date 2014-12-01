@@ -76,44 +76,27 @@ namespace seqan {
  * @signature typedef Tag<CgVizFormat_> const CgVizFormat;
  */
 
-/**
-.Tag.Alignment Graph Format:
-..cat:Input/Output
-..summary:A file format to write an alignment graph.
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Tag.Alignment Graph Format.value.MsfFormat:
-	Msf format to write an alignment graph.
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct MsfFormat_;
 typedef Tag<MsfFormat_> const MsfFormat;
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Tag.Alignment Graph Format.value.FastaFormat:
-	Fasta format to write an alignment graph.
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct FastaFormat_;
 typedef Tag<FastaFormat_> const FastaFormat;
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Tag.Alignment Graph Format.value.CgVizFormat:
-	Cgviz format to write an alignment graph.
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct CgVizFormat_;
 typedef Tag<CgVizFormat_> const CgVizFormat;
@@ -232,27 +215,7 @@ public:
  * @endcode
  */
 
-/**
-.Spec.Alignment Graph:
-..cat:Graph
-..general:Class.Graph
-..summary:An alignment graph.
-..description:
-...image:alignmentGraph|An alignment graph with 3 sequences.
-..signature:Graph<Alignment<TStringSet, TCargo, TSpec> > 
-..param.TStringSet:The type of the string set containing the sequence information, must be a @Spec.Dependent|Dependent StringSet@
-...default:@Spec.Dependent|Dependent StringSet@
-..param.TCargo:The cargo type that can be attached to the edges.
-...metafunction:Metafunction.Cargo
-...remarks:Use @Metafunction.Cargo@ to get the cargo type of an undirected graph.
-...default:$void$
-..param.TSpec:The specializing type for the graph.
-...metafunction:Metafunction.Spec
-...remarks:Use WithoutEdgeId here to omit edge ids.
-Note: If edges do not store ids external property maps do not work.
-...default:$Default$, see @Tag.Default@.
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TString, typename TSpecial, typename TCargo, typename TSpec>
 class Graph<Alignment<StringSet<TString, Dependent<TSpecial> >, TCargo, TSpec> > 
 {
@@ -1130,19 +1093,7 @@ write(TFile & file,
  * @see AlignmentGraph#stringSet
  */
 
-/**
-.Function.assignStringSet
-..class:Spec.Alignment Graph
-..cat:Graph
-..summary:Assigns a new string set to an alignment graph.
-..signature:assignStringSet(g, str)
-..param.g:An alignment graph.
-...type:Spec.Alignment Graph
-..param.str:A string set.
-..see:Function.getStringSet
-..see:Function.stringSet
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TString, typename TDefault, typename TCargo, typename TSpec, typename TDefault2>
 inline void
 assignStringSet(Graph<Alignment<StringSet<TString, Dependent<TDefault> >, TCargo, TSpec> >& g,
@@ -1191,19 +1142,7 @@ assignStringSet(Graph<Alignment<StringSet<TString, Dependent<TDefault> >, TCargo
  * @see AlignmentGraph#stringSet
  */
 
-/**
-.Function.getStringSet
-..class:Spec.Alignment Graph
-..cat:Graph
-..summary:Gets the string set of an alignment graph.
-..signature:getStringSet(g)
-..param.g:An alignment graph.
-...type:Spec.Alignment Graph
-..returns:A string set.
-..see:Function.assignStringSet
-..see:Function.stringSet
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec>
 inline typename Host<Graph<Alignment<TStringSet, TCargo, TSpec> > const>::Type&
 getStringSet(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
@@ -1229,19 +1168,7 @@ getStringSet(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
  * @see AlignmentGraph#getStringSet
  */
 
-/**
-.Function.stringSet
-..class:Spec.Alignment Graph
-..cat:Graph
-..summary:Gets the string set of an alignment graph.
-..signature:stringSet(g)
-..param.g:An alignment graph.
-...type:Spec.Alignment Graph
-..returns:A reference or temporary of @Class.StringSet.string set@ type.
-..see:Function.assignStringSet
-..see:Function.getStringSet
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct StringSetType;
@@ -1275,19 +1202,7 @@ stringSet(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
  * @return TInfix An infix representing the sequence label.
  */
 
-/**
-.Function.label
-..class:Spec.Alignment Graph
-..cat:Graph
-..summary:Gets the label that is associated with this vertex descriptor.
-..signature:label(g, v)
-..param.g:An alignment graph.
-...type:Spec.Alignment Graph
-..param.v:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:An infix representing the sequence label.
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename Infix<typename Value<TStringSet>::Type>::Type
 label(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
@@ -1319,19 +1234,7 @@ label(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * @return TId The sequence id.
  */
 
-/**
-.Function.sequenceId
-..class:Spec.Alignment Graph
-..cat:Graph
-..summary:Gets the sequence id that is associated with this vertex descriptor or with a sequence of a fragment.
-..signature:sequenceId(g, v)
-..param.g:An alignment graph.
-...type:Spec.Alignment Graph
-..param.v:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:The sequence id.
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename Id<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&
 sequenceId(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
@@ -1355,19 +1258,7 @@ sequenceId(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * @return TPos The begin position.
  */
 
-/**
-.Function.fragmentBegin
-..class:Spec.Alignment Graph
-..cat:Graph
-..summary:Gets the begin position for this fragment or this vertex descriptor in the sequence.
-..signature:fragmentBegin(g, v)
-..param.g:An alignment graph.
-...type:Spec.Alignment Graph
-..param.v:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:The begin position.
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename Position<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&
 fragmentBegin(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
@@ -1391,19 +1282,7 @@ fragmentBegin(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * @return TPos The fragment size.
  */
 
-/**
-.Function.fragmentLength
-..class:Spec.Alignment Graph
-..cat:Graph
-..summary:Gets the length of the label of a given vertex descriptor in the sequence.
-..signature:fragmentLength(g, v)
-..param.g:An alignment graph.
-...type:Spec.Alignment Graph
-..param.v:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:The length of the fragment represented by this vertex descriptor.
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&
 fragmentLength(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
@@ -1429,19 +1308,7 @@ fragmentLength(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * <tt>getNil&lt;TVertexDescriptor&gt;()</tt> if none could be found.
  */
 
-/**
-.Function.findVertex
-..class:Spec.Alignment Graph
-..cat:Graph
-..summary:Finds a vertex given a sequence id and a position.
-..signature:findVertex(g, id, pos)
-..param.g:An alignment graph.
-...type:Spec.Alignment Graph
-..param.id:A sequence id.
-..param.pos:A position.
-..returns:The vertex covering the given position on the specified sequence, $getNil<TVertexDescriptor>()$ if none could be found.
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId, typename TPos> 
 inline typename VertexDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
 findVertex(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
@@ -1473,13 +1340,7 @@ findVertex(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
  * @param[out] pos2   The reuslting position of the sequence was was projected onto.
  */
 
-/**
-.Function.getProjectedPosition
-..class:Spec.Alignment Graph
-..signature:getProjectedPosition(g,seqId,pos,seqId2,pos2)
-..param.g:An alignment graph.
-...type:Spec.Alignment Graph
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId, typename TPosition, typename TSeqId2, typename TPosition2> 
 inline void
 getProjectedPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
@@ -1587,19 +1448,7 @@ getProjectedPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
  * @see AlignmentGraph#getLastCoveredPosition
  */
 
-/**
-.Function.getFirstCoveredPosition
-..class:Spec.Alignment Graph
-..cat:Graph
-..summary:Finds the first position in a sequence that is not assigned to a nil vertex.
-..signature:getFirstCoveredPosition(g, id)
-..param.g:An alignment graph.
-...type:Spec.Alignment Graph
-..param.id:A sequence id.
-..returns:A sequence position
-..see:Function.getLastCoveredPosition
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId>
 inline typename Position<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 getFirstCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
@@ -1642,19 +1491,7 @@ getFirstCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * @see AlignmentGraph#getFirstCoveredPosition
  */
 
-/**
-.Function.getLastCoveredPosition
-..class:Spec.Alignment Graph
-..cat:Graph
-..summary:Finds the last position in a sequence that is not assigned to a nil vertex.
-..signature:getLastCoveredPosition(g, id)
-..param.g:An alignment graph.
-...type:Spec.Alignment Graph
-..param.id:A sequence id.
-..returns:A sequence position
-..see:Function.getFirstCoveredPosition
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId>
 inline typename Position<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 getLastCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
@@ -1703,17 +1540,7 @@ getLastCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
  * The variant with <tt>component</tt> and <tt>order</tt> computes a topological sorting of connected components.
  */
 
-/**
-.Function.convertAlignment
-..class:Spec.Alignment Graph
-..signature:convertAlignment(g, component, order, compLength)
-..remarks:The variant with $component$ and $order$ computes a topological sorting of connected components.
-..param.g:Alignment graph to convert.
-..param.component:Vertex to component mapping.
-..param.order:The order of the component graph when sorting topologically.
-..param.compLength:Component sizes.
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TComponentMap, typename TOrderMap, typename TComponentLength> 
 inline bool
@@ -1820,17 +1647,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.convertAlignment
-..cat:Graph
-..summary:Converts an alignment graph into an alignment matrix.
-..signature:convertAlignment(g, matrix)
-..param.g:In-parameter: An alignment graph.
-...type:Spec.Alignment Graph
-..param.matrix:Out-parameter: A string that represents an alignment matrix.
-..returns: A bool that is true iff the alignment graph is a valid alignment
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix> 
 inline bool
 convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
@@ -2166,20 +1983,7 @@ _heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g
 
 // TODO(holtgrew): Where does this belong? This is also there in graph_algorithms.h...
 
-/**
-.Function.heaviestCommonSubsequence:
-..summary:Computes the heaviest common subsequence between two strings using the match information given in an alignment graph.
-..cat:Alignments
-..signature:heaviestCommonSubsequence(g, str1, str2, align)
-..signature:heaviestCommonSubsequence(g, str1, str2)
-..param.g:An alignment graph.
-...type:Spec.Alignment Graph
-..param.str1:A string.
-..param.str2:Another string.
-..param.align:Out-parameter: A String of vertex strings that indicate the members of the heaviest common subsequence.
-..returns:Score of the heaviest common subsequence.
-..include:seqan/graph_algorithms.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TString, typename TOutString>
 inline TCargo
 heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,

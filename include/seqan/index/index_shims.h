@@ -115,18 +115,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 
-/**
-.Function.createSuffixArray:
-..summary:Creates a suffix array from a given text.
-..cat:Index
-..signature:createSuffixArray(suffixArray, text[, algo_tag])
-..param.suffixArray:The resulting suffix array.
-..param.text:A given text.
-..param.algo_tag:A tag that identifies the algorithm which is used for creation.
-..remarks:This function should not be called directly. Please use @Function.indexCreate@ or @Function.indexRequire@.
-The size of $suffixArray$ must be at least $length(text)$ before calling this function.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn createSuffixArray
  * @headerfile <seqan/index.h>
@@ -336,19 +325,7 @@ The size of $suffixArray$ must be at least $length(text)$ before calling this fu
 	}
 
 
-/**
-.Function.createLcpTable:
-..summary:Creates a lcp table from a given text and suffix array.
-..cat:Index
-..signature:createLcpTable(lcp, text, suffixArray[, algo_tag])
-..param.lcp:The resulting lcp table.
-..param.text:A given text.
-..param.suffixArray:The suffix array of $text$.
-..param.algo_tag:A tag that identifies the algorithm which is used for creation.
-..remarks:This function should not be called directly. Please use @Function.indexCreate@ or @Function.indexRequire@.
-The size of $lcp$ must be at least $length(text)$ before calling this function.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn createLcpTable
  * @headerfile <seqan/index.h>
@@ -550,19 +527,7 @@ The size of $lcp$ must be at least $length(text)$ before calling this function.
 		bwt << creator;
 	}
 
-/**
-.Function.createBWTable:
-..summary:Creates a Burrows-Wheeler table from a given text and suffix array.
-..cat:Index
-..signature:createBWTable(bwt, text, suffixArray[, algo_tag])
-..param.bwt:The resulting Burrows-Wheeler table.
-..param.text:A given text.
-..param.suffixArray:The suffix array of $text$.
-..param.algo_tag:A tag that identifies the algorithm which is used for creation.
-..remarks:This function should not be called directly. Please use @Function.indexCreate@ or @Function.indexRequire@.
-The size of $bwt$ must be at least $length(text)$ before calling this function.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn createBWTable
  * @headerfile <seqan/index.h>
@@ -620,18 +585,7 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
 	};
 
 //TODO(singer): Make this internal
-/**
-.Function.orderOccurrences:
-..summary:Sorts a string of occurrences.
-..cat:Index
-..signature:orderOccurrences(occstring)
-..param.occstring:String of occurrences.
-...remarks:Contains suffix array values returned by @Function.getOccurrences@.
-..remarks:The occurrences are sorted by increasing positions.
-..see:Function.getOccurrences
-..see:Metafunction.SAValue
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn orderOccurrences
  * @headerfile <seqan/index.h>
@@ -662,25 +616,7 @@ The size of $bwt$ must be at least $length(text)$ before calling this function.
 //////////////////////////////////////////////////////////////////////////////
 // fibre creators
 
-/**
-.Function.indexCreate:
-..summary:Creates a specific @Metafunction.Fibre@.
-..cat:Index
-..signature:indexCreate(index, fibreTag[, algoTag])
-..class:Class.Index
-..param.index:The @Class.Index@ object holding the fibre.
-...type:Class.Index
-..param.fibreTag:A tag that identifies the @Metafunction.Fibre@.
-...type:Tag.ESA Index Fibres
-...type:Tag.QGram Index Fibres
-...type:Tag.WOTD Index Fibres
-...type:Tag.FM Index Fibres
-..param.algoTag:A tag that identifies the algorithm which is used to create the fibre.
-...default:The result of @Metafunction.DefaultIndexCreator@.
-..returns:A $bool$ which is $true$ on a successful creation.
-..remarks:$indexCreate$ calls the fibre corresponding $createXXX(..)$ function (e.g. @Function.createSuffixArray@).
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Index#indexCreate
  * @headerfile <seqan/index.h>
@@ -787,19 +723,7 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
 //////////////////////////////////////////////////////////////////////////////
 // automatic fibre creation
 
-/**
-.Function.indexSupplied:
-..summary:Returns whether a specific @Metafunction.Fibre@ is present.
-..cat:Index
-..signature:indexSupplied(index, fibreTag)
-..class:Class.Index
-..param.index:The @Class.Index@ object holding the fibre.
-...type:Class.Index
-..param.fibreTag:A tag that identifies the @Metafunction.Fibre@.
-...type:Tag.ESA Index Fibres
-..returns:A $bool$ which is $true$, iff the fibre is present.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Index#indexSupplied
  * @headerfile <seqan/index.h>
@@ -820,39 +744,7 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
 
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Function.indexRequire:
-..summary:On-demand creation of a specific @Metafunction.Fibre@.
-..cat:Index
-..signature:indexRequire(index, fibreTag)
-..class:Class.Index
-..param.index:The @Class.Index@ object holding the fibre.
-...type:Class.Index
-..param.fibreTag:A tag that identifies the @Metafunction.Fibre@.
-...type:Tag.ESA Index Fibres
-...type:Tag.QGram Index Fibres
-...type:Tag.WOTD Index Fibres
-...type:Tag.FM Index Fibres
-..returns:A $bool$ which is $true$ on a successful creation.
-..remarks:If the fibre already exists (@Function.indexSupplied@ is true) then $indexRequire$ does nothing.
-If the fibre doesn't exist then @Function.indexCreate@ is called to create it.
-..include:seqan/index.h
-..example
-...text:The following code shows how the BWT of an text can be computed.
-...file:demos/index/index_textAt_indexText_saAt_indexRequire.cpp
-...output:BWT	Suffices
-P	PI
-S	SIPPI
-S	SISSIPPI
-M	MISSISSIPPI
-I	I
-P	PPI
-I	IPPI
-S	SSIPPI
-S	SSISSIPPI
-I	ISSIPPI
-I	ISSISSIPPI
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Index#indexRequire
  * @headerfile <seqan/index.h>

@@ -68,22 +68,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * The output type equals the input type.
  */
 
-/**
-.Spec.Shifter:
-..cat:Pipelining
-..general:Class.Pipe
-..summary:Shifts the input stream by $delta$ elements.
-..signature:Pipe<TInput, Shifter<delta, omitBlank> >
-..param.TInput:The type of the pipeline module this module reads from.
-..param.delta:The shift size. For the output stream holds $out[i]=in[i+delta]$.
-...remarks:For $delta>0$ the input stream is cut of at the beginning and for $delta<0$ at the end.
-..param.omitBlank:Omit undefined entries.
-..param.omitBlank:If $true$, the output stream is $|delta|$ elements shorter than the input stream.
-..param.omitBlank:If $false$, the lengths are equal and blanks (default constructed elements) are inserted on the cut-off-opposite side.
-...default:$false$
-..remarks:The output type equals the input type.
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     //////////////////////////////////////////////////////////////////////////////
     // echoer class

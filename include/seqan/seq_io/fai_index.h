@@ -122,21 +122,7 @@ clear(FaiIndexEntry_ &entry)
  * @signature FaiIndex::FaiIndex();
  */
 
-/**
-.Class.FaiIndex
-..cat:Input/Output
-..signature:FaiIndex
-..summary:Data type for storing FAI indices.
-..wiki:Tutorial/IndexedFastaIO|Tutorial: Indexed FASTA I/O
-..example.text:The following example demonstrate the usage of the FAIIndex class.
-..example.file:demos/seq_io/fai_index_example.cpp
-..include:seqan/seq_io.h
-
-.Memvar.FaiIndex#FaiIndex
-..class:Class.FaiIndex
-..signature:FaiIndex()
-..summary:The @Class.FaiIndex@ class only provides the default constructor.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 class FaiIndex
 {
@@ -184,16 +170,7 @@ public:
  * @param[in,out] faiIndex The FaiIndex to clear.
  */
 
-/**
-.Function.FaiIndex#clear
-..cat:Input/Output
-..class:Class.FaiIndex
-..signature:clear(faiIndex)
-..param.faiIndex:The @Class.FaiIndex@ to reset.
-...type:Class.FaiIndex
-..summary:Reset a @Class.FaiIndex@ object to the state after default construction.
-..include:seqan/seq_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void clear(FaiIndex & index)
 {
@@ -221,21 +198,7 @@ inline void clear(FaiIndex & index)
  * @return bool true if a sequence with the given name is known in the index.
  */
 
-/**
-.Function.FaiIndex#getIdByName
-..cat:Input/Output
-..class:Class.FaiIndex
-..signature:getIdByName(faiIndex, name, rID)
-..summary:Return id (numeric index in the file) of a sequence in a FAI file.
-..param.faiIndex:The @Class.FaiIndex@ to query.
-...type:Class.FaiIndex
-..param.name:The name of the sequence to get the id for.
-...type:Shortcut.CharString
-..param.rID:The id of the sequence is written here.
-...type:nolink:$unsigned$
-..return:$bool$ indicating whether a sequence with this name is known in the index.
-..include:seqan/seq_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TName, typename TId>
 inline bool getIdByName(TId & rID, FaiIndex const & index, TName const & name)
@@ -259,19 +222,7 @@ inline bool getIdByName(TId & rID, FaiIndex const & index, TName const & name)
  * @return __uint64 The length of the sequence with index rID in faiIndex.
  */
 
-/**
-.Function.FaiIndex#sequenceLength
-..cat:Input/Output
-..class:Class.FaiIndex
-..signature:__uint64 sequenceLength(faiIndex, rID)
-..summary:Return length of the sequence with the given id in the @Class.FaiIndex@.
-..param.faiIndex:The @Class.FaiIndex@ to query.
-...type:Class.FaiIndex
-..param.rID:The id of the sequence to get the length of.
-...type:nolink:$unsigned$
-..return:$__uint64$ with the length of the sequence.
-..include:seqan/seq_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSeqId>
 inline __uint64 sequenceLength(FaiIndex const & index, TSeqId rID)
@@ -303,19 +254,7 @@ inline __uint64 sequenceLength(FaiIndex & index, TSeqId rID)
  * @return CharString The name of the sequence with the given id.
  */
 
-/**
-.Function.FaiIndex#sequenceName
-..cat:Input/Output
-..class:Class.FaiIndex
-..signature:CharString sequenceName(faiIndex, rID)
-..summary:Return the name of the sequence with the given id in the @Class.FaiIndex@.
-..param.faiIndex:The @Class.FaiIndex@ to query.
-...type:Class.FaiIndex
-..param.rID:The id of the sequence to get the name of.
-...type:Shortcut.CharString
-..return:@Shortcut.CharString@ with the name of the sequence.
-..include:seqan/seq_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline CharString const & sequenceName(FaiIndex const & index, unsigned rID)
 {
@@ -337,17 +276,7 @@ inline CharString const & sequenceName(FaiIndex const & index, unsigned rID)
  * @return __uint64 The number of sequences in the index.
  */
 
-/**
-.Function.FaiIndex#numSeqs
-..cat:Input/Output
-..class:Class.FaiIndex
-..signature:numSeqs(faiIndex)
-..summary:Return number of sequences known to an @Class.FaiIndex@.
-..param.faiIndex:The @Class.FaiIndex@ to query.
-...type:Class.FaiIndex
-..return:$__uint64$ with the number of sequences.
-..include:seqan/seq_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline __uint64 numSeqs(FaiIndex const & index)
 {
@@ -375,29 +304,7 @@ inline __uint64 numSeqs(FaiIndex const & index)
  * @return int 0 on success, non-0 on errors.
  */
 
-/**
-.Function.FaiIndex#readRegion
-..cat:Input/Output
-..class:Class.FaiIndex
-..signature:readRegion(str, faiIndex, rID, beginPos, endPos)
-..signature:readRegion(str, faiIndex, region);
-..summary:Load the infix of a sequence from a @Class.FaiIndex@.
-..description:The given region is loaded from the indexed FASTA file.
-..param.str:The sequence infix is written into this string.
-...type:Class.String
-..param.faiIndex:The @Class.FaiIndex@ to query.
-...type:Class.FaiIndex
-..param.rID:The index of the sequence in the file.
-...type:nolink:$unsigned$
-..param.beginPos:The begin position of the infix to write to $str$.
-...type:nolink:$unsigned$
-..param.endPos:The end position of the infix to write to $str$.
-...type:nolink:$unsigned$
-..param.region:The @Class.GenomicRegion@ to read.
-...type:Class.GenomicRegion
-..return:Status code $int$, $0$ indicating success and $1$ an error.
-..include:seqan/seq_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TSeqId, typename TBeginPos, typename TEndPos>
 inline void readRegion(String<TValue, TSpec> & str,
@@ -501,21 +408,7 @@ inline bool readRegion(String<TValue, TSpec> & str,
  * @return int 0 on success, non-0 on errors.
  */
 
-/**
-.Function.FaiIndex#readSequence
-..cat:Input/Output
-..class:Class.FaiIndex
-..signature:readSequence(str, faiIndex, rID)
-..summary:Load a whole sequence from an @Class.FaiIndex@.
-..param.str:The sequence is written into this string.
-...type:Class.String
-..param.faiIndex:The @Class.FaiIndex@ to use.
-...type:Class.FaiIndex
-..param.rID:The index of the sequence in the file.
-...type:nolink:$unsigned$
-..return:Status code $int$, $0$ indicating success and $1$ an error.
-..include:seqan/seq_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec>
 inline void readSequence(String<TValue, TSpec> & str, FaiIndex const & index, unsigned rID)
@@ -541,22 +434,7 @@ inline void readSequence(String<TValue, TSpec> & str, FaiIndex const & index, un
  * @return int 0 on success, non-0 on errors.
  */
 
-/**
-.Function.FaiIndex#read
-..cat:Input/Output
-..class:Class.FaiIndex
-..signature:read(faiIndex, fastaFileName[, faiFileName])
-..summary:Read a FAI index.
-..param.faiIndex:The @Class.FaiIndex@ object to read the file into.
-...type:Class.FaiIndex
-..param.fastaFileName:The name of the FASTA file to read.
-...type:nolink:$char const *$
-..param.faiFileName:The name of the FAI file to read.
-...default:$fastaFileName + ".fai"$.
-...type:nolink:$char const *$
-..return:Status code $int$, $0$ indicating success and $1$ an error.
-..include:seqan/seq_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFwdIterator>
 inline void
@@ -654,21 +532,7 @@ inline bool open(FaiIndex & index, char const * fastaFilename)
  * @return int 0 on success, 1 on errors.
  */
 
-/**
-.Function.FaiIndex#save
-..cat:Input/Output
-..class:Class.FaiIndex
-..signature:write(faiIndex[, faiFileName])
-..summary:Write out an @Class.FaiIndex@ object.
-..param.faiIndex:The @Class.FaiIndex@ object to write out.
-...type:Class.FaiIndex
-..param.faiFileName:The name of the FAI file to write to.
-...remarks:This is optional only if the FAI index knows the FAI file name from a previous @Function.FaiIndex#build@ call.
-...default:The FAI file name from the previous call to @Function.FaiIndex#build@, if any.
-...type:nolink:$char const *$
-..return:Status code $int$, $0$ indicating success and $1$ an error.
-..include:seqan/seq_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool save(FaiIndex const & index, char const * faiFilename)
 {
@@ -765,22 +629,7 @@ inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
  * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.FaiIndex#build
-..class:Class.FaiIndex
-..summary:Create @Class.FaiIndex@ from FASTA file.
-..signature:build(faiIndex, fastaFilename[, faiFilename])
-..description:The index can later be written out with @Function.FaiIndex#save@ and be loaded again using @Function.FaiIndex#read@.
-..param.faiIndex:@Class.FaiIndex@ to write index to.
-...type:Class.FaiIndex
-..param.fastaFilename:Name of FASTA file to build an index for.
-...type:Shortcut.CharString
-..param.faiFilename:Name of FAI index file, stored in $faiIndex$. Optional.
-...default:$fastaFilename + ".fai"$
-...type:nolink:$char const *$
-..returns:$int$, equal to 0 on success, != 0 otherwise.
-..include:seqan/stream.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool build(FaiIndex & index, char const * seqFilename, char const * faiFilename)
 {

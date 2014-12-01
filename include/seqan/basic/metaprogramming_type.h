@@ -74,17 +74,7 @@ namespace seqan {
  * @return VALUE The same as <tt>Type::VALUE</tt>.
  */ 
 
-/**
-.Metafunction.IsSameType
-..cat:Metaprogramming
-..summary:Metaprogramming type comparison.
-..signature:IsSameType<T1, T2>::Type
-..signature:IsSameType<T1, T2>::VALUE
-..param.T1:Left-hand argument.
-..param.T2:Right-hand argument.
-..returns:@Tag.Logical Values.tag.True@/$true$ if $T1$ is the same as $T2$, otherwise @Tag.Logical Values.tag.False@/$false$.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename Type1, typename Type2>
 struct IsSameType : False {};
@@ -115,16 +105,7 @@ struct IsSameType<Type1, Type1> : True {};
  * integral value.  You can specialize the metafunction for your custom types.
  */
 
-/**
-.Metafunction.MakeUnsigned:
-..cat:Basic
-..summary:Converts an integral value into an unsigned integral value.
-..signature:MakeUnsigned<T>::Type
-..param.T:Input integral type.
-..returns.param.Type:A type without a sign of the same domain, e.g. $unsigned int$ for $T$ = $int$.
-...default:$T$
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct MakeUnsigned
@@ -179,17 +160,7 @@ struct MakeUnsigned_ : MakeUnsigned<T> {};
  * integral value.  You can specialize the metafunction for your custom types.
  */
 
-/**
-.Metafunction.MakeSigned:
-..cat:Basic
-..summary:Converts an integral value into a signed integral value.
-..signature:MakeSigned<T>::Type
-..param.T:Input integral type.
-..returns.param.Type:A type with a sign of the same domain, e.g. $int$ for $T$ = $unsigned int$.
-...default:$T$
-..include:seqan/basic.h
-..see:Metafunction.MakeUnsigned
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct MakeSigned
@@ -237,17 +208,7 @@ struct MakeSigned_ : MakeSigned<T> {};
  * @return Type A corresponding non-reference type, e.g. <tt>int</tt> for <tt>T = &amp; int</tt>.
  */
 
-/**
-.Metafunction.RemoveReference:
-..cat:Basic
-..summary:Converts a (reference) type into the same type without reference.
-..signature:RemoveReference<T>::Type
-..param.T:Input type.
-..returns.param.Type:A corresponding non-reference type, e.g. $int$ for $T$ = $int &$.
-...default:$T$
-..include:seqan/basic.h
-..see:Metafunction.RemoveConst
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 #ifdef SEQAN_CXX11_STANDARD
 
@@ -341,16 +302,7 @@ struct IsPointer<T * const> : True {};
  * @return Type A corresponding non-const type, e.g. <tt>int</tt> for <tt>T = const int</tt>.
  */
 
-/**
-.Metafunction.RemoveConst:
-..cat:Basic
-..summary:Converts a (const) type into the corresponding non-const type.
-..signature:RemoveConst<T>::Type
-..param.T:Input type.
-..returns.param.Type:A corresponding non-const type, e.g. $int$ for $T$ = $const int$.
-...default:$T$
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*
 .Internal.RemoveConst_:

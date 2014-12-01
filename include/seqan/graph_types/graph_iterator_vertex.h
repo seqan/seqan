@@ -69,32 +69,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in] graph The @link Graph @endlink to iterate vertices of.
  */
 
-/**
-.Spec.Vertex Iterator:
-..cat:Graph
-..summary:Vertex iterator for @Class.Graph@.
-..signature:Iterator<TGraph, VertexIterator>
-..param.TGraph:A graph.
-...type:Class.Graph
-..general:Class.Iter
-..see:Spec.Edge Iterator
-..see:Spec.Out-Edge Iterator
-..see:Spec.Adjacency Iterator
-..see:Spec.Bfs Iterator
-..see:Spec.Dfs Preorder Iterator
-..include:seqan/graph_types.h
-
-.Memfunc.Vertex Iterator#Iter
-..summary:Constructor
-..class:Spec.Vertex Iterator
-..signature:Iter()
-..signature:Iter(graph)
-..signature:Iter(iter)
-..param.graph:The graph to iterate vertices of.
-...type:Class.Graph
-..param.iter:Other iterator to copy-construct from.
-...type:Spec.Vertex Iterator
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TGraph, typename TSpec>
 class Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > > 
 {
@@ -219,24 +194,7 @@ struct Spec<Iter<TGraph const, GraphIterator<InternalVertexIterator<TIteratorSpe
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.getValue
-..class:Spec.Vertex Iterator
-..class:Spec.Out-Edge Iterator
-..class:Spec.Edge Iterator
-..class:Spec.Adjacency Iterator
-..class:Spec.Bfs Iterator
-..class:Spec.Dfs Preorder Iterator
-..cat:Graph
-..param.object
-...type:Spec.Vertex Iterator
-...type:Spec.Out-Edge Iterator
-...type:Spec.Edge Iterator
-...type:Spec.Adjacency Iterator
-...type:Spec.Bfs Iterator
-...type:Spec.Dfs Preorder Iterator
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TGraph, typename TSpec>
 inline typename GetValue<Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > > >::Type
@@ -248,24 +206,7 @@ SEQAN_CHECKPOINT
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.value:
-..class:Spec.Vertex Iterator
-..class:Spec.Out-Edge Iterator
-..class:Spec.Edge Iterator
-..class:Spec.Adjacency Iterator
-..class:Spec.Bfs Iterator
-..class:Spec.Dfs Preorder Iterator
-..cat:Graph
-..param.object
-...type:Spec.Vertex Iterator
-...type:Spec.Out-Edge Iterator
-...type:Spec.Edge Iterator
-...type:Spec.Adjacency Iterator
-...type:Spec.Bfs Iterator
-...type:Spec.Dfs Preorder Iterator
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TGraph, typename TSpec>
 inline typename Reference<Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > > >::Type
@@ -289,27 +230,7 @@ operator * (Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
 
 // TODO(holtgrew): Add GraphIterator class that has hostGraph() function?
 
-/**
-.Function.hostGraph
-..class:Spec.Vertex Iterator
-..class:Spec.Out-Edge Iterator
-..class:Spec.Edge Iterator
-..class:Spec.Adjacency Iterator
-..class:Spec.Bfs Iterator
-..class:Spec.Dfs Preorder Iterator
-..cat:Graph
-..summary:The graph this iterator is working on.
-..signature:hostGraph(it)
-..param.it:A vertex or edge iterator.
-...type:Spec.Vertex Iterator
-...type:Spec.Out-Edge Iterator
-...type:Spec.Edge Iterator
-...type:Spec.Adjacency Iterator
-...type:Spec.Bfs Iterator
-...type:Spec.Dfs Preorder Iterator
-..returns:A pointer to the host graph.
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TGraph, typename TSpec>
 inline typename Host<Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > > >::Type const&
@@ -321,25 +242,7 @@ hostGraph(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.atBegin
-..class:Spec.Vertex Iterator
-..class:Spec.Out-Edge Iterator
-..class:Spec.Edge Iterator
-..class:Spec.Adjacency Iterator
-..class:Spec.Bfs Iterator
-..class:Spec.Dfs Preorder Iterator
-..cat:Graph
-..param.iterator
-...type:Spec.Vertex Iterator
-...type:Spec.Out-Edge Iterator
-...type:Spec.Edge Iterator
-...type:Spec.Adjacency Iterator
-...type:Spec.Bfs Iterator
-...type:Spec.Dfs Preorder Iterator
-..see:Function.goBegin
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TGraph, typename TSpec>
 inline bool
@@ -351,24 +254,7 @@ SEQAN_CHECKPOINT
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.goBegin
-..class:Spec.Vertex Iterator
-..class:Spec.Out-Edge Iterator
-..class:Spec.Edge Iterator
-..class:Spec.Adjacency Iterator
-..class:Spec.Bfs Iterator
-..class:Spec.Dfs Preorder Iterator
-..cat:Graph
-..param.iterator
-...type:Spec.Vertex Iterator
-...type:Spec.Out-Edge Iterator
-...type:Spec.Edge Iterator
-...type:Spec.Adjacency Iterator
-...type:Spec.Bfs Iterator
-...type:Spec.Dfs Preorder Iterator
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TGraph, typename TSpec>
 inline void
@@ -380,25 +266,7 @@ goBegin(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.atEnd
-..class:Spec.Vertex Iterator
-..class:Spec.Out-Edge Iterator
-..class:Spec.Edge Iterator
-..class:Spec.Adjacency Iterator
-..class:Spec.Bfs Iterator
-..class:Spec.Dfs Preorder Iterator
-..cat:Graph
-..param.iterator
-...type:Spec.Vertex Iterator
-...type:Spec.Out-Edge Iterator
-...type:Spec.Edge Iterator
-...type:Spec.Adjacency Iterator
-...type:Spec.Bfs Iterator
-...type:Spec.Dfs Preorder Iterator
-..see:Function.goEnd
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TGraph, typename TSpec>
 inline bool
@@ -410,24 +278,7 @@ SEQAN_CHECKPOINT
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.goEnd
-..class:Spec.Vertex Iterator
-..class:Spec.Out-Edge Iterator
-..class:Spec.Edge Iterator
-..class:Spec.Adjacency Iterator
-..class:Spec.Bfs Iterator
-..class:Spec.Dfs Preorder Iterator
-..cat:Graph
-..param.iterator
-...type:Spec.Vertex Iterator
-...type:Spec.Out-Edge Iterator
-...type:Spec.Edge Iterator
-...type:Spec.Adjacency Iterator
-...type:Spec.Bfs Iterator
-...type:Spec.Dfs Preorder Iterator
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TGraph, typename TSpec>
 inline void
 goEnd(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
@@ -438,24 +289,7 @@ goEnd(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.goNext
-..class:Spec.Vertex Iterator
-..class:Spec.Out-Edge Iterator
-..class:Spec.Edge Iterator
-..class:Spec.Adjacency Iterator
-..class:Spec.Bfs Iterator
-..class:Spec.Dfs Preorder Iterator
-..cat:Graph
-..param.iterator
-...type:Spec.Vertex Iterator
-...type:Spec.Out-Edge Iterator
-...type:Spec.Edge Iterator
-...type:Spec.Adjacency Iterator
-...type:Spec.Bfs Iterator
-...type:Spec.Dfs Preorder Iterator
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TGraph, typename TSpec>
 inline void
@@ -491,20 +325,7 @@ operator ++(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it, in
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.goPrevious
-..class:Spec.Vertex Iterator
-..class:Spec.Out-Edge Iterator
-..class:Spec.Edge Iterator
-..class:Spec.Adjacency Iterator
-..cat:Graph
-..param.iterator
-...type:Spec.Vertex Iterator
-...type:Spec.Out-Edge Iterator
-...type:Spec.Edge Iterator
-...type:Spec.Adjacency Iterator
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TGraph, typename TSpec>
 inline void

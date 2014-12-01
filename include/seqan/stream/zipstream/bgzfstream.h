@@ -51,10 +51,7 @@ enum EStrategy
 	DefaultStrategy = 0
 };
 
-/** \brief A stream decorator that takes raw input and zips it to a ostream.
-
-The class wraps up the inflate method of the bgzf library 1.1.4 http://www.gzip.org/bgzf/
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<
 	typename Elem, 
 	typename Tr = std::char_traits<Elem>,
@@ -160,9 +157,7 @@ public:
     // array of worker threads
     Thread<CompressionThread>   *threads;
 
-    /** Construct a zip stream
-     * More info on the following parameters can be found in the bgzf documentation.
-     */
+/*_DDDOC_PLACEHOLDER*/
     basic_bgzf_streambuf(ostream_reference ostream_,
                          size_t numThreads = 16,
                          size_t jobsPerThread = 8) :
@@ -254,11 +249,7 @@ public:
         }
     }
 
-	/** flushes the zip buffer and output buffer.
-
-	This method should be called at the end of the compression. Calling flush multiple times, will lower the
-	compression ratio.
-	*/
+/*_DDDOC_PLACEHOLDER*/
 	std::streamsize flush(bool flushEmptyBuffer = false)
     {
         int w = static_cast<int>(this->pptr() - this->pbase());
@@ -301,10 +292,7 @@ public:
 	ostream_reference get_ostream() const	{ return serializer.worker.ostream; };
 };
 
-/** \brief A stream decorator that takes compressed input and unzips it to a istream.
-
-The class wraps up the deflate method of the bgzf library 1.1.4 http://www.gzip.org/bgzf/
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<
 	typename Elem, 
 	typename Tr = std::char_traits<Elem>,
@@ -520,9 +508,7 @@ public:
     Thread<DecompressionThread> *threads;
     TBuffer                     putbackBuffer;
 
-    /** Construct a unzip stream
-    * More info on the following parameters can be found in the bgzf documentation.
-    */
+/*_DDDOC_PLACEHOLDER*/
     basic_unbgzf_streambuf(istream_reference istream_,
                            size_t numThreads = 16,
                            size_t jobsPerThread = 8) :
@@ -772,9 +758,7 @@ public:
         ByteAT
         > bgzf_streambuf_type;
 
-    /** Construct a zip stream
-     * More info on the following parameters can be found in the bgzf documentation.
-     */
+/*_DDDOC_PLACEHOLDER*/
 	basic_bgzf_ostreambase(ostream_reference ostream_)
 		: m_buf(ostream_)
 	{
@@ -880,12 +864,7 @@ public:
 	typedef std::basic_ostream<Elem,Tr> ostream_type;
     typedef ostream_type& ostream_reference;
 
-	/** Constructs a zipper ostream decorator
-	 *
-	 * \param ostream_ ostream where the compressed output is written
-
-	 When is_gbgzf_ is true, a gzip header and footer is automatically added.
-	 */
+/*_DDDOC_PLACEHOLDER*/
 	basic_bgzf_ostream(ostream_reference ostream_)
 	: 
 		bgzf_ostreambase_type(ostream_),
@@ -946,10 +925,7 @@ public:
     typedef istream_type& istream_reference;
 	typedef char byte_type;
 
-	/** Construct a unzipper stream
-	 *
-	 * \param istream_ input buffer
-	 */
+/*_DDDOC_PLACEHOLDER*/
 	basic_bgzf_istream(istream_reference istream_)
 	  : 
 		bgzf_istreambase_type(istream_),

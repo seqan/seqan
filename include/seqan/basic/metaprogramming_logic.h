@@ -101,22 +101,7 @@ namespace seqan {
  * @signature bool False::VALUE = false;
  */
 
-/**
-.Tag.Logical Values:
-..cat:Metaprogramming
-..summary:Tag that represents true and false.
-..tag.True:The logical value "true".
-..tag.False:The logical value "false".
-..remarks:These tags also function as Metafunctions that return a boolean value $VALUE$ and themselves ($True$/$False$) as $Type$.
-..example.text:Print the values of these tags/metafunctions.
-..example.code:
-std::cout << False::VALUE << std::endl;                         // 0
-std::cout << True::VALUE << std::endl;                          // 1
-std::cout << IsSameType<False,False::Type>::VALUE << std::endl; // 1
-..include:seqan/basic.h
-..see:Metafunction.Eval
-..see:Metafunction.IsSameType
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct True
 {
@@ -203,36 +188,7 @@ struct False
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type eval
  */
 
-/**
-.Metafunction.Eval
-..cat:Metaprogramming
-..summary:Convert from $bool$ values to types ($True$ and $False$).
-..signature:Eval<b>::Type
-..param.b:The boolean to evaluate.
-...type:nolink:$bool$
-..returns:Either @Tag.Logical Values.tag.True@ or @Tag.Logical Values.tag.False@, depending on $b$.
-..include:seqan/basic.h
-..example.text:Demonstrate the usage of $Eval$ to bridge between $bool$ values and the logical tags.
-..example.code:
-void printBoolType(True const &)
-{
-    std::cout << "true" << std::endl;
-}
-
-void printBoolType(False const &)
-{
-    std::cout << "false" << std::endl;
-}
-
-int main(int argc, char ** argv)
-{
-    using namespace seqan;
-
-    printBoolType(Eval<true>::Type());   // => "true\n"
-    printBoolType(Eval<false>::Type());  // => "false\n"
-    return 0;
-}
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <bool B>
 struct Eval : False {};
@@ -268,22 +224,7 @@ struct Eval<true> : True {};
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type not
  */ 
 
-/**
-.Metafunction.Not
-..cat:Metaprogramming
-..summary:Metaprogramming boolean "not" operator.
-..signature:Not<B>::Type
-..param.B:Argument to invert.
-...type:Tag.Logical Values.tag.True
-...type:Tag.Logical Values.tag.False
-..returns:One of @Tag.Logical Values.tag.True@ and @Tag.Logical Values.tag.False@, the result of logical not.
-The arguments $B$ can either be @Tag.Logical Values.tag.True@/@Tag.Logical Values.tag.False@
-or boolean metafunctions that return @Tag.Logical Values.tag.True@/@Tag.Logical Values.tag.False@.
-..example.code:
-Not<False>::Type
-Not<True>::Type
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TBool1>
 struct Not : Not<typename TBool1::Type> {}; 
@@ -321,24 +262,7 @@ struct Not<True> : False {};
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type notc
  */ 
 
-/**
-.Metafunction.NotC
-..cat:Metaprogramming
-..summary:Metaprogramming boolean "not" operator, value variant.
-..signature:NotC<B>::Type
-..param.B:Argument
-...type:nolink:$bool$
-..returns:$!B1$.
-..example.code:
-NotC<false, true>::Type
-NotC<false, false>::VALUE
-NotC<AndC<false, true>::VALUE, false>::Type
-NotC<AndC<false, true>, true>::Type
-..see:Metafunction.Or
-..see:Metafunction.And
-..see:Metafunction.AndC
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <bool B>
 struct NotC;
@@ -377,31 +301,7 @@ struct NotC<true> : False {};
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type or
  */ 
 
-/**
-.Metafunction.Or
-..cat:Metaprogramming
-..summary:Metaprogramming boolean "or" operator.
-..signature:Or<B1, B2>::Type
-..signature:Or<B1, B2>::VALUE
-..param.B1:Left-hand argument.
-...type:Tag.Logical Values.tag.True
-...type:Tag.Logical Values.tag.False
-..param.B2:Right-hand argument.
-...type:Tag.Logical Values.tag.True
-...type:Tag.Logical Values.tag.False
-..returns:One of @Tag.Logical Values.tag.True@ and @Tag.Logical Values.tag.False@, the result of logical or.
-The arguments $B1$/$B2$ can either be @Tag.Logical Values.tag.True@/@Tag.Logical Values.tag.False@
-or boolean metafunctions that return @Tag.Logical Values.tag.True@/@Tag.Logical Values.tag.False@.
-..example.code:
-Or<False,False>::Type
-Or<False,True>::Type
-Or<typename And<T1,T2>::Type,T3>::Type
-Or<And<T1,T2>,T3>::Type
-..see:Metafunction.And
-..see:Metafunction.AndC
-..see:Metafunction.OrC
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TBool1, typename TBool2>
 struct Or : Or<typename TBool1::Type, typename TBool2::Type> {}; 
@@ -444,27 +344,7 @@ struct Or<True, True> : True {};
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type orc
  */
 
-/**
-.Metafunction.OrC
-..cat:Metaprogramming
-..summary:Metaprogramming boolean "or" operator, value variant.
-..signature:OrC<B1, B2>::Type
-..signature:OrC<B1, B2>::VALUE
-..param.B1:Left-hand argument.
-...type:nolink:$bool$
-..param.B2:Right-hand argument.
-...type:nolink:$bool$
-..returns:$B1 || B2$.
-..example.code:
-OrC<false, true>::Type
-OrC<false, false>::VALUE
-OrC<AndC<false, true>::VALUE, false>::Type
-OrC<AndC<false, true>, true>::Type
-..see:Metafunction.Or
-..see:Metafunction.And
-..see:Metafunction.AndC
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <bool B1, bool B2>
 struct OrC;
@@ -507,20 +387,7 @@ struct OrC<true, true> : True {};
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type and
  */ 
 
-/**
-.Metafunction.And
-..cat:Metaprogramming
-..summary:Metaprogramming "and" operator.
-..signature:Or<B1, B2>::Type
-..param.B1:Left-hand argument.
-...type:Tag.Logical Values.tag.True
-...type:Tag.Logical Values.tag.False
-..param.B2:Right-hand argument.
-...type:Tag.Logical Values.tag.True
-...type:Tag.Logical Values.tag.False
-..returns:One of @Tag.Logical Values.tag.True@ and @Tag.Logical Values.tag.False@, the result of logical and.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TBool1, typename TBool2>
 struct And : And<typename TBool1::Type, typename TBool2::Type> {}; 
@@ -563,27 +430,7 @@ struct And<True, True> : True {};
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type andc
  */
 
-/**
-.Metafunction.AndC
-..cat:Metaprogramming
-..summary:Metaprogramming boolean "and" operatand, value variant.
-..signature:AndC<B1, B2>::Type
-..signature:AndC<B1, B2>::VALUE
-..param.B1:Left-hand argument.
-...type:nolink:$bool$
-..param.B2:Right-hand argument.
-...type:nolink:$bool$
-..returns:$B1 && B2$.
-..example.code:
-AndC<false, true>::Type
-AndC<false, false>::VALUE
-AndC<AndC<false, true>::VALUE, false>::Type
-AndC<AndC<false, true>, true>::Type
-..see:Metafunction.And
-..see:Metafunction.And
-..see:Metafunction.AndC
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <bool B1, bool B2>
 struct AndC;
@@ -625,18 +472,7 @@ struct AndC<true, true> : True {};
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type if
  */
 
-/**
-.Metafunction.If
-..cat:Metaprogramming
-..summary:Metaprogramming "if".
-..signature:If<T, T1, T2>::Type
-..param.T:The condition.
-..param.T1:Result if $b$.
-..param.T2:Result if not $b$.
-..see:Metafunction.IfC
-..returns:If $T$ is $True$ then $T1$, otherwise $T2$.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TCondition, typename T1, typename T2>
 struct If : If<typename TCondition::Type, T1, T2>{};
@@ -715,19 +551,7 @@ ifSwitch(False, TArgT const &, TArgF const & argFalse)
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type if
  */
 
-/**
-.Metafunction.IfC
-..cat:Metaprogramming
-..summary:Metaprogramming "if", value based version.
-..signature:If<b, T1, T2>::Type
-..param.b:The condition to evaluate.
-...type:nolink:$bool$
-..param.T1:Result if $b$.
-..param.T2:Result if not $b$.
-..returns:If $b$ is $true$ then $T1$, otherwise $T2$.
-..see:Metafunction.If
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <bool FLAG, typename T1, typename T2>
 struct IfC
