@@ -41,7 +41,7 @@
 #include <seqan/vcf_io.h>
 #include <seqan/file.h>
 
-#include "../../../apps/stellar/stellar.h"
+#include "../stellar/stellar.h"
 #include "msplazer.h"
 #include "gustaf_matepairs.h"
 
