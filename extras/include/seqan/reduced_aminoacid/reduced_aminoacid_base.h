@@ -112,19 +112,12 @@ struct CompareType<SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >,
     typedef SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> > Type;
 };
 
-template <typename TRedSpec>
-struct CompareType<SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >,
-                   Unicode>
-{
-    typedef SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> > Type;
-};
-
 // -----------------------------------------------------------------------
 // Translation Tables (implementations see extra files)
 // -----------------------------------------------------------------------
 
 template <typename TRedSpec, typename TSpec = void>
-struct TranslateTableAsciiToRedAA_;
+struct TranslateTableCharToRedAA_;
 
 template <typename TRedSpec, typename TSpec = void>
 struct TranslateTableAAToRedAA_;
@@ -133,7 +126,7 @@ template <typename TRedSpec, typename TSpec = void>
 struct TranslateTableByteToRedAA_;
 
 template <typename TRedSpec, typename TSpec = void>
-struct TranslateTableRedAAToAscii_;
+struct TranslateTableRedAAToChar_;
 
 // ============================================================================
 // Functions

@@ -21,7 +21,7 @@ CASES = [
     (u'\u0123\u4567\u89ab\ucdef\uabcd\uef4a', '"\\u0123\\u4567\\u89ab\\ucdef\\uabcd\\uef4a"'),
 ]
 
-class TestEncodeBaseStringAscii(TestCase):
+class TestEncodeBaseStringchar(TestCase):
     def test_py_encode_basestring_ascii(self):
         self._test_encode_basestring_ascii(simplejson.encoder.py_encode_basestring_ascii)
 

@@ -846,7 +846,7 @@ write(TTarget & target,
                     writeValue(iter, '\n');
                 ++k;
                 writeValue(iter, value(seqContigIt));
-                Ascii c = ' ';
+                char c = ' ';
                 convertQuality(c, getQualityValue(value(seqContigIt)));
                 appendValue(qlt, c, Generous());
                 goNext(seqContigIt);++mySeqPos;
@@ -867,7 +867,7 @@ write(TTarget & target,
                 writeValue(iter, '\n');
             ++k;
             writeValue(iter, value(seqContigIt));
-            Ascii c = ' ';
+            char c = ' ';
             convertQuality(c, getQualityValue(value(seqContigIt)));
             appendValue(qlt, c, Generous());
         }
