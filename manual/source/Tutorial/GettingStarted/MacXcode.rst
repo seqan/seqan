@@ -49,7 +49,7 @@ This will configure ``xcode-select`` properly and make it work with SeqAn.
     .. todo:: Put patched version somewhere.
 
     With the current MacPort version of CMake it is no more possible to open sub projects.
-    Either open only the root project ``seqan.xcodeproj`` or install our ``cmake-2.8.9.20120903-g6ef858-dirty-Darwin-i386.dmg patched version of CMake`` instead.
+    Either open only the root project ``seqan.xcodeproj`` or install our `patched version of CMake <http://ftp.seqan.de/manual_files/seqan-1.4/cmake-2.8.9.20120903-g6ef858-dirty-Darwin-i386.dmg>`_ instead.
 
     Note: The package installs the binary at ``/usr/usr/bin/cmake``.
     Please add the following line to your ``~/.profile`` file:
