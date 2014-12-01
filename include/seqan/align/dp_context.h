@@ -35,8 +35,8 @@
 // to reuse memory blocks in mutliple calls of the same function.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_ALIGN_DP_CONTEXT_H_
-#define CORE_INCLUDE_SEQAN_ALIGN_DP_CONTEXT_H_
+#ifndef INCLUDE_SEQAN_ALIGN_DP_CONTEXT_H_
+#define INCLUDE_SEQAN_ALIGN_DP_CONTEXT_H_
 
 namespace seqan
 {
@@ -184,4 +184,4 @@ setDpTraceMatrix(DPContext<TScoreValue, TGapCosts> & dpContext,
 
 }
 
-#endif // CORE_INCLUDE_SEQAN_ALIGN_DP_CONTEXT_H_
+#endif // INCLUDE_SEQAN_ALIGN_DP_CONTEXT_H_

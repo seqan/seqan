@@ -45,8 +45,8 @@
 // to human readable strings.
 // ==========================================================================
 
-#ifndef EXTRAS_APPS_MASON2_MASON_OPTIONS_H_
-#define EXTRAS_APPS_MASON2_MASON_OPTIONS_H_
+#ifndef APPS_MASON2_MASON_OPTIONS_H_
+#define APPS_MASON2_MASON_OPTIONS_H_
 
 #include <seqan/arg_parse.h>
 #include <seqan/sequence.h>
@@ -920,4 +920,4 @@ void setDateAndVersion(seqan::ArgumentParser & parser)
 #endif
 }
 
-#endif  // #ifndef EXTRAS_APPS_MASON2_MASON_OPTIONS_H_
+#endif  // #ifndef APPS_MASON2_MASON_OPTIONS_H_

@@ -98,7 +98,7 @@ Assignment 1
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/index/indices_assignment_1.cpp
+        .. includefrags:: demos/tutorial/index/indices_assignment_1.cpp
 
 Index Based Pattern Search (Strings)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -200,7 +200,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/index/indices_assignment_2.cpp
+        .. includefrags:: demos/tutorial/index/indices_assignment_2.cpp
 
 You might have noticed that we only applied the :dox:`FMIndex` and :dox:`IndexEsa` in the examples.
 The reason for this is that even though everything stated so far is true for the other indices as well, :dox:`IndexWotd` and :dox:`IndexDfi` are more usefull when used with iterators as explained in the tutorial :ref:`tutorial-index-iterators` and the :dox:`IndexQGram` uses :dox:`Shape Shapes` which is also explained in another tutorial.

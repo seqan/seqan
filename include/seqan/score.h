@@ -34,8 +34,8 @@
 // This is the facade header for the score module.
 // ==========================================================================
 
-#ifndef SEQAN_SCORE_H_
-#define SEQAN_SCORE_H_
+#ifndef SEQAN_SH_
+#define SEQAN_SH_
 
 #include <seqan/basic.h>
 
@@ -48,4 +48,4 @@
 #include <seqan/score/score_matrix_data.h>
 #include <seqan/score/score_simple.h>
 
-#endif  // SEQAN_SCORE_H_
+#endif  // SEQAN_SH_

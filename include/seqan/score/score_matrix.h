@@ -34,8 +34,8 @@
 // Code for score matrices with data from files or built-in data.
 // ==========================================================================
 
-#ifndef SEQAN_SCORE_SCORE_MATRIX_H_
-#define SEQAN_SCORE_SCORE_MATRIX_H_
+#ifndef SEQAN_SSCORE_MATRIX_H_
+#define SEQAN_SSCORE_MATRIX_H_
 
 // TODO(holtgrew): If the complex type conversions are necessary, a static_cast<> is more C++ and explicit.
 
@@ -275,4 +275,4 @@ setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, D
 
 }  // namespace SEQAN_NAMESPACE_MAIN
 
-#endif  // SEQAN_SCORE_SCORE_MATRIX_H_
+#endif  // SEQAN_SSCORE_MATRIX_H_

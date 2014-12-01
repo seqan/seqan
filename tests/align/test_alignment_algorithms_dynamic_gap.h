@@ -34,8 +34,8 @@
 // Unit tests for the global interfaces to test dynamic gap costs.
 // ==========================================================================
 
-#ifndef CORE_TESTS_ALIGN_TEST_ALIGNMENT_ALGORITHMS_DYNAMIC_GAP_H_
-#define CORE_TESTS_ALIGN_TEST_ALIGNMENT_ALGORITHMS_DYNAMIC_GAP_H_
+#ifndef TESTS_ALIGN_TEST_ALIGNMENT_ALGORITHMS_DYNAMIC_GAP_H_
+#define TESTS_ALIGN_TEST_ALIGNMENT_ALGORITHMS_DYNAMIC_GAP_H_
 
 #include <seqan/basic.h>
 #include <seqan/align.h>
@@ -298,4 +298,4 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_local_dynamic_cost_banded)
     testDynamicGapInterfaces(seqan::SmithWaterman(), seqan::AlignConfig<>(), -3, 3);
 }
 
-#endif // CORE_TESTS_ALIGN_TEST_ALIGNMENT_ALGORITHMS_DYNAMIC_GAP_H_
+#endif // TESTS_ALIGN_TEST_ALIGNMENT_ALGORITHMS_DYNAMIC_GAP_H_

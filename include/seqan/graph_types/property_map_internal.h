@@ -33,8 +33,8 @@
 // Author: Tobias Rausch <rausch@embl.de>
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_H_
-#define CORE_INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_H_
+#ifndef INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_H_
+#define INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_H_
 
 namespace seqan {
 
@@ -224,4 +224,4 @@ getProperty(InternalPropertyMap<TValue> const &, TEdgeDescriptor const e)
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_H_
+#endif  // #ifndef INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_INTERNAL_H_

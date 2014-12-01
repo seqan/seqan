@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/apps/dfi/CMakeLists.txt
+# File: /apps/dfi/CMakeLists.txt
 #
 # CMakeLists.txt file for DFI.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (core_apps_dfi)
-message (STATUS "Configuring core/apps/dfi")
+message (STATUS "Configuring apps/dfi")
 
 # ----------------------------------------------------------------------------
 # Dependencies

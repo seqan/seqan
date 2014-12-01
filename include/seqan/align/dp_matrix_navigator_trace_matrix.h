@@ -40,8 +40,8 @@
 // is thrown.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_TRACE_MATRIX_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_TRACE_MATRIX_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_TRACE_MATRIX_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_TRACE_MATRIX_H_
 
 namespace seqan {
 
@@ -467,4 +467,4 @@ position(DPMatrixNavigator_<TDPMatrix, DPTraceMatrix<TTraceFlag>, TNavigationSpe
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_TRACE_MATRIX_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_MATRIX_NAVIGATOR_TRACE_MATRIX_H_

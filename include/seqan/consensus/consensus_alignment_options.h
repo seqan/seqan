@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNMENT_OPTIONS_H_
-#define EXTRAS_INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNMENT_OPTIONS_H_
+#ifndef INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNMENT_OPTIONS_H_
+#define INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNMENT_OPTIONS_H_
 
 namespace seqan {
 
@@ -142,4 +142,4 @@ struct ConsensusAlignmentOptions
 
 }  // namespace seqan
 
-#endif  // #ifndef EXTRAS_INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNMENT_OPTIONS_H_
+#endif  // #ifndef INCLUDE_SEQAN_CONSENSUS_CONSENSUS_ALIGNMENT_OPTIONS_H_

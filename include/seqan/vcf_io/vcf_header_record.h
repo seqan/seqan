@@ -34,8 +34,8 @@
 
 // TODO(holtgrew): Parse more than just the key/value pair.
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_IO_VCF_HEADER_RECORD_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_IO_VCF_HEADER_RECORD_H_
+#ifndef SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_HEADER_RECORD_H_
+#define SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_HEADER_RECORD_H_
 
 namespace seqan {
 
@@ -156,4 +156,4 @@ inline void clear(VcfHeaderRecord & record)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_IO_VCF_HEADER_RECORD_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_HEADER_RECORD_H_

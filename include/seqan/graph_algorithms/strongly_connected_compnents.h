@@ -34,8 +34,8 @@
 // Implementation of Strongly-Connected-Compnonents algorithm.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_STRONGLY_CONNECTED_COMPNENTS_H_
-#define CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_STRONGLY_CONNECTED_COMPNENTS_H_
+#ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_STRONGLY_CONNECTED_COMPNENTS_H_
+#define INCLUDE_SEQAN_GRAPH_ALGORITHMS_STRONGLY_CONNECTED_COMPNENTS_H_
 
 namespace seqan {
 
@@ -148,4 +148,4 @@ stronglyConnectedComponents(TComponents & components,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_STRONGLY_CONNECTED_COMPNENTS_H_
+#endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_STRONGLY_CONNECTED_COMPNENTS_H_

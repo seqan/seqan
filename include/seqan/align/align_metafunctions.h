@@ -34,8 +34,8 @@
 // Align-specific metafunctions.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGN_METAFUNCTIONS_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGN_METAFUNCTIONS_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_METAFUNCTIONS_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_METAFUNCTIONS_H_
 
 namespace seqan {
 
@@ -175,4 +175,4 @@ struct StringSetType;
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGN_METAFUNCTIONS_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_METAFUNCTIONS_H_

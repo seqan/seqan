@@ -34,8 +34,8 @@
 // Smart file for reading/writing files in ROI format.
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_ROI_IO_ROI_STREAM_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_ROI_IO_ROI_STREAM_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ROI_IO_ROI_STREAM_H_
+#define SEQAN_INCLUDE_SEQAN_ROI_IO_ROI_STREAM_H_
 
 namespace seqan {
 
@@ -122,5 +122,5 @@ writeRecord(SmartFile<Roi, Output, TSpec> & file, RoiHeader const & record)
 
 }  // namespace seqan
 
-#endif // SEQAN_EXTRAS_INCLUDE_SEQAN_ROI_IO_ROI_STREAM_H_
+#endif // SEQAN_INCLUDE_SEQAN_ROI_IO_ROI_STREAM_H_
 

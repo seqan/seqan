@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/apps/gustaf/CMakeLists.txt
+# File: /apps/gustaf/CMakeLists.txt
 #
 # CMakeLists.txt file for gustaf.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (extras__apps_gustaf)
-message (STATUS "Configuring extras/apps/gustaf")
+message (STATUS "Configuring apps/gustaf")
 
 # ----------------------------------------------------------------------------
 # Dependencies

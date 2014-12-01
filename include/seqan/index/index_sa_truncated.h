@@ -34,8 +34,8 @@
 // This file contains the Truncated VSTree iterator spec for IndexSa.
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INDEX_SA_STREE_TRUNCATED_H_
-#define SEQAN_EXTRAS_INDEX_SA_STREE_TRUNCATED_H_
+#ifndef SEQAN_INDEX_SA_STREE_TRUNCATED_H_
+#define SEQAN_INDEX_SA_STREE_TRUNCATED_H_
 
 namespace seqan {
 
@@ -160,4 +160,4 @@ getEmptyEdges(Iter< TIndex, VSTree<TSpec> > const &it)
 
 }
 
-#endif  // #ifndef SEQAN_EXTRAS_INDEX_SA_STREE_TRUNCATED_H_
+#endif  // #ifndef SEQAN_INDEX_SA_STREE_TRUNCATED_H_

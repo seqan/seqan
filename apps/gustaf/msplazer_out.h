@@ -32,8 +32,8 @@
 // Author: Kathrin Trappe <kathrin.trappe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_APPS_GUSTAF_MSPLAZER_OUT_H_
-#define SEQAN_EXTRAS_APPS_GUSTAF_MSPLAZER_OUT_H_
+#ifndef SEQAN_APPS_GUSTAF_MSPLAZER_OUT_H_
+#define SEQAN_APPS_GUSTAF_MSPLAZER_OUT_H_
 
 #include <iostream>
 #include <fstream>
@@ -41,7 +41,7 @@
 #include <seqan/vcf_io.h>
 #include <seqan/file.h>
 
-#include "../../../core/apps/stellar/stellar.h"
+#include "../../../apps/stellar/stellar.h"
 #include "msplazer.h"
 #include "gustaf_matepairs.h"
 

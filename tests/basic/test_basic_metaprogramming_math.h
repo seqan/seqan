@@ -34,8 +34,8 @@
 // Tests for the math metaprogramming code.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_MATH_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_MATH_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_MATH_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_MATH_H_
 
 // In the following, we use the unary plus to create an lvalue such
 // that the comparison functionwith "T const &" typed parameter does
@@ -94,4 +94,4 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_math_log2_power)
     SEQAN_ASSERT_EQ((+Power<2, 10>::VALUE), 1024u);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_MATH_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_MATH_H_

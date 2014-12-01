@@ -22,7 +22,7 @@
 # Some test files were renamed manually on 2012-07-27 but not rebuild (r12420)
 # gernerate_fastaputs.sh reflects these name changes (r12421) 
 
-#TCOFFEE=../../../../../build/Debug/core/apps/seqan_tcoffee/seqan_tcoffee
+#TCOFFEE=../../../../../build/Debug/apps/seqan_tcoffee/seqan_tcoffee
 TCOFFEE=../../../../../seqan-trunk-build/debug/bin/seqan_tcoffee
 # ============================================================
 # Run on Proteins (Balibase).

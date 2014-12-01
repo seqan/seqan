@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_TESTS_ALIGN_TEST_EVALUATE_ALIGNMENT_H_
-#define CORE_TESTS_ALIGN_TEST_EVALUATE_ALIGNMENT_H_
+#ifndef TESTS_ALIGN_TEST_EVALUATE_ALIGNMENT_H_
+#define TESTS_ALIGN_TEST_EVALUATE_ALIGNMENT_H_
 
 SEQAN_DEFINE_TEST(test_align_compute_alignment_stats)
 {
@@ -71,4 +71,4 @@ SEQAN_DEFINE_TEST(test_align_compute_alignment_stats)
     SEQAN_ASSERT_EQ(stats.alignmentScore, 159);
 }
 
-#endif  // #ifndef CORE_TESTS_ALIGN_TEST_EVALUATE_ALIGNMENT_H_
+#endif  // #ifndef TESTS_ALIGN_TEST_EVALUATE_ALIGNMENT_H_

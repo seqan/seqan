@@ -36,8 +36,8 @@
 // Optimization" by Gianvito Urgese et al.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_ALIGN_DP_CELL_DYNAMIC_H_
-#define CORE_INCLUDE_SEQAN_ALIGN_DP_CELL_DYNAMIC_H_
+#ifndef INCLUDE_SEQAN_ALIGN_DP_CELL_DYNAMIC_H_
+#define INCLUDE_SEQAN_ALIGN_DP_CELL_DYNAMIC_H_
 
 namespace seqan {
 
@@ -196,4 +196,4 @@ inline bool operator<(DPCell_<TScoreValueLeft, DynamicGaps> const & left,
 
 }  // namespace seqan
 
-#endif  // CORE_INCLUDE_SEQAN_ALIGN_DP_CELL_DYNAMIC_H_
+#endif  // INCLUDE_SEQAN_ALIGN_DP_CELL_DYNAMIC_H_

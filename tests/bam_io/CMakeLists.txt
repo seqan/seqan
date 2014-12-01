@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/bam_io/CMakeLists.txt
+# File: /tests/bam_io/CMakeLists.txt
 #
 # CMakeLists.txt file for the bam_io module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_bam_io)
-message (STATUS "Configuring core/tests/bam_io")
+message (STATUS "Configuring tests/bam_io")
 
 # ----------------------------------------------------------------------------
 # Dependencies

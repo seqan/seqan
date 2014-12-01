@@ -38,8 +38,8 @@
 // fir the current dp matrix.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_TRACEBACK_H_
-#define CORE_INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_TRACEBACK_H_
+#ifndef INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_TRACEBACK_H_
+#define INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_TRACEBACK_H_
 
 namespace seqan {
 
@@ -378,4 +378,4 @@ void _computeTraceback(StringSet<TTarget> & targetSet,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_TRACEBACK_H_
+#endif  // #ifndef INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_TRACEBACK_H_

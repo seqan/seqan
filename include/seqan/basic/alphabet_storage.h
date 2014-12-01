@@ -36,8 +36,8 @@
 // construction type (simple, non-simple) and storage size.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALPHABET_STORAGE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALPHABET_STORAGE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_STORAGE_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_STORAGE_H_
 
 #include <float.h>
 
@@ -323,4 +323,4 @@ valueSize()
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALPHABET_STORAGE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_STORAGE_H_

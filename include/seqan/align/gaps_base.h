@@ -34,8 +34,8 @@
 
 // TODO(holtgrew): Switch to Host interface.
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPS_BASE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPS_BASE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_BASE_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_BASE_H_
 
 namespace seqan {
 
@@ -1590,4 +1590,4 @@ inline bool operator!=(Gaps<TSequence, TSpec> const & lhs,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPS_BASE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_BASE_H_

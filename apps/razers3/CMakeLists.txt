@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/apps/razers3/CMakeLists.txt
+# File: /apps/razers3/CMakeLists.txt
 #
 # CMakeLists.txt file for razers3.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (extras_apps_razers3)
-message (STATUS "Configuring extras/apps/razers3")
+message (STATUS "Configuring apps/razers3")
 
 find_package(CXX11 REQUIRED)
 

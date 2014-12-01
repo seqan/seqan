@@ -126,7 +126,7 @@ SEQAN_DEFINE_TEST(test_score_matrix) {
     // Define path to BLOSUM62 matrix that we want to load.
     // TODO(holtgrew): It should be easier to construct these paths.
     String<char> pathToTestSrc = SEQAN_PATH_TO_ROOT();
-    append(pathToTestSrc, "/core/tests/score/");
+    append(pathToTestSrc, "/tests/s");
     String<char> pathToBlosum62(pathToTestSrc);
     append(pathToBlosum62, "BLOSUM62");
 
@@ -252,7 +252,7 @@ SEQAN_DEFINE_TEST(test_score_matrix_file) {
     // TODO(holtgrew): It should be easier to construct these paths.
     // The path to the directory with the test's sources and fixtures.
     String<char> pathToTestSrc = SEQAN_PATH_TO_ROOT();
-    append(pathToTestSrc, "/core/tests/score/");
+    append(pathToTestSrc, "/tests/s");
 
     // Load fixture BLOSUM62 matrix.
     // TODO(holtgrew): Should be done in a function.
@@ -480,7 +480,7 @@ SEQAN_DEFINE_TEST(test_score_matrix_data) {
 
     // TODO(holtgrew): It should be easier to construct these paths.
     String<char> pathToTestSrc = SEQAN_PATH_TO_ROOT();
-    append(pathToTestSrc, "/core/tests/score/");
+    append(pathToTestSrc, "/tests/s");
 
     // Test with BLOSUM30.
     {

@@ -37,8 +37,8 @@
 
 // TODO (goeke) const could be added below for the input variables but the function value() in matrix_base (align) is not defined for const.  Similarly, the function emittedProbabilty is not defined for const in statistics_markov_model.h
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGNMENT_FREE_KMER_FUNCTIONS_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGNMENT_FREE_KMER_FUNCTIONS_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_KMER_FUNCTIONS_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_KMER_FUNCTIONS_H_
 
 namespace seqan {
 
@@ -1314,4 +1314,4 @@ cutNs(String<Dna5> & sequenceCut, String<Dna5> const & sequence)
 
 }  // namespace seqan
 
-#endif  // SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGNMENT_FREE_KMER_FUNCTIONS_H_
+#endif  // SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_KMER_FUNCTIONS_H_

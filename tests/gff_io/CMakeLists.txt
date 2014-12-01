@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/gff_io/CMakeLists.txt
+# File: /tests/gff_io/CMakeLists.txt
 #
 # CMakeLists.txt file for the gff_io module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_gff_io)
-message (STATUS "Configuring core/tests/gff_io")
+message (STATUS "Configuring tests/gff_io")
 
 # ----------------------------------------------------------------------------
 # Dependencies

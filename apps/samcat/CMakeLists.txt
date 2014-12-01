@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/apps/samcat/CMakeLists.txt
+# File: /apps/samcat/CMakeLists.txt
 #
 # CMakeLists.txt file for samcat.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_apps_samcat)
-message (STATUS "Configuring core/apps/samcat")
+message (STATUS "Configuring apps/samcat")
 
 # ----------------------------------------------------------------------------
 # Dependencies

@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_CONSENSUS_OVERLAPPER_H_
-#define EXTRAS_INCLUDE_SEQAN_CONSENSUS_OVERLAPPER_H_
+#ifndef INCLUDE_SEQAN_CONSENSUS_OVERLAPPER_H_
+#define INCLUDE_SEQAN_CONSENSUS_OVERLAPPER_H_
 
 namespace seqan {
 
@@ -392,4 +392,4 @@ inline bool Overlapper_<TFragments, TSequence>::computeOverlap(Overlap_ & overla
 
 }  // namespace seqan
 
-#endif  // #ifndef EXTRAS_INCLUDE_SEQAN_CONSENSUS_OVERLAPPER_H_
+#endif  // #ifndef INCLUDE_SEQAN_CONSENSUS_OVERLAPPER_H_

@@ -34,8 +34,8 @@
 // Facade header for basic/allocator submodule.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_ALLOCATOR_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_ALLOCATOR_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ALLOCATOR_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ALLOCATOR_H_
 
 // --------------------------------------------------------------------------
 // Dependencies
@@ -61,4 +61,4 @@
 // Adaption from SeqAn allocator to STL allocator.
 #include <seqan/basic/allocator_to_std.h>
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_ALLOCATOR_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_ALLOCATOR_H_

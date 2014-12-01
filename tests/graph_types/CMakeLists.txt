@@ -1,7 +1,7 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/graph_types/CMakeLists.txt
+# File: /tests/graph_types/CMakeLists.txt
 #
 # CMakeLists.txt file for the graph_types module tests.
 # ===========================================================================
@@ -9,7 +9,7 @@
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_graph_types)
 
-message (STATUS "Configuring core/tests/graph_types")
+message (STATUS "Configuring tests/graph_types")
 
 # ----------------------------------------------------------------------------
 # Dependencies

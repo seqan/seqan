@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/apps/param_chooser/CMakeLists.txt
+# File: /apps/param_chooser/CMakeLists.txt
 #
 # CMakeLists.txt file for param_chooser.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (extras_apps_param_chooser)
-message (STATUS "Configuring extras/apps/param_chooser")
+message (STATUS "Configuring apps/param_chooser")
 
 # ----------------------------------------------------------------------------
 # Dependencies

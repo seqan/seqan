@@ -32,8 +32,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_MODIFIER_TEST_MODIFIER_VIEW_H_
-#define SEQAN_CORE_TESTS_MODIFIER_TEST_MODIFIER_VIEW_H_
+#ifndef SEQAN_TESTS_MODIFIER_TEST_MODIFIER_VIEW_H_
+#define SEQAN_TESTS_MODIFIER_TEST_MODIFIER_VIEW_H_
 
 #include <seqan/basic.h>
 #include <seqan/modifier.h>
@@ -399,4 +399,4 @@ SEQAN_DEFINE_TEST(test_modifier_convert_in_place)
     }
 }
 
-#endif  // SEQAN_CORE_TESTS_MODIFIER_TEST_MODIFIER_VIEW_H_
+#endif  // SEQAN_TESTS_MODIFIER_TEST_MODIFIER_VIEW_H_

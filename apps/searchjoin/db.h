@@ -34,8 +34,8 @@
 // This file contains database type definitions.
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_APPS_SEARCHJOIN_DB_H_
-#define SEQAN_EXTRAS_APPS_SEARCHJOIN_DB_H_
+#ifndef SEQAN_APPS_SEARCHJOIN_DB_H_
+#define SEQAN_APPS_SEARCHJOIN_DB_H_
 
 #include <numeric>
 #include <seqan/basic.h>
@@ -1023,4 +1023,4 @@ void _buildSA(TIndexSAFibre & sa,
 //    _setHost(dbIndex.index);
 //}
 
-#endif  // #ifndef SEQAN_EXTRAS_APPS_SEARCHJOIN_DB_H_
+#endif  // #ifndef SEQAN_APPS_SEARCHJOIN_DB_H_

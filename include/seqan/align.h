@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_H_
 
 // TODO(holtgrew): Usage of gapped value in align module is not consistent, need proxies in many places, reference not cleanly implemented everywhere yet.
 // TODO(holtgrew): The Author: tag at the top has to be corrected in the headers of this module.
@@ -211,4 +211,4 @@
 #include <seqan/align/alignment_operations.h>
 #include <seqan/align/evaluate_alignment.h>
 
-#endif  // SEQAN_CORE_INCLUDE_SEQAN_ALIGN_H_
+#endif  // SEQAN_INCLUDE_SEQAN_ALIGN_H_

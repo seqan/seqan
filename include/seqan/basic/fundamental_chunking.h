@@ -32,8 +32,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_CHUNKING_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_CHUNKING_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_CHUNKING_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_CHUNKING_H_
 
 namespace seqan {
 
@@ -145,4 +145,4 @@ inline void advanceChunk(TIterator &iter, TSize size)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_CHUNKING_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_CHUNKING_H_

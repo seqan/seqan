@@ -34,8 +34,8 @@
 // Defines basic tags and flags for file access.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_FILE_INTERFACE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_FILE_INTERFACE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_FILE_INTERFACE_H_
+#define SEQAN_INCLUDE_SEQAN_FILE_INTERFACE_H_
 
 namespace seqan {
 
@@ -389,4 +389,4 @@ struct UnknownExtensionError : FileOpenError
 
 }  // namespace seqan;
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_FILE_INTERFACE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_FILE_INTERFACE_H_

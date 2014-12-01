@@ -34,8 +34,8 @@
 // Implementation of Prim's algorithm.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_PRIM_H_
-#define CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_PRIM_H_
+#ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_PRIM_H_
+#define INCLUDE_SEQAN_GRAPH_ALGORITHMS_PRIM_H_
 
 namespace seqan {
 
@@ -191,4 +191,4 @@ void primsAlgorithmSpaceEfficient(TPredecessorMap & predecessor,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_PRIM_H_
+#endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_PRIM_H_

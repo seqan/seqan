@@ -19,8 +19,8 @@
 // Author: Jialu Hu <Jialu.Hu@fu-berlin.de>
 // ===========================================================================
 
-#ifndef EXTRAS_APPS_SGIP_SGIP_OUTPUT_H_
-#define EXTRAS_APPS_SGIP_SGIP_OUTPUT_H_
+#ifndef APPS_SGIP_SGIP_OUTPUT_H_
+#define APPS_SGIP_SGIP_OUTPUT_H_
 
 #include <iostream>
 #include <vector>
@@ -261,4 +261,4 @@ void outputMap(std::multimap<TKey, TValue, TComp> & degreemap, DegreeMap const &
         std::cout << it->second << " " << it->first.inDegree << " " << it->first.outDegree << std::endl;
 }
 
-#endif  // #ifndef EXTRAS_APPS_SGIP_SGIP_OUTPUT_H_
+#endif  // #ifndef APPS_SGIP_SGIP_OUTPUT_H_

@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/apps/seqan_tcoffee/CMakeLists.txt
+# File: /apps/seqan_tcoffee/CMakeLists.txt
 #
 # CMakeLists.txt file for SeqAn::T-Coffee.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (core_apps_seqan_tcoffee)
-message (STATUS "Configuring core/apps/seqan_tcoffee")
+message (STATUS "Configuring apps/seqan_tcoffee")
 
 # ----------------------------------------------------------------------------
 # Dependencies

@@ -38,8 +38,8 @@
 // TODO(holtgrew): Currently, operations are a function of the whole gap count, could be of clipped region only.
 // TODO(holtgrew): Problem with the gap value, getValue(), value().
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPS_ARRAY_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPS_ARRAY_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ARRAY_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ARRAY_H_
 
 namespace seqan {
 
@@ -891,4 +891,4 @@ endPosition(Gaps<TSequence, ArrayGaps> & gaps)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPS_ARRAY_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ARRAY_H_

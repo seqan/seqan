@@ -115,12 +115,12 @@ Therefore first a stairs layout of the reads must be computed via :dox:`AlignedR
 The function :dox:`AlignedReadLayout#printAlignment` can then be used to output a window (beginPos,endPos,firstLine,lastLine) of the read alignment against a contig either to a stream or ``SVGFile``.
 The following small example demonstrates how to first load two contigs from a Fasta file and then import a read alignment given in SAM format:
 
-.. includefrags:: core/demos/tutorial/store/store_diplay_aligned_reads.cpp
+.. includefrags:: demos/tutorial/store/store_diplay_aligned_reads.cpp
    :fragment: includes
 
 Then we create a stairs layout of the aligned reads and output a window from gapped position 0 to 150 and line 0 to 36 of the multiple alignments below contig 1 to standard out.
 
-.. includefrags:: core/demos/tutorial/store/store_diplay_aligned_reads.cpp
+.. includefrags:: demos/tutorial/store/store_diplay_aligned_reads.cpp
    :fragment: ascii
 
 .. code-block:: console
@@ -165,7 +165,7 @@ Then we create a stairs layout of the aligned reads and output a window from gap
 
 The same window can also be exported as a scalable vector graphic in SVG format (supported by Browsers, Inkscape; see :download:`original file <ReadLayout.svg>`]):
 
-.. includefrags:: core/demos/tutorial/store/store_diplay_aligned_reads.cpp
+.. includefrags:: demos/tutorial/store/store_diplay_aligned_reads.cpp
    :fragment: svg
 
 .. figure:: ReadLayout.png
@@ -181,7 +181,7 @@ In the next step, we want to access several pairwise alignments between reads an
 Therefore we first need to get the associated types that the Fragment Store uses to store contig and read sequences and gaps.
 This can be done by the following typedefs:
 
-.. includefrags:: core/demos/tutorial/store/store_access_aligned_reads.cpp
+.. includefrags:: demos/tutorial/store/store_access_aligned_reads.cpp
    :fragment: typedefs
 
 Now we want to extract and output the alignments from the :dox:`FragmentStore::alignedReadStore` at position 140,144,...,156.
@@ -198,7 +198,7 @@ After that we output both alignment rows.
    The :dox:`Gaps` contains two :dox:`Holder` references to the sequence and the inserted gaps.
    In our example these Holders are dependent and changes made to the Gaps object like the insertion/deletion of gaps would immediatly be persistent in the Fragment Store.
 
-.. includefrags:: core/demos/tutorial/store/store_access_aligned_reads.cpp
+.. includefrags:: demos/tutorial/store/store_access_aligned_reads.cpp
    :fragment: output
 
 .. code-block:: console
@@ -246,14 +246,14 @@ Assignment 1
 
         As we copy the read sequence, it suffices to change the type of the target string readSeq and the sequence type of the read :dox:`Gaps` object into CharString, i.e. a :dox:`String` of ``char``.
 
-        .. includefrags:: core/demos/tutorial/store/store_access_aligned_reads2.cpp
+        .. includefrags:: demos/tutorial/store/store_access_aligned_reads2.cpp
            :fragment: typedefs
 
         Then, we not only need to reverse-complement readSeq if the read aligns to the reverse strand (``endPos < beginPos``) but also need to convert its letters into lower-case.
         Therefor SeqAn provides the function :dox:`toLower`.
         Alternatively, we could iterate over readSeq and add ('a'-'A') to its elements.
 
-        .. includefrags:: core/demos/tutorial/store/store_access_aligned_reads2.cpp
+        .. includefrags:: demos/tutorial/store/store_access_aligned_reads2.cpp
            :fragment: output
 
         Running this program results in the following output.

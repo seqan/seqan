@@ -43,8 +43,8 @@
 
 // TODO(holtgrew): Documentation in this header necessary or internal only?
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_MATRIX_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_MATRIX_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_MATRIX_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_DP_MATRIX_H_
 
 namespace seqan {
 
@@ -695,4 +695,4 @@ coordinate(DPMatrix_<TValue, FullDPMatrix> const & dpMatrix,
 
 } // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_MATRIX_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_MATRIX_H_

@@ -386,7 +386,7 @@ SEQAN_DEFINE_TEST(test_bed_write_bed12_record)
 SEQAN_DEFINE_TEST(test_bed_bed_file_read)
 {
     seqan::CharString inPath = SEQAN_PATH_TO_ROOT();
-    append(inPath, "/extras/tests/bed_io/example.bed");
+    append(inPath, "/tests/bed_io/example.bed");
 
     seqan::BedFileIn bedStream(toCString(inPath));
 
@@ -432,7 +432,7 @@ SEQAN_DEFINE_TEST(test_bed_bed_file_write)
     close(bedStream);
 
     seqan::CharString goldPath(SEQAN_PATH_TO_ROOT());
-    append(goldPath, "/extras/tests/bed_io/example.bed");
+    append(goldPath, "/tests/bed_io/example.bed");
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
 }
 

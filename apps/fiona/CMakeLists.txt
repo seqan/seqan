@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: core/apps/fiona/CMakeLists.txt
+# File: apps/fiona/CMakeLists.txt
 #
 # CMakeLists.txt file for fiona.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (core_apps_fiona)
-message (STATUS "Configuring core/apps/fiona")
+message (STATUS "Configuring apps/fiona")
 
 # ----------------------------------------------------------------------------
 # Dependencies

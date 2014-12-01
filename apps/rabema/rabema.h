@@ -22,8 +22,8 @@
 // Globally shared code for the rabema tool.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_APPS_RABEMA_RABEMA_H_
-#define SEQAN_CORE_APPS_RABEMA_RABEMA_H_
+#ifndef SEQAN_APPS_RABEMA_RABEMA_H_
+#define SEQAN_APPS_RABEMA_RABEMA_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -115,4 +115,4 @@ void setUpCommandLineParser(CommandLineParser & parser)
     addTitleLine(parser, "(c) 2010 by Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>");
 }
 
-#endif  // #ifndef SEQAN_CORE_APPS_RABEMA_RABEMA_H_
+#endif  // #ifndef SEQAN_APPS_RABEMA_RABEMA_H_

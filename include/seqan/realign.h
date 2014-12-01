@@ -34,8 +34,8 @@
 // Facade header for module realign.
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_REALIGN_H_
-#define EXTRAS_INCLUDE_SEQAN_REALIGN_H_
+#ifndef INCLUDE_SEQAN_REALIGN_H_
+#define INCLUDE_SEQAN_REALIGN_H_
 
 // ===========================================================================
 // Prerequisites.
@@ -54,4 +54,4 @@
 #include <seqan/realign/realign_helper_functions.h>
 #include <seqan/realign/realign_base.h>
 
-#endif  // EXTRAS_INCLUDE_SEQAN_REALIGN_H_
+#endif  // INCLUDE_SEQAN_REALIGN_H_

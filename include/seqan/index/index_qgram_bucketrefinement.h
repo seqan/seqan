@@ -32,8 +32,8 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INDEX_QGRAM_BUCKETREFINEMENT_H_
-#define SEQAN_EXTRAS_INDEX_QGRAM_BUCKETREFINEMENT_H_
+#ifndef SEQAN_INDEX_QGRAM_BUCKETREFINEMENT_H_
+#define SEQAN_INDEX_QGRAM_BUCKETREFINEMENT_H_
 
 //#define SEQAN_DEBUG
 
@@ -645,4 +645,4 @@ inline bool save(Index<TText, IndexQGram<TShapeSpec, BucketRefinement> > & index
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_INDEX_QGRAM_BUCKETREFINEMENT_H_
+#endif  // #ifndef SEQAN_INDEX_QGRAM_BUCKETREFINEMENT_H_

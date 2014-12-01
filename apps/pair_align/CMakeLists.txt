@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/apps/pair_align/CMakeLists.txt
+# File: /apps/pair_align/CMakeLists.txt
 #
 # CMakeLists.txt file for pair_align.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (core_apps_pair_align)
-message (STATUS "Configuring core/apps/pair_align")
+message (STATUS "Configuring apps/pair_align")
 
 # ----------------------------------------------------------------------------
 # Dependencies

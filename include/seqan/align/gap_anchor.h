@@ -32,8 +32,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAP_ANCHOR_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAP_ANCHOR_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAP_ANCHOR_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_GAP_ANCHOR_H_
 
 namespace seqan {
 
@@ -402,4 +402,4 @@ upperBoundGapAnchor(TGapAnchors & gaps,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAP_ANCHOR_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAP_ANCHOR_H_

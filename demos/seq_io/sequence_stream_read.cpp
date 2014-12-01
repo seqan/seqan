@@ -15,7 +15,7 @@ int main(int argc, char ** argv)
     else
     {
         path = SEQAN_PATH_TO_ROOT();
-        append(path, "/core/tests/seq_io/test_dna.fq");
+        append(path, "/tests/seq_io/test_dna.fq");
     }
 
     SeqFileIn file;

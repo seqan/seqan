@@ -34,8 +34,8 @@
 // Smart file for reading/writing files in BED format.
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_BED_IO_BED_FILE_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_BED_IO_BED_FILE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BED_IO_BED_FILE_H_
+#define SEQAN_INCLUDE_SEQAN_BED_IO_BED_FILE_H_
 
 namespace seqan {
 
@@ -99,4 +99,4 @@ writeRecord(SmartFile<Bed, Output, TSpec> & file, BedRecord<TRecordSpec> & recor
 
 }  // namespace seqan
 
-#endif // SEQAN_EXTRAS_INCLUDE_SEQAN_BED_IO_BED_FILE_H_
+#endif // SEQAN_INCLUDE_SEQAN_BED_IO_BED_FILE_H_

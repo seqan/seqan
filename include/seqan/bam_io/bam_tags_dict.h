@@ -35,8 +35,8 @@
 // Code for read/write access to BAM tag dicts.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_TAGS_DICT_H_
-#define CORE_INCLUDE_SEQAN_BAM_IO_BAM_TAGS_DICT_H_
+#ifndef INCLUDE_SEQAN_BAM_IO_BAM_TAGS_DICT_H_
+#define INCLUDE_SEQAN_BAM_IO_BAM_TAGS_DICT_H_
 
 namespace seqan {
 
@@ -1060,4 +1060,4 @@ eraseTag(BamTagsDict & tags, TId const & id)
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_TAGS_DICT_H_
+#endif  // #ifndef INCLUDE_SEQAN_BAM_IO_BAM_TAGS_DICT_H_

@@ -34,8 +34,8 @@
 // Reduced Versions of the 24-letter amino acid alphabet
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_REDUCED_AMINOACID_BASE_H_
-#define SEQAN_EXTRAS_REDUCED_AMINOACID_BASE_H_
+#ifndef SEQAN_REDUCED_AMINOACID_BASE_H_
+#define SEQAN_REDUCED_AMINOACID_BASE_H_
 
 namespace seqan {
 
@@ -133,4 +133,4 @@ struct TranslateTableRedAAToChar_;
 // ============================================================================
 
 }
-#endif // def SEQAN_EXTRAS_REDUCED_AMINOACID_BASE_H_
+#endif // def SEQAN_REDUCED_AMINOACID_BASE_H_

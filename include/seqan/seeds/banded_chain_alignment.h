@@ -35,8 +35,8 @@
 // algorithm.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_H_
-#define CORE_INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_H_
+#ifndef INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_H_
+#define INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_H_
 
 namespace seqan {
 
@@ -579,4 +579,4 @@ bandedChainAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> & fragm
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_H_
+#endif  // #ifndef INCLUDE_SEQAN_SEEDS_BANDED_CHAIN_ALIGNMENT_H_

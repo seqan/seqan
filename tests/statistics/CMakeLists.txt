@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/tests/statistics/CMakeLists.txt
+# File: /tests/statistics/CMakeLists.txt
 #
 # CMakeLists.txt file for the statistics module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_tests_statistics)
-message (STATUS "Configuring extras/tests/statistics")
+message (STATUS "Configuring tests/statistics")
 
 # ----------------------------------------------------------------------------
 # Dependencies

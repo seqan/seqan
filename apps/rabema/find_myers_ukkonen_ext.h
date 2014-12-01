@@ -22,8 +22,8 @@
 // Extensions for the myers ukkonen pattern.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_APPS_RABEMA_FIND_MYERS_UKKONEN_EXT_H_
-#define SEQAN_CORE_APPS_RABEMA_FIND_MYERS_UKKONEN_EXT_H_
+#ifndef SEQAN_APPS_RABEMA_FIND_MYERS_UKKONEN_EXT_H_
+#define SEQAN_APPS_RABEMA_FIND_MYERS_UKKONEN_EXT_H_
 
 #include <seqan/find.h>
 
@@ -52,4 +52,4 @@ inline bool setEndPosition(Finder<THaystack, void> & finder,
     return result;
 }
 
-#endif  // SEQAN_CORE_APPS_RABEMA_FIND_MYERS_UKKONEN_EXT_H_
+#endif  // SEQAN_APPS_RABEMA_FIND_MYERS_UKKONEN_EXT_H_

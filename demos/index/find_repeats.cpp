@@ -9,7 +9,7 @@ int main()
     using namespace seqan;
 
     // Get path to file to search for repeats in.
-    std::string path = (std::string)SEQAN_PATH_TO_ROOT() + "/core/demos/index/ref.fa";
+    std::string path = (std::string)SEQAN_PATH_TO_ROOT() + "/demos/index/ref.fa";
 
     // Load first sequence from file.
     CharString id;

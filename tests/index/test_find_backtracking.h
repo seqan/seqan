@@ -32,8 +32,8 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_TESTS_FIND_BACKTRACKING_EXP_H_
-#define EXTRAS_TESTS_FIND_BACKTRACKING_EXP_H_
+#ifndef TESTS_FIND_BACKTRACKING_EXP_H_
+#define TESTS_FIND_BACKTRACKING_EXP_H_
 
 #include <seqan/index.h>
 
@@ -283,4 +283,4 @@ SEQAN_DEFINE_TEST(test_find_backtracking_single_edit_banana_vs_ada)
 //    test(tester);
 }
 
-#endif  // EXTRAS_TESTS_FIND_BACKTRACKING_EXP_H_
+#endif  // TESTS_FIND_BACKTRACKING_EXP_H_

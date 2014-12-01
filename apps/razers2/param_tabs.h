@@ -22,8 +22,8 @@
   folder.
  ==========================================================================*/
 
-#ifndef CORE_APPS_RAZERS_PARAM_TABS_H_
-#define CORE_APPS_RAZERS_PARAM_TABS_H_
+#ifndef APPS_RAZERS_PARAM_TABS_H_
+#define APPS_RAZERS_PARAM_TABS_H_
 
 // NOTE: DDDoc style comments are used here but not activated on purpose. Only there for RazerS developers.
 
@@ -70,4 +70,4 @@ bool getGappedParamsRecords(seqan::String<GappedParamsRecord> & records,
                             unsigned n,
                             char errorModel);
 
-#endif  // #ifndef CORE_APPS_RAZERS_PARAM_TABS_H_
+#endif  // #ifndef APPS_RAZERS_PARAM_TABS_H_

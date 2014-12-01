@@ -39,8 +39,8 @@
 
 #include <seqan/align_profile/score_profile_seq.h>
 
-#ifndef EXTRAS_INCLUDE_SEQAN_REALIGN_REALIGN_BASE_H_
-#define EXTRAS_INCLUDE_SEQAN_REALIGN_REALIGN_BASE_H_
+#ifndef INCLUDE_SEQAN_REALIGN_REALIGN_BASE_H_
+#define INCLUDE_SEQAN_REALIGN_REALIGN_BASE_H_
 
 namespace seqan {
 
@@ -1820,4 +1820,4 @@ void reAlignment(FragmentStore<TSpec, TConfig> & store,
 
 }  // namespace seqan
 
-#endif  // EXTRAS_INCLUDE_SEQAN_REALIGN_REALIGN_BASE_H_
+#endif  // INCLUDE_SEQAN_REALIGN_REALIGN_BASE_H_

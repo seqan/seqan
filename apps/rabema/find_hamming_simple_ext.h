@@ -22,8 +22,8 @@
 // Extensions for the naive hamming finder.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_APPS_RABEMA_FIND_HAMMING_SIMPLE_EXT_H_
-#define SEQAN_CORE_APPS_RABEMA_FIND_HAMMING_SIMPLE_EXT_H_
+#ifndef SEQAN_APPS_RABEMA_FIND_HAMMING_SIMPLE_EXT_H_
+#define SEQAN_APPS_RABEMA_FIND_HAMMING_SIMPLE_EXT_H_
 
 #include <seqan/find.h>
 
@@ -59,4 +59,4 @@ inline bool setEndPosition(seqan::Finder<THaystack, void> & finder,
     return result;
 }
 
-#endif  // SEQAN_CORE_APPS_RABEMA_FIND_HAMMING_SIMPLE_EXT_H_
+#endif  // SEQAN_APPS_RABEMA_FIND_HAMMING_SIMPLE_EXT_H_

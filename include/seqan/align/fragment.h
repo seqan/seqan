@@ -32,8 +32,8 @@
 // Author: Tobias Rausch <rausch@embl.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_FRAGMENT_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_FRAGMENT_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_FRAGMENT_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_FRAGMENT_H_
 
 namespace seqan
 {
@@ -719,4 +719,4 @@ inline bool operator>(Fragment<TSize, ExactFragment<TSpec> > const & lhs,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_FRAGMENT_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_FRAGMENT_H_

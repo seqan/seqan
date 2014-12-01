@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_TESTS_BAM_IO_TEST_BAM_BAM_IO_CONTEXT_H_
-#define CORE_TESTS_BAM_IO_TEST_BAM_BAM_IO_CONTEXT_H_
+#ifndef TESTS_BAM_IO_TEST_BAM_BAM_IO_CONTEXT_H_
+#define TESTS_BAM_IO_TEST_BAM_BAM_IO_CONTEXT_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -68,4 +68,4 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_io_context_fragment_store)
     SEQAN_ASSERT_EQ(&store.contigNameStoreCache, &nameStoreCache(bamIOContext));
 }
 
-#endif  // CORE_TESTS_BAM_IO_TEST_BAM_BAM_IO_CONTEXT_H_
+#endif  // TESTS_BAM_IO_TEST_BAM_BAM_IO_CONTEXT_H_

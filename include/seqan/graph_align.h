@@ -35,8 +35,8 @@
 // Umbrella header for the moduel graph_align.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_H_
+#ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALIGN_H_
+#define SEQAN_INCLUDE_SEQAN_GRAPH_ALIGN_H_
 
 // External STL
 #include <map>
@@ -66,4 +66,4 @@
 #include <seqan/graph_align/graph_algorithm_refine_inexact.h>
 #include <seqan/graph_align/graph_algorithm_refine_annotation.h>
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALIGN_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALIGN_H_

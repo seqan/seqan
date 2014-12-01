@@ -34,8 +34,8 @@
 // Facade header for module align_profile.
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_ALIGN_PROFILE_H_
-#define EXTRAS_INCLUDE_SEQAN_ALIGN_PROFILE_H_
+#ifndef INCLUDE_SEQAN_ALIGN_PROFILE_H_
+#define INCLUDE_SEQAN_ALIGN_PROFILE_H_
 
 // ===========================================================================
 // Prerequisites
@@ -54,4 +54,4 @@
 #include <seqan/align_profile/score_profile_seq.h>
 #include <seqan/align_profile/add_to_profile.h>
 
-#endif  // EXTRAS_INCLUDE_SEQAN_ALIGN_PROFILE_H_
+#endif  // INCLUDE_SEQAN_ALIGN_PROFILE_H_

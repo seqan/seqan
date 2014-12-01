@@ -37,7 +37,7 @@ A First Working Example
 Let us start out with a minimal working example.
 The following small program will read the file ``example.fa`` (which we will create later) from the current directory and print out the identifier and the sequence of the first record.
 
-.. includefrags:: extras/demos/tutorial/basic_sequence_io/example1.cpp
+.. includefrags:: demos/tutorial/basic_sequence_io/example1.cpp
 
 We use the :dox:`SequenceStream::SequenceStream SequenceStream constructor` with one parameter, the path to the file we want to read.
 This will open the file and guess the file format from the file contents.
@@ -100,7 +100,7 @@ Assignment 1
    Solution ::
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution1.cpp
+        .. includefrags:: demos/tutorial/basic_sequence_io/solution1.cpp
 
 Our program is very simple but there is one large problem.
 Anything can go wrong during file I/O and have not used any means to handle such errors.
@@ -120,7 +120,7 @@ Note that :dox:`SequenceStream#isGood` queries the state of the stream and retur
 
 The program will now read as follows:
 
-.. includefrags:: extras/demos/tutorial/basic_sequence_io/example2.cpp
+.. includefrags:: demos/tutorial/basic_sequence_io/example2.cpp
 
 Assignment 2
 """"""""""""
@@ -136,7 +136,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution2.cpp
+        .. includefrags:: demos/tutorial/basic_sequence_io/solution2.cpp
 
 Assignment 3
 """"""""""""
@@ -155,7 +155,7 @@ Assignment 3
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution3.cpp
+        .. includefrags:: demos/tutorial/basic_sequence_io/solution3.cpp
 
 After completing Assignment 3, you should be able to run your program on the example file we created above and see the following output:
 
@@ -262,7 +262,7 @@ Assignment 4
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution4.cpp
+        .. includefrags:: demos/tutorial/basic_sequence_io/solution4.cpp
 
 The Interface for Writing
 -------------------------
@@ -272,7 +272,7 @@ We can open files for writing by giving ``seqan::SequenceStream::WRITE`` as the 
 Create a new SeqAn app ``basic_seq_io_example2`` in your sandbox and change the C++ file ``basic_seq_io_example2.cpp`` in this application to have the content below.
 This program already has all the bells and whistles for error checking.
 
-.. includefrags:: extras/demos/tutorial/basic_sequence_io/example3.cpp
+.. includefrags:: demos/tutorial/basic_sequence_io/example3.cpp
 
 The first lines are similar to those in the solution to Assignment 4.
 However, instead of opening the file using ``seqan::SequenceStream seqStream(argv[1]);``, we use ``seqan::SequenceStream seqStream(argv[1], seqan::SequenceStream::WRITE);``.
@@ -313,7 +313,7 @@ Assignment 5
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution5.cpp
+        .. includefrags:: demos/tutorial/basic_sequence_io/solution5.cpp
 
 There are two functions for writing to sequence files using :dox:`SequenceStream`.
 One, :dox:`SequenceStream#writeRecord`, for writing one sequence record from :dox:`String Strings`, and another one, :dox:`SequenceStream#writeAll`, for writing all sequences from :dox:`StringSet StringSets`.
@@ -362,7 +362,7 @@ Assignment 6
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/basic_sequence_io/solution6.cpp
+        .. includefrags:: demos/tutorial/basic_sequence_io/solution6.cpp
 
 Compressed Files
 ----------------

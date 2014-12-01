@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_PARALLELISM_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_PARALLELISM_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_PARALLELISM_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_PARALLELISM_H_
 
 // Just test that the macro is defined.
 SEQAN_DEFINE_TEST(test_basic_parallelism_enable_parallelism_macro)
@@ -41,4 +41,4 @@ SEQAN_DEFINE_TEST(test_basic_parallelism_enable_parallelism_macro)
     SEQAN_ASSERT(SEQAN_ENABLE_PARALLELISM == 0 || SEQAN_ENABLE_PARALLELISM == 1);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_PARALLELISM_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_PARALLELISM_H_

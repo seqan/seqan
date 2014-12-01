@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_REALIGN_REALIGN_HELPER_FUNCTIONS_H_
-#define EXTRAS_INCLUDE_SEQAN_REALIGN_REALIGN_HELPER_FUNCTIONS_H_
+#ifndef INCLUDE_SEQAN_REALIGN_REALIGN_HELPER_FUNCTIONS_H_
+#define INCLUDE_SEQAN_REALIGN_REALIGN_HELPER_FUNCTIONS_H_
 
 namespace seqan {
 
@@ -202,4 +202,4 @@ void _printProfile(TStream & stream,
 
 }  // namespace seqan
 
-#endif  // #ifndef EXTRAS_INCLUDE_SEQAN_REALIGN_REALIGN_HELPER_FUNCTIONS_H_
+#endif  // #ifndef INCLUDE_SEQAN_REALIGN_REALIGN_HELPER_FUNCTIONS_H_

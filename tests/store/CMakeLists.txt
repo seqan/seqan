@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/store/CMakeLists.txt
+# File: /tests/store/CMakeLists.txt
 #
 # CMakeLists.txt file for the store module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_store)
-message (STATUS "Configuring core/tests/store")
+message (STATUS "Configuring tests/store")
 
 # ----------------------------------------------------------------------------
 # Dependencies

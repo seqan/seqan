@@ -34,8 +34,8 @@
 // Tests for fundamental tags.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_TAGS_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_TAGS_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_TAGS_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_TAGS_H_
 
 // Test for the Tag<T> template.
 struct SomeTag_;
@@ -100,4 +100,4 @@ SEQAN_DEFINE_TEST(test_basic_fundamental_tags_length_tag_list)
     SEQAN_ASSERT_EQ(+LENGTH<TList3>::VALUE, 3);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_TAGS_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_TAGS_H_

@@ -95,7 +95,7 @@ SEQAN_BEGIN_TESTSUITE(Sequence tests)
     SEQAN_CALL_TEST(StringSetIdHolder_Char_Dependent_Tight);
     SEQAN_CALL_TEST(StringSetIdHolder_Char_Dependent_Generous);
 
-//	debug::verifyCheckpoints("core/include/seqan/sequence/sequence_multiple.h");
+//	debug::verifyCheckpoints("include/seqan/sequence/sequence_multiple.h");
 
     SEQAN_CALL_TEST(Infix);
     SEQAN_CALL_TEST(Suffix);
@@ -110,9 +110,9 @@ SEQAN_BEGIN_TESTSUITE(Sequence tests)
     // -----------------------------------------------------------------------
     // Checkpoint Verification
     // -----------------------------------------------------------------------
-    // SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/sequence/adapt_std_string.h");
-    // SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/sequence/adapt_std_vector.h");
-    // SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/sequence/adapt_std_list.h");
+    // SEQAN_VERIFY_CHECKPOINTS("include/seqan/sequence/adapt_std_string.h");
+    // SEQAN_VERIFY_CHECKPOINTS("include/seqan/sequence/adapt_std_vector.h");
+    // SEQAN_VERIFY_CHECKPOINTS("include/seqan/sequence/adapt_std_list.h");
     // TODO(holtgrew): Add more checkpoints.
 }
 SEQAN_END_TESTSUITE

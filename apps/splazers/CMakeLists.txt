@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/apps/splazers/CMakeLists.txt
+# File: /apps/splazers/CMakeLists.txt
 #
 # CMakeLists.txt file for SplazerS.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (core_apps_splazers)
-message (STATUS "Configuring core/apps/splazers")
+message (STATUS "Configuring apps/splazers")
 
 # ----------------------------------------------------------------------------
 # Dependencies

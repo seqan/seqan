@@ -34,8 +34,8 @@
 // Metaprogramming for types algebra.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_TYPE_ALGEBRA_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_TYPE_ALGEBRA_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_TYPE_ALGEBRA_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_TYPE_ALGEBRA_H_
 
 namespace seqan {
 
@@ -271,4 +271,4 @@ struct Product<TagList<TTag1, TSubList1>, TagList<TTag2, TSubList2> >
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_TYPE_ALGEBRA_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_TYPE_ALGEBRA_H_

@@ -49,7 +49,7 @@ Before we can make use of any of the mentioned data structures, we need to tell 
 This can be achieved by including the header file ``<seqan/align.h>`` which contains the necessary data structures and functions associated with the alignments.
 The next steps would be to implement the main function of our program and to define the types that we want to use.
 
-.. includefrags:: core/demos/tutorial/alignments/alignment2_align.cpp
+.. includefrags:: demos/tutorial/alignments/alignment2_align.cpp
    :fragment: main
 
 We first define the type of the input sequences (``TSequence``).
@@ -59,7 +59,7 @@ You can use the Metafunction :dox:`Align#Row` to get the correct type of the use
 In the following we use the term ``row`` to explicitly refer to a gapped sequence as a member of the Align object.
 We will use the term ``gapped sequence`` to describe functionalities that is related to the Gaps data structure independent of the Align object.
 
-.. includefrags:: core/demos/tutorial/alignments/alignment2_align.cpp
+.. includefrags:: demos/tutorial/alignments/alignment2_align.cpp
    :fragment: typedefs
 
 After defining the types, we can continue to actually construct our own Align object.
@@ -69,13 +69,13 @@ With the function :dox:`Align#row`, we get access to the gapped sequence at a sp
 This is similar to the :dox:`RandomAccessContainerConcept#value` function used in :dox:`StringSet String Sets`.
 Now, we can assign the source to the corresponding gapped sequence.
 
-.. includefrags:: core/demos/tutorial/alignments/alignment2_align.cpp
+.. includefrags:: demos/tutorial/alignments/alignment2_align.cpp
    :fragment: init
 
 After assigning the sources to the gapped sequences, we need to add some gaps to make it to look like a real alignment.
 You can use the functions :dox:`Gaps#insertGap insertGap()` and :dox:`Gaps#removeGap` to insert and delete one gap or :dox:`Gaps#insertGaps insertGaps()` and :dox:`Gaps#removeGaps` to insert and delete multiple gaps in a gapped sequence.
 
-.. includefrags:: core/demos/tutorial/alignments/alignment2_align.cpp
+.. includefrags:: demos/tutorial/alignments/alignment2_align.cpp
    :fragment: manipulation
 
 Congratulations!
@@ -92,13 +92,13 @@ When inserting gaps, the gap space is modified and all coordinates right of the 
 At the same time, the coordinates of the source remain unchanged.
 Using the function :dox:`Gaps#toSourcePosition toSourcePosition()`, we can determine to which position in the source space our current position in the gapped sequence (gap space) maps.
 
-.. includefrags:: core/demos/tutorial/alignments/alignment2_align.cpp
+.. includefrags:: demos/tutorial/alignments/alignment2_align.cpp
    :fragment: printingSourcePos
 
 If the position in the gap space is actually a gap, then :dox:`Gaps#toSourcePosition toSourcePosition()` returns the source position of the next character to the right that is not a gap.
 Vice versa, we can determine where our current source position maps into the gap space using the function :dox:`Gaps#toViewPosition toViewPosition()`.
 
-.. includefrags:: core/demos/tutorial/alignments/alignment2_align.cpp
+.. includefrags:: demos/tutorial/alignments/alignment2_align.cpp
    :fragment: printingViewPos
 
 And here is the output of this short example program so far:
@@ -132,7 +132,7 @@ These functions shrink the gap space and can be understood as defining an infix 
 After the clipping, the relative view position changes according to the clipping and so does the mapping of the source positions to the gap space.
 The mapping of the view positions to the source space does not change.
 
-.. includefrags:: core/demos/tutorial/alignments/alignment2_align.cpp
+.. includefrags:: demos/tutorial/alignments/alignment2_align.cpp
    :fragment: clipping
 
 Here the output of the clipping procedure.
@@ -178,12 +178,12 @@ If you need to refresh the **Iterator Concept** you can read the Tutorial :ref:`
 While we iterate over the gapped sequence, we can ask if the current value, at which the iterator ``it`` points to, is a gap or not by using the function :dox:`Gaps#isGap isGap()`.
 Use :dox:`AlphabetWithGapsConcept#gapValue` to print the correct gap symbol.
 
-.. includefrags:: core/demos/tutorial/alignments/alignment2_align.cpp
+.. includefrags:: demos/tutorial/alignments/alignment2_align.cpp
    :fragment: iteratingRowClipped
 
 We will now reset the clipping of ``row1`` using :dox:`Gaps#clearClipping` and iterate again over it to see its effect.
 
-.. includefrags:: core/demos/tutorial/alignments/alignment2_align.cpp
+.. includefrags:: demos/tutorial/alignments/alignment2_align.cpp
    :fragment: iteratingRowClipped2
 
 ::
@@ -215,7 +215,7 @@ Assignment 1
    Solution
        .. container:: foldable
 
-          .. includefrags :: core/demos/tutorial/alignments/alignment_align_assignment1.cpp
+          .. includefrags :: demos/tutorial/alignments/alignment_align_assignment1.cpp
              :fragment: solution
 
 AlignmentGraph Data Structure
@@ -231,7 +231,7 @@ In the following we will actually construct this example step by step.
 First we include the ``iostream`` header from the STL and the ``<seqan/align.h>`` header to include all necessary functions and data structures we want to use.
 We use the namespace ``seqan`` and write the ``main`` function with an empty body.
 
-.. includefrags:: core/demos/tutorial/alignments/alignment_representation_ag.cpp
+.. includefrags:: demos/tutorial/alignments/alignment_representation_ag.cpp
    :fragment: main
 
 At the begin of the function we define our types we want to use later on.
@@ -243,12 +243,12 @@ That is the AlignmentGraph does not copy the sources into its data structure but
 The :dox:`DependentStringSet Dependent StringSet` facilitates this behavior.
 In the end we define the actual AlignmentGraph type.
 
-.. includefrags:: core/demos/tutorial/alignments/alignment_representation_ag.cpp
+.. includefrags:: demos/tutorial/alignments/alignment_representation_ag.cpp
    :fragment: typedef
 
 We first create our two input sequences ``TTGT`` and ``TTAGT`` append them to the StringSet ``strings`` using the :dox:`SequenceConcept#appendValue` function and pass the initialized ``strings`` object as a parameter to the constructor of the AlignmentGraph ``alignG``.
 
-.. includefrags:: core/demos/tutorial/alignments/alignment_representation_ag.cpp
+.. includefrags:: demos/tutorial/alignments/alignment_representation_ag.cpp
    :fragment: init
 
 Before we construct the alignment we print the unmodified AlignmentGraph.
@@ -265,7 +265,7 @@ In the next step we have to add a gap.
 We can do this simply by just adding a vertex that covers the inserted string.
 Finally we have to add the second edge to represent the last ungapped sequence and then we print the constructed alignment.
 
-.. includefrags:: core/demos/tutorial/alignments/alignment_representation_ag.cpp
+.. includefrags:: demos/tutorial/alignments/alignment_representation_ag.cpp
    :fragment: construct
 
 Here the output of the program.
@@ -305,7 +305,7 @@ Assignment 2
    Solution
      .. container :: foldable
 
-        .. includefrags :: core/demos/tutorial/alignments/alignment_representation_ag_assignment1.cpp
+        .. includefrags :: demos/tutorial/alignments/alignment_representation_ag_assignment1.cpp
            :fragment: main
 
         .. code-block :: console

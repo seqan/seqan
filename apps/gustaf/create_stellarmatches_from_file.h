@@ -32,14 +32,14 @@
 // Author: Kathrin Trappe <kathrin.trappe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_APPS_GUSTAF_CREATE_STELLARMATCHES_FROM_FILE_H_
-#define SEQAN_EXTRAS_APPS_GUSTAF_CREATE_STELLARMATCHES_FROM_FILE_H_
+#ifndef SEQAN_APPS_GUSTAF_CREATE_STELLARMATCHES_FROM_FILE_H_
+#define SEQAN_APPS_GUSTAF_CREATE_STELLARMATCHES_FROM_FILE_H_
 
 #include <iostream>
 #include <fstream>
 #include <seqan/file.h>
 #include <seqan/parse_lm.h>
-#include "../../../core/apps/stellar/stellar.h"
+#include "../../../apps/stellar/stellar.h"
 
 using namespace seqan;
 

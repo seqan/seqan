@@ -32,8 +32,8 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_TESTS_FIND_BASE_H_
-#define EXTRAS_TESTS_FIND_BASE_H_
+#ifndef TESTS_FIND_BASE_H_
+#define TESTS_FIND_BASE_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -153,4 +153,4 @@ test(FinderTester<TText, TPattern, TSpec> & tester)
     SEQAN_ASSERT(isEqual(tester.solution, tester.results));
 }
 
-#endif  // EXTRAS_TESTS_FIND_BASE_H_
+#endif  // TESTS_FIND_BASE_H_

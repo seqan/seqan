@@ -37,8 +37,8 @@
 // checks pass.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_CONCEPTS_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_CONCEPTS_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_CONCEPTS_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_CONCEPTS_H_
 
 // ============================================================================
 // Test basic concepts
@@ -243,4 +243,4 @@ inline void testIntegers()
 //  testSignedInteger<unsigned long>();   // <== this should fail
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_CONCEPTS_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_CONCEPTS_H_

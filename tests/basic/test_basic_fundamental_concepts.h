@@ -37,8 +37,8 @@
 // checks pass.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONCEPTS_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONCEPTS_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONCEPTS_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONCEPTS_H_
 
 using namespace seqan;
 
@@ -181,4 +181,4 @@ SEQAN_DEFINE_TEST(test_basic_concepts_concept_refine)
     myAssert(Not<Is<      seqan::StringConcept<seqan::Segment<CharString, InfixSegment> > > >::Type());   // should fail
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONCEPTS_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_CONCEPTS_H_

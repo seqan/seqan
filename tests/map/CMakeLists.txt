@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/map/CMakeLists.txt
+# File: /tests/map/CMakeLists.txt
 #
 # CMakeLists.txt file for the map module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_map)
-message (STATUS "Configuring core/tests/map")
+message (STATUS "Configuring tests/map")
 
 # ----------------------------------------------------------------------------
 # Dependencies

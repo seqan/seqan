@@ -130,8 +130,8 @@
 // sequence to determine there orientation within the matrix.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_ALGORITHM_IMPL_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_ALGORITHM_IMPL_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_ALGORITHM_IMPL_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_DP_ALGORITHM_IMPL_H_
 
 namespace seqan {
 
@@ -1473,4 +1473,4 @@ _computeAlignment(DPContext<TScoreValue, TGapScheme> & dpContext,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_DP_ALGORITHM_IMPL_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_DP_ALGORITHM_IMPL_H_

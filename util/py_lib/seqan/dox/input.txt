@@ -90,7 +90,7 @@ Here is a demo snippet:
 
 demo.cpp
 
-core/demos/api/container_concept.cpp#string
+demos/api/container_concept.cpp#string
 
 @subsection Foo Bar!
 
@@ -140,7 +140,7 @@ Subsections are also allowed.
 
 @snippet demo.cpp block marker
 
-core/demos/api/container_concept.cpp#iterate
+demos/api/container_concept.cpp#iterate
 
 
 
@@ -224,7 +224,7 @@ containers) or a proxy.
 
 demo.cpp
 
- core/demos/api/container_concept.cpp#size
+ demos/api/container_concept.cpp#size
 
 
 
@@ -249,7 +249,7 @@ demo.cpp
 
 demo.cpp
 
- core/demos/api/container_concept.cpp#iterate
+ demos/api/container_concept.cpp#iterate
 
 
 
@@ -274,7 +274,7 @@ demo.cpp
 
 demo.cpp
 
- core/demos/api/container_concept.cpp#iterate
+ demos/api/container_concept.cpp#iterate
 
 
 @fn Container#swap

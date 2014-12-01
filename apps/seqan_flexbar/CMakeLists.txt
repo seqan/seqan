@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/apps/seqan_flexbar/CMakeLists.txt
+# File: /apps/seqan_flexbar/CMakeLists.txt
 #
 # CMakeLists.txt file for seqan_flexbar.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_apps_seqan_flexbar)
-message (STATUS "Configuring extras/apps/seqan_flexbar")
+message (STATUS "Configuring apps/seqan_flexbar")
 
 # ----------------------------------------------------------------------------
 # Dependencies

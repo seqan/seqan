@@ -35,8 +35,8 @@
 // rooted by adding a pointer to the original container.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_ADAPTOR_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_ADAPTOR_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_ADAPTOR_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_ADAPTOR_H_
 
 namespace seqan {
 
@@ -866,4 +866,4 @@ getChunk(TChunk &result, Iter<TContainer, AdaptorIterator<TValue*, TSpec> > &roo
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_ADAPTOR_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_ADAPTOR_H_

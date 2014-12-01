@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/tests/parse_lm/CMakeLists.txt
+# File: /tests/parse_lm/CMakeLists.txt
 #
 # CMakeLists.txt file for the parse_lm module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_tests_parse_lm)
-message (STATUS "Configuring extras/tests/parse_lm")
+message (STATUS "Configuring tests/parse_lm")
 
 # ----------------------------------------------------------------------------
 # Dependencies

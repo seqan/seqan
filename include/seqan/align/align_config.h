@@ -32,8 +32,8 @@
 // Author: Tobias Rausch <rausch@embl.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGN_CONFIG_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGN_CONFIG_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_CONFIG_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_CONFIG_H_
 
 namespace seqan {
 
@@ -428,4 +428,4 @@ _configValueBottom(AlignConfig<TTop, TLeft, TRight, false, TSpec> const)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGN_CONFIG_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_CONFIG_H_

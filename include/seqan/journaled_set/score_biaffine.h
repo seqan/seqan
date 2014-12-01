@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_SET_SCORE_BIAFFINE_H_
-#define EXTRAS_INCLUDE_SEQAN_JOURNALED_SET_SCORE_BIAFFINE_H_
+#ifndef INCLUDE_SEQAN_JOURNALED_SET_SBIAFFINE_H_
+#define INCLUDE_SEQAN_JOURNALED_SET_SBIAFFINE_H_
 
 namespace seqan {
 
@@ -281,4 +281,4 @@ setScoreGapExtendVertical(Score<TScoreValue, BiAffine> & scoringScheme, TScoreVa
 
 }  // namespace seqan
 
-#endif  // #ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_SET_SCORE_BIAFFINE_H_
+#endif  // #ifndef INCLUDE_SEQAN_JOURNALED_SET_SBIAFFINE_H_

@@ -43,8 +43,8 @@
 // This header provides the data structures and routines to manage this.
 // ==========================================================================
 
-#ifndef EXTRAS_APPS_MASON2_EXTERNAL_SPLIT_MERGE_H_
-#define EXTRAS_APPS_MASON2_EXTERNAL_SPLIT_MERGE_H_
+#ifndef APPS_MASON2_EXTERNAL_SPLIT_MERGE_H_
+#define APPS_MASON2_EXTERNAL_SPLIT_MERGE_H_
 
 #include <vector>
 #include <iostream>
@@ -381,4 +381,4 @@ inline bool ltBamAlignmentRecord(seqan::BamAlignmentRecord const & lhs,
     return (res < 0) || (res == 0 && hasFlagFirst(lhs));
 }
 
-#endif  // #ifndef EXTRAS_APPS_MASON2_EXTERNAL_SPLIT_MERGE_H_
+#endif  // #ifndef APPS_MASON2_EXTERNAL_SPLIT_MERGE_H_

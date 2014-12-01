@@ -34,8 +34,8 @@
 // Tests for the conditional enabling part of the metaprogramming library.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_ENABLE_IF_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_ENABLE_IF_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_ENABLE_IF_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_ENABLE_IF_H_
 
 // TODO(holtgrew): Test the macros.
 
@@ -85,4 +85,4 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_enable_if2_disable_if2)
     SEQAN_ASSERT_EQ(false, testForEnableIf2(1.0));
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_ENABLE_IF_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_ENABLE_IF_H_

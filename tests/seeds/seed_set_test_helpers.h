@@ -34,8 +34,8 @@
 // Helpers for testing SetSet's
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_SEEDS_SEED_SET_TEST_HELPER_H_
-#define SEQAN_CORE_TESTS_SEEDS_SEED_SET_TEST_HELPER_H_
+#ifndef SEQAN_TESTS_SEEDS_SEED_SET_TEST_HELPER_H_
+#define SEQAN_TESTS_SEEDS_SEED_SET_TEST_HELPER_H_
 
 #include <seqan/seeds.h>  // Include module under test.
 
@@ -54,4 +54,4 @@ void testSeedsSeedBaseConstructors(TSeedSpec const &)
     }
 }
 
-#endif  // SEQAN_CORE_TESTS_SEEDS_SEED_SET_TEST_HELPER_H_
+#endif  // SEQAN_TESTS_SEEDS_SEED_SET_TEST_HELPER_H_

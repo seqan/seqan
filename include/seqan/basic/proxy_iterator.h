@@ -37,8 +37,8 @@
 // using assignValue() on the iterator, reading via getValue().
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_PROXY_ITERATOR_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_PROXY_ITERATOR_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_PROXY_ITERATOR_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_PROXY_ITERATOR_H_
 
 namespace seqan {
 
@@ -365,5 +365,5 @@ swap(seqan::Proxy<seqan::IteratorProxy<TIterator> > const & left, seqan::Proxy<s
 
 }  // namespace std
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_PROXY_ITERATOR_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_PROXY_ITERATOR_H_
 

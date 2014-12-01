@@ -34,8 +34,8 @@
 // Tests for the control structure part of the metaprogramming library.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_CONTROL_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_CONTROL_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_CONTROL_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_CONTROL_H_
 
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_control_if)
 {
@@ -123,4 +123,4 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_control_loop_reverse)
     SEQAN_ASSERT_EQ(i[4], 10);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_CONTROL_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_METAPROGRAMMING_CONTROL_H_

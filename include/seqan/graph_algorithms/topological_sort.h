@@ -34,8 +34,8 @@
 // Implementation of Topological-Sort algorithm.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_TOPOLOGICAL_SORT_H_
-#define CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_TOPOLOGICAL_SORT_H_
+#ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_TOPOLOGICAL_SORT_H_
+#define INCLUDE_SEQAN_GRAPH_ALGORITHMS_TOPOLOGICAL_SORT_H_
 
 namespace seqan {
 
@@ -117,4 +117,4 @@ void topologicalSort(String<TVertexDescriptor> & topSort,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_TOPOLOGICAL_SORT_H_
+#endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_TOPOLOGICAL_SORT_H_

@@ -32,13 +32,13 @@
 // Author: Kathrin Trappe <kathrin.trappe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_APPS_GUSTAF_STELLAR_ROUTINES_H_
-#define SEQAN_EXTRAS_APPS_GUSTAF_STELLAR_ROUTINES_H_
+#ifndef SEQAN_APPS_GUSTAF_STELLAR_ROUTINES_H_
+#define SEQAN_APPS_GUSTAF_STELLAR_ROUTINES_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
-#include "../../../core/apps/stellar/stellar.h"
+#include "../../../apps/stellar/stellar.h"
 #include "create_stellarmatches_from_file.h"
 using namespace seqan;
 

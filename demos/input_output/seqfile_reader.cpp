@@ -7,7 +7,7 @@
 int main()
 {
     seqan::CharString path = SEQAN_PATH_TO_ROOT();
-    append(path, "/core/demos/input_output/example.fa");
+    append(path, "/demos/input_output/example.fa");
 
     // Open file
     seqan::SeqFileIn inFile(toCString(path));

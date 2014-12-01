@@ -17,8 +17,8 @@
   $Id$
  ==========================================================================*/
 
-#ifndef REPSEP_HEADER_RGRAPH_SCORE_H
-#define REPSEP_HEADER_RGRAPH_SCORE_H
+#ifndef REPSEP_HEADER_RGRAPH_SH
+#define REPSEP_HEADER_RGRAPH_SH
 
 //////////////////////////////////////////////////////////////////////////////
 

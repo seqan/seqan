@@ -32,8 +32,8 @@
 // Author: Stephan Aiche <stephan.aiche@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_MISC_CMDPARSER_CMDPARSER_PARSE_H_
-#define CORE_INCLUDE_SEQAN_MISC_CMDPARSER_CMDPARSER_PARSE_H_
+#ifndef INCLUDE_SEQAN_MISC_CMDPARSER_CMDPARSER_PARSE_H_
+#define INCLUDE_SEQAN_MISC_CMDPARSER_CMDPARSER_PARSE_H_
 
 #include <seqan/misc/cmdparser/cmdoption.h>
 #include <seqan/misc/cmdparser/cmdparser.h>
@@ -222,4 +222,4 @@ parse(CommandLineParser & me, int argc, const char * argv[])
 
 } // namespace seqan
 
-#endif // CORE_INCLUDE_SEQAN_MISC_CMDPARSER_CMDPARSER_PARSE_H_
+#endif // INCLUDE_SEQAN_MISC_CMDPARSER_CMDPARSER_PARSE_H_

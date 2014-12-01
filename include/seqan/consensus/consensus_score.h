@@ -32,8 +32,8 @@
 // Author: Tobias Rausch <rausch@embl.de>
 // ==========================================================================
 
-#ifndef SEQAN_HEADER_SEQAN_CONSENSUS_SCORE_H
-#define SEQAN_HEADER_SEQAN_CONSENSUS_SCORE_H
+#ifndef SEQAN_HEADER_SEQAN_CONSENSUS_SH
+#define SEQAN_HEADER_SEQAN_CONSENSUS_SH
 
 
 namespace SEQAN_NAMESPACE_MAIN

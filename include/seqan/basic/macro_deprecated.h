@@ -34,8 +34,8 @@
 // Macro for deprecating code.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_BASIC_MACRO_DEPRECATED_H_
-#define CORE_INCLUDE_SEQAN_BASIC_MACRO_DEPRECATED_H_
+#ifndef INCLUDE_SEQAN_BASIC_MACRO_DEPRECATED_H_
+#define INCLUDE_SEQAN_BASIC_MACRO_DEPRECATED_H_
 
 namespace seqan {
 
@@ -75,4 +75,4 @@ namespace seqan {
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BASIC_MACRO_DEPRECATED_H_
+#endif  // #ifndef INCLUDE_SEQAN_BASIC_MACRO_DEPRECATED_H_

@@ -37,8 +37,8 @@
 // Strings.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_GENERIC_H_
-#define CORE_INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_GENERIC_H_
+#ifndef INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_GENERIC_H_
+#define INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_GENERIC_H_
 
 namespace seqan {
 
@@ -220,4 +220,4 @@ getProperty(TPropertyMap const & pm, TDescriptor const d)
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_GENERIC_H_
+#endif  // #ifndef INCLUDE_SEQAN_GRAPH_TYPES_PROPERTY_MAP_GENERIC_H_

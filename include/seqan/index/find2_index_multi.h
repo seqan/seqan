@@ -32,8 +32,8 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INDEX_FIND_INDEX_MULTIPLE_H
-#define SEQAN_EXTRAS_INDEX_FIND_INDEX_MULTIPLE_H
+#ifndef SEQAN_INDEX_FIND_INDEX_MULTIPLE_H
+#define SEQAN_INDEX_FIND_INDEX_MULTIPLE_H
 
 #ifdef PLATFORM_CUDA
 #include <thrust/sort.h>
@@ -608,4 +608,4 @@ _getScore(FinderContext_<TText, TPattern, Multiple<TSpec>, TDelegate> const & ct
 
 }
 
-#endif  // #ifndef SEQAN_EXTRAS_INDEX_FIND_INDEX_MULTIPLE_H
+#endif  // #ifndef SEQAN_INDEX_FIND_INDEX_MULTIPLE_H

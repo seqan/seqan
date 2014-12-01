@@ -30,12 +30,12 @@
 //
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_MISC_CMDPARSER_H_
-#define CORE_INCLUDE_SEQAN_MISC_CMDPARSER_H_
+#ifndef INCLUDE_SEQAN_MISC_CMDPARSER_H_
+#define INCLUDE_SEQAN_MISC_CMDPARSER_H_
 
 #include <seqan/misc/cmdparser/cmdparser.h>
 #include <seqan/misc/cmdparser/cmdoption.h>
 #include <seqan/misc/cmdparser/cmdparser_ctd_support.h>
 #include <seqan/misc/cmdparser/cmdparser_parse.h>
 
-#endif  // CORE_INCLUDE_SEQAN_MISC_CMDPARSER_H_
+#endif  // INCLUDE_SEQAN_MISC_CMDPARSER_H_

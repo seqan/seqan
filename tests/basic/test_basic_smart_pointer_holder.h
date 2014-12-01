@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_SMART_POINTER_HOLDER_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_SMART_POINTER_HOLDER_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_SMART_POINTER_HOLDER_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_SMART_POINTER_HOLDER_H_
 
 // ==========================================================================
 // Helper Code
@@ -823,4 +823,4 @@ SEQAN_DEFINE_TEST(test_basic_smart_pointer_holder_tristate_accessor)
     SEQAN_ASSERT_EQ(getValue(constHolder), 10);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_SMART_POINTER_HOLDER_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_SMART_POINTER_HOLDER_H_

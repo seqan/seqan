@@ -36,8 +36,8 @@
 // Affine Gap Model Optimization" by Gianvito Urgese et al.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_DYNAMIC_H_
-#define CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_DYNAMIC_H_
+#ifndef INCLUDE_SEQAN_ALIGN_DP_FORMULA_DYNAMIC_H_
+#define INCLUDE_SEQAN_ALIGN_DP_FORMULA_DYNAMIC_H_
 
 namespace seqan {
 
@@ -391,4 +391,4 @@ _doComputeScore(DPCell_<TScoreValue, DynamicGaps> & activeCell,
 
 }  // namespace seqan
 
-#endif  // CORE_INCLUDE_SEQAN_ALIGN_DP_FORMULA_DYNAMIC_H_
+#endif  // INCLUDE_SEQAN_ALIGN_DP_FORMULA_DYNAMIC_H_

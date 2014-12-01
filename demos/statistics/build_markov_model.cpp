@@ -12,7 +12,7 @@ int main()
 {
     // Build path to background FASTA file.
     CharString bgPath = SEQAN_PATH_TO_ROOT();
-    append(bgPath, "/extras/demos/statistics/background.fa");
+    append(bgPath, "/demos/statistics/background.fa");
 
     // Read the background from a file into X.
     StringSet<DnaString> X;

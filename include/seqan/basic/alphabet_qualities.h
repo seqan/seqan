@@ -35,8 +35,8 @@
 // Definitions for piggybacking qualities in free bits of bytes.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALPHABET_QUALITIES_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALPHABET_QUALITIES_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_QUALITIES_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_QUALITIES_H_
 
 // TODO(holtgrew): Should the documentation be here?
 
@@ -140,4 +140,4 @@ void convertQuality(char & c, int q)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ALPHABET_QUALITIES_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_QUALITIES_H_

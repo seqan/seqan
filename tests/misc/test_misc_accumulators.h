@@ -34,8 +34,8 @@
 // Tests for misc/misc_accumulators.h.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_MISC_TEST_MISC_ACCUMULATORS_H_
-#define SEQAN_CORE_TESTS_MISC_TEST_MISC_ACCUMULATORS_H_
+#ifndef SEQAN_TESTS_MISC_TEST_MISC_ACCUMULATORS_H_
+#define SEQAN_TESTS_MISC_TEST_MISC_ACCUMULATORS_H_
 
 #include <seqan/misc/misc_accumulators.h>
 
@@ -165,4 +165,4 @@ SEQAN_DEFINE_TEST(test_misc_accumulators_average_accumulator_double_clear)
     SEQAN_ASSERT_EQ(count(acc), 0u);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_MISC_TEST_MISC_ACCUMULATORS_H_
+#endif  // #ifndef SEQAN_TESTS_MISC_TEST_MISC_ACCUMULATORS_H_

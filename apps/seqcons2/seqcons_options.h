@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_APPS_SEQCONS2_SEQCONS_OPTIONS_H_
-#define EXTRAS_APPS_SEQCONS2_SEQCONS_OPTIONS_H_
+#ifndef APPS_SEQCONS2_SEQCONS_OPTIONS_H_
+#define APPS_SEQCONS2_SEQCONS_OPTIONS_H_
 
 #include <iosfwd>
 #include <string>
@@ -152,4 +152,4 @@ struct SeqConsOptions
 seqan::ArgumentParser::ParseResult
 parseCommandLine(SeqConsOptions & options, int argc, char const ** argv);
 
-#endif  // #ifndef EXTRAS_APPS_SEQCONS2_SEQCONS_OPTIONS_H_
+#endif  // #ifndef APPS_SEQCONS2_SEQCONS_OPTIONS_H_

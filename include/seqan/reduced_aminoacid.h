@@ -34,8 +34,8 @@
 // Module with reduced versions of alphabets
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_REDUCED_AMINOACID_H_
-#define SEQAN_EXTRAS_REDUCED_AMINOACID_H_
+#ifndef SEQAN_REDUCED_AMINOACID_H_
+#define SEQAN_REDUCED_AMINOACID_H_
 
 #include <seqan/basic.h>
 #include <seqan/score.h>
@@ -52,4 +52,4 @@
 
 #include <seqan/reduced_aminoacid/reduced_aminoacid_base_late.h>
 
-#endif // def SEQAN_EXTRAS_REDUCED_AMINOACID_H_
+#endif // def SEQAN_REDUCED_AMINOACID_H_

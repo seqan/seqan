@@ -133,4 +133,4 @@ Template Subclassing Demo
 
 Here is an example of template subclassing.
 
-.. includefrags:: core/demos/tutorial/generic_programming/template_subclassing.cpp
+.. includefrags:: demos/tutorial/generic_programming/template_subclassing.cpp

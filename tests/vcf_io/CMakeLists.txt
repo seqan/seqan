@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/tests/vcf_io/CMakeLists.txt
+# File: /tests/vcf_io/CMakeLists.txt
 #
 # CMakeLists.txt file for the vcf_io module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_tests_vcf_io)
-message (STATUS "Configuring extras/tests/vcf_io")
+message (STATUS "Configuring tests/vcf_io")
 
 # ----------------------------------------------------------------------------
 # Dependencies

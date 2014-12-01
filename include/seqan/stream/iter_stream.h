@@ -38,8 +38,8 @@
 // ==========================================================================
 // TODO(esiragusa): tests
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_STREAM_ITER_STREAM_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_STREAM_ITER_STREAM_H_
+#ifndef SEQAN_INCLUDE_SEQAN_STREAM_ITER_STREAM_H_
+#define SEQAN_INCLUDE_SEQAN_STREAM_ITER_STREAM_H_
 
 namespace seqan {
 
@@ -735,4 +735,4 @@ atEnd(Iter<TStream, StreamIterator<Output> > const & iter)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_STREAM_ITER_STREAM_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_STREAM_ITER_STREAM_H_

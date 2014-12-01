@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/apps/razers2/CMakeLists.txt
+# File: /apps/razers2/CMakeLists.txt
 #
 # CMakeLists.txt file for RazerS 2.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (core_apps_razers2)
-message (STATUS "Configuring core/apps/razers2")
+message (STATUS "Configuring apps/razers2")
 
 # ----------------------------------------------------------------------------
 # Dependencies

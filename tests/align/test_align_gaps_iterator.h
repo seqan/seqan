@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GAPS_ITERATOR_H_
-#define SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GAPS_ITERATOR_H_
+#ifndef SEQAN_TESTS_ALIGN_TEST_ALIGN_GAPS_ITERATOR_H_
+#define SEQAN_TESTS_ALIGN_TEST_ALIGN_GAPS_ITERATOR_H_
 
 #include <sstream>
 
@@ -1178,4 +1178,4 @@ SEQAN_DEFINE_TEST(test_align_gaps_iterator_anchor_gap_operations_trailing)
     testAlignGapsIteratorGapOperationsTrailing(TTag());
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GAPS_ITERATOR_H_
+#endif  // #ifndef SEQAN_TESTS_ALIGN_TEST_ALIGN_GAPS_ITERATOR_H_

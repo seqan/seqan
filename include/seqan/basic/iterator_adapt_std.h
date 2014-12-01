@@ -35,8 +35,8 @@
 // iterator traits.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_ADAPT_STD_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_ADAPT_STD_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_ADAPT_STD_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_ADAPT_STD_H_
 
 // ============================================================================
 // Adaption of SeqAn Iterators to STL Iterators.
@@ -617,4 +617,4 @@ assign(Iter<TTargetContainer, StdIteratorAdaptor> & target,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_ADAPT_STD_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_ADAPT_STD_H_

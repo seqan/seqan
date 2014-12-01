@@ -77,7 +77,7 @@ IIIIIIII\n";
 SEQAN_TYPED_TEST(VStreamTest, Construct)
 {
     CharString fileName = SEQAN_PATH_TO_ROOT();
-    append(fileName, "/core/tests/seq_io/test_dna.fq");
+    append(fileName, "/tests/seq_io/test_dna.fq");
     append(fileName, FileExtensions<typename TestFixture::Type>::VALUE[0]);
     VirtualStream<char, Input> vstream(toCString(fileName), OPEN_RDONLY);
     SEQAN_ASSERT((bool)vstream);
@@ -90,7 +90,7 @@ SEQAN_TYPED_TEST(VStreamTest, Construct)
 SEQAN_TYPED_TEST(VStreamTest, OpenClose)
 {
     CharString fileName = SEQAN_PATH_TO_ROOT();
-    append(fileName, "/core/tests/seq_io/test_dna.fq");
+    append(fileName, "/tests/seq_io/test_dna.fq");
     append(fileName, FileExtensions<typename TestFixture::Type>::VALUE[0]);
     VirtualStream<char, Input> vstream;
 
@@ -112,7 +112,7 @@ SEQAN_TYPED_TEST(VStreamTest, Decompression)
 {
     typedef typename TestFixture::Type TCompressionTag;
     CharString fileName = SEQAN_PATH_TO_ROOT();
-    append(fileName, "/core/tests/seq_io/test_dna.fq");
+    append(fileName, "/tests/seq_io/test_dna.fq");
     append(fileName, FileExtensions<TCompressionTag>::VALUE[0]);
     VirtualStream<char, Input> vstream(toCString(fileName), OPEN_RDONLY);
     SEQAN_ASSERT((bool)vstream);
@@ -124,7 +124,7 @@ SEQAN_TYPED_TEST(VStreamTest, Decompression)
     SEQAN_ASSERT_NOT((bool)vstream);
 
     fileName = SEQAN_PATH_TO_ROOT();
-    append(fileName, "/core/tests/seq_io/test_dna.fa");
+    append(fileName, "/tests/seq_io/test_dna.fa");
     append(fileName, FileExtensions<TCompressionTag>::VALUE[0]);
     open(vstream, toCString(toCString(fileName)), OPEN_RDONLY);
 
@@ -165,7 +165,7 @@ SEQAN_TYPED_TEST(VStreamTest, AutoDetection)
 {
     typedef typename TestFixture::Type TCompressionTag;
     CharString fileName = SEQAN_PATH_TO_ROOT();
-    append(fileName, "/core/tests/seq_io/test_dna.fq");
+    append(fileName, "/tests/seq_io/test_dna.fq");
     append(fileName, FileExtensions<TCompressionTag>::VALUE[0]);
     std::fstream file(toCString(fileName), std::ios::in | std::ios::binary);
 

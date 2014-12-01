@@ -36,8 +36,8 @@
 // concepts they are in.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_BASIC_ALPHABET_ADAPT_BUILTINS_H_
-#define SEQAN_CORE_INCLUDE_BASIC_ALPHABET_ADAPT_BUILTINS_H_
+#ifndef SEQAN_INCLUDE_BASIC_ALPHABET_ADAPT_BUILTINS_H_
+#define SEQAN_INCLUDE_BASIC_ALPHABET_ADAPT_BUILTINS_H_
 
 #include <limits>
 
@@ -269,4 +269,4 @@ infimumValueImpl(long double *)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_BASIC_ALPHABET_ADAPT_BUILTINS_H_
+#endif  // #ifndef SEQAN_INCLUDE_BASIC_ALPHABET_ADAPT_BUILTINS_H_

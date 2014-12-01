@@ -34,8 +34,8 @@
 // Proxy definition.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_PROXY_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_PROXY_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_PROXY_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_PROXY_H_
 
 // --------------------------------------------------------------------------
 // Dependencies
@@ -56,4 +56,4 @@
 // assignValue() and setValue()).
 #include <seqan/basic/proxy_iterator.h>
 
-#endif  // SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_PROXY_H_
+#endif  // SEQAN_INCLUDE_SEQAN_BASIC_BASIC_PROXY_H_

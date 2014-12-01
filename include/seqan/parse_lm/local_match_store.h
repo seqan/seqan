@@ -40,8 +40,8 @@
    index in this string sets.
  */
 
-#ifndef EXTRAS_INCLUDE_SEQAN_PARSE_LM_LOCAL_MATCH_STORE_H_
-#define EXTRAS_INCLUDE_SEQAN_PARSE_LM_LOCAL_MATCH_STORE_H_
+#ifndef INCLUDE_SEQAN_PARSE_LM_LOCAL_MATCH_STORE_H_
+#define INCLUDE_SEQAN_PARSE_LM_LOCAL_MATCH_STORE_H_
 
 namespace seqan {
 
@@ -529,4 +529,4 @@ appendLocalMatch(TLocalMatchStore & store,
 
 }  // namespace seqan
 
-#endif  // EXTRAS_INCLUDE_SEQAN_PARSE_LM_LOCAL_MATCH_STORE_H_
+#endif  // INCLUDE_SEQAN_PARSE_LM_LOCAL_MATCH_STORE_H_

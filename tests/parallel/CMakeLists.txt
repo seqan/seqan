@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/parallel/CMakeLists.txt
+# File: /tests/parallel/CMakeLists.txt
 #
 # CMakeLists.txt file for the parallel module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_parallel)
-message (STATUS "Configuring core/tests/parallel")
+message (STATUS "Configuring tests/parallel")
 
 # ----------------------------------------------------------------------------
 # Dependencies

@@ -32,8 +32,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_RANGE_H
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_RANGE_H
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_RANGE_H
+#define SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_RANGE_H
 
 namespace seqan {
 
@@ -384,4 +384,4 @@ inline void operator << (Range<TIterator> &dest, Pipe<TInput, TPipeSpec> &src)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_RANGE_H
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_RANGE_H

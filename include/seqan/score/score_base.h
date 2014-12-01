@@ -34,8 +34,8 @@
 
 // TODO(holtgrew): Should the public interface for the class Score not be defined here?
 
-#ifndef SEQAN_SCORE_SCORE_BASE_H_
-#define SEQAN_SCORE_SCORE_BASE_H_
+#ifndef SEQAN_SSCORE_BASE_H_
+#define SEQAN_SSCORE_BASE_H_
 
 namespace seqan {
 
@@ -57,11 +57,11 @@ namespace seqan {
  *
  * @section Examples
  *
- * @include demos/score/score.cpp
+ * @include demos/sscore.cpp
  *
  * The output is as follows:
  *
- * @include demos/score/score.cpp.stdout
+ * @include demos/sscore.cpp.stdout
  */
 
 /**
@@ -73,7 +73,7 @@ namespace seqan {
 ...default:int
 ..param.TSpec:The specializing type.
 ...default:$Tag.Simple$
-..example.snippet:demos/score/score.cpp|UsingScore
+..example.snippet:demos/sscore.cpp|UsingScore
 ..example.text:The output is as follows:
 ..example.output:
 Score = 66
@@ -498,4 +498,4 @@ score(Score<TValue, TSpec> const & me, TSeqHVal valH, TSeqVVal valV) {
 
 }  // namespace SEQAN_NAMESPACE_MAIN
 
-#endif  // SEQAN_SCORE_SCORE_BASE_H_
+#endif  // SEQAN_SSCORE_BASE_H_

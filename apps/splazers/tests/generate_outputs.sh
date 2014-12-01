@@ -2,8 +2,8 @@
 #
 # Output generation script for splazers
 
-SPLAZERS="../../../../build/Debug/core/apps/splazers/splazers" # " -pd ../gapped_params/"
-#SPLAZERS="../../../../build/linuxRelease/core/apps/splazers/splazers -pd ../gapped_params/"
+SPLAZERS="../../../../build/Debug/apps/splazers/splazers" # " -pd ../gapped_params/"
+#SPLAZERS="../../../../build/linuxRelease/apps/splazers/splazers -pd ../gapped_params/"
 
 # ============================================================
 # First Section

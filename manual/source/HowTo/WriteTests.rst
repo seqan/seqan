@@ -63,7 +63,7 @@ Afterwards, you can compile and run the tests:
    $ cd build/Debug
    $ cmake ../..
    $ make test_my_module
-   $ ./core/tests/my_module/test_my_module
+   $ ./tests/my_module/test_my_module
    ...
 
 Note that when adding new tests then you have to add them to the dependencies of the test target in *sandbox/my_sandbox/tests/my_module/CMakeLists.txt*.

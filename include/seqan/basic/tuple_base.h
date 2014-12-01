@@ -37,8 +37,8 @@
 
 // TODO(holtgrew): What about move construction? Useful for pairs of strings and such. Tricky to implement since ints have no move constructor, for example.
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_TUPLE_BASE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_TUPLE_BASE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_TUPLE_BASE_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_TUPLE_BASE_H_
 
 namespace seqan {
 
@@ -640,4 +640,4 @@ operator+(Tuple<TValue, SIZE, TSpecL> const & left,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_TUPLE_BASE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_TUPLE_BASE_H_

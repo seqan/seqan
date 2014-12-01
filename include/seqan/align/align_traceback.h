@@ -39,8 +39,8 @@
 // defined.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGN_TRACEBACK_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGN_TRACEBACK_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_TRACEBACK_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_TRACEBACK_H_
 
 namespace seqan {
 
@@ -171,4 +171,4 @@ _alignTracePrint(AlignTraceback<TSize> & tb,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGN_TRACEBACK_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGN_TRACEBACK_H_

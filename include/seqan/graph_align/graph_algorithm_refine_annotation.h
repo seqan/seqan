@@ -33,8 +33,8 @@
 // Author: Anne-Katrin Emde <anne-katrin.emde@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_ANNOTATION_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_ANNOTATION_H_
+#ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_ANNOTATION_H_
+#define SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_ANNOTATION_H_
 
 //SEQAN_NO_DDDOC: do not generate documentation for this file
 
@@ -410,4 +410,4 @@ SEQAN_CHECKPOINT
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_ANNOTATION_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_ANNOTATION_H_

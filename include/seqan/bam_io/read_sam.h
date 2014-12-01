@@ -34,8 +34,8 @@
 // Code for reading SAM.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_BAM_IO_READ_SAM_H_
-#define CORE_INCLUDE_SEQAN_BAM_IO_READ_SAM_H_
+#ifndef INCLUDE_SEQAN_BAM_IO_READ_SAM_H_
+#define INCLUDE_SEQAN_BAM_IO_READ_SAM_H_
 
 namespace seqan {
 
@@ -426,5 +426,5 @@ readRecord(BamAlignmentRecord & record,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_READ_SAM_H_
+#endif  // #ifndef INCLUDE_SEQAN_BAM_IO_READ_SAM_H_
 

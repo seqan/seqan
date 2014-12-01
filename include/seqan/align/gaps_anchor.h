@@ -38,8 +38,8 @@
 // TODO(holtgrew): Clipping in leading and trailing gaps is not possible right now. Dave and I have to discuss this further.
 // TODO(holtgrew): Also, inserting gaps in the front changes the clipped begin position which is unexpected.
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPS_ANCHOR_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPS_ANCHOR_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ANCHOR_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ANCHOR_H_
 
 namespace seqan {
 
@@ -1063,4 +1063,4 @@ clippedEndPosition(Gaps<TSequence, AnchorGaps<TGapAnchors> > const & gaps)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_GAPS_ANCHOR_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_GAPS_ANCHOR_H_

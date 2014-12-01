@@ -36,8 +36,8 @@
 
 // TODO(holtgrew): Split into iterator_interface.h and iterator_adapt_pointer.h.
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_INTERFACE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_INTERFACE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_INTERFACE_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_INTERFACE_H_
 
 namespace seqan {
 
@@ -955,4 +955,4 @@ atNil(TIterator * me)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_INTERFACE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_INTERFACE_H_

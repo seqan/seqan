@@ -34,8 +34,8 @@
 // Implementation of the Connected-Components algorithm.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_CONNECTED_COMPONENTS_H_
-#define CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_CONNECTED_COMPONENTS_H_
+#ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_CONNECTED_COMPONENTS_H_
+#define INCLUDE_SEQAN_GRAPH_ALGORITHMS_CONNECTED_COMPONENTS_H_
 
 namespace seqan {
 
@@ -147,4 +147,4 @@ connectedComponents(TComponents & components,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_CONNECTED_COMPONENTS_H_
+#endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_CONNECTED_COMPONENTS_H_

@@ -34,8 +34,8 @@
 // Tests for basic/translation.h
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_TESTS_BASIC_TEST_TRANSLATION_H_
-#define SEQAN_EXTRAS_TESTS_BASIC_TEST_TRANSLATION_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_TRANSLATION_H_
+#define SEQAN_TESTS_BASIC_TEST_TRANSLATION_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -625,4 +625,4 @@ SEQAN_DEFINE_TEST(test_translation_stringset_multiframe_concatdirect_parallel)
                                                 Parallel>();
 }
 
-#endif  // SEQAN_EXTRAS_TESTS_BASIC_TEST_TRANSLATION_H_
+#endif  // SEQAN_TESTS_BASIC_TEST_TRANSLATION_H_

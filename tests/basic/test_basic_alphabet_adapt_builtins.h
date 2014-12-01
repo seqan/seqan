@@ -37,8 +37,8 @@
 // test_basic_alphabet_concepts.h.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_ADAPT_BUILTINS_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_ADAPT_BUILTINS_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_ADAPT_BUILTINS_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_ADAPT_BUILTINS_H_
 
 // Test metafunction IsCharType<>.
 SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_metafunction_is_char_type)
@@ -739,4 +739,4 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_adapt_builtins_concepts_double)
     // Alphabet With Qualities - Not Applicable
 }
 
-#endif  // SEQAN_CORE_TESTS_BASIC_TEST_BASIC_ALPHABET_ADAPT_BUILTINS_H_
+#endif  // SEQAN_TESTS_BASIC_TEST_BASIC_ALPHABET_ADAPT_BUILTINS_H_

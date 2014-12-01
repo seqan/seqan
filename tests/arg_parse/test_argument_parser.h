@@ -34,8 +34,8 @@
 // Tests for arg_parse/arg_parse_option.h.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARGUMENT_PARSER_H_
-#define SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARGUMENT_PARSER_H_
+#ifndef SEQAN_TESTS_ARG_PARSE_TEST_ARGUMENT_PARSER_H_
+#define SEQAN_TESTS_ARG_PARSE_TEST_ARGUMENT_PARSER_H_
 
 #include <seqan/basic.h>
 
@@ -55,4 +55,4 @@ SEQAN_DEFINE_TEST(test_argument_parser)
 }
 
 
-#endif // SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARGUMENT_PARSER_H_
+#endif // SEQAN_TESTS_ARG_PARSE_TEST_ARGUMENT_PARSER_H_

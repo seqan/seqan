@@ -23,8 +23,8 @@
 // strings of WeightedMatch objects.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_APPS_RABEMA_CURVE_SMOOTHING_H_
-#define SEQAN_CORE_APPS_RABEMA_CURVE_SMOOTHING_H_
+#ifndef SEQAN_APPS_RABEMA_CURVE_SMOOTHING_H_
+#define SEQAN_APPS_RABEMA_CURVE_SMOOTHING_H_
 
 #include <algorithm>
 
@@ -275,4 +275,4 @@ void smoothErrorCurve(String<WeightedMatch> & errorCurve)
     while (itBegin != end(errorCurve));
 }
 
-#endif  // SEQAN_CORE_APPS_RABEMA_CURVE_SMOOTHING_H_
+#endif  // SEQAN_APPS_RABEMA_CURVE_SMOOTHING_H_

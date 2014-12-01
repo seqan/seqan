@@ -34,8 +34,8 @@
 // Murphy10 reduction tables
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_REDUCED_AMINOACID_MURPHY10_TABLES_H_
-#define SEQAN_EXTRAS_REDUCED_AMINOACID_MURPHY10_TABLES_H_
+#ifndef SEQAN_REDUCED_AMINOACID_MURPHY10_TABLES_H_
+#define SEQAN_REDUCED_AMINOACID_MURPHY10_TABLES_H_
 
 namespace seqan {
 
@@ -153,4 +153,4 @@ char const TranslateTableByteToRedAA_<Murphy10, TVoidSpec>::VALUE[256] =
 
 } // namespace
 
-#endif // SEQAN_EXTRAS_REDUCED_AMINOACID_MURPHY10_TABLES_H_
+#endif // SEQAN_REDUCED_AMINOACID_MURPHY10_TABLES_H_

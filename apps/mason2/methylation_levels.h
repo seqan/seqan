@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_APPS_MASON2_METHYLATION_LEVELS_H_
-#define EXTRAS_APPS_MASON2_METHYLATION_LEVELS_H_
+#ifndef APPS_MASON2_METHYLATION_LEVELS_H_
+#define APPS_MASON2_METHYLATION_LEVELS_H_
 
 #include <seqan/index.h>  // for Shape<>
 #include <seqan/sequence.h>
@@ -290,4 +290,4 @@ void fixVariationLevels(MethylationLevels & levels,
                         seqan::String<std::pair<int, bool> > const & varPoints,
                         MethylationLevelSimulatorOptions const & options);
 
-#endif  // #ifndef EXTRAS_APPS_MASON2_METHYLATION_LEVELS_H_
+#endif  // #ifndef APPS_MASON2_METHYLATION_LEVELS_H_

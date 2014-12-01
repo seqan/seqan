@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/tests/consensus_v2/CMakeLists.txt
+# File: /tests/consensus_v2/CMakeLists.txt
 #
 # CMakeLists.txt file for the consensus module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_tests_consensus_v2)
-message (STATUS "Configuring extras/tests/consensus_v2")
+message (STATUS "Configuring tests/consensus_v2")
 
 # ----------------------------------------------------------------------------
 # Dependencies

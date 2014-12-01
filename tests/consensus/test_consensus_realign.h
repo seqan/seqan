@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_TESTS_CONSENSUS_TEST_CONSENSUS_REALIGN_H_
-#define CORE_TESTS_CONSENSUS_TEST_CONSENSUS_REALIGN_H_
+#ifndef TESTS_CONSENSUS_TEST_CONSENSUS_REALIGN_H_
+#define TESTS_CONSENSUS_TEST_CONSENSUS_REALIGN_H_
 
 #include <fstream>
 
@@ -49,7 +49,7 @@ SEQAN_DEFINE_TEST(test_consensus_realign_one_contig_small)
     // There are many superflous gaps in the SAM file that we will get rid of below.
     seqan::FragmentStore<> store;
     seqan::CharString samPath = SEQAN_PATH_TO_ROOT();
-    append(samPath, "/core/tests/consensus/small_example.sam");
+    append(samPath, "/tests/consensus/small_example.sam");
     seqan::BamFileIn fSamIn(toCString(samPath));
     readRecords(store, fSamIn);
 
@@ -93,4 +93,4 @@ SEQAN_DEFINE_TEST(test_consensus_realign_one_contig_small)
     // SEQAN_ASSERT_EQ(store.alignedReadStore[3].endPos, 146);
 }
 
-#endif  // #ifndef CORE_TESTS_CONSENSUS_TEST_CONSENSUS_REALIGN_H_
+#endif  // #ifndef TESTS_CONSENSUS_TEST_CONSENSUS_REALIGN_H_

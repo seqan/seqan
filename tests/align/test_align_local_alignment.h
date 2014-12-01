@@ -34,8 +34,8 @@
 // Tests for the local alignment algorithms, both unbanded and banded.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_LOCAL_ALIGNMENT_H_
-#define SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_LOCAL_ALIGNMENT_H_
+#ifndef SEQAN_TESTS_ALIGN_TEST_ALIGN_LOCAL_ALIGNMENT_H_
+#define SEQAN_TESTS_ALIGN_TEST_ALIGN_LOCAL_ALIGNMENT_H_
 
 #include <sstream>
 
@@ -698,4 +698,4 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_fragment)
     // TODO(holtgrew): Test after this is written.
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_LOCAL_ALIGNMENT_H_
+#endif  // #ifndef SEQAN_TESTS_ALIGN_TEST_ALIGN_LOCAL_ALIGNMENT_H_

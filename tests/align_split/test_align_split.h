@@ -34,8 +34,8 @@
 // Tests for the align_split module.
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_TESTS_ALIGN_SPLIT_TEST_ALIGN_SPLIT_H_
-#define SEQAN_EXTRAS_TESTS_ALIGN_SPLIT_TEST_ALIGN_SPLIT_H_
+#ifndef SEQAN_TESTS_ALIGN_SPLIT_TEST_ALIGN_SPLIT_H_
+#define SEQAN_TESTS_ALIGN_SPLIT_TEST_ALIGN_SPLIT_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -586,4 +586,4 @@ SEQAN_DEFINE_TEST(test_align_split_insertion_in_reference_gaps_banded)
     SEQAN_ASSERT_EQ(clippedEndPosition(gapsVR), 56);
 }
 
-#endif  // SEQAN_EXTRAS_TESTS_ALIGN_SPLIT_TEST_ALIGN_SPLIT_H_
+#endif  // SEQAN_TESTS_ALIGN_SPLIT_TEST_ALIGN_SPLIT_H_

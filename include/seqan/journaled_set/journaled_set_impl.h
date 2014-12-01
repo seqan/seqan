@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_IMPL_H_
-#define EXTRAS_INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_IMPL_H_
+#ifndef INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_IMPL_H_
+#define INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_IMPL_H_
 
 namespace seqan {
 
@@ -340,4 +340,4 @@ createHost(StringSet<TString, Owner<JournaledSet> > & journalSet,
 
 }  // namespace seqan
 
-#endif  // #ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_IMPL_H_
+#endif  // #ifndef INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_IMPL_H_

@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_INDEX_BASE_H_
-#define CORE_INCLUDE_SEQAN_BAM_IO_BAM_INDEX_BASE_H_
+#ifndef INCLUDE_SEQAN_BAM_IO_BAM_INDEX_BASE_H_
+#define INCLUDE_SEQAN_BAM_IO_BAM_INDEX_BASE_H_
 
 namespace seqan {
 
@@ -125,4 +125,4 @@ class BamIndex;
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_INDEX_BASE_H_
+#endif  // #ifndef INCLUDE_SEQAN_BAM_IO_BAM_INDEX_BASE_H_

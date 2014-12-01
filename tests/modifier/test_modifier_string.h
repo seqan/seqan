@@ -36,8 +36,8 @@
 
 // TODO(holtgrew): We need more systematic testing of modified string and iterator.
 
-#ifndef SEQAN_CORE_TESTS_MODIFIER_TEST_MODIFIER_STRING_H_
-#define SEQAN_CORE_TESTS_MODIFIER_TEST_MODIFIER_STRING_H_
+#ifndef SEQAN_TESTS_MODIFIER_TEST_MODIFIER_STRING_H_
+#define SEQAN_TESTS_MODIFIER_TEST_MODIFIER_STRING_H_
 
 #include <seqan/basic.h>
 #include <seqan/modifier.h>
@@ -438,4 +438,4 @@ SEQAN_DEFINE_TEST(test_modifier_minimal)
     // static_cast<typename seqan::Pointer_<TString>::Type *>(seqan::Nothing());
 }
 
-#endif // #ifndef SEQAN_CORE_TESTS_MODIFIER_TEST_MODIFIER_STRING_H_
+#endif // #ifndef SEQAN_TESTS_MODIFIER_TEST_MODIFIER_STRING_H_

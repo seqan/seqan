@@ -34,8 +34,8 @@
 // Facade header for module alignment_free.
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGNMENT_FREE_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGNMENT_FREE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_H_
 
 // ===========================================================================
 // Prerequisites.
@@ -60,4 +60,4 @@
 
 #include <seqan/alignment_free/alignment_free_comparison.h>
 
-#endif  // SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGNMENT_FREE_H_
+#endif  // SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_H_

@@ -1787,20 +1787,20 @@ SEQAN_BEGIN_TESTSUITE(test_find) {
     SEQAN_CALL_TEST(test_pattern_assign);
 
     // Verify checkpoints in all files in this module.
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/find/find_hamming_simple.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/find/find_myers_ukkonen.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/find/find_wild_shiftand.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/find/find_horspool.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/find/find_base.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/find/find_shiftand.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/find/find_shiftor.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/find/find_bndm.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/find/find_bom.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/find/find_ahocorasick.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/find/find_multiple_shiftand.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/find/find_set_horspool.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/find/find_wumanber.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/find/find_abndm.h");
-    SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/find/find_pex.h");
+    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_hamming_simple.h");
+    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_myers_ukkonen.h");
+    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_wild_shiftand.h");
+    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_horspool.h");
+    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_base.h");
+    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_shiftand.h");
+    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_shiftor.h");
+    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_bndm.h");
+    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_bom.h");
+    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_ahocorasick.h");
+    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_multiple_shiftand.h");
+    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_set_horspool.h");
+    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_wumanber.h");
+    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_abndm.h");
+    SEQAN_VERIFY_CHECKPOINTS("include/seqan/find/find_pex.h");
 }
 SEQAN_END_TESTSUITE

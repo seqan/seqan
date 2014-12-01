@@ -34,8 +34,8 @@
 // DPScout_ specialization for the split alignment implementation.
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGN_SPLIT_DP_SCOUT_SPLIT_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGN_SPLIT_DP_SCOUT_SPLIT_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_SPLIT_DP_SCOUT_SPLIT_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_SPLIT_DP_SCOUT_SPLIT_H_
 
 namespace seqan {
 
@@ -135,4 +135,4 @@ _scoutBestScore(DPScout_<TDPCell, SplitAlignmentScout> & dpScout,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGN_SPLIT_DP_SCOUT_SPLIT_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_SPLIT_DP_SCOUT_SPLIT_H_

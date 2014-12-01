@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/score/CMakeLists.txt
+# File: /tests/sCMakeLists.txt
 #
 # CMakeLists.txt file for the score module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_score)
-message (STATUS "Configuring core/tests/score")
+message (STATUS "Configuring tests/score")
 
 # ----------------------------------------------------------------------------
 # Dependencies

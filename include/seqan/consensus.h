@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_CONSENSUS_H_
-#define EXTRAS_INCLUDE_SEQAN_CONSENSUS_H_
+#ifndef INCLUDE_SEQAN_CONSENSUS_H_
+#define INCLUDE_SEQAN_CONSENSUS_H_
 
 // ==========================================================================
 // Dependencies
@@ -67,4 +67,4 @@
 #include <seqan/consensus/consensus_aligner.h>
 #include <seqan/consensus/consensus_aligner_interface.h>
 
-#endif  // #ifndef EXTRAS_INCLUDE_SEQAN_CONSENSUS_H_
+#endif  // #ifndef INCLUDE_SEQAN_CONSENSUS_H_

@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/apps/sak/CMakeLists.txt
+# File: /apps/sak/CMakeLists.txt
 #
 # CMakeLists.txt file for sak.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (core_apps_sak)
-message (STATUS "Configuring core/apps/sak")
+message (STATUS "Configuring apps/sak")
 
 # ----------------------------------------------------------------------------
 # Dependencies

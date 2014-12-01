@@ -44,7 +44,7 @@ Let us first setup the build system:
     $ mkdir SeqAn-Builds && cd SeqAn-Builds
     $ cmake ../SeqAn -DCMAKE_BUILD_TYPE=Release
 
-Now we can compile and execute our `CUDA hello world <http://github.com/seqan/seqan/tree/develop/core/demos/cuda/hello.cu>`_:
+Now we can compile and execute our `CUDA hello world <http://github.com/seqan/seqan/tree/develop/demos/cuda/hello.cu>`_:
 
 .. code-block:: console
 
@@ -66,7 +66,7 @@ Now we can compile and execute our `CUDA hello world <http://github.com/seqan/se
 MMap String
 ^^^^^^^^^^^
 
-Now let's try the `MMap String demo <http://github.com/seqan/seqan/tree/develop/core/demos/cuda/mmap.cu>`_.
+Now let's try the `MMap String demo <http://github.com/seqan/seqan/tree/develop/demos/cuda/mmap.cu>`_.
 This demo maps a text file in memory, copies it on the device and uses Thrust to count the number of occurrences of a given character into the file.
 
 .. code-block:: console
@@ -79,7 +79,7 @@ This demo maps a text file in memory, copies it on the device and uses Thrust to
 FM-index counting
 ^^^^^^^^^^^^^^^^^
 
-The `FM-index counting demo <http://github.com/seqan/seqan/tree/develop/core/demos/cuda/count.cu>`_ builds an FM-index over a static text.
+The `FM-index counting demo <http://github.com/seqan/seqan/tree/develop/demos/cuda/count.cu>`_ builds an FM-index over a static text.
 Given a set of patterns, the program counts - both on the host and on the device - the total number of occurrences of all patterns in the text.
 
 .. code-block:: console

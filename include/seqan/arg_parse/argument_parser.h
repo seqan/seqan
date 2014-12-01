@@ -30,8 +30,8 @@
 //
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_ARG_PARSE_ARGUMENT_PARSER_H_
-#define SEQAN_CORE_INCLUDE_ARG_PARSE_ARGUMENT_PARSER_H_
+#ifndef SEQAN_INCLUDE_ARG_PARSE_ARGUMENT_PARSER_H_
+#define SEQAN_INCLUDE_ARG_PARSE_ARGUMENT_PARSER_H_
 
 #include <seqan/map.h>
 #include <seqan/sequence.h>
@@ -1504,4 +1504,4 @@ getFileExtensions(T const formatTag)
 
 }  // namespace seqan
 
-#endif // SEQAN_CORE_INCLUDE_ARG_PARSE_ARGUMENT_PARSER_H_
+#endif // SEQAN_INCLUDE_ARG_PARSE_ARGUMENT_PARSER_H_

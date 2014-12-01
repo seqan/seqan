@@ -34,8 +34,8 @@
 // Unit tests for the journaled string set.
 // ==========================================================================
 
-#ifndef EXTRAS_TESTS_JOURNALED_SET_TEST_JOURNALED_SET_H_
-#define EXTRAS_TESTS_JOURNALED_SET_TEST_JOURNALED_SET_H_
+#ifndef TESTS_JOURNALED_SET_TEST_JOURNALED_SET_H_
+#define TESTS_JOURNALED_SET_TEST_JOURNALED_SET_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -407,4 +407,4 @@ SEQAN_DEFINE_TEST(test_journaled_set_iterator)
     SEQAN_ASSERT_EQ(&host(*it), &ref);
 }
 
-#endif  // EXTRAS_TESTS_JOURNALED_SET_TEST_JOURNALED_SET_H_
+#endif  // TESTS_JOURNALED_SET_TEST_JOURNALED_SET_H_

@@ -34,8 +34,8 @@
 // The class BamAlignmentRecord, flag checking methods, flag constants.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_RECORD_H_
-#define CORE_INCLUDE_SEQAN_BAM_IO_BAM_RECORD_H_
+#ifndef INCLUDE_SEQAN_BAM_IO_BAM_RECORD_H_
+#define INCLUDE_SEQAN_BAM_IO_BAM_RECORD_H_
 
 namespace seqan {
 
@@ -986,4 +986,4 @@ getAlignmentLengthInRef(BamAlignmentRecord const & record)
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_RECORD_H_
+#endif  // #ifndef INCLUDE_SEQAN_BAM_IO_BAM_RECORD_H_

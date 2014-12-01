@@ -37,8 +37,8 @@
 
 // TODO(holtgrew): Do we want to get rid of move() and HasMoveConstructor<>? Will get rrvalues in C++11 and for everything else, swap() would be better.
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_TRANSPORT_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_TRANSPORT_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_TRANSPORT_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_TRANSPORT_H_
 
 namespace seqan {
 
@@ -302,4 +302,4 @@ move(TTarget const & target,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_TRANSPORT_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_FUNDAMENTAL_TRANSPORT_H_

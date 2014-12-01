@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/pipe/CMakeLists.txt
+# File: /tests/pipe/CMakeLists.txt
 #
 # CMakeLists.txt file for the pipe module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_pipe)
-message (STATUS "Configuring core/tests/pipe")
+message (STATUS "Configuring tests/pipe")
 
 # ----------------------------------------------------------------------------
 # Dependencies

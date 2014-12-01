@@ -34,8 +34,8 @@
 // Approximate string matching via backtracking on two substring indices.
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_FIND_BACKTRACKING_MULTIPLE_H_
-#define SEQAN_EXTRAS_FIND_BACKTRACKING_MULTIPLE_H_
+#ifndef SEQAN_FIND_BACKTRACKING_MULTIPLE_H_
+#define SEQAN_FIND_BACKTRACKING_MULTIPLE_H_
 
 //#define SEQAN_DEBUG
 
@@ -1356,4 +1356,4 @@ _find(Finder_<Index<TText, TTextIndexSpec>, Index<TPattern, TPatternIndexSpec>, 
 
 }
 
-#endif  // #ifndef SEQAN_EXTRAS_FIND_BACKTRACKING_MULTIPLE_H_
+#endif  // #ifndef SEQAN_FIND_BACKTRACKING_MULTIPLE_H_

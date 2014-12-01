@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_BASE_H_
-#define EXTRAS_INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_BASE_H_
+#ifndef INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_BASE_H_
+#define INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_BASE_H_
 
 namespace seqan {
 
@@ -277,4 +277,4 @@ struct JoinConfig{};
 
 }  // namespace seqan
 
-#endif  // EXTRAS_INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_BASE_H_
+#endif  // INCLUDE_SEQAN_JOURNALED_SET_JOURNALED_SET_BASE_H_

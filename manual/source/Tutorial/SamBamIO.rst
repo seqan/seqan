@@ -102,7 +102,7 @@ Even more, if the sequence is not know yet (remember, the ``@SQ`` headers are op
 Here is a minimal example of setting up a name store, name store cache, and a :dox:`BamIOContext`.
 We will build upon this example below when showing how to read and write SAM and BAM files.
 
-.. includefrags:: extras/demos/tutorial/bam_io/example1.cpp
+.. includefrags:: demos/tutorial/bam_io/example1.cpp
 
 BGZF Files / Stream
 -------------------
@@ -118,11 +118,11 @@ This information can then be used together with indices.
 SeqAn provides the :dox:`BgzfStream BGZF Stream` class in the module ``<seqan/stream.h>`` to access such streams.
 Here is an example for using a :dox:`BgzfStream Stream` for reading:
 
-.. includefrags:: extras/demos/tutorial/bam_io/example2.cpp
+.. includefrags:: demos/tutorial/bam_io/example2.cpp
 
 Using a :dox:`BgzfStream BGZF Stream` for writing:
 
-.. includefrags:: extras/demos/tutorial/bam_io/example3.cpp
+.. includefrags:: demos/tutorial/bam_io/example3.cpp
 
 Assignment 1
 """"""""""""
@@ -143,7 +143,7 @@ Assignment 1
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/bam_io/solution1.cpp
+        .. includefrags:: demos/tutorial/bam_io/solution1.cpp
 
 Reading and Writing Headers
 ---------------------------
@@ -154,19 +154,19 @@ Instead, we will focus on how to read headers from SAM and BAM files.
 Here is a minimal example of reading and writing a header from and to a SAM file.
 The example contains the creation of a :dox:`BamIOContext`, the necessary :dox:`RecordReader` and full error handling.
 
-.. includefrags:: extras/demos/tutorial/bam_io/example4.cpp
+.. includefrags:: demos/tutorial/bam_io/example4.cpp
 
 Reading and writing headers from and to BAM files is simple.
 We simply replace ``seqan::Sam()`` by ``seqan::Bam()`` and use :dox:`BgzfStream BGZF Stream` objects instead of uncompressed streams.
 Also, we do not need a :dox:`RecordReader` any more.
 
-.. includefrags:: extras/demos/tutorial/bam_io/example5.cpp
+.. includefrags:: demos/tutorial/bam_io/example5.cpp
 
 Note that except for the types, the signatures of the functions ``readRecord()`` and ``write()`` are the same.
 Thus, we can make copying of the header a template function ``copyHeader()``.
 This function can now be used for both BAM and SAM.
 
-.. includefrags:: extras/demos/tutorial/bam_io/example6.cpp
+.. includefrags:: demos/tutorial/bam_io/example6.cpp
 
 Assignment 2
 """"""""""""
@@ -184,7 +184,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-         .. includefrags:: extras/demos/tutorial/bam_io/solution2.cpp
+         .. includefrags:: demos/tutorial/bam_io/solution2.cpp
 
 Reading and Writing Alignment Records
 -------------------------------------
@@ -253,7 +253,7 @@ Assignment 3
    Solution
       .. container:: foldable
 
-         .. includefrags:: extras/demos/tutorial/bam_io/solution3.cpp
+         .. includefrags:: demos/tutorial/bam_io/solution3.cpp
 
 Using Indices
 -------------
@@ -269,7 +269,7 @@ This means, you have to manually read as many records up until the one you are l
 The reason for this is that the function :dox:`BamIndex#jumpToRegion` would have to read until it finds the first record that is right from or at the given position.
 This would lead to this record being lost.
 
-.. includefrags:: extras/demos/tutorial/bam_io/example7.cpp
+.. includefrags:: demos/tutorial/bam_io/example7.cpp
 
 Next Steps
 ----------

@@ -35,8 +35,8 @@
 // Provides a platform independent access to memory mapping of files.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_FILE_MAPPING_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_FILE_MAPPING_H_
+#ifndef SEQAN_INCLUDE_SEQAN_FILE_MAPPING_H_
+#define SEQAN_INCLUDE_SEQAN_FILE_MAPPING_H_
 
 namespace seqan {
 
@@ -993,4 +993,4 @@ remapFileSegment(FileMapping<TSpec> &mapping, void *oldAddr, TPos oldFileOfs, TS
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_FILE_MAPPING_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_FILE_MAPPING_H_

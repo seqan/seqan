@@ -36,8 +36,8 @@
 
 // TODO(holtgrew): We need to adapt this to the new I/O scheme.
 
-#ifndef CORE_INCLUDE_SEQAN_SCORE_SCORE_MATRIX_IO_H_
-#define CORE_INCLUDE_SEQAN_SCORE_SCORE_MATRIX_IO_H_
+#ifndef INCLUDE_SEQAN_SCORE_SCORE_MATRIX_IO_H_
+#define INCLUDE_SEQAN_SCORE_SCORE_MATRIX_IO_H_
 
 #include <seqan/stream.h>
 
@@ -363,4 +363,4 @@ operator<<(TStream & target,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_SCORE_SCORE_MATRIX_IO_H_
+#endif  // #ifndef INCLUDE_SEQAN_SCORE_SCORE_MATRIX_IO_H_

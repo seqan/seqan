@@ -15,7 +15,7 @@ import sys
 import glob
 
 # Automagically add util/py_lib to PYTHONPATH environment variable.
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..',
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
                                     '..', '..', 'util', 'py_lib'))
 sys.path.insert(0, path)
 
@@ -39,7 +39,7 @@ def main(source_base, binary_base):
     
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
-        'core/apps/yara/tests')  # tests dir
+        'apps/yara/tests')  # tests dir
 
     # ============================================================
     # Auto-detect the binary path.

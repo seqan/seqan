@@ -42,8 +42,8 @@
 // TODO(holtgrew): Group all these metafunctions?
 // TODO(holtgrew): Make a comment on the C prefix and the auto-evaluation to TParam::Type in the group?
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_LOGIC_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_LOGIC_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_LOGIC_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_LOGIC_H_
 
 namespace seqan {
 
@@ -747,4 +747,4 @@ struct IfC<false, T1, T2>
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_LOGIC_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_LOGIC_H_

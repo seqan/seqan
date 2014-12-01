@@ -35,7 +35,7 @@ http://www.seqan.de). To build ALF from SVN do the following:
   3) cd build/Release
   4) cmake ../.. -DCMAKE_BUILD_TYPE=Release
   5) make alf
-  6) ./extras/apps/alf/alf --help
+  6) ./apps/alf/alf --help
 
 On success, an executable file alf was build and a brief usage description
 was dumped.
@@ -130,7 +130,7 @@ sequences from the input fasta file, for example:
 ---------------------------------------------------------------------------
 
 These examples use the fasta file "small.fasta" which can be found in
-seqan/extras/apps/alf/example/. Copy this file to the directory where you 
+seqan/apps/alf/example/. Copy this file to the directory where you 
 execute alf.
 
 (1) Run ALF with default settings on two sequences:

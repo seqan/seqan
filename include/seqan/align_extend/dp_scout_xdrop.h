@@ -34,8 +34,8 @@
 // This file contains routines to extend an existing Align object
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_SEQAN_ALIGN_DP_SCOUT_EXTEND_H_
-#define EXTRAS_INCLUDE_SEQAN_ALIGN_DP_SCOUT_EXTEND_H_
+#ifndef INCLUDE_SEQAN_ALIGN_DP_SCOUT_EXTEND_H_
+#define INCLUDE_SEQAN_ALIGN_DP_SCOUT_EXTEND_H_
 
 namespace seqan {
 
@@ -203,4 +203,4 @@ _computeCell(TDPScout & scout,
 
 }  // namespace seqan
 
-#endif  // #ifndef EXTRAS_INCLUDE_SEQAN_ALIGN_DP_SCOUT_EXTEND_H_
+#endif  // #ifndef INCLUDE_SEQAN_ALIGN_DP_SCOUT_EXTEND_H_

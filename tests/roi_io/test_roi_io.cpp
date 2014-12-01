@@ -91,7 +91,7 @@ SEQAN_DEFINE_TEST(test_roi_write_roi_record)
 SEQAN_DEFINE_TEST(test_roi_roi_file_read)
 {
     seqan::CharString inPath = SEQAN_PATH_TO_ROOT();
-    append(inPath, "/extras/tests/roi_io/example.roi");
+    append(inPath, "/tests/roi_io/example.roi");
 
     seqan::RoiFileIn roiFileIn(toCString(inPath));
 
@@ -163,7 +163,7 @@ SEQAN_DEFINE_TEST(test_roi_roi_file_write)
     close(roiFileOut);
 
     seqan::CharString goldPath(SEQAN_PATH_TO_ROOT());
-    append(goldPath, "/extras/tests/roi_io/example.roi");
+    append(goldPath, "/tests/roi_io/example.roi");
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(tmpPath), toCString(goldPath)));
 }
 

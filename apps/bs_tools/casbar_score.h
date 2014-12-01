@@ -1,5 +1,5 @@
-#ifndef CORE_APPS_BS_TOOLS_CASBAR_SCORE_H__
-#define CORE_APPS_BS_TOOLS_CASBAR_SCORE_H__
+#ifndef APPS_BS_TOOLS_CASBAR_SCORE_H__
+#define APPS_BS_TOOLS_CASBAR_SCORE_H__
 
 namespace seqan {
 

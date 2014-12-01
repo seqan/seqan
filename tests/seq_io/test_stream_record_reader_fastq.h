@@ -302,7 +302,7 @@ SEQAN_DEFINE_TEST(test_stream_record_reader_fastq_check_stream_format)
     using namespace seqan;
 
     CharString fileName = SEQAN_PATH_TO_ROOT();
-    append(fileName, "/core/tests/stream/files/lane_5_p1.fastq");
+    append(fileName, "/tests/stream/files/lane_5_p1.fastq");
     std::fstream inFile(toCString(fileName), std::ios::in | std::ios::binary);
 
     RecordReader<std::fstream, SinglePass<> > reader(inFile);

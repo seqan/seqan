@@ -35,8 +35,8 @@
 // assert macros double for test checks.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_DEBUG_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_DEBUG_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_DEBUG_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_BASIC_DEBUG_H_
 
 // --------------------------------------------------------------------------
 // Prerequisites
@@ -57,4 +57,4 @@
 // Code for profiling.
 #include <seqan/basic/profiling.h>
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_BASIC_DEBUG_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BASIC_DEBUG_H_

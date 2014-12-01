@@ -34,8 +34,8 @@
 // This file contains routines to extend an existing Align object
 // ==========================================================================
 
-#ifndef EXTRAS_INCLUDE_ALIGN_ALIGN_EXTEND_H
-#define EXTRAS_INCLUDE_ALIGN_ALIGN_EXTEND_H
+#ifndef INCLUDE_ALIGN_ALIGN_EXTEND_H
+#define INCLUDE_ALIGN_ALIGN_EXTEND_H
 
 namespace seqan {
 
@@ -619,4 +619,4 @@ extendAlignment(Align<TStringInfix, TAlignSpec> & align,
 
 }
 
-#endif  // EXTRAS_INCLUDE_ALIGN_ALIGN_EXTEND_H
+#endif  // INCLUDE_ALIGN_ALIGN_EXTEND_H

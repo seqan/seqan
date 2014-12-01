@@ -1,6 +1,6 @@
 ##fileformat=VCFv4.1
 ##source=mason_variator
-##reference=/home/takifugu/sabrina7/Development/seqan-git2/seqan/core/apps/bs_tools/tests/hg18_chr21_3000.fa
+##reference=/home/takifugu/sabrina7/Development/seqan-git2/seqan/apps/bs_tools/tests/hg18_chr21_3000.fa
 ##INFO=<ID=END,Number=1,Type=Integer,Description="End position of the variant described in this record">
 ##INFO=<ID=SVLEN,Number=.,Type=Integer,Description="Difference in length between REF and ALT alleles">
 ##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structural variant">

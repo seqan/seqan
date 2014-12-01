@@ -34,8 +34,8 @@
 // Split alignment implementation.
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGN_SPLIT_ALIGN_SPLIT_INTERFACE_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGN_SPLIT_ALIGN_SPLIT_INTERFACE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_SPLIT_ALIGN_SPLIT_INTERFACE_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_SPLIT_ALIGN_SPLIT_INTERFACE_H_
 
 #include "dp_scout_split.h"
 
@@ -643,4 +643,4 @@ int splitAlignment(Gaps<TSeqHL, TGapSpecHL> & gapsHL,
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGN_SPLIT_ALIGN_SPLIT_INTERFACE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_SPLIT_ALIGN_SPLIT_INTERFACE_H_

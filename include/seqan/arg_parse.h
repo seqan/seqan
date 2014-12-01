@@ -34,8 +34,8 @@
 // Facade header for module arg_parse.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ARG_PARSE_H_
+#define SEQAN_INCLUDE_SEQAN_ARG_PARSE_H_
 
 // ===========================================================================
 // Prerequisites.
@@ -71,4 +71,4 @@
 #include <seqan/arg_parse/arg_parse_parse.h>
 
 
-#endif  // SEQAN_CORE_INCLUDE_SEQAN_ARG_PARSE_H_
+#endif  // SEQAN_INCLUDE_SEQAN_ARG_PARSE_H_

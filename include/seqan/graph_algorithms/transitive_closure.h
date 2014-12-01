@@ -34,8 +34,8 @@
 // Implementation of Transitive-Closure algorithm.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_TRANSITIVE_CLOSURE_H_
-#define CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_TRANSITIVE_CLOSURE_H_
+#ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_TRANSITIVE_CLOSURE_H_
+#define INCLUDE_SEQAN_GRAPH_ALGORITHMS_TRANSITIVE_CLOSURE_H_
 
 namespace seqan {
 
@@ -104,4 +104,4 @@ void transitiveClosure(TMatrix & closure,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_TRANSITIVE_CLOSURE_H_
+#endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_TRANSITIVE_CLOSURE_H_

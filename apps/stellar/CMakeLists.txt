@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/apps/stellar/CMakeLists.txt
+# File: /apps/stellar/CMakeLists.txt
 #
 # CMakeLists.txt file for STELLAR.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (core_apps_stellar)
-message (STATUS "Configuring core/apps/stellar")
+message (STATUS "Configuring apps/stellar")
 
 # ----------------------------------------------------------------------------
 # Dependencies

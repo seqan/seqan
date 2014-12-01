@@ -6,7 +6,7 @@ using namespace seqan;
 int main()
 {
     CharString path = SEQAN_PATH_TO_ROOT();
-    append(path, "/extras/demos/vcf_io/example.vcf");
+    append(path, "/demos/vcf_io/example.vcf");
 
     VcfFileIn vcfIn;
     if (!open(vcfIn, toCString(path)))

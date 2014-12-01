@@ -34,8 +34,8 @@
 // Tests for arg_parse/arg_parse_ctd_support.h.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARG_PARSE_CTD_SUPPORT_H_
-#define SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARG_PARSE_CTD_SUPPORT_H_
+#ifndef SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_CTD_SUPPORT_H_
+#define SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_CTD_SUPPORT_H_
 
 #include <seqan/basic.h>
 
@@ -93,9 +93,9 @@ SEQAN_DEFINE_TEST(test_arg_parse_ctd_support)
 
     // compare ctd to expected
     seqan::CharString goldPath = SEQAN_PATH_TO_ROOT();
-    append(goldPath, "/core/tests/arg_parse/test_app.ctd");
+    append(goldPath, "/tests/arg_parse/test_app.ctd");
 
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPath), toCString(goldPath)));
 }
 
-#endif // SEQAN_CORE_TESTS_ARG_PARSE_TEST_ARG_PARSE_CTD_SUPPORT_H_
+#endif // SEQAN_TESTS_ARG_PARSE_TEST_ARG_PARSE_CTD_SUPPORT_H_

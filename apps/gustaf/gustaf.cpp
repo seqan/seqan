@@ -24,7 +24,7 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
-#include "../../../core/apps/stellar/stellar.h"
+#include "../../../apps/stellar/stellar.h"
 #include "msplazer_parse_options.h"
 #include "msplazer.h"
 #include "msplazer_main.h"

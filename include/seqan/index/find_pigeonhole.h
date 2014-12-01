@@ -39,8 +39,8 @@
 // ==========================================================================
 
 
-#ifndef CORE_INCLUDE_SEQAN_FIND_PIGEONHOLE_H_
-#define CORE_INCLUDE_SEQAN_FIND_PIGEONHOLE_H_
+#ifndef INCLUDE_SEQAN_FIND_PIGEONHOLE_H_
+#define INCLUDE_SEQAN_FIND_PIGEONHOLE_H_
 
 namespace seqan
 {
@@ -1314,5 +1314,5 @@ getMaxDeviationOfOrder(Pattern<TIndex, Pigeonhole<TSpec> > &pattern)
 
 }// namespace seqan
 
-#endif //#ifndef CORE_INCLUDE_SEQAN_FIND_PIGEONHOLE_H_
+#endif //#ifndef INCLUDE_SEQAN_FIND_PIGEONHOLE_H_
 

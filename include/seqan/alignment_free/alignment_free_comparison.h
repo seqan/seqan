@@ -36,8 +36,8 @@
 // alignmentFreeComparison()
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGNMENT_FREE_ALIGNMENT_FREE_COMPARISON_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGNMENT_FREE_ALIGNMENT_FREE_COMPARISON_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_ALIGNMENT_FREE_COMPARISON_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_ALIGNMENT_FREE_COMPARISON_H_
 
 namespace seqan {
 
@@ -153,4 +153,4 @@ void alignmentFreeComparison(Matrix<TValue, 2> & scoreMatrix, TStringSet const &
 
 }  // namespace seqan
 
-#endif  // SEQAN_EXTRAS_INCLUDE_SEQAN_ALIGNMENT_FREE_COMPARISON_H_
+#endif  // SEQAN_INCLUDE_SEQAN_ALIGNMENT_FREE_COMPARISON_H_

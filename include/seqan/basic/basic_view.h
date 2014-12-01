@@ -32,8 +32,8 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_BASIC_VIEW_H
-#define SEQAN_EXTRAS_BASIC_VIEW_H
+#ifndef SEQAN_BASIC_VIEW_H
+#define SEQAN_BASIC_VIEW_H
 
 namespace seqan {
 
@@ -187,4 +187,4 @@ view(TObject * object)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_BASIC_VIEW_H
+#endif  // #ifndef SEQAN_BASIC_VIEW_H

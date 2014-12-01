@@ -40,8 +40,8 @@
 
 // SEQAN_NO_GENERATED_FORWARDS
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_DEBUG_TEST_SYSTEM_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_DEBUG_TEST_SYSTEM_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_DEBUG_TEST_SYSTEM_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_DEBUG_TEST_SYSTEM_H_
 
 #include <iostream>  // stdout, stderr
 #include <iomanip>
@@ -745,12 +745,12 @@ struct StaticData
 
     static char const * _computePathToRoot()
     {
-        // Get path to core (this file resides in core/include/seqan/basic).
+        // Get path to include.
         const char * file = __FILE__;
         int pos = -1;
-        for (size_t i = 0; i < strlen(file) - strlen("core"); ++i)
+        for (size_t i = 0; i < strlen(file) - strlen("include"); ++i)
         {
-            if (strncmp(file + i, "core", strlen("core")) == 0)
+            if (strncmp(file + i, "include", strlen("include")) == 0)
             {
                 pos = i;
             }
@@ -3085,7 +3085,7 @@ void SEQAN_ASSERT_NOT_MSG(T1 const & _arg1, const char * comment, ...) {}
 /*!
  * @macro SEQAN_PATH_TO_ROOT
  * @headerfile <seqan/basic.h>
- * @brief Return path to the checkout root directory (i.e. containing core/extras).
+ * @brief Return path to the checkout root directory (i.e. containing extras).
  * 
  * @signature TCharPtr SEQAN_PATH_TO_ROOT()
  * 
@@ -3099,7 +3099,7 @@ void SEQAN_ASSERT_NOT_MSG(T1 const & _arg1, const char * comment, ...) {}
  * 
  * @code{.cpp}
  * CharString buffer = SEQAN_PATH_TO_ROOT();
- * append(buffer, "/core/tests/files/example.txt");
+ * append(buffer, "/tests/files/example.txt");
  *
  * FILE *f = fopen(toCString(buffer), "w");
  * fprintf(f, "Test Data");
@@ -3113,7 +3113,7 @@ void SEQAN_ASSERT_NOT_MSG(T1 const & _arg1, const char * comment, ...) {}
 /**
 .Macro.SEQAN_PATH_TO_ROOT
 ..cat:Testing & Debugging
-..summary:Return path to the checkout root directory (i.e. containing core/extras).
+..summary:Return path to the checkout root directory (i.e. containing extras).
 ..description.note:This only works when using the SeqAn SVN checkout!
 ..returns:$char const *$, string with the path to the parent directory of the tests directory.
 ..signature:SEQAN_PATH_TO_ROOT()
@@ -3193,7 +3193,7 @@ fclose(f);
 ..signature:SEQAN_VERIFY_CHECKPOINTS(path)
 ..param.path:Path to the file to verify check points for. Relative to parent directory of tests.
 ..example.code:
-SEQAN_VERIFY_CHECKPOINTS("core/include/seqan/basic_alphabet.h");
+SEQAN_VERIFY_CHECKPOINTS("include/seqan/basic_alphabet.h");
 ..see:Macro.SEQAN_CHECKPOINT
 
 .Macro.SEQAN_CHECKPOINT
@@ -3248,4 +3248,4 @@ SEQAN_CHECKPOINT;
 
 }  // namespace seqan
 
-#endif  // SEQAN_CORE_INCLUDE_SEQAN_BASIC_DEBUG_TEST_SYSTEM_H_
+#endif  // SEQAN_INCLUDE_SEQAN_BASIC_DEBUG_TEST_SYSTEM_H_

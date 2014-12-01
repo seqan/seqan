@@ -35,8 +35,8 @@
 // independently from the algorithms.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGNMENT_ALGORITHM_TAGS_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGNMENT_ALGORITHM_TAGS_H_
+#ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGNMENT_ALGORITHM_TAGS_H_
+#define SEQAN_INCLUDE_SEQAN_ALIGN_ALIGNMENT_ALGORITHM_TAGS_H_
 
 namespace seqan {
 
@@ -189,4 +189,4 @@ typedef Tag<WatermanEggert_> WatermanEggert;
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_ALIGN_ALIGNMENT_ALGORITHM_TAGS_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_ALIGN_ALIGNMENT_ALGORITHM_TAGS_H_

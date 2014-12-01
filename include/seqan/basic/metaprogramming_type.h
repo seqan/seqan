@@ -38,8 +38,8 @@
 // and modifying it, such as querying for const-ness.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_TYPE_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_TYPE_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_TYPE_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_TYPE_H_
 
 namespace seqan {
 
@@ -463,4 +463,4 @@ struct ClassIdentifier_
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_TYPE_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_METAPROGRAMMING_TYPE_H_

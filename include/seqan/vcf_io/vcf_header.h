@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_VCF_HEADER_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_VCF_HEADER_H_
+#ifndef SEQAN_INCLUDE_SEQAN_VCF_VCF_HEADER_H_
+#define SEQAN_INCLUDE_SEQAN_VCF_VCF_HEADER_H_
 
 namespace seqan {
 
@@ -135,4 +135,4 @@ typedef String<VcfHeaderRecord> VcfHeader;
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_VCF_HEADER_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_VCF_VCF_HEADER_H_

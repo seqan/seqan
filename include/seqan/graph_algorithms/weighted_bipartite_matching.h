@@ -36,8 +36,8 @@
 // WARNING: Functionality not carefully tested!
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_WEIGHTED_BIPARTITE_MATCHING_H_
-#define CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_WEIGHTED_BIPARTITE_MATCHING_H_
+#ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_WEIGHTED_BIPARTITE_MATCHING_H_
+#define INCLUDE_SEQAN_GRAPH_ALGORITHMS_WEIGHTED_BIPARTITE_MATCHING_H_
 
 namespace seqan {
 
@@ -320,4 +320,4 @@ weightedBipartiteMatching(String<TEdges> & edges,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_GRAPH_ALGORITHMS_WEIGHTED_BIPARTITE_MATCHING_H_
+#endif  // #ifndef INCLUDE_SEQAN_GRAPH_ALGORITHMS_WEIGHTED_BIPARTITE_MATCHING_H_

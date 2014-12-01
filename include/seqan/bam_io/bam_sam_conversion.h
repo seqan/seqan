@@ -35,8 +35,8 @@
 // Code to convert between SAM and BAM format tags (textual <-> binary).
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_SAM_CONVERSION_H_
-#define CORE_INCLUDE_SEQAN_BAM_IO_BAM_SAM_CONVERSION_H_
+#ifndef INCLUDE_SEQAN_BAM_IO_BAM_SAM_CONVERSION_H_
+#define INCLUDE_SEQAN_BAM_IO_BAM_SAM_CONVERSION_H_
 
 namespace seqan {
 
@@ -393,4 +393,4 @@ void assignTagsBamToSam(TTarget & target, TSource const & source)
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BAM_IO_BAM_SAM_CONVERSION_H_
+#endif  // #ifndef INCLUDE_SEQAN_BAM_IO_BAM_SAM_CONVERSION_H_

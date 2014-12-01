@@ -32,8 +32,8 @@
 // Author: Rene Rahn <rene.rahn@fu-berlin.de>
 // ==========================================================================
 
-#ifndef CORE_TESTS_CONSENSUS_TEST_CONSENSUS_H_
-#define CORE_TESTS_CONSENSUS_TEST_CONSENSUS_H_
+#ifndef TESTS_CONSENSUS_TEST_CONSENSUS_H_
+#define TESTS_CONSENSUS_TEST_CONSENSUS_H_
 
 #include <seqan/basic.h>
 #include <seqan/stream.h>
@@ -251,7 +251,7 @@ SEQAN_DEFINE_TEST(test_consensus_write_celera_cgb)
 {
     // Get path to input files.
     seqan::CharString inPathSam = SEQAN_PATH_TO_ROOT();
-    append(inPathSam, "/core/tests/consensus/toy.sam");
+    append(inPathSam, "/tests/consensus/toy.sam");
     // Get path to temporary file.
     seqan::CharString outPathCgb = SEQAN_TEMP_FILENAME();
 
@@ -267,7 +267,7 @@ SEQAN_DEFINE_TEST(test_consensus_write_celera_cgb)
 
     // Compare result.
     seqan::CharString goldPathCgb = SEQAN_PATH_TO_ROOT();
-    append(goldPathCgb, "/core/tests/consensus/sam_to_cgb_result.cgb");
+    append(goldPathCgb, "/tests/consensus/sam_to_cgb_result.cgb");
     SEQAN_ASSERT(seqan::_compareTextFilesAlt(toCString(outPathCgb), toCString(goldPathCgb)));
 }
 
@@ -275,7 +275,7 @@ SEQAN_DEFINE_TEST(test_consensus_write_celera_frg)
 {
     // Get path to input files.
     seqan::CharString inPathSam = SEQAN_PATH_TO_ROOT();
-    append(inPathSam, "/core/tests/consensus/toy.sam");
+    append(inPathSam, "/tests/consensus/toy.sam");
     // Get path to temporary file.
     seqan::CharString outPathFrg = SEQAN_TEMP_FILENAME();
 
@@ -291,7 +291,7 @@ SEQAN_DEFINE_TEST(test_consensus_write_celera_frg)
 
     // Compare result.
     seqan::CharString goldPathFrg = SEQAN_PATH_TO_ROOT();
-    append(goldPathFrg, "/core/tests/consensus/sam_to_frg_result.frg");
+    append(goldPathFrg, "/tests/consensus/sam_to_frg_result.frg");
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathFrg), toCString(goldPathFrg)));
 }
 
@@ -299,9 +299,9 @@ SEQAN_DEFINE_TEST(test_consensus_write_fasta_read_format)
 {
     // Get path to input files.
     seqan::CharString inPathSam = SEQAN_PATH_TO_ROOT();
-    append(inPathSam, "/core/tests/consensus/toy.sam");
+    append(inPathSam, "/tests/consensus/toy.sam");
     seqan::CharString inPathFasta = SEQAN_PATH_TO_ROOT();
-    append(inPathFasta, "/core/tests/consensus/toy.fa");
+    append(inPathFasta, "/tests/consensus/toy.fa");
     // Get path to temporary file.
     seqan::CharString outPathFasta = SEQAN_TEMP_FILENAME();
 
@@ -318,7 +318,7 @@ SEQAN_DEFINE_TEST(test_consensus_write_fasta_read_format)
 
     // Compare result.
     seqan::CharString goldPathFasta = SEQAN_PATH_TO_ROOT();
-    append(goldPathFasta, "/core/tests/consensus/sam_to_fasta_read_result.fa");
+    append(goldPathFasta, "/tests/consensus/sam_to_fasta_read_result.fa");
     SEQAN_ASSERT(seqan::_compareTextFiles(toCString(outPathFasta), toCString(goldPathFasta)));
 }
 
@@ -326,7 +326,7 @@ SEQAN_DEFINE_TEST(test_consensus_convert_simple_read_file)
 {
     // Get path to input files.
     seqan::CharString inPathFasta = SEQAN_PATH_TO_ROOT();
-    append(inPathFasta, "/core/tests/consensus/simulated_reads.fasta");
+    append(inPathFasta, "/tests/consensus/simulated_reads.fasta");
     std::string filePath(toCString(inPathFasta));
     // Get path to temporary file.
     std::string outPathSam = (std::string)SEQAN_TEMP_FILENAME() + ".sam";
@@ -344,8 +344,8 @@ SEQAN_DEFINE_TEST(test_consensus_convert_simple_read_file)
 
     // Compare result.
     seqan::CharString goldPathSam = SEQAN_PATH_TO_ROOT();
-    append(goldPathSam, "/core/tests/consensus/reads_to_sam_read_result.sam");
+    append(goldPathSam, "/tests/consensus/reads_to_sam_read_result.sam");
     SEQAN_ASSERT(seqan::_compareTextFiles(outPathSam.c_str(), toCString(goldPathSam)));
 }
 
-#endif  // #ifndef CORE_TESTS_CONSENSUS_TEST_CONSENSUS_H_
+#endif  // #ifndef TESTS_CONSENSUS_TEST_CONSENSUS_H_

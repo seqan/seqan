@@ -35,8 +35,8 @@
 // module.
 // ==========================================================================
 
-#ifndef CORE_TESTS_SEQUENCE_TEST_STRINGSET_H_
-#define CORE_TESTS_SEQUENCE_TEST_STRINGSET_H_
+#ifndef TESTS_SEQUENCE_TEST_STRINGSET_H_
+#define TESTS_SEQUENCE_TEST_STRINGSET_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -2123,4 +2123,4 @@ SEQAN_TYPED_TEST(StringSetTestCommon, ValueById)
     
     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
-#endif // CORE_TESTS_SEQUENCE_TEST_STRINGSET_H_
+#endif // TESTS_SEQUENCE_TEST_STRINGSET_H_

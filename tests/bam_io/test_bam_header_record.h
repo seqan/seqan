@@ -34,8 +34,8 @@
 // Basic tests for the BamHeader and BamHeaderRecord classes.
 // ==========================================================================
 
-#ifndef CORE_TESTS_BAM_IO_TEST_BAM_HEADER_RECORD_H_
-#define CORE_TESTS_BAM_IO_TEST_BAM_HEADER_RECORD_H_
+#ifndef TESTS_BAM_IO_TEST_BAM_HEADER_RECORD_H_
+#define TESTS_BAM_IO_TEST_BAM_HEADER_RECORD_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -129,4 +129,4 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_header_record_get_tag_value)
     SEQAN_ASSERT_EQ(res, CharString("aa"));
 }
 
-#endif  // CORE_TESTS_BAM_IO_TEST_BAM_HEADER_RECORD_H_
+#endif  // TESTS_BAM_IO_TEST_BAM_HEADER_RECORD_H_

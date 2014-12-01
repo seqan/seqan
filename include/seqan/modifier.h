@@ -32,8 +32,8 @@
 // Umbrella header for the modifier module.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_MODIFIER_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_MODIFIER_H_
+#ifndef SEQAN_INCLUDE_SEQAN_MODIFIER_H_
+#define SEQAN_INCLUDE_SEQAN_MODIFIER_H_
 
 // --------------------------------------------------------------------------
 // Prerequisites
@@ -77,4 +77,4 @@
 #include <seqan/modifier/modifier_shortcuts.h>
 #include <seqan/modifier/modifier_cyclic_shape.h>
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_MODIFIER_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_MODIFIER_H_

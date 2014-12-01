@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/apps/micro_razers/CMakeLists.txt
+# File: /apps/micro_razers/CMakeLists.txt
 #
 # CMakeLists.txt file for MicroRazerS.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (core_apps_micro_razers)
-message (STATUS "Configuring core/apps/micro_razers")
+message (STATUS "Configuring apps/micro_razers")
 
 # ----------------------------------------------------------------------------
 # Dependencies

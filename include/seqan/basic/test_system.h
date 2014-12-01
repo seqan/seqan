@@ -41,8 +41,8 @@
 // TODO(holtgrew): Add DDDoc documentation.
 // TODO(holtgrew): Port all tests over to new system?
 
-#ifndef CORE_INCLUDE_SEQAN_BASIC_TEST_SYSTEM_H_
-#define CORE_INCLUDE_SEQAN_BASIC_TEST_SYSTEM_H_
+#ifndef INCLUDE_SEQAN_BASIC_TEST_SYSTEM_H_
+#define INCLUDE_SEQAN_BASIC_TEST_SYSTEM_H_
 
 #ifdef PLATFORM_WINDOWS
 #include <typeinfo>
@@ -411,4 +411,4 @@ public:
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BASIC_TEST_SYSTEM_H_
+#endif  // #ifndef INCLUDE_SEQAN_BASIC_TEST_SYSTEM_H_

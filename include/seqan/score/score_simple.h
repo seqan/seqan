@@ -34,8 +34,8 @@
 // Code for the Simple Scoring Schema.
 // ==========================================================================
 
-#ifndef SEQAN_SCORE_SCORE_SIMPLE_H_
-#define SEQAN_SCORE_SCORE_SIMPLE_H_
+#ifndef SEQAN_SSCORE_SIMPLE_H_
+#define SEQAN_SSCORE_SIMPLE_H_
 
 namespace seqan {
 
@@ -485,4 +485,4 @@ as they require character positions and sequences and allow for position-depende
 
 }  // namespace SEQAN_NAMESPACE_MAIN
 
-#endif  // SEQAN_SCORE_SCORE_SIMPLE_H_
+#endif  // SEQAN_SSCORE_SIMPLE_H_

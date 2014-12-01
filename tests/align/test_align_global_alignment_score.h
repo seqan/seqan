@@ -34,8 +34,8 @@
 // Tests for the various variants of globalAlignmentScore().
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GLOBAL_ALIGNMENT_SCORE_H_
-#define SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GLOBAL_ALIGNMENT_SCORE_H_
+#ifndef SEQAN_TESTS_ALIGN_TEST_ALIGN_GLOBAL_ALIGNMENT_SCORE_H_
+#define SEQAN_TESTS_ALIGN_TEST_ALIGN_GLOBAL_ALIGNMENT_SCORE_H_
 
 #include <sstream>
 
@@ -279,4 +279,4 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_score_myers_hirschberg)
     SEQAN_ASSERT_EQ(res, -8);
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_ALIGN_TEST_ALIGN_GLOBAL_ALIGNMENT_SCORE_H_
+#endif  // #ifndef SEQAN_TESTS_ALIGN_TEST_ALIGN_GLOBAL_ALIGNMENT_SCORE_H_

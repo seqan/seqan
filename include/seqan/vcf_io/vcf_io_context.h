@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_IO_VCF_IO_CONTEXT_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_IO_VCF_IO_CONTEXT_H_
+#ifndef SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_IO_CONTEXT_H_
+#define SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_IO_CONTEXT_H_
 
 namespace seqan {
 
@@ -212,4 +212,4 @@ sampleNamesCache(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & conte
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_IO_VCF_IO_CONTEXT_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_VCF_IO_VCF_IO_CONTEXT_H_

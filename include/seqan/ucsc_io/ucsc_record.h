@@ -33,8 +33,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_UCSC_RECORD_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_UCSC_RECORD_H_
+#ifndef SEQAN_INCLUDE_SEQAN_UCSC_RECORD_H_
+#define SEQAN_INCLUDE_SEQAN_UCSC_RECORD_H_
 
 namespace seqan {
 
@@ -170,4 +170,4 @@ inline void clear(UcscRecord & record)
 
 }  // namespace seqan
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BAM_IO_BAM_RECORD_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BAM_IO_BAM_RECORD_H_

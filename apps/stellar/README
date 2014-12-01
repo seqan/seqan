@@ -54,7 +54,7 @@ with:
   2)  cd seqan/build/
   3)  cmake .. -DCMAKE_BUILD_TYPE=Release
   4)  make stellar
-  5)  ./core/apps/stellar/stellar
+  5)  ./apps/stellar/stellar
 
 On success, an executable file stellar was build and a brief usage 
 description was dumped.

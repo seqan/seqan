@@ -36,8 +36,8 @@
 
 // TODO(holtgrew): Allow simulation of Ns into genome.
 
-#ifndef EXTRAS_APPS_MASON2_SIMULATE_GENOME_H_
-#define EXTRAS_APPS_MASON2_SIMULATE_GENOME_H_
+#ifndef APPS_MASON2_SIMULATE_GENOME_H_
+#define APPS_MASON2_SIMULATE_GENOME_H_
 
 #include <sstream>
 
@@ -82,4 +82,4 @@ int simulateGenome(seqan::SeqFileOut & stream, MasonSimulateGenomeOptions const 
 
 int simulateGenome(char const * filename, MasonSimulateGenomeOptions const & options);
 
-#endif  // #ifndef EXTRAS_APPS_MASON2_SIMULATE_GENOME_H_
+#endif  // #ifndef APPS_MASON2_SIMULATE_GENOME_H_

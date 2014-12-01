@@ -34,8 +34,8 @@
 // Helpers for basic_fundamental tests.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_HELPERS_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_HELPERS_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_HELPERS_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_HELPERS_H_
 
 // Helper metafunction to test for type equality.
 template <typename T1, typename T2>
@@ -50,4 +50,4 @@ struct SameType_<T, T>
     enum { VALUE = 1 };
 };
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_HELPERS_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_FUNDAMENTAL_HELPERS_H_

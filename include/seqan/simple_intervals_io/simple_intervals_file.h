@@ -34,8 +34,8 @@
 // SmartFile for .intervals format
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_SIMPLE_INTERVALS_IO_SIMPLE_INTERVALS_FILE_H_
-#define CORE_INCLUDE_SEQAN_SIMPLE_INTERVALS_IO_SIMPLE_INTERVALS_FILE_H_
+#ifndef INCLUDE_SEQAN_SIMPLE_INTERVALS_IO_SIMPLE_INTERVALS_FILE_H_
+#define INCLUDE_SEQAN_SIMPLE_INTERVALS_IO_SIMPLE_INTERVALS_FILE_H_
 
 #include <seqan/simple_intervals_io/simple_intervals_io.h>
 
@@ -173,4 +173,4 @@ void writeRecord(SmartFile<SimpleIntervals, Output, TSpec> & file, GenomicRegion
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_SIMPLE_INTERVALS_IO_SIMPLE_INTERVALS_FILE_H_
+#endif  // #ifndef INCLUDE_SEQAN_SIMPLE_INTERVALS_IO_SIMPLE_INTERVALS_FILE_H_

@@ -32,8 +32,8 @@
 // Umbrella header for the basic module.
 // ==========================================================================
 
-#ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_H_
-#define SEQAN_CORE_INCLUDE_SEQAN_BASIC_H_
+#ifndef SEQAN_INCLUDE_SEQAN_BASIC_H_
+#define SEQAN_INCLUDE_SEQAN_BASIC_H_
 
 // --------------------------------------------------------------------------
 // Prerequisites
@@ -109,4 +109,4 @@
 // Basic SIMD vector (not included by default on purpose)
 //#include <seqan/basic/basic_simd_vector.h>
 
-#endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_H_
+#endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_H_

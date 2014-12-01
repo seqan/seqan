@@ -15,7 +15,7 @@ import subprocess
 import sys
 
 # Automagically add util/py_lib to PYTHONPATH environment variable.
-path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..',
+path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
                                     '..', '..', 'util', 'py_lib'))
 sys.path.insert(0, path)
 
@@ -61,18 +61,18 @@ def main(source_base, binary_base):
 
     ph = app_tests.TestPathHelper(
         source_base, binary_base,
-        'core/apps/fiona/tests')  # tests dir
+        'apps/fiona/tests')  # tests dir
 
     # ============================================================
     # Auto-detect the binary path.
     # ============================================================
 
     path_to_fiona = app_tests.autolocateBinary(
-      binary_base, 'core/apps/fiona', 'fiona')
+      binary_base, 'apps/fiona', 'fiona')
     path_to_fiona_illumina = app_tests.autolocateBinary(
-      binary_base, 'core/apps/fiona', 'fiona_illumina')
+      binary_base, 'apps/fiona', 'fiona_illumina')
     path_to_compute_gain = app_tests.autolocateBinary(
-      binary_base, 'core/apps/fiona', 'compute_gain')
+      binary_base, 'apps/fiona', 'compute_gain')
 
     # ============================================================
     # Built TestConf list.
@@ -89,7 +89,7 @@ def main(source_base, binary_base):
     transforms = [
         app_tests.ReplaceTransform(
             os.path.join(ph.source_base_path,
-                         'core/apps/fiona/tests') + os.sep,
+                         'apps/fiona/tests') + os.sep,
             '', right=True),
         app_tests.ReplaceTransform(ph.temp_dir + os.sep, '', right=True),
         app_tests.NormalizeScientificExponentsTransform(),

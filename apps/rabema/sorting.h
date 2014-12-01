@@ -47,8 +47,8 @@
    SOFTWARE.
 */
 
-#ifndef SEQAN_CORE_APPS_RABEMA_SORTING_H_
-#define SEQAN_CORE_APPS_RABEMA_SORTING_H_
+#ifndef SEQAN_APPS_RABEMA_SORTING_H_
+#define SEQAN_APPS_RABEMA_SORTING_H_
 
 #include <seqan/sequence.h>
 
@@ -82,4 +82,4 @@ inline bool lessThanSamtoolsQueryName(seqan::CharString const & lhs,
     return strnum_cmp(toCString(lhs), toCString(rhs)) < 0;
 }
 
-#endif  // #ifndef SEQAN_CORE_APPS_RABEMA_SORTING_H_
+#endif  // #ifndef SEQAN_APPS_RABEMA_SORTING_H_

@@ -32,8 +32,8 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_EXCEPTION_H_
-#define SEQAN_CORE_TESTS_BASIC_TEST_BASIC_EXCEPTION_H_
+#ifndef SEQAN_TESTS_BASIC_TEST_BASIC_EXCEPTION_H_
+#define SEQAN_TESTS_BASIC_TEST_BASIC_EXCEPTION_H_
 
 using namespace seqan;
 
@@ -79,4 +79,4 @@ SEQAN_DEFINE_TEST(test_basic_exception_runtime_error)
     SEQAN_ASSERT_MSG(false, "RuntimeError Exception has not been caught!");
 }
 
-#endif  // #ifndef SEQAN_CORE_TESTS_BASIC_TEST_BASIC_EXCEPTION_H_
+#endif  // #ifndef SEQAN_TESTS_BASIC_TEST_BASIC_EXCEPTION_H_

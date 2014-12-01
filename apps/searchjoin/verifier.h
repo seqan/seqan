@@ -34,8 +34,8 @@
 // This file contains the Verifier class.
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_APPS_SEARCHJOIN_VERIFIER_H_
-#define SEQAN_EXTRAS_APPS_SEARCHJOIN_VERIFIER_H_
+#ifndef SEQAN_APPS_SEARCHJOIN_VERIFIER_H_
+#define SEQAN_APPS_SEARCHJOIN_VERIFIER_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -144,4 +144,4 @@ _verify(Verifier<TText, TSpec> & verifier,
     return true;
 }
 
-#endif  // #ifndef SEQAN_EXTRAS_APPS_SEARCHJOIN_VERIFIER_H_
+#endif  // #ifndef SEQAN_APPS_SEARCHJOIN_VERIFIER_H_

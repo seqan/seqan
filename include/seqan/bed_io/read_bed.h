@@ -34,8 +34,8 @@
 // Reading of BED from files.
 // ==========================================================================
 
-#ifndef CORE_INCLUDE_SEQAN_BED_IO_READ_BED_H_
-#define CORE_INCLUDE_SEQAN_BED_IO_READ_BED_H_
+#ifndef INCLUDE_SEQAN_BED_IO_READ_BED_H_
+#define INCLUDE_SEQAN_BED_IO_READ_BED_H_
 
 #include <seqan/stream.h>
 
@@ -319,4 +319,4 @@ readRecord(BedRecord<TSpec> & record,
 
 }  // namespace seqan
 
-#endif  // #ifndef CORE_INCLUDE_SEQAN_BED_IO_READ_BED_H_
+#endif  // #ifndef INCLUDE_SEQAN_BED_IO_READ_BED_H_

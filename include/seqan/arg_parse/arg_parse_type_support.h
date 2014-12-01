@@ -34,8 +34,8 @@
 
 // TODO(aiche): check if parts of the functionality could be merged with lexicalCast in stream module
 
-#ifndef SEQAN_CORE_INCLUDE_ARG_PARSE_ARG_PARSE_TYPE_SUPPRT_H_
-#define SEQAN_CORE_INCLUDE_ARG_PARSE_ARG_PARSE_TYPE_SUPPRT_H_
+#ifndef SEQAN_INCLUDE_ARG_PARSE_ARG_PARSE_TYPE_SUPPRT_H_
+#define SEQAN_INCLUDE_ARG_PARSE_ARG_PARSE_TYPE_SUPPRT_H_
 
 #include <sstream>
 #include <string>
@@ -187,4 +187,4 @@ inline bool _convertArgumentValue(TObject & dst, ArgParseArgument const & opt, s
 
 } // namespace seqan
 
-#endif // SEQAN_CORE_INCLUDE_ARG_PARSE_ARG_PARSE_TYPE_SUPPRT_H_
+#endif // SEQAN_INCLUDE_ARG_PARSE_ARG_PARSE_TYPE_SUPPRT_H_

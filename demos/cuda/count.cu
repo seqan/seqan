@@ -32,8 +32,8 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_DEMOS_CUDA_COUNT_H
-#define SEQAN_EXTRAS_DEMOS_CUDA_COUNT_H
+#ifndef SEQAN_DEMOS_CUDA_COUNT_H
+#define SEQAN_DEMOS_CUDA_COUNT_H
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -141,4 +141,4 @@ int main(int argc, char const ** argv)
     return 0;
 }
 
-#endif  // SEQAN_EXTRAS_DEMOS_CUDA_COUNT_H
+#endif  // SEQAN_DEMOS_CUDA_COUNT_H

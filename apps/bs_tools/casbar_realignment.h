@@ -1,5 +1,5 @@
-#ifndef __CORE_APPS_BS_TOOLS_CASBAR_REALIGNMENT_H__
-#define __CORE_APPS_BS_TOOLS_CASBAR_REALIGNMENT_H__
+#ifndef __APPS_BS_TOOLS_CASBAR_REALIGNMENT_H__
+#define __APPS_BS_TOOLS_CASBAR_REALIGNMENT_H__
 
 #include "bisar_score_data.h"
 #include "casbar_score_data.h"

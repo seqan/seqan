@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /core/tests/seq_io/CMakeLists.txt
+# File: /tests/seq_io/CMakeLists.txt
 #
 # CMakeLists.txt file for the seq_io module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_core_tests_seq_io)
-message (STATUS "Configuring core/tests/seq_io")
+message (STATUS "Configuring tests/seq_io")
 
 # ----------------------------------------------------------------------------
 # Dependencies

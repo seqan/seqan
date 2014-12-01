@@ -1,14 +1,14 @@
 # ===========================================================================
 #                  SeqAn - The Library for Sequence Analysis
 # ===========================================================================
-# File: /extras/tests/journaled_set/CMakeLists.txt
+# File: /tests/journaled_set/CMakeLists.txt
 #
 # CMakeLists.txt file for the journaled_set module tests.
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_tests_journaled_set)
-message (STATUS "Configuring extras/tests/journaled_set")
+message (STATUS "Configuring tests/journaled_set")
 
 # ----------------------------------------------------------------------------
 # Dependencies

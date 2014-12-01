@@ -34,8 +34,8 @@
 // Facade header for module vcf_io.
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_IO_H_
-#define SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_IO_H_
+#ifndef SEQAN_INCLUDE_SEQAN_VCF_IO_H_
+#define SEQAN_INCLUDE_SEQAN_VCF_IO_H_
 
 // ===========================================================================
 // Prerequisites.
@@ -61,4 +61,4 @@
 
 #include <seqan/vcf_io/vcf_file.h>
 
-#endif  // SEQAN_EXTRAS_INCLUDE_SEQAN_VCF_IO_H_
+#endif  // SEQAN_INCLUDE_SEQAN_VCF_IO_H_
