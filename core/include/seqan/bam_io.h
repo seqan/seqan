@@ -74,6 +74,7 @@
 // ===========================================================================
 
 #include <seqan/bam_io/bam_alignment_record_util.h>
+#include <seqan/bam_io/bam_scanner_cache.h>
 
 // ===========================================================================
 // Easy BAM / SAM I/O.
