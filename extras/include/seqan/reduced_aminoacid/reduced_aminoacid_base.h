@@ -112,13 +112,6 @@ struct CompareType<SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >,
     typedef SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> > Type;
 };
 
-template <typename TRedSpec>
-struct CompareType<SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >,
-                   Unicode>
-{
-    typedef SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> > Type;
-};
-
 // -----------------------------------------------------------------------
 // Translation Tables (implementations see extra files)
 // -----------------------------------------------------------------------

@@ -103,13 +103,5 @@ inline void assign(SimpleType<unsigned char,
     target.value = TranslateTableAAToRedAA_<TRedSpec>::VALUE[c_source.value];
 }
 
-template <typename TRedSpec>
-inline void assign(SimpleType<unsigned char,
-                   ReducedAminoAcid_<TRedSpec> > & target,
-                   Unicode c_source)
-{
-    target.value = TranslateTableCharToRedAA_<TRedSpec>::VALUE[(unsigned char) c_source];
-}
-
 }
 #endif // def SEQAN_EXTRAS_REDUCED_AMINOACID_BASE_LATE_H_
