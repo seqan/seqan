@@ -279,6 +279,8 @@ endif ()
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt pthread)
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
+  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} pthread)
 endif ()
 
 # libexecinfo -- implicit
