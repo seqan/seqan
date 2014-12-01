@@ -109,9 +109,6 @@ class IdManager
  * @signature Value<TIdManager>::Type;
  */
 
-///.Metafunction.Value.param.T.type:Class.IdManager
-///.Metafunction.Value.class:Class.IdManager
-
 template<typename TIdType, typename TSpec> 
 struct Value<IdManager<TIdType, TSpec> > 
 {
@@ -132,9 +129,6 @@ struct Value<IdManager<TIdType, TSpec> const>
  *
  * @signature Spec<TIdManager>::Type;
  */
-
-///.Metafunction.Spec.param.T.type:Class.IdManager
-///.Metafunction.Spec.class:Class.IdManager
 
 template<typename TIdType, typename TSpec> 
 struct Spec<IdManager<TIdType, TSpec> > 
@@ -387,9 +381,6 @@ class IdManager<void, TSpec>
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.Value.param.T.type:Class.IdManager
-///.Metafunction.Value.class:Class.IdManager
 
 template<typename TSpec> 
 struct Value<IdManager<void, TSpec> > {

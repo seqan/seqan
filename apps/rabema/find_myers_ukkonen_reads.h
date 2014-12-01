@@ -46,8 +46,6 @@
 
 namespace seqan {
 
-///.Class.Pattern.param.TSpec.type:Spec.MyersUkkonenReads
-
 struct MyersUkkonenReads_;
 typedef Tag<MyersUkkonenReads_> MyersUkkonenReads;
 

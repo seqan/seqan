@@ -376,7 +376,6 @@ struct PackedHostValue_
 // Metafunction Host
 // --------------------------------------------------------------------------
 
-///.Metafunction.Host.param.T.type:Spec.Packed String
 template <typename TValue, typename THostspec>
 struct Host<String<TValue, Packed<THostspec> > >
 {
@@ -515,9 +514,6 @@ swap(String<TValue, Packed<THostspec> > & a,
 // --------------------------------------------------------------------------
 // Function host
 // --------------------------------------------------------------------------
-
-///.Function.host.param.object.type:Spec.Packed String
-///.Function.host.class:Spec.Packed String
 
 template <typename TValue, typename THostspec>
 inline typename Host<String<TValue, Packed<THostspec> > >::Type &
@@ -1308,8 +1304,6 @@ _clearSpace(String<TValue, Packed<THostspec> > & me,
 // --------------------------------------------------------------------------
 // Function reserve()
 // --------------------------------------------------------------------------
-
-///.Function.reserve.param.object.type:Spec.Packed String
 
 template <typename TValue, typename TSpec, typename TSize_, typename TExpand>
 inline typename Size< String<TValue, Packed<TSpec> > >::Type

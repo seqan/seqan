@@ -106,9 +106,6 @@ class Graph;
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Spec.param.T.type:Class.Graph
-///.Metafunction.Spec.class:Class.Graph
-
 template<typename TSpec>
 struct Spec<Graph<TSpec> > 
 {
@@ -125,9 +122,6 @@ struct Spec<Graph<TSpec> const>
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.EdgeDescriptor.param.T.type:Class.Graph
-///.Metafunction.EdgeDescriptor.class:Class.Graph
-
 template<typename TSpec>
 struct EdgeDescriptor<Graph<TSpec> > 
 {
@@ -141,9 +135,6 @@ struct EdgeDescriptor<Graph<TSpec> const>
 };
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.VertexDescriptor.param.T.type:Class.Graph
-///.Metafunction.VertexDescriptor.class:Class.Graph
 
 template<typename TSpec>
 struct VertexDescriptor<Graph<TSpec> > 
@@ -159,9 +150,6 @@ struct VertexDescriptor<Graph<TSpec> const>
 
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.EdgeType.param.T.type:Class.Graph
-///.Metafunction.EdgeType.class:Class.Graph
 
 template<typename TCargo, typename TSpec>
 struct EdgeType<Graph<Directed<TCargo, TSpec> > > {
@@ -277,9 +265,6 @@ struct EdgeType<Graph<Hmm<TAlphabet, TCargo, TSpec> > > {
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Cargo.param.T.type:Class.Graph
-///.Metafunction.Cargo.class:Class.Graph
-
 template<typename TSpec>
 struct Cargo<Graph<TSpec> > {
 	typedef typename Cargo<typename EdgeType<Graph<TSpec> >::Type>::Type Type;
@@ -294,9 +279,6 @@ struct Cargo<Graph<TSpec> const> {
 
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.EdgeIdHandler.param.T.type:Class.Graph
-///.Metafunction.EdgeIdHandler.class:Class.Graph
 
 template<typename TSpec>
 struct EdgeIdHandler<Graph<TSpec> const> {
@@ -314,9 +296,6 @@ struct EdgeIdHandler<Graph<TSpec> > {
 
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.Alphabet.param.T.type:Class.Graph
-///.Metafunction.Alphabet.class:Class.Graph
 
 template<typename TAlphabet, typename TCargo, typename TSpec>
 struct Alphabet<Graph<Automaton<TAlphabet, TCargo, TSpec> > > {

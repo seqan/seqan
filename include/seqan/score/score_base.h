@@ -78,7 +78,6 @@ class Score;
  * @return Type The score value type of the scoring scheme.
  */
 
-///.Metafunction.Value.param.T.type:Class.Score
 template <typename TValue, typename TSpec>
 struct Value<Score<TValue, TSpec> > {
     typedef TValue Type;

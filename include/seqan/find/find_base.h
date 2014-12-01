@@ -262,11 +262,6 @@ struct Needle<Segment<THost, TSpec> const>
  * Demo: Demo.Index Finder
  */
 
-///.Function.clear.param.object.type:Class.Finder
-///.Function.clear.class:Class.Finder
-///.Function.position.param.iterator.type:Class.Finder
-///.Function.position.class:Class.Finder
-
 template < typename THaystack, typename TSpec = typename DefaultFinder<THaystack>::Type >
 class Finder
 {
@@ -419,9 +414,6 @@ _setFinderLength(Finder<THaystack, TSpec> & me,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-///.Function.beginPosition.param.object.type:Class.Finder
-///.Function.beginPosition.class:Class.Finder
-
 /*!
  * @fn Finder#beginPosition
  * @brief Return begin position of match.
@@ -450,9 +442,6 @@ SEQAN_CHECKPOINT
 }
 
 //////////////////////////////////////////////////////////////////////////////
-///.Function.begin.param.object.type:Class.Finder
-///.Function.begin.class:Class.Finder
-
 /*!
  * @fn Finder#begin
  * @brief Return begin iterator of the match in the haystack.
@@ -485,9 +474,6 @@ SEQAN_CHECKPOINT
 }
 
 //////////////////////////////////////////////////////////////////////////////
-///.Function.endPosition.param.object.type:Class.Finder
-///.Function.endPosition.class:Class.Finder
-
 /*!
  * @fn Finder#endPosition
  * @brief Return end position of match.
@@ -516,9 +502,6 @@ SEQAN_CHECKPOINT
 }
 
 //////////////////////////////////////////////////////////////////////////////
-///.Function.end.param.object.type:Class.Finder
-///.Function.end.class:Class.Finder
-
 /*!
  * @fn Finder#end
  * @brief Return end iterator of the match in the haystack.
@@ -551,9 +534,6 @@ SEQAN_CHECKPOINT
 }
 
 //////////////////////////////////////////////////////////////////////////////
-///.Function.length.param.object.type:Class.Finder
-///.Function.length.class:Class.Finder
-
 /*!
  * @fn Finder#length
  * @brief Return the length of the match.
@@ -972,8 +952,6 @@ haystack(TObject const &obj) {
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Container.param.T.type:Class.Finder
-///.Metafunction.Container.class:Class.Finder
 template <typename THaystack, typename TSpec>
 struct Container< Finder<THaystack, TSpec> > {
 	typedef THaystack Type;
@@ -985,8 +963,6 @@ struct Container< Finder<THaystack, TSpec> const> {
 };
 
 
-///.Metafunction.Host.param.T.type:Class.Finder
-///.Metafunction.Host.class:Class.Finder
 template <typename THaystack, typename TSpec>
 struct Host< Finder<THaystack, TSpec> > {
 	typedef THaystack Type;
@@ -998,15 +974,11 @@ struct Host< Finder<THaystack, TSpec> const> {
 };
 
 
-///.Metafunction.Value.param.T.type:Class.Finder
-///.Metafunction.Value.class:Class.Finder
 template <typename THaystack, typename TSpec>
 struct Value< Finder<THaystack, TSpec> > {
 	typedef typename Value<THaystack>::Type Type;
 };
 
-///.Metafunction.Reference.param.T.type:Class.Finder
-///.Metafunction.Reference.class:Class.Finder
 template <typename THaystack, typename TSpec>
 struct Reference< Finder<THaystack, TSpec> >
 {
@@ -1020,15 +992,11 @@ struct Reference< Finder<THaystack, TSpec> const>
 };
 
 
-///.Metafunction.Position.param.T.type:Class.Finder
-///.Metafunction.Position.class:Class.Finder
 template <typename THaystack, typename TSpec>
 struct Position< Finder<THaystack, TSpec> >:
 	Position<THaystack> {};
 
 
-///.Metafunction.Difference.param.T.type:Class.Finder
-///.Metafunction.Difference.class:Class.Finder
 template <typename THaystack, typename TSpec>
 struct Difference< Finder<THaystack, TSpec> > {
 	typedef typename Difference<THaystack>::Type Type;
@@ -1040,8 +1008,6 @@ struct Size< Finder<THaystack, TSpec> > {
 };
 
 
-///.Metafunction.Iterator.param.T.type:Class.Finder
-///.Metafunction.Iterator.class:Class.Finder
 template <typename THaystack, typename TSpec, typename TIteratorSpec>
 struct Iterator< Finder<THaystack, TSpec>, TIteratorSpec >
 {

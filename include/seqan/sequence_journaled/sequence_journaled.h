@@ -239,8 +239,6 @@ struct InsertionBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffer
 // Metafunction Size
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Size.param.T.type:Spec.Journaled String
-///.Metafunction.Size.class:Spec.Journaled String
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 struct Size<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >
 {
@@ -255,8 +253,6 @@ struct Size<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > con
 // Metafunction Position
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Position.param.T.type:Spec.Journaled String
-///.Metafunction.Position.class:Spec.Journaled String
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 struct Position<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >
 {
@@ -271,8 +267,6 @@ struct Position<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >
 // Metafunction Reference
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Reference.param.T.type:Spec.Journaled String
-///.Metafunction.Reference.class:Spec.Journaled String
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 struct Reference<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >
 {
@@ -295,8 +289,6 @@ struct Reference<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> 
 // Metafunction GetValue
 // ----------------------------------------------------------------------------
 
-///.Metafunction.GetValue.param.T.type:Spec.Journaled String
-///.Metafunction.GetValue.class:Spec.Journaled String
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 struct GetValue<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >
 {
@@ -314,8 +306,6 @@ struct GetValue<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Does Value have to be overwritten? Is not for packed strings!
-///.Metafunction.Value.param.T.type:Spec.Journaled String
-///.Metafunction.Value.class:Spec.Journaled String
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 struct Value<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >
 {

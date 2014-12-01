@@ -188,7 +188,6 @@ public:
 struct StorePointsOnly {};
 
 
-///..tag.StoreIntervals:The tree nodes store intervals.
 struct StoreIntervals {};
 
 /*!
@@ -595,8 +594,6 @@ getCargo(IntervalAndCargo<TValue, TCargo> const & interval)
  * @signature Value<TIntervalAndCargo>::Type;
  */
 
-///.Metafunction.Value.param.T.type:Class.IntervalAndCargo
-///.Metafunction.Value.class:Class.IntervalAndCargo
 template <typename TValue, typename TCargo>
 struct Value<IntervalAndCargo<TValue, TCargo> >
 {
@@ -610,8 +607,6 @@ struct Value<IntervalAndCargo<TValue, TCargo> >
  * @signature Cargo<TIntervalAndCargo>::Type;
  */
 
-///.Metafunction.Cargo.param.T.type:Class.IntervalAndCargo
-///.Metafunction.Cargo.class:Class.IntervalAndCargo
 template <typename TValue, typename TCargo>
 struct Cargo<IntervalAndCargo<TValue, TCargo> >
 {
@@ -751,8 +746,6 @@ getCargo(PointAndCargo<TValue, TCargo> const & point)
  * @signature Value<TPointAndCargo>::Type;
  */
 
-///.Metafunction.Value.param.T.type:Class.PointAndCargo
-///.Metafunction.Value.class:Class.PointAndCargo
 template <typename TValue, typename TCargo>
 struct Value<PointAndCargo<TValue, TCargo> >
 {
@@ -766,8 +759,6 @@ struct Value<PointAndCargo<TValue, TCargo> >
  * @signature Cargo<TPointAndCargo>::Type;
  */
 
-///.Metafunction.Cargo.param.T.type:Class.PointAndCargo
-///.Metafunction.Cargo.class:Class.PointAndCargo
 template <typename TValue, typename TCargo>
 struct Cargo<PointAndCargo<TValue, TCargo> >
 {
@@ -844,8 +835,6 @@ _appendIntervalTreeNodeLists(IntervalTreeNode<TInterval, StorePointsOnly> & knot
  * @signature Value<TNode>::Type;
  */
 
-///.Metafunction.Value.param.T.type:Class.IntervalTreeNode
-///.Metafunction.Value.class:Class.IntervalTreeNode
 template <typename TInterval, typename TSpec>
 struct Value<IntervalTreeNode<TInterval, TSpec> >
 {
@@ -859,8 +848,6 @@ struct Value<IntervalTreeNode<TInterval, TSpec> >
  * @signature Cargo<TNode>::Type;
  */
 
-///.Metafunction.Cargo.param.T.type:Class.IntervalTreeNode
-///.Metafunction.Cargo.class:Class.IntervalTreeNode
 template <typename TInterval, typename TSpec>
 struct Cargo<IntervalTreeNode<TInterval, TSpec> >
 {
@@ -879,8 +866,6 @@ template <typename T>
 struct ListType;
 
 
-///.Metafunction.ListType.param.T.type:Class.IntervalTreeNode
-///.Metafunction.ListType.class:Class.IntervalTreeNode
 template <typename TInterval>
 struct ListType<IntervalTreeNode<TInterval, StorePointsOnly> >
 {
@@ -889,8 +874,6 @@ struct ListType<IntervalTreeNode<TInterval, StorePointsOnly> >
 };
 
 
-///.Metafunction.ListType.param.T.type:Class.IntervalTreeNode
-///.Metafunction.ListType.class:Class.IntervalTreeNode
 template <typename TInterval>
 struct ListType<IntervalTreeNode<TInterval, StoreIntervals> >
 {
@@ -1942,7 +1925,6 @@ removeInterval(
 
 /////////////////// Metafunctions ///////////////////////
 
-///.Metafunction.Value.param.T.type:Class.IntervalTree
 template <typename TValue, typename TCargo>
 struct Value<IntervalTree<TValue, TCargo> >
 {
@@ -1950,7 +1932,6 @@ struct Value<IntervalTree<TValue, TCargo> >
 };
 
 
-///.Metafunction.Cargo.param.T.type:Class.IntervalTree
 template <typename TValue, typename TCargo>
 struct Cargo<IntervalTree<TValue, TCargo> >
 {

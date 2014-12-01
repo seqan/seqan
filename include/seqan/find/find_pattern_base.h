@@ -121,8 +121,6 @@ struct Container< Pattern<TNeedle, TSpec> const > {
  * @return Type The host type.
  */
 
-///.Metafunction.Host.param.T.type:Class.Pattern
-///.Metafunction.Host.class:Class.Pattern
 template <typename TNeedle, typename TSpec>
 struct Host< Pattern<TNeedle, TSpec> > {
 	typedef TNeedle Type;
@@ -330,9 +328,6 @@ segment(Pattern<TNeedle, TSpec> const & me)
  * @return THost Reference to the host.
  */
 
-///.Function.host.param.object.type:Class.Pattern
-///.Function.host.class:Class.Pattern
-
 template <typename TNeedle, typename TSpec>
 inline typename Host<Pattern<TNeedle, TSpec> >::Type & 
 host(Pattern<TNeedle, TSpec> & me)
@@ -365,8 +360,6 @@ SEQAN_CHECKPOINT
  * TNeedle is the result of the Needle metafunction of TPattern.  This is an alias to the function @link Pattern#host @endlink.
  */
 
-///.Function.host.remarks:Aliased to @Function.needle@ and @Function.haystack@ for classes @Class.Pattern@ and @Class.Finder@.
-
 
 template < typename TObject >
 inline typename Needle<TObject>::Type &
@@ -393,9 +386,6 @@ needle(TObject const &obj)
  *
  * @return TPosition The position of the last match in the pattern.
  */
-
-///.Function.position.param.iterator.type:Class.Pattern
-///.Function.position.class:Class.Pattern
 
 template < typename TNeedle, typename TSpec >
 inline typename Needle< Pattern<TNeedle, TSpec> >::Type &

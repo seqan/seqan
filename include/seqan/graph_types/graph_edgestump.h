@@ -329,9 +329,6 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Cargo.param.T.type:Class.EdgeStump
-///.Metafunction.Cargo.class:Class.EdgeStump
-
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec>
 struct Cargo<EdgeStump<TCargo, TList, TSource, TId, TSpec> > {
 	typedef TCargo Type;
@@ -355,9 +352,6 @@ struct Cargo<EdgeStump<void, TList, TSource, TId, TSpec> const> {
 
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.Spec.param.T.type:Class.EdgeStump
-///.Metafunction.Spec.class:Class.EdgeStump
 
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec>
 struct Spec<EdgeStump<TCargo, TList, TSource, TId, TSpec> > 

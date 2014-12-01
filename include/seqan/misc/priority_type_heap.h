@@ -102,8 +102,6 @@ SEQAN_CHECKPOINT
  */
 
 // Empty the priority queue
-///.Function.clear.param.object.type:Class.PriorityType
-///.Function.clear.class:Class.PriorityType
 template <typename TValue, typename TLess>
 inline void 
 clear (PriorityType<TValue,TLess, PriorityHeap> & me)
@@ -123,8 +121,6 @@ clear (PriorityType<TValue,TLess, PriorityHeap> & me)
  * @return bool <tt>true</tt> if <tt>pq</tt> queue is empty.
  */
 
-///.Function.empty.param.object.type:Class.PriorityType
-///.Function.empty.class:Class.PriorityType
 template <typename TValue, typename TLess>
 inline bool 
 empty(PriorityType<TValue, TLess, PriorityHeap> const & me) 
@@ -145,8 +141,6 @@ SEQAN_CHECKPOINT
  */
  
 // Number of elements in the priority queue
-///.Function.length.param.object.type:Class.PriorityType
-///.Function.length.class:Class.PriorityType
 template <typename TValue, typename TLess>
 inline typename Size<PriorityType<TValue, TLess, PriorityHeap> >::Type
 length( PriorityType<TValue, TLess, PriorityHeap> const & me)
@@ -348,16 +342,12 @@ SEQAN_CHECKPOINT
 
 	//MetaFunctions
 
-///.Metafunction.Size.param.T.type:Class.PriorityType
-///.Metafunction.Size.class:Class.PriorityType
 template < typename TValue, typename TLess>
 struct Size<PriorityType<TValue, TLess, PriorityHeap> >
 {
 	typedef typename Size<typename PriorityType<TValue, TLess, PriorityHeap>::THeap>::Type Type;
 };
 
-///.metafunction.value.param.t.type:class.prioritytype
-///.metafunction.value.class:class.prioritytype
 template < typename TValue, typename TLess>
 struct Value<PriorityType<TValue, TLess, PriorityHeap> >
 {

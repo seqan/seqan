@@ -166,7 +166,6 @@ public:
  * 
  * @return TIterator An iterator to the first item in <tt>object</tt>. Metafunctions: Metafunction.Iterator
  */
-///.Function.begin.param.object.type:Class.RightArrayBinaryTree
 template <typename TChar, typename TSpec, typename TIterSpec>
 inline typename Iterator<RightArrayBinaryTree<TChar, TSpec> const, TIterSpec>::Type
 begin(RightArrayBinaryTree<TChar, TSpec> const & waveletTreeStructure, TIterSpec const &)
@@ -194,7 +193,6 @@ begin(RightArrayBinaryTree<TChar, TSpec> & waveletTreeStructure, TIterSpec const
  * 
  * @return TContainer The container that <tt>iterator</tt> traverses.
  */
-///.Function.container.param.iterator.type:Class.RightArrayBinaryTree
 template <typename TTree, typename TIterSpec>
 inline TTree &
 container(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & it)
@@ -224,7 +222,6 @@ container(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const 
  * 
  * @return TIterator An iterator to the first item in <tt>object</tt>.  Metafunctions: Metafunction.Iterator
  */
-///.Function.end.param.object.type:Class.RightArrayBinaryTree
 template <typename TChar, typename TSpec, typename TIterSpec>
 inline typename Iterator<RightArrayBinaryTree<TChar, TSpec> const, TIterSpec>::Type
 end(RightArrayBinaryTree<TChar, TSpec> const & waveletTreeStructure, TIterSpec const &)
@@ -392,7 +389,6 @@ inline void _historyPush(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<Parent
  * 
  * @return bool <tt>true</tt> if an edge to go down exists, otherwise <tt>false</tt>.
  */
-///.Function.goDown.param.iterator.type:Spec.RightArrayBinaryTree Iterator
 template <typename TTree, typename TIterSpec>
 inline bool goDown(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & iter)
 {

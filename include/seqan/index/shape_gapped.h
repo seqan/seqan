@@ -617,9 +617,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 //____________________________________________________________________________
-///.Function.stringToShape.param.shape.type:Spec.GenericShape
-///.Function.stringToShape.class:Spec.GenericShape
-
 	template <typename TValue, typename TSpec, typename TShapeString>
 	inline bool
 	stringToShape(
@@ -695,9 +692,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 //____________________________________________________________________________
-///.Function.reverse.param.object.type:Spec.GenericShape
-///.Function.reverse.class:Spec.GenericShape
-
 	template <typename TValue, typename TSpec>
 	inline void
 	reverse(Shape<TValue, GappedShape<TSpec> > &me)

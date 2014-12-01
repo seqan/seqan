@@ -79,8 +79,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @endcode
  */
 
-///.Class.Pattern.param.TSpec.type:Spec.AhoCorasick
-
 struct AhoCorasick_;
 typedef Tag<AhoCorasick_> AhoCorasick;
 

@@ -281,9 +281,6 @@ public:
  * Clears all strings and resets it to default initialization state.
  */
 
-///.Function.clear.param.object.type:Class.BamAlignmentRecord
-///.Function.clear.class:Class.BamAlignmentRecord
-
 inline void
 clear(BamAlignmentRecord & record)
 {

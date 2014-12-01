@@ -62,8 +62,6 @@ struct DPSearch {};
  * contains the right-most column of the dynamic programming matrix.
  */
 
-///.Class.Pattern.param.TSpec.type:Class.Score
-
 
 template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec>
 class Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> >:

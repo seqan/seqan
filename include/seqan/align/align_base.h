@@ -127,8 +127,6 @@ public:
  * @return Type   The resulting column type.
  */
 
-///.Metafunction.Cols.param.T.type:Class.Align
-
 template <typename TSource, typename TSpec>
 struct Cols<Align<TSource, TSpec> >
 {
@@ -156,8 +154,6 @@ struct Cols<Align<TSource, TSpec> const>
  * @return Type   The resulting value type.
  */
 
-///.Metafunction.Value.param.T.type:Class.Align
-
 template <typename TSource, typename TSpec>
 struct Value<Align<TSource, TSpec> >:
     Value<Gaps<TSource, TSpec> >
@@ -182,8 +178,6 @@ struct Value<Align<TSource, TSpec> const>:
  * @return Type   The resulting get-value type.
  */
 
-///.Metafunction.GetValue.param.T.type:Class.Align
-
 template <typename TSource, typename TSpec>
 struct GetValue<Align<TSource, TSpec> >:
     GetValue<Gaps<TSource, TSpec> >
@@ -207,8 +201,6 @@ struct GetValue<Align<TSource, TSpec> const>:
  *
  * @return Type   The resulting reference type.
  */
-
-///.Metafunction.Reference.param.T.type:Class.Align
 
 template <typename TSource, typename TSpec>
 struct Reference<Align<TSource, TSpec> >:
@@ -245,8 +237,6 @@ struct Reference<Align<TSource, TSpec> const>:
  * @return Type   The resulting rows type.
  */
 
-///.Metafunction.Rows.param.T.type:Class.Align
-
 template <typename TSource, typename TSpec>
 struct Rows<Align<TSource, TSpec> >
 {
@@ -272,8 +262,6 @@ struct Rows<Align<TSource, TSpec> const>
  *
  * @return Type   The resulting sequence type.
  */
-
-///.Metafunction.Source.param.T.type:Class.Align
 
 template <typename TSource, typename TSpec>
 struct Source<Align<TSource, TSpec> >
@@ -452,8 +440,6 @@ col(Align<TSource, TSpec> const & me,
 // ----------------------------------------------------------------------------
 // Function detach()
 // ----------------------------------------------------------------------------
-
-///.Function.detach.param.object.type:Class.Align
 
 template <typename TSource, typename TSpec>
 inline void

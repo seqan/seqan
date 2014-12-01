@@ -1058,9 +1058,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @param[in,out] pool Pool to clear.
  */
-///.Function.clear.param.object.type:Class.Pool
-///.Function.clear.class:Class.Pool
-
     template < typename TValue, typename TSpec >
     inline void clear(Pool<TValue, TSpec> &me)
     {
@@ -1087,9 +1084,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return    TSize The number of elements in the pool.
  */
 
-///.Function.length.param.object.type:Class.Pool
-///.Function.length.class:Class.Pool
-
 	template < typename TValue, typename TSpec >
     inline typename Size< Pool<TValue, TSpec> >::Type
     length(Pool<TValue, TSpec> const &me)
@@ -1106,9 +1100,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in,out] pool Pool to resize.
  * @param[in]     len  Length to resize <tt>pool</tt> to.
  */
-
-///.Function.resize.param.object.type:Class.Pool
-///.Function.resize.class:Class.Pool
 
 	template < typename TValue, typename TSpec, typename TSize >
     inline TSize resize(Pool<TValue, TSpec> &me, TSize new_length)
@@ -1127,9 +1118,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @return TReference A reference to the first element of <tt>seq</tt>.
  */
-
-///.Function.Pipe#front.param.object.type:Class.Pool
-///.Function.Pipe#front.class:Class.Pool
 
     template < typename TValue, typename TSpec >
 	inline typename Value< Pool<TValue, TSpec> >::Type const & front(Pool<TValue, TSpec> &me) {
@@ -1150,9 +1138,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * Pool#front or Pool#pop can only be called within a read process surrounded by beginRead and endRead.
  */
-///.Function.pop.param.object.type:Class.Pool
-///.Function.pop.class:Class.Pool
-
     template < typename TValue, typename TSpec >
     inline void pop(Pool<TValue, TSpec> &me) {
         me.pop();
@@ -1277,8 +1262,6 @@ SEQAN_CHECKPOINT
 		    return me.endWrite();
         }
 
-///.Function.atEnd.param.iterator.type:Class.Pool
-///.Function.atEnd.class:Class.Pool
 /*!
  * @fn Pool#atEnd
  * @brief Check whether the @link Pool @endlink object is at end.
@@ -1379,9 +1362,6 @@ SEQAN_CHECKPOINT
  *
  * Assign value of source to target.
  */
-///.Function.assign.param.target.type:Class.Pool
-///.Function.assign.class:Class.Pool
-
     template < typename TValue,
                typename TSpec,
                typename TSource >
@@ -1399,9 +1379,6 @@ SEQAN_CHECKPOINT
     }
 
 
-
-///.Function.assign.param.source.type:Class.Pool
-///.Function.assign.class:Class.Pool
 
     // pool -> string
     template < typename TValue1,

@@ -40,8 +40,6 @@ namespace SEQAN_NAMESPACE_MAIN
 // Pmsp
 //////////////////////////////////////////////////////////////////////////////
 
-///.Class.MotifFinder.param.TSpec.type:Spec.Pmsp
-
 struct Pmsp_;
 typedef Tag<Pmsp_> const Pmsp;
 

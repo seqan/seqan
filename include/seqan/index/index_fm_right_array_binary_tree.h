@@ -66,8 +66,6 @@ class RightArrayBinaryTree;
  * @brief The string encoding the wavelet tree structure.
  */
 
-///.Metafunction.Fibre.param.TContainer.type:Class.RightArrayBinaryTree
-///.Metafunction.Fibre.param.TSpec.type:Tag.RightArrayBinaryTree Fibres
 struct FibreTreeStructureEncoding_;
 typedef Tag<FibreTreeStructureEncoding_> const FibreTreeStructureEncoding;
 

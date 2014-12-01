@@ -688,8 +688,6 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
 
-///.Function.length.param.object.type:Spec.MaxRepeats Iterator
-///.Function.length.class:Spec.MaxRepeats Iterator
 	template < typename TSTree, typename TSpec >
 	inline typename Size<TSTree>::Type 
 	length(Iter< TSTree, VSTree< BottomUp<MaxRepeats_<TSpec> > > > const &it) {
@@ -697,8 +695,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 //____________________________________________________________________________
 
-///.Function.begin.param.object.type:Spec.MaxRepeats Iterator
-///.Function.begin.class:Spec.MaxRepeats Iterator
 	template < typename TSTree, class TSpec >
 	inline typename Iterator< Iter< TSTree, VSTree< BottomUp<MaxRepeats_<TSpec> > > > >::Type
 	begin(Iter< TSTree, VSTree< BottomUp<MaxRepeats_<TSpec> > > > &it) 
@@ -708,8 +704,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 //____________________________________________________________________________
 
-///.Function.end.param.object.type:Spec.MaxRepeats Iterator
-///.Function.end.class:Spec.MaxRepeats Iterator
 	template < typename TSTree, class TSpec >
 	inline typename Iterator< Iter< TSTree, VSTree< BottomUp<MaxRepeats_<TSpec> > > > >::Type
 	end(Iter< TSTree, VSTree< BottomUp<MaxRepeats_<TSpec> > > > &it) 

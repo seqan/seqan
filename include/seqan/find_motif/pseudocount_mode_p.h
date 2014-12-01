@@ -40,8 +40,6 @@ namespace SEQAN_NAMESPACE_MAIN
 // PMode
 //////////////////////////////////////////////////////////////////////////////
 
-///.Class.Pseudocount.param.TSpec.type:Spec.PMode
-
 struct PMode_;
 typedef Tag<PMode_> PMode;
 

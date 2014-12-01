@@ -57,8 +57,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The types of all keywords in the needle and the haystack have to match.
  */
 
-///.Class.Pattern.param.TSpec.type:Spec.SetHorspool
-
 struct SetHorspool_;
 typedef Tag<SetHorspool_> SetHorspool;
 

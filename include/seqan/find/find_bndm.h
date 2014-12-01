@@ -56,9 +56,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The types of the needle and the haystack have to match.
  */
 
-///.Class.Pattern.param.TSpec.type:Spec.BndmAlgo
-///.Class.Pattern.class:Spec.BndmAlgo
-
 struct BndmAlgo_;
 typedef Tag<BndmAlgo_> BndmAlgo;
 

@@ -261,7 +261,6 @@ struct IsContiguous<String<TValue, Packed2<THostspec> > >
 // Metafunction Host
 // --------------------------------------------------------------------------
 
-///.Metafunction.Host.param.T.type:Spec.Packed String
 template <typename TValue, typename THostspec>
 struct Host<String<TValue, Packed2<THostspec> > >
 {
@@ -410,9 +409,6 @@ struct TempCopy_<String<TValue, Packed2<THostspec> > >
 // --------------------------------------------------------------------------
 // Function host
 // --------------------------------------------------------------------------
-
-///.Function.host.param.object.type:Spec.Packed String
-///.Function.host.class:Spec.Packed String
 
 template <typename TValue, typename THostspec>
 inline typename Host<String<TValue, Packed2<THostspec> > >::Type &
@@ -884,8 +880,6 @@ _clearSpace(String<TValue, Packed2<THostspec> > & me,
 // --------------------------------------------------------------------------
 // Function reserve()
 // --------------------------------------------------------------------------
-
-///.Function.reserve.param.object.type:Spec.Packed String
 
 template <typename TValue, typename TSpec, typename TSize_, typename TExpand>
 inline typename Size< String<TValue, Packed2<TSpec> > >::Type

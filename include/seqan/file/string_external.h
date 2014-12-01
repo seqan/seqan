@@ -1932,8 +1932,6 @@ namespace SEQAN_NAMESPACE_MAIN
 			return true;
     }
 //____________________________________________________________________________
-///.Function.length.param.object.type:Class.Shape
-
 	template < typename TValue, typename TConfig >
     inline typename Size< String<TValue, External<TConfig> > >::Type
     length(String<TValue, External<TConfig> > const &me)

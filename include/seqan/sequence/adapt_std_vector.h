@@ -63,9 +63,6 @@ SEQAN_CONCEPT_IMPL((std::vector<TChar, TAlloc> const), (ContainerConcept)); // r
 // Metafunctions
 // ===========================================================================
 
-///.Metafunction.IsContiguous.param.T.type:Adaption.std::vector
-///.Metafunction.IsContiguous.class:Adaption.std::vector
-
 template <typename TChar, typename TAlloc>
 struct IsContiguous< std::vector<TChar, TAlloc> >
 {
@@ -75,9 +72,6 @@ struct IsContiguous< std::vector<TChar, TAlloc> >
 template <typename  TChar, typename TAlloc>
 struct IsContiguous< std::vector<TChar, TAlloc> const>
         : IsContiguous< std::vector<TChar, TAlloc> > {};
-
-///.Metafunction.Value.param.T.type:Adaption.std::vector
-///.Metafunction.Value.class:Adaption.std::vector
 
 template <typename TChar, typename TAlloc>
 struct Value< std::vector<TChar, TAlloc> >
@@ -89,10 +83,7 @@ template <typename TChar, typename TAlloc>
 struct Value< std::vector<TChar, TAlloc> const>
         : Value< std::vector<TChar, TAlloc> > {};
 
-///.Metafunction.GetValue.param.T.type:Adaption.std::vector
 // TODO(holtgrew): GetValue is a reference?! I thought the reverse was true in respect to Value<>.
-///.Metafunction.GetValue.class:Adaption.std::vector
-
 template <typename TChar, typename TAlloc>
 struct GetValue< std::vector<TChar, TAlloc> >
 {
@@ -105,9 +96,6 @@ struct GetValue< std::vector<TChar,  TAlloc> const>
     typedef typename std::vector<TChar, TAlloc>::const_reference Type;
 };
 
-///.Metafunction.Reference.param.T.type:Adaption.std::vector
-///.Metafunction.Reference.class:Adaption.std::vector
-
 template <typename TChar, typename TAlloc>
 struct Reference< std::vector<TChar, TAlloc> >
 {
@@ -119,9 +107,6 @@ struct Reference< std::vector<TChar, TAlloc> const>
 {
     typedef typename std::vector<TChar,  TAlloc>::const_reference Type;
 };
-
-///.Metafunction.Iterator.param.T.type:Adaption.std::vector
-///.Metafunction.Iterator.class:Adaption.std::vector
 
 template <typename TChar, typename TAlloc>
 struct Iterator< std::vector<TChar, TAlloc>, Rooted>
@@ -151,9 +136,6 @@ struct Iterator< std::vector<TChar,  TAlloc> const, Standard>
     typedef Iter< std::vector<TChar, TAlloc> const, StdIteratorAdaptor > Type;
 };
 
-///.Metafunction.Position.param.T.type:Adaption.std::vector
-///.Metafunction.Position.class:Adaption.std::vector
-
 template <typename TChar,  typename TAlloc>
 struct Position< std::vector<TChar, TAlloc> >
 {
@@ -163,9 +145,6 @@ struct Position< std::vector<TChar, TAlloc> >
 template <typename TChar,  typename TAlloc>
 struct Position< std::vector<TChar,  TAlloc> const>
         : Position< std::vector<TChar,  TAlloc> > {};
-
-///.Metafunction.Position.param.T.type:Adaption.std::vector
-///.Metafunction.Position.class:Adaption.std::vector
 
 template <typename TChar,  typename TAlloc>
 struct Size< std::vector<TChar, TAlloc> >
@@ -177,17 +156,11 @@ template <typename TChar, typename TAlloc>
 struct Size< std::vector<TChar, TAlloc> const>
         : Size< std::vector<TChar, TAlloc> > {};
 
-///.Metafunction.Size.param.T.type:Adaption.std::vector
-///.Metafunction.Size.class:Adaption.std::vector
-
 template <typename TChar, typename TAlloc>
 struct DefaultOverflowImplicit< std::vector<TChar, TAlloc> >
 {
     typedef Generous Type;
 };
-
-///.Metafunction.StdContainerIterator.param.T.type:Adaption.std::vector
-///.Metafunction.StdContainerIterator.class:Adaption.std::vector
 
 template <typename TChar, typename TAlloc>
 struct StdContainerIterator< std::vector<TChar, TAlloc> >
@@ -203,18 +176,12 @@ struct StdContainerIterator< std::vector<TChar, TAlloc> const>
     typedef typename TContainer_::const_iterator Type;
 };
 
-///.Metafunction.IsSequence.param.T.type:Adaption.std::vector
-///.Metafunction.IsSequence.class:Adaption.std::vector
-
 template <typename TChar, typename TAlloc>
 struct IsSequence<std::vector<TChar, TAlloc> > : True {};
 
 // ===========================================================================
 // Functions
 // ===========================================================================
-
-///.Function.getObjectId.param.object.type:Adaption.std::vector
-///.Function.getObjectId.class:Adaption.std::vector
 
 template <typename TChar,  typename TAlloc>
 inline void const *
@@ -226,9 +193,6 @@ getObjectId(std::vector<TChar, TAlloc> const & me)
     else
         return (& *(me.end() - 1)) + 1;
 }
-
-///.Function.begin.param.object.type:Adaption.std::vector
-///.Function.begin.class:Adaption.std::vector
 
 template <typename TChar,  typename TAlloc>
 inline typename Iterator< std::vector<TChar,  TAlloc>, Standard>::Type
@@ -247,9 +211,6 @@ begin(std::vector<TChar, TAlloc> const & me,
     return typename Iterator< std::vector<TChar,  TAlloc> const, Standard>::Type(me.begin());
 }
 
-///.Function.end.param.object.type:Adaption.std::vector
-///.Function.end.class:Adaption.std::vector
-
 template <typename TChar, typename TAlloc>
 inline typename Iterator< std::vector<TChar, TAlloc>, Standard>::Type
 end(std::vector<TChar,  TAlloc> & me,
@@ -266,9 +227,6 @@ end(std::vector<TChar,  TAlloc> const & me,
     SEQAN_CHECKPOINT;
     return typename Iterator< std::vector<TChar,  TAlloc> const, Standard>::Type(me.end());
 }
-
-///.Function.value.param.container.type:Adaption.std::vector
-///.Function.value.class:Adaption.std::vector
 
 template <typename TChar,  typename TAlloc, typename TPos>
 inline typename GetValue< std::vector<TChar, TAlloc> >::Type
@@ -287,9 +245,6 @@ value(std::vector<TChar, TAlloc> const & me,
     return me[pos];
 }
 
-///.Function.value.param.container.type:Adaption.std::vector
-///.Function.value.class:Adaption.std::vector
-
 template <typename TChar, typename TAlloc>
 inline typename Size< std::vector<TChar, TAlloc> >::Type
 length(std::vector<TChar, TAlloc> const & me)
@@ -297,9 +252,6 @@ length(std::vector<TChar, TAlloc> const & me)
     SEQAN_CHECKPOINT;
     return me.size();
 }
-
-///.Function.capacity.param.object.type:Adaption.std::vector
-///.Function.capacity.class:Adaption.std::vector
 
 template <typename TChar, typename TAlloc>
 inline typename Size< std::vector<TChar, TAlloc> >::Type
@@ -309,9 +261,6 @@ capacity(std::vector<TChar, TAlloc> const & me)
     return me.capacity();
 }
 
-///.Function.empty.param.object.type:Adaption.std::vector
-///.Function.empty.class:Adaption.std::vector
-
 template <typename TChar, typename TAlloc>
 inline bool
 empty(std::vector<TChar, TAlloc> const & me)
@@ -320,9 +269,6 @@ empty(std::vector<TChar, TAlloc> const & me)
     return me.empty();
 }
 
-///.Function.clear.param.object.type:Adaption.std::vector
-///.Function.clear.class:Adaption.std::vector
-
 template <typename TChar,  typename TAlloc>
 inline void
 clear(std::vector<TChar, TAlloc> & me)
@@ -330,9 +276,6 @@ clear(std::vector<TChar, TAlloc> & me)
     SEQAN_CHECKPOINT;
     me.clear();
 }
-
-///.Function.front.param.container.type:Adaption.std::vector
-///.Function.front.class:Adaption.std::vector
 
 template <typename TChar>
 inline typename Reference<std::vector<TChar> >::Type
@@ -349,9 +292,6 @@ front(std::vector<TChar> const & list)
     SEQAN_CHECKPOINT;
     return list.front();
 }
-
-///.Function.back.param.container.type:Adaption.std::vector
-///.Function.back.class:Adaption.std::vector
 
 template <typename TChar>
 inline typename Reference<std::vector<TChar> >::Type
@@ -371,9 +311,6 @@ back(std::vector<TChar> const & list)
 
 //////////////////////////////////////////////////////////////////////////////
 //assign to std::vector
-
-///.Function.assign.param.target.type:Adaption.std::vector
-///.Function.assign.class:Adaption.std::vector
 
 template <typename TChar,  typename TAlloc, typename TSource>
 inline void
@@ -524,9 +461,6 @@ assign(std::vector<TChar,  TAlloc> & target,
 //////////////////////////////////////////////////////////////////////////////
 //append to std::vector
 
-///.Function.append.param.target.type:Adaption.std::vector
-///.Function.append.class:Adaption.std::vector
-
 template <typename TChar, typename TAlloc, typename TSource>
 inline void
 append(std::vector<TChar,  TAlloc> & target,
@@ -593,9 +527,6 @@ append(std::vector<TChar, TAlloc> & target,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-///.Function.appendValue.param.target.type:Adaption.std::vector
-///.Function.appendValue.class:Adaption.std::vector
-
 template <typename TChar, typename TAlloc, typename TValue, typename TTag>
 inline void
 appendValue(std::vector<TChar, TAlloc> & me,
@@ -618,10 +549,6 @@ appendValue(std::vector<TChar,  TAlloc> & me,
 
 //////////////////////////////////////////////////////////////////////////////
 //replace to std::vector
-
-///.Function.replace.param.target.type:Adaption.std::vector
-///.Function.replace.param.source.type:Adaption.std::vector
-///.Function.replace.class:Adaption.std::vector
 
 template <typename TChar,  typename TAlloc, typename TSource>
 inline void
@@ -744,10 +671,6 @@ replace(std::vector<TChar, TAlloc> & target,
 */
 
 
-///.Function.reserve.param.object.type:Adaption.std::vector
-///.Function.reserve.remarks:For @Adaption.std::vector|STL Adaptions@, $reserve$ is only guaranteed to have the specified behaviour with $Insist$ and $Generous$.
-///.Function.reserve.class:Adaption.std::vector
-
 template <typename TChar,  typename TAlloc, typename TSize, typename TExpand>
 inline typename Size< std::vector<TChar, TAlloc> >::Type
 reserve(
@@ -784,7 +707,6 @@ reserve(
     return _capacityReturned(seq, new_capacity, Limit());
 }
 
-///.Function.resize.param.object.type:Adaption.std::vector
 template <typename TChar,  typename TAlloc, typename TSize, typename TExpand>
 inline typename Size< std::vector<TChar,  TAlloc> >::Type
 resize(

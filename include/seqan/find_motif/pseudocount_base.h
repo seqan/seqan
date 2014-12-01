@@ -45,9 +45,6 @@ class Pseudocount;
 //Metafunctions
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Value.param.T.type:Class.Pseudocount
-///.Metafunction.Value.class:Class.Pseudocount
-
 template<typename TValue, typename TSpec>
 struct Value< Pseudocount<TValue, TSpec> >
 {

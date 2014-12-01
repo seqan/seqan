@@ -146,9 +146,6 @@ struct Pair
  * @return VALUE The number of element in a Pair (2).
  */
 
-///.Metafunction.LENGTH.param.T.type:Class.Pair
-///.Metafunction.LENGTH.class:Class.Pair
-
 template <typename T1, typename T2, typename TSpec>
 struct LENGTH<Pair<T1, T2, TSpec> >
 {
@@ -199,9 +196,6 @@ struct Value<Pair<T1, T2, TSpec>, 2>
  *
  * @return Type The resulting type.
  */
-
-///.Metafunction.Spec.param.T.type:Class.Pair
-///.Metafunction.Spec.class:Class.Pair
 
 template <typename T1, typename T2, typename TSpec>
 struct Spec<Pair<T1, T2, TSpec> >

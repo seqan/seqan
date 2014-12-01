@@ -189,8 +189,6 @@ operator<<(TStream & target,
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Spec.param.T.type:Class.FrequencyDistribution
-
 template <typename TValue, typename TSpec>
 struct Spec< FrequencyDistribution<TValue, TSpec> >
 {
@@ -218,8 +216,6 @@ struct Spec< FrequencyDistribution<TValue, double> const>
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Iterator.param.T.type:Class.FrequencyDistribution
-
 template <typename TValue, typename TSpec, typename TIteratorSpec>
 struct Iterator< FrequencyDistribution<TValue, TSpec>, TIteratorSpec >
 {
@@ -228,8 +224,6 @@ struct Iterator< FrequencyDistribution<TValue, TSpec>, TIteratorSpec >
 };
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.Position.param.T.type:Class.FrequencyDistribution
 
 template<typename TValue, typename TSpec>
 struct Position< FrequencyDistribution<TValue, TSpec> >
@@ -246,8 +240,6 @@ struct Position< FrequencyDistribution<TValue, TSpec> const>
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Size.param.T.type:Class.FrequencyDistribution
-
 template<typename TValue, typename TSpec>
 struct Size< FrequencyDistribution<TValue, TSpec> >
 {
@@ -263,7 +255,6 @@ struct Size<FrequencyDistribution<TValue, TSpec> const>
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Value.param.T.type:Class.FrequencyDistribution
 /*
 .Metafunction.Value:
 ..summary:Returns the sequence type of a @Class.FrequencyDistribution@ type
@@ -350,9 +341,6 @@ backgroundFrequency(FrequencyDistribution<TValue, TSpec> & fd,
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Function.begin.param.object.type:Class.FrequencyDistribution
-///.Function.begin.class:Class.FrequencyDistribution
-
 template <typename TValue, typename TSpec>
 inline typename Iterator< FrequencyDistribution<TValue, TSpec> >::Type
 begin(FrequencyDistribution<TValue, TSpec> & me)
@@ -367,9 +355,6 @@ begin(FrequencyDistribution<TValue, TSpec> const & me)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Function.clear.param.object.type:Class.FrequencyDistribution
-///.Function.clear.class:Class.FrequencyDistribution
 
 template<typename TValue, typename TSpec>
 void 
@@ -403,9 +388,6 @@ convertResidueToFrequencyDist(FrequencyDistribution<TValue, TSpec> & fd, TValue 
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Function.end.param.object.type:Class.FrequencyDistribution
-///.Function.end.class:Class.FrequencyDistribution
-
 template<typename TValue, typename TSpec>
 inline typename Iterator< FrequencyDistribution<TValue, TSpec> >::Type
 end(FrequencyDistribution<TValue, TSpec> & me)
@@ -420,9 +402,6 @@ end(FrequencyDistribution<TValue, TSpec> const & me)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Function.length.param.object.type:Class.FrequencyDistribution
-///.Function.length.class:Class.FrequencyDistribution
 
 template<typename TValue, typename TSpec>
 inline typename Size< FrequencyDistribution<TValue, TSpec> >::Type

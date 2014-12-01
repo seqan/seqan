@@ -126,8 +126,6 @@ class Pdf;
  * @return Type The value type of the Pdf.
  */
 
-///.Metafunction.Value.param.T.type:Class.Pdf
-///.Metafunction.Value.class:Class.Pdf
 // specification only
 
 /*!
@@ -162,13 +160,6 @@ class Pdf;
  *
  * @return VALUE The largest value a Rng can return.
  */
-
-///.Metafunction.Value.param.T.type:Class.Rng
-///.Metafunction.Value.class:Class.Rng
-///.Metafunction.MinValue.param.T.type:Class.Rng
-///.Metafunction.MinValue.class:Class.Rng
-///.Metafunction.MaxValue.param.T.type:Class.Rng
-///.Metafunction.MaxValue.class:Class.Rng
 
 template <typename TSpec>
 struct MaxValue<Rng<TSpec> >

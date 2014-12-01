@@ -301,8 +301,6 @@ _storeOneAnnotation(
     }
 }
 
-///.Function.read.param.tag.type:Tag.File Format.tag.Gff
-///.Function.read.param.tag.type:Tag.File Format.tag.Gtf
 template <typename TSpec, typename TConfig>
 inline void
 readRecords(FragmentStore<TSpec, TConfig> & fragStore,

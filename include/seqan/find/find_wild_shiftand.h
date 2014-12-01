@@ -69,8 +69,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * wildcards.
  */
 
-///.Class.Pattern.param.TSpec.type:Spec.WildShiftAnd
-
 struct WildShiftAnd_;
 typedef Tag<WildShiftAnd_> WildShiftAnd;
 

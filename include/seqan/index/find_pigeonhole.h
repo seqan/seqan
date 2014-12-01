@@ -195,9 +195,6 @@ namespace seqan
  */
 
 // docu is now in find_pattern_base.h
-///.Class.Pattern.param.TSpec.type:Spec.Pigeonhole
-///.Class.Finder.param.TSpec.type:Spec.Pigeonhole
-
 	template <typename THaystack, typename TSpec>
 	class Finder<THaystack, Pigeonhole<TSpec> >
 	{
@@ -729,10 +726,6 @@ endPosition(Pattern<TIndex, Pigeonhole<TSpec> > & pattern)
 	return endPosition(const_cast<Pattern<TIndex, Pigeonhole<TSpec> > const &>(pattern));
 }
 
-///.Function.positionRangeNoClip.param.finder.type:Spec.Pigeonhole
-///.Function.positionRangeNoClip.class:Spec.Pigeonhole
-///.Function.positionRangeNoClip.param.pattern.type:Spec.Pigeonhole
-
 template <typename THaystack, typename TSpec>
 inline Pair<typename Position<Finder<THaystack, Pigeonhole<TSpec> > >::Type>
 positionRangeNoClip(Finder<THaystack, Pigeonhole<TSpec> > const & finder)
@@ -749,10 +742,6 @@ positionRangeNoClip(Finder<THaystack, Pigeonhole<TSpec> > & finder)
 {
 	return positionRangeNoClip(const_cast<Finder<THaystack, Pigeonhole<TSpec> > const &>(finder));
 }
-
-///.Function.positionRange.param.finder.type:Spec.Pigeonhole
-///.Function.positionRange.class:Spec.Pigeonhole
-///.Function.positionRange.param.pattern.type:Spec.Pigeonhole
 
 template <typename THaystack, typename TSpec>
 inline Pair<typename Position<Finder<THaystack, Pigeonhole<TSpec> > >::Type>
@@ -811,9 +800,6 @@ pigeonholeInfix(TPigeonholeHit const &hit, TText &text)
 }
 
 //____________________________________________________________________________
-
-///.Function.Finder#infix.param.finder.type:Spec.Pigeonhole
-///.Function.Finder#infix.class:Spec.Pigeonhole
 
 template <typename THaystack, typename TSpec>
 inline typename Infix<THaystack>::Type
@@ -1223,8 +1209,6 @@ windowFindEnd(
 {
 }
 
-///.Function.getWindowFindHits.param.finder.type:Spec.Pigeonhole
-
 /*!
  * @fn PigeonholeFinder#getWindowFindHits
  * @headerfile <seqan/index/find_pigeonhole.h>
@@ -1248,8 +1232,6 @@ getWindowFindHits(Finder<THaystack, Pigeonhole<TSpec> > &finder)
 
 	return finder.hits;
 }
-
-///.Function.getMaxDeviationOfOrder.param.pattern.type:Spec.Pigeonhole
 
 /*!
  * @fn PigeonholePattern#getMaxDeviationOfOrder

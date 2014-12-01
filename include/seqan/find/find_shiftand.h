@@ -58,8 +58,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The types of the needle and the haystack have to match.
  */
 
-///.Class.Pattern.param.TSpec.type:Spec.ShiftAnd
-
 struct ShiftAnd_;
 typedef Tag<ShiftAnd_> ShiftAnd;
 

@@ -187,7 +187,6 @@ SEQAN_HOST_DEVICE inline void _indexRequireTopDownIteration(Index<TText, FMIndex
 // Function begin()                                                  [Iterator]
 // ----------------------------------------------------------------------------
 
-///.Function.begin.param.object.type:Spec.FMIndex
 template <typename TText, typename TOccSpec, typename TIndexSpec, typename TSpec>
 inline
 typename Iterator<Index<TText,FMIndex<TOccSpec, TIndexSpec> >, TSpec>::Type

@@ -56,9 +56,6 @@ namespace SEQAN_NAMESPACE_MAIN {
  * This specialization should only be used if no other is applicable or for verification purposes.
  */
 
-///.Class.Pattern.param.TSpec.type:Spec.HammingSimpleFinder
-///.Class.Pattern.class:Spec.HammingSimpleFinder
-
 struct HammingSimple_;
 typedef Tag<HammingSimple_> HammingSimple;
 

@@ -71,8 +71,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see OracleBfamPattern
  */
 
-///.Class.Pattern.param.TSpec.type:Spec.MultiBfam
-
 //struct Oracle //defined in find_bom.h
 
 template <typename TSpec = Oracle>

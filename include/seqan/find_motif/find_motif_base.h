@@ -48,9 +48,6 @@ class MotifFinder;
 //Metafunctions
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Value.param.T.type:Class.MotifFinder
-///.Metafunction.Value.class:Class.MotifFinder
-
 template<typename TValue, typename TSpec, typename TRng>
 struct Value< MotifFinder<TValue, TSpec, TRng> >
 {
@@ -201,7 +198,6 @@ getMotif(MotifFinder<TValue, TSpec, TRng> & me,
 	return me.set_of_motifs[pos];
 }
 
-///.Function.getMotif.signature:getMotif(motifFinder)
 template <typename TValue, typename TSpec, typename TRng>
 inline typename Motif<MotifFinder<TValue, TSpec, TRng> >::Type &
 getMotif(MotifFinder<TValue, TSpec, TRng> & me)

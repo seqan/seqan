@@ -45,8 +45,6 @@ computeH(TType const & t, TType const & l, TType const & d, bool const & is_exac
 // EPatternBranching
 //////////////////////////////////////////////////////////////////////////////
 
-///.Class.MotifFinder.param.TSpec.type:Spec.EPatternBranching
-
 struct EPatternBranching_;
 typedef Tag<EPatternBranching_> const EPatternBranching;
 

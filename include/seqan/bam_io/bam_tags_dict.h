@@ -358,8 +358,6 @@ setHost(BamTagsDict & me, THost const & host_)
  *               <tt>Size&lt;BamTagsDict&gt;::Type</tt>.
  */
 
-///.Function.length.param.object.type:Class.BamTagsDict
-
 inline Size<BamTagsDict>::Type
 length(BamTagsDict const & tags)
 {

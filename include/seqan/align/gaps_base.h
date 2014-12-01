@@ -122,9 +122,6 @@ class Gaps;
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Value.param.T.type:Class.Gaps
-///.Metafunction.Value.class:Class.Gaps
-
 template <typename TSequence, typename TSpec>
 struct Value<Gaps<TSequence, TSpec> >
 {
@@ -139,9 +136,6 @@ struct Value<Gaps<TSequence, TSpec> const> : Value<Gaps<TSequence, TSpec> >
 // ----------------------------------------------------------------------------
 // Metafunction Iterator
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Iterator.param.T.type:Class.Gaps
-///.Metafunction.Iterator.class:Class.Gaps
 
 template <typename TSequence, typename TSpec, typename TIteratorSpec>
 struct Iterator<Gaps<TSequence, TSpec>, TIteratorSpec>
@@ -159,9 +153,6 @@ struct Iterator<Gaps<TSequence, TSpec> const, TIteratorSpec>
 // Metafunction GetValue
 // ----------------------------------------------------------------------------
 
-///.Metafunction.GetValue.param.T.type:Class.Gaps
-///.Metafunction.GetValue.class:Class.Gaps
-
 template <typename TSequence, typename TSpec>
 struct GetValue<Gaps<TSequence, TSpec> > : Value<Gaps<TSequence, TSpec> >
 {};
@@ -173,9 +164,6 @@ struct GetValue<Gaps<TSequence, TSpec> const> : GetValue<Gaps<TSequence, TSpec> 
 // ----------------------------------------------------------------------------
 // Metafunction Position
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Position.param.T.type:Class.Gaps
-///.Metafunction.Position.class:Class.Gaps
 
 template <typename TSequence, typename TSpec>
 struct Position<Gaps<TSequence, TSpec> >
@@ -191,9 +179,6 @@ struct Position<Gaps<TSequence, TSpec> const> : Position<Gaps<TSequence, TSpec> 
 // ----------------------------------------------------------------------------
 // Metafunction Reference
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Reference.param.T.type:Class.Gaps
-///.Metafunction.Reference.class:Class.Gaps
 
 template <typename TSequence, typename TSpec>
 struct Reference<Gaps<TSequence, TSpec> >
@@ -213,9 +198,6 @@ struct Reference<Gaps<TSequence, TSpec> const>
 // Metafunction Size
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Size.param.T.type:Class.Gaps
-///.Metafunction.Size.class:Class.Gaps
-
 template <typename TSequence, typename TSpec>
 struct Size<Gaps<TSequence, TSpec> >
 {
@@ -232,9 +214,6 @@ struct Size<Gaps<TSequence, TSpec> const> : Size<Gaps<TSequence, TSpec> >
 
 // TODO(holtgrew): Switch to Hosted Type interface
 
-///.Metafunction.Source.param.T.type:Class.Gaps
-///.Metafunction.Source.class:Class.Gaps
-
 template <typename TSequence, typename TSpec>
 struct Source<Gaps<TSequence, TSpec> >
 {
@@ -250,9 +229,6 @@ struct Source<Gaps<TSequence, TSpec> const> : Source<Gaps<TSequence, TSpec> >
 // ----------------------------------------------------------------------------
 // Metafunction IsSequence
 // ----------------------------------------------------------------------------
-
-///.Metafunction.IsSequence.param.T.type:Class.Gaps
-///.Metafunction.IsSequence.class:Class.Gaps
 
 template <typename TSequence, typename TSpec>
 struct IsSequence<Gaps<TSequence, TSpec> >
@@ -291,10 +267,6 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  */
 
 // TODO(holtgrew): Adding links to implemented sequence. This should be cleaned up once we have better documentation with concepts.
-///.Function.begin.class:Class.Gaps
-///.Function.end.class:Class.Gaps
-///.Function.iter.class:Class.Gaps
-
 // ----------------------------------------------------------------------------
 // Function setSource()
 // ----------------------------------------------------------------------------
@@ -1060,8 +1032,6 @@ inline void clipSemiGlobal(TGlobalGaps & global, TLocalGaps & local)
 // ----------------------------------------------------------------------------
 // Function clear()
 // ----------------------------------------------------------------------------
-
-///.Function.clear.class:Class.Gaps
 
 template <typename TSequence, typename TSpec>
 inline void clearGaps(Gaps<TSequence, TSpec> & gaps);

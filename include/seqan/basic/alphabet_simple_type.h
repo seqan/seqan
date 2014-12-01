@@ -280,8 +280,6 @@ public:
 // Metafunction IsSimple
 // ----------------------------------------------------------------------------
 
-///.Metafunction.IsSimple.param.T.type:Class.SimpleType
-
 template <typename TValue, typename TSpec>
 struct IsSimple<SimpleType<TValue, TSpec> >
 {
@@ -305,8 +303,6 @@ struct Is< Convertible<TTarget, SimpleType<TValue, TSpec> > > :
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Rename? SimpleType is no container!
-
-///.Metafunction.Value.param.T.type:Class.SimpleType
 
 template <typename TValue, typename TSpec>
 struct Value<SimpleType<TValue, TSpec> >
@@ -363,8 +359,6 @@ supremumValueImpl(SimpleType<TValue, TSpec> *)
 // ----------------------------------------------------------------------------
 // Metafunction Spec
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Spec.param.T.type:Class.SimpleType
 
 template <typename TValue, typename TSpec>
 struct Spec<SimpleType<TValue, TSpec> >
@@ -446,10 +440,6 @@ operator>>(TStream & stream,
 // ----------------------------------------------------------------------------
 // Function assign()
 // ----------------------------------------------------------------------------
-
-///.Function.assign.param.target.type:Class.SimpleType
-///.Function.assign.param.target.type:Class.SimpleType
-///.Function.assign.class:Class.SimpleType
 
 template <typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TSourceSpec>
 SEQAN_HOST_DEVICE inline void
