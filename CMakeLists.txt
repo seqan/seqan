@@ -16,18 +16,6 @@ project (seqan)
 cmake_minimum_required (VERSION 2.8.2)
 
 # ===========================================================================
-# Iff the file INST or SUA exists in the source root
-# turn on SeqAn instrumentation for experimental data collection.
-# ===========================================================================
-
-if (EXISTS ${CMAKE_SOURCE_DIR}/INST OR EXISTS ${CMAKE_SOURCE_DIR}/SUA OR EXISTS ${CMAKE_SOURCE_DIR}/../SUA)
-  set (SEQAN_INSTRUMENTATION YES)
-else (EXISTS ${CMAKE_SOURCE_DIR}/INST OR EXISTS ${CMAKE_SOURCE_DIR}/SUA OR EXISTS ${CMAKE_SOURCE_DIR}/../SUA)
-  set (SEQAN_INSTRUMENTATION NO)
-endif (EXISTS ${CMAKE_SOURCE_DIR}/INST OR EXISTS ${CMAKE_SOURCE_DIR}/SUA OR EXISTS ${CMAKE_SOURCE_DIR}/../SUA)
-
-
-# ===========================================================================
 # Warn People About the Perils Of In-Source Builds
 # ===========================================================================
 
@@ -130,14 +118,34 @@ seqan_get_repository_info ()
 # Include Subdirectories
 # ===========================================================================
 
-message (STATUS "Configuring core")
-add_subdirectory (core)
+# Tests are only built when building in DEVELOP mode.
+if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    message (STATUS "Configuring tests")
+    add_subdirectory (tests)
+endif ()
+
+# Demos are required when doing a whole SeqAn release (copy demos) or when
+# developing (build demos).
+if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
+    ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP"))
+    message (STATUS "Configuring demos")
+    add_subdirectory (demos)
+endif ()
+
+message (STATUS "Configuring apps")
+add_subdirectory (apps)
 message (STATUS "Configuring dox")
 add_subdirectory (dox)
 message (STATUS "Configuring manual")
 add_subdirectory (manual)
 message (STATUS "Configuring util/py_lib")
 add_subdirectory (util/py_lib)
+
+# ===========================================================================
+# Register Libraries (for GUI project generators)
+# ===========================================================================
+
+seqan_setup_library ()
 
 # ===========================================================================
 # Include CPack
