@@ -27,6 +27,8 @@ In contrast to, e.g., online-search algorithms that search through the text in :
 
 You can find the following indices in SeqAn.
 
+:dox:`IndexSa`
+  Suffix Array :cite:`Manber1993`
 :dox:`IndexEsa`
   Extended Suffix Array :cite:`Abouelhoda2004`
 :dox:`IndexWotd`
@@ -38,7 +40,7 @@ You can find the following indices in SeqAn.
 :dox:`PizzaChiliIndex`
   An adapter for the `Pizza & Chili <http://pizzachili.dcc.uchile.cl/>`_ index API
 :dox:`FMIndex`
-  :cite:`Ferragina2001`
+  Full-text minute index :cite:`Ferragina2001`
 
 Index Construction
 ^^^^^^^^^^^^^^^^^^
@@ -284,10 +286,17 @@ When instantiating and associating the index the next time, the index contains i
 Reducing the memory consumption
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-One option is to change the data types used.
-This option to reduce the memory consumption has no drawback concerning running time but one has to make sure that the text to index does not exceed 4.29 billion characters.
-The critical observation is that each suffix array entry consumes 64 bit of memory per default where 32 bit would be sufficient if the text size is appropriate.
-In order to change the size type of the suffix array entry we simply have to overload the metafunction ``SAValue``.
+All :dox:`Index Indices` in SeqAn are capable of indexing :dox:`String Strings` or :dox:`StringSet StringSets` of arbitrary sizes, i.e. up to 2^64 characters.
+This always comes at a cost in terms of memory consumption, as any :dox:`Index` has to represent 64 bit positions in the underlying text.
+However, in many practical instances, the text to be indexed is shorter, e.g. it does not exceed 4.29 billion (2^32) characters.
+In this case, one can reduce the memory consumption of an :dox:`Index` by changing its internal data types, with no drawback concerning running time.
+
+SA Fibre
+""""""""
+
+All :dox:`Index Indices` in SeqAn internally use the :dox:`FibreSA`, i.e. some sort of suffix array.
+For :dox:`String Strings`, each suffix array entry consumes 64 bit of memory per default, where 32 bit would be sufficient if the text size is appropriate.
+In order to change the size type of the suffix array entry we simply have to overload the metafunction :dox:`SAValue`.
 
 .. code-block:: cpp
 
@@ -297,7 +306,7 @@ In order to change the size type of the suffix array entry we simply have to ove
        typedef unsigned Type;
    }
 
-If your text is a :dox:`StringSet` than ``SAValue`` will return a :dox:`Pair` that can be overloaded in the same way.
+If your text is a :dox:`StringSet`, then :dox:`SAValue` will return a :dox:`Pair` that can be overloaded in the same way.
 
 .. code-block:: cpp
 
@@ -318,7 +327,19 @@ So if you only have a few strings you could save even more memory like this.
         typedef Pair<unsigned char, unsigned> Type;
     }
 
-How To: Accessing Index Fibres Directly
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+FMIndex Fibres
+""""""""""""""
+
+The size of a generalized :dox:`FMIndex` depends also on the total number of characters in a :dox:`StringSet` (see :dox:`lengthSum`).
+This trait can be configured via the :dox:`FMIndexConfig` object.
+
+.. code-block:: cpp
+
+        typedef FMIndexConfig<void, unsigned> TConfig;
+        Index<StringSet<String<Dna> >, FMIndex<void, TConfig> > index(text);
+
+Other Index Fibres
+""""""""""""""""""
 
 See :ref:`how-to-access-index-fibres` for more information.
