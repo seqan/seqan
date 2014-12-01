@@ -3,13 +3,13 @@
    .. contents::
 
 
-.. _tutorial-basic-sequence-io:
+.. _tutorial-sequence-io:
 
-Basic Sequence I/O
-==================
+Sequence I/O
+============
 
 Learning Objective
-  You will learn how to read and write compressed or uncompressed sequence files, e.g. FASTQ and FASTQ.
+  You will learn how to read and write compressed or uncompressed sequence files in FASTA, FASTQ, EMBL or GenBank format.
 
 Difficulty
   Basic

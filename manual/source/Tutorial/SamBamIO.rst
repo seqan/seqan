@@ -9,54 +9,206 @@ SAM and BAM I/O
 ===============
 
 Learning Objective
-  This tutorial will explain how to use the lower-level API for reading from and writing to SAM and BAM files.
+  In this tutorial, you will learn how to read and write SAM and BAM files.
 
 Difficulty
-  Advanced
+  Average
 
 Duration
-  20 min
+  1 h (45 min if you know the SAM format)
 
 Prerequisites
-  :ref:`tutorial-basic-sam-bam-io`, :ref:`tutorial-input-output-overview`
+  :ref:`tutorial-sequences`, :ref:`tutorial-basic-sequence-io`, Exposure to the SAM format
 
-After reading the :ref;`tutorial-basic-sam-bam-io` tutorial, you should have a good understanding of the representation of SAM/BAM records in SeqAn library.
-This tutorial will explain how the lower-level implementation of SAM and BAM I/O works and which design decisions lead to this.
-You will also learn about the classes :dox:`BamIOContext` and :dox:`NameStoreCache`.
-This article also explains how to write template-based code that can read both SAM files from :dox:`RecordReader RecordReaders` and BAM files from compressed streams.
-Furthermore, you will learn how to use BAI indices for jumping in BAM files.
-
-This tutorial will mostly work by showing full source code examples and explaining them.
-Do not feel intimidated by its length, it is inflated by the amount of embedded source code.
-
-The usage of SAM and BAM tags is explained in the :ref:`tutorial-basic-sam-bam-io` tutorial and will not be discussed here further.
+This tutorial deals with how to easily read and write SAM and BAM files using the :dox:`BamFileIn` and :dox:`BamFileOut` classes.
+It starts out with a quick reminder on the structure of SAM (and also BAM) files and will then continue with how to read and write SAM/BAM files and access the tags of a record.
 
 .. important::
 
-   Note that this tutorial is targeted at readers that already know about the SAM format.
-   If you do not know about the SAM format yet then this tutorial will be harder for your to understand.
-   Teaching the ins and outs of SAM is out of the scope of such a tutorial.
+    Note that this tutorial is targeted at readers that already know about the SAM format.
+    If you do not know about the SAM format yet then this tutorial will be harder for your to understand.
+    Teaching the ins and outs of SAM is out of the scope of such a tutorial.
 
-``BamAlignmentRecord`` Design Overview
---------------------------------------
+Both SAM and BAM file store multi-read alignments.
+Storing alignments of longer sequences such as contigs from assemblies is also possible, but less common.
+Here, we will focus on multi-read alignments.
 
-Besides the fact that BAM is a compressed, binary format, the main difference to the plain-text format SAM is that BAM has additional header information.
-The binary header of BAM files contains a plain-text SAM header with the same information as a SAM file.
-However, BAM files contain an additional binary header section that stores all reference sequence names and their length.
+SAM files are text files, having one record per line.
+BAM files are just binary, compressed versions of SAM files that have a stricter organization and aim to be more efficiently useable by programs and computers.
+The nuts and bolts of the formats are described in the `SAM Format Specification <http://samtools.sourceforge.net/SAM1.pdf>`_.
 
-This is equivalent to the ``@SQ`` entries in a SAM header but the ``@SQ`` entries are optional in both SAM and the SAM header in a BAM file.
-Also, the ``@SQ`` entries in the SAM header of a BAM file can be out of sync with the binary reference information entries.
-The authorative source for this information (most prominently the names and the order of the reference sequences).
-BAM records then only contain an integer ``rID`` for each reference that referes to the ``rID``-th reference sequence in the binary header.
+The SAM and BAM related I/O functionality in SeqAn focuses on allowing access to these formats in SeqAn with thin abstractions.
+The :ref:`tutorial-fragment-store` Tutorial shows how to get a more high-level abstraction for multi-read alignments.
 
-Because SAM and BAM files store the same information, there is only one record type to store it in SeqAn.
-The record type is the class :dox:`BamAlignmentRecord` that was already introduced in the :ref:`tutorial-basic-sam-bam-io` tutorial tutorial.
-The structure of this class is designed after the BAM file so conversion from the BAM file on disk to the in-memory representation is fast.
-For example, the tags are stored as a binary string, the same as in a BAM file.
-When reading SAM, the tags are converted into the BAM representation whereas BAM tags can be copied verbatim.
-There is one important deviation, though: The qualities are stored using a phred-style ASCII encoding for consistencies with the rest of the SeqAn library.
+.. important::
 
-As a reminder, here is the synopsis of the :dox:`BamAlignmentRecord` class again.
+    SAM/BAM I/O vs. Fragment Store
+
+    The :ref:`tutorial-fragment-store` provides a high-level view of multi-read alignments.
+    This is very useful if you want to do SNP or small indel detection because you need to access the alignment of the reads around your candidate regions.
+    However, storing the whole alignment of a 120GB BAM file obviously is not a good idea.
+
+    The SAM/BAM I/O functionaliy in SeqAn is meant for sequentially reading through SAM and BAM files.
+    Jumping within BAM files using BAI indices is described in the :ref:`tutorial-sam-bam-io` tutorial.
+
+SAM / BAM File Structure
+------------------------
+
+We will give an quick overview of the SAM and BAM formats here.
+Note that this overview serves more to remind you what the formats are about and are not meant to teach how to use the SAM and BAM format.
+
+The following shows an example of a SAM file.
+
+::
+
+    @HD VN:1.3  SO:coordinate
+    @SQ SN:ref  LN:45
+    @SQ SN:ref2 LN:40
+    r001    163 ref 7   30  8M4I4M1D3M  =   37  39  TTAGATAAAGAGGATACTG *   XX:B:S,12561,2,20,112
+    r002    0   ref 9   30  1S2I6M1P1I1P1I4M2I  *   0   0   AAAAGATAAGGGATAAA   *
+    r003    0   ref 9   30  5H6M    *   0   0   AGCTAA  *
+    r004    0   ref 16  30  6M14N1I5M   *   0   0   ATAGCTCTCAGC    *
+    r003    16  ref 29  30  6H5M    *   0   0   TAGGC   *
+    r001    83  ref 37  30  9M  =   7   -39 CAGCGCCAT   *
+
+SAM files are TSV (tab-separated-values) files and begin with an optional header.
+The header consists of multiple lines, starting with an ``'@'`` character, each line is a record.
+Each record starts with its identifier and is followed by tab-separated tags.
+Each tag in the header consists of a two-character identifier, followed by ``':'``, followed by the value.
+
+If present, the ``@HD`` record must be the first record and specifies the SAM version (tag ``VN``) used in this file and the sort order (``SO``).
+The optional ``@SQ`` header records give the reference sequence names (tag ``SN``) and lengths (tag ``LN``).
+There also are other header record types.
+
+The optional header section is followed by the alignment records.
+The alignment records are again tab-separated.
+There are 11 mandatory columns.
+
++-----------+-------------+--------------+-----------------+-------------------------------------------+
+| Col       | Field       | Type         | N/A Value       | Description                               |
++===========+=============+==============+=================+===========================================+
+| 1         | QNAME       | string       | mandatory       | The query/read name.                      |
++-----------+-------------+--------------+-----------------+-------------------------------------------+
+| 2         | FLAG        | int          | mandatory       | The record's flag.                        |
++-----------+-------------+--------------+-----------------+-------------------------------------------+
+| 3         | RNAME       | string       | ``*``           | The reference name.                       |
++-----------+-------------+--------------+-----------------+-------------------------------------------+
+| 4         | POS         | 32-bit int   | ``0``           | 1-based position on the reference.        |
++-----------+-------------+--------------+-----------------+-------------------------------------------+
+| 5         | MAPQ        | 8-bit int    | ``255``         | The mapping quality.                      |
++-----------+-------------+--------------+-----------------+-------------------------------------------+
+| 6         | CIGAR       | string       | ``*``           | The CIGAR string of the alignment.        |
++-----------+-------------+--------------+-----------------+-------------------------------------------+
+| 7         | RNEXT       | string       | ``*``           | The reference of the next mate/segment.   |
++-----------+-------------+--------------+-----------------+-------------------------------------------+
+| 8         | PNEXT       | string       | ``0``           | The position of the next mate/seqgment.   |
++-----------+-------------+--------------+-----------------+-------------------------------------------+
+| 9         | TLEN        | string       | ``0``           | The observed length of the template.      |
++-----------+-------------+--------------+-----------------+-------------------------------------------+
+| 10        | SEQ         | string       | ``*``           | The query/read sequence.                  |
++-----------+-------------+--------------+-----------------+-------------------------------------------+
+| 11        | QUAL        | string       | ``*``           | The ASCII PHRED-encoded base qualities.   |
++-----------+-------------+--------------+-----------------+-------------------------------------------+
+
+Notes:
+
+* The SAM standard talks about "queries".
+  In the context of read mapping, where the format originates, queries are reads.
+* The SAM standard talks about "templates" and "segments".
+  In the case of paired-end and mate-pair mapping the template consists of two segments, each is one read.
+  The template length is the insert size.
+* Paired-end reads are stored as two alignments records with the same QNAME.
+  The first and second mate are discriminated by the FLAG values.
+* When the FLAG indicates that SEQ is reverse-complemented, then QUAL is reversed.
+* Positions in the SAM file are 1-based.
+  When read into a :dox:`BamAlignmentRecord` (see below), the positions become 0-based.
+* The qualities must be stored as ASCII PRED-encoded qualities.
+* The query and reference names must not contain whitespace.
+  It is common to trim query and reference ids at the first space.
+
+There are many ambiguities, recommendations, and some special cases in the formats that we do not describe here.
+We recommend that you follow this tutorial, start working with the SAM and BAM formats and later read the SAM specification "on demand" when you need it.
+
+The 11 mandatory columns are followed by an arbitrary number of optional tags.
+Tags have a two-character identifier followed by ``":${TYPE}:"``, followed by the tag's value.
+
+BAM files store their header as plain-text SAM headers.
+However, they additionally store the name and length information about the reference sequences.
+This information is mandatory since in BAM, the alignment records only contain the numeric ids of the reference sequences.
+Thus, the name is stored outside the record in the header.
+
+A First Working Example
+-----------------------
+
+The following example shows an example of a program that reads the file with the path ``example.sam`` and prints its contents back to the user on stdout.
+If you want to try out this program then create a file with the sample SAM content from above and adjust the path ``"example.sam"`` in the program below to the path to your SAM file (e.g. ``"path/to/my_example.sam"``).
+
+.. includefrags:: demos/tutorial/basic_sam_bam_io/example1.cpp
+
+The program instantiates a :dox:`BamFileIn` object for reading and a :dox:`BamFileOut` for writing.
+Note that both classes automatically guess the file type from the file name.
+
+First, we read the BAM header with :dox:`BamFileIn#readRecord` and we write it with :dox:`BamFileOut#writeRecord`.
+Then, we read each record from the input file and write it to the output file.
+The alignment records are read into :dox:`BamAlignmentRecord` objects which we will focus on below.
+
+.. COMMENT You can also force a format using :dox:`BamStream::BamStream BamStream's constructor`.
+.. COMMENT You can read from stdin and write to stdout using ``"-"`` as the file name.
+
+Error Handling
+--------------
+
+We now introduce error handling when reading or writing files.
+The functions :dox:`BamFileIn#readRecord` and :dox:`BamFileOut#writeRecord` throw exceptions on errors.
+In Assignment 1, we will add error handling to the program.
+
+.. COMMENT For example, the following file contains trailing empty lines, the program will loop indefinitely as can be seen in the shell output below:
+
+.. COMMENT
+   # tutorial_basic_sam_bam_io_example1
+   @HD     VN:1.3  SO:coordinate
+   @SQ     SN:ref  LN:45
+   @SQ     SN:ref2 LN:40
+   r001    163     ref     7       30      8M4I4M1D3M      =       37      39      TTAGATAAAGAGGATACTG     *       XX:B:S,12561,2,20,112
+   r002    0       ref     9       30      1S2I6M1P1I1P1I4M2I      *       0       0       AAAAGATAAGGGATAAA       *
+   r003    0       ref     9       30      5H6M    *       0       0       AGCTAA  *
+   r004    0       ref     16      30      6M14N1I5M       *       0       0       ATAGCTCTCAGC    *
+   r003    16      ref     29      30      6H5M    *       0       0       TAGGC   *
+   r001    83      ref     37      30      9M      =       7       -39     CAGCGCCAT       *
+	   83      *       *       *       *       *       0       *       *       *
+	   83      *       *       *       *       *       0       *       *       *
+   ...
+
+
+Assignment 1
+""""""""""""
+
+.. container:: assignment
+
+   Adding Error Handling
+
+   Type
+     Review
+
+   Objective
+     Add error handling using the hints below.
+
+   Hints
+      The functions :dox:`BamFileIn#readRecord` and :dox:`BamFileOut#writeRecord` throw exceptions on errors.
+
+   Solution
+      .. container:: foldable
+
+         .. includefrags:: demos/tutorial/basic_sam_bam_io/solution1.cpp
+
+The Class :dox:`BamAlignmentRecord`
+-----------------------------------
+
+The class :dox:`BamAlignmentRecord` stores one alignment record in a SAM or BAM file.
+The class gives a in-memory representation that (1) is independent of whether it comes from/goes to a SAM or BAM file, (2) at the same time follows both formats closely, (3) allows for efficient storage and usage in C++, and (4) integrates well with the rest of the SeqAn library.
+
+The following definition gives an overview that annotate which fields are available, the field types, and how they map to the SAM and BAM fields.
+Note that we use the :dox:`CigarElement` class to store entries in the CIGAR string.
 
 .. code-block:: cpp
 
@@ -79,7 +231,7 @@ As a reminder, here is the synopsis of the :dox:`BamAlignmentRecord` class again
        CharString qual;                // Quality string as in SAM (Phred).
        CharString tags;                // Tags, raw as in BAM.
 
-       // Constants for marking pos, reference id and length members invalid (== */0).
+       // Constants for marking pos, reference id and length members invalid (== 0/*).
        static __int32 const INVALID_POS = -1;
        static __int32 const INVALID_REFID = -1;
        static __int32 const INVALID_LEN = 0;
@@ -87,192 +239,215 @@ As a reminder, here is the synopsis of the :dox:`BamAlignmentRecord` class again
 
    }  // namespace seqan
 
-Name Stores and Name Store Caches
----------------------------------
+The static members ``INVALID_POS``, ``INVALID_REFID``, and ``INVALID_LEN`` store sentinel values for marking positions, reference sequence ids, and lengths as invalid or N/A.
 
-In order to translate from numeric reference id (``rID``) to text reference sequence name, the names have to be stored in a :dox:`StringSet` which we will call a **name store**.
-For being able to translate back from a textual name (stored as a :dox:`CharString`, for example), we need a :dox:`NameStoreCache` that allows the fast lookup of numeric ids from textual names.
-Both the name store and the cache are then wrapped by a :dox:`BamIOContext`.
-This context object is used to prescient from the differences of SAM and BAM files when reading and writing.
+An important related type is the enum :dox:`BamFlags` that provides constants for bit operations on the ``flag`` field.
+The functions :dox:`BamAlignmentRecord#hasFlagAllProper`, :dox:`BamAlignmentRecord#hasFlagDuplicate`, :dox:`BamAlignmentRecord#hasFlagFirst`, :dox:`BamAlignmentRecord#hasFlagLast`, :dox:`BamAlignmentRecord#hasFlagMultiple`, :dox:`BamAlignmentRecord#hasFlagNextRC`, :dox:`BamAlignmentRecord#hasFlagNextUnmapped`, :dox:`BamAlignmentRecord#hasFlagQCNoPass`, :dox:`BamAlignmentRecord#hasFlagRC`, :dox:`BamAlignmentRecord#hasFlagSecondary`, :dox:`BamAlignmentRecord#hasFlagUnmapped`, and :dox:`BamAlignmentRecord#hasFlagSupplementary` allow for easy reading of flags.
 
-For example, when writing out a :dox:`BamAlignmentRecord` to a SAM file, we need to look up the name of the reference from its numeric id to write it out as a string.
-When reading a record from a SAM file, we have to translate its name string into a numeric id.
-Even more, if the sequence is not know yet (remember, the ``@SQ`` headers are optional), we have to append it to the name store and register it with the cache.
-
-Here is a minimal example of setting up a name store, name store cache, and a :dox:`BamIOContext`.
-We will build upon this example below when showing how to read and write SAM and BAM files.
-
-.. includefrags:: demos/tutorial/bam_io/example1.cpp
-
-BGZF Files / Stream
--------------------
-
-By default, the BAM format is compressed using the BGZF compression scheme (originating from `Tabix <http://samtools.sourceforge.net/swlist.shtml>`_, but also described in the `SAM standard <http://samtools.sourceforge.net/SAM1.pdf>`_).
-You can read BGZF files with tools for processing ``.gz`` files, e.g. ``gzip`` and ``zcat``.
-
-However, there is a big difference between files written in BGZF and ``.gz`` files.
-BGZF is a sequence of compressed blocks.
-If the offset of a block is known, it can be decompressed independent of the rest of the file.
-This information can then be used together with indices.
-
-SeqAn provides the :dox:`BgzfStream BGZF Stream` class in the module ``<seqan/stream.h>`` to access such streams.
-Here is an example for using a :dox:`BgzfStream Stream` for reading:
-
-.. includefrags:: demos/tutorial/bam_io/example2.cpp
-
-Using a :dox:`BgzfStream BGZF Stream` for writing:
-
-.. includefrags:: demos/tutorial/bam_io/example3.cpp
-
-Assignment 1
-""""""""""""
 
 .. container:: assignment
 
-   Uncompressing a BGZF file.
+   Counting Records
 
    Type
      Review
 
    Objective
-     Write a program that reads in a BGZF compressed file using :dox:`BgzfStream BGZF Stream` and writes the uncompressed data out again.
+     Extend the result of Assignment 1 by counting the number of unmapped reads.
 
-   Hint
-     Use the function :dox:`StreamConcept#streamReadBlock` and :dox:`StreamConcept#streamWriteBlock` for reading and writing data into and from buffers.
-
-   Solution
-     .. container:: foldable
-
-        .. includefrags:: demos/tutorial/bam_io/solution1.cpp
-
-Reading and Writing Headers
----------------------------
-
-The data structure :dox:`BamHeader` has already been described in the :ref:`tutorial-basic-sam-bam-io` so we will not repeat that here.
-Instead, we will focus on how to read headers from SAM and BAM files.
-
-Here is a minimal example of reading and writing a header from and to a SAM file.
-The example contains the creation of a :dox:`BamIOContext`, the necessary :dox:`RecordReader` and full error handling.
-
-.. includefrags:: demos/tutorial/bam_io/example4.cpp
-
-Reading and writing headers from and to BAM files is simple.
-We simply replace ``seqan::Sam()`` by ``seqan::Bam()`` and use :dox:`BgzfStream BGZF Stream` objects instead of uncompressed streams.
-Also, we do not need a :dox:`RecordReader` any more.
-
-.. includefrags:: demos/tutorial/bam_io/example5.cpp
-
-Note that except for the types, the signatures of the functions ``readRecord()`` and ``write()`` are the same.
-Thus, we can make copying of the header a template function ``copyHeader()``.
-This function can now be used for both BAM and SAM.
-
-.. includefrags:: demos/tutorial/bam_io/example6.cpp
-
-Assignment 2
-""""""""""""
-
-.. container:: assignment
-
-   Converting BAM header to SAM.
-
-   Type
-     Application
-
-   Objective
-     Write a program that reads the header from a BAM file and writes it out as a SAM header to ``std::cout``.
+   Hints
+     Use the function :dox:`BamAlignmentRecord#hasFlagUnmapped`.
 
    Solution
      .. container:: foldable
 
-         .. includefrags:: demos/tutorial/bam_io/solution2.cpp
+        .. includefrags:: demos/tutorial/basic_sam_bam_io/solution2.cpp
 
-Reading and Writing Alignment Records
--------------------------------------
+The Classes :dox:`BamHeader` and :dox:`BamHeaderRecord`
+-------------------------------------------------------
 
-:dox:`BamAlignmentRecord BamAlignmentRecords` can be read and written the same way as :dox:`BamHeader` objects.
-Here is an example for reading and writing of alignment records from SAM and to files.
+The header information is stored in the class :dox:`BamHeader`.
+This class gives a unified in-memory representation for SAM and BAM files.
 
-.. code-block:: cpp
+The class has two members: ``records`` and ``sequenceInfos``.
+We will focus on ``sequenceInfos`` here.
+``sequenceInfos`` is a :dox:`String` of :dox:`Pair` objects.
+The first entry of the pair is a :dox:`CharString` with the sequence name and the second entry is a ``_int32`` with the sequence length.
+Note that the ``@SQ`` header lines in the header and the ``sequenceInfos`` fields are not kept in sync automatically.
 
-   // Copy over records.
-   seqan::BamAlignmentRecord record;
-   while (atEnd(reader))
-   {
-       if (readRecord(record, context, reader, seqan::Sam()) != 0)
-       {
-           std::cerr << "ERROR: Could not read record from SAM file " << argv[1] << "\n";
-           return 1;
-       }
+The following example program prints the sequences and lengths from a BAM file.
 
-       if (write2(outStream, record, context, seqan::Sam()) != 0)
-       {
-           std::cerr << "ERROR: Could not write record to SAM file " << argv[2] << "\n";
-           return 1;
-       }
-   }
+.. includefrags:: demos/tutorial/basic_sam_bam_io/example2.cpp
 
-And here is the modified version for the BAM format.
-The only changes are that
+Note that this is only guaranteed to work for BAM files because this information is not mandatory in SAM files and might be missing.
+When writing files, you have to fill the ``sequenceInfos`` string appropriately before writing any record.
 
-* we do not read from a :dox:`RecordReader` but a :dox:`BgzfStream BGZF Stream` instead,
-* we need to write to a :dox:`BgzfStream BGZF Stream`, and
-* we need to use the tag ``seqan::Bam()`` instead of ``seqan::Sam()``.
+.. tip::
 
-.. code-block:: cpp
+    Building Ref-ID Mappings Using ``sequenceInfos``.
 
-   // Copy over records.
-   seqan::BamAlignmentRecord record;
-   while (atEnd(reader))
-   {
-       if (readRecord(record, context, inStream, seqan::Bam()) != 0)
-       {
-           std::cerr << "ERROR: Could not read record from BAM file " << argv[1] << "\n";
-           return 1;
-       }
+    The following example gives a typical example for using the ``sequenceInfos`` member:
+    You want to post-process a BAM file together with the reference FASTA file.
+    The sequences in the FASTA file are the same but their order may have changed.
+    For example, because the FASTA file from the mapping step has been generated from the chromosomes by concatenation in a different order than the currently present one.
 
-       if (write2(outStream, record, context, seqan::Bam()) != 0)
-       {
-           std::cerr << "ERROR: Could not write record to BAM file " << argv[2] << "\n";
-           return 1;
-       }
-    }
+    .. includefrags:: demos/tutorial/basic_sam_bam_io/example3.cpp
 
 Assignment 3
 """"""""""""
 
 .. container:: assignment
 
-   Converting whole BAM files to SAM.
+   Generating SAM From Scratch
 
    Type
-      Application
+     Application
 
    Objective
-      Modify the solution of Assignment 2 to not only convert the header to BAM but also the alignment records.
+     Write a program that prints a SAM file, including headers ``@HD`` and ``@SQ``.
+     The content should be all 12-mers of the reference sequence ``"CCCGATGAGCACACGATCACACGATGACA"``, called ``"REF"``.
+     The name should be ``"REF_${begin pos}_${end pos}"``.
+     You only have to fill the members ``qId``, ``rID``, ``beginPos``, ``cigar``, and ``flag`` (set ``flag`` to ``0``).
+
+   Hints
+     You can convert integers into strings using the ``<sstream>`` STL header.
+
+     .. code-block: cpp
+
+	#include <sstream>
+	// ...
+	std::stringstream ss;
+	ss << 10;
+	seqan::CharString str = ss.str();  // => == "10"
+	// To reset ss, we need two calls:
+	ss.str("");  // Remove contents.
+	ss.clear();  // Reset any error bits.
+
+     The first lines of the result should read as follows:
+
+     ::
+
+	 @HD VN:1.4
+	 @SQ SN:REF  LN:29
+	 REF_0_12    0   REF 1   *   12= *   0   *   CCCGATGAGCAC    *
+	 REF_1_13    0   REF 2   *   12= *   0   *   CCGATGAGCACA    *
+	 REF_2_14    0   REF 3   *   12= *   0   *   CGATGAGCACAC    *
+	 REF_3_15    0   REF 4   *   12= *   0   *   GATGAGCACACG    *
+
 
    Solution
-      .. container:: foldable
+     .. container:: foldable
 
-         .. includefrags:: demos/tutorial/bam_io/solution3.cpp
+        .. includefrags:: demos/tutorial/basic_sam_bam_io/solution3.cpp
 
-Using Indices
--------------
 
-SeqAn also contains support for reading BAM indices with the format ``.bai``.
-These indices can be built using the ``samtools index`` command.
+Accessing the Tags
+------------------
 
-You can read such indices into a :dox:`BaiBamIndex BAI BamIndex` object with the function :dox:`BamIndex#read`.
-Then, you can use the function seqan:"Function.BamIndex#jumpToRegion" to jump within BAM files.
+As seen above, accessing the header tags is simple since it is a string of tag/value pairs.
+The whole header is completely read, parsed, and converted into this structure when the file is opened.
+The header is expected to be small, especially when compared to the rest of the file, and thus the time and memory spent is neglectable.
 
-After jumping, the next record that is read is before at the given position.
-This means, you have to manually read as many records up until the one you are looking for is found.
-The reason for this is that the function :dox:`BamIndex#jumpToRegion` would have to read until it finds the first record that is right from or at the given position.
-This would lead to this record being lost.
+The alignment record tags are a different story.
+The tags only contain auxiliary information that are not of interest for all use cases.
+Always parsing the tags would not be in agreement with C++'s and SeqAn's device "you only pay for what you use", especially for BAM files that are expected to contain millions of records.
+Also, the tags of the alignment records are typed, e.g. ``NM:i:10`` is an integer tag named ``"NM"`` with the value ``10``.
 
-.. includefrags:: demos/tutorial/bam_io/example7.cpp
+Thus, the following strategy is used.
+Alignment record tags from BAM files are copied byte-wise into the ``tag`` member of :dox:`BamAlignmentRecord` in a verbatim fashion.
+When reading from SAM, the tags are converted into format used by BAM tags.
+
+Then, you can use the :dox:`BamTagsDict` class to access the the tag list of a record in a dictionary-like fashion.
+This class also performs the necessary casting when reading and writing tag list entries.
+
+:dox:`BamTagsDict` acts as a wrapper around the ``tags`` member (which is of type :dox:`CharString`) of a :dox:`BamAlignmentRecord`:
+
+.. code-block:: cpp
+
+   seqan::BamAlignmentRecord record;
+   seqan::BamTagsDict tagsDict(record.tags);
+
+We can add a tag using the function :dox:`BamTagsDict#setTagValue`.
+When setting an already existing tag's value, its value will be overwritten.
+Note that in the following, we give the tags value in SAM format because it is easier to read, although they are stored in BAM format internally.
+
+.. code-block:: cpp
+
+   setTagValue(tagsDict, "NM", 2);
+   // => tags: "NM:i:2"
+   setTagValue(tagsDict, "NH", 1);
+   // => tags: "NM:i:2 NH:i:1"
+   setTagValue(tagsDict, "NM", 3);
+   // => tags: "NM:i:3 NH:i:1"
+
+The first parameter to :dox:`BamTagsDict#setTagValue` is the :dox:`BamTagsDict`, the second one is a two-character string with the key, and the third one is the value.
+Note that the type of tag entry will be taken automatically from the type of the third parameter.
+
+Reading values is slightly more complex because we have to handle the case that the value is not present.
+First, we get the index of the tag in the tag list.
+
+.. code-block:: cpp
+
+   unsigned myIdx = 0;
+   bool keyFound = findTagKey(myIdx, tagsDict, "NH");
+   if (keyFound)
+       std::cerr << "ERROR: Unknown key!\n";
+
+Then, we can read the value from the :dox:`BamTagsDict` using the function :dox:`BamTagsDict#extractTagValue`.
+
+.. code-block:: cpp
+
+   int valInt = 0;
+   bool ok = extractTagValue(valInt, tagsDict, myIdx);
+   if (ok)
+       std::cerr << "ERROR: There was an error extracting NH from tags!\n";
+
+The function returns a ``bool`` that is ``true`` on success and ``false`` otherwise.
+The extraction can fail if the index is out of bounds or the value in the dictionary cannot be cast to the type of the first parameter.
+
+The value in the tags dictionary will be casted to the type of the first parameter (result parameter) of :dox:`BamTagsDict#extractTagValue`:
+
+.. code-block:: cpp
+
+   short valShort = 0;
+   extractTagValue(valShort, tagsDict, myIdx);
+
+Assignment 4
+""""""""""""
+
+.. container:: assignment
+
+   Writing Tags
+
+   Type
+     Review
+
+   Objective
+     Modify the solution of Assignment 3 to also write the ``"NH"`` tag.
+     This tag stores an ``int`` value that is the number of records for this query.
+     In our case, the value is always ``1``.
+
+     The first lines of the result should read as follows:
+
+     ::
+
+         @HD VN:1.4
+         @SQ SN:REF  LN:29
+         REF_0_12    0   REF 1   *   12= *   0   *   CCCGATGAGCAC    *   NH:i:1
+         REF_1_13    0   REF 2   *   12= *   0   *   CCGATGAGCACA    *   NH:i:1
+         REF_2_14    0   REF 3   *   12= *   0   *   CGATGAGCACAC    *   NH:i:1
+         REF_3_15    0   REF 4   *   12= *   0   *   GATGAGCACACG    *   NH:i:1
+
+
+   Solution
+     .. container:: foldable
+
+        .. includefrags:: demos/tutorial/basic_sam_bam_io/solution4.cpp
+
+Congratulations, you have now learned to read and write SAM and BAM files.
 
 Next Steps
-----------
+~~~~~~~~~~
 
 * Read the `SAM Specification (pdf) <http://samtools.sourceforge.net/SAM1.pdf>`_.
 * Continue with the :ref:`tutorial`.
