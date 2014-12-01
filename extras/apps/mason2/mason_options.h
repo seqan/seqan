@@ -668,6 +668,8 @@ struct MasonSimulatorOptions
     seqan::CharString outFileNameLeft, outFileNameRight;
     // Path to output SAM file.
     seqan::CharString outFileNameSam;
+    // Path to exome bias weight tsv file. (Oliver Stolpe 2014-11-12)
+    seqan::CharString biasTsvInFile;
 
     // Configuration for the reading of the reference and application of the variants from the VCF file.
     MaterializerOptions matOptions;
