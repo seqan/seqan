@@ -41,10 +41,10 @@ We therefore want to use :dox:`TopDownIterator#goDown` which has an overload to 
 
 .. important::
 
-   Note that the iterator traverses the complete edge.
-   It does not stop after the first characters if the edge represents more than one character.
-   This is true for all tree iterators.
-   The only exception is the iterator of the :dox:`FMIndex`, which is a trie iterator.
+   The following examples show how to iterate :dox:`IndexEsa`, :dox:`IndexWotd` or :dox:`IndexDfi`, i.e. :dox:`Index` specializations representing suffix trees.
+   The result of the iteration will look different on :dox:`Index` specializations representing tries, e.g. :dox:`FMIndex` or :dox:`IndexQGram`.
+   Indeed, the topology of an :dox:`Index` changes depending on the chosen tree or trie specialization.
+   Note that any suffix tree edge can be labeled by more than one character, whereas any trie edge is always labeled by exactly one character.
 
 First we create an index of the text ``"How much wood would a woodchuck chuck?"``
 
