@@ -39,7 +39,7 @@
 #include <fstream>
 #include <seqan/file.h>
 #include <seqan/parse_lm.h>
-#include "../../../apps/stellar/stellar.h"
+#include "../stellar/stellar.h"
 
 using namespace seqan;
 
