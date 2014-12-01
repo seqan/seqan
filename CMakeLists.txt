@@ -132,8 +132,6 @@ seqan_get_repository_info ()
 
 message (STATUS "Configuring core")
 add_subdirectory (core)
-message (STATUS "Configuring extras")
-add_subdirectory (extras)
 message (STATUS "Configuring docs")
 add_subdirectory (docs)
 message (STATUS "Configuring dox")
