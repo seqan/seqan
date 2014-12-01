@@ -68,16 +68,7 @@ template <typename TSpec> class Graph;
  * Note that internally T is used as signed, so not the whole range is available if T is unsigned.
  */
 
-/**
-.Class.UnionFind
-..cat:Miscellaneous
-..summary:Union-Find data structure.
-..signature:UnionFind<T>
-..param.T:The type the data structure operates on.
-..remarks:The data structure uses union by rank and path compression to achieve almost linear running time.
-..remarks:Note that internally, T is used signed so not the whole range might be available.
-..include:seqan/misc/misc_union_find.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 class UnionFind
@@ -356,19 +347,7 @@ resizeVertexMap(UnionFind<TValue> & unionFind,
  * @see UnionFind#joinSets
  */
 
-/**
-.Function.findSet:
-..cat:Miscellaneous
-..summary:Return set identifier, given an element identifier.
-..signature:find(unionFind, query)
-..class:Class.UnionFind
-..param.unionFind:The Union-Find data structure query.
-...type:Class.UnionFind
-..param.query:The value to query for.
-..returns:The set identifier for the given element id.
-..see:Function.joinSets
-..include:seqan/misc/misc_union_find.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TQuery>
 inline
@@ -417,21 +396,7 @@ findSet(UnionFind<TValue> & unionFind,
  * @see UnionFind#findSet
  */
 
-/**
-.Function.joinSets
-..cat:Miscellaneous
-..summary:UNION() operation for UF data structure.
-..signature:joinSets(unionFind, left, right)
-..class:Class.UnionFind
-..param.unionFind:The type the data structure operates on.
-...type:Class.UnionFind
-..param.left:Representant of the left set to union.
-..param.right:Representant of the right set to union.
-..remarks:This function is called $join$ and not $union$ since $union$ is a reserved keyword in the C and C++ programming languages.
-..remarks:Note that you most likely want to put return values of $findSet()$ as the values for $left$ and $right$.
-..see:Function.findSet
-..include:seqan/misc/misc_union_find.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TLeft, typename TRight>
 inline

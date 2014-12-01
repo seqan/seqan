@@ -70,20 +70,7 @@ namespace seqan {
 
 // TODO(holtgrew): Change name of specialization to Owner StringSet.
 
-/**
-.Spec.Owner:
-..summary:A string set storing the strings as members.
-..cat:Sequences
-..general:Class.StringSet
-..signature:StringSet<TString, Owner<> >
-..signature:StringSet<TString, Owner<Default> >
-..param.TString:The string type.
-...type:Class.String
-..remarks:The strings are internally stored in a $String<TString>$ object and the character position type is a
-@Class.Pair@ $(seqNo,seqOfs)$ where seqNo identifies the string within the stringset and seqOfs identifies the position within this string.
-..remarks:The position type can be returned or modified by the meta-function @Metafunction.SAValue@ called with the @Class.StringSet@ type.
-..include:seqan/sequence.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TString>
 class StringSet<TString, Owner<Default> >
 {

@@ -51,16 +51,7 @@ class RightArrayBinaryTree;
 // Tags 
 // ============================================================================
 //
-/**
-.Tag.RightArrayBinaryTree Fibres
-..summary:Tag to select a specific fibre (e.g. table, object, ...) of a @Class.RightArrayBinaryTree@.
-..remarks:These tags can be used to get @Metafunction.Fibre.Fibres@ of a RightArrayBinaryTree.
-..cat:RightArrayBinaryTree
-..tag.FibreTreeStructureEncoding:The string encoding the wavelet tree structure.
-..see:Metafunction.Fibre
-..see:Function.getFibre
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @defgroup RightArrayBinaryTreeFibres RightArrayBinaryTree Fibres
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
@@ -138,16 +129,7 @@ struct Value<RightArrayBinaryTree<TChar, TSpec> const> :
  * @tparam TSpec  The wavelet tree structure specialisation. Default: void.
  */
 
-/**
-.Class.RightArrayBinaryTree:
-..cat:WaveletTree
-..summary:A special format to encode the structure of a wavelet tree. The structure is very space efficient because only one position is stored which encodes where the left and right subtree of a given node exist.
-..signature:RightArrayBinaryTree<TValue, TSpec>
-..param.TSpec:The value type, that is the type of the stored characters.
-..param.TSpec:The wavelet tree structure specialisation.
-...default:void.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TChar, typename TSpec>
 class RightArrayBinaryTree
 {
@@ -186,11 +168,7 @@ public:
  * @param[in,out] rightArrayBinaryTree The RightArrayBinaryTree to be cleared.
  */
 
-/**
-.Function.clear
-..param.object:
-...type:Class.RightArrayBinaryTree
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TChar, typename TSpec>
 inline void clear(RightArrayBinaryTree<TChar, TSpec> & treeStructure)
 {
@@ -211,21 +189,7 @@ inline void clear(RightArrayBinaryTree<TChar, TSpec> & treeStructure)
  * @param[in] text                 A @link TextConcept text @endlink.
  */
 
-/**
-.Function.createRightArrayBinaryTree
-..summary:Computes the wavelet tree structure of a text.
-..signature:createRightArrayBinaryTree(waveletTreeStructure, text)
-..param.waveletTreeStructure:A wavelet tree structure.
-...type:Class.RightArrayBinaryTree
-..param.text:A text.
-...type:Class.String
-..include:seqan/index.h
-..example.code:
-String<Dna5> genome = "ACGTACGT";
-
-RightArrayBinaryTree<Dna5> waveletTreeStructure;
-computeRightArrayBinaryTree(genome);
-*/
+/*_DDDOC_PLACEHOLDER*/
 // This function computes the wavelet tree structure.
 template <typename TChar, typename TSpec, typename TIterSpec, typename TBorderString, typename TPrefixSums>
 inline void _createRightArrayBinaryTreeImpl(Iter<RightArrayBinaryTree<TChar, TSpec>, TIterSpec> & it,
@@ -294,11 +258,7 @@ createRightArrayBinaryTree(RightArrayBinaryTree<TChar, TSpec> & waveletTreeStruc
  * @return bool Returns <tt>true</tt> if the rank-support-bit string is empty and <tt>false</tt> otherwise.
  */
 
-/**
-.Function.empty
-..param.object:
-...type:Class.RightArrayBinaryTree
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TChar, typename TSpec>
 inline bool empty(RightArrayBinaryTree<TChar, TSpec> const & treeStructure)
 {
@@ -322,19 +282,7 @@ inline bool empty(RightArrayBinaryTree<TChar, TSpec> const & treeStructure)
  * 
  * @return TFibre A reference to the @link Fibre @endlink object.
  */
-/**
-.Function.RightArrayBinaryTree#getFibre:
-..summary:Returns a specific fibre of a container.
-..signature:getFibre(container, fibreTag)
-..class:Class.RightArrayBinaryTree
-..cat:Index
-..param.container:The container holding the fibre.
-...type:Class.RightArrayBinaryTree
-..param.fibreTag:A tag that identifies the @Metafunction.Fibre@.
-...type:Tag.RightArrayBinaryTree Fibres
-..returns:A reference to the @Metafunction.Fibre@ object.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TChar, typename TSpec>
 inline typename Fibre<RightArrayBinaryTree<TChar, TSpec>, FibreTreeStructureEncoding>::Type &
 getFibre(RightArrayBinaryTree<TChar, TSpec> & treeStructure, FibreTreeStructureEncoding)
@@ -420,23 +368,7 @@ _resize(RightArrayBinaryTree<TChar, TSpec> & treeStructure, TSize size,
  * @return bool A <tt>bool</tt> which is <tt>true</tt> on success.
  */
 
-/**
-.Function.RightArrayBinaryTree#open
-..class:Class.RightArrayBinaryTree
-..summary:This functions loads a @Class.RightArrayBinaryTree@ from disk.
-..signature:open(rightArrayBinaryTree, fileName [, openMode])
-..param.rightArrayBinaryTree:The rightArrayBinaryTree.
-...type:Class.RightArrayBinaryTree
-..param.fileName:C-style character string containing the file name.
-..param.openMode:The combination of flags defining how the file should be opened.
-...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
-...remarks:To create or overwrite a file add $OPEN_CREATE$.
-...remarks:To append a file if existing add $OPEN_APPEND$.
-...remarks:To circumvent problems, files are always opened in binary mode.
-...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TChar, typename TSpec>
 inline bool open(RightArrayBinaryTree<TChar, TSpec> & treeStructure, const char * fileName, int openMode)
 {
@@ -486,23 +418,7 @@ inline bool open(RightArrayBinaryTree<TChar, TSpec> & treeStructure, const char 
  * @return bool A <tt>bool</tt> which is <tt>true</tt> on success.
  */
 
-/**
-.Function.RightArrayBinaryTree#save
-..class:Class.RightArrayBinaryTree
-..summary:This functions saves a @Class.RightArrayBinaryTree@ to disk.
-..signature:save(rightArrayBinaryTree, fileName [, openMode])
-..param.rightArrayBinaryTree:The rightArrayBinaryTree.
-...type:Class.RightArrayBinaryTree
-..param.fileName:C-style character string containing the file name.
-..param.openMode:The combination of flags defining how the file should be opened.
-...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
-...remarks:To create or overwrite a file add $OPEN_CREATE$.
-...remarks:To append a file if existing add $OPEN_APPEND$.
-...remarks:To circumvent problems, files are always opened in binary mode.
-...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TChar, typename TSpec>
 inline bool save(RightArrayBinaryTree<TChar, TSpec> const & treeStructure, const char * fileName, int openMode)
 {

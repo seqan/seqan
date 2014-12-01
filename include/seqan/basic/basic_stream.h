@@ -78,21 +78,7 @@ length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
  * @signature #define SEQAN_HAS_BZIP 0  // or 1
  */
 
-/**
-.Macro.SEQAN_HAS_ZLIB
-..cat:Input/Output
-..cat:From Outside
-..signature:SEQAN_HAS_ZLIB
-..summary:If set to 1 then zlib is available, i.e. including $<zlib.h>$ and linking against libz works.
-..remarks:This flag is normally set from the outside by your build system using compiler flags.
-
-.Macro.SEQAN_HAS_BZIP2
-..cat:Input/Output
-..cat:From Outside
-..signature:SEQAN_HAS_BZLIB
-..summary:If set to 1 then bzlib2 is available, i.e. including $<bzlib.h>$ and linking against libbzip2 works.
-..remarks:This flag is normally set from the outside by your build system using compiler flags.
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // ============================================================================
 // Tags

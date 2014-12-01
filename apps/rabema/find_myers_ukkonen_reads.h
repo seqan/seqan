@@ -46,17 +46,7 @@
 
 namespace seqan {
 
-/**
-.Spec.MyersUkkonenReads:
-..summary:Approximate string matching using Myers-Ukkonen that guarantees that the last position of the pattern is not matched with a delete.
-..general:Class.Pattern
-..cat:Searching
-..signature:Pattern<TNeedle, MyersUkkonenReads>
-..param.TNeedle:The needle type.
-...type:Class.String
-..remarks.text:The types of the needle and the haystack have to match.
-..include:seqan/find.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 ///.Class.Pattern.param.TSpec.type:Spec.MyersUkkonenReads
 

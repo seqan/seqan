@@ -102,15 +102,7 @@ typedef Blosum30_ ScoreSpecBlosum30;
  * @endcode
  */
 
-/**
-.Shortcut.Blosum30:
-..cat:Scoring
-..summary:Blosum30 scoring matrix.
-..signature:Blosum30
-..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum30> >
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum30> > Blosum30;
 
 
@@ -207,15 +199,7 @@ typedef Blosum45_ ScoreSpecBlosum45;
  * @endcode
  */
 
-/**
-.Shortcut.Blosum45:
-..cat:Scoring
-..summary:Blosum45 scoring matrix.
-..signature:Blosum45
-..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum45> >
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum45> > Blosum45;
 
 
@@ -311,15 +295,7 @@ typedef Blosum62_ ScoreSpecBlosum62;
  * @endcode
  */
 
-/**
-.Shortcut.Blosum62:
-..cat:Scoring
-..summary:Blosum62 scoring matrix.
-..signature:Blosum62
-..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum62> >
-..include:seqan/score.h
- */
+/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum62> > Blosum62;
 
 
@@ -415,15 +391,7 @@ typedef Blosum80_ ScoreSpecBlosum80;
  * @endcode
  */
 
-/**
-.Shortcut.Blosum80:
-..cat:Scoring
-..summary:Blosum80 scoring matrix.
-..signature:Blosum80
-..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum80> >
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum80> > Blosum80;
 
 
@@ -519,15 +487,7 @@ typedef Pam40_ ScoreSpecPam40;
  * @endcode
  */
 
-/**
-.Shortcut.Pam40:
-..cat:Scoring
-..summary:Pam40 scoring matrix.
-..signature:Pam40
-..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam40> >
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam40> > Pam40;
 
 
@@ -626,15 +586,7 @@ typedef Pam120_ ScoreSpecPam120;
  * @endcode
  */
 
-/**
-.Shortcut.Pam120:
-..cat:Scoring
-..summary:Pam120 scoring matrix.
-..signature:Pam120
-..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam120> >
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam120> > Pam120;
 
 
@@ -732,15 +684,7 @@ typedef Pam200_ ScoreSpecPam200;
  * @endcode
  */
 
-/**
-.Shortcut.Pam200:
-..cat:Scoring
-..summary:Pam200 scoring matrix.
-..signature:Pam200
-..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam200> >
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam200> > Pam200;
 
 
@@ -838,15 +782,7 @@ typedef Pam250_ ScoreSpecPam250;
  * @endcode
  */
 
-/**
-.Shortcut.Pam250:
-..cat:Scoring
-..summary:Pam250 scoring matrix.
-..signature:Pam250
-..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam250> >
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam250> > Pam250;
 
 
@@ -944,15 +880,7 @@ typedef Vtml200_ ScoreSpecVtml200;
  * @endcode
  */
 
-/**
-.Shortcut.Vtml200:
-..cat:Scoring
-..summary:Vtml200 scoring matrix.
-..signature:Vtml200
-..shortcutfor:Spec.Score Matrix
-...signature:Score<int, ScoreMatrix<AminoAcid, ScoreSpecVtml200> >
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecVtml200> > Vtml200;
 
 

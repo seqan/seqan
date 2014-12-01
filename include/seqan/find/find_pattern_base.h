@@ -61,19 +61,7 @@ namespace seqan {
  * matching needle and the position in the needle.
  */
 
-/**
-.Class.Pattern:
-..summary:Holds the needle and preprocessing data (depends on algorithm).
-..cat:Searching
-..signature:Pattern<TNeedle[, TSpec]>
-..param.TNeedle:The needle type.
-...type:Class.String
-..param.TSpec:The online-algorithm to search with.
-...remarks:Leave empty for index-based pattern matching (see @Class.Index@).
-...default:The result of @Metafunction.DefaultPattern@
-..remarks:If $TNeedle$ is a set of strings, then $position(pattern)$ returns the index of the currently matching needle.
-..include:seqan/find.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template < typename TNeedle, typename TSpec = typename DefaultPattern<TNeedle>::Type >
 class Pattern;
@@ -223,17 +211,7 @@ struct Size< Pattern<TPattern, TSpec> > {
  * @tparam TPattern The Pattern to query for its scoring scheme type.  Default: EditDistanceScore.
  */
 
-/**
-.Metafunction.ScoringScheme:
-..summary:Returns the scoring scheme of an approximate searching algorithm.
-..cat:Searching
-..signature:ScoringScheme<TPattern>::Type
-..param.TPattern:A @Class.Pattern@ type.
-...type:Class.Pattern
-..returns:The scoring scheme.
-...default:@Shortcut.EditDistanceScore@
-..include:seqan/find.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TNeedle>
 struct ScoringScheme
@@ -391,20 +369,7 @@ SEQAN_CHECKPOINT
  * TNeedle is the result of the Needle metafunction of TPattern.  This is an alias to the function @link Pattern#host @endlink.
  */
 
-/**
-.Function.needle:
-..summary:Returns the needle of a @Class.Pattern@ object (not implemented for some online-algorithms).
-..cat:Searching
-..signature:needle(pattern)
-..class:Class.Pattern
-..param.pattern:The @Class.Pattern@ object to search with.
-...type:Class.Pattern
-..returns:The needle object to search for.
-..remarks:The result type is @Metafunction.Needle@$<TPattern>::Type$ for pattern of type $TPattern$.
-This is an alias to function @Function.host@ of the pattern function.
-..see:Function.host
-..include:seqan/find.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 ///.Function.host.remarks:Aliased to @Function.needle@ and @Function.haystack@ for classes @Class.Pattern@ and @Class.Finder@.
 
 
@@ -461,18 +426,7 @@ needle(Pattern<TNeedle, TSpec> const & obj)
  * @param[in]     needle  The needle to set.
  */
 
-/**
-.Function.setNeedle:
-..summary:Sets the needle of a @Class.Pattern@ object and optionally induces preprocessing.
-..cat:Searching
-..signature:setNeedle(pattern, needle)
-..class:Class.Pattern
-..param.pattern:The @Class.Pattern@ object to search with.
-...type:Class.Pattern
-..param.needle:The needle object to search for.
-...type:Class.String
-..include:seqan/find.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template < typename TNeedle, typename TSpec >
 inline void

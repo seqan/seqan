@@ -37,34 +37,7 @@
 #ifndef SEQAN_VERSION_H_
 #define SEQAN_VERSION_H_
 
-/**
-.Macro.SEQAN_VERSION_MAJOR
-..cat:Versioning
-..summary:Major SeqAn revision number.
-..signature:SEQAN_VERSION_MAJOR
-..example:For SeqAn version "1.3", this value is $1$, for "2.5.4", it is $2$.
-..include:seqan/version.h
-
-.Macro.SEQAN_VERSION_MINOR
-..cat:Versioning
-..summary:Minor SeqAn revision number.
-..signature:SEQAN_VERSION_MINOR
-..example:For SeqAn version "1.3", this value is $3$, for "1.5.4", it is $5$.
-..include:seqan/version.h
-
-.Macro.SEQAN_VERSION_PATCH
-..cat:Versioning
-..summary:SeqAn patch revision number.
-..signature:SEQAN_VERSION_PATCH
-..example:For SeqAn version "1.3", this value is $0$, for "1.3.4", it is $4$.
-..include:seqan/version.h
-
-.Macro.SEQAN_VERSION_PRE_RELEASE
-..cat:Versioning
-..summary:Flag ($0$/$1$) to indicate whether this is a pre-release (i.e. SVN version).
-..signature:SEQAN_VERSION_PRE_RELEASE
-..include:seqan/version.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 #define SEQAN_VERSION_MAJOR 1
 

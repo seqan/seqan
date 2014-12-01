@@ -71,18 +71,7 @@ namespace seqan {
  * @brief Is a comment (CO) header.
  */
 
-/**
-.Enum.BamHeaderRecordType
-..cat:BAM I/O
-..summary:Enumeration for the header record type.
-..signature:BamHeaderRecordType
-..value.BAM_HEADER_FIRST:@Class.BamHeaderRecord@ is of type $@HD$
-..value.BAM_HEADER_REFERENCE:@Class.BamHeaderRecord@ is of type $@SQ$
-..value.BAM_HEADER_READ_GROUP:@Class.BamHeaderRecord@ is of type $@RG$
-..value.BAM_HEADER_PROGRAM:@Class.BamHeaderRecord@ is of type $@PG$
-..value.BAM_HEADER_COMMENT:@Class.BamHeaderRecord@ is of type $@CO$
-..include:seqan/bam_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 enum BamHeaderRecordType
 {
@@ -113,17 +102,7 @@ enum BamHeaderRecordType
  * @brief BAM file is sorted by coordinate.
  */
 
-/**
-.Enum.BamSortOrder
-..cat:BAM I/O
-..summary:Enumeration for the header record type.
-..signature:BamSortOrder
-..value.BAM_SORT_UNKNOWN:BAM file sort order is unknown.
-..value.BAM_SORT_UNSORTED:BAM file is unsorted.
-..value.BAM_SORT_QUERYNAME:BAM file is sorted by query name.
-..value.BAM_SORT_COORDINATE:BAM file is sorted by coordinates.
-..include:seqan/bam_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 enum BamSortOrder
 {
@@ -177,46 +156,7 @@ enum BamSortOrder
  * @brief The header record's tags, of type @link BamHeaderRecord::TTags @endlink.
  */
 
-/**
-.Class.BamHeaderRecord
-..cat:BAM I/O
-..summary:Represents a header entry in a SAM file or the header section of the BAM header.
-..signature:BamHeaderRecord
-..remarks:Comment records are stored with one tag where the key is empty and the value is the comment.
-..include:seqan/bam_io.h
-
-.Memfunc.BamHeaderRecord#BamHeaderRecord
-..class:Class.BamHeaderRecord
-..signature:BamHeaderRecord()
-..summary:Constructor.
-..remarks:Only the default constructor is provided.
-
-.Typedef.BamHeaderRecord#TTagName
-..class:Class.BamHeaderRecord
-..summary:Type of the tag keys.
-
-.Typedef.BamHeaderRecord#TTagValue
-..class:Class.BamHeaderRecord
-..summary:Type of the tag values.
-
-.Typedef.BamHeaderRecord#TTag
-..class:Class.BamHeaderRecord
-..summary:@Class.Pair@ to use for storing tags.
-
-.Typedef.BamHeaderRecord#TTags
-..class:Class.BamHeaderRecord
-..summary:Type of the string of tag @Class.Pair|Pairs@.
-
-.Memvar.BamHeaderRecord#type
-..summary:Type of the record.
-..class:Class.BamHeaderRecord
-..type:Enum.BamHeaderRecordType
-
-.Memvar.BamHeaderRecord#tags
-..summary:The header record's tags.
-..class:Class.BamHeaderRecord
-..type:Typedef.BamHeaderRecord#TTags
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 class BamHeaderRecord
 {
@@ -267,30 +207,7 @@ swap(BamHeaderRecord &a, BamHeaderRecord &b)
  * @brief @link AllocString @endlink of @link BamHeaderRecord BamHeaderRecords @endlink.
  */
 
-/**
-.Class.BamHeader
-..cat:BAM I/O
-..summary:Stores the information of the BAM header.
-..signature:BamHeader
-..see:Class.BamHeaderRecord
-..include:seqan/bam_io.h
-
-.Memfunc.BamHeader#BamHeader
-..class:Class.BamHeader
-..signature:BamHeader()
-..summary:Constructor.
-..remarks:Only the default constructor is provided.
-
-.Memvar.BamHeader#sequenceInfos
-..class:Class.BamHeader
-..summary:String of $(seqid, length)$ with reference name / length information.
-..type:nolink:$String<Pair<CharString, __int32> >$
-
-.Memvar.BamHeader#records
-..class:Class.BamHeader
-..summary:String of @Class.BamHeaderRecord|BamHeaderRecords@.
-..type:nolink:$String<BamHeaderRecord>$
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef String<BamHeaderRecord> BamHeader;
 
@@ -336,23 +253,7 @@ clear(BamHeaderRecord & record)
 // Function findTagKey()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.BamHeaderRecord#findTagKey
-..cat:BAM I/O
-..summary:Find a tag's key of a @Class.BamHeaderRecord@.
-..signature:findTagKey(idx, key, record)
-..param.idx:The index of the found key is stored here.
-...type:nolink:$unsigned$
-..param.key:The name of the tag key whose position is to be stored in $idx$.
-...type:Shortcut.CharString
-..param.record:The record to query.
-...type:Class.BamHeaderRecord
-..returns:$bool$, indicating whether the key could be found.
-..include:seqan/bam_io.h
-..example.code:
-unsigned myIdx = 0;
-bool keyFound = findTagKey(myIdx, "SN", record);
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TKeyName>
 inline bool
@@ -395,27 +296,7 @@ findTagKey(unsigned & idx, TKeyName const & key, BamHeaderRecord const & record)
  * @endcode
  */
 
-/**
-.Function.BamHeaderRecord#getTagValue
-..cat:BAM I/O
-..summary:Return tag value from a @Class.BamHeaderRecord@ or @Class.BamTagsDict@.
-..signature:getTagValue(tagValue, idx, record)
-..signature:getTagValue(tagValue, key, record)
-..param.tagValue:The tag's value is stored here.
-...type:Shortcut.CharString
-..param.idx:The index of the tag whose value is to be retrieved.
-...type:nolink:$unsigned$
-..param.key:The name of tag whose value is to be retrieved.
-...type:Shortcut.CharString
-..param.record:The record to query.
-...type:Class.BamHeaderRecord
-..returns:$bool$, indicating whether the value could be retrieved, always $true$ if $idx$ is given.
-..include:seqan/bam_io.h
-..example.code:
-CharString tagValue;
-bool keyFound = getTagValue(tagValue, "SN", record);
-..see:Function.BamHeaderRecord#findTagKey
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TId>
 SEQAN_FUNC_ENABLE_IF(
@@ -455,25 +336,7 @@ inline getTagValue(CharString & value, TKeyName const & key, BamHeaderRecord con
 
 // TODO(holtgrew): Parameter order!
 
-/**
-.Function.BamHeaderRecord#setTagValue
-..cat:BAM I/O
-..summary:Set tag value of a @Class.BamHeaderRecord@.
-..signature:setTagValue(idx, tagValue, record)
-..signature:setTagValue(key, tagValue, record)
-..param.idx:The index of the tag whose value should be set.
-...type:nolink:$unsigned$
-..param.key:The name of tag whose value should be set.
-...type:Shortcut.CharString
-..param.tagValue:The new tag value.
-...type:Shortcut.CharString
-..param.record:The record to query.
-...type:Class.BamHeaderRecord
-..include:seqan/bam_io.h
-..example.code:
-setTagValue("SN", "chr1", record);
-..see:Function.BamHeaderRecord#findTagKey
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TId>
 SEQAN_FUNC_ENABLE_IF(

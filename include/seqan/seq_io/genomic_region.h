@@ -199,17 +199,7 @@ struct GenomicRegion
  * @param[in,out] genomicRegion The @link GenomicRegion @endlink object to reset.  Types: GenomicRegion
  */
 
-/**
-.Function.GenomicRegion#clear
-..cat:Input/Output
-..class:Class.GenomicRegion
-..summary:Reset a @Class.GenomicRegion@ object to the same state after default construction.
-..signature:reset(genomicRegion)
-..param.genomicRegion:The @Class.GenomicRegion@ object to reset.
-...type:Class.GenomicRegion
-..returns:$void$, where $true$ indicates sucess
-..include:seqan/seq_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void
 clear(GenomicRegion & region)
@@ -237,20 +227,7 @@ clear(GenomicRegion & region)
  * @return bool true indicates successful parsing.
  */
 
-/**
-.Function.GenomicRegion#parse
-..cat:Input/Output
-..class:Class.GenomicRegion
-..summary:Parse genomic region string store results in @Class.GenomicRegion@.
-..signature:parse(genomicRegion, regionString)
-..param.genomicRegion:The @Class.GenomicRegion@ object to write the results to.
-...type:Class.GenomicRegion
-..param.regionString:The region string to prse.
-...type:Shortcut.CharString
-..returns:$bool$, where $true$ indicates sucess
-..example.text:See the example for parsing in the @Class.GenomicRegion@.
-..include:seqan/seq_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // Parse regionString and write to region.  region.rID will not be set but
 // region.seqName will be.  Return true on success.

@@ -149,20 +149,7 @@ getBasename(TFilename const & fname, TagSelector<TTagList> const &format)
  * @return bool <tt>true</tt> if the format represented by <tt>formatTag</tt> was recognized in <tt>fileName</tt>.
  */
 
-/**
-.Function.guessFormatFromFilename:
-..summary:Guesses a file format from a sequence file name.
-..cat:Input/Output
-..signature:guessFormatFromFilename(fileName, formatTag)
-..param.fileName:A filename of a sequence file.
-...see:Class.String
-..param.formatTag:A file format tag.
-...type:Tag.File Format
-...type:Class.AutoSeqFormat
-..returns:$true$ if the format represented by $formatTag$ was recognized in $fileName$.
-..see:Function.guessFormatFromFilename
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFilename, typename TFormat_>
 inline bool guessFormatFromFilename(TFilename const & fileName, Tag<TFormat_> /*formatTag*/)

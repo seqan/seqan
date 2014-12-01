@@ -193,21 +193,7 @@ namespace seqan
  * @see sysTime
  */
 
-/**
-.Function.cpuTime
-..cat:Miscellaneous
-..summary:Returns the cpu time in seconds.
-..signature:cpuTime()
-..returns:A $double$, cpu time stamp in seconds.
-...type:nolink:double
-..remarks:
-Calls $clock$ to retrieve the processor time used by the running thread.
-This implies that the thread's processor time does not tick if the thread is suspended.
-While this has its advantages, benchmarks should generally focus on wall clock time, not processor time.
-Wall clock time is returned by @Function.sysTime@.
-..see:Function.sysTime
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 
 // HINT: The unit of all time functions is second.
@@ -257,32 +243,7 @@ Wall clock time is returned by @Function.sysTime@.
  * @see cpuTime
  */
 
-/**
-.Function.sysTime
-..cat:Miscellaneous
-..summary:Returns the system time in seconds.
-..signature:sysTime()
-..returns:A $double$, system time stamp in seconds.
-...type:nolink:double
-..remarks:In contrast to @Function.cpuTime@, the system time corresponds to the wall clock time under Linux and Mac OS X.
-Under Windows @Function.sysTime@ returns the result of @Function.cpuTime@.
-..remarks:Use this for benchmarking uner Linux and Mac Os X.
-..remarks:Calls $clock_gettime$ under Linux and $gettimeofday$ under Mac OS X.
-..see:Function.cpuTime
-..example.text:
-We can use @Function.sysTime@ to instrument our code for profiling/timing information quite robustly.
-The following demonstrates how the Function.sysTime is used in many SeqAn apps for collecting timing information.
-..example.code:
-bool printTiming = true;
-
-// ...
-
-double startTime = sysTime();
-// Do some complex calculation.
-if (printTiming)
-    std::cerr << "Some complex calculation too " << sysTime() - startTime << " s." << std::endl;
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     #ifdef PLATFORM_WINDOWS
 //        inline _proFloat sysTime() { return GetTickCount() * 1e-3; }

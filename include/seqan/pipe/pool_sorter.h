@@ -90,20 +90,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see SorterConfig
  */
 
-/**
-.Spec.SorterConfigSize:
-..cat:Pipelining
-..general:Spec.SorterSpec
-..summary:Configuration of Sorter.
-..signature:SorterConfigSize<TCompare, TSize, TFile>
-..param.TCompare:The compare function (see STL's $binary_function$).
-...remarks:Let $comp$ be an object of type $TCompare$. $comp(a,b)$ should return a value less, equal, or greater than $0$ if $a<b$, $a==b$, or $a>b$.
-..param.TSize:The Sorter's size type.
-..param.TFile:The underlying @Class.File@ type.
-...default:$File<>$, see @Class.File@.
-..see:Spec.SorterConfig
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 	template < typename TCompare,
 		       typename TSize,
@@ -136,20 +123,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see SorterConfigSize
  */
 
-/**
-.Spec.SorterConfig:
-..cat:Pipelining
-..general:Spec.SorterSpec
-..summary:Configuration of Sorter.
-..signature:SorterConfig<TCompare, TFile>
-..param.TCompare:The compare function (see STL's $binary_function$).
-...remarks:Let $comp$ be an object of type $TCompare$. $comp(a,b)$ should return a value less, equal, or greater than $0$ if $a<b$, $a==b$, or $a>b$.
-..param.TFile:The underlying @Class.File@ type.
-...default:$File<>$, see @Class.File@.
-..remarks:Using this configuration spec., the Sorter's size type is $Size<TFile>::Type$. To use a custom size type @Spec.SorterConfigSize@ should be used.
-..see:Spec.SorterConfigSize
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TCompare, typename TFile = File<> >
     struct SorterConfig {
@@ -187,20 +161,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @endcode
  */
 
-/**
-.Spec.SorterSpec:
-..cat:Pipelining
-..general:Class.Pool
-..summary:Sorts all elements using a custom compare function.
-..signature:Pool<TValue, SorterSpec<TConfig> >
-..param.TValue:The value type, that is the type of the stream elements.
-..param.TConfig:Configuration Spec. Defines compare function, size type, and file type.
-...type:Spec.SorterConfig
-...type:Spec.SorterConfigSize
-..remarks:The Pool's input/output type is $TValue$ and the size type is determined by the $TConfig$.
-...note:If there exists an explicit function mapping input elements to their destined positions in the output stream, @Spec.MapperSpec@ should be preferred.
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TConfig >
     struct SorterSpec {

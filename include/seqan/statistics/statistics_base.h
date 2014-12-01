@@ -429,23 +429,7 @@ typedef String<TDnaAlphabet> TDnaSequence;
  * @return TFloat The z-score for W w.r.t. X and M, TFloat is the TFloat from the type of M.
  */
 
-/**
-.Function.zscore:
-..class:Class.MarkovModel
-..cat:Statistics
-..summary:Computes the z-score index for a set of patterns w.r.t. a set of text strings and a MarkovModel
-..signature:zscore(W, X, M, algorithmTag)
-..param.W:The set of patterns.
-...type:Class.StringSet
-..param.X:The set of text strings.
-...type:Class.StringSet
-..param.M:The MarkovModel object.
-...type:Class.MarkovModel
-..param.algorithmTag:The algorithm to exploit to compute the number of occurrences of patterns in the text strings (see @Spec.AhoCorasick@ etc.).
-..returns:The z-score for W w.r.t. X and M.
-..remarks:If the alphabet is Dna, then the suitable correction factors are computed.
-..include:seqan/statistics.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TAlgorithm, typename TFloat, typename TSpec, typename TStringSet, typename TAlphabet>
 TFloat zscore(TStringSet W,  TStringSet &X, MarkovModel<TAlphabet, TFloat, TSpec> &M, TAlgorithm const & algorithmTag)
@@ -522,22 +506,7 @@ TFloat zscore(StringSet<TDnaSequence> W,  StringSet<TDnaSequence> &X, MarkovMode
  * @return TFloat The variance for W w.r.t. X and M, TFloat is the TFloat from the type of M.
  */
 
-/**
-.Function.variance:
-..class:Class.MarkovModel
-..cat:Statistics
-..summary:Computes the variance for a set of patterns w.r.t. a set of text strings and a MarkovModel
-..signature:variance(W,X,M)
-..param.W:The set of patterns.
-...type:Class.StringSet
-..param.X:The set of text strings.
-...type:Class.StringSet
-..param.M:The MarkovModel object.
-...type:Class.MarkovModel
-..returns:The variance for W w.r.t. X and M.
-..remarks:If the alphabet is Dna, then the suitable correction factors are computed.
-..include:seqan/statistics.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFloat, typename TAlphabet, typename TSpec>
 TFloat variance(StringSet<String<TAlphabet> > &W, StringSet<String<TAlphabet> >& X, MarkovModel<TAlphabet, TFloat, TSpec> & M)
@@ -600,21 +569,7 @@ TFloat variance(StringSet<String<Dna> > W, StringSet<String<Dna> > &X, MarkovMod
  * @return TFloat The expectation for W w.r.t. X and M, TFloat is the TFloat from the type of M.
  */
 
-/**
-.Function.expectation:
-..class:Class.MarkovModel
-..cat:Statistics
-..summary:Computes the expectation for a set of patterns w.r.t. a set of text strings and a MarkovModel
-..signature:expectation(W,X,M)
-..param.W:The set of patterns.
-...type:Class.StringSet
-..param.X:The set of text strings.
-...type:Class.StringSet
-..param.M:The MarkovModel object.
-...type:Class.MarkovModel
-..returns:The expectation for W w.r.t. X and M.
-..include:seqan/statistics.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Add const?
 

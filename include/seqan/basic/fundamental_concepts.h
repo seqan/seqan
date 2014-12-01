@@ -99,21 +99,7 @@ SEQAN_CONCEPT(UnsignedIntegerConcept, (T));
  * @see DestructibleConcept
  */
 
-/**
-.Concept.DefaultConstructibleConcept
-..cat:Basic
-..summary:A type with a default constructor.
-..signature:DefaultConstructible<T>
-..remarks:
-...text:Expects an instance of type $T$ to be default constructible.
-..example.text:Valid expressions:
-..example.code:
-T()
-T a;
-..include:seqan/basic.h
-..see:Concept.AssignableConcept
-..see:Concept.CopyConstructibleConcept
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT(DefaultConstructible,(T))
 {
@@ -144,20 +130,7 @@ SEQAN_CONCEPT(DefaultConstructible,(T))
  * @see DefaultConstructibleConcept
  */
 
-/**
-.Concept.DestructibleConcept
-..cat:Basic
-..summary:A type with a destructor.
-..signature:Destructible<T>
-..remarks:
-...text:Expects an instance of type $T$ to be destructible.
-..example.text:Valid expressions:
-..example.code:
-T()
-T a;
-..include:seqan/basic.h
-..see:Concept.DefaultConstructibleConcept
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT(Destructible, (T))
 {
@@ -195,21 +168,7 @@ SEQAN_CONCEPT(Destructible, (T))
  * @signature T & T::operator=(T const & other);
  */
 
-/**
-.Concept.AssignableConcept
-..cat:Basic
-..summary:A type with an assignment operator.
-..signature:Assignable<T>
-..remarks:
-...text:Expects instances of type $T$ to be assignable into each other.
-..example.text:Valid expressions:
-..example.code:
-a = b;  // a, b are of type T
-..include:seqan/basic.h
-
-.Function.assign.concept:Concept.AssignableConcept
-.Function.operator=.concept:Concept.AssignableConcept
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Test availability of assign() function?
 
@@ -326,16 +285,7 @@ struct Is<Convertible<T, S const> > :
  * @see DefaultConstructibleConcept
  */
 
-/**
-.Concept.CopyConstructibleConcept
-..cat:Basic
-..summary:A type with a copy-constructor.
-..signature:CopyConstructible<T>
-..example.text:Valid expressions:
-..example.code:
-T a(b);  // b is of type T
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT(CopyConstructible,(T))
 {
@@ -386,16 +336,7 @@ private:
  * @see ConceptChecking#SEQAN_CONCEPT_USAGE
  */
 
-/**
-.Function.requireBooleanExpr
-..summary:Tests for a boolean expression.
-..cat:Concepts
-..signature:requireBooleanExpr(x)
-..param.x: Object that must be convertible to $bool$.
-..remarks:This function can be used to test for available boolean functions, e.g. less operators.
-..include:seqan/basic.h
-..see:Macro.SEQAN_CONCEPT_USAGE
- */
+/*_DDDOC_PLACEHOLDER*/
 template <class T>
 void requireBooleanExpr(const T& t) 
 {
@@ -465,25 +406,7 @@ void requireBooleanExpr(const T& t)
  * @see EqualityComparableConcept::operator==
  */
 
-/**
-.Concept.EqualityComparableConcept
-..cat:Comparisons
-..summary:A type that can be equality compared.
-..signature:EqualityComparable<T>
-..remarks:
-...text:Expects instances of type $T$ to be comparable via $operator==$ and $operator!=$. 
-Comparison operators must return boolean convertible values.
-$operator==$ must be an equivalence relation.
-..example.text:Valid expressions:
-..example.code:
-a == b;
-a != b;
-..example.text:Invariants:\br
-$a==a$ (reflexivity)\nl
-$a==b$ \Rightarrow $b==a$ (symmetry)\nl
-$a==b$ and $b==c$ \Rightarrow $a==c$ (transitivity)
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT(EqualityComparable,(T))
 {
@@ -531,26 +454,7 @@ private:
  * @signature bool T::operator<(T const & other) const;
  */
 
-/**
-.Concept.LessThanComparableConcept
-..cat:Comparisons
-..summary:A type that can be less-than compared.
-..signature:LessThanComparable<T>
-..remarks:
-...text:Expects instances of type $T$ to be comparable via $operator<$. 
-Comparison operator must return a boolean convertible value.
-$operator<$ must be a partial ordering.
-..example.text:Valid expressions:
-..example.code:
-a < b;
-..example.text:Invariants:\br
-$\not a<a$ (irreflexivity)\nl
-$a<b$ \Rightarrow $\not b<a$ (antisymmetry)\nl
-$a<b$ and $b<c$ \Rightarrow $a<c$ (transitivity)
-..include:seqan/basic.h
-
-.Function.operator<.concept:Concept.LessThanComparableConcept
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT(LessThanComparable,(T))
 {
@@ -623,32 +527,7 @@ private:
  * This operator can be implemented as a member or a global function.
  */
 
-/**
-.Concept.ComparableConcept
-..cat:Comparisons
-..summary:A type that can be compared.
-..signature:Comparable<T>
-..baseconcept:Concept.LessThanComparableConcept
-..remarks:
-...text:Expects instances of type $T$ to be comparable. Comparison operators must return boolean convertible values.
-..example.text:Valid expressions:
-..example.code:
-a < b;
-a > b;
-a <= b;
-a >= b;
-..example.text:Invariants:\br
-$a<b$ \Leftrightarrow $b>a$\nl
-$a<=b$ \Leftrightarrow $b>=a$\nl
-$a<=b$ \Leftrightarrow $a<b$ or ($a<=b$ and $a>=b$)
-..include:seqan/basic.h
-..see:Concept.EqualityComparableConcept
-..see:Concept.LessThanComparableConcept
-
-.Function.operator<=.concept:Concept.ComparableConcept
-.Function.operator>.concept:Concept.ComparableConcept
-.Function.operator>=.concept:Concept.ComparableConcept
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // This is equiaent to SGI STL's LessThanComparable.
 SEQAN_CONCEPT(Comparable,(T))
@@ -779,30 +658,9 @@ struct Is< NumberConcept<T const> > : Is< NumberConcept<typename RemoveConst<T>:
 template <typename T>
 struct Is< FundamentalConcept<T const> > : Is< FundamentalConcept<typename RemoveConst<T>::Type> > {};
 
-/**
-.Metafunction.IsSignedInteger:
-..cat:Basic
-..summary:Tests for a type to be of signed integral aue.
-..signature:IsSignedInteger<T>::Type
-..param.T:Type that is tested.
-..returns.param.Type:@Tag.Logical Values.True@, if $T$ is a signed integral type, @Tag.Logical Values.False@ otherwise.
-...default:@Tag.Logical Values.False@
-..status:deprecated, please use $Is<SignedIntegerConcept<T> >::Type$
-..include:seqan/basic.h
-..see:Metafunction.IsUnsignedInteger
- */
+/*_DDDOC_PLACEHOLDER*/
 
-/**
-.Metafunction.IsUnsignedInteger:
-..cat:Basic
-..summary:Tests for a type to be of unsigned integral aue.
-..signature:IsUnsignedInteger<T>::Type
-..param.T:Type that is tested.
-..returns.param.Type:@Tag.Logical Values.True@, if $T$ is an unsigned integral type, @Tag.Logical Values.False@ otherwise.
-...default:@Tag.Logical Values.False@
-..status:deprecated, please use $Is<UnsignedIntegerConcept<T> >::Type$
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @mfn IsInteger
@@ -820,19 +678,7 @@ struct Is< FundamentalConcept<T const> > : Is< FundamentalConcept<typename Remov
  * @see IsIntegral
  */
 
-/**
-.Metafunction.IsInteger:
-..cat:Basic
-..summary:Tests for a type to be of integral aue.
-..signature:IsInteger<T>::Type
-..param.T:Type that is tested.
-..returns.param.Type:@Tag.Logical Values.True@, if $T$ is an ingegral type, @Tag.Logical Values.False@ otherwise.
-...default:@Tag.Logical Values.False@
-..status:deprecated, please use $Is<IntegerConcept<T> >::Type$
-..include:seqan/basic.h
-..see:Metafunction.IsSignedInteger
-..see:Metafunction.IsUnsignedInteger
- */
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @mfn IsIntegral
@@ -848,17 +694,7 @@ struct Is< FundamentalConcept<T const> > : Is< FundamentalConcept<typename Remov
  * @deprecated Please use <tt>Is&lt;IntegerConcept&lt;T&gt; &gt;::Type</tt>.
  */
 
-/**
-.Metafunction.IsIntegral:
-..cat:Basic
-..summary:Tests for a type to be of integral aue.
-..signature:IsIntegral<T>::Type
-..param.T:Type that is tested.
-..returns.param.Type:@Tag.Logical Values.True@, if $T$ is an ingegral type, @Tag.Logical Values.False@ otherwise.
-...default:@Tag.Logical Values.False@
-..status:deprecated, please use $Is<IntegerConcept<T> >::Type$
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // deprecation wrappers
 template <typename T>
@@ -963,72 +799,7 @@ struct IsIntegral : IsInteger<T> {};
  * @endcode
  */
 
-/**
-.Concept.IntegerConcept
-..cat:Basic
-..baseconcept:Concept.ComparableConcept
-..baseconcept:Concept.EqualityComparableConcept
-..summary:An integral type.
-..signature:IntegerConcept<T>
-..remarks:
-...text:Expects an instance of type $T$ to be of integral value and to provide the same operations as $int$.
-The integer concept imposes no restrictions on an available sign.
-Every type $T$ that fulfills the @Concept.IntegerConcept@ fulfills either the @Concept.SignedIntegerConcept@ or the @Concept.UnsignedIntegerConcept@.
-..example.code:
-SEQAN_CONCEPT_ASSERT((IntegerConcept<int>));
-SEQAN_CONCEPT_ASSERT((IntegerConcept<char>));
-//SEQAN_CONCEPT_ASSERT((IntegerConcept<double>));                       // fails to compile
-
-std::cout << Is<IntegerConcept<char> >::VALUE << std::endl;             // 1
-std::cout << Is<IntegerConcept<int> >::VALUE << std::endl;              // 1
-std::cout << Is<IntegerConcept<unsigned short> >::VALUE << std::endl;   // 1
-std::cout << Is<IntegerConcept<double> >::VALUE << std::endl;           // 0
-..example.text:Valid expressions:
-..example.code:
-T a, b;
-int c;
-
-a = 0u;
-b = 1u;
-c = a;
-
-b = a + 1u;
-b = a + a;
-b += a;
-b += 1u;
-b = a++;
-b = ++a;
-
-b = a - a;
-b = a - 1u;
-b -= a;
-b -= 1u;
-b = a--;
-b = --a;
-
-b = a * a;
-b = a * 1u;
-b *= a;
-b *= 1u;
-
-b = a / a;
-b = a / 1u;
-b /= a;
-b /= 1u;
-
-b = a << a;
-b = a << 1;
-b <<= a;
-b <<= 1;
-
-b = a >> a;
-b = a >> 1;
-b >>= a;
-b >>= 1;
-..include:seqan/basic.h
-..see:Concept.SignedIntegerConcept
-..see:Concept.UnsignedIntegerConcept
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT(IntegerConcept, (TValue)) :
     Comparable<TValue>
@@ -1126,40 +897,7 @@ SEQAN_CONCEPT(IntegerConcept, (TValue)) :
  * @endcode
  */
 
-/**
-.Concept.SignedIntegerConcept
-..cat:Basic
-..baseconcept:Concept.IntegerConcept
-..summary:An integral type with a sign.
-..signature:SignedIntegerConcept<T>
-..remarks:
-...text:Expects an instance of type $T$ to represent (possibly negative) integral values and to provide the same operations as $int$.
-Every type $T$ that fulfills the @Concept.IntegerConcept@ fulfills either the @Concept.SignedIntegerConcept@ or the @Concept.UnsignedIntegerConcept@.
-..example.code:
-SEQAN_CONCEPT_ASSERT((SignedIntegerConcept<int>));
-//SEQAN_CONCEPT_ASSERT((SignedIntegerConcept<unsigned short>));             // fails to compile
-
-std::cout << Is<SignedIntegerConcept<char> >::VALUE << std::endl;           // 0
-std::cout << Is<SignedIntegerConcept<int> >::VALUE << std::endl;            // 0
-std::cout << Is<SignedIntegerConcept<unsigned short> >::VALUE << std::endl; // 1
-std::cout << Is<SignedIntegerConcept<double> >::VALUE << std::endl;         // 0
-..example.text:Valid expressions:
-..example.code:
-T a;
-int b;
-
-a = -1;
-b = a;
-
-a = a - a;
-a = a + 1;
-a = a - 1;
-
-a = a / 2;
-
-static_cast<T>(-1) < static_cast<T>(0);
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // an integer that must have a sign
 SEQAN_CONCEPT(SignedIntegerConcept, (TValue)) :
@@ -1223,34 +961,7 @@ SEQAN_CONCEPT(SignedIntegerConcept, (TValue)) :
  * @endcode
  */
 
-/**
-.Concept.UnsignedIntegerConcept
-..cat:Basic
-..baseconcept:Concept.IntegerConcept
-..summary:An integral type without a sign.
-..signature:UnsignedIntegerConcept<T>
-..remarks:
-...text:Expects an instance of type $T$ to represent non-negative integral values and to provide the same operations as $unsigned int$.
-Every type $T$ that fulfills the @Concept.IntegerConcept@ fulfills either the @Concept.SignedIntegerConcept@ or the @Concept.UnsignedIntegerConcept@.
-..example.code:
-//SEQAN_CONCEPT_ASSERT((UnsignedIntegerConcept<int>));                          // fails to compile
-SEQAN_CONCEPT_ASSERT((UnsignedIntegerConcept<unsigned short>));
-
-std::cout << Is<UnsignedIntegerConcept<char> >::VALUE << std::endl;             // 0
-std::cout << Is<UnsignedIntegerConcept<int> >::VALUE << std::endl;              // 0
-std::cout << Is<UnsignedIntegerConcept<unsigned short> >::VALUE << std::endl;   // 1
-std::cout << Is<UnsignedIntegerConcept<double> >::VALUE << std::endl;           // 0
-..example.text:Valid expressions:
-..example.code:
-T a;
-unsigned int b;
-
-a = 1u;
-b = a;
-
-std::cout << static_cast<T>(0) < static_cast<T>(-1) << std::endl;  // 1
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 
 // an integer that mustn't have a sign

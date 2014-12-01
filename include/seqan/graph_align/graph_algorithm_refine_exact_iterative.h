@@ -645,19 +645,7 @@ SEQAN_CHECKPOINT
 
 ///////WRAPPERS
 
-/**
-.Function.matchRefinement:
-..signature:matchRefinement(matches,stringSet,scoringScheme,refinedGraph)
-..param.matches:The set of matches.
-...type:Class.Fragment
-...type:Class.Align
-...type:Spec.Alignment Graph
-..param.scoringScheme:The scoring scheme used to score the refined matches (scores are attached to 
-edges in the refined Alignment Graph).
-...remarks:If no scoring scheme is given, all edges get weight 1.
-...type:Class.Score
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 //exact refinement, score type given
 template<typename TAlignmentString, typename TScoreValue,typename TScoreSpec,typename TOutGraph, typename TSequence, typename TSetSpec>
 void
@@ -674,19 +662,7 @@ SEQAN_CHECKPOINT
 
 
 
-/**
-.Function.matchRefinement:
-..cat:Alignments
-..summary:Refines (i.e. cuts into smaller parts) a set of pairwise segment 
-matches in such a way that none of the segments partly overlap. They are either 
-identical (fully overlapping) or non-overlapping.
-..signature:matchRefinement(matches,stringSet,refinedGraph)
-..param.stringSet:The StringSet containing the sequences which the matches lie on.
-...type:Class.StringSet
-..param.refinedGraph:The resulting refined set of matches stored in a graph.
-...type:Spec.Alignment Graph
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 //exact refinement, score type not given
 template<typename TFragmentString, typename TOutGraph, typename TSequence, typename TSetSpec>
 void

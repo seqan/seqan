@@ -73,19 +73,7 @@ public:
     {}
 };
 
-/**
-.Spec.BucketRefinement
-..summary:An index based on a refined array of sorted q-grams.
-..cat:Index
-..general:Spec.IndexQGram
-..signature:Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >
-..param.TText:The text type.
-...type:Class.String
-..param.TShapeSpec:The @Class.Shape@ specialization type.
-...note:This can be either a $TSpec$ argument (e.g. $SimpleShape$) or a complete @Class.Shape@ class (e.g. Shape<Dna, SimpleShape>).
-..remarks:This index refines q-gram buckets by sorting and uses binary search to locate them.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct BucketRefinement_;
 typedef Tag<BucketRefinement_> BucketRefinement;

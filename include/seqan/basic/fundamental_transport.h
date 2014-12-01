@@ -68,15 +68,7 @@ void assignValue(TDest &, TSource const &);
  * @tparam T Type to query for availability of move constructor.
  */
 
-/**
-.Metafunction.HasMoveConstructor
-..summary:Query whether a class has a move constructor.
-..cat:Content Manipulation
-..signature:HasMoveConstructor<T>::Type
-..signature:HasMoveConstructor<T>::VALUE
-..param.T:Type to query for availability of move constructor.
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct HasMoveConstructor
@@ -106,23 +98,7 @@ struct HasMoveConstructor
  * Assign value of source to target.
  */
 
-/**
-.Function.assign
-..summary:Assigns one object to another object.
-..cat:Content Manipulation
-..signature:assign(target, source)
-..signature:assign(target, source [, limit] [,resize_tag])
-..param.target: Gets the content of $source$.
-..param.source: Is copied to $target$.
-..param.limit: The maximal length of $target$ after the operation. (optional)
-...remarks:This arguments can be applied if $target$ is a container.
-..param.resize_tag: Specifies the strategy that is applied if $target$ has not enough capacity to store the complete content. (optional)
-...type:Tag.Overflow Strategy
-...default:Specified by @Metafunction.DefaultOverflowImplicit@ of the $target$ type.
-...remarks:This arguments can be applied if $target$ is a container.
-..remarks:$assign(target, source)$ is semantically equivalent to $target = source$.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TTarget, typename TSource>
 inline void
@@ -181,18 +157,7 @@ assign(Proxy<TTargetSpec> & target,
  * The default implementation copies.  Types implementing AssignableConcept can implement more efficient variants.
  */
 
-/**
-.Function.set
-..summary:Assigns one object to another object avoiding to copy contents.
-..cat:Content Manipulation
-..signature:set(target, source)
-..signature:set(target, source)
-..param.target: Gets the content of $source$.
-..param.source: Content source.
-..remarks:$set(target, source)$ is semantically equivalent to $target = source$.
-If possible, $set$ copies content references instead of the content itself.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TTarget, typename TSource>
 inline void
@@ -248,19 +213,7 @@ set(TTarget const & target,
  * AssignableConcept can override move to provide a more efficient implementation.
  */
 
-/**
-.Function.move
-..summary:Hands over content from one container to another container.
-..cat:Content Manipulation
-..signature:move(target, source)
-..param.target:A container $source$ is moved to.
-..param.source:A container that is moved to $target$.
-..remarks:The function tries to hand over the contents of $source$ to $target$.
-If this is possible, $source$ loses its content and will therefore be empty after this operation.
-Otherwise, the function behaves like @Function.assign@ and $source$ is copied to $target$.
-..see:Function.assign
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Are all specializations necessary?
 

@@ -94,18 +94,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * The output type of this pipe is the result type of <tt>TFunctor</tt>.
  */
 
-/**
-.Spec.Filter:
-..cat:Pipelining
-..general:Class.Pipe
-..summary:Applies a specific function to the input stream.
-..signature:Pipe<TInput, Filter<TFunctor> >
-..param.TInput:The type of the pipeline module this module reads from.
-..param.TFunctor:A unary function (see STL's $unary_function$).
-...remarks:The argument type of $TFunctor$ must be $VALUE<TInput>::Type$.
-..remarks: The output type of this pipe is the result type of $TFunctor$.
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 	//////////////////////////////////////////////////////////////////////////////
     // filter class
@@ -125,15 +114,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in] func A <tt>TFunctor</tt> object.
  */
         
-/**
-.Memfunc.Filter#Pipe:
-..class:Spec.Filter
-..summary:Constructor
-..signature:Pipe<TInput, Filter<TFunctor> > (in)
-..signature:Pipe<TInput, Filter<TFunctor> > (in, func)
-..param.in:Reference to an input pipe.
-..param.func:A TFunctor object (copy constructor).
-*/
+/*_DDDOC_PLACEHOLDER*/
         Pipe(TInput& _in):
             in(_in) {}
         

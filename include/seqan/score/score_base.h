@@ -64,26 +64,7 @@ namespace seqan {
  * @include demos/sscore.cpp.stdout
  */
 
-/**
-.Class.Score:
-..cat:Miscellaneous
-..summary:A scoring scheme.
-..signature:Score<TValue, TSpec>
-..param.TValue:The value type.
-...default:int
-..param.TSpec:The specializing type.
-...default:$Tag.Simple$
-..example.snippet:demos/sscore.cpp|UsingScore
-..example.text:The output is as follows:
-..example.output:
-Score = 66
-Alignment:
-0     .    :    .    :    .
-  ACGTG--GATCGGTGACTTACGGACTG
-  |||||  ||   |||| ||||||||||
-  ACGTGTTGA---GTGA-TTACGGACTG
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue = int, typename TSpec = Simple>
 class Score;
 
@@ -128,22 +109,7 @@ struct Value<Score<TValue, TSpec> > {
  * @see ConsensusScoreSequenceEntry
  */
 
-/**
-.Metafunction.Score#SequenceEntryForScore
-..cat:Alignments
-..class:Class.Score
-..signature:SequenceEntryForScore<TScore, TSequence>::Type
-..summary:Returns representation type for a character of a position in a sequence.
-..description:This is used for unified interfaces for position dependent and independent scores.
-..param.TScore:The score type to use.
-...type:Class.Score
-..param.TSequence:The underlying sequence of the alignments or gaps.
-...type:Concept.ContainerConcept
-..return:The type to use for the representation of sequence entries.
-..see:Metafunction.Score#SequenceEntryForScore
-..see:Function.Score#sequenceEntryForScore
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TScore, typename TSequence>
 struct SequenceEntryForScore
@@ -168,20 +134,7 @@ struct SequenceEntryForScore
  * @return TAlphabet The value of <tt>seq</tt> at <tt>pos</tt>.
  */
 
-/**
-.Function.Score#sequenceEntryForScore
-..summary:Helper function for element access, depending on score type.
-..cat:Alignments
-..signature:sequenceEntryForScore(scoringScheme, seq, pos)
-..param.scoringScheme:The scoring scheme to get the representation for.
-...type:Class.Score
-..param.seq:The sequence to get the representation for.
-...type:Concept.ContainerConcept
-..param.pos:The position of the character.
-..return:
-Representation of the character $seq[pos]$ to be used for the given scoring scheme.
-The resulting type is $SequenceEntryForScore<TScore, TSequence>::Type$.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(rmaerker): Check if using iterator instead would be more efficient than subscript operator.
 template <typename TScore, typename TSequence, typename TPosition>
@@ -208,23 +161,7 @@ sequenceEntryForScore(TScore const & /*scoringScheme*/, TSequence const & seq, T
  * Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
  */
 
-/**
-.Function.scoreGapOpenHorizontal
-..class:Class.Score
-..cat:Scoring
-..signature:scoreGapOpenHorizontal(score, entryH, entryV)
-..param.score:The scoring scheme to use.
-...type:Class.Score
-..param.entryH:Entry in sequence one (horizontal).
-...type:Metafunction.Score#SequenceEntryForScore
-..param.entryV:Entry in sequence two (vertical).
-...type:Metafunction.Score#SequenceEntryForScore
-..summary:Returns the score for opening a gap in horizontal direction.
-..remarks:Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
-..see:Function.Score#sequenceEntryForScore
-..see:Class.ConsensusScoreSequenceEntry
-..include:seqan/score.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapOpenHorizontal(
@@ -253,23 +190,7 @@ scoreGapOpenHorizontal(
  * Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
  */
 
-/**
-.Function.scoreGapOpenVertical
-..class:Class.Score
-..cat:Scoring
-..signature:scoreGapOpenVertical(score, entryH, entryV)
-..param.score:The scoring scheme to use.
-...type:Class.Score
-..param.entryH:Entry in sequence one (horizontal).
-...type:Metafunction.Score#SequenceEntryForScore
-..param.entryV:Entry in sequence two (vertical).
-...type:Metafunction.Score#SequenceEntryForScore
-..summary:Returns the score for opening a gap in vertical direction.
-..remarks:Corresponds to a deletion event in sequence one and an insertion event in sequence two, respectively.
-..see:Function.Score#sequenceEntryForScore
-..see:Class.ConsensusScoreSequenceEntry
-..include:seqan/score.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapOpenVertical(
@@ -298,22 +219,7 @@ scoreGapOpenVertical(
  * Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
  */
 
-/**
-.Function.scoreGapExtendHorizontal
-..cat:Scoring
-..signature:scoreGapExtendHorizontal(score, entryH, entryV)
-..param.score:The scoring scheme to use.
-...type:Class.Score
-..param.entryH:Entry in sequence one (horizontal).
-...type:Metafunction.Score#SequenceEntryForScore
-..param.entryV:Entry in sequence two (vertical).
-...type:Metafunction.Score#SequenceEntryForScore
-..summary:Returns the score for extending a gap in horizontal direction.
-..remarks:Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
-..see:Function.Score#sequenceEntryForScore
-..see:Class.ConsensusScoreSequenceEntry
-..include:seqan/score.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapExtendHorizontal(
@@ -342,22 +248,7 @@ scoreGapExtendHorizontal(
  * Corresponds to a deletion event in sequence one and an insertion event in sequence two, respectively.
  */
 
-/**
-.Function.scoreGapExtendVertical
-..cat:Scoring
-..signature:scoreGapExtendVertical(score, entryH, entryV)
-..param.score:The scoring scheme to use.
-...type:Class.Score
-..param.entryH:Entry in sequence one (horizontal).
-...type:Metafunction.Score#SequenceEntryForScore
-..param.entryV:Entry in sequence two (vertical).
-...type:Metafunction.Score#SequenceEntryForScore
-..summary:Returns the score for extending a gap in vertical direction.
-..remarks:Corresponds to a deletion event in sequence one and an insertion event in sequence two, respectively.
-..see:Function.Score#sequenceEntryForScore
-..see:Class.ConsensusScoreSequenceEntry
-..include:seqan/score.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapExtendVertical(
@@ -386,22 +277,7 @@ scoreGapExtendVertical(
  * Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
  */
 
-/**
-.Function.scoreGapHorizontal
-..cat:Scoring
-..signature:scoreGapHorizontal(score, entryH, entryV)
-..param.score:The scoring scheme to use.
-...type:Class.Score
-..param.entryH:Entry in sequence one (horizontal).
-...type:Metafunction.Score#SequenceEntryForScore
-..param.entryV:Entry in sequence two (vertical).
-...type:Metafunction.Score#SequenceEntryForScore
-..summary:Returns the score for a gap in horizontal direction.
-..remarks:Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
-..see:Function.Score#sequenceEntryForScore
-..see:Class.ConsensusScoreSequenceEntry
-..include:seqan/score.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapHorizontal(
@@ -430,22 +306,7 @@ scoreGapHorizontal(
  * Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
  */
 
-/**
-.Function.scoreGapVertical
-..cat:Scoring
-..signature:scoreGapVertical(score, entryH, entryV)
-..param.score:The scoring scheme to use.
-...type:Class.Score
-..param.entryH:Entry in sequence one (horizontal).
-...type:Metafunction.Score#SequenceEntryForScore
-..param.entryV:Entry in sequence two (vertical).
-...type:Metafunction.Score#SequenceEntryForScore
-..summary:Returns the score for a gap in vertical direction.
-..remarks:Corresponds to a deletion event in sequence one and an insertion event in sequence two, respectively.
-..see:Function.Score#sequenceEntryForScore
-..see:Class.ConsensusScoreSequenceEntry
-..include:seqan/score.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapVertical(
@@ -471,21 +332,7 @@ scoreGapVertical(
  *                score.
  */
 
-/**
-.Function.score
-..cat:Scoring
-..signature:score(score, entryH, entryV)
-..param.score:The scoring scheme to use.
-...type:Class.Score
-..param.entryH:Entry in sequence one.
-...type:Metafunction.Score#SequenceEntryForScore
-..param.entryV:Entry in sequence two.
-...type:Metafunction.Score#SequenceEntryForScore
-..summary:Returns the score for aligning the entries $entryH$ and $entryV$.
-..see:Function.Score#sequenceEntryForScore
-..see:Class.ConsensusScoreSequenceEntry
-..include:seqan/score.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSeqHVal, typename TSeqVVal>
 inline TValue
 score(Score<TValue, TSpec> const & me, TSeqHVal valH, TSeqVVal valV) {

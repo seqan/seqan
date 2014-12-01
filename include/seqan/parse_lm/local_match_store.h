@@ -90,36 +90,7 @@ namespace seqan {
  * @brief The id of the subject.
  */
 
-/**
-.Class.LocalMatch
-..summary:Stores information about local matches.
-..cat:Local Match Store
-..signature:LocalMatch<TId, TPosition>
-..param.TId:Type to use for subject/query id.
-..param.TPosition:Type to use for storing positions.
-..remarks:Matches on the reverse-complement are encoded by the begin position being greater than the end position.
-..remarks:Sequence names are not stored in LocalMatch objects but in the @Class.LocalMatchStore@ they belong to.
-..see:Class.LocalMatchStore
-..include:seqan/parse_lm.h
-.Memvar.LocalMatch#subjectId
-..summary:The id of the subject.
-..class:Class.LocalMatch
-.Memvar.LocalMatch#subjectBeginPos
-..summary:Begin position of local match in the subject.
-..class:Class.LocalMatch
-.Memvar.LocalMatch#subjectEndPos
-..summary:End position of local match in the subject.
-..class:Class.LocalMatch
-.Memvar.LocalMatch#queryId
-..summary:The id of the query.
-..class:Class.LocalMatch
-.Memvar.LocalMatch#queryBeginPos
-..summary:Begin position of local match in the query.
-..class:Class.LocalMatch
-.Memvar.LocalMatch#queryEndPos
-..summary:End position of local match in the query.
-..class:Class.LocalMatch
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TId, typename TPosition>
 class LocalMatch
@@ -187,13 +158,7 @@ public:
  * @signature typedef (...) LocalMatchStoreConfig::TPosition;
  */
 
-/**
-.Class.LocalMatchStoreConfig
-..summary:Stores information about local matches.
-..cat:Local Match Store
-..signature:LocalMatchStoreConfig
-..include:seqan/parse_lm.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec>
 struct LocalMatchStoreConfig
@@ -273,55 +238,7 @@ struct LocalMatchStoreConfig
  * @return int 0 on success, non-0 on errors and EOF
  */
 
-/**
-.Class.LocalMatchStore
-..summary:Stores information about local matches.
-..cat:Local Match Store
-..signature:LocalMatchStore<[TSpec[, TConfig]]>
-..param.TSpec:Specialization tag.
-..param.TConfig:Configuration class.
-..remarks:
-The LocalMatchStore provides information about matches.
-Similar to the @Class.FragmentStore@, the information is split into multiple sub stores.
-Each sub store stores a part of the information.
-..remarks:
-The @Memvar.LocalMatchStore#matchStore@ stores the information about a match.
-The @Memvar.LocalMatchStore#sequenceNameStore@ stores the sequence names.
-These both sub stores are "core stores", they are filled with consistent information, i.e. for each sequence id in the matchStore, there has to be a valid entry in the sequenceNameStore.
-..remarks:
-The @Memvar.LocalMatchStore#cigarStore@ optionally stores CIGAR strings for the matches.
-Its entries are referenced by $matchStore[i].id$.
-..example.text:Read Lastz matches from a @Class.RecordReader@ and then print them to stdout.
-..example.code:
-// Read local alignments from record reader.  Note that in real-world code,
-// you should have error handling.
-LocalMatchStore<> lmStore;
-while (!atEnd(recordReader))
-    readRecord(lmStore, recordReader, StellarGff());
-
-// Print local alignment information to stdout.
-std::cout << "# Reverse strandness is indicated by end < begin\n"
-          << "#db\tdb_beg\tdb_end\tquery\tq_beg\tq_end\n";
-for (unsigned i = 0; i < length(lmStore.matchStore); ++i)
-    std::cout << lmStore.sequenceNameStore[lmStore.matchStore[i].queryId] << "\t"
-              << lmStore.matchStore[i].queryBeginPos << "\t"
-              << lmStore.matchStore[i].queryEndPos << "\t"
-              << lmStore.sequenceNameStore[lmStore.matchStore[i].subjectId] << "\t"
-              << lmStore.matchStore[i].subjectBeginPos << "\t"
-              << lmStore.matchStore[i].subjectEndPos << "\n";              
-..include:seqan/parse_lm.h
-..see:Class.LocalMatch
-.Memvar.LocalMatchStore#sequenceNameStore
-..summary:@Class.StringSet@ storing the sequence names.
-..class:Class.LocalMatchStore
-.Memvar.LocalMatchStore#matchStore
-..summary:@Class.String@ storing the @Class.LocalMatch|local matches@.
-..class:Class.LocalMatchStore
-.Memvar.LocalMatchStore#cigarStore
-..summary:@Class.String@ storing the CIGAR strings.
-..type:nolink:$String<String<CigarElement<> > >$
-..class:Class.LocalMatchStore
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec=void, typename TConfig=LocalMatchStoreConfig<TSpec> >
 class LocalMatchStore
@@ -408,30 +325,7 @@ registerSequenceName(TLocalMatchStore & store,
  * Matches on the reverse-complement are encoded by the begin position being greater than the begin position.
  */
 
-/**
-.Function.appendLocalMatch
-..class:Class.LocalMatchStore
-..summary:Append a new local match to a @Class.LocalMatchStore@
-..cat:Local Match Store
-..signature:appendLocalMatchStore(store, subjectId, subjectBeginPos, subjectEndPos, queryId, queryBeginPos, queryEndPos)
-..signature:appendLocalMatchStore(store, subjectName, subjectBeginPos, subjectEndPos, queryName, queryBeginPos, queryEndPos, cigarStringBuffer)
-..param.store:The store to add the local match to.
-...type:Class.LocalMatchStore
-..param.subjectId:Numeric subject sequence identifier.
-..param.subjectName:The textual name of the query sequence.
-...type:Shortcut.CharString
-..param.subjectBegin:The begin position of the match in the subject.
-..param.subjectEnd:The end position of the match in the subject.
-..param.queryId:Numeric query sequence identifier.
-..param.queryName:The textual name of the query sequence.
-...type:Shortcut.CharString
-..param.queryBegin:The begin position of the match in the query.
-..param.queryEnd:The end position of the match in the query.
-..param.cigarStringBuffer:Buffer with the cigar string of the local alignment.
-...type:Shortcut.CharString
-..remarks:Matches on the reverse-complement are encoded by the begin position being greater than the begin position.
-..include:seqan/parse_lm.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TLocalMatchStore, typename TPosition>
 inline void

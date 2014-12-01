@@ -64,15 +64,7 @@ struct RngFunctor {};
  * @tparam TPdf The probability density function type to use.
  */
 
-/**
-.Spec.Rng Functor
-..general:Class.Rng
-..signature:Rng<RngFunctor<TRng, TPdf> >
-..summary:Functor wrapper for random number generation.
-..cat:Random
-..include:seqan/random.h
-..wiki:Tutorial/Randomness|Tutorial: Randomness
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TRng, typename TPdf>
 class Rng<RngFunctor<TRng, TPdf> >
@@ -92,14 +84,7 @@ public:
  * @param[in] pdf A reference to the underlying Pdf to use.
  */
 
-/**
-.Memfunc.Rng Functor#Rng
-..class:Spec.Rng Functor
-..summary:Constructor Functor Rng.
-..signature:Rng<RngFunctor<TRng, TPdf> >(rng, pdf)
-..param.rng:@Class.Rng@ object to use.
-..param.pdf:@Class.Pdf@ object to use.
-*/
+/*_DDDOC_PLACEHOLDER*/
     Rng(TRng & rng, TPdf & pdf)
 	    : _rng(rng), _pdf(pdf)
     {}

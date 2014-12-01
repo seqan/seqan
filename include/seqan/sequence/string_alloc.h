@@ -62,18 +62,7 @@ namespace seqan {
 
 // TODO(holtgrew): Where is Alloc<> defined? In module base?
 
-/**
-.Spec.Alloc String:
-..cat:Strings
-..general:Class.String
-..summary:Expandable string that is stored on heap.
-..signature:String<TValue, Alloc<TSpec> >
-..param.TValue:The value type, that is the type of the items/characters stored in the string.
-...remarks:Use @Metafunction.Value@ to get the value type for a given class.
-..param.TSpec:The specializing type.
-...default:$void$
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 class String<TValue, Alloc<TSpec> >
 {
@@ -326,10 +315,7 @@ capacity(String<TValue, Alloc<TSpec> > const & me)
 // Internal Function _setBegin()
 // ----------------------------------------------------------------------------
 
-/**
-.Internal._setBegin:
-..remarks:Called by Function.move in string_base.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TPtr>
 inline void
 _setBegin(String<TValue, Alloc<TSpec> > & me,
@@ -342,16 +328,7 @@ _setBegin(String<TValue, Alloc<TSpec> > & me,
 // Internal Function _setLength()
 // ----------------------------------------------------------------------------
 
-/**
-.Internal._setLength:
-..remarks:Called in string_base.h
-..cat:Functions
-..summary:Set the length of container.
-..signature:_setLength(object, new_length)
-..param.object:A container.
-..param.object.type:Spec.Alloc String
-..param.new_length:The new length.
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSize>
 inline void
 _setLength(String<TValue, Alloc<TSpec> > & me,
@@ -364,10 +341,7 @@ _setLength(String<TValue, Alloc<TSpec> > & me,
 // Internal Function _setCapacity()
 // ----------------------------------------------------------------------------
 
-/**
-.Internal._setCapacity:
-..remarks:Called in string_base.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSize>
 inline void
 _setCapacity(String<TValue, Alloc<TSpec> > & me,
@@ -380,20 +354,7 @@ _setCapacity(String<TValue, Alloc<TSpec> > & me,
 // Internal Function _allocateStorage()
 // ----------------------------------------------------------------------------
 
-/**
-.Internal._allocateStorage:
-..cat:Functions
-..remarks:Called in string_base.h
-..summary:Allocates a new buffer for a container.
-..signature:_allocateStorage(object, new_capacity)
-..param.object:A container.
-..param.object.type:Spec.Alloc String
-..param.new_capacity:The capacity of the new allocated buffer.
-..returns:The old butter $object$, that is replaced by the new allocated buffer.
-..remarks:The returned buffer must be deallocated by @Internal._deallocateStorage@.
-..remarks:This function does not construct objects in the allocated buffer.
-..see:Internal._reallocateStorage
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSize>
 inline typename Value<String<TValue, Alloc<TSpec> > >::Type *
 _allocateStorage(String<TValue, Alloc<TSpec> > & me,
@@ -410,19 +371,7 @@ _allocateStorage(String<TValue, Alloc<TSpec> > & me,
 // Internal Function _deallocateStorage()
 // ----------------------------------------------------------------------------
 
-/**
-.Internal._deallocateStorage:
-..cat:Functions
-..summary:Deallocates a buffer of a container.
-..signature:_deallocateStorage(object, buffer, capacity)
-..param.object:A container.
-..param.object.type:Spec.Alloc String
-..param.buffer:The buffer that will be deallocated.
-..param.capacity:The capacity of $buffer$.
-..remarks:All objects in the buffer must be destroyed before calling $_deallocateStorage$.
-..see:Internal._allocateStorage
-..see:Internal._reallocateStorage
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TPtr, typename TSize>
 inline void
 _deallocateStorage(String<TValue, Alloc<TSpec> > & me,

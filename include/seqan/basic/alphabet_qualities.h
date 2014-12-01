@@ -118,19 +118,7 @@ struct HasQualities
  * @see AlphabetWithQualitiesConcept#assignQualityValue
  */
 
-/**
-.Function.convertQuality
-..cat:Alphabets
-..signature:convertQuality(c, q)
-..summary:Convert an integer quality value into its ASCII representation for FASTQ (Phred scale).
-..param.c:Character to store the quality in.
-...type:nolink:$char$
-..param.q:Value of the quality to convert.
-...remarks:The quality value is an integral value between 0 and 62 (inclusive).
-...type:nolink:$int$
-..see:Function.getQualityValue
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 inline 
 void convertQuality(char & c, int q) 

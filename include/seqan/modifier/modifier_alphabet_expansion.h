@@ -69,23 +69,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * </dl>
  */
 
-/**
-.Spec.Alphabet Expansion:
-..summary:Modifier that adds a character to an alphabet.
-..cat:Modifier
-..signature:ModifiedAlphabet<TAlphabet, ModExpand<CHAR [,TSpec]> >
-..param.TAlphabet:Original value type.
-..param.CHAR:$char$ character that specifies, what value should added to the alphabet.
-...remarks:$CHAR$ should not be a $char$ that already stands for a value in $TAlphabet$.
-	For example, do not use $'A'$ or $'a'$ as $CHAR$ when expanding @Spec.Dna@.
-...remarks:Some values of $CHAR$ have special meaning:
-....table:$'-'$|A gap character. The value in the expanded alphabet that corresponds to $'-'$ will be returned by the @Function.gapValue@.
-....table:$'\$'$|An end of string character.
-..param.TSpec:Optional specialization tag.
-...default:$Default$
-...remarks:This modifier is intended to expand @Class.SimpleType@ classes.
-..include:seqan/modifier.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <char CHAR, typename TSpec = Default>
 struct ModExpand;

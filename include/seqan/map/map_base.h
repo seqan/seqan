@@ -70,19 +70,7 @@ struct Skiplist;
  *                mapping from <tt>Key</tt> to <tt>Cargo</tt>.
  */
 
-/**
-.Class.Map:
-..cat:Map
-..summary:Set/dictionary container.
-..signature:Map<TValue, TSpec >
-..param.TValue:Type of values that are stored in the map.
-...metafunction:Metafunction.Value
-...remarks:Use a @Class.Pair.Pair<Key, Cargo>@ to implement a dictionary mapping from $Key$ to $Cargo$.
-..param.TSpec:The specializing type.
-...metafunction:Metafunction.Spec
-...default:@Spec.Skiplist@
-..include:seqan/map.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TElement, typename TSpec = Skiplist<> >
 class Map;
 
@@ -140,18 +128,7 @@ struct MapValueImpl_<TMap, Nothing>
  * @return Type the map value type.
  */
 
-/**
-.Metafunction.MapValue:
-..cat:Map
-..summary:Type of the map value type.
-..signature:MapValue<T>::Type
-..class:Class.Map
-..param.T:A map type.
-...type:Class.Map
-..returns.param.Type:The type of the value of T.
-..see:Metafunction.Cols
-..include:seqan/map.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TMap>
 struct MapValue :
 	MapValueImpl_< TMap, typename Cargo<TMap>::Type >
@@ -213,32 +190,7 @@ struct ImplMapValue_<Nothing>
  * key and what as cargo.
  */
 
-/**
-.Function.mapValue:
-..cat:Map
-..summary:Subscript operator $[ ]$ of maps. 
-..signature:MapValue mapValue(map, key)
-..class:Class.Map
-..param.map:A map.
-...type:Class.Map
-..param.key:A key.
-...metafunction:Metafunction.Key
-..returns:If $map$ is a set: The same as @Function.Map#hasKey@.
-...text:If $map$ is a dictionary: The same as @Function.Map#value@.
-...metafunction:Metafunction.MapValue
-..remarks: Usually, @Function.Map#value@ implements the subscript operator $[ ]$, but for maps, 
-this operator is implemented in $mapValue$. 
-The semantic of this operator depends on the kind of map: If the map has a @Metafunction.Cargo.cargo@, 
-than $mapValue(map, key)$ returns the cargo of the (first) value in the map of the given key.
-If the map has no @Metafunction.Cargo.cargo@, than the function returns a $true$, if $key$ is in $map$, or $false$ otherwise.
-...note:There is no way to create a set of @Class.Pair@, since it is always interpreted as a key/value pair.
-If you need a key type that holds two members, define your own key type.
-..remarks:You may overload @Metafunction.Key@ and @Metafunction.Cargo@ for your own value type in order to define, what part of your value type is used as key and what as cargo.
-..see:Function.Map#value
-..see:Function.Map#cargo
-..see:Function.Map#hasKey
-..include:seqan/map.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TMap, typename TKey>
 inline typename MapValue<TMap>::Type

@@ -83,23 +83,7 @@ struct StringSetLimits;
  * @param[in] stringSet The @link StringSet @endlink object to be concatenated.
  */
 
-/**
-.Class.ConcatenatorManyToOne:
-..summary:A sequence class that virtually concatenates all sequences in a @Class.StringSet@.
-..cat:Sequences
-..signature:ConcatenatorManyToOne<TStringSet>
-..param.TStringSet:The @Class.StringSet@ type.
-...type:Class.StringSet
-..remarks:This container can be iterated like the concatenation string of all sequences in a @Class.StringSet@.
-..remarks:This container only is a lightweight hull around a @Class.StringSet@. The iteration is handled by @Spec.ConcatVirtual Iterator@.
-..remarks:Note that accessing an element by index through $operator[]$ conducts a binary search and should be avoided. Use the @Spec.ConcatDirect@ specialization of @Class.StringSet@ for random access or only use sequential access through iterators.
-..include:seqan/sequence.h
-.Memfunc.ConcatenatorManyToOne#ConcatenatorManyToOne
-..summary:Constructor
-..signature:ConcatenatorManyToOne<TStringSet> (stringSet)
-..param.stringSet:The @Class.StringSet@ object to be concatenated.
-..class:Class.ConcatenatorManyToOne
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TStringSet>
 class ConcatenatorManyToOne
 {

@@ -46,17 +46,7 @@ class Annotation;
 
 
 
-/**
-.Class.Annotation:
-..cat:Sequences
-..summary:Class for annotating sequences. 
-..signature:Annotation<TSequence, TLabel, TSpec>  
-..param.TSequence:The sequence that annotation is available for.
-..param.TLabel:The label type (e.g. int or String<char>)
-..param.TSpec:The specializing type.
-...default:Simple
-..include:graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TSequence,typename TValue>
 class Annotation<TSequence,TValue,Simple>{
 
@@ -75,16 +65,7 @@ public:
 	{
 	}
 
-    /**
-.Memfunc.Annotation#Annotation:
-..class:Class.Annotation
-..summary:Constructor.
-..signature:Annotation(seqId, begin, len, label)
-..param.seqId:The sequence ID of the annotated sequence of type Id<TSequence>::Type.
-..param.begin:The begin position of the annotated interval of type Position<TSequence>::Type.
-..param.len:The length of the annotated interval of type Size<TSequence>::Type.
-..param.cargo:The annotation label/identifier of type TValue.
-     */
+/*_DDDOC_PLACEHOLDER*/
 	
 	Annotation(TId_ seqId, TPos_ begin, TSize_ len, TValue label) :
 			data_seq_id(seqId),
@@ -316,15 +297,7 @@ SEQAN_CHECKPOINT
 
 
 
-/**
-.Function.matchRefinement:
-..class:Spec.Alignment Graph
-..signature:matchRefinement(matches,annotation,stringSet,scoringScheme,refinedGraph)
-..param.annotation:Sequence annotation data. 
-...remarks: Additional semgent match subdivisions will be made at sequence positions at which the annotation label changes.
-...type:Class.Annotation
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 //annotation given,exact refinement, score type given
 template<typename TAlignmentString, typename TScoreValue,typename TScoreSpec,typename TAnnoString,typename TOutGraph, typename TSequence, typename TSetSpec>
 void
@@ -340,11 +313,7 @@ SEQAN_CHECKPOINT
 }
 
 
-/**
-.Function.matchRefinement:
-..signature:matchRefinement(matches,annotation,stringSet,scoringScheme,refinedGraph,minFragmentLen)
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 //annotation given,score type given, min fragment length given, if > 1 ==> inexact refinement
 template<typename TAlignmentString, typename TScoreValue,typename TScoreSpec,typename TAnnoString, typename TOutGraph, typename TSequence, typename TSetSpec>
 void
@@ -364,11 +333,7 @@ SEQAN_CHECKPOINT
 
 
 
-/**
-.Function.matchRefinement:
-..signature:matchRefinement(matches,annotation,stringSet,refinedGraph,minFragmentLen)
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 //annotation given,score type not given, min fragment length given, if > 1 ==> inexact refinement
 template<typename TAlignmentString, typename TOutGraph, typename TAnnoString, typename TSequence, typename TSetSpec>
 void
@@ -389,11 +354,7 @@ SEQAN_CHECKPOINT
 	
 
 
-/**
-.Function.matchRefinement:
-..signature:matchRefinement(matches,annotation,stringSet,refinedGraph)
-..include:seqan/graph_align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 //annotation given,exact refinement, score type not given
 template<typename TAlignmentString,typename TAnnoString, typename TOutGraph, typename TSequence, typename TSetSpec>
 void

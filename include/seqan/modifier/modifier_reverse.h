@@ -75,18 +75,7 @@ namespace seqan
  * @tparam THost original string.
  */
 
-/**
-.Spec.ModReverse:
-..summary:Mirrors the characters from begin to end.
-..cat:Modifier
-..general:Class.ModifiedIterator
-..general:Class.ModifiedString
-..signature:ModifiedIterator<THost, ModReverse>
-..signature:ModifiedString<THost, ModReverse>
-..param.THost:Original string/iterator.
-...type:Concept.RandomAccessIteratorConcept
-..include:seqan/modifier.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct ModReverse_;
 typedef Tag<ModReverse_> ModReverse;
@@ -531,16 +520,7 @@ end(ModifiedString<THost, ModReverse> & me, Tag<TTagSpec> const)
  * remains the same.
  */
 
-/**
-.Function.reverse
-..summary:Reverse an object/container in-place.
-..cat:Modifier
-..signature:reverse(object)
-..param.object:The object/container whose elements to reverse.
-...type:Concept.ContainerConcept
-...type:Adaption.std::list
-..include:seqan/modifier.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline bool

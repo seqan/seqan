@@ -55,26 +55,7 @@ struct PizzaChiliCodeProvider {
     typedef InvalidPizzaChiliSpec Type;
 };
 
-/**
-.Tag.Pizza & Chili Index Tags
-..summary:Tag specifying the Pizza & Chili library to use.
-..remarks:More information for all the index libraries can be found in the
-@http://pizzachili.dcc.uchile.cl|original documentation@ (or the
-@http://pizzachili.di.unipi.it|Italian mirror@).
-..cat:Index
-..tag.PizzaChiliAF:The alphabet-friendly FM index.
-..tag.PizzaChiliCcsa:The compressed compact suffix array index.
-..tag.PizzaChiliFM: The FM (full-text in minute space) index.
-..tag.PizzaChiili_RSA:The repair suffix array index.
-...remarks:The index cannot be saved and loaded.
-..tag.PizzaChiliSA: The simple suffix array index.
-...remarks:The index cannot be saved and loaded.
-..tag.PizzaChiliSada: the compressed suffix array index.
-...remarks:The index cannot be saved and loaded.
-..see:Spec.Pizza & Chili Index
-..see:Spec.Pizza & Chili String
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @defgroup PizzaChiliIndexTags Pizza &amp; Chili Index Tags
  * 

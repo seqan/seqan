@@ -76,22 +76,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
 
-/**
-.Function.open:
-..class:Class.File
-..summary:Opens a file, stream, or persistent string.
-..cat:Input/Output
-..signature:open(file, fileName[, openMode])
-..param.file:A File object.
-...type:Class.File
-..param.fileName:C-style character string containing the file name.
-..param.openMode:The combination of flags defining how the file should be opened. See @Enum.FileOpenMode@ for more details.
-...remarks:If you omit the $OPEN_APPEND$ flag in write mode, the file will be cleared when opened.
-...type:Enum.FileOpenMode
-...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TSpec >
     inline bool open(File<TSpec> &me, const char *fileName, int openMode) 
@@ -125,19 +110,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return bool <tt>true</tt> on success <tt>false</tt> on failure.
  */
 
-/**
-.Function.openTemp:
-..class:Class.File
-..summary:Opens a temporary file.
-..cat:Input/Output
-..signature:openTemp(file)
-..param.file:A File object.
-...type:Class.File
-..remarks:After closing this file will automatically be deleted.
-..remarks:The openmode (see @Function.open@) is $OPEN_RDWR | OPEN_CREATE$.
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TSpec >
     inline bool openTemp(File<TSpec> &me) 
@@ -170,17 +143,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
 
-/**
-.Function.close:
-..class:Class.File
-..cat:Input/Output
-..summary:Closes a file.
-..signature:close(file)
-..param.file:A File object.
-...type:Class.File
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TSpec >
     inline bool close(File<TSpec> & me) 
@@ -217,20 +180,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * The records are read from the position pointed to by the current file pointer (see @link File#seek @endlink).
  */
 
-/**
-.Function.read:
-..class:Class.File
-..cat:Input/Output
-..summary:Loads records from a file.
-..signature:read(file, memPtr, count)
-..param.file:A File object.
-...type:Class.File
-..param.memPtr:A pointer to the first destination record in memory.
-..param.count:The amount of records to be read.
-..returns:A $bool$ which is $true$ on success.
-..remarks:The records are read from the position pointed by the current file pointer (see @Function.seek@).
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 	template < typename TSpec, typename TValue, typename TSize >
     inline bool read(File<TSpec> & me, TValue *memPtr, TSize const count) 
@@ -258,20 +208,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * The records are written at the position pointed to by th ecurrent file pointer (see @link File#seek @endlink).
  */
 
-/**
-.Function.write:
-..class:Class.File
-..cat:Input/Output
-..summary:Saves records to a file.
-..signature:write(file, memPtr, count)
-..param.file:A File object.
-...type:Class.File
-..param.memPtr:A pointer to the first source record in memory.
-..param.count:The amount of records to be written.
-..returns:A $bool$ which is $true$ on success.
-..remarks:The records are written at the position pointed by the current file pointer (see @Function.seek@).
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 	template < typename TSpec, typename TValue, typename TSize >
     inline bool write(File<TSpec> & me, TValue const *memPtr, TSize const count) 
@@ -296,20 +233,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return bool <tt>true</tt> on success and <tt>false</tt> on failure.
  */
 
-/**
-.Function.readAt:
-..class:Class.File
-..summary:Loads records from a specific position in a file.
-..cat:Input/Output
-..signature:readAt(file, memPtr, count, fileOfs)
-..param.file:A File object.
-...type:Class.File
-..param.memPtr:A pointer to the first destination record in memory.
-..param.count:The amount of records to be read.
-..param.fileOfs:The absolute file position in bytes measured from the beginning.
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TFile, typename TValue, typename TSize, typename TPos >
     inline bool readAt(TFile & me, TValue *memPtr, TSize const count, TPos const fileOfs) 
@@ -334,20 +258,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
 
-/**
-.Function.writeAt:
-..class:Class.File
-..summary:Saves records to a specific position in a file.
-..cat:Input/Output
-..signature:writeAt(file, memPtr, count, fileOfs)
-..param.file:A File object.
-...type:Class.File
-..param.memPtr:A pointer to the first source record in memory.
-..param.count:The amount of records to be written.
-..param.fileOfs:The absolute file position in bytes measured from the beginning.
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TFile, typename TValue, typename TSize, typename TPos >
     inline bool writeAt(TFile & me, TValue const *memPtr, TSize const count, TPos const fileOfs) 
@@ -378,21 +289,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return TPosition The new file position measured in bytes from the beginning.
  */
 
-/**
-.Function.seek:
-..class:Class.File
-..summary:Changes the current file pointer.
-..cat:Input/Output
-..signature:seek(file, fileOfs[, origin])
-..param.file:A File object.
-...type:Class.File
-..param.fileOfs:A file offset measured in bytes relative to $origin$.
-..param.origin:Selects the origin from where to calculate the new position.
-...default:$SEEK_BEGIN$
-...remarks:For $SEEK_BEGIN$, $SEEK_CURRENT$, or $SEEK_END$ the origin is the beginning, the current pointer, or the end of the file.
-..returns:The new file position measured in bytes from the beginning.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 	template < typename TSpec, typename TPos >
     inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const fileOfs, int origin) 
@@ -426,17 +323,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return TPosition The current position in the file.
  */
 
-/**
-.Function.tell:
-..class:Class.File
-..summary:Gets the current file pointer.
-..cat:Input/Output
-..signature:tell(file)
-..param.file:A File object.
-...type:Class.File
-..returns:The current file position measured in bytes from the beginning.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TSpec >
     inline typename Position< File<TSpec> >::Type tell(File<TSpec> &me) 
@@ -454,17 +341,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @param[in,out] file The file to reset the file pointer of.
  */
 
-/**
-.Function.rewind:
-..class:Class.File
-..summary:Sets the current file pointer to the beginning.
-..cat:Input/Output
-..signature:rewind(file)
-..param.file:A File object.
-...type:Class.File
-..remarks:Calls @Function.seek@$(file, 0)$ by default.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename File >
     inline void rewind(File &me) 
@@ -484,17 +361,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return TSize The file size measured in bytes.
  */
 
-/**
-.Function.length:
-..class:Class.File
-..summary:Gets the file size.
-..cat:Input/Output
-..signature:length(file)
-..param.file:A File object.
-...type:Class.File
-..returns:The file size measured in bytes.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TSpec >
     inline typename Size<File<TSpec> >::Type length(File<TSpec> &me) 
@@ -516,16 +383,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @param[in]     newLength The file size in bytes to resize to in bytes.
  */
 
-/**
-.Function.resize:
-..class:Class.File
-..cat:Input/Output
-..signature:resize(file, new_length)
-..param.file:A File object.
-...type:Class.File
-..param.new_length:The new file size measured in bytes.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TSpec, typename TSize >
     inline void resize(File<TSpec> &me, TSize new_length) 
@@ -548,16 +406,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
 
-/**
-.Function.setEof:
-..class:Class.File
-..summary:Sets the file end to the current pointer.
-..cat:Input/Output
-..signature:setEof(file)
-..param.file:A File object.
-...type:Class.File
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TSpec >
     inline bool setEof(File<TSpec> &/*me*/) 
@@ -686,22 +535,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
 
-/**
-.Function.asyncReadAt:
-..class:Class.File
-..summary:Asynchronously loads records from a specific position in a file.
-..cat:Input/Output
-..signature:asyncReadAt(file, memPtr, count, fileOfs, request)
-..param.file:A File object.
-...type:Class.File
-..param.memPtr:A pointer to the first destination record in memory.
-..param.count:The amount of records to be read.
-..param.fileOfs:The absolute file position in bytes measured from the beginning.
-..param.request:Reference to a structure that will be associated with this asynchronous request.
-...type:Class.AsyncRequest
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename File, typename TValue, typename TSize, typename TPos,
                typename AsyncRequest >
@@ -728,22 +562,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return bool <tt>true</tt> on succcess, <tt>false</tt> on failure.
  */
 
-/**
-.Function.asyncWriteAt:
-..class:Class.File
-..summary:Asynchronously saves records to a specific position in a file.
-..cat:Input/Output
-..signature:asyncWriteAt(file, memPtr, count, fileOfs, request)
-..param.file:A File object.
-...type:Class.File
-..param.memPtr:A pointer to the first source record in memory.
-..param.count:The amount of records to be written.
-..param.fileOfs:The absolute file position in bytes measured from the beginning.
-..param.request:Reference to a structure that will be associated with this asynchronous request.
-...type:Class.AsyncRequest
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename File, typename TValue, typename TSize, typename TPos,
                typename TAsyncRequest >
@@ -768,17 +587,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @param[in,out] file The File object to flush.
  */
 
-/**
-.Function.flush:
-..class:Class.File
-..summary:Waits for all open requests to complete.
-..cat:Input/Output
-..signature:flush(file)
-..param.file:A File object.
-...type:Class.File
-..remarks:$flush$ returns after all pending requests are completed.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TSpec >
     inline void flush(File<TSpec> &) 
@@ -804,21 +613,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * <tt>timeout</tt> milliseconds.
  */
 
-/**
-.Function.waitFor:
-..class:Class.AsyncRequest
-..summary:Waits for an asynchronous request to complete.
-..cat:Input/Output
-..signature:waitFor(request[, timeoutMilliSec])
-..param.request:Reference to an AsyncRequest object.
-...type:Class.AsyncRequest
-..param.timeoutMilliSec:Timout value in milliseconds.
-...remarks:A value of 0 can be used to test for completion without waiting.
-...default:Infinity.
-..returns:A $bool$ which is $true$ on completion and $false$ on timeout.
-..remarks:$waitFor$ suspends the calling process until $request$ is completed or after $timeoutMilliSec$ milliseconds.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     inline bool waitFor(AsyncDummyRequest &) 
 	{ 
@@ -853,19 +648,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
 
-/**
-.Function.cancel:
-..class:Class.File
-..summary:Cancels an asynchronous request.
-..cat:Input/Output
-..signature:cancel(file, request)
-..param.file:A File object.
-...type:Class.File
-..param.request:Reference to an AsyncRequest object.
-...type:Class.AsyncRequest
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/file.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     template < typename TSpec, typename AsyncRequest >
     inline bool cancel(File<TSpec> &, AsyncRequest &) 

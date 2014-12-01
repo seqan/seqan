@@ -107,45 +107,7 @@ namespace seqan {
  * @signature typedef (...) BamIOContext::TNameStoreCache;
  */
 
-/**
-.Class.BamIOContext
-..cat:BAM I/O
-..signature:BamIOContext<TNameStore[, TNameStoreCache]>
-..summary:The I/O context to use for BAM I/O.
-..param.TNameStore:The name store class.
-..param.TNameStoreCache:The name store cache class.
-...default:@Class.NameStoreCache@<TNameStore>
-..include:bam_io.h
-..example.text:Creating a @Class.BamIOContext@ for a raw @Class.StringSet@ of @Shortcut.CharString@.
-..example.code:
-StringSet<CharString> nameStore;
-NameStoreCache<StringSet<CharString> > nameStoreCache(nameStore);
-BamIOContext<StringSet<CharString> > bamIOContext(nameStore, nameStoreCache);
-// ...
-..example.text:Using a @Class.BamIOContext@ with a @Class.FragmentStore@.
-..example.code:
-typedef FragmentStore<>::TContigNameStore         TNameStore;
-typedef NameStoreCache<TNameStore>                TNameStoreCache;
-FragmentStore<> store;
-// Optionally, do something with store.
-typedef BamIOContext<TNameStore, TNameStoreCache> TBamIOContext;
-TBamIOContext bamIOContext(store.contigNameStore, store.contigNameStoreCache);
-// ...
-
-.Memfunc.BamIOContext#BamIOContext
-..class:Class.BamIOContext
-..signature:BamIOContext()
-..summary:Constructor.
-..remarks:Only the default constructor is provided.
-
-.Typedef.BamIOContext#TNameStore
-..class:Class.BamIOContext
-..summary:The name store class.
-
-.Typedef.BamIOContext#TNameStoreCache
-..class:Class.BamIOContext
-..summary:The name store cache class.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <
     typename TNameStore_ = StringSet<CharString>,
@@ -224,17 +186,7 @@ public:
  * @return TNameStoreRef A reference to the <tt>TNameStore</tt> of the context.
  */
 
-/**
-.Function.BamIOContext#nameStore
-..class:Class.BamIOContext
-..cat:BAM I/O
-..summary:Return reference to name store from @Class.BamIOContext@.
-..signature:nameStore(context)
-..param.context:The @Class.BamIOContext@ to query.
-...type:Class.BamIOContext
-..see:Typedef.BamIOContext#TNameStore
-..include:seqan/bam_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStore &
@@ -300,18 +252,7 @@ setSequenceLengths(BamIOContext<TNameStore, TNameStoreCache, Dependent<> > & con
  * @return TNameStoreCacheRef A reference to the <tt>TNameStoreCache</tt> of the context.
  */
 
-/**
-.Function.BamIOContext#nameStoreCache
-..class:Class.BamIOContext
-..cat:BAM I/O
-..summary:Return reference to name store cache from @Class.BamIOContext@.
-..signature:nameStoreCache(context)
-..param.context:The @Class.BamIOContext@ to query.
-...type:Class.BamIOContext
-..see:Typedef.BamIOContext#TNameStoreCache
-..include:seqan/bam_io.h
-..see:Function.BamIOContext#nameStore
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStoreCache &

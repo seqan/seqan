@@ -56,17 +56,7 @@ namespace SEQAN_NAMESPACE_MAIN {
  * This specialization should only be used if no other is applicable or for verification purposes.
  */
 
-/**
-.Spec.HammingSimpleFinder:
-..summary:A brute force online searching algorithm for approximate string matching with hamming distance.
-..general:Class.Pattern
-..cat:Searching
-..signature:Pattern<TNeedle, HammingSimple>
-..param.TNeedle:The needle type.
-...type:Class.String
-..remarks:This specialization should only be used if no other is applicable or for verification purposes.
-..include:seqan/find.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 ///.Class.Pattern.param.TSpec.type:Spec.HammingSimpleFinder
 ///.Class.Pattern.class:Spec.HammingSimpleFinder

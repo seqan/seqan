@@ -39,15 +39,7 @@
 
 namespace seqan {
 
-/**
-.Metafunction.Pointer
-..cat:Basic
-..summary:Returns pointer to an object, required for @Function.operator->@, for example.
-..signature:Pointer<T>::Type
-..param.T:The type to query.
-..returns:Pointer type.
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // Forward Declaration / Prototype.
 template <typename T> struct Pointer;
@@ -153,20 +145,7 @@ template <typename T> struct Pointer;
  * @return TGetValue The get-value that is pointed to.
  */
 
-/**
-.Concept.IteratorAssociatedTypesConcept
-..cat:Iterators
-..summary:Requires metafunctions for the associated types used in the iterator concepts.
-..signature:IteratorAssociatedTypesConcept<T>
-..remarks:The SeqAn iterators mirror the definitions from @http://www.generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator|ConceptC++@.
-..include:seqan/basic.h
-
-.Metafunction.Value.concept:Concept.IteratorAssociatedTypesConcept
-.Metafunction.GetValue.concept:Concept.IteratorAssociatedTypesConcept
-.Metafunction.Difference.concept:Concept.IteratorAssociatedTypesConcept
-.Metafunction.Reference.concept:Concept.IteratorAssociatedTypesConcept
-.Metafunction.Pointer.concept:Concept.IteratorAssociatedTypesConcept
- */
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT(IteratorAssociatedTypesConcept, (T))
 {
@@ -244,25 +223,7 @@ SEQAN_CONCEPT(IteratorAssociatedTypesConcept, (T))
  * This function is equivalent to <tt>++iterator</tt>.
  */
 
-/**
-.Concept.InputIteratorConcept
-..cat:Iterators
-..summary:Iterator that allows dereferenced reading.
-..baseconcept:Concept.IteratorAssociatedTypesConcept
-..baseconcept:Concept.CopyConstructibleConcept
-..baseconcept:Concept.EqualityComparableConcept
-..signature:InputIteratorConcept<T>
-..see:Concept.BasicOutputIteratorConcept
-..remarks:The SeqAn iterators mirror the definitions from @http://www.generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator|ConceptC++@.
-..include:seqan/basic.h
-
-.Function.operator->.concept:Concept.InputIteratorConcept
-.Function.operator++ (prefix).concept:Concept.InputIteratorConcept
-.Function.operator++ (suffix).concept:Concept.InputIteratorConcept
-.Function.goNext.concept:Concept.InputIteratorConcept
-.Function.operator*.concept:Concept.InputIteratorConcept
-.Function.operator!=.concept.Concept.InputIteratorConcept
- */
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)(CopyConstructible)(EqualityComparable))
 {
@@ -375,31 +336,7 @@ SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)
  * This function is equivalent to <tt>++iterator</tt>.
  */
 
-/**
-.Concept.BasicOutputIteratorConcept
-..cat:Iterators
-..summary:Iterator that allows dereferenced writing.
-..baseconcept:Concept.IteratorAssociatedTypesConcept
-..baseconcept:Concept.CopyConstructibleConcept
-..signature:OutputIteratorConcept<T>
-..see:Concept.InputIteratorConcept
-..remarks:The SeqAn iterators mirror the definitions from @http://www.generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator|ConceptC++@.
-..include:seqan/basic.h
-..example.text:In the following, $x$ is an iterator to type $X$, $t$ is a valid rvalue of type $X$.
-..example.text:The following expressions must be valid.
-..example.code:
-*x = t     // Dereference assignment.
-++x        // Preincrement.
-(void)x++  // Postincrement.
-*x++ = t   // Postincrement and assign.
-
-assignValue(x, t);
-
-.Function.assignValue.concept:Concept.BasicOutputIteratorConcept
-.Function.operator++ (prefix).concept:Concept.BasicOutputIteratorConcept
-.Function.operator++ (suffix).concept:Concept.BasicOutputIteratorConcept
-.Function.goNext.concept:Concept.BasicOutputIteratorConcept
- */
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(BasicOutputIteratorConcept, (T), (CopyConstructible))
 {
@@ -448,21 +385,7 @@ SEQAN_CONCEPT_REFINE(BasicOutputIteratorConcept, (T), (CopyConstructible))
  * @endcode
  */
 
-/**
-.Concept.ForwardIteratorConcept
-..cat:Iterators
-..summary:Iterator that allows passing over a linear sequence multiple times.
-..baseconcept:Concept.InputIteratorConcept
-..baseconcept:Concept.DefaultConstructibleConcept
-..signature:ForwardIteratorConcept<T>
-..remarks:The SeqAn iterators mirror the definitions from @http://www.generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator|ConceptC++@.
-..include:seqan/basic.h
-..example.text:In the following, $x$ is an iterator to type $X$.
-..example.text:The following expressions must be valid.
-..example.code:
-++x  // Preincrement.
-x++  // Postincrement.
- */
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(ForwardIteratorConcept, (T), (InputIteratorConcept)(DefaultConstructible))
 {
@@ -488,15 +411,7 @@ SEQAN_CONCEPT_REFINE(ForwardIteratorConcept, (T), (InputIteratorConcept)(Default
  * The SeqAn iterators mirror the definitions from <a href="http://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
  */
 
-/**
-.Concept.MutableForwardIteratorConcept
-..cat:Iterators
-..summary:A @Concept.ForwardIteratorConcept|Forward Iterator@ that allows dereferenced assignment.
-..baseconcept:Concept.ForwardIteratorConcept
-..baseconcept:Concept.BasicOutputIteratorConcept
-..remarks:The SeqAn iterators mirror the definitions from @http://www.generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator|ConceptC++@.
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(MutableForwardIteratorConcept, (T), (ForwardIteratorConcept)(BasicOutputIteratorConcept))
 {
@@ -570,24 +485,7 @@ SEQAN_CONCEPT_REFINE(MutableForwardIteratorConcept, (T), (ForwardIteratorConcept
  * This function is equivalent to <tt>--iterator</tt>.
  */
 
-/**
-.Concept.BidirectionalIteratorConcept
-..cat:Iterators
-..summary:Iterator that can be both incremented and decremented.
-..baseconcept:Concept.ForwardIteratorConcept
-..signature:BidirectionalIteratorConcept<T>
-..remarks:The SeqAn iterators mirror the definitions from @http://www.generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator|ConceptC++@.
-..include:seqan/basic.h
-..example.text:In the following, $x$ is an iterator to type $X$.
-..example.text:The following expressions must be valid.
-..example.code:
---x  // Predecrement.
-x--  // Postdecrement.
-
-.Function.operator-- (prefix).concept:Concept.BidirectionalIteratorConcept
-.Function.operator-- (suffix).concept:Concept.BidirectionalIteratorConcept
-.Function.goPrevious.concept:Concept.BidirectionalIteratorConcept
- */
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(BidirectionalIteratorConcept, (T), (ForwardIteratorConcept))
 {
@@ -610,14 +508,7 @@ SEQAN_CONCEPT_REFINE(BidirectionalIteratorConcept, (T), (ForwardIteratorConcept)
  * @signature MutableBidirectionalIteratorConcept<T>
  */
 
-/**
-.Concept.MutableBidirectionalIteratorConcept
-..cat:Iterators
-..summary:A @Concept.BidirectionalIteratorConcept|Bidirectional Iterator@ that allows dereferenced assignment
-..baseconcept:Concept.ForwardIteratorConcept
-..signature:MutableBidirectionalIteratorConcept<T>
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(MutableBidirectionalIteratorConcept, (T), (BidirectionalIteratorConcept)(MutableForwardIteratorConcept))
 {
@@ -756,39 +647,7 @@ SEQAN_CONCEPT_REFINE(MutableBidirectionalIteratorConcept, (T), (BidirectionalIte
  * @return bool Whether or not the iterator is at the nil positions (NULL for pointers).
  */
 
-/**
-.Concept.RandomAccessIteratorConcept
-..cat:Iterators
-..summary:An iterator allowing random access.
-..baseconcept:Concept.BidirectionalIteratorConcept
-..baseconcept:Concept.LessThanComparableConcept
-..signature:RandomAccessIteratorConcept<T>
-..remarks:The SeqAn iterators mirror the definitions from @http://www.generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator|ConceptC++@.
-..include:seqan/basic.h
-..example.text:In the following, $x$ is an iterator to type $X$, $t$ is a valid rvalue of type $X$, $n$ is a distance type.
-..example.text:The following expressions must be valid.
-..example.code:
-x += n    // Iterator addition assignment.
-x + n     // Iterator addition.
-n + i     // Iterator addition.
-x -= n    // Iterator subtraction assignment.
-x - n     // Iterator subtraction.
-x - a     // Difference.
-x[n]      // Element operator.
-
-.Metafunction.Difference.concept:Concept.RandomAccessIteratorConcept
-.Function.operator+=.concept:Concept.RandomAccessIteratorConcept
-.Function.operator+.concept:Concept.RandomAccessIteratorConcept
-.Function.operator-=.concept:Concept.RandomAccessIteratorConcept
-.Function.operator-.concept:Concept.RandomAccessIteratorConcept
-.Function.difference.concept:Concept.RandomAccessIteratorConcept
-.Function.operator[].concept:Concept.RandomAccessIteratorConcept
-.Function.goFurther.concept:Concept.RandomAccessIteratorConcept
-
-.Function.operator>=.concept:Concept.RandomAccessIteratorConcept
-.Function.operator>.concept:Concept.RandomAccessIteratorConcept
-.Function.operator<=.concept:Concept.RandomAccessIteratorConcept
- */
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(RandomAccessIteratorConcept, (T), (BidirectionalIteratorConcept)(LessThanComparable))
 {
@@ -826,20 +685,7 @@ SEQAN_CONCEPT_REFINE(RandomAccessIteratorConcept, (T), (BidirectionalIteratorCon
  * @signature MutableRandomAccessIteratorConcept<T>
  */
 
-/**
-.Concept.MutableRandomAccessIteratorConcept
-..cat:Iterators
-..summary:A @Concept.RandomAccessIteratorConcept@ that allows assignable derefentiation.
-..baseconcept:Concept.BidirectionalIteratorConcept
-..baseconcept:Concept.LessThanComparableConcept
-..signature:RandomAccessIteratorConcept<T>
-..remarks:The SeqAn iterators mirror the definitions from @http://www.generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator|ConceptC++@.
-..example.text:The following expressions should be valid.
-..example.code:
-value(x, n) = t
-x[n] = t
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(MutableRandomAccessIteratorConcept, (T), (RandomAccessIteratorConcept)(MutableBidirectionalIteratorConcept))
 {
@@ -910,20 +756,7 @@ SEQAN_CONCEPT_REFINE(MutableRandomAccessIteratorConcept, (T), (RandomAccessItera
  * @return bool Whether or not the iterator is at the end.
  */
 
-/**
-.Concept.RootedIteratorConcept
-..cat:Iterators
-..summary:Iterator that knows its container.
-..baseconcept:Concept.ForwardIteratorConcept
-..signature:RootedIteratorConcept<T>
-..remarks:The SeqAn iterators mirror the definitions from @http://www.generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator|ConceptC++@.
-..include:seqan/basic.h
-
-.Metafunction.Container.concept:Concept.RootedIteratorConcept
-.Function.container.concept:Concept.RootedIteratorConcept
-.Function.atBegin.concept:Concept.RootedIteratorConcept
-.Function.atEnd.concept:Concept.RootedIteratorConcept
- */
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(RootedIteratorConcept, (T), (IteratorAssociatedTypesConcept))
 {
@@ -953,15 +786,7 @@ SEQAN_CONCEPT_REFINE(RootedIteratorConcept, (T), (IteratorAssociatedTypesConcept
  * @signature MutableRootedIteratorConcept<T>
  */
 
-/**
-.Concept.MutableRootedIteratorConcept
-..cat:Iterators
-..summary:A @Concept.RootedIteratorConcept|Rooted Iterator@ that allows dereferenced assignment.
-..baseconcept:Concept.ForwardIteratorConcept
-..signature:RootedIteratorConcept<T>
-..remarks:The SeqAn iterators mirror the definitions from @http://www.generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator|ConceptC++@.
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(MutableRootedIteratorConcept, (T), (RootedIteratorConcept)(MutableForwardIteratorConcept))
 {
@@ -1029,20 +854,7 @@ SEQAN_CONCEPT_REFINE(MutableRootedIteratorConcept, (T), (RootedIteratorConcept)(
  * @param[in,out] it  The iterator to set the position of.
  */
 
-/**
-.Concept.RootedRandomAccessIteratorConcept
-..cat:Iterators
-..summary:An iterator that is both rooted and random access, allowing to implement @Function.position@.
-..signature:RootedRandomAccessIteratorConcept<T>
-..baseconcept:Concept.RandomAccessIteratorConcept
-..baseconcept:Concept.RootedIteratorConcept
-
-.Metafunction.Position.concept:Concept.RootedRandomAccessIteratorConcept
-.Function.position.concept:Concept.RootedRandomAccessIteratorConcept
-.Function.setPosition.concept:Concept.RootedRandomAccessIteratorConcept
-.Function.goBegin.concept:Concept.RootedRandomAccessIteratorConcept
-.Function.goEnd.concept:Concept.RootedRandomAccessIteratorConcept
- */
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(RootedRandomAccessIteratorConcept, (T), (RootedIteratorConcept)(RandomAccessIteratorConcept))
 {
@@ -1068,15 +880,7 @@ SEQAN_CONCEPT_REFINE(RootedRandomAccessIteratorConcept, (T), (RootedIteratorConc
  * @signature RootedRandomAccessIteratorConcept<T>
  */
 
-/**
-.Concept.MutableRootedRandomAccessIteratorConcept
-..cat:Iterators
-..baseconcept:Concept.RootedRandomAccessIteratorConcept
-..baseconcept:Concept.MutableBidirectionalIteratorConcept
-..summary:A @Concept.RootedIteratorConcept|Rooted Iterator@ that allows dereferenced assignment.
-..signature:MutableRootedRandomAccessIteratorConcept<T>
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(MutableRootedRandomAccessIteratorConcept, (T), (RootedRandomAccessIteratorConcept)(MutableBidirectionalIteratorConcept))
 {

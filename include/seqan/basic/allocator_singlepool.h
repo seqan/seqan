@@ -71,24 +71,7 @@ namespace seqan {
  * than a few KB is not advised.
  */
 
-/**
-.Spec.Single Pool Allocator:
-..cat:Allocators
-..general:Class.Allocator
-..summary:Allocator that pools memory blocks of specific size.
-..signature:Allocator< SinglePool<SIZE, ParentAllocator> >
-..param.SIZE:Size of memory blocks that are pooled.
-..param.ParentAllocator:An allocator that is by the pool allocator used to allocate memory.
-...default:@Spec.Simple Allocator@
-...note:The single pool allocator only supports @Function.clear@ if this function is also implemented for $ParentAllocator$.
-..remarks:A pool allocator allocates several memory blocks at once. 
-Freed blocks are not immediately deallocated but recycled in subsequential allocations.
-This way, the number of calls to the heap manager is reduced, and that speeds up memory management.
-...text:The single pool allocator only pools memory blocks of size at most $SIZE$.
-Blocks of other sizes are allocated and deallocated using an allocator of type $ParentAllocator$.
-...text:Using the single pool allocator for blocksizes larger than some KB is not advised.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <size_t SIZE, typename TParentAllocator = SimpleAllocator>
 struct SinglePool;

@@ -101,73 +101,7 @@ namespace seqan {
  * @return Type The selected type.
  */
 
-/**
-.Tag.NilCase
-..cat:Metaprogramming
-..summary:Metaprogramming $default:$ case expression.
-..signature:NilCase
-..remarks:$NilCase$ is returned by metafunction @Metafunction.Switch@ if no case matched.
-..include:seqan/basic.h
-..remarks:The documentation of @Metafunction.Switch@ gives an example.
-..see:Tag.Case
-..see:Metafunction.Switch
-
-.Tag.Case
-..cat:Metaprogramming
-..summary:Metaprogramming $case$ expression.
-..signature:Case<TAG[, NextCase]>
-..param.TAG:
-..param.NextCase:Optional next case of type @Tag.Case@, defaults to @Tag.NilCase@.
-...type:Tag.NilCase
-...type:Tag.Case
-..include:seqan/basic.h
-..remarks:The documentation of @Metafunction.Switch@ gives an example.
-..see:Tag.NilCase
-..see:Metafunction.Switch
-
-.Metafunction.Switch
-..cat:Metaprogramming
-..summary:Metaprogramming $switch$ expression.
-..signature:Switch<TAG, Case>::Type
-..param.TAG:The case label.
-...type:nolink:$int$
-..param.Case:Cascade of $Case$ tags.
-...type:Tag.Case
-...type:Tag.NilCase
-..returns:The selected type from the @Tag.Case@ cascade or @Tag.NilCase@.
-..include:seqan/basic.h
-..see:Tag.NilCase
-..see:Tag.Case
-..example.code:
-int switchTest(Nothing const &) { return -1; }
-int switchTest(False const &) { return 0; }
-int switchTest(True const &) { return 1; }
-int switchTest(NilCase const &) { return 2; }
-
-template <int X>
-struct SwitchTest
-{
-    typedef typename Switch<
-        X,
-        Case<-1, Nothing,
-        Case<0, False,
-        Case<1, True
-        > > > >::Type Type;
-};
-
-SEQAN_DEFINE_TEST(test_metaprogramming_switch)
-{
-    typedef typename SwitchTest<-1>::Type T1;
-    typedef typename SwitchTest< 0>::Type T2;
-    typedef typename SwitchTest< 1>::Type T3;
-    typedef typename SwitchTest< 2>::Type T4;
-
-    std::cout << switchTest(T1()) << std::endl;  // => -1
-    std::cout << switchTest(T2()) << std::endl;  // =>  0
-    std::cout << switchTest(T3()) << std::endl;  // =>  1
-    std::cout << switchTest(T4()) << std::endl;  // =>  2
- }
- */
+/*_DDDOC_PLACEHOLDER*/
 
 const int DEFAULT_ = ~(~0u >> 1); // initialize with the smallest int
 
@@ -245,31 +179,7 @@ struct Switch<TAG, NilCase>
  * @param[in]     i   The <tt>int</tt> passed to the <tt>body()</tt> function.
  */
 
-/**
-.Metafunction.Loop:
-..cat:Metaprogramming
-..summary:Metafunction returning a function that iterates over a static integer range.
-..signature:Loop<Worker, I>::run(Arg & arg)
-..param.Worker:A worker $struct$. It has to implement the static (and preferably finline/inline) function $body$ that accepts two parameters. The first one will be a reference to $arg$, as given to $run()$.  The second will be the current value of the iterating variable.
-..param.I:The upper limit for the iteration.
-..param.arg:The argument to be passed into the workers' $body()$ function.
-..remarks:The loop will go from 1 up to and including $I$.
-..see:Metafunction.LoopReverse
-..include:seqan/basic.h
-..example.text:Print the values 1, 2, ..., $I-1$, $I$.
-..example.code:
-struct PrintWorker
-{
-    static inline void body(Nothing & arg, int I)
-    {
-        (void)arg;  // ignored
-        printf("%d\n", I);
-    }
-};
-
-Loop<PrintWorker, 10>::run(Nothing());
-// This will print the numbers 1, 2, ..., 9, 10.
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // Example of a loop Worker class.  Could be removed, serves no
 // purpose.
@@ -344,31 +254,7 @@ public:
  * @param[in]     i   The <tt>int</tt> passed to the <tt>body()</tt> function.
  */
 
-/**
-.Metafunction.LoopReverse:
-..cat:Metaprogramming
-..summary:Metafunction returning a function that iterates over a static integer range in reverse order.
-..signature:LoopReverse<Worker, I>::run(Arg & arg)
-..param.Worker:A worker $struct$. It has to implement the static (and preferably finline/inline) function $body$ that accepts two parameters. The first one will be a reference to $arg$, as given to $run()$.  The second will be the current value of the iterating variable.
-..param.I:The upper limit for the iteration.
-..param.arg:The argument to be passed into the workers' $body()$ function.
-..remarks:The loop will go from $I$ down to and including 1.
-..include:seqan/basic.h
-..see:Metafunction.Loop
-..example.text:Print the values $I$, $I - 1$, ..., 2, 1.
-..example.code:
-struct PrintWorker
-{
-    static inline body(Nothing & arg, int I)
-    {
-        (void)arg;  // ignored
-        printf("%d\n", I);
-    }
-};
-
-Loop<PrintWorker, 10>::run(Nothing());
-// This will print the numbers 1, 2, ..., 9, 10.
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename Worker, int I>
 class LoopReverse

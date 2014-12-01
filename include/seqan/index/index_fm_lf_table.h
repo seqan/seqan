@@ -54,19 +54,7 @@ struct LF;
 // Tags
 // ============================================================================
 
-/**
-.Tag.LF Table Fibres
-..summary:Tag to select a specific fibre of a @Spec.FMIndex@.
-..remarks:These tags can be used to get @Metafunction.Fibre.Fibres@ of a FM index.
-..cat:Index
-
-..tag.FibreOccTable:The occurrence table of the lf table.
-..tag.FibrePrefixSumsTable:The prefix sum table of the lf table.
-
-..see:Metafunction.Fibre
-..see:Function.getFibre
-..include:seqan/index_fm.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @defgroup LFTableFibres LF Table Fibres
@@ -189,17 +177,7 @@ struct Fibre<LF<TText, TSpec, TConfig>, FibreTempBwt>
 // Class LF
 // ----------------------------------------------------------------------------
 
-/**
-.Class.LF:
-..cat:Index
-..summary:LF is an object storing all necessary information for the LF-mapping.
-..signature:LF<TText, TSpec, TConfig>
-..param.TOccTable:The occurrence table data structure.
-...type:Spec.WaveletTree
-..param.TPrefixSumsTable:The specialisation tag.
-...default:String
-..include:seqan/Index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class LF
  * 
@@ -273,19 +251,7 @@ bwtLength(TText const & text)
 // Function getFibre()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.LF#getFibre:
-..summary:Returns a specific fibre of a container.
-..signature:getFibre(container, fibreTag)
-..class:Class.LF
-..cat:Index
-..param.container:The container holding the fibre.
-...type:Class.LF
-..param.fibreTag:A tag that identifies the @Metafunction.Fibre@.
-...type:Tag.LF Table Fibres
-..returns:A reference to the @Metafunction.Fibre@ object.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn LF#getFibre
  * 
@@ -346,17 +312,7 @@ getFibre(LF<TText, TSpec, TConfig> const & lf, FibreSentinels)
 // Function empty()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.LF#empty
-..class:Class.LF
-..summary:Clears the LF table.
-..signature:empty(lf)
-..param.lf:The LF table to be cleared.
-...type:Class.LF
-..returns:$true$ if the LF table is empty, $false$ otherwise.
-...type:nolink:$bool$
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn LF#empty
  * 
@@ -391,15 +347,7 @@ SEQAN_HOST_DEVICE inline bool empty(LF<StringSet<TText, TSSetSpec>, TSpec, TConf
 // Function clear()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.LF#clear
-..class:Class.LF
-..summary:Clears the LF table.
-..signature:clear(lf)
-..param.lf:The LF table to be cleared.
-...type:Class.LF
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn LF#clear
  * 
@@ -697,23 +645,7 @@ inline void createLF(LF<TText, TSpec, TConfig> & lf, TOtherText const & text, TS
 // Function open()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.LF#open
-..class:Class.LF
-..summary:This functions loads a LF table from disk.
-..signature:open(lf, fileName [, openMode])
-..param.lf:The lf.
-...type:Class.LF
-..param.fileName:C-style character string containing the file name.
-..param.openMode:The combination of flags defining how the file should be opened.
-...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
-...remarks:To create or overwrite a file add $OPEN_CREATE$.
-...remarks:To append a file if existing add $OPEN_APPEND$.
-...remarks:To circumvent problems, files are always opened in binary mode.
-...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
-..returns:A nolink:$bool$ which is $true$ on success.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn LF#open
  * @headerfile <seqan/index.h>
@@ -768,23 +700,7 @@ inline bool open(LF<TText, TSpec, TConfig> & lf, const char * fileName)
 // Function save()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.LF#save
-..class:Class.LF
-..summary:This functions saves a LF table to disk.
-..signature:save(lf, fileName [, openMode])
-..param.lf:The dictionary.
-...type:Class.LF
-..param.fileName:C-style character string containing the file name.
-..param.openMode:The combination of flags defining how the file should be opened.
-...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
-...remarks:To create or overwrite a file add $OPEN_CREATE$.
-...remarks:To append a file if existing add $OPEN_APPEND$.
-...remarks:To circumvent problems, files are always opened in binary mode.
-...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
-..returns:A nolink:$bool$ which is $true$ on success.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn LF#save
  * 

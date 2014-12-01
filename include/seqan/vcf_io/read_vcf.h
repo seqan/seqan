@@ -84,20 +84,7 @@ typedef Tag<Vcf_> Vcf;
  * @return int A status code, 0 on success, a different value otherwise.
  */
 
-/**
-.Function.VCF I/O#read
-..cat:VCF I/O
-..summary:Read a @Class.VcfHeader@.
-..signature:int read(header, reader, context, Vcf())
-..param.header:The @Class.VcfHeader@ to read into.
-...type:Class.VcfHeader
-..param.reader:The @Spec.Single-Pass RecordReader@ to read from.
-...type:Spec.Single-Pass RecordReader
-..param.context:The @Class.VcfIOContext@ to use for reading.
-...class:Class.VcfIOContext
-..return:$0$ on success, $1$ on failure.
-..include:seqan/vcf_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void
 _parseVcfContig(CharString & chromName, CharString const & headerValue)
@@ -193,20 +180,7 @@ readRecord(VcfHeader & header,
  * @return int A status code, 0 on success, a different value otherwise.
  */
 
-/**
-.Function.VCF I/O#readRecord
-..cat:VCF I/O
-..summary:Read a @Class.VcfRecord@ from a @Spec.Single-Pass RecordReader@.
-..signature:int readRecord(record, reader, context, Vcf())
-..param.record:The @Class.VcfRecord@ to read into.
-...type:Class.VcfRecord
-..param.reader:The @Spec.Single-Pass RecordReader@ to read from.
-...type:Spec.Single-Pass RecordReader
-..param.context:The @Class.VcfIOContext@ to use for reading.
-...class:Class.VcfIOContext
-..return:$0$ on success, $1$ on failure.
-..include:seqan/vcf_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // Read record, updating list of known sequences if new one occurs.
 

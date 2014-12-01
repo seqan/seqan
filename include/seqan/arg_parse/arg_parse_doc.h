@@ -59,18 +59,7 @@ namespace seqan {
  * @return TCharStringRef The app name, const-ref to @link CharString @endlink.
  */
 
-/**
-.Function.ArgumentParser#getAppName
-..class:Class.ArgumentParser
-..summary:Get tool name of @Class.ArgumentParser@ object.
-..cat:Miscellaneous
-..signature:getAppName(parser)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..returns:Tool name of argument parser object.
-...type:nolink:$std::string$
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline CharString const & getAppName(ArgumentParser const & parser)
 {
@@ -109,19 +98,7 @@ inline void _parseAppName(ArgumentParser & parser, std::string const & candidate
  * @param[in]     line   The line of text to add, @link SequenceConcept @endlink of <tt>char</tt>.
  */
 
-/**
-.Function.ArgumentParser#addLine:
-..class:Class.ArgumentParser
-..summary:Adds a line of text to the help output of the @Class.ArgumentParser@ in the block of
-@Class.ArgParseOption@s.
-..cat:Miscellaneous
-..signature:addLine(parser, text)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.text:A line of text that will be added to the help output.
-...type:Shortcut.CharString
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TString>
 inline void addLine(ArgumentParser & me, TString const & line)
@@ -156,30 +133,7 @@ inline void addLine(ArgumentParser & me, TString const & line)
  * @endcode
  */
 
-/**
-.Function.ArgumentParser#addSection:
-..class:Class.ArgumentParser
-..summary:Begins a new section of @Class.ArgParseOption@ the help output of
-the @Class.ArgumentParser@.
-..cat:Miscellaneous
-..signature:addSection(parser, text)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.text:A section header that will be added to the help output.
-...type:Shortcut.CharString
-..include:seqan/arg_parse.h
-..example.code:
-ArgumentParser parser;
-
-[...] // init parser
-
-addSection(parser, "In-/Output-Options");
-addOption("i", ... );
-addOption("o", ... );
-
-addSection(parser, "Other Options");
-addOption("x", ... );
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TString>
 inline void addSection(ArgumentParser & me, TString const & line)
@@ -202,17 +156,7 @@ inline void addSection(ArgumentParser & me, TString const & line)
  * @param[in]     line   The line to add, a <tt>std::string</tt>.
  */
 
-/**
-.Function.ArgumentParser#addUsageLine:
-..class:Class.ArgumentParser
-..summary:Adds a line of text to the usage output of the @Class.ArgumentParser@.
-..cat:Miscellaneous
-..signature:addUsageLine(parser, text)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.text:A text line that will be added to the usage output.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void addUsageLine(ArgumentParser & me, std::string const & line)
 {
@@ -249,18 +193,7 @@ inline void _addUsage(ToolDoc & toolDoc, ArgumentParser const & me)
  * @param[in]     description The description text, a <tt>std::string</tt>.
  */
 
-/**
-.Function.ArgumentParser#addDescription
-..class:Class.ArgumentParser
-..summary:Appends a description paragraph to the @Class.ArgumentParser@ documentation.
-..cat:Miscellaneous
-..signature:addDescription(parser, text)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.text:The description paragraph.
-..returns:$void$
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void addDescription(ArgumentParser & me, std::string const & description)
 {
@@ -281,18 +214,7 @@ inline void addDescription(ArgumentParser & me, std::string const & description)
  * @param[in]     name   The application name, <tt>std::string</tt>.
  */
 
-/**
-.Function.ArgumentParser#setAppName
-..class:Class.ArgumentParser
-..summary:Sets application name of @Class.ArgumentParser@.
-..cat:Miscellaneous
-..signature:setAppName(parser, appName)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.appName:The name of the application.
-..returns:$void$
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void setAppName(ArgumentParser & me, std::string const & name)
 {
@@ -313,18 +235,7 @@ inline void setAppName(ArgumentParser & me, std::string const & name)
  * @param[in]     desc   The short description, <tt>std::string</tt>.
  */
 
-/**
-.Function.ArgumentParser#setShortDescription
-..class:Class.ArgumentParser
-..summary:Sets short description of the @Class.ArgumentParser@ object.
-..cat:Miscellaneous
-..signature:setShortDescription(parser, text)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.text:The short description text.
-..returns:$void$
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void setShortDescription(ArgumentParser & me, std::string const & description)
 {
@@ -346,17 +257,7 @@ inline void setShortDescription(ArgumentParser & me, std::string const & descrip
  * @return CharString A @link CharString @endlink with the short description.
  */
 
-/**
-.Function.ArgumentParser#getShortDescription
-..class:Class.ArgumentParser
-..summary:Gets short description of @Class.ArgumentParser@.
-..cat:Miscellaneous
-..signature:getShortDescription(parser)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..returns:The short description of the @Class.ArgumentParser@ object.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline CharString getShortDescription(ArgumentParser const & me)
 {
@@ -377,18 +278,7 @@ inline CharString getShortDescription(ArgumentParser const & me)
  * @param[in]     version The version string to set, <tt>std::string</tt>.
  */
 
-/**
-.Function.ArgumentParser#setVersion
-..class:Class.ArgumentParser
-..summary:Sets version string of @Class.ArgumentParser@.
-..cat:Miscellaneous
-..signature:setVersion(parser, versionString)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.versionString:The version string to set.
-..returns:$void$
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void setVersion(ArgumentParser & me, std::string const & versionString)
 {
@@ -412,18 +302,7 @@ inline void setVersion(ArgumentParser & me, std::string const & versionString)
  * @return TCharString A const-ref to a @link CharString @endlink with the version string.
  */
 
-/**
-.Function.ArgumentParser#getVersion
-..class:Class.ArgumentParser
-..cat:Miscellaneous
-..summary:Get version string from @Class.ArgumentParser@ object.
-..signature:getVersion(parser)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..returns:Date string.
-...type:Shortcut.CharString
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline CharString const & getVersion(ArgumentParser const & me)
 {
@@ -444,19 +323,7 @@ inline CharString const & getVersion(ArgumentParser const & me)
  * @param[in]     category The category to set, <tt>std::string</tt>.
  */
 
-/**
-.Function.ArgumentParser#setCategory
-..class:Class.ArgumentParser
-..summary:Set tool category for @Class.ArgumentParser@ object.
-..cat:Miscellaneous
-..signature:setCategory(parser, category)
-..param.parser:The @Class.ArgumentParser@ object to set the category.
-...type:Class.ArgumentParser
-..param.category:Category to set.
-...type:Shortcut.CharString
-..returns:$void$
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void setCategory(ArgumentParser & parser, CharString const & category)
 {
@@ -478,18 +345,7 @@ inline void setCategory(ArgumentParser & parser, CharString const & category)
  * @return TCharString A const-ref to a @link CharString @endlink with the category.
  */
 
-/**
-.Function.ArgumentParser#getCategory
-..class:Class.ArgumentParser
-..summary:Get tool category of @Class.ArgumentParser@ object.
-..cat:Miscellaneous
-..signature:getCategory(parser)
-..param.parser:The @Class.ArgumentParser@ object to get the tool category of.
-...type:Class.ArgumentParser
-..returns:Tool category of the @Class.ArgumentParser@ object.
-...type:Shortcut.CharString
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline CharString const & getCategory(ArgumentParser const & parser)
 {
@@ -510,18 +366,7 @@ inline CharString const & getCategory(ArgumentParser const & parser)
  * @param[in]     date   The date string to set, <tt>std::string</tt>.
  */
 
-/**
-.Function.ArgumentParser#setDate
-..class:Class.ArgumentParser
-..summary:Sets date string of @Class.ArgumentParser@.
-..cat:Miscellaneous
-..signature:setDate(parser, date)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.date:The date string.
-..returns:$void$
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void setDate(ArgumentParser & me, std::string const & date)
 {
@@ -542,19 +387,7 @@ inline void setDate(ArgumentParser & me, std::string const & date)
  * @param[in]     title  The section title to add, <tt>std::string</tt>.
  */
 
-/**
-.Function.ArgumentParser#addTextSection
-..class:Class.ArgumentParser
-..summary:Adds a text section to the @Class.ArgumentParser@.
-..cat:Miscellaneous
-..signature:addTextSection(parser, title)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.title:The section title.
-..returns:$void$
-..remarks:This will result in an additional section heading to be printed.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void addTextSection(ArgumentParser & me, std::string const & title)
 {
@@ -575,19 +408,7 @@ inline void addTextSection(ArgumentParser & me, std::string const & title)
  * @param[in]     title  The sub section title to add, <tt>std::string</tt>.
  */
 
-/**
-.Function.ArgumentParser#addTextSubSection
-..class:Class.ArgumentParser
-..summary:Adds a text subsection to the @Class.ArgumentParser@.
-..cat:Miscellaneous
-..signature:addTextSubSection(parser, title)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.title:The subsection title.
-..returns:$void$
-..remarks:This will result in an additional subsection heading to be printed.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void addTextSubSection(ArgumentParser & me, std::string const & title)
 {
@@ -608,18 +429,7 @@ inline void addTextSubSection(ArgumentParser & me, std::string const & title)
  * @param[in]     text   The <tt>std::string</tt> to add to the parser.
  */
 
-/**
-.Function.ArgumentParser#addText
-..class:Class.ArgumentParser
-..summary:Appends a text paragraph to the @Class.ArgumentParser@.
-..cat:Miscellaneous
-..signature:addText(parser, text)
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.text:The content of the text.
-..returns:$void$
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void addText(ArgumentParser & me, std::string const & text)
 {
@@ -641,21 +451,7 @@ inline void addText(ArgumentParser & me, std::string const & text)
  * @param[in]     description The item to add, <tt>std::string</tt>.
  */
 
-/**
-.Function.ArgumentParser#addListItem
-..class:Class.ArgumentParser
-..summary:Appends a list item to the @Class.ArgumentParser@.
-..cat:Miscellaneous
-..signature:addListItem(parser, item, description)
-..description:
-This method adds a list item to the parser's output.
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.item:The item text.
-..param.description:The description text.
-..returns:$void$
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void addListItem(ArgumentParser & me, std::string const & item, std::string const & description)
 {
@@ -676,17 +472,7 @@ inline void addListItem(ArgumentParser & me, std::string const & item, std::stri
  * @param[in,out] out    The <tt>std::ostream</tt> to print help to.
  */
 
-/**
-.Function.ArgumentParser#printShortHelp
-..class:Class.ArgumentParser
-..summary:Prints a short help message for the parser to a stream
-..cat:Miscellaneous
-..signature:printShortHelp(parser[, stream])
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.stream:Target stream (e.g. $std::cerr$).
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void printShortHelp(ArgumentParser const & me, std::ostream & stream)
 {
@@ -722,18 +508,7 @@ inline void printShortHelp(ArgumentParser const & me)
  * @param[in,out] stream The <tt>std::ostream</tt> to print to.
  */
 
-/**
-.Function.ArgumentParser#printVersion
-..class:Class.ArgumentParser
-..summary:Prints the version information of the parser to a stream.
-..cat:Miscellaneous
-..signature:printVersion(parser[, stream])
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.stream:Target std::ostream (e.g. $std::cerr$).
-...default: $std::cerr$
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void printVersion(ArgumentParser const & me, std::ostream & stream)
 {
@@ -855,19 +630,7 @@ inline void _addValidValuesRestrictions(std::string & text, ArgParseOption const
  * @param[in]     format The format to print, one of "html", "man", and "txt".
  */
 
-/**
-.Function.ArgumentParser#printHelp
-..class:Class.ArgumentParser
-..summary:Prints the complete help message for the parser to a stream.
-..cat:Miscellaneous
-..signature:printHelp(parser[, stream][, format])
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.stream:Target std::ostream (e.g. $std::cerr$).
-...default: $std::cerr$
-..param.format:Format to print, one of "html", "man", "txt".
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void printHelp(ArgumentParser const & me, std::ostream & stream, CharString const & format)
 {

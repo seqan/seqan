@@ -51,16 +51,7 @@ namespace seqan {
  * @tparam TValue The score value to use.
  */
 
-/**
-.Spec.Simple Score
-..cat:Scoring
-..signature:Score<TValue, Simple>
-..param.TValue:The value type.
-...default:int
-..general:Class.Score
-..summary:Simple scoring scheme that has scores for matches, mismatches, opening gaps and extending gaps.
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue>
 class Score<TValue, Simple> {
 public:
@@ -103,28 +94,7 @@ public:
  * @param[in] gapOpen Gap open value (defaults to gap), type TValue.
  */
 
-/**
-.Memfunc.Score#Score:
-..class:Class.Score
-..summary:Constructor
-..signature:Score<TValue, Simple>()
-..signature:Score<TValue, Simple>(score)
-..signature:Score<TValue, Simple>(match, mismatch, gap [, gap_open])
-..param.score:Other Score object. (copy constructor)
-..param.match:TValue object.
-...default:0
-..param.mismatch:TValue object.
-...default:-1
-..param.gap:TValue object.
-...remarks:The score for a single blank in a gap (linear gap costs).
-...default:-1
-..param.gap_open:TValue object.
-...remarks:The score for the first blank in a gap (affine gap costs).
-...default:$gap$
-..remarks:
-...text:If both gap and gap_open are specified, the total score of a length $n$ gap is $gap_open (n-1)*gap$.
-...note:Usually $mismatch$, $gap$, and $gap_open$ are negative values.
- */
+/*_DDDOC_PLACEHOLDER*/
     Score(TValue _match, TValue _mismatch, TValue _gap_extend, TValue _gap_open)
         : data_match(_match), data_mismatch(_mismatch),
           data_gap_extend(_gap_extend), data_gap_open(_gap_open) {
@@ -140,15 +110,7 @@ public:
  * @signature typedef Score<int, Simple> SimpleScore;
  */
 
-/**
-.Shortcut.SimpleScore:
-..cat:Scoring
-..summary:Simple scoring scheme.
-..signature:SimpleScore
-..shortcutfor:Spec.Simple Score
-...signature:Score<int, Simple>
-..see:Spec.Simple Score
-*/
+/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, Simple> SimpleScore;
 
 /*!
@@ -162,19 +124,7 @@ typedef Score<int, Simple> SimpleScore;
  * @return TValue The match score.
  */
 
-/**
-.Function.scoreMatch:
-..class:Class.Score
-..cat:Alignments
-..summary:Match score.
-..signature:scoreMatch(object)
-..param.object.type:Class.Score
-..returns:Match score.
-..see:Function.scoreMismatch
-..see:Function.scoreGapExtend
-..see:Function.scoreGapOpen
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline TValue
 scoreMatch(Score<TValue, TSpec> const & me) {
@@ -192,19 +142,7 @@ scoreMatch(Score<TValue, TSpec> const & me) {
  * @param[in]     value The value to set the match score to.
  */
 
-/**
-.Function.setScoreMatch:
-..class:Class.Score
-..cat:Alignments
-..summary:Set match score.
-..signature:setScoreMatch(object, value)
-..param.object.type:Class.Score
-..param.value.type:nolink:TValue
-..see:Function.scoreMismatch
-..see:Function.scoreGapExtend
-..see:Function.scoreGapOpen
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline void
 setScoreMatch(Score<TValue, TSpec> & me, TValue const & value) {
@@ -223,20 +161,7 @@ setScoreMatch(Score<TValue, TSpec> & me, TValue const & value) {
  * @return TValue The mismatch score.
  */
 
-/**
-.Function.scoreMismatch:
-..class:Class.Score
-..cat:Alignments
-..summary:Mismatch score.
-..signature:scoreMismatch(object)
-..param.object.type:Class.Score
-..returns:Mismatch score.
-...note:Usually, mismatches have negative scores.
-..see:Function.scoreMatch
-..see:Function.scoreGapExtend
-..see:Function.scoreGapOpen
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline TValue
 scoreMismatch(Score<TValue, TSpec> const & me) {
@@ -254,19 +179,7 @@ scoreMismatch(Score<TValue, TSpec> const & me) {
  * @param[in]     value The value to set the mismatch score to.
  */
 
-/**
-.Function.setScoreMismatch:
-..class:Class.Score
-..cat:Alignments
-..summary:Set mismatch score.
-..signature:setScoreMismatch(object, value)
-..param.object.type:Class.Score
-..param.value.type:nolink:TValue
-..see:Function.scoreMismatch
-..see:Function.scoreGapExtend
-..see:Function.scoreGapOpen
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline void
 setScoreMismatch(Score<TValue, TSpec> & me, TValue const & value) {
@@ -285,20 +198,7 @@ setScoreMismatch(Score<TValue, TSpec> & me, TValue const & value) {
  * @return TValue The gap extension score.
  */
 
-/**
-.Function.scoreGapExtend:
-..class:Class.Score
-..cat:Alignments
-..summary:Score for extending gaps.
-..signature:scoreGapExtend(object)
-..param.object.type:Class.Score
-..returns:Score for extending gaps.
-...note:Usually, gaps have negative scores.
-..see:Function.scoreMismatch
-..see:Function.scoreMatch
-..see:Function.scoreGapOpen
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline TValue
 scoreGapExtend(Score<TValue, TSpec> const & me) {
@@ -307,19 +207,7 @@ scoreGapExtend(Score<TValue, TSpec> const & me) {
 }
 
 
-/**
-.Function.setScoreGapExtend:
-..class:Class.Score
-..cat:Alignments
-..summary:Set gap extension score.
-..signature:setScoreGapExtend(object, value)
-..param.object.type:Class.Score
-..param.value.type:nolink:TValue
-..see:Function.scoreMismatch
-..see:Function.scoreGapExtend
-..see:Function.scoreGapOpen
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline void
 setScoreGapExtend(Score<TValue, TSpec> & me, TValue const & value) {
@@ -338,20 +226,7 @@ setScoreGapExtend(Score<TValue, TSpec> & me, TValue const & value) {
  * @return TValue The gap open score.
  */
 
-/**
-.Function.scoreGapOpen:
-..class:Class.Score
-..cat:Alignments
-..summary:Score for opening a gap.
-..signature:scoreGapOpen(object)
-..param.object.type:Class.Score
-..returns:Score for opening a gap.
-...note:Usually, gaps have negative scores.
-..see:Function.scoreMismatch
-..see:Function.scoreGapExtend
-..see:Function.scoreMatch
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline TValue
 scoreGapOpen(Score<TValue, TSpec> const & me) {
@@ -370,19 +245,7 @@ scoreGapOpen(Score<TValue, TSpec> const & me) {
  * @param[in]     value The value to set the gap open score to.
  */
 
-/**
-.Function.setScoreGapOpen:
-..class:Class.Score
-..cat:Alignments
-..summary:Set gap opening score.
-..signature:setScoreGapOpen(object, value)
-..param.object.type:Class.Score
-..param.value.type:nolink:TValue
-..see:Function.scoreMismatch
-..see:Function.scoreGapExtend
-..see:Function.scoreGapOpen
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline void
 setScoreGapOpen(Score<TValue, TSpec> & me, TValue const & value) {
@@ -402,22 +265,7 @@ setScoreGapOpen(Score<TValue, TSpec> & me, TValue const & value) {
  */
 
 
-/**
-.Function.scoreGap:
-..class:Class.Score
-..cat:Alignments
-..summary:Score for gaps.
-..signature:scoreGapExtend(object)
-..param.object.type:Class.Score
-..returns:Score for extending gaps.
-...note:Usually, gaps have negative scores.
-..remarks:This score is used for linear gap costs. For affine gap costs use @Function.scoreGapExtend@ and @Function.scoreGapOpen@ instead.
-..see:Function.scoreMismatch
-..see:Function.scoreMatch
-..see:Function.scoreGapOpen
-..see:Function.scoreGapExtend
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 // TODO(holtgrew): This shortcut/forward should live in score_base.h.
 template <typename TValue, typename TSpec>
 inline TValue
@@ -436,19 +284,7 @@ scoreGap(Score<TValue, TSpec> const & me) {
  * @param[in]     value The value to set the gap score to.
  */
 
-/**
-.Function.setScoreGap:
-..class:Class.Score
-..cat:Alignments
-..summary:Set gap opening and extension score.
-..signature:setScoreGap(object, value)
-..param.object.type:Class.Score
-..param.value.type:nolink:TValue
-..see:Function.scoreMismatch
-..see:Function.scoreGapExtend
-..see:Function.scoreGapOpen
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline void
 setScoreGap(Score<TValue, TSpec> & me, TValue const & value) {
@@ -459,20 +295,7 @@ setScoreGap(Score<TValue, TSpec> & me, TValue const & value) {
 
 
 // TODO(rmaerker): Remove this here!
-/**
-.Function.score:
-..cat:Scoring
-..class:Class.Score
-..signature:score(score, value1, value2) [deprecated]
-..param.score:A scoring scheme.
-...type:Class.Score
-..param.value1:Aligned character in the first sequence.
-..param.value2:Aligned character in the second sequence.
-..status:The version that explicitely requires two characters is deprecated. For using (or defining) custom scoring schemes better use the functions
-@Function.score@, @Function.scoreGapOpenVertical@, @Function.scoreGapExtendVertical@, @Function.scoreGapOpenHorizontal@ and @Function.scoreGapExtendHorizontal@ 
-as they require character positions and sequences and allow for position-dependent scoring schemes.
-..include:seqan/score.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 //template <typename TValue, typename TSpec, typename TVal1, typename TVal2>
 //inline TValue
 //score(Score<TValue, TSpec> const & me, TVal1 left, TVal2 right) {

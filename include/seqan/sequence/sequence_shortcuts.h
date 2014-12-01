@@ -52,17 +52,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature typedef String<char> CharString;
  */
 
-/**
-.Shortcut.CharString:
-..cat:Strings
-..summary:A string of $char$.
-..signature:CharString
-..description:
-This is a useful replacement of $std::string$.
-If you want a C-style $char *$ string, use @Function.toCString@.
-..shortcutfor:Spec.Alloc String
-...signature:String<char, Alloc<> >
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef String<char, Alloc<void> > CharString;
 
@@ -76,15 +66,7 @@ typedef String<char, Alloc<void> > CharString;
  * @signature typedef Iterator<CharString, Rooted>::Type CharIterator;
  */
 
-/**
-.Shortcut.CharIterator:
-..cat:Iterators
-..summary:Iterator for @Shortcut.CharString@.
-..signature:CharIterator
-..shortcutfor:Concept.RootedIteratorConcept
-...signature:Iterator<CharString, Rooted>::Type
-..see:Shortcut.CharString
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef Iterator<CharString, Rooted>::Type CharIterator;
 
@@ -98,28 +80,13 @@ typedef Iterator<CharString, Rooted>::Type CharIterator;
  * @signature typedef String<wchar_t> CharString;
  */
 
-/**
-.Shortcut.UnicodeString:
-..cat:Strings
-..summary:A string of $wchar_t$.
-..signature:UnicodeString
-..shortcutfor:Spec.Alloc String
-...signature:String<wchar_t, Alloc<> >
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef String<wchar_t, Alloc<void> > UnicodeString;
 
 //____________________________________________________________________________
 
-/**
-.Shortcut.UnicodeIterator:
-..cat:Iterators
-..summary:Iterator for @Shortcut.UnicodeString@.
-..signature:UnicodeIterator
-..shortcutfor:Concept.RootedIteratorConcept
-...signature:Iterator<UnicodeString, Rooted>::Type
-..see:Shortcut.UnicodeString
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef Iterator<UnicodeString, Rooted>::Type UnicodeIterator;
 
@@ -133,15 +100,7 @@ typedef Iterator<UnicodeString, Rooted>::Type UnicodeIterator;
  * @signature typedef String<Dna> CharString;
  */
 
-/**
-.Shortcut.DnaString:
-..cat:Strings
-..summary:A string of @Spec.Dna@.
-..signature:DnaString
-..shortcutfor:Spec.Alloc String
-...signature:String<Dna, Alloc<> >
-..see:Spec.Dna
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef String<Dna, Alloc<void> > DnaString;
 
@@ -155,16 +114,7 @@ typedef String<Dna, Alloc<void> > DnaString;
  * @signature typedef Iterator<DnaString, Rooted>::Type DnaIterator;
  */
 
-/**
-.Shortcut.DnaIterator:
-..cat:Iterators
-..summary:Iterator for @Shortcut.DnaString@.
-..signature:DnaIterator
-..shortcutfor:Concept.RootedIteratorConcept
-...signature:Iterator<DnaString, Rooted>::Type
-..see:Spec.Dna
-..see:Shortcut.DnaString
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef Iterator<DnaString, Rooted>::Type DnaIterator;
 
@@ -178,16 +128,7 @@ typedef Iterator<DnaString, Rooted>::Type DnaIterator;
  * @signature typedef String<Dna5> CharString;
  */
 
-/**
-.Shortcut.Dna5String:
-..cat:Strings
-..summary:A string of @Spec.Dna5@.
-..signature:Dna5String
-..shortcutfor:Spec.Alloc String
-...signature:String<Dna5, Alloc<> >
-..see:Spec.Dna5
-..see:Shortcut.DnaString
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef String<Dna5, Alloc<void> > Dna5String;
 
@@ -201,16 +142,7 @@ typedef String<Dna5, Alloc<void> > Dna5String;
  * @signature typedef String<DnaQ> CharString;
  */
 
-/**
-.Shortcut.DnaQString:
-..cat:Strings
-..summary:A string of @Spec.DnaQ@.
-..signature:DnaQString
-..shortcutfor:Spec.Alloc String
-...signature:String<DnaQ, Alloc<> >
-..see:Spec.DnaQ
-..see:Shortcut.DnaString
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef String<DnaQ, Alloc<void> > DnaQString;
 
@@ -224,16 +156,7 @@ typedef String<DnaQ, Alloc<void> > DnaQString;
  * @signature typedef String<Dna5Q> CharString;
  */
 
-/**
-.Shortcut.Dna5QString:
-..cat:Strings
-..summary:A string of @Spec.Dna5Q@.
-..signature:Dna5QString
-..shortcutfor:Spec.Alloc String
-...signature:String<Dna5Q, Alloc<> >
-..see:Spec.Dna5Q
-..see:Shortcut.DnaString
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef String<Dna5Q, Alloc<void> > Dna5QString;
 
@@ -247,17 +170,7 @@ typedef String<Dna5Q, Alloc<void> > Dna5QString;
  * @signature typedef Iterator<Dna5String, Rooted>::Type Dna5Iterator;
  */
 
-/**
-.Shortcut.Dna5Iterator:
-..cat:Iterators
-..summary:Iterator for @Shortcut.Dna5String@.
-..signature:Dna5Iterator
-..shortcutfor:Concept.RootedIteratorConcept
-...signature:Iterator<Dna5String, Rooted>::Type
-..see:Spec.Dna5
-..see:Shortcut.Dna5String
-..see:Shortcut.DnaIterator
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef Iterator<Dna5String, Rooted>::Type Dna5Iterator;
 
@@ -271,15 +184,7 @@ typedef Iterator<Dna5String, Rooted>::Type Dna5Iterator;
  * @signature typedef String<Rna> CharString;
  */
 
-/**
-.Shortcut.RnaString:
-..cat:Strings
-..summary:A string of @Spec.Rna@.
-..signature:RnaString
-..shortcutfor:Spec.Alloc String
-...signature:String<Rna, Alloc<> >
-..see:Spec.Rna
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef String<Rna, Alloc<void> > RnaString;
 
@@ -293,16 +198,7 @@ typedef String<Rna, Alloc<void> > RnaString;
  * @signature typedef Iterator<RnaString, Rooted>::Type RnaIterator;
  */
 
-/**
-.Shortcut.RnaIterator:
-..cat:Iterators
-..summary:Iterator for @Shortcut.RnaString@.
-..signature:RnaIterator
-..shortcutfor:Concept.RootedIteratorConcept
-...signature:Iterator<RnaString, Rooted>::Type
-..see:Spec.Rna
-..see:Shortcut.RnaString
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef Iterator<RnaString, Rooted>::Type RnaIterator;
 
@@ -316,16 +212,7 @@ typedef Iterator<RnaString, Rooted>::Type RnaIterator;
  * @signature typedef String<Rna5> CharString;
  */
 
-/**
-.Shortcut.Rna5String:
-..cat:Strings
-..summary:A string of @Spec.Rna5@.
-..signature:Rna5String
-..shortcutfor:Spec.Alloc String
-...signature:String<Rna5, Alloc<> >
-..see:Spec.Rna5
-..see:Shortcut.RnaString
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef String<Rna5, Alloc<void> > Rna5String;
 
@@ -339,17 +226,7 @@ typedef String<Rna5, Alloc<void> > Rna5String;
  * @signature typedef Iterator<Rna5String, Rooted>::Type Rna5Iterator;
  */
 
-/**
-.Shortcut.Rna5Iterator:
-..cat:Iterators
-..summary:Iterator for @Shortcut.Rna5String@.
-..signature:Rna5Iterator
-..shortcutfor:Concept.RootedIteratorConcept
-...signature:Iterator<Rna5String, Rooted>::Type
-..see:Spec.Rna5
-..see:Shortcut.Rna5String
-..see:Shortcut.RnaIterator
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef Iterator<Rna5String, Rooted>::Type Rna5Iterator;
 
@@ -363,15 +240,7 @@ typedef Iterator<Rna5String, Rooted>::Type Rna5Iterator;
  * @signature typedef String<Iupac> CharString;
  */
 
-/**
-.Shortcut.IupacString:
-..cat:Strings
-..summary:A string of @Spec.Iupac@.
-..signature:IupacString
-..shortcutfor:Spec.Alloc String
-...signature:String<Iupac, Alloc<> >
-..see:Spec.Iupac
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef String<Iupac, Alloc<void> > IupacString;
 
@@ -385,16 +254,7 @@ typedef String<Iupac, Alloc<void> > IupacString;
  * @signature typedef Iterator<IupacString, Rooted>::Type IupacIterator;
  */
 
-/**
-.Shortcut.IupacIterator:
-..cat:Iterators
-..summary:Iterator for @Shortcut.IupacString@.
-..signature:IupacIterator
-..shortcutfor:Concept.RootedIteratorConcept
-...signature:Iterator<IupacString, Rooted>::Type
-..see:Spec.Iupac
-..see:Shortcut.IupacString
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef Iterator<IupacString, Rooted>::Type IupacIterator;
 
@@ -408,15 +268,7 @@ typedef Iterator<IupacString, Rooted>::Type IupacIterator;
  * @signature typedef String<AminoAcid> Peptide;
  */
 
-/**
-.Shortcut.Peptide:
-..cat:Strings
-..summary:A string of @Spec.AminoAcid@.
-..signature:Peptide
-..shortcutfor:Spec.Alloc String
-...signature:String<AminoAcid, Alloc<> >
-..see:Spec.AminoAcid
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef String<AminoAcid, Alloc<void> > Peptide;
 
@@ -430,16 +282,7 @@ typedef String<AminoAcid, Alloc<void> > Peptide;
  * @signature typedef Iterator<Peptide, Rooted>::Type PeptideIterator;
  */
 
-/**
-.Shortcut.PeptideIterator:
-..cat:Iterators
-..summary:Iterator for @Shortcut.Peptide@.
-..signature:PeptideIterator
-..shortcutfor:Concept.RootedIteratorConcept
-...signature:Iterator<Peptide, Rooted>::Type
-..see:Spec.AminoAcid
-..see:Shortcut.Peptide
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef Iterator<Peptide, Rooted>::Type PeptideIterator;
 

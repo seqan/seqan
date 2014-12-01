@@ -134,85 +134,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *        alignment row.
  */
 
-/**
-.Class.AlignedReadStoreElement
-..summary:Represents an alignment between read and contig.
-..cat:Fragment Store
-..signature:AlignedReadStoreElement<>
-..signature:AlignedReadStoreElement<TPos[, TGapAnchor[, TSpec]]>
-..param.TPos:Type to store (gap-space) positions.
-..param.TGapAnchor:Type of a read gap anchor.
-...type:Class.GapAnchor
-..param.TSpec:The specialization type.
-...default:$void$
-..remarks:Value type of the @Memvar.FragmentStore#alignedReadStore@ string.
-In contrast to all other @Class.FragmentStore@ stores, the @Memvar.AlignedReadStoreElement#id@ of an aligned read is explicitly stored
-as a member to allow for random reordering of the @Memvar.FragmentStore#alignedReadStore@, e.g. sorting by genomic position via @Function.sortAlignedReads@.
-..include:seqan/store.h
-
-.Typedef.AlignedReadStoreElement#TId
-..summary:Type of all stored ids.
-..remarks:$TId$ equals the result of $Id<AlignedReadStoreElement<> >::Type$, see @Metafunction.Id@.
-..class:Class.AlignedReadStoreElement
-.Typedef.AlignedReadStoreElement#TPos
-..summary:Type of the @Memvar.AlignedReadStoreElement#beginPos@ and @Memvar.AlignedReadStoreElement#endPos@ members.
-..class:Class.AlignedReadStoreElement
-.Typedef.AlignedReadStoreElement#TGapAnchors
-..summary:Type of the @Memvar.AlignedReadStoreElement#gaps@ member.
-..class:Class.AlignedReadStoreElement
-.Typedef.AlignedReadStoreElement#TSpec
-..summary:The specialization type.
-..class:Class.AlignedReadStoreElement
-
-.Memfunc.AlignedReadStoreElement#AlignedReadStoreElement
-..summary:Constructor
-..signature:AlignedReadStoreElement()
-..signature:AlignedReadStoreElement(id, readId, contigId, beginPos, endPos[, gaps])
-..param.id:The alignment id refers to associated alignment information in @Memvar.FragmentStore#alignQualityStore@ or @Memvar.FragmentStore#alignedReadTagStore@.
-..param.readId:Refers to the aligned read in the @Memvar.FragmentStore#readStore@.
-..param.contigId:Refers to the contig in the @Memvar.FragmentStore#contigStore@ the read is aligned with.
-..param.beginPos:Begin position of the alignment in gap-space.
-..param.endPos:End position of the alignment in gap-space.
-..param.gaps:Read gap anchors.
-..remarks:The default constructor sets all ids to @Memvar.AlignedReadStoreElement#INVALID_ID@ and
-@Memvar.AlignedReadStoreElement#beginPos@ and @Memvar.AlignedReadStoreElement#endPos@ to $0$.
-..class:Class.AlignedReadStoreElement
-
-.Memvar.AlignedReadStoreElement#id
-..summary:The alignment id refers to associated alignment information in @Memvar.FragmentStore#alignQualityStore@ or @Memvar.FragmentStore#alignedReadTagStore@.
-..type:Metafunction.Id
-..class:Class.AlignedReadStoreElement
-.Memvar.AlignedReadStoreElement#readId
-..summary:Refers to the aligned read in the @Memvar.FragmentStore#readStore@.
-..type:Metafunction.Id
-..class:Class.AlignedReadStoreElement
-.Memvar.AlignedReadStoreElement#contigId
-..summary:Refers to the contig in the @Memvar.FragmentStore#contigStore@ the read is aligned with.
-..type:Metafunction.Id
-..class:Class.AlignedReadStoreElement
-.Memvar.AlignedReadStoreElement#pairMatchId
-..summary:Two read alignments having the same @Memvar.AlignedReadStoreElement#pairMatchId@ form a valid pair match.
-If it equals @Memvar.AlignedReadStoreElement#INVALID_ID@, the read is either not paired or could not be aligned as part of a pair match.
-..type:Metafunction.Id
-..class:Class.AlignedReadStoreElement
-.Memvar.AlignedReadStoreElement#beginPos
-..summary:Begin position of the alignment in gap-space.
-..type:Typedef.AlignedReadStoreElement#TPos
-..class:Class.AlignedReadStoreElement
-.Memvar.AlignedReadStoreElement#endPos
-..summary:End position of the alignment in gap-space. If @Memvar.AlignedReadStoreElement#endPos@ < @Memvar.AlignedReadStoreElement#beginPos@, the read is aligned to the reverse strand, 
-where @Memvar.AlignedReadStoreElement#beginPos@ and @Memvar.AlignedReadStoreElement#endPos@ are the corresponding positions on the forward strand.
-..type:Typedef.AlignedReadStoreElement#TPos
-..class:Class.AlignedReadStoreElement
-.Memvar.AlignedReadStoreElement#gaps
-..summary:String of read gap anchors. Can be used to create a @Spec.AnchorGaps@ alignment row.
-..type:Typedef.AlignedReadStoreElement#TGapAnchors
-..class:Class.AlignedReadStoreElement
-.Memvar.AlignedReadStoreElement#INVALID_ID
-..summary:Constant to represent an invalid id.
-..type:Metafunction.Id
-..class:Class.AlignedReadStoreElement
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TPos_, typename TGapAnchor_, typename TSpec_ = void>
 struct AlignedReadStoreElement
@@ -310,34 +232,7 @@ AlignedReadStoreElement<TPos, TGapAnchor, TSpec>::INVALID_ID = MaxValue<typename
  * @brief Absolute number of errors in the alignment (<tt>unsigned char</tt>).
  */
 
-/**
-.Class.AlignQualityStoreElement
-..summary:Stores alignment qualities.
-..cat:Fragment Store
-..signature:AlignQualityStoreElement<TScore[, TSpec]>
-..param.TScore:Type to store align and pair score values.
-..param.TSpec:The specialization type.
-...default:$void$
-..remarks:Value type of the @Memvar.FragmentStore#alignQualityStore@ string.
-
-.Memfunc.AlignQualityStoreElement#AlignQualityStoreElement
-..summary:Constructor
-..signature:AlignQualityStoreElement<TScore[, TSpec]> ()
-..remarks:Sets all members to $0$.
-
-..class:Class.AlignQualityStoreElement
-.Memvar.AlignQualityStoreElement#pairScore
-..summary:Combined score of both alignments of a pair match.
-..class:Class.AlignQualityStoreElement
-.Memvar.AlignQualityStoreElement#score
-..summary:Score of the alignment.
-..class:Class.AlignQualityStoreElement
-.Memvar.AlignQualityStoreElement#errors
-..summary:Absolute number of errors in the alignment.
-..type:nolink:unsigned char
-..class:Class.AlignQualityStoreElement
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TScore, typename TSpec = void>
 struct AlignQualityStoreElement
@@ -414,33 +309,7 @@ struct AlignQualityStoreElement
  * @signature typedef Tag<SortReadId_> const SortReadId;
  */
 
-/**
-.Tag.sortAlignedRead Tags
-..summary:Tag to select a specific field to stably sort the @Memvar.FragmentStore#alignedReadStore@ by.
-..cat:Fragment Store
-..see:Function.sortAlignedReads
-..see:Function.lowerBoundAlignedReads
-..see:Function.upperBoundAlignedReads
-..tag.SortContigId:
-...summary:Sort alignedReads by @Memvar.AlignedReadStoreElement#contigId@.
-...signature:SortContigId
-..tag.SortId:
-...summary:Sort alignedReads by @Memvar.AlignedReadStoreElement#id@.
-...signature:SortId
-..tag.SortBeginPos:
-...summary:Sort alignedReads by @Memvar.AlignedReadStoreElement#beginPos@.
-...signature:SortBeginPos
-..tag.SortEndPos:
-...summary:Sort alignedReads by @Memvar.AlignedReadStoreElement#endPos@.
-...signature:SortEndPos
-..tag.SortPairMatchId:
-...summary:Sort alignedReads by @Memvar.AlignedReadStoreElement#pairMatchId@.
-...signature:SortPairMatchId
-..tag.SortReadId:
-...summary:Sort alignedReads by @Memvar.AlignedReadStoreElement#readId@.
-...signature:SortReadId
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct SortContigId_;
 typedef Tag<SortContigId_> const SortContigId;
@@ -618,53 +487,7 @@ struct _LessAlignedRead<TAlignedRead, SortReadId> :
  * @see lowerBoundAlignedReads
  */
 
-/**
-.Function.sortAlignedReads
-..summary:Stably sort aligned reads.
-..cat:Fragment Store
-..signature:sortAlignedReads(alignStore, sortTag)
-..signature:sortAlignedReads(alignStore, lessFunctor)
-..param.alignStore:A sequence of @Class.AlignedReadStoreElement@ to be sorted, e.g. @Memvar.FragmentStore#alignedReadStore@.
-..param.sortTag:Selects the field to sort by.
-...type:Tag.sortAlignedRead Tags
-..param.lessFunctor:STL-less functor to compare two @Class.AlignedReadStoreElement.AlignedReadStoreElements@.
-..remarks:This function calls $std::stable_sort$ to sort the @Memvar.FragmentStore#alignedReadStore@.
-..include:seqan/store.h
-..see:Function.lowerBoundAlignedReads
-..see:Function.upperBoundAlignedReads
-
-.Function.lowerBoundAlignedReads
-..summary:Performs a binary lower bound search on the aligned reads.
-..cat:Fragment Store
-..signature:lowerBoundAlignedReads(alignStore, value, sortTag)
-..signature:lowerBoundAlignedReads(itBegin, itEnd, value, sortTag)
-..param.alignStore:A sequence of @Class.AlignedReadStoreElement@ to be searched through, e.g. @Memvar.FragmentStore#alignedReadStore@.
-..param.itBegin:An iterator to the first element of the sequence of @Class.AlignedReadStoreElement@ to be searched through.
-..param.itEnd:An iterator behind the last element of the sequence of @Class.AlignedReadStoreElement@ to be searched through.
-..param.value:The value to use for the comparison.
-..param.sortTag:Selects the field for the comparison in the binary search.
-...type:Tag.sortAlignedRead Tags
-..remarks:This is equivalent to calling $std::lower_bound$ on @Memvar.FragmentStore#alignedReadStore@ with according parameters.
-..include:seqan/store.h
-..see:Function.sortAlignedReads
-..see:Function.upperBoundAlignedReads
-
-.Function.upperBoundAlignedReads
-..summary:Performs a binary upper bound search on the aligned reads.
-..cat:Fragment Store
-..signature:upperBoundAlignedReads(alignStore, value, sortTag)
-..signature:upperBoundAlignedReads(itBegin, itEnd, value, sortTag)
-..param.alignStore:A sequence of @Class.AlignedReadStoreElement@ to be searched through, e.g. @Memvar.FragmentStore#alignedReadStore@.
-..param.itBegin:An iterator to the first element of the sequence of @Class.AlignedReadStoreElement@ to be searched through.
-..param.itEnd:An iterator behind the last element of the sequence of @Class.AlignedReadStoreElement@ to be searched through.
-..param.value:The value to use for the comparison.
-..param.sortTag:Selects the field for the comparison in the binary search.
-...type:Tag.sortAlignedRead Tags
-..remarks:This is equivalent to calling $std::upper_bound$ on @Memvar.FragmentStore#alignedReadStore@ with according parameters.
-..include:seqan/store.h
-..see:Function.sortAlignedReads
-..see:Function.lowerBoundAlignedReads
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TAlign, typename TSortSpec>
 inline void

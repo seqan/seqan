@@ -69,32 +69,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Constant to represetn an invalid id.
  */
 
-/**
-.Class.ReadStoreElement
-..summary:Represents a single read (without sequence).
-..cat:Fragment Store
-..signature:ReadStoreElement<>
-..signature:ReadStoreElement<TSpec>
-..param.TSpec:The specialization type.
-...default:$void$
-..remarks:Value type of the @Memvar.FragmentStore#readStore@ string.
-
-.Memfunc.ReadStoreElement#ReadStoreElement
-..summary:Constructor
-..signature:ReadStoreElement<>()
-..signature:ReadStoreElement<TSpec> ()
-..remarks:Sets $matePairId$ to $INVALID_ID$.
-..class:Class.ReadStoreElement
-.Memvar.ReadStoreElement#matePairId
-..summary:Refers to a mate-pair in the @Memvar.FragmentStore#matePairStore@ or is $INVALID_ID$ if the read is not paired.
-..type:Metafunction.Id
-..class:Class.ReadStoreElement
-.Memvar.ReadStoreElement#INVALID_ID
-..summary:Constant to represent an invalid id.
-..type:Metafunction.Id
-..class:Class.ReadStoreElement
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec = void>
 struct ReadStoreElement

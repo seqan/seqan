@@ -185,23 +185,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @aka substring
  */
 
-/**
-.Class.Segment:
-..cat:Sequences
-..summary:A contiguous part of a sequence.
-..signature:Segment<THost, TSpec>
-..param.THost:Type of the whole sequence.
-...metafunction:Metafunction.Host
-...text:Instances of $Segment<THost, TSpec>$ are subsequences of $THost$ objects.
-..param.TSpec:The specializing type.
-...metafunction:Metafunction.Spec
-...default:@Spec.InfixSegment@.
-..example.file:demos/sequence/infix.cpp
-..example.text:The output is as follows:
-..example.output:
-Infix: CGCG
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @fn Segment#beginPosition
@@ -637,14 +621,7 @@ struct SegmentSetImpl_<False, True>
 // assign
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.assign:
-..class:Class.Segment
-..remarks:If $target$ is a @Class.Segment@ object, then
-$limit$ denotes the maximal length of @Function.host.$host(target)$@ after the operation.
-..param.target.type:Class.Segment
-..param.source.type:Class.Segment
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): We'd rather only have one version.
 

@@ -41,14 +41,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 
 
-/**
-.Tag.Oops:
-..summary:Represents the One Occurrence Per Sequence model.
-..cat:Motif Search
-..remarks:The @Tag.Oops@ model, which was introduced by Lawrence and Reilly permits 
-          exactly one motif occurrence in each sequence.
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct Oops
 {
@@ -57,14 +50,7 @@ struct Oops
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Tag.Omops:
-..summary:Represents the One or More Occurences Per Sequence model.
-..cat:Motif Search
-..remarks:The @Tag.Omops@ model is comparable with the @Tag.Tcm@ model with the one difference
-          that zero occurrence in a sample sequence is not permitted.
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct Omops
 {
@@ -73,14 +59,7 @@ struct Omops
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Tag.Zoops:
-..summary:Represents the Zero or One Occurence Per Sequence model.
-..cat:Motif Search
-..remarks:The @Tag.Zoops@ model formulated by Bailey and Elkan permits at most one
-          motif occurrence in each sequence.
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct Zoops
 {
@@ -102,14 +81,7 @@ struct Zoops
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Tag.Tcm:
-..summary:Represents the Two-Component-Mixture Sequence model.
-..cat:Motif Search
-..remarks:The @Tag.Tcm@ model formulated by Bailey and Elkan permits any number pf
-          non-overlapping motif occurrences per sequence.
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct Tcm
 {

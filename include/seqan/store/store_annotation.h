@@ -131,107 +131,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief The id of the parent annotation.
  */
 
-/**
-.Class.AnnotationStoreElement
-..summary:Represents an annotation of a contig feature.
-..cat:Fragment Store
-..signature:AnnotationStoreElement<>
-..signature:AnnotationStoreElement<TPos[, TSpec]>
-..param.TPos:Type to store (gap-space) positions.
-..param.TSpec:The specialization type.
-...default:$void$
-..remarks:Value type of the @Memvar.FragmentStore#annotationStore@ string.
-The id of an annotation (aka annotationId) is not stored explicitly, as it is implicitly given by the position in the @Memvar.FragmentStore#annotationStore@.
-..include:seqan/store.h
-
-.Typedef.AnnotationStoreElement#TId
-..summary:Type of annotationId and @Memvar.AnnotationStoreElement#contigId@.
-..remarks:$TId$ equals the result of $Id<AnnotationStoreElement<> >::Type$, see @Metafunction.Id@.
-..class:Class.AnnotationStoreElement
-..include:seqan/store.h
-
-.Typedef.AnnotationStoreElement#TPos
-..summary:Type of the @Memvar.AnnotationStoreElement#beginPos@ and @Memvar.AnnotationStoreElement#endPos@ members.
-..class:Class.AnnotationStoreElement
-..include:seqan/store.h
-
-.Typedef.AnnotationStoreElement#TValues
-..summary:@Class.StringSet@ type of the @Memvar.AnnotationStoreElement#values@ member.
-..class:Class.AnnotationStoreElement
-..include:seqan/store.h
-
-
-.Memfunc.AnnotationStoreElement#AnnotationStoreElement
-..summary:Constructor
-..signature:AnnotationStoreElement()
-..remarks:The default constructor sets all members to @Memvar.AnnotationStoreElement#INVALID_ID@ and 
-@Memvar.AnnotationStoreElement#beginPos@ and @Memvar.AnnotationStoreElement#endPos@ to @Memvar.AnnotationStoreElement#INVALID_POS@.
-..class:Class.AnnotationStoreElement
-..include:seqan/store.h
-
-.Memvar.AnnotationStoreElement#contigId
-..summary:Refers to the contig in the @Memvar.FragmentStore#contigStore@ the annotation is part of.
-..type:Metafunction.Id
-..class:Class.AnnotationStoreElement
-..include:seqan/store.h
-
-.Memvar.AnnotationStoreElement#typeId
-..summary:Refers to an entry in the @Memvar.FragmentStore#annotationTypeStore@. 
-There are some type ids predefined for commonly used types, e.g. $ANNO_GENE$. See @Enum.Predefined Annotation Types@.
-..type:Metafunction.Id
-..class:Class.AnnotationStoreElement
-..include:seqan/store.h
-
-.Memvar.AnnotationStoreElement#beginPos
-..summary:Begin position of the annotation in gap-space.
-..type:Typedef.AnnotationStoreElement#TPos
-..class:Class.AnnotationStoreElement
-..include:seqan/store.h
-
-.Memvar.AnnotationStoreElement#endPos
-..summary:End position of the annotation in gap-space. If @Memvar.AnnotationStoreElement#endPos@ < @Memvar.AnnotationStoreElement#beginPos@, 
-the annotated feature is located on the reverse strand, where @Memvar.AnnotationStoreElement#beginPos@ and @Memvar.AnnotationStoreElement#endPos@
-are the corresponding positions on the forward strand.
-..type:Typedef.AnnotationStoreElement#TPos
-..class:Class.AnnotationStoreElement
-..include:seqan/store.h
-
-.Memvar.AnnotationStoreElement#values
-..summary:@Class.StringSet@ that stores additional annotation values addressed by $keyId$. The GFF/GTF file format allows to define user-specific key-value pairs. The set of all keys addressed by $keyId$ are stored in the @Memvar.FragmentStore#annotationKeyStore@.
-..type:Typedef.AnnotationStoreElement#TValues
-..class:Class.AnnotationStoreElement
-..include:seqan/store.h
-
-.Memvar.AnnotationStoreElement#parentId
-..summary:The id of the parent annotation.
-..type:Metafunction.Id
-..class:Class.AnnotationStoreElement
-..include:seqan/store.h
-
-.Memvar.AnnotationStoreElement#nextSiblingId
-..summary:The id of the right sibling annotation.
-..type:Metafunction.Id
-..class:Class.AnnotationStoreElement
-..include:seqan/store.h
-
-.Memvar.AnnotationStoreElement#lastChildId
-..summary:The id of the rightmost child annotation.
-..type:Metafunction.Id
-..class:Class.AnnotationStoreElement
-..include:seqan/store.h
-
-.Memvar.AnnotationStoreElement#INVALID_ID
-..summary:Constant to represent an invalid id.
-..type:Metafunction.Id
-..class:Class.AnnotationStoreElement
-..include:seqan/store.h
-
-.Memvar.AnnotationStoreElement#INVALID_POS
-..summary:Constant to represent an invalid position.
-..type:Typedef.AnnotationStoreElement#TPos
-..class:Class.AnnotationStoreElement
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TPos_, typename TSpec = void>
 struct AnnotationStoreElement
@@ -343,46 +243,7 @@ struct AnnotationTree {};
  * @endcode
  */
 
-/**
-.Spec.AnnotationTree Iterator:
-..cat:FragmentStore
-..summary:Iterator of the annotation tree represented by a @Class.FragmentStore@.
-..remarks:This iterator can move @Function.AnnotationTree Iterator#goDown|down@, @Function.AnnotationTree Iterator#goRight|right@, and @Function.AnnotationTree Iterator#goUp|up@ in the tree and supports a preorder dfs traversal via the functions @Function.goBegin@, @Function.goNext@, and @Function.atEnd@.
-Preorder means that the iterator visits a node before its children.
-..remarks:To access the annotation, the iterator points to, use @Function.getAnnotation@. The annotation id is returned by @Function.value@.
-..signature:Iter<TFragmentStore, AnnotationTree<> >
-..signature:Iterator<TFragmentStore, AnnotationTree<> >::Type
-..general:Class.Iter
-..implements:Concept.RootedIteratorConcept
-..param.TFragmentStore:A FragmentStore class.
-...type:Class.FragmentStore
-..include:seqan/store.h
-..example:
-...image:AnnotationTree|Typical annotation tree hierarchy.
-..example:
-...text:A new annotation tree iterator can be instantiated as follows:
-...code:
-Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
-it = begin(store, AnnotationTree<>());
-...text:Or shorter (see @Memfunc.AnnotationTree Iterator#AnnotationTree Iterator|AnnotationTree Iterator constructor@):
-...code:
-Iterator<FragmentStore<>, AnnotationTree<> >::Type it(store);
-
-.Memfunc.AnnotationTree Iterator#AnnotationTree Iterator
-..summary:Constructor
-..signature:Iter()
-..signature:Iter(store [, startInNode])
-..class:Spec.AnnotationTree Iterator
-..param.store:A @Class.FragmentStore@ object.
-...type:Class.FragmentStore
-..param.startInNode:Annotation id of the node the iterator should start at.
-...default:$0$, the id of the root node.
-..include:seqan/store.h
-..remarks:The @Function.begin@ function can also be used to create a tree iterator that starts in the root node:
-...code:
-Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
-it = begin(store, AnnotationTree<>());
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 class Iter<TFragmentStore, AnnotationTree<TSpec> >
@@ -482,17 +343,7 @@ container(Iter< TFragmentStore, AnnotationTree<TSpec> > const &it) {
  * @return TAnnotation A reference to the AnnotationStoreElement the iterator points to.
  */
 
-/**
-.Function.getAnnotation
-..class:Spec.AnnotationTree Iterator
-..summary:Returns the current annotation.
-..cat:Fragment Store
-..signature:getAnnotation(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..returns:A reference to the @Class.AnnotationStoreElement@ the iterator points at.
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Better use Reference in both cases?
 
@@ -524,20 +375,7 @@ getAnnotation(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  * @see AnnotationTreeIterator#setName
  */
 
-/**
-.Function.AnnotationTree Iterator#getName
-..class:Spec.AnnotationTree Iterator
-..summary:Returns the identifier of the current annotation.
-..cat:Fragment Store
-..signature:getName(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..returns:The name of the current annotation.
-...remarks:This a reference to the corresponding position in the @Memvar.FragmentStore#annotationNameStore@.
-...type:Concept.ContainerConcept
-..see:Function.AnnotationTree Iterator#setName
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline typename GetValue<typename TFragmentStore::TAnnotationNameStore>::Type
@@ -558,19 +396,7 @@ getName(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  * @see AnnotationTreeIterator#getName
  */
 
-/**
-.Function.AnnotationTree Iterator#setName
-..class:Spec.AnnotationTree Iterator
-..summary:Sets the identifier of the current annotation.
-..cat:Fragment Store
-..signature:setName(iter, name)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..param.name:The new identifier of the current annotation element.
-...type:Concept.ContainerConcept
-..see:Function.AnnotationTree Iterator#getName
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec, typename TName>
 inline void
@@ -593,20 +419,7 @@ setName(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it, TName const & n
  *               @link FragmentStore::annotationNameStore @endlink.
  */
 
-/**
-.Function.getParentName
-..class:Spec.AnnotationTree Iterator
-..summary:Returns the identifier of the parent node in the annotation tree of the current annotation.
-..cat:Fragment Store
-..signature:getParentName(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..returns:The name of the parent of the current annotation.
-...remarks:This a reference to the corresponding position in the @Memvar.FragmentStore#annotationNameStore@.
-...type:Concept.ContainerConcept
-..see:Function.AnnotationTree Iterator#getName
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline typename GetValue<typename TFragmentStore::TAnnotationNameStore>::Type
@@ -637,20 +450,7 @@ getParentName(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @see AnnotationTreeIterator#setType
  */
 
-/**
-.Function.getType
-..class:Spec.AnnotationTree Iterator
-..summary:Returns the type name of the current annotation.
-..cat:Fragment Store
-..signature:getType(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..returns:The type name of the current annotation, e.g. "exon" or "mRNA".
-...remarks:This a reference to an entry in the @Memvar.FragmentStore#annotationTypeStore@.
-...type:Concept.ContainerConcept
-..see:Function.setType
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline typename GetValue<typename TFragmentStore::TAnnotationTypeStore>::Type
@@ -671,19 +471,7 @@ getType(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  * @see AnnotationTreeIterator#getType
  */
 
-/**
-.Function.setType
-..class:Spec.AnnotationTree Iterator
-..summary:Sets the type name of the current annotation.
-..cat:Fragment Store
-..signature:setType(iter, typeName)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..param.typeName:The new type name, e.g. "exon" or "mRNA".
-...type:Concept.ContainerConcept
-..see:Function.getType
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec, typename TTypeName>
 inline void
@@ -710,21 +498,7 @@ setType(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it, TTypeName & typ
  * @see AnnotationTreeIterator#getName
  */
 
-/**
-.Function.getUniqueName
-..class:Spec.AnnotationTree Iterator
-..summary:Returns a unique name of the current annotation.
-..cat:Fragment Store
-..signature:getUniqueName(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..returns:A unique name of the current annotation.
-...type:Shortcut.CharString
-..remarks:Some annotation file formats doesn't require that every annotation has a non-empty name.
-This function returns the name if non-empty and otherwise generates one using the type and id.
-..see:Function.AnnotationTree Iterator#getName
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline CharString
@@ -747,18 +521,7 @@ getUniqueName(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  * @see AnnotationTreeIterator#getValueByKey
  */
 
-/**
-.Function.clearValues
-..class:Spec.AnnotationTree Iterator
-..summary:Clear all key-value pairs of the current annotation.
-..cat:Fragment Store
-..signature:clearValues(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..see:Function.assignValueByKey
-..see:Function.getValueByKey
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline void 
@@ -781,22 +544,7 @@ clearValues(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @see AnnotationTreeIterator#getValueByKey
  */
 
-/**
-.Function.assignValueByKey
-..class:Spec.AnnotationTree Iterator
-..summary:Add or update a key-value pair of the current annotation.
-..cat:Fragment Store
-..signature:assignValueByKey(iter, key, value)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..param.key:The key whose value should be changed.
-...type:Concept.ContainerConcept
-..param.value:The new value of the key.
-...type:Concept.ContainerConcept
-..see:Function.clearValues
-..see:Function.getValueByKey
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec, typename TKey, typename TValue>
 inline void 
@@ -823,27 +571,7 @@ assignValueByKey(
  * @see AnnotationTreeIterator#assignValueByKey
  */
 
-/**
-.Function.getValueByKey
-..class:Spec.AnnotationTree Iterator
-..summary:Given a key, retrieve its value of the current annotation.
-..cat:Fragment Store
-..signature:getValueByKey(iter, key)
-..signature:getValueByKey(value, iter, key)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..param.key:The key to retrieve the value from.
-...type:Concept.ContainerConcept
-..param.value:The sequence where the return value should be wrote to.
-...type:Concept.ContainerConcept
-..returns:The three-parameter function returns a boolean indicating whether a non-empty value was returned.
-..returns:The two-parameter function returns the value for the given key.
-...type:nolink:bool
-...type:Shortcut.CharString
-..see:Function.clearValues
-..see:Function.assignValueByKey
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec, typename TKey, typename TValue>
 inline bool 
@@ -895,19 +623,7 @@ goEnd(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @param[in]     annoId The id of the annotation to move to.
  */
 
-/**
-.Function.goTo
-..class:Spec.AnnotationTree Iterator
-..summary:Moves the iterator to an arbitrary node given its annotationId.
-..cat:Fragment Store
-..signature:goTo(iter, annotationId)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..param.annotationId:The id of the new annotation.
-..returns: Iterator to the new node.
-...type:Spec.AnnotationTree Iterator
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec, typename TId>
 inline void
@@ -972,18 +688,7 @@ goNext(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @param[in,out] it The AnnotationTreeIterator to
  */
 
-/**
-.Function.AnnotationTree Iterator#goNextRight
-..class:Spec.AnnotationTree Iterator
-..summary:Go to the next node in preorder DFS skipping the current node's subtree.
-..cat:Fragment Store
-..signature:goNextRight(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..see:Function.goNext
-..see:Function.AnnotationTree Iterator#goNextUp
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline void
@@ -1007,18 +712,7 @@ goNextRight(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @param[in,out] it The AnnotationTreeIterator to
  */
 
-/**
-.Function.AnnotationTree Iterator#goNextUp
-..class:Spec.AnnotationTree Iterator
-..summary:Go to the next node in preorder DFS skipping the subtrees of the current node and of all its siblings.
-..cat:Fragment Store
-..signature:goNextUp(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..see:Function.goNext
-..see:Function.AnnotationTree Iterator#goNextRight
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline void
@@ -1043,18 +737,7 @@ goNextUp(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @param[in,out] it The AnnotationTreeIterator to move.
  */
 
-/**
-.Function.AnnotationTree Iterator#goRoot
-..class:Spec.AnnotationTree Iterator
-..summary:Go to the root node in the annotation tree.
-..cat:Fragment Store
-..signature:goRoot(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..see:Function.goNext
-..see:Function.AnnotationTree Iterator#goNextRight
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline void
@@ -1077,20 +760,7 @@ goRoot(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @see AnnotationTreeIterator#goRight
  */
 
-/**
-.Function.AnnotationTree Iterator#goUp
-..class:Spec.AnnotationTree Iterator
-..summary:Move the iterator up in the annotation tree.
-..cat:Fragment Store
-..signature:goUp(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..returns:$true$ if the iterator could be moved, otherwise $false$.
-...type:nolink:bool
-..see:Function.AnnotationTree Iterator#goDown
-..see:Function.AnnotationTree Iterator#goRight
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline bool
@@ -1123,20 +793,7 @@ goUp(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @see AnnotationTreeIterator#goRight
  */
 
-/**
-.Function.AnnotationTree Iterator#goDown
-..class:Spec.AnnotationTree Iterator
-..summary:Move the iterator down to the left-most child in the annotation tree.
-..cat:Fragment Store
-..signature:goDown(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..returns:$true$ if the iterator could be moved, otherwise $false$.
-...type:nolink:bool
-..see:Function.AnnotationTree Iterator#goUp
-..see:Function.AnnotationTree Iterator#goRight
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline bool
@@ -1169,20 +826,7 @@ goDown(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @see AnnotationTreeIterator#goDown
  */
 
-/**
-.Function.AnnotationTree Iterator#goRight
-..class:Spec.AnnotationTree Iterator
-..summary:Move the iterator right to the next sibling in the annotation tree.
-..cat:Fragment Store
-..signature:goRight(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..returns:$true$ if the iterator could be moved, otherwise $false$.
-...type:nolink:bool
-..see:Function.AnnotationTree Iterator#goUp
-..see:Function.AnnotationTree Iterator#goDown
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline bool
@@ -1222,20 +866,7 @@ goRight(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @see AnnotationTreeIterator#nodeRight
  */
 
-/**
-.Function.AnnotationTree Iterator#nodeUp
-..class:Spec.AnnotationTree Iterator
-..summary:Returns a new iterator to the parent node of the current annotation in the annotation tree.  
-..cat:Fragment Store
-..signature:nodeUp(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..returns: A new iterator to the parent node.
-....type:Spec.AnnotationTree Iterator
-..see:Function.AnnotationTree Iterator#nodeDown
-..see:Function.AnnotationTree Iterator#nodeRight
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline Iter<TFragmentStore, AnnotationTree<TSpec> >
@@ -1260,20 +891,7 @@ nodeUp(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  * @see AnnotationTreeIterator#nodeRight
  */
 
-/**
-.Function.AnnotationTree Iterator#nodeDown
-..class:Spec.AnnotationTree Iterator
-..summary:Returns a new iterator to the first child node of the current annotation in the annotation tree.  
-..cat:Fragment Store
-..signature:nodeDown(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..returns: A new iterator to the parent node.
-....type:Spec.AnnotationTree Iterator
-..see:Function.AnnotationTree Iterator#nodeUp
-..see:Function.AnnotationTree Iterator#nodeRight
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline Iter<TFragmentStore, AnnotationTree<TSpec> >
@@ -1298,20 +916,7 @@ nodeDown(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  * @see AnnotationTreeIterator#nodeDown
  */
 
-/**
-.Function.AnnotationTree Iterator#nodeRight
-..class:Spec.AnnotationTree Iterator
-..summary:Returns a new iterator to the right sibling of the current annotation in the annotation tree.  
-..cat:Fragment Store
-..signature:nodeRight(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..returns: A new iterator to the right sibling.
-....type:Spec.AnnotationTree Iterator
-..see:Function.AnnotationTree Iterator#nodeUp
-..see:Function.AnnotationTree Iterator#nodeDown
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline Iter<TFragmentStore, AnnotationTree<TSpec> >
@@ -1414,20 +1019,7 @@ _cyclicListRemove(TAnnotationStore & annotationStore, TId _id, TId lastChildId)
  * @see AnnotationTreeIterator#createSibling
  */
 
-/**
-.Function.createLeftChild
-..class:Spec.AnnotationTree Iterator
-..summary:Creates a new left-most child of the current node and returns an iterator to it.
-..cat:Fragment Store
-..signature:createLeftChild(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..returns: Iterator to the new left-most child.
-....type:Spec.AnnotationTree Iterator
-..see:Function.createRightChild
-..see:Function.createSibling
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline Iter<TFragmentStore, AnnotationTree<TSpec> >
@@ -1466,20 +1058,7 @@ createLeftChild(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @see AnnotationTreeIterator#createSibling
  */
 
-/**
-.Function.createRightChild
-..class:Spec.AnnotationTree Iterator
-..summary:Creates a new right-most child of the current node and returns an iterator to it.
-..cat:Fragment Store
-..signature:createRightChild(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..returns: Iterator to the new right-most child.
-....type:Spec.AnnotationTree Iterator
-..see:Function.createLeftChild
-..see:Function.createSibling
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline Iter<TFragmentStore, AnnotationTree<TSpec> >
@@ -1519,20 +1098,7 @@ createRightChild(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @see AnnotationTreeIterator#createRightChild
  */
 
-/**
-.Function.createSibling
-..class:Spec.AnnotationTree Iterator
-..summary:Creates a new right sibling of the current node and returns an iterator to it.
-..cat:Fragment Store
-..signature:createSibling(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..returns: Iterator to the new right sibling.
-....type:Spec.AnnotationTree Iterator
-..see:Function.createLeftChild
-..see:Function.createRightChild
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline Iter<TFragmentStore, AnnotationTree<TSpec> >
@@ -1573,11 +1139,7 @@ createSibling(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @param[in] it The AnnotationTreeIterator to query.
  */
 
-/**
-.Function.isRoot:
-..class:Spec.AnnotationTree Iterator
-..param.iterator.type:Spec.AnnotationTree Iterator
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline bool
@@ -1599,11 +1161,7 @@ isRoot(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  * @param[in] it The AnnotationTreeIterator to query.
  */
 
-/**
-.Function.isLeaf:
-..class:Spec.AnnotationTree Iterator
-..param.iterator.type:Spec.AnnotationTree Iterator
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline bool
@@ -1625,18 +1183,7 @@ isLeaf(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  * @param[in] it The AnnotationTreeIterator to query.
  */
 
-/**
-.Function.isLastChild
-..class:Spec.AnnotationTree Iterator
-..summary:Returns a boolean value that indicates whether the current node is the last child.
-..cat:Fragment Store
-..signature:isLastChild(iter)
-..param.iter:An annotation tree iterator.
-...type:Spec.AnnotationTree Iterator
-..returns: $true$ if the iterator is the last child, otherwise $false$.
-...type:nolink:bool
-..include:seqan/store.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline bool

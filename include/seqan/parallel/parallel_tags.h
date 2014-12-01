@@ -64,13 +64,7 @@ namespace seqan {
  * @brief Tag to select the serial implementation of an algorithm.
  */
 
-/**
-.Tag.Parallel:
-..cat:Parallelism
-..summary:Tag to select a parallel implementation of an algorithm.
-..tag.Parallel:Select serial implementation of an algorithm.
-..include:seqan/parallel.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct Parallel_;
 typedef Tag<Parallel_> Parallel;

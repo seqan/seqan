@@ -169,97 +169,7 @@ class LocalAlignmentEnumerator;
  * @param[in] cutoff    Alignments with scores <tt>&lt; cutoff</tt> will be discarded (<tt>int</tt>, default 0).
  */
 
-/**
-.Class.LocalAlignmentEnumerator
-..cat:Alignments
-..summary:Enumerate local alignments using the Waterman-Eggert algorithm.
-..description:This is an abstract base class for the alignment enumeration; the specializations provide the actual implementaiton of banded and unbanded local aligment search.
-..signature:LocalAlignmentEnumerator<TScore, TSpec>
-..param.TScore:The @Class.Score@ type to use.
-...type:Class.Score
-..param.TSpec:Specialization tag.
-..example.text:See the specializations for usage examples.
-..cite:Waterman MS, Eggert M: A new algorithm for best subsequence alignments with application to tRNA-rRNA comparisons. J Mol Biol 1987, 197(4):723-728.
-..include:seqan/align.h
-
-.Spec.Unbanded LocalAlignmentEnumerator
-..cat:Alignments
-..general:Class.LocalAlignmentEnumerator
-..summary:Unbanded enumeration of local alignments using the Waterman-Eggert algorithm.
-..signature:LocalAlignmentEnumerator<TScore, Unbanded>
-..example.text:Enumerate all alignments into an @Class.Align@ object.
-..example.code:
-SimpleScore scoringScheme(2, -1, -1, -2);
-LocalAlignmentEnumerator<SimpleScore, Unbanded> enumerator(scoringScheme, 5);
-
-Dna5String seqH = "CGAGAGAGACCGAGA";
-Dna5String seqV = "TTCTGAGATCCGTTTTT";
-
-Align<Dna5String> align;
-resize(rows(align), 2);
-assignSource(row(align), 0, seqH);
-assignSource(row(align), 1, seqV);
-
-int i = 0;
-while (nextLocalAlignment(align, enumerator))
-{
-    std::cout << i << "-th alignment:\n";
-    std::cout << align << "\n\n";
-    std::cout << "score == " << getScore(enumerator) << "\n";
-}
-..include:seqan/align.h
-
-.Memfunc.Unbanded LocalAlignmentEnumerator#LocalAlignmentEnumerator
-..class:Spec.Unbanded LocalAlignmentEnumerator
-..summary:Constructor
-..signature:LocalAlignmentEnumerator(score, [cutoff])
-..param.score:The scoring scheme to use for the alignments.
-...type:Class.Score
-..param.cutoff:Alignments with scores < $cutoff$ will be discarded.
-...default:0
-...type:nolink:$int$
-
-.Spec.Banded LocalAlignmentEnumerator
-..cat:Alignments
-..general:Class.LocalAlignmentEnumerator
-..signature:LocalAlignmentEnumerator<TScore, Banded>
-..summary:Banded enumeration of local alignments using the Waterman-Eggert algorithm.
-..example.text:Enumerate all alignments in the band between $-3$ and $0$ into an @Class.Align@ object.
-..example.code:
-SimpleScore scoringScheme(2, -1, -1, -2);
-LocalAlignmentEnumerator<SimpleScore, Banded> enumerator(scoringScheme, 5, -3, 0);
-
-Dna5String seqH = "CGAGAGAGACCGAGA";
-Dna5String seqV = "TTCTGAGATCCGTTTTT";
-
-Align<Dna5String> align;
-resize(rows(align), 2);
-assignSource(row(align), 0, seqH);
-assignSource(row(align), 1, seqV);
-
-int i = 0;
-while (nextLocalAlignment(align, enumerator))
-{
-    std::cout << i << "-th alignment:\n";
-    std::cout << align << "\n\n";
-    std::cout << "score == " << getScore(enumerator) << "\n";
-}
-..include:seqan/align.h
-
-.Memfunc.Banded LocalAlignmentEnumerator#LocalAlignmentEnumerator
-..class:Spec.Banded LocalAlignmentEnumerator
-..summary:Constructor
-..signature:LocalAlignmentEnumerator(score, upperDiag, lowerDiag, [cutoff])
-..param.score:The scoring scheme to use for the alignments.
-...type:Class.Score
-..param.upperDiag:Upper diagonal of the band.
-...type:nolink:$int$
-..param.lowerDiag:Lower diagonal of the band.
-...type:nolink:$int$
-..param.cutoff:Alignments with scores < $cutoff$ will be discarded.
-...type:nolink:$int$
-...default:0
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // ============================================================================
 // Metafunctions
@@ -285,18 +195,7 @@ while (nextLocalAlignment(align, enumerator))
  * @return TScoreVal The current alignment score (@link Score#Value @endlink of <tt>TScore</tt>).
  */
 
-/**
-.Function.LocalAlignmentEnumerator#getScore
-..cat:Alignments
-..summary:Compute next suboptimal local alignment.
-..signature:getScore(enumerator)
-..param.enumerator:The local alignment enumerator to use.
-...type:Class.LocalAlignmentEnumerator
-..returns:
-The score of the previously computed alignment.
-(Type: @Metafunction.Value@ of $enumerator$'s class.)
-..include:seqan/align.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // ----------------------------------------------------------------------------
 // Function nextLocalAlignment()
@@ -319,24 +218,7 @@ The score of the previously computed alignment.
  *              otherwise.
  */
 
-/**
-.Function.nextLocalAlignment
-..cat:Alignments
-..summary:Compute next suboptimal local alignment.
-..signature:nextLocalAlignment(align,        enumerator)
-..signature:nextLocalAlignment(gapsH, gapsV, enumerator)
-..param.align:The @Class.Align@ object to use for the alignment representation.
-...type:Class.Align
-..param.gapsH:The @Class.Gaps@ object to use for the horizontal sequence in the alignment matrix.
-...type:Class.Gaps
-..param.gapsV:The @Class.Gaps@ object to use for the vertical sequence in the alignment matrix.
-...type:Class.Gaps
-..param.enumerator:The @Class.LocalAlignmentEnumerator@ object to use.
-...type:Class.LocalAlignmentEnumerator
-..returns:$true$ if another suboptimal alignment above the given threshold was found, $false$ otherwise.
-...type:nolink:$bool$
-..include:seqan/align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 }  // namespace seqan
 

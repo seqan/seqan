@@ -38,27 +38,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-/**
-.Class.MotifFinder:
-..cat:Motif Search
-..summary:Holds the algorithm parameter values and the motif instance(s) found by the appropriate
-          motif discovery algorithm.
-..description.note:There are various known problems with the motif finding in SeqAn. We plan to fix this in an upcoming release.
-..cat:Motif Search
-..signature:MotifFinder<TValue, TSpec, TRng>
-..param.TValue:The type of sequences to be analyzed.
-...metafunction:Metafunction.Value
-...type:Spec.Dna
-...type:Spec.AminoAcid
-..param.TSpec:The motif finding algorithm to search with.
-...type:Spec.Projection
-...type:Spec.EPatternBranching
-...type:Spec.Pms1
-...type:Spec.Pmsp
-..param.TRng:The @Class.Rng@ specialization to use for random number generation.
-...default:$GetDefaultRng<MotifFinderClass>::Type$
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct MotifFinderClass_;
 typedef Tag<MotifFinderClass_> MotifFinderClass;
@@ -89,41 +69,9 @@ struct Value< MotifFinder<TValue, TSpec, TRng> const>
 // Functions
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.findMotif
-..class:Class.MotifFinder
-..summary:Represents the main function which is used to start the search for noticeable motif patterns.
-..cat:Motif Search
-..signature:findMotif(finder,dataset,seq_model)
-..param.finder:The @Class.MotifFinder@ object.
-...type:Class.MotifFinder
-..param.dataset:The dataset object representing the input sequences.
-...type:Class.StringSet
-..param.seq_model:The seq_model object.
-...type:Tag.Oops
-...type:Tag.Omops
-...type:Tag.Zoops
-...type:Tag.Tcm
-...remarks:The sequence models rely on different assumptions about the distribution of motif occurrences
-           across the sample sequences. 
-..remarks:The PROJECTION algorithm is able to run in @Tag.Oops@, @Tag.Zoops@ and @Tag.Tcm@ mode.
-..remarks:The ePatternBranching algorithm is able to run in @Tag.Oops@ and @Tag.Omops@ mode.
-..remarks:The Pms1 and Pmsp algorithm is able to run in  @Tag.Oops@,  @Tag.Omops@,  @Tag.Zoops@ and  
-          @Tag.Tcm@ mode.
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
-/**
-.Function.factorial:
-..summary:Calculates the factorial value of any integer number.
-..cat:Motif Search
-..signature:factorial(value)
-..param.value:The value object.
-...remarks:$value$ must be a positive integer.
-..remarks:The factorial of a non-negative integer $value$ is 
-          the product of all positive integers less than or equal to $value$.  
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TType>
 TType factorial(TType n)
@@ -146,19 +94,7 @@ TType factorial(TType n)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.binomialCoefficient:
-..summary:Calculates the binomial coefficient C(n,k).
-..cat:Motif Search
-..signature:binomialCoefficient(n,k)
-..param.n:The first parameter object.
-...remarks:$n$ must be a positive integer.
-..param.k:The second parameter object.
-...remarks:$k$ must be a positive integer.
-..remarks:The binomial coefficient of $n$ and $k$ is equal to zero 
-          if $k$ is greater than $n$.   
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TType>
 TType binomialCoefficient(TType n, TType k)
@@ -178,29 +114,7 @@ TType binomialCoefficient(TType n, TType k)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.hammingDistance:
-..summary:Determines the Hamming distance between two sequences.
-..cat:Motif Search
-..signature:hammingDistance<TType>(begin1,end1,begin2)
-..param.TType:Distance type.
-..param.begin1:An iterator pointing to the beginning of the first sequence which is either
-              a @Shortcut.DnaString@ or a @Shortcut.Peptide@. 
-...type:Concept.RandomAccessIteratorConcept
-...type:Shortcut.DnaIterator
-...type:Shortcut.PeptideIterator
-..param.end1:An iterator pointing to the end of the first sequence which is either
-            a @Shortcut.DnaString@ or a @Shortcut.Peptide@. 
-...type:Concept.RandomAccessIteratorConcept
-...type:Shortcut.DnaIterator
-...type:Shortcut.PeptideIterator
-..param.begin2:An iterator pointing to the beginning of the second sequence which is either
-              a @Shortcut.DnaString@ or a @Shortcut.Peptide@. 
-...type:Concept.RandomAccessIteratorConcept
-...type:Shortcut.DnaIterator
-...type:Shortcut.PeptideIterator
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TType, typename TStringIterator>
 TType hammingDistance(TStringIterator start1, TStringIterator end1, TStringIterator start2)
@@ -223,17 +137,7 @@ TType hammingDistance(TStringIterator start1, TStringIterator end1, TStringItera
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.inverseHash:
-..summary:Determines the corresponding sequence pattern given the hash value.
-..cat:Motif Search
-..signature:inverseHash<TValue>(hash_value,alphabet_size,seq_size)
-..param.hash_value:The hash_value object.
-..param.alphabet_size:The alphabet_size object.
-...remarks:$alphabet_size$ is four for nucleotide sequences and twenty for amino acid sequences.
-..param.seq_size:The seq_size object representing the size of the corresponding sequence.
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename TType>
 String<TValue>
@@ -262,17 +166,7 @@ inverseHash(TType const & hash_value,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.displayResult:
-..class:Class.MotifFinder
-..summary:Displays all found motif candidates. In the case of the Projection Motif Finder
-          the function displays the consensus pattern of the found motif candidate.
-..cat:Motif Search
-..signature:displayResult(motif_finder)
-..param.motif_finder:The @Class.MotifFinder@ object.
-...type:Class.MotifFinder
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename TAlgorithm, typename TRng>
 void
@@ -301,16 +195,7 @@ displayResult(MotifFinder<TValue, TAlgorithm, TRng> & finder)
 }
 
 /////////////////////////////////////////////////////////////////////////
-/**
-.Metafunction.Motif:
-..cat:Motif Search
-..summary:The string type of the finder.
-..signature:Motif<T>::Type
-..param.T:Finder for which the string type is determined.
-...type:Class.String
-..returns.param.Type:Underlying sequence type of finder $T$.
-..include:seqan/find_motif.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct Motif;
 
@@ -321,17 +206,7 @@ struct Motif< MotifFinder<TValue, TSpec, TRng> >
 };
 
 /////////////////////////////////////////////////////////////////////////
-/**
-.Function.getMotif:
-..class:Class.MotifFinder
-..summary:Gets the motif out of a @Class.MotifFinder@.  If pos is given, the pos-th motif is returned, otherwise the first motif is returned.
-..cat:Motif Search
-..signature:getMotif(motifFinder, pos)
-..param.motifFinder:
-...type:Class.MotifFinder
-..param.pos:Position 
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TPosition, typename TRng>
 inline typename Motif<MotifFinder<TValue, TSpec, TRng> >::Type &
@@ -352,16 +227,7 @@ getMotif(MotifFinder<TValue, TSpec, TRng> & me)
 }
 
 /////////////////////////////////////////////////////////////////////////
-/**
-.Function.motifCount:
-..class:Class.MotifFinder
-..summary:Gets number of motifs in the @Class.MotifFinder@.
-..cat:Motif Search
-..signature:motifCount(motifFinder)
-..param.motifFinder:
-...type:Class.MotifFinder
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TRng>
 inline size_t

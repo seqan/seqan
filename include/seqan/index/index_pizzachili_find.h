@@ -39,14 +39,7 @@ namespace SEQAN_NAMESPACE_MAIN {
 
 struct PizzaChiliFinder_;
 
-/**
-.Tag.Index Find Algorithm
-..cat:Searching
-..tag.PizzaChiliFinder:Finds an occurrence in a @Spec.Pizza & Chili Index@ index.
-...remarks:The actual algorithm used for searching depends on the @Tag.Pizza & Chili Index Tags@ used.
-..see:Spec.Pizza & Chili Index
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 typedef Tag<PizzaChiliFinder_> const PizzaChiliFinder;
 

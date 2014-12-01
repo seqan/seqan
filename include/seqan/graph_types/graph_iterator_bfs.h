@@ -69,34 +69,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in] v     The descriptor of the vertex to start BFS iteration.
  */
 
-/**
-.Spec.Bfs Iterator:
-..cat:Graph
-..summary:Breath-first search iterator for @Class.Graph@.
-..signature:Iterator<TGraph, BfsIterator>
-..param.TGraph:A graph.
-...type:Class.Graph
-..general:Class.Iter
-..see:Spec.Vertex Iterator
-..see:Spec.Out-Edge Iterator
-..see:Spec.Edge Iterator
-..see:Spec.Adjacency Iterator
-..see:Spec.Dfs Preorder Iterator
-..include:seqan/graph_types.h
-
-.Memfunc.Bfs Iterator#Iter
-..summary:Constructor
-..class:Spec.Bfs Iterator
-..signature:Iter()
-..signature:Iter(graph, v)
-..signature:Iter(iter)
-..param.graph:The graph to iterate edges of.
-...type:Class.Graph
-..param.v:Vertex descriptor of vertex to start BFS from.
-...type:Metafunction.VertexDescriptor
-..param.iter:Other iterator to copy-construct from.
-...type:Spec.Bfs Iterator
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TGraph, typename TSpec>
 class Iter<TGraph, GraphIterator<InternalBfsIterator<TSpec> > > 
 {

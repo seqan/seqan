@@ -49,19 +49,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef THideEmptyEdges HideEmptyEdges;
     };
 
-/**
-.Tag.DFS Order
-..summary:Pre/postorder selection for depth-first search.
-..cat:Index
-..description:
-These tags are given to @Function.goNext@ and trigger post-order or pre-order traversal of a suffix tree.
-In case of $PreorderEmptyEdges$ and $PostorderEmptyEdges$, the empty edges are also traversed.
-..tag.Preorder:Visit the node before its children.
-..tag.Postorder:Visit the node after its children.
-..tag.PreorderEmptyEdges:Visit the node before its children, visit empty edges.
-..tag.PostorderEmptyEdges:Visit the node after its children, visit empty edges.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @defgroup DfsOrder DFS Order
  * @brief Pre/postorder selection for depth-first search.
@@ -103,32 +91,7 @@ In case of $PreorderEmptyEdges$ and $PostorderEmptyEdges$, the empty edges are a
 	template <typename TSpec = void>
 	struct VSTree;
 
-/**
-.Tag.TopDown
-..summary:Tag that specifies a @Spec.VSTree Iterator@ to traverse the virtual string tree from the root towards the leafs.
-..cat:Index
-..tag.Preorder:Pre-order traversal of the virtual string tree.
-..tag.Postorder:Post-order traversal of the virtual string tree.
-..tag.ParentLinks:A top down iterator with the possibility to go back up again.
-..example
-...text:The following example shows how a the @Tag.TopDown@ tag is used.
-...file:demos/index/index_begin_atEnd_representative.cpp
-...output:
-A
-AA
-ATAA
-TA
-TAA
-TATAA
---------------------------------
-AA
-ATAA
-A
-TAA
-TATAA
-TA
-
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @defgroup TopDown Top-Down Iteration
  * @brief Tag that specifies a @link VSTreeIterator @endlink to traverse the virtual string tree from the root towards
@@ -174,22 +137,7 @@ TA
 			template < typename TSpec = Preorder >
 			struct ParentLinks {};			// .. can also go up
 
-/**
-.Tag.BottomUp
-..summary:Tag that specifies a @Spec.VSTree Iterator@ to traverse the virtual string tree from the root towards the leafs.
-..cat:Index
-..tag.Postorder:Post-order traversal of the virtual string tree.
-..example
-...text:The following example shows how a the @Tag.BottomUp@ tag is used.
-...file:demos/index/index_begin_atEnd_representative_bottomUp.cpp
-...output:
-AA
-ATAA
-A
-TAA
-TATAA
-TA
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @defgroup BottomUp Bottom-Up Iteration
  * @brief Tag that specifies a @link VSTreeIterator @endlink to traverse the
@@ -227,16 +175,7 @@ TA
 			struct	MultiMemOccurences;					// i.e. maximal match over different sequences
 
 
-/**
-.Metafunction.GetVSTreeIteratorTraits:
-..cat:Index
-..summary:Default behaviour of @Function.goNext@ when no second parameter is given.
-..signature:GetVSTreeIteratorTraits<TIterator>::Type
-..class:Class.Index
-..param.TIterator:A @Spec.VSTree Iterator@.
-..returns:$Tag.Postorder$ by default and $Tag.Preorder$ if $TIterator$ is $VSTree<TopDown<ParentLinks<> > >$ or $VSTree<TopDown<ParentLinks<Preorder> > >$.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @mfn Index#GetVSTreeIteratorTraits
  * 
@@ -336,40 +275,7 @@ TA
 //////////////////////////////////////////////////////////////////////////////
 // ESA fibres
 
-/**
-.Tag.ESA Index Fibres
-..summary:Tag to select a specific fibre (e.g. table, object, ...) of an @Spec.IndexEsa.ESA@ index.
-..remarks:These tags can be used to get @Metafunction.Fibre.Fibres@ of an Enhanced Suffix Array based @Spec.IndexEsa.Index@.
-..cat:Index
-
-..tag.EsaText:The original text the index should be based on.
-
-..tag.EsaRawText:The raw text the index is really based on.
-...remarks:$EsaText$ and $EsaRawText$ fibres are equal by default.
-They differ if the index text is a set of strings. Then, raw text is the concatenation of all strings in this set.
-
-..tag.EsaSA:The suffix array.
-...remarks:The suffix array contains the indices of all suffices of $EsaRawText$ in lexicographical order.
-...remarks:@Metafunction.Fibre@ returns a @Class.String@ over the alphabet of the @Metafunction.SAValue@ of $TIndex$.
-
-..tag.EsaLcp:The lcp table.
-...remarks:The lcp table contains the lcp-value of two adjacent suffices in the suffix array $EsaSA$.
-...remarks:@Metafunction.Fibre@ returns a @Class.String@ over the alphabet of a size type.
-
-..tag.EsaChildtab:The child table.
-...remarks:The child table contains structural information of the suffix tree (see Abhouelda et al.).
-...remarks:@Metafunction.Fibre@ returns a @Class.String@ over the alphabet of a size type.
-
-..tag.EsaBwt:The Burrows-Wheeler table.
-...remarks:The Burrows-Wheeler table contains the Burrows-Wheeler transformation of $EsaRawText$.
-The entries are the characters left of the corresponding suffix in the suffix array $EsaSA$.
-...remarks:@Metafunction.Fibre@ returns the same type for $EsaRawText$ and for $EsaBwt$.
-
-..see:Metafunction.Fibre
-..see:Function.getFibre
-..see:Spec.IndexEsa
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @defgroup IndexEsaFibres Index Esa Fibres
@@ -466,21 +372,7 @@ The entries are the characters left of the corresponding suffix in the suffix ar
 //////////////////////////////////////////////////////////////////////////////
 // ESA index
 
-/**
-.Spec.IndexEsa:
-..summary:The enhanced suffix array index is very fast index, requiring more memory than other indices.
-In addition to the suffix array an lcp (longest common prefix) table and a child table (containing structural 
-information of the suffix tree) are provided.
-..cat:Index
-..general:Class.Index
-..signature:Index<TText, IndexEsa<> >
-..param.TText:The text type.
-...type:Class.String
-...type:Class.StringSet
-..remarks:The main fibres (see @Class.Index@ and @Metafunction.Fibre@) of this index are a suffix array
-(see @Tag.ESA Index Fibres.EsaSA@), a lcp table (see @Tag.ESA Index Fibres.EsaLcp@) and a child table (see @Tag.ESA Index Fibres.EsaChildtab@).
-..remarks:This index can be accessed as a Suffix Tree using the @Spec.VSTree Iterator@ classes.  ..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class IndexEsa
  * @extends Index

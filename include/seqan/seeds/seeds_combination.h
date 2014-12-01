@@ -75,18 +75,7 @@ namespace seqan {
  */
 
 // TODO(holtgrew): Stream-line tags to Merge, ChaosChain, SimpleChain?
-/**
-.Tag.Local Chaining
-..cat:Seed Handling
-..summary:The local chaining algorithms to use when adding a seed to a @Class.SeedSet@.
-..see:Class.SeedSet
-..see:Function.SeedSet#addSeed
-..tag.Merge:Merge with existing seed.
-..tag.Chaos:CHAOS chaining.
-..tag.SimpleChain:Simple chaining.
-..tag.Single:Add single seed without merging and chaining.
-..include:seqan/seeds.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 struct Merge_;
 typedef Tag<Merge_> Merge;
 

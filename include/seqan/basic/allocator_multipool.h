@@ -68,24 +68,7 @@ namespace seqan {
  * using <tt>ParentAllocator</tt>.
  */
 
-/**
-.Spec.Multi Pool Allocator:
-..cat:Allocators
-..general:Class.Allocator
-..summary:Allocator that pools memory blocks.
-..signature:Allocator MultiPool<ParentAllocator, BLOCKING_LIMIT> >
-..param.ParentAllocator:An allocator that is by the pool allocator used to allocate memory.
-...default:@Spec.Simple Allocator@
-...note:The multi pool allocator only supports @Function.clear@ if this function is also implemented for $ParentAllocator$.
-..remarks:A pool allocator allocates several memory blocks at once. 
-..param.BLOCKING_LIMIT:The maximum size for memory blocks to be pooled.
-...default:256
-Freed blocks are not immediately deallocated but recycled in subsequential allocations.
-This way, the number of calls to the heap manager is reduced, and that speeds up memory management.
-...text:Note that memory blocks larger than $BLOCKING_LIMIT$ are not pooled 
-but immediately allocated and deallocated using $ParentAllocator$.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TParentAllocator = Allocator<SimpleAlloc<Default> >, unsigned int BLOCKING_LIMIT = 0x100>
 struct MultiPool;

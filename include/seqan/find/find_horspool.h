@@ -55,16 +55,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TNeedle The needle type. Types: String
  */
 
-/**
-.Spec.Horspool:
-..summary: Exact string matching using Horspool's algorithm (1980).
-..general:Class.Pattern
-..cat:Searching
-..signature:Pattern<TNeedle, Horspool>
-..param.TNeedle:The needle type.
-...type:Class.String
-..include:seqan/find.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 ///.Class.Pattern.param.TSpec.type:Spec.Horspool
 

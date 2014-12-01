@@ -61,24 +61,7 @@ namespace seqan {
  * @tparam T3 The third type of the Triple.
  */
 
-/**
-.Spec.Packed Triple:
-..cat:Aggregates
-..general:Class.Triple
-..summary:Stores three arbitrary objects. Saves memory by disabling memory alignment.
-..signature:Triple<T1, T2, T3, Pack>
-..param.T1:The type of the first object.
-..param.T2:The type of the second object.
-..param.T3:The type of the third object.
-..notes:Useful for external storage.
-..remarks:Memory access could be slower. Direct access to members by pointers is not allowed on all platforms.
-..include:seqan/basic.h
-
-.Memfunc.Triple#Triple.class:Spec.Packed Triple
-.Memvar.Triple#i1.class:Spec.Packed Triple
-.Memvar.Triple#i2.class:Spec.Packed Triple
-.Memvar.Triple#i3.class:Spec.Packed Triple
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 #ifdef PLATFORM_WINDOWS
     #pragma pack(push,1)

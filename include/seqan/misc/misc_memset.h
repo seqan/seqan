@@ -73,21 +73,7 @@ namespace seqan {
  * @param[in]     c   The value to set to.
  */
 
-/**
-.Function.memset
-..cat:Memory
-..summary:An implementation of $memset$ with fixed number of bytes using Metaprogramming.
-..signature:memset<SIZE>(ptr, c)
-..signature:memset<SIZE, c>(ptr)
-..param.SIZE:The number of bytes to set.
-...type:nolink:$unsigned$
-..param.ptr:Pointer to the data to set.
-...type:nolink:$unsigned char *$
-..param.c:The character to fill the memory with.
-....type:nolink:$unsigned char$
-..remarks:These functions can be completely unrolled and inlined by the compiler.
-..include:seqan/misc/misc_memset.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Does memset() really belong in this header? Used in find_myers_ukknonen.h, pump_lcp_core.h, pipe_sample.h, file_async
 

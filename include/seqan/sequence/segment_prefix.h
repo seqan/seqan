@@ -61,27 +61,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @aka substring
  */
 
-/**
-.Spec.PrefixSegment:
-..cat:Segments
-..summary:First part of a sequence.
-..general:Class.Segment
-..signature:Segment<THost, PrefixSegment>
-..param.THost:Type of the whole sequence.
-...text:Instances of $Segment<THost, PrefixSegment>$ are prefixes of $THost$ objects.
-...remarks:Use @Metafunction.Host@ to get the host type for a given class.
-..remarks.note:Since the appropriate segment type depends on the host sequence type,
-    it is recommended to use the metafunction @Metafunction.Prefix@ instead of explicitely
-    choose a specialization of @Class.Segment@.
-..see:Spec.InfixSegment
-..see:Spec.SuffixSegment
-..see:Metafunction.Prefix
-..example.file:demos/sequence/prefix.cpp
-..example.text:The output is as follows:
-..example.output:
-Prefix: TATA
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct PrefixSegment {};
 
@@ -98,32 +78,7 @@ public:
 
 public:
 
-/**
-.Memfunc.PrefixSegment#Segment:
-..class:Spec.PrefixSegment
-..summary:Constructor
-..signature:Segment<THost, PrefixSegment> ()
-..signature:Segment<THost, PrefixSegment> (prefix)
-..signature:Segment<THost, PrefixSegment> (host [, end])
-..param.prefix:Other prefix object. (copy constructor)
-..param.host:The whole sequence.
-..param.end:Position in $host$ behind the last item in segment. (optional)
-...default:$length(host)$
-...type:Metafunction.Position.$Position<THost>::Type$
-...type:Metafunction.Iterator.$Iterator<THost>::Type$
-..remarks:
-...text:A Segment object cannot work without a host. If the object is default constructed,
-the host must be set by @Function.setHost@ before the segment can be used.
-...text:If a segment object is constructed by the copy constructor, the
-members of the new constructed object are set to the same values as the members in the
-source object; the host object is not modified.
-Note that this is a special case, since all other copy operations result in changes
-of the host object.
-...text:$begin$ must be a valid position/iterator in $host$.
-If $begin$ is omitted, the prefix segment corresponding to
-the whole sequence $host$ is constructed.
-This is the same segment that is returned by @Function.goBegin@.
-*/
+/*_DDDOC_PLACEHOLDER*/
     Segment():
         data_host(),
         data_end_position(0)
@@ -354,19 +309,7 @@ SEQAN_CHECKPOINT
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Metafunction.Prefix:
-..cat:Segments
-..class:Class.String
-..summary:Prefix sequence type.
-..signature:Prefix<T>::Type
-..param.T:A sequence type.
-...type:Class.String
-..returns.param.Type:The prefix type.
-..see:Spec.PrefixSegment
-..see:Metafunction.Infix
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct InfixSegment;
 struct SuffixSegment;
@@ -525,34 +468,7 @@ operator --(Segment<THost, PrefixSegment> & segment)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.prefix:
-..cat:Containers
-..class:Class.String
-..class:Adaption.char array
-..summary:Creates prefix object.
-..signature:prefix(host, end)
-..remarks:Note that a prefix of a @Class.Segment@ object is an @Spec.SuffixSegment@ object having the same host type.
-..param.host:The complete sequence.
-...type:Class.String
-...type:Adaption.char array
-..param.end:Position or iterator behind the last element of the segment.
-...type:Metafunction.Position
-...type:Metafunction.Iterator
-..returns:The prefix of $host that ends at $end$.
-...remarks:The type of the prefix is given by @Metafunction.Prefix@.
-..remarks:Notational sugar.
-..see:Spec.PrefixSegment
-..see:Function.suffix
-..see:Function.infix
-..see:Function.suffix
-..include:seqan/sequence.h
-..example.code:
-CharString str = "ABCDEF";
-Prefix<CharString >::Type myPrefix = prefix(str, 3);
-
-std::cout << myPrefix << std::endl;
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TPosEnd>
 inline typename Prefix<T>::Type

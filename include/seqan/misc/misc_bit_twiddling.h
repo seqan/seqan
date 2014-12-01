@@ -126,23 +126,7 @@ struct WordSize_ {};
  * @param[in]     value The value to set to, <tt>bool</tt>.
  */
 
-/**
-.Function.setBitTo
-..cat:Bit Twiddling
-..summary:Set the bit with the given index to the given value.
-..signature:setBitTo(word, index, value)
-..param.word:The number.
-..param.index:The index of the bit in the word.
-...type:nolink:$unsigned$
-..param.value:The value to set the bit to.
-...type:nolink:$bool
-..returns:$void$
-..include:seqan/misc/misc_bit_twiddling.h
-..see:Function.setBit
-..see:Function.clearBit
-..see:Function.clearAllBits
-..see:Function.isBitSet
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TWord, typename TPos>
 inline void
@@ -167,21 +151,7 @@ setBitTo(TWord & word, TPos index, bool value)
  * @param[in]     index The index of the bit to set (@link IntegerConcept @endlink).
  */
 
-/**
-.Function.setBit
-..cat:Bit Twiddling
-..summary:Set the bit with the given index to 1.
-..signature:setBit(word, index)
-..param.word:The number.
-..param.index:The index of the bit in the word.
-...type:nolink:$unsigned$
-..returns:$void$
-..include:seqan/misc/misc_bit_twiddling.h
-..see:Function.setBitTo
-..see:Function.clearBit
-..see:Function.clearAllBits
-..see:Function.isBitSet
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TWord, typename TPos>
 inline void
@@ -205,21 +175,7 @@ setBit(TWord & word, TPos index)
  * @param[in]     index The index of the bit to set to 0 (@link IntegerConcept @endlink).
  */
 
-/**
-.Function.clearBit
-..cat:Bit Twiddling
-..summary:Set the bit with the given index to 0.
-..signature:clearBit(word, index)
-..param.word:The number.
-..param.index:The index of the bit in the word.
-...type:nolink:$unsigned$
-..returns:$void$
-..include:seqan/misc/misc_bit_twiddling.h
-..see:Function.setBitTo
-..see:Function.setBit
-..see:Function.clearAllBits
-..see:Function.isBitSet
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TWord, typename TPos>
 inline void
@@ -242,19 +198,7 @@ clearBit(TWord & word, TPos index)
  * @param[in,out] word The word to clear all bits of (@link IntegerConcept @endlink).
  */
 
-/**
-.Function.clearAllBits
-..cat:Bit Twiddling
-..summary:Set all bits to 0.
-..signature:clearAllBits(word)
-..param.word:The number.
-..returns:$void$
-..include:seqan/misc/misc_bit_twiddling.h
-..see:Function.setBitTo
-..see:Function.setBit
-..see:Function.clearBit
-..see:Function.isBitSet
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TWord>
 inline void
@@ -280,22 +224,7 @@ clearBits(TWord & word)
  * @return bool Whether the bit with the given index is set in <tt>word</tt>.
  */
 
-/**
-.Function.isBitSet
-..cat:Bit Twiddling
-..summary:Returns whether the bit with the given index is set to 1.
-..signature:isBitSet(word, index)
-..param.word:The number.
-..param.index:The index.
-...type:nolink:$unsigned$
-..returns:$true$ if the bit was set and $false$ otherwise.
-...type:nolink:$bool$
-..include:seqan/misc/misc_bit_twiddling.h
-..see:Function.setBitTo
-..see:Function.setBit
-..see:Function.clearBit
-..see:Function.clearAllBits
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TWord, typename TIndex>
 inline bool
@@ -333,16 +262,7 @@ hiBits(TWord word, TPos index)
  * @return unsigned The number of set bits in <tt>word</tt>.
  */
 
-/**
-.Function.popCount
-..cat:Bit Twiddling
-..summary:Returns number of set bits in an integer.
-..signature:popCount(word)
-..param.word:The number.
-..returns:The number of set bits (1s) in an integer.
-...type:nolink:$unsigned$
-..include:seqan/misc/misc_bit_twiddling.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TWord>
 SEQAN_HOST_DEVICE

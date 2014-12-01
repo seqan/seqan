@@ -88,15 +88,7 @@ struct StdContainerIterator;
  * This type is a wrapper around STL iterators that has a conversion operator back to the underlying iterator.
  */
 
-/**
-.Spec.STD Adaptor Iterator
-..general:Class.Iter
-..cat:Iterators
-..summary:Adapt STL iterators to SeqAn iterators.
-..signature:Iter<TContainer, StdIteratorAdaptor>
-..param.TContainer:The STL container to iterate over.
-..remarks:This type is a wrapper around STL iterators that has a conversion operator back to the underlying iterator.
- */
+/*_DDDOC_PLACEHOLDER*/
 
 struct StdIteratorAdaptor_;
 typedef Tag<StdIteratorAdaptor_> StdIteratorAdaptor;
@@ -254,15 +246,7 @@ struct Reference<Iter<TContainer const, StdIteratorAdaptor> const> :
 
 // TODO(holtgrew): This is a candidate for not beging publically documented
 
-/**
-.Metafunction.StdContainerIterator
-..cat:Sequences
-..summary:Returns type of the STL container iterator.
-..signature:StdContainerIterator<T>::Type
-..param.T.type:Adaption.std::list
-..include:seqan/sequence.h
-..remarks:This is used in @Spec.STD Adaptor Iterator@.
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TStdContainer>
 struct StdContainerIterator;

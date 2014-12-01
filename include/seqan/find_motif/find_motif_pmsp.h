@@ -40,23 +40,7 @@ namespace SEQAN_NAMESPACE_MAIN
 // Pmsp
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Spec.Pmsp:
-..summary: Represents the Pmsp algorithm of Davila et al.
-..description.note:There are various known problems with the motif finding in SeqAn. We plan to fix this in an upcoming release.
-..general:Class.MotifFinder
-..cat:Motif Search
-..signature:MotifFinder<TValue, Pmsp, TRng>
-..param.TValue:The type of sequences to be analyzed.
-...type:Spec.Dna
-...type:Spec.AminoAcid
-..remarks:The @Spec.Pmsp|Pmsp algorithm@ is an improvement of the @Spec.Pms1|Pms1 algorithm@.
-          It examines each possible l-mer of the first input sequence, explores its neighborhood
-		  and finally checks whether an l-mer in the neighborhood is a motif instance.
-..param.TRng:The @Class.Rng@ specialization to use for random number generation.
-...default:$GetDefaultRng<MotifFinderClass>::Type$
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 ///.Class.MotifFinder.param.TSpec.type:Spec.Pmsp
 

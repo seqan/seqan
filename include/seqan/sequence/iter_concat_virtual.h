@@ -83,26 +83,7 @@ struct ConcatVirtual;
  * If <tt>objNo</tt> and <tt>offset</tt> are not given then the iterator will point to the first element with offset 0.
  */
 
-/**
-.Spec.ConcatVirtual Iterator
-..cat:Sequences
-..general:Class.Iter
-..summary:Iterator that sequentially iterates through the elements of a @Class.StringSet@ as if they were directly concatenated, cmp. @Spec.ConcatDirect@.
-..signature:Iter<TStringSet, ConcatVirtual<TSpec> >
-..param.TStringSet:Type of the @Class.StringSet@.
-..param.TSpec:The delimiter to use.
-..include:seqan/sequence.h
-
-.Memfunc.ConcatVirtual Iterator#Iter:
-..class:Spec.ConcatVirtual Iterator
-..summary:Constructor
-..signature:Iter(host)
-..signature:Iter(host, objNo, offset)
-..param.host:Container to iterate.
-..param.objNo:Sequence number to set the iterator to.
-..param.offset:Offset in the object (specified by objNo) to point to.
-..remarks:If $objNo$ and $offset$ are not given, the iterator will point to the first element with offset 0.
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TStringSet, typename TSpec >
 class Iter<TStringSet, ConcatVirtual<TSpec> >
 {
@@ -557,19 +538,7 @@ atEnd(Iter<TSSet, ConcatVirtual<TSpec> > const & me)
 
 // TODO(holtgrew): Specifying a catch-all implementation appears a bit too generous, what about concept checking?
 
-/**
-.Function.atEndOfSequence
-..class:Spec.ConcatVirtual Iterator
-..summary:Returns true if the iterator is at the end of a sequence.
-..cat:Sequences
-..signature:atEndOfSequence(iter)
-..param.iter:Iterator to test.
-...type:Spec.ConcatVirtual Iterator
-...type:Class.Iter
-..returns:$true$ if the iterator is at the end of a sequence.
-...type:nolink:$bool$
-..include:seqan/sequence.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TIterator>
 inline bool
 atEndOfSequence(TIterator const & me)

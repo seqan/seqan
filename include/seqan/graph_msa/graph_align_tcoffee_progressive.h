@@ -127,22 +127,7 @@ _createAlignmentGraph(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * @param[out] outputGraph An @link AlignmentGraph @endlink for the final MSA.
  */
 
-/**
-.Function.progressiveAlignment
-..class:Spec.Alignment Graph
-..summary:Performs a progressive alignment.
-..cat:Graph
-..signature:
-progressiveAlignment(inputGraph, guideTree, outputGraph)
-..param.inputGraph:The alignment graph with multiple sequence information.
-...type:Spec.Alignment Graph
-..param.guideTree:A guide tree.
-...type:Spec.Tree
-..param.outputGraph:An alignment graph for the final MSA.
-...type:Spec.Alignment Graph
-..returns:void
-..include:seqan/graph_msa.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TGuideTree, typename TOutGraph>
 inline void 
 progressiveAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,

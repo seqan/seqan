@@ -69,34 +69,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in] v     The descriptor of the vertex to iterate out edges of.
  */
 
-/**
-.Spec.Out-Edge Iterator:
-..cat:Graph
-..summary:Out-edge iterator for @Class.Graph@.
-..signature:Iterator<TGraph, OutEdgeIterator>
-..param.TGraph:A graph.
-...type:Class.Graph
-..general:Class.Iter
-..see:Spec.Vertex Iterator
-..see:Spec.Edge Iterator
-..see:Spec.Adjacency Iterator
-..see:Spec.Bfs Iterator
-..see:Spec.Dfs Preorder Iterator
-..include:seqan/graph_types.h
-
-.Memfunc.Out-Edge Iterator#Iter
-..summary:Constructor
-..class:Spec.Out-Edge Iterator
-..signature:Iter()
-..signature:Iter(graph, v)
-..signature:Iter(iter)
-..param.graph:The graph to iterate edges of.
-...type:Class.Graph
-..param.v:Vertex descriptor of vertex to iterate out-edges from.
-...type:Metafunction.VertexDescriptor
-..param.iter:Other iterator to copy-construct from.
-...type:Spec.Out-Edge Iterator
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1202,21 +1175,7 @@ sourceVertex(Iter<TGraph, GraphIterator<InternalOutEdgeIterator<TSpec> > >& it)
  * @return TAlphabet The current label (Alphabe is the alphabet of the automaton).
  */
 
-/**
-.Function.Automaton#label
-..class:Spec.Out-Edge Iterator
-..class:Spec.Edge Iterator
-..cat:Graph
-..summary:Returns the label of the out-edge this iterator points to (for automatons).
-..signature:label(it)
-..param.it:An out-edge iterator.
-...type:Spec.Out-Edge Iterator
-...type:Spec.Edge Iterator
-..returns:A label.
-...type:Metafunction.Alphabet.
-..remarks:The label function only works for out-edge iterators on automatons.
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TAlphabet, typename TCargo, typename TGraphSpec, typename TSpec>
 inline typename Alphabet<Graph<Automaton<TAlphabet, TCargo, TGraphSpec> > >::Type

@@ -45,17 +45,9 @@ namespace seqan {
 // Enums, Tags, Classes, Specializations
 // ===========================================================================
 
-/**
-.Adaption.char array:
-..summary:Zero terminated $char[]$ or $wchar_t[]$.
-..remarks:Char arrays only support the Insist @Tag.Overflow Strategy.overflow strategy@.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
-/**
-.Adaption.char array.remarks:The default overflow strategy
-(both @Metafunction.DefaultOverflowImplicit@ and @Metafunction.DefaultOverflowExplicit@)
-for all operations on char arrays is @Tag.Overflow Strategy.insist@.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // ===========================================================================
 // Metafunctions

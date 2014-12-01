@@ -57,19 +57,7 @@ struct PriorityHeap;
  * @tparam TSpec  The specialization.  Default: <tt>PriorityHeap</tt>.
  */
 
-/**
-.Class.PriorityType:
-..cat:Miscellaneous
-..summary:Stores items in such a way that the item with the highest priority is at the top.
-..signature:PriorityType<TValue, TLess, TSpec>
-..param.TValue:The value type that is stored.
-...default:int
-..param.TLess:The comparator type that is used for sorting the items stored.
-...default:std::less<TValue>
-..param.TSpec:The specializing type.
-...default:@Spec.PriorityHeap@
-..include:seqan/misc.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TValue = int, typename TLess = ::std::less<TValue>, typename TSpec = PriorityHeap>
 class PriorityType;
 

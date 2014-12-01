@@ -67,33 +67,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * an edge id.  Edge ids are used to append additional properties to edges with the help of external property maps.
  */
 
-/**
-.Class.EdgeStump:
-..cat:Graph
-..summary:The EdgeStump class encapsulates a single edge. 
-It represents either a list node in the adjacency list of a graph or an array field if edges are stored in an array.
-..signature:EdgeStump<TCargo, bool TList, bool TSource, bool TId, TSpec>
-..param.TCargo:The cargo type of an edge.
-...metafunction:Metafunction.Cargo
-...remarks:The cargo can be used to store arbitrary information with an edge.
-...default:$void$
-..param.TList:Boolean value that indicates whether it is a list node or not.
-...remarks:If it is a list node it has one or two next pointers.
-...default:$true$
-..param.TSource:Boolean value that indicates whether the source is stored in the EdgeStump or not.
-...remarks:If this value is true and it is a list node an additional source next pointer is present.
-...default:$false$
-..param.TId:Boolean value that indicates whether an id is stored in the EdgeStump or not.
-Note: Without edge ids external property maps do not work for edges!
-...default:$true$
-..param.TSpec:The specializing type.
-...metafunction:Metafunction.Spec
-...default:$Default$, see @Tag.Default@.
-..remarks:The default EdgeStump in all graph types does not consider a cargo. 
-However, in default usage every graph does store an edge id. 
-Edge ids are used to append additional properties to edges with the help of external property maps.
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TCargo, typename TSpec>
 class EdgeStump<TCargo, true, false, false, TSpec> 
 {
@@ -416,20 +390,7 @@ struct Spec<EdgeStump<TCargo, TList, TSource, TId, TSpec> const>
  * @return TCargo Reference to the cargo of the EdgeStump.
  */
 
-/**
-.Function.getCargo
-..class:Class.EdgeStump
-..cat:Graph
-..summary:Get method for the edge cargo.
-..signature:getCargo(es)
-..param.es:Pointer to the EdgeStump.
-...type:Class.EdgeStump
-..returns:Returns the cargo.
-..remarks:If cargo is not present the return value is (void*) 0.
-..see:Function.cargo
-..see:Function.assignCargo
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec>
@@ -485,20 +446,7 @@ getCargo(EdgeStump<void, TList, TSource, TId, TSpec>*)
  * @return TCargo Reference to the cargo of the EdgeStump.
  */
 
-/**
-.Function.cargo
-..class:Class.EdgeStump
-..cat:Graph
-..summary:Access to the cargo.
-..signature:cargo(es)
-..param.es:Pointer to the EdgeStump.
-...type:Class.EdgeStump
-..returns:Returns a reference to the cargo.
-..remarks:If cargo is not present the return value is (void*) 0.
-..see:Function.getCargo
-..see:Function.assignCargo
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec>
@@ -557,22 +505,7 @@ cargo(EdgeStump<void, TList, TSource, TId, TSpec> const*)
  * Calling assignCargo on EdgeStump objects without cargo does nothing.
  */
 
-/**
-.Function.assignCargo
-..class:Class.EdgeStump
-..cat:Graph
-..summary:Assigns a new cargo to the edge.
-..signature:assignCargo(es, cargo)
-..param.es:Pointer to the EdgeStump.
-...type:Class.EdgeStump
-..param.cargo:New cargo object.
-...remarks:Type of the new cargo object must match Cargo<EdgeStump<TCargo, TList, TSource, TId, TSpec> >::Type.
-..returns:void
-..remarks:In cargoless EdgeStumps this operation is a NOP.
-..see:Function.cargo
-..see:Function.getCargo
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec, typename TCargo2>
 inline void 
@@ -606,20 +539,7 @@ assignCargo(EdgeStump<void, TList, TSource, TId, TSpec>*,
  * @param[in]     t     Vertex descriptor to assign as the target.
  */
 
-/**
-.Function.assignTarget
-..class:Class.EdgeStump
-..cat:Graph
-..summary:Assigns a target vertex to an edge.
-..signature:assignTarget(es, t)
-..param.es:Pointer to the EdgeStump.
-...type:Class.EdgeStump
-..param.t:Target vertex.
-..returns:void
-..see:Function.target
-..see:Function.getTarget
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec, typename TVertexDescriptor>
@@ -644,19 +564,7 @@ assignTarget(EdgeStump<TCargo, TList, TSource, TId, TSpec>* es,
  * @return TVertexDescriptor Reference to the target vertex descriptor of stump.
  */
 
-/**
-.Function.target
-..class:Class.EdgeStump
-..cat:Graph
-..summary:Accesses the target of an EdgeStump.
-..signature:target(es)
-..param.es:Pointer to the EdgeStump.
-...type:Class.EdgeStump
-..returns:Reference to the target vertex.
-..see:Function.assignTarget
-..see:Function.getTarget
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec>
 inline typename VertexDescriptor<EdgeStump<TCargo, TList, TSource, TId, TSpec> >::Type&
@@ -689,19 +597,7 @@ target(EdgeStump<TCargo, TList, TSource, TId, TSpec> const* es)
  * @return TVertexDescriptor The vetex descriptor stored in stump.
  */
 
-/**
-.Function.getTarget
-..class:Class.EdgeStump
-..cat:Graph
-..summary:Get method for the target.
-..signature:getTarget(es)
-..param.es:Pointer to the EdgeStump.
-...type:Class.EdgeStump
-..returns:Target vertex.
-..see:Function.assignTarget
-..see:Function.target
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec>
 inline typename VertexDescriptor<EdgeStump<TCargo, TList, TSource, TId, TSpec> const>::Type
@@ -739,22 +635,7 @@ getTarget(EdgeStump<TCargo, TList, TSource, TId, TSpec>* es)
  * vertex, as in undirected graphs.
  */
 
-/**
-.Function.Graph#assignSource
-..class:Class.EdgeStump
-..cat:Graph
-..summary:Assigns a source vertex to an edge.
-..remarks:A source vertex is not required in an edge stump.
-However, EdgeStumps can be configured to contain a source vertex, e.g., in undirected graphs.
-..signature:assignSource(es, s)
-..param.es:Pointer to the EdgeStump.
-...type:Class.EdgeStump
-..param.s:Source vertex.
-..returns:void
-..see:Function.source
-..see:Function.getSource
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TList, bool TId, typename TSpec, typename TVertexDescriptor>
 inline void 
@@ -854,21 +735,7 @@ source(EdgeStump<TCargo, TList, false, TId, TSpec> const*)
  * vertex, as in undirected graphs.
  */
 
-/**
-.Function.getSource
-..class:Class.EdgeStump
-..cat:Graph
-..summary:Get method for the source.
-..remarks:A source vertex is not required in an edge stump.
-However, EdgeStumps can be configured to contain a source vertex, e.g., in undirected graphs.
-..signature:getSource(es)
-..param.es:Pointer to the EdgeStump.
-...type:Class.EdgeStump
-..returns:Source vertex.
-..see:Function.Graph#assignSource
-..see:Function.source
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TList, bool TId, typename TSpec>
 inline typename VertexDescriptor<EdgeStump<TCargo, TList, true, TId, TSpec> const>::Type
@@ -925,21 +792,7 @@ getSource(EdgeStump<TCargo, TList, false, TId, TSpec>*)
  * @param[in]     es2 Pointer to the following EdgeStump.
  */
 
-/**
-.Function.assignNextT
-..class:Class.EdgeStump
-..cat:Graph
-..summary:Assigns another EdgeStump to the next target pointer.
-..signature:assignNextT(es, es2)
-..param.es:Pointer to the EdgeStump.
-...type:Class.EdgeStump
-..param.es2:Pointer to the following EdgeStump.
-...type:Class.EdgeStump
-..returns:void
-..see:Function.nextT
-..see:Function.getNextT
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TSource, bool TId, typename TSpec>
 inline void 
@@ -963,19 +816,7 @@ assignNextT(EdgeStump<TCargo, true, TSource, TId, TSpec>* es,
  * @return TEdgeStump Reference to the next target pointer.
  */
 
-/**
-.Function.nextT
-..class:Class.EdgeStump
-..cat:Graph
-..summary:Accesses the next target pointer.
-..signature:nextT(es)
-..param.es:Pointer to the EdgeStump.
-...type:Class.EdgeStump
-..returns:Reference to the next target pointer.
-..see:Function.assignNextT
-..see:Function.getNextT
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TSource, bool TId, typename TSpec>
 inline EdgeStump<TCargo, true, TSource, TId, TSpec>* &
@@ -1007,19 +848,7 @@ nextT(EdgeStump<TCargo, true, TSource, TId, TSpec> const* es)
  * @return TEdgeStump Reference to the next target pointer.
  */
 
-/**
-.Function.getNextT
-..class:Class.EdgeStump
-..cat:Graph
-..summary:Get method for the next target pointer.
-..signature:getNextT(es)
-..param.es:Pointer to the EdgeStump.
-...type:Class.EdgeStump
-..returns:Pointer to the next edge stump in target list.
-..see:Function.assignNextT
-..see:Function.nextT
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TSource, bool TId, typename TSpec>
 inline EdgeStump<TCargo, true, TSource, TId, TSpec>*
@@ -1053,22 +882,7 @@ getNextT(EdgeStump<TCargo, true, TSource, TId, TSpec> const* es)
  * Edge Stumps can be configured to have no source.  In this case, there is no next source pointer.
  */
 
-/**
-.Function.assignNextS
-..class:Class.EdgeStump
-..cat:Graph
-..summary:Assigns another EdgeStump to the next source pointer.
-..signature:assignNextS(es, es2)
-..remarks:EdgeStumps can be configured to have no source. Then there is no next source pointer.
-..param.es:Pointer to the EdgeStump.
-...type:Class.EdgeStump
-..param.es2:Pointer to the following EdgeStump.
-...type:Class.EdgeStump
-..returns:void
-..see:Function.nextS
-..see:Function.getNextS
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TId, typename TSpec>
 inline void 
@@ -1106,20 +920,7 @@ assignNextS(EdgeStump<TCargo, true, false, TId, TSpec>*,
  * Edge Stumps can be configured to have no source.  In this case, there is no next source pointer.
  */
 
-/**
-.Function.nextS
-..class:Class.EdgeStump
-..cat:Graph
-..summary:Accesses the next source pointer.
-..signature:nextS(es)
-..remarks:EdgeStumps can be configured to have no source. Then there is no next source pointer.
-..param.es:Pointer to the EdgeStump.
-...type:Class.EdgeStump
-..returns:Reference to the next source pointer.
-..see:Function.assignNextS
-..see:Function.getNextS
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TId, typename TSpec>
 inline EdgeStump<TCargo, true, true, TId, TSpec>* &
@@ -1174,20 +975,7 @@ nextS(EdgeStump<TCargo, true, false, TId, TSpec> const*)
  * Edge Stumps can be configured to have no source.  In this case, there is no next source pointer.
  */
 
-/**
-.Function.getNextS
-..class:Class.EdgeStump
-..cat:Graph
-..summary:Get method for the next source pointer.
-..remarks:EdgeStumps can be configured to have no source. Then there is no next source pointer.
-..signature:getNextS(es)
-..param.es:Pointer to the EdgeStump.
-...type:Class.EdgeStump
-..returns:Pointer to the next edge stump in source list.
-..see:Function.assignNextS
-..see:Function.nextS
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TId, typename TSpec>
 inline EdgeStump<TCargo, true, true, TId, TSpec>*

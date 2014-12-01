@@ -481,18 +481,7 @@ _writeEdgeType(TFile & file,
  * @param[in]     tag     Format tag to use for writing.  Types: DotDrawing.
  */
 
-/**
-.Function.write
-..class:Class.Graph
-..signature:write(file, graph, nodeMap, edgeMap, tag)
-..param.graph:The graph to write out.
-...type:Class.Graph
-..param.nodeMap:A mapping from vertex descriptor to vertex label.
-..param.edgeMap:A mapping from edge descriptor to edge label.
-..param.tag:A tag to select the output format.
-...type:Tag.DotDrawing
-..include:seqan/graph_types.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TTarget, typename TSpec, typename TNodeAttributes, typename TEdgeAttributes>
 void
 writeRecords(
@@ -552,11 +541,7 @@ writeRecords(
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.write
-..signature:write(file, graph, nodeMap, tag)
-..include:seqan/graph_types.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TFile, typename TSpec, typename TNodeAttributes>
 inline void
 writeRecords(
@@ -574,11 +559,7 @@ writeRecords(
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.write
-..signature:write(file, graph, tag)
-..include:seqan/graph_types.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TFile, typename TSpec>
 inline void
 writeRecords(

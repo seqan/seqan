@@ -96,24 +96,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see BitPackedTuple
  */
 
-/**
-.Spec.Sampler:
-..cat:Pipelining
-..general:Class.Pipe
-..summary:Outputs m-tuples beginning at a position of difference cover DC.
-..signature:Pipe<TInput, Sampler<m, DC[, TPacked]> >
-..param.TInput:The type of the pipeline module this module reads from.
-..param.m:The tuple size.
-..param.DC:A set of non-negative integers less than $m$.
-..param.DC:$DC[0]$ contains the size of the set and $DC[1..DC[0]]$ contains the distinct and ordered elements.
-..param.TPack:Specifies the packing method of the tuples ($void$ = no packing).
-...default:@Tag.Pack@.
-..example:The set ${1,2,4}$ is represented by $int DC[] = { 3, 1, 2, 4 }$.
-..remarks:The output type is a @Class.Pair@ of size type and @Class.Tuple@ of input elements and length m (i.e. $Pair<Size<TInput>::Type, Tuple<Value<TInput>::Type, m, TPack> >$).
-..remarks:The first output field contains the number of remaining pipe elements. The m-tuple in the second field contains the first m elements of them.
-The m-tuples are substrings of the input stream beginning at positions $i$, with $(n-i) mod m$ is element of the set DC (n is the input stream length).
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     //////////////////////////////////////////////////////////////////////////////
     // sampler class

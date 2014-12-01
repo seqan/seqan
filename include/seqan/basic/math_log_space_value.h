@@ -79,22 +79,7 @@ namespace seqan {
  * @endcode
  */
 
-/**
-.Class.LogProb
-..summary:Value type for computation in log-space.
-..signature:LogProb<T>
-..param.T:Floating number type to use as the basic.
-...default:$double$
-..remarks:Internally, the logarithms of the original values are stored.  This is numerically more stable for multiplications and large numbers.
-..remarks:This type can be used like an ordinary $double$ or $float$ value.
-..example.code:
-LogProb<double> x = 10;
-x *= 3;
-x += 4;
-int y = x;
-..cat:Basic
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue = double, typename TSpec = Default>
 class LogProb;

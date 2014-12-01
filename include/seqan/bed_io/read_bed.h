@@ -107,25 +107,7 @@ char const * FileExtensions<Bed, T>::VALUE[1] =
  * previously unknown reference occurs.
  */
 
-/**
-.Function.BedRecord#readRecord
-..cat:BED I/O
-..signature:int readRecord(record, reader[, context], Bed())
-..summary:Read a BED record from a file.
-..description:
-The type of the parameter $record$ decides which fields are interpreted.
-The remainder of the line (excluding the line break) is written to $record.data$.
-..description:
-When $context$ is given, the $rID$ field is filled and the context's name store may be updated if a previously unknown reference occurs.
-..param.record:@Class.BedRecord@ object to write to.
-...type:Class.BedRecord
-..param.reader:The @Spec.Single-Pass RecordReader@ to use.
-...type:Spec.Single-Pass RecordReader
-..param.context:The optional @Class.BedIOContext@ to use.
-...type:Class.BedRecord
-..returns:$int$ value, $0$ on success, non-$0$ value on errors.
-..include:seqan/bed_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // We have a helper function _readBedRecordNoData() that has various
 // overloads.  The one for Bed$N$ calls the one with Bed$N-1$.

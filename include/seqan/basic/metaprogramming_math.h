@@ -84,16 +84,7 @@ struct ConstUInt {};
  * @snippet demos/basic/metaprogramming_math.cpp log2 call
  */
 
-/**
-.Metafunction.Log2
-..cat:Metaprogramming
-..summary:Compute ceiled logarithm to base 2 using metaprogramming.
-..signature:Log2<x>::VALUE
-..param.x:The value to take the logarithm of.
-...type:nolink:$__int64$
-..returns:$ceil(log2(x))$.
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <__uint64 numerus, __uint64 base>
 struct LogN
@@ -127,16 +118,7 @@ template <__uint64 base> struct LogN<0, base> { static const __uint64 VALUE = 0;
  * @snippet demos/basic/metaprogramming_math.cpp log2floor call
  */
 
-/**
-.Metafunction.Log2Floor
-..cat:Metaprogramming
-..summary:Compute floored logarithm to base 2 using metaprogramming.
-..signature:Log2<x>::VALUE
-..param.x:The value to take the logarithm of.
-...type:nolink:$__int64$
-..returns:$floor(log2(x))$.
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <__uint64 numerus, __uint64 base>
 struct LogNFloor
@@ -169,18 +151,7 @@ template <__uint64 base> struct LogNFloor<0, base> { static const __uint64 VALUE
  * @snippet demos/basic/metaprogramming_math.cpp power call
  */
 
-/**
-.Metafunction.Power
-..cat:Metaprogramming
-..summary:Compute power of a number.
-..signature:Power<b, e>::VALUE
-..param.b:The base.
-...type:nolink:$__int64$
-..param.e:The exponent.
-...type:nolink:$__int64$
-..returns:$b^e$
-..include:seqan/basic.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <__int64 base, __int64 exponent>
 struct Power {

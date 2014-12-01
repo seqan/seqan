@@ -82,21 +82,7 @@ namespace seqan
  * @tparam TFunctor A unary functor type.
  */
 
-/**
-.Spec.ModView:
-..summary:Transforms the characters of the $THost$ string/iterator using a custom function.
-..cat:Modifier
-..general:Class.ModifiedIterator
-..general:Class.ModifiedString
-..signature:ModifiedIterator<THost, ModView<TFunctor> >
-..signature:ModifiedString<THost, ModView<TFunctor> >
-..param.THost:Original string/iterator.
-...type:Concept.RandomAccessIteratorConcept
-..param.TFunctor:A unary function (see STL's $unary_function$).
-...remarks:The argument type of $TFunctor$ must be $VALUE<THost>::Type$.
-..remarks:The @Metafunction.Value@ type of this modifier is the result type of $TFunctor$.
-..include:seqan/modifier.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFunctor>
 struct ModView {};

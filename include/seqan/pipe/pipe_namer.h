@@ -76,20 +76,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * elements gets the same name, if and only if they are equal.
  */
 
-/**
-.Spec.Namer:
-..cat:Pipelining
-..general:Class.Pipe
-..summary:Extends the input stream by a second field which names the elements.
-..signature:Pipe<TInput, Namer<TCompare> >
-..param.TInput:The type of the pipeline module this module reads from.
-..param.TCompare:A binary function (see STL's $binary_function$) with result type $int$.
-...remarks:Should return $0$ if and only if two elements are equal.
-..remarks:The output type is a @Class.Pair@ of input type and size type (i.e. $Pair<Value<TInput>::Type, Size<TInput>::Type>$).
-..remarks:The first output field is the original input stream.
-..remarks:The second output field is the name. This field begins with 0 and increases by 1 for every distinct element. Two elements gets the same name, if and only if they are equal.
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     //////////////////////////////////////////////////////////////////////////////
     // namer class
@@ -111,15 +98,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in] comp A <tt>TCompare</tt> object (copied).
  */
 
-/**
-.Memfunc.Namer#Pipe:
-..class:Spec.Namer
-..summary:Constructor
-..signature:Pipe<TInput, Namer<TCompare> > (in)
-..signature:Pipe<TInput, Namer<TCompare> > (in, comp)
-..param.in:Reference to an input pipe.
-..param.comp:A $TCompare$ object (copy constructor).
-*/
+/*_DDDOC_PLACEHOLDER*/
         Pipe(TInput& _in):
             in(_in) {}
         

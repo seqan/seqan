@@ -606,23 +606,7 @@ cropOuter(TContainer &cont, TFunctor const &func)
  * @param[in]  maxSplit         The maximal number of split operations to do if given.
  */
 
-/**
-.Function.stringSplit:
-..summary:Append a list of the words in the string, using sep as the delimiter string @Class.StringSet@.
-..cat:Sequences
-..class:Class.StringSet
-..signature:strSplit(stringSet, sequence)
-..signature:strSplit(stringSet, sequence, sep)
-..signature:strSplit(stringSet, sequence, sep, allowEmptyStrings)
-..signature:strSplit(stringSet, sequence, sep, allowEmptyStrings, maxSplit)
-..param.stringSet:The @Class.StringSet@ object the words are appended to.
-...type:Class.StringSet
-..param.sequence:A sequence of words.
-..param.sep:Word separator (default: ' ').
-..param.allowEmptyStrings:Boolean to specify whether empty words should be considered (default: true, iff sep is given).
-..param.maxSplit:If maxsplit is given, at most maxsplit splits are done.
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TString, typename TSpec, typename TSequence, typename TFunctor, typename TSize>
 inline void

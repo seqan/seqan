@@ -83,29 +83,7 @@ namespace seqan {
  * @see Gaps
  */
 
-/**
-.Class.Align:
-..cat:Alignments
-..summary:An alignment of sequences.
-..signature:Align<TSource, TSpec>
-..param.TSource:Type of the ungapped sequences.
-...metafunction:Metafunction.Source
-..param.TSpec:The specializing type.
-...metafunction:Metafunction.Spec
-...default:@Spec.ArrayGaps@
-..remarks:The default implementation of $Align$ stores the alignment in a set of @Class.Gaps|Gaps<TSource,TSpec>@ objects.
-Hence, the default implementation is row-based, so it will be faster to access the alignment row-wise than column-wise.
-..example.file:demos/align/align.cpp
-..example.text:The output is as follows:
-..example.output:
-score = -4
-align
-  0     .    :
-    AGTTTAATCA
-    ||| | |  |
-    AGTAT-ACGA
-..include:seqan/align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSource, typename TSpec = ArrayGaps>
 class Align
@@ -367,19 +345,7 @@ void move(Align<TSource, TSpec> & target, Align<TSource, TSpec> & source)
  * @return TRows A container with the Gaps of the Align object.
  */
 
-/**
-.Function.rows:
-..cat:Alignments
-..summary:The container of rows in an alignment.
-..signature:Rows rows(align)
-..param.align:An alignment.
-...type:Class.Align
-..returns:The container of rows in $align$.
-...metafunction:Metafunction.Rows
-..see:Function.cols
-..see:Metafunction.Rows
-..include:seqan/align.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSource, typename TSpec>
 inline typename Rows<Align<TSource, TSpec> >::Type &
@@ -411,22 +377,7 @@ rows(Align<TSource, TSpec> const & me)
  * @return TRow Reference to the given row of align  (Metafunction: @link Align#Row @endlink).
  */
 
-/**
-.Function.row:
-..cat:Alignments
-..summary:A row in an alignment.
-..signature:Row & row(align, position)
-..param.align:An alignment.
-...type:Class.Align
-..param.position:A position in the @Function.rows@ container of $align$.
-..returns:The row in @Function.rows@ container of $align$ at the given $position$.
-...metafunction:Metafunction.Row
-..remarks:This function is equivalent to $value(rows(align), position)$.
-..see:Function.rows
-..see:Function.col
-..see:Metafunction.Row
-..include:seqan/align.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSource, typename TSpec, typename TPosition>
 inline typename Row<Align<TSource, TSpec> >::Type &
@@ -459,18 +410,7 @@ row(Align<TSource, TSpec> const & me,
  * @return TCols The columns of the Align object (Metafunction: @link Align#Cols @endlink).
  */
 
-/**
-.Function.cols:
-..cat:Alignments
-..summary:The container of columns in an alignment.
-..signature:Cols cols(align)
-..param.align:An alignment.
-...type:Class.Align
-..returns:The container of columns in $align$.
-...metafunction:Metafunction.Cols
-..see:Metafunction.Cols
-..include:seqan/align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSource, typename TSpec>
 inline typename Cols<Align<TSource, TSpec> >::Type
@@ -501,21 +441,7 @@ cols(Align<TSource, TSpec> const & me)
  * @return TCol The column of the Align object (Metafunction: @link Align#Col @endlink).
  */
 
-/**
-.Function.col:
-..cat:Alignments
-..summary:A column in an alignment.
-..signature:Col & col(align, position)
-..param.align:An alignment.
-...type:Class.Align
-..param.position:A position in the @Function.cols@ container of $align$.
-..returns:The column in @Function.cols@ container of $align$ at the given $position$.
-...metafunction:Metafunction.Col
-..remarks:This function is equivalent to $value(cols(align), position)$.
-..see:Function.cols
-..see:Metafunction.Col
-..include:seqan/align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSource, typename TSpec, typename TPosition>
 inline typename Col<Align<TSource, TSpec> >::Type
@@ -723,19 +649,7 @@ operator<<(TStream & target,
  * @param[in]     stringSet The @link StringSet @endlink with the data.
  */
 
-/**
-.Function.setStrings:
-..cat:Alignments
-..summary:Loads the sequences of a stringset into an alignment.
-..signature:setStrings(align, stringset)
-..param.align:An alignment.
-...type:Class.Align
-..param.stringset:A string set.
-...type:Class.StringSet
-..remarks:The function clears $align$ and creates an new global alignment between strings in $stringset$ that contains only trainling gaps.
-The alignment will be dependent from the strings in the stringset; use @Function.detach@ to make $align$ the owner of its strings.
-..include:seqan/align.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSource, typename TSpec, typename TSpec2>
 inline void
@@ -800,11 +714,7 @@ clearGaps(Align<TSource, TSpec> & me)
  * @return TStringSet The set of ungapped sequences (Metafunction: @link Align#StringSetType @endlink).
  */
 
-/**
-.Function.stringSet:
-..param.g.type:Class.Align
-..include:seqan/align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSource, typename TSpec>
 inline typename StringSetType<Align<TSource, TSpec> >::Type

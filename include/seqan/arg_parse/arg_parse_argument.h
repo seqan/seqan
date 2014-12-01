@@ -103,16 +103,7 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos);
  * @brief Argument is an output file.
  */
 
-/**
-.Class.ArgParseArgument
-..cat:Miscellaneous
-..summary:Stores information for a specific command line argument. It can be either an argument of
-a ArgParseArgument or directly an Argument on the command line.
-..signature:ArgParseArgument
-..include:seqan/arg_parse.h
-..see:Class.ArgParseOption
-..see:Class.ArgumentParser
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @fn ArgParseArgument::ArgParseArgument
@@ -127,29 +118,7 @@ a ArgParseArgument or directly an Argument on the command line.
  *                              expect two values (<tt>int</tt>, default is 1).
  */
 
-/**
-.Memfunc.ArgParseArgument#ArgParseArgument
-..class:Class.ArgParseArgument
-..summary:Constructor
-..signature:ArgParseArgument (argumentType [, argumentLabel, isListArgument, numberOfArguments])
-..param.argumentType:A ArgParseArgument.ArgumentType value defining the type (e.g., String) of the
-ArgParseArgument.
-...tableheader:Flag|Description
-...table:$ArgParseArgument::STRING$|Argument is a string
-...table:$ArgParseArgument::INTEGER$|Argument is an integer
-...table:$ArgParseArgument::INT64|Argument is a 64 bit integer
-...table:$ArgParseArgument::DOUBLE$|A float
-...table:$ArgParseArgument::INPUT_FILE$|An input file
-...table:$ArgParseArgument::OUTPUT_FILE$|An output file
- ..param.argumentLabel:Defines a user defined argument label for the help output. If this option is
- not set, ArgParseArgument will automatically define a label based on the ArgumentType.
-..param.isListArgument:Defines if the argument can be given multiple times.
-...default:false.
-..param.numberOfArguments: Defines if the argument consists of defined number of elements (e.g., if
-you want to provide an interval you would set this option to 2, so the parser knows that he needs
-to search for exactly 2 values).
-...default:1.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 class ArgParseArgument
 {
@@ -297,18 +266,7 @@ inline std::string _typeToString(ArgParseArgument const & me)
  * @return bool <tt>true</tt> if it can be given multiple times, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.isListArgument
-..class:Class.ArgParseArgument
-..summary:Returns whether the argument can be given multiple times.
-..cat:Miscellaneous
-..signature:isListArgument(argument)
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..returns:$true$ if the argument argument can be given multiple times.
-..see:Memfunc.ArgParseArgument#ArgParseArgument.param.isListArgument
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool isListArgument(ArgParseArgument const & me)
 {
@@ -332,18 +290,7 @@ inline bool isListArgument(ArgParseArgument const & me)
  * @return bool <tt>true</tt> if it is a string, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.isStringArgument
-..class:Class.ArgParseArgument
-..summary:Returns whether the argument is a string.
-..cat:Miscellaneous
-..signature:isListArgument(argument)
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..returns:$true$ if the argument argument is a string argument.
-..see:Memfunc.ArgParseArgument#ArgParseArgument.param.argumentType
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool isStringArgument(ArgParseArgument const & me)
 {
@@ -370,18 +317,7 @@ inline bool isStringArgument(ArgParseArgument const & me)
  * @return bool <tt>true</tt> if it is an integer, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.isIntegerArgument
-..class:Class.ArgParseArgument
-..summary:Returns whether the argument is an integer.
-..cat:Miscellaneous
-..signature:isIntegerArgument(argument)
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..returns:$true$ if the argument argument is an integer argument.
-..see:Memfunc.ArgParseArgument#ArgParseArgument.param.argumentType
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool isIntegerArgument(ArgParseArgument const & me)
 {
@@ -404,18 +340,7 @@ inline bool isIntegerArgument(ArgParseArgument const & me)
  * @return bool <tt>true</tt> if it is a 64 bit integer, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.isInt64Argument
-..class:Class.ArgParseArgument
-..summary:Returns whether the argument is a 64 bit integer.
-..cat:Miscellaneous
-..signature:isInt64Argument(argument)
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..returns:$true$ if the argument argument is a 64 bit  integer argument.
-..see:Memfunc.ArgParseArgument#ArgParseArgument.param.argumentType
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool isInt64Argument(ArgParseArgument const & me)
 {
@@ -438,18 +363,7 @@ inline bool isInt64Argument(ArgParseArgument const & me)
  * @return bool <tt>true</tt> if it is a double argument, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.isDoubleArgument
-..class:Class.ArgParseArgument
-..summary:Returns whether the argument is a double.
-..cat:Miscellaneous
-..signature:isDoubleArgument(argument)
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..returns:$true$ if the argument argument is a double argument.
-..see:Memfunc.ArgParseArgument#ArgParseArgument.param.argumentType
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool isDoubleArgument(ArgParseArgument const & me)
 {
@@ -472,18 +386,7 @@ inline bool isDoubleArgument(ArgParseArgument const & me)
  * @return bool <tt>true</tt> if it is a input file argument, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.isInputFileArgument
-..class:Class.ArgParseArgument
-..summary:Returns whether the argument is an input file.
-..cat:Miscellaneous
-..signature:isOutputFileArgument(argument)
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..returns:$true$ if the argument argument is an input file argument.
-..see:Memfunc.ArgParseArgument#ArgParseArgument.param.argumentType
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool isInputFileArgument(ArgParseArgument const & me)
 {
@@ -506,19 +409,7 @@ inline bool isInputFileArgument(ArgParseArgument const & me)
  * @return bool <tt>true</tt> if it is a output file argument, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.isOutputFileArgument
-..class:Class.ArgParseArgument
-..summary:Returns whether the argument is an output file.
-..cat:Miscellaneous
-..signature:isOutputFileArgument(argument)
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-...type:Class.ArgParseOption
-..returns:$true$ if the argument argument is an output file argument.
-..see:Memfunc.ArgParseArgument#ArgParseArgument.param.argumentType
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool isOutputFileArgument(ArgParseArgument const & me)
 {
@@ -541,19 +432,7 @@ inline bool isOutputFileArgument(ArgParseArgument const & me)
  * @return bool <tt>true</tt> if it is an output prefix argument, <tt>false</tt> otherwise.
  */
 
-/**
- .Function.isOutputPrefixArgument
- ..class:Class.ArgParseArgument
- ..summary:Returns whether the argument is an output file.
- ..cat:Miscellaneous
- ..signature:isOutputPrefixArgument(argument)
- ..param.argument:The @Class.ArgParseArgument@ object.
- ...type:Class.ArgParseArgument
- ...type:Class.ArgParseOption
- ..returns:$true$ if the argument argument is an output file argument.
- ..see:Memfunc.ArgParseArgument#ArgParseArgument.param.argumentType
- ..include:seqan/arg_parse.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool isOutputPrefixArgument(ArgParseArgument const & me)
 {
@@ -576,19 +455,7 @@ inline bool isOutputPrefixArgument(ArgParseArgument const & me)
  * @return bool <tt>true</tt> if it is an input prefix argument, <tt>false</tt> otherwise.
  */
 
-/**
- .Function.isInputPrefixArgument
- ..class:Class.ArgParseArgument
- ..summary:Returns whether the argument is an output file.
- ..cat:Miscellaneous
- ..signature:isInputPrefixArgument(argument)
- ..param.argument:The @Class.ArgParseArgument@ object.
- ...type:Class.ArgParseArgument
- ...type:Class.ArgParseOption
- ..returns:$true$ if the argument argument is an input prefix argument.
- ..see:Memfunc.ArgParseArgument#ArgParseArgument.param.argumentType
- ..include:seqan/arg_parse.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool isInputPrefixArgument(ArgParseArgument const & me)
 {
@@ -611,18 +478,7 @@ inline bool isInputPrefixArgument(ArgParseArgument const & me)
  * @return std::string The argument label as a STL string.
  */
 
-/**
-.Function.getArgumentLabel
-..class:Class.ArgParseArgument
-..summary:Returns the label for the given @Class.ArgParseArgument@. Either the user defined label
-is returned or a default label (based on the ArgumentType is used).
-..cat:Miscellaneous
-..signature:getArgumentLabel(argument)
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..returns:A $ShortCut.std::string$ containing the label.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline std::string const getArgumentLabel(ArgParseArgument const & me)
 {
@@ -694,18 +550,7 @@ inline void _intervalAssert(const std::string minValueAsString, const std::strin
  * @param[in]     minValue The smallest value to set (<tt>std::string</tt>).
  */
 
-/**
-.Function.setMinValue
-..class:Class.ArgParseArgument
-..summary:Sets the minimum value of a @Class.ArgParseArgument@ object.
-..cat:Miscellaneous
-..signature:setMinValue(argument,minValue)
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..param.minValue:A std::string containing a string representation of the minimum value
-of the @Class.ArgParseArgument@.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void setMinValue(ArgParseArgument & me, const std::string minValue)
 {
@@ -746,18 +591,7 @@ inline void setMinValue(ArgParseArgument & me, const std::string minValue)
  * @param[in]     maxValue The largest value to set (<tt>std::string</tt>).
  */
 
-/**
-.Function.setMaxValue
-..class:Class.ArgParseArgument
-..summary:Sets the maximum value of a @Class.ArgParseArgument@ object.
-..cat:Miscellaneous
-..signature:setMaxValue(argument,maxValue)
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..param.maxValue:A std::string containing a string representation of the maximum value
-of the @Class.ArgParseArgument@.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void setMaxValue(ArgParseArgument & me, const std::string maxValue)
 {
@@ -830,20 +664,7 @@ inline void setMaxValue(ArgParseArgument & me, const std::string maxValue)
  * @endcode
  */
 
-/**
-.Function.setValidValues
-..class:Class.ArgParseArgument
-..summary:Sets the set of allowed values of a @Class.ArgParseArgument@ object.
-..cat:Miscellaneous
-..signature:setValidValues(argument,values)
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..param.values:A std::vector<std::string> containing all valid entries for the option or a std::string
-with valid values separated by spaces.
-..remarks:If the argument or option is an in- or output file. The valid strings will be interpreted as
-file endings and the command line parser checks if the provided file has the required file ending.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void setValidValues(ArgParseArgument & me, std::vector<std::string> const & values)
 {
@@ -892,17 +713,7 @@ inline void setValidValues(ArgParseArgument & me, std::string const & valuesStri
  * @param[in]     text The text to display as the description of the argument (<tt>std::string</tt>).
  */
 
-/**
-.Function.setHelpText
-..class:Class.ArgParseArgument
-..summary:Sets the help text for an ArgParseArgument.
-..cat:Miscellaneous
-..signature:setHelpText(argument,text)
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..param.text:A std::string describing the argument.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void setHelpText(ArgParseArgument & me, std::string const & text)
 {
@@ -1069,20 +880,7 @@ inline void _checkValue(ArgParseArgument const & me)
 // Function _assignArgumentValue()
 // ----------------------------------------------------------------------------
 
-/**
-.Internal.Function._assignArgumentValue
-..class:Class.ArgParseArgument
-..summary:Assigns the given value (if applicable) to the @Class.ArgParseArgument@ object. If
-the @Class.ArgParseArgument@ is a list or can hold multiple values
-(@Memfunc.ArgParseArgument#ArgParseArgument.param.numberOfArguments@) the value will be appended.
-Otherwise the value will be overwritten.
-..cat:internal
-..signature:_assignArgumentValue(argument,value [, argNo])
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..param.value:A std::string containing the value that should be assigned.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline void _assignArgumentValue(ArgParseArgument & me, std::string const & value)
 {
@@ -1118,21 +916,7 @@ inline void _assignArgumentValue(ArgParseArgument & me, std::string const & valu
  * @return std::string Const-reference to the argument value.
  */
 
-/**
-.Function.ArgParseArgument#getArgumentValue
-..class:Class.ArgParseArgument
-..summary:Returns the value of the @Class.ArgParseArgument@ object. If
-the @Class.ArgParseArgument@ is a list or can hold multiple values
-(@Memfunc.ArgParseArgument#ArgParseArgument.param.numberOfArguments@) you can specify which value
-you want to get. If not set the first value will be returned.
-..cat:Miscellaneous
-..signature:getArgumentValue(argument [, argNo])
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..param.argNo:If the argument is a list,  the $argNo$-th list element is returned.
-..returns:The value set at position $position$.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline std::string const & getArgumentValue(ArgParseArgument const & me, unsigned argNo)
 {
@@ -1166,18 +950,7 @@ inline std::string const & getArgumentValue(ArgParseArgument const & me)
  * @return std::vector<std::string> Const-reference to the argument values.
  */
 
-/**
-.Function.getArgumentValues
-..class:Class.ArgParseArgument
-..summary:Returns all values of the @Class.ArgParseArgument@ object as const std::vector.
-..cat:Miscellaneous
-..signature:getArgumentValues(argument)
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..returns:$std::vector<std::string>$ containing the values. If no value was set and no
-default value exists an empty vector will be returned.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline std::vector<std::string> const & getArgumentValues(ArgParseArgument const & me)
 {
@@ -1204,18 +977,7 @@ inline std::vector<std::string> const & getArgumentValues(ArgParseArgument const
  * @return bool <tt>true</tt> if <tt>pos</tt> is less than the size and the argument is non-empty.
  */
 
-/**
-.Function.ArgParseArgument#hasValue
-..class:Class.ArgParseArgument
-..summary:Returns true if a value for the given position is available.
-..cat:Miscellaneous
-..signature:hasValue(argument [, position=0])
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..param.position:The position for which the availability should be tested.
-..returns: $true$ if a value is available, $false$ if not.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 inline bool hasValue(ArgParseArgument const & arg, unsigned position)
 {
     return arg.value.size() > position || arg.defaultValue.size() > position;
@@ -1242,17 +1004,7 @@ inline bool hasValue(ArgParseArgument const & arg)
  * @return bool <tt>true</tt> if a value was assigned, <tt>false</tt> otherwise.
  */
 
-/**
-.Function.ArgParseArgument#isSet
-..class:Class.ArgParseArgument
-..summary:Returns true if a value was assigned to the argument.
-..cat:Miscellaneous
-..signature:isSet(argument)
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..returns:$true$ if a value was assigned to the argument, $false$ if not.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool isSet(ArgParseArgument const & me)
 {
@@ -1275,16 +1027,7 @@ inline bool isSet(ArgParseArgument const & me)
  * @return bool <tt>true</tt> if the argument has a default value and <tt>false</tt> if not.
  */
 
-/**
-.Function.ArgParseArgument#hasDefault
-..summary:Returns true if a default value was given for that argument.
-..cat:Miscellaneous
-..signature:hasDefault(argument)
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..returns:$true$ if a default value was given for the argument, $false$ if not.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool hasDefault(ArgParseArgument const & me)
 {
@@ -1307,17 +1050,7 @@ inline bool hasDefault(ArgParseArgument const & me)
  * @return unsigned The number of allowed values.
  */
 
-/**
-.Function.numberOfAllowedValues
-..class:Class.ArgParseArgument
-..summary:Returns the number of allowed values for this @Class.ArgParseArgument@.
-..cat:Miscellaneous
-..signature:numberOfAllowedValues(argument)
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..returns:The number of allowed values for this @Class.ArgParseArgument@.
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline unsigned numberOfAllowedValues(ArgParseArgument const & me)
 {
@@ -1349,22 +1082,7 @@ inline unsigned numberOfAllowedValues(ArgParseArgument const & me)
  * @return std::string The file extension, empty if no extension or not set.
  */
 
-/**
-.Function.ArgParseArgument#getFileExtension
-..class:Class.ArgParseArgument
-..summary:Returns the file extension for the given file argument.
-..description:Only valid when argument is an INPUT_FILE or OUTPUT_FILE.
-..cat:Miscellaenous
-..signature:std::string getFileExtension(argument[, pos]);
-..param.argument:The @Class.ArgParseArgument@ object.
-...type:Class.ArgParseArgument
-..param.pos:The position of the value if multiple values are allowed.
-...type:nolink:$unsigned$
-..returns:A $std::string$ with the extension of the file, if any.  Empty if no extension.
-..remarks:Halts the program if the argument is not an input or output file argument.
-..remarks:Note that you can
-..include:seqan/arg_parse.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos = 0)
 {

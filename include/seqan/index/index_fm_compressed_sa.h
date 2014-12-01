@@ -71,18 +71,7 @@ typedef Tag<FibreLF_> const     FibreLF;
  * @see Fibre
  * @see CompressedSA#getFibre
  */
-/**
-.Tag.CompressedSA Fibres
-..summary:Tag to select a specific fibre of a @Class.CompressedSA@.
-..remarks:These tags can be used to get @Metafunction.Fibre.Fibres@ of a sparse string.
-..cat:Index
-
-..tag.FibreSparseString:The sparse string.
-
-..see:Metafunction.Fibre
-..see:Function.getFibre
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 // TODO(esiragusa): Rename FibreSparseString as FibreSparseValues.
 struct FibreSparseString_;
 typedef Tag<FibreSparseString_> const FibreSparseString;
@@ -172,20 +161,7 @@ struct Value<CompressedSA<TText, TSpec, TConfig> const>
 // Class CompressedSA
 // ----------------------------------------------------------------------------
 
-/**
-.Class.CompressedSA:
-..cat:Index
-..summary:A suffix array storing only a few suffix array entries and computing the remaining on demand.
-..signature:CompressedSA<TText, TSpec, TConfig>
-..param.TSparseString:The string containing specific suffix array entries.
-...type:Class.SparseString
-..param.TLF:The lf containg an occurrence table and a prefix sum table.
-...type:Class.LF
-..param.TSpec:Possibility to specialise a compressed suffix array.
-...default:void.
-..remarks:The compressed suffix array can only be used with the FM index.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class CompressedSA
  * @implements ContainerConcept
@@ -245,9 +221,7 @@ struct CompressedSA
 // Function clear()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.clear.param.object.type:Class.CompressedSA
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#clear
  * @headerfile <seqan/index.h>
@@ -269,9 +243,7 @@ inline void clear(CompressedSA<TText, TSpec, TConfig> & compressedSA)
 // Function empty()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.empty.param.object.type:Class.CompressedSA
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#empty
  * @headerfile <seqan/index.h>
@@ -295,19 +267,7 @@ SEQAN_HOST_DEVICE inline bool empty(CompressedSA<TText, TSpec, TConfig> & compre
 // ----------------------------------------------------------------------------
 // This function creates a compressed suffix array using a normal one.
 
-/**
-.Function.CompressedSA#createCompressedSa
-..summary:This functions creates a compressed suffix array with a specified compression factor.
-..signature:void createCompressedSa(compressedSA, completeSA, compressionFactor [,offset])
-..param.compressedSA:The compressed suffix array
-...type:Class.CompressedSA
-..param.completeSA:A complete suffix array containing all values
-..param.compressionFactor:The compression factor.
-...type:Concept.UnsignedIntegerConcept
-...remarks:A compression factor of x means that the compressed suffix array specifically stores a value for every x values in the complete suffix array.
-..param:offset:Number of elements at the beginning which should contain the default value.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 // TODO(holtgrew): Rename to createCompressedSA
 /*!
  * @fn CompressedSA#createCompressedSa
@@ -380,23 +340,7 @@ void createCompressedSa(CompressedSA<TText, TSpec, TConfig> & compressedSA, TSA 
 // Function getFibre()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.CompressedSA#getFibre:
-..summary:Returns a specific fibre of a container.
-..signature:getFibre(container, fibreTag)
-..class:Class.CompressedSA
-..cat:Index
-..param.container:The container holding the fibre.
-...type:Class.CompressedSA
-..param.fibreTag:A tag that identifies the @Metafunction.Fibre@.
-...type:Tag.CompressedSA Fibres
-..returns:A reference to the @Metafunction.Fibre@ object.
-..include:seqan/index.h
-..example.code:
-Index< String<char> > index_esa("tobeornottobe");
-
-String<char> & text = getFibre(indexEsa, EsaText());
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#getFibre
  * 
@@ -444,16 +388,7 @@ getFibre(CompressedSA<TText, TSpec, TConfig> & compressedSA, FibreLF)
 // Function setFibre()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.setFibre
-..summary:Set the LF of the compressed suffix array.
-..signature:setFibre(CompressedSA<TText, TSpec, TConfig> compressedSa, TLF & lf, FibreLF)
-..param.CompressedSA<TText, TSpec, TConfig>:The compressed suffix array.
-...type:Class.CompressedSA
-..param.lf
-...type:Class.LF
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#setFibre
  * 
@@ -477,9 +412,7 @@ void setFibre(CompressedSA<TText, TSpec, TConfig> & compressedSA, TLF & lf, Fibr
 // Function length()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.length.param.object.type:Class.CompressedSA
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#length
  * 
@@ -506,9 +439,7 @@ length(CompressedSA<TText, TSpec, TConfig> const & compressedSA)
 // Function resize()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.resize.param.object.type:Class.CompressedSA
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#resize
  * 
@@ -540,17 +471,7 @@ resize(CompressedSA<TText, TSpec, TConfig> & compressedSA, TSize size, Tag<TExpa
 // Function value()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.CompressedSA#value
-..summary:Returns the value stored at a specified position in the compressed suffix-array.
-..signature:value(compressedSA, pos)
-..param.compressedSA:The compressed suffix array to access.
-...type:Class.CompressedSA
-..param.pos:Position at which to access the suffix array.
-...type:Concept.UnsignedIntegerConcept
-..remarks:Note that the compressed suffix array is read only. Therefore a const reference is return by
-this function.
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#value
  * 
@@ -604,11 +525,7 @@ value(CompressedSA<TText, TSpec, TConfig> const & compressedSA, TPos pos)
 // Function open()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.open
-..param.object:
-...type:Class.CompressedSA
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#open
  * @headerfile <seqan/index.h>
@@ -644,23 +561,7 @@ inline bool open(CompressedSA<TText, TSpec, TConfig> & compressedSA, const char 
 // Function save()
 // ----------------------------------------------------------------------------
 
-/**
-.Function.CompressedSA#save
-..class:Class.CompressedSA
-..summary:This functions saves a compressed suffix array to disk.
-..signature:open(compressedSA, fileName [, openMode])
-..param.compressedSA:The string to be saved.
-...type:Class.CompressedSA
-..param.fileName:C-style character string containing the file name.
-..param.openMode:The combination of flags defining how the file should be opened.
-...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
-...remarks:To create or overwrite a file add $OPEN_CREATE$.
-...remarks:To append a file if existing add $OPEN_APPEND$.
-...remarks:To circumvent problems, files are always opened in binary mode.
-...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#save
  * 

@@ -70,21 +70,7 @@ namespace seqan {
  * this string set.
  */
 
-/**
-.Spec.Journaled Set:
-..summary:A string set storing the string as members. It can store a global reference sequence to which
-all members can be journaled if they are of type @Spec.Journaled String@.
-..cat:Sequences
-..signature:StringSet<TString, Owner<JournaledSet> >
-..param.TString:The string type.
-...type:Class.String
-...type:Spec.Journaled String
-..remarks:The strings are internally stored in a $String<TString>$ object and the character position type is a
-@Class.Pair@ $(seqNo,seqOfs)$ where seqNo identifies the string within the stringset and seqOfs identifies the position within this string.
-..remarks:The global reference is of type $Host<TString>$. Only strings of type @Spec.Journaled String@ or $Host<$@Spec.Journaled String@>$
-can be used for the advanced functionality supported by this string set.
-..include:seqan/journal_set.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 struct JournaledSet_;
 typedef Tag<JournaledSet_> JournaledSet;
@@ -121,18 +107,7 @@ class JournalTraceBuffer;
  * @signature typedef Tag<JournaledCompact_> JournaledCompact;
  */
 
-/**
-.Tag.Join Strategies
-..cat:Alignments
-..summary:Tags used for selecting journaling strategies when joining a @Spec.Journaled String@ to a global reference sequence.
-..tag
-...JournaledManhatten:Constructs @Spec.Journaled String@ based on Manhatten distance.
-....remarks:This strategy is very fast on the cost of memory.
-...JournaledCompact:Computes an optimal alignment to construct @Spec.Journaled String@.
-....remarks:This strategy is slow but depending on the scoring function minimizes the memory requirements for the computed @Spec.Journaled String@ (default).
-..see:Function.join
-..include:seqan/align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // ----------------------------------------------------------------------------
 // Tag JournaledManhatten
@@ -171,21 +146,7 @@ typedef Tag<JournaledCompact_> JournaledCompact;
  * @endlink consists of one insertion node covering the complete joined sequence.
  */
 
-/**
-.Spec.GlobalAlign:
-..summary:Selects a global alignment method to join a @Spec.Journaled String@ to a global reference sequence.
-..cat:Sequences
-..general:Class.JoinConfig
-..signature:GlobalAlign<TStrategyTag>
-..param.TStrategyTag:The strategy used to compute the journal.
-...type:Tag.Join Strategies.tag.JournaledManhatten
-...type:Tag.Join Strategies.tag.GlobalChain
-..default:Tag.Join Strategies.tag.JournaledManhatten
-..remarks:If @Tag.Join Strategies.tag.JournaledManhatten@ is selected, then the resulting @Spec.Journaled String@ consists
-of one insertion node covering the complete joined sequence.
-..see:Spec.GlobalChain
-..include:seqan/journal_set.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec = JournaledManhatten>
 struct GlobalAlign{};
@@ -212,21 +173,7 @@ struct GlobalAlign{};
  * insertion node whil the corresponding part of the reference sequence is deleted.
  */
 
-/**
-.Spec.GlobalChain:
-..summary:Selects an anchor based method to join a @Spec.Journaled String@ to a global reference sequence.
-..cat:Sequences
-..general:Class.JoinConfig
-..signature:GlobalChain<TStrategyTag>
-..param.TStrategyTag:The strategy used to compute the journal.
-...type:Tag.Join Strategies.tag.JournaledManhatten
-...type:Tag.Join Strategies.tag.JournaledCompact
-..default:Tag.Join Strategies.tag.JournaledManhatten
-..remarks:The @Tag.Join Strategies.tag.JournaledManhatten@ strategy fills the gaps between the anchors with a single insertion node,
-while the corresponding part of the reference sequence is deleted.
-..see:Spec.GlobalAlign
-..include:seqan/journal_set.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec = JournaledManhatten>
 struct GlobalChain{};
@@ -249,19 +196,7 @@ struct GlobalChain{};
  * function and the second one uses an anchor based approach.
  */
 
-/**
-.Class.JoinConfig:
-..summary:Specifies the strategy and all necessary parameters used to journal a sequence to a reference sequence.
-..cat:Sequences
-..signature:JoinConfig<TMethod>
-..param.TMethod:The method type.
-...type:Spec.GlobalAlign
-...type:Spec.GlobalChain
-..default:Spec.JournaledManhatten
-..remarks:SeqAn offers two general methods to compute the journal. The first one uses a @Function.globalAlignment@ function
-and the second one uses an anchor based approach.
-..include:seqan/journal_set.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec = GlobalAlign<JournaledManhatten> >
 struct JoinConfig{};

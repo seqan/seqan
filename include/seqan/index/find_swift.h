@@ -46,26 +46,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 // TODO(bkehr): Is this documentatin right? Should the Specializations be Tags?
 // weese: of minimal length?
-/**
-.Spec.Swift:
-..summary:Provides a fast filter alogrithm that guarantees to find all regions overlapping with potential \epsilon-matches.
-An \epsilon-match is a matching region of minimal length and an error rate of at most \epsilon.
-..general:Class.Pattern
-..general:Class.Finder
-..cat:Searching
-..signature:Finder<THaystack, Swift<TSpec> >
-..signature:Pattern<TIndex, Swift<TSpec> >
-..param.THaystack: A haystack type.
-...type:Class.Index
-...type:Class.String
-...type:Class.StringSet
-..param.TIndex: A q-gram index of needle(s).
-...type:Spec.IndexQGram
-..param.TSpec: Specifies the type of Swift filter.
-..include:seqan/index.h
-..remarks:
-The @Class.Pattern@ must be a q-gram index over multiple patterns. The allowed error rate must be given when @Function.find@ or @Function.windowFindBegin@ is called.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @class SwiftPattern
@@ -111,21 +92,7 @@ The @Class.Pattern@ must be a q-gram index over multiple patterns. The allowed e
 ///.Class.Pattern.param.TSpec.type:Spec.Swift
 ///.Class.Finder.param.TSpec.type:Spec.Swift
 
-/**
-.Spec.SwiftLocal:
-..summary:The specialization for the general swift filter that finds epsilon matches between haystack and needle.
-..general:Spec.Swift
-..cat:Searching
-..signature:Finder<THaystack, Swift<SwiftLocal> >
-..signature:Pattern<TIndex, Swift<SwiftLocal> >
-..param.THaystack: A haystack type.
-...type:Class.Index
-...type:Class.String
-...type:Class.StringSet
-..param.TIndex: A q-gram index of needle(s).
-...type:Spec.IndexQGram
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @class SwiftLocalPattern
@@ -154,21 +121,7 @@ The @Class.Pattern@ must be a q-gram index over multiple patterns. The allowed e
 
 ///.Spec.Swift.param.TSpec.type:Spec.SwiftLocal
 
-/**
-.Spec.SwiftSemiGlobal:
-..summary:The specialization for the semi-global swift filter that finds regions of the haystack where a needle matches with an error rate less than \epsilon.
-..general:Spec.Swift
-..cat:Searching
-..signature:Finder<THaystack, Swift<SwiftSemiGlobal> >
-..signature:Pattern<TIndex, Swift<SwiftSemiGlobal> >
-..param.THaystack: A haystack type.
-...type:Class.Index
-...type:Class.String
-...type:Class.StringSet
-..param.TIndex: A q-gram index of needle(s).
-...type:Spec.IndexQGram
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @class SwiftSemiGlobalPattern
@@ -1641,23 +1594,7 @@ endPosition(Pattern<TIndex, Swift<TSpec> > & pattern)
 }
 
 //____________________________________________________________________________
-/**
-.Function.positionRangeNoClip
-..cat:Searching
-..summary:Returns a pair of the begin and end position in or beyond the haystack or needle for the last hit found.
-..signature:positionRangeNoClip(finder)
-..class:Class.Finder
-..signature:positionRangeNoClip(pattern)
-..param.finder:A @Class.Finder@ object.
-...type:Spec.Swift
-..param.pattern:A @Class.Pattern@ object.
-...type:Spec.Swift
-..returns:A pair of the begin and end position in the haystack or needle for the last hit found. These positions could
-be negative or beyond the end of $finder$ or $pattern$ when using filter algorithms.
-...remarks:The return type is $Pair<typename SAValue<THost>::Type>$ if $THost$ is the type of haystack or needle.
-..see:Function.positionRange
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @fn SwiftFinder#positionRangeNoClip
@@ -1713,23 +1650,7 @@ positionRangeNoClip(Finder<THaystack, Swift<TSpec> > & finder)
 }
 
 //____________________________________________________________________________
-/**
-.Function.positionRange
-..cat:Searching
-..summary:Returns a pair of the begin and end position in the haystack or needle for the last hit found.
-..signature:positionRange(finder)
-..class:Class.Finder
-..signature:positionRange(pattern)
-..param.finder:A @Class.Finder@ object.
-...type:Spec.Swift
-..param.pattern:A @Class.Pattern@ object.
-...type:Spec.Swift
-..returns:A pair of the begin and end position in the haystack or needle for the last hit found.
-...remarks:The return type is $Pair<typename SAValue<THost>::Type>$ if $THost$ is the type of haystack or needle.
-..see:Function.beginPosition
-..see:Function.endPosition
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @fn SwiftFinder#positionRange
@@ -2151,23 +2072,7 @@ find(
     return true;
 }
 
-/**
-.Function.windowFindBegin:
-..cat:Searching
-..summary:Initializes the pattern. Sets the finder on the begin position.
- Gets the first non-repeat range and sets it in the finder.
- Used together with @Function.windowFindBegin@ and @Function.windowFindEnd@.
-..signature:windowFindBegin(finder, pattern, errorRate)
-..class:Spec.Swift
-..param.finder:A finder with window interface.
-...type:Spec.Swift
-..param.pattern: A pattern with window interface.
-...type:Spec.Swift
-..param.errorRate:Error rate that is allowed between reads and reference.
- Should be the same in as in @Function.windowFindNext@.
-...type:nolink:double
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @fn SwiftFinder#windowFindBegin
@@ -2209,26 +2114,7 @@ windowFindBegin(
 }
 
 
-/**
-.Function.windowFindNext:
-..cat:Searching
-..summary:Searches over the next window with the finder. The found hits can be retrieved with @Function.getWindowFindHits@
- Used together with @Function.windowFindBegin@ and @Function.windowFindEnd@.
-..signature:windowFindNext(finder, pattern, finderWindowLength)
-..param.finder:A finder with window interface.
-..class:Spec.Swift
-...type:Spec.Swift
-..param.pattern: A pattern with window interface.
-...type:Spec.Swift
-..param.finderWindowLength:Number of bases that are scanned beginning from the position the finder is at.
- Including bases that are marked as repeats and that are skipped.
-...type:nolink:unsigned int
-..returns:true, if there are bases that can be scanned. false, otherwise
-..see:Function.windowFindBegin
-..see:Function.windowFindEnd
-..see:Function.getWindowFindHits
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @fn SwiftFinder#windowFindNext
@@ -2317,19 +2203,7 @@ windowFindNext(
  * @see SwiftFinder#windowFindNext
  */
 
-/**
-.Function.windowFindEnd:
-..cat:Searching
-..summary:Flushes the pattern. Used together with @Function.windowFindBegin@ and @Function.windowFindNext@.
-..signature:windowFindNext(finder, pattern)
-..param.finder:A finder with window interface.
-..class:Spec.Swift
-...type:Spec.Swift
-..param.pattern: A pattern with window interface.
-...type:Spec.Swift
-..see:Function.windowFindBegin
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename THaystack, typename TIndex, typename TSpec>
 inline void
 windowFindEnd(
@@ -2353,17 +2227,7 @@ windowFindEnd(
  * @see SwiftFinder#windowFindNext
  */
 
-/**
-.Function.getWindowFindHits:
-..cat:Searching
-..summary:Returns the string of hits from the finder.
-..signature:getWindowFindHits(finder)
-..class:Spec.Swift
-..param.finder:A finder with window interface.
-...type:Spec.Swift
-..returns:@Class.String@ of Hits (use Finder<...>::THitString as Type).
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename THaystack, typename TSpec>
 inline typename WindowFindResult<Finder<THaystack, Swift<TSpec> >, void>::Type &
 getWindowFindHits(Finder<THaystack, Swift<TSpec> > &finder)
@@ -2385,17 +2249,7 @@ getWindowFindHits(Finder<THaystack, Swift<TSpec> > &finder)
  *                    <tt>TSize</tt> is the size type of the underlying index.
  */
 
-/**
-.Function.getMaxDeviationOfOrder:
-..cat:Searching
-..summary:Returns the maximal out-of-order distance of adjacent hits.
-..signature:getMaxDeviationOfOrder(pattern)
-..class:Class.Pattern
-..param.pattern:A pattern with window interface.
-...type:Spec.Swift
-..returns:Returns the maximal distance two adjacent hits can have which are not in increasing order.
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TIndex, typename TSpec>
 inline typename Size<TIndex>::Type
 getMaxDeviationOfOrder(Pattern<TIndex, Swift<TSpec> > &pattern)

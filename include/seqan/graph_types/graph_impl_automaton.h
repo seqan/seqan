@@ -76,30 +76,7 @@ public:
  *                   NB: if edges to not store ids then external property maps do not work.
  */
 
-/**
-.Spec.Automaton:
-..cat:Graph
-..general:Class.Graph
-..summary:An Automaton has directed edges, labeled with input symbols, and a distinct start state, called root. The
-input symbols require the use of a third parameter: The alphabet of the input symbols.
-..description:
-...image:automatonGraph|An automaton, where $0$ is the start state.
-..signature:Graph<Automaton<TAlphabet, TCargo, TSpec> > 
-..param.TAlphabet:The alphabet type that is used for the transition labels.
-...metafunction:Metafunction.Alphabet
-...remarks:Use @Metafunction.Alphabet@ to get the type of the labels in an automaton.
-...default:$char$
-..param.TCargo:The cargo type that can be attached to the edges.
-...metafunction:Metafunction.Cargo
-...remarks:Use @Metafunction.Cargo@ to get the cargo type of an undirected graph.
-...default:$void$
-..param.TSpec:The specializing type for the graph.
-...metafunction:Metafunction.Spec
-...remarks:Use WithoutEdgeId here to omit edge ids.
-Note: If edges do not store ids external property maps do not work.
-...default:$Default$, see @Tag.Default@.
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec>
 class Graph<Automaton<TAlphabet, TCargo, TSpec> > 
 {
@@ -703,19 +680,7 @@ write(TFile & target,
  * @param[in,out] g The Automaton to create the root for.
  */
 
-/**
-.Function.createRoot
-..class:Spec.Automaton
-..class:Spec.Tree
-..cat:Graph
-..summary:Creates the root in a tree or an automaton.
-..signature:createRoot(g)
-..param.g:A tree or an automaton.
-...type:Spec.Automaton
-...type:Spec.Tree
-..returns:void
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TAlphabet, typename TCargo, typename TSpec>
 inline void
@@ -737,24 +702,7 @@ createRoot(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g)
  * @param[in]     v A vertex descriptor.
  */
 
-/**
-.Function.assignRoot
-..class:Spec.Automaton
-..class:Spec.Tree
-..cat:Graph
-..summary:Assigns a new root vertex to the graph.
-..signature:assignRoot(g, vertex)
-..param.g:A tree or automaton.
-...type:Spec.Automaton
-...type:Spec.Tree
-..param.vertex:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:void
-..see:Function.getRoot
-..see:Function.root
-..see:Function.Graph#isRoot
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline void
@@ -778,23 +726,7 @@ assignRoot(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
  * @return TVertexDescriptor Reference to the root's vertex descriptor.
  */
 
-/**
-.Function.root
-..class:Spec.Automaton
-..class:Spec.Tree
-..cat:Graph
-..summary:Gets a reference to the root of the tree.
-..signature:root(g)
-..param.g:A tree or an automaton.
-...type:Spec.Automaton
-...type:Spec.Tree
-..returns:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..see:Function.getRoot
-..see:Function.assignRoot
-..see:Function.Graph#isRoot
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TAlphabet, typename TCargo, typename TSpec>
 inline typename VertexDescriptor<Graph<Automaton<TAlphabet, TCargo, TSpec> > >::Type&
@@ -817,23 +749,7 @@ root(Graph<Automaton<TAlphabet, TCargo, TSpec> > & g)
  * @return TVertexDescriptor The root's vertex descriptor.
  */
 
-/**
-.Function.getRoot
-..class:Spec.Automaton
-..class:Spec.Tree
-..cat:Graph
-..summary:Get method for the root of a tree or an automaton.
-..signature:getRoot(g)
-..param.g:An automaton or a tree.
-...type:Spec.Automaton
-...type:Spec.Tree
-..returns:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..see:Function.assignRoot
-..see:Function.root
-..see:Function.Graph#isRoot
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TAlphabet, typename TCargo, typename TSpec>
 inline typename VertexDescriptor<Graph<Automaton<TAlphabet, TCargo, TSpec> > >::Type 
@@ -857,24 +773,7 @@ getRoot(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g)
  * @return bool true if v is the root and false otherwise.
  */
 
-/**
-.Function.Graph#isRoot
-..class:Spec.Automaton
-..class:Spec.Tree
-..cat:Graph
-..summary:Tests whether a given vertex is the root or not.
-..signature:isRoot(g, v)
-..param.g:An automaton or a tree.
-...type:Spec.Automaton
-...type:Spec.Tree
-..param.v:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..returns:True if vertex is the root.
-..see:Function.getRoot
-..see:Function.assignRoot
-..see:Function.root
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline bool
@@ -904,30 +803,7 @@ isRoot(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
  * @see Graph#getNil
  */
 
-/**
-.Function.getSuccessor
-..class:Spec.Automaton
-..class:Spec.Word Graph
-..cat:Graph
-..summary:Gets the successor for a given vertex and an edge label.
-For an automaton a single character is required whereas for a word graph getSuccessor takes a string.
-..signature:getSuccessor(g, v, c)
-..signature:getSuccessor(g, v, str)
-..param.g:An automaton or a word graph.
-...type:Spec.Automaton
-...type:Spec.Word Graph
-..param.v:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..param.c:A label.
-...type:Metafunction.Alphabet
-..param.str:A string.
-...type:Class.String
-..returns:A vertex descriptor or nil if successor is not defined.
-...type:Metafunction.VertexDescriptor
-..see:Function.parseString
-..see:Function.getNil
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor, typename TChar>
 inline typename VertexDescriptor<Graph<Automaton<TAlphabet, TCargo, TSpec> > >::Type 
@@ -962,34 +838,7 @@ getSuccessor(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
  * read.
  */
 
-/**
-.Function.parseString
-..class:Spec.Automaton
-..class:Spec.Word Graph
-..cat:Graph
-..summary:Parses a string one character at a time and moves accordingly in the automaton.
-..signature:parseString(g, v, beginIt, endIt)
-..signature:parseString(g, v, str)
-..param.g:An automaton or a word graph.
-...type:Spec.Automaton
-...type:Spec.Word Graph
-..param.v:A vertex descriptor.
-...type:Metafunction.VertexDescriptor
-..param.beginIt:An iterator to the beginning of the string. (Input and Output)
-...type:Metafunction.Iterator.
-..param.endIt:An iterator to the end of the string.
-...type:Metafunction.Iterator.
-..param.str:A string.
-...type:Class.String
-..returns:The vertex descriptor of the state that was reached after parsing.
-...type:Metafunction.VertexDescriptor
-..returns.param.beginIt:Iterator to the first character that could not be parsed, 
-	or $endIt$ if the complete string was parsed.
-..remarks:The parsing stops before @Function.getSuccessor@ reaches the $nil$ state, 
-	or if the the complete sequences is read.
-..see:Function.getSuccessor
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor, typename TIterator>
 inline typename VertexDescriptor<Graph<Automaton<TAlphabet, TCargo, TSpec> > >::Type 
@@ -1063,26 +912,7 @@ parseString(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
  *              <tt>false</tt> otherwise.
  */
 
-/**
-.Function.canParseString
-..class:Spec.Automaton
-..class:Spec.Word Graph
-..cat:Graph
-..summary:Test whether an automaton can parse a string completely.
-..signature:canParseString(g [, v], str)
-..param.g:An automaton or a word graph.
-...type:Spec.Automaton
-...type:Spec.Word Graph
-..param.v:A vertex descriptor. (optional)
-...type:Metafunction.VertexDescriptor
-...default:The @Function.root@ of $g$.
-..param.str:A string.
-...type:Class.String
-..returns:$true$ if $g$ parses $str$ starting at $v$ completely, $false$ otherwise.
-..see:Function.getSuccessor
-..see:Function.parseString
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TAlphabet, typename TCargo,  typename TSpec, typename TVertexDescriptor, typename TCharacters>
 inline bool 

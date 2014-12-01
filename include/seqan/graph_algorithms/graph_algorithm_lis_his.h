@@ -120,19 +120,7 @@ _nextInSortedSequence(TSortedSequence const& list, TIterator const& prev) {
  * @see longestCommonSubsequence
  */
 
-/**
-.Function.longestIncreasingSubsequence:
-..summary:Computes the longest increasing subsequence.
-..cat:Alignments
-..signature:longestIncreasingSubsequence(str, pos)
-..param.str:In-parameter: An arbitrary string.
-...type:Class.String
-..param.pos:Out-parameter: A String with the positions that belong to the longest increasing subsequence.
-...remarks:
-The last position in pos indicates the first element in the longest increasing subsequence.
-That's why pos should be a Block-String (Stack).
-..include:seqan/graph_algorithms.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TString, typename TPositions>
 inline void
 longestIncreasingSubsequence(TString const& str, TPositions& pos) {
@@ -224,19 +212,7 @@ longestIncreasingSubsequence(TString const& str, TPositions& pos) {
  * @see longestIncreasingSubsequence
  */
 
-/**
-.Function.longestCommonSubsequence:
-..summary:Computes the longest common subsequence.
-..cat:Alignments
-..signature:longestCommonSubsequence(str1, str2, nSize, pos)
-..param.str1:In-parameter: An arbitrary string.
-...type:Class.String
-..param.str2:In-parameter: An arbitrary string.
-...type:Class.String
-..param.pos:Out-parameter: A String with pairs of positions that indicate the longest common subsequence.
-...remarks:
-..include:seqan/graph_algorithms.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TString1, typename TString2, typename TNeighborhoodSize, typename TFinalPos>
 inline void
 longestCommonSubsequence(TString1 const& str1,
@@ -389,21 +365,7 @@ globalAlignment(TAlign& align,
  * @see longestIncreasingSubsequence
  */
 
-/**
-.Function.heaviestIncreasingSubsequence:
-..summary:Computes the heaviest increasing subsequence.
-..cat:Alignments
-..signature:heaviestIncreasingSubsequence(str, weights, pos)
-..param.str:In-parameter: An arbitrary string.
-...type:Class.String
-..param.weights:In-parameter: A weight for each position in the string.
-..param.pos:Out-parameter: A String of positions that indicate the members of the heaviest increasing subsequence.
-...remarks:
-The last position in pos indicates the first member of the heaviest increasing subsequence.
-That's why pos should be a Block-String (Stack).
-Note that only members that contribute a weight are selected, that is, positions with associated weight=0 are ignored.
-..include:seqan/graph_algorithms.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TString, typename TWeightMap, typename TPositions>
 inline typename Value<TWeightMap>::Type
 heaviestIncreasingSubsequence(TString const& str,

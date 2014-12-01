@@ -68,18 +68,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * The input stream is casted using <tt>reinterpret_cast&lt;TValue&gt;</tt>.
  */
 
-/**
-.Spec.Caster:
-..cat:Pipelining
-..general:Class.Pipe
-..summary:Casts the input type in a specific output type.
-..signature:Pipe<TInput, Caster<TValue[, TSpec]> >
-..param.TInput:The type of the pipeline module this module reads from.
-..param.TValue:The new output type.
-..param.TSpec:$CasterReinterpret$ (default) or $CasterConvert$.
-..remarks: The input stream is casted using $reinterpret_cast<TValue>$.
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     //////////////////////////////////////////////////////////////////////////////
     // caster pipe

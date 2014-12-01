@@ -95,31 +95,7 @@ struct User : Mode
 	User (int m, int e): min_length(m), errors(e) {}
 };
 
-/**
-.Class.AdapterTrimmingStats:
-..summary:Struct holding information about certain adapter trimming statistics.
-..include:seqan/adapterTrimming.h
-.Memvar.AdapterTrimmingStats#a1count
-..class:Class.AdapterTrimmingStats
-..summary:Unsigned int holding the number of adapters present in forward reads.
-..type:nolink:unsigned
-.Memvar.AdapterTrimmingStats#a2count
-..class:Class.AdapterTrimmingStats
-..summary:Unsigned int holding the number of adapters present in backwardreads.
-..type:nolink:unsigned
-.Memvar.AdapterTrimmingStats#overlapSum
-..class:Class.AdapterTrimmingStats
-..summary:Unsigned int holding the sum of the removed adapter bases. Later used to calculate mean adapter size.
-..type:nolink:unsigned
-.Memvar.AdapterTrimmingStats#minOverlap
-..class:Class.AdapterTrimmingStats
-..summary:Unsigned int holding the minimum overlap between adapter and reads.
-..type:nolink:unsigned
-.Memvar.AdapterTrimmingStats#maxOverlap
-..class:Class.AdapterTrimmingStats
-..summary:Unsigned int holding the maximum overlap between adapter and reads.
-..type:nolink:unsigned
- */
+/*_DDDOC_PLACEHOLDER*/
 struct AdapterTrimmingStats
 {
 	unsigned a1count, a2count;
@@ -155,26 +131,7 @@ struct STRING_REVERSE_COMPLEMENT
 // Functions
 // ============================================================================
 
-/**
-.Function.alignPair:
-..summary:Aligns two sequences, returning the score and the align object of the alignment.
-..signature:alignPair(ret, seq1, seq2, config, band)
-..param.ret:A pair which will be used to store the score of the alignment and the align object.
-...type:nolink:Pair<unsigned, Align<TSeq1> >
-..param.seq1:The first sequence of the alignment.
-...type:nolink:TSeq1
-..param.seq2:The second sequence of the alignment.
-...type:nolink:TSeq2
-..param.config:The alignment configuration used by the Seqan's globalAlignment method.
-...type:Class.AlignConfig
-..param.band:Bool inidicating if the alignment's lower diagonal should be banded at -2. (Two diagonals
- below the main diagonal.) Useful to speed up computation for 5'-3' overlap alignments.
-...type:nolink:bool
-..remarks:The main intended uses are AlignConfig<true, false, true, false> with band = true
- and AlignConfig<true, true, true, true> with band = false
-..remarks:We use a custom scoring scheme which scores 1 for match, -1 for mismatch, 0 for match with N.
-..returns:void
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq1, typename TSeq2, bool TTop, bool TLeft, bool TRight, bool TBottom>
 void alignPair(seqan::Pair<unsigned, seqan::Align<TSeq1> >& ret, TSeq1& seq1, TSeq2& seq2,
 		const seqan::AlignConfig<TTop, TLeft, TRight, TBottom>& config, bool band = false)
@@ -196,31 +153,14 @@ void alignPair(seqan::Pair<unsigned, seqan::Align<TSeq1> >& ret, TSeq1& seq1, TS
     }
 }
 
-/**
-.Function.countTotalGaps:
-..summary:Returns the total number of gaps in a row object.
-..signature:countTotalGaps(row)
-..param.row:The gapped row object used by seqan alignments.
-...type:Class.Align
-..returns:The number of gaps.
-...type:nolink:unsigned
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TRow>
 unsigned countTotalGaps(TRow& row)
 {
 	return length(row) - length(source(row));
 }
 
-/**
-.Function.getOverlap:
-..summary:Determines the overlap between two (free-shift) aligned gapless sequences.
-..signature:getOverlap(align)
-..param.align:An alignment object with two aligned overlapping sequences.
-...type:Class.Align
-..remarks:The aligned sequences must not contain any internal gaps.
-..returns:The number of overlapping positions.
-...type:nolink:unsigned
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TAlign>
 unsigned getOverlap(TAlign& align)
 {
@@ -230,19 +170,7 @@ unsigned getOverlap(TAlign& align)
 	return length(source(row1)) - countTotalGaps(row2);
 }
 
-/**
-.Function.getInsertSize:
-..summary:Given an alignment of two overlapping (forward and reverse) sequences,
- this function determines the actual size of the insert they cover.
-..signature:getInsertSize(align)
-..param.align:An alignment object with two aligned overlapping sequences.
-...type:Class.Align
-..remarks:The aligned sequences must not contain any internal gaps.
-..remarks:This method can reconstruct the insert perfectly, provided the alignment
- object represents the real alignment. There can be small discrepancies if indels occurred.
-..returns:The insert size that was determined from the overlap alignment.
-...type:nolink:unsigned
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TAlign>
 unsigned getInsertSize(TAlign& align)
 {
@@ -260,28 +188,7 @@ unsigned getInsertSize(TAlign& align)
 	return seq1_length + seq2_length - overlap - (seq2l + seq1r);
 }
 
-/**
-.Function.stripPair:
-..summary:Removes adapter contamination from paired-end reads.
-..signature:stripPair(seq1, seq2)
-..signature:stripPair(seq1, adapter1, seq2, adapter2)
-..param.seq1:The forward read.
-...type:nolink:String
-..param.adapter1:The adapter that contaminates the forward read.
-...type:nolink:String
-..param.seq2:The backward read.
-...type:nolink:String
-..param.adapter2:The adapter whose reverse complement contaminates the backward read.
-...type:nolink:String
-..remarks:This method is very accurate and does not need any knowledge of the specific
- adapter sequences contaminating the reads.
-..remarks:The number of trimmed bases is len(seq) - insert, if the sequence was greater than the insert size.
-..remarks: The method using adapters can be less accurate than the overload which doesn't use any adapter
- sequence information, since it is more constrained in how it tries to overlap the sequences. Therefore the overload
- using adapter information is currently not in use.
-..returns:The determined actual insert size or 0 if the sequences don't overlap.
-...type:nolink:unsigned
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq>
 unsigned stripPair(TSeq& seq1, TSeq& seq2)
 {
@@ -364,27 +271,7 @@ unsigned stripPair(TSeq& seq1, TSeq& adapter1, TSeq& seq2, TSeq& adapter2)
 	return insert;
 }
 
-/**
-.Function.stripPairBatch:
-..summary:Removes adapter contamination from paired-end reads and tags their IDs.
-..signature:stripPairBatch(set1, idSet1, set2, idSet2, stats, tagOpt)
-..param.set1:The set of forward reads.
-...type:Class.StringSet
-..param.idSet1:The set of IDs associated with the forward reads.
-...type:Class.StringSet
-..param.set2:The set of backward reads.
-...type:Class.StringSet
-..param.idSet2:The set of IDs associated with the backward reads.
-...type:Class.StringSet
-..param.stats:The AdapterTrimmingStats object.
-...type:Class.AdapterTrimmingStats
-..param.tagOpt:Bool incidating that reads with removed adapter shall be tagged (i.e their IDs).
-...type:nolink:bool
-..remarks:This method is very accurate and does not need any knowledge of
- the specific adapter sequences contaminating the reads.
-..returns:The number of sequences that had some bases removed.
-...type:nolink:unsigned
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq, typename TId>
 unsigned stripPairBatch(seqan::StringSet<TSeq>& set1, seqan::StringSet<TId>& idSet1,
     seqan::StringSet<TSeq>& set2, seqan::StringSet<TId>& idSet2, AdapterTrimmingStats& stats, bool tagOpt)
@@ -453,19 +340,7 @@ unsigned stripPairBatch(seqan::StringSet<TSeq>& set1, seqan::StringSet<TId>& idS
 	return a1count + a2count;
 }
 
-/**
-.Function.alignAdapter:
-..summary:Aligns a sequence to an adapter.
-..signature:alignAdapter(ret, alignPair, seq, adapter)
-..param.ret:A pair which will be used to store the score of the alignment and the align object.
-...type:nolink:Pair<unsigned, Align<TSeq1> >
-..param.seq:The sequence whose adapter contamination shall be removed.
-...type:Class.String
-..param.adapter:The adapter sequence that might contaminate the sequence.
-...type:Class.String
-..remarks:The aligned sequences must not contain any internal gaps.
-..returns:void
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq, typename TAdapter>
 void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, TSeq& seq, TAdapter& adapter)
 {
@@ -475,22 +350,7 @@ void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, TSeq& seq, TA
 	alignPair(ret, seq, adapter, seqan::AlignConfig<true, false, true, false>(), true);
 }
 
-/**
-.Function.isMatch:
-..summary:Checks if a overlap of an alignment is accepted, based on mismatches and the length of the overlap.
-..signature:isMatch(overlap, mismatches)
-..signature:isMatch(overlap, mismatches, userOptions)
-..param.overlap:The number of overlapping positions in the overlap alignment.
-...type:nolink:int
-..param.mismatches:The number of allowed mismatches in the overlapping region.
-...type:nolink:int
-..param.userOptions:Parameters specifying requirements for the overlap.
-...type:nolink:int
-..remarks:The method using two arguments automatically uses a very simple heuristic to determine matches.
-..remarks:The overload using "userOptions" lets the user specify the match requirements.
-..returns:A bool indicating if the alignment is significant.
-...type:nolink:bool
- */
+/*_DDDOC_PLACEHOLDER*/
 //Version for automatic matching options
 inline bool isMatch(int overlap, int mismatches, const Auto &)
 {
@@ -511,19 +371,7 @@ inline bool isMatch(int overlap, int mismatches, const User& userOptions)
 	return overlap >= userOptions.min_length && mismatches <= userOptions.errors;
 }
 
-/**
-.Function.stripAdapter:
-..summary:Removes adapter sequence from a sequence.
-..signature:stripAdapter(seq, adapter, spec)
-..param.seq:The sequence whose adapter contamination should be removed.
-...type:Class.String
-..param.adapter:The adapter sequence that might contaminate the sequence.
-...type:Class.String
-..param.spec:Tag determining the match algorithm that decides whether a match was significant.
-...type:nolink:TSpec
-..returns:The overlap of the sequence with the adapter.
-...type:nolink:unsigned
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq, typename TAdapter, typename TSpec>
 unsigned stripAdapter(TSeq& seq, TAdapter& adapter, TSpec const & spec)
 {
@@ -543,29 +391,7 @@ unsigned stripAdapter(TSeq& seq, TAdapter& adapter, TSpec const & spec)
 	    return 0;
     }
 }
-/**
-.Function.stripAdapterBatch:
-..summary:Remove adapter sequence from a set of sequences and Tag their IDs.
-..signature:stripAdapterBatch(set, idSet, adapter, spec, stats, reverse, tagOpt)
-..param.set: A StringSet of sequences whose adapter contaminations shall be removed.
-...type:Class.StringSet
-..param.idSet: StringSet of IDs associated with the reads.
-...type:Class.StringSet
-..param.adapter:The adapter sequence that might contaminate the sequences.
-...type:Class.String
-..param.spec:Tag determining the match algorithm that decides whether a match was significant.
-...type:nolink:TSpec
-..param.stats: AdapterTrimmingStats object holding statistic information on the Adaptertrimming process.
-...type:Class.AdapterTrimmingStats
-..param.reverse:Bool indicating that the reverse complement of the sequence shall be used.
-...type:nolink:bool
-..param.tagOpt:Bool incidating that reads with removed adapter shall be tagged (i.e their IDs).
-...type:nolink:bool
-..remarks:This method simply applies stripAdapter to all sequences in the set and adds a Tag to the IDs.
-..returns:The number of sequences which had bases removed.
-...type:nolink:unsigned
-..see:Function.stripAdapter
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq, typename TId, typename TAdapter, typename TSpec>
 unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& idSet, TAdapter& adapter, TSpec const & spec,
 		AdapterTrimmingStats& stats, bool reverse = false, bool tagOpt = false)
@@ -621,30 +447,7 @@ unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& i
 	return a_count;
 }
 
-/**
-.Function.stripReverseAdapterBatch:
-..summary:A simple interface to align the reverse complement of an adapter to a set of sequences
- and removing significant matches.
-..signature:stripReverseAdapterBatch(set, idSet, adapter, spec, stats, tagOpt)
-..param.set: A StringSet of sequences whose adapter contaminations shall be removed.
-...type:Class.StringSet
-..param.idSet: StringSet of IDs associated with the reads.
-...type:Class.StringSet
-..param.adapter:The adapter sequence whose reverse complement might contaminate the sequences.
-...type:Class.String
-..param.spec:Tag determining the match algorithm that decides whether a match was significant.
-...type:nolink:TSpec
-..param.stats: AdapterTrimmingStats object holding statistic information on the Adaptertrimming process.
-...type:Class.AdapterTrimmingStats
-..param.tagOpt:Bool incidating that reads with removed adapter shall be tagged (i.e their IDs).
-...type:nolink:bool
-..remarks:This interface can be used to detect contamination in reverse reads of paired-end
- reads. Those reads might read into the reverse complement of an adapter.
-..returns:The number of sequences which had bases removed.
-...type:nolink:unsigned
-..see:Function.stripAdapter
-..see:Function.stripAdapterBatch
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq, typename TId, typename TSpec>
 unsigned stripReverseAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& IdSet, TSeq& adapter, TSpec const & spec,
 		AdapterTrimmingStats& stats, bool tagOpt)

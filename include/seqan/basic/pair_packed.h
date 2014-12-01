@@ -71,22 +71,7 @@ namespace seqan {
  * <tt>getValue()</tt>, <tt>assignValue()</tt>, <tt>moveValue()</tt>, <tt>setValue()</tt> instead.
  */
 
-/**
-.Spec.Packed Pair:
-..cat:Aggregates
-..general:Class.Pair
-..summary:Stores two arbitrary objects. Saves memory by disabling memory alignment.
-..signature:Pair<T1, T2, Pack>
-..param.T1:The type of the first object.
-..param.T2:The type of the second object.
-..notes:Useful for external storage.
-..remarks:Memory access could be slower. Direct access to members by pointers is not allowed on all platforms.
-..remarks:Functions $value()$ is not implemented yet since there it would require using a proxy. Use $getValue()$, $assignValue()$, $moveValue()$, $setValue()$ instead.
-..include:seqan/basic.h
-.Memfunc.Pair#Pair.class:Spec.Packed Pair
-.Memvar.Pair#i1.class:Spec.Packed Pair
-.Memvar.Pair#i2.class:Spec.Packed Pair
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 #ifdef PLATFORM_WINDOWS
     #pragma pack(push,1)

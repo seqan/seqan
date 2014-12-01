@@ -58,17 +58,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * The types of all keywords in the needle and the haystack have to match.
  */
 
-/**
-.Spec.MultipleShiftAnd:
-..summary: Multiple exact string matching using bit parallelism. The total size of the patterns should fit into a computer word.
-..general:Class.Pattern
-..cat:Searching
-..signature:Pattern<TNeedle, MultipleShiftAnd>
-..param.TNeedle:The needle type, a string of keywords.
-...type:Class.String
-..remarks.text:The types of all keywords in the needle and the haystack have to match.
-..include:seqan/find.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 ///.Class.Pattern.param.TSpec.type:Spec.MultipleShiftAnd
 

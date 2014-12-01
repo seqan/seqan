@@ -227,20 +227,7 @@ inline void assignValue(
  * @return THost Reference to the host.
  */
 
-/**
-.Function.host:
-..summary:Returns the global reference sequence of a @Spec.Journaled Set@.
-..class:Spec.Journaled Set
-..cat:Sequences
-..signature:host(stringSet)
-..param.stringSet: The string set that stores the sequences.
-...type:Spec.Journaled Set
-..returns:The global reference sequence of the @Spec.Journaled Set@.
-...metafunction:Metafunction.Host
-..see:Function.setHost
-..see:Function.createHost
-..include:seqan/journal_set.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TString>
 inline typename Host<StringSet<TString, Owner<JournaledSet> > >::Type const &
@@ -275,21 +262,7 @@ host(StringSet<TString, Owner<JournaledSet> > & journalSet)
  * Uses an @link Holder @endlink to store a reference to the new global reference sequence instead of copying it.
  */
 
-/**
-.Function.setHost:
-..summary:Sets the global reference of a @Spec.Journaled Set@.
-..class:Spec.Journaled Set
-..cat:Sequences
-..signature:setHost(stringSet, reference)
-..param.stringSet: The string set that stores the sequences.
-...type:Spec.Journaled Set
-..param.reference: The new reference sequence of the Journaled Set.
-...type:nolink:$Host<StringSet<TString, Owner<JournaledSet> > >::Type$
-..remarks:Uses an @Class.Holder@ to store a reference to the new global reference sequence instead of copying it.
-..see:Function.createHost
-..see:Function.host
-..include:seqan/journal_set.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TString, typename THost>
 inline void
@@ -314,21 +287,7 @@ setHost(StringSet<TString, Owner<JournaledSet> > & journalSet,
  *                          reference sequence.
  */
 
-/**
-.Function.createHost:
-..summary:Creates the global reference of a @Spec.Journaled Set@.
-..class:Spec.Journaled Set
-..cat:Sequences
-..signature:createHost(stringSet, reference)
-..param.stringSet: The string set that stores the sequences.
-...type:Spec.Journaled Set
-..param.reference: The new reference sequence of the Journaled Set.
-...type:nolink:$Host<StringSet<TString, Owner<JournaledSet> > >::Type$
-..remarks:Stores a copy of the passed global reference sequence.
-..see:Function.setHost
-..see:Function.host
-..include:seqan/journal_set.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TString>
 inline void

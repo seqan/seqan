@@ -68,19 +68,7 @@ template <typename THost, typename TSpec> class ModifiedString;
  * <tt>THost</tt> can also be a modified iterator, so you can create custom iterators by combining predefined ones.
  */
 
-/**
-.Class.ModifiedIterator:
-..summary:Allows to modify arbitrary iterators by specializing what differs from an origin.
-..cat:Modifier
-..signature:ModifiedIterator<THost[, TSpec]>
-..param.THost:Original iterator.
-...type:Concept.RandomAccessIteratorConcept
-..param.TSpec:The modifier type.
-...metafunction:Metafunction.Spec
-..implements:Concept.RandomAccessIteratorConcept
-..remarks:$THost$ can also be a modified iterator, so you can create custom iterators by combining predefined ones.
-..include:seqan/modifier.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename THost, typename TSpec = void>
 class ModifiedIterator

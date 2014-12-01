@@ -42,30 +42,7 @@ namespace SEQAN_NAMESPACE_MAIN
 // Functions
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.convertPatternToProfile:
-..summary:Converts a pattern into a profile which consists of a set of frequency distributions.
-..cat:Motif Search
-..signature:convertPatternToProfile(profile,begin,end)
-..param.profile:A StringSet of @Class.FrequencyDistribution|frequency distributions@.
-...type:Class.StringSet
-..param.begin:An iterator pointing to the beginning of a given sequence pattern which is either
-              a @Shortcut.DnaString@ or a @Shortcut.Peptide@.
-...type:Concept.RandomAccessIteratorConcept
-...type:Shortcut.DnaIterator
-...type:Shortcut.PeptideIterator
-..param.end:An iterator pointing to the end of a given sequence pattern which is either
-            a @Shortcut.DnaString@ or a @Shortcut.Peptide@.
-...type:Concept.RandomAccessIteratorConcept
-...type:Shortcut.DnaIterator
-...type:Shortcut.PeptideIterator
-..remarks:The number of @Class.FrequencyDistribution@ objects which together form the profile
-          equals the length of the given sequence.
-..remarks:e.g.:$profile[0]$ represents the frequency distribution for the first residue of
-          the given sequence.
-..see:Function.convertResidueToFrequencyDist
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TProfile, typename TIterStr>
 void 
@@ -88,21 +65,7 @@ convertPatternToProfile(TProfile & profile,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.convertSetOfPatternsToProfile:
-..summary:Converts a set of sequence patterns into a profile.
-..cat:Motif Search
-..signature:convertSetOfPatternsToProfile(profile,l_mers,pseudocount_mode)
-..param.profile:A StringSet of @Class.FrequencyDistribution|frequency distributions@.
-...type:Class.StringSet
-..param.l_mers:The set of sequence patterns.
-...type:Class.StringSet
-..param.pseudocount_mode:The @Class.Pseudocount@ object for determining the pseudocount method.
-...type:Class.Pseudocount
-..remarks:This function is used, for example, in the refinement step of the PROJECTION algorithm to convert
-          the collection of l-mers inside the corresponding buckets into a profile. 
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TProfile, typename TStrings, typename TPseudocountMode>
 void
@@ -138,23 +101,7 @@ convertSetOfPatternsToProfile(
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.normalize:
-..summary:Determines the normalized frequencies.
-..cat:Motif Search
-..signature:normalize(container)
-..signature:normalize(profile,pseudocount_mode)
-..param.container:The @Class.FrequencyDistribution@ or @Class.StringSet@ (of @Class.FrequencyDistribution|frequency distributions@) object.
-...type:Class.FrequencyDistribution
-...type:Class.StringSet
-..param.profile:A StringSet of @Class.FrequencyDistribution|frequency distributions@.
-...type:Class.StringSet
-..param.pseudocount_mode:The @Class.Pseudocount@ object for determining the pseudocount method.
-...type:Class.Pseudocount
-..remarks:If necessary, pseudocounts are first added to the frequency values before normalizing them 
-          when the parameter $container$ is a StringSet of @Class.FrequencyDistribution|frequency distributions@ (profile).
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TProfile>
 void 
@@ -171,18 +118,7 @@ normalize(TProfile & profile)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.completeProfile:
-..summary:Concatenates the background frequency with the profile for the motif component.
-..cat:Motif Search
-..signature:completeProfile(profile,background_distribution)
-..param.profile:A StringSet of @Class.FrequencyDistribution|frequency distributions@.
-...type:Class.StringSet
-..param.background_distribution:The @Class.FrequencyDistribution@ object which represents the backround distribution.
-...type:Class.FrequencyDistribution
-..remarks:The first row of the final profile (probability matrix) represents the @Class.FrequencyDistribution|background distribution@.
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template<typename TProfile>
 void 
@@ -205,17 +141,7 @@ completeProfile(TProfile & profile,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.display:
-..summary:Displays a given set of strings.
-..cat:Motif Search
-..signature:display(strings)
-..param.strings:A StringSet.
-...type:Class.StringSet
-..remarks:This function can also be used to display a profile (probability matrix) 
-          which is a set of @Class.FrequencyDistribution|frequency distributions@.
-..include:seqan/find_motif.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 
 template<typename TStrings>

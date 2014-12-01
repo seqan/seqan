@@ -77,22 +77,7 @@ namespace seqan {
  * context's name store.
  */
 
-/**
-.Function.BedRecord#writeRecord
-..cat:BED I/O
-..signature:int readRecord(stream, record[, context], Bed())
-..summary:Write a BED record to a file.
-..description:
-When $context$ is given, the first field is written from the sequence with index $record.rID$ in the context's name store.
-..param.stream:@Concept.StreamConcept@ object to write to.
-...type:Concept.StreamConcept
-..param.record:The @Class.BedRecord@ to write.
-...type:Class.BedRecord
-..param.context:The optional @Class.BedIOContext@ to use.
-...type:Class.BedRecord
-..returns:$int$ value, $0$ on success, non-$0$ value on errors.
-..include:seqan/bed_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // Similar to readRecord() for BedRecord, we have various overloads of _writeBedRecord().
 

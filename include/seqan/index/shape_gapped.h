@@ -41,20 +41,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // HardwiredShape allows compiler-time defined gapped shape
 
-/**
-.Class.HardwiredShape:
-..cat:Index
-..summary:A structure to define a fixed gapped shape.
-..signature:HardwiredShape<P1, P2, ..., Pn>
-..param.Pi:Pi is the distance of the i'th '1' to the next '1' in the shape.
-...nowarn:unknown param
-...remarks:At most 20 parameters are allowed, so the maximal shape weight is 21.
-..remarks:You can use this structure to define your one gapped shapes in conjunction with @Spec.GappedShape@.
-...note:The shape $1100101$ corresponds to $HardwiredShape<1,3,2>$.
-...note:The following predefined shapes are already available in $seqan/index/shape_predefined.h$:
-..file:include/seqan/index/shape_predefined.h
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class HardwiredShape
  * @extends GappedShape
@@ -219,17 +206,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Spec.GenericShape:
-..cat:Index
-..summary:A variable gapped shape.
-..general:Class.Shape
-..signature:Shape<TValue, GenericShape>
-..param.TValue:The @Metafunction.Value@ type of the string the shape is applied to (e.g. $Dna$).
-..remarks:A GenericShape must be initialized first with a valid shape. To do so, call @Function.stringToShape@.
-..see:Spec.GappedShape
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class GenericShape
  * @extends Shape
@@ -265,22 +242,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		typename Value<Shape>::Type	hValue;		// current hash value
 //____________________________________________________________________________
 
-/**
-.Memfunc.GenericShape#Shape:
-..class:Spec.GenericShape
-..summary:Constructor
-..signature:Shape<TValue, GenericShape> ()
-..signature:Shape<TValue, GenericShape> (q)
-..signature:Shape<TValue, GenericShape> (shape)
-..signature:Shape<TValue, GenericShape> (bitmap)
-..signature:Shape<TValue, GenericShape> (predefined)
-..param.q:Creates an ungapped q-gram.
-..param.shape:Any other gapped/ungapped shape.
-..param.bitmap:Bitmap string. Sequence of '0's and '1's.
-...see:Function.stringToShape
-..param.predefined:Any instance of a predefined shape spec (e.g. $ShapePatternHunter$).
-..see:Class.HardwiredShape
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn GenericShape::Shape
  * 
@@ -395,20 +357,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Spec.GappedShape:
-..cat:Index
-..summary:A fixed gapped shape.
-..general:Class.Shape
-..signature:Shape<TValue, GappedShape<TSpec> >
-..param.TValue:The @Metafunction.Value@ type of the string the shape is applied to (e.g. $Dna$).
-..param.TSpec:A structure to store the shape at compile-time.
-...type:Class.HardwiredShape
-..remarks:There are predefined shapes in $index/shape_predefined.h$.
-You can simply use them with $Shape<TValue, ShapePatternHunter>$ for example.
-..see:Class.HardwiredShape
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class GappedShape
  * @extends Shape

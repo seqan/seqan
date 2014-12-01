@@ -76,29 +76,7 @@ namespace seqan {
  *                 Allocator#deallocate @endlink.
  */
 
-/**
-.Class.ToStdAllocator:
-..summary:Emulates standard conform allocator.
-..signature:ToStdAllocator<THost, TValue>
-..param.THost:Type of the host allocator object.
-...text:This object is used to call @Function.allocate@ and @Function.deallocate@.
-..param.TValue:Type of allocated items.
-..remarks:The member functions $allocate$ and $deallocate$ of $ToStdAllocator$ call
-the (globale) functions @Function.allocate@ and @Function.deallocate@, respectively. The globale functions
-get an allocator object as their first arguments. This allocator object is not the $ToStdAllocator$ object itself,
-but the host object that was given to the constructor.
-..cat:Basic
-..remarks:
-..see:Function.allocate
-..see:Function.deallocate
-..include:seqan/basic.h
-
-.Memfunc.ToStdAllocator:
-..summary:Constructor
-..signature:ToStdAllocator(host)
-..class:Class.ToStdAllocator
-..param.host:The host object that is used as allocator for @Function.allocate@ and @Function.deallocate@.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename THost, typename TValue>
 struct ToStdAllocator
@@ -218,17 +196,7 @@ struct StdAllocator
  * @return THost The host object.
  */
 
-/**
-.Function.host
-..class:Class.ToStdAllocator
-..summary:The object a given object depends on.
-..cat:Dependent Objects
-..signature:host(object)
-..param.object:An object.
-...type:Class.ToStdAllocator
-..returns:The host object.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename THost, typename TValue>
 THost &

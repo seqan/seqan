@@ -64,21 +64,7 @@ namespace seqan {
  * <tt>Proxy&lt;TSpec&gt;</tt> too, since otherwise the general version will be called.
  */
 
-/**
-.Class.Proxy:
-..cat:Basic
-..summary:Emulates object of another class.
-..signature:Proxy<TSpec>
-..param.TSpec:The specializing type.
-...metafunction:Metafunction.Spec
-..remarks.text:Use @Metafunction.Value@ to get the emulated type.
-An instance of $Proxy$ behaves like an object of its value type.
-$Proxy$ can be used as reference type (see @Metafunction.Reference@).
-..remarks.text:Note that functions that are both general and specialized for
-the value type should be specialized for $Proxy<TSpec>$ too,
-since otherwise the general version will be called.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec>
 class Proxy;

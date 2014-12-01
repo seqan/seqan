@@ -76,14 +76,7 @@ namespace seqan {
  * @see isAnsiColorTerminal
  */
 
-/**
-.Function.isTerminal()
-..cat:Miscellaneous
-..summary:Check whether we are printing to a terminal.
-..signature:isTerminal()
-..returns:$true$ if we are on the terminal, false otherwise.
-..include:seqan/misc/misc_terminal.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 #if defined(PLATFORM_WINDOWS)
 
@@ -132,15 +125,7 @@ inline bool isTerminal()
  * @see getTerminalSize
  */
 
-/**
-.Function.isAnsiColorTerminal
-..cat:Miscellaneous
-..summary:Check whether we are printing to a terminal.
-..signature:isTerminal()
-..returns:$true$ if we are in a terminal and the terminal knows ANSI color codes.
-..remarks:Currently, we assume that Unix terminals support color while Windows terminals and no terminals do not.
-..include:seqan/misc/misc_terminal.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 #if defined(PLATFORM_WINDOWS) || defined(PLATFORM_GCC_MINGW)
 
@@ -188,28 +173,7 @@ inline bool isAnsiColorTerminal()
  * @see isAnsiColorTerminal
  */
 
-/**
-.Function.getTerminalSize
-..cat:Miscellaneous
-..summary:Retrieve size of terminal.
-..signature:getTerminalSize(cols, rows)
-..param.cols:The column count is written here.
-...type:nolink:$unsigned$
-..param.rows:The line count is written here.
-...type:nolink:$unsigned$
-..returns:$true$ on success, $false$ otherwise.
-...type:nolink:$bool$
-..remarks:On Windows, $rows$ contains the number of rows in the terminal *buffer*, not the window.
-..include:seqan/misc/misc_terminal.h
-..example:The following demonstrates the usage.
-..example.code:
-#include <seqan/misc/misc_terminal.h>
-
-unsigned rows = 0, cols = 0;
-bool success = getTerminalSize(cols, rows);
-std::cerr << "rows == " << rows << ", cols == " << cols
-          << ", success == " << success << "\n";
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 #if defined(PLATFORM_WINDOWS)
 

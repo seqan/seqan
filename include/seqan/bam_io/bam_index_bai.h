@@ -114,20 +114,7 @@ struct BaiBamIndexBinData_
  * Only the default constructor is provided.
  */
 
-/**
-.Spec.BAI BamIndex
-..cat:BAM I/O
-..general:Class.BamIndex
-..summary:Access to BAI (samtools-style) Indices.
-..signature:BamIndex<Bai>
-..include:seqan/bam_io.h
-
-.Memfunc.BAI BamIndex#BamIndex
-..class:Spec.BAI BamIndex
-..signature:BamIndex()
-..summary:Constructor.
-..remarks:Only the default constructor is provided.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <>
 class BamIndex<Bai>
@@ -186,31 +173,7 @@ public:
  * @see BamIndex#jumpToRegion
  */
 
-/**
-.Function.BamIndex#jumpToRegion
-..class:Class.BamIndex
-..cat:BAM I/O
-..signature:jumpToRegion(bgzfStream, hasAlignments, bamIOContext, refId, pos, posEnd, bamIndex)
-..summary:Seek in BAM BGZF stream using an index.
-..remark:Note that because of the structure of BAI indices, you cannot simply jump to a position and you have to jump to region.
-..param.bgzfStream:The BGZF Stream to seek in.
-...type:Spec.BGZF Stream
-..param.refId:Reference ID to seek to.
-...type:nolink:$__int32$
-..param.hasAlignments:Set to $true$ iff there are alignments at this position.
-...type:nolink:$bool$
-..param.bamIOContext:Context to use for loading alignments.
-...type:Class.BamIOContext
-..param.pos:Zero-based begin position in the reference.
-...type:nolink:$__int32$
-..param.pos:Zero-based (exclusive, C-style) end position in the reference.
-...type:nolink:$__int32$
-..param.bamIndex:The index to use.
-...type:Class.BamIndex
-..returns:$bool$ indicating success.
-..remarks:This function may fail if the refId/pos is invalid.
-..include:seqan/bam_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 static inline void
 _baiReg2bins(String<__uint16> & list, __uint32 beg, __uint32 end)
@@ -368,21 +331,7 @@ jumpToRegion(SmartFile<Bam, Input, TSpec> & bamFile,
  * @see BamIndex#jumpToOrphans
  */
 
-/**
-.Function.BamIndex#jumpToOrphans
-..class:Class.BamIndex
-..cat:BAM I/O
-..signature:jumpToOrphans(bgzfStream, bamIOContext, bamIndex)
-..summary:Seek to orphans block in BAM BGZF stream using an index.
-..param.bgzfStream:The BGZF Stream to seek in.
-...type:Spec.BGZF Stream
-..param.bamIOContext:Context to use for loading alignments.
-...type:Class.BamIOContext
-..param.bamIndex:The index to use.
-...type:Class.BamIndex
-..returns:$bool$ indicating success.
-..include:seqan/bam_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Parameter order, see jumpToRegion()!
 
@@ -453,17 +402,7 @@ bool jumpToOrphans(SmartFile<Bam, Input, TSpec> & bamFile,
  * @return    __uint64  The number of unaligned reads.
  */
 
-/**
-.Function.BamIndex#getUnalignedCount
-..class:Class.BamIndex
-..cat:BAM I/O
-..signature:getUnalignedCount(index)
-..summary:Query index for number of unaligned reads.
-..param.index:Index to query.
-...type:Class.BamIndex
-..returns:$__uint64$ with number of unaligned reads.
-..include:seqan/bam_io.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 inline __uint64
 getUnalignedCount(BamIndex<Bai> const & index)
@@ -486,19 +425,7 @@ getUnalignedCount(BamIndex<Bai> const & index)
  * @return        int      The status code, <tt>0</tt> indicating success.
  */
 
-/**
-.Function.BamIndex#open
-..class:Class.BamIndex
-..cat:BAM I/O
-..signature:open(index, filename)
-..summary:Load a BAM index from a given file name.
-..param.index:Target data structure.
-...type:Class.BamIndex
-..param.filename:Path to file to load.
-...type:nolink:$char const *$
-..returns:$int$ status code, $0$ indicating success.
-..include:seqan/bam_io.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 inline bool
 open(BamIndex<Bai> & index, char const * filename)

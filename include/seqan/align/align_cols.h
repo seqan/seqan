@@ -65,19 +65,7 @@ namespace seqan {
  * @tparam TAlign The Align type.
  */
 
-/**
-.Class.AlignCols:
-..cat:Alignments
-..summary:Pseudo columns container for row-based alignment classes.
-..signature:AlignCols<TAlign>
-..param.TAlign:Alignment type.
-...metafunction:Metafunction.Host
-..remarks:
-This class emulates a container of columns on alignment classes that store the alignment in a container of rows.
-Note that accessing a row-based alignment column-wise can be significantly slower than accessing the alignment row-wise.
-..see:Class.Align
-..include:seqan/align.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TAlign>
 struct AlignCols
@@ -112,16 +100,7 @@ struct AlignCols
 // Specialization AlignCols
 // ----------------------------------------------------------------------------
 
-/**
-.Spec.AlignColIterator:
-..cat:Iterators
-..summary:Iterator for @Class.AlignCols@ pseudo container.
-..signature:Iter< TAlign, AlignColIterator<TSpec> >
-..param.TSpec:Specialization tag.
-..general:Class.Iter
-..see:Class.AlignCols
-..include:seqan/align.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec>
 struct AlignColIterator;

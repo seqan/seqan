@@ -66,15 +66,7 @@ namespace seqan {
  *  < -> &lt;
  *  > -> &gt;
  */
-/**
-.Function.xmlEscape:
-..summary:Replaces invalid XML characters in the given sequence with their valid XML equivalent.
-..cat:Miscellaneous
-..signature:xmlEscape(sequence)
-..param.sequence:The sequence to escape.
-..returns:An escaped version of the given string.
-..include:seqan/arg_parse/xml_support.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TSequence>
 TSequence xmlEscape(TSequence const & original)
 {

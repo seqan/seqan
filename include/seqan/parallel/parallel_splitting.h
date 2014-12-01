@@ -91,45 +91,7 @@ typedef Tag<Equidistant_> Equidistant;
  *                             between parallel and serial variants.
  */
 
-/**
-.Class.Splitter
-..cat:Parallelism
-..summary:Splits an interval into subintervals.
-..description:This class divides an interval into the disjoint union of subintervals and enumerates its boundaries.
-It can be used to parallelize large for-loops that iterate over a contiguous range of elements.
-The interval and the number of subintervals can be set in the constructor @Memfunc.Splitter#Splitter@.
-@Function.length@ and @Function.resize@ can be used to retrieve or change the number of subintervals later.
-In contrast to other containers the Splitter allows to access one more element than its length would imply to allow to retrieve the right boundary of each subinterval (see example code below).
-
-..signature:Splitter<TValue, TSpec>
-..param.TValue:Type of the interval boundaries.
-..param.TSpec:Tag to select the way the values are sampled.
-...default:Equidistant Splitter
-..example:
-...text:Simple example for equidistant (default) splitting.
-...file:demos/parallel/splitter_example.cpp
-...output:
-[10,14)
-[14,17)
-[17,20)
-..include:seqan/parallel.h
-
-.Memfunc.Splitter#Splitter
-..summary:Constructor
-..signature:Splitter(beginPos, endPos[, subintervalCount])
-..signature:Splitter(beginPos, endPos, parallelTag)
-..param.beginPos:Left interval boundary.
-..param.endPos:Right interval boundary.
-..param.subintervalCount:Number of subintervals.
-...default:The minimum of interval size and the number of available threads (returned by $omp_get_max_threads()$).
-...remarks:@Function.length@ and @Function.resize@ can be used to retrieve or change the number of subintervals later.
-..param.parallelTag:Tag to generically enable/disable parallelism. If its type is @Tag.Parallel@, the default number of subintervals is used.
-If it is @Tag.Serial@, only one subinterval is used.
-...type:Tag.Serial
-...type:Tag.Parallel
-...remarks:This tag should be used to write generic parallel algorithms and to switch between parallel and serial variants.
-..class:Class.Splitter
- */
+/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @class Equidistant Splitter
@@ -160,23 +122,7 @@ If it is @Tag.Serial@, only one subinterval is used.
  * @endcode
  */
 
-/**
-.Spec.Equidistant Splitter
-..cat:Parallelism
-..general:Class.Splitter
-..summary:Splits an interval into equal-sized subintervals.
-..signature:Splitter<TValue[, Equidistant]>
-..description:This @Class.Splitter@ specialization divides an interval into subintervals of (almost) equal length, i.e.
-two subintervals differ by at most 1 in size.
-..param.TValue:Type of the interval boundaries.
-..example:
-...text:Simple example for equidistant splitting.
-...file:demos/parallel/splitter_example.cpp
-...output:
-[10,14)
-[14,17)
-[17,20)
-..include:seqan/parallel.h */
+/*_DDDOC_PLACEHOLDER*/
  
 template <typename TValue, typename TSpec = Equidistant>
 class Splitter
@@ -351,25 +297,7 @@ resize(Splitter<TValue, TSpec> &splitter, TSize newCount)
  * @endcode
  */
 
-/**
-.Function.computeSplitters
-..cat:Parallelism
-..summary:Compute splitters for a sequence of objects.
-..signature:computeSplitters(splitters, size, count)
-..param.splitters:Resulting splitters, will be resized to contain $count + 1$ elements.
-...type:Spec.Alloc String
-..param.size:The number of objects to split.
-..param.count:The number of chunks.
-..remarks:The first $count - 1$ chunks will have the size $ceil(size / count)$, the last chunk will contain the rest.
-..example.text:Most simple case for splitting.
-..example.code:String<unsigned> splitters;
-computeSplitters(splitters, 10, 5);
-// splitters == {0, 5, 10}
-..example.text:In this case, the last chunks will stay empty.
-..example.code:computeSplitters(splitters, 3, 5);
-// splitters == {0, 1, 2, 3, 3, 3}
-..include:seqan/parallel.h
- */
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TPosString, typename TSize, typename TCount>
 void computeSplitters(TPosString & splitters, TSize size, TCount count)

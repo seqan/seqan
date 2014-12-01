@@ -45,10 +45,7 @@ namespace seqan {
 // Enums, Tags, Classes, Specializations
 // ===========================================================================
 
-/**
-.Adaption."std::list"
-..summary:Adaption for STL list objects.
- */
+/*_DDDOC_PLACEHOLDER*/
 
 // ===========================================================================
 // Metafunctions
@@ -292,16 +289,7 @@ length(std::list<TValue> const & list)
     return list.size();
 }
 
-/**
-.Function.prependValue:
-..cat:Sequences
-..summary:Prepend a value to a container.
-..signature:prependValue(container, value)
-..param.container:The container to prepend to.
-...type:Adaption.std::list
-..param.value:The value to prepend to the container.
-..include:seqan/sequence.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 ///.Function.prependValue.class:Adaption.std::list
 
 template <typename T, typename T2>

@@ -86,25 +86,7 @@ struct Hmm;
  * @include demos/graph/graph_algo_dijkstra.cpp.stdout
  */
 
-/**
-.Class.Graph:
-..cat:Graph
-..summary:Generic graph.
-..signature:Graph<TSpec>
-..param.TSpec:The specializing type determines the kind of graph, e.g., directed, undirected, tree, or automaton.
-...remarks:The default Graph<> corresponds to a directed graph.
-...default:Directed<>
-..include:seqan/graph_types.h
-..example:This is an example for Dijkstra's algorithm on a directed graph with an external property map. The property map adds weights to the edges. The example only outputs distances, not the details of the paths.
-...file:demos/graph/graph_algo_dijkstra.cpp
-...text:The output of the distances is as follows:
-...output:Distance from 0 to 0: 0
-Distance from 0 to 1: 8
-Distance from 0 to 2: 9
-Distance from 0 to 3: 5
-Distance from 0 to 4: 7
-
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TSpec = Directed<> >
 class Graph;
 
@@ -635,16 +617,7 @@ struct Alphabet<Graph<Hmm<TAlphabet, TCargo, TSpec> > const> {
  * @return T Pseudo nil value for type T.
  */
 
-/**
-.Function.getNil
-..class:Class.Graph
-..cat:Graph
-..summary:Utility function returning a value that represents nil.
-Useful for various graph algorithms, e.g., missing predecessors, vertices that have not been visited, etc.
-..signature:getNil<T>()
-..returns:Pseudo nil value for type T.
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 inline T
 getNil(T *)
@@ -743,25 +716,7 @@ _createVertices(Graph<TSpec>& g,
  * child, parent, child</tt>.
  */
 
-/**
-.Function.addEdges
-..class:Class.Graph
-..cat:Graph
-..summary:Shortcut to add multiple edges at once.
-Creates vertices implicitly.
-..signature:addEdges(g, edges, size)
-..param.g:A graph.
-...type:Class.Graph
-..param.edges:An array of vertex descriptors. It is assumed that the
-edges are stored in the following way: Source1, Target1, Source2, Target2, Source3, ...
-For a tree the root must be the first vertex in this array and the enumeration is Parent, Child, Parent, Child, ...
-...type:Metafunction.VertexDescriptor
-..param.size:Size of the array. Must be a multiple of 2.
-...type:Metafunction.Size
-..returns:void
-..see:Function.addEdge
-..include:seqan/graph_types.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TSpec, typename TEdgeArray, typename TSize>
 inline void
 addEdges(Graph<TSpec>& dest,

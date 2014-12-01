@@ -66,22 +66,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * <tt>i</tt> begins with 0 and for <tt>omitLast=true</tt> <tt>i</tt> begins with <tt>tupleLen-1</tt>.
  */
 
-/**
-.Spec.EditEnvironment:
-..cat:Pipelining
-..general:Class.Pipe
-..summary:Outputs tuples of the $tupleLen$ consecutive elements of the input stream.
-..signature:Pipe<TInput, Tupler<tupleLen, omitLast> >
-..param.TInput:The type of the pipeline module this module reads from.
-..param.tupleLen:The tuple length.
-...remarks:The tuples contain elements $in[i]in[i+1]...in[i+(tupleLen-1)]$.
-..param.omitLast:Omit half filled tuples.
-..param.omitLast:If $true$, the output stream is $tupleLen-1$ elements shorter than the input stream.
-..param.omitLast:If $false$, the lengths are identical and the last tuples are filled with blanks (default constructed elements) for undefined entries.
-..remarks:The output type is a @Class.Tuple@ of input elements and length $tupleLen$ (i.e. $Tuple<Value<TInput>::Type, tupleLen>$).
-..remarks:The tuples are sequences of the form $in[i]in[i-1]in[i-2]..in[i-tupleLen+1]$. For $omitLast=false$ $i$ begins with 0 and for $omitLast=true$ $i$ begins with $tupleLen-1$.
-..include:seqan/pipe.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
     //////////////////////////////////////////////////////////////////////////////
     // pipe to enumerate the hamming 1-environment

@@ -41,22 +41,7 @@
 
 namespace SEQAN_NAMESPACE_MAIN {
 
-/**
-.Spec.Pizza & Chili String:
-..summary:String used by the Pizza & Chili indices.
-..remarks:The string is lazy in the sense that it holds a reference to the
-compressed index structure it is associated with. Only when the text is
-actually read, the index is queried for the text. If only a substring is
-needed, this string tries to query only a substring.
-..cat:Strings
-..general:Class.String
-..signature:String<TValue, PizzaChili<TSpec> >
-..param.TValue:The value type, that is the type of them items/characters stored in the string.
-...remarks:This type must be a simple type and it must hold that $sizeof(TValue) == 1$.
-..param.TSpec:Tag specifying the Pizza & Chili index library to use.
-...type:Tag.Pizza & Chili Index Tags
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class PizzaChiliString Pizza &amp; Chili String
  * 

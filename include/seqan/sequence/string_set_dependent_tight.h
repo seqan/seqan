@@ -82,20 +82,7 @@ namespace seqan {
  * efficient access to strings in the container via ids at the cost of higher memory usage.
  */
 
-/**
-.Spec.Dependent:
-..summary:A string set storing references of the strings.
-..cat:Sequences
-..general:Class.StringSet
-..signature:StringSet<TString, Dependent<TSpec> >
-..param.TString:The string type.
-...type:Class.String
-..param.TSpec:The specializing type for the dependent string set.
-...default:$Tight$
-...remarks:Possible values are $Tight$ or $Generous$
-...remarks:$Tight$ is very space efficient whereas $Generous$ provides fast access to the strings in the container via ids.
-..include:seqan/sequence.h
- */
+/*_DDDOC_PLACEHOLDER*/
 // Default id holder string set
 template <typename TSpec = Tight>
 struct Dependent;

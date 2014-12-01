@@ -40,18 +40,7 @@
 
 namespace SEQAN_NAMESPACE_MAIN {
 
-/**
-.Tag.Pizza & Chili Index Fibres
-..summary:Tag to select a specific fibre (e.g. table, object, ...) of a @Spec.Pizza & Chili Index@ index.
-..cat:Index
-..tag.PizzaChiliText:The original text the index is based on.
-..tag.PizzaChiliCompressed:The compressed suffix array.
-...remarks:Pizza & Chili indices are compressed indices. Hence, this fibre is used for searching in the index.
-..see:Metafunction.Fibre
-..see:Function.getFibre
-..see:Spec.Pizza & Chili Index
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @defgroup PizzaChiliIndexFibres Pizza &amp; Chili Index Fibres
  * 
@@ -80,22 +69,7 @@ typedef Tag<FibrePizzaChiliCompressed_> const FibrePizzaChiliCompressed;
 typedef FibrePizzaChiliText PizzaChiliText;
 typedef FibrePizzaChiliCompressed PizzaChiliCompressed;
 
-/**
-.Spec.Pizza & Chili Index:
-..summary:An adapter for the Pizza & Chili index API.
-..remarks:
-..cat:Index
-..general:Class.Index
-..signature:Index<TText, PizzaChili<TSpec> >
-..param.TText:The text type.
-...type:Class.String
-..param.TSpec:Tag specifying the Pizza & Chili index library to use.
-...type:Tag.Pizza & Chili Index Tags
-..see:Spec.Pizza & Chili String
-..see:Tag.Pizza & Chili Index Fibres
-..see:Tag.Index Find Algorithm
-..include:seqan/index.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class PizzaChiliIndex Pizza & Chili Index
  * 

@@ -95,55 +95,7 @@ namespace seqan {
  * @endcode
  */
 
-/**
-.Function.alignmentFreeComparison:
-..summary:Computes the pairwise similarity scores for a set of sequences
-..cat:Alignment Free
-..signature:alignmentFreeComparison(scoreMatrix, sequenceSet, score)
-..param.scoreMatrix:A two-dimensional Matrix, used to store all pairwise scores
-...type:Class.Matrix
-..param.sequenceSet:StringSet containing all sequences for which pairwise scores will be computed
-...type:Class.StringSet
-..param.score:The score values to be used for computing the alignment.
-...type:Class.AFScore
-..include:seqan/alignment_free.h
-..example.text: Calculate the alignment free sequence similarity o two masked DNA sequences.
-..example.code:
-using namespace seqan;
-StringSet<Dna5String> sequences;
-Dna5String seq1 =
-    "TAGGTTTTCCGAAAAGGTAGCAACTTTACGTGATCAAACCTCTGACGGGGTTTTCCCCGTCGAAATTGGGTG"
-    "TTTCTTGTCTTGTTCTCACTTGGGGCATCTCCGTCAAGCCAAGAAAGTGCTCCCTGGATTCTGTTGCTAACG"
-    "AGTCTCCTCTGCATTCCTGCTTGACTGATTGGGCGGACGGGGTGTCCACCTGACGCTGAGTATCGCCGTCAC"
-    "GGTGCCACATGTCTTATCTATTCAGGGATCAGAATTTATTCAGGAAATCAGGAGATGCTACACTTGGGTTAT"
-    "CGAAGCTCCTTCCAAGGCGTAGCAAGGGCGACTGAGCGCGTAAGCTCTAGATCTCCTCGTGTTGCAACTACA"
-    "CGCGCGGGTCACTCGAAACACATAGTATGAACTTAACGACTGCTCGTACTGAACAATGCTGAGGCAGAAGAT"
-    "CGCAGACCAGGCATCCCACTGCTTGAAAAAACTATNNNNCTACCCGCCTTTTTATTATCTCATCAGATCAAG";
-Dna5String seq2 =
-    "ACCGACGATTAGCTTTGTCCGAGTTACAACGGTTCAATAATACAAAGGATGGCATAAACCCATTTGTGTGAA"
-    "AGTGCCCATCACATTATGATTCTGTCTACTATGGTTAATTCCCAATATACTCTCGAAAAGAGGGTATGCTCC"
-    "CACGGCCATTTACGTCACTAAAAGATAAGATTGCTCAAANNNNNNNNNACTGCCAACTTGCTGGTAGCTTCA"
-    "GGGGTTGTCCACAGCGGGGGGTCGTATGCCTTTGTGGTATACCTTACTAGCCGCGCCATGGTGCCTAAGAAT"
-    "GAAGTAAAACAATTGATGTGAGACTCGACAGCCAGGCTTCGCGCTAAGGACGCAAAGAAATTCCCTACATCA"
-    "GACGGCCGCGNNNAACGATGCTATCGGTTAGGACATTGTGCCCTAGTATGTACATGCCTAATACAATTGGAT"
-    "CAAACGTTATTCCCACACACGGGTAGAAGAACNNNNATTACCCGTAGGCACTCCCCGATTCAAGTAGCCGCG";
-
-clear(sequences);
-appendValue(sequences, seq1);
-appendValue(sequences, seq2);
-
-Matrix<double, 2> myMatrix;
-
-unsigned kmerSize = 5;
-unsigned bgModelOrder = 1;
-String<char>  revCom = "both_strands";
-unsigned mismatches = 1;
-double mismatchWeight = 0.5;
-AFScore<N2> myScoreN2(kmerSize, bgModelOrder, revCom, mismatches, mismatchWeight);
-
-alignmentFreeComparison(myMatrix, sequences, myScoreN2);
-std::cout << myMatrix;
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TStringSet, typename TValue, typename TComparisonMethod>
 void alignmentFreeComparison(Matrix<TValue, 2> & scoreMatrix, TStringSet const & sequenceSet, TComparisonMethod const & comparisonMethod)

@@ -70,24 +70,7 @@ namespace seqan {
  *            typedef Tag<Rooted_> Rooted;
  */
 
-/**
-.Tag.Iterator Spec:
-..cat:Iteration
-..summary:Specifies the kind of an iterator.
-..tag.Rooted:Rooted iterator.
-...remarks
-....text:This iterator implements some more advanced functions like
-@Function.container@ and @Function.position@.
-....concept:Concept.RootedIteratorConcept
-..tag.Standard:Standard conform iterator.
-...remarks
-....text:Note that standard iterators need not to implement all functions
-that are available for rooted iterators.
-..remarks.text:The default iterator spec is given by @Metafunction.DefaultIteratorSpec@.
-..see:Metafunction.DefaultIteratorSpec
-..see:Concept.IteratorAssociatedTypesConcept
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct Rooted_;
 typedef Tag<Rooted_> const Rooted;
@@ -117,18 +100,7 @@ typedef Tag<Standard_> const Standard;
  * @see ContainerConcept#Iterator
  */
 
-/**
-.Metafunction.DefaultIteratorSpec:
-..hidefromindex
-..concept:Concept.ContainerConcept
-..summary:Specifies default kind of iterator.
-..signature:DefaultIteratorSpec<T>::Type
-..param.T:Container type for which the default iterator spec is determined.
-...type:Concept.ContainerConcept
-..returns.param.Type:Iterator spec of $T$.
-..see:Metafunction.Iterator
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct DefaultIteratorSpec
@@ -155,21 +127,7 @@ struct DefaultIteratorSpec
  * @see ContainerConcept#Iterator
  */
 
-/**
-.Metafunction.DefaultGetIteratorSpec:
-..hidefromindex
-..concept:Concept.ContainerConcept
-..summary:Specifies default kind of iterator returned by functions.
-..signature:DefaultGetIteratorSpec<T>::Type
-..param.T:Container type for which the spec is determined.
-...concept:Concept.ContainerConcept
-..returns.param.Type:Iterator spec of $T$.
-..remarks:This metafunction returns the iterator spec of iterators that are returned by functions like
-@Function.begin@, @Function.end@, or @Function.iter@.
-..see:Metafunction.Iterator
-..see:Metafunction.DefaultIteratorSpec
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct DefaultGetIteratorSpec
@@ -181,24 +139,7 @@ struct DefaultGetIteratorSpec
 // Metafunction Iterator
 // ----------------------------------------------------------------------------
 
-/**
-.Metafunction.Iterator:
-..concept:Concept.ContainerConcept
-..cat:Iteration
-..summary:Type of iterator objects that are used to traverse the container.
-..signature:Iterator<T, TSpec>::Type
-..param.T:Type for which the iterator type is determined.
-...concept:Concept.ContainerConcept
-...type:Class.Iter
-..param.TSpec:Specifies an @Tag.Iterator Spec.iterator spec@.
-...default:The default iterator spec is given by @Metafunction.DefaultIteratorSpec@.
-..returns.param.Type:Iterator type of $T$.
-..remarks.text:Iterators behave like pointers in some respects.
- For example, you can use $*it$ to access the value object the iterator $it$ points to.
- But note that $Iterator<T>::Type$ can differ from $T *$, depending on $T$.
-..see:Metafunction.Position
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TSpec>
 struct IteratorDefaultImp_;
@@ -233,18 +174,7 @@ struct Iterator : IteratorDefaultImp_<T, TSpec>
 // Metafunction Container
 // ----------------------------------------------------------------------------
 
-/**
-.Metafunction.Container:
-..class:Class.Iter
-..cat:Iteration
-..summary:Type of the container given an iterator.
-..signature:Container<T>::Type
-..param.T:Iterator type.
-...type:Class.Iter
-...concept:Concept.RootedIteratorConcept
-..returns.param.Type:The container type to $T$.
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Remove the default implementation; anti-auto-sequence. Also, using plain pointers for strings does not work any more. Will probably only work for rooted/adaptor/positional iterators. Same below.
 
@@ -262,15 +192,7 @@ struct Container
 // Function value()
 // ---------------------------------------------------------------------------
 
-/**
-.Function.value
-..class:Class.Iter
-..signature:Reference value(object)
-..param.object:An object that holds a value or an iterator that points to a value.
-...type:Class.Iter
-...concept:Concept.IteratorAssociatedTypesConcept
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline typename Reference<T>::Type
@@ -292,17 +214,7 @@ value(T const & me)
 // Function getValue()
 // ---------------------------------------------------------------------------
 
-/**
-.Function.getValue
-..class:Class.Iter
-..cat:Iteration
-..signature:GetValue getValue(object)
-..param.object:An object that holds a value or points to a value.
-...type:Class.Iter
-...concept:Concept.IteratorAssociatedTypesConcept
-..see:Metafunction.GetValue
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline typename GetValue<T>::Type
@@ -331,22 +243,7 @@ getValue(T const & me)
 // Function assignValue()
 // ---------------------------------------------------------------------------
 
-/**
-.Function.assignValue
-..class:Class.Iter
-..cat:Iteration
-..summary:Assigns value to item.
-..signature:assignValue(object, value)
-..param.object:An object that holds a value or points to a value.
-...type:Class.Iter
-...concept:Concept.BasicOutputIteratorConcept
-..param.value:A value that is assigned to the item $object$ holds or points to.
-..remarks.text:This function is similar to @Function.assign@.
-The difference is, that $assignValue$ just changes a value stored in $object$ or the value $object$ points to,
-while @Function.assign@ changes the whole object.
-..see:Function.assign
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TValue>
 inline void
@@ -383,23 +280,7 @@ assignValue(T const & me,
  * @param[in,out] value     The value to move to <tt>container[pos]</tt>.
  */
 
-/**
-.Function.moveValue
-..class:Class.Iter
-..cat:Iteration
-..summary:Assigns value to item.
-..signature:moveValue(object, value)
-..param.object:An object that holds a value or points to a value.
-...type:Class.Iter
-...concept:Concept.BasicOutputIteratorConcept
-..param.value:A value that is handed over to the item $object$ holds or points to.
-..remarks.text:This function is similar to @Function.move@.
-The difference is, that $moveValue$ just changes a value stored in $object$ or the value $object$ points to,
-while @Function.move@ changes the whole object.
-..see:Function.move
-..see:Function.assignValue
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TValue>
 inline void
@@ -450,19 +331,7 @@ setValue(T const * & ptr,
 // Function container()
 // ---------------------------------------------------------------------------
 
-/**
-.Function.container
-..concept:Concept.RootedIteratorConcept
-..cat:Iteration
-..summary:Container of an iterator.
-..signature:Container container(iterator)
-..param.iterator:An iterator.
-...type:Class.Iter
-...concept:Concept.RootedIteratorConcept
-..returns:The container that $iterator$ traverses.
-...metafunction:Metafunction.Container
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline
@@ -478,24 +347,7 @@ container(T me)
 // Function position()
 // ---------------------------------------------------------------------------
 
-/**
-.Function.position
-..class:Class.Iter
-..concept:Concept.ContainerConcept
-..summary:Position of an iterator.
-..cat:Iteration
-..signature:Position position(iterator [, container])
-..param.iterator:An iterator.
-...type:Class.Iter
-...concept:Concept.RootedRandomAccessIteratorConcept
-..param.container:A container.
-...concept:Concept.ContainerConcept
-...remarks:If $iterator$ implements @Concept.RootedIteratorConcept@, then $container$ is optional.
-...remarks:If $container$ is specified, $iterator$ must be a container of $container$.
-..returns:The position of the value in the container $iterator$ points to.
-...metafunction:Metafunction.Position
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline typename Position<T>::Type
@@ -519,23 +371,7 @@ position(TIterator const & it,
 // Function atBegin()
 // ---------------------------------------------------------------------------
 
-/**
-.Function.atBegin
-..class:Class.Iter
-..concept:Concept.ContainerConcept
-..concept:Concept.RootedIteratorConcept
-..cat:Iteration
-..summary:Determines whether an iterator is at the beginning position.
-..signature:bool atBegin(iterator [, container])
-..param.iterator:An iterator.
-...type:Class.Iter
-...concept:Concept.RootedIteratorConcept
-..param.container:Container of $iterator$. (optional)
-...remarks.text:If $iterator$ implements @Concept.RootedIteratorConcept@ then $container$ is optional otherwise $container$ is required.
-..returns:$true$ if $iterator$ points to the fist item of the container, otherwise $false$.
-..see:Function.begin
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 // TODO(doering): Was, wenn der Container leer ist?
 
@@ -589,26 +425,7 @@ atBegin(T const & it)
 // Function atEnd()
 // ---------------------------------------------------------------------------
 
-/**
-.Function.atEnd
-..class:Class.Iter
-..concept:Concept.ContainerConcept
-..concept:Concept.RootedIteratorConcept
-..cat:Iteration
-..summary:Determines whether an iterator is at the end position.
-..signature:bool atEnd(iterator [, container])
-..param.iterator:An iterator.
-...type:Class.Iter
-...concept:Concept.RootedIteratorConcept
-..param.container:Container of $iterator$.
-...remarks.text:If $iterator$ implements @Concept.RootedIteratorConcept@ then $container$ is optional.
-....text:$container$ is also optional for iterators to @Adaption.char array.char arrays@.
-....text:Otherwise, $container$ is required.
-..returns:$true$ if $iterator$ points behind the last item of the container, otherwise $false$.
-..see:Function.atBegin
-..see:Function.end
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TContainer>
 inline SEQAN_HOST_DEVICE bool
@@ -666,27 +483,7 @@ atEnd(T const & it)
 // Function goBegin()
 // ---------------------------------------------------------------------------
 
-/**
-.Function.goBegin
-..class:Class.Iter
-..concept:Concept.RootedIteratorConcept
-..cat:Iteration
-..summary:Iterates to the first position of a container.
-..signature:goBegin(iterator [, container])
-..param.iterator:Object that iterates through $container$.
-...type:Class.Iter
-...concept:Concept.RootedIteratorConcept
-...text:$iterator$ is set to the position of the first item in $container$.
-..param.container:Container of $iterator$.
-...type:Concept.ContainerConcept
-...remarks.text:If $iterator$ implements @Concept.RootedIteratorConcept@ then $container$ is optional,
-otherwise $container$ is required.
-..remarks:This function is equivalent to $iterator = begin(container)$.
-..see:Function.begin
-..see:Function.atBegin
-..see:Function.goEnd
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator, typename TContainer>
 inline SEQAN_HOST_DEVICE void
@@ -716,28 +513,7 @@ goBegin(TIterator & it)
 // Function goEnd()
 // ---------------------------------------------------------------------------
 
-/**
-.Function.goEnd
-..class:Class.Iter
-..concept:Concept.RootedIteratorConcept
-..cat:Iteration
-..summary:Iterates to the last position of a container.
-..signature:goEnd(iterator [, container])
-..param.iterator:Object that iterates through $container$.
-...type:Class.Iter
-...concept:Concept.RootedIteratorConcept
-...text:$iterator$ is set to the position behin the last item in $container$.
-..param.container:Container of $iterator$.
-...type:Concept.ContainerConcept
-...remarks.text:If $iterator$ implements @Concept.RootedIteratorConcept@ then $container$ is optional,
-otherwise $container$ is required.
-..remarks:This function is equivalent to $iterator = end(container)$.
-..see:Function.end
-..see:Function.atEnd
-..see:Function.goBegin
-..see:Function.goEnd
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator, typename TContainer>
 inline SEQAN_HOST_DEVICE void
@@ -769,21 +545,7 @@ goEnd(TIterator & it)
 // Function goNext()
 // ---------------------------------------------------------------------------
 
-/**
-.Function.goNext
-..concept:Concept.ForwardIteratorConcept
-..cat:Iteration
-..summary:Iterates to next position.
-..signature:goNext(iterator)
-..param.iterator:An iterator.
-...type:Class.Iter
-...concept:Concept.ForwardIteratorConcept
-...text:$iterator$ is set to the next position of an iteration through its container.
-..remarks:This function is equivalent to $++iterator$.
-..see:Function.goBegin
-..see:Function.goEnd
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator>
 inline SEQAN_HOST_DEVICE void
@@ -797,23 +559,7 @@ goNext(TIterator & it)
 // Function goFurther()
 // ---------------------------------------------------------------------------
 
-/**
-.Function.goFurther
-..concept:Concept.RandomAccessIteratorConcept
-..cat:Iteration
-..summary:Iterates some steps further.
-..signature:goFurther(iterator, steps)
-..param.iterator:An iterator.
-...type:Class.Iter
-...concept:Concept.RandomAccessIteratorConcept
-...text:$iterator$ is set $steps$ positions further in the iteration through the container.
-..param.steps:Number of steps $iterator$ should be moved further.
-...remarks:If $iterator$ supports bidirectional iteration, $steps$ could also be negativ.
-..remarks:This function is equivalent to $iterator += steps$ for random access iterators.
-..see:Function.goNext
-..see:Function.goPrevious
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator, typename TDiff>
 inline SEQAN_HOST_DEVICE void
@@ -827,22 +573,7 @@ goFurther(TIterator & it,
 // Function goPrevious()
 // ---------------------------------------------------------------------------
 
-/**
-.Function.goPrevious
-..concept:Concept.BidirectionalIteratorConcept
-..cat:Iteration
-..summary:Iterates to pevious position.
-..signature:goPrevious(iterator)
-..param.iterator:An iterator.
-...type:Class.Iter
-...concept:Concept.BidirectionalIteratorConcept
-...text:$iterator$ is set to the pevious position of an iteration through its container.
-..remarks:This function is equivalent to $--iterator$.
-..see:Function.goBegin
-..see:Function.goEnd
-..see:Function.goNext
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template <typename TIterator>
 inline SEQAN_HOST_DEVICE void
 goPrevious(TIterator & it)
@@ -855,26 +586,7 @@ goPrevious(TIterator & it)
 // Function difference()
 // ---------------------------------------------------------------------------
 
-/**
-.Function.difference
-..concept:Concept.RandomAccessIteratorConcept
-..cat:Iteration
-..summary:The difference between two iterators.
-..signature:difference(begin, end)
-..param.begin:Iterator to the first position of a range.
-...type:Class.Iter
-...concept:Concept.RandomAccessIteratorConcept
-..param.end:Iterator behind the last position of a range.
-...type:Class.Iter
-...concept:Concept.RandomAccessIteratorConcept
-..returns:Length of the range between $begin$ and $end$.
-..remarks:This function is equivalent to $end - begin$.
-...text:Usually, $begin$ and $end$ have the same type.
-..see:Function.begin
-..see:Function.end
-..see:Function.length
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator>
 inline SEQAN_HOST_DEVICE
@@ -890,18 +602,7 @@ difference(TIterator const & begin,
 // Function goNil()
 // ---------------------------------------------------------------------------
 
-/**
-.Function.goNil
-..concept:Concept.RandomAccessIteratorConcept
-..cat:Iteration
-..summary:Moves iterator to nil position.
-..signature:goNil(iterator)
-..param.iterator:The iterator that will be moved.
-...type:Concept.RandomAccessIteratorConcept
-..remarks:$iterator$ is set to an invalid position, e.g. $NULL$ for pointer types.
-..see:Function.clear
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator>
 inline void
@@ -923,19 +624,7 @@ goNil(TIterator * & me)
 // Function atNil()
 // ---------------------------------------------------------------------------
 
-/**
-.Function.atNil
-..concept:Concept.RandomAccessIteratorConcept
-..cat:Iteration
-..summary:Tests whether iterator is at nil position.
-..signature:bool atNil(iterator)
-..param.iterator:An iterator.
-...type:Concept.RandomAccessIteratorConcept
-..returns:$true$ if $iterator$ points to an ivalid position, e.g. $iterator$ is a $NULL$ pointer.
-$false$ otherwise.
-..see:Function.goNil
-..include:seqan/basic.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator>
 inline bool
