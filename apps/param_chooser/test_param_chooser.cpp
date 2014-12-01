@@ -44,7 +44,7 @@
 #include <seqan/basic.h>
 #include <seqan/file.h>
 
-#include "../../../apps/splazers/paramChooser.h"
+#include "../splazers/paramChooser.h"
 
 SEQAN_DEFINE_TEST(test_param_chooser_quality_distribution_from_prb_file)
 {
