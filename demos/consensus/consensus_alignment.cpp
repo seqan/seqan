@@ -9,7 +9,7 @@ using namespace seqan;
 int main()
 {
     // Reference to simulate reads from.
-    Dna5String ref = 
+    Dna5String ref =
             "AATGGATGGCAAAATAGTTGTTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTTAGTCAAATTTT"
             "CAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCTAGCTAATATTATGTGGCAT";
 
@@ -29,9 +29,10 @@ int main()
         appendAlignedRead(store, readID, 0, pos2, pos2 + READ_LENGTH);
     }
 
-    // Add contig for printing.
+    // Add contig and contig name for printing.
     resize(store.contigStore, 1);
     store.contigStore[0].seq = ref;
+    resize(store.contigNameStore, 1);
 
     // Print initial perturbated alignment.
     std::cout << "Initial Alignment\n\n";

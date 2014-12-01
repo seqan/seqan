@@ -38,7 +38,7 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 
-#include "../../../apps/stellar/stellar.h"
+#include "../stellar/stellar.h"
 #include "create_stellarmatches_from_file.h"
 using namespace seqan;
 
