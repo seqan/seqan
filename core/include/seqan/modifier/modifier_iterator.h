@@ -544,11 +544,12 @@ position(ModifiedIterator<THost, TSpec> const & me)
     return position(host(me));
 }
 
-template <typename THost, typename TSpec, typename TContainer>
+template <typename THost, typename TSpec, typename THost2, typename TSpec2>
 inline typename Position<ModifiedIterator<THost, TSpec> const>::Type 
-position(ModifiedIterator<THost, TSpec> const & me, TContainer const &cont)
+position(ModifiedIterator<THost, TSpec> const & me,
+         ModifiedString<THost2, TSpec2> const & cont)
 {
-    return position(host(me), cont);
+    return position(host(me), host(cont));
 }
 
 // --------------------------------------------------------------------------
@@ -633,18 +634,18 @@ atBegin(ModifiedIterator<THost, TSpec> const & me)
 // Function atEnd()
 // --------------------------------------------------------------------------
 
-template <typename THost, typename TSpec, typename TContainer>
+template <typename THost, typename TSpec, typename THost2, typename TSpec2>
 inline bool
 atEnd(ModifiedIterator<THost, TSpec> & me,
-      TContainer const & container)
+      ModifiedString<THost2, TSpec2> const & cont)
 {
     return atEnd(const_cast<ModifiedIterator<THost, TSpec> const &>(me), container);
 }
 
-template <typename THost, typename TSpec, typename TContainer>
+template <typename THost, typename TSpec, typename THost2, typename TSpec2>
 inline bool
 atEnd(ModifiedIterator<THost, TSpec> const & me,
-      TContainer const & container)
+      ModifiedString<THost2, TSpec2> const & cont)
 {
     return atEnd(host(me), container);
 }
