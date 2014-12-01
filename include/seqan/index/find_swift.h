@@ -87,9 +87,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see SwiftPattern
  */
 
-///.Class.Pattern.param.TSpec.type:Spec.Swift
-///.Class.Finder.param.TSpec.type:Spec.Swift
-
 /*!
  * @class SwiftLocalPattern
  * @extends SwiftPattern
@@ -114,8 +111,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @tparam THaystack A haystack type. Types: @link Index @endlink, @link String @endlink, @link StringSet @endlink.
  */
-
-///.Spec.Swift.param.TSpec.type:Spec.SwiftLocal
 
 /*!
  * @class SwiftSemiGlobalPattern
@@ -142,8 +137,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @tparam THaystack A haystack type. Types: @link Index @endlink, @link String @endlink, @link StringSet @endlink
  */
-
-///.Spec.Swift.param.TSpec.type:Spec.SwiftSemiGlobal
 
 template < typename TObject, typename TSpec > class Index;
 template < typename TObject > struct SAValue;
@@ -1737,9 +1730,6 @@ swiftInfix(TSwiftHit const & hit, TText & text)
 //____________________________________________________________________________
 
 // now in find_base.h
-///.Function.Finder#infix.remarks:For finders or patterns of filtering algorithms (e.g. @Spec.Swift@) the returned infix is a potential match.
-///.Function.Finder#infix.param.finder.type:Spec.Swift
-
 template <typename THaystack, typename TSpec>
 inline typename Infix<THaystack>::Type
 infix(Finder<THaystack, Swift<TSpec> > &finder)

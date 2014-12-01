@@ -202,8 +202,6 @@ createHost(T & me,
 
 /// TODO(holtgrew): Move documentation here?
 
-///.Function.host.concept:Concept.HostedConcept Type
-
 template <typename T>
 inline typename Host<T>::Type &
 host(T & me)
@@ -244,9 +242,6 @@ host(T const & me)
  */
 
 /// TODO(holtgrew): Move documentation here?
-
-///.Function.setHost.param.object.type:nolink:$Host<T>::Type &$
-///.Function.setHost.concept:Concept.HostedConcept Type
 
 template <typename T, typename THost>
 inline void

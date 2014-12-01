@@ -208,9 +208,6 @@ SEQAN_CHECKPOINT
 
 //____________________________________________________________________________
 
-///.Function.begin.param.object.type:Class.Segment
-///.Function.begin.class:Class.Segment
-
 template <typename THost_>
 SEQAN_HOST_DEVICE inline typename Iterator<Segment<THost_, InfixSegment>, Standard>::Type
 begin(Segment<THost_, InfixSegment> & me,
@@ -229,9 +226,6 @@ SEQAN_CHECKPOINT
 }
 
 //____________________________________________________________________________
-
-///.Function.beginPosition.param.object.type:Class.Segment
-///.Function.beginPosition.class:Class.Segment
 
 template <typename THost_>
 SEQAN_HOST_DEVICE inline typename Position<Segment<THost_, InfixSegment> >::Type
@@ -271,9 +265,6 @@ SEQAN_CHECKPOINT
 
 //____________________________________________________________________________
 
-///.Function.begin.param.object.type:Class.Segment
-///.Function.begin.class:Class.Segment
-
 template <typename THost_>
 SEQAN_HOST_DEVICE inline typename Iterator<Segment<THost_, InfixSegment>, Standard>::Type
 end(Segment<THost_, InfixSegment> & me,
@@ -292,9 +283,6 @@ SEQAN_CHECKPOINT
 }
 
 //____________________________________________________________________________
-
-///.Function.endPosition.param.object.type:Class.Segment
-///.Function.endPosition.class:Class.Segment
 
 template <typename THost_>
 SEQAN_HOST_DEVICE inline typename Position<Segment<THost_, InfixSegment> >::Type

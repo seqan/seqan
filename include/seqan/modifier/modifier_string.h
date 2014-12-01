@@ -301,9 +301,6 @@ struct Reference< ModifiedString<THost, TSpec> const >:
 // Metafunction Size
 // --------------------------------------------------------------------------
 
-///.Metafunction.Size.param.T.type:Class.ModifiedString
-///.Metafunction.Size.class:Class.ModifiedString
-
 template < typename THost, typename TSpec >
 struct Size< ModifiedString<THost, TSpec> >:
     Size< typename Iterator< ModifiedString<THost, TSpec>, Rooted >::Type > {};
@@ -327,9 +324,6 @@ struct Difference< ModifiedString<THost, TSpec> >:
 // --------------------------------------------------------------------------
 // Metafunction Iterator
 // --------------------------------------------------------------------------
-
-///.Metafunction.Iterator.param.T.type:Class.ModifiedString
-///.Metafunction.Iterator.class:Class.ModifiedString
 
 template <typename THost, typename TSpec>
 struct Iterator<ModifiedString<THost, TSpec>, Standard>
@@ -372,9 +366,6 @@ struct Iterator<ModifiedString<THost, TSpec> const, Rooted>
 // --------------------------------------------------------------------------
 // Metafunction Host
 // --------------------------------------------------------------------------
-
-///.Metafunction.Host.param.T.type:Class.ModifiedString
-///.Metafunction.Host.class:Class.ModifiedString
 
 template <typename T>
 struct ConvertArrayToPointer
@@ -439,8 +430,6 @@ struct Pointer_<ModifiedString<THost, TSpec> const > : Pointer_<ModifiedString<T
 // --------------------------------------------------------------------------
 // Metafunction IsSequence
 // --------------------------------------------------------------------------
-
-///.Metafunction.IsSequence.param.T.type:Class.ModifiedString
 
 template <typename THost, typename TSpec >
 struct IsSequence<ModifiedString<THost, TSpec> > : True

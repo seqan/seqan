@@ -92,8 +92,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see OracleBfamPattern
  */
 
-///.Class.Pattern.param.TSpec.type:Spec.Bfam
-
 struct Oracle; //Oracle Tag => "BOM"
 struct Trie {}; //Trie Tag => "BTM"
 

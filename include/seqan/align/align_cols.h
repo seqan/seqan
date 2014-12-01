@@ -111,8 +111,6 @@ struct AlignColIterator;
 
 // TODO(holtgrew): Add HostedTypeConcept and make AlignCols object implement the concept.
 
-///.Metafunction.Host.param.T.type:Class.AlignCols
-
 template <typename TAlign>
 struct Host<AlignCols<TAlign> >
 {
@@ -127,8 +125,6 @@ struct Host<AlignCols<TAlign> const>
 // ----------------------------------------------------------------------------
 // Metafunction AlignColIterator
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Iterator.param.T.type:Class.AlignCols
 
 template <typename TAlign, typename TIteratorSpec>
 struct Iterator<AlignCols<TAlign>, TIteratorSpec>
@@ -147,8 +143,6 @@ struct Iterator<AlignCols<TAlign> const, TIteratorSpec>
 
 // Iterator is also used as Value
 
-///.Metafunction.Value.param.T.type:Class.AlignCols
-
 template <typename TAlign>
 struct Value<AlignCols<TAlign> >:
     Iterator<AlignCols<TAlign>, Standard>
@@ -163,8 +157,6 @@ struct Value<AlignCols<TAlign> const>:
 // Metafunction Size
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Size.param.T.type:Class.AlignCols
-
 template <typename TAlign>
 struct Size<AlignCols<TAlign> >:
     Size<typename Row<TAlign>::Type>
@@ -178,8 +170,6 @@ struct Size<AlignCols<TAlign> const>:
 // ----------------------------------------------------------------------------
 // Metafunction Position
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Position.param.T.type:Class.AlignCols
 
 template <typename TAlign>
 struct Position<AlignCols<TAlign> >:
@@ -198,8 +188,6 @@ struct Position<AlignCols<TAlign> const>:
 // ----------------------------------------------------------------------------
 // Function host()
 // ----------------------------------------------------------------------------
-
-///.Function.host.param.object.type:Class.AlignCols
 
 template <typename TAlign>
 inline typename Host<AlignCols<TAlign> >::Type &
@@ -241,8 +229,6 @@ host(AlignCols<TAlign> const & me)
  * If <tt>pos</tt> is out of range then the iterator is invalid.
  */
 
-///.Function.iter.param.object.type:Class.AlignCols
-
 template <typename TAlign, typename TPosition, typename TTag>
 inline typename Iterator<AlignCols<TAlign>, Tag<TTag> const>::Type
 iter(AlignCols<TAlign> & me,
@@ -275,8 +261,6 @@ iter(AlignCols<TAlign> const & me,
  * @return TColumn The column, as determined by Value metafunction.
  */
 
-///.Function.value.param.container.type:Class.AlignCols
-
 template <typename TAlign, typename TPosition>
 inline typename Value<AlignCols<TAlign> >::Type
 value(AlignCols<TAlign> & me,
@@ -296,8 +280,6 @@ value(AlignCols<TAlign> const & me,
 // ----------------------------------------------------------------------------
 // Function beginPosition()
 // ----------------------------------------------------------------------------
-
-///.Function.beginPosition.param.object.type:Class.AlignCols
 
 template <typename TAlignCols>
 inline typename Position<TAlignCols>::Type
@@ -344,8 +326,6 @@ beginPosition(AlignCols<TAlign> & me)
 // Function begin()
 // ----------------------------------------------------------------------------
 
-///.Function.begin.param.object.type:Class.AlignCols
-
 template <typename TAlign, typename TTag>
 inline typename Iterator<AlignCols<TAlign>, Tag<TTag> const>::Type
 begin(AlignCols<TAlign> & me,
@@ -365,8 +345,6 @@ begin(AlignCols<TAlign> const & me,
 // ----------------------------------------------------------------------------
 // Function endPosition()
 // ----------------------------------------------------------------------------
-
-///.Function.endPosition.param.object.type:Class.AlignCols
 
 template <typename TAlignCols>
 inline typename Position<TAlignCols>::Type
@@ -406,8 +384,6 @@ endPosition(AlignCols<TAlign> const & me)
 // ----------------------------------------------------------------------------
 // Function end()
 // ----------------------------------------------------------------------------
-
-///.Function.end.param.object.type:Class.AlignCols
 
 template <typename TAlign, typename TTag>
 inline typename Iterator<AlignCols<TAlign>, Tag<TTag> const>::Type

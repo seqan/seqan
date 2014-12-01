@@ -101,9 +101,6 @@ struct DefaultOverflowExplicit< TValue const [SIZE] >
     typedef Insist Type;
 };
 
-///.Metafunction.IsContiguous.param.T.type:Adaption.char array
-///.Metafunction.IsContiguous.class:Adaption.char array
-
 template <typename TValue>
 struct IsContiguous;
 
@@ -127,9 +124,6 @@ struct IsContiguous< TValue const [SIZE] >
     typedef True Type;
     enum { VALUE = true };
 };
-
-///.Metafunction.IsSequence.param.T.type:Adaption.char array
-///.Metafunction.IsSequence.class:Adaption.char array
 
 template <typename TValue>
 struct IsSequence< TValue * >
@@ -169,9 +163,6 @@ SEQAN_CONCEPT_IMPL((TValue const [SIZE]), (ContainerConcept));
 // ----------------------------------------------------------------------------
 // Metafunction Iterator
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Iterator.param.T.type:Adaption.char array
-///.Metafunction.Iterator.class:Adaption.char array
 
 template <typename TValue>
 struct Iterator<TValue *, Standard>
@@ -221,9 +212,6 @@ SEQAN_CHECKPOINT
     return begin(me, typename DefaultGetIteratorSpec<T>::Type()) ;
 }
 
-///.Function.begin.param.object.type:Adaption.char array
-///.Function.begin.class:Adaption.char array
-
 template <typename TValue>
 inline typename Iterator<TValue *, Standard>::Type
 begin(TValue * me,
@@ -264,9 +252,6 @@ SEQAN_CHECKPOINT
     return TIterator(me, begin(me, Standard()));
 }
 
-///.Function.end.param.object.type:Adaption.char array
-///.Function.end.class:Adaption.char array
-
 template <typename TValue>
 inline typename Iterator<TValue *, Standard>::Type
 end(TValue * me,
@@ -304,9 +289,6 @@ SEQAN_CHECKPOINT
     return begin(me, tag_) + length(me);
 }
 
-///.Function.value.param.container.type:Adaption.char array
-///.Function.value.class:Adaption.char array
-
 template <typename TValue, typename TPos>
 inline TValue &
 value(TValue * me,
@@ -325,9 +307,6 @@ SEQAN_CHECKPOINT
     return me[pos];
 }
 
-///.Function.assignValue.param.container.type:Adaption.char array
-///.Function.assignValue.class:Adaption.char array
-
 template <typename TValue, typename TPos>
 inline void
 assignValue(TValue * me,
@@ -337,9 +316,6 @@ assignValue(TValue * me,
 SEQAN_CHECKPOINT
     assign(value(me, pos), _value);
 }
-
-///.Function.moveValue.param.container.type:Adaption.char array
-///.Function.moveValue.class:Adaption.char array
 
 template <typename TValue, typename TPos>
 inline void
@@ -369,9 +345,6 @@ atEnd(TValue const * pos,
 SEQAN_CHECKPOINT
     return *pos == 0;
 }
-
-///.Function.length.param.object.type:Adaption.char array
-///.Function.length.class:Adaption.char array
 
 template <typename TValue>
 inline size_t
@@ -420,8 +393,6 @@ SEQAN_CHECKPOINT
     me[new_length] = 0;
 }
 
-///.Function.clear.param.object.type:Adaption.char array
-
 template <typename TValue>
 inline void
 clear(TValue * me)
@@ -431,8 +402,6 @@ SEQAN_CHECKPOINT
     //arrayDestruct(begin(me), length(me)); //??? Die Laengenbestimmung ist meistens nutzlos, braucht man sowieso nur fuer non-pod
     _setLength(me, 0);
 }
-
-///.Function.empty.param.object.type:Adaption.char array
 
 template <typename TValue>
 inline bool
@@ -487,10 +456,6 @@ _clearSpace(TValue * me,
 SEQAN_CHECKPOINT
     return ClearSpaceStringBase_<Tag<TExpand> >::_clearSpace_(me, size, pos_begin, pos_end, limit);
 }
-
-///.Function.assign.param.target.type:.Adaption.char array
-///.Function.assign.param.source.type:.Adaption.char array
-///.Function.assign.class:Adaption.char array
 
 //overload of binary version for strings:
 
@@ -558,9 +523,6 @@ SEQAN_CHECKPOINT
     AssignString_<Tag<TExpand> >::assign_(target, source, limit);
 }
 
-///.Function.move.param.target.type:Adaption.char array
-///.Function.move.class:Adaption.char array
-
 //overload of binary version for strings:
 
 template<typename TTargetValue, typename TSource>
@@ -584,10 +546,6 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 // append
 //////////////////////////////////////////////////////////////////////////////
-
-///.Function.append.param.target.type:.Adaption.char array
-///.Function.append.param.source.type:.Adaption.char array
-///.Function.append.class:Adaption.char array
 
 template<typename TTargetValue, typename TSource, typename TExpand>
 inline void
@@ -637,9 +595,6 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 // replace
 //////////////////////////////////////////////////////////////////////////////
-
-///.Function.replace.param.target.type:.Adaption.char array
-///.Function.replace.param.source.type:.Adaption.char array
 
 template<typename TTargetValue, typename TSource, typename TExpand>
 inline void
@@ -719,8 +674,6 @@ replace(TTargetValue * target,
 }
 */
 //////////////////////////////////////////////////////////////////////////////
-///.Function.resize.param.object.type:Adaption.char array
-
 template <typename TValue, typename TSize, typename TExpand>
 inline size_t
 resize(

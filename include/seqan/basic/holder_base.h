@@ -138,8 +138,6 @@ struct Holder;
  * @return Type The value type for its holder.
  */
 
-///.Metafunction.Value.param.T.type:Class.Holder
-
 template <typename TValue, typename TSpec>
 struct Value<Holder<TValue, TSpec> >
 {
@@ -176,9 +174,6 @@ struct Value<Holder<TValue * const, TSpec> >
  * @return Type The resulting specialization tag.
  */
 
-///.Metafunction.Spec.param.T.type:Class.Holder
-///.Metafunction.Spec.class:Class.Holder
-
 template <typename TValue, typename TSpec>
 struct Spec<Holder<TValue, TSpec> >
 {
@@ -205,9 +200,6 @@ struct Spec<Holder<TValue, TSpec> const>
  *
  * @return Type The resulting reference type.
  */
-
-///.Metafunction.Reference.param.T.type:Class.Holder
-///.Metafunction.Reference.class:Class.Holder
 
 template <typename TValue, typename TSpec>
 struct Reference<Holder<TValue, TSpec> >

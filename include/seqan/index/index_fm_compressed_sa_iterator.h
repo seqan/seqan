@@ -89,7 +89,6 @@ struct Iterator<CompressedSA<TText, TSpec, TConfig> const, Rooted>:
  * @return TIterator Returns an iterator pointing to the first position of a compresses suffix array.  Types: <tt>The
  *                   result of Iterator&lt;Index&lt;TText, TIndexSpec&gt;, TSpec&gt;::Type</tt>
  */
-///.Function.begin.param.object.type:Class.CompressedSA
 template <typename TText, typename TSpec, typename TConfig>
 inline typename Iterator<CompressedSA<TText, TSpec, TConfig>, Standard>::Type
 begin(CompressedSA<TText, TSpec, TConfig> & compressedSA, Standard const & /* dummy */)
@@ -136,7 +135,6 @@ begin(CompressedSA<TText, TSpec, TConfig> const & compressedSA, Rooted const & /
  *                   Types: <tt>The result of Iterator&lt;Index&lt;TText, TIndexSpec&gt;, TSpec&gt;::Type</tt>
  */
 
-///.Function.end.param.object.type:Class.CompressedSA
 template <typename TText, typename TSpec, typename TConfig>
 inline typename Iterator<CompressedSA<TText, TSpec, TConfig>, Rooted>::Type
 end(CompressedSA<TText, TSpec, TConfig> & compressedSA, Rooted const & /* dummy */)

@@ -149,9 +149,6 @@ struct Accumulator<TValue, AccuAverage>
  * @return Type The value type.
  */
 
-///.Metafunction.Value.param.T.type:Class.Accumulator
-///.Metafunction.Value.class:Class.Accumulator
-
 template <typename TValue>
 struct Value<Accumulator<TValue, AccuAverage> >
 {
@@ -185,8 +182,6 @@ struct Result;
 // ----------------------------------------------------------------------------
 // Metafunction Result                                      Average Accumulator
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Result.param.T.type:Class.Accumulator
 
 template <typename TValue>
 struct Result<Accumulator<TValue, AccuAverage>, AccuAverage>
@@ -227,8 +222,6 @@ struct Result<Accumulator<TValue, AccuAverage> const, AccuSum> : Result<Accumula
 // ----------------------------------------------------------------------------
 // Function clear()                                                 Accumulator
 // ----------------------------------------------------------------------------
-
-///.Function.clear.param.object.type:Class.Accumulator
 
 // ----------------------------------------------------------------------------
 // Function push()                                                  Accumulator

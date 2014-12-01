@@ -221,8 +221,6 @@ value(StringSet<TString, Owner<Default> > const & me, TPos pos)
 // Function erase()
 // --------------------------------------------------------------------------
 
-///.Function.erase.param.object.type:Spec.Owner
-
 template <typename TString, typename TPos>
 inline typename Size<StringSet<TString, Owner<Default> > >::Type
 erase(StringSet<TString, Owner<Default> > & me, TPos pos)

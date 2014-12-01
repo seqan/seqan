@@ -169,9 +169,6 @@ struct Triple
  * @return VALUE Length of the triple (always 3).
  */
 
-///.Metafunction.LENGTH.param.T.type:Class.Triple
-///.Metafunction.LENGTH.class:Class.Triple
-
 template <typename T1, typename T2, typename T3, typename TSpec>
 struct LENGTH<Triple<T1, T2, T3, TSpec> >
 {
@@ -193,9 +190,6 @@ struct LENGTH<Triple<T1, T2, T3, TSpec> >
  * @tparam TTriple The Triple to return the <tt>I</tt>-th value of.
  * @tparam I       The index of the value to return, one of 1, 2, or 3.
  */
-
-///.Metafunction.Value.param.T.type:Class.Triple
-///.Metafunction.Value.class:Class.Triple
 
 template <typename T1, typename T2, typename T3, typename TSpec>
 struct Value<Triple<T1, T2, T3, TSpec>, 1>
@@ -229,9 +223,6 @@ struct Value<Triple<T1, T2, T3, TSpec>, 3 >
  *
  * @return Type The specialization type.
  */
-
-///.Metafunction.Spec.param.T.type:Class.Triple
-///.Metafunction.Spec.class:Class.Triple
 
 template <typename T1, typename T2, typename T3, typename TSpec>
 struct Spec<Triple<T1, T2, T3, TSpec> >

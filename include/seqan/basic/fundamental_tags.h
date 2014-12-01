@@ -391,8 +391,6 @@ typedef Tag<Blat_> Blat;
  * @return VALUE The length of the TagList.
  */
 
-///.Metafunction.LENGTH.param.T.type:Tag.TagList
-
 template <>
 struct LENGTH<void>
 {

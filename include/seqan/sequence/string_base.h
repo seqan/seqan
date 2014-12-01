@@ -290,9 +290,6 @@ class String;
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Value.param.T.type:Class.String
-///.Metafunction.Value.class:Class.String
-
 template <typename TValue, typename TSpec>
 struct Value<String<TValue, TSpec> >
 {
@@ -307,9 +304,6 @@ struct Value<String<TValue, TSpec> const >
 // ----------------------------------------------------------------------------
 // Metafunction Spec
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Spec.param.T.type:Class.String
-///.Metafunction.Spec.class:Class.String
 
 template <typename TValue, typename TSpec>
 struct Spec<String<TValue, TSpec> >
@@ -353,9 +347,6 @@ struct Chunk<String<TValue, TSpec> >:
 // Metafunction IsSequence
 // ----------------------------------------------------------------------------
 
-///.Metafunction.IsSequence.param.T.type:Class.String
-///.Metafunction.IsSequence.class:Class.String
-
 template <typename TValue, typename TSpec>
 struct IsSequence<String<TValue, TSpec> > : True {};
 
@@ -387,13 +378,6 @@ struct TempCopy_
 
 // TODO(holtgrew): Where to move this documentation/specification-only stuff?
 
-///.Function.getObjectId.param.object.type:Class.String
-///.Function.getObjectId.class:Class.String
-///.Function.empty.param.object.type:Class.String
-///.Function.empty.class:Class.String
-///.Function.capacity.param.object.type:Class.String
-///.Function.capacity.class:Class.String
-
 // ----------------------------------------------------------------------------
 // Function swap()
 // ----------------------------------------------------------------------------
@@ -415,8 +399,6 @@ swap(String<TAlphabet, TSpec> & left,
 // Function shareResources()
 // ----------------------------------------------------------------------------
 
-///.Function.shareResources.param.sequence1, sequence2.type:Class.String
-
 template <typename TValue, typename TSpec>
 inline bool
 shareResources(String<TValue, TSpec> const & obj1,
@@ -434,16 +416,9 @@ shareResources(TValue const & obj1,
 }
 
 // TODO(holtgrew): Where to move this documentation/specification-only stuff?
-///.Function.begin.param.object.type:Class.String
-///.Function.begin.class:Class.String
-///.Function.end.param.object.type:Class.String
-///.Function.end.class:Class.String
-
 // ----------------------------------------------------------------------------
 // Function value()
 // ----------------------------------------------------------------------------
-
-///.Function.value.param.container.type:Class.String
 
 template <typename TValue, typename TSpec, typename TPos>
 SEQAN_HOST_DEVICE inline typename Reference< String<TValue, TSpec> >::Type
@@ -469,9 +444,6 @@ value(String<TValue, TSpec> const & me,
 // Function length()
 // ----------------------------------------------------------------------------
 
-///.Function.length.param.object.type:Class.String
-///.Function.length.class:Class.String
-
 template <typename TValue, typename TSpec>
 SEQAN_HOST_DEVICE inline typename Size< String<TValue, TSpec> const>::Type
 length(String<TValue, TSpec> const & me)
@@ -482,9 +454,6 @@ length(String<TValue, TSpec> const & me)
 // ----------------------------------------------------------------------------
 // Function empty()
 // ----------------------------------------------------------------------------
-
-///.Function.empty.param.object.type:Class.String
-///.Function.empty.class:Class.String
 
 template <typename TValue, typename TSpec>
 SEQAN_HOST_DEVICE inline bool
@@ -935,9 +904,6 @@ _clearSpace(String<TValue, TSpec> & me,
 // Function resizeSpace()
 // ----------------------------------------------------------------------------
 
-///.Function.resizeSpace.param.object.type:Class.String
-///.Function.resizeSpace.class:Class.String
-
 template<typename TValue, typename TSpec, typename TSize, typename TBeginPosition, typename TEndPosition, typename TExpand>
 inline typename Size< String<TValue, TSpec> >::Type
 resizeSpace(String<TValue, TSpec> & me,
@@ -983,11 +949,6 @@ resizeSpace(String<TValue, TSpec> & me,
 // ----------------------------------------------------------------------------
 // Function assign()
 // ----------------------------------------------------------------------------
-
-///.Function.assign.param.target.type:Class.String
-///.Function.assign.class:Class.String
-///.Function.assign.param.source.type:Class.String
-///.Function.assign.class:Class.String
 
 // Facade version without overflow tag.  Forwards to version with overflow
 // tag, using Metafunction.DefaultOverflowImplicity.
@@ -1240,10 +1201,6 @@ _stringCheckForPossibleOverlap(TIter const &it1, TIter const &it2, TSize length)
 // Function append()
 // ----------------------------------------------------------------------------
 
-///.Function.append.param.target.type:Class.String
-///.Function.append.param.source.type:Class.String
-///.Function.append.class:Class.String
-
 template <typename TExpand>
 struct AppendString_
 {
@@ -1433,10 +1390,6 @@ insertValue(String<TTargetValue, TTargetSpec> & me,
 // ----------------------------------------------------------------------------
 // Function replace()
 // ----------------------------------------------------------------------------
-
-///.Function.replace.param.target.type:Class.String
-///.Function.replace.param.source.type:Class.String
-///.Function.replace.class:Class.String
 
 template <typename TExpand>
 struct ReplaceString_
@@ -1664,9 +1617,6 @@ _reallocateStorage(
 // Function reserve()
 // ----------------------------------------------------------------------------
 
-///.Function.reserve.param.object.type:Class.String
-///.Function.reserve.class:Class.String
-
 template <typename TValue, typename TSpec, typename TSize_>
 inline void
 _reserveStorage(
@@ -1728,8 +1678,6 @@ reserve(
 // ----------------------------------------------------------------------------
 // Function resize()
 // ----------------------------------------------------------------------------
-
-///.Function.resize.param.object.type:Class.String
 
 template <typename TExpand>
 struct _Resize_String

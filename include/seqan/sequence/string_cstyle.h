@@ -384,8 +384,6 @@ capacity(String <TValue, CStyle > const & me)
 // Internal Function _reallocateStorage()
 // --------------------------------------------------------------------------
 
-///.Internal._reallocateStorage.param.object.type:Spec.CStyle String
-///.Internal._reallocateStorage.param.resize_tag.remarks:@Spec.CStyle String@ only supports @Tag.Overflow Strategy.exact@.
 //this function works also for dependent buffers
 template <typename TValue>
 inline TValue *
@@ -413,8 +411,6 @@ _reallocateStorage(
 // --------------------------------------------------------------------------
 // Internal Function _deallocateStorage()
 // --------------------------------------------------------------------------
-
-///.Internal._deallocateStorage.param.object.type:Spec.CStyle String
 
 template <typename TValue>
 inline void

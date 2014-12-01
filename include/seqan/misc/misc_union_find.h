@@ -95,9 +95,6 @@ public:
  * @tparam TUnionFind The UnionFind specialization to query for its value type.
  */
 
-///.Metafunction.Value.param.T.type:Class.UnionFind
-///.Metafunction.Value.class:Class.UnionFind
-
 template <typename TValue>
 struct Value<UnionFind<TValue> >
 {
@@ -127,9 +124,6 @@ struct Value<UnionFind<TValue> const>
  * @tparam TUnionFind The UnionFind specialization to query for its get-value type.
  */
 
-///.Metafunction.GetValue.param.T.type:Class.UnionFind
-///.Metafunction.GetValue.class:Class.UnionFind
-
 template <typename TValue>
 struct GetValue<UnionFind<TValue> >
 {
@@ -158,9 +152,6 @@ struct GetValue<UnionFind<TValue> const>
  *
  * @tparam TUnionFind The UnionFind specialization to query for its size type.
  */
-
-///.Metafunction.Size.param.T.type:Class.UnionFind
-///.Metafunction.Size.class:Class.UnionFind
 
 template <typename TValue>
 struct Size<UnionFind<TValue> >
@@ -195,9 +186,6 @@ struct Size<UnionFind<TValue> const>
  * @param[in,out] uf The Union-Find object to clear
  */
 
-///.Function.clear.param.object.type:Class.UnionFind
-///.Function.clear.class:Class.UnionFind
-
 template <typename TValue>
 inline
 void
@@ -220,9 +208,6 @@ clear(UnionFind<TValue> & unionFind)
  *
  * @return TSize The length of the Union-Find object  (Metafunction: @link UnionFind#Size @endlink).
  */
-
-///.Function.length.param.object.type:Class.UnionFind
-///.Function.length.class:Class.UnionFind
 
 template <typename TValue>
 inline
@@ -248,9 +233,6 @@ length(UnionFind<TValue> const & unionFind)
  * @param[in]     size  The number of elements to reserve.
  * @param[in]     tag   The tag to use for reserving (defaults to <tt>Generous()</tt>).
  */
-
-///.Function.reserve.param.object.type:Class.UnionFind
-///.Function.reserve.class:Class.UnionFind
 
 template <typename TValue, typename TSize, typename TTag>
 inline
@@ -282,10 +264,6 @@ reserve(UnionFind<TValue> & unionFind,
  * @return TSize The new length of the Union-Find object  (Metafunction: @link UnionFind#Size @endlink).
  */
 
-///.Function.resize.param.object.type:Class.UnionFind
-///.Function.resize.class:Class.UnionFind
-///.Function.resize.remarks:If $pm$ is of the @Class.UnionFind@, $value$ will automatically be set to -1.
-
 template <typename TValue, typename TSize, typename TTag>
 inline
 typename Size<UnionFind<TValue> >::Type
@@ -313,10 +291,6 @@ resize(UnionFind<TValue> & unionFind,
  *
  * @return TSize New size of the vertex map  (Metafunction: @link UnionFind#Size @endlink).
  */
-
-///.Function.resizeVertexMap.param.pm.type:Class.UnionFind
-///.Function.resizeVertexMap.class:Class.UnionFind
-///.Function.resizeVertexMap.remarks:If $pm$ is of type @Class.UnionFind@ then the $prototype$ parameter is not available.
 
 template <typename TSpec, typename TValue>
 typename Size<UnionFind<TValue> >::Type

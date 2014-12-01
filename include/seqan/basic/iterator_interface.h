@@ -287,9 +287,6 @@ moveValue(T const & me,
 // Function setValue()
 // ---------------------------------------------------------------------------
 
-///.Function.setValue.param.object.type:Concept.BasicOutputIteratorConcept
-///.Function.setValue.concept:Concept.BasicOutputIteratorConcept
-
 template <typename T, typename TValue>
 inline void
 setValue(T * & ptr,

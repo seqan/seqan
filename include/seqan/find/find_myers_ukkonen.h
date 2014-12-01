@@ -67,8 +67,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The needle-length must be smaller than the highest number that can be stored in an unsigned int.
  */
 
-///.Class.Pattern.param.TSpec.type:Spec.Myers
-
 template <typename TSpec = FindInfix, 
 		  typename THasState = True,
 		  typename TFindBeginPatternSpec = typename DefaultFindBeginPatternSpec<EditDistanceScore, THasState>::Type>
@@ -736,9 +734,6 @@ SEQAN_CHECKPOINT
  * @return TScoreValue The score limit value.
  */
 
-///.Function.scoreLimit.param.pattern.type:Spec.Myers
-///.Function.scoreLimit.class:Spec.Myers
-
 template <typename TNeedle, typename TSpec, typename TFindBeginPatternSpec>
 inline int 
 scoreLimit(PatternState_<TNeedle, Myers<TSpec, True, TFindBeginPatternSpec> > const & state)
@@ -769,9 +764,6 @@ SEQAN_CHECKPOINT
  *
  * @return TScoreValue The score limit value.
  */
-
-///.Function.setScoreLimit.param.pattern.type:Spec.Myers
-///.Function.setScoreLimit.class.type:Spec.Myers
 
 template <typename TNeedle, typename TSpec, typename TFindBeginPatternSpec, typename TScoreValue>
 inline void 
@@ -809,9 +801,6 @@ SEQAN_CHECKPOINT
  * @return TScoreValue The score of the last match found using <tt>pattern</tt>.  If no match was found then the value
  *                     is undefined.
  */
-
-///.Function.getScore.param.pattern.type:Spec.Myers
-///.Function.getScore.class:Spec.Myers
 
 template <typename TNeedle, typename TSpec, typename TFindBeginPatternSpec>
 inline int 

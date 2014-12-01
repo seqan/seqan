@@ -265,9 +265,6 @@ class EdgeStump;
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.VertexDescriptor.param.T.type:Class.EdgeStump
-///.Metafunction.VertexDescriptor.class:Class.EdgeStump
-
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec>
 struct VertexDescriptor<EdgeStump<TCargo, TList, TSource, TId, TSpec> > 
 {
@@ -295,9 +292,6 @@ template<typename TIdType = unsigned int, typename TSpec = Default>
 class IdManager;
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.EdgeIdHandler.param.T.type:Class.EdgeStump
-///.Metafunction.EdgeIdHandler.class:Class.EdgeStump
 
 template<typename TCargo, bool TList, bool TSource, typename TSpec>
 struct EdgeIdHandler<EdgeStump<TCargo, TList, TSource, false, TSpec> > {

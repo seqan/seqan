@@ -146,9 +146,6 @@ public:
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Value.param.T.type:Class.Proxy
-///.Metafunction.Value.class:Class.Proxy
-
 template <typename TIterator>
 struct Value<Proxy<IteratorProxy<TIterator> > >
         : Value<TIterator>
@@ -164,9 +161,6 @@ struct Value<Proxy<IteratorProxy<TIterator> > const>
 // ----------------------------------------------------------------------------
 // Metafunction GetValue
 // ----------------------------------------------------------------------------
-
-///.Metafunction.GetValue.param.T.type:Class.Proxy
-///.Metafunction.GetValue.class:Class.Proxy
 
 template <typename TIterator>
 struct GetValue<Proxy<IteratorProxy<TIterator> > >
@@ -184,9 +178,6 @@ struct GetValue<Proxy<IteratorProxy<TIterator> > const>
 // Metafunction Reference
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Reference.param.T.type:Class.Proxy
-///.Metafunction.Reference.class:Class.Proxy
-
 template <typename TIterator>
 struct Reference<Proxy<IteratorProxy<TIterator> > >
 {
@@ -203,9 +194,6 @@ struct Reference<Proxy<IteratorProxy<TIterator> > const>
 // Metafunction Size
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Size.param.T.type:Class.Proxy
-///.Metafunction.Size.class:Class.Proxy
-
 template <typename TIterator>
 struct Size<Proxy<IteratorProxy<TIterator> > >
         : Size<TIterator>
@@ -221,9 +209,6 @@ struct Size<Proxy<IteratorProxy<TIterator> > const>
 // ----------------------------------------------------------------------------
 // Metafunction Difference
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Difference.param.T.type:Class.Proxy
-///.Metafunction.Difference.class:Class.Proxy
 
 template <typename TIterator>
 struct Difference<Proxy<IteratorProxy<TIterator> > >
@@ -260,9 +245,6 @@ struct CompareTypeRemoveProxy<Proxy<IteratorProxy<TIterator1> >, Proxy<IteratorP
 // ----------------------------------------------------------------------------
 // Function iter()
 // ----------------------------------------------------------------------------
-
-///.Function.iter.param.object.type:Spec.Iterator Proxy
-///.Function.iter.class:Spec.Iterator Proxy
 
 template <typename TIterator>
 inline TIterator &

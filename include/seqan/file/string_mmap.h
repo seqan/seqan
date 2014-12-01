@@ -565,9 +565,6 @@ SEQAN_CHECKPOINT
 //IOREV
 	}
 //____________________________________________________________________________
-///.Function.open.param.string.type:Spec.MMap String
-///.Function.open.class:Spec.MMap String
-
 /*!
  * @fn MMapString#open
  * @brief Open the MMapString's underlying file from a path.
@@ -611,9 +608,6 @@ SEQAN_CHECKPOINT
 			return _map(me, capacity(me));
 		return false;
     }
-
-///.Function.openTemp.param.string.type:Spec.MMap String
-///.Function.openTemp.class:Spec.MMap String
 
 /*!
  * @fn MMapString#openTemp
@@ -676,9 +670,6 @@ SEQAN_CHECKPOINT
 		return true;
 	}
 //____________________________________________________________________________
-///.Function.close.param.string.type:Spec.MMap String
-///.Function.close.class:Spec.MMap String
-
 /*!
  * @fn MMapString#close
  * @brief Close the MMapString.

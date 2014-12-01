@@ -377,9 +377,6 @@ SEQAN_CHECKPOINT
  * @return    TSize The size of the pipe.
  */
 
-///.Function.length.param.object.type:Class.Pipe
-///.Function.length.class:Class.Pipe
-
 	template < typename TInput, typename TSpec >
     inline typename Size< Pipe<TInput, TSpec> >::Type
     length(Pipe<TInput, TSpec> const &me) {
@@ -502,9 +499,6 @@ SEQAN_CHECKPOINT
  *
  * @return bool true in case of the pipe being at the end, false otherwise.
  */
-///.Function.atEnd.param.iterator.type:Class.Pipe
-///.Function.atEnd.class:Class.Pipe
-
 
     //////////////////////////////////////////////////////////////////////////////
     // pipe flow control
@@ -632,9 +626,6 @@ SEQAN_CHECKPOINT
  *
  * Assign value of source to target.
  */
-///.Function.assign.param.source.type:Class.Pipe
-///.Function.assign.class:Class.Pipe
-
 	//////////////////////////////////////////////////////////////////////////////
     // pipe -> string
 

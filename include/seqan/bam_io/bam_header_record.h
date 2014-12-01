@@ -233,8 +233,6 @@ typedef String<BamHeaderRecord> BamHeader;
  * @param[in,out] record The record to clear.
  */
 
-///.Function.clear.param.object.type:Class.BamHeaderRecord
-
 inline void
 clear(BamHeaderRecord & record)
 {

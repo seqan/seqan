@@ -54,9 +54,6 @@ namespace seqan {
 // Metafunction IsSequence
 // ----------------------------------------------------------------------------
 
-///.Metafunction.IsSequence.param.T.type:Adaption.thrust::device_vector
-///.Metafunction.IsSequence.class:Adaption.thrust::device_vector
-
 template <typename TChar, typename TAlloc>
 struct IsSequence<thrust::device_vector<TChar, TAlloc> >
 {
@@ -67,9 +64,6 @@ struct IsSequence<thrust::device_vector<TChar, TAlloc> >
 // ----------------------------------------------------------------------------
 // Metafunction IsContiguous
 // ----------------------------------------------------------------------------
-
-///.Metafunction.IsContiguous.param.T.type:Adaption.thrust::device_vector
-///.Metafunction.IsContiguous.class:Adaption.thrust::device_vector
 
 template <typename TChar, typename TAlloc>
 struct IsContiguous<thrust::device_vector<TChar, TAlloc> >
@@ -85,9 +79,6 @@ struct IsContiguous<thrust::device_vector<TChar, TAlloc> const>
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Value.param.T.type:Adaption.thrust::device_vector
-///.Metafunction.Value.class:Adaption.thrust::device_vector
-
 template <typename TChar, typename TAlloc>
 struct Value<thrust::device_vector<TChar, TAlloc> >
 {
@@ -101,9 +92,6 @@ struct Value<thrust::device_vector<TChar, TAlloc> const>
 // ----------------------------------------------------------------------------
 // Metafunction Reference
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Reference.param.T.type:Adaption.thrust::device_vector
-///.Metafunction.Reference.class:Adaption.thrust::device_vector
 
 template <typename TChar, typename TAlloc>
 struct Reference<thrust::device_vector<TChar, TAlloc> >
@@ -133,9 +121,6 @@ struct Reference<thrust::detail::normal_iterator<thrust::device_ptr<TValue> > co
 // Metafunction GetValue
 // ----------------------------------------------------------------------------
 
-///.Metafunction.GetValue.param.T.type:Adaption.thrust::device_vector
-///.Metafunction.GetValue.class:Adaption.thrust::device_vector
-
 template <typename TChar, typename TAlloc>
 struct GetValue<thrust::device_vector<TChar, TAlloc> > : Reference<thrust::device_vector<TChar, TAlloc> const> {};
 
@@ -145,9 +130,6 @@ struct GetValue<thrust::device_vector<TChar, TAlloc> const> : Reference<thrust::
 // ----------------------------------------------------------------------------
 // Metafunction Iterator
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Iterator.param.T.type:Adaption.thrust::device_vector
-///.Metafunction.Iterator.class:Adaption.thrust::device_vector
 
 template <typename TChar, typename TAlloc>
 struct Iterator<thrust::device_vector<TChar, TAlloc>, Rooted>
@@ -181,9 +163,6 @@ struct Iterator<thrust::device_vector<TChar, TAlloc> const, Standard>
 // Metafunction Position
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Position.param.T.type:Adaption.thrust::device_vector
-///.Metafunction.Position.class:Adaption.thrust::device_vector
-
 template <typename TChar,  typename TAlloc>
 struct Position<thrust::device_vector<TChar, TAlloc> >
 {
@@ -194,9 +173,6 @@ struct Position<thrust::device_vector<TChar, TAlloc> >
 // Metafunction Size
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Size.param.T.type:Adaption.thrust::device_vector
-///.Metafunction.Size.class:Adaption.thrust::device_vector
-
 template <typename TChar,  typename TAlloc>
 struct Size<thrust::device_vector<TChar, TAlloc> >
 {
@@ -206,9 +182,6 @@ struct Size<thrust::device_vector<TChar, TAlloc> >
 // ----------------------------------------------------------------------------
 // Metafunction Difference
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Difference.param.T.type:Adaption.thrust::device_vector
-///.Metafunction.Difference.class:Adaption.thrust::device_vector
 
 template <typename TChar, typename TAlloc>
 struct Difference<thrust::device_vector<TChar, TAlloc> >
@@ -229,9 +202,6 @@ struct DefaultOverflowImplicit<thrust::device_vector<TChar, TAlloc> >
 // ----------------------------------------------------------------------------
 // Metafunction StdContainerIterator
 // ----------------------------------------------------------------------------
-
-///.Metafunction.StdContainerIterator.param.T.type:Adaption.thrust::device_vector
-///.Metafunction.StdContainerIterator.class:Adaption.thrust::device_vector
 
 template <typename TChar, typename TAlloc>
 struct StdContainerIterator<thrust::device_vector<TChar, TAlloc> >
@@ -294,9 +264,6 @@ struct Device<std::string>
 // Function getObjectId()
 // ----------------------------------------------------------------------------
 
-///.Function.getObjectId.param.object.type:Adaption.thrust::device_vector
-///.Function.getObjectId.class:Adaption.thrust::device_vector
-
 template <typename TChar,  typename TAlloc>
 inline void const *
 getObjectId(thrust::device_vector<TChar, TAlloc> const & me)
@@ -310,9 +277,6 @@ getObjectId(thrust::device_vector<TChar, TAlloc> const & me)
 // ----------------------------------------------------------------------------
 // Function begin()
 // ----------------------------------------------------------------------------
-
-///.Function.begin.param.object.type:Adaption.thrust::device_vector
-///.Function.begin.class:Adaption.thrust::device_vector
 
 template <typename TChar,  typename TAlloc>
 inline typename Iterator<thrust::device_vector<TChar, TAlloc>, Standard>::Type
@@ -332,9 +296,6 @@ begin(thrust::device_vector<TChar, TAlloc> const & me, Standard)
 // Function end()
 // ----------------------------------------------------------------------------
 
-///.Function.end.param.object.type:Adaption.thrust::device_vector
-///.Function.end.class:Adaption.thrust::device_vector
-
 template <typename TChar, typename TAlloc>
 inline typename Iterator<thrust::device_vector<TChar, TAlloc>, Standard>::Type
 end(thrust::device_vector<TChar, TAlloc> & me, Standard)
@@ -352,9 +313,6 @@ end(thrust::device_vector<TChar, TAlloc> const & me, Standard)
 // ----------------------------------------------------------------------------
 // Function value()
 // ----------------------------------------------------------------------------
-
-///.Function.value.param.container.type:Adaption.thrust::device_vector
-///.Function.value.class:Adaption.thrust::device_vector
 
 template <typename TChar,  typename TAlloc, typename TPos>
 inline typename Reference<thrust::device_vector<TChar, TAlloc> >::Type
@@ -374,9 +332,6 @@ value(thrust::device_vector<TChar, TAlloc> const & me, TPos pos)
 // Function length()
 // ----------------------------------------------------------------------------
 
-///.Function.length.param.container.type:Adaption.thrust::device_vector
-///.Function.length.class:Adaption.thrust::device_vector
-
 template <typename TChar, typename TAlloc>
 inline typename Size<thrust::device_vector<TChar, TAlloc> >::Type
 length(thrust::device_vector<TChar, TAlloc> const & me)
@@ -387,9 +342,6 @@ length(thrust::device_vector<TChar, TAlloc> const & me)
 // ----------------------------------------------------------------------------
 // Function capacity()
 // ----------------------------------------------------------------------------
-
-///.Function.capacity.param.object.type:Adaption.thrust::device_vector
-///.Function.capacity.class:Adaption.thrust::device_vector
 
 template <typename TChar, typename TAlloc>
 inline typename Size<thrust::device_vector<TChar, TAlloc> >::Type
@@ -402,9 +354,6 @@ capacity(thrust::device_vector<TChar, TAlloc> const & me)
 // Function empty()
 // ----------------------------------------------------------------------------
 
-///.Function.empty.param.object.type:Adaption.thrust::device_vector
-///.Function.empty.class:Adaption.thrust::device_vector
-
 template <typename TChar, typename TAlloc>
 inline bool
 empty(thrust::device_vector<TChar, TAlloc> const & me)
@@ -416,9 +365,6 @@ empty(thrust::device_vector<TChar, TAlloc> const & me)
 // Function clear()
 // ----------------------------------------------------------------------------
 
-///.Function.clear.param.object.type:Adaption.thrust::device_vector
-///.Function.clear.class:Adaption.thrust::device_vector
-
 template <typename TChar,  typename TAlloc>
 inline void
 clear(thrust::device_vector<TChar, TAlloc> & me)
@@ -429,9 +375,6 @@ clear(thrust::device_vector<TChar, TAlloc> & me)
 // ----------------------------------------------------------------------------
 // Function front()
 // ----------------------------------------------------------------------------
-
-///.Function.front.param.container.type:Adaption.thrust::device_vector
-///.Function.front.class:Adaption.thrust::device_vector
 
 template <typename TChar, typename TAlloc>
 inline typename Reference<thrust::device_vector<TChar, TAlloc> >::Type
@@ -451,9 +394,6 @@ front(thrust::device_vector<TChar, TAlloc> const & list)
 // Function back()
 // ----------------------------------------------------------------------------
 
-///.Function.back.param.container.type:Adaption.thrust::device_vector
-///.Function.back.class:Adaption.thrust::device_vector
-
 template <typename TChar, typename TAlloc>
 inline typename Reference<thrust::device_vector<TChar, TAlloc> >::Type
 back(thrust::device_vector<TChar, TAlloc> & list)
@@ -471,9 +411,6 @@ back(thrust::device_vector<TChar, TAlloc> const & list)
 // ----------------------------------------------------------------------------
 // Function assign()
 // ----------------------------------------------------------------------------
-
-///.Function.assign.param.target.type:Adaption.thrust::device_vector
-///.Function.assign.class:Adaption.thrust::device_vector
 
 template <typename TChar,  typename TAlloc, typename TSource>
 inline void
@@ -594,9 +531,6 @@ assign(thrust::device_vector<TChar, TAlloc> & target,
 // Function append(); Generous
 // ----------------------------------------------------------------------------
 
-///.Function.append.param.target.type:Adaption.thrust::device_vector
-///.Function.append.class:Adaption.thrust::device_vector
-
 template <typename TChar, typename TAlloc, typename TSource>
 inline void
 append(thrust::device_vector<TChar, TAlloc> & target, TSource const & source, Generous)
@@ -660,9 +594,6 @@ append(thrust::device_vector<TChar, TAlloc> & target,
 // Function appendValue()
 // ----------------------------------------------------------------------------
 
-///.Function.appendValue.param.target.type:Adaption.thrust::device_vector
-///.Function.appendValue.class:Adaption.thrust::device_vector
-
 template <typename TChar, typename TAlloc, typename TValue, typename TTag>
 inline void
 appendValue(thrust::device_vector<TChar, TAlloc> & me, TValue const & _value, TTag)
@@ -680,10 +611,6 @@ appendValue(thrust::device_vector<TChar, TAlloc> & me, TValue const & _value, Li
 // ----------------------------------------------------------------------------
 // Function replace()
 // ----------------------------------------------------------------------------
-
-///.Function.replace.param.target.type:Adaption.thrust::device_vector
-///.Function.replace.param.source.type:Adaption.thrust::device_vector
-///.Function.replace.class:Adaption.thrust::device_vector
 
 template <typename TChar,  typename TAlloc, typename TSource>
 inline void
@@ -804,10 +731,6 @@ replace(thrust::device_vector<TChar, TAlloc> & target,
 // Function reserve()
 // ----------------------------------------------------------------------------
 
-///.Function.reserve.param.object.type:Adaption.thrust::device_vector
-///.Function.reserve.remarks:For @Adaption.thrust::device_vector|STL Adaptions@, $reserve$ is only guaranteed to have the specified behaviour with $Insist$ and $Generous$.
-///.Function.reserve.class:Adaption.thrust::device_vector
-
 template <typename TChar,  typename TAlloc, typename TSize, typename TExpand>
 inline typename Size<thrust::device_vector<TChar, TAlloc> >::Type
 reserve(thrust::device_vector<TChar, TAlloc> & seq, TSize new_capacity, Tag<TExpand> const & tag)
@@ -836,7 +759,6 @@ reserve(thrust::device_vector<TChar, TAlloc> & seq, TSize new_capacity, Limit co
 // Function resize()
 // ----------------------------------------------------------------------------
 
-///.Function.resize.param.object.type:Adaption.thrust::device_vector
 template <typename TChar,  typename TAlloc, typename TSize, typename TExpand>
 inline typename Size<thrust::device_vector<TChar, TAlloc> >::Type
 resize(thrust::device_vector<TChar, TAlloc> & me, TSize new_length, Tag<TExpand> const &)

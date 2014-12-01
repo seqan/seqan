@@ -899,8 +899,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-///.Function.container.param.iterator.type:Spec.VSTree Iterator
-
 	template < typename TIndex, class TSpec >
 	SEQAN_HOST_DEVICE inline TIndex const & 
 	container(Iter< TIndex, VSTree<TSpec> > const &it) { 
@@ -915,8 +913,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 
 //////////////////////////////////////////////////////////////////////////////
-///.Function.value.param.object.type:Spec.VSTree Iterator
-
 /*!
  * @fn VSTreeIterator#value
  * @headerfile <seqan/index.h>
@@ -1606,10 +1602,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  * 
  * @see StringTreeConcept#begin
  */
-///.Function.goBegin.param.iterator.type:Spec.BottomUp Iterator
-///.Function.goBegin.class:Spec.BottomUp Iterator
-///.Function.goBegin.param.iterator.type:Spec.TopDownHistory Iterator
-///.Function.goBegin.class:Spec.TopDownHistory Iterator
 	template < typename TText, typename TIndexSpec, class TSpec >
 	inline void goBegin(Iter<Index<TText, TIndexSpec>, VSTree<TSpec> > &it) 
 	{
@@ -1649,8 +1641,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 //____________________________________________________________________________
 
 // TODO(singer) ask Dave
-///.Function.end.param.object.type:Class.Index
-///.Function.end.class:Class.Index
 	template < typename TText, typename TIndexSpec, class TSpec >
 	inline typename Iterator<Index<TText, TIndexSpec>, TSpec >::Type
 	end(Index<TText, TIndexSpec> &index, TSpec const) 
@@ -1662,10 +1652,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	}
 
 // TODO(singer) ask Dave
-///.Function.goEnd.param.iterator.type:Spec.BottomUp Iterator
-///.Function.goEnd.class:Spec.BottomUp Iterator
-///.Function.goEnd.param.iterator.type:Spec.TopDownHistory Iterator
-///.Function.goEnd.class:Spec.TopDownHistory Iterator
 	template < typename TText, typename TIndexSpec, class TSpec >
 	inline void goEnd(Iter<Index<TText, IndexEsa<TIndexSpec> >, VSTree<TSpec> > &it) 
 	{
@@ -1683,11 +1669,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 //____________________________________________________________________________
 
 // TODO(singer) ask Dave
-///.Function.goNext.param.iterator.type:Spec.BottomUp Iterator
-///.Function.goNext.class:Spec.BottomUp Iterator
-///.Function.goNext.param.iterator.type:Spec.TopDownHistory Iterator
-///.Function.goNext.class:Spec.TopDownHistory Iterator
-
 // TODO(holtgrew): Dave needs to update this.
 /*!
  * @fn VSTreeIterator#goNext
@@ -2458,11 +2439,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  * TA
  *
  */
-
-///.Function.atEnd.param.iterator.type:Spec.BottomUp Iterator
-///.Function.atEnd.class:Spec.BottomUp Iterator
-///.Function.atEnd.param.iterator.type:Spec.TopDownHistory Iterator
-///.Function.atEnd.class:Spec.TopDownHistory Iterator
 
 	template < typename TIndex, class TSpec >
 	inline bool atEnd(Iter<TIndex, VSTree<TSpec> > &it) 

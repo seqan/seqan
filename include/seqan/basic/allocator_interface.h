@@ -109,11 +109,6 @@ typedef Tag<AllocateStorage_> TagAllocateStorage;
 template <typename TSpec>
 struct Allocator;
 
-///.Function.allocate.param.object.type:Class.Allocator
-///.Function.allocate.class:Class.Allocator
-///.Function.deallocate.param.object.type:Class.Allocator
-///.Function.deallocate.class:Class.Allocator
-
 // ============================================================================
 // Metafunctions
 // ============================================================================

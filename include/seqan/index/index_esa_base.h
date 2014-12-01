@@ -236,9 +236,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-///.Metafunction.VertexDescriptor.param.T.type:Spec.IndexEsa
-///.Metafunction.VertexDescriptor.class:Spec.IndexEsa
-
 /*!
  * @mfn StringTreeConcept#VertexDescriptor
  * @headerfile <seqan/index.h>
@@ -350,8 +347,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief The lcpe table.
  */
 
-///.Metafunction.Fibre.param.TSpec.type:Tag.ESA Index Fibres
-
     typedef FibreText       EsaText;
     typedef FibreRawText    EsaRawText;
     typedef FibreSA         EsaSA;
@@ -455,8 +450,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-///.Function.clear.param.object.type:Class.Index
-
 /*!
  * @fn Index#clear
  * @brief Resets all fibres of an index.

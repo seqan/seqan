@@ -220,9 +220,6 @@ struct QualityValueSize<DnaQ>
     enum { VALUE = 63 }; // 64 - 1 (N)
 };
 
-///.Function.getQualityValue.param.c.type:Spec.DnaQ
-///.Function.getQualityValue.class:Spec.DnaQ
-
 template <typename TValue>
 inline int getQualityValue(TValue const &) 
 {
@@ -233,9 +230,6 @@ inline int getQualityValue(DnaQ const & c)
 {
     return c.value >> 2;
 }
-
-///.Function.assignQualityValue.param.c.type:Spec.DnaQ
-///.Function.assignQualityValue.class:Spec.DnaQ
 
 inline
 void assignQualityValue(DnaQ & c, int q)
@@ -334,9 +328,6 @@ unknownValueImpl(Dna5Q *)
     return _result;
 }
 
-///.Function.getQualityValue.param.c.type:Spec.Dna5Q
-///.Function.getQualityValue.class.Spec.Dna5Q
-
 inline int getQualityValue(Dna5Q const &c) 
 {
     // We use a lookup table to extract the qualities from DNA5Q.  The lookup
@@ -362,9 +353,6 @@ inline int getQualityValue(Dna5Q const &c)
         0,  0,  0,  0};
     return table[c.value];
 }
-
-///.Function.assignQualityValue.param.c.type:Spec.Dna5Q
-///.Function.assignQualityValue.class:Spec.Dna5Q
 
 inline
 void assignQualityValue(Dna5Q &c, int q)

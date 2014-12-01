@@ -55,8 +55,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TNeedle The needle type. Types: String
  */
 
-///.Class.Pattern.param.TSpec.type:Spec.Horspool
-
 struct Horspool_;
 typedef Tag<Horspool_> Horspool;
 

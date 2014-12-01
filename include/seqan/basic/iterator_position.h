@@ -178,9 +178,6 @@ container(Iter<TContainer, PositionIterator> const & me)
 // Function setContainer()
 // ----------------------------------------------------------------------------
 
-///.Function.setContainer.param.object.type:Spec.Position Iterator
-///.Function.setContainer.class:Spec.Position Iterator
-
 template <typename TContainer>
 inline void
 setContainer(Iter<TContainer, PositionIterator> & me, typename Parameter_<TContainer>::Type container_)

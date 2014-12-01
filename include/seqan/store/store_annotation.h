@@ -570,7 +570,6 @@ getValueByKey(
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Function.goBegin.param.iterator.type:Spec.AnnotationTree Iterator
 template <typename TFragmentStore, typename TSpec>
 inline void
 goBegin(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
@@ -578,7 +577,6 @@ goBegin(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 	it._id = 0;
 }
 
-///.Function.goEnd.param.iterator.type:Spec.AnnotationTree Iterator
 template <typename TFragmentStore, typename TSpec>
 inline void
 goEnd(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
@@ -618,7 +616,6 @@ clear(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Function.atBegin.param.iterator.type:Spec.AnnotationTree Iterator
 template <typename TFragmentStore, typename TSpec>
 inline bool
 atBegin(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
@@ -626,7 +623,6 @@ atBegin(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 	return it._id == 0;
 }
 
-///.Function.atEnd.param.iterator.type:Spec.AnnotationTree Iterator
 template <typename TFragmentStore, typename TSpec>
 inline bool
 atEnd(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
@@ -639,7 +635,6 @@ atEnd(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Function.goNext.param.iterator.type:Spec.AnnotationTree Iterator
 template <typename TFragmentStore, typename TSpec>
 inline void
 goNext(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)

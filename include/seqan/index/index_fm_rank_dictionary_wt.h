@@ -88,8 +88,6 @@ typedef Tag<FibreTreeStructure_>    const FibreTreeStructure;
 // Metafunction Fibre
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Fibre.param.TContainer.type:Class.RankDictionary
-///.Metafunction.Fibre.param.TSpec.type:Tag.WaveletTree Fibres
 /*
 .Metafunction.Fibre:
 ..summary:Type of a specific FMIndex member (fibre).

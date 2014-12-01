@@ -170,9 +170,6 @@ public:
  * @return VALUE Number of different values T can have.
  */
 
-///.Metafunction.ValueSize.param.T.type:Class.ProfileChar
-///.Metafunction.ValueSize.class:Class.ProfileChar
-
 template <typename TValue, typename TCount, typename TSpec>
 struct ValueSize<ProfileChar<TValue, TCount, TSpec> >
 {

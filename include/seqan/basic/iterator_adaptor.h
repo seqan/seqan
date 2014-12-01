@@ -341,8 +341,6 @@ hostIterator(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 // Function position()
 // ----------------------------------------------------------------------------
 
-///.Function.position.param.iter.type:Spec.Adaptor Iterator
-
 template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE typename Position<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
 position(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)

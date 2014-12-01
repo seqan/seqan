@@ -601,9 +601,6 @@ inline void posLocalize(TResult & result, Pair<T1, T2, TPack> const & pos, Strin
 // Function prefix()
 // --------------------------------------------------------------------------
 
-///.Function.prefix.param.host.type:Class.StringSet
-///.Function.prefix.class:Class.StringSet
-
 template < typename TString, typename TSpec, typename TPosition >
 inline typename Prefix<TString>::Type
 prefix(StringSet< TString, TSpec > & me, TPosition const & pos)
@@ -635,9 +632,6 @@ prefix(StringSet< TString, TSpec > const & me, TPosition const & pos)
 // --------------------------------------------------------------------------
 // Function suffix()
 // --------------------------------------------------------------------------
-
-///.Function.suffix.param.host.type:Class.StringSet
-///.Function.suffix.class:Class.StringSet
 
 template < typename TString, typename TSpec, typename TPosition >
 inline typename Suffix<TString>::Type
@@ -671,9 +665,6 @@ suffix(StringSet< TString, TSpec > const & me, TPosition const & pos)
 // Function infixWithLength()
 // --------------------------------------------------------------------------
 
-///.Function.infixWithLength.param.host.type:Class.StringSet
-///.Function.infixWithLength.class:Class.StringSet
-
 template < typename TString, typename TSpec, typename TPosition, typename TSize >
 inline typename Infix<TString>::Type
 infixWithLength(StringSet< TString, TSpec > & me, TPosition const & pos, TSize length)
@@ -705,9 +696,6 @@ infixWithLength(StringSet< TString, TSpec > const & me, TPosition const & pos, T
 // --------------------------------------------------------------------------
 // Function infix()
 // --------------------------------------------------------------------------
-
-///.Function.infix.param.host.type:Class.StringSet
-///.Function.infix.class:Class.StringSet
 
 template < typename TString, typename TSpec, typename TPosBegin, typename TPosEnd >
 inline typename Infix<TString>::Type
@@ -1280,15 +1268,6 @@ lengthSum(StringSet<TString, TSpec> const & me)
 // --------------------------------------------------------------------------
 
 
-///.Function.appendValue.param.target.type:Class.StringSet
-///.Function.appendValue.class:Class.StringSet
-///.Function.clear.param.object.type:Class.StringSet
-///.Function.clear.class:Class.StringSet
-///.Function.resize.param.object.type:Class.StringSet
-///.Function.resize.class:Class.StringSet
-///.Function.length.param.object.type:Class.StringSet
-///.Function.length.class:Class.StringSet
-
 template <typename TString, typename TSpec >
 inline typename Size<StringSet<TString, TSpec > >::Type
 length(StringSet<TString, TSpec > const & me)
@@ -1376,7 +1355,6 @@ assign(StringSet<TString, TSpec> & target,
 // Function iter()
 // --------------------------------------------------------------------------
 
-///.Function.iter.param.object.type:Class.StringSet
 template <typename TString, typename TSpec, typename TPos, typename TTag>
 inline typename Iterator<StringSet<TString, TSpec >, Tag<TTag> const>::Type
 iter(StringSet<TString, TSpec > & me,
@@ -1405,9 +1383,6 @@ iter(StringSet<TString, TSpec > const & me,
 // Function begin()
 // --------------------------------------------------------------------------
 
-///.Function.begin.param.object.type:Class.StringSet
-///.Function.begin.class:Class.StringSet
-
 template <typename TString, typename TSpec, typename TTag>
 inline typename Iterator<StringSet<TString, TSpec >, Tag<TTag> const>::Type
 begin(StringSet<TString, TSpec > & me,
@@ -1428,9 +1403,6 @@ begin(StringSet<TString, TSpec > const & me,
 // Function end()
 // --------------------------------------------------------------------------
 
-///.Function.end.param.object.type:Class.StringSet
-///.Function.end.class:Class.StringSet
-
 template <typename TString, typename TSpec, typename TTag>
 inline typename Iterator<StringSet<TString, TSpec >, Tag<TTag> const>::Type
 end(StringSet<TString, TSpec > & me,
@@ -1450,9 +1422,6 @@ return iter(me, length(me), tag);
 // --------------------------------------------------------------------------
 // Function value()
 // --------------------------------------------------------------------------
-
-///.Function.value.param.object.type:Class.StringSet
-///.Function.value.class:Class.StringSet
 
 // --------------------------------------------------------------------------
 // Function getValueById()

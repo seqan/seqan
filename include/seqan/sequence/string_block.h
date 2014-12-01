@@ -168,9 +168,6 @@ struct DefaultOverflowImplicit< String<TValue, Block<SPACE> > >
 // Metafunction Iterator
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Iterator.param.T.type:Spec.Block String
-///.Metafunction.Iterator.class:Spec.Block String
-
 template<typename TValue, size_t SPACE>
 struct Iterator<String<TValue, Block<SPACE> >, Standard>
 {
@@ -364,8 +361,6 @@ resize(String<TValue, Block<SPACE> > & me, TSize2 new_length, Limit)
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Why is this only a dummy implementation?
-///.Function.reserve.param.object.type:Spec.Block String
-///.Function.reserve.class:Spec.Block String
 /*
 template <typename TValue, size_t SPACE, typename TSize, typename TExpand>
 inline typename Size< String<TValue, Block<SPACE> > >::Type
@@ -392,8 +387,6 @@ reserve(String<TValue, Block<SPACE> > & /*me*/, TSize new_capacity, Tag<TExpand>
 // ----------------------------------------------------------------------------
 // Function appendValue()
 // ----------------------------------------------------------------------------
-
-///.Function.appendValue.param.target.type:Spec.Block String
 
 template<typename TTargetValue, size_t SPACE, typename TValue, typename TExpand>
 inline void

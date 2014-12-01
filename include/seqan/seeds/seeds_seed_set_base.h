@@ -82,20 +82,6 @@ class SeedSet;
 // Metafunctions
 // ===========================================================================
 
-///.Metafunction.Position.param.T.type:Class.SeedSet
-///.Metafunction.Position.class:Class.SeedSet
-///.Metafunction.Size.param.T.type:Class.SeedSet
-///.Metafunction.Size.class:Class.SeedSet
-///.Metafunction.Value.param.T.type:Class.SeedSet
-///.Metafunction.Value.class:Class.SeedSet
-///.Metafunction.GetValue.param.T.type:Class.SeedSet
-///.Metafunction.GetValue.class:Class.SeedSet
-///.Metafunction.Reference.param.T.type:Class.SeedSet
-///.Metafunction.Reference.class:Class.SeedSet
-///.Metafunction.Iterator.param.T.type:Class.SeedSet
-///.Metafunction.Iterator.class:Class.SeedSet
-
-
 // ===========================================================================
 // Functions
 // ===========================================================================
@@ -263,7 +249,6 @@ inline bool _qualityReached(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet,
  * @param[in,out] seedSet The SeedSet to clear.
  */
 
-///.Function.clear.param.object.type:Class.SeedSet
 template <typename TSeedSpec, typename TSeedSetSpec>
 inline void clear(SeedSet<TSeedSpec, TSeedSetSpec> & seedSet)
 {

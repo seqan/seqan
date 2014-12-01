@@ -83,8 +83,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return Type The value type of the shape.
  */
 
-///.Metafunction.Value.param.T.type:Class.Shape
-///.Metafunction.Value.class:Class.Shape
 	template <typename TValue, typename TSpec>
 	struct Value<Shape<TValue,TSpec> >
 	{
@@ -102,8 +100,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return Type The size type of the shape.
  */
 
-///.Metafunction.Size.param.T.type:Class.Shape
-///.Metafunction.Size.class:Class.Shape
 	template <typename TValue, typename TSpec>
 	struct Size<Shape<TValue,TSpec> >
 	{
@@ -121,8 +117,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return VALUE The length (span) of the shape.
  */
 
-///.Metafunction.LENGTH.param.T.type:Class.Shape
-///.Metafunction.LENGTH.class:Class.Shape
     template <typename TValue, unsigned q>
 	struct LENGTH< Shape<TValue, UngappedShape<q> > >
 	{
@@ -140,8 +134,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return VALUE The weight (number of 1's) of the shape.
  */
 
-///.Metafunction.WEIGHT.param.T.type:Class.Shape
-///.Metafunction.WEIGHT.class:Class.Shape
     template <typename TValue, unsigned q>
 	struct WEIGHT< Shape<TValue, UngappedShape<q> > >
 	{
@@ -159,8 +151,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return Type Type to use for the value size.
  */
 
-///.Metafunction.ValueSize.param.T.type:Class.Shape
-///.Metafunction.ValueSize.class:Class.Shape
 	template <typename TValue, typename TSpec>
 	struct ValueSize< Shape<TValue, TSpec> >
 	{
@@ -180,9 +170,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @return Type Type to use for the host (= value) size.
  */
-
-///.Metafunction.Host.param.T.type:Class.Shape
-///.Metafunction.Host.class:Class.Shape
 
 	template <typename TValue, typename TSpec>
 	struct Host<Shape<TValue,TSpec> >
@@ -343,8 +330,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return TValue The hash value of the shape.
  */
 
-///.Function.value.param.object.type:Class.Shape
-///.Function.value.class:Class.Shape
 	template <typename TValue, typename TSpec>
 	inline typename Value< Shape<TValue, TSpec> >::Type
 	value(Shape<TValue, TSpec> &me)
@@ -371,8 +356,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @return TSize The number of elements of the shape (span) (Metafunction: @link Shape#Size @endlink).
  */
-///.Function.length.param.object.type:Class.Shape
-///.Function.length.class:Class.Shape
 	template <typename TValue, typename TSpec>
 	inline SEQAN_HOST_DEVICE
 	typename Size< Shape<TValue, TSpec> >::Type
@@ -408,8 +391,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //____________________________________________________________________________
 
-///.Function.resize.param.object.type:Spec.SimpleShape
-///.Function.resize.class:Spec.SimpleShape
 /*!
  * @fn Shape#resize
  * @brief Resize a shape to a specified span.
@@ -994,9 +975,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //____________________________________________________________________________
 	
-///.Function.reverse.param.object.type:Spec.SimpleShape
-///.Function.reverse.class:Spec.SimpleShape
-
 	template <typename TValue, typename TSpec>
 	inline void
 	reverse(Shape<TValue, TSpec> &)

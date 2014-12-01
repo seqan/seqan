@@ -116,8 +116,6 @@ public:
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Iterator.param.T.type:Class.Graph
-
 template<typename TGraph>
 struct Iterator<TGraph, VertexIterator>
 {	

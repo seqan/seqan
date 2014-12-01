@@ -205,9 +205,6 @@ struct Tuple<TValue, SIZE, Pack>
  * @return VALUE The length of the tuple.
  */
 
-///.Metafunction.LENGTH.param.T.type:Class.Tuple
-///.Metafunction.LENGTH.class:Class.Tuple
-
 template <typename TValue, unsigned SIZE, typename TSpec>
 struct LENGTH<Tuple<TValue, SIZE, TSpec> >
 {
@@ -229,9 +226,6 @@ struct LENGTH<Tuple<TValue, SIZE, TSpec> >
  * @return Type The resulting value type.
  */
 
-///.Metafunction.Value.param.T.type:Class.Tuple
-///.Metafunction.Value.class:Class.Tuple
-
 template <typename TValue, unsigned SIZE, typename TSpec>
 struct Value<Tuple<TValue, SIZE, TSpec> >
 {
@@ -241,9 +235,6 @@ struct Value<Tuple<TValue, SIZE, TSpec> >
 // -----------------------------------------------------------------------
 // Metafunction Spec
 // -----------------------------------------------------------------------
-
-///.Metafunction.Spec.param.T.type:Class.Tuple
-///.Metafunction.Spec.class:Class.Tuple
 
 template <typename TValue, unsigned SIZE, typename TSpec>
 struct Spec<Tuple<TValue, SIZE, TSpec> >

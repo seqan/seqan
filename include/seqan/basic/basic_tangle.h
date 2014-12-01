@@ -75,8 +75,6 @@ struct Iterator<SimpleType<TValue, TSpec> const, Standard>
 
 // TODO(holtgrew): Is this part of some adaption?
 
-///.Metafunction.Key.param.T.type:Class.Pair
-
 template <typename TKey, typename TObject, typename TSpec>
 struct Key<Pair<TKey, TObject, TSpec> > 
 {
@@ -88,8 +86,6 @@ struct Key<Pair<TKey, TObject, TSpec> >
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Is this part of some adaption?
-
-///.Metafunction.Cargo.param.T.type:Class.Pair
 
 template <typename TKey, typename TCargo, typename TSpec>
 struct Cargo<Pair<TKey, TCargo, TSpec> > 

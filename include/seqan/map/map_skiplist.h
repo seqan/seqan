@@ -871,9 +871,6 @@ clear(Map<TValue, Skiplist<TSpec> > & me)
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Function.length.param.object.type:Class.Map
-///.Function.length.class:Class.Map
-
 template <typename TValue, typename TSpec>
 inline typename Size< Map<TValue, Skiplist<TSpec> > >::Type
 length(Map<TValue, Skiplist<TSpec> > const & me)
@@ -882,8 +879,6 @@ length(Map<TValue, Skiplist<TSpec> > const & me)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Function.begin.class:Class.Map
 
 template <typename TValue, typename TSpec, typename TIteratorSpec>
 inline typename Iterator< Map<TValue, Skiplist<TSpec> >, TIteratorSpec>::Type
@@ -902,8 +897,6 @@ begin(Map<TValue, Skiplist<TSpec> > & me)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Function.end.class:Class.Map
 
 template <typename TValue, typename TSpec, typename TIteratorSpec>
 inline typename Iterator< Map<TValue, Skiplist<TSpec> >, TIteratorSpec>::Type

@@ -175,7 +175,6 @@ public:
  * @tparam TSplitter The Splitter to query for its size type.
  */
 
-///.Metafunction.Size.param.T.type:Class.Splitter
 template <typename TValue, typename TSpec>
 struct Size<Splitter<TValue, TSpec> >
 {
@@ -191,7 +190,6 @@ struct Size<Splitter<TValue, TSpec> >
  * @tparam TSplitter The Splitter to query for its value type.
  */
 
-///.Metafunction.Value.param.T.type:Class.Splitter
 template <typename TValue, typename TSpec>
 struct Value<Splitter<TValue, TSpec> >
 {
@@ -209,8 +207,6 @@ struct Value<Splitter<TValue, TSpec> >
  * @return TSize The number of elements in the Splitter, <tt>TSize</tt> is the size type.
  */
 
-///.Function.length.param.object.type:Class.Splitter
-///.Function.length.class:Class.Splitter
 template <typename TValue, typename TSpec>
 inline typename Size<Splitter<TValue, TSpec> >::Type
 length(Splitter<TValue, TSpec> const &splitter)
@@ -245,8 +241,6 @@ _resize(Splitter<TValue, TSpec> &splitter, TSize1 intervalLen, TSize2 newCount)
     splitter.subintervalCount = newCount;
 }
 
-///.Function.resize.param.object.type:Class.Splitter
-///.Function.resize.class:Class.Splitter
 template <typename TValue, typename TSpec, typename TSize>
 inline typename Size<Splitter<TValue, TSpec> >::Type
 resize(Splitter<TValue, TSpec> &splitter, TSize newCount)

@@ -128,10 +128,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	typedef FibreRawSA		WotdRawSA;
 	typedef FibreDir		WotdDir;
 
-///.Spec.VSTree Iterator.param.TContainer.type:Spec.IndexWotd
-///.Spec.TopDown Iterator.param.TContainer.type:Spec.IndexWotd
-///.Spec.TopDownHistory Iterator.param.TContainer.type:Spec.IndexWotd
-
 //////////////////////////////////////////////////////////////////////////////
 // wotd tree index
 
@@ -341,8 +337,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 	};
 
 //////////////////////////////////////////////////////////////////////////////
-///.Metafunction.VertexDescriptor.param.T.type:Spec.IndexWotd
-
 	template < typename TText >
 	struct VertexDescriptor< Index<TText, IndexWotd<WotdOriginal> > > {
 		typedef typename Size< Index<TText, IndexWotd<WotdOriginal> > >::Type TSize;
@@ -437,9 +431,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-///.Function.resizeVertexMap.param.index.type:Spec.IndexWotd
-///.Function.resizeVertexMap.class:Spec.IndexWotd
-
 	template < typename TText, typename TIndexSpec, typename TPropertyMap >
 	inline void
 	resizeVertexMap(

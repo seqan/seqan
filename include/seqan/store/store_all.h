@@ -584,7 +584,6 @@ struct VertexDescriptor< FragmentStore<TSpec, TConfig> >
 };
 
 //////////////////////////////////////////////////////////////////////////////
-///.Function.begin.param.object.type:Class.FragmentStore
 template < typename TConfig, typename TSpec, typename TIterSpec >
 inline typename Iterator<FragmentStore<TSpec, TConfig>, TIterSpec >::Type
 begin(FragmentStore<TSpec, TConfig> &store, TIterSpec const) 
@@ -600,7 +599,6 @@ begin(FragmentStore<TSpec, TConfig> const &store, TIterSpec const)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-///.Function.end.param.object.type:Class.FragmentStore
 template < typename TConfig, typename TSpec, typename TIterSpec >
 inline typename Iterator<FragmentStore<TSpec, TConfig>, TIterSpec >::Type
 end(FragmentStore<TSpec, TConfig> &store, TIterSpec const) 
