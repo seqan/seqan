@@ -36,8 +36,8 @@
 #define SEQAN_APPS_GUSTAF_MSPLAZER_MAIN_H_
 
 
-#include "../../../apps/stellar/stellar.h"
-#include "../../../apps/stellar/stellar_output.h"
+#include "../stellar/stellar.h"
+#include "../stellar/stellar_output.h"
 
 #include "msplazer.h"
 #include "msplazer_out.h"
