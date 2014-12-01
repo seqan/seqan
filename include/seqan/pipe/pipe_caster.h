@@ -68,8 +68,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The input stream is casted using <tt>reinterpret_cast&lt;TValue&gt;</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     //////////////////////////////////////////////////////////////////////////////
     // caster pipe
     template <typename TInput, typename TValue >

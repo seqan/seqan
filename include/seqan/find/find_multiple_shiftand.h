@@ -58,8 +58,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The types of all keywords in the needle and the haystack have to match.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 ///.Class.Pattern.param.TSpec.type:Spec.MultipleShiftAnd
 
 struct MultipleShiftAnd_;

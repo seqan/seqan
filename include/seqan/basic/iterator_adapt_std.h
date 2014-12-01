@@ -88,8 +88,6 @@ struct StdContainerIterator;
  * This type is a wrapper around STL iterators that has a conversion operator back to the underlying iterator.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct StdIteratorAdaptor_;
 typedef Tag<StdIteratorAdaptor_> StdIteratorAdaptor;
 
@@ -245,8 +243,6 @@ struct Reference<Iter<TContainer const, StdIteratorAdaptor> const> :
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): This is a candidate for not beging publically documented
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TStdContainer>
 struct StdContainerIterator;

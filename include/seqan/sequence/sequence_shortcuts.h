@@ -52,8 +52,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature typedef String<char> CharString;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 typedef String<char, Alloc<void> > CharString;
 
 //____________________________________________________________________________
@@ -65,8 +63,6 @@ typedef String<char, Alloc<void> > CharString;
  *
  * @signature typedef Iterator<CharString, Rooted>::Type CharIterator;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 typedef Iterator<CharString, Rooted>::Type CharIterator;
 
@@ -80,13 +76,9 @@ typedef Iterator<CharString, Rooted>::Type CharIterator;
  * @signature typedef String<wchar_t> CharString;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 typedef String<wchar_t, Alloc<void> > UnicodeString;
 
 //____________________________________________________________________________
-
-/*_DDDOC_PLACEHOLDER*/
 
 typedef Iterator<UnicodeString, Rooted>::Type UnicodeIterator;
 
@@ -100,8 +92,6 @@ typedef Iterator<UnicodeString, Rooted>::Type UnicodeIterator;
  * @signature typedef String<Dna> CharString;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 typedef String<Dna, Alloc<void> > DnaString;
 
 //____________________________________________________________________________
@@ -113,8 +103,6 @@ typedef String<Dna, Alloc<void> > DnaString;
  *
  * @signature typedef Iterator<DnaString, Rooted>::Type DnaIterator;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 typedef Iterator<DnaString, Rooted>::Type DnaIterator;
 
@@ -128,8 +116,6 @@ typedef Iterator<DnaString, Rooted>::Type DnaIterator;
  * @signature typedef String<Dna5> CharString;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 typedef String<Dna5, Alloc<void> > Dna5String;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -141,8 +127,6 @@ typedef String<Dna5, Alloc<void> > Dna5String;
  *
  * @signature typedef String<DnaQ> CharString;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 typedef String<DnaQ, Alloc<void> > DnaQString;
 
@@ -156,8 +140,6 @@ typedef String<DnaQ, Alloc<void> > DnaQString;
  * @signature typedef String<Dna5Q> CharString;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 typedef String<Dna5Q, Alloc<void> > Dna5QString;
 
 //____________________________________________________________________________
@@ -169,8 +151,6 @@ typedef String<Dna5Q, Alloc<void> > Dna5QString;
  *
  * @signature typedef Iterator<Dna5String, Rooted>::Type Dna5Iterator;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 typedef Iterator<Dna5String, Rooted>::Type Dna5Iterator;
 
@@ -184,8 +164,6 @@ typedef Iterator<Dna5String, Rooted>::Type Dna5Iterator;
  * @signature typedef String<Rna> CharString;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 typedef String<Rna, Alloc<void> > RnaString;
 
 //____________________________________________________________________________
@@ -197,8 +175,6 @@ typedef String<Rna, Alloc<void> > RnaString;
  *
  * @signature typedef Iterator<RnaString, Rooted>::Type RnaIterator;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 typedef Iterator<RnaString, Rooted>::Type RnaIterator;
 
@@ -212,8 +188,6 @@ typedef Iterator<RnaString, Rooted>::Type RnaIterator;
  * @signature typedef String<Rna5> CharString;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 typedef String<Rna5, Alloc<void> > Rna5String;
 
 //____________________________________________________________________________
@@ -225,8 +199,6 @@ typedef String<Rna5, Alloc<void> > Rna5String;
  *
  * @signature typedef Iterator<Rna5String, Rooted>::Type Rna5Iterator;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 typedef Iterator<Rna5String, Rooted>::Type Rna5Iterator;
 
@@ -240,8 +212,6 @@ typedef Iterator<Rna5String, Rooted>::Type Rna5Iterator;
  * @signature typedef String<Iupac> CharString;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 typedef String<Iupac, Alloc<void> > IupacString;
 
 //____________________________________________________________________________
@@ -253,8 +223,6 @@ typedef String<Iupac, Alloc<void> > IupacString;
  *
  * @signature typedef Iterator<IupacString, Rooted>::Type IupacIterator;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 typedef Iterator<IupacString, Rooted>::Type IupacIterator;
 
@@ -268,8 +236,6 @@ typedef Iterator<IupacString, Rooted>::Type IupacIterator;
  * @signature typedef String<AminoAcid> Peptide;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 typedef String<AminoAcid, Alloc<void> > Peptide;
 
 //____________________________________________________________________________
@@ -281,8 +247,6 @@ typedef String<AminoAcid, Alloc<void> > Peptide;
  *
  * @signature typedef Iterator<Peptide, Rooted>::Type PeptideIterator;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 typedef Iterator<Peptide, Rooted>::Type PeptideIterator;
 

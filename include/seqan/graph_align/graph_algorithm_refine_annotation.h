@@ -46,7 +46,6 @@ class Annotation;
 
 
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TSequence,typename TValue>
 class Annotation<TSequence,TValue,Simple>{
 
@@ -65,7 +64,6 @@ public:
 	{
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 	
 	Annotation(TId_ seqId, TPos_ begin, TSize_ len, TValue label) :
 			data_seq_id(seqId),
@@ -297,7 +295,6 @@ SEQAN_CHECKPOINT
 
 
 
-/*_DDDOC_PLACEHOLDER*/
 //annotation given,exact refinement, score type given
 template<typename TAlignmentString, typename TScoreValue,typename TScoreSpec,typename TAnnoString,typename TOutGraph, typename TSequence, typename TSetSpec>
 void
@@ -313,7 +310,6 @@ SEQAN_CHECKPOINT
 }
 
 
-/*_DDDOC_PLACEHOLDER*/
 //annotation given,score type given, min fragment length given, if > 1 ==> inexact refinement
 template<typename TAlignmentString, typename TScoreValue,typename TScoreSpec,typename TAnnoString, typename TOutGraph, typename TSequence, typename TSetSpec>
 void
@@ -333,7 +329,6 @@ SEQAN_CHECKPOINT
 
 
 
-/*_DDDOC_PLACEHOLDER*/
 //annotation given,score type not given, min fragment length given, if > 1 ==> inexact refinement
 template<typename TAlignmentString, typename TOutGraph, typename TAnnoString, typename TSequence, typename TSetSpec>
 void
@@ -354,7 +349,6 @@ SEQAN_CHECKPOINT
 	
 
 
-/*_DDDOC_PLACEHOLDER*/
 //annotation given,exact refinement, score type not given
 template<typename TAlignmentString,typename TAnnoString, typename TOutGraph, typename TSequence, typename TSetSpec>
 void

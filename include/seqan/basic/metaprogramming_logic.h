@@ -101,8 +101,6 @@ namespace seqan {
  * @signature bool False::VALUE = false;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct True
 {
     typedef True Type;
@@ -188,8 +186,6 @@ struct False
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type eval
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <bool B>
 struct Eval : False {};
 
@@ -223,8 +219,6 @@ struct Eval<true> : True {};
  *
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type not
  */ 
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TBool1>
 struct Not : Not<typename TBool1::Type> {}; 
@@ -262,8 +256,6 @@ struct Not<True> : False {};
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type notc
  */ 
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <bool B>
 struct NotC;
 
@@ -300,8 +292,6 @@ struct NotC<true> : False {};
  *
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type or
  */ 
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TBool1, typename TBool2>
 struct Or : Or<typename TBool1::Type, typename TBool2::Type> {}; 
@@ -344,8 +334,6 @@ struct Or<True, True> : True {};
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type orc
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <bool B1, bool B2>
 struct OrC;
 
@@ -386,8 +374,6 @@ struct OrC<true, true> : True {};
  *
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type and
  */ 
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TBool1, typename TBool2>
 struct And : And<typename TBool1::Type, typename TBool2::Type> {}; 
@@ -430,8 +416,6 @@ struct And<True, True> : True {};
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type andc
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <bool B1, bool B2>
 struct AndC;
 
@@ -471,8 +455,6 @@ struct AndC<true, true> : True {};
  *
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type if
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TCondition, typename T1, typename T2>
 struct If : If<typename TCondition::Type, T1, T2>{};
@@ -550,8 +532,6 @@ ifSwitch(False, TArgT const &, TArgF const & argFalse)
  *
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type if
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <bool FLAG, typename T1, typename T2>
 struct IfC

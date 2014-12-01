@@ -227,8 +227,6 @@ inline void assignValue(
  * @return THost Reference to the host.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TString>
 inline typename Host<StringSet<TString, Owner<JournaledSet> > >::Type const &
 host(StringSet<TString, Owner<JournaledSet> > const & journalSet)
@@ -262,8 +260,6 @@ host(StringSet<TString, Owner<JournaledSet> > & journalSet)
  * Uses an @link Holder @endlink to store a reference to the new global reference sequence instead of copying it.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TString, typename THost>
 inline void
 setHost(StringSet<TString, Owner<JournaledSet> > & journalSet,
@@ -286,8 +282,6 @@ setHost(StringSet<TString, Owner<JournaledSet> > & journalSet,
  * @param[in]     ref       The new reference sequence of the JournaledSet.  Stores a copy of the passed global
  *                          reference sequence.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TString>
 inline void

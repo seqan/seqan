@@ -57,8 +57,6 @@ struct SortedList;
 template <typename TSpec = void>
 struct IndexSa {};
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @class IndexSa
  * @extends Index

@@ -56,8 +56,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * This specialization should only be used if no other is applicable.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 ///.Class.Pattern.param.TSpec.type:Spec.Simple Finder
 
 //////////////////////////////////////////////////////////////////////////////

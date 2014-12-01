@@ -67,8 +67,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The needle-length must be smaller than the highest number that can be stored in an unsigned int.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 ///.Class.Pattern.param.TSpec.type:Spec.Myers
 
 template <typename TSpec = FindInfix, 
@@ -98,7 +96,6 @@ struct AlignTextBanded; // search query in a parallelogram
  * @deprecated Use <tt>Myers&lt;FindInfix&gt;</tt> instead.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 typedef Myers<FindInfix, True, void> MyersUkkonen;
 
 /*!
@@ -109,7 +106,6 @@ typedef Myers<FindInfix, True, void> MyersUkkonen;
  * @signature typedef Myers<FindInfix, True, void> MyersUkkonenGlobal;
  */
 
-/*_DDDOC_PLACEHOLDER*/
 typedef Myers<FindPrefix, True, void> MyersUkkonenGlobal;
 
 /*!
@@ -120,8 +116,6 @@ typedef Myers<FindPrefix, True, void> MyersUkkonenGlobal;
  * @signature Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_>, True, void> MyersUkkonenBanded;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @typedef MyersUkkonenGlobalBanded
  * @headerfile <seqan/find.h>
@@ -130,7 +124,6 @@ typedef Myers<FindPrefix, True, void> MyersUkkonenGlobal;
  * @signature Myers<AlignTextBanded<FindPrefix, NMatchesN_, NMatchesN_>, True, void> MyersUkkonenGlobalBanded;
  */
 
-/*_DDDOC_PLACEHOLDER*/
 typedef Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_>, True, void> MyersUkkonenBanded;
 typedef Myers<AlignTextBanded<FindPrefix, NMatchesN_, NMatchesN_>, True, void> MyersUkkonenGlobalBanded;
 

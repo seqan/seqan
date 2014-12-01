@@ -58,8 +58,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see MapperConfig
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     template < typename TMap,
 		       typename TSize,
 		       typename TFile = File<> >						// default file type
@@ -88,8 +86,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see MapperConfigSize
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     template < typename TMap,
 		       typename TFile = File<> >
     struct MapperConfig {
@@ -113,8 +109,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * The Pool's input/output type is <tt>TValue</tt> and the size type is determined by the <tt>TConfig</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
     template <typename TConfig>
     struct MapperSpec {

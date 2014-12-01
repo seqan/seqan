@@ -59,7 +59,6 @@ struct Mean {
 	Mean(unsigned w) : window(w) {}
 };
 
-/*_DDDOC_PLACEHOLDER*/
 struct QualityTrimmingStats
 {
 	unsigned dropped_1, dropped_2;
@@ -83,7 +82,6 @@ struct QualityTrimmingStats
 // Functions
 // ============================================================================
 
-/*_DDDOC_PLACEHOLDER*/
 inline unsigned getQuality(const seqan::String<seqan::Dna5Q>& seq, unsigned i)
 {
 	return seqan::getQualityValue(seq[i]);
@@ -91,7 +89,6 @@ inline unsigned getQuality(const seqan::String<seqan::Dna5Q>& seq, unsigned i)
 
 // Trimming methods
 // ----------------------------------------------------------------------------
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq>
 unsigned _trimRead(const TSeq& seq, unsigned const cutoff, Tail const &)
 {
@@ -148,7 +145,6 @@ unsigned _trimRead(const TSeq& seq, unsigned const _cutoff, Mean const & spec)
 	return i;   // i now holds the start of the first window that turned bad.
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq, typename TSpec>
 unsigned trimRead(TSeq& seq, unsigned const cutoff, TSpec const & spec)
 {
@@ -158,7 +154,6 @@ unsigned trimRead(TSeq& seq, unsigned const cutoff, TSpec const & spec)
 	erase(seq, cut_pos, length(seq));
     return ret;
 }
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSet, typename TIdSet, typename TSpec>
 unsigned _trimReads(TSet & seqSet, TIdSet& idSet, unsigned const cutoff, TSpec const & spec, bool tagOpt)
 {
@@ -182,7 +177,6 @@ unsigned _trimReads(TSet & seqSet, TIdSet& idSet, unsigned const cutoff, TSpec c
 	return trimmedReads;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TId, typename TSeq>
 unsigned dropReads(seqan::StringSet<TId> & idSet, seqan::StringSet<TSeq> & seqSet,
 		unsigned const min_length, QualityTrimmingStats& stats)
@@ -288,7 +282,6 @@ unsigned dropReads(seqan::StringSet<TId> & idSet1, seqan::StringSet<TSeq> & seqS
 	return 0;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq, typename TId, typename TSpec>
 unsigned trimBatch(seqan::StringSet<TSeq>& seqSet, seqan::StringSet<TId>& idSet, unsigned const cutoff,
     TSpec const& spec, bool tagOpt)
@@ -297,7 +290,6 @@ unsigned trimBatch(seqan::StringSet<TSeq>& seqSet, seqan::StringSet<TId>& idSet,
 	return trimmedReads;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq, typename TId, typename TSpec>
 seqan::Pair<unsigned, unsigned> trimPairBatch(seqan::StringSet<TSeq>& seqSet1, seqan::StringSet<TId>& idSet1,
     seqan::StringSet<TSeq> & seqSet2, seqan::StringSet<TId>& idSet2, unsigned const cutoff,

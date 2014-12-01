@@ -61,8 +61,6 @@ namespace seqan {
  * @tparam T3 The third type of the Triple.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 #ifdef PLATFORM_WINDOWS
     #pragma pack(push,1)
 #endif

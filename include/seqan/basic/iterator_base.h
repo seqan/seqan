@@ -62,8 +62,6 @@ namespace seqan {
  * @tparam TSpec      Type to use for specializing the <tt>Iter</tt> class.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TContainer, typename TSpec>
 class Iter;
 
@@ -86,8 +84,6 @@ class Iter;
  * @return Type The type of the iterator that is the same as <tt>TIter</tt> except that the const-ness of the
  *              container is complemented.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator>
 struct IterComplementConst;
@@ -121,8 +117,6 @@ struct IterComplementConst<Iter<TContainer, TSpec> const>
  *
  * @return Type The resulting Iter type with a const container.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator>
 struct IterMakeConst;

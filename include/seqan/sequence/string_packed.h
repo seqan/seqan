@@ -122,8 +122,6 @@ struct PackedTraits_
     }
 };
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*???TODO Optimierungsm�glichkeiten:
 - _clearSpace kopiert Zeichenweise im Packed-String, und nicht im Host-String
 - _clearSpace verwendet resize, um den Host zu vergr��ern, d.h. der Inhalt wird eventuell doppelt kopiert.

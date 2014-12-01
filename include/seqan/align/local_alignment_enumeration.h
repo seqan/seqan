@@ -169,8 +169,6 @@ class LocalAlignmentEnumerator;
  * @param[in] cutoff    Alignments with scores <tt>&lt; cutoff</tt> will be discarded (<tt>int</tt>, default 0).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -195,8 +193,6 @@ class LocalAlignmentEnumerator;
  * @return TScoreVal The current alignment score (@link Score#Value @endlink of <tt>TScore</tt>).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function nextLocalAlignment()
 // ----------------------------------------------------------------------------
@@ -217,8 +213,6 @@ class LocalAlignmentEnumerator;
  * @return bool <tt>true</tt> if another suboptimal alignment above the given threshold was found and <tt> false
  *              otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 }  // namespace seqan
 

@@ -79,8 +79,6 @@ namespace seqan {
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TValue = double, typename TSpec = Default>
 class LogProb;
 

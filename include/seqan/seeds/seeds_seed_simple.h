@@ -74,8 +74,6 @@ namespace seqan {
  * @param[in] endPosV   The end position in the vertical position.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TConfiguration>
 class Seed<Simple, TConfiguration>
 {

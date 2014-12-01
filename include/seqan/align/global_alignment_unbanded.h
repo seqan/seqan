@@ -163,8 +163,6 @@ class Fragment;
  * @see AlignmentAlgorithmTags
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function globalAlignment()                                 [unbanded, Align]
 // ----------------------------------------------------------------------------
@@ -488,8 +486,6 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
  * @see http://trac.seqan.de/wiki/Tutorial/PairwiseSequenceAlignment
  * @see globalAlignment
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // ----------------------------------------------------------------------------
 // Function globalAlignmentScore()                        [unbanded, 2 Strings]

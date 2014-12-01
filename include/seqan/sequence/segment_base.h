@@ -185,8 +185,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @aka substring
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @fn Segment#beginPosition
  * @headerfile <seqan/sequence.h>
@@ -620,8 +618,6 @@ struct SegmentSetImpl_<False, True>
 //////////////////////////////////////////////////////////////////////////////
 // assign
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): We'd rather only have one version.
 

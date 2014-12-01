@@ -492,8 +492,6 @@ int _splitAlignmentImpl(Gaps<TContigSeqL> & gapsContigL,
  * @include demos/align_split/split_alignment.cpp.stdout
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Variant: unbanded, with Align objects.
 
 template <typename TSequenceL, typename TAlignSpecL, typename TSequenceR, typename TAlignSpecR,

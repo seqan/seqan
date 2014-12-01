@@ -70,8 +70,6 @@ namespace seqan {
  * the component and set all pointers to <tt>NULL</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template < typename Type >
 struct VolatilePtr
 {
@@ -210,8 +208,6 @@ struct VolatilePtr
  * @param[in] ptr One pointer of the connected component to reset.
  */
  
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): Remove this version?
 template <typename TValue>
 inline void nukeCopies(TValue * &)

@@ -70,8 +70,6 @@ namespace seqan {
  *            typedef Tag<Rooted_> Rooted;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct Rooted_;
 typedef Tag<Rooted_> const Rooted;
 
@@ -100,8 +98,6 @@ typedef Tag<Standard_> const Standard;
  * @see ContainerConcept#Iterator
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 struct DefaultIteratorSpec
 {
@@ -127,8 +123,6 @@ struct DefaultIteratorSpec
  * @see ContainerConcept#Iterator
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 struct DefaultGetIteratorSpec
 {
@@ -138,8 +132,6 @@ struct DefaultGetIteratorSpec
 // ----------------------------------------------------------------------------
 // Metafunction Iterator
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TSpec>
 struct IteratorDefaultImp_;
@@ -174,8 +166,6 @@ struct Iterator : IteratorDefaultImp_<T, TSpec>
 // Metafunction Container
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): Remove the default implementation; anti-auto-sequence. Also, using plain pointers for strings does not work any more. Will probably only work for rooted/adaptor/positional iterators. Same below.
 
 template <typename T>
@@ -191,8 +181,6 @@ struct Container
 // ---------------------------------------------------------------------------
 // Function value()
 // ---------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline typename Reference<T>::Type
@@ -213,8 +201,6 @@ value(T const & me)
 // ---------------------------------------------------------------------------
 // Function getValue()
 // ---------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline typename GetValue<T>::Type
@@ -242,8 +228,6 @@ getValue(T const & me)
 // ---------------------------------------------------------------------------
 // Function assignValue()
 // ---------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TValue>
 inline void
@@ -279,8 +263,6 @@ assignValue(T const & me,
  * @param[in]     pos       The position of the item in the container to manipulate.
  * @param[in,out] value     The value to move to <tt>container[pos]</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TValue>
 inline void
@@ -331,8 +313,6 @@ setValue(T const * & ptr,
 // Function container()
 // ---------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 inline
 typename Container<T>::Type &
@@ -346,8 +326,6 @@ container(T me)
 // ---------------------------------------------------------------------------
 // Function position()
 // ---------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline typename Position<T>::Type
@@ -370,8 +348,6 @@ position(TIterator const & it,
 // ---------------------------------------------------------------------------
 // Function atBegin()
 // ---------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(doering): Was, wenn der Container leer ist?
 
@@ -424,8 +400,6 @@ atBegin(T const & it)
 // ---------------------------------------------------------------------------
 // Function atEnd()
 // ---------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TContainer>
 inline SEQAN_HOST_DEVICE bool
@@ -483,8 +457,6 @@ atEnd(T const & it)
 // Function goBegin()
 // ---------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TIterator, typename TContainer>
 inline SEQAN_HOST_DEVICE void
 goBegin(TIterator & it,
@@ -512,8 +484,6 @@ goBegin(TIterator & it)
 // ---------------------------------------------------------------------------
 // Function goEnd()
 // ---------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator, typename TContainer>
 inline SEQAN_HOST_DEVICE void
@@ -545,8 +515,6 @@ goEnd(TIterator & it)
 // Function goNext()
 // ---------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TIterator>
 inline SEQAN_HOST_DEVICE void
 goNext(TIterator & it)
@@ -558,8 +526,6 @@ goNext(TIterator & it)
 // ---------------------------------------------------------------------------
 // Function goFurther()
 // ---------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator, typename TDiff>
 inline SEQAN_HOST_DEVICE void
@@ -573,7 +539,6 @@ goFurther(TIterator & it,
 // Function goPrevious()
 // ---------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TIterator>
 inline SEQAN_HOST_DEVICE void
 goPrevious(TIterator & it)
@@ -585,8 +550,6 @@ goPrevious(TIterator & it)
 // ---------------------------------------------------------------------------
 // Function difference()
 // ---------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator>
 inline SEQAN_HOST_DEVICE
@@ -601,8 +564,6 @@ difference(TIterator const & begin,
 // ---------------------------------------------------------------------------
 // Function goNil()
 // ---------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator>
 inline void
@@ -623,8 +584,6 @@ goNil(TIterator * & me)
 // ---------------------------------------------------------------------------
 // Function atNil()
 // ---------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TIterator>
 inline bool

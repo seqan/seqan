@@ -97,26 +97,20 @@ namespace SEQAN_NAMESPACE_MAIN {
  * @brief The stored cargo.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue = int, typename TCargo = int>
 class IntervalAndCargo
 {
 public:
-/*_DDDOC_PLACEHOLDER*/
     TValue i1;
 
-/*_DDDOC_PLACEHOLDER*/
     TValue i2;
 
-/*_DDDOC_PLACEHOLDER*/
     TCargo cargo;
 
-/*_DDDOC_PLACEHOLDER*/
     IntervalAndCargo() :
         i1(), i2(), cargo()
     {}
 
-/*_DDDOC_PLACEHOLDER*/
     IntervalAndCargo(TValue i1, TValue i2, TCargo cargo) :
         i1(i1), i2(i2), cargo(cargo)
     {
@@ -156,23 +150,18 @@ public:
  * @brief The cargo to store.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue = int, typename TCargo = int>
 class PointAndCargo
 {
 public:
-/*_DDDOC_PLACEHOLDER*/
     TValue point;
 
-/*_DDDOC_PLACEHOLDER*/
     TCargo cargo;
 
-/*_DDDOC_PLACEHOLDER*/
     PointAndCargo() :
         point(), cargo()
     {}
 
-/*_DDDOC_PLACEHOLDER*/
     PointAndCargo(TValue point, TCargo cargo) :
         point(point), cargo(cargo)
     {}
@@ -196,7 +185,6 @@ public:
  * @brief The tree nodes store intervals.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 struct StorePointsOnly {};
 
 
@@ -216,7 +204,6 @@ struct StoreIntervals {};
  */
 
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TInterval, typename TSpec = StorePointsOnly>
 class IntervalTreeNode;
 
@@ -243,7 +230,6 @@ class IntervalTreeNode;
  * @brief @link AllocString @endlink of intervals sorted by end point.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TInterval>
 class IntervalTreeNode<TInterval, StoreIntervals>
 {
@@ -285,7 +271,6 @@ public:
  * @brief Points with cargo sorted by the end points.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TInterval>
 class IntervalTreeNode<TInterval, StorePointsOnly>
 {
@@ -297,7 +282,6 @@ public:
     String<PointAndCargo<TValue, TCargo> > list1;
     String<PointAndCargo<TValue, TCargo> > list2;
 
-/*_DDDOC_PLACEHOLDER*/
     IntervalTreeNode() :
         center()
     {
@@ -374,7 +358,6 @@ public:
  * @param[in] tag       Tag for tree construction method.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue = int, typename TCargo = unsigned int>
 class IntervalTree
 {
@@ -387,8 +370,6 @@ public:
     TGraph g;
     TPropertyMap pm;
     size_t interval_counter;
-
-/*_DDDOC_PLACEHOLDER*/
 
     IntervalTree()
     {
@@ -466,10 +447,7 @@ public:
 
 
 ///////Specs for the way interval centers are determined
-/*_DDDOC_PLACEHOLDER*/
 
-
-/*_DDDOC_PLACEHOLDER*/
 //template <typename TSpec = SpecPointAndCargo>
 struct TagComputeCenter_;
 typedef Tag<TagComputeCenter_> const ComputeCenter;
@@ -489,8 +467,6 @@ typedef Tag<TagComputeCenter_> const ComputeCenter;
  *
  * @return TBoundary Reference to the left boundary value.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TCargo>
 TValue &
@@ -517,8 +493,6 @@ leftBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
  * @return TBoundary Reference to the right boundary value.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TCargo>
 TValue &
 rightBoundary(IntervalAndCargo<TValue, TCargo> & interval)
@@ -544,8 +518,6 @@ rightBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
  * @return TBoundary Copy of the left boundary value.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TCargo>
 TValue
 getLeftBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
@@ -564,8 +536,6 @@ getLeftBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
  * @return TBoundary Copy of the right boundary value.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TCargo>
 TValue
 getRightBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
@@ -583,8 +553,6 @@ getRightBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
  *
  * @return TCargo Reference to the cargo member.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TCargo>
 TCargo const &
@@ -610,8 +578,6 @@ cargo(IntervalAndCargo<TValue, TCargo> & interval)
  *
  * @return TCargo Copy of the cargo member.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TCargo>
 TCargo
@@ -668,8 +634,6 @@ struct Cargo<IntervalAndCargo<TValue, TCargo> >
  * @return TBoundary Reference to the left boundary value.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TCargo>
 TValue const &
 leftBoundary(PointAndCargo<TValue, TCargo> const & point)
@@ -695,8 +659,6 @@ leftBoundary(PointAndCargo<TValue, TCargo> & point)
  * @return TBoundary Reference to the right boundary value.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TCargo>
 TValue const &
 rightBoundary(PointAndCargo<TValue, TCargo> const & point)
@@ -710,8 +672,6 @@ rightBoundary(PointAndCargo<TValue, TCargo> & point)
 {
     return point.point;
 }
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TCargo>
 TValue
@@ -731,8 +691,6 @@ getLeftBoundary(PointAndCargo<TValue, TCargo> const & point)
  * @return TBoundary Copy of the left boundary value.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TCargo>
 TValue
 getRightBoundary(PointAndCargo<TValue, TCargo> const & point)
@@ -751,8 +709,6 @@ getRightBoundary(PointAndCargo<TValue, TCargo> const & point)
  * @return TCargo Reference to the cargo member.
  */
 
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TCargo>
 TCargo const &
@@ -778,8 +734,6 @@ cargo(PointAndCargo<TValue, TCargo> & point)
  *
  * @return TCargo Copy of the cargo member.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TCargo>
 TCargo
@@ -921,7 +875,6 @@ struct Cargo<IntervalTreeNode<TInterval, TSpec> >
  * @signature ListType<T>::Type;
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct ListType;
 
@@ -966,8 +919,6 @@ struct ListType<IntervalTreeNode<TInterval, StoreIntervals> >
  * @param[in]     intervals    Container of intervals.  A string of <tt>IntervalAndCargo&lt;TValue, TCargo&gt;</tt>
  *                             objects, see @link IntervalAndCargo @endlink. Types: @link AllocString @endlink.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TGraph, typename TPropertyMap, typename TIntervals, typename TSpec>
 inline void
@@ -1331,8 +1282,6 @@ _calcIntervalTreeRootCenter(TIntervals & intervals)
  */
 
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TGraph, typename TPropertyMap, typename TInterval>
 void
 addInterval(TGraph & g, TPropertyMap & pm, TInterval interval)
@@ -1492,7 +1441,6 @@ addInterval(IntervalTree<TValue, TCargo> & itree, TValue begin, TValue end)
  * @param[out] result       A reference to the result string of <tt>TCargo</tt> objects. Types: @link String @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSpec, typename TPropertyMap, typename TValue, typename TCargo>
 inline void
 findIntervals(
@@ -1729,7 +1677,6 @@ findIntervals(
  *                         be a string of TCargo. Types: String
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSpec, typename TPropertyMap, typename TValue, typename TCargo>
 inline void
 findIntervalsExcludeTouching(
@@ -1839,8 +1786,6 @@ findIntervalsExcludeTouching(
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <
     typename TSpec,

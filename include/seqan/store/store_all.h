@@ -400,8 +400,6 @@ struct FragmentStoreConfig
  * @brief A 3' untranslated region ("three_prime_UTR").
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 
 template <typename TSpec = void, typename TConfig = FragmentStoreConfig<TSpec> >
 class FragmentStore
@@ -984,8 +982,6 @@ annotationGetValueIdByKey (
  * This function clears the @link FragmentStore::contigStore @endlink and @link FragmentStore::contigNameStore @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec, typename TConfig>
 inline void
 clearContigs(FragmentStore<TSpec, TConfig> &me)
@@ -1011,8 +1007,6 @@ clearContigs(FragmentStore<TSpec, TConfig> &me)
  * Clears the @link FragmentStore::readStore @endlink, @link FragmentStore::readSeqStore @endlink, and @link
  * FragmentStore::readNameStore @endlink.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig>
 inline void
@@ -1046,8 +1040,6 @@ clearReads(FragmentStore<TSpec, TConfig> &me)
  * @see FragmentStore#getRead
  */
  
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig, typename TRead, typename TId>
 inline typename Size<typename FragmentStore<TSpec, TConfig>::TReadStore>::Type
@@ -1125,8 +1117,6 @@ appendRead(
  *               FragmentStore::readStore @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec, typename TConfig, typename TId>
 inline typename Value<typename FragmentStore<TSpec, TConfig>::TReadSeqStore>::Type
 getRead(
@@ -1163,7 +1153,6 @@ getRead(
  * @see FragmentStore#appendRead
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSpec, typename TConfig, typename TReadId, typename TContigId, typename TPos, typename TPairMatchId>
 inline typename Size<typename FragmentStore<TSpec, TConfig>::TAlignedReadStore>::Type
 appendAlignedRead(
@@ -1223,8 +1212,6 @@ appendAlignedRead(
  * @endlink and a mate pair entry for both them to the @link FragmentStore::matePairStore @endlink.  If names are given,
  * they are appended to @link FragmentStore::readNameStore @endlink.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig, typename TRead>
 inline typename Size<typename FragmentStore<TSpec, TConfig>::TMatePairStore>::Type
@@ -1303,8 +1290,6 @@ appendMatePair(
  * by previously setting their id to INVALID_ID.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // 1. remove aligned reads with invalid ids
 // 2. rename ids beginning with 0
 template <typename TSpec, typename TConfig>
@@ -1365,8 +1350,6 @@ compactAlignedReads(FragmentStore<TSpec, TConfig> &me)
  * orientation or a wrong insert size.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // rename pair match ids beginning with 0, returns the number of pair matches
 template <typename TSpec, typename TConfig>
 inline typename Size<typename FragmentStore<TSpec, TConfig>::TAlignedReadStore>::Type
@@ -1417,8 +1400,6 @@ compactPairMatchIds(FragmentStore<TSpec, TConfig> &me)
  * pair match.  The insert size of a pair match is the outer distance between the two matches.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TLibSizeString, typename TSpec, typename TConfig>
 inline void
 calculateInsertSizes(TLibSizeString &insertSizes, FragmentStore<TSpec, TConfig> &me)
@@ -1466,8 +1447,6 @@ calculateInsertSizes(TLibSizeString &insertSizes, FragmentStore<TSpec, TConfig> 
  *             read is not paired.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec, typename TConfig, typename TId>
 inline int
 getMateNo(FragmentStore<TSpec, TConfig> const & me, TId readId)
@@ -1504,8 +1483,6 @@ getMateNo(FragmentStore<TSpec, TConfig> const & me, TId readId)
  *
  * Entries of reads without a mate contain <tt>INVALID_ID</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // calculate index of the other mate for each pair match
 template <typename TMateIndexString, typename TSpec, typename TConfig>
@@ -1550,7 +1527,6 @@ calculateMateIndices(TMateIndexString & mateIndices, FragmentStore<TSpec, TConfi
  * alignment in the multiple sequence alignment and contigId the id of the reference contig.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 	
 struct AlignedReadLayout
 {
@@ -1575,8 +1551,6 @@ struct AlignedReadLayout
  *
  * @see AlignedReadLayout#printAlignment
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig>
 void layoutAlignment(AlignedReadLayout &layout, FragmentStore<TSpec, TConfig> &store)
@@ -1691,8 +1665,6 @@ inline void _printContig(
  * The window coordinates (beginPos, ...) may be chosen bigger than the lyaout is.  The empty space is then filled with
  * spaces.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TStream, typename TSpec, typename TConfig, typename TContigId, typename TPos, typename TNum>
 void printAlignment(
@@ -1839,8 +1811,6 @@ void printAlignment(
  * <tt>convertMatchesToGlobalAlignment()</tt> is called then the @link FragmentStore::alignQualityStore @endlink is
  * filled with the edit distance scores.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig, typename TScore, typename TShrinkMatches>
 void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScore const & score, TShrinkMatches const &)
@@ -2182,8 +2152,6 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
  * 
  * After calling this functions all positions in the @link FragmentStore::alignedReadStore @endlink are in gap-space.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 
 template <typename TFragmentStore>

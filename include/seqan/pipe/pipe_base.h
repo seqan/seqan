@@ -68,8 +68,6 @@ namespace seqan {
  * @param[in] in Reference to an input pipe.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     template < typename TInput, typename TSpec >
     struct Pipe {
         TInput &in;
@@ -104,7 +102,6 @@ namespace seqan {
  * @brief TInput2 reference
  */
 
-/*_DDDOC_PLACEHOLDER*/
     // pipe input adapter 2->1 pipe
     template < typename TInput1, typename TInput2 >
     struct Bundle2 {
@@ -130,7 +127,6 @@ namespace seqan {
  * @see Bundle2
  */
 
-/*_DDDOC_PLACEHOLDER*/
 	template < typename TInput1, typename TInput2 >
 	inline Bundle2< TInput1, TInput2 >
 	bundle2(TInput1 &_in1, TInput2 &_in2) {
@@ -162,7 +158,6 @@ namespace seqan {
  * @brief TInput3 reference
  */
 
-/*_DDDOC_PLACEHOLDER*/
     // pipe input adapter 3->1 pipe
     template < typename TInput1, typename TInput2, typename TInput3 >
     struct Bundle3 {
@@ -191,7 +186,6 @@ namespace seqan {
  * @see Bundle3
  */
 
-/*_DDDOC_PLACEHOLDER*/
 	template < typename TInput1, typename TInput2, typename TInput3 >
 	inline Bundle3< TInput1, TInput2, TInput3 >
 	bundle3(TInput1 &_in1, TInput2 &_in2, TInput3 &_in3) {
@@ -232,7 +226,6 @@ namespace seqan {
  * @brief TInput5 reference
  */
 
-/*_DDDOC_PLACEHOLDER*/
     // pipe input adapter 5->1 pipe
     template < typename TIn1, typename TIn2, typename TIn3, typename TIn4, typename TIn5 >
     struct Bundle5 {
@@ -265,7 +258,6 @@ namespace seqan {
  * @see Bundle5
  */
 
-/*_DDDOC_PLACEHOLDER*/
     template < typename TIn1, typename TIn2, typename TIn3, typename TIn4, typename TIn5 >
 	inline Bundle5< TIn1, TIn2, TIn3, TIn4, TIn5 >
 	bundle5(TIn1 &_in1, TIn2 &_in2, TIn3 &_in3, TIn4 &_in4, TIn5 &_in5) {
@@ -464,8 +456,6 @@ SEQAN_CHECKPOINT
  * @see Pipe#pop
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     template < typename TInput, typename TSpec, typename TValue >
     inline typename Value< Pipe<TInput, TSpec> >::Type const &
     front(Pipe<TInput, TSpec> &me) {
@@ -488,8 +478,6 @@ SEQAN_CHECKPOINT
  * 
  * Pipe#front or Pipe#pop can only be called within a read process surrounded by beginRead and endRead.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
     template < typename TInput, typename TSpec, typename TValue >
     inline void pop(Pipe<TInput, TSpec> &me, TValue &Ref_) {
@@ -576,8 +564,6 @@ SEQAN_CHECKPOINT
  * @see Pipe#endRead
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     template < typename TInput, typename TSpec >
 	inline bool beginRead(Pipe<TInput, TSpec> &me)
     {
@@ -600,8 +586,6 @@ SEQAN_CHECKPOINT
  * 
  * @see Pipe#beginRead
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
     template < typename TInput, typename TSpec >
 	inline bool endRead(Pipe<TInput, TSpec> &me) {

@@ -103,8 +103,6 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos);
  * @brief Argument is an output file.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @fn ArgParseArgument::ArgParseArgument
  * @brief Constructor
@@ -117,8 +115,6 @@ inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos);
  * @param[in] numberOfArguments Number of times the argument must be given.  E.g. set to 2 for the parser to always
  *                              expect two values (<tt>int</tt>, default is 1).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 class ArgParseArgument
 {
@@ -266,8 +262,6 @@ inline std::string _typeToString(ArgParseArgument const & me)
  * @return bool <tt>true</tt> if it can be given multiple times, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool isListArgument(ArgParseArgument const & me)
 {
     return me._isListArgument;
@@ -289,8 +283,6 @@ inline bool isListArgument(ArgParseArgument const & me)
  *
  * @return bool <tt>true</tt> if it is a string, <tt>false</tt> otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline bool isStringArgument(ArgParseArgument const & me)
 {
@@ -317,8 +309,6 @@ inline bool isStringArgument(ArgParseArgument const & me)
  * @return bool <tt>true</tt> if it is an integer, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool isIntegerArgument(ArgParseArgument const & me)
 {
     return me._argumentType == ArgParseArgument::INTEGER;
@@ -339,8 +329,6 @@ inline bool isIntegerArgument(ArgParseArgument const & me)
  *
  * @return bool <tt>true</tt> if it is a 64 bit integer, <tt>false</tt> otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline bool isInt64Argument(ArgParseArgument const & me)
 {
@@ -363,8 +351,6 @@ inline bool isInt64Argument(ArgParseArgument const & me)
  * @return bool <tt>true</tt> if it is a double argument, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool isDoubleArgument(ArgParseArgument const & me)
 {
     return me._argumentType == ArgParseArgument::DOUBLE;
@@ -385,8 +371,6 @@ inline bool isDoubleArgument(ArgParseArgument const & me)
  *
  * @return bool <tt>true</tt> if it is a input file argument, <tt>false</tt> otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline bool isInputFileArgument(ArgParseArgument const & me)
 {
@@ -409,8 +393,6 @@ inline bool isInputFileArgument(ArgParseArgument const & me)
  * @return bool <tt>true</tt> if it is a output file argument, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool isOutputFileArgument(ArgParseArgument const & me)
 {
     return me._argumentType == ArgParseArgument::OUTPUT_FILE;
@@ -431,8 +413,6 @@ inline bool isOutputFileArgument(ArgParseArgument const & me)
  *
  * @return bool <tt>true</tt> if it is an output prefix argument, <tt>false</tt> otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline bool isOutputPrefixArgument(ArgParseArgument const & me)
 {
@@ -455,8 +435,6 @@ inline bool isOutputPrefixArgument(ArgParseArgument const & me)
  * @return bool <tt>true</tt> if it is an input prefix argument, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool isInputPrefixArgument(ArgParseArgument const & me)
 {
     return me._argumentType == ArgParseArgument::INPUTPREFIX;
@@ -477,8 +455,6 @@ inline bool isInputPrefixArgument(ArgParseArgument const & me)
  *
  * @return std::string The argument label as a STL string.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline std::string const getArgumentLabel(ArgParseArgument const & me)
 {
@@ -550,8 +526,6 @@ inline void _intervalAssert(const std::string minValueAsString, const std::strin
  * @param[in]     minValue The smallest value to set (<tt>std::string</tt>).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline void setMinValue(ArgParseArgument & me, const std::string minValue)
 {
     if (isDoubleArgument(me))
@@ -590,8 +564,6 @@ inline void setMinValue(ArgParseArgument & me, const std::string minValue)
  * @param[in,out] arg      The ArgParseArgument to set the smallest value of.
  * @param[in]     maxValue The largest value to set (<tt>std::string</tt>).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void setMaxValue(ArgParseArgument & me, const std::string maxValue)
 {
@@ -664,8 +636,6 @@ inline void setMaxValue(ArgParseArgument & me, const std::string maxValue)
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline void setValidValues(ArgParseArgument & me, std::vector<std::string> const & values)
 {
     if (isDoubleArgument(me) || isIntegerArgument(me))
@@ -712,8 +682,6 @@ inline void setValidValues(ArgParseArgument & me, std::string const & valuesStri
  * @param[in,out] arg  The ArgParseArgument to set the help text for.
  * @param[in]     text The text to display as the description of the argument (<tt>std::string</tt>).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void setHelpText(ArgParseArgument & me, std::string const & text)
 {
@@ -880,8 +848,6 @@ inline void _checkValue(ArgParseArgument const & me)
 // Function _assignArgumentValue()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline void _assignArgumentValue(ArgParseArgument & me, std::string const & value)
 {
     // assignment
@@ -916,8 +882,6 @@ inline void _assignArgumentValue(ArgParseArgument & me, std::string const & valu
  * @return std::string Const-reference to the argument value.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline std::string const & getArgumentValue(ArgParseArgument const & me, unsigned argNo)
 {
     SEQAN_CHECK(argNo < me.value.size() || argNo < me.defaultValue.size(),
@@ -950,8 +914,6 @@ inline std::string const & getArgumentValue(ArgParseArgument const & me)
  * @return std::vector<std::string> Const-reference to the argument values.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline std::vector<std::string> const & getArgumentValues(ArgParseArgument const & me)
 {
     if (!me.value.empty())
@@ -977,7 +939,6 @@ inline std::vector<std::string> const & getArgumentValues(ArgParseArgument const
  * @return bool <tt>true</tt> if <tt>pos</tt> is less than the size and the argument is non-empty.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 inline bool hasValue(ArgParseArgument const & arg, unsigned position)
 {
     return arg.value.size() > position || arg.defaultValue.size() > position;
@@ -1004,8 +965,6 @@ inline bool hasValue(ArgParseArgument const & arg)
  * @return bool <tt>true</tt> if a value was assigned, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool isSet(ArgParseArgument const & me)
 {
     return !me.value.empty();
@@ -1027,8 +986,6 @@ inline bool isSet(ArgParseArgument const & me)
  * @return bool <tt>true</tt> if the argument has a default value and <tt>false</tt> if not.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool hasDefault(ArgParseArgument const & me)
 {
     return !me.defaultValue.empty();
@@ -1049,8 +1006,6 @@ inline bool hasDefault(ArgParseArgument const & me)
  *
  * @return unsigned The number of allowed values.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline unsigned numberOfAllowedValues(ArgParseArgument const & me)
 {
@@ -1081,8 +1036,6 @@ inline unsigned numberOfAllowedValues(ArgParseArgument const & me)
  *
  * @return std::string The file extension, empty if no extension or not set.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline std::string getFileExtension(ArgParseArgument const & me, unsigned pos = 0)
 {

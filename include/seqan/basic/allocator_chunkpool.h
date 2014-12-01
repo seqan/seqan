@@ -50,8 +50,6 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <
     size_t SIZE, 
     size_t MAX_COUNT = 26, 

@@ -134,8 +134,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *        alignment row.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TPos_, typename TGapAnchor_, typename TSpec_ = void>
 struct AlignedReadStoreElement
 {
@@ -232,8 +230,6 @@ AlignedReadStoreElement<TPos, TGapAnchor, TSpec>::INVALID_ID = MaxValue<typename
  * @brief Absolute number of errors in the alignment (<tt>unsigned char</tt>).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TScore, typename TSpec = void>
 struct AlignQualityStoreElement
 {
@@ -308,8 +304,6 @@ struct AlignQualityStoreElement
  *
  * @signature typedef Tag<SortReadId_> const SortReadId;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct SortContigId_;
 typedef Tag<SortContigId_> const SortContigId;
@@ -486,8 +480,6 @@ struct _LessAlignedRead<TAlignedRead, SortReadId> :
  * @see sortAlignedReads
  * @see lowerBoundAlignedReads
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TAlign, typename TSortSpec>
 inline void

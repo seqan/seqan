@@ -142,8 +142,6 @@ inline ArgParseArgument & getArgument(ArgumentParser & me, unsigned position);
  * @brief Parsing was successful, built-in <tt>--export-help</tt> option was used.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 class ArgumentParser
 {
 public:
@@ -261,8 +259,6 @@ public:
  * @return bool <tt>true</tt> if there is such an option, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool hasOption(ArgumentParser const & me, std::string const & name)
 {
     return hasKey(me.shortNameMap, name) || hasKey(me.longNameMap, name);
@@ -282,8 +278,6 @@ inline bool hasOption(ArgumentParser const & me, std::string const & name)
  * @param[in,out] parser The ArgumentParser to add the option to.
  * @param[in]     option The ArgParseOption to add to <tt>parser</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void _copyValidValuesToFileExt(ArgumentParser & me, std::string const & name)
 {
@@ -349,8 +343,6 @@ inline void addOption(ArgumentParser & me, ArgParseOption const & opt)
  * @param[in,out] parser The ArgumentParser to add the argument to.
  * @param[in]     arg    The ArgParseArgument to add to <tt>parser</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void _copyValidValuesToFileExt(ArgumentParser & me, unsigned no)
 {
@@ -445,8 +437,6 @@ inline ArgumentParser::TOptionMapSize _getOptionIndex(ArgumentParser const & me,
  * @return TOption Reference to the @link ArgParseOption @endlink with the given short or long name.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline ArgParseOption & getOption(ArgumentParser & me, std::string const & name)
 {
     SEQAN_CHECK(hasOption(me, name), "Unknown option: %s", toCString(name));
@@ -475,8 +465,6 @@ inline ArgParseOption const & getOption(ArgumentParser const & me, std::string c
  * @param[in]     required Whether or not the option is required (<tt>bool</tt>, default to <tt>true</tt>).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline void setRequired(ArgumentParser & me, std::string const & name, bool required = true)
 {
     SEQAN_CHECK(hasOption(me, name), "Unknown option: %s", toCString(name));
@@ -498,8 +486,6 @@ inline void setRequired(ArgumentParser & me, std::string const & name, bool requ
  * @param[in]     name   The short or long name of the option to modify.
  * @param[in]     hide   Whether or not to hide the flag (<tt>bool</tt>, defaults to <tt>true</tt>).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void hideOption(ArgumentParser & me, std::string const & name, bool hide)
 {
@@ -523,8 +509,6 @@ inline void hideOption(ArgumentParser & me, std::string const & name, bool hide)
  *
  * @return TArgument Reference to the @link ArgParseArgument @endlink with the given position.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline ArgParseArgument & getArgument(ArgumentParser & me, unsigned position)
 {
@@ -557,8 +541,6 @@ inline ArgParseArgument const & getArgument(ArgumentParser const & me, unsigned 
  * @return bool Whether or not the option was set on the command line or not.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool isSet(ArgumentParser const & me, std::string const & name)
 {
     SEQAN_CHECK(hasOption(me, name), "Unknown option: %s", toCString(name));
@@ -581,8 +563,6 @@ inline bool isSet(ArgumentParser const & me, std::string const & name)
  *
  * @return bool Whether or not the option has a default value.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline bool hasDefault(ArgumentParser const & me, std::string const & name)
 {
@@ -637,8 +617,6 @@ inline bool _allArgumentsSet(ArgumentParser const & me)
  * @return bool <tt>true</tt> if the requested option was given on the command line and could be coverted to the type of
  *              <tt>dest</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline bool getOptionValue(TValue & val,
@@ -696,8 +674,6 @@ inline bool getOptionValue(TValue & val,
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline std::string getOptionFileExtension(ArgumentParser const & me,
                                           std::string const & name,
                                           unsigned argNo = 0)
@@ -724,8 +700,6 @@ inline std::string getOptionFileExtension(ArgumentParser const & me,
  * @return unsigned The number of values for the option with the given name.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline unsigned getOptionValueCount(ArgumentParser const & me, std::string const & name)
 {
     SEQAN_CHECK(hasOption(me, name), "Unknown option: %s", toCString(name));
@@ -748,8 +722,6 @@ inline unsigned getOptionValueCount(ArgumentParser const & me, std::string const
  *
  * @return unsigned The number of values for the argument with the given position.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline unsigned getArgumentValueCount(ArgumentParser const & me, unsigned argumentPosition)
 {
@@ -779,8 +751,6 @@ inline unsigned getArgumentValueCount(ArgumentParser const & me, unsigned argume
  *
  * @return bool <tt>true</tt> if the retrieval was successful, <tt>false</tt> otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline bool getArgumentValue(TValue & value,
@@ -834,8 +804,6 @@ inline bool getArgumentValue(TValue & value,
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline std::string getArgumentFileExtension(ArgumentParser const & me,
                                             unsigned argumentPosition,
                                             unsigned argNo = 0)
@@ -865,8 +833,6 @@ inline std::string getArgumentFileExtension(ArgumentParser const & me,
  * @return TVector The resulting values (<tt>std::vector&lt;std::string&gt;</tt>).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline std::vector<std::string> const & getOptionValues(ArgumentParser const & me,
                                                         std::string const & name)
 {
@@ -890,8 +856,6 @@ inline std::vector<std::string> const & getOptionValues(ArgumentParser const & m
  *
  * @return TVector The resulting values (<tt>std::vector&lt;std::string&gt;</tt>).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline std::vector<std::string> const & getArgumentValues(ArgumentParser const & me,
                                                           unsigned argumentPosition)
@@ -918,8 +882,6 @@ inline std::vector<std::string> const & getArgumentValues(ArgumentParser const &
  * @param[in] v      The value to set (template parameter, must be streamable into a <tt>std::stringstream</tt>).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue>
 inline void setDefaultValue(ArgumentParser & me,
                             std::string const & name,
@@ -944,8 +906,6 @@ inline void setDefaultValue(ArgumentParser & me,
  * @param[in]     name   The short or long name of the argument (<tt>std::string</tt>).
  * @param[in]     v      The value to append (template parameter, must be streamable into a <tt>std::stringstream</tt>).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline void addDefaultValue(ArgumentParser & me,
@@ -977,8 +937,6 @@ inline void addDefaultValue(ArgumentParser & me,
  *
  * The option/argument must have an integer or double type.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void setMinValue(ArgumentParser & me,
                         std::string const & name,
@@ -1020,8 +978,6 @@ inline void setMinValue(ArgumentParser & me,
  * The option/argument must have an integer or double type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline void setMaxValue(ArgumentParser & me,
                         std::string const & name,
                         std::string const & _maxValue)
@@ -1058,8 +1014,6 @@ inline void setMaxValue(ArgumentParser & me,
  * @param[in]     values The values to set.  Either a <tt>std::string</tt> with the values as space-separated list
  *                       or a <tt>std::vector&lt;std::string&gt;</tt> with the values.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void setValidValues(ArgumentParser & me,
                            std::string const & name,
@@ -1119,8 +1073,6 @@ inline void setValidValues(ArgumentParser & me,
  * @param[in]     text   The string to use for the help text (<tt>std::string</tt>).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline void setHelpText(ArgumentParser & me,
                         std::string const & name,
                         std::string const & text)
@@ -1158,8 +1110,6 @@ inline void setHelpText(ArgumentParser & me,
  *
  * @return TVector A <tt>std::vector&lt;std::string&gt;</tt> with the allowed file format extensions.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline std::vector<std::string>

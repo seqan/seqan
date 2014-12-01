@@ -118,8 +118,6 @@ struct HasQualities
  * @see AlphabetWithQualitiesConcept#assignQualityValue
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline 
 void convertQuality(char & c, int q) 
 {

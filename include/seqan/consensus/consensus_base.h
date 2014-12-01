@@ -45,8 +45,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 // TODO(holtgrew): This apparently belongs into graph_msa?
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct OverlapLibrary_;
 typedef Tag<OverlapLibrary_> const OverlapLibrary;
 
@@ -69,15 +67,9 @@ typedef Tag<OverlapLibrary_> const OverlapLibrary;
  * @brief Consensus based on a bayesian probability.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct MajorityVote_;
 typedef Tag<MajorityVote_> const MajorityVote;
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct Bayesian_;
 typedef Tag<Bayesian_> const Bayesian;
@@ -465,8 +457,6 @@ assignGappedConsensus(FragmentStore<TSpec, TConfig>& fragStore,
  * }
  * @endcode
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TSize, typename TConfigOptions>
 inline void
@@ -1133,8 +1123,6 @@ consensusCalling(FragmentStore<TFragSpec, TConfig>& fragStore,
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct FastaReadFormat_;
 typedef Tag<FastaReadFormat_> const FastaReadFormat;

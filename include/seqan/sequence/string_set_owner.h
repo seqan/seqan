@@ -70,7 +70,6 @@ namespace seqan {
 
 // TODO(holtgrew): Change name of specialization to Owner StringSet.
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TString>
 class StringSet<TString, Owner<Default> >
 {

@@ -126,8 +126,6 @@ namespace seqan {
  * @snippet demos/basic/simple_type_construction.cpp simple type construction and assignment
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 #ifdef PLATFORM_WINDOWS
     #pragma pack(push,1)
 #endif

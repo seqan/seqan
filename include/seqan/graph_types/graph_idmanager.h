@@ -54,7 +54,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TSpec   Specializing type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TIdType, typename TSpec>
 class IdManager 
 {
@@ -166,8 +165,6 @@ struct Spec<IdManager<TIdType, TSpec> const>
  * @return TId A new unique id.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TIdType, typename TSpec>
 inline typename Value<IdManager<TIdType, TSpec> >::Type 
 obtainId(IdManager<TIdType, TSpec>& idm) 
@@ -200,8 +197,6 @@ obtainId(IdManager<TIdType, TSpec>& idm)
  * @param[in]     id      The ID to release.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TIdType, typename TSpec, typename TId>
 inline void 
 releaseId(IdManager<TIdType, TSpec>& idm, 
@@ -232,8 +227,6 @@ releaseId(IdManager<TIdType, TSpec>& idm,
  * @param[in,out] manager The IdManager to release the ids from.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 
 template<typename TIdType, typename TSpec>
 inline void 
@@ -257,8 +250,6 @@ releaseAll(IdManager<TIdType, TSpec>& idm)
  * @return TId The return value is guaranteed to be an upper bound on all distributed ids.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TIdType, typename TSpec>
 inline typename Value<IdManager<TIdType, TSpec> >::Type 
 getIdUpperBound(IdManager<TIdType, TSpec> const& idm)
@@ -279,8 +270,6 @@ getIdUpperBound(IdManager<TIdType, TSpec> const& idm)
  *
  * @return TId The smallest obtained id so far.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TIdType, typename TSpec>
 inline typename Value<IdManager<TIdType, TSpec> >::Type 
@@ -307,8 +296,6 @@ getIdLowerBound(IdManager<TIdType, TSpec> const& idm)
  * @return TId The number of ids obtained so far.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TIdType, typename TSpec>
 inline typename Value<IdManager<TIdType, TSpec> >::Type 
 idCount(IdManager<TIdType, TSpec> const& idm)
@@ -331,8 +318,6 @@ idCount(IdManager<TIdType, TSpec> const& idm)
  *
  * @return bool true if the id is already in use and false otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TIdType, typename TSpec, typename TId>
 inline bool 
@@ -360,7 +345,6 @@ idInUse(IdManager<TIdType, TSpec> const& idm,
  * @tparam TSpec Specializing type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TSpec>
 class IdManager<void, TSpec> 
 {

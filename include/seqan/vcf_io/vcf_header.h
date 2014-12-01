@@ -74,8 +74,6 @@ namespace seqan {
  * @brief Names of the samples (@link StringSet @endlink of @link CharString @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Records for the meta information lines.
 typedef String<VcfHeaderRecord> VcfHeader;
 
@@ -99,8 +97,6 @@ typedef String<VcfHeaderRecord> VcfHeader;
  *
  * @param[in,out] header VcfHeader to clear.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 }  // namespace seqan
 

@@ -83,7 +83,6 @@ struct ConcatVirtual;
  * If <tt>objNo</tt> and <tt>offset</tt> are not given then the iterator will point to the first element with offset 0.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TStringSet, typename TSpec >
 class Iter<TStringSet, ConcatVirtual<TSpec> >
 {
@@ -538,7 +537,6 @@ atEnd(Iter<TSSet, ConcatVirtual<TSpec> > const & me)
 
 // TODO(holtgrew): Specifying a catch-all implementation appears a bit too generous, what about concept checking?
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TIterator>
 inline bool
 atEndOfSequence(TIterator const & me)

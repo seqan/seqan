@@ -64,8 +64,6 @@ struct RngFunctor {};
  * @tparam TPdf The probability density function type to use.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TRng, typename TPdf>
 class Rng<RngFunctor<TRng, TPdf> >
 {
@@ -84,7 +82,6 @@ public:
  * @param[in] pdf A reference to the underlying Pdf to use.
  */
 
-/*_DDDOC_PLACEHOLDER*/
     Rng(TRng & rng, TPdf & pdf)
 	    : _rng(rng), _pdf(pdf)
     {}

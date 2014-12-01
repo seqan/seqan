@@ -71,8 +71,6 @@ namespace seqan {
  * <tt>getValue()</tt>, <tt>assignValue()</tt>, <tt>moveValue()</tt>, <tt>setValue()</tt> instead.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 #ifdef PLATFORM_WINDOWS
     #pragma pack(push,1)
 #endif

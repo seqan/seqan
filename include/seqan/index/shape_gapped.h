@@ -41,7 +41,6 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // HardwiredShape allows compiler-time defined gapped shape
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class HardwiredShape
  * @extends GappedShape
@@ -206,7 +205,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class GenericShape
  * @extends Shape
@@ -242,7 +240,6 @@ namespace SEQAN_NAMESPACE_MAIN
 		typename Value<Shape>::Type	hValue;		// current hash value
 //____________________________________________________________________________
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn GenericShape::Shape
  * 
@@ -357,7 +354,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class GappedShape
  * @extends Shape

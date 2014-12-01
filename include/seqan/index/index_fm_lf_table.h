@@ -54,8 +54,6 @@ struct LF;
 // Tags
 // ============================================================================
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @defgroup LFTableFibres LF Table Fibres
  * @brief Tag to select a specific fibre of a @link LF @endlink.
@@ -177,7 +175,6 @@ struct Fibre<LF<TText, TSpec, TConfig>, FibreTempBwt>
 // Class LF
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class LF
  * 
@@ -251,7 +248,6 @@ bwtLength(TText const & text)
 // Function getFibre()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn LF#getFibre
  * 
@@ -312,7 +308,6 @@ getFibre(LF<TText, TSpec, TConfig> const & lf, FibreSentinels)
 // Function empty()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn LF#empty
  * 
@@ -347,7 +342,6 @@ SEQAN_HOST_DEVICE inline bool empty(LF<StringSet<TText, TSSetSpec>, TSpec, TConf
 // Function clear()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn LF#clear
  * 
@@ -645,7 +639,6 @@ inline void createLF(LF<TText, TSpec, TConfig> & lf, TOtherText const & text, TS
 // Function open()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn LF#open
  * @headerfile <seqan/index.h>
@@ -700,7 +693,6 @@ inline bool open(LF<TText, TSpec, TConfig> & lf, const char * fileName)
 // Function save()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn LF#save
  * 

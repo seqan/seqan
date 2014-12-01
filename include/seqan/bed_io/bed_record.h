@@ -121,8 +121,6 @@ typedef Tag<Bed12_> Bed12;
  * @signature BedRecord::BedRecord();
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec = Bed12>
 class BedRecord;
 
@@ -141,8 +139,6 @@ class BedRecord;
  * 
  * This BedRecord specialization stores the first three fields (ref, beginPos, endPos) of a BED file.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <>
 class BedRecord<Bed3>
@@ -194,8 +190,6 @@ public:
  * @brief The name of the interval (@link CharString @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <>
 class BedRecord<Bed4> : public BedRecord<Bed3>
 {
@@ -237,8 +231,6 @@ public:
  * Storing the score as a @link CharString @endlink is provided for compatibility with bedtools.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <>
 class BedRecord<Bed5> : public BedRecord<Bed4>
 {
@@ -277,8 +269,6 @@ public:
  * 
  * Defaults to '.'.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <>
 class BedRecord<Bed6> : public BedRecord<Bed5>
@@ -329,8 +319,6 @@ public:
  * @param[in] green __int32 green value <tt>0-255</tt> (defaults to <tt>0</tt>).
  * @param[in] red   __int32 red value <tt>0-255</tt> (defaults to <tt>0</tt>).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 class BedRgb
 {
@@ -388,8 +376,6 @@ public:
  * @brief The end position of thick drawing.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <>
 class BedRecord<Bed12> : public BedRecord<Bed6>
 {
@@ -442,8 +428,6 @@ public:
  * 
  * @param[in,out] record BedRecord to reset.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec>
 void clear(BedRecord<TSpec> & record)

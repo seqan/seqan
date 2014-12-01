@@ -69,7 +69,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in] graph The @link Graph @endlink to iterate vertices of.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TGraph, typename TSpec>
 class Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > > 
 {
@@ -194,8 +193,6 @@ struct Spec<Iter<TGraph const, GraphIterator<InternalVertexIterator<TIteratorSpe
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TGraph, typename TSpec>
 inline typename GetValue<Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > > >::Type
 getValue(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
@@ -205,8 +202,6 @@ SEQAN_CHECKPOINT
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TGraph, typename TSpec>
 inline typename Reference<Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > > >::Type
@@ -230,8 +225,6 @@ operator * (Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
 
 // TODO(holtgrew): Add GraphIterator class that has hostGraph() function?
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TGraph, typename TSpec>
 inline typename Host<Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > > >::Type const&
 hostGraph(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
@@ -241,8 +234,6 @@ hostGraph(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
 } 
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TGraph, typename TSpec>
 inline bool
@@ -254,8 +245,6 @@ SEQAN_CHECKPOINT
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TGraph, typename TSpec>
 inline void
 goBegin(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
@@ -265,8 +254,6 @@ goBegin(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TGraph, typename TSpec>
 inline bool
@@ -278,7 +265,6 @@ SEQAN_CHECKPOINT
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TGraph, typename TSpec>
 inline void
 goEnd(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
@@ -288,8 +274,6 @@ goEnd(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TGraph, typename TSpec>
 inline void
@@ -324,8 +308,6 @@ operator ++(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it, in
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TGraph, typename TSpec>
 inline void

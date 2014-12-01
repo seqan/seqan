@@ -69,8 +69,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * wildcards.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 ///.Class.Pattern.param.TSpec.type:Spec.WildShiftAnd
 
 struct WildShiftAnd_;

@@ -75,7 +75,6 @@ struct ConcatDirect;                    // contains 1 string (the concatenation 
  * @brief The concatenation string.  Concatenates all sequences of the StringSet without gaps.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TString, typename TSpec>
 class StringSet<TString, Owner<ConcatDirect<TSpec> > >
 {

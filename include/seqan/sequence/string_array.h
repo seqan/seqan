@@ -67,8 +67,6 @@ namespace seqan {
  * Having static-sized strings is useful as members of structs for external memory algorithms, for example.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <size_t CAPACITY>
 struct Array;
 
@@ -251,7 +249,6 @@ reserve(String<TValue, Array<CAPACITY> > & me,
 // Function _setLength()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, size_t CAPACITY, typename TSize>
 inline void
 _setLength(String<TValue, Array<CAPACITY> > & me,

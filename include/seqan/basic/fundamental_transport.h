@@ -68,8 +68,6 @@ void assignValue(TDest &, TSource const &);
  * @tparam T Type to query for availability of move constructor.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 struct HasMoveConstructor
 {
@@ -97,8 +95,6 @@ struct HasMoveConstructor
  *
  * Assign value of source to target.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TTarget, typename TSource>
 inline void
@@ -157,8 +153,6 @@ assign(Proxy<TTargetSpec> & target,
  * The default implementation copies.  Types implementing AssignableConcept can implement more efficient variants.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TTarget, typename TSource>
 inline void
 set(TTarget & target,
@@ -212,8 +206,6 @@ set(TTarget const & target,
  * The default implementation will call @link AssignableConcept#assign @endlink and classes implementing
  * AssignableConcept can override move to provide a more efficient implementation.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Are all specializations necessary?
 

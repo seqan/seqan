@@ -66,8 +66,6 @@ typedef Tag<StellarGff_> StellarGff;
 // Function readRecord()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TLocalMatchStore, typename TForwardIter>
 inline void
 readRecord(TLocalMatchStore & store,

@@ -86,8 +86,6 @@ struct LengthLess
  * @return bool <tt>true</tt> if <tt>suffix</tt> is a suffix of <tt>str</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TLhs, typename TRhs>
 inline bool endsWith(TLhs const & lhs, TRhs const & rhs)
 {
@@ -115,8 +113,6 @@ inline bool endsWith(TLhs const & lhs, TRhs const & rhs)
  *
  * @return bool <tt>true</tt> if <tt>prefix</tt> is a prefix of <tt>str</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(weese:) this function is doing the same as isPrefix() one should be removed
 template <typename TLhs, typename TRhs>

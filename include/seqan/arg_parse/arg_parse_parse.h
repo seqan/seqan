@@ -63,8 +63,6 @@ namespace seqan {
  * This function must be called before retrieving any options or arguments from the parser.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Helper class for parsing command line arguments.
 //
 // Putting things into its a class allows us to structure the parsing in a fine way.

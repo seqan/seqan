@@ -154,8 +154,6 @@ namespace seqan {
  * @see PairwiseLocalAlignmentAlgorithms
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function localAlignment()                                  [unbanded, Align]
 // ----------------------------------------------------------------------------

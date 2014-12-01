@@ -92,8 +92,6 @@ typedef Tag<Output_> Output;
  * @brief Second member
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): Should default specs be specialized with void or Default?
 // TODO(holtgrew): Move construction, will be a bit tricky, either with enable_if or with 4 base classes and all constructors are forwarded there.
 
@@ -174,8 +172,6 @@ struct LENGTH<Pair<T1, T2, TSpec> >
  *
  * @return Type Result type.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T1, typename T2, typename TSpec>
 struct Value<Pair<T1, T2, TSpec>, 1>

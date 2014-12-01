@@ -69,8 +69,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * </dl>
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <char CHAR, typename TSpec = Default>
 struct ModExpand;
 

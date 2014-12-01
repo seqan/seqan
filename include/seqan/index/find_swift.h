@@ -46,8 +46,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 // TODO(bkehr): Is this documentatin right? Should the Specializations be Tags?
 // weese: of minimal length?
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @class SwiftPattern
  * @extends Pattern
@@ -92,8 +90,6 @@ namespace SEQAN_NAMESPACE_MAIN
 ///.Class.Pattern.param.TSpec.type:Spec.Swift
 ///.Class.Finder.param.TSpec.type:Spec.Swift
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @class SwiftLocalPattern
  * @extends SwiftPattern
@@ -120,8 +116,6 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
 ///.Spec.Swift.param.TSpec.type:Spec.SwiftLocal
-
-/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @class SwiftSemiGlobalPattern
@@ -1594,8 +1588,6 @@ endPosition(Pattern<TIndex, Swift<TSpec> > & pattern)
 }
 
 //____________________________________________________________________________
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @fn SwiftFinder#positionRangeNoClip
  * @headerfile <seqan/index.h>
@@ -1650,8 +1642,6 @@ positionRangeNoClip(Finder<THaystack, Swift<TSpec> > & finder)
 }
 
 //____________________________________________________________________________
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @fn SwiftFinder#positionRange
  * @headerfile <seqan/index.h>
@@ -2072,8 +2062,6 @@ find(
     return true;
 }
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @fn SwiftFinder#windowFindBegin
  * @headerfile <seqan/index.h>
@@ -2113,8 +2101,6 @@ windowFindBegin(
     return true;
 }
 
-
-/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @fn SwiftFinder#windowFindNext
@@ -2203,7 +2189,6 @@ windowFindNext(
  * @see SwiftFinder#windowFindNext
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename THaystack, typename TIndex, typename TSpec>
 inline void
 windowFindEnd(
@@ -2227,7 +2212,6 @@ windowFindEnd(
  * @see SwiftFinder#windowFindNext
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename THaystack, typename TSpec>
 inline typename WindowFindResult<Finder<THaystack, Swift<TSpec> >, void>::Type &
 getWindowFindHits(Finder<THaystack, Swift<TSpec> > &finder)
@@ -2249,7 +2233,6 @@ getWindowFindHits(Finder<THaystack, Swift<TSpec> > &finder)
  *                    <tt>TSize</tt> is the size type of the underlying index.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TIndex, typename TSpec>
 inline typename Size<TIndex>::Type
 getMaxDeviationOfOrder(Pattern<TIndex, Swift<TSpec> > &pattern)

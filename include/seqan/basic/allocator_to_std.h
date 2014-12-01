@@ -76,8 +76,6 @@ namespace seqan {
  *                 Allocator#deallocate @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename THost, typename TValue>
 struct ToStdAllocator
 {
@@ -195,8 +193,6 @@ struct StdAllocator
  * 
  * @return THost The host object.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename THost, typename TValue>
 THost &

@@ -111,8 +111,6 @@ typedef Tag<ArrayGaps_> ArrayGaps;
  * @include demos/align/gaps_example.cpp.stdout
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSequence, typename TSpec = ArrayGaps>
 class Gaps;
 
@@ -234,8 +232,6 @@ struct Size<Gaps<TSequence, TSpec> const> : Size<Gaps<TSequence, TSpec> >
 
 // TODO(holtgrew): Switch to Hosted Type interface
 
-/*_DDDOC_PLACEHOLDER*/
-
 ///.Metafunction.Source.param.T.type:Class.Gaps
 ///.Metafunction.Source.class:Class.Gaps
 
@@ -320,8 +316,6 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  * @param[in,out] gaps Object to clear clipping from.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function clearGaps()
 // ----------------------------------------------------------------------------
@@ -334,8 +328,6 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  *
  * @param[in,out] gaps Object to clear gaps from.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // ----------------------------------------------------------------------------
 // Function length()
@@ -355,8 +347,6 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  *               @link ContainerConcept#Size @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function unclippedLength()
 // ----------------------------------------------------------------------------
@@ -371,8 +361,6 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  *
  * @return TSize The result (Metafunction: @link ContainerConcept#Size @endlink).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // ----------------------------------------------------------------------------
 // Function toViewPosition()
@@ -389,8 +377,6 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  *
  * @return TPos The resulting position in the view (Metafunction: @link ContainerConcept#Position @endlink).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // ----------------------------------------------------------------------------
 // Function toSourcePosition()
@@ -409,8 +395,6 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  *              @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function isGap()
 // ----------------------------------------------------------------------------
@@ -426,8 +410,6 @@ struct IsSequence<Gaps<TSequence, TSpec> const> : IsSequence<Gaps<TSequence, TSp
  *
  * @return bool The query result.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSequence, typename TSpec, typename TPos>
 bool isGap(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
@@ -472,8 +454,6 @@ bool isCharacter(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
  * @param[in]     count   The number of gaps to insert.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function insertGap()
 // ----------------------------------------------------------------------------
@@ -487,8 +467,6 @@ bool isCharacter(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
  * @param[in,out] gaps    The Gaps object to insert gap into.
  * @param[in]     viewPos The view position (including clipping and gaps) to insert the gap at.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // Forward to removeGaps() which has to be implemented in each subclass.
 
@@ -516,8 +494,6 @@ insertGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
  * @return TSize The number of gap characters removed (Metafunction: @link ContainerConcept#Size @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function removeGap()
 // ----------------------------------------------------------------------------
@@ -533,8 +509,6 @@ insertGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
  *
  * @return TSize The number of gap characters removed (Metafunction: @link ContainerConcept#Size @endlink).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // Forward to removeGaps() which has to be implemented in each subclass.
 
@@ -561,8 +535,6 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
  * @return TSize The number of gap characters at <tt>viewPos</tt>  (Metafunction: @link ContainerConcept#Size
  *               @endlink).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSequence, typename TSpec, typename TPos>
 typename Size<Gaps<TSequence, TSpec> >::Type
@@ -653,8 +625,6 @@ countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
  * @param[in]     unclippedViewPos View position (including gaps but excluding clipping) to set the clipping begin to.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function setClippedEndPosition()
 // ----------------------------------------------------------------------------
@@ -668,8 +638,6 @@ countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
  * @param[in,out] gaps             The Gaps object to set the clipping end position of.
  * @param[in]     unclippedViewPos View position (including gaps but excluding clipping) to set the clipping end to.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // ----------------------------------------------------------------------------
 // Function clippedBeginPosition()
@@ -701,8 +669,6 @@ countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function clippedEndPosition()
 // ----------------------------------------------------------------------------
@@ -733,8 +699,6 @@ countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function setBeginPosition()
 // ----------------------------------------------------------------------------
@@ -749,8 +713,6 @@ countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
  * @param[in]     sourcePos Position in the underlying sequence to set clipping to.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function setEndPosition()
 // ----------------------------------------------------------------------------
@@ -764,8 +726,6 @@ countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
  * @param[in,out] gaps      The Gaps object to set the end position in.
  * @param[in]     sourcePos Position in the underlying sequence to set clipping to.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // ----------------------------------------------------------------------------
 // Function beginPosition()
@@ -798,8 +758,6 @@ countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function endPosition()
 // ----------------------------------------------------------------------------
@@ -829,8 +787,6 @@ countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
  * clipped view position:     0123456
  * @endcode
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // ----------------------------------------------------------------------------
 // Function write()
@@ -923,8 +879,6 @@ void _pumpTraceToGaps(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 
 // TODO(holtgrew): Document TSource via metafunctio.
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @fn Gaps#source
  * @brief Return underlying object.
@@ -992,8 +946,6 @@ sourceSegment(Gaps<TSequence, TSpec> & gaps)
  * @param[in]     seq  The @link ContainerConcept sequence @endlink to assign to the underlying string.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TOOD(holtgrew): Switch to Hosted Type?
 
 template <typename TSequence, typename TSpec, typename TValue>
@@ -1006,8 +958,6 @@ assignSource(Gaps<TSequence, TSpec> & gaps, TValue const & value)
 // ----------------------------------------------------------------------------
 // Function setSource()
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 // ----------------------------------------------------------------------------
 // Function copyGaps()

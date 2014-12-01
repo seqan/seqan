@@ -55,8 +55,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TNeedle The needle type. Types: String
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 ///.Class.Pattern.param.TSpec.type:Spec.Horspool
 
 struct Horspool_;

@@ -83,7 +83,6 @@ namespace seqan {
  * @signature typedef Tag<GappedXDrop_> const GappedXDrop;
  */
 
-/*_DDDOC_PLACEHOLDER*/
 struct MatchExtend_;
 typedef Tag<MatchExtend_> const MatchExtend;
 
@@ -120,8 +119,6 @@ typedef Tag<GappedXDrop_> const GappedXDrop;
  * @val ExtensionDirection EXTEND_BOTH = 3;
  * @brief Perform extension to both directions.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 enum ExtensionDirection
 {
@@ -175,8 +172,6 @@ enum ExtensionDirection
  * @see ExtensionDirection
  * @see SeedExtensionTags
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // We need one specialization for each combination of the extension variants and seeds.  It is not worth to extract the
 // common parts for simple and chained seeds.

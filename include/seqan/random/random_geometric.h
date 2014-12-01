@@ -66,14 +66,11 @@ struct GeometricFairCoin {};
  * @signature Pdf::Pdf();
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <>
 class Pdf<GeometricFairCoin>
 {
 public:
 
-/*_DDDOC_PLACEHOLDER*/
     Pdf() { SEQAN_CHECKPOINT; }
 };
 

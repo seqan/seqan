@@ -195,8 +195,6 @@ struct Iterator<SparseString<TFibreValues, TSpec> const, Rooted>:
 // ----------------------------------------------------------------------------
 // NOTE(esiragusa): Why is SparseString not a specialization of String?
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @class SparseString
  * @headerfile <seqan/index.h>
@@ -526,7 +524,6 @@ resize(SparseString<TFibreValues, TSpec> & string, TSize size, Tag<TExpand> tag)
  * @return bool <tt>true</tt> on success.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TFibreValues, typename TSpec>
 inline bool open(SparseString<TFibreValues, TSpec> & sparseString, const char * fileName, int openMode)
 {
@@ -581,7 +578,6 @@ inline bool open(SparseString<TFibreValues, TSpec> & sparseString, const char * 
  * 
  * @return bool <tt>true</tt> on success.
  */
-/*_DDDOC_PLACEHOLDER*/
 template <typename TFibreValues, typename TSpec>
 inline bool save(SparseString<TFibreValues, TSpec> const & sparseString, const char * fileName)
 {

@@ -170,8 +170,6 @@ struct Host
  * The definition of Cargo allows the addition of user-specified data into existing data structures.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): Should this have a default implementation?
 
 template <typename T>
@@ -196,8 +194,6 @@ struct Cargo<T const> {
  *
  * @return Type The resulting vertex descriptor type.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Should this have a default implementation? For all graphs -- OK but for all types?
 
@@ -224,8 +220,6 @@ struct VertexDescriptor<T const>:
  * @return Type The resulting identifier type.
  */
     
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): Should this have a default implementation?
 
 template<typename T>
@@ -249,8 +243,6 @@ struct Id<T const> : Id<T> {};
  *
  * @return Type The key type.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Should this have a default implementation?
 
@@ -288,8 +280,6 @@ struct Object<T const>:
 // TODO(holtgrew): Move to alignments?
 // TODO(holtgrew): Is this default implementation what we want?
 
-/*_DDDOC_PLACEHOLDER*/
-
 template < typename TSpec = void >
 struct Source
 {
@@ -317,15 +307,11 @@ struct Source<T const>:
  * @return Type Either True or False.  True if the object can efficiently be copied.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 struct IsLightWeight:
     False {};
 
 //____________________________________________________________________________
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Really required?
 
@@ -346,8 +332,6 @@ struct Parameter_<T [I]>
 {
     typedef T * Type;
 };
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Really required?
 
@@ -373,8 +357,6 @@ SEQAN_HOST_DEVICE inline _toParameter(T const & _object)
 }
 
 //____________________________________________________________________________
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Really required?
 
@@ -439,8 +421,6 @@ struct Member<TObject const, TSpec> :
 
 //____________________________________________________________________________
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): Really required?
 
 template <typename T>
@@ -478,8 +458,6 @@ struct NonConstPointer_<T * const>
 {
     typedef T * Type;
 };
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Really required?
 
@@ -547,8 +525,6 @@ _referenceCast(typename RemovePointer<T>::Type & ptr)
  * @return VALUE The length of <tt>T</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // SEQREV: elements-are-containers should probably not have a default implementation
 // TODO(holtgrew): Rather switch to static const unsigned VALUE = ?
 
@@ -573,8 +549,6 @@ struct LENGTH<T const>:
  * @tparam T     The Shape type to query.
  * @return VALUE The number of relevant positions in a shape.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Should probably go to wherever shapes are defined.
 

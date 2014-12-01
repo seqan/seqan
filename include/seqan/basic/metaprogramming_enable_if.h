@@ -268,8 +268,6 @@ struct DisableIf2<true, T> {};
  * @snippet demos/basic/enable_if.cpp enable if example constructor
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 #define SEQAN_CTOR_ENABLE_IF(...) typename ::seqan::EnableIf<__VA_ARGS__>::Type * dummy = 0
 
 /*!
@@ -297,8 +295,6 @@ struct DisableIf2<true, T> {};
  *
  * @snippet demos/basic/enable_if.cpp disable if example constructor
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 #define SEQAN_CTOR_DISABLE_IF(...) typename ::seqan::DisableIf<__VA_ARGS__>::Type * dummy = 0
 
@@ -329,8 +325,6 @@ struct DisableIf2<true, T> {};
  * @snippet demos/basic/enable_if.cpp enable if example function
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 #define SEQAN_FUNC_ENABLE_IF(...) typename ::seqan::EnableIf<__VA_ARGS__>::Type
 
 /*!
@@ -359,8 +353,6 @@ struct DisableIf2<true, T> {};
  *
  * @snippet demos/basic/enable_if.cpp disable if example function
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 #define SEQAN_FUNC_DISABLE_IF(...) typename ::seqan::DisableIf<__VA_ARGS__>::Type
 

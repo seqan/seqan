@@ -96,8 +96,6 @@ class FMIndex;
 // ============================================================================
 
 // FM index fibres
-/*_DDDOC_PLACEHOLDER*/
-
 struct FibreTempSA_;
 struct FibreLF_;
 struct FibreSALF_;
@@ -201,8 +199,6 @@ struct DefaultFinder<Index<TText, FMIndex<TSpec, TConfig> > >
 // Class FMIndex 
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @class FMIndex
  * @extends Index
@@ -272,8 +268,6 @@ inline bool empty(Index<TText, FMIndex<TSpec, TConfig> > const & index)
 // Function getFibre()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TText, typename TSpec, typename TConfig>
 SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, FMIndex<TSpec, TConfig> >, FibreLF>::Type &
 getFibre(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreLF /*tag*/)
@@ -341,8 +335,6 @@ indexLF(Index<TText, FMIndex<TSpec, TConfig> > const & index)
  *                  @endlink&lt;@link Index @endlink&lt;TText, FMIndex&lt;TSpec, TConfig&gt; &gt; &gt;::Type
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TText, typename TSpec, typename TConfig, typename TPos, typename TSize>
 inline typename SAValue<Index<TText, FMIndex<TSpec, TConfig> > >::Type
 toSuffixPosition(Index<TText, FMIndex<TSpec, TConfig> > & index, TPos i, TSize offset)
@@ -394,8 +386,6 @@ _findFirstIndex(Finder<Index<TText, FMIndex<TSpec, TConfig> >, TSpecFinder> & fi
 // Function indexCreate()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TText, typename TSpec, typename TConfig>
 inline bool indexCreate(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreSALF)
 {
@@ -443,7 +433,6 @@ inline bool indexCreate(Index<TText, FMIndex<TSpec, TConfig> > & index)
 // Function indexSupplied()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TText, typename TSpec, typename TConfig>
 SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, FMIndex<TSpec, TConfig> > & index, FibreSALF const)
 {
@@ -459,8 +448,6 @@ SEQAN_HOST_DEVICE inline bool indexSupplied(Index<TText, FMIndex<TSpec, TConfig>
 // ----------------------------------------------------------------------------
 // Function open()
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 // This function can be used to open a previously saved index.
 template <typename TText, typename TSpec, typename TConfig>
@@ -492,8 +479,6 @@ inline bool open(Index<TText, FMIndex<TSpec, TConfig> > & index, const char * fi
 // ----------------------------------------------------------------------------
 // Function save()
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TText, typename TSpec, typename TConfig>
 inline bool save(Index<TText, FMIndex<TSpec, TConfig> > const & index, const char * fileName, int openMode)

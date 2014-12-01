@@ -85,8 +85,6 @@ typedef Tag<MeanStdDev_> MeanStdDev;
  * @param[in] sigma Standard deviation value for the beta distribution, <tt>double</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <>
 class Pdf<Beta>
 {
@@ -94,7 +92,6 @@ public:
     double _alpha;
     double _beta;
 
-/*_DDDOC_PLACEHOLDER*/
     Pdf(double mu, double sigma, MeanStdDev const & /*tag*/)
             : _alpha(((1 - mu) / sigma / sigma - 1 / mu) * mu * mu),
               _beta(_alpha * (1 / mu - 1))

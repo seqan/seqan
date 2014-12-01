@@ -82,8 +82,6 @@ namespace seqan
  * @tparam TFunctor A unary functor type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFunctor>
 struct ModView {};
 

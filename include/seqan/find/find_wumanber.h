@@ -54,8 +54,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TNeedle The type of the needle to search for.  Type: @link ContainerConcept @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 ///.Class.Pattern.param.TSpec.type:Spec.WuManber
 
 struct WuManber_;

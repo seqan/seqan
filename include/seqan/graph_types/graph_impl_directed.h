@@ -58,7 +58,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *                ids.  NB: if edges do not store ids then external property maps do not work.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TCargo, typename TSpec>
 class Graph<Directed<TCargo, TSpec> > 
 {
@@ -202,8 +201,6 @@ _copyGraph(Graph<Directed<TCargo, TSpec> > const& source,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TCargo, typename TSpec>
 inline void 
 transpose(Graph<Directed<TCargo, TSpec> > const& source,
@@ -227,8 +224,6 @@ transpose(Graph<Directed<TCargo, TSpec> >& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TCargo, typename TSpec>
 inline typename Size<Graph<Directed<TCargo, TSpec> > >::Type 
 numEdges(Graph<Directed<TCargo, TSpec> > const& g) 
@@ -238,8 +233,6 @@ numEdges(Graph<Directed<TCargo, TSpec> > const& g)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec>
 inline typename Size<Graph<Directed<TCargo, TSpec> > >::Type 
@@ -251,8 +244,6 @@ numVertices(Graph<Directed<TCargo, TSpec> > const& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TCargo, typename TSpec>
 inline bool 
 empty(Graph<Directed<TCargo, TSpec> > const& g) 
@@ -262,8 +253,6 @@ empty(Graph<Directed<TCargo, TSpec> > const& g)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec>
 inline void
@@ -283,8 +272,6 @@ clearEdges(Graph<Directed<TCargo, TSpec> >& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TCargo, typename TSpec>
 inline void
 clearVertices(Graph<Directed<TCargo, TSpec> >& g) 
@@ -299,8 +286,6 @@ clearVertices(Graph<Directed<TCargo, TSpec> >& g)
 //////////////////////////////////////////////////////////////////////////////
 
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TCargo, typename TSpec>
 inline void 
 clear(Graph<Directed<TCargo, TSpec> >& g) 
@@ -310,8 +295,6 @@ clear(Graph<Directed<TCargo, TSpec> >& g)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline typename Size<Graph<Directed<TCargo, TSpec> > >::Type 
@@ -334,8 +317,6 @@ outDegree(Graph<Directed<TCargo, TSpec> > const& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline typename Size<Graph<Directed<TCargo, TSpec> > >::Type 
@@ -365,8 +346,6 @@ inDegree(Graph<Directed<TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename Size<Graph<Directed<TCargo, TSpec> > >::Type 
 degree(Graph<Directed<TCargo, TSpec> > const& g, 
@@ -377,8 +356,6 @@ degree(Graph<Directed<TCargo, TSpec> > const& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec> 
 inline typename VertexDescriptor<Graph<Directed<TCargo, TSpec> > >::Type 
@@ -396,8 +373,6 @@ addVertex(Graph<Directed<TCargo, TSpec> >& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline void 
 removeVertex(Graph<Directed<TCargo, TSpec> >& g, 
@@ -412,8 +387,6 @@ removeVertex(Graph<Directed<TCargo, TSpec> >& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline typename EdgeDescriptor<Graph<Directed<TCargo, TSpec> > >::Type 
@@ -459,8 +432,6 @@ addEdge(Graph<Directed<TCargo, TSpec> >& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline void 
@@ -535,8 +506,6 @@ removeEdge(Graph<Directed<TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline void 
 removeOutEdges(Graph<Directed<TCargo, TSpec> >& g, 
@@ -554,8 +523,6 @@ removeOutEdges(Graph<Directed<TCargo, TSpec> >& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline void 
@@ -588,8 +555,6 @@ removeInEdges(Graph<Directed<TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TCargo, typename TSpec, typename TEdgeDescriptor>
 inline typename VertexDescriptor<Graph<Directed<TCargo, TSpec> > >::Type 
 targetVertex(Graph<Directed<TCargo, TSpec> > const&,
@@ -600,8 +565,6 @@ targetVertex(Graph<Directed<TCargo, TSpec> > const&,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TEdgeDescriptor>
 inline typename VertexDescriptor<Graph<Directed<TCargo, TSpec> > >::Type 
@@ -627,8 +590,6 @@ sourceVertex(Graph<Directed<TCargo, TSpec> > const& g,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TMatrix>
 inline void
@@ -664,7 +625,6 @@ getAdjacencyMatrix(Graph<Directed<TCargo, TSpec> > const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename EdgeDescriptor<Graph<Directed<TCargo, TSpec> > >::Type 
 findEdge(Graph<Directed<TCargo, TSpec> > const& g,

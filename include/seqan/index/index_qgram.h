@@ -42,7 +42,6 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // q-gram index fibres
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @defgroup QGramIndexFibres Index QGram Fibres
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
@@ -165,8 +164,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 // q-gram index
-
-/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @defgroup OpenAdressingTags Open Adressing Tags
@@ -431,7 +428,6 @@ namespace SEQAN_NAMESPACE_MAIN
  */
   
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#indexDir
  * @headerfile <seqan/index.h>
@@ -455,7 +451,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#dirAt
  * @headerfile <seqan/index.h>
@@ -482,7 +477,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#indexCounts
  * @headerfile <seqan/index.h>
@@ -506,7 +500,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#indexCountsDir
  * @headerfile <seqan/index.h>
@@ -531,7 +524,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#indexBucketMap
  * @headerfile <seqan/index.h>
@@ -557,7 +549,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#indexShape
  * @headerfile <seqan/index.h>
@@ -581,7 +572,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#getStepSize
  * @headerfile <seqan/index.h>
@@ -603,7 +593,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#setStepSize
  * @headerfile <seqan/index.h>
@@ -1323,7 +1312,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#createQGramIndex
  * @headerfile <seqan/index.h>
@@ -1446,7 +1434,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#createQGramIndexSAOnly
  * @headerfile <seqan/index.h>
@@ -1616,7 +1603,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#createQGramIndexDirOnly
  * @headerfile <seqan/index.h>
@@ -1667,7 +1653,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#createCountArray
  * @headerfile <seqan/index.h>
@@ -2332,7 +2317,6 @@ std::cout << "reading took " << omp_get_wtime() - start << " seconds.\n";
 
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#getKmerSimilarityMatrix
  * @headerfile <seqan/index.h>
@@ -2564,7 +2548,6 @@ std::cout << "reading took " << omp_get_wtime() - start << " seconds.\n";
 	
 	
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#range
  * @headerfile <seqan/index.h>
@@ -2607,7 +2590,6 @@ std::cout << "reading took " << omp_get_wtime() - start << " seconds.\n";
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#getOccurrence
  * @headerfile <seqan/index.h>
@@ -2644,7 +2626,6 @@ std::cout << "reading took " << omp_get_wtime() - start << " seconds.\n";
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#getOccurrences
  * @headerfile <seqan/index.h>
@@ -2693,7 +2674,6 @@ std::cout << "reading took " << omp_get_wtime() - start << " seconds.\n";
 	}	
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#countOccurrences
  * @headerfile <seqan/index.h>
@@ -2737,7 +2717,6 @@ std::cout << "reading took " << omp_get_wtime() - start << " seconds.\n";
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexQGram#countOccurrencesMultiple
  * @headerfile <seqan/index.h>

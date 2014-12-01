@@ -182,8 +182,6 @@ void _appendTagsSamToBamOneTag(TTarget & target, TForwardIter & iter, CharString
  * @see assignTagsBamToSam
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TTarget, typename TSource>
 void appendTagsSamToBam(TTarget & target, TSource const & source)
 {
@@ -339,8 +337,6 @@ void _appendTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
  *
  * @see assignTagsSamToBam
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TTarget, typename TSource>
 inline void

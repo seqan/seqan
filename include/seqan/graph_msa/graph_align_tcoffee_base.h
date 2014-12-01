@@ -76,18 +76,13 @@ static const int SEQAN_DISTANCE_UNITY = 1;
  * @signature typedef Tag<FractionalScore_> const ReScore;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
-/*_DDDOC_PLACEHOLDER*/
 struct FractionalScore_;
 typedef Tag<FractionalScore_> const FractionalScore;
 
 
-/*_DDDOC_PLACEHOLDER*/
 struct FrequencyCounting_;
 typedef Tag<FrequencyCounting_> const FrequencyCounting;
 
-/*_DDDOC_PLACEHOLDER*/
 struct ReScore_;
 typedef Tag<ReScore_> const ReScore;
 
@@ -113,8 +108,6 @@ typedef Tag<ReScore_> const ReScore;
  * Calls the function @link matchRefinement @endlink and adapts the scores according to <tt>tag</tt>.
  */
  
-
-/*_DDDOC_PLACEHOLDER*/
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -329,7 +322,6 @@ struct LessMsaEdgeCargo_ :
  * The running time is quadratic in the number of pairwise edges.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec>
 inline void 
 tripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
@@ -784,7 +776,6 @@ graphBasedTripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& 
  * version assuming independ columns use sumOfPairsScoreInd.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TScore> 
 inline typename Value<TScore>::Type
 sumOfPairsScore(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
@@ -903,7 +894,6 @@ sumOfPairsScoreInd(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * @return TScoreVal The score of the alignment  (Metafunction: @link Score#Value @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TScore, typename TSize> 
 inline typename Value<TScore>::Type
 alignmentEvaluation(Graph<Alignment<TStringSet, TCargo, TSpec> > const & g,

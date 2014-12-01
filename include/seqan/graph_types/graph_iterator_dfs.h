@@ -71,7 +71,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in] v     The descriptor of the vertex to start DFS preorder iteration.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TGraph, typename TSpec>
 class Iter<TGraph, GraphIterator<InternalDfsIterator<TSpec> > > 
 {

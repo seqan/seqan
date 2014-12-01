@@ -62,8 +62,6 @@ namespace seqan {
  * reference to a holder type of <tt>Host&lt;T&gt;::Type &amp;</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -77,8 +75,6 @@ namespace seqan {
  * @tparam T Type for which the host type is determined.
  * @return Type The Host type.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct Host;
@@ -101,8 +97,6 @@ struct Host;
  * 
  * @return bool <tt>true</tt> if the host is empty, <tt>false</tt> otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline bool
@@ -127,8 +121,6 @@ emptyHost(T const & me)
  * @return bool <tt>true</tt> if the host is dependent, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 inline bool
 dependentHost(T const & me)
@@ -149,8 +141,6 @@ dependentHost(T const & me)
  * 
  * @param[in,out] object The object to clear the host of.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline void
@@ -177,8 +167,6 @@ clearHost(T & me)
  * 
  * If <tt>host</tt> is given then it is used for copy creation.  Otherwise, the default constructor is used.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline void
@@ -292,8 +280,6 @@ setHost(T & me,
  * @param[in]     object The object to assign the host of.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T, typename THost>
 inline void
 assignHost(T & me,
@@ -316,8 +302,6 @@ assignHost(T & me,
  * @param[in,out] host   The object to move-assign as host.
  * @param[in,out] object The object to move-assign the host of.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename THost>
 inline void

@@ -42,13 +42,7 @@ namespace seqan
 // Shortcuts for Modified Strings.
 // ==========================================================================
 
-/*_DDDOC_PLACEHOLDER*/
 
-/*_DDDOC_PLACEHOLDER*/
-
-/*_DDDOC_PLACEHOLDER*/
-
-/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @typedef DnaStringComplement
@@ -58,8 +52,6 @@ namespace seqan
  * @signature typedef ModifiedString<DnaString, ModView<FunctorComplementDna> > > DnaStringComplement;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @typedef Dna5StringComplement
  * @headerfile <seqan/modifier.h>
@@ -67,8 +59,6 @@ namespace seqan
  *
  * @signature typedef ModifiedString<Dna5String, ModView<FunctorComplementDna> > > DnaStringComplement;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @typedef RnaStringComplement
@@ -78,8 +68,6 @@ namespace seqan
  * @signature typedef ModifiedString<RnaString, ModView<FunctorComplementDna> > > DnaStringComplement;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @typedef Rna5StringComplement
  * @headerfile <seqan/modifier.h>
@@ -87,8 +75,6 @@ namespace seqan
  *
  * @signature typedef ModifiedString<Rna5String, ModView<FunctorComplementDna> > > DnaStringComplement;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @typedef DnaStringReverse
@@ -98,8 +84,6 @@ namespace seqan
  * @signature typedef ModifiedString<DnaString, ModReverse> DnaStringReverse;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @typedef Dna5StringReverse
  * @headerfile <seqan/modifier.h>
@@ -107,8 +91,6 @@ namespace seqan
  *
  * @signature typedef ModifiedString<Dna5String, ModReverse> DnaStringReverse;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @typedef RnaStringReverse
@@ -118,8 +100,6 @@ namespace seqan
  * @signature typedef ModifiedString<RnaString, ModReverse> DnaStringReverse;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @typedef Rna5StringReverse
  * @headerfile <seqan/modifier.h>
@@ -127,8 +107,6 @@ namespace seqan
  *
  * @signature typedef ModifiedString<Rna5String, ModReverse> DnaStringReverse;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @typedef DnaStringReverseComplement
@@ -138,8 +116,6 @@ namespace seqan
  * @signature typedef ModifiedString<ModifiedString<DnaString, ModView<FunctorComplement<Dna5> >, ModReverse> DnaStringReverseComplement;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @typedef Dna5StringReverseComplement
  * @headerfile <seqan/modifier.h>
@@ -147,8 +123,6 @@ namespace seqan
  *
  * @signature typedef ModifiedString<ModifiedString<Dna5String, ModView<FunctorComplement<Dna55> >, ModReverse> Dna5StringReverseComplement;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @typedef RnaStringReverseComplement
@@ -158,8 +132,6 @@ namespace seqan
  * @signature typedef ModifiedString<ModifiedString<RnaString, ModView<FunctorComplement<Rna5> >, ModReverse> RnaStringReverseComplement;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @typedef Rna5StringReverseComplement
  * @headerfile <seqan/modifier.h>
@@ -167,8 +139,6 @@ namespace seqan
  *
  * @signature typedef ModifiedString<ModifiedString<Rna5String, ModView<FunctorComplement<Rna55> >, ModReverse> Rna5StringReverseComplement;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 typedef ModView<FunctorComplement<Dna> >	ModComplementDna;
 typedef ModView<FunctorComplement<Dna5> >	ModComplementDna5;
@@ -229,8 +199,6 @@ typedef ReverseComplementString<Rna5String>::Type	Rna5StringReverseComplement;
  * such definitions for Dna, Dna5, Rna, Rna5.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSequence >
 inline void complement(TSequence & sequence) 
 {
@@ -246,8 +214,6 @@ inline void complement(TSequence const & sequence)
 // --------------------------------------------------------------------------
 // Function complement()
 // --------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template < typename TSequence, typename TSpec >
 inline void complement(StringSet<TSequence, TSpec> & stringSet)
@@ -306,7 +272,6 @@ complementString(THost const & host)
  */
 
 
-/*_DDDOC_PLACEHOLDER*/
 template < typename TSequence, typename TParallelTag >
 inline void reverseComplement(TSequence & sequence, Tag<TParallelTag> parallelTag)
 {
@@ -323,7 +288,6 @@ inline void reverseComplement(TSequence const & sequence, Tag<TParallelTag> para
 	reverse(sequence, parallelTag);
 } 
 
-/*_DDDOC_PLACEHOLDER*/
 template < typename TSequence, typename TSpec, typename TParallelTag >
 inline void reverseComplement(StringSet<TSequence, TSpec> & stringSet, Tag<TParallelTag>)
 {
@@ -392,8 +356,6 @@ reverseComplementString(THost const & host)
  * @param[in,out] stringSet The StringSet to convert to lower-case.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template < typename TSequence >
 inline void toLower(TSequence & sequence) 
 {
@@ -408,7 +370,6 @@ inline void toLower(TSequence const & sequence)
 	convert(sequence, FunctorLowcase<typename Value<TSequence>::Type>());
 } 
 
-/*_DDDOC_PLACEHOLDER*/
 template < typename TSequence, typename TSpec >
 inline void toLower(StringSet<TSequence, TSpec> & stringSet)
 {
@@ -443,7 +404,6 @@ inline void toLower(StringSet<TSequence, TSpec> const & stringSet)
  * @param[in,out] stringSet The StringSet to convert to upper-case.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template < typename TSequence >
 inline void toUpper(TSequence & sequence) 
 {
@@ -458,7 +418,6 @@ inline void toUpper(TSequence const & sequence)
 	convert(sequence, FunctorUpcase<typename Value<TSequence>::Type>());
 } 
 
-/*_DDDOC_PLACEHOLDER*/
 template < typename TSequence, typename TSpec >
 inline void toUpper(StringSet<TSequence, TSpec> & stringSet)
 {

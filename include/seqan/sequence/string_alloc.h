@@ -62,7 +62,6 @@ namespace seqan {
 
 // TODO(holtgrew): Where is Alloc<> defined? In module base?
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 class String<TValue, Alloc<TSpec> >
 {
@@ -315,7 +314,6 @@ capacity(String<TValue, Alloc<TSpec> > const & me)
 // Internal Function _setBegin()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TPtr>
 inline void
 _setBegin(String<TValue, Alloc<TSpec> > & me,
@@ -328,7 +326,6 @@ _setBegin(String<TValue, Alloc<TSpec> > & me,
 // Internal Function _setLength()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSize>
 inline void
 _setLength(String<TValue, Alloc<TSpec> > & me,
@@ -341,7 +338,6 @@ _setLength(String<TValue, Alloc<TSpec> > & me,
 // Internal Function _setCapacity()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSize>
 inline void
 _setCapacity(String<TValue, Alloc<TSpec> > & me,
@@ -354,7 +350,6 @@ _setCapacity(String<TValue, Alloc<TSpec> > & me,
 // Internal Function _allocateStorage()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSize>
 inline typename Value<String<TValue, Alloc<TSpec> > >::Type *
 _allocateStorage(String<TValue, Alloc<TSpec> > & me,
@@ -371,7 +366,6 @@ _allocateStorage(String<TValue, Alloc<TSpec> > & me,
 // Internal Function _deallocateStorage()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TPtr, typename TSize>
 inline void
 _deallocateStorage(String<TValue, Alloc<TSpec> > & me,

@@ -42,8 +42,6 @@ namespace SEQAN_NAMESPACE_MAIN
 // Functions
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TProfile, typename TIterStr>
 void 
 convertPatternToProfile(TProfile & profile,
@@ -64,8 +62,6 @@ convertPatternToProfile(TProfile & profile,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TProfile, typename TStrings, typename TPseudocountMode>
 void
@@ -101,8 +97,6 @@ convertSetOfPatternsToProfile(
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TProfile>
 void 
 normalize(TProfile & profile)
@@ -117,8 +111,6 @@ normalize(TProfile & profile)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TProfile>
 void 
@@ -140,8 +132,6 @@ completeProfile(TProfile & profile,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 
 template<typename TStrings>

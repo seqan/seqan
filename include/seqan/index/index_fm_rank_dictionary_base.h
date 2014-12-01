@@ -80,7 +80,6 @@ struct RDConfig
 // Class RankDictionary
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class RankDictionary
  * @headerfile <seqan/index.h>

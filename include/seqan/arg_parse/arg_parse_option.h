@@ -58,8 +58,6 @@ namespace seqan {
  * object.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @fn ArgParseOption::ArgParseOption
  * @brief Constructor.
@@ -90,8 +88,6 @@ namespace seqan {
  *     and dashes, no underline characters</li>.
  * </ul>
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 class ArgParseOption :
     public ArgParseArgument
@@ -177,8 +173,6 @@ inline bool isStringArgument(ArgParseOption const & me)
  * Flags are given without arguments, e.g. the <tt>-l</tt> flag in the Unix <tt>ls</tt> command.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool isBooleanOption(ArgParseOption const & me)
 {
     return me._isFlag;
@@ -202,8 +196,6 @@ inline bool isBooleanOption(ArgParseOption const & me)
  * By default, options are not hidden.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool isHidden(ArgParseOption const & me)
 {
     return me._isHidden;
@@ -223,8 +215,6 @@ inline bool isHidden(ArgParseOption const & me)
  * @param[in,out] option The ArgParseOption object to set the hidden flag of.
  * @param[in]     hide   <tt>bool</tt> that indicates whether to hide the flag (default: <tt>true</tt>)
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void hideOption(ArgParseOption & me, bool hide = true)
 {
@@ -249,8 +239,6 @@ inline void hideOption(ArgParseOption & me, bool hide = true)
  * By default, options are not mandatory.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool isRequired(ArgParseOption const & me)
 {
     return me._isRequired;
@@ -272,8 +260,6 @@ inline bool isRequired(ArgParseOption const & me)
  */
 
 // TODO(holtgrew): Deprecate in favour of string-only variant?
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline void setDefaultValue(ArgParseOption & me, const TValue & value)
@@ -318,8 +304,6 @@ inline void setDefaultValue(ArgParseOption & me, const TValue & value)
  */
 
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue>
 inline void addDefaultValue(ArgParseOption & me, const TValue & value)
 {
@@ -356,8 +340,6 @@ inline void addDefaultValue(ArgParseOption & me, const TValue & value)
  *
  * By default, options are not mandatory.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void setRequired(ArgParseOption & me, bool required)
 {
@@ -404,7 +386,6 @@ inline std::string const getArgumentLabel(ArgParseOption const & me)
  * @return std::string The option name string.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 inline std::string getOptionName(ArgParseOption const & me)
 {
     std::stringstream stream;
@@ -434,8 +415,6 @@ inline std::string getOptionName(ArgParseOption const & me)
  * @param[in,out] stream The @link StreamConcept stream @endlink to write to.
  * @param[out]    option The ArgParseOption object to write to <tt>stream</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TStream>
 inline void write(TStream & target, ArgParseOption const & me)

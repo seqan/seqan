@@ -72,8 +72,6 @@ inline bool testAllOnes(TValue const & val);
  * Only useful for small alphabets as small tuple sizes (|Sigma|^size &lt;= 2^64 as for Dna or AminoAcid m-grams).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <unsigned char SIZE>
 struct BitVector_
 {

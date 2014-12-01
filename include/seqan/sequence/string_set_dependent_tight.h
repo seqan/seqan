@@ -82,7 +82,6 @@ namespace seqan {
  * efficient access to strings in the container via ids at the cost of higher memory usage.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 // Default id holder string set
 template <typename TSpec = Tight>
 struct Dependent;

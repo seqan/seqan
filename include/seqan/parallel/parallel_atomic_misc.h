@@ -80,8 +80,6 @@ namespace seqan {
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 inline void
 atomicMax(T volatile & x, T y)
@@ -115,8 +113,6 @@ atomicMax(T volatile & x, T y)
  * }
  * @endcode
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline void

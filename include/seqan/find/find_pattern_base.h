@@ -61,8 +61,6 @@ namespace seqan {
  * matching needle and the position in the needle.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template < typename TNeedle, typename TSpec = typename DefaultPattern<TNeedle>::Type >
 class Pattern;
 
@@ -210,8 +208,6 @@ struct Size< Pattern<TPattern, TSpec> > {
  *
  * @tparam TPattern The Pattern to query for its scoring scheme type.  Default: EditDistanceScore.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TNeedle>
 struct ScoringScheme
@@ -369,7 +365,6 @@ SEQAN_CHECKPOINT
  * TNeedle is the result of the Needle metafunction of TPattern.  This is an alias to the function @link Pattern#host @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 ///.Function.host.remarks:Aliased to @Function.needle@ and @Function.haystack@ for classes @Class.Pattern@ and @Class.Finder@.
 
 
@@ -426,8 +421,6 @@ needle(Pattern<TNeedle, TSpec> const & obj)
  * @param[in]     needle  The needle to set.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template < typename TNeedle, typename TSpec >
 inline void
 setNeedle(Pattern<TNeedle, TSpec> &obj, TNeedle const &ndl) {
@@ -447,8 +440,6 @@ setNeedle(Pattern<TNeedle, TSpec> &obj, TNeedle const &ndl) {
  *
  * @return TScoringScheme The scoring scheme of the pattern.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TNeedle, typename TSpec>
 inline typename ScoringScheme<Pattern<TNeedle, TSpec> >::Type 
@@ -476,8 +467,6 @@ SEQAN_CHECKPOINT
  * @param[in,out] pattern The pattern to set the scoring scheme for.
  * @param[in]     score   The scoring scheme to set.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TNeedle, typename TSpec, typename TScore2>
 inline void

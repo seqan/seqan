@@ -103,8 +103,6 @@ namespace seqan {
  * signature T3 Triple::i3;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T1, typename T2 = T1, typename T3 = T1, typename TSpec = void>
 struct Triple
 {

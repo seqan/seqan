@@ -59,14 +59,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature typedef Tag<LibraryDistance_> const KmerDistance;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
-/*_DDDOC_PLACEHOLDER*/
 struct LibraryDistance_;
 typedef Tag<LibraryDistance_> const LibraryDistance;
 
 
-/*_DDDOC_PLACEHOLDER*/
 struct KmerDistance_;
 typedef Tag<KmerDistance_> const KmerDistance;
 
@@ -204,7 +200,6 @@ getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
  */
  
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix>
 inline void 
 getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,

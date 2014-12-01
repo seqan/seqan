@@ -145,8 +145,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * with <tt>SIZE-1</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 	template <typename TInput, unsigned SIZE, bool omitLast, typename TPack>
     struct Pipe<TInput, Tupler<SIZE, omitLast, TPack> >
     {

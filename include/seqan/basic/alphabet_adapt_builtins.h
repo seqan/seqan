@@ -98,8 +98,6 @@ struct BitsPerValue<bool>
  * <tt>wchar_t const</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 struct IsCharType;
 

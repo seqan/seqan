@@ -606,8 +606,6 @@ cropOuter(TContainer &cont, TFunctor const &func)
  * @param[in]  maxSplit         The maximal number of split operations to do if given.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TString, typename TSpec, typename TSequence, typename TFunctor, typename TSize>
 inline void
 strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence, TFunctor const &sep, bool allowEmptyStrings, TSize maxSplit)

@@ -89,8 +89,6 @@ namespace seqan {
  * @brief The described operation.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TOperation_ = char, typename TCount_ = unsigned>
 struct CigarElement
 {

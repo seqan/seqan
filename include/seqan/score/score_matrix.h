@@ -85,7 +85,6 @@ struct ScoreMatrix;
  * @param[in] gapOpen   Gap open score, defaults to gapExtend, type is TValue.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSequenceValue, typename TSpec>
 class Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > {
 public:
@@ -104,7 +103,6 @@ public:
     // The gap open score.
     TValue data_gap_open;
 
-/*_DDDOC_PLACEHOLDER*/
     explicit Score(TValue _gap_extend = -1)
         : data_gap_extend(_gap_extend),
           data_gap_open(_gap_extend) {
@@ -112,21 +110,18 @@ public:
         setDefaultScoreMatrix(*this, TSpec());
     }
 
-/*_DDDOC_PLACEHOLDER*/
     Score(TValue _gap_extend, TValue _gap_open)
         : data_gap_extend(_gap_extend), data_gap_open(_gap_open) {
         SEQAN_CHECKPOINT;
         setDefaultScoreMatrix(*this, TSpec());
     }
 
-/*_DDDOC_PLACEHOLDER*/
     explicit Score(char const * filename, TValue _gap_extend = -1)
         : data_gap_extend(_gap_extend), data_gap_open(_gap_extend) {
         SEQAN_CHECKPOINT;
         loadScoreMatrix(*this, filename);
     }
 
-/*_DDDOC_PLACEHOLDER*/
     Score(char const * filename, TValue _gap_extend, TValue _gap_open)
         : data_gap_extend(_gap_extend), data_gap_open(_gap_open) {
         SEQAN_CHECKPOINT;
@@ -160,7 +155,6 @@ score(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > const & sc, TVal1 val1,
  * @param[in]     v     The score value to set.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSequenceValue, typename TSpec, typename TVal1, typename TVal2, typename T>
 inline void
 setScore(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TVal1 val1, TVal2 val2, T score) {
@@ -190,7 +184,6 @@ setScore(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TVal1 val1, TV
  * If Default is used for tag then the matrix will be filled with default-constructed TValue values.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSequenceValue, typename TSpec, typename TTag>
 inline void
 setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, TTag) {
@@ -201,7 +194,6 @@ setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, T
 }
 
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSequenceValue, typename TSpec>
 inline void
 setDefaultScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc, Default) {

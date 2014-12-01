@@ -108,7 +108,6 @@ namespace seqan {
  * @note The user has to ensure that the container's capacity is large enough.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 struct TagInsist_;
 typedef Tag<TagInsist_> Insist;
 typedef Tag<TagInsist_> Tight;  // TODO(holtgrew): Necessary?
@@ -146,7 +145,6 @@ typedef Tag<TagExact_> Exact;
  * @link StringConcept#replace @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct DefaultOverflowImplicit
 {
@@ -172,7 +170,6 @@ struct DefaultOverflowImplicit
  * @link StringConcept#resize @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct DefaultOverflowExplicit
 {
@@ -201,7 +198,6 @@ struct DefaultOverflowExplicit
  * For example, String and Segment as <tt>T</tt> return true.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct IsSequence
 {
@@ -232,7 +228,6 @@ struct IsSequence<T const> : IsSequence<T> {};
  * For example, String and std::vector allow for fast random access, while std::list does not.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct AllowsFastRandomAccess
 {
@@ -286,7 +281,6 @@ struct AllowsFastRandomAccess<T const>
  * compile time.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 inline void const *
 getObjectId(T const & me)
@@ -311,8 +305,6 @@ getObjectId(T const & me)
  *
  * @return bool <tt>true</tt> if the two sequences share resources and <tt>false</tt> if not.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T1, typename T2>
 inline bool
@@ -371,7 +363,6 @@ _beginDefault(T const & me,
 // Function begin()
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 SEQAN_HOST_DEVICE inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type
 begin(T & me)
@@ -458,7 +449,6 @@ begin(TValue const * me,
 // Function beginPosition()
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 inline typename Position<T>::Type
 beginPosition(T &)
@@ -521,7 +511,6 @@ _endDefault(T const & me,
 // Function end()
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 SEQAN_HOST_DEVICE inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type
 end(T & me)
@@ -560,7 +549,6 @@ end(T const & me,
 // Function endPosition()
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 inline typename Position<T>::Type
 endPosition(T & me)
@@ -581,7 +569,6 @@ endPosition(T const & me)
 // Function value()
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 //* ???Anti Default Sequences
 template <typename T, typename TPos>
 SEQAN_HOST_DEVICE inline typename Reference<T>::Type
@@ -606,7 +593,6 @@ value(T const & me,
 // Function getValue()
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T, typename TPos>
 inline typename GetValue<T>::Type
 getValue(T & me,
@@ -629,8 +615,6 @@ getValue(T const & me,
 // Function front()
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 inline typename Reference<T>::Type
 front(T & me)
@@ -649,8 +633,6 @@ front(T const & me)
 // --------------------------------------------------------------------------
 // Function back()
 // --------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 SEQAN_HOST_DEVICE inline typename Reference<T const>::Type
@@ -686,7 +668,6 @@ backPrev(T & me)
 // Function iter()
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T, typename TPos>
 inline typename Iterator<T, typename DefaultGetIteratorSpec<T>::Type>::Type
 iter(T & me,
@@ -731,8 +712,6 @@ iter(T const & me,
 // Function assignValue()
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T, typename TValue, typename TPos>
 inline void
 assignValue(T & me,
@@ -759,8 +738,6 @@ assignValue(T & me,
  * @param[in,out] value     The value to move to <tt>container[pos]</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T, typename TValue, typename TPos>
 inline void
 moveValue(T & me,
@@ -784,8 +761,6 @@ moveValue(T const & me,
 // --------------------------------------------------------------------------
 // Function length()
 // --------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 //* ???Anti Default Sequences
 template <typename T>
@@ -818,7 +793,6 @@ length(T const & /*me*/)
  * function reserve can be used to change the capacity explicitely.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 inline SEQAN_HOST_DEVICE typename Size<T const>::Type
 capacity(T const & me)
@@ -831,7 +805,6 @@ capacity(T const & me)
 // Function empty()
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 SEQAN_HOST_DEVICE inline bool
 empty(T const & me)
@@ -881,7 +854,6 @@ _computeSizeForCapacity(T const & /*me*/,
  *               when it is expanded using the <tt>Generous</tt> overflow strategy.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T, typename TSize>
 inline TSize
 computeGenerousCapacity(T const & /*me*/,
@@ -978,8 +950,6 @@ assign(TTarget const & target,
  * @param[in]     source This @link ContainerConcept container @endlink will be appended to <tt>source</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TTarget, typename TSource>
 inline void
 append(TTarget & target,
@@ -1073,8 +1043,6 @@ append(TTarget const & target,
  *                       <tt>target</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T, typename TValue>
 inline void
 appendValue(T SEQAN_FORWARD_ARG me,
@@ -1111,8 +1079,6 @@ appendValue(T const & me,
  * @param[in]     src The sequence to insert at pos.
  * @param[in]     tag The resize tag, defaults to what <tt>OverflowStrategyImplicit</tt> returns.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TPosition, typename TSeq, typename TExpand>
 inline void
@@ -1173,8 +1139,6 @@ insert(T const & me,
  * @param[in]     tag  The resize tag, defaults to what <tt>OverflowStrategyImplicit</tt> returns.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T, typename TPosition, typename TValue>
 inline void
 insertValue(T & me,
@@ -1215,7 +1179,6 @@ insertValue(T const & me,
  *                          returns.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TTarget, typename TPositionBegin, typename TPositionEnd, typename TSource>
 inline void
 replace(TTarget & target,
@@ -1356,8 +1319,6 @@ _capacityReturned(T &,
  * This operation may invalidate iterators of <tt>object</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T, typename TSize, typename TExpand>
 inline typename Size<T>::Type
 reserve(T & me,
@@ -1380,8 +1341,6 @@ reserve(T & me,
 // --------------------------------------------------------------------------
 // Function resize()
 // --------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TSize>
 inline typename Size<T>::Type
@@ -1428,8 +1387,6 @@ resize(T & me,
  *               <tt>size</tt> if <tt>object</tt> has not enough <tt>capacity</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename T, typename TSize, typename TBeginPosition, typename TEndPosition>
 inline TSize
 resizeSpace(T & me,
@@ -1456,8 +1413,6 @@ resizeSpace(T & me,
 // --------------------------------------------------------------------------
 // Function erase()
 // --------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename T, typename TBeginPosition, typename TEndPosition>
 inline void
@@ -1503,8 +1458,6 @@ erase(T const & me,
 // Function eraseBack()
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 inline void eraseBack(T & me)
 {
@@ -1526,8 +1479,6 @@ inline void eraseBack(T & me)
  *
  * @param[in] cont The container to shrink.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 inline void

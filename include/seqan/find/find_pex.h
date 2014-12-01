@@ -79,8 +79,6 @@ struct FindBeginPatternSpec< Pattern<TNeedle, Pex<TVerification , TMultiFinder >
  * <tt>Pattern&lt;String&lt;Segment&l;tNeedle&gt; &gt;, TMultiFinder&gt;</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename T>
 struct PexMultiFinder;
 
@@ -121,7 +119,6 @@ struct PexRange_{
  * @endlink algorithm for the multiple exact string matching.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 ///.Class.Pattern.param.TSpec.type:Spec.Pex
 
 /*!
@@ -137,7 +134,6 @@ struct PexRange_{
  * @tparam TMultiFinder Specifies the algorithm for th emultiple exact string matching algorithm.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 ///.Spec.Pex.param.TVerification.type:Spec.Hierarchical
 
 /*!
@@ -153,7 +149,6 @@ struct PexRange_{
  * @tparam TMultiFinder Specifies the algorithm for th emultiple exact string matching algorithm.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 ///.Spec.Pex.param.TVerification.type:Spec.NonHierarchical
 
 template <typename TNeedle, typename TVerification, typename TMultiFinder>

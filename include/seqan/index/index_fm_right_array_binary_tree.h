@@ -51,7 +51,6 @@ class RightArrayBinaryTree;
 // Tags 
 // ============================================================================
 //
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @defgroup RightArrayBinaryTreeFibres RightArrayBinaryTree Fibres
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
@@ -129,7 +128,6 @@ struct Value<RightArrayBinaryTree<TChar, TSpec> const> :
  * @tparam TSpec  The wavelet tree structure specialisation. Default: void.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TChar, typename TSpec>
 class RightArrayBinaryTree
 {
@@ -168,7 +166,6 @@ public:
  * @param[in,out] rightArrayBinaryTree The RightArrayBinaryTree to be cleared.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TChar, typename TSpec>
 inline void clear(RightArrayBinaryTree<TChar, TSpec> & treeStructure)
 {
@@ -189,7 +186,6 @@ inline void clear(RightArrayBinaryTree<TChar, TSpec> & treeStructure)
  * @param[in] text                 A @link TextConcept text @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 // This function computes the wavelet tree structure.
 template <typename TChar, typename TSpec, typename TIterSpec, typename TBorderString, typename TPrefixSums>
 inline void _createRightArrayBinaryTreeImpl(Iter<RightArrayBinaryTree<TChar, TSpec>, TIterSpec> & it,
@@ -258,7 +254,6 @@ createRightArrayBinaryTree(RightArrayBinaryTree<TChar, TSpec> & waveletTreeStruc
  * @return bool Returns <tt>true</tt> if the rank-support-bit string is empty and <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TChar, typename TSpec>
 inline bool empty(RightArrayBinaryTree<TChar, TSpec> const & treeStructure)
 {
@@ -282,7 +277,6 @@ inline bool empty(RightArrayBinaryTree<TChar, TSpec> const & treeStructure)
  * 
  * @return TFibre A reference to the @link Fibre @endlink object.
  */
-/*_DDDOC_PLACEHOLDER*/
 template <typename TChar, typename TSpec>
 inline typename Fibre<RightArrayBinaryTree<TChar, TSpec>, FibreTreeStructureEncoding>::Type &
 getFibre(RightArrayBinaryTree<TChar, TSpec> & treeStructure, FibreTreeStructureEncoding)
@@ -368,7 +362,6 @@ _resize(RightArrayBinaryTree<TChar, TSpec> & treeStructure, TSize size,
  * @return bool A <tt>bool</tt> which is <tt>true</tt> on success.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TChar, typename TSpec>
 inline bool open(RightArrayBinaryTree<TChar, TSpec> & treeStructure, const char * fileName, int openMode)
 {
@@ -418,7 +411,6 @@ inline bool open(RightArrayBinaryTree<TChar, TSpec> & treeStructure, const char 
  * @return bool A <tt>bool</tt> which is <tt>true</tt> on success.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TChar, typename TSpec>
 inline bool save(RightArrayBinaryTree<TChar, TSpec> const & treeStructure, const char * fileName, int openMode)
 {

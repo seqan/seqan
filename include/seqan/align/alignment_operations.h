@@ -79,8 +79,6 @@ namespace seqan {
  * @include demos/align/integrate_align.cpp.stdout
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSource1, typename TSpec1, typename TSource2, typename TSpec2, typename TPos> 
 void integrateAlign(Align<TSource1, TSpec1> & align,
                     Align<TSource2, TSpec2> const & infixAlign,

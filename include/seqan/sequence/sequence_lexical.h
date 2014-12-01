@@ -63,7 +63,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature typedef Tag<TagPrefixGreater_> const TagPrefixGreater;
  */
 
-/*_DDDOC_PLACEHOLDER*/
 struct TagPrefixLess_ {};
 typedef Tag<TagPrefixLess_> const TagPrefixLess;
 
@@ -83,7 +82,6 @@ typedef Tag<TagPrefixGreater_> const TagPrefixGreater;
  * @return Type The prefix order tag type of T, see @link PrefixOrderTags @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct DefaultPrefixOrder
 {
@@ -153,8 +151,6 @@ struct DefaultPrefixOrder
  * 
  * @see Comparator
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec = size_t>
 struct Lexical
@@ -226,7 +222,6 @@ SEQAN_CHECKPOINT
  * Comparators are objects that can be used to compare other objects and store the result of comparisons.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct Comparator
 {
@@ -284,8 +279,6 @@ struct Spec<Lexical<TSpec> const>
  * 
  * @see Comparator
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TLeft, typename TRight>
 inline void
@@ -382,7 +375,6 @@ compare(Lexical<TSpec> & lexical,
  * @return bool <tt>true</tt> if <tt>left</tt> equals <tt>right</tt>, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TLeft, typename TRight >
 inline bool
 isEqual(TLeft const & left,
@@ -419,7 +411,6 @@ SEQAN_CHECKPOINT
  * @return bool <tt>true</tt> if <tt>left</tt> does not equal <tt>right</tt>, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TLeft, typename TRight >
 inline bool
 isNotEqual(TLeft const & left,
@@ -456,7 +447,6 @@ SEQAN_CHECKPOINT
  * @return bool <tt>true</tt> if <tt>left</tt> is less than <tt>right</tt>, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TLeft, typename TRight, typename TPrefixOrder >
 inline bool
 isLess(TLeft const & left,
@@ -518,8 +508,6 @@ SEQAN_CHECKPOINT
  * 
  * @return bool <tt>true</tt> if <tt>left</tt> is less than or equal to <tt>right</tt>, <tt>false</tt> otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TLeft, typename TRight, typename TPrefixOrder >
 inline bool
@@ -583,7 +571,6 @@ SEQAN_CHECKPOINT
  * @return bool <tt>true</tt> if <tt>left</tt> is greater than <tt>right</tt>, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TLeft, typename TRight, typename TPrefixOrder >
 inline bool
 isGreater(TLeft const & left,
@@ -645,8 +632,6 @@ SEQAN_CHECKPOINT
  * 
  * @return bool <tt>true</tt> if <tt>left</tt> is greater than or equal to <tt>right</tt>, <tt>false</tt> otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TLeft, typename TRight, typename TPrefixOrder >
 inline bool
@@ -712,8 +697,6 @@ SEQAN_CHECKPOINT
  * By definition, a sequence is a prefix of itself: <tt>isPrefix("abc", "abc")</tt> is <tt>true</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TLeft, typename TRight >
 inline bool
 isPrefix(TLeft const & left,
@@ -752,8 +735,6 @@ SEQAN_CHECKPOINT
  *
  * By definition, a sequence is a prefix of itself: <tt>hasPrefix("abc", "abc")</tt> is <tt>true</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TLeft, typename TRight >
 inline bool
@@ -794,7 +775,6 @@ SEQAN_CHECKPOINT
  * By definition, a sequence is a prefix of itself: <tt>hasPrefix("abc", "abc")</tt> is <tt>true</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TLeft, typename TRight >
 inline typename Size<TLeft>::Type
 lcpLength(TLeft const & left, TRight const & right)

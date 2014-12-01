@@ -49,8 +49,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	typedef GappedShape<Default> GenericShape;
 
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @class Shape
  * @headerfile <seqan/index.h>
@@ -195,7 +193,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class SimpleShape
  * @extends Shape
@@ -234,7 +231,6 @@ namespace SEQAN_NAMESPACE_MAIN
 		TValue						leftChar;
 //____________________________________________________________________________
 		
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn SimpleShape::Shape
  *
@@ -291,7 +287,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	// ungapped shape with fixed length q
 	//////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class UngappedShape
  * @extends Shape
@@ -389,7 +384,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //____________________________________________________________________________
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Shape#weight
  * @brief Number of relevant positions in a shape.
@@ -440,7 +434,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //____________________________________________________________________________
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Shape#hash
  * @brief Computes a (lower) hash value for a shape applied to a sequence.
@@ -505,7 +498,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
 	template <typename TValue, typename TIter>
 	inline void
 	hashInit(Shape<TValue, SimpleShape> &me, TIter it)
@@ -661,7 +653,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //____________________________________________________________________________
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Shape#hashUpper
  * @brief Computes an upper hash value for a shape applied to a sequence.
@@ -713,7 +704,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //____________________________________________________________________________
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Shape#hashNext
  * @headerfile <seqan/index.h>
@@ -750,7 +740,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //____________________________________________________________________________
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Shape#hash2
  * @brief Computes an unique hash value of a shape applied to a sequence, even if the sequence is shorter than
@@ -800,7 +789,6 @@ namespace SEQAN_NAMESPACE_MAIN
 		return me.hValue += iEnd;
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Shape#hash2Upper
  * @brief Computes an upper unique hash value of a shape applied to a sequence,
@@ -861,7 +849,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //____________________________________________________________________________
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Shape#hash2Next
  * @headerfile <seqan/index.h>
@@ -907,7 +894,6 @@ namespace SEQAN_NAMESPACE_MAIN
 		return me.hValue;
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Shape#unhash
  * @headerfile <seqan/index.h>
@@ -938,7 +924,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //____________________________________________________________________________
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Shape#stringToShape
  * @brief Takes a shape given as a string of '1' (relevant position) and '0'
@@ -983,7 +968,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //____________________________________________________________________________
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Shape#shapeToString
  * @brief Converts a given shape into a sequence of '1' (relevant position) and '0' (irrelevant position).

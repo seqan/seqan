@@ -98,8 +98,6 @@ typedef Tag<ArrayGaps_> ArrayGaps;
  * @param[in] seq   Sequence concept to construct the gaps for.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSequence>
 class Gaps<TSequence, ArrayGaps>
 {

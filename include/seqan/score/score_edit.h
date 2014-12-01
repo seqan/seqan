@@ -53,8 +53,6 @@ namespace seqan {
  * @tparam TValue The score value type to use.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): Should EditDistance better live here instead of basic_tag.h?
 // EditDistance is defined in basic_tag.h
 template <typename TValue>
@@ -72,8 +70,6 @@ public:
  *
  * @signature typedef Score<int, EditDistance> EditDistanceScore;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 typedef Score<int, EditDistance> EditDistanceScore;
 

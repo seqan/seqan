@@ -58,8 +58,6 @@ namespace seqan {
 // Functions
 // ============================================================================
 
-/*_DDDOC_PLACEHOLDER*/
-
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_BUILTIN_FUNCTIONS_H_

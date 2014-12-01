@@ -279,8 +279,6 @@ struct Alloc {};
  *                 <tt>pos</tt> is converted to a local position and <tt>i2</tt> is returned.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TSpec = Alloc<> >
 class String;
 
@@ -327,8 +325,6 @@ struct Spec<String<TValue, TSpec> const>:
 // ----------------------------------------------------------------------------
 // Metafunction StringSpec
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct StringSpec
@@ -377,8 +373,6 @@ SEQAN_CONCEPT_IMPL((String<TValue, TSpec> const), (ContainerConcept));  // read-
 // Internal Metafunction TempCopy_
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 struct TempCopy_
 {
@@ -403,8 +397,6 @@ struct TempCopy_
 // ----------------------------------------------------------------------------
 // Function swap()
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TAlphabet, typename TSpec>
 inline void
@@ -504,8 +496,6 @@ empty(String<TValue, TSpec> const & me)
 // ----------------------------------------------------------------------------
 // Function clear()
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec>
 inline void
@@ -898,8 +888,6 @@ struct ClearSpaceStringBase_<Generous>:
     ClearSpaceExpandStringBase_<Generous>
 {
 };
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename TSpec, typename TSize, typename TExpand>
 inline typename Size< String<TValue, TSpec> >::Type
@@ -1416,8 +1404,6 @@ appendValue(String<TTargetValue, TTargetSpec> & me,
 // insertValue
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TExpand>
 struct InsertValueToString_
 {
@@ -1560,8 +1546,6 @@ replace(String<TTargetValue, TTargetSpec> & target,
 // ----------------------------------------------------------------------------
 // Internal Function _reallocateStorage()
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TSize>
 inline typename Value<String<TValue, TSpec> >::Type *

@@ -83,8 +83,6 @@ namespace seqan {
  * @see Gaps
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSource, typename TSpec = ArrayGaps>
 class Align
 {
@@ -345,8 +343,6 @@ void move(Align<TSource, TSpec> & target, Align<TSource, TSpec> & source)
  * @return TRows A container with the Gaps of the Align object.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSource, typename TSpec>
 inline typename Rows<Align<TSource, TSpec> >::Type &
 rows(Align<TSource, TSpec> & me)
@@ -376,8 +372,6 @@ rows(Align<TSource, TSpec> const & me)
  *
  * @return TRow Reference to the given row of align  (Metafunction: @link Align#Row @endlink).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSource, typename TSpec, typename TPosition>
 inline typename Row<Align<TSource, TSpec> >::Type &
@@ -410,8 +404,6 @@ row(Align<TSource, TSpec> const & me,
  * @return TCols The columns of the Align object (Metafunction: @link Align#Cols @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSource, typename TSpec>
 inline typename Cols<Align<TSource, TSpec> >::Type
 cols(Align<TSource, TSpec> & me)
@@ -440,8 +432,6 @@ cols(Align<TSource, TSpec> const & me)
  *
  * @return TCol The column of the Align object (Metafunction: @link Align#Col @endlink).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSource, typename TSpec, typename TPosition>
 inline typename Col<Align<TSource, TSpec> >::Type
@@ -649,8 +639,6 @@ operator<<(TStream & target,
  * @param[in]     stringSet The @link StringSet @endlink with the data.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSource, typename TSpec, typename TSpec2>
 inline void
 setStrings(Align<TSource, TSpec> & me,
@@ -713,8 +701,6 @@ clearGaps(Align<TSource, TSpec> & me)
  *
  * @return TStringSet The set of ungapped sequences (Metafunction: @link Align#StringSetType @endlink).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSource, typename TSpec>
 inline typename StringSetType<Align<TSource, TSpec> >::Type

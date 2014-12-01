@@ -75,8 +75,6 @@
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 #ifdef _OPENMP
 
 #include <omp.h>

@@ -102,7 +102,6 @@ typedef Blosum30_ ScoreSpecBlosum30;
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum30> > Blosum30;
 
 
@@ -199,7 +198,6 @@ typedef Blosum45_ ScoreSpecBlosum45;
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum45> > Blosum45;
 
 
@@ -295,7 +293,6 @@ typedef Blosum62_ ScoreSpecBlosum62;
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum62> > Blosum62;
 
 
@@ -391,7 +388,6 @@ typedef Blosum80_ ScoreSpecBlosum80;
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecBlosum80> > Blosum80;
 
 
@@ -487,7 +483,6 @@ typedef Pam40_ ScoreSpecPam40;
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam40> > Pam40;
 
 
@@ -586,7 +581,6 @@ typedef Pam120_ ScoreSpecPam120;
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam120> > Pam120;
 
 
@@ -684,7 +678,6 @@ typedef Pam200_ ScoreSpecPam200;
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam200> > Pam200;
 
 
@@ -782,7 +775,6 @@ typedef Pam250_ ScoreSpecPam250;
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecPam250> > Pam250;
 
 
@@ -880,7 +872,6 @@ typedef Vtml200_ ScoreSpecVtml200;
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, ScoreMatrix<AminoAcid, ScoreSpecVtml200> > Vtml200;
 
 

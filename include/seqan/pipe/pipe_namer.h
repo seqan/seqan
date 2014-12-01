@@ -76,8 +76,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * elements gets the same name, if and only if they are equal.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     //////////////////////////////////////////////////////////////////////////////
     // namer class
     template < typename TInput, typename TCompare >
@@ -98,7 +96,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in] comp A <tt>TCompare</tt> object (copied).
  */
 
-/*_DDDOC_PLACEHOLDER*/
         Pipe(TInput& _in):
             in(_in) {}
         

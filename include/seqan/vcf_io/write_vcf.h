@@ -73,8 +73,6 @@ namespace seqan {
  * @return int A status code, 0 on success, a different value otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 writeRecord(TTarget & target,
@@ -118,8 +116,6 @@ writeRecord(TTarget & target,
  *
  * @return int A status code, 0 on success, a different value otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void

@@ -626,8 +626,6 @@ public:
  * @signature ToolDoc::ToolDoc()
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 class ToolDoc
 {
 public:
@@ -721,8 +719,6 @@ public:
  * @param[in]     b This object is appended to <tt>b</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline void append(ToolDoc & a, ToolDoc const & b)
 {
     for (unsigned i = 0; i < length(b._entries); ++i)
@@ -764,8 +760,6 @@ inline void append(ToolDoc & a, ToolDoc const & b)
  * @param[in]     name    The name of the tool (@link CharString @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline void setName(ToolDoc & doc, CharString const & name)
 {
     doc._name = name;
@@ -787,8 +781,6 @@ inline void setName(ToolDoc & doc, CharString const & name)
  * @return CharString Resulting name (@link CharString @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline CharString const & getName(ToolDoc const & doc)
 {
     return doc._name;
@@ -808,8 +800,6 @@ inline CharString const & getName(ToolDoc const & doc)
  * @param[in,out] toolDoc The ToolDoc object to the set the name for.
  * @param[in]     name    The name of the tool (@link CharString @endlink).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void setCategory(ToolDoc & doc, CharString const & category)
 {
@@ -832,8 +822,6 @@ inline void setCategory(ToolDoc & doc, CharString const & category)
  * @return CharString Resulting category (@link CharString @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline CharString const & getCategory(ToolDoc const & doc)
 {
     return doc._category;
@@ -853,8 +841,6 @@ inline CharString const & getCategory(ToolDoc const & doc)
  * @param[in,out] toolDoc The ToolDoc object to the set the short description for.
  * @param[in]     text    The short description of the tool (@link CharString @endlink).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void setShortDescription(ToolDoc & doc, CharString const & shortDescription)
 {
@@ -877,8 +863,6 @@ inline void setShortDescription(ToolDoc & doc, CharString const & shortDescripti
  * @return CharString Resulting short description (@link CharString @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline CharString const & getShortDescription(ToolDoc const & doc)
 {
     return doc._shortDescription;
@@ -898,8 +882,6 @@ inline CharString const & getShortDescription(ToolDoc const & doc)
  * @param[in,out] toolDoc The ToolDoc object to the set the date string for.
  * @param[in]     str     The date string of the tool (@link CharString @endlink).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void setDate(ToolDoc & doc, CharString const & date)
 {
@@ -922,8 +904,6 @@ inline void setDate(ToolDoc & doc, CharString const & date)
  * @return CharString Resulting date string (@link CharString @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline CharString const & getDate(ToolDoc const & doc)
 {
     return doc._date;
@@ -943,8 +923,6 @@ inline CharString const & getDate(ToolDoc const & doc)
  * @param[in,out] toolDoc The ToolDoc object to the set the version string for.
  * @param[in]     str     The version string of the tool (@link CharString @endlink).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void setVersion(ToolDoc & doc, CharString const & version)
 {
@@ -967,8 +945,6 @@ inline void setVersion(ToolDoc & doc, CharString const & version)
  * @return CharString Resulting version string (@link CharString @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline CharString const & getVersion(ToolDoc const & doc)
 {
     return doc._version;
@@ -988,8 +964,6 @@ inline CharString const & getVersion(ToolDoc const & doc)
  * @param[in,out] toolDoc The ToolDoc object to the set the title for.
  * @param[in]     title   The title of the tool (@link CharString @endlink).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void setManTitle(ToolDoc & doc, CharString const & title)
 {
@@ -1012,8 +986,6 @@ inline void setManTitle(ToolDoc & doc, CharString const & title)
  * @return CharString Resulting man page title (@link CharString @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline CharString const & getManTitle(ToolDoc & doc)
 {
     return doc._manTitle;
@@ -1033,8 +1005,6 @@ inline CharString const & getManTitle(ToolDoc & doc)
  * @param[in,out] toolDoc The ToolDoc object to add a section for.
  * @param[in]     title   The section title (@link CharString @endlink).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void addSection(ToolDoc & doc, CharString const & title)
 {
@@ -1056,8 +1026,6 @@ inline void addSection(ToolDoc & doc, CharString const & title)
  * @param[in]     title   The subsection title (@link CharString @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline void addSubSection(ToolDoc & doc, CharString const & title)
 {
     appendValue(doc._entries, new ToolDocSubSection_(title));
@@ -1078,8 +1046,6 @@ inline void addSubSection(ToolDoc & doc, CharString const & title)
  * @param[in]     text        The text to add (@link CharString @endlink).
  * @param[in]     isParagraph Whether to insert as paragraph or just a line (only one line break if not a paragraph).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void addText(ToolDoc & doc, CharString const & text, bool isParagraph)
 {
@@ -1107,8 +1073,6 @@ inline void addText(ToolDoc & doc, CharString const & text)
  * @param[in]     value   The value for the list (@link CharString @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline void addListItem(ToolDoc & doc, CharString const & key, CharString const & value)
 {
     appendValue(doc._entries, new ToolDocListItem_(key, value));
@@ -1130,8 +1094,6 @@ inline void addListItem(ToolDoc & doc, CharString const & key, CharString const 
  * @param[in]     format  The format, one of {"html", "man", "txt"}.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline void print(std::ostream & stream, ToolDoc const & doc, CharString const & format)
 {
     doc.print(stream, format);
@@ -1150,8 +1112,6 @@ inline void print(std::ostream & stream, ToolDoc const & doc, CharString const &
  *
  * @param[in,out] toolDoc The ToolDoc object to clear entries from.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void clearEntries(ToolDoc & doc)
 {

@@ -96,8 +96,6 @@ template <typename TValue> SEQAN_HOST_DEVICE inline typename ValueSize<TValue>::
  * @see CompareType
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Given two types, the CompareType is a type that both types can be cast to
 // and where the results are then used to compare two values.
 

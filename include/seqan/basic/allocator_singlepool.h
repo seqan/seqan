@@ -71,8 +71,6 @@ namespace seqan {
  * than a few KB is not advised.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <size_t SIZE, typename TParentAllocator = SimpleAllocator>
 struct SinglePool;
 

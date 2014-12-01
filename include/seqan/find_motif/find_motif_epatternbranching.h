@@ -45,8 +45,6 @@ computeH(TType const & t, TType const & l, TType const & d, bool const & is_exac
 // EPatternBranching
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 ///.Class.MotifFinder.param.TSpec.type:Spec.EPatternBranching
 
 struct EPatternBranching_;

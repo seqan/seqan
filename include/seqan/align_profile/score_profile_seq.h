@@ -135,8 +135,6 @@ typedef Tag<ProfileSeqScore_> ProfileSeqScore;
  * assign the profile to this class.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue>
 class Score<TValue, ProfileSeqScore>
 {
@@ -218,8 +216,6 @@ typedef Tag<ProfileSeqFracScore_> ProfileSeqFracScore;
  * assign the profile to this class.
  */
 
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 class Score<TValue, ProfileSeqFracScore>
@@ -306,8 +302,6 @@ sequenceEntryForScore(Score<TScoreValue, ProfileSeqScore> const & /*sScheme*/,
  * @param[out] score   The ProfileSeqScore object to assign the profile for.
  * @param[in]  profile The profile to assign to the score.  @link AllocString @endlink of @link ProfileChar @endlink.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TString>
 inline void
@@ -439,7 +433,6 @@ sequenceEntryForScore(Score<TScoreValue, ProfileSeqFracScore> const & /*sScheme*
  * @param[in]  profile The profile to assign to the score.  @link AllocString @endlink of @link ProfileChar @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TString>
 inline void
 assignProfile(Score<TValue, ProfileSeqFracScore> & me,

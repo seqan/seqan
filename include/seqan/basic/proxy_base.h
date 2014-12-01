@@ -64,8 +64,6 @@ namespace seqan {
  * <tt>Proxy&lt;TSpec&gt;</tt> too, since otherwise the general version will be called.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec>
 class Proxy;
 

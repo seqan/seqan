@@ -53,8 +53,6 @@ namespace seqan
  * @tparam TSpec     The modifier type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename THost, typename TSpec>
 class ModifiedAlphabet;
 

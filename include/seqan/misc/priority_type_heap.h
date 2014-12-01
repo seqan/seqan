@@ -51,7 +51,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TLess  The less-than comparator.  Default: <tt>std::less&lt;TValue&gt;</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template < typename TValue, typename TLess>
 class PriorityType<TValue,TLess,PriorityHeap>
 {
@@ -174,7 +173,6 @@ SEQAN_CHECKPOINT
  * @return TReference The result, reference to Value type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TLess>
 inline TValue & 
 top(PriorityType<TValue, TLess, PriorityHeap> & me)
@@ -222,7 +220,6 @@ SEQAN_CHECKPOINT
  * @param[in,out] pq The PriorityType to adjust.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TLess>
 inline void 
 adjustTop (PriorityType<TValue, TLess, PriorityHeap> & me)	// so könnte man es dann auch nennen
@@ -249,7 +246,6 @@ SEQAN_CHECKPOINT
  * @param[in]     element The element to push.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TLess>
 inline void 
 push (PriorityType<TValue, TLess, PriorityHeap> & me, TValue const & element)
@@ -300,7 +296,6 @@ SEQAN_CHECKPOINT
  * @param[in,out] pq      The PriorityType to pop from.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TLess>
 inline void 
 pop (PriorityType<TValue, TLess, PriorityHeap> & me)

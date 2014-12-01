@@ -45,8 +45,6 @@ namespace seqan {
 // Enums, Tags, Classes, Specializations
 // ===========================================================================
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ===========================================================================
 // Metafunctions
 // ===========================================================================
@@ -289,7 +287,6 @@ length(std::list<TValue> const & list)
     return list.size();
 }
 
-/*_DDDOC_PLACEHOLDER*/
 ///.Function.prependValue.class:Adaption.std::list
 
 template <typename T, typename T2>

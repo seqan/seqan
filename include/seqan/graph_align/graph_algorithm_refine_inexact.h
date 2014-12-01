@@ -297,7 +297,6 @@ SEQAN_CHECKPOINT
  *                           Types: Score
  */
 
-/*_DDDOC_PLACEHOLDER*/
 //score type given, min fragment length given, if > 1 ==> inexact refinement
 template<typename TAlignmentString, typename TScoreValue,typename TScoreSpec, typename TOutGraph, typename TSequence, typename TSetSpec>
 void
@@ -316,7 +315,6 @@ SEQAN_CHECKPOINT
 }
 
 
-/*_DDDOC_PLACEHOLDER*/
 //score type not given, min fragment length given, if > 1 ==> inexact refinement
 template<typename TAlignmentString, typename TOutGraph, typename TSequence, typename TSetSpec>
 void

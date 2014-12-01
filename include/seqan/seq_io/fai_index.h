@@ -122,8 +122,6 @@ clear(FaiIndexEntry_ &entry)
  * @signature FaiIndex::FaiIndex();
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 class FaiIndex
 {
 public:
@@ -170,8 +168,6 @@ public:
  * @param[in,out] faiIndex The FaiIndex to clear.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline void clear(FaiIndex & index)
 {
     clear(index.fastaFilename);
@@ -198,8 +194,6 @@ inline void clear(FaiIndex & index)
  * @return bool true if a sequence with the given name is known in the index.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TName, typename TId>
 inline bool getIdByName(TId & rID, FaiIndex const & index, TName const & name)
 {
@@ -221,8 +215,6 @@ inline bool getIdByName(TId & rID, FaiIndex const & index, TName const & name)
  *
  * @return __uint64 The length of the sequence with index rID in faiIndex.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSeqId>
 inline __uint64 sequenceLength(FaiIndex const & index, TSeqId rID)
@@ -254,8 +246,6 @@ inline __uint64 sequenceLength(FaiIndex & index, TSeqId rID)
  * @return CharString The name of the sequence with the given id.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline CharString const & sequenceName(FaiIndex const & index, unsigned rID)
 {
     return index.indexEntryStore[rID].name;
@@ -275,8 +265,6 @@ inline CharString const & sequenceName(FaiIndex const & index, unsigned rID)
  *
  * @return __uint64 The number of sequences in the index.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline __uint64 numSeqs(FaiIndex const & index)
 {
@@ -303,8 +291,6 @@ inline __uint64 numSeqs(FaiIndex const & index)
  *
  * @return int 0 on success, non-0 on errors.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TSeqId, typename TBeginPos, typename TEndPos>
 inline void readRegion(String<TValue, TSpec> & str,
@@ -408,8 +394,6 @@ inline bool readRegion(String<TValue, TSpec> & str,
  * @return int 0 on success, non-0 on errors.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TSpec>
 inline void readSequence(String<TValue, TSpec> & str, FaiIndex const & index, unsigned rID)
 {
@@ -433,8 +417,6 @@ inline void readSequence(String<TValue, TSpec> & str, FaiIndex const & index, un
  *
  * @return int 0 on success, non-0 on errors.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFwdIterator>
 inline void
@@ -532,8 +514,6 @@ inline bool open(FaiIndex & index, char const * fastaFilename)
  * @return int 0 on success, 1 on errors.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool save(FaiIndex const & index, char const * faiFilename)
 {
     // Open index files.
@@ -628,8 +608,6 @@ inline void getRecordInfo(FaiIndexEntry_ & entry, TFwdIterator & iter, Fasta)
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline bool build(FaiIndex & index, char const * seqFilename, char const * faiFilename)
 {

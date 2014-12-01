@@ -114,8 +114,6 @@ struct BaiBamIndexBinData_
  * Only the default constructor is provided.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <>
 class BamIndex<Bai>
 {
@@ -172,8 +170,6 @@ public:
  *
  * @see BamIndex#jumpToRegion
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 static inline void
 _baiReg2bins(String<__uint16> & list, __uint32 beg, __uint32 end)
@@ -331,8 +327,6 @@ jumpToRegion(SmartFile<Bam, Input, TSpec> & bamFile,
  * @see BamIndex#jumpToOrphans
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): Parameter order, see jumpToRegion()!
 
 template <typename TSpec, typename TNameStore, typename TNameStoreCache>
@@ -402,8 +396,6 @@ bool jumpToOrphans(SmartFile<Bam, Input, TSpec> & bamFile,
  * @return    __uint64  The number of unaligned reads.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline __uint64
 getUnalignedCount(BamIndex<Bai> const & index)
 {
@@ -424,8 +416,6 @@ getUnalignedCount(BamIndex<Bai> const & index)
  *
  * @return        int      The status code, <tt>0</tt> indicating success.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline bool
 open(BamIndex<Bai> & index, char const * filename)

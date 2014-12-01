@@ -99,8 +99,6 @@ struct Spec<Iter<RightArrayBinaryTree<TChar, TSpec> const, RightArrayBinaryTreeI
  * @tparam TSpec                 Specialisation Tag. Types: TopDownIterator
  * @tparam TRightArrayBinaryTree The @link RightArrayBinaryTree @endlink.
  */
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TTree, typename TIterSpec>
 class Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > >
 {
@@ -255,7 +253,6 @@ end(RightArrayBinaryTree<TChar, TSpec> & waveletTreeStructure, TIterSpec const &
  *
  * @return TChar The resulting character.
  */
-/*_DDDOC_PLACEHOLDER*/
 template <typename TTree, typename TIterSpec>
 inline typename Value<typename Value<TTree>::Type, 1>::Type
 getCharacter(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & iter)
@@ -277,7 +274,6 @@ getCharacter(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > con
  *
  * @return unsigned The left child position.
  */
-/*_DDDOC_PLACEHOLDER*/
 template <typename TTree, typename TIterSpec>
 inline unsigned int getLeftChildPos(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & iter)
 {
@@ -303,7 +299,6 @@ inline unsigned int getLeftChildPos(Iter<TTree, RightArrayBinaryTreeIterator<Top
  *
  * @return unsigned The subtree size.
  */
-/*_DDDOC_PLACEHOLDER*/
 template <typename TTree, typename TIterSpec>
 inline typename Size<TTree>::Type
 getSubTreeSize(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & it)
@@ -333,7 +328,6 @@ getSubTreeSize(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > c
  *
  * @return unsigned The position.
  */
-/*_DDDOC_PLACEHOLDER*/
 template <typename TTree, typename TIterSpec>
 inline typename Size<TTree>::Type
 getPosition(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & it)
@@ -355,7 +349,6 @@ getPosition(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > cons
  *
  * @return unsigned The left child position.
  */
-/*_DDDOC_PLACEHOLDER*/
 template <typename TTree, typename TIterSpec>
 inline typename Size<TTree>::Type
 getRightChildPos(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & it)
@@ -439,7 +432,6 @@ inline bool _goDownConstruction(Iter<TTree, RightArrayBinaryTreeIterator<TopDown
  * 
  * @return bool <tt>true</tt> if the edge to go down exists, otherwise <tt>false</tt>.
  */
-/*_DDDOC_PLACEHOLDER*/
 template <typename TTree, typename TIterSpec>
 inline bool goLeftChild(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & it)
 {
@@ -470,7 +462,6 @@ inline bool goLeftChild(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSp
  * 
  * @return bool <tt>true</tt> if the iterator could be moved, otherwise <tt>false</tt>.
  */
-/*_DDDOC_PLACEHOLDER*/
 template <typename TTree, typename TIterSpec>
 inline bool goRight(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & it)
 {
@@ -506,7 +497,6 @@ inline bool goRight(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> 
  * 
  * @return bool <tt>true</tt> if the edge to go down exists, otherwise <tt>false</tt>.
  */
-/*_DDDOC_PLACEHOLDER*/
 template <typename TTree, typename TIterSpec>
 inline bool goRightChild(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & it)
 {
@@ -579,7 +569,6 @@ inline bool goToPosition(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterS
  * 
  * @return bool <tt>true</tt> if the iterator could be moved, otherwise <tt>false</tt>.
  */
-/*_DDDOC_PLACEHOLDER*/
 /*
 ..returns:$true$ if the current node is not the root node.
 ..include:seqan/index.h
@@ -640,7 +629,6 @@ inline bool _goUpStructureConstruction(Iter<TTree, RightArrayBinaryTreeIterator<
  * 
  * @return bool <tt>true</tt> if the node is a leaf.
  */
-/*_DDDOC_PLACEHOLDER*/
 template <typename TTree, typename TIterSpec>
 inline bool isLeaf(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & iter)
 {
@@ -693,7 +681,6 @@ inline bool _setAndGoRight(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIte
  * @param[in,out] iterator  The iterator.
  * @param[in]     character The character to be assigned to a node.
  */
-/*_DDDOC_PLACEHOLDER*/
 template <typename TTree, typename TIterSpec, typename TChar2>
 inline void setCharacter(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & iter,
                          TChar2 character)
@@ -839,7 +826,6 @@ inline bool _setRightChildPos(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<T
  * 
  * @return bool <tt>true</tt> if <tt>iterator</tt> points to the root of the tree, otherwise <tt>false</tt>.
  */
-/*_DDDOC_PLACEHOLDER*/
 template <typename TTree, typename TIterSpec>
 inline bool isRoot(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > const & it)
 {

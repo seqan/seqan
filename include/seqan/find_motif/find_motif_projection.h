@@ -52,8 +52,6 @@ TType _computeNumOfTrials(TType const & t, TType const & l, TType const & d, TTy
 // Projection
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct Projection_;
 typedef Tag<Projection_> const Projection;
 
@@ -1166,8 +1164,6 @@ _computeLikelihoodRatioOfLMers(TStrings const & l_mers,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TString, typename TProfile>
 void

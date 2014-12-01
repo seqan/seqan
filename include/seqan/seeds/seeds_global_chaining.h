@@ -51,7 +51,6 @@ namespace seqan {
  * @brief Tag for global sparse chaining.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 struct SparseChaining_;
 typedef Tag<SparseChaining_> SparseChaining;
 
@@ -98,7 +97,6 @@ typedef Tag<SparseChaining_> SparseChaining;
  */
 
 // TODO(holtgrew): Implement scored!
-/*_DDDOC_PLACEHOLDER*/
 template <typename TTargetContainer, typename TSeedSpec, typename TSeedSetSpec>
 void
 chainSeedsGlobally(

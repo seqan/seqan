@@ -81,7 +81,6 @@ struct Owner {};
  * @include demos/sequence/stringset.cpp.stdout
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TString, typename TSpec = Owner<> >
 class StringSet;
 
@@ -110,8 +109,6 @@ struct StringSpec<StringSet<TString, TSpec> > : StringSpec<TString> {};
  *
  * @return Type The resulting concatenator type.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Why is this specialized for all types?
 template <typename TObject>
@@ -384,8 +381,6 @@ SEQAN_CONCEPT_IMPL((StringSet<TString, TSpec> const), (ContainerConcept));  // r
 // Function stringSetLimits()
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): Default implementation necessary?!
 template <typename TStringSet>
 inline typename StringSetLimits<TStringSet>::Type
@@ -415,8 +410,6 @@ stringSetLimits(StringSet<TString, TSpec> const & stringSet)
 // --------------------------------------------------------------------------
 // Function getSeqNo()
 // --------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Auto-sequences should go away!
 template <typename TPosition>
@@ -462,8 +455,6 @@ inline TPos getSeqNo(TPos const & pos, TLimitsString const & limits)
 // --------------------------------------------------------------------------
 // Function getSeqOffset()
 // --------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Auto-sequences should go away!
 template <typename TPosition>
@@ -527,8 +518,6 @@ setSeqOffset(Pair<T1, T2, TPack> & pos, TSeqOffset seqOffset)
 // Function posGlobalize()
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 // any_position and no limits_string -> any_position
 template <typename TPosition>
 inline TPosition posGlobalize(TPosition const & pos, Nothing const &)
@@ -562,8 +551,6 @@ posGlobalize(Pair<T1, T2, TPack> const & pos, TLimitsString const & limits)
 // Function posLocalToX()
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TDest, typename TLimitsString, typename T1, typename T2, typename TPack>
 inline void
 posLocalToX(TDest & dst, Pair<T1, T2, TPack> const & localPos, TLimitsString const & limits)
@@ -581,8 +568,6 @@ posLocalToX(Pair<TD1, TD2, TDPack> & dst, Pair<T1, T2, TPack> const & localPos, 
 // --------------------------------------------------------------------------
 // Function posLocalize()
 // --------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 // any_position and no limits_string -> any_position
 template <typename TResult, typename TPosition>
@@ -809,8 +794,6 @@ inline bool posAtEnd(TPos pos, TSequence const & seq) {
  * @see PositionCalculation#posAdd
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TPos>
 inline TPos posPrev(TPos pos) {
     return pos - 1;
@@ -839,8 +822,6 @@ inline Pair<T1, T2, TPack> posPrev(Pair<T1, T2, TPack> const & pos) {
  * @see PositionCalculation#posPrev
  * @see PositionCalculation#posAdd
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TPos>
 inline void posInc(TPos &pos) {
@@ -882,8 +863,6 @@ inline void posInc(Pair<T1, T2, TPack> & pos, TDelta delta) {
  * @see PositionCalculation#posAdd
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TPos>
 inline TPos posNext(TPos pos) {
     return pos + 1;
@@ -916,8 +895,6 @@ posNext(Pair<T1, T2, TPack> const & pos) {
  * @see PositionCalculation#posNext
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TPos, typename TDelta>
 SEQAN_HOST_DEVICE inline TPos posAdd(TPos pos, TDelta delta) {
     return pos + delta;
@@ -948,8 +925,6 @@ posAdd(Pair<T1, T2, TPack> const & pos, TDelta delta) {
  * @see PositionCalculation#posAdd
  * @see PositionCalculation#posInc
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TPos, typename TDelta, typename TSequence>
 inline bool posAddAndCheck(TPos & pos, TDelta delta, TSequence const & sequence) {
@@ -1000,8 +975,6 @@ posAddAndCheck(Pair<T1, T2, TPack> & pos, TDelta delta, StringSet<TSequence, TSp
  * @see PositionCalculation#posInc
  * @see PositionCalculation#posNext
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TA, typename TB>
 inline TA posSub(TA a, TB b) {
@@ -1508,8 +1481,6 @@ return iter(me, length(me), tag);
  * @return TString Reference to the string with the given id.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): Why is there no generic implementation for StringSets??
 
 // --------------------------------------------------------------------------
@@ -1527,8 +1498,6 @@ return iter(me, length(me), tag);
  *
  * @return TString Reference to the string with the given id.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TString, typename TSpec, typename TId>
 inline typename Reference<StringSet<TString, TSpec> >::Type
@@ -1555,8 +1524,6 @@ valueById(StringSet<TString, TSpec> & me,
  *
  * @return TId The id of the new string in the string set.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TString, typename TSpec, typename TString2>
 inline typename Id<StringSet<TString, TSpec> >::Type
@@ -1593,8 +1560,6 @@ assignValueById(StringSet<TString, TSpec1>& dest,
  * @param[in]     id  The id of the string to remove.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): Why is there no generic implementation for StringSets??
 
 // --------------------------------------------------------------------------
@@ -1613,8 +1578,6 @@ assignValueById(StringSet<TString, TSpec1>& dest,
  * @return TId The resulting id.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): Why is there no generic implementation for StringSets??
 
 // --------------------------------------------------------------------------
@@ -1631,8 +1594,6 @@ assignValueById(StringSet<TString, TSpec1>& dest,
  *
  * @return TConcat The concatenation sequence.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Why default concat() for any class?
 template <typename TString>
@@ -1735,8 +1696,6 @@ inline void prefixSums(TPrefixSums & sums, TText const & text)
  *
  * @return TPos The resulting position.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Why is there no generic implementation for StringSets??
 

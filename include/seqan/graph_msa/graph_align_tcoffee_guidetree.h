@@ -77,7 +77,6 @@ _roundToSignificantFigures(double num, int n)
  * @param[out] tree The guide tree.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TValue, typename TStringSpec, typename TCargo, typename TSpec>
 inline void
 njTree(String<TValue, TStringSpec> const & matIn,
@@ -340,32 +339,22 @@ njTree(String<TValue, TStringSpec> const & matIn,
  * @signature typedef Tag<UpgmaAvg_> const UpgmaWeightAvg;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct UpgmaMin_;
 typedef Tag<UpgmaMin_> const UpgmaMin;
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct UpgmaMax_;
 typedef Tag<UpgmaMax_> const UpgmaMax;
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct UpgmaAvg_;
 typedef Tag<UpgmaAvg_> const UpgmaAvg;
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct UpgmaWeightAvg_;
 typedef Tag<UpgmaWeightAvg_> const UpgmaWeightAvg;
@@ -901,7 +890,6 @@ upgmaTree(Graph<Undirected<TValue, TSpec1> >& pairGraph,
  *                  Default: <tt>UpgmaWeightAvg</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TDistance, typename TCargo, typename TSpec>
 inline void
 upgmaTree(TDistance& dist, 

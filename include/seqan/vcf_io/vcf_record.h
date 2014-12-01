@@ -127,8 +127,6 @@ namespace seqan {
  * @brief Textual identifier of the variant (@link CharString @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 class VcfRecord
 {
 public:
@@ -194,8 +192,6 @@ public:
  *
  * @param[in,out] record The VcfRecord to clear.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void clear(VcfRecord & record)
 {

@@ -197,8 +197,6 @@ namespace SEQAN_NAMESPACE_MAIN
 		childtab << esa;
 	}
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @fn IndexEsa#createChildtab
  * @headerfile <seqan/index.h>

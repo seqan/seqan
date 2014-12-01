@@ -126,8 +126,6 @@ struct EditEnvironment;
  *       <tt>DISTANCE &gt; 2</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TObject, typename TSpec>
 class StringEnumerator
 {

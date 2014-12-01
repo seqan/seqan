@@ -192,8 +192,6 @@ inline unsigned countPaddings(String<CigarElement<> > const & cigarString)
 
 // TODO(holtgrew): Convert into full example.
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSource, typename TSpec, typename TReference>
 void
 bamRecordToAlignment(Align<TSource, TSpec> & result, TReference & reference, BamAlignmentRecord & record)

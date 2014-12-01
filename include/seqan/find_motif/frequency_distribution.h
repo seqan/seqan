@@ -38,8 +38,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TSpec = double>
 class FrequencyDistribution
 {
@@ -288,8 +286,6 @@ struct Value< FrequencyDistribution<TValue, TSpec> const>
 // Functions
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TValue, typename TSpec, typename TSeqIter> 
 void 
 absFreqOfLettersInSeq(FrequencyDistribution<TValue, TSpec> & fd,
@@ -304,8 +300,6 @@ absFreqOfLettersInSeq(FrequencyDistribution<TValue, TSpec> & fd,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename TSpec, typename TIter>
 void
@@ -322,8 +316,6 @@ absFreqOfLettersInSetOfSeqs(FrequencyDistribution<TValue, TSpec> & fd,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TValue, typename TSpec, typename TType>
 void 
 addValue(FrequencyDistribution<TValue, TSpec> & fd, TType const & val)
@@ -336,8 +328,6 @@ addValue(FrequencyDistribution<TValue, TSpec> & fd, TType const & val)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename TSpec,typename TDatasetIter> 
 void 
@@ -389,8 +379,6 @@ clear(FrequencyDistribution<TValue, TSpec> & fd)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename TSpec>
 void 
@@ -452,8 +440,6 @@ length(FrequencyDistribution<TValue, TSpec> const & me)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TValue, typename TSpec>
 void 
 logarithmize(FrequencyDistribution<TValue, TSpec> & fd) 
@@ -495,8 +481,6 @@ normalize(FrequencyDistribution<TValue, TSpec> & fd)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TValue, typename TSpec>
 typename Position< FrequencyDistribution<TValue, TSpec> >::Type
 posOfMax(FrequencyDistribution<TValue, TSpec> & me)
@@ -519,8 +503,6 @@ posOfMax(FrequencyDistribution<TValue, TSpec> & me)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename TSpec>
 TSpec 

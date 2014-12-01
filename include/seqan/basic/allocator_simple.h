@@ -64,8 +64,6 @@ namespace seqan {
  * <tt>deallocate</tt> are used.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TParentAllocator = Default>
 struct SimpleAlloc;
 
@@ -156,7 +154,6 @@ parentAllocator(Allocator<SimpleAlloc<TParentAllocator> > & me)
  */
 
 // TODO(holtgrew): Using #-functions messes up search results.
-/*_DDDOC_PLACEHOLDER*/
 template <typename TParentAllocator>
 void
 clear(Allocator<SimpleAlloc<TParentAllocator> > & me)

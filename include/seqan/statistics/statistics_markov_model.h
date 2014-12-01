@@ -156,7 +156,6 @@ namespace seqan {
 /*
 with matrix calss matrices
 */
-/*_DDDOC_PLACEHOLDER*/
 template <typename TAlphabet, typename TFloat = double, typename TSpec = Default>
 class MarkovModel
 {

@@ -74,7 +74,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> >), (StringTreeConcept));
 template <typename TText, typename TSpec>
 SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class VSTreeIterator VSTree Iterator
  * @extends Iter
@@ -177,7 +176,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 		typedef typename Infix< typename Fibre<TIndex, FibreText>::Type const >::Type Type;
 	};
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class TopDownIterator Top Down Iterator
  * @extends VSTreeIterator
@@ -279,7 +277,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	};
 
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class TopDownHistoryIterator Top Down History Iterator
  * @implements ForwardIteratorConcept
@@ -415,7 +412,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 //    template <typename TIndex, class TSpec>
 //    SEQAN_CONCEPT_IMPL((ParentLinksConcepts), Iter<TIndex,VSTree<TopDown<ParentLinks<TSpec> > > >);
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class BottomUpIterator Bottom Up Iterator
  * @implements ForwardIteratorConcept
@@ -661,7 +657,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#repLength
  * @headerfile <seqan/index.h>
@@ -716,7 +711,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownHistoryIterator#nodeDepth
  * 
@@ -741,7 +735,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownIterator#parentRepLength
  * @headerfile <seqan/index.h>
@@ -764,7 +757,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownIterator#emptyParentEdge
  * @headerfile <seqan/index.h>
@@ -792,7 +784,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownHistoryIterator#lca
  * @headerfile <seqan/index.h>
@@ -851,7 +842,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*! 
  * @fn TopDownHistoryIterator#lcp
  * @headerfile <seqan/index.h>
@@ -1035,7 +1025,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#getOccurrence
  * @headerfile <seqan/index.h>
@@ -1059,7 +1048,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#countOccurrences
  * @headerfile <seqan/index.h>
@@ -1096,7 +1084,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#range
  * @headerfile <seqan/index.h>
@@ -1135,7 +1122,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#getOccurrences
  * @headerfile <seqan/index.h>
@@ -1174,7 +1160,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#alignment
  * @brief Returns an alignment of the occurrences of the @link VSTreeIterator#representative @endlink substring in the index text.
@@ -1260,7 +1245,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#getOccurrencesBwt
  * @headerfile <seqan/index.h>
@@ -1288,7 +1272,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	}
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#representative
  * @headerfile <seqan/index.h>
@@ -1318,7 +1301,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#countChildren
  * @headerfile <seqan/index.h>
@@ -1480,7 +1462,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	}
 
 
-/*_DDDOC_PLACEHOLDER*/
 //TODO(singer): Why only bottom-up???
 /*!
  * @fn VSTreeIterator#nodePredicate
@@ -1504,7 +1485,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	}
 
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#nodeHullPredicate
  * @headerfile <seqan/index.h>
@@ -1528,7 +1508,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 //____________________________________________________________________________
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#goRoot
  * @headerfile <seqan/index.h>
@@ -1550,7 +1529,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 
 //____________________________________________________________________________
 
-/*_DDDOC_PLACEHOLDER*/
 //TODO(singer): The summary is not entirely true!!!
 /*!
  * @fn StringTreeConcept#begin
@@ -1751,7 +1729,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	}
 
 
-/*_DDDOC_PLACEHOLDER*/
 //TODO(singer): The lcp stuff needs to be adapted
 /*!
  * @fn TopDownIterator#goDown
@@ -2067,7 +2044,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	}
 
 		
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownHistoryIterator#goUp
  * @headerfile <seqan/index.h>
@@ -2142,7 +2118,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 			return false;
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownIterator#nodeUp
  * @headerfile <seqan/index.h>
@@ -2180,7 +2155,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 		return it._parentDesc;
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownIterator#goRight
  * @headerfile <seqan/index.h>
@@ -2232,7 +2206,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 			return false;
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownIterator#parentEdgeLength
  * @headerfile <seqan/index.h>
@@ -2252,7 +2225,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 		return repLength(it) - parentRepLength(it);
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn TopDownIterator#parentEdgeLabel
  * @headerfile <seqan/index.h>
@@ -2276,7 +2248,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 			parentEdgeLength(it));
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 //TODO(singer): EsaRawText
 /*!
  * @fn TopDownIterator#parentEdgeFirstChar
@@ -2418,8 +2389,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	}
 
 //..concept:Concept.ContainerConcept
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @fn VSTreeIterator#atEnd
  * @headerfile <seqan/index.h>
@@ -2507,7 +2476,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 		return !value(it).range.i2;
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#isRoot
  * @headerfile <seqan/index.h>
@@ -2553,7 +2521,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 		return _isSizeInval(value.range.i2);
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 //TODO(singer): Note the case for trie or FM Index
 /*!
  * @fn VSTreeIterator#isRightTerminal
@@ -2582,7 +2549,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 			== sequenceLength(getSeqNo(pos, limits), index));
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#isLeftMaximal
  * @headerfile <seqan/index.h>
@@ -2636,7 +2602,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 		return false;
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#isPartiallyLeftExtensible
  * @headerfile <seqan/index.h>
@@ -2692,7 +2657,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 		return isPartiallyLeftExtensible(it, set);
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#isUnique
  * @headerfile <seqan/index.h>
@@ -2741,7 +2705,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 		return isUnique(it, set);
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#getFrequency
  * @headerfile <seqan/index.h>
@@ -2813,7 +2776,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 		return getFrequency(it, set);
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#childrenAreLeaves
  * @headerfile <seqan/index.h>
@@ -2832,7 +2794,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 		return countChildren(it) == countOccurrences(it);
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn VSTreeIterator#isLeaf
  * @headerfile <seqan/index.h>

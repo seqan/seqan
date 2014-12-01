@@ -69,8 +69,6 @@ namespace seqan {
  * This holder stores a copy of the value.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue>
 struct Holder<TValue, Simple>
 {

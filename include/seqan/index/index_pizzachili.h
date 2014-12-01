@@ -40,7 +40,6 @@
 
 namespace SEQAN_NAMESPACE_MAIN {
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @defgroup PizzaChiliIndexFibres Pizza &amp; Chili Index Fibres
  * 
@@ -69,7 +68,6 @@ typedef Tag<FibrePizzaChiliCompressed_> const FibrePizzaChiliCompressed;
 typedef FibrePizzaChiliText PizzaChiliText;
 typedef FibrePizzaChiliCompressed PizzaChiliCompressed;
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class PizzaChiliIndex Pizza & Chili Index
  * 

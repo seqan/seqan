@@ -83,7 +83,6 @@ namespace seqan {
  * @brief The length of the diagonal.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TPosition, typename TSize>
 class SeedDiagonal
 {
@@ -119,8 +118,6 @@ public:
  * @return Type The position type of <tt>TDiagonal</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TPosition, typename TSize>
 struct Position<SeedDiagonal<TPosition, TSize> >
 {
@@ -145,8 +142,6 @@ struct Position<SeedDiagonal<TPosition, TSize> const> : Position<SeedDiagonal<TP
  * 
  * @return Type The size type of <tt>TDiagonal</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TPosition, typename TSize>
 struct Size<SeedDiagonal<TPosition, TSize> >

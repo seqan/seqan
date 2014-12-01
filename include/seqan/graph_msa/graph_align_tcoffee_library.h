@@ -79,27 +79,17 @@ namespace SEQAN_NAMESPACE_MAIN
  * @signature typedef Tag<LcsLibrary_> const LcsLibrary;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct GlobalPairwiseLibrary_;
 typedef Tag<GlobalPairwiseLibrary_> const GlobalPairwiseLibrary;
 
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct LocalPairwiseLibrary_;
 typedef Tag<LocalPairwiseLibrary_> const LocalPairwiseLibrary;
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct KmerLibrary_;
 typedef Tag<KmerLibrary_> const KmerLibrary;
 
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct LcsLibrary_;
 typedef Tag<LcsLibrary_> const LcsLibrary;

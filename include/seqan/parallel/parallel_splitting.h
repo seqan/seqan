@@ -91,8 +91,6 @@ typedef Tag<Equidistant_> Equidistant;
  *                             between parallel and serial variants.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @class Equidistant Splitter
  * @extends Splitter
@@ -122,7 +120,6 @@ typedef Tag<Equidistant_> Equidistant;
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
  
 template <typename TValue, typename TSpec = Equidistant>
 class Splitter
@@ -296,8 +293,6 @@ resize(Splitter<TValue, TSpec> &splitter, TSize newCount)
  * // splitters == {0, 1, 2, 3, 3, 3}
  * @endcode
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TPosString, typename TSize, typename TCount>
 void computeSplitters(TPosString & splitters, TSize size, TCount count)

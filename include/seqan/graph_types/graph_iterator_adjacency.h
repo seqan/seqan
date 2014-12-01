@@ -70,7 +70,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in] v     The descriptor of the vertex to iterate adjacent edges of.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TGraph, typename TSpec>
 class Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > > 
 {

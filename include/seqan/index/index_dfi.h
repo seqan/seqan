@@ -69,7 +69,6 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // Dfi - The Deferred Frequency Index
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class IndexDfi
  * @extends IndexWotd

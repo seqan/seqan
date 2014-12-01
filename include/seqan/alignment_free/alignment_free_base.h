@@ -55,8 +55,6 @@ namespace seqan {
  * @see alignmentFreeComparison
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec>
 struct AFScore;
 
@@ -96,8 +94,6 @@ struct AFScore;
  * 
  * @see alignmentFreeComparison
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct D2_;     // Inner product of k-mer counts, d2 score
 typedef Tag<D2_> const D2;
@@ -148,8 +144,6 @@ struct AFScore<D2>
  * @var unsigned D2StarAFScore::bgModelOrder
  * @brief Order of the background model.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct D2Star_;        // Reinert and Waterman, D2 with centralised and standardised counts
 typedef Tag<D2Star_> const D2Star;
@@ -226,8 +220,6 @@ struct AFScore<D2Star>
  * @var bool N2AFScore::verbose;
  * @brief <tt>true</tt> to enable verbose debug output.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct N2_;     // Reinert and Waterman, D2 with centralised and standardised counts
 typedef Tag<N2_> const N2;
@@ -328,8 +320,6 @@ struct AFScore<N2>
  * @var bool D2zAFScore::verbose;
  * @brief <tt>true</tt> to enable verbose debug output.
 ] */ 
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct D2z_;  // Inner product of k-mer counts, d2 score with z-score
 typedef Tag<D2z_> const D2z;

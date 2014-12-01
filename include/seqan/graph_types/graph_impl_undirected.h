@@ -57,7 +57,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *                property maps do not work.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TCargo,typename TSpec>
 class Graph<Undirected<TCargo, TSpec> > 
 {

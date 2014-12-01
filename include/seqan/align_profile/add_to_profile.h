@@ -80,8 +80,6 @@ namespace seqan {
 
 // TODO(holtgrew): Add example?
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TChar, typename TValue, typename TSpec, typename TSpec2>
 void addToProfile(String<ProfileChar<TChar, TValue, TSpec> > & profile,
                   String<TChar, TSpec2> /*const*/ & seq,

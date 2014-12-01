@@ -69,8 +69,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Constant to represetn an invalid id.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec = void>
 struct ReadStoreElement
 {

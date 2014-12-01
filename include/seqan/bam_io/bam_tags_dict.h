@@ -111,8 +111,6 @@ struct Position<BamTagsDict>
  * @signature BamTagsDict::BamTagsDict();
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 class BamTagsDict
 {
 public:
@@ -172,8 +170,6 @@ host(BamTagsDict const & bamTags)
  * @return bool <tt>true</tt> if <tt>dict</tt> has an index and <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool
 hasIndex(BamTagsDict const & bamTags)
 {
@@ -201,8 +197,6 @@ hasIndex(BamTagsDict const & bamTags)
 
 // Return sizeof() of the type identified with the given char.  Returns -2 if not
 // valid, -1 if of variable length.
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct GetBamTypeSizeHelper_
 {
@@ -256,8 +250,6 @@ getBamTypeSize(char c)
  *
  * @param[in,out] bamTags The BamTagsDict object to build the index for.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void
 buildIndex(BamTagsDict const & bamTags)
@@ -394,8 +386,6 @@ length(BamTagsDict const & tags)
  * @return char A <tt>char</tt> that identifies the tag type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TId>
 inline char
 getTagType(BamTagsDict const & tags, TId id)
@@ -418,8 +408,6 @@ getTagType(BamTagsDict const & tags, TId id)
  *
  * @return TKey An infix of a @link CharString @endlink.  Will be a two-character char sequence.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TId>
 inline Infix<Host<BamTagsDict const>::Type>::Type
@@ -444,8 +432,6 @@ getTagKey(BamTagsDict const & tags, TId id)
  *
  * @return bool <tt>true</tt> if the key could be found and <tt>false</tt> otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TId, typename TKey>
 inline bool
@@ -481,8 +467,6 @@ findTagKey(TId & id, BamTagsDict const & tags, TKey const & key)
  *
  * See @link BamTagsDict @endlink for an example.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TResultType, typename TIter>
 struct ExtractTagValueHelper_
@@ -577,8 +561,6 @@ extractTagValue(TResultValue & val, BamTagsDict const & tags, TId id)
  * @see getBamTypeSize
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue>
 struct BamTypeChar<TValue const> :
     BamTypeChar<TValue> {};
@@ -659,8 +641,6 @@ inline char getBamTypeChar(T const &)
  *
  * @see getBamTypeChar
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TBamValueSequence, typename TValue>
 struct ToBamTagValueHelper_
@@ -842,8 +822,6 @@ appendTagValue(TDictOrString & tags, TKey const & key, TValue const & val)
  *
  * @return bool <tt>true</tt> if the tag could be erased, <tt>false</tt> if the key wasn't present.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TKey>
 inline SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<TKey> >, bool)

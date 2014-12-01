@@ -55,8 +55,6 @@ namespace seqan
  * @tparam TSpec Specializing type.  Default: <tt>ExactFragment&lt;&gt;</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TSpec = Default>
 struct ExactFragment;	
 
@@ -77,8 +75,6 @@ struct ExactFragment;
  * @tparam TSize The size type of the underlying sequence.  Default: <tt>Size&lt;CharString&gt;Type</tt>.
  * @tparam TSpec Specializing type.  Default: <tt>ExactFragment&lt;&gt;</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TSpec = Default>
 struct ExactReversableFragment;	
@@ -114,8 +110,6 @@ struct ExactReversableFragment;
  * fragmentLength(fragment) += 42;
  * @endcode
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 
 template<typename TSize = typename Size<String<char> >::Type, typename TSpec = ExactFragment<> >
@@ -168,8 +162,6 @@ public:
  * @param[in] l       The length of the segment match.  Type: <tt>TSize</tt>.
  */
   
-/*_DDDOC_PLACEHOLDER*/
-
     Fragment() : seqId1(0), begin1(0), seqId2(0), begin2(0), len(0) {}
 
     Fragment(TId sqId1, TSize beg1, TId sqId2, TSize beg2, TSize l) :
@@ -250,7 +242,6 @@ public:
  * @param[in] reversed A bool; <tt>true</tt> if the segments match in reverse orientation, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
     
     Fragment() : seqId1(0), begin1(0), seqId2(0), begin2(0), len(0), reversed(false) {}
     
@@ -321,7 +312,6 @@ operator<(Fragment<TSize, ExactReversableFragment<TSpec> > const & left,
  * @param[in] seqID     The id of the sequence for which the label should be retrieved.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TSize, typename TSpec, typename TStringSet, typename TVal>
 inline typename Infix<typename Value<TStringSet>::Type>::Type
 label(Fragment<TSize, TSpec> const& f,
@@ -349,7 +339,6 @@ label(Fragment<TSize, TSpec> const& f,
  * @return TId Reference to the sequence fragment id member.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TSize, typename TSpec, typename TVal>
 inline typename Id<Fragment<TSize, TSpec> >::Type &
 sequenceId(Fragment<TSize, TSpec> const& f,
@@ -374,7 +363,6 @@ sequenceId(Fragment<TSize, TSpec> const& f,
  * @return TSize Reference to the fragment begin position member.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TSize, typename TSpec, typename TVal>
 inline TSize&
 fragmentBegin(Fragment<TSize, TSpec> const& f,
@@ -409,7 +397,6 @@ fragmentLength(Fragment<TSize, TSpec> const& f,
  * @return TSize Reference to the Fragment's length.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TSize, typename TSpec>
 inline TSize&
 fragmentLength(Fragment<TSize, TSpec> const& f)
@@ -420,7 +407,6 @@ fragmentLength(Fragment<TSize, TSpec> const& f)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TSize, typename TSpec, typename TId1, typename TPosition1, typename TId2, typename TPosition2>
 inline void
 getProjectedPosition(Fragment<TSize, ExactFragment<TSpec> > const& f,
@@ -555,7 +541,6 @@ getProjectedPosition(Fragment<TSize, ExactReversableFragment<TSpec> > const& f,
  * @return bool <tt>true</tt> if the fragment is reversed and <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TSize, typename TSpec>
 inline bool
 isReversed(Fragment<TSize, ExactReversableFragment<TSpec> > const& f)

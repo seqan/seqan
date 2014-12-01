@@ -71,8 +71,6 @@ namespace seqan {
  * @brief Is a comment (CO) header.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 enum BamHeaderRecordType
 {
     BAM_HEADER_FIRST       = 0,
@@ -101,8 +99,6 @@ enum BamHeaderRecordType
  * @val BamSortOrder BAM_SORT_COORDINATE = 3;
  * @brief BAM file is sorted by coordinate.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 enum BamSortOrder
 {
@@ -156,8 +152,6 @@ enum BamSortOrder
  * @brief The header record's tags, of type @link BamHeaderRecord::TTags @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 class BamHeaderRecord
 {
 public:
@@ -207,8 +201,6 @@ swap(BamHeaderRecord &a, BamHeaderRecord &b)
  * @brief @link AllocString @endlink of @link BamHeaderRecord BamHeaderRecords @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 typedef String<BamHeaderRecord> BamHeader;
 
 // ============================================================================
@@ -253,8 +245,6 @@ clear(BamHeaderRecord & record)
 // Function findTagKey()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TKeyName>
 inline bool
 findTagKey(unsigned & idx, TKeyName const & key, BamHeaderRecord const & record)
@@ -296,8 +286,6 @@ findTagKey(unsigned & idx, TKeyName const & key, BamHeaderRecord const & record)
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TId>
 SEQAN_FUNC_ENABLE_IF(
     IsInteger<TId>,
@@ -335,8 +323,6 @@ inline getTagValue(CharString & value, TKeyName const & key, BamHeaderRecord con
  */
 
 // TODO(holtgrew): Parameter order!
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TId>
 SEQAN_FUNC_ENABLE_IF(

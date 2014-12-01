@@ -112,7 +112,6 @@ TSequence _toText(TSequence const & input)
 // Function _join()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue>
 inline std::string
 _join(std::vector<TValue> const & v, std::string const & delimiter)
@@ -300,8 +299,6 @@ inline std::string _getManual(ArgumentParser const & me)
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline bool
 writeCTD(ArgumentParser const & me, std::ostream & ctdfile)

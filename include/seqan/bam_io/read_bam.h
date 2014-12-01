@@ -60,8 +60,6 @@ namespace seqan {
  * @brief Identify the SAM format.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct Bam_;
 typedef Tag<Bam_> Bam;
 
@@ -114,8 +112,6 @@ unsigned char const MagicHeader<Bam, T>::VALUE[4] = { 'B', 'A', 'M', '\1' };  //
  *
  * @return int A status code, 0 on success, != 0 on failure.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
@@ -183,8 +179,6 @@ readRecord(BamHeader & header,
 // ----------------------------------------------------------------------------
 // Function readRecord()                                     BamAlignmentRecord
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TBuffer, typename TForwardIter>
 inline __int32

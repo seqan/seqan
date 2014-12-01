@@ -59,7 +59,6 @@ using namespace seqan;
 // Tags, Classes, Enums
 // ============================================================================
 
-/*_DDDOC_PLACEHOLDER*/
 struct GeneralStats
 {
 	unsigned removedSeqs;       //Number of deleted sequences due to N's
@@ -73,7 +72,6 @@ struct GeneralStats
 // Functions
 // ============================================================================
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlpha, typename TSub>
 int findN(String<TAlpha>& seq, unsigned allowed, TSub substitute)
 {
@@ -116,7 +114,6 @@ int findN(String<TAlpha>& seq, unsigned allowed)
     return c;                   //sequence not deleted, number of N's returned
 }
 
-/*_DDDOC_PLACEHOLDER*/
 //single-end data with substitutions
 template<typename TSeqs, typename TIds, typename TSub>
 void processN(TSeqs& seqs, TIds& ids, unsigned allowed, TSub substitute, GeneralStats& stats)
@@ -486,7 +483,6 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& mult
 }
 
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TSeqs, typename TIds> //Version for single end data
 void preTrim(TSeqs& seqs, TIds& ids, unsigned head, unsigned tail, unsigned min, GeneralStats& stats)
 {

@@ -74,8 +74,6 @@ namespace seqan {
  * is int.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T, const int I = 0>
 struct Value;
 
@@ -100,8 +98,6 @@ struct Value;
  * confuse it with value that returns a reference to the value.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 struct GetValue;
 
@@ -120,8 +116,6 @@ struct GetValue;
  *
  * @return Type Either <tt>Value&lt;T&gt;Type &amp;</tt> or a proxy object Proxy for <tt>T</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct Reference;
@@ -142,8 +136,6 @@ struct Reference;
  * @returns Type Size type of <tt>T</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 struct Size;
 
@@ -162,8 +154,6 @@ struct Size;
  *
  * @returns Type Difference type of <tt>T</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct Difference;
@@ -184,8 +174,6 @@ struct Difference;
  * @returns Type position type of <tt>T</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 struct Position;
 
@@ -205,8 +193,6 @@ struct Position;
  *
  * @returns Type Spec type of <tt>T</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // Default case for types without Spec<>::Type specialization.
 
@@ -243,8 +229,6 @@ struct Spec<T const> : Spec<T>
  *
  * @returns Type Size type of <tt>T</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // Default case if not specialized for T.
 

@@ -39,8 +39,6 @@
 
 namespace seqan {
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Forward Declaration / Prototype.
 template <typename T> struct Pointer;
 
@@ -145,8 +143,6 @@ template <typename T> struct Pointer;
  * @return TGetValue The get-value that is pointed to.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 SEQAN_CONCEPT(IteratorAssociatedTypesConcept, (T))
 {
     typedef typename Value<T>::Type      TValue;
@@ -222,8 +218,6 @@ SEQAN_CONCEPT(IteratorAssociatedTypesConcept, (T))
  * 
  * This function is equivalent to <tt>++iterator</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)(CopyConstructible)(EqualityComparable))
 {
@@ -336,8 +330,6 @@ SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)
  * This function is equivalent to <tt>++iterator</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 SEQAN_CONCEPT_REFINE(BasicOutputIteratorConcept, (T), (CopyConstructible))
 {
     typedef typename Value<T>::Type TValue;
@@ -385,8 +377,6 @@ SEQAN_CONCEPT_REFINE(BasicOutputIteratorConcept, (T), (CopyConstructible))
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 SEQAN_CONCEPT_REFINE(ForwardIteratorConcept, (T), (InputIteratorConcept)(DefaultConstructible))
 {
     typedef typename Value<T>::Type TValue;
@@ -410,8 +400,6 @@ SEQAN_CONCEPT_REFINE(ForwardIteratorConcept, (T), (InputIteratorConcept)(Default
  * 
  * The SeqAn iterators mirror the definitions from <a href="http://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(MutableForwardIteratorConcept, (T), (ForwardIteratorConcept)(BasicOutputIteratorConcept))
 {
@@ -485,8 +473,6 @@ SEQAN_CONCEPT_REFINE(MutableForwardIteratorConcept, (T), (ForwardIteratorConcept
  * This function is equivalent to <tt>--iterator</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 SEQAN_CONCEPT_REFINE(BidirectionalIteratorConcept, (T), (ForwardIteratorConcept))
 {
     T x;
@@ -507,8 +493,6 @@ SEQAN_CONCEPT_REFINE(BidirectionalIteratorConcept, (T), (ForwardIteratorConcept)
  *
  * @signature MutableBidirectionalIteratorConcept<T>
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(MutableBidirectionalIteratorConcept, (T), (BidirectionalIteratorConcept)(MutableForwardIteratorConcept))
 {
@@ -647,8 +631,6 @@ SEQAN_CONCEPT_REFINE(MutableBidirectionalIteratorConcept, (T), (BidirectionalIte
  * @return bool Whether or not the iterator is at the nil positions (NULL for pointers).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 SEQAN_CONCEPT_REFINE(RandomAccessIteratorConcept, (T), (BidirectionalIteratorConcept)(LessThanComparable))
 {
     typedef typename Difference<T>::Type TDifference;
@@ -684,8 +666,6 @@ SEQAN_CONCEPT_REFINE(RandomAccessIteratorConcept, (T), (BidirectionalIteratorCon
  *
  * @signature MutableRandomAccessIteratorConcept<T>
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(MutableRandomAccessIteratorConcept, (T), (RandomAccessIteratorConcept)(MutableBidirectionalIteratorConcept))
 {
@@ -756,8 +736,6 @@ SEQAN_CONCEPT_REFINE(MutableRandomAccessIteratorConcept, (T), (RandomAccessItera
  * @return bool Whether or not the iterator is at the end.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 SEQAN_CONCEPT_REFINE(RootedIteratorConcept, (T), (IteratorAssociatedTypesConcept))
 {
     typedef typename Container<T>::Type TContainer;
@@ -785,8 +763,6 @@ SEQAN_CONCEPT_REFINE(RootedIteratorConcept, (T), (IteratorAssociatedTypesConcept
  *
  * @signature MutableRootedIteratorConcept<T>
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(MutableRootedIteratorConcept, (T), (RootedIteratorConcept)(MutableForwardIteratorConcept))
 {
@@ -854,8 +830,6 @@ SEQAN_CONCEPT_REFINE(MutableRootedIteratorConcept, (T), (RootedIteratorConcept)(
  * @param[in,out] it  The iterator to set the position of.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 SEQAN_CONCEPT_REFINE(RootedRandomAccessIteratorConcept, (T), (RootedIteratorConcept)(RandomAccessIteratorConcept))
 {
     typedef typename Position<T>::Type TPosition;
@@ -879,8 +853,6 @@ SEQAN_CONCEPT_REFINE(RootedRandomAccessIteratorConcept, (T), (RootedIteratorConc
  *
  * @signature RootedRandomAccessIteratorConcept<T>
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT_REFINE(MutableRootedRandomAccessIteratorConcept, (T), (RootedRandomAccessIteratorConcept)(MutableBidirectionalIteratorConcept))
 {

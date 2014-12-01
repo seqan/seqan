@@ -156,8 +156,6 @@ struct InternalValueSize_
  * @see IntegralForValue
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue>
 struct BytesPerValue
 {
@@ -215,8 +213,6 @@ struct BytesPerValue
  * @see AlphabetConcept#BitsPerValue
  * @see BytesPerValue
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <int SIZE>
 struct IntegralForValueImpl_

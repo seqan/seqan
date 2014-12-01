@@ -69,8 +69,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in] v     The descriptor of the vertex to iterate out edges of.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 
 //////////////////////////////////////////////////////////////////////////////
 // InternalOutEdgeIterator for Directed Graph
@@ -1174,8 +1172,6 @@ sourceVertex(Iter<TGraph, GraphIterator<InternalOutEdgeIterator<TSpec> > >& it)
  *
  * @return TAlphabet The current label (Alphabe is the alphabet of the automaton).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TAlphabet, typename TCargo, typename TGraphSpec, typename TSpec>
 inline typename Alphabet<Graph<Automaton<TAlphabet, TCargo, TGraphSpec> > >::Type

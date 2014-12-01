@@ -429,8 +429,6 @@ typedef String<TDnaAlphabet> TDnaSequence;
  * @return TFloat The z-score for W w.r.t. X and M, TFloat is the TFloat from the type of M.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TAlgorithm, typename TFloat, typename TSpec, typename TStringSet, typename TAlphabet>
 TFloat zscore(TStringSet W,  TStringSet &X, MarkovModel<TAlphabet, TFloat, TSpec> &M, TAlgorithm const & algorithmTag)
 {
@@ -506,8 +504,6 @@ TFloat zscore(StringSet<TDnaSequence> W,  StringSet<TDnaSequence> &X, MarkovMode
  * @return TFloat The variance for W w.r.t. X and M, TFloat is the TFloat from the type of M.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFloat, typename TAlphabet, typename TSpec>
 TFloat variance(StringSet<String<TAlphabet> > &W, StringSet<String<TAlphabet> >& X, MarkovModel<TAlphabet, TFloat, TSpec> & M)
 {
@@ -568,8 +564,6 @@ TFloat variance(StringSet<String<Dna> > W, StringSet<String<Dna> > &X, MarkovMod
  *
  * @return TFloat The expectation for W w.r.t. X and M, TFloat is the TFloat from the type of M.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Add const?
 

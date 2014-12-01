@@ -75,8 +75,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Refers to two paried reads in @link FragmentStore::readStore @endlink or is INVALID_ID values.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec = void>
 struct MatePairStoreElement
 {

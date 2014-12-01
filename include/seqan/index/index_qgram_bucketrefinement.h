@@ -73,8 +73,6 @@ public:
     {}
 };
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct BucketRefinement_;
 typedef Tag<BucketRefinement_> BucketRefinement;
 

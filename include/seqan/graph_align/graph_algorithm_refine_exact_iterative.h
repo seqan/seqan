@@ -645,7 +645,6 @@ SEQAN_CHECKPOINT
 
 ///////WRAPPERS
 
-/*_DDDOC_PLACEHOLDER*/
 //exact refinement, score type given
 template<typename TAlignmentString, typename TScoreValue,typename TScoreSpec,typename TOutGraph, typename TSequence, typename TSetSpec>
 void
@@ -662,7 +661,6 @@ SEQAN_CHECKPOINT
 
 
 
-/*_DDDOC_PLACEHOLDER*/
 //exact refinement, score type not given
 template<typename TFragmentString, typename TOutGraph, typename TSequence, typename TSetSpec>
 void
