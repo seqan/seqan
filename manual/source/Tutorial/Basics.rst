@@ -20,19 +20,19 @@ In SeqAn, several standard alphabets are already predefined, for example :dox:`D
 Let's start with a simple task. We want to write a program that outputs all letters of the predefined :dox:`AminoAcid` alphabet.
 First we include the corresponding header files and specify that we are using the namespace ``seqan``.
 
-.. includefrags:: core/demos/tutorial/basics/show_alphabets.cpp
+.. includefrags:: demos/tutorial/basics/show_alphabets.cpp
    :fragment: includes
 
 Next, we will define a template function ``template<typename TAlphabet> void showAllLettersOfMyAlphabet(TAlphabet const&)`` which will iterate over all the characters of the alphabet and outputs them.
 For this, we need to determine the alphabet size using the metafunction :dox:`FiniteOrderedAlphabetConcept#ValueSize ValueSize<TAlphabet>::VALUE`.
 Then we increment a counter from 0 to the alphabet size minus one and output the counter as well as the corresponding letter of the alphabet using a conversion constructor.
 
-.. includefrags:: core/demos/tutorial/basics/show_alphabets.cpp
+.. includefrags:: demos/tutorial/basics/show_alphabets.cpp
    :fragment: showAllLettersOfMyAlphabet
 
 In the main program we simply call the above function using a number of alphabets that are predefined in SeqAn.
 
-.. includefrags:: core/demos/tutorial/basics/show_alphabets.cpp
+.. includefrags:: demos/tutorial/basics/show_alphabets.cpp
    :fragment: main
 
 This program produces the following output:
@@ -112,7 +112,7 @@ Assignment 1
 
             Add link to naming conventions
 
-         .. includefrags:: core/demos/tutorial/basics/strings.cpp
+         .. includefrags:: demos/tutorial/basics/strings.cpp
             :fragment: create-string
 
          Then we define an iterator type using the SeqAn metafunction :dox:`ContainerConcept#Iterator`.
@@ -121,7 +121,7 @@ Assignment 1
          Note that this function returns a reference which allows us to replace the occurrence of all ``R``'s with ``A``'s.
          So at this point we have solved parts a) and b) of the assignment.
 
-         .. includefrags:: core/demos/tutorial/basics/strings.cpp
+         .. includefrags:: demos/tutorial/basics/strings.cpp
             :fragment: iterate-and-replace
 
          In the next part of the code we want to count, how often a specific letter of the alphabet occurs in the string.
@@ -133,12 +133,12 @@ Assignment 1
          Note the use of the :dox:`IteratorAssociatedTypesConcept#value` function.
          In this example one could also use the ``operator[]`` to write ``counter[ordValue(value(it))]++``.
 
-         .. includefrags:: core/demos/tutorial/basics/strings.cpp
+         .. includefrags:: demos/tutorial/basics/strings.cpp
             :fragment: count-occurrences
 
          Finally we iterate through the counter String and output the i-th aminoacid (by calling a constructor with the letter's ordinal value) ad its frequency.
 
-         .. includefrags:: core/demos/tutorial/basics/strings.cpp
+         .. includefrags:: demos/tutorial/basics/strings.cpp
             :fragment: frequency-table
 
          The result looks like this:
@@ -234,14 +234,14 @@ Assignment 2
 
          We start in this assignment by including the ``basic.h`` SeqAn header and defining two different allocators, one :dox:`MultiPoolAllocator Multi Pool Allocator` and one :dox:`SimpleAllocator Simple Allocator`.
 
-         .. includefrags:: core/demos/tutorial/basics/allocator.cpp
+         .. includefrags:: demos/tutorial/basics/allocator.cpp
             :fragment: definitions
 
          Given these fixed allocators we allocate now various size blocks, namely of size 10, 100, and 1000.
          We repeat the allocation a number of times and then clear the allocated memory.
          For each of the block sizes we output the system time needed to allocate and clear the memory.
 
-         .. includefrags:: core/demos/tutorial/basics/allocator.cpp
+         .. includefrags:: demos/tutorial/basics/allocator.cpp
             :fragment: time-measurements
 
          Running this program results in the following output which shows the advantage of the :dox:`MultiPoolAllocator Multi Pool Allocator`:

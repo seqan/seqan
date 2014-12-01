@@ -54,7 +54,7 @@ The function :dox:`Shape#hash` converts this 3-gram into :math:`61 = (\mathbf{3}
 
 With :dox:`Shape#hash` and :dox:`Shape#hash hashNext`, we can compute the hash values of arbitrary / adjacent q-grams and a loop that outputs the hash values of all overlapping ungapped 3-grams could look as follows:
 
-.. includefrags:: core/demos/tutorial/index/index_qgram_hash.cpp
+.. includefrags:: demos/tutorial/index/index_qgram_hash.cpp
    :fragment: hash_loop1
 
 Note that the shape not only stores the length and gaps of a q-gram shape but also stores the hash value returned by the last hash/hashNext call.
@@ -63,7 +63,7 @@ However, one drawback of the example loop above is that the first hash value mus
 This complicates the structure of algorithms that need to iterate all hash values, as they have to handle this first hash differently.
 As a remedy, the :dox:`Shape#hashInit` function can be used first and then :dox:`Shape#hashNext` on the first and all following text positions in the same way:
 
-.. includefrags:: core/demos/tutorial/index/index_qgram_hash.cpp
+.. includefrags:: demos/tutorial/index/index_qgram_hash.cpp
    :fragment: hash_loop2
 
 The q-gram index offers different functions to search or count occurrences of q-grams in an indexed text, see :dox:`IndexQGram#getOccurrences`, :dox:`IndexQGram#countOccurrences`.
@@ -87,13 +87,13 @@ As 3 is fixed at compile-time and the shape has no gaps we can use a :dox:`Ungap
 Next we create the string ``"CATGATTACATA"`` and specialize the first index template argument with the type of this string.
 The string can be given to the index constructor.
 
-.. includefrags:: core/demos/tutorial/index/index_qgram.cpp
+.. includefrags:: demos/tutorial/index/index_qgram.cpp
    :fragment: initialization
 
 To get all occurrences of a q-gram, we first have to hash it with a shape of the same type as the index shape (we can even use the index shape returned by :dox:`IndexQGram#indexShape`).
 The hash value returned by :dox:`Shape#hash` or :dox:`Shape#hashNext` is also stored in the shape and is used by the function :dox:`IndexQGram#getOccurrences` to retrieve all occurrences of our 3-gram.
 
-.. includefrags:: core/demos/tutorial/index/index_qgram.cpp
+.. includefrags:: demos/tutorial/index/index_qgram.cpp
    :fragment: output
 
 Program output:
@@ -121,7 +121,7 @@ Assignment 1
 	Because our shape ``1101`` is known at compile-time and contains only one gap we could choose :dox:`OneGappedShape`, :dox:`GappedShape`, or :dox:`GenericShape` (see the commented-out code).
 	Although the :dox:`GenericShape` could be used for every possible shape, it is a good idea to choose a :dox:`Shape` with restrictions as its :dox:`Shape#hash` functions are more efficient in general.
 
-	.. includefrags:: core/demos/tutorial/index/index_assignment5.cpp
+	.. includefrags:: demos/tutorial/index/index_assignment5.cpp
 	   :fragment: initialization
 
 	Please note that the :dox:`Shape` object that corresponds to the :dox:`IndexQGram` index is empty initially and has to be set by :dox:`Shape#stringToShape` or :dox:`Shape#resize`.
@@ -129,7 +129,7 @@ Assignment 1
 	To search for "AT-A" we first have to hash it with the index shape or any other :dox:`Shape` with the same bitmap.
 	The we can use :dox:`IndexQGram#getOccurrences` to output all matches.
 
-	.. includefrags:: core/demos/tutorial/index/index_assignment5.cpp
+	.. includefrags:: demos/tutorial/index/index_assignment5.cpp
           :fragment: output
 
 	.. tip::
@@ -168,7 +168,7 @@ Assignment 2
         The 3 generated strings are of random length and appended to a :dox:`StringSet`.
         The main algorithmus is encapsulated in a template function ``qgramCounting`` to easily switch between the two :dox:`IndexQGram` specializations.
 
-        .. includefrags:: core/demos/tutorial/index/index_assignment6.cpp
+        .. includefrags:: demos/tutorial/index/index_assignment6.cpp
            :fragment: initialization
 
         The main function expects the :dox:`StringSet` and the :dox:`Index` specialization as a tag.
@@ -177,7 +177,7 @@ Assignment 2
         For storing the common q-grams we use a 2-dimensional :dox:`Matrix` object whose lengths have to be set with ``setLength`` for each dimension.
         The matrix is initialized with zeros by :dox:`Matrix#resize`.
 
-        .. includefrags:: core/demos/tutorial/index/index_assignment6.cpp
+        .. includefrags:: demos/tutorial/index/index_assignment6.cpp
            :fragment: matrix_init
 
         The main part of the function iterates over the CountsDir fibre.
@@ -186,7 +186,7 @@ Assignment 2
         So the inner loops iterate over all non-empty buckets and two pairs (seqNo1,count1) and (seqNo2,count2) indicate that seqNo1 and seqNo2 have a common q-gram.
         At the end the matrix can simply be output by shifting it to the ``cout`` stream.
 
-        .. includefrags:: core/demos/tutorial/index/index_assignment6.cpp
+        .. includefrags:: demos/tutorial/index/index_assignment6.cpp
            :fragment: matrix_calculation
 
         Please note that the :dox:`OpenAddressingQGramIndex open addressing` q-gram index directories are smaller than the :dox:`IndexQGram` index directories.

@@ -1,6 +1,6 @@
 SRC=../src
-CXXFLAGS+=-I../../../core/include
-CXXFLAGS+=-I../../../extras/include
+CXXFLAGS+=-I../../../include
+CXXFLAGS+=-I../../../include
 
 default: all
 all: main

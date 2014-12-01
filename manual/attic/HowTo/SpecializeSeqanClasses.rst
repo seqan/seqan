@@ -45,7 +45,7 @@ Finder class for searching indices. For indices having a suffix array it
 suffice to specialize the internal function \_findFirstIndex and to
 define a default find algorithm via the meta-function DefaultFinder. See
 the find interface of the q-gram index for an
-[source:trunk/core/include/seqan/index/find\_index\_qgram.h example].
+[source:trunk/include/seqan/index/find\_index\_qgram.h example].
 
 Suffix Tree Interface
 ^^^^^^^^^^^^^^^^^^^^^

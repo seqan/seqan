@@ -206,7 +206,7 @@ Tests in ``apps`` folders
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It is also possible to write normal tests inside apps.
-One example is the ``extras/apps/param\_chooser/ param\_chooser`` app.
+One example is the ``apps/param\_chooser/ param\_chooser`` app.
 
 To add a test to your app, you have to (1) add a test ``.cpp`` file and (2) register it in the ``CMakeLists.txt`` file.
 

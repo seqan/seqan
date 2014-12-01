@@ -35,7 +35,7 @@ Then, we load SeqAn's *uncrustify.cfg* which is located in *${CHECKOUT}/misc*. W
 
 .. figure:: uig-3.png
 
-Then, we load a file from the SeqAn repository, for example *core/apps/sak/sak.cpp*.
+Then, we load a file from the SeqAn repository, for example *apps/sak/sak.cpp*.
 
 .. figure:: uig-4.png
 

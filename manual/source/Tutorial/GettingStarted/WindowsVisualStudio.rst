@@ -231,6 +231,6 @@ As a next step, we suggest the following:
 * :ref:`Continue with the Tutorials <tutorial>`
 * If you have not done so, install optional dependencies of SeqAn.
   To read and write compressed files, follow :ref:`how-to-install-contribs-on-windows`.
-* Look around in the files in ``sandbox/my_sandbox/apps/first_app`` or the demos in ``core/demos`` and ``extras/demos``.
+* Look around in the files in ``sandbox/my_sandbox/apps/first_app`` or the demos in ``demos`` and ``demos``.
 * For the tutorial, using the SeqAn build system is great!
   If you later want to use SeqAn as a library, have a look at :ref:`build-manual-integration-with-your-own-build-system`.

@@ -42,18 +42,18 @@ To this function, we pass the buffers we want to read the record identifier and 
 This is followed by the ``reader`` object we create with the ``std::fstream`` previously opened.
 The last argument is the tag ``seqan::Fasta()`` which uses the variant of :dox:`RecordReader#readRecord` for reading FASTA files.
 
-.. includefrags:: core/demos/tutorial/sequence_io/example1.cpp
+.. includefrags:: demos/tutorial/sequence_io/example1.cpp
 
 When reading FASTQ files, we use the tag ``seqan::Fastq()``.
 For storing the qualities, we can pass an optional third parameter of type :dox:`CharString` which stores the quality values.
 
-.. includefrags:: core/demos/tutorial/sequence_io/example2.cpp
+.. includefrags:: demos/tutorial/sequence_io/example2.cpp
 
 Optionally, we can also read the sequence into a string of [dox:Dna5Q
 Dna5Q] characters which will store the qualities directly in the
 string's characters.
 
-.. includefrags:: core/demos/tutorial/sequence_io/example3.cpp
+.. includefrags:: demos/tutorial/sequence_io/example3.cpp
 
 .. important::
 
@@ -81,7 +81,7 @@ Assignment 1
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/sequence_io/solution1.cpp
+        .. includefrags:: demos/tutorial/sequence_io/solution1.cpp
 
 When we want to read a whole sequence (e.g. FASTA or FASTQ) file into memory then we only have to slightly adjust the example from above.
 For example, here is how we can read a whole FASTQ file into memory using the function :dox:`RecordReader#read` into :dox:`StringSet StringSets` of :dox:`CharString CharStrings` and :dox:`Dna5String Dna5Strings`.
@@ -90,7 +90,7 @@ For example, here is how we can read a whole FASTQ file into memory using the fu
 
    For a short time, ``read()`` will still be called ``read2()`` because of name clashes with the old I/O system.
 
-.. includefrags:: core/demos/tutorial/sequence_io/example4.cpp
+.. includefrags:: demos/tutorial/sequence_io/example4.cpp
 
 Assignment 2
 """"""""""""
@@ -108,7 +108,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/sequence_io/solution2.cpp
+        .. includefrags:: demos/tutorial/sequence_io/solution2.cpp
 
 Choice of Record Reader
 -----------------------
@@ -163,7 +163,7 @@ Assignment 3
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/sequence_io/solution3.cpp
+        .. includefrags:: demos/tutorial/sequence_io/solution3.cpp
 
 Auto Format Detection
 ---------------------
@@ -177,7 +177,7 @@ When this succeeds, the successfully recognized file type is stored in the objec
 
 You can then subsequently use the :dox:`AutoSeqStreamFormat` instead of a tag to the functions :dox:`RecordReader#readRecord` or :dox:`RecordReader#read`.
 
-.. includefrags:: core/demos/tutorial/sequence_io/example9.cpp
+.. includefrags:: demos/tutorial/sequence_io/example9.cpp
 
 Assignment 4
 """"""""""""
@@ -195,7 +195,7 @@ Assignment 4
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/sequence_io/solution6.cpp
+        .. includefrags:: demos/tutorial/sequence_io/solution6.cpp
 
 .. note::
 
@@ -214,7 +214,7 @@ For record-wise writing, we use the function :dox:`StreamConcept#writeRecord`.
 This function expects as parameters, the :dox:`StreamConcept` to write to, the data to write, followed by the format tag.
 The following example writes an identifier and a sequence :dox:`StringSet` record-by-record to stdout.
 
-.. includefrags:: core/demos/tutorial/sequence_io/example6.cpp
+.. includefrags:: demos/tutorial/sequence_io/example6.cpp
 
 The result on the console looks like this:
 
@@ -245,7 +245,7 @@ Assignment 5
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/sequence_io/solution5.cpp
+        .. includefrags:: demos/tutorial/sequence_io/solution5.cpp
 
         The output looks as follows:
 
@@ -267,7 +267,7 @@ The transition from record-wise writing to writing whole string sets is of simil
 
    For a short time, ``write()`` will still be called ``write2()`` because of name clashes with the old I/O system.
 
-.. includefrags:: core/demos/tutorial/sequence_io/example8.cpp
+.. includefrags:: demos/tutorial/sequence_io/example8.cpp
 
 Using MultiSeqFile
 ------------------
@@ -290,34 +290,34 @@ For this, we need the file format. We could give a specify format in the tag (e.
 The following example demonstrates how to use :dox:`MultiSeqFile` to read sequence files.
 First, we include the necessary headers and start our ``main()`` function.
 
-.. includefrags:: core/demos/tutorial/sequence_io/example5.cpp
+.. includefrags:: demos/tutorial/sequence_io/example5.cpp
    :fragment: includes-main
 
 Then, we declare the :dox:`MultiSeqFile` object and open it with the value of ``argv[1]``.
 If no parameters are given then we exit the program with status code ``1``.
 
-.. includefrags:: core/demos/tutorial/sequence_io/example5.cpp
+.. includefrags:: demos/tutorial/sequence_io/example5.cpp
    :fragment: open
 
 This is followed by using :dox:`AutoSeqFormat` for guessing the sequence file type.
 
-.. includefrags:: core/demos/tutorial/sequence_io/example5.cpp
+.. includefrags:: demos/tutorial/sequence_io/example5.cpp
    :fragment: guess
 
 After guessing the file type, we can now use this knowledge to compute the start positions of each record using the function :dox:`split`.
 
-.. includefrags:: core/demos/tutorial/sequence_io/example5.cpp
+.. includefrags:: demos/tutorial/sequence_io/example5.cpp
    :fragment: split
 
 After the call to :dox:`split`, we can get the number of sequences in the file using the function :dox:`ContainerConcept#length`.
 We declare the :dox:`StringSet StringSets` for storing the sequences and sequence ids and reserve the exact space for the number of elements we need.
 
-.. includefrags:: core/demos/tutorial/sequence_io/example5.cpp
+.. includefrags:: demos/tutorial/sequence_io/example5.cpp
    :fragment: load
 
 Then, we declare some buffers for storing the sequence id, characters, and the quality values.
 
-.. includefrags:: core/demos/tutorial/sequence_io/example5.cpp
+.. includefrags:: demos/tutorial/sequence_io/example5.cpp
    :fragment: buffers
 
 Now, we can access the sequence, qualities and ids using the functions :dox:`assignSeq`, :dox:`assignQual`, and :dox:`assignSeqId`.
@@ -328,12 +328,12 @@ In the following loop, we first extract the sequences, qualities, and the sequen
 Then, the qualities are stored in the :dox:`Dna5Q` letters of the string.
 The sequence with qualities and the sequence ids are then stored in the variables ``seqs`` and ``seqIDs`` we allocated above.
 
-.. includefrags:: core/demos/tutorial/sequence_io/example5.cpp
+.. includefrags:: demos/tutorial/sequence_io/example5.cpp
    :fragment: output
 
 Finally, we return the status code ``0`` at the end of our ``main()`` function.
 
-.. includefrags:: core/demos/tutorial/sequence_io/example5.cpp
+.. includefrags:: demos/tutorial/sequence_io/example5.cpp
    :fragment: return
 
 Indexed reading has multiple advantages.

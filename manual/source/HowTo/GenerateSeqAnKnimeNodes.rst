@@ -77,7 +77,7 @@ The following example will demonstrate the creation of a SeqAn app and its regis
    ~ # cd seqan-trunk
    ~ # ./util/bin/skel.py app knime_node sandbox/my_sandbox
 
-Now open the file *seqan-trunk/sandbox/my_sandbox/apps/knime_node/knime_node.cpp* and replace its content with the one found in *seqan-trunk/core/demos/knime_node.cpp*.
+Now open the file *seqan-trunk/sandbox/my_sandbox/apps/knime_node/knime_node.cpp* and replace its content with the one found in *seqan-trunk/demos/knime_node.cpp*.
 The code implements the reading of a read file and its storage somewhere on the disk.
 
 In order to register the app ``knime_node``, you simply add the line

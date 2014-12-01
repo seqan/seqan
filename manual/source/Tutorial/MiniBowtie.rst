@@ -159,7 +159,7 @@ Assignment 1
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/mini_bowtie/solution1.cpp
+        .. includefrags:: demos/tutorial/mini_bowtie/solution1.cpp
 
 Now that we have the backbone of our program we can start to implement the fundamental part, the search routine.
 The ``search`` function requires two input arguments, namely the iterator used to traverse the FM index of the reference sequence and the string set containing the reads.
@@ -203,7 +203,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/mini_bowtie/solution2.cpp
+        .. includefrags:: demos/tutorial/mini_bowtie/solution2.cpp
 
 At this point we need to implement the most critical part of the our program, which is the second step of the search phase.
 In our case this step works as follows:
@@ -262,7 +262,7 @@ Assignment 3
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/mini_bowtie/solution3.cpp
+        .. includefrags:: demos/tutorial/mini_bowtie/solution3.cpp
 
 So far so good.
 But there is a slight mistake.
@@ -283,7 +283,7 @@ Assignment 4
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/mini_bowtie/solution4.cpp
+        .. includefrags:: demos/tutorial/mini_bowtie/solution4.cpp
 
 So this is already the fundamental part of our program.
 What's left to do is to write the result into a SAM file.
@@ -343,7 +343,7 @@ Assignment 5
    Solution
      .. container:: foldable
 
-       .. includefrags:: extras/demos/tutorial/mini_bowtie/mini_bowtie.cpp
+       .. includefrags:: demos/tutorial/mini_bowtie/mini_bowtie.cpp
 
 Done? Not quite.
 

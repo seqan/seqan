@@ -118,7 +118,7 @@ Assignment 1
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/indexed_fasta_io/solution1.cpp
+        .. includefrags:: demos/tutorial/indexed_fasta_io/solution1.cpp
 
 Using the Index
 ---------------
@@ -204,7 +204,7 @@ Assignment 2
 
        The program appears to be very long, but most is error handling, as usual with robust I/O code.
 
-       .. includefrags:: extras/demos/tutorial/indexed_fasta_io/solution2.cpp
+       .. includefrags:: demos/tutorial/indexed_fasta_io/solution2.cpp
 
 
 Next Steps

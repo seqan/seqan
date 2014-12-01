@@ -46,10 +46,10 @@ Design & Layout Conventions
 * Use the following markup to include source code
   ::
 
-      .. includefrags:: core/demos/tutorial/alignment/alignment_msa.cpp
+      .. includefrags:: demos/tutorial/alignment/alignment_msa.cpp
          :fragment: init
 
-  where ``extras/demos/tutorial/tutorial/alignment/alignment_msa.cpp`` gives the source code file in the repository and ``init`` the fragment to include in the tutorial.
+  where ``demos/tutorial/tutorial/alignment/alignment_msa.cpp`` gives the source code file in the repository and ``init`` the fragment to include in the tutorial.
 * You should always build and test the tutorials code snippets before using them.
 
   .. code-block:: console
@@ -344,7 +344,7 @@ Tutorial Template
     Link all classes and other resources to the SeqAn documentation system by using ``:dox:Item` (e.g. :dox:`String`).
     In order to include code snippets use ``.. includefrags:: path``.
 
-    .. includefrags:: core/demos/tutorial/alignments/alignment_banded.cpp
+    .. includefrags:: demos/tutorial/alignments/alignment_banded.cpp
        :fragment: alignment
 
     If possible also include the generated output by given code in the console.
@@ -399,7 +399,7 @@ Tutorial Template
              The given sequence are of alphabet...
              Therefore, you have to...
 
-             .. includefrags:: core/demos/tutorial/alignments/alignment_banded.cpp
+             .. includefrags:: demos/tutorial/alignments/alignment_banded.cpp
                 :fragment: main
 
          Solution Step 2
@@ -407,5 +407,5 @@ Tutorial Template
              The given sequence are of alphabet...
              Therefore, you have to...
 
-             .. includefrags:: core/demos/tutorial/alignments/alignment_banded.cpp
+             .. includefrags:: demos/tutorial/alignments/alignment_banded.cpp
                 :fragment: fragment

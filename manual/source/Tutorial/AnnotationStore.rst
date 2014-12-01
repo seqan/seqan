@@ -167,7 +167,7 @@ Asignment 1
 
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/annotation_store/assignment_1_hint.cpp
+        .. includefrags:: demos/tutorial/annotation_store/assignment_1_hint.cpp
 
      Hints
        In the given data the left-most leaf is a child of mRNA and has siblings.
@@ -178,7 +178,7 @@ Asignment 1
 
       .. container:: foldable
 
-         .. includefrags:: core/demos/tutorial/annotation_store/assignment_1_solution.cpp
+         .. includefrags:: demos/tutorial/annotation_store/assignment_1_solution.cpp
 
          .. code-block:: console
 
@@ -205,7 +205,7 @@ Assignment 2
 
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/annotation_store/assignment_2_solution.cpp
+        .. includefrags:: demos/tutorial/annotation_store/assignment_2_solution.cpp
 
         .. code-block:: console
 
@@ -313,7 +313,7 @@ Assignment 3
 
     .. container:: foldable
 
-       .. includefrags:: core/demos/tutorial/annotation_store/assignment_3_solution.cpp
+       .. includefrags:: demos/tutorial/annotation_store/assignment_3_solution.cpp
 
        .. code-block:: console
 
@@ -345,7 +345,7 @@ Assignment 4
 
       .. container:: foldable
 
-         .. includefrags:: core/demos/tutorial/annotation_store/assignment_4_solution.cpp
+         .. includefrags:: demos/tutorial/annotation_store/assignment_4_solution.cpp
 
          .. code-block:: console
 

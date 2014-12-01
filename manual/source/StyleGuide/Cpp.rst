@@ -991,17 +991,17 @@ The header ``#define`` include guards are constructed from full paths to the rep
 
     Example:
 
-    +------------------------------------------------+-----------------------------------------------------+
-    | filename                                       | preprocessor symbol                                 |
-    +================================================+=====================================================+
-    | seqan/core/include/seqan/basic/iterator_base.h | ``SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_`` |
-    +------------------------------------------------+-----------------------------------------------------+
+    +-------------------------------------------+-----------------------------------------------------+
+    | filename                                  | preprocessor symbol                                 |
+    +===========================================+=====================================================+
+    | seqan/include/seqan/basic/iterator_base.h | ``SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_``      |
+    +-------------------------------------------+-----------------------------------------------------+
 
     .. code-block:: cpp
 
-        #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
-        #define SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
-        #endif  // #ifndef SEQAN_CORE_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
+        #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
+        #define SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
+        #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
 
 Include Order
 ^^^^^^^^^^^^^
@@ -1107,8 +1107,8 @@ Application Header Structure
     // $FILE_COMMENT
     // ==========================================================================
 
-    #ifndef CORE_APPS_APP_NAME_HEADER_FILE_H_
-    #define CORE_APPS_APP_NAME_HEADER_FILE_H_
+    #ifndef APPS_APP_NAME_HEADER_FILE_H_
+    #define APPS_APP_NAME_HEADER_FILE_H_
 
     // ==========================================================================
     // Forwards
@@ -1138,7 +1138,7 @@ Application Header Structure
     // Function functionName()
     // --------------------------------------------------------------------------
 
-    #endif  // CORE_APPS_APP_NAME_HEADER_FILE_H_
+    #endif  // APPS_APP_NAME_HEADER_FILE_H_
 
 Library Header Structure
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1181,8 +1181,8 @@ Library Header Structure
     // SHORT COMMENT ON WHAT THIS FILE CONTAINS
     // ==========================================================================
 
-    #ifndef CORE_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
-    #define CORE_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
+    #ifndef INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
+    #define INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
 
     namespace seqan {
 
@@ -1216,4 +1216,4 @@ Library Header Structure
 
     }  // namespace seqan
 
-    #endif  // CORE_INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
+    #endif  // INCLUDE_SEQAN_BASIC_ITERATOR_BASE_H_
