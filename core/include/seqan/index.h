@@ -227,6 +227,16 @@
 #include <seqan/index/find2_index_multi.h>
 #include <seqan/index/find2_functors.h>
 
+
+// ----------------------------------------------------------------------------
+// Gapped index (meiers)
+// ----------------------------------------------------------------------------
+
+#include <seqan/modifier/cyclic_shape.h>
+#include <seqan/index/index_gapped_dislex.h>
+#include <seqan/index/index_gapped_dislex_external.h>
+
+
 // ----------------------------------------------------------------------------
 // Lambda interface.
 // ----------------------------------------------------------------------------
@@ -234,5 +244,6 @@
 #ifdef SEQAN_CXX11_STANDARD
 #include <seqan/index/find_index_lambda.h>
 #endif
+
 
 #endif //#ifndef SEQAN_HEADER_...

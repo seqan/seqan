@@ -1,5 +1,5 @@
 // ==========================================================================
-//                 SeqAn - The Library for Sequence Analysis
+//                                gappedIndex
 // ==========================================================================
 // Copyright (c) 2006-2013, Knut Reinert, FU Berlin
 // All rights reserved.
@@ -29,53 +29,23 @@
 // DAMAGE.
 //
 // ==========================================================================
-
-#ifndef SEQAN_HEADER_PIPE_H
-#define SEQAN_HEADER_PIPE_H
-
-//____________________________________________________________________________
-// prerequisites
+// Author: Sascha Meiers <meiers@inf.fu-berlin.de>
+// ==========================================================================
 
 #include <seqan/basic.h>
-#include <seqan/parallel.h>
 #include <seqan/file.h>
 
-#include <cstdio>
-#include <cassert>
-#include <functional>
-#include <iterator>
-#include <climits>
-#include <vector>
-#include <queue>
+#include "../index/test_index_helpers.h"
+#include "test_gappedIndex.h"
+//#include "test_gappedIndex_find.h"
+//#include "test_gappedIndex_stree.h"
+#include "test_gappedIndex_construction.h"
 
-//____________________________________________________________________________
-// pipes
 
-#define SEQAN_NAMESPACE_PIPELINING pipe
-
-#include <seqan/pipe/pipe_base.h>
-#include <seqan/pipe/pipe_iterator.h>
-#include <seqan/pipe/pipe_caster.h>
-#include <seqan/pipe/pipe_counter.h>
-#include <seqan/pipe/pipe_echoer.h>
-#include <seqan/pipe/pipe_edit_environment.h>
-#include <seqan/pipe/pipe_filter.h>
-#include <seqan/pipe/pipe_joiner.h>
-#include <seqan/pipe/pipe_namer.h>
-#include <seqan/pipe/pipe_sampler.h>
-#include <seqan/pipe/pipe_shifter.h>
-#include <seqan/pipe/pipe_source.h>
-#include <seqan/pipe/pipe_tupler.h>
-#include <seqan/pipe/pipe_gapped_tupler.h>
-
-//____________________________________________________________________________
-// pools
-
-#include <seqan/pipe/pool_base.h>
-#include <seqan/pipe/pool_mapper.h>
-
-#include <seqan/misc/priority_type_base.h>
-#include <seqan/misc/priority_type_heap.h>
-#include <seqan/pipe/pool_sorter.h>
-
-#endif //#ifndef SEQAN_HEADER_...
+SEQAN_BEGIN_TESTSUITE(test_gappedIndex)
+{
+    // Construction
+    SEQAN_CALL_TEST(test_gappedIndex_construction_str);
+    SEQAN_CALL_TEST(test_gappedIndex_construction_strSet);
+}
+SEQAN_END_TESTSUITE
