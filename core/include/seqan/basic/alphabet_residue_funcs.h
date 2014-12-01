@@ -44,7 +44,7 @@ namespace seqan {
 
 template <typename T>
 SEQAN_HOST_DEVICE inline unsigned char
-_translateAsciiToDna(unsigned char c)
+_translateCharToDna(unsigned char c)
 {
     switch (toUpperValue(c))
     {
@@ -65,7 +65,7 @@ _translateAsciiToDna(unsigned char c)
 
 template <typename T>
 SEQAN_HOST_DEVICE inline unsigned char
-_translateAsciiToDna5(unsigned char c)
+_translateCharToDna5(unsigned char c)
 {
     switch (toUpperValue(c))
     {
