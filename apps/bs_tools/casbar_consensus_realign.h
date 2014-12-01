@@ -124,9 +124,9 @@ insertGap(String<TAlignedReads, TSpec>& alignedReadStoreTmp,
         if (alignIt->id == length(fragmentStoreOrig.alignedReadStore))    // Ref
             insertGap(*alignIt, gapPos);
         else if (fragmentStoreOrig.alignedReadStore[alignIt->id].beginPos <  fragmentStoreOrig.alignedReadStore[alignIt->id].endPos) // Top
-            numGapsTop += (int)(insertGap(*alignIt, gapPos) * (1.0 -pow(10, -fragmentStoreOrig.alignQualityStore[alignIt->id].s10.0)));
+            numGapsTop += (int)(insertGap(*alignIt, gapPos) * (1.0 -pow(10, -fragmentStoreOrig.alignQualityStore[alignIt->id].score/10.0)));
         else                                                // Bottom
-            numGapsBottom += (int)(insertGap(*alignIt, gapPos) * (1.0 -pow(10, -fragmentStoreOrig.alignQualityStore[alignIt->id].s10.0)));
+            numGapsBottom += (int)(insertGap(*alignIt, gapPos) * (1.0 -pow(10, -fragmentStoreOrig.alignQualityStore[alignIt->id].score/10.0)));
     }
 }
 
@@ -185,7 +185,7 @@ reAlign(double &profileScore,
 	    if (alignIt->id == length(fragStore.alignedReadStore)) isRef = true;
         bool top = (fragStore.alignedReadStore[alignIt->id].beginPos < fragStore.alignedReadStore[alignIt->id].endPos);
         double mapE = 0.0; // ?
-        if (!isRef) mapE = pow(10, -fragStore.alignQualityStore[alignIt->id].s10.0);
+        if (!isRef) mapE = pow(10, -fragStore.alignQualityStore[alignIt->id].score/10.0);
         double mapq = 0;
         if (!isRef) mapq = fragStore.alignQualityStore[alignIt->id].score;  // TODO Get rid of it
 
@@ -704,7 +704,7 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
         bool top = true;
         if (!isRef) top = (fragStore.alignedReadStore[contigReadsIt->id].beginPos < fragStore.alignedReadStore[contigReadsIt->id].endPos);
         double mapE = 0.0; // ?
-        if (!isRef) mapE = pow(10, -fragStore.alignQualityStore[contigReadsIt->id].s10.0);
+        if (!isRef) mapE = pow(10, -fragStore.alignQualityStore[contigReadsIt->id].score/10.0);
 
 		contigReadsIt->beginPos -= minPos;  // Me: adjust read positions to min observed postion
 		contigReadsIt->endPos -= minPos;
