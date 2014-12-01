@@ -126,8 +126,6 @@ struct WordSize_ {};
  * @param[in]     value The value to set to, <tt>bool</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TWord, typename TPos>
 inline void
 setBitTo(TWord & word, TPos index, bool value)
@@ -151,8 +149,6 @@ setBitTo(TWord & word, TPos index, bool value)
  * @param[in]     index The index of the bit to set (@link IntegerConcept @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TWord, typename TPos>
 inline void
 setBit(TWord & word, TPos index)
@@ -175,8 +171,6 @@ setBit(TWord & word, TPos index)
  * @param[in]     index The index of the bit to set to 0 (@link IntegerConcept @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TWord, typename TPos>
 inline void
 clearBit(TWord & word, TPos index)
@@ -197,8 +191,6 @@ clearBit(TWord & word, TPos index)
  *
  * @param[in,out] word The word to clear all bits of (@link IntegerConcept @endlink).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TWord>
 inline void
@@ -223,8 +215,6 @@ clearBits(TWord & word)
  *
  * @return bool Whether the bit with the given index is set in <tt>word</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TWord, typename TIndex>
 inline bool
@@ -261,8 +251,6 @@ hiBits(TWord word, TPos index)
  *
  * @return unsigned The number of set bits in <tt>word</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TWord>
 SEQAN_HOST_DEVICE

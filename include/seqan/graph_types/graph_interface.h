@@ -86,7 +86,6 @@ struct Hmm;
  * @include demos/graph/graph_algo_dijkstra.cpp.stdout
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TSpec = Directed<> >
 class Graph;
 
@@ -617,7 +616,6 @@ struct Alphabet<Graph<Hmm<TAlphabet, TCargo, TSpec> > const> {
  * @return T Pseudo nil value for type T.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 inline T
 getNil(T *)
@@ -716,7 +714,6 @@ _createVertices(Graph<TSpec>& g,
  * child, parent, child</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TSpec, typename TEdgeArray, typename TSize>
 inline void
 addEdges(Graph<TSpec>& dest,

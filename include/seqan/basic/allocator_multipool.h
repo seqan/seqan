@@ -68,8 +68,6 @@ namespace seqan {
  * using <tt>ParentAllocator</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TParentAllocator = Allocator<SimpleAlloc<Default> >, unsigned int BLOCKING_LIMIT = 0x100>
 struct MultiPool;
 

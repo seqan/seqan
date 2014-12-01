@@ -93,7 +93,6 @@ template <
     typename TRazerSMode>
 struct MapSingleReads {};
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSpec>
 class ThreadLocalStorage;
 

@@ -74,8 +74,6 @@ namespace seqan {
  * @return VALUE The same as <tt>Type::VALUE</tt>.
  */ 
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename Type1, typename Type2>
 struct IsSameType : False {};
 
@@ -104,8 +102,6 @@ struct IsSameType<Type1, Type1> : True {};
  * The function is defined for all builtin integral types and with a fallback to that returns T if T is not a built-in
  * integral value.  You can specialize the metafunction for your custom types.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct MakeUnsigned
@@ -160,8 +156,6 @@ struct MakeUnsigned_ : MakeUnsigned<T> {};
  * integral value.  You can specialize the metafunction for your custom types.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 struct MakeSigned
 {
@@ -207,8 +201,6 @@ struct MakeSigned_ : MakeSigned<T> {};
  *
  * @return Type A corresponding non-reference type, e.g. <tt>int</tt> for <tt>T = &amp; int</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 #ifdef SEQAN_CXX11_STANDARD
 
@@ -301,8 +293,6 @@ struct IsPointer<T * const> : True {};
  *
  * @return Type A corresponding non-const type, e.g. <tt>int</tt> for <tt>T = const int</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 /*
 .Internal.RemoveConst_:

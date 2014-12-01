@@ -57,7 +57,6 @@ struct PriorityHeap;
  * @tparam TSpec  The specialization.  Default: <tt>PriorityHeap</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue = int, typename TLess = ::std::less<TValue>, typename TSpec = PriorityHeap>
 class PriorityType;
 

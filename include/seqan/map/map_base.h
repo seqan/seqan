@@ -70,7 +70,6 @@ struct Skiplist;
  *                mapping from <tt>Key</tt> to <tt>Cargo</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TElement, typename TSpec = Skiplist<> >
 class Map;
 
@@ -128,7 +127,6 @@ struct MapValueImpl_<TMap, Nothing>
  * @return Type the map value type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TMap>
 struct MapValue :
 	MapValueImpl_< TMap, typename Cargo<TMap>::Type >
@@ -189,8 +187,6 @@ struct ImplMapValue_<Nothing>
  * You may overload Key and Cargo for your own value type in order to define, what part of your value type is used as
  * key and what as cargo.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TMap, typename TKey>
 inline typename MapValue<TMap>::Type

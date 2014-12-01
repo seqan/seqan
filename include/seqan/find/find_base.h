@@ -68,7 +68,6 @@ namespace seqan {
  * @see ApproximateFinderSearchTypeTags#FindPrefix
  */
 
-/*_DDDOC_PLACEHOLDER*/
 struct FindInfix;
 
 /*!
@@ -82,7 +81,6 @@ struct FindInfix;
  * @see ApproximateFinderSearchTypeTags#FindInfix
  */
 
-/*_DDDOC_PLACEHOLDER*/
 struct FindPrefix;
 
 //////////////////////////////////////////////////////////////////////////////
@@ -100,7 +98,6 @@ struct FindPrefix;
  *              @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template < typename TObject >
 struct DefaultFinder 
 {
@@ -119,7 +116,6 @@ struct DefaultFinder
  * @return Type Is <tt>void</tt> by default
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template < typename TObject >
 struct DefaultPattern 
 {
@@ -139,8 +135,6 @@ struct DefaultPattern
  *              TSpec&gt;</tt>.  This is an alias to function <tt>host()</tt> of the pattern function.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFinder>
 struct Haystack 
 {
@@ -158,8 +152,6 @@ struct Haystack
  *
  * @return Type The needle type of <tt>TPattern</tt., i.e. <tt>TNeedle</tt> for <tt>Pattern&lt;TNeedle, TSpec&gt;</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TPattern>
 struct Needle 
@@ -220,9 +212,6 @@ struct Needle<Segment<THost, TSpec> const>
  * @include demos/find/finder_index.cpp.stdout
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
-/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @class Finder
@@ -306,7 +295,6 @@ public:
  * @param[in] iter     The iter to work on on, either const or non-const.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 	Finder()
 		: data_endPos(0)
 		, data_length(0)
@@ -314,7 +302,6 @@ public:
 		, _beginFind_called(false)
 	{}
 
-/*_DDDOC_PLACEHOLDER*/
 	Finder(THaystack & haystack)
 		: data_iterator(begin(haystack, Rooted()))
 		, data_endPos(0)
@@ -323,7 +310,6 @@ public:
 		, _beginFind_called(false)
 	{}
 
-/*_DDDOC_PLACEHOLDER*/
 	Finder(TIterator &iter)
 		: data_iterator(iter)
 		, data_endPos(0)
@@ -340,7 +326,6 @@ public:
 		, _beginFind_called(false)
 	{}
 	
-/*_DDDOC_PLACEHOLDER*/
 	Finder(Finder const &orig)
 		: data_iterator(orig.data_iterator)
 		, data_endPos(orig.data_endPos)
@@ -610,7 +595,6 @@ SEQAN_CHECKPOINT
  * For finders or patterns of filtering algorithms (e.g. @Spec.Swift@) the returned infix is a potential match.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename THaystack, typename TSpec>
 inline typename Infix<THaystack>::Type
 infix(Finder<THaystack, TSpec> & me)
@@ -774,7 +758,6 @@ SEQAN_CHECKPOINT
  * @param[in] finder The finder to reset to the beginning of the text.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename THaystack, typename TSpec>
 inline void
 goBegin(Finder<THaystack, TSpec> & me)
@@ -793,7 +776,6 @@ SEQAN_CHECKPOINT
  * @param[in] finder The finder to reset to the end of the text.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename THaystack, typename TSpec>
 inline void
 goEnd(Finder<THaystack, TSpec> & me)
@@ -845,8 +827,6 @@ SEQAN_CHECKPOINT
  * @param[in,out] finder The Findre to set the position for.
  * @param[in]     pos    The position to set the finder to.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename THaystack, typename TSpec, typename TPosition>
 inline void 
@@ -951,8 +931,6 @@ SEQAN_CHECKPOINT
  * @param[in]     haystack The haystack to set.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template < typename THaystack, typename TSpec >
 inline void
 setHaystack(Finder<THaystack, TSpec> &obj, THaystack const &hstk) {
@@ -977,8 +955,6 @@ setHaystack(Finder<THaystack, TSpec> &obj, THaystack &hstk)
  *
  * @return THaystack The result type can be retrieved using @link Finder#Haystack @endlink.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template < typename TObject >
 inline typename Parameter_<typename Haystack<TObject>::Type>::Type

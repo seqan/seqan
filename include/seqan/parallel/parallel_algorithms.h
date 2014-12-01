@@ -47,8 +47,6 @@ namespace seqan {
 // Function arrayFill
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TIterator, typename TValue, typename TParallelTag>
 inline void 
 arrayFill(TIterator begin_,
@@ -84,8 +82,6 @@ arrayFill(TIterator begin_,
  *
  * @see partialSum
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSequence>
 inline typename Value<TSequence>::Type
@@ -143,8 +139,6 @@ sum(TSequence const &seq)
  * 
  * @see sum
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TTarget, typename TSource, typename TParallelTag>
 inline typename Value<TSource>::Type

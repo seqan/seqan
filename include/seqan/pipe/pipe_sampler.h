@@ -96,8 +96,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see BitPackedTuple
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     //////////////////////////////////////////////////////////////////////////////
     // sampler class
     template < typename TInput, unsigned m, typename TPack >

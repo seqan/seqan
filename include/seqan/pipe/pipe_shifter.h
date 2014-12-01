@@ -68,8 +68,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The output type equals the input type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     //////////////////////////////////////////////////////////////////////////////
     // echoer class
     template < typename TInput, int delta, bool omitBlank >

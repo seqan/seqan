@@ -125,7 +125,6 @@ _parseSkipSpace(TFile& file, TChar& c)
 }
 
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TFile, typename TChar>
 inline void 
 _parseSkipUntilChar(TFile& file, const TChar &x, TChar& c)

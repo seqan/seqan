@@ -85,8 +85,6 @@ namespace seqan {
  * @param[in,out] record The VcfHeaderRecord to clear.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 class VcfHeaderRecord
 {
 public:
@@ -112,8 +110,6 @@ public:
 // ============================================================================
 // Functions
 // ============================================================================
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void clear(VcfHeaderRecord & record)
 {

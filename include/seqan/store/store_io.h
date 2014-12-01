@@ -60,7 +60,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
 struct TagAmos_;
 typedef Tag<TagAmos_> const Amos;
 
@@ -85,8 +84,6 @@ typedef Tag<TagAmos_> const Amos;
  * @param[out] endClr   End of the clear range.
  */
 
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig, typename TPos, typename TGapAnchor, typename TSpecAlign, typename TBeginClr, typename TEndClr>
 inline void
@@ -149,8 +146,6 @@ getClrRange(FragmentStore<TSpec, TConfig> const& fragStore,
  *
  * @return int 0 in the case of success, non-0 value in case of errors.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TKey, typename TValue, typename TIter>
 void readAmosKeyValue(TKey &key, TValue &value, TIter &reader)
@@ -633,7 +628,6 @@ read(FragmentStore<TSpec, TConfig>& fragStore,
  * @return int 0 in case of success, 1 in case of errors.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TTarget, typename TSpec, typename TConfig>
 inline void
 write(TTarget & target,
@@ -913,7 +907,6 @@ write(TTarget & target,
  * @return bool true on success, false on errors.
  */ 
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSpec, typename TFSSpec, typename TFSConfig>
 bool writeContigs(SmartFile<Fastq, Output, TSpec> & file, FragmentStore<TFSSpec, TFSConfig> & store)
 {
@@ -943,8 +936,6 @@ bool writeContigs(SmartFile<Fastq, Output, TSpec> & file, FragmentStore<TFSSpec,
  *
  * @return bool true in case of success and false in case of error.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFSSpec, typename TFSConfig>
 bool loadContigs(FragmentStore<TFSSpec, TFSConfig> &store, StringSet<CharString> const &fileNameList, bool loadSeqs)
@@ -1025,8 +1016,6 @@ bool loadContigs(FragmentStore<TFSSpec, TFSConfig> &store, TFileNames const &fil
  * @return bool true on success, false on failure.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec, typename TConfig, typename TId>
 bool loadContig(FragmentStore<TSpec, TConfig> &store, TId _id)
 {
@@ -1067,8 +1056,6 @@ bool loadContig(FragmentStore<TSpec, TConfig> &store, TId _id)
  * @return bool true on success, false on failure.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec, typename TConfig, typename TId>
 bool lockContig(FragmentStore<TSpec, TConfig> &store, TId _id)
 {
@@ -1097,8 +1084,6 @@ bool lockContig(FragmentStore<TSpec, TConfig> &store, TId _id)
  * @return bool true on success, false on failure.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec, typename TConfig, typename TId>
 bool unlockContig(FragmentStore<TSpec, TConfig> &store, TId _id)
 {
@@ -1120,8 +1105,6 @@ bool unlockContig(FragmentStore<TSpec, TConfig> &store, TId _id)
  *
  * @return bool true on success, false on failure.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig, typename TId>
 bool unlockAndFreeContig(FragmentStore<TSpec, TConfig> &store, TId _id)
@@ -1153,8 +1136,6 @@ bool unlockAndFreeContig(FragmentStore<TSpec, TConfig> &store, TId _id)
  * @return bool true in case of success, false in case of errors.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec, typename TConfig>
 bool lockContigs(FragmentStore<TSpec, TConfig> &store)
 {
@@ -1175,8 +1156,6 @@ bool lockContigs(FragmentStore<TSpec, TConfig> &store)
  * @return bool true in case of success, false in case of errors.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec, typename TConfig>
 bool unlockContigs(FragmentStore<TSpec, TConfig> &store)
 {
@@ -1196,8 +1175,6 @@ bool unlockContigs(FragmentStore<TSpec, TConfig> &store)
  *
  * @return bool true in case of success, false in case of errors.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig>
 bool unlockAndFreeContigs(FragmentStore<TSpec, TConfig> &store)
@@ -1229,8 +1206,6 @@ bool unlockAndFreeContigs(FragmentStore<TSpec, TConfig> &store)
  *
  * @return bool true in case of success, false in case of errors.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig, typename TFileName>
 bool loadReads(FragmentStore<TSpec, TConfig> &store, TFileName &fileName)

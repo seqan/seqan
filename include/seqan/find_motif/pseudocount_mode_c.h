@@ -40,8 +40,6 @@ namespace SEQAN_NAMESPACE_MAIN
 // CMode
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 ///.Class.Pseudocount.param.TSpec.type:Spec.CMode
 
 struct CMode_;

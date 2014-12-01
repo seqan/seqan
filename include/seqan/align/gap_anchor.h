@@ -79,8 +79,6 @@ typedef Tag<SortGapPos_> const SortGapPos;
  * @see AnchorGaps
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // We store gap anchors only for the first text character behind a gap or a clipped sequence character
 
 template <typename TPos>

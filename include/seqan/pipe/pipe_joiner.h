@@ -78,8 +78,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The output type is a packed @link  Pair  @endlink or @link Triple @endlink of the input types <tt>Value&lt;TInputX&gt;::Type</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     //////////////////////////////////////////////////////////////////////////////
     // joiner class
 	template < typename TInput1, typename TInput2 >

@@ -71,7 +71,6 @@ typedef Tag<FibreLF_> const     FibreLF;
  * @see Fibre
  * @see CompressedSA#getFibre
  */
-/*_DDDOC_PLACEHOLDER*/
 // TODO(esiragusa): Rename FibreSparseString as FibreSparseValues.
 struct FibreSparseString_;
 typedef Tag<FibreSparseString_> const FibreSparseString;
@@ -161,7 +160,6 @@ struct Value<CompressedSA<TText, TSpec, TConfig> const>
 // Class CompressedSA
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class CompressedSA
  * @implements ContainerConcept
@@ -221,7 +219,6 @@ struct CompressedSA
 // Function clear()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#clear
  * @headerfile <seqan/index.h>
@@ -243,7 +240,6 @@ inline void clear(CompressedSA<TText, TSpec, TConfig> & compressedSA)
 // Function empty()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#empty
  * @headerfile <seqan/index.h>
@@ -267,7 +263,6 @@ SEQAN_HOST_DEVICE inline bool empty(CompressedSA<TText, TSpec, TConfig> & compre
 // ----------------------------------------------------------------------------
 // This function creates a compressed suffix array using a normal one.
 
-/*_DDDOC_PLACEHOLDER*/
 // TODO(holtgrew): Rename to createCompressedSA
 /*!
  * @fn CompressedSA#createCompressedSa
@@ -340,7 +335,6 @@ void createCompressedSa(CompressedSA<TText, TSpec, TConfig> & compressedSA, TSA 
 // Function getFibre()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#getFibre
  * 
@@ -388,7 +382,6 @@ getFibre(CompressedSA<TText, TSpec, TConfig> & compressedSA, FibreLF)
 // Function setFibre()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#setFibre
  * 
@@ -412,7 +405,6 @@ void setFibre(CompressedSA<TText, TSpec, TConfig> & compressedSA, TLF & lf, Fibr
 // Function length()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#length
  * 
@@ -439,7 +431,6 @@ length(CompressedSA<TText, TSpec, TConfig> const & compressedSA)
 // Function resize()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#resize
  * 
@@ -471,7 +462,6 @@ resize(CompressedSA<TText, TSpec, TConfig> & compressedSA, TSize size, Tag<TExpa
 // Function value()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#value
  * 
@@ -525,7 +515,6 @@ value(CompressedSA<TText, TSpec, TConfig> const & compressedSA, TPos pos)
 // Function open()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#open
  * @headerfile <seqan/index.h>
@@ -561,7 +550,6 @@ inline bool open(CompressedSA<TText, TSpec, TConfig> & compressedSA, const char 
 // Function save()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn CompressedSA#save
  * 

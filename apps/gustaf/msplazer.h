@@ -328,7 +328,6 @@ struct Breakpoint
 // ----------------------------------------------------------------------------
 
 // Sparse property map class: A property map that has only a few objects or where most of the object would be empty
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TPos>
 struct SparsePropertyMap
 {
@@ -426,15 +425,11 @@ struct Options
 // Function assignProperty()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TObject, typename TPos, typename TDescriptor>
 inline void assignProperty(SparsePropertyMap<TObject, TPos> & spm, TDescriptor const & descr)
 {
     assignProperty(spm.slotLookupTable, descr, -1);
 }
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TObject, typename TPos, typename TDescriptor, typename TValue>
 inline void assignProperty(SparsePropertyMap<TObject, TPos> & spm,
@@ -448,8 +443,6 @@ inline void assignProperty(SparsePropertyMap<TObject, TPos> & spm,
 // ----------------------------------------------------------------------------
 // Function property()
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TObject, typename TPos, typename TDescriptor>
 inline typename Reference<TObject>::Type property(SparsePropertyMap<TObject, TPos> & spm,
@@ -474,8 +467,6 @@ inline typename Reference<TObject>::Type property(SparsePropertyMap<TObject, TPo
 // ----------------------------------------------------------------------------
 // Function getProperty()
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TObject, typename TPos, typename TDescriptor>
 inline bool getProperty(SparsePropertyMap<TObject, TPos> & spm, TDescriptor const & descr, TObject & obj)
@@ -503,8 +494,6 @@ inline bool getProperty(SparsePropertyMap<TObject, TPos> const & spm, TDescripto
 // Function appendSupportId()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TBreakpoint, typename TId>
 inline void appendSupportId(TBreakpoint & bp, TId const & id)
 {
@@ -520,8 +509,6 @@ inline void appendSupportId(TBreakpoint & bp, TId const & id)
     ++bp.support;
 }
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TBreakpoint, typename TId>
 inline void appendSupportId(TBreakpoint & bp, StringSet<TId> const & ids)
 {
@@ -534,8 +521,6 @@ inline void appendSupportId(TBreakpoint & bp, StringSet<TId> const & ids)
     for (unsigned i = 0; i < length(ids); ++i)
         appendSupportId(bp, ids[i]);
 }
-
-/*_DDDOC_PLACEHOLDER*/
 
 // ----------------------------------------------------------------------------
 // Function setSupport()
@@ -550,8 +535,6 @@ inline void setSupport(TBreakpoint & bp, unsigned const & value)
 // Function getSVType()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSequence, typename TId, typename TSVType>
 inline TSVType getSVType(Breakpoint<TSequence, TId> & bp)
 {
@@ -562,15 +545,11 @@ inline TSVType getSVType(Breakpoint<TSequence, TId> & bp)
 // Function setSVType()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TBreakpoint, typename TSVType>
 inline void setSVType(TBreakpoint & bp, TSVType type)
 {
     bp.svtype = type;
 }
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TBreakpoint>
 inline bool setSVType(TBreakpoint & bp, bool refOrder)
@@ -618,16 +597,12 @@ inline bool setSVType(TBreakpoint & bp, bool refOrder)
     return true;
 }
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TBreakpoint, typename TSequence>
 inline void setInsertionSeq(TBreakpoint & bp, TSequence & inSeq)
 {
     bp.insertionSeq = inSeq;
     // assignValue(bp.insertionSeq, inSeq);
 }
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TPos, typename TPosR>
 inline bool _posInSameRange(TPos const & pos1, TPos const & pos2, TPosR const & range)
@@ -664,8 +639,6 @@ inline bool _breakendSupport(Breakpoint<TId, TPos> & be, Breakpoint<TId, TPos> &
     return (_posInSameRange(be.startSeqPos, bp.startSeqPos, range) ||
             _posInSameRange(be.startSeqPos, bp.endSeqPos, range) );
 }
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TId, typename TPos>
 inline bool _similarBreakpoints(Breakpoint<TId, TPos> & bp1, Breakpoint<TId, TPos> & bp2, unsigned const & range)
 {
@@ -694,8 +667,6 @@ inline bool _similarBreakpoints(Breakpoint<TId, TPos> & bp1, Breakpoint<TId, TPo
     }
     return false;
 }
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TId, typename TPos>
 inline bool operator==(Breakpoint<TId, TPos> const & bp1, Breakpoint<TId, TPos> const & bp2)
@@ -726,8 +697,6 @@ inline bool operator==(Breakpoint<TId, TPos> const & bp1, Breakpoint<TId, TPos> 
 // Function operator<(Breakpoint)
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TId, typename TPos>
 inline bool operator<(Breakpoint<TId, TPos> const & bp1, Breakpoint<TId, TPos> const & bp2)
 {
@@ -743,7 +712,6 @@ inline bool operator<(Breakpoint<TId, TPos> const & bp1, Breakpoint<TId, TPos> c
     return bp1.endSeqPos < bp2.endSeqPos;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSequence, typename TId, typename TStream>
 // std::ostream & operator<<(std::ostream & out, Breakpoint<TSequence, TId> const & value)
 TStream & operator<<(TStream & out, Breakpoint<TSequence, TId> const & value)
@@ -793,7 +761,6 @@ TStream & operator<<(TStream & out, Breakpoint<TSequence, TId> const & value)
     return out;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSequence, typename TId, typename TStream>
 TStream & operator<<(TStream & out, StellarMatch<TSequence, TId> & match)
 {
@@ -823,14 +790,12 @@ TStream & operator<<(TStream & out, StellarMatch<TSequence, TId> & match)
 // Function insertBestChain
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TMSplazerChain, typename TMatchAlloc>
 void insertBestChain(TMSplazerChain & mspChain, TMatchAlloc const & chain)
 {
     appendValue(mspChain.bestChains, chain);
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TMSplazerChain, typename TMatchAlloc>
 void insertBestChain(TMSplazerChain & mspChain, TMatchAlloc & chain)
 {

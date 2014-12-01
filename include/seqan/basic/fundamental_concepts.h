@@ -99,8 +99,6 @@ SEQAN_CONCEPT(UnsignedIntegerConcept, (T));
  * @see DestructibleConcept
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 SEQAN_CONCEPT(DefaultConstructible,(T))
 {
     SEQAN_CONCEPT_USAGE(DefaultConstructible) 
@@ -129,8 +127,6 @@ SEQAN_CONCEPT(DefaultConstructible,(T))
  *
  * @see DefaultConstructibleConcept
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT(Destructible, (T))
 {
@@ -167,8 +163,6 @@ SEQAN_CONCEPT(Destructible, (T))
  *
  * @signature T & T::operator=(T const & other);
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Test availability of assign() function?
 
@@ -285,8 +279,6 @@ struct Is<Convertible<T, S const> > :
  * @see DefaultConstructibleConcept
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 SEQAN_CONCEPT(CopyConstructible,(T))
 {
     SEQAN_CONCEPT_USAGE(CopyConstructible) 
@@ -336,7 +328,6 @@ private:
  * @see ConceptChecking#SEQAN_CONCEPT_USAGE
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <class T>
 void requireBooleanExpr(const T& t) 
 {
@@ -406,8 +397,6 @@ void requireBooleanExpr(const T& t)
  * @see EqualityComparableConcept::operator==
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 SEQAN_CONCEPT(EqualityComparable,(T))
 {
     SEQAN_CONCEPT_USAGE(EqualityComparable) 
@@ -453,8 +442,6 @@ private:
  *
  * @signature bool T::operator<(T const & other) const;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 SEQAN_CONCEPT(LessThanComparable,(T))
 {
@@ -526,8 +513,6 @@ private:
  *
  * This operator can be implemented as a member or a global function.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // This is equiaent to SGI STL's LessThanComparable.
 SEQAN_CONCEPT(Comparable,(T))
@@ -658,9 +643,6 @@ struct Is< NumberConcept<T const> > : Is< NumberConcept<typename RemoveConst<T>:
 template <typename T>
 struct Is< FundamentalConcept<T const> > : Is< FundamentalConcept<typename RemoveConst<T>::Type> > {};
 
-/*_DDDOC_PLACEHOLDER*/
-
-/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @mfn IsInteger
@@ -678,8 +660,6 @@ struct Is< FundamentalConcept<T const> > : Is< FundamentalConcept<typename Remov
  * @see IsIntegral
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @mfn IsIntegral
  * @brief Tests for a type to be of integral vaule.
@@ -693,8 +673,6 @@ struct Is< FundamentalConcept<T const> > : Is< FundamentalConcept<typename Remov
  * 
  * @deprecated Please use <tt>Is&lt;IntegerConcept&lt;T&gt; &gt;::Type</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // deprecation wrappers
 template <typename T>
@@ -799,8 +777,6 @@ struct IsIntegral : IsInteger<T> {};
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 SEQAN_CONCEPT(IntegerConcept, (TValue)) :
     Comparable<TValue>
 {
@@ -897,8 +873,6 @@ SEQAN_CONCEPT(IntegerConcept, (TValue)) :
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // an integer that must have a sign
 SEQAN_CONCEPT(SignedIntegerConcept, (TValue)) :
     IntegerConcept<TValue>
@@ -960,8 +934,6 @@ SEQAN_CONCEPT(SignedIntegerConcept, (TValue)) :
  * std::cout << static_cast<T>(0) < static_cast<T>(-1) << std::endl;  // 1
  * @endcode
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 
 // an integer that mustn't have a sign

@@ -56,8 +56,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The skiplist takes in average an oberhead of only two pointers per value stored in the map.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 //////////////////////////////////////////////////////////////////////////////
 // Skiplist
 //////////////////////////////////////////////////////////////////////////////
@@ -549,8 +547,6 @@ _skiplistFind(Map<TValue, Skiplist<TSpec> > & me,
  * @see Map#cargo
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TSpec, typename TFind>
 inline typename Iterator< Map<TValue, Skiplist<TSpec> > >::Type
 find(Map<TValue, Skiplist<TSpec> > & me,
@@ -627,8 +623,6 @@ _skiplistInsertElement(Map<TValue, Skiplist<TSpec> > & me,
  * @note Do not change the key of a value in the map.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TSpec, typename TKey2>
 inline typename Value< Map<TValue, Skiplist<TSpec> > >::Type &
 value(Map<TValue, Skiplist<TSpec> > & me,
@@ -672,8 +666,6 @@ value(Map<TValue, Skiplist<TSpec> > & me,
  *                 cargo of a new value that is inserted to <tt>map</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TSpec, typename TKey2>
 inline typename Cargo< Map<TValue, Skiplist<TSpec> > >::Type &
 cargo(Map<TValue, Skiplist<TSpec> > & me,
@@ -704,8 +696,6 @@ cargo(Map<TValue, Skiplist<TSpec> > & me,
  * 
  * Use Map#add instead to insert multiple values of the same key.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TValue2>
 inline void
@@ -740,8 +730,6 @@ insert(Map<TValue, Skiplist<TSpec> > & me,
  * 
  * If <tt>key</tt> and <tt>cargo</tt> are specified, a new value of that key and value is added.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TValue2>
 inline void
@@ -807,8 +795,6 @@ _skiplistUnlinkElement(Map<TValue, Skiplist<TSpec> > & me,
  * Use @link Map#eraseAll @endlink to remove all values of the given key in a multi map.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TSpec, typename TMap2>
 inline void
 erase(Map<TValue, Skiplist<TSpec> > & me,
@@ -845,8 +831,6 @@ erase(Map<TValue, Skiplist<TSpec> > & me,
  * 
  * Removes all values in <tt>map</tt> of the given key, if there is any.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TToRemove>
 inline void
@@ -988,8 +972,6 @@ mapValue(Map<TValue, Skiplist<TSpec> > & me,
  * 
  * @return bool <tt>true</tt>, if there is a value in <tt>map</tt> of that key, <tt>false</tt> otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TKey2>
 inline bool

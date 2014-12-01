@@ -66,8 +66,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * <tt>i</tt> begins with 0 and for <tt>omitLast=true</tt> <tt>i</tt> begins with <tt>tupleLen-1</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     //////////////////////////////////////////////////////////////////////////////
     // pipe to enumerate the hamming 1-environment
     template < typename TInput, unsigned STEP_SIZE >

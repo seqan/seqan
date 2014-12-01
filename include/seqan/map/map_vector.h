@@ -55,7 +55,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * get.  So do not use this map for large key types.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 //////////////////////////////////////////////////////////////////////////////
 // 
 //	VectorSet

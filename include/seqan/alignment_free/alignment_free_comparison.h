@@ -95,8 +95,6 @@ namespace seqan {
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TStringSet, typename TValue, typename TComparisonMethod>
 void alignmentFreeComparison(Matrix<TValue, 2> & scoreMatrix, TStringSet const & sequenceSet, TComparisonMethod const & comparisonMethod)
 {

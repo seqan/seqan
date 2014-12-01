@@ -61,7 +61,6 @@ using namespace seqan;
 
 typedef String<Dna5Q> TAlphabet;
 
-/*_DDDOC_PLACEHOLDER*/
 struct DemultiplexStats
 {
 	String<unsigned> groups;
@@ -72,7 +71,6 @@ struct DemultiplexStats
 // Functions
 // ============================================================================
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSeqs, typename TIds, typename TBarcodes> //This version works with paired-end data
 bool check(TSeqs& seqs,  TIds& ids, TSeqs& seqsRev, TIds& idsRev, TBarcodes& barcodes, GeneralStats& stats)
 {
@@ -143,7 +141,6 @@ bool check(TSeqs& seqs, TIds& ids,TBarcodes& barcodes, GeneralStats& stats)
 	return true;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSeqs>
 void getPrefix(TSeqs& prefices, TSeqs& seqs, unsigned len)
 {
@@ -156,7 +153,6 @@ void getPrefix(TSeqs& prefices, TSeqs& seqs, unsigned len)
 	}
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TBarcode>
 void buildVariations(StringSet<Dna5String>& variations, const TBarcode& barcode)
 {
@@ -179,7 +175,6 @@ void buildVariations(StringSet<Dna5String>& variations, const TBarcode& barcode)
 	}
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TBarcodes>
 void buildAllVariations(TBarcodes& barcodes)
 {
@@ -197,7 +192,6 @@ void buildAllVariations(TBarcodes& barcodes)
 	barcodes = newbarcodes;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TPrefix, typename TFinder>
 int findExactIndex(const TPrefix& prefix, TFinder& finder)
 {
@@ -209,7 +203,6 @@ int findExactIndex(const TPrefix& prefix, TFinder& finder)
 	else return -1;								//return -1 if no hit occured
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TPrefices, typename TFinder, typename TStats>
 void findAllExactIndex(String<int>& matches, const TPrefices& prefices, const TFinder& finder, TStats& stats)
 {
@@ -242,7 +235,6 @@ void findAllExactIndex(String<int>& matches, const TPrefices& prefices, const TF
     }
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSeqs>
 void clipBarcodes(TSeqs& seqs, const String<int>& matches, unsigned len)
 {
@@ -267,7 +259,6 @@ void clipBarcodes(TSeqs& seqs, int len)
     }
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TMatches, typename TBarcodes>
 void group(StringSet<String<int> >& sortedSequences, const TMatches& matches, const TBarcodes& barcodes, bool exclude)
 {
@@ -297,7 +288,6 @@ void group(StringSet<String<int> >& sortedSequences, const TMatches& matches,
     }
 }
 
-/*_DDDOC_PLACEHOLDER*/
 //Using exact search and multiplex barcodes.
 template<typename TBarcodes, typename TMultiplex ,typename TFinder>
 void doAll(StringSet<String<int> >& sortedSequences, TMultiplex& multiplex, TBarcodes& barcodes,
@@ -355,7 +345,6 @@ void doAll(StringSet<String<int> >& sortedSequences, TSeqs& seqs, TBarcodes& bar
     group(sortedSequences, matches, barcodes, approximate, exclude);
 }
 
-/*_DDDOC_PLACEHOLDER*/
 //Version for paired-end data
 template<typename TSeqs, typename TIds>
 void buildSets(TSeqs& seqs, TSeqs& seqsRev, TIds& ids, TIds& idsRev, const StringSet<String<int> >& groups,

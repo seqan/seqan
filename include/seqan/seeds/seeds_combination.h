@@ -75,7 +75,6 @@ namespace seqan {
  */
 
 // TODO(holtgrew): Stream-line tags to Merge, ChaosChain, SimpleChain?
-/*_DDDOC_PLACEHOLDER*/
 struct Merge_;
 typedef Tag<Merge_> Merge;
 

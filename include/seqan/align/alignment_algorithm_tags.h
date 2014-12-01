@@ -68,8 +68,6 @@ namespace seqan {
  * @signature typedef Tag<Gotoh_> Gotoh;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct Gotoh_;
 typedef Tag<Gotoh_> Gotoh;
 
@@ -129,8 +127,6 @@ typedef Tag<MyersHirschberg_> MyersHirschberg;
  * @defgroup PairwiseLocalAlignmentAlgorithms Pairwise Local Alignment Algorithms
  * @brief Tags for selecting algorithms.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @tag PairwiseLocalAlignmentAlgorithms#SmithWaterman

@@ -68,8 +68,6 @@ namespace seqan {
  * @tparam TBufferSpec  Specialization type for the buffer string.  Default: <tt>Alloc&lt;&gt;</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename THostSpec, typename TJournalSpec = SortedArray, typename TBufferSpec = Alloc<void> >
 struct Journaled {};
 
@@ -195,8 +193,6 @@ struct StringSpec<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec>
  * @return Type The host type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 struct Host<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >
 {
@@ -224,7 +220,6 @@ struct Host<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > con
  * @return Type The insertion buffer type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct InsertionBuffer;
 
@@ -348,7 +343,6 @@ struct Value<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > co
  * @return Type the journal type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct JournalType;
 
@@ -531,7 +525,6 @@ set(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & target,
  * @param[in]     str The string to set as the host.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TSequence2>
 inline
 void
@@ -558,7 +551,6 @@ setHost(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journ
  * @return THost Reference to the host of <tt>js</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 inline
 typename Host<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >::Type &
@@ -590,7 +582,6 @@ host(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & jo
  * @param[in,out] js The JournaledString to clear.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 // TODO(holtgrew): Behaviour is to clear the journal, not the string!
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 inline void
@@ -629,7 +620,6 @@ reset(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journal
  * @param[in,out] js The JournaledString to flatten.
  */ 
 
-/*_DDDOC_PLACEHOLDER*/
 // TODO(holtgrew): What about non-destructive version that creates a new copy and sets holder to it?
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 inline void
@@ -913,8 +903,6 @@ getValue(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const 
  * @return TPos Position in the host.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Note that if pos is in a gap, we return the position of the entry
 // after the gap in the host.
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TPos>
@@ -943,8 +931,6 @@ virtualToHostPosition(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferS
  *
  * @return TPos The virtual view position.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TPos>
 inline
@@ -1108,8 +1094,6 @@ getObjectId(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > con
  *
  * @return bool Indicates whether the string has been modified.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Is the non-const version necessary?
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>

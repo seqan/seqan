@@ -77,29 +77,21 @@ typedef Tag<FastaAlign_> FastaAlign;
  * @signature typedef Tag<NewickFormat_> const NewickFormat;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct TCoffeeLib_;
 typedef Tag<TCoffeeLib_> const TCoffeeLib;
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct BlastLib_;
 typedef Tag<BlastLib_> const BlastLib;
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct MummerLib_;
 typedef Tag<MummerLib_> const MummerLib;
 
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct NewickFormat_;
 typedef Tag<NewickFormat_> const NewickFormat;

@@ -126,8 +126,6 @@ struct DefaultSeedConfig
  * @include demos/seeds/seeds_chaining.cpp
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec, typename TConfig = DefaultSeedConfig>
 class Seed;
 
@@ -149,8 +147,6 @@ class Seed;
  *
  * @return Type The position type of <tt>TSeed</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig>
 struct Position<Seed<TSpec, TConfig> >
@@ -177,8 +173,6 @@ struct Position<Seed<TSpec, TConfig> const> : Position<Seed<TSpec, TConfig> >
  * @return Type The size type of <tt>TSeed</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec, typename TConfig>
 struct Size<Seed<TSpec, TConfig> >
 {
@@ -203,8 +197,6 @@ struct Size<Seed<TSpec, TConfig> const> : Size<Seed<TSpec, TConfig> >
  *
  * @return Type The diagonal type of <tt>TSeed</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct Diagonal;
@@ -234,8 +226,6 @@ struct Diagonal<Seed<TSpec, TConfig> const>
  * @return Type The score type of <tt>TSeed</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 struct SeedScore;
 
@@ -255,8 +245,6 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
 
 // TODO(holtgrew): COULD introduce {get,set}{Begin,End}(dim, value), but probably only necessary to make consistent with multi dimensional chaining interface.
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ---------------------------------------------------------------------------
 // Function beginPositionH()
 // ---------------------------------------------------------------------------
@@ -271,8 +259,6 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
  *
  * @return TPosition The horizontal begin position of type @link Seed#Position @endlink.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // ---------------------------------------------------------------------------
 // Function endPositionH()
@@ -290,8 +276,6 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
  */
 
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ---------------------------------------------------------------------------
 // Function setBeginPositionH()
 // ---------------------------------------------------------------------------
@@ -306,8 +290,6 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
  * @param[in]     pos  The value to set for the horizontal begin position.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ---------------------------------------------------------------------------
 // Function setEndPositionH()
 // ---------------------------------------------------------------------------
@@ -321,8 +303,6 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
  * @param[in,out] seed The Seed to set the horizontal end position for.
  * @param[in]     pos  The value to set for the horizontal end position.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // ---------------------------------------------------------------------------
 // Function beginPositionV()
@@ -339,8 +319,6 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
  * @return TPosition The vertical begin position of type @link Seed#Position @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ---------------------------------------------------------------------------
 // Function endPositionV()
 // ---------------------------------------------------------------------------
@@ -356,8 +334,6 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
  * @return TPosition The vertical end position of type @link Seed#Position @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ---------------------------------------------------------------------------
 // Function setBeginPositionV()
 // ---------------------------------------------------------------------------
@@ -371,8 +347,6 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
  * @param[in,out] seed The Seed to set the vertical begin position for.
  * @param[in]     pos  The value to set for the vertical begin position.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // ---------------------------------------------------------------------------
 // Function setEndPositionV()
@@ -388,8 +362,6 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
  * @param[in]     pos  The value to set for the vertical end position.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ---------------------------------------------------------------------------
 // Function lowerDiagonal()
 // ---------------------------------------------------------------------------
@@ -404,8 +376,6 @@ struct SeedScore<Seed<TSpec, TConfig> const> : SeedScore<Seed<TSpec, TConfig> >
  *
  * @return TDiagonal The lower diagonal value of type @link Seed#Diagonal @endlink.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig>
 inline typename Diagonal<Seed<TSpec, TConfig> >::Type
@@ -427,8 +397,6 @@ lowerDiagonal(Seed<TSpec, TConfig> const & seed)
  * @param[in,out] seed The Seed to set the diagonal value for.
  * @param[in]     diag The value to set for the diagonal.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig, typename TDiagonal>
 inline void 
@@ -452,8 +420,6 @@ setLowerDiagonal(Seed<TSpec, TConfig> & seed, TDiagonal newDiag)
  * @return TDiagonal The upper diagonal value of type @link Seed#Diagonal @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec, typename TConfig>
 inline typename Diagonal<Seed<TSpec, TConfig> >::Type
 upperDiagonal(Seed<TSpec, TConfig> const & seed)
@@ -474,8 +440,6 @@ upperDiagonal(Seed<TSpec, TConfig> const & seed)
  * @param[in,out] seed The Seed to set the diagonal value for.
  * @param[in]     diag The value to set for the diagonal.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig, typename TPosition>
 inline void 
@@ -500,8 +464,6 @@ setUpperDiagonal(Seed<TSpec, TConfig> & seed,
  *
  * @return TSize The size of the type @link Seed#Size @endlink.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig>
 inline typename Size<Seed<TSpec, TConfig> >::Type
@@ -535,8 +497,6 @@ seedSize(Seed<TSpec, TConfig> const & seed)
  */
 
 // TODO(holtgrew): Rename to getBeginDiagonal.
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec, typename TConfig>
 inline typename Diagonal<Seed<TSpec, TConfig> >::Type
 beginDiagonal(Seed<TSpec, TConfig> const & seed)
@@ -558,8 +518,6 @@ beginDiagonal(Seed<TSpec, TConfig> const & seed)
  *
  * @return TDiagonal The diagonal of the Seed's end position of type @link Seed#Diagonal @endlink.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TConfig>
 inline typename Diagonal<Seed<TSpec, TConfig> >::Type
@@ -583,8 +541,6 @@ endDiagonal(Seed<TSpec, TConfig> const & seed)
  * @return TSeedScore The score value of the seed of type @link Seed#SeedScore @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSeed>
 inline typename SeedScore<TSeed>::Type
 score(TSeed const & seed)
@@ -606,8 +562,6 @@ score(TSeed const & seed)
  * @param[in]     scoreVal The score value to set.  The type can queried from the type of <tt>seed</tt> using
  *                         @link Seed#SeedScore @endlink.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSeed, typename TScore>
 inline void

@@ -51,7 +51,6 @@ enum EStrategy
 	DefaultStrategy = 0
 };
 
-/*_DDDOC_PLACEHOLDER*/
 template<
 	typename Elem, 
 	typename Tr = std::char_traits<Elem>,
@@ -157,7 +156,6 @@ public:
     // array of worker threads
     Thread<CompressionThread>   *threads;
 
-/*_DDDOC_PLACEHOLDER*/
     basic_bgzf_streambuf(ostream_reference ostream_,
                          size_t numThreads = 16,
                          size_t jobsPerThread = 8) :
@@ -249,7 +247,6 @@ public:
         }
     }
 
-/*_DDDOC_PLACEHOLDER*/
 	std::streamsize flush(bool flushEmptyBuffer = false)
     {
         int w = static_cast<int>(this->pptr() - this->pbase());
@@ -292,7 +289,6 @@ public:
 	ostream_reference get_ostream() const	{ return serializer.worker.ostream; };
 };
 
-/*_DDDOC_PLACEHOLDER*/
 template<
 	typename Elem, 
 	typename Tr = std::char_traits<Elem>,
@@ -508,7 +504,6 @@ public:
     Thread<DecompressionThread> *threads;
     TBuffer                     putbackBuffer;
 
-/*_DDDOC_PLACEHOLDER*/
     basic_unbgzf_streambuf(istream_reference istream_,
                            size_t numThreads = 16,
                            size_t jobsPerThread = 8) :
@@ -758,7 +753,6 @@ public:
         ByteAT
         > bgzf_streambuf_type;
 
-/*_DDDOC_PLACEHOLDER*/
 	basic_bgzf_ostreambase(ostream_reference ostream_)
 		: m_buf(ostream_)
 	{
@@ -864,7 +858,6 @@ public:
 	typedef std::basic_ostream<Elem,Tr> ostream_type;
     typedef ostream_type& ostream_reference;
 
-/*_DDDOC_PLACEHOLDER*/
 	basic_bgzf_ostream(ostream_reference ostream_)
 	: 
 		bgzf_ostreambase_type(ostream_),
@@ -925,7 +918,6 @@ public:
     typedef istream_type& istream_reference;
 	typedef char byte_type;
 
-/*_DDDOC_PLACEHOLDER*/
 	basic_bgzf_istream(istream_reference istream_)
 	  : 
 		bgzf_istreambase_type(istream_),

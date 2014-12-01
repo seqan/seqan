@@ -79,8 +79,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 ///.Class.Pattern.param.TSpec.type:Spec.AhoCorasick
 
 struct AhoCorasick_;

@@ -61,8 +61,6 @@ typedef Tag<Normal_> Normal;
  *            class Pdf<Normal>;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <>
 class Pdf<Normal>
 {
@@ -80,7 +78,6 @@ public:
  * @param[in] sigma Standard deviation of the normal distribution, double.
  */
 
-/*_DDDOC_PLACEHOLDER*/
     Pdf(double mu, double sigma)
             : _mu(mu), _sigma(sigma)
     {

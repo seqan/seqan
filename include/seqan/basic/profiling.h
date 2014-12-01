@@ -193,8 +193,6 @@ namespace seqan
  * @see sysTime
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 
 // HINT: The unit of all time functions is second.
     inline _proFloat cpuTime() {
@@ -242,8 +240,6 @@ namespace seqan
  *
  * @see cpuTime
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
     #ifdef PLATFORM_WINDOWS
 //        inline _proFloat sysTime() { return GetTickCount() * 1e-3; }

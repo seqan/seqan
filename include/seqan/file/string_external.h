@@ -149,9 +149,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * swapped out before to free a page frame.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
-/*_DDDOC_PLACEHOLDER*/
     // standard external string
     // size is uint32
     template < typename TFile_ = File<>,				// default file type
@@ -165,7 +162,6 @@ namespace SEQAN_NAMESPACE_MAIN
         enum { FRAMES = FRAMES_ };
     };
 
-/*_DDDOC_PLACEHOLDER*/
     // the same as ExternalConfig
     // but size type is size type of TFile_ (i.e. uint64)
     //
@@ -183,7 +179,6 @@ namespace SEQAN_NAMESPACE_MAIN
         enum { FRAMES = FRAMES_ };
     };
 
-/*_DDDOC_PLACEHOLDER*/
     // custom size type
     template < typename TSize_,
 		       typename TFile_ = File<>,				// default file type
@@ -1166,7 +1161,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * openTemp afterwards to reach the same behaviour.
  */
 
-/*_DDDOC_PLACEHOLDER*/
         explicit
         String(TFile &_file) :
             file(NULL), _temporary(true), _ownFile(false), data_size(0), lastDiskPage(0), lastDiskPageSize(0)
@@ -1684,7 +1678,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in,out] str The ExternalString to flush.
  */
 
-/*_DDDOC_PLACEHOLDER*/
     template < typename TValue, typename TConfig >
     inline void 
 	flush(String<TValue, External<TConfig> > &me) 
@@ -1794,8 +1787,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return bool <tt>true</tt> if the operation succeeded and <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 	template < typename TValue, typename TConfig >
     inline bool 
     open(String<TValue, External<TConfig> > &me, const char *fileName, int openMode) 
@@ -1868,7 +1859,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return bool <tt>true</tt> if opening succeeded, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 	template < typename TValue, typename TConfig >
     inline bool 
     openTemp(String<TValue, External<TConfig> > &me) 
@@ -1921,7 +1911,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return bool <tt>true</tt> if the closing succeeded, <tt>false</tt> otherwise.
  */
     
-/*_DDDOC_PLACEHOLDER*/
 	template < typename TValue, typename TConfig >
     inline bool 
     close(String<TValue, External<TConfig> > &me) 

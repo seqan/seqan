@@ -71,8 +71,6 @@ namespace seqan {
  * A constant instance of <tt>Convert</tt> is (ab)used as tag argument of convertImpl.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TTarget, typename TSource = void>
 struct Convert
 {
@@ -106,8 +104,6 @@ struct Convert
  * 
  * @see convert
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // NOTE(doering): Specialize convertImpl, use convert.
 // NOTE(doering): Conversion of one char into another char happes at another place.
@@ -145,8 +141,6 @@ convertImpl(Convert<TTarget, T> const,
  * 
  * @see convertImpl
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TTarget, typename TSource>
 SEQAN_HOST_DEVICE inline typename Convert<TTarget, TSource>::Type

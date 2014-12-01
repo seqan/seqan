@@ -85,8 +85,6 @@ struct AdaptorIterator;
  * @param[in] iterator  The <tt>Standard</tt> iterator to wrap, defaults to beginning of <tt>container</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TContainer, typename TIterator, typename TSpec>
 class Iter<TContainer, AdaptorIterator<TIterator, TSpec> >
 {
@@ -299,8 +297,6 @@ container(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
  */
 
 // TODO(holtgrew): Also defined in index module, change documentation?
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE void
 setContainer(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
@@ -324,8 +320,6 @@ setContainer(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
  *
  * @return TIter The wrapped iterator.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE TIterator &
@@ -379,8 +373,6 @@ position(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me,
  * @param[in,out] iter The AdaptorIterator to set the position for.
  * @param[in]     pos  The position to set.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TContainer, typename TIterator, typename TSpec, typename TPosition>
 inline SEQAN_HOST_DEVICE void

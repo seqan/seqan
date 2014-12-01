@@ -565,7 +565,6 @@ reAlign(double &profileScore,
 
 // TODO(holtgrew): realignmentMethod should not be optional or moved to the end of the list.
 // TODO(holtgrew): The method should be selected with an enum instead of an int.
-/*_DDDOC_PLACEHOLDER*/
 template<typename TSpec, typename TConfig, typename TId, typename TBandwidth, typename TOptions, typename TModel>
 void
 reAlign(FragmentStore<TSpec, TConfig> & fragStore,

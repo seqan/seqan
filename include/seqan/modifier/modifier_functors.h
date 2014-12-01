@@ -75,8 +75,6 @@ namespace seqan
  * @return TResult The converted value (<tt>TResult</tt>).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename InType, typename Result = InType>
 struct FunctorUpcase : public std::unary_function<InType, Result> 
 {
@@ -111,8 +109,6 @@ struct FunctorUpcase : public std::unary_function<InType, Result>
  * @return TResult The converted value (<tt>TResult</tt>).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename InType, typename Result = InType>
 struct FunctorLowcase : public std::unary_function<InType, Result> 
 {
@@ -146,8 +142,6 @@ struct FunctorLowcase : public std::unary_function<InType, Result>
  *
  * @return TOutType The converted value (<tt>TOutType</tt>).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename InType, typename OutType>
 struct FunctorConvert : public std::unary_function<InType,OutType> 
@@ -220,8 +214,6 @@ signed char const TranslateTableIupacToIupacComplement_<T>::VALUE[16] = {0, 8, 4
  *
  * @return TValue The converted value (<tt>TValue</tt>).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <>
 struct FunctorComplement<char> : public std::unary_function<Dna5,Dna5> 

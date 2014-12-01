@@ -75,8 +75,6 @@ namespace seqan
  * @tparam THost original string.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct ModReverse_;
 typedef Tag<ModReverse_> ModReverse;
 
@@ -519,8 +517,6 @@ end(ModifiedString<THost, ModReverse> & me, Tag<TTagSpec> const)
  * StringSet objects are reverse element-wise, i.e. the entries are reverse-complemented but their order itself
  * remains the same.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline bool

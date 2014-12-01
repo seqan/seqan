@@ -77,8 +77,6 @@ typedef CountingIteratorImpl_<Nothing> PositionIterator;
  * @param[in] position  The position to create the iterator at, defauls to 0.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TContainer>
 class Iter<TContainer, PositionIterator> :
     public Iter<typename Position<TContainer>::Type, CountingIterator>

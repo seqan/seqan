@@ -115,7 +115,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn createSuffixArray
  * @headerfile <seqan/index.h>
@@ -325,7 +324,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn createLcpTable
  * @headerfile <seqan/index.h>
@@ -527,7 +525,6 @@ namespace SEQAN_NAMESPACE_MAIN
 		bwt << creator;
 	}
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn createBWTable
  * @headerfile <seqan/index.h>
@@ -585,7 +582,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	};
 
 //TODO(singer): Make this internal
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn orderOccurrences
  * @headerfile <seqan/index.h>
@@ -616,7 +612,6 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // fibre creators
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Index#indexCreate
  * @headerfile <seqan/index.h>
@@ -723,7 +718,6 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
 //////////////////////////////////////////////////////////////////////////////
 // automatic fibre creation
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Index#indexSupplied
  * @headerfile <seqan/index.h>
@@ -744,7 +738,6 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
 
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Index#indexRequire
  * @headerfile <seqan/index.h>

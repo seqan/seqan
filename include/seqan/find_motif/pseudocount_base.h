@@ -38,8 +38,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TValue, typename TSpec>
 class Pseudocount;
 

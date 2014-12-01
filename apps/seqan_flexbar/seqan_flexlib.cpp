@@ -633,7 +633,6 @@ seqan::ArgumentParser initParser()
 // Class ProcessingParams
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 struct ProcessingParams
 {
     seqan::Dna substitute;
@@ -658,7 +657,6 @@ struct ProcessingParams
         runPost(false) {};
 };
 
-/*_DDDOC_PLACEHOLDER*/
 enum TrimmingMode
 {
     E_WINDOW,
@@ -666,14 +664,12 @@ enum TrimmingMode
     E_TAIL
 };
 
-/*_DDDOC_PLACEHOLDER*/
 enum MatchMode
 {
     E_AUTO,
     E_USER
 };
 
-/*_DDDOC_PLACEHOLDER*/
 struct DemultiplexingParams
 {
     seqan::String<char> barcodeFile;
@@ -696,7 +692,6 @@ struct DemultiplexingParams
         exclude(false)
     {};
 };
-/*_DDDOC_PLACEHOLDER*/
 struct AdapterTrimmingParams
 {
     bool paired;
@@ -710,7 +705,6 @@ struct AdapterTrimmingParams
     AdapterTrimmingParams() : paired(false), noAdapter(false), run(false), mmode(E_AUTO) {};
 };
 
-/*_DDDOC_PLACEHOLDER*/
 struct QualityTrimmingParams
 {
     TrimmingMode trim_mode;
@@ -721,7 +715,6 @@ struct QualityTrimmingParams
        QualityTrimmingParams() : trim_mode(E_WINDOW), cutoff(-1), min_length(1), run(false) {};
 };
 
-/*_DDDOC_PLACEHOLDER*/
 struct ProgramParams
 {
     int fileCount;
@@ -731,8 +724,6 @@ struct ProgramParams
 
     ProgramParams() : fileCount(0), readCount(0), processTime(0), ioTime(0) {};
 };
-
-/*_DDDOC_PLACEHOLDER*/
 
 //TODO(singer): THIS NEEDS TO BE REDONE/DELETED
 class OutputStreams
@@ -933,7 +924,6 @@ public:
 // Functions
 // ============================================================================
 
-/*_DDDOC_PLACEHOLDER*/
 int loadBarcodes(char const * path, DemultiplexingParams& params)
 {
     seqan::SeqFileIn bcFile;
@@ -957,14 +947,12 @@ int loadBarcodes(char const * path, DemultiplexingParams& params)
     return 0;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 inline void loadMultiplex(seqan::SeqFileIn& multiplexFile, DemultiplexingParams& params, unsigned records)
 {
     seqan::StringSet<seqan::String<char> > ids;
     readRecords(ids, params.multiplex, multiplexFile, records);
 }
 
-/*_DDDOC_PLACEHOLDER*/
 int openStream(seqan::CharString const & file, seqan::SeqFileIn & inFile)
 {
     if (!open(inFile, seqan::toCString(file)))
@@ -975,7 +963,6 @@ int openStream(seqan::CharString const & file, seqan::SeqFileIn & inFile)
     return 0;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 int loadDemultiplexingParams(seqan::ArgumentParser const& parser, DemultiplexingParams& params)
 {
     // APPROXIMATE/EXACT MATCHING---------------------    
@@ -1005,7 +992,6 @@ int loadDemultiplexingParams(seqan::ArgumentParser const& parser, Demultiplexing
     return 0;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmingParams & params)
 {
     // PAIRED-END ------------------------------
@@ -1067,7 +1053,6 @@ int loadAdapterTrimmingParams(seqan::ArgumentParser const& parser, AdapterTrimmi
     return 0;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 int loadQualityTrimmingParams(seqan::ArgumentParser const & parser, QualityTrimmingParams & params)
 {
     // TRIMMING METHOD ----------------------------
@@ -1097,7 +1082,6 @@ int loadQualityTrimmingParams(seqan::ArgumentParser const & parser, QualityTrimm
     return 0;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 int loadProgramParams(seqan::ArgumentParser const & parser, ProgramParams & params)
 {
     params.fileCount = getArgumentValueCount(parser, 0);
@@ -1124,7 +1108,6 @@ int loadProgramParams(seqan::ArgumentParser const & parser, ProgramParams & para
     return 0;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 int checkParams(ProgramParams const & programParams, ProcessingParams const & processingParams,
     DemultiplexingParams const & demultiplexingParams, AdapterTrimmingParams const & adapterTrimmingParams,
     QualityTrimmingParams & qualityTrimmingParams)
@@ -1159,7 +1142,6 @@ int checkParams(ProgramParams const & programParams, ProcessingParams const & pr
 // PROGRAM STAGES ---------------------
 
 //Preprocessing Stage
-/*_DDDOC_PLACEHOLDER*/
 template<typename TSeqs, typename TIds>
 void preprocessingStage(TSeqs& seqs, TIds& ids, DemultiplexingParams& demultiplexingParams,
     ProcessingParams& processingParams, seqan::ArgumentParser const & parser, GeneralStats& generalStats)
@@ -1264,7 +1246,6 @@ void preprocessingStage(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev,
     }
 }
 // DEMULTIPLEXING
-/*_DDDOC_PLACEHOLDER*/
 //Version for single-end data
 template <typename TSeqsVec, typename TIdsVec, typename TFinder,typename TMap>
 int demultiplexingStage(DemultiplexingParams& params, TSeqsVec& seqs, TIdsVec& ids, TFinder& esaFinder, 
@@ -1389,7 +1370,6 @@ int demultiplexingStage(DemultiplexingParams& params, TSeqsVec& seqs, TSeqsVec& 
 }
 
 // ADAPTER TRIMMING
-/*_DDDOC_PLACEHOLDER*/
 //Version for single-end data
 template <typename TSeqs, typename TIds>
 void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet, TIds& idSet, bool tagOpt)
@@ -1459,7 +1439,6 @@ void adapterTrimmingStage(AdapterTrimmingParams& params, TSeqs& seqSet1, TIds& i
 }
 
 // QUALITY TRIMMING
-/*_DDDOC_PLACEHOLDER*/
 //Version for single-ende data
 template <typename TIds, typename TSeqs>
 void qualityTrimmingStage(QualityTrimmingParams& params, TIds& idSet, TSeqs& seqSet, bool tagOpt)
@@ -1589,7 +1568,6 @@ void postprocessingStage(TSeqSet& seqSet, TIdSet& idSet, TSeqSet& seqSet2, TIdSe
 }
 
 // END PROGRAM STAGES ---------------------
-/*_DDDOC_PLACEHOLDER*/
 void printStatistics(ProgramParams& programParams, GeneralStats& generalStats, DemultiplexingParams& demultiplexParams,
                 AdapterTrimmingParams& adapterParams, QualityTrimmingParams& qualityParams, bool timing)
 {

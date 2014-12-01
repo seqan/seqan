@@ -88,8 +88,6 @@ public:
 // Class LocalAlignmentFinder
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TScoreValue = int>
 class LocalAlignmentFinder
 {

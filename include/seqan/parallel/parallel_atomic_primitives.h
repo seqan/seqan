@@ -232,8 +232,6 @@ struct Atomic
 
 // TODO(holtgrew): What about correct alignment?!
 
-/*_DDDOC_PLACEHOLDER*/
-
 #ifndef SEQAN_CACHE_LINE_SIZE
 #define SEQAN_CACHE_LINE_SIZE 128
 #endif

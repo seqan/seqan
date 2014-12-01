@@ -60,7 +60,6 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef BucketMap<THashValue>			Type;
 	};
 	
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class OpenAddressingQGramIndex
  * @extends IndexQGram

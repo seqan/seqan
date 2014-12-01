@@ -71,8 +71,6 @@ template <typename TValue, typename TSpec> struct Holder;
  * @brief Memory for storing container content.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): ANY use/difference?
 
 struct AllocateUnspecified_;
@@ -107,8 +105,6 @@ typedef Tag<AllocateStorage_> TagAllocateStorage;
  *       @link Allocator#clear @endlink for pooled memory blocks.</li>
  * </ol>
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec>
 struct Allocator;
@@ -169,8 +165,6 @@ struct Spec<Allocator<TSpec> >
  * 
  * All allocated memory blocks should be deallocated by the corresponding function @link Allocator#deallocate @endlink.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TValue, typename TSize>
 inline void
@@ -273,8 +267,6 @@ allocate(T &,
  * <tt>delete</tt> and <tt>delete []</tt> operators which are part of the C++ standard (defined in <tt>&lt;new&gt;</tt>)
  * can also be used to destruct objects at a given memory address.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TValue, typename TSize>
 inline void 

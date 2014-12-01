@@ -63,7 +63,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename T>
 struct EdgeDescriptor;
 
@@ -80,7 +79,6 @@ struct EdgeDescriptor;
  * @return Type The resulting cargo type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename T>
 struct Cargo;
 
@@ -104,7 +102,6 @@ struct Cargo;
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename T>
 struct EdgeType;
 
@@ -130,7 +127,6 @@ struct EdgeType;
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename T>
 struct Alphabet;
 
@@ -151,7 +147,6 @@ struct Alphabet;
  * counts edge ids and otherwise it manages a list of free and used ids.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename T>
 struct EdgeIdHandler;
 
@@ -169,7 +164,6 @@ struct EdgeIdHandler;
  * @return Type The IdManager type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename T>
 struct VertexIdHandler;
 
@@ -230,37 +224,29 @@ typedef Tag<TreeTag_> const TreeTag;
  * @signature typedef Tag<DfsPreorder_> const DfsPreorder;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 struct VertexIterator_;
 typedef Tag<VertexIterator_> const VertexIterator;
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 struct EdgeIterator_;
 typedef Tag<EdgeIterator_> const EdgeIterator;
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 struct OutEdgeIterator_;
 typedef Tag<OutEdgeIterator_> const OutEdgeIterator;
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 struct AdjacencyIterator_;
 typedef Tag<AdjacencyIterator_> const AdjacencyIterator;
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 struct BfsIterator_;
 typedef Tag<BfsIterator_> const BfsIterator;
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 struct DfsPreorder_;
 typedef Tag<DfsPreorder_> const DfsPreorder;
 

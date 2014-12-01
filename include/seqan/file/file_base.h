@@ -76,8 +76,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     template < typename TSpec >
     inline bool open(File<TSpec> &me, const char *fileName, int openMode) 
 	{
@@ -110,8 +108,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return bool <tt>true</tt> on success <tt>false</tt> on failure.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     template < typename TSpec >
     inline bool openTemp(File<TSpec> &me) 
 	{
@@ -142,8 +138,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
     template < typename TSpec >
     inline bool close(File<TSpec> & me) 
@@ -180,8 +174,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * The records are read from the position pointed to by the current file pointer (see @link File#seek @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 	template < typename TSpec, typename TValue, typename TSize >
     inline bool read(File<TSpec> & me, TValue *memPtr, TSize const count) 
 	{
@@ -208,8 +200,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * The records are written at the position pointed to by th ecurrent file pointer (see @link File#seek @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 	template < typename TSpec, typename TValue, typename TSize >
     inline bool write(File<TSpec> & me, TValue const *memPtr, TSize const count) 
 	{
@@ -233,8 +223,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return bool <tt>true</tt> on success and <tt>false</tt> on failure.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     template < typename TFile, typename TValue, typename TSize, typename TPos >
     inline bool readAt(TFile & me, TValue *memPtr, TSize const count, TPos const fileOfs) 
 	{
@@ -257,8 +245,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
     template < typename TFile, typename TValue, typename TSize, typename TPos >
     inline bool writeAt(TFile & me, TValue const *memPtr, TSize const count, TPos const fileOfs) 
@@ -288,8 +274,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  *
  * @return TPosition The new file position measured in bytes from the beginning.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 	template < typename TSpec, typename TPos >
     inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const fileOfs, int origin) 
@@ -323,8 +307,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return TPosition The current position in the file.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     template < typename TSpec >
     inline typename Position< File<TSpec> >::Type tell(File<TSpec> &me) 
 	{
@@ -340,8 +322,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  *
  * @param[in,out] file The file to reset the file pointer of.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
     template < typename File >
     inline void rewind(File &me) 
@@ -360,8 +340,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  *
  * @return TSize The file size measured in bytes.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
     template < typename TSpec >
     inline typename Size<File<TSpec> >::Type length(File<TSpec> &me) 
@@ -383,8 +361,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @param[in]     newLength The file size in bytes to resize to in bytes.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     template < typename TSpec, typename TSize >
     inline void resize(File<TSpec> &me, TSize new_length) 
 	{
@@ -405,8 +381,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
     template < typename TSpec >
     inline bool setEof(File<TSpec> &/*me*/) 
@@ -535,8 +509,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     template < typename File, typename TValue, typename TSize, typename TPos,
                typename AsyncRequest >
     inline bool 
@@ -562,8 +534,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return bool <tt>true</tt> on succcess, <tt>false</tt> on failure.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     template < typename File, typename TValue, typename TSize, typename TPos,
                typename TAsyncRequest >
     inline bool
@@ -586,8 +556,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  *
  * @param[in,out] file The File object to flush.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
     template < typename TSpec >
     inline void flush(File<TSpec> &) 
@@ -612,8 +580,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * <tt>waitfor</tt> block sand suspends the calling thread process until <tt>request</tt> is completed or after
  * <tt>timeout</tt> milliseconds.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
     inline bool waitFor(AsyncDummyRequest &) 
 	{ 
@@ -647,8 +613,6 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
     template < typename TSpec, typename AsyncRequest >
     inline bool cancel(File<TSpec> &, AsyncRequest &) 

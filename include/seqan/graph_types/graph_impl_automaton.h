@@ -76,7 +76,6 @@ public:
  *                   NB: if edges to not store ids then external property maps do not work.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec>
 class Graph<Automaton<TAlphabet, TCargo, TSpec> > 
 {
@@ -680,8 +679,6 @@ write(TFile & target,
  * @param[in,out] g The Automaton to create the root for.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TAlphabet, typename TCargo, typename TSpec>
 inline void
 createRoot(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g)
@@ -701,8 +698,6 @@ createRoot(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g)
  * @param[in,out] a The Automaton to assign the root for.
  * @param[in]     v A vertex descriptor.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline void
@@ -726,8 +721,6 @@ assignRoot(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
  * @return TVertexDescriptor Reference to the root's vertex descriptor.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TAlphabet, typename TCargo, typename TSpec>
 inline typename VertexDescriptor<Graph<Automaton<TAlphabet, TCargo, TSpec> > >::Type&
 root(Graph<Automaton<TAlphabet, TCargo, TSpec> > & g)
@@ -748,8 +741,6 @@ root(Graph<Automaton<TAlphabet, TCargo, TSpec> > & g)
  *
  * @return TVertexDescriptor The root's vertex descriptor.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TAlphabet, typename TCargo, typename TSpec>
 inline typename VertexDescriptor<Graph<Automaton<TAlphabet, TCargo, TSpec> > >::Type 
@@ -772,8 +763,6 @@ getRoot(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g)
  *
  * @return bool true if v is the root and false otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline bool
@@ -802,8 +791,6 @@ isRoot(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
  * @see Automaton#parseString
  * @see Graph#getNil
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor, typename TChar>
 inline typename VertexDescriptor<Graph<Automaton<TAlphabet, TCargo, TSpec> > >::Type 
@@ -837,8 +824,6 @@ getSuccessor(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
  * The parsing stops before @link Automaton#getSuccessor @endlink reaches the nil state or if the complete sequence is
  * read.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor, typename TIterator>
 inline typename VertexDescriptor<Graph<Automaton<TAlphabet, TCargo, TSpec> > >::Type 
@@ -911,8 +896,6 @@ parseString(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
  * @return bool <tt>true</tt> if the Automaton parses <tt>str</tt> , starting at <tt>v</tt>, completely and
  *              <tt>false</tt> otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TAlphabet, typename TCargo,  typename TSpec, typename TVertexDescriptor, typename TCharacters>
 inline bool 

@@ -94,8 +94,6 @@ inline void clear(BamAlignmentRecord & record);
  * @brief Supplementary alignment.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 enum BamFlags
 {
     BAM_FLAG_MULTIPLE      = 0x0001,
@@ -226,8 +224,6 @@ typedef TagList<int,
  * @brief Raw BAM tag string, use @link BamTagsDict @endlink for comfortable access.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct BamAlignmentRecordCore
 {
             __int32 rID;
@@ -325,8 +321,6 @@ clear(BamAlignmentRecord & record)
  * @see BamFlags
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool
 hasFlagMultiple(BamAlignmentRecord const & record)
 {
@@ -350,8 +344,6 @@ hasFlagMultiple(BamAlignmentRecord const & record)
  *
  * @see BamFlags
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline bool
 hasFlagAllProper(BamAlignmentRecord const & record)
@@ -377,8 +369,6 @@ hasFlagAllProper(BamAlignmentRecord const & record)
  * @see BamFlags
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool
 hasFlagUnmapped(BamAlignmentRecord const & record)
 {
@@ -402,8 +392,6 @@ hasFlagUnmapped(BamAlignmentRecord const & record)
  *
  * @see BamFlags
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline bool
 hasFlagNextUnmapped(BamAlignmentRecord const & record)
@@ -429,7 +417,6 @@ hasFlagNextUnmapped(BamAlignmentRecord const & record)
  * @see BamFlags
  */
 
-/*_DDDOC_PLACEHOLDER*/
 inline bool
 hasFlagRC(BamAlignmentRecord const & record)
 {
@@ -453,8 +440,6 @@ hasFlagRC(BamAlignmentRecord const & record)
  *
  * @see BamFlags
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline bool
 hasFlagNextRC(BamAlignmentRecord const & record)
@@ -480,8 +465,6 @@ hasFlagNextRC(BamAlignmentRecord const & record)
  * @see BamFlags
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool
 hasFlagFirst(BamAlignmentRecord const & record)
 {
@@ -505,8 +488,6 @@ hasFlagFirst(BamAlignmentRecord const & record)
  *
  * @see BamFlags
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline bool
 hasFlagLast(BamAlignmentRecord const & record)
@@ -532,8 +513,6 @@ hasFlagLast(BamAlignmentRecord const & record)
  * @see BamFlags
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool
 hasFlagSecondary(BamAlignmentRecord const & record)
 {
@@ -558,8 +537,6 @@ hasFlagSecondary(BamAlignmentRecord const & record)
  * @see BamFlags
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline bool
 hasFlagQCNoPass(BamAlignmentRecord const & record)
 {
@@ -583,8 +560,6 @@ hasFlagQCNoPass(BamAlignmentRecord const & record)
  *
  * @see BamFlags
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline bool
 hasFlagDuplicate(BamAlignmentRecord const & record)
@@ -631,8 +606,6 @@ hasFlagSupplementary(BamAlignmentRecord const & record)
  *
  * @see BamFlags
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline unsigned
 getAlignmentLengthInRef(BamAlignmentRecord const & record)

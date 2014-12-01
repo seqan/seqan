@@ -127,7 +127,6 @@ _createAlignmentGraph(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * @param[out] outputGraph An @link AlignmentGraph @endlink for the final MSA.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TGuideTree, typename TOutGraph>
 inline void 
 progressiveAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,

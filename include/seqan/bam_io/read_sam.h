@@ -47,8 +47,6 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct Sam_;
 typedef Tag<Sam_> Sam;
 
@@ -208,8 +206,6 @@ readRecord(BamHeaderRecord & record,
 // Function readRecord()                                              BamHeader
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 readRecord(BamHeader & header,
@@ -261,8 +257,6 @@ _readBamRecord(TBuffer & rawRecord, TForwardIter & iter, Sam)
 // ----------------------------------------------------------------------------
 // Function readRecord()                                     BamAlignmentRecord
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void

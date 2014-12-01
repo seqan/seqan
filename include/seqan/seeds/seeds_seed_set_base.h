@@ -71,8 +71,6 @@ typedef Tag<Unordered_> Unordered;
  * @tparam TSpec     Optional tag for seed set specialization. Defaults to <tt>Unordered</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ..param.TScored:Either UnScored or a seed set scoring scheme specification.
 // ..param.TSpec:Specialization of the seed set.
 // ..param.TSeedConfig:Configuration for the seeds.  Sensible defaults are chosen based on the other template parameters.
@@ -104,7 +102,6 @@ class SeedSet;
 
 // Basic Container Functions
 
-/*_DDDOC_PLACEHOLDER*/
 // TODO(holtgrew): dddoc {begin,end,length,front,back}All(T)
 
 // SeedSet Functions
@@ -167,9 +164,6 @@ class SeedSet;
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
-/*_DDDOC_PLACEHOLDER*/
 
 // ---------------------------------------------------------------------------
 // Function minScore()
@@ -190,8 +184,6 @@ class SeedSet;
  * 
  * @see SeedSet#setMinScore
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSeedSpec, typename TSeedSetSpec>
 typename SeedScore<typename Value<SeedSet<TSeedSpec, TSeedSetSpec> >::Type >::Type
@@ -218,8 +210,6 @@ minScore(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet)
  * 
  * @see SeedSet#minScore
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSeedSpec, typename TSeedSetSpec, typename TScoreValue>
 void setMinScore(SeedSet<TSeedSpec, TSeedSetSpec> & seedSet, TScoreValue val)

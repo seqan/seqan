@@ -72,7 +72,6 @@ struct TimelineEntry_
         entryType(entryType_), isBegin(isBegin_), timestamp(timestamp_) {}
 };
 
-/*_DDDOC_PLACEHOLDER*/
 class Timeline
 {
 public:
@@ -110,7 +109,6 @@ private:
 // Functions
 // ============================================================================
 
-/*_DDDOC_PLACEHOLDER*/
 inline
 unsigned
 timelineAddTaskType(CharString const & shortName, CharString const & longName)
@@ -126,7 +124,6 @@ timelineAddTaskType(CharString const & shortName)
     return timelineAddTaskType(shortName, shortName);
 }
 
-/*_DDDOC_PLACEHOLDER*/
 inline
 void
 initTimeline(int threadCount)
@@ -144,7 +141,6 @@ initTimeline()
     initTimeline(omp_get_max_threads());
 }
 
-/*_DDDOC_PLACEHOLDER*/
 inline
 double
 timelineBeginTask(unsigned taskTypeNo)
@@ -155,7 +151,6 @@ timelineBeginTask(unsigned taskTypeNo)
     return timestamp;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 inline
 double
 timelineEndTask(unsigned taskTypeNo)
@@ -166,7 +161,6 @@ timelineEndTask(unsigned taskTypeNo)
     return timestamp;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 inline
 void
 dumpTimeline(char const * path, bool appendPid)

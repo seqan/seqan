@@ -44,8 +44,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	//////////////////////////////////////////////////////////////////////////////
 
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @class SuperMaxRepeatsIterator Super Max Repeats Iterator
  * @extends BottomUpIterator
@@ -144,7 +142,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 		
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class SuperMaxRepeatsFastIterator Super Max Repeats Fast Iterator
  * @extends BottomUpIterator
@@ -285,7 +282,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 	
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class MaxRepeatsIterator Max Repeats Iterator
  * @extends BottomUpIterator

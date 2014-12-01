@@ -47,18 +47,13 @@
 
 using namespace seqan;
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct DotDrawingMSplazer_;
 typedef Tag<DotDrawingMSplazer_> DotDrawingMSplazer;
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct DotDrawingMSplazerBestChain_;
 typedef Tag<DotDrawingMSplazer_> DotDrawingMSplazerBestchain;
 
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TGraph, typename TVertexDescriptor, typename TScoreAlloc, typename TMatch, // typename TFile, 
           typename TBreakpoint, typename TPos, typename TMatchAlloc, typename TID>
 // typename TBreakpointAlloc, typename TMatchAlloc> // Requires Value<SparsePropertyMap> specialisation in msplazer.h

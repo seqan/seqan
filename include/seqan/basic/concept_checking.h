@@ -285,8 +285,6 @@ struct concept_check_<void(*)(Model)>
  * @see Is
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Usage, in class or function context:
 //     SEQAN_CONCEPT_ASSERT((UnaryFunctionConcept<F,bool,int>));
 # define SEQAN_CONCEPT_ASSERT(ModelInParens) \
@@ -339,7 +337,6 @@ struct usage_requirements
  * @see ConceptChecking#SEQAN_CONCEPT_REFINE
  */
 
-/*_DDDOC_PLACEHOLDER*/
 #define SEQAN_CONCEPT_USAGE(model)                                      \
     SEQAN_CONCEPT_ASSERT((seqan::usage_requirements<model>));           \
     ~model()
@@ -514,7 +511,6 @@ inline void functionRequires(Model* = 0)
  * operators.  Use this functions to remove a compile warning that otherwise would be raised in this case.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <class T> SEQAN_HOST_DEVICE inline void ignoreUnusedVariableWarning(T const&) {}
 
 // ---------------------------------------------------------------------------
@@ -586,8 +582,6 @@ template <class T> SEQAN_HOST_DEVICE inline void ignoreUnusedVariableWarning(T c
  * @see ConceptChecking#SEQAN_CONCEPT_USAGE
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 # define SEQAN_CONCEPT(name, params)                                            \
     template < SEQAN_PP_SEQ_FOR_EACH_I(SEQAN_CONCEPT_typename,~,params) >       \
     struct name
@@ -632,8 +626,6 @@ template <class T> SEQAN_HOST_DEVICE inline void ignoreUnusedVariableWarning(T c
  * @endcode
  * @see ConceptChecking#SEQAN_CONCEPT_USAGE
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 # define SEQAN_CONCEPT_REFINE(name, params, refinedConcepts)                                        \
     template < SEQAN_PP_SEQ_FOR_EACH_I(SEQAN_CONCEPT_typename,~,params) >                           \
@@ -680,8 +672,6 @@ template <class T> SEQAN_HOST_DEVICE inline void ignoreUnusedVariableWarning(T c
  * SEQAN_CONCEPT_IMPL((String<TValue, TSpec>), (StringConcept));
  * @endcode
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 
 // STRIP_PARENS macro by Steven Watanabe (http://lists.boost.org/boost-users/2010/08/61429.php)
@@ -736,8 +726,6 @@ template <class T> SEQAN_HOST_DEVICE inline void ignoreUnusedVariableWarning(T c
  *
  * @see ConceptChecking#SEQAN_CONCEPT_USAGE
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 void sameType(T, T) { }
@@ -810,8 +798,6 @@ void sameType(T, T) { }
  * @see EnableIfFunctionality#SEQAN_FUNC_ENABLE_IF
  * @see ConceptChecking#SEQAN_CONCEPT_ASSERT
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // test whether a concept is fulfilled (without concept checking)
 template <typename T>

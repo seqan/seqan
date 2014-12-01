@@ -130,8 +130,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in]     openMode The open mode.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     template < typename TValue,
                typename TConfig >
 	class String<TValue, MMap<TConfig> >
@@ -392,7 +390,6 @@ SEQAN_CHECKPOINT
  * @return bool <tt>true</tt> if the advise was successful, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
     template <typename TValue, typename TConfig, typename TPos, typename TSize>
 	inline bool
 	mmapAdvise(String<TValue, MMap<TConfig> > &me, FileMappingAdvise advise, TPos beginPos, TSize size)

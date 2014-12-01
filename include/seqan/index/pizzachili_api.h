@@ -55,7 +55,6 @@ struct PizzaChiliCodeProvider {
     typedef InvalidPizzaChiliSpec Type;
 };
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @defgroup PizzaChiliIndexTags Pizza &amp; Chili Index Tags
  * 

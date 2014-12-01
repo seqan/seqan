@@ -61,8 +61,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @aka substring
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct SuffixSegment {};
 
 template <typename THost_>
@@ -78,7 +76,6 @@ public:
 
 public:
 
-/*_DDDOC_PLACEHOLDER*/
     SEQAN_HOST_DEVICE
     Segment():
         data_host(),
@@ -328,8 +325,6 @@ _setLength(Segment<THost_, SuffixSegment> &, TSize)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct PrefixSegment;
 struct InfixSegment;
 
@@ -486,8 +481,6 @@ operator --(Segment<THost, SuffixSegment> & segment)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TPosBegin>
 inline typename Suffix<T>::Type

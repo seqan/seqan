@@ -41,7 +41,6 @@
 
 namespace SEQAN_NAMESPACE_MAIN {
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class PizzaChiliString Pizza &amp; Chili String
  * 

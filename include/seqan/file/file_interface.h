@@ -54,8 +54,6 @@ namespace seqan {
  * request completion.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec = void>
 struct Sync;
 
@@ -71,8 +69,6 @@ struct Sync;
  * @tparam TSpec Further specializing type.  Default: <tt>void</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec = void>
 struct Async;
 
@@ -86,8 +82,6 @@ struct Async;
  *
  * @tparam TSpec Specializing type.  Default: <tt>Async&lt;&gt;</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec = Async<> >
 class File;
@@ -140,8 +134,6 @@ class File;
  * @brief (Internal) Open automatically delete the file after close.  Use the <tt>openTemp</tt> methods to open
  *        temporary files.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // --------------------------------------------------------------------------
 // Enum FileOpenMode
@@ -255,8 +247,6 @@ struct HasMoveConstructor<AsyncDummyRequest> : True {};
  *
  * This structure is used to identify asynchronous requests after their initiation.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
     template < typename T >
     struct AsyncRequest

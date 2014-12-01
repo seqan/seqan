@@ -84,8 +84,6 @@ struct ConstUInt {};
  * @snippet demos/basic/metaprogramming_math.cpp log2 call
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <__uint64 numerus, __uint64 base>
 struct LogN
 {
@@ -118,8 +116,6 @@ template <__uint64 base> struct LogN<0, base> { static const __uint64 VALUE = 0;
  * @snippet demos/basic/metaprogramming_math.cpp log2floor call
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <__uint64 numerus, __uint64 base>
 struct LogNFloor
 {
@@ -150,8 +146,6 @@ template <__uint64 base> struct LogNFloor<0, base> { static const __uint64 VALUE
  *
  * @snippet demos/basic/metaprogramming_math.cpp power call
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <__int64 base, __int64 exponent>
 struct Power {

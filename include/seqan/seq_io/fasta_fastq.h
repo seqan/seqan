@@ -55,7 +55,6 @@ namespace seqan {
 // Tag Fasta
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 struct TagFasta_;
 typedef Tag<TagFasta_> Fasta;
 
@@ -63,7 +62,6 @@ typedef Tag<TagFasta_> Fasta;
 // Tag Fastq
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 struct TagFastq_;
 typedef Tag<TagFastq_> Fastq;
 
@@ -207,8 +205,6 @@ struct FastaIgnoreOrAssertFunctor_
  * @brief Whether or not to write the meta information into the <tt>"+"</tt> line before the qualities (interpreted for
  *        FASTQ only). Default is <tt>false</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Would it be worth having two/three shortcuts for "short reads" and "genomic sequence" and faster or can the compiler optimize the creation away?
 
@@ -448,8 +444,6 @@ inline void readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, T
  *
  * @return int 0 on success, non-0 value on errors.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 
 // ----------------------------------------------------------------------------

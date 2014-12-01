@@ -57,8 +57,6 @@ namespace seqan {
 
 // TODO(holtgrew): What format is this actually?
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct TagScoreMatrixFile_;
 typedef Tag<TagScoreMatrixFile_> ScoreMatrixFile;
 
@@ -172,7 +170,6 @@ read(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc,
  * @param[out]    meta     Meta information is stored here, CharString.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSequenceValue, typename TSpec>
 inline bool
 loadScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc,
@@ -187,7 +184,6 @@ loadScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc,
     return true;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TMeta, typename TValue, typename TSequenceValue, typename TSpec>
 inline bool
 loadScoreMatrix(TMeta & meta,
@@ -220,8 +216,6 @@ loadScoreMatrix(TMeta & meta,
  *
  * @return int Status code, 0 on success, a different value on errors.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TTarget, typename TValue, typename TSequenceValue, typename TSpec>
 inline void

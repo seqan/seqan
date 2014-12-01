@@ -42,7 +42,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	//////////////////////////////////////////////////////////////////////////////
 
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class MumsIterator Mums Iterator
  * @extends BottomUpIterator
@@ -147,7 +146,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 	
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class MultiMemsIterator Multi Mems Iterator
  * @extends BottomUpIterator

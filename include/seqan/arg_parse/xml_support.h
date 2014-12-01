@@ -66,7 +66,6 @@ namespace seqan {
  *  < -> &lt;
  *  > -> &gt;
  */
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSequence>
 TSequence xmlEscape(TSequence const & original)
 {

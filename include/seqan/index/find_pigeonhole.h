@@ -140,8 +140,6 @@ namespace seqan
 //____________________________________________________________________________
 
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @class PigeonholeFinder
  * @extends Finder
@@ -1038,8 +1036,6 @@ find(
 	} while (true);
 }
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @fn PigeonholeFinder#windowFindBegin
  * @headerfile <seqan/index/find_pigeonhole.h>
@@ -1079,8 +1075,6 @@ windowFindBegin(
     return true;
 }
 
-
-/*_DDDOC_PLACEHOLDER*/
 
 /*!
  * @fn PigeonholeFinder#windowFindNext
@@ -1203,8 +1197,6 @@ windowFindNext(
     finder.windowStart = windowEnd;
 	return true;
 }
-
-/*_DDDOC_PLACEHOLDER*/
 
 
 /*!

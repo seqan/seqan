@@ -82,8 +82,6 @@ namespace seqan {
  * @see SimpleType
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 struct IsSimple_
 {
@@ -238,8 +236,6 @@ getValue(T * me)
  * 
  * The type of the destructed object is the value type of <tt>iterator</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // Helper code for constructing values behind iterators that do not return
 // proxies from their value() functions but references.
@@ -424,8 +420,6 @@ struct ValueDestructorProxy_
  * The type of the constructed object is the value type of <tt>iterator</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TIterator>
 inline void
 valueDestruct(TIterator it)
@@ -462,8 +456,6 @@ valueDestruct(TIterator it)
  * 
  * The type of the constructed Objects is the value type of <tt>begin</tt> and <tt>end</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // NOTE(holtgrew): Of course, it does not make sense to declare this in a move version!
 
@@ -530,8 +522,6 @@ arrayConstruct(TIterator1 begin_,
  *                        constructs an target objects given a source object is required.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TTarget, typename TSource1, typename TSource2>
 inline void 
 _arrayConstructCopyDefault(TSource1 source_begin, 
@@ -577,8 +567,6 @@ arrayConstructCopy(TSource1 source_begin,
  *                        store <tt>sourceEnd</tt> - <tt>sourceBegin</tt> objects.  An appropriate move constructor that
  *                        constructs an target objects given a source object is required.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TTarget, typename TSource1, typename TSource2>
 inline void 
@@ -628,8 +616,6 @@ arrayConstructMove(TSource1 source_begin,
  * This function does not deallocates the memory.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TIterator1, typename TIterator2>
 inline void 
 _arrayDestructDefault(TIterator1 begin_, 
@@ -670,8 +656,6 @@ arrayDestruct(TIterator1 begin_,
  * 
  * All objects <tt>target_begin[0]</tt> to <tt>target_begin[count-1]</tt> are set to <tt>value</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Redirects to fill_n. What are the exact semantics here? Do the array elements have to be initialized already? fill_n uses assignment, not copy construction!
 
@@ -717,8 +701,6 @@ arrayFill(TIterator begin_,
  * If there is no need for the source elements to persist, consider to use arrayMoveForward instead to improve
  * performance.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TTarget, typename TSource1, typename TSource2>
 inline void 
@@ -767,8 +749,6 @@ arrayCopyForward(TSource1 source_begin,
  * The semantic of this function's argument <tt>target</tt> differ from the arguments of <tt>::std::copy_backward</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TTarget, typename TSource1, typename TSource2>
 inline void 
 _arrayCopyBackwardDefault(TSource1 source_begin, 
@@ -812,8 +792,6 @@ arrayCopyBackward(TSource1 source_begin,
  * performance.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TTarget, typename TSource1, typename TSource2>
 inline void arrayCopy(TSource1 source_begin, 
                       TSource2 source_end, 
@@ -848,8 +826,6 @@ inline void arrayCopy(TSource1 source_begin,
  * Be careful if source and target range overlap, because in this case some source elements could be accidently
  * overwritten before they are moved.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TTarget, typename TSource1, typename TSource2>
 inline void 
@@ -907,8 +883,6 @@ arrayMoveForward(TSource1 source_begin,
  * The semantic of this function's argument <tt>target</tt> differ from the arguments of <tt>::std::copy_backward</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TTarget, typename TSource1, typename TSource2>
 inline void 
 _arrayMoveBackwardDefault(TSource1 source_begin, 
@@ -961,8 +935,6 @@ arrayMoveBackward(TSource1 source_begin,
  * Don't confuse this function with the standard <tt>move</tt> function that resembles arrayCopy.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TTarget, typename TSource1, typename TSource2>
 inline void 
 arrayMove(TSource1 source_begin, 
@@ -1000,8 +972,6 @@ arrayMove(TSource1 source_begin,
  * The objects from <tt>arr[0]</tt> to <tt>arr[array_length-1]</tt> have to be initialized/constructed, arrays beyond
  * <tt>arr[array_length-1]</tt> are assumed not to be constructed. If this assumption is violated, memory might leak.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): The feature that the range [0, array_begin) is deleted is used nowhere. Can this be removed to simplify behaviour?
 

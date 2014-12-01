@@ -67,7 +67,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * an edge id.  Edge ids are used to append additional properties to edges with the help of external property maps.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TCargo, typename TSpec>
 class EdgeStump<TCargo, true, false, false, TSpec> 
 {
@@ -390,8 +389,6 @@ struct Spec<EdgeStump<TCargo, TList, TSource, TId, TSpec> const>
  * @return TCargo Reference to the cargo of the EdgeStump.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec>
 inline typename Cargo<EdgeStump<TCargo, TList, TSource, TId, TSpec> const>::Type&
@@ -445,8 +442,6 @@ getCargo(EdgeStump<void, TList, TSource, TId, TSpec>*)
  *
  * @return TCargo Reference to the cargo of the EdgeStump.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec>
@@ -505,8 +500,6 @@ cargo(EdgeStump<void, TList, TSource, TId, TSpec> const*)
  * Calling assignCargo on EdgeStump objects without cargo does nothing.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec, typename TCargo2>
 inline void 
 assignCargo(EdgeStump<TCargo, TList, TSource, TId, TSpec>* es,
@@ -539,8 +532,6 @@ assignCargo(EdgeStump<void, TList, TSource, TId, TSpec>*,
  * @param[in]     t     Vertex descriptor to assign as the target.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec, typename TVertexDescriptor>
 inline void 
@@ -563,8 +554,6 @@ assignTarget(EdgeStump<TCargo, TList, TSource, TId, TSpec>* es,
  *
  * @return TVertexDescriptor Reference to the target vertex descriptor of stump.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec>
 inline typename VertexDescriptor<EdgeStump<TCargo, TList, TSource, TId, TSpec> >::Type&
@@ -596,8 +585,6 @@ target(EdgeStump<TCargo, TList, TSource, TId, TSpec> const* es)
  *
  * @return TVertexDescriptor The vetex descriptor stored in stump.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec>
 inline typename VertexDescriptor<EdgeStump<TCargo, TList, TSource, TId, TSpec> const>::Type
@@ -634,8 +621,6 @@ getTarget(EdgeStump<TCargo, TList, TSource, TId, TSpec>* es)
  * A source vertex is not required in an edge stump.  However, EdgeStump objects can be configured to contain a source
  * vertex, as in undirected graphs.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TList, bool TId, typename TSpec, typename TVertexDescriptor>
 inline void 
@@ -735,8 +720,6 @@ source(EdgeStump<TCargo, TList, false, TId, TSpec> const*)
  * vertex, as in undirected graphs.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TCargo, bool TList, bool TId, typename TSpec>
 inline typename VertexDescriptor<EdgeStump<TCargo, TList, true, TId, TSpec> const>::Type
 getSource(EdgeStump<TCargo, TList, true, TId, TSpec> const* es) 
@@ -792,8 +775,6 @@ getSource(EdgeStump<TCargo, TList, false, TId, TSpec>*)
  * @param[in]     es2 Pointer to the following EdgeStump.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TCargo, bool TSource, bool TId, typename TSpec>
 inline void 
 assignNextT(EdgeStump<TCargo, true, TSource, TId, TSpec>* es, 
@@ -815,8 +796,6 @@ assignNextT(EdgeStump<TCargo, true, TSource, TId, TSpec>* es,
  *
  * @return TEdgeStump Reference to the next target pointer.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TSource, bool TId, typename TSpec>
 inline EdgeStump<TCargo, true, TSource, TId, TSpec>* &
@@ -847,8 +826,6 @@ nextT(EdgeStump<TCargo, true, TSource, TId, TSpec> const* es)
  *
  * @return TEdgeStump Reference to the next target pointer.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TSource, bool TId, typename TSpec>
 inline EdgeStump<TCargo, true, TSource, TId, TSpec>*
@@ -881,8 +858,6 @@ getNextT(EdgeStump<TCargo, true, TSource, TId, TSpec> const* es)
  *
  * Edge Stumps can be configured to have no source.  In this case, there is no next source pointer.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TId, typename TSpec>
 inline void 
@@ -919,8 +894,6 @@ assignNextS(EdgeStump<TCargo, true, false, TId, TSpec>*,
  *
  * Edge Stumps can be configured to have no source.  In this case, there is no next source pointer.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TId, typename TSpec>
 inline EdgeStump<TCargo, true, true, TId, TSpec>* &
@@ -974,8 +947,6 @@ nextS(EdgeStump<TCargo, true, false, TId, TSpec> const*)
  *
  * Edge Stumps can be configured to have no source.  In this case, there is no next source pointer.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, bool TId, typename TSpec>
 inline EdgeStump<TCargo, true, true, TId, TSpec>*

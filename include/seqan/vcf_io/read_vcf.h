@@ -84,8 +84,6 @@ typedef Tag<Vcf_> Vcf;
  * @return int A status code, 0 on success, a different value otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline void
 _parseVcfContig(CharString & chromName, CharString const & headerValue)
 {
@@ -179,8 +177,6 @@ readRecord(VcfHeader & header,
  *
  * @return int A status code, 0 on success, a different value otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // Read record, updating list of known sequences if new one occurs.
 

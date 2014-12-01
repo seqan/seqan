@@ -60,8 +60,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @aka substring
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename THost_>
 class Segment<THost_, InfixSegment>
 {
@@ -81,8 +79,6 @@ public:
     SEQAN_HOST_DEVICE inline void _checkMemberVariables() const {
         SEQAN_ASSERT_LEQ(data_begin_position, data_end_position);
     }
-
-/*_DDDOC_PLACEHOLDER*/
 
     SEQAN_HOST_DEVICE
     Segment():
@@ -254,7 +250,6 @@ SEQAN_CHECKPOINT
 
 //____________________________________________________________________________
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename THost_, typename TIterator>
 inline void
 setBegin(Segment<THost_, InfixSegment> & me, TIterator new_begin)
@@ -265,8 +260,6 @@ SEQAN_CHECKPOINT
 
 
 //____________________________________________________________________________
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename THost_, typename TPosition>
 inline void
@@ -320,8 +313,6 @@ SEQAN_CHECKPOINT
 
 //____________________________________________________________________________
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename THost_, typename TIterator>
 inline void
 setEnd(Segment<THost_, InfixSegment> & me, TIterator new_end)
@@ -333,8 +324,6 @@ setEnd(Segment<THost_, InfixSegment> & me, TIterator new_end)
 
 //____________________________________________________________________________
 
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename THost_, typename TPosition>
 inline void
@@ -359,7 +348,6 @@ SEQAN_CHECKPOINT
 
 //____________________________________________________________________________
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename THost_>
 inline void
 setHost(Segment<THost_, InfixSegment> & me, typename Parameter_<THost_>::Type _host)
@@ -377,8 +365,6 @@ SEQAN_CHECKPOINT
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename THost>
 struct Infix
@@ -632,8 +618,6 @@ value(Segment<THost, TSpec> const & me,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T, typename TPosBegin, typename TPosEnd>
 SEQAN_HOST_DEVICE inline typename Infix<T>::Type
 infix(T & t, TPosBegin pos_begin, TPosEnd pos_end)
@@ -701,8 +685,6 @@ SEQAN_CHECKPOINT
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TPosBegin, typename TSize>
 SEQAN_HOST_DEVICE inline typename Infix<T>::Type

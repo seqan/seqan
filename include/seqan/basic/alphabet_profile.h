@@ -76,8 +76,6 @@ struct IteratorProxy;
  * @brief Array of ValueSize elements, giving counts in profile.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TCount = unsigned, typename TSpec = void>
 class ProfileChar;
 
@@ -203,8 +201,6 @@ struct ValueSize<ProfileChar<TValue, TCount, TSpec> >
  * typedef SourceValue<TProfileChar>::Type TType;  // Is Dna.
  * @endcode
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct SourceValue;

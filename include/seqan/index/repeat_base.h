@@ -41,7 +41,6 @@
 
 namespace seqan {
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class Repeat
  * @headerfile <seqan/index.h>
@@ -157,7 +156,6 @@ namespace seqan {
 		return val == 'X';
 	}
 */
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn findRepeats
  * @headerfile <seqan/index.h>

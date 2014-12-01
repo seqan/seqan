@@ -83,7 +83,6 @@ struct StringSetLimits;
  * @param[in] stringSet The @link StringSet @endlink object to be concatenated.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TStringSet>
 class ConcatenatorManyToOne
 {

@@ -76,27 +76,19 @@ namespace seqan {
  * @signature typedef Tag<CgVizFormat_> const CgVizFormat;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct MsfFormat_;
 typedef Tag<MsfFormat_> const MsfFormat;
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct FastaFormat_;
 typedef Tag<FastaFormat_> const FastaFormat;
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct CgVizFormat_;
 typedef Tag<CgVizFormat_> const CgVizFormat;
@@ -215,7 +207,6 @@ public:
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TString, typename TSpecial, typename TCargo, typename TSpec>
 class Graph<Alignment<StringSet<TString, Dependent<TSpecial> >, TCargo, TSpec> > 
 {
@@ -1093,7 +1084,6 @@ write(TFile & file,
  * @see AlignmentGraph#stringSet
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TString, typename TDefault, typename TCargo, typename TSpec, typename TDefault2>
 inline void
 assignStringSet(Graph<Alignment<StringSet<TString, Dependent<TDefault> >, TCargo, TSpec> >& g,
@@ -1142,7 +1132,6 @@ assignStringSet(Graph<Alignment<StringSet<TString, Dependent<TDefault> >, TCargo
  * @see AlignmentGraph#stringSet
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec>
 inline typename Host<Graph<Alignment<TStringSet, TCargo, TSpec> > const>::Type&
 getStringSet(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
@@ -1167,8 +1156,6 @@ getStringSet(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
  * @see AlignmentGraph#assignStringSet
  * @see AlignmentGraph#getStringSet
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct StringSetType;
@@ -1202,7 +1189,6 @@ stringSet(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
  * @return TInfix An infix representing the sequence label.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename Infix<typename Value<TStringSet>::Type>::Type
 label(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
@@ -1234,7 +1220,6 @@ label(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * @return TId The sequence id.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename Id<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&
 sequenceId(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
@@ -1258,7 +1243,6 @@ sequenceId(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * @return TPos The begin position.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename Position<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&
 fragmentBegin(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
@@ -1282,7 +1266,6 @@ fragmentBegin(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * @return TPos The fragment size.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type&
 fragmentLength(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
@@ -1308,7 +1291,6 @@ fragmentLength(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * <tt>getNil&lt;TVertexDescriptor&gt;()</tt> if none could be found.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId, typename TPos> 
 inline typename VertexDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
 findVertex(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
@@ -1340,7 +1322,6 @@ findVertex(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
  * @param[out] pos2   The reuslting position of the sequence was was projected onto.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId, typename TPosition, typename TSeqId2, typename TPosition2> 
 inline void
 getProjectedPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
@@ -1448,7 +1429,6 @@ getProjectedPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
  * @see AlignmentGraph#getLastCoveredPosition
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId>
 inline typename Position<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 getFirstCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
@@ -1491,7 +1471,6 @@ getFirstCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * @see AlignmentGraph#getFirstCoveredPosition
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId>
 inline typename Position<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 getLastCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
@@ -1539,8 +1518,6 @@ getLastCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
  * 
  * The variant with <tt>component</tt> and <tt>order</tt> computes a topological sorting of connected components.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TComponentMap, typename TOrderMap, typename TComponentLength> 
 inline bool
@@ -1647,7 +1624,6 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix> 
 inline bool
 convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
@@ -1983,7 +1959,6 @@ _heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g
 
 // TODO(holtgrew): Where does this belong? This is also there in graph_algorithms.h...
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TString, typename TOutString>
 inline TCargo
 heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,

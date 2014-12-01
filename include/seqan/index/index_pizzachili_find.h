@@ -39,8 +39,6 @@ namespace SEQAN_NAMESPACE_MAIN {
 
 struct PizzaChiliFinder_;
 
-/*_DDDOC_PLACEHOLDER*/
-
 typedef Tag<PizzaChiliFinder_> const PizzaChiliFinder;
 
 //////////////////////////////////////////////////////////////////////////////

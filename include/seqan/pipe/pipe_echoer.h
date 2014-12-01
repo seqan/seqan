@@ -97,8 +97,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * <tt>i</tt> begins with 0 and for <tt>omitFirst=true</tt> <tt>i</tt> begins with <tt>echoRepeats-1</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     //////////////////////////////////////////////////////////////////////////////
     // echoer class
     template < typename TInput, unsigned echoRepeats, bool omitFirst >

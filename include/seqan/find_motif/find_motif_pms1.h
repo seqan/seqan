@@ -40,8 +40,6 @@ namespace SEQAN_NAMESPACE_MAIN
 // Pms1
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 ///.Class.MotifFinder.param.TSpec.type:Spec.Pms1
 
 struct Pms1_;

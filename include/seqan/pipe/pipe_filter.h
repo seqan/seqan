@@ -94,8 +94,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The output type of this pipe is the result type of <tt>TFunctor</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 	//////////////////////////////////////////////////////////////////////////////
     // filter class
     template <typename TInput, typename TFunctor >
@@ -114,7 +112,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in] func A <tt>TFunctor</tt> object.
  */
         
-/*_DDDOC_PLACEHOLDER*/
         Pipe(TInput& _in):
             in(_in) {}
         

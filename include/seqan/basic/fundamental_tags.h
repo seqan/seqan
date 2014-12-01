@@ -95,8 +95,6 @@ namespace seqan {
  * (<tt>struct SomeTag;</tt>) or full declarations (<tt>struct SomeTag {};</tt>) everywhere.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 struct Tag {};
 
@@ -112,7 +110,6 @@ struct Tag {};
  * @signature typedef Tag<Default_> Default;
  */
 
-/*_DDDOC_PLACEHOLDER*/
 struct Default_;
 typedef Tag<Default_> Default;
 
@@ -129,8 +126,6 @@ typedef Tag<Default_> Default;
  *
  * @signature struct Nothing {};
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct Nothing_;
 typedef Tag<Nothing_> Nothing;
@@ -187,8 +182,6 @@ typedef Tag<Raw_> Raw;
  * @see AssignableConcept#move
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct Move_;
 typedef Tag<Move_> Move;
 
@@ -226,8 +219,6 @@ typedef Tag<GoEnd_> GoEnd;
 // Tag Serial
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct Serial_;
 typedef Tag<Serial_> Serial;
 
@@ -246,8 +237,6 @@ typedef Tag<Serial_> Serial;
  * @tparam TTag     The tag of the front for the list.
  * @tparam TSubList Nested list.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TTag = void, typename TSubList = void>
 struct TagList
@@ -275,8 +264,6 @@ struct TagList
  * @headerfile <seqan/basic.h>
  * @brief Stores the index of a Tag in the tag list.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TTagList = void>
 struct TagSelector
@@ -336,8 +323,6 @@ value(TagSelector<TTagList> const &selector)
  * @signature typedef Tag<DotDrawing_> DotDrawing;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct DotDrawing_;
 typedef Tag<DotDrawing_> DotDrawing;
 
@@ -351,8 +336,6 @@ typedef Tag<DotDrawing_> DotDrawing;
  *
  * @signature typedef Tag<HammingDistance_> HammingDistance;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): Why ambiguous here? Edit distance is the more common name.
 
@@ -371,8 +354,6 @@ typedef Tag<DotDrawing_> DotDrawing;
  *
  * @signature typedef Tag<LevenshteinDistance_> EditDistance;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct HammingDistance_;
 struct LevenshteinDistance_;
@@ -445,8 +426,6 @@ struct LENGTH<TagList<TTag, TSubList> >
  *                 <tt>0..LENGTH&lt;TTagList&gt;::VALUE -1</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TList, int I>
 struct TagListValue
 {
@@ -500,8 +479,6 @@ struct TagListValue<TagList<TTag, TSubList>, I>:
  * }
  * @endcode
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TList, typename TSearchTag>
 struct Find;

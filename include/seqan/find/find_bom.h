@@ -92,11 +92,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see OracleBfamPattern
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
-/*_DDDOC_PLACEHOLDER*/
-/*_DDDOC_PLACEHOLDER*/
-
 ///.Class.Pattern.param.TSpec.type:Spec.Bfam
 
 struct Oracle; //Oracle Tag => "BOM"

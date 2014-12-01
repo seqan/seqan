@@ -67,8 +67,6 @@ namespace seqan {
  * @return TStream Reference to <tt>stream</tt> after writing <tt>aggregate</tt> to it.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @defgroup AggregateTags Aggregate Tags
  * @brief Tags to use in aggregate (e.g. Pair, Triple, and Tuple) types.
@@ -81,8 +79,6 @@ namespace seqan {
  *
  * @signature typedef Tag<Pack_> Pack;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct Pack_;
 typedef Tag<Pack_> Pack;
@@ -102,8 +98,6 @@ typedef Tag<Pack_> Pack;
  * BITSIZE2 The number of bits for the second entry.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <unsigned BITSIZE1 = 16, unsigned BITSIZE2 = 16>
 struct BitPacked;
 
@@ -122,8 +116,6 @@ struct BitPacked;
  *
  * @return Type The resulting packed type.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct MakePacked

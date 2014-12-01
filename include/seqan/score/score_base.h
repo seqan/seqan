@@ -64,7 +64,6 @@ namespace seqan {
  * @include demos/sscore.cpp.stdout
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue = int, typename TSpec = Simple>
 class Score;
 
@@ -109,8 +108,6 @@ struct Value<Score<TValue, TSpec> > {
  * @see ConsensusScoreSequenceEntry
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TScore, typename TSequence>
 struct SequenceEntryForScore
 {
@@ -133,8 +130,6 @@ struct SequenceEntryForScore
  * 
  * @return TAlphabet The value of <tt>seq</tt> at <tt>pos</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(rmaerker): Check if using iterator instead would be more efficient than subscript operator.
 template <typename TScore, typename TSequence, typename TPosition>
@@ -161,7 +156,6 @@ sequenceEntryForScore(TScore const & /*scoringScheme*/, TSequence const & seq, T
  * Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapOpenHorizontal(
@@ -190,7 +184,6 @@ scoreGapOpenHorizontal(
  * Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapOpenVertical(
@@ -219,7 +212,6 @@ scoreGapOpenVertical(
  * Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapExtendHorizontal(
@@ -248,7 +240,6 @@ scoreGapExtendHorizontal(
  * Corresponds to a deletion event in sequence one and an insertion event in sequence two, respectively.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapExtendVertical(
@@ -277,7 +268,6 @@ scoreGapExtendVertical(
  * Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapHorizontal(
@@ -306,7 +296,6 @@ scoreGapHorizontal(
  * Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSeqHValue, typename TSeqVValue>
 inline TValue
 scoreGapVertical(
@@ -332,7 +321,6 @@ scoreGapVertical(
  *                score.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec, typename TSeqHVal, typename TSeqVVal>
 inline TValue
 score(Score<TValue, TSpec> const & me, TSeqHVal valH, TSeqVVal valV) {

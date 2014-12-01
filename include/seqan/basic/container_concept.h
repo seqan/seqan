@@ -281,8 +281,6 @@ template <typename TContainer, typename TSpec> struct Iterator;
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // mutable container concept
 template <typename TContainer>
 struct ContainerConcept :
@@ -341,8 +339,6 @@ struct ContainerConcept :
     }
 };
 
-/*_DDDOC_PLACEHOLDER*/
-
 SEQAN_CONCEPT_REFINE(StringConcept, (TString), (ContainerConcept)(PropertyMapConcept))
 {
     typedef typename Value<TString>::Type                 TValue;
@@ -397,7 +393,6 @@ SEQAN_CONCEPT_REFINE(StringConcept, (TString), (ContainerConcept)(PropertyMapCon
  * first element of the content array.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct IsContiguous
 {

@@ -97,8 +97,6 @@ namespace seqan {
  * relationship between <tt>A</tt> and <tt>B</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Tag for default Holder specialization.
 struct Tristate_;
 typedef Tag<Tristate_> Tristate;

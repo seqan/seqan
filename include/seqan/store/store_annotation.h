@@ -131,8 +131,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief The id of the parent annotation.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TPos_, typename TSpec = void>
 struct AnnotationStoreElement
 {
@@ -243,8 +241,6 @@ struct AnnotationTree {};
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFragmentStore, typename TSpec>
 class Iter<TFragmentStore, AnnotationTree<TSpec> >
 {
@@ -343,8 +339,6 @@ container(Iter< TFragmentStore, AnnotationTree<TSpec> > const &it) {
  * @return TAnnotation A reference to the AnnotationStoreElement the iterator points to.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): Better use Reference in both cases?
 
 template <typename TFragmentStore, typename TSpec>
@@ -375,8 +369,6 @@ getAnnotation(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  * @see AnnotationTreeIterator#setName
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFragmentStore, typename TSpec>
 inline typename GetValue<typename TFragmentStore::TAnnotationNameStore>::Type
 getName(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
@@ -395,8 +387,6 @@ getName(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  *
  * @see AnnotationTreeIterator#getName
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec, typename TName>
 inline void
@@ -418,8 +408,6 @@ setName(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it, TName const & n
  * @return TName The name of the parent of the current annotation.  This is a reference to the corresponding value in
  *               @link FragmentStore::annotationNameStore @endlink.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline typename GetValue<typename TFragmentStore::TAnnotationNameStore>::Type
@@ -450,8 +438,6 @@ getParentName(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @see AnnotationTreeIterator#setType
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFragmentStore, typename TSpec>
 inline typename GetValue<typename TFragmentStore::TAnnotationTypeStore>::Type
 getType(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
@@ -470,8 +456,6 @@ getType(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  *
  * @see AnnotationTreeIterator#getType
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec, typename TTypeName>
 inline void
@@ -498,8 +482,6 @@ setType(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it, TTypeName & typ
  * @see AnnotationTreeIterator#getName
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFragmentStore, typename TSpec>
 inline CharString
 getUniqueName(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
@@ -521,8 +503,6 @@ getUniqueName(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  * @see AnnotationTreeIterator#getValueByKey
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFragmentStore, typename TSpec>
 inline void 
 clearValues(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
@@ -543,8 +523,6 @@ clearValues(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @see AnnotationTreeIterator#clearValues
  * @see AnnotationTreeIterator#getValueByKey
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec, typename TKey, typename TValue>
 inline void 
@@ -570,8 +548,6 @@ assignValueByKey(
  * @see AnnotationTreeIterator#clearValues
  * @see AnnotationTreeIterator#assignValueByKey
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec, typename TKey, typename TValue>
 inline bool 
@@ -622,8 +598,6 @@ goEnd(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @param[in,out] it     The AnnotationTreeIterator to move.
  * @param[in]     annoId The id of the annotation to move to.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec, typename TId>
 inline void
@@ -688,8 +662,6 @@ goNext(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @param[in,out] it The AnnotationTreeIterator to
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFragmentStore, typename TSpec>
 inline void
 goNextRight(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
@@ -711,8 +683,6 @@ goNextRight(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  *
  * @param[in,out] it The AnnotationTreeIterator to
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline void
@@ -737,8 +707,6 @@ goNextUp(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @param[in,out] it The AnnotationTreeIterator to move.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFragmentStore, typename TSpec>
 inline void
 goRoot(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
@@ -759,8 +727,6 @@ goRoot(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @see AnnotationTreeIterator#goDown
  * @see AnnotationTreeIterator#goRight
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline bool
@@ -793,8 +759,6 @@ goUp(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @see AnnotationTreeIterator#goRight
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFragmentStore, typename TSpec>
 inline bool
 goDown(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
@@ -825,8 +789,6 @@ goDown(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @see AnnotationTreeIterator#goUp
  * @see AnnotationTreeIterator#goDown
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline bool
@@ -866,8 +828,6 @@ goRight(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @see AnnotationTreeIterator#nodeRight
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFragmentStore, typename TSpec>
 inline Iter<TFragmentStore, AnnotationTree<TSpec> >
 nodeUp(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
@@ -891,8 +851,6 @@ nodeUp(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  * @see AnnotationTreeIterator#nodeRight
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFragmentStore, typename TSpec>
 inline Iter<TFragmentStore, AnnotationTree<TSpec> >
 nodeDown(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
@@ -915,8 +873,6 @@ nodeDown(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  * @see AnnotationTreeIterator#nodeUp
  * @see AnnotationTreeIterator#nodeDown
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline Iter<TFragmentStore, AnnotationTree<TSpec> >
@@ -1019,8 +975,6 @@ _cyclicListRemove(TAnnotationStore & annotationStore, TId _id, TId lastChildId)
  * @see AnnotationTreeIterator#createSibling
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFragmentStore, typename TSpec>
 inline Iter<TFragmentStore, AnnotationTree<TSpec> >
 createLeftChild(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
@@ -1057,8 +1011,6 @@ createLeftChild(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @see AnnotationTreeIterator#createLeftChild
  * @see AnnotationTreeIterator#createSibling
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline Iter<TFragmentStore, AnnotationTree<TSpec> >
@@ -1097,8 +1049,6 @@ createRightChild(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @see AnnotationTreeIterator#createLeftChild
  * @see AnnotationTreeIterator#createRightChild
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline Iter<TFragmentStore, AnnotationTree<TSpec> >
@@ -1139,8 +1089,6 @@ createSibling(Iter<TFragmentStore, AnnotationTree<TSpec> > & it)
  * @param[in] it The AnnotationTreeIterator to query.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFragmentStore, typename TSpec>
 inline bool
 isRoot(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
@@ -1161,8 +1109,6 @@ isRoot(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  * @param[in] it The AnnotationTreeIterator to query.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFragmentStore, typename TSpec>
 inline bool
 isLeaf(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
@@ -1182,8 +1128,6 @@ isLeaf(Iter<TFragmentStore, AnnotationTree<TSpec> > const & it)
  *
  * @param[in] it The AnnotationTreeIterator to query.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TFragmentStore, typename TSpec>
 inline bool

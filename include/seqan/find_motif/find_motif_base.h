@@ -38,8 +38,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct MotifFinderClass_;
 typedef Tag<MotifFinderClass_> MotifFinderClass;
     
@@ -69,9 +67,6 @@ struct Value< MotifFinder<TValue, TSpec, TRng> const>
 // Functions
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TType>
 TType factorial(TType n)
@@ -94,8 +89,6 @@ TType factorial(TType n)
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TType>
 TType binomialCoefficient(TType n, TType k)
 {
@@ -113,8 +106,6 @@ TType binomialCoefficient(TType n, TType k)
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TType, typename TStringIterator>
 TType hammingDistance(TStringIterator start1, TStringIterator end1, TStringIterator start2)
@@ -136,8 +127,6 @@ TType hammingDistance(TStringIterator start1, TStringIterator end1, TStringItera
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TValue, typename TType>
 String<TValue>
@@ -166,8 +155,6 @@ inverseHash(TType const & hash_value,
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TValue, typename TAlgorithm, typename TRng>
 void
 displayResult(MotifFinder<TValue, TAlgorithm, TRng> & finder)
@@ -195,7 +182,6 @@ displayResult(MotifFinder<TValue, TAlgorithm, TRng> & finder)
 }
 
 /////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct Motif;
 
@@ -206,8 +192,6 @@ struct Motif< MotifFinder<TValue, TSpec, TRng> >
 };
 
 /////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TSpec, typename TPosition, typename TRng>
 inline typename Motif<MotifFinder<TValue, TSpec, TRng> >::Type &
 getMotif(MotifFinder<TValue, TSpec, TRng> & me,
@@ -227,8 +211,6 @@ getMotif(MotifFinder<TValue, TSpec, TRng> & me)
 }
 
 /////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TSpec, typename TRng>
 inline size_t
 motifCount(MotifFinder<TValue, TSpec, TRng> const & me)

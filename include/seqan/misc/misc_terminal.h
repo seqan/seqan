@@ -76,8 +76,6 @@ namespace seqan {
  * @see isAnsiColorTerminal
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 #if defined(PLATFORM_WINDOWS)
 
 #include <io.h>
@@ -125,8 +123,6 @@ inline bool isTerminal()
  * @see getTerminalSize
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 #if defined(PLATFORM_WINDOWS) || defined(PLATFORM_GCC_MINGW)
 
 inline bool isAnsiColorTerminal()
@@ -172,8 +168,6 @@ inline bool isAnsiColorTerminal()
  * @see isTerminal
  * @see isAnsiColorTerminal
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 #if defined(PLATFORM_WINDOWS)
 

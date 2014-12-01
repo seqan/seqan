@@ -120,7 +120,6 @@ _nextInSortedSequence(TSortedSequence const& list, TIterator const& prev) {
  * @see longestCommonSubsequence
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TString, typename TPositions>
 inline void
 longestIncreasingSubsequence(TString const& str, TPositions& pos) {
@@ -212,7 +211,6 @@ longestIncreasingSubsequence(TString const& str, TPositions& pos) {
  * @see longestIncreasingSubsequence
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TString1, typename TString2, typename TNeighborhoodSize, typename TFinalPos>
 inline void
 longestCommonSubsequence(TString1 const& str1,
@@ -365,7 +363,6 @@ globalAlignment(TAlign& align,
  * @see longestIncreasingSubsequence
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TString, typename TWeightMap, typename TPositions>
 inline typename Value<TWeightMap>::Type
 heaviestIncreasingSubsequence(TString const& str,

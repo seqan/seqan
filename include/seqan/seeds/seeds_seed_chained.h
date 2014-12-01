@@ -78,8 +78,6 @@ typedef Tag<Chained_> ChainedSeed;  // TODO(holtgrew): Chained already taken as 
  * @param[in] length    The length of the seed.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TConfig>
 class Seed<ChainedSeed, TConfig>
 {
@@ -126,8 +124,6 @@ public:
  * @return Type The resulting diagonal seed.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TConfig>
 struct Value<Seed<ChainedSeed, TConfig> >
 {
@@ -163,8 +159,6 @@ struct Value<Seed<ChainedSeed, TConfig> const>
  * @return Type Reference to the contained seeds.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TConfig>
 struct Reference<Seed<ChainedSeed, TConfig> >
 {
@@ -196,8 +190,6 @@ struct Reference<Seed<ChainedSeed, TConfig> const>
  *
  * @return Type Reference to the contained seeds.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TConfig>
 struct Iterator<Seed<ChainedSeed, TConfig>, Standard>
@@ -315,8 +307,6 @@ endPositionV(Seed<ChainedSeed, TConfig> const & seed)
  *               <tt>seed</tt>
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TConfig>
 inline typename Size<Seed<ChainedSeed, TConfig> >::Type
 length(Seed<ChainedSeed, TConfig> const & seed)
@@ -337,8 +327,6 @@ length(Seed<ChainedSeed, TConfig> const & seed)
  * @param[in,out] seed     The ChainedSeed to which the digonal should be added.
  * @param[in]     diagonal The SeedDiagional to add to <tt>seed</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TConfig>
 inline void
@@ -369,8 +357,6 @@ appendDiagonal(Seed<ChainedSeed, TConfig> & seed,
  * @param[in]     first An iterator into the ChainedSeed, as returned by @link ChainedSeed#Iterator @endlink.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TConfig>
 inline void
 truncateDiagonals(Seed<ChainedSeed, TConfig> & seed,
@@ -393,8 +379,6 @@ truncateDiagonals(Seed<ChainedSeed, TConfig> & seed,
  * @param[in] seed The ChainedSeed to the begin iterator for.
  * @param[in] tag  A tag for selecting the type of the iterator, one of <tt>Standard</tt> and <tt>Rooted</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TConfig>
 inline typename Iterator<Seed<ChainedSeed, TConfig> >::Type
@@ -423,8 +407,6 @@ begin(Seed<ChainedSeed, TConfig> const & seed, Standard const &)
  * @param[in] seed The ChainedSeed to the end iterator for.
  * @param[in] tag  A tag for selecting the type of the iterator, one of <tt>Standard</tt> and <tt>Rooted</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TConfig>
 inline typename Iterator<Seed<ChainedSeed, TConfig> >::Type
@@ -455,8 +437,6 @@ end(Seed<ChainedSeed, TConfig> const & seed, Standard const &)
  * @return TReference Reference to first ChainedSeed diagonal.  TReference is the reference type of <tt>seed</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TConfig>
 inline typename Reference<Seed<ChainedSeed, TConfig> >::Type
 front(Seed<ChainedSeed, TConfig> & seed)
@@ -485,8 +465,6 @@ front(Seed<ChainedSeed, TConfig> const & seed)
  *
  * @return TReference Reference to the last ChainedSeed diagonal.  TReference is the reference type of <tt>seed</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TConfig>
 inline typename Reference<Seed<ChainedSeed, TConfig> >::Type

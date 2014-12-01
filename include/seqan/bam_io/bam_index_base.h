@@ -57,8 +57,6 @@ namespace seqan {
  * This is an abstract class; don't use it itself but its specializations.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec>
 class BamIndex;
 

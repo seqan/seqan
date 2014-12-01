@@ -64,8 +64,6 @@ namespace seqan {
  * @brief Tag to select the serial implementation of an algorithm.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct Parallel_;
 typedef Tag<Parallel_> Parallel;
 

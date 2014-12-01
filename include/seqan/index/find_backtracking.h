@@ -101,7 +101,6 @@ struct PrefixAligner_<TPrefix, HammingDistance>
 
 // ============================================================================
 
-/*_DDDOC_PLACEHOLDER*/
 ///.Class.Pattern.param.TSpec.type:Spec.Backtracking
 ///.Class.Finder.param.TSpec.type:Spec.Backtracking
 

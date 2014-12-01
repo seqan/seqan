@@ -42,7 +42,6 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // wotd tree index fibres
 
-/*_DDDOC_PLACEHOLDER*/
 /*! 
  * @defgroup WOTDIndexFibres WOTD Index Fibres
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of an @link
@@ -136,7 +135,6 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // wotd tree index
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class IndexWotd
  * @extends Index
@@ -1143,7 +1141,6 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 
 //////////////////////////////////////////////////////////////////////////////
 //TODO(singer): The function createWotdIndex in never defined!
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn IndexWotd#createWotdIndex
  * @headerfile <seqan/index.h>

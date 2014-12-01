@@ -95,7 +95,6 @@ struct User : Mode
 	User (int m, int e): min_length(m), errors(e) {}
 };
 
-/*_DDDOC_PLACEHOLDER*/
 struct AdapterTrimmingStats
 {
 	unsigned a1count, a2count;
@@ -131,7 +130,6 @@ struct STRING_REVERSE_COMPLEMENT
 // Functions
 // ============================================================================
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq1, typename TSeq2, bool TTop, bool TLeft, bool TRight, bool TBottom>
 void alignPair(seqan::Pair<unsigned, seqan::Align<TSeq1> >& ret, TSeq1& seq1, TSeq2& seq2,
 		const seqan::AlignConfig<TTop, TLeft, TRight, TBottom>& config, bool band = false)
@@ -153,14 +151,12 @@ void alignPair(seqan::Pair<unsigned, seqan::Align<TSeq1> >& ret, TSeq1& seq1, TS
     }
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TRow>
 unsigned countTotalGaps(TRow& row)
 {
 	return length(row) - length(source(row));
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TAlign>
 unsigned getOverlap(TAlign& align)
 {
@@ -170,7 +166,6 @@ unsigned getOverlap(TAlign& align)
 	return length(source(row1)) - countTotalGaps(row2);
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TAlign>
 unsigned getInsertSize(TAlign& align)
 {
@@ -188,7 +183,6 @@ unsigned getInsertSize(TAlign& align)
 	return seq1_length + seq2_length - overlap - (seq2l + seq1r);
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq>
 unsigned stripPair(TSeq& seq1, TSeq& seq2)
 {
@@ -271,7 +265,6 @@ unsigned stripPair(TSeq& seq1, TSeq& adapter1, TSeq& seq2, TSeq& adapter2)
 	return insert;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq, typename TId>
 unsigned stripPairBatch(seqan::StringSet<TSeq>& set1, seqan::StringSet<TId>& idSet1,
     seqan::StringSet<TSeq>& set2, seqan::StringSet<TId>& idSet2, AdapterTrimmingStats& stats, bool tagOpt)
@@ -340,7 +333,6 @@ unsigned stripPairBatch(seqan::StringSet<TSeq>& set1, seqan::StringSet<TId>& idS
 	return a1count + a2count;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq, typename TAdapter>
 void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, TSeq& seq, TAdapter& adapter)
 {
@@ -350,7 +342,6 @@ void alignAdapter(seqan::Pair<unsigned, seqan::Align<TSeq> >& ret, TSeq& seq, TA
 	alignPair(ret, seq, adapter, seqan::AlignConfig<true, false, true, false>(), true);
 }
 
-/*_DDDOC_PLACEHOLDER*/
 //Version for automatic matching options
 inline bool isMatch(int overlap, int mismatches, const Auto &)
 {
@@ -371,7 +362,6 @@ inline bool isMatch(int overlap, int mismatches, const User& userOptions)
 	return overlap >= userOptions.min_length && mismatches <= userOptions.errors;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq, typename TAdapter, typename TSpec>
 unsigned stripAdapter(TSeq& seq, TAdapter& adapter, TSpec const & spec)
 {
@@ -391,7 +381,6 @@ unsigned stripAdapter(TSeq& seq, TAdapter& adapter, TSpec const & spec)
 	    return 0;
     }
 }
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq, typename TId, typename TAdapter, typename TSpec>
 unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& idSet, TAdapter& adapter, TSpec const & spec,
 		AdapterTrimmingStats& stats, bool reverse = false, bool tagOpt = false)
@@ -447,7 +436,6 @@ unsigned stripAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& i
 	return a_count;
 }
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSeq, typename TId, typename TSpec>
 unsigned stripReverseAdapterBatch(seqan::StringSet<TSeq>& set, seqan::StringSet<TId>& IdSet, TSeq& adapter, TSpec const & spec,
 		AdapterTrimmingStats& stats, bool tagOpt)

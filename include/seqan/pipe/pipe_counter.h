@@ -70,8 +70,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The second output field begins with 0 and increases by 1 per element.
  */ 
 
-/*_DDDOC_PLACEHOLDER*/
-
     //////////////////////////////////////////////////////////////////////////////
     // counter class
     template < typename TInput >

@@ -73,8 +73,6 @@ namespace seqan {
  * @param[in]     c   The value to set to.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): Does memset() really belong in this header? Used in find_myers_ukknonen.h, pump_lcp_core.h, pipe_sample.h, file_async
 
 using ::std::memset;

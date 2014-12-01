@@ -57,7 +57,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TSpec  Specializing type.  Default: <tt>Default</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TCargo, typename TSpec>
 class Graph<Tree<TCargo, TSpec> > 
 {
@@ -866,8 +865,6 @@ isRoot(Graph<Tree<TCargo, TSpec> > const& g,
  * @param[in] v The descriptor of the vertex to query for.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline bool
 isLeaf(Graph<Tree<TCargo, TSpec> > const& g,
@@ -894,8 +891,6 @@ isLeaf(Graph<Tree<TCargo, TSpec> > const& g,
  * @return TSize The number of tree edges.  Faster than @link Graph#numEdges @endlink for trees.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TCargo, typename TSpec>
 inline typename Size<Graph<Tree<TCargo, TSpec> > >::Type 
 numTreeEdges(Graph<Tree<TCargo, TSpec> > const& g) 
@@ -918,8 +913,6 @@ numTreeEdges(Graph<Tree<TCargo, TSpec> > const& g)
  *
  * @return TSize The number of children.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline typename Size<Graph<Tree<TCargo, TSpec> > >::Type 
@@ -945,8 +938,6 @@ numChildren(Graph<Tree<TCargo, TSpec> > const& g,
  *
  * @return TVertexDescriptor Vertex descriptor of the added vertex.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline typename VertexDescriptor<Graph<Tree<TCargo, TSpec> > >::Type 
@@ -988,8 +979,6 @@ addChild(Graph<Tree<TCargo, TSpec> >& g,
  * @param[in]     child  The descriptor of the child vertex.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline void 
 removeChild(Graph<Tree<TCargo, TSpec> >& g,
@@ -1013,8 +1002,6 @@ removeChild(Graph<Tree<TCargo, TSpec> >& g,
  * @param[in,out] g      The Tree to modify.
  * @param[in]     parent Descriptor of the vertex to remove children of.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
 inline void 
@@ -1048,7 +1035,6 @@ removeAllChildren(Graph<Tree<TCargo, TSpec> >& g,
  * @return TVertexDescriptor The descriptor of the child vertex.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TCargo, typename TSpec, typename TEdgeDescriptor>
 inline typename VertexDescriptor<Graph<Tree<TCargo, TSpec> > >::Type 
 childVertex(Graph<Tree<TCargo, TSpec> > const&,
@@ -1074,7 +1060,6 @@ childVertex(Graph<Tree<TCargo, TSpec> > const&,
  * @return TVertexDescriptor The descriptor of the child vertex.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TCargo, typename TSpec>
 inline typename VertexDescriptor<Graph<Tree<TCargo, TSpec> > >::Type 
 parentVertex(Graph<Tree<TCargo, TSpec> > const& g,
@@ -1108,7 +1093,6 @@ parentVertex(Graph<Tree<TCargo, TSpec> > const& g,
  * @param[out] group A @link String @endlink of leaf vertex descriptors.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TCargo, typename TSpec, typename TVertexDescriptor, typename TGroup>
 inline void
 collectLeaves(Graph<Tree<TCargo, TSpec> > const& g,

@@ -70,8 +70,6 @@ namespace seqan {
  * this string set.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct JournaledSet_;
 typedef Tag<JournaledSet_> JournaledSet;
 
@@ -106,8 +104,6 @@ class JournalTraceBuffer;
  *
  * @signature typedef Tag<JournaledCompact_> JournaledCompact;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // ----------------------------------------------------------------------------
 // Tag JournaledManhatten
@@ -146,8 +142,6 @@ typedef Tag<JournaledCompact_> JournaledCompact;
  * @endlink consists of one insertion node covering the complete joined sequence.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec = JournaledManhatten>
 struct GlobalAlign{};
 
@@ -173,8 +167,6 @@ struct GlobalAlign{};
  * insertion node whil the corresponding part of the reference sequence is deleted.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec = JournaledManhatten>
 struct GlobalChain{};
 
@@ -195,8 +187,6 @@ struct GlobalChain{};
  * SeqAn offers two general methods to compute the journal.  The first one uses a @link globalAlignment @endlink
  * function and the second one uses an anchor based approach.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec = GlobalAlign<JournaledManhatten> >
 struct JoinConfig{};

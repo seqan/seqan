@@ -66,8 +66,6 @@ typedef SmartFile<Fastq, Output>    SeqFileOut;
  * @signature typedef TagSelector<SeqFormat> AutoSeqFormat;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 typedef
     TagList<Fastq,
     TagList<Fasta,

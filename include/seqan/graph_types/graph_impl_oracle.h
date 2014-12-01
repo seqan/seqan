@@ -44,8 +44,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 //////////////////////////////////////////////////////////////////////////////
 // INTERNAL FUNCTIONS
 //////////////////////////////////////////////////////////////////////////////
@@ -96,7 +94,6 @@ _addLetterToOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
  * @see Automaton#createOracleOnReverse
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TText>
 inline void
 createOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
@@ -130,7 +127,6 @@ createOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
  * @see Automaton#createOracle
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TText>
 inline void
 createOracleOnReverse(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,

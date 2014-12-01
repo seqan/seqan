@@ -89,8 +89,6 @@ namespace seqan {
  * </dl>
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <bool TOP = false, bool LEFT = false, bool RIGHT = false, bool BOTTOM = false, typename TSpec = Default>
 class AlignConfig
 {};

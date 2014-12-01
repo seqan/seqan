@@ -60,7 +60,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *                   edge ids.  NB: if edges do not store ids then external property maps do not work.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec>
 class Graph<Hmm<TAlphabet, TCargo, TSpec> > 
 {
@@ -615,7 +614,6 @@ write(TFile & target,
  * @param[in]     v   The descriptor of the vertex to assign as begin state.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline void
 assignBeginState(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
@@ -641,7 +639,6 @@ assignBeginState(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
  * @param[in]     v   The descriptor of the vertex to assign as end state.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline void
 assignEndState(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
@@ -667,7 +664,6 @@ assignEndState(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
  * @return TVertexDescriptor A reference to the begin state vertex descriptor.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec>
 inline typename VertexDescriptor<Graph<Hmm<TAlphabet, TCargo, TSpec> > >::Type&
 beginState(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g)
@@ -689,7 +685,6 @@ beginState(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g)
  * @return TVertexDescriptor A reference to the end state vertex descriptor.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec>
 inline typename VertexDescriptor<Graph<Hmm<TAlphabet, TCargo, TSpec> > >::Type&
 endState(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g)
@@ -711,7 +706,6 @@ endState(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g)
  * @return TVertexDescriptor The begin state vertex descriptor.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec>
 inline typename VertexDescriptor<Graph<Hmm<TAlphabet, TCargo, TSpec> > >::Type
 getBeginState(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g)
@@ -733,7 +727,6 @@ getBeginState(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g)
  * @return TVertexDescriptor The end state vertex descriptor.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec>
 inline typename VertexDescriptor<Graph<Hmm<TAlphabet, TCargo, TSpec> > >::Type
 getEndState(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g)
@@ -759,7 +752,6 @@ getEndState(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g)
  * @return TCargo Return the transition probability.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline TCargo
 getTransitionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,
@@ -802,7 +794,6 @@ getTransitionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> > const&,
  * @return TCargo Returns a reference to the transition probability.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline TCargo&
 transitionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
@@ -842,7 +833,6 @@ transitionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> >&,
  * @param[in] e      Assign probability to edge with this edge descriptor.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor, typename TTransProb>
 inline void
 assignTransitionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
@@ -884,7 +874,6 @@ assignTransitionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> >&,
  * @return TCargo The emission probability.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline TCargo
 getEmissionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,
@@ -910,7 +899,6 @@ getEmissionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,
  * @return TCargo Reference to the emission probability.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline TCargo&
 emissionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
@@ -935,7 +923,6 @@ emissionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
  * @param[in]     eProb  Emission probability to assign.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor, typename TEmisProb>
 inline void
 assignEmissionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
@@ -962,7 +949,6 @@ assignEmissionProbability(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
  * @param[in] silent A bool with the silent status.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline void
 assignSilentStatus(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
@@ -988,7 +974,6 @@ assignSilentStatus(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
  * @return TBoolRef Reference to bool silent status flag.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline bool&
 silentStatus(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
@@ -1013,7 +998,6 @@ silentStatus(Graph<Hmm<TAlphabet, TCargo, TSpec> >& g,
  * @return bool true if the state is silent and false if not.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor>
 inline bool
 isSilent(Graph<Hmm<TAlphabet, TCargo, TSpec> > const& g,

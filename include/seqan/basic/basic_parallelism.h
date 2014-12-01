@@ -65,8 +65,6 @@
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 #if !defined(SEQAN_ENABLE_PARALLELISM)
 #if defined(_OPENMP)
 #define SEQAN_ENABLE_PARALLELISM 1

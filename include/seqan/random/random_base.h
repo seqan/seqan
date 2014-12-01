@@ -76,8 +76,6 @@ struct MersenneTwister;
  * @see http://trac.seqan.de/wiki/Tutorial/Randomness
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec = MersenneTwister>
 class Rng;
 
@@ -95,8 +93,6 @@ class Rng;
  * @return TValue Random number, TValue can be retrieved with Rng#Value.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @class Pdf
  * @headerfile <seqan/random.h>
@@ -110,8 +106,6 @@ class Rng;
  * This class is used together with @link Rng @endlink in the function @link Rng#pickRandomNumber @endlink. See the 
  * <a href="http://trac.seqan.de/wiki/Tutorial/Randomness">SeqAn Randomness Tutorial</a> for more details.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec>
 class Pdf;
@@ -230,7 +224,6 @@ const typename Value<Rng<TSpec> const>::Type MinValue<Rng<TSpec> const>::VALUE =
  * @see defaultRng
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct GetDefaultRng
 {
@@ -258,7 +251,6 @@ struct GetDefaultRng
  * For more details see the <a href="http://trac.seqan.de/wiki/Tutorial/Randomness">SeqAn Tutorial on Randomness</a>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 // specification only
 
 /*!
@@ -282,8 +274,6 @@ struct GetDefaultRng
  *
  * @see GetDefaultRng
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TRng>
 inline TRng &

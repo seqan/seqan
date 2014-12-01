@@ -107,8 +107,6 @@ char const * FileExtensions<Bed, T>::VALUE[1] =
  * previously unknown reference occurs.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // We have a helper function _readBedRecordNoData() that has various
 // overloads.  The one for Bed$N$ calls the one with Bed$N-1$.
 

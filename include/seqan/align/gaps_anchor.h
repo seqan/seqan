@@ -100,8 +100,6 @@ inline void _reinitAnchorGaps(Gaps<TSequence, AnchorGaps<TGapAnchors> > & gaps);
  */
 
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TGapAnchors = String<GapAnchor<unsigned> > >
 struct AnchorGaps
 {};
@@ -778,8 +776,6 @@ assignSource(Gaps<TSequence, AnchorGaps<TGapAnchor> > & gaps, TSequence2 const &
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSource, typename TGapAnchors, typename TPosition>
 inline TPosition
 positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition pos)
@@ -860,8 +856,6 @@ positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition p
  * TAlignedReadPos endPos = positionGapToSeq(contigGaps, 33);
  * @endcode
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSource, typename TGapAnchors, typename TPosition>
 inline TPosition

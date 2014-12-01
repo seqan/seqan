@@ -44,8 +44,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
-
 
 //////////////////////////////////////////////////////////////////////////////
 // INTERNAL FUNCTIONS
@@ -106,7 +104,6 @@ _addStringToTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
  * @see Automaton#createTrieOnReverse
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TTerminalStateMap, typename TKeywords>
 inline void
 createTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
@@ -143,7 +140,6 @@ createTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
  * @see Automaton#createTrie
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TCargo, typename TSpec, typename TTerminalStateMap, typename TKeywords>
 inline void
 createTrieOnReverse(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
@@ -181,7 +177,6 @@ createTrieOnReverse(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
  * @param[in]  text             A @link TextConcept @endlink object.
  */
  
-/*_DDDOC_PLACEHOLDER*/
 template <typename TAlphabet, typename TCargo, typename TSpec, typename TTerminalStateMap, typename TText>
 inline void
 createSuffixTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,

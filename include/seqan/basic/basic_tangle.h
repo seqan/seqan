@@ -127,8 +127,6 @@ struct Cargo<Pair<TKey, TCargo, TSpec> >
  * @see AlphabetWithQualitiesConcept#assignQualityValue
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TDest, typename TSource>
 inline void
 _assignQualities(TDest &dst, TSource const &src, True)

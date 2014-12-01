@@ -77,8 +77,6 @@ namespace seqan {
  * context's name store.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Similar to readRecord() for BedRecord, we have various overloads of _writeBedRecord().
 
 template <typename TTarget>

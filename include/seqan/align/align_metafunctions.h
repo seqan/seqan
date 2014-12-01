@@ -55,8 +55,6 @@ namespace seqan {
 // Metafunction Cols
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 struct Cols;
 
@@ -76,8 +74,6 @@ struct Cols;
  * @return Type   The resulting type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 struct Col : Value<typename Cols<T>::Type>
 {};
@@ -86,16 +82,12 @@ struct Col : Value<typename Cols<T>::Type>
 // Metafunction Rows
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 struct Rows;
 
 // ----------------------------------------------------------------------------
 // Metafunction Row
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T>
 struct Row : Value<typename Rows<T>::Type>
@@ -111,7 +103,6 @@ struct Row<T const>
 // Metafunction StringSetType
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename T>
 struct StringSetType;
 

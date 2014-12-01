@@ -77,8 +77,6 @@ namespace seqan {
  * @return VALUE The number of bits needed to store a value.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Forwards for Metafunctions and Functions.
 template <typename T> struct BitsPerValue;
 
@@ -242,8 +240,6 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * @see OrderedAlphabetConcept#MinValue
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Forwards for Metafunctions and Functions.
 template <typename T> struct MinValue;
 template <typename T> struct MaxValue;
@@ -346,8 +342,6 @@ SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Compara
  * @see FiniteOrderedAlphabetConcept#ValueSize
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Forwards for Metafunctions and Functions.
 template <typename T> struct ValueSize;
 template <typename T> typename ValueSize<T>::Type valueSize();
@@ -427,8 +421,6 @@ SEQAN_CONCEPT_REFINE(FiniteOrderedAlphabetConcept, (TValue), (OrderedAlphabetCon
  * @see AlphabetWithGapsConcept#gapValueImpl
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Forwards for Metafunctions and Functions.
 template <typename T> T gapValue();
 template <typename T> T gapValueImpl(T *);
@@ -482,8 +474,6 @@ SEQAN_CONCEPT_REFINE(AlphabetWithGapsConcept, (TValue), (AlphabetConcept))
  * 
  * @see AlphabetWithUnknownValueConcept#unknownValue
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // Forwards for Metafunctions and Functions.
 template <typename T> T unknownValue();
@@ -577,8 +567,6 @@ SEQAN_CONCEPT_REFINE(AlphabetWithUnknownValueConcept, (TValue), (AlphabetConcept
  * @see convertQuality
  * @see assignQualities
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // TODO(holtgrew): What about different quality types? Guess scaling? Look at how other packages do this.
 

@@ -71,8 +71,6 @@ namespace seqan {
  * @brief Write accesses are not written back to file and not shared among different mappings.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 enum FileMappingMode {
     MAP_RDONLY = 1,
     MAP_WRONLY = 2,
@@ -102,8 +100,6 @@ enum FileMappingMode {
  * @val FileMappingAdvise MAP_DONTNEED;
  * @brief The address range in the advise will not be needed any more.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 #ifdef PLATFORM_WINDOWS
 
@@ -139,8 +135,6 @@ enum FileMappingAdvise {
  *
  * This structure represents both a file and its memory mapping.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 #ifdef PLATFORM_WINDOWS
 static SECURITY_ATTRIBUTES FileMappingDefaultAttributes =
@@ -347,8 +341,6 @@ _unmapFile(FileMapping<TSpec> &mapping)
  * @return bool <tt>true</tt> if the opening was successful, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function open()
 // ----------------------------------------------------------------------------
@@ -395,8 +387,6 @@ open(FileMapping<TSpec> &mapping, TFile const &file)
  * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function openTemp()
 // ----------------------------------------------------------------------------
@@ -423,8 +413,6 @@ openTemp(FileMapping<TSpec> &mapping)
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // ----------------------------------------------------------------------------
 // Function close()
@@ -453,8 +441,6 @@ close(FileMapping<TSpec> &mapping)
  * @return bool <tt>true</tt> indicating success, <tt>false</tt> failure.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function closeAndResize()
 // ----------------------------------------------------------------------------
@@ -482,8 +468,6 @@ closeAndResize(FileMapping<TSpec> &mapping, TSize newFileSize)
  *
  * @return TSize The file size  (Metafunction: @link FileMapping#Size @endlink).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // ----------------------------------------------------------------------------
 // Function length()
@@ -520,8 +504,6 @@ length(FileMapping<TSpec> const &mapping)
  * claling this function.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec, typename TSize>
 inline bool
 resize(FileMapping<TSpec> &mapping, TSize newFileSize)
@@ -557,8 +539,6 @@ resize(FileMapping<TSpec> &mapping, TSize newFileSize)
  * needed to synchronize file accesses in non-shared-memory environments.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec, typename TPos, typename TSize>
 inline bool
 flushFileSegment(FileMapping<TSpec> &, void *addr, TPos beginPos, TSize size)
@@ -587,8 +567,6 @@ flushFileSegment(FileMapping<TSpec> &, void *addr, TPos beginPos, TSize size)
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TPos, typename TSize>
 inline bool
@@ -624,7 +602,6 @@ cancelFileSegment(FileMapping<TSpec> &, void *addr, TPos fileOfs, TSize size)
  * This function has no effect on Windows.  On all other platforms it calls <tt>posix_madvise</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSpec, typename TPos, typename TSize>
 inline bool
 adviseFileSegment(FileMapping<TSpec> &, FileMappingAdvise advise, void *addr, TPos fileOfs, TSize size)
@@ -656,8 +633,6 @@ adviseFileSegment(FileMapping<TSpec> &, FileMappingAdvise advise, void *addr, TP
  * @return TPtr A pointer to the beginning of the memory-mapped segment in memory or <tt>NULL</tt> on error.  TPtr is
  *              <tt>void *</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TPos, typename TSize, typename TFileMappingMode>
 inline void *
@@ -741,8 +716,6 @@ mapFileSegment(FileMapping<TSpec> &mapping, TPos fileOfs = 0)
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSpec, typename TSize>
 inline bool
 unmapFileSegment(FileMapping<TSpec> &, void *addr, TSize size)
@@ -776,8 +749,6 @@ unmapFileSegment(FileMapping<TSpec> &, void *addr, TSize size)
  * @return TPtr A pointer to the beginning of the memory-mapped segment in memory or <tt>NULL</tt> on error.  Type:
  *              <tt>void*</tt>.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec, typename TPos, typename TSize>
 inline void *

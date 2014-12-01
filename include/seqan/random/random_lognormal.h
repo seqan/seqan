@@ -66,8 +66,6 @@ typedef Tag<LogNormal_> LogNormal;
  *        for lognormal distributions.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct MuSigma_;
 typedef Tag<MuSigma_> MuSigma;
 struct MeanStdDev_;
@@ -104,15 +102,12 @@ typedef Tag<MeanStdDev_> MeanStdDev;
  * @param[in] stdDev Standard deviation of the log-normal distribution, double.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <>
 class Pdf<LogNormal>
 {
 public:
     Pdf<Normal> _normalDist;
 
-/*_DDDOC_PLACEHOLDER*/
     Pdf(double mu, double sigma, MuSigma const &)
             : _normalDist(mu, sigma)
     {

@@ -75,8 +75,6 @@ namespace seqan {
  * </ul>
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct TraceBack_ {};
 typedef SimpleType<unsigned char, TraceBack_> TraceBack;
 

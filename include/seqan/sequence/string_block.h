@@ -68,7 +68,6 @@ namespace seqan {
 template<size_t SPACE = 4096>
 struct Block;
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TValue, size_t SPACE>
 class String<TValue, Block<SPACE> >
 {

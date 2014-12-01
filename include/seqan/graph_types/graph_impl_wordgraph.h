@@ -58,7 +58,6 @@ struct WordGraph;
  * @tparam TSpec     The specializing types.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template<typename TAlphabet, typename TSpec>
 class Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > 
 {

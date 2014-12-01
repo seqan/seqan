@@ -80,8 +80,6 @@ typedef Tag<AccuCount_> AccuCount;
  * Currently, this is only meant for accumulating integers.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TSpec>
 struct Accumulator;
 
@@ -120,8 +118,6 @@ struct Accumulator;
  * count:   3
  * @endcode
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 struct Accumulator<TValue, AccuAverage>
@@ -182,8 +178,6 @@ struct Value<Accumulator<TValue, AccuAverage> const > : Value<Accumulator<TValue
  *
  * @return Type The result type.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename T, typename TTag = void>
 struct Result;
@@ -250,8 +244,6 @@ struct Result<Accumulator<TValue, AccuAverage> const, AccuSum> : Result<Accumula
  * @param[in]     x   The value to include in the accumulation (@link IntegerConcept @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ----------------------------------------------------------------------------
 // Function clear()                                                 Accumulator
 // ----------------------------------------------------------------------------
@@ -305,8 +297,6 @@ push(Accumulator<TValue, AccuAverage> & acc, TValue2 value)
  * @return TResult The average of the values (Metafunction: @link Accumulator#Result @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue>
 inline typename Result<Accumulator<TValue, AccuAverage>, AccuAverage>::Type
 average(Accumulator<TValue, AccuAverage> const & acc)
@@ -332,8 +322,6 @@ average(Accumulator<TValue, AccuAverage> const & acc)
  * @return TResult The sum of the values (Metafunction: @link Accumulator#Result @endlink).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue>
 inline typename Result<Accumulator<TValue, AccuAverage>, AccuSum>::Type
 sum(Accumulator<TValue, AccuAverage> const & acc)
@@ -355,8 +343,6 @@ sum(Accumulator<TValue, AccuAverage> const & acc)
  *
  * @return TResult The number of pushed values (Metafunction: @link Accumulator#Result @endlink).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline typename Result<Accumulator<TValue, AccuAverage>, AccuCount>::Type

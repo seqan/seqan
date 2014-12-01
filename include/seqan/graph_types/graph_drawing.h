@@ -481,7 +481,6 @@ _writeEdgeType(TFile & file,
  * @param[in]     tag     Format tag to use for writing.  Types: DotDrawing.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TTarget, typename TSpec, typename TNodeAttributes, typename TEdgeAttributes>
 void
 writeRecords(
@@ -541,7 +540,6 @@ writeRecords(
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TFile, typename TSpec, typename TNodeAttributes>
 inline void
 writeRecords(
@@ -559,7 +557,6 @@ writeRecords(
 
 //////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TFile, typename TSpec>
 inline void
 writeRecords(

@@ -67,7 +67,6 @@ struct Myers;
  * @return Type The pattern specialization to use as a default.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TScore = EditDistanceScore, typename THasState = True>
 struct DefaultFindBeginPatternSpec
 {
@@ -349,7 +348,6 @@ _findBeginInit(TPattern & pattern, TNeedle & needle_)
  * findBegin to find a begin position.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TFinder, typename TPattern>
 inline bool
 findBegin(TFinder & finder,
@@ -382,8 +380,6 @@ findBegin(TFinder & finder,
  * @return TScoreValue The score of the lst match found using <tt>pattern</tt>.  The value is set after successfully
  *                     call of @link Finder#findBegin @endlink.  If no match was found, the value is undefined.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TPattern>
 inline typename Value<typename ScoringScheme<TPattern>::Type>::Type

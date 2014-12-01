@@ -90,8 +90,6 @@ namespace seqan {
  * @brief The id of the subject.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TId, typename TPosition>
 class LocalMatch
 {
@@ -157,8 +155,6 @@ public:
  * @brief The type to use for positions.
  * @signature typedef (...) LocalMatchStoreConfig::TPosition;
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec>
 struct LocalMatchStoreConfig
@@ -237,8 +233,6 @@ struct LocalMatchStoreConfig
  * 
  * @return int 0 on success, non-0 on errors and EOF
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec=void, typename TConfig=LocalMatchStoreConfig<TSpec> >
 class LocalMatchStore
@@ -324,8 +318,6 @@ registerSequenceName(TLocalMatchStore & store,
  * 
  * Matches on the reverse-complement are encoded by the begin position being greater than the begin position.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TLocalMatchStore, typename TPosition>
 inline void

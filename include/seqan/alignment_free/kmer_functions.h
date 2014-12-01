@@ -124,8 +124,6 @@ struct UnmaskedAlphabet_<const TAlphabet>
  * @see MarkovModel
  */ 
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*
  * Function to count kmers, Ns are not considered
  */
@@ -368,8 +366,6 @@ void countKmers(String<unsigned> & kmerCounts, MarkovModel<TAlphabetBG, TValue> 
  * @see countKmers
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TString, typename TStringBG>
 void calculateProbability(TValue & probability, TString const & sequence, TStringBG const & backgroundFrequencies)
 {
@@ -450,8 +446,6 @@ void calculateProbability(TValue & probability, TString const & sequence, TStrin
  * @see countKmers
  * @see calculateOverlapIndicator
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TString, typename TStringBG>
 void calculateVariance(TValue & variance, TString const & word, TStringBG const & backgroundFrequencies, int const n)
@@ -578,8 +572,6 @@ void calculateVariance(TValue & variance, String<TAlphabet, TSpec> const & word,
  * @see countKmers
  * @see calculateOverlapIndicator
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TString, typename TStringBG>
 void calculateCovariance(TValue & covariance, TString const & word1, TString const & word2, TStringBG const & backgroundFrequencies, int const n)
@@ -715,7 +707,6 @@ void calculateCovariance(TValue & covariance, String<TAlphabet, TSpec> const & w
  * @see alignmentFreeComparison
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TString>
 void calculatePeriodicity(String<int> & periodicity, TString const & word1, TString const & word2)
 {
@@ -780,7 +771,6 @@ void calculatePeriodicity(String<int> & periodicity, TString const & word1, TStr
  * @see alignmentFreeComparison
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TString>
 void calculateOverlapIndicator(String<int> & epsilon, TString const & word1, TString const & word2)
 {
@@ -843,8 +833,6 @@ void calculateOverlapIndicator(String<int> & epsilon, TString const & word1, TSt
  * @see cutNs
  * @see countKmers
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TString>
 void
@@ -930,8 +918,6 @@ stringToStringSet(StringSet<String<Dna> > & dnaStringSet, String<Dna5> const & s
  * @see stringToStringSet
  * @see alignmentFreeComparison
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void
 cutNs(String<Dna5> & sequenceCut, String<Dna5> const & sequence)

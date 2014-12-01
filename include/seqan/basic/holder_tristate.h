@@ -85,8 +85,6 @@ template <typename TValue> inline size_t length(TValue * me);
  * If a holder object is in owner state when destructed, the owned object is destructed as well.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): This is broken for const TValue since we use Value<Holder>::Type below.
 
 template <typename TValue>
@@ -612,8 +610,6 @@ _holderAllocatePointer(THolder & me, TValue * data)
 }
 #endif  // #if SEQAN_ENABLE_POINTER_HOLDER
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue>
 inline void
 create(Holder<TValue, Tristate> & me)
@@ -757,8 +753,6 @@ create(Holder<TValue, Tristate> & me,
 }
 
 //////////////////////////////////////////////////////////////////////////////
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue>
 inline void
 detach(Holder<TValue, Tristate> & me)
@@ -770,8 +764,6 @@ detach(Holder<TValue, Tristate> & me)
 // ----------------------------------------------------------------------------
 // Function setValue()
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline void

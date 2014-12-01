@@ -78,8 +78,6 @@ length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
  * @signature #define SEQAN_HAS_BZIP 0  // or 1
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // ============================================================================
 // Tags
 // ============================================================================

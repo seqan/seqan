@@ -107,8 +107,6 @@ namespace seqan {
  * @signature typedef (...) BamIOContext::TNameStoreCache;
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <
     typename TNameStore_ = StringSet<CharString>,
     typename TNameStoreCache_ = NameStoreCache<TNameStore_>,
@@ -186,8 +184,6 @@ public:
  * @return TNameStoreRef A reference to the <tt>TNameStore</tt> of the context.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStore &
 nameStore(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
@@ -251,8 +247,6 @@ setSequenceLengths(BamIOContext<TNameStore, TNameStoreCache, Dependent<> > & con
  *
  * @return TNameStoreCacheRef A reference to the <tt>TNameStoreCache</tt> of the context.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStoreCache &

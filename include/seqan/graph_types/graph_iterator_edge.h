@@ -69,8 +69,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in] graph The @link Graph @endlink to iterate edges of.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template<typename TGraph, typename TSpec>
 class Iter<TGraph, GraphIterator<InternalEdgeIterator<TSpec> > > 
 {

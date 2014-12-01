@@ -68,8 +68,6 @@ template <typename TSpec> class Graph;
  * Note that internally T is used as signed, so not the whole range is available if T is unsigned.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue>
 class UnionFind
 {
@@ -347,8 +345,6 @@ resizeVertexMap(UnionFind<TValue> & unionFind,
  * @see UnionFind#joinSets
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TQuery>
 inline
 TValue
@@ -395,8 +391,6 @@ findSet(UnionFind<TValue> & unionFind,
  *
  * @see UnionFind#findSet
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TLeft, typename TRight>
 inline

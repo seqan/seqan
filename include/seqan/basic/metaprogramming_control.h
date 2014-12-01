@@ -101,8 +101,6 @@ namespace seqan {
  * @return Type The selected type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 const int DEFAULT_ = ~(~0u >> 1); // initialize with the smallest int
 
 struct NilCase {};
@@ -179,8 +177,6 @@ struct Switch<TAG, NilCase>
  * @param[in]     i   The <tt>int</tt> passed to the <tt>body()</tt> function.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Example of a loop Worker class.  Could be removed, serves no
 // purpose.
 struct WorkerNothing
@@ -253,8 +249,6 @@ public:
  * @param[in,out] arg The argument to pass to the worker's <tt>body()</tt> function.
  * @param[in]     i   The <tt>int</tt> passed to the <tt>body()</tt> function.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename Worker, int I>
 class LoopReverse

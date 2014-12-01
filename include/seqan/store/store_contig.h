@@ -116,8 +116,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Constant to represent an invalid.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TContigSeq_, typename TGapAnchor_, typename TSpec_ = void>
 struct ContigStoreElement
 {
@@ -184,8 +182,6 @@ ContigStoreElement<TContigSeq_, TGapAnchor_, TSpec_>::INVALID_ID = MaxValue<type
  * @var TId ContigFile::firstContigId;
  * @brief The contigId of the first sequence in the file.  Subsequent contig sequences have an increasing contigId.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec_ = void>
 struct ContigFile

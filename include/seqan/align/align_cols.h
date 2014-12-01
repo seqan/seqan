@@ -65,8 +65,6 @@ namespace seqan {
  * @tparam TAlign The Align type.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TAlign>
 struct AlignCols
 {
@@ -99,8 +97,6 @@ struct AlignCols
 // ----------------------------------------------------------------------------
 // Specialization AlignCols
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TSpec>
 struct AlignColIterator;

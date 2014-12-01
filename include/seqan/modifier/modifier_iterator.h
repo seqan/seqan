@@ -68,8 +68,6 @@ template <typename THost, typename TSpec> class ModifiedString;
  * <tt>THost</tt> can also be a modified iterator, so you can create custom iterators by combining predefined ones.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename THost, typename TSpec = void>
 class ModifiedIterator
 {

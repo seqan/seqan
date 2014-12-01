@@ -90,8 +90,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see SorterConfig
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 	template < typename TCompare,
 		       typename TSize,
 			   typename TFile = File<> >
@@ -122,8 +120,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * @see SorterConfigSize
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
     template < typename TCompare, typename TFile = File<> >
     struct SorterConfig {
@@ -160,8 +156,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 10
  * @endcode
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
     template < typename TConfig >
     struct SorterSpec {

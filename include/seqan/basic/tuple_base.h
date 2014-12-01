@@ -75,8 +75,6 @@ struct StoredTupleValue_< SimpleType<TValue, TSpec> >
  * @tparam TSpec  Specialization tag, optional;  defaults to void.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @fn Tuple::i
  * @brief Array of tuple value.

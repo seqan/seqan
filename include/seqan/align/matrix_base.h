@@ -85,8 +85,6 @@ struct Host<Matrix<TValue, DIMENSION> >
  *                   <tt>DIMENSION</tt> dimensions.  Defaults to 0.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 
 template <typename TValue>
 class Matrix<TValue, 0>
@@ -1077,7 +1075,6 @@ matricialProduct(Matrix<TValue, 2> &matrix1,
  * @return TMatrix The resulting tranposed matrix.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue>
 Matrix<TValue,2>
 transpose(Matrix<TValue,2> const & matrix)

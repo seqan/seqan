@@ -53,8 +53,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see PoolConfig
  */ 
 
-/*_DDDOC_PLACEHOLDER*/
-
 	template < typename TSize,
 		       typename TFile = File<> >						// default file type
     struct PoolConfigSize {
@@ -79,8 +77,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see PoolConfigSize
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 	template < typename TFile = File<> >						// default file type
     struct PoolConfig {
 		typedef typename Size<TFile>::Type SizeType;
@@ -103,8 +99,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The Pool's input/output type is <tt>TValue</tt> and the size type is determined by the <tt>TConfig</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     template < typename TConfig = PoolConfig<> >
     struct PoolSpec {
         typedef TConfig Config;
@@ -125,8 +119,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * Use Size to get the size type of a given Pipe (returns <tt>Size&lt;TInput&gt;::Type</tt> by default).
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
     template < typename TValue,
                typename TSpec = PoolSpec<> >
@@ -1183,8 +1175,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The function <tt>push</tt> can only be called within a write process surrounded by beginWrite and endWrite.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
     template < typename TValue, typename TSpec >
     inline void push(Pool<TValue, TSpec> &me, TValue const &Val_) {
         me.push(Val_);
@@ -1261,8 +1251,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see Pool#endWrite
 */
 
-/*_DDDOC_PLACEHOLDER*/
-
 		template < typename TValue, typename TSpec >
 	    inline bool beginWrite(Pool< TValue, TSpec > &me) {
 SEQAN_CHECKPOINT
@@ -1283,8 +1271,6 @@ SEQAN_CHECKPOINT
  * 
  * @see Pool#beginWrite
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 		template < typename TValue, typename TSpec >
 	    inline bool endWrite(Pool< TValue, TSpec > &me) {

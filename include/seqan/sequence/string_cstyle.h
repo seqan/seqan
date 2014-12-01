@@ -109,8 +109,6 @@ clear(String<TValue, CStyle> & me);
  * @endcode
  */
  
-/*_DDDOC_PLACEHOLDER*/
-
 struct CStyle_;
 typedef Tag<CStyle_> CStyle;
 
@@ -434,7 +432,6 @@ _deallocateStorage(
 // Function dependent()
 // --------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue>
 inline bool
 dependent(String <TValue, CStyle > & me)
@@ -620,8 +617,6 @@ clear(String<TValue, CStyle> & me)
 // --------------------------------------------------------------------------
 
 //see basic_holder
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TExpand>
 struct CreateArrayStringExpand_
 {
@@ -860,8 +855,6 @@ create(String<TTargetValue, CStyle> & target,
  * c-style strings for non-contiguous strings or strings with different alphabets, use a @link CStyleString @endlink as an
  * intermediate.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue>
 inline TValue *

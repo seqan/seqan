@@ -62,8 +62,6 @@ namespace seqan {
  * @tparam TIterator The iterator to store internally.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): Assignment works through operator=() but we also need set() and move()!
 // TODO(holtgrew): Proxy cannot work correctly for const containers, but should! RemoveConst_ removes the const of the values inside pointers and references.
 

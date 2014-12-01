@@ -82,8 +82,6 @@ namespace seqan {
  * Default constructor or construction with references to sequence and sample names.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <
     typename TNameStore_ = StringSet<CharString>,
     typename TNameStoreCache_ = NameStoreCache<TNameStore_>,

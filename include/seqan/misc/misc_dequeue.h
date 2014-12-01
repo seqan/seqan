@@ -54,7 +54,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TSpec  Specialization tag for the String.  Default: <tt>Alloc&lt;&gt;</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec = Alloc<> >
 class Dequeue
 {

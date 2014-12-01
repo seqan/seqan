@@ -51,7 +51,6 @@ namespace seqan {
  * @tparam TValue The score value to use.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue>
 class Score<TValue, Simple> {
 public:
@@ -94,7 +93,6 @@ public:
  * @param[in] gapOpen Gap open value (defaults to gap), type TValue.
  */
 
-/*_DDDOC_PLACEHOLDER*/
     Score(TValue _match, TValue _mismatch, TValue _gap_extend, TValue _gap_open)
         : data_match(_match), data_mismatch(_mismatch),
           data_gap_extend(_gap_extend), data_gap_open(_gap_open) {
@@ -110,7 +108,6 @@ public:
  * @signature typedef Score<int, Simple> SimpleScore;
  */
 
-/*_DDDOC_PLACEHOLDER*/
 typedef Score<int, Simple> SimpleScore;
 
 /*!
@@ -124,7 +121,6 @@ typedef Score<int, Simple> SimpleScore;
  * @return TValue The match score.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline TValue
 scoreMatch(Score<TValue, TSpec> const & me) {
@@ -142,7 +138,6 @@ scoreMatch(Score<TValue, TSpec> const & me) {
  * @param[in]     value The value to set the match score to.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline void
 setScoreMatch(Score<TValue, TSpec> & me, TValue const & value) {
@@ -161,7 +156,6 @@ setScoreMatch(Score<TValue, TSpec> & me, TValue const & value) {
  * @return TValue The mismatch score.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline TValue
 scoreMismatch(Score<TValue, TSpec> const & me) {
@@ -179,7 +173,6 @@ scoreMismatch(Score<TValue, TSpec> const & me) {
  * @param[in]     value The value to set the mismatch score to.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline void
 setScoreMismatch(Score<TValue, TSpec> & me, TValue const & value) {
@@ -198,7 +191,6 @@ setScoreMismatch(Score<TValue, TSpec> & me, TValue const & value) {
  * @return TValue The gap extension score.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline TValue
 scoreGapExtend(Score<TValue, TSpec> const & me) {
@@ -207,7 +199,6 @@ scoreGapExtend(Score<TValue, TSpec> const & me) {
 }
 
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline void
 setScoreGapExtend(Score<TValue, TSpec> & me, TValue const & value) {
@@ -226,7 +217,6 @@ setScoreGapExtend(Score<TValue, TSpec> & me, TValue const & value) {
  * @return TValue The gap open score.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline TValue
 scoreGapOpen(Score<TValue, TSpec> const & me) {
@@ -245,7 +235,6 @@ scoreGapOpen(Score<TValue, TSpec> const & me) {
  * @param[in]     value The value to set the gap open score to.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline void
 setScoreGapOpen(Score<TValue, TSpec> & me, TValue const & value) {
@@ -265,7 +254,6 @@ setScoreGapOpen(Score<TValue, TSpec> & me, TValue const & value) {
  */
 
 
-/*_DDDOC_PLACEHOLDER*/
 // TODO(holtgrew): This shortcut/forward should live in score_base.h.
 template <typename TValue, typename TSpec>
 inline TValue
@@ -284,7 +272,6 @@ scoreGap(Score<TValue, TSpec> const & me) {
  * @param[in]     value The value to set the gap score to.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TValue, typename TSpec>
 inline void
 setScoreGap(Score<TValue, TSpec> & me, TValue const & value) {
@@ -295,7 +282,6 @@ setScoreGap(Score<TValue, TSpec> & me, TValue const & value) {
 
 
 // TODO(rmaerker): Remove this here!
-/*_DDDOC_PLACEHOLDER*/
 //template <typename TValue, typename TSpec, typename TVal1, typename TVal2>
 //inline TValue
 //score(Score<TValue, TSpec> const & me, TVal1 left, TVal2 right) {

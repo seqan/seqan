@@ -62,7 +62,6 @@ struct MersenneTwister {};
  *            class Rng<MersenneTwister>;
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <>
 class Rng<MersenneTwister>
 {
@@ -78,7 +77,6 @@ public:
  * @param[in] seed The <tt>unsigned</tt> value to use for seeding, defaults to 0.
  */
 
-/*_DDDOC_PLACEHOLDER*/
     Rng() : _mtRand(0lu)
     { SEQAN_CHECKPOINT; }
 
@@ -128,8 +126,6 @@ pickRandomNumber(Rng<MersenneTwister> & mt)
  * @param[in,out] mt   The MersenneTwisterRng to re-seed.
  * @param[in]     seed The <tt>unsigned</tt> to use for re-seeding, defaults to 0.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 inline void
 reSeed(Rng<MersenneTwister> & mt, __uint32 const seed = 0)

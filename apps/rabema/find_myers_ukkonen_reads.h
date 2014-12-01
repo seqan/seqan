@@ -46,8 +46,6 @@
 
 namespace seqan {
 
-/*_DDDOC_PLACEHOLDER*/
-
 ///.Class.Pattern.param.TSpec.type:Spec.MyersUkkonenReads
 
 struct MyersUkkonenReads_;

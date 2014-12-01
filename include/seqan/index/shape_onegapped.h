@@ -43,7 +43,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	// shape with one gap
 	//////////////////////////////////////////////////////////////////////////////
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class OneGappedShape
  * @extends Shape

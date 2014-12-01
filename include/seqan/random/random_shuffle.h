@@ -66,8 +66,6 @@ namespace seqan {
  * @param[in,out] rng       The random number generator to use.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TContainer, typename TRNG>
 void shuffle(TContainer & container, TRNG & rng)
 {

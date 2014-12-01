@@ -67,7 +67,6 @@ typedef Tag<FibreTreeStructure_>    const FibreTreeStructure;
 // ==========================================================================
 // Metafunctions
 // ==========================================================================
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @defgroup WaveletTreeFibres WaveletTree Fibres
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link WaveletTree @endlink.
@@ -180,8 +179,6 @@ struct RankDictionaryBlock_<TValue, WaveletTree<TSpec, TConfig> >
 // Spec WaveletTree
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TSpec, typename TConfig>
 struct RankDictionary<TValue, WaveletTree<TSpec, TConfig> >
 {
@@ -205,8 +202,6 @@ struct RankDictionary<TValue, WaveletTree<TSpec, TConfig> >
 // Function getFibre()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TSpec, typename TConfig>
 inline typename Fibre<RankDictionary<TValue, WaveletTree<TSpec, TConfig> >, FibreTreeStructure>::Type &
 getFibre(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & dict, FibreTreeStructure)
@@ -225,8 +220,6 @@ getFibre(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, Fibr
 // Function clear()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TSpec, typename TConfig>
 inline void clear(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & dict)
 {
@@ -238,8 +231,6 @@ inline void clear(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & dict)
 // Function empty()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TSpec, typename TConfig>
 inline bool empty(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict)
 {
@@ -249,8 +240,6 @@ inline bool empty(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & d
 // ----------------------------------------------------------------------------
 // Function getValue()
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos>
 inline TValue getValue(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & dict, TPos pos)
@@ -300,8 +289,6 @@ inline TValue getValue(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > cons
 // ----------------------------------------------------------------------------
 // Function getRank()
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TConfig, typename TPos, typename TChar>
 inline typename Size<RankDictionary<TValue, WaveletTree<TSpec, TConfig> > >::Type
@@ -412,8 +399,6 @@ inline void updateRanks(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & d
 // ----------------------------------------------------------------------------
 // Function createRankDictionary()
 // ----------------------------------------------------------------------------
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TSpec, typename TConfig, typename TText, typename TPrefixSums>
 inline void
 createRankDictionary(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & dict, TText const & text, TPrefixSums const & sums)
@@ -437,8 +422,6 @@ createRankDictionary(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & dict
 // Function open()
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TValue, typename TSpec, typename TConfig>
 inline bool open(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & dict, const char * fileName, int openMode)
 {
@@ -458,8 +441,6 @@ inline bool open(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > & dict, co
 // ----------------------------------------------------------------------------
 // Function save()
 // ----------------------------------------------------------------------------
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TValue, typename TSpec, typename TConfig>
 inline bool save(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > const & dict, const char * fileName, int openMode)

@@ -109,8 +109,6 @@ public:
  * This is used for unified interfaces for position dependent and independetn scores.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSequence>
 class ConsensusScoreSequenceEntry
 {
@@ -139,8 +137,6 @@ public:
  * @return TSequence A reference to the underlying sequence.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TSequence>
 inline TSequence const &
 host(ConsensusScoreSequenceEntry<TSequence> & entry)
@@ -167,7 +163,6 @@ host(ConsensusScoreSequenceEntry<TSequence> const & entry)
  *                   <tt>ConsensusScoreSequenceEntry&lt;TSequence&gt;::TPosition</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSequence>
 inline typename ConsensusScoreSequenceEntry<TSequence>::TPosition
 position(ConsensusScoreSequenceEntry<TSequence> const & entry)
@@ -186,7 +181,6 @@ position(ConsensusScoreSequenceEntry<TSequence> const & entry)
  * @return TValue The value of the sequence at the current position.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TSequence>
 inline typename Value<TSequence>::Type
 value(ConsensusScoreSequenceEntry<TSequence> & entry)

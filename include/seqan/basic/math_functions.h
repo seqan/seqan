@@ -90,8 +90,6 @@ inline TValue _intPow(TValue a, TExponent b)
  * @return unsigned The largest integer smaller or equal than the logarithm of <tt>i</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // TODO(holtgrew): Should this maybe called log2floor for consistency with Log2Floor<>::VALUE?
 
 template <int BITS_MAX>

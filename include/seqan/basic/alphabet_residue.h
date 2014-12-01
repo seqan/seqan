@@ -90,8 +90,6 @@ template <typename T> struct BaseAlphabet;
  * @see DnaIterator
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct Dna_ {};
 typedef SimpleType<unsigned char, Dna_> Dna;
 
@@ -131,8 +129,6 @@ struct BitsPerValue< Dna >
  * @see Dna5String
  * @see Dna
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct Dna5_ {};
 typedef SimpleType<unsigned char, Dna5_> Dna5;
@@ -181,8 +177,6 @@ unknownValueImpl(Dna5 *)
  * @see Dna5Q
  * @see Dna
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 #ifndef SEQAN_DEFAULT_QUALITY
 #define SEQAN_DEFAULT_QUALITY 40
@@ -292,8 +286,6 @@ void assignQualityValue(char & q, DnaQ c)
  * @see Dna5
  * @see DnaQ
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct Dna5Q_ {};
 typedef SimpleType <unsigned char, Dna5Q_> Dna5Q;
@@ -425,8 +417,6 @@ void assignQualityValue(char & q, Dna5Q c)
  * @see RnaIterator
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct Rna_ {};
 typedef SimpleType<unsigned char, Rna_> Rna;
 
@@ -466,8 +456,6 @@ struct BitsPerValue<Rna>
  * @see Rna5String
  * @see Rna
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct Rna5_ {};
 typedef SimpleType<unsigned char, Rna5_> Rna5;
@@ -515,8 +503,6 @@ unknownValueImpl(Rna5 *)
  * @see IupacString
  * @see IupacIterator
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 struct Iupac_ {};
 typedef SimpleType<unsigned char, Iupac_> Iupac;
@@ -569,8 +555,6 @@ unknownValueImpl(Iupac *)
  * @see Peptide
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 struct AminoAcid_ {};
 typedef SimpleType<unsigned char, AminoAcid_> AminoAcid;
 
@@ -610,8 +594,6 @@ unknownValueImpl(AminoAcid *)
  * @tparam TValue The type that is use to store the values.
  * @tparam SIZE   The ValueSize of the alphabet.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <unsigned SIZE>
 struct Finite;

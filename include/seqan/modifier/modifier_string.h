@@ -96,8 +96,6 @@ template <typename TType, typename TTestType> struct IsAnInnerHost;
  * @include demos/modifier/modified_string_nested.cpp.stdout
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename THost, typename TSpec = void>
 class ModifiedString
 {

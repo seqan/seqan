@@ -62,8 +62,6 @@ struct DPSearch {};
  * contains the right-most column of the dynamic programming matrix.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 ///.Class.Pattern.param.TSpec.type:Class.Score
 
 
@@ -237,8 +235,6 @@ setScoringScheme(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec>
  * @return TScoreValue The score limit value.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec>
 inline typename Value<TScore>::Type 
 scoreLimit(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > const & me)
@@ -260,8 +256,6 @@ scoreLimit(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > con
  *
  * @return TScoreValue The score limit value.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec, typename TScoreValue>
 inline void 
@@ -286,8 +280,6 @@ setScoreLimit(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > 
  * @return TScoreValue The score of the last match found using <tt>pattern</tt>.  If no match was found then the vlaue
  *                     is undefined.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec>
 inline typename Value<TScore>::Type

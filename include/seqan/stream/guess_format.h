@@ -149,8 +149,6 @@ getBasename(TFilename const & fname, TagSelector<TTagList> const &format)
  * @return bool <tt>true</tt> if the format represented by <tt>formatTag</tt> was recognized in <tt>fileName</tt>.
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename TFilename, typename TFormat_>
 inline bool guessFormatFromFilename(TFilename const & fileName, Tag<TFormat_> /*formatTag*/)
 {

@@ -73,7 +73,6 @@ public:
 // Class DPScout_
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TDPCell>
 class DPScout_<TDPCell, SplitAlignmentScout> : public DPScout_<TDPCell, Default>
 {
@@ -101,7 +100,6 @@ public:
 // Function _scoutBestScore()                                        [DPScout_]
 // ----------------------------------------------------------------------------
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TDPCell, typename TTraceMatrixNavigator, typename TIsLastColumn, typename TIsLastRow>
 inline void
 _scoutBestScore(DPScout_<TDPCell, SplitAlignmentScout> & dpScout,

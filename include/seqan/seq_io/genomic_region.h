@@ -199,8 +199,6 @@ struct GenomicRegion
  * @param[in,out] genomicRegion The @link GenomicRegion @endlink object to reset.  Types: GenomicRegion
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 inline void
 clear(GenomicRegion & region)
 {
@@ -226,8 +224,6 @@ clear(GenomicRegion & region)
  * 
  * @return bool true indicates successful parsing.
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // Parse regionString and write to region.  region.rID will not be set but
 // region.seqName will be.  Return true on success.

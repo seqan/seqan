@@ -63,8 +63,6 @@ struct Uniform;
  * @tparam T The number type to use (integer or floating point).
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 template <typename T>
 class Pdf<Uniform<T> >
 {
@@ -82,7 +80,6 @@ public:
  * @param[in] max The largest value of the interval, of the Value type of the Pdf.
  */
 
-/*_DDDOC_PLACEHOLDER*/
     Pdf(T min, T max)
             : _min(min), _max(max)
     {

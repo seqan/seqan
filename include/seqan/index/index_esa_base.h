@@ -49,7 +49,6 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef THideEmptyEdges HideEmptyEdges;
     };
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @defgroup DfsOrder DFS Order
  * @brief Pre/postorder selection for depth-first search.
@@ -91,7 +90,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	template <typename TSpec = void>
 	struct VSTree;
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @defgroup TopDown Top-Down Iteration
  * @brief Tag that specifies a @link VSTreeIterator @endlink to traverse the virtual string tree from the root towards
@@ -137,7 +135,6 @@ namespace SEQAN_NAMESPACE_MAIN
 			template < typename TSpec = Preorder >
 			struct ParentLinks {};			// .. can also go up
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @defgroup BottomUp Bottom-Up Iteration
  * @brief Tag that specifies a @link VSTreeIterator @endlink to traverse the
@@ -175,7 +172,6 @@ namespace SEQAN_NAMESPACE_MAIN
 			struct	MultiMemOccurences;					// i.e. maximal match over different sequences
 
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @mfn Index#GetVSTreeIteratorTraits
  * 
@@ -275,8 +271,6 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // ESA fibres
 
-/*_DDDOC_PLACEHOLDER*/
-
 /*!
  * @defgroup IndexEsaFibres Index Esa Fibres
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of an @link
@@ -372,7 +366,6 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // ESA index
 
-/*_DDDOC_PLACEHOLDER*/
 /*!
  * @class IndexEsa
  * @extends Index

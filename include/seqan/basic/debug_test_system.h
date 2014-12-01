@@ -197,8 +197,6 @@ inline const char * toCString(Demangler<T> const & me)
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 #define SEQAN_FAIL(...)                                                 \
     do {                                                                \
         ::seqan::ClassTest::forceFail(__FILE__, __LINE__,               \
@@ -253,8 +251,6 @@ inline const char * toCString(Demangler<T> const & me)
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 #define SEQAN_CHECK(_arg1, ...)                                         \
     do {                                                                \
         if (!::seqan::ClassTest::testTrue(__FILE__, __LINE__,           \
@@ -306,8 +302,6 @@ inline const char * toCString(Demangler<T> const & me)
  * @see TestSystemMacros#SEQAN_ENABLE_DEBUG
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Set default for SEQAN_ENABLE_TESTING.
 #ifndef SEQAN_ENABLE_TESTING
 #define SEQAN_ENABLE_TESTING 0
@@ -332,8 +326,6 @@ inline const char * toCString(Demangler<T> const & me)
  * @see TestSystemMacros#SEQAN_ENABLE_TESTING
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Set default for SEQAN_ENABLE_DEBUG.
 #ifndef SEQAN_ENABLE_DEBUG
   #ifdef NDEBUG
@@ -348,8 +340,6 @@ inline const char * toCString(Demangler<T> const & me)
 #undef SEQAN_ENABLE_DEBUG
 #define SEQAN_ENABLE_DEBUG 1
 #endif  // #if SEQAN_ENABLE_TESTING
-
-/*_DDDOC_PLACEHOLDER*/
 
 // Allow disabling checkpoints independent of testing.
 #ifndef SEQAN_ENABLE_CHECKPOINTS
@@ -370,7 +360,6 @@ inline const char * toCString(Demangler<T> const & me)
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
 #if !SEQAN_ENABLE_DEBUG
 #  if defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)))
 #    define SEQAN_TYPEDEF_FOR_DEBUG __attribute__((unused))
@@ -411,7 +400,6 @@ namespace seqan {
  * @param[in,out] stream A std::ostream where the information about the levels are streamed to.
  */
 
-/*_DDDOC_PLACEHOLDER*/
 template <typename TStream>
 void printDebugLevel(TStream & stream)
 {
@@ -1750,8 +1738,6 @@ inline void fail()
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // This macro expands to function header for one test.
 #define SEQAN_DEFINE_TEST(test_name)                    \
     template <bool speed_up_dummy_to_prevent_compilation_of_unused_tests_> \
@@ -1786,8 +1772,6 @@ inline void fail()
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 #if SEQAN_ENABLE_TESTING
 // This macro expands to startup code for a test file.
 #define SEQAN_BEGIN_TESTSUITE(suite_name)                       \
@@ -1817,8 +1801,6 @@ inline void fail()
  * @endcode
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // This macro expands to shutdown code for a test file.
 #define SEQAN_END_TESTSUITE                     \
     return ::seqan::ClassTest::endTestSuite();  \
@@ -1841,8 +1823,6 @@ inline void fail()
  * SEQAN_CALL_TEST(test_name);
  * @endcode
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // This macro expands to code to call a given test.
 #define SEQAN_CALL_TEST(test_name)                                      \
@@ -1883,8 +1863,6 @@ inline void fail()
  * }
  * @endcode
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // This macro returns from the current function and logs a "skipped"
 // event for the current test.
@@ -2182,8 +2160,6 @@ inline void fail()
  * SEQAN_ASSERT_IN_DELTA_MSG(1, 0, 0.1, "msg");  // will fail with message
  * @endcode
  */
-
-/*_DDDOC_PLACEHOLDER*/
 
 // Force a test failure.
 //
@@ -2704,8 +2680,6 @@ void SEQAN_ASSERT_NOT_MSG(T1 const & _arg1, const char * comment, ...) {}
  */
 
 // TODO(holtgrew): Subject to change wiht restructuring.
-/*_DDDOC_PLACEHOLDER*/
-
 // Returns a const char * string with the path to the projects directory.
 #define SEQAN_PATH_TO_ROOT()                      \
     ::seqan::ClassTest::StaticData::pathToRoot()
@@ -2742,13 +2716,9 @@ void SEQAN_ASSERT_NOT_MSG(T1 const & _arg1, const char * comment, ...) {}
  * @see SEQAN_PATH_TO_ROOT
  */
 
-/*_DDDOC_PLACEHOLDER*/
-
 // Returns a temporary filename.
 #define SEQAN_TEMP_FILENAME() (::seqan::ClassTest::tempFileName())
 
-
-/*_DDDOC_PLACEHOLDER*/
 
 #if SEQAN_ENABLE_CHECKPOINTS
 
