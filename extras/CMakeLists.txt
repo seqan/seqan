@@ -28,6 +28,6 @@ if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
 endif ()
 
 # Tests are only built when building in DEVLOP mode.
-if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
-    add_subdirectory (tests)
-endif ()
+# if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+#     add_subdirectory (tests)
+# endif ()
