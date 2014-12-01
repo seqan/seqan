@@ -15,7 +15,7 @@ echo find . -name '*.gcov' '>' /tmp/fixgcov.gcov.$$.txt
 find . -name '*.gcov' > /tmp/fixgcov.gcov.$$.txt
 echo grep '\.cpp' `dirname $3`/CXX.includecache
 src=$(grep '\.cpp' `dirname $3`/CXX.includecache)
-inc="-I $HOME/Nightly/`uname -m`/seqan-trunk/core/include -I $HOME/Nightly/`uname -m`/seqan-trunk/core/include"
+inc="-I $HOME/Nightly/`uname -m`/seqan-trunk/include -I $HOME/Nightly/`uname -m`/seqan-trunk/include"
 echo $HOME/Development/seqan-trunk/util/bin/fixgcov.py -s $src --gcov-files=/tmp/fixgcov.gcov.$$.txt -l /tmp/fixgcov.loc.$$.txt $inc
 $HOME/Development/seqan-trunk/util/bin/fixgcov.py -s $src --gcov-files /tmp/fixgcov.gcov.$$.txt -l /tmp/fixgcov.loc.$$.txt $inc
 exit $ret

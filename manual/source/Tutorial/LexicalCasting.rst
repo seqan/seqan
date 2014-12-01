@@ -71,7 +71,7 @@ A Full Example
 
 The following example program demonstrates the usage of both interfaces.
 
-.. includefrags:: extras/demos/tutorial/stream/lexical_cast_example.cpp
+.. includefrags:: demos/tutorial/stream/lexical_cast_example.cpp
 
 This is the program's output.
 
@@ -127,5 +127,5 @@ Assignment 1
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/lexical_casting/solution1.cpp
+        .. includefrags:: demos/tutorial/lexical_casting/solution1.cpp
 

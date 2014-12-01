@@ -31,5 +31,5 @@ An Example
 
 The following extensive example shows how to practically translate between the coordinate systems.
 
-.. includefrags:: core/demos/align_gaps_clipping.cpp
+.. includefrags:: demos/align_gaps_clipping.cpp
 

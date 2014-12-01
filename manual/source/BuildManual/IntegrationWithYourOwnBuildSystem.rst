@@ -20,7 +20,7 @@ You should be able to adapt the descriptions to configuring your build system an
 .. tip::
 
    SeqAn is a header library only.
-   Simply add ``core/include`` and ``extras/include`` to your include path and you can use SeqAn, as seen in the `Short Version`_.
+   Simply add ``include`` and ``include`` to your include path and you can use SeqAn, as seen in the `Short Version`_.
    See below how to enable using zlib for BAM access, for example.
 
 Libraries on Linux
@@ -263,7 +263,7 @@ For example, we could create a directory ``include`` parallel to ``src``, copy t
 Short Version
 ~~~~~~~~~~~~~
 
-* Add both ``core/include`` and ``extras/include`` to your include path (``-I``).
+* Add both ``include`` and ``include`` to your include path (``-I``).
 * Linux/GCC flags: ``-lrt`` (required) ``-W -Wall -Wno-long-long -pedantic -Wno-variadic-macros`` (optional).
 * Windows/MSVC flags: ``/W2 /wd4996 -D_CRT_SECURE_NO_WARNINGS`` (optional).
 * Defines: ``NDEBUG`` to also disable SeqAn assertions in release mode.

@@ -26,12 +26,12 @@ Both can be used to search epsilon-matches of a certain minimum length.
 
 The following program searches for semi-global alignments between pairs of reads with a maximal error rate of 10%.
 
-.. includefrags:: core/demos/howto/filter_similar_sequences.cpp
+.. includefrags:: demos/howto/filter_similar_sequences.cpp
    :fragment: includes
 
 First we loads reads from a file into a :dox:`FragmentStore` with :dox:`FragmentStore#loadReads`.
 
-.. includefrags:: core/demos/howto/filter_similar_sequences.cpp
+.. includefrags:: demos/howto/filter_similar_sequences.cpp
    :fragment: load_reads
 
 Swift uses a q-gram index of the needle sequences.
@@ -44,6 +44,6 @@ Thus, we have to specialize the :dox:`SwiftSemiGlobalPattern Swift Semi Global P
 
 The main loop iterates over all potential matches which can be further processed, e.g. by a semi-global or overlap aligner.
 
-.. includefrags:: core/demos/howto/filter_similar_sequences.cpp
+.. includefrags:: demos/howto/filter_similar_sequences.cpp
    :fragment: filter
 

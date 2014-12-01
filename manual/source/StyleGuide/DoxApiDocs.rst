@@ -463,7 +463,7 @@ including fragments.
      * @brief Minimal function.
      *
      * The following example shows the usage of the function.
-     * @include core/demos/use_f.cpp
+     * @include demos/use_f.cpp
      */
 
 @internal
@@ -704,7 +704,7 @@ Add "see also" link to a documentation entry.
      *
      * Here is a snippet:
      *
-     * @snippet core/demos/use_f.cpp Simple Function
+     * @snippet demos/use_f.cpp Simple Function
      */
 
 And here is the file with the snippet.

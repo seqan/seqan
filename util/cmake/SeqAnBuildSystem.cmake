@@ -114,10 +114,8 @@ function (add_executable NAME)
     # Call overwritten _add_executable.
     _add_executable(${ARGV})
 
-    # Add dependencies on parts of the SeqAn library.
-    foreach (PART ${SEQAN_LIBRARY_PARTS})
-        add_dependencies(${NAME} ${PART})
-    endforeach ()
+    # Add dependencies on the SeqAn library.
+    add_dependencies(${NAME} seqan_library)
 
     # Add dependency on the SUA target.
     seqan_add_sua_dependency (${NAME})
@@ -201,13 +199,11 @@ macro (seqan_build_system_init)
 
     set (SEQAN_BUILD_SYSTEM "DEVELOP" CACHE STRING "Build/Release mode to select. One of DEVELOP SEQAN_RELEASE, APP:\${APP_NAME}. Defaults to DEVELOP.")
 
+    set (_CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/include")
+    set (CMAKE_INCLUDE_PATH ${_CMAKE_INCLUDE_PATH} CACHE STRING "")
+
     SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY
          ${PROJECT_BINARY_DIR}/bin)
-
-    # TODO(holtgrew): The initialization stuff from the old build system.
-
-    # Enable testing if configured so.
-    seqan_setup_sua ()
 endmacro (seqan_build_system_init)
 
 # ---------------------------------------------------------------------------
@@ -236,14 +232,13 @@ macro (seqan_add_app_test APP_NAME)
 endmacro (seqan_add_app_test APP_NAME)
 
 # ---------------------------------------------------------------------------
-# Macro seqan_setup_library (NAME [OTHER_NAMES])
+# Macro seqan_setup_library ()
 #
 # * Creates install targets for the library.
 # * Writes list SeqAn headers to ${_SEQAN_HEADERS}
-# * Appends NAME and all other names to SEQAN_LIBRARY_PARTS.
 # ---------------------------------------------------------------------------
 
-macro (seqan_setup_library NAME)
+macro (seqan_setup_library)
     # Only install the library if the virtual build packages "SEQAN_RELEASE"
     # or "SEQAN_LIBRARY_ONLY" are chosen.
     if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
@@ -298,14 +293,8 @@ macro (seqan_setup_library NAME)
     # Add pseudo target for the library part.  Note that the IDE_SOURCES
     # variable includes the "SOURCES" argument for add_custom_target when
     # building with a generator for an IDE.
-    set (TARGET_NAME seqan_${NAME})
-    add_custom_target (${TARGET_NAME} SOURCES ${SUB_HEADERS} ${HEADERS} ${SUPER_HEADERS})
-
-    # Register the SeqAn library part (e.g. core, extras) as a target name.
-    foreach (PART_NAME ${ARGV})
-        list (APPEND SEQAN_LIBRARY_PARTS seqan_${PART_NAME})
-    endforeach (PART_NAME ${ARGV})
-endmacro (seqan_setup_library NAME)
+    add_custom_target (seqan_library SOURCES ${SUB_HEADERS} ${HEADERS} ${SUPER_HEADERS})
+endmacro (seqan_setup_library)
 
 # ---------------------------------------------------------------------------
 # Macro seqan_setup_install_vars (APP_NAME)
@@ -464,7 +453,7 @@ macro (seqan_get_version)
           _SEQAN_COMPILE_RESULT
           ${CMAKE_BINARY_DIR}/CMakeFiles/SeqAnVersion
           ${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/SeqAnVersion.cpp
-          CMAKE_FLAGS -DINCLUDE_DIRECTORIES:STRING=${CMAKE_CURRENT_SOURCE_DIR}/core/include
+          CMAKE_FLAGS -DINCLUDE_DIRECTORIES:STRING=${CMAKE_CURRENT_SOURCE_DIR}/include
           COMPILE_OUTPUT_VARIABLE _COMPILE_OUTPUT
           RUN_OUTPUT_VARIABLE _RUN_OUTPUT)
   if (NOT _RUN_OUTPUT)
@@ -599,9 +588,6 @@ macro (seqan_install_demos_release)
 
     # Get path to current source directory, relative from root.  Will be used to install demos in.
     file (RELATIVE_PATH INSTALL_DIR "${SEQAN_ROOT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
-    # Strip prefixes "core/" and "extras/".
-    string (REPLACE "core/" "" INSTALL_DIR "${INSTALL_DIR}")
-    string (REPLACE "extras/" "" INSTALL_DIR "${INSTALL_DIR}")
 
     # Install all demo files into "share/doc/seqan/demos" (demos comes from INSTALL_DIR).
     install (FILES ${ENTRIES} DESTINATION "share/doc/seqan/${INSTALL_DIR}")

@@ -176,8 +176,8 @@ def autolocateBinary(base_path, relative_path, binary_name):
 
   When building applications with CMake, they do not always have the same
   relative path from the binary build directory.  For Unix Makefiles, the path
-  could be 'core/apps/tree_recon' whereas for Visual Studio, it could be
-  'core/apps/Release/tree_recon'.
+  could be 'apps/tree_recon' whereas for Visual Studio, it could be
+  'apps/Release/tree_recon'.
 
   Also, it searches for the binary name in "${base_path}/bin".
 

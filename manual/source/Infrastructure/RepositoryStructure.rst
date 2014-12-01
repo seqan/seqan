@@ -119,7 +119,7 @@ The library modules area looks as follows:
 
 ::
 
-    seqan/core/include
+    seqan/include
       |-- seqan
       |     |-- basic/                       Library Module basic
       |     |     |-- aggregate_concept.h
