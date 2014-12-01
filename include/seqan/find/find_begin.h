@@ -383,19 +383,7 @@ findBegin(TFinder & finder,
  *                     call of @link Finder#findBegin @endlink.  If no match was found, the value is undefined.
  */
 
-/**.Function.getBeginScore
-..cat:Searching
-..summary:Score of the last match found by @Function.findBegin@ during approximate searching.
-..signature:getBeginScore(pattern)
-..class:Class.Finder
-..param.pattern:A @Class.Pattern@ that can be used for approximate searching.
-...type:Spec.DPSearch
-..returns:The score of the last match found using $pattern$.
-...remarks:The value is set after a successfully call of @Function.findBegin@.
-If no match was found, the value is undefined.
-..see:Function.findBegin
-..see:Function.getScore
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TPattern>
 inline typename Value<typename ScoringScheme<TPattern>::Type>::Type

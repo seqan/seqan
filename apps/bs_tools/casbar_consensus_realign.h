@@ -565,15 +565,7 @@ reAlign(double &profileScore,
 
 // TODO(holtgrew): realignmentMethod should not be optional or moved to the end of the list.
 // TODO(holtgrew): The method should be selected with an enum instead of an int.
-/**
-.Function.reAlign:
-..cat:Consensus
-..summary:Perform realignment similar to Anson-Myers algorithm.
-..signature:reAlignment(fragmentStore, consensusScore, contigId, [realignmentMethod,] bandwidth, includeReference)
-..category:Alignments
-..remark:The consensus sequence will be appended to the readSeqStore of fragmentStore if includeReference is true.
-..include:seqan/consensus.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 template<typename TSpec, typename TConfig, typename TId, typename TBandwidth, typename TOptions, typename TModel>
 void
 reAlign(FragmentStore<TSpec, TConfig> & fragStore,

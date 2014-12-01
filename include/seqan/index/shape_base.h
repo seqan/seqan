@@ -389,17 +389,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //____________________________________________________________________________
 
-/**.Function.weight:
-..cat:Index
-..summary:Number of relevant positions in a shape.
-..signature:weight(shape)
-..class:Class.Shape
-..param.shape:Shape object for which the number of relevant positions is determined.
-...type:Class.Shape
-..returns:Number of relevant positions.
-..remarks.text:For ungapped shapes the return value is the result of the @Function.length@ function.
-For gapped shapes this is the number of '1's.
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Shape#weight
  * @brief Number of relevant positions in a shape.
@@ -671,19 +661,7 @@ For gapped shapes this is the number of '1's.
 
 //____________________________________________________________________________
 
-/**.Function.hashUpper:
-..cat:Index
-..summary:Computes an upper hash value for a shape applied to a sequence.
-..signature:hashUpper(shape, it, charsLeft)
-..class:Class.Shape
-..param.shape:Shape to be used for hashing.
-...type:Class.Shape
-..param.it:Sequence iterator pointing to the first character of the shape.
-..param.charsLeft:The distance of $it$ to the string end.
-..returns:Upper hash value of the shape.
-The hash value corresponds to the maximal @Function.hash@ value of a shape beginning with $min(charsLeft,length(shape))$ characters + 1.
-..remarks:This function in conjunction with @Function.hash@ is useful to search a q-gram index for p-grams with p<q.
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Shape#hashUpper
  * @brief Computes an upper hash value for a shape applied to a sequence.
@@ -772,19 +750,7 @@ The hash value corresponds to the maximal @Function.hash@ value of a shape begin
 
 //____________________________________________________________________________
 
-/**.Function.hash2:
-..cat:Index
-..summary:Computes an unique hash value of a shape applied to a sequence, even if the sequence is shorter than the shape span
-..signature:hash2(shape, it, charsLeft)
-..class:Class.Shape
-..param.shape:Shape to be used for hashing.
-...type:Class.Shape
-..param.it:Sequence iterator pointing to the first character of the shape.
-..param.charsLeft:The distance of $it$ to the string end.
-..returns:Hash value of the shape.
-..see:Function.hash2Next
-..see:Function.hash2Upper
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Shape#hash2
  * @brief Computes an unique hash value of a shape applied to a sequence, even if the sequence is shorter than
@@ -834,19 +800,7 @@ The hash value corresponds to the maximal @Function.hash@ value of a shape begin
 		return me.hValue += iEnd;
 	}
 
-/**.Function.hash2Upper:
-..cat:Index
-..summary:Computes an upper unique hash value of a shape applied to a sequence, even if the sequence is shorter than the shape span.
-..signature:hash2Upper(shape, it, charsLeft)
-..class:Class.Shape
-..param.shape:Shape to be used for hashing.
-...type:Class.Shape
-..param.it:Sequence iterator pointing to the first character of the shape.
-..param.charsLeft:The distance of $it$ to the string end.
-..returns:Upper hash value of the shape.
-The hash value corresponds to the maximal @Function.hash2@ value of a shape beginning with the $min(charsLeft,length(shape))$ characters + 1
-..remarks:This function in conjunction with @Function.hash2@ is useful to search a q-gram index for p-grams with p<q.
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Shape#hash2Upper
  * @brief Computes an upper unique hash value of a shape applied to a sequence,
@@ -984,21 +938,7 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
 
 //____________________________________________________________________________
 
-/**.Function.stringToShape:
-..cat:Index
-..summary:Takes a shape given as a string of '1' (relevant position) and '0'
-(irrelevant position) and converts it into a Shape object.
-..signature:stringToShape(shape, bitmap)
-..class:Class.Shape
-..param.shape:Shape object that is manipulated.
-...type:Spec.SimpleShape
-..param.bitmap:A character string of '1' and '0' representing relevant and irrelevant positions (blanks) respectively.
-...remarks:This string must begin with a '1'. Trailing '0's are ignored.
-...remarks:If $shape$ is a @Spec.SimpleShape@ at most one contiguous sequences of $1$s is allowed.
-...type:Class.String
-..see:Function.shapeToString
-..see:Function.reverse
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Shape#stringToShape
  * @brief Takes a shape given as a string of '1' (relevant position) and '0'
@@ -1043,19 +983,7 @@ The hash value corresponds to the maximal @Function.hash2@ value of a shape begi
 
 //____________________________________________________________________________
 
-/**.Function.shapeToString:
-..cat:Index
-..class:Class.Shape
-..summary:Converts a given shape into a sequence of '1' (relevant position) and '0'
-(irrelevant position).
-..signature:shapeToString(bitmap, shape)
-..class:Class.Shape
-..param.bitmap:The resulting sequence object.
-...type:Class.String
-..param.shape:Shape object.
-...type:Class.Shape
-..see:Function.stringToShape
-*/
+/*_DDDOC_PLACEHOLDER*/
 /*!
  * @fn Shape#shapeToString
  * @brief Converts a given shape into a sequence of '1' (relevant position) and '0' (irrelevant position).

@@ -237,15 +237,7 @@ setScoringScheme(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec>
  * @return TScoreValue The score limit value.
  */
 
-/**.Function.scoreLimit
-..cat:Searching
-..summary:The minimal score a match must reach in approximate searching.
-..signature:scoreLimit(pattern)
-..class:Spec.DPSearch
-..param.pattern:A @Class.Pattern@ that can be used for approximate searching.
-...type:Spec.DPSearch
-..returns:The current score limit of $pattern$.
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec>
 inline typename Value<TScore>::Type 
@@ -269,16 +261,7 @@ scoreLimit(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > con
  * @return TScoreValue The score limit value.
  */
 
-/**.Function.setScoreLimit
-..cat:Searching
-..summary:Sets the minimal score a match must reach in approximate searching.
-..signature:setScoreLimit(pattern, limit)
-..class:Spec.DPSearch
-..param.pattern:A @Class.Pattern@ that can be used for approximate searching.
-...type:Spec.DPSearch
-..param.limit:The new score limit.
-..see:Function.scoreLimit
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec, typename TScoreValue>
 inline void 
@@ -304,19 +287,7 @@ setScoreLimit(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > 
  *                     is undefined.
  */
 
-/**.Function.getScore
-..cat:Searching
-..summary:Score of the last found match in approximate searching.
-..signature:getScore(pattern)
-..class:Spec.DPSearch
-..param.pattern:A @Class.Pattern@ that can be used for approximate searching.
-...type:Spec.DPSearch
-..returns:The score of the last match found using $pattern$.
-...remarks:If no match was found, the value is undefined.
-..see:Function.scoreLimit
-..see:Function.setScoreLimit
-..see:Function.find
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec>
 inline typename Value<TScore>::Type

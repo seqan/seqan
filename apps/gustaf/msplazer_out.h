@@ -47,38 +47,18 @@
 
 using namespace seqan;
 
-/**
-.Tag.DotDrawingMSplazer
-..cat:Input/Output
-..summary:Switch to trigger drawing in dot format.
-..value.DotDrawingMSplazer:Graphs in dot format.
-..include:seqan/msplazer.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct DotDrawingMSplazer_;
 typedef Tag<DotDrawingMSplazer_> DotDrawingMSplazer;
 
-/**
-.Tag.DotDrawingMSplazerBestChain
-..cat:Input/Output
-..summary:Switch to trigger drawing in dot format.
-..value.DotDrawingMSplazerBestChain:Best chain graphs in dot format.
-..include:seqan/msplazer.h
-*/
+/*_DDDOC_PLACEHOLDER*/
 
 struct DotDrawingMSplazerBestChain_;
 typedef Tag<DotDrawingMSplazer_> DotDrawingMSplazerBestchain;
 
 
-/**
-.Function.write:
-..signature:write(file, msplazerchain, stellarmatches, tag)
-..param.file:The file to write to.
-...type:Class.Graph
-..param.tag:A tag to select the output format.
-...type:Tag.DotDrawingMSplazer
-..include:seqan/msplazer.h
- */
+/*_DDDOC_PLACEHOLDER*/
 template <typename TGraph, typename TVertexDescriptor, typename TScoreAlloc, typename TMatch, // typename TFile, 
           typename TBreakpoint, typename TPos, typename TMatchAlloc, typename TID>
 // typename TBreakpointAlloc, typename TMatchAlloc> // Requires Value<SparsePropertyMap> specialisation in msplazer.h
