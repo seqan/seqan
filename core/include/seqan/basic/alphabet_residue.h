@@ -844,21 +844,6 @@ inline void assign(Dna & target, char c_source)
 }
 
 template <>
-struct CompareTypeImpl<Dna, Unicode>
-{
-    typedef Dna Type;
-};
-
-inline void assign(Dna & target, Unicode c_source)
-{
-#ifdef __CUDA_ARCH__
-    target.value = _translateCharToDna<void>((unsigned char)c_source);
-#else
-    target.value = TranslateTableCharToDna_<>::VALUE[(unsigned char) c_source];
-#endif
-}
-
-template <>
 struct CompareTypeImpl<Dna, Dna5>
 {
     typedef Dna Type;
@@ -902,21 +887,6 @@ struct CompareTypeImpl<Dna5, char>
 };
 
 inline void assign(Dna5 & target, char c_source)
-{
-#ifdef __CUDA_ARCH__
-    target.value = _translateCharToDna5<void>((unsigned char)c_source);
-#else
-    target.value = TranslateTableCharToDna5_<>::VALUE[(unsigned char) c_source];
-#endif
-}
-
-template <>
-struct CompareTypeImpl<Dna5, Unicode>
-{
-    typedef Dna5 Type;
-};
-
-inline void assign(Dna5 & target, Unicode c_source)
 {
 #ifdef __CUDA_ARCH__
     target.value = _translateCharToDna5<void>((unsigned char)c_source);
@@ -974,17 +944,6 @@ inline void assign(Rna & target, char c_source)
 }
 
 template <>
-struct CompareTypeImpl<Rna, Unicode>
-{
-    typedef Rna Type;
-};
-
-inline void assign(Rna & target, Unicode c_source)
-{
-    target.value = TranslateTableCharToDna_<>::VALUE[(unsigned char)c_source];
-}
-
-template <>
 struct CompareTypeImpl<Rna, Rna5>
 {
     typedef Rna Type;
@@ -1017,17 +976,6 @@ struct CompareTypeImpl<Rna5, char>
 };
 
 inline void assign(Rna5 & target, char c_source)
-{
-    target.value = TranslateTableCharToDna5_<>::VALUE[(unsigned char)c_source];
-}
-
-template <>
-struct CompareTypeImpl<Rna5, Unicode>
-{
-    typedef Rna5 Type;
-};
-
-inline void assign(Rna5 & target, Unicode c_source)
 {
     target.value = TranslateTableCharToDna5_<>::VALUE[(unsigned char)c_source];
 }
@@ -1069,17 +1017,6 @@ inline void assign(Iupac & target, char c_source)
     target.value = TranslateTableCharToIupac_<>::VALUE[(unsigned char) c_source];
 }
 
-template <>
-struct CompareTypeImpl<Iupac, Unicode>
-{
-    typedef Iupac Type;
-};
-
-inline void assign(Iupac & target, Unicode c_source)
-{
-    target.value = TranslateTableCharToIupac_<>::VALUE[(unsigned char) c_source];
-}
-
 inline void assign(Iupac & target, Dna const & source)
 {
     target.value = TranslateTableDna5ToIupac_<>::VALUE[source.value];
@@ -1112,17 +1049,6 @@ struct CompareTypeImpl<AminoAcid, char>
 };
 
 inline void assign(AminoAcid & target, char c_source)
-{
-    target.value = TranslateTableCharToAA_<>::VALUE[(unsigned char) c_source];
-}
-
-template <>
-struct CompareTypeImpl<AminoAcid, Unicode>
-{
-    typedef AminoAcid Type;
-};
-
-inline void assign(AminoAcid & target, Unicode c_source)
 {
     target.value = TranslateTableCharToAA_<>::VALUE[(unsigned char) c_source];
 }
@@ -1222,17 +1148,6 @@ struct CompareTypeImpl<DnaQ, char>
 };
 
 inline void assign(DnaQ & target, char c_source)
-{
-    assign(target, (Dna) c_source);
-}
-
-template <>
-struct CompareTypeImpl<DnaQ, Unicode>
-{
-    typedef Dna Type;
-};
-
-inline void assign(DnaQ & target, Unicode c_source)
 {
     assign(target, (Dna) c_source);
 }
@@ -1566,17 +1481,6 @@ struct CompareTypeImpl<Dna5Q, char>
 };
 
 inline void assign(Dna5Q & target, char c_source)
-{
-    assign(target, (Dna5)c_source);
-}
-
-template <>
-struct CompareTypeImpl<Dna5Q, Unicode>
-{
-    typedef Dna5 Type;
-};
-
-inline void assign(Dna5Q & target, Unicode c_source)
 {
     assign(target, (Dna5)c_source);
 }
