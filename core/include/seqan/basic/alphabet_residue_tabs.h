@@ -48,13 +48,13 @@ namespace seqan {
 // --------------------------------------------------------------------------
 
 template <typename T = void>
-struct TranslateTableDna5ToAscii_
+struct TranslateTableDna5ToChar_
 {
     static char const VALUE[5];
 };
 
 template <typename T>
-char const TranslateTableDna5ToAscii_<T>::VALUE[5] = {'A', 'C', 'G', 'T', 'N'};
+char const TranslateTableDna5ToChar_<T>::VALUE[5] = {'A', 'C', 'G', 'T', 'N'};
 
 
 template <typename T = void>
@@ -67,13 +67,13 @@ template <typename T>
 char const TranslateTableDna5ToIupac_<T>::VALUE[5] = {0x01, 0x02, 0x04, 0x08, 0x0f};
 
 template <typename T = void>
-struct TranslateTableAsciiToDna_
+struct TranslateTableCharToDna_
 {
     static char const VALUE[256];
 };
 
 template <typename T>
-char const TranslateTableAsciiToDna_<T>::VALUE[256] = 
+char const TranslateTableCharToDna_<T>::VALUE[256] = 
 {
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //0
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //1
@@ -104,13 +104,13 @@ char const TranslateTableAsciiToDna_<T>::VALUE[256] =
 
 
 template <typename T = void>
-struct TranslateTableAsciiToDna5_
+struct TranslateTableCharToDna5_
 {
     static char const VALUE[256];
 };
 
 template <typename T>
-char const TranslateTableAsciiToDna5_<T>::VALUE[256] = 
+char const TranslateTableCharToDna5_<T>::VALUE[256] = 
 {
     4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //0
     4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //1
@@ -139,72 +139,18 @@ char const TranslateTableAsciiToDna5_<T>::VALUE[256] =
     4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4  //15
 };
 
-template <typename T = void>
-struct TranslateTableByteToDna_
-{
-    static char const VALUE[256];
-};
-
-template <typename T>
-char const TranslateTableByteToDna_<T>::VALUE[256] = 
-{
-    0,   1,   2,   3,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //0
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //1
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //2
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //3
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //4
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //5
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //6
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //7
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //8
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //9
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //10
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //11
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //12
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //13
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //14
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0  //15
-};
-
-template <typename T = void>
-struct TranslateTableByteToDna5_
-{
-    static char const VALUE[256];
-};
-
-template <typename T>
-char const TranslateTableByteToDna5_<T>::VALUE[256] =
-{
-    0,   1,   2,   3,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //0
-    4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //1
-    4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //2
-    4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //3
-    4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //4
-    4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //5
-    4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //6
-    4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //7
-    4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //8
-    4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //9
-    4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //10
-    4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //11
-    4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //12
-    4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //13
-    4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //14
-    4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4  //15
-};
-
 // --------------------------------------------------------------------------
 // Rna and Rna5
 // --------------------------------------------------------------------------
 
 template <typename T = void>
-struct TranslateTableRna5ToAscii_
+struct TranslateTableRna5ToChar_
 {
     static char const VALUE[5];
 };
 
 template <typename T>
-char const TranslateTableRna5ToAscii_<T>::VALUE[5] = {'A', 'C', 'G', 'U', 'N'}; 
+char const TranslateTableRna5ToChar_<T>::VALUE[5] = {'A', 'C', 'G', 'U', 'N'}; 
 
 // other tables identical to Dna(5)
 
@@ -213,13 +159,13 @@ char const TranslateTableRna5ToAscii_<T>::VALUE[5] = {'A', 'C', 'G', 'U', 'N'};
 // --------------------------------------------------------------------------
 
 template <typename T = void>
-struct TranslateTableIupacToAscii_
+struct TranslateTableIupacToChar_
 {
     static char const VALUE[16];
 };
 
 template <typename T>
-char const TranslateTableIupacToAscii_<T>::VALUE[16] = 
+char const TranslateTableIupacToChar_<T>::VALUE[16] = 
 {        //TGCA
     '=', //0000=0 = or U
     'A', //0001=1
@@ -294,13 +240,13 @@ char const TranslateTableIupacToDna5_<T>::VALUE[16] =
 };
 
 template <typename T = void>
-struct TranslateTableAsciiToIupac_
+struct TranslateTableCharToIupac_
 {
     static char const VALUE[256];
 };
 
 template <typename T>
-char const TranslateTableAsciiToIupac_<T>::VALUE[256] = 
+char const TranslateTableCharToIupac_<T>::VALUE[256] = 
 {
     15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,
     15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,
@@ -325,44 +271,17 @@ char const TranslateTableAsciiToIupac_<T>::VALUE[256] =
     15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15
 };
 
-template <typename T = void>
-struct TranslateTableByteToIupac_
-{
-    static char const VALUE[256];
-};
-
-template <typename T>
-char const TranslateTableByteToIupac_<T>::VALUE[256] = 
-{
-    0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,  13,  14,  15, //0
-    15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15, //1
-    15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15, //2
-    15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15, //3
-    15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15, //4
-    15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15, //5
-    15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15, //6
-    15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15, //7
-    15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15, //8
-    15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15, //9
-    15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15, //10
-    15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15, //11
-    15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15, //12
-    15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15, //13
-    15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15, //14
-    15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15  //15
-};
-
 // --------------------------------------------------------------------------
 // Amino Acid
 // --------------------------------------------------------------------------
 
 template <typename T = void>
-struct TranslateTableAAToAscii_
+struct TranslateTableAAToChar_
 {
     static char const VALUE[24];
 };
 template <typename T>
-char const TranslateTableAAToAscii_<T>::VALUE[24] = 
+char const TranslateTableAAToChar_<T>::VALUE[24] = 
 {
     'A', // 0 Ala Alanine                 
     'R', // 1 Arg Arginine                
@@ -391,13 +310,13 @@ char const TranslateTableAAToAscii_<T>::VALUE[24] =
 };
 
 template <typename T = void>
-struct TranslateTableAsciiToAA_
+struct TranslateTableCharToAA_
 {
     static char const VALUE[256];
 };
 
 template <typename T>
-char const TranslateTableAsciiToAA_<T>::VALUE[256] = 
+char const TranslateTableCharToAA_<T>::VALUE[256] = 
 {
     22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //0
     22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //1
@@ -416,33 +335,6 @@ char const TranslateTableAsciiToAA_<T>::VALUE[256] =
     14,   5,   1,  15,  16,  22,  19,  17,  22,  18,  21,  22,  22,  22,  22,  22, //7
 //   p,   q,   r,   s,   t,   u,   v,   w,   x,   y,   z,    ,    ,    ,    ,    ,
 
-    22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //8
-    22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //9
-    22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //10
-    22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //11
-    22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //12
-    22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //13
-    22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //14
-    22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22  //15
-};
-
-template <typename T = void>
-struct TranslateTableByteToAA_
-{
-    static char const VALUE[256];
-};
-
-template <typename T>
-char const TranslateTableByteToAA_<T>::VALUE[256] = 
-{
-    0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,  15, //0
-    16,  17,  18,  19,  20,  21,  22,  23,  22,  22,  22,  22,  22,  22,  22,  22, //1
-    22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //2
-    22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //3
-    22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //4
-    22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //5
-    22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //6
-    22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //7
     22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //8
     22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //9
     22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22,  22, //10

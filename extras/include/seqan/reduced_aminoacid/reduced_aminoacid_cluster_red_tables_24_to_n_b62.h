@@ -55,13 +55,13 @@ namespace seqan {
 
 // ---------------------------------- N = 23 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<23, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<23, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<23, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<23, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<23, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -72,21 +72,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<23, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<23, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 22 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<22, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<22, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<22, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<22, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<22, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -97,21 +91,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<22, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<22, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 21 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<21, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<21, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<21, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<21, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<21, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -122,21 +110,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<21, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<21, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 20 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<20, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<20, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<20, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<20, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<20, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -147,21 +129,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<20, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<20, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 19 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<19, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<19, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<19, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<19, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<19, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -172,21 +148,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<19, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<19, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 18 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<18, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<18, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<18, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<18, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<18, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -197,21 +167,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<18, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<18, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 17 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<17, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<17, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<17, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<17, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<17, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -222,21 +186,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<17, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<17, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 16 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<16, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<16, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<16, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<16, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<16, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -247,21 +205,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<16, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<16, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 15 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<15, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<15, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<15, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<15, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<15, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -272,21 +224,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<15, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<15, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 14 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<14, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<14, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<14, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<14, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<14, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -297,21 +243,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<14, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<14, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 13 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<13, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<13, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<13, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<13, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<13, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -322,21 +262,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<13, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<13, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 12 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<12, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<12, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<12, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<12, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<12, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -347,21 +281,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<12, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<12, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 11 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<11, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<11, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<11, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<11, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<11, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -372,21 +300,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<11, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<11, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 10 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<10, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<10, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<10, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<10, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<10, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -397,21 +319,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<10, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<10, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 9 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<9, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<9, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<9, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<9, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<9, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -422,21 +338,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<9, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<9, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 8 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<8, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<8, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<8, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<8, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<8, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -447,21 +357,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<8, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<8, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 7 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<7, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<7, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<7, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<7, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<7, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -472,21 +376,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<7, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<7, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 6 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<6, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<6, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<6, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<6, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<6, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -497,21 +395,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<6, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<6, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 5 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<5, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<5, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<5, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<5, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<5, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -522,21 +414,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<5, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<5, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 4 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<4, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<4, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<4, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<4, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<4, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -547,21 +433,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<4, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<4, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 3 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<3, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<3, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<3, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<3, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<3, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -572,21 +452,15 @@ struct TranslateTableAAToRedAA_<ClusterReduction<3, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<3, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 2 ------------------------------
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<ClusterReduction<2, 24, Blosum62>, TSpec>
+struct TranslateTableRedAAToChar_<ClusterReduction<2, 24, Blosum62>, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<2, 24, Blosum62> > > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<ClusterReduction<2, 24, Blosum62>, TSpec>
+struct TranslateTableCharToRedAA_<ClusterReduction<2, 24, Blosum62>, TSpec>
 {
     static const char VALUE[256];
 };
@@ -597,18 +471,12 @@ struct TranslateTableAAToRedAA_<ClusterReduction<2, 24, Blosum62>, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<ClusterReduction<2, 24, Blosum62>, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ========================== DEFINITIONS SECOND ===========================
 
 // ---------------------------------- N = 23 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<23, 24, Blosum62>, TVoidSpec>::VALUE[23] =
 {
     'A', // A
@@ -637,7 +505,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<23, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
     21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
@@ -668,34 +536,10 @@ char const TranslateTableAAToRedAA_<
     12, 13, 14, 15, 16, 17, 18, 19, 20,  6, 21, 22
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<23, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-    15, 16, 17, 18, 19, 20, 21, 22, 21, 21, 21, 21, 21, 21, 21,
-    21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-    21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-    21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-    21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-    21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-    21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-    21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-    21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-    21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-    21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-    21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-    21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-    21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-    21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-    21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21,
-    21
-};
-
 // ---------------------------------- N = 22 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<22, 24, Blosum62>, TVoidSpec>::VALUE[22] =
 {
     'A', // A
@@ -723,7 +567,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<22, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
     20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
@@ -754,34 +598,10 @@ char const TranslateTableAAToRedAA_<
     12, 13, 14, 15, 16, 17, 18, 19,  3,  6, 20, 21
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<22, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-    15, 16, 17, 18, 19, 20, 21, 20, 20, 20, 20, 20, 20, 20, 20,
-    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
-    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
-    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
-    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
-    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
-    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
-    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
-    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
-    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
-    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
-    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
-    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
-    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
-    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
-    20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20,
-    20
-};
-
 // ---------------------------------- N = 21 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<21, 24, Blosum62>, TVoidSpec>::VALUE[21] =
 {
     'A', // A
@@ -808,7 +628,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<21, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
     19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
@@ -839,34 +659,10 @@ char const TranslateTableAAToRedAA_<
     12, 13, 14, 15, 16, 17, 18,  9,  3,  6, 19, 20
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<21, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-    15, 16, 17, 18, 19, 20, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19,
-    19
-};
-
 // ---------------------------------- N = 20 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<20, 24, Blosum62>, TVoidSpec>::VALUE[20] =
 {
     'A', // A
@@ -892,7 +688,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<20, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
     18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
@@ -923,34 +719,10 @@ char const TranslateTableAAToRedAA_<
     11, 12, 13, 14, 15, 16, 17,  8,  3,  5, 18, 19
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<20, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-    15, 16, 17, 18, 19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-    18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-    18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-    18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-    18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-    18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-    18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-    18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-    18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-    18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-    18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-    18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-    18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-    18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-    18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-    18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
-    18
-};
-
 // ---------------------------------- N = 19 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<19, 24, Blosum62>, TVoidSpec>::VALUE[19] =
 {
     'A', // A
@@ -975,7 +747,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<19, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
     17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
@@ -1006,34 +778,10 @@ char const TranslateTableAAToRedAA_<
     10, 11, 12, 13, 14, 15, 16,  8,  3,  5, 17, 18
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<19, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-    15, 16, 17, 18, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-    17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-    17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-    17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-    17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-    17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-    17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-    17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-    17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-    17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-    17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-    17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-    17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-    17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-    17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-    17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
-    17
-};
-
 // ---------------------------------- N = 18 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<18, 24, Blosum62>, TVoidSpec>::VALUE[18] =
 {
     'A', // A
@@ -1057,7 +805,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<18, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
     16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
@@ -1088,34 +836,10 @@ char const TranslateTableAAToRedAA_<
      9, 10, 11, 12, 13, 14, 15,  8,  3,  5, 16, 17
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<18, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-    15, 16, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16,
-    16
-};
-
 // ---------------------------------- N = 17 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<17, 24, Blosum62>, TVoidSpec>::VALUE[17] =
 {
     'A', // A
@@ -1138,7 +862,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<17, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
     15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
@@ -1169,34 +893,10 @@ char const TranslateTableAAToRedAA_<
      9, 10, 11, 12, 13, 14, 10,  8,  3,  5, 15, 16
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<17, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-    15, 16, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15
-};
-
 // ---------------------------------- N = 16 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<16, 24, Blosum62>, TVoidSpec>::VALUE[16] =
 {
     'A', // A
@@ -1218,7 +918,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<16, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
     14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
@@ -1249,34 +949,10 @@ char const TranslateTableAAToRedAA_<
      8,  9, 10, 11, 12, 13,  9,  7,  2,  4, 14, 15
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<16, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-    15, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-    14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-    14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-    14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-    14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-    14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-    14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-    14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-    14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-    14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-    14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-    14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-    14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-    14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-    14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-    14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14,
-    14
-};
-
 // ---------------------------------- N = 15 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<15, 24, Blosum62>, TVoidSpec>::VALUE[15] =
 {
     'A', // A
@@ -1297,7 +973,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<15, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
     13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
@@ -1328,34 +1004,10 @@ char const TranslateTableAAToRedAA_<
      7,  8,  9, 10, 11, 12,  8,  7,  2,  4, 13, 14
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<15, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
-    13
-};
-
 // ---------------------------------- N = 14 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<14, 24, Blosum62>, TVoidSpec>::VALUE[14] =
 {
     'A', // A
@@ -1375,7 +1027,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<14, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
     10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
@@ -1406,34 +1058,10 @@ char const TranslateTableAAToRedAA_<
      7,  8,  9, 10, 11, 12,  8,  7,  2,  4, 10, 13
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<14, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
-    10
-};
-
 // ---------------------------------- N = 13 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<13, 24, Blosum62>, TVoidSpec>::VALUE[13] =
 {
     'A', // A
@@ -1452,7 +1080,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<13, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
      9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
@@ -1483,34 +1111,10 @@ char const TranslateTableAAToRedAA_<
      6,  7,  8,  9, 10, 11,  7,  6,  2,  1,  9, 12
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<13, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9
-};
-
 // ---------------------------------- N = 12 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<12, 24, Blosum62>, TVoidSpec>::VALUE[12] =
 {
     'A', // A
@@ -1528,7 +1132,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<12, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
      9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
@@ -1559,34 +1163,10 @@ char const TranslateTableAAToRedAA_<
      6,  7,  8,  9,  9, 10,  7,  6,  2,  1,  9, 11
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<12, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9
-};
-
 // ---------------------------------- N = 11 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<11, 24, Blosum62>, TVoidSpec>::VALUE[11] =
 {
     'A', // A
@@ -1603,7 +1183,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<11, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
      9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
@@ -1634,34 +1214,10 @@ char const TranslateTableAAToRedAA_<
      6,  7,  8,  9,  9,  7,  7,  6,  2,  1,  9, 10
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<11, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,  9,
-     9
-};
-
 // ---------------------------------- N = 10 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<10, 24, Blosum62>, TVoidSpec>::VALUE[10] =
 {
     'A', // A S T X
@@ -1677,7 +1233,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<10, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -1708,34 +1264,10 @@ char const TranslateTableAAToRedAA_<
      6,  7,  8,  0,  0,  7,  7,  6,  2,  1,  0,  9
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<10, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 9 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<9, 24, Blosum62>, TVoidSpec>::VALUE[9] =
 {
     'A', // A S T X
@@ -1750,7 +1282,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<9, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -1781,34 +1313,10 @@ char const TranslateTableAAToRedAA_<
      5,  6,  7,  0,  0,  6,  6,  5,  1,  1,  0,  8
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<9, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 8 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<8, 24, Blosum62>, TVoidSpec>::VALUE[8] =
 {
     'A', // A S T X
@@ -1822,7 +1330,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<8, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -1853,34 +1361,10 @@ char const TranslateTableAAToRedAA_<
      4,  5,  6,  0,  0,  5,  5,  4,  1,  1,  0,  7
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<8, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 7 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<7, 24, Blosum62>, TVoidSpec>::VALUE[7] =
 {
     'A', // A S T X
@@ -1893,7 +1377,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<7, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -1924,34 +1408,10 @@ char const TranslateTableAAToRedAA_<
      2,  4,  5,  0,  0,  4,  4,  2,  1,  1,  0,  6
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<7, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 6 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<6, 24, Blosum62>, TVoidSpec>::VALUE[6] =
 {
     'A', // A G S T X
@@ -1963,7 +1423,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<6, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -1994,34 +1454,10 @@ char const TranslateTableAAToRedAA_<
      2,  3,  4,  0,  0,  3,  3,  2,  1,  1,  0,  5
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<6, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 5 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<5, 24, Blosum62>, TVoidSpec>::VALUE[5] =
 {
     'A', // A R N D Q E G H K S T B Z X
@@ -2032,7 +1468,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<5, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -2063,34 +1499,10 @@ char const TranslateTableAAToRedAA_<
      1,  2,  3,  0,  0,  2,  2,  1,  0,  0,  0,  4
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<5, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 4 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<4, 24, Blosum62>, TVoidSpec>::VALUE[4] =
 {
     'A', // A R N D Q E G H K P S T B Z X
@@ -2100,7 +1512,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<4, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -2131,34 +1543,10 @@ char const TranslateTableAAToRedAA_<
      1,  2,  0,  0,  0,  2,  2,  1,  0,  0,  0,  3
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<4, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 3 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<3, 24, Blosum62>, TVoidSpec>::VALUE[3] =
 {
     'A', // A R N D Q E G H K P S T B Z X
@@ -2167,7 +1555,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<3, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -2198,34 +1586,10 @@ char const TranslateTableAAToRedAA_<
      1,  1,  0,  0,  0,  1,  1,  1,  0,  0,  0,  2
 };
 
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<3, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 // ---------------------------------- N = 2 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<
+char const TranslateTableRedAAToChar_<
                 ClusterReduction<2, 24, Blosum62>, TVoidSpec>::VALUE[2] =
 {
     'A', // A R N D C Q E G H I L K M F P S T W Y V B Z X
@@ -2233,7 +1597,7 @@ char const TranslateTableRedAAToAscii_<
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<
+char const TranslateTableCharToRedAA_<
                 ClusterReduction<2, 24, Blosum62>, TVoidSpec>::VALUE[256] =
 {
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -2263,33 +1627,6 @@ char const TranslateTableAAToRedAA_<
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1
 };
-
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<
-                ClusterReduction<2, 24, Blosum62>, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-// ============================================================================
-// Functions
-// ============================================================================
 
 }
 

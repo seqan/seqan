@@ -124,16 +124,13 @@ struct CompareType<SimpleType<unsigned char, ReducedAminoAcid_<TRedSpec> >,
 // -----------------------------------------------------------------------
 
 template <typename TRedSpec, typename TSpec = void>
-struct TranslateTableAsciiToRedAA_;
+struct TranslateTableCharToRedAA_;
 
 template <typename TRedSpec, typename TSpec = void>
 struct TranslateTableAAToRedAA_;
 
 template <typename TRedSpec, typename TSpec = void>
-struct TranslateTableByteToRedAA_;
-
-template <typename TRedSpec, typename TSpec = void>
-struct TranslateTableRedAAToAscii_;
+struct TranslateTableRedAAToChar_;
 
 // ============================================================================
 // Functions

@@ -52,13 +52,13 @@ namespace seqan {
 // ============================================================================
 
 template <typename TSpec>
-struct TranslateTableRedAAToAscii_<Murphy10, TSpec>
+struct TranslateTableRedAAToChar_<Murphy10, TSpec>
 {
     static const char VALUE[ValueSize<SimpleType<unsigned char, ReducedAminoAcid_<Murphy10> > >::VALUE];
 };
 
 template <typename TSpec>
-struct TranslateTableAsciiToRedAA_<Murphy10, TSpec>
+struct TranslateTableCharToRedAA_<Murphy10, TSpec>
 {
     static const char VALUE[256];
 };
@@ -69,16 +69,10 @@ struct TranslateTableAAToRedAA_<Murphy10, TSpec>
     static const char VALUE[24];
 };
 
-template <typename TSpec>
-struct TranslateTableByteToRedAA_<Murphy10, TSpec>
-{
-    static const char VALUE[256];
-};
-
 // ---------------------------------- N = 10 ------------------------------
 
 template <typename TVoidSpec>
-char const TranslateTableRedAAToAscii_<Murphy10, TVoidSpec>::VALUE[10] =
+char const TranslateTableRedAAToChar_<Murphy10, TVoidSpec>::VALUE[10] =
 {
     'A', // A
     'R', // R K
@@ -93,7 +87,7 @@ char const TranslateTableRedAAToAscii_<Murphy10, TVoidSpec>::VALUE[10] =
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAsciiToRedAA_<Murphy10, TVoidSpec>::VALUE[256] =
+char const TranslateTableCharToRedAA_<Murphy10, TVoidSpec>::VALUE[256] =
 {
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -121,30 +115,6 @@ char const TranslateTableAAToRedAA_<Murphy10, TVoidSpec>::VALUE[24] =
      0,  1,  2,  2,  3,  2,  2,  4,  5,  6,  6,  1,
      6,  7,  8,  9,  9,  7,  7,  6,  0,  0,  0,  0
 };
-
-template <typename TVoidSpec>
-char const TranslateTableByteToRedAA_<Murphy10, TVoidSpec>::VALUE[256] =
-{
-     0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0
-};
-
 
 // ============================================================================
 // Functions

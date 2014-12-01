@@ -76,15 +76,7 @@ template <typename TRedSpec>
 inline void assign(char & c_target, SimpleType<unsigned char,
                    ReducedAminoAcid_<TRedSpec> > const & source)
 {
-    c_target = TranslateTableRedAAToAscii_<TRedSpec>::VALUE[source.value];
-}
-
-template <typename TRedSpec>
-inline void assign(SimpleType<unsigned char,
-                   ReducedAminoAcid_<TRedSpec> > & target,
-                   __uint8 c_source)
-{
-    target.value = TranslateTableByteToRedAA_<TRedSpec>::VALUE[c_source];
+    c_target = TranslateTableRedAAToChar_<TRedSpec>::VALUE[source.value];
 }
 
 template <typename TRedSpec>
@@ -92,7 +84,7 @@ inline void assign(SimpleType<unsigned char,
                    ReducedAminoAcid_<TRedSpec> > & target,
                    char c_source)
 {
-    target.value = TranslateTableAsciiToRedAA_<TRedSpec>::VALUE[(unsigned char) c_source];
+    target.value = TranslateTableCharToRedAA_<TRedSpec>::VALUE[(unsigned char) c_source];
 }
 
 template <typename TRedSpec>
@@ -108,7 +100,7 @@ inline void assign(SimpleType<unsigned char,
                    ReducedAminoAcid_<TRedSpec> > & target,
                    Unicode c_source)
 {
-    target.value = TranslateTableAsciiToRedAA_<TRedSpec>::VALUE[(unsigned char) c_source];
+    target.value = TranslateTableCharToRedAA_<TRedSpec>::VALUE[(unsigned char) c_source];
 }
 
 }

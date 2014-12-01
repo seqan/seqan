@@ -45,22 +45,22 @@ struct BitsPerValue<DnaM>
 // ============================================================================
 
 template <typename T = void>
-struct TranslateTableDnaMToAscii_
+struct TranslateTableDnaMToChar_
 {
     static char const VALUE[6];
 };
 
 template <typename T>
-char const TranslateTableDnaMToAscii_<T>::VALUE[6] = {'A', 'C', 'G', 'T', 'D', 'H'};
+char const TranslateTableDnaMToChar_<T>::VALUE[6] = {'A', 'C', 'G', 'T', 'D', 'H'};
 
 template <typename T = void>
-struct TranslateTableAsciiToDnaM_
+struct TranslateTableCharToDnaM_
 {
     static char const VALUE[256];
 };
 
 template <typename T>
-char const TranslateTableAsciiToDnaM_<T>::VALUE[256] =
+char const TranslateTableCharToDnaM_<T>::VALUE[256] =
 {
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //0
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //1
@@ -101,33 +101,6 @@ char const TranslateTableDnaMToDna_<T>::VALUE[6] =
     0,   1,   2,   3,   1,   2      //
 };
 
-template <typename T = void>
-struct TranslateTableByteToDnaM_
-{
-    static char const VALUE[256];
-};
-
-template <typename T>
-char const TranslateTableByteToDnaM_<T>::VALUE[256] =
-{
-    0,   1,   2,   3,   4,   5,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //0
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //1
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //2
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //3
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //4
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //5
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //6
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //7
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //8
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //9
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //10
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //11
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //12
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //13
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //14
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0  //15
-};
-
 // ============================================================================
 // Assignment / Conversion Functions
 // ============================================================================
@@ -135,18 +108,7 @@ char const TranslateTableByteToDnaM_<T>::VALUE[256] =
 inline void assign(char & c_target,
                    DnaM const & source)
 {
-    c_target = TranslateTableDnaMToAscii_<>::VALUE[source.value];
-}
-
-template <>
-struct CompareType<DnaM, __uint8>
-{
-    typedef DnaM Type;
-};
-
-inline void assign(DnaM & target, __uint8 c_source)
-{
-    target.value = TranslateTableByteToDnaM_<>::VALUE[c_source];
+    c_target = TranslateTableDnaMToChar_<>::VALUE[source.value];
 }
 
 template <>
@@ -157,7 +119,7 @@ struct CompareType<DnaM, char>
 
 inline void assign(DnaM & target, char c_source)
 {
-    target.value = TranslateTableAsciiToDnaM_<>::VALUE[(unsigned char) c_source];
+    target.value = TranslateTableCharToDnaM_<>::VALUE[(unsigned char) c_source];
 }
 
 
@@ -211,13 +173,13 @@ struct BitsPerValue<DnaMR>
 // ============================================================================
 
 template <typename T = void>
-struct TranslateTableDnaMRToAscii_
+struct TranslateTableDnaMRToChar_
 {
     static char const VALUE[11];
 };
 
 template <typename T>
-char const TranslateTableDnaMRToAscii_<T>::VALUE[11] = {'A', 'C', 'G', 'T', 'a', 'c', 'g', 't', 'R', 'V', 'X'};
+char const TranslateTableDnaMRToChar_<T>::VALUE[11] = {'A', 'C', 'G', 'T', 'a', 'c', 'g', 't', 'R', 'V', 'X'};
 
 
 

@@ -61,7 +61,6 @@ class SimpleType;
 //
 //                 Also see http://stackoverflow.com/questions/6300804/
 //                 GitHub Issue: seqan/seqan #548
-typedef char Ascii;
 typedef wchar_t Unicode;
 
 // ============================================================================

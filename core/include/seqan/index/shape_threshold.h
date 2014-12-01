@@ -140,18 +140,18 @@ int qgramThreshold(TShape const & shape, TPatternSize patternLength, TErrors err
 	template <> struct BitsPerValue< ErrorAlphabet > { enum { VALUE = 2 }; };
 
 	template <typename T = void>
-	struct TranslateTableErrorToAscii_
+	struct TranslateTableErrorToChar_
 	{
 		static char const VALUE[4];
 	};
 	template <typename T>
-	char const TranslateTableErrorToAscii_<T>::VALUE[4] = {'.', 'M', 'I', 'D'};
+	char const TranslateTableErrorToChar_<T>::VALUE[4] = {'.', 'M', 'I', 'D'};
 
-	inline void assign(Ascii & c_target, 
+	inline void assign(char & c_target, 
 					   ErrorAlphabet const & source)
 	{
 	SEQAN_CHECKPOINT
-		c_target = TranslateTableErrorToAscii_<>::VALUE[source.value];
+		c_target = TranslateTableErrorToChar_<>::VALUE[source.value];
 	}
 
 
