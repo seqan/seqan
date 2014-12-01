@@ -1,44 +1,60 @@
 #include <iostream>
-#include <fstream>
-
 #include <seqan/sequence.h>
 #include <seqan/bam_io.h>
 
-int main(int argc, char const * argv[])
+int main()
 {
-    if (argc != 3)
-    {
-        std::cerr << "USAGE: " << argv[0] << " IN.[sam|bam] OUT.[sam|bam]\n";
-        return 1;
-    }
+    seqan::Dna5String ref = "CCCGATGAGCACACGATCACACGATGACA";
 
-    // Open BamFileIn for reading.
-    seqan::BamFileIn inFile;
-    if (!open(inFile, argv[1]))
-    {
-        std::cerr << "ERROR: Could not open " << argv[1] << " for reading.\n";
-        return 1;
-    }
+    // --------------------------------------------------------
+    // Build header.
+    // --------------------------------------------------------
+    seqan::BamFileOut bamFileOut(std::cout, seqan::Sam());
 
-    // Open BamFileOut for writing. Give inFile to share its BamIoContext
-    seqan::BamFileOut outFile(inFile);
-    if (!open(outFile, argv[2]))
-    {
-        std::cerr << "ERROR: Could not open " << argv[2] << " for writing.\n";
-        return 1;
-    }
+    // Fill sequenceInfos.
+    assignValueById(sequenceLengths(context(bamFileOut)),
+                    nameToId(nameStoreCache(context(bamFileOut)), "REF"),
+                    length(ref));
 
-    // Read header.
+    // Fill header records.
     seqan::BamHeader header;
-    readRecord(header, inFile);
-    writeRecord(outFile, header);
+    resize(header, 1);
+    // @HD header.
+    header[0].type = seqan::BAM_HEADER_FIRST;
+    resize(header[0].tags, 1);
+    // @HD header, tag/value: VN:1.4.
+    header[0].tags[0].i1 = "VN";
+    header[0].tags[0].i2 = "1.4";
 
-    // Copy over the alignment records.
+    writeRecord(bamFileOut, header);
+
+    // --------------------------------------------------------
+    // Write out records.
+    // --------------------------------------------------------
+
     seqan::BamAlignmentRecord record;
-    while (!atEnd(inFile))
+
+    for (unsigned i = 0; i + 12 - 1 < length(ref); ++i)
     {
-        readRecord(record, inFile);
-        writeRecord(outFile, record);
+        clear(record);
+        // Set members that are the same for all records.
+        record.rID = 0;
+        record.flag = 0;
+        resize(record.cigar, 1);
+        record.cigar[0].operation = '=';
+        record.cigar[0].count = 12;
+
+        // The query name is REF_${START}_${END}.
+        record.qName = "REF_";
+        appendNumber(record.qName, i);
+        appendValue(record.qName, '_');
+        appendNumber(record.qName, i + 12);
+        // Set position.
+        record.beginPos = i;
+        // Set sequence.
+        record.seq = infix(ref, i, i + 12);
+
+        writeRecord(bamFileOut, record);
     }
 
     return 0;
