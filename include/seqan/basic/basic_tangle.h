@@ -75,8 +75,6 @@ struct Iterator<SimpleType<TValue, TSpec> const, Standard>
 
 // TODO(holtgrew): Is this part of some adaption?
 
-///.Metafunction.Key.param.T.type:Class.Pair
-
 template <typename TKey, typename TObject, typename TSpec>
 struct Key<Pair<TKey, TObject, TSpec> > 
 {
@@ -88,8 +86,6 @@ struct Key<Pair<TKey, TObject, TSpec> >
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Is this part of some adaption?
-
-///.Metafunction.Cargo.param.T.type:Class.Pair
 
 template <typename TKey, typename TCargo, typename TSpec>
 struct Cargo<Pair<TKey, TCargo, TSpec> > 
@@ -126,24 +122,6 @@ struct Cargo<Pair<TKey, TCargo, TSpec> >
  * 
  * @see AlphabetWithQualitiesConcept#assignQualityValue
  */
-
-/**
-.Function.assignQualities
-..cat:Alphabets
-..summary:Assign quality values between strings.
-..signature:assignQualities(target, source)
-..param.target:Target string
-...type:nolink:@Class.String@ of any alphabet with qualities, e.g. @Spec.DnaQ@, @Spec.Dna5Q@
-..param.source:Source string.
-...type:nolink:@Class.String@ of $int$ or $char$.
-..remarks:
-The target is resized to the length of source.
-This function calls @Function.assignQualityValue@ for all entries of $target$ and $source$, look at the documentation of @Function.assignQualityValue@ on how the values of $source$ are interpreted.
-..remarks:
-Note that qualities are expected to be in PHRED scale.
-..see:Function.assignQualityValue
-..include:seqan/basic.h
-*/
 
 template <typename TDest, typename TSource>
 inline void

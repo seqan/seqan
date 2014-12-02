@@ -60,11 +60,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Tag.File Format.tag.Amos message file:
-	Amos message file.
-..include:seqan/store.h
-*/
 struct TagAmos_;
 typedef Tag<TagAmos_> const Amos;
 
@@ -89,21 +84,6 @@ typedef Tag<TagAmos_> const Amos;
  * @param[out] endClr   End of the clear range.
  */
 
-
-/**
-.Function.getClrRange
-..cat:Fragment Store
-..summary:Get the "clear" range of a read alignment.
-..remarks:The clear range of a read alignment is the range of the part of the alignment that is not clipped.
-..signature:getClrRange(fragStore, alignEl, begClr, endClr)
-..param.fragStore:Fragment Store to work on.
-...type:Class.FragmentStore
-..param.alignEl:Read alignment element.
-...type:Class.AlignedReadStoreElement
-..param.begClr:Start of the clear range.
-..param.endClr:End of the clear range.
-..include:seqan/store.h
-*/
 
 template <typename TSpec, typename TConfig, typename TPos, typename TGapAnchor, typename TSpecAlign, typename TBeginClr, typename TEndClr>
 inline void
@@ -166,17 +146,6 @@ getClrRange(FragmentStore<TSpec, TConfig> const& fragStore,
  *
  * @return int 0 in the case of success, non-0 value in case of errors.
  */
-
-/**
-.Function.read
-..cat:Fragment Store
-..signature:read(file, fragStore, tag)
-..param.fragStore:A fragment store. Currently @Tag.File Format.tag.Amos message file@ and @Tag.File Format.tag.Sam@ formats are supported.
-...type:Class.FragmentStore
-..param.tag.type:Tag.File Format.tag.Amos message file
-..returns:An $int$ value with a status code. $0$ on success, a non-$0$ value on failure.
-..include:seqan/store.h
-*/
 
 template <typename TKey, typename TValue, typename TIter>
 void readAmosKeyValue(TKey &key, TValue &value, TIter &reader)
@@ -659,16 +628,6 @@ read(FragmentStore<TSpec, TConfig>& fragStore,
  * @return int 0 in case of success, 1 in case of errors.
  */
 
-/**
-.Function.write
-..cat:Fragment Store
-..signature:int write(file, fragStore, tag)
-..param.fragStore:A fragment store.
-...type:Class.FragmentStore
-..param.tag.type:Tag.File Format.tag.Amos message file
-..returns:An $int$ with the status code. $0$ on success, non-$0$ on errors.
-..include:seqan/store.h
-*/
 template <typename TTarget, typename TSpec, typename TConfig>
 inline void
 write(TTarget & target,
@@ -948,19 +907,6 @@ write(TTarget & target,
  * @return bool true on success, false on errors.
  */ 
 
-/**
-.Function.writeContigs
-..class:Class.FragmentStore
-..summary:Write contigs from fragment store into file.
-..cat:Fragment Store
-..signature:writeContigs(file, store, tag)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..param.file:A file/stream.
-..param.tag:Specify format to write, e.g. Fasta.
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/store.h
-*/
 template <typename TSpec, typename TFSSpec, typename TFSConfig>
 bool writeContigs(SmartFile<Fastq, Output, TSpec> & file, FragmentStore<TFSSpec, TFSConfig> & store)
 {
@@ -990,27 +936,6 @@ bool writeContigs(SmartFile<Fastq, Output, TSpec> & file, FragmentStore<TFSSpec,
  *
  * @return bool true in case of success and false in case of error.
  */
-
-/**
-.Function.loadContigs
-..class:Class.FragmentStore
-..summary:Loads contigs into fragment store.
-..cat:Fragment Store
-..signature:loadContigs(store, fileName[, loadSeqs])
-..signature:loadContigs(store, fileNameList[, loadSeqs])
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..param.fileName:A sequence file name.
-...type:Shortcut.CharString
-..param.fileNameList:A @Class.StringSet@ of sequence file names.
-...type:Class.StringSet
-..param.loadSeqs:If $true$, sequences are loaded immediately. 
-If $false$, an empty contig with a reference to the file is created. Its sequence can be loaded on-demand by @Function.lockContig@ or @Function.loadContig@.
-...default:$true$
-...type:nolink:bool
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/store.h
-*/
 
 template <typename TFSSpec, typename TFSConfig>
 bool loadContigs(FragmentStore<TFSSpec, TFSConfig> &store, StringSet<CharString> const &fileNameList, bool loadSeqs)
@@ -1091,19 +1016,6 @@ bool loadContigs(FragmentStore<TFSSpec, TFSConfig> &store, TFileNames const &fil
  * @return bool true on success, false on failure.
  */
 
-/**
-.Function.loadContig
-..class:Class.FragmentStore
-..summary:Manually loads a contig sequence.
-..cat:Fragment Store
-..signature:loadContig(store, contigId)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..param.contigId:Id of the contig which was created earlier by @Function.loadContigs@.
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/store.h
-*/
-
 template <typename TSpec, typename TConfig, typename TId>
 bool loadContig(FragmentStore<TSpec, TConfig> &store, TId _id)
 {
@@ -1144,19 +1056,6 @@ bool loadContig(FragmentStore<TSpec, TConfig> &store, TId _id)
  * @return bool true on success, false on failure.
  */
 
-/**
-.Function.lockContig
-..summary:Locks a contig sequence from being removed.
-..cat:Fragment Store
-..signature:lockContig(store, contigId)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..param.contigId:Id of the contig which was created earlier by @Function.loadContigs@.
-..returns:A $bool$ which is $true$ on success.
-..remarks:This function increases the contig usage counter by 1 and ensures that the contig sequence is loaded.
-..include:seqan/store.h
-*/
-
 template <typename TSpec, typename TConfig, typename TId>
 bool lockContig(FragmentStore<TSpec, TConfig> &store, TId _id)
 {
@@ -1185,19 +1084,6 @@ bool lockContig(FragmentStore<TSpec, TConfig> &store, TId _id)
  * @return bool true on success, false on failure.
  */
 
-/**
-.Function.unlockContig
-..summary:Removes a previous contig lock.
-..cat:Fragment Store
-..signature:unlockContig(store, contigId)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..param.contigId:Id of the contig which was created earlier by @Function.loadContigs@.
-..returns:A $bool$ which is $true$ on success.
-..remarks:This function decreases the contig usage counter by 1.
-..include:seqan/store.h
-*/
-
 template <typename TSpec, typename TConfig, typename TId>
 bool unlockContig(FragmentStore<TSpec, TConfig> &store, TId _id)
 {
@@ -1219,19 +1105,6 @@ bool unlockContig(FragmentStore<TSpec, TConfig> &store, TId _id)
  *
  * @return bool true on success, false on failure.
  */
-
-/**
-.Function.unlockAndFreeContig
-..summary:Removes a previous contig lock and clears sequence no further lock exist.
-..cat:Fragment Store
-..signature:unlockAndFreeContig(store, contigId)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..param.contigId:Id of the contig which was created earlier by @Function.loadContigs@.
-..returns:A $bool$ which is $true$ on success.
-..remarks:This function decreases contig usage counter by 1 and clears contig sequence if counter is 0.
-..include:seqan/store.h
-*/
 
 template <typename TSpec, typename TConfig, typename TId>
 bool unlockAndFreeContig(FragmentStore<TSpec, TConfig> &store, TId _id)
@@ -1263,18 +1136,6 @@ bool unlockAndFreeContig(FragmentStore<TSpec, TConfig> &store, TId _id)
  * @return bool true in case of success, false in case of errors.
  */
 
-/**
-.Function.lockContigs
-..summary:Locks all contig sequences from being removed. 
-..cat:Fragment Store
-..signature:lockContigs(store)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..returns:A $bool$ which is $true$ on success.
-..remarks:Calls @Function.lockContig@ for all contigs.
-..include:seqan/store.h
-*/
-
 template <typename TSpec, typename TConfig>
 bool lockContigs(FragmentStore<TSpec, TConfig> &store)
 {
@@ -1295,18 +1156,6 @@ bool lockContigs(FragmentStore<TSpec, TConfig> &store)
  * @return bool true in case of success, false in case of errors.
  */
 
-/**
-.Function.unlockContigs
-..summary:Removes a previous lock for all contigs.
-..cat:Fragment Store
-..signature:unlockContigs(store)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..returns:A $bool$ which is $true$ on success.
-..remarks:Calls @Function.unlockContig@ for all contigs.
-..include:seqan/store.h
-*/
-
 template <typename TSpec, typename TConfig>
 bool unlockContigs(FragmentStore<TSpec, TConfig> &store)
 {
@@ -1326,18 +1175,6 @@ bool unlockContigs(FragmentStore<TSpec, TConfig> &store)
  *
  * @return bool true in case of success, false in case of errors.
  */
-
-/**
-.Function.unlockAndFreeContigs
-..summary:Removes a previous lock for all contigs and clears sequences without lock.
-..cat:Fragment Store
-..signature:unlockAndFreeContigs(store)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..returns:A $bool$ which is $true$ on success.
-..remarks:Calls @Function.unlockAndFreeContigs@ for all contigs.
-..include:seqan/store.h
-*/
 
 template <typename TSpec, typename TConfig>
 bool unlockAndFreeContigs(FragmentStore<TSpec, TConfig> &store)
@@ -1369,23 +1206,6 @@ bool unlockAndFreeContigs(FragmentStore<TSpec, TConfig> &store)
  *
  * @return bool true in case of success, false in case of errors.
  */
-
-/**
-.Function.loadReads
-..class:Class.FragmentStore
-..summary:Loads reads into fragment store.
-..remarks:When two file names are given, the files are expected to contain the same number of reads and reads with the same index are assumed to be mate pairs.
-Mate pairs are stored internally in an "interleaved" mode, i.e. a read is read from each file before reading the next one.
-..cat:Fragment Store
-..signature:loadReads(store, fileName)
-..signature:loadReads(store, fileNameL, fileNameR)
-..param.store:The fragment store.
-...type:Class.FragmentStore
-..param.fileName:A sequence file name.
-...type:Shortcut.CharString
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/store.h
-*/
 
 template <typename TSpec, typename TConfig, typename TFileName>
 bool loadReads(FragmentStore<TSpec, TConfig> &store, TFileName &fileName)

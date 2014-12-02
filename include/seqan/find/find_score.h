@@ -62,24 +62,6 @@ struct DPSearch {};
  * contains the right-most column of the dynamic programming matrix.
  */
 
-/**
-.Spec.DPSearch:
-..cat:Searching
-..general:Class.Pattern
-..summary:A dynamic programming algorithm for approximate string-matching with a user-definable scoring function.
-..signature:Pattern<TNeedle, DPSearch<TScore [, TSpec [, TFindBeginPatternSpec] ]> >
-..param.TNeedle:The needle type.
-...type:Class.String
-..param.TScore:The scoring function.
-...type:Class.Score
-..remarks.text:The algorithm is based on the Sellers/Needleman-Wunsch dynamic progamming algorithm. 
-The $Pattern$ object only contains the right-most column of the dynamic programming matrix.
-...note:At the moment, the algorithm only works on linear gap costs.
-..include:seqan/find.h
-*/
-
-///.Class.Pattern.param.TSpec.type:Class.Score
-
 
 template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec>
 class Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> >:
@@ -251,16 +233,6 @@ setScoringScheme(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec>
  * @return TScoreValue The score limit value.
  */
 
-/**.Function.scoreLimit
-..cat:Searching
-..summary:The minimal score a match must reach in approximate searching.
-..signature:scoreLimit(pattern)
-..class:Spec.DPSearch
-..param.pattern:A @Class.Pattern@ that can be used for approximate searching.
-...type:Spec.DPSearch
-..returns:The current score limit of $pattern$.
-*/
-
 template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec>
 inline typename Value<TScore>::Type 
 scoreLimit(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > const & me)
@@ -282,17 +254,6 @@ scoreLimit(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > con
  *
  * @return TScoreValue The score limit value.
  */
-
-/**.Function.setScoreLimit
-..cat:Searching
-..summary:Sets the minimal score a match must reach in approximate searching.
-..signature:setScoreLimit(pattern, limit)
-..class:Spec.DPSearch
-..param.pattern:A @Class.Pattern@ that can be used for approximate searching.
-...type:Spec.DPSearch
-..param.limit:The new score limit.
-..see:Function.scoreLimit
-*/
 
 template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec, typename TScoreValue>
 inline void 
@@ -317,20 +278,6 @@ setScoreLimit(Pattern<TNeedle, DPSearch<TScore, TSpec, TFindBeginPatternSpec> > 
  * @return TScoreValue The score of the last match found using <tt>pattern</tt>.  If no match was found then the vlaue
  *                     is undefined.
  */
-
-/**.Function.getScore
-..cat:Searching
-..summary:Score of the last found match in approximate searching.
-..signature:getScore(pattern)
-..class:Spec.DPSearch
-..param.pattern:A @Class.Pattern@ that can be used for approximate searching.
-...type:Spec.DPSearch
-..returns:The score of the last match found using $pattern$.
-...remarks:If no match was found, the value is undefined.
-..see:Function.scoreLimit
-..see:Function.setScoreLimit
-..see:Function.find
-*/
 
 template <typename TNeedle, typename TScore, typename TSpec, typename TFindBeginPatternSpec>
 inline typename Value<TScore>::Type

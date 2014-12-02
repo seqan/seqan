@@ -79,20 +79,6 @@ struct FindBeginPatternSpec< Pattern<TNeedle, Pex<TVerification , TMultiFinder >
  * <tt>Pattern&lt;String&lt;Segment&l;tNeedle&gt; &gt;, TMultiFinder&gt;</tt>.
  */
 
-/**
-.Metafunction.PexMultiFinder:
-..cat:Searching
-..summary:Determines the multiple exact string matching algorithm used by the Pex algorithm.
-..signature:PexMultiFinder< Pattern<TNeedle,Pex<TVerification,TMultiFinder> > >::Type
-..class:Class.Pattern
-..param.TMultiFinder:The specification for the multiple exact string matching algorithm that should be used with the Pex algorithm.
-..returns.param.Type:Pattern type of the multiple exact string matching algorithm for the specified Pattern.
-..see:Spec.Pex
-..remarks: For a description of Pattern usage see @Class.Pattern@.
-..remarks: Overload this Metafunction if you want to use something else for verification then $Pattern<String<Segment<TNeedle> > , TMultiFinder>$.
-..include:seqan/find.h
-*/
-
 template<typename T>
 struct PexMultiFinder;
 
@@ -133,22 +119,6 @@ struct PexRange_{
  * @endlink algorithm for the multiple exact string matching.
  */
 
-/**
-.Spec.Pex:
-..summary: Provides a fast approximate string matching filter that splits the needle into several pieces that are searched with a multiple exact string matching algorithm and later verified.
-..general:Class.Pattern
-..cat:Searching
-..signature:Pattern<TNeedle, Pex<TVerification,TMultiFinder> >
-..param.TNeedle:The needle type.
-...type:Class.String
-..param.TVerification: Determines if the hierarchical verification proposed by Navarro and Baeza-Yates is used or not.
-..param.TMultiFinder: Specifies the algorithm for the multiple exact string matching algorithm
-...type:Spec.AhoCorasick
-..remarks: There are two defaults available $PexHierarchical$ and $PexNonHierarchical$ (e.g. $Pattern<String<char> ,PexHierarchical> $) that both use the @Spec.AhoCorasick@ algorithm for the multiple exact string matching.
-..include:seqan/find.h
-*/
-///.Class.Pattern.param.TSpec.type:Spec.Pex
-
 /*!
  * @class HierarchicalPexPattern
  * @extends PexPattern
@@ -162,19 +132,6 @@ struct PexRange_{
  * @tparam TMultiFinder Specifies the algorithm for th emultiple exact string matching algorithm.
  */
 
-/**
-.Spec.Hierarchical:
-..summary: By using this Specialization the hierarchical verification is enabled.
-..general:Spec.Pex
-..cat:Searching
-..signature:Pattern<TNeedle, Pex<Hierarchical,TMultiFinder> >
-..param.TNeedle:The needle type.
-...type:Class.String
-..param.TMultiFinder: Specifies the algorithm for the multiple exact string matching algorithm
-..include:seqan/find.h
-*/
-///.Spec.Pex.param.TVerification.type:Spec.Hierarchical
-
 /*!
  * @class NonHierarchicalPexPattern
  * @extends PexPattern
@@ -187,19 +144,6 @@ struct PexRange_{
  * @tparam TNeedle      The needle type. Type: @link ContainerConcept @endlink
  * @tparam TMultiFinder Specifies the algorithm for th emultiple exact string matching algorithm.
  */
-
-/**
-.Spec.NonHierarchical:
-..summary: By using this Specialization the hierarchical verification is disabled.
-..general:Spec.Pex
-..cat:Searching
-..signature:Pattern<TNeedle, Pex<NonHierarchical,TMultiFinder> >
-..param.TNeedle:The needle type.
-...type:Class.String
-..param.TMultiFinder: Specifies the algorithm for the multiple exact string matching algorithm
-..include:seqan/find.h
-*/
-///.Spec.Pex.param.TVerification.type:Spec.NonHierarchical
 
 template <typename TNeedle, typename TVerification, typename TMultiFinder>
 class Pattern<TNeedle, Pex<TVerification, TMultiFinder > >:
@@ -324,9 +268,6 @@ SEQAN_CHECKPOINT
  * @return TScoreValue The score of the last match found using <tt>pattern</tt>.  If no match was found then the value
  *                     is undefined.
  */
-///.Function.getScore.param.pattern.type:Spec.Pex
-///.Function.getScore.class:Spec.Pex
-
 template <typename TNeedle, typename TVerification, typename TMultiFinder>
 int getScore(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me) 
 {
@@ -346,9 +287,6 @@ SEQAN_CHECKPOINT
  *
  * @return TScoreValue The score limit value.
  */
-///.Function.scoreLimit.param.pattern.type:Spec.Pex
-///.Function.scoreLimit.class:Spec.Pex
-
 template <typename TNeedle, typename TVerification, typename TMultiFinder>
 inline int 
 scoreLimit(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > const & me)
@@ -372,9 +310,6 @@ SEQAN_CHECKPOINT
  * @return TScoreValue The score limit value.
  */
 
-
-///.Function.setScoreLimit.param.pattern.type:Spec.Pex
-///.Function.setScoreLimit.class:Spec.Pex
 
 template <typename TNeedle, typename TScoreValue,typename TVerification, typename TMultiFinder>
 inline void 

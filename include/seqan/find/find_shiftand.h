@@ -58,20 +58,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The types of the needle and the haystack have to match.
  */
 
-/**
-.Spec.ShiftAnd:
-..summary: Exact string matching using bit parallelism. The Shift-And algorithm is applicable to search small patterns in texts using a small alphabet.
-..general:Class.Pattern
-..cat:Searching
-..signature:Pattern<TNeedle, ShiftAnd>
-..param.TNeedle:The needle type.
-...type:Class.String
-..remarks.text:The types of the needle and the haystack have to match.
-..include:seqan/find.h
-*/
-
-///.Class.Pattern.param.TSpec.type:Spec.ShiftAnd
-
 struct ShiftAnd_;
 typedef Tag<ShiftAnd_> ShiftAnd;
 

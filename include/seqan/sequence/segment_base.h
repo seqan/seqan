@@ -185,24 +185,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @aka substring
  */
 
-/**
-.Class.Segment:
-..cat:Sequences
-..summary:A contiguous part of a sequence.
-..signature:Segment<THost, TSpec>
-..param.THost:Type of the whole sequence.
-...metafunction:Metafunction.Host
-...text:Instances of $Segment<THost, TSpec>$ are subsequences of $THost$ objects.
-..param.TSpec:The specializing type.
-...metafunction:Metafunction.Spec
-...default:@Spec.InfixSegment@.
-..example.file:demos/sequence/infix.cpp
-..example.text:The output is as follows:
-..example.output:
-Infix: CGCG
-..include:seqan/sequence.h
-*/
-
 /*!
  * @fn Segment#beginPosition
  * @headerfile <seqan/sequence.h>
@@ -237,9 +219,6 @@ class Segment
 };
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.Host.param.T.type:Class.Segment
-///.Metafunction.Host.class:Class.Segment
 
 template <typename THost, typename TSpec>
 struct Host<Segment<THost, TSpec> >
@@ -283,9 +262,6 @@ struct Parameter_<Segment<THost, TSpec> const >
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Spec.param.T.type:Class.Segment
-///.Metafunction.Spec.class:Class.Segment
-
 template <typename THost, typename TSpec>
 struct Spec<Segment<THost, TSpec> >
 {
@@ -310,9 +286,6 @@ struct StringSpec<Segment<THost, TSpec> > : StringSpec<THost> {};
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Value.param.T.type:Class.Segment
-///.Metafunction.Value.class:Class.Segment
-
 template <typename THost, typename TSpec>
 struct Value<Segment<THost, TSpec> > :
     Value<THost> {};
@@ -323,9 +296,6 @@ struct Value<Segment<THost, TSpec> const > :
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.GetValue.param.T.type:Class.Segment
-///.Metafunction.GetValue.class:Class.Segment
-
 template <typename THost, typename TSpec>
 struct GetValue<Segment<THost, TSpec> > :
     GetValue<THost> {};
@@ -335,9 +305,6 @@ struct GetValue<Segment<THost, TSpec> const > :
     GetValue<THost const> {};
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.Reference.param.T.type:Class.Segment
-///.Metafunction.Reference.class:Class.Segment
 
 template <typename THost, typename TSpec>
 struct Reference<Segment<THost, TSpec> > :
@@ -358,9 +325,6 @@ struct Reference<Segment<THost, TSpec> const > :
 //////////////////////////////////////////////////////////////////////////////
 
 // TODO(holtgrew): Should the iterators of const segments be iterators with the constness of the host.
-
-///.Metafunction.Iterator.param.T.type:Class.Segment
-///.Metafunction.Iterator.class:Class.Segment
 
 template <typename THost, typename TSpec>
 struct Iterator<Segment<THost, TSpec>, Rooted>
@@ -389,9 +353,6 @@ struct Iterator<Segment<THost, TSpec> const, Standard>:
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Size.param.T.type:Class.Segment
-///.Metafunction.Size.class:Class.Segment
-
 template <typename THost, typename TSpec>
 struct Size<Segment<THost, TSpec> > :
     Size<THost> {};
@@ -410,9 +371,6 @@ struct Position<Segment<THost, TSpec> const > :
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.DefaultOverflowImplicit.param.T.type:Class.Segment
-///.Metafunction.DefaultOverflowImplicit.class:Class.Segment
-
 template <typename THost, typename TSpec>
 struct DefaultOverflowImplicit<Segment<THost, TSpec > > :
     DefaultOverflowImplicit<THost> {};
@@ -422,9 +380,6 @@ struct DefaultOverflowImplicit<Segment<THost, TSpec > const > :
     DefaultOverflowImplicit<THost> {};
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.DefaultOverflowExplicit.param.T.type:Class.Segment
-///.Metafunction.DefaultOverflowExplicit.class:Class.Segment
 
 template <typename THost, typename TSpec>
 struct DefaultOverflowExplicit<Segment<THost, TSpec > > :
@@ -436,17 +391,11 @@ struct DefaultOverflowExplicit<Segment<THost, TSpec > const > :
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.IsContiguous.param.T.type:Class.Segment
-///.Metafunction.IsContiguous.class:Class.Segment
-
 template <typename THost, typename TSpec>
 struct IsContiguous< Segment<THost, TSpec> > :
     IsContiguous<THost> {};
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.IsSequence.param.T.type:Class.Segment
-///.Metafunction.IsSequence.class:Class.Segment
 
 template <typename THost, typename TSpec>
 struct IsSequence< Segment<THost, TSpec> > :
@@ -464,8 +413,6 @@ SEQAN_CONCEPT_IMPL((Segment<THost, TSpec> const), (ContainerConcept));
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.IsLightWeight.param.T.type:Class.Segment
-
 template <typename THost, typename TSpec>
 struct IsLightWeight< Segment<THost, TSpec> > :
     True {};
@@ -473,30 +420,9 @@ struct IsLightWeight< Segment<THost, TSpec> > :
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Function.atBegin.param.iterator.type:Class.Segment
-///.Function.atBegin.class:Class.Segment
-///.Function.atEnd.param.iterator.type:Class.Segment
-///.Function.atEnd.class:Class.Segment
-///.Function.goBegin.param.iterator.type:Class.Segment
-///.Function.goBegin.class:Class.Segment
-///.Function.goEnd.param.iterator.type:Class.Segment
-///.Function.goEnd.class:Class.Segment
-///.Function.goNext.param.iterator.type:Class.Segment
-///.Function.goNext.class:Class.Segment
-///.Function.goPrevious.param.iterator.type:Class.Segment
-///.Function.goPrevious.class:Class.Segment
-///.Function.value.param.container.type:Class.Segment
-///.Function.value.class:Class.Segment
-
-///.Function.shareResources.param.sequence1, sequence2.type:Class.Segment
-///.Function.shareResources.class:Class.Segment
-
 //////////////////////////////////////////////////////////////////////////////
 // functions for all Segment classes
 //////////////////////////////////////////////////////////////////////////////
-
-///.Function.getObjectId.param.object.type:Class.Segment
-///.Function.getObjectId.class:Class.Segment
 
 template <typename THost, typename TSpec>
 inline void const *
@@ -543,8 +469,6 @@ Segment<THost, TSpec> _fromPointer(Segment<THost, TSpec> const & me)
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Function.empty.param.object.type:Class.Segment
-
 template <typename THost, typename TSpec>
 SEQAN_HOST_DEVICE inline bool
 empty(Segment<THost, TSpec> const & me)
@@ -555,9 +479,6 @@ empty(Segment<THost, TSpec> const & me)
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Function.length.param.object.type:Class.Segment
-///.Function.length.class:Class.Segment
-
 template <typename THost, typename TSpec>
 SEQAN_HOST_DEVICE inline typename Size<Segment<THost, TSpec> const>::Type
 length(Segment<THost, TSpec> const & me)
@@ -567,9 +488,6 @@ SEQAN_CHECKPOINT
 }
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Function.capacity.param.object.type:Class.Segment
-///.Function.capacity.class:Class.Segment
 
 template <typename THost, typename TSpec>
 inline typename Size< Segment<THost, TSpec> const>::Type
@@ -636,15 +554,6 @@ struct SegmentSetImpl_<False, True>
 //////////////////////////////////////////////////////////////////////////////
 // assign
 //////////////////////////////////////////////////////////////////////////////
-
-/**
-.Function.assign:
-..class:Class.Segment
-..remarks:If $target$ is a @Class.Segment@ object, then
-$limit$ denotes the maximal length of @Function.host.$host(target)$@ after the operation.
-..param.target.type:Class.Segment
-..param.source.type:Class.Segment
-*/
 
 // TODO(holtgrew): We'd rather only have one version.
 

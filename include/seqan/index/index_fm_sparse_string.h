@@ -195,17 +195,6 @@ struct Iterator<SparseString<TFibreValues, TSpec> const, Rooted>:
 // ----------------------------------------------------------------------------
 // NOTE(esiragusa): Why is SparseString not a specialization of String?
 
-/**
-.Class.SparseString:
-..cat:Index
-..summary:A string storing only a fraction of the values of the original string..
-..signature:SparseString<TValueString, TSpec>
-..param.TValueString:The string containing the values.
-..param.TSpec:The specialisation tag.
-...default:void.
-..include:seqan/String.h
-*/
-
 /*!
  * @class SparseString
  * @headerfile <seqan/index.h>
@@ -263,7 +252,6 @@ inline void _assignValueInValueString(SparseString<TFibreValues, TSpec> & string
  * @param[in,out] sparseString The @link SparseString @endlink to be cleared.
  */
 
-///.Function.clear.param.object.type:Class.SparseString
 template <typename TFibreValues, typename TSpec>
 inline void clear(SparseString<TFibreValues, TSpec> & string)
 {
@@ -287,7 +275,6 @@ inline void clear(SparseString<TFibreValues, TSpec> & string)
  * @return bool <tt>true</tt> if there are no elements in the sparse string and <tt>false</tt> otherwise.
  */
 
-///.Function.empty.param.object.type:Class.SparseString
 template <typename TFibreValues, typename TSpec>
 SEQAN_HOST_DEVICE inline bool empty(SparseString<TFibreValues, TSpec> const & string)
 {
@@ -305,7 +292,6 @@ SEQAN_HOST_DEVICE inline bool _isContained(SparseString<TFibreValues, TSpec> con
 // Function assignValue()
 // ----------------------------------------------------------------------------
 
-///.Function.assignValue.param.container.type:Class.SparseString
 template <typename TFibreValues, typename TSpec, typename TPos, typename TValue>
 inline void
 assignValue(SparseString<TFibreValues, TSpec> & string, TPos pos, TValue value)
@@ -333,7 +319,6 @@ assignValue(SparseString<TFibreValues, TSpec> & string, TPos pos, TValue value)
  * @return TValue The type @link GetValue @endlink of @link SparseString @endlink is returned.
  */
 
-///.Function.getValue.param.container.type:Class.SparseString
 template <typename TFibreValues, typename TSpec, typename TPos>
 SEQAN_HOST_DEVICE inline typename GetValue<SparseString<TFibreValues, TSpec> >::Type
 getValue(SparseString<TFibreValues, TSpec> & string, TPos pos)
@@ -371,7 +356,6 @@ getValue(SparseString<TFibreValues, TSpec> const & string, TPos pos)
  * @return TReference The type @link Reference @endlink of @link SparseString @endlink is returned.
  */
 
-///.Function.value.param.container.type:Class.SparseString
 template <typename TFibreValues, typename TSpec, typename TPos>
 SEQAN_HOST_DEVICE inline typename Reference<SparseString<TFibreValues, TSpec> >::Type 
 value(SparseString<TFibreValues, TSpec> & string, TPos pos)
@@ -403,7 +387,6 @@ value(SparseString<TFibreValues, TSpec> const & string, TPos pos)
  * @return TFibre A reference to the @link Fibre @endlink object.
  */
 
-///.Function.getFibre.param.container.type:Class.CompressedSA
 template <typename TFibreValues, typename TSpec>
 SEQAN_HOST_DEVICE inline typename Fibre<SparseString<TFibreValues, TSpec>, FibreValues>::Type const &
 getFibre(SparseString<TFibreValues, TSpec> const & sparseString, FibreValues)
@@ -450,7 +433,6 @@ getFibre(SparseString<TFibreValues, TSpec> & sparseString, FibreIndicators)
  */
 
 
-///.Function.length.param.object.type:Class.SparseString
 template <typename TFibreValues, typename TSpec>
 SEQAN_HOST_DEVICE inline typename Size<SparseString<TFibreValues, TSpec> const>::Type
 length(SparseString<TFibreValues, TSpec> const & string)
@@ -463,7 +445,6 @@ length(SparseString<TFibreValues, TSpec> const & string)
 // ----------------------------------------------------------------------------
 // NOTE(esiragusa): This version of resize() was now working, therefore it was commented out.
 
-///.Function.resize.param.object.type:Class.SparseString
 //template <typename TFibreValues, typename TSpec, typename TSize, typename TValue, typename TExpand>
 //inline typename Size<typename Fibre<SparseString<TFibreValues, TSpec>, FibreValues>::Type>::Type
 //resize(SparseString<TFibreValues, TSpec> & string, TSize size, TValue value, Tag<TExpand> const tag)
@@ -535,11 +516,6 @@ resize(SparseString<TFibreValues, TSpec> & string, TSize size, Tag<TExpand> tag)
  * @return bool <tt>true</tt> on success.
  */
 
-/**
-.Function.open
-..param.string:
-...type:Class.SparseString
-*/
 template <typename TFibreValues, typename TSpec>
 inline bool open(SparseString<TFibreValues, TSpec> & sparseString, const char * fileName, int openMode)
 {
@@ -594,23 +570,6 @@ inline bool open(SparseString<TFibreValues, TSpec> & sparseString, const char * 
  * 
  * @return bool <tt>true</tt> on success.
  */
-/**
-.Function.SparseString#save
-..class:Class.SparseString
-..summary:This functions saves a sparse string to disk.
-..signature:open(string, fileName [, openMode])
-..param.string:The string to be saved.
-...type:Class.SparseString
-..param.fileName:C-style character string containing the file name.
-..param.openMode:The combination of flags defining how the file should be opened.
-...remarks:To open a file read-only, write-only or to read and write use $OPEN_RDONLY$, $OPEN_WRONLY$, or $OPEN_RDWR$.
-...remarks:To create or overwrite a file add $OPEN_CREATE$.
-...remarks:To append a file if existing add $OPEN_APPEND$.
-...remarks:To circumvent problems, files are always opened in binary mode.
-...default:$OPEN_RDWR | OPEN_CREATE | OPEN_APPEND$
-..returns:A $bool$ which is $true$ on success.
-..include:seqan/index.h
-*/
 template <typename TFibreValues, typename TSpec>
 inline bool save(SparseString<TFibreValues, TSpec> const & sparseString, const char * fileName)
 {

@@ -68,17 +68,6 @@ template <typename TSpec> class Graph;
  * Note that internally T is used as signed, so not the whole range is available if T is unsigned.
  */
 
-/**
-.Class.UnionFind
-..cat:Miscellaneous
-..summary:Union-Find data structure.
-..signature:UnionFind<T>
-..param.T:The type the data structure operates on.
-..remarks:The data structure uses union by rank and path compression to achieve almost linear running time.
-..remarks:Note that internally, T is used signed so not the whole range might be available.
-..include:seqan/misc/misc_union_find.h
- */
-
 template <typename TValue>
 class UnionFind
 {
@@ -105,9 +94,6 @@ public:
  *
  * @tparam TUnionFind The UnionFind specialization to query for its value type.
  */
-
-///.Metafunction.Value.param.T.type:Class.UnionFind
-///.Metafunction.Value.class:Class.UnionFind
 
 template <typename TValue>
 struct Value<UnionFind<TValue> >
@@ -138,9 +124,6 @@ struct Value<UnionFind<TValue> const>
  * @tparam TUnionFind The UnionFind specialization to query for its get-value type.
  */
 
-///.Metafunction.GetValue.param.T.type:Class.UnionFind
-///.Metafunction.GetValue.class:Class.UnionFind
-
 template <typename TValue>
 struct GetValue<UnionFind<TValue> >
 {
@@ -169,9 +152,6 @@ struct GetValue<UnionFind<TValue> const>
  *
  * @tparam TUnionFind The UnionFind specialization to query for its size type.
  */
-
-///.Metafunction.Size.param.T.type:Class.UnionFind
-///.Metafunction.Size.class:Class.UnionFind
 
 template <typename TValue>
 struct Size<UnionFind<TValue> >
@@ -206,9 +186,6 @@ struct Size<UnionFind<TValue> const>
  * @param[in,out] uf The Union-Find object to clear
  */
 
-///.Function.clear.param.object.type:Class.UnionFind
-///.Function.clear.class:Class.UnionFind
-
 template <typename TValue>
 inline
 void
@@ -231,9 +208,6 @@ clear(UnionFind<TValue> & unionFind)
  *
  * @return TSize The length of the Union-Find object  (Metafunction: @link UnionFind#Size @endlink).
  */
-
-///.Function.length.param.object.type:Class.UnionFind
-///.Function.length.class:Class.UnionFind
 
 template <typename TValue>
 inline
@@ -259,9 +233,6 @@ length(UnionFind<TValue> const & unionFind)
  * @param[in]     size  The number of elements to reserve.
  * @param[in]     tag   The tag to use for reserving (defaults to <tt>Generous()</tt>).
  */
-
-///.Function.reserve.param.object.type:Class.UnionFind
-///.Function.reserve.class:Class.UnionFind
 
 template <typename TValue, typename TSize, typename TTag>
 inline
@@ -293,10 +264,6 @@ reserve(UnionFind<TValue> & unionFind,
  * @return TSize The new length of the Union-Find object  (Metafunction: @link UnionFind#Size @endlink).
  */
 
-///.Function.resize.param.object.type:Class.UnionFind
-///.Function.resize.class:Class.UnionFind
-///.Function.resize.remarks:If $pm$ is of the @Class.UnionFind@, $value$ will automatically be set to -1.
-
 template <typename TValue, typename TSize, typename TTag>
 inline
 typename Size<UnionFind<TValue> >::Type
@@ -325,10 +292,6 @@ resize(UnionFind<TValue> & unionFind,
  * @return TSize New size of the vertex map  (Metafunction: @link UnionFind#Size @endlink).
  */
 
-///.Function.resizeVertexMap.param.pm.type:Class.UnionFind
-///.Function.resizeVertexMap.class:Class.UnionFind
-///.Function.resizeVertexMap.remarks:If $pm$ is of type @Class.UnionFind@ then the $prototype$ parameter is not available.
-
 template <typename TSpec, typename TValue>
 typename Size<UnionFind<TValue> >::Type
 resizeVertexMap(UnionFind<TValue> & unionFind,
@@ -354,20 +317,6 @@ resizeVertexMap(UnionFind<TValue> & unionFind,
  * @return TValue Identifier of the set that <tt>q</tt> is in  (Metafunction: @link UnionFind#Value @endlink).
  *
  * @see UnionFind#joinSets
- */
-
-/**
-.Function.findSet:
-..cat:Miscellaneous
-..summary:Return set identifier, given an element identifier.
-..signature:find(unionFind, query)
-..class:Class.UnionFind
-..param.unionFind:The Union-Find data structure query.
-...type:Class.UnionFind
-..param.query:The value to query for.
-..returns:The set identifier for the given element id.
-..see:Function.joinSets
-..include:seqan/misc/misc_union_find.h
  */
 
 template <typename TValue, typename TQuery>
@@ -415,22 +364,6 @@ findSet(UnionFind<TValue> & unionFind,
  * <tt>right</tt>.
  *
  * @see UnionFind#findSet
- */
-
-/**
-.Function.joinSets
-..cat:Miscellaneous
-..summary:UNION() operation for UF data structure.
-..signature:joinSets(unionFind, left, right)
-..class:Class.UnionFind
-..param.unionFind:The type the data structure operates on.
-...type:Class.UnionFind
-..param.left:Representant of the left set to union.
-..param.right:Representant of the right set to union.
-..remarks:This function is called $join$ and not $union$ since $union$ is a reserved keyword in the C and C++ programming languages.
-..remarks:Note that you most likely want to put return values of $findSet()$ as the values for $left$ and $right$.
-..see:Function.findSet
-..include:seqan/misc/misc_union_find.h
  */
 
 template <typename TValue, typename TLeft, typename TRight>

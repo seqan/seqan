@@ -44,14 +44,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	struct FinderQGramLookup_; //Finder that simply looks up the q-gram in the hash table
 
 // the docu is now in index_base.h
-/**
-.Tag.Index Find Algorithm
-..summary:Tags to specialise the search strategies.
-..tag.QGramFindLookup:q-gram search.
-Finds q-grams in a @Spec.IndexQGram@ index using the hash table.
-..include:seqan/index.h
-*/
-
 	typedef Tag<FinderQGramLookup_> const QGramFindLookup;
 
 //____________________________________________________________________________

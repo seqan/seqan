@@ -57,20 +57,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The types of all keywords in the needle and the haystack have to match.
  */
 
-/**
-.Spec.SetHorspool:
-..summary: Multiple exact string matching using set horspool algorithm.
-..general:Class.Pattern
-..cat:Searching
-..signature:Pattern<TNeedle, SetHorspool>
-..param.TNeedle:The needle type, a string of keywords.
-...type:Class.String
-..remarks.text:The types of all keywords in the needle and the haystack have to match.
-..include:seqan/find.h
-*/
-
-///.Class.Pattern.param.TSpec.type:Spec.SetHorspool
-
 struct SetHorspool_;
 typedef Tag<SetHorspool_> SetHorspool;
 

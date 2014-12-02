@@ -67,16 +67,6 @@ struct Myers;
  * @return Type The pattern specialization to use as a default.
  */
 
-/**
-.Metafunction.DefaultFindBeginPatternSpec:
-..cat:Searching
-..summary:Type of the default findBegin pattern specialization, given a score.
-..signature:DefaultBeginPatternSpec<TScore>
-..param.TScore:A score type.
-...type:Class.Score
-..returns.param.Type:The pattern specialization to use as a default.
-..include:seqan/find.h
- */
 template <typename TScore = EditDistanceScore, typename THasState = True>
 struct DefaultFindBeginPatternSpec
 {
@@ -358,26 +348,6 @@ _findBeginInit(TPattern & pattern, TNeedle & needle_)
  * findBegin to find a begin position.
  */
 
-/**
-.Function.findBegin:
-..summary:Search the begin of an approximate match.
-..cat:Searching
-..signature:findBegin(finder, pattern [, limit])
-..class:Class.Finder
-..param.finder:The @Class.Finder@ object to search through.
-...type:Class.Finder
-..param.pattern:The @Class.Pattern@ object to search for.
-...remarks:This must be a pattern for approximate string matching.
-...type:Class.Pattern
-..param.limit:The score limit.
-...default:The limit used during the last @Function.find@ call, see @Function.getScore@.
-...remarks:All occurrences that score at least $limit$ are reported.
-..returns:$boolean$ that indicates whether an begin position was found.
-..remarks:The function @Function.find@ successfully called be called - that is an end position was found - before calling $findBegin$ to find a begin position.
-..see:Function.getBeginScore
-..see:Function.find
-..include:seqan/find.h
-*/
 template <typename TFinder, typename TPattern>
 inline bool
 findBegin(TFinder & finder,
@@ -410,20 +380,6 @@ findBegin(TFinder & finder,
  * @return TScoreValue The score of the lst match found using <tt>pattern</tt>.  The value is set after successfully
  *                     call of @link Finder#findBegin @endlink.  If no match was found, the value is undefined.
  */
-
-/**.Function.getBeginScore
-..cat:Searching
-..summary:Score of the last match found by @Function.findBegin@ during approximate searching.
-..signature:getBeginScore(pattern)
-..class:Class.Finder
-..param.pattern:A @Class.Pattern@ that can be used for approximate searching.
-...type:Spec.DPSearch
-..returns:The score of the last match found using $pattern$.
-...remarks:The value is set after a successfully call of @Function.findBegin@.
-If no match was found, the value is undefined.
-..see:Function.findBegin
-..see:Function.getScore
-*/
 
 template <typename TPattern>
 inline typename Value<typename ScoringScheme<TPattern>::Type>::Type

@@ -86,18 +86,6 @@ struct LengthLess
  * @return bool <tt>true</tt> if <tt>suffix</tt> is a suffix of <tt>str</tt>.
  */
 
-/**
-.Function.endsWith
-..concept:Class.String
-..cat:Input/Output
-..signature:endsWith(str, suffix)
-..summary:Check whether a sequence ends with a given suffix.
-..param.str:The string to check.
-..param.suffix:The suffix to check for.
-..returns:$bool$
-..include:seqan/stream.h
-*/
-
 template <typename TLhs, typename TRhs>
 inline bool endsWith(TLhs const & lhs, TRhs const & rhs)
 {
@@ -125,18 +113,6 @@ inline bool endsWith(TLhs const & lhs, TRhs const & rhs)
  *
  * @return bool <tt>true</tt> if <tt>prefix</tt> is a prefix of <tt>str</tt>.
  */
-
-/**
-.Function.startsWith
-..concept:Class.String
-..cat:Input/Output
-..signature:startsWith(str, prefix)
-..summary:Check whether a sequence starts with a given prefix.
-..param.str:The string to check.
-..param.prefix:The prefix to check for.
-..returns:$bool$
-..include:seqan/stream.h
-*/
 
 // TODO(weese:) this function is doing the same as isPrefix() one should be removed
 template <typename TLhs, typename TRhs>

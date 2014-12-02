@@ -47,15 +47,6 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-/**
-.Tag.Sam
-..cat:BAM I/O
-..signature:Sam
-..summary:Tag for identifying the SAM format.
-..include:seqan/bam_io.h
-..see:Tag.Bam
-*/
-
 struct Sam_;
 typedef Tag<Sam_> Sam;
 
@@ -215,14 +206,6 @@ readRecord(BamHeaderRecord & record,
 // Function readRecord()                                              BamHeader
 // ----------------------------------------------------------------------------
 
-/**
-.Function.readRecord
-..signature:readRecord(headerRecord, context, recordReader, tag)
-..param.recordReader:The RecordReader to read from.
-...type:Class.RecordReader
-...remarks:Use for SAM.
-*/
-
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 readRecord(BamHeader & header,
@@ -274,11 +257,6 @@ _readBamRecord(TBuffer & rawRecord, TForwardIter & iter, Sam)
 // ----------------------------------------------------------------------------
 // Function readRecord()                                     BamAlignmentRecord
 // ----------------------------------------------------------------------------
-
-/**
-.Function.readRecord
-..signature:readRecord(alignmentRecord, context, recordReader, tag)
-*/
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void

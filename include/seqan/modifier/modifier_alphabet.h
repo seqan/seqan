@@ -53,18 +53,6 @@ namespace seqan
  * @tparam TSpec     The modifier type.
  */
 
-/**
-.Class.ModifiedAlphabet:
-..summary:Modifies value types.
-..cat:Modifier
-..signature:ModifiedAlphabet<TAlphabet, TSpec>
-..param.TAlphabet:Original value type.
-..param.TSpec:The modifier type.
-...metafunction:Metafunction.Spec
-...remarks:There is no default specialization.
-..include:seqan/modifier.h
-*/
-
 template <typename THost, typename TSpec>
 class ModifiedAlphabet;
 

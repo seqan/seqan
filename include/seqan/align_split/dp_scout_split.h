@@ -73,10 +73,6 @@ public:
 // Class DPScout_
 // ----------------------------------------------------------------------------
 
-/**
- * The default implementation of the dp scout simply stores one maximum
- * and its corresponding position.
- */
 template <typename TDPCell>
 class DPScout_<TDPCell, SplitAlignmentScout> : public DPScout_<TDPCell, Default>
 {
@@ -104,9 +100,6 @@ public:
 // Function _scoutBestScore()                                        [DPScout_]
 // ----------------------------------------------------------------------------
 
-/**
- * Tracks the new score, if it is the new maximum.
- */
 template <typename TDPCell, typename TTraceMatrixNavigator, typename TIsLastColumn, typename TIsLastRow>
 inline void
 _scoutBestScore(DPScout_<TDPCell, SplitAlignmentScout> & dpScout,

@@ -67,20 +67,6 @@ namespace seqan {
  * @return TStream Reference to <tt>stream</tt> after writing <tt>aggregate</tt> to it.
  */
 
-/**
-.Concept.AggregateConcept
-..summary:Aggregate types contain a fixed number of fixed-size values.
-..remarks:Stream output operators are not shown in the function list below, but required.
-..remarks:Comparison operators are not shown in the function list below, but required.
-
-.Function.clear.concept:Concept.AggregateConcept
-.Function.value.concept:Concept.AggregateConcept
-.Function.assignValue.concept:Concept.AggregateConcept
-
-.Metafunction.LENGTH.concept:Concept.AggregateConcept
-.Metafunction.Value.concept:Concept.AggregateConcept
- */
-
 /*!
  * @defgroup AggregateTags Aggregate Tags
  * @brief Tags to use in aggregate (e.g. Pair, Triple, and Tuple) types.
@@ -92,14 +78,6 @@ namespace seqan {
  * @brief Tag to mark a packed specialization that disables address alignment for members.
  *
  * @signature typedef Tag<Pack_> Pack;
- */
-
-/**
-.Tag.Pack
-..cat:Aggregates
-..summary:Tag to mark a packed specialization that disables address alignment for members.
-..signature:Pack
-..include:seqan/basic.h
  */
 
 struct Pack_;
@@ -120,18 +98,6 @@ typedef Tag<Pack_> Pack;
  * BITSIZE2 The number of bits for the second entry.
  */
 
-/**
-.Tag.BitPacked
-..cat:Aggregates
-..summary:Tag to mark a bit-packed specialization that avoids to waste bits.
-..signature:BitPacked<BITSIZE1, BITSIZE2>
-..param.BITSIZE1:Number of bits used for first element.
-...type:nolink:$unsigned$
-..param.BITSIZE2:Number of bits used for second element.
-...type:nolink:$unsigned$
-..include:seqan/basic.h
- */
-
 template <unsigned BITSIZE1 = 16, unsigned BITSIZE2 = 16>
 struct BitPacked;
 
@@ -149,16 +115,6 @@ struct BitPacked;
  * @tparam TAggregate The aggregate type to transform.
  *
  * @return Type The resulting packed type.
- */
-
-/**
-.Metafunction.MakePacked
-..cat:Aggregates
-..summary:Return the corresponding packed type of a type.
-..signature:MakePacked<TAggregate>
-..param.TAggregate:An aggregate type.
-..returns:The corresponding packed aggregate.
-..include:seqan/basic.h
  */
 
 template <typename T>

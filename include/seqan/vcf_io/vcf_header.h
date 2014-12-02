@@ -74,31 +74,6 @@ namespace seqan {
  * @brief Names of the samples (@link StringSet @endlink of @link CharString @endlink).
  */
 
-/**
-.Class.VcfHeader
-..cat:VCF I/O
-..summary:Store VCF Header information.
-..signature:class VcfHeader
-..include:seqan/vcf_io.h
-
-.Memfunc.VcfHeader#VcfHeader
-..class:Class.VcfHeader
-..signature:VcfHeader::VcfHeader()
-..summary:Only default constructor.
-
-.Memvar.VcfHeader#sequenceNames
-..class:Class.VcfHeader
-..summary:Names of the sequences (@Class.StringSet@<@Shortcut.CharString@>).
-
-.Memvar.VcfHeader#sampleNames
-..class:Class.VcfHeader
-..summary:Names of the samples (@Class.StringSet@<@Shortcut.CharString@>).
-
-.Memvar.VcfHeader#headerRecords
-..class:Class.VcfHeader
-..summary:The meta information records (@Class.String@ of @Class.VcfHeaderRecord@).
-*/
-
 // Records for the meta information lines.
 typedef String<VcfHeaderRecord> VcfHeader;
 
@@ -122,16 +97,6 @@ typedef String<VcfHeaderRecord> VcfHeader;
  *
  * @param[in,out] header VcfHeader to clear.
  */
-
-/**
-.Function.VcfHeader#clear
-..class:Class.VcfHeader
-..summary:Clear a @Class.VcfHeader@.
-..signature:void clear(header)
-..param.header:@Class.VcfHeader@ to clear.
-...type:Class.VcfHeader
-..include:seqan/vcf_io.h
-*/
 
 }  // namespace seqan
 

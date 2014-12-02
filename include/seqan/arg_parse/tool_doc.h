@@ -626,59 +626,6 @@ public:
  * @signature ToolDoc::ToolDoc()
  */
 
-/**
-.Class.ToolDoc
-..cat:Miscellaneous
-..summary:Container for string documentation on a command line tool.
-..signature:ToolDoc
-..remarks:
-This class is generally not used directly by the user but through @Class.ArgumentParser@.
-It allows to store and represent all information related to a command line tool that would normally go into a man page.
-It can be printed to STL streams in different formats, currently plain text, HTML and man pages are supported.
-..remarks:
-You can also use basic formatting in text. This formatting is tailored to the usage on the command line.
-Use $\fB$ to start bold font, $\fI$ to start italic font and $\fP$ to use the previous font (of course, use correct escaping of the backslash in C strings, so use $"\\fB"$, $"\\fI"$, and $"\\fP"$ in your code.
-..example.text:The following shows a brief example of how to use @Class.ToolDoc@.
-..example.code:
-ToolDoc doc;
-setName(doc, "RazerS");
-setShortDescription(doc, "Read mapping with controllable sensitivity.");
-setDate(doc, "04 March 2012");
-setVersion(doc, "1.0");
-setCategory(doc, "Read Mapping");
-setManTitle(doc, "SeqAn Apps Reference Manual");
-
-addSection(doc, "Synopsis");
-addText(doc, "\\fBrazers\\fP [\\fIOPTIONS\\fP] \\fIREFERENCE\\fP \\fIREADS\\fP", false);
-addText(doc,
-        "\\fBrazers\\fP [\\fIOPTIONS\\fP] \\fIREFERENCE\\fP \\fILEFT_READS\\fP "
-        "\\fIRIGHT_READS\\fP", false);
-
-addSection(doc, "Description");
-addText(doc,
-        "RazerS is a read mapper with controllable, sensitivity.  This "
-        "means that you can find all read matches in the reference sequence "
-        "and optionally, you can trade lower sensitivity for better "
-        "performance.");
-addText(doc,
-        "What's special about RazerS is that you can control the sensitivity.");
-
-addSection(doc, "Options");
-addSubSection(doc, "Main Options");
-addListItem(doc, "\\fB-id\\fP, \\fB--indels\\fP",
-            "Enable mapping with indels enabled.");
-addListItem(doc, "\\fB-i\\fP, \\fB--identity\\fP \\fIIDENTITY\\fP",
-            "Set minimal identity of matches to find.");
-
-print(std::cout, doc, "text");
-..include:seqan/arg_parse/tool_doc.h
-
-.Memfunc.ToolDoc#ToolDoc
-..summary:constructor
-..class:Class.ToolDoc
-..signature:ToolDoc()
-*/
-
 class ToolDoc
 {
 public:
@@ -772,20 +719,6 @@ public:
  * @param[in]     b This object is appended to <tt>b</tt>.
  */
 
-/**
-.Function.ToolDoc#append
-..summary:Append two @Class.ToolDoc@ objects.
-..cat:Miscellaneous
-..signature:append(a, b)
-..class:Class.ToolDoc
-..param.a:This object is updated.
-...type:Class.ToolDoc
-..param.b:This object is appended to $b$.
-...type:Class.ToolDoc
-..returns:$void$
-..include:seqan/arg_parse/tool_doc.h
-*/
-
 inline void append(ToolDoc & a, ToolDoc const & b)
 {
     for (unsigned i = 0; i < length(b._entries); ++i)
@@ -827,20 +760,6 @@ inline void append(ToolDoc & a, ToolDoc const & b)
  * @param[in]     name    The name of the tool (@link CharString @endlink).
  */
 
-/**
-.Function.ToolDoc#setName
-..summary:Set tool name for @Class.ToolDoc@ object.
-..cat:Miscellaneous
-..signature:setName(doc, name)
-..class:Class.ToolDoc
-..param.doc:Tool documentation object to set the name of.
-...type:Class.ToolDoc
-..param.name:Name to set.
-...type:Shortcut.CharString
-..returns:$void$
-..include:seqan/arg_parse/tool_doc.h
-*/
-
 inline void setName(ToolDoc & doc, CharString const & name)
 {
     doc._name = name;
@@ -862,19 +781,6 @@ inline void setName(ToolDoc & doc, CharString const & name)
  * @return CharString Resulting name (@link CharString @endlink).
  */
 
-/**
-.Function.ToolDoc#getName
-..summary:Get tool name of @Class.ToolDoc@ object.
-..cat:Miscellaneous
-..signature:getName(doc)
-..class:Class.ToolDoc
-..param.doc:Tool documentation object to get the tool name of.
-...type:Class.ToolDoc
-..returns:Tool name of documentation object.
-...type:Shortcut.CharString
-..include:seqan/arg_parse/tool_doc.h
-*/
-
 inline CharString const & getName(ToolDoc const & doc)
 {
     return doc._name;
@@ -894,20 +800,6 @@ inline CharString const & getName(ToolDoc const & doc)
  * @param[in,out] toolDoc The ToolDoc object to the set the name for.
  * @param[in]     name    The name of the tool (@link CharString @endlink).
  */
-
-/**
-.Function.ToolDoc#setCategory
-..summary:Set tool category for @Class.ToolDoc@ object.
-..cat:Miscellaneous
-..signature:setCategory(doc, category)
-..class:Class.ToolDoc
-..param.doc:Tool documentation object to set the name of.
-...type:Class.ToolDoc
-..param.category:Category to set.
-...type:Shortcut.CharString
-..returns:$void$
-..include:seqan/arg_parse/tool_doc.h
-*/
 
 inline void setCategory(ToolDoc & doc, CharString const & category)
 {
@@ -930,19 +822,6 @@ inline void setCategory(ToolDoc & doc, CharString const & category)
  * @return CharString Resulting category (@link CharString @endlink).
  */
 
-/**
-.Function.ToolDoc#getCategory
-..summary:Get tool category of @Class.ToolDoc@ object.
-..cat:Miscellaneous
-..signature:getCategory(doc)
-..class:Class.ToolDoc
-..param.doc:Tool documentation object to get the tool category of.
-...type:Class.ToolDoc
-..returns:Tool category of documentation object.
-...type:Shortcut.CharString
-..include:seqan/arg_parse/tool_doc.h
-*/
-
 inline CharString const & getCategory(ToolDoc const & doc)
 {
     return doc._category;
@@ -962,20 +841,6 @@ inline CharString const & getCategory(ToolDoc const & doc)
  * @param[in,out] toolDoc The ToolDoc object to the set the short description for.
  * @param[in]     text    The short description of the tool (@link CharString @endlink).
  */
-
-/**
-.Function.ToolDoc#setShortDescription
-..summary:Set short description for @Class.ToolDoc@ object.
-..cat:Miscellaneous
-..signature:setShortDescriptioin(doc, description)
-..class:Class.ToolDoc
-..param.doc:Tool documentation object to set the short description of.
-...type:Class.ToolDoc
-..param.description:Short description to set.
-...type:Shortcut.CharString
-..returns:$void$
-..include:seqan/arg_parse/tool_doc.h
-*/
 
 inline void setShortDescription(ToolDoc & doc, CharString const & shortDescription)
 {
@@ -998,19 +863,6 @@ inline void setShortDescription(ToolDoc & doc, CharString const & shortDescripti
  * @return CharString Resulting short description (@link CharString @endlink).
  */
 
-/**
-.Function.ToolDoc#getShortDescription
-..summary:Get short description of @Class.ToolDoc@ object.
-..cat:Miscellaneous
-..signature:setName(doc)
-..class:Class.ToolDoc
-..param.doc:Tool documentation object to set the short description of.
-...type:Class.ToolDoc
-..returns:Tool description of documentation object.
-...type:Shortcut.CharString
-..include:seqan/arg_parse/tool_doc.h
-*/
-
 inline CharString const & getShortDescription(ToolDoc const & doc)
 {
     return doc._shortDescription;
@@ -1030,20 +882,6 @@ inline CharString const & getShortDescription(ToolDoc const & doc)
  * @param[in,out] toolDoc The ToolDoc object to the set the date string for.
  * @param[in]     str     The date string of the tool (@link CharString @endlink).
  */
-
-/**
-.Function.ToolDoc#setDate
-..cat:Miscellaneous
-..summary:Set date string for @Class.ToolDoc@ object.
-..signature:setDate(doc, date)
-..class:Class.ToolDoc
-..param.doc:Tool documentation object to set the date string to.
-...type:Class.ToolDoc
-..param.date:Date string to set.
-...type:Shortcut.CharString
-..returns:$void$
-..include:seqan/arg_parse/tool_doc.h
-*/
 
 inline void setDate(ToolDoc & doc, CharString const & date)
 {
@@ -1066,19 +904,6 @@ inline void setDate(ToolDoc & doc, CharString const & date)
  * @return CharString Resulting date string (@link CharString @endlink).
  */
 
-/**
-.Function.ToolDoc#getDate
-..cat:Miscellaneous
-..summary:Get date string from @Class.ToolDoc@ object.
-..signature:getDate(doc)
-..class:Class.ToolDoc
-..param.doc:Tool documentation object to get the date string of.
-...type:Class.ToolDoc
-..returns:Date string.
-...type:Shortcut.CharString
-..include:seqan/arg_parse/tool_doc.h
-*/
-
 inline CharString const & getDate(ToolDoc const & doc)
 {
     return doc._date;
@@ -1098,20 +923,6 @@ inline CharString const & getDate(ToolDoc const & doc)
  * @param[in,out] toolDoc The ToolDoc object to the set the version string for.
  * @param[in]     str     The version string of the tool (@link CharString @endlink).
  */
-
-/**
-.Function.ToolDoc#setVersion
-..cat:Miscellaneous
-..summary:Set version string for @Class.ToolDoc@ object.
-..signature:setVersion(doc, version)
-..class:Class.ToolDoc
-..param.doc:Tool documentation object to set the version string to.
-...type:Class.ToolDoc
-..param.version:Version string to set.
-...type:Shortcut.CharString
-..returns:$void$
-..include:seqan/arg_parse/tool_doc.h
-*/
 
 inline void setVersion(ToolDoc & doc, CharString const & version)
 {
@@ -1134,19 +945,6 @@ inline void setVersion(ToolDoc & doc, CharString const & version)
  * @return CharString Resulting version string (@link CharString @endlink).
  */
 
-/**
-.Function.ToolDoc#getVersion
-..cat:Miscellaneous
-..summary:Get version string from @Class.ToolDoc@ object.
-..class:Class.ToolDoc
-..signature:CharString getVersion(doc)
-..param.doc:Tool documentation object to get the version string of.
-...type:Class.ToolDoc
-..returns:Date string.
-...type:Shortcut.CharString
-..include:seqan/arg_parse/tool_doc.h
-*/
-
 inline CharString const & getVersion(ToolDoc const & doc)
 {
     return doc._version;
@@ -1166,20 +964,6 @@ inline CharString const & getVersion(ToolDoc const & doc)
  * @param[in,out] toolDoc The ToolDoc object to the set the title for.
  * @param[in]     title   The title of the tool (@link CharString @endlink).
  */
-
-/**
-.Function.ToolDoc#setManTitle
-..cat:Miscellaneous
-..summary:Set version string for @Class.ToolDoc@ object.
-..signature:setManTitle(doc, title)
-..class:Class.ToolDoc
-..param.doc:Tool documentation object to set the man title to.
-...type:Class.ToolDoc
-..param.title:Title string to set.
-...type:Shortcut.CharString
-..returns:$void$
-..include:seqan/arg_parse/tool_doc.h
-*/
 
 inline void setManTitle(ToolDoc & doc, CharString const & title)
 {
@@ -1202,19 +986,6 @@ inline void setManTitle(ToolDoc & doc, CharString const & title)
  * @return CharString Resulting man page title (@link CharString @endlink).
  */
 
-/**
-.Function.ToolDoc#getManTitle
-..cat:Miscellaneous
-..summary:Get man title from @Class.ToolDoc@ object.
-..signature:getManTitle(doc)
-..class:Class.ToolDoc
-..param.doc:Tool documentation object to get the man title of.
-...type:Class.ToolDoc
-..returns:Man title.
-...type:Shortcut.CharString
-..include:seqan/arg_parse/tool_doc.h
-*/
-
 inline CharString const & getManTitle(ToolDoc & doc)
 {
     return doc._manTitle;
@@ -1234,20 +1005,6 @@ inline CharString const & getManTitle(ToolDoc & doc)
  * @param[in,out] toolDoc The ToolDoc object to add a section for.
  * @param[in]     title   The section title (@link CharString @endlink).
  */
-
-/**
-.Function.ToolDoc#addSection
-..cat:Miscellaneous
-..summary:Add section to @Class.ToolDoc@ object.
-..signature:addSection(doc, title)
-..class:Class.ToolDoc
-..param.doc:Tool documentation object to add section to.
-...type:Class.ToolDoc
-..param.title:Section title.
-...type:Shortcut.CharString
-..returns:$void$
-..include:seqan/arg_parse/tool_doc.h
-*/
 
 inline void addSection(ToolDoc & doc, CharString const & title)
 {
@@ -1269,20 +1026,6 @@ inline void addSection(ToolDoc & doc, CharString const & title)
  * @param[in]     title   The subsection title (@link CharString @endlink).
  */
 
-/**
-.Function.ToolDoc#addSubSection
-..cat:Miscellaneous
-..summary:Add subsection to @Class.ToolDoc@ object.
-..signature:addSubSection(doc, title)
-..class:Class.ToolDoc
-..param.doc:Tool documentation object to add subsection to.
-...type:Class.ToolDoc
-..param.title:Subsection title.
-...type:Shortcut.CharString
-..returns:$void$
-..include:seqan/arg_parse/tool_doc.h
-*/
-
 inline void addSubSection(ToolDoc & doc, CharString const & title)
 {
     appendValue(doc._entries, new ToolDocSubSection_(title));
@@ -1303,24 +1046,6 @@ inline void addSubSection(ToolDoc & doc, CharString const & title)
  * @param[in]     text        The text to add (@link CharString @endlink).
  * @param[in]     isParagraph Whether to insert as paragraph or just a line (only one line break if not a paragraph).
  */
-
-/**
-.Function.ToolDoc#addText
-..cat:Miscellaneous
-..summary:Add text line/paragraph to @Class.ToolDoc@.
-..signature:addText(doc, text, [isParagraph])
-..class:Class.ToolDoc
-..param.doc:Tool documentation object to text to.
-...type:Class.ToolDoc
-..param.text:Text to add.
-...type:Shortcut.CharString
-..param.isParagraph:Whether to insert as paragraph or just a line (only line break in the last case).
-...type:nolink:$bool$
-..returns:$void$
-..remarks:See @Class.ToolDoc@ for information on formatting of text.
-..see:Class.ToolDoc
-..include:seqan/arg_parse/tool_doc.h
-*/
 
 inline void addText(ToolDoc & doc, CharString const & text, bool isParagraph)
 {
@@ -1348,24 +1073,6 @@ inline void addText(ToolDoc & doc, CharString const & text)
  * @param[in]     value   The value for the list (@link CharString @endlink).
  */
 
-/**
-.Function.ToolDoc#addListItem
-..cat:Miscellaneous
-..summary:Add list item to @Class.ToolDoc@ object.
-..signature:addListItem(doc, key, value)
-..class:Class.ToolDoc
-..param.doc:Tool documentation object to add subsection to.
-...type:Class.ToolDoc
-..param.key:List item key.
-...type:Shortcut.CharString
-..param.key:List item value.
-...type:Shortcut.CharString
-..returns:$void$
-..remarks:You can add formatting to both $key$ and $value$. See @Class.ToolDoc@ for information on formatting of text.
-..see:Class.ToolDoc
-..include:seqan/arg_parse/tool_doc.h
-*/
-
 inline void addListItem(ToolDoc & doc, CharString const & key, CharString const & value)
 {
     appendValue(doc._entries, new ToolDocListItem_(key, value));
@@ -1387,22 +1094,6 @@ inline void addListItem(ToolDoc & doc, CharString const & key, CharString const 
  * @param[in]     format  The format, one of {"html", "man", "txt"}.
  */
 
-/**
-.Function.ToolDoc#print
-..cat:Miscellaneous
-..summary:Print @Class.ToolDoc@ object in a given format.
-..signature:print(stream, doc, format)
-..class:Class.ToolDoc
-..param.stream:List item key.
-...type:nolink:$std::ostream$
-..param.doc:Tool documentation object to print.
-...type:Class.ToolDoc
-..param.format:Format to print in. One of "html", "man", "txt".
-...type:Shortcut.CharString
-..returns:$void$
-..include:seqan/arg_parse/tool_doc.h
-*/
-
 inline void print(std::ostream & stream, ToolDoc const & doc, CharString const & format)
 {
     doc.print(stream, format);
@@ -1421,18 +1112,6 @@ inline void print(std::ostream & stream, ToolDoc const & doc, CharString const &
  *
  * @param[in,out] toolDoc The ToolDoc object to clear entries from.
  */
-
-/**
-.Function.ToolDoc#clearEntries
-..cat:Miscellaneous
-..summary:Clear entries from @Class.ToolDoc@ object.
-..signature:clearEntries(doc)
-..class:Class.ToolDoc
-..param.doc:Tool documentation object to clear.
-...type:Class.ToolDoc
-..returns:$void$
-..include:seqan/arg_parse/tool_doc.h
-*/
 
 inline void clearEntries(ToolDoc & doc)
 {

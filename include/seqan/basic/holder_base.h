@@ -97,35 +97,6 @@ namespace seqan {
  * relationship between <tt>A</tt> and <tt>B</tt>.
  */
 
-/**
-.Class.Holder:
-..cat:Basic
-..summary:Manages relationship to another object.
-..signature:Holder<TValue, TSpec>
-..param.TValue:Type of the managed object.
-...metafunction:Metafunction.Value
-..param.TSpec:The specializing type.
-...metafunction:Metafunction.Spec
-...default:$Tristate$
-..remarks.text:The main purpose of this class is to facilitate the handling of
-member objects. If we want class $A$ to be dependent on or the owner of another object of class $B$, 
-then we add a data member of type $Holder<B>$ to $A$. 
-$Holder$ offers some useful access functions and stores the kind of relationship between $A$ and $B$.
-..include:seqan/basic.h
-
-.Memfunc.Holder:
-..class:Class.Holder
-..summary:Constructor
-..signature:Holder<TValue, TSpec>()
-..signature:Holder<TValue, TSpec>(holder)
-..signature:Holder<TValue, TSpec>(value)
-..param.holder:Another holder object.
-..param.value:An object of type $TValue$.
-..remarks.text:
-The default constructor creates a holder that is in state 'empty'.
-If a $value$ is passed to the constructor, the holder will be in state 'dependent'.
- */
-
 // Tag for default Holder specialization.
 struct Tristate_;
 typedef Tag<Tristate_> Tristate;
@@ -167,8 +138,6 @@ struct Holder;
  * @return Type The value type for its holder.
  */
 
-///.Metafunction.Value.param.T.type:Class.Holder
-
 template <typename TValue, typename TSpec>
 struct Value<Holder<TValue, TSpec> >
 {
@@ -205,9 +174,6 @@ struct Value<Holder<TValue * const, TSpec> >
  * @return Type The resulting specialization tag.
  */
 
-///.Metafunction.Spec.param.T.type:Class.Holder
-///.Metafunction.Spec.class:Class.Holder
-
 template <typename TValue, typename TSpec>
 struct Spec<Holder<TValue, TSpec> >
 {
@@ -234,9 +200,6 @@ struct Spec<Holder<TValue, TSpec> const>
  *
  * @return Type The resulting reference type.
  */
-
-///.Metafunction.Reference.param.T.type:Class.Holder
-///.Metafunction.Reference.class:Class.Holder
 
 template <typename TValue, typename TSpec>
 struct Reference<Holder<TValue, TSpec> >

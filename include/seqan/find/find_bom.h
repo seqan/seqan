@@ -92,47 +92,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see OracleBfamPattern
  */
 
-/**
-.Spec.Bfam:
-..summary:Backward Factor Automaton Matching algorithm.
-..general:Class.Pattern
-..cat:Searching
-..signature:Pattern<TNeedle, Bfam<TAutomaton> >
-..param.TNeedle:The needle type.
-...type:Class.String
-..param.TAutomaton:A tag that specifies the used automaton.
-...default:@Spec.Bfam<Oracle>@
-..remarks.text:To be used in combination with the default specialization of @Class.Finder@.
-..include:seqan/find.h
-*/
-
-/**
-.Spec.Bfam<Oracle>:
-..summary:Backward Oracle Matching algorithm.
-..general:Spec.Bfam
-..cat:Searching
-..signature:Pattern<TNeedle, Bfam<Oracle> >
-..param.TNeedle:The needle type.
-...type:Class.String
-..remarks.text:To be used in combination with the default specialization of @Class.Finder@.
-..see:Spec.Bfam<Trie>
-..include:seqan/find.h
-*/
-/**
-.Spec.Bfam<Trie>:
-..summary:Backward Suffix Trie Matching algorithm.
-..general:Spec.Bfam
-..cat:Searching
-..signature:Pattern<TNeedle, Bfam<Trie> >
-..param.TNeedle:The needle type.
-...type:Class.String
-..remarks.text:To be used in combination with the default specialization of @Class.Finder@.
-..see:Spec.Bfam<Oracle>
-..include:seqan/find.h
-*/
-
-///.Class.Pattern.param.TSpec.type:Spec.Bfam
-
 struct Oracle; //Oracle Tag => "BOM"
 struct Trie {}; //Trie Tag => "BTM"
 

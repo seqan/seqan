@@ -97,61 +97,20 @@ namespace SEQAN_NAMESPACE_MAIN {
  * @brief The stored cargo.
  */
 
-/**
-.Class.IntervalAndCargo:
-..cat:Miscellaneous
-..summary:A simple record type that stores an interval and a cargo value.
-..signature:IntervalAndCargo<TValue, TCargo>
-..param.TValue:The value type, that is the type of the interval borders.
-...default:int.
-...metafunction:Metafunction.Value
-..param.TCargo:The cargo type.
-...default:int.
-...metafunction:Metafunction.Cargo
-..include:seqan/misc/misc_interval_tree.h
-*/
 template <typename TValue = int, typename TCargo = int>
 class IntervalAndCargo
 {
 public:
-    /**
-.Memvar.IntervalAndCargo#i1:
-..class:Class.PointAndCargo
-..summary:The first element in the interval of type i1.
-     */
     TValue i1;
 
-    /**
-.Memvar.IntervalAndCargo#i2:
-..class:Class.PointAndCargo
-..summary:The last element in the interval of type i2.
-     */
     TValue i2;
 
-    /**
-.Memvar.IntervalAndCargo#cargo:
-..class:Class.PointAndCargo
-..summary:The stored cargo of type TCargo.
-     */
     TCargo cargo;
 
-    /**
-.Memfunc.IntervalAndCargo#IntervalAndCargo:
-..signature:IntervalAndCargo()
-     */
     IntervalAndCargo() :
         i1(), i2(), cargo()
     {}
 
-    /**
-.Memfunc.IntervalAndCargo#IntervalAndCargo:
-..class:Class.IntervalAndCargo
-..summary:Constructor.
-..signature:IntervalAndCargo(i1, i2, cargo)
-..param.i1:The first element in the interval, of type TValue.
-..param.i2:The last element in the interval of type TValue.
-..param.cargo:The cargo value of type TCargo.
-     */
     IntervalAndCargo(TValue i1, TValue i2, TCargo cargo) :
         i1(i1), i2(i2), cargo(cargo)
     {
@@ -191,56 +150,18 @@ public:
  * @brief The cargo to store.
  */
 
-/**
-.Class.PointAndCargo:
-..cat:Miscellaneous
-..summary:Simple record class storing a point (one-value interval) and a cargo.
-..signature:PointAndCargo<TValue, TCargo>
-..param.TValue:
-...default:int.
-...metafunction:Metafunction.Value
-..param.TCargo:
-...default:int.
-...metafunction:Metafunction.Value
-..include:seqan/misc/misc_interval_tree.h
-*/
 template <typename TValue = int, typename TCargo = int>
 class PointAndCargo
 {
 public:
-    /**
-.Memvar.PointAndCargo#point:
-..class:Class.PointAndCargo
-..summary:The stored point of type TValue.
-     */
     TValue point;
 
-    /**
-.Memvar.PointAndCargo#cargo:
-..class:Class.PointAndCargo
-..summary:The stored cargo of type TCargo.
-     */
     TCargo cargo;
 
-    /**
-.Memfunc.PointAndCargo#PointAndCargo
-..class:Class.PointAndCargo
-..signature:PointAndCargo(point, cargo)
-    */
     PointAndCargo() :
         point(), cargo()
     {}
 
-    /**
-.Memfunc.PointAndCargo#PointAndCargo
-..class:Class.PointAndCargo
-..summary:Constructor.
-..signature:PointAndCargo(point, cargo)
-..param.point:
-...summary:The point to store of type TValue.
-..param.cargo:
-...summary:The cargo to store of type TCargo.
-    */
     PointAndCargo(TValue point, TCargo cargo) :
         point(point), cargo(cargo)
     {}
@@ -264,19 +185,9 @@ public:
  * @brief The tree nodes store intervals.
  */
 
-/**
-.Tag.IntervalTree Node Types
-..summary:Tags to select the node type for @Class.IntervalTree@.
-..cat:Miscellaneous
-..see:Class.IntervalTree
-
-..tag.StorePointsOnly:The tree nodes store points.
-..include:seqan/misc/misc_interval_tree.h
-*/
 struct StorePointsOnly {};
 
 
-///..tag.StoreIntervals:The tree nodes store intervals.
 struct StoreIntervals {};
 
 /*!
@@ -292,29 +203,6 @@ struct StoreIntervals {};
  */
 
 
-/**
-.Class.IntervalTreeNode:
-..cat:Miscellaneous
-..summary:Element of @Class.IntervalTree@.
-..signature:IntervalTreeNode<TInterval, TSpec>
-..param.TInterval:The type of interval to store.
-..param.TSpec:The type of interval to store.
-...default:StorePointsOnly.
-...metafunction:Metafunction.Spec
-..include: seqan/misc/misc_interval_tree.h
-
-.Memvar.IntervalTreeNode#center:
-..class:Class.IntervalTreeNode
-..summary:The center of the interval of type TValue.
-
-.Memvar.IntervalTreeNode#list1
-..class:Class.IntervalTreeNode
-..summary:Sorted list of pointers to intervals, sorted in ascending according to their left boundary points.
-
-.Memvar.IntervalTreeNode#list2
-..class:Class.IntervalTreeNode
-..summary:Sorted list of pointers to intervals, sorted in descending according to their right boundary points.
- */
 template <typename TInterval, typename TSpec = StorePointsOnly>
 class IntervalTreeNode;
 
@@ -341,15 +229,6 @@ class IntervalTreeNode;
  * @brief @link AllocString @endlink of intervals sorted by end point.
  */
 
-/**
-.Spec.Interval Tree Node
-..cat:Miscellaneous
-..general:Class.IntervalTreeNode
-..summary:An Interval Tree Node that stores intervals explicitely in each node.
-..signature:IntervalTreeNode<TInterval, StoreIntervals>
-..param.TInterval:The interval type to store in the node.
-..include:seqan/misc/misc_interval_tree.h
- */
 template <typename TInterval>
 class IntervalTreeNode<TInterval, StoreIntervals>
 {
@@ -391,15 +270,6 @@ public:
  * @brief Points with cargo sorted by the end points.
  */
 
-/**
-.Spec.Points Only Tree Node
-..cat:Miscellaneous
-..general:Class.IntervalTreeNode
-..summary:Spec for IntervalTreeNode that stores only the relevant point in each node meaning the endpoint of the interval in the list sorted by endpoints (list2) and only the beginpoint of the interval in the list sorted by beginpoints (list1).
-..signature:IntervalTreeNode<TInterval, StorePointsOnly>
-..param.TInterval:The interval type to store in the node.
-..include:seqan/misc/misc_interval_tree.h
- */
 template <typename TInterval>
 class IntervalTreeNode<TInterval, StorePointsOnly>
 {
@@ -411,12 +281,6 @@ public:
     String<PointAndCargo<TValue, TCargo> > list1;
     String<PointAndCargo<TValue, TCargo> > list2;
 
-    /**
-.Memfunc.IntervalTreeNode#IntervalTreeNode:
-..class:Class.IntervalTreeNode
-..summary:Default constructor.
-..signature:IntervalTreeNode()
-     */
     IntervalTreeNode() :
         center()
     {
@@ -493,26 +357,6 @@ public:
  * @param[in] tag       Tag for tree construction method.
  */
 
-/**
-.Class.IntervalTree:
-..cat:Miscellaneous
-..summary:A datastructure that efficiently stores intervals.
-..signature:IntervalTree<TValue, TCargo>
-..param.TValue:The value type.
-...default:int
-..param.TCargo:The cargo/id type.
-...default:int
-...remarks:If the intervals are not associated with cargos/IDs, they will be numbered consecutively.
-..example:The following example creates an integer interval tree with string keys.
-This tree is queried for keys of intervals that overlap the interval [550,900).
-...file:demos/misc/interval_tree_example.cpp
-...text:The resulting keys are:
-...output:
-gene
-exon2
-coding2
-..include:seqan/misc/misc_interval_tree.h
-*/
 template <typename TValue = int, typename TCargo = unsigned int>
 class IntervalTree
 {
@@ -525,28 +369,6 @@ public:
     TGraph g;
     TPropertyMap pm;
     size_t interval_counter;
-
-/**
-.Memfunc.IntervalTree#IntervalTree:
-..class:Class.IntervalTree
-..summary:Constructor
-..signature:IntervalTree()
-..signature:IntervalTree(String<TInterval> intervals)
-..signature:IntervalTree(String<TInterval> intervals, TValue center)
-..signature:IntervalTree(String<TInterval> intervals, Tag<TTagSpec> const tag)
-..signature:IntervalTree(intervalBegins, intervalEnds, len)
-..signature:IntervalTree(intervalBegins, intervalEnds, intervalCargos, len)
-..param.intervals:Container of intervals.
-...type:Spec.Alloc String
-...remarks:A string of $IntervalAndCargo<TValue, TCargo>$ objects, see @Class.IntervalAndCargo@.
-..param.intervalBegins:Iterator pointing to begin position of first interval.
-..param.intervalEnds:Iterator pointing to end position of first interval.
-..param.intervalCargos:Iterator pointing to cargos/ids for intervals.
-..param.len:Number of intervals to store in tree.
-..param.tag:Tag for tree construction method; @Tag.IntervalTree Centers.tag.ComputeCenter@
-...default:@Tag.IntervalTree Centers.tag.ComputeCenter@
-..remarks:center of root node is computed by _calcIntervalTreeRootCenter
-*/
 
     IntervalTree()
     {
@@ -624,21 +446,7 @@ public:
 
 
 ///////Specs for the way interval centers are determined
-/**
-.Tag.IntervalTree Centers
-..cat:Miscellaneous
-..summary:Tag to select a specific way to compute the center of an interval tree node.
-..see:Class.IntervalTree
-..include:seqan/misc/misc_interval_tree.h
- */
 
-
-/**
-..tag.ComputeCenter
-...summary:For intervals that are more or less uniformly distributed in the value range, using the ComputeCenter tag may result in a more balanced tree compared to using a random approach.
-...signature:ComputeCenter
-...remarks:center = minbegin + (maxend-minbegin)/2
- */
 //template <typename TSpec = SpecPointAndCargo>
 struct TagComputeCenter_;
 typedef Tag<TagComputeCenter_> const ComputeCenter;
@@ -658,20 +466,6 @@ typedef Tag<TagComputeCenter_> const ComputeCenter;
  *
  * @return TBoundary Reference to the left boundary value.
  */
-
-/**
-.Function.leftBoundary
-..cat:Miscellaneous
-..summary:Access to the left boundary.
-..signature:leftBoundary(interval)
-..class:Class.IntervalAndCargo
-..param.interval:The interval to return the left boundary for.
-...type:Class.IntervalAndCargo
-..returns:The reference to the left boundary of the interval of type TValue&.
-..see:Function.getLeftBoundary
-..see:Function.rightBoundary
-..see:Function.getRightBoundary
-*/
 
 template <typename TValue, typename TCargo>
 TValue &
@@ -698,20 +492,6 @@ leftBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
  * @return TBoundary Reference to the right boundary value.
  */
 
-/**
-.Function.rightBoundary
-..cat:Miscellaneous
-..summary:Access to the right boundary.
-..signature:leftBoundary(interval)
-..class:Class.IntervalAndCargo
-..param.interval:The interval to return the left boundary for.
-...type:Class.IntervalAndCargo
-..returns:The reference to the right boundary of the interval of type TValue&.
-..see:Function.getRightBoundary
-..see:Function.leftBoundary
-..see:Function.getLeftBoundary
-*/
-
 template <typename TValue, typename TCargo>
 TValue &
 rightBoundary(IntervalAndCargo<TValue, TCargo> & interval)
@@ -737,20 +517,6 @@ rightBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
  * @return TBoundary Copy of the left boundary value.
  */
 
-/**
-.Function.getLeftBoundary
-..cat:Miscellaneous
-..summary:Get method for the left boundary.
-..signature:leftBoundary(interval)
-..class:Class.IntervalAndCargo
-..param.interval:The interval to return the left boundary for.
-...type:Class.IntervalAndCargo
-..returns:The copy of the left boundary of the interval of type TValue.
-..see:Function.leftBoundary
-..see:Function.getRightBoundary
-..see:Function.rightBoundary
-*/
-
 template <typename TValue, typename TCargo>
 TValue
 getLeftBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
@@ -769,20 +535,6 @@ getLeftBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
  * @return TBoundary Copy of the right boundary value.
  */
 
-/**
-.Function.getRightBoundary
-..cat:Miscellaneous
-..summary:Get method for the right boundary.
-..signature:leftBoundary(interval)
-..class:Class.IntervalAndCargo
-..param.interval:The interval to return the right boundary for.
-...type:Class.IntervalAndCargo
-..returns:The copy of the right boundary of the interval of type TValue.
-..see:Function.rightBoundary
-..see:Function.getLeftBoundary
-..see:Function.leftBoundary
-*/
-
 template <typename TValue, typename TCargo>
 TValue
 getRightBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
@@ -800,15 +552,6 @@ getRightBoundary(IntervalAndCargo<TValue, TCargo> const & interval)
  *
  * @return TCargo Reference to the cargo member.
  */
-
-/**
-.Function.cargo
-..signature:cargo(me)
-..class:Class.IntervalAndCargo
-..param.me:
-...type:Class.IntervalAndCargo
-..see:Function.getCargo
-*/
 
 template <typename TValue, typename TCargo>
 TCargo const &
@@ -835,15 +578,6 @@ cargo(IntervalAndCargo<TValue, TCargo> & interval)
  * @return TCargo Copy of the cargo member.
  */
 
-/**
-.Function.getCargo
-..signature:getCargo(me)
-..class:Class.IntervalAndCargo
-..param.me:
-...type:Class.IntervalAndCargo
-..see:Function.cargo
-*/
-
 template <typename TValue, typename TCargo>
 TCargo
 getCargo(IntervalAndCargo<TValue, TCargo> const & interval)
@@ -860,8 +594,6 @@ getCargo(IntervalAndCargo<TValue, TCargo> const & interval)
  * @signature Value<TIntervalAndCargo>::Type;
  */
 
-///.Metafunction.Value.param.T.type:Class.IntervalAndCargo
-///.Metafunction.Value.class:Class.IntervalAndCargo
 template <typename TValue, typename TCargo>
 struct Value<IntervalAndCargo<TValue, TCargo> >
 {
@@ -875,8 +607,6 @@ struct Value<IntervalAndCargo<TValue, TCargo> >
  * @signature Cargo<TIntervalAndCargo>::Type;
  */
 
-///.Metafunction.Cargo.param.T.type:Class.IntervalAndCargo
-///.Metafunction.Cargo.class:Class.IntervalAndCargo
 template <typename TValue, typename TCargo>
 struct Cargo<IntervalAndCargo<TValue, TCargo> >
 {
@@ -897,13 +627,6 @@ struct Cargo<IntervalAndCargo<TValue, TCargo> >
  * @param[in] point The PointAndCargo to query for its left boundary.
  *
  * @return TBoundary Reference to the left boundary value.
- */
-
-/**
-.Function.leftBoundary
-..signature:leftBoundary(point)
-..class:Class.PointAndCargo
-..param.point.type:Class.PointAndCargo
  */
 
 template <typename TValue, typename TCargo>
@@ -931,13 +654,6 @@ leftBoundary(PointAndCargo<TValue, TCargo> & point)
  * @return TBoundary Reference to the right boundary value.
  */
 
-/**
-.Function.rightBoundary
-..signature:rightBoundary(point)
-..class:Class.PointAndCargo
-..param.point.type:Class.PointAndCargo
- */
-
 template <typename TValue, typename TCargo>
 TValue const &
 rightBoundary(PointAndCargo<TValue, TCargo> const & point)
@@ -951,13 +667,6 @@ rightBoundary(PointAndCargo<TValue, TCargo> & point)
 {
     return point.point;
 }
-
-/**
-.Function.getLeftBoundary
-..signature:getLeftBoundary(point)
-..class:Class.PointAndCargo
-..param.point.type:Class.PointAndCargo
- */
 
 template <typename TValue, typename TCargo>
 TValue
@@ -975,13 +684,6 @@ getLeftBoundary(PointAndCargo<TValue, TCargo> const & point)
  * @param[in] point The PointAndCargo to query for its left boundary.
  *
  * @return TBoundary Copy of the left boundary value.
- */
-
-/**
-.Function.getRightBoundary
-..signature:getRightBoundary(point)
-..class:Class.PointAndCargo
-..param.point.type:Class.PointAndCargo
  */
 
 template <typename TValue, typename TCargo>
@@ -1002,13 +704,6 @@ getRightBoundary(PointAndCargo<TValue, TCargo> const & point)
  * @return TCargo Reference to the cargo member.
  */
 
-
-/**
-.Function.cargo
-..signature:cargo(point)
-..class:Class.PointAndCargo
-..param.point.type:Class.PointAndCargo
- */
 
 template <typename TValue, typename TCargo>
 TCargo const &
@@ -1035,15 +730,6 @@ cargo(PointAndCargo<TValue, TCargo> & point)
  * @return TCargo Copy of the cargo member.
  */
 
-/**
-.Function.cargo
-..signature:getCargo(point)
-..class:Class.IntervalAndCargo
-..param.point:
-...type:Class.IntervalAndCargo
-..see:Function.getCargo
-*/
-
 template <typename TValue, typename TCargo>
 TCargo
 getCargo(PointAndCargo<TValue, TCargo> const & point)
@@ -1060,8 +746,6 @@ getCargo(PointAndCargo<TValue, TCargo> const & point)
  * @signature Value<TPointAndCargo>::Type;
  */
 
-///.Metafunction.Value.param.T.type:Class.PointAndCargo
-///.Metafunction.Value.class:Class.PointAndCargo
 template <typename TValue, typename TCargo>
 struct Value<PointAndCargo<TValue, TCargo> >
 {
@@ -1075,8 +759,6 @@ struct Value<PointAndCargo<TValue, TCargo> >
  * @signature Cargo<TPointAndCargo>::Type;
  */
 
-///.Metafunction.Cargo.param.T.type:Class.PointAndCargo
-///.Metafunction.Cargo.class:Class.PointAndCargo
 template <typename TValue, typename TCargo>
 struct Cargo<PointAndCargo<TValue, TCargo> >
 {
@@ -1153,8 +835,6 @@ _appendIntervalTreeNodeLists(IntervalTreeNode<TInterval, StorePointsOnly> & knot
  * @signature Value<TNode>::Type;
  */
 
-///.Metafunction.Value.param.T.type:Class.IntervalTreeNode
-///.Metafunction.Value.class:Class.IntervalTreeNode
 template <typename TInterval, typename TSpec>
 struct Value<IntervalTreeNode<TInterval, TSpec> >
 {
@@ -1168,8 +848,6 @@ struct Value<IntervalTreeNode<TInterval, TSpec> >
  * @signature Cargo<TNode>::Type;
  */
 
-///.Metafunction.Cargo.param.T.type:Class.IntervalTreeNode
-///.Metafunction.Cargo.class:Class.IntervalTreeNode
 template <typename TInterval, typename TSpec>
 struct Cargo<IntervalTreeNode<TInterval, TSpec> >
 {
@@ -1184,22 +862,10 @@ struct Cargo<IntervalTreeNode<TInterval, TSpec> >
  * @signature ListType<T>::Type;
  */
 
-/**
-.Metafunction.ListType:
-..cat:Miscellaneous
-..signature:ListType<T>::ListType
-..class.Class.IntervalTreeNode
-..summary:Type of lists in tree nodes.
-..param.T:The type to retrieve the list type for.
-..returns:Returns the type of the lists in @Class.IntervalTreeNode@ objects.
-..include:seqan/misc/misc_interval_tree.h
- */
 template <typename T>
 struct ListType;
 
 
-///.Metafunction.ListType.param.T.type:Class.IntervalTreeNode
-///.Metafunction.ListType.class:Class.IntervalTreeNode
 template <typename TInterval>
 struct ListType<IntervalTreeNode<TInterval, StorePointsOnly> >
 {
@@ -1208,8 +874,6 @@ struct ListType<IntervalTreeNode<TInterval, StorePointsOnly> >
 };
 
 
-///.Metafunction.ListType.param.T.type:Class.IntervalTreeNode
-///.Metafunction.ListType.class:Class.IntervalTreeNode
 template <typename TInterval>
 struct ListType<IntervalTreeNode<TInterval, StoreIntervals> >
 {
@@ -1237,28 +901,6 @@ struct ListType<IntervalTreeNode<TInterval, StoreIntervals> >
  * @param[in]     tag          Tag for tree construction method;
  * @param[in]     intervals    Container of intervals.  A string of <tt>IntervalAndCargo&lt;TValue, TCargo&gt;</tt>
  *                             objects, see @link IntervalAndCargo @endlink. Types: @link AllocString @endlink.
- */
-
-/**
-.Function.createIntervalTree
-..summary:Create an interval tree.
-..cat:Miscellaneous
-..class:Class.IntervalTree
-..signature:createIntervalTree(intervalTree, intervals [, tag])
-..signature:createIntervalTree(g, pm, intervals [, tag])
-..signature:createIntervalTree(g, pm, intervals, center [, tag]])
-..param.intervalTree:An interval tree
-...type:Class.IntervalTree
-..param.g:DirectedGraph to create interval tree in.
-...type:Class.Graph
-..param.pm:Property map to use for the created interval tree.
-..param.intervals:Container of intervals.
-...type:Spec.Alloc String
-...remarks:A string of $IntervalAndCargo<TValue, TCargo>$ objects, see @Class.IntervalAndCargo@.
-..param.tag:Tag for tree construction method; @Tag.IntervalTree Centers.tag.ComputeCenter@
-...default:@Tag.IntervalTree Centers.tag.ComputeCenter@
-..remarks:center of root node is computed by _calcIntervalTreeRootCenter
-..include:seqan/misc/misc_interval_tree.h
  */
 
 template <typename TGraph, typename TPropertyMap, typename TIntervals, typename TSpec>
@@ -1623,27 +1265,6 @@ _calcIntervalTreeRootCenter(TIntervals & intervals)
  */
 
 
-/**
-.Function.addInterval
-..summary:Adds an interval to an interval tree.
-..cat:Miscellaneous
-..class:Class.IntervalTree
-..signature:addInterval(intervalTree, interval)
-..signature:addInterval(intervalTree, begin, end)
-..signature:addInterval(intervalTree, begin, end, cargo)
-..signature:addInterval(graph, propertyMap, interval)
-..param.intervalTree:The interval tree to add the interval to.
-...type:Class.IntervalTree
-..param.interval:The interval to be added to the interval tree.
-..param.begin:Begin position of interval of type TValue.
-..param.end:End position of interval of type TValue.
-..param.cargo:Cargo to attach to the interval.
-...type:Class.IntervalAndCargo
-..param.graph:The directed graph that contains the topography of the interval tree.
-..param.propertyMap:The property map containing the node properties of the interval tree.
-..include:seqan/misc/misc_interval_tree.h
-*/
-
 template <typename TGraph, typename TPropertyMap, typename TInterval>
 void
 addInterval(TGraph & g, TPropertyMap & pm, TInterval interval)
@@ -1803,23 +1424,6 @@ addInterval(IntervalTree<TValue, TCargo> & itree, TValue begin, TValue end)
  * @param[out] result       A reference to the result string of <tt>TCargo</tt> objects. Types: @link String @endlink.
  */
 
-/**
-.Function.findIntervals
-..summary:Find all intervals that contain the query point or overlap with the query interval.
-..cat:Miscellaneous
-..class:Class.IntervalTree
-..signature:findIntervals(intervalTree, query, result)
-..signature:findIntervals(intervalTree, query_begin, query_end, result)
-..signature:findIntervals(graph, propertyMap, query, result)
-..param.intervalTree:An interval tree
-...type:Class.IntervalTree
-..param.query:A query point.
-..param.query_begin:The begin position of the query interval.
-..param.query_end:The end position of the query interval.
-..param.result:A reference to the result string of $TCargo$ objects
-...type:Class.String
-..include:seqan/misc/misc_interval_tree.h
-*/
 template <typename TSpec, typename TPropertyMap, typename TValue, typename TCargo>
 inline void
 findIntervals(
@@ -2056,23 +1660,6 @@ findIntervals(
  *                         be a string of TCargo. Types: String
  */
 
-/**
-.Function.findIntervalsExcludeTouching
-..summary:Find all intervals that contain the query point, exclude intervals that touch the query, i.e. where the query point equals the start or end point.
-..signature:findIntervalsExcludeTouching(intervalTree, query, result)
-..signature:findIntervalsExcludeTouching(graph, propertyMap, query, result)
-..cat:Miscellaneous
-..class:Class.IntervalTree
-..param.intervalTree:An interval tree
-...type:Class.IntervalTree
-..param.graph:The directed graph that contains the topography of the interval tree.
-..param.propertyMap:The property map containing the node properties of the interval tree
-..param.query:The TValue to query here.
-..param.result:The resulting string of cargos/ids of the intervals that contain the query point.
-...type:Class.String
-...remarks:Should be a string of TCargo.
-..include:seqan/misc/misc_interval_tree.h
-*/
 template <typename TSpec, typename TPropertyMap, typename TValue, typename TCargo>
 inline void
 findIntervalsExcludeTouching(
@@ -2182,19 +1769,6 @@ findIntervalsExcludeTouching(
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
-
-/**
-.Function.removeInterval
-..summary:Removes an interval from the interval tree.
-..signature:removeInterval(intervalTree, i_begin, i_end, i_id)
-..cat:Miscellaneous
-..class:Class.IntervalTree
-..param.intervalTree:An interval tree
-...type:Class.IntervalTree
-..param.i_begin:The begin position of the interval to be removed.
-..param.i_end:The end position of the interval to be removed.
-..param.i_id:The ID of the interval to be removed.
-*/
 
 template <
     typename TSpec,
@@ -2351,7 +1925,6 @@ removeInterval(
 
 /////////////////// Metafunctions ///////////////////////
 
-///.Metafunction.Value.param.T.type:Class.IntervalTree
 template <typename TValue, typename TCargo>
 struct Value<IntervalTree<TValue, TCargo> >
 {
@@ -2359,7 +1932,6 @@ struct Value<IntervalTree<TValue, TCargo> >
 };
 
 
-///.Metafunction.Cargo.param.T.type:Class.IntervalTree
 template <typename TValue, typename TCargo>
 struct Cargo<IntervalTree<TValue, TCargo> >
 {

@@ -160,7 +160,6 @@ public:
 // Metafunction Iterator                                             [Standard]
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Iterator.param.T:Spec.Journal String
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
 struct Iterator<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> >, Standard>
 {

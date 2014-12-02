@@ -68,21 +68,6 @@ namespace seqan {
  * @signature typedef Tag<Gotoh_> Gotoh;
  */
 
-/**
-.Tag.Pairwise Global Alignment Algorithms
-..cat:Alignments
-..summary:Tags used for selecting pairwise global alignment algorithms.
-..tag
-...Gotoh:Gotoh's for affine gap costs.
-...NeedlemanWunsch:The Needleman-Wunsch algorithm for linear gap costs.
-...Hirschberg:Hirschberg's algorithm using linear space.
-...MyersBitVector:Myer's bit-vector algorithm.
-...MyersHirschberg:Combination of Myer's and Hirschberg's algorithm.
-..see:Function.globalAlignment
-..see:Function.globalAlignmentScore
-..include:seqan/align.h
-*/
-
 struct Gotoh_;
 typedef Tag<Gotoh_> Gotoh;
 
@@ -142,18 +127,6 @@ typedef Tag<MyersHirschberg_> MyersHirschberg;
  * @defgroup PairwiseLocalAlignmentAlgorithms Pairwise Local Alignment Algorithms
  * @brief Tags for selecting algorithms.
  */
-
-/**
-.Tag.Pairwise Local Alignment Algorithms
-..cat:Alignments
-..summary:Tags used for selecting pairwise global alignment algorithms.
-..tag
-...SmithWaterman:Smith-Waterman algorithm for local alignments.
-...WatermanEggert:Smith-Waterman algorithm with declumping to identify suboptimal local alignments.
-..see:Function.localAlignment
-..see:Class.LocalAlignmentEnumerator
-..include:seqan/align.h
-*/
 
 /*!
  * @tag PairwiseLocalAlignmentAlgorithms#SmithWaterman

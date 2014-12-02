@@ -45,12 +45,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 // TODO(holtgrew): This apparently belongs into graph_msa?
 
-/**
-.Tag.Segment Match Generation.value.OverlapLibrary:
-	Segment matches from overlap alignments.
-..include:seqan/consensus.h
-*/
-
 struct OverlapLibrary_;
 typedef Tag<OverlapLibrary_> const OverlapLibrary;
 
@@ -73,28 +67,9 @@ typedef Tag<OverlapLibrary_> const OverlapLibrary;
  * @brief Consensus based on a bayesian probability.
  */
 
-/**
-.Tag.Consensus Calling:
-..cat:Consensus
-..summary:A tag that specifies how to call the consensus.
-..include:seqan/consensus.h
-*/
-
-
-/**
-.Tag.Consensus Calling.value.MajorityVote:
-	A consensus based on the most common character.
-..include:seqan/consensus.h
-*/
 
 struct MajorityVote_;
 typedef Tag<MajorityVote_> const MajorityVote;
-
-/**
-.Tag.Consensus Calling.value.Bayesian:
-	A consensus based on bayesian probability.
-..include:seqan/consensus.h
-*/
 
 struct Bayesian_;
 typedef Tag<Bayesian_> const Bayesian;
@@ -482,45 +457,6 @@ assignGappedConsensus(FragmentStore<TSpec, TConfig>& fragStore,
  * }
  * @endcode
  */
-
-/**
-.Function.consensusAligment
-..cat:Consensus
-..summary:Compute consensus alignment.
-..signature:consensusAlignment(alignmentGraph, beginEndPos, [options])
-..param.alignmentGraph:
-...type:Spec.Alignment Graph
-..param.beginEndPos:Interval start and end position for the read's alignment.
-...type:nolink:$StringSet<Pair<TPos, TPos> >$
-..param.options:Optional settings for the consenus alignment
-...type:nolink:$ConsensusOptions$
-..include:seqan/consensus.h
-..example.code:
-#include <seqan/sequence.h>
-#include <seqan/graph_align.h>
-#include <seqan/consensus.h>
-
-int main()
-{
-    using namespace seqan;
-
-    typedef StringSet<Dna5String> TStringSet;
-    typedef Graph<Alignment<TStringSet, void, WithoutEdgeId> > TAlignGraph;
-
-    TStringSet readSet;
-    String<Pair<TSize> > begEndPos;
-
-    appendValue(readSet, "CCCAGTGA");
-    appendValue(begEndPos, Pair<TSize>(0, 5));
-    appendValue(readSet, "AGGGACTGT");
-    appendValue(begEndPos, Pair<TSize>(3, 9));
-
-    TAlignGraph alignmentGraph(readSet);
-    consensusAlignment(alignmentGraph, begEndPos);
-
-    return 0;
-}
-*/
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TSize, typename TConfigOptions>
 inline void
@@ -1187,12 +1123,6 @@ consensusCalling(FragmentStore<TFragSpec, TConfig>& fragStore,
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-
-/**
-.Tag.Alignment Graph Format.value.FastaReadFormat:
-	Fasta read format to write a multi-read alignment.
-..include:seqan/consensus.h
-*/
 
 struct FastaReadFormat_;
 typedef Tag<FastaReadFormat_> const FastaReadFormat;

@@ -73,21 +73,6 @@ namespace seqan {
  * @return int A status code, 0 on success, a different value otherwise.
  */
 
-/**
-.Function.VCF I/O#write
-..cat:VCF I/O
-..summary:Write a @Class.VcfHeader@.
-..signature:int write(stream, header, context, Vcf())
-..param.stream:The @Concept.StreamConcept@ to write to.
-...type:Concept.StreamConcept
-..param.header:The @Class.VcfHeader@ to write.
-...type:Class.VcfHeader
-..param.context:The @Class.VcfIOContext@ to use for writing.
-...class:Class.VcfIOContext
-..return:$0$ on success, $1$ on failure.
-..include:seqan/vcf_io.h
-*/
-
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
 writeRecord(TTarget & target,
@@ -131,21 +116,6 @@ writeRecord(TTarget & target,
  *
  * @return int A status code, 0 on success, a different value otherwise.
  */
-
-/**
-.Function.VCF I/O#writeRecord
-..cat:VCF I/O
-..summary:Write a @Class.VcfRecord@.
-..signature:int writeRecord(stream, record, context, Vcf())
-..param.stream:The @Concept.StreamConcept@ to write to.
-...type:Concept.StreamConcept
-..param.record:The @Class.VcfRecord@ to write.
-...type:Class.VcfRecord
-..param.context:The @Class.VcfIOContext@ to use for writing.
-...class:Class.VcfIOContext
-..return:$0$ on success, $1$ on failure.
-..include:seqan/vcf_io.h
-*/
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void

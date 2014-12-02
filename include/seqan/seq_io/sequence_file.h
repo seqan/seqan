@@ -66,22 +66,6 @@ typedef SmartFile<Fastq, Output>    SeqFileOut;
  * @signature typedef TagSelector<SeqFormat> AutoSeqFormat;
  */
 
-/**
-.Class.AutoSeqFormat
-..summary:Auto-detects and stores a file format.
-..cat:Input/Output
-..general:Class.TagSelector
-..signature:AutoSeqFormat
-..remarks:Currently, it is defined as $TagSelector<SeqFormats>$, with:
-...code:
-	typedef
-		TagList<Fastq,
-		TagList<Fasta,
-		TagList<QSeq,
-		TagList<Raw> > > > 						SeqFormats;
-..include:seqan/file.h
-*/
-
 typedef
     TagList<Fastq,
     TagList<Fasta,

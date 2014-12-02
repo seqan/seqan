@@ -60,12 +60,6 @@ enum TraceDirection
 // Class JournalTraceBuffer
 // ----------------------------------------------------------------------------
 
-/**
- * Specialization of the JournalTraceBuffer for the use of Journal sequences.
- * Describes the trace back in form of journal nodes in a sorted array.
- * Note, that the nodes are entered in reversed order, because the trace back
- * is parsed from the end to the beginning of the alignment.
- */
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
 class JournalTraceBuffer<String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > >
 {
@@ -292,9 +286,6 @@ value(JournalTraceBuffer<TJournalString> & me,
     return me.revSortedOperation_[pos];
 }
 
-/**
- * Returns a reference to the node at the given position within the trace back.
- */
 template <typename TJournalString>
 inline typename Reference<JournalTraceBuffer<TJournalString> const>::Type
 value(JournalTraceBuffer<TJournalString> const & me,
@@ -353,10 +344,6 @@ getTraceReverse(JournalTraceBuffer<String< TValue, Journaled<THostSpec, TJournal
     return cpy;
 }
 
-/**
- * Returns the trace in reverse (left-to-right) order. Use this function to access the nodes
- * in consecutive order from the beginning to the end of the sequence.
- */
 template <typename TString>
 inline String <typename Value<JournalTraceBuffer<TString> const>::Type> const
 getTraceReverse(JournalTraceBuffer<TString> const & me)

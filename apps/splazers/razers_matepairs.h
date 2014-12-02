@@ -59,8 +59,6 @@ public:
 // Iterators
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Iterator.param.T.type:Class.Dequeue
-
 template<typename TValue, typename TSpec>
 struct Iterator<Dequeue<TValue, TSpec>, Standard> 
 {

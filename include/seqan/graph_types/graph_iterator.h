@@ -75,9 +75,6 @@ struct GraphIterator;
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Host.param.T.type:Class.Graph
-///.Metafunction.Host.class:Class.Graph
-
 template<typename TGraph, typename TIteratorSpec>
 struct Host<Iter<TGraph, GraphIterator<TIteratorSpec> > >
 {	

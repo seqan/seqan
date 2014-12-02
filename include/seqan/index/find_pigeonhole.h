@@ -140,25 +140,6 @@ namespace seqan
 //____________________________________________________________________________
 
 
-/**
-.Spec.Pigeonhole:
-..summary:Provides a fast filter alogrithm that uses the pigeonhole lemma, i.e. if a pattern matches with k errors in the text, every partition into k+1 parts contains one part that matches without error.
-..general:Class.Pattern
-..general:Class.Finder
-..cat:Searching
-..signature:Finder<THaystack, Pigeonhole<TSpec> >
-..signature:Pattern<TIndex, Pigeonhole<TSpec> >
-..param.THaystack:The type of the sequence that should be searched.
-..param.TIndex: A q-gram index of needle(s) that should be searched for.
-...type:Spec.IndexQGram
-..param.TSpec: Specifies the type of pigeonhole filter.
-..include:seqan/index.h
-..remarks:
- The @Class.Pattern@ must be a q-gram index over multiple patterns. The tolerated error rate must be given when @Function.find@ or @Function.windowFindBegin@ is called.
- In these functions the length of the index @Class.Shape@ is set automatically thus it must be modifiable at runtime, e.g. @Spec.OneGappedShape@.
-
-*/
-
 /*!
  * @class PigeonholeFinder
  * @extends Finder
@@ -214,9 +195,6 @@ namespace seqan
  */
 
 // docu is now in find_pattern_base.h
-///.Class.Pattern.param.TSpec.type:Spec.Pigeonhole
-///.Class.Finder.param.TSpec.type:Spec.Pigeonhole
-
 	template <typename THaystack, typename TSpec>
 	class Finder<THaystack, Pigeonhole<TSpec> >
 	{
@@ -748,10 +726,6 @@ endPosition(Pattern<TIndex, Pigeonhole<TSpec> > & pattern)
 	return endPosition(const_cast<Pattern<TIndex, Pigeonhole<TSpec> > const &>(pattern));
 }
 
-///.Function.positionRangeNoClip.param.finder.type:Spec.Pigeonhole
-///.Function.positionRangeNoClip.class:Spec.Pigeonhole
-///.Function.positionRangeNoClip.param.pattern.type:Spec.Pigeonhole
-
 template <typename THaystack, typename TSpec>
 inline Pair<typename Position<Finder<THaystack, Pigeonhole<TSpec> > >::Type>
 positionRangeNoClip(Finder<THaystack, Pigeonhole<TSpec> > const & finder)
@@ -768,10 +742,6 @@ positionRangeNoClip(Finder<THaystack, Pigeonhole<TSpec> > & finder)
 {
 	return positionRangeNoClip(const_cast<Finder<THaystack, Pigeonhole<TSpec> > const &>(finder));
 }
-
-///.Function.positionRange.param.finder.type:Spec.Pigeonhole
-///.Function.positionRange.class:Spec.Pigeonhole
-///.Function.positionRange.param.pattern.type:Spec.Pigeonhole
 
 template <typename THaystack, typename TSpec>
 inline Pair<typename Position<Finder<THaystack, Pigeonhole<TSpec> > >::Type>
@@ -830,9 +800,6 @@ pigeonholeInfix(TPigeonholeHit const &hit, TText &text)
 }
 
 //____________________________________________________________________________
-
-///.Function.Finder#infix.param.finder.type:Spec.Pigeonhole
-///.Function.Finder#infix.class:Spec.Pigeonhole
 
 template <typename THaystack, typename TSpec>
 inline typename Infix<THaystack>::Type
@@ -1055,13 +1022,6 @@ find(
 	} while (true);
 }
 
-/**
-.Function.windowFindBegin:
-..class:Spec.Pigeonhole
-..param.finder.type:Spec.Pigeonhole
-..param.pattern.type:Spec.Pigeonhole
-*/
-
 /*!
  * @fn PigeonholeFinder#windowFindBegin
  * @headerfile <seqan/index/find_pigeonhole.h>
@@ -1101,13 +1061,6 @@ windowFindBegin(
     return true;
 }
 
-
-/**
-.Function.windowFindNext:
-..class:Spec.Pigeonhole
-..param.finder.type:Spec.Pigeonhole
-..param.pattern.type:Spec.Pigeonhole
-*/
 
 /*!
  * @fn PigeonholeFinder#windowFindNext
@@ -1231,13 +1184,6 @@ windowFindNext(
 	return true;
 }
 
-/**
-.Function.windowFindEnd:
-..class:Spec.Pigeonhole
-..param.finder.type:Spec.Pigeonhole
-..param.pattern.type:Spec.Pigeonhole
-*/
-
 
 /*!
  * @fn PigeonholeFinder#windowFindEnd
@@ -1263,8 +1209,6 @@ windowFindEnd(
 {
 }
 
-///.Function.getWindowFindHits.param.finder.type:Spec.Pigeonhole
-
 /*!
  * @fn PigeonholeFinder#getWindowFindHits
  * @headerfile <seqan/index/find_pigeonhole.h>
@@ -1288,8 +1232,6 @@ getWindowFindHits(Finder<THaystack, Pigeonhole<TSpec> > &finder)
 
 	return finder.hits;
 }
-
-///.Function.getMaxDeviationOfOrder.param.pattern.type:Spec.Pigeonhole
 
 /*!
  * @fn PigeonholePattern#getMaxDeviationOfOrder

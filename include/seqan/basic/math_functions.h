@@ -90,17 +90,6 @@ inline TValue _intPow(TValue a, TExponent b)
  * @return unsigned The largest integer smaller or equal than the logarithm of <tt>i</tt>.
  */
 
-/**
-.Function.log2
-..cat:Miscellaneous
-..summary:Computes floored logarithm of base 2 for integer types
-..signature:unsigned int log2(i)
-..param.i:An integer type.
-..returns:The largest integer smaller or equal than
-the logarithm of $i$.
-..include:seqan/basic.h
-*/
-
 // TODO(holtgrew): Should this maybe called log2floor for consistency with Log2Floor<>::VALUE?
 
 template <int BITS_MAX>

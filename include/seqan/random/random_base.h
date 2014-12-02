@@ -76,30 +76,6 @@ struct MersenneTwister;
  * @see http://trac.seqan.de/wiki/Tutorial/Randomness
  */
 
-/**
-.Class.Rng:
-..summary:Random Number Generator
-..signature:Rng<>
-..signature:Rng<TSpec>
-..cat:Random
-..param.TSpec:Random Number Generator specialization.
-...default:@Spec.Mersenne Twister Rng@
-..include:seqan/random.h
-..wiki:Tutorial/Randomness|Tutorial: Randomness
-..example
-...text:The following code shows how to generate random numbers and shuffle a text.
-...file:demos/random/random.cpp
-...output:
-pickRandomNumber(rng) == 1608637542
-pickRandomNumber(rng, uniformDouble) == 0.950714
-pickRandomNumber(rng, uniformInt) == 27
-pickRandomNumber(rng, normal) == 0.419823
-pickRandomNumber(rng, logNormal) == 1.22431
-pickRandomNumber(rng, logNormal2) == 2.78004
-pickRandomNumber(rng, logNormal3) == 0.00155248
-shuffle("Hello World!") ==  o!reWlloHld
-*/
-
 template <typename TSpec = MersenneTwister>
 class Rng;
 
@@ -117,13 +93,6 @@ class Rng;
  * @return TValue Random number, TValue can be retrieved with Rng#Value.
  */
 
-/**
-.Memfunc.Rng#operator()
-..class:Class.Rng
-..summary:Function call operator.
-..signature:operator()
-*/
-
 /*!
  * @class Pdf
  * @headerfile <seqan/random.h>
@@ -137,16 +106,6 @@ class Rng;
  * This class is used together with @link Rng @endlink in the function @link Rng#pickRandomNumber @endlink. See the 
  * <a href="http://trac.seqan.de/wiki/Tutorial/Randomness">SeqAn Randomness Tutorial</a> for more details.
  */
-
-/**
-.Class.Pdf:
-..summary:ProbabilityDensityFunction
-..signature:Pdf<TSpec>
-..cat:Random
-..param.TSpec:Specialization.
-..include:seqan/random.h
-..wiki:Tutorial/Randomness|Tutorial: Randomness
-*/
 
 template <typename TSpec>
 class Pdf;
@@ -167,8 +126,6 @@ class Pdf;
  * @return Type The value type of the Pdf.
  */
 
-///.Metafunction.Value.param.T.type:Class.Pdf
-///.Metafunction.Value.class:Class.Pdf
 // specification only
 
 /*!
@@ -203,13 +160,6 @@ class Pdf;
  *
  * @return VALUE The largest value a Rng can return.
  */
-
-///.Metafunction.Value.param.T.type:Class.Rng
-///.Metafunction.Value.class:Class.Rng
-///.Metafunction.MinValue.param.T.type:Class.Rng
-///.Metafunction.MinValue.class:Class.Rng
-///.Metafunction.MaxValue.param.T.type:Class.Rng
-///.Metafunction.MaxValue.class:Class.Rng
 
 template <typename TSpec>
 struct MaxValue<Rng<TSpec> >
@@ -265,16 +215,6 @@ const typename Value<Rng<TSpec> const>::Type MinValue<Rng<TSpec> const>::VALUE =
  * @see defaultRng
  */
 
-/**
-.Metafunction.GetDefaultRng
-..cat:Random
-..summary:Return the default @Class.Rng|Random Number Generator@ to use in a given class, spezialiation or algorithm.
-..signature:GetDefaultRng<T>::Type
-..param.T:The class or algorithm tag to get the default @Class.Rng@ for.
-..returns:The type of Rng specialization to use.
-..remarks:Currently, the default value is @Spec.Mersenne Twister Rng@.
-..see:Function.defaultRng
- */
 template <typename T>
 struct GetDefaultRng
 {
@@ -302,21 +242,6 @@ struct GetDefaultRng
  * For more details see the <a href="http://trac.seqan.de/wiki/Tutorial/Randomness">SeqAn Tutorial on Randomness</a>.
  */
 
-/**
-.Function.pickRandomNumber
-..class:Class.Rng
-..class:Class.Pdf
-..summary:Pick a random number using a random number generator object, possibly following the given distribution.
-..cat:Random
-..include:seqan/random.h
-..wiki:Tutorial/Randomness|Tutorial: Randomness
-..signature:pickRandomNumber(rng[, pdf])
-..param.rng:Random number generator to use.
-...type:Class.Rng
-..param.pdf:Probability density function to use, if any.
-...type:Class.Pdf
-..returns:Random number as specified in pdf, if any, or rng. For more details refer to the SeqAn Tutorial.
- */
 // specification only
 
 /*!
@@ -339,20 +264,6 @@ struct GetDefaultRng
  * state to be used can be set to be thread-local.
  *
  * @see GetDefaultRng
- */
-
-/**
-.Function.defaultRng
-..summary:Default default random number generator object of a given type.
-..cat:Random
-..signature:defaultRng<TRng>()
-..param.TRng:Type of the @Class.Rng@ to return the global default object of.
-...default:$MersenneTwister$
-...type:nolink:$MersenneTwister$
-..returns:Default random number generator object of the type given by $tag$.
-..remarks:The random number generator will be default constructed, i.e. with the default seed.
-..remarks:This function is NOT thread-safe! Also, data structures using such global state are not thread-safe! Data structures using global random number generator state should use pointers or @Class.Holder|Holder instances@. This way, the random number generator state to be used can be set to be thread-local.
-..see:Metafunction.GetDefaultRng
  */
 
 template <typename TRng>

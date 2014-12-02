@@ -279,51 +279,6 @@ struct Alloc {};
  *                 <tt>pos</tt> is converted to a local position and <tt>i2</tt> is returned.
  */
 
-/**
-.Class.String
-..cat:Sequences
-..summary:A sequence container with generic alphabet and many specializations.
-..description:
-String is at the heart of the SeqAn library (SeqAn is for SEQuence ANalaysis after all).
-There are various specializations with @Spec.Alloc String@ being the default and most widely used one.
-Strings can be used to store arbitrary values and can be used for large biologicaly sequences as well as a generic, dynamic array and replace $std::vector<>$.
-..signature:String<TValue, TSpec>
-..param.TValue:The value type, that is the type of the items/characters stored in the string.
-...metafunction:Metafunction.Value
-..param.TSpec:The specializing type.
-...metafunction:Metafunction.Spec
-...default:$Alloc<>$, see @Spec.Alloc String@.
-..implements:Concept.ContainerConcept
-..include:seqan/sequence.h
-..example
-...text:This example shows a brute force pattern matching scheme for two character Strings. Creation of String "text" shows the usage of some available String operating functions. See class @Class.StringSet@ for an example of a String container with other than simple type values. See class @Class.Index@ example for efficiently finding the same pattern matches using an index. 
-...file:demos/sequence/string2.cpp
-...text:The output of this demo is:
-...output:to be
-Last sign is whitespace? 1
-tobeornottobe
-hit at 2 11
-
-.Memfunc.String#String
-..class:Class.String
-..signature:String::String()
-..signature:String::String(other)
-..signature:String::String(seq)
-..summary:Constructor
-..description:
-The $String$ class provides the default constructor and copy constructor.
-Additionally, you can construct a string from any sequence.
-..param.other:Another $String$ object of the same type.
-..param.seq:A sequence to copy into the $String$.
-...type:Concept.StringConcept
-..remarks:
-The third variant (construction from sequence) first reserves the necessary space and then copies over the characters from $seq$.
-During this copying, the source characters are implicitely casted/converted into the alphabet of the String.
-For example, @Spec.Dna@ characters can be converted to @Spec.Dna5@ characters and vice versa.
-The conversion can be lossy, e.g. when converting from @Spec.Dna5@ to @Spec.Dna@, all $N$ characters are replaced by $A$ characters.
-Similarly, when converting from $char$ to @Spec.Dna5@, all characters except ${A, a, C, c, G, g, T, t}$ are converted to $N$.
-*/
-
 template <typename TValue, typename TSpec = Alloc<> >
 class String;
 
@@ -334,9 +289,6 @@ class String;
 // ----------------------------------------------------------------------------
 // Metafunction Value
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Value.param.T.type:Class.String
-///.Metafunction.Value.class:Class.String
 
 template <typename TValue, typename TSpec>
 struct Value<String<TValue, TSpec> >
@@ -353,9 +305,6 @@ struct Value<String<TValue, TSpec> const >
 // Metafunction Spec
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Spec.param.T.type:Class.String
-///.Metafunction.Spec.class:Class.String
-
 template <typename TValue, typename TSpec>
 struct Spec<String<TValue, TSpec> >
 {
@@ -370,21 +319,6 @@ struct Spec<String<TValue, TSpec> const>:
 // ----------------------------------------------------------------------------
 // Metafunction StringSpec
 // ----------------------------------------------------------------------------
-
-/**
-.Metafunction.StringSpec
-..cat:Fundamental
-..summary:The @Class.String@ @Metafunction.Spec@ of a class.
-..signature:StringSpec<T>::Type
-..param.T:Type for which the @Class.String@ @Metafunction.Spec@ is determined.
-..returns.param.Type:StringSpec of $T$.
-..remarks:
-The StringSpec of a SeqAn type is the @Metafunction.Spec@ of the @Class.String@ on which the type depends.
-For example, the StringSpec of $Index<String<char, MMap<> > >$ and $typename Infix<String<char, MMap<> > >::Type$ is $MMap<>$.
-..remarks:
-For types not dependent, composed by or related to @Class.String@, this metafunction returns $Alloc<>$.
-..include:seqan/string.h
-*/
 
 template <typename T>
 struct StringSpec
@@ -413,9 +347,6 @@ struct Chunk<String<TValue, TSpec> >:
 // Metafunction IsSequence
 // ----------------------------------------------------------------------------
 
-///.Metafunction.IsSequence.param.T.type:Class.String
-///.Metafunction.IsSequence.class:Class.String
-
 template <typename TValue, typename TSpec>
 struct IsSequence<String<TValue, TSpec> > : True {};
 
@@ -433,12 +364,6 @@ SEQAN_CONCEPT_IMPL((String<TValue, TSpec> const), (ContainerConcept));  // read-
 // Internal Metafunction TempCopy_
 // ----------------------------------------------------------------------------
 
-/**
-.Internal.TempCopy_
-..cat:Metafunctions
-..summary:Returns a Class that can be used to store a temporary copy of a String
- */
-
 template <typename T>
 struct TempCopy_
 {
@@ -453,36 +378,9 @@ struct TempCopy_
 
 // TODO(holtgrew): Where to move this documentation/specification-only stuff?
 
-///.Function.getObjectId.param.object.type:Class.String
-///.Function.getObjectId.class:Class.String
-///.Function.empty.param.object.type:Class.String
-///.Function.empty.class:Class.String
-///.Function.capacity.param.object.type:Class.String
-///.Function.capacity.class:Class.String
-
 // ----------------------------------------------------------------------------
 // Function swap()
 // ----------------------------------------------------------------------------
-
-/**
-.Function.swap:
-..summary:Swaps the contents of two values.
-..class:Class.String
-..cat:Content Manipulation
-..signature:swap(left, right)
-..param.left:The first value.
-...type:Class.String
-..param.right:The second value.
-...type:Class.String
-..remarks:The function swaps the values of variables left and right.
-This is equivalent to using move three times with a temporary variable.
-
-Note that this function has the same name as the STL function $std::swap$ but is in a different namespace.
-Argument Dependent Lookup (ADL, aka Koenig lookup) will take care that the right $swap$ function is called from STL $sort$, for example.
-We only specialize it for Class.String and Class.StringSet.
-..see:Function.move
-..include:seqan/sequence.h
-*/
 
 template <typename TAlphabet, typename TSpec>
 inline void
@@ -501,8 +399,6 @@ swap(String<TAlphabet, TSpec> & left,
 // Function shareResources()
 // ----------------------------------------------------------------------------
 
-///.Function.shareResources.param.sequence1, sequence2.type:Class.String
-
 template <typename TValue, typename TSpec>
 inline bool
 shareResources(String<TValue, TSpec> const & obj1,
@@ -520,16 +416,9 @@ shareResources(TValue const & obj1,
 }
 
 // TODO(holtgrew): Where to move this documentation/specification-only stuff?
-///.Function.begin.param.object.type:Class.String
-///.Function.begin.class:Class.String
-///.Function.end.param.object.type:Class.String
-///.Function.end.class:Class.String
-
 // ----------------------------------------------------------------------------
 // Function value()
 // ----------------------------------------------------------------------------
-
-///.Function.value.param.container.type:Class.String
 
 template <typename TValue, typename TSpec, typename TPos>
 SEQAN_HOST_DEVICE inline typename Reference< String<TValue, TSpec> >::Type
@@ -555,9 +444,6 @@ value(String<TValue, TSpec> const & me,
 // Function length()
 // ----------------------------------------------------------------------------
 
-///.Function.length.param.object.type:Class.String
-///.Function.length.class:Class.String
-
 template <typename TValue, typename TSpec>
 SEQAN_HOST_DEVICE inline typename Size< String<TValue, TSpec> const>::Type
 length(String<TValue, TSpec> const & me)
@@ -569,9 +455,6 @@ length(String<TValue, TSpec> const & me)
 // Function empty()
 // ----------------------------------------------------------------------------
 
-///.Function.empty.param.object.type:Class.String
-///.Function.empty.class:Class.String
-
 template <typename TValue, typename TSpec>
 SEQAN_HOST_DEVICE inline bool
 empty(String<TValue, TSpec> const & me)
@@ -582,23 +465,6 @@ empty(String<TValue, TSpec> const & me)
 // ----------------------------------------------------------------------------
 // Function clear()
 // ----------------------------------------------------------------------------
-
-/**
-.Function.clear:
-..cat:Containers
-..class:Class.String
-..summary:Resets an object.
-..signature:clear(object)
-..param.object:The object that will be resetted.
-...type:Class.String
-..remarks:$object$ is set to a state that is equivalent to a default constructed object of the same type.
-..remarks:If $object$ is a container, then all elements are removed from this container.
-The length is set to 0.
-The capacity can be changed, depending on the implementation.
-..see:Function.resize
-..see:Function.length
-..include:seqan/sequence.h
-*/
 
 template <typename TValue, typename TSpec>
 inline void
@@ -992,25 +858,6 @@ struct ClearSpaceStringBase_<Generous>:
 {
 };
 
-/**
-.Internal._clearSpace:
-..cat:Functions
-..summary:Makes space in container
-..signature:_clearSpace(object, size [, pos_begin, pos_end] [, limit], resize_tag)
-..param.object:The container.
-..param.size:Length of the freed space.
-..param.pos_begin:Position of the first item in $object$ that is to be destroyed. (optional)
-..param.pos_end:Position behind the last item in $object$ that is to be destroyed. (optional)
-...remarks:If $pos_end == pos_begin$, no item in $object$ will be destroyed.
-..param.limit:Maximal length $object$ can get after this operation. (optional)
-..param.resize_tag:Strategy that is applied if $object$ has not enough capacity to store the complete content.
-..returns:The number of free characters.
-...remarks:Depeding on the @Tag.Overflow Strategy.overflow strategy@ specified by $resize_tag$,
-this could be $size$ or less than $size$ if $object$ has not enough @Function.capacity@.
-..remarks:This function is similar to @Function.resizeSpace@ and @Function.fillSpace@.
-The main difference is that $_clearSpace$ does not construct objects in the new created space.
-*/
-
 template<typename TValue, typename TSpec, typename TSize, typename TExpand>
 inline typename Size< String<TValue, TSpec> >::Type
 _clearSpace(String<TValue, TSpec> & me,
@@ -1057,9 +904,6 @@ _clearSpace(String<TValue, TSpec> & me,
 // Function resizeSpace()
 // ----------------------------------------------------------------------------
 
-///.Function.resizeSpace.param.object.type:Class.String
-///.Function.resizeSpace.class:Class.String
-
 template<typename TValue, typename TSpec, typename TSize, typename TBeginPosition, typename TEndPosition, typename TExpand>
 inline typename Size< String<TValue, TSpec> >::Type
 resizeSpace(String<TValue, TSpec> & me,
@@ -1105,11 +949,6 @@ resizeSpace(String<TValue, TSpec> & me,
 // ----------------------------------------------------------------------------
 // Function assign()
 // ----------------------------------------------------------------------------
-
-///.Function.assign.param.target.type:Class.String
-///.Function.assign.class:Class.String
-///.Function.assign.param.source.type:Class.String
-///.Function.assign.class:Class.String
 
 // Facade version without overflow tag.  Forwards to version with overflow
 // tag, using Metafunction.DefaultOverflowImplicity.
@@ -1362,10 +1201,6 @@ _stringCheckForPossibleOverlap(TIter const &it1, TIter const &it2, TSize length)
 // Function append()
 // ----------------------------------------------------------------------------
 
-///.Function.append.param.target.type:Class.String
-///.Function.append.param.source.type:Class.String
-///.Function.append.class:Class.String
-
 template <typename TExpand>
 struct AppendString_
 {
@@ -1526,12 +1361,6 @@ appendValue(String<TTargetValue, TTargetSpec> & me,
 // insertValue
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Function.insertValue:
-..class:Class.String
-..include:seqan/sequence.h
-*/
-
 template <typename TExpand>
 struct InsertValueToString_
 {
@@ -1561,10 +1390,6 @@ insertValue(String<TTargetValue, TTargetSpec> & me,
 // ----------------------------------------------------------------------------
 // Function replace()
 // ----------------------------------------------------------------------------
-
-///.Function.replace.param.target.type:Class.String
-///.Function.replace.param.source.type:Class.String
-///.Function.replace.class:Class.String
 
 template <typename TExpand>
 struct ReplaceString_
@@ -1674,22 +1499,6 @@ replace(String<TTargetValue, TTargetSpec> & target,
 // ----------------------------------------------------------------------------
 // Internal Function _reallocateStorage()
 // ----------------------------------------------------------------------------
-
-/**
-.Internal._reallocateStorage:
-..cat:Functions
-..summary:Allocates a new buffer if needed.
-..signature:_reallocateStorage(object, new_capacity, resize_tag)
-..param.object:A container for which the buffer is reallocated.
-...type:Class.String
-..param.new_capacity:The capacity $object$ will get after reallocating the buffer.
-..param.resize_tag:Strategy that is used for changing the capacity.
-..returns:Returns the old buffer, if a new buffer has been allocated, $0$ otherwise.
-..remarks:This function only allocates a new buffer if the current capacity is less then $new_capacity$.
-A new buffer is not filled with any content, all copy operations must be done by the caller.
-..remarks:If $object$ never had a buffer, or the buffer is not changed by the function,
-the returned pointer is 0.
-*/
 
 template <typename TValue, typename TSpec, typename TSize>
 inline typename Value<String<TValue, TSpec> >::Type *
@@ -1808,9 +1617,6 @@ _reallocateStorage(
 // Function reserve()
 // ----------------------------------------------------------------------------
 
-///.Function.reserve.param.object.type:Class.String
-///.Function.reserve.class:Class.String
-
 template <typename TValue, typename TSpec, typename TSize_>
 inline void
 _reserveStorage(
@@ -1872,8 +1678,6 @@ reserve(
 // ----------------------------------------------------------------------------
 // Function resize()
 // ----------------------------------------------------------------------------
-
-///.Function.resize.param.object.type:Class.String
 
 template <typename TExpand>
 struct _Resize_String

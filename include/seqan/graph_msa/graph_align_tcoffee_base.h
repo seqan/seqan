@@ -76,35 +76,13 @@ static const int SEQAN_DISTANCE_UNITY = 1;
  * @signature typedef Tag<FractionalScore_> const ReScore;
  */
 
-/**
-.Tag.Alignment Graph Combination:
-..cat:Alignments
-..summary:A tag to specify how to combine alignment graphs.
-..include:seqan/graph_msa.h
-*/
-
-/**
-.Tag.Alignment Graph Combination.value.FractionalScore:
-	Rescores matches with the appropriate fractional score.
-..include:seqan/graph_msa.h
-*/
 struct FractionalScore_;
 typedef Tag<FractionalScore_> const FractionalScore;
 
 
-/**
-.Tag.Alignment Graph Combination.value.FrequencyCount:
-	Rescores matches with the frequency count for this edge.
-..include:seqan/graph_msa.h
-*/
 struct FrequencyCounting_;
 typedef Tag<FrequencyCounting_> const FrequencyCounting;
 
-/**
-.Tag.Alignment Graph Combination.value.ReScore:
-	Rescores the matches after segment-match refinement.
-..include:seqan/graph_msa.h
-*/
 struct ReScore_;
 typedef Tag<ReScore_> const ReScore;
 
@@ -130,29 +108,6 @@ typedef Tag<ReScore_> const ReScore;
  * Calls the function @link matchRefinement @endlink and adapts the scores according to <tt>tag</tt>.
  */
  
-
-/**
-.Function.buildAlignmentGraph
-..class:Spec.Alignment Graph
-..summary:Builds an @Spec.Alignment Graph@ from a set of input alignments.
-..cat:Graph
-..signature:
-buildAlignmentGraph(matches, [scores,] outGraph, tag)
-buildAlignmentGraph(matches, scores, outGraph, scoreType, ReScore)
-..param.matches:A string of alignments, e.g. @Class.Fragment@ or @Class.Align@.
-...type:Class.String
-..param.scores:A string of scores.
-...type:Class.String
-..param.outGraph:An alignment graph with a set string set.
-...type:Spec.Alignment Graph
-..param.scoreType:A score type.
-...type:Class.Score
-..param.tag:A tag indicating the scoring of matches.
-...type:Tag.Alignment Graph Combination
-..returns:void
-..include:seqan/graph_msa.h
-..remarks:Calls the function @Function.matchRefinement@ and adapts scores according to tag.
-*/
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -367,22 +322,6 @@ struct LessMsaEdgeCargo_ :
  * The running time is quadratic in the number of pairwise edges.
  */
 
-/**
-.Function.tripletLibraryExtension
-..class:Spec.Alignment Graph
-..summary:Performs a full or group-based consistency extension.
-..cat:Graph
-..signature:
-void tripletLibraryExtension(graph, [,guideTree, minMembers])
-..param.graph:An alignment graph.
-...type:Spec.Alignment Graph
-..param.guideTree:A guide tree.
-..param.minMembers:Minimum number of sequences per group.
-...remarks:If a guide tree and a minimum number of memebers is given, the triplet extension is limited to groups of sequences.
-..remarks:The running time is quadratic in the number of pairwise edges.
-..returns:void
-..include:seqan/graph_msa.h
-*/
 template<typename TStringSet, typename TCargo, typename TSpec>
 inline void 
 tripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
@@ -837,23 +776,6 @@ graphBasedTripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& 
  * version assuming independ columns use sumOfPairsScoreInd.
  */
 
-/**
-.Function.sumOfPairsScore
-..class:Spec.Alignment Graph
-..summary:Given a multiple alignment, this function calculates the sum-of-pairs score.
-..cat:Graph
-..signature:
-sumOfPairsScore(graph, score_type)
-..param.graph:An alignment graph.
-...type:Spec.Alignment Graph
-..param.score_type:A score object.
-...type:Class.Score
-..remarks:This function does NOT assume independent columns. 
-That is, gap openings are properly scored. 
-If you want the fast version assuming independ columns use sumOfPairsScoreInd.
-..returns:void
-..include:seqan/graph_msa.h
-*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TScore> 
 inline typename Value<TScore>::Type
 sumOfPairsScore(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
@@ -972,25 +894,6 @@ sumOfPairsScoreInd(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * @return TScoreVal The score of the alignment  (Metafunction: @link Score#Value @endlink).
  */
 
-/**
-.Function.alignmentEvaluation
-..class:Spec.Alignment Graph
-..summary:Given a multiple alignment, this function calculates all kinds of alignment statistics.
-..cat:Graph
-..signature:
-alignmentEvaluation(graph, score_type, gapExCount, gapCount, pairCount, numPairs, len)
-..param.graph:An alignment graph.
-...type:Spec.Alignment Graph
-..param.score_type:A score object.
-...type:Class.Score
-..param.gapExCount:Number of gap extensions.
-..param.gapCount:Number of gaps.
-..param.pairCount:Number of aligned pairs.
-..param.numPairs:Counter for each pair.
-..param.len:Alignment length.
-..returns:Score of the alignment.
-..include:seqan/graph_msa.h
-*/
 template<typename TStringSet, typename TCargo, typename TSpec, typename TScore, typename TSize> 
 inline typename Value<TScore>::Type
 alignmentEvaluation(Graph<Alignment<TStringSet, TCargo, TSpec> > const & g,

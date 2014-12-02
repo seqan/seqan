@@ -68,18 +68,6 @@ namespace seqan {
 template<size_t SPACE = 4096>
 struct Block;
 
-/**
-.Spec.Block String:
-..cat:Strings
-..general:Class.String
-..summary:String optimized for appendValue, back, and eraseBack (Stack behaviour).
-..signature:String<TValue, Block<size> >
-..param.TValue:The value type, that is the type of the items/characters stored in the string.
-...remarks:Use @Metafunction.Value@ to get the value type for a given class.
-..param.size:A positive integer that specifies the number of values in each allocated block.
-...remarks: Size should be a power of 2, e.g., 1024.
-..include:seqan/sequence.h
-*/
 template<typename TValue, size_t SPACE>
 class String<TValue, Block<SPACE> >
 {
@@ -179,9 +167,6 @@ struct DefaultOverflowImplicit< String<TValue, Block<SPACE> > >
 // ----------------------------------------------------------------------------
 // Metafunction Iterator
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Iterator.param.T.type:Spec.Block String
-///.Metafunction.Iterator.class:Spec.Block String
 
 template<typename TValue, size_t SPACE>
 struct Iterator<String<TValue, Block<SPACE> >, Standard>
@@ -376,8 +361,6 @@ resize(String<TValue, Block<SPACE> > & me, TSize2 new_length, Limit)
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Why is this only a dummy implementation?
-///.Function.reserve.param.object.type:Spec.Block String
-///.Function.reserve.class:Spec.Block String
 /*
 template <typename TValue, size_t SPACE, typename TSize, typename TExpand>
 inline typename Size< String<TValue, Block<SPACE> > >::Type
@@ -404,8 +387,6 @@ reserve(String<TValue, Block<SPACE> > & /*me*/, TSize new_capacity, Tag<TExpand>
 // ----------------------------------------------------------------------------
 // Function appendValue()
 // ----------------------------------------------------------------------------
-
-///.Function.appendValue.param.target.type:Spec.Block String
 
 template<typename TTargetValue, size_t SPACE, typename TValue, typename TExpand>
 inline void

@@ -61,20 +61,6 @@ namespace seqan {
  * matching needle and the position in the needle.
  */
 
-/**
-.Class.Pattern:
-..summary:Holds the needle and preprocessing data (depends on algorithm).
-..cat:Searching
-..signature:Pattern<TNeedle[, TSpec]>
-..param.TNeedle:The needle type.
-...type:Class.String
-..param.TSpec:The online-algorithm to search with.
-...remarks:Leave empty for index-based pattern matching (see @Class.Index@).
-...default:The result of @Metafunction.DefaultPattern@
-..remarks:If $TNeedle$ is a set of strings, then $position(pattern)$ returns the index of the currently matching needle.
-..include:seqan/find.h
-*/
-
 template < typename TNeedle, typename TSpec = typename DefaultPattern<TNeedle>::Type >
 class Pattern;
 
@@ -135,8 +121,6 @@ struct Container< Pattern<TNeedle, TSpec> const > {
  * @return Type The host type.
  */
 
-///.Metafunction.Host.param.T.type:Class.Pattern
-///.Metafunction.Host.class:Class.Pattern
 template <typename TNeedle, typename TSpec>
 struct Host< Pattern<TNeedle, TSpec> > {
 	typedef TNeedle Type;
@@ -222,18 +206,6 @@ struct Size< Pattern<TPattern, TSpec> > {
  *
  * @tparam TPattern The Pattern to query for its scoring scheme type.  Default: EditDistanceScore.
  */
-
-/**
-.Metafunction.ScoringScheme:
-..summary:Returns the scoring scheme of an approximate searching algorithm.
-..cat:Searching
-..signature:ScoringScheme<TPattern>::Type
-..param.TPattern:A @Class.Pattern@ type.
-...type:Class.Pattern
-..returns:The scoring scheme.
-...default:@Shortcut.EditDistanceScore@
-..include:seqan/find.h
-*/
 
 template <typename TNeedle>
 struct ScoringScheme
@@ -356,9 +328,6 @@ segment(Pattern<TNeedle, TSpec> const & me)
  * @return THost Reference to the host.
  */
 
-///.Function.host.param.object.type:Class.Pattern
-///.Function.host.class:Class.Pattern
-
 template <typename TNeedle, typename TSpec>
 inline typename Host<Pattern<TNeedle, TSpec> >::Type & 
 host(Pattern<TNeedle, TSpec> & me)
@@ -391,22 +360,6 @@ SEQAN_CHECKPOINT
  * TNeedle is the result of the Needle metafunction of TPattern.  This is an alias to the function @link Pattern#host @endlink.
  */
 
-/**
-.Function.needle:
-..summary:Returns the needle of a @Class.Pattern@ object (not implemented for some online-algorithms).
-..cat:Searching
-..signature:needle(pattern)
-..class:Class.Pattern
-..param.pattern:The @Class.Pattern@ object to search with.
-...type:Class.Pattern
-..returns:The needle object to search for.
-..remarks:The result type is @Metafunction.Needle@$<TPattern>::Type$ for pattern of type $TPattern$.
-This is an alias to function @Function.host@ of the pattern function.
-..see:Function.host
-..include:seqan/find.h
-*/
-///.Function.host.remarks:Aliased to @Function.needle@ and @Function.haystack@ for classes @Class.Pattern@ and @Class.Finder@.
-
 
 template < typename TObject >
 inline typename Needle<TObject>::Type &
@@ -434,9 +387,6 @@ needle(TObject const &obj)
  * @return TPosition The position of the last match in the pattern.
  */
 
-///.Function.position.param.iterator.type:Class.Pattern
-///.Function.position.class:Class.Pattern
-
 template < typename TNeedle, typename TSpec >
 inline typename Needle< Pattern<TNeedle, TSpec> >::Type &
 needle(Pattern<TNeedle, TSpec> & obj) 
@@ -461,19 +411,6 @@ needle(Pattern<TNeedle, TSpec> const & obj)
  * @param[in]     needle  The needle to set.
  */
 
-/**
-.Function.setNeedle:
-..summary:Sets the needle of a @Class.Pattern@ object and optionally induces preprocessing.
-..cat:Searching
-..signature:setNeedle(pattern, needle)
-..class:Class.Pattern
-..param.pattern:The @Class.Pattern@ object to search with.
-...type:Class.Pattern
-..param.needle:The needle object to search for.
-...type:Class.String
-..include:seqan/find.h
-*/
-
 template < typename TNeedle, typename TSpec >
 inline void
 setNeedle(Pattern<TNeedle, TSpec> &obj, TNeedle const &ndl) {
@@ -493,19 +430,6 @@ setNeedle(Pattern<TNeedle, TSpec> &obj, TNeedle const &ndl) {
  *
  * @return TScoringScheme The scoring scheme of the pattern.
  */
-
-/**.Function.scoringScheme
-..cat:Searching
-..summary:The @glos:Scoring Scheme|scoring scheme@ used for finding or aligning.
-..signature:scoringScheme(obj)
-..class:Class.Pattern
-..param.obj:Object that holds a @glos:Scoring Scheme|scoring scheme@
-...type:Class.Pattern
-..returns:The @glos:Scoring Scheme|scoring scheme@ used in $obj$
-...default:@Shortcut.EditDistanceScore@
-..see:glos:Scoring Scheme|scoring scheme
-..see:Metafunction.ScoringScheme
-*/
 
 template <typename TNeedle, typename TSpec>
 inline typename ScoringScheme<Pattern<TNeedle, TSpec> >::Type 
@@ -533,18 +457,6 @@ SEQAN_CHECKPOINT
  * @param[in,out] pattern The pattern to set the scoring scheme for.
  * @param[in]     score   The scoring scheme to set.
  */
-
-/**.Function.setScoringScheme
-..cat:Searching
-..summary:Sets the @glos:Scoring Scheme|scoring scheme@ used for finding or aligning.
-..signature:setScoringScheme(obj, score)
-..class:Class.Pattern
-..param.obj:Object that holds a @glos:Scoring Scheme|scoring scheme@.
-...type:Class.Pattern
-..param.score:The new @glos:Scoring Scheme|scoring scheme@ used by $obj$.
-..see:glos:Scoring Scheme|scoring scheme
-..see:Function.scoringScheme
-*/
 
 template <typename TNeedle, typename TSpec, typename TScore2>
 inline void

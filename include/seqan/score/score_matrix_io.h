@@ -57,11 +57,6 @@ namespace seqan {
 
 // TODO(holtgrew): What format is this actually?
 
-/**
-.Tag.File Format.tag.ScoreMatrixFile:Score matrix file.
-..include:seqan/score.h
-*/
-
 struct TagScoreMatrixFile_;
 typedef Tag<TagScoreMatrixFile_> ScoreMatrixFile;
 
@@ -175,16 +170,6 @@ read(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc,
  * @param[out]    meta     Meta information is stored here, CharString.
  */
 
-/**
-.Function.loadScoreMatrix
-..cat:Input/Output
-..summary:Load a score matrix from a file.
-..signature:loadScoreMatrix(score, filename)
-..param.score:Score matrix object to load into.
-...type:Spec.Score Matrix
-..param.filename:Path to the file to load.
-..include:seqan/score.h
-*/
 template <typename TValue, typename TSequenceValue, typename TSpec>
 inline bool
 loadScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc,
@@ -199,13 +184,6 @@ loadScoreMatrix(Score<TValue, ScoreMatrix<TSequenceValue, TSpec> > & sc,
     return true;
 }
 
-/**
-.Function.loadScoreMatrix
-..signature:loadScoreMatrix(score, filename, meta)
-..param.meta:Meta information read from the file.
-..status:The order of the parameters filename and meta will switch.
-..include:seqan/score.h
-*/
 template <typename TMeta, typename TValue, typename TSequenceValue, typename TSpec>
 inline bool
 loadScoreMatrix(TMeta & meta,
@@ -237,21 +215,6 @@ loadScoreMatrix(TMeta & meta,
  * @param[out]    meta        Meta information is stored here.
  *
  * @return int Status code, 0 on success, a different value on errors.
- */
-
-/**
-.Function.Score Matrix#write
-..summary:Write a score matrix to a stream.
-..cat:Input/Output
-..class:Spec.Score Matrix
-..signature:write(stream, scoreMatrix[, meta])
-..param.stream:A @Concept.StreamConcept@ to write to.
-...type:Concept.StreamConcept
-..param.scoreMatrix:The matrix to write out.
-...type:Spec.Score Matrix
-..param.meta:Optional description.
-...type:Shortcut.CharString
-..include:seqan/score.h
  */
 
 template <typename TTarget, typename TValue, typename TSequenceValue, typename TSpec>
