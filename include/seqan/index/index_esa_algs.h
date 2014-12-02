@@ -44,29 +44,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	//////////////////////////////////////////////////////////////////////////////
 
 
-/**
-.Spec.SuperMaxRepeats Iterator:
-..cat:Index
-..general:Spec.BottomUp Iterator
-..summary:Iterator to search for all supermaximal repeats.
-..signature:Iterator<TContainer, SuperMaxRepeats>::Type
-..signature:Iter<TContainer, VSTree< BottomUp<SuperMaxRepeats> > >
-..param.TContainer:Type of an index that can be iterated with a bottom-up iterator.
-...type:Spec.IndexEsa
-...metafunction:Metafunction.Container
-..include:seqan/index.h
-
-.Memfunc.SuperMaxRepeats Iterator#Iterator
-..class:Spec.SuperMaxRepeats Iterator
-..summary:Constructor
-..signature:Iterator(index[, minLength])
-..signature:Iterator(iterator)
-..param.index:An index object.
-..param.minLength:Minimum length of the supermaximal repeats, default value is 1.
-..param.iterator:Another SuperMaxRepeats iterator. (copy constructor)
-...type:Spec.SuperMaxRepeats Iterator
-*/
-
 /*!
  * @class SuperMaxRepeatsIterator Super Max Repeats Iterator
  * @extends BottomUpIterator
@@ -165,28 +142,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 		
 
-/**
-.Spec.SuperMaxRepeatsFast Iterator:
-..cat:Index
-..general:Spec.BottomUp Iterator
-..summary:Iterator to search for all supermaximal repeats (for enh. suffix arrays only).
-..signature:Iterator<TContainer, SuperMaxRepeatsFast>::Type
-..signature:Iter<TContainer, VSTree< BottomUp<SuperMaxRepeatsFast> > >
-..param.TContainer:Type of an index based on enhanced suffix array.
-...type:Spec.IndexEsa
-...metafunction:Metafunction.Container
-..include:seqan/index.h
-
-.Memfunc.SuperMaxRepeatsFast Iterator#Iterator
-..class:Spec.SuperMaxRepeatsFast Iterator
-..summary:Constructor
-..signature:Iterator(index[, minLength])
-..signature:Iterator(iterator)
-..param.index:An index object.
-..param.minLength:Minimum length of the supermaximal repeats, default value is 1.
-..param.iterator:Another SuperMaxRepeatsFast iterator. (copy constructor)
-...type:Spec.SuperMaxRepeatsFast Iterator
-*/
 /*!
  * @class SuperMaxRepeatsFastIterator Super Max Repeats Fast Iterator
  * @extends BottomUpIterator
@@ -327,28 +282,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 	
-/**
-.Spec.MaxRepeats Iterator:
-..cat:Index
-..general:Spec.BottomUp Iterator
-..summary:Iterator to search for all maximal repeats.
-..signature:Iterator<TContainer, MaxRepeats>::Type
-..signature:Iter<TContainer, VSTree< BottomUp<MaxRepeats> > >
-..param.TContainer:Type of an index that can be iterated with a bottom-up iterator.
-...type:Spec.IndexEsa
-...metafunction:Metafunction.Container
-..include:seqan/index.h
-
-.Memfunc.MaxRepeats Iterator#Iterator
-..class:Spec.MaxRepeats Iterator
-..summary:Constructor
-..signature:Iterator(index[, minLength])
-..signature:Iterator(iterator)
-..param.index:An index object.
-..param.minLength:Minimum length of the maximal repeats, default value is 1.
-..param.iterator:Another MaxRepeats iterator. (copy constructor)
-...type:Spec.MaxRepeats Iterator
-*/
 /*!
  * @class MaxRepeatsIterator Max Repeats Iterator
  * @extends BottomUpIterator
@@ -755,8 +688,6 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
 
-///.Function.length.param.object.type:Spec.MaxRepeats Iterator
-///.Function.length.class:Spec.MaxRepeats Iterator
 	template < typename TSTree, typename TSpec >
 	inline typename Size<TSTree>::Type 
 	length(Iter< TSTree, VSTree< BottomUp<MaxRepeats_<TSpec> > > > const &it) {
@@ -764,8 +695,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 //____________________________________________________________________________
 
-///.Function.begin.param.object.type:Spec.MaxRepeats Iterator
-///.Function.begin.class:Spec.MaxRepeats Iterator
 	template < typename TSTree, class TSpec >
 	inline typename Iterator< Iter< TSTree, VSTree< BottomUp<MaxRepeats_<TSpec> > > > >::Type
 	begin(Iter< TSTree, VSTree< BottomUp<MaxRepeats_<TSpec> > > > &it) 
@@ -775,8 +704,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 //____________________________________________________________________________
 
-///.Function.end.param.object.type:Spec.MaxRepeats Iterator
-///.Function.end.class:Spec.MaxRepeats Iterator
 	template < typename TSTree, class TSpec >
 	inline typename Iterator< Iter< TSTree, VSTree< BottomUp<MaxRepeats_<TSpec> > > > >::Type
 	end(Iter< TSTree, VSTree< BottomUp<MaxRepeats_<TSpec> > > > &it) 

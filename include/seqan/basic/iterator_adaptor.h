@@ -85,30 +85,6 @@ struct AdaptorIterator;
  * @param[in] iterator  The <tt>Standard</tt> iterator to wrap, defaults to beginning of <tt>container</tt>.
  */
 
-/**
-.Spec.Adaptor Iterator:
-..cat:Iterators
-..general:Class.Iter
-..summary:Adapts iterators to @Concept.RootedIteratorConcept@.
-..signature:Iter<TContainer, AdaptorIterator<TIterator [, TSpec]> >
-..param.TContainer:Type of the container that can be iterated by $TIterator$.
-...remarks:Use @Metafunction.Container@ to get the container type for a given iterator.
-..param.TIterator:Type of the iterator that is adapted to @Concept.RootedIteratorConcept@.
-..remarks.text:Adaptor iterators can implicitly converted to $TIterator$.
-..include:seqan/basic.h
-
-.Memfunc.Adaptor Iterator#Iter:
-..class:Spec.Adaptor Iterator
-..summary:Constructor
-..signature:Iter()
-..signature:Iter(iter)
-..signature:Iter(container [, iterator])
-..param.iter:Another adaptor iterator object.
-..param.container:The corresponding container object.
-..param.iterator:A iterator of $container$. (optional)
-...remarks.text:If this argument is omitted, the adaptor iterator is initialized to the @Function.begin.begin iterator@ of $container$.
-*/
-
 template <typename TContainer, typename TIterator, typename TSpec>
 class Iter<TContainer, AdaptorIterator<TIterator, TSpec> >
 {
@@ -321,18 +297,6 @@ container(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
  */
 
 // TODO(holtgrew): Also defined in index module, change documentation?
-/**
-.Function.setContainer
-..class:Spec.Adaptor Iterator
-..summary:Set container of an adaptor iterator.
-..description:After setting the pointer to the container, the position will be set to 0.
-..cat:Dependent Objects
-..signature:setContainer(object, container)
-..param.object:Object to set the container for.
-...type:Spec.Adaptor Iterator
-..param.container:The container to "root" the iterator in.
- */
-
 template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE void
 setContainer(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
@@ -357,17 +321,6 @@ setContainer(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me,
  * @return TIter The wrapped iterator.
  */
 
-/**
-.Function.hostIterator
-..class:Spec.Adaptor Iterator
-..cat:Dependent Objects
-..summary:Return host iterator.
-..signature:hostIterator(object)
-..param.object:Object to return host iterator for.
-...type:Spec.Adaptor Iterator
-..returns:Container of the given object.
- */
-
 template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE TIterator &
 hostIterator(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > & me)
@@ -387,8 +340,6 @@ hostIterator(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me)
 // ----------------------------------------------------------------------------
 // Function position()
 // ----------------------------------------------------------------------------
-
-///.Function.position.param.iter.type:Spec.Adaptor Iterator
 
 template <typename TContainer, typename TIterator, typename TSpec>
 inline SEQAN_HOST_DEVICE typename Position<Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const>::Type
@@ -419,15 +370,6 @@ position(Iter<TContainer, AdaptorIterator<TIterator, TSpec> > const & me,
  *
  * @param[in,out] iter The AdaptorIterator to set the position for.
  * @param[in]     pos  The position to set.
- */
-
-/**
-.Function.setPosition
-..class:Spec.Adaptor Iterator
-..cat:Dependent Objects
-..signature:setPosition(iterator, pos)
-..param.iterator:The iterator to set the position of.
-...type:Spec.Adaptor Iterator
  */
 
 template <typename TContainer, typename TIterator, typename TSpec, typename TPosition>

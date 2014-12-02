@@ -53,19 +53,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see PoolConfig
  */ 
 
-/**
-.Spec.PoolConfigSize:
-..cat:Pipelining
-..general:Spec.PoolSpec
-..summary:Configuration of Pool.
-..signature:PoolConfig<TSize, TFile>
-..param.TSize:The Pool's size type.
-..param.TFile:The underlying @Class.File@ type.
-...default:$File<>$, see @Class.File@.
-..see:Spec.PoolConfig
-..include:seqan/pipe.h
-*/
-
 	template < typename TSize,
 		       typename TFile = File<> >						// default file type
     struct PoolConfigSize {
@@ -90,19 +77,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see PoolConfigSize
  */
 
-/**
-.Spec.PoolConfig:
-..cat:Pipelining
-..general:Spec.PoolSpec
-..summary:Configuration of Pool.
-..signature:PoolConfig<TFile>
-..param.TFile:The underlying @Class.File@ type.
-...default:$File<>$, see @Class.File@.
-..remarks:Using this configuration spec., the Pool's size type is $Size<TFile>::Type$. To use a custom size type @Spec.PoolConfigSize@ should be used.
-..see:Spec.PoolConfigSize
-..include:seqan/pipe.h
-*/
-
 	template < typename TFile = File<> >						// default file type
     struct PoolConfig {
 		typedef typename Size<TFile>::Type SizeType;
@@ -125,20 +99,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The Pool's input/output type is <tt>TValue</tt> and the size type is determined by the <tt>TConfig</tt>.
  */
 
-/**
-.Spec.PoolSpec:
-..cat:Pipelining
-..general:Class.Pool
-..summary:Stores/Retrieves all elements to/from disk.
-..signature:Pool<TValue, PoolSpec<TConfig> >
-..param.TValue:The value type, that is the type of the stream elements.
-..param.TConfig:Configuration Spec. Defines destination function, size type, and file type.
-...type:Spec.PoolConfig
-...type:Spec.PoolConfigSize
-..remarks:The Pool's input/output type is $TValue$ and the size type is determined by the $TConfig$.
-..include:seqan/pipe.h
-*/
-
     template < typename TConfig = PoolConfig<> >
     struct PoolSpec {
         typedef TConfig Config;
@@ -159,19 +119,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * Use Size to get the size type of a given Pipe (returns <tt>Size&lt;TInput&gt;::Type</tt> by default).
  */
-
-/**
-.Class.Pool:
-..cat:Pipelining
-..summary:Pools are push- and pop-passive pipeline modules.
-..signature:Pool<TValue, TSpec>
-..param.TValue:The value type, that is the type of the stream elements.
-..param.TSpec:The specializing type.
-...default:PoolSpec<>, see @Spec.PoolSpec@.
-..remarks:Use @Metafunction.Value@ to get the output type of a given Pipe (returns $Value<TInput>::Type$ by default).
-..remarks:Use @Metafunction.Size@ to get the size type of a given Pipe (returns $Size<TInput>::Type$ by default).
-..include:seqan/pipe.h
-*/
 
     template < typename TValue,
                typename TSpec = PoolSpec<> >
@@ -1111,9 +1058,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @param[in,out] pool Pool to clear.
  */
-///.Function.clear.param.object.type:Class.Pool
-///.Function.clear.class:Class.Pool
-
     template < typename TValue, typename TSpec >
     inline void clear(Pool<TValue, TSpec> &me)
     {
@@ -1140,9 +1084,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return    TSize The number of elements in the pool.
  */
 
-///.Function.length.param.object.type:Class.Pool
-///.Function.length.class:Class.Pool
-
 	template < typename TValue, typename TSpec >
     inline typename Size< Pool<TValue, TSpec> >::Type
     length(Pool<TValue, TSpec> const &me)
@@ -1159,9 +1100,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in,out] pool Pool to resize.
  * @param[in]     len  Length to resize <tt>pool</tt> to.
  */
-
-///.Function.resize.param.object.type:Class.Pool
-///.Function.resize.class:Class.Pool
 
 	template < typename TValue, typename TSpec, typename TSize >
     inline TSize resize(Pool<TValue, TSpec> &me, TSize new_length)
@@ -1180,9 +1118,6 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @return TReference A reference to the first element of <tt>seq</tt>.
  */
-
-///.Function.Pipe#front.param.object.type:Class.Pool
-///.Function.Pipe#front.class:Class.Pool
 
     template < typename TValue, typename TSpec >
 	inline typename Value< Pool<TValue, TSpec> >::Type const & front(Pool<TValue, TSpec> &me) {
@@ -1203,9 +1138,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * Pool#front or Pool#pop can only be called within a read process surrounded by beginRead and endRead.
  */
-///.Function.pop.param.object.type:Class.Pool
-///.Function.pop.class:Class.Pool
-
     template < typename TValue, typename TSpec >
     inline void pop(Pool<TValue, TSpec> &me) {
         me.pop();
@@ -1227,19 +1159,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * The function <tt>push</tt> can only be called within a write process surrounded by beginWrite and endWrite.
  */
-
-/**
-.Function.push:
-..class:Class.Pool
-..cat:Pipelining
-..summary:Appends an item at the end of an input stream.
-..signature:push(object, val)
-..param.object:A push-passive pipeline module.
-...type:Class.Pool
-..param.val:Item to be pushed.
-..remarks:@Function.push@ can only be called within a write process surrounded by @Function.beginWrite@ and @Function.endWrite@.
-..include:seqan/pipe.h
-*/
 
     template < typename TValue, typename TSpec >
     inline void push(Pool<TValue, TSpec> &me, TValue const &Val_) {
@@ -1317,21 +1236,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see Pool#endWrite
 */
 
-/**
-.Function.beginWrite
-..class:Class.Pool
-..cat:Pipelining
-..summary:Initiates a write process.
-..signature:beginWrite(object)
-..param.object:A push-passive pipeline module.
-...type:Class.Pool
-..returns:A $bool$ which is $true$ on success.
-..remarks:$beginWrite$ prepares a @Class.Pool@ for succeeding writes.
-..remarks:A write process must be terminated with @Function.endWrite@. Nested write processes are not allowed.
-..see:Function.endWrite
-..include:seqan/pipe.h
-*/
-
 		template < typename TValue, typename TSpec >
 	    inline bool beginWrite(Pool< TValue, TSpec > &me) {
 SEQAN_CHECKPOINT
@@ -1353,27 +1257,11 @@ SEQAN_CHECKPOINT
  * @see Pool#beginWrite
  */
 
-/**
-.Function.endWrite:
-..class:Class.Pool
-..cat:Pipelining
-..summary:Terminates a write process.
-..signature:endWrite(object)
-..param.object:A push-passive pipeline module.
-...type:Class.Pool
-..returns:A $bool$ which is $true$ on success.
-..remarks:$endWrite$ closes the input stream and frees resources possibly allocated by @Function.beginWrite@.
-..see:Function.beginWrite
-..include:seqan/pipe.h
-*/
-
 		template < typename TValue, typename TSpec >
 	    inline bool endWrite(Pool< TValue, TSpec > &me) {
 		    return me.endWrite();
         }
 
-///.Function.atEnd.param.iterator.type:Class.Pool
-///.Function.atEnd.class:Class.Pool
 /*!
  * @fn Pool#atEnd
  * @brief Check whether the @link Pool @endlink object is at end.
@@ -1474,9 +1362,6 @@ SEQAN_CHECKPOINT
  *
  * Assign value of source to target.
  */
-///.Function.assign.param.target.type:Class.Pool
-///.Function.assign.class:Class.Pool
-
     template < typename TValue,
                typename TSpec,
                typename TSource >
@@ -1494,9 +1379,6 @@ SEQAN_CHECKPOINT
     }
 
 
-
-///.Function.assign.param.source.type:Class.Pool
-///.Function.assign.class:Class.Pool
 
     // pool -> string
     template < typename TValue1,

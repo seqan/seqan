@@ -60,15 +60,6 @@ namespace seqan {
  * @brief Identify the SAM format.
  */
 
-/**
-.Tag.Bam
-..cat:BAM I/O
-..signature:Bam
-..summary:Tag for identifying the BAM format.
-..include:seqan/bam_io.h
-..see:Tag.Sam
-*/
-
 struct Bam_;
 typedef Tag<Bam_> Bam;
 
@@ -121,22 +112,6 @@ unsigned char const MagicHeader<Bam, T>::VALUE[4] = { 'B', 'A', 'M', '\1' };  //
  *
  * @return int A status code, 0 on success, != 0 on failure.
  */
-
-/**
-.Function.readRecord
-..signature:readRecord(headerRecord, context, stream, tag)
-..param.header:@Class.BamHeader@ to read information into.
-...type:Class.BamHeader
-..param.context:The context to use for reading.
-...type:Class.BamIOContext
-..param.stream:The stream to read from (for BAM).
-...remarks:BAM data can be read from any stream. For the proper decompression (from compressed BAM, the default) use @Spec.BGZF Stream@.
-...type:Concept.StreamConcept
-..param.tag:Format to read @Class.BamHeader@ from.
-...type:Tag.Sam
-...type:Tag.Bam
-..include:seqan/bam_io.h
-*/
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
@@ -204,12 +179,6 @@ readRecord(BamHeader & header,
 // ----------------------------------------------------------------------------
 // Function readRecord()                                     BamAlignmentRecord
 // ----------------------------------------------------------------------------
-
-/**
-.Function.readRecord
-..signature:readRecord(alignmentRecord, context, stream, tag)
-..param.alignmentRecord.type:Class.BamAlignmentRecord
-*/
 
 template <typename TBuffer, typename TForwardIter>
 inline __int32

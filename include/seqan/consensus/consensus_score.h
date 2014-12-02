@@ -109,19 +109,6 @@ public:
  * This is used for unified interfaces for position dependent and independetn scores.
  */
 
-/**
-.Class.ConsensusScoreSequenceEntry
-..cat:Alignments
-..signature:ConsensusScoreSequenceEntry<TSequence>
-..summary:Wrapper for a pointer to a sequence and a position in this sequence.
-..description:This is used for unified interfaces for position dependent and independent scores.
-..param.TSequence:The underlying sequence of the alignments or gaps.
-...type:Concept.ContainerConcept
-..see:Metafunction.Score#SequenceEntryForScore
-..see:Function.Score#sequenceEntryForScore
-..include:seqan/consensus.h
-*/
-
 template <typename TSequence>
 class ConsensusScoreSequenceEntry
 {
@@ -150,18 +137,6 @@ public:
  * @return TSequence A reference to the underlying sequence.
  */
 
-/**
-.Function.ConsensusScoreSequenceEntry#host
-..cat:Alignments
-..class:Class.ConsensusScoreSequenceEntry
-..signature:TSequence host(entry)
-..summary:Returns reference to sequence from entry.
-..param.entry:The entry to query.
-...type:Class.ConsensusScoreSequenceEntry
-..return:Reference to the underying sequence, is of type $TSequence const &$.
-..include:seqan/consensus.h
-*/
-
 template <typename TSequence>
 inline TSequence const &
 host(ConsensusScoreSequenceEntry<TSequence> & entry)
@@ -188,17 +163,6 @@ host(ConsensusScoreSequenceEntry<TSequence> const & entry)
  *                   <tt>ConsensusScoreSequenceEntry&lt;TSequence&gt;::TPosition</tt>.
  */
 
-/**
-.Function.ConsensusScoreSequenceEntry#position
-..cat:Alignments
-..class:Class.ConsensusScoreSequenceEntry
-..signature:TPosition position(entry)
-..summary:Returns position stored in $entry$.
-..param.entry:The entry to query.
-...type:Class.ConsensusScoreSequenceEntry
-..return:The position of the score, has type $Position<TSequence>::Type$ where $TSequence$ is the parameter from type type of $entry$.
-..include:seqan/consensus.h
-*/
 template <typename TSequence>
 inline typename ConsensusScoreSequenceEntry<TSequence>::TPosition
 position(ConsensusScoreSequenceEntry<TSequence> const & entry)
@@ -217,17 +181,6 @@ position(ConsensusScoreSequenceEntry<TSequence> const & entry)
  * @return TValue The value of the sequence at the current position.
  */
 
-/**
-.Function.ConsensusScoreSequenceEntry#value
-..cat:Alignments
-..class:Class.ConsensusScoreSequenceEntry
-..signature:TPosition value(entry)
-..summary:Returns value of character referenced by $entry$.
-..param.entry:The entry to query.
-...type:Class.ConsensusScoreSequenceEntry
-..return:The value, of type $Value<TSequence>::Type$.
-..include:seqan/consensus.h
-*/
 template <typename TSequence>
 inline typename Value<TSequence>::Type
 value(ConsensusScoreSequenceEntry<TSequence> & entry)

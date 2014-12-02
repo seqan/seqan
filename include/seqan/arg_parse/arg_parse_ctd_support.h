@@ -112,11 +112,6 @@ TSequence _toText(TSequence const & input)
 // Function _join()
 // ----------------------------------------------------------------------------
 
-/**
- * joins all elements of the the passed StringSet into a single CharString
- * the provided delimiter is used to separate the single entries in the
- * resulting CharString
- */
 template <typename TValue>
 inline std::string
 _join(std::vector<TValue> const & v, std::string const & delimiter)
@@ -304,19 +299,6 @@ inline std::string _getManual(ArgumentParser const & me)
  *
  * @return bool <tt>true</tt> on success, <tt>false</tt> on failure.
  */
-
-/**
-.Function.writeCTD
-..summary:Exports the app's interface description to a .ctd file.
-..cat:Miscellaneous
-..signature:writeCTD(parser [, ctdfile])
-..param.parser:The @Class.ArgumentParser@ object.
-...type:Class.ArgumentParser
-..param.ctdfile:The stream where the ctd file will be written to. If non is given the function writes it to the file given in the write-ctd parameter.
-..param.parser:The @Class.ArgumentParser@ object.
-..returns:$true$ if the ctd file could be created correctly, $false$ otherwise.
-..include:seqan/arg_parse.h
-*/
 
 inline bool
 writeCTD(ArgumentParser const & me, std::ostream & ctdfile)

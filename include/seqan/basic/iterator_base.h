@@ -62,19 +62,6 @@ namespace seqan {
  * @tparam TSpec      Type to use for specializing the <tt>Iter</tt> class.
  */
 
-/**
-.Class.Iter:
-..cat:Basic
-..summary:Iterator that is used to traverse containers.
-..signature:Iter<TContainer, TSpec>
-..param.TContainer:Type of the container that can be iterated by $Iter$.
-...metafunction:Metafunction.Container
-..param.TSpec:The specializing type.
-...metafunction:Metafunction.Spec
-..implements:Concept.IteratorAssociatedTypesConcept
-..include:seqan/basic.h
-*/
-
 template <typename TContainer, typename TSpec>
 class Iter;
 
@@ -97,15 +84,6 @@ class Iter;
  * @return Type The type of the iterator that is the same as <tt>TIter</tt> except that the const-ness of the
  *              container is complemented.
  */
-
-/**
-.Metafunction.IterComplementConst:
-..cat:Basic
-..summary:Complement the "constness" of the container of an iterator.
-..signature:IterComplementConst<TIterator>
-..param.TIterator:The iterator to toggle the constness of its container for.
-..include:seqan/basic.h
-*/
 
 template <typename TIterator>
 struct IterComplementConst;
@@ -140,15 +118,6 @@ struct IterComplementConst<Iter<TContainer, TSpec> const>
  * @return Type The resulting Iter type with a const container.
  */
 
-/**
-.Metafunction.IterMakeConst:
-..cat:Basic
-..summary:Make the container of an Iter const.
-..signature:IterMakeConst<TIterator>
-..param.TIterator:The iterator make the container const for.
-..include:seqan/basic.h
-*/
-
 template <typename TIterator>
 struct IterMakeConst;
 
@@ -177,9 +146,6 @@ struct IterMakeConst<Iter<TContainer, TSpec> const>
  * @return Type The specialization tag used for the <tt>Iter</tt>.
  */
 
-///.Metafunction.Spec.param.T.type:Class.Iter
-///.Metafunction.Spec.class:Class.Iter
-
 template <typename TContainer, typename TSpec>
 struct Spec<Iter<TContainer, TSpec> >
 {
@@ -195,9 +161,6 @@ struct Spec<Iter<TContainer, TSpec> const>
 // ----------------------------------------------------------------------------
 // Metafunction Value
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Value.param.T.type:Class.Iter
-///.Metafunction.Value.class:Class.Iter
 
 template <typename TContainer, typename TSpec>
 struct Value<Iter<TContainer, TSpec> >:
@@ -215,9 +178,6 @@ struct Value<Iter<TContainer, TSpec> const>:
 // Metafunction GetValue
 // ----------------------------------------------------------------------------
 
-///.Metafunction.GetValue.param.T.type:Class.Iter
-///.Metafunction.GetValue.class:Class.Iter
-
 template <typename TContainer, typename TSpec>
 struct GetValue<Iter<TContainer, TSpec> >:
     GetValue<TContainer>
@@ -233,9 +193,6 @@ struct GetValue<Iter<TContainer, TSpec> const>:
 // ----------------------------------------------------------------------------
 // Metafunction Reference
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Reference.param.T.type:Class.Iter
-///.Metafunction.Reference.class:Class.Iter
 
 template <typename TContainer, typename TSpec>
 struct Reference<Iter<TContainer, TSpec> >:
@@ -263,9 +220,6 @@ struct Reference<Iter<TContainer, TSpec> const>:
  *
  * @return Type The container type of <tt>TIter</tt>
  */
-
-///.Metafunction.Container.param.T.type:Class.Iter
-///.Metafunction.Container.class:Class.Iter
 
 template <typename T> struct Container;
 

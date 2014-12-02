@@ -125,15 +125,6 @@ _parseSkipSpace(TFile& file, TChar& c)
 }
 
 
-/**
-.Internal._parseSkipUntilChar:
-..summary:Skip to the next ocurrence of x in file.
-..cat:Miscenalleous
-..signature:_parseSkipUntilChar(file, x, c)
-..param.file:The file to read from.
-..param.x:The character to skip to.
-..param.c:Parser state character.
- */
 template<typename TFile, typename TChar>
 inline void 
 _parseSkipUntilChar(TFile& file, const TChar &x, TChar& c)

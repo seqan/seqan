@@ -62,17 +62,6 @@ namespace seqan {
  * @return Type A type that can store the values of <tt>T</tt> and the value <tt>'-'</tt>.
  */
 
-/**
-.Metafunction.GappedValueType:
-..cat:Alignments
-..summary:Returns a value type that contains a blank value '-'.
-..signature:GappedValueType<T>::Type
-..param.T:The value type that should be expanded (if needed) by '-'.
-..returns.param.Type:A value type that can be used to store store values in $T$ and the value '-'.
-..remarks:The default implementation returns $T$.
-..include:seqan/align.h
-*/
-
 // TODO(holtgrew): Would it be enough to define it for Nothing instead of having a default implementation.
 
 // We need a default implementation since we need it for Nothing.

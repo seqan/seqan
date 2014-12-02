@@ -55,17 +55,6 @@ namespace seqan {
 // Metafunction Cols
 // ----------------------------------------------------------------------------
 
-/**
-.Metafunction.Cols:
-..cat:Alignments
-..summary:Type of column container of an alignment.
-..signature:Cols<T>::Type
-..param.T:An alignment type.
-...type:Class.Align
-..returns.param.Type:The type of the container that allows access to the columns of $T$.
-..include:seqan/align.h
-*/
-
 template <typename T>
 struct Cols;
 
@@ -85,20 +74,6 @@ struct Cols;
  * @return Type   The resulting type.
  */
 
-/**
-.Metafunction.Col:
-..cat:Alignments
-..summary:Type of a column in an alignment.
-..signature:Col<T>::Type
-..param.T:An alignment type.
-...type:Class.Align
-..returns.param.Type:The column type of $T$.
-..remarks:The returned type is equivalent to $Value<Cols<T>::Type>::Type$.
-..see:Metafunction.Cols
-..see:Metafunction.Value
-..include:seqan/align.h
-*/
-
 template <typename T>
 struct Col : Value<typename Cols<T>::Type>
 {};
@@ -107,38 +82,12 @@ struct Col : Value<typename Cols<T>::Type>
 // Metafunction Rows
 // ----------------------------------------------------------------------------
 
-/**
-.Metafunction.Rows:
-..cat:Alignments
-..summary:Type of row container of an alignment.
-..signature:Rows<T>::Type
-..param.T:An alignment type.
-...type:Class.Align
-..returns.param.Type:The type of the container that allows access to the rows of $T$.
-..see:Metafunction.Cols
-..include:seqan/align.h
-*/
-
 template <typename T>
 struct Rows;
 
 // ----------------------------------------------------------------------------
 // Metafunction Row
 // ----------------------------------------------------------------------------
-
-/**
-.Metafunction.Row:
-..cat:Alignments
-..summary:Type of a row in an alignment.
-..signature:Row<T>::Type
-..param.T:An alignment type.
-...type:Class.Align
-..returns.param.Type:The row type of $T$.
-..remarks:The returned type is equivalent to $Value<Rows<T>::Type>::Type$.
-..see:Metafunction.Rows
-..see:Metafunction.Value
-..include:seqan/align.h
-*/
 
 template <typename T>
 struct Row : Value<typename Rows<T>::Type>
@@ -154,18 +103,6 @@ struct Row<T const>
 // Metafunction StringSetType
 // ----------------------------------------------------------------------------
 
-/**
-.Metafunction.StringSetType:
-..cat:Alignments
-..summary:Return type of @Function.stringSet@ function.
-..signature:StringSetType<T>::Type
-..param.T:Alignment data structure.
-..param.T.type:Spec.Alignment Graph
-..param.T.type:Class.Align
-..returns.param.Type:A @Class.StringSet.string set@ type of a reference to a string set type.
-..see:Function.stringSet
-..include:seqan/align.h
-*/
 template <typename T>
 struct StringSetType;
 

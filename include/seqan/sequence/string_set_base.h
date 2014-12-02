@@ -81,27 +81,6 @@ struct Owner {};
  * @include demos/sequence/stringset.cpp.stdout
  */
 
-/**
-.Class.StringSet:
-..cat:Sequences
-..summary:A container class for a set of strings.
-..signature:StringSet<TString, TSpec>
-..param.TString:The string type.
-...type:Class.String
-..param.TSpec:The specializing type for the StringSet.
-...metafunction:Metafunction.Spec
-...default:$Owner<Generous>$.
-..example.file:demos/sequence/stringset.cpp
-..example.text:The output is as follows:
-..example.output:
-Number of elements: 1
-Number of elements: 3
-Element 0: Hello World!
-Element 1: To be or not to be!
-Element 2: A man, a plan, a canal - Panama!
-Number of elements: 0
-..include:sequence.h
- */
 template <typename TString, typename TSpec = Owner<> >
 class StringSet;
 
@@ -130,18 +109,6 @@ struct StringSpec<StringSet<TString, TSpec> > : StringSpec<TString> {};
  *
  * @return Type The resulting concatenator type.
  */
-
-/**
-.Metafunction.Concatenator:
-..class:Class.StringSet
-..summary:Returns the type of the concatenation sequence of all sequences in a @Class.StringSet@.
-..cat:Sequences
-..signature:Concatenator<TStringSet>::Type
-..param.TStringSet:The @Class.StringSet@ type.
-...type:Class.StringSet
-..returns:The type of a container that can be iterated like the concatenation string of all sequences in a @Class.StringSet@.
-..include:seqan/sequence.h
-*/
 
 // TODO(holtgrew): Why is this specialized for all types?
 template <typename TObject>
@@ -414,22 +381,6 @@ SEQAN_CONCEPT_IMPL((StringSet<TString, TSpec> const), (ContainerConcept));  // r
 // Function stringSetLimits()
 // --------------------------------------------------------------------------
 
-/**
-.Function.stringSetLimits:
-..cat:Sequences
-..class:Class.String
-..class:Class.StringSet
-..summary:Retrieves a string of delimiter positions of a @Class.StringSet@ which is needed for local<->global position conversions.
-..signature:stringSetLimits(me)
-..param.me:A string or string set.
-...type:Class.String
-...type:Class.StringSet
-..returns:A reference to a string.
-...remarks:If $me$ is a @Class.StringSet@ then the returned string is of size $length(me)+1$ and contains the ascending (virtual) delimiter positions of the concatenation of all strings in the string set.
-...remarks:If $me$ is a @Class.String@, @Tag.Nothing@ is returned.
-..include:seqan/sequence.h
-*/
-
 // TODO(holtgrew): Default implementation necessary?!
 template <typename TStringSet>
 inline typename StringSetLimits<TStringSet>::Type
@@ -459,21 +410,6 @@ stringSetLimits(StringSet<TString, TSpec> const & stringSet)
 // --------------------------------------------------------------------------
 // Function getSeqNo()
 // --------------------------------------------------------------------------
-
-/**
-.Function.getSeqNo:
-..cat:Sequences
-..summary:Returns the sequence number of a position.
-..signature:getSeqNo(pos[, limits])
-..param.pos:A position.
-...type:Class.Pair
-..param.limits:The limits string returned by @Function.stringSetLimits@.
-..returns:A single integer value that identifies the string within the stringset $pos$ points at.
-...remarks:If $limits$ is omitted or @Tag.Nothing@ $getSeqNo$ returns 0.
-...remarks:If $pos$ is a local position (of class @Class.Pair@) then $i1$ is returned.
-...remarks:If $pos$ is a global position (integer type and $limits$ is a @Class.String@) then $pos$ is converted to a local position and $i1$ is returned.
-..include:seqan/sequence.h
-*/
 
 // TODO(holtgrew): Auto-sequences should go away!
 template <typename TPosition>
@@ -519,21 +455,6 @@ inline TPos getSeqNo(TPos const & pos, TLimitsString const & limits)
 // --------------------------------------------------------------------------
 // Function getSeqOffset()
 // --------------------------------------------------------------------------
-
-/**
-.Function.getSeqOffset:
-..cat:Sequences
-..summary:Returns the local sequence offset of a position.
-..signature:getSeqOffset(pos[, limits])
-..param.pos:A position.
-...type:Class.Pair
-..param.limits:The limits string returned by @Function.stringSetLimits@.
-..returns:A single integer value that identifies the position within the string $pos$ points at.
-...remarks:If $limits$ is omitted or @Tag.Nothing@ $getSeqNo$ returns $pos$.
-...remarks:If $pos$ is a local position (of class @Class.Pair@) then $i2$ is returned.
-...remarks:If $pos$ is a global position (integer type and $limits$ is a @Class.String@) then $pos$ is converted to a local position and $i2$ is returned.
-..include:seqan/sequence.h
-*/
 
 // TODO(holtgrew): Auto-sequences should go away!
 template <typename TPosition>
@@ -597,20 +518,6 @@ setSeqOffset(Pair<T1, T2, TPack> & pos, TSeqOffset seqOffset)
 // Function posGlobalize()
 // --------------------------------------------------------------------------
 
-/**
-.Function.posGlobalize:
-..cat:Sequences
-..summary:Converts a local/global to a global position.
-..signature:posGlobalize(pos, limits)
-..param.pos:A local or global position (pair or integer value).
-...type:Class.Pair
-..param.limits:The limits string returned by @Function.stringSetLimits@.
-..returns:The corresponding global position of $pos$.
-...remarks:If $pos$ is an integral type $pos$ is returned.
-...remarks:If not, $limits[getSeqNo(pos, limits)] + getSeqOffset(pos, limits)$ is returned.
-..include:seqan/sequence.h
-*/
-
 // any_position and no limits_string -> any_position
 template <typename TPosition>
 inline TPosition posGlobalize(TPosition const & pos, Nothing const &)
@@ -644,19 +551,6 @@ posGlobalize(Pair<T1, T2, TPack> const & pos, TLimitsString const & limits)
 // Function posLocalToX()
 // --------------------------------------------------------------------------
 
-/**
-.Function.posLocalToX:
-..cat:Sequences
-..summary:Converts a local to a local/global position.
-..signature:posLocalToX(dst, localPos, limits)
-..param.dst:Destination value. A local or global position (pair or integer value).
-...type:Class.Pair
-..param.localPos:A local position (pair).
-...type:Class.Pair
-..param.limits:The limits string returned by @Function.stringSetLimits@.
-..include:seqan/sequence.h
-*/
-
 template <typename TDest, typename TLimitsString, typename T1, typename T2, typename TPack>
 inline void
 posLocalToX(TDest & dst, Pair<T1, T2, TPack> const & localPos, TLimitsString const & limits)
@@ -674,21 +568,6 @@ posLocalToX(Pair<TD1, TD2, TDPack> & dst, Pair<T1, T2, TPack> const & localPos, 
 // --------------------------------------------------------------------------
 // Function posLocalize()
 // --------------------------------------------------------------------------
-
-/**
-.Function.posLocalize:
-..cat:Sequences
-..summary:Converts a local/global to a local position.
-..signature:posLocalize(result, pos, limits)
-..param.pos:A local or global position (pair or integer value).
-...type:Class.Pair
-..param.limits:The limits string returned by @Function.stringSetLimits@.
-..param.result:Reference to the resulting corresponding local position of $pos$.
-...remarks:If $pos$ is an integral type and $limits$ is omitted or @Tag.Nothing@, $pos$ is returned.
-...remarks:If $pos$ is a local position (of class @Class.Pair@) then $pos$ is returned.
-...remarks:If $pos$ is a global position (integer type and $limits$ is a @Class.String@) then $pos$ is converted to a local position.
-..include:seqan/sequence.h
-*/
 
 // any_position and no limits_string -> any_position
 template <typename TResult, typename TPosition>
@@ -722,9 +601,6 @@ inline void posLocalize(TResult & result, Pair<T1, T2, TPack> const & pos, Strin
 // Function prefix()
 // --------------------------------------------------------------------------
 
-///.Function.prefix.param.host.type:Class.StringSet
-///.Function.prefix.class:Class.StringSet
-
 template < typename TString, typename TSpec, typename TPosition >
 inline typename Prefix<TString>::Type
 prefix(StringSet< TString, TSpec > & me, TPosition const & pos)
@@ -756,9 +632,6 @@ prefix(StringSet< TString, TSpec > const & me, TPosition const & pos)
 // --------------------------------------------------------------------------
 // Function suffix()
 // --------------------------------------------------------------------------
-
-///.Function.suffix.param.host.type:Class.StringSet
-///.Function.suffix.class:Class.StringSet
 
 template < typename TString, typename TSpec, typename TPosition >
 inline typename Suffix<TString>::Type
@@ -792,9 +665,6 @@ suffix(StringSet< TString, TSpec > const & me, TPosition const & pos)
 // Function infixWithLength()
 // --------------------------------------------------------------------------
 
-///.Function.infixWithLength.param.host.type:Class.StringSet
-///.Function.infixWithLength.class:Class.StringSet
-
 template < typename TString, typename TSpec, typename TPosition, typename TSize >
 inline typename Infix<TString>::Type
 infixWithLength(StringSet< TString, TSpec > & me, TPosition const & pos, TSize length)
@@ -826,9 +696,6 @@ infixWithLength(StringSet< TString, TSpec > const & me, TPosition const & pos, T
 // --------------------------------------------------------------------------
 // Function infix()
 // --------------------------------------------------------------------------
-
-///.Function.infix.param.host.type:Class.StringSet
-///.Function.infix.class:Class.StringSet
 
 template < typename TString, typename TSpec, typename TPosBegin, typename TPosEnd >
 inline typename Infix<TString>::Type
@@ -915,19 +782,6 @@ inline bool posAtEnd(TPos pos, TSequence const & seq) {
  * @see PositionCalculation#posAdd
  */
 
-/**
-.Function.posPrev
-..cat:Sequences
-..summary:Returns a position where the local offset is decreased by one.
-..signature:posPrev(pos)
-..param.pos:A position type. Could either be an integer $seqOfs$ or a pair $(seqNo, seqOfs)$.
-..returns:Returns a value of the same type as $pos$ where $seqOfs$ is decreased by one.
-..see:Function.posNext
-..see:Function.posInc
-..see:Function.posAdd
-..include:seqan/sequence.h
-*/
-
 template <typename TPos>
 inline TPos posPrev(TPos pos) {
     return pos - 1;
@@ -956,17 +810,6 @@ inline Pair<T1, T2, TPack> posPrev(Pair<T1, T2, TPack> const & pos) {
  * @see PositionCalculation#posPrev
  * @see PositionCalculation#posAdd
  */
-
-/**
-.Function.posInc
-..cat:Sequences
-..summary:Increments the local offset of a position type.
-..signature:posInc(pos)
-..param.pos:A position type. Could either be an integer $seqOfs$ or a pair $(seqNo, seqOfs)$. In both cases $seqOfs$ will be incremented by one.
-..see:Function.posNext
-..see:Function.posAdd
-..include:seqan/sequence.h
-*/
 
 template <typename TPos>
 inline void posInc(TPos &pos) {
@@ -1008,19 +851,6 @@ inline void posInc(Pair<T1, T2, TPack> & pos, TDelta delta) {
  * @see PositionCalculation#posAdd
  */
 
-/**
-.Function.posNext
-..cat:Sequences
-..summary:Returns a position where the local offset is increased by one.
-..signature:posNext(pos)
-..param.pos:A position type. Could either be an integer $seqOfs$ or a pair $(seqNo, seqOfs)$.
-..returns:Returns a value of the same type as $pos$ where $seqOfs$ is increased by one.
-..see:Function.posPrev
-..see:Function.posInc
-..see:Function.posAdd
-..include:seqan/sequence.h
-*/
-
 template <typename TPos>
 inline TPos posNext(TPos pos) {
     return pos + 1;
@@ -1053,20 +883,6 @@ posNext(Pair<T1, T2, TPack> const & pos) {
  * @see PositionCalculation#posNext
  */
 
-/**
-.Function.posAdd
-..cat:Sequences
-..summary:Returns a position where the local offset is increased by a value $delta$.
-..signature:posAdd(pos, delta)
-..param.pos:A position type. Could either be an integer $seqOfs$ or a pair $(seqNo, seqOfs)$.
-..param.delta:Increase the local offset of $pos$ by this value.
-..returns:Returns a value of the same type as $pos$ where $seqOfs$ is increased by $delta$.
-..see:Function.posAddAndCheck
-..see:Function.posInc
-..see:Function.posNext
-..include:seqan/sequence.h
-*/
-
 template <typename TPos, typename TDelta>
 SEQAN_HOST_DEVICE inline TPos posAdd(TPos pos, TDelta delta) {
     return pos + delta;
@@ -1097,21 +913,6 @@ posAdd(Pair<T1, T2, TPack> const & pos, TDelta delta) {
  * @see PositionCalculation#posAdd
  * @see PositionCalculation#posInc
  */
-
-/**
-.Function.posAddAndCheck
-..cat:Sequences
-..summary:Increases the local offset of a position by a value $delta$ and check for overflow.
-..signature:posAddAndCheck(pos, delta, text)
-..param.pos:A position type. Could either be an integer $seqOfs$ or a pair $(seqNo, seqOfs)$.
-..param.delta:Increase the local offset of $pos$ by this value.
-..param.text:Single sequence or @Class.StringSet@.
-..returns:Returns a $bool$ which is $true$ if the position is still valid, i.e. 
-if it doesn't exceed the end of the referred sequence in the text.
-..see:Function.posAdd
-..see:Function.posInc
-..include:seqan/sequence.h
-*/
 
 template <typename TPos, typename TDelta, typename TSequence>
 inline bool posAddAndCheck(TPos & pos, TDelta delta, TSequence const & sequence) {
@@ -1162,20 +963,6 @@ posAddAndCheck(Pair<T1, T2, TPack> & pos, TDelta delta, StringSet<TSequence, TSp
  * @see PositionCalculation#posInc
  * @see PositionCalculation#posNext
  */
-
-/**
-.Function.posSub
-..cat:Sequences
-..summary:Returns a position where the local offset is decreased by a value $delta$.
-..signature:posSub(pos, delta)
-..param.pos:A position type. Could either be an integer $seqOfs$ or a pair $(seqNo, seqOfs)$.
-..param.delta:Decrease the local offset of $pos$ by this value.
-..returns:Returns a value of the same type as $pos$ where $seqOfs$ is decreased by $delta$.
-..see:Function.posAdd
-..see:Function.posInc
-..see:Function.posNext
-..include:seqan/sequence.h
-*/
 
 template <typename TA, typename TB>
 inline TA posSub(TA a, TB b) {
@@ -1481,15 +1268,6 @@ lengthSum(StringSet<TString, TSpec> const & me)
 // --------------------------------------------------------------------------
 
 
-///.Function.appendValue.param.target.type:Class.StringSet
-///.Function.appendValue.class:Class.StringSet
-///.Function.clear.param.object.type:Class.StringSet
-///.Function.clear.class:Class.StringSet
-///.Function.resize.param.object.type:Class.StringSet
-///.Function.resize.class:Class.StringSet
-///.Function.length.param.object.type:Class.StringSet
-///.Function.length.class:Class.StringSet
-
 template <typename TString, typename TSpec >
 inline typename Size<StringSet<TString, TSpec > >::Type
 length(StringSet<TString, TSpec > const & me)
@@ -1577,7 +1355,6 @@ assign(StringSet<TString, TSpec> & target,
 // Function iter()
 // --------------------------------------------------------------------------
 
-///.Function.iter.param.object.type:Class.StringSet
 template <typename TString, typename TSpec, typename TPos, typename TTag>
 inline typename Iterator<StringSet<TString, TSpec >, Tag<TTag> const>::Type
 iter(StringSet<TString, TSpec > & me,
@@ -1606,9 +1383,6 @@ iter(StringSet<TString, TSpec > const & me,
 // Function begin()
 // --------------------------------------------------------------------------
 
-///.Function.begin.param.object.type:Class.StringSet
-///.Function.begin.class:Class.StringSet
-
 template <typename TString, typename TSpec, typename TTag>
 inline typename Iterator<StringSet<TString, TSpec >, Tag<TTag> const>::Type
 begin(StringSet<TString, TSpec > & me,
@@ -1629,9 +1403,6 @@ begin(StringSet<TString, TSpec > const & me,
 // Function end()
 // --------------------------------------------------------------------------
 
-///.Function.end.param.object.type:Class.StringSet
-///.Function.end.class:Class.StringSet
-
 template <typename TString, typename TSpec, typename TTag>
 inline typename Iterator<StringSet<TString, TSpec >, Tag<TTag> const>::Type
 end(StringSet<TString, TSpec > & me,
@@ -1651,9 +1422,6 @@ return iter(me, length(me), tag);
 // --------------------------------------------------------------------------
 // Function value()
 // --------------------------------------------------------------------------
-
-///.Function.value.param.object.type:Class.StringSet
-///.Function.value.class:Class.StringSet
 
 // --------------------------------------------------------------------------
 // Function getValueById()
@@ -1682,22 +1450,6 @@ return iter(me, length(me), tag);
  * @return TString Reference to the string with the given id.
  */
 
-/**
-.Function.getValueById:
-..cat:Sequences
-..class:Class.StringSet
-..summary:Retrieves a string from the StringSet given an id.
-..signature:getValueById(me, id)
-..param.me:A StringSet.
-...type:Class.StringSet
-..param.id:An id.
-...type:Metafunction.Id
-..returns:A reference to a string.
-..see:Function.assignValueById
-..see:Function.valueById
-..include:seqan/sequence.h
-*/
-
 // TODO(holtgrew): Why is there no generic implementation for StringSets??
 
 // --------------------------------------------------------------------------
@@ -1715,22 +1467,6 @@ return iter(me, length(me), tag);
  *
  * @return TString Reference to the string with the given id.
  */
-
-/**
-.Function.valueById:
-..cat:Sequences
-..class:Class.StringSet
-..summary:Retrieves a string from the StringSet given an id.
-..signature:valueById(me, id)
-..param.me:A StringSet.
-...type:Class.StringSet
-..param.id:An id.
-...type:Metafunction.Id
-..returns:A reference to a string.
-..see:Function.assignValueById
-..see:Function.getValueById
-..include:seqan/sequence.h
-*/
 
 template<typename TString, typename TSpec, typename TId>
 inline typename Reference<StringSet<TString, TSpec> >::Type
@@ -1757,28 +1493,6 @@ valueById(StringSet<TString, TSpec> & me,
  *
  * @return TId The id of the new string in the string set.
  */
-
-/**
-.Function.assignValueById:
-..cat:Sequences
-..class:Class.StringSet
-..summary:Adds a new string to the StringSet and returns an id.
-..signature:assignValueById(dest, str, [id])
-..signature:assignValueById(dest, source, id)
-..param.dest:A StringSet.
-...type:Class.StringSet
-..param.source:A StringSet.
-...type:Class.StringSet
-..param.str:A new string.
-...type:Metafunction.Value
-..param.id:An associated id.
-...type:Metafunction.Id
-..returns:A new id
-...type:Metafunction.Id
-..see:Function.getValueById
-..see:Function.valueById
-..include:seqan/sequence.h
-*/
 
 template<typename TString, typename TSpec, typename TString2>
 inline typename Id<StringSet<TString, TSpec> >::Type
@@ -1815,21 +1529,6 @@ assignValueById(StringSet<TString, TSpec1>& dest,
  * @param[in]     id  The id of the string to remove.
  */
 
-/**
-.Function.removeValueById:
-..cat:Sequences
-..class:Class.StringSet
-..summary:Removes a string from the StringSet given an id.
-..signature:removeValueById(me, id)
-..param.me:A StringSet.
-...type:Class.StringSet
-..param.id:An id.
-...type:Metafunction.Id
-..returns:void
-..see:Function.assignValueById
-..include:seqan/sequence.h
-*/
-
 // TODO(holtgrew): Why is there no generic implementation for StringSets??
 
 // --------------------------------------------------------------------------
@@ -1848,21 +1547,6 @@ assignValueById(StringSet<TString, TSpec1>& dest,
  * @return TId The resulting id.
  */
 
-/**
-.Function.positionToId:
-..cat:Sequences
-..class:Class.StringSet
-..summary:Retrieves the id of a string in the StringSet given a position.
-..signature:positionToId(string_set, pos)
-..param.string_set:A StringSet.
-...type:Class.StringSet
-..param.pos:A position that is transfored into an id.
-..returns:An id that corresponds to $pos$ within $string_set$
-..see:Function.assignValueById
-..see:Function.valueById
-..include:seqan/sequence.h
-*/
-
 // TODO(holtgrew): Why is there no generic implementation for StringSets??
 
 // --------------------------------------------------------------------------
@@ -1879,21 +1563,6 @@ assignValueById(StringSet<TString, TSpec1>& dest,
  *
  * @return TConcat The concatenation sequence.
  */
-
-/**
-.Function.concat:
-..summary:Returns the concatenation sequence of all sequences in a @Class.StringSet@.
-..cat:Sequences
-..class:Class.StringSet
-..signature:concat(stringSet)
-..param.stringSet:A @Class.StringSet@ object.
-...type:Class.StringSet
-..returns:A container that can be iterated like the concatenation string of all sequences in a @Class.StringSet@.
-..remarks:If $stringSet$ is a @Spec.ConcatDirect@ StringSet a reference to $stringSet.concat$ is returned.
-For all other StringSets a @Class.ConcatenatorManyToOne@ object is returned.
-...type:Metafunction.Concatenator
-..include:seqan/sequence.h
-*/
 
 // TODO(holtgrew): Why default concat() for any class?
 template <typename TString>
@@ -1996,22 +1665,6 @@ inline void prefixSums(TPrefixSums & sums, TText const & text)
  *
  * @return TPos The resulting position.
  */
-
-/**
-.Function.idToPosition:
-..cat:Sequences
-..class:Class.StringSet
-..summary:Retrieves the position of a string in the StringSet given an id.
-..signature:idToPosition(me, id)
-..param.me:A StringSet.
-...type:Class.StringSet
-..param.id:An id.
-...type:Metafunction.Id
-..returns:A reference to a string.
-..see:Function.assignValueById
-..see:Function.valueById
-..include:seqan/sequence.h
-*/
 
 // TODO(holtgrew): Why is there no generic implementation for StringSets??
 

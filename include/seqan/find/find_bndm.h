@@ -56,21 +56,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The types of the needle and the haystack have to match.
  */
 
-/**
-.Spec.BndmAlgo:
-..summary: Backward Nondeterministic Dawg Matching algorithm. Exact string matching using bit parallelism.
-..general:Class.Pattern
-..cat:Searching
-..signature:Pattern<TNeedle, BndmAlgo>
-..param.TNeedle:The needle type.
-...type:Class.String
-..remarks.text:The types of the needle and the haystack have to match.
-..include:seqan/find.h
-*/
-
-///.Class.Pattern.param.TSpec.type:Spec.BndmAlgo
-///.Class.Pattern.class:Spec.BndmAlgo
-
 struct BndmAlgo_;
 typedef Tag<BndmAlgo_> BndmAlgo;
 

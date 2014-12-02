@@ -40,21 +40,6 @@ namespace SEQAN_NAMESPACE_MAIN
 // CMode
 //////////////////////////////////////////////////////////////////////////////
 
-/**
-.Spec.CMode:
-..summary: Represents the C ("constant") computation scheme for handling "zero" probabilities.
-..general:Class.Pseudocount
-..cat:Motif Search
-..signature:Pseudocount<TValue, CMode>
-..param.TValue:The type of sequence which is considered.
-...type:Spec.Dna
-...type:Spec.AminoAcid
-..remarks:The pseudocount is identical for each residue (pseudocount = epsilon/alphabet_size).
-..include:seqan/find_motif.h
-*/
-
-///.Class.Pseudocount.param.TSpec.type:Spec.CMode
-
 struct CMode_;
 typedef Tag<CMode_> CMode;
 

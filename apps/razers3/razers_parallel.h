@@ -93,12 +93,6 @@ template <
     typename TRazerSMode>
 struct MapSingleReads {};
 
-/**
-.Class.ThreadLocalStorage:
-..summary:Encapsulates the thread-local data.
-..signature:ThreadLocalStorage<TSpec>
-..param.TSpec:Specialization template argument.
- */
 template <typename TSpec>
 class ThreadLocalStorage;
 

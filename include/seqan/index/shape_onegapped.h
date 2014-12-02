@@ -43,30 +43,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	// shape with one gap
 	//////////////////////////////////////////////////////////////////////////////
 
-/**
-.Spec.OneGappedShape:
-..cat:Index
-..summary:A variable shape with one optional gap.
-..general:Class.Shape
-..signature:Shape<TValue, OneGappedShape>
-..param.TValue:The @Metafunction.Value@ type of the string the shape is applied to (e.g. $Dna$).
-..remarks:A OneGappedShape must be initialized first with a valid shape. To do so, call @Function.stringToShape@.
-..see:Spec.GenericShape
-..include:seqan/index.h
-.Memfunc.OneGappedShape#Shape:
-..class:Spec.OneGappedShape
-..summary:Constructor
-..signature:Shape<TValue, OneGappedShape> ()
-..signature:Shape<TValue, OneGappedShape> (shape)
-..signature:Shape<TValue, OneGappedShape> (bitmap)
-..signature:Shape<TValue, OneGappedShape> (blockLen1, gapLen, blockLen2)
-..param.shape:Other Shape object. (copy constructor)
-..param.bitmap:Bitmap string. Sequence of '0's and '1's.
-...see:Function.stringToShape
-..param.blockLen1:Number of '1's in the first block.
-..param.gapLen:Number of '0's in the second block.
-..param.blockLen2:Number of '1's in the third block.
-*/
 /*!
  * @class OneGappedShape
  * @extends Shape
@@ -355,10 +331,6 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 //____________________________________________________________________________
-///.Function.stringToShape.param.shape.type:Spec.OneGappedShape
-///.Function.stringToShape.class:Spec.OneGappedShape
-///.Function.stringToShape.param.bitmap.remarks:If $shape$ is a @Spec.OneGappedShape@ at most two contiguous sequences of '1's are allowed.
-
 	template <typename TValue, typename TShapeString>
 	inline bool
 	stringToShape(
@@ -412,9 +384,6 @@ namespace SEQAN_NAMESPACE_MAIN
 	}
 
 //____________________________________________________________________________
-///.Function.reverse.param.object.type:Spec.OneGappedShape
-///.Function.reverse.class:Spec.OneGappedShape
-
 	template <typename TValue>
 	inline void
 	reverse(Shape<TValue, OneGappedShape> &me)

@@ -86,25 +86,6 @@ struct Hmm;
  * @include demos/graph/graph_algo_dijkstra.cpp.stdout
  */
 
-/**
-.Class.Graph:
-..cat:Graph
-..summary:Generic graph.
-..signature:Graph<TSpec>
-..param.TSpec:The specializing type determines the kind of graph, e.g., directed, undirected, tree, or automaton.
-...remarks:The default Graph<> corresponds to a directed graph.
-...default:Directed<>
-..include:seqan/graph_types.h
-..example:This is an example for Dijkstra's algorithm on a directed graph with an external property map. The property map adds weights to the edges. The example only outputs distances, not the details of the paths.
-...file:demos/graph/graph_algo_dijkstra.cpp
-...text:The output of the distances is as follows:
-...output:Distance from 0 to 0: 0
-Distance from 0 to 1: 8
-Distance from 0 to 2: 9
-Distance from 0 to 3: 5
-Distance from 0 to 4: 7
-
-*/
 template<typename TSpec = Directed<> >
 class Graph;
 
@@ -125,9 +106,6 @@ class Graph;
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Spec.param.T.type:Class.Graph
-///.Metafunction.Spec.class:Class.Graph
-
 template<typename TSpec>
 struct Spec<Graph<TSpec> > 
 {
@@ -144,9 +122,6 @@ struct Spec<Graph<TSpec> const>
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.EdgeDescriptor.param.T.type:Class.Graph
-///.Metafunction.EdgeDescriptor.class:Class.Graph
-
 template<typename TSpec>
 struct EdgeDescriptor<Graph<TSpec> > 
 {
@@ -160,9 +135,6 @@ struct EdgeDescriptor<Graph<TSpec> const>
 };
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.VertexDescriptor.param.T.type:Class.Graph
-///.Metafunction.VertexDescriptor.class:Class.Graph
 
 template<typename TSpec>
 struct VertexDescriptor<Graph<TSpec> > 
@@ -178,9 +150,6 @@ struct VertexDescriptor<Graph<TSpec> const>
 
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.EdgeType.param.T.type:Class.Graph
-///.Metafunction.EdgeType.class:Class.Graph
 
 template<typename TCargo, typename TSpec>
 struct EdgeType<Graph<Directed<TCargo, TSpec> > > {
@@ -296,9 +265,6 @@ struct EdgeType<Graph<Hmm<TAlphabet, TCargo, TSpec> > > {
 
 //////////////////////////////////////////////////////////////////////////////
 
-///.Metafunction.Cargo.param.T.type:Class.Graph
-///.Metafunction.Cargo.class:Class.Graph
-
 template<typename TSpec>
 struct Cargo<Graph<TSpec> > {
 	typedef typename Cargo<typename EdgeType<Graph<TSpec> >::Type>::Type Type;
@@ -313,9 +279,6 @@ struct Cargo<Graph<TSpec> const> {
 
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.EdgeIdHandler.param.T.type:Class.Graph
-///.Metafunction.EdgeIdHandler.class:Class.Graph
 
 template<typename TSpec>
 struct EdgeIdHandler<Graph<TSpec> const> {
@@ -333,9 +296,6 @@ struct EdgeIdHandler<Graph<TSpec> > {
 
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.Alphabet.param.T.type:Class.Graph
-///.Metafunction.Alphabet.class:Class.Graph
 
 template<typename TAlphabet, typename TCargo, typename TSpec>
 struct Alphabet<Graph<Automaton<TAlphabet, TCargo, TSpec> > > {
@@ -635,16 +595,6 @@ struct Alphabet<Graph<Hmm<TAlphabet, TCargo, TSpec> > const> {
  * @return T Pseudo nil value for type T.
  */
 
-/**
-.Function.getNil
-..class:Class.Graph
-..cat:Graph
-..summary:Utility function returning a value that represents nil.
-Useful for various graph algorithms, e.g., missing predecessors, vertices that have not been visited, etc.
-..signature:getNil<T>()
-..returns:Pseudo nil value for type T.
-..include:seqan/graph_types.h
-*/
 template <typename T>
 inline T
 getNil(T *)
@@ -743,25 +693,6 @@ _createVertices(Graph<TSpec>& g,
  * child, parent, child</tt>.
  */
 
-/**
-.Function.addEdges
-..class:Class.Graph
-..cat:Graph
-..summary:Shortcut to add multiple edges at once.
-Creates vertices implicitly.
-..signature:addEdges(g, edges, size)
-..param.g:A graph.
-...type:Class.Graph
-..param.edges:An array of vertex descriptors. It is assumed that the
-edges are stored in the following way: Source1, Target1, Source2, Target2, Source3, ...
-For a tree the root must be the first vertex in this array and the enumeration is Parent, Child, Parent, Child, ...
-...type:Metafunction.VertexDescriptor
-..param.size:Size of the array. Must be a multiple of 2.
-...type:Metafunction.Size
-..returns:void
-..see:Function.addEdge
-..include:seqan/graph_types.h
-*/
 template<typename TSpec, typename TEdgeArray, typename TSize>
 inline void
 addEdges(Graph<TSpec>& dest,

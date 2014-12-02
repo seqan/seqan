@@ -126,59 +126,6 @@ struct EditEnvironment;
  *       <tt>DISTANCE &gt; 2</tt>.
  */
 
-/**
-.Class.StringEnumerator
-..cat:Miscellaneous
-..summary:Class to enumerate all strings within a given edit/Hamming distance.
-..signature:StringEnumerator<TString, TSpec>
-..param.TString:Type of the string to enumerate the environment of.
-..param.TSpec:Specialization.
-..example.text:
-..include:seqan/misc/edit_environment.h
-
-.Memfunc.StringEnumerator#StringEnumerator
-..class:Class.StringEnumerator
-..summary:Constructor
-..signature:StringEnumerator(string[, minDist])
-..param.string:The string to use as the center.
-...type:nolink:$TString$
-..param.minDist:The smallest distance to generate strings with.
-...type:nolink:$unsigned$
-...default:0
-
-.Memvar.StringEnumerator#trim
-..class:Class.StringEnumerator
-..summary:Indicate whether to ignore substitutions in first or last character of string in Levenshtein mode (optimization for approximate search).
-..signature:trim
-..remarks:
-This is useful when searching for such enumerated strings in large texts.
-Patterns with substitutions in the first base would also be found
-..default:$true$
-
-.Spec.Hamming StringEnumerator
-..general:Class.StringEnumerator
-..cat:Miscellaneous
-..summary:Enumerate all strings within a given edit distance of a "center string".
-..signature:StringEnumerator<TString, EditEnvironment<HammingDistance, DISTANCE> >
-..param.TString:Type of the string to enumerate the environment of.
-..param.DISTANCE:The maximal distance to generate strings with.
-...type:nolink:$unsigned$
-..remarks:See @Class.StringEnumerator@ for examples.
-..include:seqan/misc/edit_environment.h
-
-.Spec.Levenshtein StringEnumerator
-..general:Class.StringEnumerator
-..cat:Miscellaneous
-..summary:Enumerate all strings within a given edit distance of a "center string".
-..signature:StringEnumerator<TString, EditEnvironment<LevenshteinDistance, DISTANCE> >
-..param.TString:Type of the string to enumerate the environment of.
-..param.DISTANCE:The maximal distance to generate strings with.
-...type:nolink:$unsigned$
-..remarks:See @Class.StringEnumerator@ for examples.
-..remarks:Note that the @Function.length@ function does not work for $DISTANCE > 2$.
-..include:seqan/misc/edit_environment.h
- */
-
 template <typename TObject, typename TSpec>
 class StringEnumerator
 {
@@ -453,9 +400,6 @@ public:
  * @signature Value<TStringEnumerator>::Type;
  */
 
-///.Metafunction.Value.param.T.type:Class.StringEnumerator
-///.Metafunction.Value.class:Class.StringEnumerator
-
 template <typename TObject, typename TSpec>
 struct Value<StringEnumerator<TObject, TSpec> > : Value<TObject>
 {};
@@ -470,9 +414,6 @@ struct Value<StringEnumerator<TObject, TSpec> > : Value<TObject>
  *
  * @signature Reference<TStringEnumerator>::Type;
  */
-
-///.Metafunction.Reference.param.T.type:Class.StringEnumerator
-///.Metafunction.Reference.class:Class.StringEnumerator
 
 template <typename TObject, typename TSpec>
 struct Reference<StringEnumerator<TObject, TSpec> >
@@ -497,9 +438,6 @@ struct Reference<StringEnumerator<TObject, TSpec> const>
  * @signature Size<TStringEnumerator>::Type;
  */
 
-///.Metafunction.Size.param.T.type:Class.StringEnumerator
-///.Metafunction.Size.class:Class.StringEnumerator
-
 template <typename TObject, typename TSpec>
 struct Size<StringEnumerator<TObject, TSpec> > : Size<TObject>
 {};
@@ -514,9 +452,6 @@ struct Size<StringEnumerator<TObject, TSpec> > : Size<TObject>
  *
  * @signature Difference<TStringEnumerator>::Type;
  */
-
-///.Metafunction.Difference.param.T.type:Class.StringEnumerator
-///.Metafunction.Difference.class:Class.StringEnumerator
 
 template <typename TObject, typename TSpec>
 struct Difference<StringEnumerator<TObject, TSpec> > : Difference<TObject>
@@ -533,9 +468,6 @@ struct Difference<StringEnumerator<TObject, TSpec> > : Difference<TObject>
  * @signature Position<TStringEnumerator>::Type;
  */
 
-///.Metafunction.Position.param.T.type:Class.StringEnumerator
-///.Metafunction.Position.class:Class.StringEnumerator
-
 template <typename TObject, typename TSpec>
 struct Position<StringEnumerator<TObject, TSpec> > : Position<TObject>
 {};
@@ -550,9 +482,6 @@ struct Position<StringEnumerator<TObject, TSpec> > : Position<TObject>
  *
  * @signature Position<TStringEnumerator, TSpec>::Type;
  */
-
-///.Metafunction.Iterator.param.T.type:Class.StringEnumerator
-///.Metafunction.Iterator.class:Class.StringEnumerator
 
 template <typename TObject, typename TSpec>
 struct Iterator<StringEnumerator<TObject, TSpec>, Standard>
@@ -576,9 +505,6 @@ struct Iterator<StringEnumerator<TObject, TSpec> const, Standard>
  *
  * @signature Host<TStringEnumerator>::Type;
  */
-
-///.Metafunction.Host.param.T.type:Class.StringEnumerator
-///.Metafunction.Host.class:Class.StringEnumerator
 
 template <typename TObject, typename TSpec>
 struct Host<StringEnumerator<TObject, TSpec> >
@@ -630,9 +556,6 @@ _dataHost(StringEnumerator<TText, TSpec> const & enumerator)
  * @return TIter Iterator to the first string in the enumerator.
  */
 
-///.Function.begin.param.object.type:Class.StringEnumerator
-///.Function.begin.class:Class.StringEnumerator
-
 template <typename TObject, typename TSpec>
 inline Iter<StringEnumerator<TObject, TSpec>, Standard>
 begin(StringEnumerator<TObject, TSpec> & enumerator, Standard)
@@ -662,9 +585,6 @@ begin(StringEnumerator<TObject, TSpec> const & enumerator, Standard)
  *
  * @return TIter End iterator for the string enumerator.
  */
-
-///.Function.end.param.object.type:Class.StringEnumerator
-///.Function.end.class:Class.StringEnumerator
 
 template <typename TObject, typename TSpec>
 inline Iter<StringEnumerator<TObject, TSpec>, Standard>
@@ -698,9 +618,6 @@ end(StringEnumerator<TObject, TSpec> const & enumerator, Standard)
  *
  * @return TSize The number of elements in the enumerator  (Metafunction: @link StringEnumerator#Size @endlink).
  */
-
-///.Function.length.param.object.type:Class.StringEnumerator
-///.Function.length.class:Class.StringEnumerator
 
 template <typename TObject, unsigned DISTANCE>
 inline typename Size<StringEnumerator<TObject, EditEnvironment<HammingDistance, DISTANCE> > >::Type

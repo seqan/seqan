@@ -62,29 +62,9 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
 
-///.Spec.VSTree Iterator.param.TContainer.type:Spec.IndexDfi
-///.Spec.TopDown Iterator.param.TContainer.type:Spec.IndexDfi
-///.Spec.TopDownHistory Iterator.param.TContainer.type:Spec.IndexDfi
-
 //////////////////////////////////////////////////////////////////////////////
 // Dfi - The Deferred Frequency Index
 
-/**
-.Spec.IndexDfi:
-..summary:The Deferred Frequency Index (see Weese and Schulz, "Efficient string mining under constraints via the
-deferred frequency index").
-..cat:Index
-..general:Spec.IndexWotd
-..signature:Index<TText, IndexWotd< Dfi<TPredHull, TPred> > >
-..param.TText:The text type.
-...type:Class.String
-..param.TPred:An arbitrary frequency predicate
-..param.TPredHull:A monotonic hull of $TPred$
-..remarks:This index is based on a lazy suffix tree (see @Spec.IndexWotd@).
-All $TPredHull$ sufficing nodes can be iterated using a @Spec.TopDown Iterator@.
-To iterate the exact solution set of $TPred$, use a $Spec.TopDownHistory Iterator$ of this index.
-..include:seqan/index.h
-*/
 /*!
  * @class IndexDfi
  * @extends IndexWotd

@@ -58,22 +58,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see MapperConfig
  */
 
-/**
-.Spec.MapperConfigSize:
-..cat:Pipelining
-..general:Spec.MapperSpec
-..summary:Configuration of Mapper.
-..signature:MapperConfigSize<TMap, TSize, TFile>
-..param.TMap:The destination function (see STL's $unary_function$).
-...remarks:This functions maps a stream element to its destined position. The result type of this unary function should convertible to $TSize$.
-...note:The destination function must be bijective.
-..param.TSize:The Mapper's size type.
-..param.TFile:The underlying @Class.File@ type.
-...default:$File<>$, see @Class.File@.
-..see:Spec.MapperConfig
-..include:seqan/pipe.h
-*/
-
     template < typename TMap,
 		       typename TSize,
 		       typename TFile = File<> >						// default file type
@@ -102,22 +86,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see MapperConfigSize
  */
 
-/**
-.Spec.MapperConfig:
-..cat:Pipelining
-..general:Spec.MapperSpec
-..summary:Configuration of Mapper.
-..signature:MapperConfig<TMap, TFile>
-..param.TMap:The destination function (see STL's $unary_function$).
-...remarks:This functions maps a stream element to its destined position. The result type of this unary function should convertible to $TSize$.
-...note:The destination function must be bijective.
-..param.TFile:The underlying @Class.File@ type.
-...default:$File<>$, see @Class.File@.
-..remarks:Using this configuration spec., the Mapper's size type is $Size<TFile>::Type$. To use a custom size type @Spec.MapperConfigSize@ should be used.
-..see:Spec.MapperConfigSize
-..include:seqan/pipe.h
-*/
-
     template < typename TMap,
 		       typename TFile = File<> >
     struct MapperConfig {
@@ -141,20 +109,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * 
  * The Pool's input/output type is <tt>TValue</tt> and the size type is determined by the <tt>TConfig</tt>.
  */
-
-/**
-.Spec.MapperSpec:
-..cat:Pipelining
-..general:Class.Pool
-..summary:Permutes all elements using a custom destination function.
-..signature:Pool<TValue, MapperSpec<TConfig> >
-..param.TValue:The value type, that is the type of the stream elements.
-..param.TConfig:Configuration Spec. Defines destination function, size type, and file type.
-...type:Spec.MapperConfig
-...type:Spec.MapperConfigSize
-..remarks:The Pool's input/output type is $TValue$ and the size type is determined by the $TConfig$.
-..include:seqan/pipe.h
-*/
 
     template <typename TConfig>
     struct MapperSpec {

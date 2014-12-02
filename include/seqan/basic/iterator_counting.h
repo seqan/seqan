@@ -112,9 +112,6 @@ struct Difference<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >
 // Function position()
 // ----------------------------------------------------------------------------
 
-///.Function.position.param.iterator.type:Spec.Position Iterator
-///.Function.position.class:Spec.Position Iterator
-
 template <typename TSpec, typename TIncrementable>
 inline typename Position<Iter<TIncrementable, CountingIteratorImpl_<TSpec> > >::Type &
 position(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > & me)
@@ -132,9 +129,6 @@ position(Iter<TIncrementable, CountingIteratorImpl_<TSpec> > const & me)
 // ----------------------------------------------------------------------------
 // Function setPosition()
 // ----------------------------------------------------------------------------
-
-///.Function.setPosition.param.iterator.type:Spec.Position Iterator
-///.Function.setPosition.class:Spec.Position Iterator
 
 template <typename TIncrementable, typename TSpec, typename TPosition>
 inline void

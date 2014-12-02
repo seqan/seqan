@@ -103,45 +103,6 @@ namespace seqan {
  * signature T3 Triple::i3;
  */
 
-/**
-.Class.Triple:
-..cat:Aggregates
-..concept:Concept.AggregateConcept
-..summary:Stores three arbitrary objects.
-..signature:Triple<T1[, T2[, T3[, TSpec]]]>
-..param.T1:The type of the first object.
-..param.T2:The type of the second object.
-...default:$T1$
-..param.T3:The type of the third object.
-...default:$T1$
-..param.TSpec:The specializing type.
-...default:$void$, no packing (faster access).
-
-.Memfunc.Triple#Triple:
-..class:Class.Triple
-..summary:Constructor
-..signature:Triple<T1, T2, T3[, TSpec]> ()
-..signature:Triple<T1, T2, T3[, TSpec]> (triple)
-..signature:Triple<T1, T2, T3[, TSpec]> (i1, i2, i3)
-..param.triple:Other Triple object. (copy constructor)
-..param.i1:T1 object.
-..param.i2:T2 object.
-..param.i3:T3 object.
-
-.Memvar.Triple#i1:
-..class:Class.Triple
-..summary:T1 object
-
-.Memvar.Triple#i2:
-..class:Class.Triple
-..summary:T2 object
-
-.Memvar.Triple#i3:
-..class:Class.Triple
-..summary:T3 object
-..include:seqan/basic.h
-*/
-
 template <typename T1, typename T2 = T1, typename T3 = T1, typename TSpec = void>
 struct Triple
 {
@@ -208,9 +169,6 @@ struct Triple
  * @return VALUE Length of the triple (always 3).
  */
 
-///.Metafunction.LENGTH.param.T.type:Class.Triple
-///.Metafunction.LENGTH.class:Class.Triple
-
 template <typename T1, typename T2, typename T3, typename TSpec>
 struct LENGTH<Triple<T1, T2, T3, TSpec> >
 {
@@ -232,9 +190,6 @@ struct LENGTH<Triple<T1, T2, T3, TSpec> >
  * @tparam TTriple The Triple to return the <tt>I</tt>-th value of.
  * @tparam I       The index of the value to return, one of 1, 2, or 3.
  */
-
-///.Metafunction.Value.param.T.type:Class.Triple
-///.Metafunction.Value.class:Class.Triple
 
 template <typename T1, typename T2, typename T3, typename TSpec>
 struct Value<Triple<T1, T2, T3, TSpec>, 1>
@@ -268,9 +223,6 @@ struct Value<Triple<T1, T2, T3, TSpec>, 3 >
  *
  * @return Type The specialization type.
  */
-
-///.Metafunction.Spec.param.T.type:Class.Triple
-///.Metafunction.Spec.class:Class.Triple
 
 template <typename T1, typename T2, typename T3, typename TSpec>
 struct Spec<Triple<T1, T2, T3, TSpec> >

@@ -62,17 +62,6 @@ namespace seqan {
  * @tparam TIterator The iterator to store internally.
  */
 
-/**
-.Spec.Iterator Proxy
-..cat:Proxies
-..general:Class.Proxy
-..summary:Proxy that is implemented by an iterator.
-..signature:Proxy<IteratorProxy<TIterator> >
-..param.TIterator:Iterator type.
-..remarks.text:The value type of an iterator proxy is the value type of the iterator $TIterator$.
-..include:seqan/basic.h
-*/
-
 // TODO(holtgrew): Assignment works through operator=() but we also need set() and move()!
 // TODO(holtgrew): Proxy cannot work correctly for const containers, but should! RemoveConst_ removes the const of the values inside pointers and references.
 
@@ -157,9 +146,6 @@ public:
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Value.param.T.type:Class.Proxy
-///.Metafunction.Value.class:Class.Proxy
-
 template <typename TIterator>
 struct Value<Proxy<IteratorProxy<TIterator> > >
         : Value<TIterator>
@@ -175,9 +161,6 @@ struct Value<Proxy<IteratorProxy<TIterator> > const>
 // ----------------------------------------------------------------------------
 // Metafunction GetValue
 // ----------------------------------------------------------------------------
-
-///.Metafunction.GetValue.param.T.type:Class.Proxy
-///.Metafunction.GetValue.class:Class.Proxy
 
 template <typename TIterator>
 struct GetValue<Proxy<IteratorProxy<TIterator> > >
@@ -195,9 +178,6 @@ struct GetValue<Proxy<IteratorProxy<TIterator> > const>
 // Metafunction Reference
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Reference.param.T.type:Class.Proxy
-///.Metafunction.Reference.class:Class.Proxy
-
 template <typename TIterator>
 struct Reference<Proxy<IteratorProxy<TIterator> > >
 {
@@ -214,9 +194,6 @@ struct Reference<Proxy<IteratorProxy<TIterator> > const>
 // Metafunction Size
 // ----------------------------------------------------------------------------
 
-///.Metafunction.Size.param.T.type:Class.Proxy
-///.Metafunction.Size.class:Class.Proxy
-
 template <typename TIterator>
 struct Size<Proxy<IteratorProxy<TIterator> > >
         : Size<TIterator>
@@ -232,9 +209,6 @@ struct Size<Proxy<IteratorProxy<TIterator> > const>
 // ----------------------------------------------------------------------------
 // Metafunction Difference
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Difference.param.T.type:Class.Proxy
-///.Metafunction.Difference.class:Class.Proxy
 
 template <typename TIterator>
 struct Difference<Proxy<IteratorProxy<TIterator> > >
@@ -271,9 +245,6 @@ struct CompareTypeRemoveProxy<Proxy<IteratorProxy<TIterator1> >, Proxy<IteratorP
 // ----------------------------------------------------------------------------
 // Function iter()
 // ----------------------------------------------------------------------------
-
-///.Function.iter.param.object.type:Spec.Iterator Proxy
-///.Function.iter.class:Spec.Iterator Proxy
 
 template <typename TIterator>
 inline TIterator &

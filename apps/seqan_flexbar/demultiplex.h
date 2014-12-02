@@ -61,14 +61,6 @@ using namespace seqan;
 
 typedef String<Dna5Q> TAlphabet;
 
-/**
-.Class.DemultiplexStats:
-..summary:Struct holding information on demultiplexing statistics.
-..include:seqan/demultipex.h
-.Memvar.DemultiplexStats#groups
-..class:Class.DemultiplexStats
-..summary:String of unsigned integers holding the number of sequences for every barcode.
-*/
 struct DemultiplexStats
 {
 	String<unsigned> groups;
@@ -79,25 +71,6 @@ struct DemultiplexStats
 // Functions
 // ============================================================================
 
-/**
-.Function.check:
-..summary:Deletes the ID and sequence from the given StringSet if the sequence length is <= barcode length.
-..signature:check(seqs, ids, seqsRev, idsRev, barcodes, stats)
-..signature:check(seqs, ids, barcodes, stats)
-..param.seqs:StringSet of forward reads.
-...type:Class.StringSet
-..param.seqsRev: StringSet of backward reads.
-...type:Class.StringSet
-..param.ids:StringSet of IDs of forward reads.
-...type:Class.StringSet
-..param.idsRev:StringSet of IDs of backward reads.
-...type:Class.StringSet
-..param.barcodes:StringSet of barcodes.
-...type:Class.StringSet
-..param.stats:The GeneralStats object holding general statistic data.
-...type:Class.GeneralStats
-..returns:A bool: false on different lengths of the barcodes, true otherwise.
-*/
 template <typename TSeqs, typename TIds, typename TBarcodes> //This version works with paired-end data
 bool check(TSeqs& seqs,  TIds& ids, TSeqs& seqsRev, TIds& idsRev, TBarcodes& barcodes, GeneralStats& stats)
 {
@@ -168,18 +141,6 @@ bool check(TSeqs& seqs, TIds& ids,TBarcodes& barcodes, GeneralStats& stats)
 	return true;
 }
 
-/**
-.Function.getPrefix:
-..summary:Function for extracting the prefices of all given StringSet of sequences.
-..signature:getPrefix(prefices, seqs, len)
-..param.seqs:StringSet to be filled with the prefices.
-...type:Class.StringSet
-..param.seqs:StringSet of sequences.
-...type:Class.StringSet
-..param.len:Desired prefix length.
-...type:nolink:unsigned int
-..see:Function.prefix
-*/
 template <typename TSeqs>
 void getPrefix(TSeqs& prefices, TSeqs& seqs, unsigned len)
 {
@@ -192,17 +153,6 @@ void getPrefix(TSeqs& prefices, TSeqs& seqs, unsigned len)
 	}
 }
 
-/**
-.Function.buildVariations:
-..summary:Function for building all possible variations with 1 mismatch of ONE given barcode.
-..signature: buildVariations(variations, barcode)
-..param.variations:StringSet to be filled with the variations.
-...type:nolink:String
-..param.barcode:Barcode-Sequence whose variations shall be build.
-...type:nolink:String
-..returns:void
-..see:Function.buildAllVariations
-*/
 template <typename TBarcode>
 void buildVariations(StringSet<Dna5String>& variations, const TBarcode& barcode)
 {
@@ -225,16 +175,6 @@ void buildVariations(StringSet<Dna5String>& variations, const TBarcode& barcode)
 	}
 }
 
-/**
-.Function.buildAllVariations
-..summary:Funtion for executing buildVariations(barcode) on all barcodes of a given StringSet.
-..signature:buildAllVariations(barcodes)
-..param.barcodes:StringSet of barcodes. Will be exchanged with the new barcodes.
-...type:Class.StringSet
-..remarks:The given StringSet is modified.
-..returns: void
-..see:Function.buildVariations
-*/
 template <typename TBarcodes>
 void buildAllVariations(TBarcodes& barcodes)
 {
@@ -252,21 +192,6 @@ void buildAllVariations(TBarcodes& barcodes)
 	barcodes = newbarcodes;
 }
 
-/**
-.Function.findExactIndex:
-..summary:Function for exact search for one prefix in the barcode-index.
-..signature:findExactIndex(prefix, finder)
-..param.prefix:Prefix of a sequence.
-...type:Class.String
-..param.finder:Finder-object holding the preprocessed barcodes.
-...type:Class.Finder
-..remarks:Only the first hit is reported.
-..returns:An integer representing the position of the matching barcode in the StringSet the index associated with
- finder was build on. If no hit occured -1 is returned.
-...type:nolink:integer
-..see:Class.Index
-..see:Function.findAllExactIndex
-*/
 template <typename TPrefix, typename TFinder>
 int findExactIndex(const TPrefix& prefix, TFinder& finder)
 {
@@ -278,28 +203,6 @@ int findExactIndex(const TPrefix& prefix, TFinder& finder)
 	else return -1;								//return -1 if no hit occured
 }
 
-/**
-.Function.findAllExactIndex
-..summary:Function for performing findExactIndex on all given prefices and barcodes.
-..signature:findAllExactIndex(matches, prefices, finder, stats)
-..param.matches:StringSet of ints to be filled with the results.
- The integers represent the positions of the matched barcodes in the index.
- If a sequence could not be matched, its position is replaced by  -1.
-...type:Class.StringSet
-..param.prefices:StringSet of prefices.
-...type:Class.StringSet
-..param.finder:Finder-object holding the preprocessed barcodes.
-...type:Class.Finder
-..param.stats:The DemultiplexStats-object holding statistic information on the demultiplexing process.
-...type:Class.DemultiplexStats
-..remarks:The n-th element of the resulting String is associated with the n-th prefix/sequence.
-..remarks:Only the first hit of each sequence will be reported.
- If a sequence could not be matched, its position is replaced by  -1.
-...type:Class.String
-..returns:void
-see:Function.findExactIndex
-see:Class.Index
-*/
 template <typename TPrefices, typename TFinder, typename TStats>
 void findAllExactIndex(String<int>& matches, const TPrefices& prefices, const TFinder& finder, TStats& stats)
 {
@@ -332,18 +235,6 @@ void findAllExactIndex(String<int>& matches, const TPrefices& prefices, const TF
     }
 }
 
-/**
-.Function.clipBarcodes:
-..summary:Function for deleting the barcodes from the sequences. If the String produced by findAllExactIndex is given
- in addition, the barcode is only deleted, if it could be matched beforehand.
-..signature:clipBarcodes(seqs, matches, len)
-..signature:clipBarcodes(seqs, len)
-..param.seqs:StringSet of sequences.
-..param.matches:String produced by findAllExactIndex, holding information about the matched barcodes.
-..param.len:Unsigned integer representing the length of the barcodes.
-..returns: void
-..see:Function.findExactIndex
-*/
 template <typename TSeqs>
 void clipBarcodes(TSeqs& seqs, const String<int>& matches, unsigned len)
 {
@@ -368,26 +259,6 @@ void clipBarcodes(TSeqs& seqs, int len)
     }
 }
 
-/**
-.Function.group:
-..summary:Function for sorting the matched and clipped sequences (their indices) into one StringSet.
-..signature:group(sortedSequences, matches, barcodes, exclude)
-..signature:group(sortedSequences, matches, barcodes, approximate, exclude)
-..param.sortedSequences:StringSet of String<int> to be filled with the results.
-...type:Class.StringSet
-..param.matches:String holding information about the matched barcodes. Produced by findAllExactIndex.
-...type:Class.String
-..param.barcodes:StringSet of barcodes.
-...type:Class.StringSet
-..param.approximate:bool indicating that approximate search has been used and a correction
- of the barcode indices has to be performed.
- ..param.exclude:A bool indicating, whether unidentified sequences (true) shall be excluded.
-...type:nolink:bool
-..remarks:The 0-th group (i.e. 0-th collum of the String) contains the unidentified sequences.
-..remarks:All following groups hold the sequences associated with the i-1-th barcode.
-..returns:void
-..see:Function.findAllExactIndex
-*/
 template <typename TMatches, typename TBarcodes>
 void group(StringSet<String<int> >& sortedSequences, const TMatches& matches, const TBarcodes& barcodes, bool exclude)
 {
@@ -417,38 +288,6 @@ void group(StringSet<String<int> >& sortedSequences, const TMatches& matches,
     }
 }
 
-/**
-.Function.doAll:
-..summary:Function for performing all demultiplexing operations. 
-..signature:doAll(sortedSequences, multiplex, barcodes, esaFinder, stats, exclude)
-..signature:doAll(sortedSequences, multiplex, barcodes, esaFinder, stats, approximate, exclude)
-..signature:doAll(sortedSequences, seqs, barcodes, esaFinder, hardClip, stats, exclude)
-..signature:doAll(sortedSequences, seqs, barcodes, esaFinder, hardClip, stats, approximate, exclude)
-..param.sortedSequences:StringSet of String<int> to be filled with the results.
-...type:Class.StringSet
-..param.multiplex:StringSet of multiplex barcodes.
-...type:Class.StringSet
-..param.seqs:StringSet of forward-reads.
-...type:Class.StringSet
-..param.barcodes:StringSet of barcodes.
-...type:Class.StringSet
-..param.esaFinder:esaFinder-object of the barcode-index.
-...type:Class.Finder
-..param.hardClip:A bool indicating whether the first Bases of each sequence shall be clipped without considering the
- barcodes (true).
-...type:nolink:bool
-..param.stats: The DemultiplexStats-object holding statistic information on the demultiplexing process.
-...type:Class.DemultiplexStats
-..param.approximate:A bool indicating, whether approximate matching (true) shall be used.
-...type:nolink:bool
-..param.exclude:A bool indicating, whether unidentified sequences (true) shall be excluded.
-...type:nolink:bool
-..remarks:The 0-th group (i.e. 0-th collum of the String) contains the unidentified sequences.
-..remarks:All following groups hold the sequences associated with the i-1-th barcode.
-..returns:void
-..see:Function.findAllExactIndex
-..see:Function.group
-*/
 //Using exact search and multiplex barcodes.
 template<typename TBarcodes, typename TMultiplex ,typename TFinder>
 void doAll(StringSet<String<int> >& sortedSequences, TMultiplex& multiplex, TBarcodes& barcodes,
@@ -506,34 +345,6 @@ void doAll(StringSet<String<int> >& sortedSequences, TSeqs& seqs, TBarcodes& bar
     group(sortedSequences, matches, barcodes, approximate, exclude);
 }
 
-/**
-.Function.buildSets:
-..summary:Function for creating Strings of StringSets from the String produced by doAll, or group.
-..signature:buildSets(seqs, seqsRev, ids, idsRev, groups, gSeqs, gSeqsRev, gIds, gIdsRev)
-..signature:buldSets(seqs, ids, groups, gSeqs, gIds)
-..param.seqs:StringSet of forward reads.
-...type:Class.StringSet
-..param.seqsRev:StringSet backward reads.
-...type:Class.StringSet
-..param.ids:StringSet of IDs of forward reads.
-...type:Class.StringSet
-..param.idsRev:StringSet of IDs of backward reads.
-...type:Class.StringSet
-..param.groups:StringSet of String<int> representing the indices of the sequences. Produced by doAll or group.
-...type:Class.StringSet
-..param.gSeqs:String of StringSets to be filled with the forward reads.
-...type:Class.String
-..param.gSeqsRev:String of StringSets to be filled with the backward reads.
-...type:Class.String
-..param.gIds:String of StringSets to be filled with the IDs of forwad reads.
-...type:Class.String
-..param.gIdsRev:String of StringSets to be filled with the IDs of backward reads.
-...type:Class.String
-..remarks:The given StringSets are deleted.
-..returns:void
-..see:Function.doAll
-..see:Function.group
-*/
 //Version for paired-end data
 template<typename TSeqs, typename TIds>
 void buildSets(TSeqs& seqs, TSeqs& seqsRev, TIds& ids, TIds& idsRev, const StringSet<String<int> >& groups,

@@ -126,33 +126,6 @@ namespace seqan {
  * @snippet demos/basic/simple_type_construction.cpp simple type construction and assignment
  */
 
-/**
-.Class.SimpleType:
-..cat:Basic
-..implements:Concept.FiniteOrderedAlphabetConcept
-..summary:Implementation for "simple" types.
-..signature:SimpleType<TValue, TSpec>
-..param.TValue:Type that stores the values of an instance.
-...remarks:TValue must be a simple type.
-...metafunction:Metafunction.Value
-..param.TSpec:Specialization tag.
-...metafunction:Metafunction.Spec
-..remarks:
-...text:A "simple type" is a C++ type that can be constructed without constructor,
-destructed without destructor and copied without copy constructor or assignment operator.
-All basic types (like $char$, $int$ or $float$) are simple. Pointers, references and arrays of
-simple types are simple.
-POD types ("plain old data types"), that are - simplified spoken - C++-types that already existed in C,
-are simple too. 
-...text:Arrays of simple types can be copied very fast by memory manipulation routines, 
-but the default implementation of functions like @Function.arrayCopyForward@ and @Function.arrayCopy@
-are not optimized for simple types this way.
-But for classes derived from $SimpleType$, optimized variants of array manipulation functions are applied. 
-...text:Note that simple types need not to be derived or specialized from $SimpleType$, but
-it could be convenient to do so.
-..include:seqan/basic.h
-*/
-
 #ifdef PLATFORM_WINDOWS
     #pragma pack(push,1)
 #endif
@@ -307,8 +280,6 @@ public:
 // Metafunction IsSimple
 // ----------------------------------------------------------------------------
 
-///.Metafunction.IsSimple.param.T.type:Class.SimpleType
-
 template <typename TValue, typename TSpec>
 struct IsSimple<SimpleType<TValue, TSpec> >
 {
@@ -332,8 +303,6 @@ struct Is< Convertible<TTarget, SimpleType<TValue, TSpec> > > :
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Rename? SimpleType is no container!
-
-///.Metafunction.Value.param.T.type:Class.SimpleType
 
 template <typename TValue, typename TSpec>
 struct Value<SimpleType<TValue, TSpec> >
@@ -390,8 +359,6 @@ supremumValueImpl(SimpleType<TValue, TSpec> *)
 // ----------------------------------------------------------------------------
 // Metafunction Spec
 // ----------------------------------------------------------------------------
-
-///.Metafunction.Spec.param.T.type:Class.SimpleType
 
 template <typename TValue, typename TSpec>
 struct Spec<SimpleType<TValue, TSpec> >
@@ -473,10 +440,6 @@ operator>>(TStream & stream,
 // ----------------------------------------------------------------------------
 // Function assign()
 // ----------------------------------------------------------------------------
-
-///.Function.assign.param.target.type:Class.SimpleType
-///.Function.assign.param.target.type:Class.SimpleType
-///.Function.assign.class:Class.SimpleType
 
 template <typename TTargetValue, typename TTargetSpec, typename TSourceValue, typename TSourceSpec>
 SEQAN_HOST_DEVICE inline void

@@ -78,20 +78,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The output type is a packed @link  Pair  @endlink or @link Triple @endlink of the input types <tt>Value&lt;TInputX&gt;::Type</tt>.
  */
 
-/**
-.Spec.Joiner:
-..cat:Pipelining
-..general:Class.Pipe
-..summary:Joins two or three input streams.
-..signature:Pipe<Bundle2<TInput1, TInput2>, Joiner>
-..signature:Pipe<Bundle3<TInput1, TInput2, TInput3>, Joiner>
-..param.TInput1:The type of the first pipeline module this module reads from.
-..param.TInput2:The type of the second pipeline module this module reads from.
-..param.TInput3:The type of the third pipeline module this module reads from.
-..remarks: The output type is a packed @Class.Pair@ or @Class.Triple@ of the input types $Value<TInputX>::Type$.
-..include:seqan/pipe.h
-*/
-
     //////////////////////////////////////////////////////////////////////////////
     // joiner class
 	template < typename TInput1, typename TInput2 >

@@ -197,19 +197,6 @@ namespace SEQAN_NAMESPACE_MAIN
 		childtab << esa;
 	}
 
-/**
-.Function.createChildtab:
-..summary:Creates a child table from a given lcp table.
-..cat:Index
-..signature:createChildtab(childTab, lcp[, algo_tag])
-..class:Class.Index
-..param.childTab:A reference to the resulting child table.
-..param.lcp:A given lcp table.
-..param.algo_tag:A tag that identifies the algorithm which is used for creation.
-..remarks:The size of $childTab$ must be at least $length(text)$ before calling this function.
-..include:seqan/index.h
-*/
-
 /*!
  * @fn IndexEsa#createChildtab
  * @headerfile <seqan/index.h>

@@ -67,28 +67,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * The needle-length must be smaller than the highest number that can be stored in an unsigned int.
  */
 
-/**
-.Spec.Myers:
-..cat:Searching
-..general:Class.Pattern
-..summary:Provides fast approximate searching of one string in another using Myer's fast bit-parallel algorithm with application of the Ukkonen-trick.
-..signature:Pattern<TNeedle, Myers< [TSpec [, TFindBeginPatternSpec] ]> >
-..param.TNeedle:The needle type.
-...type:Class.String
-..param.TSpec:Specialization tag.
-...default:Tag.FindInfix
-...remarks:This could be @Tag.FindInfix@ for infix search or $FindPrefix$ for prefix search.
-..param.TFindBeginPatternSpec:Specialization of @Class.Pattern@ used to find the begin of matches.
-...default:@Metafunction.DefaultFindBeginPatternSpec@
-...metafunction:Metafunction.DefaultFindBeginPatternSpec
-...remarks:This must be a finder for prefix search, e.g. @Spec.DPSearch|$DPSearch<TScore, FindPrefix>$@ or @Spec.Myers|$Myers<FindPrefix>$@.
-Specify $void$ to suppress prefix searching.
-..remarks.text:The needle-length must be smaller than the highest number that can be stored in an unsigned int.
-..include:seqan/find.h
-*/
-
-///.Class.Pattern.param.TSpec.type:Spec.Myers
-
 template <typename TSpec = FindInfix, 
 		  typename THasState = True,
 		  typename TFindBeginPatternSpec = typename DefaultFindBeginPatternSpec<EditDistanceScore, THasState>::Type>
@@ -116,19 +94,6 @@ struct AlignTextBanded; // search query in a parallelogram
  * @deprecated Use <tt>Myers&lt;FindInfix&gt;</tt> instead.
  */
 
-/**
-.Shortcut.MyersUkkonen:
-..status:deprecated, use $Myers<FindInfix>$
-..cat:Searching
-..summary:Semi-global (query-global, text-local) pattern matching without findBegin() support.
-..signature:MyersUkkonen
-..shortcutfor:Spec.Myers
-...signature:Myers<FindInfix, void>
-..see:Spec.Myers
-..see:Shortcut.MyersUkkonenBanded
-..see:Shortcut.MyersUkkonenGlobal
-..see:Shortcut.MyersUkkonenGlobalBanded
-*/
 typedef Myers<FindInfix, True, void> MyersUkkonen;
 
 /*!
@@ -139,19 +104,6 @@ typedef Myers<FindInfix, True, void> MyersUkkonen;
  * @signature typedef Myers<FindInfix, True, void> MyersUkkonenGlobal;
  */
 
-/**
-.Shortcut.MyersUkkonenGlobal:
-..status:deprecated, use $Myers<FindPrefix>$
-..cat:Searching
-..summary:Global (query-global, text-global) pattern matching without findBegin() support.
-..signature:MyersUkkonen
-..shortcutfor:Spec.Myers
-...signature:Myers<FindPrefix, void>
-..see:Spec.Myers
-..see:Shortcut.MyersUkkonenGlobalBanded
-..see:Shortcut.MyersUkkonen
-..see:Shortcut.MyersUkkonenBanded
-*/
 typedef Myers<FindPrefix, True, void> MyersUkkonenGlobal;
 
 /*!
@@ -162,20 +114,6 @@ typedef Myers<FindPrefix, True, void> MyersUkkonenGlobal;
  * @signature Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_>, True, void> MyersUkkonenBanded;
  */
 
-/**
-.Shortcut.MyersUkkonenBanded:
-..status:deprecated, use $Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_> >$
-..cat:Searching
-..summary:Semin-global (query-global, text-local) pattern matching without findBegin() support.
-..signature:MyersUkkonen
-..shortcutfor:Spec.Myers
-...signature:Myers<AlignTextBanded, void>
-..see:Spec.Myers
-..see:Shortcut.MyersUkkonen
-..see:Shortcut.MyersUkkonenGlobal
-..see:Shortcut.MyersUkkonenGlobalBanded
-*/
-
 /*!
  * @typedef MyersUkkonenGlobalBanded
  * @headerfile <seqan/find.h>
@@ -184,19 +122,6 @@ typedef Myers<FindPrefix, True, void> MyersUkkonenGlobal;
  * @signature Myers<AlignTextBanded<FindPrefix, NMatchesN_, NMatchesN_>, True, void> MyersUkkonenGlobalBanded;
  */
 
-/**
-.Shortcut.MyersUkkonenGlobalBanded:
-..status:deprecated, use $Myers<AlignTextBanded<FindPrefix, NMatchesN_, NMatchesN_> >$
-..cat:Searching
-..summary:global (query-global, text-global) pattern matching without findBegin() support.
-..signature:MyersUkkonen
-..shortcutfor:Spec.Myers
-...signature:Myers<MyersUkkonenGlobalBanded, void>
-..see:Spec.Myers
-..see:Shortcut.MyersUkkonen
-..see:Shortcut.MyersUkkonenGlobal
-..see:Shortcut.MyersUkkonenBanded
-*/
 typedef Myers<AlignTextBanded<FindInfix, NMatchesN_, NMatchesN_>, True, void> MyersUkkonenBanded;
 typedef Myers<AlignTextBanded<FindPrefix, NMatchesN_, NMatchesN_>, True, void> MyersUkkonenGlobalBanded;
 
@@ -809,9 +734,6 @@ SEQAN_CHECKPOINT
  * @return TScoreValue The score limit value.
  */
 
-///.Function.scoreLimit.param.pattern.type:Spec.Myers
-///.Function.scoreLimit.class:Spec.Myers
-
 template <typename TNeedle, typename TSpec, typename TFindBeginPatternSpec>
 inline int 
 scoreLimit(PatternState_<TNeedle, Myers<TSpec, True, TFindBeginPatternSpec> > const & state)
@@ -842,9 +764,6 @@ SEQAN_CHECKPOINT
  *
  * @return TScoreValue The score limit value.
  */
-
-///.Function.setScoreLimit.param.pattern.type:Spec.Myers
-///.Function.setScoreLimit.class.type:Spec.Myers
 
 template <typename TNeedle, typename TSpec, typename TFindBeginPatternSpec, typename TScoreValue>
 inline void 
@@ -882,9 +801,6 @@ SEQAN_CHECKPOINT
  * @return TScoreValue The score of the last match found using <tt>pattern</tt>.  If no match was found then the value
  *                     is undefined.
  */
-
-///.Function.getScore.param.pattern.type:Spec.Myers
-///.Function.getScore.class:Spec.Myers
 
 template <typename TNeedle, typename TSpec, typename TFindBeginPatternSpec>
 inline int 

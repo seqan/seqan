@@ -53,19 +53,6 @@ namespace seqan {
  * @tparam TValue The score value type to use.
  */
 
-/**
-.Spec.EditDistance
-..cat:Scoring
-..summary:Edit distance scoring scheme.
-..signature:Score<TValue, EditDistance>
-..param.TValue:The value type.
-...default:int
-..general:Class.Score
-..remarks:Semantically equivalent to a default contructed @Spec.Simple Score.Score<int, Simple>@.
-..remarks:$EditDistance$ is a synonym for @Tag.LevenshteinDistance@.
-..include:seqan/score.h
-*/
-
 // TODO(holtgrew): Should EditDistance better live here instead of basic_tag.h?
 // EditDistance is defined in basic_tag.h
 template <typename TValue>
@@ -83,17 +70,6 @@ public:
  *
  * @signature typedef Score<int, EditDistance> EditDistanceScore;
  */
-
-/**
-.Shortcut.EditDistanceScore:
-..cat:Scoring
-..summary:Edit distance scoring scheme.
-..signature:EditDistanceScore
-..shortcutfor:Spec.EditDistance
-...signature:Score<int, EditDistance>
-..see:Spec.EditDistance
-..include:seqan/score.h
-*/
 
 typedef Score<int, EditDistance> EditDistanceScore;
 

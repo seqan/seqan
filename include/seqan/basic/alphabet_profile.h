@@ -76,23 +76,6 @@ struct IteratorProxy;
  * @brief Array of ValueSize elements, giving counts in profile.
  */
 
-/**
-.Class.ProfileChar
-..summary:Alphabet type for profiles over another alphabet.
-..cat:Alphabets
-..signature:ProfileChar<TValue, TCount[, TSpec=void]>
-..param.TValue:The underlying alphabet type.
-..param.TCount:The type to use for counting.
-...default:nolink:$unsigned int$
-..param.TSpec:Specialization tag.
-...default:nolink:$void$
-..include:seqan/basic.h
-
-.Memvar.ProfileChar#count[]
-..class:Class.ProfileChar
-..summary:Array of @Metafunction.ValueSize@ elements, giving counts in profile.
- */
-
 template <typename TValue, typename TCount = unsigned, typename TSpec = void>
 class ProfileChar;
 
@@ -187,9 +170,6 @@ public:
  * @return VALUE Number of different values T can have.
  */
 
-///.Metafunction.ValueSize.param.T.type:Class.ProfileChar
-///.Metafunction.ValueSize.class:Class.ProfileChar
-
 template <typename TValue, typename TCount, typename TSpec>
 struct ValueSize<ProfileChar<TValue, TCount, TSpec> >
 {
@@ -218,21 +198,6 @@ struct ValueSize<ProfileChar<TValue, TCount, TSpec> >
  * typedef SourceValue<TProfileChar>::Type TType;  // Is Dna.
  * @endcode
  */
-
-/**
-.Metafunction.SourceValue
-..class:Class.ProfileChar
-..cat:Alphabets
-..summary:Returns underlying value for @Class.ProfileChar@.
-..signature:SourceValue<T>::Type
-..param.T:Type to query.
-...type:Class.ProfileChar
-..returns:The type of the underlying character.
-..example.code:
-typedef ProfileChar<Dna5>               TProfileChar;
-typedef SourceValue<TProfileChar>::Type TType;  // Is Dna.
-..include:seqan/basic.h
-*/
 
 template <typename T>
 struct SourceValue;

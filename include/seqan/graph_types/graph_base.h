@@ -63,20 +63,6 @@ namespace SEQAN_NAMESPACE_MAIN
  * @endcode
  */
 
-/**
-.Metafunction.EdgeDescriptor
-..class:Class.Graph
-..cat:Graph
-..summary:Type of an object that represents an edge descriptor.
-..signature:EdgeDescriptor<T>::Type
-..param.T:Type T must be a graph. All graphs use a pointer to an edge stump as an edge descriptor.
-..returns.param.Type:EdgeDescriptor type.
-..remarks.text:The edge descriptor is a unique handle to a given edge in a graph.
-It is used in various graph functions, e.g., to remove edges, to assign a cargo to an edge or to get the endpoints of an edge.
-It is also used to attach properties to edges.
-..example.code:EdgeDescriptor<Graph<> >::Type eD; //eD is an edge descriptor
-..include:seqan/graph_types.h
-*/
 template<typename T>
 struct EdgeDescriptor;
 
@@ -93,13 +79,6 @@ struct EdgeDescriptor;
  * @return Type The resulting cargo type.
  */
 
-/**
-.Metafunction.Cargo
-..class:Class.Graph
-..cat:Graph
-..example.code:Cargo<Graph<Directed<int> > >::Type c; //c has type int
-..include:seqan/graph_types.h
-*/
 template<typename T>
 struct Cargo;
 
@@ -123,18 +102,6 @@ struct Cargo;
  * @endcode
  */
 
-/**
-.Metafunction.EdgeType:
-..class:Class.Graph
-..cat:Graph
-..summary:Edge type of a graph object.
-..signature:EdgeType<T>::Type
-..param.T:Type T must be a graph.
-..returns.param.Type:Edge type.
-..remarks.text:The specific edge stump type that is used in a graph.
-..example.code:EdgeType<TGraph>::Type e; //e is an edge in TGraph
-..include:seqan/graph_types.h
-*/
 template<typename T>
 struct EdgeType;
 
@@ -160,19 +127,6 @@ struct EdgeType;
  * @endcode
  */
 
-/**
-.Metafunction.Alphabet:
-..class:Spec.Word Graph
-..class:Spec.Automaton
-..cat:Graph
-..summary:Access to the Alphabet type.
-..signature:Alphabet<T>::Type
-..param.T:Type T must be a type that uses some kind of alphabet internally.
-..returns.param.Type:Alphabet type.
-..remarks.text:Type T can be for example an automaton where the alphabet type describes the domain of the transition labels.
-..example.code:Alphabet<Graph<Automaton<Dna> > >::Type alph; //alph is of type Dna
-..include:seqan/graph_types.h
-*/
 template<typename T>
 struct Alphabet;
 
@@ -193,20 +147,6 @@ struct Alphabet;
  * counts edge ids and otherwise it manages a list of free and used ids.
  */
 
-/**
-.Metafunction.EdgeIdHandler:
-..class:Class.Graph
-..cat:Graph
-..summary:Type of an object that represents an Id Manager.
-..signature:EdgeIdHandler<T>::Type
-..param.T:A graph.
-...type:Class.Graph
-..returns.param.Type:IdManager type.
-..remarks.text:The exact IdManager type depends on the edge stump.
-If the edge stump is id-free the IdManager simply counts edge ids, 
-otherwise it manages a list of free and used ids.
-..include:seqan/graph_types.h
-*/
 template<typename T>
 struct EdgeIdHandler;
 
@@ -224,16 +164,6 @@ struct EdgeIdHandler;
  * @return Type The IdManager type.
  */
 
-/**
-.Metafunction.VertexIdHandler:
-..class:Class.Graph
-..cat:Graph
-..summary:Type of an object that represents an Id Manager.
-..signature:VertexIdHandler<T>::Type
-..param.T:A graph.
-..returns.param.Type:IdManager type.
-..include:seqan/graph_types.h
-*/
 template<typename T>
 struct VertexIdHandler;
 
@@ -294,66 +224,29 @@ typedef Tag<TreeTag_> const TreeTag;
  * @signature typedef Tag<DfsPreorder_> const DfsPreorder;
  */
 
-/**
-.Tag.Graph Iterator:
-..cat:Graph
-..summary:A specification of the iterator to traverse a graph.
-..include:seqan/graph_types.h
-*/
-
 //////////////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Tag.Graph Iterator.value.VertexIterator:
-	Traverses all vertices of a graph.
-..include:seqan/graph_types.h
-*/
 struct VertexIterator_;
 typedef Tag<VertexIterator_> const VertexIterator;
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Tag.Graph Iterator.value.EdgeIterator:
-	Traverses all edges of a graph.
-..include:seqan/graph_types.h
-*/
 struct EdgeIterator_;
 typedef Tag<EdgeIterator_> const EdgeIterator;
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Tag.Graph Iterator.value.OutEdgeIterator:
-	Traverses all edges of a graph given a vertex.
-..include:seqan/graph_types.h
-*/
 struct OutEdgeIterator_;
 typedef Tag<OutEdgeIterator_> const OutEdgeIterator;
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Tag.Graph Iterator.value.AdjacencyIterator:
-	Traverses all neighbors of a graph given a vertex.
-..include:seqan/graph_types.h
-*/
 struct AdjacencyIterator_;
 typedef Tag<AdjacencyIterator_> const AdjacencyIterator;
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Tag.Graph Iterator.value.BfsIterator:
-	Traverses all vertices of a graph in Bfs order.
-..include:seqan/graph_types.h
-*/
 struct BfsIterator_;
 typedef Tag<BfsIterator_> const BfsIterator;
 
 //////////////////////////////////////////////////////////////////////////////
-/**
-.Tag.Graph Iterator.value.DfsPreorder:
-	Traverses all vertices of a graph in Dfs order.
-..include:seqan/graph_types.h
-*/
 struct DfsPreorder_;
 typedef Tag<DfsPreorder_> const DfsPreorder;
 
@@ -371,9 +264,6 @@ template<typename TCargo = void, bool TList = true, bool TSource = false, bool T
 class EdgeStump;
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.VertexDescriptor.param.T.type:Class.EdgeStump
-///.Metafunction.VertexDescriptor.class:Class.EdgeStump
 
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec>
 struct VertexDescriptor<EdgeStump<TCargo, TList, TSource, TId, TSpec> > 
@@ -402,9 +292,6 @@ template<typename TIdType = unsigned int, typename TSpec = Default>
 class IdManager;
 
 //////////////////////////////////////////////////////////////////////////////
-
-///.Metafunction.EdgeIdHandler.param.T.type:Class.EdgeStump
-///.Metafunction.EdgeIdHandler.class:Class.EdgeStump
 
 template<typename TCargo, bool TList, bool TSource, typename TSpec>
 struct EdgeIdHandler<EdgeStump<TCargo, TList, TSource, false, TSpec> > {

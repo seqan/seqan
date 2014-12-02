@@ -90,20 +90,6 @@ inline void _printMask(String <unsigned> const &  mask,unsigned start, unsigned 
  * @note The types of the needle and the haystack have to match.
  */
 
-/**
-.Spec.AbndmAlgo:
-..summary: Approximate Backward Nondeterministic Dawg Matching algorithm. Approximate string matching using bit parallelism.
-..general:Class.Pattern
-..cat:Searching
-..signature:Pattern<TNeedle, AbndmAlgo>
-..param.TNeedle:The needle type.
-...type:Class.String
-..remarks.text:The types of the needle and the haystack have to match.
-..include:seqan/find.h
-*/
-
-///.Class.Pattern.param.TSpec.type:Spec.AbndmAlgo
-
 
 struct AbndmAlgo; 
 
@@ -275,8 +261,6 @@ host(Pattern<TNeedle, AbndmAlgo> const & me)
  *                     is undefined.
  */
 
-
-///.Function.getScore.param.pattern.type:Spec.AbndmAlgo
 
 template <typename TNeedle>
 int getScore(Pattern<TNeedle, AbndmAlgo > & me) 
@@ -609,9 +593,6 @@ inline bool _findAbndmLargeNeedle(TFinder & finder, Pattern<TNeedle, AbndmAlgo> 
  *
  * @return TScoreValue The score limit value.
  */
-///.Function.scoreLimit.param.pattern.type:Spec.AbndmAlgo
-///.Function.scoreLimit.class:Spec.AbndmAlgo
-
 template <typename TNeedle>
 inline int 
 scoreLimit(Pattern<TNeedle, AbndmAlgo > const & me)
@@ -634,9 +615,6 @@ scoreLimit(Pattern<TNeedle, AbndmAlgo > const & me)
  *
  * @return TScoreValue The score limit value.
  */
-
-///.Function.setScoreLimit.param.pattern.type:Spec.AbndmAlgo
-///.Function.setScoreLimit.class:Spec.AbndmAlgo
 
 template <typename TNeedle, typename TScoreValue>
 inline void 
