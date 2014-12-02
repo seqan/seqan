@@ -19,7 +19,7 @@ Duration
   40 min
 
 Prerequisites
-  :ref:`tutorial-input-output-overview`, :ref:`tutorial-lexical-casting`
+  :ref:`tutorial-input-output-overview`
 
 In this tutorial, you will learn how to use the :dox:`RecordReader` functions to easily create parsers for structured text file formats.
 We will first give a quick example for parsing a simple TSV format.
@@ -35,7 +35,7 @@ The following program reads a two-column TSV file from the standard input.
 The first column contains keys, the second one contains values.
 The program prints the data as ``${key} -> ${value}`` to stdout.
 
-.. includefrags:: demos/tutorial/parsing/example1.cpp
+.. includefrags:: demos/tutorial/custom_io/example1.cpp
 
 As you can see, using the :dox:`RecordReader` is straightforward.
 First, we construct the :dox:`RecordReader` to wrap ``std::cin`` as also described in the :ref:`tutorial-input-output-overview` tutorial.
@@ -67,7 +67,7 @@ Assignment 1
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/parsing/solution1.cpp
+        .. includefrags:: demos/tutorial/custom_io/solution1.cpp
 
 The Single-Pass ``RecordReader`` Class Interface
 ------------------------------------------------
@@ -92,7 +92,7 @@ The low-level API for the single-pass reader is as follows:
 The following program shows another example of single-pass I/O.
 We read a text file line-by-line and append the results to a :dox:`String` of :dox:`CharString CharStrings`.
 
-.. includefrags:: demos/tutorial/parsing/reader_single_demo.cpp
+.. includefrags:: demos/tutorial/custom_io/reader_single_demo.cpp
 
 Character Classes and the ``read*`` and ``skip*`` Functions
 -----------------------------------------------------------
@@ -366,7 +366,7 @@ Assignment 2
         The following program reads from stdin as long as the input forms a valid hexadecimal number.
         Note that you can send an end-of-file character to your application by pressing ``Ctrl + d``.
 
-        .. includefrags:: demos/tutorial/parsing/solution2.cpp
+        .. includefrags:: demos/tutorial/custom_io/solution2.cpp
 
         An example session.
         The ``Ctrl + d`` is shown as ``^D``.
@@ -402,7 +402,7 @@ Assignment 3
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/parsing/solution3.cpp
+        .. includefrags:: demos/tutorial/custom_io/solution3.cpp
 
         An example session.
         The ``Ctrl + d`` is shown as ``^D``.
@@ -445,37 +445,37 @@ Here, GFF2 files are TSV files with the following fields.
 The following example shows a GFF2 parser.
 First, include the necessary headers.
 
-.. includefrags:: demos/tutorial/parsing/parse_gff2.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_gff2.cpp
    :fragment: includes
 
 Then, define ``Gff2`` tag and record struct.
 
-.. includefrags:: demos/tutorial/parsing/parse_gff2.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_gff2.cpp
    :fragment: tags-structs
 
 We then implement a parser function for GFF records.
 Note that most of the code is error handling.
 
-.. includefrags:: demos/tutorial/parsing/parse_gff2.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_gff2.cpp
    :fragment: read-record
 
 On top of the record-reading routine, we implement reading of whole documents.
 This is quite simple.
 
-.. includefrags:: demos/tutorial/parsing/parse_gff2.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_gff2.cpp
    :fragment: read-batch
 
 Finally, some driver code to open a file and call the parser routine.
 In the end, we dump some of the information we just read.
 
-.. includefrags:: demos/tutorial/parsing/parse_gff2.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_gff2.cpp
    :fragment: main
 
 Let's look at an example run of the program.
 
 .. code-block:: console
 
-    # cat demos/tutorial/parsing /gff2_example.txt
+    # cat demos/tutorial/custom_io /gff2_example.txt
     IV     curated  mRNA   5506800 5508917 . + .   Transcript B0273.1; Note "Zn-Finger"
     IV     curated  5'UTR  5506800 5508999 . + .   Transcript B0273.1
     IV     curated  exon   5506900 5506996 . + .   Transcript B0273.1
@@ -483,7 +483,7 @@ Let's look at an example run of the program.
     IV     curated  exon   5506558 5506660 . + .   Transcript B0273.1
     IV     curated  exon   5506738 5506852 . + .   Transcript B0273.1
     IV     curated  3'UTR  5506852 5508917 . + .   Transcript B0273.1
-    # ./demos/tutorial/parsing/tutorial_parse_gff2 demos/tutorial/parsing/gff2_example.txt
+    # ./demos/tutorial/custom_io/tutorial_parse_gff2 demos/tutorial/custom_io/gff2_example.txt
     IV  +   0   5508917
     IV  +   0   5508999
     IV  +   0   5506996
@@ -538,34 +538,34 @@ The following demo shows the parsers, code to dump the tree from the internal da
 
 First, the necessary includes.
 
-.. includefrags:: demos/tutorial/parsing/parse_newick.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_newick.cpp
    :fragment: includes
 
 Then, we define a ``Newick`` tag and a struct for branch labels.
 
-.. includefrags:: demos/tutorial/parsing/parse_newick.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_newick.cpp
    :fragment: tags-structs
 
 In a next step, we write a ``readFloatLiteral()`` helper function that is reusable.
 
-.. includefrags:: demos/tutorial/parsing/parse_newick.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_newick.cpp
    :fragment: read-float
 
 The code for reading a Newick forest is recursive and a bit lengthy but not too complex.
 We load such forests into strings of :dox:`Tree` objects.
 Additionally, we have a vertex map for the branch distances and the vertex labels for each tree.
 
-.. includefrags:: demos/tutorial/parsing/parse_newick.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_newick.cpp
    :fragment: reading
 
 The code for dumping a Newick forest is also quite simple, if lengthy because of error checks.
 
-.. includefrags:: demos/tutorial/parsing/parse_newick.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_newick.cpp
    :fragment: writing
 
 Finally, the ``main()`` routine.
 
-.. includefrags:: demos/tutorial/parsing/parse_newick.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_newick.cpp
    :fragment: main
 
 Let's look at an example run.
@@ -574,14 +574,14 @@ In the written result, the order of the children has changed.
 
 .. code-block:: console
 
-    # cat demos/tutorial/parsing/newick_example.txt
+    # cat demos/tutorial/custom_io/newick_example.txt
     (a,('Darwin''s Bulldog (Huxley)',c):-1.92e19)'The ''Root''':5;
     ((a_node,
       'another node',
       bird:0.3134)higher_node:4.5,
      c):1.03e10;
     ((<sub>),(,(</sub>,),));
-    # tutorial_parse_newick demos/tutorial/parsing/newick_example.txt
+    # tutorial_parse_newick demos/tutorial/custom_io/newick_example.txt
     ((c,'Darwin''s Bulldog (Huxley)'):-1.92e+19,a)'The ''Root''':5;
     (c,(bird:0.3134,'another node',a_node)higher_node:4.5):1.03e+10;
     ((,(<sub>,),),(</sub>));
@@ -612,12 +612,12 @@ Then, we build a batch-reading API that reads such a file into a sequence of rec
 
 The program starts with including the required headers.
 
-.. includefrags:: demos/tutorial/parsing/parse_blastn.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_blastn.cpp
    :fragment: includes
 
 Then, we define a record for the file format ``BlastnTab`` and tabs for the comment and alignment record types.
 
-.. includefrags:: demos/tutorial/parsing/parse_blastn.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_blastn.cpp
    :fragment: tags
 
 Next, we define a record type.
@@ -627,37 +627,37 @@ See the (upcoming, TODO) SAM record I/O for the implementation of one record typ
 
 We also create a simple function to dump the record to a stream.
 
-.. includefrags:: demos/tutorial/parsing/parse_blastn.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_blastn.cpp
    :fragment: record
 
 Then, we define :dox:`RecordReader#nextIs` functions for the ``BlastnTabComment`` and ``BlastnTabAlignment`` tags, and their represented record types.
 
-.. includefrags:: demos/tutorial/parsing/parse_blastn.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_blastn.cpp
    :fragment: next-is
 
 Then, we implement a record-reading API on top of the ``skip*`` and ``read*`` functions.
 Note that the error handling bloats up the number of required lines but is necessary.
 
-.. includefrags:: demos/tutorial/parsing/parse_blastn.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_blastn.cpp
    :fragment: read-record
 
 On top of the record-reading API, we implement a batch-reading function.
 This function turns out to be fairly simple.
 
-.. includefrags:: demos/tutorial/parsing/parse_blastn.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_blastn.cpp
    :fragment: batch-read
 
 In the ``main()`` routine, we can then simply open a ``std::fstream``, create a :dox:`RecordReader`.
 Then, use the batch-reading API to read the whole file into main memory and write it to *stdout* again.
 
-.. includefrags:: demos/tutorial/parsing/parse_blastn.cpp
+.. includefrags:: demos/tutorial/custom_io/parse_blastn.cpp
    :fragment: main
 
 The program's output looks as follow:
 
 .. code-block:: console
 
-    # ./demos/tutorial/parsing/tutorial_parse_blastn ../../demos/tutorial/parsing/blast_example.txt
+    # ./demos/tutorial/custom_io/tutorial_parse_blastn ../../demos/tutorial/custom_io/blast_example.txt
     query name: gi|9626621|ref|NC_001460.1|
     subject name: gi|9626158|ref|NC_001405.1|
     identity: 81.13
@@ -719,7 +719,7 @@ This will reset the position of the reader to the one where :dox:`DoublePassReco
 
 Here is an example for using double-pass I/O:
 
-.. includefrags:: demos/tutorial/parsing/reader_double_demo.cpp
+.. includefrags:: demos/tutorial/custom_io/reader_double_demo.cpp
 
 Note that all file contents read in the first pass are buffered when operating on streams.
 Thus, double-pass I/O can have a high memory usage on streams when having large passes.
