@@ -25,7 +25,7 @@ These classes provide an API for accessing sequence files in different file form
 
 
 FASTA/FASTQ Format
--------------------
+------------------
 
 FASTA/FASTQ are record-based files.
 For example, a FASTQ record contains the sequence id, the sequence characters, and a quality value for each character.
@@ -86,13 +86,6 @@ Assignment 1
 Handling Errors
 ---------------
 
-Our program does not handle yet possible I/O errors.
-These include: the file permissions forbid a certain operations, the file does not exist, there is a disk reading error, a file read from a remote location gets deleted while we are reading from it, or there is a physical error in the hard disk.
-The :dox:`SeqFileIn::SeqFileIn SeqFileIn constructor` and :dox:`SeqFileIn#readRecord` throw :dox:`IOError` exceptions on failure.
-Therefore, it is sufficient to catch them to handle errors properly.
-
-.. COMMENT Conversely, function :dox:`SeqFileIn#open` returns a ``bool`` to indicate whether the file was opened successfully or not.
-
 The program will now read as follows:
 
 .. includefrags:: demos/tutorial/seq_io/example2.cpp
@@ -117,15 +110,9 @@ Assignment 2
 Reading Files
 -------------
 
-There are three use cases for reading sequences:
-
-#. we want to read the file **record by record**;
-#. we want to read a **batch of records** into memory, e.g. 100k records at a time;
-#. we want to read **all records** from the file into memory.
-
 These use cases are supported by the functions :dox:`SeqFileIn#readRecord` and :dox:`SeqFileIn#readRecords`.
-These functions are available in two variants:
 
+These functions are available in two variants:
 #. the first variant accepts only the sequence identifier and sequence characters, besides the :dox:`SeqFileIn` object;
 #. the second variant accepts an additional :dox:`CharString` for a PHRED base quality string.
 
@@ -338,22 +325,6 @@ Assignment 6
      .. container:: foldable
 
         .. includefrags:: demos/tutorial/seq_io/solution6.cpp
-
-Compressed Files
-----------------
-
-All above examples and your solutions to the assignments **already have compression support built-in**, if the compression libraries are available!
-For accessing compressed files, you need to have zlib installed for reading ``.gz`` files and libbz2 for reading ``.bz2`` files.
-
-If you are using Linux or Mac Os X and you followed the :ref:`tutorial-getting-started` tutorial closely then you should have already installed the necessary libraries.
-On Windows, you will need to follow :ref:`how-to-install-contribs-on-windows` to get the necessary libraries.
-
-You can check whether you have installed the libraries to use zlib and libbz2 by running CMake again.
-Simply call ``cmake .`` in your build directory.
-At the end of the output, there will be a section "SeqAn Features".
-If you can read ``ZLIB - FOUND`` and ``BZIP2 - FOUND`` then you can use zlib and libbz2 in your programs.
-
-Congratulations, you have now learned to write simple and robust sequence I/O code using SeqAn!
 
 Next Steps
 ----------

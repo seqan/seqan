@@ -20,20 +20,106 @@ Duration
 Prerequisites
   :ref:`tutorial-sequences`
 
-Overview
---------
-
-#. Adaptions of system library provided file and stream routines to the SeqAn :dox:`StreamConcept` concept.
-#. Code for tokenization and parsing.
-#. Conversion from textual number representations to numeric values (aka "lexical casting").
-
 
 Files
 -----
 
 Most file formats in bioinformatics are structured as lists of records.
 Often, they start out with a header that itself contains different header records.
-For example, the SAM format starts with an optional header where users can specify the contigs of their reference sequence.
+For example, the Binary Sequence Alignment/Map (BAM) format starts with an header that lists all contigs of the reference sequence.
+The BAM header is followed by a list of BAM alignment records that contain query sequences aligned to some reference contig.
+
+SeqAn allows to read or write record-structured files through two types of classes: :dox:`FileIn` and :dox:`FileOut`.
+Classes of type :dox:`FileIn` allow to read files, whereas classes of type :dox:`FileOut` allow to write files.
+For example, the class :dox:`BamFileIn` allows to read a BAM file, whereas the class :dox:`BamFileOut` allows to write a BAM file.
+Note how these types of classes **do not allow to read and write the same file at the same time**.
+
+This tutorial shows the basic functionalities provided by :dox:`FileIn` and :dox:`FileOut` class types.
+In particular, this tutorial adopts the classes :dox:`BamFileIn` and :dox:`BamFileOut` as concrete types.
+Nonetheless, these functionalities are independent from the particular file format and thus valid for all record-based file formats supported by SeqAn.
+The demo application shown here is a simple SAM to BAM converter.
+
+
+Includes
+""""""""
+
+Support for a specific format comes by including a specific header file.
+In this case, we include the BAM header file:
+
+.. includefrags:: demos/tutorial/base_io/example1.cpp
+   :fragment: include
+
+
+Opening and Closing Files
+"""""""""""""""""""""""""
+
+Classes :dox:`FileIn` and :dox:`FileOut` allow to :dox:`open` and :dox:`close` files.
+
+A file can be opened by passing the filename to the constructor:
+
+.. includefrags:: demos/tutorial/base_io/example1.cpp
+   :fragment: ctor
+
+Alternatively, a file can be opened after construction by calling :dox:`open`:
+
+.. includefrags:: demos/tutorial/base_io/example1.cpp
+   :fragment: open
+
+Noe that any file is closed *automatically* whenever the :dox:`FileIn` or :dox:`FileOut` object goes out of scope.
+Eventually, a file can be closed *manually* by calling :dox:`close`.
+
+Accessing the Header
+""""""""""""""""""""
+
+To access the header, we need an object representing the format-specific header.
+In this case, we use an object of type :dox:`BamHeader`.
+The content of this object can be ignored for now, it will be covered in the :ref:`tutorial-sam-bam-io` tutorial.
+
+.. includefrags:: demos/tutorial/base_io/example1.cpp
+   :fragment: header
+
+Function :dox:`BamFileIn#readRecord` reads the header from the input SAM file and :dox:`BamFileOut#writeRecord` writes it to the BAM output file.
+
+Accessing the Records
+"""""""""""""""""""""
+
+There are three use cases for reading or writing record-based files:
+
+#. read or write the file **record by record**;
+#. read or write a **batch of records**, e.g. 100k records at a time;
+#. read or write **all records** from or to the file.
+
+These use cases are supported respectively by the functions :dox:`readRecord` and :dox:`readRecords`, or :dox:`writeRecord` and :dox:`writeRecords`.
+
+In this example, we are going to read and write the files record by record.
+Again, to access each record, we need an object representing the format-specific record.
+In this case, we use an object of type :dox:`BamAlignmentRecord`.
+Each call to :dox:`BamFileIn#readRecord` reads one record from the SAM input file and moves the :dox:`BamFileIn` forward.
+Each call to :dox:`BamFileOut#writeRecord` writes the record just read to the BAM output files.
+We check the end of the input file by calling :dox:`BamFileIn#atEnd`.
+
+.. includefrags:: demos/tutorial/base_io/example1.cpp
+   :fragment: records
+
+
+Error Handling
+--------------
+
+Exceptions.
+Possible I/O errors include: the file permissions forbid a certain operations, the file does not exist, there is a disk reading error, a file read from a remote location gets deleted while we are reading from it, or there is a physical error in the hard disk.
+
+
+I/O Errors
+""""""""""
+
+The :dox:`SeqFileIn::SeqFileIn SeqFileIn constructor` and :dox:`SeqFileIn#readRecord` throw :dox:`IOError` exceptions on failure.
+Therefore, it is sufficient to catch them to handle errors properly.
+
+.. COMMENT Conversely, function :dox:`SeqFileIn#open` returns a ``bool`` to indicate whether the file was opened successfully or not.
+
+Parsing Errors
+""""""""""""""
+
 
 Streams
 -------
@@ -44,10 +130,22 @@ In SeqAn, the concept :dox:`StreamConcept` provides an interface for such stream
 SeqAn provides adaptions from the standard C and C++ file interfaces to the :dox:`StreamConcept` concept.
 Furthermore, SeqAn provides the :dox:`Stream` class and specializations for accessing ``char`` arrays and zlib and bzip compressed files as streams.
 
-Error Handling
---------------
+Standard Input/Output
+"""""""""""""""""""""
 
-Exceptions.
+Compressed Files
+""""""""""""""""
+
+All above examples and your solutions to the assignments **already have compression support built-in**, if the compression libraries are available!
+For accessing compressed files, you need to have zlib installed for reading ``.gz`` files and libbz2 for reading ``.bz2`` files.
+
+If you are using Linux or Mac Os X and you followed the :ref:`tutorial-getting-started` tutorial closely then you should have already installed the necessary libraries.
+On Windows, you will need to follow :ref:`how-to-install-contribs-on-windows` to get the necessary libraries.
+
+You can check whether you have installed the libraries to use zlib and libbz2 by running CMake again.
+Simply call ``cmake .`` in your build directory.
+At the end of the output, there will be a section "SeqAn Features".
+If you can read ``ZLIB - FOUND`` and ``BZIP2 - FOUND`` then you can use zlib and libbz2 in your programs.
 
 Next Steps
 ----------
