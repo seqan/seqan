@@ -189,8 +189,6 @@ Assignment 3
         .. includefrags:: demos/tutorial/seq_io/solution3.cpp
 
 
-
-
 Accessing Qualities
 -------------------
 
