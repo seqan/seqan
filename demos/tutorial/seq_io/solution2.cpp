@@ -1,5 +1,3 @@
-#include <iostream>
-#include <seqan/sequence.h>
 #include <seqan/seq_io.h>
 
 int main(int argc, char const ** argv)
@@ -19,15 +17,18 @@ int main(int argc, char const ** argv)
         std::cerr << "ERROR: Could not open the file.\n";
         return 1;
     }
+
     try
     {
         readRecord(id, seq, seqFileIn);
-        std::cout << id << '\t' << seq << '\n';
     }
-    catch (std::runtime_error &e)
+    catch (seqan::IOError const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;
     }
+
+    std::cout << id << '\t' << seq << '\n';
+
     return 0;
 }
