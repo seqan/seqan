@@ -163,7 +163,7 @@ The article :ref:`build-manual-integration-with-your-own-build-system` contains 
 .. rubric:: :rubric-heading2:`Input/Output`
 
 :ref:`tutorial-input-output-overview`
-  This article gives an overview of the I/O functionality in SeqAn.
+  This article gives an overview of the file I/O functionality in SeqAn.
 
 :ref:`tutorial-sequence-io`
   This tutorial explains how to read and write FASTA, FASTQ, EMBL and GenBank sequence files.
