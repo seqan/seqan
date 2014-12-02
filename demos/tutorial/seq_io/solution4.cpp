@@ -16,11 +16,12 @@ int main(int argc, char const ** argv)
     }
 
     seqan::StringSet<seqan::CharString> ids;
-    seqan::StringSet<seqan::String<seqan::Dna5Q> > > seqsWithQuals;
+    seqan::StringSet<seqan::Dna5String> seqs;
+    seqan::StringSet<seqan::CharString> quals;
 
     try
     {
-        readRecords(ids, seqsWithQuals, seqFileIn);
+        readRecords(ids, seqs, quals, seqFileIn);
     }
     catch (seqan::IOError const & e)
     {
@@ -29,7 +30,7 @@ int main(int argc, char const ** argv)
     }
 
     for (unsigned i = 0; i < length(ids); ++i)
-        std::cout << id[i] << '\t' << seq[i] << << qual[i] << '\n';
+        std::cout << ids[i] << '\t' << seqs[i] << << quals[i] << '\n';
 
     return 0;
 }
