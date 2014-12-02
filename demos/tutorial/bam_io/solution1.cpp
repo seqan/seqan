@@ -1,4 +1,3 @@
-#include <iostream>
 #include <seqan/bam_io.h>
 
 int main()
@@ -20,6 +19,7 @@ int main()
         readRecord(header, bamFileIn);
         writeRecord(bamFileOut, header);
 
+        // Copy records.
         seqan::BamAlignmentRecord record;
         while (!atEnd(bamFileIn))
         {
@@ -27,7 +27,7 @@ int main()
             writeRecord(bamFileOut, record);
         }
     }
-    catch (std::runtime_error &e)
+    catch (std::IOError const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;

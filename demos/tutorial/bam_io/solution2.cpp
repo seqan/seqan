@@ -1,9 +1,8 @@
-#include <iostream>
 #include <seqan/bam_io.h>
 
 int main()
 {
-    // Open input file, BamFileIn can read SAM and BAM files.
+    // Open input file.
     seqan::BamFileIn bamFileIn;
     if (!open(bamFileIn, "example.sam"))
     {
@@ -13,10 +12,11 @@ int main()
 
     try
     {
-        // Copy header.
+        // Read header.
         seqan::BamHeader header;
         readRecord(header, bamFileIn);
 
+        // Read records.
         unsigned numUnmappedReads = 0;
         seqan::BamAlignmentRecord record;
         while (!atEnd(bamFileIn))
@@ -25,14 +25,14 @@ int main()
             if (hasFlagUnmapped(record))
                 numUnmappedReads += 1;
         }
-
-        std::cout << "Number of unmapped reads: " << numUnmappedReads << "\n";
     }
-    catch (std::runtime_error &e)
+    catch (seqan::IOError const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;
     }
+
+    std::cout << "Number of unmapped reads: " << numUnmappedReads << "\n";
 
     return 0;
 }
