@@ -5,8 +5,8 @@
 
 .. _tutorial-custom-io:
 
-Parsing
-=======
+Custom File I/O
+===============
 
 Learning Objective
   This tutorial will explain how to use the class :dox:`RecordReader` for the parsing of text file fo

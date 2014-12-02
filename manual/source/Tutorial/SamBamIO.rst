@@ -18,10 +18,10 @@ Duration
   1 h (45 min if you know the SAM format)
 
 Prerequisites
-  :ref:`tutorial-sequences`, :ref:`tutorial-input-output-overview`, Exposure to the `SAM Format Specification <http://samtools.sourceforge.net/SAM1.pdf>`_
+  :ref:`tutorial-sequences`, :ref:`tutorial-input-output-overview`, `SAM Format Specification <http://samtools.sourceforge.net/SAM1.pdf>`_
 
-This tutorial deals with how to easily read and write SAM and BAM files using the :dox:`BamFileIn` and :dox:`BamFileOut` classes.
-It starts out with a quick reminder on the structure of SAM (and also BAM) files and will then continue with how to read and write SAM/BAM files and access the tags of a record.
+This tutorial shows how to read and write SAM and BAM files using the :dox:`BamFileIn` and :dox:`BamFileOut` classes.
+It starts out with a quick reminder on the structure of SAM (and also BAM) files and continues with how to read and write SAM/BAM files and access the tags of a record.
 
 .. important::
 

@@ -5,11 +5,11 @@
 
 .. _tutorial-input-output-overview:
 
-I/O Overview
-============
+File I/O Overview
+=================
 
 Learning Objective
-  This article will give you an overview of the I/O in SeqAn.
+  This article will give you an overview of the file I/O in SeqAn.
 
 Difficulty
   Basic
@@ -21,8 +21,8 @@ Prerequisites
   :ref:`tutorial-sequences`
 
 
-Files
------
+Overview
+--------
 
 Most file formats in bioinformatics are structured as lists of records.
 Often, they start out with a header that itself contains different header records.
@@ -36,9 +36,12 @@ Note how these types of classes **do not allow to read and write the same file a
 
 This tutorial shows the basic functionalities provided by :dox:`FileIn` and :dox:`FileOut` class types.
 In particular, this tutorial adopts the classes :dox:`BamFileIn` and :dox:`BamFileOut` as concrete types.
-Nonetheless, these functionalities are independent from the particular file format and thus valid for all record-based file formats supported by SeqAn.
-The demo application shown here is a simple SAM to BAM converter.
+Nonetheless, **these functionalities are independent from the particular file format** and thus valid for all record-based file formats supported by SeqAn.
 
+Basic I/O
+---------
+
+The demo application shown here is a simple SAM to BAM converter.
 
 Includes
 """"""""
@@ -101,37 +104,111 @@ We check the end of the input file by calling :dox:`BamFileIn#atEnd`.
 .. includefrags:: demos/tutorial/base_io/example1.cpp
    :fragment: records
 
+Our small SAM to BAM conversion demo is ready.
+The tool still lacks error handling, reading from standard input and writing to standard output.
+You are now going to add these features.
 
 Error Handling
 --------------
 
-Exceptions.
-Possible I/O errors include: the file permissions forbid a certain operations, the file does not exist, there is a disk reading error, a file read from a remote location gets deleted while we are reading from it, or there is a physical error in the hard disk.
+We distinguish between two types of errors: *low-level* file I/O errors and *high-level* file format errors.
+Possible file I/O errors can affect both input and output files.
+Example of errors are: the file permissions forbid a certain operations, the file does not exist, there is a disk reading error, a file being read gets deleted while we are reading from it, or there is a physical error in the hard disk.
+Conversely, file format errors can only affect input files.
+Such errors arise whenever the input file content is damaged or incorrect.
 
+Error handling in SeqAn is implemented by means of exceptions.
+Classes of types :dox:`FileIn` and :dox:`FileOut` throw exceptions of type :dox:`IOError` to signal *low-level* file I/O errors and exceptions of type :dox:`ParseError` to signal *high-level* input file format errors.
 
 I/O Errors
 """"""""""
 
-The :dox:`SeqFileIn::SeqFileIn SeqFileIn constructor` and :dox:`SeqFileIn#readRecord` throw :dox:`IOError` exceptions on failure.
-Therefore, it is sufficient to catch them to handle errors properly.
+All :dox:`FileIn` and :dox:`FileOut` constructors and functions throw :dox:`IOError` exceptions on failure.
+Therefore, it is sufficient to catch these exceptions to handle any error properly.
 
-.. COMMENT Conversely, function :dox:`SeqFileIn#open` returns a ``bool`` to indicate whether the file was opened successfully or not.
+There is only one exception to this rule.
+Function :dox:`FileIn#open` returns a ``bool`` to indicate whether the file was opened successfully or not.
+
+
+Assignment 1
+""""""""""""
+
+.. container:: assignment
+
+   Type
+     Application
+
+   Objective
+     Improve the program above to handle I/O errors.
+
+   Solution
+     .. container:: foldable
+
+        .. includefrags:: demos/tutorial/base_io/solution1.cpp
+
 
 Parsing Errors
 """"""""""""""
+
+Functions :dox:`FileIn#readRecord` and :dox:`FileIn#readRecords` throw :dox:`ParseError` exceptions on failure.
+
+
+Assignment 2
+""""""""""""
+
+.. container:: assignment
+
+   Type
+     Application
+
+   Objective
+     Improve the program above to handle parsing errors.
+
+   Solution
+     .. container:: foldable
+
+        .. includefrags:: demos/tutorial/base_io/solution2.cpp
 
 
 Streams
 -------
 
-In computer science, it is common to call the abstraction to such data sources **streams**.
-In SeqAn, the concept :dox:`StreamConcept` provides an interface for such stream data types.
+The constructors of :dox:`FileIn` and :dox:`FileOut` accept not only filenames, but also standard C++ streams or any other class fulfilling the :dox:`StreamConcept` concept.
+For instance, you can pass `std::cin` to any :dox:`FileIn::FileIn FileIn constructor` and `std::cout` to any :dox:`FileIn::FileOut FileOut constructor`.
 
-SeqAn provides adaptions from the standard C and C++ file interfaces to the :dox:`StreamConcept` concept.
-Furthermore, SeqAn provides the :dox:`Stream` class and specializations for accessing ``char`` arrays and zlib and bzip compressed files as streams.
+Assignment 3
+""""""""""""
 
-Standard Input/Output
-"""""""""""""""""""""
+.. container:: assignment
+
+   Type
+     Application
+
+   Objective
+     Improve the program above to read from standard input.
+
+   Solution
+     .. container:: foldable
+
+        .. includefrags:: demos/tutorial/base_io/solution3.cpp
+
+
+Assignment 4
+""""""""""""
+
+.. container:: assignment
+
+   Type
+     Application
+
+   Objective
+     Improve the program above to write to standard output.
+
+   Solution
+     .. container:: foldable
+
+        .. includefrags:: demos/tutorial/base_io/solution4.cpp
+
 
 Compressed Files
 """"""""""""""""
