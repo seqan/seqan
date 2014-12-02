@@ -307,32 +307,18 @@ Assignment 3
 
 .. container:: assignment
 
-   Writing Tags
+   Reading Tags
 
    Type
      Review
 
    Objective
-     Modify the solution of Assignment 3 to also write the ``"NH"`` tag.
-     This tag stores an ``int`` value that is the number of records for this query.
-     In our case, the value is always ``1``.
-
-     The first lines of the result should read as follows:
-
-     ::
-
-         @HD VN:1.4
-         @SQ SN:REF  LN:29
-         REF_0_12    0   REF 1   *   12= *   0   *   CCCGATGAGCAC    *   NH:i:1
-         REF_1_13    0   REF 2   *   12= *   0   *   CCGATGAGCACA    *   NH:i:1
-         REF_2_14    0   REF 3   *   12= *   0   *   CGATGAGCACAC    *   NH:i:1
-         REF_3_15    0   REF 4   *   12= *   0   *   GATGAGCACACG    *   NH:i:1
-
+     Modify the solution of Assignment 2 to count the number of records having the ``"XX"`` tag.
 
    Solution
      .. container:: foldable
 
-        .. includefrags:: demos/tutorial/bam_io/solution4.cpp
+        .. includefrags:: demos/tutorial/bam_io/solution3.cpp
 
 
 Next Steps
