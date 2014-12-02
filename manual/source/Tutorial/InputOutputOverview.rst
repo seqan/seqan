@@ -15,7 +15,7 @@ Difficulty
   Basic
 
 Duration
-  20 min
+  30 min
 
 Prerequisites
   :ref:`tutorial-sequences`
@@ -170,6 +170,28 @@ Assignment 2
         .. includefrags:: demos/tutorial/base_io/solution2.cpp
 
 
+File Formats
+------------
+
+.. warning::
+    Describe file format detection of FileIn and FileOut.
+
+Compressed Files
+""""""""""""""""
+
+All above examples and your solutions to the assignments **already have compression support built-in**, if the compression libraries are available!
+For accessing compressed files, you need to have zlib installed for reading ``.gz`` files and libbz2 for reading ``.bz2`` files.
+
+If you are using Linux or Mac Os X and you followed the :ref:`tutorial-getting-started` tutorial closely then you should have already installed the necessary libraries.
+On Windows, you will need to follow :ref:`how-to-install-contribs-on-windows` to get the necessary libraries.
+
+You can check whether you have installed the libraries to use zlib and libbz2 by running CMake again.
+Simply call ``cmake .`` in your build directory.
+At the end of the output, there will be a section "SeqAn Features".
+If you can read ``ZLIB - FOUND`` and ``BZIP2 - FOUND`` then you can use zlib and libbz2 in your programs.
+
+
+
 Streams
 -------
 
@@ -210,19 +232,6 @@ Assignment 4
         .. includefrags:: demos/tutorial/base_io/solution4.cpp
 
 
-Compressed Files
-""""""""""""""""
-
-All above examples and your solutions to the assignments **already have compression support built-in**, if the compression libraries are available!
-For accessing compressed files, you need to have zlib installed for reading ``.gz`` files and libbz2 for reading ``.bz2`` files.
-
-If you are using Linux or Mac Os X and you followed the :ref:`tutorial-getting-started` tutorial closely then you should have already installed the necessary libraries.
-On Windows, you will need to follow :ref:`how-to-install-contribs-on-windows` to get the necessary libraries.
-
-You can check whether you have installed the libraries to use zlib and libbz2 by running CMake again.
-Simply call ``cmake .`` in your build directory.
-At the end of the output, there will be a section "SeqAn Features".
-If you can read ``ZLIB - FOUND`` and ``BZIP2 - FOUND`` then you can use zlib and libbz2 in your programs.
 
 Next Steps
 ----------
