@@ -51,37 +51,23 @@ struct FileFormat;
 template <typename TSmartFile, typename TStorageSpec>
 struct SmartFileContext;
 
+template <typename TObject, typename TStorageSpec>
+struct StorageSwitch;
+
 // ============================================================================
 // Classes
 // ============================================================================
 
-// TODO(holtgrew): Document or mark as internal by adding underscore. Add an explaining sentence anyway.
-
-template <typename TObject, typename TStorageSpec>
-struct StorageSwitch
-{
-    typedef TObject Type;
-};
-
-template <typename TObject, typename TSpec>
-struct StorageSwitch<TObject, Dependent<TSpec> >
-{
-    typedef TObject * Type;
-};
-
 // ----------------------------------------------------------------------------
 // Class SmartFile
 // ----------------------------------------------------------------------------
-
-// TODO(holtgrew): Dave/Enrico, please double-check, especially the context stuff.
-// TODO(holtgrew): We definitely need extensive explanation and tutorials for this, especially the context stuff.
 
 /*!
  * @class SmartFile
  * @implements InputStreamConcept
  * @implements OutputStreamConcept
  * @headerfile <seqan/stream.h>
- * @brief Base class for high-level I/O functions.
+ * @brief Base class for formatted file I/O.
  *
  * @signature template <typename TFileType, typename TDirection[, typename TSpec]>
  *            struct SmartFile;
@@ -94,24 +80,22 @@ struct StorageSwitch<TObject, Dependent<TSpec> >
  * It depends on <tt>TDirection</tt> whether it implements @link InputStreamConcept @endlink or
  * @link OutputStreamConcept @endlink.
  *
- * SmartFile bundles the necessary information for easily building (aka metaprogramming) easy-to use high-level I/O
- * functionality:
+ * SmartFile provides the following I/O operations on formatted files:
  *
  * <ul>
- * <li>An underlying @link VirtualStream @endlink that is used for the I/O and allows attaching to
- *     already open streams as well as opening and owning the stream.  Further, transparent
- *     access to compressed files is possible.</li>
- * <li>A @link StreamConcept#DirectionIterator direction iterator @endlink for reading/writing.</li>
- * <li>A <b>context</b> used for the I/O.  The context object can be retrieved using @link SmartFile#context context
- *     @endlink.  This context can be used for storing contig and sample names, in the case of VCF I/O, for example,
- *     @link NameStoreCache @endlink objects, and buffers.  Each SmartFile has exactly one context.</li>
- * <li>The context type can be constructed both as dependent and independent using @link SmartFile#SmartFileContext
- *     SmartFileContext @endlink.  Each SmartFile stores an independent context and a dependent context.  When
- *     constructing with another SmartFile or another SmartFile's context, the dependent context of this SmartFile is
- *     set to depend on the dependent context of the other Smart File.  Otherwise, it is set to depend on this
- *     SmartFile's independent context.  This allows chaining of contexts, e.g. for updating the contig names of an
- *     output smart file from an input smart file.</li>
+ * <li>Open a file given its filename or attach to an existing stream like stdin/stdout.</li>
+ * <li>Guess the file format from the file content or filename extension.</li>
+ * <li>Set the file format manually.</li>
+ * <li>Access compressed or uncompressed files.</li>
  * </ul>
+ *
+ * SmartFile encapsulates a @link VirtualStream @endlink and provides access to its @link StreamConcept#DirectionIterator direction iterator @endlink.
+ * Each instance of SmartFile keeps a file context to help reading/writing the formatted file.</li>
+ *
+ * @see SeqFileIn
+ * @see SeqFileOut
+ * @see BamFileIn
+ * @see BamFileOut
  */
 
 template <typename TFileType, typename TDirection, typename TSpec = void>
@@ -129,7 +113,6 @@ struct SmartFile
     TOwnerContext       data_context;
     TDependentContext   context;
 
-    // TODO(holtgrew): Only documented first few constructors, must be extended after describing the contexts concept.
     /*!
      * @fn SmartFile::SmartFile
      * @brief Provides default construction.
@@ -294,6 +277,9 @@ struct DirectionIterator<SmartFile<TFileType, TDirection, TSpec>, TDirection>
 // ----------------------------------------------------------------------------
 // Metafunction SmartFileContext
 // ----------------------------------------------------------------------------
+// SmartFile holds a Context either as owner or dependent (see StorageSwitch below).
+// Note that the SmartFile class contains twice the context: both as owner and dependent.
+// NOTE(esiragusa): A statically-typed Holder should abstract this pattern.
 
 /*!
  * @mfn SmartFile#SmartFileContext
@@ -311,6 +297,27 @@ template <typename TSmartFile, typename TStorageSpec>
 struct SmartFileContext
 {
     typedef Nothing Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction StorageSwitch
+// ----------------------------------------------------------------------------
+// This metafunction is used to switch the relationship between the SmartFile
+// and its Context among aggregation and composition.
+// NOTE(esiragusa): there was a more generic metafunction Member<> to do this.
+
+// Composition (owner).
+template <typename TObject, typename TStorageSpec>
+struct StorageSwitch
+{
+    typedef TObject Type;
+};
+
+// Aggregation (dependent).
+template <typename TObject, typename TSpec>
+struct StorageSwitch<TObject, Dependent<TSpec> >
+{
+    typedef TObject * Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -377,8 +384,6 @@ format(SmartFile<TFileType, TDirection, TSpec> & file)
 // Function setFormat()
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Document me, including demo snippet.
-
 template <typename TFileType, typename TDirection, typename TSpec, typename TFormat>
 inline void
 setFormat(SmartFile<TFileType, TDirection, TSpec> & file, TFormat format)
@@ -389,8 +394,6 @@ setFormat(SmartFile<TFileType, TDirection, TSpec> & file, TFormat format)
 // ----------------------------------------------------------------------------
 // Function guessFormat()
 // ----------------------------------------------------------------------------
-
-// TODO(holtgrew): Document me, including demo snippet.
 
 template <typename TFileType, typename TSpec>
 inline bool guessFormat(SmartFile<TFileType, Input, TSpec> & file)
@@ -461,8 +464,6 @@ _checkThatStreamOutputFormatIsSet(SmartFile<TFileType, Output, TSpec> const &, T
 // --------------------------------------------------------------------------
 // Function open()
 // --------------------------------------------------------------------------
-
-// TODO(holtgrew): Complete documentation, the combination of formats etc are a bit hard to grasp quickly.
 
 /*!
  * @fn SmartFile#open
