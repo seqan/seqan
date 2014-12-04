@@ -274,5 +274,13 @@ if on_rtd:
 
 # -- Options for SeqAn plugins ----------------------------------------------
 
+# Configure the base URL for dox links.  By default, we point to the develop
+# branch, but if we are on readthedocs then we compute the URL from the
+# release as configured in the release.
 doxlinks_base_url = 'http://docs.seqan.de/seqan/develop/'
+if on_rtd:
+  seqan_release = release.replace('seqan-v', '')
+  doxlinks_base_url = 'http://docs.seqan.de/seqan/%s/' % seqan_release
+
+# Set base dir for inclusion of fragments.
 includefrags_base_dir = '../..'
