@@ -41,12 +41,14 @@ Tutorial
 
    Tutorial/Graphs
 
-   Tutorial/BasicSequenceIO
+   Tutorial/InputOutputOverview
+   Tutorial/SequenceIO
    Tutorial/IndexedFastaIO
-   Tutorial/BasicSamBamIO
+   Tutorial/SamBamIO
    Tutorial/VcfIO
    Tutorial/BedIO
    Tutorial/GffGtfIO
+   Tutorial/CustomIO
 
    Tutorial/Modifiers
 
@@ -57,13 +59,6 @@ Tutorial
    Tutorial/ParsingCommandLineArguments
 
    Tutorial/AnnotationStore
-
-   Tutorial/InputOutputOverview
-   Tutorial/SequenceFileIO
-   Tutorial/SamBamIO
-   Tutorial/FileIO
-   Tutorial/LexicalCasting
-   Tutorial/Parsing
 
    Tutorial/FragmentStore
    Tutorial/ConsensusAlignment
@@ -165,25 +160,32 @@ The article :ref:`build-manual-integration-with-your-own-build-system` contains 
   This section of the tutorial introduces you to the graph type in SeqAn.
   We will discuss the various graph specializations and show you how to create directed and undirected graphs as well as HMMs, how to store additional information for edges and vertices and last but not least how to apply standard algorithms to the graphs.
 
-.. rubric:: :rubric-heading2:`I/O Basics`
+.. rubric:: :rubric-heading2:`Input/Output`
 
-:ref:`tutorial-basic-sequence-io`
-  Basic Sequence I/O This tutorial explains how to use the high-level API for reading and writing sequence files.
+:ref:`tutorial-input-output-overview`
+  This article gives an overview of the file I/O functionality in SeqAn.
+
+:ref:`tutorial-sequence-io`
+  This tutorial explains how to read and write FASTA, FASTQ, EMBL and GenBank sequence files.
 
 :ref:`tutorial-indexed-fasta-io`
-  Indexed FASTA I/O This tutorial explains how to use FASTA index files for quick random access within FASTA files: read contigs or just sections without having to read through whole FASTA file.
+  This tutorial explains how to use FASTA index files for quick random access within FASTA files: read contigs or just sections without having to read through whole FASTA file.
 
-:ref:`tutorial-basic-sam-bam-io`
-  Basic SAM and BAM I/O This tutorial explains how to use the high-level API for reading and writing SAM and BAM files.
+:ref:`tutorial-sam-bam-io`
+  This tutorial explains how to read and write SAM and BAM files.
 
 :ref:`tutorial-vcf-io`
-  VCF I/O This tutorial explains how to use the high-level API for reading and writing VCF files.
+  This tutorial explains how to read and write  VCF files.
 
 :ref:`tutorial-bed-io`
-  BED I/O This tutorial explains how to use the high-level API for reading and writing BED files.
+  This tutorial explains how to read and write BED files.
 
 :ref:`tutorial-gff-and-gtf-io`
-  GFF and GTF I/O This tutorial explains how to use the high-level API for reading and writing GFF and GTF files.
+  This tutorial explains how to read and write GFF and GTF files.
+
+:ref:`tutorial-custom-io`
+  This tutorial explains how to read and write your own file format in SeqAn.
+
 
 .. rubric:: :rubric-heading2:`Modifiers`
 
@@ -211,37 +213,6 @@ The article :ref:`build-manual-integration-with-your-own-build-system` contains 
 :ref:`tutorial-genome-annotations`
   You will learn how to work with annotations in SeqAn and analyzing them, using the :dox:`FragmentStore::annotationStore` which is part of SeqAn's :dox:`FragmentStore`.
 
-.. rubric:: :rubric-heading2:`More I/O`
-
-These tutorials explain how to use the I/O functionality in SeqAn beyond the basic sequence, SAM/BAM and indexed FASTA I/O from above.
-The tutorials are targeted at developers that either want to use the lower level I/O routines in SeqAn or write their own parsers.
-We recommended to start out reading the I/O Overview and then jump to the chapter that interests you most.
-In this Section we introduce the three main techniques of programming in SeqAn, namely the ''global function interface'', the use of
-''Metafunctions'', and the concept of  ''Template subclassing''.
-
-:ref:`tutorial-input-output-overview`
-  This article gives an overview of the I/O functionality in SeqAn.
-
-After reading, you will have a better understanding of the different bits in this section of the library.
-The following tutorials introduce the lower level I/O routines for specific file formats.
-
-:ref:`tutorial-sequence-file-io`
-  This tutorial explains the RecordReader- and Stream-based interface for reading sequence files.
-
-:ref:`tutorial-sam-bam-io`
-  This tutorial explains the lower level API for reading and writing SAM and BAM files.
-
-Read the following tutorials to learn how to write your own I/O routines.
-
-:ref:`tutorial-file-io`
-  This chapter shows how to use the file I/O facilities of SeqAn, including streams, compressed streams and memory mapped files.
-
-:ref:`tutorial-lexical-casting`
-  This tutorial explains the :dox:`lexicalCast` and :dox:`lexicalCast2` functions that allow to convert strings representing numbers into their numeric values.
-
-:ref:`tutorial-parsing`
-  In this part of the tutorial, you will be introduced to the parsing and tokenizing functionality using the RecordReader class.
-  You will get the necessary information to write your own file parsers.
 
 .. rubric:: :rubric-heading1:`Advanced Tutorials`
 

@@ -1,41 +1,38 @@
-#include <iostream>
-#include <fstream>
-
-#include <seqan/sequence.h>
 #include <seqan/bam_io.h>
 
-int main(int argc, char const ** argv)
+int main()
 {
-    if (argc != 2)
+    // Open input file.
+    seqan::BamFileIn bamFileIn;
+    if (!open(bamFileIn, "example.sam"))
     {
-        std::cerr << "USAGE: " << argv[0] << " IN.bam\n";
+        std::cerr << "ERROR: Could not open example.sam!" << std::endl;
         return 1;
     }
 
-    // Open BGZF Stream for reading.
-    typedef seqan::VirtualStream<char, seqan::Input> TInStream;
-    TInStream inStream;
-    if (!open(inStream, argv[1]))
+    try
     {
-        std::cerr << "ERROR: Could not open " << argv[1] << " for reading.\n";
+        // Read header.
+        seqan::BamHeader header;
+        readRecord(header, bamFileIn);
+
+        // Read records.
+        unsigned numUnmappedReads = 0;
+        seqan::BamAlignmentRecord record;
+        while (!atEnd(bamFileIn))
+        {
+            readRecord(record, bamFileIn);
+            if (hasFlagUnmapped(record))
+                numUnmappedReads += 1;
+        }
+    }
+    catch (seqan::IOError const & e)
+    {
+        std::cout << "ERROR: " << e.what() << std::endl;
         return 1;
     }
 
-    // Setup name store, cache, and BAM I/O context.
-    typedef seqan::StringSet<seqan::CharString> TNameStore;
-    typedef seqan::NameStoreCache<TNameStore>   TNameStoreCache;
-    typedef seqan::BamIOContext<TNameStore>     TBamIOContext;
-    TNameStore      nameStore;
-    TNameStoreCache nameStoreCache(nameStore);
-    TBamIOContext   context(nameStore, nameStoreCache);
-
-    // Read header.
-    seqan::BamHeader header;
-    seqan::DirectionIterator<TInStream, seqan::Input>::Type reader = directionIterator(inStream, seqan::Input());
-    readRecord(header, context, reader, seqan::Bam());
-
-    // Write out header again.
-    write(std::cout, header, context, seqan::Sam());
+    std::cout << "Number of unmapped reads: " << numUnmappedReads << "\n";
 
     return 0;
 }

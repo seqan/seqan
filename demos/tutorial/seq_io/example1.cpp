@@ -1,5 +1,3 @@
-#include <iostream>
-#include <seqan/sequence.h>
 #include <seqan/seq_io.h>
 
 int main()

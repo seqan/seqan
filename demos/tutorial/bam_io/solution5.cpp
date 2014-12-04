@@ -33,5 +33,13 @@ int main(int argc, char const * argv[])
     readRecord(header, inFile);
     writeRecord(outFile, header);
 
+    // Copy over the alignment records.
+    seqan::BamAlignmentRecord record;
+    while (!atEnd(inFile))
+    {
+        readRecord(record, inFile);
+        writeRecord(outFile, record);
+    }
+
     return 0;
 }

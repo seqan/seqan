@@ -1,45 +1,42 @@
-#include <iostream>
-#include <fstream>
-
-#include <seqan/sequence.h>
 #include <seqan/bam_io.h>
 
-int main(int argc, char const * argv[])
+int main()
 {
-    if (argc != 3)
+    // Open input file.
+    seqan::BamFileIn bamFileIn;
+    if (!open(bamFileIn, "example.sam"))
     {
-        std::cerr << "USAGE: " << argv[0] << " IN.[sam|bam] OUT.[sam|bam]\n";
+        std::cerr << "ERROR: Could not open example.sam!" << std::endl;
         return 1;
     }
 
-    // Open BamFileIn for reading.
-    seqan::BamFileIn inFile;
-    if (!open(inFile, argv[1]))
+    try
     {
-        std::cerr << "ERROR: Could not open " << argv[1] << " for reading.\n";
+        // Read header.
+        seqan::BamHeader header;
+        readRecord(header, bamFileIn);
+
+        unsigned tagIdx = 0;
+        unsigned numXXtags = 0;
+
+        // Rear records.
+        seqan::BamAlignmentRecord record;
+        while (!atEnd(bamFileIn))
+        {
+            readRecord(record, bamFileIn);
+            seqan::BamTagsDict tagsDict(record.tags);
+
+            if (findTagKey(tagIdx, tagsDict, "XX"))
+                numXXtags += 1;
+        }
+    }
+    catch (seqan::IOError const & e)
+    {
+        std::cout << "ERROR: " << e.what() << std::endl;
         return 1;
     }
 
-    // Open BamFileOut for writing. Give inFile to share its BamIoContext
-    seqan::BamFileOut outFile(inFile);
-    if (!open(outFile, argv[2]))
-    {
-        std::cerr << "ERROR: Could not open " << argv[2] << " for writing.\n";
-        return 1;
-    }
-
-    // Read header.
-    seqan::BamHeader header;
-    readRecord(header, inFile);
-    writeRecord(outFile, header);
-
-    // Copy over the alignment records.
-    seqan::BamAlignmentRecord record;
-    while (!atEnd(inFile))
-    {
-        readRecord(record, inFile);
-        writeRecord(outFile, record);
-    }
+    std::cout << "Number of records with the XX tag: " << numXXtags << "\n";
 
     return 0;
 }
