@@ -214,7 +214,7 @@ Here is an example for the second variant of :dox:`SeqFileIn#readRecord`:
 
 .. tip::
 
-    When :dox:`DnaQ` or :dox:`Dna5Q` :dox:`String Strings` are used, then you should use second variant.
+    When :dox:`DnaQ` or :dox:`Dna5Q` :dox:`String Strings` are used, then you should use the second variant.
     The qualities are simply stored directly in the sequence characters.
 
 
