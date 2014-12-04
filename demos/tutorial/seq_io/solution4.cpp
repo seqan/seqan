@@ -1,5 +1,3 @@
-#include <iostream>
-#include <seqan/sequence.h>
 #include <seqan/seq_io.h>
 
 int main(int argc, char const ** argv)
@@ -10,27 +8,29 @@ int main(int argc, char const ** argv)
         return 1;
     }
 
-    seqan::CharString id;
-    seqan::Dna5String seq;
-
     seqan::SeqFileIn seqFileIn;
     if (!open(seqFileIn, argv[1]))
     {
         std::cerr << "ERROR: Could not open the file.\n";
         return 1;
     }
+
+    seqan::StringSet<seqan::CharString> ids;
+    seqan::StringSet<seqan::Dna5String> seqs;
+    seqan::StringSet<seqan::CharString> quals;
+
     try
     {
-        while (!atEnd(seqFileIn))
-        {
-            readRecord(id, seq, seqFileIn);
-            std::cout << id << '\t' << seq << '\n';
-        }
+        readRecords(ids, seqs, quals, seqFileIn);
     }
-    catch (std::runtime_error &e)
+    catch (seqan::IOError const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;
     }
+
+    for (unsigned i = 0; i < length(ids); ++i)
+        std::cout << ids[i] << '\t' << seqs[i] << << quals[i] << '\n';
+
     return 0;
 }
