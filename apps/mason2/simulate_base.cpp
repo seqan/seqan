@@ -56,7 +56,12 @@ void SequencingSimulator::simulatePairedEnd(TRead & seqL, TQualities & qualsL, S
                                             TFragment const & frag,
                                             MethylationLevels const * levels)
 {
-    bool isForward = (pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, 1)) == 1);
+    bool isForward;
+    if (seqOptions->strands == SequencingOptions::BOTH)
+        isForward = (pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, 1)) == 1);
+    else
+        isForward = (seqOptions->strands == SequencingOptions::FORWARD);
+
     if (!seqOptions->bsSeqOptions.bsSimEnabled)
     {
         _simulatePairedEnd(seqL, qualsL, infoL, seqR, qualsR, infoR, frag, isForward);
@@ -83,7 +88,12 @@ void SequencingSimulator::simulateSingleEnd(TRead & seq, TQualities & quals, Seq
                                             TFragment const & frag,
                                             MethylationLevels const * levels)
 {
-    bool isForward = (pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, 1)) == 1);
+    bool isForward;
+    if (seqOptions->strands == SequencingOptions::BOTH)
+        isForward = (pickRandomNumber(rng, seqan::Pdf<seqan::Uniform<int> >(0, 1)) == 1);
+    else
+        isForward = (seqOptions->strands == SequencingOptions::FORWARD);
+
     if (!seqOptions->bsSeqOptions.bsSimEnabled)
     {
         _simulateSingleEnd(seq, quals, info, frag, isForward);
