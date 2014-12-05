@@ -914,12 +914,13 @@ virtualToHostPosition(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferS
  * @fn JournaledString#hostToVirtualPosition
  * @brief Translates host position to virtual position.
  *
- * @signature TPos hostToVirtualPosition(js, pos);
+ * @signature TPos hostToVirtualPosition(js, pos)
  *
  * @param[in] js  The JournaledString to translate the position for.
  * @param[in] pos The host position to translate.
  *
- * @return TPos The virtual view position.
+ * @return TPos The virtual view position. Note the returned position equates to @link JournaledString#length @endlink 
+ * if <tt>pos</tt> is greater or equal the length of the underlying host.
  */
 
 template<typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TPos>
@@ -928,8 +929,9 @@ typename Position<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec>
 hostToVirtualPosition(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & journalString,
                       TPos const & pos)
 {
-    SEQAN_ASSERT_LEQ(pos, (TPos) length(host(journalString)));
-    return hostToVirtualPosition(journalString._journalEntries, pos);
+    if (pos < (TPos) length(host(journalString)))
+        return hostToVirtualPosition(journalString._journalEntries, pos);
+    return length(journalString);
 }
 
 // --------------------------------------------------------------------------

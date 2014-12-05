@@ -579,27 +579,33 @@ void testJournalStringFlatten(TStringJournalSpec const &)
 template <typename TStringJournalSpec>
 void testJournaledStringVirtualToHostPosition()
 {
-    {
-        CharString charStr = "test";
-        String<char, Journaled<Alloc<void>, TStringJournalSpec> > journaledString(charStr);
+    {  // Test right-based projection.
+        CharString testSrc = "leftright";
+        //  0123   45678
+        //--left---right
+        //zzl--tyyyri--txx
+        //012  345678  901
+        String<char, Journaled<Alloc<> > > jString(testSrc);
 
-        insertValue(journaledString, 0, '!');
-        erase(journaledString, 2);
-        insertValue(journaledString, 4, '!');
+        insert(jString, 9, "xx");
+        erase(jString, 6, 8);
+        insert(jString, 4, "yyy");
+        erase(jString, 1, 3);
+        insert(jString, 0, "zz");
 
-        // journaledString == !tst!
-        //
-        //                           01234
-        // alignment with original  "test"
-        //                         "!t-st!"
-        //                          01 2345
-
-        SEQAN_ASSERT_EQ(0u, virtualToHostPosition(journaledString, 0u));
-        SEQAN_ASSERT_EQ(0u, virtualToHostPosition(journaledString, 1u));
-        SEQAN_ASSERT_EQ(2u, virtualToHostPosition(journaledString, 2u));
-        SEQAN_ASSERT_EQ(3u, virtualToHostPosition(journaledString, 3u));
-        SEQAN_ASSERT_EQ(4u, virtualToHostPosition(journaledString, 4u));
-        SEQAN_ASSERT_EQ(4u, virtualToHostPosition(journaledString, 5u));
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 0u), 0);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 1u), 0);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 2u), 0);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 3u), 3);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 4u), 4);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 5u), 4);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 6u), 4);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 7u), 4);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 8u), 5);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 9u), 8);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 10u), 9);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 11u), 9);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 20u), 9);
     }
     {
         CharString charStr = "ABCDE";
@@ -622,7 +628,7 @@ void testJournaledStringHostToVirtualPosition()
     /*
      * write concrete test scenario
      * Given a JournalString with insertions and deletions
-     * if the source position of ...
+     * if the source position of ...
      */
     { // test 1: insertion
                             //01234567
@@ -674,11 +680,12 @@ void testJournaledStringHostToVirtualPosition()
         erase(journaledStr, 2, 5);
         insert(journaledStr, 2, "TTT");
         insert(journaledStr, 5, "AAA");
+        insert(journaledStr, 11, "CC");
 
-                        //ACTTT---AAACGT
-        // journaled str: 01234555567890
-        // host str:      01---234---567
-        //              //AC---GTA---CGT
+                        //ACTTT---AAACGTCC
+        // journaled str: 0123455556789012
+        // host str:      01---234---567--
+        //              //AC---GTA---CGT--
 
         SEQAN_ASSERT_EQ(0u, hostToVirtualPosition(journaledStr, 0));
         SEQAN_ASSERT_EQ(1u, hostToVirtualPosition(journaledStr, 1));
@@ -688,6 +695,8 @@ void testJournaledStringHostToVirtualPosition()
         SEQAN_ASSERT_EQ(8u, hostToVirtualPosition(journaledStr, 5));
         SEQAN_ASSERT_EQ(9u, hostToVirtualPosition(journaledStr, 6));
         SEQAN_ASSERT_EQ(10u, hostToVirtualPosition(journaledStr, 7));
+        SEQAN_ASSERT_EQ(13u, hostToVirtualPosition(journaledStr, 8));
+        SEQAN_ASSERT_EQ(13u, hostToVirtualPosition(journaledStr, 20));
     }
 
     { // test 4: empty journal string
