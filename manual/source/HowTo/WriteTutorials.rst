@@ -5,20 +5,6 @@ Writing Tutorials
 
 At the bottom, you can find a `Tutorial Template`_ for starting a new tutorial.
 
-Setup
------
-
-Follow these instructions to setup a local sphinx build environment:
-
-::
-
-    $ virtualenv ~/seqan-manual-env
-    $ source ~/seqan-manual-env
-    (seqan-manual-env) $ cd ~/seqan/manual
-    (seqan-manual-env) $ pip install -r requirements.txt
-    (seqan-manual-env) $ make html
-
-
 Conventions
 -----------
 
