@@ -31,6 +31,10 @@ int main(int argc, char const ** argv)
       readRecord(header, bamFileIn);
       writeRecord(samFileOut, header);
     }
+    catch (seqan::ParseError const & e)
+    {
+        std::cerr << "ERROR: input header is badly formatted. " << e.what() << "\n";
+    }
     catch (seqan::IOError const & e)
     {
         std::cerr << "ERROR: could not copy header. " << e.what() << "\n";
@@ -44,6 +48,10 @@ int main(int argc, char const ** argv)
         {
             readRecord(header, bamFileIn);
             writeRecord(samFileOut, record);
+        }
+        catch (seqan::ParseError const & e)
+        {
+            std::cerr << "ERROR: input record is badly formatted. " << e.what() << "\n";
         }
         catch (seqan::IOError const & e)
         {
