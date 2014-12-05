@@ -20,6 +20,10 @@ Duration
 Prerequisites
   Exposure to the BED format is useful.
 
+.. warning::
+
+    This tutorial must be updated to the new I/O.
+
 This tutorial deals with how to easily read and write BED files using the :dox:`BedStream` class.
 It starts out with a quick reminder on the structure of BED files and will then continue with how to read and write BED files.
 

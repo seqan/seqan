@@ -20,6 +20,10 @@ Duration
 Prerequisites
   Exposure to the GFF and GTF formats is useful.
 
+.. warning::
+
+    This tutorial must be updated to the new I/O.
+
 This tutorial deals with how to easily read and write GFF and GTF files using the :dox:`GffStream` class.
 It starts out with a quick reminder on the structure of GFF and GTF files and will then continue with how to read and write GFF and GTF files.
 

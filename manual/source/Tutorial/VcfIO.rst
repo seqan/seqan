@@ -20,6 +20,10 @@ Duration
 Prerequisites
   :ref:`tutorial-sequences`, exposure to the VCf format
 
+.. warning::
+
+    This tutorial must be updated to the new I/O.
+
 This tutorial deals with how to easily read and write VCF files using the :dox:`VcfStream` class.
 It starts out with a quick reminder on the structure of VCF files and will then continue with how to read and write VCF files and access the tags of a record.
 

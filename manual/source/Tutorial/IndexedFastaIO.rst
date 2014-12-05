@@ -21,6 +21,10 @@ Duration
 Prerequisites
   :ref:`tutorial-sequences`
 
+.. warning::
+
+    This tutorial must be updated to the new I/O.
+
 The idea of FASTA index files (*FAI*) comes from the `samtools <http://samtools.sourceforge.net/samtools.shtml>`_ program by Heng Li.
 The program provides a command ``samtools faidx`` for rapidly accessing parts of a large FASTA file (e.g. querying for the first chromosome by the identifier "chr1" or querying for 900 characters starting from character 100 (1-based) by ``chr1:100-1,000``).
 To do this, the program creates an index file that contains one entry for each sequence.

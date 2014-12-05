@@ -21,6 +21,10 @@ Duration
 Prerequisites
   :ref:`tutorial-input-output-overview`
 
+.. warning::
+
+    This tutorial must be updated to the new I/O.
+
 In this tutorial, you will learn how to use the :dox:`RecordReader` functions to easily create parsers for structured text file formats.
 We will first give a quick example for parsing a simple TSV format.
 Then, single-pass parsing will be explained (which is the most important variant) and the interface of the :dox:`RecordReader` class and the ``skip*()`` and ``read*()`` functions will be described.
