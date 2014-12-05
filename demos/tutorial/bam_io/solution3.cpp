@@ -10,14 +10,13 @@ int main()
         return 1;
     }
 
+    unsigned numXXtags = 0;
+
     try
     {
         // Read header.
         seqan::BamHeader header;
         readRecord(header, bamFileIn);
-
-        unsigned tagIdx = 0;
-        unsigned numXXtags = 0;
 
         // Rear records.
         seqan::BamAlignmentRecord record;
@@ -26,11 +25,12 @@ int main()
             readRecord(record, bamFileIn);
             seqan::BamTagsDict tagsDict(record.tags);
 
+            unsigned tagIdx = 0;
             if (findTagKey(tagIdx, tagsDict, "XX"))
                 numXXtags += 1;
         }
     }
-    catch (seqan::IOError const & e)
+    catch (seqan::Exception const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;

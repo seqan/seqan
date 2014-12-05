@@ -27,7 +27,7 @@ int main()
             writeRecord(bamFileOut, record);
         }
     }
-    catch (std::IOError const & e)
+    catch (seqan::Exception const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;

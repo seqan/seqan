@@ -180,7 +180,7 @@ struct Tag;
  * @class Exception
  * @headerfile <seqan/basic.h>
  * @brief Generic SeqAn exception.
- * @signature typedef std::exception RuntimeError;
+ * @signature typedef std::exception Exception;
  *
  * @fn Exception::Exception
  * @brief Constructor.
