@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (core_apps_razers)
+project (seqan_apps_razers)
 message (STATUS "Configuring apps/razers")
 
 # ----------------------------------------------------------------------------

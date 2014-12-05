@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (core_apps_snp_store)
+project (seqan_apps_snp_store)
 message (STATUS "Configuring apps/snp_store")
 
 # ----------------------------------------------------------------------------

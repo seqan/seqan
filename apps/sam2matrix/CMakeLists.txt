@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_core_apps_sam2matrix)
+project (seqan_apps_sam2matrix)
 message (STATUS "Configuring apps/sam2matrix")
 
 # ----------------------------------------------------------------------------

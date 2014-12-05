@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (extras_apps_insegt)
+project (seqan_apps_insegt)
 message (STATUS "Configuring apps/insegt")
 
 # ----------------------------------------------------------------------------

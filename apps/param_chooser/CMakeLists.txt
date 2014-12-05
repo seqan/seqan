@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (extras_apps_param_chooser)
+project (seqan_apps_param_chooser)
 message (STATUS "Configuring apps/param_chooser")
 
 # ----------------------------------------------------------------------------

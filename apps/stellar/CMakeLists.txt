@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (core_apps_stellar)
+project (seqan_apps_stellar)
 message (STATUS "Configuring apps/stellar")
 
 # ----------------------------------------------------------------------------

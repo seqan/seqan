@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_extras_apps_searchjoin)
+project (seqan_apps_searchjoin)
 message (STATUS "Configuring apps/searchjoin")
 
 # ----------------------------------------------------------------------------

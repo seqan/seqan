@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (core_apps_splazers)
+project (seqan_apps_splazers)
 message (STATUS "Configuring apps/splazers")
 
 # ----------------------------------------------------------------------------

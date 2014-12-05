@@ -7,8 +7,8 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_sandbox_jagla_apps_ngs_roi)
-message (STATUS "Configuring sandbox/jagla/apps/ngs_roi")
+project (seqan_apps_ngs_roi)
+message (STATUS "Configuring apps/ngs_roi")
 
 # ----------------------------------------------------------------------------
 # Dependencies

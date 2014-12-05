@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (extras_apps_alf)
+project (seqan_apps_alf)
 message (STATUS "Configuring apps/alf")
 
 # ----------------------------------------------------------------------------

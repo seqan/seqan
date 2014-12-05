@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (extras_apps_sgip)
+project (seqan_apps_sgip)
 message (STATUS "Configuring apps/sgip")
 
 # ----------------------------------------------------------------------------
