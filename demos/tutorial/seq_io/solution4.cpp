@@ -23,14 +23,14 @@ int main(int argc, char const ** argv)
     {
         readRecords(ids, seqs, quals, seqFileIn);
     }
-    catch (seqan::IOError const & e)
+    catch (seqan::Exception const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;
     }
 
     for (unsigned i = 0; i < length(ids); ++i)
-        std::cout << ids[i] << '\t' << seqs[i] << << quals[i] << '\n';
+        std::cout << ids[i] << '\t' << seqs[i] << quals[i] << '\n';
 
     return 0;
 }

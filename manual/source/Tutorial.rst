@@ -163,28 +163,28 @@ The article :ref:`build-manual-integration-with-your-own-build-system` contains 
 .. rubric:: :rubric-heading2:`Input/Output`
 
 :ref:`tutorial-input-output-overview`
-  This article gives an overview of the file I/O functionality in SeqAn.
+  This article gives an overview of the formatted file I/O functionality in SeqAn.
 
 :ref:`tutorial-sequence-io`
-  This tutorial explains how to read and write FASTA, FASTQ, EMBL and GenBank sequence files.
+  This tutorial explains how to access FASTA, FASTQ, EMBL and GenBank sequence files.
 
 :ref:`tutorial-indexed-fasta-io`
   This tutorial explains how to use FASTA index files for quick random access within FASTA files: read contigs or just sections without having to read through whole FASTA file.
 
 :ref:`tutorial-sam-bam-io`
-  This tutorial explains how to read and write SAM and BAM files.
+  This tutorial explains how to access SAM and BAM files.
 
 :ref:`tutorial-vcf-io`
-  This tutorial explains how to read and write  VCF files.
+  This tutorial explains how to access VCF files.
 
 :ref:`tutorial-bed-io`
-  This tutorial explains how to read and write BED files.
+  This tutorial explains how to access BED files.
 
 :ref:`tutorial-gff-and-gtf-io`
-  This tutorial explains how to read and write GFF and GTF files.
+  This tutorial explains how to access GFF and GTF files.
 
 :ref:`tutorial-custom-io`
-  This tutorial explains how to read and write your own file format in SeqAn.
+  This tutorial explains how to access files in your own format.
 
 
 .. rubric:: :rubric-heading2:`Modifiers`
