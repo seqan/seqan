@@ -10,6 +10,8 @@ int main()
         return 1;
     }
 
+    unsigned numUnmappedReads = 0;
+
     try
     {
         // Read header.
@@ -17,7 +19,6 @@ int main()
         readRecord(header, bamFileIn);
 
         // Read records.
-        unsigned numUnmappedReads = 0;
         seqan::BamAlignmentRecord record;
         while (!atEnd(bamFileIn))
         {
@@ -26,7 +27,7 @@ int main()
                 numUnmappedReads += 1;
         }
     }
-    catch (seqan::IOError const & e)
+    catch (seqan::Exception const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;

@@ -22,7 +22,7 @@ int main(int argc, char const ** argv)
     {
         readRecord(id, seq, seqFileIn);
     }
-    catch (seqan::IOError const & e)
+    catch (seqan::Exception const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;

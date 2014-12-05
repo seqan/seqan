@@ -7,7 +7,7 @@ int main()
     seqan::BamHeader header;
     readRecord(header, bamFileIn);
 
-    typedef typename seqan::SmartFileContext<seqan::BamFileIn>::Type TBamContext;
+    typedef seqan::SmartFileContext<seqan::BamFileIn, void>::Type TBamContext;
 
     TBamContext const & bamContext = context(bamFileIn);
 
