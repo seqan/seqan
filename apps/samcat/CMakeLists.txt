@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_core_apps_samcat)
+project (seqan_apps_samcat)
 message (STATUS "Configuring apps/samcat")
 
 # ----------------------------------------------------------------------------

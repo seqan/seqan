@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (core_apps_seqan_tcoffee)
+project (seqan_apps_seqan_tcoffee)
 message (STATUS "Configuring apps/seqan_tcoffee")
 
 # ----------------------------------------------------------------------------

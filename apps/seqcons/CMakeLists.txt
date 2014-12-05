@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (core_apps_seqcons)
+project (seqan_apps_seqcons)
 message (STATUS "Configuring apps/seqcons")
 
 # ----------------------------------------------------------------------------

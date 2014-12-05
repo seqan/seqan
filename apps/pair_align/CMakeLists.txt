@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (core_apps_pair_align)
+project (seqan_apps_pair_align)
 message (STATUS "Configuring apps/pair_align")
 
 # ----------------------------------------------------------------------------

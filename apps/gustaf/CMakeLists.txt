@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (extras__apps_gustaf)
+project (seqan_apps_gustaf)
 message (STATUS "Configuring apps/gustaf")
 
 # ----------------------------------------------------------------------------

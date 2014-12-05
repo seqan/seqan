@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_extras_apps_bs_tools)
+project (seqan_apps_bs_tools)
 message (STATUS "Configuring apps/bs_tools")
 
 # ----------------------------------------------------------------------------

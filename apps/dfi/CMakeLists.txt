@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (core_apps_dfi)
+project (seqan_apps_dfi)
 message (STATUS "Configuring apps/dfi")
 
 # ----------------------------------------------------------------------------
