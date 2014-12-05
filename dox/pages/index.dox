@@ -6,8 +6,8 @@ SeqAn is an open source C++ library of efficient algorithms and data structures 
 @section Getting Started
 
 <ol>
-<li><b>Install SeqAn.</b> It's as easy as following the <a href="http://trac.seqan.de/wiki/Tutorial/GettingStarted" target="_top">installation instructions</a>.</li>
-<li><b>Learn SeqAn.</b> The <a href="http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial" target="_top">SeqAn Tutorials</a> in the <a href="http://trac.mi.fu-berlin.de/seqan/wiki" target="_top">SeqAn Wiki</a> will introduce you into SeqAn's basic concepts and show you how to use its data structures and functions.</li>
+<li><b>Install SeqAn.</b> It's as easy as following the <a href="http://seqan.readthedocs.org/en/master/Tutorial/GettingStarted.html" target="_top">installation instructions</a>.</li>
+<li><b>Learn SeqAn.</b> The <a href="http://seqan.readthedocs.org/en/master/Tutorial.html" target="_top">SeqAn Tutorials</a> in the <a href="http://seqan.readthedocs.org/en/master/" target="_top">SeqAn Manual</a> will introduce you into SeqAn's basic concepts and show you how to use its data structures and functions.</li>
 <li><b>Think SeqAn.</b> Since our library uses advanced C++ template programming techniques, we recommend you to read our glossary of <a href="page_LanguageEntities.html">language entity types</a> for a quick introduction.</li>
 <li><b>Use SeqAn.</b> Search the library for classes, functions, etc. using the search bar to the left. Need some orientation? Check the <a href="#typical_tasks">typical tasks</a> below.</li>
 </ol>
@@ -16,14 +16,14 @@ SeqAn is an open source C++ library of efficient algorithms and data structures 
 
 If you know what you want to do but not how to achieve this with SeqAn, this sections gives you a nice overview of the components that might help you.
 
-Alternatively you might want to check the <a href="http://trac.mi.fu-berlin.de/seqan/wiki/Tutorial" target="_top">SeqAn Tutorials</a>.
+Alternatively you might want to check the <a href="http://seqan.readthedocs.org/en/master/Tutorial.html" target="_top">SeqAn Tutorials</a>.
 
 <ul class="overview">
     <li>
         <h3>Read Mapping</h3>
         <p>Most modern read mappers first identify candidate regions in the reference sequence approximately or using heuristics.  Then, they verify the found locations.  SeqAn can help with both and also provides facilities for making I/O easier.</p>
         <table>
-            <tr><td><ul><li><a href="http://trac.seqan.de/wiki/Tutorial/SimpleReadMapping" target="_top" data-lang-entity="tutorial">Read Mapping</a></li></ul></td><td>instructive introductions</td></tr>
+            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/SimpleReadMapping" target="_top" data-lang-entity="tutorial">Read Mapping</a></li></ul></td><td>instructive introductions</td></tr>
             <tr><td><ul><li>@link Index @endlink</li></ul></td><td>class and subclasses can be used for index-based search</td></tr>
             <tr><td><ul><li>@link Finder @endlink</li><li>@link Pattern @endlink</li></ul></td><td>can be used to implement online string search</td></tr>
             <tr><td><ul><li>@link Align @endlink</li><li>@link globalAlignment @endlink</li></ul></td><td>alignments can be used for the verification</td></tr>
@@ -36,7 +36,7 @@ Alternatively you might want to check the <a href="http://trac.mi.fu-berlin.de/s
         <h3>File I/O</h3>
         <p>SeqAn has support for most common file formats in Bioinformatics. The following lists the most convenient access methods.</p>
         <table>
-            <tr><td><ul><li><a href="http://trac.seqan.de/wiki/Tutorial" target="_top" data-lang-entity="tutorial">I/O Basics</a></li></ul></td><td>instructive introductions</td></tr>
+            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial.html" target="_top" data-lang-entity="tutorial">I/O Basics</a></li></ul></td><td>instructive introductions</td></tr>
             <tr><td><ul><li>@link VcfStream @endlink</li><li>@link VcfRecord @endlink</li></ul></td><td>VCF</td></tr>
             <tr><td><ul><li>@link GffStream @endlink</li><li>@link GffRecord @endlink</li></ul></td><td>GFF, GTF</td></tr>
             <tr><td><ul><li>@link BamStream @endlink</li><li>@link BamAlignmentRecord @endlink</li></ul></td><td>SAM, BAM</td></tr>
@@ -48,7 +48,7 @@ Alternatively you might want to check the <a href="http://trac.mi.fu-berlin.de/s
         <h3>Sequence Alignment <small>and Multiple Sequence Alignment</small></h3>
         <p>Sequence alignment and multiple sequence alignment are classic problems in Bioinformatics.</p>
         <table>
-            <tr><td><ul><li><a href="http://trac.seqan.de/wiki/Tutorial/AlignmentRepresentation" target="_top" data-lang-entity="tutorial">Alignment Representation</a></li><li><a href="http://trac.seqan.de/wiki/Tutorial/PairwiseSequenceAlignment" target="_top" data-lang-entity="tutorial">Pairwise Sequence Alignment</a></li><li><a href="http://trac.seqan.de/wiki/Tutorial/MultipleSequenceAlignment" target="_top" data-lang-entity="tutorial">Multiple Sequence Alignment</a></li></ul></td><td>instructive introductions</td></tr>
+            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/AlignmentRepresentation" target="_top" data-lang-entity="tutorial">Alignment Representation</a></li><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/PairwiseSequenceAlignment" target="_top" data-lang-entity="tutorial">Pairwise Sequence Alignment</a></li><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/MultipleSequenceAlignment" target="_top" data-lang-entity="tutorial">Multiple Sequence Alignment</a></li></ul></td><td>instructive introductions</td></tr>
             <tr><td><ul><li>@link globalAlignment @endlink</li></ul></td><td>provides dynamic programming algorithms for global sequence alignment with various parameters</td></tr>
             <tr><td><ul><li>@link localAlignment @endlink</li></ul></td><td></td></tr>
             <tr><td><ul><li>@link LocalAlignmentEnumerator @endlink</li></ul></td><td>offers the Waterman-Eggert algorithm for enumerating suboptimal local alignments</td></tr>
@@ -60,7 +60,7 @@ Alternatively you might want to check the <a href="http://trac.mi.fu-berlin.de/s
         <h3>Graph <small>Data Structures and Algorithms</small></h3>
         <p>Often, graphs come in handy to model subproblems in sequence analysis. SeqAn provides basic support for graphs and graph algorithms.</p>
         <table>
-            <tr><td><ul><li><a href="http://trac.seqan.de/wiki/Tutorial/Graphs" target="_top" data-lang-entity="tutorial">Graphs</a></li></ul></td><td>instructive introductions</td></tr>
+            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/Graphs" target="_top" data-lang-entity="tutorial">Graphs</a></li></ul></td><td>instructive introductions</td></tr>
             <tr><td><ul><li>@link Graph @endlink</li></ul></td><td>central class (including subclasses)</td></tr>
             <tr><td><ul><li>@link DirectedGraph @endlink</li><li>@link UndirectedGraph @endlink.</li></ul></td><td>simple directed and undirected graphs structures</td></tr>
             <tr><td><ul><li>@link Automaton @endlink</li><li>@link WordGraph @endlink</li><li>@link HmmGraph @endlink</li></ul></td><td>special subclasses for sequence analysis</td></tr>
