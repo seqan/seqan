@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_core_demos)
+project (seqan_demos)
 message (STATUS "Configuring demos")
 
 # Recursively register all demos in core and prefix their target/binary names
