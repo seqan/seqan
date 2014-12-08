@@ -263,7 +263,7 @@ parse(GenomicRegion & region, CharString const & regionString)
     region.beginPos--;                      // Adjust to 0-based.
     if (atEnd(reader))  // just one position
     {
-        region.endPos = INVALID_POS;
+        region.endPos = region.INVALID_POS;
         return;
     }
 
