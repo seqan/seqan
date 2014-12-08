@@ -2,68 +2,65 @@
 #include <fstream>
 #include <iostream>
 #include <seqan/store.h>
-#include <seqan/misc/misc_cmdparser.h>
+#include <seqan/arg_parse.h>
 
 using namespace std;
 using namespace seqan;
 
 int main(int argc, const char *argv[])
 {
-	CommandLineParser parser;
+	ArgumentParser parser;
 
 	//////////////////////////////////////////////////////////////////////////////
 	// Define options
-	addTitleLine(parser, "****************************");
-	addTitleLine(parser, "*** Annotation Converter ***");
-	addTitleLine(parser, "****************************");
-	addHelpLine(parser, "");	
-	addOption(parser, CommandLineOption("rg",  "read-gff",      "read annotation in Gff/Gtf format", OptionType::String | OptionType::Label));
-	addOption(parser, CommandLineOption("ru",  "read-ucsc",  2, "read annotation in Ucsc format (knownGenes.txt knownIsoforms.txt)", OptionType::String | OptionType::Label));
-	addHelpLine(parser, "");
-	addOption(parser, CommandLineOption("wg",  "write-gff",     "write annotation in Gff/Gtf format", OptionType::String | OptionType::Label));
-	addOption(parser, CommandLineOption("wu",  "write-ucsc", 2, "write annotation in Ucsc format (knownGene.txt knownIsoforms.txt)", OptionType::String | OptionType::Label));
+	addDescription(parser, "****************************");
+	addDescription(parser, "*** Annotation Converter ***");
+	addDescription(parser, "****************************");
+	addDescription(parser, "");
+	addOption(parser, ArgParseOption("rg",  "read-gff",  "Read annotation in Gff/Gtf format.", ArgParseOption::STRING));
+	addOption(parser, ArgParseOption("ru",  "read-ucsc", "Read annotation in Ucsc format (knownGenes.txt knownIsoforms.txt).", ArgParseOption::STRING, "TXT TXT", true, 2));
+	addDescription(parser, "");
+	addOption(parser, ArgParseOption("wg",  "write-gff",  "Write annotation in Gff/Gtf format.", ArgParseOption::STRING));
+	addOption(parser, ArgParseOption("wu",  "write-ucsc", "Write annotation in Ucsc format (knownGene.txt knownIsoforms.txt).", ArgParseOption::STRING, "TXT TXT", true, 2));
 
-	bool stop = !parse(parser, argc, argv, cerr);
-	if (argc == 1 || stop)
-	{
-		if (argc == 1)
-			shortHelp(parser, cerr);	// print short help and exit
-		return 0;
-	}
+    ArgumentParser::ParseResult res = parse(parser, argc, argv);
+
+    if (res != ArgumentParser::PARSE_OK)
+        return res;
 
 	FragmentStore<> store;
-	String<char, CStyle> fileName;
+	CharString fileName;
 
 	// IMPORT
-	if (isSetLong(parser, "read-gff"))
+	if (isSet(parser, "read-gff"))
 	{
-		getOptionValueLong(parser, "read-gff", fileName);
+		getOptionValue(fileName, parser, "read-gff");
 		GffFileIn file(toCString(fileName));
 		readRecords(store, file);
 	}
-	if (isSetLong(parser, "read-ucsc"))
+	if (isSet(parser, "read-ucsc"))
 	{
-		fileName = getOptionValuesLong(parser, "read-ucsc")[0];
+		getOptionValue(fileName, parser, "read-ucsc", 0);
 		UcscFileIn file1(toCString(fileName));
-		fileName = getOptionValuesLong(parser, "read-ucsc")[1];
+        getOptionValue(fileName, parser, "read-ucsc", 1);
 		UcscFileIn file2(toCString(fileName));
 		readRecords(store, file1);
 		readRecords(store, file2);
 	}
 
 	// EXPORT
-	if (isSetLong(parser, "write-gff"))
+	if (isSet(parser, "write-gff"))
 	{
-		getOptionValueLong(parser, "write-gff", fileName);
+		getOptionValue(fileName, parser, "write-gff");
 		GffFileOut file(toCString(fileName));
 		writeRecords(file, store);
 	}
-	if (isSetLong(parser, "write-ucsc"))
+	if (isSet(parser, "write-ucsc"))
 	{
-		fileName = getOptionValuesLong(parser, "write-ucsc")[0];
-		UcscFileOut file1(toCString(fileName), ios_base::out | ios_base::binary);
-		fileName = getOptionValuesLong(parser, "write-ucsc")[1];
-		UcscFileOut file2(toCString(fileName), ios_base::out | ios_base::binary);
+        getOptionValue(fileName, parser, "write-ucsc", 0);
+		UcscFileOut file1(toCString(fileName));
+        getOptionValue(fileName, parser, "write-ucsc", 1);
+		UcscFileOut file2(toCString(fileName));
 		writeRecords(file1, store);
 		writeRecords(file2, store);
 	}
