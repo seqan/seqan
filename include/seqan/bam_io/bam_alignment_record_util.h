@@ -204,10 +204,10 @@ bamRecordToAlignment(Align<TSource, TSpec> & result, TReference & reference, Bam
     setSource(row(result, 0), reference);
     setClippedEndPosition(row(result, 0), record.beginPos + len);
     setClippedBeginPosition(row(result, 0), record.beginPos);
-    cigarToGapAnchorContig(record.cigar, row(result, 0));
+    cigarToGapAnchorContig(row(result, 0), record.cigar);
 
     assignSource(row(result, 1), record.seq);
-    cigarToGapAnchorRead(record.cigar, row(result, 1));
+    cigarToGapAnchorRead(row(result, 1), record.cigar);
 }
 
 }  // namespace seqan

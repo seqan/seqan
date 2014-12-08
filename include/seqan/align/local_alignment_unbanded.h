@@ -63,18 +63,18 @@ namespace seqan {
  * @fn localAlignment
  * @headerfile <seqan/align.h>
  * @brief Computes the best pairwise local alignment using the Smith-Waterman algorithm.
- * 
+ *
  * @signature TScoreVal localAlignment(align,          scoringScheme, [lowerDiag, upperDiag]);
  * @signature TScoreVal localAlignment(gapsH, gapsV,   scoringScheme, [lowerDiag, upperDiag]);
  * @signature TScoreVal localAlignment(fragmentString, scoringScheme, [lowerDiag, upperDiag]);
- * 
- * @param[in,out] gapsH Horizontal gapped sequence in alignment matrix. Types: @link Gaps @endlink 
- * @param[in,out] gapsV Vertical gapped sequence in alignment matrix. Types: @link Gaps @endlink 
+ *
+ * @param[in,out] gapsH Horizontal gapped sequence in alignment matrix. Types: @link Gaps @endlink
+ * @param[in,out] gapsV Vertical gapped sequence in alignment matrix. Types: @link Gaps @endlink
  * @param[in,out] align An @link Align @endlink object that stores the alignment. The
  *                      number of rows must be 2 and the sequences must have already
  *                      been set. <tt>align[0]</tt> is the horizontal one in the
  *                      alignment matrix alignment, <tt>align[1]</tt> is the vertical
- *                      one. 
+ *                      one.
  * @param[in,out] fragmentString
  *                      String of @link Fragment @endlink objects. The sequence
  *                      with id <tt>0</tt> is the horizontal one, the sequence
@@ -86,17 +86,17 @@ namespace seqan {
  *
  * @return TScoreVal Score value of the resulting alignment  (Metafunction @link Score#Value @endlink of the type of
  *                   <tt>scoringScheme</tt>).
- * 
+ *
  * The Waterman-Eggert algorithm (local alignment with declumping) is available through the @link
  * LocalAlignmentEnumerator @endlink class.
- * 
+ *
  * When using @link Gaps @endlink and @link Align @endlink objects, only parts (i.e. one infix) of each sequence will be
  * aligned.  This will be presented to the user by setting the clipping begin and end position of the gaps (the rows in
  * the case of @link Align @endlink objects).  When using @link Fragment @endlink strings, these parts of the sequences
  * will not appear in any fragment.
- * 
+ *
  * There exist multiple overloads for this function with two configuration dimensions.
- * 
+ *
  * First, you can select the type of the target storing the alignment. This can be either an @link Align @endlink
  * object, two @link Gaps @endlink objects, or a string of @link Fragment @endlink objects. @link Align @endlink objects
  * provide an interface to tabular alignments with the restriction of all rows having the same type. Using two @link
@@ -104,45 +104,45 @@ namespace seqan {
  * @endlink and @link Dna5String @endlink. Using @link Fragment @endlink strings is useful for collecting many pairwise
  * alignments, for example in the construction of @link AlignmentGraph Alignment Graphs @endlink for multiple- sequence
  * alignments (MSA).
- * 
+ *
  * Second, you can optionally give a band for the alignment using <tt>lowerDiag</tt> and <tt>upperDiag</tt>. The center
  * diagonal has index <tt>0</tt>, the <tt>i</tt>th diagonal below has index <tt>-i</tt>, the <tt>i</tt>th above has
  * index <tt>i</tt>.
- * 
+ *
  * The examples below show some common use cases.
- * 
+ *
  * @section Examples
- * 
+ *
  * Local alignment of two sequences using an @link Align @endlink object.
- * 
+ *
  * @code{.cpp}
  * Dna5String seqH = "CGATT";
  * Dna5String seqV = "CGAAATT";
- *  
+ *
  * Align<Dna5String> align;
  * resize(rows(align), 2);
  * assignSource(row(align, 0), seqH);
  * assignSource(row(align, 0), seqV);
  * Score<int, Simple> scoringScheme(2, -1, -2);
- *  
+ *
  * int result = localAlignment(align, scoringScheme);
  * @endcode
  *
  * Local banded alignment of two sequences using two @link Gaps @endlink objects.
- * 
+ *
  * @code{.cpp}
  * Dna5String seqH = "CGATT";
  * Gaps<Dna5String, ArrayGaps> gapsH(seqH);
  * DnaString seqV = "CGAAATT";
  * Gaps<Dna5String, AnchorGaps<> > gapsV(seqV);
- *  
+ *
  * Score<int, Simple> scoringScheme(5, -3, -1, -5);
- *  
+ *
  * int result = localAlignment(gapsH, gapsV, scoringScheme, -2, 2);
  * @endcode
  *
- * http://trac.seqan.de/wiki/Tutorial/PairwiseSequenceAlignment
- * 
+ * http://seqan.readthedocs.org/en/develop/Tutorial/PairwiseSequenceAlignment.html
+ *
  * @section References
  *
  * <ul>

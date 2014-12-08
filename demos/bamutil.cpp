@@ -42,7 +42,7 @@
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
 #include <seqan/file.h>      // For printing SeqAn Strings.
-#include <seqan/misc/misc_cmdparser.h>
+#include <seqan/arg_parse.h>
 #include <seqan/seq_io.h>
 #include <seqan/bam_io.h>
 #include <seqan/stream.h>
@@ -70,75 +70,67 @@ struct Options
 };
 
 void
-setupCommandLineParser(CommandLineParser & parser, Options const & options)
+setupArgumentParser(ArgumentParser & parser, Options const & options)
 {
-    addVersionLine(parser, "1.0");
+    setVersion(parser, "1.0");
     
-    addTitleLine(parser, "***********");
-    addTitleLine(parser, "* BAMUTIL *");
-    addTitleLine(parser, "***********");
-    addTitleLine(parser, "");
-    addTitleLine(parser, "SeqAn SAM/BAM Utility.");
-    addTitleLine(parser, "");
-    addTitleLine(parser, "Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>");
+    addDescription(parser, "***********");
+    addDescription(parser, "* BAMUTIL *");
+    addDescription(parser, "***********");
+    addDescription(parser, "");
+    addDescription(parser, "SeqAn SAM/BAM Utility.");
+    addDescription(parser, "");
+    addDescription(parser, "Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>");
 
     addUsageLine(parser, "bamutil [OPTIONS] <IN >OUT");
     
 	addSection(parser, "General Options");
-    addOption(parser, CommandLineOption("v", "verbose", "Enable verbose mode.", OptionType::Bool));
-    addOption(parser, CommandLineOption("vv", "very-verbose", "Enable very verbose mode.", OptionType::Bool));
+    addOption(parser, ArgParseOption("v", "verbose", "Enable verbose mode."));
+    addOption(parser, ArgParseOption("vv", "very-verbose", "Enable very verbose mode."));
 
 	addSection(parser, "Input Specification");
-    addOption(parser, CommandLineOption("i", "input-file", "Path to input, '-' for stdin.", OptionType::String, options.inFile));
-    addOption(parser, CommandLineOption("bi", "bai-index-file", "Path to BAI index, default: input + '.bai'.", OptionType::String));
+    addOption(parser, ArgParseOption("i", "input-file", "Path to input, '-' for stdin.", ArgParseOption::STRING));
+    addOption(parser, ArgParseOption("bi", "bai-index-file", "Path to BAI index, default: input + '.bai'.", ArgParseOption::STRING));
 
 	addSection(parser, "Range Specification");
-    addOption(parser, CommandLineOption("r", "region", "Regions to dump (in which aligments start). REF:FROM-TO, e.g. IV:1,000-2,000 will alignments with ref IV in range [1000,2000) (zero based).", OptionType::String | OptionType::List, options.inFile));
+    addOption(parser, ArgParseOption("r", "region", "Regions to dump (in which aligments start). REF:FROM-TO, e.g. IV:1,000-2,000 will alignments with ref IV in range [1000,2000) (zero based).", ArgParseOption::STRING));
 
 	addSection(parser, "Output Specification");
-    addOption(parser, CommandLineOption("o", "output-file", "Path to output, '-' for stdout.", OptionType::String, options.outFile));
-    addOption(parser, CommandLineOption("b", "output-bam", "Output file is BAM.", OptionType::Bool));
+    addOption(parser, ArgParseOption("o", "output-file", "Path to output, '-' for stdout.", ArgParseOption::STRING));
+    addOption(parser, ArgParseOption("b", "output-bam", "Output file is BAM."));
 }
 
 // Parse the command line and check for any syntatical errors.
 
-int parseCommandLineAndCheck(Options & options,
-                             CommandLineParser & parser,
-                             int argc,
-                             char const ** argv)
+ArgumentParser::ParseResult
+parseArguments(Options & options,
+               ArgumentParser & parser,
+               int argc,
+               char const ** argv)
 {
-    bool stop = !parse(parser, argc, argv);
-    if (stop)
-        return 1;
-    if (isSetLong(parser, "help"))
-    {
-        options.showHelp = true;
-        return 0;
-    }
-    if (isSetLong(parser, "version"))
-    {
-        options.showVersion = true;
-        return 0;
-    }
+    ArgumentParser::ParseResult res = parse(parser, argc, argv);
 
-    if (isSetLong(parser, "verbose"))
+    if (res != ArgumentParser::PARSE_OK)
+        return res;
+
+    if (isSet(parser, "verbose"))
         options.verbosity = 2;
-    if (isSetLong(parser, "very-verbose"))
+    if (isSet(parser, "very-verbose"))
         options.verbosity = 3;
 
-    getOptionValueLong(parser, "input-file", options.inFile);
-    getOptionValueLong(parser, "bai-index-file", options.baiFile);
+    getOptionValue(options.inFile, parser, "input-file");
+    getOptionValue(options.baiFile, parser, "bai-index-file");
     if (empty(options.baiFile) && !empty(options.inFile))
     {
         options.baiFile = options.inFile;
         append(options.baiFile, ".bai");
     }
 
-    getOptionValueLong(parser, "output-file", options.outFile);
-    options.bamFormat = isSetLong(parser, "output-bam");
-    if (isSetLong(parser, "region"))
+    getOptionValue(options.outFile, parser, "output-file");
+    options.bamFormat = isSet(parser, "output-bam");
+    if (isSet(parser, "region"))
     {
-        String<CharString> regions = getOptionValuesLong(parser, "region");
+        String<CharString> regions = getOptionValues(parser, "region");
         GenomicRegion region;
         for (unsigned i = 0; i < length(regions); ++i)
         {
@@ -158,7 +150,7 @@ int parseCommandLineAndCheck(Options & options,
         }
     }
 
-	return 0;
+	return ArgumentParser::PARSE_OK;
 }
 
 template <typename TOptions>
@@ -246,17 +238,16 @@ int main(int argc, char const * argv[])
     // -----------------------------------------------------------------------
 
     // Setup command line parser.
-    CommandLineParser parser;
+    ArgumentParser parser;
     Options options;
-    setupCommandLineParser(parser, options);
+    setupArgumentParser(parser, options);
     
     // Then, parse the command line and handle the cases where help display
     // is requested or erroneous parameters were given.
-    int res = parseCommandLineAndCheck(options, parser, argc, argv);
-    if (res != 0)
-        return 1;
-    if (options.showHelp || options.showVersion)
-        return 0;
+    ArgumentParser::ParseResult res = parseArguments(options, parser, argc, argv);
+
+    if (res != ArgumentParser::PARSE_OK)
+        return res == ArgumentParser::PARSE_ERROR;
 
     // -----------------------------------------------------------------------
     // Open Input / Output Files.

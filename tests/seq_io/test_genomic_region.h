@@ -53,8 +53,8 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_region_from_string)
 
     SEQAN_ASSERT_EQ(region.seqName, "chr1");
     SEQAN_ASSERT(region.rID == region.INVALID_ID);
-    SEQAN_ASSERT_EQ(region.beginPos, 999u);
-    SEQAN_ASSERT_EQ(region.endPos, 2000u);
+    SEQAN_ASSERT_EQ(region.beginPos, 999);
+    SEQAN_ASSERT_EQ(region.endPos, 2000);
 }
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_region_clear)
@@ -90,7 +90,7 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_region_parse_chrom_begin)
 
     SEQAN_ASSERT_EQ(region.seqName, "chr1");
     SEQAN_ASSERT(region.rID == region.INVALID_ID);
-    SEQAN_ASSERT_EQ(region.beginPos, 999u);
+    SEQAN_ASSERT_EQ(region.beginPos, 999);
     SEQAN_ASSERT(region.endPos == region.INVALID_POS);
 }
 
@@ -101,8 +101,8 @@ SEQAN_DEFINE_TEST(test_seq_io_genomic_region_parse_chrom_begin_end)
 
     SEQAN_ASSERT_EQ(region.seqName, "chr1");
     SEQAN_ASSERT(region.rID == region.INVALID_ID);
-    SEQAN_ASSERT_EQ(region.beginPos, 999u);
-    SEQAN_ASSERT_EQ(region.endPos, 2000u);
+    SEQAN_ASSERT_EQ(region.beginPos, 999);
+    SEQAN_ASSERT_EQ(region.endPos, 2000);
 }
 
 SEQAN_DEFINE_TEST(test_seq_io_genomic_region_to_string_interval)

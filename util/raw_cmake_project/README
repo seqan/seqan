@@ -1,0 +1,2 @@
+This is an example of how to use SeqAn in a CMake-based project independently
+from the SeqAn build system.

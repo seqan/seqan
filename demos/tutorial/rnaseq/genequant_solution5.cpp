@@ -144,7 +144,7 @@ void countReadsPerGene(String<unsigned> & readsPerGene, String<TIntervalTree> co
         TPos queryEnd = _max(ar.beginPos, ar.endPos);
 
         // search read-overlapping genes
-        findIntervals(intervalTrees[ar.contigId], queryBegin, queryEnd, result);
+        findIntervals(result, intervalTrees[ar.contigId], queryBegin, queryEnd);
 
         // increase read counter for each overlapping annotation given the id in the interval tree
         for (unsigned j = 0; j < length(result); ++j)

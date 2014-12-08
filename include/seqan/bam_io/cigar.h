@@ -577,7 +577,7 @@ alignAndGetCigarString(
 // ----------------------------------------------------------------------------
 
 template <typename TCigarString, typename TNum>
-inline void _getClippedLength(TCigarString const & cigar, TNum & sum)
+inline void _getClippedLength(TNum & sum, TCigarString const & cigar)
 {
     typedef typename Iterator<TCigarString const, Standard>::Type TCigarIter;
 
@@ -595,7 +595,7 @@ inline void _getClippedLength(TCigarString const & cigar, TNum & sum)
 // ----------------------------------------------------------------------------
 
 template <typename TCigarString, typename TNum>
-inline void _getLengthInRef(TCigarString const & cigar, TNum & sum)
+inline void _getLengthInRef(TNum & sum, TCigarString const & cigar)
 {
     typedef typename Iterator<TCigarString const, Standard>::Type TCigarIter;
 
@@ -632,9 +632,8 @@ _getQueryLength(TCigarString const & cigar)
 // cigarToGapAnchorRead()
 // ----------------------------------------------------------------------------
 
-template<typename TCigarString, typename TGaps>
-inline unsigned
-cigarToGapAnchorRead(TCigarString const & cigar, TGaps & gaps)
+template <typename TGaps, typename TCigarString>
+unsigned cigarToGapAnchorRead(TGaps & gaps, TCigarString const & cigar)
 {
     typename Iterator<TGaps>::Type it = begin(gaps);
     bool atBegin = true;
@@ -664,8 +663,7 @@ cigarToGapAnchorRead(TCigarString const & cigar, TGaps & gaps)
 // ----------------------------------------------------------------------------
 
 template<typename TCigarString, typename TGaps>
-inline unsigned
-cigarToGapAnchorContig(TCigarString const & cigar, TGaps & gaps)
+unsigned cigarToGapAnchorContig(TGaps & gaps, TCigarString const & cigar)
 {
     typename Iterator<TGaps>::Type it = begin(gaps);
     bool atBegin = true;

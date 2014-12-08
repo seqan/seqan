@@ -611,7 +611,7 @@ int readMatchesFromSamBam(
 
         // need to calculate endPos
         TContigPos endPos;
-        _getLengthInRef(record.cigar, endPos);
+        _getLengthInRef(endPos, record.cigar);
         endPos = beginPos + endPos;
 
         // check if cigar string has indels
@@ -696,14 +696,14 @@ int readMatchesFromSamBam(
             }
             TReadGapAnchors readGapAnchors;
             TReadGaps readGaps(record.seq, readGapAnchors);
-            cigarToGapAnchorRead(record.cigar, readGaps);
+            cigarToGapAnchorRead(readGaps, record.cigar);
             appendAlignment(fragmentStore, readId, contigId, beginPos, endPos, readGapAnchors);
             // Contig gap anchors
             //TContigGapAnchors contigGapAnchors;
             //TContigGaps contigGaps(contigGapAnchors);
             TContigAnchorGaps contigGapAnchors;
             TContigGaps contigGaps(contigGapAnchors);
-            cigarToGapAnchorContig(record.cigar, contigGaps);
+            cigarToGapAnchorContig(contigGaps, record.cigar);
             appendValue(setContigAnchorGaps, contigGapAnchors);
 
 

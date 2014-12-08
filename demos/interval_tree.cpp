@@ -46,7 +46,7 @@ int main()
     TValue delEnd   = 500;
     String<TCargo> results;
 
-    findIntervals(tree, delBegin, delEnd, results);
+    findIntervals(results, tree, delBegin, delEnd);
 
     std::cout << "Deletion " << delBegin << ".." << delEnd << " overlaps with ";
     for (unsigned i = 0; i < length(results); ++i)
@@ -55,7 +55,7 @@ int main()
 
 ///Query a single position.
     TValue snpPos = 150;
-    findIntervals(tree, snpPos, results);
+    findIntervals(results, tree, snpPos);
 
     std::cout << "SNP " << snpPos << " overlaps with ";
     for (unsigned i = 0; i < length(results); ++i)
@@ -69,7 +69,7 @@ int main()
 
 ///Now, redo the query. This time one interval less should be returned.
     String<TCargo> results2;
-    findIntervals(tree, snpPos, results2);
+    findIntervals(results2, tree, snpPos);
 
     std::cout << "SNP " << snpPos << " overlaps with ";
     for (unsigned i = 0; i < length(results2); ++i)

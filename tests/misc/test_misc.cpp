@@ -44,7 +44,6 @@
 
 #include <seqan/misc/edit_environment.h>
 #include <seqan/misc/base.h>
-#include <seqan/misc/misc_cmdparser.h>
 #include <seqan/misc/dequeue.h>
 #include <seqan/misc/map.h>
 #include <seqan/misc/set.h>

@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_core_tests)
+project (seqan_tests)
 message (STATUS "Configuring tests")
 
 # Setup flags and register all subdirectories.
