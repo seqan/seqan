@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_core_tests_bam_io)
+project (seqan_tests_bam_io)
 message (STATUS "Configuring tests/bam_io")
 
 # ----------------------------------------------------------------------------

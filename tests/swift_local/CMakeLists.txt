@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_core_tests_find_swift)
+project (seqan_tests_find_swift)
 message (STATUS "Configuring tests/find_swift")
 
 # ----------------------------------------------------------------------------

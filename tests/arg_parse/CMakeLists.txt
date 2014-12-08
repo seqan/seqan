@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_core_tests_arg_parse)
+project (seqan_tests_arg_parse)
 message (STATUS "Configuring tests/arg_parse")
 
 # ----------------------------------------------------------------------------

@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_core_tests_test_ucsc_io)
+project (seqan_tests_test_ucsc_io)
 message (STATUS "Configuring tests/test_ucsc_io")
 
 # ----------------------------------------------------------------------------
