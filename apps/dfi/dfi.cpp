@@ -24,7 +24,6 @@
  ==========================================================================*/
 
 #include <seqan/arg_parse.h>
-//#include <seqan/misc/misc_cmdparser.h>
 #include <seqan/index.h>
 #include <seqan/seq_io.h>
 #include <seqan/math.h>
