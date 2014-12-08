@@ -398,7 +398,7 @@ macro (seqan_setup_cuda_vars)
                         ${ARGN})
   if (SEQAN_HAS_CUDA)
     # Wrap nvcc to make cudafe output gcc-like.
-    find_program (COLOR_NVCC colornvcc PATHS ${CMAKE_SOURCE_DIR}/misc NO_DEFAULT_PATH)
+    find_program (COLOR_NVCC colornvcc PATHS ${CMAKE_SOURCE_DIR}/util NO_DEFAULT_PATH)
     set (CUDA_NVCC_EXECUTABLE ${COLOR_NVCC})
 
     # Build CUDA targets from the given architecture upwards.
