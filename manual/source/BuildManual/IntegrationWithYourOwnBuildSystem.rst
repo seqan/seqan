@@ -187,7 +187,7 @@ We will create a project with good old Makefiles and GCC.
 The program will not do much but can serve as a minimal example on how to use SeqAn with your own build process.
 You should be able to adapt this guide to your favourite build system or IDE.
 
-The example project can be found in ``misc/makefile_project``.
+The example project can be found in ``util/makefile_project``.
 The project layout looks like this:
 
 ::
@@ -209,7 +209,7 @@ main.cpp
 We have one directory ``src`` for source files.
 The file ``main.cpp`` looks as follows:
 
-.. includefrags:: misc/makefile_project/src/main.cpp
+.. includefrags:: util/makefile_project/src/main.cpp
    :language: cpp
 
 It includes SeqAn headers just as you would within the SeqAn CMake framework.
@@ -222,7 +222,7 @@ Makefile.rules
 Contains the necessary commands to build the object file for the program ``main.cpp`` and then make an executeable ``main`` from it and clean targets.
 This file is included from the files ``release/Makefile`` and ``debug/Makefile``.
 
-.. includefrags:: misc/makefile_project/Makefile.rules
+.. includefrags:: util/makefile_project/Makefile.rules
    :language: make
 
 Makefile
@@ -231,7 +231,7 @@ Makefile
 Allows to build both debug and release builds by calling ``make debug``, ``make release`` or ``make all`` from the project directory.
 Removes all binaries with ``make clean``.
 
-.. includefrags:: misc/makefile_project/Makefile
+.. includefrags:: util/makefile_project/Makefile
    :language: make
 
 debug/Makefile, release/Makefile
@@ -239,12 +239,12 @@ debug/Makefile, release/Makefile
 
 The file ``debug/Makefile`` looks as follows.
 
-.. includefrags:: misc/makefile_project/debug/Makefile
+.. includefrags:: util/makefile_project/debug/Makefile
    :language: make
 
 The file ``release/Makefile`` looks as follows.
 
-.. includefrags:: misc/makefile_project/release/Makefile
+.. includefrags:: util/makefile_project/release/Makefile
    :language: make
 
 These Makefiles include the file ``Makefile.rules``.
