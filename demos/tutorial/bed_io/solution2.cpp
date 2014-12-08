@@ -1,6 +1,6 @@
 #include <seqan/basic.h>
 #include <seqan/bed_io.h>
-#include <seqan/misc/misc_name_store_cache.h>
+#include <seqan/misc/name_store_cache.h>
 
 int main()
 {

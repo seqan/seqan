@@ -34,7 +34,7 @@
 #define SEQAN_HEADER_MISC_SET_H
 
 #include <set>
-#include <seqan/misc/misc_base.h>
+#include <seqan/misc/base.h>
 
 //////////////////////////////////////////////////////////////////////////////
 

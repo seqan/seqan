@@ -43,15 +43,15 @@
 #include <seqan/map.h>
 
 #include <seqan/misc/edit_environment.h>
-#include <seqan/misc/misc_base.h>
+#include <seqan/misc/base.h>
 #include <seqan/misc/misc_cmdparser.h>
-#include <seqan/misc/misc_dequeue.h>
-#include <seqan/misc/misc_map.h>
-#include <seqan/misc/misc_set.h>
-#include <seqan/misc/misc_interval_tree.h>
+#include <seqan/misc/dequeue.h>
+#include <seqan/misc/map.h>
+#include <seqan/misc/set.h>
+#include <seqan/misc/interval_tree.h>
 #include <seqan/misc/priority_type_base.h>
 #include <seqan/misc/priority_type_heap.h>
-#include <seqan/misc/misc_terminal.h>
+#include <seqan/misc/terminal.h>
 
 #include "test_misc_interval_tree.h"
 #include "test_misc_accumulators.h"

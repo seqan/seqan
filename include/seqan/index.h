@@ -44,9 +44,9 @@
 #include <seqan/parallel.h>
 
 #include <seqan/find.h>
-#include <seqan/misc/misc_set.h>
-#include <seqan/misc/misc_memset.h>
-#include <seqan/misc/misc_bit_twiddling.h>
+#include <seqan/misc/set.h>
+#include <seqan/misc/memset.h>
+#include <seqan/misc/bit_twiddling.h>
 
 #include <climits>
 #include <functional>

@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_FIND_MYERS_UKKONEN_H
 #define SEQAN_HEADER_FIND_MYERS_UKKONEN_H
 
-#include <seqan/misc/misc_sse2.h>
+#include <seqan/misc/sse2.h>
 
 namespace SEQAN_NAMESPACE_MAIN 
 {

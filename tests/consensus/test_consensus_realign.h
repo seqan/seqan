@@ -40,7 +40,7 @@
 #include <seqan/basic.h>
 #include <seqan/consensus.h>
 
-#include <seqan/misc/misc_svg.h>
+#include <seqan/misc/svg.h>
 
 SEQAN_DEFINE_TEST(test_consensus_realign_one_contig_small)
 {

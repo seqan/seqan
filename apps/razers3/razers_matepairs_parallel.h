@@ -28,7 +28,7 @@
 
 #include <numeric>
 
-#include <seqan/misc/misc_dequeue.h>
+#include <seqan/misc/dequeue.h>
 
 #include "razers_parallel.h"
 #include "razers_matepairs.h"

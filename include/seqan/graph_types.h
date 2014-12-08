@@ -78,7 +78,7 @@
 
 // Graph drawing and some file parsing
 #include <seqan/graph_types/graph_drawing.h>
-#include <seqan/misc/misc_parsing.h>
+#include <seqan/misc/parsing.h>
 
 // TODO(singer): The following file contains a function not used.
 //#include <seqan/graph_types/graph_utility_parsing.h>

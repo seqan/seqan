@@ -34,7 +34,7 @@
 #include "razers.h"
 #include "readSimulator.h"
 
-#include <seqan/misc/misc_parsing.h>
+#include <seqan/misc/parsing.h>
 
 
 

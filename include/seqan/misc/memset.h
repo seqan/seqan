@@ -32,8 +32,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_MISC_MISC_MEMSET_H_
-#define INCLUDE_SEQAN_MISC_MISC_MEMSET_H_
+#ifndef INCLUDE_SEQAN_MISC_MEMSET_H_
+#define INCLUDE_SEQAN_MISC_MEMSET_H_
 
 #include <seqan/basic/basic_metaprogramming.h>
 
@@ -61,7 +61,7 @@ namespace seqan {
 
 /*!
  * @fn memset
- * @headerfile <seqa/misc/misc_memset.h>
+ * @headerfile <seqa/misc/memset.h>
  * @brief An implementation of <tt>memset</tt> with fixed number of bytes using Metaprogramming.
  *
  * @signature template <unsigned SIZE>
@@ -209,4 +209,4 @@ memset(void* ptr)
 
 }  // namespace seqan
 
-#endif  // #ifndef INCLUDE_SEQAN_MISC_MISC_MEMSET_H_
+#endif  // #ifndef INCLUDE_SEQAN_MISC_MEMSET_H_
