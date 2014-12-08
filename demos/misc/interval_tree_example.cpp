@@ -19,7 +19,7 @@ int main()
 
     // find intervals that overlap the query interval [550,900)
     String<CharString> results;
-    findIntervals(tree, 550, 900, results);
+    findIntervals(results, tree, 550, 900);
 
     // output corresponding keys
     for (unsigned i = 0; i < length(results); ++i)
