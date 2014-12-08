@@ -73,7 +73,7 @@ struct MersenneTwister;
  * shuffle("Hello World!") ==  o!reWlloHld
  * @endcode
  *
- * @see http://trac.seqan.de/wiki/Tutorial/Randomness
+ * @see http://seqan.readthedocs.org/en/develop/Tutorial/Randomness.html
  */
 
 template <typename TSpec = MersenneTwister>
@@ -103,8 +103,9 @@ class Rng;
  *
  * @tparam TSpec Tag for selecting the specialization.
  *
- * This class is used together with @link Rng @endlink in the function @link Rng#pickRandomNumber @endlink. See the 
- * <a href="http://trac.seqan.de/wiki/Tutorial/Randomness">SeqAn Randomness Tutorial</a> for more details.
+ * This class is used together with @link Rng @endlink in the function @link Rng#pickRandomNumber @endlink. See the
+ * <a href="http://seqan.readthedocs.org/en/develop/Tutorial/Randomness.html">SeqAn Randomness Tutorial</a> for more
+ * details.
  */
 
 template <typename TSpec>
@@ -122,7 +123,7 @@ class Pdf;
  * @signature Value<TPdf>::Type
  *
  * @tparam TPdf The Pdf for the value type.
- * 
+ *
  * @return Type The value type of the Pdf.
  */
 
@@ -133,7 +134,7 @@ class Pdf;
  * @brief Value type of a Rng.
  *
  * @signature Value<TRng>::Type
- * 
+ *
  * @tparam TRng the Rng to get the value type for.
  *
  * @return Type the value type for the Rng.
@@ -239,7 +240,8 @@ struct GetDefaultRng
  *
  * @section Remarks
  *
- * For more details see the <a href="http://trac.seqan.de/wiki/Tutorial/Randomness">SeqAn Tutorial on Randomness</a>.
+ * For more details see the <a href="http://seqan.readthedocs.org/en/develop/Tutorial/Randomness.html">SeqAn
+ * Tutorial on Randomness</a>.
  */
 
 // specification only
