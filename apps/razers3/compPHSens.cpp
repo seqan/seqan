@@ -1,7 +1,10 @@
+// NOTE(esiragusa): this tool is commented out in the cmake file.
+
 #include <fstream>
 #include <iostream>
 #include <string>
 
+// NOTE(esiragusa): this tool uses the old cmdparser.
 #include <seqan/misc/misc_cmdparser.h>
 #include "razers.h"
 
