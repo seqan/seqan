@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_core_tests_modifier_cyclic_shape)
+project (seqan_tests_modifier_cyclic_shape)
 message (STATUS "Configuring tests/modifier_cyclic_shape")
 
 # ----------------------------------------------------------------------------
