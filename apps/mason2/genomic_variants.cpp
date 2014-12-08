@@ -715,7 +715,7 @@ bool PositionMap::overlapsWithBreakpoint(int svBeginPos, int svEndPos) const
 GenomicInterval PositionMap::getGenomicInterval(int svPos) const
 {
     seqan::String<GenomicInterval> intervals;
-    findIntervals(svIntervalTree, svPos, intervals);
+    findIntervals(intervals, svIntervalTree, svPos);
     SEQAN_ASSERT_EQ(length(intervals), 1u);
     return intervals[0];
 }
@@ -728,7 +728,7 @@ GenomicInterval PositionMap::getGenomicInterval(int svPos) const
 GenomicInterval PositionMap::getGenomicIntervalSmallVarPos(int smallVarPos) const
 {
     seqan::String<GenomicInterval> intervals;
-    findIntervals(svIntervalTreeSTL, smallVarPos, intervals);
+    findIntervals(intervals, svIntervalTreeSTL, smallVarPos);
     return intervals[0];
 }
 

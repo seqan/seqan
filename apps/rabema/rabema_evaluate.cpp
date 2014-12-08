@@ -641,7 +641,7 @@ int benchmarkReadResult(RabemaStats & result,
 
         // Try to hit any interval.
         clear(queryResult);
-        findIntervals(intervalTrees[seqId], lastPos, queryResult);
+        findIntervals(queryResult, intervalTrees[seqId], lastPos);
         mappedAny = mappedAny || !empty(queryResult);
 #if DEBUG_RABEMA
         if (mappedAny)

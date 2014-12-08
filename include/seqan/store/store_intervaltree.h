@@ -174,13 +174,13 @@ createIntervalTreeStore(FragmentStore<TSpec, TConfig> & me, const bool &unknownO
 
 template<typename TIntervalTree, typename TInterval, typename TCargo>
 inline void
-findIntervalsForInterval(String<TCargo> & result, TIntervalTree & intervalTree, TInterval & interval, const unsigned & offsetInterval)
+findIntervalsForInterval(String<TCargo> & result, TIntervalTree & intervalTree, TInterval & interval, unsigned offsetInterval)
 {
 	String<TCargo> result1;
 	String<TCargo> result2;
 	
-	findIntervals(intervalTree.g, intervalTree.pm, interval.i1 + offsetInterval, result1);
-	findIntervals(intervalTree.g, intervalTree.pm, interval.i2 - offsetInterval, result2);
+	findIntervals(result1, intervalTree.g, intervalTree.pm, interval.i1 + offsetInterval);
+	findIntervals(result2, intervalTree.g, intervalTree.pm, interval.i2 - offsetInterval);
 	
 	interSec(result, result1, result2); 
 	
