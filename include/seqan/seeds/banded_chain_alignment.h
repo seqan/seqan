@@ -60,12 +60,12 @@ namespace seqan {
  * @fn bandedChainAlignment
  * @headerfile <seqan/seeds.h>
  * @brief Computes the best global pairwise alignment between two sequences given a non-empty seed chain.
- * 
+ *
  * @signature TValue bandedChainAlignment(align,          seedChain, scoringScheme1[, scoringScheme2] [, alignConfig] [, k]);
  * @signature TValue bandedChainAlignment(gapsH, gapsV,   seedChain, scoringScheme1[, scoringScheme2] [, alignConfig] [, k]);
  * @signature TValue bandedChainAlignment(frags, strings, seedChain, scoringScheme1[, scoringScheme2] [, alignConfig] [, k]);
  * @signature TValue bandedChainAlignment(alignmentGraph, seedChain, scoringScheme1[, scoringScheme2] [, alignConfig] [, k]);
- * 
+ *
  * @param[in,out] align   An @link Align @endlink object that stores the alignment. The number of rows must be 2 and the
  *                        sequences must have already been set.  <tt>row(align, 0)</tt> is the horizontal sequence in the
  *                        alignment matrix, <tt>row(align, 1)</tt> is the vertical sequence.
@@ -90,16 +90,16 @@ namespace seqan {
  *                       or equal <tt>1</tt> are allowed. Type: nolink:<tt>int</tt>. Default: 15.
  * @param[in] alignConfig
  *                       The @link AlignConfig @endlink to use for the alignment.
- * 
+ *
  * @return TValue An integer with the alignment score, as given by the @link Score#Value @endlink metafunction of the
  *                @link Score @endlink type.  If the seed chain is empty then the @link OrderedAlphabetConcept#MinValue
  *                smallest value of the score type @endlink is used to return the minimal value of the selected score
  *                type and no alignment is computed.
- * 
+ *
  * There exist multiple overloads for this function with four configuration dimensions.
- * 
+ *
  * First, you can select whether begin and end gaps are free in either sequence using <tt>alignConfig</tt>.
- * 
+ *
  * Second, you can select the type of the target storing the alignment. This can be either an @link Align @endlink
  * object, two @link Gaps @endlink objects, a @link AlignmentGraph @endlink, or a string of @link Fragment @endlink
  * objects. @link Align @endlink objects provide an interface to tabular alignments with the restriction of all rows
@@ -108,67 +108,67 @@ namespace seqan {
  * Graphs @endlink provide a graph-based representation of segment-based colinear alignments. Using @link Fragment
  * @endlink strings is useful for collecting many pairwise alignments, for example in the construction of @link
  * AlignmentGraph Alignment Graphs @endlink for multiple-sequence alignments (MSA).
- * 
+ *
  * Third, you can optionally give a second scoring scheme to fill the gaps between two consecutive seeds. Note that
  * based on the specified scores either an affine or linear gap cost function is used. This only depends on whether for
  * one of the scoring schemes the scores for gap opening and gap extension differ or not. If only one scoring scheme is
  * defined the complete region is computed with the same scoring scheme.
- * 
+ *
  * Fourth, you can optinally select a proper band extension for the bands around the seeds.  At the moment only band
  * extensions of at least <tt>1</tt> are allowed.  The default value is <tt>15</tt> and is based on the default values
  * for the LAGAN-algorithm described by Brudno et al., 2003.
- * 
+ *
  * The examples below show some common use cases.
- * 
+ *
  * @section Examples
- * 
+ *
  * Banded chain alignment of two sequences using an @link Align @endlink object and using only one scoring scheme and no
  * free end-gaps.
- * 
+ *
  * @code{.cpp}
  * Dna5String seqH = "CGAATCCATCCCACACA";
  * Dna5String seqV = "GGCGATNNNCATGGCACA";
- *  
+ *
  * String<Seed<Simple> > seedChain;
  * appendValue(seedChain, Seed<Simple>(2, 0, 6, 5));
  * appendValue(seedChain, Seed<Simple>(9, 6, 12, 9));
  * appendValue(seedChain, Seed<Simple>(14, 11, 16, 17));
- *  
+ *
  * Align<Dna5String, ArrayGaps> alignment;
  * resize(rows(alignment), 2);
  * assignSource(row(alignment, 0), seqH);
  * assignSource(row(alignment, 1), seqV);
- *  
+ *
  * Score<int, Simple> scoringScheme(2, -1, -2);
- *  
+ *
  * int result = bandedChainAlignment(alignment, seedChain, scoringScheme, 2);
  * @endcode
  *
  * Banded chain alignment of two sequences using two @link Gaps @endlink objects, an unordered seed set to hold the
  * seeds, two different scoring schemes for the gaps between the seeds and the seeds and free end-gaps.
- * 
+ *
  * @code{.cpp}
  * DnaString seqH = "CGAATCCATCCCACACA";
  * Dna5String seqV = "GGCGATNNNCATGGCACA";
- *  
+ *
  * SeedSet<Simple, Unordered> seedChain;
  * addSeed(seedChain, Seed<Simple>(2, 0, 6, 5), Single());
  * addSeed(seedChain, Seed<Simple>(9, 6, 12, 9), Single());
  * addSeed(seedChain, Seed<Simple>(14, 11, 16, 17), Single());
- *  
+ *
  * Gaps<DnaString, ArrayGaps> gapsH(seqH);
  * Gaps<Dna5String, AnchorGaps<> > gapsV(seqV);
- *  
+ *
  * Score<int, Simple> scoringSchemeSeed(2, -1, -2);
  * Score<int, Simple> scoringSchemeGap(5, -3, -1, -5);
  * AlignConfig<true, true, true, true> alignConfig;
- *  
+ *
  * int result = globalAlignment(gapsH, gapsV, scoringSchemeSeed, scoringSchemeGap, alignConfig, 2);
  * @endcode
  *
  * @section Tutorial
  *
- * Also see the <a href="http://trac.seqan.de/wiki/Tutorial/Seed-and-Extend">Seed-and-Extend Tutorial</a>
+ * Also see the <a href="http://seqan.readthedocs.org/en/develop/Tutorial/SeedAndExtend.html">Seed-and-Extend Tutorial</a>
  *
  * @section Reference
  *
