@@ -17,7 +17,7 @@
 #include <seqan/stream.h>
 #include <seqan/store.h>
 #include <seqan/random.h>
-#include <seqan/misc/misc_cmdparser.h>
+#include <seqan/arg_parse.h>
 
 using namespace seqan;
 
@@ -144,34 +144,34 @@ int main(int argc, char const ** argv)
     options.seed = 42;
 
     // Setup command line parser.
-    CommandLineParser parser;
+    ArgumentParser parser;
     addUsageLine(parser, "filter_sam [OPTIONS] INPUT.sam");
-    addOption(parser, CommandLineOption("r", "reference", "Reference sequence in FASTA file.", OptionType::String, options.referenceFilename));
-    addOption(parser, CommandLineOption("o", "output-filename", "Filename of the output.", OptionType::String, options.outputFilename));
-    addOption(parser, CommandLineOption("sd", "sort-distance", "Sort alignments by distance.", OptionType::Bool, options.sortDistance));
-    addOption(parser, CommandLineOption("l", "limit", "Number of alignments to output per read.", OptionType::Int, options.limit));
-    requiredArguments(parser, 1);
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "INPUT"));
+    addOption(parser, ArgParseOption("r", "reference", "Reference sequence in FASTA file.", ArgParseOption::STRING));
+    addOption(parser, ArgParseOption("o", "output-filename", "Filename of the output.", ArgParseOption::STRING));
+    addOption(parser, ArgParseOption("sd", "sort-distance", "Sort alignments by distance."));
+    addOption(parser, ArgParseOption("l", "limit", "Number of alignments to output per read."));
 
     // Parse command line.
-    bool stop = !parse(parser, argc, argv, std::cerr);
-    if (stop)
-        return !isSetShort(parser, "h");
-    getOptionValueLong(parser, "reference", options.referenceFilename);
-    getOptionValueLong(parser, "output-filename", options.outputFilename);
-    getOptionValueLong(parser, "limit", options.limit);
-    if (isSetLong(parser, "sort-distance"))
-        options.sortDistance = true;
-    options.samFilename = getArgumentValue(parser, 0);
+    ArgumentParser::ParseResult res = parse(parser, argc, argv);
 
-    int res = 0;
-    if (options.sortDistance && empty(options.referenceFilename)) {
+    if (res != ArgumentParser::PARSE_OK)
+        return res == ArgumentParser::PARSE_ERROR;
+
+    getOptionValue(options.referenceFilename, parser, "reference");
+    getOptionValue(options.outputFilename, parser, "output-filename");
+    getOptionValue(options.limit, parser, "limit");
+    getOptionValue(options.sortDistance, parser, "sort-distance");
+
+    getArgumentValue(options.samFilename, parser, 0);
+
+    if (options.sortDistance && empty(options.referenceFilename))
+    {
         std::cerr << "Reference has to be given if --sort-distance- is specified." << std::endl;
-        stop = true;
-        res = 1;
+        return 1;
     }
 
-    if (!stop)
-        performWork(options);
+    performWork(options);
 
-    return res;
+    return 0;
 }

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-#include <seqan/misc/misc_cmdparser.h>
+#include <seqan/arg_parse.h>
 #include <seqan/store.h>
 #include "razers.h"
 
@@ -14,38 +14,34 @@ int main(int argc, const char * argv[])
 
     //////////////////////////////////////////////////////////////////////////////
     // Define options
-    CommandLineParser parser;
+    ArgumentParser parser;
     RazerSOptions<> options;
     double delta = 0;
 
     addUsageLine(parser, "[OPTION]... <reads.fasta>");
-    addOption(parser, CommandLineOption("mr", "mutation-rate", "set the percent mutation rate", OptionType::Double | OptionType::Label, 100.0 * options.mutationRate));
-    addOption(parser, CommandLineOption("qd", "quality-delta", "add a delta value to qualities", OptionType::Double | OptionType::Label, delta));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "READS FILE"));
+    addOption(parser, ArgParseOption("mr", "mutation-rate", "set the percent mutation rate", ArgParseOption::DOUBLE));
+    addOption(parser, ArgParseOption("qd", "quality-delta", "add a delta value to qualities", ArgParseOption::DOUBLE));
 
-    requiredArguments(parser, 1);
+    ArgumentParser::ParseResult res = parse(parser, argc, argv);
 
-    bool stop = !parse(parser, argc, argv, std::cerr);
-    if (stop)
-        return 0;
+    if (res != ArgumentParser::PARSE_OK)
+        return res == ArgumentParser::PARSE_ERROR;
 
     FragmentStore<> store;
-    getOptionValueLong(parser, "mutation-rate", options.mutationRate);
-    getOptionValueLong(parser, "quality-delta", delta);
+    getOptionValue(options.mutationRate, parser, "mutation-rate");
+    getOptionValue(delta, parser, "quality-delta");
     options.mutationRate /= 100;
 
     //////////////////////////////////////////////////////////////////////////////
     // Load reads
+    CharString readsFilename;
+    getArgumentValue(readsFilename, parser, 0);
+
     SeqFileIn seqFileIn;
-    if (!open(seqFileIn, toCString(getArgumentValue(parser, 0))) || !loadReads(store, seqFileIn, options))
+    if (!open(seqFileIn, toCString(readsFilename)) || !loadReads(store, seqFileIn, options))
     {
         std::cerr << "Failed to load reads." << std::endl;
-        stop = true;
-    }
-
-    // something went wrong
-    if (stop)
-    {
-        std::cerr << "Exiting ..." << std::endl;
         return 1;
     }
 

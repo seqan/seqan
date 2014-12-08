@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-#include <seqan/misc/misc_cmdparser.h>
+#include <seqan/arg_parse.h>
 #include <seqan/store.h>
 #include <seqan/random.h>
 #include <seqan/parallel.h>
@@ -77,7 +77,7 @@ int main(int argc, const char * argv[])
 
     //////////////////////////////////////////////////////////////////////////////
     // Define options
-    CommandLineParser parser;
+    ArgumentParser parser;
 
     addUsageLine(parser, "[OPTION]... <reference.fasta> <error_dist file>");
 
@@ -85,20 +85,24 @@ int main(int argc, const char * argv[])
     unsigned numReads = 1000000;
     String<double> errorProb;
 
-    addOption(parser, CommandLineOption("n", "num-reads", "number of reads", OptionType::Int | OptionType::Label, numReads));
-    addOption(parser, CommandLineOption("o", "output", "output read filename", OptionType::String | OptionType::Label, outputFilename));
-    requiredArguments(parser, 2);
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "REFERENCE FILE"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "ERROR DIST FILE"));
+    addOption(parser, ArgParseOption("n", "num-reads", "number of reads", ArgParseOption::INTEGER));
+    addOption(parser, ArgParseOption("o", "output", "output read filename", ArgParseOption::STRING));
 
-    bool stop = !parse(parser, argc, argv, std::cerr);
-    if (stop)
-        return 0;
+    ArgumentParser::ParseResult res = parse(parser, argc, argv);
+
+    if (res != ArgumentParser::PARSE_OK)
+        return res == ArgumentParser::PARSE_ERROR;
 
     //////////////////////////////////////////////////////////////////////////////
     // Extract and check options
-    getOptionValueLong(parser, "num-reads", numReads);
-    getOptionValueLong(parser, "output", outputFilename);
+    getOptionValue(numReads, parser, "num-reads");
+    getOptionValue(outputFilename, parser, "output");
 
-    std::ifstream errorDistFile(toCString(getArgumentValue(parser, 1)), std::ios_base::in | std::ios_base::binary);
+    CharString distFile;
+    getArgumentValue(distFile, parser, 1);
+    std::ifstream errorDistFile(toCString(distFile), std::ios_base::in | std::ios_base::binary);
 
     while (true)
     {
@@ -111,13 +115,11 @@ int main(int argc, const char * argv[])
 
     FragmentStore<> store;
 
-    if (!loadContigs(store, getArgumentValue(parser, 0)) && (stop = true))
-        std::cerr << "Failed to load genome." << std::endl;
-
-    // something went wrong
-    if (stop)
+    CharString referenceFile;
+    getArgumentValue(distFile, parser, 0);
+    if (!loadContigs(store, toCString(referenceFile)))
     {
-        std::cerr << "Exiting ..." << std::endl;
+        std::cerr << "Failed to load genome." << std::endl;
         return 1;
     }
 
@@ -141,5 +143,6 @@ int main(int argc, const char * argv[])
             readFile << (char)('!' + getQualityValue(reads[i][j]));
         readFile << std::endl;
     }
+
     return 0;
 }
