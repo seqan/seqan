@@ -106,7 +106,7 @@ public:
 
         // Get length of alignment in reference.
         int len = 0;
-        _getLengthInRef(info.cigar, len);
+        _getLengthInRef(len, info.cigar);
 
         // Compute whether the alignment overlaps with a breakpoint.
         bool overlapsWithBreakpoint = posMap.overlapsWithBreakpoint(info.beginPos, info.beginPos + len);
@@ -331,8 +331,8 @@ public:
 
         // Get length of alignments in reference.
         int lenL = 0, lenR = 0;
-        _getLengthInRef(infoL.cigar, lenL);
-        _getLengthInRef(infoR.cigar, lenR);
+        _getLengthInRef(lenL, infoL.cigar);
+        _getLengthInRef(lenR, infoR.cigar);
 
         // Compute whether the left/right alignmetn overlaps with a breakpoint.
         bool overlapsWithBreakpointL = posMap.overlapsWithBreakpoint(infoL.beginPos, infoL.beginPos + lenL);

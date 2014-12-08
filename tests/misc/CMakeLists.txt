@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_core_tests_misc)
+project (seqan_tests_misc)
 message (STATUS "Configuring tests/misc")
 
 # ----------------------------------------------------------------------------
@@ -37,10 +37,6 @@ add_executable (test_misc
                test_misc_edit_environment.h)
 target_link_libraries (test_misc ${SEQAN_LIBRARIES})
 
-add_executable (test_misc_cmdparser 
-               test_misc_cmdparser.cpp)
-target_link_libraries (test_misc_cmdparser ${SEQAN_LIBRARIES})
-
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
@@ -49,4 +45,3 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 # ----------------------------------------------------------------------------
 
 add_test (NAME test_test_misc COMMAND $<TARGET_FILE:test_misc>)
-add_test (NAME test_test_misc_cmdparser COMMAND $<TARGET_FILE:test_misc_cmdparser>)

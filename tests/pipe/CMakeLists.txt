@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_core_tests_pipe)
+project (seqan_tests_pipe)
 message (STATUS "Configuring tests/pipe")
 
 # ----------------------------------------------------------------------------

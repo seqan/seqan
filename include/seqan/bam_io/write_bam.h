@@ -171,7 +171,7 @@ _writeBamRecord(TTarget & target,
 
     // bin_mq_nl
     unsigned l = 0;
-    _getLengthInRef(record.cigar, l);
+    _getLengthInRef(l, record.cigar);
     record.bin =_reg2Bin(record.beginPos, record.beginPos + l);
 
     // Write fixed-size BamAlignmentRecordCore.

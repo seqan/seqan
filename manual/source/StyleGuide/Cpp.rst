@@ -1054,8 +1054,6 @@ CPP File Structure
     #include <seqan/basic.h>
     #include <seqan/sequence.h>
 
-    #include <seqan/misc/misc_cmdparser.h>
-
     #include "app_name.h"
 
     using namespace seqan;

@@ -608,7 +608,7 @@ inline unsigned
 getAlignmentLengthInRef(BamAlignmentRecord const & record)
 {
     unsigned l = 0;
-    _getLengthInRef(record.cigar, l);
+    _getLengthInRef(l, record.cigar);
     return l;
 }
 

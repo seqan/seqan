@@ -108,7 +108,7 @@ SEQAN_CHECKPOINT
 	//find all segment matches that contain the current position (node_i)
 	String<TAlignmentPointer> relevant_segments;
 	TValue seq_i_pos = idToPosition(seqs,seq_i_id);
-	findIntervalsExcludeTouching(gs[seq_i_pos],pms[seq_i_pos],node_i,relevant_segments);
+	findIntervalsExcludeTouching(relevant_segments, gs[seq_i_pos],pms[seq_i_pos],node_i);
 
 	
 	TSegmentIterator segment_it = begin(relevant_segments);
@@ -573,7 +573,7 @@ SEQAN_CHECKPOINT
 					TValue seq_i_id = positionToId(seq, seq_i_pos);
 					all_nodes[seq_i_pos].insert(node_i);
 					String<TAlignmentPointer> relevant_segments;
-					findIntervalsExcludeTouching(gs[seq_i_pos],pms[seq_i_pos],node_i,relevant_segments);
+					findIntervalsExcludeTouching(relevant_segments, gs[seq_i_pos],pms[seq_i_pos],node_i);
 					
 					TSegmentIterator segment_it = begin(relevant_segments);
 					TSegmentIterator segment_end = end(relevant_segments);

@@ -1411,29 +1411,27 @@ addInterval(IntervalTree<TValue, TCargo> & itree, TValue begin, TValue end)
  * @fn IntervalTree#findIntervals
  * @brief Find all intervals that contain the query point or overlap with the query interval.
  *
- * @signature void findIntervals(intervalTree, query, result);
- * @signature void findIntervals(intervalTree, queryBegin, queryEnd, result);
- * @signature void findIntervals(graph, propertyMap, query, result);
+ * @signature void findIntervals(result, intervalTree, query);
+ * @signature void findIntervals(result, intervalTree, queryBegin, queryEnd);
+ * @signature void findIntervals(result, graph, propertyMap, query);
  *
+ * @param[out] result       A reference to the result string of <tt>TCargo</tt> objects. Types: @link String @endlink.
  * @param[in]  intervalTree An IntervalTree.
  * @param[in]  graph        The directed @link Graph graph @endlink that contains the topography of the interval tree.
  * @param[in]  propertyMap  The property map containing the node properties of the interval tree.
  * @param[in]  query        A query point.
  * @param[in]  queryBegin   The begin position of the query interval.
  * @param[in]  queryEnd     The end position of the query interval.
- * @param[out] result       A reference to the result string of <tt>TCargo</tt> objects. Types: @link String @endlink.
  */
 
 template <typename TSpec, typename TPropertyMap, typename TValue, typename TCargo>
 inline void
 findIntervals(
-    Graph<TSpec> const & g,
-    TPropertyMap const & pm,
-    TValue query,
-    String<TCargo> & result)
+        String<TCargo> & result,
+        Graph<TSpec> const & g,
+        TPropertyMap const & pm,
+        TValue query)
 {
-    SEQAN_CHECKPOINT
-
     typedef Graph<TSpec> const TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Value<TPropertyMap>::Type TProperty;
@@ -1509,37 +1507,35 @@ findIntervals(
 
 }
 
-template <typename TValue, typename TCargo>
+template <typename TValue, typename TCargo, typename TValue2>
 inline void
 findIntervals(
-    IntervalTree<TValue, TCargo> const & it,
-    TValue query,
-    String<TCargo> & result)
+        String<TCargo> & result,
+        IntervalTree<TValue, TCargo> const & it,
+        TValue2 query)
 {
-    SEQAN_CHECKPOINT
-        findIntervals(it.g, it.pm, query, result);
+    findIntervals(result, it.g, it.pm, query);
 }
 
-template <typename TValue, typename TCargo>
+template <typename TValue, typename TCargo, typename TValue2>
 inline void
 findIntervals(
-    IntervalTree<TValue, TCargo> const & tree,
-    TValue query_begin,
-    TValue query_end,
-    String<TCargo> & result)
+        String<TCargo> & result,
+        IntervalTree<TValue, TCargo> const & tree,
+        TValue2 query_begin,
+        TValue2 query_end)
 {
-    SEQAN_CHECKPOINT
-        findIntervals(tree.g, tree.pm, query_begin, query_end, result);
+    findIntervals(result, tree.g, tree.pm, query_begin, query_end);
 }
 
 template <typename TSpec, typename TPropertyMap, typename TValue, typename TCargo>
 inline void
 findIntervals(
-    Graph<TSpec> const & g,
-    TPropertyMap const & pm,
-    TValue query_begin,
-    TValue query_end,
-    String<TCargo> & result)
+        String<TCargo> & result,
+        Graph<TSpec> const & g,
+        TPropertyMap const & pm,
+        TValue query_begin,
+        TValue query_end)
 {
     typedef Graph<TSpec> const TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
@@ -1548,7 +1544,7 @@ findIntervals(
 
     // start at root
     TVertexDescriptor act_knot = 0;
-    findIntervals(g, pm, act_knot, query_begin, query_end, result);
+    findIntervals(result, g, pm, act_knot, query_begin, query_end);
 }
 
 template <
@@ -1559,15 +1555,13 @@ template <
     typename TCargo>
 inline void
 findIntervals(
-    Graph<TSpec> const & g,
-    TPropertyMap const & pm,
-    TVertexDescriptor & act_knot,
-    TValue query_begin,
-    TValue query_end,
-    String<TCargo> & result)
+        String<TCargo> & result,
+        Graph<TSpec> const & g,
+        TPropertyMap const & pm,
+        TVertexDescriptor & act_knot,
+        TValue query_begin,
+        TValue query_end)
 {
-    SEQAN_CHECKPOINT
-
     typedef typename Value<TPropertyMap>::Type TProperty;
     typedef typename Iterator<Graph<TSpec>, OutEdgeIterator>::Type TOutEdgeIterator;
 
@@ -1633,7 +1627,7 @@ findIntervals(
                 while (!atEnd(it))
                 {
                     TVertexDescriptor next_knot = targetVertex(it);
-                    findIntervals(g, pm, next_knot, query_begin, query_end, result);
+                    findIntervals(result, g, pm, next_knot, query_begin, query_end);
                     goNext(it);
                 }
                 break;
@@ -1649,27 +1643,25 @@ findIntervals(
  * @brief Find all intervals that contain the query point, exclude intervals that touch the query, i.e. where the query
  *        point equals the start or end point.
  *
- * @signature void findIntervalsExcludeTouching(intervalTree, query, result);
- * @signature void findIntervalsExcludeTouching(graph, propertyMap, query, result);
+ * @signature void findIntervalsExcludeTouching(result, intervalTree, query);
+ * @signature void findIntervalsExcludeTouching(result, graph, propertyMap, query,);
  *
+ * @param[out] result      The resulting string of cargos/ids of the intervals that contain the query point.  Should
+ *                         be a string of TCargo. Types: String
  * @param[in] intervalTree An interval tree Types: IntervalTree
  * @param[in] graph        The directed graph that contains the topography of the interval tree.
  * @param[in] query        The TValue to query here.
  * @param[in] propertyMap  The property map containing the node properties of the interval tree
- * @param[out] result      The resulting string of cargos/ids of the intervals that contain the query point.  Should
- *                         be a string of TCargo. Types: String
  */
 
 template <typename TSpec, typename TPropertyMap, typename TValue, typename TCargo>
 inline void
 findIntervalsExcludeTouching(
-    Graph<TSpec> const & g,
-    TPropertyMap const & pm,
-    TValue query,
-    String<TCargo> & result)
+        String<TCargo> & result,
+        Graph<TSpec> const & g,
+        TPropertyMap const & pm,
+        TValue query)
 {
-    SEQAN_CHECKPOINT
-
     typedef Graph<TSpec> const TGraph;
     typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
@@ -1748,12 +1740,11 @@ findIntervalsExcludeTouching(
 template <typename TValue, typename TCargo>
 inline void
 findIntervalsExcludeTouching(
-    IntervalTree<TValue, TCargo> const & tree,
-    TValue query,
-    String<TCargo> & result)
+        String<TCargo> & result,
+        IntervalTree<TValue, TCargo> const & tree,
+        TValue query)
 {
-    SEQAN_CHECKPOINT
-        findIntervalsExcludeTouching(tree.g, tree.pm, query, result);
+    findIntervalsExcludeTouching(result, tree.g, tree.pm, query);
 }
 
 /*!
@@ -1900,8 +1891,6 @@ removeInterval(
     TValue i_end,
     TCargo i_id)
 {
-    SEQAN_CHECKPOINT
-
     typedef typename VertexDescriptor<Graph<TSpec> >::Type TVertexDescriptor;
 
     // start looking at root
@@ -1917,8 +1906,6 @@ removeInterval(
     TValue i_end,
     TCargo i_id)
 {
-    SEQAN_CHECKPOINT
-
     return removeInterval(tree.g, tree.pm, i_begin, i_end, i_id);
     // we do not decrease the interval_counter of tree, as it would mix up interval IDs
 }

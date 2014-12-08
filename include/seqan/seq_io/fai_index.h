@@ -104,7 +104,8 @@ clear(FaiIndexEntry_ &entry)
  * FAI indices allow the rast random access to sequences or parts of sequences in a FASTA file.  Originally, they were
  * introduced in the <a href="http://samtools.sourceforge.net/samtools.shtml">samtools</a> program.
  *
- * Also see the <a href="http://trac.seqan.de/wiki/Tutorial/IndexedFastaIO">Indexed FASTA I/O Tutorial</a>.
+ * Also see the <a href="http://seqan.readthedocs.org/en/develop/Tutorial/IndexedFastaIO.html">Indexed FASTA I/O
+ * Tutorial</a>.
  *
  * @section Example
  *
@@ -366,13 +367,13 @@ inline bool readRegion(String<TValue, TSpec> & str,
                        FaiIndex const & index,
                        GenomicRegion const & region)
 {
-    unsigned rID = region.rID;
+    int rID = region.rID;
     if (rID == GenomicRegion::INVALID_ID)
         if (!getIdByName(rID, index, region.seqName))
             return false;  // Sequence with this name could not be found.
 
-    unsigned beginPos = (region.beginPos != GenomicRegion::INVALID_POS)? region.beginPos : 0;
-    unsigned endPos = (region.endPos != GenomicRegion::INVALID_POS)? region.endPos : sequenceLength(index, rID);
+    int beginPos = (region.beginPos != GenomicRegion::INVALID_POS)? region.beginPos : 0;
+    int endPos = (region.endPos != GenomicRegion::INVALID_POS)? region.endPos : sequenceLength(index, rID);
     readRegion(str, index, rID, beginPos, endPos);
     return true;
 }
