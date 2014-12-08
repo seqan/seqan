@@ -161,7 +161,7 @@ void SangerSequencingSimulator::simulateRead(
     {
         info.cigar = cigar;
         unsigned len = 0;
-        _getLengthInRef(cigar, len);
+        _getLengthInRef(len, cigar);
         if (dir == LEFT)
             info.sampleSequence = prefix(frag, len);
         else
