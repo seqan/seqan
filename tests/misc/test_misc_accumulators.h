@@ -37,7 +37,7 @@
 #ifndef SEQAN_TESTS_MISC_TEST_MISC_ACCUMULATORS_H_
 #define SEQAN_TESTS_MISC_TEST_MISC_ACCUMULATORS_H_
 
-#include <seqan/misc/misc_accumulators.h>
+#include <seqan/misc/accumulators.h>
 
 #include <seqan/basic.h>
 

@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include <seqan/sequence.h>
-#include <seqan/misc/misc_name_store_cache.h>
+#include <seqan/misc/name_store_cache.h>
 
 using namespace seqan;
 

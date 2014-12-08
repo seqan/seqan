@@ -1,7 +1,7 @@
 // FRAGMENT(includes)
 #include <iostream>
 #include <seqan/store.h>
-#include <seqan/misc/misc_svg.h>
+#include <seqan/misc/svg.h>
 
 using namespace seqan;
 

@@ -35,7 +35,7 @@
 #ifndef SEQAN_HEADER_STORE_IO_H
 #define SEQAN_HEADER_STORE_IO_H
 
-#include <seqan/misc/misc_parsing.h>
+#include <seqan/misc/parsing.h>
 
 /* IOREV
  *

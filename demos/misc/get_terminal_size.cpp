@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <seqan/misc/misc_terminal.h>
+#include <seqan/misc/terminal.h>
 
 int main()
 {

@@ -1,7 +1,7 @@
 #ifndef __APPS_BS_TOOLS_CASBAR_CONSENSUS_REALIGN_H__
 #define __APPS_BS_TOOLS_CASBAR_CONSENSUS_REALIGN_H__
 
-#include <seqan/misc/misc_svg.h>
+#include <seqan/misc/svg.h>
 
 using namespace std;
 using namespace seqan;

@@ -36,8 +36,8 @@
 // http://www-graphics.stanford.edu/~seander/bithacks.html
 // ==========================================================================
 
-#ifndef SEQAN_MISC_MISC_BIT_TWIDDLING_H_
-#define SEQAN_MISC_MISC_BIT_TWIDDLING_H_
+#ifndef SEQAN_MISC_BIT_TWIDDLING_H_
+#define SEQAN_MISC_BIT_TWIDDLING_H_
 
 #ifdef PLATFORM_WINDOWS_VS
 
@@ -116,7 +116,7 @@ struct WordSize_ {};
 
 /*!
  * @fn setBitTo
- * @headerfile <seqan/misc/misc_bit_twiddling.h>
+ * @headerfile <seqan/misc/bit_twiddling.h>
  * @brief Set the bit with the given index to the given value.
  *
  * @signature void setBitTo(word, index, value);
@@ -140,7 +140,7 @@ setBitTo(TWord & word, TPos index, bool value)
 
 /*!
  * @fn setBit
- * @headerfile <seqan/misc/misc_bit_twiddling.h>
+ * @headerfile <seqan/misc/bit_twiddling.h>
  * @brief Set the bit with the given index to 1.
  *
  * @signature void setBit(word, index);
@@ -162,7 +162,7 @@ setBit(TWord & word, TPos index)
 
 /*!
  * @fn clearBit
- * @headerfile <seqan/misc/misc_bit_twiddling.h>
+ * @headerfile <seqan/misc/bit_twiddling.h>
  * @brief Set the bit with the given index to 0.
  *
  * @signature void clearBit(word, index);
@@ -184,7 +184,7 @@ clearBit(TWord & word, TPos index)
 
 /*!
  * @fn clearAllBits
- * @headerfile <seqan/misc/misc_bit_twiddling.h>
+ * @headerfile <seqan/misc/bit_twiddling.h>
  * @brief Set all bits to 0.
  *
  * @signature void clearAllBits(word);
@@ -205,7 +205,7 @@ clearBits(TWord & word)
 
 /*!
  * @fn isBitSet
- * @headerfile <seqan/misc/misc_bit_twiddling.h>
+ * @headerfile <seqan/misc/bit_twiddling.h>
  * @brief Returns whether the bit with the given index is set to 1.
  *
  * @signature bool isBitSet(word, index);
@@ -242,7 +242,7 @@ hiBits(TWord word, TPos index)
 
 /*!
  * @fn popCount
- * @headerfile <seqan/misc/misc_bit_twiddling.h>
+ * @headerfile <seqan/misc/bit_twiddling.h>
  * @brief Returns number of set bits in an integer.
  *
  * @signature unsigned popCount(words);
@@ -760,4 +760,4 @@ bitScanForward(TWord word)
 
 }  // namespace seqan
 
-#endif // #ifndef SEQAN_MISC_MISC_BIT_TWIDDLING_H_
+#endif // #ifndef SEQAN_MISC_BIT_TWIDDLING_H_

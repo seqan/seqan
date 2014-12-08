@@ -37,7 +37,7 @@
 
 #include <iterator>
 
-#include <seqan/misc/misc_terminal.h>
+#include <seqan/misc/terminal.h>
 #include <seqan/arg_parse/xml_support.h>
 
 namespace seqan {

@@ -6,7 +6,7 @@
 #include <math.h>
 #include <cmath>
 
-#include <seqan/misc/misc_svg.h>
+#include <seqan/misc/svg.h>
 #include <seqan/stream.h>
 
 namespace seqan {

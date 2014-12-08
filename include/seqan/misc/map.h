@@ -42,7 +42,7 @@
 #define SEQAN_HEADER_MISC_MAP_H
 
 #include <algorithm>
-#include "misc_base.h"
+#include "base.h"
 
 
 //////////////////////////////////////////////////////////////////////////////

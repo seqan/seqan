@@ -47,7 +47,7 @@
 #define APPS_MASON2_GENOMIC_VARIANTS_H_
 
 #include <seqan/align.h>
-#include <seqan/misc/misc_interval_tree.h>
+#include <seqan/misc/interval_tree.h>
 
 #include "methylation_levels.h"
 
