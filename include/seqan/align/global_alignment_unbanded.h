@@ -77,12 +77,12 @@ class Fragment;
  * @fn globalAlignment
  * @headerfile <seqan/align.h>
  * @brief Computes the best global pairwise alignment.
- * 
+ *
  * @signature TScoreVal globalAlignment(align,          scoringScheme, [alignConfig,] [lowerDiag, upperDiag,] [algorithmTag]);
  * @signature TScoreVal globalAlignment(gapsH, gapsV,   scoringScheme, [alignConfig,] [lowerDiag, upperDiag,] [algorithmTag]);
  * @signature TScoreVal globalAlignment(frags, strings, scoringScheme, [alignConfig,] [lowerDiag, upperDiag,] [algorithmTag]);
  * @signature TScoreVal globalAlignment(alignGraph,     scoringScheme, [alignConfig,] [lowerDiag, upperDiag,] [algorithmTag]);
- * 
+ *
  * @param[in,out] align        The @link Align @endlink object to use for storing the pairwise alignment.
  * @param[in,out] gapsH        The @link Gaps @endlink object for the first row (horizontal in the DP matrix).
  * @param[in,out] gapsV        The @link Gaps @endlink object for the second row (vertical in the DP matrix).
@@ -98,11 +98,11 @@ class Fragment;
  *
  * @return TScoreVal   Score value of the resulting alignment  (Metafunction: @link Score#Value @endlink of
  *                     the type of <tt>scoringScheme</tt>).
- * 
+ *
  * There exist multiple overloads for this function with four configuration dimensions.
- * 
+ *
  * First, you can select whether begin and end gaps are free in either sequence using <tt>alignConfig</tt>.
- * 
+ *
  * Second, you can select the type of the target storing the alignment. This can be either an @link Align @endlink
  * object, two @link Gaps @endlink objects, a @link AlignmentGraph @endlink, or a string of @link Fragment @endlink
  * objects. @link Align @endlink objects provide an interface to tabular alignments with the restriction of all rows
@@ -111,26 +111,26 @@ class Fragment;
  * Graphs @endlink provide a graph-based representation of segment-based colinear alignments. Using @link Fragment
  * @endlink strings is useful for collecting many pairwise alignments, for example in the construction of @link
  * AlignmentGraph Alignment Graphs @endlink for multiple-sequence alignments (MSA).
- * 
+ *
  * Third, you can optionally give a band for the alignment using <tt>lowerDiag</tt> and <tt>upperDiag</tt>. The center
  * diagonal has index <tt>0</tt>, the <tt>i</tt>th diagonal below has index <tt>-i</tt>, the <tt>i</tt>th above has
  * index <tt>i</tt>.
- * 
+ *
  * Fourth, you can select the algorithm to use with <tt>algorithmTag</tt>.  This can be one of @link
  * AlignmentAlgorithmTags#NeedlemanWunsch @endlink and @link AlignmentAlgorithmTags#Gotoh @endlink.  The
  * Needleman-Wunsch algorithm supports scoring schemes with linear gap costs only while Gotoh's algorithm also allows
  * affine gap costs.
- * 
+ *
  * The available alignment algorithms all have some restrictions.  Gotoh's algorithm can handle arbitrary substitution
  * and affine gap scores.  Needleman-Wunsch is limited to linear gap scores.  The implementation of Hirschberg's
  * algorithm is further limited that it does not support <tt>alignConfig</tt> objects or banding.  The implementation of
  * the Myers-Hirschberg algorithm further limits this to only support edit distance (as scores, matches are scored with
  * 0, mismatches are scored with -1).
- * 
+ *
  * The examples below show some common use cases.
- * 
+ *
  * @section Examples
- * 
+ *
  * Global alignment of two sequences using an @link Align @endlink object and
  * the Needleman-Wunsch algorithm.
  *
@@ -147,9 +147,9 @@ class Fragment;
  * The output is as follows:
  *
  * @include demos/align/global_alignment_banded.cpp.stdout
- * 
- * http://trac.seqan.de/wiki/Tutorial/PairwiseSequenceAlignment
- * 
+ *
+ * http://seqan.readthedocs.org/en/develop/Tutorial/PairwiseSequenceAlignment.html
+ *
  * @section References
  *
  * <ul>
@@ -157,7 +157,7 @@ class Fragment;
  *       of two proteins. J Mol Biol 1970, 48(3): 443-53.</li>
  *   <li>Gotoh O: An improved algorithm for matching biological sequences. J Mol Biol 1982, 162(3):705-8</li>
  * </ul>
- * 
+ *
  * @see localAlignment
  * @see globalAlignmentScore
  * @see AlignmentAlgorithmTags
@@ -456,12 +456,12 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
  * @fn globalAlignmentScore
  * @headerfile <seqan/align.h>
  * @brief Computes the best global pairwise alignment score.
- * 
+ *
  * @signature TScoreVal globalAlignmentScore(seqH, seqV, scoringScheme[, alignConfig][, lowerDiag, upperDiag][, algorithmTag]);
  * @signature TScoreVal globalAlignmentScore(strings,    scoringScheme[, alignConfig][, lowerDiag, upperDiag][, algorithmTag]);
  * @signature TScoreVal globalAlignmentScore(seqH, seqV, {MyersBitVector | MyersHirschberg});
  * @signature TScoreVal globalAlignmentScore(strings,    {MyersBitVector | MyersHirschberg});
- * 
+ *
  * @param[in] seqH          Horizontal gapped sequence in alignment matrix.  Types: String
  * @param[in] seqV          Vertical gapped sequence in alignment matrix.  Types: String
  * @param[in] strings       A @link StringSet @endlink containing two sequences.  Type: StringSet.
@@ -472,18 +472,18 @@ TScoreValue globalAlignment(String<Fragment<TSize, TFragmentSpec>, TStringSpec> 
  * @param[in] upperDiag     Optional upper diagonal.  Types: <tt>int</tt>
  * @param[in] algorithmTag  The Tag for picking the alignment algorithm. Types: @link PairwiseLocalAlignmentAlgorithms
  *                          @endlink.
- * 
+ *
  * @return TScoreVal   Score value of the resulting alignment  (Metafunction: @link Score#Value @endlink of
  *                     the type of <tt>scoringScheme</tt>).
- * 
+ *
  * This function does not perform the (linear time) traceback step after the (mostly quadratic time) dynamic programming
  * step.  Note that Myers' bit-vector algorithm does not compute an alignment (only in the Myers-Hirschberg variant) but
  * scores can be computed using <tt>globalAlignmentScore</tt>.
- * 
+ *
  * The same limitations to algorithms as in @link globalAlignment @endlink apply.  Furthermore, the
  * <tt>MyersBitVector</tt> and <tt>MyersHirschberg</tt> variants can only be used without any other parameter.
- * 
- * @see http://trac.seqan.de/wiki/Tutorial/PairwiseSequenceAlignment
+ *
+ * @see http://seqan.readthedocs.org/en/develop/Tutorial/PairwiseSequenceAlignment.html
  * @see globalAlignment
  */
 
