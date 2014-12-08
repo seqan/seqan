@@ -107,6 +107,18 @@ inline void parse(GenomicRegion & region, CharString const & regionString);
 struct GenomicRegion
 {
     /*!
+     * @var __int32 GenomicRegion::INVALID_POS;
+     * @brief Constant for marking a position as invalid (static-const member).
+     */
+    static __int32 const INVALID_POS = -1;
+
+    /*!
+     * @var __int32 GenomicRegion::INVALID_ID;
+     * @brief Constant for marking a position as invalid (static-const member).
+     */
+    static __int32 const INVALID_ID = -1;
+
+    /*!
      * @var CharString GenomicRegion::seqName;
      * @brief Name of the sequence the region lies on, default is the empty string.
      */
@@ -116,22 +128,19 @@ struct GenomicRegion
      * @var __int32 GenomicRegion::rID;
      * @brief An optional field storing an integer.  Default is <tt>-1</tt>.
      */
-    unsigned rID;
+    __int32 rID;
 
     /*!
      * @var __int32 GenomicRegion::beginPos;
      * @brief Begin position of the range on the chromosome.  Default is <tt>-1</tt>.
      */
-    unsigned beginPos;
+    __int32 beginPos;
 
     /*!
      * @var __int32 GenomicRegion::endPos;
      * @brief End position of the range on the chromosome.  Default is <tt>-1</tt>.
      */
-    unsigned endPos;
-
-    enum { INVALID_ID = (unsigned)-1 };
-    enum { INVALID_POS = (unsigned)-1 };
+    __int32 endPos;
 
     /*!
      * @fn GenomicRegion::GenomicRegion
@@ -142,15 +151,13 @@ struct GenomicRegion
      * 
      * @param[in] str The string to parse region from. Types: CharString
      * 
-     * The default constructor sets all integer members to <tt>-1</tt>, the <tt>seqName</tt> member is left empty.
+     * The default constructor sets all integer members to <tt>INVALID_POS</tt>, the <tt>seqName</tt> member is left empty.
      */
 
-    GenomicRegion() :
-        rID(INVALID_ID), beginPos(INVALID_POS), endPos(INVALID_POS)
+    GenomicRegion() : rID(INVALID_ID), beginPos(INVALID_POS), endPos(INVALID_POS)
     {}
 
-    GenomicRegion(CharString const & str) :
-        rID(INVALID_ID), beginPos(INVALID_POS), endPos(INVALID_POS)
+    GenomicRegion(CharString const & str) : rID(INVALID_ID), beginPos(INVALID_POS), endPos(INVALID_POS)
     {
         parse(*this, str);
     }
@@ -158,6 +165,10 @@ struct GenomicRegion
     /*!
      * @fn GenomicRegion::toString
      * @brief Write string representation of interval to out.
+     *
+     * @signature void GenomicRegion::toString(out);
+     *
+     * @param[in,out] out Target to write textual interval description to.
      */
     template <typename TString>
     void toString(TString & out) const
@@ -203,9 +214,9 @@ inline void
 clear(GenomicRegion & region)
 {
     clear(region.seqName);
-    region.rID = GenomicRegion::INVALID_ID;
-    region.beginPos = GenomicRegion::INVALID_POS;
-    region.endPos = GenomicRegion::INVALID_POS;
+    region.rID = region.INVALID_ID;
+    region.beginPos = region.INVALID_POS;
+    region.endPos = region.INVALID_POS;
 }
 
 // ---------------------------------------------------------------------------
