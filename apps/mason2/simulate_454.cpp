@@ -401,7 +401,7 @@ void Roche454SequencingSimulator::simulateRead(
     // and alignment information.
     info.cigar = cigar;
     unsigned len = 0;
-    _getLengthInRef(cigar, len);
+    _getLengthInRef(len, cigar);
     info.beginPos = (dir == LEFT) ? beginPosition(frag) : (beginPosition(frag) + length(frag) - len);
     info.isForward = (strand == FORWARD);
 
