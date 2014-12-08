@@ -43,19 +43,12 @@
 #include <seqan/file.h>      // For printing SeqAn Strings.
 #include <seqan/seq_io.h>
 #include <seqan/bam_io.h>
-#include <seqan/misc/misc_cmdparser.h>
+#include <seqan/arg_parse.h>
 #include <seqan/find.h>
 
 #if SEQAN_HAS_ZLIB
 
 using namespace seqan;
-
-enum Format
-{
-    FORMAT_AUTO,
-    FORMAT_SAM,
-    FORMAT_BAM
-};
 
 struct Options
 {
@@ -72,7 +65,6 @@ struct Options
     CharString inFastqFile;
     CharString goldStandardFile;
     CharString bestMatchFile;
-    Format inFormat;
 
     int insertSizeMin;
     int insertSizeMax;
@@ -89,7 +81,6 @@ struct Options
         goldStandard = false;
         
         verbosity = 1;
-        inFormat = FORMAT_AUTO;
     }
 };
 
@@ -117,42 +108,41 @@ namespace  seqan {
 }
 
 void
-setupCommandLineParser(CommandLineParser & parser, Options const & options)
+setupCommandLineParser(ArgumentParser & parser, Options const & options)
 {
-    addVersionLine(parser, "1.0");
+    setVersion(parser, "1.0");
     
-    addTitleLine(parser, "*************");
-    addTitleLine(parser, "* bam_stats *");
-    addTitleLine(parser, "*************");
-    addTitleLine(parser, "");
-    addTitleLine(parser, "BAM Statistics.");
-    addTitleLine(parser, "");
-    addTitleLine(parser, "Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>");
+    addDescription(parser, "*************");
+    addDescription(parser, "* bam_stats *");
+    addDescription(parser, "*************");
+    addDescription(parser, "");
+    addDescription(parser, "BAM Statistics.");
+    addDescription(parser, "");
+    addDescription(parser, "Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>");
 
     addUsageLine(parser, "bam_stats [OPTIONS] REF.fasta ALIGN.bam");
-    
+
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTPREFIX, "REFERENCE FASTA"));
+    addArgument(parser, ArgParseArgument(ArgParseArgument::INPUTPREFIX, "ALIGNED BAM"));
+
 	addSection(parser, "General Options");
-    addOption(parser, CommandLineOption("v", "verbose", "Enable verbose mode (show steps).", OptionType::Bool));
-    addOption(parser, CommandLineOption("vv", "very-verbose", "Enable very verbose mode (show SAM lines and actual aligments).", OptionType::Bool));
+    addOption(parser, ArgParseOption("v", "verbose", "Enable verbose mode (show steps)."));
+    addOption(parser, ArgParseOption("vv", "very-verbose", "Enable very verbose mode (show SAM lines and actual aligments)."));
 
 	addSection(parser, "Input Specification");
-    addOption(parser, CommandLineOption("S", "input-sam", "Input file is SAM (default: auto).", OptionType::Bool, options.inFormat == FORMAT_SAM));
-    addOption(parser, CommandLineOption("B", "input-bam", "Input file is BAM (default: auto).", OptionType::Bool, options.inFormat == FORMAT_BAM));
-    addOption(parser, CommandLineOption("i", "input-file", "Path to input, '-' for stdin.", OptionType::String, options.inFile));
-    addOption(parser, CommandLineOption("fi", "fastq-input-file", "Path to fastq input (prefix excluding _1.fastq).", OptionType::String, options.inFastqFile));
-    addOption(parser, CommandLineOption("g", "gold-standard", "Input file with gold standard", OptionType::String));
+    addOption(parser, ArgParseOption("i", "input-file", "Path to input, '-' for stdin.", ArgParseOption::STRING));
+    addOption(parser, ArgParseOption("fi", "fastq-input-file", "Path to fastq input (prefix excluding _1.fastq).", ArgParseOption::STRING));
+    addOption(parser, ArgParseOption("g", "gold-standard", "Input file with gold standard", ArgParseOption::STRING));
 
 	addSection(parser, "Stats Specification");    
-    addOption(parser, CommandLineOption("pe","paired-end","Paired-end mode.", OptionType::Bool));
-    addOption(parser, CommandLineOption("r", "realign",   "Don't trust NM values and realign instead", OptionType::Bool));
-    addOption(parser, CommandLineOption("nm","use-nm-tag","Get errors from NM values instead of CIGAR string", OptionType::Bool));
-    addOption(parser, CommandLineOption("", "insert-size-min", "Minimal allowed insert size.  Default: any.", OptionType::Integer));
-    addOption(parser, CommandLineOption("", "insert-size-max", "Maximal allowed insert size.  Default: any.", OptionType::Integer));
+    addOption(parser, ArgParseOption("pe","paired-end","Paired-end mode."));
+    addOption(parser, ArgParseOption("r", "realign",   "Don't trust NM values and realign instead"));
+    addOption(parser, ArgParseOption("nm","use-nm-tag","Get errors from NM values instead of CIGAR string"));
+    addOption(parser, ArgParseOption("", "insert-size-min", "Minimal allowed insert size.  Default: any.", ArgParseOption::INTEGER));
+    addOption(parser, ArgParseOption("", "insert-size-max", "Maximal allowed insert size.  Default: any.", ArgParseOption::INTEGER));
     
     addSection(parser, "Output Specification");
-    addOption(parser, CommandLineOption("bm",  "best-match-file", "Output file with minimal found errors for each read", OptionType::String));
-
-    requiredArguments(parser, 2);
+    addOption(parser, ArgParseOption("bm",  "best-match-file", "Output file with minimal found errors for each read", ArgParseOption::STRING));
 }
 
 void trimSeqHeaderToId(seqan::CharString & header)
@@ -164,58 +154,46 @@ void trimSeqHeaderToId(seqan::CharString & header)
     resize(header, i);
 }
 
-int parseCommandLineAndCheck(Options & options,
-                             CommandLineParser & parser,
-                             int argc,
-                             char const ** argv)
+ArgumentParser::ParseResult
+parseCommandLineAndCheck(Options & options,
+                         ArgumentParser & parser,
+                         int argc,
+                         char const ** argv)
 {
-    bool stop = !parse(parser, argc, argv);
-    if (stop)
-        return 1;
-    if (isSetLong(parser, "help"))
-    {
-        options.showHelp = true;
-        return 0;
-    }
-    if (isSetLong(parser, "version"))
-    {
-        options.showVersion = true;
-        return 0;
-    }
 
-    if (isSetLong(parser, "verbose"))
+    ArgumentParser::ParseResult res = parse(parser, argc, argv);
+
+    if (res != ArgumentParser::PARSE_OK)
+        return res;
+
+    if (isSet(parser, "verbose"))
         options.verbosity = 2;
-    if (isSetLong(parser, "very-verbose"))
+    if (isSet(parser, "very-verbose"))
         options.verbosity = 3;
 
-    getOptionValueLong(parser, "paired-end", options.pairedEnd);
+    getOptionValue(options.pairedEnd, parser, "paired-end");
 
-    getOptionValueLong(parser, "input-file", options.inFile);
-    getOptionValueLong(parser, "best-match-file", options.bestMatchFile);
-    getOptionValueLong(parser, "use-nm-tag", options.useNM);
-    if (isSetLong(parser, "input-sam"))
-        options.inFormat = FORMAT_SAM;
-    if (isSetLong(parser, "input-bam"))
-        options.inFormat = FORMAT_BAM;
+    getOptionValue(options.inFile, parser, "input-file");
+    getOptionValue(options.bestMatchFile, parser, "best-match-file");
+    getOptionValue(options.useNM, parser, "use-nm-tag");
+
+    getOptionValue(options.inFastqFile, parser, "fastq-input-file");
     
-    getOptionValueLong(parser, "fastq-input-file", options.inFastqFile);
-    
-    if (isSetLong(parser, "gold-standard"))
+    if (isSet(parser, "gold-standard"))
     {
         options.goldStandard = true;
-        getOptionValueLong(parser, "gold-standard", options.goldStandardFile);
+        getOptionValue(options.goldStandardFile, parser, "gold-standard");
     }
-    
-    options.refFile = getArgumentValue(parser, 0);
-    options.inFile = getArgumentValue(parser, 1);
-    options.realign = isSetLong(parser, "realign");
 
-    if (isSet(parser, "insert-size-min"))
-        getOptionValueLong(parser, "insert-size-min", options.insertSizeMin);
-    if (isSet(parser, "insert-size-max"))
-        getOptionValueLong(parser, "insert-size-max", options.insertSizeMax);
+    getOptionValue(options.realign, parser, "realign");
 
-	return 0;
+    getOptionValue(options.insertSizeMin, parser, "insert-size-min");
+    getOptionValue(options.insertSizeMax, parser, "insert-size-max");
+
+    getArgumentValue(options.refFile, parser, 0);
+    getArgumentValue(options.inFile, parser, 1);
+
+	return ArgumentParser::PARSE_OK;
 }
 
 struct Stats
@@ -1285,41 +1263,16 @@ int main(int argc, char const ** argv)
     // -----------------------------------------------------------------------
 
     // Setup command line parser.
-    CommandLineParser parser;
+    ArgumentParser parser;
     Options options;
     setupCommandLineParser(parser, options);
     
     // Then, parse the command line and handle the cases where help display
     // is requested or erroneous parameters were given.
-    int res = parseCommandLineAndCheck(options, parser, argc, argv);
-    if (res != 0)
-    {
-        std::cerr << "Error with command line arguments.\n";
-        return 1;
-    }
-    if (options.showHelp || options.showVersion)
-        return 0;
+    ArgumentParser::ParseResult res = parseCommandLineAndCheck(options, parser, argc, argv);
 
-    // -----------------------------------------------------------------------
-    // Guess format.
-    // -----------------------------------------------------------------------
-
-    if (options.inFormat == FORMAT_AUTO)
-    {
-        std::ifstream guessIn(toCString(options.inFile), std::ios::binary | std::ios::in);
-        if (!guessIn.good())
-        {
-            std::cerr << "Could not open " << options.inFile << std::endl;
-            return 1;
-        }
-        CharString magic;
-        resize(magic, 2);
-        guessIn.read(&magic[0], 2);
-        if (magic != "\x1f\x8b")  // Is not gzip-compressed.
-            options.inFormat = FORMAT_SAM;
-        else
-            options.inFormat = FORMAT_BAM;
-    }
+    if (res != ArgumentParser::PARSE_OK)
+        return res == ArgumentParser::PARSE_ERROR;
 
     // -----------------------------------------------------------------------
     // Do Work.
