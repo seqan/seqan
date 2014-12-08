@@ -113,10 +113,10 @@ struct GenomicRegion
     static __int32 const INVALID_POS = -1;
 
     /*!
-     * @var __int32 GenomicRegion::INVALID_RID;
+     * @var __int32 GenomicRegion::INVALID_ID;
      * @brief Constant for marking a position as invalid (static-const member).
      */
-    static __int32 const INVALID_RID = -1;
+    static __int32 const INVALID_ID = -1;
 
     /*!
      * @var CharString GenomicRegion::seqName;
@@ -154,10 +154,10 @@ struct GenomicRegion
      * The default constructor sets all integer members to <tt>INVALID_POS</tt>, the <tt>seqName</tt> member is left empty.
      */
 
-    GenomicRegion() : rID(INVALID_RID), beginPos(INVALID_POS), endPos(INVALID_POS)
+    GenomicRegion() : rID(INVALID_ID), beginPos(INVALID_POS), endPos(INVALID_POS)
     {}
 
-    GenomicRegion(CharString const & str) : rID(INVALID_RID), beginPos(INVALID_POS), endPos(INVALID_POS)
+    GenomicRegion(CharString const & str) : rID(INVALID_ID), beginPos(INVALID_POS), endPos(INVALID_POS)
     {
         parse(*this, str);
     }
@@ -214,9 +214,9 @@ inline void
 clear(GenomicRegion & region)
 {
     clear(region.seqName);
-    region.rID = INVALID_RID;
-    region.beginPos = INVALID_POS;
-    region.endPos = INVALID_POS;
+    region.rID = region.INVALID_ID;
+    region.beginPos = region.INVALID_POS;
+    region.endPos = region.INVALID_POS;
 }
 
 // ---------------------------------------------------------------------------
