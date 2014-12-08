@@ -367,13 +367,13 @@ inline bool readRegion(String<TValue, TSpec> & str,
                        FaiIndex const & index,
                        GenomicRegion const & region)
 {
-    unsigned rID = region.rID;
+    int rID = region.rID;
     if (rID == GenomicRegion::INVALID_ID)
         if (!getIdByName(rID, index, region.seqName))
             return false;  // Sequence with this name could not be found.
 
-    unsigned beginPos = (region.beginPos != GenomicRegion::INVALID_POS)? region.beginPos : 0;
-    unsigned endPos = (region.endPos != GenomicRegion::INVALID_POS)? region.endPos : sequenceLength(index, rID);
+    int beginPos = (region.beginPos != GenomicRegion::INVALID_POS)? region.beginPos : 0;
+    int endPos = (region.endPos != GenomicRegion::INVALID_POS)? region.endPos : sequenceLength(index, rID);
     readRegion(str, index, rID, beginPos, endPos);
     return true;
 }
