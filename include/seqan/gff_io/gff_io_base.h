@@ -53,8 +53,8 @@ namespace seqan {
  * @defgroup GffFileIO GFF and GTF File I/O
  * @brief I/O functionality for the GFF and GTF file formats.
  *
- * Both the GFF and the GTF file format are represendted by @link GffRecord @endlink in SeqAn.  The tags and functions
- * in this group can be used for I/O of both formats to and from @link GffRecord @endlink objects.
+ * Both the GFF and the GTF file format are represented by @link GffRecord @endlink in SeqAn.
+ * Tags and functions in this group can be used for I/O of both formats to and from @link GffRecord @endlink objects.
  */
 
 /*!
@@ -98,13 +98,14 @@ struct MagicHeader<Gff, T> :
 template <typename T>
 struct FileExtensions<Gff, T>
 {
-    static char const * VALUE[1];	// default is one extension
+    static char const * VALUE[2];	// default is one extension
 };
 
 template <typename T>
-char const * FileExtensions<Gff, T>::VALUE[1] =
+char const * FileExtensions<Gff, T>::VALUE[2] =
 {
-    ".gff"     // default output extension
+    ".gff",     // default output extension
+    ".gff3"
 };
 
 template <typename T>
@@ -264,10 +265,7 @@ _parseReadGffKeyValue(TValueString & outValue, TKeyString & key, TForwardIter & 
     //TODO(singer): AssertList functor would be need
     char c = value(iter);
     if (IsWhitespace()(c) || c == '=')
-    {
-        throw std::runtime_error("The key field of an attribute is empty!");
-        return;  // Key cannot be empty.
-    }
+        SEQAN_THROW(ParseError("The key field of an attribute is empty!"));
 
     for (; !atEnd(iter); goNext(iter))
     {
@@ -478,7 +476,7 @@ _writePossiblyInQuotes(TTarget& target, TString & source, TMustBeQuotedFunctor c
     {
         // we have a problem if the string contains a '"' or a line break
         if (value(it) =='\n' || value(it) == '"')
-            throw std::runtime_error("Attribute contains illegal character!");
+            SEQAN_THROW(ParseError("Attribute contains illegal character!"));
 
         if (func(*it))
         {
@@ -624,14 +622,14 @@ writeRecord(TTarget & target, GffRecord const & record, Tag<TFormat> const & tag
     if (record.beginPos != (unsigned)-1)
         appendNumber(target, record.beginPos + 1);
     else
-        throw std::runtime_error("No start position!");
+        SEQAN_THROW(ParseError("No start position!"));
     writeValue(target, '\t');
 
     // write column 5: end position
     if (record.endPos != (unsigned)-1 && record.beginPos <= record.endPos)
         appendNumber(target, record.endPos);
     else
-        throw std::runtime_error("No end position!");
+        SEQAN_THROW(ParseError("No end position!"));
     writeValue(target, '\t');
 
     // write column 6: score
