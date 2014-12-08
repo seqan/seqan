@@ -90,7 +90,7 @@ void IntervalTreeTest_Random(TValue minValue, TValue maxValue) {
     {
 		TValue query = (TValue)((double)rand()/((double)RAND_MAX+1) * (maxValue-minValue)) + minValue;
 		String<TCargo> itreeResult;
-		findIntervals(itree,query,itreeResult);
+		findIntervals(itreeResult,itree,query);
 		String<TCargo> naiveResult;
 		for(unsigned j = 0; j < numIntervals; ++j)
 		{
@@ -145,7 +145,7 @@ void IntervalTreeTest_GraphMap() {
     {
         TValue query = static_cast<TValue>(37.0);
         String<TCargo> result;
-        findIntervals(g, pm, query, result);
+        findIntervals(result, g, pm, query);
 
         SEQAN_ASSERT_EQ(length(result), 2u);
         SEQAN_ASSERT((result[0] == 9 && result[1] == 6) ||
@@ -282,7 +282,7 @@ void IntervalTreeTest_FindIntervalsIntervals() {
     // Query for interval [10.0,20.0) and check for the expected result.
     {
 		String<TCargo> result;
-		findIntervals(itree, (TValue)10.0, (TValue)20.0, result);
+		findIntervals(result, itree, (TValue)10.0, (TValue)20.0);
 
 		// intervals 0, 1, 3, and 4 should be returned
 	    SEQAN_ASSERT_EQ(length(result), 4u);
@@ -365,7 +365,7 @@ void IntervalTreeTest_FindNoInterval() {
     {
         TValue query = static_cast<TValue>(13.0);
         String<TCargo> result;
-        findIntervals(g, pm, query, result);
+        findIntervals(result, g, pm, query);
         SEQAN_ASSERT_EQ(length(result), 0u);
     }
 
@@ -409,7 +409,7 @@ void IntervalTreeTest_FindIntervalExcludeTouching() {
     {
         TValue query = static_cast<TValue>(23.0);
         String<TCargo> result;
-        findIntervalsExcludeTouching(g, pm, query, result);
+        findIntervalsExcludeTouching(result, g, pm, query);
         SEQAN_ASSERT_EQ(length(result), 1u);
         SEQAN_ASSERT_EQ(result[0], 4);
     }
@@ -457,7 +457,7 @@ void IntervalTreeTest_IntervalTree() {
         TValue query = 7;
         String<TCargo> result;
 
-        findIntervals(itree, query, result);
+        findIntervals(result, itree, query);
         SEQAN_ASSERT_EQ(length(result), 2u);
         SEQAN_ASSERT_EQ(result[0], 1);
         SEQAN_ASSERT_EQ(result[1], 3);
@@ -506,7 +506,7 @@ void IntervalTreeTest_IntervalTreeFromIterator() {
         TValue query = 7;
         String<TCargo> result;
 
-        findIntervals(itree, query, result);
+        findIntervals(result, itree, query);
         SEQAN_ASSERT_EQ(length(result), 2u);
         SEQAN_ASSERT_EQ(result[0], 1);
         SEQAN_ASSERT_EQ(result[1], 3);
@@ -555,10 +555,10 @@ void IntervalTreeTest_NonFullLength() {
         TIntervalTree itree(begin(begins), begin(ends), begin(cargos), 4);
         String<TCargo> result;
 
-        findIntervals(itree, 1, result);
+        findIntervals(result, itree, 1);
         SEQAN_ASSERT_EQ(length(result), 0u);
 
-        findIntervals(itree, 4, result);
+        findIntervals(result, itree, 4);
         SEQAN_ASSERT_EQ(length(result), 2u);
         SEQAN_ASSERT((result[0] == 2 && result[1] == 1) ||
                           (result[0] == 1 && result[1] == 2));
@@ -621,24 +621,24 @@ void IntervalTreeTest_AddInterval() {
         addInterval(itree, iv);
         SEQAN_ASSERT_EQ(itree.interval_counter, 6u);
 
-        findIntervals(itree, 100, result);
+        findIntervals(result, itree, 100);
         SEQAN_ASSERT_EQ(length(result), 1u);
         SEQAN_ASSERT_EQ(result[0], 100);
 
-        findIntervalsExcludeTouching(itree, 100, result);
+        findIntervalsExcludeTouching(result, itree, 100);
         SEQAN_ASSERT_EQ(length(result), 0u);
 
         addInterval(itree, 44, 88, 100);
         SEQAN_ASSERT_EQ(itree.interval_counter, 7u);
 
-        findIntervals(itree, 77, result);
+        findIntervals(result, itree, 77);
         SEQAN_ASSERT_EQ(length(result), 1u);
         SEQAN_ASSERT_EQ(result[0], 100);
 
         addInterval(itree, 30, 50);
         SEQAN_ASSERT_EQ(itree.interval_counter, 8u);
 
-        findIntervals(itree, 48, result);
+        findIntervals(result, itree, 48);
         SEQAN_ASSERT_EQ(length(result), 2u);
         SEQAN_ASSERT((result[0] == 100 && result[1] == 7) ||
                           (result[1] == 100 && result[0] == 7));
@@ -657,7 +657,7 @@ SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_QueryAtBoundary)
     appendValue(tmpL, TInterval(40,60,3.3));
     IntervalTree<int, double> tmpT(tmpL);
     String<double> resultstmp;
-    findIntervals(tmpT, 20, 30, resultstmp);
+    findIntervals(resultstmp, tmpT, 20, 30);
     SEQAN_ASSERT_EQ(length(resultstmp), 1u);
     SEQAN_ASSERT_EQ(resultstmp[0], 1.4);
 }

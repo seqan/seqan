@@ -477,7 +477,7 @@ _bamAppendAlignment(
     // insert alignment gaps
     clear(contextSAM.readGapAnchors);
     TReadGaps readGaps(readSeq, contextSAM.readGapAnchors);
-    unsigned beginGaps = cigarToGapAnchorRead(cigar, readGaps);
+    unsigned beginGaps = cigarToGapAnchorRead(readGaps, cigar);
 
     // adapt start or end (on reverse strand) position if alignment begins with gaps
     if (beginPos > endPos)
@@ -511,7 +511,7 @@ _bamAppendAlignmentWithoutSeq(
     // insert alignment gaps
     clear(contextSAM.readGapAnchors);
     TReadGaps readGaps(nothing, contextSAM.readGapAnchors);
-    unsigned beginGaps = cigarToGapAnchorRead(cigar, readGaps);
+    unsigned beginGaps = cigarToGapAnchorRead(readGaps, cigar);
 
     // adapt start or end (on reverse strand) position if alignment begins with gaps
     if (beginPos > endPos)
@@ -579,7 +579,7 @@ _readOneAlignment(
     // Get begin and end position.
     TContigPos beginPos = record.beginPos;
     TContigPos endPos = 0;
-    _getLengthInRef(record.cigar, endPos);
+    _getLengthInRef(endPos, record.cigar);
     endPos = beginPos + endPos;
     if (hasFlagRC(record))
         std::swap(beginPos, endPos);
@@ -604,7 +604,7 @@ _readOneAlignment(
         (void)newRead;
         SEQAN_ASSERT_NOT(newRead && empty(readSeq));
     }
-    
+
     // Stop here if read is unaligned.
     if (record.rID == BamAlignmentRecord::INVALID_REFID || record.beginPos == BamAlignmentRecord::INVALID_POS)
         return;
@@ -630,7 +630,7 @@ _readOneAlignment(
 
         clear(contextSAM.contigGapAnchors);
         TContigGapsPW contigGaps(contextSAM.contigGapAnchors);
-        cigarToGapAnchorContig(record.cigar, contigGaps);
+        cigarToGapAnchorContig(contigGaps, record.cigar);
         appendValue(contigAnchorGaps, contextSAM.contigGapAnchors);
     }
 

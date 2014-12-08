@@ -229,7 +229,7 @@ _checkRightMateMatches(TMatch const & sMatch, String<TMatch> const & queryMatche
     TPos mateIntervalEnd = _min(dbLength, sMatch.end1 + options.libSize - gustafChain.mateJoinPosition + options.libError);
     SEQAN_ASSERT_GEQ_MSG(dbLength, mateIntervalBegin, "Calculated valid region for right mate exceeds database length");
     SEQAN_ASSERT_GEQ_MSG(dbLength, mateIntervalEnd, "Calculated valid region for right mate exceeds database length");
-    findIntervals(gustafChain.rightMateTree, mateIntervalBegin, mateIntervalEnd, confMateMatches);
+    findIntervals(confMateMatches, gustafChain.rightMateTree, mateIntervalBegin, mateIntervalEnd);
     /*
     std::cout << "checkRightMatches " << mateIntervalBegin << "," << mateIntervalEnd << ";";
     for (unsigned i = 0; i < length(confMateMatches); ++i)
@@ -252,7 +252,7 @@ _checkLeftMateMatches(TMatch const & sMatch, String<TMatch> const & queryMatches
     TPos mateIntervalEnd = _max(0u, sMatch.end1 - options.libSize + gustafChain.mateJoinPosition + options.libError);
     SEQAN_ASSERT_GEQ_MSG(mateIntervalBegin, 0u, "Calculated valid region for left mate is < 0");
     SEQAN_ASSERT_GEQ_MSG(mateIntervalEnd, 0u, "Calculated valid region for left mate is < 0");
-    findIntervals(gustafChain.leftMateTree, mateIntervalBegin, mateIntervalEnd, confMateMatches);
+    findIntervals(confMateMatches, gustafChain.leftMateTree, mateIntervalBegin, mateIntervalEnd);
     /*
     std::cout << "checkLeftMatches " << mateIntervalBegin << "," << mateIntervalEnd << ";";
     for (unsigned i = 0; i < length(confMateMatches); ++i)

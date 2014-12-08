@@ -1115,8 +1115,8 @@ postProcessMain(TOptions &options, TModel const &)
             }
         }
         // Get positions
-        unsigned len;
-        _getLengthInRef(record.cigar, len);
+        unsigned len = 0;
+        _getLengthInRef(len, record.cigar);
 
         TContigPos beginPos = record.beginPos;
         TContigPos endPos = beginPos + len;
