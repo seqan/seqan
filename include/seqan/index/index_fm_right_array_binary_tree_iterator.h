@@ -525,10 +525,7 @@ inline bool goRightChild(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterS
 // ----------------------------------------------------------------------------
 
 // TODO(singer): Make this work!
-/*
-.Function.goToPosition
-_DDDOC_PLACEHOLDER
-*/
+
 template <typename TTree, typename TIterSpec, typename TPos>
 inline bool goToPosition(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & it, TPos pos)
 {
@@ -550,9 +547,7 @@ inline bool goToPosition(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterS
  * 
  * @return bool <tt>true</tt> if the iterator could be moved, otherwise <tt>false</tt>.
  */
-/*
-_DDDOC_PLACEHOLDER
-*/
+
 template <typename TTree, typename TIterSpec>
 inline bool goUp(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<ParentLinks<TIterSpec> > > > & it)
 {

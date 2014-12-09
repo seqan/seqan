@@ -362,11 +362,6 @@ operator==(HirschbergSet_ const & lhs,
 // debug flag .. define to see where Hirschberg cuts the sequences	
 //#define SEQAN_HIRSCHBERG_DEBUG_CUT
 
-/*DISABLED
-.Function.hirschberg:
-_DDDOC_PLACEHOLDER
-*/
-
 // ----------------------------------------------------------------------------
 // Function globalAlignment()
 // ----------------------------------------------------------------------------

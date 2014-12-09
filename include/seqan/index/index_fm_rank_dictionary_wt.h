@@ -88,10 +88,6 @@ typedef Tag<FibreTreeStructure_>    const FibreTreeStructure;
 // Metafunction Fibre
 // ----------------------------------------------------------------------------
 
-/*
-.Metafunction.Fibre:
-_DDDOC_PLACEHOLDER
-*/
 /*!
  * @class WaveletTree
  * @extends RankDictionary

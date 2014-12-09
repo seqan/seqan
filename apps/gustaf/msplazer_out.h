@@ -1063,11 +1063,6 @@ _writeParams(TOptions & options)
     std::cout << "  required read support (st)       : " << options.support << std::endl;
 }
 
-/**TODO(ktrappe): Add write functionality for SAM/VCF format
-.Function.write:
-_DDDOC_PLACEHOLDER
- */
-
 // ////////////////////
 // SAM Output
 // TODO(ktrappe): Use SamBamIO, see tutorial

@@ -64,11 +64,6 @@ namespace SEQAN_NAMESPACE_MAIN
     struct Childtab;
     struct Bwt;
 
-/*
-.Tag.Index Find Algorithm
-_DDDOC_PLACEHOLDER
-*/
-
 /*!
  * @defgroup IndexFindAlgorithm Index Find Algorithm
  * @brief Tag to specify the index search algorithm.
@@ -346,10 +341,7 @@ template <
 
 
 //////////////////////////////////////////////////////////////////////////////
-/*
-	.Class.Bundle:
-_DDDOC_PLACEHOLDER
-*/
+
 /*
 	template < typename TSpec = void >
 	truct Bundle {

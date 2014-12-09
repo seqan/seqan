@@ -581,11 +581,6 @@ void _setParser(ArgumentParser & parser)
 
 // TODO(holtgrew): Move this into a SeqAn misc module.
 
-/*
-.Class.ScientificNotationExponentOutputNormalizer
-_DDDOC_PLACEHOLDER
-*/
-
 class ScientificNotationExponentOutputNormalizer
 {
 public:
