@@ -54,8 +54,7 @@ struct ParseError;
 
 /*
 .Internal.Class.InvalidOption
-..cat:Miscellaneous
-..summary:Thrown if an unknown option was set on the command line.
+_DDDOC_PLACEHOLDER
 */
 
 class InvalidOption : public ParseError
@@ -72,9 +71,7 @@ public:
 
 /*
 .Internal.Class.MissingArgument
-..cat:Miscellaneous
-..summary:Thrown if an option was set on the command line but without giving the
-required arguments for this option.
+_DDDOC_PLACEHOLDER
 */
 
 class MissingArgument : public ParseError
@@ -91,9 +88,7 @@ public:
 
 /*
 .Internal.Class.NotEnoughArguments
-..cat:Miscellaneous
-..summary:Thrown if an option was set on the command line but not enough arguments for
-this option were provided.
+_DDDOC_PLACEHOLDER
 */
 
 class NotEnoughArguments : public ParseError

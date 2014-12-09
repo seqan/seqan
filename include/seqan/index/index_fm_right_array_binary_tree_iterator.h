@@ -527,22 +527,7 @@ inline bool goRightChild(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterS
 // TODO(singer): Make this work!
 /*
 .Function.goToPosition
-..summary:Move the iterator to a specified position.
-..signature:bool goToPosition(iterator, pos)
-..param.iterator:An iterator of a wavelet tree structure.
-...type:Spec.RightArrayBinaryTree Iterator
-..param.pos:A position.
-..remarks:$goToPosition(iterator)$ goes to position pos regardless of pos being a valid position.
-..returns:$true$ if the edge or path to go down exists, otherwise $false$.
-..include:seqan/index.h
-..example.code:
-String<Dna5> genome = "ACGTACGT";
-RightArrayBinaryTree<Dna5> waveletTreeStructure(genome);
-
-Iterator<RightArrayBinaryTree<Dna5>, TopDown<> >::Type it;
-it = begin(waveletTreeStructure); // go to root node
-
-goToPosition(it, 2); // go to right child of root node
+_DDDOC_PLACEHOLDER
 */
 template <typename TTree, typename TIterSpec, typename TPos>
 inline bool goToPosition(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterSpec> > > & it, TPos pos)
@@ -566,17 +551,7 @@ inline bool goToPosition(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<TIterS
  * @return bool <tt>true</tt> if the iterator could be moved, otherwise <tt>false</tt>.
  */
 /*
-..returns:$true$ if the current node is not the root node.
-..include:seqan/index.h
-..example.code:
-String<Dna5> genome = "ACGTACGT";
-RightArrayBinaryTree<Dna5> waveletTreeStructure(genome);
-
-Iterator<RightArrayBinaryTree<Dna5>, TopDown<> >::Type it;
-it = begin(waveletTreeStructure); // go to root node
-
-goRightChild(it); // go to right child of root node
-goUp(it); // go to root node
+_DDDOC_PLACEHOLDER
 */
 template <typename TTree, typename TIterSpec>
 inline bool goUp(Iter<TTree, RightArrayBinaryTreeIterator<TopDown<ParentLinks<TIterSpec> > > > & it)

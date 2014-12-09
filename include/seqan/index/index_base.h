@@ -66,24 +66,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 /*
 .Tag.Index Find Algorithm
-..summary:Tag to specify the index search algorithm.
-..remarks:These tag can be used to specify the @Function.find@ algorithm 
-for @Class.Index@ based substring searches.
-..cat:Index
-
-..tag.FinderMlr:Binary search with mlr-heuristic.
-...remarks:Exact string matching using a suffix array binary search with the mlr-heuristic.
-
-..tag.FinderLcpe:Binary search using lcp values.
-...remarks:Exact string matching using a suffix array binary search and a lcp-interval tree.
-
-..tag.FinderSTree:Suffix tree search.
-...remarks:Exact string matching using a suffix tree.
-
-..see:Class.Finder
-..see:Spec.IndexEsa
-..see:Spec.IndexQGram
-..include:seqan/index.h
+_DDDOC_PLACEHOLDER
 */
 
 /*!
@@ -365,12 +348,7 @@ template <
 //////////////////////////////////////////////////////////////////////////////
 /*
 	.Class.Bundle:
-	..summary:General purpose container of various members.
-	..signature:Bundle<TValue, TSize>
-	..param.TValue:The value type, that is the type of the items/characters stored in the string.
-	...remarks:Use @Metafunction.Value@ to get the value type for a given class.
-	..param.TSpec:The specializing type.
-	...default:$Alloc<>$, see @Spec.Alloc String@.
+_DDDOC_PLACEHOLDER
 */
 /*
 	template < typename TSpec = void >

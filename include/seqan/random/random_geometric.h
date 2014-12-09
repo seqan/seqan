@@ -92,7 +92,7 @@ struct Value<const Pdf<GeometricFairCoin> > : Value<Pdf<GeometricFairCoin> > {};
 // ===========================================================================
 
 /*
-..summary:Pick a geometricly distributed random number.
+_DDDOC_PLACEHOLDER
 */
 template <typename TRNG>
 inline

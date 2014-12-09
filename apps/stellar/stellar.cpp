@@ -583,22 +583,7 @@ void _setParser(ArgumentParser & parser)
 
 /*
 .Class.ScientificNotationExponentOutputNormalizer
-..summary:RAII class to normalize the output of exponents in scientific notation.
-..signature:ScientificNotationExponentOutputNormalizer
-..remarks:
-The C/C++ standard only specifies that exponents in scientific notation have to be printed with at least two characters.
-MSVC prints three and thus the output of otherwise identical programs differs.
-This RAII class fixes the problem.
-..example.text:Use this class in your $main()$ function, for example.
-..example.code:
-int main()
-{
-    // Make sure doubles are printed consistently on all platforms.
-    ScientificNotationExponentOutputNormalizer normalizer;
-
-    std::cout << 1e-8 << std::endl;
-    return 0;
-}
+_DDDOC_PLACEHOLDER
 */
 
 class ScientificNotationExponentOutputNormalizer
