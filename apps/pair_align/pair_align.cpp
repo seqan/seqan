@@ -1,336 +1,19 @@
 /*==========================================================================
-               SeqAn - The Library for Sequence Analysis
-                         http://www.seqan.de 
+SeqAn - The Library for Sequence Analysis
+http://www.seqan.de
 ============================================================================
 Copyright (C) 2007-2012
-
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
 License as published by the Free Software Foundation; either
 version 3 of the License, or (at your option) any later version.
-
 This library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 Lesser General Public License for more details.
 ==========================================================================*/
 
-#include <seqan/basic.h>
-#include <seqan/align.h>
-#include <seqan/modifier.h>
-#include <seqan/arg_parse.h>
-#include <seqan/seq_io.h>
-#include <seqan/stream.h>
-
-using namespace seqan;
-
-// --------------------------------------------------------------------------
-// Class Options
-// --------------------------------------------------------------------------
-
-struct Options
-{
-    static int const INVALID_DIAGONAL;
-
-    seqan::CharString inputFile;
-    seqan::CharString outputFile;
-    seqan::CharString alphabet;
-    seqan::CharString method;
-    int gop;
-    int gex;
-    seqan::CharString matrix;
-    int msc;
-    int mmsc;
-    int low;
-    int high;
-    seqan::CharString config;
-
-    Options() : gop(0), gex(0), msc(0), mmsc(0), low(INVALID_DIAGONAL), high(INVALID_DIAGONAL)
-    {}
-};
-
-int const Options::INVALID_DIAGONAL = seqan::MaxValue<int>::VALUE;
-
-//////////////////////////////////////////////////////////////////////////////////
-
-template <typename TSeqSet, typename TNameSet>
-bool _loadSequences(TSeqSet& sequences, 
-                    TNameSet& fastaIDs,
-                    const char *fileName)
-{
-    SeqFileIn inFile;
-    if (!open(inFile, fileName))
-    {
-        std::cerr << "Could not open file " << fileName << " for reading!" << std::endl;
-        return false;
-    }
-
-    try
-    {
-        readRecords(fastaIDs, sequences, inFile);
-    }
-    catch (seqan::ParseError const & e)
-    {
-        std::cerr << "ERROR: Problem parsing input file: " << e.what() << "\n";
-        return false;
-    }
-
-    if (length(fastaIDs) > 2u)  // Limit number of sequences to 2.
-    {
-        resize(fastaIDs, 2, Exact());
-        resize(sequences, 2, Exact());
-        return true;
-    }
-    return (length(fastaIDs) == 2u);
-}
-
-// TODO(holtgrew): Make publically available.
-template<typename TStringSet, typename TCargo, typename TSpec>
-inline int
-globalAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
-                Lcs)
-{
-    return globalAlignment(g, stringSet(g), Lcs());
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-
-template<typename TAlphabet, typename TAlignConfig, typename TScore, typename TSeqFile, typename TMethod, typename TDiag, typename TOutfile>
-inline void
-pairwise_align(TScore const& sc,
-               TSeqFile& seqfile,
-               TMethod method,
-               TDiag low,
-               TDiag high,
-               bool banded,
-               TOutfile& outfile) 
-{
-    typedef VirtualStream<char, Output> TOutputStream;
-
-    // Load the 2 sequences
-    typedef String<TAlphabet> TSequence;
-    StringSet<TSequence, Owner<> > sequenceSet;
-    StringSet<String<char> > sequenceNames;
-    _loadSequences(sequenceSet, sequenceNames, seqfile.c_str());
-
-    // Fix low and high diagonal.
-    low = _max(low, -1 * (int) length(sequenceSet[1]));
-    high = _min(high, (int) length(sequenceSet[0]));
-
-    // Align the sequences
-    Graph<Alignment<StringSet<TSequence, Dependent<> >, void, WithoutEdgeId> > gAlign(sequenceSet);
-    
-    int aliScore = 0;
-    // Banded alignment?
-    if (!banded) {
-        if (method == 0) aliScore = globalAlignment(gAlign, sc, TAlignConfig(), NeedlemanWunsch());
-        else if (method == 1) aliScore = globalAlignment(gAlign, sc, TAlignConfig(), Gotoh());
-        else if (method == 2) aliScore = localAlignment(gAlign, sc);
-        else if (method == 3) aliScore = globalAlignment(gAlign, Lcs());
-    } else {
-        if (method == 0) aliScore = globalAlignment(gAlign, sc, TAlignConfig(), low, high, NeedlemanWunsch());
-        else if (method == 1) aliScore = globalAlignment(gAlign, sc, TAlignConfig(), low, high, Gotoh());
-    }
-    
-    // Alignment output
-    std::cout << "Alignment score: " << aliScore << std::endl;
-    TOutputStream outputFile;
-    if (!open(outputFile, toCString(outfile)))
-    {
-        std::cerr << "Could not open " << outfile << " for writing!" << std::endl;
-        return;
-    }
-
-    if (guessFormatFromFilename(outfile, Fasta()))
-        write(outputFile, gAlign, sequenceNames, FastaFormat());
-    else
-        write(outputFile, gAlign, sequenceNames, MsfFormat());
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-
-template<typename TScore, typename TSc>
-inline void
-_setMatchScore(TScore&, TSc) {
-    // No operation
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-
-template<typename TScore, typename TSc>
-inline void
-_setMismatchScore(TScore&, TSc) {
-    // No operation
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-
-template<typename TSc>
-inline void
-_setMatchScore(Score<int, Simple>& sc, TSc msc) {
-    sc.data_match = msc;
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-
-template<typename TSc>
-inline void
-_setMismatchScore(Score<int, Simple>& sc, TSc mmsc) {
-    sc.data_mismatch = mmsc;
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////
-
-template<typename TAlphabet, typename TScore>
-inline void
-_initAlignParams(Options const & options, TScore& sc) {
-    // Set options
-    sc.data_gap_open = options.gop;
-    sc.data_gap_extend = options.gex;
-    int msc = options.msc;
-    _setMatchScore(sc, msc);
-    int mmsc = options.mmsc;
-    _setMismatchScore(sc, mmsc);
-    ::std::string seqfile = toCString(options.inputFile);
-    ::std::string outfile = toCString(options.outputFile);
-    unsigned int method = 0;
-    String<char> meth = options.method;
-    if (meth == "nw") method = 0;
-    else if (meth == "gotoh") method = 1;
-    else if (meth == "sw") method = 2;
-    else if (meth == "lcs") method = 3;
-    int low = 0;
-    int high = 0;
-    bool banded = false;
-    if (options.low != Options::INVALID_DIAGONAL)
-    {
-        low = options.low;
-        banded = true;
-    }
-    if (options.high != Options::INVALID_DIAGONAL)
-    {
-        high = options.high;
-        banded = true;
-    }
-
-    // Check options
-    if (low > high) banded = false;
-    
-    // Do pairwise alignment
-    String<char> config = options.config;
-    if (!empty(config))
-    {
-        if (config == "tttt")
-            pairwise_align<TAlphabet, AlignConfig<true, true, true, true> >(sc, seqfile, method, low, high, banded, outfile);
-        else if (config == "tttf")
-            pairwise_align<TAlphabet, AlignConfig<true, true, true, false> >(sc, seqfile, method, low, high, banded, outfile);
-        else if (config == "ttft")
-            pairwise_align<TAlphabet, AlignConfig<true, true, false, true> >(sc, seqfile, method, low, high, banded, outfile);
-        else if (config == "ttff")
-            pairwise_align<TAlphabet, AlignConfig<true, true, false, false> >(sc, seqfile, method, low, high, banded, outfile);
-        else if (config == "tftt")
-            pairwise_align<TAlphabet, AlignConfig<true, false, true, true> >(sc, seqfile, method, low, high, banded, outfile);
-        else if (config == "tftf")
-            pairwise_align<TAlphabet, AlignConfig<true, false, true, false> >(sc, seqfile, method, low, high, banded, outfile);
-        else if (config == "tfft")
-            pairwise_align<TAlphabet, AlignConfig<true, false, false, true> >(sc, seqfile, method, low, high, banded, outfile);
-        else if (config == "tfff")
-            pairwise_align<TAlphabet, AlignConfig<true, false, false, false> >(sc, seqfile, method, low, high, banded, outfile);
-        else if (config == "fttt")
-            pairwise_align<TAlphabet, AlignConfig<false, true, true, true> >(sc, seqfile, method, low, high, banded, outfile);
-        else if (config == "fttf")
-            pairwise_align<TAlphabet, AlignConfig<false, true, true, false> >(sc, seqfile, method, low, high, banded, outfile);
-        else if (config == "ftft")
-            pairwise_align<TAlphabet, AlignConfig<false, true, false, true> >(sc, seqfile, method, low, high, banded, outfile);
-        else if (config == "ftff")
-            pairwise_align<TAlphabet, AlignConfig<false, true, false, false> >(sc, seqfile, method, low, high, banded, outfile);
-        else if (config == "fftt")
-            pairwise_align<TAlphabet, AlignConfig<false, false, true, true> >(sc, seqfile, method, low, high, banded, outfile);
-        else if (config == "fftf")
-            pairwise_align<TAlphabet, AlignConfig<false, false, true, false> >(sc, seqfile, method, low, high, banded, outfile);
-        else if (config == "ffft")
-            pairwise_align<TAlphabet, AlignConfig<false, false, false, true> >(sc, seqfile, method, low, high, banded, outfile);
-        else if (config == "ffff")
-            pairwise_align<TAlphabet, AlignConfig<false, false, false, false> >(sc, seqfile, method, low, high, banded, outfile);
-    }
-    else
-    {
-        pairwise_align<TAlphabet, AlignConfig<false, false, false, false> >(sc, seqfile, method, low, high, banded, outfile);
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-
-inline void
-_initScoreMatrix(Options const & options, Dna5 const) {
-    String<char> matrix = options.matrix;
-    if (!empty(options.matrix))
-    {
-        Score<int, ScoreMatrix<> > sc;
-        loadScoreMatrix(sc, toCString(options.matrix));
-        _initAlignParams<Dna5>(options, sc);
-    }
-    else
-    {
-        Score<int> sc;
-        _initAlignParams<Dna5>(options, sc);
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-
-inline void
-_initScoreMatrix(Options const & options, char const) {
-    String<char> matrix = options.matrix;
-    if (!empty(options.matrix))
-    {
-        Score<int, ScoreMatrix<> > sc;
-        loadScoreMatrix(sc, toCString(options.matrix));
-        _initAlignParams<char>(options, sc);
-    }
-    else
-    {
-        Score<int> sc;
-        _initAlignParams<char>(options, sc);
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-
-inline void
-_initScoreMatrix(Options const & options, Rna5 const) {
-    String<char> matrix = options.matrix;
-    if (!empty(options.matrix))
-    {    
-        Score<int, ScoreMatrix<> > sc;
-        loadScoreMatrix(sc, toCString(options.matrix));
-        _initAlignParams<Rna5>(options, sc);
-    }
-    else
-    {
-        Score<int> sc;
-        _initAlignParams<Rna5>(options, sc);
-    }
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-
-inline void
-_initScoreMatrix(Options const & options, AminoAcid const) {
-    String<char> matrix = options.matrix;
-    if (!empty(options.matrix))
-    {
-        Score<int, ScoreMatrix<> > sc;
-        loadScoreMatrix(sc, toCString(options.matrix));
-        _initAlignParams<AminoAcid>(options, sc);
-    }
-    else
-    {
-        Blosum62 sc;
-        _initAlignParams<AminoAcid>(options, sc);
-    }
-}
+#include "lib/pair_align_lib.h"
 
 // --------------------------------------------------------------------------
 // Function parseCommandLine()
@@ -344,11 +27,11 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     // Set short description, version, and date.
     setShortDescription(parser, "Pairwise alignment");
     setVersion(parser, "1.1");
-    setDate(parser, "September 2014");
+    setDate(parser, "December 2014");
 
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fB-s\\fP \\fIIN\\fP");
-	setCategory(parser, "Sequence Alignment");
+    setCategory(parser, "Sequence Alignment");
     addDescription(parser,
                    "The program allows to align two sequences using dyamic programming alignment algorithms while "
                    "tweaking various parameters.");
@@ -422,15 +105,11 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     getOptionValue(options.low, parser, "low");
     getOptionValue(options.high, parser, "high");
     getOptionValue(options.config, parser, "config");
-
+    
     return seqan::ArgumentParser::PARSE_OK;
 }
 
-// --------------------------------------------------------------------------
-// Function main()
-// --------------------------------------------------------------------------
-
-int main(int argc, const char *argv[])
+int main(int argc, const char** argv)
 {
     // Parse the command line.
     Options options;
@@ -441,12 +120,51 @@ int main(int argc, const char *argv[])
     // were errors and 0 if there were none.
     if (res != seqan::ArgumentParser::PARSE_OK)
         return res == seqan::ArgumentParser::PARSE_ERROR;
-    
-    // Initialize scoring matrices
-    if (options.alphabet == "dna") _initScoreMatrix(options, Dna5());
-    else if (options.alphabet == "rna") _initScoreMatrix(options, Rna5());
-    else if (options.alphabet == "protein") _initScoreMatrix(options, AminoAcid());
-    else _initScoreMatrix(options, char());
 
-    return 0;
+    // Defer to the library code pair_align_lib.a.
+    // For every major alignment configuration there is a single translation unit
+    // breaking down the compiled source code to single sources. This reduces the
+    // memory needed for the compilation to some MB. Note before it were several GB.
+    // Also the library can now built in parallel which also speeds up the compilation
+    // process.
+
+    if (options.method == "lcs")
+        pairAlignLcs(options);
+    else if (options.method == "sw")
+        pairAlignLocal(options);
+    else
+    {
+        if (options.config == "tttt")
+            pairAlignGlobal_tttt(options);
+        else if (options.config == "tttf")
+            pairAlignGlobal_tttf(options);
+        else if (options.config == "ttft")
+            pairAlignGlobal_ttft(options);
+        else if (options.config == "ttff")
+            pairAlignGlobal_ttff(options);
+        else if (options.config == "tftt")
+            pairAlignGlobal_tftt(options);
+        else if (options.config == "tftf")
+            pairAlignGlobal_tftf(options);
+        else if (options.config == "tfft")
+            pairAlignGlobal_tfft(options);
+        else if (options.config == "tfff")
+            pairAlignGlobal_tfff(options);
+        else if (options.config == "fttt")
+            pairAlignGlobal_fttt(options);
+        else if (options.config == "fttf")
+            pairAlignGlobal_fttf(options);
+        else if (options.config == "ftft")
+            pairAlignGlobal_ftft(options);
+        else if (options.config == "ftff")
+            pairAlignGlobal_ftff(options);
+        else if (options.config == "fftt")
+            pairAlignGlobal_fftt(options);
+        else if (options.config == "fftf")
+            pairAlignGlobal_fftf(options);
+        else if (options.config == "ffft")
+            pairAlignGlobal_ffft(options);
+        else
+            pairAlignGlobal_ffff(options);
+    }
 }
