@@ -126,9 +126,7 @@ struct MakeUnsigned<T const>
 // TODO(holtgrew): Internal metafunction unnecessary now?
 /*
 .Internal.MakeUnsigned_:
-..signature:MakeUnsigned_<T>
-..status:deprecated, please use @Metafunction.MakeUnsigned@
-..returns:$unsigned t$ if $T$ is not $unsigned t$, otherwise $T$.
+_DDDOC_PLACEHOLDER
 */
 template <typename T>
 struct MakeUnsigned_ : MakeUnsigned<T> {};
@@ -179,9 +177,7 @@ struct MakeSigned<T const>
 // TODO(holtgrew): Internal metafunction unnecessary now?
 /*
 .Internal.MakeSigned_:
-..signature:MakeSigned_<T>
-..status:deprecated, please use @Metafunction.MakeSigned@
-..returns:$signed t$ if $T$ is not $signed t$, otherwise $T$.
+_DDDOC_PLACEHOLDER
 */
 template <typename T>
 struct MakeSigned_ : MakeSigned<T> {};
@@ -296,9 +292,7 @@ struct IsPointer<T * const> : True {};
 
 /*
 .Internal.RemoveConst_:
-..signature:RemoveConst_<T>
-..status:deprecated, please use @Metafunction.RemoveConst@
-..returns:$t$ if $T$ is $t const$, otherwise $T$.
+_DDDOC_PLACEHOLDER
 */
 
 template <typename T>
@@ -362,8 +356,7 @@ struct CopyConst_<TFrom const, TTo>
 
 /*
 .Internal.IsConst_:
-..signature:IsConst_<T>
-..returns:@Tag.Logical Values.tag.True@ if $T$ is $t const$, otherwise @Tag.Logical Values.tag.False@.
+_DDDOC_PLACEHOLDER
 */
 
 template <typename T>
@@ -382,10 +375,7 @@ struct IsConst_<T const> : True
 
 /*
 .Internal.ClassIdentifier_:
-..signature:void * ClassIdentifier_<T>::getID()
-..returns:A void * that identifies $T$.
-...text:The returned values of two calls of $getID$ are equal if and only if
-the used type $T$ was the same.
+_DDDOC_PLACEHOLDER
  */
 
 template <typename T>

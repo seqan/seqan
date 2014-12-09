@@ -31,7 +31,7 @@
 
 /*
 .Class.GappedParamsRecords
-..summary: Contains one gapped params record.
+_DDDOC_PLACEHOLDER
 */
 
 struct GappedParamsRecord
@@ -56,14 +56,7 @@ struct GappedParamsRecord
 
 /*
 .Function.getGappedParamsRecords
-..summary:Retrieve records for precomputation.
-..signature:getGappedParamsRecords(records, n, errorModel)
-..param.records:String of @Class.GappedParamRecord@ objects, results are written here.
-..param.n:Read length for which to retrieve records.
-...type:nolink:$unsigned$
-..param.errorModel:Error model to use, either 'L' or 'H' (Levenshtein or Hamming distance).
-...type:nolink:$char$
-..returns:$bool$, whether appropriate records could be found.
+_DDDOC_PLACEHOLDER
 */
 
 bool getGappedParamsRecords(seqan::String<GappedParamsRecord> & records,

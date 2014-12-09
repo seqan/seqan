@@ -524,9 +524,7 @@ public:
 
 	/*
 		.Memfunc.MarkovModel#_computeAuxiliaryMatrices:
-		..class:Class.MarkovModel
-		..summary:Computes the auxiliary information for statistical indices computation
-		..signature:_computeAuxiliaryMatrices()
+_DDDOC_PLACEHOLDER
 	*/
 
 	void _computeAuxiliaryMatrices()
@@ -592,14 +590,7 @@ public:
 
 /*
 .Function._computeInverseMatrix:
-..summary:Computes the inverse matrix of a given matrix
-..signature:_computeInverseMatrix(matrix,n)
-..param.matrix:The matrix in input.
-...type:String<TAlphabet, TSpec1>&
-..param.n:The number of columns of the matrix.
-...type:nolink:unsigned int
-..returns:The inverse matrix of the matrix.
-..include:seqan/statistics.h
+_DDDOC_PLACEHOLDER
 */
 
 template <typename TValue>

@@ -864,14 +864,7 @@ void _pumpTraceToGaps(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 
 /*
 .Function.Gaps#source
-..summary:Return underlying sequence.
-..cat:Alignments
-..signature:TSource source(gaps)
-..param.obj:The object to get underlying sequence of.
-...type:Class.Gaps
-..returns:Reference to the underlying sequence.
-...type:Metafunction.Source
-..include:seqan/align.h
+_DDDOC_PLACEHOLDER
 */
 
 // ----------------------------------------------------------------------------
