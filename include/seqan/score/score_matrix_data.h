@@ -56,10 +56,6 @@
 
 namespace seqan {
 
-/*
-.Tag.Blosum30_:
-_DDDOC_PLACEHOLDER
- */
 struct Blosum30_ {};
 typedef Blosum30_ ScoreSpecBlosum30;
 
@@ -149,11 +145,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum30> {
     }
 };
 
-
-/*
-.Tag.Blosum45_:
-_DDDOC_PLACEHOLDER
- */
 struct Blosum45_ {};
 typedef Blosum45_ ScoreSpecBlosum45;
 
@@ -242,11 +233,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum45> {
     }
 };
 
-
-/*
-.Tag.Blosum62_:
-_DDDOC_PLACEHOLDER
- */
 struct Blosum62_ {};
 typedef Blosum62_ ScoreSpecBlosum62;
 
@@ -335,11 +321,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum62> {
     }
 };
 
-
-/*
-.Tag.Blosum80_:
-_DDDOC_PLACEHOLDER
- */
 struct Blosum80_ {};
 typedef Blosum80_ ScoreSpecBlosum80;
 
@@ -428,11 +409,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum80> {
     }
 };
 
-
-/*
-.Tag.Pam40_:
-_DDDOC_PLACEHOLDER
- */
 struct Pam40_ {};
 typedef Pam40_ ScoreSpecPam40;
 
@@ -524,11 +500,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam40> {
     }
 };
 
-
-/*
-.Tag.Pam120_:
-_DDDOC_PLACEHOLDER
- */
 struct Pam120_ {};
 typedef Pam120_ ScoreSpecPam120;
 
@@ -619,11 +590,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam120> {
     }
 };
 
-
-/*
-.Tag.Pam200_:
-_DDDOC_PLACEHOLDER
- */
 struct Pam200_ {};
 typedef Pam200_ ScoreSpecPam200;
 
@@ -714,11 +680,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam200> {
     }
 };
 
-
-/*
-.Tag.Pam250_:
-_DDDOC_PLACEHOLDER
- */
 struct Pam250_ {};
 typedef Pam250_ ScoreSpecPam250;
 
@@ -809,11 +770,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam250> {
     }
 };
 
-
-/*
-.Tag.Vtml200_:
-_DDDOC_PLACEHOLDER
- */
 struct Vtml200_ {};
 typedef Vtml200_ ScoreSpecVtml200;
 

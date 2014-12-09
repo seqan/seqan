@@ -29,11 +29,6 @@
 
 #include <seqan/sequence.h>
 
-/*
-.Class.GappedParamsRecords
-_DDDOC_PLACEHOLDER
-*/
-
 struct GappedParamsRecord
 {
     // Length of the read, "N??" in gapped_params file name.
@@ -53,11 +48,6 @@ struct GappedParamsRecord
     // computed.
     unsigned measure;
 };
-
-/*
-.Function.getGappedParamsRecords
-_DDDOC_PLACEHOLDER
-*/
 
 bool getGappedParamsRecords(seqan::String<GappedParamsRecord> & records,
                             unsigned n,

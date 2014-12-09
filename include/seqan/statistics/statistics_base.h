@@ -55,11 +55,6 @@ void _numOccurrences(TFloat &nW, String<TAlphabet>& haystack, StringSet<String<T
  * @return TFloat The z-score, TFloat is the TFloat from the MarkovModel M.
  */
 
-/*
-.Function._zscore:
-_DDDOC_PLACEHOLDER
-*/
-
 template <typename TAlgorithm, typename TFloat,  typename TStringSet, typename TAlphabet, typename TSpec>
 TFloat _zscore(TStringSet W,  TStringSet& X, MarkovModel<TAlphabet, TFloat, TSpec> & M, TAlgorithm const &)
 {
@@ -100,11 +95,6 @@ TFloat _zscore(TStringSet W,  TStringSet& X, MarkovModel<TAlphabet, TFloat, TSpe
  * @param[in]     algoTag  The tag to select the online text search algorithm with.
  */
 
-/*
-.Function._numOccurrences:
-_DDDOC_PLACEHOLDER
-*/
-
 //Fixed to  AhoCorasick in original code, reason???
 template <typename TAlgorithm, typename TFloat, typename TAlphabet>
 void _numOccurrences(TFloat &nW, String<TAlphabet> &haystack, StringSet<String<TAlphabet> > &needle, TAlgorithm const &)
@@ -130,11 +120,6 @@ void _numOccurrences(TFloat &nW, String<TAlphabet> &haystack, StringSet<String<T
  *
  * @return TFloat the expectation valuefor W w.r.t. a string and M.
  */
-
-/*
-.Function._computeExpectation:
-_DDDOC_PLACEHOLDER
-*/
 
 template <typename TAlphabet, typename TFloat, typename TSpec>
 TFloat _computeExpectation(MarkovModel<TAlphabet, TFloat, TSpec> &mm,
@@ -167,11 +152,6 @@ TFloat _computeExpectation(MarkovModel<TAlphabet, TFloat, TSpec> &mm,
  *
  * If the alphabet is Dna, then the suitable correction factors are computed.
  */
-
-/*
-.Function._computevariance:
-_DDDOC_PLACEHOLDER
-*/
 
 // TODO(holtgrew): W could become const-ref.
 
@@ -276,11 +256,6 @@ TFloat _computeVariance( StringSet<String<TAlphabet> > W,  StringSet<String<TAlp
  * @return TFloat The expectation value for overlapping, TFloat is the TFloat from the type of M.
  */
 
-/*
-.Function._overlapExpectation:
-_DDDOC_PLACEHOLDER
-*/
-
 template <typename TFloat, typename TAlphabet, typename TSpec>
 TFloat _overlapExpectation(StringSet<String<TAlphabet> > W, MarkovModel<TAlphabet, TFloat, TSpec> &M, unsigned int n)
 {
@@ -322,11 +297,6 @@ TFloat _overlapExpectation(StringSet<String<TAlphabet> > W, MarkovModel<TAlphabe
  *
  * @param[in,out] ss A String set to expand.
  */
-
-/*
-.Function._addReveseComplements:
-_DDDOC_PLACEHOLDER
-*/
 
 template <typename TAlphabet>
 void _addReveseComplements(StringSet<String<TAlphabet> > &stringSet)

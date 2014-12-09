@@ -227,10 +227,6 @@ struct SparseString
 // Functions
 // ==========================================================================
 
-/*
-.Function._assignValueInValueString
-_DDDOC_PLACEHOLDER
-*/
 template <typename TFibreValues, typename TSpec, typename TPos, typename TValue>
 inline void _assignValueInValueString(SparseString<TFibreValues, TSpec> & string, TPos pos, TValue value)
 {

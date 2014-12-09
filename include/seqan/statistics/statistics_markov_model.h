@@ -522,10 +522,7 @@ public:
 	///// COMPUTE THE AUXILIARY MATRICES FOR THE VARIANCE And Z-SCORE COMPUTATION
 	/////////////////////////////////////////////////////////////////////////////
 
-	/*
-		.Memfunc.MarkovModel#_computeAuxiliaryMatrices:
-_DDDOC_PLACEHOLDER
-	*/
+	
 
 	void _computeAuxiliaryMatrices()
 	{
@@ -587,11 +584,6 @@ _DDDOC_PLACEHOLDER
  *
  * @return TMatrix The inverse matrix, the same type as matrix.
  */
-
-/*
-.Function._computeInverseMatrix:
-_DDDOC_PLACEHOLDER
-*/
 
 template <typename TValue>
 Matrix<TValue,2> _computeInverseMatrix(Matrix<TValue,2> &matrix)

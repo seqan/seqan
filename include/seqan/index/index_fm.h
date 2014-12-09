@@ -112,11 +112,6 @@ typedef Tag<FibreSALF_> const           FibreSALF;
 // Metafunction Fibre
 // ----------------------------------------------------------------------------
 
-/*
-.Metafunction.Fibre:
-_DDDOC_PLACEHOLDER
-*/
-
 /*!
  * @defgroup FMIndexFibres FM Index Fibres
  * @brief Tag to select a specific fibre of a @link FMIndex @endlink.

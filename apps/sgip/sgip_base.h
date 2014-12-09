@@ -69,11 +69,6 @@ inline int compare_(std::vector<TValue> const & obj1, std::vector<TValue> const 
 // Class SgipDegreeDir_
 // --------------------------------------------------------------------------
 
-/*
-.Class.SgipDegreeDir_:
-_DDDOC_PLACEHOLDER
-*/
-
 template <typename TValue>
 struct SgipDegreeDir_
 {
@@ -96,11 +91,6 @@ struct SgipDegreeDir_
 // Class SgipDegreeUndir_
 // --------------------------------------------------------------------------
 
-/*
-.Class.SgipDegreeUndir_:
-_DDDOC_PLACEHOLDER
-*/
-
 template <typename TValue>
 struct SgipDegreeUndir_
 {
@@ -110,11 +100,6 @@ struct SgipDegreeUndir_
 // --------------------------------------------------------------------------
 // Class SgipHash
 // --------------------------------------------------------------------------
-
-/*
-.Class.SgipHash:
-_DDDOC_PLACEHOLDER
-*/
 
 template <typename TString = std::vector<int> >
 struct SgipHash;
@@ -161,11 +146,6 @@ struct SgipHash<std::vector<TValue> >
 // --------------------------------------------------------------------------
 // Class SgipEqualTo
 // --------------------------------------------------------------------------
-
-/*
-.Class.SgipEqualTo:
-_DDDOC_PLACEHOLDER
-*/
 
 template <typename TString>
 struct SgipEqualTo;
@@ -218,11 +198,6 @@ struct SgipEqualTo<std::vector<TValue> >
 // Class LessCompare_
 // --------------------------------------------------------------------------
 
-/*
-.Class.LessCompare_:
-_DDDOC_PLACEHOLDER
-*/
-
 template <typename TTag>
 struct LessCompare_;
 
@@ -263,11 +238,6 @@ struct LessCompare_<std::vector<TValue> >
 // --------------------------------------------------------------------------
 // Function compare_()
 // --------------------------------------------------------------------------
-
-/*
-.Function.compare_:
-_DDDOC_PLACEHOLDER
-*/
 
 // Comparison of various data types.
 template <typename T>
@@ -773,11 +743,6 @@ void _createCandMap(std::unordered_map<TVal, bool> & hmap, TString & cand)
 // Function getCanonicalLabel()
 // --------------------------------------------------------------------------
 
-/*
-.Function.getCanonicalLabel:
-_DDDOC_PLACEHOLDER
-*/
-
 template <typename TSpec, typename TMat>
 bool getCanonicalLabel(TMat & leastmat, seqan::Graph<TSpec> const & graph)
 {
@@ -834,11 +799,6 @@ bool getCanonicalLabel(TMat & leastmat, seqan::Graph<TSpec> const & graph)
 // --------------------------------------------------------------------------
 // Function checkIsomorphic()
 // --------------------------------------------------------------------------
-
-/*
-.Function.checkIsomorphic:
-_DDDOC_PLACEHOLDER
-*/
 
 template <typename TSpec>
 bool checkIsomorphic(seqan::Graph<TSpec> const & g1, seqan::Graph<TSpec> const & g2)

@@ -524,11 +524,6 @@ open(BamIndex<Bai> & index, char * filename)
 // Function buildIndex()
 // ----------------------------------------------------------------------------
 
-/*DISABLED
-.Function.BamIndex#buildIndex
-_DDDOC_PLACEHOLDER
- */
-
 inline bool _saveIndex(BamIndex<Bai> const & index, char const * filename)
 {
     std::cerr << "WRITE INDEX TO " << filename << std::endl;

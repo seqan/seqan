@@ -91,9 +91,6 @@ struct Value<const Pdf<GeometricFairCoin> > : Value<Pdf<GeometricFairCoin> > {};
 // Functions
 // ===========================================================================
 
-/*
-_DDDOC_PLACEHOLDER
-*/
 template <typename TRNG>
 inline
 typename Value<Pdf<GeometricFairCoin> >::Type

@@ -258,11 +258,6 @@ struct Key<T const>:
 
 //____________________________________________________________________________
 
-/*VERALTET
-.Metafunction.Object:
-_DDDOC_PLACEHOLDER
-*/
-
 template<typename T>
 struct Object; 
 

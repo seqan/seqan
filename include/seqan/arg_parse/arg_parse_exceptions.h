@@ -52,11 +52,6 @@ struct ParseError;
 // Class InvalidOption
 // ----------------------------------------------------------------------------
 
-/*
-.Internal.Class.InvalidOption
-_DDDOC_PLACEHOLDER
-*/
-
 class InvalidOption : public ParseError
 {
 public:
@@ -69,11 +64,6 @@ public:
 // Class MissingArgument
 // ----------------------------------------------------------------------------
 
-/*
-.Internal.Class.MissingArgument
-_DDDOC_PLACEHOLDER
-*/
-
 class MissingArgument : public ParseError
 {
 public:
@@ -85,11 +75,6 @@ public:
 // ----------------------------------------------------------------------------
 // Class NotEnoughArguments
 // ----------------------------------------------------------------------------
-
-/*
-.Internal.Class.NotEnoughArguments
-_DDDOC_PLACEHOLDER
-*/
 
 class NotEnoughArguments : public ParseError
 {

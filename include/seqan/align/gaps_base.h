@@ -862,11 +862,6 @@ void _pumpTraceToGaps(Gaps<TSequenceH, TGapsSpecH> & gapsH,
  * @return TSource Reference to the source of the Gaps.
  */
 
-/*
-.Function.Gaps#source
-_DDDOC_PLACEHOLDER
-*/
-
 // ----------------------------------------------------------------------------
 // Function sourceSegment()
 // ----------------------------------------------------------------------------

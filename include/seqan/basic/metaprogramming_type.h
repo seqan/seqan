@@ -124,10 +124,7 @@ struct MakeUnsigned<T const>
 };
 
 // TODO(holtgrew): Internal metafunction unnecessary now?
-/*
-.Internal.MakeUnsigned_:
-_DDDOC_PLACEHOLDER
-*/
+
 template <typename T>
 struct MakeUnsigned_ : MakeUnsigned<T> {};
 
@@ -175,10 +172,7 @@ struct MakeSigned<T const>
 };
 
 // TODO(holtgrew): Internal metafunction unnecessary now?
-/*
-.Internal.MakeSigned_:
-_DDDOC_PLACEHOLDER
-*/
+
 template <typename T>
 struct MakeSigned_ : MakeSigned<T> {};
 
@@ -290,11 +284,6 @@ struct IsPointer<T * const> : True {};
  * @return Type A corresponding non-const type, e.g. <tt>int</tt> for <tt>T = const int</tt>.
  */
 
-/*
-.Internal.RemoveConst_:
-_DDDOC_PLACEHOLDER
-*/
-
 template <typename T>
 struct RemoveConst
 {
@@ -354,11 +343,6 @@ struct CopyConst_<TFrom const, TTo>
 
 // TODO(holtgrew): Make public, complete documentation.
 
-/*
-.Internal.IsConst_:
-_DDDOC_PLACEHOLDER
-*/
-
 template <typename T>
 struct IsConst_ : False
 {};
@@ -372,11 +356,6 @@ struct IsConst_<T const> : True
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Make public, complete documentation or deletion candidate.
-
-/*
-.Internal.ClassIdentifier_:
-_DDDOC_PLACEHOLDER
- */
 
 template <typename T>
 struct ClassIdentifier_

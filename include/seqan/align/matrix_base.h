@@ -799,12 +799,6 @@ coordinate(Iter<Matrix<TValue, DIMENSION> const, PositionIterator > & me,
  * @return TMatrix The resulting matrix of same type as <tt>lhs</tt> and <tt>rhs</tt>.
  */
 
-/*
-operator +
-Computes the matricial sum between two matrices
-_DDDOC_PLACEHOLDER
-*/
-
 template <typename TValue,unsigned DIMENSION>
 Matrix<TValue,DIMENSION>
 operator + (Matrix<TValue,DIMENSION> const & matrix1,Matrix<TValue,DIMENSION> const & matrix2)
@@ -918,10 +912,7 @@ operator == (Matrix<TValue, DIMENSION1> const & matrix1, Matrix<TValue, DIMENSIO
 	result= (matrix1.data_lengths==matrix2.data_lengths)&&(matrix1.data_factors==matrix2.data_factors)&&(value(matrix1.data_host)==value(matrix2.data_host))&&(DIMENSION1==DIMENSION2);
 	return result;
 }
-/*
-.Function.matricialSum:
-_DDDOC_PLACEHOLDER
-*/
+
 /*
 template <typename TValue>
 Matrix<TValue,2>
@@ -958,10 +949,6 @@ matricialSum(Matrix<TValue,2> &matrix1,Matrix<TValue,2> &matrix2)
 //////////////////////////////////////////////////////////////////////////////
 
 /*
-.Function.matricialDifference:
-_DDDOC_PLACEHOLDER
-*/
-/*
 template <typename TValue>
 inline Matrix<TValue,2>
 matricialDifference(Matrix<TValue,2> & matrix1, Matrix<TValue,2> & matrix2)
@@ -995,10 +982,7 @@ matricialDifference(Matrix<TValue,2> & matrix1, Matrix<TValue,2> & matrix2)
 	return result;
 }
 */
-/*
-.Function.matricialProduct:
-_DDDOC_PLACEHOLDER
-*/
+
 /*
 template <typename TValue>
 inline Matrix<TValue, 2>
