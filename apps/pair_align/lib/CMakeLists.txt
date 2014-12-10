@@ -38,18 +38,17 @@ endforeach(CONFIG)
 # ---------------------------------------------------------------------------
 
 # Add library for lcs option.
-add_library(pair_align_lcs OBJECT pair_align_lcs.cpp pair_align_lib.cpp pair_align_lib.h)
+add_library(pair_align_lcs OBJECT pair_align_lcs.cpp)
 # Add library for local option.
-add_library(pair_align_local OBJECT pair_align_local.cpp pair_align_lib.cpp pair_align_lib.h)
+add_library(pair_align_local OBJECT pair_align_local.cpp)
 # Add library for all global options.
 foreach(TARGET ${GLOBAL_ALIGN_TARGETS})	
-	add_library(${TARGET} OBJECT pair_align_global.cpp pair_align_lib.cpp pair_align_lib.h)
+	add_library(${TARGET} OBJECT pair_align_global.cpp)
 endforeach(TARGET)
 
 # ---------------------------------------------------------------------------
 # Add COMPILE_DEFINITIONS in order to generate all pairAlignGlobal_<config>
 # interfaces using preprocessor macros in pair_align_global.cpp.
-# We only 
 # ---------------------------------------------------------------------------
 
 # Extract number of different configurations
@@ -94,5 +93,5 @@ endforeach(TARGET)
 # Build static library linking all the object libraries.
 # ---------------------------------------------------------------------------
 
-add_library(pair_align_lib ${OBJECT_REF})
+add_library(pair_align_lib pair_align_lib.cpp pair_align_lib.h ${OBJECT_REF})
 target_link_libraries(pair_align_lib ${SEQAN_LIBRARIES})

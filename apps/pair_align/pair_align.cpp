@@ -1,6 +1,6 @@
 /*==========================================================================
-SeqAn - The Library for Sequence Analysis
-http://www.seqan.de
+               SeqAn - The Library for Sequence Analysis
+                         http://www.seqan.de
 ============================================================================
 Copyright (C) 2007-2012
 This library is free software; you can redistribute it and/or
@@ -105,11 +105,11 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     getOptionValue(options.low, parser, "low");
     getOptionValue(options.high, parser, "high");
     getOptionValue(options.config, parser, "config");
-    
+
     return seqan::ArgumentParser::PARSE_OK;
 }
 
-int main(int argc, const char** argv)
+int main(int argc, const char* argv[])
 {
     // Parse the command line.
     Options options;
@@ -125,7 +125,7 @@ int main(int argc, const char** argv)
     // For every major alignment configuration there is a single translation unit
     // breaking down the compiled source code to single sources. This reduces the
     // memory needed for the compilation to some MB. Note before it were several GB.
-    // Also the library can now built in parallel which also speeds up the compilation
+    // Also the library can built in parallel which also speeds up the compilation
     // process.
 
     if (options.method == "lcs")
