@@ -88,22 +88,6 @@ typedef Tag<FibreTreeStructure_>    const FibreTreeStructure;
 // Metafunction Fibre
 // ----------------------------------------------------------------------------
 
-/*
-.Metafunction.Fibre:
-..summary:Type of a specific FMIndex member (fibre).
-..signature:Fibre<RankDictionary<TValue, WaveletTree<TSpec, TConfig> >, TFibreSpec>::Type
-..class:Spec.FMIndex
-..cat:Index
-..param.TValue:The character type of the @Class.String@ the wavelet tree represents.
-..param.TFibreSpec:Tag to specify the fibre.
-...type:Tag.WaveletTree Fibres
-..returns:Fibre type.
-..remarks:Some containers, such as @Spec.FMIndex@, can be seen as a bundle consisting of various fibres. Because not 
-every table is a fibre we did not call them tables, however, in many cases one can think of fibres as tables. The 
-fibre interface was designed to unify the access to the members of the different fibres.
-To get a reference or the type of a specific fibre use @Function.getFibre@ or @Metafunction.Fibre@.		
-..include:seqan/index.h
-*/
 /*!
  * @class WaveletTree
  * @extends RankDictionary
