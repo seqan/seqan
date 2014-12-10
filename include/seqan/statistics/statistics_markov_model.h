@@ -522,12 +522,7 @@ public:
 	///// COMPUTE THE AUXILIARY MATRICES FOR THE VARIANCE And Z-SCORE COMPUTATION
 	/////////////////////////////////////////////////////////////////////////////
 
-	/*
-		.Memfunc.MarkovModel#_computeAuxiliaryMatrices:
-		..class:Class.MarkovModel
-		..summary:Computes the auxiliary information for statistical indices computation
-		..signature:_computeAuxiliaryMatrices()
-	*/
+	
 
 	void _computeAuxiliaryMatrices()
 	{
@@ -589,18 +584,6 @@ public:
  *
  * @return TMatrix The inverse matrix, the same type as matrix.
  */
-
-/*
-.Function._computeInverseMatrix:
-..summary:Computes the inverse matrix of a given matrix
-..signature:_computeInverseMatrix(matrix,n)
-..param.matrix:The matrix in input.
-...type:String<TAlphabet, TSpec1>&
-..param.n:The number of columns of the matrix.
-...type:nolink:unsigned int
-..returns:The inverse matrix of the matrix.
-..include:seqan/statistics.h
-*/
 
 template <typename TValue>
 Matrix<TValue,2> _computeInverseMatrix(Matrix<TValue,2> &matrix)

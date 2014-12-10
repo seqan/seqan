@@ -32,44 +32,50 @@
 // Author: Jochen Singer <jochen.singer@fu-berlin.de>
 // ==========================================================================
 
-// core modules
 #include <seqan/align.h>
+#include <seqan/align_extend.h>
+#include <seqan/align_profile.h>
+#include <seqan/align_split.h>
+#include <seqan/alignment_free.h>
 #include <seqan/arg_parse.h>
 #include <seqan/bam_io.h>
 #include <seqan/basic.h>
+#include <seqan/bed_io.h>
 #include <seqan/consensus.h>
 #include <seqan/file.h>
 #include <seqan/find.h>
 #include <seqan/gff_io.h>
 #include <seqan/graph_algorithms.h>
+#include <seqan/graph_align.h>
 #include <seqan/graph_msa.h>
 #include <seqan/graph_types.h>
 #include <seqan/index.h>
+#include <seqan/journaled_set.h>
 #include <seqan/map.h>
+#include <seqan/math.h>
 #include <seqan/modifier.h>
+#include <seqan/parallel.h>
+#include <seqan/parse_lm.h>
 #include <seqan/pipe.h>
 #include <seqan/platform.h>
 #include <seqan/random.h>
-#include <seqan/graph_align.h>
+#include <seqan/realign.h>
+#include <seqan/reduced_aminoacid.h>
+#include <seqan/roi_io.h>
 #include <seqan/score.h>
 #include <seqan/seeds.h>
 #include <seqan/seq_io.h>
 #include <seqan/sequence.h>
 #include <seqan/sequence_journaled.h>
+#include <seqan/simple_intervals_io.h>
+#include <seqan/statistics.h>
 #include <seqan/store.h>
 #include <seqan/stream.h>
 #include <seqan/system.h>
-#include <seqan/version.h>
-
-// extras modules
-#include <seqan/alignment_free.h>
-#include <seqan/find_motif.h>
-#include <seqan/gff_io.h>
-#include <seqan/journaled_set.h>
-#include <seqan/math.h>
-#include <seqan/parse_lm.h>
-#include <seqan/statistics.h>
+#include <seqan/translation.h>
+#include <seqan/ucsc_io.h>
 #include <seqan/vcf_io.h>
+#include <seqan/version.h>
 
 // This test simply checks whether all functions are inline or templates.
 SEQAN_BEGIN_TESTSUITE(test_multiple_translation_units)
