@@ -362,20 +362,6 @@ operator==(HirschbergSet_ const & lhs,
 // debug flag .. define to see where Hirschberg cuts the sequences	
 //#define SEQAN_HIRSCHBERG_DEBUG_CUT
 
-/*DISABLED
-.Function.hirschberg:
-..cat:Alignment
-..summary:Computes a global Alignment for the passed Alignment-Container with the specified scoring scheme
-..signature:hirschberg(Align<TSource, TSpec> & align,Score<TScoreValue, Simple> const & score)
-..param.align: Reference to the Alignment-Object
-..param.score: Const Reference to the Scoring Scheme
-..remarks: The alignment is based on the algorithm proposed by Hirschberg. The general idea is to divide the DP (dynamic programming) matrix,
-to compute a global alignment in linear space. Instead of computing half of the
-DP matrix in forward direction and the other half in reverse, a pointer to the cell of the DP matrix, were the actual, optimal alignment
-passes the mid column ist saved, during the computation of the second part of the Matrix.
-..include:seqan/align.h
-*/
-
 // ----------------------------------------------------------------------------
 // Function globalAlignment()
 // ----------------------------------------------------------------------------

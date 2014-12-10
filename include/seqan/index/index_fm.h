@@ -112,29 +112,6 @@ typedef Tag<FibreSALF_> const           FibreSALF;
 // Metafunction Fibre
 // ----------------------------------------------------------------------------
 
-/*
-.Metafunction.Fibre:
-..summary:Type of a specific FMIndex member (fibre).
-..signature:Fibre<Index<TText, FMIndex<TSentinelRankDictionary, TSpec> >, TFibreSpec>::Type
-..class:Spec.FMIndex
-..cat:Index
-..param.TText:The text type.
-...type:Class.String
-...type:Class.StringSet
-..param.TSentinelRankDictionary:The type of the sentinel rank dictionary.
-...type:Class.SentinelRankDictionary
-..param.TSpec:Tag to specify a certain variant of the FM index.
-...default;$void$
-..param.TFibreSpec:Tag to specify the fibre.
-...type:Tag.FM Index Fibres
-..returns:Fibre type.
-..remarks:Some containers, such as @Spec.FMIndex@, can be seen as a bundle consisting of various fibres. Because not 
-every table is a fibre we did not call them tables, however, in many cases one can think of fibres as tables. The 
-fibre interface was designed to unify the access to the members of the different fibres.
-To get a reference or the type of a specific fibre use @Function.getFibre@ or @Metafunction.Fibre@.		
-..include:seqan/index.h
-*/
-
 /*!
  * @defgroup FMIndexFibres FM Index Fibres
  * @brief Tag to select a specific fibre of a @link FMIndex @endlink.

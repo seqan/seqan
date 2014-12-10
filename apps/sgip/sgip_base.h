@@ -69,15 +69,6 @@ inline int compare_(std::vector<TValue> const & obj1, std::vector<TValue> const 
 // Class SgipDegreeDir_
 // --------------------------------------------------------------------------
 
-/*
-.Class.SgipDegreeDir_:
-..cat:Class.Graph
-..summary:A degree type of directed graphs.
-..signature:SgipDegreeDir_<TValue>
-..param.TValue:The value type, that is the type of degree.
-..include:seqan/sgip.h
-*/
-
 template <typename TValue>
 struct SgipDegreeDir_
 {
@@ -100,15 +91,6 @@ struct SgipDegreeDir_
 // Class SgipDegreeUndir_
 // --------------------------------------------------------------------------
 
-/*
-.Class.SgipDegreeUndir_:
-..cat:Class.Graph
-..summary:A degree type of undirected graphs.
-..signature:SgipDegreeUndir_<TValue>
-..param.TValue:The value type, that is the type of degree.
-..include:seqan/sgip.h
-*/
-
 template <typename TValue>
 struct SgipDegreeUndir_
 {
@@ -118,18 +100,6 @@ struct SgipDegreeUndir_
 // --------------------------------------------------------------------------
 // Class SgipHash
 // --------------------------------------------------------------------------
-
-/*
-.Class.SgipHash:
-..cat:Class.Graph
-..summary:A user-defined Hash type to get hash Value for a set of data.
-..signature:SgipHash<TString>
-..param.TString:The value type, that is the type of container.
-...default:std::vector<int>.
-...type:Spec.String<TValue, Array<LENGTH> >
-...type:Spec.std::vector<TValue>
-..include:seqan/sgip.h
-*/
 
 template <typename TString = std::vector<int> >
 struct SgipHash;
@@ -176,17 +146,6 @@ struct SgipHash<std::vector<TValue> >
 // --------------------------------------------------------------------------
 // Class SgipEqualTo
 // --------------------------------------------------------------------------
-
-/*
-.Class.SgipEqualTo:
-..cat:Class.Graph
-..summary:A user-defined EqualTo type for two dataset, like std::EqualTo<T>.
-..signature:SgipEqualTo<TString>
-..param.TString:The value type, that is the type of container.
-...type:Spec.String<TValue, Array<LENGTH> >
-...type:Spec.std::vector<TValue>
-..include:seqan/sgip.h
-*/
 
 template <typename TString>
 struct SgipEqualTo;
@@ -239,18 +198,6 @@ struct SgipEqualTo<std::vector<TValue> >
 // Class LessCompare_
 // --------------------------------------------------------------------------
 
-/*
-.Class.LessCompare_:
-..cat:Class.Graph
-..summary:A user-defined less function for various data types.
-..signature:LessCompare_<Type>
-..param.TTag:The value type, that is the type of compared data.
-...type:Spec.SgipDegreeDir<TValue>
-...type:Spec.String<TValue, Array<LENGTH>
-...type:Spec.std::vector<TValue>
-..include:seqan/sgip.h
-*/
-
 template <typename TTag>
 struct LessCompare_;
 
@@ -291,25 +238,6 @@ struct LessCompare_<std::vector<TValue> >
 // --------------------------------------------------------------------------
 // Function compare_()
 // --------------------------------------------------------------------------
-
-/*
-.Function.compare_:
-..cat:Graph
-..summary:comparison of various value type, e.g. degree type.
-..signature:compare_(T, T)
-..param.T:In-parameter:first value.
-...type:Spec.SgipDegreeDir_<TValue>
-...type:Spec.String<TValue>
-...type:Spec.std::vector<TValue>
-..param.T:In-parameter:second value.
-...type:Spec.SgipDegreeDir_<TValue>
-...type:Spec.String<TValue>
-...type:Spec.std::vector<TValue>
-..returns:int.
-...remarks: return -1 if first value is less than second, 0 if equal, otherwise return 1.
-..see:Function.compare_
-..include:seqan/sgip.h
-*/
 
 // Comparison of various data types.
 template <typename T>
@@ -815,24 +743,6 @@ void _createCandMap(std::unordered_map<TVal, bool> & hmap, TString & cand)
 // Function getCanonicalLabel()
 // --------------------------------------------------------------------------
 
-/*
-.Function.getCanonicalLabel:
-..cat:Graph
-..summary:Implements graph canonization on a graph.
-..remarks:getCanonicalLabel adopts heuristical approach to find one canonical identity for graphs that
-from one isomorphic class.
-..signature:getCanonicalLabel(leastmat, graph)
-..param.graph:In-parameter:A graph.
-...type:Spec.Undirected Graph(not support yet)
-...type:Spec.Directed Graph
-..param.leastmat:Out-parameter:A property map.
-...remarks:Identity of queried graph.
-..returns:bool.
-...remarks: return true if canonical label was obtained successfully, otherwise return false.
-..see:Function.getCanonicalLabel
-..include:seqan/sgip.h
-*/
-
 template <typename TSpec, typename TMat>
 bool getCanonicalLabel(TMat & leastmat, seqan::Graph<TSpec> const & graph)
 {
@@ -889,24 +799,6 @@ bool getCanonicalLabel(TMat & leastmat, seqan::Graph<TSpec> const & graph)
 // --------------------------------------------------------------------------
 // Function checkIsomorphic()
 // --------------------------------------------------------------------------
-
-/*
-.Function.checkIsomorphic:
-..cat:Graph
-..summary:Solve graph isomorphism which is a problem of determining whether two given graph are isomorphic or not.
-..remarks:checkIsomorphic solve the problem by comparing canonical label of two graphs which obtained from graph canonization.
-..signature:checkIsomorphic(g1, g2)
-..param.g1:In-parameter:First graph.
-...type:Spec.Undirected Graph(not support yet)
-...type:Spec.Directed Graph
-..param.g2:In-parameter:Second graph.
-...type:Spec.Undirected Graph
-...type:Spec.Directed Graph
-..returns:bool.
-...remarks:return true if g1 and g2 are isomorphic, false otherwise.
-..see:Function.checkIsomorphic
-..include:seqan/sgip.h
-*/
 
 template <typename TSpec>
 bool checkIsomorphic(seqan::Graph<TSpec> const & g1, seqan::Graph<TSpec> const & g2)
