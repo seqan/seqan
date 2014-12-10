@@ -593,19 +593,19 @@ void testJournaledStringVirtualToHostPosition()
         erase(jString, 1, 3);
         insert(jString, 0, "zz");
 
-        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 0u), 0);
-        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 1u), 0);
-        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 2u), 0);
-        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 3u), 3);
-        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 4u), 4);
-        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 5u), 4);
-        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 6u), 4);
-        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 7u), 4);
-        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 8u), 5);
-        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 9u), 8);
-        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 10u), 9);
-        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 11u), 9);
-        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 20u), 9);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 0u), 0u);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 1u), 0u);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 2u), 0u);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 3u), 3u);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 4u), 4u);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 5u), 4u);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 6u), 4u);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 7u), 4u);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 8u), 5u);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 9u), 8u);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 10u), 9u);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 11u), 9u);
+        SEQAN_ASSERT_EQ(virtualToHostPosition(jString, 20u), 9u);
     }
     {
         CharString charStr = "ABCDE";
