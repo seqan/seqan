@@ -35,7 +35,6 @@
 #include <fstream>
 #include <seqan/sequence.h>
 #include <seqan/file.h>
-#include <seqan/find_motif.h>
 
 #include "../splazers/paramChooser.h"
 

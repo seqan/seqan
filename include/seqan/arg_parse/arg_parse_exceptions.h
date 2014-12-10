@@ -52,12 +52,6 @@ struct ParseError;
 // Class InvalidOption
 // ----------------------------------------------------------------------------
 
-/*
-.Internal.Class.InvalidOption
-..cat:Miscellaneous
-..summary:Thrown if an unknown option was set on the command line.
-*/
-
 class InvalidOption : public ParseError
 {
 public:
@@ -70,13 +64,6 @@ public:
 // Class MissingArgument
 // ----------------------------------------------------------------------------
 
-/*
-.Internal.Class.MissingArgument
-..cat:Miscellaneous
-..summary:Thrown if an option was set on the command line but without giving the
-required arguments for this option.
-*/
-
 class MissingArgument : public ParseError
 {
 public:
@@ -88,13 +75,6 @@ public:
 // ----------------------------------------------------------------------------
 // Class NotEnoughArguments
 // ----------------------------------------------------------------------------
-
-/*
-.Internal.Class.NotEnoughArguments
-..cat:Miscellaneous
-..summary:Thrown if an option was set on the command line but not enough arguments for
-this option were provided.
-*/
 
 class NotEnoughArguments : public ParseError
 {

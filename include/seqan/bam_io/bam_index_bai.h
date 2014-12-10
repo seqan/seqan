@@ -524,21 +524,6 @@ open(BamIndex<Bai> & index, char * filename)
 // Function buildIndex()
 // ----------------------------------------------------------------------------
 
-/*DISABLED
-.Function.BamIndex#buildIndex
-..class:Class.BamIndex
-..cat:BAM I/O
-..signature:buildIndex(index, filename)
-..summary:Build index for BAM file with given filename.
-..remarks:This will create an index file named $filename + ".bai"$.
-..param.index:Target data structure.
-...type:Class.BamIndex
-..param.filename:Path to BAM file to load.
-...type:nolink:$char const *$
-..returns:$bool$ indicating success.
-..include:seqan/bam_io.h
- */
-
 inline bool _saveIndex(BamIndex<Bai> const & index, char const * filename)
 {
     std::cerr << "WRITE INDEX TO " << filename << std::endl;

@@ -799,18 +799,6 @@ coordinate(Iter<Matrix<TValue, DIMENSION> const, PositionIterator > & me,
  * @return TMatrix The resulting matrix of same type as <tt>lhs</tt> and <tt>rhs</tt>.
  */
 
-/*
-operator +
-Computes the matricial sum between two matrices
-..signature:Matrix +(matrix1,matrix2)
-..param.matrix1:The first matrix.
-...type:Class.Matrix
-..param.matrix2:The second matrix.
-...type:Class.Matrix
-..returns:The sum of the two matrices (another nxm matrix).
-..remarks:The number of rows and columns of matrix1 must be equal to the number of rows and columns of matrix2 (length of dimensions for NDimensional matrices)
-*/
-
 template <typename TValue,unsigned DIMENSION>
 Matrix<TValue,DIMENSION>
 operator + (Matrix<TValue,DIMENSION> const & matrix1,Matrix<TValue,DIMENSION> const & matrix2)
@@ -924,18 +912,7 @@ operator == (Matrix<TValue, DIMENSION1> const & matrix1, Matrix<TValue, DIMENSIO
 	result= (matrix1.data_lengths==matrix2.data_lengths)&&(matrix1.data_factors==matrix2.data_factors)&&(value(matrix1.data_host)==value(matrix2.data_host))&&(DIMENSION1==DIMENSION2);
 	return result;
 }
-/*
-.Function.matricialSum:
-..summary:Computes the matricial sum between two nxm matrixes
-..signature:matricialSum(matrix1,matrix2)
-..param.matrix1:The first matrix.
-...type:Matrix<TValue, 2>&
-..param.matrix2:The second matrix.
-...type:Matrix<TValue, 2>&
-..returns:The sum of the two matrices (another nxm matrix).
-..remarks:The number of rows and columns of matrix1 must be equal to the number of rows and columns of matrix2.
-..include:seqan/align.h
-*/
+
 /*
 template <typename TValue>
 Matrix<TValue,2>
@@ -972,18 +949,6 @@ matricialSum(Matrix<TValue,2> &matrix1,Matrix<TValue,2> &matrix2)
 //////////////////////////////////////////////////////////////////////////////
 
 /*
-.Function.matricialDifference:
-..summary:Computes the matricial difference between two matrixes
-..signature:matricialDifference(matrix1,matrix2)
-..param.matrix1:The first matrix.
-...type:Matrix<TValue, 2>&
-..param.matrix2:The second matrix.
-...type:Matrix<TValue, 2>&
-..returns:The difference of the two matrices (another matrix).
-..remarks:The number of rows and columns of matrix1 must be equal to the number of rows and columns of matrix2.
-..include:seqan/align.h
-*/
-/*
 template <typename TValue>
 inline Matrix<TValue,2>
 matricialDifference(Matrix<TValue,2> & matrix1, Matrix<TValue,2> & matrix2)
@@ -1017,18 +982,7 @@ matricialDifference(Matrix<TValue,2> & matrix1, Matrix<TValue,2> & matrix2)
 	return result;
 }
 */
-/*
-.Function.matricialProduct:
-..summary:Computes the matricial product between two 2-dimensional matrixes
-..signature:matricialProduct(matrix1,matrix2)
-..param.matrix1:The first matrix (mxn).
-...type:Matrix<TValue,2>&
-..param.matrix2:The second matrix (nxp).
-...type:Matrix<TValue,2>&
-..returns:The products of the two matrices (another matrix, mxp).
-..remarks:The number of columns of matrix1 (left matrix) must be equal to the number of rows of matrix2(right matrix).
-..include:seqan/align.h
-*/
+
 /*
 template <typename TValue>
 inline Matrix<TValue, 2>
