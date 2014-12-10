@@ -6,7 +6,7 @@ using namespace seqan;
 int main()
 {
     typedef Seed<Simple> TSeed;
-    typedef SeedSet<Simple> TSeedSet;
+    typedef SeedSet<Seed<Simple> > TSeedSet;
     typedef Iterator<TSeedSet>::Type TIterator;
 
     DnaString seqH = "ggatACGTccTTCGAtACccTGGTg";
