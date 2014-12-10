@@ -47,7 +47,7 @@ void testSeedsSeedSetContainerFunctions(TSeedSpec const &, TSeedSetSpec const &)
     using namespace seqan;
 
     // Define SeedSet type and declare a variable.
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     TSeedSet s;
 
     // Test length/begin/end with empty set.
@@ -97,7 +97,7 @@ void testSeedsSeedSetAddSeedSingleNoThreshold(TSeedSpec const &, TSeedSetSpec co
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -118,7 +118,7 @@ void testSeedsSeedSetAddSeedSingleThresholdReachedLength(TSeedSpec const &, TSee
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -140,7 +140,7 @@ void testSeedsSeedSetAddSeedSingleThresholdNotReachedLength(TSeedSpec const &, T
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -162,7 +162,7 @@ void testSeedsSeedSetAddSeedSingleThresholdReachedScore(TSeedSpec const &, TSeed
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -186,7 +186,7 @@ void testSeedsSeedSetAddSeedSingleThresholdNotReachedScore(TSeedSpec const &, TS
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -208,7 +208,7 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleNoThreshold(TSeedSpec const 
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -234,7 +234,7 @@ void testSeedsSeedSetAddSeedMergeRightMergingPossibleNoThreshold(TSeedSpec const
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -259,7 +259,7 @@ void testSeedsSeedSetAddSeedMergeLeftMergingImpossibleNoThreshold(TSeedSpec cons
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     {  // Merging not possible because of diagonal distance
@@ -295,7 +295,7 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdNotReachedLength(TS
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -324,7 +324,7 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdReachedLength(TSeed
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -357,7 +357,7 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdNotReachedScored(TS
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -388,7 +388,7 @@ void testSeedsSeedSetAddSeedMergeLeftMergingPossibleThresholdReachedScored(TSeed
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -424,7 +424,7 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleNoThreshold(TSeedSpec
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -449,7 +449,7 @@ void testSeedsSeedSetAddSeedSimpleChainRightChainingPossibleNoThreshold(TSeedSpe
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -474,7 +474,7 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingImpossibleNoThreshold(TSeedSp
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     {  // Chaining not possible because of distance
@@ -510,7 +510,7 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdNotReachedLe
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -539,7 +539,7 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdReachedLengt
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -572,7 +572,7 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdNotReachedSc
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -604,7 +604,7 @@ void testSeedsSeedSetAddSeedSimpleChainLeftChainingPossibleThresholdReachedScore
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -641,7 +641,7 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleNoThreshold(TSeedSpec const
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     DnaString sequence0 = "CCCCCCCCCC";
@@ -669,7 +669,7 @@ void testSeedsSeedSetAddSeedChaosRightChainingPossibleNoThreshold(TSeedSpec cons
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     DnaString sequence0 = "CCCCCCCCCC";
@@ -697,7 +697,7 @@ void testSeedsSeedSetAddSeedChaosLeftChainingImpossibleNoThreshold(TSeedSpec con
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     {  // Chaining not possible because of distance
@@ -739,7 +739,7 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdNotReachedLength(T
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -771,7 +771,7 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedLength(TSee
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -807,7 +807,7 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdNotReachedScored(T
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -842,7 +842,7 @@ void testSeedsSeedSetAddSeedChaosLeftChainingPossibleThresholdReachedScored(TSee
 {
     using namespace seqan;
 
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<Seed<TSeedSpec>, TSeedSetSpec> TSeedSet;
     typedef typename Value<TSeedSet>::Type TSeed;
 
     TSeedSet set;
@@ -1474,13 +1474,13 @@ void testSeedsSeedSetBaseClear()
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_clear_simple)
 {
     using namespace seqan;
-    testSeedsSeedSetBaseClear<Seed<Simple>, SeedSet<Simple> >();
+    testSeedsSeedSetBaseClear<Seed<Simple>, SeedSet<Seed<Simple> > >();
 }
 
 SEQAN_DEFINE_TEST(test_seeds_seed_set_base_clear_chained)
 {
     using namespace seqan;
-    testSeedsSeedSetBaseClear<Seed<ChainedSeed, DefaultSeedConfig>, SeedSet<ChainedSeed> >();
+    testSeedsSeedSetBaseClear<Seed<ChainedSeed, DefaultSeedConfig>, SeedSet<Seed<ChainedSeed, DefaultSeedConfig> > >();
 }
 
 SEQAN_BEGIN_TESTSUITE(test_seeds_seed_set_base)
