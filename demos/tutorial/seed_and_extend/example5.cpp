@@ -7,7 +7,7 @@ int main()
 {
     // FRAGMENT(example)
     typedef seqan::Seed<seqan::Simple>    TSeed;
-    typedef seqan::SeedSet<seqan::Simple> TSeedSet;
+    typedef seqan::SeedSet<TSeed> TSeedSet;
     
     TSeedSet seedSet;
     addSeed(seedSet, TSeed(0, 0, 2), seqan::Single());

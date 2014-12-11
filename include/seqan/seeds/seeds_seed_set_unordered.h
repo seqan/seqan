@@ -55,15 +55,14 @@ typedef Tag<Unordered_> Unordered;
 
 // TODO(holtgrew): Maybe allow iterating over seeds that have reached a certain quality (length/score).
 
-template <typename TSeedSpec>
-class SeedSet<TSeedSpec, Unordered>
+template <typename TSeed>
+class SeedSet<TSeed, Unordered>
 {
 public:
-    typedef Seed<TSeedSpec> TSeed_;
-    typedef typename SeedScore<TSeed_>::Type TScoreValue_;
-    typedef typename Size<TSeed_>::Type TSize_;
-    typedef LessBeginDiagonal<TSeed_> TSeedCmp_;
-    typedef std::multiset<TSeed_, TSeedCmp_> TSet_;
+    typedef typename SeedScore<TSeed>::Type TScoreValue_;
+    typedef typename Size<TSeed>::Type TSize_;
+    typedef LessBeginDiagonal<TSeed> TSeedCmp_;
+    typedef std::multiset<TSeed, TSeedCmp_> TSet_;
 
     TSet_ _seeds;
 
@@ -82,81 +81,76 @@ public:
 // Metafunction Position
 // ---------------------------------------------------------------------------
 
-template <typename TSeedSpec>
-struct Position<SeedSet<TSeedSpec, Unordered> >
+template <typename TSeed>
+struct Position<SeedSet<TSeed, Unordered> >
 {
-    typedef SeedSet<TSeedSpec, Unordered> TSeedSet_;
+    typedef SeedSet<TSeed, Unordered> TSeedSet_;
     typedef String<typename TSeedSet_::TSeed> TSeedString_;
     typedef typename Position<TSeedString_>::Type Type;
 };
 
-template <typename TSeedSpec>
-struct Position<SeedSet<TSeedSpec, Unordered> const> : Position<SeedSet<TSeedSpec, Unordered> >
+template <typename TSeed>
+struct Position<SeedSet<TSeed, Unordered> const> : Position<SeedSet<TSeed, Unordered> >
 {};
 
 // ---------------------------------------------------------------------------
 // Metafunction Size
 // ---------------------------------------------------------------------------
 
-template <typename TSeedSpec>
-struct Size<SeedSet<TSeedSpec, Unordered> >
+template <typename TSeed>
+struct Size<SeedSet<TSeed, Unordered> >
 {
-    typedef SeedSet<TSeedSpec, Unordered> TSeedSet_;
-    typedef String<typename TSeedSet_::TSeed_> TSeedString_;
+    typedef SeedSet<TSeed, Unordered> TSeedSet_;
+    typedef String<TSeed> TSeedString_;
     typedef typename Size<TSeedString_>::Type Type;
 };
 
-template <typename TSeedSpec>
-struct Size<SeedSet<TSeedSpec, Unordered> const> : Size<SeedSet<TSeedSpec, Unordered> >
+template <typename TSeed>
+struct Size<SeedSet<TSeed, Unordered> const> : Size<SeedSet<TSeed, Unordered> >
 {};
 
 // ---------------------------------------------------------------------------
 // Metafunction Value
 // ---------------------------------------------------------------------------
 
-template <typename TSeedSpec>
-struct Value<SeedSet<TSeedSpec, Unordered> >
+template <typename TSeed>
+struct Value<SeedSet<TSeed, Unordered> >
 {
-    typedef SeedSet<TSeedSpec, Unordered> TSeedSet;
-    typedef typename TSeedSet::TSeed_ Type;
+    typedef TSeed Type;
 };
 
-template <typename TSeedSpec>
-struct Value<SeedSet<TSeedSpec, Unordered> const> : Value<SeedSet<TSeedSpec, Unordered> >
-{};
+template <typename TSeed>
+struct Value<SeedSet<TSeed, Unordered> const>
+{
+    typedef typename Value<SeedSet<TSeed, Unordered> >::Type const Type;
+};
 
 // ---------------------------------------------------------------------------
 // Metafunction Reference
 // ---------------------------------------------------------------------------
 
-template <typename TSeedSpec>
-struct Reference<SeedSet<TSeedSpec, Unordered> >
+template <typename TSeed>
+struct Reference<SeedSet<TSeed, Unordered> >
 {
-    typedef typename Value<SeedSet<TSeedSpec, Unordered> >::Type & Type;
-};
-
-template <typename TSeedSpec>
-struct Reference<SeedSet<TSeedSpec, Unordered> const>
-{
-    typedef typename Value<SeedSet<TSeedSpec, Unordered> >::Type const & Type;
+    typedef typename Value<SeedSet<TSeed, Unordered> >::Type & Type;
 };
 
 // ---------------------------------------------------------------------------
 // Metafunction Iterator
 // ---------------------------------------------------------------------------
 
-template <typename TSeedSpec>
-struct Iterator<SeedSet<TSeedSpec, Unordered>, Standard>
+template <typename TSeed>
+struct Iterator<SeedSet<TSeed, Unordered>, Standard>
 {
-    typedef SeedSet<TSeedSpec, Unordered> TSeedSet_;
+    typedef SeedSet<TSeed, Unordered> TSeedSet_;
 	typedef typename TSeedSet_::TSet_ TMultiSet_;
     typedef Iter<TMultiSet_, StdIteratorAdaptor> Type;
 };
 
-template <typename TSeedSpec>
-struct Iterator<SeedSet<TSeedSpec, Unordered> const, Standard>
+template <typename TSeed>
+struct Iterator<SeedSet<TSeed, Unordered> const, Standard>
 {
-    typedef SeedSet<TSeedSpec, Unordered> const TSeedSet_;
+    typedef SeedSet<TSeed, Unordered> const TSeedSet_;
 	typedef typename TSeedSet_::TSet_ const TMultiSet_;
     typedef Iter<TMultiSet_, StdIteratorAdaptor> Type;
 };
@@ -171,16 +165,16 @@ struct Iterator<SeedSet<TSeedSpec, Unordered> const, Standard>
 
 // Standard Container Functions
 
-template <typename TSeedSpec>
-inline typename Size<SeedSet<TSeedSpec, Unordered> >::Type
-length(SeedSet<TSeedSpec, Unordered> & seedSet)
+template <typename TSeed>
+inline typename Size<SeedSet<TSeed, Unordered> >::Type
+length(SeedSet<TSeed, Unordered> & seedSet)
 {
     return seedSet._seeds.size();
 }
 
-template <typename TSeedSpec>
-inline typename Size<SeedSet<TSeedSpec, Unordered> const>::Type
-length(SeedSet<TSeedSpec, Unordered> const & seedSet)
+template <typename TSeed>
+inline typename Size<SeedSet<TSeed, Unordered> const>::Type
+length(SeedSet<TSeed, Unordered> const & seedSet)
 {
     return seedSet._seeds.size();
 }
@@ -189,16 +183,16 @@ length(SeedSet<TSeedSpec, Unordered> const & seedSet)
 // Function begin()
 // ---------------------------------------------------------------------------
 
-template <typename TSeedSpec>
-inline typename Iterator<SeedSet<TSeedSpec, Unordered> >::Type
-begin(SeedSet<TSeedSpec, Unordered> & seedSet, Standard const &)
+template <typename TSeed>
+inline typename Iterator<SeedSet<TSeed, Unordered> >::Type
+begin(SeedSet<TSeed, Unordered> & seedSet, Standard const &)
 {
 	return seedSet._seeds.begin();
 }
 
-template <typename TSeedSpec>
-inline typename Iterator<SeedSet<TSeedSpec, Unordered> const>::Type
-begin(SeedSet<TSeedSpec, Unordered> const & seedSet, Standard const &)
+template <typename TSeed>
+inline typename Iterator<SeedSet<TSeed, Unordered> const>::Type
+begin(SeedSet<TSeed, Unordered> const & seedSet, Standard const &)
 {
     return seedSet._seeds.begin();
 }
@@ -207,16 +201,16 @@ begin(SeedSet<TSeedSpec, Unordered> const & seedSet, Standard const &)
 // Function end()
 // ---------------------------------------------------------------------------
 
-template <typename TSeedSpec>
-inline typename Iterator<SeedSet<TSeedSpec, Unordered> >::Type
-end(SeedSet<TSeedSpec, Unordered> & seedSet, Standard const &)
+template <typename TSeed>
+inline typename Iterator<SeedSet<TSeed, Unordered> >::Type
+end(SeedSet<TSeed, Unordered> & seedSet, Standard const &)
 {
     return seedSet._seeds.end();
 }
 
-template <typename TSeedSpec>
-inline typename Iterator<SeedSet<TSeedSpec, Unordered> const>::Type
-end(SeedSet<TSeedSpec, Unordered> const & seedSet, Standard const &)
+template <typename TSeed>
+inline typename Iterator<SeedSet<TSeed, Unordered> const>::Type
+end(SeedSet<TSeed, Unordered> const & seedSet, Standard const &)
 {
     return seedSet._seeds.end();
 }
@@ -225,16 +219,16 @@ end(SeedSet<TSeedSpec, Unordered> const & seedSet, Standard const &)
 // Function front()
 // ---------------------------------------------------------------------------
 
-template <typename TSeedSpec>
-inline typename Reference<typename Iterator<SeedSet<TSeedSpec, Unordered>, Standard>::Type >::Type
-front(SeedSet<TSeedSpec, Unordered> & seedSet)
+template <typename TSeed>
+inline typename Reference<typename Iterator<SeedSet<TSeed, Unordered>, Standard>::Type >::Type
+front(SeedSet<TSeed, Unordered> & seedSet)
 {
     return *seedSet._seeds.begin();
 }
 
-template <typename TSeedSpec>
-inline typename Reference<typename Iterator<SeedSet<TSeedSpec, Unordered> const, Standard>::Type >::Type
-front(SeedSet<TSeedSpec, Unordered> const & seedSet)
+template <typename TSeed>
+inline typename Reference<typename Iterator<SeedSet<TSeed, Unordered> const, Standard>::Type >::Type
+front(SeedSet<TSeed, Unordered> const & seedSet)
 {
     return *seedSet._seeds.begin();
 }
@@ -243,16 +237,16 @@ front(SeedSet<TSeedSpec, Unordered> const & seedSet)
 // Function back()
 // ---------------------------------------------------------------------------
 
-template <typename TSeedSpec>
-inline typename Reference<typename Iterator<SeedSet<TSeedSpec, Unordered> , Standard>::Type >::Type
-back(SeedSet<TSeedSpec, Unordered> & seedSet)
+template <typename TSeed>
+inline typename Reference<typename Iterator<SeedSet<TSeed, Unordered> , Standard>::Type >::Type
+back(SeedSet<TSeed, Unordered> & seedSet)
 {
     return *seedSet._seeds.rbegin();
 }
 
-template <typename TSeedSpec>
-inline typename Reference<typename Iterator<SeedSet<TSeedSpec, Unordered> const, Standard>::Type >::Type
-back(SeedSet<TSeedSpec, Unordered> const & seedSet)
+template <typename TSeed>
+inline typename Reference<typename Iterator<SeedSet<TSeed, Unordered> const, Standard>::Type >::Type
+back(SeedSet<TSeed, Unordered> const & seedSet)
 {
     return *seedSet._seeds.rbegin();
 }
@@ -265,13 +259,13 @@ back(SeedSet<TSeedSpec, Unordered> const & seedSet)
 
 // TODO(holtgrew): Add bulk-addSeeds functions.
 
-template <typename TSeedIter, typename TSeedSpec, typename TDistanceThreshold, typename TBandwidth, typename TCombination>
+template <typename TSeedIter, typename TSeed, typename TDistanceThreshold, typename TBandwidth, typename TCombination>
 bool
 _findSeedForCombination(
         TSeedIter & mergePartner,
         bool & seedIsOnTheLeft,
-        SeedSet<TSeedSpec, Unordered> & seedSet,
-        typename Value<SeedSet<TSeedSpec, Unordered> >::Type const & seed,
+        SeedSet<TSeed, Unordered> & seedSet,
+        typename Value<SeedSet<TSeed, Unordered> >::Type const & seed,
         TDistanceThreshold const & maxDistance,
         TBandwidth const & bandwidth,
         TCombination const & tag)
@@ -310,10 +304,10 @@ _findSeedForCombination(
 // Function addSeed()
 // ---------------------------------------------------------------------------
 
-template <typename TSeedSpec, typename TDistanceThreshold, typename TBandwidth, typename TScoreValue, typename TSequence0, typename TSequence1, typename TCombination>
+template <typename TSeed, typename TDistanceThreshold, typename TBandwidth, typename TScoreValue, typename TSequence0, typename TSequence1, typename TCombination>
 inline bool
-addSeed(SeedSet<TSeedSpec, Unordered> & seedSet,
-        typename Value<SeedSet<TSeedSpec, Unordered> >::Type const & seed,
+addSeed(SeedSet<TSeed, Unordered> & seedSet,
+        TSeed const & seed,
         TDistanceThreshold const & maxDiagDist,
         TBandwidth const & bandwidth,
         Score<TScoreValue, Simple> const & scoringScheme,
@@ -323,10 +317,9 @@ addSeed(SeedSet<TSeedSpec, Unordered> & seedSet,
 {
     SEQAN_CHECKPOINT;
 
-    typedef SeedSet<TSeedSpec, Unordered> TSeedSet;
+    typedef SeedSet<TSeed, Unordered> TSeedSet;
     typedef typename TSeedSet::TSet_ TSet;
     typedef typename TSet::iterator TSeedIterator;
-    typedef typename Value<TSeedSet>::Type TSeed;
 
     // Try to find a seed for recombination.
     TSeedIterator it;
@@ -356,20 +349,20 @@ addSeed(SeedSet<TSeedSpec, Unordered> & seedSet,
 }
 
 // TODO(holtgrew): Score not needed for Merge!
-template <typename TSeedSpec, typename TDistanceThreshold>
+template <typename TSeed, typename TDistanceThreshold>
 inline bool
-addSeed(SeedSet<TSeedSpec, Unordered> & seedSet,
-        typename Value<SeedSet<TSeedSpec, Unordered> >::Type const & seed,
+addSeed(SeedSet<TSeed, Unordered> & seedSet,
+        TSeed const & seed,
         TDistanceThreshold const & maxDiagDist,
         Merge const &)
 {
     return addSeed(seedSet, seed, maxDiagDist, 0, Score<int, Simple>(), Nothing(), Nothing(), Merge());
 }
 
-template <typename TSeedSpec, typename TDistanceThreshold, typename TScoreValue>
+template <typename TSeed, typename TDistanceThreshold, typename TScoreValue>
 inline bool
-addSeed(SeedSet<TSeedSpec, Unordered> & seedSet,
-        typename Value<SeedSet<TSeedSpec, Unordered> >::Type const & seed,
+addSeed(SeedSet<TSeed, Unordered> & seedSet,
+        TSeed const & seed,
         TDistanceThreshold const & maxDiagDist,
         Score<TScoreValue, Simple> const & scoringScheme,
         SimpleChain const &)
@@ -377,9 +370,9 @@ addSeed(SeedSet<TSeedSpec, Unordered> & seedSet,
     return addSeed(seedSet, seed, maxDiagDist, 0, scoringScheme, Nothing(), Nothing(), SimpleChain());
 }
 
-template <typename TSeedSpec, typename TSeed>
+template <typename TSeed>
 inline bool
-addSeed(SeedSet<TSeedSpec, Unordered> & seedSet,
+addSeed(SeedSet<TSeed, Unordered> & seedSet,
         TSeed const & seed,
         Single const &)
 {
