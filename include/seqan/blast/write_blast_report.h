@@ -566,7 +566,7 @@ writeTop(TStream                                            & stream,
     if (ret)
         return ret;
     char buffer[40] = "";
-    sprintf(buffer, "%u", dbSpecs.dbNumberOfSeqs); //TODO insert commata
+    sprintf(buffer, "%" PRIu32, dbSpecs.dbNumberOfSeqs); //TODO insert commata
     ret = streamPut(stream, buffer);
     if (ret)
         return ret;
@@ -574,7 +574,7 @@ writeTop(TStream                                            & stream,
     if (ret)
         return ret;
         clear(buffer);
-    sprintf(buffer, "%lu", dbSpecs.dbTotalLength); //TODO insert commata
+    sprintf(buffer, "%" PRIu64, dbSpecs.dbTotalLength); //TODO insert commata
     ret = streamPut(stream, buffer);
     if (ret)
         return ret;
