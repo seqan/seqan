@@ -6,7 +6,7 @@
 int main()
 {
     typedef seqan::Seed<seqan::Simple>    TSeed;
-    typedef seqan::SeedSet<seqan::Simple> TSeedSet;
+    typedef seqan::SeedSet<TSeed> TSeedSet;
     
     seqan::Dna5String seqH;
     seqan::Dna5String seqV;
