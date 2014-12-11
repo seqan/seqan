@@ -1,4 +1,4 @@
-#include <iostream>
+    #include <iostream>
 #include <seqan/seeds.h>
 
 using namespace seqan;
@@ -6,7 +6,7 @@ using namespace seqan;
 int main()
 {
     typedef Seed<Simple> TSeed;
-    typedef SeedSet<Seed<Simple> > TSeedSet;
+    typedef SeedSet<TSeed> TSeedSet;
     typedef Iterator<TSeedSet>::Type TIterator;
 
     DnaString seqH = "ggatACGTccTTCGAtACccTGGTg";
