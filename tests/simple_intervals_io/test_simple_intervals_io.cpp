@@ -54,14 +54,14 @@ SEQAN_DEFINE_TEST(test_simple_intervals_io_read_records)
     // Read and check first record.
     readRecord(region, context, it, seqan::SimpleIntervals());
     SEQAN_ASSERT_EQ(region.seqName, "chr1");
-    SEQAN_ASSERT_EQ(region.beginPos, 2489280u);
-    SEQAN_ASSERT_EQ(region.endPos, 2489282u);
+    SEQAN_ASSERT_EQ(region.beginPos, 2489280);
+    SEQAN_ASSERT_EQ(region.endPos, 2489282);
 
     // Read and check second record.
     readRecord(region, context, it, seqan::SimpleIntervals());
     SEQAN_ASSERT_EQ(region.seqName, "chr4");
-    SEQAN_ASSERT_EQ(region.beginPos, 2489840u);
-    SEQAN_ASSERT_EQ(region.endPos, 2489841u);
+    SEQAN_ASSERT_EQ(region.beginPos, 2489840);
+    SEQAN_ASSERT_EQ(region.endPos, 2489841);
 
     // We should be at the end of the file.
     SEQAN_ASSERT(atEnd(it));
@@ -109,14 +109,14 @@ SEQAN_DEFINE_TEST(test_simple_intervals_io_smart_file_read)
     // Read and check first record.
     readRecord(region, simple_intervalsIn);
     SEQAN_ASSERT_EQ(region.seqName, "chr1");
-    SEQAN_ASSERT_EQ(region.beginPos, 2489280u);
-    SEQAN_ASSERT_EQ(region.endPos, 2489282u);
+    SEQAN_ASSERT_EQ(region.beginPos, 2489280);
+    SEQAN_ASSERT_EQ(region.endPos, 2489282);
 
     // Read and check second record.
     readRecord(region, simple_intervalsIn);
     SEQAN_ASSERT_EQ(region.seqName, "chr4");
-    SEQAN_ASSERT_EQ(region.beginPos, 2489840u);
-    SEQAN_ASSERT_EQ(region.endPos, 2489841u);
+    SEQAN_ASSERT_EQ(region.beginPos, 2489840);
+    SEQAN_ASSERT_EQ(region.endPos, 2489841);
 
     // We should be at the end of the file.
     SEQAN_ASSERT(atEnd(simple_intervalsIn));
