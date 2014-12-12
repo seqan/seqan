@@ -511,6 +511,31 @@ _writeMatchOneLiner(TStream             & stream,
 // Function writeRecord()
 // ----------------------------------------------------------------------------
 
+constexpr
+const char * _uint_label(unsigned short)
+{
+    return "%uh";
+}
+
+constexpr
+const char * _uint_label(unsigned int)
+{
+    return "%u";
+}
+
+constexpr
+const char * _uint_label(unsigned long)
+{
+    return "%ul";
+}
+
+
+constexpr
+const char * _uint_label(unsigned long long)
+{
+    return "%ull";
+}
+
 template <typename TStream,
           typename TDbSpecs,
           BlastFormatProgram p,
@@ -566,7 +591,9 @@ writeTop(TStream                                            & stream,
     if (ret)
         return ret;
     char buffer[40] = "";
-    sprintf(buffer, "%" PRIu32, dbSpecs.dbNumberOfSeqs); //TODO insert commata
+    sprintf(buffer,
+            _uint_label(dbSpecs.dbNumberOfSeqs),
+            dbSpecs.dbNumberOfSeqs); //TODO insert commata
     ret = streamPut(stream, buffer);
     if (ret)
         return ret;
@@ -574,7 +601,9 @@ writeTop(TStream                                            & stream,
     if (ret)
         return ret;
         clear(buffer);
-    sprintf(buffer, "%" PRIu64, dbSpecs.dbTotalLength); //TODO insert commata
+    sprintf(buffer,
+            _uint_label(dbSpecs.dbTotalLength),
+            dbSpecs.dbTotalLength); //TODO insert commata
     ret = streamPut(stream, buffer);
     if (ret)
         return ret;
