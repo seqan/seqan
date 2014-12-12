@@ -47,6 +47,264 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+enum class BlastMatchFieldEnum : uint8_t
+{
+    Q_SEQ_ID,
+    Q_GI,
+    Q_ACC,
+    Q_ACCVER,
+    Q_LEN,
+    S_SEQ_ID,
+    S_ALL_SEQ_ID,
+    S_GI,
+    S_ALL_GI,
+    S_ACC,
+    S_ACCVER,
+    S_ALLACC,
+    S_LEN,
+    Q_START,
+    Q_END,
+    S_START,
+    S_END,
+    Q_SEQ,
+    S_SEQ,
+    E_VALUE,
+    BIT_SCORE,
+    SCORE,
+    LENGTH,
+    P_IDENT,
+    N_IDENT,
+    MISMATCH,
+    POSITIVE,
+    GAP_OPEN,
+    GAPS,
+    P_POS,
+    FRAMES,
+    Q_FRAME,
+    S_FRAME,
+    BTOP,
+    S_TAX_IDS,
+    S_SCI_NAMES,
+    S_COM_NAMES,
+    S_BLAST_NAMES,
+    S_S_KINGDOMS,
+    S_TITLE,
+    S_ALL_TITLES,
+    S_STRAND,
+    Q_COV_S,
+    Q_COV_HSP
+};
+
+//TODO make all the below static constexpr template foo
+std::vector<BlastMatchFieldEnum> _blastMatchDefaultFields =
+{
+    BlastMatchFieldEnum::Q_SEQ_ID,
+    BlastMatchFieldEnum::S_SEQ_ID,
+    BlastMatchFieldEnum::P_IDENT,
+    BlastMatchFieldEnum::LENGTH,
+    BlastMatchFieldEnum::MISMATCH,
+    BlastMatchFieldEnum::GAP_OPEN,
+    BlastMatchFieldEnum::Q_START,
+    BlastMatchFieldEnum::Q_END,
+    BlastMatchFieldEnum::S_START,
+    BlastMatchFieldEnum::S_END,
+    BlastMatchFieldEnum::E_VALUE,
+    BlastMatchFieldEnum::BIT_SCORE
+};
+
+const char* const BlastMatchFieldOptionLabels [] =
+{
+    "qseqid",
+    "qgi",
+    "qacc",
+    "qaccver",
+    "qlen",
+    "sseqid",
+    "sallseqid",
+    "sgi",
+    "sallgi",
+    "sacc",
+    "saccver",
+    "sallacc",
+    "slen",
+    "qstart",
+    "qend",
+    "sstart",
+    "send",
+    "qseq",
+    "sseq",
+    "evalue",
+    "bitscore",
+    "score",
+    "length",
+    "pident",
+    "nident",
+    "mismatch",
+    "positive",
+    "gapopen",
+    "gaps",
+    "ppos",
+    "frames",
+    "qframe",
+    "sframe",
+    "btop",
+    "staxids",
+    "sscinames",
+    "scomnames",
+    "sblastnames",
+    "sskingdoms",
+    "stitle",
+    "salltitles",
+    "sstrand",
+    "qcovs",
+    "qcovhsp"
+};
+
+const char* const BlastMatchFieldColumnLabels [] =
+{
+    "query id",
+    "query gi",
+    "query acc.",
+    "query acc.ver",
+    "query length",
+    "subject id",
+    "subject ids",
+    "subject gi",
+    "subject gis",
+    "subject acc.",
+    "subject acc.ver",
+    "subject accs.",
+    "subject length",
+    "q. start",
+    "q. end",
+    "s. start",
+    "s. end",
+    "query seq",
+    "subject seq",
+    "evalue",
+    "bit score",
+    "score",
+    "alignment length",
+    "% identity",
+    "identical",
+    "mismatches",
+    "positives",
+    "gap opens",
+    "gaps",
+    "% positives",
+    "query/sbjct frames",
+    "query frame",
+    "sbjct frame",
+    "BTOP",
+    "subject tax ids",
+    "subject sci names",
+    "subject com names",
+    "subject blast names",
+    "subject super kingdoms",
+    "subject title",
+    "subject titles",
+    "subject strand",
+    "% subject coverage",
+    "% hsp coverage"
+};
+
+const char* const BlastMatchFieldDescriptions [] =
+{
+    "Query Seq-id",
+    "Query GI",
+    "Query accesion",
+    "Query accesion.version",
+    "Query sequence length",
+    "Subject Seq-id",
+    "All subject Seq-id(s), separated by a ';'",
+    "Subject GI",
+    "All subject GIs",
+    "Subject accession",
+    "Subject accession.version",
+    "All subject accessions",
+    "Subject sequence length",
+    "Start of alignment in query",
+    "End of alignment in query",
+    "Start of alignment in subject",
+    "End of alignment in subject",
+    "Aligned part of query sequence",
+    "Aligned part of subject sequence",
+    "Expect value",
+    "Bit score",
+    "Raw score",
+    "Alignment length",
+    "Percentage of identical matches",
+    "Number of identical matches",
+    "Number of mismatches",
+    "Number of positive-scoring matches",
+    "Number of gap openings",
+    "Total number of gaps",
+    "Percentage of positive-scoring matches",
+    "Query and subject frames separated by a '/'",
+    "Query frame",
+    "Subject frame",
+    "Blast traceback operations (BTOP)",
+    "unique Subject Taxonomy ID(s), separated by a ';' (in numerical order)",
+    "unique Subject Scientific Name(s), separated by a ';'",
+    "unique Subject Common Name(s), separated by a ';'",
+    "unique Subject Blast Name(s), separated by a ';' (in alphabetical order)",
+    "unique Subject Super Kingdom(s), separated by a ';' (in alphabetical order)",
+    "Subject Title",
+    "All Subject Title(s), separated by a '<>'",
+    "Subject Strand",
+    "Query Coverage Per Subject",
+    "Query Coverage Per HSP"
+};
+
+bool const BlastMatchFieldsImplemented [] =
+{
+    true,
+    false,
+    false,
+    false,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+};
+
+
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -76,8 +334,210 @@ _seperatorString(BlastFormat<BlastFormatFile::TABULAR,
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Helper functions for printing n columns (requires C++11 variadic templates)
+// _firstOcc
 // ----------------------------------------------------------------------------
+
+template <typename TString>
+inline typename Size<TString>::Type
+_firstOcc(TString const & str, typename Value<TString>::Type const & val)
+{
+    typedef typename Size<TString>::Type S;
+    for (S s = 0; s < length(str); ++s)
+        if (value(str, s) == val)
+            return s;
+    return length(str);
+}
+
+// ----------------------------------------------------------------------------
+// Function _writeField() [ match object given]
+// ----------------------------------------------------------------------------
+
+template <typename TStream,
+          typename TTag,
+          typename TField,
+          typename TQId,
+          typename TSId,
+          typename TPos,
+          typename TAlign>
+inline int
+_writeField(TStream & s,
+            BlastMatch<TQid, TSId, TPos, TAlign> const & match,
+            BlastMatchFieldEnum const fieldId,
+            TTag const &)
+{
+    int r = 0;
+    switch (fieldID)
+    {
+        case BlastMatchFieldEnum::Q_SEQ_ID:
+            r = streamPut(s, prefix(match.qId, _firstOcc(match.qId, ' '));
+            break;
+//         case BlastMatchFieldEnum::Q_GI: r = streamPut(s,  * ); break;
+//         case BlastMatchFieldEnum::Q_ACC: r = streamPut(s,  * ); break;
+//         case BlastMatchFieldEnum::Q_ACCVER: r = streamPut(s,  * ); break;
+        case BlastMatchFieldEnum::Q_LEN:
+            r = streamPut(s, match.qLength);
+            break;
+        case BlastMatchFieldEnum::S_SEQ_ID:
+            r = streamPut(s, prefix(match.sId, _firstOcc(match.sId, ' ')));
+            break;
+//         case BlastMatchFieldEnum::S_ALL_SEQ_ID: r = streamPut(s,  * ); break;
+//         case BlastMatchFieldEnum::S_GI: r = streamPut(s,  * ); break;
+//         case BlastMatchFieldEnum::S_ALL_GI: r = streamPut(s,  * ); break;
+//         case BlastMatchFieldEnum::S_ACC: r = streamPut(s,  * ); break;
+//         case BlastMatchFieldEnum::S_ACCVER: r = streamPut(s,  * ); break;
+//         case BlastMatchFieldEnum::S_ALLACC: r = streamPut(s,  * ); break;
+        case BlastMatchFieldEnum::S_LEN:
+            r = streamPut(s, match.sLength);
+            break;
+        case BlastMatchFieldEnum::Q_START:
+        {
+            TPos effectiveQStart    = match.qStart;
+            TPos effectiveQEnd      = match.qEnd;
+            _untranslatePositions(effectiveQStart, effectiveQEnd,
+                                  match.qFrameShift, match.qLength,
+                                  QHasRevComp<TFormat>(),
+                                  QIsTranslated<TFormat>());
+            r = streamPut(s, effectiveQStart);
+        } break;
+        case BlastMatchFieldEnum::Q_END:
+        {
+            TPos effectiveQStart    = match.qStart;
+            TPos effectiveQEnd      = match.qEnd;
+            _untranslatePositions(effectiveQStart, effectiveQEnd,
+                                  match.qFrameShift, match.qLength,
+                                  QHasRevComp<TFormat>(),
+                                  QIsTranslated<TFormat>());
+            r = streamPut(s, effectiveQEnd);
+        } break;
+        case BlastMatchFieldEnum::S_START:
+        {
+            TPos effectiveSStart    = match.sStart;
+            TPos effectiveSEnd      = match.sEnd;
+
+            _untranslatePositions(effectiveSStart, effectiveSEnd,
+                                  match.sFrameShift, match.sLength,
+                                  SHasRevComp<TFormat>(),
+                                  SIsTranslated<TFormat>());
+            r = streamPut(s, effectiveSStart);
+        } break;
+        case BlastMatchFieldEnum::S_END:
+        {
+            TPos effectiveSStart    = match.sStart;
+            TPos effectiveSEnd      = match.sEnd;
+
+            _untranslatePositions(effectiveSStart, effectiveSEnd,
+                                  match.sFrameShift, match.sLength,
+                                  SHasRevComp<TFormat>(),
+                                  SIsTranslated<TFormat>());
+            r = streamPut(s, effectiveSEnd);
+        } break;
+//         case BlastMatchFieldEnum::Q_SEQ: r = streamPut(s,  * ); break;
+//         case BlastMatchFieldEnum::S_SEQ: r = streamPut(s,  * ); break;
+        case BlastMatchFieldEnum::E_VALUE:
+            r = streamPut(s, match.eValue);
+            break;
+        case BlastMatchFieldEnum::BIT_SCORE:
+            r = streamPut(s, match.bitScore);
+            break;
+        case BlastMatchFieldEnum::SCORE:
+            r = streamPut(s, match.score);
+            break;
+        case BlastMatchFieldEnum::LENGTH:
+            r = streamPut(s, match.aliLength);
+            break;
+        case BlastMatchFieldEnum::P_IDENT:
+            r = streamPut(s, double(match.identities) * 100 / match.aliLength);
+            break;
+        case BlastMatchFieldEnum::N_IDENT:
+            r = streamPut(s, match.identities);
+            break;
+        case BlastMatchFieldEnum::MISMATCH:
+            r = streamPut(s, match.mismatches);
+            break;
+        case BlastMatchFieldEnum::POSITIVE:
+            r = streamPut(s, match.positives);
+            break;
+        case BlastMatchFieldEnum::GAP_OPEN:
+            r = streamPut(s, match.gapOpenings);
+            break;
+        case BlastMatchFieldEnum::GAPS:
+            r = streamPut(s, match.gaps);
+            break;
+        case BlastMatchFieldEnum::P_POS:
+            r = streamPut(s, double(match.positives) * 100 / match.aliLength);
+            break;
+        case BlastMatchFieldEnum::FRAMES:
+            if (match.qFrame > 0)
+                r = streamPut(s, '+');
+            r += streamPut(s, match.qFrame);
+            r += streamPut(s, '/');
+            if (match.sFrame > 0)
+                r += streamPut(s, '+');
+            r += streamPut(s, match.sFrame);
+            break;
+        case BlastMatchFieldEnum::Q_FRAME:
+            if (match.qFrame > 0)
+                r = streamPut(s, '+');
+            r += streamPut(s, match.qFrame);
+            break;
+        case BlastMatchFieldEnum::S_FRAME:
+            if (match.sFrame > 0)
+                r = streamPut(s, '+');
+            r += streamPut(s, match.sFrame);
+            break;
+//         case BlastMatchFieldEnum::BTOP: streamPut( * ); break;
+//         case BlastMatchFieldEnum::S_TAX_IDS: streamPut( * ); break;
+//         case BlastMatchFieldEnum::S_SCI_NAMES: streamPut( * ); break;
+//         case BlastMatchFieldEnum::S_COM_NAMES: streamPut( * ); break;
+//         case BlastMatchFieldEnum::S_BLAST_NAMES: streamPut( * ); break;
+//         case BlastMatchFieldEnum::S_S_KINGDOMS: streamPut( * ); break;
+//         case BlastMatchFieldEnum::S_TITLE: streamPut( * ); break;
+//         case BlastMatchFieldEnum::S_ALL_TITLES: streamPut( * ); break;
+//         case BlastMatchFieldEnum::S_STRAND: streamPut( * ); break;
+//         case BlastMatchFieldEnum::Q_COV_S: streamPut( * ); break;
+//         case BlastMatchFieldEnum::Q_COV_HSP:
+    };
+    return r;
+}
+
+// ----------------------------------------------------------------------------
+// Function _writeFields() [ match object given]
+// ----------------------------------------------------------------------------
+
+template <typename TStream,
+          typename TTag,
+          typename TField,
+          typename TQId,
+          typename TSId,
+          typename TPos,
+          typename TAlign>
+inline int
+_writeFields(TStream & s,
+             BlastMatch<TQid, TSId, TPos, TAlign> const & match,
+             TFieldList const & fields,
+             TTag const &)
+{
+    int ret = 0;
+    for (auto it = begin(fields), itEnd = end(fields), itBack = itEnd - 1;
+         it != itEnd;
+         ++it)
+    {
+        ret = writeField(s, match, *it, TTag());
+        if (ret)
+            return ret;
+
+        if (it != itBack)
+        {
+            streamPut(stream, _seperatorString(TTag()));
+            if (ret)
+                return ret;
+        }
+    }
+}
+// ----------------------------------------------------------------------------
+// Function _writeFields() [no match object given]
+// ----------------------------------------------------------------------------
+
 
 template <typename TStream, typename TTag>
 inline int
@@ -103,16 +563,7 @@ _writeFields(TStream & stream,
     return _writeFields(stream, TTag(), fields... );
 }
 
-template <typename TString>
-inline typename Size<TString>::Type
-_firstOcc(TString const & str, typename Value<TString>::Type const & val)
-{
-    typedef typename Size<TString>::Type S;
-    for (S s = 0; s < length(str); ++s)
-        if (value(str, s) == val)
-            return s;
-    return length(str);
-}
+
 
 // ----------------------------------------------------------------------------
 // Function writeHeader()
@@ -222,7 +673,7 @@ writeHeader(TStream & stream,
                         p,
                         g> TFormat;
 
-    int ret = _writeHeaderWithoutFields(stream, qryId, dbName, TFormat());
+    int ret = _writeHeaderWithoutColumnLabels(stream, qryId, dbName, TFormat());
     if (ret)
         return ret;
 
@@ -438,7 +889,7 @@ writeHeader(TStream & /**/,
  * @fn BlastMatch#writeMatch
  * @headerfile seqan/blast.h
  * @brief write a @link BlastMatch @endlink to file
- * @signature int writeMatch(stream, blastMatch, blastFormatTag)
+ * @signature int writeMatch(stream, blastMatch, [fields,] blastFormatTag)
  * @signature int writeMatch(stream, blastFormatTag, columns...)
  *
  * This function writes a single match if @link BlastFormatFile @endlink
@@ -452,6 +903,9 @@ writeHeader(TStream & /**/,
  * translation has taken place.
  * Please note also that query and subject IDs are truncated at the first space
  * character in NCBI BLAST, this is also done by default here.
+ * By passing the fields variable you manually specify which columns you want to
+ * print, the same conversions mentioned above will me made. See 
+ * @link BlastMatchFieldEnum @endlink for a list of fields available.
  *
  * The second signature allows an arbitrary amount of and
  * arbitrary typed columns to be printed. If you do this and you use the
@@ -461,10 +915,10 @@ writeHeader(TStream & /**/,
  * the mentioned fields and you want compatability).
  *
  * Many guides recommend always printing the default columns and using only
- * additional columns with custom data. In this case you still have to use the
- * second signature and correct for BLAST's conventions.
+ * additional columns with custom data.
  *
  * @param stream    The file to write to (FILE, fstream, @link Stream @endlink ...)
+ * @param fields    A @link Sequence @endlink of @link BlastMatchFieldEnum @endlink
  * @param blastMatch    The @link BlastMatch @endlink you wish to print.
  * @param blastFormatTag The @link BlastFormat @endlink specifier.
  * @param columns...   Custom columns
@@ -476,8 +930,7 @@ writeHeader(TStream & /**/,
  * @see BlastRecord#writeHeader
  */
 
-
-// Functions for arbitrary number and typed fields
+// Function for arbitrary number and typed fields
 template <typename TStream, typename TField, typename... TFields,
           BlastFormatProgram p, BlastFormatGeneration g>
 inline int
@@ -499,7 +952,30 @@ writeMatch(TStream & stream,
     return streamPut(stream, '\n');
 }
 
-// BlastTabHdr Record equal to BlastTab Record
+// Function for match object and manually given colummns
+template <typename TStream, typename TBlastMatch, typename TBlastMatchFields
+          BlastFormatProgram p, BlastFormatGeneration g>
+inline int
+writeMatch(TStream & stream, TBlastMatch const & match,
+           TBlastMatchFields const & fields,
+           BlastFormat<BlastFormatFile::TABULAR, p, g> const & /*tag*/)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
+    return _writeFields(stream, match, fields, TFormat());
+}
+
+// Function for match object and default colummns
+template <typename TStream, typename TBlastMatch,
+          BlastFormatProgram p, BlastFormatGeneration g>
+inline int
+writeMatch(TStream & stream, TBlastMatch const & match,
+           BlastFormat<BlastFormatFile::TABULAR, p, g> const & /*tag*/)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
+    return _writeFields(stream, match, _blastMatchDefaultFields, TFormat());
+}
+
+// writeMatch TABULAR_WITH_HEADER equal to TABULAR
 template <typename TStream, typename TField, typename... TFields,
           BlastFormatProgram p, BlastFormatGeneration g>
 inline int
@@ -514,41 +990,15 @@ writeMatch(TStream & stream,
     return writeMatch(stream, TFormat(), field1, fields... );
 }
 
-template <typename TStream, typename TBlastMatch,
+template <typename TStream, typename TBlastMatch, typename TBlastMatchFields
           BlastFormatProgram p, BlastFormatGeneration g>
 inline int
 writeMatch(TStream & stream, TBlastMatch const & match,
-           BlastFormat<BlastFormatFile::TABULAR, p, g> const & /*tag*/)
+           TBlastMatchFields const & fields,
+           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &/**/)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-    typedef decltype(match.qStart) TPos;
-
-    TPos effectiveQStart    = match.qStart;
-    TPos effectiveQEnd      = match.qEnd;
-    TPos effectiveSStart    = match.sStart;
-    TPos effectiveSEnd      = match.sEnd;
-
-    _untranslatePositions(effectiveQStart, effectiveQEnd, match.qFrameShift,
-                          match.qLength, QHasRevComp<TFormat>(),
-                          QIsTranslated<TFormat>());
-    _untranslatePositions(effectiveSStart, effectiveSEnd, match.sFrameShift,
-                          match.sLength, SHasRevComp<TFormat>(),
-                          SIsTranslated<TFormat>());
-
-    return writeMatch(stream,
-                      TFormat(),
-                      prefix(match.qId, _firstOcc(match.qId, ' ')),
-                      prefix(match.sId, _firstOcc(match.sId, ' ')),
-                      double(match.identities) * 100 / match.aliLength,
-                      match.aliLength,
-                      match.mismatches,
-                      match.gapOpenings,
-                      effectiveQStart,
-                      effectiveQEnd,
-                      effectiveSStart,
-                      effectiveSEnd,
-                      match.eValue,
-                      match.bitScore);
+    return writeMatch(stream, match, fields, TFormat());
 }
 
 template <typename TStream, typename TBlastMatch,
@@ -558,7 +1008,7 @@ writeMatch(TStream & stream, TBlastMatch const & match,
             BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &/**/)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-    return writeMatch(stream, match, TFormat());
+    return writeMatch(stream, match, _blastMatchDefaultFields, TFormat());
 }
 
 // ----------------------------------------------------------------------------
