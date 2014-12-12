@@ -36,56 +36,31 @@
 
 #include "pair_align_lib.h"
 
-// Set default values if preprocessor symbols are not known.
+// Set default values if preprocessor symbols are not set.
 #ifndef SUFFIX_GAP_TOP
-#define SUFFIX_GAP_TOP 0 
+#define SUFFIX_GAP_TOP 0
 #endif  // SUFFIX_GAP_TOP
 
 #ifndef SUFFIX_GAP_LEFT
-#define SUFFIX_GAP_LEFT 0 
+#define SUFFIX_GAP_LEFT 0
 #endif  // SUFFIX_GAP_LEFT
 
 #ifndef SUFFIX_GAP_RIGHT
-#define SUFFIX_GAP_RIGHT 0 
+#define SUFFIX_GAP_RIGHT 0
 #endif  // SUFFIX_GAP_RIGHT
 
 #ifndef SUFFIX_GAP_BOTTOM
-#define SUFFIX_GAP_BOTTOM 0 
+#define SUFFIX_GAP_BOTTOM 0
 #endif  // SUFFIX_GAP_BOTTOM
 
-// Replace the integer values to character values for a better naming scheme for
-// the pairAlignGlobal_<config> function.
-#if SUFFIX_GAP_TOP == 0
-    #define SUFFIX_GAP_TOP_SHORT f
-#else
-    #define SUFFIX_GAP_TOP_SHORT t
-#endif
-
-#if SUFFIX_GAP_LEFT == 0
-    #define SUFFIX_GAP_LEFT_SHORT f
-#else
-    #define SUFFIX_GAP_LEFT_SHORT t
-#endif
-
-#if SUFFIX_GAP_RIGHT == 0
-    #define SUFFIX_GAP_RIGHT_SHORT f
-#else
-    #define SUFFIX_GAP_RIGHT_SHORT t
-#endif
-
-#if SUFFIX_GAP_BOTTOM == 0
-    #define SUFFIX_GAP_BOTTOM_SHORT f
-#else
-    #define SUFFIX_GAP_BOTTOM_SHORT t
-#endif
-
 // Defines the suffix for every generated object file.
-#define PAIR_ALIGN_GLOBAL_FUNC_SUFFIX SEQAN_JOIN(SEQAN_JOIN(SUFFIX_GAP_TOP_SHORT, SUFFIX_GAP_LEFT_SHORT),   \
-                                                 SEQAN_JOIN(SUFFIX_GAP_RIGHT_SHORT, SUFFIX_GAP_BOTTOM_SHORT))
+#define PAIR_ALIGN_GLOBAL_FUNC_SUFFIX SEQAN_JOIN(SEQAN_JOIN(SUFFIX_GAP_TOP, SUFFIX_GAP_LEFT),   \
+SEQAN_JOIN(SUFFIX_GAP_RIGHT, SUFFIX_GAP_BOTTOM))
+
 // This macro expands to the function resulting from the set preprocessor values SUFFIX_GAP_*.
 // Note that the cmake script generates for every AlignConfig combination
 // a new object file where the preprocessor definitions are set accordingly.
-#define PAIR_ALIGN_DEFINE_GLOBAL_FUNC(name)                                                                        \
+#define PAIR_ALIGN_DEFINE_GLOBAL_FUNC(name)                                                                       \
 void name(Options const & options)                                                                                 \
 {                                                                                                                  \
     AlignConfig<SUFFIX_GAP_TOP, SUFFIX_GAP_LEFT, SUFFIX_GAP_RIGHT, SUFFIX_GAP_BOTTOM> config;                      \
