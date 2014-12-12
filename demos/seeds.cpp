@@ -27,7 +27,7 @@ int main()
     std::cout << endPositionV(seed3) << std::endl;  //output: 13
 
 ///Example 2: global chaining.
-    SeedSet<Simple, Unordered> seedSet;
+    SeedSet<Seed<Simple>, Unordered> seedSet;
     addSeed(seedSet, Seed<Simple>(0, 93, 281, 342), Single());
     addSeed(seedSet, Seed<Simple>(3, 237, 127, 364), Single());
     addSeed(seedSet, Seed<Simple>(3, 284, 86, 368), Single());

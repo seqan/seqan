@@ -5,7 +5,7 @@
 int main()
 {
     typedef seqan::Seed<seqan::Simple>    TSeed;
-    typedef seqan::SeedSet<seqan::Simple> TSeedSet;
+    typedef seqan::SeedSet<TSeed> TSeedSet;
     
     TSeedSet seedSet;
     addSeed(seedSet, TSeed(1, 1, 3), seqan::Single());
