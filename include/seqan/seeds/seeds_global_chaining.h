@@ -97,15 +97,13 @@ typedef Tag<SparseChaining_> SparseChaining;
  */
 
 // TODO(holtgrew): Implement scored!
-template <typename TTargetContainer, typename TSeedSpec, typename TSeedSetSpec>
+template <typename TTargetContainer, typename TSeed, typename TSeedSetSpec>
 void
 chainSeedsGlobally(
         TTargetContainer & target,
-        SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet,
+        SeedSet<TSeed, TSeedSetSpec> const & seedSet,
         SparseChaining const &)
 {
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
-    typedef typename Value<TSeedSet>::Type TSeed;
     typedef typename Position<TSeed>::Type TPosition;
     typedef typename Size<TSeed>::Type TSize;
 

@@ -56,12 +56,6 @@
 
 namespace seqan {
 
-/*
-.Tag.Blosum30_:
-..cat:Scoring
-..summary:Tag for Retrieving a BLOSUM30 matrix.
-..include:seqan/score.h
- */
 struct Blosum30_ {};
 typedef Blosum30_ ScoreSpecBlosum30;
 
@@ -151,13 +145,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum30> {
     }
 };
 
-
-/*
-.Tag.Blosum45_:
-..cat:Scoring
-..summary:Tag for Retrieving a BLOSUM45 matrix.
-..include:seqan/score.h
- */
 struct Blosum45_ {};
 typedef Blosum45_ ScoreSpecBlosum45;
 
@@ -246,13 +233,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum45> {
     }
 };
 
-
-/*
-.Tag.Blosum62_:
-..cat:Scoring
-..summary:Tag for Retrieving a BLOSUM62 matrix.
-..include:seqan/score.h
- */
 struct Blosum62_ {};
 typedef Blosum62_ ScoreSpecBlosum62;
 
@@ -341,13 +321,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum62> {
     }
 };
 
-
-/*
-.Tag.Blosum80_:
-..cat:Scoring
-..summary:Tag for Retrieving a BLOSUM80 matrix.
-..include:seqan/score.h
- */
 struct Blosum80_ {};
 typedef Blosum80_ ScoreSpecBlosum80;
 
@@ -436,13 +409,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecBlosum80> {
     }
 };
 
-
-/*
-.Tag.Pam40_:
-..cat:Scoring
-..summary:Tag for Retrieving a PAM40 matrix.
-..include:seqan/score.h
- */
 struct Pam40_ {};
 typedef Pam40_ ScoreSpecPam40;
 
@@ -534,13 +500,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam40> {
     }
 };
 
-
-/*
-.Tag.Pam120_:
-..cat:Scoring
-..summary:Tag for Retrieving a PAM120 matrix.
-..include:seqan/score.h
- */
 struct Pam120_ {};
 typedef Pam120_ ScoreSpecPam120;
 
@@ -631,13 +590,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam120> {
     }
 };
 
-
-/*
-.Tag.Pam200_:
-..cat:Scoring
-..summary:Tag for Retrieving a PAM200 matrix.
-..include:seqan/score.h
- */
 struct Pam200_ {};
 typedef Pam200_ ScoreSpecPam200;
 
@@ -728,13 +680,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam200> {
     }
 };
 
-
-/*
-.Tag.Pam250_:
-..cat:Scoring
-..summary:Tag for Retrieving a PAM250 matrix.
-..include:seqan/score.h
- */
 struct Pam250_ {};
 typedef Pam250_ ScoreSpecPam250;
 
@@ -825,13 +770,6 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam250> {
     }
 };
 
-
-/*
-.Tag.Vtml200_:
-..cat:Scoring
-..summary:Tag for Retrieving a PAM200 matrix.
-..include:seqan/score.h
- */
 struct Vtml200_ {};
 typedef Vtml200_ ScoreSpecVtml200;
 

@@ -64,10 +64,10 @@ typedef Tag<Unordered_> Unordered;
  * @brief Handles a set of seeds with local chaining on adding seeds.
  * @note At the moment only <tt>Unordered SeedSets</tt> are supported.
  *
- * @signature template <typename TSeedSpec[, typename TSpec]>
+ * @signature template <typename TSeed[, typename TSpec]>
  *            class SeedSet;
  *
- * @tparam TSeedSpec Specialization tag of contained @link Seed @endlink objects.
+ * @tparam TSeed     Type of the @link Seed @endlink objects stored in the seed set.
  * @tparam TSpec     Optional tag for seed set specialization. Defaults to <tt>Unordered</tt>.
  */
 
@@ -75,7 +75,7 @@ typedef Tag<Unordered_> Unordered;
 // ..param.TSpec:Specialization of the seed set.
 // ..param.TSeedConfig:Configuration for the seeds.  Sensible defaults are chosen based on the other template parameters.
 
-template <typename TSeedSpec, typename TSpec = Unordered>
+template <typename TSeed, typename TSpec = Unordered>
 class SeedSet;
 
 // ===========================================================================
@@ -171,9 +171,9 @@ class SeedSet;
  * @see SeedSet#setMinScore
  */
 
-template <typename TSeedSpec, typename TSeedSetSpec>
-typename SeedScore<typename Value<SeedSet<TSeedSpec, TSeedSetSpec> >::Type >::Type
-minScore(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet)
+template <typename TSeed, typename TSeedSetSpec>
+typename SeedScore<typename Value<SeedSet<TSeed, TSeedSetSpec> >::Type >::Type
+minScore(SeedSet<TSeed, TSeedSetSpec> const & seedSet)
 {
     return seedSet._minScore;
 }
@@ -197,8 +197,8 @@ minScore(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet)
  * @see SeedSet#minScore
  */
 
-template <typename TSeedSpec, typename TSeedSetSpec, typename TScoreValue>
-void setMinScore(SeedSet<TSeedSpec, TSeedSetSpec> & seedSet, TScoreValue val)
+template <typename TSeed, typename TSeedSetSpec, typename TScoreValue>
+void setMinScore(SeedSet<TSeed, TSeedSetSpec> & seedSet, TScoreValue val)
 {
     seedSet._minScore = val;
 }
@@ -207,9 +207,9 @@ void setMinScore(SeedSet<TSeedSpec, TSeedSetSpec> & seedSet, TScoreValue val)
 // Function minSeedSize()
 // ---------------------------------------------------------------------------
 
-template <typename TSeedSpec, typename TSeedSetSpec>
-typename Size<typename Value<SeedSet<TSeedSpec, TSeedSetSpec> >::Type >::Type
-minSeedSize(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet)
+template <typename TSeed, typename TSeedSetSpec>
+typename Size<typename Value<SeedSet<TSeed, TSeedSetSpec> >::Type >::Type
+minSeedSize(SeedSet<TSeed, TSeedSetSpec> const & seedSet)
 {
     return seedSet._minSeedSize;
 }
@@ -218,8 +218,8 @@ minSeedSize(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet)
 // Function setMinSeedSize()
 // ---------------------------------------------------------------------------
 
-template <typename TSeedSpec, typename TSeedSetSpec, typename TSize>
-void setMinSeedSize(SeedSet<TSeedSpec, TSeedSetSpec> & seedSet, TSize siz)
+template <typename TSeed, typename TSeedSetSpec, typename TSize>
+void setMinSeedSize(SeedSet<TSeed, TSeedSetSpec> & seedSet, TSize siz)
 {
     seedSet._minSeedSize = siz;
 }
@@ -228,10 +228,12 @@ void setMinSeedSize(SeedSet<TSeedSpec, TSeedSetSpec> & seedSet, TSize siz)
 // Helper Function _qualityReached()
 // ---------------------------------------------------------------------------
 
-template <typename TSeedSpec, typename TSeedSetSpec, typename TSeedConfig>
-inline bool _qualityReached(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet,
+// TODO(rmaerker): Is this function used anywhere?
+template <typename TSeed, typename TSeedSetSpec, typename TSeedSpec, typename TSeedConfig>
+inline bool _qualityReached(SeedSet<TSeed, TSeedSetSpec> const & seedSet,
                             Seed<TSeedSpec, TSeedConfig> const & seed)
 {
+    // TODO(rmaerker): If different seed configs are supported we must make sure, that the scoreValues are comparable to avoid compiler warnings.
     return score(seed) >= minScore(seedSet) && seedSize(seed) >= minSeedSize(seedSet);
 }
 
@@ -249,8 +251,8 @@ inline bool _qualityReached(SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet,
  * @param[in,out] seedSet The SeedSet to clear.
  */
 
-template <typename TSeedSpec, typename TSeedSetSpec>
-inline void clear(SeedSet<TSeedSpec, TSeedSetSpec> & seedSet)
+template <typename TSeed, typename TSeedSetSpec>
+inline void clear(SeedSet<TSeed, TSeedSetSpec> & seedSet)
 {
     seedSet._seeds.clear();
     seedSet._minScore = 0;
@@ -260,16 +262,16 @@ inline void clear(SeedSet<TSeedSpec, TSeedSetSpec> & seedSet)
 
 // Debugging / TikZ Output
 
-template <typename TStream, typename TQuerySequence, typename TDatabaseSequence, typename TSeedSetSpec, typename TSeedSpec>
+template <typename TStream, typename TQuerySequence, typename TDatabaseSequence, typename TSeedSetSpec, typename TSeed>
 inline void
 __write(TStream & stream,
        TQuerySequence & sequence0,
        TDatabaseSequence & sequence1,
-       SeedSet<TSeedSpec, TSeedSetSpec> const & seedSet,
+       SeedSet<TSeed, TSeedSetSpec> const & seedSet,
        Tikz_ const &)
 {
 //IOREV _nodoc_ specialization not documented
-    typedef SeedSet<TSeedSpec, TSeedSetSpec> TSeedSet;
+    typedef SeedSet<TSeed, TSeedSetSpec> TSeedSet;
 
     stream << "\\begin{tikzpicture}[" << std::endl
            << "    seed/.style={very thick}," << std::endl

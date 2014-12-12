@@ -258,15 +258,6 @@ struct Key<T const>:
 
 //____________________________________________________________________________
 
-/*VERALTET
-.Metafunction.Object:
-..summary:Object type of a key to object mapping.
-..signature:Object<T>::Type
-..param.T:Type for which a object type is determined.
-..returns.param.Type:Object type.
-..include:seqan/basic.h
-*/
-
 template<typename T>
 struct Object; 
 

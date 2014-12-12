@@ -1063,18 +1063,6 @@ _writeParams(TOptions & options)
     std::cout << "  required read support (st)       : " << options.support << std::endl;
 }
 
-/**TODO(ktrappe): Add write functionality for SAM/VCF format
-.Function.write:
-..signature:write(file, msplazerchain, stellarmatches, nodeMap, edgeMap, tag)
-..param.graph:The graph to write out.
-...type:Class.Graph
-..param.nodeMap:A mapping from vertex descriptor to vertex label.
-..param.edgeMap:A mapping from edge descriptor to edge label.
-..param.tag:A tag to select the output format.
-...type:Tag.SamMSplazer
-..include:seqan/msplazer.h
- */
-
 // ////////////////////
 // SAM Output
 // TODO(ktrappe): Use SamBamIO, see tutorial
