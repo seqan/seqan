@@ -26,24 +26,28 @@ endforeach(GAPS_T)
 # the suffix of the target name.
 # ---------------------------------------------------------------------------
 
-foreach(CONFIG ${ALIGN_CONFIG_FLAGS})
-	list(APPEND GLOBAL_ALIGN_TARGETS "pair_align_global_${CONFIG}")
+foreach(CONFIG ${ALIGN_CONFIG_FLAGS})   
+    string(REPLACE "-" "" SUFFIX ${CONFIG})
+	list(APPEND GLOBAL_ALIGN_TARGETS "pair_align_global_${SUFFIX}")
 endforeach(CONFIG)
 
 
 # ---------------------------------------------------------------------------
-# Add object libraries for all pair_align configurations. 
-# Note only the object files are generated and are linked later in
-# the general pair_align_lib target.
+# Add static libraries for all pair_align configurations, which are later
+# linked to by the pair_align_lib.
+#
+# Note with cmake 2.8.8 and higher we could use the OBJECT feature of
+# add_library, which only builds the object files without linking them into
+# libraries.
 # ---------------------------------------------------------------------------
 
 # Add library for lcs option.
-add_library(pair_align_lcs OBJECT pair_align_lcs.cpp)
+add_library(pair_align_lcs STATIC pair_align_lcs.cpp)
 # Add library for local option.
-add_library(pair_align_local OBJECT pair_align_local.cpp)
+add_library(pair_align_local STATIC pair_align_local.cpp)
 # Add library for all global options.
 foreach(TARGET ${GLOBAL_ALIGN_TARGETS})	
-	add_library(${TARGET} OBJECT pair_align_global.cpp)
+	add_library(${TARGET} STATIC pair_align_global.cpp)
 endforeach(TARGET)
 
 # ---------------------------------------------------------------------------
@@ -61,8 +65,8 @@ foreach(INDEX RANGE ${MAX_RANGE})
 	list(GET ALIGN_CONFIG_FLAGS ${INDEX} CONFIG)
 	
 	# Form a list out of the suffix string.	
-	string(REPLACE "f" "FREE_GAPS_DISABLED" CONFIG_1 ${CONFIG})
-	string(REPLACE "t" "FREE_GAPS_ENABLED" CONFIG_2 ${CONFIG_1})
+	string(REPLACE "f" "0" CONFIG_1 ${CONFIG})
+	string(REPLACE "t" "1" CONFIG_2 ${CONFIG_1})
 	string(REPLACE "-" ";" CONFIG_LIST ${CONFIG_2})
 	list(GET CONFIG_LIST 0 GAP_T)
 	list(GET CONFIG_LIST 1 GAP_L)
@@ -81,17 +85,32 @@ endforeach(INDEX)
 # ---------------------------------------------------------------------------
 
 # Add lcs and local reference.
-set(OBJECT_REF "$<TARGET_OBJECTS:pair_align_lcs>")
-list(APPEND OBJECT_REF "$<TARGET_OBJECTS:pair_align_local>")
+set(LIB_TARGETS pair_align_lcs)
+list(APPEND LIB_TARGETS pair_align_local)
 
 # Add reference for all global configurations.
 foreach(TARGET ${GLOBAL_ALIGN_TARGETS})
-	list(APPEND OBJECT_REF "$<TARGET_OBJECTS:${TARGET}>")
+	list(APPEND LIB_TARGETS ${TARGET})
 endforeach(TARGET)
+
+## The commented parts can be used instead if minimum cmake version is 2.8.8 
+## or higher. Then the OBJECT feature is available and here we would link 
+## against the object files generated in the steps before.
+##set(OBJECT_REF "$<TARGET_OBJECTS:pair_align_lcs>")
+##list(APPEND OBJECT_REF "$<TARGET_OBJECTS:pair_align_local>")
+
+## Add reference for all global configurations.
+##foreach(TARGET ${GLOBAL_ALIGN_TARGETS})
+##	list(APPEND OBJECT_REF "$<TARGET_OBJECTS:${TARGET}>")
+##endforeach(TARGET)
 
 # ---------------------------------------------------------------------------
 # Build static library linking all the object libraries.
 # ---------------------------------------------------------------------------
 
-add_library(pair_align_lib pair_align_lib.cpp pair_align_lib.h ${OBJECT_REF})
-target_link_libraries(pair_align_lib ${SEQAN_LIBRARIES})
+add_library(pair_align_lib pair_align_lib.cpp pair_align_lib.h)
+target_link_libraries(pair_align_lib ${LIB_TARGETS} ${SEQAN_LIBRARIES})
+
+## Can be enabled instead for cmake version greater or equal to 2.8.8.
+##add_library(pair_align_lib pair_align_lib.cpp pair_align_lib.h ${OBJECT_REF})
+##target_link_libraries(pair_align_lib ${SEQAN_LIBRARIES})
