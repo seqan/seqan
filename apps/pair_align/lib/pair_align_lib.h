@@ -43,20 +43,12 @@
 #include <seqan/arg_parse.h>
 #include <seqan/seq_io.h>
 #include <seqan/stream.h>
-//#include "pair_align2.h"
 
 using namespace seqan;
 
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
-
-enum PairAlignConfig
-{
-    LCS,
-    LOCAL,
-    GLOBAL_FFFF
-};
 
 // --------------------------------------------------------------------------
 // Class Options
@@ -376,26 +368,70 @@ inline void pairAlignConfig(Options const & options, TAlgorithm const & alg, TSp
 }
 
 // ==========================================================================
-// Exported Interfaces
+// Declaration of external interfaces.
 // ==========================================================================
 
 void pairAlignLocal(Options const &);
 void pairAlignLcs(Options const &);
-void pairAlignGlobal_tttt(Options const &);
-void pairAlignGlobal_tttf(Options const &);
-void pairAlignGlobal_ttft(Options const &);
-void pairAlignGlobal_ttff(Options const &);
-void pairAlignGlobal_tftt(Options const &);
-void pairAlignGlobal_tftf(Options const &);
-void pairAlignGlobal_tfft(Options const &);
-void pairAlignGlobal_tfff(Options const &);
-void pairAlignGlobal_fttt(Options const &);
-void pairAlignGlobal_fttf(Options const &);
-void pairAlignGlobal_ftft(Options const &);
-void pairAlignGlobal_ftff(Options const &);
-void pairAlignGlobal_fftt(Options const &);
-void pairAlignGlobal_fftf(Options const &);
-void pairAlignGlobal_ffft(Options const &);
-void pairAlignGlobal_ffff(Options const &);
+void pairAlignGlobal_1111(Options const &);
+void pairAlignGlobal_1110(Options const &);
+void pairAlignGlobal_1101(Options const &);
+void pairAlignGlobal_1100(Options const &);
+void pairAlignGlobal_1011(Options const &);
+void pairAlignGlobal_1010(Options const &);
+void pairAlignGlobal_1001(Options const &);
+void pairAlignGlobal_1000(Options const &);
+void pairAlignGlobal_0111(Options const &);
+void pairAlignGlobal_0110(Options const &);
+void pairAlignGlobal_0101(Options const &);
+void pairAlignGlobal_0100(Options const &);
+void pairAlignGlobal_0011(Options const &);
+void pairAlignGlobal_0010(Options const &);
+void pairAlignGlobal_0001(Options const &);
+void pairAlignGlobal_0000(Options const &);
+
+inline void pairAlignMain(Options const & options)
+{
+
+    if (options.method == "lcs")
+        pairAlignLcs(options);
+    else if (options.method == "sw")
+        pairAlignLocal(options);
+    else
+    {
+        if (options.config == "tttt")
+            pairAlignGlobal_1111(options);
+        else if (options.config == "tttf")
+            pairAlignGlobal_1110(options);
+        else if (options.config == "ttft")
+            pairAlignGlobal_1101(options);
+        else if (options.config == "ttff")
+            pairAlignGlobal_1100(options);
+        else if (options.config == "tftt")
+            pairAlignGlobal_1011(options);
+        else if (options.config == "tftf")
+            pairAlignGlobal_1010(options);
+        else if (options.config == "tfft")
+            pairAlignGlobal_1001(options);
+        else if (options.config == "tfff")
+            pairAlignGlobal_1000(options);
+        else if (options.config == "fttt")
+        	pairAlignGlobal_0111(options);
+        else if (options.config == "fttf")
+        	pairAlignGlobal_0110(options);
+        else if (options.config == "ftft")
+        	pairAlignGlobal_0101(options);
+        else if (options.config == "ftff")
+        	pairAlignGlobal_0100(options);
+        else if (options.config == "fftt")
+        	pairAlignGlobal_0011(options);
+        else if (options.config == "fftf")
+        	pairAlignGlobal_0010(options);
+        else if (options.config == "ffft")
+        	pairAlignGlobal_0001(options);
+        else
+            pairAlignGlobal_0000(options);
+    }
+}
 
 #endif // APPS_PAIR_ALIGN_PAIR_ALIGN_LIB_H_

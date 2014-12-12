@@ -128,43 +128,7 @@ int main(int argc, const char* argv[])
     // Also the library can built in parallel which also speeds up the compilation
     // process.
 
-    if (options.method == "lcs")
-        pairAlignLcs(options);
-    else if (options.method == "sw")
-        pairAlignLocal(options);
-    else
-    {
-        if (options.config == "tttt")
-            pairAlignGlobal_tttt(options);
-        else if (options.config == "tttf")
-            pairAlignGlobal_tttf(options);
-        else if (options.config == "ttft")
-            pairAlignGlobal_ttft(options);
-        else if (options.config == "ttff")
-            pairAlignGlobal_ttff(options);
-        else if (options.config == "tftt")
-            pairAlignGlobal_tftt(options);
-        else if (options.config == "tftf")
-            pairAlignGlobal_tftf(options);
-        else if (options.config == "tfft")
-            pairAlignGlobal_tfft(options);
-        else if (options.config == "tfff")
-            pairAlignGlobal_tfff(options);
-        else if (options.config == "fttt")
-            pairAlignGlobal_fttt(options);
-        else if (options.config == "fttf")
-            pairAlignGlobal_fttf(options);
-        else if (options.config == "ftft")
-            pairAlignGlobal_ftft(options);
-        else if (options.config == "ftff")
-            pairAlignGlobal_ftff(options);
-        else if (options.config == "fftt")
-            pairAlignGlobal_fftt(options);
-        else if (options.config == "fftf")
-            pairAlignGlobal_fftf(options);
-        else if (options.config == "ffft")
-            pairAlignGlobal_ffft(options);
-        else
-            pairAlignGlobal_ffff(options);
-    }
+    pairAlignMain(options);
+
+    return res;
 }
