@@ -36,50 +36,44 @@
 
 #include "pair_align_lib.h"
 
-enum GapConfigurations
-{
-    FREE_GAPS_ENABLED = 0,
-    FREE_GAPS_DISABLED = 1
-};
-
 // Set default values if preprocessor symbols are not known.
 #ifndef SUFFIX_GAP_TOP
-#define SUFFIX_GAP_TOP FREE_GAPS_DISABLED
+#define SUFFIX_GAP_TOP 0 
 #endif  // SUFFIX_GAP_TOP
 
 #ifndef SUFFIX_GAP_LEFT
-#define SUFFIX_GAP_LEFT FREE_GAPS_DISABLED
+#define SUFFIX_GAP_LEFT 0 
 #endif  // SUFFIX_GAP_LEFT
 
 #ifndef SUFFIX_GAP_RIGHT
-#define SUFFIX_GAP_RIGHT FREE_GAPS_DISABLED
+#define SUFFIX_GAP_RIGHT 0 
 #endif  // SUFFIX_GAP_RIGHT
 
 #ifndef SUFFIX_GAP_BOTTOM
-#define SUFFIX_GAP_BOTTOM FREE_GAPS_DISABLED
+#define SUFFIX_GAP_BOTTOM 0 
 #endif  // SUFFIX_GAP_BOTTOM
 
 // Replace the integer values to character values for a better naming scheme for
 // the pairAlignGlobal_<config> function.
-#if SUFFIX_GAP_TOP == FREE_GAPS_DISABLED
+#if SUFFIX_GAP_TOP == 0
     #define SUFFIX_GAP_TOP_SHORT f
 #else
     #define SUFFIX_GAP_TOP_SHORT t
 #endif
 
-#if SUFFIX_GAP_LEFT == FREE_GAPS_DISABLED
+#if SUFFIX_GAP_LEFT == 0
     #define SUFFIX_GAP_LEFT_SHORT f
 #else
     #define SUFFIX_GAP_LEFT_SHORT t
 #endif
 
-#if SUFFIX_GAP_RIGHT == FREE_GAPS_DISABLED
+#if SUFFIX_GAP_RIGHT == 0
     #define SUFFIX_GAP_RIGHT_SHORT f
 #else
     #define SUFFIX_GAP_RIGHT_SHORT t
 #endif
 
-#if SUFFIX_GAP_BOTTOM == FREE_GAPS_DISABLED
+#if SUFFIX_GAP_BOTTOM == 0
     #define SUFFIX_GAP_BOTTOM_SHORT f
 #else
     #define SUFFIX_GAP_BOTTOM_SHORT t
@@ -88,7 +82,6 @@ enum GapConfigurations
 // Defines the suffix for every generated object file.
 #define PAIR_ALIGN_GLOBAL_FUNC_SUFFIX SEQAN_JOIN(SEQAN_JOIN(SUFFIX_GAP_TOP_SHORT, SUFFIX_GAP_LEFT_SHORT),   \
                                                  SEQAN_JOIN(SUFFIX_GAP_RIGHT_SHORT, SUFFIX_GAP_BOTTOM_SHORT))
-
 // This macro expands to the function resulting from the set preprocessor values SUFFIX_GAP_*.
 // Note that the cmake script generates for every AlignConfig combination
 // a new object file where the preprocessor definitions are set accordingly.
