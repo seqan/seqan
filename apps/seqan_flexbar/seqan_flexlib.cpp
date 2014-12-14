@@ -950,8 +950,7 @@ int loadBarcodes(char const * path, DemultiplexingParams& params)
 inline void loadMultiplex(seqan::SeqFileIn& multiplexFile, DemultiplexingParams& params, unsigned records)
 {
     seqan::StringSet<seqan::String<char> > ids;
-    for (unsigned i = 0; i < records && !atEnd(multiplexFile); ++i)
-        readRecords(ids, params.multiplex, multiplexFile);
+    readRecords(ids, params.multiplex, multiplexFile, records);
 }
 
 int openStream(seqan::CharString const & file, seqan::SeqFileIn & inFile)
@@ -1751,7 +1750,7 @@ int flexbarMain(int argc, char const ** argv)
     //--------------------------------------------------
     GeneralStats generalStats;
 
-    unsigned records;
+    __uint64 records;
     getOptionValue(records, parser, "r");
 
     seqan::CharString output;
@@ -2128,8 +2127,7 @@ int flexbarMain(int argc, char const ** argv)
             appendValue(idSet, seqan::StringSet<seqan::CharString>());
             appendValue(seqSet, seqan::StringSet<Dna5QString>());
 
-            for (unsigned i = 0; i < records && !atEnd(programParams.fileStream1); ++i)
-                readRecords(idSet[0], seqSet[0], programParams.fileStream1);
+            readRecords(idSet[0], seqSet[0], programParams.fileStream1, records);
 
             programParams.readCount += length(idSet[0]);
             SEQAN_PROTIMESTART(processTime);            // START of processing time.
@@ -2181,10 +2179,8 @@ int flexbarMain(int argc, char const ** argv)
             appendValue(idSet2, seqan::StringSet<seqan::CharString>());
             appendValue(seqSet2, seqan::StringSet<Dna5QString>());
 
-            for (unsigned i = 0; i < records && !atEnd(programParams.fileStream1); ++i)
-                readRecords(idSet1[0], seqSet1[0], programParams.fileStream1);
-            for (unsigned i = 0; i < records && !atEnd(programParams.fileStream2); ++i)
-                readRecords(idSet2[0], seqSet2[0], programParams.fileStream2);
+            readRecords(idSet1[0], seqSet1[0], programParams.fileStream1, records);
+            readRecords(idSet2[0], seqSet2[0], programParams.fileStream2, records);
 
             programParams.readCount += length(idSet1[0]);
             SEQAN_PROTIMESTART(processTime); // START of processing time.
