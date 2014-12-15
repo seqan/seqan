@@ -40,6 +40,8 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>  // for output
 
+using namespace seqan;
+
 int main()
 {
     // Examples for constructing strings.

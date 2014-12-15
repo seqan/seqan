@@ -2,6 +2,8 @@
 #include <seqan/gff_io.h>
 #include <seqan/misc/name_store_cache.h>
 
+using namespace seqan;
+
 int main()
 {
     // Open input gff file.

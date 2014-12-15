@@ -1,5 +1,7 @@
 #include <seqan/bam_io.h>
 
+using namespace seqan;
+
 int main(int argc, char const ** argv)
 {
     if (argc < 3)

@@ -4,6 +4,8 @@
 #include <seqan/score.h>
 #include <seqan/seeds.h>
 
+using namespace seqan;
+
 int main()
 {
     // FRAGMENT(example)

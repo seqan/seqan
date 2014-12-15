@@ -3,6 +3,8 @@
 
 #include <sstream>
 
+using namespace seqan;
+
 int main()
 {
     seqan::GffFileOut out(std::cout, seqan::Gff());

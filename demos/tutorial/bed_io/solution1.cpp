@@ -1,6 +1,8 @@
 #include <seqan/basic.h>
 #include <seqan/bed_io.h>
 
+using namespace seqan;
+
 int main()
 {
     // Open input bed file.

@@ -2,6 +2,8 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
+using namespace seqan;
+
 int main()
 {
     std::ifstream in("in.txt", std::ios::binary | std::ios::in);

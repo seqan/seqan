@@ -3,6 +3,8 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
+using namespace seqan;
+
 // Read "<key>,<value>" map from stdin.  Write out as "<key> -> <value>".
 
 int main()

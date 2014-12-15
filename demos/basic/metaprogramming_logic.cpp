@@ -38,6 +38,8 @@
 
 #include <seqan/basic.h>
 
+using namespace seqan;
+
 // Demonstration of using True and False as base classes.
 //![inheriting from true false]
 template <typename T>

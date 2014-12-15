@@ -38,6 +38,8 @@
 
 #include <seqan/basic.h>
 
+using namespace seqan;
+
 int main()
 {
 //![log2 call]

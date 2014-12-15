@@ -3,6 +3,8 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
+using namespace seqan;
+
 int main()
 {
 ///The metafunction @Metafunction.Iterator@ returns the iterator type for a given container type.

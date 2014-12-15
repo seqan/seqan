@@ -2,6 +2,8 @@
 #include <seqan/stream.h>
 #include <seqan/seeds.h>
 
+using namespace seqan;
+
 int main()
 {
     typedef seqan::Seed<seqan::Simple>    TSeed;

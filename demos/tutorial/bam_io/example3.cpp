@@ -1,6 +1,8 @@
 #include <seqan/seq_io.h>  // for FaiIndex
 #include <seqan/bam_io.h>  // for BamStream
 
+using namespace seqan;
+
 int main()
 {
     // Open FASTA, FAI, and BAM file.  Build FAI if necessary.

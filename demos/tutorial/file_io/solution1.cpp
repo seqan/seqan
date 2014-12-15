@@ -4,6 +4,8 @@
 
 #include <seqan/stream.h>
 
+using namespace seqan;
+
 // This template function reads the contents from the given Stream in and
 // writes it out to std::cout
 

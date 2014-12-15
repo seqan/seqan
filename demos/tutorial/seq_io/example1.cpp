@@ -1,5 +1,7 @@
 #include <seqan/seq_io.h>
 
+using namespace seqan;
+
 int main()
 {
     seqan::CharString id;

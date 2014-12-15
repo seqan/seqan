@@ -1,6 +1,8 @@
 // FRAGMENT(include)
 #include <seqan/bam_io.h>
 
+using namespace seqan;
+
 int main()
 {
     // FRAGMENT(ctor)

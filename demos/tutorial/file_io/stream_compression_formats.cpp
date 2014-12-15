@@ -3,6 +3,8 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
+using namespace seqan;
+
 // FRAGMENT(main)
 int main(int argc, char const ** argv)
 {

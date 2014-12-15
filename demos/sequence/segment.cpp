@@ -38,6 +38,8 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>  // for I/O
 
+using namespace seqan;
+
 int main()
 {
 //![basic operations]

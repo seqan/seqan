@@ -1,6 +1,8 @@
 #include <iostream>
 #include <seqan/align_profile.h>
 
+using namespace seqan;
+
 int main()
 {
     typedef seqan::ProfileChar<seqan::Dna, int> TDnaProfile;

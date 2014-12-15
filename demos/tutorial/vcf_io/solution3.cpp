@@ -3,6 +3,8 @@
 
 #include <sstream>
 
+using namespace seqan;
+
 int main()
 {
     // Open output stream

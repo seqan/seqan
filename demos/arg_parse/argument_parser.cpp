@@ -6,10 +6,7 @@
 
 #include <seqan/arg_parse.h>
 
-using seqan::ArgumentParser;
-using seqan::ArgParseOption;
-using seqan::ArgParseArgument;
-using seqan::CharString;
+using namespace seqan;
 
 int main(int argc, char const ** argv)
 {
