@@ -7,7 +7,7 @@ using namespace seqan;
 int main()
 {
     // Open input gff file.
-    seqan::GffFileIn gffIn;
+    GffFileIn gffIn;
     if (!open(gffIn, "example.gff"))
     {
         std::cerr << "ERROR: Could not open example.gff\n";
@@ -15,12 +15,12 @@ int main()
     }
 
     // Array of counters and sequence names.
-    seqan::String<unsigned> counters;
-    seqan::StringSet<seqan::CharString> seqNames;
-    seqan::NameStoreCache<seqan::StringSet<seqan::CharString> > cache(seqNames);
+    String<unsigned> counters;
+    StringSet<CharString> seqNames;
+    NameStoreCache<StringSet<CharString> > cache(seqNames);
 
     // Read the file record by record.
-    seqan::GffRecord record;
+    GffRecord record;
 
     try
     {

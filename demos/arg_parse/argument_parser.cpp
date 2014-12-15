@@ -13,7 +13,7 @@ int main(int argc, char const ** argv)
     // Initialize ArgumentParser.
     ArgumentParser parser("arg_parse_demo");
     setCategory(parser, "Demo");
-    setShortDescription(parser, "Just a demo of the new seqan::ArgumentParser!");
+    setShortDescription(parser, "Just a demo of the new ArgumentParser!");
     setVersion(parser, "0.1");
     setDate(parser, "Mar 2012");
 
@@ -22,7 +22,7 @@ int main(int argc, char const ** argv)
 
     addDescription(
             parser,
-            "This is just a little demo to show what seqan::ArgumentParser is "
+            "This is just a little demo to show what ArgumentParser is "
             "able to do.  \\fIIN\\fP is a multi-FASTA input file.  \\fIOUT\\fP is a "
             "txt output file.");
 

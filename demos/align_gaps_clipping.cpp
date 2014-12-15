@@ -9,11 +9,11 @@ using namespace seqan;
 
 int main()
 {
-    typedef seqan::Position<seqan::Gaps<seqan::CharString> >::Type TPos;
+    typedef Position<Gaps<CharString> >::Type TPos;
 
 	// Create sequence variable and gaps basd on sequence.
-	seqan::CharString seq("ABCDEFGHIJ");
-	seqan::Gaps<seqan::CharString> gaps(seq);
+	CharString seq("ABCDEFGHIJ");
+	Gaps<CharString> gaps(seq);
 	
 	// Insert gaps, the positions are in (clipped) view space.
 	insertGaps(gaps, 2, 2);

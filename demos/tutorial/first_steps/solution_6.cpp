@@ -8,11 +8,11 @@
 using namespace seqan;
 
 template <typename TText>
-int computeLocalScore(TText const & subText, seqan::String<seqan::AminoAcid> const & pattern)
+int computeLocalScore(TText const & subText, String<AminoAcid> const & pattern)
 {
     int localScore = 0;
-    for (unsigned i = 0; i < seqan::length(pattern); ++i)
-        localScore += seqan::score(seqan::Blosum62(), subText[i], pattern[i]);
+    for (unsigned i = 0; i < length(pattern); ++i)
+        localScore += score(Blosum62(), subText[i], pattern[i]);
     
     return localScore;
 }
@@ -21,7 +21,7 @@ template <typename TText, typename TPattern>
 int computeLocalScore(TText const & subText, TPattern const & pattern)
 {
     int localScore = 0;
-    for (unsigned i = 0; i < seqan::length(pattern); ++i)
+    for (unsigned i = 0; i < length(pattern); ++i)
         if (subText[i] == pattern[i])
             ++localScore;
     
@@ -29,13 +29,13 @@ int computeLocalScore(TText const & subText, TPattern const & pattern)
 }
 
 template <typename TText, typename TPattern>
-seqan::String<int> computeScore(TText const & text, TPattern const & pattern)
+String<int> computeScore(TText const & text, TPattern const & pattern)
 {
-    seqan::String<int> score;
-    seqan::resize(score, seqan::length(text) - seqan::length(pattern) + 1, 0);
+    String<int> score;
+    resize(score, length(text) - length(pattern) + 1, 0);
 
-    for (unsigned i = 0; i < seqan::length(text) - seqan::length(pattern) + 1; ++i)
-        score[i] = computeLocalScore(infix(text, i, i + seqan::length(pattern)), pattern);
+    for (unsigned i = 0; i < length(text) - length(pattern) + 1; ++i)
+        score[i] = computeLocalScore(infix(text, i, i + length(pattern)), pattern);
     
     return score;
 }
@@ -46,9 +46,9 @@ void print(TText const & text)
     std::cout << text << std::endl;
 }
 
-void print(seqan::String<int> const & text)
+void print(String<int> const & text)
 {
-    for (unsigned i = 0; i < seqan::length(text); ++i)
+    for (unsigned i = 0; i < length(text); ++i)
         std::cout << text[i] << " ";
     std::cout << std::endl;
 }
@@ -65,9 +65,9 @@ template <typename TText>
 void print(TText const & score, MaxOnly const & /*tag*/)
 {
     int maxScore = score[0];
-    seqan::String<int> output;
+    String<int> output;
     appendValue(output, 0);
-    for (unsigned i = 1; i < seqan::length(score); ++i)
+    for (unsigned i = 1; i < length(score); ++i)
     {
         if (score[i] > maxScore)
         {
@@ -87,21 +87,21 @@ struct GreaterZero {};
 template <typename TText>
 void print(TText const & score, GreaterZero const & /*tag*/)
 {
-    seqan::String<seqan::Pair<int> > output;
-    for (unsigned i = 1; i < seqan::length(score); ++i)
+    String<Pair<int> > output;
+    for (unsigned i = 1; i < length(score); ++i)
         if (score[i] > 0)
-            appendValue(output, seqan::Pair<int>(i, score[i]));
+            appendValue(output, Pair<int>(i, score[i]));
     
-    for (unsigned i = 0; i < seqan::length(output); ++i)
+    for (unsigned i = 0; i < length(output); ++i)
         std::cout << "(" << output[i].i1 << "; " << output[i].i2 << ") ";
     std::cout << std::endl;
 }
 
 int main()
 {
-    seqan::String<char> text = "This is an awesome tutorial to get to now SeqAn!";
-    seqan::String<char> pattern = "tutorial";
-    seqan::String<int> score = computeScore(text, pattern);
+    String<char> text = "This is an awesome tutorial to get to now SeqAn!";
+    String<char> pattern = "tutorial";
+    String<int> score = computeScore(text, pattern);
 
     print(text);
     // > This is an awesome tutorial to get to now SeqAn!
@@ -115,8 +115,8 @@ int main()
     // > (2; 1) (5; 1) (12; 1) (17; 1) (19; 8) (21; 1) (26; 2) (28; 1) (31; 1) (33; 3) (35; 1) (36; 1)
     
     // And now for a protein pattern
-    seqan::String<seqan::AminoAcid> protein = "tutorial";
-    seqan::String<int> proteinScore = computeScore(text, protein);
+    String<AminoAcid> protein = "tutorial";
+    String<int> proteinScore = computeScore(text, protein);
 
     print(text);
     // > This is an awesome tutorial to get to now SeqAn!

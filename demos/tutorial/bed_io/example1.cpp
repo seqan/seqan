@@ -6,12 +6,12 @@ using namespace seqan;
 int main()
 {
     // Open input bed file.
-    seqan::BedFileIn bedIn("example.bed");
+    BedFileIn bedIn("example.bed");
     // Open output bed file and link to stdout.
-    seqan::BedFileOut bedOut(std::cout, seqan::Bed());
+    BedFileOut bedOut(std::cout, Bed());
 
     // Read the file record by record.
-    seqan::BedRecord<seqan::Bed3> record;
+    BedRecord<Bed3> record;
     while (!atEnd(bedIn))
     {
         readRecord(record, bedIn);

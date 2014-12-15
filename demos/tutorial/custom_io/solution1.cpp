@@ -10,21 +10,21 @@ using namespace seqan;
 int main()
 {
     // We will read from std::cin via an iterator.
-    typedef seqan::DirectionIterator<std::istream, seqan::Input>::Type TReader;
+    typedef DirectionIterator<std::istream, Input>::Type TReader;
 
     // Create iterator to read from standard input.
-    TReader reader = directionIterator(std::cin, seqan::Input());
+    TReader reader = directionIterator(std::cin, Input());
 
-    seqan::CharString key, value;
+    CharString key, value;
 
     // Read the file line by line.
     while (!atEnd(reader))
     {
         // Read first column: The key.
         clear(key);
-        readUntil(key, reader, seqan::EqualsChar<','>());
+        readUntil(key, reader, EqualsChar<','>());
 
-        skipOne(reader, seqan::EqualsChar<','>());  // Skip comma.
+        skipOne(reader, EqualsChar<','>());  // Skip comma.
 
         // Read second column: The value.
         clear(value);

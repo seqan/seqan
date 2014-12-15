@@ -16,12 +16,12 @@ int main(int argc, char const ** argv)
     }
 
     // Open file.
-    seqan::SeqFileIn file(argv[1]);
+    SeqFileIn file(argv[1]);
 
     // Read sequence file and print sequence lengths.
     size_t total = 0;
-    seqan::CharString id;
-    seqan::CharString seq;
+    CharString id;
+    CharString seq;
     while (!atEnd(file))
     {
         readRecord(id, seq, file);

@@ -28,7 +28,7 @@ struct Options
 };
 
 // Parse command line, write results to options, return PARSE_OK if everything went well.
-seqan::ArgumentParser::ParseResult parseCommandLine(Options & options, int argc, char const ** argv)
+ArgumentParser::ParseResult parseCommandLine(Options & options, int argc, char const ** argv)
 {
     ArgumentParser parser;
     setShortDescription(parser, "draw SAM/BAM file as SVG vector graphics");
@@ -63,10 +63,10 @@ seqan::ArgumentParser::ParseResult parseCommandLine(Options & options, int argc,
     addOption(parser, ArgParseOption("", "gap-space", "begin and end position are given in gap space instead of in sequence space"));
 
     // Parse command line.
-    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
+    ArgumentParser::ParseResult res = parse(parser, argc, argv);
 
     // Only extract  options if the program will continue after parseCommandLine()
-    if (res != seqan::ArgumentParser::PARSE_OK)
+    if (res != ArgumentParser::PARSE_OK)
         return res;
 
     getOptionValue(options.contigID, parser, "contig");
@@ -86,17 +86,17 @@ seqan::ArgumentParser::ParseResult parseCommandLine(Options & options, int argc,
     if (options.beginPos != -1 && options.endPos != -1 && options.beginPos > options.endPos)
     {
         std::cerr << "ERROR: begin position cannot be greater than end position!\n";
-        return seqan::ArgumentParser::PARSE_ERROR;
+        return ArgumentParser::PARSE_ERROR;
     }
 
     // First line number cannot be greater than last line number.
     if (options.beginLine != -1 && options.endLine != -1 && options.beginLine < options.endLine)
     {
         std::cerr << "ERROR: first line cannot be greater than end position!\n";
-        return seqan::ArgumentParser::PARSE_ERROR;
+        return ArgumentParser::PARSE_ERROR;
     }
 
-    return seqan::ArgumentParser::PARSE_OK;
+    return ArgumentParser::PARSE_OK;
 }
 
 int main(int argc, char const ** argv)
@@ -105,12 +105,12 @@ int main(int argc, char const ** argv)
     // Parse Options
     // -----------------------------------------------------------------------
     Options options;
-    seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
+    ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
 
     // If parsing was not successful then exit with code 1 if there were errors.
     // Otherwise, exit with code 0 (e.g. help was printed).
-    if (res != seqan::ArgumentParser::PARSE_OK)
-        return res == seqan::ArgumentParser::PARSE_ERROR;
+    if (res != ArgumentParser::PARSE_OK)
+        return res == ArgumentParser::PARSE_ERROR;
 
     // -----------------------------------------------------------------------
     // Load Files

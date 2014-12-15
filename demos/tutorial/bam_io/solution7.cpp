@@ -15,7 +15,7 @@ int main(int argc, char const ** argv)
     }
 
     // Open BGZF Stream for reading.
-    typedef seqan::VirtualStream<char, seqan::Input> TInStream;
+    typedef VirtualStream<char, Input> TInStream;
     TInStream inStream;
     if (!open(inStream, argv[1]))
     {
@@ -24,20 +24,20 @@ int main(int argc, char const ** argv)
     }
 
     // Setup name store, cache, and BAM I/O context.
-    typedef seqan::StringSet<seqan::CharString> TNameStore;
-    typedef seqan::NameStoreCache<TNameStore>   TNameStoreCache;
-    typedef seqan::BamIOContext<TNameStore>     TBamIOContext;
+    typedef StringSet<CharString> TNameStore;
+    typedef NameStoreCache<TNameStore>   TNameStoreCache;
+    typedef BamIOContext<TNameStore>     TBamIOContext;
     TNameStore      nameStore;
     TNameStoreCache nameStoreCache(nameStore);
     TBamIOContext   context(nameStore, nameStoreCache);
 
     // Read header.
-    seqan::BamHeader header;
-    seqan::DirectionIterator<TInStream, seqan::Input>::Type reader = directionIterator(inStream, seqan::Input());
-    readRecord(header, context, reader, seqan::Bam());
+    BamHeader header;
+    DirectionIterator<TInStream, Input>::Type reader = directionIterator(inStream, Input());
+    readRecord(header, context, reader, Bam());
 
     // Write out header again.
-    write(std::cout, header, context, seqan::Sam());
+    write(std::cout, header, context, Sam());
 
     return 0;
 }

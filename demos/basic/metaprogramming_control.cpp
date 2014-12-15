@@ -41,11 +41,11 @@
 
 using namespace seqan;
 
-// Demo worker for seqan::Loop<>.
+// Demo worker for Loop<>.
 //![print worker]
 struct PrintWorker
 {
-    static inline void body(seqan::Nothing & arg, int I)
+    static inline void body(Nothing & arg, int I)
     {
         (void)arg;  // ignored
         printf("%d\n", I);
@@ -55,20 +55,20 @@ struct PrintWorker
 
 int main()
 {
-    // Call to PrintWorker::body() through seqan::Loop<>.
+    // Call to PrintWorker::body() through Loop<>.
     {
 //![print worker call loop]
-    seqan::Nothing nothing;
-    seqan::Loop<PrintWorker, 10>::run(nothing);
+    Nothing nothing;
+    Loop<PrintWorker, 10>::run(nothing);
     // This will print the numbers 1, 2, ..., 9, 10.
 //![print worker call loop]
     }
 
-    // Call to PrintWorker::body() through seqan::LoopReverse<>.
+    // Call to PrintWorker::body() through LoopReverse<>.
     {
 //![print worker call loop reverse]
-    seqan::Nothing nothing;
-    seqan::LoopReverse<PrintWorker, 10>::run(nothing);
+    Nothing nothing;
+    LoopReverse<PrintWorker, 10>::run(nothing);
     // This will print the numbers 10, 9, ..., 2, 1.
 //![print worker call loop reverse]
     }

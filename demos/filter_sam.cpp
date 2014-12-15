@@ -33,7 +33,7 @@ struct Options
 };
 
 struct SortAlignmentDistance_;
-typedef seqan::Tag<SortAlignmentDistance_> SortAlignmentDistance;
+typedef Tag<SortAlignmentDistance_> SortAlignmentDistance;
 
 template <typename TAlignedRead, typename TDistanceString>
 struct LessAlignedReadDistance

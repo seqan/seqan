@@ -10,10 +10,10 @@ int main(int argc, char const ** argv)
         return 1;
     }
 
-    seqan::CharString id;
-    seqan::Dna5String seq;
+    CharString id;
+    Dna5String seq;
 
-    seqan::SeqFileIn seqFileIn;
+    SeqFileIn seqFileIn;
     if (!open(seqFileIn, argv[1]))
     {
         std::cerr << "ERROR: Could not open the file.\n";
@@ -24,7 +24,7 @@ int main(int argc, char const ** argv)
     {
         readRecord(id, seq, seqFileIn);
     }
-    catch (seqan::Exception const & e)
+    catch (Exception const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;

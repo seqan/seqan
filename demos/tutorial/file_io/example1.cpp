@@ -10,13 +10,13 @@ int main()
     std::ofstream out("out.txt", std::ios::binary | std::ios::out);
 
     // Create iterators to read and write.
-    typedef seqan::DirectionIterator<std::ifstream, seqan::Input>::Type TReader;
-    typedef seqan::DirectionIterator<std::ofstream, seqan::Output>::Type TWriter;
+    typedef DirectionIterator<std::ifstream, Input>::Type TReader;
+    typedef DirectionIterator<std::ofstream, Output>::Type TWriter;
 
-    TReader reader = directionIterator(in, seqan::Input());
-    TWriter writer = directionIterator(out, seqan::Output());
+    TReader reader = directionIterator(in, Input());
+    TWriter writer = directionIterator(out, Output());
 
-    seqan::CharString buffer;
+    CharString buffer;
     reserve(buffer, 1000);
 
     while (!atEnd(reader))

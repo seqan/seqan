@@ -230,7 +230,7 @@ int main(int argc, char const * argv[])
     }
 
     // Read file.
-    seqan::DirectionIterator<std::ifstream, seqan::Input>::Type reader = directionIterator(stream, Input());
+    DirectionIterator<std::ifstream, Input>::Type reader = directionIterator(stream, Input());
     String<BlastnTabAlignmentRecord> records;
     readRecords(records, reader, BlastnTab());
 

@@ -6,17 +6,17 @@ using namespace seqan;
 
 int main()
 {
-    typedef seqan::Seed<seqan::Simple>    TSeed;
-    typedef seqan::SeedSet<TSeed> TSeedSet;
+    typedef Seed<Simple>    TSeed;
+    typedef SeedSet<TSeed> TSeedSet;
     
     TSeedSet seedSet;
-    addSeed(seedSet, TSeed(1, 1, 3), seqan::Single());
-    addSeed(seedSet, TSeed(6, 9, 2), seqan::Single());
-    addSeed(seedSet, TSeed(10, 13, 3), seqan::Single());
-    addSeed(seedSet, TSeed(20, 22, 5), seqan::Single());
+    addSeed(seedSet, TSeed(1, 1, 3), Single());
+    addSeed(seedSet, TSeed(6, 9, 2), Single());
+    addSeed(seedSet, TSeed(10, 13, 3), Single());
+    addSeed(seedSet, TSeed(20, 22, 5), Single());
 
-    seqan::String<TSeed> result;
-    chainSeedsGlobally(result, seedSet, seqan::SparseChaining());
+    String<TSeed> result;
+    chainSeedsGlobally(result, seedSet, SparseChaining());
 
     return 0;
 }

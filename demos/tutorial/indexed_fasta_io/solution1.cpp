@@ -12,14 +12,14 @@ int main(int argc, char const ** argv)
         return 1;
     }
 
-    seqan::FaiIndex faiIndex;
+    FaiIndex faiIndex;
     if (build(faiIndex, argv[1]) != 0)
     {
         std::cerr << "ERROR: Could not build FAI index for file " << argv[1] << ".\n";
         return 1;
     }
 
-    seqan::CharString faiFilename = argv[1];
+    CharString faiFilename = argv[1];
     append(faiFilename, ".fai");
 
     if (!save(faiIndex, toCString(faiFilename)))

@@ -5,18 +5,18 @@ using namespace seqan;
 
 int main()
 {
-    typedef seqan::ProfileChar<seqan::Dna, int> TDnaProfile;
-    typedef seqan::String<TDnaProfile> TProfileString;
+    typedef ProfileChar<Dna, int> TDnaProfile;
+    typedef String<TDnaProfile> TProfileString;
 
     TProfileString profile = "CGAT";
-    seqan::DnaString seq = "CGGAAT";
+    DnaString seq = "CGGAAT";
 
-    seqan::Gaps<TProfileString> gapsH(profile);
-    seqan::Gaps<seqan::DnaString> gapsV(seq);
+    Gaps<TProfileString> gapsH(profile);
+    Gaps<DnaString> gapsV(seq);
 
-    seqan::Score<int, seqan::ProfileSeqScore> sScheme(profile);
+    Score<int, ProfileSeqScore> sScheme(profile);
 
-    int val = globalAlignment(gapsH, gapsV, sScheme, seqan::NeedlemanWunsch());
+    int val = globalAlignment(gapsH, gapsV, sScheme, NeedlemanWunsch());
     std::cout << "score value = " << val << "\n";
 
     std::cout << "gaps in profile/sequence\n"

@@ -48,7 +48,7 @@
 
 #if SEQAN_HAS_ZLIB
 
-void trimSeqHeaderToId(seqan::CharString & header)
+void trimSeqHeaderToId(CharString & header)
 {
     unsigned i = 0;
     for (; i < length(header); ++i)

@@ -1,6 +1,6 @@
 #include <seqan/align.h>
 #include <seqan/align_split.h>
-#include <seqan/file.h>  // output of seqan::String
+#include <seqan/file.h>  // output of String
 #include <seqan/sequence.h>
 #include <seqan/score.h>
 

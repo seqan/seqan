@@ -14,7 +14,7 @@ int main(int argc, char const ** argv)
     }
 
     // Try to load index and create on the fly if necessary.
-    seqan::FaiIndex faiIndex;
+    FaiIndex faiIndex;
     if (!open(faiIndex, argv[1]))
     {
         if (!build(faiIndex, argv[1]))
@@ -39,12 +39,12 @@ int main(int argc, char const ** argv)
 
     // Convert positions into integers.
     unsigned beginPos = 0, endPos = 0;
-    if (!seqan::lexicalCast(beginPos, argv[3]))
+    if (!lexicalCast(beginPos, argv[3]))
     {
         std::cerr << "ERROR: Cannot cast " << argv[3] << " into an unsigned.\n";
         return 1;
     }
-    if (!seqan::lexicalCast(endPos, argv[4]))
+    if (!lexicalCast(endPos, argv[4]))
     {
         std::cerr << "ERROR: Cannot cast " << argv[4] << " into an unsigned.\n";
         return 1;
@@ -59,7 +59,7 @@ int main(int argc, char const ** argv)
         endPos = beginPos;
 
     // Finally, get infix of sequence.
-    seqan::Dna5String sequenceInfix;
+    Dna5String sequenceInfix;
     readRegion(sequenceInfix, faiIndex, idx, beginPos, endPos);
     std::cout << sequenceInfix << "\n";
 

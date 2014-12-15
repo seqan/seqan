@@ -8,9 +8,9 @@ using namespace seqan;
 int main()
 {
 ///The metafunction @Metafunction.Iterator@ returns the iterator type for a given container type.
-	seqan::String<char> str = "admn";
-	seqan::Iterator<seqan::String<char> >::Type it = begin(str);
-	seqan::Iterator<seqan::String<char> >::Type itEnd = end(str);
+	String<char> str = "admn";
+	Iterator<String<char> >::Type it = begin(str);
+	Iterator<String<char> >::Type itEnd = end(str);
 ///We can use iterators to iterate over the elements of a container.
 	while (it != itEnd) {
 		std::cout << *it;
@@ -21,7 +21,7 @@ int main()
 ///Hence, the functions @Function.goBegin@ and @Function.atEnd@ do
 ///not get $str$ as an argument.
 ///The following loop increments each character in $str$.
-	seqan::Iterator<seqan::String<char>, seqan::Rooted >::Type it2 = begin(str);
+	Iterator<String<char>, Rooted >::Type it2 = begin(str);
 	for (goBegin(it2); !atEnd(it2); goNext(it2)) 
 	{
 		++value(it2);
