@@ -4,7 +4,6 @@
 #include <seqan/seq_io.h>
 
 using namespace seqan;
-using namespace std;
 
 int main(int argc, const char *argv[]) 
 {
@@ -70,7 +69,7 @@ int main(int argc, const char *argv[])
 	
 	TAlignmentGraph gOut(seqs);
 	progressiveAlignment(g, guideTree, gOut);
-	cout << gOut;
+	std::cout << gOut;
 	
 	return 0;
 }

@@ -6,7 +6,6 @@
 #include <iostream>
 
 using namespace seqan;
-using namespace std;
 
 const unsigned long blockSize = 1 << 12;
 const unsigned long repeats = 1 << 19;
@@ -21,7 +20,7 @@ void testThroughput(const char *fileName)
 	typename AsyncRequest<TFile>::Type req1, req2;
 
 	if (!open(myFile, fileName, OPEN_WRONLY | OPEN_CREATE)) {
-		cout << "Could not open for writing" << endl;
+        std::cout << "Could not open for writing\n";
 		return;
 	}
 
@@ -39,8 +38,8 @@ void testThroughput(const char *fileName)
 	waitFor(req1);
 	waitFor(req2);
 
-	cout << ((repeats*blockSize / (512.0 * 1024.0)) / SEQAN_PROTIMEDIFF(iotime));
-	cout << " MB/s" << endl;
+	std::cout << ((repeats*blockSize / (512.0 * 1024.0)) / SEQAN_PROTIMEDIFF(iotime));
+	std::cout << " MB/s\n";
 
 	close(myFile);
 }
@@ -51,7 +50,7 @@ void testExtString(const char *fileName)
 	String<char, External<ExternalConfig<TFile> > > myString;
 
 	if (!open(myString, fileName, OPEN_WRONLY | OPEN_CREATE)) {
-		cout << "Could not open for writing" << endl;
+		std::cout << "Could not open for writing\n";
 		return;
 	}
 
@@ -63,8 +62,8 @@ void testExtString(const char *fileName)
 		append(myString, block2);
 	}
 
-	cout << ((repeats*blockSize / (512.0 * 1024.0)) / SEQAN_PROTIMEDIFF(iotime));
-	cout << " MB/s" << endl;
+	std::cout << ((repeats*blockSize / (512.0 * 1024.0)) / SEQAN_PROTIMEDIFF(iotime));
+	std::cout << " MB/s\n";
 }
 
 template <typename TFile>
@@ -73,7 +72,7 @@ void testMMapString(const char *fileName)
 	String<char, MMap<> > myString;
 
 	if (!open(myString, fileName, OPEN_RDWR /*| OPEN_CREATE*/)) {
-		cout << "Could not open for writing" << endl;
+		std::cout << "Could not open for writing\n";
 		return;
 	}
 
@@ -85,18 +84,18 @@ void testMMapString(const char *fileName)
 		append(myString, block2);
 	}
 
-	cout << ((repeats*blockSize / (512.0 * 1024.0)) / SEQAN_PROTIMEDIFF(iotime));
-	cout << " MB/s" << endl;
+	std::cout << ((repeats*blockSize / (512.0 * 1024.0)) / SEQAN_PROTIMEDIFF(iotime));
+	std::cout << " MB/s\n";
 }
 
 int main() 
 {
 	resize(block1, blockSize);
 	resize(block2, blockSize);
-	cout << "asyncWrite() using sync. File   ";		testThroughput< File< Sync<> > >	("file_speed2.bin");
-	cout << "asyncWrite() using async. File  ";		testThroughput< File< Async<> > >	("file_speed3.bin");
-	cout << "ExtString using sync. File  ";		testExtString< File< Sync<> > >		("file_speed5.bin");
-	cout << "ExtString using async. File ";		testExtString< File< Async<> > >	("file_speed6.bin");
-	cout << "Memory Mapped String        ";		testMMapString< File< Async<> > >	("file_speed7.bin");
+	std::cout << "asyncWrite() using sync. File   ";		testThroughput< File< Sync<> > >	("file_speed2.bin");
+	std::cout << "asyncWrite() using async. File  ";		testThroughput< File< Async<> > >	("file_speed3.bin");
+	std::cout << "ExtString using sync. File  ";		testExtString< File< Sync<> > >		("file_speed5.bin");
+	std::cout << "ExtString using async. File ";		testExtString< File< Async<> > >	("file_speed6.bin");
+	std::cout << "Memory Mapped String        ";		testMMapString< File< Async<> > >	("file_speed7.bin");
 	return 0;
 }

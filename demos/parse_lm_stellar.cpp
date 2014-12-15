@@ -39,10 +39,10 @@
 #include <seqan/stream.h>
 #include <seqan/parse_lm.h>
 
+using namespace seqan;
+
 int main(int argc, char const ** argv)
 {
-    using namespace seqan;
-
     // Check arguments.
     if (argc != 2)
     {

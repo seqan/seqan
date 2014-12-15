@@ -44,11 +44,11 @@
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
 
+using namespace seqan;
+
 template <typename TStream>
 void convertToHardMasked(TStream & stream, char const * filename)
 {
-    using namespace seqan;
-
     SeqFileIn inFile(filename);
 
     String<char> meta;

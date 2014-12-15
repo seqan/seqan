@@ -46,6 +46,8 @@
 #include <seqan/bam_io.h>
 #include <seqan/seq_io.h>
 
+using namespace seqan;
+
 #if SEQAN_HAS_ZLIB
 
 void trimSeqHeaderToId(CharString & header)
@@ -59,8 +61,6 @@ void trimSeqHeaderToId(CharString & header)
 
 int main(int argc, char const ** argv)
 {
-    using namespace seqan;
-
     // Check command line arguments.
     if (argc != 3)
     {

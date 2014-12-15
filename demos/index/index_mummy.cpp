@@ -3,7 +3,6 @@
 #include <seqan/index.h>
 #include <seqan/seq_io.h>
 
-using namespace std;
 using namespace seqan;
 
 
@@ -13,24 +12,24 @@ void findMUMs(TIndex &esa, unsigned minLen)
 	typename Iterator<TIndex, Mums>::Type it(esa, minLen);  // set minimum MUM length
 	String< typename SAValue<TIndex>::Type > occs;          // temp. string storing the hit positions
 
-	cout << resetiosflags(ios::left);
+	std::cout << resetiosflags(std::ios::left);
 	while (!atEnd(it)) 
 	{
 		occs = getOccurrences(it);                          // gives hit positions (seqNo,seqOfs)
 		orderOccurrences(occs);                             // order them by seqNo
 		
 		for(unsigned i = 0; i < length(occs); ++i)
-			cout << setw(8)
+			std::cout << std::setw(8)
 					<< getValueI2(occs[i]) + 1              // output them in MUMmer's output format
 					<< "  ";
 
-		cout << setw(8) 
+		std::cout << std::setw(8) 
 				<< repLength(it)
-				<< endl;
+				<< "\n";
 
 		++it;
 	}
-	cout << setiosflags(ios::left) << endl;
+	std::cout << setiosflags(std::ios::left) << "\n";
 }
 
 
@@ -58,7 +57,7 @@ int runMummy(int argc, const char *argv[], unsigned seqCount, unsigned minLen)
 		if (argv[arg][0] != '-') {
 			SeqFileIn file;
 			if (!open(file, argv[arg])) {
-				cout << "Import of sequence " << argv[arg] << " failed." << endl;
+				std::cout << "Import of sequence " << argv[arg] << " failed.\n";
 				return 1;
 			}
 			readRecords(meta, indexText(index), file);
@@ -67,7 +66,7 @@ int runMummy(int argc, const char *argv[], unsigned seqCount, unsigned minLen)
 			++seq;
 		}
 	}
-	cout << lengthSum(indexText(index)) << " bps sequence imported." << endl;
+	std::cout << lengthSum(indexText(index)) << " bps sequence imported.\n";
 
 	findMUMs(index, minLen);
 
@@ -77,19 +76,19 @@ int runMummy(int argc, const char *argv[], unsigned seqCount, unsigned minLen)
 
 void printHelp(int, const char *[], bool longHelp = false) 
 {
-	cout << "***************************************" << endl;
-	cout << "***        Simple MUM finder        ***" << endl;
-	cout << "*** written by David Weese (c) 2007 ***" << endl;
-	cout << "***************************************" << endl << endl;
-	cout << "Usage: mummy [OPTION]... <SEQUENCE FILE> ... <SEQUENCE FILE>" << endl;
+	std::cout << "***************************************\n";
+	std::cout << "***        Simple MUM finder        ***\n";
+	std::cout << "*** written by David Weese (c) 2007 ***\n";
+	std::cout << "***************************************\n\n";
+	std::cout << "Usage: mummy [OPTION]... <SEQUENCE FILE> ... <SEQUENCE FILE>\n";
 	if (longHelp) {
-		cout << endl << "Options:" << endl;
-		cout << "  -e, --extern          \t" << "use external memory (for large datasets)" << endl;
-		cout << "  -l, --minlen          \t" << "set minimum MUM length" << endl;
-		cout << "                        \t" << "if not set, default value is 20" << endl;
-		cout << "  -h, --help            \t" << "print this help" << endl;
+		std::cout << "\nOptions:\n";
+		std::cout << "  -e, --extern          \tuse external memory (for large datasets)\n";
+		std::cout << "  -l, --minlen          \tset minimum MUM length\n";
+		std::cout << "                        \tif not set, default value is 20\n";
+		std::cout << "  -h, --help            \tprint this help\n";
 	} else {
-		cout << "Try 'mummy --help' for more information." << endl;
+		std::cout << "Try 'mummy --help' for more information.\n";
 	}
 }
 

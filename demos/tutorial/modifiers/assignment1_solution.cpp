@@ -2,10 +2,7 @@
 #include <seqan/stream.h>
 #include <seqan/modifier.h>
 
-
-using namespace std;
 using namespace seqan;
-
 
 struct ConvertCT : public std::unary_function<Dna, Dna> 
 {
