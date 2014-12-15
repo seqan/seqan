@@ -194,7 +194,8 @@ void testBamIOBamFileReadRecords(char const * pathFragment)
     SEQAN_ASSERT_EQ(alignments[2].qual, "!!!!!!!!!!");
     SEQAN_ASSERT_EQ(length(alignments[2].tags), 0u);
 
-    SEQAN_ASSERT_EQ(contigNames(context(bamIO))[0], "REFERENCE");
+    SEQAN_ASSERT_EQ(getContigName(alignments[0], bamIO), "REFERENCE");
+    SEQAN_ASSERT_EQ(getContigLength(alignments[0], bamIO), 10000);
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_read_records)
