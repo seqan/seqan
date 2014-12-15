@@ -188,6 +188,17 @@ setContigNames(BamIOContext<TNameStore, TNameStoreCache, Dependent<> > & context
 // Function contigLengths()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn BamIOContext#contigLengths
+ * @brief Return reference to contig lengths from @link BamIOContext @endlink.
+ *
+ * @signature TLengthStoreRef contigLengths(context);
+ *
+ * @param[in] context The @link BamIOContext @endlink to query.
+ *
+ * @return TLengthStoreRef A reference to the <tt>TLengthStore</tt> of the context.
+ */
+
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline typename BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>::TLengthStore &
 contigLengths(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
