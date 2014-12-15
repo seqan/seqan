@@ -98,7 +98,7 @@ template <typename TValue>
 inline double
 log(TValue const & value)
 {
-    return ::std::log((double)value);
+    return std::log((double)value);
 }
 
 
@@ -112,7 +112,7 @@ class LogProb
     // Constructors
     // ------------------------------------------------------------------------
     
-    LogProb() : data_value(::std::log(0.0)) {}
+    LogProb() : data_value(std::log(0.0)) {}
 
     template <typename TValue2>
     LogProb(TValue2 const & _other)
@@ -127,13 +127,13 @@ class LogProb
     template <typename TResult>
     inline TResult _convert(False) const
     {
-        return (TResult)::std::exp(data_value);
+        return (TResult)std::exp(data_value);
     }
 
     template <typename TResult>
     inline TResult _convert(True) const
     {
-        return (TResult)round(::std::exp(data_value));
+        return (TResult)round(std::exp(data_value));
     }
 
     template <typename TValue2>
@@ -146,13 +146,13 @@ class LogProb
     inline
     operator float() const
     {
-        return (float) ::std::exp(data_value);
+        return (float) std::exp(data_value);
     }
 
     inline
     operator double() const
     {
-        return (double) ::std::exp(data_value);
+        return (double) std::exp(data_value);
     }
 */
     // ------------------------------------------------------------------------
@@ -164,7 +164,7 @@ class LogProb
     LogProb &
     operator=(TRhs const& rhs)
     {
-        data_value = ::std::log(rhs);
+        data_value = std::log(rhs);
         return *this;
     }
 
@@ -276,7 +276,7 @@ inline
 LogProb<TValue, TSpec> &
 operator+=(LogProb<TValue, TSpec> & lhs,
            TRhs const & rhs) {
-    lhs.data_value = ::std::log(::std::exp(lhs.data_value) + rhs);
+    lhs.data_value = std::log(std::exp(lhs.data_value) + rhs);
     return lhs;
 }
 
@@ -287,15 +287,15 @@ operator+=(LogProb<TValue, TSpec> & lhs,
            LogProb<TValue2, TSpec2> const & rhs)
 {
     if (lhs.data_value > rhs.data_value) {
-        if ((rhs.data_value == ::std::log(0.0)) || (lhs.data_value - rhs.data_value > 100))
+        if ((rhs.data_value == std::log(0.0)) || (lhs.data_value - rhs.data_value > 100))
             return lhs;
-        lhs.data_value = lhs.data_value + ::std::log(1 + ::std::exp(rhs.data_value - lhs.data_value));
+        lhs.data_value = lhs.data_value + std::log(1 + std::exp(rhs.data_value - lhs.data_value));
     } else {
-        if ((lhs.data_value == ::std::log(0.0)) || (rhs.data_value - lhs.data_value > 100)) {
+        if ((lhs.data_value == std::log(0.0)) || (rhs.data_value - lhs.data_value > 100)) {
             lhs.data_value = rhs.data_value;
             return lhs;
         }
-        lhs.data_value = rhs.data_value + ::std::log(1 + ::std::exp(lhs.data_value - rhs.data_value));
+        lhs.data_value = rhs.data_value + std::log(1 + std::exp(lhs.data_value - rhs.data_value));
     }
     return lhs;
 }
@@ -335,7 +335,7 @@ LogProb<TValue, TSpec> &
 operator-=(LogProb<TValue, TSpec> & lhs,
            TRhs const & rhs)
 {
-    lhs.data_value = ::std::log(::std::exp(lhs.data_value) - rhs);
+    lhs.data_value = std::log(std::exp(lhs.data_value) - rhs);
     return lhs;
 }
 
@@ -346,15 +346,15 @@ operator-=(LogProb<TValue, TSpec> & lhs,
            LogProb<TValue2, TSpec2> const & rhs)
 {
     if (lhs.data_value > rhs.data_value) {
-        if ((rhs.data_value == ::std::log(0.0)) || (lhs.data_value - rhs.data_value > 100))
+        if ((rhs.data_value == std::log(0.0)) || (lhs.data_value - rhs.data_value > 100))
             return lhs;
-        lhs.data_value = lhs.data_value + ::std::log(1 - ::std::exp(rhs.data_value - lhs.data_value));
+        lhs.data_value = lhs.data_value + std::log(1 - std::exp(rhs.data_value - lhs.data_value));
     } else {
-        if ((lhs.data_value == ::std::log(0.0)) || (rhs.data_value - lhs.data_value > 100)) {
+        if ((lhs.data_value == std::log(0.0)) || (rhs.data_value - lhs.data_value > 100)) {
             lhs.data_value = rhs.data_value;
             return lhs;
         }
-        lhs.data_value = rhs.data_value + ::std::log(1 - ::std::exp(lhs.data_value - rhs.data_value));
+        lhs.data_value = rhs.data_value + std::log(1 - std::exp(lhs.data_value - rhs.data_value));
     }
     return lhs;
 }
@@ -473,7 +473,7 @@ inline
 TStream &
 operator<<(TStream & stream, LogProb<TValue, TSpec> const & rhs)
 {
-    return stream << ::std::exp(rhs.data_value);
+    return stream << std::exp(rhs.data_value);
 }
     
 }  // namespace seqan

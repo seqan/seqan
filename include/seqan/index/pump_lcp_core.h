@@ -109,8 +109,8 @@ namespace SEQAN_NAMESPACE_MAIN
 			TSize windowEnd = windowBegin + windowSize;
 			TSize newOverlap = windowEnd;
             #ifdef SEQAN_DEBUG_INDEX
-				::std::cerr << ::std::hex << "  read window[" << windowBegin << "," << windowEnd;
-				::std::cerr << ") overlay " << overlap << " rest " << rest << ::std::dec << ::std::endl;
+				std::cerr << std::hex << "  read window[" << windowBegin << "," << windowEnd;
+				std::cerr << ") overlay " << overlap << " rest " << rest << std::dec << std::endl;
             #endif
             rest -= windowSize;
 
@@ -123,7 +123,7 @@ namespace SEQAN_NAMESPACE_MAIN
 					TSize left = (*invertedSAIn).i2[1] + out.i2;        // left == j + h
 
 					if (overlap <= (*invertedSAIn).i2[1] && left <= windowEnd) {
-	//                        ::std::cerr << "* ";
+	//                        std::cerr << "* ";
 						for(; left < windowBegin; ++left) {
 							++textIn;
 							++out.i2;
@@ -158,7 +158,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 					if (left >= windowEnd && (*invertedSAIn).i2[1] < newOverlap) {
 						#ifdef SEQAN_VERBOSE
-							::std::cerr << "crossing border @ " << (*invertedSAIn).i2[1] << " len " << out.i2 << ::std::endl;
+							std::cerr << "crossing border @ " << (*invertedSAIn).i2[1] << " len " << out.i2 << std::endl;
 						#endif
 						newOverlap = (*invertedSAIn).i2[1];    //++_olaps;
 					}
@@ -177,23 +177,23 @@ namespace SEQAN_NAMESPACE_MAIN
 			overlap = newOverlap;
 			buffer = reader.next();                                 // read the following block
 
-			//::std::cerr << "pops:" << _pops << " pushes:" << _pushes << " overlaps:" << _olaps << ::std::endl;
+			//std::cerr << "pops:" << _pops << " pushes:" << _pushes << " overlaps:" << _olaps << std::endl;
 		}
 		// trailing zero
 		push(dest, Pair<TSize>(length(textIn) - 1, 0));
 
-		//::std::cerr << "pushes:" << _pushes << " length:" << length(textIn) << ::std::endl;
+		//std::cerr << "pushes:" << _pushes << " length:" << length(textIn) << std::endl;
         //SEQAN_ASSERT_EQ(_pushes, length(textIn));
         //for (unsigned i = 0; i < n; ++i)
         //    if (!seen[i])
-        //        ::std::cerr << "___" << i << "______HUH?" << ::std::endl;
+        //        std::cerr << "___" << i << "______HUH?" << std::endl;
         //delete[] seenISA;
 
         #ifdef SEQAN_DEBUG_INDEX
-            ::std::cerr << "  n: " << n;
-            ::std::cerr << "  lcpMax: " << lcpMax;
-            ::std::cerr << "  lcpAvrg: " << lcpAvrg + lcpNumer / (double)n;
-            ::std::cerr << "  sigma: " << sigma << ::std::endl;
+            std::cerr << "  n: " << n;
+            std::cerr << "  lcpMax: " << lcpMax;
+            std::cerr << "  lcpAvrg: " << lcpAvrg + lcpNumer / (double)n;
+            std::cerr << "  sigma: " << sigma << std::endl;
         #endif
 
 //TODO: uncomment this line
@@ -264,8 +264,8 @@ namespace SEQAN_NAMESPACE_MAIN
 			TSize windowEnd = windowBegin + windowSize;
 			TSize newOverlap = windowEnd;
             #ifdef SEQAN_DEBUG_INDEX
-				::std::cerr << ::std::hex << "  read window[" << windowBegin << "," << windowEnd;
-				::std::cerr << ") overlay " << overlap << " rest " << rest << ::std::dec << " size:"<< sizeof(TSize)<<::std::endl;
+				std::cerr << std::hex << "  read window[" << windowBegin << "," << windowEnd;
+				std::cerr << ") overlay " << overlap << " rest " << rest << std::dec << " size:"<< sizeof(TSize)<<std::endl;
             #endif
             rest -= windowSize;
 
@@ -281,7 +281,7 @@ namespace SEQAN_NAMESPACE_MAIN
 					left = leftOrig + out.i2;        // left == j + h
 
 					if (overlap <= leftOrig && left <= windowEnd) {
-	//                        ::std::cerr << "* ";
+	//                        std::cerr << "* ";
 						for(; left < windowBegin; ++left) {
 							++textIn;
 							++out.i2;
@@ -324,7 +324,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 					if (left >= windowEnd && leftOrig < newOverlap) {
 						#ifdef SEQAN_VERBOSE
-							::std::cerr << "crossing border @ " << (*invertedSAIn).i2[1] << " len " << out.i2 << ::std::endl;
+							std::cerr << "crossing border @ " << (*invertedSAIn).i2[1] << " len " << out.i2 << std::endl;
 						#endif
 						newOverlap = leftOrig;    //++_olaps;
 					}
@@ -345,23 +345,23 @@ namespace SEQAN_NAMESPACE_MAIN
 			overlap = newOverlap;
 			buffer = reader.next();                                 // read the following block
 
-			//::std::cerr << "pops:" << _pops << " pushes:" << _pushes << " overlaps:" << _olaps << ::std::endl;
+			//std::cerr << "pops:" << _pops << " pushes:" << _pushes << " overlaps:" << _olaps << std::endl;
 		}
 		// trailing zero
 		push(dest, Pair<TSize>(length(textIn) - 1, 0));
 
-		//::std::cerr << "pushes:" << _pushes << " length:" << length(textIn) << ::std::endl;
+		//std::cerr << "pushes:" << _pushes << " length:" << length(textIn) << std::endl;
         //SEQAN_ASSERT_EQ(_pushes, length(textIn));
         //for (unsigned i = 0; i < n; ++i)
         //    if (!seen[i])
-        //        ::std::cerr << "___" << i << "______HUH?" << ::std::endl;
+        //        std::cerr << "___" << i << "______HUH?" << std::endl;
         //delete[] seenISA;
 
         #ifdef SEQAN_DEBUG_INDEX
-            ::std::cerr << "  n: " << n;
-            ::std::cerr << "  lcpMax: " << lcpMax;
-            ::std::cerr << "  lcpAvrg: " << lcpAvrg + lcpNumer / (double)n;
-            ::std::cerr << "  sigma: " << sigma << ::std::endl;
+            std::cerr << "  n: " << n;
+            std::cerr << "  lcpMax: " << lcpMax;
+            std::cerr << "  lcpAvrg: " << lcpAvrg + lcpNumer / (double)n;
+            std::cerr << "  sigma: " << sigma << std::endl;
         #endif
 
 //TODO: uncomment this line

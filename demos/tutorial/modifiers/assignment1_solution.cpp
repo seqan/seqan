@@ -7,7 +7,7 @@ using namespace std;
 using namespace seqan;
 
 
-struct ConvertCT : public ::std::unary_function<Dna, Dna> 
+struct ConvertCT : public std::unary_function<Dna, Dna> 
 {
     inline Dna operator()(Dna x) const 
     {

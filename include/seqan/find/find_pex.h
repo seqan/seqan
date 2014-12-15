@@ -167,9 +167,9 @@ class Pattern<TNeedle, Pex<TVerification, TMultiFinder > >:
    String<Segment<TNeedle> >  splitted_needles;
    
    // data store for the verification tree respectively the splitted needle
-   ::std::map<unsigned, PexRange_<TPosition,TScore,TVerifier,TNeedle> > range_table;
+   std::map<unsigned, PexRange_<TPosition,TScore,TVerifier,TNeedle> > range_table;
    // map leafs of the tree to parts of the needle
-   ::std::map<unsigned, unsigned> leaf_map;
+   std::map<unsigned, unsigned> leaf_map;
 
    // store the infixes for the verifiers
    String<Segment<TNeedle> > segment_store;
@@ -336,7 +336,7 @@ SEQAN_CHECKPOINT
 /*
   // split pattern
   unsigned k = me.limit + 1;
-  unsigned seg_len = me.needleLength / k; //::std::floor(me.needleLength/k); 
+  unsigned seg_len = me.needleLength / k; //std::floor(me.needleLength/k); 
   
   clear(me.splitted_needles);
   clear(me.range_table);
@@ -398,16 +398,16 @@ SEQAN_CHECKPOINT
   _findBeginInit(me, needle(me));
 
 #ifdef SEQAN_DEBUG_PEX
-  ::std::cout << " -------------------------------------------------  " << ::std::endl;
-  ::std::cout << "                   PATTERN INIT                     " << ::std::endl;
-  ::std::cout << "Needle:   " << value(me.data_host) << ::std::endl;
-  ::std::cout << "|Needle|: " << me.needleLength << ::std::endl;
-  ::std::cout << "seg_len:  " << me.needleLength / k << ::std::endl;
-  ::std::cout << "limit:    " << me.limit << ::std::endl;
-  ::std::cout << "k:        " << k << ::std::endl;
-  ::std::cout << "computed following needles for multipattern search: " << ::std::endl;
-  for(unsigned i = 0;i < length(me.splitted_needles);++i)  ::std::cout << me.splitted_needles[i] << ::std::endl;
-  ::std::cout << " -------------------------------------------------  " << ::std::endl;
+  std::cout << " -------------------------------------------------  " << std::endl;
+  std::cout << "                   PATTERN INIT                     " << std::endl;
+  std::cout << "Needle:   " << value(me.data_host) << std::endl;
+  std::cout << "|Needle|: " << me.needleLength << std::endl;
+  std::cout << "seg_len:  " << me.needleLength / k << std::endl;
+  std::cout << "limit:    " << me.limit << std::endl;
+  std::cout << "k:        " << k << std::endl;
+  std::cout << "computed following needles for multipattern search: " << std::endl;
+  for(unsigned i = 0;i < length(me.splitted_needles);++i)  std::cout << me.splitted_needles[i] << std::endl;
+  std::cout << " -------------------------------------------------  " << std::endl;
 #endif  
 
 }
@@ -513,16 +513,16 @@ void _createTree(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me, unsign
   // direction == 1 .. choose right child in the tree
 
 #ifdef SEQAN_DEBUG_PEX
-  ::std::cout << "called _createTree:" << ::std::endl;
-  ::std::cout << "  start: " << start << ::std::endl;
-  ::std::cout << "  end  : " << end << ::std::endl;
-  ::std::cout << "  seq  : " << infix(value(me.data_host),start,end + 1) << ::std::endl;
-  ::std::cout << "  k    : " << k << ::std::endl;
-  ::std::cout << "  paren: " << parent << ::std::endl;
-  ::std::cout << "  direc: " << direction << ::std::endl;
-  ::std::cout << "  idx  : " << idx << ::std::endl;
-  ::std::cout << "  plen : " << plen << ::std::endl;
-  ::std::cout << " ----------------------------- " << ::std::endl;
+  std::cout << "called _createTree:" << std::endl;
+  std::cout << "  start: " << start << std::endl;
+  std::cout << "  end  : " << end << std::endl;
+  std::cout << "  seq  : " << infix(value(me.data_host),start,end + 1) << std::endl;
+  std::cout << "  k    : " << k << std::endl;
+  std::cout << "  paren: " << parent << std::endl;
+  std::cout << "  direc: " << direction << std::endl;
+  std::cout << "  idx  : " << idx << std::endl;
+  std::cout << "  plen : " << plen << std::endl;
+  std::cout << " ----------------------------- " << std::endl;
 #endif
   typedef typename Position<TNeedle>::Type TPosition;
   typedef unsigned TScore;
@@ -537,7 +537,7 @@ void _createTree(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me, unsign
   setScoreLimit(pr.verifier, - static_cast<int>(pr.error));
   setHost(pr.verifier, me.segment_store[length(me.segment_store) - 1]);
   
-  unsigned left = k/2 + 1; //::std::ceil(static_cast<double>(k + 1)/2);
+  unsigned left = k/2 + 1; //std::ceil(static_cast<double>(k + 1)/2);
   unsigned cur_idx = (parent << 1) + direction;
 
   // insert pr into the tree
@@ -546,16 +546,16 @@ void _createTree(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me, unsign
   if(k == 0){
     appendValue(me.splitted_needles,infix(value(me.data_host),pr.start,pr.end + 1));
 #ifdef SEQAN_DEBUG_PEX
-    ::std::cout << "inserted : " << me.splitted_needles[length(me.splitted_needles) - 1] << " into splitted needles" << ::std::endl;
-    ::std::cout << "assign to leaf_map " << length(me.splitted_needles) - 1 << " value " << cur_idx << ::std::endl;
-    ::std::cout << " ----------------------------- " << ::std::endl;
+    std::cout << "inserted : " << me.splitted_needles[length(me.splitted_needles) - 1] << " into splitted needles" << std::endl;
+    std::cout << "assign to leaf_map " << length(me.splitted_needles) - 1 << " value " << cur_idx << std::endl;
+    std::cout << " ----------------------------- " << std::endl;
 #endif
     me.leaf_map[length(me.splitted_needles) - 1] = cur_idx;
   }else{
     // recusivly create the rest of the tree
-//    _createTree(me, start, start + left * plen - 1, ::std::floor(static_cast<double>(left * k)/ static_cast<double>(k + 1)),cur_idx,0,idx,plen);
+//    _createTree(me, start, start + left * plen - 1, std::floor(static_cast<double>(left * k)/ static_cast<double>(k + 1)),cur_idx,0,idx,plen);
     _createTree(me, start, start + left * plen - 1, left * k / (k+1),cur_idx,0,idx,plen);
-//    _createTree(me,  start + left * plen, end, ::std::floor(static_cast<double>((k + 1 - left)*k)/ static_cast<double>(k + 1)),cur_idx,1,idx + left,plen);
+//    _createTree(me,  start + left * plen, end, std::floor(static_cast<double>((k + 1 - left)*k)/ static_cast<double>(k + 1)),cur_idx,1,idx + left,plen);
     _createTree(me,  start + left * plen, end, (k + 1 - left)*k / (k+1),cur_idx,1,idx + left,plen);
   }
 }
@@ -608,7 +608,7 @@ template <typename TNeedle, typename TFinder, typename TMultiFinder>
 void _patternInit(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me, TFinder &)
 {
   unsigned k = me.limit + 1;
-  unsigned plen = me.needleLength / k; //::std::floor(static_cast<double>(me.needleLength)/static_cast<double>(k));
+  unsigned plen = me.needleLength / k; //std::floor(static_cast<double>(me.needleLength)/static_cast<double>(k));
 
   // reset
   clear(me.splitted_needles);
@@ -628,15 +628,15 @@ void _patternInit(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me, TFind
   _findBeginInit(me, needle(me));
 
 #ifdef SEQAN_DEBUG_PEX
-  ::std::cout << " -------------------------------------------------  " << ::std::endl;
-  ::std::cout << "                   PATTERN INIT                     " << ::std::endl;
-  ::std::cout << "Needle:   " << value(me.data_host) << ::std::endl;
-  ::std::cout << "|Needle|: " << me.needleLength << ::std::endl;
-  ::std::cout << "limit:    " << me.limit << ::std::endl;
-  ::std::cout << "k:        " << k << ::std::endl;
-  ::std::cout << "computed following needles for multipattern search: " << ::std::endl;
-  for(unsigned i = 0;i < length(me.splitted_needles);++i)  ::std::cout << me.splitted_needles[i] << ::std::endl;
-  ::std::cout << " -------------------------------------------------  " << ::std::endl;
+  std::cout << " -------------------------------------------------  " << std::endl;
+  std::cout << "                   PATTERN INIT                     " << std::endl;
+  std::cout << "Needle:   " << value(me.data_host) << std::endl;
+  std::cout << "|Needle|: " << me.needleLength << std::endl;
+  std::cout << "limit:    " << me.limit << std::endl;
+  std::cout << "k:        " << k << std::endl;
+  std::cout << "computed following needles for multipattern search: " << std::endl;
+  for(unsigned i = 0;i < length(me.splitted_needles);++i)  std::cout << me.splitted_needles[i] << std::endl;
+  std::cout << " -------------------------------------------------  " << std::endl;
 #endif  
 }
 

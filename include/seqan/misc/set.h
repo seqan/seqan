@@ -370,7 +370,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 	template <typename TElement>
-	struct SetLess_ : public ::std::binary_function<TElement, TElement, bool>
+	struct SetLess_ : public std::binary_function<TElement, TElement, bool>
 	{
 		// key less
 		inline bool operator() (TElement const &a, TElement const &b) {
@@ -381,82 +381,82 @@ namespace SEQAN_NAMESPACE_MAIN
 /* DISABLED: this part of code interferes with map_adapter_stl.h
 
 	template <typename TElement>
-	struct Value< ::std::set<TElement> > {
+	struct Value< std::set<TElement> > {
 		typedef TElement Type;
 	};
 	template <typename TElement>
-	struct Size< ::std::set<TElement> > {
-		typedef typename ::std::set<TElement>::size_type Type;
+	struct Size< std::set<TElement> > {
+		typedef typename std::set<TElement>::size_type Type;
 	};
 
 	template <typename TElement>
-	struct Key< ::std::set<TElement> > :
+	struct Key< std::set<TElement> > :
 		Key<TElement> {};
 
 	template <typename TElement>
-	struct Object< ::std::set<TElement> > :
+	struct Object< std::set<TElement> > :
 		Object<TElement> {};
 
 
 
 	template <typename TKey>
 	inline void 
-	clear(::std::set<TKey> &set) {
+	clear(std::set<TKey> &set) {
 		set.clear();
 	}
 
 	template <typename TElement, typename TSetKey>
 	inline void 
-	insert(TElement const &element, ::std::set<TSetKey> &set) {
+	insert(TElement const &element, std::set<TSetKey> &set) {
 		set.insert(element);
 	}
 
 	template <typename TKey, typename TSetKey>
 	inline void 
-	erase(TKey const &key, ::std::set<TSetKey> &set) {
+	erase(TKey const &key, std::set<TSetKey> &set) {
 		set.erase(key);
 	}
 	template <typename TKey, typename TSetKey, typename TSetObject, typename TPairSpec>
 	inline void 
-	erase(TKey const &key, ::std::set< Pair<TSetKey, TSetObject, TPairSpec> > &set) {
+	erase(TKey const &key, std::set< Pair<TSetKey, TSetObject, TPairSpec> > &set) {
 		set.erase(Pair<TSetKey, TSetObject, TPairSpec>(key, TSetObject()));
 	}
 
 	template <typename TKey, typename TSetKey>
 	inline bool 
-	in(TKey const &key, ::std::set<TSetKey> const &set) {
+	in(TKey const &key, std::set<TSetKey> const &set) {
 		return set.count(key) != 0;
 	}
 	template <typename TKey, typename TSetKey, typename TSetObject, typename TPairSpec>
 	inline bool 
-	in(TKey const &key, ::std::set<Pair<TSetKey, TSetObject, TPairSpec> > const &set) {
+	in(TKey const &key, std::set<Pair<TSetKey, TSetObject, TPairSpec> > const &set) {
 		return set.count(Pair<TSetKey, TSetObject, TPairSpec>(key, TSetObject())) != 0;
 	}
 
 	template <typename TKey>
-	inline typename Size< ::std::set<TKey> >::Type 
-	length(::std::set<TKey> const &set) {
+	inline typename Size< std::set<TKey> >::Type 
+	length(std::set<TKey> const &set) {
 		return set.size();
 	}
 
 	template <typename TKey, typename TSetKey>
-	inline typename Iterator< ::std::set<TSetKey> >::Type 
-	find(TKey const &key, ::std::set<TSetKey> &set) {
+	inline typename Iterator< std::set<TSetKey> >::Type 
+	find(TKey const &key, std::set<TSetKey> &set) {
 		return set.find(key);
 	}
 	template <typename TKey, typename TSetKey>
-	inline typename Iterator< ::std::set<TSetKey> const>::Type 
-	find(TKey const &key, ::std::set<TSetKey> const &set) {
+	inline typename Iterator< std::set<TSetKey> const>::Type 
+	find(TKey const &key, std::set<TSetKey> const &set) {
 		return set.find(key);
 	}
 	template <typename TKey, typename TSetKey, typename TSetObject, typename TPairSpec>
-	inline typename Iterator< ::std::set<Pair<TSetKey, TSetObject, TPairSpec> > >::Type 
-	find(TKey const &key, ::std::set<Pair<TSetKey, TSetObject> > &set) {
+	inline typename Iterator< std::set<Pair<TSetKey, TSetObject, TPairSpec> > >::Type 
+	find(TKey const &key, std::set<Pair<TSetKey, TSetObject> > &set) {
 		return set.find(Pair<TSetKey, TSetObject>(key, TSetObject()));
 	}
 	template <typename TKey, typename TSetKey, typename TSetObject>
-	inline typename Iterator< ::std::set<Pair<TSetKey, TSetObject> > const>::Type 
-	find(TKey const &key, ::std::set<Pair<TSetKey, TSetObject> > const &set) {
+	inline typename Iterator< std::set<Pair<TSetKey, TSetObject> > const>::Type 
+	find(TKey const &key, std::set<Pair<TSetKey, TSetObject> > const &set) {
 		return set.find(Pair<TSetKey, TSetObject>(key, TSetObject()));
 	}
 
@@ -465,73 +465,73 @@ namespace SEQAN_NAMESPACE_MAIN
 	//////////////////////////////////////////////////////////////////////////////
 
 	template <typename TObject>
-	struct Iterator< ::std::set<TObject> > {
-		typedef typename ::std::set<TObject>::iterator Type;
+	struct Iterator< std::set<TObject> > {
+		typedef typename std::set<TObject>::iterator Type;
 	};
 	template <typename TObject>
-	struct Iterator< ::std::set<TObject> const > {
-		typedef typename ::std::set<TObject>::const_iterator Type;
+	struct Iterator< std::set<TObject> const > {
+		typedef typename std::set<TObject>::const_iterator Type;
 	};
 
 
 	template <typename TObject>
-	typename Iterator< ::std::set<TObject> >::Type begin(::std::set<TObject> &set) {
+	typename Iterator< std::set<TObject> >::Type begin(std::set<TObject> &set) {
 		return set.begin();
 	}
 	template <typename TObject>
-	typename Iterator< ::std::set<TObject> const >::Type begin(::std::set<TObject> const &set) {
+	typename Iterator< std::set<TObject> const >::Type begin(std::set<TObject> const &set) {
 		return set.begin();
 	}
 	template <typename TObject>
-	typename Iterator< ::std::set<TObject> >::Type end(::std::set<TObject> &set) {
+	typename Iterator< std::set<TObject> >::Type end(std::set<TObject> &set) {
 		return set.end();
 	}
 	template <typename TObject>
-	typename Iterator< ::std::set<TObject> const >::Type end(::std::set<TObject> const &set) {
+	typename Iterator< std::set<TObject> const >::Type end(std::set<TObject> const &set) {
 		return set.end();
 	}
 
 	//////////////////////////////////////////////////////////////////////////////
 
 	template <typename TElement>
-	inline typename Key< ::std::set<TElement> >::Type &
-	keyOf(typename ::std::set<TElement>::iterator &it) {
+	inline typename Key< std::set<TElement> >::Type &
+	keyOf(typename std::set<TElement>::iterator &it) {
 		return keyOf(*it);
 	}
 	template <typename TElement>
-	inline typename Key< ::std::set<TElement> >::Type &
-	keyOf(typename ::std::set<TElement>::iterator const &it) {
+	inline typename Key< std::set<TElement> >::Type &
+	keyOf(typename std::set<TElement>::iterator const &it) {
 		return keyOf(*it);
 	}
 	template <typename TElement>
-	inline typename Key< ::std::set<TElement> >::Type const &
-	keyOf(typename ::std::set<TElement>::const_iterator &it) {
+	inline typename Key< std::set<TElement> >::Type const &
+	keyOf(typename std::set<TElement>::const_iterator &it) {
 		return keyOf(*it);
 	}
 	template <typename TElement>
-	inline typename Key< ::std::set<TElement> >::Type const &
-	keyOf(typename ::std::set<TElement>::const_iterator const &it) {
+	inline typename Key< std::set<TElement> >::Type const &
+	keyOf(typename std::set<TElement>::const_iterator const &it) {
 		return keyOf(*it);
 	}
 
 	template <typename TElement>
-	inline typename Object< ::std::set<TElement> >::Type &
-	objectOf(typename ::std::set<TElement>::iterator &it) {
+	inline typename Object< std::set<TElement> >::Type &
+	objectOf(typename std::set<TElement>::iterator &it) {
 		return objectOf(*it);
 	}
 	template <typename TElement>
-	inline typename Object< ::std::set<TElement> >::Type &
-	objectOf(typename ::std::set<TElement>::iterator const &it) {
+	inline typename Object< std::set<TElement> >::Type &
+	objectOf(typename std::set<TElement>::iterator const &it) {
 		return objectOf(*it);
 	}
 	template <typename TElement>
-	inline typename Object< ::std::set<TElement> >::Type const &
-	objectOf(typename ::std::set<TElement>::const_iterator &it) {
+	inline typename Object< std::set<TElement> >::Type const &
+	objectOf(typename std::set<TElement>::const_iterator &it) {
 		return objectOf(*it);
 	}
 	template <typename TElement>
-	inline typename Object< ::std::set<TElement> >::Type const &
-	objectOf(typename ::std::set<TElement>::const_iterator const &it) {
+	inline typename Object< std::set<TElement> >::Type const &
+	objectOf(typename std::set<TElement>::const_iterator const &it) {
 		return objectOf(*it);
 	}
 
@@ -555,11 +555,11 @@ namespace SEQAN_NAMESPACE_MAIN
 
 	template <typename TKey>
 	struct Set {
-		typedef ::std::set<TKey> Type;
+		typedef std::set<TKey> Type;
 	};
 	template <typename TKey, typename TObject, typename TPairSpec>
 	struct Set< Pair<TKey, TObject, TPairSpec> > {
-		typedef ::std::set< 
+		typedef std::set< 
 			Pair<TKey, TObject, TPairSpec>, 
 			SetLess_< Pair<TKey, TObject, TPairSpec> > > Type;
 	};

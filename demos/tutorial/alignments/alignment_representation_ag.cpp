@@ -24,7 +24,7 @@ int main()
     TAlignGraph alignG(strings);
 
     // FRAGMENT(construct)
-    ::std::cout << alignG << ::std::endl;
+    std::cout << alignG << std::endl;
 
     addEdge(alignG, addVertex(alignG, positionToId(stringSet(alignG),0), 0, 2),
                     addVertex(alignG, positionToId(stringSet(alignG),1), 0, 2));
@@ -34,7 +34,7 @@ int main()
     addEdge(alignG, addVertex(alignG, positionToId(stringSet(alignG),0), 2, 2),
                         addVertex(alignG, positionToId(stringSet(alignG),1), 3, 2));
 
-    ::std::cout << alignG << ::std::endl;
+    std::cout << alignG << std::endl;
 
     return 0;
 }

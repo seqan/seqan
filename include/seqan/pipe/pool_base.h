@@ -277,10 +277,10 @@ namespace SEQAN_NAMESPACE_MAIN
             chain(_min(_readAheadBuffers, _pool.pages(pageSize = alignSize(_min(_pool.size(), _requestedBufferSize), _pool.pageSize)))) 
         {
 			#ifdef SEQAN_HEADER_PIPE_DEBUG
-				::std::cerr << "___BufferHandler___" << ::std::endl;
-				::std::cerr << "pagesize: " << pageSize << ::std::endl;
-				::std::cerr << "readaheadbuffers: " << chain.maxFrames << ::std::endl;
-				::std::cerr << "pages: " << pool.pages(pageSize) << ::std::endl;
+				std::cerr << "___BufferHandler___" << std::endl;
+				std::cerr << "pagesize: " << pageSize << std::endl;
+				std::cerr << "readaheadbuffers: " << chain.maxFrames << std::endl;
+				std::cerr << "pages: " << pool.pages(pageSize) << std::endl;
 			#endif
         }
 
@@ -341,7 +341,7 @@ namespace SEQAN_NAMESPACE_MAIN
         {
             TPageFrame *p = chain.first;
             while (p) {
-				::seqan::cancel(*p, pool.file);
+				seqan::cancel(*p, pool.file);
                 freePage(*p, pool.file);
                 p = p->next;
             }
@@ -351,7 +351,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     private:
 		bool _error() {
-//            ::std::cerr << "Error in BufWriteFileHandler::_read " << pool.file.error() << ::std::endl;
+//            std::cerr << "Error in BufWriteFileHandler::_read " << pool.file.error() << std::endl;
             return true;
         }
 
@@ -470,14 +470,14 @@ namespace SEQAN_NAMESPACE_MAIN
                 freePage(*p, pool.file);
                 p = p->next;
             }
-			::seqan::flush(pool.file);
+			seqan::flush(pool.file);
         }
 
         inline void cancel()
         {
             TPageFrame *p = chain.first;
             while (p) {
-                ::seqan::cancel(*p, pool.file);
+                seqan::cancel(*p, pool.file);
                 freePage(*p, pool.file);
                 p = p->next;
             }
@@ -489,7 +489,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         bool _error()
         {
-//            ::std::cerr << "Error in BufWriteFileHandler::_write " << pool.file.error() << ::std::endl;
+//            std::cerr << "Error in BufWriteFileHandler::_write " << pool.file.error() << std::endl;
             return true;
         }
 
@@ -764,7 +764,7 @@ namespace SEQAN_NAMESPACE_MAIN
             _ownFile = false;
             _temporary = false;
             memBufferSize = 0;
-			_setSize(::seqan::length(file) / sizeof(TValue));
+			_setSize(seqan::length(file) / sizeof(TValue));
         }
         
         Pool(const char *fileName, const PoolParameters &_conf = PoolParameters()) :
@@ -775,7 +775,7 @@ namespace SEQAN_NAMESPACE_MAIN
             memBufferSize = 0;
             _ownFile = open(file, fileName);
             if (_ownFile)
-                _setSize(::seqan::length(file) / sizeof(TValue));
+                _setSize(seqan::length(file) / sizeof(TValue));
             else
                 _setSize(0);
         }
@@ -1166,10 +1166,10 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template < typename TValue, typename TSpec >
-    ::std::ostream& operator<<(::std::ostream &out, Pool<TValue, TSpec> &p) {
+    std::ostream& operator<<(std::ostream &out, Pool<TValue, TSpec> &p) {
         beginRead(p);
         while (!eof(p)) {
-		    out << front(p) << ::std::endl;
+		    out << front(p) << std::endl;
             pop(p);
         }
         endRead(p);

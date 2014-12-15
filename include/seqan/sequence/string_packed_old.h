@@ -782,11 +782,11 @@ struct ClearSpaceStringPacked2_
         //move [end:right_end] to [start + size:..]
         if (old_size > size)
         {//move rest to left
-            ::std::copy(iter(seq, end, Standard()), iter(seq, old_length, Standard()), iter(seq, end + size - old_size, Standard()));
+            std::copy(iter(seq, end, Standard()), iter(seq, old_length, Standard()), iter(seq, end + size - old_size, Standard()));
         }
         else
         {//move rest to right
-            ::std::copy_backward(iter(seq, end, Standard()), iter(seq, old_length, Standard()), iter(seq,  new_length, Standard()));
+            std::copy_backward(iter(seq, end, Standard()), iter(seq, old_length, Standard()), iter(seq,  new_length, Standard()));
         }
 */
         if (old_size > size)

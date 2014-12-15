@@ -143,9 +143,9 @@ namespace SEQAN_NAMESPACE_MAIN
         for(TValue *cur = buf.begin; cur != buf.end; ++cur) {
             #ifdef SEQAN_DEBUG
                 if (!(M(*cur) >= offset && M(*cur) < offset + capacity(buf))) {
-					::std::cerr << "Mapper assertion failed: " << ::std::hex << M(*cur);
-					::std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (cur - buf.begin);
-                    ::std::cerr << " element is " << ::std::dec << *cur << ::std::endl;
+					std::cerr << "Mapper assertion failed: " << std::hex << M(*cur);
+					std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (cur - buf.begin);
+                    std::cerr << " element is " << std::dec << *cur << std::endl;
                 }
             #endif
             SEQAN_ASSERT(M(*cur) >= offset && M(*cur) < offset + capacity(buf));
@@ -186,9 +186,9 @@ namespace SEQAN_NAMESPACE_MAIN
 
 			#ifdef SEQAN_DEBUG
                 if (!(dstPos >= offset && dstPos < offset + (TSize)capacity(buf))) {
-					::std::cerr << "Mapper assertion failed: " << ::std::hex << dstPos;
-					::std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (cur - buf.begin);
-                    ::std::cerr << " element is " << ::std::dec << *cur << ::std::endl;
+					std::cerr << "Mapper assertion failed: " << std::hex << dstPos;
+					std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (cur - buf.begin);
+                    std::cerr << " element is " << std::dec << *cur << std::endl;
                 }
 			#endif
             SEQAN_ASSERT(dstPos >= offset && dstPos < offset + (TSize)capacity(buf));
@@ -210,9 +210,9 @@ namespace SEQAN_NAMESPACE_MAIN
 					{
 						#ifdef SEQAN_DEBUG
 							if (!(dstPos >= offset && dstPos < offset + (TSize)capacity(buf))) {
-								::std::cerr << "Mapper assertion failed: " << ::std::hex << dstPos;
-								::std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (refNext - buf.begin);
-								::std::cerr << " element is " << ::std::dec << *refNext << ::std::endl;
+								std::cerr << "Mapper assertion failed: " << std::hex << dstPos;
+								std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (refNext - buf.begin);
+								std::cerr << " element is " << std::dec << *refNext << std::endl;
 							}
 							TValue *oldI = I;
 						#endif
@@ -222,13 +222,13 @@ namespace SEQAN_NAMESPACE_MAIN
 
 						#ifdef SEQAN_DEBUG
 							if (!partiallyFilled && I < cur) {
-								::std::cerr << "Mapper assertion failed: I=" << ::std::hex << I;
-								::std::cerr << " < cur=" << cur << ::std::dec << ::std::endl;
+								std::cerr << "Mapper assertion failed: I=" << std::hex << I;
+								std::cerr << " < cur=" << cur << std::dec << std::endl;
 								break;
 							}
 							if (I == oldI) {
-								::std::cerr << "Mapper assertion failed: I=" << ::std::hex << I;
-								::std::cerr << " in endless loop" << ::std::dec << ::std::endl;
+								std::cerr << "Mapper assertion failed: I=" << std::hex << I;
+								std::cerr << " in endless loop" << std::dec << std::endl;
 								break;
 							}
 						#endif
@@ -335,7 +335,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef Pool<TValue, TSpec>             TPool;
         typedef Buffer<TValue>                  TBuffer;
         typedef PageBucket<TValue>              TPageBucket;
-        typedef ::std::vector<TPageBucket>      TCache;
+        typedef std::vector<TPageBucket>      TCache;
 
         TPool   &pool;
         TBuffer bucketBuffer;
@@ -348,7 +348,7 @@ namespace SEQAN_NAMESPACE_MAIN
             cancel();
         }
         
-		struct insertBucket : public ::std::unary_function<TPageBucket,void>
+		struct insertBucket : public std::unary_function<TPageBucket,void>
         {
 			Handler &me;
 			insertBucket(Handler &_me): me(_me) {}
@@ -372,8 +372,8 @@ namespace SEQAN_NAMESPACE_MAIN
 			unsigned pageNo = pool.handlerArgs(item) / pool.pageSize;
             #ifdef SEQAN_DEBUG
                 if (!(pageNo < cache.size())) {
-					::std::cerr << "Mapper push assertion failed: " << pageNo << " >= " << cache.size();
-                    ::std::cerr << " element is " << item << ::std::endl;
+					std::cerr << "Mapper push assertion failed: " << pageNo << " >= " << cache.size();
+                    std::cerr << " element is " << item << std::endl;
                 }
 			#endif
     		SEQAN_ASSERT_LT(pageNo, cache.size());
@@ -432,7 +432,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef Buffer<TValue>                              TBuffer;
         typedef Buffer<TValue, PageFrame<TFile, Dynamic> >  TPageFrame;
         typedef PageBucket<TValue>                          TPageBucket;
-        typedef ::std::vector<TPageBucket>                  Cache;
+        typedef std::vector<TPageBucket>                  Cache;
         typedef PageChain<TPageFrame>                       TPageChain;
 
         TPool       &pool;
@@ -454,7 +454,7 @@ namespace SEQAN_NAMESPACE_MAIN
             cancel();
         }
         
-		struct insertBucket : public ::std::unary_function<TPageBucket,void>
+		struct insertBucket : public std::unary_function<TPageBucket,void>
         {
 			Handler &me;
 			insertBucket(Handler &_me): me(_me) {}
@@ -475,7 +475,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			if (clusterSize == 0) {
 				clusterSize = UINT_MAX;
 				#ifdef SEQAN_DEBUG
-					::std::cerr << "mapper switched to synchronous mode" << ::std::endl;
+					std::cerr << "mapper switched to synchronous mode" << std::endl;
 				#endif
 				return equiDistantDistribution(
 					bucketBuffer, pool.bucketBufferSize, pool.file,
@@ -484,7 +484,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			}
 
 			#ifdef SEQAN_VERBOSE
-				::std::cerr << "async mapper clustersize " << clusterSize << ::std::endl;
+				std::cerr << "async mapper clustersize " << clusterSize << std::endl;
 			#endif
             allocPage(writeCache, chain.maxFrames * clusterSize, pool.file);
 
@@ -505,10 +505,10 @@ namespace SEQAN_NAMESPACE_MAIN
 			unsigned pageNo = pool.handlerArgs(item) / pool.pageSize;
             #ifdef SEQAN_DEBUG
                 if (!(pageNo < cache.size())) {
-					::std::cerr << "Mapper push assertion failed: " << pageNo << " >= " << cache.size();
-                    ::std::cerr << " element is " << item << ::std::endl;
-					::std::cerr << ::std::hex << pool.handlerArgs(item) << " / " << pool.pageSize;
-					::std::cerr << " = " << pageNo << ::std::dec << ::std::endl;
+					std::cerr << "Mapper push assertion failed: " << pageNo << " >= " << cache.size();
+                    std::cerr << " element is " << item << std::endl;
+					std::cerr << std::hex << pool.handlerArgs(item) << " / " << pool.pageSize;
+					std::cerr << " = " << pageNo << std::dec << std::endl;
                 }
 			#endif
             SEQAN_ASSERT_LT(pageNo, cache.size());

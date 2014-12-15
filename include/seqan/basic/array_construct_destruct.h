@@ -659,7 +659,7 @@ arrayFill(TIterator begin_,
           TIterator end_,
           TValue const & value)
 {
-    ::std::fill_n(begin_, end_ - begin_, value);
+    std::fill_n(begin_, end_ - begin_, value);
 }
 
 template <typename TIterator, typename TValue>
@@ -702,7 +702,7 @@ _arrayCopyForwardDefault(TSource1 source_begin,
                          TSource2 source_end, 
                          TTarget target_begin)
 {
-    ::std::copy(source_begin, source_end, target_begin);
+    std::copy(source_begin, source_end, target_begin);
 }
 
 template<typename TTarget, typename TSource1, typename TSource2>
@@ -740,7 +740,7 @@ arrayCopyForward(TSource1 source_begin,
  * If there is no need for the source elements to persist, consider to use arrayMoveBackward instead to improve
  * performance.
  * 
- * The semantic of this function's argument <tt>target</tt> differ from the arguments of <tt>::std::copy_backward</tt>.
+ * The semantic of this function's argument <tt>target</tt> differ from the arguments of <tt>std::copy_backward</tt>.
  */
 
 template<typename TTarget, typename TSource1, typename TSource2>
@@ -749,7 +749,7 @@ _arrayCopyBackwardDefault(TSource1 source_begin,
                           TSource2 source_end,
                           TTarget target_begin)
 {
-    ::std::copy_backward(source_begin, source_end, target_begin + (source_end - source_begin));
+    std::copy_backward(source_begin, source_end, target_begin + (source_end - source_begin));
 }
 
 template<typename TTarget, typename TSource1, typename TSource2>
@@ -874,7 +874,7 @@ arrayMoveForward(TSource1 source_begin,
  * If source and target do not overlap, consider to use the function arrayMoveForward instead that is faster in some
  * cases.
  * 
- * The semantic of this function's argument <tt>target</tt> differ from the arguments of <tt>::std::copy_backward</tt>.
+ * The semantic of this function's argument <tt>target</tt> differ from the arguments of <tt>std::copy_backward</tt>.
  */
 
 template<typename TTarget, typename TSource1, typename TSource2>
@@ -1201,7 +1201,7 @@ _arrayCopyForwardPointer(TValue * source_begin,
                           TValue * target_begin,
                           True)
 {
-    ::std::memmove(target_begin, source_begin, (source_end - source_begin) * sizeof(TValue));
+    std::memmove(target_begin, source_begin, (source_end - source_begin) * sizeof(TValue));
 }
 
 template<typename TValue>
@@ -1230,7 +1230,7 @@ _arrayCopyBackwardPointer(TValue * source_begin,
                            TValue * target_begin,
                            True)
 {
-    ::std::memmove(target_begin, source_begin, (source_end - source_begin) * sizeof(TValue));
+    std::memmove(target_begin, source_begin, (source_end - source_begin) * sizeof(TValue));
 }
 
 template <typename TValue>
@@ -1263,7 +1263,7 @@ _arrayMoveForwardPointer(TValue * source_begin,
                           TValue * target_begin,
                           True)
 {
-    ::std::memmove(target_begin, source_begin, (source_end - source_begin) * sizeof(TValue));
+    std::memmove(target_begin, source_begin, (source_end - source_begin) * sizeof(TValue));
 }
 
 template<typename TValue>
@@ -1292,7 +1292,7 @@ _arrayMoveBackwardPointer(TValue * source_begin,
                            TValue * target_begin,
                            True)
 {
-    ::std::memmove(target_begin, source_begin, (source_end - source_begin) * sizeof(TValue));
+    std::memmove(target_begin, source_begin, (source_end - source_begin) * sizeof(TValue));
 }
 template <typename TValue>
 inline void 

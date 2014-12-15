@@ -43,9 +43,9 @@ namespace seqan
 
 void failExceptionTest()
 {
-    ::seqan::ClassTest::StaticData::thisTestOk() = false;
-    ::seqan::ClassTest::StaticData::errorCount() += 1;
-    ::seqan::ClassTest::fail();
+    seqan::ClassTest::StaticData::thisTestOk() = false;
+    seqan::ClassTest::StaticData::errorCount() += 1;
+    seqan::ClassTest::fail();
 }
 
 }  // namespace seqan

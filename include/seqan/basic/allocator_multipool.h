@@ -93,18 +93,18 @@ struct Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT_> >
     {
         SEQAN_CHECKPOINT;
         // TODO(holtrew): Why not SeqAn's memset? or use using?
-        ::std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
-        ::std::memset(data_current_begin, 0, sizeof(data_current_begin));
-        ::std::memset(data_current_free, 0, sizeof(data_current_free));
+        std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
+        std::memset(data_current_begin, 0, sizeof(data_current_begin));
+        std::memset(data_current_free, 0, sizeof(data_current_free));
     }
 
     Allocator(TParentAllocator & parent_alloc)
     {
         SEQAN_CHECKPOINT;
         // TODO(holtrew): Why not SeqAn's memset? or use using?
-        ::std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
-        ::std::memset(data_current_begin, 0, sizeof(data_current_begin));
-        ::std::memset(data_current_free, 0, sizeof(data_current_free));
+        std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
+        std::memset(data_current_begin, 0, sizeof(data_current_begin));
+        std::memset(data_current_free, 0, sizeof(data_current_free));
 
         setValue(data_parent_allocator, parent_alloc);
     }
@@ -113,9 +113,9 @@ struct Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT_> >
     Allocator(Allocator const &)
     {
         // TODO(holtrew): Why not SeqAn's memset? or use using?
-        ::std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
-        ::std::memset(data_current_begin, 0, sizeof(data_current_begin));
-        ::std::memset(data_current_free, 0, sizeof(data_current_free));
+        std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
+        std::memset(data_current_begin, 0, sizeof(data_current_begin));
+        std::memset(data_current_free, 0, sizeof(data_current_free));
     }
 
     inline Allocator &
@@ -161,9 +161,9 @@ void
 clear(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > & me)
 {
     SEQAN_CHECKPOINT;
-    ::std::memset(me.data_recycled_blocks, 0, sizeof(me.data_recycled_blocks));
-    ::std::memset(me.data_current_begin, 0, sizeof(me.data_current_begin));
-    ::std::memset(me.data_current_free, 0, sizeof(me.data_current_free));
+    std::memset(me.data_recycled_blocks, 0, sizeof(me.data_recycled_blocks));
+    std::memset(me.data_current_begin, 0, sizeof(me.data_current_begin));
+    std::memset(me.data_current_free, 0, sizeof(me.data_current_free));
 
     clear(parentAllocator(me));
 }

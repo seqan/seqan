@@ -19,8 +19,8 @@ int main()
 
 // FRAGMENT(alignment)
     int score = globalAlignment(align, Score<int,Simple>(0,-1,-1),-2,2);
-    ::std::cout << "Score: " << score << ::std::endl;
-    ::std::cout << align << ::std::endl;
+    std::cout << "Score: " << score << std::endl;
+    std::cout << align << std::endl;
 
     return 0;
 }

@@ -513,36 +513,36 @@ namespace SEQAN_NAMESPACE_MAIN
 //____________________________________________________________________________
 
 		inline void _dump() const {
-			::std::cerr << "SETSTACK of " << representative(*this) << ":" << ::std::endl;
+			std::cerr << "SETSTACK of " << representative(*this) << ":" << std::endl;
 			typename Iterator<TSetStack const>::Type it = begin(setStack), itEnd = end(setStack);
 			while (it != itEnd) {
 				TSet const &set = (*it).set;
 				typename Iterator<TSet const>::Type sit = begin(set), sitEnd = end(set);
 
 				while (sit != sitEnd) {
-					::std::cerr << keyOf(sit) << "::";
+					std::cerr << keyOf(sit) << "::";
 					typename TFractionCompound::TFractionHeader head = objectOf(sit);
 					TSize i = head.begin;
 					while (!_isSizeInval(i)) {
-						::std::cerr << saAt(i,container(*this)) << "  ";
+						std::cerr << saAt(i,container(*this)) << "  ";
 						i = posList[i];
 					}
-					::std::cerr << ::std::endl;
+					std::cerr << std::endl;
 					++sit;
 				}
 				
 				if ((*it).leftmost.size > 0)
 				{
-					::std::cerr << "\"\"::";
+					std::cerr << "\"\"::";
 					TSize i = (*it).leftmost.begin;
 					while (!_isSizeInval(i)) {
-						::std::cerr << saAt(i,container(*this)) << "  ";
+						std::cerr << saAt(i,container(*this)) << "  ";
 						i = posList[i];
 					}
-					::std::cerr << ::std::endl;
+					std::cerr << std::endl;
 				}
 				
-				::std::cerr << "_________________________" << ::std::endl;
+				std::cerr << "_________________________" << std::endl;
 				++it;
 			}
 		}
@@ -593,7 +593,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		if (it.canMerge)
 			resize(it.setStack, length(it.setStack) + 1);
 /*
-		::std::cerr << "PUSH ";
+		std::cerr << "PUSH ";
 		_dumpHistoryStack(it);
 		it._dump();
 */	}
@@ -629,7 +629,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 		_setSizeInval(it.posList[i]);
 /*
-		::std::cerr << "LEAF ";
+		std::cerr << "LEAF ";
 		_dumpHistoryStack(it);
 		it._dump();
 */	}

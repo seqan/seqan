@@ -1232,7 +1232,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			{
 				_temporary = true;
 				if (!(_ownFile = openTemp(file)))
-					::std::cerr << "External String couldn't open temporary file" << ::std::endl;
+					std::cerr << "External String couldn't open temporary file" << std::endl;
 			}
 		}
 
@@ -1242,18 +1242,18 @@ namespace SEQAN_NAMESPACE_MAIN
             for(int i = 0; i < length(cache); ++i) 
 			{
                 TPageFrame &pf = cache[i];
-                ::std::cerr << "[" << pf.pageNo << "]";
+                std::cerr << "[" << pf.pageNo << "]";
                 if (pf.dirty)
-                    ::std::cerr << "*";
+                    std::cerr << "*";
                 else
-                    ::std::cerr << " ";
+                    std::cerr << " ";
 
                 if (pf.status == READY)
-                    ::std::cerr << "   ";
+                    std::cerr << "   ";
                 else
-                    ::std::cerr << ".  ";
+                    std::cerr << ".  ";
             }
-            ::std::cerr << ::std::endl;
+            std::cerr << std::endl;
         }
 
         // return a priority for a page frame (the higher is more persistent)
@@ -1331,7 +1331,7 @@ namespace SEQAN_NAMESPACE_MAIN
             pf.pageNo = -1;                                 // cut back link
 		}
 
-		struct testIODone : public ::std::unary_function<TPageFrame&,bool> 
+		struct testIODone : public std::unary_function<TPageFrame&,bool> 
 		{
 			String &me;
 			testIODone(String &_me): me(_me) {}
@@ -1459,7 +1459,7 @@ namespace SEQAN_NAMESPACE_MAIN
                     if (frameNo < 0 || frameNo == except) return;   // no lowlevel-page left for prefetching
 				    TPageFrame &pf = cache[frameNo];
                     #ifdef SEQAN_VERBOSE
-						::std::cerr << "prefetch: page " << pageNo << ::std::endl;
+						std::cerr << "prefetch: page " << pageNo << std::endl;
                     #endif
 
                     // *** frame is choosen ***
@@ -1512,7 +1512,7 @@ namespace SEQAN_NAMESPACE_MAIN
 					{
                         #ifdef SEQAN_VERBOSE
                             if (pf.dirty)
-								::std::cerr << "writeThrough: page " << pageNo << ::std::endl;
+								std::cerr << "writeThrough: page " << pageNo << std::endl;
                         #endif
 					    flush(pf);							        // write if dirty
                     }
@@ -1739,7 +1739,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 me.pager[(*f).pageNo] = (*f).dataStatus;
                 (*f).pageNo = TPageFrame::UNINITIALIZED;
             }
-//			::std::cerr << *f << ::std::endl;
+//			std::cerr << *f << std::endl;
             if ((*f).begin)
                 freePage(*f, me.file);
   		}
@@ -1768,7 +1768,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 me.pager[f->pageNo] = f->dataStatus;
                 f->pageNo = TPageFrame::UNINITIALIZED;
             }
-//			::std::cerr << *f << ::std::endl;
+//			std::cerr << *f << std::endl;
             if (f->begin) freePage(*f, me.file);
         }
 	}

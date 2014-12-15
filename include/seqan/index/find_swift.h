@@ -570,24 +570,24 @@ struct SwiftParameters
 template <typename TSpec_, typename TSize, typename TShortSize>
 inline void _printSwiftParams(SwiftBucketParams_<TSpec_, TSize, TShortSize > &bucketParams)
 {
-    ::std::cout << "  firstBucket: " << bucketParams.firstBucket << ::std::endl;
-    ::std::cout << "  reuseMask:   " << bucketParams.reuseMask << ::std::endl;
-    ::std::cout << "  distanceCut: " << bucketParams.distanceCut << ::std::endl;
-    ::std::cout << "  delta:       " << bucketParams.delta << ::std::endl;
-    ::std::cout << "  threshold:   " << bucketParams.threshold << ::std::endl;
-    ::std::cout << "  overlap:     " << bucketParams.overlap << ::std::endl;
-    ::std::cout << "  logDelta:    " << (int)bucketParams.logDelta << ::std::endl << ::std::endl;
+    std::cout << "  firstBucket: " << bucketParams.firstBucket << std::endl;
+    std::cout << "  reuseMask:   " << bucketParams.reuseMask << std::endl;
+    std::cout << "  distanceCut: " << bucketParams.distanceCut << std::endl;
+    std::cout << "  delta:       " << bucketParams.delta << std::endl;
+    std::cout << "  threshold:   " << bucketParams.threshold << std::endl;
+    std::cout << "  overlap:     " << bucketParams.overlap << std::endl;
+    std::cout << "  logDelta:    " << (int)bucketParams.logDelta << std::endl << std::endl;
 }
 
 template <typename TSpec_, typename TSize, typename TShortSize>
 inline void _printSwiftParams(SwiftBucketParams_<Tag<SwiftSemiGlobal_<TSpec_> >, TSize, TShortSize > &bucketParams)
 {
-    ::std::cout << "  firstBucket: " << bucketParams.firstBucket << ::std::endl;
-    ::std::cout << "  reuseMask:   " << bucketParams.reuseMask << ::std::endl;
-    ::std::cout << "  delta:       " << bucketParams.delta << ::std::endl;
-    ::std::cout << "  threshold:   " << bucketParams.threshold << ::std::endl;
-    ::std::cout << "  overlap:     " << bucketParams.overlap << ::std::endl;
-    ::std::cout << "  logDelta:    " << (int)bucketParams.logDelta << ::std::endl << ::std::endl;
+    std::cout << "  firstBucket: " << bucketParams.firstBucket << std::endl;
+    std::cout << "  reuseMask:   " << bucketParams.reuseMask << std::endl;
+    std::cout << "  delta:       " << bucketParams.delta << std::endl;
+    std::cout << "  threshold:   " << bucketParams.threshold << std::endl;
+    std::cout << "  overlap:     " << bucketParams.overlap << std::endl;
+    std::cout << "  logDelta:    " << (int)bucketParams.logDelta << std::endl << std::endl;
 }
 
 template <typename TIndex, typename TSpec>
@@ -602,15 +602,15 @@ inline void _printSwiftBuckets(Pattern< TIndex, Swift<TSpec> > &p)
     {
         if ((i & bucketParams->reuseMask) == 0)
         {
-            ::std::cout << ::std::endl << "ReadBucket #" << j << "    " << '"';
-            ::std::cout << indexText(host(p))[j] << '"' << ::std::endl;
-            ::std::cout << "  length:      " << sequenceLength(j, host(p)) << ::std::endl;
+            std::cout << std::endl << "ReadBucket #" << j << "    " << '"';
+            std::cout << indexText(host(p))[j] << '"' << std::endl;
+            std::cout << "  length:      " << sequenceLength(j, host(p)) << std::endl;
             bucketParams = &_swiftBucketParams(p, j++);
             _printSwiftParams(*bucketParams);
         }
 
-        ::std::cout << "    lastInc: " << (int)p.buckets[i].lastIncrement;
-        ::std::cout << "  \tCounter: " << p.buckets[i].counter << ::std::endl;
+        std::cout << "    lastInc: " << (int)p.buckets[i].lastIncrement;
+        std::cout << "  \tCounter: " << p.buckets[i].counter << std::endl;
     }
 }
 
@@ -1269,8 +1269,8 @@ inline bool _swiftMultiProcessQGram(
                      (upperBktNo - ((upperBktNo - bktNo) & bucketParams.reuseMask)) << bucketParams.logDelta;
 
                 if ((*bkt)._lastIncDiag - _bktBeginHstk >= bucketParams.delta + bucketParams.overlap || (*bkt)._lastIncDiag < _bktBeginHstk) {
-                    ::std::cerr << "qgram stored in wrong bucket (diag:" << (*bkt)._lastIncDiag << ", begin:" << _bktBeginHstk;
-                    ::std::cerr << ", delta:" << bucketParams.delta << ", overlap:" << bucketParams.overlap << ")" << ::std::endl;
+                    std::cerr << "qgram stored in wrong bucket (diag:" << (*bkt)._lastIncDiag << ", begin:" << _bktBeginHstk;
+                    std::cerr << ", delta:" << bucketParams.delta << ", overlap:" << bucketParams.overlap << ")" << std::endl;
                 }
 #endif
 //              if (bktBeginHstk >= 0)
@@ -1809,10 +1809,10 @@ _printDots(Finder<THaystack, Swift<TSpec> > &finder)
         finder.dotPos += 100000;
         if (finder.dotPos >= finder.dotPos2)
         {
-            ::std::cerr << (finder.dotPos2 / 1000000) << "M" << ::std::flush;
+            std::cerr << (finder.dotPos2 / 1000000) << "M" << std::flush;
             finder.dotPos2 += 1000000;
         } else
-            ::std::cerr << "." << ::std::flush;
+            std::cerr << "." << std::flush;
     }
 }
 
@@ -1846,7 +1846,7 @@ _nextNonRepeatRange(
     finder.haystackEnd = begin(host(finder)) + (finder.endPos - length(pattern.shape) + 1);
 
 //  if (pattern.params.printDots)
-//      ::std::cerr << ::std::endl << "  scan range (" << finder.startPos << ", " << finder.endPos << ") " << std::flush;
+//      std::cerr << std::endl << "  scan range (" << finder.startPos << ", " << finder.endPos << ") " << std::flush;
 
     return true;
 }
@@ -1876,7 +1876,7 @@ _firstNonRepeatRange(
     finder.haystackEnd = begin(tmpHost) + (finder.endPos - length(pattern.shape) + 1);
 
 //  if (pattern.params.printDots)
-//      ::std::cerr << ::std::endl << "  scan range (" << finder.startPos << ", " << finder.endPos << ") " << std::flush;
+//      std::cerr << std::endl << "  scan range (" << finder.startPos << ", " << finder.endPos << ") " << std::flush;
 
     return true;
 }

@@ -20,10 +20,10 @@ int main()
     LocalAlignmentEnumerator<Score<int>, Unbanded> enumerator(scoring, 5);
     while (nextLocalAlignment(ali, enumerator))
     {
-        ::std::cout << "Score = " << getScore(enumerator) << ::std::endl;
-        ::std::cout << ali;
-        ::std::cout << "Aligns Seq1[" << clippedBeginPosition(row(ali, 0)) << ":" << (clippedEndPosition(row(ali, 0))-1) << "]";
-        ::std::cout << " and Seq2[" << clippedBeginPosition(row(ali, 1)) << ":" <<  (clippedEndPosition(row(ali, 1))-1) << "]" << ::std::endl << ::std::endl;
+        std::cout << "Score = " << getScore(enumerator) << std::endl;
+        std::cout << ali;
+        std::cout << "Aligns Seq1[" << clippedBeginPosition(row(ali, 0)) << ":" << (clippedEndPosition(row(ali, 0))-1) << "]";
+        std::cout << " and Seq2[" << clippedBeginPosition(row(ali, 1)) << ":" <<  (clippedEndPosition(row(ali, 1))-1) << "]" << std::endl << std::endl;
     }
     return 0;
 }

@@ -134,7 +134,7 @@ void evaluateAlignment(MsaOptions<TAlphabet, TScore> const & msaOpt)
 
     // Read the sequences
     std::fstream strm;
-    strm.open(msaOpt.infile.c_str(), ::std::ios_base::in | ::std::ios_base::binary);
+    strm.open(msaOpt.infile.c_str(), std::ios_base::in | std::ios_base::binary);
     read(strm, origStrSet, names, FastaAlign());
     strm.close();
 
@@ -147,7 +147,7 @@ void evaluateAlignment(MsaOptions<TAlphabet, TScore> const & msaOpt)
     String<TScoreValue> scores;
     TFragmentString matches;
     std::fstream strm_lib;
-    strm_lib.open(msaOpt.infile.c_str(), ::std::ios_base::in | ::std::ios_base::binary);
+    strm_lib.open(msaOpt.infile.c_str(), std::ios_base::in | std::ios_base::binary);
     read(strm_lib, matches, scores, names, FastaAlign());
     strm_lib.close();
 
@@ -312,7 +312,7 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
         for (; begIt != begItEnd; goNext(begIt))
         {
             std::ifstream strm_lib;
-            strm_lib.open((*begIt).c_str(), ::std::ios_base::in | ::std::ios_base::binary);
+            strm_lib.open((*begIt).c_str(), std::ios_base::in | std::ios_base::binary);
             read(strm_lib, matches, scores, sequenceNames, FastaAlign());
             strm_lib.close();
         }
@@ -399,7 +399,7 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
     if (!empty(msaOpt.treefile))
     {
         std::fstream strm_tree;
-        strm_tree.open(msaOpt.treefile.c_str(), ::std::ios_base::in | ::std::ios_base::binary);
+        strm_tree.open(msaOpt.treefile.c_str(), std::ios_base::in | std::ios_base::binary);
         read(strm_tree, guideTree, sequenceNames, NewickFormat());  // Read newick tree
         strm_tree.close();
     }

@@ -873,10 +873,10 @@ _printDots(Finder<THaystack, Pigeonhole<TSpec> > &finder)
 		finder.dotPos += 100000;
 		if (finder.dotPos >= finder.dotPos2)
 		{
-			::std::cerr << (finder.dotPos2 / 1000000) << "M" << ::std::flush;
+			std::cerr << (finder.dotPos2 / 1000000) << "M" << std::flush;
 			finder.dotPos2 += 1000000;
 		} else
-			::std::cerr << "." << ::std::flush;
+			std::cerr << "." << std::flush;
 	}
 }
 
@@ -911,7 +911,7 @@ _nextNonRepeatRange(
 	finder.haystackEnd = begin(host(finder)) + (finder.endPos - length(pattern.shape) + 1);
 
 //	if (pattern.params.printDots)
-//		::std::cerr << ::std::endl << "  scan range (" << finder.startPos << ", " << finder.endPos << ") " << std::flush;
+//		std::cerr << std::endl << "  scan range (" << finder.startPos << ", " << finder.endPos << ") " << std::flush;
 
 	return true;
 }
@@ -941,7 +941,7 @@ _firstNonRepeatRange(
 	finder.haystackEnd = begin(host(finder)) + (finder.endPos - length(pattern.shape) + 1);
 
 //	if (pattern.params.printDots)
-//		::std::cerr << ::std::endl << "  scan range (" << finder.startPos << ", " << finder.endPos << ") " << std::flush;
+//		std::cerr << std::endl << "  scan range (" << finder.startPos << ", " << finder.endPos << ") " << std::flush;
 
 	return true;
 }

@@ -129,7 +129,7 @@ inline void _printMask(String <unsigned> const &  mask,unsigned line,String <cha
 		}
 		std::cout << " ";
 	}
-	std::cout << ::std::endl;
+	std::cout << std::endl;
 }
 */
 
@@ -520,12 +520,12 @@ SEQAN_CHECKPOINT
 
 #ifdef SEQAN_WILD_SHIFTAND_DEBUG	
 	// Debug code
-	std::cout << "Alphabet size: " << ValueSize<TValue>::VALUE << ::std::endl;
-	std::cout << "Needle length (with wildcards): " << me.needleLength << ::std::endl;
-	std::cout << "Needle length (wo wildcards): " << me.character_count << ::std::endl;
-	std::cout << "Block count: " << me.blockCount << ::std::endl;
+	std::cout << "Alphabet size: " << ValueSize<TValue>::VALUE << std::endl;
+	std::cout << "Needle length (with wildcards): " << me.needleLength << std::endl;
+	std::cout << "Needle length (wo wildcards): " << me.character_count << std::endl;
+	std::cout << "Block count: " << me.blockCount << std::endl;
 
-	std::cout << "Needle:" << needle << ::std::endl;
+	std::cout << "Needle:" << needle << std::endl;
 
 	_printMask(me.f_table,0,"F ");
 	_printMask(me.i_table,0,"I ");
@@ -540,7 +540,7 @@ SEQAN_CHECKPOINT
 				std::cout << ((me.table[me.blockCount*i+j] & (1<<(bit_pos % BitsPerValue<unsigned>::VALUE))) !=0);
 			}
 		}
-		std::cout << ::std::endl;
+		std::cout << std::endl;
 	}
 #endif
 

@@ -79,7 +79,7 @@ join(StringSet<TString, Owner<JournaledSet> > & journalSet,
    SEQAN_ASSERT_LT(journalIdx, static_cast<TPosition>(length(journalSet)));
    if (empty(host(journalSet)))
    {
-       ::std::cerr << "No reference set! Join aborted!" << ::std::endl;
+       std::cerr << "No reference set! Join aborted!" << std::endl;
    }
    _joinInternal(value(journalSet, journalIdx), journalSet, joinConfig);
 }
@@ -98,7 +98,7 @@ join(StringSet<TString, Owner<JournaledSet> > & journalSet,
 
    if (empty(host(journalSet)))
    {
-       ::std::cerr << "No reference set! Join aborted!" << ::std::endl;
+       std::cerr << "No reference set! Join aborted!" << std::endl;
    }
    _joinInternal(value(journalSet, journalIdx), journalSet, joinConfig);
 }

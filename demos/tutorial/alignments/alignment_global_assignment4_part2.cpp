@@ -41,9 +41,9 @@ int main()
     assignSource(row(align,1),strings[bestSeqIdx2]);
 
     globalAlignment(align, MyersHirschberg());
-    ::std::cout << "Best alignment between sequences at position " << bestSeqIdx1 << " and " << bestSeqIdx2 << ::std::endl;
-    ::std::cout << "Score: " << bestScore << ::std::endl;
-    ::std::cout << align << ::std::endl;
+    std::cout << "Best alignment between sequences at position " << bestSeqIdx1 << " and " << bestSeqIdx2 << std::endl;
+    std::cout << "Score: " << bestScore << std::endl;
+    std::cout << align << std::endl;
 
     return 0;
 }
