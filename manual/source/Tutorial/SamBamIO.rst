@@ -169,8 +169,7 @@ Assignment 1
 Accessing the Header
 --------------------
 
-The BAM header information is split between the class :dox:`BamHeader` and the :dox:`SmartFileContext Context` of the :dox:`BamFileIn`.
-All BAM header records are stored in the class :dox:`BamHeader`, except for sequence information (i.e. @SQ records) which is stored in the :dox:`SmartFileContext Context`.
+All BAM header information is stored in the class :dox:`BamHeader`, except for sequence information (i.e. @SQ records) which is stored in the :dox:`SmartFileContext Context`.
 
 .. important::
    The header is not mandatory in SAM files and might be missing.
@@ -220,8 +219,14 @@ Note that we use the :dox:`CigarElement` class to store entries in the CIGAR str
 
 The static members ``INVALID_POS``, ``INVALID_REFID``, and ``INVALID_LEN`` store sentinel values for marking positions, reference sequence ids, and lengths as invalid or N/A.
 
+.. tip::
+   A :dox:`BamAlignmentRecord` is linked to a reference sequence by the field rID.
+   The reference sequence information is stored in the BAM header and kept in the :dox:`BamFileIn` :dox:`SmartFileContext Context`.
+   To easily access reference sequence name and and length relative to a given :dox:`BamAlignmentRecord` within a :dox:`BamFileIn`, use functions :dox:`BamAlignmentRecord#getContigName` and :dox:`BamAlignmentRecord#getContigLength`.
+
 An important related type is the enum :dox:`BamFlags` that provides constants for bit operations on the ``flag`` field.
 The functions :dox:`BamAlignmentRecord#hasFlagAllProper`, :dox:`BamAlignmentRecord#hasFlagDuplicate`, :dox:`BamAlignmentRecord#hasFlagFirst`, :dox:`BamAlignmentRecord#hasFlagLast`, :dox:`BamAlignmentRecord#hasFlagMultiple`, :dox:`BamAlignmentRecord#hasFlagNextRC`, :dox:`BamAlignmentRecord#hasFlagNextUnmapped`, :dox:`BamAlignmentRecord#hasFlagQCNoPass`, :dox:`BamAlignmentRecord#hasFlagRC`, :dox:`BamAlignmentRecord#hasFlagSecondary`, :dox:`BamAlignmentRecord#hasFlagUnmapped`, and :dox:`BamAlignmentRecord#hasFlagSupplementary` allow for easy reading of flags.
+
 
 
 Assignment 2
