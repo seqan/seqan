@@ -258,13 +258,17 @@ operator!=(ProfileChar<TValue, TCount, TSpec> const & lhs,
 // Function empty()
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Document.
-
-// Check if there are only gaps.
-
+/*!
+ * @fn ProfileChar#empty
+ * @brief Check whether there are only gaps in the representation of the ProfileChar.
+ *
+ * @signature bool empty(c);
+ *
+ * @param  c    ProfileChar to query.
+ * @return bool Whether or not the ProfileChar only contains gaps.
+ */
 template <typename TSourceValue, typename TSourceCount, typename TSourceSpec>
-inline bool
-empty(ProfileChar<TSourceValue, TSourceCount, TSourceSpec> const & source)
+bool empty(ProfileChar<TSourceValue, TSourceCount, TSourceSpec> const & source)
 {
     typedef typename ValueSize<ProfileChar<TSourceValue, TSourceCount, TSourceSpec> const>::Type TSize;
 
@@ -275,12 +279,22 @@ empty(ProfileChar<TSourceValue, TSourceCount, TSourceSpec> const & source)
 }
 
 // ----------------------------------------------------------------------------
-// Helper Function _getMaxIndex()
+// Helper Function getMaxIndex()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ProfileChar#getMaxIndex
+ * @brief Return number of dominating entry in ProfileChar.
+ *
+ * @signature TSize getMaxIndex(c);
+ *
+ * @param[in] c     ProfileChar to query for its dominating entry.
+ * @return    TSize index (with the @link FiniteOrderedAlphabetConcept#ordValue @endlink) of the dominating character
+ *                  in <tt>c</tt>
+ */
 template <typename TSourceValue, typename TSourceCount, typename TSourceSpec>
-inline typename Size<ProfileChar<TSourceValue, TSourceCount, TSourceSpec> const>::Type
-_getMaxIndex(ProfileChar<TSourceValue, TSourceCount, TSourceSpec> const & source)
+typename Size<ProfileChar<TSourceValue, TSourceCount, TSourceSpec> const>::Type
+getMaxIndex(ProfileChar<TSourceValue, TSourceCount, TSourceSpec> const & source)
 {
     typedef ProfileChar<TSourceValue, TSourceCount, TSourceSpec> TProfileChar;
     typedef typename Size<TProfileChar>::Type TSize;
@@ -298,12 +312,20 @@ _getMaxIndex(ProfileChar<TSourceValue, TSourceCount, TSourceSpec> const & source
 }
 
 // ----------------------------------------------------------------------------
-// Helper Function _totalCount()
+// Helper Function totalCount()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn ProfileChar#totalCount
+ * @brief Return sum of counts in ProfileChar.
+ *
+ * @signature TCount totalCount(c);
+ *
+ * @param[in] c      ProfileChar to query.
+ * @return    TCount Total number of characters represented by <tt>c</tt>.
+ */
 template <typename TSourceValue, typename TSourceCount, typename TSourceSpec>
-inline TSourceCount
-_totalCount(ProfileChar<TSourceValue, TSourceCount, TSourceSpec> const & source)
+TSourceCount totalCount(ProfileChar<TSourceValue, TSourceCount, TSourceSpec> const & source)
 {
     typedef ProfileChar<TSourceValue, TSourceCount, TSourceSpec> TProfileChar;
     typedef typename Size<TProfileChar>::Type TSize;
