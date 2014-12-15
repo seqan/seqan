@@ -116,7 +116,7 @@ struct FileFormat<SmartFile<Gff, TDirection, TSpec> >
  * @param[out] record The @link GffRecord @endlink to write to.
  * @param[in]  file   The GffFileIn to read from.
  *
- * @throw IOError if something went wrong.
+ * @throw IOError or ParseError.
  *
  * Both GFF and GTF records can be read into a GffRecord.  The format is detected by the GffFileIn.
  */
@@ -152,9 +152,9 @@ readRecord(GffRecord & record, SmartFile<Gff, Input, TSpec> & file)
  * @param[in]  file   The GffFileIn to read from.
  * @param[out] record The @link GffRecord @endlink to write out.
  *
- * @throw IOError if something went wrong.
+ * @throw IOError or ParseError.
  *
- * @link GffRecord @endlink objects can be written to both GFF and GTF files.  The format is chosen depending on
+ * @link GffRecord @endlink objects can be written to both GFF and GTF files. The format is chosen depending on
  * the parameters of the GffFileOut (which will auto-detect it by default).
  */
 

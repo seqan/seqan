@@ -91,9 +91,6 @@ struct Value<const Pdf<GeometricFairCoin> > : Value<Pdf<GeometricFairCoin> > {};
 // Functions
 // ===========================================================================
 
-/*
-..summary:Pick a geometricly distributed random number.
-*/
 template <typename TRNG>
 inline
 typename Value<Pdf<GeometricFairCoin> >::Type
