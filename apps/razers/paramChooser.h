@@ -33,15 +33,6 @@
 #include "readSimulator.h"
 #include "param_tabs.h"
 
-#include <seqan/misc/misc_parsing.h>
-
-
-
-
-
-
-
-
 namespace SEQAN_NAMESPACE_MAIN {
 // ls in directory dir, store filenames in files
 template <typename TPath, typename TFilenameString>

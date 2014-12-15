@@ -43,7 +43,7 @@
 
 #include <seqan/basic.h>
 #include <seqan/stream.h>
-#include <seqan/misc/misc_name_store_cache.h>
+#include <seqan/misc/name_store_cache.h>
 
 // ===========================================================================
 // Sequence File Formats

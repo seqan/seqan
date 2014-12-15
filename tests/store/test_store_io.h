@@ -37,7 +37,7 @@
 #include <seqan/basic.h>  // For test functionality.
 #include <seqan/store.h>  // Header under test.
 
-#include <seqan/misc/misc_svg.h>
+#include <seqan/misc/svg.h>
 
 using namespace seqan;
 

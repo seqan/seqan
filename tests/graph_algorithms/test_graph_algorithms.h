@@ -34,7 +34,7 @@
 #define SEQAN_HEADER_TEST_GRAPH_ALGORITHMS_H
 
 #include <seqan/random.h>
-#include <seqan/misc/misc_union_find.h>
+#include <seqan/misc/union_find.h>
 
 namespace SEQAN_NAMESPACE_MAIN
 {

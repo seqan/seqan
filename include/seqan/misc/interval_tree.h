@@ -68,7 +68,7 @@ namespace SEQAN_NAMESPACE_MAIN {
 
 /*!
  * @class IntervalAndCargo
- * @headerfile <seqan/misc/misc_interval_tree.h>
+ * @headerfile <seqan/misc/interval_tree.h>
  * @brief A simple record type that stores an interval and a cargo value.
  *
  * @signature template <[typename TValue[, typename TCargo]]>
@@ -125,7 +125,7 @@ public:
 
 /*!
  * @class PointAndCargo
- * @headerfile <seqan/misc/misc_interval_tree.h>
+ * @headerfile <seqan/misc/interval_tree.h>
  * @brief Simple record class storing a point (one-value) interval and cargo.
  *
  * @signature template <[typename TValue[, typename TCargo]]>
@@ -175,12 +175,12 @@ public:
  * @brief Tags to select the node type for @link IntervalTree @endlink.
  *
  * @tag IntervalTreeNodeTypeTags#StorePointsOnly
- * @headerfile <seqan/misc/misc_interval_tree.h>
+ * @headerfile <seqan/misc/interval_tree.h>
  * @signature struct StorePointsOnly {};
  * @brief The tree nodes store points.
  *
  * @tag IntervalTreeNodeTypeTags#StoreIntervals
- * @headerfile <seqan/misc/misc_interval_tree.h>
+ * @headerfile <seqan/misc/interval_tree.h>
  * @signature struct StoreIntervals {};
  * @brief The tree nodes store intervals.
  */
@@ -192,7 +192,7 @@ struct StoreIntervals {};
 
 /*!
  * @class IntervalTreeNode
- * @headerfile <seqan/misc/misc_interval_tree.h>
+ * @headerfile <seqan/misc/interval_tree.h>
  * @brief Element of @link IntervalTree @endlink.
  *
  * @signature template <typename TInterval[, typename TSpec]>
@@ -209,7 +209,7 @@ class IntervalTreeNode;
 /*!
  * @class StoreIntervalsIntervalTreeNode
  * @extends IntervalTreeNode
- * @headerfile <seqan/misc/misc_interval_tree.h>
+ * @headerfile <seqan/misc/interval_tree.h>
  * @brief An IntervalTreeNode that stores intervals explicitely in each node.
  *
  * @signature template <typename TInterval>
@@ -247,7 +247,7 @@ public:
 /*!
  * @class StorePointsOnlyIntervalTreeNode
  * @extends IntervalTreeNode
- * @headerfile <seqan/misc/misc_interval_tree.h>
+ * @headerfile <seqan/misc/interval_tree.h>
  * @brief An IntervalTreeNode that stores only the relevant points in each node.
  *
  * Only the end points of the intervals in the list sorted by endpoints (list2) and only the begin point of the interval
@@ -307,7 +307,7 @@ public:
 
 /*!
  * @class IntervalTree
- * @headerfile <seqan/misc/misc_interval_tree.h>
+ * @headerfile <seqan/misc/interval_tree.h>
  * @brief Data structure for efficient interval storage.
  *
  * @signature template <[typename TValue[, typename TCargo]]>
@@ -1247,7 +1247,7 @@ _calcIntervalTreeRootCenter(TIntervals & intervals)
 /*!
  * @fn IntervalTree#addInterval
  *
- * @headerfile <seqan/misc/misc_interval_tree.h>
+ * @headerfile <seqan/misc/interval_tree.h>
  *
  * @brief Adds an interval to an interval tree.
  *

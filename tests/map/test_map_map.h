@@ -40,7 +40,7 @@
 #include <set>
 
 #include <seqan/map.h>
-#include <seqan/misc/misc_set.h>
+#include <seqan/misc/set.h>
 #include <seqan/find.h>
 
 using namespace std;

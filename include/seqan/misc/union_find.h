@@ -34,8 +34,8 @@
 // Implementation of the Union-Find data structure.
 // ==========================================================================
 
-#ifndef SEQAN_MISC_MISC_UNION_FIND_H_
-#define SEQAN_MISC_MISC_UNION_FIND_H_
+#ifndef SEQAN_MISC_UNION_FIND_H_
+#define SEQAN_MISC_UNION_FIND_H_
 
 #include <seqan/basic.h>
 #include <seqan/sequence.h>
@@ -55,7 +55,7 @@ template <typename TSpec> class Graph;
 
 /*!
  * @class UnionFind
- * @headerfile <seqan/misc/misc_union_find.h>
+ * @headerfile <seqan/misc/union_find.h>
  * @brief Union-Find data structure.
  *
  * @signature template <typename T>
@@ -387,4 +387,4 @@ joinSets(UnionFind<TValue> & unionFind,
 
 }  // namespace seqan
 
-#endif // #ifndef SEQAN_MISC_MISC_UNION_FIND_H_
+#endif // #ifndef SEQAN_MISC_UNION_FIND_H_

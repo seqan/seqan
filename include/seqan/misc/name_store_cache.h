@@ -93,7 +93,7 @@ struct NameStoreLess_
 
 /*!
  * @class NameStoreCache
- * @headerfile <seqan/misc/misc_name_store_cache.h>
+ * @headerfile <seqan/misc/name_store_cache.h>
  * @brief Fast mapping from string names to numeric ids.
  *
  * NameStore objects store a binary search tree (using <tt>std::map&lt;&gt;</tt>) on a @link StringSet @endlink (the

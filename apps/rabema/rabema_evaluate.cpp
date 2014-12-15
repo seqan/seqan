@@ -29,7 +29,7 @@
 #include <seqan/bam_io.h>
 #include <seqan/basic.h>
 #include <seqan/find.h>
-#include <seqan/misc/misc_interval_tree.h>
+#include <seqan/misc/interval_tree.h>
 #include <seqan/store.h>
 #include <seqan/seq_io.h>
 

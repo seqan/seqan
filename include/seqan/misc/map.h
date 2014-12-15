@@ -29,36 +29,60 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: Andreas Gogol-Doering <andreas.doering@mdc-berlin.de>
 // ==========================================================================
-// Facade header for module vcf_io.
+// Note that this file originally did not compile.  Me (holtgrew) change it
+// it it compiled.  However, it might not make sense to fix it so it actually
+// works.
 // ==========================================================================
 
-#ifndef SEQAN_INCLUDE_SEQAN_VCF_IO_H_
-#define SEQAN_INCLUDE_SEQAN_VCF_IO_H_
+//SEQAN_NO_GENERATED_FORWARDS: no forwards are generated for this file
 
-// ===========================================================================
-// Prerequisites.
-// ===========================================================================
+#ifndef SEQAN_HEADER_MISC_MAP_H
+#define SEQAN_HEADER_MISC_MAP_H
 
-#include <seqan/basic.h>
-#include <seqan/file.h>
-#include <seqan/sequence.h>
-#include <seqan/misc/name_store_cache.h>
-#include <seqan/stream.h>
+#include <algorithm>
+#include "base.h"
 
-// ===========================================================================
-// First Header Group.
-// ===========================================================================
 
-#include <seqan/vcf_io/vcf_header_record.h>
-#include <seqan/vcf_io/vcf_header.h>
-#include <seqan/vcf_io/vcf_record.h>
+//////////////////////////////////////////////////////////////////////////////
 
-#include <seqan/vcf_io/vcf_io_context.h>
-#include <seqan/vcf_io/read_vcf.h>
-#include <seqan/vcf_io/write_vcf.h>
+namespace SEQAN_NAMESPACE_MAIN
+{
 
-#include <seqan/vcf_io/vcf_file.h>
+	//////////////////////////////////////////////////////////////////////////////
+	//
 
-#endif  // SEQAN_INCLUDE_SEQAN_VCF_IO_H_
+	template <typename TPair>
+	inline typename TPair::T1 & keyOf(TPair &pair) {
+		return getValueI1(pair);
+	}
+	template <typename TPair>
+	inline typename TPair::T1 const & keyOf(TPair const &pair) {
+		return getValueI1(pair);
+	}
+	template <typename TPair>
+	inline typename TPair::T2 & objectOf(TPair &pair) {
+		return getValueI2(pair);
+	}
+	template <typename TPair>
+	inline typename TPair::T2 const & objectOf(TPair const &pair) {
+		return getValueI2(pair);
+	}
+
+	//////////////////////////////////////////////////////////////////////////////
+	//
+
+//	template <typename TKey>
+//	struct Map {
+//		typedef ::std::map<TKey> Type;
+//	};
+	template <typename TKey, typename TObject>
+	class Map< Pair<TKey, TObject> > {
+//		typedef ::std::set< Pair<TKey, TObject>, SetLess< Pair<TKey, TObject> > > Type;
+	};
+
+}
+
+#endif
+

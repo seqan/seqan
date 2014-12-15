@@ -41,7 +41,7 @@
 // TODO(holtgrew): Are the static_casts<> to TValue necessary?
 // TODO(holtgrew): Split up large tests into one setup and multiple test functions.
 
-#include <seqan/misc/misc_interval_tree.h>  // Header under test.
+#include <seqan/misc/interval_tree.h>  // Header under test.
 
 #include <seqan/basic.h>
 
