@@ -1,4 +1,4 @@
-// FRAGMENT(initialization)
+//![initialization]
 #include <iostream>
 #include <seqan/index.h>
 
@@ -9,7 +9,8 @@ int main()
     typedef Index<CharString> TIndex;
     TIndex index("tobeornottobe");
     Iterator<TIndex, TopDown<ParentLinks<> > >::Type it(index);
-// FRAGMENT(iteration)
+//![initialization]
+//![iteration]
 
     do
     {
@@ -22,3 +23,5 @@ int main()
 
     return 0;
 }
+//![iteration]
+

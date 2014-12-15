@@ -1,4 +1,4 @@
-// FRAGMENT(initialization)
+//![initialization]
 #include <iostream>
 #include <seqan/index.h>
 
@@ -14,7 +14,8 @@ int main()
     typedef Index<StringSet<CharString> > TMyIndex;
     TMyIndex myIndex(myStringSet);
 
-// FRAGMENT(iteration1)
+//![initialization]
+//![iteration1]
     Iterator<TMyIndex, TopDown<ParentLinks<Postorder> > >::Type myIterator(myIndex);
 
     // Top-down iterators start in the root node which is not the first node of a
@@ -26,7 +27,8 @@ int main()
         ++myIterator;
     }
 
-// FRAGMENT(iteration2)
+//![iteration1]
+//![iteration2]
     Iterator<TMyIndex, BottomUp<> >::Type myIterator2(myIndex);
 
     while (!atEnd(myIterator2))
@@ -37,3 +39,5 @@ int main()
 
     return 0;
 }
+//![iteration2]
+

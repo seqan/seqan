@@ -1,4 +1,3 @@
-// FRAGMENT(includes)
 #include <iostream>
 #include <seqan/index.h>
 

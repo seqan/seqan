@@ -1,10 +1,11 @@
-// FRAGMENT(includes)
+//![includes]
 #include <iostream>
 #include <seqan/index.h>
 
 using namespace seqan;
 
-// FRAGMENT(initialization)
+//![includes]
+//![initialization]
 int main()
 {
     String<char> myString = "abracadabra";
@@ -12,7 +13,7 @@ int main()
     typedef Index<String<char> > TMyIndex;
     TMyIndex myIndex(myString);
 
-// FRAGMENT(iteration)
+//![iteration]
     Iterator<TMyIndex, TopDown<ParentLinks<Preorder> > >::Type myIterator(myIndex);
 
     while (!atEnd(myIterator))
@@ -23,3 +24,5 @@ int main()
 
     return 0;
 }
+//![iteration]
+

@@ -1,10 +1,11 @@
-// FRAGMENT(includes)
+//![includes]
 #include <iostream>
 #include <seqan/index.h>
 
 using namespace seqan;
 
-// FRAGMENT(iteration)
+//![includes]
+//![iteration]
 template <typename TIndexSpec>
 void constrainedDFS()
 {
@@ -34,3 +35,5 @@ int main()
     constrainedDFS<IndexWotd<> >();
     return 0;
 }
+//![iteration]
+

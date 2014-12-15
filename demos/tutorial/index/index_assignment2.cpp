@@ -1,4 +1,4 @@
-// FRAGMENT(initialization)
+//![initialization]
 #include <iostream>
 #include <seqan/index.h>
 
@@ -13,7 +13,8 @@ int main()
     typedef Index<StringSet<CharString> > TMyIndex;
     TMyIndex myIndex(myStringSet);
 
-// FRAGMENT(iteration)
+//![initialization]
+//![iteration]
     Iterator<TMyIndex, Mums>::Type myIterator(myIndex);
 
     while (!atEnd(myIterator))
@@ -24,3 +25,5 @@ int main()
 
     return 0;
 }
+//![iteration]
+
