@@ -40,8 +40,8 @@ struct LessAlignedReadDistance
 {
     TDistanceString const & distances;
 
-    LessAlignedReadDistance(TDistanceString const & _distances)
-            : distances(_distances)
+    LessAlignedReadDistance(TDistanceString const & _distances) :
+        distances(_distances)
     {}
 
     inline bool
@@ -49,6 +49,7 @@ struct LessAlignedReadDistance
     {
         return distances[lhs.id] < distances[rhs.id];
     }
+
 };
 
 template <typename TAlignedReadStore, typename TDistanceString>
@@ -56,9 +57,9 @@ void sortAlignedReads(TAlignedReadStore & alignedReadStore,
                       TDistanceString const & distances,
                       SortAlignmentDistance const &)
 {
-	std::stable_sort(
-		begin(alignedReadStore, Standard()), 
-		end(alignedReadStore, Standard()),
+    std::stable_sort(
+        begin(alignedReadStore, Standard()),
+        end(alignedReadStore, Standard()),
         LessAlignedReadDistance<typename Value<TAlignedReadStore>::Type, TDistanceString>(distances));
 }
 
@@ -67,7 +68,8 @@ void performWork(Options const & options)
     typedef FragmentStore<>::TContigSeq TContigSeq;
     FragmentStore<> fragmentStore;
 
-    if (!empty(options.referenceFilename)) {
+    if (!empty(options.referenceFilename))
+    {
         std::cerr << "Loading contigs..." << std::endl;
         loadContigs(fragmentStore, options.referenceFilename);
         std::cerr << "  loaded " << length(fragmentStore.contigStore) << " contigs" << std::endl;
@@ -82,7 +84,8 @@ void performWork(Options const & options)
     String<int> distances;
     resize(distances, length(fragmentStore.alignedReadStore), Exact());
     typedef Iterator<FragmentStore<>::TAlignedReadStore, Standard>::Type TIterator;
-    for (TIterator it = begin(fragmentStore.alignedReadStore), itEnd = end(fragmentStore.alignedReadStore); it != itEnd; ++it) {
+    for (TIterator it = begin(fragmentStore.alignedReadStore), itEnd = end(fragmentStore.alignedReadStore); it != itEnd; ++it)
+    {
         Align<TContigSeq> align;
         resize(rows(align), 2);
         size_t beginPos = it->beginPos;
@@ -111,11 +114,15 @@ void performWork(Options const & options)
     FragmentStore<>::TAlignedReadStore rsCopy;
     size_t readId = MaxValue<size_t>::VALUE;
     size_t alignmentCount = 0;
-    for (TIterator it = begin(fragmentStore.alignedReadStore), itEnd = end(fragmentStore.alignedReadStore); it != itEnd; ++it) {
-        if (readId != it->readId) {
+    for (TIterator it = begin(fragmentStore.alignedReadStore), itEnd = end(fragmentStore.alignedReadStore); it != itEnd; ++it)
+    {
+        if (readId != it->readId)
+        {
             alignmentCount = 1;
             readId = it->readId;
-        } else {
+        }
+        else
+        {
             alignmentCount += 1;
         }
         if (alignmentCount <= options.limit)

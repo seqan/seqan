@@ -6,22 +6,22 @@ using namespace seqan;
 
 int main()
 {
-	typedef String<char>				TSequence;	// sequence type
-	typedef StringSet<TSequence,Dependent<> >	TDepStringSet;	
-	typedef Graph<Alignment<TDepStringSet> >	TAlignGraph;	
+    typedef String<char>                TSequence;  // sequence type
+    typedef StringSet<TSequence, Dependent<> >   TDepStringSet;
+    typedef Graph<Alignment<TDepStringSet> >    TAlignGraph;
 
 // FRAGMENT(init)
-	StringSet<TSequence> seq;
-	appendValue(seq, "blablablu");
-	appendValue(seq, "abab");
+    StringSet<TSequence> seq;
+    appendValue(seq, "blablablu");
+    appendValue(seq, "abab");
 
-	TAlignGraph alignG(seq);
+    TAlignGraph alignG(seq);
 
 // FRAGMENT(alignment)
-	AlignConfig<true,false,false,true> ac;
-	int score = globalAlignment(alignG, Score<int>(1,-1,-1,-1), ac, Gotoh());
-	std::cout << "Score = " << score << std::endl;
-	std::cout << alignG;
-	
-	return 0;
+    AlignConfig<true, false, false, true> ac;
+    int score = globalAlignment(alignG, Score<int>(1, -1, -1, -1), ac, Gotoh());
+    std::cout << "Score = " << score << std::endl;
+    std::cout << alignG;
+
+    return 0;
 }

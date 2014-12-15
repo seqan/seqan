@@ -9,7 +9,8 @@ using namespace seqan;
 int main(int argc, char const ** argv)
 {
     // Check arguments.
-    if (argc != 2) {
+    if (argc != 2)
+    {
         std::cerr << "Wrong argument count!" << std::endl
                   << "USAGE: sequence_length SEQUENCE.fasta" << std::endl;
         return 1;

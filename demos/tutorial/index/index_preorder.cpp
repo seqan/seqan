@@ -5,21 +5,21 @@
 using namespace seqan;
 
 // FRAGMENT(initialization)
-int main ()
+int main()
 {
-	String<char> myString = "abracadabra";
+    String<char> myString = "abracadabra";
 
-	typedef Index< String<char> > TMyIndex;
-	TMyIndex myIndex(myString);
+    typedef Index<String<char> > TMyIndex;
+    TMyIndex myIndex(myString);
 
 // FRAGMENT(iteration)
-	Iterator< TMyIndex, TopDown< ParentLinks<Preorder> > >::Type myIterator(myIndex);
+    Iterator<TMyIndex, TopDown<ParentLinks<Preorder> > >::Type myIterator(myIndex);
 
-	while (!atEnd(myIterator))
-	{
-		std::cout << representative(myIterator) << std::endl;
-		++myIterator;
-	}
+    while (!atEnd(myIterator))
+    {
+        std::cout << representative(myIterator) << std::endl;
+        ++myIterator;
+    }
 
-	return 0;
+    return 0;
 }

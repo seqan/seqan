@@ -59,11 +59,11 @@ int main(int argc, char const ** argv)
     if (argc == 3)
         success = open(vout, argv[2]);
     else
-        success = open(vout, std::cout, Nothing()); // disable compression on stdout
+        success = open(vout, std::cout, Nothing());  // disable compression on stdout
 
     if (!success)
     {
-        std::cerr << "ERROR: Could not open output file " << ((argc == 3)? argv[2] : "") << "\n";
+        std::cerr << "ERROR: Could not open output file " << ((argc == 3) ? argv[2] : "") << "\n";
         return 1;
     }
 

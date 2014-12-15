@@ -27,6 +27,6 @@ int main()
     record.score = "0";
     record.strand = '+';
     writeRecord(out, record);
-    
+
     return 0;
 }

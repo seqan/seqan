@@ -32,11 +32,11 @@ struct BlastnTabAlignmentRecord
     unsigned subjectEnd;
     double eValue;
     double bitScore;
-    
+
     BlastnTabAlignmentRecord() :
-            identity(0), alignmentLength(0), mismatches(0), gapOpens(0),
-            queryBegin(0), queryEnd(0), subjectBegin(0), subjectEnd(0),
-            eValue(0), bitScore(0)
+        identity(0), alignmentLength(0), mismatches(0), gapOpens(0),
+        queryBegin(0), queryEnd(0), subjectBegin(0), subjectEnd(0),
+        eValue(0), bitScore(0)
     {}
 };
 
@@ -111,7 +111,7 @@ readRecord(BlastnTabAlignmentRecord & record, CharString & buffer, TReader & rea
     clear(record.subjectName);
     readUntil(record.subjectName, reader, IsTab());
     skipOne(reader, IsTab());
-    
+
     // Read identity.
     readUntil(buffer, reader, IsTab());
     lexicalCast(record.identity, buffer);
@@ -210,7 +210,6 @@ readRecords(TBlastnTabRecords & records, TReader & reader, BlastnTab const & /*t
         }
     }
 }
-            
 
 // FRAGMENT(main)
 int main(int argc, char const * argv[])

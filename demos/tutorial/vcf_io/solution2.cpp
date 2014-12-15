@@ -34,12 +34,12 @@ int main()
             std::cout << contigNames(context(vcfIn))[i] << '\t'
                       << counters[i] << '\n';
     }
-    catch (IOError &e)
+    catch (IOError & e)
     {
         std::cerr << "=== I/O Error ===\n" << e.what() << std::endl;
         return 1;
     }
-    catch (ParseError &e)
+    catch (ParseError & e)
     {
         std::cerr << "=== Parse Error ===\n" << e.what() << std::endl;
         return 1;

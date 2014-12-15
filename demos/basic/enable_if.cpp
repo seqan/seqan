@@ -46,23 +46,25 @@ class EnableIfExample
 {
 public:
     int num;
-    
+
 //![enable if example constructor]
     template <typename T>
     EnableIfExample(T const & n, SEQAN_CTOR_ENABLE_IF(Is<IntegerConcept<T> >)) :
-            num(0)
+        num(0)
     {
         ignoreUnusedVariableWarning(dummy);
     }
+
 //![enable if example constructor]
 
 //![disable if example constructor]
     template <typename T>
     EnableIfExample(T const & n, SEQAN_CTOR_DISABLE_IF(Is<IntegerConcept<T> >)) :
-            num(0)
+        num(0)
     {
         ignoreUnusedVariableWarning(dummy);
     }
+
 //![disable if example constructor]
 
 //![enable if example function]

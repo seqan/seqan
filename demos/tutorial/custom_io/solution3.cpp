@@ -10,10 +10,11 @@ using namespace seqan;
 struct IsPunct
 {
     template <typename TValue>
-    bool operator() (TValue const & val) const
+    bool operator()(TValue const & val) const
     {
         return ispunct(val);
     }
+
 };
 
 // This main routine is only some driver code that reads from stdin.
@@ -35,7 +36,7 @@ int main()
 
         // Print hexadecimal number back to the user.
         std::cout << "RECOGNIZED " << buffer << '\n';
-        
+
         // Skip all trailing input.
         skipLine(reader);
     }

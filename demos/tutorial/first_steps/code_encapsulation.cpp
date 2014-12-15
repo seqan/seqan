@@ -11,7 +11,7 @@ int computeLocalScore(String<char> subText, String<char> pattern)
     for (unsigned i = 0; i < length(pattern); ++i)
         if (subText[i] == pattern[i])
             ++localScore;
-    
+
     return localScore;
 }
 
@@ -22,7 +22,7 @@ String<int> computeScore(String<char> text, String<char> pattern)
 
     for (unsigned i = 0; i < length(text) - length(pattern) + 1; ++i)
         score[i] = computeLocalScore(infix(text, i, i + length(pattern)), pattern);
-    
+
     return score;
 }
 

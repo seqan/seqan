@@ -76,7 +76,6 @@ bool loadFiles(TStore & store, Options const & options)
     return true;
 }
 
-
 // FRAGMENT(main)
 int main(int argc, char const * argv[])
 {

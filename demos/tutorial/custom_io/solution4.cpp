@@ -16,14 +16,14 @@ int main(int argc, char const ** argv)
         int      i = 0;
         unsigned u = 0;
         double   d = 0;
-        
+
         try
         {
             d = lexicalCast<double>(argv[1]);
             i = lexicalCast<int>(argv[1]);
             u = lexicalCast<unsigned>(argv[1]);
         }
-        catch (BadLexicalCast &e)
+        catch (BadLexicalCast & e)
         {
             std::cerr << e.what() << std::endl;
         }
@@ -31,13 +31,13 @@ int main(int argc, char const ** argv)
         std::cout << "lexicalCast<unsinged>(" << argv[1] << ") == " << u << '\n';
         std::cout << "lexicalCast<double>(" << argv[1] << ") ==   " << d << '\n';
     }
-    
+
     // Lexical casting with the 2-argument lexicalCast().
     {
         int      i = 0;
         unsigned u = 0;
         double   d = 0;
-        
+
         bool bi = lexicalCast(i, argv[1]);
         bool bu = lexicalCast(u, argv[1]);
         bool bd = lexicalCast(d, argv[1]);
@@ -46,20 +46,20 @@ int main(int argc, char const ** argv)
         std::cout << "lexicalCast2<unsigned>(" << argv[1] << ") == (" << bu << ", " << u << ")\n";
         std::cout << "lexicalCast2<double>(" << argv[1] << ") ==   (" << bd << ", " << d << ")\n";
     }
-    
+
     // Lexical casting with the 2-argument lexicalCast() that throws exceptions.
     {
         int      i = 0;
         unsigned u = 0;
         double   d = 0;
-        
+
         try
         {
             lexicalCastWithException(d, argv[1]);
             lexicalCastWithException(i, argv[1]);
             lexicalCastWithException(u, argv[1]);
         }
-        catch (BadLexicalCast &e)
+        catch (BadLexicalCast & e)
         {
             std::cerr << e.what() << std::endl;
         }
@@ -68,6 +68,6 @@ int main(int argc, char const ** argv)
         std::cout << "lexicalCast2<unsigned>(" << argv[1] << ") == (" << u << ")\n";
         std::cout << "lexicalCast2<double>(" << argv[1] << ") ==   (" << d << ")\n";
     }
-    
+
     return 0;
 }

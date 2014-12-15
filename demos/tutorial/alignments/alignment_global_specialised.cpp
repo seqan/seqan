@@ -13,12 +13,12 @@ int main()
     TSequence seq2 = "GARFIELDTHEBIGCAT";
 
     TAlign align;
-    resize(rows(align),2);
-    assignSource(row(align,0),seq1);
-    assignSource(row(align,1),seq2);
+    resize(rows(align), 2);
+    assignSource(row(align, 0), seq1);
+    assignSource(row(align, 1), seq2);
 
 // FRAGMENT(alignment)
-    int score = globalAlignment(align,Score<int,Simple>(1,-1,-1),Hirschberg());
+    int score = globalAlignment(align, Score<int, Simple>(1, -1, -1), Hirschberg());
     std::cout << "Score: " << score << std::endl;
     std::cout << align << std::endl;
 

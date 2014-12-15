@@ -100,7 +100,7 @@ int main(int argc, char const ** argv)
     // Finally, sample reads.
     SeqFileOut seqFileOut(std::cout, Fastq());
     std::set<unsigned>::iterator it = sampledIds.begin();
-    for(; it != sampledIds.end(); ++it)
+    for (; it != sampledIds.end(); ++it)
         writeRecord(seqFileOut, ids[*it], seqs[*it]);
 
     return 0;

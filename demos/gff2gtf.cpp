@@ -7,30 +7,30 @@
 
 using namespace seqan;
 
-int main(int argc, const char *argv[])
+int main(int argc, const char * argv[])
 {
-	if (argc < 3)
+    if (argc < 3)
     {
         std::cerr << "[OPTION]... <infile.[gff|gtf]> <outfile.[gff|gtf]>" << std::endl;
         return 0;
-	}
+    }
 
-	FragmentStore<> store;
-	GffFileIn inFile;
-	if (!open(inFile, argv[1]))
+    FragmentStore<> store;
+    GffFileIn inFile;
+    if (!open(inFile, argv[1]))
     {
-		std::cerr << "Failed to open annotation infile for reading." << std::endl;
+        std::cerr << "Failed to open annotation infile for reading." << std::endl;
         return 1;
     }
     readRecords(store, inFile);
 
-	GffFileOut outFile;
+    GffFileOut outFile;
     if (!open(outFile, argv[2]))
     {
-        std::cerr << "Failed to open annotation outfile for writing." << std::endl ;
+        std::cerr << "Failed to open annotation outfile for writing." << std::endl;
         return 1;
-	}
+    }
     writeRecords(outFile, store);
 
-	return 0;
+    return 0;
 }

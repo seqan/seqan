@@ -2,7 +2,7 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
     typedef StringSet<String<char> >    TText;
     typedef Index<TText>                TIndex;

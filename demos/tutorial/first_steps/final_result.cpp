@@ -13,7 +13,7 @@ int computeLocalScore(TText const & subText, String<AminoAcid> const & pattern)
     int localScore = 0;
     for (unsigned i = 0; i < length(pattern); ++i)
         localScore += score(Blosum62(), subText[i], pattern[i]);
-    
+
     return localScore;
 }
 
@@ -24,7 +24,7 @@ int computeLocalScore(TText const & subText, TPattern const & pattern)
     for (unsigned i = 0; i < length(pattern); ++i)
         if (subText[i] == pattern[i])
             ++localScore;
-    
+
     return localScore;
 }
 
@@ -36,7 +36,7 @@ String<int> computeScore(TText const & text, TPattern const & pattern)
 
     for (unsigned i = 0; i < length(text) - length(pattern) + 1; ++i)
         score[i] = computeLocalScore(infix(text, i, i + length(pattern)), pattern);
-    
+
     return score;
 }
 
@@ -58,7 +58,7 @@ void print(TText const & text, TSpec const & /*tag*/)
 {
     print(text);
 }
-                            
+
 struct MaxOnly {};
 
 template <typename TText>
@@ -78,7 +78,7 @@ void print(TText const & score, MaxOnly const & /*tag*/)
         else if (score[i] == maxScore)
             appendValue(output, i);
     }
-    
+
     print(output);
 }
 
@@ -91,7 +91,7 @@ void print(TText const & score, GreaterZero const & /*tag*/)
     for (unsigned i = 1; i < length(score); ++i)
         if (score[i] > 0)
             appendValue(output, Pair<int>(i, score[i]));
-    
+
     for (unsigned i = 0; i < length(output); ++i)
         std::cout << "(" << output[i].i1 << "; " << output[i].i2 << ") ";
     std::cout << std::endl;
@@ -110,10 +110,10 @@ int main()
     print(score);
     // > 1 0 1 0 0 1 0 0 0 0 0 0 1 0 0 0 0 1 0 8 0 1 0 0 0 0 2 0 1 0 0 1 0 3 0 1 1 0 0 0 0
     print(score, MaxOnly());
-    // > 19 
+    // > 19
     print(score, GreaterZero());
     // > (2; 1) (5; 1) (12; 1) (17; 1) (19; 8) (21; 1) (26; 2) (28; 1) (31; 1) (33; 3) (35; 1) (36; 1)
-    
+
     // And now for a protein pattern
     String<AminoAcid> protein = "tutorial";
     String<int> proteinScore = computeScore(text, protein);
@@ -125,7 +125,7 @@ int main()
     print(proteinScore);
     // > 6 -9 -3 -6 -6 0 -9 -8 -7 -3 -9 -5 -8 -4 -5 -6 -6 1 -6 25 -7 2 -6 -6 -9 -6 -5 -7 1 -7 -5 -4 -6 2 -6 -3 -8 -9 -10 -4 -6 0 0 0 0 0 0 0
     print(proteinScore, MaxOnly());
-    // > 19 
+    // > 19
     print(proteinScore, GreaterZero());
     // > (17; 1) (19; 25) (21; 2) (28; 1) (33; 2)
 

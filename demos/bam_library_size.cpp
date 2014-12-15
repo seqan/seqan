@@ -71,23 +71,33 @@ struct LibraryInfo
     unsigned maxNormalISize;
     Orientation defaultOrient;
 
-    LibraryInfo() : median(0), stdDev(0), maxNormalISize(0), defaultOrient(F_PLUS)
+    LibraryInfo() :
+        median(0), stdDev(0), maxNormalISize(0), defaultOrient(F_PLUS)
     {}
 };
 
 inline int
-getStrandIndependentOrientation(BamAlignmentRecord const& rec)
+getStrandIndependentOrientation(BamAlignmentRecord const & rec)
 {
-    if (!hasFlagRC(rec)) {
-        if (!(hasFlagNextRC(rec))) {
+    if (!hasFlagRC(rec))
+    {
+        if (!(hasFlagNextRC(rec)))
+        {
             return (rec.beginPos < rec.pNext) ? LibraryInfo::F_PLUS : LibraryInfo::F_MINUS;
-        } else {
+        }
+        else
+        {
             return (rec.beginPos < rec.pNext) ? LibraryInfo::R_PLUS : LibraryInfo::R_MINUS;
         }
-    } else {
-        if (!hasFlagNextRC(rec)) {
+    }
+    else
+    {
+        if (!hasFlagNextRC(rec))
+        {
             return (rec.beginPos > rec.pNext) ? LibraryInfo::R_PLUS : LibraryInfo::R_MINUS;
-        } else {
+        }
+        else
+        {
             return (rec.beginPos > rec.pNext) ? LibraryInfo::F_PLUS : LibraryInfo::F_MINUS;
         }
     }
@@ -106,7 +116,7 @@ bool performEstimation(LibraryInfo & libInfo, BamFileIn & bamFileIn)
 {
     typedef StringSet<String<char> >   TNameStore;
     typedef NameStoreCache<TNameStore> TNameStoreCache;
-    
+
     // Vector of all insert sizes.
     typedef std::vector<unsigned int> TVecISize;
     TVecISize vecISize;
@@ -159,7 +169,7 @@ bool performEstimation(LibraryInfo & libInfo, BamFileIn & bamFileIn)
         std::swap(vecISize, vecISizeTmp);
     }
 
-    
+
     // Check that this is a proper paired-end library
     if (vecISize.empty())
         return true;
@@ -181,9 +191,9 @@ bool performEstimation(LibraryInfo & libInfo, BamFileIn & bamFileIn)
     double cutoffMax = libInfo.median + 7 * 0.1 * libInfo.median;
     double cutoffMin = libInfo.median - 7 * 0.1 * libInfo.median;
     if ((cutoffMin < 0) || (cutoffMax < cutoffMin))
-        cutoffMin = 0; 
+        cutoffMin = 0;
     unsigned int count = 0;
-    for(;begin < end; ++begin)
+    for (; begin < end; ++begin)
     {
         if ((*begin >= cutoffMin) && (*begin <= cutoffMax))
         {
@@ -230,18 +240,21 @@ int main(int argc, char const ** argv)
     std::cout << "orientation:                ";
     switch (libInfo.defaultOrient)
     {
-        case LibraryInfo::F_PLUS:
-            std::cout << "F+ R1 ---> ---> R2\n";
-            break;
-        case LibraryInfo::F_MINUS:
-            std::cout << "F- R1 ---> ---> R2\n";
-            break;
-        case LibraryInfo::R_PLUS:
-            std::cout << "R+ R1 ---> <--- R2\n";
-            break;
-        case LibraryInfo::R_MINUS:
-            std::cout << "R- R1 <--- ---> R2\n";
-            break;
+    case LibraryInfo::F_PLUS:
+        std::cout << "F+ R1 ---> ---> R2\n";
+        break;
+
+    case LibraryInfo::F_MINUS:
+        std::cout << "F- R1 ---> ---> R2\n";
+        break;
+
+    case LibraryInfo::R_PLUS:
+        std::cout << "R+ R1 ---> <--- R2\n";
+        break;
+
+    case LibraryInfo::R_MINUS:
+        std::cout << "R- R1 <--- ---> R2\n";
+        break;
     }
 
     return 0;
@@ -256,4 +269,3 @@ int main(int, char const **)
 }
 
 #endif  // #if SEQAN_HAS_ZLIB
-

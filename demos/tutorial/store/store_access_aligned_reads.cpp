@@ -5,7 +5,7 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
     typedef FragmentStore<> TStore;
 
@@ -29,18 +29,18 @@ int main ()
 // FRAGMENT(output)
     for (int i = 140; i < 160; i += 4)
     {
-        TAlignedRead &ar = store.alignedReadStore[i];
+        TAlignedRead & ar = store.alignedReadStore[i];
 
         readSeq = store.readSeqStore[ar.readId];
         if (ar.endPos < ar.beginPos)
             reverseComplement(readSeq);
 
         TContigGaps contigGaps(
-            store.contigStore[ar.contigId].seq, 
+            store.contigStore[ar.contigId].seq,
             store.contigStore[ar.contigId].gaps);
 
         TReadGaps readGaps(
-            readSeq, 
+            readSeq,
             ar.gaps);
 
         setBeginPosition(contigGaps, std::min(ar.beginPos, ar.endPos));

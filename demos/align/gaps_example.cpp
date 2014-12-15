@@ -27,6 +27,6 @@ int main()
               << "toSourcePosition(gaps, 4) == " << toSourcePosition(gaps, 4) << "\n"
               << "toViewPosition(gaps, 0) == " << toViewPosition(gaps, 0) << "\n"
               << "toViewPosition(gaps, 5) == " << toViewPosition(gaps, 6) << "\n";
-    
+
     return 0;
 }

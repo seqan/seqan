@@ -38,6 +38,6 @@ int main()
     appendValue(record.tagNames, "Parent");
     appendValue(record.tagValues, "gene0001");
     writeRecord(out, record);
-    
+
     return 0;
 }

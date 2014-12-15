@@ -23,6 +23,6 @@ int main()
         readRecord(record, vcfIn);
         writeRecord(vcfOut, record);
     }
-    
+
     return 0;
 }

@@ -17,13 +17,13 @@ int main()
 
     std::cout << "After creating the Journaled String:" << std::endl;
     std::cout << "Host: " << host(journalStr) << std::endl;
-    std::cout << "Journal: "<< journalStr << std::endl;
+    std::cout << "Journal: " << journalStr << std::endl;
     std::cout << "Nodes: " << journalStr._journalEntries << std::endl;
     std::cout << std::endl;
 
     // FRAGMENT(modification)
     insert(journalStr, 7, "modified");
-    erase(journalStr, 19,27);
+    erase(journalStr, 19, 27);
 
     std::cout << "After modifying the Journaled String:" << std::endl;
     std::cout << "Host: " << host(journalStr) << std::endl;

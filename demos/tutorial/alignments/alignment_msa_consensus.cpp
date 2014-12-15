@@ -8,7 +8,8 @@ using namespace seqan;
 int main()
 {
     // some variangs of sonic hedgehog exon 1
-    char const * strings[4] = {
+    char const * strings[4] =
+    {
         // gi|2440284|dbj|AB007129.1| Oryzias latipes
         "GCGGGTCACTGAGGGCTGGGATGAGGACGGCCACCACTTCGAGGAGTCCCTTCACTACGAGGGCAGGGCC"
         "GTGGACATCACCACGTCAGACAGGGACAAGAGCAAGTACGGCACCCTGTCCAGACTGGCGGTGGAAGCTG"

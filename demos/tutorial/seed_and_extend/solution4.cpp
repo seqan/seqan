@@ -11,7 +11,7 @@ int main()
     // The horizontal and vertical sequence (database and query).
     CharString seqH = "The quick BROWN fox jumped again!";
     CharString seqV =     "thick BROWN boxes of brownies!";
-                                     //  ^^^
+    //  ^^^
     // Create seed and print the seeed sequence.
     Seed<Simple> seed(11, 7, 14, 10);
 

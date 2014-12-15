@@ -50,7 +50,6 @@ ArgumentParser::ParseResult parseOptions(Options & options, int argc, char const
     return res;
 }
 
-
 //
 // 2. Load annotations and alignments from files
 //
@@ -79,7 +78,6 @@ bool loadFiles(TStore & store, Options const & options)
 
     return true;
 }
-
 
 //
 // 3. Extract intervals from gene annotations (grouped by contigId)
@@ -125,7 +123,6 @@ void constructIntervalTrees(String<TIntervalTree> & intervalTrees,
     for (int i = 0; i < numContigs; ++i)
         createIntervalTree(intervalTrees[i], intervals[i]);
 }
-
 
 // FRAGMENT(main)
 int main(int argc, char const * argv[])

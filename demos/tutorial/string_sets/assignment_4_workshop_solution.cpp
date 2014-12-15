@@ -7,10 +7,11 @@ using namespace seqan;
 template <typename TText1, typename TText2>
 void printAlign(TText1 const & genomeFragment, TText2 const & read)
 {
-        std::cout <<  "Alignment " << std::endl;
-        std::cout << "  genome : " << genomeFragment << std::endl;
-        std::cout << "  read   : " << read << std::endl;
+    std::cout <<  "Alignment " << std::endl;
+    std::cout << "  genome : " << genomeFragment << std::endl;
+    std::cout << "  read   : " << read << std::endl;
 }
+
 int main(int, char const **)
 {
     // Build reads and genomes
@@ -28,7 +29,7 @@ int main(int, char const **)
     append(chr1, chr2);
     // Print readlist
     std::cout << " \n Read list: " << std::endl;
-    for(unsigned i = 0; i < length(readList); ++i)
+    for (unsigned i = 0; i < length(readList); ++i)
         std::cout << readList[i] << std::endl;
     // Assume we have mapped the 4 reads to chr1 (and chr2) and now have the mapping start positions (no gaps).
     // Store the start position in a String alignPosList: 7, 100, 172, 272
@@ -40,10 +41,10 @@ int main(int, char const **)
     alignPosList[3] = 272;
     // Print alignments using Segment
     std::cout << " \n Print alignment using Segment: " << std::endl;
-    for(unsigned i = 0; i < length(readList); ++i)
+    for (unsigned i = 0; i < length(readList); ++i)
     {
         // Temporary copy of begin and end position (beginPosition) from alignPosList
-        // of a given alignment between the read and the genome        
+        // of a given alignment between the read and the genome
         unsigned beginPosition = alignPosList[i];
         unsigned endPosition = beginPosition + length(readList[i]);
         // Build infix
@@ -51,7 +52,7 @@ int main(int, char const **)
         // Call of our function to print the simple alignment
         printAlign(genomeFragment, readList[i]);
     }
-    
+
     // Iterators :)
     // Print alignments using Iterators: Do the same as above, but use Iterators to iterate over the read list.
     // First, use Standard Iterators.
@@ -59,12 +60,12 @@ int main(int, char const **)
     Iterator<TDnaList, Standard>::Type itEnd = end(readList); //same Iterator as above
 
     std::cout << " \n Print alignment using Standard Iterators: " << std::endl;
-    for(; it != itEnd; goNext(it))
+    for (; it != itEnd; goNext(it))
     {
         // Get the right index for alignPosList
         int i = position(it, readList);
         // Temporary copy of begin and end position (beginPosition) from alignPosList
-        // of a given alignment between the read and the genome        
+        // of a given alignment between the read and the genome
         unsigned beginPosition = alignPosList[i];
         unsigned endPosition = beginPosition + length(value(it));
         // Build Infix
@@ -72,15 +73,15 @@ int main(int, char const **)
         // Call of our function to print the simple alignment
         printAlign(genomeFragment, value(it));
     }
-    
+
     // Now, use Rooted Iterators.
     Iterator<TDnaList, Rooted>::Type it2 = begin(readList);
     std::cout << " \n Print alignment using Rooted Iterators: " << std::endl;
-    for(; !atEnd(it2); goNext(it2))
+    for (; !atEnd(it2); goNext(it2))
     {
         int i = position(it2);
         // Temporary copy of begin and end position (beginPosition) from alignPosList
-        // of a given alignment between the read and the genome        
+        // of a given alignment between the read and the genome
         unsigned beginPosition = alignPosList[i];
         unsigned endPosition = beginPosition + length(value(it2));
         // Build Infix
@@ -88,22 +89,22 @@ int main(int, char const **)
         // Call of our function to print the simple alignment
         printAlign(genomeFragment, value(it2));
     }
-    
+
     // StringSets
     // Build StringSet of readList: Build a StringSet of DnaQString and append the reads from readList.
     // Reuse the Rooted Iterator from above.
     typedef StringSet<DnaString> TDnaListSet;
     TDnaListSet readStringSet;
     goBegin(it2);
-    for(; !atEnd(it2); goNext(it2))
+    for (; !atEnd(it2); goNext(it2))
         appendValue(readStringSet, value(it2));
 
     // Iterate over StringSet
     Iterator<TDnaListSet, Rooted>::Type it3 = begin(readStringSet);
-    
+
     std::cout << " \n Print reads stored in a StringSet using Rooted Iterators: " << std::endl;
-    for(; !atEnd(it3); goNext(it3))
+    for (; !atEnd(it3); goNext(it3))
         std::cout << value(it3) << std::endl;
-    
+
     return 1;
 }

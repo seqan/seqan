@@ -9,7 +9,9 @@ int main()
     FaiIndex faiIndex;
     if (!open(faiIndex, "filename.fasta"))          // try to load
         if (!build(faiIndex, "filename.fasta"))     // try to build
-            return 1;  // Error.
+            return 1;
+
+    // Error.
     BamFileIn bamFileIn("file.bam");
     BamHeader header;
     readRecord(header, bamFileIn);
@@ -23,7 +25,7 @@ int main()
             std::cerr << "ERROR: Sequence "
                       << nameStore(context(bamFileIn))[i]
                       << "unknown in FASTA Index.\n";
-            return 1; 
+            return 1;
         }
 
     return 0;

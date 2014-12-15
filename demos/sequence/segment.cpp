@@ -48,7 +48,7 @@ int main()
     typedef Suffix<String<char> >::Type TSuffix;
 
     String<char> text = "This is a text!";
-    
+
     TPrefix preA(text, 4);
     TInfix infA(text, 10, 14);
     TSuffix sufA(text, 10);
@@ -59,9 +59,9 @@ int main()
     append(str, infA);
     append(str, sufA);
     std::cout << str << "\n";  // => "This text text!"
-    
+
     std::cout << preA[0] << " " << infA[0] << " " << sufA[0] << "\n";  // => "T t t"
-    
+
     preA[0] = 'X';
     infA[0] = 'X';
     sufA[1] = 'X';
@@ -78,7 +78,7 @@ int main()
     typedef Infix<TInfix>::Type  TInfix2;  // == TInfix
     typedef Prefix<TInfix>::Type TInfix3;  // == TInfix
     typedef Suffix<TInfix>::Type TInfix4;  // == TInfix
-    
+
     typedef Infix<TPrefix>::Type  TInfix5;   // == TInfix
     typedef Prefix<TPrefix>::Type TPrefix2;  // == TPrefix
     typedef Suffix<TPrefix>::Type TInfix6;   // == TInfix

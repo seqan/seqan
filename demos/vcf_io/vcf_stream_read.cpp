@@ -28,6 +28,6 @@ int main()
         std::cout << contigNames(context(vcfIn))[record.rID]
                   << "\t" << (record.beginPos + 1) << "\n";
     }
-    
+
     return 0;
 }

@@ -33,7 +33,7 @@ int main()
             assignValueById(counters, rID, getValueById(counters, rID) + 1);
         }
     }
-    catch (std::runtime_error &e)
+    catch (std::runtime_error & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;
@@ -44,6 +44,6 @@ int main()
     for (unsigned i = 0; i < length(seqNames); ++i)
         if (counters[i] != 0u)
             std::cout << seqNames[i] << '\t' << counters[i] << '\n';
-    
+
     return 0;
 }

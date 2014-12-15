@@ -6,7 +6,7 @@ using namespace seqan;
 
 int main()
 {
-    typedef String<Dna> TSequence;                 
+    typedef String<Dna> TSequence;
 
     TSequence seq1 = "CCCGGCATCATCC";
     TSequence seq2 = "CTTGGCATTATTC";
@@ -17,4 +17,3 @@ int main()
 
     return 0;
 }
-

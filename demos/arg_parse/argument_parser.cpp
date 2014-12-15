@@ -21,10 +21,10 @@ int main(int argc, char const ** argv)
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fIIN\\fP \\fIOUT\\fP ");
 
     addDescription(
-            parser,
-            "This is just a little demo to show what ArgumentParser is "
-            "able to do.  \\fIIN\\fP is a multi-FASTA input file.  \\fIOUT\\fP is a "
-            "txt output file.");
+        parser,
+        "This is just a little demo to show what ArgumentParser is "
+        "able to do.  \\fIIN\\fP is a multi-FASTA input file.  \\fIOUT\\fP is a "
+        "txt output file.");
 
     // Add positional arguments and set their valid file types.
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "IN"));
@@ -44,7 +44,7 @@ int main(int argc, char const ** argv)
     addSection(parser, "Miscellaneous");
     addOption(parser, ArgParseOption("v", "verbose", "Turn on verbose output."));
     addOption(parser, ArgParseOption("H", "hidden", "Super mysterious flag that will not be shown in "
-                                     "the help screen or man page."));
+                                                    "the help screen or man page."));
     hideOption(parser, "H");
 
     // Add a Reference section.

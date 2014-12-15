@@ -8,7 +8,7 @@ int main()
 {
     CharString path = SEQAN_PATH_TO_ROOT();
     append(path, "/demos/seq_io/example.fa");
-    
+
     FaiIndex faiIndex;
 
     // Try to read the FAI index.
@@ -44,6 +44,6 @@ int main()
 
     // Now print the first 100 characters we just read.
     std::cout << "chr:1-100 = " << seq << "\n";
-    
+
     return 0;
 }

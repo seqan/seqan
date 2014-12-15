@@ -13,7 +13,7 @@ int main()
     resize(rows(ali), 2);
     assignSource(row(ali, 0), "aphilologicaltheorem");
     assignSource(row(ali, 1), "bizarreamphibology");
-    int score = localAlignment(ali, Score<int>(3,-3,-2, -2));
+    int score = localAlignment(ali, Score<int>(3, -3, -2, -2));
     std::cout << "Score = " << score << std::endl;
     std::cout << ali;
     unsigned cBeginPos = clippedBeginPosition(row(ali, 0));

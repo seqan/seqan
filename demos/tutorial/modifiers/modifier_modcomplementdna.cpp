@@ -6,15 +6,15 @@
 using namespace seqan;
 
 
-int main ()
+int main()
 {
 // FRAGMENT(mod)
-	String<Dna> mySeq = "ACCGTT";
+    String<Dna> mySeq = "ACCGTT";
 
-	ModifiedString< String<Dna>, ModComplementDna > myCompl(mySeq);
+    ModifiedString<String<Dna>, ModComplementDna> myCompl(mySeq);
 
-	std::cout << mySeq << std::endl;
-	std::cout << myCompl << std::endl;
+    std::cout << mySeq << std::endl;
+    std::cout << myCompl << std::endl;
 // FRAGMENT(end)
-	return 0;
+    return 0;
 }

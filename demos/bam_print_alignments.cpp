@@ -81,7 +81,7 @@ int main(int argc, char const ** argv)
     readRecords(refNameStore, seqs, inSeq);
     for (unsigned i = 0; i < length(refNameStore); ++i)
         trimSeqHeaderToId(refNameStore[i]);
-    
+
     // Open BGZF stream.
     std::cerr << "Opening BAM " << argv[2] << std::endl;
     BamFileIn bamFileIn;
@@ -125,7 +125,7 @@ int main(int argc, char const ** argv)
 int main()
 {
     std::cerr << "zlib is required for bam_print_alignment demo." << std::endl;
-    
+
     return 1;
 }
 

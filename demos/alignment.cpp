@@ -7,9 +7,9 @@
 
 int main()
 {
-	using namespace seqan;
-	typedef Value<Gaps<Dna5String, ArrayGaps> >::Type TValue;
-	using namespace seqan;
+    using namespace seqan;
+    typedef Value<Gaps<Dna5String, ArrayGaps> >::Type TValue;
+    using namespace seqan;
 
 ///Two DNA sequences that shall be aligned.
     typedef String<Dna> TSequence;
@@ -18,8 +18,8 @@ int main()
 ///Scoring objects are used to define a scoring scheme.
 ///In this case, affine gap costs with match = 0, mismatch = -1, gapextend = -1 and gapopen = -2.
     Score<int> scoringScheme(0, -1, -1, -2);
-///Example 1: We use @Class.Align@ to align the two sequences.   
-///Since we do not specify an @Tag.Pairwise Global Alignment Algorithms|algorithm tag@ when we call @Function.globalAlignment@, 
+///Example 1: We use @Class.Align@ to align the two sequences.
+///Since we do not specify an @Tag.Pairwise Global Alignment Algorithms|algorithm tag@ when we call @Function.globalAlignment@,
 ///a suitable algorithm (@Tag.Pairwise Global Alignment Algorithms|Gotoh@) is automatically choosen.
     Align<TSequence, ArrayGaps> align;
     resize(rows(align), 2);
