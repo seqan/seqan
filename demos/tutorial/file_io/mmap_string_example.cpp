@@ -9,7 +9,7 @@ int main(int argc, char const ** argv)
 {
     if (argc != 2)
         return 1;
-    
+
     // Memory mapped string, automatically backed by temporary file.
     String<char, MMap<> > str1;
     str1 = "This is the first mapped string!";

@@ -6,14 +6,14 @@ using namespace seqan;
 
 int main()
 {
-	CharString haystack = "Simon, send more money!";
-	CharString needle = "mo";
+    CharString haystack = "Simon, send more money!";
+    CharString needle = "mo";
 
 // FRAGMENT(output)
-	Finder<CharString> finder(haystack);
-	Pattern<CharString, Horspool> pattern(needle);
-	while (find(finder, pattern))
-		std::cout << '[' << beginPosition(finder) << ',' << endPosition(finder) << ")\t" << infix(finder) << std::endl;
+    Finder<CharString> finder(haystack);
+    Pattern<CharString, Horspool> pattern(needle);
+    while (find(finder, pattern))
+        std::cout << '[' << beginPosition(finder) << ',' << endPosition(finder) << ")\t" << infix(finder) << std::endl;
 
-	return 0;
+    return 0;
 }

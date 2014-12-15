@@ -26,7 +26,8 @@ struct Gff2Record
     CharString attributes;
     CharString comments;
 
-    Gff2Record() : start(0), end(0), hasScore(false), score(0), strand('.'), frame(0)
+    Gff2Record() :
+        start(0), end(0), hasScore(false), score(0), strand('.'), frame(0)
     {}
 };
 
@@ -86,7 +87,7 @@ readRecord(Gff2Record & record, CharString & buffer, TReader & reader, Gff2 cons
     clear(record.attributes);
     clear(record.comments);
     readUntil(record.attributes, reader, OrFunctor<IsTab, IsNewline>());
-    if (atEnd(reader) || IsNewline()(value(reader)))
+    if (atEnd(reader) || IsNewline() (value(reader)))
     {
         skipLine(reader);
         return;
@@ -117,6 +118,7 @@ int main(int argc, char const ** argv)
     // Handle command line arguments, open files.
     if (argc != 2)
         return 1;
+
     std::ifstream stream(argv[1], std::ios::binary | std::ios::in);
     if (!stream.good())
         return 1;
@@ -130,6 +132,6 @@ int main(int argc, char const ** argv)
     for (unsigned i = 0; i < length(gffRecords); ++i)
         std::cout << gffRecords[i].seqName << "\t" << gffRecords[i].strand << "\t" << gffRecords[i].start << "\t"
                   << gffRecords[i].end << std::endl;
-    
+
     return 0;
 }

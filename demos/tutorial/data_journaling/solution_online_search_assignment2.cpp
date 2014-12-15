@@ -22,14 +22,14 @@ void findPatternInReference(String<int> & hits,
         // [C] Evaluate all positions of the pattern until you find a mismatch or you have found a hit.
         for (unsigned posPattern = 0; posPattern < length(pattern); ++posPattern)
         {
-            if(pattern[posPattern] != reference[posPattern + pos])
+            if (pattern[posPattern] != reference[posPattern + pos])
             {
                 isHit = false;
                 break;
             }
         }
         // [D] Report begin position at which pattern matches the sequence.
-        if(isHit)
+        if (isHit)
             appendValue(hits, pos);
     }
 }
@@ -105,9 +105,9 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
 int main()
 {
     // Definition of the used types.
-    typedef String<Dna,Alloc<> > TSequence;
-    typedef String<Dna,Journaled<Alloc<>,SortedArray,Alloc<> > > TJournal;
-    typedef StringSet< TJournal, Owner<JournaledSet> > TJournaledSet;
+    typedef String<Dna, Alloc<> > TSequence;
+    typedef String<Dna, Journaled<Alloc<>, SortedArray, Alloc<> > > TJournal;
+    typedef StringSet<TJournal, Owner<JournaledSet> > TJournaledSet;
 
     // Open the stream to the file containing the sequences.
     CharString seqDatabasePath = "/path/to/your/fasta/file/sequences.fasta";
@@ -133,7 +133,7 @@ int main()
     {
         std::cout << "Hit in reference " << " at ";
         for (unsigned j = 0; j < length(hitSet[0]); ++j)
-            std::cout << hitSet[0][j] << ": " << infix(host(journalSet), hitSet[0][j],hitSet[0][j] + length(pattern)) << "\t";
+            std::cout << hitSet[0][j] << ": " << infix(host(journalSet), hitSet[0][j], hitSet[0][j] + length(pattern)) << "\t";
     }
     std::cout << std::endl;
 

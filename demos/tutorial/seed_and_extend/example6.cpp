@@ -10,7 +10,7 @@ int main()
     // FRAGMENT(example)
     typedef Seed<Simple>    TSeed;
     typedef SeedSet<TSeed> TSeedSet;
-    
+
     TSeedSet seedSet;
     addSeed(seedSet, TSeed(0, 0, 2), Single());
     addSeed(seedSet, TSeed(3, 5, 2), Single());

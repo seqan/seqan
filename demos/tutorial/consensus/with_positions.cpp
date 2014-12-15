@@ -36,12 +36,12 @@ int main()
     appendAlignedRead(store, 2, 0, 14, 14 + (int)length(store.readSeqStore[2]));
     appendAlignedRead(store, 3, 0, 18, 18 + (int)length(store.readSeqStore[3]));
     appendAlignedRead(store, 4, 0, 25, 25 + (int)length(store.readSeqStore[4]));
-   
+
     // Print the (wrong) alignment.
     std::cout << "Initial alignment\n\n";
     AlignedReadLayout layout;
     layoutAlignment(layout, store);
-    printAlignment(std::cout, layout, store, /*contigID=*/0, /*beginPos=*/0, /*endPos=*/80, 0, 30);
+    printAlignment(std::cout, layout, store, /*contigID=*/ 0, /*beginPos=*/ 0, /*endPos=*/ 80, 0, 30);
 
 // FRAGMENT(compute_consensus)
     ConsensusAlignmentOptions options;
@@ -51,7 +51,7 @@ int main()
 // FRAGMENT(print_layout)
     std::cout << "Final alignment\n\n";
     layoutAlignment(layout, store);
-    printAlignment(std::cout, layout, store, /*contigID=*/0, /*beginPos=*/0, /*endPos=*/80, 0, 30);
+    printAlignment(std::cout, layout, store, /*contigID=*/ 0, /*beginPos=*/ 0, /*endPos=*/ 80, 0, 30);
 
     return 0;
 }

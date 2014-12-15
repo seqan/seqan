@@ -3,7 +3,7 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
     // instantiate an empty Queue
     ConcurrentQueue<unsigned> queue;
@@ -22,7 +22,7 @@ int main ()
             bool equal = true;
             for (int i = 9999; i != 0; --i)
                 equal &= (i == popFront(queue));
-            std::cout << (equal? "SUCCESS" : "FAILURE") << std::endl;
+            std::cout << (equal ? "SUCCESS" : "FAILURE") << std::endl;
         }
     }
 

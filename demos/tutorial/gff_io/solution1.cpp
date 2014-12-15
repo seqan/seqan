@@ -26,11 +26,11 @@ int main()
             writeRecord(gffOut, record);
         }
     }
-    catch (std::runtime_error &e)
+    catch (std::runtime_error & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;
     }
-    
+
     return 0;
 }

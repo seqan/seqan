@@ -43,10 +43,12 @@ using namespace seqan;
 // Demonstration of using True and False as base classes.
 //![inheriting from true false]
 template <typename T>
-struct IsInt32 : False {};
+struct IsInt32 :
+    False {};
 
 template <>
-struct IsInt32<int> : True {};
+struct IsInt32<int>:
+    True {};
 //![inheriting from true false]
 
 // Helper functions for print tags True/False.
@@ -60,6 +62,7 @@ void printBoolType(False const & /*tag*/)
 {
     std::cout << "false" << std::endl;
 }
+
 //![true false print helpers]
 
 int main()
@@ -98,45 +101,45 @@ int main()
     // Demonstration of using Or.
 //![print bool type or]
     printBoolType(Or<False, False>::Type());  // => "false"
-    printBoolType(Or<False, True >::Type());  // => "true"
-    printBoolType(Or<True,  False>::Type());  // => "true"
-    printBoolType(Or<True,  True >::Type());  // => "true"
+    printBoolType(Or<False, True>::Type());   // => "true"
+    printBoolType(Or<True, False>::Type());   // => "true"
+    printBoolType(Or<True, True>::Type());    // => "true"
 //![print bool type or]
 
     // Demonstration of using OrC.
 //![print bool type orc]
     printBoolType(OrC<false, false>::Type());  // => "false"
-    printBoolType(OrC<false, true >::Type());  // => "true"
-    printBoolType(OrC<true,  false>::Type());  // => "true"
-    printBoolType(OrC<true,  true >::Type());  // => "true"
+    printBoolType(OrC<false, true>::Type());   // => "true"
+    printBoolType(OrC<true, false>::Type());   // => "true"
+    printBoolType(OrC<true, true>::Type());    // => "true"
 //![print bool type orc]
 
     // Demonstration of using And.
 //![print bool type and]
     printBoolType(And<False, False>::Type());  // => "false"
-    printBoolType(And<False, True >::Type());  // => "true"
-    printBoolType(And<True,  False>::Type());  // => "true"
-    printBoolType(And<True,  True >::Type());  // => "true"
+    printBoolType(And<False, True>::Type());   // => "true"
+    printBoolType(And<True, False>::Type());   // => "true"
+    printBoolType(And<True, True>::Type());    // => "true"
 //![print bool type and]
 
     // Demonstration of using AndC.
 //![print bool type andc]
     printBoolType(AndC<false, false>::Type());  // => "false"
-    printBoolType(AndC<false, true >::Type());  // => "true"
-    printBoolType(AndC<true,  false>::Type());  // => "true"
-    printBoolType(AndC<true,  true >::Type());  // => "true"
+    printBoolType(AndC<false, true>::Type());   // => "true"
+    printBoolType(AndC<true, false>::Type());   // => "true"
+    printBoolType(AndC<true, true>::Type());    // => "true"
 //![print bool type andc]
 
     // Demonstration of using If.
 //![print bool type if]
-    printBoolType(If<True, True,  False>::Type());  // => "true"
-    printBoolType(If<True, False, True >::Type());  // => "false"
+    printBoolType(If<True, True, False>::Type());   // => "true"
+    printBoolType(If<True, False, True>::Type());   // => "false"
 //![print bool type if]
 
     // Demonstration of using IfC.
 //![print bool type ifc]
-    printBoolType(If<True, True,  False>::Type());  // => "true"
-    printBoolType(If<True, False, True >::Type());  // => "false"
+    printBoolType(If<True, True, False>::Type());   // => "true"
+    printBoolType(If<True, False, True>::Type());   // => "false"
 //![print bool type ifc]
 
     // Demonstration of the shortcut-to-::Type feature.

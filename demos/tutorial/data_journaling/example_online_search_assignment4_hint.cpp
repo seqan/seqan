@@ -6,9 +6,9 @@ using namespace seqan;
 // FRAGMENT(searchAtBorder)
 template <typename TJournalEntriesIterator, typename TJournal, typename TPattern>
 void _searchAtBorder(String<int> & hitTarget,
-                    TJournalEntriesIterator & entriesIt,
-                    TJournal const & journal,
-                    TPattern const & pattern)
+                     TJournalEntriesIterator & entriesIt,
+                     TJournal const & journal,
+                     TPattern const & pattern)
 {
     // [A] Determine first position of the at which pattern crosses the border of current node.
 

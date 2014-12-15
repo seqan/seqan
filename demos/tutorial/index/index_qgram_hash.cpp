@@ -4,7 +4,7 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
 // FRAGMENT(hash_loop1)
     DnaString text = "AAAACACAGTTTGA";

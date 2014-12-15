@@ -23,7 +23,8 @@ void printDataArray(TRow & row, TString & name) {
 */
 
 // FRAGMENT(main)
-int main(int, const char *[]) {
+int main(int, const char *[])
+{
 /*
 
 // FRAGMENT(unclipped)
@@ -98,4 +99,3 @@ int main(int, const char *[]) {
     std::cout << std::endl;
 */
 }
-

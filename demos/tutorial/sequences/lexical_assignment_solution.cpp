@@ -20,11 +20,12 @@ int main()
     Dna5String ref = "GATGCATGAT";
 
     // For each Dna5String of the String:
-    for (unsigned i = 0; i < length(nucleotidesList); ++i){
+    for (unsigned i = 0; i < length(nucleotidesList); ++i)
+    {
         // Compare the Dna5String with the given reference string
         // The result of the comparison is stored in comp
-        Lexical<> comp(nucleotidesList[i], ref); 
-        // The function isLess checks only the stored result 
+        Lexical<> comp(nucleotidesList[i], ref);
+        // The function isLess checks only the stored result
         // without comparing the sequences again
         if (isLess(comp))
             appendValue(lesser, nucleotidesList[i]);
@@ -33,12 +34,14 @@ int main()
     }
     // Print the results
     std::cout << "Lesser sequences: " << std::endl;
-    for (unsigned i = 0; i < length(lesser); ++i){
+    for (unsigned i = 0; i < length(lesser); ++i)
+    {
         std::cout << lesser[i] << ", ";
     }
     std::cout << std::endl;
     std::cout << "Greater sequences: " << std::endl;
-    for (unsigned i = 0; i < length(greater); ++i){
+    for (unsigned i = 0; i < length(greater); ++i)
+    {
         std::cout << greater[i] << ", ";
     }
 }

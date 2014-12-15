@@ -15,6 +15,6 @@ int main()
     e = 'N';       // => e.value == 0
     e = 'c';       // => e.value == c
 //![simple type construction and assignment]
-    
+
     return 0;
 }

@@ -66,17 +66,17 @@ struct SwitchTest
     typedef typename Switch<
         X,
         Case<-1, Nothing,
-        Case<0, False,
-        Case<1, True
-        > > > >::Type Type;
+             Case<0, False,
+                  Case<1, True
+                       > > > >::Type Type;
 };
 
 int main()
 {
     typedef SwitchTest<-1>::Type T1;
-    typedef SwitchTest< 0>::Type T2;
-    typedef SwitchTest< 1>::Type T3;
-    typedef SwitchTest< 2>::Type T4;
+    typedef SwitchTest<0>::Type T2;
+    typedef SwitchTest<1>::Type T3;
+    typedef SwitchTest<2>::Type T4;
 
     std::cout << switchTest(T1()) << "\n"   // => "-1"
               << switchTest(T2()) << "\n"   // => "0"
@@ -85,4 +85,5 @@ int main()
 
     return 0;
 }
+
 //![switch demo]

@@ -5,7 +5,7 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
     FragmentStore<> store;
     loadContigs(store, "ex1.fa");

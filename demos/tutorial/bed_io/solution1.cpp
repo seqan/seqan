@@ -26,7 +26,7 @@ int main()
             writeRecord(bedOut, record);
         }
     }
-    catch (std::runtime_error &e)
+    catch (std::runtime_error & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;

@@ -3,7 +3,7 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
     Index<DnaString, IndexQGram<OneGappedShape> > index("CATGATTACATA");
     stringToShape(indexShape(index), "1101");

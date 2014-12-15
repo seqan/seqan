@@ -12,14 +12,14 @@ int main()
     // The horizontal and vertical sequence (database and query).
     CharString seqH = "The quick BROWN fox jumped again!";
     CharString seqV =     "thick BROWN boxes of brownies!";
-                                     //  ^^^
+    //  ^^^
     // Create seed and print the seeed sequence.
     Seed<Simple> seed(11, 7, 14, 10);
     std::cout << "original\n"
               << "seedH: " << infix(seqH, beginPositionH(seed),
-                                    endPositionH(seed)) << "\n"
+                          endPositionH(seed)) << "\n"
               << "seedV: " << infix(seqV, beginPositionV(seed),
-                                    endPositionV(seed)) << "\n";
+                          endPositionV(seed)) << "\n";
 
     // Perform match extension.
     Score<int, Simple> scoringScheme(1, -1, -1);
@@ -28,9 +28,9 @@ int main()
     // Print the resulting seed.
     std::cout << "result\n"
               << "seedH: " << infix(seqH, beginPositionH(seed),
-                                    endPositionH(seed)) << "\n"
+                          endPositionH(seed)) << "\n"
               << "seedV: " << infix(seqV, beginPositionV(seed),
-                                    endPositionV(seed)) << "\n";
+                          endPositionV(seed)) << "\n";
 
     // FRAGMENT(footer)
     return 0;

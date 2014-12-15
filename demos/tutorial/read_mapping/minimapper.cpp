@@ -1,10 +1,10 @@
 //FRAGMENT(header)
 /*==========================================================================
   SeqAn - The Library for Sequence Analysis
-  http://www.seqan.de 
+  http://www.seqan.de
   ===========================================================================
   Copyright (C) 2010
-  
+
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
@@ -54,9 +54,11 @@ typedef Value<TAlignedReadStore>::Type TAlignedRead;
 const double EPSILON = 0.08;
 
 //FRAGMENT(main-input)
-int main(int argc, char *argv[]) {
+int main(int argc, char * argv[])
+{
     // 0) Handle command line arguments.
-    if (argc < 3) {
+    if (argc < 3)
+    {
         std::cerr << "Invalid number of arguments." << std::endl
                   << "USAGE: minimapper GENOME.fasta READS.fasta OUT.sam" << std::endl;
         return 1;
@@ -64,8 +66,11 @@ int main(int argc, char *argv[]) {
 
     // 1) Load contigs and reads.
     FragmentStore<> fragStore;
-    if (!loadContigs(fragStore, argv[1])) return 1;
-    if (!loadReads(fragStore, argv[2])) return 1;
+    if (!loadContigs(fragStore, argv[1]))
+        return 1;
+
+    if (!loadReads(fragStore, argv[2]))
+        return 1;
 
 //FRAGMENT(pattern-finder)
     // 2) Build an index over all reads and a SWIFT pattern over this index.
@@ -74,9 +79,11 @@ int main(int argc, char *argv[]) {
 
 //FRAGMENT(swift)
     // 3) Enumerate all epsilon matches.
-    for (unsigned i = 0; i < length(fragStore.contigStore); ++i) {
+    for (unsigned i = 0; i < length(fragStore.contigStore); ++i)
+    {
         TFinder finder(fragStore.contigStore[i].seq);
-        while (find(finder, pattern, EPSILON)) {
+        while (find(finder, pattern, EPSILON))
+        {
 //FRAGMENT(verification)
             // Verify match.
             Finder<TContigSeq> verifyFinder(fragStore.contigStore[i].seq);
@@ -84,7 +91,8 @@ int main(int argc, char *argv[]) {
             Pattern<TReadSeq, HammingSimple> verifyPattern(fragStore.readSeqStore[position(pattern).i1]);
             unsigned readLength = length(fragStore.readSeqStore[position(pattern).i1]);
             int minScore = -static_cast<int>(EPSILON * readLength);
-            while (find(verifyFinder, verifyPattern, minScore) && position(verifyFinder) < endPosition(infix(finder))) {
+            while (find(verifyFinder, verifyPattern, minScore) && position(verifyFinder) < endPosition(infix(finder)))
+            {
                 TAlignedRead match(length(fragStore.alignedReadStore), position(pattern).i1, i,
                                    beginPosition(verifyFinder), endPosition(verifyFinder));
                 appendValue(fragStore.alignedReadStore, match);

@@ -7,7 +7,8 @@ using namespace seqan;
 
 int main()
 {
-    char const * strings[4] = {
+    char const * strings[4] =
+    {
         "DPKKPRGKMSSYAFFVQTSREEHKKKHPDASVNFSEFSKKCSERWKTMSAKEKGKFEDMA"
         "KADKARYEREMKTYIPPKGE",
         "RVKRPMNAFIVWSRDQRRKMALENPRMRNSEISKQLGYQWKMLTEAEKWPFFQEAQKLQA"

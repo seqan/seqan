@@ -4,19 +4,22 @@
 
 using namespace seqan;
 
-struct ConvertCT : public std::unary_function<Dna, Dna> 
+struct ConvertCT :
+    public std::unary_function<Dna, Dna>
 {
-    inline Dna operator()(Dna x) const 
+    inline Dna operator()(Dna x) const
     {
         if (x == 'C') return 'T';
-        return x; 
+
+        return x;
     }
+
 };
 
 
 int main()
 {
-    typedef String<Dna> TSequence;                 
+    typedef String<Dna> TSequence;
 
     TSequence seq1 = "CCCGGCATCATCC";
     TSequence seq2 = "CTTGGCATTATTC";
@@ -24,8 +27,8 @@ int main()
     std::cout << seq1 << std::endl;
     std::cout << seq2 << std::endl;
     std::cout << std::endl;
-    
-    typedef ModifiedString< TSequence, ModView<ConvertCT> > TModCT;
+
+    typedef ModifiedString<TSequence, ModView<ConvertCT> > TModCT;
     TModCT modCT1(seq1);
     TModCT modCT2(seq2);
 
@@ -34,4 +37,3 @@ int main()
 
     return 0;
 }
-

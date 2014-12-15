@@ -30,6 +30,6 @@ int main(int argc, char const * argv[])
         readRecord(record, bedIn);
         std::cout << record.ref << "\t" << record.beginPos << "\n";
     }
-    
+
     return 0;
 }

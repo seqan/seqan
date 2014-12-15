@@ -4,7 +4,7 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
     // A nested modifier.
     typedef ModifiedString<String<Dna>, ModComplementDna>   TMyComplement;

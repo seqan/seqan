@@ -7,10 +7,10 @@ using namespace seqan;
 int main()
 {
     typedef String<Dna> TSequence;                 // sequence type
-    typedef Align<TSequence,ArrayGaps> TAlign;      // align type
+    typedef Align<TSequence, ArrayGaps> TAlign;      // align type
 
 // FRAGMENT(init)
-    Align< String<char> > ali;
+    Align<String<char> > ali;
     resize(rows(ali), 2);
     assignSource(row(ali, 0), "ataagcgtctcg");
     assignSource(row(ali, 1), "tcatagagttgc");
@@ -22,8 +22,8 @@ int main()
     {
         std::cout << "Score = " << getScore(enumerator) << std::endl;
         std::cout << ali;
-        std::cout << "Aligns Seq1[" << clippedBeginPosition(row(ali, 0)) << ":" << (clippedEndPosition(row(ali, 0))-1) << "]";
-        std::cout << " and Seq2[" << clippedBeginPosition(row(ali, 1)) << ":" <<  (clippedEndPosition(row(ali, 1))-1) << "]" << std::endl << std::endl;
+        std::cout << "Aligns Seq1[" << clippedBeginPosition(row(ali, 0)) << ":" << (clippedEndPosition(row(ali, 0)) - 1) << "]";
+        std::cout << " and Seq2[" << clippedBeginPosition(row(ali, 1)) << ":" <<  (clippedEndPosition(row(ali, 1)) - 1) << "]" << std::endl << std::endl;
     }
     return 0;
 }

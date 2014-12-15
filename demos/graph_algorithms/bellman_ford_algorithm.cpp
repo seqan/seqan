@@ -12,7 +12,7 @@ int main()
 
     // Create graph with 10 directed edges (0,1), (0,3), ...
     TSize numEdges = 10;
-    TVertexDescriptor edges[] = {0,1, 0,3, 1,2, 1,3, 2,4, 3,1, 3,2, 3,4, 4,0, 4,2};
+    TVertexDescriptor edges[] = {0, 1, 0, 3, 1, 2, 1, 3, 2, 4, 3, 1, 3, 2, 3, 4, 4, 0, 4, 2};
     TGraph g;
     addEdges(g, edges, numEdges);
 
@@ -35,10 +35,10 @@ int main()
               << "Graph without negative cycles? " << noNegativeCycle << "\n";
     typedef Iterator<TGraph, VertexIterator>::Type TVertexIterator;
     TVertexIterator it(g);
-    while(!atEnd(it))
+    while (!atEnd(it))
     {
         std::cout << "Path from 0 to " << getValue(it) << ": ";
-        _printPath(g,predMap,(TVertexDescriptor) 0, getValue(it));
+        _printPath(g, predMap, (TVertexDescriptor) 0, getValue(it));
         std::cout << " (Distance: " << getProperty(distMap, getValue(it)) << ")\n";
         goNext(it);
     }

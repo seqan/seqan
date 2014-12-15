@@ -12,9 +12,9 @@ int main()
 
     // Create graph with 14 undirected edges {0,1}, {0,6}, ...
     TSize numEdges = 14;
-    TVertexDescriptor edges[] = {0,1, 0,6, 1,2, 1,6, 2,3, 2,4, 2,8, 3,5, 3,8, 4,6, 4,7, 5,8, 6,7, 7,8};
+    TVertexDescriptor edges[] = {0, 1, 0, 6, 1, 2, 1, 6, 2, 3, 2, 4, 2, 8, 3, 5, 3, 8, 4, 6, 4, 7, 5, 8, 6, 7, 7, 8};
     TGraph g;
-    addEdges(g,edges, numEdges);
+    addEdges(g, edges, numEdges);
     // Print graph.
     std::cout << g << std::endl;
 

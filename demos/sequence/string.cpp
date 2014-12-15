@@ -47,7 +47,7 @@ int main()
     // Examples for constructing strings.
 //![initializing strings]
     String<char> strA;        // default construction
-    String<char> strB(strA);  // copy construction 
+    String<char> strB(strA);  // copy construction
     String<char> strC("copy from other sequence");
 //![initializing strings]
 
@@ -68,10 +68,10 @@ int main()
     std::cout << strB[3] << "\n";  // => "l";
     strB[3] = 'g';
     std::cout << strB[3] << "\n";  // => "g"
-    
+
     replace(strB, 5, 12, "land");
     std::cout << strB << "\n";  // => "Helgoland"
-    
+
     // Removal of elements and strings.
     erase(strA, 5, 18);
     erase(strA, length(strA) - 1);

@@ -74,10 +74,10 @@ struct Options
     bool nonConcat;
     bool multiSeq;
 
-    Options()
-            : doublePass(false), cstdio(false), fstream(false),
-              mmapString(false), gzip(false), bzip2(false), documentMMap(false),
-              nonConcat(false), multiSeq(false)
+    Options() :
+        doublePass(false), cstdio(false), fstream(false),
+        mmapString(false), gzip(false), bzip2(false), documentMMap(false),
+        nonConcat(false), multiSeq(false)
     {}
 };
 
@@ -169,7 +169,7 @@ int readFileMMapDocument(char const * filename, Options const & /*options*/, TSp
     // TSequenceIdsIter itId = begin(sequenceIds);
     // TSequencesIter itSeq = begin(sequences);
     // for (; !atEnd(itId); ++itId, ++itSeq) {
-        //std::cout << value(itId) << "\t" << value(itSeq) << "\n";
+    //std::cout << value(itId) << "\t" << value(itSeq) << "\n";
     // }
 
     double after = sysTime();
@@ -181,10 +181,12 @@ int readFileMMapDocument(char const * filename, Options const & options)
 {
     if (options.nonConcat)
         return readFileMMapDocument(filename, options, Owner<Default>());
+
     //else
-        //return readFileMMapDocument(filename, options, Owner<ConcatDirect<> >());
+    //return readFileMMapDocument(filename, options, Owner<ConcatDirect<> >());
     return 0;
 }
+
 int readFastaFile(StringSet<CharString> & sequenceIds,
                   StringSet<TSequence> & sequences,
                   SeqFileIn & file)
@@ -229,7 +231,8 @@ void readFileMMap(char const * filename, Options const & /*options*/)
 
     typedef File<Async<> > TFile;
     String<char, MMap<ExternalConfig<TFile> > > myString;
-    if (!open(myString, filename, OPEN_RDONLY)) {
+    if (!open(myString, filename, OPEN_RDONLY))
+    {
         std::cerr << std::endl << "Could not open mmap file for reading." << std::endl;
         return;
     }
@@ -246,25 +249,32 @@ void readFileDefault(char const * filename, Options const & options)
 
     std::cerr << "READING\tRECORD\t" << std::flush;
     double before = sysTime();
-    if (options.cstdio) {
+    if (options.cstdio)
+    {
         std::cerr << "cstdio" << std::flush;
         FILE * f = fopen(filename, "rb");
-        if (!f) {
+        if (!f)
+        {
             std::cerr << std::endl << "ERROR: Could not open input file!" << std::endl;
             return;
         }
         //readFastaFile(sequenceIds, sequences, f);
         fclose(f);
-    } else if (options.fstream) {
+    }
+    else if (options.fstream)
+    {
         std::cerr << "fstream" << std::flush;
         std::ifstream f(filename, std::ios_base::in | std::ios_base::binary);
-        if (!f.is_open()) {
+        if (!f.is_open())
+        {
             std::cerr << std::endl << "ERROR: Could not open input file!" << std::endl;
             return;
         }
         //readFastaFile(sequenceIds, sequences, f);
 #if SEQAN_HAS_ZLIB
-    } else if (options.gzip) {
+    }
+    else if (options.gzip)
+    {
         std::cerr << "gzip" << std::flush;
         SeqFileIn f;
         if (!open(f, filename))
@@ -275,7 +285,9 @@ void readFileDefault(char const * filename, Options const & options)
         readFastaFile(sequenceIds, sequences, f);
 #endif  // #if SEQAN_HAS_ZLIB
 #if SEQAN_HAS_BZIP2
-    } else if (options.bzip2) {
+    }
+    else if (options.bzip2)
+    {
         std::cerr << "bzip2" << std::flush;
         SeqFileIn f;
         if (!open(f, filename))
@@ -285,7 +297,9 @@ void readFileDefault(char const * filename, Options const & options)
         }
         //readFastaFile(sequenceIds, sequences, f);
 #endif  // #if SEQAN_HAS_BZIP2
-    } else {
+    }
+    else
+    {
         SEQAN_ASSERT_FAIL("SHOULD NEVER REACH HERE!");
     }
     double after = sysTime();
@@ -328,9 +342,11 @@ int main(int argc, char const ** argv)
     // -----------------------------------------------------------------------
 
     bool stop = !parse(parser, argc, argv);
-    if (stop) {
+    if (stop)
+    {
         if (isSet(parser, "help"))
             return 0;
+
         return 1;
     }
 
@@ -358,14 +374,18 @@ int main(int argc, char const ** argv)
         options.multiSeq = true;
 
     if (options.cstdio + options.fstream + options.gzip + options.bzip2 + options.mmapString +
-        options.documentMMap + options.multiSeq == 0) {
+        options.documentMMap + options.multiSeq == 0)
+    {
         std::cerr << "You have to select exactly one stream type!" << std::endl;
         return 1;
-    } else if (options.cstdio + options.fstream + options.gzip + options.bzip2 + options.mmapString + options.documentMMap > 1) {
+    }
+    else if (options.cstdio + options.fstream + options.gzip + options.bzip2 + options.mmapString + options.documentMMap > 1)
+    {
         std::cerr << "Only one stream type can be selected!" << std::endl;
         return 1;
     }
-    if (options.documentMMap && options.doublePass) {
+    if (options.documentMMap && options.doublePass)
+    {
         std::cerr << "Double-pass I/O is implicit with document-mapped." << std::endl;
         return 1;
     }
@@ -376,15 +396,19 @@ int main(int argc, char const ** argv)
     String<char> inputFileName;
     getArgumentValue(inputFileName, parser, 0);
 
-    if (options.multiSeq) {
-        ;
+    if (options.multiSeq)
+    {
         //readFileMultiSeqFile(toCString(getArgumentValue(parser, 0)), options);
-    } else if (options.documentMMap) {
+    }
+    else if (options.documentMMap)
+    {
         readFileMMapDocument(toCString(inputFileName), options);
-   } else {
+    }
+    else
+    {
         if (options.mmapString)
             ;
-            //readFileMMap(toCString(inputFileName), options);
+        //readFileMMap(toCString(inputFileName), options);
         else
             readFileDefault(toCString(inputFileName), options);
     }
@@ -393,6 +417,6 @@ int main(int argc, char const ** argv)
     //     std::cerr << '>' << sequenceIds[i] << '\n';
     //     std::cerr << sequences[i] << '\n';
     // }
-    
+
     return 0;
 }

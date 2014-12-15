@@ -23,7 +23,8 @@ struct Options
     std::string fileOut;
     std::string fileRefIn;
 
-    Options() : contigID(-1), beginPos(-1), endPos(-1), beginLine(-1), endLine(-1), writeAscii(false), gapSpace(false)
+    Options() :
+        contigID(-1), beginPos(-1), endPos(-1), beginLine(-1), endLine(-1), writeAscii(false), gapSpace(false)
     {}
 };
 

@@ -31,8 +31,7 @@ int main()
     std::cout << "Final alignment\n\n";
     AlignedReadLayout layout;
     layoutAlignment(layout, store);
-    printAlignment(std::cout, layout, store, /*contigID=*/0, /*beginPos=*/0, /*endPos=*/80, 0, 30);
+    printAlignment(std::cout, layout, store, /*contigID=*/ 0, /*beginPos=*/ 0, /*endPos=*/ 80, 0, 30);
 
     return 0;
 }
-

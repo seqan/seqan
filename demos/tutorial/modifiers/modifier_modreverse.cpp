@@ -6,18 +6,18 @@
 using namespace seqan;
 
 
-int main ()
+int main()
 {
-	String<char> myString = "A man, a plan, a canal-Panama";
+    String<char> myString = "A man, a plan, a canal-Panama";
 // FRAGMENT(modifier)
-	ModifiedString< String<char>, ModReverse > myModifier(myString);
+    ModifiedString<String<char>, ModReverse> myModifier(myString);
 
 // FRAGMENT(output1)
-	std::cout << myString << std::endl;
-	std::cout << myModifier << std::endl;
+    std::cout << myString << std::endl;
+    std::cout << myModifier << std::endl;
 // FRAGMENT(output2)
-	replace(myString, 9, 9, "master ");
-	std::cout << myString << std::endl;
-	std::cout << myModifier << std::endl;
-	return 0;
+    replace(myString, 9, 9, "master ");
+    std::cout << myString << std::endl;
+    std::cout << myModifier << std::endl;
+    return 0;
 }

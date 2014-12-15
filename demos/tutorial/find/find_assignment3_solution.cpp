@@ -5,12 +5,12 @@ using namespace seqan;
 
 int main()
 {
-	typedef Index<CharString, IndexQGram<UngappedShape<4>, OpenAddressing> > TIndex;
-	TIndex index("tobeornottobe");
-	Finder<TIndex> finder(index);
+    typedef Index<CharString, IndexQGram<UngappedShape<4>, OpenAddressing> > TIndex;
+    TIndex index("tobeornottobe");
+    Finder<TIndex> finder(index);
 
-	while (find(finder, "tobe"))
-		std::cout << '[' << beginPosition(finder) << ',' << endPosition(finder) << ")\t" << infix(finder) << std::endl;
-	
-	return 0;
+    while (find(finder, "tobe"))
+        std::cout << '[' << beginPosition(finder) << ',' << endPosition(finder) << ")\t" << infix(finder) << std::endl;
+
+    return 0;
 }

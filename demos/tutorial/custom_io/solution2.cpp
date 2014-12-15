@@ -8,8 +8,8 @@ using namespace seqan;
 // The following few lines are the actual solution to the assignment.
 
 typedef OrFunctor<IsInRange<'0', '9'>,
-        OrFunctor<IsInRange<'a', 'f'>,
-                         IsInRange<'A', 'F'> > > IsHexDigit;
+                  OrFunctor<IsInRange<'a', 'f'>,
+                            IsInRange<'A', 'F'> > > IsHexDigit;
 
 // This main routine is only some driver code that reads from stdin.
 
@@ -30,7 +30,7 @@ int main()
 
         // Print hexadecimal number back to the user.
         std::cout << "RECOGNIZED " << buffer << '\n';
-        
+
         // Skip all trailing input.
         skipLine(reader);
     }

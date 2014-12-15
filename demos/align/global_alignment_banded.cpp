@@ -24,7 +24,7 @@ int main()
     int uDiag = 2;
 
     int result = globalAlignment(align, scoringScheme, alignConfig, lDiag, uDiag);
-    
+
     std::cout << "Score: " << result << "\n";
     std::cout << "The resulting alignment is\n"
               << align << "\n";

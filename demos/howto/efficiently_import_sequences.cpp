@@ -6,45 +6,44 @@
 using namespace seqan;
 
 // FRAGMENT(open_file)
-int main (int argc, char const * argv[])
+int main(int argc, char const * argv[])
 {
-	SEQAN_PROTIMESTART(loadTime);
+    SEQAN_PROTIMESTART(loadTime);
 
-	SeqFileIn seqFile;
-	if (argc < 2 || !open(seqFile, argv[1]))
-		return 1;
+    SeqFileIn seqFile;
+    if (argc < 2 || !open(seqFile, argv[1]))
+        return 1;
 
 // FRAGMENT(read_sequences)
-	StringSet<String<Dna5Q> > seqs;
-	StringSet<CharString> seqIDs;
-	String<Dna5Q> seq;
-	CharString qual;
-	CharString id;
+    StringSet<String<Dna5Q> > seqs;
+    StringSet<CharString> seqIDs;
+    String<Dna5Q> seq;
+    CharString qual;
+    CharString id;
 
     size_t seqCount = 0;
-	for (; !atEnd(seqFile); ++seqCount)
-	{
-		readRecord(id, seq, qual, seqFile);     // read record
+    for (; !atEnd(seqFile); ++seqCount)
+    {
+        readRecord(id, seq, qual, seqFile);     // read record
 
-		// convert ascii to values from 0..62
-		// store dna and quality together in Dna5Q
+        // convert ascii to values from 0..62
+        // store dna and quality together in Dna5Q
         assignQualities(seq, qual);
 
-		// we use reserve and append, as assign is not supported
-		// by StringSet<..., Owner<ConcatDirect<> > >
-		appendValue(seqs, seq, Generous());
-		appendValue(seqIDs, id, Generous());
-	}
+        // we use reserve and append, as assign is not supported
+        // by StringSet<..., Owner<ConcatDirect<> > >
+        appendValue(seqs, seq, Generous());
+        appendValue(seqIDs, id, Generous());
+    }
 
 // FRAGMENT(output)
-	std::cout << "Loading " << seqCount << " sequences took " << SEQAN_PROTIMEDIFF(loadTime);
-	std::cout << " seconds." << std::endl << std::endl;
-	for (unsigned i = 0; i < seqCount && i < 10; ++i)
-	{
-		std::cout << '>' << seqIDs[i] << std::endl;
-		std::cout << seqs[i] << std::endl;
-	}
+    std::cout << "Loading " << seqCount << " sequences took " << SEQAN_PROTIMEDIFF(loadTime);
+    std::cout << " seconds." << std::endl << std::endl;
+    for (unsigned i = 0; i < seqCount && i < 10; ++i)
+    {
+        std::cout << '>' << seqIDs[i] << std::endl;
+        std::cout << seqs[i] << std::endl;
+    }
 
-	return 0;
+    return 0;
 }
-

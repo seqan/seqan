@@ -16,13 +16,13 @@ int main()
     TSequence seq2 = "abba";
 
     TStringSet sequences;
-    appendValue(sequences,seq1);
-    appendValue(sequences,seq2);
+    appendValue(sequences, seq1);
+    appendValue(sequences, seq2);
 
     TAlignGraph alignG(sequences);
 
 // FRAGMENT(alignment)
-    int score = globalAlignment(alignG, Score<int,Simple>(1,-1,-1), AlignConfig<true, true, true, true>());
+    int score = globalAlignment(alignG, Score<int, Simple>(1, -1, -1), AlignConfig<true, true, true, true>());
     std::cout << "Score: " << score << std::endl;
     std::cout << alignG << std::endl;
 

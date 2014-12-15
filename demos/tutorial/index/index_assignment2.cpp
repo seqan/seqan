@@ -4,23 +4,23 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
-	StringSet<CharString> myStringSet;
-	appendValue(myStringSet, "CDFGHC");
-	appendValue(myStringSet, "CDEFGAHC");
+    StringSet<CharString> myStringSet;
+    appendValue(myStringSet, "CDFGHC");
+    appendValue(myStringSet, "CDEFGAHC");
 
-	typedef Index< StringSet<CharString> > TMyIndex;
-	TMyIndex myIndex(myStringSet);
+    typedef Index<StringSet<CharString> > TMyIndex;
+    TMyIndex myIndex(myStringSet);
 
 // FRAGMENT(iteration)
-	Iterator< TMyIndex, Mums >::Type myIterator(myIndex);
+    Iterator<TMyIndex, Mums>::Type myIterator(myIndex);
 
-	while (!atEnd(myIterator))
-	{
-		std::cout << representative(myIterator) << std::endl;
-		++myIterator;
-	}
+    while (!atEnd(myIterator))
+    {
+        std::cout << representative(myIterator) << std::endl;
+        ++myIterator;
+    }
 
-	return 0;
+    return 0;
 }

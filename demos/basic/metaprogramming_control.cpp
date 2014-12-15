@@ -50,6 +50,7 @@ struct PrintWorker
         (void)arg;  // ignored
         printf("%d\n", I);
     }
+
 };
 //![print worker]
 
@@ -58,18 +59,18 @@ int main()
     // Call to PrintWorker::body() through Loop<>.
     {
 //![print worker call loop]
-    Nothing nothing;
-    Loop<PrintWorker, 10>::run(nothing);
-    // This will print the numbers 1, 2, ..., 9, 10.
+        Nothing nothing;
+        Loop<PrintWorker, 10>::run(nothing);
+        // This will print the numbers 1, 2, ..., 9, 10.
 //![print worker call loop]
     }
 
     // Call to PrintWorker::body() through LoopReverse<>.
     {
 //![print worker call loop reverse]
-    Nothing nothing;
-    LoopReverse<PrintWorker, 10>::run(nothing);
-    // This will print the numbers 10, 9, ..., 2, 1.
+        Nothing nothing;
+        LoopReverse<PrintWorker, 10>::run(nothing);
+        // This will print the numbers 10, 9, ..., 2, 1.
 //![print worker call loop reverse]
     }
 

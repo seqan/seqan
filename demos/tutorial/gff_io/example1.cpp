@@ -17,6 +17,6 @@ int main()
         readRecord(record, gffIn);
         writeRecord(gffOut, record);
     }
-    
+
     return 0;
 }

@@ -36,7 +36,7 @@ int main()
     for (unsigned i = 0; i < length(score); ++i)
         if (score[i] == (int)length(pattern))
             std::cout << i << " ";
-    std::cout << std::endl;	
+    std::cout << std::endl;
 
     return 0;
 }

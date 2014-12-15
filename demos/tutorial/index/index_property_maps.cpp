@@ -5,37 +5,37 @@
 using namespace seqan;
 
 // FRAGMENT(initialization)
-int main ()
+int main()
 {
-	String<char> myString = "abracadabra";
+    String<char> myString = "abracadabra";
 
-	typedef Index< String<char>, IndexWotd<> > TMyIndex;
-	TMyIndex myIndex(myString);
-	String<int> propMap;
+    typedef Index<String<char>, IndexWotd<> > TMyIndex;
+    TMyIndex myIndex(myString);
+    String<int> propMap;
 
 // FRAGMENT(iteration)
-	Iterator< TMyIndex, TopDown< ParentLinks<Preorder> > >::Type myIterator(myIndex);
+    Iterator<TMyIndex, TopDown<ParentLinks<Preorder> > >::Type myIterator(myIndex);
 
-	int depth;
-	while (!atEnd(myIterator))
-	{
-		if (isRoot(myIterator))
-			depth = 0;
-		else
-			depth = getProperty(propMap, nodeUp(myIterator)) + 1;
+    int depth;
+    while (!atEnd(myIterator))
+    {
+        if (isRoot(myIterator))
+            depth = 0;
+        else
+            depth = getProperty(propMap, nodeUp(myIterator)) + 1;
 
-		resizeVertexMap(propMap, myIndex);
-		assignProperty(propMap, value(myIterator), depth);
+        resizeVertexMap(propMap, myIndex);
+        assignProperty(propMap, value(myIterator), depth);
 
-		++myIterator;
-	}
+        ++myIterator;
+    }
 
 // FRAGMENT(output)
-	goBegin(myIterator);
-	while (!atEnd(myIterator))
-	{
-		std::cout << getProperty(propMap, value(myIterator)) << '\t' << representative(myIterator) << std::endl;
-		++myIterator;
-	}
-	return 0;
+    goBegin(myIterator);
+    while (!atEnd(myIterator))
+    {
+        std::cout << getProperty(propMap, value(myIterator)) << '\t' << representative(myIterator) << std::endl;
+        ++myIterator;
+    }
+    return 0;
 }

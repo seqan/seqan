@@ -71,7 +71,7 @@ int main(int argc, char const ** argv)
             i++;
         }
     }
-    catch (std::runtime_error &e)
+    catch (std::runtime_error & e)
     {
         std::cerr << "Invalid Stellar GFF record #" << i << ": " << e.what() << '\n';
         return 1;

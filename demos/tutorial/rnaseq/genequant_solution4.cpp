@@ -51,7 +51,6 @@ ArgumentParser::ParseResult parseOptions(Options & options, int argc, char const
     return res;
 }
 
-
 //
 // 2. Load annotations and alignments from files
 //
@@ -80,7 +79,6 @@ bool loadFiles(TStore & store, Options const & options)
 
     return true;
 }
-
 
 //
 // 3. Extract intervals from gene annotations (grouped by contigId)
@@ -137,7 +135,7 @@ void countReadsPerGene(String<unsigned> & readsPerGene, String<TIntervalTree> co
     int numAlignments = length(store.alignedReadStore);
 
     // iterate aligned reads and get search their begin and end positions
-    SEQAN_OMP_PRAGMA(parallel for private(result))
+    SEQAN_OMP_PRAGMA(parallel for private (result))
     for (int i = 0; i < numAlignments; ++i)
     {
         TAlignedRead const & ar = store.alignedReadStore[i];
@@ -155,7 +153,6 @@ void countReadsPerGene(String<unsigned> & readsPerGene, String<TIntervalTree> co
         }
     }
 }
-
 
 // FRAGMENT(main)
 int main(int argc, char const * argv[])

@@ -17,6 +17,6 @@ int main()
         readRecord(record, bedIn);
         writeRecord(bedOut, record);
     }
-    
+
     return 0;
 }
