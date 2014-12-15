@@ -98,7 +98,7 @@ inline void write(TTarget & target,
                   Sam const & tag)
 {
     String<bool> writtenSeqInfos;
-    resize(writtenSeqInfos, length(nameStore(context)), false);
+    resize(writtenSeqInfos, length(contigNames(context)), false);
 
     size_t globalRefId = 0;
     for (unsigned i = 0; i < length(header); ++i)
@@ -108,7 +108,7 @@ inline void write(TTarget & target,
             for (unsigned j = 0; j < length(record.tags); ++j)
                 if (record.tags[j].i1 == "SN")
                 {
-                    if (getIdByName(globalRefId, nameStoreCache(context), record.tags[j].i2))
+                    if (getIdByName(globalRefId, contigNamesCache(context), record.tags[j].i2))
                         writtenSeqInfos[globalRefId] = true;
                     break;
                 }
@@ -117,15 +117,15 @@ inline void write(TTarget & target,
     }
 
     // Write missing @SQ header records.
-    SEQAN_ASSERT_LEQ(length(sequenceLengths(context)), length(nameStore(context)));
-    for (unsigned i = 0; i < length(sequenceLengths(context)); ++i)
+    SEQAN_ASSERT_LEQ(length(contigLengths(context)), length(contigNames(context)));
+    for (unsigned i = 0; i < length(contigLengths(context)); ++i)
     {
         if (writtenSeqInfos[i])
             continue;
         write(target, "@SQ\tSN:");
-        write(target, nameStore(context)[i]);
+        write(target, contigNames(context)[i]);
         write(target, "\tLN:");
-        appendNumber(target, sequenceLengths(context)[i]);
+        appendNumber(target, contigLengths(context)[i]);
         writeValue(target, '\n');
     }
 }
@@ -149,7 +149,7 @@ inline void write(TTarget & target,
     if (record.rID == BamAlignmentRecord::INVALID_REFID)
         writeValue(target, '*');
     else
-        write(target, nameStore(context)[record.rID]);
+        write(target, contigNames(context)[record.rID]);
 
     writeValue(target, '\t');
 
@@ -177,7 +177,7 @@ inline void write(TTarget & target,
     else if (record.rID == record.rNextId)
         writeValue(target, '=');
     else
-        write(target, nameStore(context)[record.rNextId]);
+        write(target, contigNames(context)[record.rNextId]);
 
     writeValue(target, '\t');
 

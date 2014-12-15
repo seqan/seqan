@@ -68,8 +68,8 @@ void testBamIOBamFileReadHeader(char const * pathFragment)
     SEQAN_ASSERT_EQ(header[1].tags[0].i2, "REFERENCE");
     SEQAN_ASSERT_EQ(header[1].tags[1].i1, "LN");
     SEQAN_ASSERT_EQ(header[1].tags[1].i2, "10000");
-    SEQAN_ASSERT_EQ(length(sequenceLengths(context(bamIO))), 1u);
-    SEQAN_ASSERT_EQ(sequenceLengths(context(bamIO))[0], 10000);
+    SEQAN_ASSERT_EQ(length(contigLengths(context(bamIO))), 1u);
+    SEQAN_ASSERT_EQ(contigLengths(context(bamIO))[0], 10000);
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_read_header)
@@ -194,7 +194,7 @@ void testBamIOBamFileReadRecords(char const * pathFragment)
     SEQAN_ASSERT_EQ(alignments[2].qual, "!!!!!!!!!!");
     SEQAN_ASSERT_EQ(length(alignments[2].tags), 0u);
 
-    SEQAN_ASSERT_EQ(nameStore(context(bamIO))[0], "REFERENCE");
+    SEQAN_ASSERT_EQ(contigNames(context(bamIO))[0], "REFERENCE");
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_read_records)
@@ -217,8 +217,8 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_ex1)
 
     readRecord(header, bamIO);
 
-    SEQAN_ASSERT_EQ(nameStore(context(bamIO))[0], "seq1");
-    SEQAN_ASSERT_EQ(nameStore(context(bamIO))[1], "seq2");
+    SEQAN_ASSERT_EQ(contigNames(context(bamIO))[0], "seq1");
+    SEQAN_ASSERT_EQ(contigNames(context(bamIO))[1], "seq2");
     SEQAN_ASSERT_EQ(context(bamIO).translateFile2GlobalRefId[0], 0u);
     SEQAN_ASSERT_EQ(context(bamIO).translateFile2GlobalRefId[1], 1u);
 
@@ -229,7 +229,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_read_ex1)
     {
         readRecord(record, bamIO);
         ++counts[record.rID];
-//        seqan::CharString name = nameStore(context(bamIO))[record.rID];
+//        seqan::CharString name = contigNames(context(bamIO))[record.rID];
 //        std::cout << "Chrom: " << name << " (" << record.rID << ")" << std::endl;
     }
     SEQAN_ASSERT_EQ(counts[0], 1501);
@@ -255,7 +255,7 @@ void testBamIOBamFileWriteHeader(char const * pathFragmentExpected)
     seqan::BamFileOut bamIO(toCString(tmpPath));
 
     seqan::BamHeader header;
-    assignValueById(sequenceLengths(context(bamIO)), nameToId(nameStoreCache(context(bamIO)), "REFERENCE"), 10000);
+    assignValueById(contigLengths(context(bamIO)), nameToId(contigNamesCache(context(bamIO)), "REFERENCE"), 10000);
     resize(header, 2);
     resize(header[0].tags, 2);
     header[0].type = seqan::BAM_HEADER_FIRST;
@@ -310,7 +310,7 @@ void testBamIOBamFileWriteRecords(char const * pathFragmentExpected)
     seqan::BamFileOut bamIO(toCString(tmpPath));
 
     seqan::BamHeader header;
-    assignValueById(sequenceLengths(context(bamIO)), nameToId(nameStoreCache(context(bamIO)), "REFERENCE"), 10000);
+    assignValueById(contigLengths(context(bamIO)), nameToId(contigNamesCache(context(bamIO)), "REFERENCE"), 10000);
     resize(header, 2);
     resize(header[0].tags, 2);
     header[0].type = seqan::BAM_HEADER_FIRST;

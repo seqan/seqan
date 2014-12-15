@@ -234,10 +234,10 @@ readRecord(BamHeader & header,
             }
 
             // Add entry to name store and sequenceInfos if necessary.
-            size_t globalRefId = nameToId(nameStoreCache(context), name);
-            if (length(sequenceLengths(context)) <= globalRefId)
-                resize(sequenceLengths(context), globalRefId + 1, 0);
-            sequenceLengths(context)[globalRefId] = lRef;
+            size_t globalRefId = nameToId(contigNamesCache(context), name);
+            if (length(contigLengths(context)) <= globalRefId)
+                resize(contigLengths(context), globalRefId + 1, 0);
+            contigLengths(context)[globalRefId] = lRef;
         }
     }
 }
@@ -291,7 +291,7 @@ readRecord(BamAlignmentRecord & record,
     if (buffer == "*")
         record.rID = BamAlignmentRecord::INVALID_REFID;
     else
-        record.rID = nameToId(nameStoreCache(context), buffer);
+        record.rID = nameToId(contigNamesCache(context), buffer);
     skipOne(iter, IsTab());
 
     // POS
@@ -341,7 +341,7 @@ readRecord(BamAlignmentRecord & record,
     else if (buffer == "=")
         record.rNextId = record.rID;
     else
-        record.rNextId = nameToId(nameStoreCache(context), buffer);
+        record.rNextId = nameToId(contigNamesCache(context), buffer);
     skipOne(iter, IsTab());
 
     // PNEXT
