@@ -37,7 +37,7 @@
 #include <string>
 
 #include <seqan/basic.h>
-#include <seqan/misc/misc_bit_twiddling.h>
+#include <seqan/misc/bit_twiddling.h>
 
 using namespace seqan;
 

@@ -34,16 +34,6 @@
 #include "razers.h"
 #include "readSimulator.h"
 
-#include <seqan/misc/misc_parsing.h>
-
-
-
-
-
-
-
-
-
 namespace SEQAN_NAMESPACE_MAIN
 {
 // ls in directory dir, store filenames in files

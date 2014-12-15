@@ -37,7 +37,7 @@
 #ifndef SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_PROFILE_H_
 #define SEQAN_INCLUDE_SEQAN_BASIC_ALPHABET_PROFILE_H_
 
-#include <seqan/misc/misc_memset.h>
+#include <seqan/misc/memset.h>
 
 namespace seqan {
 

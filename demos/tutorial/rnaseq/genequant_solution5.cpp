@@ -1,7 +1,7 @@
 #include <iostream>
 #include <seqan/store.h>
 #include <seqan/arg_parse.h>
-#include <seqan/misc/misc_interval_tree.h>
+#include <seqan/misc/interval_tree.h>
 #include <seqan/parallel.h>
 
 using namespace seqan;

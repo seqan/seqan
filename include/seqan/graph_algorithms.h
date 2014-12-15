@@ -40,7 +40,7 @@
 // Seqan
 #include <seqan/graph_types.h>
 #include <seqan/random.h>
-#include <seqan/misc/misc_union_find.h>
+#include <seqan/misc/union_find.h>
 
 // Graph algorithms
 #include <seqan/graph_algorithms/graph_algorithm_heap_tree.h>

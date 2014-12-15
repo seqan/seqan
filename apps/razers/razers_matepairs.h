@@ -22,7 +22,7 @@
 #ifndef SEQAN_HEADER_RAZERS_MATEPAIRS_H
 #define SEQAN_HEADER_RAZERS_MATEPAIRS_H
 
-#include <seqan/misc/misc_dequeue.h>
+#include <seqan/misc/dequeue.h>
 
 namespace SEQAN_NAMESPACE_MAIN
 {

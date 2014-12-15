@@ -42,7 +42,7 @@
 #include <seqan/bam_io.h>
 #include <seqan/gff_io.h>
 #include <seqan/ucsc_io.h>
-#include <seqan/misc/misc_name_store_cache.h>
+#include <seqan/misc/name_store_cache.h>
 
 #include <sstream>
 #include <algorithm>

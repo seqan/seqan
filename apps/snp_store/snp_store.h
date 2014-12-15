@@ -28,7 +28,7 @@
 #include <fstream>
 #include <cmath>
 
-#include <seqan/misc/misc_svg.h>
+#include <seqan/misc/svg.h>
 #include <seqan/stream.h>
 #include <boost/math/special_functions/fpclassify.hpp>
 
