@@ -122,7 +122,7 @@ Notes:
 * When the FLAG indicates that SEQ is reverse-complemented, then QUAL is reversed.
 * Positions in the SAM file are 1-based.
   When read into a :dox:`BamAlignmentRecord` (see below), the positions become 0-based.
-* The qualities must be stored as ASCII PRED-encoded qualities.
+* The qualities must be stored as ASCII PHRED-encoded qualities.
 * The query and reference names must not contain whitespace.
   It is common to trim query and reference ids at the first space.
 
@@ -175,7 +175,7 @@ All BAM header records are stored in the class :dox:`BamHeader`, except for sequ
 .. important::
    The header is not mandatory in SAM files and might be missing.
 
-The following program accesses the :dox:`BamFileIn` :dox:`SmartFileContext Context` and prints the sequences and lengths present in the BAM header.
+The following program accesses the :dox:`BamFileIn` :dox:`SmartFileContext Context` and prints the reference sequence names and lengths present in the BAM header.
 
 .. includefrags:: demos/tutorial/bam_io/example2.cpp
 
