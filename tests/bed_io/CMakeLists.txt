@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_extras_tests_bed_io)
+project (seqan_tests_bed_io)
 message (STATUS "Configuring tests/bed_io")
 
 # ----------------------------------------------------------------------------
