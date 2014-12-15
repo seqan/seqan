@@ -1023,13 +1023,13 @@ postProcessMain(TOptions &options, TModel const &)
     // Read header
     readRecord(header, bamFileIn);
     // Check that this fits to the contig names in the store.
-    if (length(nameStore(context(bamFileIn))) != length(store.contigNameStore))
+    if (length(contigNames(context(bamFileIn))) != length(store.contigNameStore))
     {
         std::cerr << "ERROR: Different number of contigs in reference and SAM/BAM file!\n";
         return 1;
     }
-    for (unsigned i = 0; i < length(nameStore(context(bamFileIn))); ++i)
-        if (nameStore(context(bamFileIn))[i] != store.contigNameStore[i])
+    for (unsigned i = 0; i < length(contigNames(context(bamFileIn))); ++i)
+        if (contigNames(context(bamFileIn))[i] != store.contigNameStore[i])
         {
             std::cerr << "ERROR: Different contig names/order in reference and SAM/BAM file!\n";
             return 1;
