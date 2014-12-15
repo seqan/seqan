@@ -124,12 +124,7 @@ struct MakeUnsigned<T const>
 };
 
 // TODO(holtgrew): Internal metafunction unnecessary now?
-/*
-.Internal.MakeUnsigned_:
-..signature:MakeUnsigned_<T>
-..status:deprecated, please use @Metafunction.MakeUnsigned@
-..returns:$unsigned t$ if $T$ is not $unsigned t$, otherwise $T$.
-*/
+
 template <typename T>
 struct MakeUnsigned_ : MakeUnsigned<T> {};
 
@@ -177,12 +172,7 @@ struct MakeSigned<T const>
 };
 
 // TODO(holtgrew): Internal metafunction unnecessary now?
-/*
-.Internal.MakeSigned_:
-..signature:MakeSigned_<T>
-..status:deprecated, please use @Metafunction.MakeSigned@
-..returns:$signed t$ if $T$ is not $signed t$, otherwise $T$.
-*/
+
 template <typename T>
 struct MakeSigned_ : MakeSigned<T> {};
 
@@ -294,13 +284,6 @@ struct IsPointer<T * const> : True {};
  * @return Type A corresponding non-const type, e.g. <tt>int</tt> for <tt>T = const int</tt>.
  */
 
-/*
-.Internal.RemoveConst_:
-..signature:RemoveConst_<T>
-..status:deprecated, please use @Metafunction.RemoveConst@
-..returns:$t$ if $T$ is $t const$, otherwise $T$.
-*/
-
 template <typename T>
 struct RemoveConst
 {
@@ -360,12 +343,6 @@ struct CopyConst_<TFrom const, TTo>
 
 // TODO(holtgrew): Make public, complete documentation.
 
-/*
-.Internal.IsConst_:
-..signature:IsConst_<T>
-..returns:@Tag.Logical Values.tag.True@ if $T$ is $t const$, otherwise @Tag.Logical Values.tag.False@.
-*/
-
 template <typename T>
 struct IsConst_ : False
 {};
@@ -379,14 +356,6 @@ struct IsConst_<T const> : True
 // ----------------------------------------------------------------------------
 
 // TODO(holtgrew): Make public, complete documentation or deletion candidate.
-
-/*
-.Internal.ClassIdentifier_:
-..signature:void * ClassIdentifier_<T>::getID()
-..returns:A void * that identifies $T$.
-...text:The returned values of two calls of $getID$ are equal if and only if
-the used type $T$ was the same.
- */
 
 template <typename T>
 struct ClassIdentifier_

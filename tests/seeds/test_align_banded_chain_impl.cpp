@@ -47,8 +47,7 @@ void testBandedChainAlignmentEmptyChain(TGapCosts const &)
 {
     using namespace seqan;
 
-    //typedef Seed<Simple> TSeed;
-    typedef SeedSet<Simple, Unordered> TSeedSet;
+    typedef SeedSet<Seed<Simple>, Unordered> TSeedSet;
     AlignConfig<true, true, true, true> alignConfig;
 
     CharString seqH = "ACGATCGATCGACTGACT";
@@ -78,7 +77,7 @@ void testBandedChainAlignmentOneSeed(TGapCosts const &)
     using namespace seqan;
 
     typedef Seed<Simple> TSeed;
-    typedef SeedSet<Simple, Unordered> TSeedSet;
+    typedef SeedSet<TSeed, Unordered> TSeedSet;
     AlignConfig<true, true, true, true> alignConfig;
 
     // Tested overlapping anchor without shift which overlaps in all directions.
@@ -393,7 +392,7 @@ void testBandedChainAlignmentTwoSeeds(TGapCosts const &)
     using namespace seqan;
 
     typedef Seed<Simple> TSeed;
-    typedef SeedSet<Simple, Unordered> TSeedSet;
+    typedef SeedSet<TSeed, Unordered> TSeedSet;
     AlignConfig<true, true, true, true> alignConfig;
     
     // Test two anchors that does not overlap.
