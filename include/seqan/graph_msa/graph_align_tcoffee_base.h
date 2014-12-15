@@ -295,7 +295,7 @@ struct MsaEdgeCargo_ {
 
 template<typename TVertexDescriptor, typename TCargo>
 struct LessMsaEdgeCargo_ :
-	public ::std::binary_function<TVertexDescriptor, TCargo, bool>
+	public std::binary_function<TVertexDescriptor, TCargo, bool>
 {
 	inline bool 
 	operator() (MsaEdgeCargo_<TVertexDescriptor, TCargo> const& a1, 
@@ -349,7 +349,7 @@ tripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
 		newEMap.insert(std::make_pair(TNewEdge(sV, tV), c));
 	}
 	clearEdges(g);
-	::std::sort(begin(fullEdges, Standard()), end(fullEdges, Standard()), LessMsaEdgeCargo_<TVertexDescriptor, TCargo>() );
+	std::sort(begin(fullEdges, Standard()), end(fullEdges, Standard()), LessMsaEdgeCargo_<TVertexDescriptor, TCargo>() );
 	
 	// Perform triplet extension
 	typedef typename Iterator<TEdgeString, Standard>::Type TEdgeIter;
@@ -480,7 +480,7 @@ _subTreeSearch(TGuideTree& guideTree,
 			appendValue(allGroupedLeaves, *itSeqGroup, Generous());
 	}
 	appendValue(allGroupedLeaves, nSeq);
-	::std::sort(begin(allGroupedLeaves, Standard()), end(allGroupedLeaves, Standard()));
+	std::sort(begin(allGroupedLeaves, Standard()), end(allGroupedLeaves, Standard()));
 	TSeqGroupIter itSeqGroup = begin(allGroupedLeaves, Standard());
 	TSeqGroupIter itSeqGroupEnd = end(allGroupedLeaves, Standard());
 	TSize leftover = 0;
@@ -582,7 +582,7 @@ tripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 				appendValue(fullEdges, TEdge((*itInitial).v2, (*itInitial).v1, (*itInitial).c), Generous());
 			}
 		}
-		::std::sort(begin(fullEdges, Standard()), end(fullEdges, Standard()), LessMsaEdgeCargo_<TVertexDescriptor, TCargo>() );
+		std::sort(begin(fullEdges, Standard()), end(fullEdges, Standard()), LessMsaEdgeCargo_<TVertexDescriptor, TCargo>() );
 		typedef typename Iterator<TEdgeString, Standard>::Type TEdgeIter;
 		TEdgeIter itEdges1 = begin(fullEdges, Standard());
 		TEdgeIter itEdgesEnd = end(fullEdges, Standard());

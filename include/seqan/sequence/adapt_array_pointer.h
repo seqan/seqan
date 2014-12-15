@@ -374,14 +374,14 @@ inline size_t
 length(char * me)
 {
 SEQAN_CHECKPOINT
-    return ::std::strlen(me);
+    return std::strlen(me);
 }
 
 inline size_t
 length(char const * me)
 {
 SEQAN_CHECKPOINT
-    return ::std::strlen(me);
+    return std::strlen(me);
 }
 
 template <typename TValue>

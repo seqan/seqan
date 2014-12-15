@@ -31,7 +31,7 @@ int main()
     TGaps gapsText;
     TGaps gapsPattern;
     assignSource(gapsPattern, pattern);
-    ::std::cout << "Text: " << text << "\tPattern: " << pattern <<::std::endl;
+    std::cout << "Text: " << text << "\tPattern: " << pattern <<std::endl;
     for (TIterator it = begin(locations); it != end(locations);++it)
     {
         // Clear previously computed gaps.
@@ -61,7 +61,7 @@ int main()
             setClippedBeginPosition(gapsPattern, countGaps(itGapsPattern));
             setClippedBeginPosition(gapsText, countGaps(itGapsPattern));
         }
-        ::std::cout << "Hit at position "<< *it << "\ttotal edits: " << abs(score) << ::std::endl;
+        std::cout << "Hit at position "<< *it << "\ttotal edits: " << abs(score) << std::endl;
     }
     return 0;
 }

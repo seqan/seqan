@@ -970,9 +970,9 @@ void computeQGramFilteringSensitivity(
 	TMatrixCol *colPrev = &col0;
 
 #ifdef DEBUG_RECOG_DP
-	::std::cout << span << ":0";
+	std::cout << span << ":0";
 	dump(col0, 0,statesCount);
-	::std::cout << " :1";
+	std::cout << " :1";
 	dump(col0, 1,statesCount);
 #endif
 	
@@ -1020,7 +1020,7 @@ void computeQGramFilteringSensitivity(
 				}
 			}
 			if (!optionMinOutput)
-				::std::cout << '.' << ::std::flush;
+				std::cout << '.' << std::flush;
 		}
 
 		TMatrixCol *tmp = col;
@@ -1028,17 +1028,17 @@ void computeQGramFilteringSensitivity(
 		colPrev = tmp;
 
 #ifdef DEBUG_RECOG_DP
-		::std::cout << n+1 << ":0";
+		std::cout << n+1 << ":0";
 		dump(*colPrev, 0,statesCount);
-		::std::cout << " :1";
+		std::cout << " :1";
 		dump(*colPrev, 1,statesCount);
-		::std::cout << " :2";
+		std::cout << " :2";
 		dump(*colPrev, 2,statesCount);
 #endif
 	}
 	
 	if (!optionMinOutput)
-		::std::cout << ::std::endl;
+		std::cout << std::endl;
 
 	// RECURSION END
 	for (int eSum = 0; eSum < maxErrors; ++eSum)

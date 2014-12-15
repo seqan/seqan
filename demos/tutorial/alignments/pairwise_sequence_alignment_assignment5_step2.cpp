@@ -31,7 +31,7 @@ int main()
     TGaps gapsText;
     TGaps gapsPattern;
     assignSource(gapsPattern, pattern);
-    ::std::cout << "Text: " << text << "\tPattern: " << pattern <<::std::endl;
+    std::cout << "Text: " << text << "\tPattern: " << pattern <<std::endl;
     for (TIterator it = begin(locations); it != end(locations);++it)
     {
         // Clear previously computed gaps.
@@ -45,7 +45,7 @@ int main()
     	// Use semi-global alignment since we do not want to track leading/trailing gaps in the pattern.
     	// Restirct search space using a band allowing at most 2 errors in vertical/horizontal direction.
     	int score = globalAlignment(gapsText,gapsPattern,Score<int>(0,-1,-1),AlignConfig<true,false,false,true>(),-2,2);
-    	::std::cout << "Hit at position "<< *it << "\ttotal edits: " << abs(score) << ::std::endl;
+    	std::cout << "Hit at position "<< *it << "\ttotal edits: " << abs(score) << std::endl;
     }
 
     return 0;

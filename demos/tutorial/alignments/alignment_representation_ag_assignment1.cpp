@@ -57,7 +57,7 @@ int main()
     addEdge(alignG, findVertex(alignG, positionToId(stringSet(alignG),1), 14),
                     findVertex(alignG, positionToId(stringSet(alignG),2), 6));
 
-    ::std::cout << alignG << ::std::endl;
+    std::cout << alignG << std::endl;
 
     return 0;
 }

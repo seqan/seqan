@@ -33,7 +33,7 @@ int main()
     TGaps gapsText;
     TGaps gapsPattern;
     assignSource(gapsPattern, pattern);
-    ::std::cout << "Text: " << text << "\tPattern: " << pattern <<::std::endl;
+    std::cout << "Text: " << text << "\tPattern: " << pattern <<std::endl;
     for (TIterator it = begin(locations); it != end(locations);++it)
     {
         // Clear previously computed gaps.
@@ -70,7 +70,7 @@ int main()
     	itGapsEnd = end(gapsPattern);
 
     	// Use a stringstream to construct the cigar string.
-    	::std::stringstream cigar;
+    	std::stringstream cigar;
     	int numChar = 0;
     	while (itGapsPattern != itGapsEnd)
     	{
@@ -121,7 +121,7 @@ int main()
             numChar = 0;
     	}
     	// Output the hit position in the text, the total number of edits and the corresponding cigar string.
-    	::std::cout << "Hit at position  " << *it << "\ttotal edits: " << abs(score) << "\tcigar: " << cigar.str() << ::std::endl;
+    	std::cout << "Hit at position  " << *it << "\ttotal edits: " << abs(score) << "\tcigar: " << cigar.str() << std::endl;
     }
 
     return 0;

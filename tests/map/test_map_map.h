@@ -388,7 +388,7 @@ void Test_Skiplist_Stress()
 	typedef Map<TValue, Skiplist< > > TSkipList;
 	typedef Iterator<TSkipList>::Type TSkipListIterator;
 
-	typedef ::std::map<int, int> TSTDMap;
+	typedef std::map<int, int> TSTDMap;
 	typedef Iterator<TSTDMap>::Type TSTDMapIterator;
 
 	TSkipList sl;
@@ -447,12 +447,12 @@ void Main_Test_Map()
 	Test_Cargo_Single< Map< Pair<char, int>, Skiplist< > > >();
 	Test_Cargo_Single< Map< Pair<char, int>, VectorSet< > > >();
     
-    Test_STLMap< ::std::map<char, int> >();
+    Test_STLMap< std::map<char, int> >();
 
 	Test_NoCargo_Single< Map< char, Skiplist< > > >();
 	Test_NoCargo_Single< Map< char, VectorSet< > > >();
     
-    Test_STLSet< ::std::set<char> >();
+    Test_STLSet< std::set<char> >();
 
    	Test_Cargo_Multiple< Map< Pair<char, int>, Skiplist< > > >();
 

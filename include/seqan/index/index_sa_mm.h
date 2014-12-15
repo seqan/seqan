@@ -105,7 +105,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			for(TSize h = 1; cd > 0; h <<= 1, --cd) {
 
 				#ifdef SEQAN_DEBUG_INDEX
-					::std::cerr << "[" << cd << "] ";
+					std::cerr << "[" << cd << "] ";
 				#endif
 				SEQAN_PROADD(SEQAN_PRODEPTH, 1);
 				SEQAN_PROMARK("Beginne Durchlauf");
@@ -164,7 +164,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		}
         SEQAN_PROSET(SEQAN_PRODEPTH, 0);
         #ifdef SEQAN_DEBUG_INDEX
-			::std::cerr << ::std::endl;
+			std::cerr << std::endl;
         #endif
 	}
 

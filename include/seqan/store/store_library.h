@@ -71,7 +71,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @var TMean LibraryStoreElement::mean;
  * @brief The library size mean.
  *
- * @var TStd LibraryStoreElement::std;
+ * @var TStd LibraryStoreElementstd;
  * @brief The library size standard deviation.
  */ 
 

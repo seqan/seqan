@@ -183,16 +183,16 @@ void setHost (Pattern<TNeedle, MultipleShiftAnd> & me, TNeedle2 const & needle) 
 
 	/*
 	// Debug code
-	std::cout << "Alphabet size: " << me.alphabetSize << ::std::endl;
-	std::cout << "Needle length: " << me.totalLength << ::std::endl;
-	std::cout << "Block count: " << me.blockCount << ::std::endl;
+	std::cout << "Alphabet size: " << me.alphabetSize << std::endl;
+	std::cout << "Needle length: " << me.totalLength << std::endl;
+	std::cout << "Block count: " << me.blockCount << std::endl;
 	std::cout << "K: ";
 	goBegin(it);
 	for(;!atEnd(it);goNext(it)) {
 		std::cout << *it;
 	}
-	std::cout << ::std::endl;
-	std::cout << "Table: " << ::std::endl;
+	std::cout << std::endl;
+	std::cout << "Table: " << std::endl;
 	for(unsigned int i=0;i<me.alphabetSize;++i) {
 		//if ((i<97) || (i>122)) continue;
 		std::cout << TAlphabet(i) << ": ";
@@ -201,23 +201,23 @@ void setHost (Pattern<TNeedle, MultipleShiftAnd> & me, TNeedle2 const & needle) 
 				std::cout << ((me.table[me.blockCount*i+j] & (1<<(bit_pos % BitsPerValue<unsigned int>::VALUE))) !=0);
 			}
 		}
-		std::cout << ::std::endl;
+		std::cout << std::endl;
 	}
-	std::cout << "DI and DF: " << ::std::endl;
+	std::cout << "DI and DF: " << std::endl;
 	std::cout << "I: ";
 	for(int j=0;j<me.blockCount;++j) {
 		for(int bit_pos=0;bit_pos<BitsPerValue<unsigned int>::VALUE;++bit_pos) {
 			std::cout << ((me.di[j] & (1<<(bit_pos % BitsPerValue<unsigned int>::VALUE))) !=0);
 		}
 	}
-	std::cout << ::std::endl;
+	std::cout << std::endl;
 	std::cout << "F: ";
 	for(int j=0;j<me.blockCount;++j) {
 		for(int bit_pos=0;bit_pos<BitsPerValue<unsigned int>::VALUE;++bit_pos) {
 			std::cout << ((me.df[j] & (1<<(bit_pos % BitsPerValue<unsigned int>::VALUE))) !=0);
 		}
 	}
-	std::cout << ::std::endl;
+	std::cout << std::endl;
 	*/
 }
 
@@ -287,7 +287,7 @@ bool _findShiftAndSmallNeedle(TFinder & finder, Pattern<TNeedle, MultipleShiftAn
 				std::cout << ((me.prefSufMatch[j] & (1<<(bit_pos % BitsPerValue<unsigned int>::VALUE))) !=0);
 			}
 		}
-		std::cout << ::std::endl;
+		std::cout << std::endl;
 		*/
 
 		if ((me.prefSufMatch[0] & me.df[0]) != 0) {
@@ -305,7 +305,7 @@ bool _findShiftAndSmallNeedle(TFinder & finder, Pattern<TNeedle, MultipleShiftAn
 						std::cout << ((test & (1<<(bit_pos % BitsPerValue<unsigned int>::VALUE))) !=0);
 					}
 				}
-				std::cout << ::std::endl;
+				std::cout << std::endl;
 				*/
 				if ((me.prefSufMatch[0] & test) != 0) {
 					me.data_keyword.push_back(Pair<TSize,TSize>(position(it),length(*it)));
@@ -349,7 +349,7 @@ bool _findShiftAndLargeNeedle(TFinder & finder, Pattern<TNeedle, MultipleShiftAn
 				std::cout << ((me.prefSufMatch[j] & (1<<(bit_pos % BitsPerValue<unsigned int>::VALUE))) !=0);
 			}
 		}
-		std::cout << ::std::endl;
+		std::cout << std::endl;
 		*/
 
 		bool match = false;
@@ -378,7 +378,7 @@ bool _findShiftAndLargeNeedle(TFinder & finder, Pattern<TNeedle, MultipleShiftAn
 						std::cout << ((test[i] & (1<<(bit_pos % BitsPerValue<unsigned int>::VALUE))) !=0);
 					}
 				}
-				std::cout << ::std::endl;
+				std::cout << std::endl;
 				*/
 
 				if ((me.prefSufMatch[(j - 1) / BitsPerValue<TWord>::VALUE] & test[(j - 1) / BitsPerValue<TWord>::VALUE]) != 0) {

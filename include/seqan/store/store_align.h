@@ -349,7 +349,7 @@ struct _LessAlignedRead;
 
 template <typename TAlignedRead>
 struct _LessAlignedRead<TAlignedRead, SortId> :
-	public ::std::binary_function<TAlignedRead, TAlignedRead, bool>
+	public std::binary_function<TAlignedRead, TAlignedRead, bool>
 {
 	inline bool 
 	operator() (TAlignedRead const& a1, TAlignedRead const& a2) const {
@@ -359,7 +359,7 @@ struct _LessAlignedRead<TAlignedRead, SortId> :
 
 template <typename TAlignedRead>
 struct _LessAlignedRead<TAlignedRead, SortContigId> :
-	public ::std::binary_function<TAlignedRead, TAlignedRead, bool>
+	public std::binary_function<TAlignedRead, TAlignedRead, bool>
 {
 	inline bool 
 	operator() (TAlignedRead const& a1, TAlignedRead const& a2) const {
@@ -369,7 +369,7 @@ struct _LessAlignedRead<TAlignedRead, SortContigId> :
 
 template <typename TAlignedRead>
 struct _LessAlignedRead<TAlignedRead, SortBeginPos> :
-	public ::std::binary_function<TAlignedRead, TAlignedRead, bool>
+	public std::binary_function<TAlignedRead, TAlignedRead, bool>
 {
 	inline bool 
 	operator() (TAlignedRead const& a1, TAlignedRead const& a2) const {
@@ -379,7 +379,7 @@ struct _LessAlignedRead<TAlignedRead, SortBeginPos> :
 
 template <typename TAlignedRead>
 struct _LessAlignedRead<TAlignedRead, SortEndPos> :
-	public ::std::binary_function<TAlignedRead, TAlignedRead, bool>
+	public std::binary_function<TAlignedRead, TAlignedRead, bool>
 {
 	inline bool 
 	operator() (TAlignedRead const& a1, TAlignedRead const& a2) const {
@@ -389,7 +389,7 @@ struct _LessAlignedRead<TAlignedRead, SortEndPos> :
 
 template <typename TAlignedRead>
 struct _LessAlignedRead<TAlignedRead, SortPairMatchId> :
-	public ::std::binary_function<TAlignedRead, TAlignedRead, bool>
+	public std::binary_function<TAlignedRead, TAlignedRead, bool>
 {
 	inline bool 
 	operator() (TAlignedRead const& a1, TAlignedRead const& a2) const {
@@ -399,7 +399,7 @@ struct _LessAlignedRead<TAlignedRead, SortPairMatchId> :
 
 template <typename TAlignedRead>
 struct _LessAlignedRead<TAlignedRead, SortReadId> :
-	public ::std::binary_function<TAlignedRead, TAlignedRead, bool>
+	public std::binary_function<TAlignedRead, TAlignedRead, bool>
 {
 	inline bool 
 	operator() (TAlignedRead const& a1, TAlignedRead const& a2) const {
@@ -534,7 +534,7 @@ lowerBoundAlignedReads(TAlign const & alignStore,
 	typedef typename Value<TAlign>::Type TAlignElement;
 	TAlignElement el;
 	el.id = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -550,7 +550,7 @@ lowerBoundAlignedReads(TAlign & alignStore,
 	typedef typename Value<TAlign>::Type TAlignElement;
 	TAlignElement el;
 	el.id = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -568,7 +568,7 @@ upperBoundAlignedReads(TAlign const & alignStore,
 	typedef typename Value<TAlign>::Type TAlignElement;
 	TAlignElement el;
 	el.id = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -584,7 +584,7 @@ upperBoundAlignedReads(TAlign & alignStore,
 	typedef typename Value<TAlign>::Type TAlignElement;
 	TAlignElement el;
 	el.id = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -602,7 +602,7 @@ lowerBoundAlignedReads(TAlign const & alignStore,
 	typedef typename Value<TAlign>::Type TAlignElement;
 	TAlignElement el;
 	el.contigId = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -618,7 +618,7 @@ lowerBoundAlignedReads(TAlign & alignStore,
 	typedef typename Value<TAlign>::Type TAlignElement;
 	TAlignElement el;
 	el.contigId = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -636,7 +636,7 @@ upperBoundAlignedReads(TAlign const & alignStore,
 	typedef typename Value<TAlign>::Type TAlignElement;
 	TAlignElement el;
 	el.contigId = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -652,7 +652,7 @@ upperBoundAlignedReads(TAlign & alignStore,
 	typedef typename Value<TAlign>::Type TAlignElement;
 	TAlignElement el;
 	el.contigId = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -671,7 +671,7 @@ lowerBoundAlignedReads(TAlign const & alignStore,
 	TAlignElement el;
 	el.beginPos = val;
 	el.endPos = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -688,7 +688,7 @@ lowerBoundAlignedReads(TAlign & alignStore,
 	TAlignElement el;
 	el.beginPos = val;
 	el.endPos = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -707,7 +707,7 @@ upperBoundAlignedReads(TAlign const & alignStore,
 	TAlignElement el;
 	el.beginPos = val;
 	el.endPos = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -724,7 +724,7 @@ upperBoundAlignedReads(TAlign & alignStore,
 	TAlignElement el;
 	el.beginPos = val;
 	el.endPos = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -743,7 +743,7 @@ lowerBoundAlignedReads(TAlign const & alignStore,
 	TAlignElement el;
 	el.beginPos = val;
 	el.endPos = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -760,7 +760,7 @@ lowerBoundAlignedReads(TAlign & alignStore,
 	TAlignElement el;
 	el.beginPos = val;
 	el.endPos = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -779,7 +779,7 @@ upperBoundAlignedReads(TAlign const & alignStore,
 	TAlignElement el;
 	el.beginPos = val;
 	el.endPos = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -796,7 +796,7 @@ upperBoundAlignedReads(TAlign & alignStore,
 	TAlignElement el;
 	el.beginPos = val;
 	el.endPos = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -814,7 +814,7 @@ lowerBoundAlignedReads(TAlign const & alignStore,
 	typedef typename Value<TAlign>::Type TAlignElement;
 	TAlignElement el;
 	el.pairMatchId = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -830,7 +830,7 @@ lowerBoundAlignedReads(TAlign & alignStore,
 	typedef typename Value<TAlign>::Type TAlignElement;
 	TAlignElement el;
 	el.pairMatchId = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -848,7 +848,7 @@ upperBoundAlignedReads(TAlign const & alignStore,
 	typedef typename Value<TAlign>::Type TAlignElement;
 	TAlignElement el;
 	el.pairMatchId = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -864,7 +864,7 @@ upperBoundAlignedReads(TAlign & alignStore,
 	typedef typename Value<TAlign>::Type TAlignElement;
 	TAlignElement el;
 	el.pairMatchId = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -882,7 +882,7 @@ lowerBoundAlignedReads(TAlign const & alignStore,
 	typedef typename Value<TAlign>::Type TAlignElement;
 	TAlignElement el;
 	el.readId = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -898,7 +898,7 @@ lowerBoundAlignedReads(TAlign & alignStore,
 	typedef typename Value<TAlign>::Type TAlignElement;
 	TAlignElement el;
 	el.readId = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -916,7 +916,7 @@ upperBoundAlignedReads(TAlign const & alignStore,
 	typedef typename Value<TAlign>::Type TAlignElement;
 	TAlignElement el;
 	el.readId = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -932,7 +932,7 @@ upperBoundAlignedReads(TAlign & alignStore,
 	typedef typename Value<TAlign>::Type TAlignElement;
 	TAlignElement el;
 	el.readId = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		begin(alignStore, Standard()), 
 		end(alignStore, Standard()), 
 		el,
@@ -951,7 +951,7 @@ lowerBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
 	typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
 	TAlignElement el;
 	el.id = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -971,7 +971,7 @@ upperBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
 	typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
 	TAlignElement el;
 	el.id = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -990,7 +990,7 @@ lowerBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
 	typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
 	TAlignElement el;
 	el.contigId = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1009,7 +1009,7 @@ upperBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
 	typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
 	TAlignElement el;
 	el.contigId = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1029,7 +1029,7 @@ lowerBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
 	TAlignElement el;
 	el.beginPos = val;
 	el.endPos = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1049,7 +1049,7 @@ upperBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
 	TAlignElement el;
 	el.beginPos = val;
 	el.endPos = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1070,7 +1070,7 @@ lowerBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
 	TAlignElement el;
 	el.beginPos = val;
 	el.endPos = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1090,7 +1090,7 @@ upperBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
 	TAlignElement el;
 	el.beginPos = val;
 	el.endPos = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1110,7 +1110,7 @@ lowerBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
 	typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
 	TAlignElement el;
 	el.pairMatchId = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1129,7 +1129,7 @@ upperBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
 	typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
 	TAlignElement el;
 	el.pairMatchId = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1148,7 +1148,7 @@ lowerBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
 	typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
 	TAlignElement el;
 	el.readId = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1167,7 +1167,7 @@ upperBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
 	typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
 	TAlignElement el;
 	el.readId = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1186,7 +1186,7 @@ lowerBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
 	typedef typename Value<TReadAlignElement *>::Type TAlignElement;
 	TAlignElement el;
 	el.id = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1205,7 +1205,7 @@ upperBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
 	typedef typename Value<TReadAlignElement *>::Type TAlignElement;
 	TAlignElement el;
 	el.id = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1224,7 +1224,7 @@ lowerBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
 	typedef typename Value<TReadAlignElement *>::Type TAlignElement;
 	TAlignElement el;
 	el.contigId = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1243,7 +1243,7 @@ upperBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
 	typedef typename Value<TReadAlignElement *>::Type TAlignElement;
 	TAlignElement el;
 	el.contigId = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1263,7 +1263,7 @@ lowerBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
 	TAlignElement el;
 	el.beginPos = val;
 	el.endPos = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1283,7 +1283,7 @@ upperBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
 	TAlignElement el;
 	el.beginPos = val;
 	el.endPos = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1304,7 +1304,7 @@ lowerBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
 	TAlignElement el;
 	el.beginPos = val;
 	el.endPos = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1324,7 +1324,7 @@ upperBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
 	TAlignElement el;
 	el.beginPos = val;
 	el.endPos = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1344,7 +1344,7 @@ lowerBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
 	typedef typename Value<TReadAlignElement *>::Type TAlignElement;
 	TAlignElement el;
 	el.pairMatchId = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1363,7 +1363,7 @@ upperBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
 	typedef typename Value<TReadAlignElement *>::Type TAlignElement;
 	TAlignElement el;
 	el.pairMatchId = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1382,7 +1382,7 @@ lowerBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
 	typedef typename Value<TReadAlignElement *>::Type TAlignElement;
 	TAlignElement el;
 	el.readId = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,
@@ -1401,7 +1401,7 @@ upperBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
 	typedef typename Value<TReadAlignElement *>::Type TAlignElement;
 	TAlignElement el;
 	el.readId = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		alignedReadsItBegin, 
 		alignedReadsItEnd, 
 		el,

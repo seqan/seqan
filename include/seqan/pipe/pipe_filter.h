@@ -42,7 +42,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //{
     
     template <typename TValue, typename TResult = typename Value<TValue, 1>::Type>
-    struct filterI1 : public ::std::unary_function<TValue, TResult>
+    struct filterI1 : public std::unary_function<TValue, TResult>
     {
         inline TResult operator() (const TValue & x) const
         {
@@ -51,7 +51,7 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
     template <typename TValue, typename TResult = typename Value<TValue, 2>::Type>
-    struct filterI2 : public ::std::unary_function<TValue, TResult>
+    struct filterI2 : public std::unary_function<TValue, TResult>
     {
         inline TResult operator() (const TValue & x) const
         {
@@ -60,7 +60,7 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
     template <typename TValue, typename TResult = typename Value<TValue, 3>::Type>
-    struct filterI3 : public ::std::unary_function<TValue, TResult>
+    struct filterI3 : public std::unary_function<TValue, TResult>
     {
         inline TResult operator() (const TValue & x) const
         {

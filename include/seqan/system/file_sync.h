@@ -133,7 +133,7 @@ namespace SEQAN_NAMESPACE_MAIN
             handle = ::_open(fileName, _getOFlag(openMode), _S_IREAD | _S_IWRITE);
 			if (handle == -1) {
 				if (!(openMode & OPEN_QUIET))
-					::std::cerr << "Open failed on file " << fileName << ". (" << ::strerror(errno) << ")" << ::std::endl;
+					std::cerr << "Open failed on file " << fileName << ". (" << ::strerror(errno) << ")" << std::endl;
 				return false;
 			}
 			SEQAN_PROADD(SEQAN_PROOPENFILES, 1);
@@ -154,7 +154,7 @@ namespace SEQAN_NAMESPACE_MAIN
 #endif // #ifdef PLATFORM_WINDOWS_MINGW
 			if (!fileName) {
 				if (!(openMode & OPEN_QUIET))
-					::std::cerr << "Cannot create a unique temporary filename" << ::std::endl;
+					std::cerr << "Cannot create a unique temporary filename" << std::endl;
 				return false;
 			}
             bool result = open(fileName, openMode | OPEN_TEMPORARY);
@@ -277,14 +277,14 @@ namespace SEQAN_NAMESPACE_MAIN
 			if (handle == -1 && errno == EINVAL) {	// fall back to cached access
 	            #ifdef SEQAN_DEBUG_OR_TEST_
 					if (!(openMode & OPEN_QUIET))
-						::std::cerr << "Warning: Direct access openening failed: " << fileName << "." << ::std::endl;
+						std::cerr << "Warning: Direct access openening failed: " << fileName << "." << std::endl;
 				#endif			
           	    handle = ::open(fileName, _getOFlag(openMode & ~OPEN_ASYNC), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
 			}
 			
 			if (handle == -1) {
 				if (!(openMode & OPEN_QUIET))
-					::std::cerr << "Open failed on file " << fileName << ". (" << ::strerror(errno) << ")" << ::std::endl;
+					std::cerr << "Open failed on file " << fileName << ". (" << ::strerror(errno) << ")" << std::endl;
 				return false;
 			}
 
@@ -293,7 +293,7 @@ namespace SEQAN_NAMESPACE_MAIN
 				// 1. include the following line before including anything in your application
 				//    #define _FILE_OFFSET_BITS 64
 				// 2. include <seqan/platform.h> or <seqan/sequence.h> before any other include
-				::std::cerr << "WARNING: FilePtr is not 64bit wide" << ::std::endl;
+				std::cerr << "WARNING: FilePtr is not 64bit wide" << std::endl;
 
 			SEQAN_PROADD(SEQAN_PROOPENFILES, 1);
             return true;
@@ -336,7 +336,7 @@ namespace SEQAN_NAMESPACE_MAIN
             {
 			    umask(oldMode);  // Reset umask mode.
 				if (!(openMode & OPEN_QUIET))
-					::std::cerr << "Couldn't create temporary file " << tmpDir << ". (" << ::strerror(errno) << ")" << ::std::endl;
+					std::cerr << "Couldn't create temporary file " << tmpDir << ". (" << ::strerror(errno) << ")" << std::endl;
 				return false;
 			}
 			if (!(close() && open(toCString(tmpDir), openMode))) 
@@ -347,7 +347,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			umask(oldMode);  // Reset umask mode.
             #ifdef SEQAN_DEBUG
 				if (::unlink(toCString(tmpDir)) == -1 && !(openMode & OPEN_QUIET))
-					::std::cerr << "Couldn't unlink temporary file " << tmpDir << ". (" << ::strerror(errno) << ")" << ::std::endl;
+					std::cerr << "Couldn't unlink temporary file " << tmpDir << ". (" << ::strerror(errno) << ")" << std::endl;
             #else
 				::unlink(toCString(tmpDir));
 			#endif
@@ -382,7 +382,7 @@ namespace SEQAN_NAMESPACE_MAIN
             FilePtr result = ::lseek(handle, pos, origin);
 //			#ifdef SEQAN_DEBUG
 				if (result < 0)
-					::std::cerr << "lseek returned " << result << ". (" << ::strerror(errno) << ")" << ::std::endl;
+					std::cerr << "lseek returned " << result << ". (" << ::strerror(errno) << ")" << std::endl;
 //			#endif
 			return result;
 		}

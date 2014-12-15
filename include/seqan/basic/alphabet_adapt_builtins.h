@@ -182,7 +182,7 @@ inline long double const &
 supremumValueImpl(long double *)
 {
 #ifdef PLATFORM_WINDOWS
-    static long double const _value = ::std::numeric_limits<long double>::infinity( );
+    static long double const _value = std::numeric_limits<long double>::infinity( );
 #else
     static long double const _value = 1.7976931348623157e+308;
 #endif
@@ -193,7 +193,7 @@ inline double const &
 supremumValueImpl(double *)
 {
 #ifdef PLATFORM_WINDOWS
-    static double const _value = ::std::numeric_limits<double>::infinity( );
+    static double const _value = std::numeric_limits<double>::infinity( );
 #else
     static double const _value = 1.7976931348623157e+308;
 #endif
@@ -203,7 +203,7 @@ inline float const &
 supremumValueImpl(float *)
 {
 #ifdef PLATFORM_WINDOWS
-    static float const _value = ::std::numeric_limits<float>::infinity( );
+    static float const _value = std::numeric_limits<float>::infinity( );
 #else
     static float const _value = 3.40282347e+38F;
 #endif
@@ -226,7 +226,7 @@ inline float const &
 infimumValueImpl(float *)
 {
 #ifdef PLATFORM_WINDOWS
-    static float const _value = -::std::numeric_limits<float>::infinity( );
+    static float const _value = -std::numeric_limits<float>::infinity( );
 #else
     static float const _value = -3.40282347e+38F;
 #endif
@@ -237,7 +237,7 @@ inline double const &
 infimumValueImpl(double *)
 {
 #ifdef PLATFORM_WINDOWS
-    static double const _value = -::std::numeric_limits<double>::infinity( );
+    static double const _value = -std::numeric_limits<double>::infinity( );
 #else
     static double const _value = -1.7976931348623157e+308;
 #endif
@@ -248,7 +248,7 @@ inline long double const &
 infimumValueImpl(long double *)
 {
 #ifdef PLATFORM_WINDOWS
-    static long double const _value = -::std::numeric_limits<long double>::infinity( );
+    static long double const _value = -std::numeric_limits<long double>::infinity( );
 #else
     static long double const _value = -1.7976931348623157e+308;
 #endif

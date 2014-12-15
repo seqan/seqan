@@ -20,8 +20,8 @@ int main()
 
 // FRAGMENT(alignment)
     int score = localAlignment(align, Score<int,Simple>(1,-1,-1,-1));
-    ::std::cout << "Score: " << score << ::std::endl;
-    ::std::cout << align << ::std::endl;
+    std::cout << "Score: " << score << std::endl;
+    std::cout << align << std::endl;
 
     return 0;
 }

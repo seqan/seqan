@@ -338,7 +338,7 @@ inline bool waitFor(Event & e, TTime timeoutMilliSec, bool & inProgress)
     bool b = e.wait(timeoutMilliSec, inProgress);
     double end = sysTime();
     if (begin != end)
-        ::std::cerr << "waitTime: " << end - begin << ::std::endl;
+        std::cerr << "waitTime: " << end - begin << std::endl;
     return b;
 
         #else

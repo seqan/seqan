@@ -22,8 +22,8 @@ int main()
 
     // FRAGMENT(alignment)
     int score = globalAlignment(align,MyersHirschberg());
-    ::std::cout << "Score: " << score << ::std::endl;
-    ::std::cout << align << ::std::endl;
+    std::cout << "Score: " << score << std::endl;
+    std::cout << align << std::endl;
 
     // FRAGMENT(view)
     unsigned aliLength = _max(length(row(align, 0)), length(row(align, 1)));

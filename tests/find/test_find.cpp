@@ -406,7 +406,7 @@ void Test_OnlineAlgMulti(bool order_by_begin_position) {
     clear(finderPos);
     clear(keywordIndex);
     while (find(my_finder, my_pattern)) {
-        //std::cout << position(my_finder) << "-" << position(my_pattern) << ::std::endl;
+        //std::cout << position(my_finder) << "-" << position(my_pattern) << std::endl;
         append(finderPos,position(my_finder));
         append(keywordIndex,position(my_pattern));
         SEQAN_ASSERT_EQ(position(my_finder), beginPosition(my_finder));
@@ -500,7 +500,7 @@ void Test_OnlineAlgMulti(bool order_by_begin_position) {
     clear(finderPos);
     clear(keywordIndex);
     while (find(my2_finder, my2_pattern)) {
-        //std::cout << position(my2_finder) << ":" << position(my2_pattern) << ::std::endl;
+        //std::cout << position(my2_finder) << ":" << position(my2_pattern) << std::endl;
         append(finderPos,position(my2_finder));
         append(keywordIndex,position(my2_pattern));
         SEQAN_ASSERT_EQ(position(my2_finder), beginPosition(my2_finder));
@@ -565,7 +565,7 @@ void Test_OnlineAlgMulti(bool order_by_begin_position) {
     unsigned int hits = 0;
     while (find(my2_finder, my2_pattern)) {
         if (hits < 2) break;
-        //std::cout << position(my2_finder) << ":" << position(my2_pattern) << ::std::endl;
+        //std::cout << position(my2_finder) << ":" << position(my2_pattern) << std::endl;
         append(finderPos,position(my2_finder));
         append(keywordIndex,position(my2_pattern));
         ++hits;
@@ -576,7 +576,7 @@ void Test_OnlineAlgMulti(bool order_by_begin_position) {
     clear(finderPos);
     clear(keywordIndex);
     while (find(my2_finder, my2_pattern)) {
-        //std::cout << position(my2_finder) << ":" << position(my2_pattern) << ::std::endl;
+        //std::cout << position(my2_finder) << ":" << position(my2_pattern) << std::endl;
         append(finderPos,position(my2_finder));
         append(keywordIndex,position(my2_pattern));
     }

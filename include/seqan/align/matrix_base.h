@@ -1060,7 +1060,7 @@ transpose(Matrix<TValue,2> const & matrix)
 
 
 template < typename TValue >
-::std::ostream& operator<<(::std::ostream &out, const Matrix<TValue,2> &matrix)
+std::ostream& operator<<(std::ostream &out, const Matrix<TValue,2> &matrix)
 {
 	for(unsigned int i1 = 0;i1< matrix.data_lengths[0];++i1)
 	{

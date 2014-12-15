@@ -39,13 +39,13 @@ namespace SEQAN_NAMESPACE_MAIN
 {
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>
-struct Value< ::std::map<TKey, TCargo, TCompare, TAlloc> > 
+struct Value< std::map<TKey, TCargo, TCompare, TAlloc> > 
 {
     typedef Pair<TKey,TCargo> Type;
 };
 
 template <typename TKey, typename TCompare, typename TAlloc>
-struct Value< ::std::set<TKey, TCompare, TAlloc> > 
+struct Value< std::set<TKey, TCompare, TAlloc> > 
 {
     typedef bool Type;
 };
@@ -53,13 +53,13 @@ struct Value< ::std::set<TKey, TCompare, TAlloc> >
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>
-struct Key< ::std::map<TKey,TCargo, TCompare, TAlloc>  >
+struct Key< std::map<TKey,TCargo, TCompare, TAlloc>  >
 {
     typedef TKey Type;
 };
 
 template <typename TKey, typename TCompare, typename TAlloc>
-struct Key< ::std::set<TKey, TCompare, TAlloc>  >
+struct Key< std::set<TKey, TCompare, TAlloc>  >
 {
     typedef TKey Type;
 };
@@ -67,7 +67,7 @@ struct Key< ::std::set<TKey, TCompare, TAlloc>  >
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>
-struct Cargo< ::std::map<TKey,TCargo, TCompare, TAlloc> >
+struct Cargo< std::map<TKey,TCargo, TCompare, TAlloc> >
 {
     typedef TCargo Type;
 };
@@ -75,16 +75,16 @@ struct Cargo< ::std::map<TKey,TCargo, TCompare, TAlloc> >
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TKey, typename TCompare, typename TAlloc>
-struct Size< ::std::set<TKey, TCompare, TAlloc> >
+struct Size< std::set<TKey, TCompare, TAlloc> >
 {
-    //typedef ::std::set<TKey>::size_type Type;
+    //typedef std::set<TKey>::size_type Type;
     typedef unsigned Type;
 };
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>
-struct Size< ::std::map<TKey,TCargo, TCompare, TAlloc> >
+struct Size< std::map<TKey,TCargo, TCompare, TAlloc> >
 {
-    //typedef ::std::map<TKey,TCargo>::size_type Type;
+    //typedef std::map<TKey,TCargo>::size_type Type;
     typedef unsigned Type;
 };
 
@@ -93,13 +93,13 @@ struct Size< ::std::map<TKey,TCargo, TCompare, TAlloc> >
 // traits for stl usage
 /*
 template <typename TKey, typename TCompare, typename TAlloc>
-struct AllocatorType< ::std::set<TKey, TCompare, TAlloc> >
+struct AllocatorType< std::set<TKey, TCompare, TAlloc> >
 {
     typedef TAlloc Type;
 };
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>
-struct AllocatorType< ::std::map<TKey, TCargo, TCompare, TAlloc> >
+struct AllocatorType< std::map<TKey, TCargo, TCompare, TAlloc> >
 {
     typedef TAlloc Type;
 };
@@ -108,13 +108,13 @@ template <typename T>
 struct StlComparator_;
 
 template <typename TKey, typename TCompare, typename TAlloc>
-struct StlComparator_< ::std::set<TKey, TCompare, TAlloc> >
+struct StlComparator_< std::set<TKey, TCompare, TAlloc> >
 {
     typedef TCompare Type;
 };
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>
-struct StlComparator_< ::std::map<TKey, TCargo, TCompare, TAlloc> >
+struct StlComparator_< std::map<TKey, TCargo, TCompare, TAlloc> >
 {
     typedef TCompare Type;
 };
@@ -131,31 +131,31 @@ struct StlIterator_
 };
 
 template <typename TKey, typename TCompare, typename TAlloc>
-struct StlIterator_< ::std::set<TKey, TCompare, TAlloc> >
+struct StlIterator_< std::set<TKey, TCompare, TAlloc> >
 {
-	typedef typename ::std::set<TKey, TCompare, TAlloc>::iterator Type;
+	typedef typename std::set<TKey, TCompare, TAlloc>::iterator Type;
 };
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>
-struct StlIterator_< ::std::map<TKey, TCargo, TCompare, TAlloc> >
+struct StlIterator_< std::map<TKey, TCargo, TCompare, TAlloc> >
 {
-	typedef typename ::std::map<TKey, TCargo, TCompare, TAlloc>::iterator Type;
+	typedef typename std::map<TKey, TCargo, TCompare, TAlloc>::iterator Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TKey, typename TCompare, typename TAlloc>
 inline void
-assign(::std::set<TKey, TCompare, TAlloc> & target,
-	   ::std::set<TKey, TCompare, TAlloc> const & source)
+assign(std::set<TKey, TCompare, TAlloc> & target,
+	   std::set<TKey, TCompare, TAlloc> const & source)
 {
     target = source;
 }
 
 template <typename TKey,typename TCargo, typename TCompare, typename TAlloc>
 inline void
-assign(::std::map<TKey,TCargo, TCompare, TAlloc> & target,
-	   ::std::map<TKey,TCargo, TCompare, TAlloc> const & source)
+assign(std::map<TKey,TCargo, TCompare, TAlloc> & target,
+	   std::map<TKey,TCargo, TCompare, TAlloc> const & source)
 {
     target = source;
 }
@@ -164,7 +164,7 @@ assign(::std::map<TKey,TCargo, TCompare, TAlloc> & target,
 
 template <typename TValue, typename TCompare, typename TAlloc, typename TKey2>
 inline bool
-hasKey(::std::set<TValue,TCompare,TAlloc> & me, TKey2 const & _key)
+hasKey(std::set<TValue,TCompare,TAlloc> & me, TKey2 const & _key)
 {
 SEQAN_CHECKPOINT
     return (me.count(_key) != 0);
@@ -172,7 +172,7 @@ SEQAN_CHECKPOINT
 
 template <typename TValue, typename TCompare, typename TAlloc, typename TKey2>
 inline bool
-hasKey(::std::set<TValue,TCompare,TAlloc> const & me, TKey2 const & _key)
+hasKey(std::set<TValue,TCompare,TAlloc> const & me, TKey2 const & _key)
 {
 SEQAN_CHECKPOINT
     return (me.count(_key) != 0);
@@ -181,7 +181,7 @@ SEQAN_CHECKPOINT
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, typename TKey2>
 inline bool
-hasKey(::std::map<TKey, TCargo, TCompare, TAlloc> & me, TKey2 const & _key)
+hasKey(std::map<TKey, TCargo, TCompare, TAlloc> & me, TKey2 const & _key)
 {
 SEQAN_CHECKPOINT
     return (me.count(_key) != 0);
@@ -189,7 +189,7 @@ SEQAN_CHECKPOINT
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, typename TKey2>
 inline bool
-hasKey(::std::map<TKey, TCargo, TCompare, TAlloc> const & me, TKey2 const & _key)
+hasKey(std::map<TKey, TCargo, TCompare, TAlloc> const & me, TKey2 const & _key)
 {
 SEQAN_CHECKPOINT
     return (me.count(_key) != 0);
@@ -198,16 +198,16 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TValue, typename TCompare, typename TAlloc>
-inline typename Size< ::std::set<TValue, TCompare, TAlloc> >::Type
-length(::std::set<TValue, TCompare, TAlloc> const & me)
+inline typename Size< std::set<TValue, TCompare, TAlloc> >::Type
+length(std::set<TValue, TCompare, TAlloc> const & me)
 {
 SEQAN_CHECKPOINT
 	return me.size();
 }
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>
-inline typename Size< ::std::map<TKey,TCargo, TCompare, TAlloc> >::Type
-length(::std::map<TKey,TCargo, TCompare, TAlloc> const & me)
+inline typename Size< std::map<TKey,TCargo, TCompare, TAlloc> >::Type
+length(std::map<TKey,TCargo, TCompare, TAlloc> const & me)
 {
 SEQAN_CHECKPOINT
 	return me.size();
@@ -217,7 +217,7 @@ SEQAN_CHECKPOINT
 
 template <typename TValue, typename TCompare, typename TAlloc, typename TValue2>
 inline void
-insert(::std::set<TValue, TCompare, TAlloc> & me,TValue2 const & _value)
+insert(std::set<TValue, TCompare, TAlloc> & me,TValue2 const & _value)
 {
 SEQAN_CHECKPOINT
     me.insert(_value);
@@ -225,7 +225,7 @@ SEQAN_CHECKPOINT
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, typename TKey2, typename TCargo2>
 inline void
-insert(::std::map<TKey,TCargo, TCompare, TAlloc> & me, 
+insert(std::map<TKey,TCargo, TCompare, TAlloc> & me, 
 	   TKey2 const & _key, 
 	   TCargo2 const & _cargo)
 {
@@ -235,7 +235,7 @@ SEQAN_CHECKPOINT
 }
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, typename TKey2>
 inline void
-insert(::std::map<TKey,TCargo, TCompare, TAlloc> & me,TKey2 const & _key)
+insert(std::map<TKey,TCargo, TCompare, TAlloc> & me,TKey2 const & _key)
 {
 SEQAN_CHECKPOINT
 
@@ -243,7 +243,7 @@ SEQAN_CHECKPOINT
 }
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, typename TKey2, typename TCargo2, typename TSpec>
 inline void
-insert(::std::map<TKey,TCargo, TCompare, TAlloc> & me, Pair<TKey2,TCargo2,TSpec> const & _value)
+insert(std::map<TKey,TCargo, TCompare, TAlloc> & me, Pair<TKey2,TCargo2,TSpec> const & _value)
 {
 SEQAN_CHECKPOINT
 	insert(me, _value.i1, _value.i2);
@@ -254,7 +254,7 @@ SEQAN_CHECKPOINT
 
 template <typename TValue, typename TCompare, typename TAlloc>
 inline void
-clear(::std::set<TValue, TCompare, TAlloc> & me)
+clear(std::set<TValue, TCompare, TAlloc> & me)
 {
 SEQAN_CHECKPOINT
     me.clear();
@@ -262,7 +262,7 @@ SEQAN_CHECKPOINT
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>
 inline void
-clear(::std::map<TKey,TCargo, TCompare, TAlloc> & me)
+clear(std::map<TKey,TCargo, TCompare, TAlloc> & me)
 {
 SEQAN_CHECKPOINT
     me.clear();
@@ -271,8 +271,8 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 
 //template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, typename TKey2>
-//inline typename Value< ::std::map<TKey,TCargo, TCompare, TAlloc> >::Type &
-//value(::std::map<TKey,TCargo, TCompare, TAlloc> & me,
+//inline typename Value< std::map<TKey,TCargo, TCompare, TAlloc> >::Type &
+//value(std::map<TKey,TCargo, TCompare, TAlloc> & me,
 //	  TKey2 const & _key)
 //{    
 //    return me[_key];
@@ -281,8 +281,8 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, typename TKey2>
-inline typename Cargo< ::std::map<TKey,TCargo, TCompare, TAlloc> >::Type &
-cargo(::std::map<TKey,TCargo, TCompare, TAlloc> & me,
+inline typename Cargo< std::map<TKey,TCargo, TCompare, TAlloc> >::Type &
+cargo(std::map<TKey,TCargo, TCompare, TAlloc> & me,
 	  TKey2 const & _key)
 {
 SEQAN_CHECKPOINT
@@ -299,9 +299,9 @@ struct StlMapIterator;
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, typename TIteratorSpec>
-struct Iterator< ::std::map<TKey,TCargo, TCompare, TAlloc> , TIteratorSpec >
+struct Iterator< std::map<TKey,TCargo, TCompare, TAlloc> , TIteratorSpec >
 {
-    typedef ::std::map<TKey,TCargo, TCompare, TAlloc> TStlMap_;
+    typedef std::map<TKey,TCargo, TCompare, TAlloc> TStlMap_;
 	typedef Iter<TStlMap_, StlMapIterator> Type;
 };
 
@@ -310,7 +310,7 @@ template <typename TStlMap>
 class Iter<TStlMap, StlMapIterator>
 {
 public:    
-    //typedef typename ::std::map<typename Key<TSTLMap>::Type,
+    //typedef typename std::map<typename Key<TSTLMap>::Type,
     //                            typename Cargo<TSTLMap>::Type,
     //                            typename StlComparator_<TStlMap>::Type,
     //                            typename AllocatorType<TStlMap>::Type >::iterator THostIter;
@@ -382,19 +382,19 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, typename TIteratorSpec>
-inline typename Iterator< ::std::map<TKey,TCargo, TCompare, TAlloc>, TIteratorSpec>::Type
-begin(::std::map<TKey,TCargo, TCompare, TAlloc> & me,
+inline typename Iterator< std::map<TKey,TCargo, TCompare, TAlloc>, TIteratorSpec>::Type
+begin(std::map<TKey,TCargo, TCompare, TAlloc> & me,
 	  TIteratorSpec)
 {
-    typedef ::std::map<TKey,TCargo, TCompare, TAlloc> TStlMap;
+    typedef std::map<TKey,TCargo, TCompare, TAlloc> TStlMap;
     typedef typename Iterator<TStlMap , TIteratorSpec>::Type TIterator;
     return TIterator(me);
 }
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>
-inline typename Iterator< ::std::map<TKey,TCargo, TCompare, TAlloc> >::Type
-begin(::std::map<TKey,TCargo, TCompare, TAlloc> & me)
+inline typename Iterator< std::map<TKey,TCargo, TCompare, TAlloc> >::Type
+begin(std::map<TKey,TCargo, TCompare, TAlloc> & me)
 {
-    typedef ::std::map<TKey,TCargo, TCompare, TAlloc> TStlMap;
+    typedef std::map<TKey,TCargo, TCompare, TAlloc> TStlMap;
     typedef typename Iterator<TStlMap>::Type TIterator;
     return TIterator(me);
 }
@@ -402,11 +402,11 @@ begin(::std::map<TKey,TCargo, TCompare, TAlloc> & me)
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, typename TIteratorSpec>
-inline typename Iterator< ::std::map<TKey,TCargo, TCompare, TAlloc> >::Type
-end(::std::map<TKey,TCargo, TCompare, TAlloc> & me,
+inline typename Iterator< std::map<TKey,TCargo, TCompare, TAlloc> >::Type
+end(std::map<TKey,TCargo, TCompare, TAlloc> & me,
 	  TIteratorSpec)
 {
-    typedef ::std::map<TKey,TCargo, TCompare, TAlloc> TStlMap;
+    typedef std::map<TKey,TCargo, TCompare, TAlloc> TStlMap;
 	typedef typename Iterator<TStlMap, TIteratorSpec>::Type TIterator;
 	TIterator _iter(me);
     _iter._iter = me.end();
@@ -414,10 +414,10 @@ end(::std::map<TKey,TCargo, TCompare, TAlloc> & me,
 }
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc>
-inline typename Iterator< ::std::map<TKey,TCargo, TCompare, TAlloc> >::Type
-end(::std::map<TKey,TCargo, TCompare, TAlloc> & me)
+inline typename Iterator< std::map<TKey,TCargo, TCompare, TAlloc> >::Type
+end(std::map<TKey,TCargo, TCompare, TAlloc> & me)
 {
-    typedef ::std::map<TKey,TCargo, TCompare, TAlloc> TStlMap;
+    typedef std::map<TKey,TCargo, TCompare, TAlloc> TStlMap;
 	typedef typename Iterator<TStlMap>::Type TIterator;
 	TIterator _iter(me);
     _iter._iter = me.end();
@@ -500,9 +500,9 @@ SEQAN_CHECKPOINT
 ////////////////////////////////////////////////////////////////////////////////
 
 template <typename TValue, typename TCompare, typename TAlloc, typename TIteratorSpec>
-struct Iterator< ::std::set<TValue, TCompare, TAlloc> , TIteratorSpec >
+struct Iterator< std::set<TValue, TCompare, TAlloc> , TIteratorSpec >
 {
-    typedef ::std::set<TValue, TCompare, TAlloc> TStlSet_;
+    typedef std::set<TValue, TCompare, TAlloc> TStlSet_;
 	typedef Iter<TStlSet_, StlSetIterator> Type;
 };
 
@@ -510,7 +510,7 @@ template <typename TStlMap>
 class Iter< TStlMap, StlSetIterator>
 {
 public:    
-    //typedef typename ::std::set<typename Key<TSTLMap>::Type,
+    //typedef typename std::set<typename Key<TSTLMap>::Type,
     //                            typename StlComparator_<TSTLMap>::Type,
     //                            typename AllocatorType<TSTLMap>::Type >::iterator THostIter;
 	typedef typename StlIterator_<TStlMap>::Type THostIter;
@@ -580,19 +580,19 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TValue, typename TCompare, typename TAlloc, typename TIteratorSpec>
-inline typename Iterator< ::std::set<TValue,TCompare,TAlloc>, TIteratorSpec>::Type
-begin(::std::set<TValue,TCompare,TAlloc> & me,
+inline typename Iterator< std::set<TValue,TCompare,TAlloc>, TIteratorSpec>::Type
+begin(std::set<TValue,TCompare,TAlloc> & me,
 	  TIteratorSpec)
 {
-    typedef ::std::set<TValue,TCompare,TAlloc> TStlMap;
+    typedef std::set<TValue,TCompare,TAlloc> TStlMap;
     typedef typename Iterator<TStlMap , TIteratorSpec>::Type TIterator;
     return TIterator(me);
 }
 template <typename TValue, typename TCompare, typename TAlloc>
-inline typename Iterator< ::std::set<TValue,TCompare,TAlloc> >::Type
-begin(::std::set<TValue,TCompare,TAlloc> & me)
+inline typename Iterator< std::set<TValue,TCompare,TAlloc> >::Type
+begin(std::set<TValue,TCompare,TAlloc> & me)
 {
-    typedef ::std::set<TValue,TCompare,TAlloc> TStlMap;
+    typedef std::set<TValue,TCompare,TAlloc> TStlMap;
     typedef typename Iterator<TStlMap>::Type TIterator;
     return TIterator(me);
 }
@@ -600,11 +600,11 @@ begin(::std::set<TValue,TCompare,TAlloc> & me)
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TValue, typename TCompare, typename TAlloc, typename TIteratorSpec>
-inline typename Iterator< ::std::set<TValue, TCompare, TAlloc>, TIteratorSpec>::Type
-end(::std::set<TValue, TCompare, TAlloc> & me,
+inline typename Iterator< std::set<TValue, TCompare, TAlloc>, TIteratorSpec>::Type
+end(std::set<TValue, TCompare, TAlloc> & me,
 	  TIteratorSpec)
 {
-    typedef ::std::set<TValue,TCompare,TAlloc> TStlMap;
+    typedef std::set<TValue,TCompare,TAlloc> TStlMap;
 	typedef typename Iterator<TStlMap, TIteratorSpec>::Type TIterator;
 	TIterator _iter(me);
     _iter._iter = me.end();
@@ -612,10 +612,10 @@ end(::std::set<TValue, TCompare, TAlloc> & me,
 }
 
 template <typename TValue, typename TCompare, typename TAlloc>
-inline typename Iterator< ::std::set<TValue,TCompare,TAlloc> >::Type
-end(::std::set<TValue,TCompare,TAlloc> & me)
+inline typename Iterator< std::set<TValue,TCompare,TAlloc> >::Type
+end(std::set<TValue,TCompare,TAlloc> & me)
 {
-    typedef ::std::set<TValue,TCompare,TAlloc> TStlMap;
+    typedef std::set<TValue,TCompare,TAlloc> TStlMap;
 	typedef typename Iterator<TStlMap>::Type TIterator;
 	TIterator _iter(me);
     _iter._iter = me.end();
@@ -678,12 +678,12 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TValue, typename TCompare, typename TAlloc,typename TFind>
-inline typename Iterator< ::std::set<TValue, TCompare, TAlloc> >::Type
-find(::std::set<TValue, TCompare, TAlloc> & me,
+inline typename Iterator< std::set<TValue, TCompare, TAlloc> >::Type
+find(std::set<TValue, TCompare, TAlloc> & me,
 	 TFind const & _find)
 {
 SEQAN_CHECKPOINT
-    typedef ::std::set<TValue, TCompare, TAlloc> TMap;
+    typedef std::set<TValue, TCompare, TAlloc> TMap;
     typedef typename Iterator< TMap >::Type TMapIterator;  
 
     TMapIterator _iter(me);
@@ -695,12 +695,12 @@ SEQAN_CHECKPOINT
 }
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, typename TFind>
-inline typename Iterator< ::std::map<TKey,TCargo, TCompare, TAlloc> >::Type
-find(::std::map<TKey,TCargo, TCompare, TAlloc> & me,
+inline typename Iterator< std::map<TKey,TCargo, TCompare, TAlloc> >::Type
+find(std::map<TKey,TCargo, TCompare, TAlloc> & me,
 	 TFind const & _find)
 {
 SEQAN_CHECKPOINT
-    typedef ::std::map<TKey,TCargo, TCompare, TAlloc> TMap;
+    typedef std::map<TKey,TCargo, TCompare, TAlloc> TMap;
     typedef typename Iterator< TMap >::Type TMapIterator;  
 
     TMapIterator _iter(me);
@@ -716,7 +716,7 @@ SEQAN_CHECKPOINT
 
 template <typename TValue, typename TCompare, typename TAlloc, typename TMap2>
 inline void
-erase(::std::set<TValue, TCompare, TAlloc> & me,
+erase(std::set<TValue, TCompare, TAlloc> & me,
 	  Iter<TMap2, StlSetIterator> const & it)
 {
 SEQAN_CHECKPOINT
@@ -725,7 +725,7 @@ SEQAN_CHECKPOINT
 
 template <typename TKey, typename TCargo ,typename TMap2>
 inline void
-erase(::std::map<TKey,TCargo> & me,
+erase(std::map<TKey,TCargo> & me,
 	  Iter<TMap2, StlMapIterator> const & it)
 {
 SEQAN_CHECKPOINT
@@ -737,7 +737,7 @@ SEQAN_CHECKPOINT
 
 template <typename TValue, typename TCompare, typename TAlloc, typename TToRemove>
 inline void
-erase(::std::set<TValue, TCompare, TAlloc> & me,
+erase(std::set<TValue, TCompare, TAlloc> & me,
 	  TToRemove const & to_remove)
 {
 SEQAN_CHECKPOINT
@@ -746,7 +746,7 @@ SEQAN_CHECKPOINT
 
 template <typename TKey, typename TCargo, typename TCompare, typename TAlloc, typename TToRemove>
 inline void
-erase(::std::map<TKey,TCargo, TCompare, TAlloc> & me,
+erase(std::map<TKey,TCargo, TCompare, TAlloc> & me,
 	  TToRemove const & to_remove)
 {
 SEQAN_CHECKPOINT

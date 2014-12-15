@@ -124,7 +124,7 @@ public:
     static void init(int argc, char const ** argv)
     {
         (void)argc;
-        ::seqan::ClassTest::beginTestSuite("tests", argv[0]);
+        seqan::ClassTest::beginTestSuite("tests", argv[0]);
     }
 
     static TestSystem * getInstance()
@@ -152,28 +152,28 @@ public:
                 testName += " type parameter ";
                 testName += (*it)->typeName;
             }
-            ::seqan::ClassTest::beginTest(testName.c_str());
+            seqan::ClassTest::beginTest(testName.c_str());
             try {
                 (*it)->instance->setUp();
                 (*it)->instance->runTest();
                 (*it)->instance->tearDown();
-            } catch(::seqan::ClassTest::AssertionFailedException e) {
+            } catch(seqan::ClassTest::AssertionFailedException e) {
                 /* Swallow exception, go on with next test. */       
                 (void) e;  /* Get rid of unused variable warning. */
-            } catch (::seqan::Exception const & e) {
-                ::std::cerr << "Unexpected exception of type "
-                            << toCString(::seqan::Demangler< ::seqan::Exception>(e))
+            } catch (seqan::Exception const & e) {
+                std::cerr << "Unexpected exception of type "
+                            << toCString(seqan::Demangler< seqan::Exception>(e))
                             << "; message: " << e.what() << "\n";
-                ::seqan::ClassTest::StaticData::thisTestOk() = false;
-                ::seqan::ClassTest::StaticData::errorCount() += 1;
+                seqan::ClassTest::StaticData::thisTestOk() = false;
+                seqan::ClassTest::StaticData::errorCount() += 1;
             } catch (...) {
-                ::std::cerr << "Unexpected exception of unknown type\n";
-                ::seqan::ClassTest::StaticData::thisTestOk() = false;
-                ::seqan::ClassTest::StaticData::errorCount() += 1;
+                std::cerr << "Unexpected exception of unknown type\n";
+                seqan::ClassTest::StaticData::thisTestOk() = false;
+                seqan::ClassTest::StaticData::errorCount() += 1;
             }
-            ::seqan::ClassTest::endTest();
+            seqan::ClassTest::endTest();
         }
-        return ::seqan::ClassTest::endTestSuite();
+        return seqan::ClassTest::endTestSuite();
     }
 };
 
@@ -274,19 +274,19 @@ public:
 // Macro for defining a test.
 
 #define SEQAN_TEST(testCaseName, testName)                                    \
-    class SEQAN_TEST_NAME_(testCaseName, testName) : public ::seqan::Test     \
+    class SEQAN_TEST_NAME_(testCaseName, testName) : public seqan::Test     \
     {                                                                         \
     public:                                                                   \
         SEQAN_TEST_NAME_(testCaseName, testName)() {}                         \
                                                                               \
         virtual void runTest();                                               \
                                                                               \
-        static ::seqan::TestDescription_ * description;                       \
+        static seqan::TestDescription_ * description;                       \
     };                                                                        \
                                                                               \
-    ::seqan::TestDescription_ *                                               \
+    seqan::TestDescription_ *                                               \
     SEQAN_TEST_NAME_(testCaseName, testName)::description =                   \
-    ::seqan::TestCaseFactory_<SEQAN_TEST_NAME_(testCaseName, testName)>::make(\
+    seqan::TestCaseFactory_<SEQAN_TEST_NAME_(testCaseName, testName)>::make(\
             SEQAN_MKSTRING(testCaseName),                                     \
             SEQAN_MKSTRING(testName));                                        \
                                                                               \
@@ -306,12 +306,12 @@ public:
                                                                               \
         virtual void runTest();                                               \
                                                                               \
-        static ::seqan::TestDescription_ * description;                       \
+        static seqan::TestDescription_ * description;                       \
     };                                                                        \
                                                                               \
-    ::seqan::TestDescription_ *                                               \
+    seqan::TestDescription_ *                                               \
     SEQAN_TEST_NAME_(testCaseName, testName)::description =                   \
-    ::seqan::TestCaseFactory_<SEQAN_TEST_NAME_(testCaseName, testName)>::make(\
+    seqan::TestCaseFactory_<SEQAN_TEST_NAME_(testCaseName, testName)>::make(\
             SEQAN_MKSTRING(testCaseName),                                     \
             SEQAN_MKSTRING(testName));                                        \
                                                                               \
@@ -354,7 +354,7 @@ public:
     };                                                                  \
                                                                         \
     bool SEQAN_ ## testCaseName ## __ ## testName ## _registered_ =     \
-            ::seqan::TypedTestFactory_<SEQAN_TEST_NAME_(testCaseName, testName), \
+            seqan::TypedTestFactory_<SEQAN_TEST_NAME_(testCaseName, testName), \
                                SEQAN_TYPED_TEST_CASE_TYPES_NAME_(testCaseName, types) \
                                >::make(SEQAN_MKSTRING(testCaseName), SEQAN_MKSTRING(testName)); \
                                                                         \
