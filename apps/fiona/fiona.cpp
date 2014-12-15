@@ -4020,7 +4020,7 @@ if (LOOP_LEVEL != 0)
                             //bool debugConsensus = false;
                             for (; itE < itEEnd; ++itE, ++itCons)
                             {
-                                unsigned maxBase = _getMaxIndex(*itCons);
+                                unsigned maxBase = getMaxIndex(*itCons);
                                 if (maxBase == 4) continue;     // skip if N is the consensus base
                                 unsigned frequency = (*itCons).count[maxBase];
                                 if (frequency < 2) break;       // at least 2 suffixes need to vote for that base
@@ -4029,14 +4029,14 @@ if (LOOP_LEVEL != 0)
                                     // TODO:
                                     // (weese:) I'm not sure if we better scale the overlap-sum relative to the coverage at the anchor (front(consensus))
                                     //          or relative to the coverage at the current base (*itCons)
-                                    unsigned totalCounts = _totalCount(*itCons);
+                                    unsigned totalCounts = totalCount(*itCons);
                                     if(totalCounts == 0)
                                          continue;
-                                  //_totalCount(*itCons /*front(consensus)*/));
+                                  //totalCount(*itCons /*front(consensus)*/));
                                     unsigned consOverlapSum = (unsigned)((frequency * overlapSum) / totalCounts);
 				   if(consOverlapSum >1) //penalize consensus correction by one to always to major correction first
 					--consOverlapSum; 
-                                    //unsigned testOverlapSum = (unsigned)((frequency * overlapSum) / _totalCount(front(itCons)));
+                                    //unsigned testOverlapSum = (unsigned)((frequency * overlapSum) / totalCount(front(itCons)));
                                   /*  SEQAN_OMP_PRAGMA(critical(TestConsensusOverlapsum))
                                     {
                                            std::cout << "overCorrect: " << errorReadId<< " "<< maxBase << " " <<itE-itEBegin<< " " << overlapSum << " " << consOverlapSum << " "   << frequency <<" overcutoff: " << options.overlapSumCutoffs[itE-itEBegin+1]<< " " << cycle << std::endl;
@@ -4064,7 +4064,7 @@ if (LOOP_LEVEL != 0)
                                 for(int xx=0; xx<positionError+1+indel; ++xx) std::cout << ' ';
                                 for(unsigned xa=0; xa<length(bestCorrection[i].consensus); ++xa)
                                 {
-                                    unsigned maxBase = _getMaxIndex(bestCorrection[i].consensus[xa]);
+                                    unsigned maxBase = getMaxIndex(bestCorrection[i].consensus[xa]);
                                     if (bestCorrection[i].consensus[xa].count[maxBase] == 0) break;
                                     std::cout << (bestCorrection[i].consensus[xa].count[maxBase] / divider) % 10;
                                 }
@@ -4076,7 +4076,7 @@ if (LOOP_LEVEL != 0)
                             std::cout << prefix(store.readSeqStore[errorReadId], positionError) << ' ';
                             for(unsigned xa=0; xa<length(bestCorrection[i].consensus); ++xa)
                             {
-                                unsigned maxBase = _getMaxIndex(bestCorrection[i].consensus[xa]);
+                                unsigned maxBase = getMaxIndex(bestCorrection[i].consensus[xa]);
                                 if (bestCorrection[i].consensus[xa].count[maxBase] == 0) break;
                                 std::cout << (Dna5)maxBase;
                             }

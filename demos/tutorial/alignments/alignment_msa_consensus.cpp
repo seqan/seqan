@@ -52,9 +52,9 @@ int main()
     DnaString consensus;
     for (unsigned i = 0; i < length(profile); ++i)
     {
-        int idx = _getMaxIndex(profile[i]);
+        int idx = getMaxIndex(profile[i]);
         if (idx < 4)  // is not gap
-            appendValue(consensus, Dna(_getMaxIndex(profile[i])));
+            appendValue(consensus, Dna(getMaxIndex(profile[i])));
     }
 
     std::cout << "consensus sequence is\n"
