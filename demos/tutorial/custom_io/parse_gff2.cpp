@@ -122,7 +122,7 @@ int main(int argc, char const ** argv)
         return 1;
 
     // Read file.
-    seqan::DirectionIterator<std::ifstream, seqan::Input>::Type reader = directionIterator(stream, Input());
+    DirectionIterator<std::ifstream, Input>::Type reader = directionIterator(stream, Input());
     String<Gff2Record> gffRecords;
     readRecords(gffRecords, reader, Gff2());
 

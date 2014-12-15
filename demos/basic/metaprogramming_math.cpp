@@ -43,15 +43,15 @@ using namespace seqan;
 int main()
 {
 //![log2 call]
-    std::cout << seqan::Log2<10>::VALUE << "\n";  // => "4"
+    std::cout << Log2<10>::VALUE << "\n";  // => "4"
 //![log2 call]
 
 //![log2floor call]
-    std::cout << seqan::Log2Floor<10>::VALUE << "\n";  // => "3""
+    std::cout << Log2Floor<10>::VALUE << "\n";  // => "3""
 //![log2floor call]
 
 //![power call]
-    std::cout << seqan::Power<2, 4>::VALUE << "\n";  // => "16"
+    std::cout << Power<2, 4>::VALUE << "\n";  // => "16"
 //![power call]
 
     return 0;

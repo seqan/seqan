@@ -6,17 +6,17 @@ using namespace seqan;
 int main()
 {
     // Open input bed file.
-    seqan::BedFileIn bedIn;
+    BedFileIn bedIn;
     if (!open(bedIn, "example.bed"))
     {
         std::cerr << "ERROR: Could not open example.bed\n";
         return 1;
     }
     // Open output bed file and link to stdout.
-    seqan::BedFileOut bedOut(std::cout, seqan::Bed());
+    BedFileOut bedOut(std::cout, Bed());
 
     // Read the file record by record.
-    seqan::BedRecord<seqan::Bed3> record;
+    BedRecord<Bed3> record;
 
     try
     {

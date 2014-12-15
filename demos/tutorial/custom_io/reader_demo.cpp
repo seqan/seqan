@@ -14,10 +14,10 @@ int main(int argc, char const ** argv)
     if (!stream.good())
         return 1;
     
-    typedef seqan::DirectionIterator<std::fstream, seqan::Input>::Type TReader;
-    TReader reader = directionIterator(stream, seqan::Input());
+    typedef DirectionIterator<std::fstream, Input>::Type TReader;
+    TReader reader = directionIterator(stream, Input());
 
-    seqan::StringSet<seqan::CharString> result;
+    StringSet<CharString> result;
     
     while (!atEnd(reader))
     {

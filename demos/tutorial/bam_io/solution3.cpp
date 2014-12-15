@@ -5,7 +5,7 @@ using namespace seqan;
 int main()
 {
     // Open input file.
-    seqan::BamFileIn bamFileIn;
+    BamFileIn bamFileIn;
     if (!open(bamFileIn, "example.sam"))
     {
         std::cerr << "ERROR: Could not open example.sam!" << std::endl;
@@ -17,22 +17,22 @@ int main()
     try
     {
         // Read header.
-        seqan::BamHeader header;
+        BamHeader header;
         readRecord(header, bamFileIn);
 
         // Rear records.
-        seqan::BamAlignmentRecord record;
+        BamAlignmentRecord record;
         while (!atEnd(bamFileIn))
         {
             readRecord(record, bamFileIn);
-            seqan::BamTagsDict tagsDict(record.tags);
+            BamTagsDict tagsDict(record.tags);
 
             unsigned tagIdx = 0;
             if (findTagKey(tagIdx, tagsDict, "XX"))
                 numXXtags += 1;
         }
     }
-    catch (seqan::Exception const & e)
+    catch (Exception const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;

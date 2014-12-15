@@ -5,7 +5,7 @@ using namespace seqan;
 int main()
 {
     // Open input file.
-    seqan::BamFileIn bamFileIn;
+    BamFileIn bamFileIn;
     if (!open(bamFileIn, "example.sam"))
     {
         std::cerr << "ERROR: Could not open example.sam!" << std::endl;
@@ -17,11 +17,11 @@ int main()
     try
     {
         // Read header.
-        seqan::BamHeader header;
+        BamHeader header;
         readRecord(header, bamFileIn);
 
         // Read records.
-        seqan::BamAlignmentRecord record;
+        BamAlignmentRecord record;
         while (!atEnd(bamFileIn))
         {
             readRecord(record, bamFileIn);
@@ -29,7 +29,7 @@ int main()
                 numUnmappedReads += 1;
         }
     }
-    catch (seqan::Exception const & e)
+    catch (Exception const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;

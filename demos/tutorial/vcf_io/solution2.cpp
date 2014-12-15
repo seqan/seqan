@@ -8,18 +8,18 @@ int main()
     try
     {
         // Open input stream.
-        seqan::VcfFileIn vcfIn("example.vcf");
+        VcfFileIn vcfIn("example.vcf");
 
         // Copy over header.
-        seqan::VcfHeader header;
+        VcfHeader header;
         readRecord(header, vcfIn);
 
         // Get array of counters.
-        seqan::String<unsigned> counters;
+        String<unsigned> counters;
         resize(counters, length(contigNames(context(vcfIn))), 0);
 
         // Read the file record by record.
-        seqan::VcfRecord record;
+        VcfRecord record;
         while (!atEnd(vcfIn))
         {
             readRecord(record, vcfIn);
@@ -34,12 +34,12 @@ int main()
             std::cout << contigNames(context(vcfIn))[i] << '\t'
                       << counters[i] << '\n';
     }
-    catch (seqan::IOError &e)
+    catch (IOError &e)
     {
         std::cerr << "=== I/O Error ===\n" << e.what() << std::endl;
         return 1;
     }
-    catch (seqan::ParseError &e)
+    catch (ParseError &e)
     {
         std::cerr << "=== Parse Error ===\n" << e.what() << std::endl;
         return 1;

@@ -7,10 +7,10 @@ using namespace seqan;
 
 int main()
 {
-    seqan::BedFileOut out(std::cout, seqan::Bed());
+    BedFileOut out(std::cout, Bed());
 
     // Write out the records.
-    seqan::BedRecord<seqan::Bed6> record;
+    BedRecord<Bed6> record;
 
     record.ref = "chr7";
     record.beginPos = 127471195;

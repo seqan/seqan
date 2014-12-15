@@ -46,9 +46,9 @@ int main()
 {
     // Examples for constructing strings.
 //![initializing strings]
-    seqan::String<char> strA;        // default construction
-    seqan::String<char> strB(strA);  // copy construction 
-    seqan::String<char> strC("copy from other sequence");
+    String<char> strA;        // default construction
+    String<char> strB(strA);  // copy construction 
+    String<char> strC("copy from other sequence");
 //![initializing strings]
 
     // Common string operations.

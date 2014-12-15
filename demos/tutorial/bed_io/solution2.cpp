@@ -7,7 +7,7 @@ using namespace seqan;
 int main()
 {
     // Open input bed file.
-    seqan::BedFileIn bedIn;
+    BedFileIn bedIn;
     if (!open(bedIn, "example.bed"))
     {
         std::cerr << "ERROR: Could not open example.bed\n";
@@ -15,12 +15,12 @@ int main()
     }
 
     // Array of counters and sequence names.
-    seqan::String<unsigned> counters;
-    seqan::StringSet<seqan::CharString> seqNames;
-    seqan::NameStoreCache<seqan::StringSet<seqan::CharString> > cache(seqNames);
+    String<unsigned> counters;
+    StringSet<CharString> seqNames;
+    NameStoreCache<StringSet<CharString> > cache(seqNames);
 
     // Read the file record by record.
-    seqan::BedRecord<seqan::Bed3> record;
+    BedRecord<Bed3> record;
 
     try
     {

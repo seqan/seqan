@@ -43,20 +43,20 @@ using namespace seqan;
 // Demonstration of using True and False as base classes.
 //![inheriting from true false]
 template <typename T>
-struct IsInt32 : seqan::False {};
+struct IsInt32 : False {};
 
 template <>
-struct IsInt32<int> : seqan::True {};
+struct IsInt32<int> : True {};
 //![inheriting from true false]
 
 // Helper functions for print tags True/False.
 //![true false print helpers]
-void printBoolType(seqan::True const & /*tag*/)
+void printBoolType(True const & /*tag*/)
 {
     std::cout << "true" << std::endl;
 }
 
-void printBoolType(seqan::False const & /*tag*/)
+void printBoolType(False const & /*tag*/)
 {
     std::cout << "false" << std::endl;
 }
@@ -66,9 +66,9 @@ int main()
 {
     // Example for using the tags True and False.
 //![tags true false]
-    std::cout << seqan::False::VALUE << "\n"                                         // => "0"
-              << seqan::True::VALUE << "\n"                                          // => "1"
-              << seqan::IsSameType<seqan::False, seqan::False::Type>::VALUE << "\n"; // => "1"
+    std::cout << False::VALUE << "\n"                                         // => "0"
+              << True::VALUE << "\n"                                          // => "1"
+              << IsSameType<False, False::Type>::VALUE << "\n"; // => "1"
 //![tags true false]
 
     // And an example for using IsInt32.
@@ -79,69 +79,69 @@ int main()
 
     // Demonstration of using Eval.
 //![print bool type eval]
-    printBoolType(seqan::Eval<true>::Type());  // => "true"
-    printBoolType(seqan::Eval<false>::Type()); // => "false"
+    printBoolType(Eval<true>::Type());  // => "true"
+    printBoolType(Eval<false>::Type()); // => "false"
 //![print bool type eval]
 
     // Demonstration of using Not.
 //![print bool type not]
-    printBoolType(seqan::Not<seqan::False>::Type());  // => "true"
-    printBoolType(seqan::Not<seqan::True>::Type());   // => "false"
+    printBoolType(Not<False>::Type());  // => "true"
+    printBoolType(Not<True>::Type());   // => "false"
 //![print bool type not]
 
     // Demonstration of using NotC.
 //![print bool type notc]
-    printBoolType(seqan::NotC<false>::Type());  // => "true"
-    printBoolType(seqan::NotC<true>::Type());   // => "false"
+    printBoolType(NotC<false>::Type());  // => "true"
+    printBoolType(NotC<true>::Type());   // => "false"
 //![print bool type notc]
 
     // Demonstration of using Or.
 //![print bool type or]
-    printBoolType(seqan::Or<seqan::False, seqan::False>::Type());  // => "false"
-    printBoolType(seqan::Or<seqan::False, seqan::True >::Type());  // => "true"
-    printBoolType(seqan::Or<seqan::True,  seqan::False>::Type());  // => "true"
-    printBoolType(seqan::Or<seqan::True,  seqan::True >::Type());  // => "true"
+    printBoolType(Or<False, False>::Type());  // => "false"
+    printBoolType(Or<False, True >::Type());  // => "true"
+    printBoolType(Or<True,  False>::Type());  // => "true"
+    printBoolType(Or<True,  True >::Type());  // => "true"
 //![print bool type or]
 
     // Demonstration of using OrC.
 //![print bool type orc]
-    printBoolType(seqan::OrC<false, false>::Type());  // => "false"
-    printBoolType(seqan::OrC<false, true >::Type());  // => "true"
-    printBoolType(seqan::OrC<true,  false>::Type());  // => "true"
-    printBoolType(seqan::OrC<true,  true >::Type());  // => "true"
+    printBoolType(OrC<false, false>::Type());  // => "false"
+    printBoolType(OrC<false, true >::Type());  // => "true"
+    printBoolType(OrC<true,  false>::Type());  // => "true"
+    printBoolType(OrC<true,  true >::Type());  // => "true"
 //![print bool type orc]
 
     // Demonstration of using And.
 //![print bool type and]
-    printBoolType(seqan::And<seqan::False, seqan::False>::Type());  // => "false"
-    printBoolType(seqan::And<seqan::False, seqan::True >::Type());  // => "true"
-    printBoolType(seqan::And<seqan::True,  seqan::False>::Type());  // => "true"
-    printBoolType(seqan::And<seqan::True,  seqan::True >::Type());  // => "true"
+    printBoolType(And<False, False>::Type());  // => "false"
+    printBoolType(And<False, True >::Type());  // => "true"
+    printBoolType(And<True,  False>::Type());  // => "true"
+    printBoolType(And<True,  True >::Type());  // => "true"
 //![print bool type and]
 
     // Demonstration of using AndC.
 //![print bool type andc]
-    printBoolType(seqan::AndC<false, false>::Type());  // => "false"
-    printBoolType(seqan::AndC<false, true >::Type());  // => "true"
-    printBoolType(seqan::AndC<true,  false>::Type());  // => "true"
-    printBoolType(seqan::AndC<true,  true >::Type());  // => "true"
+    printBoolType(AndC<false, false>::Type());  // => "false"
+    printBoolType(AndC<false, true >::Type());  // => "true"
+    printBoolType(AndC<true,  false>::Type());  // => "true"
+    printBoolType(AndC<true,  true >::Type());  // => "true"
 //![print bool type andc]
 
     // Demonstration of using If.
 //![print bool type if]
-    printBoolType(seqan::If<seqan::True, seqan::True,  seqan::False>::Type());  // => "true"
-    printBoolType(seqan::If<seqan::True, seqan::False, seqan::True >::Type());  // => "false"
+    printBoolType(If<True, True,  False>::Type());  // => "true"
+    printBoolType(If<True, False, True >::Type());  // => "false"
 //![print bool type if]
 
     // Demonstration of using IfC.
 //![print bool type ifc]
-    printBoolType(seqan::If<seqan::True, seqan::True,  seqan::False>::Type());  // => "true"
-    printBoolType(seqan::If<seqan::True, seqan::False, seqan::True >::Type());  // => "false"
+    printBoolType(If<True, True,  False>::Type());  // => "true"
+    printBoolType(If<True, False, True >::Type());  // => "false"
 //![print bool type ifc]
 
     // Demonstration of the shortcut-to-::Type feature.
 //![shortcut to type feature]
-    typedef seqan::And<seqan::Or<seqan::True, seqan::False>, seqan::True> TResult;
+    typedef And<Or<True, False>, True> TResult;
     printBoolType(TResult());  // => "true"
 //![shortcut to type feature]
 

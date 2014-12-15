@@ -15,7 +15,7 @@ int main(int argc, char const * argv[])
     }
 
     // Open BamFileIn for reading.
-    seqan::BamFileIn inFile;
+    BamFileIn inFile;
     if (!open(inFile, argv[1]))
     {
         std::cerr << "ERROR: Could not open " << argv[1] << " for reading.\n";
@@ -23,7 +23,7 @@ int main(int argc, char const * argv[])
     }
 
     // Open BamFileOut for writing. Give inFile to share its BamIoContext
-    seqan::BamFileOut outFile(inFile);
+    BamFileOut outFile(inFile);
     if (!open(outFile, argv[2]))
     {
         std::cerr << "ERROR: Could not open " << argv[2] << " for writing.\n";
@@ -31,12 +31,12 @@ int main(int argc, char const * argv[])
     }
 
     // Read header.
-    seqan::BamHeader header;
+    BamHeader header;
     readRecord(header, inFile);
     writeRecord(outFile, header);
 
     // Copy over the alignment records.
-    seqan::BamAlignmentRecord record;
+    BamAlignmentRecord record;
     while (!atEnd(inFile))
     {
         readRecord(record, inFile);

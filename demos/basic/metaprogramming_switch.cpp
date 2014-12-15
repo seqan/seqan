@@ -40,22 +40,22 @@
 using namespace seqan;
 
 //![switch demo]
-int switchTest(seqan::Nothing const &)
+int switchTest(Nothing const &)
 {
     return -1;
 }
 
-int switchTest(seqan::False const &)
+int switchTest(False const &)
 {
     return 0;
 }
 
-int switchTest(seqan::True const &)
+int switchTest(True const &)
 {
     return 1;
 }
 
-int switchTest(seqan::NilCase const &)
+int switchTest(NilCase const &)
 {
     return 2;
 }
@@ -63,11 +63,11 @@ int switchTest(seqan::NilCase const &)
 template <int X>
 struct SwitchTest
 {
-    typedef typename seqan::Switch<
+    typedef typename Switch<
         X,
-        seqan::Case<-1, seqan::Nothing,
-        seqan::Case<0, seqan::False,
-        seqan::Case<1, seqan::True
+        Case<-1, Nothing,
+        Case<0, False,
+        Case<1, True
         > > > >::Type Type;
 };
 

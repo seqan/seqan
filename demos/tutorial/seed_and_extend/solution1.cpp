@@ -7,10 +7,10 @@ using namespace seqan;
 int main()
 {
     // Default-construct seed.
-    seqan::Seed<seqan::Simple> seed1;
+    Seed<Simple> seed1;
 
     // Construct seed with begin and end position in both sequences.
-    seqan::Seed<seqan::Simple> seed2(3, 10, 7, 14);
+    Seed<Simple> seed2(3, 10, 7, 14);
     setUpperDiagonal(seed2, -7);
     setLowerDiagonal(seed2, -9);
 
