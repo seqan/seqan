@@ -63,7 +63,6 @@
 
 // extras modules
 #include <seqan/alignment_free.h>
-#include <seqan/find_motif.h>
 #include <seqan/gff_io.h>
 #include <seqan/journaled_set.h>
 #include <seqan/math.h>
