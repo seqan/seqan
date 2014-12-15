@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_extras_tests_journaled_set)
+project (seqan_tests_journaled_set)
 message (STATUS "Configuring tests/journaled_set")
 
 # ----------------------------------------------------------------------------

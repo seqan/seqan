@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_extras_tests_multiple_translation_units)
+project (seqan_tests_multiple_translation_units)
 message (STATUS "Configuring tests/multiple_translation_units")
 
 # ----------------------------------------------------------------------------

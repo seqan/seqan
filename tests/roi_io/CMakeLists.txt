@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_extras_tests_roi_io)
+project (seqan_tests_roi_io)
 message (STATUS "Configuring tests/roi_io")
 
 # ----------------------------------------------------------------------------
