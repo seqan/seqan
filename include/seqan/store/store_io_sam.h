@@ -351,9 +351,9 @@ readRecords(FragmentStore<TFSSpec, TConfig> & store,
     BamIOContext<TContigNameStore, TContigNameStoreCache, Dependent<> > ctx;
 
     // Make sure that the BAM I/O context refers to the name cache of the FragmentStore
-    setNameStore(ctx, store.contigNameStore);
-    setNameStoreCache(ctx, store.contigNameStoreCache);
-    setSequenceLengths(ctx, contigLengths(context(bamFile)));
+    setContigNames(ctx, store.contigNameStore);
+    setContigNamesCache(ctx, store.contigNameStoreCache);
+    setContigLengths(ctx, contigLengths(context(bamFile)));
     std::swap(ctx.buffer, context(bamFile).buffer);
     std::swap(ctx.translateFile2GlobalRefId, context(bamFile).translateFile2GlobalRefId);
 
@@ -748,8 +748,8 @@ fillHeader(BamHeader & header,
            TBamIOFunctor & functor)
 {
     // Make sure that the BAM I/O context refers to the name cache of the FragmentStore
-    setNameStore(context(bamFile), store.contigNameStore);
-    setNameStoreCache(context(bamFile), store.contigNameStoreCache);
+    setContigNames(context(bamFile), store.contigNameStore);
+    setContigNamesCache(context(bamFile), store.contigNameStoreCache);
 
     // Fill header with information from fragment store.
     _fillHeader(header, store, functor);
