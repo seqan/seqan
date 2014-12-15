@@ -146,7 +146,7 @@ public:
 
     operator char()
     {
-        typename Size<ProfileChar>::Type maxIndex = _getMaxIndex(*this);
+        typename Size<ProfileChar>::Type maxIndex = getMaxIndex(*this);
         return (maxIndex == ValueSize<ProfileChar>::VALUE - 1) ? gapValue<char>() : (char) TValue(maxIndex);
     }
 };
@@ -347,7 +347,7 @@ inline void
 assign(SimpleType<TTargetValue, TTargetSpec> & target,
        ProfileChar<TSourceValue, TSourceCount, TSourceSpec> const & source)
 {
-    target.value = _getMaxIndex(source);
+    target.value = getMaxIndex(source);
 }
 
 // ----------------------------------------------------------------------------
@@ -359,7 +359,7 @@ inline typename Convert<TTarget, ProfileChar<TSourceValue, TSourceCount, TSource
 convertImpl(Convert<TTarget, T> const &,
             ProfileChar<TSourceValue, TSourceCount, TSourceSpec> const & source)
 {
-    return (_getMaxIndex(source) == ValueSize<TSourceValue>::VALUE) ? convertImpl(Convert<TTarget, T>(), '-') : convertImpl(Convert<TTarget, T>(), TSourceValue(_getMaxIndex(source)));
+    return (getMaxIndex(source) == ValueSize<TSourceValue>::VALUE) ? convertImpl(Convert<TTarget, T>(), '-') : convertImpl(Convert<TTarget, T>(), TSourceValue(getMaxIndex(source)));
 }
 
 // ----------------------------------------------------------------------------
