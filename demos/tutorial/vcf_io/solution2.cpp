@@ -1,6 +1,8 @@
 #include <seqan/basic.h>
 #include <seqan/vcf_io.h>
 
+using namespace seqan;
+
 int main()
 {
     try

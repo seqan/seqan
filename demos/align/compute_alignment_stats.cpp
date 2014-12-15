@@ -3,6 +3,8 @@
 #include <seqan/align.h>
 #include <seqan/sequence.h>
 
+using namespace seqan;
+
 int main()
 {
     // Create an alignment between subject and query.

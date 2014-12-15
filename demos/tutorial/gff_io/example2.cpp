@@ -1,6 +1,8 @@
 #include <seqan/basic.h>
 #include <seqan/gff_io.h>
 
+using namespace seqan;
+
 int main()
 {
     // Open input stream.

@@ -39,6 +39,8 @@
 
 #include <seqan/basic.h>
 
+using namespace seqan;
+
 #if !defined(_MSC_VER)  // Currently, there are some issues with MSVC and concepts.
 class EnableIfExample
 {

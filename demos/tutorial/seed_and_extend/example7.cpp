@@ -4,6 +4,8 @@
 #include <seqan/seeds.h>
 #include <seqan/sequence.h>
 
+using namespace seqan;
+
 int main()
 {
     // FRAGMENT(example)

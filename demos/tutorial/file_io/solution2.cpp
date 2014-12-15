@@ -3,6 +3,8 @@
 
 #include <seqan/stream.h>
 
+using namespace seqan;
+
 // Copy from stream in to the stream out.
 
 template <typename TOutStream, typename TInStream>

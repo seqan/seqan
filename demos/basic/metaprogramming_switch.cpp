@@ -37,6 +37,8 @@
 #include <iostream>
 #include <seqan/basic.h>
 
+using namespace seqan;
+
 //![switch demo]
 int switchTest(seqan::Nothing const &)
 {

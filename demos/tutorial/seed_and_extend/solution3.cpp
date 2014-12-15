@@ -3,6 +3,8 @@
 #include <seqan/score.h>
 #include <seqan/seeds.h>
 
+using namespace seqan;
+
 int main()
 {
     // The horizontal and vertical sequence (database and query).

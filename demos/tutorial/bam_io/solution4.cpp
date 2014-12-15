@@ -2,6 +2,8 @@
 #include <seqan/sequence.h>
 #include <seqan/bam_io.h>
 
+using namespace seqan;
+
 int main()
 {
     seqan::Dna5String ref = "CCCGATGAGCACACGATCACACGATGACA";

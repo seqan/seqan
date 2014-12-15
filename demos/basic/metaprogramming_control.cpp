@@ -39,6 +39,8 @@
 
 #include <seqan/basic.h>
 
+using namespace seqan;
+
 // Demo worker for seqan::Loop<>.
 //![print worker]
 struct PrintWorker

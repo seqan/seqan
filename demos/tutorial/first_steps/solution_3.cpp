@@ -4,6 +4,8 @@
 #include <seqan/file.h>
 #include <seqan/sequence.h>
 
+using namespace seqan;
+
 int computeLocalScore(seqan::String<char> const & subText, seqan::String<char> const & pattern)
 {
     int localScore = 0;

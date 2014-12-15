@@ -3,6 +3,8 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
+using namespace seqan;
+
 // The following few lines are the actual solution to the assignment.
 
 typedef seqan::OrFunctor<seqan::IsInRange<'0', '9'>,

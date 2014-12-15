@@ -3,6 +3,8 @@
 #include <seqan/seq_io.h>
 #include <seqan/stream.h>
 
+using namespace seqan;
+
 int main(int argc, char const ** argv)
 {
     if (argc != 5)

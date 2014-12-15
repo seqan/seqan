@@ -3,6 +3,8 @@
 
 #include <sstream>
 
+using namespace seqan;
+
 int main()
 {
     seqan::BedFileOut out(std::cout, seqan::Bed());
