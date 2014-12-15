@@ -231,8 +231,6 @@ int performConversion(BamFileIn & in, BamFileOut & out, TOptions const & options
 
 int main(int argc, char const * argv[])
 {
-    using namespace seqan;
-
     // -----------------------------------------------------------------------
     // Handle Command Line
     // -----------------------------------------------------------------------

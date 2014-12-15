@@ -4,10 +4,10 @@
 #include <seqan/index.h>
 #include <seqan/seq_io.h>
 
+using namespace seqan;
+
 int main()
 {
-    using namespace seqan;
-
     // Get path to file to search for repeats in.
     std::string path = (std::string)SEQAN_PATH_TO_ROOT() + "/demos/index/ref.fa";
 

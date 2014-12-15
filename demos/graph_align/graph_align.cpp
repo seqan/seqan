@@ -5,10 +5,10 @@
 #include <seqan/align.h>
 #include <seqan/graph_align.h>
 
+using namespace seqan;
+
 int main()
 {
-    using namespace seqan;
-
     typedef StringSet<DnaString, Dependent<> > TStringSet;
     typedef Graph<Alignment<TStringSet, void> > TAlignmentGraph;
 

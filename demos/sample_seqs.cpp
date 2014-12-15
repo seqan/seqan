@@ -43,12 +43,12 @@
 #include <seqan/stream.h>
 #include <seqan/seq_io.h>
 
+using namespace seqan;
+
 const unsigned SEED = 42;
 
 int main(int argc, char const ** argv)
 {
-    using namespace seqan;
-
     // Check command line count.
     if (argc != 3)
     {

@@ -5,6 +5,8 @@
 #include <seqan/sequence.h>
 #include <seqan/pipe.h>
 
+using namespace seqan;
+
 // Custom 3-way comparator functor.  Return a value </==/> 0 (less than, equal
 // to, greater than).
 struct MyIntLessCmp : std::binary_function<int, int, int>
@@ -17,8 +19,6 @@ struct MyIntLessCmp : std::binary_function<int, int, int>
 
 int main()
 {
-    using namespace seqan;
-
     typedef MyIntLessCmp                     TLess;
     typedef SorterSpec<SorterConfig<TLess> > TSorterSpec;
     typedef Pool<int, TSorterSpec>           TSorterPool;

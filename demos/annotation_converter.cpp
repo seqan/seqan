@@ -4,7 +4,6 @@
 #include <seqan/store.h>
 #include <seqan/arg_parse.h>
 
-using namespace std;
 using namespace seqan;
 
 int main(int argc, const char *argv[])

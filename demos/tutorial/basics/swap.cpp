@@ -3,9 +3,7 @@
 #include <seqan/basic.h>
 #include <seqan/stream.h>
 
-
 using namespace seqan;
-using namespace std;
 
 // FRAGMENT(swap-declaration)
 template <typename T> void swap(T& container, int i, int j, int k)
@@ -46,13 +44,12 @@ int main()
 	
 // FRAGMENT(swap-apply)
 	swap(dna,1,4,2);
-	cout << dna << endl;
+    std::cout << dna << "\n";
 	
     swap(numbers,1,7,2);
-	for (TIntIterator it=begin(numbers); !atEnd(it); goNext(it)) {
+	for (TIntIterator it=begin(numbers); !atEnd(it); goNext(it))
 		std::cout << *it;
-	}
-	cout << endl;
+	std::cout << "\n";
 	
 	return 0;
 }

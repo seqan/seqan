@@ -2,10 +2,7 @@
 #include <seqan/stream.h>
 #include <seqan/modifier.h>
 
-
-using namespace std;
 using namespace seqan;
-
 
 int main()
 {
@@ -17,7 +14,6 @@ int main()
     std::cout << seq1 << std::endl;
     std::cout << seq2 << std::endl;
     std::cout << std::endl;
-    
 
     return 0;
 }
