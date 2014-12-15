@@ -861,7 +861,7 @@ compareAlignedReadsToReference(RabemaStats & result,
     // Mapping between ref IDs from SAM/BAM file and reference sequence (from SAM/BAM file to reference sequences).
     RefIdMapping refIdMapping;
     rebuildMapping(refIdMapping, faiIndex.seqNameStore, faiIndex.seqNameStoreCache,
-                   nameStore(context(bamFileIn)));
+                   contigNames(context(bamFileIn)));
 
     // Read in initial SAM/GSI records.
     BamAlignmentRecord samRecord;
@@ -959,9 +959,9 @@ compareAlignedReadsToReference(RabemaStats & result,
                 return 1;
             }
             // Rebuild ref ID mapping if we discovered a new reference sequence.
-            if (length(nameStore(context(bamFileIn))) != length(refIdMapping))
+            if (length(contigNames(context(bamFileIn))) != length(refIdMapping))
                 rebuildMapping(refIdMapping, faiIndex.seqNameStore, faiIndex.seqNameStoreCache,
-                               nameStore(context(bamFileIn)));
+                               contigNames(context(bamFileIn)));
         }
 
         // Read in the next block of GSI records.

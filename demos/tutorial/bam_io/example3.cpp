@@ -14,12 +14,12 @@ int main()
 
     // Build mapping from bamSeqIds to fastaSeqIds;
     seqan::String<int> mapping;
-    resize(mapping, length(nameStore(context(bamFileIn))), -1);
-    for (unsigned i = 0; i < length(nameStore(context(bamFileIn))); ++i)
-        if (!getIdByName(mapping[i], faiIndex, nameStore(context(bamFileIn))[i]))
+    resize(mapping, length(contigNames(context(bamFileIn))), -1);
+    for (unsigned i = 0; i < length(contigNames(context(bamFileIn))); ++i)
+        if (!getIdByName(mapping[i], faiIndex, contigNames(context(bamFileIn))[i]))
         {
             std::cerr << "ERROR: Sequence "
-                      << nameStore(context(bamFileIn))[i]
+                      << contigNames(context(bamFileIn))[i]
                       << "unknown in FASTA Index.\n";
             return 1; 
         }

@@ -73,8 +73,8 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_read_header)
     // Check Results.
     // -----------------------------------------------------------------------
 
-    SEQAN_ASSERT_EQ(length(sequenceLengths(bamIOContext)), 1u);
-    SEQAN_ASSERT_EQ(sequenceLengths(bamIOContext)[0], 10000);
+    SEQAN_ASSERT_EQ(length(contigLengths(bamIOContext)), 1u);
+    SEQAN_ASSERT_EQ(contigLengths(bamIOContext)[0], 10000);
 
     SEQAN_ASSERT_EQ(length(referenceNameStore), 1u);
     SEQAN_ASSERT_EQ(referenceNameStore[0], "REFERENCE");

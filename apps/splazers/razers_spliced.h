@@ -251,7 +251,7 @@ bool loadReadsSam(
 
         // Read reference name.  Same behaviour as for query name:  Read up to
         // the first whitespace character and skip to next tab char.
-        String<char> chrname = nameStore(context(file))[record.rID];
+        String<char> chrname = contigNames(context(file))[record.rID];
         //need gnameToIdMap !!
 
         // Get read begin position.

@@ -353,14 +353,14 @@ readRecords(FragmentStore<TFSSpec, TConfig> & store,
     // Make sure that the BAM I/O context refers to the name cache of the FragmentStore
     setNameStore(ctx, store.contigNameStore);
     setNameStoreCache(ctx, store.contigNameStoreCache);
-    setSequenceLengths(ctx, sequenceLengths(context(bamFile)));
+    setSequenceLengths(ctx, contigLengths(context(bamFile)));
     std::swap(ctx.buffer, context(bamFile).buffer);
     std::swap(ctx.translateFile2GlobalRefId, context(bamFile).translateFile2GlobalRefId);
 
-    refresh(nameStoreCache(ctx));
+    refresh(contigNamesCache(ctx));
     readRecords(store, ctx, directionIterator(bamFile, Input()), format(bamFile), importFlags);
-//for(size_t i=0;i<length(nameStore(ctx));++i)
-//std::cout<<nameStore(ctx)[i]<<std::endl;
+//for(size_t i=0;i<length(contigNames(ctx));++i)
+//std::cout<<contigNames(ctx)[i]<<std::endl;
     std::swap(ctx.buffer, context(bamFile).buffer);
     std::swap(ctx.translateFile2GlobalRefId, context(bamFile).translateFile2GlobalRefId);
 }
@@ -755,9 +755,9 @@ fillHeader(BamHeader & header,
     _fillHeader(header, store, functor);
 
     // Fill sequence lengths.
-    resize(sequenceLengths(context(bamFile)), length(store.contigStore));
+    resize(contigLengths(context(bamFile)), length(store.contigStore));
     for (size_t i = 0; i != length(store.contigStore); ++i)
-        sequenceLengths(context(bamFile))[i] = length(store.contigStore[i].seq);
+        contigLengths(context(bamFile))[i] = length(store.contigStore[i].seq);
 }
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig>

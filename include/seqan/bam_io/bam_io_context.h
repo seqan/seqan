@@ -40,11 +40,7 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
-// Tags, Classes, Enums
+// Classes
 // ============================================================================
 
 /*!
@@ -55,17 +51,19 @@ namespace seqan {
  * @signature template <typename TNameStore[, typename TNameStoreCache]>
  *            class BamIOContext;
  *
- * @tparam TNameStore      The name store class.
- * @tparam TNameStoreCache The name store cache class.  Defaults to @link NameStoreCache @endlink &lt;TNameStore&gtl;.
+ * @tparam TNameStore      The type used to represent the names.
+ * @tparam TNameStoreCache The type used to cache the names. Defaults to @link NameStoreCache @endlink &lt;TNameStore&gtl;.
+ *
+ * BamIOContext objects store the names of (and provide a cache for) reference contig names.
  *
  * @section Examples
  *
  * Creating a @link BamIOContext @endlink for a raw @link StringSet @endlink of @link CharString @endlink.
  *
  * @code{.cpp}
- * StringSet<CharString> nameStore;
- * NameStoreCache<StringSet<CharString> > nameStoreCache(nameStore);
- * BamIOContext<StringSet<CharString> > bamIOContext(nameStore, nameStoreCache);
+ * StringSet<CharString> contigNames;
+ * NameStoreCache<StringSet<CharString> > contigNamesCache(contigNames);
+ * BamIOContext<StringSet<CharString> > bamIOContext(contigNames, contigNamesCache);
  * // ...
  * @endcode
  *
@@ -88,96 +86,77 @@ namespace seqan {
  * @brief Constructor.
  *
  * @signature BamIOContext::BamIOContext();
+ * @signature BamIOContext::BamIOContext(contigNameStore, contigNamesStoreCache);
  *
- * Only the default constructor is provided.
+ * Default constructor or construction with references to sequence and sample names.
  */
 
-/*!
- * @typedef BamIOContext::TNameStore
- *
- * @brief The name store class.
-
- * @signature typedef (...) BamIOContext::TNameStore;
- */
-
-/*!
- * @typedef BamIOContext::TNameStoreCache
- * @brief The name store cache class.
- *
- * @signature typedef (...) BamIOContext::TNameStoreCache;
- */
-
-template <
-    typename TNameStore_ = StringSet<CharString>,
-    typename TNameStoreCache_ = NameStoreCache<TNameStore_>,
-    typename TStorageSpec = void>
+template <typename TNameStore_        = StringSet<CharString>,
+          typename TNameStoreCache_   = NameStoreCache<TNameStore_>,
+          typename TStorageSpec       = void>
 class BamIOContext
 {
 public:
-    typedef TNameStore_ TNameStore;
-    typedef TNameStoreCache_ TNameStoreCache;
-    typedef __int32 TSequenceLength;
-    typedef String<TSequenceLength> TSequenceLengths;
+    typedef TNameStore_             TNameStore;
+    typedef TNameStoreCache_        TNameStoreCache;
+    typedef __int32                 TLength;
+    typedef String<TLength>         TLengthStore;
 
     typedef typename If<IsSameType<TStorageSpec, void>,
-                        Dependent<>, TStorageSpec>::Type TNSStorageSpec;
+                        Dependent<>, TStorageSpec>::Type                    TNSStorageSpec;
     typedef typename If<IsSameType<TStorageSpec, void>,
-                        Owner<>, TStorageSpec>::Type TSLStorageSpec;
+                        Owner<>, TStorageSpec>::Type                        TSLStorageSpec;
 
     typedef typename StorageSwitch<TNameStore, TNSStorageSpec>::Type        TNameStoreMember;
     typedef typename StorageSwitch<TNameStoreCache, TNSStorageSpec>::Type   TNameStoreCacheMember;
-    typedef typename StorageSwitch<TSequenceLengths, TSLStorageSpec>::Type  TSequenceLengthsMember;
+    typedef typename StorageSwitch<TLengthStore, TSLStorageSpec>::Type      TLengthStoreMember;
 
-    TNameStoreMember        _nameStore;
-    TNameStoreCacheMember   _nameStoreCache;
-    TSequenceLengthsMember  _sequenceLengths;
+    TNameStoreMember        _contigNames;
+    TNameStoreCacheMember   _contigNamesCache;
+    TLengthStoreMember      _contigLengths;
     CharString              buffer;
     String<CharString>      buffers;
     String<unsigned>        translateFile2GlobalRefId;
 
     BamIOContext() :
-        _nameStore(TNameStoreMember()),
-        _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+        _contigNames(TNameStoreMember()),
+        _contigNamesCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
                                  (TNameStoreCache*)NULL,
-                                 _nameStore)),
-        _sequenceLengths(TSequenceLengthsMember())
+                                 _contigNames)),
+        _contigLengths(TLengthStoreMember())
     {}
 
-    BamIOContext(TNameStore & nameStore_, TNameStoreCache & nameStoreCache_) :
-        _nameStore(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(nameStore_)),
-        _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
-                                 &nameStoreCache_,
-                                 _nameStore)),
-        _sequenceLengths(TSequenceLengthsMember())
+    BamIOContext(TNameStore & contigNames_, TNameStoreCache & contigNamesCache_) :
+        _contigNames(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(contigNames_)),
+        _contigNamesCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 &contigNamesCache_,
+                                 _contigNames)),
+        _contigLengths(TLengthStoreMember())
     {}
 
     template <typename TOtherStorageSpec>
     BamIOContext(BamIOContext<TNameStore, TNameStoreCache, TOtherStorageSpec> & other) :
-        _nameStore(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(nameStore(other))),
-        _nameStoreCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
-                                 &nameStoreCache(other),
-                                 _nameStore)),
-        _sequenceLengths(_referenceCast<typename Parameter_<TSequenceLengthsMember>::Type>(sequenceLengths(other)))
+        _contigNames(_referenceCast<typename Parameter_<TNameStoreMember>::Type>(contigNames(other))),
+        _contigNamesCache(ifSwitch(typename IsPointer<TNameStoreCacheMember>::Type(),
+                                 &contigNamesCache(other),
+                                 _contigNames)),
+        _contigLengths(_referenceCast<typename Parameter_<TLengthStoreMember>::Type>(contigLengths(other)))
     {}
 };
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
 
 // ============================================================================
 // Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function nameStore()
+// Function contigNames()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BamIOContext#nameStoreCache
- * @brief Return reference to name store cache from @link BamIOContext @endlink.
+ * @fn BamIOContext#contigNames
+ * @brief Return reference to contig names from @link BamIOContext @endlink.
  *
- * @signature TNameStoreRef nameStoreCache(context);
+ * @signature TNameStoreRef contigNames(context);
  *
  * @param[in] context The @link BamIOContext @endlink to query.
  *
@@ -186,62 +165,61 @@ public:
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStore &
-nameStore(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
+contigNames(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
 {
-    return _referenceCast<TNameStore &>(context._nameStore);
+    return _referenceCast<TNameStore &>(context._contigNames);
 }
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStore const &
-nameStore(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
+contigNames(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
-    return _referenceCast<TNameStore const &>(context._nameStore);
+    return _referenceCast<TNameStore const &>(context._contigNames);
 }
 
 template <typename TNameStore, typename TNameStoreCache>
 inline void
-setNameStore(BamIOContext<TNameStore, TNameStoreCache, Dependent<> > & context, TNameStore & nameStore)
+setContigNames(BamIOContext<TNameStore, TNameStoreCache, Dependent<> > & context, TNameStore & contigNames)
 {
-    context._nameStore = &nameStore;
+    context._contigNames = &contigNames;
 }
 
 // ----------------------------------------------------------------------------
-// Function sequenceLengths()
+// Function contigLengths()
 // ----------------------------------------------------------------------------
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-inline typename BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>::TSequenceLengths &
-sequenceLengths(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
+inline typename BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>::TLengthStore &
+contigLengths(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
 {
-    typedef typename BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>::TSequenceLengths TSequenceLengths;
-    return _referenceCast<TSequenceLengths &>(context._sequenceLengths);
+    typedef typename BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>::TLengthStore TLengthStore;
+    return _referenceCast<TLengthStore &>(context._contigLengths);
 }
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-inline typename BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>::TSequenceLengths const &
-sequenceLengths(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
+inline typename BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>::TLengthStore const &
+contigLengths(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
-    typedef typename BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>::TSequenceLengths TSequenceLengths;
-    return _referenceCast<TSequenceLengths const &>(context._sequenceLengths);
+    typedef typename BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>::TLengthStore TLengthStore;
+    return _referenceCast<TLengthStore const &>(context._contigLengths);
 }
 
-template <typename TNameStore, typename TNameStoreCache, typename TSequenceLengths>
+template <typename TNameStore, typename TNameStoreCache, typename TLengthStore>
 inline void
-setSequenceLengths(BamIOContext<TNameStore, TNameStoreCache, Dependent<> > & context, TSequenceLengths & sequenceLengths)
+setContigLengths(BamIOContext<TNameStore, TNameStoreCache, Dependent<> > & context, TLengthStore & contigLengths)
 {
-    context._sequenceLengths = &sequenceLengths;
+    context._contigLengths = &contigLengths;
 }
 
 // ----------------------------------------------------------------------------
-// Function nameStoreCache()
+// Function contigNamesCache()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BamIOContext#nameStore
- * @headerfile <seqan/bam_io.h>
- * @brief Return reference to name store from @link BamIOContext @endlink.
+ * @fn BamIOContext#contigNamesCache
+ * @brief Return reference to contig names cache from @link BamIOContext @endlink.
  *
- * @signature TNameStoreCacheRef nameStore(context);
+ * @signature TNameStoreCacheRef contigNamesCache(context);
  *
  * @param[in] context The @link BamIOContext @endlink to query.
  *
@@ -250,23 +228,23 @@ setSequenceLengths(BamIOContext<TNameStore, TNameStoreCache, Dependent<> > & con
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStoreCache &
-nameStoreCache(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
+contigNamesCache(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
 {
-    return _referenceCast<TNameStoreCache &>(context._nameStoreCache);
+    return _referenceCast<TNameStoreCache &>(context._contigNamesCache);
 }
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStoreCache const &
-nameStoreCache(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
+contigNamesCache(BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> const & context)
 {
-    return _referenceCast<TNameStoreCache const &>(context._nameStoreCache);
+    return _referenceCast<TNameStoreCache const &>(context._contigNamesCache);
 }
 
 template <typename TNameStore, typename TNameStoreCache>
 inline void
-setNameStoreCache(BamIOContext<TNameStore, TNameStoreCache, Dependent<> > & context, TNameStoreCache & nameStoreCache)
+setContigNamesCache(BamIOContext<TNameStore, TNameStoreCache, Dependent<> > & context, TNameStoreCache & contigNamesCache)
 {
-    context._nameStoreCache = &nameStoreCache;
+    context._contigNamesCache = &contigNamesCache;
 }
 
 }  // namespace seqan

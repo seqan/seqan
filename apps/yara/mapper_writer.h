@@ -515,7 +515,7 @@ inline void _fillXa(MatchesWriter<TSpec, Traits> & me, TMatches const & matches)
 {
     forEach(matches, [&](typename Value<TMatches const>::Type const & match)
     {
-        append(me.xa, nameStore(context(me.outputFile))[getMember(match, ContigId())]);
+        append(me.xa, contigNames(context(me.outputFile))[getMember(match, ContigId())]);
         appendValue(me.xa, ',');
         appendNumber(me.xa, getMember(match, ContigBegin()) + 1);
         appendValue(me.xa, ',');
