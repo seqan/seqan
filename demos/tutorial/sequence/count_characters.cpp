@@ -1,4 +1,4 @@
-//FRAGMENT(includes)
+//![includes]
 #include <iostream>
 #include <seqan/sequence.h>
 
@@ -6,17 +6,20 @@ using namespace seqan;
 
 void countOneMers(CharString const & str)
 {
-    //FRAGMENT(count-one-mers-initialize-table)
+//![includes]
+//![count-one-mers-initialize-table]
     String<int> table;
     resize(table, 'z' - 'a' + 1, 0);
+//![count-one-mers-initialize-table]
 
-    //FRAGMENT(count-one-mers-count-chars)
+//![count-one-mers-count-chars]
     for (unsigned int i = 0; i < length(str); ++i)
     {
         table[str[i] - 'a'] += 1;
     }
+//![count-one-mers-count-chars]
 
-    //FRAGMENT(count-one-mers-print-chars)
+//![count-one-mers-print-chars]
     for (unsigned int i = 0; i < 'z' - 'a' + 1; ++i)
     {
         if (table[i] == 0)
@@ -24,8 +27,9 @@ void countOneMers(CharString const & str)
         std::cout << static_cast<char>('a' + i) << " " << table[i] << std::endl;
     }
 }
+//![count-one-mers-print-chars]
 
-//FRAGMENT(main)
+//![main]
 int main()
 {
     std::cout << "String: helloworld" << std::endl;
@@ -39,3 +43,5 @@ int main()
 
     return 0;
 }
+//![main]
+

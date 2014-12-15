@@ -1,19 +1,23 @@
-// FRAGMENT(includes)
+//![includes]
 #include <iostream>
 #include <seqan/index.h>
 
 using namespace seqan;
+//![includes]
 
-// FRAGMENT(initialization)
+//![initialization]
 int main()
 {
     typedef Index<CharString> TIndex;
     TIndex index("How many wood would a woodchuck chuck?");
-// FRAGMENT(iterator)
+//![initialization]
+//![initialization]
 
+//![iterator]
     Iterator<TIndex, TopDown<> >::Type it(index);
-// FRAGMENT(iteration)
+//![iterator]
 
+//![iteration]
     CharString pattern = "wood";
     while (repLength(it) < length(pattern))
     {
@@ -28,8 +32,9 @@ int main()
             infix(pattern, parentRepLength(it) + 1, endPos))
             return 0;
     }
+//![iteration]
 
-// FRAGMENT(output)
+//![output]
     // if we get here the pattern was found
     // output match positions
     for (unsigned i = 0; i < length(getOccurrences(it)); ++i)
@@ -37,3 +42,5 @@ int main()
 
     return 0;
 }
+//![output]
+

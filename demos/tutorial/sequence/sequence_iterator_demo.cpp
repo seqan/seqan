@@ -1,6 +1,6 @@
-// The comment lines containing FRAGMENT(fragment-line) are there for the
+// The comment lines containing ![fragment-line] are there for the
 // documentation system.  You can ignore them when reading this file.
-// FRAGMENT(includes)
+//![includes]
 #include <iostream>
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
@@ -9,24 +9,28 @@ using namespace seqan;
 
 int main()
 {
-// FRAGMENT(metafunctions)
+//![includes]
+//![metafunctions]
     String<char> str = "admn";
     Iterator<String<char> >::Type it = begin(str);
     Iterator<String<char> >::Type itEnd = end(str);
-// FRAGMENT(iterators)
+//![metafunctions]
+//![iterators]
     while (it != itEnd)
     {
         std::cout << *it;
         ++it;
     }
     std::cout << std::endl;
-// FRAGMENT(rooted-iterators)
+//![iterators]
+//![rooted-iterators]
     Iterator<String<char>, Rooted>::Type it2 = begin(str);
     for (goBegin(it2); !atEnd(it2); goNext(it2))
     {
         ++value(it2);
     }
-// FRAGMENT(iterator-reverse)
+//![rooted-iterators]
+//![iterator-reverse]
     goEnd(it2);
     while (!atBegin(it2))
     {
@@ -34,9 +38,12 @@ int main()
         std::cout << getValue(it2);
     }
     std::cout << std::endl;
-// FRAGMENT(assign-value)
+//![iterator-reverse]
+//![assign-value]
     assignValue(begin(str), 'X');
     std::cout << str << std::endl;
 
     return 0;
 }
+//![assign-value]
+

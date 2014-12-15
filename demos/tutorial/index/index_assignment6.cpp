@@ -1,12 +1,13 @@
-// FRAGMENT(includes)
+//![includes]
 #include <iostream>
 #include <seqan/align.h>
 #include <seqan/index.h>
 #include <seqan/random.h>
 
 using namespace seqan;
+//![includes]
 
-// FRAGMENT(matrix_init)
+//![matrix_init]
 template <typename TStringSet, typename TIndexSpec>
 void qgramCounting(TStringSet & set, TIndexSpec)
 {
@@ -31,8 +32,9 @@ void qgramCounting(TStringSet & set, TIndexSpec)
     TIterCountsDir itCountsDir = begin(indexCountsDir(index), Standard());
     TIterCountsDir itCountsDirEnd = end(indexCountsDir(index), Standard());
     TIterCounts itCountsBegin = begin(indexCounts(index), Standard());
+//![matrix_init]
 
-// FRAGMENT(matrix_calculation)
+//![matrix_calculation]
     // for each bucket count common q-grams for each sequence pair
     TDirValue bucketBegin = *itCountsDir;
     for (++itCountsDir; itCountsDir != itCountsDirEnd; ++itCountsDir)
@@ -54,8 +56,9 @@ void qgramCounting(TStringSet & set, TIndexSpec)
     std::cout << std::endl << "Common 5-mers for Seq_i, Seq_j" << std::endl;
     std::cout << distMat;
 }
+//![matrix_calculation]
 
-// FRAGMENT(initialization)
+//![initialization]
 int main()
 {
     //  for the sake of reproducibility
@@ -78,3 +81,5 @@ int main()
     qgramCounting(stringSet, IndexQGram<UngappedShape<5>, OpenAddressing>());
     return 0;
 }
+//![initialization]
+
