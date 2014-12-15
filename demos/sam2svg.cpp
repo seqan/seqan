@@ -1,170 +1,221 @@
-///A simple Sam viewer. Convert a Sam alignment file into a SVG vector graphic.
 #include <fstream>
 #include <iostream>
 #include <string>
 
 #include <seqan/store.h>
-#include <seqan/misc/misc_cmdparser.h>
+#include <seqan/arg_parse.h>
 #include <seqan/misc/svg.h>
 
 using namespace seqan;
 
-int main(int argc, const char *argv[])
+// Struct for storing command line options.
+struct Options
 {
-	typedef FragmentStore<> TFragStore;
+    int contigID;
+    int beginPos;
+    int endPos;
+    int beginLine;
+    int endLine;
+    bool writeAscii;
+    bool gapSpace;
 
-		typedef  TFragStore::TContigStore					TContigStore;
-        typedef  Value<TContigStore>::Type						TContig;
-		typedef TFragStore::TContigPos TContigPos;
+    std::string fileAliIn;
+    std::string fileOut;
+    std::string fileRefIn;
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Define options
-	CommandLineParser parser;
-	addUsageLine(parser, "[OPTION]... <Sam file> <SVG file>");
-	addUsageLine(parser, "[OPTION]... <Sam file> <GENOME file> <SVG file>");
+    Options() : contigID(-1), beginPos(-1), endPos(-1), beginLine(-1), endLine(-1), writeAscii(false), gapSpace(false)
+    {}
+};
 
-	addOption(parser, CommandLineOption("c",  "contig",    "display only contig #NUM (default: show all contigs)", OptionType::Int | OptionType::Label | OptionType::List));
-	addOption(parser, CommandLineOption("p",  "pos",    2, "set begin and end position (default: show whole strands)", OptionType::Int | OptionType::Label));
-	addOption(parser, CommandLineOption("l",  "lines",  2, "set first and last line of the alignment (default: show whole alignment)", OptionType::Int | OptionType::Label));
-	addOption(parser, CommandLineOption("a",  "ascii",     "output alignment in ASCII format instead of SVG", OptionType::Bool | OptionType::Label));
-	addOption(parser, CommandLineOption("gs", "gap-space", "begin and end position (-p) are given in gap space", OptionType::Bool | OptionType::Label));
-	requiredArguments(parser, 2);
+// Parse command line, write results to options, return PARSE_OK if everything went well.
+seqan::ArgumentParser::ParseResult parseCommandLine(Options & options, int argc, char const ** argv)
+{
+    ArgumentParser parser;
+    setShortDescription(parser, "draw SAM/BAM file as SVG vector graphics");
+    addUsageLine(parser, "[OPTION] -a <SAM/BAM file> [-r <GENOME file>] -o <SVG/ASCII file>");
 
-	bool stop = !parse(parser, argc, argv, std::cerr);
-	if (stop) return 0;
+    addOption(parser, ArgParseOption("a", "alignment", "SAM/BAM file to load.", ArgParseOption::INPUT_FILE));
+    setRequired(parser, "alignment", true);
+    setValidValues(parser, "alignment", BamFileIn::getFileExtensions());
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Extract and check options
-	String<unsigned> contigs;
-	TContigPos left = 0;
-	TContigPos right = MaxValue<TContigPos>::VALUE;
-	unsigned firstLine = 0;
-	unsigned lastLine = MaxValue<unsigned>::VALUE;
-	bool inASCII = false;
+    addOption(parser, ArgParseOption("r", "reference", "FASTA file to use as the reference.", ArgParseOption::INPUT_FILE));
+    setValidValues(parser, "reference", SeqFileIn::getFileExtensions());
 
-	if (isSetLong(parser, "pos"))
-	{
-		__int64 l = 0, r = 0;
-		getOptionValueLong(parser, "pos", 0, l);
-		getOptionValueLong(parser, "pos", 1, r);
-		if ((l >= r) && (stop = true))
-			std::cerr << "Begin position must be less than end position." << std::endl;
-		left = l;
-		right = r;
-	}
+    addOption(parser, ArgParseOption("o", "out", "SVG/ASCII file to write.", ArgParseOption::OUTPUT_FILE));
+    setRequired(parser, "out", true);
+    setValidValues(parser, "out", ".txt .svg");
 
-	if (isSetLong(parser, "lines"))
-	{
-		getOptionValueLong(parser, "lines", 0, firstLine);
-		getOptionValueLong(parser, "lines", 1, lastLine);
-		if ((firstLine >= lastLine) && (stop = true))
-			std::cerr << "First line must be less or equal than last line." << std::endl;
-	}
+    addOption(parser, ArgParseOption("", "contig", "Display contig with this numeric ID only (zero-based), default is to show all contigs.", ArgParseOption::INTEGER));
+    setDefaultValue(parser, "contig", -1);
 
-	TFragStore store;
-	BamFileIn samFile(toCString(getArgumentValue(parser, 0)));
-	std::ofstream ascii;
-	SVGFile svg;
+    addOption(parser, ArgParseOption("", "begin-pos", "Begin position of the region to show, default is to show all.", ArgParseOption::INTEGER));
+    setDefaultValue(parser, "begin-pos", -1);
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Optionally load genome file
-	unsigned outArgNo = 1;
-	if (argumentCount(parser) > 2)
-	{
-		if (!loadContigs(store, getArgumentValue(parser, 1)) && (stop = true))
-			std::cerr << "Failed to load genome." << std::endl;
-		++outArgNo;
-	}
+    addOption(parser, ArgParseOption("", "end-pos", "End position of the region to show, default is to show all.", ArgParseOption::INTEGER));
+    setDefaultValue(parser, "end-pos", -1);
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Load Sam file
-	if (!stop) readRecords(store, samFile);
+    addOption(parser, ArgParseOption("", "begin-line", "First line to show, zero-based", ArgParseOption::INTEGER));
+    setDefaultValue(parser, "begin-line", -1);
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Choose contigs
-	if (isSetLong(parser, "contig"))
-	{
-		resize(contigs, length(getOptionValuesLong(parser, "contig")));
-		for (unsigned i = 0; i < length(contigs); ++i)
-			getOptionValueLong(parser, "contig", i, contigs[i]);
-	} else {
-		resize(contigs, length(store.contigStore));
-		for (unsigned i = 0; i < length(contigs); ++i)
-			contigs[i] = i;
-	}
+    addOption(parser, ArgParseOption("", "end-line", "Last line to show, zero-based, default is to show all", ArgParseOption::INTEGER));
+    setDefaultValue(parser, "end-line", -1);
 
-	if (isSetLong(parser, "ascii"))
-		inASCII = true;
+    addOption(parser, ArgParseOption("", "gap-space", "begin and end position are given in gap space instead of in sequence space"));
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Optionally load genome and open SVG file for writing
-	if (!stop)
-	{
-		if (inASCII)
-		{
-			ascii.open(toCString(getArgumentValue(parser, outArgNo)), std::ios_base::out | std::ios_base::trunc);
-			if (!ascii.is_open()) stop = true;
-		} else
-			if (!open(svg, toCString(getArgumentValue(parser, outArgNo)))) stop = true;
+    // Parse command line.
+    seqan::ArgumentParser::ParseResult res = seqan::parse(parser, argc, argv);
 
-		if (stop) std::cerr << "Failed to open output file for writing." << std::endl;
-	}
+    // Only extract  options if the program will continue after parseCommandLine()
+    if (res != seqan::ArgumentParser::PARSE_OK)
+        return res;
 
-	// something went wrong
-	if (stop)
-	{
-		std::cerr << "Exiting ..." << std::endl;
-		return 1;
-	}
+    getOptionValue(options.contigID, parser, "contig");
+    getOptionValue(options.beginPos, parser, "begin-pos");
+    getOptionValue(options.endPos, parser, "end-pos");
+    getOptionValue(options.beginLine, parser, "begin-line");
+    getOptionValue(options.endLine, parser, "end-line");
 
-	for(unsigned o=0;o<length(store.contigStore);++o)
-	std::cerr<<store.contigNameStore[o]<<std::endl;
+    getOptionValue(options.fileAliIn, parser, "alignment");
+    getOptionValue(options.fileRefIn, parser, "reference");
+    getOptionValue(options.fileOut, parser, "out");
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Output alignment
-	AlignedReadLayout layout;
-	std::cout << "Layouting reads ... " << std::flush;
-	layoutAlignment(layout, store);
-	std::cout << "done" << std::endl;
+    options.writeAscii = endsWith(options.fileOut, ".txt");
+    options.gapSpace = isSet(parser, "gap-space");
 
-	for (unsigned i = 0; i < length(contigs); ++i)
-		if (i < length(store.contigStore))
-		{
-			std::cout << "Writing contig " << contigs[i] << " ... " << std::flush;
+    // Begin position cannot be greater than end position.
+    if (options.beginPos != -1 && options.endPos != -1 && options.beginPos > options.endPos)
+    {
+        std::cerr << "ERROR: begin position cannot be greater than end position!\n";
+        return seqan::ArgumentParser::PARSE_ERROR;
+    }
 
-			__int64 l = left;
-			__int64 r = right;
+    // First line number cannot be greater than last line number.
+    if (options.beginLine != -1 && options.endLine != -1 && options.beginLine < options.endLine)
+    {
+        std::cerr << "ERROR: first line cannot be greater than end position!\n";
+        return seqan::ArgumentParser::PARSE_ERROR;
+    }
 
-			if (!isSetLong(parser, "gap-space"))
-			{
-				typedef Gaps<Nothing, AnchorGaps< TContig::TGapAnchors> >	TContigGaps;
-				TContigGaps	contigGaps(store.contigStore[i].gaps);
-				l = positionSeqToGap(contigGaps, l);
-				if (r != MaxValue<TContigPos>::VALUE)
-					r = positionSeqToGap(contigGaps, r);
-			}
+    return seqan::ArgumentParser::PARSE_OK;
+}
 
-			if (r == MaxValue<TContigPos>::VALUE)
-			{
-				r = 0;
-				for (unsigned j = 0; j < length(layout.contigRows[i]); ++j)
-				{
-					unsigned id = back(layout.contigRows[i][j]);
-					if (r < store.alignedReadStore[id].beginPos)
-						r = store.alignedReadStore[id].beginPos;
-					if (r < store.alignedReadStore[id].endPos)
-						r = store.alignedReadStore[id].endPos;
-				}
-			}
+int main(int argc, char const ** argv)
+{
+    // -----------------------------------------------------------------------
+    // Parse Options
+    // -----------------------------------------------------------------------
+    Options options;
+    seqan::ArgumentParser::ParseResult res = parseCommandLine(options, argc, argv);
 
-			std::cout <<l<<'\t'<<r<<'\t'<<firstLine<<'\t'<<lastLine<<std::endl;
-			if (inASCII)
-				printAlignment(ascii, layout, store, contigs[i], l, r, firstLine, lastLine);
-			else
-				printAlignment(svg, layout, store, contigs[i], l, r, firstLine, lastLine);
+    // If parsing was not successful then exit with code 1 if there were errors.
+    // Otherwise, exit with code 0 (e.g. help was printed).
+    if (res != seqan::ArgumentParser::PARSE_OK)
+        return res == seqan::ArgumentParser::PARSE_ERROR;
 
-			std::cout << "done" << std::endl;
-		}
+    // -----------------------------------------------------------------------
+    // Load Files
+    // -----------------------------------------------------------------------
 
-	return 0;
+    typedef FragmentStore<> TFragStore;
+
+    typedef TFragStore::TContigStore TContigStore;
+    typedef Value<TContigStore>::Type TContig;
+    typedef TFragStore::TContigPos TContigPos;
+
+    TFragStore store;
+    BamFileIn samFile(options.fileAliIn.c_str());
+    std::ofstream ascii;
+    SVGFile svg;
+
+    // Optionally load genome file
+    if (!options.fileRefIn.empty())
+    {
+        if (!loadContigs(store, options.fileRefIn.c_str()))
+        {
+            std::cerr << "Failed to load genome.\n";
+            return 1;
+        }
+    }
+
+    // Load Sam file
+    readRecords(store, samFile);
+
+    // Choose contigs
+    std::vector<int> contigs;
+    if (options.contigID == -1)
+        for (unsigned i = 0; i < length(store.contigStore); ++i)
+            contigs.push_back(i);
+    else
+        contigs.push_back(options.contigID);
+
+    // Optionally load genome and open SVG file for writing
+    if (options.writeAscii)
+    {
+        ascii.open(options.fileOut.c_str(), std::ios_base::out | std::ios_base::trunc);
+        if (!ascii.is_open())
+        {
+            std::cerr << "ERROR: could not open output file for writing.\n";
+            return 1;
+        }
+    }
+    else if (!open(svg, options.fileOut.c_str()))
+    {
+        std::cerr << "ERROR: could not open output file for writing.\n";
+        return 1;
+    }
+
+    // -----------------------------------------------------------------------
+    // Write Alignment
+    // -----------------------------------------------------------------------
+
+    AlignedReadLayout layout;
+    std::cerr << "Layouting reads ... ";
+    layoutAlignment(layout, store);
+    std::cerr << "done\n";
+
+    std::cerr << "Writing " << contigs.size() << " contigs...\n";
+
+    int beginLine = (options.beginLine == -1) ? 0 : options.beginLine;
+    int endLine = (options.endLine == -1) ? MaxValue<int>::VALUE : options.endLine;
+
+    for (unsigned i = 0; i < contigs.size(); ++i)
+        if (contigs[i] < length(store.contigStore))
+        {
+            std::cerr << "Writing contig " << store.contigNameStore[contigs[i]] << " ... ";
+
+            __int64 l = (options.beginPos == -1) ? 0 : options.beginPos;
+            __int64 r = (options.endPos == -1) ? MaxValue<TContigPos>::VALUE : options.endPos;
+
+            if (!options.gapSpace)
+            {
+                typedef Gaps<Nothing, AnchorGaps<TContig::TGapAnchors> >   TContigGaps;
+                TContigGaps contigGaps(store.contigStore[i].gaps);
+                l = positionSeqToGap(contigGaps, l);
+                if (r != MaxValue<TContigPos>::VALUE)
+                    r = positionSeqToGap(contigGaps, r);
+            }
+
+            if (r == MaxValue<TContigPos>::VALUE)
+            {
+                r = 0;
+                for (unsigned j = 0; j < length(layout.contigRows[i]); ++j)
+                {
+                    unsigned id = back(layout.contigRows[i][j]);
+                    if (r < store.alignedReadStore[id].beginPos)
+                        r = store.alignedReadStore[id].beginPos;
+                    if (r < store.alignedReadStore[id].endPos)
+                        r = store.alignedReadStore[id].endPos;
+                }
+            }
+
+            std::cerr << l << '\t' << r << '\t' << beginLine << '\t' << endLine << "\n";
+            if (options.writeAscii)
+                printAlignment(ascii, layout, store, contigs[i], l, r, beginLine, endLine);
+            else
+                printAlignment(svg, layout, store, contigs[i], l, r, beginLine, endLine);
+
+            std::cout << "done\n";
+        }
+
+    return 0;
 }
