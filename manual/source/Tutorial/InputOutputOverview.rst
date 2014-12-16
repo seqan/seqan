@@ -225,12 +225,10 @@ Next Steps
 
 If you want, you can now have a look at the API documentation of the :dox:`StreamConcept` concept as well as the documentation of the :dox:`SmartFile` class.
 
-There are two "tracks" in this section of the tutorials which you can follow.
-First, you can now read the tutorials for **already supported file formats**.
+You can now read the tutorials for **already supported file formats**:
 
 * :ref:`tutorial-sequence-io`
 * :ref:`tutorial-sam-bam-io`
 
-Second, if you want to learn how to develop **support for new file formats** then read the following article.
-
-* :ref:`tutorial-custom-io`
+.. COMMENT or, if you want to learn how to develop **support for new file formats** then read the following article:
+    * :ref:`tutorial-custom-io`
