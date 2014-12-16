@@ -525,7 +525,7 @@ unknownValueImpl(Iupac *)
  * @brief IUPAC code for amino acids.
  * @signature typedef SingleType<unsigned char, AminoAcid_> AminoAcid;
  * 
- * The ValueSize of <tt>AminoAcid</tt> is 24.
+ * The ValueSize of <tt>AminoAcid</tt> is 26.
  * 
  * The amino acids are enumerated from 0 to 19 in this order:
  * 
@@ -533,7 +533,7 @@ unknownValueImpl(Iupac *)
  * 
  * The remaining 4 symbols are:
  * 
- * 'B'=20 (Aspartic Acid, Asparagine), 'Z'=21 (Glutamic Acid, Glutamine), 'X'=22 (unknown), '*'=23 (terminator)
+ * 'B'=20 (Aspartic Acid, Asparagine), 'J' = 21 (Leucine, Isoleucine), 'Z'=22 (Glutamic Acid, Glutamine), 'U' = 23 (Selenocysteine), 'X'=24 (unknown), '*'=25 (terminator)
  * 
  * Objects of type <tt>AminoAcid</tt> can be converted to <tt>char</tt> and vice versa.  Unknown values are converted to
  * <tt>'X'</tt>.
@@ -549,7 +549,7 @@ typedef SimpleType<unsigned char, AminoAcid_> AminoAcid;
 template <> struct ValueSize<AminoAcid>
 {
     typedef __uint8 Type;
-    static const Type VALUE = 24;
+    static const Type VALUE = 26;
 };
 
 template <> struct BitsPerValue<AminoAcid>
