@@ -24,6 +24,9 @@ Prerequisites
 This tutorial explains how to use the module ``random``.
 ``random`` primarily provides the two classes :dox:`Rng` (**R**\ andom **N**\ umber **G**\ enerator) and :dox:`Pdf` (**P**\ robability **D**\ ensity **F**\ unctions).
 
+.. warning::
+  This module is deprecated in favor of C++11 random number generation facilities.
+
 Random Number Generation
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
