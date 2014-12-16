@@ -25,18 +25,18 @@ int main()
             // Register record with counters.
             counters[record.rID] += 1;
         }
+
+        // Print result.
+        std::cout << "VARIANTS ON CONTIGS\n";
+        for (unsigned i = 0; i < contigsCount; ++i)
+            std::cout << contigNames(context(vcfIn))[i] << '\t'
+                      << counters[i] << '\n';
     }
-    catch (seqan::Exceptioon const & e)
+    catch (seqan::Exception const & e)
     {
         std::cerr << "ERROR:" << e.what() << std::endl;
         return 1;
     }
-
-    // Print result.
-    std::cout << "VARIANTS ON CONTIGS\n";
-    for (unsigned i = 0; i < contigsCount; ++i)
-        std::cout << contigNames(context(vcfIn))[i] << '\t'
-                  << counters[i] << '\n';
 
     return 0;
 }
