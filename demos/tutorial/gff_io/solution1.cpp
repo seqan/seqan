@@ -1,19 +1,19 @@
-#include <seqan/basic.h>
 #include <seqan/gff_io.h>
 
 int main()
 {
-    // Open input stream.
+    // Open input file.
     seqan::GffFileIn gffIn;
     if (!open(gffIn, "example.gff"))
     {
-        std::cerr << "ERROR: Could not open example.gff\n";
+        std::cerr << "ERROR: Could not open example.gff" << std::endl;
         return 1;
     }
-    // Open output stream. If target is a ostream we must specify the format.
+
+    // Attach to standard output.
     seqan::GffFileOut gffOut(std::cout, seqan::Gff());
 
-    // Read the file record by record.
+    // Copy the file record by record.
     seqan::GffRecord record;
 
     try
@@ -24,7 +24,7 @@ int main()
             writeRecord(gffOut, record);
         }
     }
-    catch (std::runtime_error &e)
+    catch (seqan::Exception const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;

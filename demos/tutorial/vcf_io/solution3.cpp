@@ -1,11 +1,8 @@
-#include <seqan/basic.h>
 #include <seqan/vcf_io.h>
-
-#include <sstream>
 
 int main()
 {
-    // Open output stream
+    // Open output file.
     seqan::VcfFileOut out(std::cout, seqan::Vcf());
 
     // Fill sequence names.
@@ -16,11 +13,8 @@ int main()
     appendValue(sampleNames(context(out)), "NA00002");
     appendValue(sampleNames(context(out)), "NA00002");
 
+    // Fill and write out headers - This is somewhat tedious.
     seqan::VcfHeader header;
-
-    // Write out headers.
-    //
-    // This is somewhat tedious.
     appendValue(header, seqan::VcfHeaderRecord("fileformat", "VCFv4.1"));
     appendValue(header, seqan::VcfHeaderRecord("fileDate", "20090805"));
     appendValue(header, seqan::VcfHeaderRecord("source", "myImputationProgramV3.1"));
@@ -39,12 +33,10 @@ int main()
     appendValue(header, seqan::VcfHeaderRecord("ID", "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">"));
     appendValue(header, seqan::VcfHeaderRecord("ID", "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">"));
     appendValue(header, seqan::VcfHeaderRecord("ID", "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">"));
-
     writeRecord(out, header);
 
-    // Write out the records.
+    // Fill and write out the record.
     seqan::VcfRecord record;
-
     record.rID = 0;
     record.beginPos = 14369;
     record.id = "rs6054257";
@@ -57,7 +49,6 @@ int main()
     appendValue(record.genotypeInfos, "0|0:48:1:51,51");
     appendValue(record.genotypeInfos, "1|0:48:8:51,51");
     appendValue(record.genotypeInfos, "1/1:43:5:.,.");
-
     writeRecord(out, record);
 
     return 0;

@@ -251,6 +251,27 @@ Assignment 2
            VARIANTS ON CONTIGS
            20  5
 
+Creating a New File
+-------------------
+
+Assignment 3
+""""""""""""
+
+
+.. container:: assignment
+
+   Generating VCF From Scratch
+
+   Type
+     Application
+
+   Objective
+     Write a program that prints the VCF file from above.
+
+   Solution
+     .. container:: foldable
+
+        .. includefrags:: demos/tutorial/vcf_io/solution3.cpp
 
 Next Steps
 ----------
