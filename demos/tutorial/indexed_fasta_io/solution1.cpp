@@ -11,7 +11,7 @@ int main(int argc, char const ** argv)
     }
 
     seqan::FaiIndex faiIndex;
-    if (build(faiIndex, argv[1]) != 0)
+    if (!build(faiIndex, argv[1]))
     {
         std::cerr << "ERROR: Could not build FAI index for file " << argv[1] << ".\n";
         return 1;
