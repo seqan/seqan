@@ -1,11 +1,10 @@
-#include <seqan/basic.h>
 #include <seqan/vcf_io.h>
 
 int main()
 {
     try
     {
-        // Open input stream.
+        // Open input file.
         seqan::VcfFileIn vcfIn("example.vcf");
 
         // Copy over header.
@@ -14,7 +13,8 @@ int main()
 
         // Get array of counters.
         seqan::String<unsigned> counters;
-        resize(counters, length(contigNames(context(vcfIn))), 0);
+        unsigned contigsCount = length(contigNames(context(vcfIn)));
+        resize(counters, contigsCount, 0);
 
         // Read the file record by record.
         seqan::VcfRecord record;
@@ -25,23 +25,18 @@ int main()
             // Register record with counters.
             counters[record.rID] += 1;
         }
+    }
+    catch (seqan::Exceptioon const & e)
+    {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
 
-        // Print result.
-        std::cout << "VARIANTS ON CONTIGS\n";
-        for (unsigned i = 0; i < length(contigNames(context(vcfIn))); ++i)
-            std::cout << contigNames(context(vcfIn))[i] << '\t'
-                      << counters[i] << '\n';
-    }
-    catch (seqan::IOError &e)
-    {
-        std::cerr << "=== I/O Error ===\n" << e.what() << std::endl;
-        return 1;
-    }
-    catch (seqan::ParseError &e)
-    {
-        std::cerr << "=== Parse Error ===\n" << e.what() << std::endl;
-        return 1;
-    }
+    // Print result.
+    std::cout << "VARIANTS ON CONTIGS\n";
+    for (unsigned i = 0; i < contigsCount; ++i)
+        std::cout << contigNames(context(vcfIn))[i] << '\t'
+                  << counters[i] << '\n';
 
     return 0;
 }
