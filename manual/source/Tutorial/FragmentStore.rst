@@ -32,7 +32,7 @@ These tasks typically require lots of data structures that are related to each o
 The Fragment Store subsumes all these data structures in an easy to use interface.
 It represents a multiple alignment of millions of reads or mate-pairs against a reference genome consisting of multiple contigs.
 Additionally, regions of the reference genome can be annotated with features like 'gene', 'mRNA', 'exon', 'intron' or custom features.
-The Fragment Store supports I/O functions to read/write a read alignment in `SAM <http://samtools.sourceforge.net/>`_ or `AMOS <http://www.cbcb.umd.edu/research/contig_representation.shtml>`_ format and to read/write annotations in `GFF <http://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_ or `GTF <http://genome.ucsc.edu/FAQ/FAQformat.html#format4>`_ format.
+The Fragment Store supports I/O functions to read/write a read alignment in `SAM/BAM <http://samtools.sourceforge.net/>`_ or `AMOS <http://www.cbcb.umd.edu/research/contig_representation.shtml>`_ format and to read/write annotations in `GFF <http://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_ or `GTF <http://genome.ucsc.edu/FAQ/FAQformat.html#format4>`_ format.
 
 The Fragment Store can be compared with a database where each table (called "store") is implemented as a :dox:`String` member of the :dox:`FragmentStore` class.
 The rows of each table (implemented as structs) are referred by their ids which are their positions in the string and not stored explicitly (marked with ``*`` in the Figures 2 and 5).
@@ -380,19 +380,8 @@ To write all contigs to an open output stream use :dox:`FragmentStore#writeConti
 Multiple Read Alignments
 """"""""""""""""""""""""
 
-A multiple read alignment can be loaded from an open input stream with:
-
-.. code-block:: cpp
-
-   read(file, store, Sam());    // reads a SAM file
-   read(file, store, Amos());   // reads a file in the AMOS assembler format
-
-and written to an open output stream with:
-
-.. code-block:: cpp
-
-   write(file, store, Sam());   // writes a SAM file
-   write(file, store, Amos());  // writes a file in the AMOS assembler format
+A multiple read alignment can be loaded from an open :dox:`BamFileIn` with :dox:`FragmentStore#readRecords`.
+Similarly, it can be written to an open :dox:`BamFileOut` with :dox:`FragmentStore#writeRecords`.
 
 As SAM supports a multiple read alignment (with padding operations in the CIGAR string) but does not enforce its use.
 That means that a typical SAM file represents a set of pairwise (not multiple) alignments.
@@ -405,25 +394,14 @@ A subsequent call of :dox:`FragmentStore#loadContigs` would load the sequences o
 Annotations
 ^^^^^^^^^^^
 
-A annotation file can be read from an open input stream with:
+A annotation file can be read from an open :dox:`GffFileIn` or  :dox:`UcscFileIn` with :dox:`FragmentStore#readRecords`.
+Similarly, it can be written to an open :dox:`GffFileOut` with :dox:`FragmentStore#writeRecords`.
 
-.. code-block:: cpp
-
-   read(file, store, Gff());    // reads a GFF or GTF file
-   read(file, store, Ucsc());   // reads a 'knownGene.txt' or 'knownIsoforms.txt' file
-
-The GFF-reader is also able to detect and read GTF files.
-As the kownGene.txt and knownIsoforms.txt files are two seperate files used by the UCSC Genome Browser, they must be read by two consecutive calls of :dox:`FragmentStore#read` (first knownGene.txt then knownIsoforms.txt).
+The :dox:`GffFileIn` is also able to detect and read GTF files in addition to GFF files.
+As the kownGene.txt and knownIsoforms.txt files are two seperate files used by the UCSC Genome Browser, they must be read by two consecutive calls of :dox:`FragmentStore#readRecords` (first knownGene.txt then knownIsoforms.txt).
 An annotation can be loaded without loading the corresponding contigs.
 In that case empty contigs are created in the contigStore with names given in the annonation.
 A subsequent call of :dox:`FragmentStore#loadContigs` would load the sequences of these contigs, if they have the same identifier in the contig file.
-
-To write an annotation to an open output stream use:
-
-.. code-block:: cpp
-
-   write(file, store, Gff());   // writes a GFF file
-   write(file, store, Gtf());   // writes a GTF file
 
 Please note, that UCSC files cannot be written due to limitations of the file format.
 
