@@ -341,7 +341,7 @@ public:
 
     // Append the transcript names for the given record.
     void _appendTranscriptNames(seqan::String<unsigned> & tIDs,  // transcript ids to write out
-                                seqan::StringSet<seqan::CharString> & nameStore,
+                                seqan::StringSet<seqan::CharString> & contigNames,
                                 seqan::NameStoreCache<seqan::StringSet<seqan::CharString> > & cache,
                                 MyGffRecord const & record)
     {
@@ -354,7 +354,7 @@ public:
         if (empty(groupNames))
             return;  // Record has no group names.
 
-        // Write out the ids of the transcripts that the record belongs to as indices in nameStore.
+        // Write out the ids of the transcripts that the record belongs to as indices in contigNames.
         unsigned idx = 0;
         seqan::StringSet<seqan::CharString> ss;
         strSplit(ss, groupNames, seqan::EqualsChar<','>());
@@ -362,10 +362,10 @@ public:
         {
             if (empty(ss[i]))
                 continue;
-            if (!getIdByName(nameStore, ss[i], idx, cache))
+            if (!getIdByName(contigNames, ss[i], idx, cache))
             {
-                appendValue(tIDs, length(nameStore));
-                appendName(nameStore, ss[i], cache);
+                appendValue(tIDs, length(contigNames));
+                appendName(contigNames, ss[i], cache);
             }
             else
             {

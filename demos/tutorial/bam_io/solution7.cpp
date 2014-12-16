@@ -25,9 +25,9 @@ int main(int argc, char const ** argv)
     typedef seqan::StringSet<seqan::CharString> TNameStore;
     typedef seqan::NameStoreCache<TNameStore>   TNameStoreCache;
     typedef seqan::BamIOContext<TNameStore>     TBamIOContext;
-    TNameStore      nameStore;
-    TNameStoreCache nameStoreCache(nameStore);
-    TBamIOContext   context(nameStore, nameStoreCache);
+    TNameStore      contigNames;
+    TNameStoreCache contigNamesCache(contigNames);
+    TBamIOContext   context(contigNames, contigNamesCache);
 
     // Read header.
     seqan::BamHeader header;

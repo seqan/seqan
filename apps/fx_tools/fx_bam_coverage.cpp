@@ -259,7 +259,7 @@ int main(int argc, char const ** argv)
             continue;  // Skip these records.
 
         int contigId = 0;
-        seqan::CharString const & contigName = nameStore(context(bamFile))[record.rID];
+        seqan::CharString const & contigName = contigNames(context(bamFile))[record.rID];
         if (!getIdByName(contigId, faiIndex, contigName))
         {
             std::cerr << "ERROR: Alignment to unknown contig " << contigId << "!\n";
