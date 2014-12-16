@@ -367,33 +367,35 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_metafunctions_amino_acid)
     // Finited Ordered Alphabet Concept Metafunctions / Type Queries
     
     SEQAN_ASSERT_EQ(ordValue(AminoAcid('A')), 0);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('R')), 1);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('N')), 2);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('B')), 1);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('C')), 2);
     SEQAN_ASSERT_EQ(ordValue(AminoAcid('D')), 3);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('C')), 4);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('Q')), 5);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('E')), 6);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('G')), 7);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('H')), 8);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('I')), 9);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('L')), 10);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('K')), 11);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('E')), 4);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('F')), 5);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('G')), 6);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('H')), 7);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('I')), 8);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('J')), 9);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('K')), 10);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('L')), 11);
     SEQAN_ASSERT_EQ(ordValue(AminoAcid('M')), 12);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('F')), 13);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('N')), 13);
     SEQAN_ASSERT_EQ(ordValue(AminoAcid('P')), 14);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('S')), 15);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('T')), 16);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('W')), 17);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('Y')), 18);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('V')), 19);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('B')), 20);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('Z')), 21);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('X')), 22);
-    SEQAN_ASSERT_EQ(ordValue(AminoAcid('*')), 23);
-
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('Q')), 15);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('R')), 16);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('S')), 17);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('T')), 18);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('U')), 19);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('V')), 20);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('W')), 21);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('Y')), 22);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('Z')), 23);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('X')), 24);
+    SEQAN_ASSERT_EQ(ordValue(AminoAcid('*')), 25);
+    
     SEQAN_ASSERT(+(SameType_<typename ValueSize<AminoAcid>::Type, __uint8>::VALUE));
-    SEQAN_ASSERT_EQ(+ValueSize<AminoAcid>::VALUE, 24);
-    SEQAN_ASSERT_EQ(valueSize<AminoAcid>(), 24u);
+    SEQAN_ASSERT_EQ(+ValueSize<AminoAcid>::VALUE, 26);
+    SEQAN_ASSERT_EQ(valueSize<AminoAcid>(), 26u);
 
     // Alphabet With Unknown Value Concept Metafunctions / Type Queries
     
@@ -801,15 +803,15 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_residue_usage_amino_acid)
     {
         AminoAcid a = 'A', n = 'N';
 
-        SEQAN_ASSERT_EQ(++a, AminoAcid('R'));
-        SEQAN_ASSERT_EQ(a, AminoAcid('R'));
-        SEQAN_ASSERT_EQ(a++, AminoAcid('R'));
-        SEQAN_ASSERT_EQ(a, AminoAcid('N'));
+        SEQAN_ASSERT_EQ(++a, AminoAcid('B'));
+        SEQAN_ASSERT_EQ(a, AminoAcid('B'));
+        SEQAN_ASSERT_EQ(a++, AminoAcid('B'));
+        SEQAN_ASSERT_EQ(a, AminoAcid('C'));
 
-        SEQAN_ASSERT_EQ(--n, AminoAcid('R'));
-        SEQAN_ASSERT_EQ(n, AminoAcid('R'));
-        SEQAN_ASSERT_EQ(n--, AminoAcid('R'));
-        SEQAN_ASSERT_EQ(n, AminoAcid('A'));
+        SEQAN_ASSERT_EQ(--n, AminoAcid('M'));
+        SEQAN_ASSERT_EQ(n, AminoAcid('M'));
+        SEQAN_ASSERT_EQ(n--, AminoAcid('M'));
+        SEQAN_ASSERT_EQ(n, AminoAcid('L'));
     }
 
     // Test Relations, Same Type
