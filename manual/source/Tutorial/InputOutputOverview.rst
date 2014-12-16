@@ -201,7 +201,6 @@ For instance, you can pass `std::cin` to any :dox:`SmartFile#SmartFile FileIn co
 
     When writing to `std::cout`, classes of type :dox:`SmartFile FileOut` cannot guess the file format from the filename extension.
     Therefore, the file format has to be specified explicitly by providing a tag, e.g. :dox:`Sam` or :dox:`Bam`.
-    seqan::BamFileOut bamFileOut(std::cout, seqan::Bam());
 
 Assignment 3
 """"""""""""
@@ -225,12 +224,13 @@ Next Steps
 
 If you want, you can now have a look at the API documentation of the :dox:`StreamConcept` concept as well as the documentation of the :dox:`SmartFile` class.
 
-There are two "tracks" in this section of the tutorials which you can follow.
-First, you can now read the tutorials for **already supported file formats**.
+You can now read the tutorials for **already supported file formats**:
 
 * :ref:`tutorial-sequence-io`
 * :ref:`tutorial-sam-bam-io`
+* :ref:`tutorial-vcf-io`
+* :ref:`tutorial-bed-io`
+* :ref:`tutorial-gff-and-gtf-io`
 
-Second, if you want to learn how to develop **support for new file formats** then read the following article.
-
-* :ref:`tutorial-custom-io`
+.. COMMENT or, if you want to learn how to develop **support for new file formats** then read the following article:
+    * :ref:`tutorial-custom-io`
