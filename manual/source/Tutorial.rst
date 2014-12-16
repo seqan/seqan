@@ -48,7 +48,7 @@ Tutorial
    Tutorial/VcfIO
    Tutorial/BedIO
    Tutorial/GffGtfIO
-   Tutorial/CustomIO
+   .. DISABLED Tutorial/CustomIO
 
    Tutorial/Modifiers
 
@@ -183,7 +183,7 @@ The article :ref:`build-manual-integration-with-your-own-build-system` contains 
 :ref:`tutorial-gff-and-gtf-io`
   This tutorial explains how to access GFF and GTF files.
 
-:ref:`tutorial-custom-io`
+.. DISABLED :ref:`tutorial-custom-io`
   This tutorial explains how to access files in your own format.
 
 

@@ -1,4 +1,3 @@
-#include <seqan/basic.h>
 #include <seqan/bed_io.h>
 #include <seqan/misc/name_store_cache.h>
 
@@ -31,7 +30,7 @@ int main()
             assignValueById(counters, rID, getValueById(counters, rID) + 1);
         }
     }
-    catch (std::runtime_error &e)
+    catch (seqan::Exception const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;

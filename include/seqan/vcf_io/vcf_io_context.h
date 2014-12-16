@@ -168,6 +168,17 @@ contigNamesCache(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & conte
     return _referenceCast<TNameStoreCache &>(context._contigNamesCache);
 }
 
+/*!
+ * @fn VcfIOContext#sampleNames
+ * @brief Return reference to the sample names from @link VcfIOContext @endlink.
+ *
+ * @signature TNameStoreRef sampleNames(context);
+ *
+ * @param[in] context The @link VcfIOContext @endlink to query.
+ *
+ * @return TNameStoreRef A reference to the <tt>TNameStore</tt> of the context.
+ */
+
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStore &
 sampleNames(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)

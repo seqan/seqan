@@ -1,15 +1,12 @@
-#include <seqan/basic.h>
 #include <seqan/bed_io.h>
-
-#include <sstream>
 
 int main()
 {
     seqan::BedFileOut out(std::cout, seqan::Bed());
 
-    // Write out the records.
     seqan::BedRecord<seqan::Bed6> record;
 
+    // Fill and write out the first record.
     record.ref = "chr7";
     record.beginPos = 127471195;
     record.endPos = 127472363;
@@ -18,6 +15,7 @@ int main()
     record.strand = '+';
     writeRecord(out, record);
 
+    // Fill and write out the second record.
     record.ref = "chr7";
     record.beginPos = 127472362;
     record.endPos = 127473530;
