@@ -1201,10 +1201,10 @@ int main(int argc, char const ** argv)
     String<int> readAlignmentDistances;
     if (options.distanceMetric == EDIT_DISTANCE)
         res = matchesToErrorFunction(errorCurves, readAlignmentDistances, inBam, readNameStore,
-                                     nameStore(context(inBam)), faiIndex, options, MyersUkkonenReads());
+                                     contigNames(context(inBam)), faiIndex, options, MyersUkkonenReads());
     else // options.distanceMetric == DISTANCE_HAMMING
         res = matchesToErrorFunction(errorCurves, readAlignmentDistances, inBam, readNameStore,
-                                     nameStore(context(inBam)), faiIndex, options, HammingSimple());
+                                     contigNames(context(inBam)), faiIndex, options, HammingSimple());
     if (res != 0)
         return 1;
 
@@ -1229,7 +1229,7 @@ int main(int argc, char const ** argv)
     else
         std::cerr << "Writing to " << options.outGsiPath << " ...";
     intervalizeAndDumpErrorCurves(gsiStream, errorCurves, readAlignmentDistances, readNameStore,
-                                  nameStore(context(inBam)), options, true);
+                                  contigNames(context(inBam)), options, true);
     std::cerr << " DONE\n"
               << "\n Took " << sysTime() - startTime << " s\n";
 

@@ -1430,21 +1430,21 @@ int readMatchesFromSamBam_Batch(
 
         // problem: contigNameStore is not filled --> what is rID set to? can i get the original string?? -> extra BamAlignmentRecord spec?
         //check if the genomeID is in our map of relevant genomeIDs, otherwise skip match
-        it = gIdStringToIdNumMap.find(nameStore(context(bamFileIn))[record.rID]);
+        it = gIdStringToIdNumMap.find(contigNames(context(bamFileIn))[record.rID]);
         if(options._debugLevel > 1)
             ::std::cout << record.rID << "\t";
         if(it != gIdStringToIdNumMap.end())
             contigId = it->second;
         else // check if there is "chr"
         {
-            if(prefix(nameStore(context(bamFileIn))[record.rID],3) == "chr")
-                it = gIdStringToIdNumMap.find(suffix(nameStore(context(bamFileIn))[record.rID],3));
+            if(prefix(contigNames(context(bamFileIn))[record.rID],3) == "chr")
+                it = gIdStringToIdNumMap.find(suffix(contigNames(context(bamFileIn))[record.rID],3));
             if(it != gIdStringToIdNumMap.end())
                 contigId = it->second;
             else
             {
                 CharString temp = "chr";
-                append(temp,nameStore(context(bamFileIn))[record.rID]);
+                append(temp,contigNames(context(bamFileIn))[record.rID]);
                 it = gIdStringToIdNumMap.find(temp);
                 if(it != gIdStringToIdNumMap.end())
                     contigId = it->second;

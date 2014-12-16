@@ -34,7 +34,7 @@ int main(int argc, char const * argv[])
 
     // Translate from reference name to rID.
     int rID = 0;
-    if (!getIdByName(rID, nameStoreCache(context(inFile)), argv[3]))
+    if (!getIdByName(rID, contigNamesCache(context(inFile)), argv[3]))
     {
         std::cerr << "ERROR: Reference sequence named " << argv[3] << " not known.\n";
         return 1;

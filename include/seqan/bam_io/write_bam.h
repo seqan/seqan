@@ -98,15 +98,15 @@ void write(TTarget & target,
     write(target, context.buffer);
 
     // Write references.
-    __int32 nRef = _max(length(nameStore(context)), length(sequenceLengths(context)));
+    __int32 nRef = _max(length(contigNames(context)), length(contigLengths(context)));
     appendRawPod(target, nRef);
 
     for (__int32 i = 0; i < nRef; ++i)
     {
-        if (i < (__int32)length(nameStore(context)))
+        if (i < (__int32)length(contigNames(context)))
         {
-            appendRawPod(target, (__int32)(length(nameStore(context)[i]) + 1));
-            write(target, nameStore(context)[i]);
+            appendRawPod(target, (__int32)(length(contigNames(context)[i]) + 1));
+            write(target, contigNames(context)[i]);
         }
         else
         {
@@ -114,8 +114,8 @@ void write(TTarget & target,
         }
         writeValue(target, '\0');
         __int32 lRef = 0;
-        if (i < (__int32)length(sequenceLengths(context)))
-            lRef = sequenceLengths(context)[i];
+        if (i < (__int32)length(contigLengths(context)))
+            lRef = contigLengths(context)[i];
         appendRawPod(target, lRef);
     }
 }

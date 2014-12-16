@@ -51,8 +51,8 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_io_context_standalone)
     TStrings ns;
     NameStoreCache<TStrings> nsc(ns);
     BamIOContext<TStrings, NameStoreCache<TStrings>, Dependent<> > bamIOContext(ns, nsc);
-    SEQAN_ASSERT_EQ(&ns, &nameStore(bamIOContext));
-    SEQAN_ASSERT_EQ(&nsc, &nameStoreCache(bamIOContext));
+    SEQAN_ASSERT_EQ(&ns, &contigNames(bamIOContext));
+    SEQAN_ASSERT_EQ(&nsc, &contigNamesCache(bamIOContext));
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_io_context_fragment_store)
@@ -64,8 +64,8 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_io_context_fragment_store)
 
     FragmentStore<> store;
     BamIOContext<TNameStore, TNameStoreCache> bamIOContext(store.contigNameStore, store.contigNameStoreCache);
-    SEQAN_ASSERT_EQ(&store.contigNameStore, &nameStore(bamIOContext));
-    SEQAN_ASSERT_EQ(&store.contigNameStoreCache, &nameStoreCache(bamIOContext));
+    SEQAN_ASSERT_EQ(&store.contigNameStore, &contigNames(bamIOContext));
+    SEQAN_ASSERT_EQ(&store.contigNameStoreCache, &contigNamesCache(bamIOContext));
 }
 
 #endif  // TESTS_BAM_IO_TEST_BAM_BAM_IO_CONTEXT_H_
