@@ -55,6 +55,158 @@ template <typename TObject, typename TStorageSpec>
 struct StorageSwitch;
 
 // ============================================================================
+// Concepts
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Concept FormattedFileConcept
+// ----------------------------------------------------------------------------
+
+/*!
+ * @concept FormattedFileConcept
+ * @extends StreamConcept
+ * @headerfile <seqan/stream.h>
+ *
+ * @signature concept FormattedFileConcept : StreamConcept;
+ *
+ * @brief Concept for formatted files.
+ */
+
+SEQAN_CONCEPT_REFINE(FormattedFileConcept, (StreamConcept))
+{
+    SEQAN_CONCEPT_USAGE(FormattedFileConcept)
+    {}
+};
+
+// ----------------------------------------------------------------------------
+// Concept FormattedFileHeaderConcept
+// ----------------------------------------------------------------------------
+
+/*!
+ * @concept FormattedFileHeaderConcept
+ * @headerfile <seqan/stream.h>
+ *
+ * @signature concept FormattedFileHeaderConcept;
+ *
+ * @brief Concept for header of formatted files.
+ * 
+ * @see BamHeader
+ * @see VcfHeader
+ * @see BedHeader
+ * @see GffHeader
+ */
+
+SEQAN_CONCEPT(FormattedFileHeaderConcept)
+{};
+
+// ----------------------------------------------------------------------------
+// Concept FormattedFileRecordConcept
+// ----------------------------------------------------------------------------
+
+/*!
+ * @concept FormattedFileRecordConcept
+ * @headerfile <seqan/stream.h>
+ *
+ * @signature concept FormattedFileRecordConcept;
+ *
+ * @brief Concept for records of formatted files.
+ *
+ * @see BamAlignmentRecord
+ * @see VcfRecord
+ * @see BedRecord
+ * @see GffRecord
+ */
+
+SEQAN_CONCEPT(FormattedFileRecordConcept)
+{};
+
+// ----------------------------------------------------------------------------
+// Concept FormattedInputFileConcept
+// ----------------------------------------------------------------------------
+
+/*!
+ * @concept FormattedInputFileConcept Input FormattedFileConcept
+ * @extends FormattedFileConcept
+ * @extends InputStreamConcept
+ * @headerfile <seqan/stream.h>
+ *
+ * @signature concept FormattedInputFileConcept : FormattedFileConcept, InputStreamConcept;
+ *
+ * @brief Concept for formatted input files (for reading).
+ *
+ * @see BamFileIn
+ * @see VcfFileIn
+ * @see BedFileIn
+ * @see GffFileIn
+ */
+
+/*!
+ * @fn FormattedInputFileConcept#readRecord
+ * @brief Read one @link FormattedFileHeaderConcept @endlink or @link FormattedFileRecordConcept @endlink from a @link FormattedInputFileConcept @endlink object.
+ *
+ * @signature void readRecord(header, fileIn);
+ * @signature void readRecord(record, fileIn);
+ *
+ * @param[out]    header    The @link FormattedFileHeaderConcept @endlink to read.
+ *                          @link FormattedFileHeaderConcept @endlink.
+ * @param[out]    record    The @link FormattedFileRecordConcept @endlink to read.
+ *                          @link FormattedFileRecordConcept @endlink.
+ * @param[in,out] fileIn    The @link FormattedInputFileConcept @endlink object to read from.
+ *
+ * @throw IOError On low-level I/O errors.
+ * @throw ParseError On high-level file format errors.
+ */
+
+SEQAN_CONCEPT_REFINE(FormattedInputFileConcept, (FormattedFileConcept)(InputStreamConcept))
+{
+    SEQAN_CONCEPT_USAGE(FormattedInputFileConcept)
+    {}
+};
+
+// ----------------------------------------------------------------------------
+// Concept FormattedOutputFileConcept
+// ----------------------------------------------------------------------------
+
+/*!
+ * @concept FormattedOutputFileConcept Output FormattedFileConcept
+ * @extends FormattedFileConcept
+ * @extends OutputStreamConcept
+ * @headerfile <seqan/stream.h>
+ *
+ * @signature concept FormattedOutputFileConcept : FormattedFileConcept, OutputStreamConcept;
+ *
+ * @brief Concept for formatted output files (for writing).
+ *
+ * @see BamFileOut
+ * @see VcfFileOut
+ * @see BedFileOut
+ * @see GffFileOut
+ */
+
+/*!
+ * @fn FormattedOutputFileConcept#writeRecord
+ * @brief Write one @link FormattedFileHeaderConcept @endlink or @link FormattedFileRecordConcept @endlink to a @link FormattedOutputFileConcept @endlink object.
+ *
+ * @signature void writeRecord(fileOut, header);
+ * @signature void writeRecord(fileOut, record);
+ *
+ * @param[in,out] fileOut   The @link FormattedInputFileConcept @endlink object to write into.
+ * @param[in]     header    The @link FormattedFileHeaderConcept @endlink to write.
+ *                          @link FormattedFileHeaderConcept @endlink.
+ * @param[in]     record    The @link FormattedFileRecordConcept @endlink to write.
+ *                          @link FormattedFileRecordConcept @endlink.
+ *
+ * @throw IOError On low-level I/O errors.
+ * @throw ParseError On high-level file format errors.
+ */
+
+SEQAN_CONCEPT_REFINE(FormattedOutputFileConcept, (FormattedFileConcept)(OutputStreamConcept))
+{
+    SEQAN_CONCEPT_USAGE(FormattedOutputFileConcept)
+    {}
+};
+
+// ============================================================================
 // Classes
 // ============================================================================
 
@@ -80,7 +232,7 @@ struct StorageSwitch;
  * It depends on <tt>TDirection</tt> whether it implements @link InputStreamConcept @endlink or
  * @link OutputStreamConcept @endlink.
  *
- * SmartFile provides the following I/O operations on formatted files:
+ * SmartFile provides the following basic I/O operations on formatted files:
  *
  * <ul>
  * <li>Open a file given its filename or attach to an existing stream like stdin/stdout.</li>
@@ -91,11 +243,6 @@ struct StorageSwitch;
  *
  * SmartFile encapsulates a @link VirtualStream @endlink and provides access to its @link StreamConcept#DirectionIterator direction iterator @endlink.
  * Each instance of SmartFile keeps a file context to help reading/writing the formatted file.</li>
- *
- * @see SeqFileIn
- * @see SeqFileOut
- * @see BamFileIn
- * @see BamFileOut
  */
 
 template <typename TFileType, typename TDirection, typename TSpec = void>
@@ -407,9 +554,9 @@ inline bool guessFormat(SmartFile<TFileType, Output, TSpec> &)
     return true;
 }
 
-// --------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // _mapFileFormatToCompressionFormat
-// --------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 template <typename TFormat>
 inline Nothing
@@ -461,9 +608,9 @@ _checkThatStreamOutputFormatIsSet(SmartFile<TFileType, Output, TSpec> const &, T
         SEQAN_FAIL("SmartFile: File format not specified, use setFormat().");
 }
 
-// --------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Function open()
-// --------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 /*!
  * @fn SmartFile#open
@@ -665,9 +812,9 @@ context(SmartFile<TFileType, TDirection, TSpec> const & file)
     return file.context;
 }
 
-// --------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // Function _getCompressionFormatExtensions()
-// --------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 template <typename TStringSet, typename TFormat_, typename TCompressionFormats>
 inline void
