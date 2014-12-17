@@ -40,10 +40,6 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
@@ -97,21 +93,6 @@ unsigned char const MagicHeader<Bam, T>::VALUE[4] = { 'B', 'A', 'M', '\1' };  //
 // ----------------------------------------------------------------------------
 // Function readRecord()                                              BamHeader
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn SamBamIO#readRecord
- * @brief Read a record from a SAM/BAM file.
- *
- * @signature int readRecord(record, context, stream, tag);
- *
- * @param[out]    record  The @link BamAlignmentRecord @endlink object to read the information into.
- * @param[out]    header  The @link BamHeader @endlink object to read the header information into.
- * @param[in,out] context The @link BamIOContext @endlink object to use.
- * @param[in,out] stream  The @link StreamConcept Stream @endlink to read from.
- * @param[in]     tag     The format tag, one of <tt>Sam</tt> and <tt>Bam</tt>.
- *
- * @return int A status code, 0 on success, != 0 on failure.
- */
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
