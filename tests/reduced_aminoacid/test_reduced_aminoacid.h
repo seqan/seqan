@@ -94,16 +94,16 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10)
             ReducedAminoAcidMurphy10;
 
     CharString str = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz*+#";
-    String<AminoAcid> aas = "ARNDCQEGHILKMFPSTWYVBZX*";
+    String<AminoAcid> aas = "ABCDEFGHIJKLMNPQRSTUVWYZX*";
 
     // N = 10
     {
         String<ReducedAminoAcidMurphy10> conv = str;
         SEQAN_ASSERT_EQ(
             CharString(conv),
-            "AAAACCNNNNFFGGHHIIAARRIIIINNAAPPNNRRSSSSAAIIFFAAFFAAAAA");
+            "AABBCCBBBBFFGGHHIIIIKKIIIIBBAAPPBBKKSSSSAAIIFFAAFFBBFAA");
         conv = aas;
-        SEQAN_ASSERT_EQ(CharString(conv), "ARNNCNNGHIIRIFPSSFFIAAAA");
+        SEQAN_ASSERT_EQ(CharString(conv), "ABCBBFGHIIKIIBPBKSSAIFFBAF");
     }
 }
 
