@@ -40,19 +40,21 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Typedefs
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Type BamFileIn
+// ----------------------------------------------------------------------------
 
 /*!
  * @class BamFileIn
  * @headerfile <seqan/bam_io.h>
- * @brief Class that provides an easy to use interface for reading SAM and BAM files.
- *
+ * @typedef SmartFile
+ * @implements FormattedInputFileConcept
  * @signature class BamFileIn;
+ *
+ * @brief Class for reading SAM and BAM files.
  *
  * @section Example
  *
@@ -71,22 +73,30 @@ namespace seqan {
  *
  * @signature BamFileIn::BamFileIn([fileName[, openMode]]);
  *
- * @param[in] fileName The path to the SAM or BAM file to load, <tt>char const *</tt>.
+ * @param[in] fileName The path to the SAM or BAM file to read, <tt>char const *</tt>.
  * @param[in] openMode The open mode. Type: <tt>int</tt>.
  */
 
 typedef SmartFile<Bam, Input> BamFileIn;
 
+SEQAN_CONCEPT_IMPL((BamFileIn), (FormattedInputFileConcept));
+
+// ----------------------------------------------------------------------------
+// Type BamFileOut
+// ----------------------------------------------------------------------------
+
 /*!
  * @class BamFileOut
  * @headerfile <seqan/bam_io.h>
- * @brief Class that provides an easy to use interface for writing SAM and BAM files.
- *
+ * @typedef SmartFile
+ * @implements FormattedOutputFileConcept
  * @signature class BamFileOut;
+ *
+ * @brief Class for writing SAM and BAM files.
  */
 
 /*!
- * @fn BamFileIn::BamFileOut
+ * @fn BamFileOut::BamFileOut
  * @brief Constructor
  *
  * @signature BamFileOut::BamFileOut([fileName[, openMode]]);
@@ -96,6 +106,8 @@ typedef SmartFile<Bam, Input> BamFileIn;
  */
 
 typedef SmartFile<Bam, Output> BamFileOut;
+
+SEQAN_CONCEPT_IMPL((BamFileOut), (FormattedOutputFileConcept));
 
 // ============================================================================
 // Metafunctions
@@ -144,20 +156,6 @@ _mapFileFormatToCompressionFormat(Bam)
 // ----------------------------------------------------------------------------
 // Function readRecord(); BamHeader
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn BamFileIn#readRecord
- * @brief Read one @link BamAlignmentHeader @endlink or @link BamAlignmentRecord @endlink from a @link BamFileIn @endlink object.
- *
- * @signature int readRecord(header, bamFileIn);
- * @signature int readRecord(record, bamFileIn);
- *
- * @param[out]   header     The @link BamAlignmentHeader @endlink to read the header information into. Of type
- *                          @link BamAlignmentHeader @endlink.
- * @param[out]   record     The @link BamAlignmentRecord @endlink to read the next alignment record into. Of type
- *                          @link BamAlignmentRecord @endlink.
- * @param[in,out] bamFileIn The @link BamFileIn @endlink object to read from.
- */
 
 // support for dynamically chosen file formats
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
@@ -283,18 +281,6 @@ readBatch(TRecords & records, SmartFile<Bam, Input, TSpec> & file, TSize maxReco
 // ----------------------------------------------------------------------------
 // Function writeRecord(); BamHeader
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn BamFileOut#writeRecord
- * @brief Write one @link BamAlignmentHeader @endlink or @link BamAlignmentRecord @endlink to a @link BamFileOut @endlink object.
- *
- * @signature int writeRecord(bamFileOut, header);
- * @signature int writeRecord(bamFileOut, record);
- *
- * @param[in,out] bamFileOut    The @link BamFileOut @endlink object to write to.
- * @param[in]     header        The @link BamAlignmentHeader @endlink to write out.
- * @param[in]     record        The @link BamAlignmentRecord @endlink to write out.
-*/
 
 // support for dynamically chosen file formats
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
