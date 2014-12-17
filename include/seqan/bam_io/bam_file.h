@@ -49,12 +49,15 @@ namespace seqan {
 
 /*!
  * @class BamFileIn
+ * @signature typedef SmartFile<Bam, Input> BamFileIn;
+ * @implements FormattedFileInConcept
+ * @extends SmartFile
  * @headerfile <seqan/bam_io.h>
- * @typedef SmartFile
- * @implements FormattedInputFileConcept
- * @signature class BamFileIn;
  *
  * @brief Class for reading SAM and BAM files.
+ *
+ * @see BamHeader
+ * @see BamAlignmentRecord
  *
  * @section Example
  *
@@ -79,20 +82,21 @@ namespace seqan {
 
 typedef SmartFile<Bam, Input> BamFileIn;
 
-SEQAN_CONCEPT_IMPL((BamFileIn), (FormattedInputFileConcept));
-
 // ----------------------------------------------------------------------------
 // Type BamFileOut
 // ----------------------------------------------------------------------------
 
 /*!
  * @class BamFileOut
+ * @signature typedef SmartFile<Bam, Output> BamFileOut;
+ * @implements FormattedFileOutConcept
+ * @extends SmartFile
  * @headerfile <seqan/bam_io.h>
- * @typedef SmartFile
- * @implements FormattedOutputFileConcept
- * @signature class BamFileOut;
  *
  * @brief Class for writing SAM and BAM files.
+ *
+ * @see BamHeader
+ * @see BamAlignmentRecord
  */
 
 /*!
@@ -106,8 +110,6 @@ SEQAN_CONCEPT_IMPL((BamFileIn), (FormattedInputFileConcept));
  */
 
 typedef SmartFile<Bam, Output> BamFileOut;
-
-SEQAN_CONCEPT_IMPL((BamFileOut), (FormattedOutputFileConcept));
 
 // ============================================================================
 // Metafunctions

@@ -68,6 +68,27 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
+// Class BamIndex
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class BamIndex
+ * @headerfile <seqan/bam_io.h>
+ *
+ * @brief Access to BAM indices.
+ *
+ * @signature template <typename TSpec>
+ *            class BamIndex;
+ *
+ * This is an abstract class; don't use it itself but its specializations.
+ * 
+ * @see BamFileIn
+ */
+
+template <typename TSpec>
+class BamIndex;
+
+// ----------------------------------------------------------------------------
 // Tag Bai
 // ----------------------------------------------------------------------------
 
@@ -159,8 +180,6 @@ public:
  * @section Remarks
  *
  * This function fails if <tt>refID</tt>/<tt>pos</tt> are invalid.
- *
- * @see BamIndex#jumpToRegion
  */
 
 static inline void
@@ -310,14 +329,10 @@ jumpToRegion(SmartFile<Bam, Input, TSpec> & bamFile,
  *
  * @signature bool jumpToOrphans(bamFileIn, hasAlignments, index);
  *
- * @param[in,out] bamFileIn      The @link BgzfStream @endlink object to jump with.
+ * @param[in,out] bamFileIn      The @link BamFileIn @endlink object to jump with.
  * @param[out]    hasAlignments  A <tt>bool</tt> that is set to true if there are any orphans.
- * @param[in]     index          The index to use for jumping.
- *
- * @see BamIndex#jumpToOrphans
+ * @param[in]     index          The @link BamIndex @endlink to use for jumping.
  */
-
-// TODO(holtgrew): Parameter order, see jumpToRegion()!
 
 template <typename TSpec, typename TNameStore, typename TNameStoreCache>
 bool jumpToOrphans(SmartFile<Bam, Input, TSpec> & bamFile,

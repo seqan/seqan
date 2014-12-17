@@ -182,7 +182,7 @@ public:
  * @class BamHeader
  * @headerfile <seqan/bam_io.h>
  * @implements FormattedFileHeaderConcept
- * @signature String<BamHeaderRecord>;
+ * @signature typedef String<BamHeaderRecord> BamHeader;
  * @brief Represent the information of the BAM header.
  *
  * @see BamFileIn
@@ -190,8 +190,6 @@ public:
  */
 
 typedef String<BamHeaderRecord> BamHeader;
-
-SEQAN_CONCEPT_IMPL((BamHeader), (FormattedFileHeaderConcept));
 
 // ============================================================================
 // Functions
@@ -211,15 +209,6 @@ swap(BamHeaderRecord &a, BamHeaderRecord &b)
 // ----------------------------------------------------------------------------
 // Function clear()
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn BamHeader::clear
- * @brief Clear BamHeader object.
- *
- * @signature void clear(header);
- *
- * @param[in,out] header The record to clear.
- */
 
 /*!
  * @fn BamHeaderRecord::clear

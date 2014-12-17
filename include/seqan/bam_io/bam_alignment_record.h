@@ -264,8 +264,6 @@ public:
     BamAlignmentRecord() : _qID(MaxValue<unsigned>::VALUE) { clear(*this); }
 };
 
-SEQAN_CONCEPT_IMPL((BamAlignmentRecord), (FormattedFileRecordConcept));
-
 // ============================================================================
 // Functions
 // ============================================================================
