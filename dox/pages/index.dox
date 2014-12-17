@@ -23,12 +23,12 @@ Alternatively you might want to check the <a href="http://seqan.readthedocs.org/
         <h3>Read Mapping</h3>
         <p>Most modern read mappers first identify candidate regions in the reference sequence approximately or using heuristics.  Then, they verify the found locations.  SeqAn can help with both and also provides facilities for making I/O easier.</p>
         <table>
-            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/SimpleReadMapping" target="_top" data-lang-entity="tutorial">Read Mapping</a></li></ul></td><td>instructive introductions</td></tr>
+            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/SimpleReadMapping.html" target="_top" data-lang-entity="tutorial">Read Mapping</a></li></ul></td><td>instructive introductions</td></tr>
             <tr><td><ul><li>@link Index @endlink</li></ul></td><td>class and subclasses can be used for index-based search</td></tr>
             <tr><td><ul><li>@link Finder @endlink</li><li>@link Pattern @endlink</li></ul></td><td>can be used to implement online string search</td></tr>
             <tr><td><ul><li>@link Align @endlink</li><li>@link globalAlignment @endlink</li></ul></td><td>alignments can be used for the verification</td></tr>
-            <tr><td><ul><li>@link SequenceStream @endlink</li><li>@link FaiIndex @endlink</li></ul></td><td>reads files sequentially whereas the latter class allows fast random access for FASTA files</td></tr>
-            <tr><td><ul><li>@link BamStream @endlink</li></ul></td><td>used to read and write SAM and BAM files</td></tr>
+            <tr><td><ul><li>@link SeqFileIn @endlink</li></ul></td><td>used to read FASTA and FASTQ files</td></tr>
+            <tr><td><ul><li>@link BamFileOut @endlink</li></ul></td><td>used to write SAM and BAM files</td></tr>
             <tr><td><ul><li>@link FragmentStore @endlink</li></ul></td><td>allows for managing read alignments and reading/writing from/to SAM</td></tr>
         </table>
     </li>
@@ -36,19 +36,19 @@ Alternatively you might want to check the <a href="http://seqan.readthedocs.org/
         <h3>File I/O</h3>
         <p>SeqAn has support for most common file formats in Bioinformatics. The following lists the most convenient access methods.</p>
         <table>
-            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial.html" target="_top" data-lang-entity="tutorial">I/O Basics</a></li></ul></td><td>instructive introductions</td></tr>
-            <tr><td><ul><li>@link VcfStream @endlink</li><li>@link VcfRecord @endlink</li></ul></td><td>VCF</td></tr>
-            <tr><td><ul><li>@link GffStream @endlink</li><li>@link GffRecord @endlink</li></ul></td><td>GFF, GTF</td></tr>
-            <tr><td><ul><li>@link BamStream @endlink</li><li>@link BamAlignmentRecord @endlink</li></ul></td><td>SAM, BAM</td></tr>
-            <tr><td><ul><li>@link SequenceStream @endlink</li><li>@link FaiIndex @endlink</li></ul></td><td>FASTA, FASTQ</td></tr>
-            <tr><td><ul><li>@link BedStream @endlink</li><li>@link BedRecord @endlink</li></ul></td><td>BED</td></tr>
+            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/InputOutputOverview.html" target="_top" data-lang-entity="tutorial">I/O Overview</a></li></ul></td><td>instructive introductions</td></tr>
+            <tr><td><ul><li>@link SeqFileIn @endlink</li><li>@link SeqFileOut @endlink</li><li>@link FaiIndex @endlink</li></ul></td><td>FASTA, FASTQ</td></tr>
+            <tr><td><ul><li>@link BamFileIn @endlink</li><li>@link BamFileOut @endlink</li></ul></td><td>SAM, BAM</td></tr>
+            <tr><td><ul><li>@link VcfFileIn @endlink</li><li>@link VcfFileOut @endlink</li></ul></td><td>VCF</td></tr>
+            <tr><td><ul><li>@link BedFileIn @endlink</li><li>@link BedFileOut @endlink</li></ul></td><td>BED</td></tr>
+            <tr><td><ul><li>@link GffFileIn @endlink</li><li>@link GffFileOut @endlink</li></ul></td><td>GFF, GTF</td></tr>
         </table>
     </li>
     <li>
         <h3>Sequence Alignment <small>and Multiple Sequence Alignment</small></h3>
         <p>Sequence alignment and multiple sequence alignment are classic problems in Bioinformatics.</p>
         <table>
-            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/AlignmentRepresentation" target="_top" data-lang-entity="tutorial">Alignment Representation</a></li><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/PairwiseSequenceAlignment" target="_top" data-lang-entity="tutorial">Pairwise Sequence Alignment</a></li><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/MultipleSequenceAlignment" target="_top" data-lang-entity="tutorial">Multiple Sequence Alignment</a></li></ul></td><td>instructive introductions</td></tr>
+            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/AlignmentRepresentation.html" target="_top" data-lang-entity="tutorial">Alignment Representation</a></li><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/PairwiseSequenceAlignment.html" target="_top" data-lang-entity="tutorial">Pairwise Sequence Alignment</a></li><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/MultipleSequenceAlignment.html" target="_top" data-lang-entity="tutorial">Multiple Sequence Alignment</a></li></ul></td><td>instructive introductions</td></tr>
             <tr><td><ul><li>@link globalAlignment @endlink</li></ul></td><td>provides dynamic programming algorithms for global sequence alignment with various parameters</td></tr>
             <tr><td><ul><li>@link localAlignment @endlink</li></ul></td><td></td></tr>
             <tr><td><ul><li>@link LocalAlignmentEnumerator @endlink</li></ul></td><td>offers the Waterman-Eggert algorithm for enumerating suboptimal local alignments</td></tr>
@@ -60,7 +60,7 @@ Alternatively you might want to check the <a href="http://seqan.readthedocs.org/
         <h3>Graph <small>Data Structures and Algorithms</small></h3>
         <p>Often, graphs come in handy to model subproblems in sequence analysis. SeqAn provides basic support for graphs and graph algorithms.</p>
         <table>
-            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/Graphs" target="_top" data-lang-entity="tutorial">Graphs</a></li></ul></td><td>instructive introductions</td></tr>
+            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/Graphs.html" target="_top" data-lang-entity="tutorial">Graphs</a></li></ul></td><td>instructive introductions</td></tr>
             <tr><td><ul><li>@link Graph @endlink</li></ul></td><td>central class (including subclasses)</td></tr>
             <tr><td><ul><li>@link DirectedGraph @endlink</li><li>@link UndirectedGraph @endlink.</li></ul></td><td>simple directed and undirected graphs structures</td></tr>
             <tr><td><ul><li>@link Automaton @endlink</li><li>@link WordGraph @endlink</li><li>@link HmmGraph @endlink</li></ul></td><td>special subclasses for sequence analysis</td></tr>
