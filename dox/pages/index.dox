@@ -27,8 +27,8 @@ Alternatively you might want to check the <a href="http://seqan.readthedocs.org/
             <tr><td><ul><li>@link Index @endlink</li></ul></td><td>class and subclasses can be used for index-based search</td></tr>
             <tr><td><ul><li>@link Finder @endlink</li><li>@link Pattern @endlink</li></ul></td><td>can be used to implement online string search</td></tr>
             <tr><td><ul><li>@link Align @endlink</li><li>@link globalAlignment @endlink</li></ul></td><td>alignments can be used for the verification</td></tr>
-            <tr><td><ul><li>@link SequenceStream @endlink</li><li>@link FaiIndex @endlink</li></ul></td><td>reads files sequentially whereas the latter class allows fast random access for FASTA files</td></tr>
-            <tr><td><ul><li>@link BamStream @endlink</li></ul></td><td>used to read and write SAM and BAM files</td></tr>
+            <tr><td><ul><li>@link SeqFileIn @endlink</li></ul></td><td>used to read FASTA and FASTQ files</td></tr>
+            <tr><td><ul><li>@link BamFileOut @endlink</li></ul></td><td>used to write SAM and BAM files</td></tr>
             <tr><td><ul><li>@link FragmentStore @endlink</li></ul></td><td>allows for managing read alignments and reading/writing from/to SAM</td></tr>
         </table>
     </li>
@@ -36,12 +36,12 @@ Alternatively you might want to check the <a href="http://seqan.readthedocs.org/
         <h3>File I/O</h3>
         <p>SeqAn has support for most common file formats in Bioinformatics. The following lists the most convenient access methods.</p>
         <table>
-            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial.html" target="_top" data-lang-entity="tutorial">I/O Basics</a></li></ul></td><td>instructive introductions</td></tr>
-            <tr><td><ul><li>@link VcfStream @endlink</li><li>@link VcfRecord @endlink</li></ul></td><td>VCF</td></tr>
-            <tr><td><ul><li>@link GffStream @endlink</li><li>@link GffRecord @endlink</li></ul></td><td>GFF, GTF</td></tr>
-            <tr><td><ul><li>@link BamStream @endlink</li><li>@link BamAlignmentRecord @endlink</li></ul></td><td>SAM, BAM</td></tr>
-            <tr><td><ul><li>@link SequenceStream @endlink</li><li>@link FaiIndex @endlink</li></ul></td><td>FASTA, FASTQ</td></tr>
-            <tr><td><ul><li>@link BedStream @endlink</li><li>@link BedRecord @endlink</li></ul></td><td>BED</td></tr>
+            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/InputOutputOverview.html" target="_top" data-lang-entity="tutorial">I/O Overview</a></li></ul></td><td>instructive introductions</td></tr>
+            <tr><td><ul><li>@link SeqFileIn @endlink</li><li>@link SeqFileOut @endlink</li><li>@link FaiIndex @endlink</li></ul></td><td>FASTA, FASTQ</td></tr>
+            <tr><td><ul><li>@link BamFileIn @endlink</li><li>@link BamFileOut @endlink</li><li>@link BamAlignmentRecord @endlink</li></ul></td><td>SAM, BAM</td></tr>
+            <tr><td><ul><li>@link VcfFileIn @endlink</li><li>@link VcfFileOut @endlink</li><li>@link VcfRecord @endlink</li></ul></td><td>VCF</td></tr>
+            <tr><td><ul><li>@link BedFileIn @endlink</li><li>@link BedFileOut @endlink</li><li>@link BedRecord @endlink</li></ul></td><td>BED</td></tr>
+            <tr><td><ul><li>@link GffFileIn @endlink</li><li>@link GffFileOut @endlink</li><li>@link GffRecord @endlink</li></ul></td><td>GFF, GTF</td></tr>
         </table>
     </li>
     <li>
