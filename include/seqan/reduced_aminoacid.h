@@ -45,10 +45,10 @@
 #include <seqan/reduced_aminoacid/reduced_aminoacid_murphy10_base.h>
 #include <seqan/reduced_aminoacid/reduced_aminoacid_murphy10_tables.h>
 
-#include <seqan/reduced_aminoacid/reduced_aminoacid_cluster_red_base.h>
-#include <seqan/reduced_aminoacid/reduced_aminoacid_cluster_red_tables_20_to_n_b62.h>
-#include <seqan/reduced_aminoacid/reduced_aminoacid_cluster_red_tables_22_to_n_b62.h>
-#include <seqan/reduced_aminoacid/reduced_aminoacid_cluster_red_tables_24_to_n_b62.h>
+// #include <seqan/reduced_aminoacid/reduced_aminoacid_cluster_red_base.h>
+// #include <seqan/reduced_aminoacid/reduced_aminoacid_cluster_red_tables_20_to_n_b62.h>
+// #include <seqan/reduced_aminoacid/reduced_aminoacid_cluster_red_tables_22_to_n_b62.h>
+// #include <seqan/reduced_aminoacid/reduced_aminoacid_cluster_red_tables_24_to_n_b62.h>
 
 #include <seqan/reduced_aminoacid/reduced_aminoacid_base_late.h>
 

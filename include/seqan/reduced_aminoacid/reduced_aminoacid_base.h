@@ -60,8 +60,7 @@ namespace seqan {
  * @signature template <typename TReductionSpec>
  * using ReducedAminoAcid = SimpleType<unsigned char, ReducedAminoAcid_<TReductionSpec> >;
  *
- * @tparam TReductionSpec Either @link Murphy10 @endlink or a specialization of
- * @link ClusterReduction @endlink
+ * @tparam TReductionSpec Currently only @link Murphy10 @endlink available
  *
  * @section Remarks
  *
@@ -71,7 +70,6 @@ namespace seqan {
  * the full definition, i.e.
  * <tt>SimpleType&lt;unsigned char, ReducedAminoAcid_&lt;TReductionSpec&gt; &gt;</tt>.
  *
- * @see ClusterReduction
  * @see Murphy10
  */
 
