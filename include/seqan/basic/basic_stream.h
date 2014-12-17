@@ -401,6 +401,16 @@ struct EmptyFieldError : ParseError
  * @result Type    The resulting direction iterator.
  */
 
+/*!
+ * @mfn ContainerConcept#DirectionIterator
+ * @brief Return the direction iterator for the given direction.
+ *
+ * @signature DirectionIterator<TContainer>::Type;
+ *
+ * @tparam TContainer The container to query for its direction iterator.
+ * @result Type       The resulting direction iterator.
+ */
+
 template <typename TObject, typename TDirection>
 struct DirectionIterator :
     If<Is<StreamConcept<TObject> >,

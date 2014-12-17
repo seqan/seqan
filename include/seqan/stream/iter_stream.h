@@ -454,9 +454,9 @@ struct Size<Iter<TStream, StreamIterator<TDirection> > > : Size<TStream> {};
  * @fn StreamConcept#directionIterator
  * @brief Returns direction iterator for Stream.
  *
- * @sigature TDirIter directionIterator(stream, dirTag);
+ * @signature TDirIter directionIterator(stream, dirTag);
  *
- * @param[in] stream The @link Stream @endlink object to compute iterator for.
+ * @param[in] stream The @link StreamConcept @endlink object to compute iterator for.
  * @param[in] dirTag Direction tag, one of the @link StreamDirectionTags @endlink.
  */
 
@@ -476,7 +476,7 @@ directionIterator(TStream &stream, TDirection const &)
  * @param[in] streamBuf The @link ContainerConcept container @endlink object to compute iterator for.
  * @param[in] dirTag    Direction tag, one of the @link StreamDirectionTags @endlink.
  *
- * @return TDirIter The resulting @link ContainerConcept#DirectionIterator DirectionIterator @endlink.
+ * @return TDirIter The resulting @link ContainerConcept#DirectionIterator @endlink.
  */
 
 template <typename TContainer, typename TDirection>
@@ -494,7 +494,7 @@ directionIterator(TContainer &cont, TDirection const &)
  * @fn StreamIterator#reserveChunk
  * @brief Reserve a chunk in the host of the StreamIterator
  *
- * @sigature void reserveChunk(iter, len, dirTag);
+ * @signature void reserveChunk(iter, len, dirTag);
  *
  * @param[in] iter   The @link StreamIterator @endlink object to reserve chunks for.
  * @param[in] len    The length of the chunk to reserve.
