@@ -253,7 +253,7 @@ assignValue(T const & me,
 // ---------------------------------------------------------------------------
 
 /*!
- * @fn BasicOutputIteratorConcept#moveValue
+ * @fn OutputIteratorConcept#moveValue
  * @headerfile <seqan/sequence.h>
  * @brief Move a value of a container to a given position.
  * 
