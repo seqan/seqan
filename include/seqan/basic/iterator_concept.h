@@ -170,7 +170,7 @@ SEQAN_CONCEPT(IteratorAssociatedTypesConcept, (T))
  * 
  * The SeqAn iterators mirror the definitions from <a href="http://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
  * 
- * @see BasicOutputIteratorConcept
+ * @see OutputIteratorConcept
  */
 
 /*!
@@ -255,7 +255,7 @@ SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)
 };
 
 /*!
- * @concept BasicOutputIteratorConcept
+ * @concept OutputIteratorConcept
  * @extends IteratorAssociatedTypesConcept
  * @extends CopyConstructibleConcept
  * @headerfile <seqan/basic.h>
@@ -286,7 +286,7 @@ SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)
  */
 
 /*!
- * @fn BasicOutputIteratorConcept#assignValue
+ * @fn OutputIteratorConcept#assignValue
  * @brief Assigns value to iterator.
  * @deprecated Use dereferencement and assignment instead.
  * 
@@ -297,7 +297,7 @@ SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)
  */
 
 /*!
- * @fn BasicOutputIteratorConcept#operator++(suffix)
+ * @fn OutputIteratorConcept#operator++(suffix)
  * @brief C++ built-in suffix increment operator.
  * 
  * @signature TIterator operator++(it, i)
@@ -309,7 +309,7 @@ SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)
  */
 
 /*!
- * @fn BasicOutputIteratorConcept#operator++(prefix)
+ * @fn OutputIteratorConcept#operator++(prefix)
  * @brief C++ built-in prefix increment operator.
  * 
  * @signature TIterator operator++(it)
@@ -320,7 +320,7 @@ SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)
  */
 
 /*!
- * @fn BasicOutputIteratorConcept#goNext
+ * @fn OutputIteratorConcept#goNext
  * @brief Iterates to next position.
  * 
  * @signature void goNext(it);
@@ -330,7 +330,7 @@ SEQAN_CONCEPT_REFINE(InputIteratorConcept, (T), (IteratorAssociatedTypesConcept)
  * This function is equivalent to <tt>++iterator</tt>.
  */
 
-SEQAN_CONCEPT_REFINE(BasicOutputIteratorConcept, (T), (CopyConstructible))
+SEQAN_CONCEPT_REFINE(OutputIteratorConcept, (T), (CopyConstructible))
 {
     typedef typename Value<T>::Type TValue;
 
@@ -339,7 +339,7 @@ SEQAN_CONCEPT_REFINE(BasicOutputIteratorConcept, (T), (CopyConstructible))
     T      x;
     TValue v;
 
-    SEQAN_CONCEPT_USAGE(BasicOutputIteratorConcept)
+    SEQAN_CONCEPT_USAGE(OutputIteratorConcept)
     {
         *x = v;
         assignValue(x, v);
@@ -393,7 +393,7 @@ SEQAN_CONCEPT_REFINE(ForwardIteratorConcept, (T), (InputIteratorConcept)(Default
 /*!
  * @concept MutableForwardIteratorConcept
  * @extends ForwardIteratorConcept
- * @extends BasicOutputIteratorConcept
+ * @extends OutputIteratorConcept
  * @headerfile <seqan/basic.h>
  * 
  * @brief A @link ForwardIteratorConcept Forward Iterator @endlink that allows dereferenced assignment.
@@ -401,7 +401,7 @@ SEQAN_CONCEPT_REFINE(ForwardIteratorConcept, (T), (InputIteratorConcept)(Default
  * The SeqAn iterators mirror the definitions from <a href="http://generic-programming.org/languages/conceptcpp/concept_web.php?header=iterator">ConceptC++</a>.
  */
 
-SEQAN_CONCEPT_REFINE(MutableForwardIteratorConcept, (T), (ForwardIteratorConcept)(BasicOutputIteratorConcept))
+SEQAN_CONCEPT_REFINE(MutableForwardIteratorConcept, (T), (ForwardIteratorConcept)(OutputIteratorConcept))
 {
     typedef typename Value<T>::Type      TValue;
 
