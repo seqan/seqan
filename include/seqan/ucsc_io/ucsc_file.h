@@ -110,18 +110,6 @@ struct FileFormat<SmartFile<Ucsc, TDirection, TSpec> >
 // Function readRecord(); UcscRecord
 // ----------------------------------------------------------------------------
 
-/*!
- * @fn UcscFileIn#readRecord
- * @brief Reading records from a UcscFileIn.
- *
- * @signature void readRecord(record, file);
- *
- * @param[out] record The resulting @link UcscRecord @endlink.
- * @param[out] file   The UcscFileIn to read from.
- *
- * @throw IOError in case of problems.
- */
-
 // support for dynamically chosen file formats
 template <typename TForwardIter>
 inline void
@@ -157,18 +145,6 @@ void readRecord(UcscRecord & record, SmartFile<Ucsc, Input, TSpec> & file)
 // ----------------------------------------------------------------------------
 // Function writeRecord(); UcscRecord
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn UcscFileIn#writeRecord
- * @brief Writing records to a UcscFileIn.
- *
- * @signature void readRecord(record, file);
- *
- * @param[out] file   The UcscFileIn to write to.
- * @param[out] record The @link UcscRecord @endlink to write out.
- *
- * @throw IOError in case of problems.
- */
 
 // support for dynamically chosen file formats
 template <typename TTarget>
