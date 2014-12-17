@@ -45,6 +45,7 @@
 
 using namespace seqan;
 
+#if 0
 SEQAN_DEFINE_TEST(test_reduced_aminoacid_cluster_red)
 {
     typedef SimpleType<unsigned char, ReducedAminoAcid_<ClusterReduction<8> > >
@@ -87,6 +88,7 @@ SEQAN_DEFINE_TEST(test_reduced_aminoacid_cluster_red)
         SEQAN_ASSERT_EQ(CharString(conv), "ARRRCRRGRIIRIFPAAFFIRRA*");
     }
 }
+#endif
 
 SEQAN_DEFINE_TEST(test_reduced_aminoacid_murphy10)
 {
