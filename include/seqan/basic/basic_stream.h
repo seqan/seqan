@@ -1009,10 +1009,6 @@ write(TOValue * optr, TIValue * &iptr, TSize n)
 // Function write(Iterator<Input>)
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Why is TSize required to be an integer and not simply size_t here?
-// TODO(holtgrew): A lot of overloads for this function are undocumented. What can be written to? ForwardIteratorConcept?
-// TODO(holtgrew): Everything below is undocumented.
-
 /*!
  * @fn ContainerConcept#write
  * @brief Allows writing to containers, just as writing with @link Iter#write @endlink.

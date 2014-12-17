@@ -73,7 +73,7 @@ class BufferedStreamBuf;
  *            class BufferedStream;
  *
  * @tparam TUnbufferedStream The type of the unbuffered @link StreamConcept stream @endlink to wrap.
- * @tparam TDirection        The stream direction, one of @link StreamDirectionTags @endlink.
+ * @tparam TDirection        The stream direction, one of @link DirectionTags @endlink.
  */
 
 template <typename TUnbufferedStream, typename TDirection>
