@@ -161,7 +161,7 @@ void readRecord(GenomicRegion & record, SmartFile<SimpleIntervals, Input, TSpec>
  * @signature void readRecord(record, file);
  *
  * @param[out] file   The SimpleIntervalsFileIn to write to.
- * @param[out] record The @link GenomicReegion @endlink to write out.
+ * @param[out] record The @link GenomicRegion @endlink to write out.
  *
  * @throw IOError in case of problems.
  */
