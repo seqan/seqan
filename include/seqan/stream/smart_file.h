@@ -65,11 +65,9 @@ struct StorageSwitch;
 /*!
  * @concept FormattedFileConcept
  * @headerfile <seqan/stream.h>
- *
+ * @brief Concept for formatted files.
  * @signature concept FormattedFileConcept;
  *
- * @brief Concept for formatted files.
- * 
  * A formatted file consists of a @link FormattedFileHeaderConcept Header @endlink
  * and a list of @link FormattedFileRecordConcept Records @endlink.
  */
@@ -81,11 +79,9 @@ struct StorageSwitch;
 /*!
  * @concept FormattedFileHeaderConcept
  * @headerfile <seqan/stream.h>
- *
+ * @brief Concept for header of formatted files.
  * @signature concept FormattedFileHeaderConcept;
  *
- * @brief Concept for header of formatted files.
- * 
  * @see BamHeader
  * @see VcfHeader
  * @see BedHeader
@@ -99,10 +95,8 @@ struct StorageSwitch;
 /*!
  * @concept FormattedFileRecordConcept
  * @headerfile <seqan/stream.h>
- *
+ * @brief Concept for record of formatted files.
  * @signature concept FormattedFileRecordConcept;
- *
- * @brief Concept for records of formatted files.
  *
  * @see BamAlignmentRecord
  * @see VcfRecord
@@ -115,13 +109,14 @@ struct StorageSwitch;
 // ----------------------------------------------------------------------------
 
 /*!
- * @concept FormattedFileInConcept Input FormattedFileConcept
- * @extends FormattedFileConcept
+ * @concept FormattedFileInConcept
  * @headerfile <seqan/stream.h>
- *
- * @signature concept FormattedFileInConcept : FormattedFileConcept;
- *
  * @brief Concept for formatted input files (for reading).
+ * @signature concept FormattedFileInConcept : FormattedFileConcept;
+ * @extends FormattedFileConcept
+ *
+ * A formatted input file can read @link FormattedFileHeaderConcept Header @endlink
+ * and @link FormattedFileRecordConcept Records @endlink.
  *
  * @see BamFileIn
  * @see VcfFileIn
@@ -149,13 +144,14 @@ struct StorageSwitch;
 // ----------------------------------------------------------------------------
 
 /*!
- * @concept FormattedFileOutConcept Output FormattedFileConcept
- * @extends FormattedFileConcept
+ * @concept FormattedFileOutConcept
  * @headerfile <seqan/stream.h>
- *
- * @signature concept FormattedFileOutConcept : FormattedFileConcept;
- *
  * @brief Concept for formatted output files (for writing).
+ * @signature concept FormattedFileOutConcept : FormattedFileConcept;
+ * @extends FormattedFileConcept
+ *
+ * A formatted output file can write @link FormattedFileHeaderConcept Header @endlink
+ * and @link FormattedFileRecordConcept Records @endlink.
  *
  * @see BamFileOut
  * @see VcfFileOut
@@ -456,8 +452,8 @@ struct DefaultOpenMode<SmartFile<TFileType, TDirection, TSpec>, TDummy> :
 // ----------------------------------------------------------------------------
 // Helper Function _throwIf().
 // ----------------------------------------------------------------------------
-
 // Helper functions that reduce number of "uncaught exception" false positives in static analysis tools.
+
 template <typename TException> void _throwIf(TException const & e, True const & /*tag*/) { SEQAN_THROW(e); }
 template <typename TException> void _throwIf(TException const & /*e*/, False const & /*tag*/) { /*nop*/ }
 
@@ -476,7 +472,15 @@ directionIterator(SmartFile<TFileType, TDirection, TSpec> & file, TDirection con
 // Function format()
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Document me, including demo snippet showing isEqual()...
+/*!
+ * @fn SmartFile#format
+ * @brief Return the format of a SmartFile.
+ *
+ * @signature TFormat format(file);
+ *
+ * @param[in] file The SmartFile to check.
+ * @return TFormat The type as returned from @link FileFormat @endlink.
+ */
 
 template <typename TFileType, typename TDirection, typename TSpec>
 inline typename FileFormat<SmartFile<TFileType, TDirection, TSpec> >::Type &
@@ -489,6 +493,16 @@ format(SmartFile<TFileType, TDirection, TSpec> & file)
 // Function setFormat()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn SmartFile#setFormat
+ * @brief Set the format of a SmartFile.
+ *
+ * @signature void setFormat(file, format);
+ *
+ * @param[in,out] file The SmartFile to change.
+ * @param[in]     format The @link FileFormat @endlink to set.
+ */
+
 template <typename TFileType, typename TDirection, typename TSpec, typename TFormat>
 inline void
 setFormat(SmartFile<TFileType, TDirection, TSpec> & file, TFormat format)
@@ -499,6 +513,15 @@ setFormat(SmartFile<TFileType, TDirection, TSpec> & file, TFormat format)
 // ----------------------------------------------------------------------------
 // Function guessFormat()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn SmartFile#guessFormat
+ * @brief Guess the format of an open SmartFile.
+ *
+ * @signature bool guessFormat(file);
+ *
+ * @param[in,out] file The open SmartFile for which the format is to be guessed.
+ */
 
 template <typename TFileType, typename TSpec>
 inline bool guessFormat(SmartFile<TFileType, Input, TSpec> & file)
