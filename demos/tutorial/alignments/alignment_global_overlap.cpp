@@ -31,4 +31,3 @@ int main()
     return 0;
 }
 //![alignment]
-
