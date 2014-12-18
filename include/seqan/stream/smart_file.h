@@ -81,11 +81,6 @@ struct StorageSwitch;
  * @headerfile <seqan/stream.h>
  * @brief Concept for header of formatted files.
  * @signature concept FormattedFileHeaderConcept;
- *
- * @see BamHeader
- * @see VcfHeader
- * @see BedHeader
- * @see GffHeader
  */
 
 // ----------------------------------------------------------------------------
@@ -97,11 +92,6 @@ struct StorageSwitch;
  * @headerfile <seqan/stream.h>
  * @brief Concept for record of formatted files.
  * @signature concept FormattedFileRecordConcept;
- *
- * @see BamAlignmentRecord
- * @see VcfRecord
- * @see BedRecord
- * @see GffRecord
  */
 
 // ----------------------------------------------------------------------------
@@ -117,11 +107,6 @@ struct StorageSwitch;
  *
  * A formatted input file can read @link FormattedFileHeaderConcept Header @endlink
  * and @link FormattedFileRecordConcept Records @endlink.
- *
- * @see BamFileIn
- * @see VcfFileIn
- * @see BedFileIn
- * @see GffFileIn
  */
 
 /*!
@@ -152,11 +137,6 @@ struct StorageSwitch;
  *
  * A formatted output file can write @link FormattedFileHeaderConcept Header @endlink
  * and @link FormattedFileRecordConcept Records @endlink.
- *
- * @see BamFileOut
- * @see VcfFileOut
- * @see BedFileOut
- * @see GffFileOut
  */
 
 /*!
