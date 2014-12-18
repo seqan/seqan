@@ -359,8 +359,7 @@ bool jumpToOrphans(SmartFile<Bam, Input, TSpec> & bamFile,
     BamAlignmentRecord record;
     __uint64 offset = MaxValue<__uint64>::VALUE;
     __uint64 result = 0;
-    int res = setPosition(bamFile, aliOffset);
-    if (res != 0)
+    if (!setPosition(bamFile, aliOffset))
         return false;  // Error while seeking.
     while (!atEnd(bamFile))
     {
@@ -378,8 +377,7 @@ bool jumpToOrphans(SmartFile<Bam, Input, TSpec> & bamFile,
     // Jump back to the first alignment.
     if (offset != MaxValue<__uint64>::VALUE)
     {
-        setPosition(bamFile, offset, SEEK_SET);
-        if (res != 0)
+        if (!setPosition(bamFile, offset, SEEK_SET))
             return false;  // Error while seeking.
     }
 
