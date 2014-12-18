@@ -32,6 +32,5 @@ int main()
     globalAlignment(align, scoringScheme);
     std::cerr << "Resulting alignment\n" << align << "\n";
 
-    // FRAGMENT(footer)
     return 0;
 }

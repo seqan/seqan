@@ -1,4 +1,4 @@
-// FRAGMENT(initialization)
+//![initialization]
 #include <iostream>
 #include <seqan/find.h>
 
@@ -8,8 +8,9 @@ int main()
 {
     CharString haystack = "Simon, send more money!";
     CharString needle = "more";
+//![initialization]
 
-// FRAGMENT(output)
+//![option]
     Finder<CharString> finder(haystack);
     Pattern<CharString, Myers<> > pattern(needle);
     while (find(finder, pattern, -2))
@@ -18,3 +19,5 @@ int main()
 
     return 0;
 }
+//![option]
+

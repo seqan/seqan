@@ -1,4 +1,4 @@
-// FRAGMENT(main)
+//![main]
 #include <iostream>
 #include <seqan/align.h>
 
@@ -6,14 +6,15 @@ using namespace seqan;
 
 int main()
 {
-    // FRAGMENT(typedef)
+//![main]
+//![typedef]
     typedef String<Dna> TSequence;
     typedef StringSet<TSequence> TStringSet;
     typedef StringSet<TSequence, Dependent<> > TDepStringSet;
     typedef Graph<Alignment<TDepStringSet> > TAlignGraph;
+//![typedef]
 
-    // FRAGMENT(init)
-
+//![init]
     TSequence seq1 = "TTGT";
     TSequence seq2 = "TTAGT";
 
@@ -22,8 +23,9 @@ int main()
     appendValue(strings, seq2);
 
     TAlignGraph alignG(strings);
+//![init]
 
-    // FRAGMENT(construct)
+//![construct]
     std::cout << alignG << std::endl;
 
     addEdge(alignG, addVertex(alignG, positionToId(stringSet(alignG), 0), 0, 2),
@@ -38,3 +40,5 @@ int main()
 
     return 0;
 }
+//![construct]
+

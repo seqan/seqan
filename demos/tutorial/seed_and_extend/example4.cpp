@@ -1,4 +1,4 @@
-// FRAGMENT(header)
+//![header]
 #include <seqan/align.h>
 #include <seqan/stream.h>
 #include <seqan/score.h>
@@ -9,7 +9,8 @@ using namespace seqan;
 
 int main()
 {
-    // FRAGMENT(example)
+//![header]
+//![example]
     // The horizontal and vertical sequence (database and query).
     CharString seqH = "The quick BROWN fox jumped again!";
     CharString seqV =     "thick BROWN boxes of brownies!";
@@ -33,7 +34,10 @@ int main()
     // TODO(holtgrew): Use seed diagonals as bands.
     globalAlignment(align, scoringScheme);
     std::cerr << "Resulting alignment\n" << align << "\n";
+//![example]
 
-    // FRAGMENT(footer)
+//![footer]
     return 0;
 }
+//![footer]
+

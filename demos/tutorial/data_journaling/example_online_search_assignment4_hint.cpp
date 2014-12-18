@@ -3,7 +3,7 @@
 
 using namespace seqan;
 
-// FRAGMENT(searchAtBorder)
+//![searchAtBorder]
 template <typename TJournalEntriesIterator, typename TJournal, typename TPattern>
 void _searchAtBorder(String<int> & hitTarget,
                      TJournalEntriesIterator & entriesIt,
@@ -18,9 +18,12 @@ void _searchAtBorder(String<int> & hitTarget,
 
     // [D] Scan pattern in current window and report possible hits.
 }
+//![searchAtBorder]
 
-// FRAGMENT(main)
+//![main]
 int main()
 {
     return 0;
 }
+//![main]
+

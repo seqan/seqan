@@ -1,12 +1,13 @@
-//FRAGMENT(includes)
+//![includes]
 #include <iostream>
 
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
 using namespace seqan;
+//![includes]
 
-// FRAGMENT(print-strings-rec)
+//![print-strings-rec]
 // Helper function for printPermutations().
 void printStringsRec(String<char> & current, unsigned int pos)
 {
@@ -23,8 +24,9 @@ void printStringsRec(String<char> & current, unsigned int pos)
         std::cout << current << std::endl;
     }
 }
+//![print-strings-rec]
 
-// FRAGMENT(print-strings)
+//![print-strings]
 // Print all strings of the alphabet {a, ..., z} of length len.
 void printStrings(int len)
 {
@@ -37,10 +39,13 @@ void printStrings(int len)
     // To iterate: human -- to recurse: DIVINE.
     printStringsRec(current, 0);
 }
+//![print-strings]
 
-//FRAGMENT(main)
+//![main]
 int main()
 {
     printStrings(3);
     return 0;
 }
+//![main]
+

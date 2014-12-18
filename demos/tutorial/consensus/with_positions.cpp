@@ -1,4 +1,4 @@
-// FRAGMENT(includes)
+//![includes]
 #include <iostream>
 
 #include <seqan/store.h>
@@ -8,7 +8,8 @@ using namespace seqan;
 
 int main()
 {
-// FRAGMENT(fill_store)
+//![includes]
+//![fill_store]
     FragmentStore<> store;
     // Resize contigStore and contigNameStore (required for printing the first layout).
     resize(store.contigStore, 1);
@@ -42,16 +43,20 @@ int main()
     AlignedReadLayout layout;
     layoutAlignment(layout, store);
     printAlignment(std::cout, layout, store, /*contigID=*/ 0, /*beginPos=*/ 0, /*endPos=*/ 80, 0, 30);
+//![fill_store]
 
-// FRAGMENT(compute_consensus)
+//![compute_consensus]
     ConsensusAlignmentOptions options;
     options.useContigID = true;
     consensusAlignment(store, options);
+//![compute_consensus]
 
-// FRAGMENT(print_layout)
+//![print_layout]
     std::cout << "Final alignment\n\n";
     layoutAlignment(layout, store);
     printAlignment(std::cout, layout, store, /*contigID=*/ 0, /*beginPos=*/ 0, /*endPos=*/ 80, 0, 30);
 
     return 0;
 }
+//![print_layout]
+

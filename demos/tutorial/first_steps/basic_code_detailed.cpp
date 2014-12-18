@@ -1,24 +1,29 @@
-// FRAGMENT(includes)
+//![includes]
 #include <iostream>
 #include <seqan/file.h>
 #include <seqan/sequence.h>
 
 using namespace seqan;
+//![includes]
 
-// FRAGMENT(main)
+//![main]
 int main()
 {
-    // FRAGMENT(sequences)
+//![main]
+//![sequences]
     // Initialization
     String<char> text = "This is an awesome tutorial to get to know SeqAn!";
     String<char> pattern = "tutorial";
+//![sequences]
 
-    // FRAGMENT(score)
+//![score]
     String<int> score;
-    // FRAGMENT(resize)
+//![score]
+//![resize]
     resize(score, length(text) - length(pattern) + 1);
+//![resize]
 
-    // FRAGMENT(similarity)
+//![similarity]
     // Computation of the similarities
     // Iteration over the text (outer loop)
     for (unsigned i = 0; i < length(text) - length(pattern) + 1; ++i)
@@ -32,13 +37,17 @@ int main()
         }
         score[i] = localScore;
     }
+//![similarity]
 
-    // FRAGMENT(print)
+//![print]
     // Printing the result
     for (unsigned i = 0; i < length(score); ++i)
         std::cout << score[i] << " ";
     std::cout << std::endl;
+//![print]
 
-    // FRAGMENT(end)
+//![end]
     return 0;
 }
+//![end]
+

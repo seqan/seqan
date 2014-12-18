@@ -1,4 +1,4 @@
-// FRAGMENT(header)
+//![header]
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 #include <seqan/seeds.h>
@@ -7,7 +7,8 @@ using namespace seqan;
 
 int main()
 {
-    // FRAGMENT(example)
+//![header]
+//![example]
     // The horizontal and vertical sequence (database and query).
     CharString seqH = "The quick BROWN fox jumped again!";
     CharString seqV =     "thick BROWNIES for me!";
@@ -28,7 +29,10 @@ int main()
                           endPositionH(seed)) << "\n"
               << "seedV: " << infix(seqV, beginPositionV(seed),
                           endPositionV(seed)) << "\n";
+//![example]
 
-    // FRAGMENT(footer)
+//![footer]
     return 0;
 }
+//![footer]
+

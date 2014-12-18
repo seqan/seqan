@@ -1,11 +1,12 @@
-// FRAGMENT(header)
+//![header]
 #include <fstream>
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
 using namespace seqan;
+//![header]
 
-// FRAGMENT(main)
+//![main]
 int main(int argc, char const ** argv)
 {
     typedef VirtualStream<char, Input> TVStream;
@@ -41,3 +42,5 @@ int main(int argc, char const ** argv)
 
     return 0;
 }
+//![main]
+

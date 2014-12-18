@@ -7,7 +7,7 @@
 using namespace seqan;
 
 
-// FRAGMENT(definitions)
+//![definitions]
 // define used types
 typedef FragmentStore<>                         TStore;
 typedef Value<TStore::TAnnotationStore>::Type   TAnnotation;
@@ -16,8 +16,9 @@ typedef TAnnotation::TPos                       TPos;
 typedef IntervalAndCargo<TPos, TId>             TInterval;
 typedef IntervalTree<TPos, TId>                 TIntervalTree;
 typedef Value<TStore::TAlignedReadStore>::Type  TAlignedRead;
-// FRAGMENT(definitions_end)
+//![definitions]
 
+//![definitions_end]
 // define options
 struct Options
 {
@@ -154,8 +155,9 @@ void countReadsPerGene(String<unsigned> & readsPerGene, String<TIntervalTree> co
         }
     }
 }
+//![definitions_end]
 
-// FRAGMENT(yourcode)
+//![yourcode]
 //
 // 6. Output RPKM values
 //
@@ -164,9 +166,9 @@ void outputGeneCoverage(String<unsigned> const & readsPerGene, TStore const & st
     // INSERT YOUR CODE HERE ...
     //
 }
+//![yourcode]
 
-// FRAGMENT(yourcode_end)
-
+//![yourcode_end]
 int main(int argc, char const * argv[])
 {
     Options options;
@@ -181,13 +183,17 @@ int main(int argc, char const * argv[])
 
     if (!loadFiles(store, options))
         return 1;
+//![yourcode_end]
 
-// FRAGMENT(main)
+//![main]
     extractGeneIntervals(intervals, store);
     constructIntervalTrees(intervalTrees, intervals);
     countReadsPerGene(readsPerGene, intervalTrees, store);
     outputGeneCoverage(readsPerGene, store);
-// FRAGMENT(main_end)
+//![main]
 
+//![main_end]
     return 0;
 }
+//![main_end]
+

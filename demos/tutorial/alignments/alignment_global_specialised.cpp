@@ -1,4 +1,4 @@
-// FRAGMENT(main)
+//![main]
 #include <iostream>
 #include <seqan/align.h>
 
@@ -16,11 +16,14 @@ int main()
     resize(rows(align), 2);
     assignSource(row(align, 0), seq1);
     assignSource(row(align, 1), seq2);
+//![main]
 
-// FRAGMENT(alignment)
+//![alignment]
     int score = globalAlignment(align, Score<int, Simple>(1, -1, -1), Hirschberg());
     std::cout << "Score: " << score << std::endl;
     std::cout << align << std::endl;
 
     return 0;
 }
+//![alignment]
+

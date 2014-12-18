@@ -1,11 +1,12 @@
-// FRAGMENT(includes)
+//![includes]
 #define SEQAN_PROFILE // enable time measurements
 #include <seqan/seq_io.h>
 #include <iostream>
 
 using namespace seqan;
+//![includes]
 
-// FRAGMENT(open_file)
+//![open_file]
 int main(int argc, char const * argv[])
 {
     SEQAN_PROTIMESTART(loadTime);
@@ -13,8 +14,9 @@ int main(int argc, char const * argv[])
     SeqFileIn seqFile;
     if (argc < 2 || !open(seqFile, argv[1]))
         return 1;
+//![open_file]
 
-// FRAGMENT(read_sequences)
+//![read_sequences]
     StringSet<String<Dna5Q> > seqs;
     StringSet<CharString> seqIDs;
     String<Dna5Q> seq;
@@ -35,8 +37,9 @@ int main(int argc, char const * argv[])
         appendValue(seqs, seq, Generous());
         appendValue(seqIDs, id, Generous());
     }
+//![read_sequences]
 
-// FRAGMENT(output)
+//![output]
     std::cout << "Loading " << seqCount << " sequences took " << SEQAN_PROTIMEDIFF(loadTime);
     std::cout << " seconds." << std::endl << std::endl;
     for (unsigned i = 0; i < seqCount && i < 10; ++i)
@@ -47,3 +50,5 @@ int main(int argc, char const * argv[])
 
     return 0;
 }
+//![output]
+

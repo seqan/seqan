@@ -1,20 +1,21 @@
-// FRAGMENT(includes)
+//![includes]
 #include <seqan/stream.h>
 #include <seqan/index.h>
 #include <seqan/store.h>
 #include <iostream>
 
 using namespace seqan;
+//![includes]
 
-// FRAGMENT(load_reads)
+//![load_reads]
 int main(int argc, char const * argv[])
 {
     FragmentStore<> fragStore;
     if (argc < 2 || !loadReads(fragStore, argv[1]))
         return 1;
+//![load_reads]
 
-// FRAGMENT(filter)
-
+//![filter]
     typedef FragmentStore<>::TReadSeqStore TReadSeqStore;
     typedef GetValue<TReadSeqStore>::Type TReadSeq;
     typedef Index<TReadSeqStore, IndexQGram<Shape<Dna, UngappedShape<11> >, OpenAddressing> > TIndex;
@@ -41,3 +42,5 @@ int main(int argc, char const * argv[])
 
     return 0;
 }
+//![filter]
+

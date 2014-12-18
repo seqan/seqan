@@ -153,7 +153,7 @@ void countReadsPerGene(String<unsigned> & readsPerGene, String<TIntervalTree> co
     }
 }
 
-// FRAGMENT(solution)
+//![solution]
 //
 // 6. Output RPKM values
 //
@@ -201,8 +201,9 @@ void outputGeneCoverage(String<unsigned> const & readsPerGene, TStore const & st
         std::cout << readsPerGene[j] / (mRNALengthMax / 1000.0) / millionMappedReads << std::endl;
     }
 }
+//![solution]
 
-// FRAGMENT(main)
+//![main]
 int main(int argc, char const * argv[])
 {
     Options options;
@@ -225,3 +226,5 @@ int main(int argc, char const * argv[])
 
     return 0;
 }
+//![main]
+

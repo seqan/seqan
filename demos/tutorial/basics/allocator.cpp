@@ -1,4 +1,4 @@
-// FRAGMENT(definitions)
+//![definitions]
 #include <iostream>
 #include <seqan/basic.h>
 
@@ -13,7 +13,8 @@ int main()
     int runs = 100000;
     char * buf;
     double startTime;
-// FRAGMENT(time-measurements)
+//![definitions]
+//![time-measurements]
 
     // loop through the different block sizes
     for (int i = 0; i < 3; ++i)
@@ -37,3 +38,5 @@ int main()
 
     return 0;
 }
+//![time-measurements]
+

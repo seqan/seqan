@@ -1,7 +1,7 @@
-// The comment lines containing FRAGMENT(fragment-line) are there for the
+// The comment lines containing ![fragment-line] are there for the
 // documentation system.  You can ignore them when reading this file.i
 // This is the draft for the new iterator tutorial
-// FRAGMENT(includes)
+//![includes]
 #include <iostream>
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
@@ -10,24 +10,28 @@ using namespace seqan;
 
 int main()
 {
-// FRAGMENT(metafunctions)
+//![includes]
+//![metafunctions]
     Dna5String genome = "TATANNNGCGCG";
     Iterator<Dna5String>::Type it = begin(genome);
     Iterator<Dna5String>::Type itEnd = end(genome);
-// FRAGMENT(iterators)
+//![metafunctions]
+//![iterators]
     while (it != itEnd)
     {
         std::cout << *it;
         ++it;
     }
     std::cout << std::endl;
-// FRAGMENT(standard-iterators)
+//![iterators]
+//![standard-iterators]
     for (goBegin(it, genome); !atEnd(it, genome); goNext(it))
     {
         std::cout << *it;
     }
     std::cout << std::endl;
-// FRAGMENT(rooted-iterators)
+//![standard-iterators]
+//![rooted-iterators]
     Iterator<Dna5String, Rooted>::Type it2 = begin(genome);
     for (goBegin(it2); !atEnd(it2); goNext(it2))
     {
@@ -43,7 +47,8 @@ int main()
             std::cout << 'N';
     }
     std::cout << std::endl;
-// FRAGMENT(iterator-reverse)
+//![rooted-iterators]
+//![iterators-reverse]
     goEnd(it2);
     while (!atBegin(it2))
     {
@@ -51,9 +56,12 @@ int main()
         std::cout << getValue(it2);
     }
     std::cout << std::endl;
-// FRAGMENT(assign-value)
+//![iterators-reverse]
+//![assign-value]
     assignValue(begin(genome), 'N');
     std::cout << genome << std::endl;
 
     return 0;
 }
+//![assign-value]
+

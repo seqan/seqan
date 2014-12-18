@@ -1,4 +1,4 @@
-// FRAGMENT(includes)
+//![includes]
 #include <iostream>
 #include <fstream>
 
@@ -7,8 +7,9 @@
 #include <seqan/stream.h>
 
 using namespace seqan;
+//![includes]
 
-// FRAGMENT(tags-structs)
+//![tags-structs]
 struct Gff2_;
 typedef Tag<Gff2_> Gff2;
 
@@ -30,8 +31,9 @@ struct Gff2Record
         start(0), end(0), hasScore(false), score(0), strand('.'), frame(0)
     {}
 };
+//![tags-structs]
 
-// FRAGMENT(read-record)
+//![read-record]
 template <typename TReader>
 inline void
 readRecord(Gff2Record & record, CharString & buffer, TReader & reader, Gff2 const & /*tag*/)
@@ -97,8 +99,9 @@ readRecord(Gff2Record & record, CharString & buffer, TReader & reader, Gff2 cons
     // <comment>
     readLine(record.comments, reader);
 }
+//![read-record]
 
-// FRAGMENT(read-batch)
+//![read-batch]
 template <typename TGff2Records, typename TReader>
 inline void
 readRecords(TGff2Records & records, TReader & reader, Gff2 const & /*tag*/)
@@ -111,8 +114,9 @@ readRecords(TGff2Records & records, TReader & reader, Gff2 const & /*tag*/)
         appendValue(records, record);
     }
 }
+//![read-batch]
 
-// FRAGMENT(main)
+//![main]
 int main(int argc, char const ** argv)
 {
     // Handle command line arguments, open files.
@@ -135,3 +139,5 @@ int main(int argc, char const ** argv)
 
     return 0;
 }
+//![main]
+

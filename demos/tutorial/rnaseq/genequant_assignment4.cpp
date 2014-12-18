@@ -6,8 +6,7 @@
 
 using namespace seqan;
 
-
-// FRAGMENT(definitions)
+//![definitions]
 // define used types
 typedef FragmentStore<>                         TStore;
 typedef Value<TStore::TAnnotationStore>::Type   TAnnotation;
@@ -16,8 +15,9 @@ typedef TAnnotation::TPos                       TPos;
 typedef IntervalAndCargo<TPos, TId>             TInterval;
 typedef IntervalTree<TPos, TId>                 TIntervalTree;
 typedef Value<TStore::TAlignedReadStore>::Type  TAlignedRead;
-// FRAGMENT(definitions_end)
+//![definitions]
 
+//![definitions_end]
 // define options
 struct Options
 {
@@ -125,8 +125,9 @@ void constructIntervalTrees(String<TIntervalTree> & intervalTrees,
     for (int i = 0; i < numContigs; ++i)
         createIntervalTree(intervalTrees[i], intervals[i]);
 }
+//![definitions_end]
 
-// FRAGMENT(yourcode)
+//![yourcode]
 //
 // 5. Count reads per gene
 //
@@ -135,31 +136,38 @@ void countReadsPerGene(String<unsigned> & readsPerGene, String<TIntervalTree> co
     // INSERT YOUR CODE HERE ...
     //
 }
+//![yourcode]
 
-// FRAGMENT(yourcode_end)
-
+//![yourcode_end]
 int main(int argc, char const * argv[])
 {
     Options options;
     TStore store;
     String<String<TInterval> > intervals;
-// FRAGMENT(main)
+//![yourcode_end]
+
+//![main]
     String<TIntervalTree> intervalTrees;
     String<unsigned> readsPerGene;
-// FRAGMENT(main_end)
+//![main]
 
+//![main_end]
     ArgumentParser::ParseResult res = parseOptions(options, argc, argv);
     if (res != ArgumentParser::PARSE_OK)
         return res == ArgumentParser::PARSE_ERROR;
 
     if (!loadFiles(store, options))
         return 1;
+//![main_end]
 
-// FRAGMENT(main2)
+//![main2]
     extractGeneIntervals(intervals, store);
     constructIntervalTrees(intervalTrees, intervals);
     countReadsPerGene(readsPerGene, intervalTrees, store);
-// FRAGMENT(main2_end)
+//![main2]
 
+//![main2_end]
     return 0;
 }
+//![main2_end]
+

@@ -1,10 +1,11 @@
-// FRAGMENT(includes)
+//![includes]
 #include <iostream>
 #include <seqan/index.h>
 
 using namespace seqan;
+//![includes]
 
-// FRAGMENT(initialization)
+//![initialization]
 int main()
 {
     typedef StringSet<CharString> THaystacks;
@@ -15,11 +16,14 @@ int main()
 
     Index<THaystacks> index(haystacks);
     Finder<Index<THaystacks> > finder(haystacks);
+//![initialization]
 
-// FRAGMENT(output)
+//![output]
     clear(finder);
     while (find(finder, "be"))
         std::cout << '[' << beginPosition(finder) << ',' << endPosition(finder) << ")\t" << infix(finder) << std::endl;
 
     return 0;
 }
+//![output]
+

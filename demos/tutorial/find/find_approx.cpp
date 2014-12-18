@@ -1,4 +1,4 @@
-// FRAGMENT(initialization)
+//![initialization]
 #include <iostream>
 #include <seqan/find.h>
 
@@ -8,8 +8,9 @@ int main()
 {
     CharString haystack = "Simon, send more money!";
     CharString needle = "more";
+//![initialization]
 
-// FRAGMENT(output)
+//![output]
     Finder<CharString> finder(haystack);
     Pattern<CharString, DPSearch<SimpleScore> > pattern(needle, SimpleScore(0, -2, -1));
     while (find(finder, pattern, -2))
@@ -18,3 +19,5 @@ int main()
 
     return 0;
 }
+//![output]
+

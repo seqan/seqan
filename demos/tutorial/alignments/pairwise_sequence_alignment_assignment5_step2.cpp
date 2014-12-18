@@ -1,4 +1,4 @@
-// FRAGMENT(main)
+//![main]
 #include <iostream>
 #include <seqan/align.h>
 
@@ -50,3 +50,5 @@ int main()
 
     return 0;
 }
+//![main]
+

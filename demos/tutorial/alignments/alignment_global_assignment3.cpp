@@ -1,4 +1,4 @@
-// FRAGMENT(main)
+//![main]
 #include <iostream>
 #include <seqan/align.h>
 
@@ -10,8 +10,9 @@ int main()
     typedef Align<TSequence, ArrayGaps> TAlign;
     typedef Row<TAlign>::Type TRow;
     typedef Iterator<TRow>::Type TRowIterator;
+//![main]
 
-    // FRAGMENT(init)
+//![init]
     TSequence seq1 = "AAGUGACUUAUUG";
     TSequence seq2 = "AGUCGGAUCUACUG";
 
@@ -19,13 +20,15 @@ int main()
     resize(rows(align), 2);
     assignSource(row(align, 0), seq1);
     assignSource(row(align, 1), seq2);
+//![init]
 
-    // FRAGMENT(alignment)
+//![alignment]
     int score = globalAlignment(align, MyersHirschberg());
     std::cout << "Score: " << score << std::endl;
     std::cout << align << std::endl;
+//![alignment]
 
-    // FRAGMENT(view)
+//![view]
     unsigned aliLength = _max(length(row(align, 0)), length(row(align, 1)));
     for (unsigned i = 0; i < length(rows(align)); ++i)
     {
@@ -45,3 +48,5 @@ int main()
 
     return 0;
 }
+//![view]
+
