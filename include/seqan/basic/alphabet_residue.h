@@ -526,18 +526,21 @@ unknownValueImpl(Iupac *)
  * @signature typedef SingleType<unsigned char, AminoAcid_> AminoAcid;
  * 
  * The ValueSize of <tt>AminoAcid</tt> is 26.
+ *
+ * The amino acid symbols are as follows, i.e. they are sorted alphabetically 
+ * up until the last two symbols:
+ *
+ * 'A' = 0, 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z', 'X'. '*'
  * 
- * The amino acids are enumerated from 0 to 19 in this order:
- * 
- * 'A'=0, 'R', 'N', 'D', 'C', 'Q', 'E', 'G', 'H', 'I', 'L', 'K', 'M', 'F', 'P', 'S', 'T', 'W', 'Y', 'V'=19.
- * 
- * The remaining 4 symbols are:
- * 
- * 'B'=20 (Aspartic Acid, Asparagine), 'J' = 21 (Leucine, Isoleucine), 'Z'=22 (Glutamic Acid, Glutamine), 'U' = 23 (Selenocysteine), 'X'=24 (unknown), '*'=25 (terminator)
- * 
+ * Of these 'B' is a wildcard for (Aspartic Acid, Asparagine),
+ * 'J' for (Leucine, Isoleucine), 'Z' for (Glutamic Acid, Glutamine) and
+ * 'X' for "any amino acid".
+ *
+ * 'U' refers to the rare Selenocysteine and '*' to the terminator tRNA.
+ *
  * Objects of type <tt>AminoAcid</tt> can be converted to <tt>char</tt> and vice versa.  Unknown values are converted to
  * <tt>'X'</tt>.
- * 
+ *
  * @see FiniteOrderedAlphabetConcept#ValueSize
  * @see PeptideIterator
  * @see Peptide
