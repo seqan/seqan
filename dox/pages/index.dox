@@ -23,7 +23,7 @@ Alternatively you might want to check the <a href="http://seqan.readthedocs.org/
         <h3>Read Mapping</h3>
         <p>Most modern read mappers first identify candidate regions in the reference sequence approximately or using heuristics.  Then, they verify the found locations.  SeqAn can help with both and also provides facilities for making I/O easier.</p>
         <table>
-            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/SimpleReadMapping" target="_top" data-lang-entity="tutorial">Read Mapping</a></li></ul></td><td>instructive introductions</td></tr>
+            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/SimpleReadMapping.html" target="_top" data-lang-entity="tutorial">Read Mapping</a></li></ul></td><td>instructive introductions</td></tr>
             <tr><td><ul><li>@link Index @endlink</li></ul></td><td>class and subclasses can be used for index-based search</td></tr>
             <tr><td><ul><li>@link Finder @endlink</li><li>@link Pattern @endlink</li></ul></td><td>can be used to implement online string search</td></tr>
             <tr><td><ul><li>@link Align @endlink</li><li>@link globalAlignment @endlink</li></ul></td><td>alignments can be used for the verification</td></tr>
@@ -48,7 +48,7 @@ Alternatively you might want to check the <a href="http://seqan.readthedocs.org/
         <h3>Sequence Alignment <small>and Multiple Sequence Alignment</small></h3>
         <p>Sequence alignment and multiple sequence alignment are classic problems in Bioinformatics.</p>
         <table>
-            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/AlignmentRepresentation" target="_top" data-lang-entity="tutorial">Alignment Representation</a></li><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/PairwiseSequenceAlignment" target="_top" data-lang-entity="tutorial">Pairwise Sequence Alignment</a></li><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/MultipleSequenceAlignment" target="_top" data-lang-entity="tutorial">Multiple Sequence Alignment</a></li></ul></td><td>instructive introductions</td></tr>
+            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/AlignmentRepresentation.html" target="_top" data-lang-entity="tutorial">Alignment Representation</a></li><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/PairwiseSequenceAlignment.html" target="_top" data-lang-entity="tutorial">Pairwise Sequence Alignment</a></li><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/MultipleSequenceAlignment.html" target="_top" data-lang-entity="tutorial">Multiple Sequence Alignment</a></li></ul></td><td>instructive introductions</td></tr>
             <tr><td><ul><li>@link globalAlignment @endlink</li></ul></td><td>provides dynamic programming algorithms for global sequence alignment with various parameters</td></tr>
             <tr><td><ul><li>@link localAlignment @endlink</li></ul></td><td></td></tr>
             <tr><td><ul><li>@link LocalAlignmentEnumerator @endlink</li></ul></td><td>offers the Waterman-Eggert algorithm for enumerating suboptimal local alignments</td></tr>
@@ -60,7 +60,7 @@ Alternatively you might want to check the <a href="http://seqan.readthedocs.org/
         <h3>Graph <small>Data Structures and Algorithms</small></h3>
         <p>Often, graphs come in handy to model subproblems in sequence analysis. SeqAn provides basic support for graphs and graph algorithms.</p>
         <table>
-            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/Graphs" target="_top" data-lang-entity="tutorial">Graphs</a></li></ul></td><td>instructive introductions</td></tr>
+            <tr><td><ul><li><a href="http://seqan.readthedocs.org/en/master/Tutorial/Graphs.html" target="_top" data-lang-entity="tutorial">Graphs</a></li></ul></td><td>instructive introductions</td></tr>
             <tr><td><ul><li>@link Graph @endlink</li></ul></td><td>central class (including subclasses)</td></tr>
             <tr><td><ul><li>@link DirectedGraph @endlink</li><li>@link UndirectedGraph @endlink.</li></ul></td><td>simple directed and undirected graphs structures</td></tr>
             <tr><td><ul><li>@link Automaton @endlink</li><li>@link WordGraph @endlink</li><li>@link HmmGraph @endlink</li></ul></td><td>special subclasses for sequence analysis</td></tr>
