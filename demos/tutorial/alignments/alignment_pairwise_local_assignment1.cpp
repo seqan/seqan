@@ -27,4 +27,3 @@ int main()
     return 0;
 }
 //![ali]
-

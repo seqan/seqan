@@ -56,4 +56,3 @@ int main()
     std::cout << "Number of gaps: " << gapCount << std::endl;
 }
 //![solution]
-

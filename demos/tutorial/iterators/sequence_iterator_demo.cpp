@@ -64,4 +64,3 @@ int main()
     return 0;
 }
 //![assign-value]
-
