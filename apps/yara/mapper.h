@@ -460,11 +460,11 @@ inline void openOutputFile(Mapper<TSpec, TConfig> & me)
 
     if (!opened) throw RuntimeError("Error while opening output file.");
 
-    setNameStore(context(me.outputFile), me.contigs.names);
+    setContigNames(context(me.outputFile), me.contigs.names);
 
     // Fill contig lengths.
-    resize(sequenceLengths(context(me.outputFile)), length(me.contigs.seqs));
-    transform(sequenceLengths(context(me.outputFile)), me.contigs.seqs, [&](TContigSeq const & seq) { return length(seq); });
+    resize(contigLengths(context(me.outputFile)), length(me.contigs.seqs));
+    transform(contigLengths(context(me.outputFile)), me.contigs.seqs, [&](TContigSeq const & seq) { return length(seq); });
 
     // Write header.
     BamHeader header;

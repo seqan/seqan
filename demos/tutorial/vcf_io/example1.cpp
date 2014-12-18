@@ -1,13 +1,13 @@
-#include <seqan/basic.h>
 #include <seqan/vcf_io.h>
 
 using namespace seqan;
 
 int main()
 {
-    // Open input stream.
+    // Open input file.
     VcfFileIn vcfIn("example.vcf");
-    // Open output stream, filename "-" means stdout.
+
+    // Attach to standard output.
     VcfFileOut vcfOut(vcfIn);
     open(vcfOut, std::cout, Vcf());
 
@@ -16,7 +16,7 @@ int main()
     readRecord(header, vcfIn);
     writeRecord(vcfOut, header);
 
-    // Read the file record by record.
+    // Copy the file record by record.
     VcfRecord record;
     while (!atEnd(vcfIn))
     {

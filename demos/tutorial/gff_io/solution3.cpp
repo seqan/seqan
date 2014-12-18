@@ -1,17 +1,12 @@
-#include <seqan/basic.h>
 #include <seqan/gff_io.h>
-
-#include <sstream>
-
-using namespace seqan;
 
 int main()
 {
     GffFileOut out(std::cout, Gff());
 
-    // Write out the records.
     GffRecord record;
 
+    // Fill and write out the first record.
     record.ref = "ctg123";
     record.source = "";
     record.type = "gene";
@@ -25,9 +20,11 @@ int main()
     appendValue(record.tagValues, "EDEN");
     writeRecord(out, record);
 
+    // Clear the record.
     clear(record.tagNames);
     clear(record.tagValues);
 
+    // Fill and write out the second record.
     record.ref = "ctg123";
     record.source = "";
     record.type = "TF_binding_site";

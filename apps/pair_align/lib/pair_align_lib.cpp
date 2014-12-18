@@ -1,7 +1,7 @@
 // ==========================================================================
-//                 SeqAn - The Library for Sequence Analysis
+//                            pair_align_lib.cpp
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,43 +29,12 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: René Rahn <rene.rahn@fu-berlin.de>
+// ==========================================================================
+// Definition of static variables.
 // ==========================================================================
 
-#ifndef TESTS_BAM_IO_TEST_BAM_BAM_IO_CONTEXT_H_
-#define TESTS_BAM_IO_TEST_BAM_BAM_IO_CONTEXT_H_
+#include "pair_align_lib.h"
 
-#include <seqan/basic.h>
-#include <seqan/sequence.h>
-
-#include <seqan/store.h>
-#include <seqan/bam_io.h>
-
-// TODO(weese:) the following 2 tests are insufficient
-
-SEQAN_DEFINE_TEST(test_bam_io_bam_io_context_standalone)
-{
-    using namespace seqan;
-
-    typedef String<CharString> TStrings;
-    TStrings ns;
-    NameStoreCache<TStrings> nsc(ns);
-    BamIOContext<TStrings, NameStoreCache<TStrings>, Dependent<> > bamIOContext(ns, nsc);
-    SEQAN_ASSERT_EQ(&ns, &contigNames(bamIOContext));
-    SEQAN_ASSERT_EQ(&nsc, &contigNamesCache(bamIOContext));
-}
-
-SEQAN_DEFINE_TEST(test_bam_io_bam_io_context_fragment_store)
-{
-    using namespace seqan;
-
-    typedef typename FragmentStore<>::TNameStore TNameStore;
-    typedef NameStoreCache<TNameStore>           TNameStoreCache;
-
-    FragmentStore<> store;
-    BamIOContext<TNameStore, TNameStoreCache> bamIOContext(store.contigNameStore, store.contigNameStoreCache);
-    SEQAN_ASSERT_EQ(&store.contigNameStore, &contigNames(bamIOContext));
-    SEQAN_ASSERT_EQ(&store.contigNameStoreCache, &contigNamesCache(bamIOContext));
-}
-
-#endif  // TESTS_BAM_IO_TEST_BAM_BAM_IO_CONTEXT_H_
+// Definition of static variable has to be moved to cpp file.
+int const Options::INVALID_DIAGONAL = seqan::MaxValue<int>::VALUE;

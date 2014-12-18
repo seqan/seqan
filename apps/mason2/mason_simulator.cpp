@@ -1103,23 +1103,23 @@ public:
         {
             for (unsigned j = 0; j < bamFileOuts.size(); ++j)
                 if (!empty(options.matOptions.vcfFileName))
-                    appendName(nameStoreCache(context(*bamFileOuts[j])), contigNames(context(vcfMat.vcfFileIn))[i]);
+                    appendName(contigNamesCache(context(*bamFileOuts[j])), contigNames(context(vcfMat.vcfFileIn))[i]);
                 else
-                    appendName(nameStoreCache(context(*bamFileOuts[j])), sequenceName(vcfMat.faiIndex, i));
+                    appendName(contigNamesCache(context(*bamFileOuts[j])), sequenceName(vcfMat.faiIndex, i));
             unsigned idx = 0;
-            if (!getIdByName(idx, vcfMat.faiIndex, nameStore(context(*bamFileOuts[0]))[i]))
+            if (!getIdByName(idx, vcfMat.faiIndex, contigNames(context(*bamFileOuts[0]))[i]))
             {
                 std::stringstream ss;
-                ss << "Could not find " << nameStore(context(*bamFileOuts[0]))[i] << " from VCF file in FAI index.";
+                ss << "Could not find " << contigNames(context(*bamFileOuts[0]))[i] << " from VCF file in FAI index.";
                 throw MasonIOException(ss.str());
             }
             for (unsigned j = 0; j < bamFileOuts.size(); ++j)
-                appendValue(sequenceLengths(context(*bamFileOuts[j])), sequenceLength(vcfMat.faiIndex, idx));
+                appendValue(contigLengths(context(*bamFileOuts[j])), sequenceLength(vcfMat.faiIndex, idx));
             seqan::BamHeaderRecord seqHeaderRecord;
             seqHeaderRecord.type = seqan::BAM_HEADER_REFERENCE;
-            appendValue(seqHeaderRecord.tags, seqan::Pair<seqan::CharString>("SN", nameStore(context(*bamFileOuts[0]))[i]));
+            appendValue(seqHeaderRecord.tags, seqan::Pair<seqan::CharString>("SN", contigNames(context(*bamFileOuts[0]))[i]));
             std::stringstream ss;
-            ss << sequenceLengths(context(*bamFileOuts[0]))[i];
+            ss << contigLengths(context(*bamFileOuts[0]))[i];
             appendValue(seqHeaderRecord.tags, seqan::Pair<seqan::CharString>("LN", ss.str().c_str()));
             appendValue(bamHeader, seqHeaderRecord);
         }

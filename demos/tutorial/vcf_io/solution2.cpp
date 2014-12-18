@@ -1,4 +1,3 @@
-#include <seqan/basic.h>
 #include <seqan/vcf_io.h>
 
 using namespace seqan;
@@ -7,7 +6,7 @@ int main()
 {
     try
     {
-        // Open input stream.
+        // Open input file.
         VcfFileIn vcfIn("example.vcf");
 
         // Copy over header.
@@ -16,7 +15,8 @@ int main()
 
         // Get array of counters.
         String<unsigned> counters;
-        resize(counters, length(contigNames(context(vcfIn))), 0);
+        unsigned contigsCount = length(contigNames(context(vcfIn)));
+        resize(counters, contigsCount, 0);
 
         // Read the file record by record.
         VcfRecord record;
@@ -30,18 +30,13 @@ int main()
 
         // Print result.
         std::cout << "VARIANTS ON CONTIGS\n";
-        for (unsigned i = 0; i < length(contigNames(context(vcfIn))); ++i)
+        for (unsigned i = 0; i < contigsCount; ++i)
             std::cout << contigNames(context(vcfIn))[i] << '\t'
                       << counters[i] << '\n';
     }
-    catch (IOError & e)
+    catch (seqan::Exception const & e)
     {
-        std::cerr << "=== I/O Error ===\n" << e.what() << std::endl;
-        return 1;
-    }
-    catch (ParseError & e)
-    {
-        std::cerr << "=== Parse Error ===\n" << e.what() << std::endl;
+        std::cerr << "ERROR:" << e.what() << std::endl;
         return 1;
     }
 

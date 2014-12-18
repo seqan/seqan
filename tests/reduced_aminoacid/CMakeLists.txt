@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_extras_tests_reduced_aminoacid)
+project (seqan_tests_reduced_aminoacid)
 message (STATUS "Configuring tests/reduced_aminoacid")
 
 # ----------------------------------------------------------------------------

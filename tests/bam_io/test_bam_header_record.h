@@ -55,7 +55,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_header_typedefs)
 {
     using namespace seqan;
 
-    typedef BamIOContext<>::TSequenceLengths TSequenceLengths SEQAN_UNUSED_TYPEDEF;
+    typedef BamIOContext<>::TLengthStore TLengthStore SEQAN_UNUSED_TYPEDEF;
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_header_record_class)

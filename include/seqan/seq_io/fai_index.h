@@ -126,8 +126,6 @@ clear(FaiIndexEntry_ &entry)
 class FaiIndex
 {
 public:
-    // TODO(holtgrew): The members are not publically documented for now. Keep it this way?
-
     // The name of the FASTA file.
     CharString fastaFilename;
     // The name of the FAI file.
@@ -192,7 +190,7 @@ inline void clear(FaiIndex & index)
  * @param[in]  name     The name of the sequence to look the id up for.  Type: @link ContainerConcept @endlink.
  * @param[out] rID      The id of the sequence is written here.
  *
- * @return bool true if a sequence with the given name is known in the index.
+ * @return bool <tt>true</tt> if a sequence with the given name is known in the index, <tt>false</tt> otherwise.
  */
 
 template <typename TName, typename TId>
@@ -280,8 +278,8 @@ inline __uint64 numSeqs(FaiIndex const & index)
  * @fn FaiIndex#readRegion
  * @brief Read a region through an FaiIndex.
  *
- * @signature int readRegion(str, faiIndex, rID, beginPos, endPos);
- * @signature int readRegion(str, faiIndex, region);
+ * @signature void readRegion(str, faiIndex, rID, beginPos, endPos);
+ * @signature void readRegion(str, faiIndex, region);
  *
  * @param[out] str      The @link String @endlink to read the sequence into.
  * @param[in]  faiIndex The FaiIndex to read from.
@@ -289,8 +287,6 @@ inline __uint64 numSeqs(FaiIndex const & index)
  * @param[in]  beginPos The begin position of the region to read (Type: <tt>unsigned).
  * @param[in]  endPos   The end position of the region to read  (Type: <tt>unsigned).
  * @param[in]  region   The @link GenomicRegion @endlink to read.
- *
- * @return int 0 on success, non-0 on errors.
  */
 
 template <typename TValue, typename TSpec, typename TSeqId, typename TBeginPos, typename TEndPos>
@@ -386,13 +382,11 @@ inline bool readRegion(String<TValue, TSpec> & str,
  * @fn FaiIndex#readSequence
  * @brief Load a whole sequence from a FaiIndex.
  *
- * @signature int readSequence(str, faiIndex, rID);
+ * @signature void readSequence(str, faiIndex, rID);
  *
  * @param[out] str      The @link String @endlink to read into.
  * @param[in]  faiIndex The FaiIndex to read from.
  * @param[in]  seqID    The index of the sequence in the file.
- *
- * @return int 0 on success, non-0 on errors.
  */
 
 template <typename TValue, typename TSpec>
@@ -402,21 +396,19 @@ inline void readSequence(String<TValue, TSpec> & str, FaiIndex const & index, un
 }
 
 // ----------------------------------------------------------------------------
-// Function read()
+// Function readRecord()
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn FaiIndex#read
+ * @fn FaiIndex#readRecord
  * @brief Read a FAI index from file.
  *
- * @signature int read(faiIndex, fastaFileName[, faiFileName]);
+ * @signature void readRecord(faiIndex, fastaFileName[, faiFileName]);
  *
  * @param[out] faiIndex      The FaiIndex to read into.
  * @param[in]  fastaFileName Path to the FASTA file to read.  Type: <tt>char const *</tt>.
  * @param[in]  faiFileName   Path to the FAI file to read.  Type: <tt>char const *</tt>.  Defaults to
  *                           <tt>"${fastaFileName}.fai"</tt>.
- *
- * @return int 0 on success, non-0 on errors.
  */
 
 template <typename TFwdIterator>
@@ -458,6 +450,25 @@ readRecord(FaiIndexEntry_ & entry, TFwdIterator & reader, CharString & buffer)
 
     skipLine(reader);           // Skip over line ending.
 }
+
+// ---------------------------------------------------------------------------
+// Function open()
+// ---------------------------------------------------------------------------
+
+/*!
+ * @fn FaiIndex#open
+ * @brief Open a FaiIndex object.
+ *
+ * @signature bool open(faiIndex, fastaFilename [, faiFileName]);
+ *
+ * @param[in] faiIndex      The FaiIndex to write out.
+ * @param[in] fastaFilename Path to the FASTA file to build an index for.  Type: <tt>char const *</tt>.
+ * @param[in] faiFileName The name of the FAI file to open.  This parameter is optional.  By default, the FAI
+ *                        file name is derived from the FASTA file name.  Type: <tt>char
+ *                        const *</tt>.
+ *
+ * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
+ */
 
 inline bool open(FaiIndex & index, char const * fastaFilename, char const * faiFilename)
 {
@@ -502,9 +513,9 @@ inline bool open(FaiIndex & index, char const * fastaFilename)
 
 /*!
  * @fn FaiIndex#save
- * @brief Write out an FaiIndex object.
+ * @brief Save a FaiIndex object.
  *
- * @signature int save(faiIndex[, faiFileName]);
+ * @signature bool save(faiIndex[, faiFileName]);
  *
  * @param[in] faiIndex    The FaiIndex to write out.
  * @param[in] faiFileName The name of the FAI file to write to.  This parameter is optional only if the FAI index knows
@@ -512,7 +523,7 @@ inline bool open(FaiIndex & index, char const * fastaFilename)
  *                        file name from the previous call to @link FaiIndex#build @endlink is used.  Type: <tt>char
  *                        const *</tt>.
  *
- * @return int 0 on success, 1 on errors.
+ * @return bool <tt>true</tt> on success, <tt>false</tt> otherwise.
  */
 
 inline bool save(FaiIndex const & index, char const * faiFilename)

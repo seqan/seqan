@@ -27,9 +27,9 @@ int main(int argc, char const ** argv)
     typedef StringSet<CharString> TNameStore;
     typedef NameStoreCache<TNameStore>   TNameStoreCache;
     typedef BamIOContext<TNameStore>     TBamIOContext;
-    TNameStore      nameStore;
-    TNameStoreCache nameStoreCache(nameStore);
-    TBamIOContext   context(nameStore, nameStoreCache);
+    TNameStore      contigNames;
+    TNameStoreCache contigNamesCache(contigNames);
+    TBamIOContext   context(contigNames, contigNamesCache);
 
     // Read header.
     BamHeader header;

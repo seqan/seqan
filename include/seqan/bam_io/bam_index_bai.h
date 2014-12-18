@@ -623,7 +623,7 @@ buildIndex(BamIndex<Bai> & index, char const * filename)
     BamHeader header;
     readRecord(header, bamFile);
 
-    __uint32 numRefSeqs = length(nameStore(context(bamFile)));
+    __uint32 numRefSeqs = length(contigNames(context(bamFile)));
 
     // Scan over BAM file and create index.
     BamAlignmentRecord record;

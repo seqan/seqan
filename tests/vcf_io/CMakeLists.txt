@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_extras_tests_vcf_io)
+project (seqan_tests_vcf_io)
 message (STATUS "Configuring tests/vcf_io")
 
 # ----------------------------------------------------------------------------
