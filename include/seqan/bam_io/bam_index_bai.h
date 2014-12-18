@@ -165,7 +165,7 @@ public:
  * You provide a region <tt>[pos, posEnd)</tt> on the reference <tt>refID</tt> that you want to jump to and the function
  * jumps to the first alignment in this region, if any.
  *
- * @signature bool jumpToRegion(bamFileIn, hasAlignments, bamIOContext, refID, pos, posEnd, index);
+ * @signature bool jumpToRegion(bamFileIn, hasAlignments, refID, pos, posEnd, index);
  *
  * @param[in,out] bamFileIn     The @link BamFileIn @endlink to jump with.
  * @param[out]    hasAlignments A <tt>bool</tt> that is set true if the region <tt>[pos, posEnd)</tt> has any
