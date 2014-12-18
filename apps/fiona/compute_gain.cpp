@@ -956,12 +956,12 @@ int main(int argc, char const ** argv)
     }
 
     String<unsigned> idMap;
-    resize(idMap, length(nameStore(context(inPre))), maxValue<unsigned>());
+    resize(idMap, length(contigNames(context(inPre))), maxValue<unsigned>());
     for (unsigned i = 0; i < length(ids); ++i)
     {
         trimSeqHeaderToId(ids[i]);
         unsigned idx = 0;
-        if (!getIdByName(idx, nameStoreCache(context(inPre)), ids[i]))
+        if (!getIdByName(idx, contigNamesCache(context(inPre)), ids[i]))
         {
             std::cerr << "Reference " << ids[i] << " not in SAM references!\n";
             return 1;
