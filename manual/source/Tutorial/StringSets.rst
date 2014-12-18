@@ -148,8 +148,6 @@ With the function :dox:`StringSet#positionToId` we can show that, in this case, 
    Position 0: Id 1
    Position 1: Id 0
 
-Also see :ref:`how-to-efficiently-import-millions-of-sequences` for reamarks on :dox:`ConcatDirectStringSet ConcatDirect StringSets`.
-
 Iterating over String Sets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 

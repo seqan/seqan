@@ -569,7 +569,7 @@ int readMatchesFromSamBam(
         int mScore;
 
         // Get global contigId to check, if order of reads is the same as order in contig files
-        if (!getIdByName(contigId, fragmentStore1.contigNameStoreCache, nameStore(context(bamFileIn))[record.rID]))
+        if (!getIdByName(contigId, fragmentStore1.contigNameStoreCache, contigNames(context(bamFileIn))[record.rID]))
         {
             clear(record);
             continue;

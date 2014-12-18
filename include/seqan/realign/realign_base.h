@@ -1419,7 +1419,7 @@ std::string _profileGapsStructureStr(TGapsIter begin, TGapsIter end)
         else
         {
             ProfileChar<Dna5> y = *begin;
-            unsigned x = _getMaxIndex(y);
+            unsigned x = getMaxIndex(y);
             if (x == 5)
                 ss << '=';
             else

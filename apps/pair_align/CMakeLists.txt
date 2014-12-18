@@ -31,8 +31,12 @@ add_definitions (${SEQAN_DEFINITIONS})
 # Update the list of file names below if you add source files to your application.
 add_executable (pair_align pair_align.cpp)
 
+#Before linking create static library for pair_align
+# Include lib folder to build the static library pair_align_lib.
+add_subdirectory(lib)
+
 # Add dependencies found by find_package (SeqAn).
-target_link_libraries (pair_align ${SEQAN_LIBRARIES})
+target_link_libraries (pair_align pair_align_lib ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")

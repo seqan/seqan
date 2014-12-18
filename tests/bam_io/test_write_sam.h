@@ -54,7 +54,7 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_write_header)
     BamIOContext<StringSet<CharString> > bamIOContext(contigNameStore, contigNameStoreCache);
     
     BamHeader header;
-    appendValue(sequenceLengths(bamIOContext), 10000);
+    appendValue(contigLengths(bamIOContext), 10000);
 
     BamHeaderRecord firstRecord;
     firstRecord.type = BAM_HEADER_FIRST;

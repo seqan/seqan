@@ -108,7 +108,7 @@ We then count the number of characters (and gap pseudo-characters which have an 
 
 Finally, we compute the consensus and print it to the standard output.
 At each position, the consensus is called as the character with the highest count.
-Note that ``_getMaxIndex`` breaks ties by the ordinal value of the caracters, i.e. ``A`` would be preferred over ``C``, ``C`` over ``G`` and so on.
+Note that ``getMaxIndex`` breaks ties by the ordinal value of the caracters, i.e. ``A`` would be preferred over ``C``, ``C`` over ``G`` and so on.
 
 .. includefrags:: demos/tutorial/alignments/alignment_msa_consensus.cpp
    :fragment: consensus-calling

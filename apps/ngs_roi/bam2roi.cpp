@@ -344,10 +344,10 @@ int main(int argc, char const ** argv)
     // Set the reference sequence names.
     seqan::BamHeader header;
     readRecord(header, bamFileIn);
-    for (unsigned i = 0; i < length(nameStore(context(bamFileIn))); ++i)
+    for (unsigned i = 0; i < length(contigNames(context(bamFileIn))); ++i)
     {
-        appendValue(roiBuilderF.refNames, nameStore(context(bamFileIn))[i]);
-        appendValue(roiBuilderR.refNames, nameStore(context(bamFileIn))[i]);
+        appendValue(roiBuilderF.refNames, contigNames(context(bamFileIn))[i]);
+        appendValue(roiBuilderR.refNames, contigNames(context(bamFileIn))[i]);
     }
 
     // TODO(holtgrew): This is only suited for the Illumina mate pair protocol at the moment (--> <--).
