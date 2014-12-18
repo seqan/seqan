@@ -1,4 +1,4 @@
-// FRAGMENT(main)
+//![main]
 #include <iostream>
 #include <seqan/seq_io.h>
 #include <seqan/journaled_set.h>
@@ -55,3 +55,5 @@ int main()
 
     return 0;
 }
+//![main]
+

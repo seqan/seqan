@@ -1,4 +1,4 @@
-// FRAGMENT(header)
+//![header]
 #include <seqan/stream.h>
 #include <seqan/score.h>
 #include <seqan/seeds.h>
@@ -8,7 +8,8 @@ using namespace seqan;
 
 int main()
 {
-    // FRAGMENT(example)
+//![header]
+//![example]
     typedef Seed<Simple>    TSeed;
     typedef SeedSet<TSeed> TSeedSet;
 
@@ -38,7 +39,10 @@ int main()
                   << ", " << beginPositionV(*it) << ", " << endPositionV(*it)
                   << ", " << lowerDiagonal(*it) << ", " << upperDiagonal(*it)
                   << ")\n";
+//![example]
 
-    // FRAGMENT(footer)
+//![footer]
     return 0;
 }
+//![footer]
+

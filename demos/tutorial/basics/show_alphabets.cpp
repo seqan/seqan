@@ -1,10 +1,12 @@
-// FRAGMENT(includes)
+//![includes]
 #include <seqan/sequence.h>
 #include <seqan/basic.h>
 #include <iostream>
 
 using namespace seqan;
-// FRAGMENT(showAllLettersOfMyAlphabet)
+//![includes]
+
+//![showAllLettersOfMyAlphabet]
 template <typename TAlphabet>
 void showAllLettersOfMyAlphabet(TAlphabet const &)
 {
@@ -14,8 +16,9 @@ void showAllLettersOfMyAlphabet(TAlphabet const &)
         std::cout << i << ',' << TAlphabet(i) << "  ";
     std::cout << std::endl;
 }
+//![showAllLettersOfMyAlphabet]
 
-// FRAGMENT(main)
+//![main]
 int main()
 {
     showAllLettersOfMyAlphabet(AminoAcid());
@@ -23,3 +26,5 @@ int main()
     showAllLettersOfMyAlphabet(Dna5());
     return 0;
 }
+//![main]
+

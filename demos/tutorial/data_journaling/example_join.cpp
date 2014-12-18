@@ -1,4 +1,4 @@
-// FRAGMENT(main)
+//![main]
 #include <iostream>
 #include <seqan/file.h>
 #include <seqan/journaled_set.h>
@@ -17,16 +17,18 @@ int main()
     THost seq0 = "DPKKPRGKMVNSPPAFFVQTSREEHKKKHPDASVFSKKCSERWKTMSAKEKGKFEDMAKARYEREMKTTYIPKGETYIPPKGE";
     THost seq1 = "DPHHPPKPRGKMVNSPPAFFVQTSREEHKPDASVFSKKCSERRMPNHHTMSAKEKGKFEDMAKARYEREMKTTYIPKGETYIPPKGE";
     THost seq2 = "DPKKPRGKMSSYAFFVQTSREEHKKKHPKKCDEFSKKCSERWKTMSAKEKGKFEDARYEREMKTYIPPKGE";
+//![main]
 
-    // FRAGMENT(init)
+//![init]
     setHost(journaledSet, reference);
     appendValue(journaledSet, TJournalString(seq0));
     appendValue(journaledSet, TJournalString(seq1));
     appendValue(journaledSet, TJournalString(seq2));
+//![init]
 
-    // FRAGMENT(join)
+//![join]
     join(journaledSet, 0, JoinConfig<GlobalAlign<JournaledManhatten> >());  // Simply inserts the
-    join(journaledSet, 1, JoinConfig<GlobalAlign<JournaledCompact> >());     // Uses default scoring scheme to compute compact journal.
+    join(journaledSet, 1, JoinConfig<GlobalAlign<JournaledCompact> >());    // Uses default scoring scheme to compute compact journal.
     JoinConfig<GlobalAlign<JournaledCompact> > joinConfig;
     setScoringScheme(joinConfig, Score<int, BiAffine>(0, -1, -1));    // Note the mismatch score is forbidden internally when used in the context of journaling.
     join(journaledSet, 2, joinConfig);  // Compute journal using Levenshtein distance.
@@ -37,3 +39,5 @@ int main()
 
     return 0;
 }
+//![join]
+

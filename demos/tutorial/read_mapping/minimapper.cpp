@@ -1,4 +1,4 @@
-//FRAGMENT(header)
+//![header]
 /*==========================================================================
   SeqAn - The Library for Sequence Analysis
   http://www.seqan.de
@@ -26,7 +26,8 @@
   The restrictions are explained in the tutorial chapter, together with
   suggestions on how to extend this code.
   ===========================================================================*/
-//FRAGMENT(includes)
+//![header]
+//![includes]
 #include <cstdio>
 #include <iostream>
 
@@ -36,8 +37,9 @@
 #include <seqan/store.h>
 
 using namespace seqan;
+//![includes]
 
-//FRAGMENT(typedefs)
+//![typedefs]
 // Some typedefs.
 typedef FragmentStore<>::TReadSeqStore TReadSeqStore;
 typedef Value<TReadSeqStore>::Type TReadSeq;
@@ -49,11 +51,13 @@ typedef Pattern<TIndex, Swift<SwiftSemiGlobal> > TPattern;
 typedef Finder<TContigSeq, Swift<SwiftSemiGlobal> > TFinder;
 typedef FragmentStore<>::TAlignedReadStore TAlignedReadStore;
 typedef Value<TAlignedReadStore>::Type TAlignedRead;
+//![typedefs]
 
-//FRAGMENT(global-constants)
+//![global-constants]
 const double EPSILON = 0.08;
+//![global-constants]
 
-//FRAGMENT(main-input)
+//![main-input]
 int main(int argc, char * argv[])
 {
     // 0) Handle command line arguments.
@@ -71,20 +75,23 @@ int main(int argc, char * argv[])
 
     if (!loadReads(fragStore, argv[2]))
         return 1;
+//![main-input]
 
-//FRAGMENT(pattern-finder)
+//![pattern-finder]
     // 2) Build an index over all reads and a SWIFT pattern over this index.
     TIndex index(fragStore.readSeqStore);
     TPattern pattern(index);
+//![pattern-finder]
 
-//FRAGMENT(swift)
+//![swift]
     // 3) Enumerate all epsilon matches.
     for (unsigned i = 0; i < length(fragStore.contigStore); ++i)
     {
         TFinder finder(fragStore.contigStore[i].seq);
         while (find(finder, pattern, EPSILON))
         {
-//FRAGMENT(verification)
+//![swift]
+//![verification]
             // Verify match.
             Finder<TContigSeq> verifyFinder(fragStore.contigStore[i].seq);
             setPosition(verifyFinder, beginPosition(finder));
@@ -99,11 +106,14 @@ int main(int argc, char * argv[])
             }
         }
     }
+//![verification]
 
-//FRAGMENT(main-output)
-    // 4) Write out Sam file.
+//![main-output]
+    // 4) Write out SAM file.
     BamFileOut bamFile(argv[3]);
     writeRecords(bamFile, fragStore);
 
     return 0;
 }
+//![main-output]
+

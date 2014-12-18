@@ -1,4 +1,4 @@
-// FRAGMENT(header)
+//![header]
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 #include <seqan/seeds.h>
@@ -7,7 +7,8 @@ using namespace seqan;
 
 int main()
 {
-    // FRAGMENT(example)
+//![header]
+//![example]
     // Default-construct seed.
     Seed<Simple> seed1;
     std::cout << "seed1\n"
@@ -29,7 +30,10 @@ int main()
               << "endPositionV == " << endPositionV(seed2) << "\n"
               << "lowerDiagonal == " << lowerDiagonal(seed2) << "\n"
               << "upperDiagonal == " << upperDiagonal(seed2) << "\n\n";
+//![example]
 
-    // FRAGMENT(footer)
+//![footer]
     return 0;
 }
+//![footer]
+

@@ -7,15 +7,16 @@
 using namespace seqan;
 
 
-// FRAGMENT(definitions)
+//![definitions]
 // define used types
 typedef FragmentStore<>                         TStore;
 typedef Value<TStore::TAnnotationStore>::Type   TAnnotation;
 typedef TAnnotation::TId                        TId;
 typedef TAnnotation::TPos                       TPos;
 typedef IntervalAndCargo<TPos, TId>             TInterval;
-// FRAGMENT(definitions_end)
+//![definitions]
 
+//![definitions_end]
 // define options
 struct Options
 {
@@ -79,8 +80,9 @@ bool loadFiles(TStore & store, Options const & options)
 
     return true;
 }
+//![definitions_end]
 
-// FRAGMENT(yourcode)
+//![yourcode]
 //
 // 3. Extract intervals from gene annotations (grouped by contigId)
 //
@@ -89,27 +91,32 @@ void extractGeneIntervals(String<String<TInterval> > & intervals, TStore const &
     // INSERT YOUR CODE HERE ...
     //
 }
+//![yourcode]
 
-// FRAGMENT(yourcode_end)
-
+//![yourcode_end]
 int main(int argc, char const * argv[])
 {
     Options options;
-// FRAGMENT(main)
+//![main]
     TStore store;
     String<String<TInterval> > intervals;
-// FRAGMENT(main_end)
+//![main]
 
+//![main_end]
     ArgumentParser::ParseResult res = parseOptions(options, argc, argv);
     if (res != ArgumentParser::PARSE_OK)
         return res == ArgumentParser::PARSE_ERROR;
+//![main_end]
 
-// FRAGMENT(main2)
+//![main2]
     if (!loadFiles(store, options))
         return 1;
 
     extractGeneIntervals(intervals, store);
-// FRAGMENT(main2_end)
+//![main2]
 
+//![main2_end]
     return 0;
 }
+//![main2_end]
+

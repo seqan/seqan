@@ -1,4 +1,4 @@
-// FRAGMENT(main)
+//![main]
 #include <iostream>
 #include <seqan/align.h>
 
@@ -9,15 +9,17 @@ int main()
     typedef String<char>                TSequence;  // sequence type
     typedef StringSet<TSequence, Dependent<> >   TDepStringSet;
     typedef Graph<Alignment<TDepStringSet> >    TAlignGraph;
+//![main]
 
-// FRAGMENT(init)
+//![init]
     StringSet<TSequence> seq;
     appendValue(seq, "blablablu");
     appendValue(seq, "abab");
 
     TAlignGraph alignG(seq);
+//![init]
 
-// FRAGMENT(alignment)
+//![alignment]
     AlignConfig<true, false, false, true> ac;
     int score = globalAlignment(alignG, Score<int>(1, -1, -1, -1), ac, Gotoh());
     std::cout << "Score = " << score << std::endl;
@@ -25,3 +27,5 @@ int main()
 
     return 0;
 }
+//![alignment]
+

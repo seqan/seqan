@@ -1,4 +1,4 @@
-// FRAGMENT(main)
+//![main]
 #include <iostream>
 #include <seqan/align.h>
 
@@ -14,8 +14,9 @@ int main()
 
     TSequence text =    "MISSISSIPPIANDMISSOURI";
     TSequence pattern = "SISSI";
+//![main]
 
-    // FRAGMENT(verfication)
+//![verification]
     String<int> locations;
     for (unsigned i = 0; i < length(text) - length(pattern); ++i)
     {
@@ -28,8 +29,9 @@ int main()
             appendValue(locations, i);
         }
     }
+//![verification]
 
-    // FRAGMENT(alignment)
+//![alignment]
     TGaps gapsText;
     TGaps gapsPattern;
     assignSource(gapsPattern, pattern);
@@ -46,8 +48,9 @@ int main()
         // Use semi-global alignment since we do not want to track leading/trailing gaps in the pattern.
         // Restirct search space using a band allowing at most 2 errors in vertical/horizontal direction.
         int score = globalAlignment(gapsText, gapsPattern, Score<int>(0, -1, -1), AlignConfig<true, false, false, true>(), -2, 2);
+//![alignment]
 
-        // FRAGMENT(cigar)
+//![cigar]
         TGapsIterator itGapsPattern = begin(gapsPattern);
         TGapsIterator itGapsEnd = end(gapsPattern);
 
@@ -74,7 +77,8 @@ int main()
         int numChar = 0;
         while (itGapsPattern != itGapsEnd)
         {
-            // FRAGMENT(cigarInsertion)
+//![cigar]
+//![cigarInsertion]
             // Count insertions.
             if (isGap(itGapsText))
             {
@@ -84,7 +88,8 @@ int main()
                 itGapsPattern += numGaps;
                 continue;
             }
-            // FRAGMENT(cigarDeletion)
+//![cigarInsertion]
+//![cigarDeletion]
             // Count deletions.
             if (isGap(itGapsPattern))
             {
@@ -94,7 +99,8 @@ int main()
                 itGapsPattern += numGaps;
                 continue;
             }
-            // FRAGMENT(cigarMatch)
+//![cigarDeletion]
+//![cigarMatch]
             // Count matches.
             while (*itGapsText == *itGapsPattern && itGapsPattern != itGapsEnd)
             {
@@ -108,7 +114,8 @@ int main()
                 numChar = 0;
                 continue;
             }
-            // FRAGMENT(cigarMismatch)
+//![cigarMatch]
+//![cigarMismatch]
             // Count mismatches.
             while (*itGapsText != *itGapsPattern && itGapsPattern != itGapsEnd)
             {
@@ -126,3 +133,5 @@ int main()
 
     return 0;
 }
+//![cigarMismatch]
+

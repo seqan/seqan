@@ -3,7 +3,7 @@
 
 using namespace seqan;
 
-// FRAGMENT(findInOriginalNode)
+//![findInOriginalNode]
 template <typename TJournalEntriesIterator, typename TPattern>
 void _findInOriginalNode(String<int> & hitTarget,
                          TJournalEntriesIterator & entriesIt,
@@ -20,9 +20,12 @@ void _findInOriginalNode(String<int> & hitTarget,
 
     // [E] Store the correct virtual position and check next hit.
 }
+//![findInOriginalNode]
 
-// FRAGMENT(main)
+//![main]
 int main()
 {
     return 0;
 }
+//![main]
+

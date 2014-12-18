@@ -1,4 +1,4 @@
-// FRAGMENT(header)
+//![header]
 /*==========================================================================
                 SeqAn - The Library for Sequence Analysis
                           http://www.seqan.de
@@ -19,7 +19,8 @@
  ============================================================================
   Demonstration on how to load a score matrix from a file.
  ==========================================================================*/
-// FRAGMENT(includes)
+//![header]
+//![includes]
 #include <iostream>
 
 #include <seqan/basic.h>
@@ -27,9 +28,9 @@
 #include <seqan/score.h>  // The module score.
 
 using namespace seqan;
+//![includes]
 
-
-// FRAGMENT(show-scoring-matrix)
+//![show-scoring-matrix]
 // Print a scoring scheme matrix to stdout.
 template <typename TScoreValue, typename TSequenceValue, typename TSpec>
 void showScoringMatrix(Score<TScoreValue, ScoreMatrix<TSequenceValue, TSpec> > const & scoringScheme)
@@ -49,8 +50,9 @@ void showScoringMatrix(Score<TScoreValue, ScoreMatrix<TSequenceValue, TSpec> > c
         std::cout << std::endl;
     }
 }
+//![show-scoring-matrix]
 
-// FRAGMENT(main)
+//![main]
 int main(int argc, char ** argv)
 {
     if (argc != 2)
@@ -68,3 +70,5 @@ int main(int argc, char ** argv)
 
     return 0;
 }
+//![main]
+

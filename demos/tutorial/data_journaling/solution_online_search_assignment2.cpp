@@ -1,11 +1,12 @@
-// FRAGMENT(include)
+//![include]
 #include <iostream>
 #include <seqan/seq_io.h>
 #include <seqan/journaled_set.h>
 
 using namespace seqan;
+//![include]
 
-// FRAGMENT(findPatternInReference)
+//![findPatternInReference]
 template <typename TString, typename TPattern>
 void findPatternInReference(String<int> & hits,
                             TString const & reference,
@@ -33,8 +34,9 @@ void findPatternInReference(String<int> & hits,
             appendValue(hits, pos);
     }
 }
+//![findPatternInReference]
 
-// FRAGMENT(searchPattern)
+//![searchPattern]
 template <typename TString, typename TPattern>
 void searchPattern(StringSet<String<int> > & hitSet,
                    StringSet<TString, Owner<JournaledSet> > const & journalSet,
@@ -64,8 +66,9 @@ void searchPattern(StringSet<String<int> > & hitSet,
 //        findPatternInJournalString(hitSet[i+1], journalSet[i], pattern, hitSet[0]);
     }
 }
+//![searchPattern]
 
-// FRAGMENT(loadAndJoin)
+//![loadAndJoin]
 template <typename TString, typename TSpec>
 inline int
 loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
@@ -100,8 +103,9 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
     }
     return 0;
 }
+//![loadAndJoin]
 
-// FRAGMENT(main)
+//![main]
 int main()
 {
     // Definition of the used types.
@@ -123,8 +127,9 @@ int main()
     TSequence pattern = "GTGGT";
     std::cout << "Search for: " << pattern << ":\n";
     searchPattern(hitSet, journalSet, pattern);
+//![main]
 
-    // FRAGMENT(printResult)
+//![printResult]
     if (empty(hitSet[0]))
     {
         std::cout << "No hit in reference " << std::endl;
@@ -139,3 +144,5 @@ int main()
 
     return 0;
 }
+//![printResult]
+

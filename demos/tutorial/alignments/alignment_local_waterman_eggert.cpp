@@ -1,4 +1,4 @@
-// FRAGMENT(main)
+//![main]
 #include <iostream>
 #include <seqan/align.h>
 
@@ -7,15 +7,17 @@ using namespace seqan;
 int main()
 {
     typedef String<Dna> TSequence;                 // sequence type
-    typedef Align<TSequence, ArrayGaps> TAlign;      // align type
+    typedef Align<TSequence, ArrayGaps> TAlign;    // align type
+//![main]
 
-// FRAGMENT(init)
+//![init]
     Align<String<char> > ali;
     resize(rows(ali), 2);
     assignSource(row(ali, 0), "ataagcgtctcg");
     assignSource(row(ali, 1), "tcatagagttgc");
+//![init]
 
-// FRAGMENT(alignment)
+//![alignment]
     Score<int> scoring(2, -1, -2, 0);
     LocalAlignmentEnumerator<Score<int>, Unbanded> enumerator(scoring, 5);
     while (nextLocalAlignment(ali, enumerator))
@@ -27,3 +29,5 @@ int main()
     }
     return 0;
 }
+//![alignment]
+

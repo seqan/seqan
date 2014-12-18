@@ -1,5 +1,4 @@
-// FRAGMENT(result)
-
+//![result]
 #include <iostream>
 #include <seqan/file.h>
 #include <seqan/sequence.h>
@@ -131,3 +130,5 @@ int main()
 
     return 0;
 }
+//![result]
+

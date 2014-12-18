@@ -1,4 +1,4 @@
-// FRAGMENT(solution)
+//![solution]
 #include <iostream>
 #include <seqan/align.h>
 
@@ -55,3 +55,5 @@ int main()
     // Print the result.
     std::cout << "Number of gaps: " << gapCount << std::endl;
 }
+//![solution]
+

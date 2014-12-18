@@ -1,24 +1,27 @@
-// FRAGMENT(swap-headers)
+//![swap-headers]
 #include <iostream>
 #include <seqan/basic.h>
 #include <seqan/stream.h>
 
 using namespace seqan;
+//![swap-headers]
 
-// FRAGMENT(swap-declaration)
+//![swap-declaration]
 template <typename T>
 void swap(T & container, int i, int j, int k)
 {
+//![swap-declaration]
 
-// FRAGMENT(swap-metafunction)
+//![swap-metafunction]
     // define helper variable
     T help;
     resize(help, k);
 
     for (int x = 0; x < k; ++x)
         value(help, x) = container[i + x];
+//![swap-metafunction]
 
-// FRAGMENT(swap-work)
+//![swap-work]
     for (int x = 0; x < k; ++x)
         value(container, i + x) = value(container, j + x);
     for (int x = 0; x < k; ++x)
@@ -26,8 +29,9 @@ void swap(T & container, int i, int j, int k)
 
     return;
 }
+//![swap-work]
 
-// FRAGMENT(swap-main)
+//![swap-main]
 int main()
 {
     typedef String<Dna> TDnaString;
@@ -41,8 +45,9 @@ int main()
     appendValue(numbers, 1);   appendValue(numbers, 1);   appendValue(numbers, 1);
     appendValue(numbers, 3);   appendValue(numbers, 3);   appendValue(numbers, 3);
     appendValue(numbers, 3);   appendValue(numbers, 3);   appendValue(numbers, 3);
+//![swap-main]
 
-// FRAGMENT(swap-apply)
+//![swap-apply]
     swap(dna, 1, 4, 2);
     std::cout << dna << "\n";
 
@@ -53,3 +58,5 @@ int main()
 
     return 0;
 }
+//![swap-apply]
+

@@ -1,11 +1,12 @@
-// FRAGMENT(include)
+//![include]
 #include <iostream>
 #include <seqan/seq_io.h>
 #include <seqan/journaled_set.h>
 
 using namespace seqan;
+//![include]
 
-// FRAGMENT(searchAtBorder)
+//![searchAtBorder]
 template <typename TJournalEntriesIterator, typename TJournal, typename TPattern>
 void _searchAtBorder(String<int> & hitTarget,
                      TJournalEntriesIterator & entriesIt,
@@ -44,8 +45,9 @@ void _searchAtBorder(String<int> & hitTarget,
             appendValue(hitTarget, position(nodeIter));
     }
 }
+//![searchAtBorder]
 
-// FRAGMENT(findInPatchNodePart1)
+//![findInPatchNodePart1]
 template <typename TJournalEntriesIterator, typename TJournal, typename TPattern>
 void _findInPatchNode(String<int> & hitTarget,
                       TJournalEntriesIterator & entriesIt,
@@ -53,15 +55,17 @@ void _findInPatchNode(String<int> & hitTarget,
                       TPattern const & pattern)
 {
     typedef typename Iterator<TJournal const, Standard>::Type TJournalIterator;
+//![findInPatchNodePart1]
 
-    // FRAGMENT(findInPatchNodePart2)
+//![findInPatchNodePart2]
     // Search for pattern in the insertion node.
     TJournalIterator patchIter = iter(journal, entriesIt->virtualPosition);
     TJournalIterator patchEnd = patchIter + _max(0, (int)entriesIt->length - (int)length(pattern) + 1);
     // Move step by step over search region.
     for (; patchIter != patchEnd; ++patchIter)
     {
-        // FRAGMENT(findInPatchNodePart3)
+//![findInPatchNodePart2]
+//![findInPatchNodePart3]
         TJournalIterator verifyIter = patchIter;
         bool isHit = true;
         // Search for pattern in the insertion node.
@@ -78,8 +82,9 @@ void _findInPatchNode(String<int> & hitTarget,
             appendValue(hitTarget, position(patchIter));
     }
 }
+//![findInPatchNodePart3]
 
-// FRAGMENT(findInOriginalNode)
+//![findInOriginalNode]
 template <typename TJournalEntriesIterator, typename TPattern>
 void _findInOriginalNode(String<int> & hitTarget,
                          TJournalEntriesIterator & entriesIt,
@@ -105,8 +110,9 @@ void _findInOriginalNode(String<int> & hitTarget,
         }
     }
 }
+//![findInOriginalNode]
 
-// FRAGMENT(findPatternInJournalStringPart1)
+//![findPatternInJournalStringPart1]
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TPattern>
 void findPatternInJournalString(String<int> & hitTarget,
                                 String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & journal,
@@ -119,13 +125,14 @@ void findPatternInJournalString(String<int> & hitTarget,
 
     if (length(pattern) > length(journal))
         return;
+//![findPatternInJournalStringPart1]
 
-    // FRAGMENT(findPatternInJournalStringPart2)
+//![findPatternInJournalStringPart2]
     TJournalEntriesIterator it = begin(journal._journalEntries);
     TJournalEntriesIterator itEnd = findInJournalEntries(journal._journalEntries, length(journal) - length(pattern) + 1) + 1;
+//![findPatternInJournalStringPart2]
 
-
-    // FRAGMENT(findPatternInJournalStringPart3)
+//![findPatternInJournalStringPart3]
     while (it != itEnd)
     {
         if (it->segmentSource == SOURCE_ORIGINAL) // Find a possible hit in the current source vertex.
@@ -141,8 +148,9 @@ void findPatternInJournalString(String<int> & hitTarget,
         ++it;
     }
 }
+//![findPatternInJournalStringPart3]
 
-// FRAGMENT(findPatternInReference)
+//![findPatternInReference]
 template <typename TString, typename TPattern>
 void findPatternInReference(String<int> & hits,
                             TString const & reference,
@@ -170,8 +178,9 @@ void findPatternInReference(String<int> & hits,
             appendValue(hits, pos);
     }
 }
+//![findPatternInReference]
 
-// FRAGMENT(searchPatternPart1)
+//![searchPatternPart1]
 template <typename TString, typename TPattern>
 void searchPattern(StringSet<String<int> > & hitSet,
                    StringSet<TString, Owner<JournaledSet> > const & journalSet,
@@ -190,19 +199,22 @@ void searchPattern(StringSet<String<int> > & hitSet,
     // Reset the hitSet to avoid phantom hits coming from a previous search.
     clear(hitSet);
     resize(hitSet, length(journalSet) + 1);
-    // FRAGMENT(searchPatternPart2)
+//![searchPatternPart1]
+//![searchPatternPart2]
     // Access the reference sequence.
     THost & globalRef = host(journalSet);
     // Search for pattern in the reference sequence.
     findPatternInReference(hitSet[0], globalRef, pattern);
+//![searchPatternPart2]
 
-    // FRAGMENT(searchPatternPart3)
+//![searchPatternPart3]
     // Search for pattern in the journaled sequences.
     for (unsigned i = 0; i < length(journalSet); ++i)
         findPatternInJournalString(hitSet[i + 1], journalSet[i], pattern, hitSet[0]);
 }
+//![searchPatternPart3]
 
-// FRAGMENT(laodAndJoin)
+//![laodAndJoin]
 template <typename TString, typename TSpec>
 inline int
 loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
@@ -237,8 +249,9 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
     }
     return 0;
 }
+//![laodAndJoin]
 
-// FRAGMENT(main)
+//![main]
 int main()
 {
     // Definition of the used types.
@@ -260,9 +273,9 @@ int main()
     TSequence pattern = "GTGGT";
     std::cout << "Search for: " << pattern << ":\n";
     searchPattern(hitSet, journalSet, pattern);
+//![main]
 
-
-    // FRAGMENT(printResult)
+//![printResult]
     if (empty(hitSet[0]))
     {
         std::cout << "No hit in reference " << std::endl;
@@ -291,3 +304,5 @@ int main()
     }
     return 0;
 }
+//![printResult]
+

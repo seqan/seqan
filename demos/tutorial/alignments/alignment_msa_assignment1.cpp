@@ -1,4 +1,4 @@
-//FRAGMENT(main)
+//![main]
 #include <iostream>
 #include <seqan/align.h>
 #include <seqan/graph_msa.h>
@@ -29,3 +29,5 @@ int main()
 
     return 0;
 }
+//![main]
+
