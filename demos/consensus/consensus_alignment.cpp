@@ -10,8 +10,8 @@ int main()
 {
     // Reference to simulate reads from.
     Dna5String ref =
-            "AATGGATGGCAAAATAGTTGTTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTTAGTCAAATTTT"
-            "CAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCTAGCTAATATTATGTGGCAT";
+        "AATGGATGGCAAAATAGTTGTTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTTAGTCAAATTTT"
+        "CAATACTGTACAATCTTCTCTAGAGCAGAGCAAAAGAATAAAAGCACTTCTAGCTAATATTATGTGGCAT";
 
     // Read length and step width for reads.
     int const READ_LENGTH = 50;
@@ -38,8 +38,8 @@ int main()
     std::cout << "Initial Alignment\n\n";
     AlignedReadLayout layout;
     layoutAlignment(layout, store);
-    printAlignment(std::cout, layout, store, /*contigID=*/0,
-                   /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
+    printAlignment(std::cout, layout, store, /*contigID=*/ 0,
+                   /*beginPos=*/ 0, /*endPos=*/ (int)length(ref), 0, 30);
 
     // Compute consensus alignment.
     ConsensusAlignmentOptions options;
@@ -48,8 +48,8 @@ int main()
     // Print final consensus alignment.
     std::cout << "\n\nFinal Consensus Alignment\n\n";
     layoutAlignment(layout, store);
-    printAlignment(std::cout, layout, store, /*contigID=*/0,
-                   /*beginPos=*/0, /*endPos=*/(int)length(ref), 0, 30);
+    printAlignment(std::cout, layout, store, /*contigID=*/ 0,
+                   /*beginPos=*/ 0, /*endPos=*/ (int)length(ref), 0, 30);
 
     return 0;
 }

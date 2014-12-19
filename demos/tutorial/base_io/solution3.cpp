@@ -1,5 +1,7 @@
 #include <seqan/bam_io.h>
 
+using namespace seqan;
+
 int main(int argc, char const ** argv)
 {
     if (argc < 2)
@@ -9,8 +11,8 @@ int main(int argc, char const ** argv)
     }
 
     // Open input BAM stream or file.
-    seqan::BamFileIn bamFileIn;
-    if (isEqual(seqan::CharString(argv[1]), "-"))
+    BamFileIn bamFileIn;
+    if (isEqual(CharString(argv[1]), "-"))
     {
         open(bamFileIn, std::cin);
     }
@@ -21,10 +23,10 @@ int main(int argc, char const ** argv)
     }
 
     // Open output SAM stream or file.
-    seqan::BamFileOut samFileOut;
+    BamFileOut samFileOut;
     if (argc < 3)
     {
-        open(samFileOut, std::cout, seqan::Sam());
+        open(samFileOut, std::cout, Sam());
     }
     else if (!open(samFileOut, argv[2]))
     {
@@ -33,23 +35,23 @@ int main(int argc, char const ** argv)
     }
 
     // Copy header.
-    seqan::BamHeader header;
+    BamHeader header;
     try
     {
-      readRecord(header, bamFileIn);
-      writeRecord(samFileOut, header);
+        readRecord(header, bamFileIn);
+        writeRecord(samFileOut, header);
     }
-    catch (seqan::ParseError const & e)
+    catch (ParseError const & e)
     {
         std::cerr << "ERROR: input header is badly formatted. " << e.what() << "\n";
     }
-    catch (seqan::IOError const & e)
+    catch (IOError const & e)
     {
         std::cerr << "ERROR: could not copy header. " << e.what() << "\n";
     }
 
     // Copy all records.
-    seqan::BamAlignmentRecord record;
+    BamAlignmentRecord record;
     while (!atEnd(bamFileIn))
     {
         try
@@ -57,11 +59,11 @@ int main(int argc, char const ** argv)
             readRecord(header, bamFileIn);
             writeRecord(samFileOut, record);
         }
-        catch (seqan::ParseError const & e)
+        catch (ParseError const & e)
         {
             std::cerr << "ERROR: input record is badly formatted. " << e.what() << "\n";
         }
-        catch (seqan::IOError const & e)
+        catch (IOError const & e)
         {
             std::cerr << "ERROR: could not copy record. " << e.what() << "\n";
         }

@@ -107,7 +107,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	// greater-operator for two SkewDCStreams
     template <typename TValue>
     struct CompareSkewDCStream :
-        public ::std::binary_function < SkewDCStream<TValue>,
+        public std::binary_function < SkewDCStream<TValue>,
                                         SkewDCStream<TValue>,
                                         bool >
     {
@@ -140,7 +140,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	// greater-operator for two SkewDCStreams (optimized for bit-packed character tuples)
     template <typename T1, typename T2, typename T, unsigned SIZE>
     struct CompareSkewDCStream< Triple<T1, T2, Tuple<T, SIZE, BitPacked<> >, Pack> > :
-        public ::std::binary_function < SkewDCStream<Triple<T1, T2, Tuple<T, SIZE, BitPacked<> >, Pack> >,
+        public std::binary_function < SkewDCStream<Triple<T1, T2, Tuple<T, SIZE, BitPacked<> >, Pack> >,
                                         SkewDCStream<Triple<T1, T2, Tuple<T, SIZE, BitPacked<> >, Pack> >,
                                         bool >
     {

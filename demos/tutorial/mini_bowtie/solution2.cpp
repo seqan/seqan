@@ -24,7 +24,7 @@ void search(TIter & it, TStringSet const & pattern)
     }
 }
 
-int main(int argc, char *argv[]) 
+int main(int argc, char * argv[])
 {
     typedef String<Dna5> TString;
     typedef StringSet<String<Dna5> > TStringSet;
@@ -39,22 +39,26 @@ int main(int argc, char *argv[])
     find(finder, "AC");
     std::cerr << position("AC") << std::endl;
 */
-    // reading the command line arguments   
-    if (argc < 3) {
+    // reading the command line arguments
+    if (argc < 3)
+    {
         std::cerr << "Invalid number of arguments." << std::endl
                   << "USAGE: minimapper GENOME.fasta READS.fasta OUT.sam" << std::endl;
         return 1;
     }
     // declaration and initialization of the fragment store
     FragmentStore<> fragStore;
-    if (!loadContigs(fragStore, argv[1])) return 1;
-    if (!loadReads(fragStore, argv[2])) return 1;
+    if (!loadContigs(fragStore, argv[1]))
+        return 1;
+
+    if (!loadReads(fragStore, argv[2]))
+        return 1;
 
     // combining the contigs of the reference into one string set
     StringSet<TString> text;
     for (unsigned i = 0; i < length(fragStore.contigStore); ++i)
         appendValue(text, fragStore.contigStore[i].seq);
-        
+
     // forward search
     reverse(text);
     TIndex fmIndex(text);

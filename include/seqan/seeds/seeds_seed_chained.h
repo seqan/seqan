@@ -196,7 +196,7 @@ struct Iterator<Seed<ChainedSeed, TConfig>, Standard>
 {
     typedef Seed<ChainedSeed, TConfig> TSeed_;
     typedef typename Value<TSeed_>::Type TSeedDiagonal_;
-    typedef typename ::std::list<TSeedDiagonal_>::iterator Type;
+    typedef typename std::list<TSeedDiagonal_>::iterator Type;
 };
 
 template <typename TConfig>
@@ -204,7 +204,7 @@ struct Iterator<Seed<ChainedSeed, TConfig> const, Standard>
 {
     typedef Seed<ChainedSeed, TConfig> TSeed_;
     typedef typename Value<TSeed_>::Type TSeedDiagonal_;
-    typedef typename ::std::list<TSeedDiagonal_>::const_iterator Type;
+    typedef typename std::list<TSeedDiagonal_>::const_iterator Type;
 };
 
 // ===========================================================================

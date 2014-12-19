@@ -347,7 +347,7 @@ inline typename Size<Dequeue<TValue, TSpec> >::Type
 reserve(Dequeue<TValue, TSpec> &me, TSize_ new_capacity, Tag<TExpand> tag)
 {
 	typedef typename Size<Dequeue<TValue, TSpec> >::Type TSize;
-//	::std::cout << "resize to "<<new_capacity<<::std::endl;
+//	std::cout << "resize to "<<new_capacity<<std::endl;
 	TSize len = length(me);
 	if (len < new_capacity && length(me.data_string) != new_capacity)
 	{

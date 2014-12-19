@@ -79,7 +79,7 @@ struct Allocator<ChunkPool<SIZE, MAX_COUNT, TParentAllocator> >
     Allocator()
     {
         SEQAN_CHECKPOINT;
-        ::std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
+        std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
         data_current_end = data_current_free = 0;
         //dont need to initialize data_current_begin
     }
@@ -87,7 +87,7 @@ struct Allocator<ChunkPool<SIZE, MAX_COUNT, TParentAllocator> >
     Allocator(size_t reserve_item_count)
     {
         SEQAN_CHECKPOINT;
-        ::std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
+        std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
 
         size_t storage_size = (reserve_item_count * SIZE > STORAGE_SIZE_MIN) ? reserve_item_count * SIZE : STORAGE_SIZE_MIN;
         allocate( parentAllocator( *this ), data_current_begin, storage_size );
@@ -98,7 +98,7 @@ struct Allocator<ChunkPool<SIZE, MAX_COUNT, TParentAllocator> >
     Allocator(TParentAllocator & parent_alloc)
     {
         SEQAN_CHECKPOINT;
-        ::std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
+        std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
         data_current_end = data_current_free = 0;
         //dont need to initialize data_current_begin
 
@@ -108,7 +108,7 @@ struct Allocator<ChunkPool<SIZE, MAX_COUNT, TParentAllocator> >
     Allocator(size_t reserve_item_count, TParentAllocator & parent_alloc)
     {
         SEQAN_CHECKPOINT;
-        ::std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
+        std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
 
         setValue(data_parent_allocator, parent_alloc);
 
@@ -121,7 +121,7 @@ struct Allocator<ChunkPool<SIZE, MAX_COUNT, TParentAllocator> >
     //Dummy copy
     Allocator(Allocator const &)
     {
-        ::std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
+        std::memset(data_recycled_blocks, 0, sizeof(data_recycled_blocks));
         data_current_end = data_current_free = 0;
         //dont need to initialize data_current_begin
     }
@@ -168,7 +168,7 @@ void
 clear(Allocator<ChunkPool<SIZE, MAX_COUNT, TParentAllocator> > & me)
 {
     SEQAN_CHECKPOINT;
-    ::std::memset(me.data_recycled_blocks, 0, sizeof(me.data_recycled_blocks));
+    std::memset(me.data_recycled_blocks, 0, sizeof(me.data_recycled_blocks));
     me.data_current_end = me.data_current_free = 0;
 
     clear(parentAllocator(me));

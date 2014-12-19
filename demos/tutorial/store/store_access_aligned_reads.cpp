@@ -1,11 +1,11 @@
-// FRAGMENT(includes)
+//![includes]
 #include <iostream>
 #include <seqan/store.h>
 #include <seqan/misc/svg.h>
 
 using namespace seqan;
 
-int main ()
+int main()
 {
     typedef FragmentStore<> TStore;
 
@@ -15,8 +15,9 @@ int main ()
     readRecords(store, file);
 
     SEQAN_ASSERT_GEQ(length(store.alignedReadStore), 5u);
+//![includes]
 
-// FRAGMENT(typedefs)
+//![typedefs]
     typedef Value<TStore::TReadSeqStore>::Type                              TReadSeq;
     typedef Value<TStore::TContigStore>::Type                               TContig;
     typedef Value<TStore::TAlignedReadStore>::Type                          TAlignedRead;
@@ -25,22 +26,23 @@ int main ()
     typedef Gaps<TStore::TReadSeq, AnchorGaps<TAlignedRead::TGapAnchors> >  TReadGaps;
 
     TStore::TReadSeq readSeq;
+//![typedefs]
 
-// FRAGMENT(output)
+//![output]
     for (int i = 140; i < 160; i += 4)
     {
-        TAlignedRead &ar = store.alignedReadStore[i];
+        TAlignedRead & ar = store.alignedReadStore[i];
 
         readSeq = store.readSeqStore[ar.readId];
         if (ar.endPos < ar.beginPos)
             reverseComplement(readSeq);
 
         TContigGaps contigGaps(
-            store.contigStore[ar.contigId].seq, 
+            store.contigStore[ar.contigId].seq,
             store.contigStore[ar.contigId].gaps);
 
         TReadGaps readGaps(
-            readSeq, 
+            readSeq,
             ar.gaps);
 
         setBeginPosition(contigGaps, std::min(ar.beginPos, ar.endPos));
@@ -52,6 +54,8 @@ int main ()
         std::cout << "\tread "   << ar.readId   << ":\t" << readGaps << std::endl;
         std::cout << std::endl;
     }
-// FRAGMENT(appendix)
+//![output]
+//![appendix]
     return 0;
 }
+//![appendix]

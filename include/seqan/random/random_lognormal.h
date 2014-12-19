@@ -115,8 +115,8 @@ public:
     }
 
     Pdf(double mean, double stddev, MeanStdDev const &)
-            : _normalDist(::std::log(mean) - 0.5 * ::std::log(1.0 + stddev * stddev / mean / mean),
-                          ::std::sqrt(::std::log(1.0 + stddev * stddev / mean / mean)))
+            : _normalDist(std::log(mean) - 0.5 * std::log(1.0 + stddev * stddev / mean / mean),
+                          std::sqrt(std::log(1.0 + stddev * stddev / mean / mean)))
     {
         SEQAN_CHECKPOINT;
     }

@@ -3,7 +3,7 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
     DnaString text = "GATTACA";
     // output all hash values as hexadecimal numbers

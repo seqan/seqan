@@ -1,13 +1,15 @@
 #include <seqan/bam_io.h>
 
+using namespace seqan;
+
 int main()
 {
-    seqan::BamFileIn bamFileIn("example.bam");
+    BamFileIn bamFileIn("example.bam");
 
-    seqan::BamHeader header;
+    BamHeader header;
     readRecord(header, bamFileIn);
 
-    typedef seqan::SmartFileContext<seqan::BamFileIn, void>::Type TBamContext;
+    typedef SmartFileContext<BamFileIn, void>::Type TBamContext;
 
     TBamContext const & bamContext = context(bamFileIn);
 

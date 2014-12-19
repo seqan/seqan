@@ -1,20 +1,23 @@
 #include <seqan/bed_io.h>
 
+using namespace seqan;
+
 int main()
 {
     // Open input bed file.
-    seqan::BedFileIn bedIn("example.bed");
+    BedFileIn bedIn("example.bed");
 
     // Attach to standard output.
-    seqan::BedFileOut bedOut(std::cout, seqan::Bed());
+    BedFileOut bedOut(std::cout, Bed());
 
     // Copy the file record by record.
-    seqan::BedRecord<seqan::Bed3> record;
+    BedRecord<Bed3> record;
+
     while (!atEnd(bedIn))
     {
         readRecord(record, bedIn);
         writeRecord(bedOut, record);
     }
-    
+
     return 0;
 }

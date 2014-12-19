@@ -346,7 +346,7 @@ SEQAN_DEFINE_TEST(testIndexCreation)
             unsigned undefs=0;
             for(int i=0; i<size; ++i)
                 if (child[i] == maxValue<unsigned>()) ++undefs;
-            if (undefs) ::std::cout << undefs << " undefined values";
+            if (undefs) std::cout << undefs << " undefined values";
 
             resize(childExt, size);
             timeDelta[TI] = -SEQAN_PROGETTIME;

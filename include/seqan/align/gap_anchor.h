@@ -221,7 +221,7 @@ struct _LessGapAnchor;
 
 template <typename TGapAnchor>
 struct _LessGapAnchor<TGapAnchor, SortSeqPos> :
-	public ::std::binary_function<TGapAnchor, TGapAnchor, bool>
+	public std::binary_function<TGapAnchor, TGapAnchor, bool>
 {
 	inline bool 
 	operator() (TGapAnchor const& a1, TGapAnchor const& a2) const {
@@ -231,7 +231,7 @@ struct _LessGapAnchor<TGapAnchor, SortSeqPos> :
 
 template <typename TGapAnchor>
 struct _LessGapAnchor<TGapAnchor, SortGapPos> :
-	public ::std::binary_function<TGapAnchor, TGapAnchor, bool>
+	public std::binary_function<TGapAnchor, TGapAnchor, bool>
 {
 	inline bool 
 	operator() (TGapAnchor const& a1, TGapAnchor const& a2) const {
@@ -252,7 +252,7 @@ lowerBoundGapAnchor(TGapAnchor const & gaps,
 	typedef typename Value<TGapAnchor>::Type TGapAnchorElement;
 	TGapAnchorElement el;
 	el.seqPos = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		begin(gaps, Standard()), 
 		end(gaps, Standard()), 
 		el,
@@ -268,7 +268,7 @@ lowerBoundGapAnchor(TGapAnchor & gaps,
 	typedef typename Value<TGapAnchor>::Type TGapAnchorElement;
 	TGapAnchorElement el;
 	el.seqPos = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		begin(gaps, Standard()), 
 		end(gaps, Standard()), 
 		el,
@@ -284,7 +284,7 @@ lowerBoundGapAnchor(TGapAnchor const & gaps,
 	typedef typename Value<TGapAnchor>::Type TGapAnchorElement;
 	TGapAnchorElement el;
 	el.gapPos = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		begin(gaps, Standard()), 
 		end(gaps, Standard()), 
 		el,
@@ -300,7 +300,7 @@ lowerBoundGapAnchor(TGapAnchor & gaps,
 	typedef typename Value<TGapAnchor>::Type TGapAnchorElement;
 	TGapAnchorElement el;
 	el.gapPos = val;
-	return ::std::lower_bound(
+	return std::lower_bound(
 		begin(gaps, Standard()), 
 		end(gaps, Standard()), 
 		el,
@@ -320,7 +320,7 @@ upperBoundGapAnchor(TGapAnchors const & gaps,
 	typedef typename Value<TGapAnchors>::Type TGapAnchorElement;
 	TGapAnchorElement el;
 	el.seqPos = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		begin(gaps, Standard()), 
 		end(gaps, Standard()), 
 		el,
@@ -336,7 +336,7 @@ upperBoundGapAnchor(TGapAnchors & gaps,
 	typedef typename Value<TGapAnchors>::Type TGapAnchorElement;
 	TGapAnchorElement el;
 	el.seqPos = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		begin(gaps, Standard()), 
 		end(gaps, Standard()), 
 		el,
@@ -352,7 +352,7 @@ upperBoundGapAnchor(TGapAnchors const & gaps,
 	typedef typename Value<TGapAnchors>::Type TGapAnchorElement;
 	TGapAnchorElement el;
 	el.gapPos = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		begin(gaps, Standard()), 
 		end(gaps, Standard()), 
 		el,
@@ -368,7 +368,7 @@ upperBoundGapAnchor(TGapAnchors & gaps,
 	typedef typename Value<TGapAnchors>::Type TGapAnchorElement;
 	TGapAnchorElement el;
 	el.gapPos = val;
-	return ::std::upper_bound(
+	return std::upper_bound(
 		begin(gaps, Standard()), 
 		end(gaps, Standard()), 
 		el,

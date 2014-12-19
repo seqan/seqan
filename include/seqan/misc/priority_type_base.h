@@ -57,7 +57,7 @@ struct PriorityHeap;
  * @tparam TSpec  The specialization.  Default: <tt>PriorityHeap</tt>.
  */
 
-template <typename TValue = int, typename TLess = ::std::less<TValue>, typename TSpec = PriorityHeap>
+template <typename TValue = int, typename TLess = std::less<TValue>, typename TSpec = PriorityHeap>
 class PriorityType;
 
 //////////////////////////////////////////////////////////////////////////////

@@ -1,20 +1,21 @@
 #include <seqan/bed_io.h>
 
+using namespace seqan;
+
 int main()
 {
     // Open input bed file.
-    seqan::BedFileIn bedIn;
+    BedFileIn bedIn;
     if (!open(bedIn, "example.bed"))
     {
         std::cerr << "ERROR: Could not open example.bed" << std::endl;
         return 1;
     }
-
     // Attach to standard output.
-    seqan::BedFileOut bedOut(std::cout, seqan::Bed());
+    BedFileOut bedOut(std::cout, Bed());
 
     // Read the file record by record.
-    seqan::BedRecord<seqan::Bed3> record;
+    BedRecord<Bed3> record;
 
     try
     {
@@ -24,7 +25,7 @@ int main()
             writeRecord(bedOut, record);
         }
     }
-    catch (seqan::Exception const & e)
+    catch (Exception const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;

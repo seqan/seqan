@@ -9,11 +9,11 @@ int main()
     Index<CharString, FMIndex<> > index(hstck);
     Finder<Index<CharString, FMIndex<> > > finder(hstck);
 
-    while(find(finder, "y"))
-        std::cout << "Hit at position: " << position(finder)<<std::endl;
+    while (find(finder, "y"))
+        std::cout << "Hit at position: " << position(finder) << std::endl;
 
     clear(finder);      // reset Finder
 
-    while(find(finder, "t"))
-        std::cout << "Hit at position: " << position(finder)<<std::endl;
+    while (find(finder, "t"))
+        std::cout << "Hit at position: " << position(finder) << std::endl;
 }

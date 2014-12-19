@@ -67,13 +67,14 @@ struct Options
         verbosity = 1;
         bamFormat = false;
     }
+
 };
 
 void
 setupArgumentParser(ArgumentParser & parser, Options const & options)
 {
     setVersion(parser, "1.0");
-    
+
     addDescription(parser, "***********");
     addDescription(parser, "* BAMUTIL *");
     addDescription(parser, "***********");
@@ -83,19 +84,19 @@ setupArgumentParser(ArgumentParser & parser, Options const & options)
     addDescription(parser, "Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>");
 
     addUsageLine(parser, "bamutil [OPTIONS] <IN >OUT");
-    
-	addSection(parser, "General Options");
+
+    addSection(parser, "General Options");
     addOption(parser, ArgParseOption("v", "verbose", "Enable verbose mode."));
     addOption(parser, ArgParseOption("vv", "very-verbose", "Enable very verbose mode."));
 
-	addSection(parser, "Input Specification");
+    addSection(parser, "Input Specification");
     addOption(parser, ArgParseOption("i", "input-file", "Path to input, '-' for stdin.", ArgParseOption::STRING));
     addOption(parser, ArgParseOption("bi", "bai-index-file", "Path to BAI index, default: input + '.bai'.", ArgParseOption::STRING));
 
-	addSection(parser, "Range Specification");
+    addSection(parser, "Range Specification");
     addOption(parser, ArgParseOption("r", "region", "Regions to dump (in which aligments start). REF:FROM-TO, e.g. IV:1,000-2,000 will alignments with ref IV in range [1000,2000) (zero based).", ArgParseOption::STRING));
 
-	addSection(parser, "Output Specification");
+    addSection(parser, "Output Specification");
     addOption(parser, ArgParseOption("o", "output-file", "Path to output, '-' for stdout.", ArgParseOption::STRING));
     addOption(parser, ArgParseOption("b", "output-bam", "Output file is BAM."));
 }
@@ -143,14 +144,14 @@ parseArguments(Options & options,
                     std::cerr << "[VERBOSE] Region " << region.seqName << ":"
                               << region.beginPos << "-" << region.endPos << std::endl;
             }
-            catch (ParseError &e)
+            catch (ParseError & e)
             {
                 std::cerr << "[WARNING] could not parse region \"" << regions[i] << "\". IGNORING." << std::endl;
             }
         }
     }
 
-	return ArgumentParser::PARSE_OK;
+    return ArgumentParser::PARSE_OK;
 }
 
 template <typename TOptions>
@@ -195,6 +196,7 @@ int _dumpRegion(BamFileIn & in, BamFileOut & out, TOptions const & options)
                 continue;  // Skip, before region.
             if (record.beginPos >= options.regions[i].endPos)
                 return 0;
+
             writeRecord(out, record);
         }
     }
@@ -231,8 +233,6 @@ int performConversion(BamFileIn & in, BamFileOut & out, TOptions const & options
 
 int main(int argc, char const * argv[])
 {
-    using namespace seqan;
-
     // -----------------------------------------------------------------------
     // Handle Command Line
     // -----------------------------------------------------------------------
@@ -241,7 +241,7 @@ int main(int argc, char const * argv[])
     ArgumentParser parser;
     Options options;
     setupArgumentParser(parser, options);
-    
+
     // Then, parse the command line and handle the cases where help display
     // is requested or erroneous parameters were given.
     ArgumentParser::ParseResult res = parseArguments(options, parser, argc, argv);
@@ -278,7 +278,7 @@ int main(int argc, char const * argv[])
             success = open(writer, std::cout, Bam());
         else
 #endif
-            success = open(writer, std::cout, Sam());
+        success = open(writer, std::cout, Sam());
     }
 
     if (!success)

@@ -71,7 +71,7 @@ void randomize(TBuffer buf)
 }
 
 template < typename TValue >
-struct IdentityMap : public ::std::unary_function< TValue, TValue >
+struct IdentityMap : public std::unary_function< TValue, TValue >
 {
     inline TValue operator() (TValue const i)
     {
@@ -80,7 +80,7 @@ struct IdentityMap : public ::std::unary_function< TValue, TValue >
 };
 
 template < typename TValue >
-struct SimpleCompare : public ::std::binary_function< TValue const, TValue const, int >
+struct SimpleCompare : public std::binary_function< TValue const, TValue const, int >
 {
     inline int operator() (TValue const a, TValue const b) const
     {

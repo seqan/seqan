@@ -540,27 +540,27 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
 	template < typename TIndex, typename TSpec >
 	inline void _dumpHistoryStack(Iter<TIndex, VSTree<TSpec> > &it) {
 		for(typename Size<TIndex>::Type i = 0; i < length(it.history); ++i)
-			::std::cerr << it.history[i].range << '\t';
-		::std::cerr << value(it) << ::std::endl;
+			std::cerr << it.history[i].range << '\t';
+		std::cerr << value(it) << std::endl;
 	}
 
 	template <typename TText, typename TSpec>
 	inline void
 	_dump(Index<TText, IndexEsa<TSpec> > &index)
 	{
-		::std::cout << "  SA" << ::std::endl;
+		std::cout << "  SA" << std::endl;
 		for(unsigned i=0; i < length(indexSA(index)); ++i)
-			::std::cout << i << ":  " << indexSA(index)[i] << "  " << suffix(indexText(index), indexSA(index)[i]) << ::std::endl;
+			std::cout << i << ":  " << indexSA(index)[i] << "  " << suffix(indexText(index), indexSA(index)[i]) << std::endl;
 
-		::std::cout << ::std::endl << "  LCP" << ::std::endl;
+		std::cout << std::endl << "  LCP" << std::endl;
 		for(unsigned i=0; i < length(indexLcp(index)); ++i)
-			::std::cout << i << ":  " << indexLcp(index)[i] << ::std::endl;
+			std::cout << i << ":  " << indexLcp(index)[i] << std::endl;
 
-		::std::cout << ::std::endl << "  Childtab" << ::std::endl;
+		std::cout << std::endl << "  Childtab" << std::endl;
 		for(unsigned i=0; i < length(indexChildtab(index)); ++i)
-			::std::cout << i << ":  " << indexChildtab(index)[i] << ::std::endl;
+			std::cout << i << ":  " << indexChildtab(index)[i] << std::endl;
 
-		::std::cout << ::std::endl;
+		std::cout << std::endl;
 	}
 
 
@@ -1325,7 +1325,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexEsa<TSpec> > const), (StringTreeConcept));
  *  count = countChildren(tdIterator);
  *  if (count >= 3)
  *  {
- *      ::std::cout << "Representative " << representative(tdIterator) << " has " <<  count << " children  and " << countOccurrences(tdIterator) << " Occurrences " << ::std::endl;
+ *      std::cout << "Representative " << representative(tdIterator) << " has " <<  count << " children  and " << countOccurrences(tdIterator) << " Occurrences " << std::endl;
  *
  *      ++tdIterator;
  *  }

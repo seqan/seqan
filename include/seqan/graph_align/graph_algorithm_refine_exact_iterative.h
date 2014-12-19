@@ -146,16 +146,16 @@ SEQAN_CHECKPOINT
 //void
 //printMatch(Fragment<TFragSize,TFragSpec> & f)
 //{
-//	::std::cout << "FRAGMENT:" << " f.len = "<< f.len <<std::endl;
-//	::std::cout << "f.seqId1 = "<< f.seqId1 << " f.begin1 = " << f.begin1 << std::endl;
-//	::std::cout << "f.seqId2 = "<< f.seqId2 << " f.begin2 = " << f.begin2 << std::endl;
+//	std::cout << "FRAGMENT:" << " f.len = "<< f.len <<std::endl;
+//	std::cout << "f.seqId1 = "<< f.seqId1 << " f.begin1 = " << f.begin1 << std::endl;
+//	std::cout << "f.seqId2 = "<< f.seqId2 << " f.begin2 = " << f.begin2 << std::endl;
 //}
 
 //template<typename TAlign>
 //void
 //printMatch(TAlign & f)
 //{
-//	::std::cout << f;
+//	std::cout << f;
 //}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////	

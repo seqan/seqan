@@ -1,26 +1,32 @@
-// FRAGMENT(include)
+//![include]
 #include <seqan/bam_io.h>
+
+using namespace seqan;
 
 int main()
 {
-    // FRAGMENT(ctor)
+//![include]
+//![ctor]
     // Open input BAM file, BamFileIn supports both SAM and BAM files.
-    seqan::BamFileIn bamFileIn("example.bam");
+    BamFileIn bamFileIn("example.bam");
+//![ctor]
 
-    // FRAGMENT(open)
+//![open]
     // Open output SAM file by passing the filename to open.
-    seqan::BamFileOut samFileOut;
+    BamFileOut samFileOut;
     open(samFileOut, "example.sam");
+//![open]
 
-    // FRAGMENT(header)
+//![header]
     // Copy header.
-    seqan::BamHeader header;
+    BamHeader header;
     readRecord(header, bamFileIn);
     writeRecord(samFileOut, header);
+//![header]
 
-    // FRAGMENT(records)
+//![records]
     // Copy all records.
-    seqan::BamAlignmentRecord record;
+    BamAlignmentRecord record;
     while (!atEnd(bamFileIn))
     {
         readRecord(record, bamFileIn);
@@ -29,3 +35,4 @@ int main()
 
     return 0;
 }
+//![records]

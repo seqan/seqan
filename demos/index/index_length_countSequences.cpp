@@ -2,7 +2,7 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
     typedef StringSet<String<char> >    TText;
     typedef Index<TText>                TIndex;
@@ -16,7 +16,7 @@ int main ()
     Finder<TIndex> finder(index);
 
     std::cout << "The text has " << length(index) << " characters and consists of " << countSequences(index) <<
-                 " sequences." << std::endl;
+    " sequences." << std::endl;
 
     // The Finder object has a pointer to the first, current and last hit
     // Each consecutive call sets the current pointer to the appropriate hit

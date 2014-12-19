@@ -684,7 +684,7 @@ SEQAN_CHECKPOINT
     {
         beginRead(src);
         while (!eof(src)) {
-			out << *src << ::std::endl;
+			out << *src << std::endl;
             ++src;
         }
         endRead(src);

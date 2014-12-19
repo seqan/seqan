@@ -21,7 +21,7 @@ int main()
     // Compute the longest increasing subsequence.
     typedef Position<String<unsigned> >::Type TPosition;
     String<TPosition> pos;
-    longestIncreasingSubsequence(seq,pos);
+    longestIncreasingSubsequence(seq, pos);
 
     // Print the result to stdout.
     for (unsigned i = 0; i < length(seq); ++i)

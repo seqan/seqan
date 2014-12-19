@@ -979,13 +979,13 @@ SEQAN_DEFINE_TEST(Std_String)
     SEQAN_CHECKPOINT;
 //____________________________________________________________________________
 
-	::std::string str_1("hamster");
+	std::string str_1("hamster");
     SEQAN_ASSERT_EQ(0, 0);
     size_t len1 = seqan::end(str_1) - seqan::begin(str_1);
     size_t len2 = length(str_1);
     SEQAN_ASSERT_EQ(len1, len2);
 
-	::std::string const str_2("goldfish");
+	std::string const str_2("goldfish");
     len1 = seqan::end(str_2) - seqan::begin(str_2);
     len2 = length(str_2);
     SEQAN_ASSERT_EQ(len1, len2);

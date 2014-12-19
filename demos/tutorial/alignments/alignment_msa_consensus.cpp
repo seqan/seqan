@@ -1,4 +1,4 @@
-//FRAGMENT(align)
+//![align]
 #include <iostream>
 #include <seqan/align.h>
 #include <seqan/graph_msa.h>
@@ -8,7 +8,8 @@ using namespace seqan;
 int main()
 {
     // some variangs of sonic hedgehog exon 1
-    char const * strings[4] = {
+    char const * strings[4] =
+    {
         // gi|2440284|dbj|AB007129.1| Oryzias latipes
         "GCGGGTCACTGAGGGCTGGGATGAGGACGGCCACCACTTCGAGGAGTCCCTTCACTACGAGGGCAGGGCC"
         "GTGGACATCACCACGTCAGACAGGGACAAGAGCAAGTACGGCACCCTGTCCAGACTGGCGGTGGAAGCTG"
@@ -38,16 +39,18 @@ int main()
 
     globalMsaAlignment(align, SimpleScore(5, -3, -1, -3));
     std::cout << align << "\n";
+//![align]
 
-//FRAGMENT(profile-computation)
+//![profile-computation]
     // create the profile string
     String<ProfileChar<Dna> > profile;
     resize(profile, length(row(align, 0)));
     for (unsigned rowNo = 0; rowNo < 4u; ++rowNo)
         for (unsigned i = 0; i < length(row(align, rowNo)); ++i)
             profile[i].count[ordValue(row(align, rowNo)[i])] += 1;
+//![profile-computation]
 
-//FRAGMENT(consensus-calling)
+//![consensus-calling]
     // call consensus from this string
     DnaString consensus;
     for (unsigned i = 0; i < length(profile); ++i)
@@ -62,3 +65,4 @@ int main()
 
     return 0;
 }
+//![consensus-calling]

@@ -1,4 +1,4 @@
-// FRAGMENT(main)
+//![main]
 #include <iostream>
 #include <seqan/seq_io.h>
 #include <seqan/journaled_set.h>
@@ -41,13 +41,12 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
     return 0;
 }
 
-
 int main()
 {
     // Definition of the used types.
-    typedef String<Dna,Alloc<> > TSequence;
-    typedef String<Dna,Journaled<Alloc<>,SortedArray,Alloc<> > > TJournal;
-    typedef StringSet< TJournal, Owner<JournaledSet> > TJournaledSet;
+    typedef String<Dna, Alloc<> > TSequence;
+    typedef String<Dna, Journaled<Alloc<>, SortedArray, Alloc<> > > TJournal;
+    typedef StringSet<TJournal, Owner<JournaledSet> > TJournaledSet;
 
     // Open the stream to the file containing the sequences.
     CharString seqDatabasePath = "/path/to/your/fasta/file/sequences.fasta";
@@ -60,3 +59,4 @@ int main()
 
     return 0;
 }
+//![main]

@@ -3,15 +3,15 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
     String<char> myString = "tobeornottobe";
 
-    typedef Index< String<char> > TIndex;
+    typedef Index<String<char> > TIndex;
     TIndex index(myString);
 
 //![iteration]
-    Iterator< TIndex, TopDown< ParentLinks<Postorder> > >::Type it(index);
+    Iterator<TIndex, TopDown<ParentLinks<Postorder> > >::Type it(index);
 
     goBegin(it);
     while (!atEnd(it))

@@ -3,7 +3,7 @@
 
 using namespace seqan;
 
-int main() 
+int main()
 {
     typedef Graph<Directed<> > TGraph;
     typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
@@ -12,7 +12,7 @@ int main()
 
     // Create graph with 8 directed edges (0,3), (0,1), ...
     TSize numEdges = 8;
-    TVertexDescriptor edges[] = {0,3, 0,1, 1,4, 2,4, 2,5, 3,1, 4,3, 5,5};
+    TVertexDescriptor edges[] = {0, 3, 0, 1, 1, 4, 2, 4, 2, 5, 3, 1, 4, 3, 5, 5};
     TGraph g;
     addEdges(g, edges, numEdges);
     // Print graph.
@@ -33,7 +33,8 @@ int main()
     std::cout << "Depth-First search: \n";
     typedef Iterator<Graph<>, VertexIterator>::Type TVertexIterator;
     TVertexIterator it(g);
-    while(!atEnd(it)) {
+    while (!atEnd(it))
+    {
         std::cout << "Vertex " << getProperty(nameMap, getValue(it)) << ": ";
         std::cout << "Discovery time = " << getProperty(discoveryTimeMap, getValue(it)) << ",";
         std::cout << "Finishing time = " << getProperty(finishingTimeMap, getValue(it)) << ",";

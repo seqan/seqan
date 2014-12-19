@@ -1,4 +1,4 @@
-// FRAGMENT(includes)
+//![includes]
 #include <iostream>
 
 #include <seqan/basic.h>
@@ -6,8 +6,9 @@
 #include <seqan/stream.h>
 
 using namespace seqan;
+//![includes]
 
-// FRAGMENT(tags)
+//![tags]
 struct BlastnTab_;
 typedef Tag<BlastnTab_> BlastnTab;
 
@@ -16,8 +17,9 @@ typedef Tag<BlastnTabComment_> BlastnTabComment;
 
 struct BlastnTabAlignment_;
 typedef Tag<BlastnTabAlignment_> BlastnTabAlignment;
+//![tags]
 
-// FRAGMENT(record)
+//![record]
 struct BlastnTabAlignmentRecord
 {
     CharString queryName;
@@ -32,11 +34,11 @@ struct BlastnTabAlignmentRecord
     unsigned subjectEnd;
     double eValue;
     double bitScore;
-    
+
     BlastnTabAlignmentRecord() :
-            identity(0), alignmentLength(0), mismatches(0), gapOpens(0),
-            queryBegin(0), queryEnd(0), subjectBegin(0), subjectEnd(0),
-            eValue(0), bitScore(0)
+        identity(0), alignmentLength(0), mismatches(0), gapOpens(0),
+        queryBegin(0), queryEnd(0), subjectBegin(0), subjectEnd(0),
+        eValue(0), bitScore(0)
     {}
 };
 
@@ -70,8 +72,9 @@ writeRecord(TWriter & writer, BlastnTabAlignmentRecord & record)
     appendNumber(writer, record.bitScore);
     write(writer, "\n\n");
 }
+//![record]
 
-// FRAGMENT(next-is)
+//![next-is]
 template <typename TReader>
 inline bool
 nextIs(TReader & reader, BlastnTabComment const & /*tag*/)
@@ -85,8 +88,9 @@ nextIs(TReader & reader, BlastnTabAlignment const & /*tag*/)
 {
     return !atEnd(reader) && value(reader) != '#';
 }
+//![next-is]
 
-// FRAGMENT(read-record)
+//![read-record]
 template <typename TCharSequence, typename TReader>
 inline void
 readRecord(TCharSequence & buffer, TReader const & reader, BlastnTabComment const & /*tag*/)
@@ -111,7 +115,7 @@ readRecord(BlastnTabAlignmentRecord & record, CharString & buffer, TReader & rea
     clear(record.subjectName);
     readUntil(record.subjectName, reader, IsTab());
     skipOne(reader, IsTab());
-    
+
     // Read identity.
     readUntil(buffer, reader, IsTab());
     lexicalCast(record.identity, buffer);
@@ -170,8 +174,9 @@ readRecord(BlastnTabAlignmentRecord & record, CharString & buffer, TReader & rea
     readLine(buffer, reader);
     lexicalCast(record.bitScore, buffer);
 }
+//![read-record]
 
-// FRAGMENT(skip-record)
+//![skip-record]
 template <typename TReader>
 inline void
 skipRecord(TReader & reader, BlastnTabComment const & /*tag*/)
@@ -185,8 +190,9 @@ skipRecord(TReader & reader, BlastnTabAlignment const & /*tag*/)
 {
     skipLine(reader);
 }
+//![skip-record]
 
-// FRAGMENT(batch-read)
+//![batch-read]
 template <typename TBlastnTabRecords, typename TReader>
 inline void
 readRecords(TBlastnTabRecords & records, TReader & reader, BlastnTab const & /*tag*/)
@@ -210,9 +216,9 @@ readRecords(TBlastnTabRecords & records, TReader & reader, BlastnTab const & /*t
         }
     }
 }
-            
+//![batch-read]
 
-// FRAGMENT(main)
+//![main]
 int main(int argc, char const * argv[])
 {
     // Process command line arguments, open file.
@@ -230,7 +236,7 @@ int main(int argc, char const * argv[])
     }
 
     // Read file.
-    seqan::DirectionIterator<std::ifstream, seqan::Input>::Type reader = directionIterator(stream, Input());
+    DirectionIterator<std::ifstream, Input>::Type reader = directionIterator(stream, Input());
     String<BlastnTabAlignmentRecord> records;
     readRecords(records, reader, BlastnTab());
 
@@ -240,3 +246,4 @@ int main(int argc, char const * argv[])
 
     return 0;
 }
+//![main]

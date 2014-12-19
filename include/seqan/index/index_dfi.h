@@ -473,10 +473,10 @@ namespace SEQAN_NAMESPACE_MAIN
 		requiredSize += _wotdCummulativeSum(bound, occ, left + index.sentinelOcc);
 		index.sentinelBound = left;
 /*
-		::std::cout << "$=" << index.sentinelOcc<<"@"<<index.sentinelBound << "\t";
+		std::cout << "$=" << index.sentinelOcc<<"@"<<index.sentinelBound << "\t";
 		for(int i=0; i<length(occ);++i)
 			if (occ[i])
-				::std::cout << i << "=" << occ[i]<<"@"<<bound[i] << "\t";
+				std::cout << i << "=" << occ[i]<<"@"<<bound[i] << "\t";
 */
 		// 4. fill suffix array
 		{
@@ -605,23 +605,23 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef typename Fibre<TIndex, WotdDir>::Type		TDir;
 		typedef typename Value<TDir>::Type					TDirValue;
 
-		::std::cout << "  Dir (wotd/Dfi)" << ::std::endl;
+		std::cout << "  Dir (wotd/Dfi)" << std::endl;
 		for(unsigned i=0; i < length(indexDir(index)); ++i) {
 			TDirValue d = indexDir(index)[i];
-			::std::cout << i << ":  " << (d & index.BITMASK0);
-			if (d & index.LEAF)				::std::cout << "  (Leaf/Uneval)";
-			if (d & index.LAST_CHILD)		::std::cout << "  (LastChild/SENTINELS)";
-			if (d & index.DFI_PRED_HULL)	::std::cout << "  (PRED_HULL)";
-			if (d & index.DFI_PRED)			::std::cout << "  (PRED)";
-			if (d & index.DFI_PARENT_FREQ)	::std::cout << "  (PARENT_FREQ)";
-			::std::cout << ::std::endl;
+			std::cout << i << ":  " << (d & index.BITMASK0);
+			if (d & index.LEAF)				std::cout << "  (Leaf/Uneval)";
+			if (d & index.LAST_CHILD)		std::cout << "  (LastChild/SENTINELS)";
+			if (d & index.DFI_PRED_HULL)	std::cout << "  (PRED_HULL)";
+			if (d & index.DFI_PRED)			std::cout << "  (PRED)";
+			if (d & index.DFI_PARENT_FREQ)	std::cout << "  (PARENT_FREQ)";
+			std::cout << std::endl;
 		}
 
-		::std::cout << ::std::endl << "  SA" << ::std::endl;
+		std::cout << std::endl << "  SA" << std::endl;
 		for(unsigned i=0; i < length(indexSA(index)); ++i)
-			::std::cout << i << ":  " << indexSA(index)[i] << "  " << suffix(indexText(index), indexSA(index)[i]) << ::std::endl;
+			std::cout << i << ":  " << indexSA(index)[i] << "  " << suffix(indexText(index), indexSA(index)[i]) << std::endl;
 
-		::std::cout << ::std::endl;
+		std::cout << std::endl;
 	}
 
 	template <typename TText, typename TPredHull, typename TPred>
@@ -632,21 +632,21 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef Index<TText, IndexWotd<TSpec> >				TIndex;
 		typedef typename Value<TIndex>::Type					TValue;
 
-		::std::cout << "  ParentF = (";
+		std::cout << "  ParentF = (";
 		for(unsigned d=0; d<length(index.nodeEntry.freq); ++d) {
-			if (d>0) ::std::cout << ",";
-			::std::cout << index.nodeEntry.freq[d];
+			if (d>0) std::cout << ",";
+			std::cout << index.nodeEntry.freq[d];
 		}
-		::std::cout << ")" << ::std::endl;
+		std::cout << ")" << std::endl;
 
 		for(unsigned i=0; i<length(index.tempOcc); ++i)
 			if (index.tempOcc[i] != 0) {
-				::std::cout << "  Freq[" << (TValue)i << "] = (";
+				std::cout << "  Freq[" << (TValue)i << "] = (";
 				for(unsigned d=0; d<length(index.childEntry[i].freq); ++d) {
-					if (d>0) ::std::cout << ",";
-					::std::cout << index.childEntry[i].freq[d];
+					if (d>0) std::cout << ",";
+					std::cout << index.childEntry[i].freq[d];
 				}
-				::std::cout << ")" << ::std::endl;
+				std::cout << ")" << std::endl;
 			}
 	}
 

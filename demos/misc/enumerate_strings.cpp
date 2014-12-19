@@ -5,10 +5,10 @@
 #include <seqan/stream.h>      // For printing SeqAn Strings.
 #include <seqan/misc/edit_environment.h>
 
+using namespace seqan;
+
 int main()
 {
-    using namespace seqan;
-
     Dna5String original = "CGAT";
 
     // Enumerate neighbourhood using Hamming distance.

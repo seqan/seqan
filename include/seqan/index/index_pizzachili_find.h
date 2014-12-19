@@ -87,7 +87,7 @@ public:
     ~Finder() {
 SEQAN_CHECKPOINT
         if (range.i1 != 0)
-            ::std::free(range.i1);
+            std::free(range.i1);
     }
 };
 
@@ -132,7 +132,7 @@ SEQAN_CHECKPOINT
     typedef typename PizzaChiliCodeProvider<TSpec>::Type TCodeProvider;
 
     if (finder.range.i1 != 0)
-        ::std::free(finder.range.i1);
+        std::free(finder.range.i1);
 
     TIndex& index = haystack(finder);
     indexRequire(index, PizzaChiliCompressed());
