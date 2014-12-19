@@ -1,5 +1,7 @@
 #include <seqan/gff_io.h>
 
+using namespace seqan;
+
 int main()
 {
     GffFileOut out(std::cout, Gff());
