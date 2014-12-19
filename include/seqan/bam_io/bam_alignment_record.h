@@ -149,7 +149,7 @@ typedef TagList<int,
 /*!
  * @class BamAlignmentRecord
  * @headerfile <seqan/bam_io.h>
- * @implements FormattedFileHeaderConcept
+ * @implements FormattedFileRecordConcept
  * @signature class BamAlignmentRecord;
  * @brief Represent a record from a BAM or SAM file.
  *
