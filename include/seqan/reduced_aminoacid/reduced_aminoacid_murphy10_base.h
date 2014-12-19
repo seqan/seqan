@@ -63,9 +63,21 @@ namespace seqan {
  *
  * This alphabet is used by many tools, e.g. Rapsearch2, Lambda, UBlast.
  *
- * It looks like this :
+ * Since it was created from the 20-letter alphabet the clusters in SeqAn are
+ * not identical (they contain more symbols). This is the clustering:
+ * @code{.txt}
+ *   'A', // A U X
+ *   'B', // B D E N Q Z
+ *   'C', // C
+ *   'F', // F W Y *
+ *   'G', // G
+ *   'H', // H
+ *   'I', // I J L M V
+ *   'K', // K R
+ *   'P', // P
+ *   'S'  // S T
+ * @endcode
  *
- * A, (R, K), (N, D, Q, E), C, G, H, (I, L, M, V), (F, W, Y), P, (S, T)
  */
 
 struct Murphy10_ {};

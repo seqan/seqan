@@ -51,7 +51,7 @@ namespace seqan {
 // Tag ClusterReduction
 // -----------------------------------------------------------------------
 
-/*!
+/*
  * @class ClusterReduction
  * @brief Specialization for @link ReducedAminoAcid @endlink
  * @headerfile seqan/reduced_aminoacid.h
