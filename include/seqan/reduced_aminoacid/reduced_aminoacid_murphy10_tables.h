@@ -66,7 +66,7 @@ struct TranslateTableCharToRedAA_<Murphy10, TSpec>
 template <typename TSpec>
 struct TranslateTableAAToRedAA_<Murphy10, TSpec>
 {
-    static const char VALUE[24];
+    static const char VALUE[26];
 };
 
 template <typename TSpec>
@@ -80,14 +80,14 @@ struct TranslateTableByteToRedAA_<Murphy10, TSpec>
 template <typename TVoidSpec>
 char const TranslateTableRedAAToChar_<Murphy10, TVoidSpec>::VALUE[10] =
 {
-    'A', // A
-    'R', // R K
-    'N', // N D Q E
+    'A', // A U X
+    'B', // B D E N Q Z
     'C', // C
+    'F', // F W Y *
     'G', // G
     'H', // H
-    'I', // I L M V
-    'F', // F W Y
+    'I', // I J L M V
+    'K', // K R
     'P', // P
     'S'  // S T
 };
@@ -97,13 +97,13 @@ char const TranslateTableCharToRedAA_<Murphy10, TVoidSpec>::VALUE[256] =
 {
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  3,  0,  0,
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
-     0,  0,  0,  0,  0,  0,  0,  3,  2,  2,  7,  4,  5,  6,  0,
-     1,  6,  6,  2,  0,  8,  2,  1,  9,  9,  0,  6,  7,  0,  7,
-     0,  0,  0,  0,  0,  0,  0,  0,  0,  3,  2,  2,  7,  4,  5,
-     6,  0,  1,  6,  6,  2,  0,  8,  2,  1,  9,  9,  0,  6,  7,
-     0,  7,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+     0,  0,  0,  0,  0,  0,  1,  2,  1,  1,  3,  4,  5,  6,  6,
+     7,  6,  6,  1,  0,  8,  1,  7,  9,  9,  0,  6,  3,  0,  3,
+     1,  0,  0,  0,  0,  0,  0,  0,  1,  2,  1,  1,  3,  4,  5,
+     6,  6,  7,  6,  6,  1,  0,  8,  1,  7,  9,  9,  0,  6,  3,
+     0,  3,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
      0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
@@ -116,10 +116,10 @@ char const TranslateTableCharToRedAA_<Murphy10, TVoidSpec>::VALUE[256] =
 };
 
 template <typename TVoidSpec>
-char const TranslateTableAAToRedAA_<Murphy10, TVoidSpec>::VALUE[24] =
+char const TranslateTableAAToRedAA_<Murphy10, TVoidSpec>::VALUE[26] =
 {
-     0,  1,  2,  2,  3,  2,  2,  4,  5,  6,  6,  1,
-     6,  7,  8,  9,  9,  7,  7,  6,  0,  0,  0,  0
+     0,  1,  2,  1,  1,  3,  4,  5,  6,  6,  7,  6,  6,
+     1,  8,  1,  7,  9,  9,  0,  6,  3,  3,  1,  0,  3
 };
 
 template <typename TVoidSpec>
@@ -145,11 +145,9 @@ char const TranslateTableByteToRedAA_<Murphy10, TVoidSpec>::VALUE[256] =
      0
 };
 
-
 // ============================================================================
 // Functions
 // ============================================================================
-
 
 } // namespace
 
