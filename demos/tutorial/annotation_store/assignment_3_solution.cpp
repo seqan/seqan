@@ -15,7 +15,8 @@ int main()
     Iterator<FragmentStore<>, AnnotationTree<> >::Type it;
     it = begin(store, AnnotationTree<>());
     // Iterate to the first annotation of type "exon"
-    while (!atEnd(it) && getType(it) != "exon") goNext(it);
+    while (!atEnd(it) && getType(it) != "exon")
+        goNext(it);
     // Output:
     std::cout << "  type: " << getType(it) << std::endl;
     std::cout << "  begin position: " << getAnnotation(it).beginPos << std::endl;

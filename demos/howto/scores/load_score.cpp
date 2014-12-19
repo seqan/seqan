@@ -1,4 +1,4 @@
-// FRAGMENT(header)
+//![header]
 /*==========================================================================
                 SeqAn - The Library for Sequence Analysis
                           http://www.seqan.de
@@ -19,7 +19,8 @@
  ============================================================================
   Demonstration on how to load a score matrix from a file.
  ==========================================================================*/
-// FRAGMENT(includes)
+//![header]
+//![includes]
 #include <iostream>
 
 #include <seqan/basic.h>
@@ -27,9 +28,9 @@
 #include <seqan/score.h>  // The module score.
 
 using namespace seqan;
+//![includes]
 
-
-// FRAGMENT(show-scoring-matrix)
+//![show-scoring-matrix]
 // Print a scoring scheme matrix to stdout.
 template <typename TScoreValue, typename TSequenceValue, typename TSpec>
 void showScoringMatrix(Score<TScoreValue, ScoreMatrix<TSequenceValue, TSpec> > const & scoringScheme)
@@ -39,20 +40,23 @@ void showScoringMatrix(Score<TScoreValue, ScoreMatrix<TSequenceValue, TSpec> > c
         std::cout << "\t" << TSequenceValue(i);
     std::cout << std::endl;
     // Print each row.
-    for (unsigned i = 0; i < ValueSize<TSequenceValue>::VALUE; ++i) {
+    for (unsigned i = 0; i < ValueSize<TSequenceValue>::VALUE; ++i)
+    {
         std::cout << TSequenceValue(i);
-        for (unsigned j = 0; j < ValueSize<TSequenceValue>::VALUE; ++j) {
+        for (unsigned j = 0; j < ValueSize<TSequenceValue>::VALUE; ++j)
+        {
             std::cout << "\t" << score(scoringScheme, TSequenceValue(i), TSequenceValue(j));
         }
         std::cout << std::endl;
     }
 }
+//![show-scoring-matrix]
 
-
-// FRAGMENT(main)
-int main(int argc, char **argv)
+//![main]
+int main(int argc, char ** argv)
 {
-    if (argc != 2) {
+    if (argc != 2)
+    {
         std::cout << "Invalid argument count!" << std::endl
                   << "USAGE: load_score FILENAME" << std::endl;
         return 1;
@@ -64,6 +68,6 @@ int main(int argc, char **argv)
     loadScoreMatrix(scoreMatrix, argv[1]);
     showScoringMatrix(scoreMatrix);
 
-	return 0;
+    return 0;
 }
-
+//![main]

@@ -15,7 +15,8 @@ int main()
     it = begin(store, AnnotationTree<>());
     unsigned count = 0;
     // Go down to the first leaf (first child of the first mRNA)
-    while (goDown(it)) ;
+    while (goDown(it))
+        ;
     ++count;
     // Iterate over all siblings and count
     while (goRight(it))

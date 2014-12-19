@@ -1,10 +1,12 @@
 #include <seqan/bed_io.h>
 #include <seqan/misc/name_store_cache.h>
 
+using namespace seqan;
+
 int main()
 {
     // Open input bed file.
-    seqan::BedFileIn bedIn;
+    BedFileIn bedIn;
     if (!open(bedIn, "example.bed"))
     {
         std::cerr << "ERROR: Could not open example.bed\n";
@@ -12,12 +14,12 @@ int main()
     }
 
     // Array of counters and sequence names.
-    seqan::String<unsigned> counters;
-    seqan::StringSet<seqan::CharString> seqNames;
-    seqan::NameStoreCache<seqan::StringSet<seqan::CharString> > cache(seqNames);
+    String<unsigned> counters;
+    StringSet<CharString> seqNames;
+    NameStoreCache<StringSet<CharString> > cache(seqNames);
 
     // Read the file record by record.
-    seqan::BedRecord<seqan::Bed3> record;
+    BedRecord<Bed3> record;
 
     try
     {
@@ -30,7 +32,7 @@ int main()
             assignValueById(counters, rID, getValueById(counters, rID) + 1);
         }
     }
-    catch (seqan::Exception const & e)
+    catch (Exception const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;
@@ -41,6 +43,6 @@ int main()
     for (unsigned i = 0; i < length(seqNames); ++i)
         if (counters[i] != 0u)
             std::cout << seqNames[i] << '\t' << counters[i] << '\n';
-    
+
     return 0;
 }

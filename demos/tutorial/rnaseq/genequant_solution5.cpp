@@ -51,7 +51,6 @@ ArgumentParser::ParseResult parseOptions(Options & options, int argc, char const
     return res;
 }
 
-
 //
 // 2. Load annotations and alignments from files
 //
@@ -80,7 +79,6 @@ bool loadFiles(TStore & store, Options const & options)
 
     return true;
 }
-
 
 //
 // 3. Extract intervals from gene annotations (grouped by contigId)
@@ -136,7 +134,7 @@ void countReadsPerGene(String<unsigned> & readsPerGene, String<TIntervalTree> co
     int numAlignments = length(store.alignedReadStore);
 
     // iterate aligned reads and get search their begin and end positions
-    SEQAN_OMP_PRAGMA(parallel for private(result))
+    SEQAN_OMP_PRAGMA(parallel for private (result))
     for (int i = 0; i < numAlignments; ++i)
     {
         TAlignedRead const & ar = store.alignedReadStore[i];
@@ -155,7 +153,7 @@ void countReadsPerGene(String<unsigned> & readsPerGene, String<TIntervalTree> co
     }
 }
 
-// FRAGMENT(solution)
+//![solution]
 //
 // 6. Output RPKM values
 //
@@ -165,7 +163,7 @@ void outputGeneCoverage(String<unsigned> const & readsPerGene, TStore const & st
     Iterator<TStore const, AnnotationTree<> >::Type transIt = begin(store, AnnotationTree<>());
     Iterator<TStore const, AnnotationTree<> >::Type exonIt;
     double millionMappedReads = length(store.alignedReadStore) / 1000000.0;
-    
+
     std::cout << "#gene name\tRPKM value" << std::endl;
     for (unsigned j = 0; j < length(readsPerGene); ++j)
     {
@@ -203,9 +201,9 @@ void outputGeneCoverage(String<unsigned> const & readsPerGene, TStore const & st
         std::cout << readsPerGene[j] / (mRNALengthMax / 1000.0) / millionMappedReads << std::endl;
     }
 }
+//![solution]
 
-
-// FRAGMENT(main)
+//![main]
 int main(int argc, char const * argv[])
 {
     Options options;
@@ -228,3 +226,4 @@ int main(int argc, char const * argv[])
 
     return 0;
 }
+//![main]

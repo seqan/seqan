@@ -657,13 +657,13 @@ namespace std
 	template<typename THost, typename TSpec>
 	struct iterator_traits<seqan::ModifiedIterator<THost, TSpec> >
 	{
-		typedef ::seqan::ModifiedIterator<THost, TSpec> TIter;
+		typedef seqan::ModifiedIterator<THost, TSpec> TIter;
 
 		typedef random_access_iterator_tag iterator_category;
-		typedef typename ::seqan::Value<TIter>::Type value_type;
-		typedef typename ::seqan::Difference<TIter>::Type difference_type;
-		typedef typename ::seqan::Value<TIter>::Type * pointer;
-		typedef typename ::seqan::Reference<TIter>::Type reference;
+		typedef typename seqan::Value<TIter>::Type value_type;
+		typedef typename seqan::Difference<TIter>::Type difference_type;
+		typedef typename seqan::Value<TIter>::Type * pointer;
+		typedef typename seqan::Reference<TIter>::Type reference;
 	};
 }
 

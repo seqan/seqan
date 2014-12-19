@@ -47,13 +47,13 @@ namespace std
     template<typename TContainer, typename TSpec>
     struct iterator_traits<seqan::Iter<TContainer, TSpec> > // nolint
     {
-        typedef ::seqan::Iter<TContainer, TSpec> TIter; // nolint
+        typedef seqan::Iter<TContainer, TSpec> TIter; // nolint
 
         typedef random_access_iterator_tag iterator_category; // nolint
-        typedef typename ::seqan::Value<TIter>::Type value_type; // nolint
-        typedef typename ::seqan::Difference<TIter>::Type difference_type; // nolint
-        typedef typename ::seqan::Value<TIter>::Type * pointer; // nolint
-        typedef typename ::seqan::Reference<TIter>::Type reference; // nolint
+        typedef typename seqan::Value<TIter>::Type value_type; // nolint
+        typedef typename seqan::Difference<TIter>::Type difference_type; // nolint
+        typedef typename seqan::Value<TIter>::Type * pointer; // nolint
+        typedef typename seqan::Reference<TIter>::Type reference; // nolint
     };
 }
 

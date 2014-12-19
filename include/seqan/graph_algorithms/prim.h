@@ -93,7 +93,7 @@ void primsAlgorithm(TPredecessorMap & predecessor,
     typedef typename Value<TPredecessorMap>::Type TPred;
     typedef typename Value<TWeightMap>::Type TWeight;
 
-    typedef ::std::pair<TWeight, TVertexDescriptor> TWeightVertexPair;
+    typedef std::pair<TWeight, TVertexDescriptor> TWeightVertexPair;
     std::priority_queue<TWeightVertexPair, std::vector<TWeightVertexPair>, std::greater<TWeightVertexPair> > q;
 
     // Initialization

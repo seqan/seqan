@@ -4,17 +4,18 @@
 
 using namespace seqan;
 
-int main() {
+int main()
+{
     typedef Graph<Directed<> > TGraph;
 
     // Graph creation: 10 directed edges (0,1), (0,3), ...
     TGraph g;
     Size<TGraph>::Type numEdges = 10;
-    VertexDescriptor<TGraph>::Type edges[] = {0,1, 0,3, 1,2, 1,3, 2,4, 3,1, 3,2, 3,4, 4,0, 4,2};
+    VertexDescriptor<TGraph>::Type edges[] = {0, 1, 0, 3, 1, 2, 1, 3, 2, 4, 3, 1, 3, 2, 3, 4, 4, 0, 4, 2};
     addEdges(g, edges, numEdges);
 
-    // One external property map: Weight map	
-    unsigned int weights[] =    {10,  5,   1,   2,   4,   3,   9,   2,   7,   6};
+    // One external property map: Weight map
+    unsigned int weights[] =    {10, 5, 1, 2, 4, 3, 9, 2, 7, 6};
     String<unsigned int> weightMap;
     assignEdgeMap(weightMap, g, weights);
 
@@ -27,7 +28,8 @@ int main() {
 
     // Output distances of shortest paths
     Iterator<TGraph, VertexIterator>::Type it(g);
-    while(!atEnd(it)) {
+    while (!atEnd(it))
+    {
         std::cout << "Distance from 0 to " << getValue(it) << ": ";
         std::cout << getProperty(distMap, getValue(it)) << std::endl;
         goNext(it);

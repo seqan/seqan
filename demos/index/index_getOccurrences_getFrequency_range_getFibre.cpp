@@ -2,7 +2,7 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
     typedef StringSet<String<char> >    TText;
     typedef Index<TText>                TIndex;
@@ -30,7 +30,7 @@ int main ()
     Pair<unsigned> hitInterval = range(it);
     for (; hitInterval.i1 < hitInterval.i2; ++hitInterval.i1)
         std::cout << "Hit in sequence " << getFibre(index, FibreSA())[hitInterval.i1].i1 <<
-                     " at position " << getFibre(index, FibreSA())[hitInterval.i1].i2 << std::endl;
+        " at position " << getFibre(index, FibreSA())[hitInterval.i1].i2 << std::endl;
 
     return 0;
 }

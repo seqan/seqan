@@ -508,7 +508,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_transport)
     // set()
     {
         TIterator it2;
-        ::seqan::set(it2, it);
+        seqan::set(it2, it);
         SEQAN_ASSERT(it == it2);
     }
     // move()
@@ -746,14 +746,14 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_transport)
     // set()
     {
         TIterator it2;
-        ::seqan::set(it2, it);
+        seqan::set(it2, it);
         SEQAN_ASSERT_EQ(it.data_container, it2.data_container);
         SEQAN_ASSERT_EQ(it.data_iterator, it2.data_iterator);
     }
     // move()
     {
         TIterator it2;
-        ::seqan::move(it2, it);
+        seqan::move(it2, it);
         SEQAN_ASSERT_EQ(it.data_container, it2.data_container);
         SEQAN_ASSERT_EQ(it.data_iterator, it2.data_iterator);
     }
@@ -1004,14 +1004,14 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_transport)
     // set()
     {
         TIterator it2;
-        ::seqan::set(it2, it);
+        seqan::set(it2, it);
         SEQAN_ASSERT_EQ(it.data_container, it2.data_container);
         SEQAN_ASSERT_EQ(it.data_position, it2.data_position);
     }
     // move()
     {
         TIterator it2;
-        ::seqan::move(it2, it);
+        seqan::move(it2, it);
         SEQAN_ASSERT_EQ(it.data_container, it2.data_container);
         SEQAN_ASSERT_EQ(it.data_position, it2.data_position);
     }

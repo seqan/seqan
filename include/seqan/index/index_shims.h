@@ -569,11 +569,11 @@ namespace SEQAN_NAMESPACE_MAIN
 
 	template <typename TOccValue>
 	struct SAValueLess_:
-		public ::std::less<TOccValue> {};
+		public std::less<TOccValue> {};
 
 	template <typename T1, typename T2, typename TPack>
 	struct SAValueLess_< Pair<T1,T2,TPack> >:
-		public ::std::binary_function< Pair<T1,T2,TPack>, Pair<T1,T2,TPack>, bool> 
+		public std::binary_function< Pair<T1,T2,TPack>, Pair<T1,T2,TPack>, bool> 
 	{
 		inline bool operator()(Pair<T1,T2,TPack> const &a, Pair<T1,T2,TPack> const &b) const {
 			return	(getValueI1(a) < getValueI1(b)) ||
@@ -605,7 +605,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	inline void orderOccurrences(String<TValue, TSpec> &occString)
 	{
 	SEQAN_CHECKPOINT
-		::std::sort(begin(occString, Standard()), end(occString, Standard()), SAValueLess_<TValue>());
+		std::sort(begin(occString, Standard()), end(occString, Standard()), SAValueLess_<TValue>());
 	}
 
 

@@ -1,23 +1,25 @@
 #include <seqan/vcf_io.h>
 
+using namespace seqan;
+
 int main()
 {
     try
     {
         // Open input file.
-        seqan::VcfFileIn vcfIn("example.vcf");
+        VcfFileIn vcfIn("example.vcf");
 
         // Copy over header.
-        seqan::VcfHeader header;
+        VcfHeader header;
         readRecord(header, vcfIn);
 
         // Get array of counters.
-        seqan::String<unsigned> counters;
+        String<unsigned> counters;
         unsigned contigsCount = length(contigNames(context(vcfIn)));
         resize(counters, contigsCount, 0);
 
         // Read the file record by record.
-        seqan::VcfRecord record;
+        VcfRecord record;
         while (!atEnd(vcfIn))
         {
             readRecord(record, vcfIn);

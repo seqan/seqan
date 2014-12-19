@@ -230,8 +230,8 @@ struct concept_check_<void(*)(Model)>
 {};
 
 #  define SEQAN_CONCEPT_ASSERT_FN( ModelFnPtr )             \
-    typedef ::seqan::detail::instantiate<          \
-    &::seqan::requirement_<ModelFnPtr>::failed>    \
+    typedef seqan::detail::instantiate<          \
+    &seqan::requirement_<ModelFnPtr>::failed>    \
       SEQAN_PP_CAT(seqan_concept_check,__LINE__) SEQAN_STATIC_ASSERT_UNUSED_ATTRIBUTE
 
 // ---------------------------------------------------------------------------
@@ -427,8 +427,8 @@ struct requirement_<void(*)(Model)>
 {};
 
 #  define SEQAN_CONCEPT_ASSERT_FN( ModelFnPtr )             \
-    typedef ::seqan::detail::instantiate<          \
-    &::seqan::requirement_<ModelFnPtr>::failed>    \
+    typedef seqan::detail::instantiate<          \
+    &seqan::requirement_<ModelFnPtr>::failed>    \
       SEQAN_PP_CAT(seqan_concept_check,__LINE__) SEQAN_STATIC_ASSERT_UNUSED_ATTRIBUTE
 
 // ---------------------------------------------------------------------------
@@ -461,7 +461,7 @@ template <int check, class Result>
 struct Requires_ : unaryfunptr_arg_type<Result>
 {};
 
-#  define SEQAN_CONCEPT_REQUIRES_(r,data,t) + (::seqan::_requires_<void(*)t>::value)
+#  define SEQAN_CONCEPT_REQUIRES_(r,data,t) + (seqan::_requires_<void(*)t>::value)
 
 #if defined(NDEBUG)
 
@@ -471,7 +471,7 @@ struct Requires_ : unaryfunptr_arg_type<Result>
 #else  // #if defined(NDEBUG)
 
 # define SEQAN_CONCEPT_REQUIRES(models, result)                                        \
-    typename ::seqan::Requires_<                                                       \
+    typename seqan::Requires_<                                                       \
       (0 SEQAN_PP_SEQ_FOR_EACH(SEQAN_CONCEPT_REQUIRES_, ~, models)),                   \
       void(*)result                                                                 \
     >::type

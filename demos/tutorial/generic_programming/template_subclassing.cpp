@@ -42,8 +42,10 @@
 
 struct SpecA {};
 struct SpecB {};
-struct SpecC : SpecB {};
-struct SpecD : SpecB {};
+struct SpecC :
+    SpecB {};
+struct SpecD :
+    SpecB {};
 
 // Base class -- most generic and thus a fallback.
 template <typename TSpec>
@@ -51,7 +53,8 @@ struct MyClass
 {
     int x;
 
-    MyClass() : x(0)
+    MyClass() :
+        x(0)
     {}
 };
 
@@ -62,7 +65,8 @@ struct MyClass<SpecB>
 {
     int x;
 
-    MyClass() : x(1)
+    MyClass() :
+        x(1)
     {}
 };
 
@@ -71,7 +75,8 @@ struct MyClass<SpecD>
 {
     int x;
 
-    MyClass() : x(2)
+    MyClass() :
+        x(2)
     {}
 };
 
@@ -95,7 +100,8 @@ void foo(MyClass<SpecB> const & obj)
 // This function overwrites the generic implementation of foo() for the
 // specialization C.
 template <>
-void foo(MyClass<SpecC> const & obj) {
+void foo(MyClass<SpecC> const & obj)
+{
     std::cout << "foo(MyClass<SpecC> const & obj) called!  obj.x == " << obj.x << "\n";
 }
 

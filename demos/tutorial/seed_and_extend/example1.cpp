@@ -1,13 +1,16 @@
-// FRAGMENT(header)
+//![header]
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 #include <seqan/seeds.h>
 
+using namespace seqan;
+
 int main()
 {
-    // FRAGMENT(example)
+//![header]
+//![example]
     // Default-construct seed.
-    seqan::Seed<seqan::Simple> seed1;
+    Seed<Simple> seed1;
     std::cout << "seed1\n"
               << "beginPositionH == " << beginPositionH(seed1) << "\n"
               << "endPositionH == " << endPositionH(seed1) << "\n"
@@ -17,7 +20,7 @@ int main()
               << "upperDiagonal == " << upperDiagonal(seed1) << "\n\n";
 
     // Construct seed with begin and end position in both sequences.
-    seqan::Seed<seqan::Simple> seed2(3, 10, 7, 14);
+    Seed<Simple> seed2(3, 10, 7, 14);
     setUpperDiagonal(seed2, -7);
     setLowerDiagonal(seed2, -9);
     std::cout << "seed2\n"
@@ -27,7 +30,9 @@ int main()
               << "endPositionV == " << endPositionV(seed2) << "\n"
               << "lowerDiagonal == " << lowerDiagonal(seed2) << "\n"
               << "upperDiagonal == " << upperDiagonal(seed2) << "\n\n";
+//![example]
 
-    // FRAGMENT(footer)
+//![footer]
     return 0;
 }
+//![footer]

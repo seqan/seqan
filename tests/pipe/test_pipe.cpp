@@ -67,7 +67,7 @@ void testExternalString(unsigned maxSize = 32*1024*1024)
     TExtString extString;
     for(unsigned i = 1; i <= maxSize; i = i << 1) 
 	{
-        // ::std::cout << i << " "; ::std::cout.flush();
+        // std::cout << i << " "; std::cout.flush();
         resize(buf, i);
         randomize(buf);
 
@@ -95,8 +95,8 @@ void testPool(unsigned maxSize = 16*1024*1024) {
     Pool<unsigned,PoolSpec<> > pool;
     for(unsigned i = 1; i <= maxSize; i = i << 1) {
         /*
-        ::std::cout << i;
-        ::std::cout.flush();
+        std::cout << i;
+        std::cout.flush();
         */
 
         resize(buf, i);
@@ -107,10 +107,10 @@ void testPool(unsigned maxSize = 16*1024*1024) {
 
         /*
         if (pool.memBuffer.begin)
-            ::std::cout << "* ";
+            std::cout << "* ";
         else 
-            ::std::cout << " ";
-        ::std::cout.flush();
+            std::cout << " ";
+        std::cout.flush();
         */
 
         beginRead(pool);
@@ -136,8 +136,8 @@ void testMapper(unsigned maxSize = 16*1024*1024) {
     Pool<unsigned,MapperSpec<MapperConfig<IdentityMap<unsigned> > > > mapper;
     for(unsigned i = 1; i <= maxSize; i = i << 1) {
         /*
-        ::std::cout << i;
-        ::std::cout.flush();
+        std::cout << i;
+        std::cout.flush();
         */
 
         resize(buf, i);
@@ -148,10 +148,10 @@ void testMapper(unsigned maxSize = 16*1024*1024) {
 
         /*(
         if (mapper.memBuffer.begin)
-            ::std::cout << "* ";
+            std::cout << "* ";
         else 
-            ::std::cout << " ";
-        ::std::cout.flush();
+            std::cout << " ";
+        std::cout.flush();
         */
 
         beginRead(mapper);
@@ -177,8 +177,8 @@ void testPartiallyFilledMapper(unsigned maxSize = 16*1024*1024) {
     Pool<unsigned,MapperSpec<MapperConfig<IdentityMap<unsigned> > > > mapper;
     for(unsigned i = 1; i <= maxSize; i = i << 1) {
         /*
-        ::std::cout << i;
-        ::std::cout.flush();
+        std::cout << i;
+        std::cout.flush();
         */
 
         resize(buf, i);
@@ -193,10 +193,10 @@ void testPartiallyFilledMapper(unsigned maxSize = 16*1024*1024) {
 
         /*
         if (mapper.memBuffer.begin)
-            ::std::cout << "* ";
+            std::cout << "* ";
         else 
-            ::std::cout << " ";
-        ::std::cout.flush();
+            std::cout << " ";
+        std::cout.flush();
         */
 
         unsigned undefCounter = 0, missCounter = 0;
@@ -239,8 +239,8 @@ void testSorter(unsigned maxSize = 16*1024*1024) {
     Pool<unsigned,SorterSpec<SorterConfig<SimpleCompare<unsigned> > > > sorter;
     for(unsigned i = 1; i <= maxSize; i = i << 1) {
         /*
-        ::std::cout << i;
-        ::std::cout.flush();
+        std::cout << i;
+        std::cout.flush();
         */
 
         resize(buf, i);
@@ -251,10 +251,10 @@ void testSorter(unsigned maxSize = 16*1024*1024) {
 
         /*
         if (sorter.memBuffer.begin)
-            ::std::cout << "* ";
+            std::cout << "* ";
         else 
-            ::std::cout << " ";
-        ::std::cout.flush();
+            std::cout << " ";
+        std::cout.flush();
         */
 
         beginRead(sorter);

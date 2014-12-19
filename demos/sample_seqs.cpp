@@ -43,12 +43,12 @@
 #include <seqan/stream.h>
 #include <seqan/seq_io.h>
 
+using namespace seqan;
+
 const unsigned SEED = 42;
 
 int main(int argc, char const ** argv)
 {
-    using namespace seqan;
-
     // Check command line count.
     if (argc != 3)
     {
@@ -100,7 +100,7 @@ int main(int argc, char const ** argv)
     // Finally, sample reads.
     SeqFileOut seqFileOut(std::cout, Fastq());
     std::set<unsigned>::iterator it = sampledIds.begin();
-    for(; it != sampledIds.end(); ++it)
+    for (; it != sampledIds.end(); ++it)
         writeRecord(seqFileOut, ids[*it], seqs[*it]);
 
     return 0;

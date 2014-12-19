@@ -93,7 +93,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			TCounterFilter				filter(inverter);
 			
             #ifdef SEQAN_DEBUG_INDEX
-				::std::cerr << "  invert suffix array" << ::std::endl;
+				std::cerr << "  invert suffix array" << std::endl;
             #endif
 			inverter << sa;
 			SEQAN_PROMARK("Suffix-Array invertiert");
@@ -102,7 +102,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			TJoiner						joiner(bundle2(filter, shifter));
 			
             #ifdef SEQAN_DEBUG_INDEX
-                ::std::cerr << "  de-invert suffix array" << ::std::endl;
+                std::cerr << "  de-invert suffix array" << std::endl;
             #endif
 			mapper << joiner;
 			SEQAN_PROMARK("Suffix-Array linearisiert");
@@ -141,7 +141,7 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
 	template <typename InType, typename TLimitsString, typename Result = typename Value<TLimitsString>::Type>
-	struct _filterGlobalizer : public ::std::unary_function<InType,Result> {
+	struct _filterGlobalizer : public std::unary_function<InType,Result> {
 		TLimitsString const &limits;
 		_filterGlobalizer(TLimitsString const &_limits) : limits(_limits) {}
         inline Result operator()(const InType& x) const
@@ -200,8 +200,8 @@ namespace SEQAN_NAMESPACE_MAIN
             // *** INSTANTIATION ***
 
 			for(int i=0;i<length(limits);++i)
-				::std::cout << limits[i]<<"  ";
-			::std::cout<<::std::endl;
+				std::cout << limits[i]<<"  ";
+			std::cout<<std::endl;
 			
 			TGlobalizer					globalizer(suffixArrayIn, limits);
 			TSA							sa(globalizer);
@@ -209,7 +209,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			TCounterFilter				filter(inverter);
 			
             #ifdef SEQAN_DEBUG_INDEX
-                ::std::cerr << "  invert suffix array" << ::std::endl;
+                std::cerr << "  invert suffix array" << std::endl;
             #endif
 			inverter << sa;
 			SEQAN_PROMARK("Suffix-Array invertiert");
@@ -218,7 +218,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			TJoiner						joiner(bundle2(filter, shifter));
 			
             #ifdef SEQAN_DEBUG_INDEX
-                ::std::cerr << "  de-invert suffix array" << ::std::endl;
+                std::cerr << "  de-invert suffix array" << std::endl;
             #endif
 			mapper << joiner;
 			SEQAN_PROMARK("Suffix-Array linearisiert");

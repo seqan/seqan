@@ -4,17 +4,19 @@
 
 #include <seqan/stream.h>
 
+using namespace seqan;
+
 // This template function reads the contents from the given Stream in and
 // writes it out to std::cout
 
 template <typename TStream>
 void doReading(TStream & stream)
 {
-    typename seqan::DirectionIterator<TStream, seqan::Input>::Type reader;
-    seqan::CharString buffer;
+    typename DirectionIterator<TStream, Input>::Type reader;
+    CharString buffer;
     reserve(buffer, 1000);
 
-    reader = directionIterator(stream, seqan::Input());
+    reader = directionIterator(stream, Input());
 
     while (!atEnd(reader))
     {
@@ -29,7 +31,7 @@ void doReading(TStream & stream)
 template <typename TStream>
 void doWriting(TStream & stream)
 {
-    seqan::CharString buffer = "Hello World!\n";
+    CharString buffer = "Hello World!\n";
     write(stream, buffer);
 }
 
@@ -46,17 +48,17 @@ int main(int argc, char const ** argv)
     }
 
     // Check second argument.
-    if (seqan::CharString(argv[1]) != "r" && seqan::CharString(argv[1]) != "w")
+    if (CharString(argv[1]) != "r" && CharString(argv[1]) != "w")
     {
         std::cerr << "ERROR: " << argv[1] << " is not a valid operation name.\n";
         return 1;
     }
-    bool doRead = (seqan::CharString(argv[1]) == "r");
+    bool doRead = (CharString(argv[1]) == "r");
 
     // Branches for stream and operation type.
     if (doRead)  // reading
     {
-        seqan::VirtualStream<char, seqan::Input> stream;
+        VirtualStream<char, Input> stream;
         if (!open(stream, argv[2]))
         {
             std::cerr << "ERROR: Could not open " << argv[2] << "\n";
@@ -66,7 +68,7 @@ int main(int argc, char const ** argv)
     }
     else
     {
-        seqan::VirtualStream<char, seqan::Output> stream;
+        VirtualStream<char, Output> stream;
         if (!open(stream, argv[2]))
         {
             std::cerr << "ERROR: Could not open " << argv[2] << "\n";

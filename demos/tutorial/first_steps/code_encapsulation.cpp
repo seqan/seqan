@@ -1,38 +1,41 @@
-// FRAGMENT(all)
+//![all]
 #include <iostream>
 #include <seqan/file.h>
 #include <seqan/sequence.h>
 
-int computeLocalScore(seqan::String<char> subText, seqan::String<char> pattern)
+using namespace seqan;
+
+int computeLocalScore(String<char> subText, String<char> pattern)
 {
     int localScore = 0;
-    for (unsigned i = 0; i < seqan::length(pattern); ++i)
+    for (unsigned i = 0; i < length(pattern); ++i)
         if (subText[i] == pattern[i])
             ++localScore;
-    
+
     return localScore;
 }
 
-seqan::String<int> computeScore(seqan::String<char> text, seqan::String<char> pattern)
+String<int> computeScore(String<char> text, String<char> pattern)
 {
-    seqan::String<int> score;
-    seqan::resize(score, seqan::length(text) - seqan::length(pattern) + 1, 0);
+    String<int> score;
+    resize(score, length(text) - length(pattern) + 1, 0);
 
-    for (unsigned i = 0; i < seqan::length(text) - seqan::length(pattern) + 1; ++i)
-        score[i] = computeLocalScore(infix(text, i, i + seqan::length(pattern)), pattern);
-    
+    for (unsigned i = 0; i < length(text) - length(pattern) + 1; ++i)
+        score[i] = computeLocalScore(infix(text, i, i + length(pattern)), pattern);
+
     return score;
 }
 
 int main()
 {
-    seqan::String<char> text = "This is an awesome tutorial to get to know SeqAn!";
-    seqan::String<char> pattern = "tutorial";
-    seqan::String<int> score = computeScore(text, pattern);
+    String<char> text = "This is an awesome tutorial to get to know SeqAn!";
+    String<char> pattern = "tutorial";
+    String<int> score = computeScore(text, pattern);
 
-    for (unsigned i = 0; i < seqan::length(score); ++i)
+    for (unsigned i = 0; i < length(score); ++i)
         std::cout << score[i] << " ";
     std::cout << std::endl;
 
     return 0;
 }
+//![all]

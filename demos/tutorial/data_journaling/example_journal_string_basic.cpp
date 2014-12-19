@@ -1,4 +1,4 @@
-// FRAGMENT(main)
+//![main]
 #include <seqan/stream.h>
 #include <seqan/sequence_journaled.h>
 
@@ -6,33 +6,36 @@ using namespace seqan;
 
 int main()
 {
-    // FRAGMENT(typedef)
+//![main]
+//![typedef]
     typedef String<char, Journaled<Alloc<>, SortedArray, Alloc<> > > TJournaledString;
     typedef Host<TJournaledString>::Type THost;
+//![typedef]
 
-    // FRAGMENT(init)
+//![init]
     String<char> hostStr = "thisisahostsequence";
     TJournaledString journalStr;
     setHost(journalStr, hostStr);
 
     std::cout << "After creating the Journaled String:" << std::endl;
     std::cout << "Host: " << host(journalStr) << std::endl;
-    std::cout << "Journal: "<< journalStr << std::endl;
+    std::cout << "Journal: " << journalStr << std::endl;
     std::cout << "Nodes: " << journalStr._journalEntries << std::endl;
     std::cout << std::endl;
+//![init]
 
-    // FRAGMENT(modification)
+//![modification]
     insert(journalStr, 7, "modified");
-    erase(journalStr, 19,27);
+    erase(journalStr, 19, 27);
 
     std::cout << "After modifying the Journaled String:" << std::endl;
     std::cout << "Host: " << host(journalStr) << std::endl;
     std::cout << "Journal: " << journalStr << std::endl;
     std::cout << "Nodes: " << journalStr._journalEntries << std::endl;
     std::cout << std::endl;
+//![modification]
 
-    // FRAGMENT(flatten)
-
+//![flatten]
     flatten(journalStr);
     std::cout << "After flatten the Journaled String:" << std::endl;
     std::cout << "Host: " << host(journalStr) << std::endl;
@@ -41,3 +44,4 @@ int main()
 
     return 0;
 }
+//![flatten]

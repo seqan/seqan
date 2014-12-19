@@ -7,10 +7,11 @@ using namespace seqan;
 template <typename TText1, typename TText2>
 void printAlign(TText1 const & genomeFragment, TText2 const & read)
 {
-        std::cout <<  "Alignment " << std::endl;
-        std::cout << "  genome : " << genomeFragment << std::endl;
-        std::cout << "  read   : " << read << std::endl;
+    std::cout <<  "Alignment " << std::endl;
+    std::cout << "  genome : " << genomeFragment << std::endl;
+    std::cout << "  read   : " << read << std::endl;
 }
+
 int main(int, char const **)
 {
     // Build reads and genomes
@@ -28,7 +29,7 @@ int main(int, char const **)
     append(chr1, chr2);
     // Print readlist
     std::cout << " \n Read list: " << std::endl;
-    for(unsigned i = 0; i < length(readList); ++i)
+    for (unsigned i = 0; i < length(readList); ++i)
         std::cout << readList[i] << std::endl;
     // Assume we have mapped the 4 reads to chr1 (and chr2) and now have the mapping start positions (no gaps).
     // Store the start position in a String alignPosList: 7, 100, 172, 272
@@ -43,15 +44,15 @@ int main(int, char const **)
     // Assume chr1 is beeing bisulfate treated: Copy chr1 to a new genome bsChr1 and exchange every 'C' with a 'T'
     DnaString bsChr1;
     assign(bsChr1, chr1);
-    for(unsigned i = 0; i < length(bsChr1); ++i)
-        if(bsChr1[i] == 'C')
+    for (unsigned i = 0; i < length(bsChr1); ++i)
+        if (bsChr1[i] == 'C')
             bsChr1[i] = 'T';
     // Print alignments using Segment: Do the same as above, but instead of using a for loop to build the fragment,
     // use the Segment class to build an infix of bsChr1.
     // Note: Because printAlign uses templates, we don't have to change the function even though the type of
     // genomeFragment is different.
     std::cout << " \n Print alignment using Segment: " << std::endl;
-    for(unsigned i = 0; i < length(readList); ++i)
+    for (unsigned i = 0; i < length(readList); ++i)
     {
         // Begin and end position of a given alignment between the read and the genome
         unsigned beginPosition = alignPosList[i];

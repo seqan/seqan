@@ -2,7 +2,7 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
     Index<String<char> > index("MISSISSIPPI");
 

@@ -1,4 +1,4 @@
-//FRAGMENT(main)
+//![main]
 #include <iostream>
 #include <seqan/align.h>
 
@@ -6,14 +6,16 @@ using namespace seqan;
 
 int main()
 {
-//FRAGMENT(init)
-	Align< String<AminoAcid> > ali;
-	resize(rows(ali), 2);
-	assignSource(row(ali, 0), "PNCFDAKQRTASRPL");
-	assignSource(row(ali, 1), "CFDKQKNNRTATRDTA");
+//![main]
+//![init]
+    Align<String<AminoAcid> > ali;
+    resize(rows(ali), 2);
+    assignSource(row(ali, 0), "PNCFDAKQRTASRPL");
+    assignSource(row(ali, 1), "CFDKQKNNRTATRDTA");
+//![init]
 
-//FRAGMENT(ali)
-	Score<int> sc(3,-2,-1,-5);
+//![ali]
+    Score<int> sc(3, -2, -1, -5);
     unsigned count = 0;
     LocalAlignmentEnumerator<Score<int>, Unbanded> enumerator(sc);
     while (nextLocalAlignment(ali, enumerator) && count < 3)
@@ -24,3 +26,4 @@ int main()
     }
     return 0;
 }
+//![ali]

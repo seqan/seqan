@@ -1,9 +1,11 @@
 #include <seqan/gff_io.h>
 
+using namespace seqan;
+
 int main()
 {
     // Open input file.
-    seqan::GffFileIn gffIn;
+    GffFileIn gffIn;
     if (!open(gffIn, "example.gff"))
     {
         std::cerr << "ERROR: Could not open example.gff" << std::endl;
@@ -11,10 +13,10 @@ int main()
     }
 
     // Attach to standard output.
-    seqan::GffFileOut gffOut(std::cout, seqan::Gff());
+    GffFileOut gffOut(std::cout, Gff());
 
     // Copy the file record by record.
-    seqan::GffRecord record;
+    GffRecord record;
 
     try
     {
@@ -24,11 +26,11 @@ int main()
             writeRecord(gffOut, record);
         }
     }
-    catch (seqan::Exception const & e)
+    catch (Exception const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;
     }
-    
+
     return 0;
 }

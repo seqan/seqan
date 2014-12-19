@@ -75,7 +75,7 @@ namespace seqan {
 
 // TODO(holtgrew): Does memset() really belong in this header? Used in find_myers_ukknonen.h, pump_lcp_core.h, pipe_sample.h, file_async
 
-using ::std::memset;
+using std::memset;
 
 // Implementation of memset() with fill size.
 
@@ -85,7 +85,7 @@ struct MemsetWorker
     finline static
     void run(unsigned char * ptr, unsigned char c)
     {
-        ::std::memset(ptr, c, SIZE);
+        std::memset(ptr, c, SIZE);
     }
 };
 
@@ -149,7 +149,7 @@ finline void memset(void* ptr, unsigned char c)
 template <unsigned SIZE, bool direct, unsigned char c>
 struct MemsetConstValueWorker
 {
-    finline static void run(unsigned char* ptr) { ::std::memset(ptr, c, SIZE); }
+    finline static void run(unsigned char* ptr) { std::memset(ptr, c, SIZE); }
 };
 
 template <unsigned  SIZE, unsigned char c>

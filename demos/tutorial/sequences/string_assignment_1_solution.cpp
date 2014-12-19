@@ -7,10 +7,11 @@ using namespace seqan;
 template <typename TText1, typename TText2>
 void printAlign(TText1 const & genomeFragment, TText2 const & read)
 {
-        std::cout <<  "Alignment " << std::endl;
-        std::cout << "  genome : " << genomeFragment << std::endl;
-        std::cout << "  read   : " << read << std::endl;
+    std::cout <<  "Alignment " << std::endl;
+    std::cout << "  genome : " << genomeFragment << std::endl;
+    std::cout << "  read   : " << read << std::endl;
 }
+
 int main(int, char const **)
 {
     // Build reads and genomes
@@ -28,7 +29,7 @@ int main(int, char const **)
     append(chr1, chr2);
     // Print readlist
     std::cout << " \n Read list: " << std::endl;
-    for(unsigned i = 0; i < length(readList); ++i)
+    for (unsigned i = 0; i < length(readList); ++i)
         std::cout << readList[i] << std::endl;
     // Assume we have mapped the 4 reads to chr1 (and chr2) and now have the mapping start positions (no gaps).
     // Store the start position in a String alignPosList: 7, 100, 172, 272
@@ -41,16 +42,16 @@ int main(int, char const **)
     // Optional
     // Bisulfite conversion
     // Assume chr1 is beeing bisulfate treated: Copy chr1 to a new genome bsChr1 and exchange every 'C' with a 'T'
-    DnaString bsChr1;;
+    DnaString bsChr1;
     assign(bsChr1, chr1);
-    for(unsigned i = 0; i < length(bsChr1); ++i)
-        if(bsChr1[i] == 'C')
+    for (unsigned i = 0; i < length(bsChr1); ++i)
+        if (bsChr1[i] == 'C')
             bsChr1[i] = 'T';
     // Print alignments of the reads with chr1 (or bsChr1) sequence using the function printAlign
     // and the positions in alignPosList.
     // To do that, you have to create a copy of the fragment in chr1 (bsChr1) that is aligned to the read.
     std::cout << " \n Print alignment: " << std::endl;
-    for(unsigned i = 0; i < length(readList); ++i)
+    for (unsigned i = 0; i < length(readList); ++i)
     {
         // Begin position beginPosition of a given alignment between the read and the genome
         unsigned beginPosition = alignPosList[i];
@@ -58,7 +59,7 @@ int main(int, char const **)
         DnaString genomeFragment;
         // We have to create a copy of the corresponding fragment of the genome, where the read aligns to
         for (unsigned j = 0; j < length(readList[i]); ++j)
-            appendValue(genomeFragment, chr1[beginPosition+j]);
+            appendValue(genomeFragment, chr1[beginPosition + j]);
         // Call of our function to print the simple alignment
         printAlign(genomeFragment, readList[i]);
     }

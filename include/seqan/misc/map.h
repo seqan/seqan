@@ -75,11 +75,11 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //	template <typename TKey>
 //	struct Map {
-//		typedef ::std::map<TKey> Type;
+//		typedef std::map<TKey> Type;
 //	};
 	template <typename TKey, typename TObject>
 	class Map< Pair<TKey, TObject> > {
-//		typedef ::std::set< Pair<TKey, TObject>, SetLess< Pair<TKey, TObject> > > Type;
+//		typedef std::set< Pair<TKey, TObject>, SetLess< Pair<TKey, TObject> > > Type;
 	};
 
 }

@@ -4,17 +4,19 @@
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
 
+using namespace seqan;
+
 int main()
 {
-    seqan::CharString path = SEQAN_PATH_TO_ROOT();
+    CharString path = SEQAN_PATH_TO_ROOT();
     append(path, "/demos/input_output/example.fa");
 
     // Open file
-    seqan::SeqFileIn inFile(toCString(path));
+    SeqFileIn inFile(toCString(path));
 
     // Read file record-wise.
-    seqan::CharString id;
-    seqan::Dna5String seq;
+    CharString id;
+    Dna5String seq;
     while (!atEnd(inFile))
     {
         readRecord(id, seq, inFile);

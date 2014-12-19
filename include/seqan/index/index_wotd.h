@@ -1838,9 +1838,9 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 /*
 			if (globalDumpFlag) 
 			{
-				::std::cerr << '"' << representative(it) << '"' << ::std::endl;
+				std::cerr << '"' << representative(it) << '"' << std::endl;
                 for (int i=0;i<length(getOccurrences(it));++i)
-                    ::std::cerr << getOccurrences(it)[i]<<'\t'<<suffix(indexText(index),getOccurrences(it)[i])<<std::endl;
+                    std::cerr << getOccurrences(it)[i]<<'\t'<<suffix(indexText(index),getOccurrences(it)[i])<<std::endl;
 //				_dumpFreq(index);
 			}
 */
@@ -1872,20 +1872,20 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 		typedef typename Fibre<TIndex, WotdDir>::Type		TDir;
 		typedef typename Value<TDir>::Type					TDirValue;
 
-		::std::cout << "  Dir (wotd)" << ::std::endl;
+		std::cout << "  Dir (wotd)" << std::endl;
 		for(unsigned i=0; i < length(indexDir(index)); ++i) {
 			TDirValue d = indexDir(index)[i];
-			::std::cout << i << ":  " << (d & index.BITMASK0);
-			if (d & index.LEAF)			::std::cout << "  (Leaf/Uneval)";
-			if (d & index.LAST_CHILD)	::std::cout << "  (LastChild/SENTINELS)";
-			::std::cout << ::std::endl;
+			std::cout << i << ":  " << (d & index.BITMASK0);
+			if (d & index.LEAF)			std::cout << "  (Leaf/Uneval)";
+			if (d & index.LAST_CHILD)	std::cout << "  (LastChild/SENTINELS)";
+			std::cout << std::endl;
 		}
 
-		::std::cout << ::std::endl << "  SA" << ::std::endl;
+		std::cout << std::endl << "  SA" << std::endl;
 		for(unsigned i=0; i < length(indexSA(index)); ++i)
-			::std::cout << i << ":  " << indexSA(index)[i] << "  " << suffix(indexText(index), indexSA(index)[i]) << ::std::endl;
+			std::cout << i << ":  " << indexSA(index)[i] << "  " << suffix(indexText(index), indexSA(index)[i]) << std::endl;
 
-		::std::cout << ::std::endl;
+		std::cout << std::endl;
 
 	}
 

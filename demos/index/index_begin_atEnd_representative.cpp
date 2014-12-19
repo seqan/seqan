@@ -2,7 +2,7 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
     typedef Index<CharString> TIndex;
     TIndex index("TATAA");
@@ -10,7 +10,7 @@ int main ()
     Iterator<TIndex, TopDown<ParentLinks<> > >::Type itDefault;
     itDefault = begin(index, TopDown<ParentLinks<> >());
 
-    while(!atEnd(itDefault))
+    while (!atEnd(itDefault))
     {
         std::cout << representative(itDefault) << std::endl;
         goNext(itDefault);
@@ -21,11 +21,11 @@ int main ()
     Iterator<TIndex, TopDown<ParentLinks<Postorder> > >::Type itPostOrder;
     itPostOrder = begin(index, TopDown<ParentLinks<Postorder> >());
 
-    while(!atEnd(itPostOrder))
+    while (!atEnd(itPostOrder))
     {
         std::cout << representative(itPostOrder) << std::endl;
         goNext(itPostOrder);
-    };
+    }
 
     return 0;
 }

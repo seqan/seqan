@@ -570,7 +570,7 @@ updateContig(FragmentStore<TFragSpec, TConfig>& fragStore,
 		TComponentToRank compToRank;
 		for(TSize compIndex = 0; compIndex < numOfComponents; ++compIndex) 
 			appendValue(compToRank, std::make_pair(order[compIndex], compIndex), Generous());
-		::std::sort(begin(compToRank, Standard()), end(compToRank, Standard()));
+		std::sort(begin(compToRank, Standard()), end(compToRank, Standard()));
 
 		typedef Pair<TSize, TSize> TRankPair;
 		typedef String<TRankPair> TSequenceToRanks;
@@ -582,9 +582,9 @@ updateContig(FragmentStore<TFragSpec, TConfig>& fragStore,
 			TVertexDescriptor vert = value(itVertex);
 			TSize seq = idToPosition(strSet, sequenceId(g, vert));
 			if (fragmentBegin(g, vert) == 0) 
-				seqToRank[seq].i1 = ::std::lower_bound(begin(compToRank, Standard()), end(compToRank, Standard()), ::std::make_pair((TSize) component[vert], (TSize) 0))->second;
+				seqToRank[seq].i1 = std::lower_bound(begin(compToRank, Standard()), end(compToRank, Standard()), std::make_pair((TSize) component[vert], (TSize) 0))->second;
 			if (fragmentBegin(g, vert) + fragmentLength(g, vert) == length(strSet[seq]))
-				seqToRank[seq].i2 = ::std::lower_bound(begin(compToRank, Standard()), end(compToRank, Standard()), ::std::make_pair((TSize) component[vert], (TSize) 0))->second;
+				seqToRank[seq].i2 = std::lower_bound(begin(compToRank, Standard()), end(compToRank, Standard()), std::make_pair((TSize) component[vert], (TSize) 0))->second;
 		}
 		clear(compToRank);
 
@@ -605,7 +605,7 @@ updateContig(FragmentStore<TFragSpec, TConfig>& fragStore,
 			TLeftOverIter itLEnd = end(leftOver, Standard());
 			for(TSize pos = 0; itL != itLEnd; ++itL, ++pos) 
 				if (*itL) appendValue(seqToBegin, std::make_pair((seqToRank[pos]).i1, pos), Generous());
-			::std::sort(begin(seqToBegin, Standard()), end(seqToBegin, Standard()));
+			std::sort(begin(seqToBegin, Standard()), end(seqToBegin, Standard()));
 			
 			TSize endPos = 0;
 			TSeqToBeginIter itSB = begin(seqToBegin, Standard());
@@ -1252,7 +1252,7 @@ write(
 		reserve(idToPos, alignItTmpEnd - alignItTmp);
 		for(TSize iCount = 0; alignItTmp!=alignItTmpEnd; ++iCount, ++alignItTmp) 
 			appendValue(idToPos, std::make_pair(alignItTmp->id, readSlot[iCount]));
-		::std::sort(begin(idToPos, Standard()), end(idToPos, Standard()));
+		std::sort(begin(idToPos, Standard()), end(idToPos, Standard()));
 
 		// Sort the reads according to the id
 		sortAlignedReads(infix(fragStore.alignedReadStore, alignIt - begin(fragStore.alignedReadStore, Standard()), alignItEnd - begin(fragStore.alignedReadStore, Standard())), SortId());

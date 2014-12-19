@@ -118,7 +118,7 @@ stronglyConnectedComponents(TComponents & components,
     }
 
     // Order vertices
-    typedef ::std::pair<TSize, TVertexDescriptor> TTimeVertexPair;
+    typedef std::pair<TSize, TVertexDescriptor> TTimeVertexPair;
     std::priority_queue<TTimeVertexPair> q;
     goBegin(it);
     for(;!atEnd(it);++it) {

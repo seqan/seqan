@@ -656,7 +656,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	// compare two q-grams of a given text (q-grams can be smaller than q)
     template < typename TSAValue, typename TText >
 	struct QGramLess_ : 
-		public ::std::binary_function < TSAValue, TSAValue, bool >
+		public std::binary_function < TSAValue, TSAValue, bool >
     {
 		typedef typename Iterator<TText, Standard>::Type TIter;
 		TIter _begin, _end;
@@ -704,7 +704,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 	template < typename TSAValue, typename TString, typename TSpec >
 	struct QGramLess_<TSAValue, StringSet<TString, TSpec> const> : 
-		public ::std::binary_function < TSAValue, TSAValue, bool >
+		public std::binary_function < TSAValue, TSAValue, bool >
     {
 		typedef typename Iterator<TString const, Standard>::Type TIter;
 		typedef typename Size<TString>::Type                     TSize;
@@ -772,7 +772,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 	template < typename TSAValue, typename TString, typename TSpec >
 	struct QGramLessOffset_<TSAValue, StringSet<TString, TSpec> const> : 
-		public ::std::binary_function < TSAValue, TSAValue, bool >
+		public std::binary_function < TSAValue, TSAValue, bool >
     {
 		typedef typename Iterator<TString const, Standard>::Type TIter;
 		typedef typename Size<TString>::Type                     TSize;
@@ -841,7 +841,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	// compare two q-grams of a given text (no check for q-grams smaller than q)
     template < typename TSAValue, typename TText >
 	struct QGramLessNoCheck_ : 
-		public ::std::binary_function < TSAValue, TSAValue, bool >
+		public std::binary_function < TSAValue, TSAValue, bool >
     {
 		typedef typename Iterator<TText, Standard>::Type TIter;
 		TIter _begin;
@@ -875,7 +875,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template < typename TSAValue, typename TString, typename TSpec >
 	struct QGramLessNoCheck_<TSAValue, StringSet<TString, TSpec> const> : 
-		public ::std::binary_function < TSAValue, TSAValue, bool >
+		public std::binary_function < TSAValue, TSAValue, bool >
     {
 		typedef typename Iterator<TString, Standard>::Type  TIter;
         typedef StringSet<TString, TSpec>                   TStringSet;
@@ -923,7 +923,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 	template < typename TSAValue, typename TString, typename TSpec >
 	struct QGramLessNoCheckOffset_<TSAValue, StringSet<TString, TSpec> const> : 
-		public ::std::binary_function < TSAValue, TSAValue, bool >
+		public std::binary_function < TSAValue, TSAValue, bool >
     {
 		typedef typename Iterator<TString, Standard>::Type TIter;
 		StringSet<TString, TSpec> const &_stringSet;
@@ -1475,12 +1475,12 @@ namespace SEQAN_NAMESPACE_MAIN
 		// 2. Sort suffix array with quicksort
 		TSize span = length(shape);
 		if (i + span > length(text) + 1)
-			::std::sort(
+			std::sort(
 				begin(sa, Standard()), 
 				end(sa, Standard()), 
 				QGramLess_<typename Value<TSA>::Type, TText const>(text, span));
 		else
-			::std::sort(
+			std::sort(
 				begin(sa, Standard()), 
 				end(sa, Standard()), 
 				QGramLessNoCheck_<typename Value<TSA>::Type, TText const>(text, span));
@@ -1524,12 +1524,12 @@ namespace SEQAN_NAMESPACE_MAIN
 		// 2. Sort suffix array with quicksort
 		TSize q = length(shape);
 		if (lengthSum(stringSet) == length(sa))
-			::std::sort(
+			std::sort(
 				begin(sa, Standard()), 
 				end(sa, Standard()), 
 				QGramLess_<typename Value<TSA>::Type, TStringSet const>(stringSet, q));
 		else
-			::std::sort(
+			std::sort(
 				begin(sa, Standard()), 
 				end(sa, Standard()), 
 				QGramLessNoCheck_<typename Value<TSA>::Type, TStringSet const>(stringSet, q));
@@ -1551,7 +1551,7 @@ namespace SEQAN_NAMESPACE_MAIN
         if (length(sa) <= 1)
             return;
 
-        ::std::sort(
+        std::sort(
             begin(sa, Standard()), 
             end(sa, Standard()),
             QGramLessOffset_<typename Value<TSA>::Type, TText const>(text, newQ - oldQ, oldQ));
@@ -1577,7 +1577,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		if (newQ <= (TSize2)oldQ) return;
 
 		if (length(dir) < 2) {
-			::std::sort(
+			std::sort(
 				begin(sa, Standard()),
 				end(sa, Standard()),
 				QGramLess_<typename Value<TSA>::Type, TText const>(text, newQ));
@@ -1594,7 +1594,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		for(; dirIt != dirItEnd; ++dirIt, itBktBegin = itBktEnd) {
 			itBktEnd = itBegin + *dirIt;
 			if (itBktEnd - itBktBegin < 2) continue;
-			::std::sort(
+			std::sort(
 				itBktBegin,
 				itBktEnd,
 				QGramLessOffset_<typename Value<TSA>::Type, TText const>(text, newQ - oldQ, oldQ));
@@ -1797,7 +1797,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	// *** COMPARATORS & MAPS ***
         
     template <typename InType, typename Result = int>
-    struct _qgramComp : public ::std::binary_function<InType,InType,Result> {
+    struct _qgramComp : public std::binary_function<InType,InType,Result> {
         inline Result operator()(InType const &a, InType const &b) const
         {
 			typedef typename Value<InType, 2>::Type TQGram;
@@ -1816,7 +1816,7 @@ namespace SEQAN_NAMESPACE_MAIN
     // optimized for bitvectors
     template <typename T1, typename TValue, unsigned _size, typename Result>
     struct _qgramComp< Pair<T1, Tuple<TValue, _size, BitPacked<> >, Pack >, Result > :
-        public ::std::binary_function<
+        public std::binary_function<
             Pair<T1, Tuple<TValue, _size, BitPacked<> >, Pack >,
             Pair<T1, Tuple<TValue, _size, BitPacked<> >, Pack >,
             Result> {       

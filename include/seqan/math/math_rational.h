@@ -76,7 +76,7 @@ class Rational :
     > > > > > > > > > > > > > > > >
 {
     // Class-wide pre-conditions
-//    SEQAN_STATIC_ASSERT( ::std::numeric_limits<TInt>::is_specialized );
+//    SEQAN_STATIC_ASSERT( std::numeric_limits<TInt>::is_specialized );
 
     // Helper types
 //    typedef typename boost::call_traits<TInt>::param_type param_type;

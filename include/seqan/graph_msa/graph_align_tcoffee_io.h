@@ -1068,7 +1068,7 @@ _buildNewickString(Graph<Tree<TCargo, TSpec> >& guideTree,
 			TEdgeDescriptor e1 = findEdge(guideTree, v, v1);
 			TEdgeDescriptor e2 = findEdge(guideTree, v, v2);
 			appendValue(subStr, ':', Generous());
-			::std::ostringstream weight;
+			std::ostringstream weight;
 			weight << (cargo(e1) + cargo(e2));
 			append(subStr, weight.str().c_str(), Generous());
 			TAdjIter adjIter(guideTree, v2);
@@ -1077,7 +1077,7 @@ _buildNewickString(Graph<Tree<TCargo, TSpec> >& guideTree,
 				_buildNewickString(guideTree, names, subStr, *adjIter, collapseRoot);
 				TEdgeDescriptor e = findEdge(guideTree, v2, *adjIter);
 				appendValue(subStr, ':', Generous());
-				::std::ostringstream weight;
+				std::ostringstream weight;
 				weight << cargo(e);
 				append(subStr, weight.str().c_str(), Generous());
 			}
@@ -1090,7 +1090,7 @@ _buildNewickString(Graph<Tree<TCargo, TSpec> >& guideTree,
 			_buildNewickString(guideTree, names, subStr, *adjIter, collapseRoot);
 			TEdgeDescriptor e = findEdge(guideTree, v, *adjIter);
 			appendValue(subStr, ':', Generous());
-			::std::ostringstream weight;
+			std::ostringstream weight;
 			weight << cargo(e);
 			append(subStr, weight.str().c_str(), Generous());
 			goNext(adjIter);
@@ -1099,7 +1099,7 @@ _buildNewickString(Graph<Tree<TCargo, TSpec> >& guideTree,
 				_buildNewickString(guideTree, names, subStr, *adjIter, collapseRoot);
 				TEdgeDescriptor e = findEdge(guideTree, v, *adjIter);
 				appendValue(subStr, ':', Generous());
-				::std::ostringstream weight;
+				std::ostringstream weight;
 				weight << cargo(e);
 				append(subStr, weight.str().c_str(), Generous());
 			}

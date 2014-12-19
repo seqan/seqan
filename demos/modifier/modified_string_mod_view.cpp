@@ -5,18 +5,21 @@
 using namespace seqan;
 
 // A user-defined modifier that transforms all characters to upper case.
-struct MyFunctor : public std::unary_function<char,char>
+struct MyFunctor :
+    public std::unary_function<char, char>
 {
     inline char operator()(char x) const
     {
         if (('a' <= x) && (x <= 'z'))
-            return (x + ('A' - 'a'));
+            return x + ('A' - 'a');
+
         return x;
     }
+
 };
 
 
-int main ()
+int main()
 {
     // Construct a String and a ModifiedString over it.
     String<char> myString = "A man, a plan, a canal-Panama";

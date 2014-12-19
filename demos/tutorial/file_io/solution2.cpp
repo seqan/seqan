@@ -3,19 +3,21 @@
 
 #include <seqan/stream.h>
 
+using namespace seqan;
+
 // Copy from stream in to the stream out.
 
 template <typename TOutStream, typename TInStream>
 void copyStream(TOutStream & vout, TInStream & vin)
 {
     // Create iterators to read and write.
-    typedef typename seqan::DirectionIterator<TInStream, seqan::Input>::Type TReader;
-    typedef typename seqan::DirectionIterator<TOutStream, seqan::Output>::Type TWriter;
+    typedef typename DirectionIterator<TInStream, Input>::Type TReader;
+    typedef typename DirectionIterator<TOutStream, Output>::Type TWriter;
 
-    TReader reader = directionIterator(vin, seqan::Input());
-    TWriter writer = directionIterator(vout, seqan::Output());
+    TReader reader = directionIterator(vin, Input());
+    TWriter writer = directionIterator(vout, Output());
 
-    seqan::CharString buffer;
+    CharString buffer;
     reserve(buffer, 1000);
 
     while (!atEnd(reader))
@@ -31,13 +33,13 @@ void copyStream(TOutStream & vout, TInStream & vin)
 
 int main(int argc, char const ** argv)
 {
-    seqan::VirtualStream<char, seqan::Input> vin;
-    seqan::VirtualStream<char, seqan::Output> vout;
+    VirtualStream<char, Input> vin;
+    VirtualStream<char, Output> vout;
 
     if (argc != 3)
     {
-        seqan::CharString inExts = seqan::concat(vin.getFileExtensions(), "|", true);
-        seqan::CharString outExts = seqan::concat(vout.getFileExtensions(), "|", true);
+        CharString inExts = concat(vin.getFileExtensions(), "|", true);
+        CharString outExts = concat(vout.getFileExtensions(), "|", true);
         std::cerr << "USAGE: " << argv[0] << " input[" << inExts << "] output[" << outExts << "]\n";
         return 1;
     }

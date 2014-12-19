@@ -283,12 +283,12 @@ void textRandomize(TBuffer &buf) {
 }
 
 template < typename TValue >
-struct IdentityMap : public ::std::unary_function< TValue, TValue > {
+struct IdentityMap : public std::unary_function< TValue, TValue > {
 	inline TValue operator() (TValue const i) { return i; }
 };
 
 template < typename TValue >
-struct SimpleCompare : public ::std::binary_function< TValue const, TValue const, int > {
+struct SimpleCompare : public std::binary_function< TValue const, TValue const, int > {
 	inline int operator() (TValue const a, TValue const b) const {
 		if (a < b) return -1;
 		if (a > b) return 1;
@@ -302,8 +302,8 @@ void printArray(TSequence const &SA) {
 	TIter it = begin(SA);
 	TIter itEnd = end(SA);
 	for(; it != itEnd; ++it)
-		::std::cout << *it << "  ";
-	::std::cout << ::std::endl;
+		std::cout << *it << "  ";
+	std::cout << std::endl;
 }
 
 template <typename TSequence>
@@ -371,10 +371,10 @@ bool sleq__(TIt s1, TIt s2, ST n1, ST n2) {
 	for(ST i = 0; i < n; i++, ++s1, ++s2) {
 		if (ordLess(*s1,*s2)) return 1;
 		if (ordLess(*s2,*s1)) {
-			::std::cerr<<(ordLess(*s2,*s1));
-			::std::cerr<<*s1;
-			::std::cerr<<*s2;
-			::std::cerr << "after " << i << " compares not " << (unsigned)*s1 << " leq " << (unsigned)*s2 << ::std::endl;
+			std::cerr<<(ordLess(*s2,*s1));
+			std::cerr<<*s1;
+			std::cerr<<*s2;
+			std::cerr << "after " << i << " compares not " << (unsigned)*s1 << " leq " << (unsigned)*s2 << std::endl;
 			return 0;
 		}
 	}
@@ -434,7 +434,7 @@ bool sleqLcp__(TIt s1, TIt s2, ST n1, ST n2, ST lcp) {
 	for(ST i = 0; i < n; i++, ++s1, ++s2) {
 		if (ordLess(*s1,*s2)) return (i == lcp);
 		if (ordLess(*s2,*s1)) {
-			::std::cerr << "after " << i << " compares not " << (unsigned)*s1 << " leq " << (unsigned)*s2 << ::std::endl;
+			std::cerr << "after " << i << " compares not " << (unsigned)*s1 << " leq " << (unsigned)*s2 << std::endl;
 			return false;
 		}
 	}
@@ -499,24 +499,24 @@ bool isSortedLCP(TLCP &LCP, TSA &SA, TText const &s) {
 template <typename TSufArray, typename TText>
 bool isSuffixArray(TSufArray &SA, TText const &s) {
 	if (length(SA) != length(s)) {
-		::std::cerr<<"isSuffixArray: length is bad: SA="<<length(SA)<<", s="<<length(s)<<::std::endl;
+		std::cerr<<"isSuffixArray: length is bad: SA="<<length(SA)<<", s="<<length(s)<<std::endl;
 		return false;
 	}
 	
 	if (!isPermutation(SA)) {
-		::std::cerr<<"isSuffixArray: SA is not a permutation!"<<::std::endl;
+		std::cerr<<"isSuffixArray: SA is not a permutation!"<<std::endl;
 		return false;
 	}
 
 	if (!isSorted(SA, s)) {
-		::std::cerr<<"isSuffixArray: SA is not sorted!"<<::std::endl;
+		std::cerr<<"isSuffixArray: SA is not sorted!"<<std::endl;
 /*			String<unsigned char, External<> > textfile;
 		if (!open(textfile,"error.txt")) printf("could not open ERROR.TXT\n");
 		textfile=s;
 */			return false;
 	}
 
-//        ::std::cerr<<"SATest OK! n="<<length(s)<<std::endl;
+//        std::cerr<<"SATest OK! n="<<length(s)<<std::endl;
 	return true;
 }
 
@@ -532,23 +532,23 @@ bool isInvSuffixArray(TInvSuffArray &iSA, TSufArray &SA, TText const &s)
 
     if (length(iSA) != length(s))
     {
-        ::std::cerr<<"isInvSuffixArray: length is bad: iSA="<<length(iSA)<<", s="<<length(s)<<::std::endl;
+        std::cerr<<"isInvSuffixArray: length is bad: iSA="<<length(iSA)<<", s="<<length(s)<<std::endl;
         return false;
     }
 
     if (!isPermutation(SA))
     {
-        ::std::cerr<<"isInvSuffixArray: SA is not a permutation!"<<::std::endl;
+        std::cerr<<"isInvSuffixArray: SA is not a permutation!"<<std::endl;
         return false;
     }
 
     if (!isSortedInvSA(iSA, SA, s))
     {
-        ::std::cerr<<"isInvSuffixArray: iSA is not sorted!"<<::std::endl;
+        std::cerr<<"isInvSuffixArray: iSA is not sorted!"<<std::endl;
         return false;
     }
 
-//        ::std::cerr<<"iSATest OK! n="<<length(s)<<std::endl;
+//        std::cerr<<"iSATest OK! n="<<length(s)<<std::endl;
     return true;
 }
 
@@ -565,16 +565,16 @@ bool isLCPTable(TLCP &LCP, TSufArray &SA, TText const &s) {
 	}
 	
 	if (!isPermutation(SA)) {
-		::std::cerr<<"isLCPTable: SA is not a permutation!\n";
+		std::cerr<<"isLCPTable: SA is not a permutation!\n";
 		return false;
 	}
 
 	if (!isSortedLCP(LCP, SA, s)) {
-		::std::cerr<<"isLCPTable: SA is not sorted!\n";
+		std::cerr<<"isLCPTable: SA is not sorted!\n";
 		return false;
 	}
 
-//        ::std::cerr<<"LCPTest OK! n="<<length(s)<<std::endl;
+//        std::cerr<<"LCPTest OK! n="<<length(s)<<std::endl;
 	return true;
 }
 
@@ -587,14 +587,14 @@ bool isEqual(TA &_a, TB &_b) {
 	IB b = begin(_b);
 	while (a!=e) {
 		if (!(*a == *b)) {
-			::std::cerr << "isEqual: difference at " << (e-a) << " a=" << *a << "  b=" << *b << ::std::endl;
+			std::cerr << "isEqual: difference at " << (e-a) << " a=" << *a << "  b=" << *b << std::endl;
 			return false;
 		}
 		++a;
 		++b;
 	}
 
-//        ::std::cerr<<"EQUALTest OK! n="<<length(_a)<<std::endl;
+//        std::cerr<<"EQUALTest OK! n="<<length(_a)<<std::endl;
 	return true;
 }
 

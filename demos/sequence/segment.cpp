@@ -38,56 +38,58 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>  // for I/O
 
+using namespace seqan;
+
 int main()
 {
 //![basic operations]
-    typedef seqan::Prefix<seqan::String<char> >::Type TPrefix;
-    typedef seqan::Infix<seqan::String<char> >::Type  TInfix;
-    typedef seqan::Suffix<seqan::String<char> >::Type TSuffix;
+    typedef Prefix<String<char> >::Type TPrefix;
+    typedef Infix<String<char> >::Type  TInfix;
+    typedef Suffix<String<char> >::Type TSuffix;
 
-    seqan::String<char> text = "This is a text!";
-    
+    String<char> text = "This is a text!";
+
     TPrefix preA(text, 4);
     TInfix infA(text, 10, 14);
     TSuffix sufA(text, 10);
     std::cout << preA << " " << infA << " " << sufA << "\n";  // => "This text text!"
 
-    seqan::String<char> str;
+    String<char> str;
     append(str, preA);
     append(str, infA);
     append(str, sufA);
     std::cout << str << "\n";  // => "This text text!"
-    
+
     std::cout << preA[0] << " " << infA[0] << " " << sufA[0] << "\n";  // => "T t t"
-    
+
     preA[0] = 'X';
     infA[0] = 'X';
     sufA[1] = 'X';
     std::cout << text << "\n";  // => "Xhis is a XXxt!"
 
-    typedef seqan::Iterator<TInfix, seqan::Standard>::Type TIter;
-    TIter it = begin(preA, seqan::Standard());
+    typedef Iterator<TInfix, Standard>::Type TIter;
+    TIter it = begin(preA, Standard());
     it += 2;
     *it = 'Y';
     std::cout << text << "\n";  // => "XhYs is a XXxt!"
 //![basic operations]
 
 //![metafunction examples]
-    typedef seqan::Infix<TInfix>::Type  TInfix2;  // == TInfix
-    typedef seqan::Prefix<TInfix>::Type TInfix3;  // == TInfix
-    typedef seqan::Suffix<TInfix>::Type TInfix4;  // == TInfix
-    
-    typedef seqan::Infix<TPrefix>::Type  TInfix5;   // == TInfix
-    typedef seqan::Prefix<TPrefix>::Type TPrefix2;  // == TPrefix
-    typedef seqan::Suffix<TPrefix>::Type TInfix6;   // == TInfix
+    typedef Infix<TInfix>::Type  TInfix2;  // == TInfix
+    typedef Prefix<TInfix>::Type TInfix3;  // == TInfix
+    typedef Suffix<TInfix>::Type TInfix4;  // == TInfix
 
-    typedef seqan::Infix<TSuffix>::Type  TInfix7;   // == TInfix
-    typedef seqan::Prefix<TSuffix>::Type TInfix8;   // == TPrefix
-    typedef seqan::Suffix<TSuffix>::Type TSuffix2;  // == TSuffix
+    typedef Infix<TPrefix>::Type  TInfix5;   // == TInfix
+    typedef Prefix<TPrefix>::Type TPrefix2;  // == TPrefix
+    typedef Suffix<TPrefix>::Type TInfix6;   // == TInfix
+
+    typedef Infix<TSuffix>::Type  TInfix7;   // == TInfix
+    typedef Prefix<TSuffix>::Type TInfix8;   // == TPrefix
+    typedef Suffix<TSuffix>::Type TSuffix2;  // == TSuffix
 //![metafunction examples]
 
 //![explicit segment]
-    typedef seqan::Segment<TSuffix, seqan::PrefixSegment> TExplicitPrefix;
+    typedef Segment<TSuffix, PrefixSegment> TExplicitPrefix;
     TExplicitPrefix preB(sufA, 3);
     std::cout << preB << "\n";  // => "XXx"
 //![explicit segment]

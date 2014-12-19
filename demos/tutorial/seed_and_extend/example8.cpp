@@ -1,4 +1,4 @@
-// FRAGMENT(header)
+//![header]
 #include <seqan/sequence.h>
 #include <seqan/align.h>
 #include <seqan/score.h>
@@ -8,7 +8,8 @@ using namespace seqan;
 
 int main()
 {
-    // FRAGMENT(example)
+//![header]
+//![example]
     typedef Seed<Simple> TSeed;
 
     Dna5String sequenceH = "CGAATCCATCCCACACA";
@@ -30,7 +31,9 @@ int main()
 
     std::cout << "Score: " << result << std::endl;
     std::cout << alignment << std::endl;
+//![example]
 
-    // FRAGMENT(footer)
+//![footer]
     return 0;
 }
+//![footer]

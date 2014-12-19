@@ -283,7 +283,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 		TFilePos newOfs = me.seek(fileOfs, origin);
         #if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
 			if (origin == SEEK_BEGIN && newOfs != (TFilePos)fileOfs) {
-				::std::cerr << "seek returned " << ::std::hex << newOfs << " instead of " << fileOfs << ::std::dec << ::std::endl;
+				std::cerr << "seek returned " << std::hex << newOfs << " instead of " << fileOfs << std::dec << std::endl;
 			}
         #endif
         return newOfs;

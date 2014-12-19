@@ -1,10 +1,14 @@
 #include <seqan/bed_io.h>
 
+#include <sstream>
+
+using namespace seqan;
+
 int main()
 {
-    seqan::BedFileOut out(std::cout, seqan::Bed());
+    BedFileOut out(std::cout, Bed());
 
-    seqan::BedRecord<seqan::Bed6> record;
+    BedRecord<Bed6> record;
 
     // Fill and write out the first record.
     record.ref = "chr7";
@@ -23,6 +27,6 @@ int main()
     record.score = "0";
     record.strand = '+';
     writeRecord(out, record);
-    
+
     return 0;
 }

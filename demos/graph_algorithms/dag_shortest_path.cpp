@@ -12,7 +12,7 @@ int main()
 
     // Create graph with 10 directed edges (0,2), (0,1), ...
     TSize numEdges = 10;
-    TVertexDescriptor edges[] = {0,2, 0,1, 1,3, 1,2, 2,5, 2,4, 2,3, 3,5, 3,4, 4,5};
+    TVertexDescriptor edges[] = {0, 2, 0, 1, 1, 3, 1, 2, 2, 5, 2, 4, 2, 3, 3, 5, 3, 4, 4, 5};
     TGraph g;
     addEdges(g, edges, numEdges);
     // Print graph to stdout.
@@ -26,7 +26,7 @@ int main()
     // Run DAG shortest path computation from vertex with descriptor 1.
     String<unsigned> predMap;
     String<unsigned> distMap;
-    dagShortestPath(predMap,distMap, g, 1, weightMap);
+    dagShortestPath(predMap, distMap, g, 1, weightMap);
 
     // Print result to stdout.
     std::cout << "Single-Source Shortest Paths in DAG: \n";
