@@ -398,7 +398,7 @@ struct EmptyFieldError : ParseError
  * @signature DirectionIterator<TStream>::Type;
  *
  * @tparam TStream The stream to query for its direction iterator.
- * @result Type    The resulting direction iterator.
+ * @return Type    The resulting direction iterator.
  */
 
 /*!
@@ -408,7 +408,7 @@ struct EmptyFieldError : ParseError
  * @signature DirectionIterator<TContainer>::Type;
  *
  * @tparam TContainer The container to query for its direction iterator.
- * @result Type       The resulting direction iterator.
+ * @return Type       The resulting direction iterator.
  */
 
 template <typename TObject, typename TDirection>
