@@ -61,13 +61,13 @@ namespace seqan {
  *
  * @section Example
  *
- * Read SAM or BAM files.
+ * Access SAM or BAM files.
  *
- * @include demos/bam_io/bam_file_in.cpp
+ * @include demos/tutorial/bam_io/solution1.cpp
  *
  * The output is as follows:
  *
- * @include demos/bam_io/bam_file_in.cpp.stdout
+ * @include demos/tutorial/bam_io/example.sam
  */
 
 /*!
@@ -97,6 +97,16 @@ typedef SmartFile<Bam, Input> BamFileIn;
  *
  * @see BamHeader
  * @see BamAlignmentRecord
+ *
+ * @section Example
+ *
+ * Access SAM or BAM files.
+ *
+ * @include demos/tutorial/bam_io/solution1.cpp
+ *
+ * The output is as follows:
+ *
+ * @include demos/tutorial/bam_io/example.sam
  */
 
 /*!
