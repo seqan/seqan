@@ -275,4 +275,5 @@ if on_rtd:
 # -- Options for SeqAn plugins ----------------------------------------------
 
 doxlinks_base_url = 'http://docs.seqan.de/seqan/1.5.0/'
+doxlinks_dox_json = '../dox/html/js/search.data.js'
 includefrags_base_dir = '../..'

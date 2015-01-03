@@ -20,8 +20,13 @@ endif (NOT SPHINX_FOUND)
 
 # Add building Sphinx documentation as a test.
 
-add_test (build_manual
-          ${SPHINX_EXECUTABLE} -W -n
+set (SEQAN_MANUAL_PATH "${CMAKE_SOURCE_DIR}/manual")
+
+add_test (NAME build_manual
+          COMMAND ${SPHINX_EXECUTABLE} -W -n
           -b html -d ${CMAKE_BINARY_DIR}/manual/doctrees
           ${CMAKE_CURRENT_SOURCE_DIR}/source
-          ${CMAKE_BINARY_DIR}/manual/html)
+          ${CMAKE_BINARY_DIR}/manual/html
+          WORKING_DIRECTORY ${SEQAN_MANUAL_PATH})
+
+      set_tests_properties (build_manual PROPERTIES depends build_dox)
