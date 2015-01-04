@@ -1,0 +1,557 @@
+***  SplazerS - Split Read Mapping as a branch of RazerS ***
+http://www.seqan.de/projects/splazers.html
+
+---------------------------------------------------------------------------
+Table of Contents
+---------------------------------------------------------------------------
+  1.   Overview
+  2.   Installation
+  3.   Usage
+  4.   Output Format
+  5.   Example
+  6.   Contact
+
+---------------------------------------------------------------------------
+1. Overview
+---------------------------------------------------------------------------
+
+
+SplazerS (SplitRazerS) is a tool primarily designed for split mapping of 
+sequencing reads. It is a branch of the RazerS algorithm 
+(http://www.seqan.de/projects/razers.html) and therefore also features basic 
+read mapping functionality (split mapping can be switched off via a command 
+line parameter). 
+SplazerS searches for split read matches where prefix and suffix match of a
+read may be interrupted by a longer gap. Matches are identified with two 
+q-gram filtering criteria: one for the read prefix and one for the read 
+suffix. Prefix/suffix matches are only verified if both prefix and suffix 
+filter return a potential match region within a certain maximum distance.
+If both are verified positively, the best split position within the read is
+located. SplazerS version 1.1 (and higher) also support anchored split mapping
+in paired-end data where the candidate region of a potential split-read is 
+defined by its mapped paired end. Note that this feature was not yet 
+implemented in SeqAn Release 1.3.
+
+
+
+---------------------------------------------------------------------------
+2. Installation
+---------------------------------------------------------------------------
+
+A precompiled linux 64-bit binary of SplazerS can be downloaded from the 
+SeqAn projects download page: http://www.seqan.de/downloads/projects.html
+
+SplazerS is distributed with SeqAn - The C++ Sequence Analysis Library (see 
+http://www.seqan.de). To build SplazerS yourself you can check out the latest 
+SVN version of SplazerS and SeqAn with:
+
+  1)  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan seqan-trunk
+  2)  mkdir seqan-trunk/build/
+  3)  cd seqan-trunk/build/
+  4)  cmake .. -DCMAKE_BUILD_TYPE=Release
+  5)  make splazers
+  6)  ./apps/splazers/splazers --help
+
+Alternatively, you can download the latest SeqAn snapshot and build SplazerS
+with:
+
+  1)  Download the latest snapshot of SeqAn
+  2)  Unzip it to a directory of your choice (e.g. snapshot)
+  3)  cd snapshot/apps
+  4)  make splazers
+
+If the make command was successful, you can skip ahead to step 5. Otherwise,
+you may have to manually add SplazerS to the Makefile targets. For this, open 
+the file "Makefile" and add "splazers/splazers" to the "TARGETS = " line. 
+Also, add a line "splazers: check_seqan_base splazers/splazers" anywhere below
+the "TARGETS = " and above the "check_seqan_base:" line. Now the make command 
+should be successful.
+
+  5)  cd splazers
+  6)  ./splazers --help
+
+If succesful, an executable file splazers was built and a brief usage 
+description is dumped.
+
+
+---------------------------------------------------------------------------
+3. Usage
+---------------------------------------------------------------------------
+
+To get a short usage description of SplazerS, you can execute splazers -h or 
+splazers --help.
+
+Usage: splazers [OPTION]... <GENOME FILE> <READS FILE>
+       splazers [OPTION]... <GENOME FILE> <MP-READS FILE1> <MP-READS FILE2>
+
+SplazerS expects a Fasta file containing the reference DNA sequence and a
+Fasta/Fastq file containing the reads to be mapped onto the reference. If 
+two read files are given, split mapping is disabled and instead mate-pair 
+mapping is switched on. In that case, the two read files must contain the
+same number of reads, corresponding to left and right mates.
+
+Important: If the splazers binary does not reside in the same directory
+as the gapped_params folder, then please specify its location with the 
+-pd option, e.g. -pd seqan-trunk/apps/splazers/gapped_params. If 
+SplazerS does not know where the gapped_params folder is, it will still 
+run but may produce suboptimal results and take longer than necessary.
+
+SplazerS version 1.1 (and higher) also support anchored split mapping in
+paired-end data. Note that this feature was not yet implemented in SeqAn 
+Release 1.3. The anchored mode can be switched on with option -an. The
+input reads then must be given in SAM format. Reads with flag 85, 101, 149,
+or 165 (which are unmapped but are anchored by their mapped mate) are then
+split-mapped within a smaller candidate region (see options -ll and -le).
+
+Currently, in its default mode, SplazerS maps the reads with a minimal 
+prefix/suffix match length of 18bp, an overall identity of at least 95% in
+the matched part of the read (excluding the potentially longer gap in the 
+middle), and at most 1 error in the 18bp prefix and at most 1 error in the
+18bp suffix.
+
+By adding option --split-mapping 0, regular RazerS mapping is switched on. 
+However, note that default parameters are not the same as in RazerS.
+
+The default behaviour can be modified by the following command line options:
+
+---------------------------------------------------------------------------
+3.1. Main Options
+---------------------------------------------------------------------------
+
+---------------------------------------------------------------------------
+3.1.1. RazerS-Inherited Main Options
+---------------------------------------------------------------------------
+
+  [ -f ],  [ --forward ]
+
+  Only map reads onto the positive/forward strand of the genome. By
+  default, both strands are scanned.
+
+  [ -r ],  [ --reverse ]
+
+  Only map reads onto the negative/reverse-complement strand of the
+  genome. By default, both strands are scanned.
+
+  [ -i NUM ],  [ --percent-identity NUM ]
+
+  Set the percent identity threshold for the matched part of the read 
+  (excluding the potentially longer gap in the middle). NUM must be a value
+  between 50 and 100 (default is 95). SplazerS only outputs matches 
+  conforming to the precent identity threshold. 
+
+  [ -rr NUM ],  [ --recognition-rate NUM ]
+  
+  Set the percent recognition rate. NUM must be a value between 80 and 100
+  (default is 100). The recognition rate controls the sensitivity of 
+  SplazerS. The higher the recognition rate the more sensitive is SplazerS. 
+  The lower the recognition rate the faster runs SplazerS. A value of 100 
+  corresponds to lossless read mapping. The recognition rate corresponds 
+  to the expected fraction of matches SplazerS will find compared to 
+  lossless mapping. Depending on the desired recogition rate, the allowed
+  numbers of errors in prefix and suffix match and the minimum match 
+  length, the filter is configured to run as fast as possible.
+  Therefore it needs access to files with precomputed filtration settings
+  in a 'gapped_params' subfolder which resides in the razers folder. This 
+  value is ignored if the shape (-s) or the minimum threshold (-t) is set
+  manually.
+  
+  [ -id ],  [ --indels ]
+  
+  Consider insertions, deletions and mismatches as errors. By default, only 
+  mismatches are recognized.
+  
+  [ -ll NUM ],  [ --library-length NUM ]
+  
+  Set the mean library size, default is 220. The library size is the expected
+  outer distance of the two reads of pair. This value is used for paired-end 
+  read mapping and for anchored split-read mapping.
+  
+  [ -le NUM ],  [ --library-error NUM ]
+  
+  Set the tolerated absolute deviation of the library size, default value is
+  50. 
+  
+  [ -m NUM ],  [ --max-hits NUM ]
+  
+  Output at most NUM of the best matches, default value is 100.
+  
+  [ --unique ]
+  
+  Output only unique best matches (like ELAND). This flag corresponds to 
+  '-m 1 -dr 0 -pa'.
+  
+  [ -tr NUM ],  [ --trim-reads NUM ]
+  
+  Trim reads to length NUM.
+
+  [ -o FILE ],  [ --output FILE ]
+
+  Change the output filename to FILE. By default, this is the read file
+  name extended by the suffix ".result".
+
+  [ -v ],  [ --verbose ]
+  
+  Verbose. Print extra information and running times.
+
+  [ -vv ],  [ --vverbose ]
+
+  Very verbose. Like -v, but also print filtering statistics like true and
+  false positives (TP/FP).
+
+  [ -V ],  [ --version ]
+  
+  Print version information.
+
+  [ -h ],  [ --help ]
+
+  Print a brief usage summary.
+
+---------------------------------------------------------------------------
+3.1.2. SplazerS-Specific Main Options
+---------------------------------------------------------------------------
+
+
+  [ -sm NUM ],  [ --split-mapping NUM ]
+  
+  Minimum length for prefix/suffix matches in split read mapping (default 23).
+  If set to 0, split mapping is switched off.
+
+  [ -an ],  [ --anchored ]
+  
+  Switch on anchored split mapping mode. Reads will be expected in SAM format.
+  Please make sure that options -ll and -le are set correctly.
+
+  [ -maxG NUM], [ --max-gap NUM ]
+ 
+  Maximum length of middle gap (default 10000). This parameters puts a 
+  constraint on the distance between prefix and suffix match.
+
+  [ -minG NUM], [ --min-gap NUM ]
+  
+  Minimum length of middle gap (default 0). If edit distance is used, i.e. 
+  option -id is specified, it is recommended to use at least 5-10% of the 
+  read length to avoid overlap between split-edit-distance and regular 
+  edit-distance for small gaps.
+
+  [ -ep NUM], [ --errors-prefix NUM ]
+ 
+  Maximum number of errors allowed on the prefix match of minimum length.
+
+  [ -es NUM], [ --errors-suffix NUM ]
+ 
+  Maximum number of errors allowed on the suffix match of minimum length.
+
+  [ -gl NUM], [ --genome-len NUM ]
+
+  Genome length, needs to be specified if the expected number of random 
+  matches is supposed to be computated (default 3000000000 for human genome).
+  The computed statistics are only reported in verbose mode.
+
+
+
+---------------------------------------------------------------------------
+3.2.1. Output Format Options as in RazerS
+---------------------------------------------------------------------------
+
+SplazerS-Specific Behaviour:
+Note that there currently are no SplazerS-specific options and that SplazerS
+only supports GFF output format in its split mapping (i.e. default) mode. If
+a different option is specified, SplazerS internally automatically switches 
+to GFF. Also -a options is currently disabled for split mapping.
+
+  [ -a ],  [ --alignment ]
+
+  Dump the alignment for each match in the ".result" file. The alignment is
+  written directly after the match and has the following format:
+  #Read:   CAGGAGATAAGCTGGATCGTTTACGGT
+  #Genome: CAGGAGATAAGC-GGATCTTTTACG--
+
+  [ -pa ],  [ --purge-ambiguous ]
+  
+  Omit reads with more than #max-hits many matches.
+  
+  [ -dr NUM ], [ --distance-range NUM ]
+  
+  If the best match of a read has E errors, only consider hits with 
+  E <= X <= E+NUM errors as matches.
+
+  [ -of NUM ], [ --output-format NUM ]
+  
+  Select the output format the matches should be stored in. See section 4.
+
+  [ -gn NUM ],  [ --genome-naming NUM ]
+
+  Select how genomes are named in the output file. If NUM is 0, the Fasta
+  ids of the genome sequences are used (default). If NUM is 1, the genome
+  sequences are enumerated beginning with 1.
+
+  [ -rn NUM ],  [ --read-naming NUM ]
+  
+  Select how reads are named in the output file. If NUM is 0, the Fasta ids 
+  of the reads are used (default). If NUM is 1, the reads are enumerated
+  beginning with 1. If NUM is 2, the read sequence itself is used.
+
+  [ -so NUM ],  [ --sort-order NUM ]
+  
+  Select how matches are ordered in the output file. 
+  If NUM is 0, matches are sorted primarily by the read number and 
+  secondarily by their position in the genome sequence (default).
+  If NUM is 1, matches are sorted primarily by their position in the genome
+  sequence and secondarily by the read number.
+
+  [ -pf NUM ],  [ --position-format NUM ]
+  
+  Select how positions are stored in the output file. 
+  If NUM is 0, the gap space is used, i.e. gaps around characters are 
+  enumerated beginning with 0 and the beginning and end position is the 
+  postion of the gap before and after a match (default).
+  If NUM is 1, the position space is used, i.e. characters are enumerated 
+  beginning with 1 and the beginning and end position is the postion of the 
+  first and last character involved in a match.
+  
+  Example: Consider the string CONCAT. The beginning and end positions 
+  of the substring CAT are (3,6) in gap space and (4,6) in position space.
+
+---------------------------------------------------------------------------
+3.3. Filtration Options as in RazerS
+---------------------------------------------------------------------------
+
+SplazerS-Specific Behaviour:
+Note that the filtering criteria can be explicitly set through options -s 
+and -t. In split mapping (i.e. default) mode, SplazerS will in that case use
+the same filtering criterium for prefix as well as suffix matches. Depending
+on the settings, this may not be 100% sensitive. To garuantee 100% 
+sensitivity, the precomputed parameter files in the folder 'gapped_params'
+must be available. (See main options: --recognition-rate)
+
+
+  [ -s BITSTRING ],  [ --shape BITSTRING ]
+  
+  Define the k-mer shape. BITSTRING must be a sequence of bits beginning
+  and ending with 1, e.g. 1111111001101. A '1' defines a relevant and a
+  '0' an irrelevant position. Two k-mers are equal, if all characters at 
+  relevant postitions are equal.  
+  
+  [ -t NUM ],  [ --threshold NUM ]
+
+  Depending on the percent identity and the length, for each read a
+  threshold of common k-mers between read and reference genome is
+  calculated. These thresholds determine the filtratition strictness and are 
+  crucial to the overall running time. With this option the threshold values 
+  can manually be raised to a minimum value to reduce the running time at 
+  cost of the mapping sensitivity. All threshold values smaller than NUM 
+  are raised to NUM. The default value is 1.
+  
+  [ -oc NUM ],  [ --overabundance-cut NUM ]
+  
+  Remove overabundant read k-mers from the k-mer index. k-mers with a 
+  relative abundance above NUM are removed. NUM must be a value between 
+  0 (remove all) and 1 (remove nothing, default).
+
+  [ -rl NUM ],  [ --repeat-length NUM ]
+
+  The repeat length is the minimal length a simple-repeat in the 
+  genome sequence must have to be filtered out by the repeat masker of 
+  SplazerS. Simple repeats are tandem repeats of only one repeated   
+  character, e.g. AAAAA. Independently of this parameter, N characters in 
+  the genome are filtered out automatically. Default value is 1000.
+
+  [ -tl NUM ],  [ --taboo-length NUM ]
+
+  The taboo length is the minimal distance two k-mer must have in the
+  reference genome when counting common k-mers between reads and reference
+  genome (default is 1).
+  
+---------------------------------------------------------------------------
+3.4. Verification Options as in RazerS
+---------------------------------------------------------------------------
+
+SplazerS-specific behaviour:
+Error distribution files are currently not output in split mapping mode.
+
+  [ -mN ],  [ --match-N ]
+  
+  By default, 'N' characters in read or genome sequences equal to nothing, 
+  not even to another 'N'. They are considered as errors. By activating this 
+  option, 'N' equals to every other character and produces no mismatch in 
+  the verification process. The filtration is not affected by this option.
+
+  [ -ed FILE ],  [ --error-distr FILE ]
+  
+  Produce an error distribution file containing the relative frequencies of
+  mismatches for each read position. If the "--indels" option is given, the
+  relative frequencies of insertions and deletions are also recorded.
+
+
+---------------------------------------------------------------------------
+4. Output Formats
+---------------------------------------------------------------------------
+
+SplazerS currently supports the GFF output format (default) and the SAM format
+(-of 4) for reporting split matches. If split mapping is deactivated, it 
+inherits SplazerS' output formats which are selectable via the 
+"--output-format NUM" option. The following values for NUM are then possible:
+
+  0 = Razer Format
+  1 = Enhanced Fasta Format
+  2 = Eland Format
+  3 = General Feature Format (GFF)
+ 
+---------------------------------------------------------------------------
+4.1. Razer Format
+---------------------------------------------------------------------------
+
+The output file is a text file whose lines represent matches. A line 
+consists of different tab separated match values in the following format:
+
+RNAME RBEGIN REND GSTRAND GNAME GBEGIN GEND PERCID [PAIRID PAIRSCR MATEDIST]
+
+Match value description:
+
+  RNAME        Name of the read sequence (see --read-naming)
+  RBEGIN       Beginning position in the read sequence (0/1 see -pf option)
+  REND         End position in the read sequence (length of the read)
+  GSTRAND      'F'=forward strand or 'R'=reverse strand
+  GNAME        Name of the genome sequence (see --genome-naming)
+  GBEGIN       Beginning position in the genome sequence
+  GEND         End position in the genome sequence
+  PERCID       Percent identity (see --percent-identity)
+
+For paired-end read mapping 3 additional values are dumped:
+
+  PAIRID       Unique number to identify the two corresponding mate matches
+  PAIRSCR      The sum of the negative number of errors in both matches
+  MATEDIST     Relative outer distance to the mate match
+               The absolute value is the insert size
+
+For matches on the reverse strand, GBEGIN and GEND are positions on the 
+related forward strand. It holds GBEGIN < GEND, regardless of GSTRAND.
+
+---------------------------------------------------------------------------
+4.2. Enhanced Fasta Format
+---------------------------------------------------------------------------
+
+The matches are stored in the same order as in the Razer format. Each match
+is stored in two lines:
+
+>GBEGIN,GEND[KEY1=VALUE1,KEY2=VALUE2,...]
+READSEQ
+
+Match value description:
+
+  GBEGIN       Beginning position in the genome sequence
+  GEND         End position in the genome sequence
+  READSEQ      Read sequence.
+
+The following keys are output:
+
+  id           ID value of the input file Fasta header (>..[id=ID,..]..)
+  fragId       Fragment ID value (>..[..,fragId=FRAGID,..]..)
+  contigId     Name of the genome sequence (see --genome-naming)
+  errors       Absolute numbers of errors in this match
+  percId       Percent identity (see --percent-identity)
+  ambiguity    Number of matches of this read as good as or better than this
+
+If the ID or fragment ID values of a read couldn't be found in the reads file
+the read number (beginning with 0) is used instead. For matches on the
+reverse strand, GBegin and GEnd are positions on the related forward strand
+and GBEGIN > GEND.
+
+---------------------------------------------------------------------------
+4.3. Eland Format
+---------------------------------------------------------------------------
+
+Each line of the output file corresponds to a read appearing in the same 
+order as they are stored in the reads file. A line consists of the following
+tab separated values:
+
+>RNAME READSEQ TYPE N0 N1 N2 GNAME GBEGIN* GSTRAND '..' SUBST1 SUBST2 ...
+
+Additional value description:
+
+  TYPE         NM = No match found
+               QC = No matching done (too many Ns in read sequence)
+               Ux = Best match found was unique with x errors
+               Rx = Multiple best matches found having x errors
+  N0 N1 N2     Number of exact, 1-error, and 2-error matches
+  GBEGIN*      Minimum of GBEGIN and GEND
+  SUBSTx       Position and type of the x'th mismatch (not for --indels)
+               (e.g. 12A: 12'th base was A in the genome)
+
+---------------------------------------------------------------------------
+4.4. General Feature Format
+---------------------------------------------------------------------------
+
+The General Feature Format is specified by the Sanger Institute as a tab-
+delimited text format with the following columns:
+
+<seqname> <src> <feat> <start> <end> <score> <strand> <frame> [attr] [cmts]
+
+See also: http://www.sanger.ac.uk/Software/formats/GFF/GFF_Spec.shtml
+Consistent with this specification razers GFF output looks as follows:
+
+GNAME razers read GBEGIN GEND PERCID GSTRAND . ATTRIBUTES
+
+Match value description:
+
+  GNAME        Name of the genome sequence (see --genome-naming)
+  razers       Constant
+  read         Constant
+  GBEGIN       Beginning position in the genome sequence 
+               (positions are counted from 1)
+  GEND         End position in the genome sequence (included!)
+  PERCID       Percent identity (see --percent-identity)
+  GSTRAND      '+'=forward strand or '-'=reverse strand
+  .            Constant
+  ATTRIBUTES   A list of attributes in the format <tag_name>[=<tag>] 
+               separated by ';'
+
+Attributes are: 
+
+  ID=          Name of the read
+  quality=     Ascii coded quality values of the read
+  cigar=       Read-reference alignment description in cigar format*
+  mutations=   Positions and bases that differ from the reference
+               with respect to the read (counting from 1)
+  unique       This is the best read match and it is unique
+  multi        This is one of multiple best machtes 
+  suboptimal   This is a suboptimal read match
+  split        This is a split match
+
+The original read sequence can be retrieved using the genomic subsequence 
+and the information contained in the 'cigar' and 'mutations' tags. 
+
+For matches on the reverse strand, GBEGIN and GEND are positions on the 
+related forward strand. It holds GBEGIN < GEND, regardless of GSTRAND.
+
+*http://may2005.archive.ensembl.org/Docs/wiki/html/EnsemblDocs/CigarFormat.html
+Note that the cigar string is given with respect to the read sequence.
+
+---------------------------------------------------------------------------
+4.5. SAM Format
+---------------------------------------------------------------------------
+
+SplazerS supports SAM output format for split mapped reads. For a 
+specification of the SAM format see http://samtools.sourceforge.net.
+
+
+---------------------------------------------------------------------------
+5. Split read mapping example
+---------------------------------------------------------------------------
+
+The subfolder 'example' contains a little example. When running SplazerS
+in default mode, i.e.
+
+./splazers example/genome.fa example/reads.fa
+
+a file example/reads.fa.result containing two split read matches should be 
+generated. One should contain a 6bp insertion, the other a 10bp deletion.
+
+For examples of usage of RazerS see the RazerS README file.
+
+---------------------------------------------------------------------------
+6. Contact
+---------------------------------------------------------------------------
+
+For questions or comments, contact:
+  Anne-Katrin Emde <emde@inf.fu-berlin.de>

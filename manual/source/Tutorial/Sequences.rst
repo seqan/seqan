@@ -361,7 +361,7 @@ Workshop Assignment 1
 
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/sequences/string_assignment_1_solution.cpp
+        .. includefrags:: demos/tutorial/sequences/string_assignment_1_solution.cpp
 
 Comparisons
 ^^^^^^^^^^^
@@ -531,7 +531,7 @@ Assignment 3
 
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/sequences/lexical_assignment_solution.cpp
+        .. includefrags:: demos/tutorial/sequences/lexical_assignment_solution.cpp
 
 Segments
 ~~~~~~~~
@@ -591,14 +591,14 @@ Assignment 4
      In the main function a fragment of the Dna5String ``genome`` is copied and passed together with the Dna5String ``read`` to a ``print`` function.
      Adjust the code to use an infix of the genome, instead of copying the corresponding fragment.
 
-     .. includefrags:: core/demos/tutorial/sequences/segments_assignment_hint.cpp
+     .. includefrags:: demos/tutorial/sequences/segments_assignment_hint.cpp
 
    Solution
      Click **more...** to see the solution.
 
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/sequences/segments_assignment_solution.cpp
+        .. includefrags:: demos/tutorial/sequences/segments_assignment_solution.cpp
 
 Workshop Assignment 2
 ^^^^^^^^^^^^^^^^^^^^^
@@ -619,4 +619,4 @@ Workshop Assignment 2
 
     .. container:: foldable
 
-       .. includefrags:: core/demos/tutorial/sequences/segments_assignment_2_solution.cpp
+       .. includefrags:: demos/tutorial/sequences/segments_assignment_2_solution.cpp

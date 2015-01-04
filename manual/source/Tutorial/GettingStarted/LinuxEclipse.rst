@@ -220,7 +220,7 @@ Further Steps
 As a next step, we suggest the following:
 
 * :ref:`Continue with the Tutorials <tutorial>`
-* Look around in the files in ``sandbox/my_sandbox/apps/first_app`` or the demos in ``core/demos`` and ``extras/demos``.
+* Look around in the files in ``sandbox/my_sandbox/apps/first_app`` or the demos in ``demos`` and ``demos``.
 * For the tutorial, using the SeqAn build system is great!
   If you later want to use SeqAn as a library, have a look at :ref:`build-manual-integration-with-your-own-build-system`.
 

@@ -2,4 +2,4 @@
 
 # Run doxygen-style documentation system.
 
-rm -f dddoc_cache.bin && ../util/bin/dox.py -b ../core -b ../extras -i ../core/include/seqan  -i ../extras/include/seqan -i pages --image-dir ../docs2/images/ --image-dir ./images/reduced_aminoacid/ $*
+rm -f dddoc_cache.bin && ../util/bin/dox.py -b .. -i ../include/seqan -i pages --image-dir ./images/docs2 --image-dir ./images/reduced_aminoacid/ $*

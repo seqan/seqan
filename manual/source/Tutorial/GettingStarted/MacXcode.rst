@@ -49,7 +49,7 @@ This will configure ``xcode-select`` properly and make it work with SeqAn.
     .. todo:: Put patched version somewhere.
 
     With the current MacPort version of CMake it is no more possible to open sub projects.
-    Either open only the root project ``seqan.xcodeproj`` or install our ``cmake-2.8.9.20120903-g6ef858-dirty-Darwin-i386.dmg patched version of CMake`` instead.
+    Either open only the root project ``seqan.xcodeproj`` or install our `patched version of CMake <http://ftp.seqan.de/manual_files/seqan-1.4/cmake-2.8.9.20120903-g6ef858-dirty-Darwin-i386.dmg>`_ instead.
 
     Note: The package installs the binary at ``/usr/usr/bin/cmake``.
     Please add the following line to your ``~/.profile`` file:
@@ -245,6 +245,6 @@ Further Steps
 As a next step, we suggest the following:
 
 * :ref:`Continue with the Tutorials <tutorial>`
-* Look around in the files in ``sandbox/my_sandbox/apps/first_app`` or the demos in ``core/demos`` and ``extras/demos``.
+* Look around in the files in ``sandbox/my_sandbox/apps/first_app`` or the demos in ``demos`` and ``demos``.
 * For the tutorial, using the SeqAn build system is great!
   If you later want to use SeqAn as a library, have a look at :ref:`build-manual-integration-with-your-own-build-system`.

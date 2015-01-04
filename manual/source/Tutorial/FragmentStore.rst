@@ -32,7 +32,7 @@ These tasks typically require lots of data structures that are related to each o
 The Fragment Store subsumes all these data structures in an easy to use interface.
 It represents a multiple alignment of millions of reads or mate-pairs against a reference genome consisting of multiple contigs.
 Additionally, regions of the reference genome can be annotated with features like 'gene', 'mRNA', 'exon', 'intron' or custom features.
-The Fragment Store supports I/O functions to read/write a read alignment in `SAM <http://samtools.sourceforge.net/>`_ or `AMOS <http://www.cbcb.umd.edu/research/contig_representation.shtml>`_ format and to read/write annotations in `GFF <http://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_ or `GTF <http://genome.ucsc.edu/FAQ/FAQformat.html#format4>`_ format.
+The Fragment Store supports I/O functions to read/write a read alignment in `SAM/BAM <http://samtools.sourceforge.net/>`_ or `AMOS <http://www.cbcb.umd.edu/research/contig_representation.shtml>`_ format and to read/write annotations in `GFF <http://genome.ucsc.edu/FAQ/FAQformat.html#format3>`_ or `GTF <http://genome.ucsc.edu/FAQ/FAQformat.html#format4>`_ format.
 
 The Fragment Store can be compared with a database where each table (called "store") is implemented as a :dox:`String` member of the :dox:`FragmentStore` class.
 The rows of each table (implemented as structs) are referred by their ids which are their positions in the string and not stored explicitly (marked with ``*`` in the Figures 2 and 5).
@@ -115,12 +115,12 @@ Therefore first a stairs layout of the reads must be computed via :dox:`AlignedR
 The function :dox:`AlignedReadLayout#printAlignment` can then be used to output a window (beginPos,endPos,firstLine,lastLine) of the read alignment against a contig either to a stream or ``SVGFile``.
 The following small example demonstrates how to first load two contigs from a Fasta file and then import a read alignment given in SAM format:
 
-.. includefrags:: core/demos/tutorial/store/store_diplay_aligned_reads.cpp
+.. includefrags:: demos/tutorial/store/store_diplay_aligned_reads.cpp
    :fragment: includes
 
 Then we create a stairs layout of the aligned reads and output a window from gapped position 0 to 150 and line 0 to 36 of the multiple alignments below contig 1 to standard out.
 
-.. includefrags:: core/demos/tutorial/store/store_diplay_aligned_reads.cpp
+.. includefrags:: demos/tutorial/store/store_diplay_aligned_reads.cpp
    :fragment: ascii
 
 .. code-block:: console
@@ -165,7 +165,7 @@ Then we create a stairs layout of the aligned reads and output a window from gap
 
 The same window can also be exported as a scalable vector graphic in SVG format (supported by Browsers, Inkscape; see :download:`original file <ReadLayout.svg>`]):
 
-.. includefrags:: core/demos/tutorial/store/store_diplay_aligned_reads.cpp
+.. includefrags:: demos/tutorial/store/store_diplay_aligned_reads.cpp
    :fragment: svg
 
 .. figure:: ReadLayout.png
@@ -181,7 +181,7 @@ In the next step, we want to access several pairwise alignments between reads an
 Therefore we first need to get the associated types that the Fragment Store uses to store contig and read sequences and gaps.
 This can be done by the following typedefs:
 
-.. includefrags:: core/demos/tutorial/store/store_access_aligned_reads.cpp
+.. includefrags:: demos/tutorial/store/store_access_aligned_reads.cpp
    :fragment: typedefs
 
 Now we want to extract and output the alignments from the :dox:`FragmentStore::alignedReadStore` at position 140,144,...,156.
@@ -198,7 +198,7 @@ After that we output both alignment rows.
    The :dox:`Gaps` contains two :dox:`Holder` references to the sequence and the inserted gaps.
    In our example these Holders are dependent and changes made to the Gaps object like the insertion/deletion of gaps would immediatly be persistent in the Fragment Store.
 
-.. includefrags:: core/demos/tutorial/store/store_access_aligned_reads.cpp
+.. includefrags:: demos/tutorial/store/store_access_aligned_reads.cpp
    :fragment: output
 
 .. code-block:: console
@@ -246,14 +246,14 @@ Assignment 1
 
         As we copy the read sequence, it suffices to change the type of the target string readSeq and the sequence type of the read :dox:`Gaps` object into CharString, i.e. a :dox:`String` of ``char``.
 
-        .. includefrags:: core/demos/tutorial/store/store_access_aligned_reads2.cpp
+        .. includefrags:: demos/tutorial/store/store_access_aligned_reads2.cpp
            :fragment: typedefs
 
         Then, we not only need to reverse-complement readSeq if the read aligns to the reverse strand (``endPos < beginPos``) but also need to convert its letters into lower-case.
         Therefor SeqAn provides the function :dox:`toLower`.
         Alternatively, we could iterate over readSeq and add ('a'-'A') to its elements.
 
-        .. includefrags:: core/demos/tutorial/store/store_access_aligned_reads2.cpp
+        .. includefrags:: demos/tutorial/store/store_access_aligned_reads2.cpp
            :fragment: output
 
         Running this program results in the following output.
@@ -380,19 +380,8 @@ To write all contigs to an open output stream use :dox:`FragmentStore#writeConti
 Multiple Read Alignments
 """"""""""""""""""""""""
 
-A multiple read alignment can be loaded from an open input stream with:
-
-.. code-block:: cpp
-
-   read(file, store, Sam());    // reads a SAM file
-   read(file, store, Amos());   // reads a file in the AMOS assembler format
-
-and written to an open output stream with:
-
-.. code-block:: cpp
-
-   write(file, store, Sam());   // writes a SAM file
-   write(file, store, Amos());  // writes a file in the AMOS assembler format
+A multiple read alignment can be loaded from an open :dox:`BamFileIn` with :dox:`FragmentStore#readRecords`.
+Similarly, it can be written to an open :dox:`BamFileOut` with :dox:`FragmentStore#writeRecords`.
 
 As SAM supports a multiple read alignment (with padding operations in the CIGAR string) but does not enforce its use.
 That means that a typical SAM file represents a set of pairwise (not multiple) alignments.
@@ -405,25 +394,14 @@ A subsequent call of :dox:`FragmentStore#loadContigs` would load the sequences o
 Annotations
 ^^^^^^^^^^^
 
-A annotation file can be read from an open input stream with:
+A annotation file can be read from an open :dox:`GffFileIn` or  :dox:`UcscFileIn` with :dox:`FragmentStore#readRecords`.
+Similarly, it can be written to an open :dox:`GffFileOut` with :dox:`FragmentStore#writeRecords`.
 
-.. code-block:: cpp
-
-   read(file, store, Gff());    // reads a GFF or GTF file
-   read(file, store, Ucsc());   // reads a 'knownGene.txt' or 'knownIsoforms.txt' file
-
-The GFF-reader is also able to detect and read GTF files.
-As the kownGene.txt and knownIsoforms.txt files are two seperate files used by the UCSC Genome Browser, they must be read by two consecutive calls of :dox:`FragmentStore#read` (first knownGene.txt then knownIsoforms.txt).
+The :dox:`GffFileIn` is also able to detect and read GTF files in addition to GFF files.
+As the kownGene.txt and knownIsoforms.txt files are two seperate files used by the UCSC Genome Browser, they must be read by two consecutive calls of :dox:`FragmentStore#readRecords` (first knownGene.txt then knownIsoforms.txt).
 An annotation can be loaded without loading the corresponding contigs.
 In that case empty contigs are created in the contigStore with names given in the annonation.
 A subsequent call of :dox:`FragmentStore#loadContigs` would load the sequences of these contigs, if they have the same identifier in the contig file.
-
-To write an annotation to an open output stream use:
-
-.. code-block:: cpp
-
-   write(file, store, Gff());   // writes a GFF file
-   write(file, store, Gtf());   // writes a GTF file
 
 Please note, that UCSC files cannot be written due to limitations of the file format.
 

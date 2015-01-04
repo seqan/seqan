@@ -103,10 +103,6 @@
 #  SEQAN_VERSION_MINOR
 #  SEQAN_VERSION_PATCH
 #
-# When you want to use the SeqAn build system and the core/extras/sandbox
-# layout then you can switch this on by setting the following variable to ON.
-#
-#  SEQAN_USE_SEQAN_BUILD_SYSTEM
 # ============================================================================
 
 include(FindPackageMessage)
@@ -228,7 +224,7 @@ endif (MSVC)
 # Search for directory seqan.
 # ----------------------------------------------------------------------------
 
-option (SEQAN_USE_SEQAN_BUILD_SYSTEM "Whether or not to expect the SeqAn build system with core/extras structure." OFF)
+option (SEQAN_USE_SEQAN_BUILD_SYSTEM "Whether or not to expect the SeqAn build system." OFF)
 
 if (SEQAN_USE_SEQAN_BUILD_SYSTEM)
   # When using the SeqAn build system, we scan all entries in
@@ -279,6 +275,8 @@ endif ()
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt pthread)
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
+  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} pthread)
 endif ()
 
 # libexecinfo -- implicit

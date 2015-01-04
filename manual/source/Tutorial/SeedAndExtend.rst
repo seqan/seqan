@@ -49,7 +49,7 @@ Note, we use the capital letters 'H' and 'V' to indicate horizontal direction an
 
 The following program gives an example of creating seeds as well as setting and reading properties.
 
-.. includefrags:: core/demos/tutorial/seed_and_extend/example1.cpp
+.. includefrags:: demos/tutorial/seed_and_extend/example1.cpp
    :fragment: example
 
 The output to the console is as follows.
@@ -87,7 +87,7 @@ Assignment 1
    Solution
      .. container:: foldable
 
-        .. includefrags: core/demos/tutorial/seed_and_extend/solution1.cpp
+        .. includefrags: demos/tutorial/seed_and_extend/solution1.cpp
 
 Seed Extension
 ~~~~~~~~~~~~~~
@@ -98,7 +98,7 @@ However, the match can be longer than just *k* characters. To get longer matches
 In the most simple case we simply look for matching characters in both sequences to the left and right end of the seed.
 This is called **match extension** and available through the :dox:`Seed#extendSeed` function using the ``MatchExtend`` tag.
 
-.. includefrags:: core/demos/tutorial/seed_and_extend/example3.cpp
+.. includefrags:: demos/tutorial/seed_and_extend/example3.cpp
    :fragment: example
 
 .. code-block:: console
@@ -124,7 +124,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/seed_and_extend/solution2.cpp
+        .. includefrags:: demos/tutorial/seed_and_extend/solution2.cpp
 
 A more complex case is the standard bioinformatics approach of **x-drop extension**:
 
@@ -137,7 +137,7 @@ When the sum drops more strongly than a value *x*, the extension is stopped.
 This approach is also available in the gapped case in the SeqAn library.
 Here, creating gaps is also possible but also assigned negative scores.
 
-.. includefrags:: core/demos/tutorial/seed_and_extend/example2.cpp
+.. includefrags:: demos/tutorial/seed_and_extend/example2.cpp
    :fragment: example
 
 .. code-block:: console
@@ -163,13 +163,13 @@ Assignment 3
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/seed_and_extend/solution3.cpp
+        .. includefrags:: demos/tutorial/seed_and_extend/solution3.cpp
 
 After extending a seed, we might wish to actually get the resulting alignment.
 When using gapped x-drop extension, we need to perform a banded global alignment of the two sequence infixes that correspond to the seed.
 This is shown in the following example:
 
-.. includefrags:: core/demos/tutorial/seed_and_extend/example4.cpp
+.. includefrags:: demos/tutorial/seed_and_extend/example4.cpp
    :fragment: example
 
 .. code-block:: console
@@ -198,7 +198,7 @@ Assignment 4
 	Note that we do not have to explicitely call Gotoh's algorithm in ``globalAlignment()``.
 	The fact that the gap extension score is different from the gap opening score is enough.
 
-        .. includefrags:: core/demos/tutorial/seed_and_extend/solution4.cpp
+        .. includefrags:: demos/tutorial/seed_and_extend/solution4.cpp
 
 Local Chaining using Seed Sets
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -210,7 +210,7 @@ This combination is called **local chaining**. This approach has been pioneered 
 SeqAn provides the :dox:`SeedSet` class as a data structure to efficiently store seeds and combine new seeds with existing ones.
 The following example creates a :dox:`SeedSet` object ``seeds``, adds four seeds to it and then prints its contents.
 
-.. includefrags:: core/demos/tutorial/seed_and_extend/example5.cpp
+.. includefrags:: demos/tutorial/seed_and_extend/example5.cpp
    :fragment: example
 
 The output of the program above can be seen below.
@@ -242,7 +242,7 @@ A call using the ``Single`` strategy always yields ``true``.
 
 The following example shows how to use the ``SimpleChain`` strategy.
 
-.. includefrags:: core/demos/tutorial/seed_and_extend/example7.cpp
+.. includefrags:: demos/tutorial/seed_and_extend/example7.cpp
    :fragment: example
 
 As we can see, the seed ``TSeed(4, 2, 3)`` has been chained to ``TSeed(0, 0, 2)``.
@@ -268,7 +268,7 @@ Assignment 5
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/seed_and_extend/solution5.cpp
+        .. includefrags:: demos/tutorial/seed_and_extend/solution5.cpp
 
 Global Chaining
 ~~~~~~~~~~~~~~~
@@ -291,7 +291,7 @@ A subset of the seeds from the :dox:`SeedSet` are then selected and stored in th
 
 The following shows a simple example.
 
-.. includefrags:: core/demos/tutorial/seed_and_extend/example6.cpp
+.. includefrags:: demos/tutorial/seed_and_extend/example6.cpp
    :fragment: example
 
 Assignment 6
@@ -309,7 +309,7 @@ Assignment 6
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/seed_and_extend/solution6.cpp
+        .. includefrags:: demos/tutorial/seed_and_extend/solution6.cpp
 
 Banded Chain Alignment
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -335,7 +335,7 @@ The default value is 15 and conforms the default value in the LAGAN-algorithm :c
 
     At the moment the specified value for the band extension must be at least one.
 
-.. includefrags:: core/demos/tutorial/seed_and_extend/example8.cpp
+.. includefrags:: demos/tutorial/seed_and_extend/example8.cpp
    :fragment: example
 
 The output of the example above.
@@ -366,7 +366,7 @@ Assignment 7
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/seed_and_extend/solution7.cpp
+        .. includefrags:: demos/tutorial/seed_and_extend/solution7.cpp
 
 
 .. TODO: LAGAN demo should be refered to from here when it's done.

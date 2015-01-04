@@ -1,0 +1,178 @@
+               *** ALF - Alignment Free Sequence Comparison ***
+                       http://www.seqan.de/projects/alf
+                                January, 2012
+
+---------------------------------------------------------------------------
+Table of Contents
+---------------------------------------------------------------------------
+
+  1.   Overview
+  2.   Installation
+  3.   Usage
+  4.   Output Format
+  5.   Example
+  6.   Contact and Reference
+
+---------------------------------------------------------------------------
+1. Overview
+---------------------------------------------------------------------------
+
+ALF can be used to calculate the pairwise similarity of sequences using
+alignment-free methods. All methods which are implemented are based on
+k-mer counts. More details can be found in the online documentation of the
+alignment-free methods (www.seqan.de). By default, ALF uses the 
+N2 similarity measure.
+
+---------------------------------------------------------------------------
+2. Installation
+---------------------------------------------------------------------------
+
+ALF is distributed with SeqAn - The C++ Sequence Analysis Library (see
+http://www.seqan.de). To build ALF from SVN do the following:
+
+  1) svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan
+  2) mkdir -p build/Release
+  3) cd build/Release
+  4) cmake ../.. -DCMAKE_BUILD_TYPE=Release
+  5) make alf
+  6) ./apps/alf/alf --help
+
+On success, an executable file alf was build and a brief usage description
+was dumped.
+
+For more information about retrieving SeqAn and prerequisites please visit
+
+  http://trac.seqan.de/wiki/Tutorial/GettingStarted
+
+---------------------------------------------------------------------------
+3. Usage
+---------------------------------------------------------------------------
+
+To get a short usage description of ALF, you can execute alf -h or
+alf --help.
+
+Usage: alf [OPTION]... -i <MULTI FASTA FILE>
+
+ALF expects one DNA (multi-)Fasta file. For all pairs of sequences, the
+pairwise scores will be computed. A matrix of pairwise scores will be
+returned. The default behaviour can be modified by specifying the following
+options at the command line:
+
+---------------------------------------------------------------------------
+3.1. Main Options
+---------------------------------------------------------------------------
+
+  [ -i ],   [ --input-file ]
+
+  Name of the multi fasta input file. Mandatory.
+
+  [ -o ],   [ --output-file ]
+
+  Name of the file to which the tab delimited matrix with pairwise scores
+  will be written. Default: stdout.
+
+  [ -m ],   [ --method ]
+
+  Method that will be udes for sequence comparison.
+  Default:N2 [N2, D2, D2Star, D2z]
+
+  [ -k ],   [ --k-mer-size ]
+
+  Size of the k-mers that will be counted. Default:4 [integer]
+
+  [ -mo ],  [ --bg-model-order ]
+
+  Order of background markov model for N2, D2Star, D2z. Default:1 [integer]
+
+  [ -rc ],  [ --reverse-complement ]
+
+  N2 only. Specify how the k-mer counts from the reverse and foreward
+  strand should be combined. By default, only the input sequence is used
+  for the comparison. Select 'bothStrands' to calculate the pairwise score
+  using both strands from the input sequences.  Default: input sequence
+  only. ['bothStrands','mean','min','max']
+
+  [ -mm ],  [ --mismatches ]
+
+  N2 only. Select -mm 1 if you want to include all words with one mismatch
+  to the k-mer neighbourhood. Default: Exact counts only [0,1]
+
+  [ -mmw ], [ --mismatch-weight ]
+
+  N2 only. Weight of counts for words with mismatches, only used in
+  combination with -mm 1. Default:0.1 [Double]
+
+  [ -kwf ], [ --k-mer-weights-file ]
+
+  N2 only. Print k-mer weights for every sequence to this file.
+
+  [ -v ],   [ --verbose ]
+
+  Specify this option to print details on progress to the screen.
+
+  [ -h ],  [ --help ]
+
+  Displays help message
+
+---------------------------------------------------------------------------
+4. Output Format
+---------------------------------------------------------------------------
+
+The program returns a (tab delimited) matrix with pairwise scores for all
+sequences from the input fasta file, for example:
+
+  1         0.046   0.052
+  0.046     1       0.992
+  0.052     0.992   1
+
+---------------------------------------------------------------------------
+5. Example
+---------------------------------------------------------------------------
+
+These examples use the fasta file "small.fasta" which can be found in
+seqan/apps/alf/example/. Copy this file to the directory where you 
+execute alf.
+
+(1) Run ALF with default settings on two sequences:
+
+  ./alf -i small.fasta
+
+Output:
+
+  1           0.0463497
+  0.0463497   1
+
+(2) Calculate scores using N2 (-m N2), counting words of length 5 (-k 5) on
+both strands (-rc both_strands), including words with one mismatch into the
+word neighbourhood (-mm 1) with a weight of 0.5 (-mmw 0.5) and a background
+Markov model of order 1 (-mo 1), writing the output to a file
+(-o results.txt), saving all k-mer weights to a file (-kwf kmerWeights.txt):
+
+  ./alf -m N2 -k 5 -mo 1 -rc both_strands -mm 1 -mmw 0.5 -i small.fasta \
+      -o results.txt -kwf kmerWeights.txt
+
+---------------------------------------------------------------------------
+6. Contact and Reference
+---------------------------------------------------------------------------
+
+For questions or comments, contact:
+  Jonathan Goeke <goeke@molgen.mpg.de>
+
+Please reference the following publication if you used ALF or the N2 method
+for your analysis:
+
+  Jonathan Goeke, Marcel H. Schulz, Julia Lasserre, and Martin Vingron.
+  Estimation of Pairwise Sequence Similarity of Mammalian Enhancers with
+  Word Neighbourhood Counts. Bioinformatics (2012).
+
+---------------------------------------------------------------------------
+7. Version History
+---------------------------------------------------------------------------
+
+* 2012-07-17: Version 1.1
+  - Updated ALF to use the new ArgumentParser for command line parsing.
+  - Changed long parameter names to use --parameter-name instead of
+    --parameterName.
+
+* 2012-01-05: Version 1.0
+  - Initial Release of ALF.

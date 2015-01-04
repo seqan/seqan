@@ -1,5 +1,0 @@
-.Indexpage.Function:
-..description:
-This section lists the functions implemented in SeqAn.
-Note that SeqAn uses global functions to access data types, 
-e.g. the length of a string $str$ is determined by calling @Function.length|length(str)@ and not by calling a member function $str.length()$.
