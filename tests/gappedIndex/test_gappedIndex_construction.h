@@ -121,7 +121,7 @@ SEQAN_DEFINE_TEST(test_gappedIndex_construction_str)
     TArray  sa1;
     TArray  sa2;
     
-    const int maxSize = 256 * 1024;	// max text size is 1 megabyte
+    const int maxSize = 1024; //256 * 1024;	// max text size is 1 megabyte
     int runs = 5;
     
     for(int i = 0; i < runs; ++i) {
@@ -161,8 +161,8 @@ SEQAN_DEFINE_TEST(test_gappedIndex_construction_strSet)
     TArray  sa1;
     TArray  sa2;
     
-    const int maxSize = 16 * 1024;	// max text size is 30 kilobyte per String
-    const int maxSet = 1024;
+    const int maxSize = 1024; // 16 * 1024;	// max text size is 30 kilobyte per String
+    const int maxSet = 64; // 1024;
     int runs = 5;
     int totalSize =0;
     
