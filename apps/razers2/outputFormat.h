@@ -169,11 +169,11 @@ score(Score<TValue, Quality<TQualityString> > const & me,
 		public ::std::binary_function < typename Value<TAlignedReadStore>::Type, typename Value<TAlignedReadStore>::Type, bool >
 	{
 		typedef typename Value<TAlignedReadStore>::Type TAlignedRead;		
-		TReadNameStore & nameStore;
+		TReadNameStore & contigNames;
 		TAlignedReadQualityStore &qualStore;
 		
-		LessGPosRName(TReadNameStore & nameStore, TAlignedReadQualityStore &_qualStore):
-            nameStore(nameStore), qualStore(_qualStore) {}
+		LessGPosRName(TReadNameStore & contigNames, TAlignedReadQualityStore &_qualStore):
+            contigNames(contigNames), qualStore(_qualStore) {}
 		
 		inline bool operator() (TAlignedRead const &a, TAlignedRead const &b) const 
 		{
@@ -193,8 +193,8 @@ score(Score<TValue, Quality<TQualityString> > const & me,
 			if (oa != ob) return oa;
 
 			// read name
-			if (nameStore[a.readId] < nameStore[b.readId]) return true;
-			if (nameStore[a.readId] > nameStore[b.readId]) return false;
+			if (contigNames[a.readId] < contigNames[b.readId]) return true;
+			if (contigNames[a.readId] > contigNames[b.readId]) return false;
 
 			// qualities
 			SEQAN_ASSERT_NEQ(a.id, TAlignedRead::INVALID_ID);

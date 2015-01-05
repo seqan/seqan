@@ -262,7 +262,7 @@ _pizzaChiliAllocate(
 ) {
 SEQAN_ CHECKPOINT
     TValue* old = me.data_begin;
-    me.data_begin = static_cast<TValue*>(::std::malloc(new_capacity));
+    me.data_begin = static_cast<TValue*>(std::malloc(new_capacity));
     return old == me.data_begin ? 0 : old;
 }
 */
@@ -282,8 +282,8 @@ SEQAN_CHECKPOINT
     //    return _pizzaChiliAllocate(me, new_capacity);
 
     me.data_begin =
-        static_cast<TValue*>(::std::realloc(me.data_begin, new_capacity));
-    // ::std::realloc does the cleanup itself.
+        static_cast<TValue*>(std::realloc(me.data_begin, new_capacity));
+    // std::realloc does the cleanup itself.
     return 0;
 }
 
@@ -292,7 +292,7 @@ inline void
 _pizzaChiliDeallocate(TValue* begin) {
 SEQAN_CHECKPOINT
     if (begin != 0)
-        ::std::free(begin);
+        std::free(begin);
 }
 
 template <typename TValue, typename TSpec>
@@ -441,7 +441,7 @@ SEQAN_CHECKPOINT
         }
         if (me.index_handle == 0) {
 SEQAN_CHECKPOINT
-            me.data_begin = static_cast<TValue*>(::std::malloc(1));
+            me.data_begin = static_cast<TValue*>(std::malloc(1));
             me.data_begin[0] = '\0';
             me.data_end = me.data_begin;
         }

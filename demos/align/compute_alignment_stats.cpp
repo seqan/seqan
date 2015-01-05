@@ -3,28 +3,30 @@
 #include <seqan/align.h>
 #include <seqan/sequence.h>
 
+using namespace seqan;
+
 int main()
 {
     // Create an alignment between subject and query.
-    seqan::Peptide subject =
-            "MGLSDGEWQLVLNVWGKVEADIPGHGQEVLIRLFKGHPETLEKFDKFKHLKSEDEMKASE"
-            "DLKKHGATVLTALGGILKKKGHHEAEIKPLAQSHATKHKIPVKYLEFISECIIQVLQSKH"
-            "PGDFGADAQGAMNKALELFRKDMASNYK";
-    seqan::Peptide query =
-            "MSLTKTERTIIVSMWAKISTQADTIGTETLERLFLSHPQTKTYFPHFDLHPGSA"
-            "QLRAHGSKVVAAVGDAVKSIDDIGGALSKLSELHAYILRVDPVNFKLLSHCLLVTLAARF"
-            "PADFTAEAHAAWDKFLSVTEKYR";
+    Peptide subject =
+        "MGLSDGEWQLVLNVWGKVEADIPGHGQEVLIRLFKGHPETLEKFDKFKHLKSEDEMKASE"
+        "DLKKHGATVLTALGGILKKKGHHEAEIKPLAQSHATKHKIPVKYLEFISECIIQVLQSKH"
+        "PGDFGADAQGAMNKALELFRKDMASNYK";
+    Peptide query =
+        "MSLTKTERTIIVSMWAKISTQADTIGTETLERLFLSHPQTKTYFPHFDLHPGSA"
+        "QLRAHGSKVVAAVGDAVKSIDDIGGALSKLSELHAYILRVDPVNFKLLSHCLLVTLAARF"
+        "PADFTAEAHAAWDKFLSVTEKYR";
 
-    seqan::Align<seqan::Peptide> align;
+    Align<Peptide> align;
     resize(rows(align), 2);
     setSource(row(align, 0), subject);
     setSource(row(align, 1), query);
 
-    seqan::Blosum62 scoringScheme(-1, -12);
+    Blosum62 scoringScheme(-1, -12);
     globalAlignment(align, scoringScheme);
 
     // Compute the statistics of the alignment.
-    seqan::AlignmentStats stats;
+    AlignmentStats stats;
     int scoreVal = computeAlignmentStats(stats, align, scoringScheme);
     SEQAN_ASSERT_EQ(scoreVal, stats.alignmentScore);
     std::cout << align

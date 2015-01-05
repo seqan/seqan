@@ -287,7 +287,7 @@ namespace seqan
         _proFloat dumpNext;        
 
         ProfileTStates_ all, last;
-        ::std::string mark;
+        std::string mark;
         unsigned    lines;
 
         ProfileFile_() {
@@ -335,15 +335,15 @@ namespace seqan
         }
 
         inline void syncTime(ProfileTStates_ &dst) {
-            ::std::memcpy(dst, ProfileData_<>::_proValue, 2 * sizeof(ProfileTimeValue_));
+            std::memcpy(dst, ProfileData_<>::_proValue, 2 * sizeof(ProfileTimeValue_));
         }
 
         inline void sync(ProfileTStates_ &dst) {
-            ::std::memcpy(&(dst[2]), &(ProfileData_<>::_proValue[2]), sizeof(ProfileTStates_) - 2 * sizeof(ProfileTimeValue_));
+            std::memcpy(&(dst[2]), &(ProfileData_<>::_proValue[2]), sizeof(ProfileTStates_) - 2 * sizeof(ProfileTimeValue_));
         }
 
         inline void syncAll(ProfileTStates_ &dst) {
-            ::std::memcpy(dst, ProfileData_<>::_proValue, sizeof(ProfileTStates_));
+            std::memcpy(dst, ProfileData_<>::_proValue, sizeof(ProfileTStates_));
         }
 
         inline static void setTime(ProfileTStates_ &dst) {

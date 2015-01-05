@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_extras_tests_alignment_free)
+project (seqan_tests_alignment_free)
 message (STATUS "Configuring tests/alignment_free")
 
 # ----------------------------------------------------------------------------

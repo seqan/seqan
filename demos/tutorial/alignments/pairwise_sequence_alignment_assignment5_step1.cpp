@@ -1,4 +1,4 @@
-// FRAGMENT(main)
+//![main]
 #include <iostream>
 #include <seqan/align.h>
 
@@ -19,13 +19,14 @@ int main()
     for (unsigned i = 0; i < length(text) - length(pattern); ++i)
     {
         // Compute the MyersBitVector in current window of text.
-    	TSequence tmp = infix(text,i,i+length(pattern));
+        TSequence tmp = infix(text, i, i + length(pattern));
 
-    	// Report hits with at most 2 errors.
-        if (globalAlignmentScore(tmp,pattern,MyersBitVector()) >= -2)
+        // Report hits with at most 2 errors.
+        if (globalAlignmentScore(tmp, pattern, MyersBitVector()) >= -2)
         {
-            appendValue(locations,i);
+            appendValue(locations, i);
         }
     }
     return 0;
 }
+//![main]

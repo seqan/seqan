@@ -40,13 +40,15 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>  // for output
 
+using namespace seqan;
+
 int main()
 {
     // Examples for constructing strings.
 //![initializing strings]
-    seqan::String<char> strA;        // default construction
-    seqan::String<char> strB(strA);  // copy construction 
-    seqan::String<char> strC("copy from other sequence");
+    String<char> strA;        // default construction
+    String<char> strB(strA);  // copy construction
+    String<char> strC("copy from other sequence");
 //![initializing strings]
 
     // Common string operations.
@@ -66,10 +68,10 @@ int main()
     std::cout << strB[3] << "\n";  // => "l";
     strB[3] = 'g';
     std::cout << strB[3] << "\n";  // => "g"
-    
+
     replace(strB, 5, 12, "land");
     std::cout << strB << "\n";  // => "Helgoland"
-    
+
     // Removal of elements and strings.
     erase(strA, 5, 18);
     erase(strA, length(strA) - 1);

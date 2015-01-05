@@ -38,20 +38,54 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
-// Tags, Classes, Enums
-// ============================================================================
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
-
-// ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function getContigName()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamAlignmentRecord#getContigName
+ * @brief Return the name of the reference contig of a @link BamAlignmentRecord @endlink.
+ *
+ * @signature TNameString getContigName(record, file);
+ *
+ * @param[in] record The @link BamAlignmentRecord @endlink to query.
+ * @param[in] file The @link BamFileIn @endlink or @link BamFileOut @endlink where the record belongs to.
+ *
+ * @return TNameString The name of the reference contig.
+ */
+
+template <typename TDirection, typename TSpec>
+inline typename Value<typename SmartFileContext<SmartFile<Bam, TDirection, TSpec>, Dependent<> >::Type::TNameStore>::Type const &
+getContigName(BamAlignmentRecord const & record, SmartFile<Bam, TDirection, TSpec> const & file)
+{
+    return contigNames(context(file))[record.rID];
+}
+
+// ----------------------------------------------------------------------------
+// Function getContigLength()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BamAlignmentRecord#getContigLength
+ * @brief Return the length of the reference contig of a @link BamAlignmentRecord @endlink.
+ *
+ * @signature TLength getContigLength(record, file);
+ *
+ * @param[in] record The @link BamAlignmentRecord @endlink to query.
+ * @param[in] file The @link BamFileIn @endlink or @link BamFileOut @endlink where the record belongs to.
+ *
+ * @return TLength The length of the reference contig.
+ */
+
+template <typename TDirection, typename TSpec>
+inline typename Value<typename SmartFileContext<SmartFile<Bam, TDirection, TSpec>, Dependent<> >::Type::TLengthStore>::Type
+getContigLength(BamAlignmentRecord const & record, SmartFile<Bam, TDirection, TSpec> const & file)
+{
+    return contigLengths(context(file))[record.rID];
+}
 
 // ----------------------------------------------------------------------------
 // Function getClippedPos()

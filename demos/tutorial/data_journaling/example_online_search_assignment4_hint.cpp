@@ -3,12 +3,12 @@
 
 using namespace seqan;
 
-// FRAGMENT(searchAtBorder)
+//![searchAtBorder]
 template <typename TJournalEntriesIterator, typename TJournal, typename TPattern>
 void _searchAtBorder(String<int> & hitTarget,
-                    TJournalEntriesIterator & entriesIt,
-                    TJournal const & journal,
-                    TPattern const & pattern)
+                     TJournalEntriesIterator & entriesIt,
+                     TJournal const & journal,
+                     TPattern const & pattern)
 {
     // [A] Determine first position of the at which pattern crosses the border of current node.
 
@@ -18,9 +18,11 @@ void _searchAtBorder(String<int> & hitTarget,
 
     // [D] Scan pattern in current window and report possible hits.
 }
+//![searchAtBorder]
 
-// FRAGMENT(main)
+//![main]
 int main()
 {
     return 0;
 }
+//![main]

@@ -88,7 +88,7 @@ _getAlignmentStatistics(Graph<Undirected<TCargo, TSpec> >& dist,
 
 template<typename TSize>
 struct LessPair_ :
-	public ::std::unary_function<Pair<TSize, TSize>, bool>
+	public std::unary_function<Pair<TSize, TSize>, bool>
 {
 	inline bool 
 	operator() (Pair<TSize, TSize> const& a1, Pair<TSize, TSize> const& a2) const {
@@ -99,7 +99,7 @@ struct LessPair_ :
 
 template<typename TSize>
 struct _LessTripel :
-	public ::std::unary_function<Pair<TSize, Triple<TSize, TSize, TSize> >, bool>
+	public std::unary_function<Pair<TSize, Triple<TSize, TSize, TSize> >, bool>
 {
 	inline bool 
 	operator() (Pair<TSize, Triple<TSize, TSize, TSize> > const& a1, Pair<TSize, Triple<TSize, TSize, TSize> > const& a2) {
@@ -513,7 +513,7 @@ appendSegmentMatches(StringSet<TString, TSpec> const & str,
 	//std::cout << "Unaligned reads: " << countUnalignedReads << std::endl;
 	if (countUnalignedReads > 0) {
 		// Sort unaligned reads
-		::std::sort(begin(unalignedReads, Standard()), end(unalignedReads, Standard()));
+		std::sort(begin(unalignedReads, Standard()), end(unalignedReads, Standard()));
 		
 		// Realign all unaligned sequences
 		itPair = begin(pList, Standard());
@@ -525,8 +525,8 @@ appendSegmentMatches(StringSet<TString, TSpec> const & str,
 			TId id2 = itPair->i2;
 			TSize seq1 = idToPosition(str, id1);
 			TSize seq2 = idToPosition(str, id2);
-			if ((!::std::binary_search(begin(unalignedReads, Standard()), end(unalignedReads, Standard()), seq1)) &&
-				(!::std::binary_search(begin(unalignedReads, Standard()), end(unalignedReads, Standard()), seq2))) 
+			if ((!std::binary_search(begin(unalignedReads, Standard()), end(unalignedReads, Standard()), seq1)) &&
+				(!std::binary_search(begin(unalignedReads, Standard()), end(unalignedReads, Standard()), seq2))) 
 				continue;
 			if ((frontOvl[seq1] > maxOvl) && (backOvl[seq1] > maxOvl) &&
 				(frontOvl[seq2] > maxOvl) && (backOvl[seq2] > maxOvl)) 

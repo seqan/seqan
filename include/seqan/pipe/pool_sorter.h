@@ -39,7 +39,7 @@ namespace SEQAN_NAMESPACE_MAIN
 {
 
     template < typename TValue, typename Compare >
-    struct MergeStreamComparer : public ::std::binary_function < PageBucket<TValue>,
+    struct MergeStreamComparer : public std::binary_function < PageBucket<TValue>,
 														       PageBucket<TValue>,
 														       bool>
     {
@@ -54,7 +54,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template < typename TCompare >
 	struct AdaptorCompare2Less : 
-		public ::std::binary_function <
+		public std::binary_function <
 			typename TCompare::first_argument_type, 
 			typename TCompare::second_argument_type, 
 			bool >
@@ -184,9 +184,9 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef PageBucketExtended<TValue>              TPageBucket;
 
         typedef MergeStreamComparer<TValue, TCompare>   TStreamComparer;
-/*        typedef ::std::priority_queue <
+/*        typedef std::priority_queue <
             TPageBucket,
-            ::std::vector<TPageBucket>,
+            std::vector<TPageBucket>,
             MergeStreamComparer<Type, Compare> >	    PQueue;
 */
         typedef PriorityType<TPageBucket, TStreamComparer> TPrioQueue;
@@ -203,7 +203,7 @@ namespace SEQAN_NAMESPACE_MAIN
             cancel();
         }
 
-		struct insertBucket : public ::std::unary_function<TPageBucket,void>
+		struct insertBucket : public std::unary_function<TPageBucket,void>
         {
 			Handler &me;
 			insertBucket(Handler &_me): me(_me) {}
@@ -242,7 +242,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			{
                 // bucket is empty, we have to fetch the next bucket
 				if (!readBucket(pb, pb.pageNo, pool.pageSize, pool.dataSize(pb.pageNo), pool.file)) {
-					::seqan::pop(pqueue);
+					seqan::pop(pqueue);
 					return;
 				}
 			}
@@ -257,7 +257,7 @@ namespace SEQAN_NAMESPACE_MAIN
             if (++pb.cur == pb.end)
                 // bucket is empty, we have to fetch the next bucket
 				if (!readBucket(pb, pb.pageNo, pool.pageSize, pool.dataSize(pb.pageNo), pool.file)) {
-					::seqan::pop(pqueue);
+					seqan::pop(pqueue);
 					return;
 				}
 			adjustTop(pqueue);
@@ -294,9 +294,9 @@ namespace SEQAN_NAMESPACE_MAIN
 		typedef PageBucketExtended<TValue>              TPageBucket;
 
         typedef MergeStreamComparer<TValue, TCompare>   StreamComparer;
-        typedef ::std::priority_queue <
+        typedef std::priority_queue <
             TPageBucket,
-            ::std::vector<TPageBucket>,
+            std::vector<TPageBucket>,
             MergeStreamComparer<TValue, TCompare> >     TPrioQueue;
 
         TPool       &pool;
@@ -318,7 +318,7 @@ namespace SEQAN_NAMESPACE_MAIN
             cancel();
         }
 
-		struct insertBucket : public ::std::unary_function<TPageBucket, void> {
+		struct insertBucket : public std::unary_function<TPageBucket, void> {
 			BufferHandler &me;
 			insertBucket(BufferHandler &_me): me(_me) {}
 

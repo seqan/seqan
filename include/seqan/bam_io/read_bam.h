@@ -168,11 +168,11 @@ readRecord(BamHeader & header,
 
         // Add entry to name store and sequenceInfos if necessary.
         // Compute translation from local ids (used in the BAM file) to corresponding ids in the name store
-        size_t globalRefId = nameToId(nameStoreCache(context), name);
+        size_t globalRefId = nameToId(contigNamesCache(context), name);
         context.translateFile2GlobalRefId[i] = globalRefId;
-        if (length(sequenceLengths(context)) <= globalRefId)
-            resize(sequenceLengths(context), globalRefId + 1, 0);
-        sequenceLengths(context)[globalRefId] = lRef;
+        if (length(contigLengths(context)) <= globalRefId)
+            resize(contigLengths(context), globalRefId + 1, 0);
+        contigLengths(context)[globalRefId] = lRef;
     }
 }
 
@@ -236,17 +236,17 @@ readRecord(BamAlignmentRecord & record,
                       record._n_cigar * 4 + (record._l_qseq + 1) / 2 + record._l_qseq;
     SEQAN_ASSERT_GEQ(remainingBytes, 0);
 
-    // Translate file local rID into a global rID that is compatible with the context nameStore.
+    // Translate file local rID into a global rID that is compatible with the context contigNames.
     if (record.rID >= 0 && !empty(context.translateFile2GlobalRefId))
         record.rID = context.translateFile2GlobalRefId[record.rID];
     if (record.rID >= 0)
-        SEQAN_ASSERT_LT(static_cast<__uint64>(record.rID), length(nameStore(context)));
+        SEQAN_ASSERT_LT(static_cast<__uint64>(record.rID), length(contigNames(context)));
 
     // ... the same for rNextId
     if (record.rNextId >= 0 && !empty(context.translateFile2GlobalRefId))
         record.rNextId = context.translateFile2GlobalRefId[record.rNextId];
     if (record.rNextId >= 0)
-        SEQAN_ASSERT_LT(static_cast<__uint64>(record.rNextId), length(nameStore(context)));
+        SEQAN_ASSERT_LT(static_cast<__uint64>(record.rNextId), length(contigNames(context)));
 
     // query name.
     resize(record.qName, record._l_qname - 1, Exact());

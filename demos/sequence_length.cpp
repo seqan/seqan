@@ -4,22 +4,25 @@
 #include <seqan/sequence.h>
 #include <seqan/seq_io.h>
 
+using namespace seqan;
+
 int main(int argc, char const ** argv)
 {
     // Check arguments.
-    if (argc != 2) {
+    if (argc != 2)
+    {
         std::cerr << "Wrong argument count!" << std::endl
                   << "USAGE: sequence_length SEQUENCE.fasta" << std::endl;
         return 1;
     }
 
     // Open file.
-    seqan::SeqFileIn file(argv[1]);
+    SeqFileIn file(argv[1]);
 
     // Read sequence file and print sequence lengths.
     size_t total = 0;
-    seqan::CharString id;
-    seqan::CharString seq;
+    CharString id;
+    CharString seq;
     while (!atEnd(file))
     {
         readRecord(id, seq, file);

@@ -12,7 +12,7 @@ int main()
 
     // Create graph with 9 directed edges (0,3), (0,1), ...
     TSize numEdges = 9;
-    TVertexDescriptor edges[] = {0,3, 0,1, 1,2, 3,2, 5,7, 5,6, 6,7, 6,3, 8,7};
+    TVertexDescriptor edges[] = {0, 3, 0, 1, 1, 2, 3, 2, 5, 7, 5, 6, 6, 7, 6, 3, 8, 7};
     TGraph g;
     addEdges(g, edges, numEdges);
     // Print graph.
@@ -22,7 +22,7 @@ int main()
     String<std::string> nameMap;
     std::string names[] = {"shirt", "tie", "jacket", "belt", "watch", "undershorts", "pants", "shoes", "socks"};
     assignVertexMap(nameMap, g, names);
-    
+
     // Get vertex descriptor in topological sort order.
     String<TVertexDescriptor> order;
     topologicalSort(order, g);

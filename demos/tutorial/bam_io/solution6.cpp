@@ -4,6 +4,8 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
+using namespace seqan;
+
 int main(int argc, char const ** argv)
 {
     if (argc != 3)
@@ -13,7 +15,7 @@ int main(int argc, char const ** argv)
     }
 
     // Open BGZF file for reading.
-    typedef seqan::VirtualStream<char, seqan::Input> TInStream;
+    typedef VirtualStream<char, Input> TInStream;
     TInStream inStream;
     if (!open(inStream, argv[1]))
     {
@@ -30,8 +32,8 @@ int main(int argc, char const ** argv)
     }
 
     // Copy over data.
-    seqan::DirectionIterator<TInStream, seqan::Input>::Type reader = directionIterator(inStream, seqan::Input());
-    while (!seqan::atEnd(reader))
+    DirectionIterator<TInStream, Input>::Type reader = directionIterator(inStream, Input());
+    while (!atEnd(reader))
         read(outStream, reader, 1000);
 
     return 0;

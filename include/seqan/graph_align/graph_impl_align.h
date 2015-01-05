@@ -2018,7 +2018,7 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 			}
 		}
 	}
-	::std::sort(begin(occupiedPositions, Standard()), end(occupiedPositions, Standard()));
+	std::sort(begin(occupiedPositions, Standard()), end(occupiedPositions, Standard()));
 	// Get all occupied positions
 	typedef String<TSize> TSlotToPos;
 	typedef typename Iterator<TSlotToPos, Standard>::Type TSlotToPosIter;
@@ -2051,7 +2051,7 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 				// Target vertex must be in the map
 				pPos = map[targetVertex(itOut)];
 				if ( pPos != MaxValue<TSize>::VALUE) 
-					weights[::std::distance(begin(slotToPos, Standard()), ::std::lower_bound(begin(slotToPos, Standard()), end(slotToPos, Standard()), pPos * n + (TSize) (n - posItStr2 - 1)))] += (TCargo) cargo(*itOut);
+					weights[std::distance(begin(slotToPos, Standard()), std::lower_bound(begin(slotToPos, Standard()), end(slotToPos, Standard()), pPos * n + (TSize) (n - posItStr2 - 1)))] += (TCargo) cargo(*itOut);
 			}
 		}
 	}

@@ -8,7 +8,7 @@ using namespace seqan;
 int main()
 {
     String<Dna> seq = "TATACGCGAAAA";
-    ModifiedString< String<Dna>, ModReverse > myModifier(seq);
+    ModifiedString<String<Dna>, ModReverse> myModifier(seq);
 
     std::cout << seq << std::endl;
     std::cout << myModifier << std::endl;
@@ -19,4 +19,3 @@ int main()
 
     return 0;
 }
-

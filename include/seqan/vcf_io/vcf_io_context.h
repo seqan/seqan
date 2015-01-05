@@ -38,15 +38,11 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
-// Tags, Classes, Enums
+// Classes
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class VcfHeader
+// Class VcfIOContext
 // ----------------------------------------------------------------------------
 
 /*!
@@ -54,22 +50,11 @@ namespace seqan {
  * @headerfile <seqan/vcf_io.h>
  * @brief The I/O context to use for VCF I/O.
  * 
- * @signature class VcfIOContext;
- * 
- * VcfIOContext objects store the names of (and provide a cache for) reference and sample names.  StringSet of
- * CharString are used for the name stores.
- * 
- * @var TNamesPtr VcfIOContext::sequenceNames;
- * @brief Names of the reference sequences, pointer to @link StringSet @endlink of @link CharString @endlink.
- * 
- * @var TNameStoreCache VcfIOContext::sequenceNamesCache;
- * @brief Name store cache for of the reference names, @link NameStoreCache @endlink of @link CharString @endlink.
- * 
- * @var TNamesPtr VcfIOContext::sampleNames;
- * @brief Names of the samples, pointer to @link StringSet @endlink of @link CharString @endlink.
- * 
- * @var TNameStoreCache VcfIOContext::sampleNamesCache;
- * @brief Name store cache for the sample names, @link NameStoreCache @endlink of @link CharString @endlink.
+ * @signature template <typename TNameStore[, typename TNameStoreCache]>
+ *            class VcfIOContext;
+ *
+ * @tparam TNameStore      The type used to represent the names.
+ * @tparam TNameStoreCache The type used to cache the names. Defaults to @link NameStoreCache @endlink &lt;TNameStore&gtl;.
  */
 
 /*!
@@ -77,15 +62,14 @@ namespace seqan {
  * @brief Constructor.
  * 
  * @signature VcfIOContext::VcfIOContext();
- * @signature VcfIOContext::VcfIOContext(sequenceNames, sampleNames);
+ * @signature VcfIOContext::VcfIOContext(contigNames, sampleNames);
  *
- * Default constructor or construction with references to sequence and sample names.
+ * Default constructor or construction with references to contig and sample names.
  */
 
-template <
-    typename TNameStore_ = StringSet<CharString>,
-    typename TNameStoreCache_ = NameStoreCache<TNameStore_>,
-    typename TStorageSpec = Owner<> >
+template <typename TNameStore_        = StringSet<CharString>,
+          typename TNameStoreCache_   = NameStoreCache<TNameStore_>,
+          typename TStorageSpec       = Owner<> >
 class VcfIOContext
 {
 public:
@@ -141,12 +125,23 @@ public:
 };
 
 // ============================================================================
-// Metafunctions
-// ============================================================================
-
-// ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function contigNames()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn VcfIOContext#contigNames
+ * @brief Return reference to the contig names from @link VcfIOContext @endlink.
+ *
+ * @signature TNameStoreRef contigNames(context);
+ *
+ * @param[in] context The @link VcfIOContext @endlink to query.
+ *
+ * @return TNameStoreRef A reference to the <tt>TNameStore</tt> of the context.
+ */
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStore &
@@ -155,12 +150,34 @@ contigNames(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
     return _referenceCast<TNameStore &>(context._contigNames);
 }
 
+/*!
+ * @fn VcfIOContext#contigNamesCache
+ * @brief Return reference to contig names cache from @link VcfIOContext @endlink.
+ *
+ * @signature TNameStoreCacheRef contigNamesCache(context);
+ *
+ * @param[in] context The @link BamIOContext @endlink to query.
+ *
+ * @return TNameStoreCacheRef A reference to the <tt>TNameStoreCache</tt> of the context.
+ */
+
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStoreCache &
 contigNamesCache(VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context)
 {
     return _referenceCast<TNameStoreCache &>(context._contigNamesCache);
 }
+
+/*!
+ * @fn VcfIOContext#sampleNames
+ * @brief Return reference to the sample names from @link VcfIOContext @endlink.
+ *
+ * @signature TNameStoreRef sampleNames(context);
+ *
+ * @param[in] context The @link VcfIOContext @endlink to query.
+ *
+ * @return TNameStoreRef A reference to the <tt>TNameStore</tt> of the context.
+ */
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline TNameStore &

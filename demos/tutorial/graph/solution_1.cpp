@@ -3,7 +3,7 @@
 #include <seqan/graph_algorithms.h>
 using namespace seqan;
 
-int main ()
+int main()
 {
     typedef unsigned int TCargo;
     typedef Graph<Directed<TCargo> > TGraph;
@@ -30,6 +30,5 @@ int main ()
 
     std::cout << g << std::endl;
 
-	return 0;
+    return 0;
 }
-

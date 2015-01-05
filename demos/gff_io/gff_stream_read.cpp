@@ -28,7 +28,7 @@ int main(int argc, char ** argv)
             std::cout << record.ref << "\t" << (record.beginPos + 1) << "\n";
         }
     }
-    catch (Exception &e)
+    catch (Exception & e)
     {
         std::cerr << e.what() << std::endl;
         return 1;

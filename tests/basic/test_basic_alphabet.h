@@ -457,9 +457,9 @@ void TestExtremeValuesSigned()
 	long double maxVal = -minVal - 1;
 
 /*
-	::std::cout << ::std::endl << "Max/Min of " << typeid(T).name() << ::std::endl;
-	::std::cout << maxVal << " == " << MaxValue<T>::VALUE << "(" << (double)MaxValue<T>::VALUE << ")  " << maxValue<T>() << ::std::endl;
-	::std::cout << minVal << " == " << MinValue<T>::VALUE << "(" << (double)MinValue<T>::VALUE << ")  " << minValue<T>() << ::std::endl;
+	std::cout << std::endl << "Max/Min of " << typeid(T).name() << std::endl;
+	std::cout << maxVal << " == " << MaxValue<T>::VALUE << "(" << (double)MaxValue<T>::VALUE << ")  " << maxValue<T>() << std::endl;
+	std::cout << minVal << " == " << MinValue<T>::VALUE << "(" << (double)MinValue<T>::VALUE << ")  " << minValue<T>() << std::endl;
 */
 
 	bool isSigned = IsSameType< typename MakeSigned_<T>::Type, T >::VALUE;
@@ -485,9 +485,9 @@ void TestExtremeValuesUnsigned()
 	maxVal = maxVal - 1;
 
 /*
-	::std::cout << ::std::endl << "Max/Min of " << typeid(T).name() << ::std::endl;
-	::std::cout << maxVal << " == " << MaxValue<T>::VALUE << "(" << (double)MaxValue<T>::VALUE << ")  " << maxValue<T>() << ::std::endl;
-	::std::cout << 0 << " == " << MinValue<T>::VALUE << "(" << (double)MinValue<T>::VALUE << ")  " << minValue<T>() << ::std::endl;
+	std::cout << std::endl << "Max/Min of " << typeid(T).name() << std::endl;
+	std::cout << maxVal << " == " << MaxValue<T>::VALUE << "(" << (double)MaxValue<T>::VALUE << ")  " << maxValue<T>() << std::endl;
+	std::cout << 0 << " == " << MinValue<T>::VALUE << "(" << (double)MinValue<T>::VALUE << ")  " << minValue<T>() << std::endl;
 */
 
 	bool isUnsigned = IsSameType< typename MakeUnsigned_<T>::Type, T >::VALUE;

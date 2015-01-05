@@ -4,6 +4,8 @@
 #include <seqan/sequence.h>
 #include <seqan/bam_io.h>
 
+using namespace seqan;
+
 int main(int argc, char const * argv[])
 {
     if (argc != 7)
@@ -13,7 +15,7 @@ int main(int argc, char const * argv[])
     }
 
     // Open BamFileIn for reading.
-    seqan::BamFileIn inFile;
+    BamFileIn inFile;
     if (!open(inFile, argv[1]))
     {
         std::cerr << "ERROR: Could not open " << argv[1] << " for reading.\n";
@@ -21,7 +23,7 @@ int main(int argc, char const * argv[])
     }
 
     // Read BAI index.
-    seqan::BamIndex<seqan::Bai> baiIndex;
+    BamIndex<Bai> baiIndex;
     if (!open(baiIndex, argv[2]))
     {
         std::cerr << "ERROR: Could not read BAI index file " << argv[2] << "\n";
@@ -29,12 +31,12 @@ int main(int argc, char const * argv[])
     }
 
     // Read header.
-    seqan::BamHeader header;
+    BamHeader header;
     readRecord(header, inFile);
 
     // Translate from reference name to rID.
     int rID = 0;
-    if (!getIdByName(rID, nameStoreCache(context(inFile)), argv[3]))
+    if (!getIdByName(rID, contigNamesCache(context(inFile)), argv[3]))
     {
         std::cerr << "ERROR: Reference sequence named " << argv[3] << " not known.\n";
         return 1;
@@ -42,13 +44,13 @@ int main(int argc, char const * argv[])
 
     // Translate BEGIN and END arguments to number, 1-based to 0-based.
     int beginPos = 0, endPos = 0;
-    if (!seqan::lexicalCast(beginPos, argv[4]) || beginPos <= 0)
+    if (!lexicalCast(beginPos, argv[4]) || beginPos <= 0)
     {
         std::cerr << "ERROR: Begin position " << argv[4] << " is invalid.\n";
         return 1;
     }
     beginPos -= 1;  // 1-based to 0-based.
-    if (!seqan::lexicalCast(endPos, argv[5]) || endPos <= 0)
+    if (!lexicalCast(endPos, argv[5]) || endPos <= 0)
     {
         std::cerr << "ERROR: End position " << argv[5] << " is invalid.\n";
         return 1;
@@ -57,7 +59,7 @@ int main(int argc, char const * argv[])
 
     // Translate number of elements to print to number.
     int num = 0;
-    if (!seqan::lexicalCast(num, argv[6]))
+    if (!lexicalCast(num, argv[6]))
     {
         std::cerr << "ERROR: Count " << argv[6] << " is invalid.\n";
         return 1;
@@ -74,9 +76,9 @@ int main(int argc, char const * argv[])
         return 0;  // No alignments here.
 
     // Seek linearly to the selected position.
-    seqan::BamAlignmentRecord record;
+    BamAlignmentRecord record;
     int numPrinted = 0;
-    seqan::BamFileOut out(inFile, std::cout, seqan::Sam());
+    BamFileOut out(inFile, std::cout, Sam());
 
     while (!atEnd(inFile) && numPrinted < num)
     {

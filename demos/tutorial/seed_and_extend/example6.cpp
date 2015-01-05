@@ -1,23 +1,28 @@
-// FRAGMENT(header)
+//![header]
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 #include <seqan/seeds.h>
 
+using namespace seqan;
+
 int main()
 {
-    // FRAGMENT(example)
-    typedef seqan::Seed<seqan::Simple>    TSeed;
-    typedef seqan::SeedSet<TSeed> TSeedSet;
-    
+//![header]
+//![example]
+    typedef Seed<Simple>    TSeed;
+    typedef SeedSet<TSeed> TSeedSet;
+
     TSeedSet seedSet;
-    addSeed(seedSet, TSeed(0, 0, 2), seqan::Single());
-    addSeed(seedSet, TSeed(3, 5, 2), seqan::Single());
-    addSeed(seedSet, TSeed(4, 2, 3), seqan::Single());
-    addSeed(seedSet, TSeed(9, 9, 2), seqan::Single());
+    addSeed(seedSet, TSeed(0, 0, 2), Single());
+    addSeed(seedSet, TSeed(3, 5, 2), Single());
+    addSeed(seedSet, TSeed(4, 2, 3), Single());
+    addSeed(seedSet, TSeed(9, 9, 2), Single());
 
-    seqan::String<TSeed> result;
-    chainSeedsGlobally(result, seedSet, seqan::SparseChaining());
+    String<TSeed> result;
+    chainSeedsGlobally(result, seedSet, SparseChaining());
+//![example]
 
-    // FRAGMENT(footer)
+//![footer]
     return 0;
 }
+//![footer]

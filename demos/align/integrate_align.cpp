@@ -68,7 +68,7 @@ int main()
               << beginViewPos << ", " << endViewPos << ")\n";
     setClippedBeginPosition(row(align, 0), beginViewPos);
     setClippedEndPosition(row(align, 0), endViewPos);
-    
+
     std::cout << "align with clipping\n"
               << align;
 

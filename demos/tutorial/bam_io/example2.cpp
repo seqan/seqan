@@ -1,19 +1,21 @@
 #include <seqan/bam_io.h>
 
+using namespace seqan;
+
 int main()
 {
-    seqan::BamFileIn bamFileIn("example.bam");
+    BamFileIn bamFileIn("example.bam");
 
-    seqan::BamHeader header;
+    BamHeader header;
     readRecord(header, bamFileIn);
 
-    typedef seqan::SmartFileContext<seqan::BamFileIn, void>::Type TBamContext;
+    typedef SmartFileContext<BamFileIn, void>::Type TBamContext;
 
     TBamContext const & bamContext = context(bamFileIn);
 
-    for (unsigned i = 0; i < length(nameStore(bamContext)); ++i)
-        std::cout << nameStore(bamContext)[i] << '\t'
-                  << sequenceLengths(bamContext)[i] << '\n';
+    for (unsigned i = 0; i < length(contigNames(bamContext)); ++i)
+        std::cout << contigNames(bamContext)[i] << '\t'
+                  << contigLengths(bamContext)[i] << '\n';
 
     return 0;
 }

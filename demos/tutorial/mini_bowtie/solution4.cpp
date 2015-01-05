@@ -22,7 +22,7 @@ void search(TIter & it, TStringSet const & pattern)
         unsigned startApproxSearch = length(value(patternIt)) / 2;
         if (goDown(it, infix(value(patternIt), 0, startApproxSearch - 1)))
         {
-            for (unsigned i = startApproxSearch; ; ++i)
+            for (unsigned i = startApproxSearch;; ++i)
             {
                 Dna character = getValue(patternIt)[i];
                 for (Dna5 c = MinValue<Dna>::VALUE; c < valueSize<Dna>(); ++c)
@@ -34,7 +34,7 @@ void search(TIter & it, TStringSet const & pattern)
                         {
                             if (goDown(localIt, infix(value(patternIt), i + 1, length(value(patternIt)))))
                             {
-                               //HIT 
+                                //HIT
                             }
                         }
                     }
@@ -43,7 +43,7 @@ void search(TIter & it, TStringSet const & pattern)
                     break;
                 else if (i == length(value(patternIt)) - 1)
                 {
-                    // HIT 
+                    // HIT
                     break;
                 }
             }
@@ -52,7 +52,7 @@ void search(TIter & it, TStringSet const & pattern)
     }
 }
 
-int main(int argc, char *argv[]) 
+int main(int argc, char * argv[])
 {
     typedef String<Dna5> TString;
     typedef StringSet<String<Dna5> > TStringSet;
@@ -60,20 +60,24 @@ int main(int argc, char *argv[])
     typedef Iterator<TIndex, TopDown<> >::Type TIter;
 
     // 0) Handle command line arguments.
-    if (argc < 3) {
+    if (argc < 3)
+    {
         std::cerr << "Invalid number of arguments." << std::endl
                   << "USAGE: minimapper GENOME.fasta READS.fasta OUT.sam" << std::endl;
         return 1;
     }
     // 1) Load contigs and reads.
     FragmentStore<> fragStore;
-    if (!loadContigs(fragStore, argv[1])) return 1;
-    if (!loadReads(fragStore, argv[2])) return 1;
+    if (!loadContigs(fragStore, argv[1]))
+        return 1;
+
+    if (!loadReads(fragStore, argv[2]))
+        return 1;
 
     StringSet<TString> text;
     for (unsigned i = 0; i < length(fragStore.contigStore); ++i)
         appendValue(text, fragStore.contigStore[i].seq);
-        
+
     reverse(text);
     TIndex fmIndex(text);
     TIter it(fmIndex);

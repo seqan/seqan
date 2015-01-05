@@ -12,7 +12,7 @@ int main()
 
     // Create graph with 5 directed edges (3,0), (1,2), ...
     TSize numEdges = 5;
-    TVertexDescriptor edges[] = {3,0, 1,2, 2,1, 1,3, 3,2};
+    TVertexDescriptor edges[] = {3, 0, 1, 2, 2, 1, 1, 3, 3, 2};
     TGraph g;
     addEdges(g, edges, numEdges);
     // Print graph to stdout.

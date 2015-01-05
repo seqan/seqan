@@ -1,20 +1,22 @@
-#include <seqan/basic.h>
 #include <seqan/gff_io.h>
+
+using namespace seqan;
 
 int main()
 {
-    // Open input stream.
-    seqan::GffFileIn gffIn("example.gff");
-    // Open output stream. If target is a ostream we must specify the format.
-    seqan::GffFileOut gffOut(std::cout, seqan::Gff());
+    // Open input file.
+    GffFileIn gffIn("example.gff");
 
-    // Read the file record by record.
-    seqan::GffRecord record;
+    // Attach to standard output.
+    GffFileOut gffOut(std::cout, Gff());
+
+    // Copy the file record by record.
+    GffRecord record;
     while (!atEnd(gffIn))
     {
         readRecord(record, gffIn);
         writeRecord(gffOut, record);
     }
-    
+
     return 0;
 }

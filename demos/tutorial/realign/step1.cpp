@@ -25,8 +25,8 @@ int main()
     // Layout alignment and print.
     AlignedReadLayout layout;
     layoutAlignment(layout, store);
-    printAlignment(std::cout, layout, store, /*contigID=*/0, /*posBegin=*/1060,
-                   /*posEnd=*/1140, /*lineBegin=*/0, /*lineEnd=*/100);
+    printAlignment(std::cout, layout, store, /*contigID=*/ 0, /*posBegin=*/ 1060,
+                   /*posEnd=*/ 1140, /*lineBegin=*/ 0, /*lineEnd=*/ 100);
 
     return 0;
 }

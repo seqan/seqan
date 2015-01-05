@@ -39,40 +39,44 @@
 
 #include <seqan/basic.h>
 
+using namespace seqan;
+
 #if !defined(_MSC_VER)  // Currently, there are some issues with MSVC and concepts.
 class EnableIfExample
 {
 public:
     int num;
-    
+
 //![enable if example constructor]
     template <typename T>
-    EnableIfExample(T const & n, SEQAN_CTOR_ENABLE_IF(seqan::Is<seqan::IntegerConcept<T> >)) :
-            num(0)
+    EnableIfExample(T const & n, SEQAN_CTOR_ENABLE_IF(Is<IntegerConcept<T> >)) :
+        num(0)
     {
-        seqan::ignoreUnusedVariableWarning(dummy);
+        ignoreUnusedVariableWarning(dummy);
     }
+
 //![enable if example constructor]
 
 //![disable if example constructor]
     template <typename T>
-    EnableIfExample(T const & n, SEQAN_CTOR_DISABLE_IF(seqan::Is<seqan::IntegerConcept<T> >)) :
-            num(0)
+    EnableIfExample(T const & n, SEQAN_CTOR_DISABLE_IF(Is<IntegerConcept<T> >)) :
+        num(0)
     {
-        seqan::ignoreUnusedVariableWarning(dummy);
+        ignoreUnusedVariableWarning(dummy);
     }
+
 //![disable if example constructor]
 
 //![enable if example function]
     template <typename T>
-    SEQAN_FUNC_ENABLE_IF(seqan::Is<seqan::IntegerConcept<T> >)
+    SEQAN_FUNC_ENABLE_IF(Is<IntegerConcept<T> >)
     f(T /* x */)
     { /* ... */ }
 //![enable if example function]
 
 //![disable if example function]
     template <typename T>
-    SEQAN_FUNC_DISABLE_IF(seqan::Is<seqan::IntegerConcept<T> >)
+    SEQAN_FUNC_DISABLE_IF(Is<IntegerConcept<T> >)
     f(T /* x */)
     { /* ... */}
 //![disable if example function]

@@ -46,9 +46,11 @@
 #include <seqan/bam_io.h>
 #include <seqan/seq_io.h>
 
+using namespace seqan;
+
 #if SEQAN_HAS_ZLIB
 
-void trimSeqHeaderToId(seqan::CharString & header)
+void trimSeqHeaderToId(CharString & header)
 {
     unsigned i = 0;
     for (; i < length(header); ++i)
@@ -59,8 +61,6 @@ void trimSeqHeaderToId(seqan::CharString & header)
 
 int main(int argc, char const ** argv)
 {
-    using namespace seqan;
-
     // Check command line arguments.
     if (argc != 3)
     {
@@ -81,7 +81,7 @@ int main(int argc, char const ** argv)
     readRecords(refNameStore, seqs, inSeq);
     for (unsigned i = 0; i < length(refNameStore); ++i)
         trimSeqHeaderToId(refNameStore[i]);
-    
+
     // Open BGZF stream.
     std::cerr << "Opening BAM " << argv[2] << std::endl;
     BamFileIn bamFileIn;
@@ -125,7 +125,7 @@ int main(int argc, char const ** argv)
 int main()
 {
     std::cerr << "zlib is required for bam_print_alignment demo." << std::endl;
-    
+
     return 1;
 }
 

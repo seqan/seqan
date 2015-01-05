@@ -29,8 +29,7 @@ It starts out with a quick reminder on the structure of SAM (and also BAM) files
 .. important::
 
     Note that this tutorial is targeted at readers that already know about the SAM format.
-    If you do not know about the SAM format yetm then this tutorial will be harder for your to understand.
-    Teaching the ins and outs of SAM is out of the scope of such a tutorial.
+    If you do not know about the SAM format yet, then this tutorial will be harder for your to understand.
 
 Both SAM and BAM file store multi-read alignments.
 Storing alignments of longer sequences such as contigs from assemblies is also possible, but less common.
@@ -122,7 +121,7 @@ Notes:
 * When the FLAG indicates that SEQ is reverse-complemented, then QUAL is reversed.
 * Positions in the SAM file are 1-based.
   When read into a :dox:`BamAlignmentRecord` (see below), the positions become 0-based.
-* The qualities must be stored as ASCII PRED-encoded qualities.
+* The qualities must be stored as ASCII PHRED-encoded qualities.
 * The query and reference names must not contain whitespace.
   It is common to trim query and reference ids at the first space.
 
@@ -140,7 +139,7 @@ Thus, the name is stored outside the record in the header.
 A First Working Example
 -----------------------
 
-The following program reads a file named ``example.sam`` and prints its contents back to the user on stdout.
+The following program reads a file named ``example.sam`` and prints its contents back to the user on standard output.
 
 .. includefrags:: demos/tutorial/bam_io/example1.cpp
 
@@ -169,16 +168,15 @@ Assignment 1
 Accessing the Header
 --------------------
 
-The BAM header information is split between the class :dox:`BamHeader` and the :dox:`SmartFileContext Context` of the :dox:`BamFileIn`.
-All BAM header records are stored in the class :dox:`BamHeader`, except for sequence information (i.e. @SQ records) which is stored in the :dox:`SmartFileContext Context`.
+Sequence information (i.e. @SQ records) from the BAM header is stored in the :dox:`BamIOContext`.
+All remaining BAM header information is stored in the class :dox:`BamHeader`.
 
 .. important::
    The header is not mandatory in SAM files and might be missing.
 
-The following program accesses the :dox:`BamFileIn` :dox:`SmartFileContext Context` and prints the sequences and lengths present in the BAM header.
+The following program accesses the :dox:`BamIOContext` of its :dox:`BamFileIn` and prints the reference sequence names and lengths present in the BAM header.
 
 .. includefrags:: demos/tutorial/bam_io/example2.cpp
-
 
 Accessing the Records
 ---------------------
@@ -220,8 +218,14 @@ Note that we use the :dox:`CigarElement` class to store entries in the CIGAR str
 
 The static members ``INVALID_POS``, ``INVALID_REFID``, and ``INVALID_LEN`` store sentinel values for marking positions, reference sequence ids, and lengths as invalid or N/A.
 
+.. tip::
+   A :dox:`BamAlignmentRecord` is linked to a reference sequence by the field ``rID``.
+   The reference sequence information is stored in the BAM header and kept in the :dox:`BamIOContext`.
+   To easily access reference sequence name and and length relative to a given :dox:`BamAlignmentRecord` within a :dox:`BamFileIn`, use functions :dox:`BamAlignmentRecord#getContigName` and :dox:`BamAlignmentRecord#getContigLength`.
+
 An important related type is the enum :dox:`BamFlags` that provides constants for bit operations on the ``flag`` field.
 The functions :dox:`BamAlignmentRecord#hasFlagAllProper`, :dox:`BamAlignmentRecord#hasFlagDuplicate`, :dox:`BamAlignmentRecord#hasFlagFirst`, :dox:`BamAlignmentRecord#hasFlagLast`, :dox:`BamAlignmentRecord#hasFlagMultiple`, :dox:`BamAlignmentRecord#hasFlagNextRC`, :dox:`BamAlignmentRecord#hasFlagNextUnmapped`, :dox:`BamAlignmentRecord#hasFlagQCNoPass`, :dox:`BamAlignmentRecord#hasFlagRC`, :dox:`BamAlignmentRecord#hasFlagSecondary`, :dox:`BamAlignmentRecord#hasFlagUnmapped`, and :dox:`BamAlignmentRecord#hasFlagSupplementary` allow for easy reading of flags.
+
 
 
 Assignment 2

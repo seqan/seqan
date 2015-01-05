@@ -236,7 +236,7 @@ void setHost (Pattern<TNeedle, AhoCorasick> & me, TNeedle2 const & needle) {
 	//strm.close();
 	// Supply links
 	//for(unsigned int i=0;i<length(me.data_supplyMap);++i) {
-	//	std::cout << i << "->" << getProperty(me.data_supplyMap,i) << ::std::endl;
+	//	std::cout << i << "->" << getProperty(me.data_supplyMap,i) << std::endl;
 	//}
 }
 

@@ -339,7 +339,7 @@ heapSort(TITBegin itBeg,
 
 template<typename TKey, typename TValue, typename TPredicate>
 struct LessPairI2WithFunctor :
-    public ::std::unary_function<Pair<TKey, TValue>, bool>
+    public std::unary_function<Pair<TKey, TValue>, bool>
 {
     inline bool
     operator() (Pair<TKey, TValue> const& a1, Pair<TKey, TValue> const& a2) {

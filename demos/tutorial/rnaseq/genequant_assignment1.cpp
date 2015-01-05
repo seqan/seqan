@@ -46,7 +46,6 @@ ArgumentParser::ParseResult parseOptions(Options & options, int argc, char const
     return res;
 }
 
-
 //
 // 2. Load annotations and alignments from files
 //
@@ -57,7 +56,6 @@ bool loadFiles(TStore & store, Options const & options)
 
     return true;
 }
-
 
 int main(int argc, char const * argv[])
 {

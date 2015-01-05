@@ -204,7 +204,7 @@ struct MMap;
         _setCapacity(buffer, size);
         resize(buffer, size);
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "allocPage: " << ::std::hex << (void*)buffer.begin << ::std::dec << ::std::endl;
+			std::cerr << "allocPage: " << std::hex << (void*)buffer.begin << std::dec << std::endl;
 		#endif
         return buffer.begin != NULL;
 	}
@@ -216,7 +216,7 @@ struct MMap;
 //IOREV _nodoc_
 		#ifdef SEQAN_VVERBOSE
 			if ((void*)buffer.begin)
-				::std::cerr << "freePage:  " << ::std::hex << (void*)buffer.begin << ::std::dec << ::std::endl;
+				std::cerr << "freePage:  " << std::hex << (void*)buffer.begin << std::dec << std::endl;
 		#endif
 		deallocate(me, buffer.begin, capacity(buffer));
 		buffer.begin = NULL;
@@ -275,7 +275,7 @@ struct MMap;
     };
     
 	template <typename TValue>
-    ::std::ostream& operator<<(::std::ostream &out, const PageBucketExtended<TValue> &pb) {
+    std::ostream& operator<<(std::ostream &out, const PageBucketExtended<TValue> &pb) {
 //IOREV _ _nodoc_
         for(TValue *cur = pb.begin; cur != pb.end; cur++)
             out << *cur << " ";
@@ -393,7 +393,7 @@ struct MMap;
 	// page frame of static size
 
 
-    typedef ::std::list<Position<String<void*> >::Type> PageLRUList;    // least recently usage list
+    typedef std::list<Position<String<void*> >::Type> PageLRUList;    // least recently usage list
 	typedef PageLRUList::iterator PageLRUEntry;
 
     template < typename TValue,
@@ -564,7 +564,7 @@ struct MMap;
     }
 
 	template <typename TValue, typename TFile, typename TSpec>
-    ::std::ostream& operator<<(::std::ostream &out, const Buffer<TValue, PageFrame<TFile, TSpec> > &pf)
+    std::ostream& operator<<(std::ostream &out, const Buffer<TValue, PageFrame<TFile, TSpec> > &pf)
 	{
 //IOREV _nodoc_
         out << "PageFrame @ " << pf.pageNo;
@@ -595,7 +595,7 @@ struct MMap;
 		//bzero(tmp, sizeof(TValue) * capacity(pf));
 		pf.begin = tmp;
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "allocPage: " << ::std::hex << &pf << '\t' << tmp << ::std::dec << ::std::endl;
+			std::cerr << "allocPage: " << std::hex << &pf << '\t' << tmp << std::dec << std::endl;
 		#endif
 	}
 
@@ -605,7 +605,7 @@ struct MMap;
 //IOREV _nodoc_
 		#ifdef SEQAN_VVERBOSE
 			if ((void*)pf.begin)
-				::std::cerr << "freePage:  " << ::std::hex << &pf << '\t' << (void*)pf.begin << ::std::dec << ::std::endl;
+				std::cerr << "freePage:  " << std::hex << &pf << '\t' << (void*)pf.begin << std::dec << std::endl;
 		#endif
         nukeCopies(pf.begin);
 		deallocate(me, (TValue*)pf.begin, capacity(pf));
@@ -619,8 +619,8 @@ struct MMap;
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "readPage:  " << ::std::hex << &pf << '\t' << (void*)pf.begin;
-			::std::cerr << " from page " << ::std::dec << pageNo << ::std::endl;
+			std::cerr << "readPage:  " << std::hex << &pf << '\t' << (void*)pf.begin;
+			std::cerr << " from page " << std::dec << pageNo << std::endl;
 		#endif
 		pf.dirty = false;
 		pf.status = READING;
@@ -680,7 +680,7 @@ struct MMap;
                 "CreateFileMapping(%d, %d, 0, 0, 0) failed in mapReadPage: \"%s\"",
                 file.handle, access, strerror(errno));
 		#if SEQAN_ENABLE_DEBUG
-			::std::cerr << "CreateFileMapping failed. (ErrNo=" << GetLastError() << ")" << ::std::endl;
+			std::cerr << "CreateFileMapping failed. (ErrNo=" << GetLastError() << ")" << std::endl;
 		#endif
 			return false;
 		}
@@ -743,8 +743,8 @@ struct MMap;
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "writePage: " << ::std::hex << &pf << '\t' << (void*)pf.begin;
-			::std::cerr << " from page " << ::std::dec << pageNo << ::std::endl;
+			std::cerr << "writePage: " << std::hex << &pf << '\t' << (void*)pf.begin;
+			std::cerr << " from page " << std::dec << pageNo << std::endl;
 		#endif
 		pf.status = WRITING;
 //        resize(pf, capacity(pf));
@@ -764,8 +764,8 @@ struct MMap;
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "readPage:  " << ::std::hex << &pf << '\t' << (void*)pf.begin;
-			::std::cerr << " from page " << ::std::dec << pageNo << " size " << size << ::std::endl;
+			std::cerr << "readPage:  " << std::hex << &pf << '\t' << (void*)pf.begin;
+			std::cerr << " from page " << std::dec << pageNo << " size " << size << std::endl;
 		#endif
 		pf.dirty = false;
 		pf.status = READY;
@@ -786,8 +786,8 @@ struct MMap;
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "writePage: " << ::std::hex << &pf << '\t' << (void*)pf.begin;
-			::std::cerr << " from page " << ::std::dec << pageNo << " size " << size << ::std::endl;
+			std::cerr << "writePage: " << std::hex << &pf << '\t' << (void*)pf.begin;
+			std::cerr << " from page " << std::dec << pageNo << " size " << size << std::endl;
 		#endif
 		pf.dirty = false;
 		pf.status = READY;
@@ -894,9 +894,9 @@ struct MMap;
 		typedef typename Position<TFile>::Type TPos;
         size_t readSize = _min(dataSize - b.pageOfs, (size_t)(b.end - b.begin));
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "readBucket:  " << ::std::hex << b.begin;
-			::std::cerr << " from page " << ::std::dec << pageNo << " at " << (TPos)pageNo * (TPos)pageSize + b.pageOfs;
-			::std::cerr << " size " << readSize << ::std::endl;
+			std::cerr << "readBucket:  " << std::hex << b.begin;
+			std::cerr << " from page " << std::dec << pageNo << " at " << (TPos)pageNo * (TPos)pageSize + b.pageOfs;
+			std::cerr << " size " << readSize << std::endl;
 		#endif
         if (readSize && readAt(file, b.begin, readSize, (TPos)pageNo * (TPos)pageSize + b.pageOfs)) {
             b.pageOfs += readSize;
@@ -913,9 +913,9 @@ struct MMap;
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "writeBucket: " << ::std::hex << b.begin;
-			::std::cerr << " from page " << ::std::dec << pageNo << " at " << (TPos)pageNo * (TPos)pageSize + b.pageOfs;
-			::std::cerr << " size " << b.cur - b.begin << ::std::endl;
+			std::cerr << "writeBucket: " << std::hex << b.begin;
+			std::cerr << " from page " << std::dec << pageNo << " at " << (TPos)pageNo * (TPos)pageSize + b.pageOfs;
+			std::cerr << " size " << b.cur - b.begin << std::endl;
 		#endif
         if ((b.cur == b.begin) || writeAt(file, b.begin, b.cur - b.begin, (TPos)pageNo * (TPos)pageSize + b.pageOfs)) {
             b.pageOfs += b.cur - b.begin;
@@ -931,9 +931,9 @@ struct MMap;
 //IOREV _nodoc_
 		typedef typename Position<TFile>::Type TPos;
 		#ifdef SEQAN_VVERBOSE
-			::std::cerr << "writeBucket: " << ::std::hex << pf.begin;
-			::std::cerr << " from page " << ::std::dec << pf.pageNo << " at " << (TPos)pf.pageNo * (TPos)capacity(pf) + pageOfs;
-			::std::cerr << " size " << length(pf) << ::std::endl;
+			std::cerr << "writeBucket: " << std::hex << pf.begin;
+			std::cerr << " from page " << std::dec << pf.pageNo << " at " << (TPos)pf.pageNo * (TPos)capacity(pf) + pageOfs;
+			std::cerr << " size " << length(pf) << std::endl;
 		#endif
         if (pf.end == pf.begin) return true;
         if (asyncWriteAt(file, pf.begin, length(pf), (TPos)pf.pageNo * (TPos)capacity(pf) + pageOfs, pf.request)) {
@@ -1286,20 +1286,20 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
 		inline void _dump() 
 		{
 			for(unsigned i = 0; i < PRIORITY_LEVELS; ++i) {
-                ::std::cerr << "|";
+                std::cerr << "|";
                 PageLRUList::const_iterator I = lruList[i].end();
                 PageLRUList::const_iterator first = lruList[i].begin();
 				while (I != first) {
 					--I;
                     TPageFrame &pf = pages[*I];
-                    ::std::cerr << pf.pageNo;
-                    if (pf.dirty) ::std::cerr << "*";
-                    else          ::std::cerr << " ";
-                    if (pf.status == READY) ::std::cerr << "  ";
-                    else                    ::std::cerr << ". ";
+                    std::cerr << pf.pageNo;
+                    if (pf.dirty) std::cerr << "*";
+                    else          std::cerr << " ";
+                    if (pf.status == READY) std::cerr << "  ";
+                    else                    std::cerr << ". ";
 				};
             }
-            ::std::cerr << ::std::endl;
+            std::cerr << std::endl;
 		}
 
         // Function is a functor which is called with a PageFrame object,
@@ -1320,7 +1320,7 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
 				};
             }
 			#ifdef SEQAN_VVERBOSE
-				::std::cerr << "ALL PAGES DIRTY OR IN USE (try to use const iterators) :-(" << ::std::endl;
+				std::cerr << "ALL PAGES DIRTY OR IN USE (try to use const iterators) :-(" << std::endl;
 			#endif
 			return -1;
 		}
@@ -1456,15 +1456,15 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
         Function const &Func_)
     {
 //IOREV _nodoc_
-//        ::std::cerr << "equiDistantDistribution: size=" << _size << "\tpageSize=" << _pageSize << ::std::endl;
+//        std::cerr << "equiDistantDistribution: size=" << _size << "\tpageSize=" << _pageSize << std::endl;
         unsigned _pages         = enclosingBlocks(_size, _pageSize);
         if (!_pages) {
-			::std::cerr << "equiDistantDistribution: _pages is null!" << ::std::endl;
+			std::cerr << "equiDistantDistribution: _pages is null!" << std::endl;
             return false;
         }
 
         if (_bufferSize < _pages) {
-			::std::cerr << "equiDistantDistribution: clusterBufferSize is too small -> raised to " << _pages << ::std::endl;
+			std::cerr << "equiDistantDistribution: clusterBufferSize is too small -> raised to " << _pages << std::endl;
             _bufferSize = _pages;
         }
 
@@ -1479,7 +1479,7 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
         pb.begin = _clusterBuffer.begin;
 
         size_t clusterSize = _bufferSize / pages;
-//        ::std::cerr << "equiDistantDistribution: pages=" << _pages << "\tclusterSize=" << clusterSize << ::std::endl;
+//        std::cerr << "equiDistantDistribution: pages=" << _pages << "\tclusterSize=" << clusterSize << std::endl;
         if (lastPageSize > 0 && clusterSize >= lastPageSize) {
             // last page bucket would get more memory than page would need
             // --> exclude from equi-size distribution
@@ -1522,14 +1522,14 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
     {
 //IOREV _nodoc_
         unsigned _pages         = enclosingBlocks(_size, _pageSize);
-//        ::std::cerr << "equiDistantAlignedDistribution: size=" << _size << "\tpageSize=" << _pageSize << ::std::endl;
+//        std::cerr << "equiDistantAlignedDistribution: size=" << _size << "\tpageSize=" << _pageSize << std::endl;
         if (!_pages) {
-			::std::cerr << "equiDistantAlignedDistribution: _pages is null!" << ::std::endl;
+			std::cerr << "equiDistantAlignedDistribution: _pages is null!" << std::endl;
             return 0;
         }
 
         if (_bufferSize < _pages) {
-			::std::cerr << "equiDistantAlignedDistribution: clusterBufferSize is too small -> raised to " << _pages << ::std::endl;
+			std::cerr << "equiDistantAlignedDistribution: clusterBufferSize is too small -> raised to " << _pages << std::endl;
             _bufferSize = _pages;
         }
 
@@ -1544,7 +1544,7 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
         if (clusterSize - aclusterSize > aligning / 2)
             aclusterSize += aligning;
 
-//        ::std::cerr << "equiDistantAlignedDistribution: pages=" << _pages << "\tclusterSize=" << aclusterSize << ::std::endl;
+//        std::cerr << "equiDistantAlignedDistribution: pages=" << _pages << "\tclusterSize=" << aclusterSize << std::endl;
 
 		if (aclusterSize != 0) {
 

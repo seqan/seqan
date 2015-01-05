@@ -3,7 +3,7 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
     // instantiate a Splitter to divide the interval [10,20) in 3 subintervals
     Splitter<unsigned> splitter(10, 20, 3);

@@ -23,15 +23,14 @@ int main()
     readRecords(store, bamFileIn);
 
     // Perform the realignment.
-    reAlignment(store, /*contigID=*/0, /*method=*/1, /*bandwidth=*/20,
-                /*includeReference=*/true);
+    reAlignment(store, /*contigID=*/ 0, /*method=*/ 1, /*bandwidth=*/ 20,
+                /*includeReference=*/ true);
 
     // Layout alignment and print.
     AlignedReadLayout layout;
     layoutAlignment(layout, store);
-    printAlignment(std::cout, layout, store, /*contigID=*/0, /*posBegin=*/1060,
-                   /*posEnd=*/1140, /*lineBegin=*/0, /*lineEnd=*/100);
+    printAlignment(std::cout, layout, store, /*contigID=*/ 0, /*posBegin=*/ 1060,
+                   /*posEnd=*/ 1140, /*lineBegin=*/ 0, /*lineEnd=*/ 100);
 
     return 0;
 }
-

@@ -1,5 +1,7 @@
 #include <seqan/seq_io.h>
 
+using namespace seqan;
+
 int main(int argc, char const ** argv)
 {
     if (argc < 2)
@@ -8,10 +10,10 @@ int main(int argc, char const ** argv)
         return 1;
     }
 
-    seqan::CharString id;
-    seqan::Dna5String seq;
+    CharString id;
+    Dna5String seq;
 
-    seqan::SeqFileIn seqFileIn(argv[1]);
+    SeqFileIn seqFileIn(argv[1]);
     readRecord(id, seq, seqFileIn);
     std::cout << id << '\t' << seq << '\n';
 

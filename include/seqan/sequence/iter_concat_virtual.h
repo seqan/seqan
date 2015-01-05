@@ -98,7 +98,7 @@ public:
     // ----------------------------------------------------------------------
     // STL compatible public iterator interface
     typedef Iter                                iterator;
-    typedef ::std::bidirectional_iterator_tag   iterator_category;
+    typedef std::bidirectional_iterator_tag   iterator_category;
     typedef TValue                              value_type;
     typedef TValue &                            reference;
     typedef TValue const &                      const_reference;

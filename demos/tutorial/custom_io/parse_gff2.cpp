@@ -1,4 +1,4 @@
-// FRAGMENT(includes)
+//![includes]
 #include <iostream>
 #include <fstream>
 
@@ -7,8 +7,9 @@
 #include <seqan/stream.h>
 
 using namespace seqan;
+//![includes]
 
-// FRAGMENT(tags-structs)
+//![tags-structs]
 struct Gff2_;
 typedef Tag<Gff2_> Gff2;
 
@@ -26,11 +27,13 @@ struct Gff2Record
     CharString attributes;
     CharString comments;
 
-    Gff2Record() : start(0), end(0), hasScore(false), score(0), strand('.'), frame(0)
+    Gff2Record() :
+        start(0), end(0), hasScore(false), score(0), strand('.'), frame(0)
     {}
 };
+//![tags-structs]
 
-// FRAGMENT(read-record)
+//![read-record]
 template <typename TReader>
 inline void
 readRecord(Gff2Record & record, CharString & buffer, TReader & reader, Gff2 const & /*tag*/)
@@ -86,7 +89,7 @@ readRecord(Gff2Record & record, CharString & buffer, TReader & reader, Gff2 cons
     clear(record.attributes);
     clear(record.comments);
     readUntil(record.attributes, reader, OrFunctor<IsTab, IsNewline>());
-    if (atEnd(reader) || IsNewline()(value(reader)))
+    if (atEnd(reader) || IsNewline() (value(reader)))
     {
         skipLine(reader);
         return;
@@ -96,8 +99,9 @@ readRecord(Gff2Record & record, CharString & buffer, TReader & reader, Gff2 cons
     // <comment>
     readLine(record.comments, reader);
 }
+//![read-record]
 
-// FRAGMENT(read-batch)
+//![read-batch]
 template <typename TGff2Records, typename TReader>
 inline void
 readRecords(TGff2Records & records, TReader & reader, Gff2 const & /*tag*/)
@@ -110,19 +114,21 @@ readRecords(TGff2Records & records, TReader & reader, Gff2 const & /*tag*/)
         appendValue(records, record);
     }
 }
+//![read-batch]
 
-// FRAGMENT(main)
+//![main]
 int main(int argc, char const ** argv)
 {
     // Handle command line arguments, open files.
     if (argc != 2)
         return 1;
+
     std::ifstream stream(argv[1], std::ios::binary | std::ios::in);
     if (!stream.good())
         return 1;
 
     // Read file.
-    seqan::DirectionIterator<std::ifstream, seqan::Input>::Type reader = directionIterator(stream, Input());
+    DirectionIterator<std::ifstream, Input>::Type reader = directionIterator(stream, Input());
     String<Gff2Record> gffRecords;
     readRecords(gffRecords, reader, Gff2());
 
@@ -130,6 +136,7 @@ int main(int argc, char const ** argv)
     for (unsigned i = 0; i < length(gffRecords); ++i)
         std::cout << gffRecords[i].seqName << "\t" << gffRecords[i].strand << "\t" << gffRecords[i].start << "\t"
                   << gffRecords[i].end << std::endl;
-    
+
     return 0;
 }
+//![main]

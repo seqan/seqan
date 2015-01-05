@@ -49,7 +49,7 @@
 #include <seqan/seq_io.h>
 #include <seqan/sequence.h>
 
-const int MB = 1024*1024;
+const int MB = 1024 * 1024;
 
 using namespace seqan;
 
@@ -61,22 +61,22 @@ void constructFastaStrings(TMetas & metas, TSeqs & seqs)
 
     reserve(seqs[0], MB);
     metas[0] = "1MB of as";
-    for (int i = 0; i< MB; ++i)
+    for (int i = 0; i < MB; ++i)
         appendValue(seqs[0], 'a');
 
-    reserve(seqs[1], 32*MB);
+    reserve(seqs[1], 32 * MB);
     metas[1] = "32MB of as";
-    for (int i = 0; i< 32*MB; ++i)
+    for (int i = 0; i < 32 * MB; ++i)
         appendValue(seqs[1], 'c');
 
-    reserve(seqs[2], 256*MB);
+    reserve(seqs[2], 256 * MB);
     metas[2] = "256MB of gs";
-    for (int i = 0; i< 256*MB; ++i)
+    for (int i = 0; i < 256 * MB; ++i)
         appendValue(seqs[2], 'g');
 
-    reserve(seqs[3], 512*MB);
+    reserve(seqs[3], 512 * MB);
     metas[3] = "512MB of ts";
-    for (int i = 0; i< 512*MB; ++i)
+    for (int i = 0; i < 512 * MB; ++i)
         appendValue(seqs[3], 't');
 }
 
@@ -100,7 +100,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
             writeRecord(file, metas[i], seqs[i]);
         close(file);
         after = sysTime();
-        std::cerr << "completed in " << after - before << "s\n"<< std::flush;
+        std::cerr << "completed in " << after - before << "s\n" << std::flush;
         unlink(filenameBuffer);
     }
     {
@@ -117,7 +117,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
             writeRecord(mmapString, metas[i], seqs[i], Fasta(), SequenceOutputOptions(0));
         close(mmapString);
         after = sysTime();
-        std::cerr << "completed in " << after - before << "s\n"<< std::flush;
+        std::cerr << "completed in " << after - before << "s\n" << std::flush;
         unlink(filenameBuffer);
     }
 //    {
@@ -150,7 +150,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
             writeRecord(iter, metas[i], seqs[i], Fasta());
         close(file);
         after = sysTime();
-        std::cerr << "completed in " << after - before << "s\n"<< std::flush;
+        std::cerr << "completed in " << after - before << "s\n" << std::flush;
         unlink(filenameBuffer);
     }
     {
@@ -167,7 +167,7 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
             writeRecord(mmapString, metas[i], seqs[i], Fasta());
         close(mmapString);
         after = sysTime();
-        std::cerr << "completed in " << after - before << "s\n"<< std::flush;
+        std::cerr << "completed in " << after - before << "s\n" << std::flush;
         unlink(filenameBuffer);
     }
 //    {
@@ -200,10 +200,11 @@ void doIt(TMetas const & metas, TSeqs const & seqs)
             writeRecord(iter, seqs[i], metas[i], Fasta());
         close(file);
         after = sysTime();
-        std::cerr << "completed in " << after - before << "s\n"<< std::flush;
+        std::cerr << "completed in " << after - before << "s\n" << std::flush;
         unlink(filenameBuffer);
     }
 }
+
 int main(int argc, char const ** argv)
 {
     (void)argc;
@@ -220,9 +221,9 @@ int main(int argc, char const ** argv)
         double after = sysTime();
         std::cerr << "completed in " << after - before << "s\n" << std::flush;
 
-        for (int i= 0; i < 5; ++i)
+        for (int i = 0; i < 5; ++i)
         {
-            std::cerr << "RUN No"<< i << "\n" << std::flush;
+            std::cerr << "RUN No" << i << "\n" << std::flush;
             doIt(metas, seqs);
         }
     }
@@ -237,9 +238,9 @@ int main(int argc, char const ** argv)
         double after = sysTime();
         std::cerr << "completed in " << after - before << "s\n" << std::flush;
 
-        for (int i= 0; i < 5; ++i)
+        for (int i = 0; i < 5; ++i)
         {
-            std::cerr << "RUN No"<< i << "\n" << std::flush;
+            std::cerr << "RUN No" << i << "\n" << std::flush;
             doIt(metas, seqs);
         }
     }

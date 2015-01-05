@@ -125,7 +125,7 @@ pickRandomNumber(TRNG & rng, Pdf<Normal> const & pdf)
         double u2 = 1 - pickRandomNumber(rng, pdfUniform);
         z = SEQAN_NV_MAGICCONST * (u1 - 0.5) / u2;
         double zz = z * z / 4.0;
-        if (zz < -::std::log10(u2))
+        if (zz < -std::log10(u2))
             break;
     }
     return pdf._mu + z * pdf._sigma;

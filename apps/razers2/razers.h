@@ -578,17 +578,17 @@ inline int estimateReadLength(SeqFileIn &seqFile)
 		public ::std::binary_function < typename Value<TAlignedReadStore>::Type, typename Value<TAlignedReadStore>::Type, bool >
 	{
 		typedef typename Value<TAlignedReadStore>::Type TAlignedRead;		
-		TReadNameStore &nameStore;
+		TReadNameStore &contigNames;
 		TAlignedReadQualityStore &qualStore;
 		
-		LessRNameGPos(TReadNameStore &nameStore, TAlignedReadQualityStore &_qualStore):
-            nameStore(nameStore), qualStore(_qualStore) {}
+		LessRNameGPos(TReadNameStore &contigNames, TAlignedReadQualityStore &_qualStore):
+            contigNames(contigNames), qualStore(_qualStore) {}
 		
 		inline bool operator() (TAlignedRead const &a, TAlignedRead const &b) const 
 		{
 			// read name
-			if (nameStore[a.readId] < nameStore[b.readId]) return true;
-			if (nameStore[a.readId] > nameStore[b.readId]) return false;
+			if (contigNames[a.readId] < contigNames[b.readId]) return true;
+			if (contigNames[a.readId] > contigNames[b.readId]) return false;
 
 			// contig number
 			if (a.contigId < b.contigId) return true;

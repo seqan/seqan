@@ -3,7 +3,7 @@
 
 using namespace seqan;
 
-int main() 
+int main()
 {
     typedef Graph<Undirected<> > TGraph;
     typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
@@ -12,7 +12,7 @@ int main()
 
     // Create a graph with 10 undirected edges {0,1}, {0,4}, ...
     TSize numEdges = 10;
-    TVertexDescriptor edges[] = {0,1, 0,4, 1,5, 2,5, 2,6, 2,3, 3,6, 3,7, 5,6, 6,7};
+    TVertexDescriptor edges[] = {0, 1, 0, 4, 1, 5, 2, 5, 2, 6, 2, 3, 3, 6, 3, 7, 5, 6, 6, 7};
     TGraph g;
     addEdges(g, edges, numEdges);
     // Print graph.

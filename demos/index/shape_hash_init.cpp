@@ -3,7 +3,7 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
     DnaString text = "AAAACACAGTTTGA";
     Shape<Dna, UngappedShape<3> > myShape;

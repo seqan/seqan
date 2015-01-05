@@ -7,7 +7,7 @@
 # ===========================================================================
 
 cmake_minimum_required (VERSION 2.8.2)
-project (seqan_extras_tests_consensus_v2)
+project (seqan_tests_consensus_v2)
 message (STATUS "Configuring tests/consensus_v2")
 
 # ----------------------------------------------------------------------------

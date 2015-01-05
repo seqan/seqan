@@ -3,32 +3,34 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
+using namespace seqan;
+
 // The following few lines are the actual solution to the assignment.
 
-typedef seqan::OrFunctor<seqan::IsInRange<'0', '9'>,
-        seqan::OrFunctor<seqan::IsInRange<'a', 'f'>,
-                         seqan::IsInRange<'A', 'F'> > > IsHexDigit;
+typedef OrFunctor<IsInRange<'0', '9'>,
+                  OrFunctor<IsInRange<'a', 'f'>,
+                            IsInRange<'A', 'F'> > > IsHexDigit;
 
 // This main routine is only some driver code that reads from stdin.
 
 int main()
 {
     // We will read from std::cin via an iterator.
-    typedef seqan::DirectionIterator<std::istream, seqan::Input>::Type TReader;
+    typedef DirectionIterator<std::istream, Input>::Type TReader;
 
     // Create iterator to read from standard input.
-    TReader reader = directionIterator(std::cin, seqan::Input());
+    TReader reader = directionIterator(std::cin, Input());
 
-    seqan::CharString buffer;
+    CharString buffer;
 
     while (!atEnd(reader))
     {
         clear(buffer);
-        readUntil(buffer, reader, seqan::NotFunctor<IsHexDigit>());
+        readUntil(buffer, reader, NotFunctor<IsHexDigit>());
 
         // Print hexadecimal number back to the user.
         std::cout << "RECOGNIZED " << buffer << '\n';
-        
+
         // Skip all trailing input.
         skipLine(reader);
     }

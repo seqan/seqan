@@ -13,7 +13,7 @@ using namespace seqan;
 
 void search() {}
 
-int main(int argc, char *argv[]) 
+int main(int argc, char * argv[])
 {
     // type definitions
     typedef String<Dna5> TString;
@@ -22,7 +22,8 @@ int main(int argc, char *argv[])
     typedef Iterator<TIndex, TopDown<ParentLinks<> > >::Type TIter;
 
     // reading the command line arguments
-    if (argc < 3) {
+    if (argc < 3)
+    {
         std::cerr << "Invalid number of arguments." << std::endl
                   << "USAGE: minimapper GENOME.fasta READS.fasta OUT.sam" << std::endl;
         return 1;
@@ -30,13 +31,16 @@ int main(int argc, char *argv[])
 
     // declaration and initialization of the fragment store
     FragmentStore<> fragStore;
-    if (!loadContigs(fragStore, argv[1])) return 1;
-    if (!loadReads(fragStore, argv[2])) return 1;
+    if (!loadContigs(fragStore, argv[1]))
+        return 1;
+
+    if (!loadReads(fragStore, argv[2]))
+        return 1;
 
     StringSet<TString> text;
     for (unsigned i = 0; i < length(fragStore.contigStore); ++i)
         appendValue(text, fragStore.contigStore[i].seq);
-        
+
     TIndex fmIndex(text);
     TIter it(fmIndex);
     search();

@@ -1,11 +1,12 @@
-// FRAGMENT(include)
+//![include]
 #include <iostream>
 #include <seqan/seq_io.h>
 #include <seqan/journaled_set.h>
 
 using namespace seqan;
+//![include]
 
-// FRAGMENT(findPatternInReference)
+//![findPatternInReference]
 template <typename TString, typename TPattern>
 void findPatternInReference(String<int> & hits,
                             TString const & reference,
@@ -22,19 +23,20 @@ void findPatternInReference(String<int> & hits,
         // [C] Evaluate all positions of the pattern until you find a mismatch or you have found a hit.
         for (unsigned posPattern = 0; posPattern < length(pattern); ++posPattern)
         {
-            if(pattern[posPattern] != reference[posPattern + pos])
+            if (pattern[posPattern] != reference[posPattern + pos])
             {
                 isHit = false;
                 break;
             }
         }
         // [D] Report begin position at which pattern matches the sequence.
-        if(isHit)
+        if (isHit)
             appendValue(hits, pos);
     }
 }
+//![findPatternInReference]
 
-// FRAGMENT(searchPattern)
+//![searchPattern]
 template <typename TString, typename TPattern>
 void searchPattern(StringSet<String<int> > & hitSet,
                    StringSet<TString, Owner<JournaledSet> > const & journalSet,
@@ -64,8 +66,9 @@ void searchPattern(StringSet<String<int> > & hitSet,
 //        findPatternInJournalString(hitSet[i+1], journalSet[i], pattern, hitSet[0]);
     }
 }
+//![searchPattern]
 
-// FRAGMENT(loadAndJoin)
+//![loadAndJoin]
 template <typename TString, typename TSpec>
 inline int
 loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
@@ -100,14 +103,15 @@ loadAndJoin(StringSet<TString, Owner<JournaledSet> > & journalSet,
     }
     return 0;
 }
+//![loadAndJoin]
 
-// FRAGMENT(main)
+//![main]
 int main()
 {
     // Definition of the used types.
-    typedef String<Dna,Alloc<> > TSequence;
-    typedef String<Dna,Journaled<Alloc<>,SortedArray,Alloc<> > > TJournal;
-    typedef StringSet< TJournal, Owner<JournaledSet> > TJournaledSet;
+    typedef String<Dna, Alloc<> > TSequence;
+    typedef String<Dna, Journaled<Alloc<>, SortedArray, Alloc<> > > TJournal;
+    typedef StringSet<TJournal, Owner<JournaledSet> > TJournaledSet;
 
     // Open the stream to the file containing the sequences.
     CharString seqDatabasePath = "/path/to/your/fasta/file/sequences.fasta";
@@ -123,8 +127,9 @@ int main()
     TSequence pattern = "GTGGT";
     std::cout << "Search for: " << pattern << ":\n";
     searchPattern(hitSet, journalSet, pattern);
+//![main]
 
-    // FRAGMENT(printResult)
+//![printResult]
     if (empty(hitSet[0]))
     {
         std::cout << "No hit in reference " << std::endl;
@@ -133,9 +138,10 @@ int main()
     {
         std::cout << "Hit in reference " << " at ";
         for (unsigned j = 0; j < length(hitSet[0]); ++j)
-            std::cout << hitSet[0][j] << ": " << infix(host(journalSet), hitSet[0][j],hitSet[0][j] + length(pattern)) << "\t";
+            std::cout << hitSet[0][j] << ": " << infix(host(journalSet), hitSet[0][j], hitSet[0][j] + length(pattern)) << "\t";
     }
     std::cout << std::endl;
 
     return 0;
 }
+//![printResult]

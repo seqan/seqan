@@ -3,7 +3,7 @@
 
 using namespace seqan;
 
-// FRAGMENT(findPatternInReferenceHint)
+//![findPatternInReferenceHint]
 template <typename TString, typename TPattern>
 void findPatternInReference(String<int> & hits,
                             TString const & reference,
@@ -17,9 +17,11 @@ void findPatternInReference(String<int> & hits,
 
     // [D] Report begin position at which pattern matches the sequence.
 }
+//![findPatternInReferenceHint]
 
-// FRAGMENT(main)
+//![main]
 int main()
 {
     return 0;
 }
+//![main]

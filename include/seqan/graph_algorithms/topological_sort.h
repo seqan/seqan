@@ -96,7 +96,7 @@ void topologicalSort(String<TVertexDescriptor> & topSort,
     SEQAN_ASSERT_EQ(numVertices(g), length(finishingTimeMap));
 
     // Order vertices.
-    typedef ::std::pair<TSize, TVertexDescriptor> TTimeVertexPair;
+    typedef std::pair<TSize, TVertexDescriptor> TTimeVertexPair;
     std::priority_queue<TTimeVertexPair> q;
     typedef typename Iterator<Graph<TSpec>, VertexIterator>::Type TVertexIterator;
     TVertexIterator it(g);

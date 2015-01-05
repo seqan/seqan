@@ -115,9 +115,9 @@ void setHost (Pattern<TNeedle, BndmAlgo> & me, TNeedle2 const& needle) {
 	setValue(me.data_host, needle);
 	/*
 	// Debug code
-	std::cout << "Alphabet size: " << ValueSize<TValue>::VALUE << ::std::endl;
-	std::cout << "Needle length: " << me.needleLength << ::std::endl;
-	std::cout << "Block count: " << me.blockCount << ::std::endl;
+	std::cout << "Alphabet size: " << ValueSize<TValue>::VALUE << std::endl;
+	std::cout << "Needle length: " << me.needleLength << std::endl;
+	std::cout << "Block count: " << me.blockCount << std::endl;
 
 	for(unsigned int i=0;i<ValueSize<TValue>::VALUE;++i) {
 		if ((i<97) || (i>122)) continue;
@@ -127,7 +127,7 @@ void setHost (Pattern<TNeedle, BndmAlgo> & me, TNeedle2 const& needle) {
 				std::cout << ((me.table[me.blockCount*i+j] & (1<<(bit_pos % BitsPerValue<unsigned int>::VALUE))) !=0);
 			}
 		}
-		std::cout << ::std::endl;
+		std::cout << std::endl;
 	}
 	*/
 }
@@ -207,7 +207,7 @@ inline bool _findBndmLargeNeedle(TFinder & finder, Pattern<TNeedle, BndmAlgo> & 
 					std::cout << ((me.activeFactors[j] & (1<<(bit_pos % BitsPerValue<unsigned int>::VALUE))) !=0);
 				}
 			}
-			std::cout << ::std::endl;
+			std::cout << std::endl;
 			*/
 
 			for(TWord block=0;block<me.blockCount;++block) me.activeFactors[block] &= me.table[me.blockCount*pos+block];

@@ -1,20 +1,22 @@
 #include <seqan/bam_io.h>
 
+using namespace seqan;
+
 int main()
 {
     // Open input file, BamFileIn can read SAM and BAM files.
-    seqan::BamFileIn bamFileIn("example.sam");
+    BamFileIn bamFileIn("example.sam");
 
     // Open output file, BamFileOut accepts also an ostream and a format tag.
-    seqan::BamFileOut bamFileOut(std::cout, seqan::Sam());
+    BamFileOut bamFileOut(std::cout, Sam());
 
     // Copy header.
-    seqan::BamHeader header;
+    BamHeader header;
     readRecord(header, bamFileIn);
     writeRecord(bamFileOut, header);
 
     // Copy records.
-    seqan::BamAlignmentRecord record;
+    BamAlignmentRecord record;
     while (!atEnd(bamFileIn))
     {
         readRecord(record, bamFileIn);

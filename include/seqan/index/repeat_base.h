@@ -117,7 +117,7 @@ namespace seqan {
 	}
 
 	template <typename TPos>
-	struct RepeatLess_ : public ::std::binary_function<TPos, TPos, bool>
+	struct RepeatLess_ : public std::binary_function<TPos, TPos, bool>
 	{
 		// key less
 		inline bool operator() (TPos const &a, TPos const &b) const {
@@ -411,7 +411,7 @@ namespace seqan {
                         // insert repeat
                         rep.endPosition = it - begin(text, Standard());
                         rep.beginPosition = rep.endPosition - repLen;
-                        //					::std::cerr<<"left:"<<rep.beginPosition<<"  right:"<<rep.endPosition<<"  length:"<<posSub(rep.endPosition,rep.beginPosition)<<"  period:"<<rep.period<<::std::endl;
+                        //					std::cerr<<"left:"<<rep.beginPosition<<"  right:"<<rep.endPosition<<"  length:"<<posSub(rep.endPosition,rep.beginPosition)<<"  period:"<<rep.period<<std::endl;
                         appendValue(repString, rep);
                     }
 					repLen = 1;
@@ -423,7 +423,7 @@ namespace seqan {
                 // insert repeat
 				rep.endPosition = length(text);
 				rep.beginPosition = rep.endPosition - repLen;
-                //			::std::cerr<<"left:"<<rep.beginPosition<<"  right:"<<rep.endPosition<<"  length:"<<posSub(rep.endPosition,rep.beginPosition)<<"  period:"<<rep.period<<::std::endl;
+                //			std::cerr<<"left:"<<rep.beginPosition<<"  right:"<<rep.endPosition<<"  length:"<<posSub(rep.endPosition,rep.beginPosition)<<"  period:"<<rep.period<<std::endl;
                 appendValue(repString, rep);
             }
 #if SEQAN_ENABLE_PARALLELISM
@@ -473,7 +473,7 @@ namespace seqan {
 						// insert repeat
 						rep.beginPosition.i2 = repLeft;
 						rep.endPosition.i2 = repRight;
-//						::std::cerr<<"left:"<<rep.beginPosition<<"  right:"<<rep.endPosition<<"  length:"<<posSub(rep.endPosition,rep.beginPosition)<<"  period:"<<rep.period<<::std::endl;
+//						std::cerr<<"left:"<<rep.beginPosition<<"  right:"<<rep.endPosition<<"  length:"<<posSub(rep.endPosition,rep.beginPosition)<<"  period:"<<rep.period<<std::endl;
 						appendValue(repString, rep);
 					}
 					repLeft = repRight;
@@ -485,7 +485,7 @@ namespace seqan {
 				// insert repeat
 				rep.beginPosition.i2 = repLeft;
 				rep.endPosition.i2 = repRight;
-//				::std::cerr<<"left:"<<rep.beginPosition<<"  right:"<<rep.endPosition<<"  length:"<<posSub(rep.endPosition,rep.beginPosition)<<"  period:"<<rep.period<<::std::endl;
+//				std::cerr<<"left:"<<rep.beginPosition<<"  right:"<<rep.endPosition<<"  length:"<<posSub(rep.endPosition,rep.beginPosition)<<"  period:"<<rep.period<<std::endl;
 				appendValue(repString, rep);
 			}
 		}
@@ -505,7 +505,7 @@ namespace seqan {
 		typedef typename Value<TRepeatStore>::Type							TRepeat;
 		typedef typename Value<TOccString>::Type							TOcc;
 
-		typedef ::std::map<TOcc,TRepeat,RepeatLess_<TOcc> >					TRepeatList;
+		typedef std::map<TOcc,TRepeat,RepeatLess_<TOcc> >					TRepeatList;
 
 		if (maxPeriod < 1) return;
 		if (maxPeriod == 1) 
@@ -555,8 +555,8 @@ namespace seqan {
 							rep.beginPosition = *itRepBegin;
 							rep.endPosition = posAdd(*itA, period);
 							rep.period = period;
-//							::std::cerr<<"left:"<<rep.beginPosition<<"  right:"<<rep.endPosition<<"  length:"<<posSub(rep.endPosition,rep.beginPosition)<<"  period:"<<rep.period<<::std::endl;
-							list.insert(::std::pair<TOcc,TRepeat>(rep.beginPosition, rep));
+//							std::cerr<<"left:"<<rep.beginPosition<<"  right:"<<rep.endPosition<<"  length:"<<posSub(rep.endPosition,rep.beginPosition)<<"  period:"<<rep.period<<std::endl;
+							list.insert(std::pair<TOcc,TRepeat>(rep.beginPosition, rep));
 						}
 					itRepBegin = itA;
 					period = diff;
@@ -575,8 +575,8 @@ namespace seqan {
 					rep.beginPosition = *itRepBegin;
 					rep.endPosition = posAdd(*itA, period);
 					rep.period = period;
-//					::std::cerr<<"left:"<<rep.beginPosition<<"  right:"<<rep.endPosition<<"  length:"<<posSub(rep.endPosition,rep.beginPosition)<<"  period:"<<rep.period<<::std::endl;
-					list.insert(::std::pair<TOcc,TRepeat>(rep.beginPosition, rep));
+//					std::cerr<<"left:"<<rep.beginPosition<<"  right:"<<rep.endPosition<<"  length:"<<posSub(rep.endPosition,rep.beginPosition)<<"  period:"<<rep.period<<std::endl;
+					list.insert(std::pair<TOcc,TRepeat>(rep.beginPosition, rep));
 				}
 		}
 

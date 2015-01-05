@@ -39,10 +39,10 @@
 #include <seqan/stream.h>
 #include <seqan/parse_lm.h>
 
+using namespace seqan;
+
 int main(int argc, char const ** argv)
 {
-    using namespace seqan;
-
     // Check arguments.
     if (argc != 2)
     {
@@ -71,7 +71,7 @@ int main(int argc, char const ** argv)
             i++;
         }
     }
-    catch (std::runtime_error &e)
+    catch (std::runtime_error & e)
     {
         std::cerr << "Invalid Stellar GFF record #" << i << ": " << e.what() << '\n';
         return 1;

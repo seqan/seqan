@@ -43,7 +43,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	// compare two suffices of a given text
     template < typename TSAValue, typename TText >
 	struct SuffixLess_ : 
-		public ::std::binary_function < TSAValue, TSAValue, bool >
+		public std::binary_function < TSAValue, TSAValue, bool >
     {
 		typedef typename Iterator<TText const, Standard>::Type TIter;
 		TIter _begin, _end;
@@ -82,7 +82,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	// compare two suffices of a given text
     template < typename TSAValue, typename TString, typename TSetSpec >
 	struct SuffixLess_<TSAValue, StringSet<TString, TSetSpec> const > :
-		public ::std::binary_function < TSAValue, TSAValue, bool >
+		public std::binary_function < TSAValue, TSAValue, bool >
     {
         typedef StringSet<TString, TSetSpec> const TText;
         
@@ -146,7 +146,7 @@ namespace SEQAN_NAMESPACE_MAIN
 	{
 	SEQAN_CHECKPOINT
 		// sort bucket with quicksort
-		::std::sort(
+		std::sort(
 			begin(sa, Standard()), 
 			end(sa, Standard()), 
 			SuffixLessOffset_<typename Value<TSA>::Type, TText>(text, lcp));
@@ -170,7 +170,7 @@ namespace SEQAN_NAMESPACE_MAIN
 			*it = i;
 
 		// 2. Sort suffix array with quicksort
-		::std::sort(
+		std::sort(
 			begin(SA, Standard()), 
 			end(SA, Standard()), 
 			SuffixLess_<typename Value<TSA>::Type, TText const>(s));
@@ -199,7 +199,7 @@ namespace SEQAN_NAMESPACE_MAIN
 		}
 
 		// 2. Sort suffix array with quicksort
-		::std::sort(
+		std::sort(
 			begin(SA, Standard()), 
 			end(SA, Standard()), 
 			SuffixLess_<typename Value<TSA>::Type, TText const>(s));

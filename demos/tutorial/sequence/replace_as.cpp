@@ -4,17 +4,19 @@
 
 using namespace seqan;
 
-void replaceAs(CharString & str) {
+void replaceAs(CharString & str)
+{
     typedef Iterator<CharString, Standard>::Type TIterator;
 
-    for (TIterator it = begin(str, Standard()); it != end(str, Standard()); ++it) {
+    for (TIterator it = begin(str, Standard()); it != end(str, Standard()); ++it)
+    {
         if (value(it) == 'a')
             value(it) = 'X';
     }
 }
 
-
-int main() {
+int main()
+{
     CharString str1 = "abcdefghijklmnopqrstuvwxyz";
     replaceAs(str1);
     std::cout << str1 << std::endl;

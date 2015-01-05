@@ -43,8 +43,8 @@ int main()
     if (countExons == 0u)  // prevent div-by-zero below
         countExons = 1;
     // Ouput some stats:
-    std::cout << "Average number of mRNAs for genes: " << (float)countmRNAs/(float)countGenes << std::endl;
-    std::cout << "Average number of exons for mRNAs: " << (float)countExons/(float)countmRNAs << std::endl;
-    std::cout << "Average length of exons: " << (float)length/(float)countExons << std::endl;
+    std::cout << "Average number of mRNAs for genes: " << (float)countmRNAs / (float)countGenes << std::endl;
+    std::cout << "Average number of exons for mRNAs: " << (float)countExons / (float)countmRNAs << std::endl;
+    std::cout << "Average length of exons: " << (float)length / (float)countExons << std::endl;
     return 0;
 }

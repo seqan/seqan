@@ -9,10 +9,10 @@ int main()
     typedef IntervalAndCargo<int, CharString> TInterval;
     String<TInterval> intervals;
     appendValue(intervals, TInterval(100, 1000, "gene"));
-    appendValue(intervals, TInterval(100, 300,  "exon1"));
-    appendValue(intervals, TInterval(150, 250,  "coding1"));
-    appendValue(intervals, TInterval(500, 800,  "exon2"));
-    appendValue(intervals, TInterval(600, 700,  "coding2"));
+    appendValue(intervals, TInterval(100, 300, "exon1"));
+    appendValue(intervals, TInterval(150, 250, "coding1"));
+    appendValue(intervals, TInterval(500, 800, "exon2"));
+    appendValue(intervals, TInterval(600, 700, "coding2"));
 
     // create IntervalTree of that string
     IntervalTree<int, CharString> tree(intervals);

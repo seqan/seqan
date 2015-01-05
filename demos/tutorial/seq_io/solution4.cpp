@@ -1,5 +1,7 @@
 #include <seqan/seq_io.h>
 
+using namespace seqan;
+
 int main(int argc, char const ** argv)
 {
     if (argc < 2)
@@ -8,22 +10,22 @@ int main(int argc, char const ** argv)
         return 1;
     }
 
-    seqan::SeqFileIn seqFileIn;
+    SeqFileIn seqFileIn;
     if (!open(seqFileIn, argv[1]))
     {
         std::cerr << "ERROR: Could not open the file.\n";
         return 1;
     }
 
-    seqan::StringSet<seqan::CharString> ids;
-    seqan::StringSet<seqan::Dna5String> seqs;
-    seqan::StringSet<seqan::CharString> quals;
+    StringSet<CharString> ids;
+    StringSet<Dna5String> seqs;
+    StringSet<CharString> quals;
 
     try
     {
         readRecords(ids, seqs, quals, seqFileIn);
     }
-    catch (seqan::Exception const & e)
+    catch (Exception const & e)
     {
         std::cout << "ERROR: " << e.what() << std::endl;
         return 1;

@@ -1,23 +1,25 @@
-#include <seqan/basic.h>
 #include <seqan/vcf_io.h>
+
+using namespace seqan;
 
 int main()
 {
     try
     {
-        // Open input stream.
-        seqan::VcfFileIn vcfIn("example.vcf");
+        // Open input file.
+        VcfFileIn vcfIn("example.vcf");
 
         // Copy over header.
-        seqan::VcfHeader header;
+        VcfHeader header;
         readRecord(header, vcfIn);
 
         // Get array of counters.
-        seqan::String<unsigned> counters;
-        resize(counters, length(contigNames(context(vcfIn))), 0);
+        String<unsigned> counters;
+        unsigned contigsCount = length(contigNames(context(vcfIn)));
+        resize(counters, contigsCount, 0);
 
         // Read the file record by record.
-        seqan::VcfRecord record;
+        VcfRecord record;
         while (!atEnd(vcfIn))
         {
             readRecord(record, vcfIn);
@@ -28,18 +30,13 @@ int main()
 
         // Print result.
         std::cout << "VARIANTS ON CONTIGS\n";
-        for (unsigned i = 0; i < length(contigNames(context(vcfIn))); ++i)
+        for (unsigned i = 0; i < contigsCount; ++i)
             std::cout << contigNames(context(vcfIn))[i] << '\t'
                       << counters[i] << '\n';
     }
-    catch (seqan::IOError &e)
+    catch (seqan::Exception const & e)
     {
-        std::cerr << "=== I/O Error ===\n" << e.what() << std::endl;
-        return 1;
-    }
-    catch (seqan::ParseError &e)
-    {
-        std::cerr << "=== Parse Error ===\n" << e.what() << std::endl;
+        std::cerr << "ERROR:" << e.what() << std::endl;
         return 1;
     }
 

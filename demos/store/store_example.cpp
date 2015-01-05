@@ -3,7 +3,7 @@
 
 using namespace seqan;
 
-int main ()
+int main()
 {
     // instantiate emtpy FragmentStore and set file paths
     FragmentStore<> store;
@@ -19,6 +19,6 @@ int main ()
     AlignedReadLayout layout;
     layoutAlignment(layout, store);
     printAlignment(std::cout, layout, store, 1, 30, 130, 0, 36);
-    
+
     return 0;
 }

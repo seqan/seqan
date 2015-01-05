@@ -1,76 +1,88 @@
-// FRAGMENT(includes)
+//![includes]
 #include <iostream>
 #include <seqan/graph_types.h>
 #include <seqan/graph_algorithms.h>
 using namespace seqan;
+//![includes]
 
-// FRAGMENT(main-typedefs)
-int main ()
+//![main-typedefs]
+int main()
 {
-	typedef unsigned int TCargo;
-	typedef Graph<Undirected<TCargo> > TGraph;
-	typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef unsigned int TCargo;
+    typedef Graph<Undirected<TCargo> > TGraph;
+    typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
+//![main-typedefs]
 
-// FRAGMENT(create-g)
-	TGraph g;
+//![create-g]
+    TGraph g;
+//![create-g]
 
-// FRAGMENT(create-vertices)
-	TVertexDescriptor vertBerlin = addVertex(g);
-	TVertexDescriptor vertHamburg = addVertex(g);
-	TVertexDescriptor vertHannover = addVertex(g);
-	TVertexDescriptor vertMainz = addVertex(g);
-	TVertexDescriptor vertMuenchen = addVertex(g);
+//![create-vertices]
+    TVertexDescriptor vertBerlin = addVertex(g);
+    TVertexDescriptor vertHamburg = addVertex(g);
+    TVertexDescriptor vertHannover = addVertex(g);
+    TVertexDescriptor vertMainz = addVertex(g);
+    TVertexDescriptor vertMuenchen = addVertex(g);
+//![create-vertices]
 
-// FRAGMENT(create-edges)
-	addEdge(g, vertBerlin, vertHamburg, 289);
-	addEdge(g, vertBerlin, vertHannover, 286);
-	addEdge(g, vertBerlin, vertMainz, 573);
-	addEdge(g, vertBerlin, vertMuenchen, 586);
-	addEdge(g, vertHannover, vertMuenchen, 572);
-	addEdge(g, vertHamburg, vertMainz, 521);
+//![create-edges]
+    addEdge(g, vertBerlin, vertHamburg, 289);
+    addEdge(g, vertBerlin, vertHannover, 286);
+    addEdge(g, vertBerlin, vertMainz, 573);
+    addEdge(g, vertBerlin, vertMuenchen, 586);
+    addEdge(g, vertHannover, vertMuenchen, 572);
+    addEdge(g, vertHamburg, vertMainz, 521);
+//![create-edges]
 
-// FRAGMENT(main-graph-io)
-	std::ofstream dotFile("graph.dot");
-	writeRecords(dotFile, g, DotDrawing());
+//![main-graph-io]
+    std::ofstream dotFile("graph.dot");
+    writeRecords(dotFile, g, DotDrawing());
     dotFile.close();
+//![main-graph-io]
 
+//![definition-property-map]
+    typedef String<char> TCityName;
+    typedef String<TCityName> TProperties;
+    TProperties cityNames;
+    resizeVertexMap(cityNames, g);
+//![definition-property-map]
 
-// FRAGMENT(definition-property-map)
-	typedef String<char> TCityName;
-	typedef String<TCityName> TProperties;
-	TProperties cityNames;
-	resizeVertexMap(cityNames, g);
+//![enter-properties]
+    assignProperty(cityNames, vertBerlin, "Berlin");
+    assignProperty(cityNames, vertHamburg, "Hamburg");
+    assignProperty(cityNames, vertMuenchen, "Munich");
+    assignProperty(cityNames, vertMainz, "Mainz");
+    assignProperty(cityNames, vertHannover, "Hannover");
+//![enter-properties]
 
-// FRAGMENT(enter-properties)
-	assignProperty(cityNames, vertBerlin, "Berlin");
-	assignProperty(cityNames, vertHamburg, "Hamburg");
-	assignProperty(cityNames, vertMuenchen, "Munich");
-	assignProperty(cityNames, vertMainz, "Mainz");
-	assignProperty(cityNames, vertHannover, "Hannover");
+//![iterate-and-output-properties]
+    typedef Iterator<TGraph, VertexIterator>::Type TVertexIterator;
+    TVertexIterator itV(g);
+    for (; !atEnd(itV); goNext(itV))
+    {
+        std::cout << value(itV) << ':' << getProperty(cityNames, value(itV)) << std::endl;
+    }
+//![iterate-and-output-properties]
 
-// FRAGMENT(iterate-and-output-properties)
-	typedef Iterator<TGraph, VertexIterator>::Type TVertexIterator;
-	TVertexIterator itV(g);
-	for(;!atEnd(itV);goNext(itV)) {
-		std::cout << value(itV) << ':' << getProperty(cityNames, value(itV)) << std::endl;
-	}
+//![dijkstra-containers]
+    typedef Size<TGraph>::Type TSize;
+    InternalPropertyMap<TCargo> cargoMap;
+    String<TVertexDescriptor> predMap;
+    String<TSize> distMap;
+//![dijkstra-containers]
+//![dijkstra]
+    dijkstra(predMap, distMap, g, vertHannover, cargoMap);
+//![dijkstra]
 
+//![dijkstra-output]
+    TVertexIterator itV2(g);
+    while (!atEnd(itV2))
+    {
+        std::cout << "Shortest path from " << property(cityNames, vertHannover) << " to " << property(cityNames, value(itV2)) << ": ";
+        std::cout << property(distMap, value(itV2)) << std::endl;
+        goNext(itV2);
+    }
 
-// FRAGMENT(dijkstra-containers)
-	typedef Size<TGraph>::Type TSize;
-	InternalPropertyMap<TCargo> cargoMap;
-	String<TVertexDescriptor> predMap;
-	String<TSize> distMap;
-// FRAGMENT(dijkstra)
-	dijkstra(predMap, distMap, g, vertHannover, cargoMap);
-
-// FRAGMENT(dijkstra-output)
-	TVertexIterator itV2(g);
-	while(!atEnd(itV2)) {
-		std::cout << "Shortest path from " << property(cityNames, vertHannover) << " to " << property(cityNames, value(itV2)) << ": ";
-		std::cout << property(distMap, value(itV2)) << std::endl;
-		goNext(itV2);
-	}
-
-	return 0;
+    return 0;
 }
+//![dijkstra-output]

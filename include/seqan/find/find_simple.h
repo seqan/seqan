@@ -130,7 +130,7 @@ inline bool find(TFinder & finder,
 	TParamHaystack hstk = haystack(finder);
 	TNeedle const & ndl = needle(me);
 
-	THaystackIterator res = ::std::search(begin(hstk, Standard())+position(finder), end(hstk, Standard()), begin(ndl, Standard()), end(ndl, Standard()));
+	THaystackIterator res = std::search(begin(hstk, Standard())+position(finder), end(hstk, Standard()), begin(ndl, Standard()), end(ndl, Standard()));
 
 	if (res == end(hstk, Standard())) return false;
 

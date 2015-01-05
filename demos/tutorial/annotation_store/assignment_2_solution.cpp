@@ -17,8 +17,10 @@ int main()
     unsigned count = 0;
     std::cout << "Number of children for each mRNA: " << std::endl;
     // Go down to the first leaf (first child of the first mRNA)
-    while (goDown(it)) ; 
-    while (!atEnd(it)){
+    while (goDown(it))
+        ;
+    while (!atEnd(it))
+    {
         ++count;
         // Iterate over all siblings and count
         while (goRight(it))
@@ -26,9 +28,12 @@ int main()
         std::cout << count << std::endl;
         count = 0;
         // Jump to the next mRNA or gene, go down to its first leaf and count it
-        if (!atEnd(it)) {
+        if (!atEnd(it))
+        {
             goNext(it);
-            if (!atEnd(it)) while(goDown(it)) ;
+            if (!atEnd(it))
+                while (goDown(it))
+                    ;
         }
     }
     return 0;

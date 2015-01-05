@@ -1,16 +1,19 @@
-// FRAGMENT(header)
+//![header]
 #include <fstream>
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 
-// FRAGMENT(main)
+using namespace seqan;
+//![header]
+
+//![main]
 int main(int argc, char const ** argv)
 {
-    typedef seqan::VirtualStream<char, seqan::Input> TVStream;
+    typedef VirtualStream<char, Input> TVStream;
 
     if (argc != 2)
     {
-        seqan::CharString exts = seqan::concat(TVStream::getFileExtensions(), "|", true);
+        CharString exts = concat(TVStream::getFileExtensions(), "|", true);
         std::cerr << "USAGE: " << argv[0] << " input[" << exts << "]" << std::endl;
         return 1;
     }
@@ -24,10 +27,10 @@ int main(int argc, char const ** argv)
     }
 
     // Create iterators to read and write.
-    typedef seqan::DirectionIterator<TVStream, seqan::Input>::Type TReader;
-    TReader reader = directionIterator(vin, seqan::Input());
+    typedef DirectionIterator<TVStream, Input>::Type TReader;
+    TReader reader = directionIterator(vin, Input());
 
-    seqan::CharString buffer;
+    CharString buffer;
     reserve(buffer, 1000);
 
     while (!atEnd(reader))
@@ -39,3 +42,4 @@ int main(int argc, char const ** argv)
 
     return 0;
 }
+//![main]

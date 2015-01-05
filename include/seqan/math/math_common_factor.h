@@ -282,7 +282,7 @@ namespace detail
     {
         T  operator ()( T const &a, T const &b )
         {
-            typedef ::std::numeric_limits<T>  limitsType;
+            typedef std::numeric_limits<T>  limitsType;
 
             typedef GcdOptimalEvaluatorHelper<T,
              limitsType::is_specialized, limitsType::is_signed>  helperType;
@@ -408,7 +408,7 @@ namespace detail
     {
         T  operator ()( T const &a, T const &b )
         {
-            typedef ::std::numeric_limits<T>  limitsType;
+            typedef std::numeric_limits<T>  limitsType;
 
             typedef LcmOptimalEvaluatorHelper<T,
              limitsType::is_specialized, limitsType::is_signed>  helperType;

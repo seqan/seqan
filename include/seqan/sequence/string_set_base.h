@@ -448,7 +448,7 @@ inline TPos getSeqNo(TPos const & pos, TLimitsString const & limits)
     typedef typename Iterator<TLimitsString const, Standard>::Type TIter;
     typedef typename Value<TLimitsString>::Type TSize;
     TIter _begin = begin(limits, Standard());
-    TIter _upper = ::std::upper_bound(_begin, end(limits, Standard()), (TSize)pos) - 1;
+    TIter _upper = std::upper_bound(_begin, end(limits, Standard()), (TSize)pos) - 1;
     return difference(_begin, _upper);
 }
 
@@ -490,7 +490,7 @@ inline TPos getSeqOffset(TPos const & pos, TLimitsString const & limits) {
     typedef typename Iterator<TLimitsString const, Standard>::Type TIter;
     typedef typename Value<TLimitsString>::Type TSize;
     TIter _begin = begin(limits, Standard());
-    TIter _upper = ::std::upper_bound(_begin, end(limits, Standard()), (TSize)pos) - 1;
+    TIter _upper = std::upper_bound(_begin, end(limits, Standard()), (TSize)pos) - 1;
     return pos - *_upper;
 }
 
@@ -586,7 +586,7 @@ template <typename TResult, typename TSize, typename TSpec, typename TPosition>
 inline void posLocalize(TResult & result, TPosition const & pos, String<TSize, TSpec> const & limits) {
     typedef typename Iterator<String<TSize, TSpec> const, Standard>::Type TIter;
     TIter _begin = begin(limits, Standard());
-    TIter _upper = ::std::upper_bound(_begin, end(limits, Standard()), (TSize)pos) - 1;
+    TIter _upper = std::upper_bound(_begin, end(limits, Standard()), (TSize)pos) - 1;
     result.i1 = difference(_begin, _upper);
     result.i2 = pos - *_upper;
 }
@@ -929,7 +929,7 @@ inline bool posAddAndCheck(TPos & pos, TDelta delta, StringSet<TSequence, TSpec>
 
     TLimits & limits = stringSetLimits(stringSet);
     TIter _end = end(limits, Standard());
-    TIter _endMark = ::std::upper_bound(begin(limits, Standard()), _end, (TSize)pos);
+    TIter _endMark = std::upper_bound(begin(limits, Standard()), _end, (TSize)pos);
     pos += delta;
     if (_endMark < _end)
         return pos < *_endMark;
