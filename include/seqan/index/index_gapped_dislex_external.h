@@ -74,7 +74,7 @@ struct PositionToLengthTransformMulti_
 
     inline TIdAndPosPair operator() (TIdAndPosPair x) const
     {
-        TSize N = _limits[x.i1+1] - _limits[x.i1];
+        TSize N = _limits[x.i1 + 1] - _limits[x.i1];
         x.i2 = N - x.i2;
         return x;
     }
@@ -257,7 +257,7 @@ struct DislexTupleCompMulti_  :
     TSize realLengths[_span];
     PositionToLengthTransformMulti_<TLimitString, TSetPos> posToLen;
 
-    DislexTupleCompMulti_(TLimitString const & limits) : posToLen(limits)
+    DislexTupleCompMulti_(TLimitString const & strSetLimits) : posToLen(strSetLimits)
     {
         #ifdef DISLEX_EXTERNAL_RUNNING_TIMES
         std::cout << "   | String Set, Tuple version"  << std::endl;
@@ -335,7 +335,7 @@ struct DislexTupleCompMulti_<Pair<TSetPos, Tuple<TTupleValue, WEIGHT<TShape>::VA
     TSize realLengths[_span];
     PositionToLengthTransformMulti_<TLimitString, TSetPos> posToLen;
 
-    DislexTupleCompMulti_(TLimitString const & limits) : posToLen(limits)
+    DislexTupleCompMulti_(TLimitString const & strSetLimits) : posToLen(strSetLimits)
     {
         #ifdef DISLEX_EXTERNAL_RUNNING_TIMES
         std::cout << "   | String Set, BitPacked version"  << std::endl;
@@ -572,15 +572,15 @@ struct Pipe<TInput, Multi<DislexExternal<TShape, TSACA>, TPair, TLimits> >
 
 
     template <typename TLimits_>
-    Pipe(TLimits_ const & limits, SEQAN_CTOR_ENABLE_IF(IsSameType<TLimits, TLimits_>)) :
-        _limits(limits)
+    Pipe(TLimits_ const & strSetLimits, SEQAN_CTOR_ENABLE_IF(IsSameType<TLimits, TLimits_>)) :
+        _limits(strSetLimits)
     {
         ignoreUnusedVariableWarning(dummy);
     }
 
     template <typename TLimits_>
-    Pipe(TInput& _textIn, TLimits_ const & limits, SEQAN_CTOR_ENABLE_IF(IsSameType<TLimits, TLimits_>)) :
-        _limits(limits), in(pool, TDislexReverse(TShape::span, limits))
+    Pipe(TInput& _textIn, TLimits_ const & strSetLimits, SEQAN_CTOR_ENABLE_IF(IsSameType<TLimits, TLimits_>)) :
+        _limits(strSetLimits), in(pool, TDislexReverse(TShape::span, strSetLimits))
     {
         // fill pool right away
         process(_textIn);

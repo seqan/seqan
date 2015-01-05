@@ -50,6 +50,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 // TODO(meiers): Write some documentation(?)
 
+    
 // --------------------------------------------------------------------------
 // Map: Text -> LexText                                              [String]
 // --------------------------------------------------------------------------
@@ -60,18 +61,18 @@ template <typename TInput, typename TResult = TInput>
 struct DislexTransform_ :
     public std::unary_function<TInput, TResult>
 {
-    TInput const S,N,B,C;
+    TInput const _s, _n, _b, _c;
 
-    DislexTransform_(TInput S_, TInput N_) : S(S_), N(N_), B(N_/S_), C(N_%S_)
+    DislexTransform_(TInput s, TInput n) : _s(s), _n(n), _b(n / s), _c(n % s)
     {}
 
     inline TResult operator() (TInput const & x) const
     {
-        TInput r = x/S;
-        TInput b = (N-x)%S;
-        TInput ret = (S-1-b)*B + r;
-        if (b <= C)
-            ret += C-b;
+        TInput r = x / _s;
+        TInput bb = (_n - x) % _s;
+        TInput ret = (_s - 1 - bb) * _b + r;
+        if (bb <= _c)
+            ret += _c - bb;
         return static_cast<TResult>(ret);
     }
 };
@@ -88,27 +89,29 @@ template <typename TValue,
 struct DislexTransformMulti_ :
     public std::unary_function<TValue, TResult>
 {
-    TString const & limits;
-    TResult const S;
+    TString const & _limits;
+    TResult const _s;
 
-    DislexTransformMulti_(TResult S_, TString const & stringSetLimits) : limits(stringSetLimits), S(S_)
+    DislexTransformMulti_(TResult s, TString const & strSetLimits) : _limits(strSetLimits), _s(s)
     {}
 
     inline TResult operator() (const TValue & x) const
     {
         TResult seq = x.i1;
         TResult pos = x.i2;
-        TResult N = limits[seq+1] - limits[seq];
+        TResult n = _limits[seq+1] - _limits[seq];
 
         // TODO: Store the following values for each String?
-        TResult B = N/S;
-        TResult C = N%S;
+        TResult b = n / _s;
+        TResult c = n % _s;
 
-        TResult r = (pos)/S;
-        TResult b = (N-pos)%S;
-        TResult ret = limits[seq] + (S-1-b)*B + r;
-        if (b > C)  return ret;
-        else        return ret + C-b;
+        TResult r = pos / _s;
+        TResult bb = (n - pos) % _s;
+        TResult ret = _limits[seq] + (_s - 1 - bb) * b + r;
+        if (bb > c)
+            return ret;
+        else
+            return ret + c - bb;
     }
 };
 
@@ -121,23 +124,23 @@ template <typename TInput, typename TResult = TInput>
 struct _dislexReverseTransform :
     public std::unary_function<TInput, TResult>
 {
-    const TInput  S,N,B,C;
+    const TInput _s, _n, _b, _c;
 
-    _dislexReverseTransform(TInput S_, TInput N_) : S(S_), N(N_), B(N_/S_), C(N_%S_)
+    _dislexReverseTransform(TInput s, TInput n) : _s(s), _n(n), _b(n / s), _c(n % s)
     {}
 
     inline TResult operator() (const TInput & x) const
     {
-        TInput b,r,ret;
+        TInput bb, r, ret;
 
-        if (x < (S-C-1)*B) {
-            b = S-1- x/B;
-            r = x -(S-b-1)*B;
-            ret = r*S + C - b + S ;
+        if (x < (_s - _c - 1) * _b) {
+            bb = _s - 1 - (x / _b);
+            r = x - (_s - bb - 1) * _b;
+            ret = (r * _s) + _c - bb + _s ;
         } else {
-            b = C -(x-(S-C-1)*B)/(B+1);
-            r = x-(S-b-1)*B -C + b;
-            ret = r*S + C - b;
+            bb = _c - (x - (_s - _c - 1) * _b) / (_b + 1);
+            r = x - (_s - bb - 1) * _b - _c + bb;
+            ret = (r * _s) + _c - bb;
         }
         return static_cast<TResult>(ret);
     }
@@ -153,34 +156,34 @@ template <typename TInput,                    // global pos
 struct _dislexReverseTransformMulti :
     public std::unary_function<TInput, TResult>
 {
-    TLimits const & limits;
-    TInput const S;
+    TLimits const & _limits;
+    TInput const _s;
 
-    _dislexReverseTransformMulti(TInput S_, TLimits const & stringSetLimits) : limits(stringSetLimits), S(S_)
+    _dislexReverseTransformMulti(TInput s, TLimits const & strSetLimits) : _limits(strSetLimits), _s(s)
     {}
 
     inline TResult operator() (const TInput & x) const
     {
         TResult ret;
         // binary search to find the corresponding sequence
-        posLocalize(ret, x, limits);
+        posLocalize(ret, x, _limits);
         return local2local(ret);
     }
     
     inline TResult local2local(TResult ret) const
     {
-        TInput N = limits[ret.i1+1] - limits[ret.i1];
-        TInput B = N/S;
-        TInput C = N%S;
-        TInput b,r, i = ret.i2;
-        if (i < (S-C-1)*B) {
-            b = S-1- i/B;
-            r = i -(S-b-1)*B;
-            ret.i2 = r*S + C - b + S ;
+        TInput n = _limits[ret.i1 + 1] - _limits[ret.i1];
+        TInput b = n / _s;
+        TInput c = n % _s;
+        TInput bb, r, i = ret.i2;
+        if (i < (_s - c - 1) * b) {
+            bb = _s - 1 - (i / b);
+            r = i - (_s - bb - 1) * b;
+            ret.i2 = (r * _s) + c - bb + _s ;
         } else {
-            b = C -(i-(S-C-1)*B)/(B+1);
-            r = i-(S-b-1)*B -C + b;
-            ret.i2 = r*S + C - b;
+            bb = c - (i - (_s - c - 1) * b) / (b + 1);
+            r = i - (_s - bb - 1) * b - c + bb;
+            ret.i2 = (r * _s) + c - bb;
         }
         return ret;
     }
