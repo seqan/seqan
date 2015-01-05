@@ -135,7 +135,7 @@ struct Pipe< TInput, GappedTupler<TShape, omitLast, TPack> >
     TSize                       buffIndex; // position in buffer to put next *in
     TSize                       map [BufferSize][TupleSize];
 
-    Pipe(TInput& _in): in(_in), buffer()
+    Pipe(TInput& inputPipe): in(inputPipe), buffer()
     {
         _createGappedTuplerMap(map, TShape());
     }
@@ -228,7 +228,7 @@ struct Pipe< TInput, Multi<GappedTupler<TShape, omitLast, TPack>, TPair, TLimits
 
     template <typename TLimitsString_>
     // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
-    Pipe(TInput& _in, TLimitsString_ &_limits):  in(_in), limits(_limits)
+    Pipe(TInput& inputPipe, TLimitsString_ &_limits):  in(inputPipe), limits(_limits)
     {
         _createGappedTuplerMap(map, TShape());
     }
@@ -349,7 +349,7 @@ struct Pipe< TInput, GappedTupler<TShape, omitLast, TPack> >
     TValue      buffer[BufferSize];
     TSize       carePos[TupleSize];
 
-    Pipe(TInput& _in): in(_in), buffer()
+    Pipe(TInput& inputPipe): in(inputPipe), buffer()
     {
         // TODO(meiers): These care positions of the shape are known at compile time
         //       They should be computed at compile time
@@ -438,7 +438,7 @@ struct Pipe< TInput, Multi<GappedTupler<TShape, omitLast, TPack>, TPair, TLimits
 
     template <typename TLimitsString_>
     // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
-    Pipe(TInput& _in, TLimitsString_ &_limits):  in(_in), limits(_limits)
+    Pipe(TInput& inputPipe, TLimitsString_ &_limits):  in(inputPipe), limits(_limits)
     {
         /// TODO(meiers): These care positions of the shape are known at compile time
         //       They should be computed at compile time
