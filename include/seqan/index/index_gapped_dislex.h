@@ -187,9 +187,7 @@ struct _dislexReverseTransformMulti :
         }
         return ret;
     }
-};
-
- 
+}; 
 } //namespace
 
 #endif  // #ifndef CORE_INCLUDE_SEQAN_INDEX_INDEX_GAPPED_SA_DISLEX_H_

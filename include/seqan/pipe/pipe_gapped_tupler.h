@@ -438,7 +438,7 @@ struct Pipe< TInput, Multi<GappedTupler<TShape, omitLast, TPack>, TPair, TLimits
 
     template <typename TLimitsString_>
     // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
-    Pipe(TInput& inputPipe, TLimitsString_ &_limits):  in(inputPipe), limits(_limits)
+    Pipe(TInput& inputPipe, TLimitsString_ &_limits):  in(inputPipe ), limits(_limits)
     {
         /// TODO(meiers): These care positions of the shape are known at compile time
         //       They should be computed at compile time
