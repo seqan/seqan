@@ -56,15 +56,13 @@ namespace SEQAN_NAMESPACE_MAIN
 
 // real dislex transformation:
 // takes a position x and returns L(x)
-template <
-typename TInput,
-typename TResult = TInput>
-struct _dislexTransform :
-public std::unary_function<TInput, TResult>
+template <typename TInput, typename TResult = TInput>
+struct DislexTransform_ :
+    public std::unary_function<TInput, TResult>
 {
     TInput const S,N,B,C;
 
-    _dislexTransform(TInput S_, TInput N_) : S(S_), N(N_), B(N_/S_), C(N_%S_)
+    DislexTransform_(TInput S_, TInput N_) : S(S_), N(N_), B(N_/S_), C(N_%S_)
     {}
 
     inline TResult operator() (TInput const & x) const
@@ -85,17 +83,15 @@ public std::unary_function<TInput, TResult>
 
 // dislex transformation for multiple strings
 // takes a Pair (seq,pos) and returns L(seq,pos) = pos
-template <
-typename TValue,
-typename TString,
-typename TResult = typename Value<TValue, 2>::Type>
-struct _dislexTransformMulti :
-public std::unary_function<TValue, TResult>
+template <typename TValue,
+          typename TString, typename TResult = typename Value<TValue, 2>::Type>
+struct DislexTransformMulti_ :
+    public std::unary_function<TValue, TResult>
 {
     TString const & limits;
     TResult const S;
 
-    _dislexTransformMulti(TResult S_, TString const & stringSetLimits) : limits(stringSetLimits), S(S_)
+    DislexTransformMulti_(TResult S_, TString const & stringSetLimits) : limits(stringSetLimits), S(S_)
     {}
 
     inline TResult operator() (const TValue & x) const
@@ -121,11 +117,9 @@ public std::unary_function<TValue, TResult>
 // Map: LexText -> Text                                              [String]
 // --------------------------------------------------------------------------
 
-template <
-    typename TInput,
-    typename TResult = TInput>
+template <typename TInput, typename TResult = TInput>
 struct _dislexReverseTransform :
-public std::unary_function<TInput, TResult>
+    public std::unary_function<TInput, TResult>
 {
     const TInput  S,N,B,C;
 
@@ -153,12 +147,11 @@ public std::unary_function<TInput, TResult>
 // Map: LexText -> Text                                           [StringSet]
 // --------------------------------------------------------------------------
 
-template <
-    typename TInput,                    // global pos
-    typename TLimits,                   // limits
-    typename TResult = Pair<TInput> >   // local pos
+template <typename TInput,                    // global pos
+          typename TLimits,                   // limits
+          typename TResult = Pair<TInput> >   // local pos
 struct _dislexReverseTransformMulti :
-public std::unary_function<TInput, TResult>
+    public std::unary_function<TInput, TResult>
 {
     TLimits const & limits;
     TInput const S;

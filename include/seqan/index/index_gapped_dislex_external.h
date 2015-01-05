@@ -47,10 +47,10 @@ namespace SEQAN_NAMESPACE_MAIN
 // --------------------------------------------------------------------------
 
 template <typename TSize>
-struct _positionToLengthTransform
+struct PositionToLengthTransform_
 {
     TSize N;
-    _positionToLengthTransform(TSize len): N(len)
+    PositionToLengthTransform_(TSize len): N(len)
     {}
 
     inline TSize operator()(TSize pos) const
@@ -64,17 +64,17 @@ struct _positionToLengthTransform
 // --------------------------------------------------------------------------
 
 template <typename TLimitString, typename TIdAndPosPair>
-struct _positionToLengthTransformMulti
+struct PositionToLengthTransformMulti_
 {
     typedef typename Value<TIdAndPosPair, 2>::Type TSize;
-    TLimitString const & limits;
+    TLimitString const & _limits;
 
-    _positionToLengthTransformMulti(TLimitString const & limitStr) : limits(limitStr)
+    PositionToLengthTransformMulti_(TLimitString const & limitStr) : _limits(limitStr)
     {}
 
     inline TIdAndPosPair operator() (TIdAndPosPair x) const
     {
-        TSize N = limits[x.i1+1] - limits[x.i1];
+        TSize N = _limits[x.i1+1] - _limits[x.i1];
         x.i2 = N - x.i2;
         return x;
     }
@@ -85,7 +85,7 @@ struct _positionToLengthTransformMulti
 // --------------------------------------------------------------------------
 
 /*
- * @signature _dislexTupleComp<TValue, TShape, TResult = int>
+ * @signature DislexTupleComp_<TValue, TShape, TResult = int>
  *
  * @tparam TValue expects a Pair<TSize, Tuple> where the 1st parameter contains the
  *                <b>length</b> of the underlying suffix and the 2nd parameter the
@@ -94,10 +94,11 @@ struct _positionToLengthTransformMulti
  *
  * Only for hardwired cyclic shapes! There is a overload for bitpacked tuples
  *
- * @see _dislexTupleCompMulti
+ * @see DislexTupleCompMulti_
  */
 template <typename TValue, typename TShape, typename TResult=int>
-struct _dislexTupleComp : public std::binary_function<TValue, TValue, TResult>
+struct DislexTupleComp_ :
+    public std::binary_function<TValue, TValue, TResult>
 {
     typedef typename Value<TValue, 1>::Type                 TSize;
     typedef typename Value<TValue, 2>::Type                 TTuple;
@@ -110,9 +111,9 @@ struct _dislexTupleComp : public std::binary_function<TValue, TValue, TResult>
         _weight = WEIGHT<TShape>::VALUE
     };
     TSize realLengths[_span];
-    _positionToLengthTransform<TSize> posToLen;
+    PositionToLengthTransform_<TSize> posToLen;
 
-    _dislexTupleComp(TSize strLen) : posToLen(strLen)
+    DislexTupleComp_(TSize strLen) : posToLen(strLen)
     {
         #ifdef DISLEX_EXTERNAL_RUNNING_TIMES
         std::cout << "   | String, Tuple version"  << std::endl;
@@ -158,10 +159,15 @@ struct _dislexTupleComp : public std::binary_function<TValue, TValue, TResult>
     }
 };
 
-// BitPacked version of _dislexTupleComp
+// BitPacked version of DislexTupleComp_
 
-template <typename TSize, typename TTupleValue,typename TShape, typename TResult>
-    struct _dislexTupleComp<Pair<TSize, Tuple<TTupleValue, WEIGHT<TShape>::VALUE, BitPacked<> >, Pack>, TShape, TResult> :
+template <typename TSize,
+          typename TTupleValue,
+          typename TShape,
+          typename TResult>
+struct DislexTupleComp_<Pair<TSize, Tuple<TTupleValue, WEIGHT<TShape>::VALUE, BitPacked<> >, Pack>,
+                        TShape,
+                        TResult> :
     public std::binary_function<Pair<TSize, Tuple<TTupleValue, WEIGHT<TShape>::VALUE, BitPacked<> >, Pack>,
                                 Pair<TSize, Tuple<TTupleValue, WEIGHT<TShape>::VALUE, BitPacked<> >, Pack>,
                                 TResult>
@@ -175,9 +181,9 @@ template <typename TSize, typename TTupleValue,typename TShape, typename TResult
         _weight = WEIGHT<TShape>::VALUE
     };
     TSize realLengths[_span];
-    _positionToLengthTransform<TSize> posToLen;
+    PositionToLengthTransform_<TSize> posToLen;
 
-    _dislexTupleComp(TSize strLen) : posToLen(strLen)
+    DislexTupleComp_(TSize strLen) : posToLen(strLen)
     {
         #ifdef DISLEX_EXTERNAL_RUNNING_TIMES
         std::cout << "   | String, Bitpacked version"  << std::endl;
@@ -222,17 +228,21 @@ template <typename TSize, typename TTupleValue,typename TShape, typename TResult
 // --------------------------------------------------------------------------
 
 /*
- * @signature _dislexTupleCompMulti<TValue, TShape, TResult = int>
+ * @signature DislexTupleCompMulti_<TValue, TShape, TResult = int>
  *
  * @tparam TValue expects a Pair<Pair<TSize, TSize>, Tuple> where the 1st parameter
  *                is a Pair of sequence ID and suffix <b>length</b> and the 2nd parameter
  *                the fixed-length sequence tuple (possibly bitpacked)
  * @tparam TShape expects a fixed CyclicShape (CyclicShape<FixedShape<...> >)
  *
- * @see _dislexTupleComp
+ * @see DislexTupleComp_
  */
-template <typename TValue, typename TShape, typename TLimitString, typename TResult=int>
-struct _dislexTupleCompMulti  : public std::binary_function<TValue, TValue, TResult>
+template <typename TValue,
+          typename TShape,
+          typename TLimitString,
+          typename TResult=int>
+struct DislexTupleCompMulti_  :
+    public std::binary_function<TValue, TValue, TResult>
 {
     typedef typename Value<TValue, 1>::Type                 TSetPos;
     typedef typename Value<TSetPos, 2>::Type                TSize;
@@ -245,9 +255,9 @@ struct _dislexTupleCompMulti  : public std::binary_function<TValue, TValue, TRes
         _weight = WEIGHT<TShape>::VALUE
     };
     TSize realLengths[_span];
-    _positionToLengthTransformMulti<TLimitString, TSetPos> posToLen;
+    PositionToLengthTransformMulti_<TLimitString, TSetPos> posToLen;
 
-    _dislexTupleCompMulti(TLimitString const & limits) : posToLen(limits)
+    DislexTupleCompMulti_(TLimitString const & limits) : posToLen(limits)
     {
         #ifdef DISLEX_EXTERNAL_RUNNING_TIMES
         std::cout << "   | String Set, Tuple version"  << std::endl;
@@ -299,10 +309,17 @@ struct _dislexTupleCompMulti  : public std::binary_function<TValue, TValue, TRes
     }
 };
 
-// BitPacked version of _dislexTupleCompMulti
+// BitPacked version of DislexTupleCompMulti_
 
-template <typename TSetPos, typename TTupleValue, typename TShape, typename TLimitString, typename TResult>
-struct _dislexTupleCompMulti<Pair<TSetPos, Tuple<TTupleValue, WEIGHT<TShape>::VALUE, BitPacked<> >, Pack>, TShape, TLimitString, TResult> :
+template <typename TSetPos,
+          typename TTupleValue,
+          typename TShape,
+          typename TLimitString,
+          typename TResult>
+struct DislexTupleCompMulti_<Pair<TSetPos, Tuple<TTupleValue, WEIGHT<TShape>::VALUE, BitPacked<> >, Pack>,
+                             TShape,
+                             TLimitString,
+                             TResult> :
     public std::binary_function<Pair<TSetPos, Tuple<TTupleValue, WEIGHT<TShape>::VALUE, BitPacked<> >, Pack>,
                                 Pair<TSetPos, Tuple<TTupleValue, WEIGHT<TShape>::VALUE, BitPacked<> >, Pack>,
                                 TResult>
@@ -316,9 +333,9 @@ struct _dislexTupleCompMulti<Pair<TSetPos, Tuple<TTupleValue, WEIGHT<TShape>::VA
         _weight = WEIGHT<TShape>::VALUE
     };
     TSize realLengths[_span];
-    _positionToLengthTransformMulti<TLimitString, TSetPos> posToLen;
+    PositionToLengthTransformMulti_<TLimitString, TSetPos> posToLen;
 
-    _dislexTupleCompMulti(TLimitString const & limits) : posToLen(limits)
+    DislexTupleCompMulti_(TLimitString const & limits) : posToLen(limits)
     {
         #ifdef DISLEX_EXTERNAL_RUNNING_TIMES
         std::cout << "   | String Set, BitPacked version"  << std::endl;
@@ -372,15 +389,14 @@ struct _dislexTupleCompMulti<Pair<TSetPos, Tuple<TTupleValue, WEIGHT<TShape>::VA
 // wrapper for the dislex Pipe
 // takes a tuple <l, ACGACA> where p is the suffix position
 // and returns L(N-l)
-template <
-typename TValue,
-typename TResult = typename Value<TValue, 1>::Type>
-struct _dislexMap :
-public std::unary_function<TValue, TResult>
+template <typename TValue,
+          typename TResult = typename Value<TValue, 1>::Type>
+struct DislexMap_ :
+    public std::unary_function<TValue, TResult>
 {
-    _dislexTransform<TResult> formula;
+    DislexTransform_<TResult> formula;
 
-    _dislexMap(TResult S_, TResult N_) : formula(S_, N_)
+    DislexMap_(TResult S_, TResult N_) : formula(S_, N_)
     {}
 
     inline TResult operator() (const TValue & x) const
@@ -397,19 +413,18 @@ public std::unary_function<TValue, TResult>
 // dislex transformation used in the mapper pool
 // takes a Pair( Pair(s,p), ACGATCG), where s is the seq id and p the suffix position,
 // returns a global position L(s,p)=pos
-template <
-typename TValue,
-typename Tlimits,
-typename TResult = typename Value<typename Value<TValue, 1>::Type, 2>::Type >
-struct _dislexMapMulti :
-public std::unary_function<TValue, TResult>
+template <typename TValue,
+          typename Tlimits,
+          typename TResult = typename Value<typename Value<TValue, 1>::Type, 2>::Type >
+struct DislexMapMulti_ :
+    public std::unary_function<TValue, TResult>
 {
     typedef typename Value<TValue, 1>::Type TPair;
     typedef typename Value<TPair, 2>::Type TSize;
 
-    _dislexTransformMulti<TPair, Tlimits> formula;
+    DislexTransformMulti_<TPair, Tlimits> formula;
     
-    _dislexMapMulti(TResult S_, Tlimits const & stringSetLimits) : formula(S_, stringSetLimits)
+    DislexMapMulti_(TResult S_, Tlimits const & stringSetLimits) : formula(S_, stringSetLimits)
     {}
     
     inline TResult operator() (const TValue & x) const
@@ -431,13 +446,13 @@ struct Pipe<TInput, DislexExternal<TShape, TSACA> >
                         BitPacked<>, Pack >::Type               TPack;
 
     typedef Pipe<TInput, GappedTupler<TShape, false, TPack> >   TPipeTupler;
-    typedef _dislexTupleComp<TypeOf_(TPipeTupler), TShape>      TTupleComparator;
+    typedef DislexTupleComp_<TypeOf_(TPipeTupler), TShape>      TTupleComparator;
     typedef Pool<TypeOf_(TPipeTupler), SorterSpec<
             SorterConfigSize<TTupleComparator,
             TSizeOf_(TPipeTupler) > > >                         TPoolSorter;
 
     typedef Pipe< TPoolSorter, Namer<TTupleComparator> >        TPipeNamer;
-    typedef _dislexMap<TypeOf_(TPipeNamer) >                    TDislexMapper;
+    typedef DislexMap_<TypeOf_(TPipeNamer) >                    TDislexMapper;
     typedef Pool< TypeOf_(TPipeNamer), MapperSpec<
             MapperConfigSize< TDislexMapper,
             TSizeOf_(TPipeNamer) > > >                          TPoolMapper;
@@ -531,14 +546,14 @@ struct Pipe<TInput, Multi<DislexExternal<TShape, TSACA>, TPair, TLimits> >
 
     typedef Pipe<TInput, Multi<GappedTupler<TShape, false, TPack>,
             TPair, TLimits> >                                   TPipeTupler;
-    typedef _dislexTupleCompMulti<TypeOf_(TPipeTupler),
+    typedef DislexTupleCompMulti_<TypeOf_(TPipeTupler),
             TShape, TLimits>                                    TTupleComparator;
     typedef Pool<TypeOf_(TPipeTupler), SorterSpec<
             SorterConfigSize<TTupleComparator,
             TSizeOf_(TPipeTupler) > > >                         TPoolSorter;
 
     typedef Pipe< TPoolSorter, Namer<TTupleComparator> >        TPipeNamer;
-    typedef _dislexMapMulti<TypeOf_(TPipeNamer), TLimits>       TDislexMapper;
+    typedef DislexMapMulti_<TypeOf_(TPipeNamer), TLimits>       TDislexMapper;
     typedef Pool< TypeOf_(TPipeNamer), MapperSpec<
             MapperConfigSize< TDislexMapper,
             TSizeOf_(TPipeNamer) > > >                          TPoolMapper;
@@ -551,21 +566,21 @@ struct Pipe<TInput, Multi<DislexExternal<TShape, TSACA>, TPair, TLimits> >
     typedef Pipe<TPipeSACA, Filter<TDislexReverse> >            TPipeReverseTransform;
 
 
-    TLimits const & limits;         // StringSetLimits
+    TLimits const & _limits;         // StringSetLimits
     TPipeSACA pool;                 // last pool (skew); will be filled when calling process().
     TPipeReverseTransform in;       // final Pipe
 
 
     template <typename TLimits_>
-    Pipe(TLimits_ const & _limits, SEQAN_CTOR_ENABLE_IF(IsSameType<TLimits, TLimits_>)) :
-        limits(_limits)
+    Pipe(TLimits_ const & limits, SEQAN_CTOR_ENABLE_IF(IsSameType<TLimits, TLimits_>)) :
+        _limits(limits)
     {
         ignoreUnusedVariableWarning(dummy);
     }
 
     template <typename TLimits_>
-    Pipe(TInput& _textIn, TLimits_ const & _limits, SEQAN_CTOR_ENABLE_IF(IsSameType<TLimits, TLimits_>)) :
-        limits(_limits), in(pool, TDislexReverse(TShape::span, limits))
+    Pipe(TInput& _textIn, TLimits_ const & limits, SEQAN_CTOR_ENABLE_IF(IsSameType<TLimits, TLimits_>)) :
+        _limits(limits), in(pool, TDislexReverse(TShape::span, limits))
     {
         // fill pool right away
         process(_textIn);
@@ -585,10 +600,10 @@ struct Pipe<TInput, Multi<DislexExternal<TShape, TSACA>, TPair, TLimits> >
     bool process(TInput_ &textIn)
     {
         // 1. Generate Gapped Tuples
-        TPipeTupler                                             tupler(textIn, limits);
+        TPipeTupler                                             tupler(textIn, _limits);
 
         // 2. Sort Tuples by the first few characters
-        TTupleComparator                                        _comp(limits);
+        TTupleComparator                                        _comp(_limits);
         TPoolSorter                                             sorter(tupler, _comp);
 
         #ifdef DISLEX_EXTERNAL_RUNNING_TIMES
@@ -605,7 +620,7 @@ struct Pipe<TInput, Multi<DislexExternal<TShape, TSACA>, TPair, TLimits> >
         TPipeNamer                                              namer(sorter, _comp);
 
         // 4. Map text Positions to lexText positions
-        TDislexMapper                                           _map(TShape::span, limits);
+        TDislexMapper                                           _map(TShape::span, _limits);
         TPoolMapper                                             mapper(namer, _map);
         mapper << namer;
 
@@ -675,8 +690,8 @@ inline bool operator<<(
     TObject &textIn)
 {
     typedef Pipe< TInput, Multi<DislexExternal<TShape, TSACA>, TPair, TLimits> > TPipe;
-    me.limits = stringSetLimits(textIn);
-    me.in = TPipe::TPipeReverseTransform(me.pool, TPipe::TDislexReverse(TShape::span, me.limits));
+    me._limits = stringSetLimits(textIn);
+    me.in = TPipe::TPipeReverseTransform(me.pool, TPipe::TDislexReverse(TShape::span, me._limits));
     return me.process(textIn);
 }
 

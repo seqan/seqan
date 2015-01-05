@@ -53,7 +53,7 @@ struct GappedTupler;
 // --------------------------------------------------------------------------
 
 template <typename TShape, typename TTuple>
-struct _gappedTuplerFillTupleFromBuffer
+struct GappedTuplerFillTupleFromBuffer_
 {
     enum { BufferSize = TShape::span };
     enum { TupleSize = WEIGHT<TShape>::VALUE };
@@ -67,7 +67,7 @@ struct _gappedTuplerFillTupleFromBuffer
 };
 
 template <typename TShape, typename TValue>
-struct _gappedTuplerFillTupleFromBuffer <TShape, Tuple<TValue, WEIGHT<TShape>::VALUE, BitPacked<> > >
+struct GappedTuplerFillTupleFromBuffer_ <TShape, Tuple<TValue, WEIGHT<TShape>::VALUE, BitPacked<> > >
 {
     typedef Tuple<TValue, WEIGHT<TShape>::VALUE, BitPacked<> > TTuple;
     enum { BufferSize = TShape::span };
@@ -338,7 +338,7 @@ struct Pipe< TInput, GappedTupler<TShape, omitLast, TPack> >
     enum { BufferSize = TShape::span };
     enum { TupleSize = LENGTH<TTuple>::VALUE };
 
-    _gappedTuplerFillTupleFromBuffer<TShape,TTuple> _fillTmp2;
+    GappedTuplerFillTupleFromBuffer_<TShape,TTuple> _fillTmp2;
 
     TInput      &in;
     TOutput     tmp;
@@ -425,7 +425,7 @@ struct Pipe< TInput, Multi<GappedTupler<TShape, omitLast, TPack>, TPair, TLimits
     enum { BufferSize = TShape::span };
     enum { TupleSize = LENGTH<TTuple>::VALUE };
 
-    _gappedTuplerFillTupleFromBuffer<TShape,TTuple> _fillTmp2;
+    GappedTuplerFillTupleFromBuffer_<TShape,TTuple> _fillTmp2;
 
     TInput                     &in;
     Incrementer					localPos;

@@ -43,7 +43,7 @@
 // Tags, Classes, Enums
 // ============================================================================
 
-struct _ShapeDefs
+struct TestGappedIndexShapeDefs_
 {
     CyclicShape<FixedShape<0,GappedShape<HardwiredShape<> >, 1> >       S_10;
     CyclicShape<FixedShape<0,GappedShape<HardwiredShape<1,2> >, 1> >    S_11010;
@@ -59,7 +59,7 @@ struct _ShapeDefs
     CyclicShape<GenericShape> s_01;
     CyclicShape<GenericShape> s_0011;
     
-    _ShapeDefs()
+    TestGappedIndexShapeDefs_()
     {
         stringToCyclicShape(s_10,       "10");
         stringToCyclicShape(s_11010,    "11010");

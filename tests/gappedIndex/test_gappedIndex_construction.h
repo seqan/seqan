@@ -122,7 +122,7 @@ SEQAN_DEFINE_TEST(test_gappedIndex_construction_str)
     TArray  sa2;
     
     const int maxSize = 256 * 1024;	// max text size is 1 megabyte
-    int runs = 1;
+    int runs = 5;
     
     for(int i = 0; i < runs; ++i) {
         
@@ -137,7 +137,7 @@ SEQAN_DEFINE_TEST(test_gappedIndex_construction_str)
         std::cout << "   textSize: " << length(text) << std::endl;
         
         //___create_suffix_array______________________________________________________
-        _ShapeDefs SD;
+        TestGappedIndexShapeDefs_ SD;
         
         if ( !_createAndCompareSAs(text, SD.S_10) )      std::cout << "SAs differ!!" << std::endl;
         if ( !_createAndCompareSAs(text, SD.S_11010) )   std::cout << "SAs differ!!" << std::endl;
@@ -163,7 +163,7 @@ SEQAN_DEFINE_TEST(test_gappedIndex_construction_strSet)
     
     const int maxSize = 16 * 1024;	// max text size is 30 kilobyte per String
     const int maxSet = 1024;
-    int runs = 1;
+    int runs = 5;
     int totalSize =0;
     
     for(int i = 0; i < runs; ++i) {
@@ -188,7 +188,7 @@ SEQAN_DEFINE_TEST(test_gappedIndex_construction_strSet)
         
         
         //___create_suffix_array______________________________________________________
-        _ShapeDefs SD;
+        TestGappedIndexShapeDefs_ SD;
         
         if ( !_createAndCompareSAs(text, SD.S_10) )      std::cout << "SAs differ!!" << std::endl;
         if ( !_createAndCompareSAs(text, SD.S_11010) )   std::cout << "SAs differ!!" << std::endl;
