@@ -47,263 +47,287 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-enum class BlastMatchFieldEnum : uint8_t
+template <typename TVoidSpec = void>
+struct BlastMatchField
 {
-    Q_SEQ_ID,
-    Q_GI,
-    Q_ACC,
-    Q_ACCVER,
-    Q_LEN,
-    S_SEQ_ID,
-    S_ALL_SEQ_ID,
-    S_GI,
-    S_ALL_GI,
-    S_ACC,
-    S_ACCVER,
-    S_ALLACC,
-    S_LEN,
-    Q_START,
-    Q_END,
-    S_START,
-    S_END,
-    Q_SEQ,
-    S_SEQ,
-    E_VALUE,
-    BIT_SCORE,
-    SCORE,
-    LENGTH,
-    P_IDENT,
-    N_IDENT,
-    MISMATCH,
-    POSITIVE,
-    GAP_OPEN,
-    GAPS,
-    P_POS,
-    FRAMES,
-    Q_FRAME,
-    S_FRAME,
-    BTOP,
-    S_TAX_IDS,
-    S_SCI_NAMES,
-    S_COM_NAMES,
-    S_BLAST_NAMES,
-    S_S_KINGDOMS,
-    S_TITLE,
-    S_ALL_TITLES,
-    S_STRAND,
-    Q_COV_S,
-    Q_COV_HSP
+    enum class Enum : uint8_t
+    {
+        Q_SEQ_ID,
+        Q_GI,
+        Q_ACC,
+        Q_ACCVER,
+        Q_LEN,
+        S_SEQ_ID,
+        S_ALL_SEQ_ID,
+        S_GI,
+        S_ALL_GI,
+        S_ACC,
+        S_ACCVER,
+        S_ALLACC,
+        S_LEN,
+        Q_START,
+        Q_END,
+        S_START,
+        S_END,
+        Q_SEQ,
+        S_SEQ,
+        E_VALUE,
+        BIT_SCORE,
+        SCORE,
+        LENGTH,
+        P_IDENT,
+        N_IDENT,
+        MISMATCH,
+        POSITIVE,
+        GAP_OPEN,
+        GAPS,
+        P_POS,
+        FRAMES,
+        Q_FRAME,
+        S_FRAME,
+        BTOP,
+        S_TAX_IDS,
+        S_SCI_NAMES,
+        S_COM_NAMES,
+        S_BLAST_NAMES,
+        S_S_KINGDOMS,
+        S_TITLE,
+        S_ALL_TITLES,
+        S_STRAND,
+        Q_COV_S,
+        Q_COV_HSP
+    };
+
+    static const String<Enum const> defaults;
+
+    static constexpr char const * const optionLabels [] =
+    {
+        "qseqid",
+        "qgi",
+        "qacc",
+        "qaccver",
+        "qlen",
+        "sseqid",
+        "sallseqid",
+        "sgi",
+        "sallgi",
+        "sacc",
+        "saccver",
+        "sallacc",
+        "slen",
+        "qstart",
+        "qend",
+        "sstart",
+        "send",
+        "qseq",
+        "sseq",
+        "evalue",
+        "bitscore",
+        "score",
+        "length",
+        "pident",
+        "nident",
+        "mismatch",
+        "positive",
+        "gapopen",
+        "gaps",
+        "ppos",
+        "frames",
+        "qframe",
+        "sframe",
+        "btop",
+        "staxids",
+        "sscinames",
+        "scomnames",
+        "sblastnames",
+        "sskingdoms",
+        "stitle",
+        "salltitles",
+        "sstrand",
+        "qcovs",
+        "qcovhsp"
+    };
+
+    static constexpr char const * const columnLabels [] =
+    {
+        "query id",
+        "query gi",
+        "query acc.",
+        "query acc.ver",
+        "query length",
+        "subject id",
+        "subject ids",
+        "subject gi",
+        "subject gis",
+        "subject acc.",
+        "subject acc.ver",
+        "subject accs.",
+        "subject length",
+        "q. start",
+        "q. end",
+        "s. start",
+        "s. end",
+        "query seq",
+        "subject seq",
+        "evalue",
+        "bit score",
+        "score",
+        "alignment length",
+        "% identity",
+        "identical",
+        "mismatches",
+        "positives",
+        "gap opens",
+        "gaps",
+        "% positives",
+        "query/sbjct frames",
+        "query frame",
+        "sbjct frame",
+        "BTOP",
+        "subject tax ids",
+        "subject sci names",
+        "subject com names",
+        "subject blast names",
+        "subject super kingdoms",
+        "subject title",
+        "subject titles",
+        "subject strand",
+        "% subject coverage",
+        "% hsp coverage"
+    };
+
+    static constexpr char const * const descriptions [] =
+    {
+        "Query Seq-id",
+        "Query GI",
+        "Query accesion",
+        "Query accesion.version",
+        "Query sequence length",
+        "Subject Seq-id",
+        "All subject Seq-id(s), separated by a ';'",
+        "Subject GI",
+        "All subject GIs",
+        "Subject accession",
+        "Subject accession.version",
+        "All subject accessions",
+        "Subject sequence length",
+        "Start of alignment in query",
+        "End of alignment in query",
+        "Start of alignment in subject",
+        "End of alignment in subject",
+        "Aligned part of query sequence",
+        "Aligned part of subject sequence",
+        "Expect value",
+        "Bit score",
+        "Raw score",
+        "Alignment length",
+        "Percentage of identical matches",
+        "Number of identical matches",
+        "Number of mismatches",
+        "Number of positive-scoring matches",
+        "Number of gap openings",
+        "Total number of gaps",
+        "Percentage of positive-scoring matches",
+        "Query and subject frames separated by a '/'",
+        "Query frame",
+        "Subject frame",
+        "Blast traceback operations (BTOP)",
+        "unique Subject Taxonomy ID(s), separated by a ';' (in numerical order)",
+        "unique Subject Scientific Name(s), separated by a ';'",
+        "unique Subject Common Name(s), separated by a ';'",
+        "unique Subject Blast Name(s), separated by a ';' (in alphabetical order)",
+        "unique Subject Super Kingdom(s), separated by a ';' (in alphabetical order)",
+        "Subject Title",
+        "All Subject Title(s), separated by a '<>'",
+        "Subject Strand",
+        "Query Coverage Per Subject",
+        "Query Coverage Per HSP"
+    };
+
+    static constexpr bool const implemented [] =
+    {
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+    };
 };
+
 
 //TODO make all the below static constexpr template foo
-std::vector<BlastMatchFieldEnum> _blastMatchDefaultFields =
+template <typename TVoidSpec>
+String<typename BlastMatchField<TVoidSpec>::Enum const> const
+BlastMatchField<TVoidSpec>::defaults =
 {
-    BlastMatchFieldEnum::Q_SEQ_ID,
-    BlastMatchFieldEnum::S_SEQ_ID,
-    BlastMatchFieldEnum::P_IDENT,
-    BlastMatchFieldEnum::LENGTH,
-    BlastMatchFieldEnum::MISMATCH,
-    BlastMatchFieldEnum::GAP_OPEN,
-    BlastMatchFieldEnum::Q_START,
-    BlastMatchFieldEnum::Q_END,
-    BlastMatchFieldEnum::S_START,
-    BlastMatchFieldEnum::S_END,
-    BlastMatchFieldEnum::E_VALUE,
-    BlastMatchFieldEnum::BIT_SCORE
+    BlastMatchField<TVoidSpec>::Enum::Q_SEQ_ID,
+    BlastMatchField<TVoidSpec>::Enum::S_SEQ_ID,
+    BlastMatchField<TVoidSpec>::Enum::P_IDENT,
+    BlastMatchField<TVoidSpec>::Enum::LENGTH,
+    BlastMatchField<TVoidSpec>::Enum::MISMATCH,
+    BlastMatchField<TVoidSpec>::Enum::GAP_OPEN,
+    BlastMatchField<TVoidSpec>::Enum::Q_START,
+    BlastMatchField<TVoidSpec>::Enum::Q_END,
+    BlastMatchField<TVoidSpec>::Enum::S_START,
+    BlastMatchField<TVoidSpec>::Enum::S_END,
+    BlastMatchField<TVoidSpec>::Enum::E_VALUE,
+    BlastMatchField<TVoidSpec>::Enum::BIT_SCORE
 };
 
-const char* const BlastMatchFieldOptionLabels [] =
-{
-    "qseqid",
-    "qgi",
-    "qacc",
-    "qaccver",
-    "qlen",
-    "sseqid",
-    "sallseqid",
-    "sgi",
-    "sallgi",
-    "sacc",
-    "saccver",
-    "sallacc",
-    "slen",
-    "qstart",
-    "qend",
-    "sstart",
-    "send",
-    "qseq",
-    "sseq",
-    "evalue",
-    "bitscore",
-    "score",
-    "length",
-    "pident",
-    "nident",
-    "mismatch",
-    "positive",
-    "gapopen",
-    "gaps",
-    "ppos",
-    "frames",
-    "qframe",
-    "sframe",
-    "btop",
-    "staxids",
-    "sscinames",
-    "scomnames",
-    "sblastnames",
-    "sskingdoms",
-    "stitle",
-    "salltitles",
-    "sstrand",
-    "qcovs",
-    "qcovhsp"
-};
+template <typename TVoidSpec>
+constexpr char const * const
+BlastMatchField<TVoidSpec>::optionLabels[44];
 
-const char* const BlastMatchFieldColumnLabels [] =
-{
-    "query id",
-    "query gi",
-    "query acc.",
-    "query acc.ver",
-    "query length",
-    "subject id",
-    "subject ids",
-    "subject gi",
-    "subject gis",
-    "subject acc.",
-    "subject acc.ver",
-    "subject accs.",
-    "subject length",
-    "q. start",
-    "q. end",
-    "s. start",
-    "s. end",
-    "query seq",
-    "subject seq",
-    "evalue",
-    "bit score",
-    "score",
-    "alignment length",
-    "% identity",
-    "identical",
-    "mismatches",
-    "positives",
-    "gap opens",
-    "gaps",
-    "% positives",
-    "query/sbjct frames",
-    "query frame",
-    "sbjct frame",
-    "BTOP",
-    "subject tax ids",
-    "subject sci names",
-    "subject com names",
-    "subject blast names",
-    "subject super kingdoms",
-    "subject title",
-    "subject titles",
-    "subject strand",
-    "% subject coverage",
-    "% hsp coverage"
-};
+template <typename TVoidSpec>
+constexpr char const * const
+BlastMatchField<TVoidSpec>::columnLabels[44];
 
-const char* const BlastMatchFieldDescriptions [] =
-{
-    "Query Seq-id",
-    "Query GI",
-    "Query accesion",
-    "Query accesion.version",
-    "Query sequence length",
-    "Subject Seq-id",
-    "All subject Seq-id(s), separated by a ';'",
-    "Subject GI",
-    "All subject GIs",
-    "Subject accession",
-    "Subject accession.version",
-    "All subject accessions",
-    "Subject sequence length",
-    "Start of alignment in query",
-    "End of alignment in query",
-    "Start of alignment in subject",
-    "End of alignment in subject",
-    "Aligned part of query sequence",
-    "Aligned part of subject sequence",
-    "Expect value",
-    "Bit score",
-    "Raw score",
-    "Alignment length",
-    "Percentage of identical matches",
-    "Number of identical matches",
-    "Number of mismatches",
-    "Number of positive-scoring matches",
-    "Number of gap openings",
-    "Total number of gaps",
-    "Percentage of positive-scoring matches",
-    "Query and subject frames separated by a '/'",
-    "Query frame",
-    "Subject frame",
-    "Blast traceback operations (BTOP)",
-    "unique Subject Taxonomy ID(s), separated by a ';' (in numerical order)",
-    "unique Subject Scientific Name(s), separated by a ';'",
-    "unique Subject Common Name(s), separated by a ';'",
-    "unique Subject Blast Name(s), separated by a ';' (in alphabetical order)",
-    "unique Subject Super Kingdom(s), separated by a ';' (in alphabetical order)",
-    "Subject Title",
-    "All Subject Title(s), separated by a '<>'",
-    "Subject Strand",
-    "Query Coverage Per Subject",
-    "Query Coverage Per HSP"
-};
+template <typename TVoidSpec>
+constexpr char const * const
+BlastMatchField<TVoidSpec>::descriptions[44];
 
-bool const BlastMatchFieldsImplemented [] =
-{
-    true,
-    false,
-    false,
-    false,
-    true,
-    true,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    true,
-    true,
-    true,
-    true,
-    true,
-    false,
-    false,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    true,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false
-};
-
+template <typename TVoidSpec>
+constexpr bool const
+BlastMatchField<TVoidSpec>::implemented[44];
 
 // ============================================================================
 // Metafunctions
@@ -353,43 +377,46 @@ _firstOcc(TString const & str, typename Value<TString>::Type const & val)
 // ----------------------------------------------------------------------------
 
 template <typename TStream,
-          typename TTag,
           typename TField,
           typename TQId,
           typename TSId,
           typename TPos,
-          typename TAlign>
+          typename TAlign,
+          typename TFormat,
+          typename TFSpec = void
+          >
 inline int
 _writeField(TStream & s,
-            BlastMatch<TQid, TSId, TPos, TAlign> const & match,
-            BlastMatchFieldEnum const fieldId,
-            TTag const &)
+            BlastMatch<TQId, TSId, TPos, TAlign> const & match,
+            typename BlastMatchField<TFSpec>::Enum const fieldId,
+            TFormat const &)
 {
+    typedef typename BlastMatchField<TFSpec>::Enum ENUM;
     int r = 0;
-    switch (fieldID)
+    switch (fieldId)
     {
-        case BlastMatchFieldEnum::Q_SEQ_ID:
-            r = streamPut(s, prefix(match.qId, _firstOcc(match.qId, ' '));
+        case ENUM::Q_SEQ_ID:
+            r = streamPut(s, prefix(match.qId, _firstOcc(match.qId, ' ')));
             break;
-//         case BlastMatchFieldEnum::Q_GI: r = streamPut(s,  * ); break;
-//         case BlastMatchFieldEnum::Q_ACC: r = streamPut(s,  * ); break;
-//         case BlastMatchFieldEnum::Q_ACCVER: r = streamPut(s,  * ); break;
-        case BlastMatchFieldEnum::Q_LEN:
+//         case ENUM::Q_GI: r = streamPut(s,  * ); break;
+//         case ENUM::Q_ACC: r = streamPut(s,  * ); break;
+//         case ENUM::Q_ACCVER: r = streamPut(s,  * ); break;
+        case ENUM::Q_LEN:
             r = streamPut(s, match.qLength);
             break;
-        case BlastMatchFieldEnum::S_SEQ_ID:
+        case ENUM::S_SEQ_ID:
             r = streamPut(s, prefix(match.sId, _firstOcc(match.sId, ' ')));
             break;
-//         case BlastMatchFieldEnum::S_ALL_SEQ_ID: r = streamPut(s,  * ); break;
-//         case BlastMatchFieldEnum::S_GI: r = streamPut(s,  * ); break;
-//         case BlastMatchFieldEnum::S_ALL_GI: r = streamPut(s,  * ); break;
-//         case BlastMatchFieldEnum::S_ACC: r = streamPut(s,  * ); break;
-//         case BlastMatchFieldEnum::S_ACCVER: r = streamPut(s,  * ); break;
-//         case BlastMatchFieldEnum::S_ALLACC: r = streamPut(s,  * ); break;
-        case BlastMatchFieldEnum::S_LEN:
+//         case ENUM::S_ALL_SEQ_ID: r = streamPut(s,  * ); break;
+//         case ENUM::S_GI: r = streamPut(s,  * ); break;
+//         case ENUM::S_ALL_GI: r = streamPut(s,  * ); break;
+//         case ENUM::S_ACC: r = streamPut(s,  * ); break;
+//         case ENUM::S_ACCVER: r = streamPut(s,  * ); break;
+//         case ENUM::S_ALLACC: r = streamPut(s,  * ); break;
+        case ENUM::S_LEN:
             r = streamPut(s, match.sLength);
             break;
-        case BlastMatchFieldEnum::Q_START:
+        case ENUM::Q_START:
         {
             TPos effectiveQStart    = match.qStart;
             TPos effectiveQEnd      = match.qEnd;
@@ -399,7 +426,7 @@ _writeField(TStream & s,
                                   QIsTranslated<TFormat>());
             r = streamPut(s, effectiveQStart);
         } break;
-        case BlastMatchFieldEnum::Q_END:
+        case ENUM::Q_END:
         {
             TPos effectiveQStart    = match.qStart;
             TPos effectiveQEnd      = match.qEnd;
@@ -409,7 +436,7 @@ _writeField(TStream & s,
                                   QIsTranslated<TFormat>());
             r = streamPut(s, effectiveQEnd);
         } break;
-        case BlastMatchFieldEnum::S_START:
+        case ENUM::S_START:
         {
             TPos effectiveSStart    = match.sStart;
             TPos effectiveSEnd      = match.sEnd;
@@ -420,7 +447,7 @@ _writeField(TStream & s,
                                   SIsTranslated<TFormat>());
             r = streamPut(s, effectiveSStart);
         } break;
-        case BlastMatchFieldEnum::S_END:
+        case ENUM::S_END:
         {
             TPos effectiveSStart    = match.sStart;
             TPos effectiveSEnd      = match.sEnd;
@@ -431,42 +458,42 @@ _writeField(TStream & s,
                                   SIsTranslated<TFormat>());
             r = streamPut(s, effectiveSEnd);
         } break;
-//         case BlastMatchFieldEnum::Q_SEQ: r = streamPut(s,  * ); break;
-//         case BlastMatchFieldEnum::S_SEQ: r = streamPut(s,  * ); break;
-        case BlastMatchFieldEnum::E_VALUE:
+//         case ENUM::Q_SEQ: r = streamPut(s,  * ); break;
+//         case ENUM::S_SEQ: r = streamPut(s,  * ); break;
+        case ENUM::E_VALUE:
             r = streamPut(s, match.eValue);
             break;
-        case BlastMatchFieldEnum::BIT_SCORE:
+        case ENUM::BIT_SCORE:
             r = streamPut(s, match.bitScore);
             break;
-        case BlastMatchFieldEnum::SCORE:
+        case ENUM::SCORE:
             r = streamPut(s, match.score);
             break;
-        case BlastMatchFieldEnum::LENGTH:
+        case ENUM::LENGTH:
             r = streamPut(s, match.aliLength);
             break;
-        case BlastMatchFieldEnum::P_IDENT:
+        case ENUM::P_IDENT:
             r = streamPut(s, double(match.identities) * 100 / match.aliLength);
             break;
-        case BlastMatchFieldEnum::N_IDENT:
+        case ENUM::N_IDENT:
             r = streamPut(s, match.identities);
             break;
-        case BlastMatchFieldEnum::MISMATCH:
+        case ENUM::MISMATCH:
             r = streamPut(s, match.mismatches);
             break;
-        case BlastMatchFieldEnum::POSITIVE:
+        case ENUM::POSITIVE:
             r = streamPut(s, match.positives);
             break;
-        case BlastMatchFieldEnum::GAP_OPEN:
+        case ENUM::GAP_OPEN:
             r = streamPut(s, match.gapOpenings);
             break;
-        case BlastMatchFieldEnum::GAPS:
+        case ENUM::GAPS:
             r = streamPut(s, match.gaps);
             break;
-        case BlastMatchFieldEnum::P_POS:
+        case ENUM::P_POS:
             r = streamPut(s, double(match.positives) * 100 / match.aliLength);
             break;
-        case BlastMatchFieldEnum::FRAMES:
+        case ENUM::FRAMES:
             if (match.qFrame > 0)
                 r = streamPut(s, '+');
             r += streamPut(s, match.qFrame);
@@ -475,60 +502,60 @@ _writeField(TStream & s,
                 r += streamPut(s, '+');
             r += streamPut(s, match.sFrame);
             break;
-        case BlastMatchFieldEnum::Q_FRAME:
+        case ENUM::Q_FRAME:
             if (match.qFrame > 0)
                 r = streamPut(s, '+');
             r += streamPut(s, match.qFrame);
             break;
-        case BlastMatchFieldEnum::S_FRAME:
+        case ENUM::S_FRAME:
             if (match.sFrame > 0)
                 r = streamPut(s, '+');
             r += streamPut(s, match.sFrame);
             break;
-//         case BlastMatchFieldEnum::BTOP: streamPut( * ); break;
-//         case BlastMatchFieldEnum::S_TAX_IDS: streamPut( * ); break;
-//         case BlastMatchFieldEnum::S_SCI_NAMES: streamPut( * ); break;
-//         case BlastMatchFieldEnum::S_COM_NAMES: streamPut( * ); break;
-//         case BlastMatchFieldEnum::S_BLAST_NAMES: streamPut( * ); break;
-//         case BlastMatchFieldEnum::S_S_KINGDOMS: streamPut( * ); break;
-//         case BlastMatchFieldEnum::S_TITLE: streamPut( * ); break;
-//         case BlastMatchFieldEnum::S_ALL_TITLES: streamPut( * ); break;
-//         case BlastMatchFieldEnum::S_STRAND: streamPut( * ); break;
-//         case BlastMatchFieldEnum::Q_COV_S: streamPut( * ); break;
-//         case BlastMatchFieldEnum::Q_COV_HSP:
+//         case ENUM::BTOP: streamPut( * ); break;
+//         case ENUM::S_TAX_IDS: streamPut( * ); break;
+//         case ENUM::S_SCI_NAMES: streamPut( * ); break;
+//         case ENUM::S_COM_NAMES: streamPut( * ); break;
+//         case ENUM::S_BLAST_NAMES: streamPut( * ); break;
+//         case ENUM::S_S_KINGDOMS: streamPut( * ); break;
+//         case ENUM::S_TITLE: streamPut( * ); break;
+//         case ENUM::S_ALL_TITLES: streamPut( * ); break;
+//         case ENUM::S_STRAND: streamPut( * ); break;
+//         case ENUM::Q_COV_S: streamPut( * ); break;
+//         case ENUM::Q_COV_HSP:
     };
     return r;
 }
 
 // ----------------------------------------------------------------------------
-// Function _writeFields() [ match object given]
+// Function _writeFields() [match object given]
 // ----------------------------------------------------------------------------
 
 template <typename TStream,
-          typename TTag,
-          typename TField,
           typename TQId,
           typename TSId,
           typename TPos,
-          typename TAlign>
+          typename TAlign,
+          typename TFieldList,
+          typename TFormat>
 inline int
-_writeFields(TStream & s,
-             BlastMatch<TQid, TSId, TPos, TAlign> const & match,
+_writeFields(TStream & stream,
+             BlastMatch<TQId, TSId, TPos, TAlign> const & match,
              TFieldList const & fields,
-             TTag const &)
+             TFormat const &)
 {
     int ret = 0;
     for (auto it = begin(fields), itEnd = end(fields), itBack = itEnd - 1;
          it != itEnd;
          ++it)
     {
-        ret = writeField(s, match, *it, TTag());
+        ret = writeField(stream, match, *it, TFormat());
         if (ret)
             return ret;
 
         if (it != itBack)
         {
-            streamPut(stream, _seperatorString(TTag()));
+            streamPut(stream, _seperatorString(TFormat()));
             if (ret)
                 return ret;
         }
@@ -539,20 +566,24 @@ _writeFields(TStream & s,
 // ----------------------------------------------------------------------------
 
 
-template <typename TStream, typename TTag>
+template <typename TStream, BlastFormatFile f, BlastFormatProgram p,
+          BlastFormatGeneration g>
 inline int
-_writeFields(TStream & /**/, TTag const & /*tag*/)
+_writeFields(TStream & /**/,
+             BlastFormat<f, p, g> const & /*tag*/)
 {
     return 0;
 }
 
-template <typename TStream, typename TField, typename... TFields, typename TTag>
+template <typename TStream, typename TField, typename... TFields,
+          BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
 inline int
 _writeFields(TStream & stream,
-             TTag const & /*tag*/,
+             BlastFormat<f, p, g> const & /*tag*/,
              TField const & field1, TFields const & ... fields)
 {
-    int ret = streamPut(stream, _seperatorString(TTag()));
+    typedef BlastFormat<f, p, g> TFormat;
+    int ret = streamPut(stream, _seperatorString(TFormat()));
     if (ret)
         return ret;
 
@@ -560,7 +591,7 @@ _writeFields(TStream & stream,
     if (ret)
         return ret;
 
-    return _writeFields(stream, TTag(), fields... );
+    return _writeFields(stream, TFormat(), fields... );
 }
 
 
@@ -905,7 +936,7 @@ writeHeader(TStream & /**/,
  * character in NCBI BLAST, this is also done by default here.
  * By passing the fields variable you manually specify which columns you want to
  * print, the same conversions mentioned above will me made. See 
- * @link BlastMatchFieldEnum @endlink for a list of fields available.
+ * @link BlastMatchField<>::Enum @endlink for a list of fields available.
  *
  * The second signature allows an arbitrary amount of and
  * arbitrary typed columns to be printed. If you do this and you use the
@@ -918,7 +949,7 @@ writeHeader(TStream & /**/,
  * additional columns with custom data.
  *
  * @param stream    The file to write to (FILE, fstream, @link Stream @endlink ...)
- * @param fields    A @link Sequence @endlink of @link BlastMatchFieldEnum @endlink
+ * @param fields    A @link Sequence @endlink of @link BlastMatchField<>::Enum @endlink
  * @param blastMatch    The @link BlastMatch @endlink you wish to print.
  * @param blastFormatTag The @link BlastFormat @endlink specifier.
  * @param columns...   Custom columns
@@ -953,7 +984,7 @@ writeMatch(TStream & stream,
 }
 
 // Function for match object and manually given colummns
-template <typename TStream, typename TBlastMatch, typename TBlastMatchFields
+template <typename TStream, typename TBlastMatch, typename TBlastMatchFields,
           BlastFormatProgram p, BlastFormatGeneration g>
 inline int
 writeMatch(TStream & stream, TBlastMatch const & match,
@@ -972,7 +1003,7 @@ writeMatch(TStream & stream, TBlastMatch const & match,
            BlastFormat<BlastFormatFile::TABULAR, p, g> const & /*tag*/)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-    return _writeFields(stream, match, _blastMatchDefaultFields, TFormat());
+    return _writeFields(stream, match, BlastMatchField<>::defaults, TFormat());
 }
 
 // writeMatch TABULAR_WITH_HEADER equal to TABULAR
@@ -990,7 +1021,7 @@ writeMatch(TStream & stream,
     return writeMatch(stream, TFormat(), field1, fields... );
 }
 
-template <typename TStream, typename TBlastMatch, typename TBlastMatchFields
+template <typename TStream, typename TBlastMatch, typename TBlastMatchFields,
           BlastFormatProgram p, BlastFormatGeneration g>
 inline int
 writeMatch(TStream & stream, TBlastMatch const & match,
@@ -1008,7 +1039,7 @@ writeMatch(TStream & stream, TBlastMatch const & match,
             BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &/**/)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-    return writeMatch(stream, match, _blastMatchDefaultFields, TFormat());
+    return writeMatch(stream, match, BlastMatchField<>::defaults, TFormat());
 }
 
 // ----------------------------------------------------------------------------
