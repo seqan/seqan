@@ -98,8 +98,6 @@ struct BlastMatchField
         Q_COV_HSP
     };
 
-    static const String<Enum const> defaults;
-
     static constexpr char const * const optionLabels [] =
     {
         "qseqid",
@@ -291,26 +289,48 @@ struct BlastMatchField
         false,
         false
     };
-};
 
+    // defaults as list
+    static constexpr std::array<Enum const, 12> defaults
+    {
+        {
+            Enum::Q_SEQ_ID,
+            Enum::S_SEQ_ID,
+            Enum::P_IDENT,
+            Enum::LENGTH,
+            Enum::MISMATCH,
+            Enum::GAP_OPEN,
+            Enum::Q_START,
+            Enum::Q_END,
+            Enum::S_START,
+            Enum::S_END,
+            Enum::E_VALUE,
+            Enum::BIT_SCORE
+//             BlastMatchField<TVoidSpec>::Enum::Q_SEQ_ID,
+//             BlastMatchField<TVoidSpec>::Enum::S_SEQ_ID,
+//             BlastMatchField<TVoidSpec>::Enum::P_IDENT,
+//             BlastMatchField<TVoidSpec>::Enum::LENGTH,
+//             BlastMatchField<TVoidSpec>::Enum::MISMATCH,
+//             BlastMatchField<TVoidSpec>::Enum::GAP_OPEN,
+//             BlastMatchField<TVoidSpec>::Enum::Q_START,
+//             BlastMatchField<TVoidSpec>::Enum::Q_END,
+//             BlastMatchField<TVoidSpec>::Enum::S_START,
+//             BlastMatchField<TVoidSpec>::Enum::S_END,
+//             BlastMatchField<TVoidSpec>::Enum::E_VALUE,
+//             BlastMatchField<TVoidSpec>::Enum::BIT_SCORE
+        }
+    };
 
-//TODO make all the below static constexpr template foo
-template <typename TVoidSpec>
-String<typename BlastMatchField<TVoidSpec>::Enum const> const
-BlastMatchField<TVoidSpec>::defaults =
-{
-    BlastMatchField<TVoidSpec>::Enum::Q_SEQ_ID,
-    BlastMatchField<TVoidSpec>::Enum::S_SEQ_ID,
-    BlastMatchField<TVoidSpec>::Enum::P_IDENT,
-    BlastMatchField<TVoidSpec>::Enum::LENGTH,
-    BlastMatchField<TVoidSpec>::Enum::MISMATCH,
-    BlastMatchField<TVoidSpec>::Enum::GAP_OPEN,
-    BlastMatchField<TVoidSpec>::Enum::Q_START,
-    BlastMatchField<TVoidSpec>::Enum::Q_END,
-    BlastMatchField<TVoidSpec>::Enum::S_START,
-    BlastMatchField<TVoidSpec>::Enum::S_END,
-    BlastMatchField<TVoidSpec>::Enum::E_VALUE,
-    BlastMatchField<TVoidSpec>::Enum::BIT_SCORE
+    // defaults as string (faster); with constexpr string handling this could
+    // be replaced
+//     static constexpr
+//     const char * _defaultColumnLabels
+//     {
+//         return "query id, subject id, % identity, alignment " \
+//             "length, mismatches, gap opens, q. start, q. end, s. " \
+//             "start, s. end, evalue, bit score";
+//     }
+
 };
 
 template <typename TVoidSpec>
@@ -328,6 +348,11 @@ BlastMatchField<TVoidSpec>::descriptions[44];
 template <typename TVoidSpec>
 constexpr bool const
 BlastMatchField<TVoidSpec>::implemented[44];
+
+//TODO make all the below static constexpr template foo
+template <typename TVoidSpec>
+constexpr std::array<typename BlastMatchField<TVoidSpec>::Enum const, 12>
+BlastMatchField<TVoidSpec>::defaults;
 
 // ============================================================================
 // Metafunctions
@@ -377,7 +402,6 @@ _firstOcc(TString const & str, typename Value<TString>::Type const & val)
 // ----------------------------------------------------------------------------
 
 template <typename TStream,
-          typename TField,
           typename TQId,
           typename TSId,
           typename TPos,
@@ -494,23 +518,23 @@ _writeField(TStream & s,
             r = streamPut(s, double(match.positives) * 100 / match.aliLength);
             break;
         case ENUM::FRAMES:
-            if (match.qFrame > 0)
+            if (match.qFrameShift > 0)
                 r = streamPut(s, '+');
-            r += streamPut(s, match.qFrame);
+            r += streamPut(s, match.qFrameShift);
             r += streamPut(s, '/');
-            if (match.sFrame > 0)
+            if (match.sFrameShift > 0)
                 r += streamPut(s, '+');
-            r += streamPut(s, match.sFrame);
+            r += streamPut(s, match.sFrameShift);
             break;
         case ENUM::Q_FRAME:
-            if (match.qFrame > 0)
+            if (match.qFrameShift > 0)
                 r = streamPut(s, '+');
-            r += streamPut(s, match.qFrame);
+            r += streamPut(s, match.qFrameShift);
             break;
         case ENUM::S_FRAME:
-            if (match.sFrame > 0)
+            if (match.sFrameShift > 0)
                 r = streamPut(s, '+');
-            r += streamPut(s, match.sFrame);
+            r += streamPut(s, match.sFrameShift);
             break;
 //         case ENUM::BTOP: streamPut( * ); break;
 //         case ENUM::S_TAX_IDS: streamPut( * ); break;
@@ -523,6 +547,8 @@ _writeField(TStream & s,
 //         case ENUM::S_STRAND: streamPut( * ); break;
 //         case ENUM::Q_COV_S: streamPut( * ); break;
 //         case ENUM::Q_COV_HSP:
+        default:
+            r = streamPut(s, "n/i"); // not implemented
     };
     return r;
 }
@@ -545,24 +571,61 @@ _writeFields(TStream & stream,
              TFormat const &)
 {
     int ret = 0;
-    for (auto it = begin(fields), itEnd = end(fields), itBack = itEnd - 1;
+
+    for (auto it = seqan::begin(fields), itB = it, itEnd = seqan::end(fields);
          it != itEnd;
          ++it)
     {
-        ret = writeField(stream, match, *it, TFormat());
-        if (ret)
-            return ret;
-
-        if (it != itBack)
+        if (it != itB)
         {
             streamPut(stream, _seperatorString(TFormat()));
             if (ret)
                 return ret;
         }
+
+        ret = _writeField(stream, match, *it, TFormat());
+        if (ret)
+            return ret;
     }
+
+    return streamPut(stream, '\n');
 }
+
 // ----------------------------------------------------------------------------
-// Function _writeFields() [no match object given]
+// Function _writeFieldLabels()
+// ----------------------------------------------------------------------------
+
+template <typename TStream,
+          typename TFieldList,
+          typename TFormat>
+inline int
+_writeFieldLabels(TStream & stream,
+                  TFieldList const & fields,
+                  TFormat const &)
+{
+    int ret = 0;
+
+    for (auto it = seqan::begin(fields), itB = it, itEnd = seqan::end(fields);
+         it != itEnd;
+         ++it)
+    {
+        if (it != itB)
+        {
+            streamPut(stream, _seperatorString(TFormat()));
+            if (ret)
+                return ret;
+        }
+
+        ret = streamPut(stream, BlastMatchField<>::columnLabels[uint8_t(*it)]);
+        if (ret)
+            return ret;
+    }
+
+    return streamPut(stream, '\n');
+}
+
+// ----------------------------------------------------------------------------
+// Function _writeFields() [no match object given] // or labels
 // ----------------------------------------------------------------------------
 
 
@@ -593,8 +656,6 @@ _writeFields(TStream & stream,
 
     return _writeFields(stream, TFormat(), fields... );
 }
-
-
 
 // ----------------------------------------------------------------------------
 // Function writeHeader()
@@ -635,12 +696,12 @@ _writeFields(TStream & stream,
 template <typename TStream, typename TString1, typename TString2,
           BlastFormatProgram p, BlastFormatGeneration g>
 inline int
-_writeHeaderWithoutFields(TStream & stream,
-                          TString1 const & qryId,
-                          TString2 const & dbName,
-                          BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                                      p,
-                                      g> const & /*tag*/)
+_writeHeaderWithoutColumnLabels(TStream & stream,
+                                TString1 const & qryId,
+                                TString2 const & dbName,
+                                BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                                            p,
+                                            g> const & /*tag*/)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,p,g> TFormat;
 
@@ -759,7 +820,7 @@ writeHeader(TStream & stream,
                         p,
                         g> TFormat;
 
-    int ret = _writeHeaderWithoutFields(stream, qryId, dbName, TFormat());
+    int ret = _writeHeaderWithoutColumnLabels(stream, qryId, dbName, TFormat());
     if (ret)
         return ret;
 

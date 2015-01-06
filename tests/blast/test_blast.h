@@ -664,11 +664,11 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise)
     "Length=0\n"
     "\n"
     " Score =  23.1 bits (48), Expect =  0.0005\n"
-    " Identities = 10/14 (71%), Positives = 12/14 (85%), Gaps = 2/14 (14%)\n"
+    " Identities = 10/14 (71%), Positives = 12/14 (86%), Gaps = 2/14 (14%)\n"
     "\n"
-    "Query  1      VAYAQTKPRRLCFP  14   \n"
-    "              VAYAQ  PR+LC+P\n"
-    "Sbjct  79     VAYAQ--PRKLCYP  90   \n"
+    "Query  1   VAYAQTKPRRLCFP  14\n"
+    "           VAYAQ  PR+LC+P\n"
+    "Sbjct  79  VAYAQ--PRKLCYP  90\n"
     "\n"
     "> Subject_Numero_Dos\n"
     "Length=0\n"
@@ -676,9 +676,9 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise)
     " Score =  22.3 bits (46), Expect =  0.0009\n"
     " Identities = 8/8 (100%), Positives = 8/8 (100%), Gaps = 0/8 (0%)\n"
     "\n"
-    "Query  3      YAQPRKLC  10   \n"
-    "              YAQPRKLC\n"
-    "Sbjct  157    YAQPRKLC  164  \n"
+    "Query  3    YAQPRKLC  10 \n"
+    "            YAQPRKLC\n"
+    "Sbjct  157  YAQPRKLC  164\n"
     "\n"
     "\n"
     "Query= Query_Numero_Dos\n"
@@ -699,9 +699,9 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise)
     " Score =  16.9 bits (32), Expect =  0.03\n"
     " Identities = 7/8 (87%), Positives = 8/8 (100%), Gaps = 0/8 (0%)\n"
     "\n"
-    "Query  1      AVITSWTQ  8    \n"
-    "              AVITS+TQ\n"
-    "Sbjct  184    AVITSFTQ  191  \n"
+    "Query  1    AVITSWTQ  8  \n"
+    "            AVITS+TQ\n"
+    "Sbjct  184  AVITSFTQ  191\n"
     "\n"
     "> Subject_Numero_Dos\n"
     "Length=0\n"
@@ -709,27 +709,27 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise)
     " Score =  18.9 bits (37), Expect =  0.007\n"
     " Identities = 8/8 (100%), Positives = 8/8 (100%), Gaps = 0/8 (0%)\n"
     "\n"
-    "Query  1      AVITSFTQ  8    \n"
-    "              AVITSFTQ\n"
-    "Sbjct  10     AVITSFTQ  17   \n"
+    "Query  1   AVITSFTQ  8 \n"
+    "           AVITSFTQ\n"
+    "Sbjct  10  AVITSFTQ  17\n"
     "\n"
     "\n"
     "Matrix:BLOSUM62\n"
     "Gap Penalties: Existence: -11, Extension: -1\n\n");
 
-//     if (contents != compString)
-//     {
-//         for (uint32_t i = 0; i < length(contents); ++i)
-//         {
-//             if (contents[i] != compString[i])
-//             {
-//                 std::cout << contents.substr(0,i) << "\n";
-//                 std::cout << "CONT: \"" << contents[i] << "\"\n";
-//                 std::cout << "COMP: \"" << compString[i] << "\"\n";
-//                 break;
-//             }
-//         }
-//     }
+    if (contents != compString)
+    {
+        for (uint32_t i = 0; i < length(contents); ++i)
+        {
+            if (contents[i] != compString[i])
+            {
+                std::cout << contents.substr(0,i) << "\n";
+                std::cout << "CONT: \"" << contents[i] << "\"\n";
+                std::cout << "COMP: \"" << compString[i] << "\"\n";
+                break;
+            }
+        }
+    }
     SEQAN_ASSERT_EQ(contents, compString);
 }
 

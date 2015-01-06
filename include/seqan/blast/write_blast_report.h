@@ -511,30 +511,29 @@ _writeMatchOneLiner(TStream             & stream,
 // Function writeRecord()
 // ----------------------------------------------------------------------------
 
-constexpr
-const char * _uint_label(unsigned short)
-{
-    return "%uh";
-}
-
-constexpr
-const char * _uint_label(unsigned int)
-{
-    return "%u";
-}
-
-constexpr
-const char * _uint_label(unsigned long)
-{
-    return "%ul";
-}
-
-
-constexpr
-const char * _uint_label(unsigned long long)
-{
-    return "%ull";
-}
+// constexpr
+// const char * _uint_label(unsigned short)
+// {
+//     return "%uh";
+// }
+// 
+// constexpr
+// const char * _uint_label(unsigned int)
+// {
+//     return "%u";
+// }
+// 
+// constexpr
+// const char * _uint_label(unsigned long)
+// {
+//     return "%ul";
+// }
+// 
+// constexpr
+// const char * _uint_label(unsigned long long)
+// {
+//     return "%ull"; // requires C99
+// }
 
 template <typename TStream,
           typename TDbSpecs,
@@ -591,20 +590,22 @@ writeTop(TStream                                            & stream,
     if (ret)
         return ret;
     char buffer[40] = "";
-    sprintf(buffer,
-            _uint_label(dbSpecs.dbNumberOfSeqs),
-            dbSpecs.dbNumberOfSeqs); //TODO insert commata
-    ret = streamPut(stream, buffer);
+//     sprintf(buffer,
+//             _uint_label(dbSpecs.dbNumberOfSeqs),
+//             dbSpecs.dbNumberOfSeqs); //TODO insert commata
+//     ret = streamPut(stream, buffer);
+    ret = streamPut(stream, dbSpecs.dbNumberOfSeqs);
     if (ret)
         return ret;
     ret = streamPut(stream, " sequences; ");
     if (ret)
         return ret;
         clear(buffer);
-    sprintf(buffer,
-            _uint_label(dbSpecs.dbTotalLength),
-            dbSpecs.dbTotalLength); //TODO insert commata
-    ret = streamPut(stream, buffer);
+//     sprintf(buffer,
+//             _uint_label(dbSpecs.dbTotalLength),
+//             dbSpecs.dbTotalLength); //TODO insert commata
+//     ret = streamPut(stream, buffer);
+    ret = streamPut(stream, dbSpecs.dbTotalLength);
     if (ret)
         return ret;
     ret = streamPut(stream, " total letters\n\n");
