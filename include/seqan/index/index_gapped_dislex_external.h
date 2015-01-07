@@ -137,7 +137,8 @@ struct DislexTupleComp_ :
         TSize n = std::min(static_cast<TSize>(_weight), std::min(rla, rlb) );
         for (TSize i = 0; i < n; i++, ++sa, ++sb)
         {
-            if (*sa == *sb) continue;
+            if (*sa == *sb)
+                continue;
             return (*sa < *sb)? -1 : 1;
         }
 
@@ -281,7 +282,8 @@ struct DislexTupleCompMulti_  :
         TSize n = std::min(static_cast<TSize>(_weight), std::min(rla, rlb) );
         for (TSize i = 0; i < n; i++, ++sa, ++sb)
         {
-            if (*sa == *sb) continue;
+            if (*sa == *sb)
+                continue;
             return (*sa < *sb)? -1 : 1;
         }
 

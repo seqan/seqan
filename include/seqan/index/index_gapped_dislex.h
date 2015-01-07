@@ -133,7 +133,8 @@ struct _dislexReverseTransform :
     {
         TInput bb, r, ret;
 
-        if (x < (_s - _c - 1) * _b) {
+        if (x < (_s - _c - 1) * _b)
+        {
             bb = _s - 1 - (x / _b);
             r = x - (_s - bb - 1) * _b;
             ret = (r * _s) + _c - bb + _s ;
@@ -176,7 +177,8 @@ struct _dislexReverseTransformMulti :
         TInput b = n / _s;
         TInput c = n % _s;
         TInput bb, r, i = ret.i2;
-        if (i < (_s - c - 1) * b) {
+        if (i < (_s - c - 1) * b)
+        {
             bb = _s - 1 - (i / b);
             r = i - (_s - bb - 1) * b;
             ret.i2 = (r * _s) + c - bb + _s ;

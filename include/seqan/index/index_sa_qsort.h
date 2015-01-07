@@ -74,7 +74,8 @@ struct SuffixLess_<TSAValue, TText, void> :
         if (a == b) return false;
         TIter itA = _begin + a;
         TIter itB = _begin + b;
-        if (a <= b) {
+        if (a <= b)
+        {
             for(; itB != _end; ++itB, ++itA) {
                 if (ordLess(*itA, *itB)) return true;
                 if (ordLess(*itB, *itA)) return false;
@@ -166,7 +167,8 @@ struct SuffixLess_<TSAValue, StringSet<TString, TSetSpec> const, void > :
 			TIter itB = begin(getValue(_text, getSeqNo(b)), Standard()) + getSeqOffset(b);
 			TIter itAEnd = end(getValue(_text, getSeqNo(a)), Standard());
 			TIter itBEnd = end(getValue(_text, getSeqNo(b)), Standard());
-			if (itAEnd - itA < itBEnd - itB) {
+			if (itAEnd - itA < itBEnd - itB) 
+            {
 				for(; itA != itAEnd; ++itA, ++itB) {
 					if (ordLess(*itA, *itB)) return true;
 					if (ordLess(*itB, *itA)) return false;

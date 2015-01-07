@@ -242,12 +242,14 @@ struct Pipe< TInput, Multi<GappedTupler<TShape, omitLast, TPack>, TPair, TLimits
     {
         // process next sequence
         if (eos())
+        {
             if (--lastTuples == 0)
             {
                 assignValueI1(tmp.i1, getValueI1(static_cast<TPair>(localPos)));
                 fill();
                 return *this;
             }
+        }
 
         assignValueI2(tmp.i1, getValueI2(tmp.i1) + 1);
 
@@ -277,12 +279,14 @@ struct Pipe< TInput, Multi<GappedTupler<TShape, omitLast, TPack>, TPair, TLimits
         do {
             buffIndex = 0;
             if (!eof(in))
+            {
                 do {
                     buffer[buffIndex] = *in;
                     ++in;
                     ++buffIndex;
                     ++localPos;
                 } while ((buffIndex < BufferSize) && !eos());
+            }
 
             // lastTuples = 1 (omitLast true) or span (omitLast false)
             lastTuples = TuplerNumberOfLastTuples_<BufferSize, omitLast>::VALUE;
@@ -372,9 +376,9 @@ struct Pipe< TInput, GappedTupler<TShape, omitLast, TPack> >
         memmove(buffer, buffer+1, (BufferSize-1)*sizeof(TValue) );
 
         if (lastTuples < TuplerNumberOfLastTuples_<BufferSize, omitLast>::VALUE)
-            buffer[BufferSize - 1] = TValue();
-        else
         {
+            buffer[BufferSize - 1] = TValue();
+        } else {
             buffer[BufferSize - 1] = *in;
             ++in;
         }
@@ -457,12 +461,14 @@ struct Pipe< TInput, Multi<GappedTupler<TShape, omitLast, TPack>, TPair, TLimits
     {
         // process next sequence
         if (eos())
+        {
             if (--lastTuples == 0)
             {
                 assignValueI1(tmp.i1, getValueI1(static_cast<TPair>(localPos)));
                 fill();
                 return *this;
             }
+        }
 
         // shift left 1 character
         memmove(buffer, buffer+1, (BufferSize-1)*sizeof(TValue) );
@@ -471,8 +477,7 @@ struct Pipe< TInput, Multi<GappedTupler<TShape, omitLast, TPack>, TPair, TLimits
         if (lastTuples < TuplerNumberOfLastTuples_<BufferSize, omitLast>::VALUE)
         {
             buffer[BufferSize - 1] = TValue();
-        } else
-        {
+        } else {
             buffer[BufferSize - 1] = *in;
             ++localPos;
             ++in;
@@ -487,12 +492,14 @@ struct Pipe< TInput, Multi<GappedTupler<TShape, omitLast, TPack>, TPair, TLimits
         do {
             unsigned i = 0;
             if (!eof(in))
+            {
                 do {
                     buffer[i] = *in;
                     ++in;
                     ++i;
                     ++localPos;
                 } while ((i < BufferSize) && !eos());
+            }
             lastTuples = TuplerNumberOfLastTuples_<BufferSize, omitLast>::VALUE;
 
             // eventually, reduce the number of half-filled tuples
