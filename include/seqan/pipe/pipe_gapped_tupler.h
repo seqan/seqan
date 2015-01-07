@@ -168,7 +168,8 @@ struct Pipe< TInput, GappedTupler<TShape, omitLast, TPack> >
     }
 
 
-    inline void fill() {
+    inline void fill() 
+    {
 
         for(buffIndex = 0; buffIndex < BufferSize && !eof(in); ++buffIndex, ++in)
             buffer[buffIndex] = *in;
@@ -359,11 +360,13 @@ struct Pipe< TInput, GappedTupler<TShape, omitLast, TPack> >
             carePos[i] = cpos[i];
     }
 
-    inline TOutput const & operator*() const {
+    inline TOutput const & operator*() const
+    {
         return tmp;
     }
 
-    inline Pipe& operator++() {
+    inline Pipe& operator++()
+    {
         if (eof(in)) --lastTuples;
 
         // it's just a jump to the left
@@ -385,7 +388,8 @@ struct Pipe< TInput, GappedTupler<TShape, omitLast, TPack> >
     }
 
 
-    inline void fill() {
+    inline void fill()
+    {
 
         unsigned i;
         for(i = 0; i < BufferSize && !eof(in); ++i, ++in)
@@ -591,6 +595,7 @@ _length(Pipe<TInput, GappedTupler< TShape, omitLast, TPack > > const &me, True c
 {
     return length(me.in);
 }
+
 template <typename TInput, typename TShape, bool omitLast, typename TPack >
 inline typename Size< Pipe< TInput, GappedTupler<TShape, omitLast, TPack> > >::Type
 _length(Pipe<TInput, GappedTupler< TShape, omitLast, TPack > > const &me, False const &)
@@ -602,6 +607,7 @@ _length(Pipe<TInput, GappedTupler< TShape, omitLast, TPack > > const &me, False 
     else
         return 0;
 }
+
 template <typename TInput, typename TShape, bool omitLast, typename TPack >
 inline typename Size< Pipe< TInput, GappedTupler<TShape, omitLast, TPack> > >::Type
 length(Pipe<TInput, GappedTupler< TShape, omitLast, TPack > > const &me)
@@ -663,6 +669,7 @@ _length(Pipe< TInput, Multi<GappedTupler< TShape, omitLast, TPack >, TPair, TLim
 {
     return length(me.in);
 }
+
 template <typename TInput, typename TShape, bool omitLast, typename TPack, typename TPair, typename TLimitsString >
 inline typename Size< Pipe< TInput, Multi<GappedTupler< TShape, omitLast, TPack >, TPair, TLimitsString> > >::Type
 _length(Pipe< TInput, Multi<GappedTupler< TShape, omitLast, TPack >, TPair, TLimitsString> > const &me, False const &)
@@ -676,6 +683,7 @@ _length(Pipe< TInput, Multi<GappedTupler< TShape, omitLast, TPack >, TPair, TLim
     else
         return 0;
 }
+
 template <typename TInput, typename TShape, bool omitLast, typename TPack, typename TPair, typename TLimitsString >
 inline typename Size< Pipe< TInput, Multi<GappedTupler< TShape, omitLast, TPack >, TPair, TLimitsString> > >::Type
 length(Pipe< TInput, Multi<GappedTupler< TShape, omitLast, TPack >, TPair, TLimitsString> > const &me)

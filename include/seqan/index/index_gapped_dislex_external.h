@@ -589,11 +589,13 @@ struct Pipe<TInput, Multi<DislexExternal<TShape, TSACA>, TPair, TLimits> >
         ignoreUnusedVariableWarning(dummy);
     }
 
-    inline typename Value<Pipe>::Type const operator*() {
+    inline typename Value<Pipe>::Type const operator*()
+    {
         return *in;
     }
 
-    inline Pipe& operator++() {
+    inline Pipe& operator++()
+    {
         ++in;
         return *this;
     }
