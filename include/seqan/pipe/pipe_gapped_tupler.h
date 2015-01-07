@@ -154,9 +154,7 @@ struct Pipe< TInput, GappedTupler<TShape, omitLast, TPack> >
             ++buffIndex;
             if (buffIndex >= BufferSize)
                 buffIndex = 0;
-        }
-        else
-        {
+        } else {
             buffer[buffIndex] = *in;
             ++in;
             ++buffIndex;
@@ -259,9 +257,7 @@ struct Pipe< TInput, Multi<GappedTupler<TShape, omitLast, TPack>, TPair, TLimits
             ++buffIndex;
             if (buffIndex >= BufferSize)
                 buffIndex = 0;
-        }
-        else
-        {
+        } else {
             buffer[buffIndex] = *in;
             ++localPos;
             ++in;
@@ -293,9 +289,9 @@ struct Pipe< TInput, Multi<GappedTupler<TShape, omitLast, TPack>, TPair, TLimits
 
             // eventually, reduce the number of half-filled tuples
             if (lastTuples <= BufferSize - buffIndex)
-                lastTuples = 0;
-            else
             {
+                lastTuples = 0;
+            } else {
                 lastTuples -= BufferSize - buffIndex;
 
                 // fill up with null chars
@@ -504,9 +500,9 @@ struct Pipe< TInput, Multi<GappedTupler<TShape, omitLast, TPack>, TPair, TLimits
 
             // eventually, reduce the number of half-filled tuples
             if (lastTuples <= BufferSize - i)
-                lastTuples = 0;
-            else
             {
+                lastTuples = 0;
+            } else {
                 lastTuples -= BufferSize - i;
                 
                 // fill up with null chars
