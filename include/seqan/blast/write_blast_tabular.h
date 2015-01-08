@@ -52,6 +52,7 @@ struct BlastMatchField
 {
     enum class Enum : uint8_t
     {
+        STD,
         Q_SEQ_ID,
         Q_GI,
         Q_ACC,
@@ -98,8 +99,28 @@ struct BlastMatchField
         Q_COV_HSP
     };
 
+    // this is what Enum::STD stands for
+    static constexpr std::array<Enum const, 12> defaults
+    {
+        {
+            Enum::Q_SEQ_ID,
+            Enum::S_SEQ_ID,
+            Enum::P_IDENT,
+            Enum::LENGTH,
+            Enum::MISMATCH,
+            Enum::GAP_OPEN,
+            Enum::Q_START,
+            Enum::Q_END,
+            Enum::S_START,
+            Enum::S_END,
+            Enum::E_VALUE,
+            Enum::BIT_SCORE
+        }
+    };
+
     static constexpr char const * const optionLabels [] =
     {
+        "std",
         "qseqid",
         "qgi",
         "qacc",
@@ -148,6 +169,9 @@ struct BlastMatchField
 
     static constexpr char const * const columnLabels [] =
     {
+        "query id, subject id, % identity, alignment "
+         "length, mismatches, gap opens, q. start, q. end, s. "
+         "start, s. end, evalue, bit score",
         "query id",
         "query gi",
         "query acc.",
@@ -196,6 +220,11 @@ struct BlastMatchField
 
     static constexpr char const * const descriptions [] =
     {
+        "Default 12 columns (Query Seq-id, Subject Seq-id, Percentage of "
+         "identical matches, Alignment length, Number of mismatches, Number of "
+         "gap openings, Start of alignment in query, End of alignment in query,"
+         " Start of alignment in subject, End of alignment in subject, Expect "
+         "value, Bit score",
         "Query Seq-id",
         "Query GI",
         "Query accesion",
@@ -245,6 +274,7 @@ struct BlastMatchField
     static constexpr bool const implemented [] =
     {
         true,
+        true,
         false,
         false,
         false,
@@ -289,67 +319,24 @@ struct BlastMatchField
         false,
         false
     };
-
-    // defaults as list
-    static constexpr std::array<Enum const, 12> defaults
-    {
-        {
-            Enum::Q_SEQ_ID,
-            Enum::S_SEQ_ID,
-            Enum::P_IDENT,
-            Enum::LENGTH,
-            Enum::MISMATCH,
-            Enum::GAP_OPEN,
-            Enum::Q_START,
-            Enum::Q_END,
-            Enum::S_START,
-            Enum::S_END,
-            Enum::E_VALUE,
-            Enum::BIT_SCORE
-//             BlastMatchField<TVoidSpec>::Enum::Q_SEQ_ID,
-//             BlastMatchField<TVoidSpec>::Enum::S_SEQ_ID,
-//             BlastMatchField<TVoidSpec>::Enum::P_IDENT,
-//             BlastMatchField<TVoidSpec>::Enum::LENGTH,
-//             BlastMatchField<TVoidSpec>::Enum::MISMATCH,
-//             BlastMatchField<TVoidSpec>::Enum::GAP_OPEN,
-//             BlastMatchField<TVoidSpec>::Enum::Q_START,
-//             BlastMatchField<TVoidSpec>::Enum::Q_END,
-//             BlastMatchField<TVoidSpec>::Enum::S_START,
-//             BlastMatchField<TVoidSpec>::Enum::S_END,
-//             BlastMatchField<TVoidSpec>::Enum::E_VALUE,
-//             BlastMatchField<TVoidSpec>::Enum::BIT_SCORE
-        }
-    };
-
-    // defaults as string (faster); with constexpr string handling this could
-    // be replaced
-//     static constexpr
-//     const char * _defaultColumnLabels
-//     {
-//         return "query id, subject id, % identity, alignment " \
-//             "length, mismatches, gap opens, q. start, q. end, s. " \
-//             "start, s. end, evalue, bit score";
-//     }
-
 };
 
 template <typename TVoidSpec>
 constexpr char const * const
-BlastMatchField<TVoidSpec>::optionLabels[44];
+BlastMatchField<TVoidSpec>::optionLabels[45];
 
 template <typename TVoidSpec>
 constexpr char const * const
-BlastMatchField<TVoidSpec>::columnLabels[44];
+BlastMatchField<TVoidSpec>::columnLabels[45];
 
 template <typename TVoidSpec>
 constexpr char const * const
-BlastMatchField<TVoidSpec>::descriptions[44];
+BlastMatchField<TVoidSpec>::descriptions[45];
 
 template <typename TVoidSpec>
 constexpr bool const
-BlastMatchField<TVoidSpec>::implemented[44];
+BlastMatchField<TVoidSpec>::implemented[45];
 
-//TODO make all the below static constexpr template foo
 template <typename TVoidSpec>
 constexpr std::array<typename BlastMatchField<TVoidSpec>::Enum const, 12>
 BlastMatchField<TVoidSpec>::defaults;
@@ -419,6 +406,9 @@ _writeField(TStream & s,
     int r = 0;
     switch (fieldId)
     {
+        case ENUM::STD:
+            r = _writeFields(s, match, BlastMatchField<>::defaults, TFormat());
+            break;
         case ENUM::Q_SEQ_ID:
             r = streamPut(s, prefix(match.qId, _firstOcc(match.qId, ' ')));
             break;
