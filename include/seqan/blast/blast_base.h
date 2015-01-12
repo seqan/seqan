@@ -843,43 +843,27 @@ _step(signed char const frameShift,
 // streamPut
 // ----------------------------------------------------------------------------
 
-template <typename TStream>
-inline int
-streamPut(TStream & s, char const c)
-{
-    writeValue(s, c);
-    return 0;
-}
-
 // template <typename TStream>
-// inline int
-// streamPut(TStream & s, unsigned char const c)
+// inline void
+// write(TStream & s, char const c)
 // {
 //     writeValue(s, c);
 //     return 0;
 // }
 // 
-// template <typename TStream>
-// inline int
-// streamPut(TStream & s, signed char const c)
+// template <typename TStream,
+//           typename TIn,
+//           typename std::enable_if<std::numeric_limits<TIn>::is_integer &&
+//                          !std::is_same<TIn, char>::value &&
+//                          !std::is_same<TIn, signed char>::value &&
+//                          !std::is_same<TIn, unsigned char>::value, int>::type = 0>
+// inline void
+// write(TStream & s, TIn const c)
 // {
-//     writeValue(s, c);
+//     appendNumber(s, c);
 //     return 0;
 // }
-
-template <typename TStream,
-          typename TIn,
-          typename std::enable_if<std::numeric_limits<TIn>::is_integer &&
-                         !std::is_same<TIn, char>::value &&
-                         !std::is_same<TIn, signed char>::value &&
-                         !std::is_same<TIn, unsigned char>::value, int>::type = 0>
-inline int
-streamPut(TStream & s, TIn const c)
-{
-    appendNumber(s, c);
-    return 0;
-}
-
+/*
 template <typename TStream,
           typename TIn,
           typename std::enable_if<IsSequence<TIn>::VALUE, int>::type = 0>
@@ -888,7 +872,7 @@ streamPut(TStream & s, TIn const & c)
 {
     write(s, c);
     return 0;
-}
+}*/
 
 
 } // namespace seqan

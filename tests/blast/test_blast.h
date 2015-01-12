@@ -291,10 +291,9 @@ _writeCustomFieldsImpl(TFile & file,
                        TDbSpecs const & dbSpecs,
                        TFormat const & /**/)
 {
-    int res = 0;
     for (auto const & r : records)
     {
-        res = writeHeader(file,
+        writeHeader(file,
                           r.qId,
                           dbSpecs.dbName,
                           r.matches.size(),
@@ -306,10 +305,9 @@ _writeCustomFieldsImpl(TFile & file,
                           "gaps",
                           "e-value",
                           "bit score");
-        SEQAN_ASSERT_EQ(res, 0);
         for (auto const & m : r.matches)
         {
-             res = writeMatch(file,
+             writeMatch(file,
                               TFormat(),
                               m.qId,
                               m.sId,
@@ -318,7 +316,6 @@ _writeCustomFieldsImpl(TFile & file,
                               m.gaps,
                               m.eValue,
                               m.bitScore);
-            SEQAN_ASSERT_EQ(res, 0);
         }
     }
 }
@@ -442,20 +439,20 @@ test_blast_write_record_match(TFile & file,
         }
     }
 
-    int res = writeTop(file, dbSpecs, TFormat());
-    SEQAN_ASSERT_EQ(res, 0);
+    writeTop(file, dbSpecs, TFormat());
+//     SEQAN_ASSERT_EQ(res, 0);
     if (!customFields)
     {
         for (int q = 0; q < 2; ++q)
         {
-            res = writeRecord(file, records[q], dbSpecs, TFormat());
-            SEQAN_ASSERT_EQ(res, 0);
+            writeRecord(file, records[q], dbSpecs, TFormat());
+//             SEQAN_ASSERT_EQ(res, 0);
         }
     } else
         _writeCustomFields(file, records, dbSpecs, TFormat());
 
-    res = writeBottom(file, dbSpecs, adapter, TFormat());
-    SEQAN_ASSERT_EQ(res, 0);
+    writeBottom(file, dbSpecs, adapter, TFormat());
+//     SEQAN_ASSERT_EQ(res, 0);
 }
 
 template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
@@ -507,8 +504,8 @@ void test_blast_write_tabular_impl(BlastFormat<f, p, g> const & /**/,
         "Query_Numero_Uno\tSubject_Numero_Dos\t8\t0\t0\t0.000912053\t22.3274\n");
     else
         compString.append(
-        "Query_Numero_Uno\tSubject_Numero_Uno\t71.4286\t14\t2\t1\t1\t12\t79\t92\t0.000534696\t23.0978\n"
-        "Query_Numero_Uno\tSubject_Numero_Dos\t100\t8\t0\t0\t3\t10\t157\t164\t0.000912053\t22.3274\n");
+        "Query_Numero_Uno\tSubject_Numero_Uno\t71.43\t14\t2\t1\t1\t12\t79\t92\t5e-04\t23.1\n"
+        "Query_Numero_Uno\tSubject_Numero_Dos\t100.00\t8\t0\t0\t3\t10\t157\t164\t0.001\t22.3\n");
 
     if (f == BlastFormatFile::TABULAR_WITH_HEADER)
     {
@@ -538,8 +535,8 @@ void test_blast_write_tabular_impl(BlastFormat<f, p, g> const & /**/,
         "Query_Numero_Dos\tSubject_Numero_Dos\t8\t0\t0\t0.00672262\t18.8606\n");
     else
         compString.append(
-        "Query_Numero_Dos\tSubject_Numero_Uno\t87.5\t8\t1\t0\t1\t8\t184\t191\t0.0255459\t16.9346\n"
-        "Query_Numero_Dos\tSubject_Numero_Dos\t100\t8\t0\t0\t1\t8\t10\t17\t0.00672262\t18.8606\n");
+        "Query_Numero_Dos\tSubject_Numero_Uno\t87.50\t8\t1\t0\t1\t8\t184\t191\t0.026\t16.9\n"
+        "Query_Numero_Dos\tSubject_Numero_Dos\t100.00\t8\t0\t0\t1\t8\t10\t17\t0.007\t18.9\n");
 
     if (contents != compString)
     {
