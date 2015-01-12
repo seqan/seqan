@@ -410,25 +410,25 @@ _writeField(TStream & s,
             r = _writeFields(s, match, BlastMatchField<>::defaults, TFormat());
             break;
         case ENUM::Q_SEQ_ID:
-            r = streamPut(s, prefix(match.qId, _firstOcc(match.qId, ' ')));
+            write(s, prefix(match.qId, _firstOcc(match.qId, ' ')));
             break;
-//         case ENUM::Q_GI: r = streamPut(s,  * ); break;
-//         case ENUM::Q_ACC: r = streamPut(s,  * ); break;
-//         case ENUM::Q_ACCVER: r = streamPut(s,  * ); break;
+//         case ENUM::Q_GI: writeValue(s,  * ); break;
+//         case ENUM::Q_ACC: writeValue(s,  * ); break;
+//         case ENUM::Q_ACCVER: writeValue(s,  * ); break;
         case ENUM::Q_LEN:
-            r = streamPut(s, match.qLength);
+            writeValue(s, match.qLength);
             break;
         case ENUM::S_SEQ_ID:
-            r = streamPut(s, prefix(match.sId, _firstOcc(match.sId, ' ')));
+            write(s, prefix(match.sId, _firstOcc(match.sId, ' ')));
             break;
-//         case ENUM::S_ALL_SEQ_ID: r = streamPut(s,  * ); break;
-//         case ENUM::S_GI: r = streamPut(s,  * ); break;
-//         case ENUM::S_ALL_GI: r = streamPut(s,  * ); break;
-//         case ENUM::S_ACC: r = streamPut(s,  * ); break;
-//         case ENUM::S_ACCVER: r = streamPut(s,  * ); break;
-//         case ENUM::S_ALLACC: r = streamPut(s,  * ); break;
+//         case ENUM::S_ALL_SEQ_ID: writeValue(s,  * ); break;
+//         case ENUM::S_GI: writeValue(s,  * ); break;
+//         case ENUM::S_ALL_GI: writeValue(s,  * ); break;
+//         case ENUM::S_ACC: writeValue(s,  * ); break;
+//         case ENUM::S_ACCVER: writeValue(s,  * ); break;
+//         case ENUM::S_ALLACC: writeValue(s,  * ); break;
         case ENUM::S_LEN:
-            r = streamPut(s, match.sLength);
+            writeValue(s, match.sLength);
             break;
         case ENUM::Q_START:
         {
@@ -438,7 +438,7 @@ _writeField(TStream & s,
                                   match.qFrameShift, match.qLength,
                                   QHasRevComp<TFormat>(),
                                   QIsTranslated<TFormat>());
-            r = streamPut(s, effectiveQStart);
+            writeValue(s, effectiveQStart);
         } break;
         case ENUM::Q_END:
         {
@@ -448,7 +448,7 @@ _writeField(TStream & s,
                                   match.qFrameShift, match.qLength,
                                   QHasRevComp<TFormat>(),
                                   QIsTranslated<TFormat>());
-            r = streamPut(s, effectiveQEnd);
+            writeValue(s, effectiveQEnd);
         } break;
         case ENUM::S_START:
         {
@@ -459,7 +459,7 @@ _writeField(TStream & s,
                                   match.sFrameShift, match.sLength,
                                   SHasRevComp<TFormat>(),
                                   SIsTranslated<TFormat>());
-            r = streamPut(s, effectiveSStart);
+            writeValue(s, effectiveSStart);
         } break;
         case ENUM::S_END:
         {
@@ -470,60 +470,60 @@ _writeField(TStream & s,
                                   match.sFrameShift, match.sLength,
                                   SHasRevComp<TFormat>(),
                                   SIsTranslated<TFormat>());
-            r = streamPut(s, effectiveSEnd);
+            writeValue(s, effectiveSEnd);
         } break;
-//         case ENUM::Q_SEQ: r = streamPut(s,  * ); break;
-//         case ENUM::S_SEQ: r = streamPut(s,  * ); break;
+//         case ENUM::Q_SEQ: writeValue(s,  * ); break;
+//         case ENUM::S_SEQ: writeValue(s,  * ); break;
         case ENUM::E_VALUE:
-            r = streamPut(s, match.eValue);
+            writeValue(s, match.eValue);
             break;
         case ENUM::BIT_SCORE:
-            r = streamPut(s, match.bitScore);
+            writeValue(s, match.bitScore);
             break;
         case ENUM::SCORE:
-            r = streamPut(s, match.score);
+            writeValue(s, match.score);
             break;
         case ENUM::LENGTH:
-            r = streamPut(s, match.aliLength);
+            writeValue(s, match.aliLength);
             break;
         case ENUM::P_IDENT:
-            r = streamPut(s, double(match.identities) * 100 / match.aliLength);
+            writeValue(s, double(match.identities) * 100 / match.aliLength);
             break;
         case ENUM::N_IDENT:
-            r = streamPut(s, match.identities);
+            writeValue(s, match.identities);
             break;
         case ENUM::MISMATCH:
-            r = streamPut(s, match.mismatches);
+            writeValue(s, match.mismatches);
             break;
         case ENUM::POSITIVE:
-            r = streamPut(s, match.positives);
+            writeValue(s, match.positives);
             break;
         case ENUM::GAP_OPEN:
-            r = streamPut(s, match.gapOpenings);
+            writeValue(s, match.gapOpenings);
             break;
         case ENUM::GAPS:
-            r = streamPut(s, match.gaps);
+            writeValue(s, match.gaps);
             break;
         case ENUM::P_POS:
-            r = streamPut(s, double(match.positives) * 100 / match.aliLength);
+            writeValue(s, double(match.positives) * 100 / match.aliLength);
             break;
         case ENUM::FRAMES:
             if (match.qFrameShift > 0)
-                r = streamPut(s, '+');
+                writeValue(s, '+');
             r += streamPut(s, match.qFrameShift);
-            r += streamPut(s, '/');
+            writeValue(s, '/');
             if (match.sFrameShift > 0)
-                r += streamPut(s, '+');
+                writeValue(s, '+');
             r += streamPut(s, match.sFrameShift);
             break;
         case ENUM::Q_FRAME:
             if (match.qFrameShift > 0)
-                r = streamPut(s, '+');
+                writeValue(s, '+');
             r += streamPut(s, match.qFrameShift);
             break;
         case ENUM::S_FRAME:
             if (match.sFrameShift > 0)
-                r = streamPut(s, '+');
+                writeValue(s, '+');
             r += streamPut(s, match.sFrameShift);
             break;
 //         case ENUM::BTOP: streamPut( * ); break;
@@ -538,7 +538,7 @@ _writeField(TStream & s,
 //         case ENUM::Q_COV_S: streamPut( * ); break;
 //         case ENUM::Q_COV_HSP:
         default:
-            r = streamPut(s, "n/i"); // not implemented
+            write(s, "n/i"); // not implemented
     };
     return r;
 }
@@ -567,18 +567,15 @@ _writeFields(TStream & stream,
          ++it)
     {
         if (it != itB)
-        {
-            streamPut(stream, _seperatorString(TFormat()));
-            if (ret)
-                return ret;
-        }
+            write(stream, _seperatorString(TFormat()));
 
         ret = _writeField(stream, match, *it, TFormat());
         if (ret)
             return ret;
     }
 
-    return streamPut(stream, '\n');
+    writeValue(stream, '\n');
+    return 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -600,18 +597,14 @@ _writeFieldLabels(TStream & stream,
          ++it)
     {
         if (it != itB)
-        {
-            streamPut(stream, _seperatorString(TFormat()));
-            if (ret)
-                return ret;
-        }
+            write(stream, _seperatorString(TFormat()));
 
         ret = streamPut(stream, BlastMatchField<>::columnLabels[uint8_t(*it)]);
         if (ret)
             return ret;
     }
 
-    return streamPut(stream, '\n');
+    return writeValue(stream, '\n');
 }
 
 // ----------------------------------------------------------------------------
