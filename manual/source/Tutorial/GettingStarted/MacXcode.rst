@@ -66,11 +66,11 @@ If the ``port`` program is found then you can go on.
 
     ~ # port info
 
-Next, install Subversion using the ``port`` command.
+Next, install `Git <http://git-scm.com/>`_ using the ``port`` command.
 
 .. code-block:: console
 
-    ~ # sudo port install subversion
+    ~ # sudo port install git
 
 There is a problem with the current version of CMake. Please read
 **Problem with CMake** box above and either install our patched version
@@ -84,41 +84,65 @@ problem with sub projects:
 Install
 ~~~~~~~
 
-Now, go to the directory you want to keep your SeqAn install in (e.g.
-``Development`` in your home folder).
+.. important::
+	
+	In the following we describe the easiest way to get up and running with SeqAn.
+	This is especially recommended for novel users working through the tutorials in the beginning.
+	If you are planning to contribute to SeqAn at any point, you need to read the :ref:`infrastructure-seqan-git-workflow` instructions first. 
+	This manual will guide you through the SeqAn workflow required to submit bug-fixes and new features.
+
+Go to the directory you want to keep your SeqAn install in (e.g. ``Development`` in your home folder).
 
 .. code-block:: console
 
     ~ # cd $HOME/Development
 
-Then, use Subversion to retrieve the current SeqAn trunk:
+Then, use git to retrieve the current SeqAn source-base:
 
 .. code-block:: console
 
-    Development # svn co https://github.com/seqan/seqan/branches/master seqan-trunk
+    # Development # git clone https://github.com/seqan/seqan.git seqan-src
 
-You can now find the whole tree with the SeqAn library and applications
-in $HOME/Development/seqan-trunk.
+You can now find the whole tree with the SeqAn library and applications in ``$HOME/Development/seqan-src``.
+
+.. tip::
+
+    By default git creates a local branch pointing to the stable master branch.
+    This branch is only updated when hot fixes are applied or a new release is published.
+    
+    If you want to have access to regular updates and new features you can switch to the ``develop`` branch of SeqAn:
+    
+    .. code-block:: console
+
+		# Development # cd seqan-src
+		# seqan-src # git checkout -b develop origin/develop
+	
+    For more help on git, please read the documentation ``git help`` and consult the homepage `Git <http://git-scm.com/>`_.
+
+
+.. warning::
+
+    Note that the state of develop is not guaranteed to be stable at any time.
 
 A First Build
 ~~~~~~~~~~~~~
 
 Next, we will use CMake to create an Xcode project for building the
 applications, demo programs (short: demos), and tests. For this, we
-create a separate folder ``seqan-trunk-build`` on the same level as the
-folder ``seqan-trunk``.
+create a separate folder ``seqan-build`` on the same level as the
+folder ``seqan-src``.
 
 .. code-block:: console
 
-    # Development # mkdir -p seqan-trunk-build/xcode
+    # Development # mkdir -p seqan-build/xcode
 
 The resulting directory structure will look as follows.
 
 ::
 
        ~/Development
-         ├─ seqan-trunk             source directory
-         └┬ seqan-trunk-build
+         ├─ seqan-src             source directory
+         └┬ seqan-build
           └─ xcode                  build directory
 
 Within the **build directory** ``xcode``, we call CMake to generate
@@ -126,12 +150,11 @@ Xcode project files.
 
 .. code-block:: console
 
-    Development # cd seqan-trunk-build/xcode
-    xcode # cmake ../../seqan-trunk -G Xcode
+    # Development # cd seqan-build/xcode
+    # xcode # cmake ../../seqan-src -G Xcode
 
 This will generate several Xcode project files in ``xcode``, namely for
-the SeqAn core applications, demos, and tests. The same will happen for
-the extras and sandbox directories.
+the SeqAn applications, demos, and tests.
 
 Now, open the project for the core applications:
 
@@ -143,10 +166,9 @@ Xcode starts and will look like this:
 
 .. image:: xcode_startup.png
 
-Now we are ready to compile and run our first application. For this,
-please choose the target ``razers2`` in the top left corner of your
-Xcode application. When selected click on ``Run`` just left to where you
-chose the target.
+Now we are ready to compile and run our first application. 
+For this, please choose the target ``razers2`` in the top left corner of your Xcode application. 
+When selected click on ``Run`` just left to where you chose the target.
 
 .. image:: razers2_selection.png
 
@@ -160,31 +182,23 @@ After having compiled and run ``razers2`` your Xcode should display ``razers2``'
 Hello World!
 ~~~~~~~~~~~~
 
-Now, let us create a **sandbox** for you.
-This sandbox will be your local workspace and you might want to have it versionized on your own Subversion repository at a later point.
-All of your development will happen in your sandbox.
-
-We go back to the source directory and then use the SeqAn code generator to create a new sandbox.
-
-.. code-block:: console
-
-    xcode # cd ../../seqan-trunk
-    seqan-trunk # ./util/bin/skel.py repository sandbox/my_sandbox
-
-Now that you have your own working space, we create a new application ``first_app``.
+Now it is time to write your first little application in SeqAn.
+Go to the demos folder in the ``seqan-src`` directory and create a new folder with the same name as your username.
+In this tutorial we use ``seqan_dev`` as the username.
+Create a new cpp file called ``hello_seqan.cpp``
 
 .. code-block:: console
-
-    seqan-trunk # ./util/bin/skel.py app first_app sandbox/my_sandbox
-
-Details about the code generator are explained in :ref:`how-to-use-the-code-generator`.
+	
+    # xcode # cd ../../seqan-src/demos
+    # demos # mkdir seqan_dev; cd seqan_dev
+    # seqan_dev # echo "" > hello_seqan.cpp
 
 Now, we go back into the build directory and call CMake again to make it detect the added app.
 
 .. code-block:: console
 
-    seqan-trunk # cd ../seqan-trunk-build/xcode
-    xcode # cmake .
+    # seqan-src # cd ../../../seqan-build/xcode
+    # xcode # cmake .
 
 .. tip::
 
@@ -198,17 +212,14 @@ Now, we go back into the build directory and call CMake again to make it detect 
 
    .. code-block:: console
 
-       ~ # cd $HOME/Development/seqan-trunk-build/xcode
+       ~ # cd $HOME/Development/seqan-build/xcode
        debug # cmake .
 
-   Do not try to call "``cmake .``" from within the ``seqan-trunk`` directory **but only from your build directory**.
+   Do not try to call "``cmake .``" from within the ``seqan-src`` directory **but only from your build directory**.
 
-The step above creates the starting point for a real-world application, including an argument parser and several other things that are a bit too complicated to fit into the Getting Started tutorial.
-Therefore, we will replace the program of the app **first_app** with a very simple example program.
+Select the file ``/Sources/demo_seqan_dev_hello_seqan/Source Files/hello_seqan.cpp`` in Xcode and open it:
 
-Select the file ``/Sources/first_app/Source Files/first_app.cpp`` in Xcode and open it:
-
-.. image:: first_app_old.png
+.. image:: first_demo_inital.png
 
 Replace its contents with the following:
 
@@ -216,7 +227,7 @@ Replace its contents with the following:
 
     #include <iostream>
     #include <seqan/sequence.h>  // CharString, ...
-    #include <seqan/file.h>      // to stream a CharString into cout
+    #include <seqan/stream.h>    // to stream a CharString into cout
 
     int main(int, char const **)
     {
@@ -226,16 +237,11 @@ Replace its contents with the following:
         return 1;
     }
 
-.. image:: first_app_new.png
-
-Afterwards, you can simply compile and run your application by clicking on the ``Run`` button on the very top left corner in Xcode.
+Afterwards, you select the run target accordingly and compile and run your application by clicking on the ``Run`` button on the very top left corner in Xcode.
 
 On completion, you should see the following output:
 
-.. code-block:: console
-
-    Hello World!
-    Hello SeqAn!
+.. image:: first_demo_run.png
 
 Congratulations, you have successfully created your first application within the SeqAn build system with Xcode!
 
@@ -245,6 +251,6 @@ Further Steps
 As a next step, we suggest the following:
 
 * :ref:`Continue with the Tutorials <tutorial>`
-* Look around in the files in ``sandbox/my_sandbox/apps/first_app`` or the demos in ``demos`` and ``demos``.
 * For the tutorial, using the SeqAn build system is great!
   If you later want to use SeqAn as a library, have a look at :ref:`build-manual-integration-with-your-own-build-system`.
+* If you plan to contribute to SeqAn, please read the following document: :ref:`infrastructure-seqan-git-workflow`.
