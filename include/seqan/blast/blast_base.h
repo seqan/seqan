@@ -159,7 +159,7 @@ enum class BlastFormatProgram : uint8_t
  *
  * @headerfile seqan/blast.h
  *
- * @val BlastFormatGeneration BlastFormatGeneration::BLAST
+ * @val BlastFormatGeneration BlastFormatGeneration::BLAST_LEGACY
  * @brief traditional Blast, written in C ("blastall" binary); all behaviour related
  * to this Format is based on NCBI BLAST-2.2.26
  *
@@ -171,7 +171,7 @@ enum class BlastFormatProgram : uint8_t
 
 enum class BlastFormatGeneration : uint8_t
 {
-    BLAST,
+    BLAST_LEGACY,
     BLAST_PLUS,
     INVALID_Generation=255
 };
@@ -619,48 +619,48 @@ const char * _programTagToString(BlastFormat<f,
 // _defaultFields()
 // ----------------------------------------------------------------------------
 
-template <BlastFormatGeneration g>
-constexpr
-const char * _defaultFields()
-{
-    return "ERROR Fields not specializied for this type";
-}
-
-template <>
-constexpr
-const char * _defaultFields<BlastFormatGeneration::BLAST>()
-{
-    return "Query id, Subject id, % identity, alignment length," \
-           " mismatches, gap openings, q. start, q. end, s. start, s." \
-           " end, e-value, bit score";
-}
-
-template <>
-constexpr
-const char * _defaultFields<BlastFormatGeneration::BLAST_PLUS>()
-{
-    return "query id, subject id, % identity, alignment " \
-           "length, mismatches, gap opens, q. start, q. end, s. " \
-           "start, s. end, evalue, bit score";
-}
-
-template <BlastFormatProgram p, BlastFormatGeneration g>
-constexpr
-const char * _defaultFields(BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                                        p,
-                                        g> const &)
-{
-    return _defaultFields<g>();
-}
-
-template <BlastFormatProgram p, BlastFormatGeneration g>
-constexpr
-const char * _defaultFields(BlastFormat<BlastFormatFile::TABULAR,
-                                        p,
-                                        g> const &)
-{
-    return "";
-}
+// template <BlastFormatGeneration g>
+// constexpr
+// const char * _defaultFields()
+// {
+//     return "ERROR Fields not specializied for this type";
+// }
+// 
+// template <>
+// constexpr
+// const char * _defaultFields<BlastFormatGeneration::BLAST_LEGACY>()
+// {
+//     return "Query id, Subject id, % identity, alignment length,
+//            " mismatches, gap openings, q. start, q. end, s. start, s."
+//            " end, e-value, bit score";
+// }
+// 
+// template <>
+// constexpr
+// const char * _defaultFields<BlastFormatGeneration::BLAST_PLUS>()
+// {
+//     return "query id, subject id, % identity, alignment "
+//            "length, mismatches, gap opens, q. start, q. end, s. "
+//            "start, s. end, evalue, bit score";
+// }
+// 
+// template <BlastFormatProgram p, BlastFormatGeneration g>
+// constexpr
+// const char * _defaultFields(BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+//                                         p,
+//                                         g> const &)
+// {
+//     return _defaultFields<g>();
+// }
+// 
+// template <BlastFormatProgram p, BlastFormatGeneration g>
+// constexpr
+// const char * _defaultFields(BlastFormat<BlastFormatFile::TABULAR,
+//                                         p,
+//                                         g> const &)
+// {
+//     return "";
+// }
 
 
 // ----------------------------------------------------------------------------

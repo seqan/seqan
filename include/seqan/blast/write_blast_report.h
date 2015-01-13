@@ -38,6 +38,7 @@
 #define SEQAN_EXTRAS_BLAST_WRITE_BLAST_REPORT_H_
 
 #ifdef __FreeBSD__
+#define _GLIBCXX_USE_C99 1
 #include <math.h>
 #define ROUND round
 #else
@@ -224,7 +225,7 @@ template <typename TStream,
           typename TChar2,
           BlastFormatProgram p,
           BlastFormatGeneration g>
-inline int
+inline void
 _writeAlignmentBlockIntermediateChar(TStream                 & stream,
                                      TChar1            const & char1,
                                      TChar2            const & char2,
@@ -232,17 +233,15 @@ _writeAlignmentBlockIntermediateChar(TStream                 & stream,
                                                 p,
                                                 g>     const & /*tag*/)
 {
-    int ret = 0;
     if ((char1 == '-') || (char2 == '-'))
-        ret = streamPut(stream, ' ');
+        write(stream, ' ');
     else if (char1 == char2)
-        ret = streamPut(stream, char1);
+        write(stream, char1);
     //TODO softcode scoring scheme
     else if (score(Blosum62(), char1, char2) > 0)
-        ret = streamPut(stream, '+');
+        write(stream, '+');
     else
-        ret = streamPut(stream, ' ');
-    return ret;
+        write(stream, ' ');
 }
 
 template <typename TStream,
@@ -250,7 +249,7 @@ template <typename TStream,
           typename TChar2,
           BlastFormatProgram p,
           BlastFormatGeneration g>
-inline int
+inline void
 _writeAlignmentBlockIntermediateChar(TStream                 & stream,
                                      TChar1                  & char1,
                                      TChar2                  & char2,
@@ -258,14 +257,12 @@ _writeAlignmentBlockIntermediateChar(TStream                 & stream,
                                                  BlastFormatProgram::BLASTN,
                                                  g>    const & /*tag*/)
 {
-    int ret = 0;
     if (char1 == '-' || char2 == '-')
-        ret = streamPut(stream, ' ');
+        write(stream, ' ');
     else if (char1 == char2)
-        ret = streamPut(stream, '|');
+        write(stream, '|');
     else
-        ret = streamPut(stream, ' ');
-    return ret;
+        write(stream, ' ');
 }
 
 template <typename T>
@@ -280,7 +277,7 @@ template <typename TStream,
           typename TMatch,
           BlastFormatProgram p,
           BlastFormatGeneration g>
-inline int
+inline void
 _writeAlignmentBlock(TStream                 & stream,
                      TMatch            const & m,
                      BlastFormat<BlastFormatFile::PAIRWISE,
@@ -290,7 +287,6 @@ _writeAlignmentBlock(TStream                 & stream,
     typedef BlastFormat<BlastFormatFile::PAIRWISE,p,g> TFormat;
     typedef decltype(m.qStart) TPos;
 
-    int             ret         = 0;
     TPos    const   windowSize  = 60;
 
     char            buffer[40]  = "";
@@ -340,73 +336,51 @@ _writeAlignmentBlock(TStream                 & stream,
     {
         // Query line
         sprintf(buffer, "Query  %-*d  ", numberWidth, qPos + effQStart);
-        ret = streamPut(stream, buffer);
-        if (ret)
-            return ret;
+        write(stream, buffer);
 
         TPos const end = _min(aPos + windowSize, m.aliLength);
         for (TPos i = aPos; i < end; ++i)
         {
             if (!isGap(row0, i))
                 qPos += qStep;
-            ret = streamPut(stream, value(row0, i));
-            if (ret)
-                return ret;
+            write(stream, value(row0, i));
         }
         sprintf(buffer, "  %-*d", numberWidth, (qPos + effQStart) - qStepOne);
-        ret = streamPut(stream, buffer);
-        if (ret)
-            return ret;
+        write(stream, buffer);
 
         // intermediate line
-        ret = streamPut(stream, "\n         ");
-        if (ret)
-            return ret;
+        write(stream, "\n         ");
         for (unsigned i = 0; i < numberWidth; ++i)
-        {
-            ret = streamPut(stream, ' ');
-            if (ret)
-                return ret;
-        }
+            write(stream, ' ');
+
         for (TPos i = aPos; i < end; ++i)
-        {
-            ret = _writeAlignmentBlockIntermediateChar(stream,
-                                                       value(row0,i),
-                                                       value(row1,i),
-                                                       TFormat());
-            if (ret)
-                return ret;
-        }
+            _writeAlignmentBlockIntermediateChar(stream,
+                                                 value(row0,i),
+                                                 value(row1,i),
+                                                 TFormat());
 
         // Subject line
         sprintf(buffer, "\nSbjct  %-*d  ", numberWidth, sPos + effSStart);
-        ret = streamPut(stream, buffer);
-        if (ret)
-            return ret;
+        write(stream, buffer);
 
         for (TPos i = aPos; i < end; ++i)
         {
             if (!isGap(row1, i))
                 sPos += sStep;
-            ret = streamPut(stream, value(row1, i));
-            if (ret)
-                return ret;
+            write(stream, value(row1, i));
         }
         sprintf(buffer, "  %-*d\n\n", numberWidth, (sPos + effSStart) - sStepOne);
-        ret = streamPut(stream, buffer);
-        if (ret)
-            return ret;
+        write(stream, buffer);
 
         aPos = end;
     }
-    return 0;
 }
 
 template <typename TStream,
           typename TMatch,
           BlastFormatProgram p,
           BlastFormatGeneration g>
-inline int
+inline void
 _writeFullMatch(TStream             & stream,
                 TMatch        const & m,
                 BlastFormat<BlastFormatFile::PAIRWISE,
@@ -414,9 +388,7 @@ _writeFullMatch(TStream             & stream,
                             g> const & /*tag*/)
 {
     typedef BlastFormat<BlastFormatFile::PAIRWISE,p,g> TFormat;
-    int ret = streamPut(stream, "> ");
-    if (ret)
-        return ret;
+    write(stream, "> ");
     for (unsigned beg = 0, end = 0; end < length(m.sId);)
     {
         if (beg == 0)
@@ -427,84 +399,53 @@ _writeFullMatch(TStream             & stream,
         if (end >= length(m.sId))
             end = length(m.sId);
 
-        ret = streamPut(stream, infix(m.sId, beg, end));
-        if (ret)
-            return ret;
-        ret = streamPut(stream, '\n');//            ");
-        if (ret)
-            return ret;
+        write(stream, infix(m.sId, beg, end));
+        write(stream, '\n');//            ");
 
         beg = end;
     }
-    ret = streamPut(stream, "Length=");
-    if (ret)
-        return ret;
-    ret = streamPut(stream, m.sLength);
-    if (ret)
-        return ret;
-    ret = streamPut(stream, "\n\n");
-    if (ret)
-        return ret;
+    write(stream, "Length=");
+    write(stream, m.sLength);
+    write(stream, "\n\n");
 
     char buffer[512] = "";
     _statsBlock(buffer, m, TFormat());
-    ret = streamPut(stream, buffer);
-    if (ret)
-        return ret;
+    write(stream, buffer);
 
-    ret = _writeAlignmentBlock(stream, m, TFormat());
-
-    return ret;
+    _writeAlignmentBlock(stream, m, TFormat());
 }
 
 template <typename TStream,
           typename TMatch,
           BlastFormatProgram p,
           BlastFormatGeneration g>
-inline int
+inline void
 _writeMatchOneLiner(TStream             & stream,
                    TMatch        const & m,
                    BlastFormat<BlastFormatFile::PAIRWISE,
                                p,
                                g> const & /*tag*/)
 {
-    int ret = 0;
     if (length(m.sId) == 66) // it fits
     {
-        ret = streamPut(stream, m.sId);
-        if (ret)
-            return ret;
+        write(stream, m.sId);
     }
     else if (length(m.sId) < 66) // needs to be padded with ' '
     {
-        ret = streamPut(stream, m.sId);
-        if (ret)
-            return ret;
+        write(stream, m.sId);
         for (unsigned char i = 0; i < 66 -length(m.sId); ++i)
-        {
-            ret = streamPut(stream, ' ');
-            if (ret)
-                return ret;
-        }
+            write(stream, ' ');
     }
     else // needs to be truncated
     {
-        ret = streamPut(stream, prefix(m.sId, 63));
-        if (ret)
-            return ret;
-        ret = streamPut(stream, "...");
-        if (ret)
-            return ret;
+        write(stream, prefix(m.sId, 63));
+        write(stream, "...");
     }
-    ret = streamPut(stream, ' ');
-    if (ret)
-        return ret;
+    write(stream, ' ');
 
     char buffer[20] = "";
     sprintf(buffer, "%4li  %.1g\n", long(m.bitScore), m.eValue);
-    ret = streamPut(stream, buffer);
-
-    return ret;
+    write(stream, buffer);
 }
 
 // ----------------------------------------------------------------------------
@@ -539,7 +480,7 @@ template <typename TStream,
           typename TDbSpecs,
           BlastFormatProgram p,
           BlastFormatGeneration g>
-inline int
+inline void
 writeTop(TStream                                            & stream,
          TDbSpecs                                     const & dbSpecs,
          BlastFormat<BlastFormatFile::PAIRWISE, p, g> const & /*tag*/)
@@ -547,76 +488,43 @@ writeTop(TStream                                            & stream,
     typedef BlastFormat<BlastFormatFile::PAIRWISE, p, g> TFormat;
 
     // write TOP
-    int ret = streamPut(stream, _programTagToString(TFormat()));
-    if (ret)
-        return ret;
-    ret = streamPut(stream, " I/O Module of SeqAn-");
-    if (ret)
-        return ret;
-    ret = streamPut(stream, SEQAN_VERSION_MAJOR);
-    if (ret)
-        return ret;
-    ret = streamPut(stream, '.');
-    if (ret)
-        return ret;
-    ret = streamPut(stream, SEQAN_VERSION_MINOR);
-    if (ret)
-        return ret;
-    ret = streamPut(stream, '.');
-    if (ret)
-        return ret;
-    ret = streamPut(stream, SEQAN_VERSION_PATCH);
-    if (ret)
-        return ret;
-    ret = streamPut(stream, " (http://www.seqan.de)\n\n");
-    if (ret)
-        return ret;
+    write(stream, _programTagToString(TFormat()));
+    write(stream, " I/O Module of SeqAn-");
+    write(stream, SEQAN_VERSION_MAJOR);
+    write(stream, '.');
+    write(stream, SEQAN_VERSION_MINOR);
+    write(stream, '.');
+    write(stream, SEQAN_VERSION_PATCH);
+    write(stream, " (http://www.seqan.de)\n\n");
 
     // write references
-    ret = streamPut(stream, _blastReference());
-    if (ret)
-        return ret;
-    ret = streamPut(stream, _seqanReference());
-    if (ret)
-        return ret;
+    write(stream, _blastReference());
+    write(stream, _seqanReference());
 
-    ret = streamPut(stream, "\n\nDatabase: ");
-    if (ret)
-        return ret;
-    ret = streamPut(stream, dbSpecs.dbName);
-    if (ret)
-        return ret;
-    ret = streamPut(stream, "\n           ");
-    if (ret)
-        return ret;
+    write(stream, "\n\nDatabase: ");
+    write(stream, dbSpecs.dbName);
+    write(stream, "\n           ");
     char buffer[40] = "";
 //     sprintf(buffer,
 //             _uint_label(dbSpecs.dbNumberOfSeqs),
 //             dbSpecs.dbNumberOfSeqs); //TODO insert commata
-//     ret = streamPut(stream, buffer);
-    ret = streamPut(stream, dbSpecs.dbNumberOfSeqs);
-    if (ret)
-        return ret;
-    ret = streamPut(stream, " sequences; ");
-    if (ret)
-        return ret;
+//     write(stream, buffer);
+    write(stream, dbSpecs.dbNumberOfSeqs);
+    write(stream, " sequences; ");
         clear(buffer);
 //     sprintf(buffer,
 //             _uint_label(dbSpecs.dbTotalLength),
 //             dbSpecs.dbTotalLength); //TODO insert commata
-//     ret = streamPut(stream, buffer);
-    ret = streamPut(stream, dbSpecs.dbTotalLength);
-    if (ret)
-        return ret;
-    ret = streamPut(stream, " total letters\n\n");
-    return ret;
+//     write(stream, buffer);
+    write(stream, dbSpecs.dbTotalLength);
+    write(stream, " total letters\n\n");
 }
 
 template <typename TStream,
           typename TRecord,
           BlastFormatProgram p,
           BlastFormatGeneration g>
-inline int
+inline void
 _writeRecordHeader(TStream               & stream,
                     TRecord        const & record,
                     BlastFormat<BlastFormatFile::PAIRWISE,
@@ -624,26 +532,16 @@ _writeRecordHeader(TStream               & stream,
                                 g> const & /*tag*/)
 {
     // write query header
-    int ret = streamPut(stream, "\nQuery= ");
-    if (ret)
-        return ret;
-    ret = streamPut(stream, record.qId);
-    if (ret)
-        return ret;
-    ret = streamPut(stream, "\n\nLength=");
-    if (ret)
-        return ret;
-    ret = streamPut(stream, record.qLength);
-    if (ret)
-        return ret;
+    write(stream, "\nQuery= ");
+    write(stream, record.qId);
+    write(stream, "\n\nLength=");
+    write(stream, record.qLength);
 
-    ret = streamPut(stream,
+    write(stream,
     "\n\n\n                                                                   "
     "Score     E\n"
     "Sequences producing significant alignments:                       "
     "(Bits)  Value\n\n");
-
-    return ret;
 }
 
 template <typename TStream,
@@ -651,7 +549,7 @@ template <typename TStream,
           typename TDbSpecs,
           BlastFormatProgram p,
           BlastFormatGeneration g>
-inline int
+inline void
 writeRecord(TStream                                            & stream,
             TRecord                                      const & record,
             TDbSpecs                                     const & /**/,
@@ -670,29 +568,17 @@ writeRecord(TStream                                            & stream,
     }
     #endif// DEBUG
 
-    int ret = _writeRecordHeader(stream, record, TFormat());
-    if (ret)
-        return ret;
+    _writeRecordHeader(stream, record, TFormat());
 
     // match one-liners
     for (auto const & m : record.matches)
-    {
-        ret = _writeMatchOneLiner(stream, m, TFormat());
-        if (ret)
-            return ret;
-    }
-    ret = streamPut(stream, "\nALIGNMENTS\n");
-    if (ret)
-        return ret;
+        _writeMatchOneLiner(stream, m, TFormat());
+
+    write(stream, "\nALIGNMENTS\n");
     // full matches
     for (auto const & m : record.matches)
-    {
-        ret = _writeFullMatch(stream, m, TFormat());
-        if (ret)
-            return ret;
-    }
+        _writeFullMatch(stream, m, TFormat());
 
-    return 0;
 }
 
 template <typename TStream,
@@ -700,7 +586,7 @@ template <typename TStream,
           typename TScore,
           BlastFormatProgram p,
           BlastFormatGeneration g>
-inline int
+inline void
 writeBottom(TStream                                           & stream,
             TDbSpecs                                    const & dbSpecs,
             BlastScoringAdapter<TScore>                 const & adapter,
@@ -710,26 +596,13 @@ writeBottom(TStream                                           & stream,
 
     TScore scheme(getScoreScheme(adapter));
     seqanScoringScheme2blastScoringScheme(scheme);
-    int ret = streamPut(stream, "\nMatrix:");
-    if (ret)
-        return ret;
-    ret = streamPut(stream, _matrixName(scheme));
-    if (ret)
-        return ret;
-    ret = streamPut(stream, "\nGap Penalties: Existence: ");
-    if (ret)
-        return ret;
-    ret = streamPut(stream, scoreGapOpen(scheme));
-    if (ret)
-        return ret;
-    ret = streamPut(stream, ", Extension: ");
-    if (ret)
-        return ret;
-    ret = streamPut(stream, scoreGapExtend(scheme));
-    if (ret)
-        return ret;
-    ret = streamPut(stream, "\n\n");
-    return ret;
+    write(stream, "\nMatrix:");
+    write(stream, _matrixName(scheme));
+    write(stream, "\nGap Penalties: Existence: ");
+    write(stream, scoreGapOpen(scheme));
+    write(stream, ", Extension: ");
+    write(stream, scoreGapExtend(scheme));
+    write(stream, "\n\n");
 }
 
 } // namespace seqan

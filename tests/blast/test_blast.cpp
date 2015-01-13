@@ -55,11 +55,12 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
 
     SEQAN_CALL_TEST(test_blast_write_tabular);
     SEQAN_CALL_TEST(test_blast_write_tabular_with_header);
-    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_generationblastplus);
-    SEQAN_CALL_TEST(test_blast_write_tabular_customfields);
-    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_customfields);
-    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_customfields_generationblastplus);
-//     SEQAN_CALL_TEST(test_blast_write_pairwise);
+    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_legacy);
+    
+    SEQAN_CALL_TEST(test_blast_write_tabular_customcolumns);
+    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_customcolumns);
+    SEQAN_CALL_TEST(test_blast_write_tabular_with_header_customcolumns_legacy);
+    SEQAN_CALL_TEST(test_blast_write_pairwise);
 
 }
 SEQAN_END_TESTSUITE
