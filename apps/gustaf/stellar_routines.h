@@ -271,34 +271,41 @@ inline void _getScore(StellarMatch<TSequence, TId> & match, TValue & alignDistan
 // Note: Matches are being sorted within this function
 template <typename TScoreAlloc, typename TSequence, typename TId>
 void _getMatchDistanceScore(
-    StringSet<QueryMatches<StellarMatch<TSequence, TId> > > & stellarMatches,
-    String<TScoreAlloc> & distanceScores)
+    StringSet<QueryMatches<StellarMatch<TSequence, TId> > > & queryMatchesSet,
+    String<TScoreAlloc> & distanceScores)  // Note that this is a string of strings corresponding to the queryMatchesSet
 {
     typedef StellarMatch<TSequence, TId> TMatch;
     typedef typename Size<typename TMatch::TAlign>::Type TSize;
-    typedef typename Iterator<String<TMatch> >::Type TIterator;
+    typedef typename Iterator<String<TMatch>, Standard>::Type TIterator;
 
-    // Calculating distance score of each match using Stellars _analayzeAlignment function
-    int alignDistance = 0;
+    typedef StringSet<QueryMatches<TMatch> > TQueryMatchSet;
+    typedef typename Iterator<TQueryMatchSet, Standard>::Type TQueryMatchSetIterator;
 
-    for (TSize i = 0; i < length(stellarMatches); ++i)
+    // TODO(rmaerker): Add threads to options and then remove line below or adapt to parallelization scheme.
+    omp_set_num_threads(1);
+    Splitter<TQueryMatchSetIterator> setSplitter(begin(queryMatchesSet, Standard()), end(queryMatchesSet, Standard()));
+
+    SEQAN_OMP_PRAGMA(parallel for)
+    for(unsigned jobId = 0; jobId < length(setSplitter); ++jobId)
     {
-        TScoreAlloc & matchDistanceScores = distanceScores[i];
-        resize(matchDistanceScores, length(stellarMatches[i].matches));
-        // Sorting matches according to query begin position (begin2)
-        std::sort(begin(stellarMatches[i].matches), end(stellarMatches[i].matches),
-                  CompareStellarMatches<TSequence, TId>());
-        TIterator itStellarMatches = begin(stellarMatches[i].matches);
-        TIterator itEndStellarMatches = end(stellarMatches[i].matches);
-        TSize matchIndex = 0;
-        for (; itStellarMatches < itEndStellarMatches; goNext(itStellarMatches))
+        for (TQueryMatchSetIterator it = setSplitter[jobId]; it != setSplitter[jobId + 1]; ++it)
         {
-            // Compute edit distance score
-            _getScore(*itStellarMatches, alignDistance);
-            matchDistanceScores[matchIndex] = alignDistance;
-            alignDistance = 0;
-
-            ++matchIndex;
+            TScoreAlloc & matchDistanceScores = distanceScores[it - begin(queryMatchesSet, Standard())];
+            resize(matchDistanceScores, length((*it).matches));
+            // Sorting matches according to query begin position (begin2)
+            std::sort(begin((*it).matches), end((*it).matches), CompareStellarMatches<TSequence, TId>());
+            TIterator itStellarMatches = begin((*it).matches, Standard());
+            TIterator itEndStellarMatches = end((*it).matches, Standard());
+            TSize matchIndex = 0;
+            for (; itStellarMatches < itEndStellarMatches; goNext(itStellarMatches))
+            {
+                int alignDistance = 0;  // Calculating distance score of each match using Stellars _analayzeAlignment function
+                // Compute edit distance score
+                _getScore(*itStellarMatches, alignDistance);
+                matchDistanceScores[matchIndex] = alignDistance;
+                
+                ++matchIndex;
+            }
         }
     }
 }
@@ -586,32 +593,17 @@ void _getStellarIndel(StellarMatch<TSequence, TId> & match,
         reverseComplement(seq1);
 }
 
-// ----------------------------------------------------------------------------
-// Function checkUniqueId()
-// ----------------------------------------------------------------------------
-
-// Checks whether the short ID (sId) from a long ID (id) is uniq regarding all short IDs of the given
-// read set (sQueryIds). Prints IDs to cerr if not.
-template <typename TId>
-bool _checkUniqueId(TId const & sId, TId const & id, StringSet<TId> & ids, StringSet<TId> & sQueryIds)
-{
-    bool unique = true;
-    for (unsigned j = 0; j < length(sQueryIds); ++j)
-    {
-        if (sId == sQueryIds[j])
-        {
-            std::cerr << "Found nonunique sequence ID!" << std::endl;
-            std::cerr << ids[j] << std::endl;
-            std::cerr << id << std::endl;
-            std::cerr << "###########################" << std::endl;
-            unique = false;
-        }
-    }
-    return unique;
-}
-
 // /////////////////////////////////////////////////////////////////////////////
 // Functions taken from Stellar code for writing Stellar parameters and read files
+
+template <typename TId>
+struct IdComparator
+{
+    bool operator()(TId const & id1, TId const & id2)
+    {
+        return std::lexicographical_compare(begin(id1, Standard()), end(id1, Standard()), begin(id2, Standard()), end(id2, Standard()));
+    }
+};
 
 // /////////////////////////////////////////////////////////////////////////////
 // Imports sequences from a file,
@@ -623,6 +615,8 @@ _importSequences(CharString const & fileName,
                  StringSet<TSequence> & seqs,
                  StringSet<TId> & ids)
 {
+    typedef typename Iterator<StringSet<TId>, Standard>::Type TIdSetIterator;
+
     seqan::SeqFileIn seqFileIn;
     if (!open(seqFileIn, toCString(fileName)))
     {
@@ -634,7 +628,7 @@ _importSequences(CharString const & fileName,
     TSequence seq;
     TId id;
     TId sId;
-    unsigned seqCount = 0, counter = 0;
+    unsigned seqCount = 0;
     for (; !atEnd(seqFileIn); ++seqCount)
     {
         readRecord(id, seq, seqFileIn);
@@ -642,14 +636,18 @@ _importSequences(CharString const & fileName,
 
         _getShortId(sId, id);
         appendValue(ids, sId, Generous());
-        if (!_checkUniqueId(sId, id, ids, sQueryIds))
-            ++counter;
         appendValue(sQueryIds, sId);
     }
 
     std::cout << "Loaded " << seqCount << " " << name << " sequence" << ((seqCount > 1) ? "s." : ".") << std::endl;
-    if (counter > 0)
-        std::cout << "Found " << counter << " nonunique sequence IDs" << std::endl;
+
+    // Check for dupliacte id entries.
+    std::sort(begin(sQueryIds, Standard()), end(sQueryIds, Standard()), IdComparator<TId>());  // O(n*log(n))
+    TIdSetIterator itOldEnd = end(sQueryIds, Standard());
+    TIdSetIterator itNewEnd = std::unique(begin(sQueryIds, Standard()), end(sQueryIds, Standard()), IdComparator<TId>());  // O(n)
+
+    if (itOldEnd - itNewEnd > 0)
+        std::cout << "Found " << itOldEnd - itNewEnd << " nonunique sequence IDs" << std::endl;
     return true;
 }
 
