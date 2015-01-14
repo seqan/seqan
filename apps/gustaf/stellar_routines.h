@@ -593,30 +593,6 @@ void _getStellarIndel(StellarMatch<TSequence, TId> & match,
         reverseComplement(seq1);
 }
 
-// ----------------------------------------------------------------------------
-// Function checkUniqueId()
-// ----------------------------------------------------------------------------
-
-// Checks whether the short ID (sId) from a long ID (id) is uniq regarding all short IDs of the given
-// read set (sQueryIds). Prints IDs to cerr if not.
-template <typename TId>
-bool _checkUniqueId(TId const & sId, TId const & id, StringSet<TId> & ids, StringSet<TId> & sQueryIds)
-{
-    bool unique = true;
-    for (unsigned j = 0; j < length(sQueryIds); ++j)
-    {
-        if (sId == sQueryIds[j])
-        {
-            std::cerr << "Found nonunique sequence ID!" << std::endl;
-            std::cerr << ids[j] << std::endl;
-            std::cerr << id << std::endl;
-            std::cerr << "###########################" << std::endl;
-            unique = false;
-        }
-    }
-    return unique;
-}
-
 // /////////////////////////////////////////////////////////////////////////////
 // Functions taken from Stellar code for writing Stellar parameters and read files
 
@@ -652,7 +628,7 @@ _importSequences(CharString const & fileName,
     TSequence seq;
     TId id;
     TId sId;
-    unsigned seqCount = 0;  //, counter = 0;
+    unsigned seqCount = 0;
     for (; !atEnd(seqFileIn); ++seqCount)
     {
         readRecord(id, seq, seqFileIn);

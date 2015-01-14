@@ -173,30 +173,6 @@ void _getShortId(TId & shortId, TId const & longId)
     }
 }
 
-// ----------------------------------------------------------------------------
-// Function checkUniqueId()
-// ----------------------------------------------------------------------------
-
-// Checks whether the short ID (sId) from a long ID (id) is uniq regarding all short IDs of the given
-// read set (sQueryIds). Prints IDs to cerr if not.
-template <typename TId>
-bool _checkUniqueId(TId const & sId, TId const & id, seqan::StringSet<TId> & ids, seqan::StringSet<TId> & sQueryIds)
-{
-    bool unique = true;
-    for (unsigned j = 0; j < length(sQueryIds); ++j)
-    {
-        if (sId == sQueryIds[j])
-        {
-            std::cerr << "Found nonunique sequence ID!" << std::endl;
-            std::cerr << ids[j] << std::endl;
-            std::cerr << id << std::endl;
-            std::cerr << "###########################" << std::endl;
-            unique = false;
-        }
-    }
-    return unique;
-}
-
 // --------------------------------------------------------------------------
 // Function _importSequences()
 // --------------------------------------------------------------------------
