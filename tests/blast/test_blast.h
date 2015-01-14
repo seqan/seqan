@@ -388,7 +388,7 @@ _writeCustomFields(TFile & file,
     _writeCustomFieldsImpl(file, records, dbSpecs, TFormat());
 }
 
-template <typename TFile, typename TDbSpecs, typename TRecords, BlastFormatProgram p, BlastFormatGeneration g>
+template <typename TFile, typename TDbSpecs, typename TRecords, BlastFormatProgram p>
 inline void
 _writeCustomFields(TFile & file,
                    TRecords const & records,
@@ -514,6 +514,9 @@ test_blast_write_record_match(TFile & file,
             writeRecord(file, records[q], dbSpecs, TFormat());
     } else if (customFields == 1) // only TABULAR, BLAST_PLUS
     {
+//         std::cout << int(getFileType(TFormat())) << '\t'
+//                   << int(getProgramType(TFormat())) << '\t'
+//                   << int(getGenerationType(TFormat())) << "\n";
         _writeCustomFields(file, records, dbSpecs, TFormat());
     } else // only TABULAR
     {
@@ -624,7 +627,7 @@ void test_blast_write_tabular_impl(BlastFormat<f, p, g> const & /**/,
     else if (customFields == 1)
         compString.append(
         "Query_Numero_Dos\tSubject_Numero_Uno\t87.50\t8\t1\t0\t1\t8\t184\t191\t0.026\t16.9\t32\t+1/+1\n"
-        "Query_Numero_Dos\tSubject_Numero_Dos\t100.00\t8\t0\t0\t1\t8\t10\t17\t0.007\t18.9\t36\t+1/+1\n");
+        "Query_Numero_Dos\tSubject_Numero_Dos\t100.00\t8\t0\t0\t1\t8\t10\t17\t0.007\t18.9\t37\t+1/+1\n");
     else
         compString.append(
         "Query_Numero_Dos\tSubject_Numero_Uno\t8\t1\t0\t0.0255459\t16.9346\n"
@@ -689,7 +692,7 @@ SEQAN_DEFINE_TEST(test_blast_write_tabular_customfields)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR,
                         BlastFormatProgram::BLASTP,
-                        BlastFormatGeneration::BLAST_LEGACY> TFormat;
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
     test_blast_write_tabular_impl(TFormat(), 1);
 }
 
