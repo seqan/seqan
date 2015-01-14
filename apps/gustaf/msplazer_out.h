@@ -984,8 +984,12 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
         return 1;
     }
 
+    
     if (!open(vcfOut, fn_vcf.c_str()))
+    {
         std::cerr << "Error while opening vcf breakpoint file!" << std::endl;
+        return false;
+    }
     seqan::VcfHeader vcfHeader;
     _fillVcfHeader(vcfHeader, vcfOut, databases, databaseIDs, msplazerOptions);
     try
