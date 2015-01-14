@@ -49,30 +49,110 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-//TODO add extra template parameter, DOX
-    
-template <BlastFormatGeneration g = BlastFormatGeneration::BLAST_PLUS>
+/*!
+ * @class BlastMatchField BlastMatchField
+ * @brief A "meta" datastructure that contains information about members of @link BlastMatch @endlink
+ * @headerfile seqan/blast.h
+ *
+ * @signature template <BlastFormatGeneration g = BlastFormatGeneration::BLAST_PLUS, typename TVoidSpec = void>
+ * struct BlastMatchField;
+ * @tparam g            The @link BlastFormatGeneration @endlink you are using.
+ * @tparam TVoidSpec    An extra spec to prevent global inclusion (you can safely ignore this)
+ *
+ * This data structure conveniently gives access to all possible fields used in
+ * BLAST-compatabile tabular output formats. @link BlastMatchField::Enum @endlink is needed to
+ * specify a custom field composition for @link BlastRecord#writeHeader @endlink,
+ * @link BlastRecord#writeRecord @endlink and @link BlastMatch#writeMatch @endlink.
+ * The member variables offer the correct labels for the tabular formats' I/O and strings
+ * to interact with the user on the command line.
+ *
+ * Value Overview for g == BlastFormatGeneration::@link BlastFormatGeneration::BLAST_PLUS @endlink .
+ * More fields will likely be implemented in the future.
+ *
+ * @htmlonly
+ * <span style="font-size:90%"><table>
+ * <tr><th>index</th><th>Enum</th><th>optionLabels</th><th>columnLabels</th><th>descriptions</th><th>implemented</th></tr>
+ * <tr><td>0</td><td>STD</td><td>std</td><td>query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score</td><td>Default 12 columns (Query Seq-id, Subject Seq-id, Percentage of identical matches, Alignment length, Number of mismatches, Number of gap openings, Start of alignment in query, End of alignment in query, Start of alignment in subject, End of alignment in subject, Expect value, Bit score</td><td>&#9745;</td></tr>
+ * <tr><td>1</td><td>Q_SEQ_ID</td><td>qseqid</td><td>query id</td><td>Query Seq-id</td><td>&#9745;</td></tr>
+ * <tr><td>2</td><td>Q_GI</td><td>qgi</td><td>query gi</td><td>Query GI</td><td>&#9744;</td></tr>
+ * <tr><td>3</td><td>Q_ACC</td><td>qacc</td><td>query acc.</td><td>Query accesion</td><td>&#9744;</td></tr>
+ * <tr><td>4</td><td>Q_ACCVER</td><td>qaccver</td><td>query acc.ver</td><td>Query accesion.version</td><td>&#9744;</td></tr>
+ * <tr><td>5</td><td>Q_LEN</td><td>qlen</td><td>query length</td><td>Query sequence length</td><td>&#9745;</td></tr>
+ * <tr><td>6</td><td>S_SEQ_ID</td><td>sseqid</td><td>subject id</td><td>Subject Seq-id</td><td>&#9745;</td></tr>
+ * <tr><td>7</td><td>S_ALL_SEQ_ID</td><td>sallseqid</td><td>subject ids</td><td>All subject Seq-id(s), separated by a ';'</td><td>&#9744;</td></tr>
+ * <tr><td>8</td><td>S_GI</td><td>sgi</td><td>subject gi</td><td>Subject GI</td><td>&#9744;</td></tr>
+ * <tr><td>9</td><td>S_ALL_GI</td><td>sallgi</td><td>subject gis</td><td>All subject GIs</td><td>&#9744;</td></tr>
+ * <tr><td>10</td><td>S_ACC</td><td>sacc</td><td>subject acc.</td><td>Subject accession</td><td>&#9744;</td></tr>
+ * <tr><td>11</td><td>S_ACCVER</td><td>saccver</td><td>subject acc.ver</td><td>Subject accession.version</td><td>&#9744;</td></tr>
+ * <tr><td>12</td><td>S_ALLACC</td><td>sallacc</td><td>subject accs.</td><td>All subject accessions</td><td>&#9744;</td></tr>
+ * <tr><td>13</td><td>S_LEN</td><td>slen</td><td>subject length</td><td>Subject sequence length</td><td>&#9745;</td></tr>
+ * <tr><td>14</td><td>Q_START</td><td>qstart</td><td>q. start</td><td>Start of alignment in query</td><td>&#9745;</td></tr>
+ * <tr><td>15</td><td>Q_END</td><td>qend</td><td>q. end</td><td>End of alignment in query</td><td>&#9745;</td></tr>
+ * <tr><td>16</td><td>S_START</td><td>sstart</td><td>s. start</td><td>Start of alignment in subject</td><td>&#9745;</td></tr>
+ * <tr><td>17</td><td>S_END</td><td>send</td><td>s. end</td><td>End of alignment in subject</td><td>&#9745;</td></tr>
+ * <tr><td>18</td><td>Q_SEQ</td><td>qseq</td><td>query seq</td><td>Aligned part of query sequence</td><td>&#9744;</td></tr>
+ * <tr><td>19</td><td>S_SEQ</td><td>sseq</td><td>subject seq</td><td>Aligned part of subject sequence</td><td>&#9744;</td></tr>
+ * <tr><td>20</td><td>E_VALUE</td><td>evalue</td><td>evalue</td><td>Expect value</td><td>&#9745;</td></tr>
+ * <tr><td>21</td><td>BIT_SCORE</td><td>bitscore</td><td>bit score</td><td>Bit score</td><td>&#9745;</td></tr>
+ * <tr><td>22</td><td>SCORE</td><td>score</td><td>score</td><td>Raw score</td><td>&#9745;</td></tr>
+ * <tr><td>23</td><td>LENGTH</td><td>length</td><td>alignment length</td><td>Alignment length</td><td>&#9745;</td></tr>
+ * <tr><td>24</td><td>P_IDENT</td><td>pident</td><td>% identity</td><td>Percentage of identical matches</td><td>&#9745;</td></tr>
+ * <tr><td>25</td><td>N_IDENT</td><td>nident</td><td>identical</td><td>Number of identical matches</td><td>&#9745;</td></tr>
+ * <tr><td>26</td><td>MISMATCH</td><td>mismatch</td><td>mismatches</td><td>Number of mismatches</td><td>&#9745;</td></tr>
+ * <tr><td>27</td><td>POSITIVE</td><td>positive</td><td>positives</td><td>Number of positive-scoring matches</td><td>&#9745;</td></tr>
+ * <tr><td>28</td><td>GAP_OPEN</td><td>gapopen</td><td>gap opens</td><td>Number of gap openings</td><td>&#9745;</td></tr>
+ * <tr><td>29</td><td>GAPS</td><td>gaps</td><td>gaps</td><td>Total number of gaps</td><td>&#9745;</td></tr>
+ * <tr><td>30</td><td>P_POS</td><td>ppos</td><td>% positives</td><td>Percentage of positive-scoring matches</td><td>&#9745;</td></tr>
+ * <tr><td>31</td><td>FRAMES</td><td>frames</td><td>query/sbjct frames</td><td>Query and subject frames separated by a '/'</td><td>&#9745;</td></tr>
+ * <tr><td>32</td><td>Q_FRAME</td><td>qframe</td><td>query frame</td><td>Query frame</td><td>&#9745;</td></tr>
+ * <tr><td>33</td><td>S_FRAME</td><td>sframe</td><td>sbjct frame</td><td>Subject frame</td><td>&#9745;</td></tr>
+ * <tr><td>34</td><td>BTOP</td><td>btop</td><td>BTOP</td><td>Blast traceback operations (BTOP)</td><td>&#9744;</td></tr>
+ * <tr><td>35</td><td>S_TAX_IDS</td><td>staxids</td><td>subject tax ids</td><td>unique Subject Taxonomy ID(s), separated by a ';' (in numerical order)</td><td>&#9744;</td></tr>
+ * <tr><td>36</td><td>S_SCI_NAMES</td><td>sscinames</td><td>subject sci names</td><td>unique Subject Scientific Name(s), separated by a ';'</td><td>&#9744;</td></tr>
+ * <tr><td>37</td><td>S_COM_NAMES</td><td>scomnames</td><td>subject com names</td><td>unique Subject Common Name(s), separated by a ';'</td><td>&#9744;</td></tr>
+ * <tr><td>38</td><td>S_BLAST_NAMES</td><td>sblastnames</td><td>subject blast names</td><td>unique Subject Blast Name(s), separated by a ';' (in alphabetical order)</td><td>&#9744;</td></tr>
+ * <tr><td>39</td><td>S_S_KINGDOMS</td><td>sskingdoms</td><td>subject super kingdoms</td><td>unique Subject Super Kingdom(s), separated by a ';' (in alphabetical order)</td><td>&#9744;</td></tr>
+ * <tr><td>40</td><td>S_TITLE</td><td>stitle</td><td>subject title</td><td>Subject Title</td><td>&#9744;</td></tr>
+ * <tr><td>41</td><td>S_ALL_TITLES</td><td>salltitles</td><td>subject titles</td><td>All Subject Title(s), separated by a '<>'</td><td>&#9744;</td></tr>
+ * <tr><td>42</td><td>S_STRAND</td><td>sstrand</td><td>subject strand</td><td>Subject Strand</td><td>&#9744;</td></tr>
+ * <tr><td>43</td><td>Q_COV_S</td><td>qcovs</td><td>% subject coverage</td><td>Query Coverage Per Subject</td><td>&#9744;</td></tr>
+ * <tr><td>45</td><td>Q_COV_HSP</td><td>qcovhsp</td><td>% hsp coverage</td><td>Query Coverage Per HSP</td><td>&#9744;</td></tr>
+ * </table></span>
+ * @endhtmlonly
+ *
+ * @var static_constexpr_char_const_*_const BlastMatchField::columnLabels[];
+ * @brief An array of CStrings representing the <b>column label</b> of each field in tabular @link BlastFormatFile @endlink
+ *
+ * @var static_constexpr_char_const_*_const BlastMatchField::optionLabels[];
+ * @brief An array of CStrings representing the command line parameter name of each field
+ *
+ * @var static_constexpr_char_const_*_const BlastMatchField::descriptions[];
+ * @brief An array of CStrings representing the human-readable descriptions of each field
+ *
+ * @var static_constexpr_bool_const BlastMatchField::implemented[];
+ * @brief An array of bools revealing whether the Blast I/O module supports printing this field      
+ */
+
+/*!
+ * @class BlastMatchField::Enum
+ * @headerfile seqan/blast.h
+ * @signature enum class BlastMatchField<g, TVoidSpec>::Enum : uint8_t { ... };
+ * @brief A strongly typed enum mapping all fields supported by NCBI Blast to an interact
+ *
+ * The available values are visible in detailed description of @link BlastMatchField @endlink.
+ */
+
+template <BlastFormatGeneration g = BlastFormatGeneration::BLAST_PLUS,
+          typename TVoidSpec = void>
 struct BlastMatchField;
 
 // Only canonical 12 columns supported for legacy blast
-template <>
-struct BlastMatchField<BlastFormatGeneration::BLAST_LEGACY>
+template <typename TVoidSpec>
+struct BlastMatchField<BlastFormatGeneration::BLAST_LEGACY, TVoidSpec>
 {
     enum class Enum : uint8_t
     {
-        STD,
-//         Q_SEQ_ID,
-//         S_SEQ_ID,
-//         P_IDENT,
-//         LENGTH,
-//         MISMATCH,
-//         GAP_OPEN,
-//         Q_START,
-//         Q_END,
-//         S_START,
-//         S_END,
-//         E_VALUE,
-//         BIT_SCORE
+        STD
     };
 
     // this is what Enum::STD stands for
@@ -86,36 +166,13 @@ struct BlastMatchField<BlastFormatGeneration::BLAST_LEGACY>
     static constexpr char const * const columnLabels [] =
     {
         "Query id, Subject id, % identity, alignment length,"
-           " mismatches, gap openings, q. start, q. end, s. start, s."
-           " end, e-value, bit score",
-//         "Query id",
-//         "Subject id",
-//         "% identity",
-//         "alignment length",
-//         "mismatches",
-//         "gap openings",
-//         "q. start",
-//         "q. end",
-//         "s. start",
-//         "s. end",
-//         "e-value",
-//         "bit score"
+         " mismatches, gap openings, q. start, q. end, s. start, s."
+         " end, e-value, bit score"
     };
 
     static constexpr char const * const optionLabels [] =
     {
-        "std",
-//         "qseqid",
-//         "sseqid",
-//         "pident",
-//         "mismatch",
-//         "gapopen",
-//         "qstart",
-//         "qend",
-//         "sstart",
-//         "send",
-//         "evalue",
-//         "bitscore",
+        "std"
     };
 
     static constexpr char const * const descriptions [] =
@@ -124,39 +181,39 @@ struct BlastMatchField<BlastFormatGeneration::BLAST_LEGACY>
          "identical matches, Alignment length, Number of mismatches, Number of "
          "gap openings, Start of alignment in query, End of alignment in query,"
          " Start of alignment in subject, End of alignment in subject, Expect "
-         "value, Bit score",
+         "value, Bit score"
     };
 
     static constexpr bool const implemented [] =
     {
-        true,
+        true
     };
 };
 
 // declarations
-// template <>
+template <typename TVoidSpec>
 constexpr char const * const
-BlastMatchField<BlastFormatGeneration::BLAST_LEGACY>::optionLabels[1];
+BlastMatchField<BlastFormatGeneration::BLAST_LEGACY, TVoidSpec>::optionLabels[1];
 
-// template <>
+template <typename TVoidSpec>
 constexpr char const * const
-BlastMatchField<BlastFormatGeneration::BLAST_LEGACY>::columnLabels[1];
+BlastMatchField<BlastFormatGeneration::BLAST_LEGACY, TVoidSpec>::columnLabels[1];
 
-// template <>
+template <typename TVoidSpec>
 constexpr char const * const
-BlastMatchField<BlastFormatGeneration::BLAST_LEGACY>::descriptions[1];
+BlastMatchField<BlastFormatGeneration::BLAST_LEGACY, TVoidSpec>::descriptions[1];
 
-// template <>
+template <typename TVoidSpec>
 constexpr bool const
-BlastMatchField<BlastFormatGeneration::BLAST_LEGACY>::implemented[1];
+BlastMatchField<BlastFormatGeneration::BLAST_LEGACY, TVoidSpec>::implemented[1];
 
-// template <typename TVoidSpec>
-constexpr std::array<typename BlastMatchField<BlastFormatGeneration::BLAST_LEGACY>::Enum const, 1>
-BlastMatchField<BlastFormatGeneration::BLAST_LEGACY>::defaults;
+template <typename TVoidSpec>
+constexpr std::array<typename BlastMatchField<BlastFormatGeneration::BLAST_LEGACY, TVoidSpec>::Enum const, 1>
+BlastMatchField<BlastFormatGeneration::BLAST_LEGACY, TVoidSpec>::defaults;
 
 
-template <>
-struct BlastMatchField<BlastFormatGeneration::BLAST_PLUS>
+template <typename TVoidSpec>
+struct BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>
 {
     enum class Enum : uint8_t
     {
@@ -378,7 +435,7 @@ struct BlastMatchField<BlastFormatGeneration::BLAST_PLUS>
         "Query Coverage Per Subject",
         "Query Coverage Per HSP"
     };
-
+    //TODO change to bitset
     static constexpr bool const implemented [] =
     {
         true,
@@ -429,25 +486,25 @@ struct BlastMatchField<BlastFormatGeneration::BLAST_PLUS>
     };
 };
 
-// template <>
+template <typename TVoidSpec>
 constexpr char const * const
-BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::optionLabels[45];
+BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::optionLabels[45];
 
-// template <>
+template <typename TVoidSpec>
 constexpr char const * const
-BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::columnLabels[45];
+BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::columnLabels[45];
 
-// template <>
+template <typename TVoidSpec>
 constexpr char const * const
-BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::descriptions[45];
+BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::descriptions[45];
 
-// template <>
+template <typename TVoidSpec>
 constexpr bool const
-BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::implemented[45];
+BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::implemented[45];
 
-// template <>
-constexpr std::array<typename BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum const, 12>
-BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::defaults;
+template <typename TVoidSpec>
+constexpr std::array<typename BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::Enum const, 12>
+BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::defaults;
 
 // ============================================================================
 // Metafunctions
@@ -816,14 +873,14 @@ _writeFields(TStream & stream,
  * This function writes the header of a record if @link BlastFormatFile @endlink
  * is TABULAR_WITH_HEADER (for TABULAR this is a no-op). Custom column labels
  * can be specified either by passing a sequence of
- * @link BlastMatchField<>::Enum @endlink (recommended) or with the variadic
+ * @link BlastMatchField::Enum @endlink (recommended) or with the variadic
  * columnlabel arguments (just pass a printable argument for each label);
  * use either of these in conjunction with the same options of
  * @link BlastMatch#writeMatch @endlink .
  *
  * @param stream    The file to write to (FILE, fstream, @link Stream @endlink ...)
  * @param blastRecord    The @link BlastRecord @endlink whose header you want to print.
- * @param fieldList Sequence of @link BlastMatchField<>::Enum @endlink
+ * @param fieldList Sequence of @link BlastMatchField::Enum @endlink
  * @param qryId     Alternatively the full ID of the query sequence (e.g. FASTA
  * one-line description)
  * @param dbName    The name of the database (NOT the ID of a subject sequence,
@@ -920,7 +977,7 @@ writeHeader(TStream & stream,
     static_assert(g == BlastFormatGeneration::BLAST_PLUS,
                   "writeMatch() with custom fields only supported with "
                   "BlastFormatGeneration::BLAST_PLUS; use default fields or "
-                  "the second signature (arbitrary columns) instead.");
+                  "the third signature (arbitrary columns) instead.");
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         p,
                         BlastFormatGeneration::BLAST_PLUS> TFormat;
@@ -1133,7 +1190,7 @@ writeHeader(TStream & /**/,
  * character in NCBI BLAST, this is also done by default here.
  * By passing the fields variable you manually specify which columns you want to
  * print, the same conversions mentioned above will me made. See 
- * @link BlastMatchField<>::Enum @endlink for a list of fields available. This
+ * @link BlastMatchField::Enum @endlink for a list of fields available. This
  * only available with @link BlastFormatGeneration @endlink ==
  * BlastFormatGeneration::BLAST_PLUS.
  *

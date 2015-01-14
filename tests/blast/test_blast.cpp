@@ -67,7 +67,6 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_write_tabular_with_header_customcolumns_legacy);
 
     SEQAN_CALL_TEST(test_blast_write_pairwise);
-
 }
 SEQAN_END_TESTSUITE
 
