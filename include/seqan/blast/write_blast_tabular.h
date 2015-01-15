@@ -49,6 +49,10 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// BlastMatchField
+// ----------------------------------------------------------------------------
+
 /*!
  * @class BlastMatchField BlastMatchField
  * @brief A "meta" datastructure that contains information about members of @link BlastMatch @endlink
@@ -66,13 +70,29 @@ namespace seqan {
  * The member variables offer the correct labels for the tabular formats' I/O and strings
  * to interact with the user on the command line.
  *
- * Value Overview for g == BlastFormatGeneration::@link BlastFormatGeneration::BLAST_PLUS @endlink .
+ * <h3>Legacy Format</h3>
+ *
+ * For g == BlastFormatGeneration::@link BlastFormatGeneration::BLAST_LEGACY @endlink</h3>
+ * only the default columns are supported and the functions mentioned above do
+ * not offer an interface with the <tt>fieldList</tt> parameter. This equivalent
+ * to the following values for the member variables:
+ * @htmlonly
+ * <span style="font-size:90%"><table>
+ * <tr><th>#</th><th>Enum</th><th>optionLabels</th><th>columnLabels</th><th>descriptions</th><th>implemented</th></tr>
+ * <tr><td>0</td><td>STD</td><td>std</td><td>Query id, Subject id, % identity, alignment length, mismatches, gap openings, q. start, q. end, s. start, s. end, e-value, bit score</td><td>Default 12 columns (Query Seq-id, Subject Seq-id, Percentage of identical matches, Alignment length, Number of mismatches, Number of gap openings, Start of alignment in query, End of alignment in query, Start of alignment in subject, End of alignment in subject, Expect value, Bit score)</td><td>&#9745;</td></tr>
+ * </table></span>
+ * @endhtmlonly
+ *
+ * <h3>Current Format</h3>
+ *
+ * Value Overview for g == BlastFormatGeneration::@link BlastFormatGeneration::BLAST_PLUS @endlink</h3>.
+ *
  * More fields will likely be implemented in the future.
  *
  * @htmlonly
  * <span style="font-size:90%"><table>
- * <tr><th>index</th><th>Enum</th><th>optionLabels</th><th>columnLabels</th><th>descriptions</th><th>implemented</th></tr>
- * <tr><td>0</td><td>STD</td><td>std</td><td>query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score</td><td>Default 12 columns (Query Seq-id, Subject Seq-id, Percentage of identical matches, Alignment length, Number of mismatches, Number of gap openings, Start of alignment in query, End of alignment in query, Start of alignment in subject, End of alignment in subject, Expect value, Bit score</td><td>&#9745;</td></tr>
+ * <tr><th>#</th><th>Enum</th><th>optionLabels</th><th>columnLabels</th><th>descriptions</th><th>implemented</th></tr>
+ * <tr><td>0</td><td>STD</td><td>std</td><td>query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score</td><td>Default 12 columns (Query Seq-id, Subject Seq-id, Percentage of identical matches, Alignment length, Number of mismatches, Number of gap openings, Start of alignment in query, End of alignment in query, Start of alignment in subject, End of alignment in subject, Expect value, Bit score)</td><td>&#9745;</td></tr>
  * <tr><td>1</td><td>Q_SEQ_ID</td><td>qseqid</td><td>query id</td><td>Query Seq-id</td><td>&#9745;</td></tr>
  * <tr><td>2</td><td>Q_GI</td><td>qgi</td><td>query gi</td><td>Query GI</td><td>&#9744;</td></tr>
  * <tr><td>3</td><td>Q_ACC</td><td>qacc</td><td>query acc.</td><td>Query accesion</td><td>&#9744;</td></tr>
@@ -130,7 +150,28 @@ namespace seqan {
  * @brief An array of CStrings representing the human-readable descriptions of each field
  *
  * @var static_constexpr_bool_const BlastMatchField::implemented[];
- * @brief An array of bools revealing whether the Blast I/O module supports printing this field      
+ * @brief An array of bools revealing whether the Blast I/O module supports printing this field
+ *
+ * @var static_constexpr_std::array<Enum const,12> defaults;
+ * @brief An std::array of BlastMatchField::Enum indicating the fields that are default
+ * @signature static constexpr std::array<Enum const, 12> defaults
+ * {
+ *     {
+ *         Enum::Q_SEQ_ID,
+ *         Enum::S_SEQ_ID,
+ *         Enum::P_IDENT,
+ *         Enum::LENGTH,
+ *         Enum::MISMATCH,
+ *         Enum::GAP_OPEN,
+ *         Enum::Q_START,
+ *         Enum::Q_END,
+ *         Enum::S_START,
+ *         Enum::S_END,
+ *         Enum::E_VALUE,
+ *         Enum::BIT_SCORE
+ *     }
+ * };
+ *
  */
 
 /*!
@@ -181,7 +222,7 @@ struct BlastMatchField<BlastFormatGeneration::BLAST_LEGACY, TVoidSpec>
          "identical matches, Alignment length, Number of mismatches, Number of "
          "gap openings, Start of alignment in query, End of alignment in query,"
          " Start of alignment in subject, End of alignment in subject, Expect "
-         "value, Bit score"
+         "value, Bit score)"
     };
 
     static constexpr bool const implemented [] =
@@ -435,7 +476,8 @@ struct BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>
         "Query Coverage Per Subject",
         "Query Coverage Per HSP"
     };
-    //TODO change to bitset
+
+    //TODO(c++14): change to std::bitset that is initialized with binary literal
     static constexpr bool const implemented [] =
     {
         true,
@@ -507,7 +549,7 @@ constexpr std::array<typename BlastMatchField<BlastFormatGeneration::BLAST_PLUS,
 BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::defaults;
 
 // ============================================================================
-// Metafunctions
+// Metafunctions and global const-expressions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
@@ -555,7 +597,7 @@ _firstOcc(TString const & str, typename Value<TString>::Type const & val)
 }
 
 // ----------------------------------------------------------------------------
-// Function _writeField() [ match object given]
+// Function _writeField() [match object given]
 // ----------------------------------------------------------------------------
 
 template <typename TStream,
@@ -862,39 +904,6 @@ _writeFields(TStream & stream,
 // Function writeHeader()
 // ----------------------------------------------------------------------------
 
-/*!
- * @fn BlastRecord#writeHeader
- * @headerfile seqan/blast.h
- * @brief write the header of a @link BlastRecord @endlink to file
- * @signature writeHeader(stream, blastRecord, [fieldList,] blastFormatTag)
- * @signature writeHeader(stream, qryId, dbname, [matchCount,] [fieldList,] blastFormatTag)
- * @signature writeHeader(stream, qryId, dbname, [matchCount,] blastFormatTag[, labels...])
- * 
- * This function writes the header of a record if @link BlastFormatFile @endlink
- * is TABULAR_WITH_HEADER (for TABULAR this is a no-op). Custom column labels
- * can be specified either by passing a sequence of
- * @link BlastMatchField::Enum @endlink (recommended) or with the variadic
- * columnlabel arguments (just pass a printable argument for each label);
- * use either of these in conjunction with the same options of
- * @link BlastMatch#writeMatch @endlink .
- *
- * @param stream    The file to write to (FILE, fstream, @link Stream @endlink ...)
- * @param blastRecord    The @link BlastRecord @endlink whose header you want to print.
- * @param fieldList Sequence of @link BlastMatchField::Enum @endlink
- * @param qryId     Alternatively the full ID of the query sequence (e.g. FASTA
- * one-line description)
- * @param dbName    The name of the database (NOT the ID of a subject sequence,
- * but the name of the database, e.g. "NCBI NR")
- * @param matchCount The amount of matches in the record. Mandatory parameter
- * for BlastFormatGeneration::BLAST_PLUS, optional for ::BLAST
- * @param blastFormatTag The @link BlastFormat @endlink specifier.
- * @param labels...   Optional custom column labels
- *
- * @see BlastFormat
- * @see BlastRecord
- * @see BlastRecord#writeRecord
- */
-
 template <typename TStream, typename TString1, typename TString2,
           BlastFormatProgram p, BlastFormatGeneration g>
 inline void
@@ -921,6 +930,34 @@ _writeHeaderWithoutColumnLabels(TStream & stream,
     write(stream, dbName);
     write(stream, '\n');
 }
+
+/*!
+ * @fn BlastFormat#writeHeader
+ * @headerfile seqan/blast.h
+ * @brief write the header for @link BlastFormatFile::TABULAR_WITH_HEADER @endlink without @link BlastRecord @endlink-object
+ * @signature writeHeader(stream, qryId, dbname, [matchCount,] blastFormatTag[, labels...])
+ *
+ * This function writes the header of a record if @link BlastFormatFile @endlink
+ * is TABULAR_WITH_HEADER (for TABULAR this is a no-op). In contrast to
+ * @link BlastRecord#writeHeader @endlink no @link BlastRecord @endlink-object
+ * is required. Custom column labels can be specified as variadic
+ * columnlabel arguments (just pass a printable argument for each label).
+ *
+ * @param stream    The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param qryId     The full ID of the query sequence (e.g. FASTA
+ * one-line description)
+ * @param dbName    The name of the database (NOT the ID of a subject sequence,
+ * but the name of the database, e.g. "NCBI NR" or path to a file)
+ * @param matchCount The amount of matches in the record. Mandatory parameter
+ * for @link BlastFormatGeneration::BLAST_PLUS @endlink, optional for
+ * @link BlastFormatGeneration::BLAST_LEGACY @endlink
+ * @param blastFormatTag The @link BlastFormat @endlink specifier.
+ * @param labels...   Optional custom column labels
+ *
+ * @see BlastFormat
+ * @see BlastRecord
+ * @see BlastRecord#writeRecord
+ */
 
 // default fields
 template <typename TStream,
@@ -959,6 +996,7 @@ writeHeader(TStream & stream,
 }
 
 // custom fields
+// this is not exposed by the documentation above, but only 
 template <typename TStream,
           typename TString,
           typename TString2,
@@ -1076,6 +1114,29 @@ writeHeader(TStream & stream,
     writeHeader(stream, qryId, dbName, 0, TFormat(), field1, fields...);
 }
 
+/*!
+ * @fn BlastRecord#writeHeader
+ * @headerfile seqan/blast.h
+ * @brief write the header of a @link BlastRecord @endlink to file
+ * @signature writeHeader(stream, blastRecord, [fieldList,] blastFormatTag)
+ * 
+ * This function writes the header of a record if @link BlastFormatFile @endlink
+ * is TABULAR_WITH_HEADER (for TABULAR this is a no-op). Custom column labels
+ * can be specified by passing a sequence of
+ * @link BlastMatchField::Enum @endlink. Use this in conjunction with the same 
+ * options of @link BlastMatch#writeMatch @endlink .
+ *
+ * @param stream    The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param blastRecord    The @link BlastRecord @endlink whose header you want to print.
+ * @param fieldList Sequence of @link BlastMatchField::Enum @endlink
+ * @param blastFormatTag The @link BlastFormat @endlink specifier.
+ *
+ * @see BlastFormat
+ * @see BlastRecord
+ * @see BlastRecord#writeRecord
+ */
+
+
 // Record parameter
 template <typename TStream,
           typename TRecord,
@@ -1091,8 +1152,11 @@ writeHeader(TStream & stream,
                         g> const & /**/)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g>  TFormat;
-    writeHeader(stream, record.qId, dbSpecs.dbName,
-                record.matches.size(),TFormat());
+    writeHeader(stream,
+                record.qId,
+                dbSpecs.dbName,
+                record.matches.size(),
+                TFormat());
 }
 
 // Record parameter, custom fields
@@ -1150,7 +1214,7 @@ writeHeader(TStream & /**/,
 template <typename TStream,
           typename T,
           typename T2,
-          typename TNumeric,
+          typename T3,
           typename... TFields,
           BlastFormatProgram p,
           BlastFormatGeneration g>
@@ -1158,13 +1222,30 @@ constexpr void
 writeHeader(TStream & /**/,
             T const & /**/,
             T2 const & /**/,
-            TNumeric const /**/,
+            T3 const & /**/,
             BlastFormat<BlastFormatFile::TABULAR,p,g> const & /*tag*/,
             TFields const & ... /**/)
 {
 }
 
-
+template <typename TStream,
+          typename T,
+          typename T2,
+          typename T3,
+          typename T4,
+          typename... TFields,
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
+constexpr void
+writeHeader(TStream & /**/,
+            T const & /**/,
+            T2 const & /**/,
+            T3 const & /**/,
+            T4 const & /**/,
+            BlastFormat<BlastFormatFile::TABULAR,p,g> const & /*tag*/,
+            TFields const & ... /**/)
+{
+}
 
 // ----------------------------------------------------------------------------
 // Function writeMatch()
@@ -1175,64 +1256,42 @@ writeHeader(TStream & /**/,
  * @headerfile seqan/blast.h
  * @brief write a @link BlastMatch @endlink to file
  * @signature writeMatch(stream, blastMatch, [fields,] blastFormatTag)
- * @signature writeMatch(stream, blastFormatTag, columns...)
  *
  * This function writes a single match if @link BlastFormatFile @endlink
- * is TABULAR_WITH_HEADER or TABULAR. The first signature causes default
+ * is @link BlastFormatFile::TABULAR_WITH_HEADER @endlink or
+ * @link BlastFormatFile::TABULAR @endlink. Not specifying <tt>fields</tt> causes default
  * columns to be printed, which is described <a href="https://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node93.html">
  * here</a>. Please note that BLAST is 1-indexed and considers the last position
  * to be the back, not the end, i.e. last one included in a match/sequence/...,
- * not the one behind it (as SeqAn does); this functions corrects for both
+ * not the one behind it (as SeqAn does); this functions corrects for both of
  * these bahaviours, so you don't have to. Additionally, based on your
- * @link BlastFormat @endlink, positions are transformed back to DNA space, if
+ * @link BlastFormatProgram @endlink, positions are transformed back to DNA space, if
  * translation has taken place.
  * Please note also that query and subject IDs are truncated at the first space
  * character in NCBI BLAST, this is also done by default here.
- * By passing the fields variable you manually specify which columns you want to
- * print, the same conversions mentioned above will me made. See 
- * @link BlastMatchField::Enum @endlink for a list of fields available. This
- * only available with @link BlastFormatGeneration @endlink ==
- * BlastFormatGeneration::BLAST_PLUS.
  *
- * The second signature allows an arbitrary amount of and
- * arbitrary typed columns to be printed. If you do this and you use the
- * TABULAR_WITH_HEADER format, you should also print custom column labels
- * with @link BlastRecord#writeHeader @endlink. Please note that in this case
- * the adjustments mentioned above have to be done by yourself (if you use
- * the mentioned fields and you want compatability).
+ * By passing the <tt>fields</tt> variable you manually specify which columns you want to
+ * print; the same conversions mentioned above will me made. See
+ * @link BlastMatchField::Enum @endlink for a list of fields available. <tt>fields</tt>
+ * is only available with @link BlastFormatGeneration @endlink ==
+ * @link BlastFormatGeneration::BLAST_PLUS @endlink.
  *
  * Many guides recommend always printing the default 12 columns and using only
- * additional columns with custom data.
+ * additional columns with additional (custom) data.
+ * 
+ * Please see @link BlastFormat#writeMatch @endlink for an implementation that
+ * does not require a @link BlastMatch @endlink object.
  *
- * @param stream    The file to write to (FILE, fstream, @link Stream @endlink ...)
- * @param fields    A @link Sequence @endlink of @link BlastMatchField<>::Enum @endlink
+ * @param stream    The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param fields    A @link Sequence @endlink of @link BlastMatchField::Enum @endlink
  * @param blastMatch    The @link BlastMatch @endlink you wish to print.
  * @param blastFormatTag The @link BlastFormat @endlink specifier.
- * @param columns...   Custom columns
  *
  * @see BlastFormat
  * @see BlastRecord
  * @see BlastRecord#writeRecord
  * @see BlastRecord#writeHeader
  */
-
-// Function for arbitrary number and typed fields
-template <typename TStream, typename TField, typename... TFields,
-          BlastFormatProgram p, BlastFormatGeneration g>
-inline void
-writeMatch(TStream & stream,
-           BlastFormat<BlastFormatFile::TABULAR,
-                       p,
-                       g> const & /*tag*/,
-            TField const & field1,
-            TFields const & ... fields)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-    write(stream, field1);
-
-    _writeFields(stream, TFormat(), fields...);
-    write(stream, '\n');
-}
 
 // Function for match object and manually specified fields
 template <typename TStream,
@@ -1270,20 +1329,6 @@ writeMatch(TStream & stream,
 
 // writeMatch TABULAR_WITH_HEADER equal to TABULAR
 template <typename TStream,
-          typename TField,
-          typename... TFields,
-          BlastFormatProgram p, BlastFormatGeneration g>
-inline void
-writeMatch(TStream & stream,
-           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const & /**/,
-           TField const & field1,
-           TFields const & ... fields)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-    writeMatch(stream, TFormat(), field1, fields... );
-}
-
-template <typename TStream,
           typename TBlastMatch,
           typename TBlastMatchFields,
           BlastFormatProgram p>
@@ -1312,31 +1357,76 @@ writeMatch(TStream & stream,
     writeMatch(stream, match, TFormat());
 }
 
+/*!
+ * @fn BlastFormat#writeMatch
+ * @headerfile seqan/blast.h
+ * @brief write blast tabular output without a @link BlastMatch @endlink object
+ * @signature writeMatch(stream, blastFormatTag, columns...)
+ *
+ * This function writes a single match if @link BlastFormatFile @endlink
+ * is TABULAR_WITH_HEADER or TABULAR. In contrast to 
+ * @link BlastMatch#writeMatch @endlink (which works on @link BlastMatch @endlink)
+ * this signature allows an arbitrary amount of and
+ * arbitrary typed columns to be printed. If you do this and you use the
+ * TABULAR_WITH_HEADER format, you should also print custom column labels
+ * with @link BlastFormat#writeHeader @endlink. Please note that this function
+ * does none of the adjustments mentioned in the other signature,
+ * so they have to be done by yourself (if you use
+ * the mentioned fields and you want compatability).
+ *
+ * Many guides recommend always printing the default 12 columns and using only
+ * additional columns with additional (custom) data.
+
+ *
+ * @param stream    The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param blastFormatTag The @link BlastFormat @endlink specifier.
+ * @param columns...   Custom columns
+ *
+ * @see BlastFormat
+ * @see BlastRecord
+ * @see BlastRecord#writeRecord
+ * @see BlastRecord#writeHeader
+ * @see BlastFormat#writeHeader
+ */
+
+// Function for arbitrary number and typed fields
+template <typename TStream, typename TField, typename... TFields,
+          BlastFormatProgram p, BlastFormatGeneration g>
+inline void
+writeMatch(TStream & stream,
+           BlastFormat<BlastFormatFile::TABULAR,
+                       p,
+                       g> const & /*tag*/,
+            TField const & field1,
+            TFields const & ... fields)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
+    write(stream, field1);
+
+    _writeFields(stream, TFormat(), fields...);
+    write(stream, '\n');
+}
+
+// writeMatch TABULAR_WITH_HEADER equal to TABULAR
+template <typename TStream,
+          typename TField,
+          typename... TFields,
+          BlastFormatProgram p, BlastFormatGeneration g>
+inline void
+writeMatch(TStream & stream,
+           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const & /**/,
+           TField const & field1,
+           TFields const & ... fields)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
+    writeMatch(stream, TFormat(), field1, fields... );
+}
+
 // ----------------------------------------------------------------------------
 // Function writeTop()
 // ----------------------------------------------------------------------------
 
-// template <typename TStream,
-//           typename TDbSpecs,
-//           BlastFormatProgram p,
-//           BlastFormatGeneration g>
-// inline void
-// writeTop(TStream                    & /**/,
-//          TDbSpecs             const & /**/,
-//          BlastFormat<BlastFormatFile::TABULAR, p, g> const & /*tag*/)
-// {
-// // }
-// 
-// template <typename TStream,
-//           typename TDbSpecs,
-//           BlastFormatProgram p,
-//           BlastFormatGeneration g>
-// inline void
-// writeTop(TStream                    & /**/,
-//          TDbSpecs             const & /**/,
-//          BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const & /*tag*/)
-// {
-// // }
+// TABULAR formats have no special "top"
 
 // ----------------------------------------------------------------------------
 // Function writeRecord()
@@ -1368,6 +1458,26 @@ _writeRecordImplTab(TStream                    & stream,
         writeMatch(stream, *it, TFormat());
     }
 }
+
+// main dox in blast_base.h; this only contains extra sig for fieldList
+/*!
+ * @fn BlastRecord#writeRecord
+ * @headerfile seqan/blast.h
+ * @brief write a @link BlastRecord @endlink including it's
+ *  @link BlastMatch @endlink es to a file, manually specifying the fields
+ * @signature writeRecord(stream, blastRecord, blastDbSpecs, fieldList, blastFormatTag)
+ *
+ * @param stream        The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param blastRecord   The @link BlastRecord @endlink you wish to print.
+ * @param blastDbSpecs  The @link BlastDbSpecs @endlink .
+ * @param blastField    A Sequence of @link BlastMatchField::Enum @endlink to print.
+ * @param blastFormatTag The @link BlastFormat @endlink specifier of which
+ *  @link BlastFormatFile @endlink must be @link BlastFormatFile::TABULAR @endlink
+ *  or @link BlastFormatFile::TABULAR_WITH_HEADER @endlink
+ *
+ * @see BlastFormat
+ * @see BlastRecord
+ */
 
 template <typename TStream,
           typename TRecord,

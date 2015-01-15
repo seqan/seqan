@@ -181,7 +181,7 @@ enum class BlastFormatGeneration : uint8_t
  * @headerfile seqan/blast.h
  * @brief Blast Format specifier
  *
- * @signature template <BlastFormatFile _f, BlastFormatProgram _p, BlastFormatGeneration _g>
+ * @signature template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
  *            struct BlastFormat;
  *
  * @section Data structures
@@ -193,7 +193,7 @@ enum class BlastFormatGeneration : uint8_t
  * @link BlastDbSpecs @endlink object.
  *
  *
- * @section E-Value statistics
+ * @section E-Value statistics TODO
  *
  * This module provides
  * 
@@ -210,25 +210,18 @@ enum class BlastFormatGeneration : uint8_t
  * @link BlastRecord#writeHeader @endlink and
  * @link BlastMatch#writeMatch @endlink .
  *
- * @tparam _f    File Type Format
- * @see BlastFormatFile
- * @tparam _p    Program Type Format
- * @see BlastFormatProgram
- * @tparam _g    Program Generation
- * @see BlastFormatGeneration
+ * @tparam f    template parameter of type @link BlastFormatFile @endlink
+ * @tparam p    template parameter of type @link BlastFormatProgram @endlink
+ * @tparam g    template parameter of type @link BlastFormatGeneration @endlink
  */
 
-template <BlastFormatFile _f, BlastFormatProgram _p, BlastFormatGeneration _g>
+template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
 struct BlastFormat_
 {
-//     // have static members for easy and run-time access to "type"
-//     static constexpr BlastFormatFile        f = _f;
-//     static constexpr BlastFormatProgram     p = _p;
-//     static constexpr BlastFormatGeneration  g = _g;
 };
 
-template <BlastFormatFile _f, BlastFormatProgram _p, BlastFormatGeneration _g>
-using BlastFormat = Tag<BlastFormat_<_f, _p, _g>>;
+template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
+using BlastFormat = Tag<BlastFormat_<f, p, g>>;
 
 // ============================================================================
 // Metafunctions
@@ -616,54 +609,6 @@ const char * _programTagToString(BlastFormat<f,
 }
 
 // ----------------------------------------------------------------------------
-// _defaultFields()
-// ----------------------------------------------------------------------------
-
-// template <BlastFormatGeneration g>
-// constexpr
-// const char * _defaultFields()
-// {
-//     return "ERROR Fields not specializied for this type";
-// }
-// 
-// template <>
-// constexpr
-// const char * _defaultFields<BlastFormatGeneration::BLAST_LEGACY>()
-// {
-//     return "Query id, Subject id, % identity, alignment length,
-//            " mismatches, gap openings, q. start, q. end, s. start, s."
-//            " end, e-value, bit score";
-// }
-// 
-// template <>
-// constexpr
-// const char * _defaultFields<BlastFormatGeneration::BLAST_PLUS>()
-// {
-//     return "query id, subject id, % identity, alignment "
-//            "length, mismatches, gap opens, q. start, q. end, s. "
-//            "start, s. end, evalue, bit score";
-// }
-// 
-// template <BlastFormatProgram p, BlastFormatGeneration g>
-// constexpr
-// const char * _defaultFields(BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-//                                         p,
-//                                         g> const &)
-// {
-//     return _defaultFields<g>();
-// }
-// 
-// template <BlastFormatProgram p, BlastFormatGeneration g>
-// constexpr
-// const char * _defaultFields(BlastFormat<BlastFormatFile::TABULAR,
-//                                         p,
-//                                         g> const &)
-// {
-//     return "";
-// }
-
-
-// ----------------------------------------------------------------------------
 // Function writeTop()
 // ----------------------------------------------------------------------------
 
@@ -673,7 +618,7 @@ const char * _programTagToString(BlastFormat<f,
  * @brief write the top-most section of a BLAST output file (NO-OP for tabular formats)
  * @signature int writeTop(stream, blastDbSpecs, blastFormatTag)
  *
- * @param stream            The file to write to (FILE, fstream, @link Stream @endlink ...)
+ * @param stream            The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
  * @param blastDbSpecs      The @link BlastDbSpecs @endlink of your database-
  * @param blastFormatTag The @link BlastFormat @endlink specifier.
  *
@@ -702,10 +647,11 @@ writeTop(TStream                    & /**/,
 /*!
  * @fn BlastRecord#writeRecord
  * @headerfile seqan/blast.h
- * @brief write a @link BlastRecord @endlink inluding it's @link BlastMatch @endlink es to a file.
- * @signature int writeRecord(stream, blastRecord, blastDbSpecs. blastFormatTag)
+ * @brief write a @link BlastRecord @endlink including it's
+ *  @link BlastMatch @endlinkes and possible headers to a file.
+ * @signature writeRecord(stream, blastRecord, blastDbSpecs, blastFormatTag)
  *
- * @param stream        The file to write to (FILE, fstream, @link Stream @endlink ...)
+ * @param stream        The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
  * @param blastRecord   The @link BlastRecord @endlink you wish to print.
  * @param blastDbSpecs  The @link BlastDbSpecs @endlink .
  * @param blastFormatTag The @link BlastFormat @endlink specifier.
@@ -723,9 +669,9 @@ writeTop(TStream                    & /**/,
  * @fn BlastFormat#writeBottom
  * @headerfile seqan/blast.h
  * @brief write the top-most section of a BLAST output file (NO-OP for tabular formats)
- * @signature int writeBottom(stream, blastDbSpecs, scoringAdapter, blastFormatTag)
+ * @signature writeBottom(stream, blastDbSpecs, scoringAdapter, blastFormatTag)
  *
- * @param stream            The file to write to (FILE, fstream, @link Stream @endlink ...)
+ * @param stream            The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
  * @param scoringAdapter    A @link BlastScoringAdapter @endlink with relevant information.
  * @param blastDbSpecs      The @link BlastDbSpecs @endlink of your database-
  * @param blastFormatTag The @link BlastFormat @endlink specifier.
@@ -838,42 +784,6 @@ _step(signed char const frameShift,
     // iterate three nucleotides per amino acid
     return (frameShift < 0) ? -3 : 3;
 }
-
-// ----------------------------------------------------------------------------
-// streamPut
-// ----------------------------------------------------------------------------
-
-// template <typename TStream>
-// inline void
-// write(TStream & s, char const c)
-// {
-//     writeValue(s, c);
-//     return 0;
-// }
-// 
-// template <typename TStream,
-//           typename TIn,
-//           typename std::enable_if<std::numeric_limits<TIn>::is_integer &&
-//                          !std::is_same<TIn, char>::value &&
-//                          !std::is_same<TIn, signed char>::value &&
-//                          !std::is_same<TIn, unsigned char>::value, int>::type = 0>
-// inline void
-// write(TStream & s, TIn const c)
-// {
-//     appendNumber(s, c);
-//     return 0;
-// }
-/*
-template <typename TStream,
-          typename TIn,
-          typename std::enable_if<IsSequence<TIn>::VALUE, int>::type = 0>
-inline int
-streamPut(TStream & s, TIn const & c)
-{
-    write(s, c);
-    return 0;
-}*/
-
 
 } // namespace seqan
 

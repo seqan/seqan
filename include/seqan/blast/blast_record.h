@@ -253,7 +253,7 @@ struct BlastMatch
  * @tparam TAlign Type of the @link Align @endlink member, defaults to
  * <tt>Align<CharString, ArrayGaps></tt>
  *
- * @typedef BlastRecord::TBLASTMatch
+ * @typedef BlastRecord::TBlastMatch
  * @signature typedef BlastMatch<TQId, TSId, TAlign, TPos> TBlastMatch;
  * @brief type of the contained matches
  *
@@ -264,7 +264,7 @@ struct BlastMatch
  * @brief length of the query sequence
  *
  * @var std::list<TBlastMatch> BlastRecord::matches;
- * @brief length of the query sequence
+ * @brief list of the contained matches
  */
 
 template <typename TQId = CharString,
