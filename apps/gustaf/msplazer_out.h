@@ -239,9 +239,9 @@ inline void _fillGffRecordDuplication(GffRecord & record, TBreakpoint & bp, unsi
     if (target != maxValue<unsigned>())
     {
         appendValue(record.tagNames, "size");
-        appendValue(record.tagValues, (end - begin));
+        appendValue(record.tagValues, toString((end - begin)));
         appendValue(record.tagNames, "targetPos");
-        appendValue(record.tagValues, target);
+        appendValue(record.tagValues, toString(target));
     }
     else
     {
