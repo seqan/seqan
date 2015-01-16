@@ -89,7 +89,7 @@ struct MSplazerOptions
     unsigned libError;              // Library size (mate pairs)
     bool pairedEndMode;             // Whether or not to run Gustaf in paired-end mode
     bool revCompl;                  // Whether or not to rev-compl the second input file
-
+    unsigned numThreads;            // Number of threads for parallelization
 
     MSplazerOptions() :
         databaseFile("reference.fa"),
@@ -113,7 +113,8 @@ struct MSplazerOptions
         libSize(0),
         libError(0),
         pairedEndMode(false),
-        revCompl(true){}
+        revCompl(true),
+        numThreads(1){}
 };
 
 // ----------------------------------------------------------------------------

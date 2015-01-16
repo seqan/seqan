@@ -62,14 +62,13 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     // import query sequences using _importSequences from Stellar
     StringSet<TSequence> queries;
     StringSet<TId> queryIDs;
-    StringSet<TId> shortQueryIDs;
     String<unsigned> readJoinPositions;
     // TODO (ktrappe) distinguish between paired and single and, call appropriate
     // importSeq function (and preprocess query files)
     if (msplazerOptions.pairedEndMode)
     {
         std::cout << "Loading paired-end read sequences... ";
-        if (!_importSequences(msplazerOptions.queryFile[0], msplazerOptions.queryFile[1], msplazerOptions.revCompl, queries, queryIDs, shortQueryIDs, readJoinPositions))
+        if (!_importSequences(msplazerOptions.queryFile[0], msplazerOptions.queryFile[1], msplazerOptions.revCompl, queries, queryIDs, readJoinPositions))
             return 1;
     }else
     {
@@ -77,6 +76,7 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
         if (!_importSequences(stellarOptions.queryFile, "query", queries, queryIDs))
             return 1;
     }
+    StringSet<TId> shortQueryIDs = queryIDs;
 
     /*
     unsigned readLength = 0;
@@ -93,6 +93,7 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     if (!_importSequences(stellarOptions.databaseFile, "database", databases, databaseIDs))
         return 1;
 
+    StringSet<TId> shortDatabaseIDs = databaseIDs;
 
     for (unsigned i = 0; i < length(databases); ++i)
     {
@@ -151,7 +152,7 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
         double startST = sysTime();
         // TODO (ktrappe) distinguish call with queryIDs and shortQueryIDs in case of mate pairs? stellar writes out short
         // query IDs anyway...
-        if (!_getStellarMatchesFromFile(queries, queryIDs, databases, databaseIDs, msplazerOptions.stellarInputFile,
+        if (!_getStellarMatchesFromFile(queries, shortQueryIDs, databases, databaseIDs, msplazerOptions.stellarInputFile,
                                         stellarMatches))
             return 1;
 
@@ -165,7 +166,7 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     }
     */
     std::cout << "Getting match distance..." << std::endl;
-    _getMatchDistanceScore(stellarMatches, distanceScores);
+    _getMatchDistanceScore(stellarMatches, distanceScores, msplazerOptions.numThreads);
 
     // Graph statistics
     /*

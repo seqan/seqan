@@ -73,6 +73,18 @@ void _getShortIds(StringSet<TId> & shortIds, StringSet<TId> & longIds)
         _getShortId(sId, longId);
         appendValue(shortIds, sId);
     }
+    /*
+    typedef typename Iterator<StringSet<TId>, Standard>::Type TSetIterator;
+    typedef typename Iterator<TId, Standard>::Type TSetIterator;
+    TSetIterator it = begin(longIds);
+    for(; it != end(longIds); ++it)
+    {
+        TId sId;
+        TIdIterator itId = begin(*it);
+        readUntil(sId, *itId, IsWhitespace());
+        appendValue(shortIds, sId);
+    }
+    */
 }
 
 // ----------------------------------------------------------------------------
@@ -86,7 +98,6 @@ template <typename TSequence, typename TId>
 bool _createStellarMatches(StringSet<TSequence> & queries,
                            StringSet<TId> const & sQueryIds,
                            StringSet<TSequence> & databases,
-                           StringSet<TId> const & sDBIds,
                            StringSet<TId> const & databaseIds,
                            LocalMatchStore<> & lmStore,
                            StringSet<QueryMatches<StellarMatch<TSequence, TId> > > & stQueryMatches)
@@ -95,6 +106,8 @@ bool _createStellarMatches(StringSet<TSequence> & queries,
     typedef typename StellarMatch<TSequence, TId>::TAlign TAlign;
     typedef typename Row<TAlign>::Type TRow;
     typedef typename LocalMatchStore<>::TPosition TPosition;
+
+    StringSet<TId> sDBIds = databaseIds;
 
     for (unsigned i = 0; i < length(lmStore.matchStore); ++i)
     {
@@ -243,17 +256,12 @@ bool _createStellarMatches(StringSet<TSequence> & queries,
 // Reads in a file with Stellar matches in gff format and creates StellarMatch object from the entries
 template <typename TSequence, typename TId, typename TMatches>
 bool _getStellarMatchesFromFile(StringSet<TSequence> & queries,
-                                StringSet<TId> & queryIDs,
+                                StringSet<TId> & sQueryIds,
                                 StringSet<TSequence> & databases,
                                 StringSet<TId> & databaseIDs,
                                 CharString const & smFileName,
                                 TMatches & stQueryMatches)
 {
-    StringSet<TId> sQueryIds; // Allocator for short query Ids, needed bc Stellar only prints these short Ids to file
-    StringSet<TId> sDBIds;    // Allocator for short db Ids
-    _getShortIds(sQueryIds, queryIDs);
-    _getShortIds(sDBIds, databaseIDs);
-
     // Open file with Stellar matches
     std::fstream inStreamMatches(toCString(smFileName), std::ios::in | std::ios::binary);
     if (!inStreamMatches.good())
@@ -280,7 +288,7 @@ bool _getStellarMatchesFromFile(StringSet<TSequence> & queries,
     // Creating Stellar Matches from input
     resize(stQueryMatches, length(queries));
     
-    if (!_createStellarMatches(queries, sQueryIds, databases, sDBIds, databaseIDs, lmStore, stQueryMatches))
+    if (!_createStellarMatches(queries, sQueryIds, databases, databaseIDs, lmStore, stQueryMatches))
         return 1;
 
     return 0;

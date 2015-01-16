@@ -52,11 +52,12 @@ _importSequences(CharString const & fileNameL,
                  bool revCompl,
                  StringSet<TSequence> & seqs,
                  StringSet<TId> & ids,
-                 StringSet<TId> & sIds,
                  StringSet<CharString> & quals,
                  String<unsigned> & readJoinPositions
                  )
 {
+    typedef typename Iterator<StringSet<TId>, Standard>::Type TIdSetIterator;
+
     seqan::SeqFileIn l, r;
     if (!open(l, toCString(fileNameL)) || !open(r, toCString(fileNameR)))
     {
@@ -99,15 +100,22 @@ _importSequences(CharString const & fileNameL,
         append(qual, qualR);
         appendValue(seqs, seq, Generous());
         appendValue(quals, qual, Generous());
-        appendValue(ids, id, Generous());
+       // appendValue(ids, id, Generous());
 
         _getShortId(sId, id);
-        if (!_checkUniqueId(sId, id, ids, sIds))
-            ++counter;
-        appendValue(sIds, sId);
+        appendValue(ids, sId, Generous());
         clear(seq);
         clear(qual);
     }
+    
+    StringSet<TId> uniqueIds = ids;
+    // Check for dupliacte id entries.
+    std::sort(begin(uniqueIds, Standard()), end(uniqueIds, Standard()), IdComparator<TId>());  // O(n*log(n))
+    TIdSetIterator itOldEnd = end(uniqueIds, Standard());
+    TIdSetIterator itNewEnd = std::unique(begin(uniqueIds, Standard()), end(uniqueIds, Standard()), IdComparator<TId>());  // O(n)
+
+    if (itOldEnd - itNewEnd > 0)
+        std::cout << "Found " << itOldEnd - itNewEnd << " nonunique sequence IDs" << std::endl;
     return true;
 }
 
@@ -122,7 +130,6 @@ _importSequences(CharString const & fileNameL,
                  bool revCompl,
                  StringSet<TSequence> & seqs,
                  StringSet<TId> & ids,
-                 StringSet<TId> & sIds,
                  String<unsigned> & readJoinPositions
                  )
 {
@@ -167,10 +174,10 @@ _importSequences(CharString const & fileNameL,
         append(seq, seqR);
         // Note: saving ID of right(!) mate per default
         appendValue(seqs, seq, Generous());
-        appendValue(ids, idR, Generous());
+        //appendValue(ids, idR, Generous());
 
         _getShortId(sId, idR);
-        appendValue(sIds, sId);
+        appendValue(ids, sId, Generous());
         clear(seq);
     }
     if (!atEnd(leftMates) || !atEnd(rightMates))
@@ -181,7 +188,7 @@ _importSequences(CharString const & fileNameL,
 
     std::cout << "Loaded " << seqCount << " mate pair sequence" << ((seqCount > 1) ? "s." : ".") << std::endl;
 
-    StringSet<TId> uniqueIds = sIds;
+    StringSet<TId> uniqueIds = ids;
     // Check for dupliacte id entries.
     std::sort(begin(uniqueIds, Standard()), end(uniqueIds, Standard()), IdComparator<TId>());  // O(n*log(n))
     TIdSetIterator itOldEnd = end(uniqueIds, Standard());
