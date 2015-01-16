@@ -65,7 +65,7 @@ First, create the app using *skel.py*.
 
 .. code-block:: console
 
-   $ ./util/bin/skel.py app upcase sandbox/$USER
+   $ ./util/bin/skel.py app upcase .
 
 Then, edit *upcase.cpp* to look as follows:
 
@@ -100,7 +100,7 @@ Then, go to your build directory (here: *build/Debug*), build the app, and make 
 
    $ cd build/Debug
    $ cmake .
-   $ cd sandbox/$USER/apps/upcase
+   $ cd apps/upcase
    $ make
    $ ./upcase This is a test
    THIS
@@ -116,9 +116,9 @@ You can use the *skel.py* program to create the app tests.
 .. code-block:: console
 
    $ cd ../../../../../..
-   $ ./util/bin/skel.py app_tests sandbox/$USER/apps/upcase/
+   $ ./util/bin/skel.py app_tests apps/upcase/
 
-As suggested by the output of *skel.py*, add the following to your *sandbox/$USER/upcase/CMakeLists.txt*:
+As suggested by the output of *skel.py*, add the following to your *apps/upcase/CMakeLists.txt*:
 
 .. code-block:: cmake
 
@@ -129,7 +129,7 @@ As suggested by the output of *skel.py*, add the following to your *sandbox/$USE
        ${CMAKE_BINARY_DIR})
    endif(PYTHONINTERP_FOUND)
 
-Now, open the file *sandbox/$USER/upcase/tests/generate_outputs.sh* and modify it as follows.
+Now, open the file *apps/upcase/tests/generate_outputs.sh* and modify it as follows.
 
 .. code-block:: bash
 
@@ -137,7 +137,7 @@ Now, open the file *sandbox/$USER/upcase/tests/generate_outputs.sh* and modify i
    #
    # Output generation script for upcase
 
-   UPCASE=../../../../../build/Debug/sandbox/holtgrew/apps/upcase/upcase
+   UPCASE=../../../../../build/Debug/apps/upcase/upcase
 
    # ============================================================
    # Generate Output
@@ -147,11 +147,11 @@ Now, open the file *sandbox/$USER/upcase/tests/generate_outputs.sh* and modify i
    ${UPCASE} 'another()/' 'examplE!' > other.stdout
 
 We now run the program two times with different arguments and stored the output in files *simple.stdout* and *other.stdout*.
-These files are kept in the directory *sandbox/$USER/apps/upcase/tests* and can now go into version control.
+These files are kept in the directory *apps/upcase/tests* and can now go into version control.
 
 .. code-block:: console
 
-   $ cd sandbox/$USER/apps/upcase/tests
+   $ cd apps/upcase/tests
    $ ./generate_outputs.sh
    $ head -1000 simple.stdout other.stdout
    ===> simple.stdout <===
@@ -164,7 +164,7 @@ These files are kept in the directory *sandbox/$USER/apps/upcase/tests* and can 
 
 Now, we have the expected test output files.
 We now have to modify the test driver script *run_tests.py*.
-Open the file *sandbox/$USER/apps/upcase/tests/run_tests.py*.
+Open the file *apps/upcase/tests/run_tests.py*.
 This file is a Python script that runs the programs, collects their output and compares the expected output prepared above with the actual one.
 It should look like the following:
 
@@ -201,20 +201,20 @@ It should look like the following:
 
        ph = app_tests.TestPathHelper(
            source_base, binary_base,
-           'sandbox/holtgrew/apps/upcase/tests')  # tests dir
+           'apps/upcase/tests')  # tests dir
 
        # ============================================================
        # Auto-detect the binary path.
        # ============================================================
 
        path_to_program = app_tests.autolocateBinary(
-         binary_base, 'sandbox/holtgrew/apps/upcase', 'upcase')
+         binary_base, 'apps/upcase', 'upcase')
 
        # ============================================================
        # Built TestConf list.
        # ============================================================
 
-       # Build list with TestConf objects, analoguely to how the output
+       # Build list with TestConf objects, analogously to how the output
        # was generated in generate_outputs.sh.
        conf_list = []
 
@@ -295,7 +295,7 @@ Finally, we can run the program using ctest.
 .. code-block:: console
 
    $ cd ../../../../..
-   $ cd build/Debug/sandbox/holtgrew/apps/upcase
+   $ cd build/Debug/apps/upcase
    $ ctest .
 
 If everything goes well, the output will be as follows:
@@ -303,7 +303,7 @@ If everything goes well, the output will be as follows:
 .. code-block:: console
 
    $ ctest .
-   Test project ${PATH_TO_CHECKOUT}/build/Debug/sandbox/holtgrew/apps/upcase
+   Test project ${PATH_TO_CHECKOUT}/build/Debug/apps/upcase
        Start 1: app_test_upcase
    1/1 Test #1: app_test_upcase ..................   Passed    0.04 sec
 
@@ -316,7 +316,7 @@ In the case of failures, the output could be as follows.
 .. code-block:: console
 
    $ ctest .
-   Test project /home/holtgrew/Development/seqan-trunk/build/Debug/sandbox/holtgrew/apps/upcase
+   Test project /home/holtgrew/Development/seqan-trunk/build/Debug/apps/upcase
        Start 1: app_test_upcase
    1/1 Test #1: app_test_upcase ..................***Failed    0.02 sec
 
@@ -335,11 +335,11 @@ For example, the output could be as follows:
 .. code-block:: console
 
    $ ctest . --output-on-failure
-   Test project /home/holtgrew/Development/seqan-trunk/build/Debug/sandbox/holtgrew/apps/upcase
+   Test project /home/holtgrew/Development/seqan-src/build/Debug/apps/upcase
        Start 1: app_test_upcase
    1/1 Test #1: app_test_upcase ..................***Failed    0.02 sec
    Traceback (most recent call last):
-     File "/home/holtgrew/Development/seqan-trunk/sandbox/holtgrew/apps/upcase/tests/run_tests.py", line 16, in <module>
+     File "/home/holtgrew/Development/seqan-trunk/apps/upcase/tests/run_tests.py", line 16, in <module>
        import seqan.app_tests as app_tests
    ImportError: No module named seqan.app_tests
 

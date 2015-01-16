@@ -254,7 +254,7 @@ Assignment 1
      Reproduction
 
    Objective
-     Copy the source code of the full First Working Example above into a demo or an app in your sandbox.
+     Copy the source code of the full First Working Example above into a demo.
      Compile it and test printing the help screen and calling it with the two command lines above.
 
    Solution

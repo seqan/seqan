@@ -156,7 +156,7 @@ Xcode project files.
 This will generate several Xcode project files in ``xcode``, namely for
 the SeqAn applications, demos, and tests.
 
-Now, open the project for the core applications:
+Now, open the project for the applications:
 
 .. code-block:: console
 
