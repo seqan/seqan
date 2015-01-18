@@ -106,6 +106,7 @@ struct AlignmentStats
     // Number of aligned residues with positive/negative scores.
     unsigned numPositiveScores;
     unsigned numNegativeScores;
+
     // the alignment identity and similarity scores
     float alignmentSimilarity;
     float alignmentIdentity;
@@ -115,7 +116,7 @@ struct AlignmentStats
 
     AlignmentStats() : numGapOpens(0), numGapExtensions(0), numInsertions(0), numDeletions(0),
                        numMatches(0), numMismatches(0), numPositiveScores(0), numNegativeScores(0),
-                       alignmentSimilarity(0.0), alignmentScore(0)
+                       alignmentSimilarity(0.0), alignmentIdentity(0.0), alignmentScore(0)
     {}
 };
 
@@ -152,6 +153,7 @@ void clear(AlignmentStats & stats)
     stats.numPositiveScores = 0;
     stats.numNegativeScores = 0;
     stats.alignmentSimilarity = 0.0;
+    stats.alignmentIdentity = 0.0;
     stats.alignmentScore = 0;
 }
 
