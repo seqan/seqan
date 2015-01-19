@@ -127,7 +127,7 @@ template <typename TSpec>
 inline void
 writeHeader(FormattedFile<Roi, Output, TSpec> & file, RoiHeader const & header)
 {
-    writeRecord(file.iter, header, file.format);
+    writeHeader(file.iter, header, file.format);
 }
 
 // ----------------------------------------------------------------------------
