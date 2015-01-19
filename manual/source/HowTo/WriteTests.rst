@@ -42,7 +42,7 @@ A skeleton and example for a test suite program look as follows:
 Getting Started With Our Test Template
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To make creating tests easier, the :ref:`code generator skel.py <how-to-use-the-code-generator>` has a command to generate test skelletons for you.
+To make creating tests easier the code generator ``util/bin/skel.py`` has a command to generate test skelletons for you.
 As parameters, you give it the name of the module you want to test and the path to the repository.
 For example, use ``skel.py tests my_module .`` to create tests for the module *my_module* in the directory ``tests``:
 
