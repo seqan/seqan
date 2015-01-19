@@ -96,6 +96,18 @@ struct FileFormat<FormattedFile<Roi, TDirection, TSpec> >
 };
 
 // ----------------------------------------------------------------------------
+// Function readHeader(); RoiHeader
+// ----------------------------------------------------------------------------
+
+// convient RoiFile variant
+template <typename TSpec>
+inline void
+readHeader(RoiHeader & header, FormattedFile<Roi, Input, TSpec> & file)
+{
+    readHeader(header, context(file), file.iter, file.format);
+}
+
+// ----------------------------------------------------------------------------
 // Function readRecord(); RoiRecord
 // ----------------------------------------------------------------------------
 
@@ -108,35 +120,23 @@ readRecord(RoiRecord & record, FormattedFile<Roi, Input, TSpec> & file)
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecord(); RoiHeader
-// ----------------------------------------------------------------------------
-
-// convient RoiFile variant
-template <typename TSpec>
-inline void
-readRecord(RoiHeader & record, FormattedFile<Roi, Input, TSpec> & file)
-{
-    readRecord(record, context(file), file.iter, file.format);
-}
-
-// ----------------------------------------------------------------------------
-// Function write(); RoiRecord
-// ----------------------------------------------------------------------------
-
-template <typename TSpec>
-inline void
-writeRecord(FormattedFile<Roi, Output, TSpec> & file, RoiRecord const & record)
-{
-    writeRecord(file.iter, record, file.format);
-}
-
-// ----------------------------------------------------------------------------
 // Function writeHeader(); RoiHeader
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
-writeHeader(FormattedFile<Roi, Output, TSpec> & file, RoiHeader const & record)
+writeHeader(FormattedFile<Roi, Output, TSpec> & file, RoiHeader const & header)
+{
+    writeRecord(file.iter, header, file.format);
+}
+
+// ----------------------------------------------------------------------------
+// Function writeRecord(); RoiRecord
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+inline void
+writeRecord(FormattedFile<Roi, Output, TSpec> & file, RoiRecord const & record)
 {
     writeRecord(file.iter, record, file.format);
 }
