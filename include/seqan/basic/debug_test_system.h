@@ -2655,7 +2655,7 @@ void SEQAN_ASSERT_NOT_MSG(T1 const & _arg1, const char * comment, ...) {}
 /*!
  * @macro SEQAN_PATH_TO_ROOT
  * @headerfile <seqan/basic.h>
- * @brief Return path to the checkout root directory (i.e. containing extras).
+ * @brief Return path to the checkout root directory.
  * 
  * @signature TCharPtr SEQAN_PATH_TO_ROOT()
  * 
