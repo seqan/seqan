@@ -225,7 +225,7 @@ int intervalizeAndDumpErrorCurves(TStream & stream,
 
     // Write out the header.
     GsiHeader header;
-    writeRecord(stream, header, Gsi());
+    writeHeader(stream, header, Gsi());
     writeRecord(stream, GSI_COLUMN_NAMES, Gsi());
 
     // Get a list of read ids, sorted by their read name.
