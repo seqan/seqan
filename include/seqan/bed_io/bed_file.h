@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in BED format.
+// Class for reading/writing files in BED format.
 // ==========================================================================
 
 #ifndef SEQAN_INCLUDE_SEQAN_BED_IO_BED_FILE_H_

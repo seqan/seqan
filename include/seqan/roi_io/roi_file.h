@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in ROI format.
+// Class for reading/writing files in ROI format.
 // ==========================================================================
 
 #ifndef SEQAN_INCLUDE_SEQAN_ROI_IO_ROI_STREAM_H_

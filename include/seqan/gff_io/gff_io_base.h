@@ -122,8 +122,7 @@ char const * FileExtensions<Gtf, T>::VALUE[1] =
 
 /*!
  * @class GffRecord
- * @implements DefaultConstructibleConcept
- * @implements AssignableConcept
+ * @implements FormattedFileRecordConcept
  * @headerfile <seqan/gff_io.h>
  * @brief Represent a record from a GFF or GTF file.
  *

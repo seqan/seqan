@@ -163,13 +163,6 @@ typedef TagList<int,
  */
 
 /*!
- * @fn BamAlignmentRecord::BamAlignmentRecord
- * @brief Default constructor.
- *
- * @signature BamAlignmentRecord::BamAlignmentRecord();
- */
-
-/*!
  * @var __uint32 BamAlignmentRecord::INVALID_POS
  * @brief Static member with invalid sentinel/position value (-1).
  *

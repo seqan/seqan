@@ -62,6 +62,7 @@ typedef Tag<Bed12_> Bed12;
 
 /*!
  * @class BedRecord
+ * @implements FormattedFileRecordConcept
  * @headerfile <seqan/bed_io.h>
  * @brief Data structure for storing BED records.
  * 

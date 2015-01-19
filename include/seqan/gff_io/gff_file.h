@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in GFF or GTF format.
+// Class for reading/writing files in GFF or GTF format.
 // ==========================================================================
 
 #ifndef SEQAN_GFF_IO_GFF_FILE_H_

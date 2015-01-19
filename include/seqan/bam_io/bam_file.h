@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in SAM or BAM format.
+// Class for reading/writing files in SAM or BAM format.
 // ==========================================================================
 
 #ifndef SEQAN_BAM_IO_BAM_FILE_H_

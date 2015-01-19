@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in UCSC format.
+// Class for reading/writing files in UCSC format.
 // ==========================================================================
 
 #ifndef SEQAN_INCLUDE_SEQAN_UCSC_IO_UCSC_FILE_H_

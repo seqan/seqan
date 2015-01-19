@@ -49,6 +49,7 @@ namespace seqan {
 //
 /*!
  * @class VcfRecord
+ * @implements FormattedFileRecordConcept
  * @headerfile <seqan/vcf_io.h>
  * @brief Information for one VCF record.
  * 

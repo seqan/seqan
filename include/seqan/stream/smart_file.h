@@ -64,6 +64,9 @@ struct StorageSwitch;
 
 /*!
  * @concept FormattedFileHeaderConcept
+ * @extends DefaultConstructibleConcept
+ * @extends CopyConstructibleConcept
+ * @extends AssignableConcept
  * @headerfile <seqan/stream.h>
  * @brief Concept for header of formatted files.
  * @signature concept FormattedFileHeaderConcept;
@@ -75,6 +78,9 @@ struct StorageSwitch;
 
 /*!
  * @concept FormattedFileRecordConcept
+ * @extends DefaultConstructibleConcept
+ * @extends CopyConstructibleConcept
+ * @extends AssignableConcept
  * @headerfile <seqan/stream.h>
  * @brief Concept for record of formatted files.
  * @signature concept FormattedFileRecordConcept;

@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in Vcf format.
+// Class for reading/writing files in Vcf format.
 // ==========================================================================
 // TODO(weese:) add Bcf I/O and integrate it
 

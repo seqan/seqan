@@ -32,7 +32,7 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 //         David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in Fasta or Fastq format.
+// Class for reading/writing files in Fasta or Fastq format.
 // ==========================================================================
 
 #ifndef SEQAN_SEQ_IO_SEQUENCE_FILE_H_
