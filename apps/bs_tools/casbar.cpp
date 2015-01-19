@@ -893,7 +893,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
             appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">"));
             appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">"));
             appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">"));
-            writeRecord(vcfFileOut, vcfHeader);
+            writeHeader(vcfFileOut, vcfHeader);
 
             seqan::BedFileOut bedFileOut(toCString(tempFileNameBed));
             //XXX addSequenceName(tempBedStream, fragmentStore1.contigNameStore[currContigId]);
@@ -927,7 +927,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
     appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=GQ,Number=1,Type=Integer,Description=\"Genotype Quality\">"));
     appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">"));
     appendValue(vcfHeader, VcfHeaderRecord("ID", "<ID=HQ,Number=2,Type=Integer,Description=\"Haplotype Quality\">"));
-    writeRecord(vcfFileOut, vcfHeader);
+    writeHeader(vcfFileOut, vcfHeader);
 
     // Prepare BED output
     seqan::BedFileOut bedFileOut;
@@ -949,7 +949,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
         }
 
         seqan::VcfHeader vcfHeader;
-        readRecord(vcfHeader, vcfFileIn);
+        readHeader(vcfHeader, vcfFileIn);
 
         seqan::VcfRecord vcfRecord;
         while (!atEnd(vcfFileIn))
