@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in GFF or GTF format.
+// Class for reading/writing files in GFF or GTF format.
 // ==========================================================================
 
 #ifndef SEQAN_GFF_IO_GFF_FILE_H_
@@ -40,26 +40,24 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Typedefs
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Typedef UcscFileIn
+// Typedef GffFileIn
 // ----------------------------------------------------------------------------
 
 /*!
  * @class GffFileIn
- * @extends SmartFile
+ * @signature typedef FormattedFile<Gff, Input> GffFileIn;
+ * @extends FormattedFileIn
  * @headerfile <seqan/gff_io.h>
- * @brief @link SmartFile @endlink for reading GFF and GTF files.
+ * @brief Class for reading GFF and GTF files.
  *
- * @signature typedef SmartFile<Gff, Input> GffFileIn;
+ * @see GffRecord
  */
-typedef SmartFile<Gff, Input>   GffFileIn;
+ 
+typedef FormattedFile<Gff, Input>   GffFileIn;
 
 // ----------------------------------------------------------------------------
 // Typedef GffFileOut
@@ -67,24 +65,26 @@ typedef SmartFile<Gff, Input>   GffFileIn;
 
 /*!
  * @class GffFileOut
- * @extends SmartFile
+ * @signature typedef FormattedFile<Gff, Output> GffFileOut;
+ * @extends FormattedFileOut
  * @headerfile <seqan/gff_io.h>
- * @brief @link SmartFile @endlink for writing GFF and GTF.
+ * @brief Class for writing GFF and GTF files.
  *
- * @signature typedef SmartFile<Gff, Output> GffFileOut;
+ * @see GffRecord
  */
-typedef SmartFile<Gff, Output>  GffFileOut;
+
+typedef FormattedFile<Gff, Output>  GffFileOut;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction SmartFileContext
+// Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Gff, Input, TSpec>, TStorageSpec>
+struct FormattedFileContext<FormattedFile<Gff, Input, TSpec>, TStorageSpec>
 {
     typedef CharString Type;
 };
@@ -94,7 +94,7 @@ struct SmartFileContext<SmartFile<Gff, Input, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormat<SmartFile<Gff, TDirection, TSpec> >
+struct FileFormat<FormattedFile<Gff, TDirection, TSpec> >
 {
     typedef TagSelector<
                 TagList<Gff,
@@ -106,20 +106,6 @@ struct FileFormat<SmartFile<Gff, TDirection, TSpec> >
 // ----------------------------------------------------------------------------
 // Function readRecord()
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn GffFileIn#readRecord
- * @brief Reading GFF and GTF records from a GffFileIn.
- *
- * @signature void readRecord(record, file);
- *
- * @param[out] record The @link GffRecord @endlink to write to.
- * @param[in]  file   The GffFileIn to read from.
- *
- * @throw IOError or ParseError.
- *
- * Both GFF and GTF records can be read into a GffRecord.  The format is detected by the GffFileIn.
- */
 
 template <typename TForwardIter, typename TFormats>
 inline void
@@ -134,7 +120,7 @@ readRecord(GffRecord & record,
 // convient GffFile variant
 template <typename TSpec>
 inline void
-readRecord(GffRecord & record, SmartFile<Gff, Input, TSpec> & file)
+readRecord(GffRecord & record, FormattedFile<Gff, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
 }
@@ -142,21 +128,6 @@ readRecord(GffRecord & record, SmartFile<Gff, Input, TSpec> & file)
 // ----------------------------------------------------------------------------
 // Function writeRecord()
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn GffFileOut#writeRecord
- * @brief Writing GFF and GTF records to a GffFileOut.
- *
- * @signature void writeRecord(record, file);
- *
- * @param[in]  file   The GffFileIn to read from.
- * @param[out] record The @link GffRecord @endlink to write out.
- *
- * @throw IOError or ParseError.
- *
- * @link GffRecord @endlink objects can be written to both GFF and GTF files. The format is chosen depending on
- * the parameters of the GffFileOut (which will auto-detect it by default).
- */
 
 // support for dynamically chosen file formats
 template <typename TTarget>
@@ -184,7 +155,7 @@ writeRecord(TTarget & target,
 
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Gff, Output, TSpec> & file, GffRecord & record)
+writeRecord(FormattedFile<Gff, Output, TSpec> & file, GffRecord & record)
 {
     writeRecord(file.iter, record, file.format);
 }

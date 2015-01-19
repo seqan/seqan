@@ -32,7 +32,7 @@ int main(int argc, char const * argv[])
 
     // Read header.
     BamHeader header;
-    readRecord(header, inFile);
+    readHeader(header, inFile);
 
     // Translate from reference name to rID.
     int rID = 0;

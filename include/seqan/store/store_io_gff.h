@@ -563,7 +563,7 @@ _writeGffGtf(
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig>
 inline void
-writeRecords(SmartFile<Gff, Output, TSpec> & gffFile,
+writeRecords(FormattedFile<Gff, Output, TSpec> & gffFile,
              FragmentStore<TFSSpec, TFSConfig> & store)
 {
     _writeGffGtf(gffFile, store, format(gffFile));

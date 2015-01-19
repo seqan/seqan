@@ -41,12 +41,12 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Enum BamHeaderRecordType
+// ----------------------------------------------------------------------------
 
 /*!
  * @enum BamHeaderRecordType
@@ -80,6 +80,10 @@ enum BamHeaderRecordType
     BAM_HEADER_COMMENT     = 4
 };
 
+// ----------------------------------------------------------------------------
+// Enum BamSortOrder
+// ----------------------------------------------------------------------------
+
 /*!
  * @enum BamSortOrder
  * @headerfile <seqan/bam_io.h>
@@ -107,6 +111,10 @@ enum BamSortOrder
     BAM_SORT_QUERYNAME  = 2,
     BAM_SORT_COORDINATE = 3
 };
+
+// ----------------------------------------------------------------------------
+// Class BamHeaderRecord
+// ----------------------------------------------------------------------------
 
 /*!
  * @class BamHeaderRecord
@@ -155,16 +163,37 @@ enum BamSortOrder
 class BamHeaderRecord
 {
 public:
-    typedef CharString TTagName;
-    typedef CharString TTagValue;
-    typedef Pair<TTagName, TTagValue> TTag;
-    typedef String<TTag> TTags;
+    typedef CharString                  TTagName;
+    typedef CharString                  TTagValue;
+    typedef Pair<TTagName, TTagValue>   TTag;
+    typedef String<TTag>                TTags;
 
     BamHeaderRecordType type;
-    String<Pair<TTagName, TTagValue> > tags;
+    TTags tags;
 
     BamHeaderRecord() : type(BAM_HEADER_FIRST) {}
 };
+
+// ----------------------------------------------------------------------------
+// Class BamHeader
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class BamHeader
+ * @headerfile <seqan/bam_io.h>
+ * @implements FormattedFileHeaderConcept
+ * @signature typedef String<BamHeaderRecord> BamHeader;
+ * @brief Represent the information of the BAM header.
+ *
+ * @see BamFileIn
+ * @see BamFileOut
+ */
+
+typedef String<BamHeaderRecord> BamHeader;
+
+// ============================================================================
+// Functions
+// ============================================================================
 
 // ----------------------------------------------------------------------------
 // Function std::swap()
@@ -177,52 +206,9 @@ swap(BamHeaderRecord &a, BamHeaderRecord &b)
     swap(a.tags, b.tags);
 }
 
-/*!
- * @class BamHeader
- * @headerfile <seqan/bam_io.h>
- * @brief Stores the information of the BAM header.
- *
- * @signature class BamHeader;
- *
- * @fn BamHeader::BamHeader
- * @brief Constructor.
- *
- * @signature BamHeader::BamHeader();
- *
- * Only the the default constructor is provided.
- *
- * @var TSequenceInfos BamHeader::sequenceInfos;
- * @brief @link AllocString @endlink of <tt>(seqId, length)</tt> with reference name / length information.
- *
- * <tt>TSequenceInfos</tt> is a @link AllocString @endlink of @link Pair @endlink objects with entries
- * @link CharString @endlink and <tt>__int32</tt>.
- *
- * @var TBamHeaderRecords BamHeader::records;
- * @brief @link AllocString @endlink of @link BamHeaderRecord BamHeaderRecords @endlink.
- */
-
-typedef String<BamHeaderRecord> BamHeader;
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
-
-// ============================================================================
-// Functions
-// ============================================================================
-
 // ----------------------------------------------------------------------------
 // Function clear()
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn BamHeader::clear
- * @brief Clear BamHeader object.
- *
- * @signature void clear(header);
- *
- * @param[in,out] header The record to clear.
- */
 
 /*!
  * @fn BamHeaderRecord::clear

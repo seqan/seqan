@@ -53,8 +53,8 @@ namespace seqan {
 
 /*!
  * @class SimpleIntervalsIOContext
- * @implements DefaultConstructible
- * @implements Assignable
+ * @implements DefaultConstructibleConcept
+ * @implements AssignableConcept
  * @headerfile <seqan/simple_intervals_io.h>
  * @brief I/O context for .intervals file.
  *

@@ -31,17 +31,13 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in UCSC format.
+// Class for reading/writing files in UCSC format.
 // ==========================================================================
 
 #ifndef SEQAN_INCLUDE_SEQAN_UCSC_IO_UCSC_FILE_H_
 #define SEQAN_INCLUDE_SEQAN_UCSC_IO_UCSC_FILE_H_
 
 namespace seqan {
-
-// ============================================================================
-// Forwards
-// ============================================================================
 
 // ============================================================================
 // Typedefs
@@ -56,13 +52,15 @@ typedef Tag<Ucsc_<> > Ucsc;
 
 /*!
  * @class UcscFileIn
- * @extends SmartFile
+ * @signature typedef FormattedFile<Ucsc, Input> UcscFileIn;
+ * @extends FormattedFileIn
  * @headerfile <seqan/ucsc_io.h>
- * @brief @link SmartFile @endlink for reading UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
+ * @brief Class for reading UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
  *
- * @signature typedef SmartFile<Ucsc, Input> UcscFileIn;
+ * @see UcscRecord
  */
-typedef SmartFile<Ucsc, Input>   UcscFileIn;
+
+typedef FormattedFile<Ucsc, Input>   UcscFileIn;
 
 // ----------------------------------------------------------------------------
 // Typedef UcscFileOut
@@ -70,24 +68,26 @@ typedef SmartFile<Ucsc, Input>   UcscFileIn;
 
 /*!
  * @class UcscFileInOut
- * @extends SmartFile
+ * @signature typedef FormattedFile<Ucsc, Output> UcscFileOut;
+ * @extends FormattedFileOut
  * @headerfile <seqan/ucsc_io.h>
- * @brief @link SmartFile @endlink for reading UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
+ * @brief Class for writing UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
  *
- * @signature typedef SmartFile<Ucsc, Output> UcscFileOut;
+ * @see UcscRecord
  */
-typedef SmartFile<Ucsc, Output> UcscFileOut;
+
+typedef FormattedFile<Ucsc, Output> UcscFileOut;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction SmartFileContext
+// Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Ucsc, TDirection, TSpec>, TStorageSpec>
+struct FormattedFileContext<FormattedFile<Ucsc, TDirection, TSpec>, TStorageSpec>
 {
     typedef UcscIOContext Type;
 };
@@ -97,7 +97,7 @@ struct SmartFileContext<SmartFile<Ucsc, TDirection, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormat<SmartFile<Ucsc, TDirection, TSpec> >
+struct FileFormat<FormattedFile<Ucsc, TDirection, TSpec> >
 {
     typedef TagSelector<
                 TagList<UcscKnownGene,
@@ -109,18 +109,6 @@ struct FileFormat<SmartFile<Ucsc, TDirection, TSpec> >
 // ----------------------------------------------------------------------------
 // Function readRecord(); UcscRecord
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn UcscFileIn#readRecord
- * @brief Reading records from a UcscFileIn.
- *
- * @signature void readRecord(record, file);
- *
- * @param[out] record The resulting @link UcscRecord @endlink.
- * @param[out] file   The UcscFileIn to read from.
- *
- * @throw IOError in case of problems.
- */
 
 // support for dynamically chosen file formats
 template <typename TForwardIter>
@@ -149,7 +137,7 @@ readRecord(UcscRecord & record,
 }
 
 template <typename TSpec>
-void readRecord(UcscRecord & record, SmartFile<Ucsc, Input, TSpec> & file)
+void readRecord(UcscRecord & record, FormattedFile<Ucsc, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
 }
@@ -157,18 +145,6 @@ void readRecord(UcscRecord & record, SmartFile<Ucsc, Input, TSpec> & file)
 // ----------------------------------------------------------------------------
 // Function writeRecord(); UcscRecord
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn UcscFileIn#writeRecord
- * @brief Writing records to a UcscFileIn.
- *
- * @signature void readRecord(record, file);
- *
- * @param[out] file   The UcscFileIn to write to.
- * @param[out] record The @link UcscRecord @endlink to write out.
- *
- * @throw IOError in case of problems.
- */
 
 // support for dynamically chosen file formats
 template <typename TTarget>
@@ -196,7 +172,7 @@ writeRecord(TTarget & target,
 
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Ucsc, Output, TSpec> & file, UcscRecord const & record)
+writeRecord(FormattedFile<Ucsc, Output, TSpec> & file, UcscRecord const & record)
 {
     writeRecord(file.iter, record, file.format);
 }

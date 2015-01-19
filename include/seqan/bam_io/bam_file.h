@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in SAM or BAM format.
+// Class for reading/writing files in SAM or BAM format.
 // ==========================================================================
 
 #ifndef SEQAN_BAM_IO_BAM_FILE_H_
@@ -40,73 +40,73 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Typedefs
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Type BamFileIn
+// ----------------------------------------------------------------------------
+
 /*!
  * @class BamFileIn
+ * @signature typedef FormattedFile<Bam, Input> BamFileIn;
+ * @extends FormattedFileIn
  * @headerfile <seqan/bam_io.h>
- * @brief Class that provides an easy to use interface for reading SAM and BAM files.
+ * @brief Class for reading SAM and BAM files.
  *
- * @signature class BamFileIn;
+ * @see BamHeader
+ * @see BamAlignmentRecord
  *
  * @section Example
  *
- * Read SAM or BAM files.
+ * Access SAM or BAM files.
  *
- * @include demos/bam_io/bam_file_in.cpp
+ * @include demos/tutorial/bam_io/solution1.cpp
  *
  * The output is as follows:
  *
- * @include demos/bam_io/bam_file_in.cpp.stdout
+ * @include demos/tutorial/bam_io/example.sam
  */
 
-/*!
- * @fn BamFileIn::BamFileIn
- * @brief Constructor
- *
- * @signature BamFileIn::BamFileIn([fileName[, openMode]]);
- *
- * @param[in] fileName The path to the SAM or BAM file to load, <tt>char const *</tt>.
- * @param[in] openMode The open mode. Type: <tt>int</tt>.
- */
+typedef FormattedFile<Bam, Input> BamFileIn;
 
-typedef SmartFile<Bam, Input> BamFileIn;
+// ----------------------------------------------------------------------------
+// Type BamFileOut
+// ----------------------------------------------------------------------------
 
 /*!
  * @class BamFileOut
+ * @signature typedef FormattedFile<Bam, Output> BamFileOut;
+ * @extends FormattedFileOut
  * @headerfile <seqan/bam_io.h>
- * @brief Class that provides an easy to use interface for writing SAM and BAM files.
+ * @brief Class for writing SAM and BAM files.
  *
- * @signature class BamFileOut;
+ * @see BamHeader
+ * @see BamAlignmentRecord
+ *
+ * @section Example
+ *
+ * Access SAM or BAM files.
+ *
+ * @include demos/tutorial/bam_io/solution1.cpp
+ *
+ * The output is as follows:
+ *
+ * @include demos/tutorial/bam_io/example.sam
  */
 
-/*!
- * @fn BamFileIn::BamFileOut
- * @brief Constructor
- *
- * @signature BamFileOut::BamFileOut([fileName[, openMode]]);
- *
- * @param[in] fileName The path to the SAM or BAM file to write, <tt>char const *</tt>.
- * @param[in] openMode The open mode. Type: <tt>int</tt>.
- */
-
-typedef SmartFile<Bam, Output> BamFileOut;
+typedef FormattedFile<Bam, Output> BamFileOut;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction SmartFileContext
+// Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Bam, TDirection, TSpec>, TStorageSpec>
+struct FormattedFileContext<FormattedFile<Bam, TDirection, TSpec>, TStorageSpec>
 {
     typedef StringSet<CharString>                                   TNameStore;
     typedef NameStoreCache<TNameStore>                              TNameStoreCache;
@@ -118,7 +118,7 @@ struct SmartFileContext<SmartFile<Bam, TDirection, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormat<SmartFile<Bam, TDirection, TSpec> >
+struct FileFormat<FormattedFile<Bam, TDirection, TSpec> >
 {
 #if SEQAN_HAS_ZLIB
     typedef TagSelector<
@@ -142,27 +142,13 @@ _mapFileFormatToCompressionFormat(Bam)
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecord(); BamHeader
+// Function readHeader(); BamHeader
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn BamFileIn#readRecord
- * @brief Read one @link BamAlignmentHeader @endlink or @link BamAlignmentRecord @endlink from a @link BamFileIn @endlink object.
- *
- * @signature int readRecord(header, bamFileIn);
- * @signature int readRecord(record, bamFileIn);
- *
- * @param[out]   header     The @link BamAlignmentHeader @endlink to read the header information into. Of type
- *                          @link BamAlignmentHeader @endlink.
- * @param[out]   record     The @link BamAlignmentRecord @endlink to read the next alignment record into. Of type
- *                          @link BamAlignmentRecord @endlink.
- * @param[in,out] bamFileIn The @link BamFileIn @endlink object to read from.
- */
 
 // support for dynamically chosen file formats
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
-readRecord(BamHeader & /* header */,
+readHeader(BamHeader & /* header */,
            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
            TForwardIter & /* iter */,
            TagSelector<> const & /* format */)
@@ -172,7 +158,7 @@ readRecord(BamHeader & /* header */,
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
 inline void
-readRecord(BamHeader & header,
+readHeader(BamHeader & header,
            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
            TagSelector<TTagList> const & format)
@@ -180,17 +166,17 @@ readRecord(BamHeader & header,
     typedef typename TTagList::Type TFormat;
 
     if (isEqual(format, TFormat()))
-        readRecord(header, context, iter, TFormat());
+        readHeader(header, context, iter, TFormat());
     else
-        readRecord(header, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+        readHeader(header, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
 // convient BamFile variant
 template <typename TSpec>
 inline void
-readRecord(BamHeader & header, SmartFile<Bam, Input, TSpec> & file)
+readHeader(BamHeader & header, FormattedFile<Bam, Input, TSpec> & file)
 {
-    readRecord(header, context(file), file.iter, file.format);
+    readHeader(header, context(file), file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -250,7 +236,7 @@ readRecord(BamAlignmentRecord & record,
 // convient BamFile variant
 template <typename TSpec>
 inline void
-readRecord(BamAlignmentRecord & record, SmartFile<Bam, Input, TSpec> & file)
+readRecord(BamAlignmentRecord & record, FormattedFile<Bam, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
 }
@@ -258,7 +244,7 @@ readRecord(BamAlignmentRecord & record, SmartFile<Bam, Input, TSpec> & file)
 template <typename TRecords, typename TSpec, typename TSize>
 inline SEQAN_FUNC_ENABLE_IF(And<IsSameType<typename Value<TRecords>::Type, BamAlignmentRecord>,
                                 IsInteger<TSize> >, TSize)
-readBatch(TRecords & records, SmartFile<Bam, Input, TSpec> & file, TSize maxRecords)
+readBatch(TRecords & records, FormattedFile<Bam, Input, TSpec> & file, TSize maxRecords)
 {
     String<CharString> & buffers = context(file).buffers;
     if ((TSize)length(buffers) < maxRecords)
@@ -281,20 +267,8 @@ readBatch(TRecords & records, SmartFile<Bam, Input, TSpec> & file, TSize maxReco
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord(); BamHeader
+// Function writeHeader(); BamHeader
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn BamFileOut#writeRecord
- * @brief Write one @link BamAlignmentHeader @endlink or @link BamAlignmentRecord @endlink to a @link BamFileOut @endlink object.
- *
- * @signature int writeRecord(bamFileOut, header);
- * @signature int writeRecord(bamFileOut, record);
- *
- * @param[in,out] bamFileOut    The @link BamFileOut @endlink object to write to.
- * @param[in]     header        The @link BamAlignmentHeader @endlink to write out.
- * @param[in]     record        The @link BamAlignmentRecord @endlink to write out.
-*/
 
 // support for dynamically chosen file formats
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
@@ -325,7 +299,7 @@ write(TTarget & target,
 // convient BamFile variant
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Bam, Output, TSpec> & file, BamHeader const & header)
+writeHeader(FormattedFile<Bam, Output, TSpec> & file, BamHeader const & header)
 {
     write(file.iter, header, context(file), file.format);
 }
@@ -362,14 +336,14 @@ write(TTarget & target,
 
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Bam, Output, TSpec> & file, BamAlignmentRecord const & record)
+writeRecord(FormattedFile<Bam, Output, TSpec> & file, BamAlignmentRecord const & record)
 {
     write(file.iter, record, context(file), file.format);
 }
 
 template <typename TSpec, typename TRecords>
 inline SEQAN_FUNC_ENABLE_IF(IsSameType<typename Value<TRecords>::Type, BamAlignmentRecord>, void)
-writeRecords(SmartFile<Bam, Output, TSpec> & file, TRecords const & records)
+writeRecords(FormattedFile<Bam, Output, TSpec> & file, TRecords const & records)
 {
     String<CharString> & buffers = context(file).buffers;
     if (length(buffers) < length(records))

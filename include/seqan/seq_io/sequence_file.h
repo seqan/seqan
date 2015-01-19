@@ -32,7 +32,7 @@
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 //         David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in Fasta or Fastq format.
+// Class for reading/writing files in Fasta or Fastq format.
 // ==========================================================================
 
 #ifndef SEQAN_SEQ_IO_SEQUENCE_FILE_H_
@@ -48,8 +48,25 @@ namespace seqan {
 // Typedefs
 // ============================================================================
 
-typedef SmartFile<Fastq, Input>     SeqFileIn;
-typedef SmartFile<Fastq, Output>    SeqFileOut;
+/*!
+ * @class SeqFileIn
+ * @signature typedef FormattedFile<Fastq, Input> SeqFileIn;
+ * @extends FormattedFileIn
+ * @headerfile <seqan/seq_io.h>
+ * @brief Class for reading RAW, FASTA, FASTQ, EMBL and GENBANK files containing unaligned sequences.
+ */
+
+typedef FormattedFile<Fastq, Input>     SeqFileIn;
+
+/*!
+ * @class SeqFileOut
+ * @signature typedef FormattedFile<Fastq, Output> SeqFileOut;
+ * @extends FormattedFileOut
+ * @headerfile <seqan/seq_io.h>
+ * @brief Class for writing RAW, FASTA, FASTQ, EMBL and GENBANK files containing unaligned sequences.
+ */
+
+typedef FormattedFile<Fastq, Output>    SeqFileOut;
 
 // --------------------------------------------------------------------------
 // Tag AutoSeqFormat
@@ -93,7 +110,7 @@ typedef SeqInFormat AutoSeqFormat;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction SmartFileContext
+// Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
 
 template <typename TDirection>
@@ -114,7 +131,7 @@ struct SeqFileContext_<Output>
 
 
 template <typename TSpec, typename TDirection, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Fastq, TDirection, TSpec>, TStorageSpec>
+struct FormattedFileContext<FormattedFile<Fastq, TDirection, TSpec>, TStorageSpec>
 {
     typedef SeqFileContext_<TDirection> Type;
 };
@@ -124,13 +141,13 @@ struct SmartFileContext<SmartFile<Fastq, TDirection, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
-struct FileFormat<SmartFile<Fastq, Input, TSpec> >
+struct FileFormat<FormattedFile<Fastq, Input, TSpec> >
 {
     typedef TagSelector<SeqInFormats> Type;
 };
 
 template <typename TSpec>
-struct FileFormat<SmartFile<Fastq, Output, TSpec> >
+struct FileFormat<FormattedFile<Fastq, Output, TSpec> >
 {
     typedef TagSelector<SeqOutFormats> Type;
 };
@@ -144,9 +161,9 @@ struct FileFormat<SmartFile<Fastq, Output, TSpec> >
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIdString, typename TSeqString>
-inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename SmartFile<Fastq, Input, TSpec>::TStream> >,
+inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >,
                                 Not<HasQualities<typename Value<TSeqString>::Type> > >, void)
-readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, Input, TSpec> & file)
+readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec> & file)
 {
     readRecord(meta, seq, file.iter, file.format);
 }
@@ -156,9 +173,9 @@ readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, Input, TSpec> & 
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIdString, typename TSeqString>
-inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename SmartFile<Fastq, Input, TSpec>::TStream> >,
+inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >,
                                 HasQualities<typename Value<TSeqString>::Type> >, void)
-readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, Input, TSpec> & file)
+readRecord(TIdString & meta, TSeqString & seq, FormattedFile<Fastq, Input, TSpec> & file)
 {
     readRecord(meta, seq, context(file).buffer[2], file.iter, file.format);
     assignQualities(seq, context(file).buffer[2]);
@@ -169,8 +186,8 @@ readRecord(TIdString & meta, TSeqString & seq, SmartFile<Fastq, Input, TSpec> & 
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<Fastq, Input, TSpec>::TStream> >, void)
-readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, SmartFile<Fastq, Input, TSpec> & file)
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >, void)
+readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile<Fastq, Input, TSpec> & file)
 {
     readRecord(meta, seq, qual, file.iter, file.format);
 }
@@ -196,7 +213,7 @@ swapPtr(TPtrA &a, TPtrB &b)
 template <typename TIdStringSet, typename TSeqStringSet, typename TSpec, typename TFastqAlphabet>
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
-                        SmartFile<Fastq, Input, TSpec> & file,
+                        FormattedFile<Fastq, Input, TSpec> & file,
                         __uint64 maxRecords = MaxValue<__uint64>::VALUE,
                         TFastqAlphabet = Iupac())
 {
@@ -227,7 +244,7 @@ inline void readRecords(TIdStringSet & meta,
 template <typename TIdStringSet, typename TSeqStringSet, typename TSpec>
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
-                        SmartFile<Fastq, Input, TSpec> & file,
+                        FormattedFile<Fastq, Input, TSpec> & file,
                         __uint64 maxRecords = MaxValue<__uint64>::VALUE)
 {
     typedef typename Value<TSeqStringSet>::Type     TSeqString;
@@ -243,7 +260,7 @@ inline void readRecords(TIdStringSet & meta,
 template <typename TIdStringSet, typename TSeqStringSet, typename TSpec, typename TFastqAlphabet>
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
-                        SmartFile<Fastq, Input, TSpec> & file,
+                        FormattedFile<Fastq, Input, TSpec> & file,
                         TFastqAlphabet = Iupac())
 {
     readRecords(meta, seq, file, MaxValue<__uint64>::VALUE, TFastqAlphabet());
@@ -257,7 +274,7 @@ template <typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         TQualStringSet & qual,
-                        SmartFile<Fastq, Input, TSpec> & file,
+                        FormattedFile<Fastq, Input, TSpec> & file,
                         __uint64 maxRecords = MaxValue<__uint64>::VALUE,
                         TFastqAlphabet = Iupac())
 {
@@ -289,7 +306,7 @@ template <typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         TQualStringSet & qual,
-                        SmartFile<Fastq, Input, TSpec> & file,
+                        FormattedFile<Fastq, Input, TSpec> & file,
                         __uint64 maxRecords = MaxValue<__uint64>::VALUE)
 {
     typedef typename Value<TSeqStringSet>::Type     TSeqString;
@@ -306,7 +323,7 @@ template <typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         TQualStringSet & qual,
-                        SmartFile<Fastq, Input, TSpec> & file,
+                        FormattedFile<Fastq, Input, TSpec> & file,
                         TFastqAlphabet = Iupac())
 {
     readRecords(meta, seq, qual, file, MaxValue<__uint64>::VALUE, TFastqAlphabet());
@@ -317,8 +334,8 @@ inline void readRecords(TIdStringSet & meta,
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIdString, typename TSeqString>
-inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Fastq, Output, TSpec>::TStream> >, void)
-writeRecord(SmartFile<Fastq, Output, TSpec> & file,
+inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename FormattedFile<Fastq, Output, TSpec>::TStream> >, void)
+writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
             TIdString const & meta,
             TSeqString const & seq)
 {
@@ -330,8 +347,8 @@ writeRecord(SmartFile<Fastq, Output, TSpec> & file,
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TIdString, typename TSeqString, typename TQualString>
-inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename SmartFile<Fastq, Output, TSpec>::TStream> >, void)
-writeRecord(SmartFile<Fastq, Output, TSpec> & file,
+inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename FormattedFile<Fastq, Output, TSpec>::TStream> >, void)
+writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
             TIdString const & meta,
             TSeqString const & seq,
             TQualString const & qual)
@@ -345,7 +362,7 @@ writeRecord(SmartFile<Fastq, Output, TSpec> & file,
 
 template <typename TSpec, typename TIdStringSet, typename TSeqStringSet>
 inline void
-writeRecords(SmartFile<Fastq, Output, TSpec> & file,
+writeRecords(FormattedFile<Fastq, Output, TSpec> & file,
              TIdStringSet const & meta,
              TSeqStringSet const & seq)
 {
@@ -359,7 +376,7 @@ writeRecords(SmartFile<Fastq, Output, TSpec> & file,
 
 template <typename TSpec, typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet>
 inline void
-writeRecords(SmartFile<Fastq, Output, TSpec> & file,
+writeRecords(FormattedFile<Fastq, Output, TSpec> & file,
              TIdStringSet const & meta,
              TSeqStringSet const & seq,
              TQualStringSet const & qual)

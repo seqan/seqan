@@ -28,7 +28,7 @@ int main()
     header[0].tags[0].i1 = "VN";
     header[0].tags[0].i2 = "1.4";
 
-    writeRecord(bamFileOut, header);
+    writeHeader(bamFileOut, header);
 
     // --------------------------------------------------------
     // Write out records.

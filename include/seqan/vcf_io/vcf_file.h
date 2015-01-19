@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in Vcf format.
+// Class for reading/writing files in Vcf format.
 // ==========================================================================
 // TODO(weese:) add Bcf I/O and integrate it
 
@@ -54,8 +54,39 @@ typedef Tag<Bcf_> Bcf;
 // Typedefs
 // ============================================================================
 
-typedef SmartFile<Vcf, Input>   VcfFileIn;
-typedef SmartFile<Vcf, Output>  VcfFileOut;
+// ----------------------------------------------------------------------------
+// Typedef VcfFileIn
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class VcfFileIn
+ * @signature typedef FormattedFile<Vcf, Input> VcfFileIn;
+ * @extends FormattedFileIn
+ * @headerfile <seqan/vcf_io.h>
+ * @brief Class for reading VCF files.
+ *
+ * @see VcfHeader
+ * @see VcfRecord
+ */
+
+typedef FormattedFile<Vcf, Input>   VcfFileIn;
+
+// ----------------------------------------------------------------------------
+// Typedef VcfFileOut
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class VcfFileOut
+ * @signature typedef FormattedFile<Vcf, Output> VcfFileOut;
+ * @extends FormattedFileOut
+ * @headerfile <seqan/vcf_io.h>
+ * @brief Class for writing VCF files.
+ *
+ * @see VcfHeader
+ * @see VcfRecord
+ */
+
+typedef FormattedFile<Vcf, Output>  VcfFileOut;
 
 // ============================================================================
 // Metafunctions
@@ -115,11 +146,11 @@ char const * FileExtensions<Bcf, T>::VALUE[1] =
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction SmartFileContext
+// Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Vcf, TDirection, TSpec>, TStorageSpec>
+struct FormattedFileContext<FormattedFile<Vcf, TDirection, TSpec>, TStorageSpec>
 {
     typedef StringSet<CharString>                                   TNameStore;
     typedef NameStoreCache<TNameStore>                              TNameStoreCache;
@@ -131,7 +162,7 @@ struct SmartFileContext<SmartFile<Vcf, TDirection, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormat<SmartFile<Vcf, TDirection, TSpec> >
+struct FileFormat<FormattedFile<Vcf, TDirection, TSpec> >
 {
 // TODO(weese:) Enable this, as soon as someone implements BCF
 
@@ -157,21 +188,36 @@ _mapFileFormatToCompressionFormat(Bcf)
 }
 
 // ----------------------------------------------------------------------------
+// Function readHeader(); VcfHeader
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+inline void
+readHeader(VcfHeader & header, FormattedFile<Vcf, Input, TSpec> & file)
+{
+    readHeader(header, context(file), file.iter, file.format);
+}
+
+// ----------------------------------------------------------------------------
 // Function readRecord(); VcfRecord
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
-readRecord(VcfHeader & record, SmartFile<Vcf, Input, TSpec> & file)
+readRecord(VcfRecord & record, FormattedFile<Vcf, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
 }
 
+// ----------------------------------------------------------------------------
+// Function writeHeader(); VcfHeader
+// ----------------------------------------------------------------------------
+
 template <typename TSpec>
 inline void
-readRecord(VcfRecord & record, SmartFile<Vcf, Input, TSpec> & file)
+writeHeader(FormattedFile<Vcf, Output, TSpec> & file, VcfHeader & header)
 {
-    readRecord(record, context(file), file.iter, file.format);
+    writeHeader(file.iter, header, context(file), file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -180,14 +226,7 @@ readRecord(VcfRecord & record, SmartFile<Vcf, Input, TSpec> & file)
 
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Vcf, Output, TSpec> & file, VcfHeader & record)
-{
-    writeRecord(file.iter, record, context(file), file.format);
-}
-
-template <typename TSpec>
-inline void
-writeRecord(SmartFile<Vcf, Output, TSpec> & file, VcfRecord & record)
+writeRecord(FormattedFile<Vcf, Output, TSpec> & file, VcfRecord & record)
 {
     writeRecord(file.iter, record, context(file), file.format);
 }

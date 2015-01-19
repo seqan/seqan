@@ -63,7 +63,7 @@ typedef Tag<Roi_> Roi;
 // ----------------------------------------------------------------------------
 
 template <typename TTarget>
-void writeRecord(TTarget & target, RoiHeader const & header, Roi const & /*tag*/)
+void writeHeader(TTarget & target, RoiHeader const & header, Roi const & /*tag*/)
 {
     write(target, "#ROI 0.3\n"
                   "##ref\t"

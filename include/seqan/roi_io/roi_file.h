@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in ROI format.
+// Class for reading/writing files in ROI format.
 // ==========================================================================
 
 #ifndef SEQAN_INCLUDE_SEQAN_ROI_IO_ROI_STREAM_H_
@@ -40,26 +40,47 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Typedefs
 // ============================================================================
 
-typedef SmartFile<Roi, Input>   RoiFileIn;
-typedef SmartFile<Roi, Output>  RoiFileOut;
+// ----------------------------------------------------------------------------
+// Type RoiFileIn
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class RoiFileIn
+ * @signature typedef FormattedFile<Roi, Input> RoiFileIn;
+ * @extends FormattedFileIn
+ * @headerfile <seqan/roi_io.h>
+ * @brief Class for reading ROI files.
+ */
+
+typedef FormattedFile<Roi, Input>   RoiFileIn;
+
+// ----------------------------------------------------------------------------
+// Type RoiFileOut
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class RoiFileOut
+ * @signature typedef FormattedFile<Roi, Output> RoiFileOut;
+ * @extends FormattedFileOut
+ * @headerfile <seqan/roi_io.h>
+ * @brief Class for writing ROI files.
+ */
+
+typedef FormattedFile<Roi, Output>  RoiFileOut;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction SmartFileContext
+// Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Roi, TDirection, TSpec>, TStorageSpec>
+struct FormattedFileContext<FormattedFile<Roi, TDirection, TSpec>, TStorageSpec>
 {
     typedef RoiIOContext Type;
 };
@@ -69,10 +90,22 @@ struct SmartFileContext<SmartFile<Roi, TDirection, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormat<SmartFile<Roi, TDirection, TSpec> >
+struct FileFormat<FormattedFile<Roi, TDirection, TSpec> >
 {
     typedef Roi Type;
 };
+
+// ----------------------------------------------------------------------------
+// Function readHeader(); RoiHeader
+// ----------------------------------------------------------------------------
+
+// convient RoiFile variant
+template <typename TSpec>
+inline void
+readHeader(RoiHeader & header, FormattedFile<Roi, Input, TSpec> & file)
+{
+    readHeader(header, context(file), file.iter, file.format);
+}
 
 // ----------------------------------------------------------------------------
 // Function readRecord(); RoiRecord
@@ -81,41 +114,29 @@ struct FileFormat<SmartFile<Roi, TDirection, TSpec> >
 // convient RoiFile variant
 template <typename TSpec>
 inline void
-readRecord(RoiRecord & record, SmartFile<Roi, Input, TSpec> & file)
+readRecord(RoiRecord & record, FormattedFile<Roi, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecord(); RoiHeader
+// Function writeHeader(); RoiHeader
 // ----------------------------------------------------------------------------
 
-// convient RoiFile variant
 template <typename TSpec>
 inline void
-readRecord(RoiHeader & record, SmartFile<Roi, Input, TSpec> & file)
+writeHeader(FormattedFile<Roi, Output, TSpec> & file, RoiHeader const & header)
 {
-    readRecord(record, context(file), file.iter, file.format);
+    writeHeader(file.iter, header, file.format);
 }
 
 // ----------------------------------------------------------------------------
-// Function write(); RoiRecord
+// Function writeRecord(); RoiRecord
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Roi, Output, TSpec> & file, RoiRecord const & record)
-{
-    writeRecord(file.iter, record, file.format);
-}
-
-// ----------------------------------------------------------------------------
-// Function write(); RoiRecord
-// ----------------------------------------------------------------------------
-
-template <typename TSpec>
-inline void
-writeRecord(SmartFile<Roi, Output, TSpec> & file, RoiHeader const & record)
+writeRecord(FormattedFile<Roi, Output, TSpec> & file, RoiRecord const & record)
 {
     writeRecord(file.iter, record, file.format);
 }

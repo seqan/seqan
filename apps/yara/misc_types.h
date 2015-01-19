@@ -110,12 +110,12 @@ struct YaraContigsConfig
 };
 
 // ----------------------------------------------------------------------------
-// SmartFile Context
+// FormattedFile Context
 // ----------------------------------------------------------------------------
 
 namespace seqan {
 template <typename TString, typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Bam, Output, StringSet<TString, Owner<ConcatDirect<TSpec> > > >, TStorageSpec>
+struct FormattedFileContext<FormattedFile<Bam, Output, StringSet<TString, Owner<ConcatDirect<TSpec> > > >, TStorageSpec>
 {
     typedef StringSet<CharString, Owner<ConcatDirect<TSpec> > >     TNameStore;
     typedef NameStoreCache<TNameStore>                              TNameStoreCache;

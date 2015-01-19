@@ -174,7 +174,7 @@ bool _parseSamFiles(StringSet<String<unsigned> > & mappedReads,
         BamHeader header;
         BamAlignmentRecord record;
 
-        readRecord(header, bamIO);
+        readHeader(header, bamIO);
 
         for (unsigned j = 0; !atEnd(bamIO); ++j)
         {

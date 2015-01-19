@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Smart file for reading/writing files in BED format.
+// Class for reading/writing files in BED format.
 // ==========================================================================
 
 #ifndef SEQAN_INCLUDE_SEQAN_BED_IO_BED_FILE_H_
@@ -40,26 +40,51 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Typedefs
 // ============================================================================
 
-typedef SmartFile<Bed, Input>   BedFileIn;
-typedef SmartFile<Bed, Output>  BedFileOut;
+// ----------------------------------------------------------------------------
+// Type BedFileIn
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class BedFileIn
+ * @signature typedef FormattedFile<Bed, Input> BedFileIn;
+ * @extends FormattedFileIn
+ * @headerfile <seqan/bed_io.h>
+ * @brief Class for reading BED files.
+ *
+ * @see BedRecord
+ */
+
+typedef FormattedFile<Bed, Input>   BedFileIn;
+
+// ----------------------------------------------------------------------------
+// Type BedFileOut
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class BedFileOut
+ * @signature typedef FormattedFile<Bed, Output> BedFileOut;
+ * @extends FormattedFileOut
+ * @headerfile <seqan/bed_io.h>
+ * @brief Class for writing BED files.
+ *
+ * @see BedRecord
+ */
+
+typedef FormattedFile<Bed, Output>  BedFileOut;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction SmartFileContext
+// Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Bed, TDirection, TSpec>, TStorageSpec>
+struct FormattedFileContext<FormattedFile<Bed, TDirection, TSpec>, TStorageSpec>
 {
     typedef CharString Type;
 };
@@ -69,7 +94,7 @@ struct SmartFileContext<SmartFile<Bed, TDirection, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormat<SmartFile<Bed, TDirection, TSpec> >
+struct FileFormat<FormattedFile<Bed, TDirection, TSpec> >
 {
     typedef Bed Type;
 };
@@ -81,7 +106,7 @@ struct FileFormat<SmartFile<Bed, TDirection, TSpec> >
 // convient BedFile variant
 template <typename TRecordSpec, typename TSpec>
 inline void
-readRecord(BedRecord<TRecordSpec> & record, SmartFile<Bed, Input, TSpec> & file)
+readRecord(BedRecord<TRecordSpec> & record, FormattedFile<Bed, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
 }
@@ -92,7 +117,7 @@ readRecord(BedRecord<TRecordSpec> & record, SmartFile<Bed, Input, TSpec> & file)
 
 template <typename TSpec, typename TRecordSpec>
 inline void
-writeRecord(SmartFile<Bed, Output, TSpec> & file, BedRecord<TRecordSpec> & record)
+writeRecord(FormattedFile<Bed, Output, TSpec> & file, BedRecord<TRecordSpec> & record)
 {
     writeRecord(file.iter, record, file.format);
 }

@@ -39,10 +39,6 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
@@ -52,9 +48,7 @@ namespace seqan {
 
 /*!
  * @class UcscRecord
- * @implements DefaultConstructibleConcept
- * @implements CopyConstructibleConcept
- * @implements AssignableConcept
+ * @implements FormattedFileRecordConcept
  * @headerfile <seqan/ucsc_io.h>
  * @brief Represent the information for one UCSC gene annotation record.
  *
@@ -130,10 +124,6 @@ public:
     UcscRecord() : cdsBegin(0), cdsEnd(0), annotationBeginPos(0), annotationEndPos(0)
     {}
 };
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
 
 // ============================================================================
 // Functions

@@ -64,12 +64,29 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Class BamIndex
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class BamIndex
+ * @headerfile <seqan/bam_io.h>
+ *
+ * @brief Access to BAM indices.
+ *
+ * @signature template <typename TSpec>
+ *            class BamIndex;
+ *
+ * This is an abstract class; don't use it itself but its specializations.
+ * 
+ * @see BamFileIn
+ */
+
+template <typename TSpec>
+class BamIndex;
 
 // ----------------------------------------------------------------------------
 // Tag Bai
@@ -134,10 +151,6 @@ public:
 };
 
 // ============================================================================
-// Metafunctions
-// ============================================================================
-
-// ============================================================================
 // Functions
 // ============================================================================
 
@@ -147,14 +160,14 @@ public:
 
 /*!
  * @fn BamFileIn#jumpToRegion
- * @brief Seek in BamStream using an index.
+ * @brief Seek in BamFileIn using an index.
  *
  * You provide a region <tt>[pos, posEnd)</tt> on the reference <tt>refID</tt> that you want to jump to and the function
  * jumps to the first alignment in this region, if any.
  *
- * @signature bool jumpToRegion(stream, hasAlignments, bamIOContext, refID, pos, posEnd, index);
+ * @signature bool jumpToRegion(bamFileIn, hasAlignments, refID, pos, posEnd, index);
  *
- * @param[in,out] stream        The @link BamStream @endlink to jump with.
+ * @param[in,out] bamFileIn     The @link BamFileIn @endlink to jump with.
  * @param[out]    hasAlignments A <tt>bool</tt> that is set true if the region <tt>[pos, posEnd)</tt> has any
  *                              alignments.
  * @param[in]     refID         The reference id to jump to (<tt>__int32</tt>).
@@ -167,8 +180,6 @@ public:
  * @section Remarks
  *
  * This function fails if <tt>refID</tt>/<tt>pos</tt> are invalid.
- *
- * @see BamIndex#jumpToRegion
  */
 
 static inline void
@@ -186,11 +197,9 @@ _baiReg2bins(String<__uint16> & list, __uint32 beg, __uint32 end)
     for (k = 4681 + (beg>>14); k <= 4681 + (end>>14); ++k) appendValue(list, k);
 }
 
-// TODO(holtgrew): Switch order of hasAlignments and stream, stream is state.
-
 template <typename TSpec>
 inline bool
-jumpToRegion(SmartFile<Bam, Input, TSpec> & bamFile,
+jumpToRegion(FormattedFile<Bam, Input, TSpec> & bamFile,
              bool & hasAlignments,
              __int32 refId,
              __int32 pos,
@@ -316,21 +325,17 @@ jumpToRegion(SmartFile<Bam, Input, TSpec> & bamFile,
 
 /*!
  * @fn BamFileIn#jumpToOrphans
- * @brief Seek to orphans block in BamStream using an index.
+ * @brief Seek to orphans block in BamFileIn using an index.
  *
- * @signature bool jumpToOrphans(stream, hasAlignments, index);
+ * @signature bool jumpToOrphans(bamFileIn, hasAlignments, index);
  *
- * @param[in,out] stream         The @link BgzfStream @endlink object to jump with.
+ * @param[in,out] bamFileIn      The @link BamFileIn @endlink object to jump with.
  * @param[out]    hasAlignments  A <tt>bool</tt> that is set to true if there are any orphans.
- * @param[in]     index          The index to use for jumping.
- *
- * @see BamIndex#jumpToOrphans
+ * @param[in]     index          The @link BamIndex @endlink to use for jumping.
  */
 
-// TODO(holtgrew): Parameter order, see jumpToRegion()!
-
 template <typename TSpec, typename TNameStore, typename TNameStoreCache>
-bool jumpToOrphans(SmartFile<Bam, Input, TSpec> & bamFile,
+bool jumpToOrphans(FormattedFile<Bam, Input, TSpec> & bamFile,
                    bool & hasAlignments,
                    BamIndex<Bai> const & index)
 {
@@ -354,8 +359,7 @@ bool jumpToOrphans(SmartFile<Bam, Input, TSpec> & bamFile,
     BamAlignmentRecord record;
     __uint64 offset = MaxValue<__uint64>::VALUE;
     __uint64 result = 0;
-    int res = setPosition(bamFile, aliOffset);
-    if (res != 0)
+    if (!setPosition(bamFile, aliOffset))
         return false;  // Error while seeking.
     while (!atEnd(bamFile))
     {
@@ -373,8 +377,7 @@ bool jumpToOrphans(SmartFile<Bam, Input, TSpec> & bamFile,
     // Jump back to the first alignment.
     if (offset != MaxValue<__uint64>::VALUE)
     {
-        setPosition(bamFile, offset, SEEK_SET);
-        if (res != 0)
+        if (!setPosition(bamFile, offset, SEEK_SET))
             return false;  // Error while seeking.
     }
 
@@ -409,12 +412,12 @@ getUnalignedCount(BamIndex<Bai> const & index)
 /*!
  * @fn BamIndex#open
  * @brief Load a BAM index from a given file name.
- * @signature int open(index, filename);
+ * @signature bool open(index, filename);
 
  * @param[in,out] index    Target data structure.
  * @param[in]     filename Path to file to load. Types: char const *
  *
- * @return        int      The status code, <tt>0</tt> indicating success.
+ * @return        bool     Returns <tt>true</tt> on success, false otherwise.
  */
 
 inline bool
@@ -527,7 +530,7 @@ open(BamIndex<Bai> & index, char * filename)
 inline bool _saveIndex(BamIndex<Bai> const & index, char const * filename)
 {
     std::cerr << "WRITE INDEX TO " << filename << std::endl;
-    // Open output stream.
+    // Open output file.
     std::ofstream out(filename, std::ios::binary | std::ios::out);
 
     SEQAN_ASSERT_EQ(length(index._binIndices), length(index._linearIndices));
@@ -621,7 +624,7 @@ buildIndex(BamIndex<Bai> & index, char const * filename)
 
     // Read BAM header.
     BamHeader header;
-    readRecord(header, bamFile);
+    readHeader(header, bamFile);
 
     __uint32 numRefSeqs = length(contigNames(context(bamFile)));
 

@@ -155,7 +155,7 @@ length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
  *
  * @signature bool atEnd(stream);
  *
- * @param[in] stream The SmartFile to check.
+ * @param[in] stream The FormattedFile to check.
  * @return bool <tt>true</tt> if the file at EOF, <tt>false</tt> otherwise.
  */
 
@@ -398,7 +398,17 @@ struct EmptyFieldError : ParseError
  * @signature DirectionIterator<TStream>::Type;
  *
  * @tparam TStream The stream to query for its direction iterator.
- * @result Type    The resulting direction iterator.
+ * @return Type    The resulting direction iterator.
+ */
+
+/*!
+ * @mfn ContainerConcept#DirectionIterator
+ * @brief Return the direction iterator for the given direction.
+ *
+ * @signature DirectionIterator<TContainer>::Type;
+ *
+ * @tparam TContainer The container to query for its direction iterator.
+ * @return Type       The resulting direction iterator.
  */
 
 template <typename TObject, typename TDirection>
@@ -998,10 +1008,6 @@ write(TOValue * optr, TIValue * &iptr, TSize n)
 // ----------------------------------------------------------------------------
 // Function write(Iterator<Input>)
 // ----------------------------------------------------------------------------
-
-// TODO(holtgrew): Why is TSize required to be an integer and not simply size_t here?
-// TODO(holtgrew): A lot of overloads for this function are undocumented. What can be written to? ForwardIteratorConcept?
-// TODO(holtgrew): Everything below is undocumented.
 
 /*!
  * @fn ContainerConcept#write

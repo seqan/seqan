@@ -39,10 +39,6 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
@@ -54,34 +50,16 @@ struct Vcf_;
 typedef Tag<Vcf_> Vcf;
 
 // ============================================================================
-// Metafunctions
-// ============================================================================
-
-// ============================================================================
 // Functions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function read()                                                  [VcfHeader]
+// Function readRecord()                                            [VcfHeader]
 // ----------------------------------------------------------------------------
 
 /*!
  * @defgroup VcfIO VCF I/O
  * @brief Routines for VCF I/O.
- */
-
-/*!
- * @fn VcfIO#read
- * @headerfile <seqan/vcf_io.h>
- * @brief Read a VcfHeader.
- *
- * @signature int read(header, reader, context, Vcf());
- *
- * @param[out]    header  The VcfHeader to read into.
- * @param[in,out] reader  The SinglePassRecordReader to use for reading.
- * @param[in,out] context VcfIOContext to use.
- *
- * @return int A status code, 0 on success, a different value otherwise.
  */
 
 inline void
@@ -103,7 +81,7 @@ _parseVcfContig(CharString & chromName, CharString const & headerValue)
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
-readRecord(VcfHeader & header,
+readHeader(VcfHeader & header,
            VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
            Vcf const & /*tag*/)
@@ -161,23 +139,8 @@ readRecord(VcfHeader & header,
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecord()                                            [VcfHeader]
+// Function readRecord()                                            [VcfRecord]
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn VcfIO#readRecord
- * @headerfile <seqan/vcf_io.h>
- * @brief Read a VcfRecord.
- *
- * @signature int readRecord(record, reader, context, Vcf());
- *
- * @param[out]    record  The VcfRecord to read into.
- * @param[in,out] reader  The SinglePassRecordReader to use for reading.
- * @param[in,out] context VcfIOContext to use.
- *
- * @return int A status code, 0 on success, a different value otherwise.
- */
-
 // Read record, updating list of known sequences if new one occurs.
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>

@@ -40,10 +40,6 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
@@ -84,10 +80,6 @@ typedef Tag<SamHeader_> SamHeader;
 
 struct SamAlignment_;
 typedef Tag<SamAlignment_> SamAlignment;
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
 
 // ============================================================================
 // Functions
@@ -208,7 +200,7 @@ readRecord(BamHeaderRecord & record,
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
-readRecord(BamHeader & header,
+readHeader(BamHeader & header,
            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
            Sam const & tag)

@@ -99,13 +99,13 @@ void catBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions con
             continue;
         }
 
-        readRecord(header, *(readerPtr[i]));
+        readHeader(header, *(readerPtr[i]));
     }
 
     // Step 2: Remove duplicate header entries and write merged header
     if (length(inFiles) > 1)
         removeDuplicates(header);
-    writeRecord(writer, header);
+    writeHeader(writer, header);
 
     // Step 3: Read and output alignment records
     BamAlignmentRecord record;

@@ -49,6 +49,6 @@
 // ===========================================================================
 
 #include <seqan/simple_intervals_io/simple_intervals_io.h>    // read/write record functions, tags
-#include <seqan/simple_intervals_io/simple_intervals_file.h>  // SmartFile
+#include <seqan/simple_intervals_io/simple_intervals_file.h>  // FormattedFile
 
 #endif  // SEQAN_SIMPLE_INTERVALS_IO_H_

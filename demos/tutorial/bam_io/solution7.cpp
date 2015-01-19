@@ -34,7 +34,7 @@ int main(int argc, char const ** argv)
     // Read header.
     BamHeader header;
     DirectionIterator<TInStream, Input>::Type reader = directionIterator(inStream, Input());
-    readRecord(header, context, reader, Bam());
+    readHeader(header, context, reader, Bam());
 
     // Write out header again.
     write(std::cout, header, context, Sam());

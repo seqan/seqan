@@ -1021,7 +1021,7 @@ postProcessMain(TOptions &options, TModel const &)
     BamHeader header;
     BamAlignmentRecord record;
     // Read header
-    readRecord(header, bamFileIn);
+    readHeader(header, bamFileIn);
     // Check that this fits to the contig names in the store.
     if (length(contigNames(context(bamFileIn))) != length(store.contigNameStore))
     {
@@ -1035,7 +1035,7 @@ postProcessMain(TOptions &options, TModel const &)
             return 1;
         }
     // Write out header again. Maybe add information about BS mapping ?
-    writeRecord(bamFileOut, header);
+    writeHeader(bamFileOut, header);
 
     // Parse SAM file, verify and write to output
     // data structure to temporarily store information about match mates

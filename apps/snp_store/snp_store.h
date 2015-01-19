@@ -1385,7 +1385,7 @@ int readMatchesFromSamBam_Batch(
     BamHeader header;
     int res = 0;
     if (firstCall)
-        readRecord(header, bamFileIn);
+        readHeader(header, bamFileIn);
     //  bool test = true;
     while (!atEnd(bamFileIn))
     {

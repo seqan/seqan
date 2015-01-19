@@ -89,7 +89,7 @@
 #include <seqan/stream/stream_compressor.h>
 #include <seqan/stream/buffered_stream.h>
 #include <seqan/stream/virtual_stream.h>
-#include <seqan/stream/smart_file.h>
+#include <seqan/stream/formatted_file.h>
 
 // ===========================================================================
 // Tokenization and Lexical Cast.

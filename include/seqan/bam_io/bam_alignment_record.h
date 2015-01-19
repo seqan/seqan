@@ -142,25 +142,24 @@ typedef TagList<int,
 //      TagList<double
         > > > > > > > > BamTagTypes;
 
+// ----------------------------------------------------------------------------
+// Class BamAlignmentRecord
+// ----------------------------------------------------------------------------
 
 /*!
  * @class BamAlignmentRecord
  * @headerfile <seqan/bam_io.h>
- * @brief Represent a record from a BAM or SAM file.
- *
+ * @implements FormattedFileRecordConcept
  * @signature class BamAlignmentRecord;
+ * @brief Represent a record from a BAM or SAM file.
  *
  * @section Remarks
  *
  * While also used to represent SAM records, the type is called <tt>BamAlignmentRecord</tt> since the data directly
  * reflects a BAM records (0-based positions, identify references by id, and tags are stored in BAM format.
- */
-
-/*!
- * @fn BamAlignmentRecord::BamAlignmentRecord
- * @brief Default constructor.
  *
- * @signature BamAlignmentRecord::BamAlignmentRecord();
+ * @see BamFileIn
+ * @see BamFileOut
  */
 
 /*!
@@ -257,10 +256,6 @@ public:
 
     BamAlignmentRecord() : _qID(MaxValue<unsigned>::VALUE) { clear(*this); }
 };
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
 
 // ============================================================================
 // Functions

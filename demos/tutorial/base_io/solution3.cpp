@@ -38,8 +38,8 @@ int main(int argc, char const ** argv)
     BamHeader header;
     try
     {
-        readRecord(header, bamFileIn);
-        writeRecord(samFileOut, header);
+        readHeader(header, bamFileIn);
+        writeHeader(samFileOut, header);
     }
     catch (ParseError const & e)
     {
@@ -56,7 +56,7 @@ int main(int argc, char const ** argv)
     {
         try
         {
-            readRecord(header, bamFileIn);
+            readHeader(header, bamFileIn);
             writeRecord(samFileOut, record);
         }
         catch (ParseError const & e)

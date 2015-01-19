@@ -889,7 +889,7 @@ int main(int argc, char const ** argv)
     BamHeader header;
     try
     {
-        readRecord(header, inPre);
+        readHeader(header, inPre);
     }
     catch (seqan::ParseError const & e)
     {
@@ -923,7 +923,7 @@ int main(int argc, char const ** argv)
         try
         {
             BamHeader header;
-            readRecord(header, inPostBam);
+            readHeader(header, inPostBam);
         }
         catch (seqan::ParseError const & e)
         {

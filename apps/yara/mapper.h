@@ -168,7 +168,7 @@ struct MapperTraits
     typedef typename If<IsSameType<TSequencing, PairedEnd>,
                         Pair<SeqFileIn>, SeqFileIn>::Type           TReadsFileIn;
     typedef PrefetchedFile<TReadsFileIn, TReads, TThreading>        TReadsFile;
-    typedef SmartFile<Bam, Output, TContigNames>                    TOutputFile;
+    typedef FormattedFile<Bam, Output, TContigNames>                    TOutputFile;
 
     typedef typename TReads::TSeqs                                  TReadSeqs;
     typedef typename Value<TReadSeqs>::Type                         TReadSeq;
@@ -469,7 +469,7 @@ inline void openOutputFile(Mapper<TSpec, TConfig> & me)
     // Write header.
     BamHeader header;
     fillHeader(header, me.options);
-    writeRecord(me.outputFile, header);
+    writeHeader(me.outputFile, header);
 }
 
 // ----------------------------------------------------------------------------

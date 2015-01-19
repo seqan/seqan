@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 // ==========================================================================
-// This file contains functions to read a Pair of SmartFiles.
+// This file contains functions to read a Pair of FormattedFiles.
 // ==========================================================================
 
 #ifndef APP_YARA_FILE_PAIR_H_
@@ -48,7 +48,7 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 template <typename TFileType, typename TDirection, typename TSpec>
-inline bool open(Pair<SmartFile<TFileType, TDirection, TSpec> > & me, const char * fileName1, const char * fileName2)
+inline bool open(Pair<FormattedFile<TFileType, TDirection, TSpec> > & me, const char * fileName1, const char * fileName2)
 {
     return open(me.i1, fileName1) && open(me.i2, fileName2);
 }
@@ -58,7 +58,7 @@ inline bool open(Pair<SmartFile<TFileType, TDirection, TSpec> > & me, const char
 // ----------------------------------------------------------------------------
 
 template <typename TFileType, typename TDirection, typename TSpec>
-inline void close(Pair<SmartFile<TFileType, TDirection, TSpec> > & me)
+inline void close(Pair<FormattedFile<TFileType, TDirection, TSpec> > & me)
 {
     close(me.i1);
     close(me.i2);
@@ -69,7 +69,7 @@ inline void close(Pair<SmartFile<TFileType, TDirection, TSpec> > & me)
 // ----------------------------------------------------------------------------
 
 template <typename TFileType, typename TDirection, typename TSpec>
-inline bool atEnd(Pair<SmartFile<TFileType, TDirection, TSpec> > const & me)
+inline bool atEnd(Pair<FormattedFile<TFileType, TDirection, TSpec> > const & me)
 {
     return atEnd(me.i1) || atEnd(me.i2);
 }
@@ -80,7 +80,7 @@ inline bool atEnd(Pair<SmartFile<TFileType, TDirection, TSpec> > const & me)
 
 template <typename TRecords, typename TFileType, typename TDirection, typename TSpec>
 inline void readRecords(TRecords & records,
-                        Pair<SmartFile<TFileType, TDirection, TSpec> > & me,
+                        Pair<FormattedFile<TFileType, TDirection, TSpec> > & me,
                         __uint64 maxRecords = MaxValue<__uint64>::VALUE)
 {
     readRecords(records, me.i1, maxRecords);

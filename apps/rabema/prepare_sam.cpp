@@ -217,7 +217,7 @@ int main(int argc, char const ** argv)
     BamHeader header;
     try
     {
-        readRecord(header, bamFileIn);
+        readHeader(header, bamFileIn);
     }
     catch (ParseError const & ioErr)
     {
@@ -234,7 +234,7 @@ int main(int argc, char const ** argv)
 
     try
     {
-        writeRecord(bamFileOut, header);
+        writeHeader(bamFileOut, header);
     }
     catch (ParseError const & ioErr)
     {

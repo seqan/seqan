@@ -55,7 +55,7 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-template <typename TSmartFile>
+template <typename TFormattedFile>
 struct FileFormat;
 
 // ============================================================================
