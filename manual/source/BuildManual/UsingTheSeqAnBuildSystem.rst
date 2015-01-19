@@ -59,7 +59,7 @@ Here is an example for the application Razers 3.
     ~ # mkdir -p seqan-build/release-razers3
     ~ # cd seqan-build/release-razers3
     release-razers3 # cmake ../../seqan-src -DCMAKE_INSTALL_PREFIX=~/local/bin/razers3 \
-                        -DSEQAN_BUILD_SYSTEM=APP:razers3
+                      -DSEQAN_BUILD_SYSTEM=APP:razers3
     release-razers3 # make install
 
 .. hint::

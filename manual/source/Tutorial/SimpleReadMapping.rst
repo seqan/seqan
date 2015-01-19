@@ -109,7 +109,7 @@ We create a new demo for the minimapper.
 Now, we copy over the code from the original location into our new app and build it.
 
 .. code-block:: console
- 
+
    demos $ cp tutorial/read_mapping/minimapper.cpp minimapper/minimapper.cpp
    $ cd ../../build/Debug
    $ cmake .
