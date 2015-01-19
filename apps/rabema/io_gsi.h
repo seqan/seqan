@@ -198,13 +198,13 @@ TStream & operator<<(TStream & stream, GsiRecord const & record)
 }
 
 // ---------------------------------------------------------------------------
-// Function readRecord()                                           [GsiHeader]
+// Function readHeader()                                           [GsiHeader]
 // ---------------------------------------------------------------------------
 
 // Read GSI header line ("@GSI\tVN:1.1") from forward iterator.
 
 template <typename TForwardIter>
-void readRecord(GsiHeader & header, TForwardIter & iter, Gsi const & /*tag*/)
+void readHeader(GsiHeader & header, TForwardIter & iter, Gsi const & /*tag*/)
 {
     (void) header;
 
