@@ -1750,7 +1750,7 @@ int flexbarMain(int argc, char const ** argv)
     //--------------------------------------------------
     GeneralStats generalStats;
 
-    unsigned records;
+    __uint64 records;
     getOptionValue(records, parser, "r");
 
     seqan::CharString output;
