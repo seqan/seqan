@@ -2,7 +2,7 @@ Name: searchjoin
 Author: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 Maintainer: Enrico Siragusa <enrico.siragusa@fu-berlin.de>
 License: BSD
-Copyright: 2008-2013, FU Berlin
+Copyright: 2006-2015, FU Berlin
 Status: stable
 Description: String Similarity Search/Join.
   Implementation of scalable algorithms for optimal string similarity search
