@@ -43,19 +43,19 @@ namespace seqan {
 // Typedefs
 // ============================================================================
 
-typedef SmartFile<Bed, Input>   BedFileIn;
-typedef SmartFile<Bed, Output>  BedFileOut;
+typedef FormattedFile<Bed, Input>   BedFileIn;
+typedef FormattedFile<Bed, Output>  BedFileOut;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction SmartFileContext
+// Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Bed, TDirection, TSpec>, TStorageSpec>
+struct FormattedFileContext<FormattedFile<Bed, TDirection, TSpec>, TStorageSpec>
 {
     typedef CharString Type;
 };
@@ -65,7 +65,7 @@ struct SmartFileContext<SmartFile<Bed, TDirection, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormat<SmartFile<Bed, TDirection, TSpec> >
+struct FileFormat<FormattedFile<Bed, TDirection, TSpec> >
 {
     typedef Bed Type;
 };
@@ -77,7 +77,7 @@ struct FileFormat<SmartFile<Bed, TDirection, TSpec> >
 // convient BedFile variant
 template <typename TRecordSpec, typename TSpec>
 inline void
-readRecord(BedRecord<TRecordSpec> & record, SmartFile<Bed, Input, TSpec> & file)
+readRecord(BedRecord<TRecordSpec> & record, FormattedFile<Bed, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
 }
@@ -88,7 +88,7 @@ readRecord(BedRecord<TRecordSpec> & record, SmartFile<Bed, Input, TSpec> & file)
 
 template <typename TSpec, typename TRecordSpec>
 inline void
-writeRecord(SmartFile<Bed, Output, TSpec> & file, BedRecord<TRecordSpec> & record)
+writeRecord(FormattedFile<Bed, Output, TSpec> & file, BedRecord<TRecordSpec> & record)
 {
     writeRecord(file.iter, record, file.format);
 }

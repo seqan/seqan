@@ -58,8 +58,8 @@ namespace seqan {
  */
 
 template <typename TDirection, typename TSpec>
-inline typename Value<typename SmartFileContext<SmartFile<Bam, TDirection, TSpec>, Dependent<> >::Type::TNameStore>::Type const &
-getContigName(BamAlignmentRecord const & record, SmartFile<Bam, TDirection, TSpec> const & file)
+inline typename Value<typename FormattedFileContext<FormattedFile<Bam, TDirection, TSpec>, Dependent<> >::Type::TNameStore>::Type const &
+getContigName(BamAlignmentRecord const & record, FormattedFile<Bam, TDirection, TSpec> const & file)
 {
     return contigNames(context(file))[record.rID];
 }
@@ -81,8 +81,8 @@ getContigName(BamAlignmentRecord const & record, SmartFile<Bam, TDirection, TSpe
  */
 
 template <typename TDirection, typename TSpec>
-inline typename Value<typename SmartFileContext<SmartFile<Bam, TDirection, TSpec>, Dependent<> >::Type::TLengthStore>::Type
-getContigLength(BamAlignmentRecord const & record, SmartFile<Bam, TDirection, TSpec> const & file)
+inline typename Value<typename FormattedFileContext<FormattedFile<Bam, TDirection, TSpec>, Dependent<> >::Type::TLengthStore>::Type
+getContigLength(BamAlignmentRecord const & record, FormattedFile<Bam, TDirection, TSpec> const & file)
 {
     return contigLengths(context(file))[record.rID];
 }

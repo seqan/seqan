@@ -56,13 +56,13 @@ typedef Tag<Ucsc_<> > Ucsc;
 
 /*!
  * @class UcscFileIn
- * @extends SmartFile
+ * @extends FormattedFileIn
  * @headerfile <seqan/ucsc_io.h>
- * @brief @link SmartFile @endlink for reading UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
+ * @brief @link FormattedFile @endlink for reading UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
  *
- * @signature typedef SmartFile<Ucsc, Input> UcscFileIn;
+ * @signature typedef FormattedFile<Ucsc, Input> UcscFileIn;
  */
-typedef SmartFile<Ucsc, Input>   UcscFileIn;
+typedef FormattedFile<Ucsc, Input>   UcscFileIn;
 
 // ----------------------------------------------------------------------------
 // Typedef UcscFileOut
@@ -70,24 +70,24 @@ typedef SmartFile<Ucsc, Input>   UcscFileIn;
 
 /*!
  * @class UcscFileInOut
- * @extends SmartFile
+ * @extends FormattedFileOut
  * @headerfile <seqan/ucsc_io.h>
- * @brief @link SmartFile @endlink for reading UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
+ * @brief @link FormattedFile @endlink for reading UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
  *
- * @signature typedef SmartFile<Ucsc, Output> UcscFileOut;
+ * @signature typedef FormattedFile<Ucsc, Output> UcscFileOut;
  */
-typedef SmartFile<Ucsc, Output> UcscFileOut;
+typedef FormattedFile<Ucsc, Output> UcscFileOut;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction SmartFileContext
+// Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Ucsc, TDirection, TSpec>, TStorageSpec>
+struct FormattedFileContext<FormattedFile<Ucsc, TDirection, TSpec>, TStorageSpec>
 {
     typedef UcscIOContext Type;
 };
@@ -97,7 +97,7 @@ struct SmartFileContext<SmartFile<Ucsc, TDirection, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormat<SmartFile<Ucsc, TDirection, TSpec> >
+struct FileFormat<FormattedFile<Ucsc, TDirection, TSpec> >
 {
     typedef TagSelector<
                 TagList<UcscKnownGene,
@@ -137,7 +137,7 @@ readRecord(UcscRecord & record,
 }
 
 template <typename TSpec>
-void readRecord(UcscRecord & record, SmartFile<Ucsc, Input, TSpec> & file)
+void readRecord(UcscRecord & record, FormattedFile<Ucsc, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
 }
@@ -172,7 +172,7 @@ writeRecord(TTarget & target,
 
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Ucsc, Output, TSpec> & file, UcscRecord const & record)
+writeRecord(FormattedFile<Ucsc, Output, TSpec> & file, UcscRecord const & record)
 {
     writeRecord(file.iter, record, file.format);
 }

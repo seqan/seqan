@@ -165,7 +165,7 @@ struct MatchMateInfoLess_
 // ============================================================================
 
 template <typename TDirection, typename TSpec, typename TConfig, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Bam, TDirection, FragmentStore<TSpec, TConfig> >, TStorageSpec>
+struct FormattedFileContext<FormattedFile<Bam, TDirection, FragmentStore<TSpec, TConfig> >, TStorageSpec>
 {
     typedef FragmentStore<TSpec, TConfig>                           TFragmentStore;
     typedef typename TFragmentStore::TContigNameStore               TNameStore;
@@ -341,7 +341,7 @@ readRecords(FragmentStore<TSpec, TConfig> & store,
 template <typename TFSSpec, typename TConfig, typename TDirection, typename TSpec>
 inline void 
 readRecords(FragmentStore<TFSSpec, TConfig> & store,
-            SmartFile<Bam, TDirection, TSpec> & bamFile,
+            FormattedFile<Bam, TDirection, TSpec> & bamFile,
             FragStoreImportFlags const & importFlags)
 {
     typedef FragmentStore<TFSSpec, TConfig>                 TFragmentStore;
@@ -368,7 +368,7 @@ readRecords(FragmentStore<TFSSpec, TConfig> & store,
 template <typename TFSSpec, typename TConfig, typename TDirection, typename TSpec>
 inline void
 readRecords(FragmentStore<TFSSpec, TConfig> & store,
-            SmartFile<Bam, TDirection, TSpec> & bamFile)
+            FormattedFile<Bam, TDirection, TSpec> & bamFile)
 {
     readRecords(store, bamFile, FragStoreImportFlags());
 }
@@ -376,7 +376,7 @@ readRecords(FragmentStore<TFSSpec, TConfig> & store,
 //template <typename TSpec, typename TConfig>
 //inline void 
 //readRecords(FragmentStore<TSpec, TConfig> & store,
-//            SmartFile<Bam, Input, FragmentStore<TSpec, TConfig> > & bamFile)
+//            FormattedFile<Bam, Input, FragmentStore<TSpec, TConfig> > & bamFile)
 //{
 //    readRecord(record, context(file), file.iter, file.format);
 //}
@@ -743,7 +743,7 @@ _fillHeader(BamHeader & header,
 template <typename TSpec, typename TFSSpec, typename TFSConfig, typename TBamIOFunctor>
 inline void
 fillHeader(BamHeader & header,
-           SmartFile<Bam, Output, TSpec> & bamFile,
+           FormattedFile<Bam, Output, TSpec> & bamFile,
            FragmentStore<TFSSpec, TFSConfig> & store,
            TBamIOFunctor & functor)
 {
@@ -763,7 +763,7 @@ fillHeader(BamHeader & header,
 template <typename TSpec, typename TFSSpec, typename TFSConfig>
 inline void
 fillHeader(BamHeader & header,
-           SmartFile<Bam, Output, TSpec> & bamFile,
+           FormattedFile<Bam, Output, TSpec> & bamFile,
            FragmentStore<TFSSpec, TFSConfig> & store)
 {
     Nothing nothing;
@@ -775,7 +775,7 @@ fillHeader(BamHeader & header,
 // --------------------------------------------------------------------------
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig, typename TBamIOFunctor>
-inline void writeHeader(SmartFile<Bam, Output, TSpec> & bamFile,
+inline void writeHeader(FormattedFile<Bam, Output, TSpec> & bamFile,
                         FragmentStore<TFSSpec, TFSConfig> & store,
                         TBamIOFunctor & functor)
 {
@@ -789,7 +789,7 @@ inline void writeHeader(SmartFile<Bam, Output, TSpec> & bamFile,
 }
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig>
-inline void writeHeader(SmartFile<Bam, Output, TSpec> & bamFile,
+inline void writeHeader(FormattedFile<Bam, Output, TSpec> & bamFile,
                         FragmentStore<TFSSpec, TFSConfig> & store)
 {
     Nothing nothing;
@@ -1012,7 +1012,7 @@ setMateMatch(BamAlignmentRecord & record,
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig, typename TBamIOFunctor>
 inline void
-writeAlignments(SmartFile<Bam, Output, TSpec> & bamFile,
+writeAlignments(FormattedFile<Bam, Output, TSpec> & bamFile,
                 FragmentStore<TFSSpec, TFSConfig> & store,
                 TBamIOFunctor & functor)
 {
@@ -1098,7 +1098,7 @@ writeAlignments(SmartFile<Bam, Output, TSpec> & bamFile,
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig, typename TBamIOFunctor>
 inline void
-writeRecords(SmartFile<Bam, Output, TSpec> & bamFile,
+writeRecords(FormattedFile<Bam, Output, TSpec> & bamFile,
              FragmentStore<TFSSpec, TFSConfig> & store,
              TBamIOFunctor & functor)
 {
@@ -1111,7 +1111,7 @@ writeRecords(SmartFile<Bam, Output, TSpec> & bamFile,
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig>
 inline void
-writeRecords(SmartFile<Bam, Output, TSpec> & bamFile,
+writeRecords(FormattedFile<Bam, Output, TSpec> & bamFile,
              FragmentStore<TFSSpec, TFSConfig> & store)
 {
     BamAlignFunctorDefault functor;

@@ -199,7 +199,7 @@ _baiReg2bins(String<__uint16> & list, __uint32 beg, __uint32 end)
 
 template <typename TSpec>
 inline bool
-jumpToRegion(SmartFile<Bam, Input, TSpec> & bamFile,
+jumpToRegion(FormattedFile<Bam, Input, TSpec> & bamFile,
              bool & hasAlignments,
              __int32 refId,
              __int32 pos,
@@ -335,7 +335,7 @@ jumpToRegion(SmartFile<Bam, Input, TSpec> & bamFile,
  */
 
 template <typename TSpec, typename TNameStore, typename TNameStoreCache>
-bool jumpToOrphans(SmartFile<Bam, Input, TSpec> & bamFile,
+bool jumpToOrphans(FormattedFile<Bam, Input, TSpec> & bamFile,
                    bool & hasAlignments,
                    BamIndex<Bai> const & index)
 {

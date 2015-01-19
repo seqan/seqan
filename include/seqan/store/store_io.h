@@ -906,7 +906,7 @@ write(TTarget & target,
  */ 
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig>
-bool writeContigs(SmartFile<Fastq, Output, TSpec> & file, FragmentStore<TFSSpec, TFSConfig> & store)
+bool writeContigs(FormattedFile<Fastq, Output, TSpec> & file, FragmentStore<TFSSpec, TFSConfig> & store)
 {
 //IOREV _doc_
 	for (unsigned i = 0; i < length(store.contigNameStore); ++i)

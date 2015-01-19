@@ -45,11 +45,11 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
-template <typename TSmartFile>
+template <typename TFormattedFile>
 struct FileFormat;
 
-template <typename TSmartFile, typename TStorageSpec>
-struct SmartFileContext;
+template <typename TFormattedFile, typename TStorageSpec>
+struct FormattedFileContext;
 
 template <typename TObject, typename TStorageSpec>
 struct StorageSwitch;
@@ -57,20 +57,6 @@ struct StorageSwitch;
 // ============================================================================
 // Concepts
 // ============================================================================
-
-// ----------------------------------------------------------------------------
-// Concept FormattedFileConcept
-// ----------------------------------------------------------------------------
-
-/*!
- * @concept FormattedFileConcept
- * @headerfile <seqan/stream.h>
- * @brief Concept for formatted files.
- * @signature concept FormattedFileConcept;
- *
- * A formatted file consists of a @link FormattedFileHeaderConcept Header @endlink
- * and a list of @link FormattedFileRecordConcept Records @endlink.
- */
 
 // ----------------------------------------------------------------------------
 // Concept FormattedFileHeaderConcept
@@ -94,59 +80,85 @@ struct StorageSwitch;
  * @signature concept FormattedFileRecordConcept;
  */
 
+// ============================================================================
+// Classes
+// ============================================================================
+
 // ----------------------------------------------------------------------------
-// Concept FormattedFileInConcept
+// Class FormattedFile
 // ----------------------------------------------------------------------------
 
 /*!
- * @concept FormattedFileInConcept
+ * @class FormattedFile
  * @headerfile <seqan/stream.h>
- * @brief Concept for formatted input files (for reading).
- * @signature concept FormattedFileInConcept : FormattedFileConcept;
- * @extends FormattedFileConcept
+ * @brief Base class for formatted file I/O.
  *
- * A formatted input file can read @link FormattedFileHeaderConcept Header @endlink
+ * @signature template <typename TFileType, typename TDirection[, typename TSpec]>
+ *            struct FormattedFile;
+ *
+ * @tparam TFileType  A type specifying the file format.
+ * @tparam TDirection The direction of the file, one of @link DirectionTags#Input Input
+ *                    @endlink or @link DirectionTags#Output @endlink.
+ * @tparam TSpec      A tag for the specialization, defauls to <tt>void</tt>.
+ *
+ * FormattedFile provides the following basic I/O operations on formatted files:
+ *
+ * <ul>
+ * <li>Open a file given its filename or attach to an existing stream like stdin/stdout.</li>
+ * <li>Guess the file format from the file content or filename extension.</li>
+ * <li>Set the file format manually.</li>
+ * <li>Access compressed or uncompressed files transparently.</li>
+ * </ul>
+ *
+ * FormattedFile encapsulates a @link VirtualStream @endlink and provides access to its @link StreamConcept#DirectionIterator @endlink.
+ * Each instance of FormattedFile keeps a @link FormattedFile#FormattedFileContext @endlink while reading or writing the formatted file.
+ */
+
+/*!
+ * @class FormattedFileIn
+ * @headerfile <seqan/stream.h>
+ * @brief Base class for reading formatted files.
+ * @signature typedef FormattedFile<TFileType, Input, TSpec> FormattedFileIn;
+ * @extends FormattedFile
+ *
+ * A formatted input file can write @link FormattedFileHeaderConcept Header @endlink
  * and @link FormattedFileRecordConcept Records @endlink.
  */
 
 /*!
- * @fn FormattedFileInConcept#readRecord
- * @brief Read one @link FormattedFileHeaderConcept @endlink or @link FormattedFileRecordConcept @endlink from a @link FormattedFileInConcept @endlink object.
+ * @fn FormattedFileIn#readRecord
+ * @brief Read one @link FormattedFileHeaderConcept @endlink or @link FormattedFileRecordConcept @endlink from a @link FormattedFileIn @endlink object.
  *
- * @signature void readRecord(header, fileIn);
- * @signature void readRecord(record, fileIn);
+ * @signature void readRecord(fileIn, header);
+ * @signature void readRecord(fileIn, record);
  *
- * @param[out]    header    The @link FormattedFileHeaderConcept @endlink to read.
- * @param[out]    record    The @link FormattedFileRecordConcept @endlink to read.
- * @param[in,out] fileIn    The @link FormattedFileInConcept @endlink object to read from.
+ * @param[in,out] fileIn    The @link FormattedFileIn @endlink object to read from.
+ * @param[in]     header    The @link FormattedFileHeaderConcept @endlink to read.
+ * @param[in]     record    The @link FormattedFileRecordConcept @endlink to read.
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
  */
 
-// ----------------------------------------------------------------------------
-// Concept FormattedFileOutConcept
-// ----------------------------------------------------------------------------
-
 /*!
- * @concept FormattedFileOutConcept
+ * @class FormattedFileOut
  * @headerfile <seqan/stream.h>
- * @brief Concept for formatted output files (for writing).
- * @signature concept FormattedFileOutConcept : FormattedFileConcept;
- * @extends FormattedFileConcept
+ * @brief Base class for writing formatted files.
+ * @signature typedef FormattedFile<TFileType, Output, TSpec> FormattedFileOut;
+ * @extends FormattedFile
  *
  * A formatted output file can write @link FormattedFileHeaderConcept Header @endlink
  * and @link FormattedFileRecordConcept Records @endlink.
  */
 
 /*!
- * @fn FormattedFileOutConcept#writeRecord
- * @brief Write one @link FormattedFileHeaderConcept @endlink or @link FormattedFileRecordConcept @endlink to a @link FormattedFileOutConcept @endlink object.
+ * @fn FormattedFileOut#writeRecord
+ * @brief Write one @link FormattedFileHeaderConcept @endlink or @link FormattedFileRecordConcept @endlink to a @link FormattedFileOut @endlink object.
  *
  * @signature void writeRecord(fileOut, header);
  * @signature void writeRecord(fileOut, record);
  *
- * @param[in,out] fileOut   The @link FormattedFileInConcept @endlink object to write into.
+ * @param[in,out] fileOut   The @link FormattedFileOut @endlink object to write into.
  * @param[in]     header    The @link FormattedFileHeaderConcept @endlink to write.
  * @param[in]     record    The @link FormattedFileRecordConcept @endlink to write.
  *
@@ -154,49 +166,14 @@ struct StorageSwitch;
  * @throw ParseError On high-level file format errors.
  */
 
-// ============================================================================
-// Classes
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Class SmartFile
-// ----------------------------------------------------------------------------
-
-/*!
- * @class SmartFile
- * @headerfile <seqan/stream.h>
- * @implements FormattedFileConcept
- * @brief Base class for formatted file I/O.
- *
- * @signature template <typename TFileType, typename TDirection[, typename TSpec]>
- *            struct SmartFile;
- *
- * @tparam TFileType  A type specifying the file format.
- * @tparam TDirection The direction of the file, one of @link DirectionTags#Input Input
- *                    @endlink or @link DirectionTags#Output @endlink.
- * @tparam TSpec      A tag for the specialization, defauls to <tt>void</tt>.
- *
- * SmartFile provides the following basic I/O operations on formatted files:
- *
- * <ul>
- * <li>Open a file given its filename or attach to an existing stream like stdin/stdout.</li>
- * <li>Guess the file format from the file content or filename extension.</li>
- * <li>Set the file format manually.</li>
- * <li>Access compressed or uncompressed files.</li>
- * </ul>
- *
- * SmartFile encapsulates a @link VirtualStream @endlink and provides access to its @link StreamConcept#DirectionIterator @endlink.
- * Each instance of SmartFile keeps a @link SmartFile#SmartFileContext @endlink while reading or writing the formatted file.
- */
-
 template <typename TFileType, typename TDirection, typename TSpec = void>
-struct SmartFile
+struct FormattedFile
 {
     typedef VirtualStream<char, TDirection>                             TStream;
-    typedef typename Iterator<TStream, TDirection>::Type                TIter;
-    typedef typename FileFormat<SmartFile>::Type                        TFileFormat;
-    typedef typename SmartFileContext<SmartFile, Owner<> >::Type        TOwnerContext;
-    typedef typename SmartFileContext<SmartFile, Dependent<> >::Type    TDependentContext;
+    typedef typename Iterator<TStream, TDirection>::Type                        TIter;
+    typedef typename FileFormat<FormattedFile>::Type                            TFileFormat;
+    typedef typename FormattedFileContext<FormattedFile, Owner<> >::Type        TOwnerContext;
+    typedef typename FormattedFileContext<FormattedFile, Dependent<> >::Type    TDependentContext;
 
     TStream             stream;
     TIter               iter;
@@ -205,33 +182,33 @@ struct SmartFile
     TDependentContext   context;
 
     /*!
-     * @fn SmartFile::SmartFile
+     * @fn FormattedFile::FormattedFile
      * @brief Provides default construction.
      *
-     * @signature SmartFile::SmartFile();
-     * @signature SmartFile::SmartFile(fileName[, openMode]);
-     * @signature SmartFile::SmartFile(stream);
-     * @signature SmartFile::SmartFile(other);
-     * @signature SmartFile::SmartFile(otherContext);
-     * @signature SmartFile::SmartFile(otherContext, fileName[, openMode]);
-     * @signature SmartFile::SmartFile(otherContext, stream);
+     * @signature FormattedFile::FormattedFile();
+     * @signature FormattedFile::FormattedFile(fileName[, openMode]);
+     * @signature FormattedFile::FormattedFile(stream);
+     * @signature FormattedFile::FormattedFile(other);
+     * @signature FormattedFile::FormattedFile(otherContext);
+     * @signature FormattedFile::FormattedFile(otherContext, fileName[, openMode]);
+     * @signature FormattedFile::FormattedFile(otherContext, stream);
      *
      * @param[in] fileName     Path to file to open, <tt>char const *</tt>.
      * @param[in] openMode     Optionally, the file open mode, default obtained from <tt>TDirection</tt>.
      * @param[in] stream       A <tt>std::basic_istream&lt;&gt;</tt> to read from or <tt>std::basic_ostream&lt;&gt;</tt>
      *                         to write to, depending on <tt>TDirection</tt>.
-     * @param[in] other        A second SmartFile, this SmartFile's dependent context will depend on <tt>other</tt>'s
+     * @param[in] other        A second FormattedFile, this FormattedFile's dependent context will depend on <tt>other</tt>'s
      *                         dependent context.
-     * @param[in] otherContext The dependent context of another SmartFile, this SmartFile's dependent context will depend on <tt>otherContext</tt>.
+     * @param[in] otherContext The dependent context of another FormattedFile, this FormattedFile's dependent context will depend on <tt>otherContext</tt>.
      *
      * @throw IOError The variants that accept the <tt>fileName</tt> parameter throw an exception of this
      *                type in case opening the file fails.
      */
-    SmartFile() : context(data_context)
+    FormattedFile() : context(data_context)
     {}
 
     // filename based c'tors
-    explicit SmartFile(const char * fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
+    explicit FormattedFile(const char * fileName, int openMode = DefaultOpenMode<FormattedFile>::VALUE) :
         context(data_context)
     {
         _open(*this, fileName, openMode, True());
@@ -240,7 +217,7 @@ struct SmartFile
     // stream based c'tors
     template <typename TValue>
     explicit
-    SmartFile(std::basic_istream<TValue> &istream,
+    FormattedFile(std::basic_istream<TValue> &istream,
               SEQAN_CTOR_ENABLE_IF(And<IsSameType<TDirection, Input>, IsSameType<TValue, char> >)) :
         context(data_context)
     {
@@ -249,7 +226,7 @@ struct SmartFile
     }
 
     template <typename TValue, typename TFormat>
-    SmartFile(std::basic_ostream<TValue> &ostream,
+    FormattedFile(std::basic_ostream<TValue> &ostream,
               TFormat const &format,
               SEQAN_CTOR_ENABLE_IF(And<IsSameType<TDirection, Output>, IsSameType<TValue, char> >)) :
         context(data_context)
@@ -262,16 +239,16 @@ struct SmartFile
 
     // now everything given another context
     explicit
-    SmartFile(TDependentContext &otherCtx) :
+    FormattedFile(TDependentContext &otherCtx) :
         context(otherCtx)
     {}
 
     explicit
-    SmartFile(SmartFile &other) :
+    FormattedFile(FormattedFile &other) :
         context(other.context)
     {}
 
-    SmartFile(TDependentContext &otherCtx, const char *fileName, int openMode = DefaultOpenMode<SmartFile>::VALUE) :
+    FormattedFile(TDependentContext &otherCtx, const char *fileName, int openMode = DefaultOpenMode<FormattedFile>::VALUE) :
         context(otherCtx)
     {
         _open(*this, fileName, openMode, True());
@@ -279,7 +256,7 @@ struct SmartFile
 
     template <typename TValue>
     explicit
-    SmartFile(TDependentContext &otherCtx,
+    FormattedFile(TDependentContext &otherCtx,
               std::basic_istream<TValue> &istream,
               SEQAN_CTOR_ENABLE_IF(And<IsSameType<TDirection, Input>, IsSameType<TValue, char> >)) :
         context(otherCtx)
@@ -289,7 +266,7 @@ struct SmartFile
     }
 
     template <typename TValue, typename TFormat>
-    SmartFile(TDependentContext &otherCtx,
+    FormattedFile(TDependentContext &otherCtx,
               std::basic_ostream<TValue> &ostream,
               TFormat const &format,
               SEQAN_CTOR_ENABLE_IF(And<IsSameType<TDirection, Output>, IsSameType<TValue, char> >)) :
@@ -301,17 +278,17 @@ struct SmartFile
         SEQAN_ASSERT(success);
     }
 
-    ~SmartFile()
+    ~FormattedFile()
     {
         close(*this);
     }
 
     /*!
-     * @fn SmartFile::operatorTDependentContext SmartFile::operator TDependentContext
-     * @brief Allows conversion to a dependent context for the SmartFile
-     * @signature TDependentContext & SmartFile::operator TDependentContext();
+     * @fn FormattedFile::operatorTDependentContext FormattedFile::operator TDependentContext
+     * @brief Allows conversion to a dependent context for the FormattedFile
+     * @signature TDependentContext & FormattedFile::operator TDependentContext();
      *
-     * @return TDependentContext The dependent context of this SmartFile.
+     * @return TDependentContext The dependent context of this FormattedFile.
      */
 
     operator TDependentContext & ()
@@ -320,7 +297,7 @@ struct SmartFile
     }
 
     /*!
-     * @fn SmartFile::getFileExtensions
+     * @fn FormattedFile::getFileExtensions
      * @brief Static function that returns a list of allowed file format extension.
      *
      * @signature TExtensionVector getFileExtensions()
@@ -350,32 +327,32 @@ struct SmartFile
 // ----------------------------------------------------------------------------
 
 template <typename TFileType, typename TDirection, typename TSpec>
-struct DirectionIterator<SmartFile<TFileType, TDirection, TSpec>, TDirection>
+struct DirectionIterator<FormattedFile<TFileType, TDirection, TSpec>, TDirection>
 {
-    typedef typename SmartFile<TFileType, TDirection, TSpec>::TIter Type;
+    typedef typename FormattedFile<TFileType, TDirection, TSpec>::TIter Type;
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction SmartFileContext
+// Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
-// SmartFile holds a Context either as owner or dependent (see StorageSwitch below).
-// Note that the SmartFile class contains twice the context: both as owner and dependent.
+// FormattedFile holds a Context either as owner or dependent (see StorageSwitch below).
+// Note that the FormattedFile class contains twice the context: both as owner and dependent.
 // NOTE(esiragusa): A statically-typed Holder should abstract this pattern.
 
 /*!
- * @mfn SmartFile#SmartFileContext
- * @brief Returns the context type for a SmartFile.
+ * @mfn FormattedFile#FormattedFileContext
+ * @brief Returns the context type for a FormattedFile.
  *
- * @signature SmartFileContext<TSmartFile, TStorageSpec>::Type
+ * @signature FormattedFileContext<TFormattedFile, TStorageSpec>::Type
  *
- * @tparam TSmartFile   The SmartFile to query.
- * @tparam TStorageSpec The storage specification, passed as specialization to any @link StringSet @endlink
- *                      contained in the context.
- * @tparam Type         The resulting SmartFile context type.
+ * @tparam TFormattedFile   The FormattedFile to query.
+ * @tparam TStorageSpec     The storage specification, passed as specialization to any @link StringSet @endlink
+ *                          contained in the context.
+ * @tparam Type             The resulting FormattedFile context type.
  */
 
-template <typename TSmartFile, typename TStorageSpec>
-struct SmartFileContext
+template <typename TFormattedFile, typename TStorageSpec>
+struct FormattedFileContext
 {
     typedef Nothing Type;
 };
@@ -383,7 +360,7 @@ struct SmartFileContext
 // ----------------------------------------------------------------------------
 // Metafunction StorageSwitch
 // ----------------------------------------------------------------------------
-// This metafunction is used to switch the relationship between the SmartFile
+// This metafunction is used to switch the relationship between the FormattedFile
 // and its Context among aggregation and composition.
 // NOTE(esiragusa): there was a more generic metafunction Member<> to do this.
 
@@ -406,24 +383,24 @@ struct StorageSwitch<TObject, Dependent<TSpec> >
 // ----------------------------------------------------------------------------
 
 template <typename TFileType, typename TDirection, typename TSpec>
-struct Value<SmartFile<TFileType, TDirection, TSpec> > :
-    Value<typename SmartFile<TFileType, TDirection, TSpec>::TStream> {};
+struct Value<FormattedFile<TFileType, TDirection, TSpec> > :
+    Value<typename FormattedFile<TFileType, TDirection, TSpec>::TStream> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Position
 // ----------------------------------------------------------------------------
 
 template <typename TFileType, typename TDirection, typename TSpec>
-struct Position<SmartFile<TFileType, TDirection, TSpec> > :
-    Position<typename SmartFile<TFileType, TDirection, TSpec>::TStream> {};
+struct Position<FormattedFile<TFileType, TDirection, TSpec> > :
+    Position<typename FormattedFile<TFileType, TDirection, TSpec>::TStream> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction DefaultOpenMode
 // ----------------------------------------------------------------------------
 
 template <typename TFileType, typename TDirection, typename TSpec, typename TDummy>
-struct DefaultOpenMode<SmartFile<TFileType, TDirection, TSpec>, TDummy> :
-    DefaultOpenMode<typename SmartFile<TFileType, TDirection, TSpec>::TStream, TDummy> {};
+struct DefaultOpenMode<FormattedFile<TFileType, TDirection, TSpec>, TDummy> :
+    DefaultOpenMode<typename FormattedFile<TFileType, TDirection, TSpec>::TStream, TDummy> {};
 
 // ============================================================================
 // Functions
@@ -442,8 +419,8 @@ template <typename TException> void _throwIf(TException const & /*e*/, False con
 // ----------------------------------------------------------------------------
 
 template <typename TFileType, typename TDirection, typename TSpec>
-inline typename SmartFile<TFileType, TDirection, TSpec>::TIter &
-directionIterator(SmartFile<TFileType, TDirection, TSpec> & file, TDirection const &)
+inline typename FormattedFile<TFileType, TDirection, TSpec>::TIter &
+directionIterator(FormattedFile<TFileType, TDirection, TSpec> & file, TDirection const &)
 {
     return file.iter;
 }
@@ -453,18 +430,18 @@ directionIterator(SmartFile<TFileType, TDirection, TSpec> & file, TDirection con
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn SmartFile#format
- * @brief Return the format of a SmartFile.
+ * @fn FormattedFile#format
+ * @brief Return the format of a FormattedFile.
  *
  * @signature TFormat format(file);
  *
- * @param[in] file The SmartFile to check.
+ * @param[in] file The FormattedFile to check.
  * @return TFormat The type as returned from @link FileFormat @endlink.
  */
 
 template <typename TFileType, typename TDirection, typename TSpec>
-inline typename FileFormat<SmartFile<TFileType, TDirection, TSpec> >::Type &
-format(SmartFile<TFileType, TDirection, TSpec> & file)
+inline typename FileFormat<FormattedFile<TFileType, TDirection, TSpec> >::Type &
+format(FormattedFile<TFileType, TDirection, TSpec> & file)
 {
     return file.format;
 }
@@ -474,18 +451,18 @@ format(SmartFile<TFileType, TDirection, TSpec> & file)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn SmartFile#setFormat
- * @brief Set the format of a SmartFile.
+ * @fn FormattedFile#setFormat
+ * @brief Set the format of a FormattedFile.
  *
  * @signature void setFormat(file, format);
  *
- * @param[in,out] file The SmartFile to change.
+ * @param[in,out] file The FormattedFile to change.
  * @param[in]     format The @link FileFormat @endlink to set.
  */
 
 template <typename TFileType, typename TDirection, typename TSpec, typename TFormat>
 inline void
-setFormat(SmartFile<TFileType, TDirection, TSpec> & file, TFormat format)
+setFormat(FormattedFile<TFileType, TDirection, TSpec> & file, TFormat format)
 {
     assign(file.format, format);
 }
@@ -495,22 +472,22 @@ setFormat(SmartFile<TFileType, TDirection, TSpec> & file, TFormat format)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn SmartFile#guessFormat
- * @brief Guess the format of an open SmartFile.
+ * @fn FormattedFile#guessFormat
+ * @brief Guess the format of an open FormattedFile.
  *
  * @signature bool guessFormat(file);
  *
- * @param[in,out] file The open SmartFile for which the format is to be guessed.
+ * @param[in,out] file The open FormattedFile for which the format is to be guessed.
  */
 
 template <typename TFileType, typename TSpec>
-inline bool guessFormat(SmartFile<TFileType, Input, TSpec> & file)
+inline bool guessFormat(FormattedFile<TFileType, Input, TSpec> & file)
 {
     return guessFormatFromStream(file.stream, file.format);
 }
 
 template <typename TFileType, typename TSpec>
-inline bool guessFormat(SmartFile<TFileType, Output, TSpec> &)
+inline bool guessFormat(FormattedFile<TFileType, Output, TSpec> &)
 {
     return true;
 }
@@ -556,17 +533,17 @@ _mapFileFormatToCompressionFormat(TagSelector<TFileFormatList> format)
 }
 
 
-template <typename TSmartFile, typename TFormat>
+template <typename TFormattedFile, typename TFormat>
 inline void
-_checkThatStreamOutputFormatIsSet(TSmartFile const &, TFormat const &)
+_checkThatStreamOutputFormatIsSet(TFormattedFile const &, TFormat const &)
 {}
 
 template <typename TFileType, typename TSpec, typename TFileFormatList>
 inline void
-_checkThatStreamOutputFormatIsSet(SmartFile<TFileType, Output, TSpec> const &, TagSelector<TFileFormatList> const &format)
+_checkThatStreamOutputFormatIsSet(FormattedFile<TFileType, Output, TSpec> const &, TagSelector<TFileFormatList> const &format)
 {
     if (value(format) < 0)
-        SEQAN_FAIL("SmartFile: File format not specified, use setFormat().");
+        SEQAN_FAIL("FormattedFile: File format not specified, use setFormat().");
 }
 
 // ----------------------------------------------------------------------------
@@ -574,19 +551,19 @@ _checkThatStreamOutputFormatIsSet(SmartFile<TFileType, Output, TSpec> const &, T
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn SmartFile#open
- * @brief Open a SmartFile.
+ * @fn FormattedFile#open
+ * @brief Open a FormattedFile.
  *
  * @signature bool open(file, fileName);
  *
- * @param[in,out] file The SmartFile to open.
+ * @param[in,out] file The FormattedFile to open.
  * @param[in]     fileName The name of the file open.
  * @return bool <tt>true</tt> in the case of success, <tt>false</tt> otherwise.
  */
 
 template <typename TFileType, typename TDirection, typename TSpec,
           typename TStream, typename TCompressionFormat, typename TThrowExceptions>
-inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
+inline bool _open(FormattedFile<TFileType, TDirection, TSpec> & file,
                   TStream &stream,
                   TCompressionFormat const &compressionFormat,
                   TThrowExceptions = True())
@@ -609,14 +586,14 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
 }
 
 template <typename TFileType, typename TDirection, typename TSpec, typename TStream>
-inline bool open(SmartFile<TFileType, TDirection, TSpec> & file,
+inline bool open(FormattedFile<TFileType, TDirection, TSpec> & file,
                  TStream &stream)
 {
     return _open(file, stream, _mapFileFormatToCompressionFormat(file.format), False());
 }
 
 template <typename TFileType, typename TSpec, typename TStream, typename TFormat_>
-inline bool open(SmartFile<TFileType, Output, TSpec> & file,
+inline bool open(FormattedFile<TFileType, Output, TSpec> & file,
                  TStream &stream,
                  Tag<TFormat_> format)
 {
@@ -625,7 +602,7 @@ inline bool open(SmartFile<TFileType, Output, TSpec> & file,
 }
 
 template <typename TFileType, typename TSpec, typename TStream, typename TFormats>
-inline bool open(SmartFile<TFileType, Output, TSpec> & file,
+inline bool open(FormattedFile<TFileType, Output, TSpec> & file,
                  TStream &stream,
                  TagSelector<TFormats> format)
 {
@@ -638,9 +615,9 @@ inline bool open(SmartFile<TFileType, Output, TSpec> & file,
 // ----------------------------------------------------------------------------
 
 template <typename TFileType, typename TDirection, typename TSpec, typename TThrowExceptions>
-inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
+inline bool _open(FormattedFile<TFileType, TDirection, TSpec> & file,
                   const char *fileName,
-                  int openMode = DefaultOpenMode<SmartFile<TFileType, TDirection, TSpec> >::VALUE,
+                  int openMode = DefaultOpenMode<FormattedFile<TFileType, TDirection, TSpec> >::VALUE,
                   TThrowExceptions = True())
 {
     if (!open(file.stream, fileName, openMode))
@@ -674,9 +651,9 @@ inline bool _open(SmartFile<TFileType, TDirection, TSpec> & file,
 }
 
 template <typename TFileType, typename TDirection, typename TSpec>
-inline bool open(SmartFile<TFileType, TDirection, TSpec> & file,
+inline bool open(FormattedFile<TFileType, TDirection, TSpec> & file,
                  const char *fileName,
-                 int openMode = DefaultOpenMode<SmartFile<TFileType, TDirection, TSpec> >::VALUE)
+                 int openMode = DefaultOpenMode<FormattedFile<TFileType, TDirection, TSpec> >::VALUE)
 {
     return _open(file, fileName, openMode, False());
 }
@@ -686,20 +663,20 @@ inline bool open(SmartFile<TFileType, TDirection, TSpec> & file,
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn SmartFile#close
- * @brief Close a SmartFile.
+ * @fn FormattedFile#close
+ * @brief Close a FormattedFile.
  *
  * @signature bool close(file);
  *
- * @param[in,out] file The SmartFile to close.
+ * @param[in,out] file The FormattedFile to close.
  * @return bool <tt>true</tt> in the case of success, <tt>false</tt> otherwise.
  */
 
 template <typename TFileType, typename TDirection, typename TSpec>
-inline bool close(SmartFile<TFileType, TDirection, TSpec> & file)
+inline bool close(FormattedFile<TFileType, TDirection, TSpec> & file)
 {
-    setFormat(file, typename FileFormat<SmartFile<TFileType, TDirection, TSpec> >::Type());
-    file.iter = typename DirectionIterator<SmartFile<TFileType, TDirection, TSpec>, TDirection>::Type();
+    setFormat(file, typename FileFormat<FormattedFile<TFileType, TDirection, TSpec> >::Type());
+    file.iter = typename DirectionIterator<FormattedFile<TFileType, TDirection, TSpec>, TDirection>::Type();
     return close(file.stream);
 }
 
@@ -708,18 +685,18 @@ inline bool close(SmartFile<TFileType, TDirection, TSpec> & file)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn SmartFile#atEnd
- * @brief Determines whether a SmartFile is at the end.
+ * @fn FormattedFile#atEnd
+ * @brief Determines whether a FormattedFile is at the end.
  *
  * @signature bool atEnd(file);
  *
- * @param[in,out] file The SmartFile to check.
+ * @param[in,out] file The FormattedFile to check.
  * @return bool <tt>true</tt> in the case of success, <tt>false</tt> otherwise.
  */
 
 template <typename TFileType, typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename SmartFile<TFileType, TDirection, TSpec>::TStream> >, bool)
-atEnd(SmartFile<TFileType, TDirection, TSpec> const & file)
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<TFileType, TDirection, TSpec>::TStream> >, bool)
+atEnd(FormattedFile<TFileType, TDirection, TSpec> const & file)
 {
     return atEnd(file.iter);
 }
@@ -729,15 +706,15 @@ atEnd(SmartFile<TFileType, TDirection, TSpec> const & file)
 // ----------------------------------------------------------------------------
 
 template <typename TFileType, typename TSpec>
-inline typename Position<SmartFile<TFileType, Output, TSpec> >::Type
-position(SmartFile<TFileType, Output, TSpec> & file)
+inline typename Position<FormattedFile<TFileType, Output, TSpec> >::Type
+position(FormattedFile<TFileType, Output, TSpec> & file)
 {
     return file.stream.tellp();
 }
 
 template <typename TFileType, typename TSpec>
-inline typename Position<SmartFile<TFileType, Input, TSpec> >::Type
-position(SmartFile<TFileType, Input, TSpec> & file)
+inline typename Position<FormattedFile<TFileType, Input, TSpec> >::Type
+position(FormattedFile<TFileType, Input, TSpec> & file)
 {
     return file.stream.tellg();
 }
@@ -748,14 +725,14 @@ position(SmartFile<TFileType, Input, TSpec> & file)
 
 template <typename TFileType, typename TSpec, typename TPosition>
 inline bool
-setPosition(SmartFile<TFileType, Output, TSpec> & file, TPosition pos)
+setPosition(FormattedFile<TFileType, Output, TSpec> & file, TPosition pos)
 {
     return (TPosition)file.stream.rdbuf()->pubseekpos(pos, std::ios_base::out) == pos;
 }
 
 template <typename TFileType, typename TSpec, typename TPosition>
 inline bool
-setPosition(SmartFile<TFileType, Input, TSpec> & file, TPosition pos)
+setPosition(FormattedFile<TFileType, Input, TSpec> & file, TPosition pos)
 {
     return (TPosition)file.stream.rdbuf()->pubseekpos(pos, std::ios_base::in) == pos;
 }
@@ -765,26 +742,26 @@ setPosition(SmartFile<TFileType, Input, TSpec> & file, TPosition pos)
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn SmartFile#context
- * @brief Return the SmartFile's dependent context object.
+ * @fn FormattedFile#context
+ * @brief Return the FormattedFile's dependent context object.
  *
- * @signature TDependentContext & context(smartFile);
+ * @signature TDependentContext & context(file);
  *
- * @param[in,out] smartFile The SmartFile to query for its context.
+ * @param[in,out] file The FormattedFile to query for its context.
  *
- * @return TDependentContext The dependent context, type as returned from @link SmartFile#SmartFileContext @endlink.
+ * @return TDependentContext The dependent context, type as returned from @link FormattedFile#FormattedFileContext @endlink.
  */
 
 template <typename TFileType, typename TDirection, typename TSpec>
-inline typename SmartFileContext<SmartFile<TFileType, TDirection, TSpec>, Dependent<> >::Type &
-context(SmartFile<TFileType, TDirection, TSpec> & file)
+inline typename FormattedFileContext<FormattedFile<TFileType, TDirection, TSpec>, Dependent<> >::Type &
+context(FormattedFile<TFileType, TDirection, TSpec> & file)
 {
     return file.context;
 }
 
 template <typename TFileType, typename TDirection, typename TSpec>
-inline typename SmartFileContext<SmartFile<TFileType, TDirection, TSpec>, Dependent<> >::Type const &
-context(SmartFile<TFileType, TDirection, TSpec> const & file)
+inline typename FormattedFileContext<FormattedFile<TFileType, TDirection, TSpec>, Dependent<> >::Type const &
+context(FormattedFile<TFileType, TDirection, TSpec> const & file)
 {
     return file.context;
 }
@@ -878,20 +855,20 @@ _getCompressionExtensions(
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn SmartFile#getFileExtensions
+ * @fn FormattedFile#getFileExtensions
  * @brief Static function that returns a list of allowed file format extension.
  *
- * @signature TExtensionVector getFileExtensions(smartFile)
+ * @signature TExtensionVector getFileExtensions(file)
  *
- * @param[in] smartFile The SmartFile to query.
+ * @param[in] file The FormattedFile to query.
  * @return TExtensionVector A <tt>std::vector&lt;std::string&gt;</tt> with the allowed file extensions.
  *
- * This is a shortcut to @link SmartFile#getFileExtensions @endlink.
+ * This is a shortcut to @link FormattedFile#getFileExtensions @endlink.
  */
 
 template <typename TFileType, typename TDirection, typename TSpec>
 static std::vector<std::string>
-getFileExtensions(SmartFile<TFileType, TDirection, TSpec> const & file)
+getFileExtensions(FormattedFile<TFileType, TDirection, TSpec> const & file)
 {
     return file.getFileExtensions();
 }

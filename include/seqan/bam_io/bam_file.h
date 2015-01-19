@@ -49,9 +49,8 @@ namespace seqan {
 
 /*!
  * @class BamFileIn
- * @signature typedef SmartFile<Bam, Input> BamFileIn;
- * @implements FormattedFileInConcept
- * @extends SmartFile
+ * @signature typedef FormattedFile<Bam, Input> BamFileIn;
+ * @extends FormattedFileIn
  * @headerfile <seqan/bam_io.h>
  *
  * @brief Class for reading SAM and BAM files.
@@ -80,7 +79,7 @@ namespace seqan {
  * @param[in] openMode The open mode. Type: <tt>int</tt>.
  */
 
-typedef SmartFile<Bam, Input> BamFileIn;
+typedef FormattedFile<Bam, Input> BamFileIn;
 
 // ----------------------------------------------------------------------------
 // Type BamFileOut
@@ -88,9 +87,8 @@ typedef SmartFile<Bam, Input> BamFileIn;
 
 /*!
  * @class BamFileOut
- * @signature typedef SmartFile<Bam, Output> BamFileOut;
- * @implements FormattedFileOutConcept
- * @extends SmartFile
+ * @signature typedef FormattedFile<Bam, Output> BamFileOut;
+ * @extends FormattedFileOut
  * @headerfile <seqan/bam_io.h>
  *
  * @brief Class for writing SAM and BAM files.
@@ -119,18 +117,18 @@ typedef SmartFile<Bam, Input> BamFileIn;
  * @param[in] openMode The open mode. Type: <tt>int</tt>.
  */
 
-typedef SmartFile<Bam, Output> BamFileOut;
+typedef FormattedFile<Bam, Output> BamFileOut;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction SmartFileContext
+// Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Bam, TDirection, TSpec>, TStorageSpec>
+struct FormattedFileContext<FormattedFile<Bam, TDirection, TSpec>, TStorageSpec>
 {
     typedef StringSet<CharString>                                   TNameStore;
     typedef NameStoreCache<TNameStore>                              TNameStoreCache;
@@ -142,7 +140,7 @@ struct SmartFileContext<SmartFile<Bam, TDirection, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormat<SmartFile<Bam, TDirection, TSpec> >
+struct FileFormat<FormattedFile<Bam, TDirection, TSpec> >
 {
 #if SEQAN_HAS_ZLIB
     typedef TagSelector<
@@ -198,7 +196,7 @@ readRecord(BamHeader & header,
 // convient BamFile variant
 template <typename TSpec>
 inline void
-readRecord(BamHeader & header, SmartFile<Bam, Input, TSpec> & file)
+readRecord(BamHeader & header, FormattedFile<Bam, Input, TSpec> & file)
 {
     readRecord(header, context(file), file.iter, file.format);
 }
@@ -260,7 +258,7 @@ readRecord(BamAlignmentRecord & record,
 // convient BamFile variant
 template <typename TSpec>
 inline void
-readRecord(BamAlignmentRecord & record, SmartFile<Bam, Input, TSpec> & file)
+readRecord(BamAlignmentRecord & record, FormattedFile<Bam, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
 }
@@ -268,7 +266,7 @@ readRecord(BamAlignmentRecord & record, SmartFile<Bam, Input, TSpec> & file)
 template <typename TRecords, typename TSpec, typename TSize>
 inline SEQAN_FUNC_ENABLE_IF(And<IsSameType<typename Value<TRecords>::Type, BamAlignmentRecord>,
                                 IsInteger<TSize> >, TSize)
-readBatch(TRecords & records, SmartFile<Bam, Input, TSpec> & file, TSize maxRecords)
+readBatch(TRecords & records, FormattedFile<Bam, Input, TSpec> & file, TSize maxRecords)
 {
     String<CharString> & buffers = context(file).buffers;
     if ((TSize)length(buffers) < maxRecords)
@@ -323,7 +321,7 @@ write(TTarget & target,
 // convient BamFile variant
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Bam, Output, TSpec> & file, BamHeader const & header)
+writeRecord(FormattedFile<Bam, Output, TSpec> & file, BamHeader const & header)
 {
     write(file.iter, header, context(file), file.format);
 }
@@ -360,14 +358,14 @@ write(TTarget & target,
 
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Bam, Output, TSpec> & file, BamAlignmentRecord const & record)
+writeRecord(FormattedFile<Bam, Output, TSpec> & file, BamAlignmentRecord const & record)
 {
     write(file.iter, record, context(file), file.format);
 }
 
 template <typename TSpec, typename TRecords>
 inline SEQAN_FUNC_ENABLE_IF(IsSameType<typename Value<TRecords>::Type, BamAlignmentRecord>, void)
-writeRecords(SmartFile<Bam, Output, TSpec> & file, TRecords const & records)
+writeRecords(FormattedFile<Bam, Output, TSpec> & file, TRecords const & records)
 {
     String<CharString> & buffers = context(file).buffers;
     if (length(buffers) < length(records))

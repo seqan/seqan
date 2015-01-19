@@ -9,7 +9,7 @@ int main()
     BamHeader header;
     readRecord(header, bamFileIn);
 
-    typedef SmartFileContext<BamFileIn, void>::Type TBamContext;
+    typedef FormattedFileContext<BamFileIn, void>::Type TBamContext;
 
     TBamContext const & bamContext = context(bamFileIn);
 

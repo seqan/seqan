@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
-// SmartFile for .intervals format
+// FormattedFile for .intervals format
 // ==========================================================================
 
 #ifndef INCLUDE_SEQAN_SIMPLE_INTERVALS_IO_SIMPLE_INTERVALS_FILE_H_
@@ -55,13 +55,13 @@ namespace seqan {
 
 /*!
  * @class SimpleIntervalsFileIn
- * @extends SmartFile
+ * @extends FormattedFileIn
  * @headerfile <seqan/ucsc_io.h>
- * @brief @link SmartFile @endlink for reading .intervals files.
+ * @brief @link FormattedFile @endlink for reading .intervals files.
  *
- * @signature typedef SmartFile<SimpleIntervals, Input> SimpleIntervalsFileIn;
+ * @signature typedef FormattedFile<SimpleIntervals, Input> SimpleIntervalsFileIn;
  */
-typedef SmartFile<SimpleIntervals, Input>   SimpleIntervalsFileIn;
+typedef FormattedFile<SimpleIntervals, Input>   SimpleIntervalsFileIn;
 
 // ----------------------------------------------------------------------------
 // Typedef SimpleIntervalsFileOut
@@ -69,13 +69,13 @@ typedef SmartFile<SimpleIntervals, Input>   SimpleIntervalsFileIn;
 
 /*!
  * @class SimpleIntervalsFileInOut
- * @extends SmartFile
+ * @extends FormattedFileOut
  * @headerfile <seqan/ucsc_io.h>
- * @brief @link SmartFile @endlink for reading .intervals files.
+ * @brief @link FormattedFile @endlink for reading .intervals files.
  *
- * @signature typedef SmartFile<SimpleIntervals, Output> SimpleIntervalsFileOut;
+ * @signature typedef FormattedFile<SimpleIntervals, Output> SimpleIntervalsFileOut;
  */
-typedef SmartFile<SimpleIntervals, Output> SimpleIntervalsFileOut;
+typedef FormattedFile<SimpleIntervals, Output> SimpleIntervalsFileOut;
 
 
 // ============================================================================
@@ -106,11 +106,11 @@ char const * FileExtensions<SimpleIntervals, T>::VALUE[1] =
 };
 
 // ----------------------------------------------------------------------------
-// Metafunction SmartFileContext
+// Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<SimpleIntervals, TDirection, TSpec>, TStorageSpec>
+struct FormattedFileContext<FormattedFile<SimpleIntervals, TDirection, TSpec>, TStorageSpec>
 {
     typedef SimpleIntervalsIOContext Type;
 };
@@ -120,7 +120,7 @@ struct SmartFileContext<SmartFile<SimpleIntervals, TDirection, TSpec>, TStorageS
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormat<SmartFile<SimpleIntervals, TDirection, TSpec> >
+struct FileFormat<FormattedFile<SimpleIntervals, TDirection, TSpec> >
 {
     typedef SimpleIntervals Type;
 };
@@ -145,7 +145,7 @@ struct FileFormat<SmartFile<SimpleIntervals, TDirection, TSpec> >
  * @throw IOError in case of problems.
  */
 template <typename TSpec>
-void readRecord(GenomicRegion & record, SmartFile<SimpleIntervals, Input, TSpec> & file)
+void readRecord(GenomicRegion & record, FormattedFile<SimpleIntervals, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
 }
@@ -166,7 +166,7 @@ void readRecord(GenomicRegion & record, SmartFile<SimpleIntervals, Input, TSpec>
  * @throw IOError in case of problems.
  */
 template <typename TSpec>
-void writeRecord(SmartFile<SimpleIntervals, Output, TSpec> & file, GenomicRegion & record)
+void writeRecord(FormattedFile<SimpleIntervals, Output, TSpec> & file, GenomicRegion & record)
 {
     writeRecord(file.iter, context(file), record, file.format);
 }

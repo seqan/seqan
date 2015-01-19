@@ -60,13 +60,13 @@ using namespace seqan;
 namespace seqan {
 
 template <typename TDirection>
-struct FileFormat<SmartFile<Bam, TDirection, int> >
+struct FileFormat<FormattedFile<Bam, TDirection, int> >
 {
     typedef Bam Type;
 };
 
-typedef SmartFile<Bam, Input, int> BamOnlyFileIn;
-typedef SmartFile<Bam, Output, int> BamOnlyFileOut;
+typedef FormattedFile<Bam, Input, int> BamOnlyFileIn;
+typedef FormattedFile<Bam, Output, int> BamOnlyFileOut;
 
 }
 

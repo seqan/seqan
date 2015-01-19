@@ -174,7 +174,7 @@ void swap(SeqStore<TSpec, TConfig> & a, SeqStore<TSpec, TConfig> & b)
 
 template <typename TSpec, typename TConfig, typename TFileSpec, typename TAlphabetSpec>
 inline void readRecords(SeqStore<TSpec, TConfig> & me,
-                        SmartFile<Fastq, Input, TFileSpec> & fileIn,
+                        FormattedFile<Fastq, Input, TFileSpec> & fileIn,
                         TAlphabetSpec const & alphabet = Iupac())
 {
     readRecords(me.names, me.seqs, fileIn, alphabet);
@@ -186,7 +186,7 @@ inline void readRecords(SeqStore<TSpec, TConfig> & me,
 
 template <typename TSpec, typename TConfig, typename TFileSpec>
 inline void readRecords(SeqStore<TSpec, TConfig> & me,
-                        SmartFile<Fastq, Input, TFileSpec> & fileIn)
+                        FormattedFile<Fastq, Input, TFileSpec> & fileIn)
 {
     typedef SeqStore<TSpec, TConfig>    TSeqStore;
     typedef typename TSeqStore::TSeqs   TSeqs;

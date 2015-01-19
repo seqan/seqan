@@ -155,7 +155,7 @@ length(std::basic_string<TChar, TCharTraits, TAlloc> const & me);
  *
  * @signature bool atEnd(stream);
  *
- * @param[in] stream The SmartFile to check.
+ * @param[in] stream The FormattedFile to check.
  * @return bool <tt>true</tt> if the file at EOF, <tt>false</tt> otherwise.
  */
 

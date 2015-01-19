@@ -168,9 +168,9 @@ _storeAnnotationRecord(
 template <typename TFSSpec, typename TConfig, typename TSpec>
 inline void
 readRecords(FragmentStore<TFSSpec, TConfig> & fragStore,
-            SmartFile<Ucsc, Input, TSpec> & file)
+            FormattedFile<Ucsc, Input, TSpec> & file)
 {
-    typedef SmartFile<Ucsc, Input, TSpec> TFile;
+    typedef FormattedFile<Ucsc, Input, TSpec> TFile;
     typename DirectionIterator<TFile, Input>::Type iter = directionIterator(file, Input());
 
     if (atEnd(iter))
@@ -274,7 +274,7 @@ _fillAnnotationRecord(
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig, typename TFormat>
 inline void
-writeRecords(SmartFile<Ucsc, Output, TSpec> & ucscFile,
+writeRecords(FormattedFile<Ucsc, Output, TSpec> & ucscFile,
              FragmentStore<TFSSpec, TFSConfig> & store,
              TFormat const & format)
 {
@@ -284,7 +284,7 @@ writeRecords(SmartFile<Ucsc, Output, TSpec> & ucscFile,
     typedef typename Iterator<TAnnotationStore, Standard>::Type     TAnnoIter;
     typedef typename Id<TAnnotation>::Type                          TId;
 
-    typename DirectionIterator<SmartFile<Ucsc, Output, TSpec>, Output>::Type iter = directionIterator(ucscFile, Output());
+    typename DirectionIterator<FormattedFile<Ucsc, Output, TSpec>, Output>::Type iter = directionIterator(ucscFile, Output());
     UcscRecord record;
 
     TAnnoIter it = begin(store.annotationStore, Standard());
@@ -297,7 +297,7 @@ writeRecords(SmartFile<Ucsc, Output, TSpec> & ucscFile,
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig>
 inline void
-writeRecords(SmartFile<Ucsc, Output, TSpec> & ucscFile,
+writeRecords(FormattedFile<Ucsc, Output, TSpec> & ucscFile,
              FragmentStore<TFSSpec, TFSConfig> & store)
 {
     writeRecords(ucscFile, store, format(ucscFile));

@@ -53,13 +53,13 @@ namespace seqan {
 
 /*!
  * @class GffFileIn
- * @extends SmartFile
+ * @extends FormattedFileIn
  * @headerfile <seqan/gff_io.h>
- * @brief @link SmartFile @endlink for reading GFF and GTF files.
+ * @brief @link FormattedFile @endlink for reading GFF and GTF files.
  *
- * @signature typedef SmartFile<Gff, Input> GffFileIn;
+ * @signature typedef FormattedFile<Gff, Input> GffFileIn;
  */
-typedef SmartFile<Gff, Input>   GffFileIn;
+typedef FormattedFile<Gff, Input>   GffFileIn;
 
 // ----------------------------------------------------------------------------
 // Typedef GffFileOut
@@ -67,24 +67,24 @@ typedef SmartFile<Gff, Input>   GffFileIn;
 
 /*!
  * @class GffFileOut
- * @extends SmartFile
+ * @extends FormattedFileOut
  * @headerfile <seqan/gff_io.h>
- * @brief @link SmartFile @endlink for writing GFF and GTF.
+ * @brief @link FormattedFile @endlink for writing GFF and GTF.
  *
- * @signature typedef SmartFile<Gff, Output> GffFileOut;
+ * @signature typedef FormattedFile<Gff, Output> GffFileOut;
  */
-typedef SmartFile<Gff, Output>  GffFileOut;
+typedef FormattedFile<Gff, Output>  GffFileOut;
 
 // ============================================================================
 // Metafunctions
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction SmartFileContext
+// Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TStorageSpec>
-struct SmartFileContext<SmartFile<Gff, Input, TSpec>, TStorageSpec>
+struct FormattedFileContext<FormattedFile<Gff, Input, TSpec>, TStorageSpec>
 {
     typedef CharString Type;
 };
@@ -94,7 +94,7 @@ struct SmartFileContext<SmartFile<Gff, Input, TSpec>, TStorageSpec>
 // ----------------------------------------------------------------------------
 
 template <typename TDirection, typename TSpec>
-struct FileFormat<SmartFile<Gff, TDirection, TSpec> >
+struct FileFormat<FormattedFile<Gff, TDirection, TSpec> >
 {
     typedef TagSelector<
                 TagList<Gff,
@@ -134,7 +134,7 @@ readRecord(GffRecord & record,
 // convient GffFile variant
 template <typename TSpec>
 inline void
-readRecord(GffRecord & record, SmartFile<Gff, Input, TSpec> & file)
+readRecord(GffRecord & record, FormattedFile<Gff, Input, TSpec> & file)
 {
     readRecord(record, context(file), file.iter, file.format);
 }
@@ -184,7 +184,7 @@ writeRecord(TTarget & target,
 
 template <typename TSpec>
 inline void
-writeRecord(SmartFile<Gff, Output, TSpec> & file, GffRecord & record)
+writeRecord(FormattedFile<Gff, Output, TSpec> & file, GffRecord & record)
 {
     writeRecord(file.iter, record, file.format);
 }
