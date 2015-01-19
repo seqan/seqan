@@ -110,7 +110,20 @@ typedef SeqInFormat AutoSeqFormat;
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Metafunction FormattedFileContext
+// Metafunction SeqFileBuffer_
+// ----------------------------------------------------------------------------
+
+template <typename TSeqStringSet, typename TSpec>
+struct SeqFileBuffer_
+{
+    typedef typename Value<TSeqStringSet>::Type     TSeqString;
+    typedef typename Value<TSeqString>::Type        TSeqAlphabet;
+
+    typedef String<TSeqAlphabet>                    Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction SeqFileContext_
 // ----------------------------------------------------------------------------
 
 template <typename TDirection>
@@ -129,6 +142,9 @@ struct SeqFileContext_<Output>
     SequenceOutputOptions   options;
 };
 
+// ----------------------------------------------------------------------------
+// Metafunction FormattedFileContext
+// ----------------------------------------------------------------------------
 
 template <typename TSpec, typename TDirection, typename TStorageSpec>
 struct FormattedFileContext<FormattedFile<Fastq, TDirection, TSpec>, TStorageSpec>
@@ -210,14 +226,15 @@ swapPtr(TPtrA &a, TPtrB &b)
     a = tmp2.a;
 }
 
-template <typename TIdStringSet, typename TSeqStringSet, typename TSpec, typename TFastqAlphabet>
+template <typename TIdStringSet, typename TSeqStringSet, typename TSpec, typename TSize>
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         FormattedFile<Fastq, Input, TSpec> & file,
-                        __uint64 maxRecords = MaxValue<__uint64>::VALUE,
-                        TFastqAlphabet = Iupac())
+                        TSize maxRecords)
 {
-    String<TFastqAlphabet> seqBuffer;
+    typedef typename SeqFileBuffer_<TSeqStringSet, TSpec>::Type TSeqBuffer;
+
+    TSeqBuffer seqBuffer;
 
     // reuse the memory of context(file).buffer for seqBuffer (which has a different type but same sizeof(Alphabet))
     swapPtr(seqBuffer.data_begin, context(file).buffer[1].data_begin);
@@ -238,47 +255,31 @@ inline void readRecords(TIdStringSet & meta,
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecords(); Without alphabet conversion
+// Function readRecords(); Without max records
 // ----------------------------------------------------------------------------
 
 template <typename TIdStringSet, typename TSeqStringSet, typename TSpec>
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
-                        FormattedFile<Fastq, Input, TSpec> & file,
-                        __uint64 maxRecords = MaxValue<__uint64>::VALUE)
+                        FormattedFile<Fastq, Input, TSpec> & file)
 {
-    typedef typename Value<TSeqStringSet>::Type     TSeqString;
-    typedef typename Value<TSeqString>::Type        TSeqAlphabet;
-
-    readRecords(meta, seq, file, maxRecords, TSeqAlphabet());
-}
-
-// ----------------------------------------------------------------------------
-// Function readRecords(); Without max records
-// ----------------------------------------------------------------------------
-
-template <typename TIdStringSet, typename TSeqStringSet, typename TSpec, typename TFastqAlphabet>
-inline void readRecords(TIdStringSet & meta,
-                        TSeqStringSet & seq,
-                        FormattedFile<Fastq, Input, TSpec> & file,
-                        TFastqAlphabet = Iupac())
-{
-    readRecords(meta, seq, file, MaxValue<__uint64>::VALUE, TFastqAlphabet());
+    readRecords(meta, seq, file, MaxValue<__uint64>::VALUE);
 }
 
 // ----------------------------------------------------------------------------
 // Function readRecords(); With separate qualities
 // ----------------------------------------------------------------------------
 
-template <typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet, typename TSpec, typename TFastqAlphabet>
+template <typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet, typename TSpec, typename TSize>
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         TQualStringSet & qual,
                         FormattedFile<Fastq, Input, TSpec> & file,
-                        __uint64 maxRecords = MaxValue<__uint64>::VALUE,
-                        TFastqAlphabet = Iupac())
+                        TSize maxRecords)
 {
-    String<TFastqAlphabet> seqBuffer;
+    typedef typename SeqFileBuffer_<TSeqStringSet, TSpec>::Type TSeqBuffer;
+
+    TSeqBuffer seqBuffer;
 
     // reuse the memory of context(file).buffer for seqBuffer (which has a different type but same sizeof(Alphabet))
     std::swap(reinterpret_cast<char* &>(seqBuffer.data_begin), context(file).buffer[1].data_begin);
@@ -299,34 +300,16 @@ inline void readRecords(TIdStringSet & meta,
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecords(); With separate qualities; Without alphabet conversion
+// Function readRecords(); With separate qualities; Without max records
 // ----------------------------------------------------------------------------
 
 template <typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet, typename TSpec>
 inline void readRecords(TIdStringSet & meta,
                         TSeqStringSet & seq,
                         TQualStringSet & qual,
-                        FormattedFile<Fastq, Input, TSpec> & file,
-                        __uint64 maxRecords = MaxValue<__uint64>::VALUE)
+                        FormattedFile<Fastq, Input, TSpec> & file)
 {
-    typedef typename Value<TSeqStringSet>::Type     TSeqString;
-    typedef typename Value<TSeqString>::Type        TSeqAlphabet;
-
-    readRecords(meta, seq, qual, file, maxRecords, TSeqAlphabet());
-}
-
-// ----------------------------------------------------------------------------
-// Function readRecords(); With separate qualities; Without max records
-// ----------------------------------------------------------------------------
-
-template <typename TIdStringSet, typename TSeqStringSet, typename TQualStringSet, typename TSpec, typename TFastqAlphabet>
-inline void readRecords(TIdStringSet & meta,
-                        TSeqStringSet & seq,
-                        TQualStringSet & qual,
-                        FormattedFile<Fastq, Input, TSpec> & file,
-                        TFastqAlphabet = Iupac())
-{
-    readRecords(meta, seq, qual, file, MaxValue<__uint64>::VALUE, TFastqAlphabet());
+    readRecords(meta, seq, qual, file, MaxValue<__uint64>::VALUE);
 }
 
 // ----------------------------------------------------------------------------
