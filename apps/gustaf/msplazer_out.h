@@ -990,7 +990,7 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
     _fillVcfHeader(vcfHeader, vcfOut, databases, databaseIDs, msplazerOptions);
     try
     {
-        writeRecord(vcfOut, vcfHeader);
+        writeHeader(vcfOut, vcfHeader);
     }
     catch (seqan::IOError const & ioErr)
     {
