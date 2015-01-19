@@ -197,7 +197,7 @@ void loadContigs(YaraIndexer<TSpec, TConfig> & me)
 
     try
     {
-        readRecords(me.contigs, me.contigsFile, Iupac());
+        readRecords(me.contigs, me.contigsFile);
     }
     catch (BadAlloc const & /* e */)
     {
