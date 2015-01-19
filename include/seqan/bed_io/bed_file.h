@@ -43,7 +43,36 @@ namespace seqan {
 // Typedefs
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Type BedFileIn
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class BedFileIn
+ * @signature typedef FormattedFile<Bed, Input> BedFileIn;
+ * @extends FormattedFileIn
+ * @headerfile <seqan/bed_io.h>
+ * @brief Class for reading BED files.
+ *
+ * @see BedRecord
+ */
+
 typedef FormattedFile<Bed, Input>   BedFileIn;
+
+// ----------------------------------------------------------------------------
+// Type BedFileOut
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class BedFileOut
+ * @signature typedef FormattedFile<Bed, Output> BedFileOut;
+ * @extends FormattedFileOut
+ * @headerfile <seqan/bed_io.h>
+ * @brief Class for writing BED files.
+ *
+ * @see BedRecord
+ */
+
 typedef FormattedFile<Bed, Output>  BedFileOut;
 
 // ============================================================================

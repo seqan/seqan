@@ -48,7 +48,24 @@ namespace seqan {
 // Typedefs
 // ============================================================================
 
+/*!
+ * @class SeqFileIn
+ * @signature typedef FormattedFile<Fastq, Input> SeqFileIn;
+ * @extends FormattedFileIn
+ * @headerfile <seqan/seq_io.h>
+ * @brief Class for reading RAW, FASTA, FASTQ, EMBL and GENBANK files containing unaligned sequences.
+ */
+
 typedef FormattedFile<Fastq, Input>     SeqFileIn;
+
+/*!
+ * @class SeqFileOut
+ * @signature typedef FormattedFile<Fastq, Output> SeqFileOut;
+ * @extends FormattedFileOut
+ * @headerfile <seqan/seq_io.h>
+ * @brief Class for writing RAW, FASTA, FASTQ, EMBL and GENBANK files containing unaligned sequences.
+ */
+
 typedef FormattedFile<Fastq, Output>    SeqFileOut;
 
 // --------------------------------------------------------------------------

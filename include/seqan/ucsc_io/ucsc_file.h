@@ -40,10 +40,6 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Typedefs
 // ============================================================================
 
@@ -56,12 +52,14 @@ typedef Tag<Ucsc_<> > Ucsc;
 
 /*!
  * @class UcscFileIn
+ * @signature typedef FormattedFile<Ucsc, Input> UcscFileIn;
  * @extends FormattedFileIn
  * @headerfile <seqan/ucsc_io.h>
- * @brief @link FormattedFile @endlink for reading UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
+ * @brief Class for reading UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
  *
- * @signature typedef FormattedFile<Ucsc, Input> UcscFileIn;
+ * @see UcscRecord
  */
+
 typedef FormattedFile<Ucsc, Input>   UcscFileIn;
 
 // ----------------------------------------------------------------------------
@@ -70,12 +68,14 @@ typedef FormattedFile<Ucsc, Input>   UcscFileIn;
 
 /*!
  * @class UcscFileInOut
+ * @signature typedef FormattedFile<Ucsc, Output> UcscFileOut;
  * @extends FormattedFileOut
  * @headerfile <seqan/ucsc_io.h>
- * @brief @link FormattedFile @endlink for reading UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
+ * @brief Class for writing UCSC <tt>knownGenes.txt</tt> and <tt>knownIsoforms.txt</tt> files.
  *
- * @signature typedef FormattedFile<Ucsc, Output> UcscFileOut;
+ * @see UcscRecord
  */
+
 typedef FormattedFile<Ucsc, Output> UcscFileOut;
 
 // ============================================================================

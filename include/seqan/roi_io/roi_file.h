@@ -40,14 +40,35 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Typedefs
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Type RoiFileIn
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class RoiFileIn
+ * @signature typedef FormattedFile<Roi, Input> RoiFileIn;
+ * @extends FormattedFileIn
+ * @headerfile <seqan/roi_io.h>
+ * @brief Class for reading ROI files.
+ */
+
 typedef FormattedFile<Roi, Input>   RoiFileIn;
+
+// ----------------------------------------------------------------------------
+// Type RoiFileOut
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class RoiFileOut
+ * @signature typedef FormattedFile<Roi, Output> RoiFileOut;
+ * @extends FormattedFileOut
+ * @headerfile <seqan/roi_io.h>
+ * @brief Class for writing ROI files.
+ */
+
 typedef FormattedFile<Roi, Output>  RoiFileOut;
 
 // ============================================================================

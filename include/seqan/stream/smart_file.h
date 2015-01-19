@@ -110,7 +110,7 @@ struct StorageSwitch;
  * <li>Access compressed or uncompressed files transparently.</li>
  * </ul>
  *
- * FormattedFile encapsulates a @link VirtualStream @endlink and provides access to its @link StreamConcept#DirectionIterator @endlink.
+ * @internal FormattedFile encapsulates a @link VirtualStream @endlink and provides access to its @link StreamConcept#DirectionIterator @endlink.
  * Each instance of FormattedFile keeps a @link FormattedFile#FormattedFileContext @endlink while reading or writing the formatted file.
  */
 

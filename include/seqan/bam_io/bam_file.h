@@ -52,7 +52,6 @@ namespace seqan {
  * @signature typedef FormattedFile<Bam, Input> BamFileIn;
  * @extends FormattedFileIn
  * @headerfile <seqan/bam_io.h>
- *
  * @brief Class for reading SAM and BAM files.
  *
  * @see BamHeader
@@ -69,16 +68,6 @@ namespace seqan {
  * @include demos/tutorial/bam_io/example.sam
  */
 
-/*!
- * @fn BamFileIn::BamFileIn
- * @brief Constructor
- *
- * @signature BamFileIn::BamFileIn([fileName[, openMode]]);
- *
- * @param[in] fileName The path to the SAM or BAM file to read, <tt>char const *</tt>.
- * @param[in] openMode The open mode. Type: <tt>int</tt>.
- */
-
 typedef FormattedFile<Bam, Input> BamFileIn;
 
 // ----------------------------------------------------------------------------
@@ -90,7 +79,6 @@ typedef FormattedFile<Bam, Input> BamFileIn;
  * @signature typedef FormattedFile<Bam, Output> BamFileOut;
  * @extends FormattedFileOut
  * @headerfile <seqan/bam_io.h>
- *
  * @brief Class for writing SAM and BAM files.
  *
  * @see BamHeader
@@ -105,16 +93,6 @@ typedef FormattedFile<Bam, Input> BamFileIn;
  * The output is as follows:
  *
  * @include demos/tutorial/bam_io/example.sam
- */
-
-/*!
- * @fn BamFileOut::BamFileOut
- * @brief Constructor
- *
- * @signature BamFileOut::BamFileOut([fileName[, openMode]]);
- *
- * @param[in] fileName The path to the SAM or BAM file to write, <tt>char const *</tt>.
- * @param[in] openMode The open mode. Type: <tt>int</tt>.
  */
 
 typedef FormattedFile<Bam, Output> BamFileOut;

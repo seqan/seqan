@@ -40,25 +40,23 @@
 namespace seqan {
 
 // ============================================================================
-// Forwards
-// ============================================================================
-
-// ============================================================================
 // Typedefs
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Typedef UcscFileIn
+// Typedef GffFileIn
 // ----------------------------------------------------------------------------
 
 /*!
  * @class GffFileIn
+ * @signature typedef FormattedFile<Gff, Input> GffFileIn;
  * @extends FormattedFileIn
  * @headerfile <seqan/gff_io.h>
- * @brief @link FormattedFile @endlink for reading GFF and GTF files.
+ * @brief Class for reading GFF and GTF files.
  *
- * @signature typedef FormattedFile<Gff, Input> GffFileIn;
+ * @see GffRecord
  */
+ 
 typedef FormattedFile<Gff, Input>   GffFileIn;
 
 // ----------------------------------------------------------------------------
@@ -67,12 +65,14 @@ typedef FormattedFile<Gff, Input>   GffFileIn;
 
 /*!
  * @class GffFileOut
+ * @signature typedef FormattedFile<Gff, Output> GffFileOut;
  * @extends FormattedFileOut
  * @headerfile <seqan/gff_io.h>
- * @brief @link FormattedFile @endlink for writing GFF and GTF.
+ * @brief Class for writing GFF and GTF files.
  *
- * @signature typedef FormattedFile<Gff, Output> GffFileOut;
+ * @see GffRecord
  */
+
 typedef FormattedFile<Gff, Output>  GffFileOut;
 
 // ============================================================================
@@ -107,20 +107,6 @@ struct FileFormat<FormattedFile<Gff, TDirection, TSpec> >
 // Function readRecord()
 // ----------------------------------------------------------------------------
 
-/*!
- * @fn GffFileIn#readRecord
- * @brief Reading GFF and GTF records from a GffFileIn.
- *
- * @signature void readRecord(record, file);
- *
- * @param[out] record The @link GffRecord @endlink to write to.
- * @param[in]  file   The GffFileIn to read from.
- *
- * @throw IOError or ParseError.
- *
- * Both GFF and GTF records can be read into a GffRecord.  The format is detected by the GffFileIn.
- */
-
 template <typename TForwardIter, typename TFormats>
 inline void
 readRecord(GffRecord & record,
@@ -142,21 +128,6 @@ readRecord(GffRecord & record, FormattedFile<Gff, Input, TSpec> & file)
 // ----------------------------------------------------------------------------
 // Function writeRecord()
 // ----------------------------------------------------------------------------
-
-/*!
- * @fn GffFileOut#writeRecord
- * @brief Writing GFF and GTF records to a GffFileOut.
- *
- * @signature void writeRecord(record, file);
- *
- * @param[in]  file   The GffFileIn to read from.
- * @param[out] record The @link GffRecord @endlink to write out.
- *
- * @throw IOError or ParseError.
- *
- * @link GffRecord @endlink objects can be written to both GFF and GTF files. The format is chosen depending on
- * the parameters of the GffFileOut (which will auto-detect it by default).
- */
 
 // support for dynamically chosen file formats
 template <typename TTarget>

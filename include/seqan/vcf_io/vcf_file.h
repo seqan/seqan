@@ -54,7 +54,38 @@ typedef Tag<Bcf_> Bcf;
 // Typedefs
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Typedef VcfFileIn
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class VcfFileIn
+ * @signature typedef FormattedFile<Vcf, Input> VcfFileIn;
+ * @extends FormattedFileIn
+ * @headerfile <seqan/vcf_io.h>
+ * @brief Class for reading VCF files.
+ *
+ * @see VcfHeader
+ * @see VcfRecord
+ */
+
 typedef FormattedFile<Vcf, Input>   VcfFileIn;
+
+// ----------------------------------------------------------------------------
+// Typedef VcfFileOut
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class VcfFileOut
+ * @signature typedef FormattedFile<Vcf, Output> VcfFileOut;
+ * @extends FormattedFileOut
+ * @headerfile <seqan/vcf_io.h>
+ * @brief Class for writing VCF files.
+ *
+ * @see VcfHeader
+ * @see VcfRecord
+ */
+
 typedef FormattedFile<Vcf, Output>  VcfFileOut;
 
 // ============================================================================
