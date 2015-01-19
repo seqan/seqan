@@ -1,5 +1,5 @@
 cmake_minimum_required (VERSION 2.6)
-project (seqan_core_demos_tutorials_random)
+project (seqan_demos_tutorials_random)
 
-seqan_setup_apps(core_demos_tutorials_random)
-seqan_add_all_executables(core_demos_tutorials_random tutorial_)
+seqan_setup_apps(demos_tutorials_random)
+seqan_add_all_executables(demos_tutorials_random tutorial_)
