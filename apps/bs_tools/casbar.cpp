@@ -820,7 +820,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
 
         // Read header.
         seqan::BamHeader header;
-        readRecord(header, *bamFileIns[i]);
+        readHeader(header, *bamFileIns[i]);
     }
 #endif  // #if !defined(SEQAN_ENABLE_PARALLELISM)
     bool abort = false;
@@ -847,7 +847,7 @@ int detectSNPs(SNPCallingOptions &options, TMethOptions &methOptions)
             {
                 // Read header.
                 seqan::BamHeader header;
-                readRecord(header, *bamFileIns[i]);
+                readHeader(header, *bamFileIns[i]);
             }
         }
 #endif  // #if defined(SEQAN_ENABLE_PARALLELISM)
