@@ -123,6 +123,19 @@ struct FormattedFileContext<FormattedFile<Bam, Output, StringSet<TString, Owner<
 };
 }
 
+// ----------------------------------------------------------------------------
+// Metafunction SeqFileBuffer_
+// ----------------------------------------------------------------------------
+// Overloaded to load FastQ files with Iupac symbols.
+
+namespace seqan {
+template <typename TString, typename TSSetSpec, typename TSpec>
+struct SeqFileBuffer_<StringSet<TString, TSSetSpec>, TSpec>
+{
+    typedef String<Iupac>   Type;
+};
+}
+
 // ============================================================================
 // FMIndex
 // ============================================================================

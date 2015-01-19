@@ -78,10 +78,10 @@ inline bool atEnd(Pair<FormattedFile<TFileType, TDirection, TSpec> > const & me)
 // Function readRecords()
 // ----------------------------------------------------------------------------
 
-template <typename TRecords, typename TFileType, typename TDirection, typename TSpec>
+template <typename TRecords, typename TFileType, typename TDirection, typename TSpec, typename TSize>
 inline void readRecords(TRecords & records,
                         Pair<FormattedFile<TFileType, TDirection, TSpec> > & me,
-                        __uint64 maxRecords = MaxValue<__uint64>::VALUE)
+                        TSize maxRecords)
 {
     readRecords(records, me.i1, maxRecords);
     readRecords(records, me.i2, maxRecords);
