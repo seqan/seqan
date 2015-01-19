@@ -7,7 +7,7 @@ int main()
     BamFileIn bamFileIn("example.bam");
 
     BamHeader header;
-    readRecord(header, bamFileIn);
+    readHeader(header, bamFileIn);
 
     typedef FormattedFileContext<BamFileIn, void>::Type TBamContext;
 

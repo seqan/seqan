@@ -624,7 +624,7 @@ buildIndex(BamIndex<Bai> & index, char const * filename)
 
     // Read BAM header.
     BamHeader header;
-    readRecord(header, bamFile);
+    readHeader(header, bamFile);
 
     __uint32 numRefSeqs = length(contigNames(context(bamFile)));
 

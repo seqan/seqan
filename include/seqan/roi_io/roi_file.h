@@ -131,12 +131,12 @@ writeRecord(FormattedFile<Roi, Output, TSpec> & file, RoiRecord const & record)
 }
 
 // ----------------------------------------------------------------------------
-// Function write(); RoiRecord
+// Function writeHeader(); RoiHeader
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
-writeRecord(FormattedFile<Roi, Output, TSpec> & file, RoiHeader const & record)
+writeHeader(FormattedFile<Roi, Output, TSpec> & file, RoiHeader const & record)
 {
     writeRecord(file.iter, record, file.format);
 }

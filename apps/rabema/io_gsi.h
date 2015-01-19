@@ -322,7 +322,7 @@ void readRecord(GsiRecord & record, TForwardIter & iter, Gsi const & /*tag*/)
 }
 
 // ---------------------------------------------------------------------------
-// Function writeRecord()                                      [GsiHeader,Gsi]
+// Function writeHeader()                                      [GsiHeader,Gsi]
 // ---------------------------------------------------------------------------
 
 // Write GSI header line ("@WIT\tVN:1.1") to stream.
@@ -332,7 +332,7 @@ void readRecord(GsiRecord & record, TForwardIter & iter, Gsi const & /*tag*/)
 // stream -- Stream to write to.
 
 template <typename TStream>
-void writeRecord(TStream & stream, GsiHeader const & /*header*/, Gsi const & /*tag*/)
+void writeHeader(TStream & stream, GsiHeader const & /*header*/, Gsi const & /*tag*/)
 {
     stream << "@GSI\tVN:1.1\n"
            << "@MATES\tSEP:/\tTYPE:01\n";

@@ -42,12 +42,12 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function writeRecord()                                           [VcfHeader]
+// Function writeHeader()                                           [VcfHeader]
 // ----------------------------------------------------------------------------
 
 template <typename TTarget, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
-writeRecord(TTarget & target,
+writeHeader(TTarget & target,
             VcfHeader const & header,
             VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
             Vcf const & /*tag*/)

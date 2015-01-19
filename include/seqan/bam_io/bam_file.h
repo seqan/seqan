@@ -142,13 +142,13 @@ _mapFileFormatToCompressionFormat(Bam)
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecord(); BamHeader
+// Function readHeader(); BamHeader
 // ----------------------------------------------------------------------------
 
 // support for dynamically chosen file formats
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
-readRecord(BamHeader & /* header */,
+readHeader(BamHeader & /* header */,
            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & /* context */,
            TForwardIter & /* iter */,
            TagSelector<> const & /* format */)
@@ -158,7 +158,7 @@ readRecord(BamHeader & /* header */,
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec, typename TTagList>
 inline void
-readRecord(BamHeader & header,
+readHeader(BamHeader & header,
            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
            TagSelector<TTagList> const & format)
@@ -166,17 +166,17 @@ readRecord(BamHeader & header,
     typedef typename TTagList::Type TFormat;
 
     if (isEqual(format, TFormat()))
-        readRecord(header, context, iter, TFormat());
+        readHeader(header, context, iter, TFormat());
     else
-        readRecord(header, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
+        readHeader(header, context, iter, static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
 // convient BamFile variant
 template <typename TSpec>
 inline void
-readRecord(BamHeader & header, FormattedFile<Bam, Input, TSpec> & file)
+readHeader(BamHeader & header, FormattedFile<Bam, Input, TSpec> & file)
 {
-    readRecord(header, context(file), file.iter, file.format);
+    readHeader(header, context(file), file.iter, file.format);
 }
 
 // ----------------------------------------------------------------------------
@@ -267,7 +267,7 @@ readBatch(TRecords & records, FormattedFile<Bam, Input, TSpec> & file, TSize max
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord(); BamHeader
+// Function writeHeader(); BamHeader
 // ----------------------------------------------------------------------------
 
 // support for dynamically chosen file formats
@@ -299,7 +299,7 @@ write(TTarget & target,
 // convient BamFile variant
 template <typename TSpec>
 inline void
-writeRecord(FormattedFile<Bam, Output, TSpec> & file, BamHeader const & header)
+writeHeader(FormattedFile<Bam, Output, TSpec> & file, BamHeader const & header)
 {
     write(file.iter, header, context(file), file.format);
 }

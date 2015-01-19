@@ -864,7 +864,7 @@ public:
         appendName(sampleNamesCache(context(vcfFileOut)), "simulated");
 
         // Write out VCF header.
-        writeRecord(vcfFileOut, vcfHeader);
+        writeHeader(vcfFileOut, vcfHeader);
 
         // Open output FASTA file if necessary.
         if (!empty(options.fastaOutFile))

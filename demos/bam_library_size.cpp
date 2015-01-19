@@ -123,7 +123,7 @@ bool performEstimation(LibraryInfo & libInfo, BamFileIn & bamFileIn)
 
     // Read Header.
     BamHeader header;
-    readRecord(header, bamFileIn);
+    readHeader(header, bamFileIn);
 
     // Orientations.
     unsigned orientationCounters[4] = {0, 0, 0, 0};

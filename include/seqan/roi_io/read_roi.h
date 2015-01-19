@@ -88,7 +88,7 @@ char const * FileExtensions<Roi, T>::VALUE[1] =
 // ----------------------------------------------------------------------------
 
 template <typename TForwardIter>
-void readRecord(RoiHeader & header, RoiIOContext &, TForwardIter & iter, Roi const & /*tag*/)
+void readHeader(RoiHeader & header, RoiIOContext &, TForwardIter & iter, Roi const & /*tag*/)
 {
     typedef OrFunctor<IsTab, IsNewline> TNextEntry;
 

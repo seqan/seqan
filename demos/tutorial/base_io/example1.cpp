@@ -20,8 +20,8 @@ int main()
 //![header]
     // Copy header.
     BamHeader header;
-    readRecord(header, bamFileIn);
-    writeRecord(samFileOut, header);
+    readHeader(header, bamFileIn);
+    writeHeader(samFileOut, header);
 //![header]
 
 //![records]

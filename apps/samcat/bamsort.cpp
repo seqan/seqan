@@ -239,7 +239,7 @@ template <typename TLess>
 bool sortChunks(String<CharString> &outFiles, BamOnlyFileIn &bamFileIn, AppOptions &options)
 {
     BamHeader header;
-    readRecord(header, bamFileIn);
+    readHeader(header, bamFileIn);
 
     if (options.order == "coord")
         setSortOrder(header, BAM_SORT_COORDINATE);
@@ -327,7 +327,7 @@ bool sortChunks(String<CharString> &outFiles, BamOnlyFileIn &bamFileIn, AppOptio
             return false;
         }
 
-        writeRecord(bamFileOut, header);                                        // Write header.
+        writeHeader(bamFileOut, header);                                        // Write header.
 
         typedef Iterator<String<size_t>, Standard>::Type TOfsIter;              // Write records in sorted order.
         TOfsIter it = begin(ofs, Standard());
@@ -369,12 +369,12 @@ bool mergeBamFiles(BamOnlyFileOut &bamFileOut, String<CharString> &chunkFiles, A
             std::cerr << "Couldn't open " << toCString(chunkFiles[i]) << " for reading." << std::endl;
             return false;
         }
-        readRecord(header, streamPtr[i]->reader);
+        readHeader(header, streamPtr[i]->reader);
     }
 
     // Step 2: Remove duplicate header entries and write merged header
     removeDuplicates(header);
-    writeRecord(bamFileOut, header);
+    writeHeader(bamFileOut, header);
 
     // Step 3: Read first records and fill priority queue
     String<CharString> buffers;

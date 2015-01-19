@@ -188,15 +188,19 @@ _mapFileFormatToCompressionFormat(Bcf)
 }
 
 // ----------------------------------------------------------------------------
-// Function readRecord(); VcfRecord
+// Function readHeader(); VcfHeader
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
-readRecord(VcfHeader & record, FormattedFile<Vcf, Input, TSpec> & file)
+readHeader(VcfHeader & header, FormattedFile<Vcf, Input, TSpec> & file)
 {
-    readRecord(record, context(file), file.iter, file.format);
+    readHeader(header, context(file), file.iter, file.format);
 }
+
+// ----------------------------------------------------------------------------
+// Function readRecord(); VcfRecord
+// ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
@@ -206,15 +210,19 @@ readRecord(VcfRecord & record, FormattedFile<Vcf, Input, TSpec> & file)
 }
 
 // ----------------------------------------------------------------------------
-// Function writeRecord(); VcfRecord
+// Function writeHeader(); VcfHeader
 // ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void
-writeRecord(FormattedFile<Vcf, Output, TSpec> & file, VcfHeader & record)
+writeHeader(FormattedFile<Vcf, Output, TSpec> & file, VcfHeader & header)
 {
-    writeRecord(file.iter, record, context(file), file.format);
+    writeHeader(file.iter, header, context(file), file.format);
 }
+
+// ----------------------------------------------------------------------------
+// Function writeRecord(); VcfRecord
+// ----------------------------------------------------------------------------
 
 template <typename TSpec>
 inline void

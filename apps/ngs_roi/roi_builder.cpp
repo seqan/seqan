@@ -185,7 +185,7 @@ void RoiBuilder::writeHeader()
     seqan::RoiHeader header;
     appendValue(header.extraColumns, "num_reads");
     appendValue(header.extraColumns, "gc_content");
-    seqan::writeRecord(roiFileOut, header);
+    seqan::writeHeader(roiFileOut, header);
 }
 
 // ---------------------------------------------------------------------------

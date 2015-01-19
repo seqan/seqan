@@ -132,14 +132,25 @@ struct StorageSwitch;
  */
 
 /*!
- * @fn FormattedFileIn#readRecord
- * @brief Read one @link FormattedFileHeaderConcept @endlink or @link FormattedFileRecordConcept @endlink from a @link FormattedFileIn @endlink object.
+ * @fn FormattedFileIn#readHeader
+ * @brief Read one @link FormattedFileHeaderConcept @endlink from a @link FormattedFileIn @endlink object.
  *
- * @signature void readRecord(fileIn, header);
- * @signature void readRecord(fileIn, record);
+ * @signature void readHeader(fileIn, header);
  *
  * @param[in,out] fileIn    The @link FormattedFileIn @endlink object to read from.
  * @param[in]     header    The @link FormattedFileHeaderConcept @endlink to read.
+ *
+ * @throw IOError On low-level I/O errors.
+ * @throw ParseError On high-level file format errors.
+ */
+
+/*!
+ * @fn FormattedFileIn#readRecord
+ * @brief Read one @link FormattedFileRecordConcept @endlink from a @link FormattedFileIn @endlink object.
+ *
+ * @signature void readRecord(fileIn, record);
+ *
+ * @param[in,out] fileIn    The @link FormattedFileIn @endlink object to read from.
  * @param[in]     record    The @link FormattedFileRecordConcept @endlink to read.
  *
  * @throw IOError On low-level I/O errors.
@@ -158,14 +169,25 @@ struct StorageSwitch;
  */
 
 /*!
- * @fn FormattedFileOut#writeRecord
- * @brief Write one @link FormattedFileHeaderConcept @endlink or @link FormattedFileRecordConcept @endlink to a @link FormattedFileOut @endlink object.
+ * @fn FormattedFileOut#writeHeader
+ * @brief Write one @link FormattedFileHeaderConcept @endlink to a @link FormattedFileOut @endlink object.
  *
- * @signature void writeRecord(fileOut, header);
- * @signature void writeRecord(fileOut, record);
+ * @signature void writeHeader(fileOut, header);
  *
  * @param[in,out] fileOut   The @link FormattedFileOut @endlink object to write into.
  * @param[in]     header    The @link FormattedFileHeaderConcept @endlink to write.
+ *
+ * @throw IOError On low-level I/O errors.
+ * @throw ParseError On high-level file format errors.
+ */
+
+/*!
+ * @fn FormattedFileOut#writeRecord
+ * @brief Write one @link FormattedFileRecordConcept @endlink to a @link FormattedFileOut @endlink object.
+ *
+ * @signature void writeRecord(fileOut, record);
+ *
+ * @param[in,out] fileOut   The @link FormattedFileOut @endlink object to write into.
  * @param[in]     record    The @link FormattedFileRecordConcept @endlink to write.
  *
  * @throw IOError On low-level I/O errors.
@@ -175,7 +197,7 @@ struct StorageSwitch;
 template <typename TFileType, typename TDirection, typename TSpec = void>
 struct FormattedFile
 {
-    typedef VirtualStream<char, TDirection>                             TStream;
+    typedef VirtualStream<char, TDirection>                                     TStream;
     typedef typename Iterator<TStream, TDirection>::Type                        TIter;
     typedef typename FileFormat<FormattedFile>::Type                            TFileFormat;
     typedef typename FormattedFileContext<FormattedFile, Owner<> >::Type        TOwnerContext;

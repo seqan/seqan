@@ -91,12 +91,12 @@ unsigned char const MagicHeader<Bam, T>::VALUE[4] = { 'B', 'A', 'M', '\1' };  //
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function readRecord()                                              BamHeader
+// Function readHeader()                                              BamHeader
 // ----------------------------------------------------------------------------
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
-readRecord(BamHeader & header,
+readHeader(BamHeader & header,
            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
            Bam const & /*tag*/)

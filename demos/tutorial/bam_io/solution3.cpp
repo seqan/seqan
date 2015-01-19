@@ -18,7 +18,7 @@ int main()
     {
         // Read header.
         BamHeader header;
-        readRecord(header, bamFileIn);
+        readHeader(header, bamFileIn);
 
         // Rear records.
         BamAlignmentRecord record;

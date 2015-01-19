@@ -227,7 +227,7 @@ bool loadReadsSam(
 
     // Read header.
     BamHeader header;
-    readRecord(header, file);
+    readHeader(header, file);
 
     // Read records.
     BamAlignmentRecord record;

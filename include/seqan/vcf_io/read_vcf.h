@@ -81,7 +81,7 @@ _parseVcfContig(CharString & chromName, CharString const & headerValue)
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
-readRecord(VcfHeader & header,
+readHeader(VcfHeader & header,
            VcfIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
            Vcf const & /*tag*/)

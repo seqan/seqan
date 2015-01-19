@@ -469,7 +469,7 @@ inline void openOutputFile(Mapper<TSpec, TConfig> & me)
     // Write header.
     BamHeader header;
     fillHeader(header, me.options);
-    writeRecord(me.outputFile, header);
+    writeHeader(me.outputFile, header);
 }
 
 // ----------------------------------------------------------------------------

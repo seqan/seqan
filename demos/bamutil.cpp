@@ -207,8 +207,8 @@ template <typename TOptions>
 int performConversion(BamFileIn & in, BamFileOut & out, TOptions const & options)
 {
     BamHeader header;
-    readRecord(header, in);
-    writeRecord(out, header);
+    readHeader(header, in);
+    writeHeader(out, header);
 
     if (length(options.regions) == 0u)
     {

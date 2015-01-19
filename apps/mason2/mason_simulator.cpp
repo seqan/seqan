@@ -1046,7 +1046,7 @@ public:
 
             // Write out header.
             seqan::BamFileOut & bamFileOut = *outBamStream;
-            writeRecord(bamFileOut, alignmentJoiner->header);
+            writeHeader(bamFileOut, alignmentJoiner->header);
 
             SamJoiner & joiner = *alignmentJoiner.get();  // Shortcut
             seqan::BamAlignmentRecord record;
@@ -1125,7 +1125,7 @@ public:
         }
         // Write out header to each output BAM file.
         for (unsigned i = 0; i < alignmentSplitter.files.size(); ++i)
-            writeRecord(*bamFileOuts[i], bamHeader);
+            writeHeader(*bamFileOuts[i], bamHeader);
     }
 
     // Configure contigPicker.

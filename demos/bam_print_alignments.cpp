@@ -96,7 +96,7 @@ int main(int argc, char const ** argv)
     NameStoreCache<StringSet<CharString> > refNameStoreCache(refNameStore);
     BamIOContext<StringSet<CharString> > context(refNameStore, refNameStoreCache);
     BamHeader header;
-    readRecord(header, bamFileIn);
+    readHeader(header, bamFileIn);
 
     // Stream through file, getting alignment and dumping it.
     std::cerr << "Reading Alignments..." << std::endl;

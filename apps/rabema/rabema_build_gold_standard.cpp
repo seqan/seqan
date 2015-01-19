@@ -1179,7 +1179,7 @@ int main(int argc, char const ** argv)
     }
     try
     {
-        readRecord(bamHeader, inBam);
+        readHeader(bamHeader, inBam);
     }
     catch (seqan::ParseError const & ioErr)
     {

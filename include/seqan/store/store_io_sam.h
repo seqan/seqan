@@ -322,7 +322,7 @@ readRecords(FragmentStore<TSpec, TConfig> & store,
     // Read in the header.  We will subsequently ignore it and use the information indirectly just using the
     // sequence names if any.
     BamHeader bamHeader;
-    readRecord(bamHeader, ctx, iter, format);
+    readHeader(bamHeader, ctx, iter, format);
 
     // fill up contig entries for each contig name that appears in the header
     resize(store.contigStore, length(store.contigNameStore));
@@ -785,7 +785,7 @@ inline void writeHeader(FormattedFile<Bam, Output, TSpec> & bamFile,
     fillHeader(header, bamFile, store, functor);
 
     // Write header to target.
-    writeRecord(bamFile, header);
+    writeHeader(bamFile, header);
 }
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig>

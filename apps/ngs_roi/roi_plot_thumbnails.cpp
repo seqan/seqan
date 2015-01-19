@@ -440,7 +440,7 @@ int main(int argc, char const ** argv)
 
     // Read header (actually, skip it).
     seqan::RoiHeader roiHeader;
-    readRecord(roiHeader, roiFileIn);
+    readHeader(roiHeader, roiFileIn);
 
     // -----------------------------------------------------------------------
     // Create plot grids.

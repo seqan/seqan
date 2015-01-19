@@ -11,7 +11,7 @@ int main()
 
         // Copy over header.
         VcfHeader header;
-        readRecord(header, vcfIn);
+        readHeader(header, vcfIn);
 
         // Get array of counters.
         String<unsigned> counters;

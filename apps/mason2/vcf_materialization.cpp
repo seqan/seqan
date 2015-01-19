@@ -168,7 +168,7 @@ void VcfMaterializer::init()
             throw MasonIOException("Could not open VCF stream.");
 
         // Read header.
-        readRecord(vcfHeader, vcfFileIn);
+        readHeader(vcfHeader, vcfFileIn);
 
         // Read first VCF record.
         if (!atEnd(vcfFileIn))
