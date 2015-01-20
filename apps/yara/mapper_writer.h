@@ -256,6 +256,7 @@ inline void _writeMappedReadImpl(MatchesWriter<TSpec, Traits> & me, TReadId read
 {
     typedef typename Traits::TMatches           TMatches;
     typedef typename Size<TMatches>::Type       TSize;
+    typedef typename Iterator<TMatches const, Standard>::Type   TIter;
 
     clear(me.record);
     _fillReadName(me, getReadSeqId(primary, me.reads.seqs));
@@ -268,13 +269,17 @@ inline void _writeMappedReadImpl(MatchesWriter<TSpec, Traits> & me, TReadId read
     TSize bestCount = countMatchesInBestStratum(matches);
     _fillReadInfo(me, matches, bestCount);
 
+    // Find the primary match in the list of matches.
+    TIter it = findMatch(matches, primary);
+    TSize primaryPos = position(it, matches);
+
     if (!me.options.outputSecondary)
-        _fillXa(me, matches, 0u);
+        _fillXa(me, matches, primaryPos);
 
     _writeRecord(me);
 
     if (me.options.outputSecondary)
-        _writeSecondary(me, matches, bestCount, 0u);
+        _writeSecondary(me, matches, bestCount, primaryPos);
 }
 
 template <typename TSpec, typename Traits, typename TReadId, typename TMatch>
