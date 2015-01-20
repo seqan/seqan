@@ -30,10 +30,14 @@ int main()
     std::cout << align
               << "gap opens:           " << stats.numGapOpens << "\n"
               << "gap extensions:      " << stats.numGapExtensions << "\n"
+              << "num insertions:      " << stats.numInsertions << "\n"
+              << "num deletions:       " << stats.numDeletions << "\n"
               << "num matches:         " << stats.numMatches << "\n"
               << "num mismatches:      " << stats.numMismatches << "\n"
               << "num positive scores: " << stats.numPositiveScores << "\n"
-              << "num negative scores: " << stats.numNegativeScores << "\n\n\n";
+              << "num negative scores: " << stats.numNegativeScores << "\n"
+              << "percent similarity:  " << stats.alignmentSimilarity << "\n"
+              << "percent identity:    " << stats.alignmentIdentity << "\n\n\n";
 
     // Clip alignment rows and compute score of this view.
     setClippedEndPosition(row(align, 0), 100);
@@ -47,10 +51,14 @@ int main()
               << align
               << "gap opens:           " << stats.numGapOpens << "\n"
               << "gap extensions:      " << stats.numGapExtensions << "\n"
+              << "num insertions:      " << stats.numInsertions << "\n"
+              << "num deletions:       " << stats.numDeletions << "\n"
               << "num matches:         " << stats.numMatches << "\n"
               << "num mismatches:      " << stats.numMismatches << "\n"
               << "num positive scores: " << stats.numPositiveScores << "\n"
-              << "num negative scores: " << stats.numNegativeScores << "\n";
+              << "num negative scores: " << stats.numNegativeScores << "\n"
+              << "percent similarity:  " << stats.alignmentSimilarity << "\n"
+              << "percent identity:    " << stats.alignmentIdentity << "\n";
 
     return 0;
 }
