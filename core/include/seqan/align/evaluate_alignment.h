@@ -267,8 +267,9 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
     SEQAN_ASSERT(it1 == itEnd1);
 
     // Finally, compute the alignment similarity from the various counts
-    stats.alignmentSimilarity = 100.0 * (float)stats.numPositiveScores / (float)length(row(align, 0));
-    stats.alignmentIdentity = 100.0 * (float)stats.numMatches / (float)length(row(align, 0));
+    float alignmentLength = static_cast<float>(length(row(align, 0)));
+    stats.alignmentSimilarity = 100.0 * static_cast<float>(stats.numPositiveScores) / alignmentLength;
+    stats.alignmentIdentity = 100.0 * static_cast<float>(stats.numMatches) / alignmentLength;
 
     return stats.alignmentScore;
 }
