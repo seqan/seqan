@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -151,7 +151,7 @@ void SamJoiner::init(seqan::BamFileOut * outPtr)
         // We use a separate header structure and name stores and caches.  Since the headers of all files are equal, we
         // will write out the first one only.
         seqan::BamHeader tmpHeader;
-        readRecord(tmpHeader, *bamFileIns[i]);
+        readHeader(tmpHeader, *bamFileIns[i]);
         if (i == 0u)
             header = tmpHeader;
 

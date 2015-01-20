@@ -12,8 +12,8 @@ int main()
 
     // Copy header.
     BamHeader header;
-    readRecord(header, bamFileIn);
-    writeRecord(bamFileOut, header);
+    readHeader(header, bamFileIn);
+    writeHeader(bamFileOut, header);
 
     // Copy records.
     BamAlignmentRecord record;

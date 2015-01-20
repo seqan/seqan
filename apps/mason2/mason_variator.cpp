@@ -1,7 +1,7 @@
 // ==========================================================================
 //                         Mason - A Read Simulator
 // ==========================================================================
-// Copyright (c) 2006-2012, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -864,7 +864,7 @@ public:
         appendName(sampleNamesCache(context(vcfFileOut)), "simulated");
 
         // Write out VCF header.
-        writeRecord(vcfFileOut, vcfHeader);
+        writeHeader(vcfFileOut, vcfHeader);
 
         // Open output FASTA file if necessary.
         if (!empty(options.fastaOutFile))

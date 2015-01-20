@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -73,7 +73,7 @@ class BufferedStreamBuf;
  *            class BufferedStream;
  *
  * @tparam TUnbufferedStream The type of the unbuffered @link StreamConcept stream @endlink to wrap.
- * @tparam TDirection        The stream direction, one of @link StreamDirectionTags @endlink.
+ * @tparam TDirection        The stream direction, one of @link DirectionTags @endlink.
  */
 
 template <typename TUnbufferedStream, typename TDirection>

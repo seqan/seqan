@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -53,8 +53,8 @@ namespace seqan {
 
 /*!
  * @class SimpleIntervalsIOContext
- * @implements DefaultConstructible
- * @implements Assignable
+ * @implements DefaultConstructibleConcept
+ * @implements AssignableConcept
  * @headerfile <seqan/simple_intervals_io.h>
  * @brief I/O context for .intervals file.
  *

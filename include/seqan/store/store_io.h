@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -906,7 +906,7 @@ write(TTarget & target,
  */ 
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig>
-bool writeContigs(SmartFile<Fastq, Output, TSpec> & file, FragmentStore<TFSSpec, TFSConfig> & store)
+bool writeContigs(FormattedFile<Fastq, Output, TSpec> & file, FragmentStore<TFSSpec, TFSConfig> & store)
 {
 //IOREV _doc_
 	for (unsigned i = 0; i < length(store.contigNameStore); ++i)

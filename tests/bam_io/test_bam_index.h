@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_index_bai)
     BamFileIn bamFile(toCString(bamFilename));
 
     BamHeader header;
-    readRecord(header, bamFile);
+    readHeader(header, bamFile);
 
     bool found = true;
     SEQAN_ASSERT(jumpToRegion(bamFile, found, 0, 1, 10, baiIndex));

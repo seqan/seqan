@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -89,7 +89,7 @@
 #include <seqan/stream/stream_compressor.h>
 #include <seqan/stream/buffered_stream.h>
 #include <seqan/stream/virtual_stream.h>
-#include <seqan/stream/smart_file.h>
+#include <seqan/stream/formatted_file.h>
 
 // ===========================================================================
 // Tokenization and Lexical Cast.

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@
 // Tests the different global interfaces of the banded chain alignment.
 // ==========================================================================
 
+#include <vector>
 #include <sstream>
 
 #include <seqan/basic.h>
@@ -699,7 +700,7 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_global_two_score)
 }
 SEQAN_DEFINE_TEST(test_banded_chain_alignment_gaps_linear_semi_one_score)
 {
-        using namespace seqan;
+    using namespace seqan;
 
     typedef Seed<Simple> TSeed;
     {
@@ -2428,6 +2429,58 @@ SEQAN_DEFINE_TEST(test_banded_chain_alignment_fragments_affine_overlap_two_score
     }
 }
 
+SEQAN_DEFINE_TEST(test_banded_chain_alignment_stl_vector_adaption)
+{
+	using namespace seqan;
+
+    typedef Seed<Simple> TSeed;
+    {
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        Dna5String sequenceH = "GGCGATNNNCATGGCACA";
+        Score<int, Simple> scoringScheme(2, -1, -2);
+
+        std::vector<TSeed> seedChain;
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
+
+        Gaps<CharString, ArrayGaps> gapsHorizontal;
+        Gaps<Dna5String, ArrayGaps> gapsVertical;
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
+
+        int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringScheme, AlignConfig<true, false, false, true>(), 2);
+        SEQAN_ASSERT_EQ(result, 9);
+
+        // Compare alignment rows.
+        SEQAN_ASSERT_EQ(gapsHorizontal, "--CGAAT--CCATCCCACACA");
+        SEQAN_ASSERT_EQ(gapsVertical, "GGCG-ATNNNCATGGCACA--");
+    }
+
+    {
+        CharString sequenceV = "CGAATCCATCCCACACA";
+        Dna5String sequenceH = "GGCGATNNNCATGGCACA";
+        Score<int, Simple> scoringScheme(2, -1, -2);
+
+        std::vector<TSeed> seedChain;
+        appendValue(seedChain, TSeed(0,2,5,6));
+        appendValue(seedChain, TSeed(6,9,9,12));
+        appendValue(seedChain, TSeed(11,14,17,16));
+
+        Gaps<CharString, ArrayGaps> gapsHorizontal;
+        Gaps<Dna5String, ArrayGaps> gapsVertical;
+        assignSource(gapsHorizontal, sequenceV);
+        assignSource(gapsVertical, sequenceH);
+
+        int result = bandedChainAlignment(gapsHorizontal, gapsVertical, seedChain, scoringScheme, AlignConfig<false, true, true, false>(),  2);
+        SEQAN_ASSERT_EQ(result, 9);
+
+        // Compare alignment rows.
+        SEQAN_ASSERT_EQ(gapsHorizontal,  "--CGAAT--CCATCCCACACA");
+        SEQAN_ASSERT_EQ(gapsVertical, "GGCG-ATNNNCATGG--CACA");
+    }
+}
+
 SEQAN_BEGIN_TESTSUITE(test_banded_chain_alignment_interface)
 {
     SEQAN_CALL_TEST(test_banded_chain_alignment_align_linear_global_one_score);
@@ -2481,5 +2534,6 @@ SEQAN_BEGIN_TESTSUITE(test_banded_chain_alignment_interface)
     SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_affine_semi_two_scores);
     SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_affine_overlap_one_score);
     SEQAN_CALL_TEST(test_banded_chain_alignment_fragments_affine_overlap_two_scores);
+    SEQAN_CALL_TEST(test_banded_chain_alignment_stl_vector_adaption);
 }
 SEQAN_END_TESTSUITE

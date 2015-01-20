@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,7 @@ typedef Tag<Roi_> Roi;
 // ----------------------------------------------------------------------------
 
 template <typename TTarget>
-void writeRecord(TTarget & target, RoiHeader const & header, Roi const & /*tag*/)
+void writeHeader(TTarget & target, RoiHeader const & header, Roi const & /*tag*/)
 {
     write(target, "#ROI 0.3\n"
                   "##ref\t"

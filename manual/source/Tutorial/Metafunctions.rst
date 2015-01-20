@@ -103,7 +103,7 @@ For example the following piece of code uses the metafunction ``Iterator`` to de
    Iterator<String<char> >::Type it = begin(str);
    while (! atEnd(it, str))
    {
-       ::std::cout << *it;
+       std::cout << *it;
        ++it;
    }
 
@@ -131,7 +131,7 @@ For example the following function prints the length of a fixed sized string usi
    template <typename T>
    void printLenOfFixedSizeString(T const &)
    {
-       ::std::cout << LENGTH<T>::VALUE;
+       std::cout << LENGTH<T>::VALUE;
    }
 
    String<char, Array<100> > my_str;

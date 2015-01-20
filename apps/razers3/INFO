@@ -2,7 +2,7 @@ Name: Faster, fully sensitive read mapping
 Author: David Weese <david.weese@fu-berlin.de>
 Maintainer: David Weese <david.weese@fu-berlin.de>
 License: GPL v3
-Copyright: 2009-2013, FU Berlin
+Copyright: 2006-2015, FU Berlin
 Status: mature
 Homepage: http://seqan.de/projects/razers
 Description: RazerS 3 is a tool for mapping millions of short genomic reads

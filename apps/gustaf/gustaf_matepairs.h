@@ -126,6 +126,8 @@ _importSequences(CharString const & fileNameL,
                  String<unsigned> & readJoinPositions
                  )
 {
+    typedef typename Iterator<StringSet<TId>, Standard>::Type TIdSetIterator;
+
     seqan::SeqFileIn leftMates, rightMates;
     if (!open(leftMates, toCString(fileNameL)))
     {
@@ -144,7 +146,7 @@ _importSequences(CharString const & fileNameL,
     TId idL;
     TId idR;
     TId sId;
-    unsigned seqCount = 0, counter = 0;
+    unsigned seqCount = 0;
     for (unsigned i = 0; !atEnd(leftMates) && !atEnd(rightMates); ++i, ++seqCount)
     {
         try
@@ -168,8 +170,6 @@ _importSequences(CharString const & fileNameL,
         appendValue(ids, idR, Generous());
 
         _getShortId(sId, idR);
-        if (!_checkUniqueId(sId, idR, ids, sIds))
-            ++counter;
         appendValue(sIds, sId);
         clear(seq);
     }
@@ -180,8 +180,16 @@ _importSequences(CharString const & fileNameL,
     }
 
     std::cout << "Loaded " << seqCount << " mate pair sequence" << ((seqCount > 1) ? "s." : ".") << std::endl;
-    if (counter > 0)
-        std::cout << "Found " << counter << " nonunique sequence IDs" << std::endl;
+
+    StringSet<TId> uniqueIds = sIds;
+    // Check for dupliacte id entries.
+    std::sort(begin(uniqueIds, Standard()), end(uniqueIds, Standard()), IdComparator<TId>());  // O(n*log(n))
+    TIdSetIterator itOldEnd = end(uniqueIds, Standard());
+    TIdSetIterator itNewEnd = std::unique(begin(uniqueIds, Standard()), end(uniqueIds, Standard()), IdComparator<TId>());  // O(n)
+
+    if (itOldEnd - itNewEnd > 0)
+        std::cout << "Found " << itOldEnd - itNewEnd << " nonunique sequence IDs" << std::endl;
+
     return true;
 }
 template <typename TSequence, typename TId, typename TPos>

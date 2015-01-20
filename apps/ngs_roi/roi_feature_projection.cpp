@@ -290,9 +290,9 @@ public:
     {
         // Read and write header.
         seqan::RoiHeader roiHeader;
-        readRecord(roiHeader, roiFileIn);
+        readHeader(roiHeader, roiFileIn);
         clear(roiHeader.extraColumns);  // extra data is removed in projection
-        writeRecord(roiFileOut, roiHeader);
+        writeHeader(roiFileOut, roiHeader);
 
         // Skip comments, then read first record through driver.
         config.skipComments();
@@ -419,8 +419,8 @@ public:
 
         // Read Roi header and write out again.
         seqan::RoiHeader roiHeader;
-        readRecord(roiHeader, roiFileIn);
-        writeRecord(roiFileOut, roiHeader);
+        readHeader(roiHeader, roiFileIn);
+        writeHeader(roiFileOut, roiHeader);
 
         // Initialize objects that we will use for the overlapping and output generation.
         ProjectSplicedRoi workerF(roiFileOut, options.gffGroupBy, options.verbosity);

@@ -1350,7 +1350,7 @@ int main(int argc, char const ** argv)
     GsiHeader gsiHeader;
     try
     {
-        readRecord(gsiHeader, inGsiIter, Gsi());
+        readHeader(gsiHeader, inGsiIter, Gsi());
         std::cerr << " OK\n";
     }
     catch (seqan::ParseError const & ioErr)
@@ -1370,7 +1370,7 @@ int main(int argc, char const ** argv)
     try
     {
         std::cerr << "Alignments                " << options.inBamPath << " (header) ...";
-        readRecord(bamHeader, bamFileIn);
+        readHeader(bamHeader, bamFileIn);
         std::cerr << " OK\n";
     }
     catch (seqan::ParseError const & ioErr)

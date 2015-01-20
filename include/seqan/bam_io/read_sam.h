@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -38,10 +38,6 @@
 #define INCLUDE_SEQAN_BAM_IO_READ_SAM_H_
 
 namespace seqan {
-
-// ============================================================================
-// Forwards
-// ============================================================================
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -84,10 +80,6 @@ typedef Tag<SamHeader_> SamHeader;
 
 struct SamAlignment_;
 typedef Tag<SamAlignment_> SamAlignment;
-
-// ============================================================================
-// Metafunctions
-// ============================================================================
 
 // ============================================================================
 // Functions
@@ -208,7 +200,7 @@ readRecord(BamHeaderRecord & record,
 
 template <typename TForwardIter, typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
 inline void
-readRecord(BamHeader & header,
+readHeader(BamHeader & header,
            BamIOContext<TNameStore, TNameStoreCache, TStorageSpec> & context,
            TForwardIter & iter,
            Sam const & tag)

@@ -2,7 +2,7 @@ Name: seqan_flexbar
 Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
 Maintainer: Jochen Singer <jochen.singer@fu-berlin.de>
 License: GPL v3
-Copyright: 2008-2014, FU Berlin
+Copyright: 2006-2015, FU Berlin
 Status: under development
 Description: SeqAn-Flexbar is a toolkit for the processing of sequenced NGS
 reads based on the original Flexbar implementation in [1]. It is possible to

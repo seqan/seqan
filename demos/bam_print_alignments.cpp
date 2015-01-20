@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -96,7 +96,7 @@ int main(int argc, char const ** argv)
     NameStoreCache<StringSet<CharString> > refNameStoreCache(refNameStore);
     BamIOContext<StringSet<CharString> > context(refNameStore, refNameStoreCache);
     BamHeader header;
-    readRecord(header, bamFileIn);
+    readHeader(header, bamFileIn);
 
     // Stream through file, getting alignment and dumping it.
     std::cerr << "Reading Alignments..." << std::endl;

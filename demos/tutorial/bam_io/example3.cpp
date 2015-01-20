@@ -14,7 +14,7 @@ int main()
     // Error.
     BamFileIn bamFileIn("file.bam");
     BamHeader header;
-    readRecord(header, bamFileIn);
+    readHeader(header, bamFileIn);
 
     // Build mapping from bamSeqIds to fastaSeqIds;
     String<int> mapping;

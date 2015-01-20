@@ -1201,7 +1201,7 @@ int dumpMatches(
             }
 
             // write header to file.
-            writeRecord(bamFile, header);
+            writeHeader(bamFile, header);
 
             // 2. write aligments
             if (options.dontShrinkAlignments)

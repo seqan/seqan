@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -88,7 +88,7 @@ char const * FileExtensions<Roi, T>::VALUE[1] =
 // ----------------------------------------------------------------------------
 
 template <typename TForwardIter>
-void readRecord(RoiHeader & header, RoiIOContext &, TForwardIter & iter, Roi const & /*tag*/)
+void readHeader(RoiHeader & header, RoiIOContext &, TForwardIter & iter, Roi const & /*tag*/)
 {
     typedef OrFunctor<IsTab, IsNewline> TNextEntry;
 

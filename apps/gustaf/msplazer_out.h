@@ -219,6 +219,54 @@ void _setGffRecordType(GffRecord & record, TBreakpoint & bp)
 }
 
 template <typename TBreakpoint>
+inline void _fillGffRecordDuplication(GffRecord & record, TBreakpoint & bp, unsigned id)
+{
+    typedef typename TBreakpoint::TId TId;
+    TId sId;
+    typedef typename TBreakpoint::TPos TPos;
+    _getShortId(sId, bp.startSeqId);
+    record.ref = sId;
+    record.source = "GUSTAF";
+    record.type = "duplication";
+    TPos begin, end, target = maxValue<unsigned>();
+    // Using set function for VCF duplication to set positions
+    _setVcfRecordDuplicationPos(bp, begin, end, target);
+    record.beginPos = begin;
+    record.endPos = end;
+    record.strand = '+';
+    appendValue(record.tagNames, "ID");
+    appendValue(record.tagValues, toString(id));
+    if (target != maxValue<unsigned>())
+    {
+        appendValue(record.tagNames, "size");
+        appendValue(record.tagValues, toString((end - begin)));
+        appendValue(record.tagNames, "targetPos");
+        appendValue(record.tagValues, toString(target));
+    }
+    else
+    {
+        std::stringstream dpos;
+        dpos << begin << "|" << end;
+        appendValue(record.tagNames, "size");
+        appendValue(record.tagValues, "imprecise");
+        appendValue(record.tagNames, "targetPos");
+        appendValue(record.tagValues, dpos.str());
+    }
+    appendValue(record.tagNames, "support");
+    appendValue(record.tagValues, toString(bp.support));
+    appendValue(record.tagNames, "supportIds");
+
+    std::stringstream s;
+    for (unsigned i = 0; i < length(bp.supportIds); ++i)
+    {
+        s << bp.supportIds[i];
+        s << ',';
+    }
+
+    appendValue(record.tagValues, s.str());
+}
+
+template <typename TBreakpoint>
 inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
 {
     typedef typename TBreakpoint::TId TId;
@@ -230,7 +278,7 @@ inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
     _setGffRecordType(record, bp);
 //    record.type = bp.svtype;
     record.beginPos = bp.startSeqPos;
-    if (bp.svtype == 2 || bp.svtype == 3 || bp.svtype == 7) // 2=deletion;3=inversion;7=translocation
+    if (bp.svtype == 2 || bp.svtype == 3) // 2=deletion;3=inversion;
         record.endPos = bp.endSeqPos;
     else
         record.endPos = bp.startSeqPos + 1;
@@ -252,6 +300,13 @@ inline void _fillGffRecord(GffRecord & record, TBreakpoint & bp, unsigned id)
     {
         appendValue(record.tagNames, "size");
         appendValue(record.tagValues, toString(static_cast<TPos>(bp.endSeqPos - bp.startSeqPos)));
+    }
+    else if (bp.svtype == 7) // 7=translocation
+    {
+        appendValue(record.tagNames, "middlePos");
+        appendValue(record.tagValues, toString(bp.dupMiddlePos));
+        appendValue(record.tagNames, "endPos");
+        appendValue(record.tagValues, toString(bp.endSeqPos));
     }
     else
     {
@@ -311,7 +366,10 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
             if (tempBP.svtype == TBreakpoint::DISPDUPLICATION && tempBP.translSuppStartPos && tempBP.translSuppEndPos)
                 tempBP.svtype = TBreakpoint::TRANSLOCATION;
             // Fill record
-            _fillGffRecord(gff_record, tempBP, i);
+            if (tempBP.svtype == TBreakpoint::DISPDUPLICATION)
+                _fillGffRecordDuplication(gff_record, tempBP, i);
+            else
+                _fillGffRecord(gff_record, tempBP, i);
             // _fillGffRecord(gff_record, globalBreakpoints[i], i);
             // Write record
             try
@@ -985,12 +1043,15 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
     }
 
     if (!open(vcfOut, fn_vcf.c_str()))
+    {
         std::cerr << "Error while opening vcf breakpoint file!" << std::endl;
+        return false;
+    }
     seqan::VcfHeader vcfHeader;
     _fillVcfHeader(vcfHeader, vcfOut, databases, databaseIDs, msplazerOptions);
     try
     {
-        writeRecord(vcfOut, vcfHeader);
+        writeHeader(vcfOut, vcfHeader);
     }
     catch (seqan::IOError const & ioErr)
     {

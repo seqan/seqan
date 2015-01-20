@@ -1,7 +1,7 @@
 // ==========================================================================
 //                                 gustaf_mate_joining
 // ==========================================================================
-// Copyright (c) 2006-2013, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -173,30 +173,6 @@ void _getShortId(TId & shortId, TId const & longId)
     }
 }
 
-// ----------------------------------------------------------------------------
-// Function checkUniqueId()
-// ----------------------------------------------------------------------------
-
-// Checks whether the short ID (sId) from a long ID (id) is uniq regarding all short IDs of the given
-// read set (sQueryIds). Prints IDs to cerr if not.
-template <typename TId>
-bool _checkUniqueId(TId const & sId, TId const & id, seqan::StringSet<TId> & ids, seqan::StringSet<TId> & sQueryIds)
-{
-    bool unique = true;
-    for (unsigned j = 0; j < length(sQueryIds); ++j)
-    {
-        if (sId == sQueryIds[j])
-        {
-            std::cerr << "Found nonunique sequence ID!" << std::endl;
-            std::cerr << ids[j] << std::endl;
-            std::cerr << id << std::endl;
-            std::cerr << "###########################" << std::endl;
-            unique = false;
-        }
-    }
-    return unique;
-}
-
 // --------------------------------------------------------------------------
 // Function _importSequences()
 // --------------------------------------------------------------------------
@@ -213,8 +189,7 @@ _importSequences(seqan::CharString const & fileNameL,
                  seqan::StringSet<TId> & ids,
                  seqan::StringSet<TId> & sIds,
                  seqan::StringSet<seqan::CharString> & quals,
-                 seqan::String<unsigned> & readJoinPositions
-                 )
+                 seqan::String<unsigned> & readJoinPositions)
 {
     try
     {
@@ -229,7 +204,6 @@ _importSequences(seqan::CharString const & fileNameL,
         seqan::CharString qual;
         seqan::CharString qualL;
         seqan::CharString qualR;
-        unsigned counter = 0;
         while (!atEnd(l) || !atEnd(r))
         {
             readRecord(id, seqL, qualL, l);
@@ -250,8 +224,6 @@ _importSequences(seqan::CharString const & fileNameL,
             appendValue(ids, id, seqan::Generous());
 
             _getShortId(sId, id);
-            if (!_checkUniqueId(sId, id, ids, sIds))
-                ++counter;
             appendValue(sIds, sId);
             clear(seq);
             clear(qual);
@@ -282,8 +254,7 @@ _importSequences(seqan::CharString const & fileName,
                  seqan::StringSet<TId> & ids,
                  seqan::StringSet<TId> & sIds,
                  seqan::StringSet<seqan::CharString> & quals,
-                 seqan::StringSet<seqan::CharString> & mateQuals
-                 )
+                 seqan::StringSet<seqan::CharString> & mateQuals)
 {
     typedef typename seqan::Position<TSequence>::Type TPos;
     seqan::SeqFileIn f;
@@ -301,7 +272,6 @@ _importSequences(seqan::CharString const & fileName,
     seqan::CharString qual;
     seqan::CharString qualL;
     seqan::CharString qualR;
-    unsigned counter = 0;
     TPos splitPos;
     while (!atEnd(f))
     {
@@ -334,10 +304,7 @@ _importSequences(seqan::CharString const & fileName,
         appendValue(mateQuals, qualR, seqan::Generous());
         appendValue(ids, id, seqan::Generous());
 
-
         _getShortId(sId, id);
-        if (!_checkUniqueId(sId, id, ids, sIds))
-            ++counter;
         appendValue(sIds, sId);
         clear(seqL);
         clear(seqR);

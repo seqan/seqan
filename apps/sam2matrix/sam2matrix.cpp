@@ -1,7 +1,7 @@
 // ==========================================================================
 //                              sam2matrix
 // ==========================================================================
-// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -174,7 +174,7 @@ bool _parseSamFiles(StringSet<String<unsigned> > & mappedReads,
         BamHeader header;
         BamAlignmentRecord record;
 
-        readRecord(header, bamIO);
+        readHeader(header, bamIO);
 
         for (unsigned j = 0; !atEnd(bamIO); ++j)
         {

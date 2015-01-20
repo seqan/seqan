@@ -343,7 +343,7 @@ int main(int argc, char const ** argv)
     RoiBuilder roiBuilderR(roiFileOut, roiBuilderOptions);
     // Set the reference sequence names.
     seqan::BamHeader header;
-    readRecord(header, bamFileIn);
+    readHeader(header, bamFileIn);
     for (unsigned i = 0; i < length(contigNames(context(bamFileIn))); ++i)
     {
         appendValue(roiBuilderF.refNames, contigNames(context(bamFileIn))[i]);

@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2006-2014, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -49,6 +49,6 @@
 // ===========================================================================
 
 #include <seqan/simple_intervals_io/simple_intervals_io.h>    // read/write record functions, tags
-#include <seqan/simple_intervals_io/simple_intervals_file.h>  // SmartFile
+#include <seqan/simple_intervals_io/simple_intervals_file.h>  // FormattedFile
 
 #endif  // SEQAN_SIMPLE_INTERVALS_IO_H_

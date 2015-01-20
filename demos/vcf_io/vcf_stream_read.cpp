@@ -16,7 +16,7 @@ int main()
     }
 
     VcfHeader header;
-    readRecord(header, vcfIn);
+    readHeader(header, vcfIn);
 
     VcfRecord record;
     while (!atEnd(vcfIn))
