@@ -1174,7 +1174,7 @@ Render the member enum details
   <h2 data-lang-entity="enum">Enum Values</h2>
 
   <table class="overview">
-    {% for subentry in entry.subentries['enum_value']|sort(attribute='name') %}
+    {% for subentry in entry.subentries['enum_value'] %}
          <tr>
             <th><code>{{ subentry.local_name|e }}</code></th>
             <td>
