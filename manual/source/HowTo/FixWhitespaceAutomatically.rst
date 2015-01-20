@@ -76,6 +76,6 @@ Here you add the attached ruby script.
 
 .. figure:: Xcode - Behavior.png
 
-**Note:** The script does **not** uncrustify the currently opened source file but all source files that were changed in your current svn checkout.
+**Note:** The script does **not** uncrustify the currently opened source file but all source files that were changed in your current branch.
 Xcode does not provide the information which source file is currently opened.
 

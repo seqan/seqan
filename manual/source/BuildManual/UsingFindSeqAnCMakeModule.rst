@@ -132,7 +132,7 @@ Currently, you can specify the following dependencies:
   CUDA language extensions to C/C++
 
 If you want ``FindSeqAn.cmake`` to expect the SeqAn build system layout then set the variable ``SEQAN_USE_SEQAN_BUILD_SYSTEM`` to ``TRUE``.
-In this case, it will try to locate the library parts from ``core`` and ``extras``.
+In this case, it will try to locate the library parts from root of the SeqAn source files.
 
 Output
 ~~~~~~
@@ -199,7 +199,7 @@ Below you can find a minimal example ``CMakeLists.txt`` file that uses the ``Fin
 .. code-block:: cmake
 
    cmake_minimum_required (VERSION 2.8.2)
-   project (core_apps_dfi)
+   project (apps_dfi)
 
    # ----------------------------------------------------------------------------
    # Dependencies
