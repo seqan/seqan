@@ -10,8 +10,10 @@ set(CTEST_BINARY_DIRECTORY "${CTEST_SOURCE_DIRECTORY}/_build")
 message(STATUS "CTEST_SOURCE_DIRECTORY: ${CTEST_SOURCE_DIRECTORY}")
 message(STATUS "CTEST_BINARY_DIRECTORY: ${CTEST_BINARY_DIRECTORY}")
 
-# create cache
-set(INITIAL_CACHE "CMAKE_BUILD_TYPE=Release SEQAN_TRAVIS_BUILD:BOOL=ON")
+# create cache - mind the newline between variables!
+set(INITIAL_CACHE
+"CMAKE_BUILD_TYPE=Release
+SEQAN_TRAVIS_BUILD:BOOL=ON")
 file(WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" ${INITIAL_CACHE})
 
 # customize reporting of errors in CDash
