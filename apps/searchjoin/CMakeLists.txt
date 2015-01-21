@@ -31,6 +31,11 @@ add_definitions (${SEQAN_DEFINITIONS})
 # Add definitions set by the build system.
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
 add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
+if (NOT SEQAN_TRAVIS_BUILD)
+    add_definitions (-DSEARCHJOIN_HUGEDB=TRUE)
+else (NOT SEQAN_TRAVIS_BUILD)
+    message (STATUS "  Building searchjoin without huge db support on Travis CI.")
+endif (NOT SEQAN_TRAVIS_BUILD)
 
 # Update the list of file names below if you add source files to your application.
 add_executable (s4_search search.cpp finder.h db.h verifier.h writer.h)
