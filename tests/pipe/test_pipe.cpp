@@ -511,27 +511,27 @@ void testPipeTupler()
     if (omitLast)
     {
         appendValues(expectedOutput, 7,
-            "< 0 , [A R N D] >",
-            "< 1 , [R N D C] >",
-            "< 2 , [N D C Q] >",
-            "< 3 , [D C Q E] >",
-            "< 4 , [C Q E G] >",
-            "< 5 , [Q E G H] >",
-            "< 6 , [E G H I] >");
+            "< 0 , [A B C D] >",
+            "< 1 , [B C D E] >",
+            "< 2 , [C D E F] >",
+            "< 3 , [D E F G] >",
+            "< 4 , [E F G H] >",
+            "< 5 , [F G H I] >",
+            "< 6 , [G H I J] >");
     }
     else
     {
         appendValues(expectedOutput, 10,
-            "< 0 , [A R N D] >",
-            "< 1 , [R N D C] >",
-            "< 2 , [N D C Q] >",
-            "< 3 , [D C Q E] >",
-            "< 4 , [C Q E G] >",
-            "< 5 , [Q E G H] >",
-            "< 6 , [E G H I] >",
-            "< 7 , [G H I A] >",
-            "< 8 , [H I A A] >",
-            "< 9 , [I A A A] >");
+            "< 0 , [A B C D] >",
+            "< 1 , [B C D E] >",
+            "< 2 , [C D E F] >",
+            "< 3 , [D E F G] >",
+            "< 4 , [E F G H] >",
+            "< 5 , [F G H I] >",
+            "< 6 , [G H I J] >",
+            "< 7 , [H I J A] >",
+            "< 8 , [I J A A] >",
+            "< 9 , [J A A A] >");
     }
     comparePipeStream(tupler, expectedOutput);
 
@@ -562,7 +562,7 @@ void testPipeMultiTupler()
         appendValue(back(set), AminoAcid(i));
         appendValue(testTexts, set);
     }
-    appendValue(set, "ARN");
+    appendValue(set, "ABC");
     appendValue(testTexts, set);
     appendValue(set, "D");
     appendValue(testTexts, set);
@@ -595,13 +595,13 @@ void testPipeMultiTupler()
     if (omitLast)
     {
         appendValues(expectedOutput, 14,
-            "< < 0 , 0 > , [A R N D] >",
-            "< < 0 , 1 > , [R N D C] >",
-            "< < 0 , 2 > , [N D C Q] >",
-            "< < 0 , 3 > , [D C Q E] >",
-            "< < 0 , 4 > , [C Q E G] >",
-            "< < 0 , 5 > , [Q E G H] >",
-            "< < 0 , 6 > , [E G H I] >",
+            "< < 0 , 0 > , [A B C D] >",
+            "< < 0 , 1 > , [B C D E] >",
+            "< < 0 , 2 > , [C D E F] >",
+            "< < 0 , 3 > , [D E F G] >",
+            "< < 0 , 4 > , [E F G H] >",
+            "< < 0 , 5 > , [F G H I] >",
+            "< < 0 , 6 > , [G H I J] >",
             "< < 4 , 0 > , [I H G E] >",
             "< < 4 , 1 > , [H G E Q] >",
             "< < 4 , 2 > , [G E Q C] >",
@@ -613,19 +613,19 @@ void testPipeMultiTupler()
     else
     {
         appendValues(expectedOutput, 24,
-            "< < 0 , 0 > , [A R N D] >",
-            "< < 0 , 1 > , [R N D C] >",
-            "< < 0 , 2 > , [N D C Q] >",
-            "< < 0 , 3 > , [D C Q E] >",
-            "< < 0 , 4 > , [C Q E G] >",
-            "< < 0 , 5 > , [Q E G H] >",
-            "< < 0 , 6 > , [E G H I] >",
-            "< < 0 , 7 > , [G H I A] >",
-            "< < 0 , 8 > , [H I A A] >",
-            "< < 0 , 9 > , [I A A A] >",
-            "< < 1 , 0 > , [A R N A] >",
-            "< < 1 , 1 > , [R N A A] >",
-            "< < 1 , 2 > , [N A A A] >",
+            "< < 0 , 0 > , [A B C D] >",
+            "< < 0 , 1 > , [B C D E] >",
+            "< < 0 , 2 > , [C D E F] >",
+            "< < 0 , 3 > , [D E F G] >",
+            "< < 0 , 4 > , [E F G H] >",
+            "< < 0 , 5 > , [F G H I] >",
+            "< < 0 , 6 > , [G H I J] >",
+            "< < 0 , 7 > , [H I J A] >",
+            "< < 0 , 8 > , [I J A A] >",
+            "< < 0 , 9 > , [J A A A] >",
+            "< < 1 , 0 > , [A B C A] >",
+            "< < 1 , 1 > , [B C A A] >",
+            "< < 1 , 2 > , [C A A A] >",
             "< < 2 , 0 > , [D A A A] >",
             "< < 4 , 0 > , [I H G E] >",
             "< < 4 , 1 > , [H G E Q] >",
