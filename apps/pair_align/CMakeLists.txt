@@ -10,6 +10,13 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_pair_align)
 message (STATUS "Configuring apps/pair_align")
 
+# Disable pair_align on Travis because of computational resource limits.
+if (SEQAN_TRAVIS_BUILD)
+  message (STATUS "  pair_align is not built on Travis.")
+  return ()
+endif ()
+
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------

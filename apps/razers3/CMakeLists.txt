@@ -12,6 +12,12 @@ message (STATUS "Configuring apps/razers3")
 
 find_package(CXX11 REQUIRED)
 
+# Disable RazerS3 on Travis because of computational resource limits.
+if (SEQAN_TRAVIS_BUILD)
+  message (STATUS "  razers3 is not built on Travis.")
+  return ()
+endif ()
+
 # Disable RazerS3 for MinGW and VS8 and earlier.
 if (NOT CXX11_FOUND)
     message (STATUS "  RazerS 3 cannot be built with MinGW or with MS Visual C++ 8 and earlier.")
