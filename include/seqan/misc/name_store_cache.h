@@ -319,12 +319,12 @@ void appendName(TNameStore &nameStore, TName const & name, NameStoreCache<TCName
  * @fn NameStoreCache#getIdByName
  * @brief Get id/index of a string in a name store using a NameStoreCache.
  *
- * @signature bool getIdByName(idx, name, cache);
+ * @signature bool getIdByName(idx, cache, name);
  *
  * @param[out]    idx       The variable to store the index in the store of (@link IntegerConcept @endlink).
+ * @param[in]     cache     The NameStoreCache to use for speeding up the lookup.
  * @param[in]     name      The name to search in the name store (@link ContainerConcept#Value @endlink of
  *                          <tt>TNameStore</tt>).
- * @param[in]     cache     The NameStoreCache to use for speeding up the lookup.
  *
  * @return bool <tt>true</tt> if the name could be found and <tt>false</tt> otherwise.
  */
