@@ -871,32 +871,32 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise)
     }
     SEQAN_ASSERT_EQ(contents, compString);
 
-    std::cout << "<span style=\"font-size:80%\"><table>\n"
-                 "<tr><th>index</th>"
-                 "<th>Enum</th>"
-                 "<th>optionLabels</th>"
-                 "<th>columnLabels</th>"
-                 "<th>descriptions</th>"
-                 "<th>implemented</th></tr>\n";
-    for (int i = 0; i < 45; ++i)
-    {
-        std::cout << "<tr><td>"
-                  << i
-                  << "</td><td>"
-                  // enum have to inserted manually
-                  << "</td><td>"
-                  << BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::optionLabels[i]
-                  << "</td><td>"
-                  << BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::columnLabels[i]
-                  << "</td><td>"
-                  << BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::descriptions[i]
-                  << "</td><td>"
-                  << (BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::implemented[i]
-                    ? "&#9745;"
-                    : "&#9744;")
-                  << "</td></tr>\n";
-    }
-    std::cout << "</table></span>\n";
+//     std::cout << "<span style=\"font-size:80%\"><table>\n"
+//                  "<tr><th>index</th>"
+//                  "<th>Enum</th>"
+//                  "<th>optionLabels</th>"
+//                  "<th>columnLabels</th>"
+//                  "<th>descriptions</th>"
+//                  "<th>implemented</th></tr>\n";
+//     for (int i = 0; i < 45; ++i)
+//     {
+//         std::cout << "<tr><td>"
+//                   << i
+//                   << "</td><td>"
+//                   // enum have to inserted manually
+//                   << "</td><td>"
+//                   << BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::optionLabels[i]
+//                   << "</td><td>"
+//                   << BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::columnLabels[i]
+//                   << "</td><td>"
+//                   << BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::descriptions[i]
+//                   << "</td><td>"
+//                   << (BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::implemented[i]
+//                     ? "&#9745;"
+//                     : "&#9744;")
+//                   << "</td></tr>\n";
+//     }
+//     std::cout << "</table></span>\n";
 }
 
 #endif  // SEQAN_EXTRAS_TESTS_BASIC_TEST_BLAST_H_

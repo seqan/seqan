@@ -193,14 +193,19 @@ enum class BlastFormatGeneration : uint8_t
  * @link BlastDbSpecs @endlink object.
  *
  *
- * @section E-Value statistics TODO
+ * @section E-Value statistics
  *
- * This module provides
- * 
+ * This part provides e-value statistics and related functions. To use it
+ * you need to convert the SeqAn scoring scheme (see
+ * @link BlastScoringScheme @endlink) and create a @link BlastScoringAdapter @endlink.
+ * After this you can @link BlastMatch#calcStatsAndScore @endlink and then
+ * @link BlastMatch#calcBitScoreAndEValue @endlink for your
+ * @link BlastMatch @endlinkes.
+ *
  * @section Output
  *
  * When writing Blast(-like) results to a file the easiest way to proceed
- * is to organize your results into
+ * is to organize your matches in the data structures described above.
  *
  * When writing this data, call @link BlastFormat#writeTop @endlink
  * first, than iterate over the records, calling
@@ -209,6 +214,11 @@ enum class BlastFormatGeneration : uint8_t
  * Certain BlastFormats have additional more fine-grained functions, e.g.
  * @link BlastRecord#writeHeader @endlink and
  * @link BlastMatch#writeMatch @endlink .
+ *
+ * Should you for some reason require more fine-grained control and/or do not
+ * wish to use the mentioned data structures, you may also use these alternative
+ * interfaces: @link BlastFormat#writeHeader @endlink and
+ * @link BlastFormat#writeMatch @endlink (only available for tabular formats).
  *
  * @tparam f    template parameter of type @link BlastFormatFile @endlink
  * @tparam p    template parameter of type @link BlastFormatProgram @endlink
@@ -616,11 +626,11 @@ const char * _programTagToString(BlastFormat<f,
  * @fn BlastFormat#writeTop
  * @headerfile seqan/blast.h
  * @brief write the top-most section of a BLAST output file (NO-OP for tabular formats)
- * @signature int writeTop(stream, blastDbSpecs, blastFormatTag)
+ * @signature writeTop(stream, blastDbSpecs, blastFormatTag)
  *
- * @param stream            The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param blastDbSpecs      The @link BlastDbSpecs @endlink of your database-
- * @param blastFormatTag The @link BlastFormat @endlink specifier.
+ * @param[in,out] stream     The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param[in] blastDbSpecs   The @link BlastDbSpecs @endlink of your database-
+ * @param[in] blastFormatTag The @link BlastFormat @endlink specifier.
  *
  * @see BlastFormat
  * @see BlastRecord
@@ -632,12 +642,11 @@ template <typename TStream,
           BlastFormatFile f,
           BlastFormatProgram p,
           BlastFormatGeneration g>
-inline int
+inline void
 writeTop(TStream                    & /**/,
          TDbSpecs             const & /**/,
          BlastFormat<f, p, g> const & /*tag*/)
 {
-    return 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -651,10 +660,10 @@ writeTop(TStream                    & /**/,
  *  @link BlastMatch @endlinkes and possible headers to a file.
  * @signature writeRecord(stream, blastRecord, blastDbSpecs, blastFormatTag)
  *
- * @param stream        The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param blastRecord   The @link BlastRecord @endlink you wish to print.
- * @param blastDbSpecs  The @link BlastDbSpecs @endlink .
- * @param blastFormatTag The @link BlastFormat @endlink specifier.
+ * @param[in,out] stream        The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param[in] blastRecord   The @link BlastRecord @endlink you wish to print.
+ * @param[in] blastDbSpecs  The @link BlastDbSpecs @endlink .
+ * @param[in] blastFormatTag The @link BlastFormat @endlink specifier.
  *
  * @see BlastFormat
  * @see BlastRecord
@@ -671,10 +680,10 @@ writeTop(TStream                    & /**/,
  * @brief write the top-most section of a BLAST output file (NO-OP for tabular formats)
  * @signature writeBottom(stream, blastDbSpecs, scoringAdapter, blastFormatTag)
  *
- * @param stream            The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param scoringAdapter    A @link BlastScoringAdapter @endlink with relevant information.
- * @param blastDbSpecs      The @link BlastDbSpecs @endlink of your database-
- * @param blastFormatTag The @link BlastFormat @endlink specifier.
+ * @param[in,out] stream            The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param[in] scoringAdapter    A @link BlastScoringAdapter @endlink with relevant information.
+ * @param[in] blastDbSpecs      The @link BlastDbSpecs @endlink of your database-
+ * @param[in] blastFormatTag The @link BlastFormat @endlink specifier.
  *
  * @see BlastFormat
  * @see BlastRecord
@@ -687,13 +696,12 @@ template <typename TStream,
           BlastFormatFile f,
           BlastFormatProgram p,
           BlastFormatGeneration g>
-inline int
+inline void
 writeBottom(TStream                           & /**/,
             TDbSpecs                    const & /**/,
             TBlastScoringAdapater       const & /**/,
             BlastFormat<f, p,g>         const & /*tag*/)
 {
-    return 0;
 }
 
 // ----------------------------------------------------------------------------
