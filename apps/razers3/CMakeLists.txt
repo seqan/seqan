@@ -18,6 +18,12 @@ if (NOT CXX11_FOUND)
     return ()
 endif (NOT CXX11_FOUND)
 
+# Disable RazerS3 on Travis CI because of computational resource limits.
+if (SEQAN_TRAVIS_BUILD)
+    message (STATUS "  RazerS 3 is not built on Travis CI.")
+    return ()
+endif ()
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
