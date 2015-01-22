@@ -287,7 +287,7 @@ void _getMatchDistanceScore(
     Splitter<TQueryMatchSetIterator> setSplitter(begin(queryMatchesSet, Standard()), end(queryMatchesSet, Standard()));
 
     SEQAN_OMP_PRAGMA(parallel for)
-    for(unsigned jobId = 0; jobId < length(setSplitter); ++jobId)
+    for (unsigned jobId = 0; jobId < length(setSplitter); ++jobId)
     {
         for (TQueryMatchSetIterator it = setSplitter[jobId]; it != setSplitter[jobId + 1]; ++it)
         {
@@ -639,16 +639,20 @@ _importSequences(CharString const & fileName,
         appendValue(ids, sId, Generous());
     }
 
-    std::cout << "Loaded " << seqCount << " " << name << " sequence" << ((seqCount > 1) ? "s." : ".") << std::endl;
-
     // Check for dupliacte id entries.
     StringSet<TId> uniqueIds = ids;
     std::sort(begin(uniqueIds, Standard()), end(uniqueIds, Standard()), IdComparator<TId>());  // O(n*log(n))
     TIdSetIterator itOldEnd = end(uniqueIds, Standard());
     TIdSetIterator itNewEnd = std::unique(begin(uniqueIds, Standard()), end(uniqueIds, Standard()), IdComparator<TId>());  // O(n)
 
-    if (itOldEnd - itNewEnd > 0)
-        std::cout << "Found " << itOldEnd - itNewEnd << " nonunique sequence IDs" << std::endl;
+    --itNewEnd;
+    unsigned diff = itOldEnd - itNewEnd;
+    if (length(ids) - diff > 0)
+    {
+        std::cout << "Found nonunique sequence IDs" << std::endl;
+        return false;
+    }
+    std::cout << "Loaded " << seqCount << " " << name << " sequence" << ((seqCount > 1) ? "s." : ".") << std::endl;
     return true;
 }
 

@@ -231,8 +231,17 @@ inline void _fillGffRecordDuplication(GffRecord & record, TBreakpoint & bp, unsi
     TPos begin, end, target = maxValue<unsigned>();
     // Using set function for VCF duplication to set positions
     _setVcfRecordDuplicationPos(bp, begin, end, target);
+    if (begin > end)
+        std::swap(begin, end);
     record.beginPos = begin;
     record.endPos = end;
+    /*
+    std::cerr << "#####################################################" << std::endl;
+    std::cerr << bp << std::endl;
+    std::cerr << "begin " << begin << " end " << end << " target " << std::cerr;
+    std::cerr << "record end " << record.endPos << std::endl;
+    std::cerr << "#####################################################" << std::endl;
+    */
     record.strand = '+';
     appendValue(record.tagNames, "ID");
     appendValue(record.tagValues, toString(id));
@@ -246,7 +255,7 @@ inline void _fillGffRecordDuplication(GffRecord & record, TBreakpoint & bp, unsi
     else
     {
         std::stringstream dpos;
-        dpos << begin << "|" << end;
+        dpos << (begin + 1) << "|" << end;
         appendValue(record.tagNames, "size");
         appendValue(record.tagValues, "imprecise");
         appendValue(record.tagNames, "targetPos");
@@ -374,7 +383,8 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
             // Write record
             try
             {
-                writeRecord(gffOut, gff_record);
+                //if (tempBP.svtype == TBreakpoint::DISPDUPLICATION)
+                    writeRecord(gffOut, gff_record);
             }
             catch (seqan::IOError const & ioErr)
             {
@@ -557,6 +567,8 @@ inline void _fillVcfRecordDuplication(VcfRecord & record, TBreakpoint & bp, TSeq
     if (!_setVcfRecordDuplicationPos(bp, begin, end, target))
         ss << "IMPRECISE;";
 
+    if (begin > end)
+        std::swap(begin, end);
     record.rID = id;
     record.beginPos = begin - 1; // Position before event
     record.filter = "PASS";

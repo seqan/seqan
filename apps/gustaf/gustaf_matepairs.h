@@ -73,7 +73,6 @@ _importSequences(CharString const & fileNameL,
     CharString qual;
     CharString qualL;
     CharString qualR;
-    unsigned counter = 0;
     while (!atEnd(l) || !atEnd(r))
     {
         if (readRecord(id, seqL, qualL, l) != 0)
@@ -108,14 +107,20 @@ _importSequences(CharString const & fileNameL,
         clear(qual);
     }
     
-    StringSet<TId> uniqueIds = ids;
     // Check for dupliacte id entries.
+    StringSet<TId> uniqueIds = ids;
     std::sort(begin(uniqueIds, Standard()), end(uniqueIds, Standard()), IdComparator<TId>());  // O(n*log(n))
     TIdSetIterator itOldEnd = end(uniqueIds, Standard());
     TIdSetIterator itNewEnd = std::unique(begin(uniqueIds, Standard()), end(uniqueIds, Standard()), IdComparator<TId>());  // O(n)
 
-    if (itOldEnd - itNewEnd > 0)
-        std::cout << "Found " << itOldEnd - itNewEnd << " nonunique sequence IDs" << std::endl;
+    --itNewEnd;
+    unsigned diff = itOldEnd - itNewEnd;
+    if (length(ids) - diff > 0)
+    {
+        std::cout << "Found nonunique sequence IDs" << std::endl;
+        return false;
+    }
+    std::cout << "Loaded " << length(ids) << " paired sequences" << std::endl;
     return true;
 }
 
@@ -194,9 +199,14 @@ _importSequences(CharString const & fileNameL,
     TIdSetIterator itOldEnd = end(uniqueIds, Standard());
     TIdSetIterator itNewEnd = std::unique(begin(uniqueIds, Standard()), end(uniqueIds, Standard()), IdComparator<TId>());  // O(n)
 
-    if (itOldEnd - itNewEnd > 0)
-        std::cout << "Found " << itOldEnd - itNewEnd << " nonunique sequence IDs" << std::endl;
-
+    --itNewEnd;
+    unsigned diff = itOldEnd - itNewEnd;
+    if (length(ids) - diff > 0)
+    {
+        std::cout << "Found nonunique sequence IDs" << std::endl;
+        return false;
+    }
+    std::cout << "Loaded " << length(ids) << " paired sequences" << std::endl;
     return true;
 }
 template <typename TSequence, typename TId, typename TPos>
