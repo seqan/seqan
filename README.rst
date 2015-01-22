@@ -34,7 +34,7 @@ Prerequisites
 For the Impatient
 -----------------
 
-Assuming that you have checked out the repository already, all prerequisites are installed and you are on Linux or Mac Os X.
+Assuming that you have checked out the repository already, all prerequisites are installed and you are on Linux or Mac OS X.
 
 ::
 
