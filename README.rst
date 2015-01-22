@@ -21,10 +21,9 @@ The licenses for the applications themselves can be found in the LICENSE files.
 Supported Platforms
 -------------------
 
-* Visual C++ 8, 9, 10, 11
-* MinGW
-* LLVM >= 3.0
-* GCC >= 4.1
+* Visual C++ 10 (2010), 11 (2012), 12 (2013)
+* Clang >= 3.3 (e.g. Xcode >= 5)
+* GCC >= 4.7 (e.g. Debian stable/wheezy)
 
 Prerequisites
 -------------
@@ -53,7 +52,7 @@ Documentation Resources
 * `Manual <http://seqan.readthedocs.org/en/master>`_
 * `Tutorial <http://seqan.readthedocs.org/en/master/Tutorial.html>`_
 * `How-Tos <http://seqan.readthedocs.org/en/master/HowTo.html>`_
-* `API Documentation (stable) <http://docs.seqan.de/seqan/1.4.1/>`_
+* `API Documentation (stable) <http://docs.seqan.de/seqan/master/>`_
 
 
 Contact
