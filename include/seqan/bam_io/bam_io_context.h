@@ -154,7 +154,6 @@ class BamIOContext
 public:
     typedef typename Member<BamIOContext, NameStoreMember>::Type            TNameStore;
     typedef typename Member<BamIOContext, NameStoreCacheMember>::Type       TNameStoreCache;
-    //typedef __int32                                                         TLength;
     typedef typename Member<BamIOContext, LengthStoreMember>::Type          TLengthStore;
 
     typedef typename If<IsSameType<TStorageSpec, void>,
