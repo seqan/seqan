@@ -1,5 +1,5 @@
 .. image:: https://readthedocs.org/projects/seqan/badge/?version=develop
-   :target: https://seqan.readthedocs.org/en/master?badge=develop
+   :target: https://seqan.readthedocs.org/en/develop?badge=develop
    :alt: Documentation Status
 
 SeqAn - The Library for Sequence Analysis
