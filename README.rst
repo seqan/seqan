@@ -1,5 +1,5 @@
-.. image:: https://readthedocs.org/projects/seqan/badge/?version=master
-   :target: https://seqan.readthedocs.org/en/master?badge=master
+.. image:: https://readthedocs.org/projects/seqan/badge/?version=develop
+   :target: https://seqan.readthedocs.org/en/master?badge=develop
    :alt: Documentation Status
 
 SeqAn - The Library for Sequence Analysis
@@ -18,31 +18,33 @@ License
 The SeqAn library itself, the tests and demos are licensed under the very permissing 3-clause BSD License.
 The licenses for the applications themselves can be found in the LICENSE files.
 
-Supported Platforms
+Prerequisites
 -------------------
 
-* Visual C++ 10 (2010), 11 (2012), 12 (2013)
-* Clang >= 3.3 (e.g. Xcode >= 5)
-* GCC >= 4.7 (e.g. Debian stable/wheezy)
+The library is tested on the following compilers:
+  * GCC >= 4.7 (e.g. Debian stable/wheezy)
+  * Clang >= 3.3 (e.g. Xcode >= 5)
+  * Visual C++ 10 (2010), 11 (2012), 12 (2013)
 
-Prerequisites
--------------
+All operating systems supported by the respective compilers should work with SeqAn. We test on 32-bit and 64-bit Intel/AMD architectures.
 
-* Supported C++ compiler
-* CMake (http://cmake.org/)
+To build tests, demos, and official SeqAn applications you also need:
+  * CMake >= 2.8.2 (http://cmake.org/)
+
+Some of the official applications might have additional requirements or work only on a subset of platforms.
 
 For the Impatient
 -----------------
 
-Assuming that you have checked out the repository already, all prerequisites are installed and you are on Linux or Mac OS X.
+Assuming that you have checked out the repository into the folder ``seqan`` (relative to your current directory), all prerequisites are installed and you are on Linux or Mac OS X.
 
 ::
 
-    # mkdir build/Debug
-    # cd build/Debug
-    # cmake ../.. -DCMAKE_BUILD_TYPE=Debug
+    # mkdir seqan-build/Debug
+    # cd seqan-build/Debug
+    # cmake ../../seqan -DCMAKE_BUILD_TYPE=Debug
     # make test_basic
-    # ./tests/basic/test_basic
+    # ./bin/test_basic
     ... the tests for module basic will run ...
 
 Documentation Resources
