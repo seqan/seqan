@@ -48,17 +48,16 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 /*!
-* @defgroup BamIOContextMemberTag BamIOContext Member Tags
-* @include <seqan/stream.h>
-* @brief Defines standard tags used to get the type of the members of the @link BamIOContext @endlink using the @link Member @endlink metafunction.
-*/
+ * @defgroup BamIOContextMemberTag BamIOContext Member Tags
+ * @brief Defines standard tags used to get the type of the members of the @link BamIOContext @endlink using the @link Member @endlink metafunction.
+ */
 
 /*!
  * @tag BamIOContextMemberTag#NameStoreMember
  * @brief Tag used to get the type for the <tt>NameStore</tt>.
+ * @headerfile <seqan/stream.h>
  *
- * @signature struct NameStoreMember_;
- *            typedef Tag<NameStoreMember_> NameStoreMember;
+ * @signature typedef Tag<NameStoreMember_> NameStoreMember;
  */
 
 struct NameStoreMember_;
@@ -71,9 +70,9 @@ typedef Tag<NameStoreMember_> NameStoreMember;
 /*!
  * @tag BamIOContextMemberTag#NameStoreCacheMember
  * @brief Tag used to get the type for the <tt>NameStoreCache</tt>.
+ * @headerfile <seqan/stream.h>
  *
- * @signature struct NameStoreCacheMember_;
- *            typedef Tag<NameStoreCacheMember_> NameStoreCacheMember;
+ * @signature typedef Tag<NameStoreCacheMember_> NameStoreCacheMember;
  */
 
 struct NameStoreCacheMember_;
@@ -84,12 +83,12 @@ typedef Tag<NameStoreCacheMember_> NameStoreCacheMember;
 // ----------------------------------------------------------------------------
 
 /*!
-* @tag BamIOContextMemberTag#LengthStoreMember
-* @brief Tag used to get the type for the <tt>LengthStore</tt>.
-*
-* @signature struct LengthStoreMember_;
-*            typedef Tag<NameStoreMember_> LengthStoreMember;
-*/
+ * @tag BamIOContextMemberTag#LengthStoreMember
+ * @brief Tag used to get the type for the <tt>LengthStore</tt>.
+ * @headerfile <seqan/stream.h>
+ *
+ * @signature typedef Tag<NameStoreMember_> LengthStoreMember;
+ */
 
 struct LengthStoreMember_;
 typedef Tag<LengthStoreMember_> LengthStoreMember;
