@@ -40,6 +40,61 @@
 namespace seqan {
 
 // ============================================================================
+// Tags
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Tag NameStoreMember
+// ----------------------------------------------------------------------------
+
+/*!
+* @defgroup BamIOContextMemberTag BamIOContext Member Tags
+* @include <seqan/stream.h>
+* @brief Defines standard tags used to get the type of the members of the @link BamIOContext @endlink using the @link Member @endlink metafunction.
+*/
+
+/*!
+ * @tag BamIOContextMemberTag#NameStoreMember
+ * @brief Tag used to get the type for the <tt>NameStore</tt>.
+ *
+ * @signature struct NameStoreMember_;
+ *            typedef Tag<NameStoreMember_> NameStoreMember;
+ */
+
+struct NameStoreMember_;
+typedef Tag<NameStoreMember_> NameStoreMember;
+
+// ----------------------------------------------------------------------------
+// Tag NameStoreCacheMember
+// ----------------------------------------------------------------------------
+
+/*!
+ * @tag BamIOContextMemberTag#NameStoreCacheMember
+ * @brief Tag used to get the type for the <tt>NameStoreCache</tt>.
+ *
+ * @signature struct NameStoreCacheMember_;
+ *            typedef Tag<NameStoreCacheMember_> NameStoreCacheMember;
+ */
+
+struct NameStoreCacheMember_;
+typedef Tag<NameStoreCacheMember_> NameStoreCacheMember;
+
+// ----------------------------------------------------------------------------
+// Tag LengthStoreMember
+// ----------------------------------------------------------------------------
+
+/*!
+* @tag BamIOContextMemberTag#LengthStoreMember
+* @brief Tag used to get the type for the <tt>LengthStore</tt>.
+*
+* @signature struct LengthStoreMember_;
+*            typedef Tag<NameStoreMember_> LengthStoreMember;
+*/
+
+struct LengthStoreMember_;
+typedef Tag<LengthStoreMember_> LengthStoreMember;
+ 
+// ============================================================================
 // Classes
 // ============================================================================
 
@@ -97,10 +152,10 @@ template <typename TNameStore_        = StringSet<CharString>,
 class BamIOContext
 {
 public:
-    typedef TNameStore_             TNameStore;
-    typedef TNameStoreCache_        TNameStoreCache;
-    typedef __int32                 TLength;
-    typedef String<TLength>         TLengthStore;
+    typedef typename Member<BamIOContext, NameStoreMember>::Type            TNameStore;
+    typedef typename Member<BamIOContext, NameStoreCacheMember>::Type       TNameStoreCache;
+    //typedef __int32                                                         TLength;
+    typedef typename Member<BamIOContext, LengthStoreMember>::Type          TLengthStore;
 
     typedef typename If<IsSameType<TStorageSpec, void>,
                         Dependent<>, TStorageSpec>::Type                    TNSStorageSpec;
@@ -142,6 +197,43 @@ public:
                                  _contigNames)),
         _contigLengths(_referenceCast<typename Parameter_<TLengthStoreMember>::Type>(contigLengths(other)))
     {}
+};
+
+// ============================================================================
+// Metafunctions
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// Metafunction NameStore
+// ----------------------------------------------------------------------------
+
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+struct Member<BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>, 
+              NameStoreMember>
+{
+    typedef TNameStore Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction NameStoreCache
+// ----------------------------------------------------------------------------
+
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+struct Member<BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>,
+              NameStoreCacheMember>
+{
+    typedef TNameStoreCache Type;
+};
+
+// ----------------------------------------------------------------------------
+// Metafunction LengthStore
+// ----------------------------------------------------------------------------
+
+template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
+struct Member<BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>,
+              LengthStoreMember>
+{
+    typedef String<__int32> Type;
 };
 
 // ============================================================================
