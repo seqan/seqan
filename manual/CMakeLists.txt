@@ -25,3 +25,7 @@ add_test (build_manual
           -b html -d ${CMAKE_BINARY_DIR}/manual/doctrees
           ${CMAKE_CURRENT_SOURCE_DIR}/source
           ${CMAKE_BINARY_DIR}/manual/html)
+
+# Building the manual depends on the JSON file from dox.
+set_tests_properties(build_manual PROPERTIES DEPENDS build_dox)
+
