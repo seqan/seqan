@@ -58,7 +58,7 @@ template <typename TGraph, typename TVertexDescriptor, typename TScoreAlloc, typ
           typename TBreakpoint, typename TPos, typename TMatchAlloc, typename TID>
 // typename TBreakpointAlloc, typename TMatchAlloc> // Requires Value<SparsePropertyMap> specialisation in msplazer.h
 void
-write(std::ostream & out, // TFile & file,  // std::ostream & out,  // std::fstream f; f.open(..); if (!f.good()) ... ; write(f, ...);  // write(std::cerr/std::cout, ...
+write(std::ostream & out,
       // MSplazerChain<TGraph, TVertexDescriptor, TScoreAlloc, TBreakpointAlloc, // Requires Value<SparsePropertyMap> specialisation in msplazer.h
       MSplazerChain<TGraph, TVertexDescriptor, TScoreAlloc, SparsePropertyMap<TBreakpoint, TPos>,
                     TMatchAlloc> const & msplazerchain,
@@ -369,7 +369,6 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
     for (unsigned i = 0; i < length(globalBreakpoints); ++i)
     {
         TBreakpoint & tempBP = globalBreakpoints[i];
-        // if (globalBreakpoints[i].svtype != 0 && globalBreakpoints[i].support >= msplazerOptions.support) // 0=invalid
         if (tempBP.svtype != 0 && tempBP.support >= msplazerOptions.support) // 0=invalid
         {
             if (tempBP.svtype == TBreakpoint::DISPDUPLICATION && tempBP.translSuppStartPos && tempBP.translSuppEndPos)
@@ -379,12 +378,10 @@ bool _writeGlobalBreakpoints(String<TBreakpoint> & globalBreakpoints,
                 _fillGffRecordDuplication(gff_record, tempBP, i);
             else
                 _fillGffRecord(gff_record, tempBP, i);
-            // _fillGffRecord(gff_record, globalBreakpoints[i], i);
             // Write record
             try
             {
-                //if (tempBP.svtype == TBreakpoint::DISPDUPLICATION)
-                    writeRecord(gffOut, gff_record);
+                writeRecord(gffOut, gff_record);
             }
             catch (seqan::IOError const & ioErr)
             {

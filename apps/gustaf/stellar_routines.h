@@ -614,8 +614,7 @@ inline bool
 _importSequences(CharString const & fileName,
                  CharString const & name,
                  StringSet<TSequence> & seqs,
-                 StringSet<TId> & ids
-                 )
+                 StringSet<TId> & ids)
 {
     typedef typename Iterator<StringSet<TId>, Standard>::Type TIdSetIterator;
 

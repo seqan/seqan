@@ -59,35 +59,6 @@ inline void _getShortId(TId & shortId, TId const & longId)
 }
 
 // ----------------------------------------------------------------------------
-// Function _getShortIds()
-// ----------------------------------------------------------------------------
-
-// Gets a Set of Ids and creates a set of short Ids from it
-template <typename TId>
-void _getShortIds(StringSet<TId> & shortIds, StringSet<TId> & longIds)
-{
-    for (unsigned index = 0; index < length(longIds); ++index)
-    {
-        TId & longId = longIds[index];
-        TId sId;
-        _getShortId(sId, longId);
-        appendValue(shortIds, sId);
-    }
-    /*
-    typedef typename Iterator<StringSet<TId>, Standard>::Type TSetIterator;
-    typedef typename Iterator<TId, Standard>::Type TSetIterator;
-    TSetIterator it = begin(longIds);
-    for(; it != end(longIds); ++it)
-    {
-        TId sId;
-        TIdIterator itId = begin(*it);
-        readUntil(sId, *itId, IsWhitespace());
-        appendValue(shortIds, sId);
-    }
-    */
-}
-
-// ----------------------------------------------------------------------------
 // Function _createStellarMatches()
 // ----------------------------------------------------------------------------
 
@@ -101,23 +72,20 @@ bool _createStellarMatches(StringSet<TSequence> & queries,
                            StringSet<TId> const & databaseIds,
                            LocalMatchStore<> & lmStore,
                            StringSet<QueryMatches<StellarMatch<TSequence, TId> > > & stQueryMatches,
-                           unsigned & numThreads)
+                           unsigned numThreads)
 {
     typedef typename Infix<TSequence>::Type TInfix;
     typedef typename StellarMatch<TSequence, TId>::TAlign TAlign;
     typedef typename Row<TAlign>::Type TRow;
-    typedef typename LocalMatchStore<>::TPosition TPosition;
     typedef typename LocalMatchStore<>::TMatchStore TMatchStore;
     typedef typename Iterator<TMatchStore, Standard>::Type TMatchStoreIterator;
 
-    //omp_set_num_threads(4);
     omp_set_num_threads(numThreads);
     Splitter<TMatchStoreIterator> setSplitter(begin(lmStore.matchStore, Standard()), end(lmStore.matchStore, Standard())); 
 
     SEQAN_OMP_PRAGMA(parallel for shared(stQueryMatches))
     for (unsigned jobId = 0; jobId < length(setSplitter); ++jobId)
     {
-	    //for (unsigned i = 0; i < length(lmStore.matchStore); ++i)
             for (TMatchStoreIterator it = setSplitter[jobId]; it != setSplitter[jobId + 1]; ++it)
 	    {
 		TInfix dbInf;
@@ -131,11 +99,9 @@ bool _createStellarMatches(StringSet<TSequence> & queries,
 		// Id entry from the reference input file
 		for (unsigned j = 0; j < length(databaseIds); ++j)
 		{
-		    //if (lmStore.sequenceNameStore[lmStore.matchStore[i].subjectId] == databaseIds[j])
 		    if (lmStore.sequenceNameStore[(*it).subjectId] == databaseIds[j])
 		    {
 			iDB = j;
-			// std::cerr << "iDB" <<  databaseIds[j] << " " << lmStore.sequenceNameStore[lmStore.matchStore[i].subjectId] << std::endl;
 			break;
 		    }
 		}
@@ -144,11 +110,9 @@ bool _createStellarMatches(StringSet<TSequence> & queries,
 		// from the read input file
 		for (unsigned j = 0; j < length(sQueryIds); ++j)
 		{
-		    //if (lmStore.sequenceNameStore[lmStore.matchStore[i].queryId] == sQueryIds[j])
 		    if (lmStore.sequenceNameStore[(*it).queryId] == sQueryIds[j])
 		    {
 			iQuery = j;
-			// std::cerr << "iQuery" <<  sQueryIds[j] << " " << lmStore.sequenceNameStore[(*it).queryId] << std::endl;
 			break;
 		    }
 		}
@@ -195,17 +159,11 @@ bool _createStellarMatches(StringSet<TSequence> & queries,
 		if ((*it).subjectBeginPos > (*it).subjectEndPos)
 		{
 		    orientation = false;
-		    TPosition tmp = (*it).subjectBeginPos;
-		    (*it).subjectBeginPos = (*it).subjectEndPos;
-		    (*it).subjectEndPos = tmp;
+                    std::swap((*it).subjectBeginPos, (*it).subjectEndPos);
 		}
 		// Computing infices for alignment rows for stellar matches
-		queryInf = infix(queries[iQuery],
-				 (*it).queryBeginPos,
-				 (*it).queryEndPos);
-		dbInf = infix(databases[iDB],
-			      (*it).subjectBeginPos,
-			      (*it).subjectEndPos);
+		queryInf = infix(queries[iQuery], (*it).queryBeginPos, (*it).queryEndPos);
+		dbInf = infix(databases[iDB], (*it).subjectBeginPos, (*it).subjectEndPos);
 
 		// Creating align object for stellar format
 		TAlign localAlign;
@@ -250,7 +208,9 @@ bool _createStellarMatches(StringSet<TSequence> & queries,
 			    }
 			}
 			else
+                        {
 			    gapIndex += cigar[j].count;
+                        }
 		    }
 		}
 		// Create Stellar match and append it to stQueryMatches
@@ -273,7 +233,7 @@ bool _getStellarMatchesFromFile(StringSet<TSequence> & queries,
                                 StringSet<TId> & databaseIDs,
                                 CharString const & smFileName,
                                 TMatches & stQueryMatches,
-                                unsigned & numThreads)
+                                unsigned numThreads)
 {
     // Open file with Stellar matches
     std::fstream inStreamMatches(toCString(smFileName), std::ios::in | std::ios::binary);

@@ -99,7 +99,6 @@ _importSequences(CharString const & fileNameL,
         append(qual, qualR);
         appendValue(seqs, seq, Generous());
         appendValue(quals, qual, Generous());
-       // appendValue(ids, id, Generous());
 
         _getShortId(sId, id);
         appendValue(ids, sId, Generous());
@@ -179,7 +178,6 @@ _importSequences(CharString const & fileNameL,
         append(seq, seqR);
         // Note: saving ID of right(!) mate per default
         appendValue(seqs, seq, Generous());
-        //appendValue(ids, idR, Generous());
 
         _getShortId(sId, idR);
         appendValue(ids, sId, Generous());
