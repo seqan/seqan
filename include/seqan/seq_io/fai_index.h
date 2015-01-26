@@ -652,7 +652,7 @@ inline bool build(FaiIndex & index, char const * seqFilename, char const * faiFi
     return true;
 }
 
-inline int build(FaiIndex & index, char const * seqFilename)
+inline bool build(FaiIndex & index, char const * seqFilename)
 {
     CharString faiFilename(seqFilename);
     append(faiFilename, ".fai");
