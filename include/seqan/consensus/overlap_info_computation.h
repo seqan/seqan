@@ -287,7 +287,7 @@ inline void OverlapInfoComputation_<TFragmentStore>::buildPositionBasedOverlapIn
         {
             if (it == it2)
                 continue;  // no overlap with self
-            if (it2->contigId != it->contigId || it2->beginPos > it->endPos + options.posDelta)
+            if (it2->contigId != it->contigId || static_cast<unsigned>(it2->beginPos) > static_cast<unsigned>(it->endPos + options.posDelta))
                 break;  // traversed contig or went too far to the right on same contig
             int pos = it2->beginPos - it->beginPos;
             OverlapInfo_ info = computeOverlapInfo(it->readId, it2->readId,

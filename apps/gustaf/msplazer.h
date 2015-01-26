@@ -89,7 +89,7 @@ struct MSplazerOptions
     unsigned libError;              // Library size (mate pairs)
     bool pairedEndMode;             // Whether or not to run Gustaf in paired-end mode
     bool revCompl;                  // Whether or not to rev-compl the second input file
-
+    unsigned numThreads;            // Number of threads for parallelization
 
     MSplazerOptions() :
         databaseFile("reference.fa"),
@@ -113,7 +113,9 @@ struct MSplazerOptions
         libSize(0),
         libError(0),
         pairedEndMode(false),
-        revCompl(true){}
+        revCompl(true),
+        numThreads(1)
+        {}
 };
 
 // ----------------------------------------------------------------------------
@@ -271,56 +273,6 @@ struct Breakpoint
         translSuppEndPos(false),
         breakend(false)
     {appendValue(supportIds, spId); }
-    /*
-    Breakpoint(TId const & sId,
-               TId const & eId,
-               bool const & sStrand,
-               bool const & eStrand,
-               TPos const & sPos,
-               TPos const & ePos,
-               TPos const & rsPos,
-               TPos const & rePos,
-               unsigned const & s,
-               TId const & spId) :
-        startSeqId(sId),
-        endSeqId(eId),
-        startSeqStrand(sStrand),
-        endSeqStrand(eStrand),
-        startSeqPos(sPos),
-        endSeqPos(ePos),
-        readStartPos(rsPos),
-        readEndPos(rePos),
-        support(s),
-        svtype(INVALID),
-        insertionSeq("NNNN"),
-        revStrandDel(false)
-    {appendValue(supportIds, spId); }
-
-    Breakpoint(TId const & sId,
-               TId const & eId,
-               bool const & sStrand,
-               bool const & eStrand,
-               TPos const & sPos,
-               TPos const & ePos,
-               TPos const & rsPos,
-               TPos const & rePos,
-               unsigned const & s,
-               StringSet<TId> const & spId) :
-        startSeqId(sId),
-        endSeqId(eId),
-        startSeqStrand(sStrand),
-        endSeqStrand(eStrand),
-        startSeqPos(sPos),
-        endSeqPos(ePos),
-        readStartPos(rsPos),
-        readEndPos(rePos),
-        support(s),
-        supportIds(spId),
-        svtype(INVALID),
-        insertionSeq("NNNN"),
-        revStrandDel(false)
-    {}
-    */
 };
 
 // ----------------------------------------------------------------------------

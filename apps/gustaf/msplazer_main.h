@@ -62,14 +62,13 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     // import query sequences using _importSequences from Stellar
     StringSet<TSequence> queries;
     StringSet<TId> queryIDs;
-    StringSet<TId> shortQueryIDs;
     String<unsigned> readJoinPositions;
     // TODO (ktrappe) distinguish between paired and single and, call appropriate
     // importSeq function (and preprocess query files)
     if (msplazerOptions.pairedEndMode)
     {
         std::cout << "Loading paired-end read sequences... ";
-        if (!_importSequences(msplazerOptions.queryFile[0], msplazerOptions.queryFile[1], msplazerOptions.revCompl, queries, queryIDs, shortQueryIDs, readJoinPositions))
+        if (!_importSequences(msplazerOptions.queryFile[0], msplazerOptions.queryFile[1], msplazerOptions.revCompl, queries, queryIDs, readJoinPositions))
             return 1;
     }else
     {
@@ -77,6 +76,7 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
         if (!_importSequences(stellarOptions.queryFile, "query", queries, queryIDs))
             return 1;
     }
+    StringSet<TId> shortQueryIDs = queryIDs;
 
     /*
     unsigned readLength = 0;
@@ -93,6 +93,7 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     if (!_importSequences(stellarOptions.databaseFile, "database", databases, databaseIDs))
         return 1;
 
+    StringSet<TId> shortDatabaseIDs = databaseIDs;
 
     for (unsigned i = 0; i < length(databases); ++i)
     {
@@ -151,8 +152,8 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
         double startST = sysTime();
         // TODO (ktrappe) distinguish call with queryIDs and shortQueryIDs in case of mate pairs? stellar writes out short
         // query IDs anyway...
-        if (!_getStellarMatchesFromFile(queries, queryIDs, databases, databaseIDs, msplazerOptions.stellarInputFile,
-                                        stellarMatches))
+        if (!_getStellarMatchesFromFile(queries, shortQueryIDs, databases, databaseIDs, msplazerOptions.stellarInputFile,
+                                        stellarMatches, msplazerOptions.numThreads))
             return 1;
 
         std::cout << "done" << std::endl;
@@ -164,8 +165,11 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
             std::cout << stellarMatches[i].matches[j] << std::endl;
     }
     */
+    double startDist = sysTime();
     std::cout << "Getting match distance..." << std::endl;
-    _getMatchDistanceScore(stellarMatches, distanceScores);
+    _getMatchDistanceScore(stellarMatches, distanceScores, msplazerOptions.numThreads);
+    std::cout << "TIME getting match distance " <<   (sysTime() - startDist) << "s" << std::endl;
+
 
     // Graph statistics
     /*
@@ -221,15 +225,18 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
 
     std::cout << "Constructing graphs... ";
     // TODO distinguish call with queryIDs and shortQueryIDs for mate pairs?
+    double startGraphs = sysTime();
+    std::cout << "Building graphs... ";
     _chainQueryMatches(stellarMatches, distanceScores, queryChains, queryIDs, queries, readJoinPositions, msplazerOptions);
-    std::cout << "done" << std::endl;
+    std::cout << "...done... " << (sysTime() - startGraphs) << "s"  << std::endl;
 
     // ///////////////////////////////////////////////////////////////////////
     // Analyze chains
 
+    double startAnalysis = sysTime();
     std::cout << "Analyzing graphs... ";
     _analyzeChains(queryChains);
-    std::cout << "done" << std::endl;
+    std::cout << "...done... " << (sysTime() - startAnalysis) << "s" << std::endl;
 
     // ///////////////////////////////////////////////////////////////////////
     // Breakpoints
@@ -237,7 +244,10 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
     typedef Breakpoint<TSequence, TId> TBreakpoint;
     String<TBreakpoint> globalBreakpoints;
     // String<TBreakpoint> globalStellarIndels;
+    double startBP = sysTime();
+    std::cout << "Extracting breakpoints... ";
     _findAllBestChains(queryChains, stellarMatches, globalBreakpoints, msplazerOptions);
+    std::cout << "...done... " << (sysTime() - startBP) << "s" << std::endl;
     // _findAllBestChains(queryChains, stellarMatches, queries, queryIDs, globalBreakpoints, globalStellarIndels, msplazerOptions);
     // _findAllChains(queryChains, stellarMatches, queries, queryIDs, globalBreakpoints, globalStellarIndels, msplazerOptions);
     // _findAllChains(queryChains);
@@ -265,10 +275,13 @@ int msplazer(StellarOptions & stellarOptions, MSplazerOptions & msplazerOptions)
 
 
     // std sort in ascending order
+    double startWriting = sysTime();
+    std::cout << "Sorting and writing breakpoints... ";
     std::sort(begin(globalBreakpoints), end(globalBreakpoints));
     // std::sort(begin(globalStellarIndels), end(globalStellarIndels));
     _writeGlobalBreakpoints(globalBreakpoints, msplazerOptions, Gff());
     _writeGlobalBreakpoints(globalBreakpoints, databases, databaseIDs, msplazerOptions, Vcf());
+    std::cout << "...done " << (sysTime() - startWriting) << "s" << std::endl;
     // _writeGlobalBreakpoints(globalStellarIndels, msplazerOptions, msplazerOptions.support);
 
     // ///////////////////////////////////////////////////////////////////////
