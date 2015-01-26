@@ -628,7 +628,7 @@ writeRecord(TTarget & target, GffRecord const & record, Tag<TFormat> const & tag
     if (record.score != record.score)
         writeValue(target, '.');
     else
-        writeValue(target, record.score);
+        appendNumber(target, record.score);
     writeValue(target, '\t');
 
     // write column 7: strand
