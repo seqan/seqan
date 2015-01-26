@@ -84,7 +84,7 @@ bool _createStellarMatches(StringSet<TSequence> & queries,
     Splitter<TMatchStoreIterator> setSplitter(begin(lmStore.matchStore, Standard()), end(lmStore.matchStore, Standard())); 
 
     SEQAN_OMP_PRAGMA(parallel for shared(stQueryMatches))
-    for (unsigned jobId = 0; jobId < length(setSplitter); ++jobId)
+    for (int jobId = 0; jobId < length(setSplitter); ++jobId)
     {
             for (TMatchStoreIterator it = setSplitter[jobId]; it != setSplitter[jobId + 1]; ++it)
 	    {

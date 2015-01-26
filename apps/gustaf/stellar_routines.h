@@ -287,7 +287,7 @@ void _getMatchDistanceScore(
     Splitter<TQueryMatchSetIterator> setSplitter(begin(queryMatchesSet, Standard()), end(queryMatchesSet, Standard()));
 
     SEQAN_OMP_PRAGMA(parallel for)
-    for (unsigned jobId = 0; jobId < length(setSplitter); ++jobId)
+    for (int jobId = 0; jobId < length(setSplitter); ++jobId)
     {
         for (TQueryMatchSetIterator it = setSplitter[jobId]; it != setSplitter[jobId + 1]; ++it)
         {
