@@ -87,6 +87,7 @@ _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions
 
     if (length(msplazerOptions.queryFile) > 1)
         msplazerOptions.pairedEndMode = true;
+    getOptionValue(msplazerOptions.numThreads, parser, "nth");
 
     // Parsing Stellar options
     getArgumentValue(options.databaseFile, parser, 0);
@@ -225,6 +226,11 @@ void _setupArgumentParser(ArgumentParser & parser)
     setDefaultValue(parser, "j", "");
 
     addOption(parser, ArgParseOption("do", "dots", "Enable graph output in dot format"));
+
+    addSection(parser, "Parallelization Options");
+    addOption(parser,
+              ArgParseOption("nth", "numThreads", "Number of threads for parallelization (only match score determination atm).", ArgParseArgument::INTEGER, "INT"));
+    setDefaultValue(parser, "nth", "1");
 
     addSection(parser, "Stellar Options");
 
