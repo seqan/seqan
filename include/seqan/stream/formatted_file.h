@@ -46,13 +46,18 @@ namespace seqan {
 // ============================================================================
 
 /*!
+ * @defgroup FileFormats File Formats
+ * @brief Tags for identifying file formats.
+ */
+
+/*!
  * @mfn FormattedFile#FileFormat
  * @brief Metafunction for retrieving the file format type of a formatted file.
  *
  * @signature FileFormat<TFormattedFile>::Type;
  *
  * @tparam TFormattedFile The formatted file type to query for its file format type.
- * @return Type           The resulting size type.
+ * @return Type           The resulting @link FileFormats @endlink file formats type.
  */
 
 template <typename TFormattedFile>
@@ -109,10 +114,10 @@ struct StorageSwitch;
  * @headerfile <seqan/stream.h>
  * @brief Base class for formatted file I/O.
  *
- * @signature template <typename TFileType, typename TDirection[, typename TSpec]>
+ * @signature template <typename TFileFormat, typename TDirection[, typename TSpec]>
  *            struct FormattedFile;
  *
- * @tparam TFileType  A type specifying the file format.
+ * @tparam TFileFormat  A type specifying the file format.
  * @tparam TDirection The direction of the file, one of @link DirectionTags#Input Input
  *                    @endlink or @link DirectionTags#Output @endlink.
  * @tparam TSpec      A tag for the specialization, defauls to <tt>void</tt>.
@@ -134,7 +139,7 @@ struct StorageSwitch;
  * @class FormattedFileIn
  * @headerfile <seqan/stream.h>
  * @brief Base class for reading formatted files.
- * @signature typedef FormattedFile<TFileType, Input, TSpec> FormattedFileIn;
+ * @signature typedef FormattedFile<TFileFormat, Input, TSpec> FormattedFileIn;
  * @extends FormattedFile
  *
  * A formatted input file can write @link FormattedFileHeaderConcept Header @endlink
@@ -171,7 +176,7 @@ struct StorageSwitch;
  * @class FormattedFileOut
  * @headerfile <seqan/stream.h>
  * @brief Base class for writing formatted files.
- * @signature typedef FormattedFile<TFileType, Output, TSpec> FormattedFileOut;
+ * @signature typedef FormattedFile<TFileFormat, Output, TSpec> FormattedFileOut;
  * @extends FormattedFile
  *
  * A formatted output file can write @link FormattedFileHeaderConcept Header @endlink
@@ -204,23 +209,23 @@ struct StorageSwitch;
  * @throw ParseError On high-level file format errors.
  */
 
-template <typename TFileType, typename TDirection, typename TSpec = void>
+template <typename TFileFormat, typename TDirection, typename TSpec = void>
 struct FormattedFile
 {
     typedef VirtualStream<char, TDirection>                                     TStream;
     typedef typename Iterator<TStream, TDirection>::Type                        TIter;
-    typedef typename FileFormat<FormattedFile>::Type                            TFileFormat;
+    typedef typename FileFormat<FormattedFile>::Type                            TFileFormats;
     typedef typename FormattedFileContext<FormattedFile, Owner<> >::Type        TOwnerContext;
     typedef typename FormattedFileContext<FormattedFile, Dependent<> >::Type    TDependentContext;
 
     TStream             stream;
     TIter               iter;
-    TFileFormat         format;
+    TFileFormats        format;
     TOwnerContext       data_context;
     TDependentContext   context;
 
     /*!
-     * @fn FormattedFile::FormattedFile
+     * @fn FormattedFile#FormattedFile
      * @brief Provides default construction.
      *
      * @signature FormattedFile::FormattedFile();
@@ -364,10 +369,10 @@ struct FormattedFile
 // Metafunction DirectionIterator
 // ----------------------------------------------------------------------------
 
-template <typename TFileType, typename TDirection, typename TSpec>
-struct DirectionIterator<FormattedFile<TFileType, TDirection, TSpec>, TDirection>
+template <typename TFileFormat, typename TDirection, typename TSpec>
+struct DirectionIterator<FormattedFile<TFileFormat, TDirection, TSpec>, TDirection>
 {
-    typedef typename FormattedFile<TFileType, TDirection, TSpec>::TIter Type;
+    typedef typename FormattedFile<TFileFormat, TDirection, TSpec>::TIter Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -420,25 +425,25 @@ struct StorageSwitch<TObject, Dependent<TSpec> >
 // Metafunction Value
 // ----------------------------------------------------------------------------
 
-template <typename TFileType, typename TDirection, typename TSpec>
-struct Value<FormattedFile<TFileType, TDirection, TSpec> > :
-    Value<typename FormattedFile<TFileType, TDirection, TSpec>::TStream> {};
+template <typename TFileFormat, typename TDirection, typename TSpec>
+struct Value<FormattedFile<TFileFormat, TDirection, TSpec> > :
+    Value<typename FormattedFile<TFileFormat, TDirection, TSpec>::TStream> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction Position
 // ----------------------------------------------------------------------------
 
-template <typename TFileType, typename TDirection, typename TSpec>
-struct Position<FormattedFile<TFileType, TDirection, TSpec> > :
-    Position<typename FormattedFile<TFileType, TDirection, TSpec>::TStream> {};
+template <typename TFileFormat, typename TDirection, typename TSpec>
+struct Position<FormattedFile<TFileFormat, TDirection, TSpec> > :
+    Position<typename FormattedFile<TFileFormat, TDirection, TSpec>::TStream> {};
 
 // ----------------------------------------------------------------------------
 // Metafunction DefaultOpenMode
 // ----------------------------------------------------------------------------
 
-template <typename TFileType, typename TDirection, typename TSpec, typename TDummy>
-struct DefaultOpenMode<FormattedFile<TFileType, TDirection, TSpec>, TDummy> :
-    DefaultOpenMode<typename FormattedFile<TFileType, TDirection, TSpec>::TStream, TDummy> {};
+template <typename TFileFormat, typename TDirection, typename TSpec, typename TDummy>
+struct DefaultOpenMode<FormattedFile<TFileFormat, TDirection, TSpec>, TDummy> :
+    DefaultOpenMode<typename FormattedFile<TFileFormat, TDirection, TSpec>::TStream, TDummy> {};
 
 // ============================================================================
 // Functions
@@ -456,9 +461,9 @@ template <typename TException> void _throwIf(TException const & /*e*/, False con
 // Function directionIterator()
 // ----------------------------------------------------------------------------
 
-template <typename TFileType, typename TDirection, typename TSpec>
-inline typename FormattedFile<TFileType, TDirection, TSpec>::TIter &
-directionIterator(FormattedFile<TFileType, TDirection, TSpec> & file, TDirection const &)
+template <typename TFileFormat, typename TDirection, typename TSpec>
+inline typename FormattedFile<TFileFormat, TDirection, TSpec>::TIter &
+directionIterator(FormattedFile<TFileFormat, TDirection, TSpec> & file, TDirection const &)
 {
     return file.iter;
 }
@@ -477,9 +482,9 @@ directionIterator(FormattedFile<TFileType, TDirection, TSpec> & file, TDirection
  * @return TFormat The type as returned from @link FormattedFile#FileFormat @endlink.
  */
 
-template <typename TFileType, typename TDirection, typename TSpec>
-inline typename FileFormat<FormattedFile<TFileType, TDirection, TSpec> >::Type &
-format(FormattedFile<TFileType, TDirection, TSpec> & file)
+template <typename TFileFormat, typename TDirection, typename TSpec>
+inline typename FileFormat<FormattedFile<TFileFormat, TDirection, TSpec> >::Type &
+format(FormattedFile<TFileFormat, TDirection, TSpec> & file)
 {
     return file.format;
 }
@@ -498,9 +503,9 @@ format(FormattedFile<TFileType, TDirection, TSpec> & file)
  * @param[in]     format The @link FormattedFile#FileFormat @endlink to set.
  */
 
-template <typename TFileType, typename TDirection, typename TSpec, typename TFormat>
+template <typename TFileFormat, typename TDirection, typename TSpec, typename TFormat>
 inline void
-setFormat(FormattedFile<TFileType, TDirection, TSpec> & file, TFormat format)
+setFormat(FormattedFile<TFileFormat, TDirection, TSpec> & file, TFormat format)
 {
     assign(file.format, format);
 }
@@ -518,14 +523,14 @@ setFormat(FormattedFile<TFileType, TDirection, TSpec> & file, TFormat format)
  * @param[in,out] file The open FormattedFile for which the format is to be guessed.
  */
 
-template <typename TFileType, typename TSpec>
-inline bool guessFormat(FormattedFile<TFileType, Input, TSpec> & file)
+template <typename TFileFormat, typename TSpec>
+inline bool guessFormat(FormattedFile<TFileFormat, Input, TSpec> & file)
 {
     return guessFormatFromStream(file.stream, file.format);
 }
 
-template <typename TFileType, typename TSpec>
-inline bool guessFormat(FormattedFile<TFileType, Output, TSpec> &)
+template <typename TFileFormat, typename TSpec>
+inline bool guessFormat(FormattedFile<TFileFormat, Output, TSpec> &)
 {
     return true;
 }
@@ -576,9 +581,9 @@ inline void
 _checkThatStreamOutputFormatIsSet(TFormattedFile const &, TFormat const &)
 {}
 
-template <typename TFileType, typename TSpec, typename TFileFormatList>
+template <typename TFileFormat, typename TSpec, typename TFileFormatList>
 inline void
-_checkThatStreamOutputFormatIsSet(FormattedFile<TFileType, Output, TSpec> const &, TagSelector<TFileFormatList> const &format)
+_checkThatStreamOutputFormatIsSet(FormattedFile<TFileFormat, Output, TSpec> const &, TagSelector<TFileFormatList> const &format)
 {
     if (value(format) < 0)
         SEQAN_FAIL("FormattedFile: File format not specified, use setFormat().");
@@ -599,9 +604,9 @@ _checkThatStreamOutputFormatIsSet(FormattedFile<TFileType, Output, TSpec> const 
  * @return bool <tt>true</tt> in the case of success, <tt>false</tt> otherwise.
  */
 
-template <typename TFileType, typename TDirection, typename TSpec,
+template <typename TFileFormat, typename TDirection, typename TSpec,
           typename TStream, typename TCompressionFormat, typename TThrowExceptions>
-inline bool _open(FormattedFile<TFileType, TDirection, TSpec> & file,
+inline bool _open(FormattedFile<TFileFormat, TDirection, TSpec> & file,
                   TStream &stream,
                   TCompressionFormat const &compressionFormat,
                   TThrowExceptions = True())
@@ -623,15 +628,15 @@ inline bool _open(FormattedFile<TFileType, TDirection, TSpec> & file,
     return true;
 }
 
-template <typename TFileType, typename TDirection, typename TSpec, typename TStream>
-inline bool open(FormattedFile<TFileType, TDirection, TSpec> & file,
+template <typename TFileFormat, typename TDirection, typename TSpec, typename TStream>
+inline bool open(FormattedFile<TFileFormat, TDirection, TSpec> & file,
                  TStream &stream)
 {
     return _open(file, stream, _mapFileFormatToCompressionFormat(file.format), False());
 }
 
-template <typename TFileType, typename TSpec, typename TStream, typename TFormat_>
-inline bool open(FormattedFile<TFileType, Output, TSpec> & file,
+template <typename TFileFormat, typename TSpec, typename TStream, typename TFormat_>
+inline bool open(FormattedFile<TFileFormat, Output, TSpec> & file,
                  TStream &stream,
                  Tag<TFormat_> format)
 {
@@ -639,8 +644,8 @@ inline bool open(FormattedFile<TFileType, Output, TSpec> & file,
     return _open(file, stream, _mapFileFormatToCompressionFormat(file.format), False());
 }
 
-template <typename TFileType, typename TSpec, typename TStream, typename TFormats>
-inline bool open(FormattedFile<TFileType, Output, TSpec> & file,
+template <typename TFileFormat, typename TSpec, typename TStream, typename TFormats>
+inline bool open(FormattedFile<TFileFormat, Output, TSpec> & file,
                  TStream &stream,
                  TagSelector<TFormats> format)
 {
@@ -652,10 +657,10 @@ inline bool open(FormattedFile<TFileType, Output, TSpec> & file,
 // Function open(fileName)
 // ----------------------------------------------------------------------------
 
-template <typename TFileType, typename TDirection, typename TSpec, typename TThrowExceptions>
-inline bool _open(FormattedFile<TFileType, TDirection, TSpec> & file,
+template <typename TFileFormat, typename TDirection, typename TSpec, typename TThrowExceptions>
+inline bool _open(FormattedFile<TFileFormat, TDirection, TSpec> & file,
                   const char *fileName,
-                  int openMode = DefaultOpenMode<FormattedFile<TFileType, TDirection, TSpec> >::VALUE,
+                  int openMode = DefaultOpenMode<FormattedFile<TFileFormat, TDirection, TSpec> >::VALUE,
                   TThrowExceptions = True())
 {
     if (!open(file.stream, fileName, openMode))
@@ -688,10 +693,10 @@ inline bool _open(FormattedFile<TFileType, TDirection, TSpec> & file,
     return true;
 }
 
-template <typename TFileType, typename TDirection, typename TSpec>
-inline bool open(FormattedFile<TFileType, TDirection, TSpec> & file,
+template <typename TFileFormat, typename TDirection, typename TSpec>
+inline bool open(FormattedFile<TFileFormat, TDirection, TSpec> & file,
                  const char *fileName,
-                 int openMode = DefaultOpenMode<FormattedFile<TFileType, TDirection, TSpec> >::VALUE)
+                 int openMode = DefaultOpenMode<FormattedFile<TFileFormat, TDirection, TSpec> >::VALUE)
 {
     return _open(file, fileName, openMode, False());
 }
@@ -710,11 +715,11 @@ inline bool open(FormattedFile<TFileType, TDirection, TSpec> & file,
  * @return bool <tt>true</tt> in the case of success, <tt>false</tt> otherwise.
  */
 
-template <typename TFileType, typename TDirection, typename TSpec>
-inline bool close(FormattedFile<TFileType, TDirection, TSpec> & file)
+template <typename TFileFormat, typename TDirection, typename TSpec>
+inline bool close(FormattedFile<TFileFormat, TDirection, TSpec> & file)
 {
-    setFormat(file, typename FileFormat<FormattedFile<TFileType, TDirection, TSpec> >::Type());
-    file.iter = typename DirectionIterator<FormattedFile<TFileType, TDirection, TSpec>, TDirection>::Type();
+    setFormat(file, typename FileFormat<FormattedFile<TFileFormat, TDirection, TSpec> >::Type());
+    file.iter = typename DirectionIterator<FormattedFile<TFileFormat, TDirection, TSpec>, TDirection>::Type();
     return close(file.stream);
 }
 
@@ -732,9 +737,9 @@ inline bool close(FormattedFile<TFileType, TDirection, TSpec> & file)
  * @return bool <tt>true</tt> in the case of success, <tt>false</tt> otherwise.
  */
 
-template <typename TFileType, typename TDirection, typename TSpec>
-inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<TFileType, TDirection, TSpec>::TStream> >, bool)
-atEnd(FormattedFile<TFileType, TDirection, TSpec> const & file)
+template <typename TFileFormat, typename TDirection, typename TSpec>
+inline SEQAN_FUNC_ENABLE_IF(Is<InputStreamConcept<typename FormattedFile<TFileFormat, TDirection, TSpec>::TStream> >, bool)
+atEnd(FormattedFile<TFileFormat, TDirection, TSpec> const & file)
 {
     return atEnd(file.iter);
 }
@@ -743,16 +748,16 @@ atEnd(FormattedFile<TFileType, TDirection, TSpec> const & file)
 // Function position()
 // ----------------------------------------------------------------------------
 
-template <typename TFileType, typename TSpec>
-inline typename Position<FormattedFile<TFileType, Output, TSpec> >::Type
-position(FormattedFile<TFileType, Output, TSpec> & file)
+template <typename TFileFormat, typename TSpec>
+inline typename Position<FormattedFile<TFileFormat, Output, TSpec> >::Type
+position(FormattedFile<TFileFormat, Output, TSpec> & file)
 {
     return file.stream.tellp();
 }
 
-template <typename TFileType, typename TSpec>
-inline typename Position<FormattedFile<TFileType, Input, TSpec> >::Type
-position(FormattedFile<TFileType, Input, TSpec> & file)
+template <typename TFileFormat, typename TSpec>
+inline typename Position<FormattedFile<TFileFormat, Input, TSpec> >::Type
+position(FormattedFile<TFileFormat, Input, TSpec> & file)
 {
     return file.stream.tellg();
 }
@@ -761,16 +766,16 @@ position(FormattedFile<TFileType, Input, TSpec> & file)
 // Function setPosition()
 // ----------------------------------------------------------------------------
 
-template <typename TFileType, typename TSpec, typename TPosition>
+template <typename TFileFormat, typename TSpec, typename TPosition>
 inline bool
-setPosition(FormattedFile<TFileType, Output, TSpec> & file, TPosition pos)
+setPosition(FormattedFile<TFileFormat, Output, TSpec> & file, TPosition pos)
 {
     return (TPosition)file.stream.rdbuf()->pubseekpos(pos, std::ios_base::out) == pos;
 }
 
-template <typename TFileType, typename TSpec, typename TPosition>
+template <typename TFileFormat, typename TSpec, typename TPosition>
 inline bool
-setPosition(FormattedFile<TFileType, Input, TSpec> & file, TPosition pos)
+setPosition(FormattedFile<TFileFormat, Input, TSpec> & file, TPosition pos)
 {
     return (TPosition)file.stream.rdbuf()->pubseekpos(pos, std::ios_base::in) == pos;
 }
@@ -790,16 +795,16 @@ setPosition(FormattedFile<TFileType, Input, TSpec> & file, TPosition pos)
  * @return TDependentContext The dependent context, type as returned from @link FormattedFile#FormattedFileContext @endlink.
  */
 
-template <typename TFileType, typename TDirection, typename TSpec>
-inline typename FormattedFileContext<FormattedFile<TFileType, TDirection, TSpec>, Dependent<> >::Type &
-context(FormattedFile<TFileType, TDirection, TSpec> & file)
+template <typename TFileFormat, typename TDirection, typename TSpec>
+inline typename FormattedFileContext<FormattedFile<TFileFormat, TDirection, TSpec>, Dependent<> >::Type &
+context(FormattedFile<TFileFormat, TDirection, TSpec> & file)
 {
     return file.context;
 }
 
-template <typename TFileType, typename TDirection, typename TSpec>
-inline typename FormattedFileContext<FormattedFile<TFileType, TDirection, TSpec>, Dependent<> >::Type const &
-context(FormattedFile<TFileType, TDirection, TSpec> const & file)
+template <typename TFileFormat, typename TDirection, typename TSpec>
+inline typename FormattedFileContext<FormattedFile<TFileFormat, TDirection, TSpec>, Dependent<> >::Type const &
+context(FormattedFile<TFileFormat, TDirection, TSpec> const & file)
 {
     return file.context;
 }
@@ -904,9 +909,9 @@ _getCompressionExtensions(
  * This is a shortcut to @link FormattedFile#getFileExtensions @endlink.
  */
 
-template <typename TFileType, typename TDirection, typename TSpec>
+template <typename TFileFormat, typename TDirection, typename TSpec>
 static std::vector<std::string>
-getFileExtensions(FormattedFile<TFileType, TDirection, TSpec> const & file)
+getFileExtensions(FormattedFile<TFileFormat, TDirection, TSpec> const & file)
 {
     return file.getFileExtensions();
 }

@@ -997,6 +997,19 @@ template <
 
 
 //////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn IndexEsa#textAt
+ * @headerfile <seqan/index.h>
+ * @brief Shortcut for <tt>value(indexText(..), ..)</tt>.
+ *
+ * @signature TValue textAt(position, index);
+ *
+ * @param[in] index The @link Index @endlink object holding the fibre.
+ * @param[in] position A position in the fibre on which the value should be accessed.
+ *
+ * @return TValue A reference or proxy to the value in the text.
+ */
+
 	template <typename TPos, typename TIndex>
 	inline typename Reference<typename Fibre<TIndex, FibreRawText>::Type>::Type 
 	textAt(TPos i, TIndex &index) {
@@ -1076,6 +1089,19 @@ template <
 	}
 
 //////////////////////////////////////////////////////////////////////////////
+/*!
+ * @fn IndexEsa#saAt
+ * @headerfile <seqan/index.h>
+ * @brief Shortcut for <tt>value(indexSA(..), ..)</tt>.
+ *
+ * @signature TValue saAt(position, index);
+ *
+ * @param[in] index The @link Index @endlink object holding the fibre.
+ * @param[in] position A position in the array on which the value should be accessed.
+ *
+ * @return TValue A reference or proxy to the value in the suffix array.
+ */
+
 	template <typename TPos, typename TIndex>
 	SEQAN_HOST_DEVICE inline typename Reference<typename Fibre<TIndex, FibreSA>::Type>::Type saAt(TPos i, TIndex &index) {
 		return value(getFibre(index, FibreSA()), i);
@@ -1347,32 +1373,40 @@ template <
 	}
 
 //////////////////////////////////////////////////////////////////////////////
+
+/*!
+ * @fn IndexEsa#indexSA
+ * @headerfile <seqan/index.h>
+ * @brief Shortcut for <tt>getFibre(.., EsaSA)</tt>.
+ *
+ * @signature TSA indexSA(index);
+ * 
+ * @param[in] index The @link Index @endlink object holding the fibre.
+ *
+ * @return TSA A reference to the @link IndexEsaFibres#EsaSA @endlink fibre (suffix array).
+ */
+
 	template <typename TText, typename TSpec>
 	SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec>, FibreSA>::Type & indexSA(Index<TText, TSpec> &index) { return getFibre(index, FibreSA()); }
 	template <typename TText, typename TSpec>
 	SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreSA>::Type & indexSA(Index<TText, TSpec> const &index) { return getFibre(index, FibreSA()); }
 
 //////////////////////////////////////////////////////////////////////////////
-// TODO(singer): should this be documented? 
-// TODO(weese): better not, we don't want to encourage users to use it
+
+// NOTE(esiragusa): indexRawSA() is internal and must stay invisible in the doc.
+
 /*
- * @fn Index#indexRawSA
+ * @fn IndexEsa#indexRawSA
  * @headerfile <seqan/index.h>
  * @brief Shortcut for <tt>getFibre(.., EsaRawSA)</tt>.
  *
- * @signature TSa indexRawSA(index);
+ * @signature TSA indexRawSA(index);
  * 
  * @param[in] index The @link Index @endlink object holding the fibre.
  *
- * @return TSa A reference to the @link IndexEsaFibres#EsaRawSA @endlink fibre (suffix array).
+ * @return TSA A reference to the @link IndexEsaFibres#EsaRawSA @endlink fibre (suffix array).
  */
 
-/*
-	template <typename TText, typename TSpec>
-	inline typename Fibre<Index<TText, TSpec>, FibreRawSA>::Type const & indexRawSA(Index<TText, TSpec> &index) { return getFibre(index, FibreRawSA()); }
-	template <typename TText, typename TSpec>
-	inline typename Fibre<Index<TText, TSpec> const, FibreRawSA>::Type const & indexRawSA(Index<TText, TSpec> const &index) { return getFibre(index, FibreRawSA()); }
-*/
 	template <typename TText, typename TSpec>
 	inline typename Fibre<Index<TText, TSpec>, FibreRawSA>::Type indexRawSA(Index<TText, TSpec> &index) { return getFibre(index, FibreRawSA()); }
 	template <typename TText, typename TSpec>

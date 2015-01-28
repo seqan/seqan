@@ -43,17 +43,12 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-/*!
- * @defgroup UcscFileIO
- * @brief Tags for UCSC I/O.
- */
-
 // ----------------------------------------------------------------------------
 // Tag Ucsc
 // ----------------------------------------------------------------------------
 
 /*!
- * @tag UcscFileIO#Ucsc
+ * @tag FileFormats#Ucsc
  * @headerfile <seqan/ucsc_io.h>
  * @brief UCSC Genome browser annotation file (aka knownGene format).
  *
@@ -71,7 +66,7 @@ typedef Tag<Ucsc_<UcscKnownGene_> > UcscKnownGene;
 // ----------------------------------------------------------------------------
 
 /*!
- * @tag UcscFileIO#UcscIsoforms
+ * @tag FileFormats#UcscIsoforms
  * @headerfile <seqan/ucsc_io.h>
  * @brief UCSC Genome browser isoform file (aka knownIsoforms format).
  *

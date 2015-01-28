@@ -66,21 +66,15 @@ struct SimpleIntervalsIOContext
     CharString buffer;
 };
 
-/*!
- * @defgroup SimpleIntervalsFileIO SimpleIntervals File I/O
- * @brief Support for .intervals file.
- *
- * The file contains format in the format <tt>CHR:POS</tt> or <tt>CHR:BEGIN-END</tt> in 1-based coordinates.
- */
-
 // ----------------------------------------------------------------------------
 // Tag SimpleIntervals
 // ----------------------------------------------------------------------------
 
 /*!
- * @tag SimpleIntervalsFileIO#SimpleIntervals
+ * @tag FileFormats#SimpleIntervals
  * @headerfile <seqan/simple_intervals_io.h>
- * @brief Tag for the simple intervals file format.
+ * @brief Tag for the simple .intervals file format.
+ * The file contains format in the format <tt>CHR:POS</tt> or <tt>CHR:BEGIN-END</tt> in 1-based coordinates.
  */
 
 struct SimpleIntervals_;
@@ -98,7 +92,8 @@ typedef Tag<SimpleIntervals_> SimpleIntervals;
 // Function readRecord()
 // ----------------------------------------------------------------------------
 
-/*!
+// NOTE(esiragusa): dox disabled.
+/*
  * @fn SimpleIntervalsFileIO#readRecord
  * @headerfile <seqan/simple_intervals_io.h>
  * @brief Read an intervals record.
@@ -134,7 +129,8 @@ void readRecord(GenomicRegion & record,
 // Function writeRecord()
 // ----------------------------------------------------------------------------
 
-/*!
+// NOTE(esiragusa): dox disabled.
+/*
  * @fn SimpleIntervalsFileIO#writeRecord
  * @headerfile <seqan/simple_intervals_io.h>
  * @brief Write out a @link GenomicRegion @endlink to an intervals file.

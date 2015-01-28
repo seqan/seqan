@@ -44,15 +44,10 @@ namespace seqan {
 // ============================================================================
 
 /*!
- * @defgroup SamBamIO SAM/BAM I/O
- * @brief Tags for identifying SAM/BAM format.
- */
-
-/*!
- * @tag SamBamIO#Bam
+ * @tag FileFormats#Bam
  * @brief Identify the BAM format.
  *
- * @tag SamBamIO#Sam
+ * @tag FileFormats#Sam
  * @brief Identify the SAM format.
  */
 
