@@ -619,39 +619,6 @@ struct IsContiguous<T const>
  * @param[in,out] seq The sequence to remove the last element from.
  */
 
-/*!
- * @mfn StringConcept#Infix
- * @brief Returns the infix type for a sequence.
- *
- * @signature Infix<TSequence>::Type
- *
- * @tparam TSequence The type for getting the infix type of.
- *
- * @return Type The infix type for <tt>TSequence</tt>.
- */
-
-/*!
- * @mfn StringConcept#Suffix
- * @brief Returns the suffix type for a sequence.
- *
- * @signature Suffix<TSequence>::Type
- *
- * @tparam TSequence The type for getting the suffix type of.
- *
- * @return Type The suffix type for <tt>TSequence</tt>.
- */
-
-/*!
- * @mfn StringConcept#Prefix
- * @brief Returns the prefix type for a sequence.
- *
- * @signature Prefix<TSequence>::Type
- *
- * @tparam TSequence The type for getting the prefix type of.
- *
- * @return Type The prefix type for <tt>TSequence</tt>.
- */
-
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_CONTAINER_CONCEPT_H_

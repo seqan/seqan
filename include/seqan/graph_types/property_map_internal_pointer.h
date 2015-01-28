@@ -216,7 +216,7 @@ property(InternalPointerPropertyMap<TValue TClass::*, MEMBER_POINTER> const &,
  * @param[in] d   A vertex or edge descriptor that identifies the item in the property map.
  *               Types: @link VertexDescriptor @endlink, @link Graph#EdgeDescriptor @endlink
  *
- * @return TValue Get-value of the item in the property map of type @link InternalPropertyMap#GetValue GetValue @endlink.
+ * @return TValue Get-value of the item in the property map of type @link PropertyMapConcept#GetValue GetValue @endlink.
  */
 
 template <typename TClass, typename TValue, TValue TClass::* MEMBER_POINTER, typename TEdgeDescriptor>

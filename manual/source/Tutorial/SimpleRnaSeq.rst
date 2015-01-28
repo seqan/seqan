@@ -211,7 +211,7 @@ Assignment 2
 
            resize(intervals, length(store.contigStore));
 
-        Use :dox:`SequenceConcept#appendValue` to add a new ``TInverval`` object to the inner string, see :dox:`IntervalAndCargo::IntervalAndCargo IntervalAndCargo constructor` for the constructor.
+        Use :dox:`StringConcept#appendValue` to add a new ``TInverval`` object to the inner string, see :dox:`IntervalAndCargo::IntervalAndCargo IntervalAndCargo constructor` for the constructor.
 
    Solution
      .. container:: foldable

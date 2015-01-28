@@ -72,7 +72,7 @@ Specialization ``Dependent<Generous>``
 Building String Sets
 ~~~~~~~~~~~~~~~~~~~~
 
-Use the function :dox:`SequenceConcept#appendValue` to append strings to string sets.
+Use the function :dox:`StringConcept#appendValue` to append strings to string sets.
 
 .. code-block:: cpp
 

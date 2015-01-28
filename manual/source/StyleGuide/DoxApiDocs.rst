@@ -129,12 +129,12 @@ Definition of an adaption with the given name and an optional label.
 An adaption is a collection of global interface functions and
 metafunctions that adapt a type outside the SeqAn library to a concept
 in the SeqAn library. For example, the STL ``std::string`` class can be
-adapted to the interface of the ``SequenceConcept`` concept.
+adapted to the interface of the ``StringConcept`` concept.
 
 .. code-block:: cpp
 
     /*!
-     * @adaption StdStringToSequenceConcept std::string to Sequence concept
+     * @adaption StdStringToStringConcept std::string to Sequence concept
      * @brief The <tt>std::string</tt> class is adapted to the Sequence concept.
      */
 
@@ -275,8 +275,8 @@ construct used in the documentation.
 .. code-block:: cpp
 
     /*!
-     * @concept SequenceConcept Sequence
-     * @signature concept SequenceConcept;
+     * @concept StringConcept Sequence
+     * @signature concept StringConcept;
      * @extends ContainerConcept
      * @brief Concept for sequence types.
      */

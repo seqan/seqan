@@ -93,7 +93,7 @@ inline void _parseAppName(ArgumentParser & parser, std::string const & candidate
  * @signature void addLine(parser, line);
  *
  * @param[in,out] parser The ArgumentParser to add the line to.
- * @param[in]     line   The line of text to add, @link SequenceConcept @endlink of <tt>char</tt>.
+ * @param[in]     line   The line of text to add, @link StringConcept @endlink of <tt>char</tt>.
  */
 
 template <typename TString>
@@ -113,7 +113,7 @@ inline void addLine(ArgumentParser & me, TString const & line)
  * @signature void addSection(parser, title);
  *
  * @param[in,out] parser The ArgumentParser to add the line to.
- * @param[in]     title  The title to add, @link SequenceConcept @endlink of <tt>char</tt>.
+ * @param[in]     title  The title to add, @link StringConcept @endlink of <tt>char</tt>.
  *
  * @code{.cpp}
  * ArgumentParser parser;

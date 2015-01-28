@@ -2637,7 +2637,7 @@ std::cout << "reading took " << omp_get_wtime() - start << " seconds.\n";
  * @param[in] shape A @link Shape @endlink object.
  * 
  * @return TSAInfix All positions where the q-gram stored in <tt>shape</tt> occurs in the text (see @link
- *                 QGramIndexFibres#QGramText @endlink).  Tupes: @link ContainerConcept#Infix @endlink<@link Fibre
+ *                 QGramIndexFibres#QGramText @endlink).  Tupes: @link SegmentableConcept#Infix @endlink<@link Fibre
  *                 @endlink<TIndex, QGramSA>::Type>::Type>.
  * 
  * The necessary index tables are built on-demand via @link Index#indexRequire @endlink if index is not <tt>const</tt>.

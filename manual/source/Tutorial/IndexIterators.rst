@@ -303,7 +303,7 @@ Assignment 4
      .. container:: foldable
 
 	First we have to create a :dox:`StringSet` of :dox:`CharString` (shortcut for ``String<char>``) and append the 3 strings to it.
-	This could also be done by using :dox:`SequenceConcept#resize` and then assigning the members with ``operator[]``.
+	This could also be done by using :dox:`StringConcept#resize` and then assigning the members with ``operator[]``.
 	The first template argument of the index class has to be adapted and is now a StringSet.
 
 	.. includefrags:: demos/tutorial/index/index_assignment1.cpp
