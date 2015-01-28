@@ -32,10 +32,8 @@
 // Author: Andreas Gogol-Doering <andreas.doering@mdc-berlin.de>
 // ==========================================================================
 // Default implementations for sequences.
-//
+
 // TODO(holtgrew): There appears to be some overlap with string_base.h. Maybe it is a good idea to move everything related to strings to string_base.h and remove all default-container behaviour.
-// TODO(holtgrew): Each value is a container by itself. This is highly undesirable since it introduces the set-of-sets problem and when users confuse atomic values with containers, bugs are hard to find. This feature should be removed.
-// ==========================================================================
 
 // TODO(holtgrew): These functions have (documentation wise) mostly gone into Container, Sequence Concepts and String class.  This is where they belong.
 
