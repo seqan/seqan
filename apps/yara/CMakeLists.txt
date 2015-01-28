@@ -148,7 +148,7 @@ install (TARGETS yara_indexer yara_mapper
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/yara for SeqAn release builds.
-install (FILES LICENSE README
+install (FILES LICENSE README.rst
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
 
 # ----------------------------------------------------------------------------
@@ -174,6 +174,7 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:yara")
   set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Yara - Yet Another Read Aligner")
   set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Enrico Siragusa <enrico.siragusa@fu-berlin.de>")
   set (CPACK_PACKAGE_VENDOR "SeqAn Team, FU Berlin")
+  set (CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.rst")
 
   seqan_configure_cpack_app (yara "yara")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:yara")
