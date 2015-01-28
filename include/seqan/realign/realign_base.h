@@ -954,13 +954,13 @@ void AnsonMyersRealigner_<TFragmentStore>::_endContig(unsigned contigID)
  * @headerfile <seqan/align.h>
  * @brief Fix a band for alignment given sequences (for their lengths) and an @link AlignConfig @endlink.
  *
- * @signature void fixBand(lowerDiag, upperDiag, seqH, seqV, alignConfig);
+ * @signature void _fixBandSize(lowerDiag, upperDiag, seqH, seqV, alignConfig);
  *
  * @param[in,out] lowerDiag   The lower band position (<tt>int</tt>) to adjust.
  * @param[in,out] upperDiag   The upper band position (<tt>int</tt>) to adjust.
- * @param[in]     seqH        The @link SequenceConcept sequence @endlink to use in horizontal direction of alignment
+ * @param[in]     seqH        The @link ContainerConcept container @endlink to use in horizontal direction of alignment
  *                            matrix.
- * @param[in]     seqV        The @link SequenceConcept sequence @endlink to use in vertical direction of alignment
+ * @param[in]     seqV        The @link ContainerConcept container @endlink to use in vertical direction of alignment
  *                            matrix.
  * @param[in]     alignConfig The @link AlignConfig @endlink to use for the alignment configuration.
  */

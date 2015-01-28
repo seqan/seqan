@@ -45,6 +45,16 @@ namespace seqan {
 // Forwards
 // ============================================================================
 
+/*!
+ * @mfn FormattedFile#FileFormat
+ * @brief Metafunction for retrieving the file format type of a formatted file.
+ *
+ * @signature FileFormat<TFormattedFile>::Type;
+ *
+ * @tparam TFormattedFile The formatted file type to query for its file format type.
+ * @return Type           The resulting size type.
+ */
+
 template <typename TFormattedFile>
 struct FileFormat;
 
@@ -464,7 +474,7 @@ directionIterator(FormattedFile<TFileType, TDirection, TSpec> & file, TDirection
  * @signature TFormat format(file);
  *
  * @param[in] file The FormattedFile to check.
- * @return TFormat The type as returned from @link FileFormat @endlink.
+ * @return TFormat The type as returned from @link FormattedFile#FileFormat @endlink.
  */
 
 template <typename TFileType, typename TDirection, typename TSpec>
@@ -485,7 +495,7 @@ format(FormattedFile<TFileType, TDirection, TSpec> & file)
  * @signature void setFormat(file, format);
  *
  * @param[in,out] file The FormattedFile to change.
- * @param[in]     format The @link FileFormat @endlink to set.
+ * @param[in]     format The @link FormattedFile#FileFormat @endlink to set.
  */
 
 template <typename TFileType, typename TDirection, typename TSpec, typename TFormat>

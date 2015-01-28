@@ -141,7 +141,7 @@ In order to store the similarities between the pattern and different text positi
    :fragment: score
 
 Note that in contrast to the first two string definitions we do not know the values of the different positions in the string in advance.
-In order to dynamically adjust the length of the new string to the text we can use the function :dox:`SequenceConcept#resize`.
+In order to dynamically adjust the length of the new string to the text we can use the function :dox:`StringConcept#resize`.
 The resize function is not a member function of the string class because SeqAn is not object oriented in the typical sence (we will see later how we adapt SeqAn to object oriented programming).
 Therefore, instead of writing ``string.resize(newLength)`` we use ``resize(string, newLength)``.
 

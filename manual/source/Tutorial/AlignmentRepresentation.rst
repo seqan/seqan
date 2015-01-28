@@ -246,7 +246,7 @@ In the end we define the actual AlignmentGraph type.
 .. includefrags:: demos/tutorial/alignments/alignment_representation_ag.cpp
    :fragment: typedef
 
-We first create our two input sequences ``TTGT`` and ``TTAGT`` append them to the StringSet ``strings`` using the :dox:`SequenceConcept#appendValue` function and pass the initialized ``strings`` object as a parameter to the constructor of the AlignmentGraph ``alignG``.
+We first create our two input sequences ``TTGT`` and ``TTAGT`` append them to the StringSet ``strings`` using the :dox:`StringConcept#appendValue` function and pass the initialized ``strings`` object as a parameter to the constructor of the AlignmentGraph ``alignG``.
 
 .. includefrags:: demos/tutorial/alignments/alignment_representation_ag.cpp
    :fragment: init

@@ -63,9 +63,11 @@ class BufferedStreamBuf;
 // Class BufferedStream
 // ----------------------------------------------------------------------------
 
+// TODO(esiragusa): @extends BasicStream::Type
+
 /*!
  * @class BufferedStream
- * @extends BasicStream
+ * @implements StreamConcept
  * @headerfile <seqan/stream.h>
  * @brief Adds a buffer to another @link StreamConcept stream @endlink.
  *
