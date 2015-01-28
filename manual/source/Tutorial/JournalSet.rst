@@ -205,7 +205,7 @@ Assignment 1
    Objective
      Download the fasta file :download:`sequences.fasta <sequences.fasta>` which contains some DNA sequences.
      Write a method called ``loadAndJoin`` that gets a Journal Set and a stream file pointing to the downloaded fasta file.
-     The method reads in the sequences one after another using SeqAn's :dox:`RecordReader`.
+     The method reads in the sequences one after another using SeqAn's :dox:`SeqFileIn`.
      The first read sequences is set to the reference sequence.
      All following sequences are first appended to the StringSet and afterwards joined to the StringSet using a global alignment strategy and the most compact form.
 

@@ -176,6 +176,21 @@ struct FileFormat<FormattedFile<Fastq, Output, TSpec> >
 // Function readRecord(); Qualities in seq string
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn SeqFileIn#readRecord
+ * @brief Read one @link FormattedFileRecordConcept @endlink from a @link SeqFileIn @endlink object.
+ *
+ * @signature void readRecord(meta, seq, qual, fileIn);
+ *
+ * @param[out] meta         The @link StringConcept @endlink object where to read the meta information into.
+ * @param[out] seq          The @link StringConcept @endlink object where to read the sequence information into.
+ * @param[out] qual         The @link StringConcept @endlink object where to read the quality information into.
+ * @param[in,out] fileIn    The @link SeqFileIn @endlink object to read from.
+ *
+ * @throw IOError On low-level I/O errors.
+ * @throw ParseError On high-level file format errors.
+ */
+
 template <typename TSpec, typename TIdString, typename TSeqString>
 inline SEQAN_FUNC_ENABLE_IF(And<Is<InputStreamConcept<typename FormattedFile<Fastq, Input, TSpec>::TStream> >,
                                 Not<HasQualities<typename Value<TSeqString>::Type> > >, void)
@@ -211,6 +226,13 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile
 // ----------------------------------------------------------------------------
 // Function readRecords()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn SeqFileIn#readRecords
+ * @brief Read many @link FormattedFileRecordConcept @endlink from a @link SeqFileIn @endlink object.
+ * @signature void readRecords(metas, seqs, quals, fileIn, numRecord);
+ * @see SeqFileIn#readRecord
+ */
 
 template <typename TPtrA, typename TPtrB>
 inline void 
@@ -316,6 +338,21 @@ inline void readRecords(TIdStringSet & meta,
 // Function writeRecord()
 // ----------------------------------------------------------------------------
 
+/*!
+ * @fn SeqFileOut#writeRecord
+ * @brief Write one @link FormattedFileRecordConcept @endlink into a @link SeqFileOut @endlink object.
+ *
+ * @signature void writeRecord(fileOut, meta, seq, qual);
+ *
+ * @param[in,out] fileOut   The @link SeqFileOut @endlink object to write into.
+ * @param[in] meta          The @link StringConcept @endlink object where to read the meta information from.
+ * @param[in] seq           The @link StringConcept @endlink object where to read the sequence information from.
+ * @param[in] qual          The @link StringConcept @endlink object where to read the quality information from.
+ *
+ * @throw IOError On low-level I/O errors.
+ * @throw ParseError On high-level file format errors.
+ */
+
 template <typename TSpec, typename TIdString, typename TSeqString>
 inline SEQAN_FUNC_ENABLE_IF(Is<OutputStreamConcept<typename FormattedFile<Fastq, Output, TSpec>::TStream> >, void)
 writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
@@ -342,6 +379,13 @@ writeRecord(FormattedFile<Fastq, Output, TSpec> & file,
 // ----------------------------------------------------------------------------
 // Function writeRecords()
 // ----------------------------------------------------------------------------
+
+/*!
+ * @fn SeqFileOut#writeRecords
+ * @brief Write many @link FormattedFileRecordConcept @endlink into a @link SeqFileOut @endlink object.
+ * @signature void writeRecords(fileOut, metas, seqs, quals);
+ * @see SeqFileOut#writeRecord
+ */
 
 template <typename TSpec, typename TIdStringSet, typename TSeqStringSet>
 inline void

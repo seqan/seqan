@@ -78,9 +78,9 @@ The following program reads a FASTA file called ``example.fa`` and prints out th
 
 .. includefrags:: demos/tutorial/seq_io/example1.cpp
 
-We call the :dox:`SeqFileIn::SeqFileIn SeqFileIn constructor` with the path to the file to read.
+We call the :dox:`FormattedFile#FormattedFile SeqFileIn constructor` with the path to the file to read.
 Successively, we call the function :dox:`SeqFileIn#readRecord` to read the first record from the file.
-Note that, differently from all others :dox:`FileIn` classes, :dox:`SeqFileIn#readRecord` accepts **separate** identifier and sequence :dox:`String Strings` rather than one single record object.
+Note that, differently from all others :dox:`FormattedFileIn` classes, :dox:`SeqFileIn#readRecord` accepts **separate** identifier and sequence :dox:`String Strings` rather than one single record object.
 
 Assignment 1
 """"""""""""
@@ -134,6 +134,12 @@ Assignment 2
 
 Accessing Records in Batches
 ----------------------------
+
+There are three use cases for reading or writing record-based files:
+
+#. read or write the file **record by record**;
+#. read or write a **batch of records**, e.g. 100k records at a time;
+#. read or write **all records** from or to the file.
 
 The class :dox:`SeqFileIn` provides the functions :dox:`SeqFileIn#readRecord` and :dox:`SeqFileIn#readRecords`, while the class :dox:`SeqFileOut` provides the functions :dox:`SeqFileOut#writeRecord` and :dox:`SeqFileOut#writeRecords`.
 
@@ -194,7 +200,7 @@ Accessing Qualities
 
 Functions :dox:`SeqFileIn#readRecord`, :dox:`SeqFileIn#readRecords`, :dox:`SeqFileOut#writeRecord` and :dox:`SeqFileOut#writeRecords` are available in two variants:
 
-#. the first variant accepts only the sequence identifier and sequence characters, besides the :dox:`SeqFile` object;
+#. the first variant accepts only the sequence identifier and sequence characters, besides the :dox:`SeqFileIn` object;
 #. the second variant accepts an additional :dox:`CharString` for a PHRED base quality string.
 
 If the first variant is used on an output file containing qualities, e.g. a FASTQ file, then :dox:`SeqFileOut#writeRecord` writes qualities as ``'I'``, i.e. PHRED score 40.

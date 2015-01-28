@@ -125,7 +125,7 @@ void catBamFiles(TWriter &writer, StringSet<CharString> &inFiles, AppOptions con
             // For Sam parallel batch processing is faster
             while (!atEnd(reader))
             {
-                unsigned size = readBatch(records, reader, 100000);
+                unsigned size = readRecords(records, reader, 100000);
                 writeRecords(writer, prefix(records, size));
                 numRecords += size;
             }

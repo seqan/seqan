@@ -26,7 +26,7 @@ This tutorial shows how to compute multiple sequence alignments (MSAs) using Seq
 First, some background on MSA will be given and the tutorial will then explain how to create multiple sequence alignments.
 
 Note that this tutorial focuses on the ``<seqan/graph_msa.h>`` module whose purpose is the computation of **global** MSAs, i.e. similar to SeqAn::T-Coffe :cite:`Rausch2008` or ClustalW :cite:`Thompson1994`.
-If you are interested in computing consensus sequences of multiple overlapping sequences (e.g. NGS reads), similar to assembly after the layouting step, then have a look at the :ref:`tutorial-consensus-computation` tutorial.
+If you are interested in computing consensus sequences of multiple overlapping sequences (e.g. NGS reads), similar to assembly after the layouting step, then have a look at the :ref:`tutorial-consensus-alignment` tutorial.
 
 While the pairwise alignment of sequences can be computed exactly in quadratic time usind dynamic programming, the computation of exact MSAs is harder.
 Given :math:`n` sequences of length :math:`\ell`, the exact computation of an MSA is only feasible in time :math:`\mathcal{O}(\ell^n)`.

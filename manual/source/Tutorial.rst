@@ -48,7 +48,6 @@ Tutorial
    Tutorial/VcfIO
    Tutorial/BedIO
    Tutorial/GffGtfIO
-   .. DISABLED Tutorial/CustomIO
 
    Tutorial/Modifiers
 

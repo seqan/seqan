@@ -144,7 +144,7 @@ The following program reads a file named ``example.sam`` and prints its contents
 .. includefrags:: demos/tutorial/bam_io/example1.cpp
 
 We instantiate a :dox:`BamFileIn` object for reading and a :dox:`BamFileOut` object for writing.
-First, we read the BAM header with :dox:`BamFileIn#readRecord` and we write it with :dox:`BamFileOut#writeRecord`.
+First, we read the BAM header with :dox:`FormattedFileIn#readRecord` and we write it with :dox:`FormattedFileOut#writeRecord`.
 Then, we read each record from the input file and write it to the output file.
 The alignment records are read into :dox:`BamAlignmentRecord` objects, which we will focus on below.
 
