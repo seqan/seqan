@@ -353,7 +353,7 @@ struct FormattedFile
         std::vector<std::string> extensions;
 
         _getCompressionExtensions(extensions,
-                                  TFileFormat(),
+                                  TFileFormats(),
                                   typename FileFormat<TStream>::Type(),
 //                                  true);
                                   IsSameType<TDirection, Output>::VALUE);
