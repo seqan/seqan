@@ -89,7 +89,7 @@ void getCwd(TString & string)
 #ifdef PLATFORM_WINDOWS
     _getcwd(cwd, 1000);
 #else
-    getcwd(cwd, 1000);
+    ignoreUnusedVariableWarning(getcwd(cwd, 1000));
 #endif
 
     assign(string, cwd);
