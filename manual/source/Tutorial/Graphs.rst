@@ -382,7 +382,7 @@ Assignment 4
 	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
 	   :fragment: vertex-map
 
-	To iterate through the graph in depth-first-search ordering we have to define an :dox:`Container#Iterator` with the specialization :dox:`DfsPreorderIterator`.
+	To iterate through the graph in depth-first-search ordering we have to define an :dox:`ContainerConcept#Iterator` with the specialization :dox:`DfsPreorderIterator`.
 
 	The vertex descriptor of the first vertex is ``0`` and we choose this vertex as a starting point for the depth-first-search through our graph ``g`` with the iterator ``dfsIt``:
 
@@ -455,7 +455,7 @@ Indeed this is the case for our graph type but it is not in general.
 The cargo of a graph might as well be a string of characters or any other type.
 So, we first have to find out how to access our internal edge map.
 We do not need to copy the information to a new map.
-Instead we can define an object of the type :dox:`InternalMap` of our type ``TCargo``.
+Instead we can define an object of the type :dox:`InternalPropertyMap` of our type ``TCargo``.
 It will automatically find the edge labels in the graph when the function :dox:`PropertyMapConcept#property` or :dox:`PropertyMapConcept#getProperty` is called on it with the corresponding edge descriptor.
 
 The output containers of the shortest-path algorithm are two property maps, ``predMap`` and ``distMap``.

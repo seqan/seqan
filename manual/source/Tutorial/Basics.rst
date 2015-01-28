@@ -127,7 +127,7 @@ Assignment 1
          In the next part of the code we want to count, how often a specific letter of the alphabet occurs in the string.
          To obtain the size type of the used alphabet we call the SeqAn metafunction :dox:`ContainerConcept#Size Size` and define a :dox:`String` of that type to hold the counters.
          The :dox:`String` has here basically the same functionality as a STL ``vector``.
-         Since alphabets are mapped to a contiguous interval of the natural numbers, we can initialize the counter up to the size of the alphabet which we obtain by a call to the SeqAn metafunction :dox:`ContainerConcept#ValueSize ValueSize`.
+         Since alphabets are mapped to a contiguous interval of the natural numbers, we can initialize the counter up to the size of the alphabet which we obtain by a call to the SeqAn metafunction :dox:`FiniteOrderedAlphabetConcept#ValueSize ValueSize`.
          We then iterate over the amino acid string and increment the counter for the corresponding letter of the alphabet.
          In order to know the corresponding natural number of an alphabet letter, we use the SeqAn function :dox:`FiniteOrderedAlphabetConcept#ordValue`.
          Note the use of the :dox:`IteratorAssociatedTypesConcept#value` function.
