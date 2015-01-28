@@ -21,9 +21,14 @@ find_package (SeqAn REQUIRED)
 find_package (Boost)
 
 if (NOT Boost_FOUND OR NOT ZLIB_FOUND)
-    message (STATUS "  Boost or zlib not found: Not building casbar.")
+    message (STATUS "  Boost or zlib not found: Not building bs_tools.")
     return ()
 endif (NOT Boost_FOUND OR NOT ZLIB_FOUND)
+
+if (MSVC)
+    message (STATUS "  Not building bs_tools under Visual Studio.")
+    return ()
+endif()
 
 # ----------------------------------------------------------------------------
 # Build Setup
