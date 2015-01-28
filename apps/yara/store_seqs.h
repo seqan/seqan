@@ -188,6 +188,34 @@ inline void readRecords(SeqStore<TSpec, TConfig> & me,
 }
 
 // ----------------------------------------------------------------------------
+// Function trimSeqNames()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec, typename TConfig>
+inline void trimSeqNames(SeqStore<TSpec, TConfig> & me)
+{
+    typedef SeqStore<TSpec, TConfig>                TSeqStore;
+    typedef typename TSeqStore::TSeqNames           TSeqNames;
+    typedef typename Value<TSeqNames>::Type const   TSeqName;
+    typedef typename Iterator<TSeqName>::Type       TSeqNameIt;
+    typedef CharString                              TSeqNameBuffer;
+
+    TSeqNameBuffer name;
+    TSeqNames names;
+    resize(names, length(me.names), Exact());
+
+    for (unsigned nameId = 0; nameId < length(me.names); ++nameId)
+    {
+        TSeqNameIt nameIt = begin(me.names[nameId]);
+        readUntil(name, nameIt, IsSpace());
+        appendValue(names, name);
+        clear(name);
+    }
+
+    assign(me.names, names);
+}
+
+// ----------------------------------------------------------------------------
 // Function randomizeNs()
 // ----------------------------------------------------------------------------
 

@@ -379,8 +379,6 @@ inline void _fillReadName(MatchesWriter<TSpec, Traits> & me, TReadSeqId readSeqI
 
     TSeqNameIt seqNameIt = begin(seqName);
     readUntil(me.record.qName, seqNameIt, OrFunctor<IsSpace, IsSlash>());
-
-//    me.record.qName = prefix(seqName, lastOf(seqName, IsSpace()));
 }
 
 // ----------------------------------------------------------------------------
