@@ -89,7 +89,7 @@ void getCwd(TString & string)
 #ifdef PLATFORM_WINDOWS
     _getcwd(cwd, 1000);
 #else
-    getcwd(cwd, 1000);
+    ignoreUnusedVariableWarning(getcwd(cwd, 1000));
 #endif
 
     assign(string, cwd);
@@ -339,9 +339,9 @@ void setDateAndVersion(ArgumentParser & parser)
     setCategory(parser, "Read Mapping");
 
 #ifdef SEQAN_REVISION
-    setVersion(parser, "0.9.2 [" + std::string(SEQAN_REVISION) + "]");
+    setVersion(parser, "0.9.3 [" + std::string(SEQAN_REVISION) + "]");
 #else
-    setVersion(parser, "0.9.2");
+    setVersion(parser, "0.9.3");
 #endif
 #ifdef SEQAN_DATE
     setDate(parser, SEQAN_DATE);

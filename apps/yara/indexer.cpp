@@ -198,6 +198,7 @@ void loadContigs(YaraIndexer<TSpec, TConfig> & me)
     try
     {
         readRecords(me.contigs, me.contigsFile);
+        trimSeqNames(me.contigs);
     }
     catch (BadAlloc const & /* e */)
     {
