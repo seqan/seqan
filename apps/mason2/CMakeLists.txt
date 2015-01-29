@@ -23,10 +23,10 @@ if (NOT ZLIB_FOUND)
   return ()
 endif (NOT ZLIB_FOUND)
 
-# Mason2 does not work correctly with Visual Studio Version <10 on 64 bit systems.
-if (MSVC AND MSVC_VERSION LESS 1600)
-  message (STATUS "  Visual Studio Version <10: MASON2 will not be built.")
-endif (MSVC AND MSVC_VERSION LESS 1600)
+if (MSVC)
+  message (STATUS "  Not building MASON2 under Visual Studio.")
+  return ()
+endif()
 
 # Enable C++11 in GCC and/or CLANG.
 #if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
