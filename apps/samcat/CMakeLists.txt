@@ -84,3 +84,4 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:samcat")
 
   seqan_configure_cpack_app (samcat "samcat")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:samcat")
+
