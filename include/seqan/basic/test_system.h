@@ -172,6 +172,7 @@ public:
                 seqan::ClassTest::StaticData::errorCount() += 1;
             }
             seqan::ClassTest::endTest();
+            delete *it;
         }
         return seqan::ClassTest::endTestSuite();
     }
