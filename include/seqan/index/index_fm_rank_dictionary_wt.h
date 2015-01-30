@@ -115,7 +115,7 @@ typedef Tag<FibreTreeStructure_>    const FibreTreeStructure;
 template <typename TValue, typename TSpec, typename TConfig>
 struct Fibre<RankDictionary<TValue, WaveletTree<TSpec, TConfig> >, FibreRanks>
 {
-    typedef String<RankDictionary<bool, Levels<TSpec, TConfig> > > Type;
+    typedef StringSet<RankDictionary<bool, Levels<TSpec, TConfig> > > Type;
 };
 
 template <typename TValue, typename TSpec, typename TConfig>
@@ -332,6 +332,7 @@ inline void _fillStructure(RankDictionary<TValue, WaveletTree<TSpec, TConfig> > 
     typedef typename Size<TRankDictionary>::Type                        TSize;
     typedef typename Iterator<TText const, Standard>::Type              TTextIterator;
 
+    // NOTE(esiragusa): the construction algorithm sometimes computes the wrong length.
     resize(dict.ranks, length(dict.waveletTreeStructure), Exact());
 
     for (TSize i = 0; i < length(dict.ranks); ++i)
