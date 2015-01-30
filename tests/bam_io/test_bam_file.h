@@ -480,14 +480,14 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
     seqan::BamHeader header;
     readHeader(header, bamFile);
 
-    seqan::String<seqan::Pair<off_t, int> > recs;
+    seqan::String<seqan::Pair<uint64_t, int> > recs;
 
     seqan::BamAlignmentRecord record;
     while (!atEnd(bamFile))
     {
-        off_t ofs = position(bamFile);
+        uint64_t ofs = position(bamFile);
         readRecord(record, bamFile);
-        appendValue(recs, seqan::Pair<off_t, int>(ofs, record.beginPos));
+        appendValue(recs, seqan::Pair<uint64_t, int>(ofs, record.beginPos));
     }
 
     for (size_t j = 0; j < length(recs); ++j)

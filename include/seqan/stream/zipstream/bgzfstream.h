@@ -320,7 +320,7 @@ public:
         istream_reference   istream;
         Mutex               lock;
         IOError             *error;
-        off_t               fileOfs;
+        off_type            fileOfs;
 
         Serializer(istream_reference istream) :
             istream(istream),
@@ -343,7 +343,7 @@ public:
 
         TInputBuffer    inputBuffer;
         TBuffer         buffer;
-        off_t           fileOfs;
+        off_type        fileOfs;
         int             size;
 
         CriticalSection cs;
@@ -644,7 +644,7 @@ public:
                 std::streampos destFileOfs = ofs >> 16;
 
                 // are we in the same block?
-                if (currentJobId >= 0 && jobs[currentJobId].fileOfs == (off_t)destFileOfs)
+                if (currentJobId >= 0 && jobs[currentJobId].fileOfs == (off_type)destFileOfs)
                 {
                     DecompressionJob &job = jobs[currentJobId];
 
@@ -671,7 +671,7 @@ public:
                     {
                         popFront(currentJobId, runningQueue);
 
-                        if (jobs[currentJobId].fileOfs == (off_t)destFileOfs)
+                        if (jobs[currentJobId].fileOfs == (off_type)destFileOfs)
                             break;
 
                         // push back useless job
@@ -707,7 +707,7 @@ public:
                             waitFor(job.readyEvent);
                     }
 
-                    SEQAN_ASSERT_EQ(job.fileOfs, (off_t)destFileOfs);
+                    SEQAN_ASSERT_EQ(job.fileOfs, (off_type)destFileOfs);
 
                     // reset buffer pointers
                     this->setg( 
