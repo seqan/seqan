@@ -140,75 +140,61 @@ sum(TSequence const &seq)
  * @see sum
  */
 
-template <typename TTarget, typename TSource, typename TParallelTag>
-inline typename Value<TSource>::Type
-partialSum(TTarget &target, TSource const &source, Tag<TParallelTag> parallelTag)
-{
-    typedef typename Value<TSource>::Type TValue;
-    typedef typename Size<TSource>::Type TSize;
-    typedef typename Iterator<TSource const, Standard>::Type TConstIterator;
-    typedef typename Iterator<TTarget, Standard>::Type TIterator;
-    
-    resize(target, length(source), Exact());
-    if (empty(target))
-        return 0;
+//template <typename TTarget, typename TSource, typename TParallelTag>
+//inline typename Value<TSource>::Type
+//partialSum(TTarget &target, TSource const &source, Tag<TParallelTag> parallelTag)
+//{
+//    typedef typename Value<TSource>::Type TValue;
+//    typedef typename Size<TSource>::Type TSize;
+//    typedef typename Iterator<TSource const, Standard>::Type TConstIterator;
+//    typedef typename Iterator<TTarget, Standard>::Type TIterator;
+//    
+//    resize(target, length(source), Exact());
+//    if (empty(target))
+//        return 0;
+//
+//    Splitter<TSize> splitter(0, length(source), parallelTag);
+//    String<TValue> localSums;
+//    resize(localSums, length(splitter), Exact());
+//    localSums[0] = 0;
+//
+//    // STEP 1: compute sums of all subintervals (in parallel)
+//    //
+//    SEQAN_OMP_PRAGMA(parallel for)
+//    for (int job = 0; job < (int)length(splitter) - 1; ++job)
+//        localSums[job + 1] = sum(infix(source, splitter[job], splitter[job + 1]), Serial());
+//
+//    // STEP 2: compute partial sums (of subinterval sums) to get offsets for each subinterval (sequentially)
+//    //
+//    for (int job = 2; job < (int)length(splitter); ++job)
+//        localSums[job] += localSums[job - 1];
+//
+//    // STEP 3: compute partial sums of each subinterval starting from offset (in parallel)
+//    //
+//    SEQAN_OMP_PRAGMA(parallel for)
+//    for (int job = 0; job < (int)length(splitter); ++job)
+//    {
+//        TConstIterator it = begin(source, Standard()) + splitter[job];
+//        TConstIterator itEnd = begin(source, Standard()) + splitter[job + 1];
+//        TIterator dstIt = begin(target, Standard()) + splitter[job];
+//        TValue sum = localSums[job];
+//        for (; it != itEnd; ++it, ++dstIt)
+//        {
+//            sum += *it;
+//            *dstIt = sum;
+//        }
+//        localSums[job] = sum;
+//    }
+//    
+//    return back(localSums);
+//}
 
-    Splitter<TSize> splitter(0, length(source), parallelTag);
-    String<TValue> localSums;
-    resize(localSums, length(splitter), Exact());
-    localSums[0] = 0;
-
-    // STEP 1: compute sums of all subintervals (in parallel)
-    //
-    SEQAN_OMP_PRAGMA(parallel for)
-    for (int job = 0; job < (int)length(splitter) - 1; ++job)
-        localSums[job + 1] = sum(infix(source, splitter[job], splitter[job + 1]), Serial());
-
-    // STEP 2: compute partial sums (of subinterval sums) to get offsets for each subinterval (sequentially)
-    //
-    for (int job = 2; job < (int)length(splitter); ++job)
-        localSums[job] += localSums[job - 1];
-
-    // STEP 3: compute partial sums of each subinterval starting from offset (in parallel)
-    //
-    SEQAN_OMP_PRAGMA(parallel for)
-    for (int job = 0; job < (int)length(splitter); ++job)
-    {
-        TConstIterator it = begin(source, Standard()) + splitter[job];
-        TConstIterator itEnd = begin(source, Standard()) + splitter[job + 1];
-        TIterator dstIt = begin(target, Standard()) + splitter[job];
-        TValue sum = localSums[job];
-        for (; it != itEnd; ++it, ++dstIt)
-        {
-            sum += *it;
-            *dstIt = sum;
-        }
-        localSums[job] = sum;
-    }
-    
-    return back(localSums);
-}
-
-template <typename TTarget, typename TParallelTag>
-inline typename Value<TTarget>::Type
-partialSum(TTarget & target, Tag<TParallelTag> parallelTag)
-{
-    return partialSum(target, target, parallelTag);
-}
-
-template <typename TTarget, typename TSource>
-inline typename Value<TSource>::Type
-partialSum(TTarget & target, TSource const & source)
-{
-    return partialSum(target, source, Serial());
-}
-
-template <typename TTarget>
-inline typename Value<TTarget>::Type
-partialSum(TTarget & target)
-{
-    return partialSum(target, target);
-}
+//template <typename TTarget, typename TParallelTag>
+//inline typename Value<TTarget>::Type
+//partialSum(TTarget & target, Tag<TParallelTag> parallelTag)
+//{
+//    return partialSum(target, target, parallelTag);
+//}
 
 // ----------------------------------------------------------------------------
 // Function iterate()
@@ -413,6 +399,19 @@ inline void stableSort(TContainer & c, Tag<TParallelTag> const & /* tag */)
     return std::stable_sort(begin(c, Standard()), end(c, Standard()));
 }
 
+// ----------------------------------------------------------------------------
+// Function partialSum()
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TSource, typename TParallelTag>
+inline typename Value<TSource>::Type
+partialSum(TTarget & t, TSource const & s, Tag<TParallelTag> const & /* tag */)
+{
+    reserve(t, length(s), Exact());
+    std::partial_sum(begin(s, Standard()), end(s, Standard()), begin(t, Standard()));
+    return back(t);
+}
+
 // ============================================================================
 // MCSTL Wrappers
 // ============================================================================
@@ -549,6 +548,19 @@ template <typename TContainer>
 inline void stableSort(TContainer & c, Parallel)
 {
     return __gnu_parallel::stable_sort(begin(c, Standard()), end(c, Standard()));
+}
+
+// ----------------------------------------------------------------------------
+// Function partialSum()
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TSource>
+inline typename Value<TTarget>::Type
+partialSum(TTarget & t, TSource const & s, Parallel)
+{
+    reserve(t, length(s), Exact());
+    __gnu_parallel::partial_sum(begin(s, Standard()), end(s, Standard()), begin(t, Standard()));
+    return back(t);
 }
 
 #endif  // #ifdef PLATFORM_GCC
@@ -699,6 +711,24 @@ template <typename TContainer>
 inline void stableSort(TContainer & c)
 {
     stableSort(c, Serial());
+}
+
+// ----------------------------------------------------------------------------
+// Function partialSum()
+// ----------------------------------------------------------------------------
+
+template <typename TTarget, typename TSource>
+inline typename Value<TSource>::Type
+partialSum(TTarget & target, TSource const & source)
+{
+    return partialSum(target, source, Serial());
+}
+
+template <typename TTarget>
+inline typename Value<TTarget>::Type
+partialSum(TTarget & target)
+{
+    return partialSum(target, target);
 }
 
 }  // namespace seqan
