@@ -666,6 +666,12 @@ public:
                     if (currentJobId >= 0)
                         appendValue(todoQueue, currentJobId);
 
+                    // Note that if we are here the current job does not represent the sought block.
+                    // Hence if the running queue is empty we need to explicitly unset the jobId,
+                    // otherwise we would not update the serializers istream pointer to the correct position.
+                    if (empty(runningQueue))
+                        currentJobId = -1;
+
                     // empty is thread-safe in serializer.lock
                     while (!empty(runningQueue))
                     {
