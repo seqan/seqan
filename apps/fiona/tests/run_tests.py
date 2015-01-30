@@ -41,11 +41,11 @@ class ResultChecker(object):
         print ' '.join(cmd_line)
         process = subprocess.Popen(cmd_line, stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
-        retcode = process.wait()
+        stdoutbuff, stderrbuff = process.communicate()
+        retcode = process.poll()
         if retcode != 0:
             raise app_tests.BadResultException('compute_gain did not return 0')
-        report = process.stdout.read()
-        gain = float(report.splitlines()[2].split()[0])
+        gain = float(stdoutbuff.splitlines()[2].split()[0])
         if gain < self.min_gain:
             fmt = 'Gain too low. Expected >= %f, got %f'
             raise app_tests.BadResultException(fmt % (self.min_gain, gain))
