@@ -64,12 +64,6 @@ namespace seqan {
  * @var unsigned AlignmentStats::numGapExtensions;
  * @brief Number of gap extension events.
  *
- * @var unsigned AlignmentStats::numInsertions;
- * @brief Number of gaps in reference relative to query.
- *
- * @var unsigned AlignmentStats::numDeletions;
- * @brief Number of gaps in query relative to reference.
- *
  * @var unsigned AlignmentStats::numMatches;
  * @brief Number of match (identity) events.
  *
@@ -82,12 +76,6 @@ namespace seqan {
  * @var unsigned AlignmentStats::numNegativeScores;
  * @brief Number of residues aligned with negative score.
  *
- * @var float AlignmentStats::alignmentSimilarity;
- * @brief The resulting alignment percent similarity (positive).
- *
- * @var float AlignmentStats::alignmentIdentity;
- * @brief The resulting alignment percent identity (match).
- *
  * @var int AlignmentStats::alignmentScore;
  * @brief The resulting alignment score.
  */
@@ -97,9 +85,6 @@ struct AlignmentStats
     // Number of gap opens/gap extensions.
     unsigned numGapOpens;
     unsigned numGapExtensions;
-    // Number of insertions and deletions.
-    unsigned numInsertions;
-    unsigned numDeletions;
     // Number of matches, mismatches.
     unsigned numMatches;
     unsigned numMismatches;
@@ -107,16 +92,11 @@ struct AlignmentStats
     unsigned numPositiveScores;
     unsigned numNegativeScores;
 
-    // the alignment identity and similarity scores
-    float alignmentSimilarity;
-    float alignmentIdentity;
-
     // The alignment score.
     int alignmentScore;
 
-    AlignmentStats() : numGapOpens(0), numGapExtensions(0), numInsertions(0), numDeletions(0),
-                       numMatches(0), numMismatches(0), numPositiveScores(0), numNegativeScores(0),
-                       alignmentSimilarity(0.0), alignmentIdentity(0.0), alignmentScore(0)
+    AlignmentStats() : numGapOpens(0), numGapExtensions(0), numMatches(0), numMismatches(0),
+                       numPositiveScores(0), numNegativeScores(0), alignmentScore(0)
     {}
 };
 
@@ -146,14 +126,10 @@ void clear(AlignmentStats & stats)
 {
     stats.numGapOpens = 0;
     stats.numGapExtensions = 0;
-    stats.numInsertions = 0;
-    stats.numDeletions = 0;
     stats.numMatches = 0;
     stats.numMismatches = 0;
     stats.numPositiveScores = 0;
     stats.numNegativeScores = 0;
-    stats.alignmentSimilarity = 0.0;
-    stats.alignmentIdentity = 0.0;
     stats.alignmentScore = 0;
 }
 
@@ -220,7 +196,6 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
                 stats.numGapExtensions += 1;
                 stats.alignmentScore += scoreGapExtend(scoringScheme);
             }
-            stats.numDeletions += 1;
             isGapOpen0 = true;
         }
         else
@@ -240,7 +215,6 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
                 stats.numGapExtensions += 1;
                 stats.alignmentScore += scoreGapExtend(scoringScheme);
             }
-            stats.numInsertions += 1;
             isGapOpen1 = true;
         }
         else
@@ -266,10 +240,6 @@ TScoreVal computeAlignmentStats(AlignmentStats & stats,
     SEQAN_ASSERT(it0 == itEnd0);
     SEQAN_ASSERT(it1 == itEnd1);
 
-    // Finally, compute the alignment similarity from the various counts
-    stats.alignmentSimilarity = 100.0 * (float)stats.numPositiveScores / (float)length(row(align, 0));
-    stats.alignmentIdentity = 100.0 * (float)stats.numMatches / (float)length(row(align, 0));
-
     return stats.alignmentScore;
 }
 
@@ -281,6 +251,241 @@ TScoreVal computeAlignmentStats(Align<TGaps, TAlignSpec> const & align,
     (void)stats;
     return computeAlignmentStats(stats, align, scoringScheme);
 }
+
+// ----------------------------------------------------------------------------
+// Function alignmentIdentityString()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Align#alignmentIdentityString()
+ * @headerfile <seqan/align.h>
+ * @brief Returns a CharString of the similarity of positions in an alignment
+ *
+ * @signature CharString alignmentIdentityString();
+ *
+ * @param align The @link Align @endlink object to score for similarity.
+ * @param match The character to use for similarity at match positions
+ * @param mismatch The character to use for similarity at mismatch positions
+ * @param gap The character to use for similarity at gap positions
+ *
+ * @signature CharString A string of characters representing alignment position similarity
+ *
+ * @section Examples
+ *
+ * @include demos/align/compute_match_string.cpp
+ *
+ * The output is as follows:
+ *
+ * @include demos/align/compute_match_string.cpp.stdout
+ */
+
+
+template <typename TGaps>
+String<char> alignmentIdentityString(TGaps & queryRow,
+                                     TGaps & referenceRow,
+                                     char const matchChar,
+                                     char const mismatchChar,
+                                     char const gapChar)
+{
+    // Define short-hand names for various types to be used
+    typedef typename Iterator<TGaps, Standard>::Type TGapsIter;
+    typedef typename Value<typename Source<TGaps>::Type>::Type TAlphabet;
+
+    // Define and size the char string we will return
+    String<char> matchString;
+    unsigned alignLength = std::min(length(queryRow), length(referenceRow));
+    resize(matchString, alignLength, Exact());
+
+    // Get iterators.
+    TGapsIter it0 = begin(queryRow);
+    TGapsIter itEnd0 = end(queryRow);
+    TGapsIter it1 = begin(referenceRow);
+    TGapsIter itEnd1 = end(referenceRow);
+
+    // Counter for the position in the similarity string
+    unsigned pos = 0;
+
+    for (; it0 != itEnd0 && it1 != itEnd1; ++it0, ++it1, ++pos)
+    {
+        if (isGap(it0) || isGap(it1))
+        {
+            matchString[pos] = gapChar;
+        }
+        else
+        {
+            // Compute the alignment score and register in stats.
+            TAlphabet c0 = *it0, c1 = *it1;
+            if (c0 == c1)
+            {
+                matchString[pos] = matchChar;
+            }
+            else
+            {
+                matchString[pos] = mismatchChar;
+            }
+        }
+    }
+    SEQAN_ASSERT(it0 == itEnd0);
+    SEQAN_ASSERT(it1 == itEnd1);
+
+    return matchString;
+}
+
+template <typename TGaps>
+String<char> alignmentIdentityString(TGaps const & queryRow,
+                                     TGaps const & referenceRow)
+{
+    return alignmentIdentityString(queryRow, referenceRow, '|', '*', ' ');
+}
+
+template <typename TAlphabet, typename TAlignSpec>
+String<char> alignmentIdentityString(Align<TAlphabet, TAlignSpec> const & align,
+                                     char const matchChar,
+                                     char const mismatchChar,
+                                     char const gapChar)
+{
+    // Check that the supplied alignment is pairwise
+    SEQAN_ASSERT_EQ_MSG(length(rows(align)), 2u, "Only works with pairwise alignments.");
+
+    typedef Align<TAlphabet, TAlignSpec> const TAlign;
+    typedef typename Row<TAlign>::Type TGaps;
+
+    TGaps queryRow = row(align, 0);
+    TGaps referenceRow = row(align, 1);
+
+    return alignmentIdentityString(queryRow, referenceRow, matchChar, mismatchChar, gapChar);
+}
+
+template <typename TSource, typename TAlignSpec>
+String<char> alignmentIdentityString(Align<TSource, TAlignSpec> const & align)
+{
+    return alignmentIdentityString(align, '|', '*', ' ');
+}
+
+
+// ----------------------------------------------------------------------------
+// Function alignmentSimilarityString()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn Align#alignmentSimilarityString()
+ * @headerfile <seqan/align.h>
+ * @brief Returns a CharString of the similarity of positions in an alignment
+ *
+ * @signature CharString computeAlignmentSimilarityString();
+ *
+ * @param align The @link Align @endlink object to score for similarity.
+ * @param score The @link Score @endlink object to use for the scoring scheme.
+ * @param match The character to use for similarity at match positions
+ * @param positive The character to use for similarity at positive-scoring non-match positions
+ * @param mismatch The character to use for similarity at negative-scoring non-match positions
+ * @param gap The character to use for similarity at gap positions
+ *
+ * @signature CharString A string of characters representing alignment position similarity
+ *
+ * @section Examples
+ *
+ * @include demos/align/compute_match_string.cpp
+ *
+ * The output is as follows:
+ *
+ * @include demos/align/compute_match_string.cpp.stdout
+ */
+
+template <typename TGaps, typename TScoreVal, typename TScoreSpec>
+String<char> alignmentSimilarityString(TGaps & queryRow,
+                                       TGaps & referenceRow,
+                                       Score<TScoreVal, TScoreSpec> const & scoringScheme,
+                                       char const matchChar,
+                                       char const positiveChar,
+                                       char const mismatchChar,
+                                       char const gapChar)
+{
+    // Define short-hand names for various types to be used
+    typedef typename Iterator<TGaps, Standard>::Type TGapsIter;
+    typedef typename Value<typename Source<TGaps>::Type>::Type TAlphabet;
+
+    // Define and size the char string we will return
+    String<char> matchString;
+    unsigned alignLength = std::min(length(queryRow), length(referenceRow));
+    resize(matchString, alignLength, Exact());
+
+    // Get iterators.
+    TGapsIter it0 = begin(queryRow);
+    TGapsIter itEnd0 = it0 + alignLength;
+    TGapsIter it1 = begin(referenceRow);
+    TGapsIter itEnd1 = it1 + alignLength;
+
+    // Counter for the position in the similarity string
+    unsigned pos = 0;
+
+    for (; it0 != itEnd0 && it1 != itEnd1; ++it0, ++it1, ++pos)
+    {
+        if (isGap(it0) || isGap(it1))
+        {
+            matchString[pos] = gapChar;
+        }
+        else
+        {
+            TAlphabet c0 = *it0, c1 = *it1;
+            if (c0 == c1)
+            {
+                matchString[pos] = matchChar;
+            }
+            else if (score(scoringScheme, c0, c1) > 0)
+            {
+                matchString[pos] = positiveChar;
+            }
+            else 
+            {
+                matchString[pos] = mismatchChar;
+            }
+        }
+    }
+    SEQAN_ASSERT(it0 == itEnd0);
+    SEQAN_ASSERT(it1 == itEnd1);
+
+    return matchString;
+}
+
+
+template <typename TGaps, typename TScoreVal, typename TScoreSpec>
+String<char> alignmentSimilarityString(TGaps const & queryRow,
+                                       TGaps const & referenceRow,
+                                       Score<TScoreVal, TScoreSpec> const & scoringScheme)
+{
+    return alignmentSimilarityString(queryRow, referenceRow, scoringScheme, 
+                                     '|', ':', '.', ' ');
+}
+
+template <typename TAlphabet, typename TAlignSpec, typename TScoreVal, typename TScoreSpec>
+String<char> alignmentSimilarityString(Align<TAlphabet, TAlignSpec> const & align,
+                                       Score<TScoreVal, TScoreSpec> const & scoringScheme,
+                                       char const matchChar,
+                                       char const positiveChar,
+                                       char const mismatchChar,
+                                       char const gapChar)
+{
+    // Check that the supplied alignment is pairwise
+    SEQAN_ASSERT_EQ_MSG(length(rows(align)), 2u, "Only works with pairwise alignments.");
+
+    typedef Align<TAlphabet, TAlignSpec> const TAlign;
+    typedef typename Row<TAlign>::Type TGaps;
+
+    TGaps queryRow = row(align, 0);
+    TGaps referenceRow = row(align, 1);
+
+    return alignmentSimilarityString(queryRow, referenceRow, scoringScheme, 
+                                     matchChar, positiveChar, mismatchChar, gapChar);
+}
+
+template <typename TSource, typename TAlignSpec, typename TScoreVal, typename TScoreSpec>
+String<char> alignmentSimilarityString(Align<TSource, TAlignSpec> const & align,
+                                       Score<TScoreVal, TScoreSpec> const & scoringScheme)
+{
+    return alignmentSimilarityString(align, scoringScheme, '|', ':', '.', ' ');
+}
+
 
 }  // namespace seqan
 
