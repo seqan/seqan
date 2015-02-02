@@ -341,7 +341,7 @@ struct Suffix<ContainerView<TContainer, TSpec> >
 template <typename TContainer, typename TSpec>
 struct Suffix<ContainerView<TContainer, TSpec> const> :
     Suffix<ContainerView<TContainer, TSpec> > {};
-    
+
 // ----------------------------------------------------------------------------
 // Metafunction Infix
 // ----------------------------------------------------------------------------

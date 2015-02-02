@@ -62,7 +62,7 @@ struct CDStruct
     int movedFrom;
     int assignedFrom;
     int setFrom;
-    
+
     CDStruct() : copiedFrom(-1), movedFrom(-1), assignedFrom(-1), setFrom(-1)
     {
         id = nextId++;
@@ -199,18 +199,18 @@ moveValue(TValue * me,
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_metafunctions)
 {
     using namespace seqan;
-    
+
     // Pointers.
     {
         typedef int * TIterator;
-        
+
         bool b = IsSameType<typename Difference<TIterator>::Type, ptrdiff_t>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Position<TIterator>::Type, size_t>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Size<TIterator>::Type, size_t>::VALUE;
         SEQAN_ASSERT(b);
-        
+
         b = IsSameType<typename Value<TIterator>::Type, int>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename GetValue<TIterator>::Type, int const &>::VALUE;
@@ -221,14 +221,14 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_metafunctions)
     // Const-Pointers.
     {
         typedef int const * TIterator;
-        
+
         bool b = IsSameType<typename Difference<TIterator>::Type, ptrdiff_t>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Position<TIterator>::Type, size_t>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Size<TIterator>::Type, size_t>::VALUE;
         SEQAN_ASSERT(b);
-        
+
         // TODO(holtgrew): This is inconsistent
         b = IsSameType<typename Value<TIterator>::Type, int const>::VALUE;
         SEQAN_ASSERT(b);
@@ -242,7 +242,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_metafunctions)
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_transport)
 {
     using namespace seqan;
-    
+
     // assign()
     {
         int x = 1, y = 2;
@@ -269,7 +269,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_transport)
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_transport_value)
 {
     using namespace seqan;
-    
+
     // assignValue()
     {
         CDStruct cs1, cs2;
@@ -325,7 +325,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_transport_value)
         SEQAN_ASSERT_EQ(ptr->movedFrom, -1);
         SEQAN_ASSERT_EQ(ptr->setFrom, -1);
         SEQAN_ASSERT_EQ(ptr->assignedFrom, -1);
-        
+
         SEQAN_ASSERT_EQ(ptr, &cs2);
 
         SEQAN_ASSERT_EQ(CDStruct::lastOther, static_cast<CDStruct *>(0));
@@ -342,7 +342,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_transport_value)
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_movement)
 {
     using namespace seqan;
-    
+
     // goNext/operator++
     {
         int arr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -350,7 +350,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_movement)
         int * ptr = &arr[4];
         goNext(ptr);
         SEQAN_ASSERT_EQ(ptr, &arr[5]);
-        
+
         ptr = &arr[4];
         ptr++;
         SEQAN_ASSERT_EQ(ptr, &arr[5]);
@@ -366,7 +366,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_movement)
         int * ptr = &arr[4];
         goPrevious(ptr);
         SEQAN_ASSERT_EQ(ptr, &arr[3]);
-        
+
         ptr = &arr[4];
         ptr--;
         SEQAN_ASSERT_EQ(ptr, &arr[3]);
@@ -386,7 +386,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_movement)
         ptr = &arr[4];
         goFurther(ptr, -2);
         SEQAN_ASSERT_EQ(ptr, &arr[2]);
-        
+
         ptr = &arr[4];
         ptr += 2;
         SEQAN_ASSERT_EQ(ptr, &arr[6]);
@@ -400,7 +400,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_movement)
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_arithmetics)
 {
     using namespace seqan;
-    
+
     int arr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     int * ptr = &arr[4];
@@ -410,7 +410,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_pointer_arithmetics)
 
     ptr2 = ptr - 2;
     SEQAN_ASSERT_EQ(ptr2, &arr[2]);
-    
+
     ptr2 = ptr + 2;
     SEQAN_ASSERT_EQ(ptr2 - ptr, 2);
 }
@@ -426,7 +426,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_metafunctions)
     // Iterator.
     {
         typedef Iter<std::vector<int>, StdIteratorAdaptor> TIterator;
-        
+
         bool b = IsSameType<typename Difference<TIterator>::Type, ptrdiff_t>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Position<TIterator>::Type, size_t>::VALUE;
@@ -447,14 +447,14 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_metafunctions)
     // Const-Iterators.
     {
         typedef Iter<std::vector<int> const, StdIteratorAdaptor> TIterator;
-        
+
         bool b = IsSameType<typename Difference<TIterator>::Type, ptrdiff_t>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Position<TIterator>::Type, size_t>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Size<TIterator>::Type, size_t>::VALUE;
         SEQAN_ASSERT(b);
-        
+
         // TODO(holtgrew): This is inconsistent
         b = IsSameType<typename Value<TIterator>::Type, int>::VALUE;
         SEQAN_ASSERT(b);
@@ -473,17 +473,17 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_constructors)
     using namespace seqan;
 
     typedef Iter<std::vector<int>, StdIteratorAdaptor> TIterator;
-    
+
     std::vector<int> vec;
     vec.push_back(0);
     vec.push_back(1);
-    
+
     // Construct from STL iterator.
     TIterator it(vec.begin());
-    
+
     // Copy constructor.
     TIterator it2(it);
-    
+
     SEQAN_ASSERT_EQ(*it, *it2);
 }
 
@@ -496,9 +496,9 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_transport)
     std::vector<int> vec;
     vec.push_back(0);
     vec.push_back(1);
-    
+
     TIterator it(vec.begin());
-    
+
     // assign()
     {
         TIterator it2;
@@ -522,9 +522,9 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_transport)
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_transport_value)
 {
     using namespace seqan;
-    
+
     typedef Iter<std::vector<CDStruct>, StdIteratorAdaptor> TIterator;
-    
+
     // assignValue()
     {
         std::vector<CDStruct> vec;
@@ -560,7 +560,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_transport_value)
         SEQAN_ASSERT_EQ(it->movedFrom, vec[1].id);
         SEQAN_ASSERT_EQ(it->setFrom, -1);
         SEQAN_ASSERT_EQ(it->assignedFrom, -1);
-        
+
         SEQAN_ASSERT_EQ(CDStruct::lastOther, &vec[1]);
         SEQAN_ASSERT_EQ(CDStruct::defaultConstructions, 0);
         SEQAN_ASSERT_EQ(CDStruct::copyConstructions, 0);
@@ -576,9 +576,9 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_transport_value)
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_movement)
 {
     using namespace seqan;
-    
+
     typedef Iter<std::vector<int>, StdIteratorAdaptor> TIterator;
-    
+
     // goNext/operator++
     {
         std::vector<int> vec;
@@ -588,7 +588,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_movement)
         TIterator it(vec.begin() + 4);
         goNext(it);
         SEQAN_ASSERT_EQ(*it, vec[5]);
-        
+
         it = vec.begin() + 4;
         it++;
         SEQAN_ASSERT_EQ(*it, vec[5]);
@@ -606,7 +606,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_movement)
         TIterator it(vec.begin() + 4);
         goPrevious(it);
         SEQAN_ASSERT_EQ(*it, vec[3]);
-        
+
         it = vec.begin() + 4;
         it--;
         SEQAN_ASSERT_EQ(*it, vec[3]);
@@ -624,7 +624,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_movement)
         TIterator it(vec.begin() + 4);
         goFurther(it, 2);
         SEQAN_ASSERT_EQ(*it, vec[6]);
-        
+
         it = vec.begin() + 4;
         goFurther(it, -2);
         SEQAN_ASSERT_EQ(*it, vec[2]);
@@ -634,9 +634,9 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_movement)
 SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_arithmetics)
 {
     using namespace seqan;
-    
+
     typedef Iter<std::vector<int>, StdIteratorAdaptor> TIterator;
-    
+
     std::vector<int> vec;
     for (int i = 0; i < 10; ++i)
         vec.push_back(i);
@@ -648,7 +648,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adapt_std_iterator_arithmetics)
 
     it2 = it - 2;
     SEQAN_ASSERT_EQ(&*it2, &vec[2]);
-    
+
     it2 = it + 2;
     SEQAN_ASSERT_EQ(it2 - it, 2);
 }
@@ -664,35 +664,35 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_metafunctions)
     // Pointers.
     {
         typedef Iter<int *, AdaptorIterator<int *> > TIterator;
-        
+
         bool b = IsSameType<typename Difference<TIterator>::Type, ptrdiff_t>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Position<TIterator>::Type, size_t>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Size<TIterator>::Type, size_t>::VALUE;
         SEQAN_ASSERT(b);
-        
+
         b = IsSameType<typename Value<TIterator>::Type, int>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename GetValue<TIterator>::Type, int const &>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Reference<TIterator>::Type, int &>::VALUE;
         SEQAN_ASSERT(b);
-        
+
         b = IsSameType<typename Container<TIterator>::Type, int *>::VALUE;
         SEQAN_ASSERT(b);
     }
     // Const-Pointers.
     {
         typedef Iter<int const *, AdaptorIterator<int const *> > TIterator;
-        
+
         bool b = IsSameType<typename Difference<TIterator>::Type, ptrdiff_t>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Position<TIterator>::Type, size_t>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Size<TIterator>::Type, size_t>::VALUE;
         SEQAN_ASSERT(b);
-        
+
         // TODO(holtgrew): This is inconsistent
         b = IsSameType<typename Value<TIterator>::Type, int const>::VALUE;
         SEQAN_ASSERT(b);
@@ -700,7 +700,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_metafunctions)
         SEQAN_ASSERT(b);
         b = IsSameType<typename Reference<TIterator>::Type, int const &>::VALUE;
         SEQAN_ASSERT(b);
-        
+
         b = IsSameType<typename Container<TIterator>::Type, int const *>::VALUE;
         SEQAN_ASSERT(b);
     }
@@ -709,11 +709,11 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_metafunctions)
 SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_constructors)
 {
     using namespace seqan;
-    
+
     typedef Iter<int *, AdaptorIterator<int *> > TIterator;
-    
+
     int container[] = { 0, 1, 2, 3 };
-    
+
     // Default constructor.
     TIterator it;
     // From container and iterator.
@@ -733,9 +733,9 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_transport)
     typedef Iter<int *, AdaptorIterator<int *> > TIterator;
 
     int container[] = { 0, 1, 2, 3 };
-    
+
     TIterator it(&container[0], &container[0]);
-    
+
     // assign()
     {
         TIterator it2;
@@ -762,9 +762,9 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_transport)
 SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_transport_value)
 {
     using namespace seqan;
-    
+
     typedef Iter<CDStruct *, AdaptorIterator<CDStruct *> > TIterator;
-        
+
     // assignValue()
     {
         CDStruct values[5];
@@ -814,9 +814,9 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_transport_value)
 SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_movement)
 {
     using namespace seqan;
-    
+
     typedef Iter<int *, AdaptorIterator<int *> > TIterator;
-    
+
     // goNext/operator++
     {
         int arr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -877,7 +877,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_movement)
 SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_arithmetics)
 {
     using namespace seqan;
-    
+
     int arr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     typedef Iter<int *, AdaptorIterator<int *> > TIterator;
@@ -889,7 +889,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_arithmetics)
 
     it2 = it - 2;
     SEQAN_ASSERT_EQ(it2, &arr[2]);
-    
+
     it2 = it + 2;
     SEQAN_ASSERT_EQ(it2 - it, 2);
 }
@@ -897,11 +897,11 @@ SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_arithmetics)
 SEQAN_DEFINE_TEST(test_basic_iterator_adaptor_rooted_functions)
 {
     using namespace seqan;
-    
+
     int arr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     typedef Iter<int *, AdaptorIterator<int *> > TIterator;
-    
+
     TIterator it(&arr[0], &arr[2]);
     SEQAN_ASSERT_EQ(container(it), &arr[0]);
     // TODO(holtgrew): Tests for atEnd() and position() depend on an actual adaption which is in the sequence module and we do not want to have a dependency on this here in the test for basic.  Maybe add a test for this in the test for sequence module.
@@ -918,35 +918,35 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_metafunctions)
     // Pointers.
     {
         typedef Iter<int *, PositionIterator> TIterator;
-        
+
         bool b = IsSameType<typename Difference<TIterator>::Type, ptrdiff_t>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Position<TIterator>::Type, size_t>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Size<TIterator>::Type, size_t>::VALUE;
         SEQAN_ASSERT(b);
-        
+
         b = IsSameType<typename Value<TIterator>::Type, int>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename GetValue<TIterator>::Type, int const &>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Reference<TIterator>::Type, int &>::VALUE;
         SEQAN_ASSERT(b);
-        
+
         b = IsSameType<typename Container<TIterator>::Type, int *>::VALUE;
         SEQAN_ASSERT(b);
     }
     // Const-Pointers.
     {
         typedef Iter<int const *, PositionIterator> TIterator;
-        
+
         bool b = IsSameType<typename Difference<TIterator>::Type, ptrdiff_t>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Position<TIterator>::Type, size_t>::VALUE;
         SEQAN_ASSERT(b);
         b = IsSameType<typename Size<TIterator>::Type, size_t>::VALUE;
         SEQAN_ASSERT(b);
-        
+
         // TODO(holtgrew): This is inconsistent
         b = IsSameType<typename Value<TIterator>::Type, int const>::VALUE;
         SEQAN_ASSERT(b);
@@ -954,7 +954,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_metafunctions)
         SEQAN_ASSERT(b);
         b = IsSameType<typename Reference<TIterator>::Type, int const &>::VALUE;
         SEQAN_ASSERT(b);
-        
+
         b = IsSameType<typename Container<TIterator>::Type, int const *>::VALUE;
         SEQAN_ASSERT(b);
     }
@@ -991,9 +991,9 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_transport)
     typedef Iter<int *, PositionIterator> TIterator;
 
     int container[] = { 0, 1, 2, 3 };
-    
+
     TIterator it(&container[0], 0);
-    
+
     // assign()
     {
         TIterator it2;
@@ -1020,9 +1020,9 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_transport)
 SEQAN_DEFINE_TEST(test_basic_iterator_position_transport_value)
 {
     using namespace seqan;
-    
+
     typedef Iter<CDStruct *, PositionIterator> TIterator;
-        
+
     // assignValue()
     {
         CDStruct values[5];
@@ -1072,9 +1072,9 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_transport_value)
 SEQAN_DEFINE_TEST(test_basic_iterator_position_movement)
 {
     using namespace seqan;
-    
+
     typedef Iter<int *, PositionIterator> TIterator;
-    
+
     // goNext/operator++
     {
         int arr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -1135,7 +1135,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_movement)
 SEQAN_DEFINE_TEST(test_basic_iterator_position_arithmetics)
 {
     using namespace seqan;
-    
+
     int arr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     typedef Iter<int *, PositionIterator> TIterator;
@@ -1147,7 +1147,7 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_arithmetics)
 
     it2 = it - 2;
     SEQAN_ASSERT_EQ(it2.data_position, 2u);
-    
+
     it2 = it + 2;
     SEQAN_ASSERT_EQ(it2 - it, 2);
 }
@@ -1155,11 +1155,11 @@ SEQAN_DEFINE_TEST(test_basic_iterator_position_arithmetics)
 SEQAN_DEFINE_TEST(test_basic_iterator_position_rooted_functions)
 {
     using namespace seqan;
-    
+
     int arr[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
 
     typedef Iter<int *, PositionIterator> TIterator;
-    
+
     TIterator it(&arr[0], 2);
     SEQAN_ASSERT_EQ(container(it), &arr[0]);
     // TODO(holtgrew): Tests for atEnd() and position() depend on an actual adaption which is in the sequence module and we do not want to have a dependency on this here in the test for basic.  Maybe add a test for this in the test for sequence module.

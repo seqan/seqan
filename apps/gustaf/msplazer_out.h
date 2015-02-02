@@ -54,7 +54,7 @@ struct DotDrawingMSplazerBestChain_;
 typedef Tag<DotDrawingMSplazer_> DotDrawingMSplazerBestchain;
 
 
-template <typename TGraph, typename TVertexDescriptor, typename TScoreAlloc, typename TMatch, // typename TFile, 
+template <typename TGraph, typename TVertexDescriptor, typename TScoreAlloc, typename TMatch, // typename TFile,
           typename TBreakpoint, typename TPos, typename TMatchAlloc, typename TID>
 // typename TBreakpointAlloc, typename TMatchAlloc> // Requires Value<SparsePropertyMap> specialisation in msplazer.h
 void
@@ -537,7 +537,7 @@ inline bool _setVcfRecordDuplicationPos(TBreakpoint & bp, TPos & begin, TPos & e
 {
     if (bp.dupMiddlePos != maxValue<unsigned>())
     {
-	// Downstream duplication dup(middlePos, endPos, startPos)
+    // Downstream duplication dup(middlePos, endPos, startPos)
         if (bp.dupTargetPos == bp.startSeqPos)
         {
             begin = bp.dupMiddlePos;
@@ -545,7 +545,7 @@ inline bool _setVcfRecordDuplicationPos(TBreakpoint & bp, TPos & begin, TPos & e
             target = bp.startSeqPos;
             return true;
         }
-	// Upstream duplication dup(startPos, middlePos, endPos)
+    // Upstream duplication dup(startPos, middlePos, endPos)
         begin = bp.startSeqPos;
         end = bp.dupMiddlePos;
         target = bp.endSeqPos;
@@ -847,7 +847,7 @@ inline bool _writeVcfTranslocation(VcfFileOut & vcfOut, TBreakpoint & bp, TSeque
         alt4 << ':';
         if (bp.startSeqPos > 0)
             alt4 << bp.startSeqPos - 1 + 1; // 1-based adjustment
-        else 
+        else
             alt4 << 0; // NO(!) 1-based adjustment
         alt4 << "]";
         append(record.alt, alt4.str());
@@ -1027,7 +1027,7 @@ __int32 _getrID(StringSet<TId> & databaseIDs, TId dbID)
     for (unsigned i = 0; i < length(databaseIDs); ++i)
     {
         TId sID;
-	_getShortId(sID, databaseIDs[i]);
+    _getShortId(sID, databaseIDs[i]);
         if (sID == dbID)
             return static_cast<__int32>(i);
     }

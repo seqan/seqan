@@ -256,9 +256,9 @@ assignValue(T const & me,
  * @fn OutputIteratorConcept#moveValue
  * @headerfile <seqan/sequence.h>
  * @brief Move a value of a container to a given position.
- * 
+ *
  * @signature void moveValue(container, pos, value);
- * 
+ *
  * @param[in,out] container The container to manipulate.
  * @param[in]     pos       The position of the item in the container to manipulate.
  * @param[in,out] value     The value to move to <tt>container[pos]</tt>.

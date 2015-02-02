@@ -149,7 +149,7 @@ getPairId(TReadSeqs const & readSeqs, TReadSeqId readSeqId)
         pairId -= getPairsCount(readSeqs);
 
     SEQAN_ASSERT_LT(pairId, getPairsCount(readSeqs));
-    
+
     return pairId;
 }
 

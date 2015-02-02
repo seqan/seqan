@@ -331,7 +331,7 @@ findSet(UnionFind<TValue> & unionFind,
     SEQAN_ASSERT_LT(unionFind._values[j], static_cast<int>(length(unionFind._values)));
     SEQAN_ASSERT_GEQ(j, static_cast<TValue>(0));
     SEQAN_ASSERT_LT(j, static_cast<TValue>(length(unionFind._values)));
-    
+
     TValue i = query;
     while (unionFind._values[i] >= 0)
     {
@@ -339,7 +339,7 @@ findSet(UnionFind<TValue> & unionFind,
         i = unionFind._values[i];
         unionFind._values[tmp] = j;
     }
-    
+
     return j;
 }
 

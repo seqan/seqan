@@ -82,7 +82,7 @@ namespace seqan {
  * This function uses the @link FragmentStore::contigStore @endlink, @link FragmentStore::alignedReadStore @endlink,
  * and @link FragmentStore::readSeqStore @endlink members of <tt>store</tt>.
  *
- * Each read must have at most one entry in <tt>store.alignedReadStore</tt>.  
+ * Each read must have at most one entry in <tt>store.alignedReadStore</tt>.
  *
  * @section General Algorithm
  *

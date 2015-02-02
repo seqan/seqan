@@ -269,7 +269,7 @@ SEQAN_DEFINE_TEST(test_random_uniform_bool_pick)
     SEQAN_ASSERT_GT(gt, 0u);
     SEQAN_ASSERT_LT(gt, 100000u);
 
-	SEQAN_ASSERT_IN_DELTA(sum / 100000.0, 0.5, 0.01);
+    SEQAN_ASSERT_IN_DELTA(sum / 100000.0, 0.5, 0.01);
 }
 
 SEQAN_DEFINE_TEST(test_random_uniform_double_constructors)

@@ -121,14 +121,14 @@ public:
         writeCurrentRecord();
     }
 
-	// Add a BAM alignment record to the current ROI, create a new one if no overlap with the current ROI
+    // Add a BAM alignment record to the current ROI, create a new one if no overlap with the current ROI
     void pushRecord(seqan::BamAlignmentRecord const & record);
 
     // write ROI file header
     void writeHeader();
 
 private:
-	// Write current roi record to text file
+    // Write current roi record to text file
     int writeCurrentRecord();
 
     // Write the given roi record to text file with the given profile, doing some computation.

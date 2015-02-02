@@ -156,29 +156,29 @@ inline const char * toCString(Demangler<T> const & me)
  * @macro AssertMacros#SEQAN_FAIL
  * @headerfile <seqan/basic.h>
  * @brief Force abortion of program, regardless of debugging settings.
- * 
+ *
  * @signature SEQAN_FAIL(msg[, args]);
- * 
+ *
  * @param[in] msg  A format string.
  * @param[in] args An optional list of arguments that are used for filling msg.
- * 
+ *
  * @section Remarks
- * 
+ *
  * Use this if something really unexpected happens inside your functions and there is no way to report this through the
  * API.  A good example would be logic errors, e.g. invalid values.
- * 
+ *
  * @section Examples
- * 
+ *
  * In the following example, the <tt>SEQAN_FAIL</tt> is there if a possible value is added to <tt>MyEnum</tt> but the
  * function <tt>foo</tt> is not updated accordingly.
- * 
+ *
  * @code{.cpp}
  * enum MyEnum
  * {
  *   VALUE_ONE,
  *   VALUE_TWO
  * };
- *  
+ *
  * bool foo(MyEnum x)
  * {
  *     switch (x)
@@ -190,7 +190,7 @@ inline const char * toCString(Demangler<T> const & me)
  *         // do something
  *         return true;
  *     }
- *  
+ *
  *     SEQAN_FAIL("Logic error. Should never reach here. x == %d.", x);
  *     return false;
  * }
@@ -208,34 +208,34 @@ inline const char * toCString(Demangler<T> const & me)
  * @macro AssertMacros#SEQAN_CHECK
  * @headerfile <seqan/basic.h>
  * @brief Force abortion of program if a condition is not met, regardless of debugging settings.
- * 
+ *
  * @signature SEQAN_CHECK(condition, msg[, args]);
  *
  * @param[in] condition An expression that is checked.
  * @param[in] msg       A format string.
  * @param[in] args      An optional list of arguments.
- * 
+ *
  * @section Remarks
- * 
+ *
  * Use this if something really unexpected happens inside your functions and there is no way to report this through the
  * API.  A good example would be logic errors, e.g. invalid values.
- * 
+ *
  * @section Examples
- * 
+ *
  * In the following example, the <tt>SEQAN_CHECK</tt> stops program execution if a value is added to <tt>MyEnum</tt> but
  * the function <tt>foo</tt> is not updated accordingly.
- * 
+ *
  * @code{.cpp}
  * enum MyEnum
  * {
  *   VALUE_ONE,
  *   VALUE_TWO
  * };
- *  
+ *
  * bool foo(MyEnum x)
  * {
  *     SEQAN_CHECK((x == VALUE_ONE || x == VALUE_TWO), "Invalid value for x == %d.", x);
- *  
+ *
  *     switch (x)
  *     {
  *     case VALUE_ONE:
@@ -245,7 +245,7 @@ inline const char * toCString(Demangler<T> const & me)
  *         // do something
  *         return true;
  *     }
- *  
+ *
  *     return false;  // Should never reach here, checked above with SEQAN_CHECK.
  * }
  * @endcode
@@ -627,7 +627,7 @@ struct StaticData
                       << __FILE__ << "\"" << std::endl;
             exit(1);
         }
-        
+
         static char buffer[1024];
         strncpy(&buffer[0], file, pos);
         buffer[pos - 1] = '\0';
@@ -1882,24 +1882,24 @@ inline void fail()
  * @macro AssertMacros#SEQAN_ASSERT
  * @headerfile <seqan/basic.h>
  * @brief Test that the given expression can be coerced to <tt>true</tt>.
- * 
+ *
  * @signature SEQAN_ASSERT(expression);
  * @signature SEQAN_ASSERT_MSG(expression, message[, parameters]);
  *
  * @param[in] expression An expression to check for being true.
  * @param[in] message    A format string.
  * @param[in] parameters An optional list of parameters.
- * 
+ *
  * @section Remarks
- * 
+ *
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
  * parameters. Otherwise, simply use the equivalent SEQAN_ASSERT @call.
- * 
+ *
  * See SEQAN_CHECK and SEQAN_FAIL for (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT(0);  // will fail
  * SEQAN_ASSERT(1);  // will run through
@@ -1911,24 +1911,24 @@ inline void fail()
  * @macro AssertMacros#SEQAN_ASSERT_NOT
  * @headerfile <seqan/basic.h>
  * @brief Test that the given expression can be coerced to <tt>false</tt>.
- * 
+ *
  * @signature SEQAN_ASSERT_NOT(expression)
  * @signature SEQAN_ASSERT_NOT_MSG(expression, message[, parameters])
- * 
+ *
  * @param[in] expression An expression to check for being false.
  * @param[in] message    A format string.
  * @param[in] parameters An optional list of parameters.
- * 
+ *
  * @section Remarks
- * 
+ *
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
  * parameters.  Otherwise, simply use the equivalent SEQAN_ASSERT call.
- * 
+ *
  * See SEQAN_CHECK and SEQAN_FAIL for (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_NOT(0);  // will run through
  * SEQAN_ASSERT_NOT(1);  // will fail
@@ -1940,25 +1940,25 @@ inline void fail()
  * @macro AssertMacros#SEQAN_ASSERT_EQ
  * @headerfile <seqan/basic.h>
  * @brief Test that two given expressions are equal, as defined by the matching call to the <tt>operator=(,)</tt>.
- 
+
  * @signature SEQAN_ASSERT_EQ(expression1, expression2);
  * @signature SEQAN_ASSERT_EQ_MSG(expression1, expression2, comment[, parameters]);
- * 
+ *
  * @param[in] expression1 The first expression.
  * @param[in] expression2 The second expression.
  * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
  *                        on failure.
  * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
  *                        <tt>comment</tt>.
- * 
+ *
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
  * parameters.  Otherwise, simply use the equivalent SEQAN_ASSERT call.
- * 
+ *
  * See SEQAN_CHECK and SEQAN_FAIL for (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_EQ(0, false);  // will run through
  * SEQAN_ASSERT_EQ(1, false);  // will fail
@@ -1971,25 +1971,25 @@ inline void fail()
  * @macro AssertMacros#SEQAN_ASSERT_NEQ
  * @headerfile <seqan/basic.h>
  * @brief Test that two given expressions are not equal, as defined by the matching call to the <tt>operator!=(,)</tt>.
- * 
+ *
  * @signature SEQAN_ASSERT_NEQ(expression1, expression2);
  * @signature SEQAN_ASSERT_NEQ_MSG(expression1, expression2, comment[, parameters]);
- * 
+ *
  * @param[in] expression1 The first expression.
  * @param[in] expression2 The second expression.
  * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
  *                        on failure.
  * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
  *                        <tt>comment</tt>.
- * 
+ *
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
  * parameters.  Otherwise, simply use the equivalent SEQAN_ASSERT call.
- * 
+ *
  * See SEQAN_CHECK and SEQAN_FAIL for (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_NEQ(0, false);  // will fail
  * SEQAN_ASSERT_NEQ(1, false);  // will run through
@@ -2003,25 +2003,25 @@ inline void fail()
  * @headerfile <seqan/basic.h>
  * @brief Test that the two given expressions are in the less-than relation as defined by the matching call to
  *        operator<(,).
- * 
+ *
  * @signature SEQAN_ASSERT_LT(expression1, expression2);
  * @signature SEQAN_ASSERT_LT(expression1, expression2, comment[, parameters]);
- * 
+ *
  * @param[in] expression1 The first expression.
  * @param[in] expression2 The second expression.
  * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
  *                        on failure.
  * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
  *                        <tt>comment</tt>.
- * 
+ *
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
  * parameters.  Otherwise, simply use the equivalent SEQAN_ASSERT call.
- * 
+ *
  * See SEQAN_CHECK and SEQAN_FAIL for (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_LT(0, 1);  // will run through
  * SEQAN_ASSERT_LT(1, 1);  // will not run through
@@ -2031,10 +2031,10 @@ inline void fail()
 
 /*!
  * @macro AssertMacros#SEQAN_ASSERT_LEQ
- * 
+ *
  * @brief Test that the two given expressions are in the less-than-or-equal
  *        relation as defined by the matching call to operator<=(,).
- * 
+ *
  * @signature SEQAN_ASSERT_LEQ(expression1, expression2)
  * @signature SEQAN_ASSERT_LEQ_MSG(expression1, expression2, comment[,
  *            parameters])
@@ -2049,14 +2049,14 @@ inline void fail()
  * The main advantage of this macro is that it prints the values of its argument
  * on failures. Note that the <tt>operator&lt;&lt;</tt> to the type of
  * <tt>std::cerr</tt> has to be defined for the type of both expression
- * parameters. Otherwise, simply use the equivalent  SEQAN_ASSERT 
+ * parameters. Otherwise, simply use the equivalent  SEQAN_ASSERT
  * call.
- * 
+ *
  * See  SEQAN_CHECK  and  SEQAN_FAIL  for
  * (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_LEQ(1, 1);  // will run through
  * SEQAN_ASSERT_LEQ(1, 2);  // will not run through
@@ -2066,31 +2066,31 @@ inline void fail()
 
 /*!
  * @macro AssertMacros#SEQAN_ASSERT_GT
- * 
+ *
  * @brief Test that the two given expressions are in the greather-than relation
  *        as defined by the matching call to operator>(,).
- * 
+ *
  * @signature SEQAN_ASSERT_GT(expression1, expression2);
  * @signature SEQAN_ASSERT_GT_MSG(expression1, expression2, comment[, parameters]);
- * 
+ *
  * @param[in] expression1 The first expression.
  * @param[in] expression2 The second expression.
  * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
  *                        on failure.
  * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
  *                        <tt>comment</tt>.
- * 
+ *
  * The main advantage of this macro is that it prints the values of its argument
  * on failures. Note that the <tt>operator&lt;&lt;</tt> to the type of
  * <tt>std::cerr</tt> has to be defined for the type of both expression
- * parameters. Otherwise, simply use the equivalent  SEQAN_ASSERT 
+ * parameters. Otherwise, simply use the equivalent  SEQAN_ASSERT
  * call.
- * 
+ *
  * See  SEQAN_CHECK  and  SEQAN_FAIL  for
  * (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_GT(2, 1);  // will run through
  * SEQAN_ASSERT_GT(1, 1);  // will not run through
@@ -2100,28 +2100,28 @@ inline void fail()
 
 /*!
  * @macro AssertMacros#SEQAN_ASSERT_GEQ
- * 
+ *
  * @brief Test that the two given expressions are in the greater-than-or-equal
  *        relation as defined by the matching call to operator>=(,).
- * 
+ *
  * @signature SEQAN_ASSERT_GEQ(expression1, expression2);
  * @signature SEQAN_ASSERT_GEQ_MSG(expression1, expression2, comment[, parameters]);
- * 
+ *
  * @param[in] expression1 The first expression.
  * @param[in] expression2 The second expression.
  * @param[in] comment     A C-string (<tt>char const *</tt>) to use as a format string for printing a message
  *                        on failure.
  * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
  *                        <tt>comment</tt>.
- * 
+ *
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
  * parameters.  Otherwise, simply use the equivalent SEQAN_ASSERT call.
- * 
+ *
  * See SEQAN_CHECK and SEQAN_FAIL for (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_GEQ(1, 1);  // will run through
  * SEQAN_ASSERT_GEQ(0, 1);  // will not run through
@@ -2131,12 +2131,12 @@ inline void fail()
 
 /*!
  * @macro AssertMacros#SEQAN_ASSERT_IN_DELTA
- * 
+ *
  * @brief Test that a value <tt>y</tt> lies within an <tt>delta</tt> environment of a value <tt>x</tt>.
- * 
+ *
  * @signature SEQAN_ASSERT_IN_DELTA(x, y, delta);
  * @signature SEQAN_ASSERT_IN_DELTA_MSG(x, y, delta, comment[, parameters]);
- * 
+ *
  * @param[in] x           The value to center the environment in.
  * @param[in] y           The value to check whether it falls within the environment.
  * @param[in] delta       The environment size.
@@ -2144,15 +2144,15 @@ inline void fail()
  *                        on failure.
  * @param[in] parameters  An optional parameter that is put into <tt>printf()</tt> with format string
  *                        <tt>comment</tt>.
- * 
+ *
  * The main advantage of this macro is that it prints the values of its argument on failures.  Note that the
  * <tt>operator&lt;&lt;</tt> to the type of <tt>std::cerr</tt> has to be defined for the type of both expression
  * parameters.  Otherwise, simply use the equivalent SEQAN_ASSERT call.
- * 
+ *
  * See SEQAN_CHECK and SEQAN_FAIL for (conditionally) aborting your program regardless of debug settings.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_IN_DELTA(0, 0, 0.1);  // will run through
  * SEQAN_ASSERT_IN_DELTA(1, -2, 1);  // will fail
@@ -2656,17 +2656,17 @@ void SEQAN_ASSERT_NOT_MSG(T1 const & _arg1, const char * comment, ...) {}
  * @macro SEQAN_PATH_TO_ROOT
  * @headerfile <seqan/basic.h>
  * @brief Return path to the checkout root directory.
- * 
+ *
  * @signature TCharPtr SEQAN_PATH_TO_ROOT()
- * 
+ *
  * @return TCharPtr <tt>char const *</tt>, string with the path to the parent directory of the tests directory.
- * 
+ *
  * This only works when using the SeqAn SVN checkout!
- * 
+ *
  * The pointed to string is initialized on program startup by the code generated by SEQAN_BEGIN_TESTSUITE.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * CharString buffer = SEQAN_PATH_TO_ROOT();
  * append(buffer, "/tests/files/example.txt");
@@ -2693,18 +2693,18 @@ void SEQAN_ASSERT_NOT_MSG(T1 const & _arg1, const char * comment, ...) {}
  * @macro SEQAN_TEMP_FILENAME
  * @headerfile <seqan/basic.h>
  * @brief Generates the name to a temporary file.
- * 
+ *
  * @signature TCharType SEQAN_TEMP_FILENAME();
- * 
+ *
  * @return TCharType <tt>char const *</tt>, string with the path to a temporary file.
- * 
+ *
  * @section Remarks
- * 
+ *
  * The pointed to string is stored in a buffer and is overwritten by the next call to this macro. Copy it out if you
  * need it.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * const char *p = SEQAN_TEMP_FILENAME();
  * buffer char tempFilename[1000];

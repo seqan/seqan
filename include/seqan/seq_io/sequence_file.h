@@ -235,7 +235,7 @@ readRecord(TIdString & meta, TSeqString & seq, TQualString & qual, FormattedFile
  */
 
 template <typename TPtrA, typename TPtrB>
-inline void 
+inline void
 swapPtr(TPtrA &a, TPtrB &b)
 {
     union {

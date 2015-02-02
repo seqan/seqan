@@ -97,7 +97,7 @@ void atomicOrTestImpl(T const &)
     T expected = 0;
     for (int i = 0; i < ITERATIONS; ++i)
         expected |= static_cast<T>(i);
-    
+
     T volatile x = 0;
     SEQAN_OMP_PRAGMA(parallel for schedule(static, 1))
     for (int i = 0; i < ITERATIONS; ++i)
@@ -116,7 +116,7 @@ void atomicXorTestImpl(T const &)
     T expected = 0;
     for (int i = 0; i < ITERATIONS; ++i)
         expected ^= static_cast<T>(i);
-    
+
     T volatile x = 0;
     SEQAN_OMP_PRAGMA(parallel for schedule(static, 1))
     for (int i = 0; i < ITERATIONS; ++i)

@@ -207,7 +207,7 @@ struct VolatilePtr
  *
  * @param[in] ptr One pointer of the connected component to reset.
  */
- 
+
 // TODO(holtgrew): Remove this version?
 template <typename TValue>
 inline void nukeCopies(TValue * &)

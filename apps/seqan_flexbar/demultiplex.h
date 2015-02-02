@@ -63,7 +63,7 @@ typedef String<Dna5Q> TAlphabet;
 
 struct DemultiplexStats
 {
-	String<unsigned> groups;
+    String<unsigned> groups;
 };
 
 
@@ -74,20 +74,20 @@ struct DemultiplexStats
 template <typename TSeqs, typename TIds, typename TBarcodes> //This version works with paired-end data
 bool check(TSeqs& seqs,  TIds& ids, TSeqs& seqsRev, TIds& idsRev, TBarcodes& barcodes, GeneralStats& stats)
 {
-	unsigned len = length(barcodes[0]);
-	for (unsigned i = 1; i < length(barcodes); ++i)
-	{
-		if (len != length(barcodes[i]))
-		{
-			std::cerr << "ERROR: Barcodes differ in length. All barcodes must be of equal length.\n";
-			return false;
-		}
-	}   //Iterating backward to avoid error after deletion of a sequence
+    unsigned len = length(barcodes[0]);
+    for (unsigned i = 1; i < length(barcodes); ++i)
+    {
+        if (len != length(barcodes[i]))
+        {
+            std::cerr << "ERROR: Barcodes differ in length. All barcodes must be of equal length.\n";
+            return false;
+        }
+    }   //Iterating backward to avoid error after deletion of a sequence
     unsigned ex = 0;
-	for (int i = length(seqs) - 1; i >= 0; --i)  
-	{   //integer necessary because unsigned would cause error after last iteration
-		if (length(seqs[i]) <= len)	
-		{
+    for (int i = length(seqs) - 1; i >= 0; --i)
+    {   //integer necessary because unsigned would cause error after last iteration
+        if (length(seqs[i]) <= len)
+        {
             //Divinding the comming jobs between the threads
             //sorting all  sequences which shall be deleted to the end of the container
             swap(seqs[i], seqs[len - ex - 1]);
@@ -95,8 +95,8 @@ bool check(TSeqs& seqs,  TIds& ids, TSeqs& seqsRev, TIds& idsRev, TBarcodes& bar
             swap(ids[i], ids[len - ex - 1]);
             swap(idsRev[i], idsRev[len - ex - 1]);
             ++ex;
-		}
-	}
+        }
+    }
     if (ex != 0)
     {
         resize(seqs, len - ex);
@@ -105,32 +105,32 @@ bool check(TSeqs& seqs,  TIds& ids, TSeqs& seqsRev, TIds& idsRev, TBarcodes& bar
         resize(idsRev, len - ex);
         stats.removedSeqsShort += (2 * ex);
     }
-	return true;
+    return true;
 }
 //Overload for single-end data
 template <typename TSeqs, typename TIds, typename TBarcodes>
-bool check(TSeqs& seqs, TIds& ids,TBarcodes& barcodes, GeneralStats& stats) 
+bool check(TSeqs& seqs, TIds& ids,TBarcodes& barcodes, GeneralStats& stats)
 {
-	unsigned len = length(barcodes[0]);
-	for (unsigned i = 1; i < length(barcodes); ++i)
-	{
-		if (len != length(barcodes[i]))
-		{
-			std::cerr << "ERROR: Barcodes differ in length. All barcodes must be of equal length.\n";
-			return false;
-		}
-	} //Iterating backward to avoid error after deletion of a sequence
+    unsigned len = length(barcodes[0]);
+    for (unsigned i = 1; i < length(barcodes); ++i)
+    {
+        if (len != length(barcodes[i]))
+        {
+            std::cerr << "ERROR: Barcodes differ in length. All barcodes must be of equal length.\n";
+            return false;
+        }
+    } //Iterating backward to avoid error after deletion of a sequence
     unsigned ex = 0;
     unsigned lenSeq = length(seqs);
     for (int i = lenSeq - 1; i >= 0; --i)
-	{
-		if (length(seqs[i]) <= len)
-		{
+    {
+        if (length(seqs[i]) <= len)
+        {
             //sorting all  sequences which shall be deleted to the end of the container
             swap(seqs[i], seqs[lenSeq - ex - 1]);
             swap(ids[i], ids[lenSeq - ex - 1]);
             ++ex;
-		}
+        }
     }
     if (ex != 0)
     {
@@ -138,69 +138,69 @@ bool check(TSeqs& seqs, TIds& ids,TBarcodes& barcodes, GeneralStats& stats)
         resize(ids, lenSeq - ex);
         stats.removedSeqsShort += ex;
     }
-	return true;
+    return true;
 }
 
 template <typename TSeqs>
 void getPrefix(TSeqs& prefices, TSeqs& seqs, unsigned len)
 {
-	int limit = length(seqs);
-	resize(prefices, limit);
-	SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
-	for (int i = 0; i < limit; ++i) //Remark: OMP requires an integer as loop-variable
-	{
-		prefices[i] = prefix(seqs[i], len);
-	}
+    int limit = length(seqs);
+    resize(prefices, limit);
+    SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
+    for (int i = 0; i < limit; ++i) //Remark: OMP requires an integer as loop-variable
+    {
+        prefices[i] = prefix(seqs[i], len);
+    }
 }
 
 template <typename TBarcode>
 void buildVariations(StringSet<Dna5String>& variations, const TBarcode& barcode)
 {
-	int limit = (length(barcode))*5;		    //possible number of variations with one error (A,T,G,C,N)
-	resize(variations, limit);				    //resizes according to calculated number of variations
-	SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
-	for (int i = 0; i < limit; ++i)
-	{
-        assign(variations[i], barcode);	        //fills resultset with original barcode
-	}
-	limit = limit/5;
-	SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
-	for (int i = 0; i < limit; ++i)
-	{										    //each run through the loop modifies 1 position of the barcode 4 times
-		move(variations[5*i][i], 'A');	    	//multiplication with 5 and addition of 0...4 prevents index conflicts
-		move(variations[5*i+1][i], 'C');
-		move(variations[5*i+2][i], 'G');
-		move(variations[5*i+3][i], 'T');
-		move(variations[5*i+4][i], 'N');
-	}
+    int limit = (length(barcode))*5;            //possible number of variations with one error (A,T,G,C,N)
+    resize(variations, limit);                    //resizes according to calculated number of variations
+    SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
+    for (int i = 0; i < limit; ++i)
+    {
+        assign(variations[i], barcode);            //fills resultset with original barcode
+    }
+    limit = limit/5;
+    SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
+    for (int i = 0; i < limit; ++i)
+    {                                            //each run through the loop modifies 1 position of the barcode 4 times
+        move(variations[5*i][i], 'A');            //multiplication with 5 and addition of 0...4 prevents index conflicts
+        move(variations[5*i+1][i], 'C');
+        move(variations[5*i+2][i], 'G');
+        move(variations[5*i+3][i], 'T');
+        move(variations[5*i+4][i], 'N');
+    }
 }
 
 template <typename TBarcodes>
 void buildAllVariations(TBarcodes& barcodes)
 {
-	StringSet<Dna5String> newbarcodes;			//stores the new barcodes
-	for (unsigned i = 0; i < length(barcodes); ++i)
-	{
-		StringSet<Dna5String> tempbarcodes;
+    StringSet<Dna5String> newbarcodes;            //stores the new barcodes
+    for (unsigned i = 0; i < length(barcodes); ++i)
+    {
+        StringSet<Dna5String> tempbarcodes;
         buildVariations(tempbarcodes, barcodes[i]);
-		for (unsigned j = 0; j < length(tempbarcodes); ++j)
+        for (unsigned j = 0; j < length(tempbarcodes); ++j)
         {
-			appendValue(newbarcodes, tempbarcodes[j]);
+            appendValue(newbarcodes, tempbarcodes[j]);
         }
-	}
-	clear(barcodes);
-	barcodes = newbarcodes;
+    }
+    clear(barcodes);
+    barcodes = newbarcodes;
 }
 
 template <typename TPrefix, typename TFinder>
 int findExactIndex(const TPrefix& prefix, TFinder& finder)
 {
-	clear(finder);								//resets finder
-	if (find(finder, prefix))
+    clear(finder);                                //resets finder
+    if (find(finder, prefix))
     {
-		return getSeqNo(position(finder));		//returns index of barcode. ONLY THE FIRST HIT!
+        return getSeqNo(position(finder));        //returns index of barcode. ONLY THE FIRST HIT!
     }
-	else return -1;								//return -1 if no hit occured
+    else return -1;                                //return -1 if no hit occured
 }
 
 template <typename TPrefices, typename TFinder, typename TStats>
@@ -208,7 +208,7 @@ void findAllExactIndex(String<int>& matches, const TPrefices& prefices, const TF
 {
     resize(matches, length(prefices));
 
-	int tnum = 1;
+    int tnum = 1;
 #ifdef _OPENMP
     tnum = omp_get_max_threads();
 #endif
@@ -218,17 +218,17 @@ void findAllExactIndex(String<int>& matches, const TPrefices& prefices, const TF
     {
         finderSet[i] = finder;
     }
-	int limit = length(prefices);
-	SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
-	for (int i = 0; i < limit; ++i)
-	{
-		int tid = 0;
+    int limit = length(prefices);
+    SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
+    for (int i = 0; i < limit; ++i)
+    {
+        int tid = 0;
 #ifdef _OPENMP
         tid = omp_get_thread_num();
 #endif
         int hit = findExactIndex(prefices[i], finderSet[tid]);
-		matches[i] = hit;
-	}
+        matches[i] = hit;
+    }
     for (unsigned i = 0; i < length(matches); ++i) //outside of parallel loop to avoid use of "atomic"
     {
         ++stats.groups[matches[i]+1];
@@ -238,12 +238,12 @@ void findAllExactIndex(String<int>& matches, const TPrefices& prefices, const TF
 template <typename TSeqs>
 void clipBarcodes(TSeqs& seqs, const String<int>& matches, unsigned len)
 {
-	int limit = length(matches);
-	SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
-	for (int i = 0; i < limit; ++i)
-		if (matches[i] != -1)					//only erases barcode from sequence if it could be matched
+    int limit = length(matches);
+    SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
+    for (int i = 0; i < limit; ++i)
+        if (matches[i] != -1)                    //only erases barcode from sequence if it could be matched
         {
-			erase(seqs[i], 0 , len);
+            erase(seqs[i], 0 , len);
         }
 }
 
@@ -251,25 +251,25 @@ void clipBarcodes(TSeqs& seqs, const String<int>& matches, unsigned len)
 template <typename TSeqs>
 void clipBarcodes(TSeqs& seqs, int len)
 {
-	int limit = length(seqs);
-	SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
-	for (int i = 0; i < limit; ++i)
+    int limit = length(seqs);
+    SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
+    for (int i = 0; i < limit; ++i)
     {
-		erase(seqs[i], 0 , len);
+        erase(seqs[i], 0 , len);
     }
 }
 
 template <typename TMatches, typename TBarcodes>
 void group(StringSet<String<int> >& sortedSequences, const TMatches& matches, const TBarcodes& barcodes, bool exclude)
 {
-	resize(sortedSequences, length(barcodes)+1);
-	for (unsigned i = 0; i < length(matches); ++i)
+    resize(sortedSequences, length(barcodes)+1);
+    for (unsigned i = 0; i < length(matches); ++i)
     {                                                       //adds index of sequence to respective group.
-		if ((!exclude) || (matches[i] != -1))                //Check if unidentified seqs have to be excluded
+        if ((!exclude) || (matches[i] != -1))                //Check if unidentified seqs have to be excluded
         {                                                   //offset by 1 is necessary since group 0 is...
             appendValue(sortedSequences[matches[i]+1], i);  //...reserved for unidentified sequences)
         }
-    }                                                  
+    }
 }
 
 //Overload if approximate search has been used.
@@ -277,11 +277,11 @@ template <typename TMatches, typename TBarcodes, typename TApprox>
 void group(StringSet<String<int> >& sortedSequences, const TMatches& matches,
     const TBarcodes& barcodes, TApprox const &, bool exclude)
 {
-	resize(sortedSequences, length(barcodes)/5+1);
-	float dividend = float(length(barcodes[0])*5.0);		//value by which the index will be corrected.
-	for (unsigned i = 0; i < length(matches); ++i)			//adds index of sequence to respective group.
+    resize(sortedSequences, length(barcodes)/5+1);
+    float dividend = float(length(barcodes[0])*5.0);        //value by which the index will be corrected.
+    for (unsigned i = 0; i < length(matches); ++i)            //adds index of sequence to respective group.
     {
-		if ((!exclude) || (matches[i] != -1))                //Check if unidentified seqs have to be excluded
+        if ((!exclude) || (matches[i] != -1))                //Check if unidentified seqs have to be excluded
         {
             appendValue(sortedSequences[int(floor(float(matches[i])/dividend))+1], i);
         }
@@ -293,8 +293,8 @@ template<typename TBarcodes, typename TMultiplex ,typename TFinder>
 void doAll(StringSet<String<int> >& sortedSequences, TMultiplex& multiplex, TBarcodes& barcodes,
     TFinder& esaFinder, DemultiplexStats& stats, bool exclude)
 {
-	String<int> matches;
-	findAllExactIndex(matches, multiplex, esaFinder, stats);
+    String<int> matches;
+    findAllExactIndex(matches, multiplex, esaFinder, stats);
     group(sortedSequences, matches, barcodes, exclude);
 }
 // Using approximate search and multiplex barcodes.
@@ -302,8 +302,8 @@ template<typename TBarcodes, typename TMultiplex ,typename TFinder, typename TAp
 void doAll(StringSet<String<int> >& sortedSequences, TMultiplex& multiplex, TBarcodes& barcodes, TFinder& esaFinder,
     DemultiplexStats& stats, const TApprox approximate, bool exclude)
 {
-	String<int> matches;
-	findAllExactIndex(matches, multiplex, esaFinder, stats);
+    String<int> matches;
+    findAllExactIndex(matches, multiplex, esaFinder, stats);
     group(sortedSequences, matches, barcodes, approximate, exclude);
 }
 //Using exact search and inline barcodes.
@@ -311,18 +311,18 @@ template<typename TSeqs, typename TBarcodes, typename TFinder>
 void doAll(StringSet<String<int> >& sortedSequences, TSeqs& seqs, TBarcodes& barcodes, TFinder& esaFinder, bool hardClip,
     DemultiplexStats& stats, bool exclude)
 {
-	TSeqs prefices;
+    TSeqs prefices;
     getPrefix(prefices, seqs, length(barcodes[0]));
-	String<int> matches;
-	findAllExactIndex(matches, prefices, esaFinder, stats);
-	if (hardClip)		//clip barcodes according to selected method
-	{
-		clipBarcodes(seqs, length(barcodes[0]));
-	}
-	else
-	{
+    String<int> matches;
+    findAllExactIndex(matches, prefices, esaFinder, stats);
+    if (hardClip)        //clip barcodes according to selected method
+    {
+        clipBarcodes(seqs, length(barcodes[0]));
+    }
+    else
+    {
         clipBarcodes(seqs, matches, length(barcodes[0]));
-	}
+    }
     group(sortedSequences, matches, barcodes, exclude);
 }
 // Using approximate search and inline barcodes.
@@ -330,77 +330,77 @@ template<typename TSeqs, typename TBarcodes, typename TFinder, typename TApprox>
 void doAll(StringSet<String<int> >& sortedSequences, TSeqs& seqs, TBarcodes& barcodes, TFinder& esaFinder,
     bool hardClip, DemultiplexStats& stats, const TApprox approximate, bool exclude)
 {
-	TSeqs prefices;
+    TSeqs prefices;
     getPrefix(prefices, seqs, length(barcodes[0]));
-	String<int> matches;
-	findAllExactIndex(matches, prefices, esaFinder, stats);
-	if (hardClip)		//clip barcodes according to selected method
-	{
-	    clipBarcodes(seqs, length(barcodes[0]));
-	}
-	else
-	{
+    String<int> matches;
+    findAllExactIndex(matches, prefices, esaFinder, stats);
+    if (hardClip)        //clip barcodes according to selected method
+    {
+        clipBarcodes(seqs, length(barcodes[0]));
+    }
+    else
+    {
         clipBarcodes(seqs, matches, length(barcodes[0]));
-	}
+    }
     group(sortedSequences, matches, barcodes, approximate, exclude);
 }
 
 //Version for paired-end data
 template<typename TSeqs, typename TIds>
 void buildSets(TSeqs& seqs, TSeqs& seqsRev, TIds& ids, TIds& idsRev, const StringSet<String<int> >& groups,
-		String<TSeqs>& gSeqs, String<TSeqs>& gSeqsRev, String<TIds>& gIds, String<TIds>& gIdsRev)
+        String<TSeqs>& gSeqs, String<TSeqs>& gSeqsRev, String<TIds>& gIds, String<TIds>& gIdsRev)
 {
-	unsigned len = length(groups);
+    unsigned len = length(groups);
     resize(gSeqs, len);
-	resize(gSeqsRev, len);
-	resize(gIds, len);
-	resize(gIdsRev, len);
+    resize(gSeqsRev, len);
+    resize(gIds, len);
+    resize(gIdsRev, len);
     unsigned k = 0;
-	for (unsigned i = 0; i < length(groups); ++i)
-	{
-		for (unsigned j = 0; j < length(groups[i]); ++j)
-		{
-			appendValue(gSeqs[k], seqs[groups[i][j]]);
-			appendValue(gSeqsRev[k], seqsRev[groups[i][j]]);
-			appendValue(gIds[k], ids[groups[i][j]]);
-			appendValue(gIdsRev[k], idsRev[groups[i][j]]);
-		}
-		if (length(groups[i]) != 0)
-		{
-			++k;
-		}
-	}
-	resize(gSeqs, k);
-	resize(gSeqsRev, k);
-	resize(gIds, k);
-	resize(gIdsRev, k);
-	clear(seqs);
-	clear(seqsRev);
-	clear(ids);
-	clear(idsRev);
+    for (unsigned i = 0; i < length(groups); ++i)
+    {
+        for (unsigned j = 0; j < length(groups[i]); ++j)
+        {
+            appendValue(gSeqs[k], seqs[groups[i][j]]);
+            appendValue(gSeqsRev[k], seqsRev[groups[i][j]]);
+            appendValue(gIds[k], ids[groups[i][j]]);
+            appendValue(gIdsRev[k], idsRev[groups[i][j]]);
+        }
+        if (length(groups[i]) != 0)
+        {
+            ++k;
+        }
+    }
+    resize(gSeqs, k);
+    resize(gSeqsRev, k);
+    resize(gIds, k);
+    resize(gIdsRev, k);
+    clear(seqs);
+    clear(seqsRev);
+    clear(ids);
+    clear(idsRev);
 }
 //Overload for single-end data.
 template<typename TSeqs, typename TIds>
 void buildSets(TSeqs& seqs, TIds& ids, const StringSet<String<int> >& groups, String<TSeqs>& gSeqs, String<TIds>& gIds)
 {
-	resize(gSeqs, length(groups));
-	resize(gIds, length(groups));
-	unsigned k = 0;
-	for (unsigned i = 0; i < length(groups); ++i)
-	{
-		for (unsigned j = 0; j < length(groups[i]); ++j)
-		{
+    resize(gSeqs, length(groups));
+    resize(gIds, length(groups));
+    unsigned k = 0;
+    for (unsigned i = 0; i < length(groups); ++i)
+    {
+        for (unsigned j = 0; j < length(groups[i]); ++j)
+        {
             appendValue(gSeqs[k], seqs[groups[i][j]]);
-		    appendValue(gIds[k],ids[groups[i][j]]);
-		}
-		if (length(groups[i]) != 0)
-		{
-			++k;
-		}
-	}
+            appendValue(gIds[k],ids[groups[i][j]]);
+        }
+        if (length(groups[i]) != 0)
+        {
+            ++k;
+        }
+    }
     resize(gSeqs, k);
-	resize(gIds, k);
-	clear(seqs);
- 	clear(ids);
+    resize(gIds, k);
+    clear(seqs);
+     clear(ids);
 }
 #endif  // #ifndef SANDBOX_GROUP3_APPS_SEQDPT_DEMULTIPLEX_H_

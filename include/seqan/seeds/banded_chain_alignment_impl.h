@@ -524,7 +524,7 @@ _computeCell(TDPScout & scout,
 }
 
 // ----------------------------------------------------------------------------
-// Function _computeCell()		  [BandedChainAlignment, FullColumn, FirstCell]
+// Function _computeCell()          [BandedChainAlignment, FullColumn, FirstCell]
 // ----------------------------------------------------------------------------
 
 // For DPInnerColumn.
@@ -925,7 +925,7 @@ _computeGapArea(TTraceSet & globalTraceSet,
     _adaptLocalTracesToGlobalGrid(localTraceSet, gridBegin);
     if (!empty(localTraceSet))
         _glueTracebacks(globalTraceSet, localTraceSet);
-    
+
     scoutState._horizontalNextGridOrigin += gridBegin.i1;
     scoutState._verticalNextGridOrigin += gridBegin.i2;
     return score;
@@ -1093,7 +1093,7 @@ _finishBandedChain(TTraceSet & globalTraceSet,
         _adaptLocalTracesToGlobalGrid(localTraceSet, gridBegin);
         if (!empty(localTraceSet))
             _glueTracebacks(globalTraceSet, localTraceSet);
-        return score;   
+        return score;
     }
 
     DPBandConfig<BandOn> band(-static_cast<TSignedPosition>((bandExtension << 1)) -static_cast<TSignedPosition>(verticalBandShift),

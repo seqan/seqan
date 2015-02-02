@@ -130,7 +130,7 @@ inline bool operator>=(Dna5Q const & left_, Dna5 const & right_)
 // ----------------------------------------------------------------------------
 // Functions ordLess/Equal/Greater()                             [Dna5 vs Dna5]
 // ----------------------------------------------------------------------------
-    
+
 template <>
 inline bool ordLess(Dna5 const & left_, Dna5 const & right_)
 {

@@ -208,7 +208,7 @@ SEQAN_DEFINE_TEST(testIndexCreation)
     if (!isInvSuffixArray(isa, sa, text)) {
         std::cout << "inverse suffix array creation (in-memory) failed." << std::endl;
     }
-     
+
     blank(isa);
     createInvSuffixArray(isa, sa, FromSortedSa<Parallel>());
     if (!isInvSuffixArray(isa, sa, text)) {

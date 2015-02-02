@@ -223,7 +223,7 @@ inline bool _extendLeft(Extender<THaystack, TNeedle, EditDistance, TSpec> & exte
     }
     if (lcp == length(needleInfix))
     {
-		matchBegin = posAdd(matchBegin, -(typename MakeSigned<THaystackSize>::Type)lcp);
+        matchBegin = posAdd(matchBegin, -(typename MakeSigned<THaystackSize>::Type)lcp);
         return true;
     }
     setEndPosition(haystackInfix, endPosition(haystackInfix) - lcp);
@@ -255,7 +255,7 @@ inline bool _extendLeft(Extender<THaystack, TNeedle, EditDistance, TSpec> & exte
     }
 
     needleErrors += minErrors;
-	matchBegin = posAdd(matchBegin, -(typename MakeSigned<THaystackSize>::Type)(endPos + lcp));
+    matchBegin = posAdd(matchBegin, -(typename MakeSigned<THaystackSize>::Type)(endPos + lcp));
 
     return needleErrors <= maxErrors;
 }

@@ -304,7 +304,7 @@ void _getMatchDistanceScore(
                 // Compute edit distance score
                 _getScore(*itStellarMatches, alignDistance);
                 matchDistanceScores[matchIndex] = alignDistance;
-                
+
                 ++matchIndex;
             }
         }

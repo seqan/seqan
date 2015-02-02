@@ -104,7 +104,7 @@ typedef Tag<ProfileSeqScore_> ProfileSeqScore;
  *
  * The following example uses the ProfileSeq Score to align a sequence against a profile.
  * Note that we print the gap state for each position since profiles cannot be printed to one stdout character.
- * 
+ *
  * @include demos/align_profile/profile_seq_score.cpp
  *
  * The output is as follows:
@@ -125,7 +125,7 @@ typedef Tag<ProfileSeqScore_> ProfileSeqScore;
 /*!
  * @fn ProfileSeqScore::Score
  * @brief Constructor
- * 
+ *
  * @signature Score::Score();
  * @signature Score::Score(profile);
  *
@@ -185,7 +185,7 @@ typedef Tag<ProfileSeqFracScore_> ProfileSeqFracScore;
  *
  * The following example uses the ProfileSeqFrac Score to align a sequence against a profile.  Note that we print the
  * gap state for each position since profiles cannot be printed to one stdout character.
- * 
+ *
  * @include demos/align_profile/profile_seq_frac_score.cpp
  *
  * The output is as follows:
@@ -206,7 +206,7 @@ typedef Tag<ProfileSeqFracScore_> ProfileSeqFracScore;
 /*!
  * @fn ProfileSeqFracScore::Score
  * @brief Constructor
- * 
+ *
  * @signature Score::Score();
  * @signature Score::Score(profile);
  *

@@ -49,7 +49,7 @@ namespace seqan {
  * @class VcfIOContext
  * @headerfile <seqan/vcf_io.h>
  * @brief The I/O context to use for VCF I/O.
- * 
+ *
  * @signature template <typename TNameStore[, typename TNameStoreCache]>
  *            class VcfIOContext;
  *
@@ -60,7 +60,7 @@ namespace seqan {
 /*!
  * @fn VcfIOContext::VcfIOContext
  * @brief Constructor.
- * 
+ *
  * @signature VcfIOContext::VcfIOContext();
  * @signature VcfIOContext::VcfIOContext(contigNames, sampleNames);
  *

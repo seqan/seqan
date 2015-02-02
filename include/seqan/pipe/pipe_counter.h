@@ -41,16 +41,16 @@ namespace SEQAN_NAMESPACE_MAIN
 //namespace SEQAN_NAMESPACE_PIPELINING
 //{
 
-	struct Counter;
+    struct Counter;
 
-	template < typename TInput >
+    template < typename TInput >
     struct Value< Pipe< TInput, Counter > > {
-		typedef Pair<
-			typename Value<TInput>::Type,
-			typename Size<TInput>::Type,
-			Pack
-		> Type;
-	};
+        typedef Pair<
+            typename Value<TInput>::Type,
+            typename Size<TInput>::Type,
+            Pack
+        > Type;
+    };
 
 /*!
  * @class Counter
@@ -60,32 +60,32 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @signature template <typename TInput>
  *            class Pipe<TInput, Counter>;
- * 
+ *
  * @tparam TInput The type of the pipeline module this module reads from.
- * 
+ *
  * The output type is a Pair of input type and size type (i.e.  <tt>Pair&lt;Value&lt;TInput&gt;::Type, Size&lt;TInput&gt;::Type</tt>).
- * 
+ *
  * The first output field is the original input stream.
- * 
+ *
  * The second output field begins with 0 and increases by 1 per element.
- */ 
+ */
 
     //////////////////////////////////////////////////////////////////////////////
     // counter class
     template < typename TInput >
     struct Pipe< TInput, Counter >
     {
-		TInput                      &in;
-        typename Value<Pipe>::Type	tmp;
-        
+        TInput                      &in;
+        typename Value<Pipe>::Type    tmp;
+
         Pipe(TInput& _in):
             in(_in) {}
-        
+
         inline typename Value<Pipe>::Type const & operator*() {
             tmp.i1 = *in;
             return tmp;
         }
-        
+
         inline Pipe& operator++() {
             ++in;
             ++tmp.i2;
@@ -97,12 +97,12 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
     // global pipe functions
     template < typename TInput >
-	inline bool control(Pipe< TInput, Counter > &me, ControlBeginRead const &command) {
+    inline bool control(Pipe< TInput, Counter > &me, ControlBeginRead const &command) {
         if (!control(me.in, command)) return false;
         me.tmp.i2 = 0;
-		return true;
-	}
-    
+        return true;
+    }
+
 //}
 
 }

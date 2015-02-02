@@ -19,10 +19,10 @@ bool loadReadsCroppedId(FragmentStore<TFSSpec, TFSConfig> &store, TFileName &fil
 {
     seqan::SeqFileIn seqFileIn;
     if (!open(seqFileIn, toCString(fileName)))
-		return false;
+        return false;
 
-	String<Dna5Q> seq;
-	CharString _id;
+    String<Dna5Q> seq;
+    CharString _id;
 
     while (!atEnd(seqFileIn))
     {
@@ -40,12 +40,12 @@ bool loadReadsCroppedId(FragmentStore<TFSSpec, TFSConfig> & store,
                         TFileName & fileNameL, TFileName & fileNameR)
 {
     seqan::SeqFileIn seqFileInL, seqFileInR;
-	if (!open(seqFileInL, toCString(fileNameL)) ||
-	    !open(seqFileInR, toCString(fileNameR)))
-		return false;
+    if (!open(seqFileInL, toCString(fileNameL)) ||
+        !open(seqFileInR, toCString(fileNameR)))
+        return false;
 
-	String<Dna5Q> seqL, seqR;
-	CharString _idL, _idR;
+    String<Dna5Q> seqL, seqR;
+    CharString _idL, _idR;
 
     while (!atEnd(seqFileInL) && !atEnd(seqFileInR))
     {
@@ -54,12 +54,12 @@ bool loadReadsCroppedId(FragmentStore<TFSSpec, TFSConfig> & store,
         readRecord(_idR, seqR, seqFileInR);
         cropAfterFirst(_idR, IsBlank());
 
-		appendMatePair(store, seqL, seqR, _idL, _idR);
+        appendMatePair(store, seqL, seqR, _idL, _idR);
     }
 
-	SEQAN_ASSERT(atEnd(seqFileInL) && atEnd(seqFileInR));
+    SEQAN_ASSERT(atEnd(seqFileInL) && atEnd(seqFileInR));
 
-	return true;
+    return true;
 }
 
 

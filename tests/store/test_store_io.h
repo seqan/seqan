@@ -224,7 +224,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_gff)
 
     SEQAN_ASSERT_EQ(getType(it), "exon");
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 1049);
-    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 1500	);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 1500    );
     SEQAN_ASSERT_EQ(value(it), 3u);
     SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1u);
     SEQAN_ASSERT_EQ(getParentName(it), "mrna0001");
@@ -397,7 +397,7 @@ SEQAN_DEFINE_TEST(test_store_io_sam)
     std::string goldPathSam = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/store/ex1.copy.sam";
     BamFileIn inFile(toCString(goldPathSam));
     readRecords(store, inFile);
-  
+
     // 3. WRITE SAM ALIGNMENTS
     std::string testPathSam = (std::string)SEQAN_TEMP_FILENAME() + ".sam";
     BamFileOut outFile(toCString(testPathSam));
@@ -438,7 +438,7 @@ void _appendReadAlignments(TFragStore &store, char const *fileName)
     BamFileIn inFile(str.c_str());
     readRecords(store, inFile);
   }
-  
+
 template <typename TFragStore>
 void _writeStore(TFragStore &store, std::string const &outPath, char const *suffix)
 {

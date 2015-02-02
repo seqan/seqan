@@ -175,7 +175,7 @@ clear(Allocator<SimpleAlloc<TParentAllocator> > & me)
 
 template <typename TParentAllocator, typename TValue, typename TSize, typename TUsage>
 inline void
-allocate(Allocator<SimpleAlloc<TParentAllocator> > & me, 
+allocate(Allocator<SimpleAlloc<TParentAllocator> > & me,
          TValue * & data,
          TSize count,
          Tag<TUsage> const &)
@@ -211,9 +211,9 @@ allocate(Allocator<SimpleAlloc<TParentAllocator> > & me,
 // ----------------------------------------------------------------------------
 
 template <typename TParentAllocator, typename TValue, typename TSize, typename TUsage>
-inline void 
+inline void
 deallocate(Allocator<SimpleAlloc<TParentAllocator> > & me,
-           TValue * data, 
+           TValue * data,
            TSize,
            Tag<TUsage> const &)
 {

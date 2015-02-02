@@ -124,7 +124,7 @@ typedef unsigned __int8 __uint8;
 template <typename T>
 inline T round(T const & x)
 {
-	return static_cast<T>(floor(x + 0.5));
+    return static_cast<T>(floor(x + 0.5));
 }
 
 // Rename some underscore-functions in Windows.

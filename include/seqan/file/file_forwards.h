@@ -32,14 +32,14 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_HEADER_FILE_FORWARDS_H 
-#define SEQAN_HEADER_FILE_FORWARDS_H 
+#ifndef SEQAN_HEADER_FILE_FORWARDS_H
+#define SEQAN_HEADER_FILE_FORWARDS_H
 
 //////////////////////////////////////////////////////////////////////////////
 
-namespace SEQAN_NAMESPACE_MAIN 
+namespace SEQAN_NAMESPACE_MAIN
 {
-    
+
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TSource, typename TSpec>

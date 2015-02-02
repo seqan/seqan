@@ -75,7 +75,7 @@ unsigned solve(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
     typedef unsigned TSize;
 
     // heuristic typedefs
-    typedef ::std::set<TVertexDescriptor>        TVisitedSet;    
+    typedef ::std::set<TVertexDescriptor>        TVisitedSet;
     typedef ::std::map<TVertexDescriptor, TSize> TVertexComponentMap;
 
     TVisitedSet visitedNodes;
@@ -113,7 +113,7 @@ unsigned solve(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
         {
             // this component was already merged
             if(length(value(componentList,c1)) == 0) continue;
-            
+
             TSize c_merge = c1 + 1;
             // find the first non-empty component
             while(length(value(componentList,c_merge)) == 0 && c_merge < vertexCount)
@@ -129,7 +129,7 @@ unsigned solve(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
                 // check if component c2 was not already merged
                 if(length(value(componentList,c2)) > 0)
                 {
-                    // this is a possible partner for c1   
+                    // this is a possible partner for c1
                     if(distance(me,value(componentList,c1),value(componentList,c2)) < best_dist)
                     {
                         c_merge = c2;
@@ -166,7 +166,7 @@ unsigned solve(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
             for(;!atEnd(unused_candIt);goNext(unused_candIt))
             {
                 if( length(value(componentList,cargo(unused_candIt).i1) ) != 0 // component 1 is not empty
-                    && 
+                    &&
                     length(value(componentList,cargo(unused_candIt).i2) ) != 0 // component 2 is not empty
                     )
                 {
@@ -216,7 +216,7 @@ unsigned solve(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
            unsigned ,
            SingleComponentExpansion const)
 {
-    // constants 
+    // constants
     const double seed_score_threshold = 0.0;
 
     // graph typedefs
@@ -232,7 +232,7 @@ unsigned solve(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
     // general typedefs
     typedef unsigned TSize;
 
-    typedef ::std::set<TVertexDescriptor>         TVisitedSet;    
+    typedef ::std::set<TVertexDescriptor>         TVisitedSet;
     //typedef ::std::map<double, TVertexDescriptor> TBestMatchMap;
 
     TVisitedSet visitedVertices;
@@ -257,12 +257,12 @@ unsigned solve(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
             TEdgeDescriptor ed = *edgeIt;
             if(!hasKey(visitedVertices,sourceVertex(edgeIt)) && !hasKey(visitedVertices,targetVertex(edgeIt)))
             {
-                if(init_best_edge_score || getEdgeScore(me,ed) < best_edge_score) 
+                if(init_best_edge_score || getEdgeScore(me,ed) < best_edge_score)
                 {
                     best_edge_score = getEdgeScore(me, ed);
 #ifdef DEBUG_RGRAPH_HEURISTICS
                     cout << "best edge score for init set to: " << best_edge_score << endl;
-#endif                    
+#endif
                     best_edge = ed;
                     init_best_edge_score = false;
                     sV = sourceVertex(edgeIt);
@@ -275,25 +275,25 @@ unsigned solve(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
         if(best_edge == 0) break; // we can not further proceed since there are no seeds left
         if(getEdgeScore(me,best_edge) > seed_score_threshold) break; // this is not a good seed ..
 
-        // while possible 
+        // while possible
         // -> extend current component
-        
+
         // 1st .. init new component
         TComponent comp;
         appendValue(comp,sV);
         appendValue(comp,tV);
-        
+
         // mark the used vertices as used
         insert(visitedVertices,sV);
         insert(visitedVertices,tV);
-     
+
         TComponent temporary_component;
-        
+
         // 2nd .. try to expand as long as possible
         bool was_expanded = true;
         while(was_expanded)
         {
-            // reset 
+            // reset
             was_expanded = false;
 
             TVertexDescriptor best_expansion = 0;
@@ -304,7 +304,7 @@ unsigned solve(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
             TVertexIterator vertexIt(me.graph);
             while(!atEnd(vertexIt))
             {
-                // this vertex was not used 
+                // this vertex was not used
                 if(!hasKey(visitedVertices,*vertexIt))
                 {
                     // candidate for an expansion
@@ -321,7 +321,7 @@ unsigned solve(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
                 }
                 goNext(vertexIt);
             }
-            
+
             // can we expand ???
             if(best_expansion_score < 0.0)
             {
@@ -329,7 +329,7 @@ unsigned solve(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
                 insert(visitedVertices,best_expansion);
                 was_expanded = true;
             }
-            
+
         }
         appendValue(components,comp);
     }

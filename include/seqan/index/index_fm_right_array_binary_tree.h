@@ -48,21 +48,21 @@ template <typename TChar, typename TSpec = void>
 class RightArrayBinaryTree;
 
 // ============================================================================
-// Tags 
+// Tags
 // ============================================================================
 //
 /*!
  * @defgroup RightArrayBinaryTreeFibres RightArrayBinaryTree Fibres
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
  *        RightArrayBinaryTree @endlink.
- * 
+ *
  * These tags can be used to get @link Fibre Fibres @endlink of a @link RightArrayBinaryTree @endlink.
- * 
+ *
  * @see Fibre
  * @see Index#getFibre
- * 
+ *
  * @tag RightArrayBinaryTreeFibres#FibreTreeStructureEncoding
- * 
+ *
  * @brief The string encoding the wavelet tree structure.
  */
 
@@ -118,10 +118,10 @@ struct Value<RightArrayBinaryTree<TChar, TSpec> const> :
  * @headerfile <seqan/index.h>
  * @brief A special format to encode the structure of a wavelet tree.  The structure is very space efficient because
  *        only one position is stored which encodes where the left and right subtree of a given node exist.
- * 
+ *
  * @signature template <typename TChar, typename TSpec>
  *            class RightArrayBinaryTree;
- * 
+ *
  * @tparam TValue The type of the stored characters.
  * @tparam TSpec  The wavelet tree structure specialisation. Default: void.
  */
@@ -132,7 +132,7 @@ class RightArrayBinaryTree
 public:
     typename Fibre<RightArrayBinaryTree, FibreTreeStructureEncoding>::Type treeVertices;
     TChar minCharValue;
- 
+
     RightArrayBinaryTree() :
         treeVertices(),
         minCharValue()
@@ -158,9 +158,9 @@ public:
  * @fn RightArrayBinaryTree#clear
  * @headerfile <seqan/index.h>
  * @brief Resets a right-array-binary tree.
- * 
+ *
  * @signature void clear(rightArrayBinaryTree);
- * 
+ *
  * @param[in,out] rightArrayBinaryTree The RightArrayBinaryTree to be cleared.
  */
 
@@ -177,9 +177,9 @@ inline void clear(RightArrayBinaryTree<TChar, TSpec> & treeStructure)
  * @fn RightArrayBinaryTree#createRightArrayBinaryTree
  * @headerfile <seqan/index.h>
  * @brief Computes the right-array-binary tree of a text.
- * 
+ *
  * @signature void createRightArrayBinaryTree(rightArrayBinaryTree, text);
- * 
+ *
  * @param[in] rightArrayBinaryTree A wavelet tree structure.
  * @param[in] text                 A @link TextConcept text @endlink.
  */
@@ -244,9 +244,9 @@ createRightArrayBinaryTree(RightArrayBinaryTree<TChar, TSpec> & waveletTreeStruc
  * @fn RightArrayBinaryTree#empty
  * @headerfile <seqan/index.h>
  * @brief Checks whether or not a right-array-binary tree contains any elements.
- * 
+ *
  * @signature bool empty(rightArrayBinaryTree);
- * 
+ *
  * @param[in] rightArrayBinaryTree The right-array-binary tree to be queried.
  *
  * @return bool Returns <tt>true</tt> if the rank-support-bit string is empty and <tt>false</tt> otherwise.
@@ -265,14 +265,14 @@ inline bool empty(RightArrayBinaryTree<TChar, TSpec> const & treeStructure)
  * @fn RightArrayBinaryTree#getFibre
  * @headerfile <seqan/index.h>
  * @brief Returns a specific fibre of a right-array-binary tree.
- * 
+ *
  * @signature TFibre getFibre(rightArrayBinaryTree, fibreTag);
- * 
+ *
  * @param[in] rightArrayBinaryTree
  *                      The container holding the fibre.
  * @param[in] fibreTag  A tag that identifies the @link Fibre @endlink.  Types: @link RightArrayBinaryTreeFibres
  *                      RightArrayBinaryTree Fibres @endlink.
- * 
+ *
  * @return TFibre A reference to the @link Fibre @endlink object.
  */
 template <typename TChar, typename TSpec>
@@ -338,15 +338,15 @@ _resize(RightArrayBinaryTree<TChar, TSpec> & treeStructure, TSize size,
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTree#open
- * 
+ *
  * @headerfile <seqan/index.h>
- * 
+ *
  * @brief This functions loads a @link RightArrayBinaryTree @endlink from disk.
- * 
+ *
  * @signature bool open(rightArrayBinaryTree, fileName [, openMode])
  *
  * @param[in,out] rightArrayBinaryTree
- *                               The RightArrayBinaryTree. 
+ *                               The RightArrayBinaryTree.
  * @param[in]     fileName       C-style character string containing the file name.
  * @param[in]     openMode       The combination of flags defining how the file should be
  *                               opened.  To open a file read-only, write-only or to read and
@@ -356,7 +356,7 @@ _resize(RightArrayBinaryTree<TChar, TSpec> & treeStructure, TSize size,
  *                               <tt>OPEN_APPEND</tt>.  To circumvent problems, files are always
  *                               opened in binary mode.  Default: <tt>OPEN_RDWR | OPEN_CREATE |
  *                               OPEN_APPEND</tt>.
- * 
+ *
  * @return bool A <tt>bool</tt> which is <tt>true</tt> on success.
  */
 
@@ -387,15 +387,15 @@ inline bool open(RightArrayBinaryTree<TChar, TSpec> & treeStructure, const char 
 // ----------------------------------------------------------------------------
 /*!
  * @fn RightArrayBinaryTree#save
- * 
+ *
  * @headerfile <seqan/index.h>
- * 
+ *
  * @brief This functions saves a @link RightArrayBinaryTree @endlink to disk.
- * 
+ *
  * @signature bool save(rightArrayBinaryTree, fileName [, openMode])
- * 
+ *
  * @param[in,out] rightArrayBinaryTree
- *                               The RightArrayBinaryTree. 
+ *                               The RightArrayBinaryTree.
  * @param[in]     fileName       C-style character string containing the file name.
  * @param[in]     openMode       The combination of flags defining how the file should be
  *                               opened.  To open a file read-only, write-only or to read and
@@ -405,7 +405,7 @@ inline bool open(RightArrayBinaryTree<TChar, TSpec> & treeStructure, const char 
  *                               <tt>OPEN_APPEND</tt>.  To circumvent problems, files are always
  *                               opened in binary mode.  Default: <tt>OPEN_RDWR | OPEN_CREATE |
  *                               OPEN_APPEND</tt>.
- * 
+ *
  * @return bool A <tt>bool</tt> which is <tt>true</tt> on success.
  */
 

@@ -76,15 +76,15 @@ template <typename T> struct BaseAlphabet;
  * @extends SimpleType
  * @headerfile <seqan/basic.h>
  * @brief Alphabet for DNA.
- * 
+ *
  * @signature typedef SimpleType<unsigned char, Dna_> Dna;
- * 
+ *
  * The ValueSize of <tt>Dna</tt> is 4.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'T' =
  * 3</tt>.
- * 
+ *
  * Objects of type <tt>Dna</tt> can be converted to various other types and vice versa.  An object that has a value not
  * in <tt>{'A', 'C', 'G', 'T'}</tt> is converted to <tt>'A'</tt>.
- * 
+ *
  * @see Dna5
  * @see DnaString
  * @see DnaIterator
@@ -116,15 +116,15 @@ struct BitsPerValue< Dna >
  * @extends SimpleType
  * @headerfile <seqan/basic.h>
  * @brief Alphabet for DNA including 'N' character.
- * 
+ *
  * @signature typedef SimpleType<unsigned char, Dna5_> Dna5;
- * 
+ *
  * The @link FiniteOrderedAlphabetConcept#ValueSize @endlink of <tt>Dna5</tt> is 5.  The nucleotides are enumerated this
  * way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'T' = 3</tt>.  The 'N' character ("unkown nucleotide") is encoded by 4.
- * 
+ *
  * Objects of type <tt>Dna5</tt> can be converted to various other types and vice versa.  An object that has a value not
  * in <tt>{'A', 'C', 'G', 'T'}</tt> is converted to <tt>'N'</tt>.
- * 
+ *
  * @see Dna5Iterator
  * @see Dna5String
  * @see Dna
@@ -164,16 +164,16 @@ unknownValueImpl(Dna5 *)
  * @headerfile <seqan/basic.h>
  * @implements AlphabetWithQualitiesConcept
  * @brief Alphabet for DNA plus PHRED quality.
- * 
+ *
  * @signature typedef SimpleType<unsigned char, DnaQ_> DnaQ;
- * 
+ *
  * The ValueSize of <tt>DnaQ</tt> is 4.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'T' =
  * 3</tt>.
- * 
+ *
  * Objects of type <tt>DnaQ</tt> can be converted to various other types and vice versa.
- * 
+ *
  * Note that the default quality value is set to 60.
- * 
+ *
  * @see Dna5Q
  * @see Dna
  */
@@ -221,7 +221,7 @@ struct QualityValueSize<DnaQ>
 };
 
 template <typename TValue>
-inline int getQualityValue(TValue const &) 
+inline int getQualityValue(TValue const &)
 {
     return 0;
 }
@@ -267,16 +267,16 @@ void assignQualityValue(char & q, DnaQ c)
  * @headerfile <seqan/basic.h>
  * @implements AlphabetWithQualitiesConcept
  * @brief Alphabet for DNA plus PHRED quality including 'N' character.
- * 
+ *
  * @signature typedef SimpleType<unsigned char, Dna5Q_> Dna5Q;
- * 
+ *
  * The ValueSize of <tt>Dna5Q</tt> is 5.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'T' =
  * 3</tt>. The 'N' character ("unknown nucleotide") is encoded by 4.
- * 
+ *
  * Objects of type <tt>Dna5</tt> can be converted to various other types and vice versa.
- * 
+ *
  * Note that the default quality value is set to 40.
- * 
+ *
  * @see Dna5
  * @see DnaQ
  */
@@ -328,7 +328,7 @@ unknownValueImpl(Dna5Q *)
     return _result;
 }
 
-inline int getQualityValue(Dna5Q const &c) 
+inline int getQualityValue(Dna5Q const &c)
 {
     // We use a lookup table to extract the qualities from DNA5Q.  The lookup
     // table based code is equivalent to the following line:
@@ -364,8 +364,8 @@ void assignQualityValue(Dna5Q &c, int q)
         c.value = (c.value & 3) | (q << 2);
 }
 
-inline 
-void assignQualityValue(Dna5Q &c, char q) 
+inline
+void assignQualityValue(Dna5Q &c, char q)
 {
     int q1 = static_cast<int>(q - '!');
     if (q1 < 0) q1 = 0;
@@ -374,7 +374,7 @@ void assignQualityValue(Dna5Q &c, char q)
     assignQualityValue(c, q1);
 }
 
-inline 
+inline
 void assignQualityValue(char & q, Dna5Q c)
 {
     q = '!' + getQualityValue(c);
@@ -389,17 +389,17 @@ void assignQualityValue(char & q, Dna5Q c)
  * @extends SimpleType
  * @headerfile <seqan/basic.h>
  * @brief Alphabet for RNA.
- * 
+ *
  * @signature typedef SimpleType<unsigned char, Rna_> Rna;
- * 
+ *
  * The ValueSize of <tt>Rna</tt> is 4.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'U' =
  * 3</tt>.
- * 
+ *
  * Objects of type <tt>Rna</tt> can be converted to various other types and vice versa.  An object that has a value not
  * in <tt>{'A', 'C', 'G', 'U'}</tt> is converted to <tt>'A'</tt>.
- * 
+ *
  * <tt>Rna</tt> is typedef for <tt>SimpleType<char,Rna_></tt>, while <tt>Rna_</tt> is a helper specialization tag class.
- * 
+ *
  * @see Rna5
  * @see RnaString
  * @see RnaIterator
@@ -431,15 +431,15 @@ struct BitsPerValue<Rna>
  * @extends SimpleType
  * @headerfile <seqan/basic.h>
  * @brief Alphabet for RNA including 'N' character.
- * 
+ *
  * @signature typedef SimpleType<unsigned char, Rna5_> Rna5;
- * 
+ *
  * The ValueSize of <tt>Rna5</tt> is 5.  The nucleotides are enumerated this way: <tt>'A' = 0, 'C' = 1, 'G' = 2, 'U' =
  * 3</tt>.  The 'N' character ("unkown nucleotide") is encoded by 4.
- * 
+ *
  * Objects of type <tt>Rna5</tt> can be converted to various other types and vice versa.  An object that has a value not
  * in <tt>{'A', 'C', 'G', 'U'}</tt> is converted to <tt>'N'</tt>.
- * 
+ *
  * @see Rna5Iterator
  * @see Rna5String
  * @see Rna
@@ -479,12 +479,12 @@ unknownValueImpl(Rna5 *)
  * @extends SimpleType
  * @headerfile <seqan/basic.h>
  * @brief Iupac code for DNA.
- * 
+ *
  * @signature typedef SimpleType<unsigned char, Iupac_> Iupac;
- * 
+ *
  * The ValueSize of <tt>Iupac</tt> is 16.  The nucleotides are enumerated from 0 to 19 in this order: 'U'=0, 'T', 'A',
  * 'W', 'C', 'Y', 'M', 'H', 'G', 'K', 'R', 'D', 'S', 'B', 'V', 'N'=15.
- * 
+ *
  * Objects of type <tt>Iupac</tt> can be converted to various other types and vice versa.  Unknown values are converted
  * to <tt>'N'</tt>.
  *
@@ -524,14 +524,14 @@ unknownValueImpl(Iupac *)
  * @headerfile <seqan/basic.h>
  * @brief IUPAC code for amino acids.
  * @signature typedef SingleType<unsigned char, AminoAcid_> AminoAcid;
- * 
+ *
  * The ValueSize of <tt>AminoAcid</tt> is 26.
  *
- * The amino acid symbols are as follows, i.e. they are sorted alphabetically 
+ * The amino acid symbols are as follows, i.e. they are sorted alphabetically
  * up until the last two symbols:
  *
  * 'A' = 0, 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'Y', 'Z', 'X'. '*'
- * 
+ *
  * Of these 'B' is a wildcard for (Aspartic Acid, Asparagine),
  * 'J' for (Leucine, Isoleucine), 'Z' for (Glutamic Acid, Glutamine) and
  * 'X' for "any amino acid".
@@ -576,12 +576,12 @@ unknownValueImpl(AminoAcid *)
  * @class Finite
  * @extends SimpleType
  * @headerfile <seqan/basic.h>
- * 
+ *
  * @brief A finite alphabet of a fixed size.
- * 
+ *
  * @signature template <typename TValue, unsigned SIZE>
  *            class SimpleType<TValue, Finite<SIZE> >;
- * 
+ *
  * @tparam TValue The type that is use to store the values.
  * @tparam SIZE   The ValueSize of the alphabet.
  */
@@ -589,14 +589,14 @@ unknownValueImpl(AminoAcid *)
 template <unsigned SIZE>
 struct Finite;
 
-template <typename TValue, unsigned SIZE> 
+template <typename TValue, unsigned SIZE>
 struct ValueSize<SimpleType<TValue, Finite<SIZE> > >
 {
     typedef __uint8 Type;
     static const Type VALUE = SIZE;
 };
 
-template <typename TValue, unsigned SIZE> 
+template <typename TValue, unsigned SIZE>
 struct BitsPerValue<SimpleType<TValue, Finite<SIZE> > >
 {
     typedef __uint8 Type;
@@ -894,7 +894,7 @@ inline void assign(AminoAcid & target, char c_source)
 // {
 //  typedef SimpleType<TValue2,Dna_> Type;
 // };
-// 
+//
 // template <typename TValue, typename TValue2>
 // struct CompareTypeImpl<SimpleType<TValue,Dna_>, SimpleType<TValue2,DnaQ_> >
 // {
@@ -984,28 +984,28 @@ inline void assign(DnaQ & target, char c_source)
     assign(target, (Dna) c_source);
 }
 
-inline void 
+inline void
 assign(DnaQ & target, DnaQ const & source)
 {
     target.value = source.value;
 }
 
 template <typename TSource>
-inline void 
+inline void
 assign(DnaQ & target, TSource const & source)
 {
     target.value = (Dna)source;
 }
 
-inline void 
-assign(__int64 & c_target, 
+inline void
+assign(__int64 & c_target,
        DnaQ & source)
 {
     c_target = Dna(source);
 }
 
-inline void 
-assign(__int64 & c_target, 
+inline void
+assign(__int64 & c_target,
        DnaQ const & source)
 {
     c_target = Dna(source);
@@ -1013,15 +1013,15 @@ assign(__int64 & c_target,
 
 // __uint64
 
-inline void 
-assign(__uint64 & c_target, 
+inline void
+assign(__uint64 & c_target,
        DnaQ & source)
 {
     c_target = Dna(source);
 }
 
-inline void 
-assign(__uint64 & c_target, 
+inline void
+assign(__uint64 & c_target,
        DnaQ const & source)
 {
     c_target = Dna(source);
@@ -1029,15 +1029,15 @@ assign(__uint64 & c_target,
 
 // int
 
-inline void 
-assign(int & c_target, 
+inline void
+assign(int & c_target,
        DnaQ & source)
 {
     c_target = Dna(source);
 }
 
-inline void 
-assign(int & c_target, 
+inline void
+assign(int & c_target,
        DnaQ const & source)
 {
     c_target = Dna(source);
@@ -1045,15 +1045,15 @@ assign(int & c_target,
 
 // unsigned int
 
-inline void 
-assign(unsigned int & c_target, 
+inline void
+assign(unsigned int & c_target,
        DnaQ & source)
 {
     c_target = Dna(source);
 }
 
-inline void 
-assign(unsigned int & c_target, 
+inline void
+assign(unsigned int & c_target,
        DnaQ const & source)
 {
     c_target = Dna(source);
@@ -1061,15 +1061,15 @@ assign(unsigned int & c_target,
 
 // short
 
-inline void 
-assign(short & c_target, 
+inline void
+assign(short & c_target,
        DnaQ & source)
 {
     c_target = Dna(source);
 }
 
-inline void 
-assign(short & c_target, 
+inline void
+assign(short & c_target,
        DnaQ const & source)
 {
     c_target = Dna(source);
@@ -1077,15 +1077,15 @@ assign(short & c_target,
 
 // unsigned short
 
-inline void 
-assign(unsigned short & c_target, 
+inline void
+assign(unsigned short & c_target,
        DnaQ & source)
 {
     c_target = Dna(source);
 }
 
-inline void 
-assign(unsigned short & c_target, 
+inline void
+assign(unsigned short & c_target,
        DnaQ const & source)
 {
     c_target = Dna(source);
@@ -1093,15 +1093,15 @@ assign(unsigned short & c_target,
 
 // char
 
-inline void 
-assign(char & c_target, 
+inline void
+assign(char & c_target,
        DnaQ & source)
 {
     c_target = Dna(source);
 }
 
-inline void 
-assign(char & c_target, 
+inline void
+assign(char & c_target,
        DnaQ const & source)
 {
     c_target = Dna(source);
@@ -1109,15 +1109,15 @@ assign(char & c_target,
 
 // signed char
 
-inline void 
-assign(signed char & c_target, 
+inline void
+assign(signed char & c_target,
        DnaQ & source)
 {
     c_target = Dna(source);
 }
 
-inline void 
-assign(signed char & c_target, 
+inline void
+assign(signed char & c_target,
        DnaQ const & source)
 {
     c_target = Dna(source);
@@ -1125,15 +1125,15 @@ assign(signed char & c_target,
 
 // unsigned char
 
-inline void 
-assign(unsigned char & c_target, 
+inline void
+assign(unsigned char & c_target,
        DnaQ & source)
 {
     c_target = Dna(source);
 }
 
-inline void 
-assign(unsigned char & c_target, 
+inline void
+assign(unsigned char & c_target,
        DnaQ const & source)
 {
     c_target = Dna(source);
@@ -1148,7 +1148,7 @@ assign(unsigned char & c_target,
 // {
 //  typedef SimpleType<TValue2,Dna5_> Type;
 // };
-// 
+//
 // template <typename TValue, typename TValue2>
 // struct CompareTypeImpl<SimpleType<TValue,Dna5_>, SimpleType<TValue2,Dna5Q_> >
 // {
@@ -1346,7 +1346,7 @@ assign(Dna5Q & target, Dna5Q const & source)
 }
 
 template <typename TSource>
-inline void 
+inline void
 assign(Dna5Q & target, TSource const & source)
 {
     assign(target, (Dna5)source);
@@ -1354,15 +1354,15 @@ assign(Dna5Q & target, TSource const & source)
 
 // __int64
 
-inline void 
-assign(__int64 & c_target, 
+inline void
+assign(__int64 & c_target,
        Dna5Q & source)
 {
     c_target = Dna5(source);
 }
 
-inline void 
-assign(__int64 & c_target, 
+inline void
+assign(__int64 & c_target,
        Dna5Q const & source)
 {
     c_target = Dna5(source);
@@ -1370,15 +1370,15 @@ assign(__int64 & c_target,
 
 // __uint64
 
-inline void 
-assign(__uint64 & c_target, 
+inline void
+assign(__uint64 & c_target,
        Dna5Q & source)
 {
     c_target = Dna5(source);
 }
 
-inline void 
-assign(__uint64 & c_target, 
+inline void
+assign(__uint64 & c_target,
        Dna5Q const & source)
 {
     c_target = Dna5(source);
@@ -1386,15 +1386,15 @@ assign(__uint64 & c_target,
 
 // int
 
-inline void 
-assign(int & c_target, 
+inline void
+assign(int & c_target,
        Dna5Q & source)
 {
     c_target = Dna5(source);
 }
 
-inline void 
-assign(int & c_target, 
+inline void
+assign(int & c_target,
        Dna5Q const & source)
 {
     c_target = Dna5(source);
@@ -1402,15 +1402,15 @@ assign(int & c_target,
 
 // unsigned int
 
-inline void 
-assign(unsigned int & c_target, 
+inline void
+assign(unsigned int & c_target,
        Dna5Q & source)
 {
     c_target = Dna5(source);
 }
 
-inline void 
-assign(unsigned int & c_target, 
+inline void
+assign(unsigned int & c_target,
        Dna5Q const & source)
 {
     c_target = Dna5(source);
@@ -1419,15 +1419,15 @@ assign(unsigned int & c_target,
 
 //short
 
-inline void 
-assign(short & c_target, 
+inline void
+assign(short & c_target,
        Dna5Q & source)
 {
     c_target = Dna5(source);
 }
 
-inline void 
-assign(short & c_target, 
+inline void
+assign(short & c_target,
        Dna5Q const & source)
 {
     c_target = Dna5(source);
@@ -1435,15 +1435,15 @@ assign(short & c_target,
 
 //unsigned short
 
-inline void 
-assign(unsigned short & c_target, 
+inline void
+assign(unsigned short & c_target,
        Dna5Q & source)
 {
     c_target = Dna5(source);
 }
 
-inline void 
-assign(unsigned short & c_target, 
+inline void
+assign(unsigned short & c_target,
        Dna5Q const & source)
 {
     c_target = Dna5(source);
@@ -1451,15 +1451,15 @@ assign(unsigned short & c_target,
 
 // char
 
-inline void 
-assign(char & c_target, 
+inline void
+assign(char & c_target,
        Dna5Q & source)
 {
     c_target = Dna5(source);
 }
 
-inline void 
-assign(char & c_target, 
+inline void
+assign(char & c_target,
        Dna5Q const & source)
 {
     c_target = Dna5(source);
@@ -1467,15 +1467,15 @@ assign(char & c_target,
 
 // signed char
 
-inline void 
-assign(signed char & c_target, 
+inline void
+assign(signed char & c_target,
        Dna5Q & source)
 {
     c_target = Dna5(source);
 }
 
-inline void 
-assign(signed char & c_target, 
+inline void
+assign(signed char & c_target,
        Dna5Q const & source)
 {
     c_target = Dna5(source);
@@ -1483,15 +1483,15 @@ assign(signed char & c_target,
 
 // unsigned char
 
-inline void 
-assign(unsigned char & c_target, 
+inline void
+assign(unsigned char & c_target,
        Dna5Q & source)
 {
     c_target = Dna5(source);
 }
 
-inline void 
-assign(unsigned char & c_target, 
+inline void
+assign(unsigned char & c_target,
        Dna5Q const & source)
 {
     c_target = Dna5(source);

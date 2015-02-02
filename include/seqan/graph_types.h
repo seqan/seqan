@@ -44,17 +44,17 @@
 
 // Basic graph stuff
 #include <seqan/graph_types/graph_base.h>
-#include <seqan/graph_types/graph_idmanager.h>	// Id manager
-#include <seqan/graph_types/graph_edgestump.h>	// EdgeStumps
-#include <seqan/graph_types/graph_interface.h>	// Graph metafunctions
+#include <seqan/graph_types/graph_idmanager.h>    // Id manager
+#include <seqan/graph_types/graph_edgestump.h>    // EdgeStumps
+#include <seqan/graph_types/graph_interface.h>    // Graph metafunctions
 
 // Graph types
-#include <seqan/graph_types/graph_impl_directed.h>		// Directed Graph
-#include <seqan/graph_types/graph_impl_undirected.h>	// Undirected graph
-#include <seqan/graph_types/graph_impl_automaton.h>		// Automaton
-#include <seqan/graph_types/graph_impl_wordgraph.h>		// Specialized automaton: Word graph
-#include <seqan/graph_types/graph_impl_tree.h>			// Tree
-#include <seqan/graph_types/graph_impl_hmm.h>			// HMM
+#include <seqan/graph_types/graph_impl_directed.h>        // Directed Graph
+#include <seqan/graph_types/graph_impl_undirected.h>    // Undirected graph
+#include <seqan/graph_types/graph_impl_automaton.h>        // Automaton
+#include <seqan/graph_types/graph_impl_wordgraph.h>        // Specialized automaton: Word graph
+#include <seqan/graph_types/graph_impl_tree.h>            // Tree
+#include <seqan/graph_types/graph_impl_hmm.h>            // HMM
 
 // Graph iterators
 #include <seqan/graph_types/graph_iterator.h>
@@ -69,8 +69,8 @@
 #include <seqan/graph_types/property_map_internal_pointer.h>
 
 // Specializations
-#include <seqan/graph_types/graph_impl_oracle.h>	// Oracle
-#include <seqan/graph_types/graph_impl_trie.h>		// Trie
+#include <seqan/graph_types/graph_impl_oracle.h>    // Oracle
+#include <seqan/graph_types/graph_impl_trie.h>        // Trie
 
 // Specialized iterators
 #include <seqan/graph_types/graph_iterator_bfs.h>

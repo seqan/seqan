@@ -292,10 +292,10 @@ inline unsigned
 _popCountImplGeneric(TWord word)  // Note that word is copied!
 {
     typename MakeUnsigned<TWord>::Type x = word;
-	unsigned int c = 0;  // c accumulates the total bits set in v
-	for (c = 0; x; c++)
-		x &= x - 1;  // clear the least significant bit set
-	return c;
+    unsigned int c = 0;  // c accumulates the total bits set in v
+    for (c = 0; x; c++)
+        x &= x - 1;  // clear the least significant bit set
+    return c;
 }
 
 // ----------------------------------------------------------------------------
@@ -382,7 +382,7 @@ _popCountImpl(TWord word, WordSize_<64> const & /*tag*/)
 #else // #if defined(_WIN64)
 
     // 32-bit Windows, 64 bit intrinsic not available
-	return __popcnt(static_cast<__uint32>(word)) + __popcnt(static_cast<__uint32>(word >> 32));
+    return __popcnt(static_cast<__uint32>(word)) + __popcnt(static_cast<__uint32>(word >> 32));
 
 #endif // #if defined(_WIN64)
 }

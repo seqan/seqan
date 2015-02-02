@@ -251,7 +251,7 @@ struct AssignTagsBamToSamOneTagHelper_
 
 template <typename TTarget, typename TSourceIter>
 void _appendTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
-{   
+{
     // Copy tag name.
     SEQAN_ASSERT_NOT(atEnd(it));
     writeValue(target, *it++);
@@ -260,7 +260,7 @@ void _appendTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
 
     // Add ':'.
     writeValue(target, ':');
-    
+
     char typeC = *it++;
     char c = FunctorLowcase<char>()(typeC);
 
@@ -295,7 +295,7 @@ void _appendTagsBamToSamOneTag(TTarget & target, TSourceIter & it)
             typeC = *it++;
             writeValue(target, typeC);
             AssignTagsBamToSamOneTagHelper_<TTarget, TSourceIter> func(target, it, typeC);
-            
+
             // Read array length.
             union {
                 char raw[4];

@@ -32,7 +32,7 @@ struct GraphScoring{
     GraphScoring(){
         matchScore = -0.3f;
         mismatchScore = 1.5f;
-        matePairScore = -3.5f;    
+        matePairScore = -3.5f;
     }
 };
 

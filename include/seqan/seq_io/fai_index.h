@@ -628,7 +628,7 @@ inline bool build(FaiIndex & index, char const * seqFilename, char const * faiFi
 
     SeqFileIn seqFile(seqFilename);
     DirectionIterator<SeqFileIn, Input>::Type iter = directionIterator(seqFile, Input());
-    
+
     if (!isEqual(format(seqFile), seqan::Fasta()))
         return false;  // Invalid format, not FASTA.
 

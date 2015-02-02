@@ -186,15 +186,15 @@ struct FastaIgnoreOrAssertFunctor_
  * @headerfile <seqan/seq_io.h>
  * @signature struct SequenceOutputOptions
  * @brief Configuration for writing sequence (FASTA/FASTQ) files.
- * 
+ *
  * This struct is used for the configuration of writing out FASTA and FASTQ files.
- * 
+ *
  * @var int SequenceOutputOptions::lineLength;
  * @brief Length of the lines when writing out.
- * 
+ *
  * Set to <tt>-1</tt> for default behaviour (no line break for FASTQ, line length of 70 for FASTA) and <tt>0</tt> for
  * disabling line breaks.
- * 
+ *
  * @var bool SequenceOutputOptions::qualMeta;
  * @brief Whether or not to write the meta information into the <tt>"+"</tt> line before the qualities (interpreted for
  *        FASTQ only). Default is <tt>false</tt>.

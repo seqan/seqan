@@ -45,18 +45,18 @@ namespace seqan {
  * @fn alignmentFreeComparison
  * @headerfile <seqan/alignment_free.h>
  * @brief Computes the pairwise similarity scores for a set of sequences.
- * 
+ *
  * @signature void alignmentFreeComparison(scoreMatrix, sequenceSet, score);
- * 
+ *
  * @param[out] scoreMatrix A two-dimensional @link Matrix @endlink, used to store all pairwise scores.
  * @param[in]  sequenceSet @link StringSet @endlink containing all sequences for which pairwise scores will be
  *                         computed.
  * @param[in]  score       The @link AFScore @endlink object to be used for computing the alignment.
  *
  * @section Examples
- * 
+ *
  * Calculate the alignment free sequence similarity of two masked DNA sequences.
- * 
+ *
  * @code{.cpp}
  * using namespace seqan;
  * StringSet<Dna5String> sequences;
@@ -76,20 +76,20 @@ namespace seqan {
  *     "GAAGTAAAACAATTGATGTGAGACTCGACAGCCAGGCTTCGCGCTAAGGACGCAAAGAAATTCCCTACATCA"
  *     "GACGGCCGCGNNNAACGATGCTATCGGTTAGGACATTGTGCCCTAGTATGTACATGCCTAATACAATTGGAT"
  *     "CAAACGTTATTCCCACACACGGGTAGAAGAACNNNNATTACCCGTAGGCACTCCCCGATTCAAGTAGCCGCG";
- *  
+ *
  * clear(sequences);
  * appendValue(sequences, seq1);
  * appendValue(sequences, seq2);
- *  
+ *
  * Matrix<double, 2> myMatrix;
- *  
+ *
  * unsigned kmerSize = 5;
  * unsigned bgModelOrder = 1;
  * String<char>  revCom = "both_strands";
  * unsigned mismatches = 1;
  * double mismatchWeight = 0.5;
  * AFScore<N2> myScoreN2(kmerSize, bgModelOrder, revCom, mismatches, mismatchWeight);
- *  
+ *
  * alignmentFreeComparison(myMatrix, sequences, myScoreN2);
  * std::cout << myMatrix;
  * @endcode

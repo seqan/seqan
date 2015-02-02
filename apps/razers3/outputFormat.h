@@ -571,17 +571,17 @@ int dumpMatches(
 
     TBinFunctor binFunctor(store.alignQualityStore);
     // maskDuplicates(store, options, mode);
-	if (options.outputFormat >= 1 && options.outputFormat <= 3)
+    if (options.outputFormat >= 1 && options.outputFormat <= 3)
     {
         // match statistics
-		unsigned maxErrors = (int)(options.errorRate * maxReadLength);
-		if (maxErrors > 10)
+        unsigned maxErrors = (int)(options.errorRate * maxReadLength);
+        if (maxErrors > 10)
             maxErrors = 10;
         if (maxErrors < 2 && options.outputFormat == 2)
             maxErrors = 2;
-		resize(stats, maxErrors + 1);
-		for (unsigned i = 0; i <= maxErrors; ++i)
-			resize(stats[i], length(store.readStore), 0);
+        resize(stats, maxErrors + 1);
+        for (unsigned i = 0; i <= maxErrors; ++i)
+            resize(stats[i], length(store.readStore), 0);
         countMatches(store, stats, mode);
     }
 
@@ -660,7 +660,7 @@ int dumpMatches(
     {
     case 0:     // Razer Format
 
-//			_sep_ = ',';
+//            _sep_ = ',';
         resize(lines, 1000000, Exact());
         while (fromIdx < length(store.alignedReadStore))
         {
@@ -748,9 +748,9 @@ int dumpMatches(
                 sprintf(intBuf, "%.5g", percId);
                 append(line, intBuf);
                 //if (ar.beginPos < ar.endPos)
-                //	file << _sep_ << (ar.beginPos + options.positionFormat) << _sep_ << ar.endPos << _sep_ << std::setprecision(5) << percId;
+                //    file << _sep_ << (ar.beginPos + options.positionFormat) << _sep_ << ar.endPos << _sep_ << std::setprecision(5) << percId;
                 //else
-                //	file << _sep_ << (ar.endPos + options.positionFormat) << _sep_ << ar.beginPos << _sep_ << std::setprecision(5) << percId;
+                //    file << _sep_ << (ar.endPos + options.positionFormat) << _sep_ << ar.beginPos << _sep_ << std::setprecision(5) << percId;
 
                 if (ar.pairMatchId != TAlignedRead::INVALID_ID)
                 {
@@ -803,7 +803,7 @@ int dumpMatches(
             //
             //SEQAN_OMP_PRAGMA(parallel for schedule(static))
             //for (TAlignedReadStoreSize i = 0; i < chunkSize; ++i)
-            //	infix(fileMM, fileOffsets[i], fileOffsets[i + 1]) = lines[i];
+            //    infix(fileMM, fileOffsets[i], fileOffsets[i + 1]) = lines[i];
             //
             //fileOffsets[0] = back(fileOffsets);
 
@@ -850,7 +850,7 @@ int dumpMatches(
                 {
                     std::istringstream iss(fastaID.substr(pos + 3));
                     iss >> id;
-//						appendMatchId = false;
+//                        appendMatchId = false;
                 }
                 pos = fastaID.find("fragId=");
                 if (pos != fastaID.npos)
@@ -979,11 +979,11 @@ int dumpMatches(
         }
         break;
 
-    /*		case 3: // Gff:  printf "$chr $name_$format read $pos %ld . $dir . ID=$col[0]$unique$rest\n",$pos+$len-1;
+    /*        case 3: // Gff:  printf "$chr $name_$format read $pos %ld . $dir . ID=$col[0]$unique$rest\n",$pos+$len-1;
                 unsigned curreadId = 0;
                 for (unsigned filecount = 0; filecount < length(genomeFileNameList); ++filecount)
                 {
-                    TQuality	qual = getValue(store.alignQualityStore, (*it).id);
+                    TQuality    qual = getValue(store.alignQualityStore, (*it).id);
 
                     // open genome file
                     std::ifstream gFile;
@@ -994,12 +994,12 @@ int dumpMatches(
                         break;
                     }
 
-                    Dna5String	currGenome;
+                    Dna5String    currGenome;
 
                     // iterate over genome sequences
                     for(; !_streamEOF(gFile); ++curreadId)
                     {
-                        read(gFile, currGenome, Fasta());			// read Fasta sequence
+                        read(gFile, currGenome, Fasta());            // read Fasta sequence
                         while(it != itEnd && (*it).contigId == curreadId)
                         {
                             file << (unsigned)qual.errors << "\t";
@@ -1007,8 +1007,8 @@ int dumpMatches(
                             int unique = 1;
                             unsigned bestMatches = 0;
                             //would seedEditDist make more sense here?
-    //CHECKcnts					if ((unsigned)qual.errors < length(stats))
-    //							bestMatches = stats[qual.errors][currReadNo];
+    //CHECKcnts                    if ((unsigned)qual.errors < length(stats))
+    //                            bestMatches = stats[qual.errors][currReadNo];
                             if (bestMatches == 0 && (unsigned)qual.errors < length(stats))
                                 bestMatches = stats[qual.errors][currReadNo];
 
@@ -1019,7 +1019,7 @@ int dumpMatches(
                                     if (stats[d][currReadNo]>0) suboptimal=true;
                             }
                             //std::cout << (stats[0][currReadNo] & 31) <<"<-dist "<< (stats[0][currReadNo] >> 5) <<"<-count\n";
-                        //	std::cout << "hier1\n";
+                        //    std::cout << "hier1\n";
                             if (bestMatches !=  1)
                             {
                                 unique = 0;
@@ -1029,11 +1029,11 @@ int dumpMatches(
                                     continue;
                                 }
 
-    //							if((*it).mScore > 0) std::cout << (*it).mScore << "<-non uniq but score > 0\n";
-    //							++it;
-    //							continue; // TODO: output non-unique matches
+    //                            if((*it).mScore > 0) std::cout << (*it).mScore << "<-non uniq but score > 0\n";
+    //                            ++it;
+    //                            continue; // TODO: output non-unique matches
                             }
-                        //	std::cout << "hier2\n";
+                        //    std::cout << "hier2\n";
                             unsigned readLen = length(store.readSeqStore[currReadNo]);
 
                             switch (options.genomeNaming)
@@ -1048,20 +1048,20 @@ int dumpMatches(
                                     file << gnoToFileMap[(*it).contigId].i1 << '#' << std::setw(gzeros) << gnoToFileMap[(*it).contigId].i2 + 1 << '\t';
                                     break;
                             }
-                        //	std::cout << "hier3\n";
+                        //    std::cout << "hier3\n";
                             //file <<  options.runID << "_razers\tread";
                             file << "razers\tread\t";
                             if ((*it).beginPos < (*it).endPos)
                                 file << ((*it).beginPos + options.positionFormat) << '\t' << (*it).endPos << '\t';
                             else
                                 file << ((*it).endPos + options.positionFormat) << '\t' << (*it).beginPos << '\t';
-            //				if ((*it).orientation == 'F')
-            //					file << '\t' << ((*it).beginPos + options.positionFormat) << '\t' << (*it).endPos <<'\t';
-            //				else
-            //					file << '\t' << (*it).endPos << '\t'<<((*it).beginPos + options.positionFormat)<< '\t';
+            //                if ((*it).orientation == 'F')
+            //                    file << '\t' << ((*it).beginPos + options.positionFormat) << '\t' << (*it).endPos <<'\t';
+            //                else
+            //                    file << '\t' << (*it).endPos << '\t'<<((*it).beginPos + options.positionFormat)<< '\t';
                             double percId = 100.0 * (1.0 - (double)qual.errors / (double)readLen);
                             file << percId << "\t";
-                        //	std::cout << "hier4\n";
+                        //    std::cout << "hier4\n";
 
                             if ((*it).beginPos < (*it).endPos)
                                 file << '+' << '\t' << '.' <<'\t';
@@ -1081,7 +1081,7 @@ int dumpMatches(
                                     file << "ID=" << readName << '#' << std::setw(pzeros) << currReadNo + 1;
                                     break;
                             }
-                        //	std::cout << "hier5\n";
+                        //    std::cout << "hier5\n";
                             if(suboptimal) file << ";suboptimal";
                             else
                             {
@@ -1106,27 +1106,27 @@ int dumpMatches(
                                     file << ";cigar=" << length(store.readSeqStore[currReadNo]) << "M";
                                     file << ";mutations=";
                                     unsigned i = 0;
-    //								while ((*it).beginPos == 0 && i < length(store.readSeqStore[currReadNo])-length(gInf) )
-    //								{
-    //									if(first){ file << i + 1 << (Dna5)store.readSeqStore[currReadNo][i]; first = false;}
-    //									else file <<','<< i + 1 << (Dna5)store.readSeqStore[currReadNo][i];
-    //									++i;
-    //								}
+    //                                while ((*it).beginPos == 0 && i < length(store.readSeqStore[currReadNo])-length(gInf) )
+    //                                {
+    //                                    if(first){ file << i + 1 << (Dna5)store.readSeqStore[currReadNo][i]; first = false;}
+    //                                    else file <<','<< i + 1 << (Dna5)store.readSeqStore[currReadNo][i];
+    //                                    ++i;
+    //                                }
                                     for (; i < length(gInf); ++i)
                                         if ((options.compMask[ordValue(store.readSeqStore[currReadNo][i])] &
                                             options.compMask[ordValue(gInf[i])]) == 0)
                                         {
-                    //						if(first){ file << i + 1 << gInf[i]; first = false;}
-                    //						else file <<','<< i + 1 << gInf[i];
+                    //                        if(first){ file << i + 1 << gInf[i]; first = false;}
+                    //                        else file <<','<< i + 1 << gInf[i];
                                             if(first){ file << i + 1 << (Dna5)store.readSeqStore[currReadNo][i]; first = false;}
                                             else file <<','<< i + 1 << (Dna5)store.readSeqStore[currReadNo][i];
                                         }
-    //								while ((*it).endPos == length(currGenome) && i < length(store.readSeqStore[currReadNo]) )
-    //								{
-    //									if(first){ file << i + 1 << (Dna5)store.readSeqStore[currReadNo][i]; first = false;}
-    //									else file <<','<< i + 1 << (Dna5)store.readSeqStore[currReadNo][i];
-    //									++i;
-    //								}
+    //                                while ((*it).endPos == length(currGenome) && i < length(store.readSeqStore[currReadNo]) )
+    //                                {
+    //                                    if(first){ file << i + 1 << (Dna5)store.readSeqStore[currReadNo][i]; first = false;}
+    //                                    else file <<','<< i + 1 << (Dna5)store.readSeqStore[currReadNo][i];
+    //                                    ++i;
+    //                                }
 
                                 }
                                 else
@@ -1162,13 +1162,13 @@ int dumpMatches(
                 }
                 break;
     */case 4:   // Sam
-//			convertMatchesToGlobalAlignment(store, scoreType, False());
-////			String<String<unsigned> > layout;
-////			layoutAlignment(layout, store, 0);
-////			printAlignment(std::cout, layout, store, 0, 0, 2000, 0, 100);
-////			printAlignment(std::cout, layout, store, 1, 0, 2000, 0, 100);
+//            convertMatchesToGlobalAlignment(store, scoreType, False());
+////            String<String<unsigned> > layout;
+////            layoutAlignment(layout, store, 0);
+////            printAlignment(std::cout, layout, store, 0, 0, 2000, 0, 100);
+////            printAlignment(std::cout, layout, store, 1, 0, 2000, 0, 100);
 //
-//			write(file, store, Sam());
+//            write(file, store, Sam());
         {
             BamFileOut bamFile;
 

@@ -207,7 +207,7 @@ template <typename TScoreValue, typename TGapSpec>
 inline typename  Reference<DPCell_<TScoreValue, TGapSpec> const>::Type
 _horizontalScoreOfCell(DPCell_<TScoreValue, TGapSpec> const & dpCell)
 {
-	return dpCell._score;
+    return dpCell._score;
 }
 
 // ----------------------------------------------------------------------------

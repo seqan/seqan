@@ -43,7 +43,7 @@
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_type_size)
 {
     using namespace seqan;
-    
+
     SEQAN_ASSERT_EQ(1, getBamTypeSize('A'));
     SEQAN_ASSERT_EQ(1, getBamTypeSize('c'));
     SEQAN_ASSERT_EQ(1, getBamTypeSize('C'));
@@ -57,7 +57,7 @@ SEQAN_DEFINE_TEST(test_bam_tags_dict_get_type_size)
 SEQAN_DEFINE_TEST(test_bam_tags_dict_get_type)
 {
     using namespace seqan;
-    
+
     {
         CharString str("XXAa");
         BamTagsDict bamTags(str);

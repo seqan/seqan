@@ -69,7 +69,7 @@ struct Transportable_
         id = nextId++;
         value = i;
     }
-    
+
     Transportable_(const Transportable_ & other)
     {
         id = nextId++;
@@ -158,7 +158,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_pair_base_metafunctions)
 SEQAN_DEFINE_TEST(test_basic_aggregates_pair_base_constructors)
 {
     typedef Pair<int, unsigned> TPair;
-    
+
     // Default constructor.
     {
         TPair p;
@@ -476,7 +476,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_pair_packed_metafunctions)
 SEQAN_DEFINE_TEST(test_basic_aggregates_pair_packed_constructors)
 {
     typedef Pair<int, unsigned, Pack> TPair;
-    
+
     // Default constructor.
     {
         TPair p;
@@ -690,7 +690,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_pair_bit_packed_metafunctions)
 SEQAN_DEFINE_TEST(test_basic_aggregates_pair_bit_packed_constructors)
 {
     typedef Pair<int, unsigned, BitPacked<16, 16> > TPair;
-    
+
     // Default constructor.
     {
         TPair p;
@@ -898,7 +898,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_triple_base_metafunctions)
 SEQAN_DEFINE_TEST(test_basic_aggregates_triple_base_constructors)
 {
     typedef Triple<int, unsigned, double, Pack> TTriple;
-    
+
     // Default constructor.
     {
         TTriple t;
@@ -1112,7 +1112,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_triple_packed_metafunctions)
 SEQAN_DEFINE_TEST(test_basic_aggregates_triple_packed_constructors)
 {
     typedef Triple<int, unsigned, double, Pack> TTriple;
-    
+
     // Default constructor.
     {
         TTriple p;
@@ -1686,7 +1686,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_assign)
     TTuple t1;
     TTuple t2;
 
-	clear(t1);
+    clear(t1);
     assignValue(t1, 0, 1);
     assignValue(t1, 1, 2);
 
@@ -1702,7 +1702,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_set)
     TTuple t1;
     TTuple t2;
 
-	clear(t1);
+    clear(t1);
     assignValue(t1, 0, 1);
     assignValue(t1, 1, 2);
 
@@ -1718,7 +1718,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_move)
     TTuple t1;
     TTuple t2;
 
-	clear(t1);
+    clear(t1);
     assignValue(t1, 0, 1);
     assignValue(t1, 1, 2);
 
@@ -1735,7 +1735,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_get_value)
     typedef Tuple<char, 2, BitPacked<> > TTuple;
     TTuple t1;
 
-	clear(t1);
+    clear(t1);
     assignValue(t1, 0, 1);
     assignValue(t1, 1, 2);
 
@@ -1748,7 +1748,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_assign_value)
     typedef Tuple<char, 2, BitPacked<> > TTuple;
     TTuple t1;
 
-	clear(t1);
+    clear(t1);
     assignValue(t1, 0, 1);
     assignValue(t1, 1, 2);
 
@@ -1761,7 +1761,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_set_value)
     typedef Tuple<char, 2, BitPacked<> > TTuple;
     TTuple t1;
 
-	clear(t1);
+    clear(t1);
     setValue(t1, 0, 1);
     setValue(t1, 1, 2);
 
@@ -1774,7 +1774,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_move_value)
     typedef Tuple<char, 2, BitPacked<> > TTuple;
     TTuple t1;
 
-	clear(t1);
+    clear(t1);
     moveValue(t1, 0, 1);
     moveValue(t1, 1, 2);
 
@@ -1785,7 +1785,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_move_value)
 SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_shift_left)
 {
     Tuple<char, 2, BitPacked<> > t1;
-	clear(t1);
+    clear(t1);
     assignValue(t1, 0, 1);
     assignValue(t1, 1, 2);
 
@@ -1798,7 +1798,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_shift_left)
 SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_shift_right)
 {
     Tuple<char, 2, BitPacked<> > t1;
-	clear(t1);
+    clear(t1);
     assignValue(t1, 0, 1);
     assignValue(t1, 1, 2);
 
@@ -1811,7 +1811,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_shift_right)
 SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_clear)
 {
     Tuple<char, 2, BitPacked<> > t1;
-	clear(t1);
+    clear(t1);
     assignValue(t1, 0, 1);
     assignValue(t1, 1, 2);
 
@@ -1830,19 +1830,19 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_length)
 SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_comparison_same_spec)
 {
     Tuple<char, 2, BitPacked<> > t00;
-	clear(t00);
-   	assignValue(t00, 0, 0);
-	assignValue(t00, 1, 0);
-    
-	Tuple<char, 2, BitPacked<> > t01;
-	clear(t01);
-	assignValue(t01, 0, 0);
-	assignValue(t01, 1, 1);
+    clear(t00);
+       assignValue(t00, 0, 0);
+    assignValue(t00, 1, 0);
+
+    Tuple<char, 2, BitPacked<> > t01;
+    clear(t01);
+    assignValue(t01, 0, 0);
+    assignValue(t01, 1, 1);
 
     Tuple<char, 2, BitPacked<> > t10;
-	clear(t10);
-	assignValue(t10, 0, 1);
-	assignValue(t10, 1, 0);
+    clear(t10);
+    assignValue(t10, 0, 1);
+    assignValue(t10, 1, 0);
 
     SEQAN_ASSERT(t00 == t00);
     SEQAN_ASSERT_NOT(t01 == t10);
@@ -1867,14 +1867,14 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_comparison_same_spec)
 SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_stream_output)
 {
     Tuple<char, 2, BitPacked<> > t1;
-	clear(t1);
+    clear(t1);
     assignValue(t1, 0, 'a');
     assignValue(t1, 1, 'b');
 
     std::stringstream s;
     s << t1;
     SEQAN_ASSERT_EQ(s.str(), "[a b]");
-    
+
 }
 
 #endif  // #ifndef TESTS_BASIC_TEST_BASIC_AGGREGATES_H_

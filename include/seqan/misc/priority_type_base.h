@@ -65,13 +65,13 @@ class PriorityType;
 template <typename TValue, typename TLess, typename TSpec>
 struct Value< PriorityType<TValue, TLess, TSpec> >
 {
-	typedef TValue Type;
+    typedef TValue Type;
 };
 
 template <typename TValue, typename TLess, typename TSpec>
 struct Size< PriorityType<TValue, TLess, TSpec> >
 {
-	typedef typename Size<TValue>::Type Type;
+    typedef typename Size<TValue>::Type Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////

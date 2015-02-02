@@ -87,7 +87,7 @@ struct BandedChainAlignment_{};
 
 template <typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTraceback, typename TColumnType>
 struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback>,
-					MetaColumnDescriptor<TColumnType, FullColumn> >
+                    MetaColumnDescriptor<TColumnType, FullColumn> >
 {
     // If InitialColumn -> replaced, replaced, replaced
     // If InnerColumn -> replaced, All, All
@@ -108,13 +108,13 @@ struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLoc
 
 template <typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTraceback, typename TColumnType>
 struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback>,
-					MetaColumnDescriptor<TColumnType, PartialColumnTop> >
+                    MetaColumnDescriptor<TColumnType, PartialColumnTop> >
 {
     // If InitialColumn -> replaced, replaced, replaced
     // If InnerColumn -> replaced, All, LowerBand
     // If FinalColumn -> replaced, All, LowerBand
 
-	typedef RecursionDirectionZero  TRecursionTypeFirstCell_;
+    typedef RecursionDirectionZero  TRecursionTypeFirstCell_;
     typedef RecursionDirectionAll TRecursionTypeInnerCell_;
     typedef RecursionDirectionLowerDiagonal TRecursionTypeLastCell_;
 
@@ -124,12 +124,12 @@ struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLoc
 };
 
 // ----------------------------------------------------------------------------
-// Class DPMetaColumn									  [PartialColumnMiddle]
+// Class DPMetaColumn                                      [PartialColumnMiddle]
 // ----------------------------------------------------------------------------
 
 template <typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTraceback, typename TColumnType>
 struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback>,
-					MetaColumnDescriptor<TColumnType, PartialColumnMiddle> >
+                    MetaColumnDescriptor<TColumnType, PartialColumnMiddle> >
 {
     // If InitialColumn -> replaced, replaced, replaced
     // If InnerColumn -> UpperDiagonal, All, LowerDiagonal
@@ -145,12 +145,12 @@ struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLoc
 };
 
 // ----------------------------------------------------------------------------
-// Class DPMetaColumn									  [PartialColumnBottom]
+// Class DPMetaColumn                                      [PartialColumnBottom]
 // ----------------------------------------------------------------------------
 
 template <typename TFreeEndGaps, typename TDPMatrixLocation, typename TGapCosts, typename TTraceback, typename TColumnType>
 struct DPMetaColumn_<DPProfile_<BandedChainAlignment_<TFreeEndGaps, TDPMatrixLocation>, TGapCosts, TTraceback>,
-					MetaColumnDescriptor<TColumnType, PartialColumnBottom> >
+                    MetaColumnDescriptor<TColumnType, PartialColumnBottom> >
 {
     // If InitialColumn -> replaced, replaced, replaced
     // If InnerColumn -> UpperDiagonal, All, All

@@ -154,7 +154,7 @@ public:
 
     template <typename TContainer_>
     SEQAN_FUNC_ENABLE_IF(IsSameType<TContainer, TContainer_ const>, Iter &)
-    SEQAN_HOST_DEVICE 
+    SEQAN_HOST_DEVICE
     operator=(Iter<TContainer_, AdaptorIterator<TIterator, TSpec> > const & other_)
     {
         data_container = other_.data_container;
@@ -167,7 +167,7 @@ public:
     // ------------------------------------------------------------------------
 
     // For chaining behaviour of operator->(), see http://stackoverflow.com/a/8782794/84349
-    
+
     SEQAN_HOST_DEVICE
     TIterator &
     operator->()

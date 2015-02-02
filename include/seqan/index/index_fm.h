@@ -53,7 +53,7 @@ namespace seqan {
  * @class FMIndexConfig
  * @headerfile <seqan/index.h>
  * @brief A configuration object that determines the data types of certain fibres of the @link FMIndex @endlink.
- * 
+ *
  * @signature template <[typename TSpec]>
  *            struct FMIndexConfig;
  *
@@ -115,18 +115,18 @@ typedef Tag<FibreSALF_> const           FibreSALF;
 /*!
  * @defgroup FMIndexFibres FM Index Fibres
  * @brief Tag to select a specific fibre of a @link FMIndex @endlink.
- * 
+ *
  * These tags can be used to get @link Fibre Fibres @endlink of a FM index.
- * 
+ *
  * @see Fibre
  * @see Index#getFibre
- * 
+ *
  * @tag FMIndexFibres#FibreText
  * @brief The original text of the index.
- * 
+ *
  * @tagFMIndexFibres#FibreSA
  * @brief The compressed suffix array of the text.
- * 
+ *
  * @tag FMIndexFibres#FibreLF
  * @brief The lf table.
  */
@@ -173,7 +173,7 @@ struct DefaultFinder<Index<TText, FMIndex<TSpec, TConfig> > >
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class FMIndex 
+// Class FMIndex
 // ----------------------------------------------------------------------------
 
 /*!
@@ -181,10 +181,10 @@ struct DefaultFinder<Index<TText, FMIndex<TSpec, TConfig> > >
  * @extends Index
  * @headerfile <seqan/index.h>
  * @brief An index based on the Burrows-Wheeler transform.
- * 
+ *
  * @signature template <typename TText[, typename TSpec[, typename TConfig]]>
  *            class Index<TText, FMIndex<TSpec, TConfig> >;
- * 
+ *
  * @tparam TText   The text type. Types: @link String @endlink, @link StringSet @endlink
  * @tparam TSpec   FM index specialisation, defaults to <tt>void</tt>.
  * @tparam TConfig A config object which determines the data types of the different fibres, defaults to
@@ -268,7 +268,7 @@ getFibre(Index<TText, FMIndex<TSpec, TConfig> > const & index, FibreLF /*tag*/)
  * @brief A shortcut for <tt>getFibre(index, FibreLF())</tt>.
  *
  * @signature TFibre indexLF(index);
- * 
+ *
  * @param[in] index The FM index.
  *
  * @return TFibre A reference to the @link FMIndexFibres#FibreLF @endlink.
@@ -295,12 +295,12 @@ indexLF(Index<TText, FMIndex<TSpec, TConfig> > const & index)
 /*!
  * @fn FMIndex#toSuffixPosition
  * @headerfile <seqan/index.h>
- * @brief This function computes the position of a specified position in the compressed suffix array (additionally 
+ * @brief This function computes the position of a specified position in the compressed suffix array (additionally
  *        containing entries for the sentinels). The returned position corresponds to the suffix array of the original
  *        text without sentinels.
- * 
+ *
  * @signature TSAValue toSuffixPosition(index, pos, offset);
- * 
+ *
  * @param[in] index  The FM index.
  * @param[in] pos    The position in the suffix array of the FM index (with sentinels).
  *                   Types: @link UnsignedIntegerConcept @endlink
@@ -331,7 +331,7 @@ toSuffixPosition(Index<TText, FMIndex<TSpec, TConfig> > const & index, TPos i, T
 }
 
 template <typename TText, typename TSpec, typename TConfig, typename TSpecFinder, typename TPattern>
-inline void 
+inline void
 _findFirstIndex(Finder<Index<TText, FMIndex<TSpec, TConfig> >, TSpecFinder> & finder,
                 TPattern const & pattern,
                 FinderSTree const)

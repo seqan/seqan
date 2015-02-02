@@ -172,7 +172,7 @@ struct DPMetaColumn_ {};
 
 
 // ----------------------------------------------------------------------------
-// Class DPMetaColumn_											   [FullColumn]
+// Class DPMetaColumn_                                               [FullColumn]
 // ----------------------------------------------------------------------------
 
 template <typename TDPProfile, typename TColumnType>
@@ -221,7 +221,7 @@ struct DPMetaColumn_<TDPProfile, MetaColumnDescriptor<TColumnType, FullColumn> >
 };
 
 // ----------------------------------------------------------------------------
-// Class DPMetaColumn_									     [PartialColumnTop]
+// Class DPMetaColumn_                                         [PartialColumnTop]
 // ----------------------------------------------------------------------------
 
 template <typename TDPProfile, typename TColumnType>
@@ -273,7 +273,7 @@ struct DPMetaColumn_<TDPProfile, MetaColumnDescriptor<TColumnType, PartialColumn
 };
 
 // ----------------------------------------------------------------------------
-// Class DPMetaColumn_									  [PartialColumnMiddle]
+// Class DPMetaColumn_                                      [PartialColumnMiddle]
 // ----------------------------------------------------------------------------
 
 template <typename TDPProfile, typename TColumnType>
@@ -322,7 +322,7 @@ struct DPMetaColumn_<TDPProfile, MetaColumnDescriptor<TColumnType, PartialColumn
 };
 
 // ----------------------------------------------------------------------------
-// Class DPMetaColumn_									  [PartialColumnBottom]
+// Class DPMetaColumn_                                      [PartialColumnBottom]
 // ----------------------------------------------------------------------------
 
 template <typename TDPProfile, typename TColumnType>

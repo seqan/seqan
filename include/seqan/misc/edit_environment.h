@@ -113,15 +113,15 @@ struct EditEnvironment;
  * @extends StringEnumerator
  * @headerfile <seqan/misc/edit_environment.h>
  * @brief Enumerate all strings within a given edit distance of a "center string" (of edit distance &lt; 3).
- * 
+ *
  * @signature template <typename TString, unsigned DISTANCE>
  *            class StringEnumerator<TString, EditEnvironment<LevenshteinDistance, DISTANCE> >;
- * 
+ *
  * @tparam TString  Type of the string to enumerate the environment of.
  * @tparam DISTANCE The maximal distance to generate strings with.
- * 
+ *
  * See @link StringEnumerator @endlink for examples.
- * 
+ *
  * @note The @link StringEnumerator#length LevenshteinStringEnumerator#length @endlink function does not work for
  *       <tt>DISTANCE &gt; 2</tt>.
  */
@@ -172,7 +172,7 @@ public:
     typedef StringEnumeratorHammingModifier_<TSignedSize> TModifier;
 
     TObject & orig;
-//		typename RemoveConst_<TObject>::Type	tmp;
+//        typename RemoveConst_<TObject>::Type    tmp;
     String<TValue>                          tmp;
 
     TModifier   mod[DISTANCE];
@@ -236,7 +236,7 @@ public:
     typedef StringEnumeratorLevenshteinModifier_<TSignedSize> TModifier;
 
     TObject & orig;
-//		typename RemoveConst_<TObject>::Type	tmp;
+//        typename RemoveConst_<TObject>::Type    tmp;
     String<TValue>                          tmp;
 
     TModifier   mod[DISTANCE + 1];
@@ -989,8 +989,8 @@ operator++(Iter<StringEnumerator<TObject, EditEnvironment<LevenshteinDistance, D
         if (mod->errorPos >= 0 && static_cast<unsigned>(mod->errorPos) < length(it.tmp))
             assignValue(it.tmp, mod->errorPos, it.orig[mod->errorPosOrig]);
 
-//					int iMax = (TSignedSize)(length(it.tmp) - i);
-//					if (mod->state == mod->INSERT_) ++iMax;
+//                    int iMax = (TSignedSize)(length(it.tmp) - i);
+//                    if (mod->state == mod->INSERT_) ++iMax;
 
         // next error position
         if (++(mod->errorPos) < mod->errorPosEnd)

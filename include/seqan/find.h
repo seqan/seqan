@@ -81,7 +81,7 @@
 #include <seqan/find/find_set_horspool.h>
 
 //#include <seqan/find/find_multi.h> //wegwerfen
-#include <seqan/find/find_wumanber.h> 
+#include <seqan/find/find_wumanber.h>
 #include <seqan/find/find_multiple_bfam.h>
 
 // ===========================================================================

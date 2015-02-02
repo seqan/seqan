@@ -179,7 +179,7 @@ void testMPMCQueue(size_t initialCapacity)
     // limit thread count as virtualbox (used by Travis) seems to have problems with thread congestion
     if (threadCount > 4)
         threadCount = 4;
-    
+
     size_t writerCount = threadCount / 2;
     if (seqan::IsSameType<TParallelPush, seqan::Serial>::VALUE)
         writerCount = 1;

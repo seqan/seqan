@@ -224,7 +224,7 @@ public:
                 break;
             case 32:  // CCG
                 levels.setLevelF(pos, pickRandomNumber(rng, pdfCHG));
-                levels.setLevelR(pos + 2, pickRandomNumber(rng, pdfCG)); 
+                levels.setLevelR(pos + 2, pickRandomNumber(rng, pdfCG));
                 break;
             case 25:    // CAA
             case 26:    // CAC

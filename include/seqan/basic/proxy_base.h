@@ -59,7 +59,7 @@ namespace seqan {
  *
  * Use Value to get the emulated type. An instance of <tt>Proxy</tt> behaves like an object of its value
  * type.  <tt>Proxy</tt> can be used as reference type (see Reference).
- * 
+ *
  * Note that functions that are both general and specialized for the value type should be specialized for
  * <tt>Proxy&lt;TSpec&gt;</tt> too, since otherwise the general version will be called.
  */

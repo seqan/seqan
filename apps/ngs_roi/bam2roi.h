@@ -60,10 +60,10 @@ struct Options
     // Paths to output read files of accepted reads.
     seqan::CharString outputFileName;
 
-	// if true the experiment is strandspecific.
-	bool strandspecific;
+    // if true the experiment is strandspecific.
+    bool strandspecific;
     // Whether or not to expect paired-end data, shortcut to !empty(inputFileName2).
-	// TODO: Do we need (see TODO file)
+    // TODO: Do we need (see TODO file)
     //bool pairedEnd() const
     //{
     //    return !empty(inputFileName);

@@ -438,10 +438,10 @@ void globalMsaAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > & gAlign,
 
     //TStringSet& str = stringSet(gAlign);
     //for(TSize i = 0; i<length(str);++i) {
-    //	for(TSize j=0;j<length(str[i]);++j) {
-    //		std::cout << ordValue(str[i][j]) << ',';
-    //	}
-    //	std::cout << std::endl;
+    //    for(TSize j=0;j<length(str[i]);++j) {
+    //        std::cout << ordValue(str[i][j]) << ',';
+    //    }
+    //    std::cout << std::endl;
     //}
 }
 

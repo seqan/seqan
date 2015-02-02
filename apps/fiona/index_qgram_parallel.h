@@ -73,7 +73,7 @@ struct Integer
 template < typename TIndex, typename TParallelTag >
 inline bool _qgramDisableBuckets(TIndex &index, Tag<TParallelTag>)
 {
-	// use the serial version (if no parallel overload is available)
+    // use the serial version (if no parallel overload is available)
     return _qgramDisableBuckets(index);
 }
 
@@ -89,7 +89,7 @@ inline bool _qgramDisableBuckets(TIndex &index, Tag<TParallelTag>)
 //   0 3 5 6 6 6 11
 
 // 3 2 1 | 3*  2  5 |
-// 3 5 6 | 9 11 16 |        
+// 3 5 6 | 9 11 16 |
 // 0 3 5 | 6  9 11 | 16     SHIFT 0
 // 0 0 3 | 5  6*  9 | 11 16  SHIFT 1
 
@@ -177,10 +177,10 @@ SEQAN_CHECKPOINT
         SEQAN_OMP_PRAGMA(parallel for firstprivate(shape))
         for (int job = 0; job < (int)length(seqSplitter); ++job)
         {
-			for(unsigned seqNo = seqSplitter[job]; seqNo < seqSplitter[job + 1]; ++seqNo)
-			{
-				TString const &sequence = value(stringSet, seqNo);
-				if (length(sequence) < length(shape)) continue;
+            for(unsigned seqNo = seqSplitter[job]; seqNo < seqSplitter[job + 1]; ++seqNo)
+            {
+                TString const &sequence = value(stringSet, seqNo);
+                if (length(sequence) < length(shape)) continue;
 
                 TIterator itText = begin(stringSet[seqNo], Standard());
                 TIterator itTextEnd = itText + (length(sequence) - length(shape) + 1);
@@ -195,10 +195,10 @@ SEQAN_CHECKPOINT
         SEQAN_OMP_PRAGMA(parallel for firstprivate(shape))
         for (int job = 0; job < (int)length(seqSplitter); ++job)
         {
-			for(unsigned seqNo = seqSplitter[job]; seqNo < seqSplitter[job + 1]; ++seqNo)
-			{
-				TString const &sequence = value(stringSet, seqNo);
-				if (length(sequence) < length(shape)) continue;
+            for(unsigned seqNo = seqSplitter[job]; seqNo < seqSplitter[job + 1]; ++seqNo)
+            {
+                TString const &sequence = value(stringSet, seqNo);
+                if (length(sequence) < length(shape)) continue;
 
                 TIterator itText = begin(stringSet[seqNo], Standard());
                 TIterator itTextEnd = itText + ((length(sequence) - length(shape)) / stepSize + 1) * stepSize;
@@ -246,7 +246,7 @@ _qgramCummulativeSum(TDir &dir, TWithConstraints, TKeepDisabledBuckets, Unsigned
         if (TWithConstraints::VALUE)
             localSums[job] = _sumIgnoreDisabled(dirInfix, Serial());
         else
-            localSums[job] = sum(dirInfix, Serial());        
+            localSums[job] = sum(dirInfix, Serial());
     }
 
     // STEP 2: compute partial sums (of subinterval sums) from position 0 to the end of each subinterval
@@ -300,7 +300,7 @@ _qgramCummulativeSum(TDir &dir, TWithConstraints, TKeepDisabledBuckets, Unsigned
             }
         }
     }
-    
+
     return back(localSums);
 }
 
@@ -309,20 +309,20 @@ _qgramCummulativeSum(TDir &dir, TWithConstraints, TKeepDisabledBuckets, Unsigned
 // w/o constraints
 template <
     typename TSA,
-    typename TText, 
-    typename TShape, 
-    typename TDir, 
-    typename TBucketMap, 
-    typename TWithConstraints, 
+    typename TText,
+    typename TShape,
+    typename TDir,
+    typename TBucketMap,
+    typename TWithConstraints,
     typename TStepSize,
     typename TParallelTag >
 inline void
 _qgramFillSuffixArray(
-    TSA &sa, 
-    TText const &text, 
-    TShape shape, 
-    TDir &dir, 
-    TBucketMap &bucketMap, 
+    TSA &sa,
+    TText const &text,
+    TShape shape,
+    TDir &dir,
+    TBucketMap &bucketMap,
     TStepSize stepSize,
     TWithConstraints const,
     Tag<TParallelTag> parallelTag)
@@ -353,7 +353,7 @@ SEQAN_CHECKPOINT
             // first hash
             register TDirIterator const bktPtr = dirBegin1 + getBucket(bucketMap, hash(shape, itText));
             if (!TWithConstraints::VALUE || *bktPtr != (TSize)-1)       // ignore disabled buckets
-                sa[atomicPostInc(*bktPtr, parallelTag)] = pos;          
+                sa[atomicPostInc(*bktPtr, parallelTag)] = pos;
 
             for (++pos; pos != posEnd; ++pos)
             {
@@ -386,19 +386,19 @@ template <
     typename TSA,
     typename TString,
     typename TSpec,
-    typename TShape, 
-    typename TDir, 
-    typename TBucketMap, 
-    typename TWithConstraints, 
+    typename TShape,
+    typename TDir,
+    typename TBucketMap,
+    typename TWithConstraints,
     typename TStepSize,
     typename TParallelTag >
 inline void
 _qgramFillSuffixArray(
-    TSA &sa, 
+    TSA &sa,
     StringSet<TString, TSpec> const &stringSet,
-    TShape shape, 
-    TDir &dir, 
-    TBucketMap &bucketMap, 
+    TShape shape,
+    TDir &dir,
+    TBucketMap &bucketMap,
     TStepSize stepSize,
     TWithConstraints const,
     Tag<TParallelTag> parallelTag)
@@ -420,22 +420,22 @@ SEQAN_CHECKPOINT
         SEQAN_OMP_PRAGMA(parallel for firstprivate(shape))
         for (int job = 0; job < (int)length(seqSplitter); ++job)
         {
-			for(unsigned seqNo = seqSplitter[job]; seqNo < seqSplitter[job + 1]; ++seqNo)
-			{
-				TString const &sequence = value(stringSet, seqNo);
-				if (length(sequence) < length(shape)) continue;
+            for(unsigned seqNo = seqSplitter[job]; seqNo < seqSplitter[job + 1]; ++seqNo)
+            {
+                TString const &sequence = value(stringSet, seqNo);
+                if (length(sequence) < length(shape)) continue;
 
                 TIterator itText = begin(stringSet[seqNo], Standard());
                 TIterator itTextEnd = itText + (length(sequence) - length(shape) + 1);
 
-				typename Value<TSA>::Type localPos;
-				assignValueI1(localPos, seqNo);
-				assignValueI2(localPos, 0);
+                typename Value<TSA>::Type localPos;
+                assignValueI1(localPos, seqNo);
+                assignValueI2(localPos, 0);
 
                 // first hash
                 register TDirIterator const bktPtr = dirBegin1 + getBucket(bucketMap, hash(shape, itText));
                 if (!TWithConstraints::VALUE || *bktPtr != (TSize)-1)       // ignore disabled buckets
-                    sa[atomicPostInc(*bktPtr, parallelTag)] = localPos;          
+                    sa[atomicPostInc(*bktPtr, parallelTag)] = localPos;
 
                 for (++itText; itText != itTextEnd; ++itText)
                 {
@@ -452,17 +452,17 @@ SEQAN_CHECKPOINT
         SEQAN_OMP_PRAGMA(parallel for firstprivate(shape))
         for (int job = 0; job < (int)length(seqSplitter); ++job)
         {
-			for(unsigned seqNo = seqSplitter[job]; seqNo < seqSplitter[job + 1]; ++seqNo)
-			{
-				TString const &sequence = value(stringSet, seqNo);
-				if (length(sequence) < length(shape)) continue;
+            for(unsigned seqNo = seqSplitter[job]; seqNo < seqSplitter[job + 1]; ++seqNo)
+            {
+                TString const &sequence = value(stringSet, seqNo);
+                if (length(sequence) < length(shape)) continue;
 
                 TIterator itText = begin(stringSet[seqNo], Standard());
                 TIterator itTextEnd = itText + ((length(sequence) - length(shape)) / stepSize + 1) * stepSize;
 
-				typename Value<TSA>::Type localPos;
-				assignValueI1(localPos, seqNo);
-				assignValueI2(localPos, 0);
+                typename Value<TSA>::Type localPos;
+                assignValueI1(localPos, seqNo);
+                assignValueI2(localPos, 0);
 
                 for (; itText != itTextEnd; ++itText)
                 {
@@ -528,7 +528,7 @@ void createQGramIndex(TIndex &index, Tag<TParallelTag> parallelTag)
     typename Fibre<TIndex, QGramDir>::Type        &dir       = indexDir(index);
     typename Fibre<TIndex, QGramShape>::Type      &shape     = indexShape(index);
     typename Fibre<TIndex, QGramBucketMap>::Type  &bucketMap = index.bucketMap;
-    
+
     // 1. clear counters
     _qgramClearDir(dir, bucketMap, parallelTag);
 
@@ -557,7 +557,7 @@ void createQGramIndex(TIndex &index, Tag<TParallelTag> parallelTag)
         // without disabled buckets
         // shift all entries by one towards the end (will be corrected by _qgramFillSuffixArray)
         _qgramCummulativeSum(dir, False(), False(), Unsigned<1>(), parallelTag);
-        
+
         // 4. fill suffix array
         _qgramFillSuffixArray(sa, text, shape, dir, bucketMap, getStepSize(index), False(), parallelTag);
     }
@@ -571,7 +571,7 @@ void createQGramIndexDirOnly(TIndex &index, Tag<TParallelTag> parallelTag)
     typename Fibre<TIndex, QGramDir>::Type        &dir       = indexDir(index);
     typename Fibre<TIndex, QGramShape>::Type      &shape     = indexShape(index);
     typename Fibre<TIndex, QGramBucketMap>::Type  &bucketMap = index.bucketMap;
-    
+
     // 1. clear counters
     _qgramClearDir(dir, bucketMap, parallelTag);
 

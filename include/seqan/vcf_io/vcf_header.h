@@ -50,7 +50,7 @@ namespace seqan {
  * @implements FormattedFileHeaderConcept
  * @headerfile <seqan/vcf_io.h>
  * @brief Store VCF Header information.
- * 
+ *
  * @signature typedef String<VcfHeaderRecord> VcfHeader;
  */
 

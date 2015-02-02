@@ -76,7 +76,7 @@ class String<TValue_, Journaled<THostSpec_, TJournalSpec_, TBufferSpec_> >
 {
 public:
     typedef String<TValue_, Journaled<THostSpec_, TJournalSpec_, TBufferSpec_> > TThis_;
-    
+
     typedef TValue_ TValue;
     typedef THostSpec_ THostSpec;
     typedef TJournalSpec_ TJournalSpec;
@@ -104,7 +104,7 @@ public:
     {}
 
     // Note: Defining both, constructors from same type and other for clarity.
-    
+
     String(THost & host) : _length(0)
     {
         SEQAN_CHECKPOINT;
@@ -118,7 +118,7 @@ public:
     }
 
     template <typename TString>
-	String(TString const & other) : _length(0)
+    String(TString const & other) : _length(0)
     {
         SEQAN_CHECKPOINT;
         assign(*this, other);
@@ -383,7 +383,7 @@ operator<<(TStream & stream, String<TValue, Journaled<THostSpec, TJournalSpec, T
     typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > TString;
     typedef typename TString::TJournalEntries TJournalEntries;
     typedef typename Iterator<TJournalEntries const, Standard>::Type TIterator;
-    
+
     for (TIterator it = begin(s._journalEntries), itend = end(s._journalEntries); it != itend; ++it) {
         if (value(it).segmentSource == SOURCE_ORIGINAL) {
             stream << infix(value(s._holder), value(it).physicalPosition, value(it).physicalPosition + value(it).length);
@@ -608,7 +608,7 @@ reset(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journal
  * @signature void flatten(js);
  *
  * @param[in,out] js The JournaledString to flatten.
- */ 
+ */
 
 // TODO(holtgrew): What about non-destructive version that creates a new copy and sets holder to it?
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
@@ -663,8 +663,8 @@ erase(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journal
       TEndPos posEnd)
 {
     SEQAN_CHECKPOINT;
-	SEQAN_ASSERT_GEQ(static_cast<TBeginPos>(journaledString._length), pos);
-	SEQAN_ASSERT_GEQ(static_cast<TEndPos>(journaledString._length), posEnd);
+    SEQAN_ASSERT_GEQ(static_cast<TBeginPos>(journaledString._length), pos);
+    SEQAN_ASSERT_GEQ(static_cast<TEndPos>(journaledString._length), posEnd);
     SEQAN_ASSERT_GEQ(static_cast<TBeginPos>(journaledString._length), static_cast<TBeginPos>(posEnd - pos));
     journaledString._length -= posEnd - pos;
     recordErase(journaledString._journalEntries, pos, posEnd);
@@ -823,24 +823,24 @@ length(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TPos>
 inline
 typename Reference<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >::Type
-value(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & me, 
+value(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & me,
       TPos pos)
 {
     SEQAN_CHECKPOINT;
-    
+
     return *iter(me, pos, Standard());
-} 
+}
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TPos>
 inline
 typename Reference<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const>::Type
-value(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & me, 
+value(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & me,
       TPos pos)
 {
     SEQAN_CHECKPOINT;
-    
+
     return *iter(me, pos, Standard());
-} 
+}
 
 
 // TODO(holtgrew): Maybe better use template parameter TPos?
@@ -1092,48 +1092,48 @@ template <typename TValue, typename THostSpec, typename TJournalSpec, typename T
 inline bool
 isFlat(String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > & journaledString)
 {
-	SEQAN_CHECKPOINT;
-	typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
-	typedef typename JournalType<TJournalString>::Type TJournalEntries;
-	typedef typename Iterator<TJournalEntries const, Standard>::Type TIteraror;
+    SEQAN_CHECKPOINT;
+    typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
+    typedef typename JournalType<TJournalString>::Type TJournalEntries;
+    typedef typename Iterator<TJournalEntries const, Standard>::Type TIteraror;
 
-	TIteraror it = begin(journaledString._journalEntries);
-	if ((*it).segmentSource == SOURCE_ORIGINAL)
-	{
-		if (((*it).physicalPosition == (*it).virtualPosition) && ((*it).length == length(host(journaledString))))
-		{
-			return true;
-		}
-	}
-	return false;
+    TIteraror it = begin(journaledString._journalEntries);
+    if ((*it).segmentSource == SOURCE_ORIGINAL)
+    {
+        if (((*it).physicalPosition == (*it).virtualPosition) && ((*it).length == length(host(journaledString))))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
 inline bool
 isFlat(String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > const & journaledString)
 {
-	SEQAN_CHECKPOINT;
-	typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
-	typedef typename JournalType<TJournalString>::Type TJournalEntries;
-	typedef typename Iterator<TJournalEntries const, Standard>::Type TIteraror;
+    SEQAN_CHECKPOINT;
+    typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
+    typedef typename JournalType<TJournalString>::Type TJournalEntries;
+    typedef typename Iterator<TJournalEntries const, Standard>::Type TIteraror;
 
-	TIteraror it = begin(journaledString._journalEntries);
-	if ((*it).segmentSource == SOURCE_ORIGINAL)
-	{
-		if (((*it).physicalPosition == (*it).virtualPosition) && ((*it).length == length(host(journaledString))))
-		{
-			return true;
-		}
-	}
-	return false;
+    TIteraror it = begin(journaledString._journalEntries);
+    if ((*it).segmentSource == SOURCE_ORIGINAL)
+    {
+        if (((*it).physicalPosition == (*it).virtualPosition) && ((*it).length == length(host(journaledString))))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 // template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
 // void
 // _deallocateStorage(String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > & string,
-//				   size_t const & newCapacity)
+//                   size_t const & newCapacity)
 // {
-//	std::cout << "Now he is here but does not actually delete the contents." << std::endl;
+//    std::cout << "Now he is here but does not actually delete the contents." << std::endl;
 // }
 
 }  // namespace seqan

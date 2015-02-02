@@ -86,28 +86,28 @@ struct Alloc {};
  * @mfn TextConcept#SAValue
  * @brief The default alphabet type of a suffix array, i.e. the type to store a
  *        position of a string or string set.
- * 
+ *
  * @signature SAValue<TText>::Type
- * 
+ *
  * @tparam TText The text type to query.
- * 
+ *
  * @return TReturn A type to store a position in a <tt>TText</tt>.  This could be an integer for strings or a
  *                 pair of integers for string sets.
- * 
+ *
  * @section Usage
- * 
+ *
  * This type should be removed for functions returning positions in texts such as online or index-based search.
  * Thus, always use this metafunction for declaring position variables.
  *
  * Use the functions @link TextConcept#posLocalize @endlink, @link TextConcept#posGlobalize @endlink, @link
  * TextConcept#getSeqNo @endlink, and @link TextConcept#getSeqOffset @endlink for conversion between local
  * and global positions in texts.
- * 
+ *
  * @section Examples
  *
  * The following shows the original definition of the SAValue metafunction in SeqAn.
  *
- * @code{.cpp} 
+ * @code{.cpp}
  * template <typename TString, typename TSpec>
  * struct SAValue<StringSet<TString, TSpec> >
  * {
@@ -118,7 +118,7 @@ struct Alloc {};
  *         > Type;
  * };
  * @endcode
- */ 
+ */
 
 /*!
  * @fn TextConcept#stringSetLimits
@@ -220,9 +220,9 @@ struct Alloc {};
  * @fn TextConcept#posLocalize
  * @brief Converts a local/global to a local position.
  * @headerfile <seqan/sequence.h>
- * 
+ *
  * @signature void posLocalize(result, pos, limits)
- * 
+ *
  * @param[in] pos    A local or global position (pair or integer value).
  * @param[in] limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
  * @param[in] result Reference to the resulting corresponding local position of
@@ -233,12 +233,12 @@ struct Alloc {};
  * @fn TextConcept#posGlobalize
  * @brief Converts a local/global to a global position.
  * @headerfile <seqan/sequence.h>
- * 
+ *
  * @signature TPos posGlobalize(pos, limits)
- * 
+ *
  * @param[in] pos A local or global position (pair or integer value). Types: Pair
  * @param[in] limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
- * 
+ *
  * @return TPos The corresponding global position of <tt>pos</tt>. If
  *                 <tt>pos</tt> is an integral type <tt>pos</tt> is returned. If
  *                 not, <tt>limits[getSeqNo(pos, limits)] + getSeqOffset(pos,
@@ -249,12 +249,12 @@ struct Alloc {};
  * @fn TextConcept#getSeqNo
  * @brief Returns the sequence number of a position.
  * @headerfile <seqan/sequence.h>
- * 
+ *
  * @signature TSeqNo getSeqNo(pos[, limits]);
- * 
+ *
  * @param[in] pos A position. Types: Pair
  * @param[in] limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
- * 
+ *
  * @return TSeqNo A single integer value that identifies the string within the stringset <tt>pos</tt> points at. If
  *                <tt>limits</tt> is omitted or @link Nothing @endlink <tt>getSeqNo</tt> returns 0.If <tt>pos</tt> is a
  *                local position (of class @link Pair @endlink) then <tt>i1</tt> is returned.If <tt>pos</tt> is a global
@@ -266,12 +266,12 @@ struct Alloc {};
  * @fn TextConcept#getSeqOffset
  * @brief Returns the local sequence offset of a position.
  * @headerfile <seqan/sequence.h>
- * 
+ *
  * @signature TOffset getSeqOffset(pos[, limits]);
- * 
+ *
  * @param[in] pos A position. Types: Pair
  * @param[in] limits The limits string returned by @link TextConcept#stringSetLimits @endlink.
- * 
+ *
  * @return TOffset A single integer value that identifies the position within the string <tt>pos</tt> points at.If
  *                 <tt>limits</tt> is omitted or @link Nothing @endlink <tt>getSeqNo</tt> returns <tt>pos</tt>.  If
  *                 <tt>pos</tt> is a local position (of class @link Pair @endlink) then <tt>i2</tt> is returned.If
@@ -1921,11 +1921,11 @@ operator>=(TLeftValue * left,
  * @fn String#beginPosition
  * @headerfile <seqan/sequence.h>
  * @brief Return 0 for compatibility with @link Segment @endlink.
- * 
+ *
  * @signature TPos beginPosition(str);
- * 
+ *
  * @param[in] seg The String to use.
- * 
+ *
  * @return TPos Always 0.
  */
 
@@ -1938,11 +1938,11 @@ operator>=(TLeftValue * left,
  * @fn String#endPosition
  * @headerfile <seqan/sequence.h>
  * @brief Return length of string for compatibility with @link Segment @endlink.
- * 
+ *
  * @signature TPos endPosition(str);
- * 
+ *
  * @param[in] seg The string to use.
- * 
+ *
  * @return TPos Length of the string.
  */
 

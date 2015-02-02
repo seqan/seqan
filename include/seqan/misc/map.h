@@ -50,37 +50,37 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
-	//////////////////////////////////////////////////////////////////////////////
-	//
+    //////////////////////////////////////////////////////////////////////////////
+    //
 
-	template <typename TPair>
-	inline typename TPair::T1 & keyOf(TPair &pair) {
-		return getValueI1(pair);
-	}
-	template <typename TPair>
-	inline typename TPair::T1 const & keyOf(TPair const &pair) {
-		return getValueI1(pair);
-	}
-	template <typename TPair>
-	inline typename TPair::T2 & objectOf(TPair &pair) {
-		return getValueI2(pair);
-	}
-	template <typename TPair>
-	inline typename TPair::T2 const & objectOf(TPair const &pair) {
-		return getValueI2(pair);
-	}
+    template <typename TPair>
+    inline typename TPair::T1 & keyOf(TPair &pair) {
+        return getValueI1(pair);
+    }
+    template <typename TPair>
+    inline typename TPair::T1 const & keyOf(TPair const &pair) {
+        return getValueI1(pair);
+    }
+    template <typename TPair>
+    inline typename TPair::T2 & objectOf(TPair &pair) {
+        return getValueI2(pair);
+    }
+    template <typename TPair>
+    inline typename TPair::T2 const & objectOf(TPair const &pair) {
+        return getValueI2(pair);
+    }
 
-	//////////////////////////////////////////////////////////////////////////////
-	//
+    //////////////////////////////////////////////////////////////////////////////
+    //
 
-//	template <typename TKey>
-//	struct Map {
-//		typedef std::map<TKey> Type;
-//	};
-	template <typename TKey, typename TObject>
-	class Map< Pair<TKey, TObject> > {
-//		typedef std::set< Pair<TKey, TObject>, SetLess< Pair<TKey, TObject> > > Type;
-	};
+//    template <typename TKey>
+//    struct Map {
+//        typedef std::map<TKey> Type;
+//    };
+    template <typename TKey, typename TObject>
+    class Map< Pair<TKey, TObject> > {
+//        typedef std::set< Pair<TKey, TObject>, SetLess< Pair<TKey, TObject> > > Type;
+    };
 
 }
 

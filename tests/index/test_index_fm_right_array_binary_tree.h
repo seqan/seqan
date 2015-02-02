@@ -63,17 +63,17 @@ void determineBorders(TIter & it, TBorderString & borderString, TChar left, TCha
 template <typename TRightArrayBinaryTree>
 void waveletTreeStructureConstructor(TRightArrayBinaryTree & /*tag*/)
 {
-	typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
-	typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
-	typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
-	//typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
+    typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
+    typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
+    typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
+    //typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 
-	{
-		TRightArrayBinaryTree waveletTreeStructure;
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure.treeVertices), 0u);
-	}
-	{
-		String<TChar> text;
+    {
+        TRightArrayBinaryTree waveletTreeStructure;
+        SEQAN_ASSERT_EQ(length(waveletTreeStructure.treeVertices), 0u);
+    }
+    {
+        String<TChar> text;
         generateText(text);
 
         String<Pair<TChar> > borderString;
@@ -83,8 +83,8 @@ void waveletTreeStructureConstructor(TRightArrayBinaryTree & /*tag*/)
         resize(freq, ValueSize<TChar>::VALUE, 0);
         _getFrequencies(freq, text);
 
-		TRightArrayBinaryTree waveletTreeStructure(text);
-		typename Iterator<TRightArrayBinaryTree, TopDown<> >::Type it(waveletTreeStructure, 0u);
+        TRightArrayBinaryTree waveletTreeStructure(text);
+        typename Iterator<TRightArrayBinaryTree, TopDown<> >::Type it(waveletTreeStructure, 0u);
         determineBorders(it, borderString, (TChar)0, (TChar)(ValueSize<TChar>::VALUE - 1));
 
         for (unsigned i = 0; i < length(getFibre(waveletTreeStructure, FibreTreeStructureEncoding())); ++i)
@@ -97,7 +97,7 @@ void waveletTreeStructureConstructor(TRightArrayBinaryTree & /*tag*/)
                 leftCounter += freq[ordValue(left)];
             }
             int rightCounter = 0;
-            
+
             for (; left <= borderString[i].i2 && left > borderString[i].i1; ++left)
             {
                 rightCounter+= freq[ordValue(left)];
@@ -105,7 +105,7 @@ void waveletTreeStructureConstructor(TRightArrayBinaryTree & /*tag*/)
             int currentSum = leftCounter - rightCounter;
             if (currentSum < 0)
                 currentSum *= -1;
-                
+
             for (TChar newPivot = (unsigned)borderString[i].i1 + 1; newPivot <= borderString[i].i2 && newPivot > borderString[i].i1; ++newPivot)
             {
                 TChar newLeft = borderString[i].i1;
@@ -125,128 +125,128 @@ void waveletTreeStructureConstructor(TRightArrayBinaryTree & /*tag*/)
                 SEQAN_ASSERT_LEQ(currentSum, newCurrentSum);
             }
         }
-	}
+    }
 }
 
 template <typename TRightArrayBinaryTree>
 void waveletTreeStructureClear(TRightArrayBinaryTree & /*tag*/)
 {
-	typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
-	typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
-	typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
-	//typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
+    typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
+    typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
+    typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
+    //typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 
-	{
-		TRightArrayBinaryTree waveletTreeStructure;
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure.treeVertices), 0u);
-		clear(waveletTreeStructure);
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure.treeVertices), 0u);
-	}
-	{
-		String<TChar> text;
+    {
+        TRightArrayBinaryTree waveletTreeStructure;
+        SEQAN_ASSERT_EQ(length(waveletTreeStructure.treeVertices), 0u);
+        clear(waveletTreeStructure);
+        SEQAN_ASSERT_EQ(length(waveletTreeStructure.treeVertices), 0u);
+    }
+    {
+        String<TChar> text;
         generateText(text);
 
-		TRightArrayBinaryTree waveletTreeStructure(text);
-		SEQAN_ASSERT_NEQ(length(waveletTreeStructure.treeVertices), 0u);
-		clear(waveletTreeStructure);
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure.treeVertices), 0u);
-	}
+        TRightArrayBinaryTree waveletTreeStructure(text);
+        SEQAN_ASSERT_NEQ(length(waveletTreeStructure.treeVertices), 0u);
+        clear(waveletTreeStructure);
+        SEQAN_ASSERT_EQ(length(waveletTreeStructure.treeVertices), 0u);
+    }
 }
 
 template <typename TRightArrayBinaryTree>
 void waveletTreeStructureEmpty(TRightArrayBinaryTree & /*tag*/)
 {
-	typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
-	typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
-	typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
-	//typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
+    typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
+    typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
+    typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
+    //typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 
-	{
-		TRightArrayBinaryTree waveletTreeStructure;
-		SEQAN_ASSERT_EQ(empty(waveletTreeStructure), true);
-		clear(waveletTreeStructure);
-		SEQAN_ASSERT_EQ(empty(waveletTreeStructure), true);
-	}
-	{
-		String<TChar> text;
+    {
+        TRightArrayBinaryTree waveletTreeStructure;
+        SEQAN_ASSERT_EQ(empty(waveletTreeStructure), true);
+        clear(waveletTreeStructure);
+        SEQAN_ASSERT_EQ(empty(waveletTreeStructure), true);
+    }
+    {
+        String<TChar> text;
         generateText(text);
 
-		TRightArrayBinaryTree waveletTreeStructure(text);
-		SEQAN_ASSERT_EQ(empty(waveletTreeStructure), false);
-		clear(waveletTreeStructure);
-		SEQAN_ASSERT_EQ(empty(waveletTreeStructure), true);
-	}
+        TRightArrayBinaryTree waveletTreeStructure(text);
+        SEQAN_ASSERT_EQ(empty(waveletTreeStructure), false);
+        clear(waveletTreeStructure);
+        SEQAN_ASSERT_EQ(empty(waveletTreeStructure), true);
+    }
 }
 
 template <typename TRightArrayBinaryTree>
 void waveletTreeStructureGetFibre(TRightArrayBinaryTree & /*tag*/)
 {
-	typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
-	//typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
-	//typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
-	//typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
+    typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
+    //typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
+    //typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
+    //typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 
-	{
-		TRightArrayBinaryTree waveletTreeStructure;
-		
-		TWaveletTreeVertices & temp = getFibre(waveletTreeStructure, FibreTreeStructureEncoding());
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure.treeVertices), 0u);
+    {
+        TRightArrayBinaryTree waveletTreeStructure;
 
-		resize(temp, 10);
-		
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure.treeVertices), 10u);
-	}
+        TWaveletTreeVertices & temp = getFibre(waveletTreeStructure, FibreTreeStructureEncoding());
+        SEQAN_ASSERT_EQ(length(waveletTreeStructure.treeVertices), 0u);
+
+        resize(temp, 10);
+
+        SEQAN_ASSERT_EQ(length(waveletTreeStructure.treeVertices), 10u);
+    }
 }
 
 template <typename TRightArrayBinaryTree>
 void waveletTreeStructureLength(TRightArrayBinaryTree & /*tag*/)
 {
-	typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
-	//typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
-	//typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
-	//typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
+    typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
+    //typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
+    //typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
+    //typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 
-	{
-		TRightArrayBinaryTree waveletTreeStructure;
-		
-		TWaveletTreeVertices & temp = getFibre(waveletTreeStructure, FibreTreeStructureEncoding());
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure), 0u);
+    {
+        TRightArrayBinaryTree waveletTreeStructure;
 
-		resize(temp, 10);
-		
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure), 10u);
-	}
+        TWaveletTreeVertices & temp = getFibre(waveletTreeStructure, FibreTreeStructureEncoding());
+        SEQAN_ASSERT_EQ(length(waveletTreeStructure), 0u);
+
+        resize(temp, 10);
+
+        SEQAN_ASSERT_EQ(length(waveletTreeStructure), 10u);
+    }
 }
 
 template <typename TRightArrayBinaryTree>
 void waveletTreeStructureResize(TRightArrayBinaryTree & /*tag*/)
 {
-	typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
-	typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
-	//typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
-	//typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
+    typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
+    typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
+    //typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
+    //typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 
-	{
-		TRightArrayBinaryTree waveletTreeStructure;
-		
-		TWaveletTreeVertices & temp = getFibre(waveletTreeStructure, FibreTreeStructureEncoding());
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure), 0u);
+    {
+        TRightArrayBinaryTree waveletTreeStructure;
 
-		resize(temp, 10);
-		
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure), 10u);
-	}
-	{
-		TRightArrayBinaryTree waveletTreeStructure;
-		
-		TWaveletTreeVertices & temp = getFibre(waveletTreeStructure, FibreTreeStructureEncoding());
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure), 0u);
+        TWaveletTreeVertices & temp = getFibre(waveletTreeStructure, FibreTreeStructureEncoding());
+        SEQAN_ASSERT_EQ(length(waveletTreeStructure), 0u);
 
-		resize(temp, 10, TWaveletTreeVertex(0, 10));
-		
-		SEQAN_ASSERT_EQ(length(waveletTreeStructure), 10u);
-		SEQAN_ASSERT_EQ(getFibre(waveletTreeStructure, FibreTreeStructureEncoding())[9],  TWaveletTreeVertex(0, 10));
-	}
+        resize(temp, 10);
+
+        SEQAN_ASSERT_EQ(length(waveletTreeStructure), 10u);
+    }
+    {
+        TRightArrayBinaryTree waveletTreeStructure;
+
+        TWaveletTreeVertices & temp = getFibre(waveletTreeStructure, FibreTreeStructureEncoding());
+        SEQAN_ASSERT_EQ(length(waveletTreeStructure), 0u);
+
+        resize(temp, 10, TWaveletTreeVertex(0, 10));
+
+        SEQAN_ASSERT_EQ(length(waveletTreeStructure), 10u);
+        SEQAN_ASSERT_EQ(getFibre(waveletTreeStructure, FibreTreeStructureEncoding())[9],  TWaveletTreeVertex(0, 10));
+    }
 
 }
 
@@ -254,27 +254,27 @@ void waveletTreeStructureResize(TRightArrayBinaryTree & /*tag*/)
 //template <typename TRightArrayBinaryTree>
 //void waveletTreeStructureOpenSave(TRightArrayBinaryTree & /*tag*/)
 //{
-//	//typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
-//	//typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
-//	//typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
-//	//typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
+//    //typedef typename Fibre<TRightArrayBinaryTree, FibreTreeStructureEncoding>::Type TWaveletTreeVertices;
+//    //typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
+//    //typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
+//    //typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 //
-//	
+//
 //    TRightArrayBinaryTree waveletTreeStructure;
 //    _resize(waveletTreeStructure, 10, Exact());
 //
 //    CharString tempFilename = SEQAN_TEMP_FILENAME();
 //
 //    save(waveletTreeStructure, toCString(tempFilename));
-//    
+//
 //    TRightArrayBinaryTree openWaveletTreeStructure;
 //    open(openWaveletTreeStructure, toCString(tempFilename));
 //
-//    SEQAN_ASSERT(waveletTreeStructure == openWaveletTreeStructure); 
+//    SEQAN_ASSERT(waveletTreeStructure == openWaveletTreeStructure);
 //
 //    waveletTreeStructure = openWaveletTreeStructure;
-//    
-//    SEQAN_ASSERT(waveletTreeStructure == openWaveletTreeStructure); 
+//
+//    SEQAN_ASSERT(waveletTreeStructure == openWaveletTreeStructure);
 //}
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_constructor)

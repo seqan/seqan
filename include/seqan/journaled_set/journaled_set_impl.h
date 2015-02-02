@@ -219,11 +219,11 @@ inline void assignValue(
 /*!
  * @fn JournaledSet#host
  * @brief Returns the global reference sequence of a @link JournaledSet @endlink.
- * 
+ *
  * @signature THost host(stringSet);
- * 
+ *
  * @param[in] stringSet The JournaledStringSet that stores the sequences. Types: @link  JournaledSet  @endlink
- * 
+ *
  * @return THost Reference to the host.
  */
 
@@ -249,14 +249,14 @@ host(StringSet<TString, Owner<JournaledSet> > & journalSet)
 /*!
  * @fn JournaledSet#setHost
  * @brief Sets the global reference of a @link JournaledSet @endlink.
- * 
+ *
  * @signature void setHost(stringSet, ref);
- * 
+ *
  * @param[in,out] stringSet The string set that stores the sequences. Types: @link JournaledSet @endlink
  * @param[in]     ref       The new reference sequence of the @link JournaledSet  @endlink.
- * 
+ *
  * @section Remarks
- * 
+ *
  * Uses an @link Holder @endlink to store a reference to the new global reference sequence instead of copying it.
  */
 

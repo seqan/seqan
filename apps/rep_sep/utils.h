@@ -20,7 +20,7 @@
 #ifndef SEQAN_APPS_RR_UTILS_H
 #define SEQAN_APPS_RR_UTILS_H
 
-// includes 
+// includes
 #include <cmath>
 #include <seqan/sequence.h>
 
@@ -29,7 +29,7 @@ using namespace seqan;
 /*
     approximated cumulative normal distribution
     http://www.sitmo.com/doc/Calculating_the_Cumulative_Normal_Distribution
-    Abromowitz and Stegun approximation 
+    Abromowitz and Stegun approximation
 */
 
 double cumulated_normal(const double x)
@@ -81,7 +81,7 @@ double p_value(const unsigned n_u, const double lambda)
     double p=0.0;
     for(unsigned i = 0; i < n_u;++i)
     { p += poisson(i,lambda); }
-    
+
     return (1 - p);
 }
 
@@ -92,20 +92,20 @@ double p_value(const unsigned n_u, const double lambda)
 //            TReadPos > .. position of the char in ungapped read (gap is length(read) + 1)
 /////////////////////////////////////////////////////////////////////////////
 template<typename TAlphabet, typename TId, typename TReadPos>
-TAlphabet _sequenceCharacter(Triple<TAlphabet, TId, TReadPos> arc) 
+TAlphabet _sequenceCharacter(Triple<TAlphabet, TId, TReadPos> arc)
 {
     return arc.i1;
 }
 
 template<typename TAlphabet, typename TId, typename TReadPos>
-TId _readId(Triple<TAlphabet, TId, TReadPos> arc) 
+TId _readId(Triple<TAlphabet, TId, TReadPos> arc)
 {
 //IOREV _notio_
     return arc.i2;
 }
 
 template<typename TAlphabet, typename TId, typename TReadPos>
-TReadPos _positionInRead(Triple<TAlphabet, TId, TReadPos> arc) 
+TReadPos _positionInRead(Triple<TAlphabet, TId, TReadPos> arc)
 {
     return arc.i3;
 }
@@ -113,19 +113,19 @@ TReadPos _positionInRead(Triple<TAlphabet, TId, TReadPos> arc)
 ///////////////////////////////////
 
 template<typename TAlphabet, typename TId, typename TReadPos>
-void _setSequenceCharacter(Triple<TAlphabet, TId, TReadPos> & arc, TAlphabet val) 
+void _setSequenceCharacter(Triple<TAlphabet, TId, TReadPos> & arc, TAlphabet val)
 {
     arc.i1 = val;
 }
 
 template<typename TAlphabet, typename TId, typename TReadPos>
-void _setReadId(Triple<TAlphabet, TId, TReadPos> & arc, TId id) 
+void _setReadId(Triple<TAlphabet, TId, TReadPos> & arc, TId id)
 {
     arc.i2 = id;
 }
 
 template<typename TAlphabet, typename TId, typename TReadPos>
-void _setPositionInRead(Triple<TAlphabet, TId, TReadPos> & arc, TReadPos pos) 
+void _setPositionInRead(Triple<TAlphabet, TId, TReadPos> & arc, TReadPos pos)
 {
     arc.i3 = pos;
 }
@@ -135,13 +135,13 @@ void _setPositionInRead(Triple<TAlphabet, TId, TReadPos> & arc, TReadPos pos)
 //            TReadPos > .. position of the char in ungapped read (gap is length(read) + 1)
 /////////////////////////////////////////////////////////////////////////////
 template<typename TAlphabet, typename TReadPos>
-TAlphabet _sequenceCharacter(Pair<TAlphabet, TReadPos> arc) 
+TAlphabet _sequenceCharacter(Pair<TAlphabet, TReadPos> arc)
 {
     return arc.i1;
 }
 
 template<typename TAlphabet, typename TReadPos>
-TReadPos _positionInRead(Pair<TAlphabet, TReadPos> arc) 
+TReadPos _positionInRead(Pair<TAlphabet, TReadPos> arc)
 {
     return arc.i2;
 }
@@ -149,13 +149,13 @@ TReadPos _positionInRead(Pair<TAlphabet, TReadPos> arc)
 ///////////////////////////////////
 
 template<typename TAlphabet, typename TReadPos>
-void _setSequenceCharacter(Pair<TAlphabet, TReadPos> & arc, TAlphabet val) 
+void _setSequenceCharacter(Pair<TAlphabet, TReadPos> & arc, TAlphabet val)
 {
     arc.i1 = val;
 }
 
 template<typename TAlphabet, typename TReadPos>
-void _setPositionInRead(Pair<TAlphabet, TReadPos> & arc, TReadPos pos) 
+void _setPositionInRead(Pair<TAlphabet, TReadPos> & arc, TReadPos pos)
 {
     arc.i2 = pos;
 }

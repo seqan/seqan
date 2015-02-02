@@ -74,7 +74,7 @@ struct SeqStore
 
     typedef String<TAlphabet, TSeqSpec>                 TSeq;
     typedef StringSet<TSeq, TSeqsSpec>                  TSeqs;
-	typedef StringSet<CharString, TSeqNamesSpec>        TSeqNames;
+    typedef StringSet<CharString, TSeqNamesSpec>        TSeqNames;
 
     TSeqs           seqs;
     TSeqNames       names;

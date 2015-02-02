@@ -55,11 +55,11 @@ namespace seqan {
  * @brief Natural container value.
  *
  * @signature concept AlphabetConcept;
- * 
+ *
  * @section Examples
- * 
+ *
  * Valid expressions (<tt>v</tt> is of type <tt>T</tt>):
- * 
+ *
  * @code{.cpp}
  * unsigned bpv = BitsPerValue<T>::VALUE;
  * @endcode
@@ -69,11 +69,11 @@ namespace seqan {
  * @mfn AlphabetConcept#BitsPerValue
  * @headerfile <seqan/basic.h>
  * @brief Number of bits needed to store a value.
- * 
+ *
  * @signature BitsPerValue<T>::VALUE
- * 
+ *
  * @tparam T A class.
- * 
+ *
  * @return VALUE The number of bits needed to store a value.
  */
 
@@ -84,7 +84,7 @@ template <typename T> struct BitsPerValue;
 SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructible)(CopyConstructible))
 {
     typedef typename BitsPerValue<TValue>::Type TBitsPerValue;
-    
+
     TValue val, val2;
 
     SEQAN_CONCEPT_USAGE(AlphabetConcept)
@@ -96,7 +96,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
 //      swap(val, val2);
 
         TBitsPerValue b = BitsPerValue<TValue>::VALUE;
-        
+
         ignoreUnusedVariableWarning(b);
     }
 };
@@ -110,7 +110,7 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * @extends AlphabetConcept
  * @extends ComparableConcept
  * @headerfile <seqan/basic.h>
- * 
+ *
  * @brief Totally strict ordered alphabet.
  *
  * @signature concept OrderedAlphabetConcept;
@@ -131,13 +131,13 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * @mfn OrderedAlphabetConcept#MaxValue
  * @headerfile <seqan/basic.h>
  * @brief Supremum for a given type.
- * 
+ *
  * @signature MaxValue<T>::VALUE
  *
  * @tparam T An ordered type.
- * 
+ *
  * @return VALUE The largest value that <tt>T</tt> can represent.
- * 
+ *
  * @see OrderedAlphabetConcept#maxValue
  */
 
@@ -145,54 +145,54 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
  * @mfn OrderedAlphabetConcept#MinValue
  * @headerfile <seqan/basic.h>
  * @brief Infimum for a given type.
- * 
+ *
  * @signature MinValue<T>::VALUE
  *
  * @tparam T An ordered type.
- * 
+ *
  * @return VALUE The smallest value that <tt>T</tt> can represent.
- * 
+ *
  * @see OrderedAlphabetConcept#minValue
  */
 
 /*!
  * @fn OrderedAlphabetConcept#supremumValueImpl
  * @brief Implements maxValue.
- * 
+ *
  * @signature T supremumValueImpl(valuePointerTag);
- * 
+ *
  * @param[in] valuePointerTag A pointer that is used as a tag to specify the value type.  The pointer needs not to point
  *                            to a valid object, so it is possible to use a null pointer here.
- * 
+ *
  * @return T A value <tt>inf</tt> that holds: <tt>inf &gt;= i</tt> for all values <tt>i</tt>.
- * 
+ *
  * This function implements OrderedAlphabetConcept#maxValue.  It is recommended to use OrderedAlphabetConcept#maxValue
  * rather than <tt>supremumValueImpl</tt>.
- * 
+ *
  * @section Status
  *
  * Deprecated, will be removed in favour of OrderedAlphabetConcept#MaxValue.
- * 
+ *
  * @see OrderedAlphabetConcept#maxValue
  */
 
 /*!
  * @fn OrderedAlphabetConcept#maxValue
  * @brief Supremum for a given type.
- * 
+ *
  * @signature T maxValue<T>();
- * 
+ *
  * @tparam T The type to get the max value of.
  *
  * @return T A value <tt>inf</tt> that holds: <tt>inf >= i</tt> for all values <tt>i</tt> of type <tt>T</tt>.
- * 
+ *
  * The function is implemented in supremumValueImpl.  Do not specialize <tt>maxValue</tt>, specialize supremumValueImpl
  * instead!
- * 
+ *
  * @section Status
  *
  * Deprecated, will be removed in favour of MaxValue.
- * 
+ *
  * @see OrderedAlphabetConcept#supremumValueImpl
  * @see OrderedAlphabetConcept#minValue
  * @see OrderedAlphabetConcept#MaxValue
@@ -201,40 +201,40 @@ SEQAN_CONCEPT_REFINE(AlphabetConcept, (TValue), (Assignable)(DefaultConstructibl
 /*!
  * @fn OrderedAlphabetConcept#infimumValueImpl
  * @brief Implements minValue.
- * 
+ *
  * @signature T infimumValueImpl(valuePointerTag);
- * 
+ *
  * @param[in] valuePointerTag A pointer that is used as a tag to specify the value type.  The pointer needs not to point
  *                            to a valid object, so it is possible to use a null pointer here.
- * 
+ *
  * @return T A value <tt>inf</tt> that holds: <tt>inf &lt;= i</tt> for all values <tt>i</tt>.
- * 
+ *
  * This function implements minValue.  It is recommended to use minValue rather than <tt>infimumValueImpl</tt>.
  *
  * @section Status
  *
  * Deprecated, will be removed in favour of MinValue.
- * 
+ *
  * @see OrderedAlphabetConcept#minValue
  */
 
 /*!
  * @fn OrderedAlphabetConcept#minValue
  * @brief Infimum for a given type.
- * 
+ *
  * @signature T minValue<T>();
- * 
+ *
  * @tparam T An ordered type.
- * 
+ *
  * @return T A value <tt>inf</tt> that holds: <tt>inf &lt;= i</tt> for all values <tt>i</tt> of type <tt>T</tt>.
- * 
+ *
  * The function is implemented in infimumValueImpl.  Do not specialize <tt>minValue</tt>, specialize infimumValueImpl
  * instead!
  *
  * @section Status
  *
  * Deprecated, will be removed in favour of MinValue.
- * 
+ *
  * @see OrderedAlphabetConcept#infimumValueImpl
  * @see OrderedAlphabetConcept#maxValue
  * @see OrderedAlphabetConcept#MinValue
@@ -285,27 +285,27 @@ SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Compara
 /*!
  * @mfn FiniteOrderedAlphabetConcept#ValueSize
  * @brief Number of different values a value type object can have.
- * 
+ *
  * @signature ValueSize<T>::Type;
  * @signature ValueSize<T>::VALUE;
- * 
+ *
  * @tparam T A type to query for its value size.
- * 
+ *
  * @return VALUE The number of different values a value of type T can have.  The type is <tt>Type</tt>.
  * @return Type  The type of the result <tt>VALUE</tt>.
- * 
+ *
  * This function is only defined for integral types like <tt>unsigned</tt>, <tt>int</tt>, or Dna.  For floating point
  * numbers and the 64 bit types <tt>__int64</tt> and <tt>__uint64</tt>, it returns 0 since there is no standard
  * compliant way to return the number of values for these types.
- * 
+ *
  * Note that you cannot get pointers or references to <tt>ValueSize&lt;T&gt;::VALUE</tt> in your program.  You can use
  * @link FiniteOrderedAlphabetConcept#valueSize @endlink in your programs without problems, though.  When you get
  * problems in your tests, use the "unary plus" workaround from the examples section.
- * 
+ *
  * @section Examples
- * 
+ *
  * The temporary assignment workaround.
- * 
+ *
  * @code{.cpp}
  * SEQAN_ASSERT_EQ(ValueSize<bool>::VALUE, 2u);    // Linker error.
  * SEQAN_ASSERT_EQ(+ValueSize<bool>::VALUE, 2u);   // OK
@@ -317,13 +317,13 @@ SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Compara
  * @fn FiniteOrderedAlphabetConcept#ordValue
  * @headerfile <seqan/sequence.h>
  * @brief Maps an alphabet 1-to-1 to the interval [0..ValueSize).
- * 
+ *
  * @signature T ordValue(value);
- * 
+ *
  * @param[in] value Arbitrary character value. Types: SimpleType
- * 
+ *
  * @return T An unsigned value (result of Size<tt>&lt;typeof(value)&gt;</tt> between 0 and ValueSize of the type of value.
- * 
+ *
  * This function first converts value to its unsigned value type and after that to an <tt>unsigned int</tt>. You can't
  * use <tt>(unsigned int)c</tt> for a character <tt>c</tt> as on some systems <tt>char</tt> is signed and a <tt>-1</tt>
  * would be mapped to <tt>0xffffffff</tt> instead of <tt>0x000000ff</tt>.
@@ -332,13 +332,13 @@ SEQAN_CONCEPT_REFINE(OrderedAlphabetConcept, (TValue), (AlphabetConcept)(Compara
 /*!
  * @fn FiniteOrderedAlphabetConcept#valueSize
  * @brief Returns size of an alphabet.
- * 
+ *
  * @signature T1 valueSize<T2>();
- * 
+ *
  * @tparam T2 Type to query for value size.
- * 
+ *
  * @return T1 Number of values in type <tt>T2</tt>.
- * 
+ *
  * @see FiniteOrderedAlphabetConcept#ValueSize
  */
 
@@ -366,7 +366,7 @@ SEQAN_CONCEPT_REFINE(FiniteOrderedAlphabetConcept, (TValue), (OrderedAlphabetCon
 
         // alphabet must be non-empty
         SEQAN_STATIC_ASSERT_MSG(static_cast<TSize>(0) < ValueSize<TValue>::VALUE, "Alphabet size be greater than zero.");
-        
+
         // convert integer to alphabet value
         val = 0;
         val = size;
@@ -385,39 +385,39 @@ SEQAN_CONCEPT_REFINE(FiniteOrderedAlphabetConcept, (TValue), (OrderedAlphabetCon
  * @concept AlphabetWithGapsConcept
  * @extends AlphabetConcept
  * @headerfile <seqan/basic.h>
- * 
+ *
  * @brief An alphabet that includes a specific gap character.
  */
 
 /*!
  * @fn AlphabetWithGapsConcept#gapValueImpl
  * @brief Implements gapValue.
- * 
+ *
  * @signature T gapValueImpl(valuePointerTag);
- * 
+ *
  * @param[in] valuePointerTag A pointer that is used as a tag to specify the value type.  The pointer needs not to
  *                            point to a valid object, so it is possible to use a null pointer here.
- * 
+ *
  * @return T A gap character.
- * 
+ *
  * This function implements gapValue.  It is recommended to use gapValue rather than <tt>gapValueImpl</tt>.
- * 
+ *
  * @see AlphabetWithGapsConcept#gapValue
  */
 
 /*!
  * @fn AlphabetWithGapsConcept#gapValue
  * @brief Return the "gap" value from an alphabet.
- * 
+ *
  * @signature T gapValue<T>();
- * 
+ *
  * @tparam T The alphabet type to query the gap value from.
- * 
+ *
  * @return T The gap character.
- * 
+ *
  * The function is implemented in gapValueImpl.  Do not specialize <tt>gapValue</tt>, specialize link gapValueImpl
  * instead!
- * 
+ *
  * @see AlphabetWithGapsConcept#gapValueImpl
  */
 
@@ -441,37 +441,37 @@ SEQAN_CONCEPT_REFINE(AlphabetWithGapsConcept, (TValue), (AlphabetConcept))
  * @concept AlphabetWithUnknownValueConcept
  * @extends AlphabetConcept
  * @headerfile <seqan/basic.h>
- * 
+ *
  * @brief An alphabet which includes a specific "unknown" character.
  */
 
 /*!
  * @fn AlphabetWithUnknownValueConcept#unknownValue
- * 
+ *
  * @brief Return the "unknown" value from an alphabet.
- * 
+ *
  * @signature T unknownValue<T>();
- * 
+ *
  * @tparam T The alphabet type to query the unknown value from.
- * 
+ *
  * @return TReturn The "unknown" value.
- * 
+ *
  * @see AlphabetWithUnknownValueConcept#unknownValueImpl
  */
 
 /*!
  * @fn AlphabetWithUnknownValueConcept#unknownValueImpl
  * @brief Implements unknownValue.
- * 
+ *
  * @signature T gapValueImpl(valuePointerTag)
- * 
+ *
  * @param[in] valuePointerTag A pointer that is used as a tag to specify the value type.  The pointer needs not to
  *                            point to a valid object, so it is possible to use a null pointer here.
- * 
+ *
  * @return TReturn A "unknown" character.
- * 
+ *
  * This function implements unknownValue.  It is recommended to use gapValue rather than <tt>gapValueImpl</tt>.
- * 
+ *
  * @see AlphabetWithUnknownValueConcept#unknownValue
  */
 
@@ -495,7 +495,7 @@ SEQAN_CONCEPT_REFINE(AlphabetWithUnknownValueConcept, (TValue), (AlphabetConcept
  * @concept AlphabetWithQualitiesConcept
  * @extends AlphabetConcept
  * @headerfile <seqan/basic.h>
- * 
+ *
  * @brief An alphabet where qualities can be attached to the characters.
  */
 
@@ -503,12 +503,12 @@ SEQAN_CONCEPT_REFINE(AlphabetWithUnknownValueConcept, (TValue), (AlphabetConcept
  * @mfn AlphabetWithQualitiesConcept#HasQualities
  * @headerfile <seqan/basic.h>
  * @brief Return whether the given type stores qualities besides the alphabet.
- * 
+ *
  * @signature HasQualities<TAlphabet>::VALUE;
  * @signature HasQualities<TAlphabet>::Type;
- * 
+ *
  * @tparam TAlphabet The alphabe to query.
- * 
+ *
  * @return VALUE <tt>true</tt> or <tt>false</tt>
  * @return Type  <tt>True</tt> or <tt>False</tt>
  */
@@ -516,11 +516,11 @@ SEQAN_CONCEPT_REFINE(AlphabetWithUnknownValueConcept, (TValue), (AlphabetConcept
 /*!
  * @mfn AlphabetWithQualitiesConcept#QualityValueSize
  * @brief Return the number of quality values in characters from alphabet with qualities.
- * 
+ *
  * @signature QualityValueSize<TAlphabet>::VALUE;
- * 
+ *
  * @tparam TAlphabet The alphabet to query for its value size.
- * 
+ *
  * @return VALUE The cardinality of the set of qualities.
  */
 
@@ -529,13 +529,13 @@ SEQAN_CONCEPT_REFINE(AlphabetWithUnknownValueConcept, (TValue), (AlphabetConcept
  * @brief Returns the quality of a character from an alphabet with integrated quality, e.g. the quality associated with
  *        a specified element from a sequence.
  * @signature int getQualityValue(c);
- * 
+ *
  * @param[in] c Character to retrieve the quality from.
- * 
+ *
  * @return int Quality value of <tt>c</tt>.  The quality value is an <tt>int</tt> value between 0 and 62 (inclusive).
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * String<Dna5Q> seq = "TATA";
  * // Assign quality value to first 'T' in sequence seq
@@ -553,16 +553,16 @@ SEQAN_CONCEPT_REFINE(AlphabetWithUnknownValueConcept, (TValue), (AlphabetConcept
  * @fn AlphabetWithQualitiesConcept#assignQualityValue
  * @brief Assigns quality to a character from an alphabet with integrated quality, e.g. to a specified element from a
  *        sequence.
- * 
+ *
  * @signature void assignQualityValue(c, q);
- * 
+ *
  * @param[out] c Target character to assign quality to.
  * @param[in] q  Quality to assign to the character.  The quality value is an integral value between 0 and 62
  *               (inclusive).
- * 
+ *
  * If <tt>q</tt> is a <tt>char</tt> then <tt>'!'</tt> is subtracted from <tt>q</tt>.  This is useful for ASCII encoded
  * PHRED scores.
- * 
+ *
  * @see AlphabetWithQualitiesConcept#getQualityValue
  * @see convertQuality
  * @see assignQualities

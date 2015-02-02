@@ -108,7 +108,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_read_alignment)
     append(bamFilename, SEQAN_PATH_TO_ROOT());
     //append(bamFilename, "/tests/bam_io/small.bam");
     append(bamFilename, "/tests/bam_io/test_small.bam");
-    
+
     String<char, MMap<> > in;
     open(in, toCString(bamFilename));
     typename Iterator<String<char, MMap<> >, Rooted>::Type iter = begin(in);
@@ -120,7 +120,7 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_read_alignment)
     StringSet<CharString> referenceNameStore;
     NameStoreCache<StringSet<CharString> > referenceNameStoreCache(referenceNameStore);
     BamIOContext<StringSet<CharString> > bamIOContext(referenceNameStore, referenceNameStoreCache);
-    
+
     BamHeader header;
     readHeader(header, bamIOContext, iter, Bam());
 

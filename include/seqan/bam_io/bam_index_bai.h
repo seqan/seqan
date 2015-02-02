@@ -81,7 +81,7 @@ namespace seqan {
  *            class BamIndex;
  *
  * This is an abstract class; don't use it itself but its specializations.
- * 
+ *
  * @see BamFileIn
  */
 
@@ -185,15 +185,15 @@ public:
 static inline void
 _baiReg2bins(String<__uint16> & list, __uint32 beg, __uint32 end)
 {
-	unsigned k;
-	if (beg >= end) return;
-	if (end >= 1u<<29) end = 1u<<29;
-	--end;
-	appendValue(list, 0);
-	for (k =    1 + (beg>>26); k <=    1 + (end>>26); ++k) appendValue(list, k);
-	for (k =    9 + (beg>>23); k <=    9 + (end>>23); ++k) appendValue(list, k);
-	for (k =   73 + (beg>>20); k <=   73 + (end>>20); ++k) appendValue(list, k);
-	for (k =  585 + (beg>>17); k <=  585 + (end>>17); ++k) appendValue(list, k);
+    unsigned k;
+    if (beg >= end) return;
+    if (end >= 1u<<29) end = 1u<<29;
+    --end;
+    appendValue(list, 0);
+    for (k =    1 + (beg>>26); k <=    1 + (end>>26); ++k) appendValue(list, k);
+    for (k =    9 + (beg>>23); k <=    9 + (end>>23); ++k) appendValue(list, k);
+    for (k =   73 + (beg>>20); k <=   73 + (end>>20); ++k) appendValue(list, k);
+    for (k =  585 + (beg>>17); k <=  585 + (end>>17); ++k) appendValue(list, k);
     for (k = 4681 + (beg>>14); k <= 4681 + (end>>14); ++k) appendValue(list, k);
 }
 
@@ -390,7 +390,7 @@ bool jumpToOrphans(FormattedFile<Bam, Input, TSpec> & bamFile,
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BamIndex#getUnalignedCount 
+ * @fn BamIndex#getUnalignedCount
  * @brief Query index for number of unaligned reads.
  *
  * @signature __uint64 getUnalignedCount(index);

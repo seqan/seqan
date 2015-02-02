@@ -801,8 +801,8 @@ void _mapSingleReadsParallelToContig(
     // It is not necessary as the contigs are freed by unlockAndFreeContig
     // They are loaded again in dumpMatches if necessary
     //
-    // if (!unlockAndFreeContig(store, contigId))						// if the contig is still used
-    //     if (orientation == 'R')	reverseComplement(contigSeq);	// we have to restore original orientation
+    // if (!unlockAndFreeContig(store, contigId))                        // if the contig is still used
+    //     if (orientation == 'R')    reverseComplement(contigSeq);    // we have to restore original orientation
 #ifdef RAZERS_PROFILE
     timelineEndTask(TASK_ON_CONTIG);
 #endif  // #ifdef RAZERS_PROFILE

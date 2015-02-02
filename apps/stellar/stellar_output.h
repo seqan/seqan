@@ -36,20 +36,20 @@ template<typename TSize>
 TSize
 _computeLengthAdjustment(TSize dbLength, TSize queryLength) {
 
-	const double K = 0.34;
-	const double logK = log(K);
-	const double alphaByLambda = 1.8/1.19;
-	const double beta = -3;
-	const TSize maxIterations = 20;
+    const double K = 0.34;
+    const double logK = log(K);
+    const double alphaByLambda = 1.8/1.19;
+    const double beta = -3;
+    const TSize maxIterations = 20;
 
-	double n = (double)dbLength;
-	double m = (double)queryLength;
-	double totalLen;
+    double n = (double)dbLength;
+    double m = (double)queryLength;
+    double totalLen;
 
-	double val = 0, val_min = 0, val_max;
-	bool converged = false;
+    double val = 0, val_min = 0, val_max;
+    bool converged = false;
 
-	 /* Choose val_max to be the largest nonnegative value that satisfies
+     /* Choose val_max to be the largest nonnegative value that satisfies
       *    K * (m - val) * (n - N * val) > max(m,n)
       * Use quadratic formula: 2 c /( - b + sqrt( b*b - 4 * a * c )) */
 
@@ -64,7 +64,7 @@ _computeLengthAdjustment(TSize dbLength, TSize queryLength) {
         }
     } // end scope of mb and c
 
-	for(TSize i = 1; i <= maxIterations; i++) {  
+    for(TSize i = 1; i <= maxIterations; i++) {
         totalLen = (m - val) * (n - val);
         double val_new  = alphaByLambda * (logK + log(totalLen)) + beta;  // proposed next value of val
         if(val_new >= val) { // val is no bigger than the true fixed point
@@ -86,9 +86,9 @@ _computeLengthAdjustment(TSize dbLength, TSize queryLength) {
         }
     }
 
-	if(converged) { // the iteration converged
+    if(converged) { // the iteration converged
         // If val_fixed is the (unknown) true fixed point, then we wish to set lengthAdjustment to floor(val_fixed).
-		// We assume that floor(val_min) = floor(val_fixed)
+        // We assume that floor(val_min) = floor(val_fixed)
         return (TSize) val_min;
 
         // But verify that ceil(val_min) != floor(val_fixed)
@@ -110,7 +110,7 @@ _computeLengthAdjustment(TSize dbLength, TSize queryLength) {
 // Computes a CIGAR string and mutations from rows of StellarMatch.
 template<typename TRow, typename TString>
 void
-_getCigarLine(TRow const & row0, TRow const & row1, TString & cigar, TString & mutations) { 
+_getCigarLine(TRow const & row0, TRow const & row1, TString & cigar, TString & mutations) {
     typedef typename Size<TRow>::Type TSize;
 
     TSize pos = 0;
@@ -122,39 +122,39 @@ _getCigarLine(TRow const & row0, TRow const & row1, TString & cigar, TString & m
     bool first = true;
     TSize readBasePos = pos + clippedBeginPosition(row1);
     TSize readPos = 0;
-	while (pos < dbEndPos || pos < queryEndPos) {
-		int matched = 0;
-		int inserted = 0;
-		int deleted = 0;
-		while (pos != dbEndPos && pos != queryEndPos &&
+    while (pos < dbEndPos || pos < queryEndPos) {
+        int matched = 0;
+        int inserted = 0;
+        int deleted = 0;
+        while (pos != dbEndPos && pos != queryEndPos &&
                !isGap(row0, pos) && !isGap(row1, pos)) {
             ++readPos;
-			if (value(row0, pos) != value(row1, pos)) {
-				if (first) first = false;
-				else mutations << ",";
-				mutations << readPos << value(source(row1), readBasePos);
-			}
-			++readBasePos;
-			++pos;
-			++matched;
-		}
-		if (matched > 0) cigar << matched << "M" ;
-		while (pos < dbEndPos && isGap(row1, pos)) {
-			++pos;
-			++deleted;
-		}
-		if (deleted > 0) cigar << deleted << "D";
-		while (pos < queryEndPos && isGap(row0, pos)) {
-			++pos;
-			++readPos;
-			if (first) first = false;
-			else mutations << ",";
-			mutations << readPos << value(source(row1), readBasePos);
-			++readBasePos;
-			++inserted;
-		}
-		if (inserted > 0) cigar << inserted << "I";
-	}
+            if (value(row0, pos) != value(row1, pos)) {
+                if (first) first = false;
+                else mutations << ",";
+                mutations << readPos << value(source(row1), readBasePos);
+            }
+            ++readBasePos;
+            ++pos;
+            ++matched;
+        }
+        if (matched > 0) cigar << matched << "M" ;
+        while (pos < dbEndPos && isGap(row1, pos)) {
+            ++pos;
+            ++deleted;
+        }
+        if (deleted > 0) cigar << deleted << "D";
+        while (pos < queryEndPos && isGap(row0, pos)) {
+            ++pos;
+            ++readPos;
+            if (first) first = false;
+            else mutations << ",";
+            mutations << readPos << value(source(row1), readBasePos);
+            ++readBasePos;
+            ++inserted;
+        }
+        if (inserted > 0) cigar << inserted << "I";
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -162,12 +162,12 @@ _getCigarLine(TRow const & row0, TRow const & row1, TString & cigar, TString & m
 template<typename TRow, typename TSize>
 inline void
 _analyzeAlignment(TRow const & row0, TRow const & row1, TSize & aliLen, TSize & matches) {
-	TSize pos = 0;
+    TSize pos = 0;
     SEQAN_ASSERT_EQ(length(row0), length(row1));
     TSize end0 = length(row0);
     TSize end1 = length(row1);
 
-	matches = 0;
+    matches = 0;
     while ((pos < end0) && (pos < end1)) {
         if (!isGap(row0, pos) && !isGap(row1, pos)) {
             if (value(row0, pos) == value(row1, pos)) {
@@ -177,7 +177,7 @@ _analyzeAlignment(TRow const & row0, TRow const & row1, TSize & aliLen, TSize & 
         ++pos;
     }
 
-	aliLen = _max(end0, end1);
+    aliLen = _max(end0, end1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -187,7 +187,7 @@ double
 _computeIdentity(TRow const & row0, TRow const & row1) {
     typedef typename Size<TRow>::Type TSize;
     TSize matches, aliLen;
-	_analyzeAlignment(row0, row1, aliLen, matches);
+    _analyzeAlignment(row0, row1, aliLen, matches);
 
     return floor(1000000.0 * matches / aliLen) / 10000.0;
 }
@@ -197,18 +197,18 @@ _computeIdentity(TRow const & row0, TRow const & row1) {
 template<typename TRow, typename TSize>
 double
 _computeEValue(TRow & row0, TRow & row1, TSize lengthAdjustment) {
-	TSize m = length(source(row0)) - lengthAdjustment;
-	TSize n = length(source(row1)) - lengthAdjustment;
-	double minusLambda = -1.19; // -lambda
-	double K = 0.34;
+    TSize m = length(source(row0)) - lengthAdjustment;
+    TSize n = length(source(row1)) - lengthAdjustment;
+    double minusLambda = -1.19; // -lambda
+    double K = 0.34;
 
-	TSize matches, aliLen;
-	_analyzeAlignment(row0, row1, aliLen, matches);
-	// score = 1 * matches - 2 * errors (mismatches or gaps)
-	//       = matches - 2 * (aliLen - matches)
-	TSize score = matches - 2 * (aliLen - matches);
+    TSize matches, aliLen;
+    _analyzeAlignment(row0, row1, aliLen, matches);
+    // score = 1 * matches - 2 * errors (mismatches or gaps)
+    //       = matches - 2 * (aliLen - matches)
+    TSize score = matches - 2 * (aliLen - matches);
 
-	return K * (double)m * (double)n * exp(minusLambda * (double)score);
+    return K * (double)m * (double)n * exp(minusLambda * (double)score);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -217,14 +217,14 @@ _computeEValue(TRow & row0, TRow & row1, TSize lengthAdjustment) {
 template<typename TSize>
 double
 _computeEValue(TSize score, TSize len0, TSize len1) {
-	double minusLambda = -1.19; // -lambda
-	double K = 0.34;
+    double minusLambda = -1.19; // -lambda
+    double K = 0.34;
 
-	TSize lengthAdjustment = _computeLengthAdjustment(len0, len1);
-	TSize m = len0 - lengthAdjustment;
-	TSize n = len1 - lengthAdjustment;
+    TSize lengthAdjustment = _computeLengthAdjustment(len0, len1);
+    TSize m = len0 - lengthAdjustment;
+    TSize n = len1 - lengthAdjustment;
 
-	return K * (double)m * (double)n * exp(minusLambda * (double)score);
+    return K * (double)m * (double)n * exp(minusLambda * (double)score);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -234,7 +234,7 @@ void
 _writeMatchGff(TId const & databaseID,
               TId const & patternID,
               bool const databaseStrand,
-			  TSize lengthAdjustment,
+              TSize lengthAdjustment,
               TRow const & row0,
               TRow const & row1,
               TFile & file) {
@@ -265,7 +265,7 @@ _writeMatchGff(TId const & databaseID,
         file << value(patternID, i);
     }
 
-	//file << ";seq2Length=" << length(source(row1));
+    //file << ";seq2Length=" << length(source(row1));
 
     file << ";seq2Range=" << beginPosition(row1) + beginPosition(source(row1)) + 1;
     file << "," << endPosition(row1) + beginPosition(source(row1));
@@ -287,52 +287,52 @@ void
 _writeMatch(TId const & databaseID,
             TId const & patternID,
             bool const databaseStrand,
-			TSize lengthAdjustment,
+            TSize lengthAdjustment,
             TRow const & row0,
             TRow const & row1,
             TFile & file) {
-//IOREV _recordreading_ _stub_ 
+//IOREV _recordreading_ _stub_
     typedef typename Value<typename Source<TRow>::Type>::Type TAlphabet;
 
-	// write database ID
-	file << "Database sequence: " << databaseID;
-	if (!databaseStrand) file << " (complement)" << std::endl;
-	else file << std::endl;
+    // write database ID
+    file << "Database sequence: " << databaseID;
+    if (!databaseStrand) file << " (complement)" << std::endl;
+    else file << std::endl;
 
-	// write database positions
-	file << "Database positions: ";
-	if (databaseStrand) {
-		file << beginPosition(row0) + beginPosition(source(row0));
-		file << ".." << endPosition(row0) + beginPosition(source(row0));
-	} else {
-		file << length(source(row0)) - beginPosition(row0) + beginPosition(source(row0));
-		file << ".." << length(source(row0)) - endPosition(row0) + beginPosition(source(row0));
-	}
-	file << std::endl;
+    // write database positions
+    file << "Database positions: ";
+    if (databaseStrand) {
+        file << beginPosition(row0) + beginPosition(source(row0));
+        file << ".." << endPosition(row0) + beginPosition(source(row0));
+    } else {
+        file << length(source(row0)) - beginPosition(row0) + beginPosition(source(row0));
+        file << ".." << length(source(row0)) - endPosition(row0) + beginPosition(source(row0));
+    }
+    file << std::endl;
 
-	// write query ID
-	file << "Query sequence: " << patternID << std::endl;
+    // write query ID
+    file << "Query sequence: " << patternID << std::endl;
 
-	// write query positions
-	file << "Query positions: ";
-	file << beginPosition(row1) + beginPosition(source(row1));
-	file << ".." << endPosition(row1) + beginPosition(source(row1));
-	file << std::endl;
-    
+    // write query positions
+    file << "Query positions: ";
+    file << beginPosition(row1) + beginPosition(source(row1));
+    file << ".." << endPosition(row1) + beginPosition(source(row1));
+    file << std::endl;
+
     if (IsSameType<TAlphabet, Dna5>::VALUE || IsSameType<TAlphabet, Rna5>::VALUE)
     {
-	    // write e-value
-	    file << "E-value: " << _computeEValue(row0, row1, lengthAdjustment) << std::endl;
+        // write e-value
+        file << "E-value: " << _computeEValue(row0, row1, lengthAdjustment) << std::endl;
     }
 
-	file << std::endl;
+    file << std::endl;
 
-	// write match
-	Align<typename Source<TRow>::Type> align;
-	appendValue(align.data_rows, row0);
-	appendValue(align.data_rows, row1);
-	file << align;
-	file << "----------------------------------------------------------------------\n" << std::endl;
+    // write match
+    Align<typename Source<TRow>::Type> align;
+    appendValue(align.data_rows, row0);
+    appendValue(align.data_rows, row1);
+    file << align;
+    file << "----------------------------------------------------------------------\n" << std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -342,92 +342,92 @@ template<typename TInfix, typename TQueryId, typename TIds, typename TDatabases,
          typename TString>
 bool
 _outputMatches(StringSet<QueryMatches<StellarMatch<TInfix, TQueryId> > > & matches,
-			   TIds const & ids,
-			   TDatabases & databases,
-			   TMode verbose,
-			   TFile & fileName,
-			   TString & format) {
-	typedef StellarMatch<TInfix, TQueryId> TMatch;
-	typedef typename Size<typename TMatch::TAlign>::Type TSize;
-	typedef typename Iterator<String<TMatch> >::Type TIterator;
+               TIds const & ids,
+               TDatabases & databases,
+               TMode verbose,
+               TFile & fileName,
+               TString & format) {
+    typedef StellarMatch<TInfix, TQueryId> TMatch;
+    typedef typename Size<typename TMatch::TAlign>::Type TSize;
+    typedef typename Iterator<String<TMatch> >::Type TIterator;
     typedef typename Value<TInfix>::Type TAlphabet;
 
-	TSize numMatches = 0;
-	TSize totalLength = 0;
+    TSize numMatches = 0;
+    TSize totalLength = 0;
     TSize maxLength = 0;
 
-	std::ofstream file;
-	file.open(toCString(fileName), ::std::ios_base::out | ::std::ios_base::app);
-	if (!file.is_open()) {
-		std::cerr << "Could not open output file." << std::endl;
-		return 1;
-	}
+    std::ofstream file;
+    file.open(toCString(fileName), ::std::ios_base::out | ::std::ios_base::app);
+    if (!file.is_open()) {
+        std::cerr << "Could not open output file." << std::endl;
+        return 1;
+    }
 
-	// output matches on positive database strand
-	for (TSize i = 0; i < length(matches); i++) {
-		QueryMatches<TMatch> &queryMatches = value(matches, i);
+    // output matches on positive database strand
+    for (TSize i = 0; i < length(matches); i++) {
+        QueryMatches<TMatch> &queryMatches = value(matches, i);
 
-		TIterator it = begin(queryMatches.matches);
-		TIterator itEnd = end(queryMatches.matches);
+        TIterator it = begin(queryMatches.matches);
+        TIterator itEnd = end(queryMatches.matches);
 
-		if (it != itEnd && (IsSameType<TAlphabet, Dna5>::VALUE || IsSameType<TAlphabet, Rna5>::VALUE)) {
-			queryMatches.lengthAdjustment = _computeLengthAdjustment(length(source((*it).row1)),
+        if (it != itEnd && (IsSameType<TAlphabet, Dna5>::VALUE || IsSameType<TAlphabet, Rna5>::VALUE)) {
+            queryMatches.lengthAdjustment = _computeLengthAdjustment(length(source((*it).row1)),
                                                                      length(source((*it).row2)));
-		}
+        }
 
-		while (it < itEnd) {
-			TSize len = _max(length((*it).row1), length((*it).row2));
-			totalLength += len;
-			if(len > maxLength) maxLength = len;
+        while (it < itEnd) {
+            TSize len = _max(length((*it).row1), length((*it).row2));
+            totalLength += len;
+            if(len > maxLength) maxLength = len;
 
-			if ((*it).orientation) {
-				if (format == "gff")
-					_writeMatchGff((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment,
+            if ((*it).orientation) {
+                if (format == "gff")
+                    _writeMatchGff((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment,
                                    (*it).row1, (*it).row2, file);
-				else
-					_writeMatch((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment,
+                else
+                    _writeMatch((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment,
                                 (*it).row1, (*it).row2, file);
-			}
+            }
 
-			++it;
-		}
-		numMatches += length(queryMatches.matches);
-	}
+            ++it;
+        }
+        numMatches += length(queryMatches.matches);
+    }
 
     if (IsSameType<TAlphabet, Dna5>::VALUE || IsSameType<TAlphabet, Rna5>::VALUE)
     {
-	    reverseComplement(databases);
+        reverseComplement(databases);
 
-	    // output matches on negative database strand
-	    for (TSize i = 0; i < length(matches); i++) {
-		    QueryMatches<TMatch> &queryMatches = value(matches, i);
+        // output matches on negative database strand
+        for (TSize i = 0; i < length(matches); i++) {
+            QueryMatches<TMatch> &queryMatches = value(matches, i);
 
-		    TIterator it = begin(queryMatches.matches);
-		    TIterator itEnd = end(queryMatches.matches);
+            TIterator it = begin(queryMatches.matches);
+            TIterator itEnd = end(queryMatches.matches);
 
-		    while (it < itEnd) {
-			    if (!(*it).orientation) {
-				    if (format == "gff")
-					    _writeMatchGff((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment, (*it).row1, (*it).row2, file);
-				    else 
-					    _writeMatch((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment, (*it).row1, (*it).row2, file);
-			    }
-			    ++it;
-		    }
-	    }
+            while (it < itEnd) {
+                if (!(*it).orientation) {
+                    if (format == "gff")
+                        _writeMatchGff((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment, (*it).row1, (*it).row2, file);
+                    else
+                        _writeMatch((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment, (*it).row1, (*it).row2, file);
+                }
+                ++it;
+            }
+        }
     }
 
-	file.close();
+    file.close();
 
-	std::cout << "# Eps-matches     : " << numMatches << std::endl;
-	if (verbose) {
-		if (numMatches > 0) {
-			std::cout << "Longest eps-match : " << maxLength << std::endl;
-			std::cout << "Avg match length  : " << totalLength / numMatches << std::endl;
-		}
-	}
+    std::cout << "# Eps-matches     : " << numMatches << std::endl;
+    if (verbose) {
+        if (numMatches > 0) {
+            std::cout << "Longest eps-match : " << maxLength << std::endl;
+            std::cout << "Avg match length  : " << totalLength / numMatches << std::endl;
+        }
+    }
 
-	return 0;
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -436,18 +436,18 @@ _outputMatches(StringSet<QueryMatches<StellarMatch<TInfix, TQueryId> > > & match
 // Writes disabled query sequences to disabledFile.
 template<typename TInfix, typename TQueryId, typename TQueries, typename TDatabases, typename TIds,
          typename TMode, typename TFile, typename TString>
-bool 
-_outputMatches(StringSet<QueryMatches<StellarMatch<TInfix, TQueryId> > > & matches, 
-			   TQueries & queries,
-			   TIds const & ids,
-			   TDatabases & databases,
-			   TMode verbose,
-			   TFile & fileName,
-			   TString & format,
-			   TString & disabledFile) {
-	typedef StellarMatch<TInfix, TQueryId> TMatch;
-	typedef typename Size<typename TMatch::TAlign>::Type TSize;
-	typedef typename Iterator<String<TMatch> >::Type TIterator;
+bool
+_outputMatches(StringSet<QueryMatches<StellarMatch<TInfix, TQueryId> > > & matches,
+               TQueries & queries,
+               TIds const & ids,
+               TDatabases & databases,
+               TMode verbose,
+               TFile & fileName,
+               TString & format,
+               TString & disabledFile) {
+    typedef StellarMatch<TInfix, TQueryId> TMatch;
+    typedef typename Size<typename TMatch::TAlign>::Type TSize;
+    typedef typename Iterator<String<TMatch> >::Type TIterator;
     typedef typename Value<TInfix>::Type TAlphabet;
 
     TSize maxLength = 0;
@@ -456,89 +456,89 @@ _outputMatches(StringSet<QueryMatches<StellarMatch<TInfix, TQueryId> > > & match
     TSize numDisabled = 0;
 
     std::ofstream daFile, file;
-	file.open(toCString(fileName), ::std::ios_base::out | ::std::ios_base::app);
-	if (!file.is_open()) {
-		std::cerr << "Could not open output file." << std::endl;
-		return 1;
-	}
+    file.open(toCString(fileName), ::std::ios_base::out | ::std::ios_base::app);
+    if (!file.is_open()) {
+        std::cerr << "Could not open output file." << std::endl;
+        return 1;
+    }
 
-	daFile.open(toCString(disabledFile), ::std::ios_base::out | ::std::ios_base::app);
-	if (!daFile.is_open()) {
-		std::cerr << "Could not open file for disabled queries." << std::endl;
-		return 1;
-	}
+    daFile.open(toCString(disabledFile), ::std::ios_base::out | ::std::ios_base::app);
+    if (!daFile.is_open()) {
+        std::cerr << "Could not open file for disabled queries." << std::endl;
+        return 1;
+    }
 
-	// output matches on positive database strand
+    // output matches on positive database strand
     for (TSize i = 0; i < length(matches); i++) {
-		QueryMatches<TMatch> &queryMatches = value(matches, i);
-		if (queryMatches.disabled) {
-			daFile << ">" << ids[i] << "\n";
-			daFile << queries[i] << "\n\n";
-			++numDisabled;
-		}
+        QueryMatches<TMatch> &queryMatches = value(matches, i);
+        if (queryMatches.disabled) {
+            daFile << ">" << ids[i] << "\n";
+            daFile << queries[i] << "\n\n";
+            ++numDisabled;
+        }
 
-		TIterator it = begin(queryMatches.matches);
-		TIterator itEnd = end(queryMatches.matches);
+        TIterator it = begin(queryMatches.matches);
+        TIterator itEnd = end(queryMatches.matches);
 
-		if (it != itEnd && (IsSameType<TAlphabet, Dna5>::VALUE || IsSameType<TAlphabet, Rna5>::VALUE)) {
-			queryMatches.lengthAdjustment = _computeLengthAdjustment(length(source((*it).row1)),
+        if (it != itEnd && (IsSameType<TAlphabet, Dna5>::VALUE || IsSameType<TAlphabet, Rna5>::VALUE)) {
+            queryMatches.lengthAdjustment = _computeLengthAdjustment(length(source((*it).row1)),
                                                                      length(source((*it).row2)));
-		}
+        }
 
-		while (it < itEnd) {
+        while (it < itEnd) {
             TSize len = _max(length((*it).row1), length((*it).row2));
             totalLength += len;
             if(len > maxLength) maxLength = len;
 
-			if ((*it).orientation) {
-				if (format == "gff")
-					_writeMatchGff((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment,
+            if ((*it).orientation) {
+                if (format == "gff")
+                    _writeMatchGff((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment,
                                    (*it).row1, (*it).row2, file);
-				else 
-					_writeMatch((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment,
+                else
+                    _writeMatch((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment,
                                 (*it).row1, (*it).row2, file);
-			}
-			++it;
+            }
+            ++it;
         }
         numMatches += length(queryMatches.matches);
-	}
+    }
 
     if (IsSameType<TAlphabet, Dna5>::VALUE || IsSameType<TAlphabet, Rna5>::VALUE)
     {
-	    reverseComplement(databases);
-	
-	    // output matches on positive database strand
-	    for (TSize i = 0; i < length(matches); i++) {
-		    QueryMatches<TMatch> &queryMatches = value(matches, i);
-		    TIterator it = begin(queryMatches.matches);
-		    TIterator itEnd = end(queryMatches.matches);
+        reverseComplement(databases);
 
-		    while (it < itEnd) {
-			    if (!(*it).orientation) {
-				    if (format == "gff")
-					    _writeMatchGff((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment,
+        // output matches on positive database strand
+        for (TSize i = 0; i < length(matches); i++) {
+            QueryMatches<TMatch> &queryMatches = value(matches, i);
+            TIterator it = begin(queryMatches.matches);
+            TIterator itEnd = end(queryMatches.matches);
+
+            while (it < itEnd) {
+                if (!(*it).orientation) {
+                    if (format == "gff")
+                        _writeMatchGff((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment,
                                        (*it).row1, (*it).row2, file);
-				    else 
-					    _writeMatch((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment,
+                    else
+                        _writeMatch((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment,
                                     (*it).row1, (*it).row2, file);
-			    }
-			    ++it;
+                }
+                ++it;
             }
         }
     }
-	daFile.close();
-	file.close();
+    daFile.close();
+    file.close();
 
-	std::cout << "# Eps-matches     : " << numMatches << std::endl;
-	if (verbose) {
-		if (numMatches > 0) {
-			std::cout << "Longest eps-match : " << maxLength << std::endl;
-			std::cout << "Avg match length  : " << totalLength / numMatches << std::endl;
-		}
-		std::cout << "# Disabled queries: " << numDisabled << std::endl;
-	}
+    std::cout << "# Eps-matches     : " << numMatches << std::endl;
+    if (verbose) {
+        if (numMatches > 0) {
+            std::cout << "Longest eps-match : " << maxLength << std::endl;
+            std::cout << "Avg match length  : " << totalLength / numMatches << std::endl;
+        }
+        std::cout << "# Disabled queries: " << numDisabled << std::endl;
+    }
 
-	return 0;
+    return 0;
 }
 
 #endif

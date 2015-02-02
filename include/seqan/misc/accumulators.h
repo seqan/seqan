@@ -68,15 +68,15 @@ typedef Tag<AccuCount_> AccuCount;
  * @class Accumulator
  * @headerfile <seqan/misc/accumulators.h>
  * @brief Accumulator base class.
- * 
+ *
  * @signature template <typename TValue, typename TSpec>
  *            struct Accumulator;
- * 
+ *
  * @tparam TSpec  The specialization tag.
  * @tparam TValue The type of the values to accumulate.
- * 
+ *
  * Accumulators are for computing statistics on streams of values.
- * 
+ *
  * Currently, this is only meant for accumulating integers.
  */
 
@@ -88,18 +88,18 @@ struct Accumulator;
  * @extends Accumulator
  * @headerfile <seqan/misc/accumulators.h>
  * @brief Accumulator for computing averages.
- * 
+ *
  * @signature template <typename TValue>
  *            struct Accumulator<TValue, AccuAverage>;
- * 
+ *
  * @tparam TValue The type of the values to compute the average of.
- * 
+ *
  * The average of an empty sequence is defined to be 0.
- * 
+ *
  * @section Examples
- * 
+ *
  * This program shows how to use the Average Accumulator.
- * 
+ *
  * @code{.cpp}
  * Accumulator<int, AccuAverage> acc;
  * push(acc, 1);
@@ -111,7 +111,7 @@ struct Accumulator;
  * @endcode
  *
  * The output is then:
- * 
+ *
  * @code{.console}
  * average: 2
  * sum:     6

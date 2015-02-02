@@ -62,8 +62,8 @@ struct SAValue<Index<TMPReadSet, IndexQGram<TShape> > >
 // template <typename TMPReadSet, typename TShape, typename TSpec>
 // struct Cargo< Index<TMPReadSet, IndexQGram<TShape, TSpec> > > {
 //  typedef struct {
-//      double		abundanceCut;
-//      int			_debugLevel;
+//      double        abundanceCut;
+//      int            _debugLevel;
 //  } Type;
 // };
 
@@ -109,7 +109,7 @@ inline bool _qgramDisableBuckets(Index<TMPReadSet, IndexQGram<TShape> > & index)
 template <typename TFSSpec, typename TFSConfig, typename TRazerSOptions>
 bool loadReads(
     FragmentStore<TFSSpec, TFSConfig>   & store,
-	SeqFileIn                           & leftMates,        // left mates file
+    SeqFileIn                           & leftMates,        // left mates file
     const char                          * fileNameR,        // right mates file
     TRazerSOptions & options)
 {
@@ -136,10 +136,10 @@ bool loadReads(
     unsigned kickoutcount = 0;
     unsigned maxReadLength = 0;
 
-	while (!atEnd(leftMates) && !atEnd(rightMates))
+    while (!atEnd(leftMates) && !atEnd(rightMates))
     {
         ++seqCount;
-        
+
         readRecord(seqId[0], seq[0], qual[0], leftMates);
         readRecord(seqId[1], seq[1], qual[1], rightMates);
 
@@ -172,7 +172,7 @@ bool loadReads(
                 for (unsigned k = 0; k < length(seq[j]); ++k)
                     if (--allowed[ordValue(getValue(seq[j], k))] == 0)
                     {
-//						std::cout << "Ignoring mate-pair: " << seq[0] << " " << seq[1] << std::endl;
+//                        std::cout << "Ignoring mate-pair: " << seq[0] << " " << seq[1] << std::endl;
                         clear(seq[0]);
                         clear(seq[1]);
                         clear(seqId[0]);
@@ -459,7 +459,7 @@ void compactPairMatches(
     {
 #endif  // #ifdef RAZERS_EXTERNAL_MATCHES
     std::sort(it, itEnd, LessPairErrors<TFragmentStore, TMatch>(store));
-//	sortAlignedReads(threadStore, LessPairScore<TFragmentStore>(mainStore, threadStore));
+//    sortAlignedReads(threadStore, LessPairScore<TFragmentStore>(mainStore, threadStore));
 #ifdef RAZERS_EXTERNAL_MATCHES
 }
 
@@ -561,7 +561,7 @@ void compactPairMatches(
     }
     unsigned origSize = length(matches);
     resize(matches, dit - begin(matches, Standard()));
-//	compactAlignedReads(matches);
+//    compactAlignedReads(matches);
 
     options.timeCompactMatches += sysTime() - beginTime;
 
@@ -767,9 +767,9 @@ void _mapMatePairReads(
             it = &value(fifo, i - firstNo);
 
             // search left mate
-//			if (((*it).i2.readId & ~NOT_VERIFIED) == leftReadId)
-//			        ^== we need not to test anymore, as only corr. left mates are traversed
-//						via the linked list beginning from lastPotMatchNo[matePairId]
+//            if (((*it).i2.readId & ~NOT_VERIFIED) == leftReadId)
+//                    ^== we need not to test anymore, as only corr. left mates are traversed
+//                        via the linked list beginning from lastPotMatchNo[matePairId]
             {
                 // verify left mate (equal seqNo), if not done already
                 if ((*it).i2.readId & NOT_VERIFIED)
@@ -814,7 +814,7 @@ void _mapMatePairReads(
                         lastValid = i;
                         continue;                                           // left pot. hit is out of tolerance window
                     }
-                } //else {}													// left match is verified already
+                } //else {}                                                    // left match is verified already
 
                 // short-cut negative matches
                 if (last != lastValid)
@@ -898,7 +898,7 @@ void _mapMatePairReads(
                             bestLeftScore = score;
                             bestLibSizeError = libSizeError;
                             bestLeft = it;
-                            // if (bestLeftScore == 0) break;	// TODO: replace if we have real qualities
+                            // if (bestLeftScore == 0) break;    // TODO: replace if we have real qualities
                         }
                     }
                 }
@@ -955,14 +955,14 @@ void _mapMatePairReads(
             fL.i2.libDiff = mR.libDiff = bestLibSizeError;
 
             // both mates match with correct library size
-/*								std::cout << "found " << matePairId << " on " << orientation << contigId;
+/*                                std::cout << "found " << matePairId << " on " << orientation << contigId;
                     std::cout << " dist:" << dist;
                     if (orientation=='F')
                         std::cout << " \t_" << fL.i2.beginPos+1 << "_" << mR.endPos;
                     else
                         std::cout << " \t_" << mR.beginPos+1 << "_" << mL.endPos;
-//							std::cout << " L_" << (*bestLeft).beginPos << "_" << (*bestLeft).endPos << "_" << (*bestLeft).editDist;
-//							std::cout << " R_" << mR.beginPos << "_" << mR.endPos << "_" << mR.editDist;
+//                            std::cout << " L_" << (*bestLeft).beginPos << "_" << (*bestLeft).endPos << "_" << (*bestLeft).editDist;
+//                            std::cout << " R_" << mR.beginPos << "_" << mR.endPos << "_" << mR.editDist;
                     std::cout << std::endl;
 */
             if (!options.spec.DONT_DUMP_RESULTS)
@@ -984,7 +984,7 @@ void _mapMatePairReads(
 
                     if (length(store.alignedReadStore) * 4 > oldSize)                   // the threshold should not be raised
                         options.compactThresh = (__int64)(options.compactThresh * options.compactMult);
-                    //options.compactThresh += (options.compactThresh >> 1);	// if too many matches were removed
+                    //options.compactThresh += (options.compactThresh >> 1);    // if too many matches were removed
 
                     if (options._debugLevel >= 2)
                         std::cerr << '(' << oldSize - length(store.alignedReadStore) << " matches removed)";
@@ -1048,7 +1048,7 @@ int _mapMatePairReads(
     typedef typename Position<TContigSeq>::Type TContigPos;
     typedef MatchRecord<TContigPos> TMatchRecord;
 
-//	std::cout << "SA-TYPE:" <<sizeof(typename SAValue<TIndex>::Type)<<std::endl;
+//    std::cout << "SA-TYPE:" <<sizeof(typename SAValue<TIndex>::Type)<<std::endl;
 
     // split mate-pairs over two indices
     TReadSet readSetL, readSetR;
@@ -1109,7 +1109,7 @@ int _mapMatePairReads(
         // (once per _mapSingleReadsToContig call)
         lockContig(store, contigId);
 
-//		std::cout<<"contigLen: "<<length(store.contigStore[contigId].seq)<<std::endl;
+//        std::cout<<"contigLen: "<<length(store.contigStore[contigId].seq)<<std::endl;
 
         if (options.forward)
             _mapMatePairReads(matches, store, contigId, filterPatternL, filterPatternR, cnts, 'F', options, mode);

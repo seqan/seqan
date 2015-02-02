@@ -30,227 +30,227 @@ namespace SEQAN_NAMESPACE_MAIN
 {
 
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Verification Token
-	template <
-		typename TGenome, 
-		typename TReadSet, 
-		typename TSpec >
-	struct VerifierToken 
-	{
-		Segment<TGenome, InfixSegment> genomeInf;   // potential match genome region
-		TReadSet *readSet;                          // q-gram index
-		unsigned rseqNo;                            // read number
-		unsigned gseqNo;							// genome number
-		char orientation;							// genome strand F/R
-	};
+    //////////////////////////////////////////////////////////////////////////////
+    // Verification Token
+    template <
+        typename TGenome,
+        typename TReadSet,
+        typename TSpec >
+    struct VerifierToken
+    {
+        Segment<TGenome, InfixSegment> genomeInf;   // potential match genome region
+        TReadSet *readSet;                          // q-gram index
+        unsigned rseqNo;                            // read number
+        unsigned gseqNo;                            // genome number
+        char orientation;                            // genome strand F/R
+    };
 
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Filtration Pipe 
-	//   Input:  <none>
-	//   Output: verification tokens
-	template <
-		typename TGenome, 
-		typename TSwiftFinder,
-		typename TSwiftPattern, 
-		typename TOptionSpec >
-	class FiltrationPipe: public tbb::filter
-	{
-	public:
-		typedef typename Host<TSwiftPattern>::Type				TReadIndex;
-		typedef typename Host<TReadIndex>::Type					TReadSet;
-		typedef VerifierToken<TGenome, TReadSet, TOptionSpec>	TToken;
-		typedef RazerSOptions<TOptionSpec> const				TOptions;
-	    
-		static const size_t nTokens = 8;
+    //////////////////////////////////////////////////////////////////////////////
+    // Filtration Pipe
+    //   Input:  <none>
+    //   Output: verification tokens
+    template <
+        typename TGenome,
+        typename TSwiftFinder,
+        typename TSwiftPattern,
+        typename TOptionSpec >
+    class FiltrationPipe: public tbb::filter
+    {
+    public:
+        typedef typename Host<TSwiftPattern>::Type                TReadIndex;
+        typedef typename Host<TReadIndex>::Type                    TReadSet;
+        typedef VerifierToken<TGenome, TReadSet, TOptionSpec>    TToken;
+        typedef RazerSOptions<TOptionSpec> const                TOptions;
 
-		TGenome			&genome;
-		TSwiftPattern	swiftPattern;
-		TSwiftFinder	swiftFinder;
-		TOptions const	&options;
-	    
-		TToken          tokens[nTokens];
-		unsigned        nextToken;
+        static const size_t nTokens = 8;
 
-		inline FiltrationPipe(TGenome &_genome, TSwiftPattern &_swiftPattern, unsigned gseqNo, char orientation, TOptions &_options) :
-			tbb::filter(serial),
-			genome(_genome),
-			swiftPattern(_swiftPattern),
-			swiftFinder(_genome, options.repeatLength, 1),
-			options(_options),
-			nextToken(0)
-		{
-			for (unsigned i = 0; i < nTokens; ++i)
-			{
-				tokens[i].readSet = &indexText(host(swiftPattern));
-				tokens[i].orientation = orientation;
-				tokens[i].gseqNo = gseqNo;
-			}
-		}
+        TGenome            &genome;
+        TSwiftPattern    swiftPattern;
+        TSwiftFinder    swiftFinder;
+        TOptions const    &options;
 
-		void * operator () (void * /*_token*/)
-		{
-			if (find(swiftFinder, swiftPattern, options.errorRate, options._debugLevel))
-			{
-				TToken &token = tokens[nextToken];
-				nextToken = (nextToken + 1) % nTokens;
-				set(token.genomeInf, infix(swiftFinder));
-				token.rseqNo = (*swiftFinder.curHit).ndlSeqNo;
-				return &token;
-			}
-			else
-				return NULL;
-		}
-	};
+        TToken          tokens[nTokens];
+        unsigned        nextToken;
 
+        inline FiltrationPipe(TGenome &_genome, TSwiftPattern &_swiftPattern, unsigned gseqNo, char orientation, TOptions &_options) :
+            tbb::filter(serial),
+            genome(_genome),
+            swiftPattern(_swiftPattern),
+            swiftFinder(_genome, options.repeatLength, 1),
+            options(_options),
+            nextToken(0)
+        {
+            for (unsigned i = 0; i < nTokens; ++i)
+            {
+                tokens[i].readSet = &indexText(host(swiftPattern));
+                tokens[i].orientation = orientation;
+                tokens[i].gseqNo = gseqNo;
+            }
+        }
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Verification Pipe 
-	//   Input:  verification tokens
-	//   Output: true matches
-	template <
-		typename TMatches, 
-		typename TGenome, 
-		typename TReadSet, 
-		typename TVerificationPatterns,
-		typename TOptionSpec,
-		typename TSwiftSpec >
-	class VerificationPipe: public tbb::filter
-	{
-	public:
-		typedef typename Value<TMatches>::Type					TMatch;
-		typedef typename Size<TGenome>::Type					TSize;
-		typedef VerifierToken<TGenome, TReadSet, TOptionSpec>	TToken;
-		typedef typename RazerSOptions<TOptionSpec>::TMutex		TMutex;
-		typedef RazerSOptions<TOptionSpec>						TOptions;
-
-		TMatches				&matches;
-		TVerificationPatterns	&verificationPatterns;
-		TOptions				&options;
-		__int64					FP;
-		__int64					TP;	 
+        void * operator () (void * /*_token*/)
+        {
+            if (find(swiftFinder, swiftPattern, options.errorRate, options._debugLevel))
+            {
+                TToken &token = tokens[nextToken];
+                nextToken = (nextToken + 1) % nTokens;
+                set(token.genomeInf, infix(swiftFinder));
+                token.rseqNo = (*swiftFinder.curHit).ndlSeqNo;
+                return &token;
+            }
+            else
+                return NULL;
+        }
+    };
 
 
-		VerificationPipe(TMatches &_matches, TVerificationPatterns &_verificationPatterns, TOptions &_options):
-			tbb::filter(parallel),
-			matches(_matches),
-			verificationPatterns(_verificationPatterns),
-			options(_options),
-			FP(0),
-			TP(0) {}
+    //////////////////////////////////////////////////////////////////////////////
+    // Verification Pipe
+    //   Input:  verification tokens
+    //   Output: true matches
+    template <
+        typename TMatches,
+        typename TGenome,
+        typename TReadSet,
+        typename TVerificationPatterns,
+        typename TOptionSpec,
+        typename TSwiftSpec >
+    class VerificationPipe: public tbb::filter
+    {
+    public:
+        typedef typename Value<TMatches>::Type                    TMatch;
+        typedef typename Size<TGenome>::Type                    TSize;
+        typedef VerifierToken<TGenome, TReadSet, TOptionSpec>    TToken;
+        typedef typename RazerSOptions<TOptionSpec>::TMutex        TMutex;
+        typedef RazerSOptions<TOptionSpec>                        TOptions;
 
-		~VerificationPipe()
-		{
-			typename TMutex::scoped_lock lock(options.optionsMutex);
-			options.FP += FP;
-			options.TP += TP;
-		}
+        TMatches                &matches;
+        TVerificationPatterns    &verificationPatterns;
+        TOptions                &options;
+        __int64                    FP;
+        __int64                    TP;
 
-		void * operator () (void *_token)
-		{
-			TToken &token = *reinterpret_cast<TToken*>(_token);
-			typename TMutex::scoped_lock lock(options.patternMutex[token.rseqNo]);
+
+        VerificationPipe(TMatches &_matches, TVerificationPatterns &_verificationPatterns, TOptions &_options):
+            tbb::filter(parallel),
+            matches(_matches),
+            verificationPatterns(_verificationPatterns),
+            options(_options),
+            FP(0),
+            TP(0) {}
+
+        ~VerificationPipe()
+        {
+            typename TMutex::scoped_lock lock(options.optionsMutex);
+            options.FP += FP;
+            options.TP += TP;
+        }
+
+        void * operator () (void *_token)
+        {
+            TToken &token = *reinterpret_cast<TToken*>(_token);
+            typename TMutex::scoped_lock lock(options.patternMutex[token.rseqNo]);
 /*
-		::std::cout<<"Verify: "<<::std::endl;
-		::std::cout<<"Genome: "<<token.genomeInf<<"\t" << beginPosition(token.genomeInf) << "," << endPosition(token.genomeInf) << ::std::endl;
-		::std::cout<<"Read:   "<<(*token.readSet)[token.rseqNo]<<::std::endl;
-*/	        
-			TMatch m;
-			if (matchVerify(m, token.genomeInf, token.rseqNo, *token.readSet, verificationPatterns, options, TSwiftSpec()))
-			{
-				// transform coordinates to the forward strand
-				if (token.orientation == 'R') 
-				{
-					TSize gLength = length(host(token.genomeInf));
-					TSize temp = m.gBegin;
-					m.gBegin = gLength - m.gEnd;
-					m.gEnd = gLength - temp;
-				}
-				m.rseqNo = token.rseqNo;
-				m.gseqNo = token.gseqNo;
-				m.orientation = token.orientation;
+        ::std::cout<<"Verify: "<<::std::endl;
+        ::std::cout<<"Genome: "<<token.genomeInf<<"\t" << beginPosition(token.genomeInf) << "," << endPosition(token.genomeInf) << ::std::endl;
+        ::std::cout<<"Read:   "<<(*token.readSet)[token.rseqNo]<<::std::endl;
+*/
+            TMatch m;
+            if (matchVerify(m, token.genomeInf, token.rseqNo, *token.readSet, verificationPatterns, options, TSwiftSpec()))
+            {
+                // transform coordinates to the forward strand
+                if (token.orientation == 'R')
+                {
+                    TSize gLength = length(host(token.genomeInf));
+                    TSize temp = m.gBegin;
+                    m.gBegin = gLength - m.gEnd;
+                    m.gEnd = gLength - temp;
+                }
+                m.rseqNo = token.rseqNo;
+                m.gseqNo = token.gseqNo;
+                m.orientation = token.orientation;
 
-				if (!options.spec.DONT_DUMP_RESULTS)
-				{
-					typename TMutex::scoped_lock lock(options.matchMutex);
-					appendValue(matches, m);
-					if (length(matches) > options.compactThresh)
-					{
-						typename Size<TMatches>::Type oldSize = length(matches);
-						maskDuplicates(matches);
-						compactMatches(matches, options);
-						options.compactThresh += (options.compactThresh >> 1);
-						if (options._debugLevel >= 2)
-							::std::cerr << '(' << oldSize - length(matches) << " matches removed)";
-					}
-				}
+                if (!options.spec.DONT_DUMP_RESULTS)
+                {
+                    typename TMutex::scoped_lock lock(options.matchMutex);
+                    appendValue(matches, m);
+                    if (length(matches) > options.compactThresh)
+                    {
+                        typename Size<TMatches>::Type oldSize = length(matches);
+                        maskDuplicates(matches);
+                        compactMatches(matches, options);
+                        options.compactThresh += (options.compactThresh >> 1);
+                        if (options._debugLevel >= 2)
+                            ::std::cerr << '(' << oldSize - length(matches) << " matches removed)";
+                    }
+                }
 
-				++TP;
-			} else
-				++FP;
+                ++TP;
+            } else
+                ++FP;
 
-			return NULL;
-		}
-	};
+            return NULL;
+        }
+    };
 
 
 //////////////////////////////////////////////////////////////////////////////
 // Find read matches in one genome sequence
 template <
-	typename TMatches, 
-	typename TGenome,
-	typename TReadIndex, 
-	typename TSwiftSpec, 
-	typename TVerifier,
-	typename TOptionSpec >
+    typename TMatches,
+    typename TGenome,
+    typename TReadIndex,
+    typename TSwiftSpec,
+    typename TVerifier,
+    typename TOptionSpec >
 void findReads(
-	TMatches &matches,				// resulting matches
-	TGenome &genome,				// genome ...
-	unsigned gseqNo,				// ... and its sequence number
-	Pattern<TReadIndex, Swift<TSwiftSpec> > &swiftPattern,
-	TVerifier &forwardPatterns,
-	char orientation,				// q-gram index of reads
-	RazerSOptions<TOptionSpec> &options)
+    TMatches &matches,                // resulting matches
+    TGenome &genome,                // genome ...
+    unsigned gseqNo,                // ... and its sequence number
+    Pattern<TReadIndex, Swift<TSwiftSpec> > &swiftPattern,
+    TVerifier &forwardPatterns,
+    char orientation,                // q-gram index of reads
+    RazerSOptions<TOptionSpec> &options)
 {
-	typedef typename Fibre<TReadIndex, FibreText>::Type	TReadSet;
-	typedef typename Size<TGenome>::Type					TSize;
-	typedef typename Value<TMatches>::Type					TMatch;
+    typedef typename Fibre<TReadIndex, FibreText>::Type    TReadSet;
+    typedef typename Size<TGenome>::Type                    TSize;
+    typedef typename Value<TMatches>::Type                    TMatch;
 
-	// FILTRATION
-	typedef Finder<TGenome, Swift<TSwiftSpec> >				TSwiftFinder;
-	typedef Pattern<TReadIndex, Swift<TSwiftSpec> >			TSwiftPattern;
+    // FILTRATION
+    typedef Finder<TGenome, Swift<TSwiftSpec> >                TSwiftFinder;
+    typedef Pattern<TReadIndex, Swift<TSwiftSpec> >            TSwiftPattern;
 
-	// iterate all genomic sequences
-	if (options._debugLevel >= 1)
-	{
-		::std::cerr << ::std::endl << "Process genome seq #" << gseqNo;
-		if (orientation == 'F')
-			::std::cerr << "[fwd]";
-		else
-			::std::cerr << "[rev]";
-	}
+    // iterate all genomic sequences
+    if (options._debugLevel >= 1)
+    {
+        ::std::cerr << ::std::endl << "Process genome seq #" << gseqNo;
+        if (orientation == 'F')
+            ::std::cerr << "[fwd]";
+        else
+            ::std::cerr << "[rev]";
+    }
 
-	tbb::pipeline pipeline;
+    tbb::pipeline pipeline;
 
-	FiltrationPipe<
-		TGenome,
+    FiltrationPipe<
+        TGenome,
         TSwiftFinder,
-		TSwiftPattern,
-		TOptionSpec > filtrationPipe(genome, swiftPattern, gseqNo, orientation, options);
+        TSwiftPattern,
+        TOptionSpec > filtrationPipe(genome, swiftPattern, gseqNo, orientation, options);
     pipeline.add_filter(filtrationPipe);
 
-	VerificationPipe<
-		TMatches,
-		TGenome,
-		TReadSet,
-		TVerifier,
-		TOptionSpec,
-		TSwiftSpec > verificationPipe(matches, forwardPatterns, options);
-	pipeline.add_filter(verificationPipe);
-    
-	pipeline.run(filtrationPipe.nTokens);
-	pipeline.clear();
+    VerificationPipe<
+        TMatches,
+        TGenome,
+        TReadSet,
+        TVerifier,
+        TOptionSpec,
+        TSwiftSpec > verificationPipe(matches, forwardPatterns, options);
+    pipeline.add_filter(verificationPipe);
+
+    pipeline.run(filtrationPipe.nTokens);
+    pipeline.clear();
 }
 
 }

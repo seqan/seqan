@@ -29,10 +29,10 @@ using namespace seqan;
 template <typename TColumnAlphabet, typename TAlignedReadStoreElement, typename TPosition>
 struct GraphCargo {
     typedef typename Id < TAlignedReadStoreElement >::Type TId;
-    
+
     // condensed information of the corresponding reads
     TAlignedReadStoreElement alignedRead;
-    
+
     // derived information for the "candidate" columns
     typedef Pair< TPosition , TColumnAlphabet> TColumnInfo;
     typedef String< TColumnInfo > TColumns;
@@ -41,7 +41,7 @@ struct GraphCargo {
     TColumns spanned_columns;
 
     GraphCargo() {}
-    GraphCargo(GraphCargo const& other) 
+    GraphCargo(GraphCargo const& other)
     {
         alignedRead = other.alignedRead;
         spanned_columns = other.spanned_columns;
@@ -49,16 +49,16 @@ struct GraphCargo {
 };
 
 //////////////////////////////////////////////////////////////////////////////
-// for compatibility 
+// for compatibility
 template <typename TColumnAlphabet, typename TAlignedReadStoreElement, typename TPosition>
-typename Id< GraphCargo<TColumnAlphabet,TAlignedReadStoreElement,TPosition> >::Type & 
+typename Id< GraphCargo<TColumnAlphabet,TAlignedReadStoreElement,TPosition> >::Type &
 id(GraphCargo<TColumnAlphabet, TAlignedReadStoreElement,TPosition> & me)
 {
     return me.alignedRead.readId;
 }
 
 template <typename TColumnAlphabet, typename TAlignedReadStoreElement, typename TPosition>
-typename Id< GraphCargo<TColumnAlphabet, TAlignedReadStoreElement,TPosition> >::Type const & 
+typename Id< GraphCargo<TColumnAlphabet, TAlignedReadStoreElement,TPosition> >::Type const &
 id(GraphCargo<TColumnAlphabet, TAlignedReadStoreElement,TPosition> const & me)
 {
     return me.alignedRead.readId;
@@ -78,8 +78,8 @@ _sequenceCharacter(GraphCargo<TColumnAlphabet, TAlignedReadStoreElement,TPositio
 template <typename TColumnAlphabet, typename TAlignedReadStoreElement, typename TPosition>
 void addColumn(GraphCargo<TColumnAlphabet, TAlignedReadStoreElement,TPosition> & me, TPosition pos, TColumnAlphabet col)
 {
-	typedef typename GraphCargo<TColumnAlphabet,TAlignedReadStoreElement,TPosition>::TColumnInfo TCargoColumnInfo;
-	TCargoColumnInfo col_info(pos,col);
+    typedef typename GraphCargo<TColumnAlphabet,TAlignedReadStoreElement,TPosition>::TColumnInfo TCargoColumnInfo;
+    TCargoColumnInfo col_info(pos,col);
     appendValue(me.spanned_columns, col_info);
 }
 
@@ -157,7 +157,7 @@ getCargo(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition> & me, ty
 
 template<typename TColumnAlphabet, typename TAlignedReadStoreElement, typename TPosition>
 inline typename ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition>::TVertexDescriptor const
-getVertex(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition> & me, typename ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition>::TId readId) 
+getVertex(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition> & me, typename ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition>::TId readId)
 {
     if( hasRead(me, readId) )
     {
@@ -166,23 +166,23 @@ getVertex(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition> & me, t
     else
     {
         return 0;
-    }    
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TColumnAlphabet, typename TAlignedReadStoreElement, typename TPosition>
 inline GraphCargo<TColumnAlphabet,TAlignedReadStoreElement, TPosition> &
-registerRead(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition> & me, typename ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition>::TId readId) 
+registerRead(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition> & me, typename ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition>::TId readId)
 {
     typedef typename ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition>::TVertexDescriptor TVertexDescriptor;
 
-    if( hasRead(me, readId) ) 
+    if( hasRead(me, readId) )
     {
         // readId is already registered -> do nothing, just return cargo
         return getCargo(me, readId);
     }
-    else 
+    else
     {
         TVertexDescriptor vd = addVertex(me.graph);
         GraphCargo<TColumnAlphabet,TAlignedReadStoreElement,TPosition> new_cargo;
@@ -201,18 +201,18 @@ registerRead(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition> & me
 
 template<typename TColumnAlphabet, typename TAlignedReadStoreElement, typename TPosition>
 inline void
-addEdge(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition> & me, 
-             typename ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition>::TId readId1, 
+addEdge(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition> & me,
+             typename ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition>::TId readId1,
              typename ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition>::TId readId2)
 {
     typedef typename ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition>::TVertexDescriptor TVertexDescriptor;
-    
+
     TVertexDescriptor vd_readId1 = me.idVertexMap[readId1];
     TVertexDescriptor vd_readId2 = me.idVertexMap[readId2];
 
     // check if this edge already exists
     if(findEdge(me.graph, vd_readId1 , vd_readId2) == 0)
-    {    
+    {
       addEdge(me.graph, vd_readId1 , vd_readId2);
     }
 }
@@ -243,7 +243,7 @@ getEdgeScore(ReadGraph<TColumnAlphabet, TAlignedReadStoreElement, TPosition> & m
 
 template<typename TColumnAlphabet, typename TAlignedReadStoreElement, typename TPosition>
 inline typename ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition>::TSize const
-numVertices(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition> & me) 
+numVertices(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition> & me)
 {
     return numVertices(me.graph);
 }
@@ -252,7 +252,7 @@ numVertices(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition> & me)
 
 template<typename TColumnAlphabet, typename TAlignedReadStoreElement, typename TPosition>
 inline typename ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition>::TSize const
-numEdges(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition> & me) 
+numEdges(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement, TPosition> & me)
 {
     return numEdges(me.graph);
 }
