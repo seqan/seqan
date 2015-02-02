@@ -161,16 +161,16 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * Most of the @link Index @endlink fibres are strings. The @link String
  * @endlink specialization type is chosen by this meta-function.
- */    
+ */
 
     template <typename TObject>
     struct DefaultIndexStringSpec : StringSpec<TObject> {};
 
 
 //////////////////////////////////////////////////////////////////////////////
-template < 
-        typename TObject, 
-        typename TSpec = typename DefaultIndexSpec<TObject>::Type > 
+template <
+        typename TObject,
+        typename TSpec = typename DefaultIndexSpec<TObject>::Type >
     class Index;
 
 /*!
@@ -181,7 +181,7 @@ template <
  *
  * @signature class Index<TText[, TSpec]>;
  *
- * @tparam TSpec The index type. 
+ * @tparam TSpec The index type.
  * @tparam TText The text type. Types: @link String @endlink, @link StringSet @endlink
  *
  *
@@ -212,7 +212,7 @@ template <
  *
  * Note that you can also use specialized iterators such as:
  *
- * @code{.cpp} 
+ * @code{.cpp}
  * Iterator<TIndex, TopDown<ParentLinks<PreOrder> > >::Type
  * @endcode
  *
@@ -249,7 +249,7 @@ template <
  *
  * @tparam TSpec Tag to specify the fibre. Types: @link IndexEsaFibres @endlink, @link FMIndexFibres @endlink, @link
  *               QGramIndexFibres @endlink, @link WOTDIndexFibres @endlink, @link WaveletTreeFibres @endlink, @link
- *               RightArrayBinaryTreeFibres @endlink, @link RankDictionaryFibres @endlink, @link 
+ *               RightArrayBinaryTreeFibres @endlink, @link RankDictionaryFibres @endlink, @link
  *               SentinelRankDictionaryFibres @endlink
  * @tparam TObject The container type. Types: @link Index @endlink, @link RankDictionary @endlink, @link SparseString
  *                 @endlink, @link CompressedSA @endlink
@@ -315,7 +315,7 @@ template <
 
 //////////////////////////////////////////////////////////////////////////////
 
-    template < 
+    template <
         typename TSA,
         typename TText,
         typename TAlgSpec >
@@ -326,7 +326,7 @@ template <
         typedef typename And<TRandomText,TRandomSA>::Type Type;
     };
 
-    template < 
+    template <
         typename TLCP,
         typename TText,
         typename TSA,
@@ -451,8 +451,8 @@ template <
  * };
  * @endcode
  * @see orderOccurrences
- */ 
-    
+ */
+
     template <typename TObject>
     struct SAValue:
         Position<TObject> {};
@@ -473,7 +473,7 @@ template <
         typedef Pair<
             typename Size< StringSet<TString, TSpec> >::Type,
             typename SAValue<TString>::Type,
-            BitPacked<2,30>                            // max. 4 sequences 
+            BitPacked<2,30>                            // max. 4 sequences
         > Type;                                        // max. 2^30 characters each
     };
 */
@@ -490,7 +490,7 @@ template <
     template < typename TText, typename TSpec >
     struct Value< Index<TText, TSpec> > {
         typedef typename Value<
-            typename Fibre< Index<TText, TSpec>, FibreRawText>::Type 
+            typename Fibre< Index<TText, TSpec>, FibreRawText>::Type
         >::Type Type;
     };
 
@@ -531,7 +531,7 @@ template <
 
     template < typename TObject, typename TSpec, typename TFibre >
     struct Fibre< Index<TObject, TSpec>, Tag<TFibre> const > {
-        typedef String< 
+        typedef String<
             typename Size< Index<TObject, TSpec> >::Type,
             typename StringSpec< Index<TObject, TSpec> >::Type
         > Type;
@@ -622,12 +622,12 @@ template <
         public Fibre< Index<TString, TSpec> const, FibreSA> {};
 
     template < typename TString, typename TSSetSpec, typename TSpec >
-    struct Fibre< Index<StringSet<TString, TSSetSpec>, TSpec>, FibreRawSA> 
+    struct Fibre< Index<StringSet<TString, TSSetSpec>, TSpec>, FibreRawSA>
     {
         typedef Index< StringSet<TString, TSSetSpec>, TSpec> TIndex;
         typedef ModifiedString<
             typename Fibre<TIndex, FibreSA>::Type,
-            ModView< FunctorGlobalize< 
+            ModView< FunctorGlobalize<
                 typename Value< typename Fibre<TIndex, FibreSA>::Type >::Type,
                 typename StringSetLimits<TString>::Type >
             >
@@ -635,12 +635,12 @@ template <
     };
 */
     template < typename TText, typename TSpec >
-    struct Fibre< Index<TText, TSpec>, FibreRawSA> 
+    struct Fibre< Index<TText, TSpec>, FibreRawSA>
     {
         typedef Index<TText, TSpec> TIndex;
         typedef ModifiedString<
             typename Fibre<TIndex, FibreSA>::Type,
-            ModView< FunctorGlobalize< 
+            ModView< FunctorGlobalize<
                 typename Value< typename Fibre<TIndex, FibreSA>::Type >::Type,
                 typename StringSetLimits<TText>::Type >
             >
@@ -727,12 +727,12 @@ template <
  */
 
     template <typename TText, typename TSpec>
-    inline typename Fibre<Index<TText, TSpec>, FibreText>::Type & 
+    inline typename Fibre<Index<TText, TSpec>, FibreText>::Type &
     getFibre(Index<TText, TSpec> &index, FibreText) {
         return value(index.text);
     }
     template <typename TText, typename TSpec>
-    inline typename Fibre<Index<TText, TSpec> const, FibreText>::Type & 
+    inline typename Fibre<Index<TText, TSpec> const, FibreText>::Type &
     getFibre(Index<TText, TSpec> const &index, FibreText) {
         return value(index.text);
     }
@@ -740,12 +740,12 @@ template <
 //////////////////////////////////////////////////////////////////////////////
 
     template <typename TText, typename TSpec>
-    inline typename Fibre<Index<TText, TSpec>, FibreRawText>::Type & 
+    inline typename Fibre<Index<TText, TSpec>, FibreRawText>::Type &
     getFibre(Index<TText, TSpec> &index, FibreRawText) {
         return concat(getFibre(index, FibreText()));
     }
     template <typename TText, typename TSpec>
-    inline typename Fibre<Index<TText, TSpec> const, FibreRawText>::Type & 
+    inline typename Fibre<Index<TText, TSpec> const, FibreRawText>::Type &
     getFibre(Index<TText, TSpec> const &index, FibreRawText) {
         return concat(getFibre(index, FibreText()));
     }
@@ -779,22 +779,22 @@ template <
 //////////////////////////////////////////////////////////////////////////////
 /*
     template <typename TText, typename TSpec>
-    inline typename Fibre<Index<TText, TSpec>, FibreRawSA>::Type const & 
+    inline typename Fibre<Index<TText, TSpec>, FibreRawSA>::Type const &
     getFibre(Index<TText, TSpec> &index, FibreRawSA) {
         return indexSA(index);
     }
 
     template <typename TString, typename TSSetSpec, typename TSpec>
     inline typename Fibre<Index<StringSet<TString, TSSetSpec>, TSpec>, FibreRawSA>::Type
-    getFibre(Index<StringSet<TString, TSSetSpec>, TSpec> &index, FibreRawSA) 
+    getFibre(Index<StringSet<TString, TSSetSpec>, TSpec> &index, FibreRawSA)
     {
         typedef Index< StringSet<TString, TSSetSpec>, TSpec> TIndex;
-        
+
         typedef FunctorGlobalize<
             typename Value< typename Fibre<TIndex, FibreSA>::Type >::Type,
             typename StringSetLimits<StringSet<TString, TSSetSpec> >::Type
         > TFunctor;
-        
+
         typedef ModifiedString<
             typename Fibre<Index<StringSet<TString, TSSetSpec>, TSpec>, FibreSA>::Type,
             ModView< TFunctor >
@@ -806,15 +806,15 @@ template <
 
     template <typename TText, typename TSpec>
     inline typename Fibre<Index<TText, TSpec>, FibreRawSA>::Type
-    getFibre(Index<TText, TSpec> &index, FibreRawSA) 
+    getFibre(Index<TText, TSpec> &index, FibreRawSA)
     {
         typedef Index<TText, TSpec> TIndex;
-        
+
         typedef FunctorGlobalize<
             typename Value< typename Fibre<TIndex, FibreSA>::Type >::Type,
             typename StringSetLimits<TText>::Type
         > TFunctor;
-        
+
         typedef ModifiedString<
             typename Fibre<Index<TText, TSpec>, FibreSA>::Type,
             ModView< TFunctor >
@@ -838,12 +838,12 @@ template <
 //////////////////////////////////////////////////////////////////////////////
 
     template <typename TText, typename TSpec>
-    inline typename Fibre<Index<TText, TSpec>, FibreLcpe>::Type & 
+    inline typename Fibre<Index<TText, TSpec>, FibreLcpe>::Type &
     getFibre(Index<TText, TSpec> &index, FibreLcpe) {
         return index.lcpe;
     }
     template <typename TText, typename TSpec>
-    inline typename Fibre<Index<TText, TSpec> const, FibreLcpe>::Type & 
+    inline typename Fibre<Index<TText, TSpec> const, FibreLcpe>::Type &
     getFibre(Index<TText, TSpec> const &index, FibreLcpe) {
         return index.lcpe;
     }
@@ -851,12 +851,12 @@ template <
 //////////////////////////////////////////////////////////////////////////////
 
     template <typename TText, typename TSpec>
-    SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec>, FibreChildtab>::Type & 
+    SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec>, FibreChildtab>::Type &
     getFibre(Index<TText, TSpec> &index, FibreChildtab) {
         return index.childtab;
     }
     template <typename TText, typename TSpec>
-    SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreChildtab>::Type & 
+    SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreChildtab>::Type &
     getFibre(Index<TText, TSpec> const &index, FibreChildtab) {
         return index.childtab;
     }
@@ -864,12 +864,12 @@ template <
 //////////////////////////////////////////////////////////////////////////////
 
     template <typename TText, typename TSpec>
-    SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec>, FibreBwt>::Type & 
+    SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec>, FibreBwt>::Type &
     getFibre(Index<TText, TSpec> &index, FibreBwt) {
         return index.bwt;
     }
     template <typename TText, typename TSpec>
-    SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreBwt>::Type & 
+    SEQAN_HOST_DEVICE inline typename Fibre<Index<TText, TSpec> const, FibreBwt>::Type &
     getFibre(Index<TText, TSpec> const &index, FibreBwt) {
         return index.bwt;
     }
@@ -901,7 +901,7 @@ template <
  */
 
     template <typename TText, typename TSpec>
-    SEQAN_HOST_DEVICE inline typename Size<Index<TText, TSpec> >::Type 
+    SEQAN_HOST_DEVICE inline typename Size<Index<TText, TSpec> >::Type
     length(Index<TText, TSpec> const &index) {
         return length(indexRawText(index));
     }
@@ -935,7 +935,7 @@ template <
  */
 
     template <typename TText, typename TSpec>
-    inline typename Size<TText>::Type 
+    inline typename Size<TText>::Type
     countSequences(Index<TText, TSpec> const &index) {
         return countSequences(indexText(index));
     }
@@ -973,7 +973,7 @@ template <
 //////////////////////////////////////////////////////////////////////////////
 // TODO(singer): Since this is a public function it should be documented
     template <typename TSeqNo, typename TText, typename TSpec>
-    SEQAN_HOST_DEVICE inline typename Size<Index<TText, TSpec> >::Type 
+    SEQAN_HOST_DEVICE inline typename Size<Index<TText, TSpec> >::Type
     sequenceLength(TSeqNo seqNo, Index<TText, TSpec> const &index) {
         return sequenceLength(seqNo, indexText(index));
     }
@@ -981,14 +981,14 @@ template <
 //////////////////////////////////////////////////////////////////////////////
 // TODO(singer): Since this is a public function it should be documented
     template <typename TPos, typename TText, typename TSpec>
-    SEQAN_HOST_DEVICE inline typename Size<Index<TText, TSpec> >::Type 
+    SEQAN_HOST_DEVICE inline typename Size<Index<TText, TSpec> >::Type
     suffixLength(TPos pos, Index<TText, TSpec> const &index)
     {
         return length(indexText(index)) - pos;
     }
 
     template <typename TPos, typename TString, typename TSSetSpec, typename TSpec>
-    SEQAN_HOST_DEVICE inline typename Size<Index<StringSet<TString, TSSetSpec>, TSpec> >::Type 
+    SEQAN_HOST_DEVICE inline typename Size<Index<StringSet<TString, TSSetSpec>, TSpec> >::Type
     suffixLength(TPos pos, Index<StringSet<TString, TSSetSpec>, TSpec> const &index)
     {
         typename StringSetLimits<StringSet<TString, TSSetSpec> >::Type const &limits = stringSetLimits(index);
@@ -1011,22 +1011,22 @@ template <
  */
 
     template <typename TPos, typename TIndex>
-    inline typename Reference<typename Fibre<TIndex, FibreRawText>::Type>::Type 
+    inline typename Reference<typename Fibre<TIndex, FibreRawText>::Type>::Type
     textAt(TPos i, TIndex &index) {
         return value(getFibre(index, FibreRawText()), i);
     }
     template <typename TPos, typename TString, typename TSSetSpec, typename TSpec>
-    inline typename Reference<typename Fibre< Index< StringSet<TString, TSSetSpec>, TSpec>, FibreRawText>::Type>::Type 
+    inline typename Reference<typename Fibre< Index< StringSet<TString, TSSetSpec>, TSpec>, FibreRawText>::Type>::Type
     textAt(TPos i, Index< StringSet<TString, TSSetSpec>, TSpec> &index) {
         return value(getFibre(index, FibreRawText()), posGlobalize(i, stringSetLimits(index)));
     }
     template <typename TPos, typename TString, typename TSSetSpec, typename TSpec>
-    inline typename Reference<typename Fibre< Index< StringSet<TString, TSSetSpec>, TSpec> const, FibreRawText>::Type>::Type 
+    inline typename Reference<typename Fibre< Index< StringSet<TString, TSSetSpec>, TSpec> const, FibreRawText>::Type>::Type
     textAt(TPos i, Index< StringSet<TString, TSSetSpec>, TSpec> const &index) {
         return value(getFibre(index, FibreRawText()), posGlobalize(i, stringSetLimits(index)));
     }
     template <typename TPos, typename TString, typename TSpec>
-    inline typename Reference<typename Fibre< Index< StringSet<TString, Owner<Default> >, TSpec>, FibreRawText>::Type>::Type 
+    inline typename Reference<typename Fibre< Index< StringSet<TString, Owner<Default> >, TSpec>, FibreRawText>::Type>::Type
     textAt(TPos i, Index< StringSet<TString, Owner<Default> >, TSpec> &index) {
         Pair <
             typename Size< StringSet<TString, Owner<Default> > >::Type,
@@ -1035,7 +1035,7 @@ template <
         return value(value(getFibre(index, FibreText()), getValueI1(locPos)), getValueI2(locPos));
     }
     template <typename TPos, typename TString, typename TSpec>
-    inline typename Reference<typename Fibre< Index< StringSet<TString, Owner<Default> >, TSpec> const, FibreRawText>::Type>::Type 
+    inline typename Reference<typename Fibre< Index< StringSet<TString, Owner<Default> >, TSpec> const, FibreRawText>::Type>::Type
     textAt(TPos i, Index< StringSet<TString, Owner<Default> >, TSpec> const &index) {
         Pair <
         typename Size< StringSet<TString, Owner<Default> > >::Type,
@@ -1207,9 +1207,9 @@ template <
  * @fn IndexEsa#childAt
  * @headerfile <seqan/index.h>
  * @brief Shortcut for <tt>value(indexChildtab(..), ..)</tt>.
- * 
+ *
  * @signature TValue childAt(position, index);
- * 
+ *
  * @param[in] position A position in the array on which the value should be accessed.
  * @param[in] index    The @link IndexEsa @endlink object holding the fibre.
  *
@@ -1230,12 +1230,12 @@ template <
  * @fn IndexEsa#bwtAt
  * @headerfile <seqan/index.h>
  * @brief Shortcut for <tt>value(indexBwt(..), ..)</tt>.
- * 
+ *
  * @signature TValue bwtAt(position, index);
- * 
+ *
  * @param[in] index    The @link IndexEsa @endlink object holding the fibre.
  * @param[in] position A position in the array on which the value should be accessed.
- * 
+ *
  * @return TValue A reference or proxy to the value.
  */
 
@@ -1308,26 +1308,26 @@ template <
 
     template <typename TText, typename TSpec>
     SEQAN_HOST_DEVICE inline typename StringSetLimits<TText const>::Type
-    stringSetLimits(Index<TText, TSpec> &) { 
-        return Nothing(); 
+    stringSetLimits(Index<TText, TSpec> &) {
+        return Nothing();
     }
 
     template <typename TText, typename TSpec>
     SEQAN_HOST_DEVICE inline typename StringSetLimits<TText const>::Type
-    stringSetLimits(Index<TText, TSpec> const &) { 
-        return Nothing(); 
+    stringSetLimits(Index<TText, TSpec> const &) {
+        return Nothing();
     }
 
     template <typename TString, typename TSSetSpec, typename TSpec>
-    SEQAN_HOST_DEVICE inline typename StringSetLimits< StringSet<TString, TSSetSpec> const >::Type & 
+    SEQAN_HOST_DEVICE inline typename StringSetLimits< StringSet<TString, TSSetSpec> const >::Type &
     stringSetLimits(Index<StringSet<TString, TSSetSpec>, TSpec> &index) {
-        return stringSetLimits(indexText(index)); 
+        return stringSetLimits(indexText(index));
     }
 
     template <typename TString, typename TSSetSpec, typename TSpec>
-    SEQAN_HOST_DEVICE inline typename StringSetLimits< StringSet<TString, TSSetSpec> const >::Type & 
+    SEQAN_HOST_DEVICE inline typename StringSetLimits< StringSet<TString, TSSetSpec> const >::Type &
     stringSetLimits(Index<StringSet<TString, TSSetSpec>, TSpec> const &index) {
-        return stringSetLimits(indexText(index)); 
+        return stringSetLimits(indexText(index));
     }
 
     template <typename TString, typename TSSetSpec, typename TSpec>
@@ -1335,7 +1335,7 @@ template <
     stringSetLimits(Index<StringSet<TString, TSSetSpec> const, TSpec> &index) {
         return stringSetLimits(indexText(index));
     }
-    
+
     template <typename TString, typename TSSetSpec, typename TSpec>
     inline typename StringSetLimits< StringSet<TString, TSSetSpec> const >::Type &
     stringSetLimits(Index<StringSet<TString, TSSetSpec> const, TSpec> const &index) {
@@ -1380,7 +1380,7 @@ template <
  * @brief Shortcut for <tt>getFibre(.., EsaSA)</tt>.
  *
  * @signature TSA indexSA(index);
- * 
+ *
  * @param[in] index The @link Index @endlink object holding the fibre.
  *
  * @return TSA A reference to the @link IndexEsaFibres#EsaSA @endlink fibre (suffix array).
@@ -1401,7 +1401,7 @@ template <
  * @brief Shortcut for <tt>getFibre(.., EsaRawSA)</tt>.
  *
  * @signature TSA indexRawSA(index);
- * 
+ *
  * @param[in] index The @link Index @endlink object holding the fibre.
  *
  * @return TSA A reference to the @link IndexEsaFibres#EsaRawSA @endlink fibre (suffix array).
@@ -1518,7 +1518,7 @@ template <
  * @param[in] mode The combination of flags defining how the file should be opened.To open a file read-only, write-only or
  *                 to read and write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or <tt>OPEN_RDWR</tt>.To create or
  *                 overwrite a file add <tt>OPEN_CREATE</tt>.To append a file if existing add <tt>OPEN_APPEND</tt>.To
- *                 circumvent problems, files are always opened in binary mode. 
+ *                 circumvent problems, files are always opened in binary mode.
  *                 Default: <tt>OPEN_RDWR | OPEN_CREATE | OPEN_APPEND</tt>.
  *
  * @return bool <tt>true</tt> on success and <tt>false</tt> otherwise.
@@ -1538,7 +1538,7 @@ template <
 // Function save
 // ----------------------------------------------------------------------------
 
-/*! 
+/*!
  * @fn Index#save
  * @headerfile <seqan/index.h>
  * @brief This functions saves an index to disk.
@@ -1550,7 +1550,7 @@ template <
  * @param[in] mode The combination of flags defining how the file should be opened.To open a file read-only, write-only or
  *                 to read and write use <tt>OPEN_RDONLY</tt>, <tt>OPEN_WRONLY</tt>, or <tt>OPEN_RDWR</tt>.To create or
  *                 overwrite a file add <tt>OPEN_CREATE</tt>.To append a file if existing add <tt>OPEN_APPEND</tt>.To
- *                 circumvent problems, files are always opened in binary mode. 
+ *                 circumvent problems, files are always opened in binary mode.
  *                 Default: <tt>OPEN_RDWR | OPEN_CREATE | OPEN_APPEND</tt>.
  *
  * @return bool <tt>true</tt> on success and <tt>false</tt> otherwise.

@@ -212,12 +212,12 @@ goBegin(ModifiedIterator<THost, ModReverse> & me,
 
 template <typename THost, typename TDelta>
 inline ModifiedIterator<THost, ModReverse> &
-operator+=(ModifiedIterator<THost, ModReverse> & me, TDelta delta_) 
+operator+=(ModifiedIterator<THost, ModReverse> & me, TDelta delta_)
 {
     typedef ModifiedIterator<THost, ModReverse> TIterator;
     typedef typename Position<TIterator>::Type TPosition;
     TPosition delta = delta_;
-    
+
     if (delta == 0)
     {
         return me;
@@ -239,7 +239,7 @@ operator+=(ModifiedIterator<THost, ModReverse> & me, TDelta delta_)
             ++delta;
         }
         host(me) -= delta;
-    } 
+    }
     return me;
 }
 
@@ -297,7 +297,7 @@ operator-(ModifiedIterator<THost, ModReverse> const & a,
 // --------------------------------------------------------------------------
 
 template <typename THost>
-inline typename Position<ModifiedIterator<THost, ModReverse> const>::Type 
+inline typename Position<ModifiedIterator<THost, ModReverse> const>::Type
 position(ModifiedIterator<THost, ModReverse> const & me)
 {
     if (cargo(me)._atEnd)
@@ -307,7 +307,7 @@ position(ModifiedIterator<THost, ModReverse> const & me)
 }
 
 template <typename THost, typename TContainer>
-inline typename Position<ModifiedIterator<THost, ModReverse> const>::Type 
+inline typename Position<ModifiedIterator<THost, ModReverse> const>::Type
 position(ModifiedIterator<THost, ModReverse> const & me, TContainer const &cont)
 {
     if (cargo(me)._atEnd)
@@ -395,14 +395,14 @@ atEnd(ModifiedIterator<THost, ModReverse> const & me)
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TPos>
-inline typename Reference<ModifiedString<THost, ModReverse> >::Type 
+inline typename Reference<ModifiedString<THost, ModReverse> >::Type
 value(ModifiedString<THost, ModReverse> & me, TPos pos)
 {
     return value(host(me), (length(host(me)) - 1) - pos);
 }
 
 template <typename THost, typename TPos>
-inline typename Reference<ModifiedString<THost, ModReverse> const>::Type 
+inline typename Reference<ModifiedString<THost, ModReverse> const>::Type
 value(ModifiedString<THost, ModReverse> const & me, TPos pos)
 {
     return value(host(me), (length(host(me)) - 1) - pos);
@@ -413,7 +413,7 @@ value(ModifiedString<THost, ModReverse> const & me, TPos pos)
 // --------------------------------------------------------------------------
 
 template < typename THost>
-inline typename Iterator< ModifiedString<THost, ModReverse> const >::Type 
+inline typename Iterator< ModifiedString<THost, ModReverse> const >::Type
 begin(ModifiedString<THost, ModReverse> const & me)
 {
     typename Iterator< ModifiedString<THost, ModReverse> const >::Type temp_(end(host(me), Rooted()));
@@ -423,7 +423,7 @@ begin(ModifiedString<THost, ModReverse> const & me)
 }
 
 template < typename THost >
-inline typename Iterator< ModifiedString<THost, ModReverse> >::Type 
+inline typename Iterator< ModifiedString<THost, ModReverse> >::Type
 begin(ModifiedString<THost, ModReverse> & me)
 {
     typename Iterator< ModifiedString<THost, ModReverse> >::Type temp_(end(host(me), Rooted()));
@@ -433,7 +433,7 @@ begin(ModifiedString<THost, ModReverse> & me)
 }
 
 template < typename THost, typename TTagSpec >
-inline typename Iterator< ModifiedString<THost, ModReverse> const, Tag<TTagSpec> const >::Type 
+inline typename Iterator< ModifiedString<THost, ModReverse> const, Tag<TTagSpec> const >::Type
 begin(ModifiedString<THost, ModReverse> const & me, Tag<TTagSpec> const)
 {
     typename Iterator< ModifiedString<THost, ModReverse> const, Tag<TTagSpec> const >::Type temp_(end(host(me), Rooted()));
@@ -443,7 +443,7 @@ begin(ModifiedString<THost, ModReverse> const & me, Tag<TTagSpec> const)
 }
 
 template < typename THost, typename TTagSpec >
-inline typename Iterator< ModifiedString<THost, ModReverse>, Tag<TTagSpec> const >::Type 
+inline typename Iterator< ModifiedString<THost, ModReverse>, Tag<TTagSpec> const >::Type
 begin(ModifiedString<THost, ModReverse> & me, Tag<TTagSpec> const)
 {
     typedef typename Iterator< ModifiedString<THost, ModReverse>, Tag<TTagSpec> const >::Type TIterator;
@@ -458,7 +458,7 @@ begin(ModifiedString<THost, ModReverse> & me, Tag<TTagSpec> const)
 // --------------------------------------------------------------------------
 
 template <typename THost >
-inline typename Iterator<ModifiedString<THost, ModReverse> const >::Type 
+inline typename Iterator<ModifiedString<THost, ModReverse> const >::Type
 end(ModifiedString<THost, ModReverse> const & me)
 {
     typename Iterator<ModifiedString<THost, ModReverse> const >::Type temp_(begin(host(me), Rooted()));
@@ -468,7 +468,7 @@ end(ModifiedString<THost, ModReverse> const & me)
 }
 
 template <typename THost >
-inline typename Iterator<ModifiedString<THost, ModReverse> >::Type 
+inline typename Iterator<ModifiedString<THost, ModReverse> >::Type
 end(ModifiedString<THost, ModReverse> & me)
 {
     typename Iterator<ModifiedString<THost, ModReverse> >::Type temp_(begin(host(me), Rooted()));
@@ -478,7 +478,7 @@ end(ModifiedString<THost, ModReverse> & me)
 }
 
 template <typename THost, typename TTagSpec >
-inline typename Iterator<ModifiedString<THost, ModReverse> const, Tag<TTagSpec> const>::Type 
+inline typename Iterator<ModifiedString<THost, ModReverse> const, Tag<TTagSpec> const>::Type
 end(ModifiedString<THost, ModReverse> const & me, Tag<TTagSpec> const)
 {
     typename Iterator<ModifiedString<THost, ModReverse> const, Tag<TTagSpec> const >::Type temp_(begin(host(me), Rooted()));
@@ -488,7 +488,7 @@ end(ModifiedString<THost, ModReverse> const & me, Tag<TTagSpec> const)
 }
 
 template <typename THost, typename TTagSpec >
-inline typename Iterator<ModifiedString<THost, ModReverse>, Tag<TTagSpec> const>::Type 
+inline typename Iterator<ModifiedString<THost, ModReverse>, Tag<TTagSpec> const>::Type
 end(ModifiedString<THost, ModReverse> & me, Tag<TTagSpec> const)
 {
     typename Iterator<ModifiedString<THost, ModReverse>, Tag<TTagSpec> const >::Type temp_(begin(host(me), Rooted()));
@@ -537,7 +537,7 @@ reverse(TSequence & sequence, Tag<TParallelTag> parallelTag)
 {
     typedef typename Position<TSequence>::Type              TPos;
     typedef typename Iterator<TSequence, Standard>::Type    TIter;
-    
+
     TIter itBeg = begin(sequence, Standard());
     TIter itEnd = end(sequence, Standard());
     Splitter<TPos> splitter(0, length(sequence) / 2, parallelTag);
@@ -590,7 +590,7 @@ reverse(TText & text)
 
 template < typename TText >
 inline void
-reverse(TText const & text) 
+reverse(TText const & text)
 {
     reverse(const_cast<TText &>(text), Parallel());
 }

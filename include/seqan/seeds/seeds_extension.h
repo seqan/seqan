@@ -144,7 +144,7 @@ enum ExtensionDirection
  * @fn Seed#extendSeed
  * @headerfile <seqan/seeds.h>
  * @brief Extends a seed.
- * 
+ *
  * @signature void extendSeed(seed, database, query, direction, MatchExtend);
  * @signature void extendSeed(seed, database, query, direction, scoringScheme, scoreDropOff, xDropTag);
  *
@@ -157,18 +157,18 @@ enum ExtensionDirection
  *                              value is exceeded.  Only given for when using an x-drop algorithm.
  * @param[in]     xDropTag      Tag for selecting x-drop method, one of <tt>UnGappedXDrop</tt> and
  *                              <tt>GappedXDrop</tt>.
- * 
+ *
  * You can use the tags, <tt>MatchExtend</tt>, <tt>UnGappedXDrop</tt>, and <tt>GappedXDrop</tt>.
- * 
+ *
  * Note that the diagonals updated in <tt>seed</tt> do not necessarily reflect the diagonals for the optimal extension
  * but the diagonals used in all traces of the extension.  However, they are guaranteed to include the optimal
  * extension's trace.
- * 
+ *
  * @section Examples
- * 
+ *
  * The documentation of the class @link Seed @endlink contains an example for
  * seed extension.
- * 
+ *
  * @see ExtensionDirection
  * @see SeedExtensionTags
  */
@@ -177,8 +177,8 @@ enum ExtensionDirection
 // common parts for simple and chained seeds.
 
 template <typename TConfig, typename TDatabase, typename TQuery>
-inline void 
-extendSeed(Seed<Simple, TConfig> & seed, 
+inline void
+extendSeed(Seed<Simple, TConfig> & seed,
            TDatabase const & database,
            TQuery const & query,
            ExtensionDirection direction,
@@ -188,7 +188,7 @@ extendSeed(Seed<Simple, TConfig> & seed,
     typedef Seed<Simple, TConfig> TSeed;
     typedef typename Position<TSeed>::Type TPosition;
     typedef typename Size<TSeed>::Type TSize;
-    
+
     // Extension to the left
     if (direction == EXTEND_LEFT || direction == EXTEND_BOTH)
     {
@@ -222,8 +222,8 @@ extendSeed(Seed<Simple, TConfig> & seed,
 
 
 template <typename TConfig, typename TDatabase, typename TQuery>
-inline void 
-extendSeed(Seed<ChainedSeed, TConfig> & seed, 
+inline void
+extendSeed(Seed<ChainedSeed, TConfig> & seed,
            TDatabase const & database,
            TQuery const & query,
            ExtensionDirection direction,
@@ -236,7 +236,7 @@ extendSeed(Seed<ChainedSeed, TConfig> & seed,
     typedef typename Value<TSeed>::Type TSeedDiagonal;
     typedef typename Position<TSeedDiagonal>::Type TPosition;
     typedef typename Size<TSeedDiagonal>::Type TSize;
-    
+
     // Extension to the left
     if (direction == EXTEND_LEFT || direction == EXTEND_BOTH)
     {
@@ -279,7 +279,7 @@ extendSeed(Seed<ChainedSeed, TConfig> & seed,
 // ---------------------------------------------------------------------------
 
 template <typename TConfig, typename TDatabase, typename TQuery, typename TScoreValue, typename TScoreSpec>
-inline void 
+inline void
 extendSeed(Seed<Simple, TConfig> & seed,
            TDatabase const & database,
            TQuery const & query,
@@ -295,7 +295,7 @@ extendSeed(Seed<Simple, TConfig> & seed,
     typedef Seed<ChainedSeed, TConfig> TSeed;
     typedef typename Position<TSeed>::Type TPosition;
     typedef typename Size<TSeed>::Type TSize;
-    
+
     // Extension to the left
     if (direction == EXTEND_LEFT || direction == EXTEND_BOTH)
     {
@@ -359,8 +359,8 @@ extendSeed(Seed<Simple, TConfig> & seed,
 
 
 template <typename TConfig, typename TDatabase, typename TQuery, typename TScoreValue, typename TScoreSpec>
-inline void 
-extendSeed(Seed<ChainedSeed, TConfig> & seed, 
+inline void
+extendSeed(Seed<ChainedSeed, TConfig> & seed,
            TDatabase const & database,
            TQuery const & query,
            ExtensionDirection direction,
@@ -376,7 +376,7 @@ extendSeed(Seed<ChainedSeed, TConfig> & seed,
     typedef typename Value<TSeed>::Type TSeedDiagonal;
     typedef typename Position<TSeedDiagonal>::Type TPosition;
     typedef typename Size<TSeedDiagonal>::Type TSize;
-    
+
     // Extension to the left
     if (direction == EXTEND_LEFT || direction == EXTEND_BOTH)
     {
@@ -776,8 +776,8 @@ _extendSeedGappedXDropOneDirection(
 }
 
 template <typename TConfig, typename TDatabase, typename TQuery, typename TScoreValue, typename TScoreSpec>
-inline void 
-extendSeed(Seed<Simple, TConfig> & seed, 
+inline void
+extendSeed(Seed<Simple, TConfig> & seed,
            TDatabase const & database,
            TQuery const & query,
            ExtensionDirection direction,
@@ -819,7 +819,7 @@ extendSeed(Seed<Simple, TConfig> & seed,
 
         typedef typename Suffix<TDatabase const>::Type TDatabaseSuffix;
         typedef typename Suffix<TQuery const>::Type TQuerySuffix;
-        
+
         TDatabaseSuffix databaseSuffix = suffix(database, endPositionH(seed));
         TQuerySuffix querySuffix = suffix(query, endPositionV(seed));
         // std::cout << "database = " << database << std::endl;
@@ -835,7 +835,7 @@ extendSeed(Seed<Simple, TConfig> & seed,
 
 
 template <typename TConfig, typename TDatabase, typename TQuery, typename TScoreValue, typename TScoreSpec>
-inline void 
+inline void
 extendSeed(Seed<ChainedSeed, TConfig> & /*seed*/,
            TDatabase const & /*database*/,
            TQuery const & /*query*/,

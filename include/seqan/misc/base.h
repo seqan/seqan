@@ -40,7 +40,7 @@ namespace SEQAN_NAMESPACE_MAIN
 {
 
     //////////////////////////////////////////////////////////////////////////////
-    // In SeqAn sets and maps store elements as pairs of (key,object) 
+    // In SeqAn sets and maps store elements as pairs of (key,object)
     // the elements of sets without objects are the keys.
     //////////////////////////////////////////////////////////////////////////////
 
@@ -56,7 +56,7 @@ namespace SEQAN_NAMESPACE_MAIN
 */
 /* moved to basic_aggregates
     template <typename TKey, typename TObject, typename TSpec>
-    struct Key< Pair<TKey, TObject, TSpec> > 
+    struct Key< Pair<TKey, TObject, TSpec> >
     {
         typedef TKey Type;
     };
@@ -80,8 +80,8 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
 
     template <typename TElement>
-    inline typename Key<TElement const>::Type & 
-    keyOf(TElement const & element) 
+    inline typename Key<TElement const>::Type &
+    keyOf(TElement const & element)
     {
         return element;
     }
@@ -97,7 +97,7 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
 
     template <typename TKey, typename TObject, typename TSpec>
-    inline TObject & 
+    inline TObject &
     objectOf(Pair<TKey, TObject, TSpec> &element) {
         return element.i2;
     }

@@ -133,7 +133,7 @@ _globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
         unsigned int temp, shift, currentBlock;
         unsigned int carryD0, carryHP, carryHN;
 
-        while (pos < len_x) 
+        while (pos < len_x)
         {
             // set vars
             carryD0 = carryHP = carryHN = 0;
@@ -141,45 +141,45 @@ _globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
 
             // computing first the top most block
             X = bitMask[shift] | VN[0];
-    
+
             temp = VP[0] + (X & VP[0]);
             carryD0 = temp < VP[0];
-            
+
             D0 = (temp ^ VP[0]) | X;
             HN = VP[0] & D0;
             HP = VN[0] | ~(VP[0] | D0);
-            
+
             // customized to compute edit distance
             X = (HP << 1) | 1;
             carryHP = HP >> (BLOCK_SIZE - 1);
-            
+
             VN[0] = X & D0;
 
             temp = (HN << 1);
             carryHN = HN >> (BLOCK_SIZE - 1);
-                                
+
              VP[0] = temp | ~(X | D0);
 
             // computing the necessary blocks, carries between blocks following one another are stored
             for (currentBlock = 1; currentBlock < blockCount; currentBlock++) {
                 X = bitMask[shift + currentBlock] | VN[currentBlock];
-        
+
                 temp = VP[currentBlock] + (X & VP[currentBlock]) + carryD0;
-                
+
                 carryD0 = ((carryD0) ? temp <= VP[currentBlock] : temp < VP[currentBlock]);
-            
+
                 D0 = (temp ^ VP[currentBlock]) | X;
                 HN = VP[currentBlock] & D0;
                 HP = VN[currentBlock] | ~(VP[currentBlock] | D0);
-                
+
                 X = (HP << 1) | carryHP;
                 carryHP = HP >> (BLOCK_SIZE-1);
-                
+
                 VN[currentBlock] = X & D0;
 
                 temp = (HN << 1) | carryHN;
                 carryHN = HN >> (BLOCK_SIZE - 1);
-                                    
+
                  VP[currentBlock] = temp | ~(X | D0);
             }
 

@@ -107,7 +107,7 @@ class Graph;
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TSpec>
-struct Spec<Graph<TSpec> > 
+struct Spec<Graph<TSpec> >
 {
     typedef TSpec Type;
 };
@@ -123,7 +123,7 @@ struct Spec<Graph<TSpec> const>
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TSpec>
-struct EdgeDescriptor<Graph<TSpec> > 
+struct EdgeDescriptor<Graph<TSpec> >
 {
     typedef typename EdgeType<Graph<TSpec> >::Type* Type;
 };
@@ -137,7 +137,7 @@ struct EdgeDescriptor<Graph<TSpec> const>
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TSpec>
-struct VertexDescriptor<Graph<TSpec> > 
+struct VertexDescriptor<Graph<TSpec> >
 {
     typedef typename Id<Graph<TSpec> >::Type Type;
 };
@@ -670,7 +670,7 @@ _getId(TId const id)
 template<typename TSpec, typename TVertexDescriptor>
 inline void
 _createVertices(Graph<TSpec>& g,
-                TVertexDescriptor const maxId) 
+                TVertexDescriptor const maxId)
 {
         // Create missing vertices
         while (maxId >= getIdUpperBound(g.data_id_managerV)) addVertex(g);
@@ -697,7 +697,7 @@ template<typename TSpec, typename TEdgeArray, typename TSize>
 inline void
 addEdges(Graph<TSpec>& dest,
          TEdgeArray const & edges,
-         TSize const size) 
+         TSize const size)
 {
     typedef typename VertexDescriptor<Graph<TSpec> >::Type TVertexDescriptor;
     for(TSize i=0;i<size;++i) {
@@ -718,7 +718,7 @@ addEdges(Graph<TSpec>& dest,
 
 template <typename TStream, typename TSpec>
 inline TStream &
-operator << (TStream & target, 
+operator << (TStream & target,
              Graph<TSpec> const& source)
 {
     typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());

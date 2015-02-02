@@ -311,7 +311,7 @@ _combineSeeds(Seed<ChainedSeed, TSeedConfig> & seed,
     // std::cout << "Merging chained seeds " << seed << " and " << other << std::endl;
     SEQAN_ASSERT_LEQ_MSG(beginPositionH(seed), beginPositionH(other), "Monotony in both dimensions required for merging.");
     SEQAN_ASSERT_LEQ_MSG(beginPositionV(seed), beginPositionV(other), "Monotony in both dimensions required for merging.");
-    
+
     _updateSeedsScoreMerge(seed, other);
 
     // Remove diagonals.

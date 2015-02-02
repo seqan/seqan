@@ -48,13 +48,13 @@ struct SVGFile
     Pair<int> cursor;
     Pair<int> size;
     String<CharString> style;
-    
+
     int dpSequence;
     int dpMatrix;
     int dpTrace;
-    
+
     int text;
-    
+
     int readForward;
     int readReverse;
     int readText;
@@ -63,10 +63,10 @@ struct SVGFile
 
     friend inline void svgWriteHeader(SVGFile &svg);
     friend inline void svgWriteFooter(SVGFile &svg);
-    
+
     friend inline bool open(SVGFile &svg, char const * fileName);
     friend inline bool close(SVGFile &svg);
-    
+
     SVGFile():
         cursor(0,0),
         size(0,0)
@@ -166,7 +166,7 @@ inline void svgWriteHeader(SVGFile &svg)
     svg.file << "    <marker id=\"startMarkerReverse\" markerWidth=\"10\" markerHeight=\"4\" style=\"overflow:visible\" orient=\"auto\" markerUnits=\"userSpaceOnUse\">" << std::endl;
     svg.file << "        <polyline points=\"-8,0 -9,-6 3,0 -9,6 -8,0\" fill=\"darkred\" />" << std::endl;
     svg.file << "    </marker>" << std::endl;
-    
+
     svg.file << " </defs>" << std::endl;
     svg.file << std::endl;
 }
@@ -232,7 +232,7 @@ writeValue(SVGFile *svg, TCharacter character)
 
 template <typename TContigGaps, typename TContigName>
 inline void _printContig(
-    SVGFile &svg, 
+    SVGFile &svg,
     AlignedReadLayout &,
     TContigGaps &contigGaps,
     TContigName const &contigName)
@@ -240,7 +240,7 @@ inline void _printContig(
     typedef typename Iterator<TContigGaps, Standard>::Type TContigIterator;
 
     TContigIterator cit = begin(contigGaps, Standard());
-    TContigIterator citEnd = end(contigGaps, Standard());    
+    TContigIterator citEnd = end(contigGaps, Standard());
     for (__int64 ofs = 0; cit != citEnd; ++cit, ++ofs)
     {
         if (!isGap(cit))
@@ -250,7 +250,7 @@ inline void _printContig(
                 svg.file << "<g transform=\"translate(" << ofs*20+2 << ',' << svg.cursor.i2*20+10 << ")\"><text y=\"0.3em\" " << svg.style[svg.rulerTextLabel] << '>';
                 svg.file << contigName << "</text></g>" << std::endl;
             }
-            
+
             __int64 seqPos = cit.current.seqPos + 1;
             if (seqPos % 5 == 0)
             {
@@ -261,7 +261,7 @@ inline void _printContig(
                         svg.file << "<g transform=\"translate(" << ofs*20+10 << ',' << svg.cursor.i2*20+10 << ")\"><text y=\"0.3em\" " << svg.style[svg.rulerTextTicks] << '>';
                         svg.file << seqPos << "</text></g>" << std::endl;
                     }
-                    
+
                     svg.file << "<line x1=\"" << ofs*20+10 << "\" x2=\"" << ofs*20+10 << "\" ";
                     svg.file << "y1=\"" << svg.cursor.i2*20+12 << "\" y2=\"" << svg.cursor.i2*20+15 << "\" ";
                 } else {
@@ -273,7 +273,7 @@ inline void _printContig(
         }
     }
     writeValue(&svg, '\n');
-    
+
     int savedStyle = svg.text;
     svg.text = svg.readText;
     svg << contigGaps;
@@ -282,8 +282,8 @@ inline void _printContig(
 
 template <typename TContigGaps, typename TReadGaps, typename TAlignedRead, typename TLine>
 inline void _printRead(
-    SVGFile &svg, 
-    AlignedReadLayout &layout, 
+    SVGFile &svg,
+    AlignedReadLayout &layout,
     TContigGaps &contigGaps,
     TReadGaps &readGaps,
     TAlignedRead &alignedRead,
@@ -299,7 +299,7 @@ inline void _printRead(
     const char *first;
     const char *second;
     __int64 ofs;
-    
+
     if (alignedRead.beginPos < alignedRead.endPos)
     {
         ofs = alignedRead.beginPos - svg.cursor.i1 + beginPosition(readGaps);
@@ -323,7 +323,7 @@ inline void _printRead(
         }
     }
     line = svg.cursor.i2 * 20 + 10;
-    
+
     if (length(layout.mateCoords) <= alignedRead.pairMatchId)
         resize(layout.mateCoords, alignedRead.pairMatchId + 1, Pair<int>(-1,-1));
     else
@@ -340,7 +340,7 @@ inline void _printRead(
             }
             __int64 dx = (b.i1 - a.i1);
             __int64 dy = (b.i2 - a.i2);
-            
+
             svg.file << "<path d=\"M " << a.i1 << ',' << a.i2;
             svg.file << " C " << a.i1+dy/10 << ',' << a.i2-dx/10;
             svg.file << ' ' << b.i1+dy/10 << ',' << b.i2-dx/10;
@@ -350,14 +350,14 @@ inline void _printRead(
         else
             layout.mateCoords[alignedRead.pairMatchId] = Pair<int>((alignedRead.beginPos - ofs) * 20, line);
     }
-    
+
 
     TContigIterator cit = begin(contigGaps, Standard()) + (_min(alignedRead.beginPos, alignedRead.endPos) + beginPosition(readGaps));
     TIterator it = begin(readGaps, Standard());
     TIterator itEnd = end(readGaps, Standard());
     int lastWasGap = -1;
     int inGap;
-    
+
     for (; it != itEnd; ++it, ++cit, xEnd += 20, ++svg.cursor.i1)
     {
         inGap = isGap(it);
@@ -365,7 +365,7 @@ inline void _printRead(
         {
             if (x < xEnd && lastWasGap != -1)
             {
-                svg.file << first << x << "\" y1=\"" << line << second << xEnd; 
+                svg.file << first << x << "\" y1=\"" << line << second << xEnd;
                 svg.file << "\" y2=\"" << line << "\" " << svg.style[style + arrow + lastWasGap] << " />" << std::endl;
                 arrow = 0;
             }
@@ -407,7 +407,7 @@ inline void _printRead(
 /*
 template <typename TSource>
 inline SVGFile &
-operator << (SVGFile & target, 
+operator << (SVGFile & target,
              TSource  source)
 {
     typename DirectionIterator<TStream, Output>::Type it = directionIterator(target, Output());
@@ -445,15 +445,15 @@ SEQAN_CHECKPOINT
     //typedef typename Value<TTrace>::Type TTraceValue;
 
     // TraceBack values
-    const int Diagonal = 0; 
-    const int Horizontal = 1; 
+    const int Diagonal = 0;
+    const int Horizontal = 1;
     const int Vertical = 2;
-    
+
     // Initialization
     TSize numCols = length(str[0]);
     TSize numRows = length(str[1]);
 
-    // Print trace matrix    
+    // Print trace matrix
     for (TSize pos0 = 0; pos0 < numCols; ++pos0)
     {
         for (TSize pos1 = 0; pos1 < numRows; ++pos1)
@@ -461,7 +461,7 @@ SEQAN_CHECKPOINT
             int tv =(int)trace[pos0*numRows + pos1];
                 if (tv & (1 << Diagonal))
                     svg.file << "<line x2=\"" << pos0*20+10 << "\" y2=\"" << pos1*20+10 << "\"" << " x1=\"" << (pos0+1)*20+10 << "\" y1=\"" << (pos1+1)*20+10 << "\" " << svg.style[svg.dpMatrix] << " />" << std::endl;
-                
+
                 if (tv & (1 << Horizontal))
                     svg.file << "<line x2=\"" << pos0*20+10 << "\" y2=\"" << (pos1+1)*20+10 << "\"" << " x1=\"" << (pos0+1)*20+10 << "\" y1=\"" << (pos1+1)*20+10 << "\" " << svg.style[svg.dpMatrix] << " />" << std::endl;
 

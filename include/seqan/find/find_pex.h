@@ -38,10 +38,10 @@
 // uncomment this for verbose debug output
 //#define SEQAN_DEBUG_PEX
 
-namespace SEQAN_NAMESPACE_MAIN 
+namespace SEQAN_NAMESPACE_MAIN
 {
 
-struct Hierarchical;            
+struct Hierarchical;
 struct NonHierarchical;
 
 
@@ -69,12 +69,12 @@ struct FindBeginPatternSpec< Pattern<TNeedle, Pex<TVerification , TMultiFinder >
  * @signature PexMultiFinder<Pattern<TNeedle,Pex<TVerification, TMultiFinder> > >::Type;
  *
  * @tparam TMultiFinder The specification for the multiple exact string matching algorithm that should be used
- *                      with the Pex algorithm. 
+ *                      with the Pex algorithm.
  *
  * @return Type Pattern type of the multiple exact string matching algorithm for the specified Pattern.
  *
  * For a description of Pattern usage, see @link Pattern @endlink.
- * 
+ *
  * Overload this metafunction if you want to use something else for verification then
  * <tt>Pattern&lt;String&lt;Segment&l;tNeedle&gt; &gt;, TMultiFinder&gt;</tt>.
  */
@@ -87,7 +87,7 @@ struct PexMultiFinder< Pattern<TNeedle, Pex<TVerification , TMultiFinder > > >
 {
   typedef Pattern<String<Segment<TNeedle> > , TMultiFinder> Type;
 };
- 
+
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TPosition,typename TScore,typename TVerifier,typename TNeedle>
@@ -153,10 +153,10 @@ class Pattern<TNeedle, Pex<TVerification, TMultiFinder > >:
    typedef typename Position<TNeedle>::Type TPosition;
    typedef unsigned TScore;
    typedef Pattern<TNeedle, MyersUkkonen > TVerifier;
-   typedef typename PexMultiFinder< 
-                       Pattern<TNeedle, Pex<TVerification,TMultiFinder > > 
-                                  >::Type TMFinder; 
-  
+   typedef typename PexMultiFinder<
+                       Pattern<TNeedle, Pex<TVerification,TMultiFinder > >
+                                  >::Type TMFinder;
+
    // the maximal accepted error
    TScore limit;
    // reference to the needle
@@ -165,7 +165,7 @@ class Pattern<TNeedle, Pex<TVerification, TMultiFinder > >:
    TMFinder multiPattern;
    // needles for the multi pattern search
    String<Segment<TNeedle> >  splitted_needles;
-   
+
    // data store for the verification tree respectively the splitted needle
    std::map<unsigned, PexRange_<TPosition,TScore,TVerifier,TNeedle> > range_table;
    // map leafs of the tree to parts of the needle
@@ -173,13 +173,13 @@ class Pattern<TNeedle, Pex<TVerification, TMultiFinder > >:
 
    // store the infixes for the verifiers
    String<Segment<TNeedle> > segment_store;
-  
+
    // track position where the last occurrence was found
    unsigned lastFPos;
    unsigned lastFNdl;
-   
+
    // indicator to track if we already found an occurrence
-   bool findNext,patternNeedsInit; 
+   bool findNext,patternNeedsInit;
 
    unsigned needleLength;
 
@@ -205,7 +205,7 @@ class Pattern<TNeedle, Pex<TVerification, TMultiFinder > >:
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TNeedle2, typename TVerification, typename TMultiFinder>
-void setHost (Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me, TNeedle2 const & needle) 
+void setHost (Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me, TNeedle2 const & needle)
 {
   // initialisation of the find-tree etc. will be done when patternInit
   // is called to assure that we already know the scoreLimit
@@ -224,7 +224,7 @@ void setHost (Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me, TNeedle2
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TVerification, typename TMultiFinder>
-inline typename Host<Pattern<TNeedle, Pex<TVerification,TMultiFinder > > >::Type & 
+inline typename Host<Pattern<TNeedle, Pex<TVerification,TMultiFinder > > >::Type &
 host(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me)
 {
 SEQAN_CHECKPOINT
@@ -232,7 +232,7 @@ SEQAN_CHECKPOINT
 }
 
 template <typename TNeedle, typename TVerification, typename TMultiFinder>
-inline typename Host<Pattern<TNeedle, Pex<TVerification,TMultiFinder > > const>::Type & 
+inline typename Host<Pattern<TNeedle, Pex<TVerification,TMultiFinder > > const>::Type &
 host(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > const & me)
 {
 SEQAN_CHECKPOINT
@@ -242,14 +242,14 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TMultiFinder>
-int _getRoot(Pattern<TNeedle, Pex<NonHierarchical, TMultiFinder > > & me) 
+int _getRoot(Pattern<TNeedle, Pex<NonHierarchical, TMultiFinder > > & me)
 {
 SEQAN_CHECKPOINT
   return length(me.splitted_needles);
 }
 
 template <typename TNeedle, typename TMultiFinder>
-int _getRoot(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &) 
+int _getRoot(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &)
 {
 SEQAN_CHECKPOINT
   return 1;
@@ -269,7 +269,7 @@ SEQAN_CHECKPOINT
  *                     is undefined.
  */
 template <typename TNeedle, typename TVerification, typename TMultiFinder>
-int getScore(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me) 
+int getScore(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me)
 {
 SEQAN_CHECKPOINT
   return getScore(me.range_table[_getRoot(me)].verifier);
@@ -288,7 +288,7 @@ SEQAN_CHECKPOINT
  * @return TScoreValue The score limit value.
  */
 template <typename TNeedle, typename TVerification, typename TMultiFinder>
-inline int 
+inline int
 scoreLimit(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > const & me)
 {
 SEQAN_CHECKPOINT
@@ -312,8 +312,8 @@ SEQAN_CHECKPOINT
 
 
 template <typename TNeedle, typename TScoreValue,typename TVerification, typename TMultiFinder>
-inline void 
-setScoreLimit(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me, 
+inline void
+setScoreLimit(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me,
               TScoreValue _limit)
 {
 SEQAN_CHECKPOINT
@@ -336,8 +336,8 @@ SEQAN_CHECKPOINT
 /*
   // split pattern
   unsigned k = me.limit + 1;
-  unsigned seg_len = me.needleLength / k; //std::floor(me.needleLength/k); 
-  
+  unsigned seg_len = me.needleLength / k; //std::floor(me.needleLength/k);
+
   clear(me.splitted_needles);
   clear(me.range_table);
   clear(me.segment_store);
@@ -345,7 +345,7 @@ SEQAN_CHECKPOINT
   unsigned c = 0;
   unsigned i = 0;
   while(s < me.needleLength)
-  { 
+  {
     PexRange_<TPosition,TScore,TVerifier,TNeedle> pr;
     pr.start = s;
     pr.end = (c == me.limit ? me.needleLength : s + seg_len);
@@ -387,12 +387,12 @@ SEQAN_CHECKPOINT
   pr.end = me.needleLength;
   pr.error = me.limit;
   setHost(pr.verifier,me.segment_store[0]);
-  setScoreLimit(pr.verifier, - static_cast<int>(me.limit));  
+  setScoreLimit(pr.verifier, - static_cast<int>(me.limit));
   insert(me.range_table,length(me.splitted_needles),pr);
-  
+
   // init multipattern finder
   setHost(me.multiPattern,me.splitted_needles);
-  
+
   me.patternNeedsInit = false;
   me.findNext = false;
   _findBeginInit(me, needle(me));
@@ -408,7 +408,7 @@ SEQAN_CHECKPOINT
   std::cout << "computed following needles for multipattern search: " << std::endl;
   for(unsigned i = 0;i < length(me.splitted_needles);++i)  std::cout << me.splitted_needles[i] << std::endl;
   std::cout << " -------------------------------------------------  " << std::endl;
-#endif  
+#endif
 
 }
 
@@ -438,7 +438,7 @@ SEQAN_CHECKPOINT
     startPos = position(finder);
     int start = me.lastFPos - me.range_table[me.lastFNdl].start - me.limit;
     int end   = me.lastFPos + (me.needleLength - me.range_table[me.lastFNdl].start) + me.limit;
-    
+
     // adjust start and end if they point over the edges of host(finder)
     start = (start < 0 ? 0 : start);
     end = (end > static_cast<int>(length(host(finder))) ? static_cast<int>(length(host(finder))) : end);
@@ -485,7 +485,7 @@ SEQAN_CHECKPOINT
     finder += offset;
     me.lastFPos = position(mf);
     me.lastFNdl = position(me.multiPattern);
-    me.findNext = true;      
+    me.findNext = true;
     _setFinderEnd(finder);
     return true;
       }
@@ -526,7 +526,7 @@ void _createTree(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me, unsign
 #endif
   typedef typename Position<TNeedle>::Type TPosition;
   typedef unsigned TScore;
-  typedef Pattern<TNeedle,MyersUkkonen> TVerifier; 
+  typedef Pattern<TNeedle,MyersUkkonen> TVerifier;
 
   PexRange_<TPosition,TScore,TVerifier,TNeedle> pr;
   pr.start = start;
@@ -536,13 +536,13 @@ void _createTree(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me, unsign
   appendValue(me.segment_store,infix(value(me.data_host),pr.start,pr.end + 1));
   setScoreLimit(pr.verifier, - static_cast<int>(pr.error));
   setHost(pr.verifier, me.segment_store[length(me.segment_store) - 1]);
-  
+
   unsigned left = k/2 + 1; //std::ceil(static_cast<double>(k + 1)/2);
   unsigned cur_idx = (parent << 1) + direction;
 
   // insert pr into the tree
   insert(me.range_table,cur_idx,pr);
-  
+
   if(k == 0){
     appendValue(me.splitted_needles,infix(value(me.data_host),pr.start,pr.end + 1));
 #ifdef SEQAN_DEBUG_PEX
@@ -561,17 +561,17 @@ void _createTree(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me, unsign
 }
 */
 template <typename TNeedle, typename TMultiFinder>
-void _createTree(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me, 
+void _createTree(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me,
                  unsigned start, unsigned end,
-                 unsigned k, 
-                 unsigned parent, 
+                 unsigned k,
+                 unsigned parent,
                  unsigned direction,
-                 unsigned idx, 
+                 unsigned idx,
                  unsigned plen)
 {
   typedef typename Position<TNeedle>::Type TPosition;
   typedef unsigned TScore;
-  typedef Pattern<TNeedle,MyersUkkonen> TVerifier; 
+  typedef Pattern<TNeedle,MyersUkkonen> TVerifier;
 
   PexRange_<TPosition,TScore,TVerifier,TNeedle> pr;
   pr.start = start;
@@ -581,12 +581,12 @@ void _createTree(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me,
   appendValue(me.segment_store,infix(value(me.data_host),pr.start,pr.end + 1));
   setScoreLimit(pr.verifier, - static_cast<int>(pr.error));
   setHost(pr.verifier, me.segment_store[length(me.segment_store) - 1]);
-  
+
   unsigned cur_idx = (parent << 1) + direction;
 
   // insert pr into the tree
   insert(me.range_table,cur_idx,pr);
-  
+
   if(k == 0)
   {
     appendValue(me.splitted_needles,infix(value(me.data_host),pr.start,pr.end + 1));
@@ -637,7 +637,7 @@ void _patternInit(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me, TFind
   std::cout << "computed following needles for multipattern search: " << std::endl;
   for(unsigned i = 0;i < length(me.splitted_needles);++i)  std::cout << me.splitted_needles[i] << std::endl;
   std::cout << " -------------------------------------------------  " << std::endl;
-#endif  
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -664,9 +664,9 @@ SEQAN_CHECKPOINT
   if(me.findNext){
     // we found an occurrence
     startPos = position(finder);
-    unsigned pnode = _getRoot(me); // use root 
+    unsigned pnode = _getRoot(me); // use root
     unsigned in = me.range_table[me.leaf_map[me.lastFNdl]].start;
-    
+
     int p1 = me.lastFPos - (in - me.range_table[pnode].start) - me.range_table[pnode].error;
     int p2 = me.lastFPos + (me.range_table[pnode].end - in + 1) + me.range_table[pnode].error;
 
@@ -687,7 +687,7 @@ SEQAN_CHECKPOINT
       me.findNext = true;
       _setFinderEnd(finder);
       return true;
-    }      
+    }
     }
     // reset mf finder to old position
     unsigned mf_offset = position(finder) - me.lastFPos;
@@ -720,7 +720,7 @@ SEQAN_CHECKPOINT
     // if we verfied till here .. verify the complete pattern
     if(cand){
       // we found an occurrence
-      node = _getRoot(me); // use root 
+      node = _getRoot(me); // use root
       int p1 = position(mf) - (in - me.range_table[node].start) - me.range_table[node].error;
       int p2 = position(mf) + (me.range_table[node].end - in + 1) + me.range_table[node].error;
 
@@ -742,7 +742,7 @@ SEQAN_CHECKPOINT
       me.findNext = true;
       _setFinderEnd(finder);
       return true;
-    }      
+    }
       }
     }
   }

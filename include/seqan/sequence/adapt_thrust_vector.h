@@ -106,13 +106,13 @@ struct Reference<thrust::device_vector<TChar, TAlloc> const>
 };
 
 template <typename TValue>
-struct Reference<thrust::detail::normal_iterator<thrust::device_ptr<TValue> > > 
+struct Reference<thrust::detail::normal_iterator<thrust::device_ptr<TValue> > >
 {
     typedef thrust::device_reference<TValue> Type;
 };
 
 template <typename TValue>
-struct Reference<thrust::detail::normal_iterator<thrust::device_ptr<TValue> > const> 
+struct Reference<thrust::detail::normal_iterator<thrust::device_ptr<TValue> > const>
 {
     typedef thrust::device_reference<TValue> const Type;
 };

@@ -288,7 +288,7 @@ inline void
 _lastColumn(AlignConfig<TTop, TLeft, false, TBottom, TSpec> const,
             TValue1& maxValue,
             TIndex1& maxIndex,
-            TValue2 const val,    
+            TValue2 const val,
             TIndex2 const row,
             TIndex2 const col)
 {
@@ -315,7 +315,7 @@ _lastColumn(AlignConfig<TTop, TLeft, true, TBottom, TSpec> const,
 
 template<bool TTop, bool TLeft, bool TRight, typename TSpec, typename TValue1, typename TIndex1, typename TValue2, typename TIndex2>
 inline void
-_lastRow(AlignConfig<TTop, TLeft, TRight, false, TSpec> const,        
+_lastRow(AlignConfig<TTop, TLeft, TRight, false, TSpec> const,
          TValue1& maxValue,
          TIndex1& maxIndex,
          TValue2 const val,

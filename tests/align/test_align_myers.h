@@ -60,18 +60,18 @@ template <typename TAlphabet>
 String<TAlphabet> generate_second_sequence(int error_count,String<TAlphabet> copy_of_org)
 {
     int length_of_org = length(copy_of_org);
-    
+
     int alphabet_size = ValueSize<TAlphabet>::VALUE;
 
     for(int i = 0;i < error_count;++i)
     {
         // introduce errors into sequence
-        // 1. choose position 
+        // 1. choose position
         int pos = static_cast<int>((int)length_of_org * rand() / (RAND_MAX +  1.0));
-        
+
         // generate new char
         TAlphabet new_char = static_cast<TAlphabet>((rand() >> 4) % alphabet_size);
-        
+
         // replace char
         copy_of_org[pos] = new_char;
     }
@@ -133,12 +133,12 @@ SEQAN_DEFINE_TEST(test_align_myers_test_short) {
     int test_count = 0;
 
     while(test_count < test_repeat)    {
-        // create random sequences 
+        // create random sequences
         String<ALPHABET> s_str0 = generate_random<ALPHABET>(20);
         String<ALPHABET> s_str1 = generate_second_sequence<ALPHABET>(3,s_str0);
         erase_sequence_parts(3,s_str1);
 
-        // test alignment with random sequences 
+        // test alignment with random sequences
         // use needleman wunsch as reference
         Align<String<ALPHABET>, ArrayGaps> s_nw_ali;
         resize(rows(s_nw_ali), 2);
@@ -155,7 +155,7 @@ SEQAN_DEFINE_TEST(test_align_myers_test_short) {
 
         m_score = globalAlignment(s_m_ali,SimpleScore(), MyersBitVector());
         SEQAN_ASSERT_EQ(nw_score, m_score);
-        
+
         // compute complete alignments
         Align<String<ALPHABET>, ArrayGaps> s_hm_ali;
         resize(rows(s_hm_ali), 2);
@@ -177,12 +177,12 @@ SEQAN_DEFINE_TEST(test_align_myers_test_long) {
     int test_count = 0;
 
     while(test_count < test_repeat) {
-        // create random sequences 
+        // create random sequences
         String<ALPHABET> l_str0 = generate_random<ALPHABET>(200);
         String<ALPHABET> l_str1 = generate_second_sequence<ALPHABET>(10,l_str0);
         erase_sequence_parts(5,l_str1);
-        
-        // test alignment with random sequences 
+
+        // test alignment with random sequences
         // use needleman wunsch as reference
         Align<String<ALPHABET>, ArrayGaps> l_nw_ali;
         resize(rows(l_nw_ali), 2);
@@ -200,7 +200,7 @@ SEQAN_DEFINE_TEST(test_align_myers_test_long) {
         m_score = globalAlignment(l_m_ali,SimpleScore(), MyersBitVector());
 
         SEQAN_ASSERT_EQ(nw_score, m_score);
-        
+
         // compute complete alignments
         Align<String<ALPHABET>, ArrayGaps> l_hm_ali;
         resize(rows(l_hm_ali), 2);
@@ -223,13 +223,13 @@ SEQAN_DEFINE_TEST(test_align_hirschberger) {
     int test_count = 0;
 
     while(test_count < test_repeat) {
-        // create random sequences 
+        // create random sequences
         String<ALPHABET> str0 = generate_random<ALPHABET>(20);
         String<ALPHABET> str1 = generate_second_sequence<ALPHABET>(2,str0);
 
         erase_sequence_parts(5,str1);
-        
-        // test alignment with random sequences 
+
+        // test alignment with random sequences
         // use needleman wunsch as reference
         Align<String<ALPHABET>, ArrayGaps> nw_ali;
         resize(rows(nw_ali), 2);
@@ -237,7 +237,7 @@ SEQAN_DEFINE_TEST(test_align_hirschberger) {
         assignSource(row(nw_ali, 1), str1);
 
         nw_score = globalAlignment(nw_ali,SimpleScore());
-        
+
         // compute complete alignments with hirschberg algorithm
         Align<String<ALPHABET>, ArrayGaps> hirsch_ali;
         resize(rows(hirsch_ali), 2);

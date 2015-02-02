@@ -99,7 +99,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
             // set necessary number of rounds cd
             for(TSize h = 1; h < n; h <<= 1, ++cd) ;
-            if (maxdepth > 0 && maxdepth < cd) 
+            if (maxdepth > 0 && maxdepth < cd)
                 cd = maxdepth;
 
             for(TSize h = 1; cd > 0; h <<= 1, --cd) {

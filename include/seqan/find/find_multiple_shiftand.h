@@ -49,12 +49,12 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Multiple exact string matching using bit parallelism.
  *
  * The total size of the patterns should fit into a computer word.
- * 
+ *
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, MultipleShiftAnd>;
- * 
+ *
  * @tparam TNeedle The needle type, a string of keywords. Types: String
- * 
+ *
  * The types of all keywords in the needle and the haystack have to match.
  */
 
@@ -81,7 +81,7 @@ public:
     TWord* df;                // Final test word
     TWord alphabetSize;        // e.g., char --> 256
     TWord totalLength;        // Lenght of concatenated keywords
-    TWord blockCount;        // #unsigned ints required to store needle    
+    TWord blockCount;        // #unsigned ints required to store needle
     std::deque<Pair<TSize, TSize> > data_keyword;  // All keywords that produced a hit here
     TSize data_keywordIndex;  // Last keyword index
     TSize data_needleLength;  // Last needle length
@@ -113,7 +113,7 @@ public:
             deallocate(this, di, blockCount);
             deallocate(this, df, blockCount);
         }
-    }        
+    }
 //____________________________________________________________________________
 };
 
@@ -157,7 +157,7 @@ void setHost (Pattern<TNeedle, MultipleShiftAnd> & me, TNeedle2 const & needle) 
     me.alphabetSize = ValueSize<TAlphabet>::VALUE;
     if (me.totalLength<1) me.blockCount=1;
     else me.blockCount=((me.totalLength-1) / BitsPerValue<TWord>::VALUE)+1;
-            
+
     allocate (me, me.table, me.blockCount * me.alphabetSize);
     arrayFill (me.table, me.table + me.blockCount * me.alphabetSize, 0);
 
@@ -244,7 +244,7 @@ inline void _patternInit (Pattern<TNeedle, MultipleShiftAnd> & me)
 //____________________________________________________________________________
 
 template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, MultipleShiftAnd>const>::Type & 
+inline typename Host<Pattern<TNeedle, MultipleShiftAnd>const>::Type &
 host(Pattern<TNeedle, MultipleShiftAnd> & me)
 {
 SEQAN_CHECKPOINT
@@ -252,7 +252,7 @@ SEQAN_CHECKPOINT
 }
 
 template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, MultipleShiftAnd>const>::Type & 
+inline typename Host<Pattern<TNeedle, MultipleShiftAnd>const>::Type &
 host(Pattern<TNeedle, MultipleShiftAnd> const & me)
 {
 SEQAN_CHECKPOINT
@@ -333,7 +333,7 @@ bool _findShiftAndLargeNeedle(TFinder & finder, Pattern<TNeedle, MultipleShiftAn
         TWord pos = convert<TWord>(*finder);
         TWord carry = 1;
         for(TWord block=0;block<me.blockCount;++block) {
-            bool newCarry = ((me.prefSufMatch[block] & (1<< (BitsPerValue<TWord>::VALUE - 1)))!=0); 
+            bool newCarry = ((me.prefSufMatch[block] & (1<< (BitsPerValue<TWord>::VALUE - 1)))!=0);
             me.prefSufMatch[block]<<=1;
             me.prefSufMatch[block]|=carry;
             carry = newCarry;
@@ -382,7 +382,7 @@ bool _findShiftAndLargeNeedle(TFinder & finder, Pattern<TNeedle, MultipleShiftAn
                 */
 
                 if ((me.prefSufMatch[(j - 1) / BitsPerValue<TWord>::VALUE] & test[(j - 1) / BitsPerValue<TWord>::VALUE]) != 0) {
-                    me.data_keyword.push_back(Pair<TSize,TSize>(position(it),length(*it)));            
+                    me.data_keyword.push_back(Pair<TSize,TSize>(position(it),length(*it)));
                 }
                 deallocate(me, test, me.blockCount);
             }

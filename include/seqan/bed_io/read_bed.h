@@ -91,7 +91,7 @@ char const * FileExtensions<Bed, T>::VALUE[1] =
 // NoData means the the member data (for the columns not read) is not
 // filled.
 template <typename TForwardIter>
-inline void 
+inline void
 _readBedRecordNoData(BedRecord<Bed3> & record,
                      TForwardIter & iter,
                      CharString & buffer)
@@ -126,7 +126,7 @@ _readBedRecordNoData(BedRecord<Bed3> & record,
 // Read first four fields without data.
 
 template <typename TForwardIter>
-inline void 
+inline void
 _readBedRecordNoData(BedRecord<Bed4> & record,
                      TForwardIter & iter,
                      CharString & buffer)

@@ -105,14 +105,14 @@ struct DefaultPrefixOrder
  * This class implement comparator objects that perform (lexical) comparisons between two sequences.  The result of the
  * comparison is stored in the data members of the instance and can be accessed by some functions, for example @link
  * Lexical#isLess @endlink or @link Lexical#isEqual @endlink.
- * 
+ *
  * In most cases, there is no need for an explicite use of comparators, but sometimes this concept provide the
  * opportunity to speed up the code.
- * 
+ *
  * @section Examples
- * 
+ *
  * This program compares the strings <tt>str1</tt> and <tt>str2</tt>:
- * 
+ *
  * @code{.cpp}
  * if (isLess(str1, str2)) //first comparison
  * {
@@ -129,7 +129,7 @@ struct DefaultPrefixOrder
  * @endcode
  *
  * Using a comparator, the same program only needs one comparison instead of two:
- * 
+ *
  * @code{.cpp}
  * Lexical <> comparator(str1, str2); //comparison is executed here
  * if (isLess(comparator))
@@ -148,7 +148,7 @@ struct DefaultPrefixOrder
  *
  * The state of a default constructed <tt>Lexical</tt> instance is undefined until it is set by a call of @link
  * Lexical#compare @endlink.
- * 
+ *
  * @see Comparator
  */
 
@@ -212,13 +212,13 @@ SEQAN_CHECKPOINT
  * @mfn Comparator
  * @headerfile <seqan/sequence.h>
  * @brief Type of comparator object
- * 
+ *
  * @signature Comparator<T>::Type;
- * 
+ *
  * @tparam T Type for which the comparator type is to be determined.
- * 
+ *
  * @return Type the comparator type.
- * 
+ *
  * Comparators are objects that can be used to compare other objects and store the result of comparisons.
  */
 
@@ -270,13 +270,13 @@ struct Spec<Lexical<TSpec> const>
  * @fn Lexical#compare
  * @headerfile <seqan/sequence.h>
  * @brief Compares two objects.
- * 
+ *
  * @signature void compare(comparator, left, right);
- * 
+ *
  * @param[out] comparator Object that stores the results. Types: Lexical
  * @param[in]  left       The first objects.
  * @param[in]  right      The second objects that is compared to <tt>left</tt>.
- * 
+ *
  * @see Comparator
  */
 
@@ -364,14 +364,14 @@ compare(Lexical<TSpec> & lexical,
  * @fn Lexical#isEqual
  * @headerfile <seqan/sequence.h>
  * @brief Operator "==".
- * 
+ *
  * @signature bool isEqual(left, right);
  * @signature bool isEqual(comparator);
- * 
+ *
  * @param[in] left The first parameter.
  * @param[in] right The second parameter that is compared to <tt>left</tt>.
  * @param[in] comparator A comparator. Types: Lexical
- * 
+ *
  * @return bool <tt>true</tt> if <tt>left</tt> equals <tt>right</tt>, <tt>false</tt> otherwise.
  */
 
@@ -400,14 +400,14 @@ SEQAN_CHECKPOINT
  * @fn Lexical#isNotEqual
  * @headerfile <seqan/sequence.h>
  * @brief Operator "!=".
- * 
+ *
  * @signature bool isNotEqual(left, right);
  * @signature bool isNotEqual(comparator);
- * 
+ *
  * @param[in] left The first parameter.
  * @param[in] right The second parameter that is compared to <tt>left</tt>.
  * @param[in] comparator A comparator. Types: Lexical
- * 
+ *
  * @return bool <tt>true</tt> if <tt>left</tt> does not equal <tt>right</tt>, <tt>false</tt> otherwise.
  */
 
@@ -436,14 +436,14 @@ SEQAN_CHECKPOINT
  * @fn Lexical#isLess
  * @headerfile <seqan/sequence.h>
  * @brief Operator "&lt;".
- * 
+ *
  * @signature bool isLess(left, right);
  * @signature bool isLess(comparator);
- * 
+ *
  * @param[in] left The first parameter.
  * @param[in] right The second parameter that is compared to <tt>left</tt>.
  * @param[in] comparator A comparator. Types: Lexical
- * 
+ *
  * @return bool <tt>true</tt> if <tt>left</tt> is less than <tt>right</tt>, <tt>false</tt> otherwise.
  */
 
@@ -498,14 +498,14 @@ SEQAN_CHECKPOINT
  * @fn Lexical#isLessOrEqual
  * @headerfile <seqan/sequence.h>
  * @brief Operator "&lt;=".
- * 
+ *
  * @signature bool isLessOrEqual(left, right);
  * @signature bool isLessOrEqual(comparator);
- * 
+ *
  * @param[in] left The first parameter.
  * @param[in] right The second parameter that is compared to <tt>left</tt>.
  * @param[in] comparator A comparator. Types: Lexical
- * 
+ *
  * @return bool <tt>true</tt> if <tt>left</tt> is less than or equal to <tt>right</tt>, <tt>false</tt> otherwise.
  */
 
@@ -560,14 +560,14 @@ SEQAN_CHECKPOINT
  * @fn Lexical#isGreater
  * @headerfile <seqan/sequence.h>
  * @brief Operator "&gt;".
- * 
+ *
  * @signature bool isGreater(left, right);
  * @signature bool isGreater(comparator);
- * 
+ *
  * @param[in] left The first parameter.
  * @param[in] right The second parameter that is compared to <tt>left</tt>.
  * @param[in] comparator A comparator. Types: Lexical
- * 
+ *
  * @return bool <tt>true</tt> if <tt>left</tt> is greater than <tt>right</tt>, <tt>false</tt> otherwise.
  */
 
@@ -622,14 +622,14 @@ SEQAN_CHECKPOINT
  * @fn Lexical#isGreaterOrEqual
  * @headerfile <seqan/sequence.h>
  * @brief Operator "&gt;=".
- * 
+ *
  * @signature bool isGreaterOrEqual(left, right);
  * @signature bool isGreaterOrEqual(comparator);
- * 
+ *
  * @param[in] left The first parameter.
  * @param[in] right The second parameter that is compared to <tt>left</tt>.
  * @param[in] comparator A comparator. Types: Lexical
- * 
+ *
  * @return bool <tt>true</tt> if <tt>left</tt> is greater than or equal to <tt>right</tt>, <tt>false</tt> otherwise.
  */
 
@@ -684,14 +684,14 @@ SEQAN_CHECKPOINT
  * @fn Lexical#isPrefix
  * @headerfile <seqan/sequence.h>
  * @brief Test whether a sequence is the prefix of another sequence.
- * 
+ *
  * @signature bool isPrefix(left, right);
  * @signature bool isPrefix(comparator);
- * 
+ *
  * @param[in] left       The putative prefix.
  * @param[in] right      The second sequence.
  * @param[in] comparator A comparator. Types: Lexical
- * 
+ *
  * @return bool <tt>true</tt> if <tt>left</tt> is a prefix of<tt>right</tt>, <tt>false</tt> otherwise.
  *
  * By definition, a sequence is a prefix of itself: <tt>isPrefix("abc", "abc")</tt> is <tt>true</tt>.
@@ -723,14 +723,14 @@ SEQAN_CHECKPOINT
  * @fn Lexical#hasPrefix
  * @headerfile <seqan/sequence.h>
  * @brief Test whether a sequence is the prefix of another sequence.
- * 
+ *
  * @signature bool isPrefix(left, right);
  * @signature bool isPrefix(comparator);
- * 
+ *
  * @param[in] left       The first sequence.
  * @param[in] right      The putative prefix.
  * @param[in] comparator A comparator. Types: Lexical
- * 
+ *
  * @return bool <tt>true</tt> if <tt>left</tt> is a prefix of<tt>right</tt>, <tt>false</tt> otherwise.
  *
  * By definition, a sequence is a prefix of itself: <tt>hasPrefix("abc", "abc")</tt> is <tt>true</tt>.
@@ -761,14 +761,14 @@ SEQAN_CHECKPOINT
  * @fn Lexical#lcpLength
  * @headerfile <seqan/sequence.h>
  * @brief Length of the longest common prefix.
- * 
+ *
  * @signature TSize lcpLength(left, right);
  * @signature TSize lcpLength(comparator);
- * 
+ *
  * @param[in] left       The first sequence.
  * @param[in] right      The second sequence.
  * @param[in] comparator A comparator. Types: Lexical
- * 
+ *
  * @return TSize The length of the longest common prefix of <tt>left</tt> and <tt>right</tt>.  TSize is the Size type of
  *               the left size type.
  *

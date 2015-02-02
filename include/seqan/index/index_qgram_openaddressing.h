@@ -40,9 +40,9 @@ namespace SEQAN_NAMESPACE_MAIN
 
     struct OpenAddressing_;
     typedef Tag<OpenAddressing_> OpenAddressing;
-    
+
     template <typename THashValue>
-    struct BucketMap 
+    struct BucketMap
     {
         static const THashValue EMPTY;
         String<THashValue> qgramCode;
@@ -59,25 +59,25 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef typename Value<TShape>::Type    THashValue;
         typedef BucketMap<THashValue>            Type;
     };
-    
+
 /*!
  * @class OpenAddressingQGramIndex
  * @extends IndexQGram
  * @headerfile <seqan/index.h>
  * @brief A <i>q</i>-gram that uses open addressing hashing instead of an array.
- * 
+ *
  * @signature template <typename TIndex, typename TShapeSpec>
  *            class Index<TText, IndexQGram<TShapeSpec, OpenAddressing> >;
- * 
+ *
  * @tparam TText      The @link TextConcept text type @endlink.
  * @tparam TShapeSpec The @link Shape @endlink specialization type.
- * 
+ *
  * This index uses a non-trivial hashing for mapping q-gram hash values to buckets.  This reduces the sizes of bucket
  * directories (QGramDir, QGramCountsDir fibres) from &Sigma;<i><sup>q</sup></i> to min(<i>&alpha; &middot; n</i>,
  * \Sigma<i><sup>q</sup></i>), for a load factor <i>&alpha; &gt; 1</i>.  A bucket still stores occurrences (or counts)
  * of the same <i>q</i>-gram, but in contrast to the @link IndexQGram @endlink index, buckets are in random order due to
  * the hashing.
- * 
+ *
  * @var double OpenAddressingQGramIndex::alpha
  * @brief Load factor.  Controls space/time-tradeoff and must be greater 1.  Default value is 1.6.
  */
@@ -255,7 +255,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef BucketMap<THashValue> TBucketMap;
         typedef unsigned long TSize;
         // get size of the index
-        
+
         // check whether bucket map is disabled and
         // where the hash should be found if no collision took place before
         TSize hlen = length(bucketMap.qgramCode);
@@ -269,7 +269,7 @@ namespace SEQAN_NAMESPACE_MAIN
         hlen -= 2;
         h1 &= hlen;
 #endif
-        
+
         // probe for our code or an empty entry
         //
         // do linear probing if we need to save memory (when SEQAN_OPENADDRESSING_COMPACT is defined)
@@ -300,7 +300,7 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template <typename TObject, typename TShapeSpec>
-    inline __int64 _fullDirLength(Index<TObject, IndexQGram<TShapeSpec, OpenAddressing> > const &index) 
+    inline __int64 _fullDirLength(Index<TObject, IndexQGram<TShapeSpec, OpenAddressing> > const &index)
     {
         typedef Index<TObject, IndexQGram<TShapeSpec, OpenAddressing> >    TIndex;
         typedef typename Fibre<TIndex, QGramDir>::Type                        TDir;
@@ -308,11 +308,11 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef typename Host<TShape>::Type                                    TTextValue;
         typedef typename Value<TDir>::Type                                    TDirValue;
         typedef typename Value<TShape>::Type                                THashValue;
-        
+
         double num_qgrams = _qgramQGramCount(index) * index.alpha;
         double max_qgrams = pow((double)ValueSize<TTextValue>::VALUE, (double)weight(indexShape(index)));
         __int64 qgrams;
-        
+
         // compare size of open adressing with 1-1 mapping and use the smaller one
         if (num_qgrams * (sizeof(TDirValue) + sizeof(THashValue)) < max_qgrams * sizeof(TDirValue))
         {
@@ -329,10 +329,10 @@ namespace SEQAN_NAMESPACE_MAIN
             qgrams = (__int64)ceil(max_qgrams);
             clear(const_cast<TIndex &>(index).bucketMap.qgramCode);    // 1-1 mapping, no bucket map needed
         }
-        
+
         return qgrams + 1;
     }
-    
+
 }
 
 #endif //#ifndef SEQAN_HEADER_...

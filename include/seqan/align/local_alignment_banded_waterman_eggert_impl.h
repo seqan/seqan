@@ -100,7 +100,7 @@ _alignBandedSmithWaterman(LocalAlignmentFinder<TScoreValue>& finder,
     for (TSize row = 1; row < height; ++row) {
         actualRow = row + lo_row;
         hori_val = 0;
-        
+
         for (TSize col = 0; col < diagonalWidth; ++col, ++matIt) {
             // handle begin and end triangle of band
             if ((int)col + diagL + (int)actualRow < 0) {++matIt2; continue;}
@@ -279,7 +279,7 @@ _alignBandedSmithWatermanDeclump(LocalAlignmentFinder<TScoreValue>& finder,
                     maxCol = traceCol + 1;
             }
         }
- 
+
         // iterate over columns that have to be re-calculated
         if (maxCol > minCol) {
             col = minCol;
@@ -406,16 +406,16 @@ _alignBandedSmithWatermanTrace(LocalAlignmentFinder<TScoreValue> & finder,
 
     TSize actualRow = row + lo_row;
     TSize actualCol = static_cast<TSize>(col + diagL + actualRow);
-    if ((actualCol == 0) || (actualRow == 0)) 
+    if ((actualCol == 0) || (actualRow == 0))
         return Pair<Pair<TDiagonal> >();
 
     if (actualCol < len1) _alignTracePrint(finder.trace, seqH, seqV, id1, actualCol, id2, actualRow, len1 - actualCol, Horizontal);
     if (actualRow < len2) _alignTracePrint(finder.trace, seqH, seqV, id1, actualCol, id2, actualRow, len2 - actualRow, Vertical);
-    
+
     TTraceValue traceValue = Stop;
     TTraceValue nextTraceValue = Horizontal;
     TSize segLen = 0;
-    
+
     while (nextTraceValue != Stop) {
         traceValue = nextTraceValue;
         if (*matIt == 0) {
@@ -428,14 +428,14 @@ _alignBandedSmithWatermanTrace(LocalAlignmentFinder<TScoreValue> & finder,
             nextTraceValue = Diagonal;
             --actualRow; --actualCol;
             --row;
-            goPrevious(matIt, 1); 
+            goPrevious(matIt, 1);
             goPrevious(matIt2, 1);
         } else if (*matIt == *(matIt2+1) +
             scoreGapExtendVertical(sc, sequenceEntryForScore(sc, str1, (int)actualCol-1),
                                    sequenceEntryForScore(sc, str2, (int)actualRow-1)))
         {
             nextTraceValue = Vertical;
-            --actualRow; 
+            --actualRow;
             --row; ++col;
             goPrevious(matIt, 1); goNext(matIt, 0);
             goPrevious(matIt2, 1); goNext(matIt2, 0);
@@ -444,7 +444,7 @@ _alignBandedSmithWatermanTrace(LocalAlignmentFinder<TScoreValue> & finder,
                             scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, (int) actualCol-1),
                                                      sequenceEntryForScore(sc, str2, (int) actualRow-1)));
             nextTraceValue = Horizontal;
-            --actualCol; 
+            --actualCol;
             --col;
             goPrevious(matIt, 0);
             goPrevious(matIt2, 0);
@@ -456,7 +456,7 @@ _alignBandedSmithWatermanTrace(LocalAlignmentFinder<TScoreValue> & finder,
             segLen = 1;
         }
     }
-    
+
     // Handle the remaining sequence
     if (actualCol != 0) _alignTracePrint(finder.trace, seqH, seqV, (TId) id1, (TSize) 0, (TId) 0, (TSize) 0, (TSize) actualCol, Horizontal);
     if (actualRow != 0) _alignTracePrint(finder.trace, seqH, seqV, (TId) 0, (TSize) 0, (TId) id2, (TSize) 0, (TSize) actualRow, Vertical);
@@ -524,7 +524,7 @@ _localAlignment(LocalAlignmentFinder<TScoreValue> & finder,
 
     _initLocalAlignmentFinder(source(gapsH), source(gapsV), finder, BandedWatermanEggert(), diag1, diag2);
     finder.needReinit = false;
-    
+
     // Fill the matrix
     TScoreValue maxScore = _alignBandedSmithWaterman(finder, source(gapsH), source(gapsV), sc, cutoff, diag1, diag2);
     if (maxScore < cutoff) return 0;

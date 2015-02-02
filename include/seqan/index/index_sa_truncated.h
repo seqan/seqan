@@ -80,7 +80,7 @@ public:
         TBase(_index, MinimalCtor()),
         depth(MaxValue<TDepth>::VALUE)
     {}
-    
+
     Iter(TIndex &_index, TVertexDesc const &_vDesc) :
         TBase(_index, _vDesc),
         depth(MaxValue<TDepth>::VALUE)

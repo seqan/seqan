@@ -119,13 +119,13 @@ struct Triple
     // ------------------------------------------------------------------------
 
     inline Triple() : i1(T1()), i2(T2()), i3(T3()) {}
-    
+
     inline Triple(Triple const & _p)
             : i1(_p.i1), i2(_p.i2), i3(_p.i3) {}
-    
+
     inline Triple(T1 const & _i1, T2 const & _i2, T3 const & _i3)
             : i1(_i1), i2(_i2), i3(_i3) {}
-    
+
     template <typename T1_, typename T2_, typename T3_, typename TSpec__>
     inline Triple(Triple<T1_, T2_, T3_, TSpec__> const & _p)
             : i1(getValueI1(_p)), i2(getValueI2(_p)), i3(getValueI3(_p)) {}
@@ -136,7 +136,7 @@ struct Triple
     {
         return i1 == other.i1 && i2 == other.i2 && i3 == other.i3;
     }
-    
+
     inline bool
     operator<(Triple const & other) const
     {
@@ -450,7 +450,7 @@ inline void moveValueI3(Triple<T1, T2, T3, TSpec> & triple, T const & _i)
 // -----------------------------------------------------------------------
 
 template <
-    typename L1, typename L2, typename L3, typename LPack, 
+    typename L1, typename L2, typename L3, typename LPack,
     typename R1, typename R2, typename R3, typename RPack>
 inline bool
 operator<(Triple<L1, L2, L3, LPack> const & _left,
@@ -464,7 +464,7 @@ operator<(Triple<L1, L2, L3, LPack> const & _left,
 // -----------------------------------------------------------------------
 
 template <
-    typename L1, typename L2, typename L3, typename LPack, 
+    typename L1, typename L2, typename L3, typename LPack,
     typename R1, typename R2, typename R3, typename RPack>
 inline bool
 operator>(Triple<L1, L2, L3, LPack> const & _left,
@@ -478,7 +478,7 @@ operator>(Triple<L1, L2, L3, LPack> const & _left,
 // -----------------------------------------------------------------------
 
 template <
-    typename L1, typename L2, typename L3, typename LPack, 
+    typename L1, typename L2, typename L3, typename LPack,
     typename R1, typename R2, typename R3, typename RPack>
 inline bool
 operator<=(Triple<L1, L2, L3, LPack> const & _left,
@@ -492,7 +492,7 @@ operator<=(Triple<L1, L2, L3, LPack> const & _left,
 // -----------------------------------------------------------------------
 
 template <
-    typename L1, typename L2, typename L3, typename LPack, 
+    typename L1, typename L2, typename L3, typename LPack,
     typename R1, typename R2, typename R3, typename RPack>
 inline bool
 operator==(Triple<L1, L2, L3, LPack> const & _left,
@@ -506,7 +506,7 @@ operator==(Triple<L1, L2, L3, LPack> const & _left,
 // -----------------------------------------------------------------------
 
 template <
-    typename L1, typename L2, typename L3, typename LPack, 
+    typename L1, typename L2, typename L3, typename LPack,
     typename R1, typename R2, typename R3, typename RPack>
 inline bool
 operator>=(Triple<L1, L2, L3, LPack> const & _left,
@@ -520,7 +520,7 @@ operator>=(Triple<L1, L2, L3, LPack> const & _left,
 // -----------------------------------------------------------------------
 
 template <
-    typename L1, typename L2, typename L3, typename LPack, 
+    typename L1, typename L2, typename L3, typename LPack,
     typename R1, typename R2, typename R3, typename RPack>
 inline bool
 operator!=(Triple<L1, L2, L3, LPack> const & _left,

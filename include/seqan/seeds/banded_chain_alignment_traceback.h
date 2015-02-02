@@ -257,7 +257,7 @@ void _computeTraceback(TTarget & target,
     TSizeSeqV seqVSize = length(seqV);
 
     // Determine whether or not we place gaps to the left.
-    typedef typename IsGapsLeft_<TTracebackSpec>::Type TIsGapsLeft; 
+    typedef typename IsGapsLeft_<TTracebackSpec>::Type TIsGapsLeft;
 
     // TODO(rmaerker): Define separate function for this.
     // Set to the correct position within the trace matrix.

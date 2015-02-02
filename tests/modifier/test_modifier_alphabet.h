@@ -46,7 +46,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_size_metafunctions)
     // Add special gap and an arbitrary symbol to Dna.
     typedef ModifiedAlphabet<Dna, ModExpand<'-'> > TDnaWithGap;
     typedef ModifiedAlphabet<Dna, ModExpand<'X'> > TDnaWithX;
-    
+
     // Add special gap symbol to Dna.
     SEQAN_ASSERT_EQ((int)BitsPerValue<TDnaWithGap>::VALUE, 3);
     SEQAN_ASSERT_EQ((int)ValueSize<TDnaWithGap>::VALUE, 5);
@@ -54,7 +54,7 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_size_metafunctions)
     // Add an arbitrary symbol to Dna.
     SEQAN_ASSERT_EQ((int)BitsPerValue<TDnaWithX>::VALUE, 3);
     SEQAN_ASSERT_EQ((int)ValueSize<TDnaWithX>::VALUE, 5);
-    
+
 }
 
 SEQAN_DEFINE_TEST(test_modifier_DnaQ)
@@ -151,8 +151,8 @@ SEQAN_DEFINE_TEST(test_modifier_alphabet_convert)
     SEQAN_ASSERT_EQ(Dna('G'), convert<Dna>(TDnaWithX('G')));
     SEQAN_ASSERT_EQ(Dna('T'), convert<Dna>(TDnaWithX('T')));
     SEQAN_ASSERT_EQ(Dna('A'), convert<Dna>(TDnaWithX('X')));
-    
-    
+
+
     typedef String<TDnaWithGap> TString;
 
     TString str = "aCgT-AcGt";

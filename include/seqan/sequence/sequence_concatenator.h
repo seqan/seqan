@@ -60,26 +60,26 @@ struct StringSetLimits;
  * @class ConcatenatorManyToOne
  * @headerfile <seqan/sequence.h>
  * @brief A sequence class that virtually concatenates all sequences in a @link StringSet @endlink.
- * 
+ *
  * @signature template <typename TStringSet>
  *            class ConcatenatorManyToOne;
- * 
+ *
  * @tparam TStringSet The @link StringSet @endlink type.
- * 
+ *
  * This container can be iterated like the concatenation string of all sequences in a @link StringSet @endlink.
- * 
+ *
  * This container only is a lightweight hull around a @link StringSet @endlink.  The iteration is handled by @link
  * ConcatVirtualIterator @endlink.
- * 
+ *
  * Note that accessing an element by index through <tt>operator[]</tt> conducts a binary search and should be avoided.
  * Use the @link ConcatDirectStringSet @endlink specialization of @link StringSet @endlink for random access or only use
  * sequential access through iterators.
- * 
+ *
  * @fn ConcatenatorManyToOne::ConcatenatorManyToOne
  * @brief Constructor
- * 
+ *
  * @signature ConcatenatorManyToOne::ConcatenatorManyToOne(stringSet);
- * 
+ *
  * @param[in] stringSet The @link StringSet @endlink object to be concatenated.
  */
 

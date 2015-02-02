@@ -109,7 +109,7 @@ namespace SEQAN_NAMESPACE_MAIN
             while (lcp_i < stack_updown.top().i2) {
                 lastIndex_updown = stack_updown.top();
                 stack_updown.pop();
-                
+
                 top = stack_updown.top();
                 if (lcp_i <= top.i2 && top.i2 != lastIndex_updown.i2 && top.i1 != lastIndex_nextl) {
                     push(dest, TPair(top.i1, lastIndex_updown.i1));            // childtab[top].down
@@ -148,7 +148,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         TLinearMapper   mapper;
         TFilter            in;
-        
+
         Pipe():
             in(mapper) {}
 
@@ -162,7 +162,7 @@ namespace SEQAN_NAMESPACE_MAIN
         inline bool process(TLcpInput_ &_lcpIn) {
 
             // *** INSTANTIATION ***
-            
+
             _childtabProcess(_lcpIn, mapper);
             return true;
         }
@@ -170,7 +170,7 @@ namespace SEQAN_NAMESPACE_MAIN
         inline typename Value<Pipe>::Type const operator*() const {
             return *in;
         }
-        
+
         inline Pipe& operator++() {
             ++in;
             return *this;
@@ -201,13 +201,13 @@ namespace SEQAN_NAMESPACE_MAIN
  * @fn IndexEsa#createChildtab
  * @headerfile <seqan/index.h>
  * @brief Creates a child table from a given lcp table.
- * 
+ *
  * @signature void createChildtab(childTab, lcp[, algoTag]);
- * 
+ *
  * @param[out] childTab A reference to the resulting child table.
  * @param[in]  lcp      A given lcp table.
  * @param[in]  algoTag  A tag that identifies the algorithm which is used for the creation.
- * 
+ *
  * The size of <tt>childTab</tt> must be at least <tt>length(text)</tt> before calling this function.
  */
     template < typename TLCPTable,
@@ -220,12 +220,12 @@ namespace SEQAN_NAMESPACE_MAIN
         createChildtabExt(childtab, lcp);
     }
 
-    
-    
+
+
     //////////////////////////////////////////////////////////////////////////////
     // internal childtab algorithm
     //////////////////////////////////////////////////////////////////////////////
-    
+
     template < typename TLCPInput, typename TDest >
     inline void createChildtab(TDest &dest, TLCPInput const &lcpIn)
     {

@@ -54,7 +54,7 @@ namespace SEQAN_NAMESPACE_MAIN
 template < typename TValue, typename TLess>
 class PriorityType<TValue,TLess,PriorityHeap>
 {
-public: 
+public:
     typedef String<TValue> THeap;
 //____________________________________________________________________________
 
@@ -79,7 +79,7 @@ SEQAN_CHECKPOINT
     {
 SEQAN_CHECKPOINT
     }
-        
+
 //    inline PriorityType const &
 //    operator = (PriorityType const & other_)
 //    {
@@ -87,7 +87,7 @@ SEQAN_CHECKPOINT
 //        heap = other_.heap;
 //        return *this;
 //    }
-    
+
 }; // class PriorityType
 
 
@@ -103,10 +103,10 @@ SEQAN_CHECKPOINT
 
 // Empty the priority queue
 template <typename TValue, typename TLess>
-inline void 
+inline void
 clear (PriorityType<TValue,TLess, PriorityHeap> & me)
 {
-    clear(me.heap); 
+    clear(me.heap);
 }
 
 /*!
@@ -122,11 +122,11 @@ clear (PriorityType<TValue,TLess, PriorityHeap> & me)
  */
 
 template <typename TValue, typename TLess>
-inline bool 
-empty(PriorityType<TValue, TLess, PriorityHeap> const & me) 
+inline bool
+empty(PriorityType<TValue, TLess, PriorityHeap> const & me)
 {
 SEQAN_CHECKPOINT
-    return empty(me.heap); 
+    return empty(me.heap);
 }
 
 /*!
@@ -139,12 +139,12 @@ SEQAN_CHECKPOINT
  * @param[in] pq The PriorityType to query.
  * @return TSize Number of elements in priority queue.
  */
- 
+
 // Number of elements in the priority queue
 template <typename TValue, typename TLess>
 inline typename Size<PriorityType<TValue, TLess, PriorityHeap> >::Type
 length( PriorityType<TValue, TLess, PriorityHeap> const & me)
-{ 
+{
 SEQAN_CHECKPOINT
     return length(me.heap);
 }
@@ -168,7 +168,7 @@ SEQAN_CHECKPOINT
  */
 
 template <typename TValue, typename TLess>
-inline TValue & 
+inline TValue &
 top(PriorityType<TValue, TLess, PriorityHeap> & me)
 {
 SEQAN_CHECKPOINT
@@ -176,7 +176,7 @@ SEQAN_CHECKPOINT
 }
 
 template <typename TValue, typename TLess>
-inline TValue const & 
+inline TValue const &
 top(PriorityType<TValue, TLess, PriorityHeap> const & me)
 {
 SEQAN_CHECKPOINT
@@ -185,7 +185,7 @@ SEQAN_CHECKPOINT
 
 // Copy heap position i to heap position h.
 template <typename TValue, typename TLess, typename TSize>
-inline void 
+inline void
 _copyHeapElement (PriorityType<TValue, TLess, PriorityHeap> & me, TSize i, TSize & h)
 {
 SEQAN_CHECKPOINT
@@ -195,7 +195,7 @@ SEQAN_CHECKPOINT
 
 // Copy element to heap position h.
 template <typename TValue, typename TLess, typename TSize>
-inline void 
+inline void
 _copyHeapElement (PriorityType<TValue, TLess, PriorityHeap> & me, TValue const & element, TSize h)
 {
 SEQAN_CHECKPOINT
@@ -203,7 +203,7 @@ SEQAN_CHECKPOINT
 }
 
 /////////////////////////////////////////////////////////////////////////////////
-//  lower priority of first element in queue 
+//  lower priority of first element in queue
 
 /*!
  * @fn PriorityType#adjustTop
@@ -215,7 +215,7 @@ SEQAN_CHECKPOINT
  */
 
 template <typename TValue, typename TLess>
-inline void 
+inline void
 adjustTop (PriorityType<TValue, TLess, PriorityHeap> & me)    // so könnte man es dann auch nennen
 {
 SEQAN_CHECKPOINT
@@ -241,7 +241,7 @@ SEQAN_CHECKPOINT
  */
 
 template <typename TValue, typename TLess>
-inline void 
+inline void
 push (PriorityType<TValue, TLess, PriorityHeap> & me, TValue const & element)
 {
 SEQAN_CHECKPOINT
@@ -252,24 +252,24 @@ SEQAN_CHECKPOINT
         return;
     }
     typedef typename Size<PriorityType<TValue, TLess, PriorityHeap> >::Type TSize;
-    TSize h = length(me.heap); 
+    TSize h = length(me.heap);
     resize(me.heap, h + 1, Generous());
-    _adjustHeapTowardRoot(me, element, h); 
+    _adjustHeapTowardRoot(me, element, h);
 }
 
 //////////////////////////////////////////////////////////////////////////////////
 /// Priority got better.  Perform a cyclic shift along the tree edges toward root.
 template <typename TValue, typename TLess, typename TSize>
-inline void 
+inline void
 _adjustHeapTowardRoot(
-    PriorityType<TValue, TLess, PriorityHeap> & me, 
-    TValue const & element, 
+    PriorityType<TValue, TLess, PriorityHeap> & me,
+    TValue const & element,
     TSize h )
 {
 SEQAN_CHECKPOINT
     // root index is zero
     while ( h > 0) {
-        const TSize i = (h-1)/2; 
+        const TSize i = (h-1)/2;
         if ( me.less ( me.heap[i], element ) )
             _copyHeapElement ( me, i, h );
         else
@@ -291,16 +291,16 @@ SEQAN_CHECKPOINT
  */
 
 template <typename TValue, typename TLess>
-inline void 
+inline void
 pop (PriorityType<TValue, TLess, PriorityHeap> & me)
 {
 SEQAN_CHECKPOINT
     // root index is zero
-    TValue element = getValue(me.heap,endPosition(me.heap)-1); 
+    TValue element = getValue(me.heap,endPosition(me.heap)-1);
     typedef typename Size<PriorityType<TValue, TLess, PriorityHeap> >::Type TSize;
     TSize heapsize = length(me.heap) - 1 ;
     resize(me.heap, heapsize, Generous());
-    if ( heapsize > 0 ) 
+    if ( heapsize > 0 )
         _adjustHeapTowardLeaves(me, element, 0, 2 );
 
 }
@@ -309,11 +309,11 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////////
 /// Priority got worse. Perform a cyclic shift along the tree edges toward leaves.
 template <typename TValue, typename TLess, typename TSize>
-inline void 
+inline void
 _adjustHeapTowardLeaves(
-    PriorityType<TValue, TLess, PriorityHeap> & me, 
-    TValue element, 
-    TSize h, 
+    PriorityType<TValue, TLess, PriorityHeap> & me,
+    TValue element,
+    TSize h,
     TSize i ) //für mich: h=0, i=1
 {
 SEQAN_CHECKPOINT

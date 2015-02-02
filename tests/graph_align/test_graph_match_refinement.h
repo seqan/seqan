@@ -58,7 +58,7 @@ SEQAN_DEFINE_TEST(RefineMatchesSelfEdges)
     TStringSet seq_set;
     appendValue(seq_set,String<char>("aaaaabbbbbbccccccaaaaaa"));
     appendValue(seq_set,String<char>("aaaabbbbbbaaaaaa"));
-    
+
 
     TFragString matches;
     appendValue(matches,TFragment(0,0,1,0,4));
@@ -107,7 +107,7 @@ SEQAN_DEFINE_TEST(RefineInexactFragment)
     TStringSet seq_set;
     appendValue(seq_set,String<char>("aaaaabbbbbbccccccaaaaaa"));
     appendValue(seq_set,String<char>("aaaabbbbbbaaaaaa"));
-    
+
 
     TFragString matches;
     appendValue(matches,TFragment(0,0,1,0,4));
@@ -141,7 +141,7 @@ SEQAN_DEFINE_TEST(RefineInexactFragment)
 //// TODO(holtgrew): Is this a helper? What does it do?
 //int Test_ConvertSequences(String<char> const in_path, String<char> const in_file, String<char> const path, String<char> const file_prefix) {
 //    typedef String<Dna5, External<ExternalConfig<File<>, 64*1024> > > TString;
-//    
+//
 //    // count sequences
 //    unsigned seqCount = 0;
 //
@@ -161,7 +161,7 @@ SEQAN_DEFINE_TEST(RefineInexactFragment)
 //    // import sequences
 //    file.clear();
 //    file.seekg(0, ios_base::beg);
-//    for(unsigned i = 0; (i < seqCount) && !_streamEOF(file); ++i) 
+//    for(unsigned i = 0; (i < seqCount) && !_streamEOF(file); ++i)
 //    {
 //        TString str;
 //        //String<TraceBack, External<> > trace;
@@ -180,7 +180,7 @@ SEQAN_DEFINE_TEST(RefineInexactFragment)
 
 // TODO(holtgrew): Is this a helper? What does it do?
 template<typename TStringSet, typename TVal1, typename TVal2>
-inline bool 
+inline bool
 Test_ReadSequences(String<char> const path, String<char> const file_prefix, TStringSet& str, TVal1 const start, TVal2 const nseq) {
     for(unsigned i = start; i < start + nseq; ++i) {
         std::stringstream s;
@@ -216,12 +216,12 @@ SEQAN_DEFINE_TEST(GraphMatchRefine)
     String<char> in_path("/home/takifugu2/data/SeqAn/binary/");
     String<char> out_path("/home/takifugu2/data/SeqAn/binary/");
 #endif
-    
+
 
     TSize hSeq = 24;
     TSize wSeq = 24;
     TSize bSeq = 24;
-    
+
 
     // Convert all sequences only once
     //TSize tmp = 0;
@@ -300,13 +300,13 @@ SEQAN_DEFINE_TEST(GraphMatchRefine)
     //strstream << out_path << "matches1000.dat"; // 2001948 Matches
     //strstream << out_path << "matches10000.dat"; // 2111 Matches
     //strstream << out_path << "matches2000.dat"; // 653095 Matches
-    //strstream << out_path << "matches500.dat"; // 3999176 
+    //strstream << out_path << "matches500.dat"; // 3999176
     open(matches, strstream.str().c_str());
 
 
     // Convert the matches to an external string
     //for(TSize i = 1; i<4; ++i) {
-    //    fstream strm; 
+    //    fstream strm;
     //    std::stringstream s;
     //    if (i==0 ) s << in_path << "TvsT.atac";
     //    else if (i==1 ) s << in_path << "BvsH.atac";
@@ -362,7 +362,7 @@ SEQAN_DEFINE_TEST(GraphMatchRefine)
 
 //produce pairwise alignments (Align object)
 template<typename TAlign, typename TSequence, typename TSeqSpec, typename TScore>
-void 
+void
 getAlignments(String<TAlign> & alis, StringSet<TSequence, TSeqSpec> & seq, TScore & score_type, int & numAlignments, int cutoff)
 {
 
@@ -398,7 +398,7 @@ getAlignments(String<TAlign> & alis, StringSet<TSequence, TSeqSpec> & seq, TScor
                 ++gesamt;
                 ++k;
             }
-        }    
+        }
     }
 
     numAlignments = gesamt;
@@ -431,7 +431,7 @@ SEQAN_DEFINE_TEST(RefineAlign)
     int numAlignments = 1;
     int numSequencePairs = 0;
     int cutoff = 4;
-    for(int i = 1 ; i < numSequences; ++i) 
+    for(int i = 1 ; i < numSequences; ++i)
         numSequencePairs += i;
     String<TAlign> alis;
     reserve(alis,numSequencePairs*numAlignments);
@@ -551,7 +551,7 @@ SEQAN_DEFINE_TEST(RefineAlign)
     SEQAN_ASSERT(vd == 24);
     SEQAN_ASSERT(fragmentBegin(ali_graph,vd) == 8);
     SEQAN_ASSERT(fragmentLength(ali_graph,vd) == 1);
-    
+
     SEQAN_ASSERT(findEdge(ali_graph,0,14)!=0);
     SEQAN_ASSERT(findEdge(ali_graph,0,8)!=0);
     SEQAN_ASSERT(findEdge(ali_graph,1,15)!=0);
@@ -597,7 +597,7 @@ SEQAN_DEFINE_TEST(RefineAlign)
 
 ////produce pairwise alignments (Graph<Alignment>)
 //template<typename TAlign, typename TStringSet, typename TScore>
-//void 
+//void
 //getGraphAlignments(String<TAlign> & alis, TStringSet & seq, TScore & score_type, int & numAlignments, int cutoff)
 //{
 //    typedef StringSet<typename Value<TStringSet>::Type, Dependent<> > TAliStringSet;
@@ -625,7 +625,7 @@ SEQAN_DEFINE_TEST(RefineAlign)
 //            appendValue(alis,ali_g);
 //            cout << ali_g <<"\n";
 //            ++gesamt;
-//        }    
+//        }
 //    }
 //
 //    numAlignments = gesamt;
@@ -638,7 +638,7 @@ SEQAN_DEFINE_TEST(RefineAlign)
 
 //
 //
-//void 
+//void
 //Test_RefineAlignGraph(){
 //
 //    typedef String<char> TString;
@@ -662,7 +662,7 @@ SEQAN_DEFINE_TEST(RefineAlign)
 //    str = "GARFIELDTHEVERYFASTCAT";
 //    //appendValue(seq_set,str);
 //    assignValueById(seq_set,str);
-//    
+//
 //    str = "THEFATCAT";
 //    //appendValue(seq_set,str);
 //    assignValueById(seq_set,str);
@@ -673,7 +673,7 @@ SEQAN_DEFINE_TEST(RefineAlign)
 //    int numAlignments = 2;
 //    int numSequencePairs = 0;
 //    int cutoff = 3;
-//    for(int i = 1 ; i < numSequences; ++i) 
+//    for(int i = 1 ; i < numSequences; ++i)
 //        numSequencePairs += i;
 //    String<TAlign> alis;
 //    reserve(alis,numSequencePairs*numAlignments);
@@ -785,7 +785,7 @@ SEQAN_DEFINE_TEST(RefineAlign)
 //    SEQAN_ASSERT(vd == 24)
 //    SEQAN_ASSERT(fragmentBegin(ali_graph,vd) == 8)
 //    SEQAN_ASSERT(fragmentLength(ali_graph,vd) == 1)
-//    
+//
 //    SEQAN_ASSERT(findEdge(ali_graph,0,14)!=0)
 //    SEQAN_ASSERT(findEdge(ali_graph,0,8)!=0)
 //    SEQAN_ASSERT(findEdge(ali_graph,1,15)!=0)
@@ -861,14 +861,14 @@ SEQAN_DEFINE_TEST(GraphMatchRefinement_Problem)
 }
 
 
-void Test_GraphMatchRefinement() 
+void Test_GraphMatchRefinement()
 {
 
 //    Test_Problem();
 
     //test for graph_align on Align<TSource,TSpec>
 //    Test_RefineAlign();
-    
+
     //test for graph_align on Graph<Alignment<> >
 //    Test_RefineAlignGraph();
 

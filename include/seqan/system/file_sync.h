@@ -38,7 +38,7 @@
 #define SEQAN_HEADER_FILE_SIMPLE_H
 
 #include <fcntl.h>          // O_CREAT ..
-#include <sys/stat.h>       // 
+#include <sys/stat.h>       //
 #include <cstdio>           // tmpnam(..)
 
 #ifdef PLATFORM_WINDOWS
@@ -102,7 +102,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     //File(int posixHandle) : handle(posixHandle) {}
 
-        inline int _getOFlag(int openMode) const 
+        inline int _getOFlag(int openMode) const
         {
             int result;
             bool canWrite = false;
@@ -128,7 +128,7 @@ namespace SEQAN_NAMESPACE_MAIN
             return result | _O_BINARY;
         }
 
-        bool open(char const *fileName, int openMode = DefaultOpenMode<File>::VALUE) 
+        bool open(char const *fileName, int openMode = DefaultOpenMode<File>::VALUE)
         {
             handle = ::_open(fileName, _getOFlag(openMode), _S_IREAD | _S_IWRITE);
             if (handle == -1) {
@@ -140,7 +140,7 @@ namespace SEQAN_NAMESPACE_MAIN
             return true;
         }
 
-        bool openTemp(int openMode = DefaultOpenTempMode<File>::VALUE) 
+        bool openTemp(int openMode = DefaultOpenTempMode<File>::VALUE)
         {
 #ifdef PLATFORM_WINDOWS_MINGW
             char fileNameBuffer[L_tmpnam + 1];
@@ -162,7 +162,7 @@ namespace SEQAN_NAMESPACE_MAIN
             return result;
         }
 
-        inline bool close() 
+        inline bool close()
         {
             if (_close(handle) != 0)
                 return false;
@@ -171,7 +171,7 @@ namespace SEQAN_NAMESPACE_MAIN
             return true;
         }
 
-        inline int read(void *buffer, SizeType_ count) const 
+        inline int read(void *buffer, SizeType_ count) const
         {
             SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
             SEQAN_PROTIMESTART(tw);
@@ -180,7 +180,7 @@ namespace SEQAN_NAMESPACE_MAIN
             return result;
         }
 
-        inline int write(void const *buffer, SizeType_ count) const 
+        inline int write(void const *buffer, SizeType_ count) const
         {
             SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
             SEQAN_PROTIMESTART(tw);
@@ -189,35 +189,35 @@ namespace SEQAN_NAMESPACE_MAIN
             return result;
         }
 
-        inline FilePtr seek(FilePtr pos, int origin = SEEK_SET) const 
+        inline FilePtr seek(FilePtr pos, int origin = SEEK_SET) const
         {
             return _lseeki64(handle, pos, origin);
         }
 
-        inline FilePtr tell() const 
+        inline FilePtr tell() const
         {
             return _telli64(handle);
         }
 
-        static int error() 
+        static int error()
         {
             return errno;
         }
 
-        operator bool () const 
+        operator bool () const
         {
             return handle != -1;
         }
     };
 
-    inline bool fileExists(const char *fileName) 
+    inline bool fileExists(const char *fileName)
     {
 //IOREV _windows_ _nodoc_
         struct _stat buf;
         return _stat(fileName, &buf) == 0;
     }
 
-    inline bool fileUnlink(const char *fileName) 
+    inline bool fileUnlink(const char *fileName)
     {
 //IOREV _windows_ _nodoc_
         return _unlink(fileName) == 0;
@@ -246,7 +246,7 @@ namespace SEQAN_NAMESPACE_MAIN
     ///File(int posixHandle) : handle(posixHandle) {}
 
         virtual ~File() {}
-        
+
         inline int _getOFlag(int openMode) const {
             int result = O_LARGEFILE;
 
@@ -278,10 +278,10 @@ namespace SEQAN_NAMESPACE_MAIN
                 #ifdef SEQAN_DEBUG_OR_TEST_
                     if (!(openMode & OPEN_QUIET))
                         std::cerr << "Warning: Direct access openening failed: " << fileName << "." << std::endl;
-                #endif            
+                #endif
                   handle = ::open(fileName, _getOFlag(openMode & ~OPEN_ASYNC), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
             }
-            
+
             if (handle == -1) {
                 if (!(openMode & OPEN_QUIET))
                     std::cerr << "Open failed on file " << fileName << ". (" << ::strerror(errno) << ")" << std::endl;
@@ -306,7 +306,7 @@ namespace SEQAN_NAMESPACE_MAIN
             // First, try to get the temporary directory from the environment
             // variables TMPDIR, TMP.
             std::string tmpDir;
-            if ((getuid() == geteuid()) && (getgid() == getegid())) 
+            if ((getuid() == geteuid()) && (getgid() == getegid()))
             {
                 char * res;
                 if ((res = getenv("TMPDIR")) != NULL)
@@ -339,7 +339,7 @@ namespace SEQAN_NAMESPACE_MAIN
                     std::cerr << "Couldn't create temporary file " << tmpDir << ". (" << ::strerror(errno) << ")" << std::endl;
                 return false;
             }
-            if (!(close() && open(toCString(tmpDir), openMode))) 
+            if (!(close() && open(toCString(tmpDir), openMode)))
             {
                 umask(oldMode);  // Reset umask mode.
                 return false;
@@ -420,7 +420,7 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TSpec, typename TSize >
     inline void resize(File<Sync<TSpec> > &me, TSize new_length)
     {
-//IOREV _doc_ 
+//IOREV _doc_
         if (!me.resize(new_length))
             SEQAN_FAIL(
                 "resize(%d, %d) failed: \"%s\"",
@@ -458,7 +458,7 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         return (size_t)me.read(memPtr, count * sizeof(TValue)) == (size_t)(count * sizeof(TValue));
     }
-    
+
     template < typename TSpec, typename TValue, typename TSize >
     inline bool write(File<Sync<TSpec> > & me, TValue *memPtr, TSize const count)
     {

@@ -185,7 +185,7 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 
 template <typename TAlign, typename TSpec>
-inline Iter<TAlign, AlignColIterator<TSpec> > & 
+inline Iter<TAlign, AlignColIterator<TSpec> > &
 operator ++(Iter<TAlign, AlignColIterator<TSpec> > & me)
 {
 SEQAN_CHECKPOINT
@@ -195,7 +195,7 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 
 template <typename TAlign, typename TSpec>
-inline Iter<TAlign, AlignColIterator<TSpec> > 
+inline Iter<TAlign, AlignColIterator<TSpec> >
 operator ++(Iter<TAlign, AlignColIterator<TSpec> > & me, int)
 {
 SEQAN_CHECKPOINT
@@ -228,7 +228,7 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 
 template <typename TAlign, typename TSpec>
-inline Iter<TAlign, AlignColIterator<TSpec> > & 
+inline Iter<TAlign, AlignColIterator<TSpec> > &
 operator --(Iter<TAlign, AlignColIterator<TSpec> > & me)
 {
 SEQAN_CHECKPOINT
@@ -238,7 +238,7 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 
 template <typename TAlign, typename TSpec>
-inline Iter<TAlign, AlignColIterator<TSpec> > 
+inline Iter<TAlign, AlignColIterator<TSpec> >
 operator --(Iter<TAlign, AlignColIterator<TSpec> > & me, int)
 {
 SEQAN_CHECKPOINT
@@ -438,7 +438,7 @@ SEQAN_CHECKPOINT
 //disabled since GapsIterator has no operator - and +
 /*
 template <typename TAlign, typename TSpec, typename TSize>
-inline Iter<TAlign, AlignColIterator<TSpec> > & 
+inline Iter<TAlign, AlignColIterator<TSpec> > &
 operator +=(Iter<TAlign, AlignColIterator<TSpec> > & me,
             TSize size)
 {
@@ -463,7 +463,7 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TAlign, typename TSpec, typename TSize>
-inline Iter<TAlign, AlignColIterator<TSpec> > 
+inline Iter<TAlign, AlignColIterator<TSpec> >
 operator +(Iter<TAlign, AlignColIterator<TSpec> > & me,
            TSize size)
 {
@@ -473,7 +473,7 @@ SEQAN_CHECKPOINT
     return me;
 }
 template <typename TAlign, typename TSpec, typename TSize>
-inline Iter<TAlign, AlignColIterator<TSpec> > 
+inline Iter<TAlign, AlignColIterator<TSpec> >
 operator +(Iter<TAlign, AlignColIterator<TSpec> > const & me,
            TSize size)
 {
@@ -486,7 +486,7 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TAlign, typename TSpec, typename TSize>
-inline Iter<TAlign, AlignColIterator<TSpec> > & 
+inline Iter<TAlign, AlignColIterator<TSpec> > &
 operator -=(Iter<TAlign, AlignColIterator<TSpec> > & me,
             TSize size)
 {
@@ -510,7 +510,7 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TAlign, typename TSpec, typename TSize>
-inline Iter<TAlign, AlignColIterator<TSpec> > 
+inline Iter<TAlign, AlignColIterator<TSpec> >
 operator -(Iter<TAlign, AlignColIterator<TSpec> > & me,
            TSize size)
 {
@@ -520,7 +520,7 @@ SEQAN_CHECKPOINT
     return me;
 }
 template <typename TAlign, typename TSpec, typename TSize>
-inline Iter<TAlign, AlignColIterator<TSpec> > 
+inline Iter<TAlign, AlignColIterator<TSpec> >
 operator -(Iter<TAlign, AlignColIterator<TSpec> > const & me,
            TSize size)
 {

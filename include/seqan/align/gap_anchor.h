@@ -65,14 +65,14 @@ typedef Tag<SortGapPos_> const SortGapPos;
  * @implements ComparableConcept
  * @headerfile <seqan/align.h>
  * @brief Stores the position of an alignment character in sequence-space and gap-space in @link AnchorGaps @endlink.
- * 
+ *
  * @signature template <typename TPosition>
  *            struct GapAnchor;
- * 
+ *
  * @tparam TPos Type to store gapped/ungapped positions.
- * 
+ *
  * @section Remarks
- * 
+ *
  * Used as value type for the <tt>gaps</tt> strings in @link ReadStoreElement @endlink and @link ContigStoreElement
  * @endlink.
  *
@@ -99,16 +99,16 @@ struct GapAnchor
 /*!
  * @fn GapAnchor::GapAnchor
  * @brief Constructor.
- * 
+ *
  * @signature GapAnchor::GapAnchor([other]);
  * @signature GapAnchor::GapAnchor(seqPos, gapPos);
  *
  * @param[in] other  GapAnchor object to copy from.
  * @param[in] seqPos Sequence character position in the ungapped sequence (of type <tt>TPos</tt>).
  * @param[in] gapPos Sequence character position in the gapped sequence (of type <tt>TPos</tt>).
- * 
+ *
  * @section Remarks
- * 
+ *
  * The default constructor sets both positions to <tt>0</tt>.
  */
 
@@ -129,42 +129,42 @@ struct GapAnchor
         seqPos = other.seqPos;
         gapPos = other.gapPos;
         return *this;
-    } 
+    }
 
     template <typename TOther>
     inline bool
     operator == (TOther const &other) const
     {
         return seqPos == other.seqPos && gapPos == other.gapPos;
-    } 
+    }
 
     template <typename TOther>
     inline bool
     operator != (TOther const &other) const
     {
         return !(*this == other);
-    } 
+    }
 
     template <typename TOther>
     inline bool
     operator < (TOther const &other) const
     {
         return seqPos < other.seqPos || gapPos < other.gapPos;
-    } 
+    }
 
     template <typename TOther>
     inline bool
     operator > (TOther const &other) const
     {
         return seqPos > other.seqPos || gapPos > other.gapPos;
-    } 
+    }
 
     template <typename TOther>
     inline bool
     operator <= (TOther const &other) const
     {
         return seqPos < other.seqPos || gapPos <= other.gapPos;
-    } 
+    }
 
     template <typename TOther>
     inline bool
@@ -223,7 +223,7 @@ template <typename TGapAnchor>
 struct _LessGapAnchor<TGapAnchor, SortSeqPos> :
     public std::binary_function<TGapAnchor, TGapAnchor, bool>
 {
-    inline bool 
+    inline bool
     operator() (TGapAnchor const& a1, TGapAnchor const& a2) const {
         return (a1.seqPos) < (a2.seqPos);
     }
@@ -233,7 +233,7 @@ template <typename TGapAnchor>
 struct _LessGapAnchor<TGapAnchor, SortGapPos> :
     public std::binary_function<TGapAnchor, TGapAnchor, bool>
 {
-    inline bool 
+    inline bool
     operator() (TGapAnchor const& a1, TGapAnchor const& a2) const {
         return (a1.gapPos) < (a2.gapPos);
     }
@@ -245,64 +245,64 @@ struct _LessGapAnchor<TGapAnchor, SortGapPos> :
 
 template <typename TGapAnchor, typename TSearchValue>
 inline typename Iterator<TGapAnchor const, Standard>::Type
-lowerBoundGapAnchor(TGapAnchor const & gaps, 
+lowerBoundGapAnchor(TGapAnchor const & gaps,
                     TSearchValue const val,
-                    SortSeqPos) 
+                    SortSeqPos)
 {
     typedef typename Value<TGapAnchor>::Type TGapAnchorElement;
     TGapAnchorElement el;
     el.seqPos = val;
     return std::lower_bound(
-        begin(gaps, Standard()), 
-        end(gaps, Standard()), 
+        begin(gaps, Standard()),
+        end(gaps, Standard()),
         el,
         _LessGapAnchor<typename Value<TGapAnchor>::Type, SortSeqPos const>() );
 }
 
 template <typename TGapAnchor, typename TSearchValue>
 inline typename Iterator<TGapAnchor, Standard>::Type
-lowerBoundGapAnchor(TGapAnchor & gaps, 
+lowerBoundGapAnchor(TGapAnchor & gaps,
                     TSearchValue const val,
-                    SortSeqPos) 
+                    SortSeqPos)
 {
     typedef typename Value<TGapAnchor>::Type TGapAnchorElement;
     TGapAnchorElement el;
     el.seqPos = val;
     return std::lower_bound(
-        begin(gaps, Standard()), 
-        end(gaps, Standard()), 
+        begin(gaps, Standard()),
+        end(gaps, Standard()),
         el,
         _LessGapAnchor<typename Value<TGapAnchor>::Type, SortSeqPos const>() );
 }
 
 template <typename TGapAnchor, typename TSearchValue>
 inline typename Iterator<TGapAnchor const, Standard>::Type
-lowerBoundGapAnchor(TGapAnchor const & gaps, 
+lowerBoundGapAnchor(TGapAnchor const & gaps,
                     TSearchValue const val,
-                    SortGapPos) 
+                    SortGapPos)
 {
     typedef typename Value<TGapAnchor>::Type TGapAnchorElement;
     TGapAnchorElement el;
     el.gapPos = val;
     return std::lower_bound(
-        begin(gaps, Standard()), 
-        end(gaps, Standard()), 
+        begin(gaps, Standard()),
+        end(gaps, Standard()),
         el,
         _LessGapAnchor<typename Value<TGapAnchor>::Type, SortGapPos const>() );
 }
 
 template <typename TGapAnchor, typename TSearchValue>
 inline typename Iterator<TGapAnchor, Standard>::Type
-lowerBoundGapAnchor(TGapAnchor & gaps, 
+lowerBoundGapAnchor(TGapAnchor & gaps,
                     TSearchValue const val,
-                    SortGapPos) 
+                    SortGapPos)
 {
     typedef typename Value<TGapAnchor>::Type TGapAnchorElement;
     TGapAnchorElement el;
     el.gapPos = val;
     return std::lower_bound(
-        begin(gaps, Standard()), 
-        end(gaps, Standard()), 
+        begin(gaps, Standard()),
+        end(gaps, Standard()),
         el,
         _LessGapAnchor<typename Value<TGapAnchor>::Type, SortGapPos const>() );
 }
@@ -315,14 +315,14 @@ template <typename TGapAnchors, typename TSearchValue>
 inline typename Iterator<TGapAnchors const, Standard>::Type
 upperBoundGapAnchor(TGapAnchors const & gaps,
                     TSearchValue const val,
-                    SortSeqPos) 
+                    SortSeqPos)
 {
     typedef typename Value<TGapAnchors>::Type TGapAnchorElement;
     TGapAnchorElement el;
     el.seqPos = val;
     return std::upper_bound(
-        begin(gaps, Standard()), 
-        end(gaps, Standard()), 
+        begin(gaps, Standard()),
+        end(gaps, Standard()),
         el,
         _LessGapAnchor<typename Value<TGapAnchors>::Type, SortSeqPos const>() );
 }
@@ -331,46 +331,46 @@ template <typename TGapAnchors, typename TSearchValue>
 inline typename Iterator<TGapAnchors, Standard>::Type
 upperBoundGapAnchor(TGapAnchors & gaps,
                     TSearchValue const val,
-                    SortSeqPos) 
+                    SortSeqPos)
 {
     typedef typename Value<TGapAnchors>::Type TGapAnchorElement;
     TGapAnchorElement el;
     el.seqPos = val;
     return std::upper_bound(
-        begin(gaps, Standard()), 
-        end(gaps, Standard()), 
+        begin(gaps, Standard()),
+        end(gaps, Standard()),
         el,
         _LessGapAnchor<typename Value<TGapAnchors>::Type, SortSeqPos const>() );
 }
 
 template <typename TGapAnchors, typename TSearchValue>
 inline typename Iterator<TGapAnchors const, Standard>::Type
-upperBoundGapAnchor(TGapAnchors const & gaps, 
+upperBoundGapAnchor(TGapAnchors const & gaps,
                     TSearchValue const val,
-                    SortGapPos) 
+                    SortGapPos)
 {
     typedef typename Value<TGapAnchors>::Type TGapAnchorElement;
     TGapAnchorElement el;
     el.gapPos = val;
     return std::upper_bound(
-        begin(gaps, Standard()), 
-        end(gaps, Standard()), 
+        begin(gaps, Standard()),
+        end(gaps, Standard()),
         el,
         _LessGapAnchor<typename Value<TGapAnchors>::Type, SortGapPos const>() );
 }
 
 template <typename TGapAnchors, typename TSearchValue>
 inline typename Iterator<TGapAnchors, Standard>::Type
-upperBoundGapAnchor(TGapAnchors & gaps, 
+upperBoundGapAnchor(TGapAnchors & gaps,
                     TSearchValue const val,
-                    SortGapPos) 
+                    SortGapPos)
 {
     typedef typename Value<TGapAnchors>::Type TGapAnchorElement;
     TGapAnchorElement el;
     el.gapPos = val;
     return std::upper_bound(
-        begin(gaps, Standard()), 
-        end(gaps, Standard()), 
+        begin(gaps, Standard()),
+        end(gaps, Standard()),
         el,
         _LessGapAnchor<typename Value<TGapAnchors>::Type, SortGapPos const>() );
 }

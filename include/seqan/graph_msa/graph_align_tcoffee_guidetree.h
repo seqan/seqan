@@ -80,13 +80,13 @@ _roundToSignificantFigures(double num, int n)
 template<typename TValue, typename TStringSpec, typename TCargo, typename TSpec>
 inline void
 njTree(String<TValue, TStringSpec> const & matIn,
-       Graph<Tree<TCargo, TSpec> >& g) 
+       Graph<Tree<TCargo, TSpec> >& g)
 {
     typedef String<TValue, TStringSpec> TMatrix;
     typedef typename Size<TMatrix>::Type TSize;
     typedef Graph<Tree<TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-    
+
     TVertexDescriptor nilVertex = getNil<TVertexDescriptor>();
     TSize nseq = (TSize) std::sqrt((double)length(matIn));
 
@@ -155,13 +155,13 @@ njTree(String<TValue, TStringSpec> const & matIn,
 
         // Determine the sum of all branches and
         // copy upper triangle matrix to lower triangle
-        for(TSize col=1; col<nseq; ++col) 
-            for(TSize row=0; row<col; ++row) 
+        for(TSize col=1; col<nseq; ++col)
+            for(TSize row=0; row<col; ++row)
                 sumOfBranches += mat[col*nseq+row] = mat[row*nseq+col];
 
         // Compute the sum of branch lengths for all possible pairs
         bool notFound = true;
-        __int64 tmin = 0;    
+        __int64 tmin = 0;
         TSize mini = 0;  // Next pair of seq i and j to join
         TSize minj = 0;
         __int64 diToAllOthers = 0;
@@ -173,7 +173,7 @@ njTree(String<TValue, TStringSpec> const & matIn,
                     if (connector[row] != nilVertex) {
                         diToAllOthers = 0;
                         djToAllOthers = 0;
-                        
+
                         for(TSize i=0; i<nseq; ++i) {
                             diToAllOthers += mat[i*nseq+row];
                             djToAllOthers += mat[i*nseq+col];
@@ -198,7 +198,7 @@ njTree(String<TValue, TStringSpec> const & matIn,
         //std::cout << minj << std::endl;
         //std::cout << tmin << std::endl;
         //std::cout << std::endl;
-        
+
         // Compute branch lengths
         __int64 dMinIToOthers = 0;
         __int64 dMinJToOthers = 0;
@@ -213,16 +213,16 @@ njTree(String<TValue, TStringSpec> const & matIn,
         __int64 jBranch = dmin - iBranch;
         iBranch -= av[mini];
         jBranch -= av[minj];
-        
+
         // Set negative branch length to zero
         if( iBranch < 0) iBranch = 0;
         if( jBranch < 0) jBranch = 0;
-    
+
         // Print branch lengths
         //std::cout << iBranch << std::endl;
         //std::cout << jBranch << std::endl;
         //std::cout << std::endl;
-        
+
         // Build tree
         TVertexDescriptor internalVertex = addVertex(g);
         addEdge(g, internalVertex, connector[mini], (TCargo) _roundToSignificantFigures((iBranch / 10000000.0) * normFactor, 5));
@@ -275,7 +275,7 @@ njTree(String<TValue, TStringSpec> const & matIn,
     branch[0] = (mat[l[0]*nseq+l[1]] + mat[l[0]*nseq+l[2]] - mat[l[1]*nseq+l[2]]) / 2;
     branch[1] = (mat[l[1]*nseq+l[2]] + mat[l[0]*nseq+l[1]] - mat[l[0]*nseq+l[2]]) / 2;
     branch[2] = (mat[l[1]*nseq+l[2]] + mat[l[0]*nseq+l[2]] - mat[l[0]*nseq+l[1]]) / 2;
-    
+
     branch[0] -= av[l[0]];
     branch[1] -= av[l[1]];
     branch[2] -= av[l[2]];
@@ -285,12 +285,12 @@ njTree(String<TValue, TStringSpec> const & matIn,
     //std::cout << branch[1] << std::endl;
     //std::cout << branch[2] << std::endl;
     //std::cout << std::endl;
-    
+
     // Reset negative branch lengths to zero
     if( branch[0] < 0) branch[0] = 0;
     if( branch[1] < 0) branch[1] = 0;
     if( branch[2] < 0) branch[2] = 0;
-    
+
     // Build tree
     TVertexDescriptor internalVertex = addVertex(g);
     addEdge(g, internalVertex, getValue(connector, l[0]), (TCargo) _roundToSignificantFigures((branch[0] / 10000000.0)* normFactor, 5));
@@ -365,12 +365,12 @@ typedef Tag<UpgmaWeightAvg_> const UpgmaWeightAvg;
 
 template<typename TMatrix, typename TActive, typename TSize>
 inline void
-_upgmaTreeMerge(TMatrix& mat, 
+_upgmaTreeMerge(TMatrix& mat,
                 TActive& active,
                 TSize index_i,
                 TSize index_j,
                 TSize nseq,
-                UpgmaWeightAvg) 
+                UpgmaWeightAvg)
 {
     SEQAN_CHECKPOINT
     typedef typename Value<TMatrix>::Type TValue;
@@ -395,12 +395,12 @@ _upgmaTreeMerge(TMatrix& mat,
 
 template<typename TMatrix, typename TActive, typename TSize>
 inline void
-_upgmaTreeMerge(TMatrix& mat, 
+_upgmaTreeMerge(TMatrix& mat,
                 TActive& active,
                 TSize index_i,
                 TSize index_j,
                 TSize nseq,
-                UpgmaAvg) 
+                UpgmaAvg)
 {
     SEQAN_CHECKPOINT
     typedef typename Value<TMatrix>::Type TValue;
@@ -421,12 +421,12 @@ _upgmaTreeMerge(TMatrix& mat,
 
 template<typename TMatrix, typename TActive, typename TSize>
 inline void
-_upgmaTreeMerge(TMatrix& mat, 
+_upgmaTreeMerge(TMatrix& mat,
                 TActive& active,
                 TSize index_i,
                 TSize index_j,
                 TSize nseq,
-                UpgmaMin) 
+                UpgmaMin)
 {
     SEQAN_CHECKPOINT
     typedef typename Value<TMatrix>::Type TValue;
@@ -446,12 +446,12 @@ _upgmaTreeMerge(TMatrix& mat,
 
 template<typename TMatrix, typename TActive, typename TSize>
 inline void
-_upgmaTreeMerge(TMatrix& mat, 
+_upgmaTreeMerge(TMatrix& mat,
                 TActive& active,
                 TSize index_i,
                 TSize index_j,
                 TSize nseq,
-                UpgmaMax) 
+                UpgmaMax)
 {
     SEQAN_CHECKPOINT
     typedef typename Value<TMatrix>::Type TValue;
@@ -504,7 +504,7 @@ _upgmaTreeMerge(Graph<Undirected<TCargo, TSpec> >& pairGraph,
 
 template<typename TCargo, typename TSpec, typename TActive, typename TEdgeDescriptor>
 inline void
-_upgmaTreeMerge(Graph<Undirected<TCargo, TSpec> >& pairGraph, 
+_upgmaTreeMerge(Graph<Undirected<TCargo, TSpec> >& pairGraph,
                 TActive const&,
                 TEdgeDescriptor best,
                 UpgmaMin)
@@ -536,10 +536,10 @@ _upgmaTreeMerge(Graph<Undirected<TCargo, TSpec> >& pairGraph,
 
 template<typename TCargo, typename TSpec, typename TActive, typename TEdgeDescriptor>
 inline void
-_upgmaTreeMerge(Graph<Undirected<TCargo, TSpec> >& pairGraph, 
+_upgmaTreeMerge(Graph<Undirected<TCargo, TSpec> >& pairGraph,
                 TActive const& active,
                 TEdgeDescriptor best,
-                UpgmaWeightAvg) 
+                UpgmaWeightAvg)
 {
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
@@ -571,10 +571,10 @@ _upgmaTreeMerge(Graph<Undirected<TCargo, TSpec> >& pairGraph,
 
 template<typename TCargo, typename TSpec, typename TActive, typename TEdgeDescriptor>
 inline void
-_upgmaTreeMerge(Graph<Undirected<TCargo, TSpec> >& pairGraph, 
+_upgmaTreeMerge(Graph<Undirected<TCargo, TSpec> >& pairGraph,
                 TActive const&,
                 TEdgeDescriptor best,
-                UpgmaAvg) 
+                UpgmaAvg)
 {
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
@@ -606,9 +606,9 @@ _upgmaTreeMerge(Graph<Undirected<TCargo, TSpec> >& pairGraph,
 
 template<typename TStringValue, typename TStringSpec, typename TCargo, typename TSpec, typename TTag>
 inline void
-upgmaTree(String<TStringValue, TStringSpec>& mat, 
+upgmaTree(String<TStringValue, TStringSpec>& mat,
           Graph<Tree<TCargo, TSpec> >& g,
-          TTag) 
+          TTag)
 {
     SEQAN_CHECKPOINT
     typedef Graph<Tree<TCargo, TSpec> > TGraph;
@@ -688,7 +688,7 @@ upgmaTree(String<TStringValue, TStringSpec>& mat,
         TCargo w = (TCargo) (minVal / 2);
         addEdge(g, internalNode, nodes[index_i], w - property(weights, nodes[index_i]));
         addEdge(g, internalNode, nodes[index_j], w - property(weights, nodes[index_j]));
-        appendValue(weights, w);        
+        appendValue(weights, w);
 
         // Get the new distance values
         _upgmaTreeMerge(mat, active, index_i, index_j, nseq, TTag());
@@ -697,7 +697,7 @@ upgmaTree(String<TStringValue, TStringSpec>& mat,
         active[index_i] += active[index_j];
         active[index_j] = 0;
         nodes[index_i] = internalNode;
-        
+
         // Find new minimum
         notFound = true;
         for(TSize i=0;i<nseq;++i) {
@@ -721,9 +721,9 @@ upgmaTree(String<TStringValue, TStringSpec>& mat,
 
 template<typename TValue, typename TSpec1, typename TCargo, typename TSpec2, typename TTag>
 inline void
-upgmaTree(Graph<Undirected<TValue, TSpec1> >& pairGraph, 
+upgmaTree(Graph<Undirected<TValue, TSpec1> >& pairGraph,
           Graph<Tree<TCargo, TSpec2> >& g,
-          TTag) 
+          TTag)
 {
     SEQAN_CHECKPOINT
     typedef Graph<Undirected<TValue, TSpec1> > TPairGraph;
@@ -766,7 +766,7 @@ upgmaTree(Graph<Undirected<TValue, TSpec1> >& pairGraph,
     resize(nodes, nseq);
     TNodeIter nodeIt = begin(nodes, Standard() );
     TNodeIter nodeItEnd = end(nodes, Standard() );
-    for(;nodeIt<nodeItEnd;goNext(nodeIt)) 
+    for(;nodeIt<nodeItEnd;goNext(nodeIt))
         *nodeIt = addVertex(g);    // For each sequence one vertex
 
     // Find the minimal value for all vertices (with respect to all greater vertices)
@@ -778,8 +778,8 @@ upgmaTree(Graph<Undirected<TValue, TSpec1> >& pairGraph,
     for(;!atEnd(itE);goNext(itE)) {
         TVD s = sourceVertex(itE);
         TVD t = targetVertex(itE);
-        if (cargo(*itE) < (minValues[s].i1)) 
-            minValues[s] = TWeightEdgePair(cargo(*itE), t);        
+        if (cargo(*itE) < (minValues[s].i1))
+            minValues[s] = TWeightEdgePair(cargo(*itE), t);
     }
     // Find the overall minimum
     typedef typename Iterator<TMinValues, Standard>::Type TMinIter;
@@ -802,7 +802,7 @@ upgmaTree(Graph<Undirected<TValue, TSpec1> >& pairGraph,
         targetBest = value(itV);
         best = addEdge(pairGraph, sourceBest, targetBest, infCargo);
     } else best = findEdge(pairGraph, sourceBest, targetBest);
-    
+
     // Property map for sum of weights for each node
     String<TCargo> weights;
     resize(weights, nseq, (TCargo) 0);
@@ -813,21 +813,21 @@ upgmaTree(Graph<Undirected<TValue, TSpec1> >& pairGraph,
     while (m>1) {
         // Merge nodes
         TVertexDescriptor internalNode = addVertex(g);
-        
+
         // Set the weights
         TCargo w = (TCargo) (minVal / 2);
         addEdge(g, internalNode, nodes[sourceBest], w - property(weights, nodes[sourceBest]));
         addEdge(g, internalNode, nodes[targetBest], w - property(weights, nodes[targetBest]));
-        appendValue(weights, w);        
+        appendValue(weights, w);
 
         // Get the new distance values
         _upgmaTreeMerge(pairGraph, active, best, TTag());
-        
+
         // Inactivate one group, adjust the member count for the other one
         active[sourceBest] += active[targetBest];
         active[targetBest] = 0;
         nodes[sourceBest] = internalNode;
-    
+
         // Update the minimum values
         minValues[sourceBest] = TWeightEdgePair(maxVal, 0);
         for(TEdgeOutI itOutE(pairGraph, sourceBest);!atEnd(itOutE);goNext(itOutE)) {
@@ -892,8 +892,8 @@ upgmaTree(Graph<Undirected<TValue, TSpec1> >& pairGraph,
 
 template<typename TDistance, typename TCargo, typename TSpec>
 inline void
-upgmaTree(TDistance& dist, 
-          Graph<Tree<TCargo, TSpec> >& g) 
+upgmaTree(TDistance& dist,
+          Graph<Tree<TCargo, TSpec> >& g)
 {
     SEQAN_CHECKPOINT
     upgmaTree(dist, g, UpgmaWeightAvg());

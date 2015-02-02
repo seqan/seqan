@@ -46,7 +46,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 template <typename TIter>
-inline void _dumpState(TIter const it) 
+inline void _dumpState(TIter const it)
 {
     std::cout << typeid(it).name() << std::endl;
     std::cout << "  range:            " << value(it).range << std::endl;
@@ -65,7 +65,7 @@ void crossBottomUp(TIndex1 &index1, TIndex2 &index2)
     typename Iterator<TIndex1, TIterSpec>::Type iter1(index1);
     typename Iterator<TIndex2, TIterSpec>::Type iter2(index2);
 
-    while (!atEnd(iter1) && !atEnd(iter2)) 
+    while (!atEnd(iter1) && !atEnd(iter2))
     {
         SEQAN_ASSERT_EQ(representative(iter1), representative(iter2));
         SEQAN_ASSERT_EQ(countOccurrences(iter1), countOccurrences(iter2));

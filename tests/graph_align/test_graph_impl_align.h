@@ -95,7 +95,7 @@ SEQAN_DEFINE_TEST(Test_Refinement_AlignmentGraphNoEdgeWeights)
 
     TVertexDescriptor v0 = addVertex(g, id1, 0, 2);
     SEQAN_ASSERT_EQ(v0, 0u);
-    SEQAN_ASSERT_EQ(outDegree(g, v0), 0u);    
+    SEQAN_ASSERT_EQ(outDegree(g, v0), 0u);
     SEQAN_ASSERT_EQ(inDegree(g, 0), 0u);
     SEQAN_ASSERT_EQ(degree(g, 0), 0u);
     SEQAN_ASSERT_EQ(numVertices(g), 1u);
@@ -153,8 +153,8 @@ SEQAN_DEFINE_TEST(Test_Refinement_AlignmentGraphNoEdgeWeights)
     removeEdge(g, 3, 1);
     removeEdge(g, 0, 1);
     SEQAN_ASSERT_EQ(numEdges(g), 2u);
-    
-    // Remove vertices 
+
+    // Remove vertices
     addVertex(g, id2, 14, 4);  // 5
     addEdge(g, 5, 2);
     addEdge(g, 2, 3);
@@ -197,7 +197,7 @@ SEQAN_DEFINE_TEST(Test_Refinement_AlignmentGraphNoEdgeWeights)
     SEQAN_ASSERT_EQ(inDegree(g, 4), 2u);
 
     // Transpose
-    transpose(g); 
+    transpose(g);
     SEQAN_ASSERT_EQ(numVertices(g), 4u);
     SEQAN_ASSERT_EQ(numEdges(g), 3u);
     SEQAN_ASSERT_EQ(outDegree(g, 4), 2u);
@@ -445,7 +445,7 @@ SEQAN_DEFINE_TEST(Test_Refinement_AlignmentGraphOutput)
     typedef Graph<Alignment<TStringSet, void> > TAlignmentGraph;
     typedef VertexDescriptor<TAlignmentGraph>::Type TVD;
     //typedef EdgeDescriptor<TAlignmentGraph>::Type TED;
-    
+
     TStringSet str;
     TString str0("Garfieldthelastfatcat");
     TId i0 = assignValueById(str, str0);
@@ -509,7 +509,7 @@ SEQAN_DEFINE_TEST(Test_Refinement_AlignmentGraphOutput)
     appendValue(seqs, "seq2");
     appendValue(seqs, "seq3");
     appendValue(seqs, "seq4");
-    
+
     // fasta output
     write(sstream, g, seqs, FastaFormat());
     expected << ">seq1\nGarfieldthelastfa-tcat\n"
@@ -519,7 +519,7 @@ SEQAN_DEFINE_TEST(Test_Refinement_AlignmentGraphOutput)
     SEQAN_ASSERT_EQ(sstream.str(), expected.str());
     sstream.str(""); sstream.clear();
     expected.str(""); expected.clear();
-    
+
     // msf output
     write(sstream, g, seqs, MsfFormat());
     expected << "PileUp\n\n"
@@ -716,7 +716,7 @@ SEQAN_DEFINE_TEST(Test_Refinement_HeaviestCommonSubsequence)
     typedef StringSet<TString, Dependent<> > TStringSet;
     typedef Graph<Alignment<TStringSet, int> > TGraph;
     typedef VertexDescriptor<TGraph>::Type TVertexDescriptor;
-    
+
     TString s1 = "aaa";
     TString s2 = "aa";
     TStringSet strSet;
@@ -792,7 +792,7 @@ SEQAN_DEFINE_TEST(Test_Refinement_OutEdgeIteratorAlignment)
     addVertex(g,1,0,1);
     addEdge(g,0,2,10);
     addVertex(g,1,1,1);
-    
+
     typedef Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator;
     TOutEdgeIterator it(g, v0);
     // Slow

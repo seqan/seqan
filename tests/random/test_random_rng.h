@@ -90,9 +90,9 @@ SEQAN_DEFINE_TEST(test_random_mt19937_pick)
 SEQAN_DEFINE_TEST(test_random_mt19937_metafunctions)
 {
     using namespace seqan;
-    
+
     typedef Value<Rng<MersenneTwister> >::Type TValue;
-    
+
     TValue m = MinValue<Rng<MersenneTwister> >::VALUE;
     SEQAN_ASSERT_EQ(MinValue<TValue>::VALUE, m);
     TValue M = MaxValue<Rng<MersenneTwister> >::VALUE;
@@ -103,14 +103,14 @@ SEQAN_DEFINE_TEST(test_random_mt19937_metafunctions)
 SEQAN_DEFINE_TEST(test_random_rng_functor_constructors)
 {
     using namespace seqan;
-    
+
     typedef Rng<MersenneTwister> TMersenneTwister;
     typedef Pdf<Uniform<int> > TUniformPdf;
-    
+
     {
         TMersenneTwister mt;
         TUniformPdf uniformPdf(0, 10);
-        
+
         Rng<RngFunctor<TMersenneTwister, TUniformPdf> > rng(mt, uniformPdf);
     }
 }
@@ -120,7 +120,7 @@ SEQAN_DEFINE_TEST(test_random_rng_functor_constructors)
 SEQAN_DEFINE_TEST(test_random_rng_functor_pick)
 {
     using namespace seqan;
-    
+
     const int SEED = 10;
 
     typedef Rng<MersenneTwister> TMersenneTwister;
@@ -132,28 +132,28 @@ SEQAN_DEFINE_TEST(test_random_rng_functor_pick)
     {
         TMersenneTwister mt(SEED);
         TUniformPdf uniform(10, 100);
-        
+
         for (int i = 0; i < 100; ++i)
             appendValue(rawInts, pickRandomNumber(mt, uniform));
     }
-    
+
     // Use RngFunctor with pickRandomNumber() and check equality.
     {
         TMersenneTwister mt(SEED);
         TUniformPdf uniform(10, 100);
         TRngFunctor rngFunctor(mt, uniform);
-        
+
         for (int i = 0; i < 100; ++i) {
             SEQAN_ASSERT_EQ_MSG(unsigned(rawInts[i]), pickRandomNumber(rngFunctor), "i = %d", i);
         }
     }
-    
+
     // Use RngFunctor with operator() and check equality.
     {
         TMersenneTwister mt(SEED);
         TUniformPdf uniform(10, 100);
         TRngFunctor rngFunctor(mt, uniform);
-        
+
         for (int i = 0; i < 100; ++i) {
             SEQAN_ASSERT_EQ_MSG(rawInts[i], rngFunctor(), "i = %d", i);
         }

@@ -72,7 +72,7 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
 template<typename TGraph, typename TSpec>
-class Iter<TGraph, GraphIterator<InternalDfsIterator<TSpec> > > 
+class Iter<TGraph, GraphIterator<InternalDfsIterator<TSpec> > >
 {
 public:
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor_;
@@ -80,7 +80,7 @@ public:
     TVertexDescriptor_ data_source;
     String<bool> data_tokenMap;            // Which vertices have been visited
     String<TVertexDescriptor_> data_stack;
-    
+
     void _init() {
         resizeVertexMap(data_tokenMap, *data_host);
         typedef typename Iterator<String<bool>, Rooted>::Type TIter;
@@ -97,16 +97,16 @@ public:
     {
         SEQAN_CHECKPOINT
     }
-    
-    Iter(TGraph& _graph, TVertexDescriptor_ v) : 
+
+    Iter(TGraph& _graph, TVertexDescriptor_ v) :
         data_host(&_graph),
         data_source(v)
     {
         SEQAN_CHECKPOINT
         _init();
     }
-    
-    
+
+
     Iter(Iter const& _iter) :
         data_host(_iter.data_host),
         data_source(_iter.data_source),
@@ -138,13 +138,13 @@ public:
 //////////////////////////////////////////////////////////////////////////////
 template<typename TGraph>
 struct Iterator<TGraph, DfsPreorder>
-{    
+{
     typedef Iter<TGraph, GraphIterator<InternalDfsIterator<DfsPreorder> > > Type;
 };
 
 template<typename TGraph>
 struct Iterator<TGraph const, DfsPreorder>
-{    
+{
     typedef Iter<TGraph const, GraphIterator<InternalDfsIterator<DfsPreorder> > > Type;
 };
 

@@ -185,7 +185,7 @@ struct Position;
 /*!
  * @mfn Spec
  * @headerfile <seqan/basic.h>
- * @brief The spec of a class. 
+ * @brief The spec of a class.
  *
  * @signature Spec<T>::Type;
  *
@@ -252,7 +252,7 @@ template <template <typename> class T,
           typename T1>
 struct DeepestSpec<T<T1> >
 {
-    typedef typename 
+    typedef typename
         IfC<IsSameType<T1, void>::VALUE,                                  // is T1 void?
             T<T1>,                                                        // yes, end of recursion
             typename DeepestSpec<typename Spec<T<T1> >::Type >::Type      // no,  recurse
@@ -268,21 +268,21 @@ struct DeepestSpec<T<T1, T2> > : DeepestSpec<typename Spec<T<T1,T2> >::Type>
 
 // Recursion for 3 arguments.
 
-template <template <typename, typename, typename> class T, 
+template <template <typename, typename, typename> class T,
           typename T1, typename T2, typename T3>
 struct DeepestSpec<T<T1, T2, T3> >:
     DeepestSpec<typename Spec<T<T1, T2, T3> >::Type> {};
 
 // Recursion for 4 arguments.
 
-template <template <typename, typename, typename, typename> class T, 
+template <template <typename, typename, typename, typename> class T,
           typename T1, typename T2, typename T3, typename T4>
 struct DeepestSpec<T<T1, T2, T3, T4> >:
     DeepestSpec<typename Spec<T<T1, T2, T3, T4> >::Type> {};
 
 // Recursion for 5 arguments.
 
-template <template <typename, typename, typename, typename, typename> class T, 
+template <template <typename, typename, typename, typename, typename> class T,
           typename T1, typename T2, typename T3, typename T4, typename T5>
 struct DeepestSpec<T<T1, T2, T3, T4, T5> > :
     DeepestSpec<typename Spec<T<T1, T2, T3, T4, T5> >::Type>

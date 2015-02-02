@@ -40,18 +40,18 @@
 
 namespace seqan {
 
-    
-///////////////////////////////////////////////////////////////////////////////////////////////////////    
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 //Functios for Align Graphs
 //project onto other sequence for Graph<Alignment>
 template<typename TAlignment,typename TId1, typename TPos1, typename TId2, typename TPos2, typename TValue,typename TMap>
 void
-_getOtherSequenceAndProject(Graph<TAlignment> & segment, 
+_getOtherSequenceAndProject(Graph<TAlignment> & segment,
                 TValue seg_num,
-                            TMap &, 
-                             TId1 seq_i_id, 
-                            TPos1 pos_i, 
-                            TId2 & seq_j_id, 
+                            TMap &,
+                             TId1 seq_i_id,
+                            TPos1 pos_i,
+                            TId2 & seq_j_id,
                             TPos2 & pos_j)
 {
     getProjectedPosition(segment,seg_num,seq_i_id, pos_i,seq_j_id,pos_j);
@@ -67,9 +67,9 @@ _getOtherSequenceAndProject(Graph<TAlignment> & segment,
 template<typename TAlign, typename TId, typename TPosition, typename TId2>
 void
 _getSeqBeginAndEnd(Graph<TAlign> & segment,
-                  std::map<const void * ,int> &, 
-                  TId & seq_i_id, 
-                  TPosition & begin_i, 
+                  std::map<const void * ,int> &,
+                  TId & seq_i_id,
+                  TPosition & begin_i,
                   TPosition & end_i,
                   TId2 seq)
 {
@@ -80,7 +80,7 @@ SEQAN_CHECKPOINT
     typedef Graph<TAlign> TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
-    
+
     TEdgeIterator ed_it(segment);
     //goBegin(ed_it);
     if(seq==0)
@@ -125,7 +125,7 @@ SEQAN_CHECKPOINT
 //
 ////    typename Infix<typename Value<TStringSet>::Type>::Type label0 = infix(getValueById(seqs,seq_i_id),pos_i,last_pos_i);
 ////    typename Infix<typename Value<TStringSet>::Type>::Type label1 = infix(getValueById(seqs,seq_j_id),pos_j,last_pos_j);
-//    
+//
 //    typename Value<TScore>::Type score = 0;
 //    TValue i = 0;
 //    while (i < len)
@@ -141,7 +141,7 @@ SEQAN_CHECKPOINT
 //                ++i;
 //                continue;
 //            }
-//        }        
+//        }
 //        pos_j = next_pos_j;
 //        score += score(score_type,getValueById(seqs,seq_i_id)[pos_i],getValueById(seqs,seq_j_id)[pos_j]);
 //        ++i;
@@ -171,13 +171,13 @@ SEQAN_CHECKPOINT
 //    //ret_score = scoreMatch(score_type);
 //    //ret_score *= len;
 //    return ret_score;
-//}                
+//}
 
 
 //////////////////////////
 // get score for part of pairwise alignment graph starting in pos_i in first sequence and in
 // pos_j in second sequence, and with length len and len_j respectively
-// only for exact refinement 
+// only for exact refinement
 template<typename TScoreValue,typename TScoreSpec,typename TStringSet,typename TAlignment,typename TValue>
 TScoreValue
 _getRefinedMatchScore(Score<TScoreValue,TScoreSpec> & score_type,
@@ -197,18 +197,18 @@ SEQAN_CHECKPOINT
     typedef typename TGraph::TPosToVertexMap TPosToVertexMap;
     typedef typename TPosToVertexMap::const_iterator TVertexMapIter;
     TVertexDescriptor nilVertex = getNil<TVertexDescriptor>();
-    
+
     TValue seq_i_id;
     TEdgeIterator ed(segment);
     //goBegin(ed);
     seq_i_id = sequenceId(segment,sourceVertex(ed));
-        
+
     int pseudo_map = 0;
     TValue pos_j_check,seq_j_id;
     _getOtherSequenceAndProject(segment,pseudo_map,seq_i_id,pos_i,seq_j_id,pos_j_check);
     SEQAN_ASSERT(pos_j_check==pos_j);
     TValue last_pos_j = pos_j + len_j;
-        
+
     TScoreValue ret_score = 0;
     bool last_one_was_aligned = false;
 
@@ -216,9 +216,9 @@ SEQAN_CHECKPOINT
     {
         TValue rest = 0;
         TVertexMapIter it = segment.data_pvMap.upper_bound(std::make_pair(seq_i_id, pos_i));
-        // it->second is nilVertex if pos_i lies within gap    
+        // it->second is nilVertex if pos_i lies within gap
         if(it->second == nilVertex)
-        {    
+        {
             ++it;
             if(it != segment.data_pvMap.end() && it->first.first == seq_i_id)
             {
@@ -249,7 +249,7 @@ SEQAN_CHECKPOINT
                     TValue next_pos_j,temp;
                     getProjectedPosition(segment,seq_i_id,pos_i,temp,next_pos_j);
                     ret_score += (next_pos_j-pos_j) * scoreGapExtend(score_type);
-                    pos_j = next_pos_j; 
+                    pos_j = next_pos_j;
                 }
                 last_one_was_aligned = true;
                 TValue i = 0;
@@ -259,7 +259,7 @@ SEQAN_CHECKPOINT
                     ++i;
                 }
                 if(rest>len) return ret_score; //done (last_pos_i is somewhere inside the current node)
-                else 
+                else
                 {//last_pos_i is the first position of the next node
                     if(rest == len) //check if there is an unalgined stretch on seq_j_id that needs to be included
                     {
@@ -280,12 +280,12 @@ SEQAN_CHECKPOINT
                 }
             }
         }
-        len -= rest;    
+        len -= rest;
     }
 
 
     return ret_score;
-}                
+}
 
 }  // namespace seqan
 

@@ -144,7 +144,7 @@ struct AlignedReadStoreElement
     typedef String<TGapAnchor>                            TGapAnchors;
 
     static const TId INVALID_ID;
-    
+
     TId            id;
     TId            readId;
     TId            contigId;
@@ -156,19 +156,19 @@ struct AlignedReadStoreElement
     AlignedReadStoreElement() : id(INVALID_ID), readId(INVALID_ID), contigId(INVALID_ID), pairMatchId(INVALID_ID), beginPos(0), endPos(0) {}
 
     AlignedReadStoreElement(TId _id, TId _readId, TId _contigId, TPos _beginPos, TPos _endPos) :
-        id(_id), 
-        readId(_readId), 
-        contigId(_contigId), 
-        pairMatchId(INVALID_ID), 
-        beginPos(_beginPos), 
+        id(_id),
+        readId(_readId),
+        contigId(_contigId),
+        pairMatchId(INVALID_ID),
+        beginPos(_beginPos),
         endPos(_endPos) {}
 
     AlignedReadStoreElement(TId _id, TId _readId, TId _contigId, TPos _beginPos, TPos _endPos, TGapAnchors const &_gaps) :
-        id(_id), 
-        readId(_readId), 
-        contigId(_contigId), 
-        pairMatchId(INVALID_ID), 
-        beginPos(_beginPos), 
+        id(_id),
+        readId(_readId),
+        contigId(_contigId),
+        pairMatchId(INVALID_ID),
+        beginPos(_beginPos),
         endPos(_endPos),
         gaps(_gaps) {}
 
@@ -194,9 +194,9 @@ TStream & operator<<(TStream & stream, AlignedReadStoreElement<TPos, TGapAnchor,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TPos, typename TGapAnchor, typename TSpec> 
-const typename Id<AlignedReadStoreElement<TPos, TGapAnchor, TSpec> >::Type 
-AlignedReadStoreElement<TPos, TGapAnchor, TSpec>::INVALID_ID = MaxValue<typename Id<AlignedReadStoreElement<TPos, TGapAnchor, TSpec> >::Type>::VALUE; 
+template <typename TPos, typename TGapAnchor, typename TSpec>
+const typename Id<AlignedReadStoreElement<TPos, TGapAnchor, TSpec> >::Type
+AlignedReadStoreElement<TPos, TGapAnchor, TSpec>::INVALID_ID = MaxValue<typename Id<AlignedReadStoreElement<TPos, TGapAnchor, TSpec> >::Type>::VALUE;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -218,7 +218,7 @@ AlignedReadStoreElement<TPos, TGapAnchor, TSpec>::INVALID_ID = MaxValue<typename
  * @brief Constructor, sets all members to 0.
  *
  * @signature AlignQualityStoreElement::AlignQualityStoreElement();
- * 
+ *
  *
  * @var TScore AlignQualityStoreElement::pairScore;
  * @brief Combined score of both alignmetns and pair match.
@@ -236,7 +236,7 @@ struct AlignQualityStoreElement
     TScore                pairScore;        // score of the mate-pair alignment (this read is part of)
     TScore                score;            // score of the single read alignment
     unsigned char        errors;            // absolute number of errors (Hamming or edit distance)
-    
+
     AlignQualityStoreElement():
         pairScore(0),
         score(0),
@@ -351,7 +351,7 @@ template <typename TAlignedRead>
 struct _LessAlignedRead<TAlignedRead, SortId> :
     public std::binary_function<TAlignedRead, TAlignedRead, bool>
 {
-    inline bool 
+    inline bool
     operator() (TAlignedRead const& a1, TAlignedRead const& a2) const {
         return (a1.id) < (a2.id);
     }
@@ -361,7 +361,7 @@ template <typename TAlignedRead>
 struct _LessAlignedRead<TAlignedRead, SortContigId> :
     public std::binary_function<TAlignedRead, TAlignedRead, bool>
 {
-    inline bool 
+    inline bool
     operator() (TAlignedRead const& a1, TAlignedRead const& a2) const {
         return a1.contigId < a2.contigId;
     }
@@ -371,7 +371,7 @@ template <typename TAlignedRead>
 struct _LessAlignedRead<TAlignedRead, SortBeginPos> :
     public std::binary_function<TAlignedRead, TAlignedRead, bool>
 {
-    inline bool 
+    inline bool
     operator() (TAlignedRead const& a1, TAlignedRead const& a2) const {
         return _min(a1.beginPos, a1.endPos) < _min(a2.beginPos, a2.endPos);
     }
@@ -381,7 +381,7 @@ template <typename TAlignedRead>
 struct _LessAlignedRead<TAlignedRead, SortEndPos> :
     public std::binary_function<TAlignedRead, TAlignedRead, bool>
 {
-    inline bool 
+    inline bool
     operator() (TAlignedRead const& a1, TAlignedRead const& a2) const {
         return _max(a1.beginPos, a1.endPos) < _max(a2.beginPos, a2.endPos);
     }
@@ -391,7 +391,7 @@ template <typename TAlignedRead>
 struct _LessAlignedRead<TAlignedRead, SortPairMatchId> :
     public std::binary_function<TAlignedRead, TAlignedRead, bool>
 {
-    inline bool 
+    inline bool
     operator() (TAlignedRead const& a1, TAlignedRead const& a2) const {
         return a1.pairMatchId < a2.pairMatchId;
     }
@@ -401,7 +401,7 @@ template <typename TAlignedRead>
 struct _LessAlignedRead<TAlignedRead, SortReadId> :
     public std::binary_function<TAlignedRead, TAlignedRead, bool>
 {
-    inline bool 
+    inline bool
     operator() (TAlignedRead const& a1, TAlignedRead const& a2) const {
         return a1.readId < a2.readId;
     }
@@ -483,11 +483,11 @@ struct _LessAlignedRead<TAlignedRead, SortReadId> :
 
 template <typename TAlign, typename TSortSpec>
 inline void
-sortAlignedReads(TAlign& alignStore, Tag<TSortSpec> const &) 
+sortAlignedReads(TAlign& alignStore, Tag<TSortSpec> const &)
 {
     std::stable_sort(
-        begin(alignStore, Standard() ), 
-        end(alignStore, Standard() ), 
+        begin(alignStore, Standard() ),
+        end(alignStore, Standard() ),
         _LessAlignedRead<typename Value<TAlign>::Type, Tag<TSortSpec> const>() );
 }
 
@@ -495,31 +495,31 @@ sortAlignedReads(TAlign& alignStore, Tag<TSortSpec> const &)
 
 template <typename TAlign, typename TSortSpec>
 inline void
-sortAlignedReads(TAlign const & alignStore, Tag<TSortSpec> const &) 
+sortAlignedReads(TAlign const & alignStore, Tag<TSortSpec> const &)
 {
     std::stable_sort(
-        begin(const_cast<TAlign&>(alignStore), Standard() ), 
-        end(const_cast<TAlign&>(alignStore), Standard() ), 
+        begin(const_cast<TAlign&>(alignStore), Standard() ),
+        end(const_cast<TAlign&>(alignStore), Standard() ),
         _LessAlignedRead<typename Value<TAlign>::Type, Tag<TSortSpec> const>() );
 }
 
 template <typename TAlign, typename TFunctorLess>
 inline void
-sortAlignedReads(TAlign & alignStore, TFunctorLess const &less) 
+sortAlignedReads(TAlign & alignStore, TFunctorLess const &less)
 {
     std::stable_sort(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         less);
 }
 
 template <typename TAlign, typename TFunctorLess>
 inline void
-sortAlignedReads(TAlign const & alignStore, TFunctorLess const &less) 
+sortAlignedReads(TAlign const & alignStore, TFunctorLess const &less)
 {
     std::stable_sort(
-        begin(const_cast<TAlign&>(alignStore), Standard()), 
-        end(const_cast<TAlign&>(alignStore), Standard()), 
+        begin(const_cast<TAlign&>(alignStore), Standard()),
+        end(const_cast<TAlign&>(alignStore), Standard()),
         less);
 }
 
@@ -527,66 +527,32 @@ sortAlignedReads(TAlign const & alignStore, TFunctorLess const &less)
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign const, Standard>::Type
-lowerBoundAlignedReads(TAlign const & alignStore, 
+lowerBoundAlignedReads(TAlign const & alignStore,
                        TSearchValue const val,
-                       SortId) 
+                       SortId)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.id = val;
     return std::lower_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortId const>() );
 }
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign, Standard>::Type
-lowerBoundAlignedReads(TAlign & alignStore, 
+lowerBoundAlignedReads(TAlign & alignStore,
                        TSearchValue const val,
-                       SortId) 
+                       SortId)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.id = val;
     return std::lower_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
-        el,
-        _LessAlignedRead<typename Value<TAlign>::Type, SortId const>() );
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-
-template <typename TAlign, typename TSearchValue>
-inline typename Iterator<TAlign const, Standard>::Type
-upperBoundAlignedReads(TAlign const & alignStore, 
-                       TSearchValue const val,
-                       SortId) 
-{
-    typedef typename Value<TAlign>::Type TAlignElement;
-    TAlignElement el;
-    el.id = val;
-    return std::upper_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
-        el,
-        _LessAlignedRead<typename Value<TAlign>::Type, SortId const>() );
-}
-
-template <typename TAlign, typename TSearchValue>
-inline typename Iterator<TAlign, Standard>::Type
-upperBoundAlignedReads(TAlign & alignStore, 
-                       TSearchValue const val,
-                       SortId) 
-{
-    typedef typename Value<TAlign>::Type TAlignElement;
-    TAlignElement el;
-    el.id = val;
-    return std::upper_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortId const>() );
 }
@@ -595,32 +561,66 @@ upperBoundAlignedReads(TAlign & alignStore,
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign const, Standard>::Type
-lowerBoundAlignedReads(TAlign const & alignStore, 
+upperBoundAlignedReads(TAlign const & alignStore,
                        TSearchValue const val,
-                       SortContigId) 
+                       SortId)
+{
+    typedef typename Value<TAlign>::Type TAlignElement;
+    TAlignElement el;
+    el.id = val;
+    return std::upper_bound(
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
+        el,
+        _LessAlignedRead<typename Value<TAlign>::Type, SortId const>() );
+}
+
+template <typename TAlign, typename TSearchValue>
+inline typename Iterator<TAlign, Standard>::Type
+upperBoundAlignedReads(TAlign & alignStore,
+                       TSearchValue const val,
+                       SortId)
+{
+    typedef typename Value<TAlign>::Type TAlignElement;
+    TAlignElement el;
+    el.id = val;
+    return std::upper_bound(
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
+        el,
+        _LessAlignedRead<typename Value<TAlign>::Type, SortId const>() );
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+template <typename TAlign, typename TSearchValue>
+inline typename Iterator<TAlign const, Standard>::Type
+lowerBoundAlignedReads(TAlign const & alignStore,
+                       TSearchValue const val,
+                       SortContigId)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.contigId = val;
     return std::lower_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortContigId const>() );
 }
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign, Standard>::Type
-lowerBoundAlignedReads(TAlign & alignStore, 
+lowerBoundAlignedReads(TAlign & alignStore,
                        TSearchValue const val,
-                       SortContigId) 
+                       SortContigId)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.contigId = val;
     return std::lower_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortContigId const>() );
 }
@@ -629,32 +629,32 @@ lowerBoundAlignedReads(TAlign & alignStore,
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign const, Standard>::Type
-upperBoundAlignedReads(TAlign const & alignStore, 
+upperBoundAlignedReads(TAlign const & alignStore,
                        TSearchValue const val,
-                       SortContigId) 
+                       SortContigId)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.contigId = val;
     return std::upper_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortContigId const>() );
 }
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign, Standard>::Type
-upperBoundAlignedReads(TAlign & alignStore, 
+upperBoundAlignedReads(TAlign & alignStore,
                        TSearchValue const val,
-                       SortContigId) 
+                       SortContigId)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.contigId = val;
     return std::upper_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortContigId const>() );
 }
@@ -663,70 +663,34 @@ upperBoundAlignedReads(TAlign & alignStore,
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign const, Standard>::Type
-lowerBoundAlignedReads(TAlign const & alignStore, 
+lowerBoundAlignedReads(TAlign const & alignStore,
                        TSearchValue const val,
-                       SortBeginPos) 
+                       SortBeginPos)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.beginPos = val;
     el.endPos = val;
     return std::lower_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortBeginPos const>() );
 }
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign, Standard>::Type
-lowerBoundAlignedReads(TAlign & alignStore, 
+lowerBoundAlignedReads(TAlign & alignStore,
                        TSearchValue const val,
-                       SortBeginPos) 
+                       SortBeginPos)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.beginPos = val;
     el.endPos = val;
     return std::lower_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
-        el,
-        _LessAlignedRead<typename Value<TAlign>::Type, SortBeginPos const>() );
-}
-
-//////////////////////////////////////////////////////////////////////////////////
-
-template <typename TAlign, typename TSearchValue>
-inline typename Iterator<TAlign const, Standard>::Type
-upperBoundAlignedReads(TAlign const & alignStore, 
-                       TSearchValue const val,
-                       SortBeginPos) 
-{
-    typedef typename Value<TAlign>::Type TAlignElement;
-    TAlignElement el;
-    el.beginPos = val;
-    el.endPos = val;
-    return std::upper_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
-        el,
-        _LessAlignedRead<typename Value<TAlign>::Type, SortBeginPos const>() );
-}
-
-template <typename TAlign, typename TSearchValue>
-inline typename Iterator<TAlign, Standard>::Type
-upperBoundAlignedReads(TAlign & alignStore, 
-                       TSearchValue const val,
-                       SortBeginPos) 
-{
-    typedef typename Value<TAlign>::Type TAlignElement;
-    TAlignElement el;
-    el.beginPos = val;
-    el.endPos = val;
-    return std::upper_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortBeginPos const>() );
 }
@@ -735,34 +699,70 @@ upperBoundAlignedReads(TAlign & alignStore,
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign const, Standard>::Type
-lowerBoundAlignedReads(TAlign const & alignStore, 
+upperBoundAlignedReads(TAlign const & alignStore,
                        TSearchValue const val,
-                       SortEndPos) 
+                       SortBeginPos)
+{
+    typedef typename Value<TAlign>::Type TAlignElement;
+    TAlignElement el;
+    el.beginPos = val;
+    el.endPos = val;
+    return std::upper_bound(
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
+        el,
+        _LessAlignedRead<typename Value<TAlign>::Type, SortBeginPos const>() );
+}
+
+template <typename TAlign, typename TSearchValue>
+inline typename Iterator<TAlign, Standard>::Type
+upperBoundAlignedReads(TAlign & alignStore,
+                       TSearchValue const val,
+                       SortBeginPos)
+{
+    typedef typename Value<TAlign>::Type TAlignElement;
+    TAlignElement el;
+    el.beginPos = val;
+    el.endPos = val;
+    return std::upper_bound(
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
+        el,
+        _LessAlignedRead<typename Value<TAlign>::Type, SortBeginPos const>() );
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+template <typename TAlign, typename TSearchValue>
+inline typename Iterator<TAlign const, Standard>::Type
+lowerBoundAlignedReads(TAlign const & alignStore,
+                       TSearchValue const val,
+                       SortEndPos)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.beginPos = val;
     el.endPos = val;
     return std::lower_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortEndPos const>() );
 }
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign, Standard>::Type
-lowerBoundAlignedReads(TAlign & alignStore, 
+lowerBoundAlignedReads(TAlign & alignStore,
                        TSearchValue const val,
-                       SortEndPos) 
+                       SortEndPos)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.beginPos = val;
     el.endPos = val;
     return std::lower_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortEndPos const>() );
 }
@@ -771,34 +771,34 @@ lowerBoundAlignedReads(TAlign & alignStore,
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign const, Standard>::Type
-upperBoundAlignedReads(TAlign const & alignStore, 
+upperBoundAlignedReads(TAlign const & alignStore,
                        TSearchValue const val,
-                       SortEndPos) 
+                       SortEndPos)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.beginPos = val;
     el.endPos = val;
     return std::upper_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortEndPos const>() );
 }
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign, Standard>::Type
-upperBoundAlignedReads(TAlign & alignStore, 
+upperBoundAlignedReads(TAlign & alignStore,
                        TSearchValue const val,
-                       SortEndPos) 
+                       SortEndPos)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.beginPos = val;
     el.endPos = val;
     return std::upper_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortEndPos const>() );
 }
@@ -807,32 +807,32 @@ upperBoundAlignedReads(TAlign & alignStore,
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign const, Standard>::Type
-lowerBoundAlignedReads(TAlign const & alignStore, 
+lowerBoundAlignedReads(TAlign const & alignStore,
                        TSearchValue const val,
-                       SortPairMatchId) 
+                       SortPairMatchId)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.pairMatchId = val;
     return std::lower_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortPairMatchId const>() );
 }
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign, Standard>::Type
-lowerBoundAlignedReads(TAlign & alignStore, 
+lowerBoundAlignedReads(TAlign & alignStore,
                        TSearchValue const val,
-                       SortPairMatchId) 
+                       SortPairMatchId)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.pairMatchId = val;
     return std::lower_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortPairMatchId const>() );
 }
@@ -841,32 +841,32 @@ lowerBoundAlignedReads(TAlign & alignStore,
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign const, Standard>::Type
-upperBoundAlignedReads(TAlign const & alignStore, 
+upperBoundAlignedReads(TAlign const & alignStore,
                        TSearchValue const val,
-                       SortPairMatchId) 
+                       SortPairMatchId)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.pairMatchId = val;
     return std::upper_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortPairMatchId const>() );
 }
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign, Standard>::Type
-upperBoundAlignedReads(TAlign & alignStore, 
+upperBoundAlignedReads(TAlign & alignStore,
                        TSearchValue const val,
-                       SortPairMatchId) 
+                       SortPairMatchId)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.pairMatchId = val;
     return std::upper_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortPairMatchId const>() );
 }
@@ -875,32 +875,32 @@ upperBoundAlignedReads(TAlign & alignStore,
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign const, Standard>::Type
-lowerBoundAlignedReads(TAlign const & alignStore, 
+lowerBoundAlignedReads(TAlign const & alignStore,
                        TSearchValue const val,
-                       SortReadId) 
+                       SortReadId)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.readId = val;
     return std::lower_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortReadId const>() );
 }
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign, Standard>::Type
-lowerBoundAlignedReads(TAlign & alignStore, 
+lowerBoundAlignedReads(TAlign & alignStore,
                        TSearchValue const val,
-                       SortReadId) 
+                       SortReadId)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.readId = val;
     return std::lower_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortReadId const>() );
 }
@@ -909,32 +909,32 @@ lowerBoundAlignedReads(TAlign & alignStore,
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign const, Standard>::Type
-upperBoundAlignedReads(TAlign const & alignStore, 
+upperBoundAlignedReads(TAlign const & alignStore,
                        TSearchValue const val,
-                       SortReadId) 
+                       SortReadId)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.readId = val;
     return std::upper_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortReadId const>() );
 }
 
 template <typename TAlign, typename TSearchValue>
 inline typename Iterator<TAlign, Standard>::Type
-upperBoundAlignedReads(TAlign & alignStore, 
+upperBoundAlignedReads(TAlign & alignStore,
                        TSearchValue const val,
-                       SortReadId) 
+                       SortReadId)
 {
     typedef typename Value<TAlign>::Type TAlignElement;
     TAlignElement el;
     el.readId = val;
     return std::upper_bound(
-        begin(alignStore, Standard()), 
-        end(alignStore, Standard()), 
+        begin(alignStore, Standard()),
+        end(alignStore, Standard()),
         el,
         _LessAlignedRead<typename Value<TAlign>::Type, SortReadId const>() );
 }
@@ -946,14 +946,14 @@ inline Iter<T, TSpec>
 lowerBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
                        Iter<T, TSpec> const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortId) 
+                       SortId)
 {
     typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
     TAlignElement el;
     el.id = val;
     return std::lower_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<Iter<T, TSpec> >::Type, SortId const>() );
 }
@@ -966,14 +966,14 @@ inline Iter<T, TSpec>
 upperBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
                        Iter<T, TSpec> const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortId) 
+                       SortId)
 {
     typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
     TAlignElement el;
     el.id = val;
     return std::upper_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<Iter<T, TSpec> >::Type, SortId const>() );
 }
@@ -985,14 +985,14 @@ inline Iter<T, TSpec>
 lowerBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
                        Iter<T, TSpec> const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortContigId) 
+                       SortContigId)
 {
     typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
     TAlignElement el;
     el.contigId = val;
     return std::lower_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<Iter<T, TSpec> >::Type, SortContigId const>() );
 }
@@ -1004,14 +1004,14 @@ inline Iter<T, TSpec>
 upperBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
                        Iter<T, TSpec> const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortContigId) 
+                       SortContigId)
 {
     typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
     TAlignElement el;
     el.contigId = val;
     return std::upper_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<Iter<T, TSpec> >::Type, SortContigId const>() );
 }
@@ -1023,15 +1023,15 @@ inline Iter<T, TSpec>
 lowerBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
                        Iter<T, TSpec> const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortBeginPos) 
+                       SortBeginPos)
 {
     typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
     TAlignElement el;
     el.beginPos = val;
     el.endPos = val;
     return std::lower_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<Iter<T, TSpec> >::Type, SortBeginPos const>() );
 }
@@ -1043,15 +1043,15 @@ inline Iter<T, TSpec>
 upperBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
                        Iter<T, TSpec> const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortBeginPos) 
+                       SortBeginPos)
 {
     typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
     TAlignElement el;
     el.beginPos = val;
     el.endPos = val;
     return std::upper_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<Iter<T, TSpec> >::Type, SortBeginPos const>() );
 }
@@ -1064,15 +1064,15 @@ inline Iter<T, TSpec>
 lowerBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
                        Iter<T, TSpec> const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortEndPos) 
+                       SortEndPos)
 {
     typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
     TAlignElement el;
     el.beginPos = val;
     el.endPos = val;
     return std::lower_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<Iter<T, TSpec> >::Type, SortEndPos const>() );
 }
@@ -1084,15 +1084,15 @@ inline Iter<T, TSpec>
 upperBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
                        Iter<T, TSpec> const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortEndPos) 
+                       SortEndPos)
 {
     typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
     TAlignElement el;
     el.beginPos = val;
     el.endPos = val;
     return std::upper_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<Iter<T, TSpec> >::Type, SortEndPos const>() );
 }
@@ -1105,14 +1105,14 @@ inline Iter<T, TSpec>
 lowerBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
                        Iter<T, TSpec> const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortPairMatchId) 
+                       SortPairMatchId)
 {
     typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
     TAlignElement el;
     el.pairMatchId = val;
     return std::lower_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<Iter<T, TSpec> >::Type, SortPairMatchId const>() );
 }
@@ -1124,14 +1124,14 @@ inline Iter<T, TSpec>
 upperBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
                        Iter<T, TSpec> const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortPairMatchId) 
+                       SortPairMatchId)
 {
     typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
     TAlignElement el;
     el.pairMatchId = val;
     return std::upper_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<Iter<T, TSpec> >::Type, SortPairMatchId const>() );
 }
@@ -1143,14 +1143,14 @@ inline Iter<T, TSpec>
 lowerBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
                        Iter<T, TSpec> const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortReadId) 
+                       SortReadId)
 {
     typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
     TAlignElement el;
     el.readId = val;
     return std::lower_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<Iter<T, TSpec> >::Type, SortReadId const>() );
 }
@@ -1162,14 +1162,14 @@ inline Iter<T, TSpec>
 upperBoundAlignedReads(Iter<T, TSpec> const & alignedReadsItBegin,
                        Iter<T, TSpec> const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortReadId) 
+                       SortReadId)
 {
     typedef typename Value<Iter<T, TSpec> >::Type TAlignElement;
     TAlignElement el;
     el.readId = val;
     return std::upper_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<Iter<T, TSpec> >::Type, SortReadId const>() );
 }
@@ -1181,14 +1181,14 @@ inline TReadAlignElement *
 lowerBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
                        TReadAlignElement * const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortId) 
+                       SortId)
 {
     typedef typename Value<TReadAlignElement *>::Type TAlignElement;
     TAlignElement el;
     el.id = val;
     return std::lower_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<TReadAlignElement *>::Type, SortId const>() );
 }
@@ -1200,14 +1200,14 @@ inline TReadAlignElement *
 upperBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
                        TReadAlignElement * const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortId) 
+                       SortId)
 {
     typedef typename Value<TReadAlignElement *>::Type TAlignElement;
     TAlignElement el;
     el.id = val;
     return std::upper_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<TReadAlignElement *>::Type, SortId const>() );
 }
@@ -1219,14 +1219,14 @@ inline TReadAlignElement *
 lowerBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
                        TReadAlignElement * const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortContigId) 
+                       SortContigId)
 {
     typedef typename Value<TReadAlignElement *>::Type TAlignElement;
     TAlignElement el;
     el.contigId = val;
     return std::lower_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<TReadAlignElement *>::Type, SortContigId const>() );
 }
@@ -1238,14 +1238,14 @@ inline TReadAlignElement *
 upperBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
                        TReadAlignElement * const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortContigId) 
+                       SortContigId)
 {
     typedef typename Value<TReadAlignElement *>::Type TAlignElement;
     TAlignElement el;
     el.contigId = val;
     return std::upper_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<TReadAlignElement *>::Type, SortContigId const>() );
 }
@@ -1257,15 +1257,15 @@ inline TReadAlignElement *
 lowerBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
                        TReadAlignElement * const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortBeginPos) 
+                       SortBeginPos)
 {
     typedef typename Value<TReadAlignElement *>::Type TAlignElement;
     TAlignElement el;
     el.beginPos = val;
     el.endPos = val;
     return std::lower_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<TReadAlignElement *>::Type, SortBeginPos const>() );
 }
@@ -1277,15 +1277,15 @@ inline TReadAlignElement *
 upperBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
                        TReadAlignElement * const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortBeginPos) 
+                       SortBeginPos)
 {
     typedef typename Value<TReadAlignElement *>::Type TAlignElement;
     TAlignElement el;
     el.beginPos = val;
     el.endPos = val;
     return std::upper_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<TReadAlignElement *>::Type, SortBeginPos const>() );
 }
@@ -1298,15 +1298,15 @@ inline TReadAlignElement *
 lowerBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
                        TReadAlignElement * const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortEndPos) 
+                       SortEndPos)
 {
     typedef typename Value<TReadAlignElement *>::Type TAlignElement;
     TAlignElement el;
     el.beginPos = val;
     el.endPos = val;
     return std::lower_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<TReadAlignElement *>::Type, SortEndPos const>() );
 }
@@ -1318,15 +1318,15 @@ inline TReadAlignElement *
 upperBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
                        TReadAlignElement * const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortEndPos) 
+                       SortEndPos)
 {
     typedef typename Value<TReadAlignElement *>::Type TAlignElement;
     TAlignElement el;
     el.beginPos = val;
     el.endPos = val;
     return std::upper_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<TReadAlignElement *>::Type, SortEndPos const>() );
 }
@@ -1339,14 +1339,14 @@ inline TReadAlignElement *
 lowerBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
                        TReadAlignElement * const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortPairMatchId) 
+                       SortPairMatchId)
 {
     typedef typename Value<TReadAlignElement *>::Type TAlignElement;
     TAlignElement el;
     el.pairMatchId = val;
     return std::lower_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<TReadAlignElement *>::Type, SortPairMatchId const>() );
 }
@@ -1358,14 +1358,14 @@ inline TReadAlignElement *
 upperBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
                        TReadAlignElement * const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortPairMatchId) 
+                       SortPairMatchId)
 {
     typedef typename Value<TReadAlignElement *>::Type TAlignElement;
     TAlignElement el;
     el.pairMatchId = val;
     return std::upper_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<TReadAlignElement *>::Type, SortPairMatchId const>() );
 }
@@ -1377,14 +1377,14 @@ inline TReadAlignElement *
 lowerBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
                        TReadAlignElement * const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortReadId) 
+                       SortReadId)
 {
     typedef typename Value<TReadAlignElement *>::Type TAlignElement;
     TAlignElement el;
     el.readId = val;
     return std::lower_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<TReadAlignElement *>::Type, SortReadId const>() );
 }
@@ -1396,14 +1396,14 @@ inline TReadAlignElement *
 upperBoundAlignedReads(TReadAlignElement * const & alignedReadsItBegin,
                        TReadAlignElement * const & alignedReadsItEnd,
                        TSearchValue const val,
-                       SortReadId) 
+                       SortReadId)
 {
     typedef typename Value<TReadAlignElement *>::Type TAlignElement;
     TAlignElement el;
     el.readId = val;
     return std::upper_bound(
-        alignedReadsItBegin, 
-        alignedReadsItEnd, 
+        alignedReadsItBegin,
+        alignedReadsItEnd,
         el,
         _LessAlignedRead<typename Value<TReadAlignElement *>::Type, SortReadId const>() );
 }

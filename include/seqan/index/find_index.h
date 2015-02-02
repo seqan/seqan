@@ -46,7 +46,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
 //////////////////////////////////////////////////////////////////////////////
-// generic Finder class for all indices containing a suffix array or 
+// generic Finder class for all indices containing a suffix array or
 // similar table, where a query result is an interval in this table
 //
 // your index must specialize the function _findFirstIndex and set
@@ -95,7 +95,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //____________________________________________________________________________
 
     template < typename TText, typename TSpec, typename TSpecFinder >
-    inline typename Parameter_< Index<TText, TSpec> >::Type 
+    inline typename Parameter_< Index<TText, TSpec> >::Type
     host(Finder< Index<TText, TSpec>, TSpecFinder > & me)
     {
 SEQAN_CHECKPOINT
@@ -103,7 +103,7 @@ SEQAN_CHECKPOINT
     }
 
     template < typename TText, typename TSpec, typename TSpecFinder >
-    inline typename Parameter_< Index<TText, TSpec> >::Type 
+    inline typename Parameter_< Index<TText, TSpec> >::Type
     host(Finder< Index<TText, TSpec>, TSpecFinder > const & me)
     {
 SEQAN_CHECKPOINT
@@ -111,7 +111,7 @@ SEQAN_CHECKPOINT
     }
 
     template < typename TText, typename TSpec, typename TSpecFinder >
-    inline typename Parameter_< Index<TText, TSpec> >::Type 
+    inline typename Parameter_< Index<TText, TSpec> >::Type
     container(Finder< Index<TText, TSpec>, TSpecFinder > & me)
     {
 SEQAN_CHECKPOINT
@@ -119,7 +119,7 @@ SEQAN_CHECKPOINT
     }
 
     template < typename TText, typename TSpec, typename TSpecFinder >
-    inline typename Parameter_< Index<TText, TSpec> >::Type 
+    inline typename Parameter_< Index<TText, TSpec> >::Type
     container(Finder< Index<TText, TSpec>, TSpecFinder > const & me)
     {
 SEQAN_CHECKPOINT
@@ -131,7 +131,7 @@ SEQAN_CHECKPOINT
     template < typename TText, typename TSpec, typename TSpecFinder >
     inline void
     setHost(
-        Finder< Index<TText, TSpec>, TSpecFinder > & me, 
+        Finder< Index<TText, TSpec>, TSpecFinder > & me,
         typename Parameter_<Index<TText, TSpec> >::Type container_)
     {
         me.index = container_;
@@ -140,7 +140,7 @@ SEQAN_CHECKPOINT
     template < typename TText, typename TSpec, typename TSpecFinder >
     inline void
     setContainer(
-        Finder< Index<TText, TSpec>, TSpecFinder > & me, 
+        Finder< Index<TText, TSpec>, TSpecFinder > & me,
         typename Parameter_<Index<TText, TSpec> >::Type container_)
     {
         me.index = container_;
@@ -287,7 +287,7 @@ SEQAN_CHECKPOINT
         Finder<Index<TText, TSpec>, TSpecFinder> &finder,
         TPattern const &pattern)
     {
-        if (empty(finder)) 
+        if (empty(finder))
         {
             _findFirstIndex(finder, needle(pattern), TSpecFinder());
             _setFinderLength(finder, length(needle(pattern)));

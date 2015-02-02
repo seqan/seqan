@@ -58,20 +58,20 @@ namespace SEQAN_NAMESPACE_MAIN
  * @class Namer
  * @extends Pipe
  * @headerfile <seqan/pipe.h>
- * 
+ *
  * @brief Extends the input stream by a second field which names the elements.
- * 
+ *
  * @signature template <typename TInput, typename TCompare>
  *            class Pipe<TInput, Namer<TCompare> >;
- * 
+ *
  * @tparam TInput   The type of the pipeline module this module reads from.
  * @tparam TCompare A binary function (see STL's <tt>binary_function</tt>) with result type <tt>int</tt>.  Should
  *                  return <tt>0</tt> if and only if two elements are equal.
- * 
+ *
  * The output type is a Pair of input type and size type (i.e. <tt>Pair&lt;Value&lt;TInput&gt;::Type, Size&lt;TInput&gt;::Type&gt;</tt>).
- * 
+ *
  * The first output field is the original input stream.
- * 
+ *
  * The second output field is the name. This field begins with 0 and increases by 1 for every distinct element. Two
  * elements gets the same name, if and only if they are equal.
  */
@@ -89,20 +89,20 @@ namespace SEQAN_NAMESPACE_MAIN
 /*!
  * @fn Namer::Pipe
  * @brief Constructor
- * 
+ *
  * @signature Pipe::Pipe(in[, comp]);
- * 
+ *
  * @param[in] in   Reference to an input pipe.
  * @param[in] comp A <tt>TCompare</tt> object (copied).
  */
 
         Pipe(TInput& _in):
             in(_in) {}
-        
+
         Pipe(TInput& _in, const TCompare& tmpC) :
             in(_in),
             C(tmpC) {}
-        
+
         inline typename Value<Pipe>::Type const & operator*()
         {
             tmp.i1 = getValueI1(*in);
@@ -125,7 +125,7 @@ namespace SEQAN_NAMESPACE_MAIN
             return tmp.i2 == (length(in) - 1);
         }
     };
-    
+
 
     //////////////////////////////////////////////////////////////////////////////
     // global pipe functions
@@ -141,7 +141,7 @@ namespace SEQAN_NAMESPACE_MAIN
         me.tmp.i2 = 0;
         return true;
     }
-    
+
 //}
 
 }

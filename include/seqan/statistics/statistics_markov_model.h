@@ -310,7 +310,7 @@ public:
         //std::cout<<temp<<"\n\n";
 
         //for(unsigned int i=0;i<length(stationaryDistribution);++i){std::cout<<stationaryDistribution[i]<<"\t";}
-        //!is commented since I dont use it and it makes everything very slow for k>3 or 4 
+        //!is commented since I dont use it and it makes everything very slow for k>3 or 4
         //!call ensureAuxMatrices(markovModel);
         //_computeAuxiliaryMatrices();
 
@@ -522,7 +522,7 @@ public:
     ///// COMPUTE THE AUXILIARY MATRICES FOR THE VARIANCE And Z-SCORE COMPUTATION
     /////////////////////////////////////////////////////////////////////////////
 
-    
+
 
     void _computeAuxiliaryMatrices()
     {

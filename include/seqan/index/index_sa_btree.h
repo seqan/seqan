@@ -37,7 +37,7 @@
 
 namespace SEQAN_NAMESPACE_MAIN
 {
-    
+
     template <
         class SAFwdIt,        // suffix array input iterator
         class FlatOutIt >    // flat tree output iterator
@@ -56,7 +56,7 @@ namespace SEQAN_NAMESPACE_MAIN
         unsigned treeLevels = 1;
         TSize _xSize;
         for(_xSize = 1; _xSize * BlockSize <= size; _xSize *= BlockSize, ++treeLevels) ;
-    
+
         // get output iterators for every level in the flat tree
         FlatOutIt *level = new FlatOutIt[treeLevels];
         for(int i = treeLevels - 1; _xSize; --i, _xSize /= BlockSize) {

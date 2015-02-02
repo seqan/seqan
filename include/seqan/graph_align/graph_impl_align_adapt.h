@@ -55,23 +55,23 @@ namespace seqan {
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TGraphSpec, typename TIteratorSpec>
-class Iter<Graph<Alignment<TStringSet, TCargo, TGraphSpec> >, GraphIterator<InternalOutEdgeIterator<TIteratorSpec> > > 
+class Iter<Graph<Alignment<TStringSet, TCargo, TGraphSpec> >, GraphIterator<InternalOutEdgeIterator<TIteratorSpec> > >
 {
 public:
     typedef Graph<Alignment<TStringSet, TCargo, TGraphSpec> > TGraph_;
     typedef typename EdgeDescriptor<TGraph_>::Type TEdgeDescriptor_;
     typedef typename VertexDescriptor<TGraph_>::Type TVertexDescriptor_;
-    
+
     TGraph_ const* data_host;
     TVertexDescriptor_ data_source;
     TEdgeDescriptor_ data_edge;
 
-    Iter()    
+    Iter()
     {
         SEQAN_CHECKPOINT
     }
-    
-    Iter(TGraph_ const& _graph, TVertexDescriptor_ const v) : 
+
+    Iter(TGraph_ const& _graph, TVertexDescriptor_ const v) :
         data_host(&_graph),
         data_source(v)
     {
@@ -79,8 +79,8 @@ public:
         if (empty(_graph)) data_edge = 0;
         else data_edge = getValue(_graph.data_align.data_vertex,v);
     }
-    
-    Iter(Iter const& _iter) : 
+
+    Iter(Iter const& _iter) :
         data_host(_iter.data_host),
         data_source(_iter.data_source),
         data_edge(_iter.data_edge)
@@ -110,13 +110,13 @@ public:
 
 template<typename TStringSet, typename TCargo, typename TGraphSpec>
 struct Iterator<Graph<Alignment<TStringSet, TCargo, TGraphSpec> >, OutEdgeIterator>
-{    
+{
     typedef Iter<Graph<Alignment<TStringSet, TCargo, TGraphSpec> >, GraphIterator<InternalOutEdgeIterator<OutEdgeIterator> > > Type;
 };
 
 template<typename TStringSet, typename TCargo, typename TGraphSpec>
 struct Iterator<Graph<Alignment<TStringSet, TCargo, TGraphSpec> > const, OutEdgeIterator>
-{    
+{
     typedef Iter<Graph<Alignment<TStringSet, TCargo, TGraphSpec> > const, GraphIterator<InternalOutEdgeIterator<OutEdgeIterator> > > Type;
 };
 
@@ -231,7 +231,7 @@ operator ==(Iter<Graph<Alignment<TStringSet, TCargo, TGraphSpec> >, GraphIterato
             Iter<Graph<Alignment<TStringSet, TCargo, TGraphSpec> >, GraphIterator<InternalOutEdgeIterator<TSpec> > >& it2)
 {
     SEQAN_CHECKPOINT
-    return ((it1.data_edge==it2.data_edge) && 
+    return ((it1.data_edge==it2.data_edge) &&
             (it1.data_source==it2.data_source));
 }
 
@@ -243,7 +243,7 @@ operator !=(Iter<Graph<Alignment<TStringSet, TCargo, TGraphSpec> >, GraphIterato
             Iter<Graph<Alignment<TStringSet, TCargo, TGraphSpec> >, GraphIterator<InternalOutEdgeIterator<TSpec> > >& it2)
 {
     SEQAN_CHECKPOINT
-    return ((it1.data_edge!=it2.data_edge) || 
+    return ((it1.data_edge!=it2.data_edge) ||
             (it1.data_source!=it2.data_source));
 }
 
@@ -312,14 +312,14 @@ _createNodeAttributes(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     TConstIter it(g);
     for(;!atEnd(it);++it) {
         TIdType id = sequenceId(g, *it);
-        std::ostringstream outs; 
+        std::ostringstream outs;
         outs << "label = \"";
         outs << "[" << fragmentBegin(g, *it) << "," << fragmentBegin(g, *it)+fragmentLength(g, *it) << ")";
         // the lower command outputs the fragemtn of the string it is replaced by the interval
         //outs << label(g, *it);
         outs << "\", group = ";
         outs << id;
-        append(property(nodeMap, *it), outs.str().c_str());        
+        append(property(nodeMap, *it), outs.str().c_str());
         //std::cout << property(nodeMap, *it) << std::endl;
     }
 }
@@ -349,7 +349,7 @@ _createEdgeAttributes(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     TConstEdIter itEd(g);
     for(;!atEnd(itEd);++itEd) {
         TCargo c = getCargo(*itEd);
-        std::ostringstream outs; 
+        std::ostringstream outs;
         outs << "label = \"";
         outs << (TCargo) c;
         outs << "\",";
@@ -376,7 +376,7 @@ _writeGraphFooter(TTarget & iter,
     for(TSize i = 0; i<len; ++i) {
         TId seqId = positionToId(str, i);
         TSize j = 0;
-        TVertexDescriptor nilVertex = getNil<TVertexDescriptor>();    
+        TVertexDescriptor nilVertex = getNil<TVertexDescriptor>();
         TVertexDescriptor previousVertex = nilVertex;
         while(j<length(str[i]))
         {

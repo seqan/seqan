@@ -52,20 +52,20 @@ namespace SEQAN_NAMESPACE_MAIN
 /*!
  * @defgroup DfsOrder DFS Order
  * @brief Pre/postorder selection for depth-first search.
- * 
+ *
  * These tags are given to @link InputIteratorConcept#goNext @endlink and trigger post-order or pre-
  * order traversal of a suffix tree. In case of <tt>PreorderEmptyEdges</tt> and
  * <tt>PostorderEmptyEdges</tt>, the empty edges are also traversed.
- * 
+ *
  * @tag DfsOrder#Preorder
  * @brief Visit the node before its children.
- * 
+ *
  * @tag DfsOrder#PostorderEmptyEdges
  * @brief Visit the node after its children, visit empty edges.
- * 
+ *
  * @tag DfsOrder#PreorderEmptyEdges
  * @brief Visit the node before its children, visit empty edges.
- * 
+ *
  * @tag DfsOrder#Postorder
  * @brief Visit the node after its children.
  */
@@ -94,13 +94,13 @@ namespace SEQAN_NAMESPACE_MAIN
  * @defgroup TopDown Top-Down Iteration
  * @brief Tag that specifies a @link VSTreeIterator @endlink to traverse the virtual string tree from the root towards
  *        the leafs.
- * 
+ *
  * @section Examples
- * 
+ *
  * The following example shows how a the @link TopDown @endlink tag is used.
- * 
+ *
  * @include demos/index/index_begin_atEnd_representative.cpp
- * 
+ *
  * @code{.output}
  * A
  * AA
@@ -119,10 +119,10 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @tag TopDown#ParentLinks
  * @brief A top down iterator with the possibility to go back up again.
- * 
+ *
  * @tag TopDown#Preorder
  * @brief Pre-order traversal of the virtual string tree.
- * 
+ *
  * @tag TopDown#Postorder
  * @brief Post-order traversal of the virtual string tree.
  */
@@ -139,7 +139,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @defgroup BottomUp Bottom-Up Iteration
  * @brief Tag that specifies a @link VSTreeIterator @endlink to traverse the
  *        virtual string tree from the root towards the leafs.
- * 
+ *
  * @section Examples
  *
  * The following example shows how the @link BottomUp @endlink tag is used.
@@ -174,15 +174,15 @@ namespace SEQAN_NAMESPACE_MAIN
 
 /*!
  * @mfn Index#GetVSTreeIteratorTraits
- * 
+ *
  * @headerfile <seqan/index.h>
- * 
+ *
  * @brief Default behaviour of @link InputIteratorConcept#goNext @endlink when no second parameter is given.
- * 
+ *
  * @signature GetVSTreeIteratorTraits<TIterator>::Type
- * 
+ *
  * @tparam TIterator A @link VSTreeIterator @endlink.
- * 
+ *
  * @return TReturn @link DfsOrder#Postorder @endlink by default and @link DfsOrder#Preorder @endlink
  *                 if <tt>TIterator</tt> is <tt>VSTree&lt;TopDown&lt;ParentLinks&lt;&gt; &gt; &gt;</tt>
  *                 or <tt>VSTree&lt;TopDown&lt;ParentLinks&lt;Preorder&gt; &gt; &gt;</tt>.
@@ -272,24 +272,24 @@ namespace SEQAN_NAMESPACE_MAIN
  * @defgroup IndexEsaFibres Index Esa Fibres
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of an @link
  *        IndexEsa @endlink index.
- * 
+ *
  * These tags can be used to get @link Fibre Fibres @endlink of an Enhanced
  * Suffix Array based @link IndexEsa @endlink.
- * 
+ *
  * @see Fibre
  * @see Index#getFibre
  * @see IndexEsa
- * 
+ *
  * @tag IndexEsaFibres#EsaSA
  * @headerfile <seqan/index.h>
  * @brief The suffix array.
- * 
+ *
  * The suffix array contains the indices of all suffices of <tt>EsaRawText</tt>
  * in lexicographical order.
- * 
+ *
  * @link Fibre @endlink returns a @link String @endlink over the alphabet of the
  * @link SAValue @endlink of <tt>TIndex</tt>.
- * 
+ *
  * @tag IndexEsaFibres#EsaIsa
  * @headerfile <seqan/index.h>
  * @brief The inverse suffix array.
@@ -302,43 +302,43 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tag IndexEsaFibres#EsaChildtab
  * @headerfile <seqan/index.h>
  * @brief The child table.
- * 
+ *
  * The child table contains structural information of the suffix tree (see
  * Abhouelda et al.).
- * 
+ *
  * @link Fibre @endlink returns a @link String @endlink over the alphabet of a
  * size type.
- * 
+ *
  * @tag IndexEsaFibres#EsaRawText
  * @headerfile <seqan/index.h>
  * @brief The raw text the index is really based on.
- * 
+ *
  * <tt>EsaText</tt> and <tt>EsaRawText</tt> fibres are equal by default. They
  * differ if the index text is a set of strings. Then, raw text is the
  * concatenation of all strings in this set.
- * 
+ *
  * @tag IndexEsaFibres#EsaText
  * @headerfile <seqan/index.h>
  * @brief The original text the index should be based on.
- * 
+ *
  * @tag IndexEsaFibres#EsaBwt
  * @headerfile <seqan/index.h>
  * @brief The Burrows-Wheeler table.
- * 
+ *
  * The Burrows-Wheeler table contains the Burrows-Wheeler transformation of
  * <tt>EsaRawText</tt>. The entries are the characters left of the corresponding
  * suffix in the suffix array <tt>EsaSA</tt>.
- * 
+ *
  * @link Fibre @endlink returns the same type for <tt>EsaRawText</tt> and for
  * <tt>EsaBwt</tt>.
- * 
+ *
  * @tag IndexEsaFibres#EsaLcp
  * @headerfile <seqan/index.h>
  * @brief The lcp table.
- * 
+ *
  * The lcp table contains the lcp-value of two adjacent suffices in the suffix
  * array <tt>EsaSA</tt>.
- * 
+ *
  * @link Fibre @endlink returns a @link String @endlink over the alphabet of a
  * size type.
  *
@@ -367,18 +367,18 @@ namespace SEQAN_NAMESPACE_MAIN
  * @implements StringTreeConcept
  * @headerfile <seqan/index.h>
  * @brief An index based on an enhanced suffix array.
- * 
+ *
  * @signature template <typename TText, typename TSpec>
  *            class Index<TText, IndexEsa<TSpec> >;
- * 
+ *
  * @tparam TText The @link TextConcept text type @endlink.
  * @tparam TSpec The specialization, defaults to <tt>void</tt>.
- * 
+ *
  * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index are a suffix array (see @link
  * IndexEsaFibres#EsaSA @endlink), a lcp table (see @link IndexEsaFibres#EsaLcp @endlink), etc.
- * 
+ *
  * This index can be accessed as a Suffix Tree using the @link VSTreeIterator @endlink classes.
- * 
+ *
  * @see IndexEsaFibres
  */
 

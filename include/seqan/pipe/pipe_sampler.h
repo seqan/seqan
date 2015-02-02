@@ -74,25 +74,25 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends Pipe
  * @headerfile <seqan/pipe.h>
  * @brief Outputs m-tuples beginning at a position of difference cover DC.
- * 
+ *
  * @signature template <typename TInput, unsigned M[, typename TPack]>
  *            class Pipe<TInput, Sampler<M, TPack> >;
- * 
+ *
  * @tparam TInput The type of the pipeline module this module reads from.
  * @tparam m      The tuple size.
  * @tparam TPack  Specifies the packing method of the tuples (<tt>void</tt> = no packing), default is <tt>Pack</tt>.
- * 
+ *
  * The output type is a Pair of size type and Tuple of input elements and length m (i.e. <tt>Pair&lt;Size&lt;TInput&gt;::Type,
  * Tuple&lt;Value&lt;TInput&gt;::Type, m, TPack&gt; &gt;</tt>).
- * 
+ *
  * The first output field contains the number of remaining pipe elements. The m-tuple in the second field contains the
  * first m elements of them. The m-tuples are substrings of the input stream beginning at positions <tt>i</tt>, with
  * <tt>(n-i) mod m</tt> is element of the set DC (n is the input stream length).
- * 
+ *
  * @section Examples
- * 
+ *
  * The set <tt>{1,2,4}</tt> is represented by <tt>int DC[] = { 3, 1, 2, 4 }</tt>.
- * 
+ *
  * @see BitPackedTuple
  */
 
@@ -111,12 +111,12 @@ namespace SEQAN_NAMESPACE_MAIN
         TOutValue   tmp1, tmp2;
         TOutValue   *outRef, *tmpRef;
         bool        last;
-        
+
         Pipe(TInput& _in):
             in(_in),
             outRef(&tmp1),
             tmpRef(&tmp2) {}
-        
+
         inline void prepare()
         {
             for (unsigned i = 0; i < m; ++i)
@@ -137,7 +137,7 @@ namespace SEQAN_NAMESPACE_MAIN
             fill();
             swap();
         }
-        
+
         inline void fill()
         {
             unsigned i;
@@ -148,7 +148,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 tmpRef->i2.i[i] = 0;
             tmpRef->i1 = idx;
         }
-        
+
         inline void rotate(unsigned r)
         {
             for(unsigned i = 0; i < m; ++i, ++r)
@@ -157,19 +157,19 @@ namespace SEQAN_NAMESPACE_MAIN
                 tmpRef->i2.i[i] = outRef->i2.i[r];
             }
         }
-        
+
         inline void swap()
         {
             TOutValue *newOutRef = tmpRef;
             tmpRef = outRef;
             outRef = newOutRef;
         }
-        
+
         inline TOutValue const& operator*()
         {
             return *outRef;
         }
-        
+
         Pipe& operator++()
         {
             unsigned skipped = 0;
@@ -211,7 +211,7 @@ namespace SEQAN_NAMESPACE_MAIN
             tmpRef->i1 = idx;
             swap();
             return *this;
-        }        
+        }
     };
 
 
@@ -230,10 +230,10 @@ namespace SEQAN_NAMESPACE_MAIN
         unsigned    idxMod;
         TOutValue   tmp;
         bool        last;
-        
+
         Pipe(TInput & _in) : in(_in), _size(0), _rest(0), idxMod(0), last(false)
         {}
-        
+
         inline void prepare()
         {
             for (unsigned i = 0; i < m; ++i)
@@ -253,7 +253,7 @@ namespace SEQAN_NAMESPACE_MAIN
             _rest = length(*this);
             fill();
         }
-        
+
         inline void fill()
         {
             unsigned i;
@@ -266,12 +266,12 @@ namespace SEQAN_NAMESPACE_MAIN
             last = eof(in);
             tmp.i2 <<= (m - i);
         }
-        
+
         inline TOutValue const& operator*()
         {
             return tmp;
         }
-        
+
         Pipe& operator++()
         {
             if (--_rest)
@@ -310,7 +310,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 }
             }
             return *this;
-        }        
+        }
     };
 
 
@@ -386,7 +386,7 @@ namespace SEQAN_NAMESPACE_MAIN
             outRef(&tmp1),
             tmpRef(&tmp2),
             limits(_limits) {}
-       
+
         inline void prepare()
         {
             for (unsigned i = 0; i < m; ++i)
@@ -405,7 +405,7 @@ namespace SEQAN_NAMESPACE_MAIN
             fill();
             swap();
         }
-        
+
         inline void fill()
         {
             unsigned i;
@@ -416,7 +416,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 tmpRef->i2.i[i] = 0;
             tmpRef->i1 = localPos;
         }
-        
+
         inline void rotate(unsigned r)
         {
             for(unsigned i = 0; i < m; ++i, ++r)
@@ -425,19 +425,19 @@ namespace SEQAN_NAMESPACE_MAIN
                 tmpRef->i2.i[i] = outRef->i2.i[r];
             }
         }
-        
+
         inline void swap()
         {
             TOutValue *newOutRef = tmpRef;
             tmpRef = outRef;
             outRef = newOutRef;
         }
-        
+
         inline TOutValue const& operator*()
         {
             return *outRef;
         }
-        
+
         Pipe& operator++()
         {
             unsigned skipped = 0;
@@ -477,7 +477,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 swap();
             }
             return *this;
-        }        
+        }
     };
 
 
@@ -500,12 +500,12 @@ namespace SEQAN_NAMESPACE_MAIN
         bool        last;
 
         TLimitsString const &limits;
-        
+
         template <typename TLimitsString_>
         Pipe(TInput& _in, TLimitsString_ &_limits):  // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
             in(_in),
             limits(_limits) {}
-        
+
         inline void prepare()
         {
             for (unsigned i = 0; i < m; ++i)
@@ -522,7 +522,7 @@ namespace SEQAN_NAMESPACE_MAIN
             _rest = length(*this);
             fill();
         }
-        
+
         inline void fill()
         {
             unsigned i;
@@ -535,12 +535,12 @@ namespace SEQAN_NAMESPACE_MAIN
             tmp.i2 <<= (m - i);
             tmp.i1 = localPos;
         }
-        
+
         inline TOutValue const& operator*()
         {
             return tmp;
         }
-        
+
         Pipe& operator++()
         {
             if (--_rest)
@@ -577,7 +577,7 @@ namespace SEQAN_NAMESPACE_MAIN
             }
             tmp.i1 = localPos;
             return *this;
-        }        
+        }
     };
 
 

@@ -164,7 +164,7 @@ struct Value<StringSet<TString, Owner<ConcatDirect<TSpec> > > >
 template <typename TString, typename TSpec>
 struct Value<StringSet<TString, Owner<ConcatDirect<TSpec> > > const>
     : Infix<typename Concatenator<StringSet<TString, Owner<ConcatDirect<TSpec> > > >::Type const> {};
-    
+
 // --------------------------------------------------------------------------
 // Metafunction GetValue
 // --------------------------------------------------------------------------

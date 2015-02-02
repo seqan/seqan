@@ -45,24 +45,24 @@ namespace seqan {
  * @class Pipe
  * @headerfile <seqan/pipe.h>
  * @brief Pipes are pop-passive pipeline modules.
- * 
+ *
  * @signature template <typename TInput, typename TSpec>
  *            class Pipe;
- * 
+ *
  * @tparam TSpec  The specializing type.
  * @tparam TInput The type of the pipeline module this module reads from.  Use Bundle2, Bundle3, etc. to read
  *                from more than one module.
- * 
+ *
  * Use @link Pipe#Value @endlink to get the output type of a given Pipe (returns <tt>Value&lt;TInput&gt;::Type</tt> by
  * default).
- * 
+ *
  * Use Size to get the size type of a given Pipe (returns <tt>Size&lt;TInput&gt;::Type</tt> by default).
  */
 
 /*!
  * @fn Pipe::Pipe
  * @brief Constructor
- * 
+ *
  * @signature Pipe::Pipe(in);
  *
  * @param[in] in Reference to an input pipe.
@@ -84,20 +84,20 @@ namespace seqan {
  * @class Bundle2
  * @headerfile <seqan/pipe.h>
  * @brief Stores references to two arbitrary objects.
- * 
+ *
  * @signature template <typename TInput1, typename TInput2>
  *            class Bundle2;
- * 
+ *
  * @tparam TInput1 The type of the first object.
  * @tparam TInput2 The type of the second object.
- * 
+ *
  * Primarily used as an adaptor for pipes with two sources.
- * 
+ *
  * @see bundle2
- * 
+ *
  * @var TInput1 Bundle2::in1;
  * @brief TInput1 reference
- * 
+ *
  * @var TInput2 Bundle2::in2;
  * @brief TInput2 reference
  */
@@ -116,14 +116,14 @@ namespace seqan {
  * @fn bundle2
  * @headerfile <seqan/pipe.h>
  * @brief Returns a bundle of two objects.
- * 
+ *
  * @signature TBundle bundle2(in1, in2);
- * 
+ *
  * @param[in] in1 First object.
  * @param[in] in2 Second object.
- * 
+ *
  * @return TBundle A Bundle2 with references to <tt>in1</tt> and <tt>in2</tt>.
- * 
+ *
  * @see Bundle2
  */
 
@@ -134,26 +134,26 @@ namespace seqan {
     }
 /*!
  * @class Bundle3
- * 
+ *
  * @brief Stores references to three arbitrary objects.
- * 
+ *
  * @signature template <typename TInput1, typename TInput2, typename TInput3>
  *            struct Bundle3;
- * 
+ *
  * @tparam TInput3 The type of the third object.
  * @tparam TInput2 The type of the second object.
  * @tparam TInput1 The type of the first object.
- * 
+ *
  * Primarily used as an adaptor for pipes with three sources.
- * 
+ *
  * @see bundle3
- * 
+ *
  * @var TInput1 Bundle3::in1;
  * @brief TInput1 reference
- * 
+ *
  * @var TInput2 Bundle3::in2;
  * @brief TInput2 reference
- * 
+ *
  * @var TInput3 Bundle3::in3;
  * @brief TInput3 reference
  */
@@ -174,15 +174,15 @@ namespace seqan {
  * @fn bundle3
  * @headerfile <seqan/pipe.h>
  * @brief Returns a bundle of three objects.
- * 
+ *
  * @signature TBundle bundle3(in1, in2, in3);
- * 
+ *
  * @param[in] in1 First object.
  * @param[in] in2 Second object.
  * @param[in] in3 Third object.
- * 
+ *
  * @return TBundle A Bundle3 with references to <tt>in1</tt>, <tt>in2</tt>, and <tt>in3</tt>.
- * 
+ *
  * @see Bundle3
  */
 
@@ -199,29 +199,29 @@ namespace seqan {
  *
  * @signature template <typename TInput1, typename TInput2, typename TInput3, typename TInput4, typename TInput5>
  *            class Bundle5;
- * 
+ *
  * @tparam TInput1 The type of the first object.
  * @tparam TInput2 The type of the second object.
  * @tparam TInput3 The type of the third object.
  * @tparam TInput4 The type of the fourth object.
  * @tparam TInput5 The type of the fifth object.
- * 
+ *
  * Primarily used as an adaptor for pipes with five sources.
- * 
+ *
  * @see bundle5
- * 
+ *
  * @var TInput1 Bundle5::in1;
  * @brief TInput1 reference
- * 
+ *
  * @var TInput2 Bundle5::in2;
  * @brief TInput2 reference
- * 
+ *
  * @var TInput3 Bundle5::in3;
  * @brief TInput3 reference
- * 
+ *
  * @var TInput4 Bundle5::in4;
  * @brief TInput4 reference
- * 
+ *
  * @var TInput5 Bundle5::in5;
  * @brief TInput5 reference
  */
@@ -243,18 +243,18 @@ namespace seqan {
  * @fn bundle5
  * @headerfile <seqan/pipe.h>
  * @brief Returns a bundle of five objects.
- * 
+ *
  * @signature TBundle bundle5(in1, in2, in3, in4, in5);
- * 
+ *
  * @param[in] in1 First object.
  * @param[in] in2 Second object.
  * @param[in] in3 Third object.
  * @param[in] in4 Fourth object.
  * @param[in] in5 Fifth object.
- * 
+ *
  * @return TBundle A Bundle5 with references to <tt>in1</tt>, <tt>in2</tt>, <tt>in3</tt>, <tt>in4</tt>,
  *                 and <tt>in5</tt>.
- * 
+ *
  * @see Bundle5
  */
 
@@ -440,16 +440,16 @@ SEQAN_CHECKPOINT
  * @fn Pipe#front
  * @headerfile <seqan/pipe.h>
  * @brief Gets the first element of the remaining stream.
- * 
+ *
  * @signature TValue front(object);
- * 
+ *
  * @param[in] object A pop-passive pipeline module.
- * 
+ *
  * @return TValue The first element of the remaining input stream.  Return type is <tt>Value&lt;TObject&gt;::Type</tt>
  *                for <tt>object</tt> type <tt>TObject</tt>.
- * 
+ *
  * Pipe#front or Pipe#pop can only be called within a read process surrounded by beginRead and endRead.
- * 
+ *
  * @see Pipe#pop
  */
 
@@ -464,15 +464,15 @@ SEQAN_CHECKPOINT
  * @fn Pipe#pop
  * @headerfile <seqan/pipe.h>
  * @brief Pops the first element of the remaining stream.
- * 
+ *
  * @signature void pop(pipe[, ref]);
- * 
+ *
  * @param[in,out] pipe A pop-passive pipeline module.
  * @param[out]    ref    Reference to the result.  Result type is <tt>Value&lt;TObject&gt;::Type</tt> for <tt>object</tt>
  *                       type <tt>TObject</tt>.  Returns the first element of the remaining input stream.
- * 
+ *
  * In contrast to Pipe#front this function also steps one element further.
- * 
+ *
  * Pipe#front or Pipe#pop can only be called within a read process surrounded by beginRead and endRead.
  */
 
@@ -543,18 +543,18 @@ SEQAN_CHECKPOINT
  * @fn Pipe#beginRead
  * @headerfile <seqan/pipe.h>
  * @brief Initiates a read process.
- * 
+ *
  * @signature bool beginRead(object);
- * 
+ *
  * @param[in,out] object A pop-passive pipeline module.
- * 
+ *
  * @return bool true on success, false on failure.
- * 
+ *
  * <tt>beginRead</tt> rewinds the output stream, prepares <tt>object</tt> for succeeding reads, and typically calls
  * <tt>beginRead</tt> of the input pipeline modules.
- * 
+ *
  * A read process must be terminated with endRead. Nested read processes are not allowed.
- * 
+ *
  * @see Pipe#endRead
  */
 
@@ -568,16 +568,16 @@ SEQAN_CHECKPOINT
  * @fn Pipe#endRead
  * @headerfile <seqan/pipe.h>
  * @brief Terminates a read process.
- * 
+ *
  * @signature bool endRead(object);
- * 
+ *
  * @param[in,out] object A pop-passive pipeline module.
- * 
+ *
  * @return bool true on success, false on failure.
- * 
+ *
  * <tt>endRead</tt> closes the output stream, frees resources possibly allocated by beginRead, and typically calls
  * <tt>endRead</tt> of the input pipeline modules.
- * 
+ *
  * @see Pipe#beginRead
  */
 
@@ -818,7 +818,7 @@ SEQAN_CHECKPOINT
     //////////////////////////////////////////////////////////////////////////////
     // pair incrementer
     //
-    // used by pipes processing multiples sequences 
+    // used by pipes processing multiples sequences
     // for generating pairs (seqNo, seqOffs)
 
     template <typename TPair, typename TLimits>
@@ -901,7 +901,7 @@ SEQAN_CHECKPOINT
     //////////////////////////////////////////////////////////////////////////////
     // pair decrementer
     //
-    // used by pipes processing multiples sequences 
+    // used by pipes processing multiples sequences
     // for generating pairs (seqNo, seqOffs)
 
     template <typename TPair, typename TLimits, unsigned m = 0>
@@ -909,7 +909,7 @@ SEQAN_CHECKPOINT
     {
         typedef typename Iterator<TLimits const, Standard>::Type            TIter;
         typedef typename RemoveConst_<typename Value<TLimits>::Type>::Type  TSize;
-        
+
         TIter       it, itEnd;
         TSize       old;
         TPair        pos;
@@ -946,7 +946,7 @@ SEQAN_CHECKPOINT
                     SEQAN_ASSERT_EQ_MSG((TSize)i2, *it - old, "Overflow detected. Use a bigger type for the *second* value in the SAValue pair!");
                     old = *it;
                     ++it;
-                } 
+                }
                 residue = i2 % m;
             }
             assignValueI2(pos, i2);
@@ -1012,7 +1012,7 @@ SEQAN_CHECKPOINT
                     SEQAN_ASSERT_EQ_MSG((TSize)i2, *it - old, "Overflow detected. Use a bigger type for the *second* value in the SAValue pair!");
                     old = *it;
                     ++it;
-                } 
+                }
             }
             assignValueI2(pos, i2);
             return pos;

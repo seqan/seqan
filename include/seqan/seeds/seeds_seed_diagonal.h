@@ -52,10 +52,10 @@ namespace seqan {
  * @class SeedDiagonal
  * @headerfile <seqan/seeds.h>
  * @brief Store the information about a seed segment.
- * 
+ *
  * @signature template <typename TPosition, typename TSize>
  *            class SeedDiagonal;
- * 
+ *
  * @tparam TSize The type to use for the seed length.
  * @tparam TPosition The type to use for positions.
  */
@@ -75,7 +75,7 @@ namespace seqan {
 /*!
  * @var TPosition SeedDiagonal::beginPositionH
  * @brief The position in the database sequence (horizontal).
- * 
+ *
  * @var TPosition SeedDiagonal::beginPositionV
  * @brief The position in the query sequence (vertical).
  *
@@ -90,7 +90,7 @@ public:
     TPosition beginPositionH;
     TPosition beginPositionV;
     TSize length;
-    
+
     SeedDiagonal() : beginPositionH(0), beginPositionV(0), length(0)
     {}
 
@@ -102,7 +102,7 @@ public:
 // ===========================================================================
 // Metafunctions
 // ===========================================================================
-  
+
 // ---------------------------------------------------------------------------
 // Metafunction Position
 // ---------------------------------------------------------------------------
@@ -110,9 +110,9 @@ public:
 /*!
  * @mfn SeedDiagonal#Position
  * @brief The position type of a @link SeedDiagonal @endlink.
- * 
+ *
  * @signature Position<TDiagonal>::Type;
- * 
+ *
  * @tparam TDiagonal A @link SeedDiagonal @endlink.
  *
  * @return Type The position type of <tt>TDiagonal</tt>.
@@ -127,7 +127,7 @@ struct Position<SeedDiagonal<TPosition, TSize> >
 template <typename TPosition, typename TSize>
 struct Position<SeedDiagonal<TPosition, TSize> const> : Position<SeedDiagonal<TPosition, TSize> >
 {};
-  
+
 // ---------------------------------------------------------------------------
 // Metafunction Size
 // ---------------------------------------------------------------------------
@@ -135,11 +135,11 @@ struct Position<SeedDiagonal<TPosition, TSize> const> : Position<SeedDiagonal<TP
 /*!
  * @mfn SeedDiagonal#Size
  * @brief The size type of a @link SeedDiagonal @endlink.
- * 
+ *
  * @signature Size<TDiagonal>::Type;
  *
  * @tparam TDiagonal A @link SeedDiagonal @endlink.
- * 
+ *
  * @return Type The size type of <tt>TDiagonal</tt>.
  */
 
@@ -152,7 +152,7 @@ struct Size<SeedDiagonal<TPosition, TSize> >
 template <typename TPosition, typename TSize>
 struct Size<SeedDiagonal<TPosition, TSize> const> : Size<SeedDiagonal<TPosition, TSize> >
 {};
-  
+
 // ===========================================================================
 // Functions
 // ===========================================================================

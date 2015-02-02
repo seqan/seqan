@@ -54,8 +54,8 @@ void testShape(TShape1 shape1, TShape2 shape2, bool dump)
 
     SEQAN_ASSERT_EQ(length(shape1), length(shape2));
     SEQAN_ASSERT_EQ(weight(shape1), weight(shape2));
-    
-    Iterator<DnaString>::Type it = begin(dna);    
+
+    Iterator<DnaString>::Type it = begin(dna);
     unsigned H1b, H2b;
     for (int i = length(dna); i >= 0; --i)
     {
@@ -79,7 +79,7 @@ void testShape(TShape1 shape1, TShape2 shape2, bool dump)
             SEQAN_ASSERT_EQ(H1, H1b);
             SEQAN_ASSERT_EQ(H1b, H2b);
 
-            if (i >= (int)length(shape1)) 
+            if (i >= (int)length(shape1))
             {
                 unsigned H1c = hash(shape1, it);
                 unsigned H2c = hash(shape2, it);
@@ -90,7 +90,7 @@ void testShape(TShape1 shape1, TShape2 shape2, bool dump)
         {
             unsigned H1 = hashUpper(shape1, it, i);
             unsigned H2 = hashUpper(shape2, it, i);
-            
+
             unhash(dna1, H1, weight(shape1));
             unhash(dna2, H2, weight(shape2));
             if (dump) std::cout << std::dec << i << "\t" << std::hex << H1 << " " << H2 << "\t" << dna1 << " " << dna2 << "\t" << (H1 == H2);
@@ -107,14 +107,14 @@ void testHashInit(TShape shape)
 {
     DnaString dna = "CGGTACGTAAGTTAG";
     Iterator<DnaString>::Type it = begin(dna);
-    
+
     TShape shape2(shape);
 
     hash(shape, it);
     hashInit(shape2, it);
     hashNext(shape2, it);
-    
-    SEQAN_ASSERT_EQ(value(shape), value(shape2));    
+
+    SEQAN_ASSERT_EQ(value(shape), value(shape2));
 }
 
 SEQAN_DEFINE_TEST(testShapes)
@@ -123,7 +123,7 @@ SEQAN_DEFINE_TEST(testShapes)
     testShape(shapeA, Shape<Dna, UngappedShape<6> >(), false);
     testHashInit(shapeA);
     testHashInit(Shape<Dna, UngappedShape<6> >());
-    
+
                        // 012345678  len=9
     CharString pattern = "11100110100";
     Shape<Dna, GenericShape> shapeB(pattern);

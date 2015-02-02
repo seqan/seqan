@@ -37,7 +37,7 @@
 
 namespace SEQAN_NAMESPACE_MAIN
 {
-    
+
     template <
         class LCPFwdIt,        // lcp table input iterator
         class FlatOutIt >    // flat tree output iterator
@@ -56,7 +56,7 @@ namespace SEQAN_NAMESPACE_MAIN
         unsigned treeLevels = 1;
         TSize _xSize = 1;
         for(; size > _xSize; _xSize *= 2, ++treeLevels) ;
-    
+
         // get output iterators for every level in the flat tree
         FlatOutIt *level = new FlatOutIt[treeLevels];
         for(unsigned i = treeLevels - 1; _xSize; --i, _xSize /= 2) {

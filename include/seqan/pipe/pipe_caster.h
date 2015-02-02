@@ -43,7 +43,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     struct CasterReinterpret;
     struct CasterConvert;
-    
+
     template < typename TValue, typename TSpec = CasterReinterpret >
     struct Caster;
 
@@ -57,14 +57,14 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends Pipe
  * @headerfile <seqan/pipe.h>
  * @brief Casts the input type in a specific output type.
- * 
+ *
  * @signature template <typename TInput, typename TValue[, typename TSpec]>
  *            class Pipe<TInput, Caster<TValue, TSpec> >;
- * 
+ *
  * @tparam TInput The type of the pipeline module this module reads from.
  * @tparam TValue The new output type.
  * @tparam TSpec  <tt>CasterReinterpret</tt> (default) or <tt>CasterConvert</tt>.
- * 
+ *
  * The input stream is casted using <tt>reinterpret_cast&lt;TValue&gt;</tt>.
  */
 
@@ -74,10 +74,10 @@ namespace SEQAN_NAMESPACE_MAIN
     struct Pipe< TInput, Caster<TValue, CasterReinterpret> >
     {
         TInput      &in;
-        
+
         Pipe(TInput& _in):
             in(_in) {}
-        
+
         inline TValue const & operator*() const {
             return reinterpret_cast<TValue const &>(*in);
         }
@@ -87,15 +87,15 @@ namespace SEQAN_NAMESPACE_MAIN
             return *this;
         }
     };
-    
+
     template <typename TInput, typename TValue >
     struct Pipe< TInput, Caster<TValue, CasterConvert> >
     {
         TInput      &in;
-        
+
         Pipe(TInput& _in):
             in(_in) {}
-        
+
         inline TValue operator*() const {
             return TValue(*in);
         }

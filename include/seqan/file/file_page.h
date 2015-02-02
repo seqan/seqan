@@ -273,7 +273,7 @@ struct MMap;
 //IOREV _nodoc_
         int         pageNo;                    // related page (needed by merger sort)
     };
-    
+
     template <typename TValue>
     std::ostream& operator<<(std::ostream &out, const PageBucketExtended<TValue> &pb) {
 //IOREV _ _nodoc_
@@ -450,7 +450,7 @@ struct MMap;
             pageNo(other.pageNo),
             dirty(other.dirty)
         {}
-#endif        
+#endif
         template <typename TPos>
         inline TValue &
         operator[] (TPos i)
@@ -587,7 +587,7 @@ struct MMap;
     }
 
     template <typename TValue, typename TFile, typename TSpec, typename T> inline
-    void allocPage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, T const & me) 
+    void allocPage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, T const & me)
     {
 //IOREV _nodoc_
         TValue* tmp = NULL;
@@ -600,7 +600,7 @@ struct MMap;
     }
 
     template <typename TValue, typename TFile, typename TSpec, typename T> inline
-    void freePage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, T const & me) 
+    void freePage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, T const & me)
     {
 //IOREV _nodoc_
         #ifdef SEQAN_VVERBOSE
@@ -661,7 +661,7 @@ struct MMap;
 #if 0
         DWORD prot = 0;
         DWORD access = 0;
-        if ((me._openMode & OPEN_MASK) == OPEN_RDONLY) 
+        if ((me._openMode & OPEN_MASK) == OPEN_RDONLY)
         {
             prot = PAGE_READONLY;
             access = FILE_MAP_READ;
@@ -685,7 +685,7 @@ struct MMap;
             return false;
         }
 
-        pf.begin = (TValue *) MapViewOfFile(pf.handle, access, 0, 0, 0);    
+        pf.begin = (TValue *) MapViewOfFile(pf.handle, access, 0, 0, 0);
         if (pf.begin == NULL)
         {
             SEQAN_FAIL(
@@ -693,7 +693,7 @@ struct MMap;
                 pf.handle, access, strerror(errno));
             return false;
         }
-                
+
         me.data_begin = (TValue *) addr;
 #endif
 #else
@@ -713,13 +713,13 @@ struct MMap;
     }
 
     template <typename TValue, typename TFile, typename TSpec, typename TSize> inline
-    bool mapWritePage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, TFile &file, TSize size) 
+    bool mapWritePage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, TFile &file, TSize size)
     {
         typedef typename Position<TFile>::Type TPos;
         unmapPage(pf, file);
         pf.status = READY;
         SEQAN_ASSERT_GT(size, 0u);
-        
+
 #ifdef PLATFORM_WINDOWS
 #else
         pf.begin = (TValue*)mmap(NULL, size * sizeof(TValue), PROT_READ | PROT_WRITE, MAP_SHARED, file.handle, (TPos)pf.pageNo * (TPos)capacity(pf) * (TPos)sizeof(TValue));
@@ -738,7 +738,7 @@ struct MMap;
     }
 
     template <typename TValue, typename TFile, typename TSpec> inline
-    bool writePage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, int pageNo, TFile &file) 
+    bool writePage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, int pageNo, TFile &file)
     {
 //IOREV _nodoc_
         typedef typename Position<TFile>::Type TPos;
@@ -759,7 +759,7 @@ struct MMap;
     }
 
     template < typename TValue, typename TFile, typename TSpec, typename TSize> inline
-    bool readLastPage(int pageNo, Buffer<TValue, PageFrame<TFile, TSpec> > &pf, TFile &file, TSize size) 
+    bool readLastPage(int pageNo, Buffer<TValue, PageFrame<TFile, TSpec> > &pf, TFile &file, TSize size)
     {
 //IOREV _nodoc_
         typedef typename Position<TFile>::Type TPos;
@@ -781,7 +781,7 @@ struct MMap;
     }
 
     template <typename TValue, typename TFile, typename TSpec, typename TSize> inline
-    bool writeLastPage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, int pageNo, TFile &file, TSize size) 
+    bool writeLastPage(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, int pageNo, TFile &file, TSize size)
     {
 //IOREV _nodoc_
         typedef typename Position<TFile>::Type TPos;
@@ -803,7 +803,7 @@ struct MMap;
     }
 
     template <typename TValue, typename TFile, typename TSpec> inline
-    bool waitFor(Buffer<TValue, PageFrame<TFile, TSpec> > &pf) 
+    bool waitFor(Buffer<TValue, PageFrame<TFile, TSpec> > &pf)
     {
 //IOREV _nodoc_ equally named functions with different purposes in system_thread.h, system_event.h and file_async.h
         if (pf.status == READY)
@@ -851,12 +851,12 @@ struct MMap;
     }
 
     template <typename TValue, typename TFile, typename TSpec> inline
-    bool cancel(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, TFile &file) 
+    bool cancel(Buffer<TValue, PageFrame<TFile, TSpec> > &pf, TFile &file)
     {
 //IOREV _nodoc_ equally named functions with different purposes in pipe/pool_*.h, system_thread.h, and file_async.h (only the latter documented)
         bool dummy;
         waitFor(pf, 0, dummy);
-        if (pf.status != READY) 
+        if (pf.status != READY)
         {
             if (!cancel(file, pf.request)) return false;
             pf.status = READY;
@@ -868,7 +868,7 @@ struct MMap;
     // page based read/write methods used by Pool classes
 
     template <typename TValue, typename TFile> inline
-    bool readPage(Buffer<TValue, PageFrame<TFile, Dynamic> > &pf, TFile &file) 
+    bool readPage(Buffer<TValue, PageFrame<TFile, Dynamic> > &pf, TFile &file)
     {
 //IOREV _nodoc_
         if (length(pf) == capacity(pf))
@@ -878,7 +878,7 @@ struct MMap;
     }
 
     template <typename TValue, typename TFile> inline
-    bool writePage(Buffer<TValue, PageFrame<TFile, Dynamic> > &pf, TFile &file) 
+    bool writePage(Buffer<TValue, PageFrame<TFile, Dynamic> > &pf, TFile &file)
     {
 //IOREV _nodoc_
         if (length(pf) == capacity(pf))
@@ -888,7 +888,7 @@ struct MMap;
     }
 
     template <typename TValue, typename TFile> inline
-    unsigned readBucket(PageBucket<TValue> &b, int pageNo, size_t pageSize, size_t dataSize, TFile &file) 
+    unsigned readBucket(PageBucket<TValue> &b, int pageNo, size_t pageSize, size_t dataSize, TFile &file)
     {
 //IOREV _nodoc_
         typedef typename Position<TFile>::Type TPos;
@@ -908,7 +908,7 @@ struct MMap;
     }
 
     template <typename TValue, typename TFile> inline
-    bool writeBucket(PageBucket<TValue> &b, int pageNo, size_t pageSize, TFile &file) 
+    bool writeBucket(PageBucket<TValue> &b, int pageNo, size_t pageSize, TFile &file)
     {
 //IOREV _nodoc_
         typedef typename Position<TFile>::Type TPos;
@@ -948,12 +948,12 @@ struct MMap;
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TPageFrame>
-struct PageChain 
+struct PageChain
 {
 //IOREV _nodoc_
     TPageFrame          *first, *last;
     unsigned            frames, maxFrames;
-    
+
     PageChain(unsigned _maxFrames = 0):
         first(NULL),
         last(NULL),
@@ -963,22 +963,14 @@ struct PageChain
         for(unsigned i = 0; i < _maxFrames; ++i)
             pushBack(*this, *(new TPageFrame()));
     }
-    
+
     ~PageChain()
     {
         while (!empty(*this))
             delete &popFront(*this);
     }
-    
-    inline TPageFrame & operator[](int k) 
-    {
-        TPageFrame *p = first;
-        for (; k > 0; --k)
-            p = p->next;
-        return *p;
-    }
-    
-    inline TPageFrame const & operator[](int k) const 
+
+    inline TPageFrame & operator[](int k)
     {
         TPageFrame *p = first;
         for (; k > 0; --k)
@@ -986,7 +978,15 @@ struct PageChain
         return *p;
     }
 
-    inline TPageFrame * getReadyPage() 
+    inline TPageFrame const & operator[](int k) const
+    {
+        TPageFrame *p = first;
+        for (; k > 0; --k)
+            p = p->next;
+        return *p;
+    }
+
+    inline TPageFrame * getReadyPage()
     {
         if (empty(*this))
             return &pushBack(*this, *(new TPageFrame()));
@@ -995,7 +995,7 @@ struct PageChain
         {
             bool inProgress;
             bool waitResult = waitFor(*first, 0, inProgress);
-            
+
             // TODO(weese): Throw an I/O exception
             if (!waitResult)
                 SEQAN_FAIL("%s operation could not be completed: \"%s\"", _pageFrameStatusString(first->status), strerror(errno));
@@ -1014,14 +1014,14 @@ struct PageChain
     }
 
     template <typename TFile>
-    inline void cancelAll(TFile &file) 
+    inline void cancelAll(TFile &file)
     {
         TPageFrame *p = first;
         for (; p != NULL; p = p->next)
             cancel(*p, file);
     }
 
-    inline void waitForAll() 
+    inline void waitForAll()
     {
         for (TPageFrame *p = first; p != NULL; p = p->next)
         {
@@ -1037,26 +1037,26 @@ struct PageChain
 //////////////////////////////////////////////////////////////////////////////
 // meta-function interface
 
-template <typename TPageFrame>    
-struct Value< PageChain<TPageFrame> > 
+template <typename TPageFrame>
+struct Value< PageChain<TPageFrame> >
 {
     typedef TPageFrame Type;
 };
 
-template <typename TPageFrame>    
-struct Size< PageChain<TPageFrame> > 
+template <typename TPageFrame>
+struct Size< PageChain<TPageFrame> >
 {
     typedef unsigned Type;
 };
 
-template <typename TPageFrame>    
-struct Iterator< PageChain<TPageFrame> > 
+template <typename TPageFrame>
+struct Iterator< PageChain<TPageFrame> >
 {
     typedef TPageFrame *Type;
 };
 
-template <typename TPageFrame>    
-struct Iterator< PageChain<TPageFrame> const > 
+template <typename TPageFrame>
+struct Iterator< PageChain<TPageFrame> const >
 {
     typedef TPageFrame const *Type;
 };
@@ -1101,7 +1101,7 @@ pushBack(PageChain<TPageFrame> &pageChain, TPageFrame &pageFrame)
         pageChain.last->next = &pageFrame;
     else
         pageChain.first = &pageFrame;
-    
+
     pageChain.last = &pageFrame;
     pageFrame.next = NULL;
     ++pageChain.frames;
@@ -1221,25 +1221,25 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
         inline TPageFrame       & operator[](TPos i)       { return pages[i]; }
         inline TPageFrame const & operator[](TPos i) const { return pages[i]; }
 
-        inline void push_back() 
+        inline void push_back()
         {
             TPos last = length(pages);
             resize(pages, last + 1);
             pages[last].lruEntry = lruList[0].insert(lruList[0].end(), last);
         }
 
-        inline void erase(int frameNo) 
+        inline void erase(int frameNo)
         {
             lruList[pages[frameNo].priority].erase(pages[frameNo].lruEntry);
             seqan::erase(pages, frameNo);
         }
 
-        inline void rename(int frameNo) 
+        inline void rename(int frameNo)
         {
             *(pages[frameNo].lruEntry) = frameNo;
         }
 
-        inline void pop_back() 
+        inline void pop_back()
         {
             lruList[back(pages).priority].erase(back(pages).lruEntry);
             seqan::erase(pages, endPosition(pages) - 1);
@@ -1255,27 +1255,27 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
         //////////////////////////////////////////////////////////////////////////////
         // lru strategy interface
 
-        inline void upgrade(const TPageFrame &pf) 
+        inline void upgrade(const TPageFrame &pf)
         {
             lruList[pf.priority].splice(lruList[pf.priority].begin(), lruList[pf.priority], pf.lruEntry);
             pf.lruEntry = lruList[pf.priority].begin();
         }
 
-        inline void downgrade(const TPageFrame &pf) 
+        inline void downgrade(const TPageFrame &pf)
         {
             lruList[pf.priority].splice(lruList[pf.priority].end(), lruList[pf.priority], pf.lruEntry);
             pf.lruEntry = lruList[pf.priority].end();
             --pf.lruEntry;
         }
 
-        inline void upgrade(TPageFrame &pf, int newPriority) 
+        inline void upgrade(TPageFrame &pf, int newPriority)
         {
             lruList[newPriority].splice(lruList[newPriority].begin(), lruList[pf.priority], pf.lruEntry);
             pf.lruEntry = lruList[newPriority].begin();
             pf.priority = static_cast<typename TPageFrame::Priority> (newPriority);
         }
 
-        inline void downgrade(TPageFrame &pf, int newPriority) 
+        inline void downgrade(TPageFrame &pf, int newPriority)
         {
             lruList[newPriority].splice(lruList[newPriority].end(), lruList[pf.priority], pf.lruEntry);
             pf.lruEntry = lruList[newPriority].end();
@@ -1283,7 +1283,7 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
             pf.priority = static_cast<typename TPageFrame::Priority> (newPriority);
         }
 
-        inline void _dump() 
+        inline void _dump()
         {
             for(unsigned i = 0; i < PRIORITY_LEVELS; ++i) {
                 std::cerr << "|";
@@ -1305,7 +1305,7 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
         // Function is a functor which is called with a PageFrame object,
         // that is dirty or not READY (in an IO transfer)
         template <class Function>
-        inline int mru(Function Func_, unsigned maxLevel = PRIORITY_LEVELS - 1) 
+        inline int mru(Function Func_, unsigned maxLevel = PRIORITY_LEVELS - 1)
         {
             for(unsigned i = 0; i <= maxLevel; ++i) {
                 PageLRUList::const_iterator I = lruList[i].end();
@@ -1325,7 +1325,7 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
             return -1;
         }
 
-        inline int mruDirty() 
+        inline int mruDirty()
         {
             for(unsigned i = 0; i < PRIORITY_LEVELS; ++i)
                 if (!lruList[i].empty())
@@ -1339,19 +1339,19 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
     // meta-function interface
 
     template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
-    struct Host< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> > 
+    struct Host< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >
     {
         typedef String<TPageFrame> Type;
     };
 
     template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
-    struct Host< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const > 
+    struct Host< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const >
     {
         typedef String<TPageFrame> const Type;
     };
 
     template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
-    struct Value< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> > 
+    struct Value< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >
     {
         typedef TPageFrame Type;
     };
@@ -1387,15 +1387,15 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
 
     template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
     inline void resize(
-        PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> &pageCont, 
-        unsigned Count_) 
+        PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> &pageCont,
+        unsigned Count_)
     {
         unsigned Size_ = length(pageCont.pages);
         if (Size_ < Count_) {
             reserve(pageCont.pages, Count_);
             for(unsigned i = Size_; i < Count_; ++i)
                 pageCont.push_back();
-        } else 
+        } else
             if (Size_ > Count_)
                 for(unsigned i = Count_; i < Size_; ++i)
                     pageCont.pop_back();
@@ -1403,7 +1403,7 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
 
     template <typename TPageFrame, unsigned FRAMES, unsigned PRIORITY_LEVELS>
     inline typename Size< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> >::Type
-    length(PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const &pageCont) 
+    length(PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const &pageCont)
     {
         return length(pageCont.pages);
     }
@@ -1412,7 +1412,7 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
     inline typename Iterator< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS>, Standard >::Type
     begin(
         PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> &pageCont,
-        Standard const) 
+        Standard const)
     {
         return begin(pageCont.pages, Standard());
     }
@@ -1421,7 +1421,7 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
     inline typename Iterator< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const, Standard >::Type
     begin(
         PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const &pageCont,
-        Standard const) 
+        Standard const)
     {
         return begin(pageCont.pages, Standard());
     }
@@ -1430,7 +1430,7 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
     inline typename Iterator< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS>, Standard >::Type
     end(
         PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> &pageCont,
-        Standard const) 
+        Standard const)
     {
         return end(pageCont.pages, Standard());
     }
@@ -1439,7 +1439,7 @@ firstToEnd(PageChain<TPageFrame> &pageChain)
     inline typename Iterator< PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const, Standard >::Type
     end(
         PageContainer<TPageFrame, FRAMES, PRIORITY_LEVELS> const &pageCont,
-        Standard const) 
+        Standard const)
     {
         return end(pageCont.pages, Standard());
     }

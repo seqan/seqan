@@ -117,7 +117,7 @@ typedef Score<int, Simple> SimpleScore;
  * @signature TValue scoreMatch(score);
  *
  * @param[in] score The SimpleScore scoring scheme.
- * 
+ *
  * @return TValue The match score.
  */
 
@@ -152,7 +152,7 @@ setScoreMatch(Score<TValue, TSpec> & me, TValue const & value) {
  * @signature TValue scoreMismatch(score);
  *
  * @param[in] score The SimpleScore to query for its mismatch score.
- * 
+ *
  * @return TValue The mismatch score.
  */
 
@@ -187,7 +187,7 @@ setScoreMismatch(Score<TValue, TSpec> & me, TValue const & value) {
  * @signature TValue scoreGapExtend(score);
  *
  * @param[in] score The SimpleScore to query for its gap extension score.
- * 
+ *
  * @return TValue The gap extension score.
  */
 
@@ -213,7 +213,7 @@ setScoreGapExtend(Score<TValue, TSpec> & me, TValue const & value) {
  * @signature TValue scoreGapOpen(score);
  *
  * @param[in] score The SimpleScore to query for its gap open score.
- * 
+ *
  * @return TValue The gap open score.
  */
 
@@ -249,7 +249,7 @@ setScoreGapOpen(Score<TValue, TSpec> & me, TValue const & value) {
  * @signature TValue scoreGap(score);
  *
  * @param[in] score The SimpleScore to query for its gap score.
- * 
+ *
  * @return TValue The gap score.
  */
 

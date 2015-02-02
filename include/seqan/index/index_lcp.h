@@ -37,7 +37,7 @@
 
 namespace SEQAN_NAMESPACE_MAIN
 {
-    
+
 //namespace SEQAN_NAMESPACE_PIPELINING
 //{
 
@@ -81,7 +81,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TLinearMapper           mapper;
         TFilter                    in;
         const LcpConfig            conf;
-        
+
         Pipe():
             in(mapper) {}
 
@@ -105,7 +105,7 @@ namespace SEQAN_NAMESPACE_MAIN
         {
             process();
         }
-        
+
         inline void process() {
             process(*textIn, *suffixArrayIn);
         }
@@ -114,7 +114,7 @@ namespace SEQAN_NAMESPACE_MAIN
         bool process(TTextInput_ &textIn, TSuffixArrayInput_ &suffixArrayIn) {
 
             // *** INSTANTIATION ***
-            
+
             TEchoer                        echoer(suffixArrayIn);
             TInverter                    inverter(echoer);
 
@@ -133,7 +133,7 @@ namespace SEQAN_NAMESPACE_MAIN
         inline typename Value<Pipe>::Type const operator*() const {
             return *in;
         }
-        
+
         inline Pipe& operator++() {
             ++in;
             return *this;
@@ -189,7 +189,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TFilter                    in;
         TLimitsString const        &limits;
         const LcpConfig            conf;
-        
+
         Pipe(TLimitsString const &_limits):
             in(mapper),
             limits(_limits)    {}
@@ -213,12 +213,12 @@ namespace SEQAN_NAMESPACE_MAIN
         {
             process(_bundleIn.in1, _bundleIn.in2);
         }
-        
+
         template < typename TTextInput_, typename TSuffixArrayInput_ >
         bool process(TTextInput_ &textIn, TSuffixArrayInput_ &suffixArrayIn) {
 
             // *** INSTANTIATION ***
-            
+
             TEchoer                        echoer(suffixArrayIn);
             map_inverse_t                _mapInverse(limits);
             TInverter                    inverter(echoer, _mapInverse);
@@ -238,7 +238,7 @@ namespace SEQAN_NAMESPACE_MAIN
         inline typename Value<Pipe>::Type const operator*() const {
             return *in;
         }
-        
+
         inline Pipe& operator++() {
             ++in;
             return *this;
@@ -253,13 +253,13 @@ namespace SEQAN_NAMESPACE_MAIN
          return me.process(bundleIn.in1, bundleIn.in2);
     }
 
-    
-    
+
+
     //////////////////////////////////////////////////////////////////////////////
     // internal Kasai algorithm
     //////////////////////////////////////////////////////////////////////////////
 
-    template < 
+    template <
         typename TLCP,
         typename TText,
         typename TSA >
@@ -301,7 +301,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         for(TSize i = 0; i < n; ++i)
             ISA[SA[i]] = i;
-        
+
         SEQAN_PROMARK("Suffix-Array invertiert");
 
         typename Iterator<TText const>::Type Ibegin = begin(s);
@@ -333,7 +333,7 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     // HINT:
-    // In contrast to the upper functions 
+    // In contrast to the upper functions
     // createLCPTableInPlace expects the lcp table to be of size n
     template < typename TLCPTable,
                typename TText,
@@ -365,7 +365,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         for(TSize i = 0; i < n; ++i)
             LCP[SA[i]] = i;
-        
+
         SEQAN_PROMARK("Suffix-Array invertiert");
         #ifdef SEQAN_DEBUG_INDEX
             std::cerr << "Suffix-Array invertiert" << std::endl;
@@ -448,7 +448,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         TText &s = concat(sset);
         TSize n = length(s);
-        
+
         if (n == 0) return;
 
         #ifdef SEQAN_DEBUG_INDEX
@@ -464,7 +464,7 @@ namespace SEQAN_NAMESPACE_MAIN
             for(TSize i = 0; i < n; ++i, ++itSA)
                 LCP[posGlobalize(*itSA, limits)] = i;
         }
-        
+
         SEQAN_PROMARK("Suffix-Array invertiert");
         #ifdef SEQAN_DEBUG_INDEX
             std::cerr << "Suffix-Array invertiert" << std::endl;
@@ -491,9 +491,9 @@ namespace SEQAN_NAMESPACE_MAIN
                     if (!h) ++sigma;
                 #endif
             }
-            if (h) 
+            if (h)
                 --h;
-            else 
+            else
                 ++I;
         }
 

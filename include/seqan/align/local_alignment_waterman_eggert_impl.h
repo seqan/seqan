@@ -58,7 +58,7 @@ namespace seqan {
 
 // Simple class that stores a value with an ID.
 template <typename TValue, typename TID>
-class ScoreAndID 
+class ScoreAndID
 {
 public:
     TValue value_;
@@ -82,7 +82,7 @@ public:
     {
         return value_ < other.value_;
     }
-}; 
+};
 
 // ----------------------------------------------------------------------------
 // Class LocalAlignmentFinder
@@ -100,21 +100,21 @@ public:
     typedef Iter<TMatrix,PositionIterator> TMatrixIterator;
     typedef PriorityType<TPQEntry> TPriorityQ;
     typedef String<bool> TBoolMatrix;
-    
+
     //DP-matrix
     TMatrix matrix;
     //matrix that memorizes the cells from which not to go diagonal
     TBoolMatrix forbidden;
     //priority queue for quickly finding the maximum score in the DP-matrix
     TPriorityQ pQ;
-    //position of maximum score (where traceback is started from) 
+    //position of maximum score (where traceback is started from)
     TMatrixPosition bestEndPos;
     //position where traceback ended and where declumping begins
     TMatrixPosition bestBeginPos;
     //traceback path that is set to forbidden while declumping
     AlignTraceback<TSize> trace;
 
-    bool needReinit; //true: call "smithWaterman", false: call "smithWatermanGetNext" 
+    bool needReinit; //true: call "smithWaterman", false: call "smithWatermanGetNext"
 
     LocalAlignmentFinder() : bestEndPos(0), bestBeginPos(0), needReinit(true)
     {}
@@ -156,7 +156,7 @@ _initLocalAlignmentFinder(TSequenceH const & seqH,
     resize(finder.matrix);
 
     resize(finder.forbidden, (len0 + 1) * (len1 + 1), false);
- 
+
     finder.bestEndPos = maxValue<typename TFinder::TMatrixPosition>();
     finder.bestBeginPos = maxValue<typename TFinder::TMatrixPosition>();
 }
@@ -262,7 +262,7 @@ _smithWatermanGetMatrix(LocalAlignmentFinder<TScoreValue> & sw,
         {
             goPrevious(finger1, 0);
             goPrevious(finger2, 0);
-            
+
             if (*x == cy)
             {
                 v = h + score_match;
@@ -275,7 +275,7 @@ _smithWatermanGetMatrix(LocalAlignmentFinder<TScoreValue> & sw,
                 TScoreValue s2 = score_gap + ((h > v) ? h : v);
                 v = (s1 > s2) ? s1 : s2;
                 if (v < 0) v = 0;
-            
+
             }
             *finger1 = v;
             if (v >= cutoff)
@@ -292,7 +292,7 @@ _smithWatermanGetMatrix(LocalAlignmentFinder<TScoreValue> & sw,
         v = getValue(sw.matrix,best.id_);
         sw.bestEndPos = best.id_;
     }
-    else 
+    else
         v=0;
 
     return v;
@@ -347,12 +347,12 @@ _smithWatermanDeclump(LocalAlignmentFinder<TScoreValue> & sw ,
     TGapsHIter ali_it0 = end(gapsH);
     TGapsVIter ali_it1 = end(gapsV);
 
-    // TStringIterator x_begin = begin(source(row0))-1; 
-    // TStringIterator y_begin = begin(source(row1))-1; 
+    // TStringIterator x_begin = begin(source(row0))-1;
+    // TStringIterator y_begin = begin(source(row1))-1;
     // TStringIterator x_end = iter(source(row0),clippedEndPosition(row0))-1;
     // TStringIterator y_end = iter(source(row1),clippedEndPosition(row1))-1;
-    TSequenceHIter x_begin = begin(source(gapsH))-1; 
-    TSequenceVIter y_begin = begin(source(gapsV))-1; 
+    TSequenceHIter x_begin = begin(source(gapsH))-1;
+    TSequenceVIter y_begin = begin(source(gapsV))-1;
     TSequenceHIter x_end = iter(source(gapsH), endPosition(gapsH) - 1);
     TSequenceVIter y_end = iter(source(gapsV), endPosition(gapsV) - 1);
 
@@ -378,7 +378,7 @@ _smithWatermanDeclump(LocalAlignmentFinder<TScoreValue> & sw ,
     bool forbidden_reached = true;
     bool end_reached = false;
     bool skip_row = false;
-    
+
 
 /*    int str0_length = length(source(row(align_,0)))+1;
     int str1_length = length(source(row(align_,1)))+1;
@@ -397,7 +397,7 @@ _smithWatermanDeclump(LocalAlignmentFinder<TScoreValue> & sw ,
     clearClipping(gapsV);
     // setClippedBeginPosition(row(align_, 0),0);
     // setClippedBeginPosition(row(align_, 1),0);
-    
+
 
     for (y = y_end; (y != y_begin) ; --y)
     {
@@ -417,7 +417,7 @@ _smithWatermanDeclump(LocalAlignmentFinder<TScoreValue> & sw ,
                 goPrevious(forbidden,1);
                 while(isGap(ali_it0)&& ali_it0!=ali_it0_stop)
                 {
-                    skip_row = true;            
+                    skip_row = true;
                     --ali_it0;
                     --ali_it1;
                     goPrevious(forbidden,1);
@@ -431,7 +431,7 @@ _smithWatermanDeclump(LocalAlignmentFinder<TScoreValue> & sw ,
                     --ali_it0;
                     goPrevious(forbidden,0);
                 }
-                // mark the forbidden cell 
+                // mark the forbidden cell
                 sw.forbidden[position(forbidden)]=true;
                 forbidden_reached = false;
             }
@@ -441,7 +441,7 @@ _smithWatermanDeclump(LocalAlignmentFinder<TScoreValue> & sw ,
         TValueV cy = *y;
 
         h = *end_col;
-        
+
         finger1 = end_col;        //points to last column
         goPrevious(end_col, 1);    //points to this column
         finger0 = end_col;
@@ -449,7 +449,7 @@ _smithWatermanDeclump(LocalAlignmentFinder<TScoreValue> & sw ,
         v = *finger0;
         x = x_end;
 
-        // declump the current row until the cells in the declumped and 
+        // declump the current row until the cells in the declumped and
         // the cells in the original matrix are the same (or the border is reached)
         // indicated by bool different
         while (x != x_begin && different)
@@ -464,7 +464,7 @@ _smithWatermanDeclump(LocalAlignmentFinder<TScoreValue> & sw ,
             else
             {
                 TScoreValue s1;
-            
+
                 if(finger0 == forbidden)
                 {
                         skip_row = false;
@@ -481,7 +481,7 @@ _smithWatermanDeclump(LocalAlignmentFinder<TScoreValue> & sw ,
                 TScoreValue s2 = score_gap + ((h > v) ? h : v);
                 v = (s1 > s2) ? s1 : s2;
                 if (v < 0) v = 0;
-            
+
             }
 
             // value is the same as in the original matrix
@@ -499,10 +499,10 @@ _smithWatermanDeclump(LocalAlignmentFinder<TScoreValue> & sw ,
                     if(x==x_end && ((!forbidden_reached && !skip_row)||end_reached))
                     {
                         --x_end;
-                        goPrevious(end_col, 0);    
+                        goPrevious(end_col, 0);
                     }
                 }
-            } 
+            }
             if(x<x_stop)// && different)
             {
                 x_stop=x;
@@ -526,7 +526,7 @@ template <typename TSourceH, typename TGapsSpecH, typename TSourceV, typename TG
 typename Iterator<Matrix<TScoreValue, DIMENSION>, Standard >::Type
 _smithWatermanTrace(Gaps<TSourceH, TGapsSpecH> & gapsH,
                     Gaps<TSourceV, TGapsSpecV> & gapsV,
-                    typename LocalAlignmentFinder<TScoreValue>::TBoolMatrix & fb_matrix, 
+                    typename LocalAlignmentFinder<TScoreValue>::TBoolMatrix & fb_matrix,
                     Iter< Matrix<TScoreValue, DIMENSION>, PositionIterator > source_,
                     Score<TScoreValue, Simple> const & scoring_) {
     //typedefs
@@ -549,7 +549,7 @@ _smithWatermanTrace(Gaps<TSourceH, TGapsSpecH> & gapsH,
 
     TSourceH strH = source(gapsH);
     TSourceV strV = source(gapsV);
-    
+
     TTargetIteratorH target_0 = iter(gapsH, pos_0);
     TTargetIteratorV target_1 = iter(gapsV, pos_1);
 
@@ -607,7 +607,7 @@ _smithWatermanTrace(Gaps<TSourceH, TGapsSpecH> & gapsH,
             insertGap(target_0);
         }
 
-        if (gh) 
+        if (gh)
         {
             ++it_1;
             goNext(source_, 1);
@@ -627,7 +627,7 @@ _smithWatermanTrace(Gaps<TSourceH, TGapsSpecH> & gapsH,
     setClippedEndPosition(gapsV, toViewPosition(gapsV, position(it_1, strV)));
     setClippedBeginPosition(gapsH, toViewPosition(gapsH, pos_0));
     setClippedBeginPosition(gapsV, toViewPosition(gapsV, pos_1));
-    
+
     return source_;
 }
 
@@ -651,7 +651,7 @@ _getNextBestEndPosition(LocalAlignmentFinder<TScoreValue> & sw ,
         while (top(sw.pQ).value_ != topScore) {
             if (topScore >= cutoff) {
                 ((sw.pQ).heap[0]).value_ = topScore;
-                adjustTop(sw.pQ); 
+                adjustTop(sw.pQ);
             } else {
                 pop(sw.pQ);
             }
@@ -669,7 +669,7 @@ _getNextBestEndPosition(LocalAlignmentFinder<TScoreValue> & sw ,
     typename LocalAlignmentFinder<TScoreValue>::TMatrixPosition ret_pos = top(sw.pQ).id_;
     sw.bestEndPos = ret_pos;
     pop(sw.pQ);
-    
+
     return ret_pos;
 }
 
@@ -683,7 +683,7 @@ TScoreValue
 _smithWaterman(Gaps<TSourceH, TGapsSpecH> & gapsH,
                Gaps<TSourceV, TGapsSpecV> & gapsV,
                LocalAlignmentFinder<TScoreValue> & sw_finder,
-               Score<TScoreValue, TScoreSpec> const & score_, 
+               Score<TScoreValue, TScoreSpec> const & score_,
                TScoreValue cutoff)
 {
     // TODO(holtgrew): This sourceSegment() stuff is confusing... Do we *really* need this?
@@ -694,9 +694,9 @@ _smithWaterman(Gaps<TSourceH, TGapsSpecH> & gapsH,
     clearClipping(gapsV);
 
     _initLocalAlignmentFinder(sourceSegment(gapsH), sourceSegment(gapsV), sw_finder, WatermanEggert());
-    
+
     TScoreValue ret = _smithWatermanGetMatrix(sw_finder, sourceSegment(gapsH), sourceSegment(gapsV), score_,cutoff);
-    
+
     if(ret==0)
         return ret;
     sw_finder.needReinit = false;
@@ -709,7 +709,7 @@ _smithWaterman(Gaps<TSourceH, TGapsSpecH> & gapsH,
     best_begin = _smithWatermanTrace(gapsH, gapsV, sw_finder.forbidden,iter(sw_finder.matrix,(top(sw_finder.pQ)).id_), score_);
 
     sw_finder.bestBeginPos = position(best_begin);
-    
+
     pop(sw_finder.pQ);
 
     return ret;
@@ -725,9 +725,9 @@ TScoreValue
 _smithWatermanGetNext(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                       Gaps<TSequenceV, TGapsSpecV> & gapsV,
                       LocalAlignmentFinder<TScoreValue> & sw_finder ,
-                      Score<TScoreValue, TScoreSpec> const & score_, 
+                      Score<TScoreValue, TScoreSpec> const & score_,
                       TScoreValue cutoff)
-{    
+{
     _smithWatermanDeclump(sw_finder, gapsH, gapsV, score_);
 
     clearGaps(gapsH);
@@ -742,7 +742,7 @@ _smithWatermanGetNext(Gaps<TSequenceH, TGapsSpecH> & gapsH,
     typename LocalAlignmentFinder<TScoreValue>::TMatrixIterator next_best_begin;
     next_best_begin= _smithWatermanTrace(gapsH, gapsV, sw_finder.forbidden,iter(sw_finder.matrix,next_best_end), score_);
     sw_finder.bestBeginPos = position(next_best_begin);
-    
+
     return getValue(sw_finder.matrix,next_best_end);
 }
 

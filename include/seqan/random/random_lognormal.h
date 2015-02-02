@@ -89,7 +89,7 @@ typedef Tag<MeanStdDev_> MeanStdDev;
  * Note that you can construct this either with mu/sigma of the underlying normal distribution (default) or with the
  * mean and standard deviation of the log-normal distribution.
  *
- * 
+ *
  * @fn LogNormalPdf::Pdf
  * @brief Constructor for log-normal Pdf.
  *

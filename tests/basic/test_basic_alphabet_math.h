@@ -86,7 +86,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_math_min_value)
 SEQAN_DEFINE_TEST(test_basic_alphabet_math_max_value)
 {
     using namespace seqan;
-    
+
     SEQAN_ASSERT_EQ(maxValue<MyNumber_>().value, 1);
     SEQAN_ASSERT_EQ(maxValue(MyNumber_()).value,  1);
 }

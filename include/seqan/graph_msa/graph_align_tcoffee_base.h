@@ -95,7 +95,7 @@ typedef Tag<ReScore_> const ReScore;
  * @fn buildAlignmentGraph
  * @headerfile <seqan/graph_msa.h>
  * @brief Builds an @link AlignmentGraph @endlink from a seqt of input alignments.
- 
+
  * @signature void buildAlignmentGraph(matches[, score], outGraph, tag);
  * @signature void buildAlignmentGraph(matches, score, outGraph, scoreType, ReScore);
  *
@@ -107,11 +107,11 @@ typedef Tag<ReScore_> const ReScore;
  *
  * Calls the function @link matchRefinement @endlink and adapts the scores according to <tt>tag</tt>.
  */
- 
+
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TFragment, typename TSpec1, typename TScoreValue, typename TSpec2, typename TStringSet, typename TCargo, typename TSpec> 
+template<typename TFragment, typename TSpec1, typename TScoreValue, typename TSpec2, typename TStringSet, typename TCargo, typename TSpec>
 inline void
 buildAlignmentGraph(String<TFragment, TSpec1>& matches,
                     String<TScoreValue, TSpec2>& scores,
@@ -166,7 +166,7 @@ buildAlignmentGraph(String<TFragment, TSpec1>& matches,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TFragment, typename TSpec1, typename TStringSet, typename TCargo, typename TSpec> 
+template<typename TFragment, typename TSpec1, typename TStringSet, typename TCargo, typename TSpec>
 inline void
 buildAlignmentGraph(String<TFragment, TSpec1>& matches,
                     Graph<Alignment<TStringSet, TCargo, TSpec> >& outGraph,
@@ -186,7 +186,7 @@ buildAlignmentGraph(String<TFragment, TSpec1>& matches,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TFragment, typename TSpec1, typename TScoreValue, typename TSpec2, typename TStringSet, typename TCargo, typename TSpec> 
+template<typename TFragment, typename TSpec1, typename TScoreValue, typename TSpec2, typename TStringSet, typename TCargo, typename TSpec>
 inline void
 buildAlignmentGraph(String<TFragment, TSpec1>& matches,
                     String<TScoreValue, TSpec2>&,
@@ -198,7 +198,7 @@ buildAlignmentGraph(String<TFragment, TSpec1>& matches,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TString, typename TSpec, typename TScoreType, typename TSize, typename TSpec2, typename TScoreString, typename TScoreValue> 
+template<typename TString, typename TSpec, typename TScoreType, typename TSize, typename TSpec2, typename TScoreString, typename TScoreValue>
 inline void
 _scoreMatches(StringSet<TString, TSpec> const & seqSet,
               TScoreType const & scType,
@@ -230,14 +230,14 @@ _scoreMatches(StringSet<TString, TSpec> const & seqSet,
         TStringIter itS2 = begin(seqSet[idToPosition(seqSet, id2)], Standard() );
         itS2 += pos2;
         *itSc = 0;
-        for(TSize i = 0; i<fragLen; ++i, ++itS1, ++itS2) 
+        for(TSize i = 0; i<fragLen; ++i, ++itS1, ++itS2)
             *itSc += offset + score(scType, *itS1, *itS2);
     }
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TString, typename TSpec, typename TScoreType, typename TFragment, typename TSpec2, typename TScoreString> 
+template<typename TString, typename TSpec, typename TScoreType, typename TFragment, typename TSpec2, typename TScoreString>
 inline void
 _scoreMatches(StringSet<TString, TSpec> const& seqSet,
               TScoreType const& scType,
@@ -251,7 +251,7 @@ _scoreMatches(StringSet<TString, TSpec> const& seqSet,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TFragment, typename TSpec1, typename TScoreValue, typename TSpec2, typename TStringSet, typename TCargo, typename TSpec, typename TScore> 
+template<typename TFragment, typename TSpec1, typename TScoreValue, typename TSpec2, typename TStringSet, typename TCargo, typename TSpec, typename TScore>
 inline void
 buildAlignmentGraph(String<TFragment, TSpec1>& matches,
                     String<TScoreValue, TSpec2>& scores,
@@ -261,7 +261,7 @@ buildAlignmentGraph(String<TFragment, TSpec1>& matches,
 {
     // ReScore
     _scoreMatches(stringSet(outGraph), scType, matches, scores);
-    
+
     // Use fractinal score
     buildAlignmentGraph(matches, scores, outGraph, FractionalScore() );
 }
@@ -286,7 +286,7 @@ struct MsaEdgeCargo_ {
 
      MsaEdgeCargo_() {}
 
-    
+
      MsaEdgeCargo_(TVertexDescriptor vert1, TVertexDescriptor vert2, TCargo carg) :
      v1(vert1), v2(vert2), c(carg) {}
 };
@@ -297,9 +297,9 @@ template<typename TVertexDescriptor, typename TCargo>
 struct LessMsaEdgeCargo_ :
     public std::binary_function<TVertexDescriptor, TCargo, bool>
 {
-    inline bool 
-    operator() (MsaEdgeCargo_<TVertexDescriptor, TCargo> const& a1, 
-                MsaEdgeCargo_<TVertexDescriptor, TCargo> const& a2) const 
+    inline bool
+    operator() (MsaEdgeCargo_<TVertexDescriptor, TCargo> const& a1,
+                MsaEdgeCargo_<TVertexDescriptor, TCargo> const& a2) const
     {
         return (a1.v1 == a2.v1) ? (a1.v2 < a2.v2) : (a1.v1 < a2.v1);
     }
@@ -323,7 +323,7 @@ struct LessMsaEdgeCargo_ :
  */
 
 template<typename TStringSet, typename TCargo, typename TSpec>
-inline void 
+inline void
 tripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
 {
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
@@ -350,7 +350,7 @@ tripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
     }
     clearEdges(g);
     std::sort(begin(fullEdges, Standard()), end(fullEdges, Standard()), LessMsaEdgeCargo_<TVertexDescriptor, TCargo>() );
-    
+
     // Perform triplet extension
     typedef typename Iterator<TEdgeString, Standard>::Type TEdgeIter;
     TEdgeIter itEdges1 = begin(fullEdges, Standard());
@@ -368,29 +368,29 @@ tripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
                     TEdgeMapIter pos = newEMap.find(TNewEdge((*itEdges2).v2, (*itEdges1).v2));
                     if (pos != newEMap.end()) (*pos).second += weight;
                     else newEMap.insert(std::make_pair(TNewEdge((*itEdges2).v2, (*itEdges1).v2), weight));
-                }    
+                }
             }
         }
     }
     clear(fullEdges);
 
     // Insert edges
-    for(TEdgeMapIter itE = newEMap.begin(); itE != newEMap.end(); ++itE) 
+    for(TEdgeMapIter itE = newEMap.begin(); itE != newEMap.end(); ++itE)
         addEdge(g, (*itE).first.first, (*itE).first.second, (*itE).second);
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TGuideTree, typename TSeqGroups, typename TGroupRoot, typename TSize>
-inline void 
-_subTreeSearch(TGuideTree& guideTree, 
+inline void
+_subTreeSearch(TGuideTree& guideTree,
                TSeqGroups& seqGroups,
                TGroupRoot& groupRoot,
-               TSize minMembers) 
+               TSize minMembers)
 {
     typedef typename Value<TSeqGroups>::Type TSeqGroup;
     typedef typename VertexDescriptor<TGuideTree>::Type TVertexDescriptor;
-    
+
     // Initialization
     TVertexDescriptor rootVertex = getRoot(guideTree);
     TSize nVertices = numVertices(guideTree);
@@ -405,8 +405,8 @@ _subTreeSearch(TGuideTree& guideTree,
     typedef String<TVertexDescriptor> TVertexString;
     TVertexString vertices;
     resize(vertices, nVertices);
-    
-    // Walk through the tree in bfs order    
+
+    // Walk through the tree in bfs order
     TBfsIterator bfsIt(guideTree, rootVertex);
     TSize pos = length(vertices) - 1;
     for(;!atEnd(bfsIt);goNext(bfsIt), --pos) {
@@ -424,7 +424,7 @@ _subTreeSearch(TGuideTree& guideTree,
             typedef typename Iterator<TGuideTree, AdjacencyIterator>::Type TAdjacencyIterator;
             TAdjacencyIterator adjIt(guideTree, *itVert);
             for(;!atEnd(adjIt);goNext(adjIt)) property(numLeaves, *itVert) += property(numLeaves, *adjIt);
-        }    
+        }
     }
 
     // Delineate the groups
@@ -455,7 +455,7 @@ _subTreeSearch(TGuideTree& guideTree,
 
     // Label all internal vertices with the closest root node
     typedef Pair<TSize, TSize> TDistGroup; // Distance, group index
-    String<TDistGroup> closestRoot;  
+    String<TDistGroup> closestRoot;
     resize(closestRoot, getIdUpperBound(_getVertexIdManager(guideTree)), TDistGroup(0,0), Exact());
     for(TSize i=0; i< (TSize) length(groupRoot); ++i) {
         TVertexDescriptor v = groupRoot[i];
@@ -463,7 +463,7 @@ _subTreeSearch(TGuideTree& guideTree,
         while(v != rootVertex) {
             ++dist;
             v = parentVertex(guideTree, v);
-            if ((property(closestRoot,v).i1 == 0) || 
+            if ((property(closestRoot,v).i1 == 0) ||
                 (property(closestRoot,v).i1 > dist)) {
                 property(closestRoot, v) = TDistGroup(dist,i);
             }
@@ -476,7 +476,7 @@ _subTreeSearch(TGuideTree& guideTree,
     for(TSize i=0; i< (TSize) length(seqGroups); ++i) {
         TSeqGroupIter itSeqGroup = begin(seqGroups[i], Standard());
         TSeqGroupIter itSeqGroupEnd = end(seqGroups[i], Standard());
-        for(;itSeqGroup != itSeqGroupEnd; ++itSeqGroup) 
+        for(;itSeqGroup != itSeqGroupEnd; ++itSeqGroup)
             appendValue(allGroupedLeaves, *itSeqGroup, Generous());
     }
     appendValue(allGroupedLeaves, nSeq);
@@ -491,7 +491,7 @@ _subTreeSearch(TGuideTree& guideTree,
             ++leftover;
         }
     }
-    
+
 
     //std::cout << guideTree << std::endl;
     //std::cout << nSeq << std::endl;
@@ -518,7 +518,7 @@ _subTreeSearch(TGuideTree& guideTree,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TGuideTree, typename TSize>
-inline void 
+inline void
 tripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
                         TGuideTree& guideTree,
                         TSize minMembers)
@@ -537,7 +537,7 @@ tripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
     typedef String<TTreeVertex> TGroupRoot;
     TGroupRoot groupRoot;
     _subTreeSearch(guideTree, seqGroup, groupRoot, minMembers);
-    
+
     // Label the subtree sequences
     String<TSize> seqLabels;
     resize(seqLabels, nSeq);
@@ -545,7 +545,7 @@ tripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
     for(TSize i=0; i< (TSize) length(seqGroup); ++i) {
         TSeqSetIter itSeqGroup = begin(seqGroup[i], Standard());
         TSeqSetIter itSeqGroupEnd = end(seqGroup[i], Standard());
-        for(;itSeqGroup != itSeqGroupEnd; ++itSeqGroup) 
+        for(;itSeqGroup != itSeqGroupEnd; ++itSeqGroup)
             seqLabels[*itSeqGroup] = i;
     }
 
@@ -567,7 +567,7 @@ tripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
     }
     clearEdges(g);
 
-    
+
     // Perform triplet extension
     typedef typename Iterator<TEdgeString, Standard>::Type TEdgeIter;
     TEdgeString fullEdges;
@@ -607,14 +607,14 @@ tripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
     }
 
     // Insert edges
-    for(TEdgeMapIter itE = newEMap.begin(); itE != newEMap.end(); ++itE) 
+    for(TEdgeMapIter itE = newEMap.begin(); itE != newEMap.end(); ++itE)
         addEdge(g, (*itE).first.first, (*itE).first.second, (*itE).second);
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec>
-inline void 
+inline void
 graphBasedTripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
 {
     SEQAN_CHECKPOINT
@@ -629,7 +629,7 @@ graphBasedTripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& 
     typedef String<TCargo> TCargoString;
     TVertexString edges_vertices;
     TCargoString edges_cargo;
-    
+
     // Triplet Extension
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     typedef typename Iterator<TGraph, VertexIterator>::Type TVertexIterator;
@@ -639,7 +639,7 @@ graphBasedTripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& 
     // Remember the old cargo
     resize(newCargoMap, getIdUpperBound(_getEdgeIdManager(g)), Exact());
     TEdgeIterator it(g);
-    for(;!atEnd(it);++it) 
+    for(;!atEnd(it);++it)
         property(newCargoMap, *it) = cargo(*it);
 
     // Iterate over all vertices
@@ -657,7 +657,7 @@ graphBasedTripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& 
                     if (e == 0) {
                         // New edge
                         TCargo val = (cargo(*outIt1) < cargo(*outIt2)) ? cargo(*outIt1) : cargo(*outIt2);
-                        
+
                         // Remember the edge with cargo
                         appendValue(edges_vertices, tV1, Generous());
                         appendValue(edges_vertices, tV2, Generous());
@@ -665,7 +665,7 @@ graphBasedTripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& 
                     } else {
                         // Increase weight of existing edge
                         if (cargo(*outIt2) > cargo(*outIt1)) property(newCargoMap, e) += cargo(*outIt1);
-                        else property(newCargoMap, e) += cargo(*outIt2);    
+                        else property(newCargoMap, e) += cargo(*outIt2);
                     }
                 }
                 goNext(outIt2);
@@ -703,7 +703,7 @@ graphBasedTripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& 
 ////////////////////////////////////////////////////////////////////////////////
 //
 //template<typename TStringSet, typename TCargo, typename TSpec>
-//inline void 
+//inline void
 //reducedTripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
 //{
 //    SEQAN_CHECKPOINT
@@ -736,7 +736,7 @@ graphBasedTripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& 
 //                    if (e != 0) {
 //                        // Increase weight of existing edge
 //                        if (getCargo(*outIt2) > getCargo(*outIt1)) property(newCargoMap, e) += getCargo(*outIt1);
-//                        else property(newCargoMap, e) += getCargo(*outIt2);    
+//                        else property(newCargoMap, e) += getCargo(*outIt2);
 //                    }
 //                }
 //                goNext(outIt2);
@@ -763,20 +763,20 @@ graphBasedTripletLibraryExtension(Graph<Alignment<TStringSet, TCargo, TSpec> >& 
  * @fn sumOfPairsScore
  * @headerfile <seqan/graph_msa.h>
  * @brief Given a multiple alignment, this function calculates the sum-of-pairs score.
- * 
+ *
  * @signature TScoreValue sumOfPairsScore(graph, scoringScheme);
- * 
+ *
  * @param[in] graph         An @link AlignmentGraph @endlink to use for the evaluation.
  * @param[in] ScoringScheme The @link Score @endlink to use.
- * 
+ *
  * @return TScoreValue The SOP score of the MSA  (Metafunction: @link Score#Value @endlink of the type of
  *                     <tt>scoringScheme</tt>).
- * 
+ *
  * This function does NOT assume independent columns.  That is, gap openings are properly scored.  If you want the fast
  * version assuming independ columns use sumOfPairsScoreInd.
  */
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TScore> 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TScore>
 inline typename Value<TScore>::Type
 sumOfPairsScore(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                 TScore const& score_type)
@@ -796,7 +796,7 @@ sumOfPairsScore(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     TScoreValue gapOpen = scoreGapOpen(score_type);
     TSize nseq = length(stringSet(g));
     TSize len = length(mat) / nseq;
-    
+
     bool gapOpeni = false;
     bool gapOpenj = false;
     TScoreValue totalScore = 0;
@@ -834,7 +834,7 @@ sumOfPairsScore(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 // This version is insensitive to gap openings, assumes independent columns
-template<typename TStringSet, typename TCargo, typename TSpec, typename TScore> 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TScore>
 inline typename Value<TScore>::Type
 sumOfPairsScoreInd(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                    TScore const& score_type)
@@ -853,7 +853,7 @@ sumOfPairsScoreInd(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     TScoreValue gap = scoreGapExtend(score_type);
     TSize nseq = length(stringSet(g));
     TSize len = length(mat) / nseq;
-    
+
     TScoreValue totalScore = 0;
     for(TSize k=0;k<len; ++k) {
         for(TSize i = 0; i<nseq-1; ++i) {
@@ -886,7 +886,7 @@ sumOfPairsScoreInd(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * @param[out] gapExCount    The number of gap extensions.
  * @param[out] gapCount      The number of gaps.
  * @param[out] pairCount     The number of aligned pairs.
- * @param[out] numPairs      Counter for each pair. A @link String @endlink resized to size <tt>n*n</tt>, where 
+ * @param[out] numPairs      Counter for each pair. A @link String @endlink resized to size <tt>n*n</tt>, where
                              <tt>n</tt> is the @link FiniteOrderedAlphabetConcept#ValueSize @endlink of the alphabet
                              of the aligned sequences.
  * @param[out] len           Alignment length.
@@ -894,7 +894,7 @@ sumOfPairsScoreInd(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * @return TScoreVal The score of the alignment  (Metafunction: @link Score#Value @endlink).
  */
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TScore, typename TSize> 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TScore, typename TSize>
 inline typename Value<TScore>::Type
 alignmentEvaluation(Graph<Alignment<TStringSet, TCargo, TSpec> > const & g,
                     TScore const& score_type,
@@ -924,7 +924,7 @@ alignmentEvaluation(Graph<Alignment<TStringSet, TCargo, TSpec> > const & g,
     TScoreValue gapOpen = scoreGapOpen(score_type);
     TSize nseq = length(stringSet(g));
     len = length(mat) / nseq;
-    
+
     bool gapOpeni = false;
     bool gapOpenj = false;
     TScoreValue totalScore = 0;
@@ -969,7 +969,7 @@ alignmentEvaluation(Graph<Alignment<TStringSet, TCargo, TSpec> > const & g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TSource, typename TSpec2> 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TSource, typename TSpec2>
 inline bool
 convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& gAlign,
                  Align<TSource, TSpec2>& align)
@@ -1019,7 +1019,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& gAlign,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSource, typename TSpec2, typename TStringSet, typename TCargo, typename TSpec> 
+template<typename TSource, typename TSpec2, typename TStringSet, typename TCargo, typename TSpec>
 inline bool
 convertAlignment(Align<TSource, TSpec2> const& align,
                  Graph<Alignment<TStringSet, TCargo, TSpec> >& gAlign)

@@ -462,7 +462,7 @@ inline bool goDown(Iter<Index<TText, IndexQGram<TShapeSpec, BucketRefinement> >,
         if (!_implantSa(it))
             return false;
     }
-    
+
     return goDown(it._bottomIterator);
 }
 

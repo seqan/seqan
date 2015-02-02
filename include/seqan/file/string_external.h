@@ -166,7 +166,7 @@ namespace SEQAN_NAMESPACE_MAIN
     // but size type is size type of TFile_ (i.e. uint64)
     //
     // ATTENTION:
-    // pipes use the size type 
+    // pipes use the size type
     // uint64 blows up your suffix arrays, lcp-tables, ...
     template < typename TFile_ = File<>,                // default file type
                unsigned PAGESIZE_ = 4 * 1024 * 1024,    // 1MTypes per default
@@ -238,33 +238,33 @@ namespace SEQAN_NAMESPACE_MAIN
         inline TDifference operator- (const TIterator &I) const {
             return offset - I.offset;
         }
-        
+
         inline TIterator operator- (TDifference delta) const {
             return TIterator(extString, offset - delta);
         }
-        
+
         inline TIterator& operator-= (TDifference delta) const {
             offset -= delta;
             return *this;
         }
-        
+
         inline TIterator operator+ (TDifference delta) const {
             return TIterator(extString, offset + delta);
         }
-        
+
         inline TIterator& operator+= (TDifference delta) const {
             offset += delta;
             return *this;
         }
-        
+
         inline TValue & operator* () const {
             return (*extString)[offset];
         }
-    
+
 /*        inline TValue const & operator* () const {
             return (*extString)[offset];
         }
-*/  
+*/
         inline TIterator& operator++ () {
             ++offset; return *this;
         }
@@ -319,8 +319,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
         TSize        offset;
         TExtString    *extString;
-        
-        
+
+
         ExtStringConstIterator():
             offset(0),
             extString(NULL) {}
@@ -346,29 +346,29 @@ namespace SEQAN_NAMESPACE_MAIN
         inline TDifference operator- (const TIterator &I) const {
             return offset - I.offset;
         }
-        
+
         inline TIterator operator- (TDifference delta) const {
             return TIterator(extString, offset - delta);
         }
-        
+
         inline TIterator& operator-= (TDifference delta) const {
             offset -= delta;
             return *this;
         }
-        
+
         inline TIterator operator+ (TDifference delta) const {
             return TIterator(extString, offset + delta);
         }
-        
+
         inline TIterator& operator+= (TDifference delta) const {
             offset += delta;
             return *this;
         }
-        
+
         inline TValue const & operator* () const {
             return (*extString)[offset];
         }
-    
+
         inline TIterator& operator++ () {
             ++offset; return *this;
         }
@@ -400,7 +400,7 @@ namespace SEQAN_NAMESPACE_MAIN
         inline bool operator< (const TIterator &I) const {
             SEQAN_ASSERT_EQ(extString, I.extString);
             return offset < I.offset;
-        }        
+        }
     };
 
 
@@ -429,7 +429,7 @@ namespace SEQAN_NAMESPACE_MAIN
         unsigned        pageOfs;
         int             prefetch;   // -n .. prefetch n pages downwards, n .. prefetch n pages upwards, 0 .. disabled
         TVolatilePtr    begin;
-        
+
         ExtStringFwdIterator():
             extString(NULL),
             dirty(true),
@@ -514,7 +514,7 @@ namespace SEQAN_NAMESPACE_MAIN
         {
             return position() - I.position();
         }
-        
+
         inline TIterator operator- (TDifference delta) const {
             TDifference dPNo  = delta / PAGESIZE;
             TDifference dPOfs = delta % PAGESIZE;
@@ -523,7 +523,7 @@ namespace SEQAN_NAMESPACE_MAIN
             else
                 return TIterator(extString, pageNo - dPNo - 1, PAGESIZE + pageOfs - dPOfs);
         }
-        
+
         inline TIterator& operator-= (TDifference delta) {
             TDifference dPNo  = delta / PAGESIZE;
             TDifference dPOfs = delta % PAGESIZE;
@@ -536,7 +536,7 @@ namespace SEQAN_NAMESPACE_MAIN
             pageNo -= dPNo;
             return *this;
         }
-        
+
         inline TIterator operator+ (TDifference delta) const {
             TDifference dPNo  = delta / PAGESIZE;
             TDifference nPOfs = pageOfs + delta % PAGESIZE;
@@ -545,7 +545,7 @@ namespace SEQAN_NAMESPACE_MAIN
             else
                 return TIterator(extString, pageNo + dPNo + 1, nPOfs - PAGESIZE);
         }
-        
+
         inline TIterator& operator+= (TDifference delta) {
             TDifference dPNo  = delta / PAGESIZE;
             TDifference nPOfs = pageOfs + delta % PAGESIZE;
@@ -558,17 +558,17 @@ namespace SEQAN_NAMESPACE_MAIN
             pageOfs = nPOfs;
             return *this;
         }
-        
-        inline void validate() const 
+
+        inline void validate() const
         {
             typename TExtString::TPageFrame &pf = extString->getSharedPage(pageNo, prefetch);
             const_cast<TIterator*>(this)->dirty = pf.dirty;
             const_cast<TIterator*>(this)->begin = pf.begin;
         }
 
-        inline void invalidate(int _prefetch = 0) const 
+        inline void invalidate(int _prefetch = 0) const
         {
-            if (begin) 
+            if (begin)
             {
                 const_cast<TIterator*>(this)->begin = NULL;
                 extString->releasePage(pageNo, (prefetch != 0) || (_prefetch != 0));
@@ -576,7 +576,7 @@ namespace SEQAN_NAMESPACE_MAIN
             }
         }
 
-        inline TValue & operator* () const 
+        inline TValue & operator* () const
         {
             if (!begin) validate();
             // synchronize PageFrame dirty flag on dirty false->true change
@@ -586,12 +586,12 @@ namespace SEQAN_NAMESPACE_MAIN
             }
             return const_cast<TIterator*>(this)->begin[pageOfs];
         }
-/*    
+/*
         inline TValue const & operator* () const {
             if (!begin) validate();
             return begin[pageOfs];
         }
-*/    
+*/
         inline TIterator& operator++ () {
             if (++pageOfs == PAGESIZE) {
                 invalidate(1);
@@ -656,7 +656,7 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TExtString >
     struct ExtStringFwdConstIterator
     {
-//IOREV _nottested_ 
+//IOREV _nottested_
         typedef ExtStringFwdConstIterator                TIterator;
         typedef ExtStringIterator<TExtString>            TStdIterator;
         typedef ExtStringConstIterator<TExtString>        TStdConstIterator;
@@ -669,14 +669,14 @@ namespace SEQAN_NAMESPACE_MAIN
 
         enum { PAGESIZE = TExtString::PAGESIZE };
 
-        
+
         TExtString        *extString;
 
         int             pageNo;
         unsigned        pageOfs;
         int             prefetch;   // -n .. prefetch n pages downwards, n .. prefetch n pages upwards, 0 .. disabled
         TVolatilePtr    begin;
-        
+
 
         ExtStringFwdConstIterator():
             extString(NULL),
@@ -784,7 +784,7 @@ namespace SEQAN_NAMESPACE_MAIN
         {
             return position() - I.position();
         }
-        
+
         inline TIterator operator- (TDifference delta) const {
             TDifference dPNo  = delta / PAGESIZE;
             TDifference dPOfs = delta % PAGESIZE;
@@ -793,7 +793,7 @@ namespace SEQAN_NAMESPACE_MAIN
             else
                 return TIterator(extString, pageNo - dPNo - 1, PAGESIZE + pageOfs - dPOfs);
         }
-        
+
         inline TIterator& operator-= (TDifference delta) {
             TDifference dPNo  = delta / PAGESIZE;
             TDifference dPOfs = delta % PAGESIZE;
@@ -815,7 +815,7 @@ namespace SEQAN_NAMESPACE_MAIN
             else
                 return TIterator(extString, pageNo + dPNo + 1, nPOfs - PAGESIZE);
         }
-        
+
         inline TIterator& operator+= (TDifference delta) {
             TDifference dPNo  = delta / PAGESIZE;
             TDifference nPOfs = pageOfs + delta % PAGESIZE;
@@ -828,7 +828,7 @@ namespace SEQAN_NAMESPACE_MAIN
             pageOfs = nPOfs;
             return *this;
         }
-        
+
         inline void validate() const {
             typename TExtString::TPageFrame &pf = extString->getSharedPage(pageNo, prefetch);
             const_cast<TIterator*>(this)->begin = pf.begin;
@@ -846,7 +846,7 @@ namespace SEQAN_NAMESPACE_MAIN
             if (!begin) validate();
             return begin[pageOfs];
         }
-    
+
         inline TIterator& operator++ () {
             if (++pageOfs == PAGESIZE) {
                 invalidate(1);
@@ -1034,7 +1034,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //IOREV
 
     template <typename TExtString>
-    inline bool    atBegin(ExtStringFwdIterator<TExtString> &it) { 
+    inline bool    atBegin(ExtStringFwdIterator<TExtString> &it) {
 //IOREV
         return it.pageNo == 0 && it.pageOfs == 0;
     }
@@ -1045,7 +1045,7 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template <typename TExtString>
-    inline bool    atBegin(ExtStringFwdConstIterator<TExtString> &it) { 
+    inline bool    atBegin(ExtStringFwdConstIterator<TExtString> &it) {
 //IOREV
         return it.pageNo == 0 && it.pageOfs == 0;
     }
@@ -1071,7 +1071,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //IOREV
 
     template <typename TExtString>
-    inline bool    atEnd(ExtStringFwdIterator<TExtString> &it) { 
+    inline bool    atEnd(ExtStringFwdIterator<TExtString> &it) {
 //IOREV
         return TExtString::PAGESIZE * it.pageNo + it.pageOfs == it.extString->data_size;
     }
@@ -1082,7 +1082,7 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template <typename TExtString>
-    inline bool    atEnd(ExtStringFwdConstIterator<TExtString> &it) { 
+    inline bool    atEnd(ExtStringFwdConstIterator<TExtString> &it) {
 //IOREV
         return TExtString::PAGESIZE * it.pageNo + it.pageOfs == it.extString->data_size;
     }
@@ -1093,10 +1093,10 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
 
-    
-    
-    
-    
+
+
+
+
     //////////////////////////////////////////////////////////////////////////////
     // External String
     //////////////////////////////////////////////////////////////////////////////
@@ -1123,7 +1123,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TFile                file;
         bool                _temporary, _ownFile;
         TSize                data_size;
-        int                 lastDiskPage;       // the last page on disk and in mem 
+        int                 lastDiskPage;       // the last page on disk and in mem
         unsigned            lastDiskPageSize;   // can be smaller than PAGESIZE
 
         String(TSize size = 0) :
@@ -1217,7 +1217,7 @@ namespace SEQAN_NAMESPACE_MAIN
             return *this;
         }
 
-        inline operator bool() 
+        inline operator bool()
         {
             return file;
         }
@@ -1226,9 +1226,9 @@ namespace SEQAN_NAMESPACE_MAIN
         // swapping interface
 
         // when a page has to be swapped out and file is not open, open a temporary file
-        inline void _ensureFileIsOpen() 
+        inline void _ensureFileIsOpen()
         {
-            if (!file) 
+            if (!file)
             {
                 _temporary = true;
                 if (!(_ownFile = openTemp(file)))
@@ -1237,9 +1237,9 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         // for debugging
-        void _dumpCache() 
+        void _dumpCache()
         {
-            for(int i = 0; i < length(cache); ++i) 
+            for(int i = 0; i < length(cache); ++i)
             {
                 TPageFrame &pf = cache[i];
                 std::cerr << "[" << pf.pageNo << "]";
@@ -1257,7 +1257,7 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         // return a priority for a page frame (the higher is more persistent)
-        inline typename TPageFrame::Priority getPriority(int /*pageNo*/) const 
+        inline typename TPageFrame::Priority getPriority(int /*pageNo*/) const
         {
 /*            if (keepFirst && pageNo < (int)(length(cache)) - 10) // save 1 for random access
                 return TPageFrame::PERMANENT_LEVEL;
@@ -1266,7 +1266,7 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         // write page to disk if dirty and remove from page table now or after finishing IO
-        inline void flush(TPageFrame &pf) 
+        inline void flush(TPageFrame &pf)
         {
             if (pf.status == READY && pf.dirty) {    // write if dirty and not i/o transferring
                 nukeCopies(pf.begin);                            // proceeding writes should wait and set dirty bit
@@ -1287,7 +1287,7 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         // write page synchronously to disk if dirty and remove from page table
-        inline void swapOutAndWait(TPageFrame &pf) 
+        inline void swapOutAndWait(TPageFrame &pf)
         {
             nukeCopies(pf.begin);                      // proceeding writes should wait and set dirty bit
 
@@ -1331,7 +1331,7 @@ namespace SEQAN_NAMESPACE_MAIN
             pf.pageNo = -1;                                 // cut back link
         }
 
-        struct testIODone : public std::unary_function<TPageFrame&,bool> 
+        struct testIODone : public std::unary_function<TPageFrame&,bool>
         {
             String &me;
             testIODone(String &_me): me(_me) {}
@@ -1368,7 +1368,7 @@ namespace SEQAN_NAMESPACE_MAIN
             {
                 TPageFrame &pf = cache[frameNo];
                 cache.upgrade(
-                    pf, 
+                    pf,
                     _max(pf.priority, newLevel));            // update lru order
 
                 PageFrameState oldStatus = pf.status;
@@ -1422,7 +1422,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
                 if (prefetchPages > 0) prefetch(pageNo + 1, pageNo + 1 + prefetchPages, frameNo);
                 else if (prefetchPages < 0) prefetch(pageNo + prefetchPages, pageNo, frameNo);
-                
+
                 bool waitResult = waitFor(pf);              // wait for I/O transfer to complete
 
                 // TODO(weese): Throw an I/O exception
@@ -1434,14 +1434,14 @@ namespace SEQAN_NAMESPACE_MAIN
                 return pf;
             }
         }
-        
+
         inline TPageFrame &getPage(int pageNo)
         {
             return getPage(pageNo, TPageFrame::NORMAL_LEVEL, TPageFrame::NORMAL_LEVEL, 0);
         }
 
         // prefetch is non-blocking and should speed up swapping
-        inline void prefetch(int pageBegin, int pageEnd, int except = -1) 
+        inline void prefetch(int pageBegin, int pageEnd, int except = -1)
         {
             if (!file) return;
             if (pageBegin < 0)                    pageBegin = 0;
@@ -1451,7 +1451,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 typename TPageFrame::DataStatus dataStatus = static_cast<typename TPageFrame::DataStatus>(frameNo);
                 if (dataStatus == TPageFrame::ON_DISK &&             // prefetch only if page is on disk
                     pageNo != lastDiskPage)                         // reading the last page is blocking
-                {   
+                {
                     frameNo = cache.mru(
                         testIODone(*this),
                         TPageFrame::NORMAL_LEVEL);                   // choose undirty and ready page
@@ -1479,36 +1479,36 @@ namespace SEQAN_NAMESPACE_MAIN
                 }
             }
         }
-        
+
         template < typename T >
         inline static int _prefetchIffAsync(int /*prefetchPages*/, T const &) {
             return 0;
         }
-        
+
         template < typename TSpec >
         inline static int _prefetchIffAsync(int prefetchPages, File<Async<TSpec> > const &) {
             return prefetchPages;
         }
 
-        inline TPageFrame &getSharedPage(int pageNo, int prefetchPages = 0) 
+        inline TPageFrame &getSharedPage(int pageNo, int prefetchPages = 0)
         {
             return getPage(
-                pageNo, 
-                TPageFrame::PREFETCH_LEVEL, 
+                pageNo,
+                TPageFrame::PREFETCH_LEVEL,
                 TPageFrame::ITERATOR_LEVEL,
                 _prefetchIffAsync(prefetchPages, file));
         }
 
-        inline void releasePage(int pageNo, bool writeThrough = false) 
+        inline void releasePage(int pageNo, bool writeThrough = false)
         {
             int frameNo = pager[pageNo];
             if (frameNo >= 0)                            // release only cached pages
-            {                                        
+            {
                 TPageFrame &pf = cache[frameNo];
-                if (pf.begin.isLonely() && pf.priority <= TPageFrame::ITERATOR_LEVEL) 
+                if (pf.begin.isLonely() && pf.priority <= TPageFrame::ITERATOR_LEVEL)
                 {
                     cache.upgrade(pf, _max(getPriority(pageNo), TPageFrame::NORMAL_LEVEL));
-                    if (writeThrough) 
+                    if (writeThrough)
                     {
                         #ifdef SEQAN_VERBOSE
                             if (pf.dirty)
@@ -1519,8 +1519,8 @@ namespace SEQAN_NAMESPACE_MAIN
                 }
             }
         }
-        
-        inline void rename(unsigned frameNo) 
+
+        inline void rename(unsigned frameNo)
         {
             TPageFrame &pf = cache[frameNo];
             cache.rename(frameNo);                                  // update lru entry
@@ -1529,9 +1529,9 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         // change the number of in-mem pageframes
-        // more pages mean less swapping, 
+        // more pages mean less swapping,
         // less pages mean more free mem
-        inline void resizeCache(unsigned newFrames) 
+        inline void resizeCache(unsigned newFrames)
         {
             unsigned oldFrames = length(cache);
             if (data_size)
@@ -1588,7 +1588,7 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
     template < typename TValue, typename TConfig, typename TSpec >
-    struct Iterator< String<TValue, External<TConfig> >, Tag<TSpec> const > 
+    struct Iterator< String<TValue, External<TConfig> >, Tag<TSpec> const >
     {
 //IOREV
         typedef ExtStringFwdIterator< String<TValue, External<TConfig> > > Type;
@@ -1615,7 +1615,7 @@ namespace SEQAN_NAMESPACE_MAIN
     struct DefaultIteratorSpec< String<TValue, External<TConfig> > > {
         typedef Standard Type;
     };
-    
+
     template < typename TValue, typename TConfig >
     struct DefaultIteratorSpec< String<TValue, External<TConfig> > const > {
         typedef Standard Type;
@@ -1637,8 +1637,8 @@ namespace SEQAN_NAMESPACE_MAIN
 //____________________________________________________________________________
 
     template < typename TValue, typename TConfig >
-    inline void 
-    clear(String<TValue, External<TConfig> > &me) 
+    inline void
+    clear(String<TValue, External<TConfig> > &me)
     {
 //IOREV
 //        clear(me.pager);
@@ -1648,7 +1648,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     // wait until IO of every page is finished
     template < typename TValue, typename TConfig >
-    inline void 
+    inline void
     waitForAll(String<TValue, External<TConfig> > &me)
     {
 //IOREV _nodoc_
@@ -1679,8 +1679,8 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
     template < typename TValue, typename TConfig >
-    inline void 
-    flush(String<TValue, External<TConfig> > &me) 
+    inline void
+    flush(String<TValue, External<TConfig> > &me)
     {
 //IOREV _doc_
         typedef typename String<TValue, External<TConfig> >::TCache    TCache;
@@ -1700,14 +1700,14 @@ namespace SEQAN_NAMESPACE_MAIN
 
     // cancel all transactions
     template < typename TValue, typename TConfig >
-    inline void 
+    inline void
     cancel(String<TValue, External<TConfig> > &me)
     {
 //IOREV _nodoc_
         typedef typename String<TValue, External<TConfig> >::TCache    TCache;
         typedef typename Iterator<TCache, Standard>::Type            TIter;
 
-        if (me.file) 
+        if (me.file)
         {
             TIter f = begin(me.cache, Standard());
             TIter fEnd = end(me.cache, Standard());
@@ -1719,7 +1719,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     // cancel all transactions and free allocated pages
     template < typename TValue, typename TConfig >
-    inline void 
+    inline void
     cancelAndFree(String<TValue, External<TConfig> > &me)
     {
 //IOREV _nodoc_
@@ -1731,10 +1731,10 @@ namespace SEQAN_NAMESPACE_MAIN
         TIter f = begin(me.cache, Standard());
         TIter fEnd = end(me.cache, Standard());
 
-        for(; f != fEnd ; ++f) 
+        for(; f != fEnd ; ++f)
         {
             if ((me.file) && (*f).begin) cancel(*f, me.file);
-            if ((*f).pageNo >= 0) 
+            if ((*f).pageNo >= 0)
             {
                 me.pager[(*f).pageNo] = (*f).dataStatus;
                 (*f).pageNo = TPageFrame::UNINITIALIZED;
@@ -1747,7 +1747,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     // flush and free all allocated pages
     template < typename TValue, typename TConfig >
-    inline void 
+    inline void
     flushAndFree(String<TValue, External<TConfig> > &me)
     {
 //IOREV _nodoc_
@@ -1761,7 +1761,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TIter f = begin(me.cache, Standard());
         TIter fEnd = end(me.cache, Standard());
 
-        for(; f != fEnd ; ++f) 
+        for(; f != fEnd ; ++f)
         {
             if (f->pageNo >= 0)
             {
@@ -1788,8 +1788,8 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
     template < typename TValue, typename TConfig >
-    inline bool 
-    open(String<TValue, External<TConfig> > &me, const char *fileName, int openMode) 
+    inline bool
+    open(String<TValue, External<TConfig> > &me, const char *fileName, int openMode)
     {
 //IOREV _doc_
         typedef String<TValue, External<TConfig> >            TExtString;
@@ -1801,9 +1801,9 @@ namespace SEQAN_NAMESPACE_MAIN
         else
             me.data_size = 0;
 
-        resize(me.pager, enclosingBlocks(me.data_size, 
-            (unsigned)me.PAGESIZE), (me.data_size)? 
-                TPageFrame::ON_DISK: 
+        resize(me.pager, enclosingBlocks(me.data_size,
+            (unsigned)me.PAGESIZE), (me.data_size)?
+                TPageFrame::ON_DISK:
                 TPageFrame::UNINITIALIZED);
 
         me.lastDiskPage = me.data_size / me.PAGESIZE;
@@ -1812,8 +1812,8 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template < typename TValue, typename TConfig >
-    inline bool 
-    open(String<TValue, External<TConfig> > &me, const char *fileName) 
+    inline bool
+    open(String<TValue, External<TConfig> > &me, const char *fileName)
     {
 //IOREV _doc_
         typedef String<TValue, External<TConfig> >    TExtString;
@@ -1823,8 +1823,8 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template < typename TValue, typename TConfig >
-    inline bool 
-    open(String<TValue, External<TConfig> > &me, typename TConfig::TFile file) 
+    inline bool
+    open(String<TValue, External<TConfig> > &me, typename TConfig::TFile file)
     {
 //IOREV _doc_
         typedef String<TValue, External<TConfig> >    TExtString;
@@ -1838,9 +1838,9 @@ namespace SEQAN_NAMESPACE_MAIN
         else
             me.data_size = 0;
 
-        resize(me.pager, enclosingBlocks(me.data_size, 
-            (unsigned)me.PAGESIZE), (me.data_size)? 
-                TPageFrame::ON_DISK: 
+        resize(me.pager, enclosingBlocks(me.data_size,
+            (unsigned)me.PAGESIZE), (me.data_size)?
+                TPageFrame::ON_DISK:
                 TPageFrame::UNINITIALIZED);
 
         me.lastDiskPage = me.data_size / me.PAGESIZE;
@@ -1860,8 +1860,8 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
     template < typename TValue, typename TConfig >
-    inline bool 
-    openTemp(String<TValue, External<TConfig> > &me) 
+    inline bool
+    openTemp(String<TValue, External<TConfig> > &me)
     {
 //IOREV _doc_
         me._temporary = true;
@@ -1873,7 +1873,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //____________________________________________________________________________
 
     template < typename TValue, typename TConfig >
-    inline bool 
+    inline bool
     save(String<TValue, External<TConfig> > const &/*me*/, const char * /*fileName*/, int /*openMode*/) {
 //IOREV _nodoc_ shouldn't we flush here? in case of abnormal termination...
         // External Strings are persistent, thus there is no need to save them
@@ -1882,7 +1882,7 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template < typename TValue, typename TConfig >
-    inline bool 
+    inline bool
     save(String<TValue, External<TConfig> > const &/*me*/, const char * /*fileName*/) {
 //IOREV _nodoc_ shouldn't we flush here? in case of abnormal termination...
         // External Strings are persistent, thus there is no need to save them
@@ -1891,7 +1891,7 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template < typename TValue, typename TConfig >
-    inline bool 
+    inline bool
     save(String<TValue, External<TConfig> > const &/*me*/, typename TConfig::TFile /*file*/) {
 //IOREV _nodoc_ shouldn't we flush here? in case of abnormal termination...
         // External Strings are persistent, thus there is no need to save them
@@ -1910,10 +1910,10 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @return bool <tt>true</tt> if the closing succeeded, <tt>false</tt> otherwise.
  */
-    
+
     template < typename TValue, typename TConfig >
-    inline bool 
-    close(String<TValue, External<TConfig> > &me) 
+    inline bool
+    close(String<TValue, External<TConfig> > &me)
     {
 //IOREV _doc_
         // close associated file
@@ -1923,11 +1923,11 @@ namespace SEQAN_NAMESPACE_MAIN
             flushAndFree(me);
         clear(me.pager);
 
-        if (me._ownFile) 
+        if (me._ownFile)
         {
             me._ownFile = false;
             return close(me.file);
-        } 
+        }
         else
             return true;
     }
@@ -2008,7 +2008,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template < typename TValue, typename TConfig, typename TSpec >
     inline typename Iterator<String<TValue, External<TConfig> >, Tag<TSpec> const>::Type
-    begin(String<TValue, External<TConfig> > &me, Tag<TSpec> const) 
+    begin(String<TValue, External<TConfig> > &me, Tag<TSpec> const)
     {
 //IOREV
         typedef String<TValue, External<TConfig> > TString;
@@ -2017,7 +2017,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template < typename TValue, typename TConfig, typename TSpec >
     inline typename Iterator<String<TValue, External<TConfig> > const, Tag<TSpec> const>::Type
-    begin(String<TValue, External<TConfig> > const &me, Tag<TSpec> const) 
+    begin(String<TValue, External<TConfig> > const &me, Tag<TSpec> const)
     {
 //IOREV
         typedef String<TValue, External<TConfig> > TString;
@@ -2026,7 +2026,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template < typename TValue, typename TConfig, typename TSpec >
     inline typename Iterator<String<TValue, External<TConfig> >, Tag<TSpec> const>::Type
-    end(String<TValue, External<TConfig> > &me, Tag<TSpec> const) 
+    end(String<TValue, External<TConfig> > &me, Tag<TSpec> const)
     {
 //IOREV
         typedef String<TValue, External<TConfig> > TString;
@@ -2035,7 +2035,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template < typename TValue, typename TConfig, typename TSpec >
     inline typename Iterator<String<TValue, External<TConfig> > const, Tag<TSpec> const>::Type
-    end(String<TValue, External<TConfig> > const &me, Tag<TSpec> const) 
+    end(String<TValue, External<TConfig> > const &me, Tag<TSpec> const)
     {
 //IOREV
         typedef String<TValue, External<TConfig> > TString;
@@ -2044,7 +2044,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //____________________________________________________________________________
 
     template < typename TValue, typename TConfig, typename TPos >
-    inline typename Reference<String<TValue, External<TConfig> > >::Type 
+    inline typename Reference<String<TValue, External<TConfig> > >::Type
     value(String<TValue, External<TConfig> > &me, TPos pos)
     {
 //IOREV
@@ -2052,7 +2052,7 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template < typename TValue, typename TConfig, typename TPos >
-    inline typename Reference<String<TValue, External<TConfig> > const>::Type 
+    inline typename Reference<String<TValue, External<TConfig> > const>::Type
     value(String<TValue, External<TConfig> > const &me, TPos pos)
     {
 //IOREV
@@ -2074,7 +2074,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template < typename TValue, typename TConfig, typename TSource, typename TExpand >
     inline void
-    append(String<TValue, External<TConfig> > &target, 
+    append(String<TValue, External<TConfig> > &target,
                 TSource const &source,
                 Tag<TExpand> expand)
     {
@@ -2084,19 +2084,19 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef typename Iterator<TTarget, Standard>::Type            ITarget;
 
         ITarget it_target       = end(target, Standard());
-        
+
         resize(target, length(target) + length(source), expand);
-        
+
         ISource it_source       = begin(source, Standard());
         ISource it_source_end   = end(source, Standard());
-        
+
         for (; it_source != it_source_end; ++it_source, ++it_target)
             *it_target = *it_source;
     }
 
     template < typename TValue, typename TConfig, typename TSourceValue, typename TExpand >
     inline void
-    append(String<TValue, External<TConfig> > &target, 
+    append(String<TValue, External<TConfig> > &target,
                 TSourceValue * source,
                 Tag<TExpand> expand)
     {
@@ -2106,12 +2106,12 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef typename Iterator<TTarget, Standard>::Type            ITarget;
 
         ITarget it_target       = end(target, Standard());
-        
+
         resize(target, length(target) + length(source), expand);
-        
+
         ISource it_source       = begin(source, Standard());
         ISource it_source_end   = end(source, Standard());
-        
+
         for (; it_source != it_source_end; ++it_source, ++it_target)
             *it_target = *it_source;
     }
@@ -2148,9 +2148,9 @@ namespace SEQAN_NAMESPACE_MAIN
                typename TSource,
                typename TExpand >
     inline void assign(
-        String<TValue, External<TConfig> > &target, 
-        TSource const &source, 
-        Tag<TExpand>) 
+        String<TValue, External<TConfig> > &target,
+        TSource const &source,
+        Tag<TExpand>)
     {
 //IOREV
         typedef String<TValue, External<TConfig> >                    TTarget;
@@ -2162,7 +2162,7 @@ namespace SEQAN_NAMESPACE_MAIN
         ISource it_source       = begin(source, Standard());
         ISource it_source_end   = end(source, Standard());
         ITarget it_target       = begin(target, Standard());
-        
+
         for (; it_source != it_source_end; ++it_source, ++it_target)
             *it_target = *it_source;
     }
@@ -2172,9 +2172,9 @@ namespace SEQAN_NAMESPACE_MAIN
                typename TSourceValue,
                typename TExpand >
     inline void assign(
-        String<TValue, External<TConfig> > &target, 
+        String<TValue, External<TConfig> > &target,
         TSourceValue const * source,
-        Tag<TExpand>) 
+        Tag<TExpand>)
     {
 //IOREV
         typedef String<TValue, External<TConfig> >                    TTarget;
@@ -2186,7 +2186,7 @@ namespace SEQAN_NAMESPACE_MAIN
         ISource it_source       = begin(source, Standard());
         ISource it_source_end   = end(source, Standard());
         ITarget it_target       = begin(target, Standard());
-        
+
         for (; it_source != it_source_end; ++it_source, ++it_target)
             *it_target = *it_source;
     }
@@ -2194,7 +2194,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //____________________________________________________________________________
 
     template < typename TValue, typename TConfig >
-    inline void const * 
+    inline void const *
     getObjectId(String<TValue, External<TConfig> > const &me)
     {
 //IOREV

@@ -266,7 +266,7 @@ class EdgeStump;
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec>
-struct VertexDescriptor<EdgeStump<TCargo, TList, TSource, TId, TSpec> > 
+struct VertexDescriptor<EdgeStump<TCargo, TList, TSource, TId, TSpec> >
 {
     typedef typename Id<EdgeStump<TCargo, TList, TSource, TId, TSpec> >::Type Type;
 };
@@ -274,7 +274,7 @@ struct VertexDescriptor<EdgeStump<TCargo, TList, TSource, TId, TSpec> >
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec>
-struct VertexDescriptor<EdgeStump<TCargo, TList, TSource, TId, TSpec> const> 
+struct VertexDescriptor<EdgeStump<TCargo, TList, TSource, TId, TSpec> const>
 {
     typedef typename Id<EdgeStump<TCargo, TList, TSource, TId, TSpec> >::Type Type;
 };

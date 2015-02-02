@@ -148,7 +148,7 @@ namespace SEQAN_NAMESPACE_MAIN
     //
 
     template <typename TString>
-    class SearchTreeIterator< TString, LeftCompleteTree > 
+    class SearchTreeIterator< TString, LeftCompleteTree >
     {
     public:
         typedef typename Value<TString>::Type                TValue;
@@ -279,7 +279,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TSize _xSize;        // max interval size of current level
         TSize _iSize;        // current interval size
 
-        inline void _descendLeft() 
+        inline void _descendLeft()
         {
             goFurther(it, _left + _lSize);
             _left <<= 1;
@@ -287,7 +287,7 @@ namespace SEQAN_NAMESPACE_MAIN
             _lSize = (size + _xSize - 1) / _xSize;
         }
 
-        inline void _descendRight() 
+        inline void _descendRight()
         {
             goFurther(it, _left + 1 + _lSize);
             _left = (_left << 1) + 1;
@@ -302,7 +302,7 @@ namespace SEQAN_NAMESPACE_MAIN
     //
 
     template <typename TString, unsigned BlockSize>
-    class SearchTreeIterator< TString, BTree<BlockSize> > 
+    class SearchTreeIterator< TString, BTree<BlockSize> >
     {
     public:
         typedef typename Value<TString>::Type                TValue;
@@ -334,7 +334,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 } else
                     _stepSizeLow <<= 1;
             }
-            
+
             _stepSizeLow >>= 1;
             for(_xSizeHigh = 1; _xSizeHigh * BlockSize <= size; _xSizeHigh *= BlockSize) ;
 
@@ -362,7 +362,7 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         // descend left
-        inline SearchTreeIterator & left() 
+        inline SearchTreeIterator & left()
         {
             if (_heightHigh == 1 && !_stepSizeLow) {
                 _heightHigh = 0;
@@ -373,7 +373,7 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         // descend right
-        inline SearchTreeIterator & right() 
+        inline SearchTreeIterator & right()
         {
             if (_heightHigh == 1 && !_stepSizeLow) {
                 ++it;
@@ -448,7 +448,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TSize _lSizeHigh;    // BBlocks of current level
         TSize _xSizeHigh;    // max BBlocks of current level
 
-        inline void _descendLeft() 
+        inline void _descendLeft()
         {
             if (_stepSizeLow) {
                 it -= _stepSizeLow;
@@ -463,7 +463,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 }
         }
 
-        inline void _descendRight() 
+        inline void _descendRight()
         {
             if (_stepSizeLow) {
                 it += _stepSizeLow;
@@ -478,7 +478,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 }
         }
 
-        inline void _updateElements() 
+        inline void _updateElements()
         {
             TSize firstElement = (1 + _leftHigh * BlockSize) * _xSizeHigh - 1;
             TSize lastElement = (1 + (_leftHigh + 1) * BlockSize) * _xSizeHigh - 2;
@@ -489,7 +489,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 _elements = BlockElements;
         }
 
-        inline void _descendBBlock(TSize _childIndex) 
+        inline void _descendBBlock(TSize _childIndex)
         {
             // goFurther to the begin of the current BBlock and further to the destination BBlock
             goFurther(it, BlockSize * (_leftHigh * (BlockSize - 1) + _childIndex + _lSizeHigh) + BlockInnerElements - _leftLow);
@@ -536,13 +536,13 @@ namespace SEQAN_NAMESPACE_MAIN
             TTextIter    t = begin(suf, Standard());
             TTextIter    tEnd = end(suf, Standard());
             TQueryIter    q = qBegin;
-            
+
             goFurther(t, parentRepLen);
             while (t != tEnd && q != qEnd && ordEqual(*t, convert<TTextAlphabet>(*q))) {
                 ++t;
                 ++q;
             }
-            
+
             // is text < query ?
             if (q != qEnd && (t == tEnd || lessLex(*t, *q))) {
                 treeIter.right();
@@ -594,7 +594,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 ++q;
                 ++lcp;
             }
-            
+
             // is text < query ?
             if (q != qEnd && (t == tEnd || ordLess(*t, convert<TTextAlphabet>(*q)))) {
                 treeIter.right();
@@ -644,7 +644,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 ++t;
                 ++q;
             }
-            
+
             // is text <= query ?
             if (q == qEnd || t == tEnd || !ordGreater(*t, convert<TTextAlphabet>(*q))) {
                 treeIter.right();
@@ -696,7 +696,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 ++q;
                 ++lcp;
             }
-            
+
             // is text <= query ?
             if (q == qEnd || t == tEnd || !ordGreater(*t, convert<TTextAlphabet>(*q))) {
                 treeIter.right();
@@ -741,13 +741,13 @@ namespace SEQAN_NAMESPACE_MAIN
             TTextIter    t = begin(suf, Standard());
             TTextIter    tEnd = end(suf, Standard());
             TQueryIter    q = qBegin;
-            
+
             goFurther(t, parentRepLen);
             while (t != tEnd && q != qEnd && ordEqual(*t, convert<TTextAlphabet>(*q))) {
                 ++t;
                 ++q;
             }
-            
+
             // is text < query ?
             if (q != qEnd && (t == tEnd || ordLess(*t, convert<TTextAlphabet>(*q))))
             {    // range begins above mid, loop
@@ -813,7 +813,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 ++q;
                 ++lcp;
             }
-            
+
             // is text < query ?
             if (q != qEnd && (t == tEnd || ordLess(*t, convert<TTextAlphabet>(*q))))
             {    // range begins above mid, loop
@@ -966,7 +966,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename TQuery,
         typename TFlatTreeSpec
     >
-    inline typename Position<TSA>::Type 
+    inline typename Position<TSA>::Type
     lowerBoundSA(
         TText const &text,
         TSA const &sa,
@@ -981,7 +981,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename TSA,
         typename TQuery
     >
-    inline typename Position<TSA>::Type 
+    inline typename Position<TSA>::Type
     lowerBoundSA(
         TText const &text,
         TSA const &sa,
@@ -996,7 +996,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename TQuery,
         typename TFlatTreeSpec
     >
-    inline typename Position<TSA>::Type 
+    inline typename Position<TSA>::Type
     upperBoundSA(
         TText const &text,
         TSA const &sa,
@@ -1011,7 +1011,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename TSA,
         typename TQuery
     >
-    inline typename Position<TSA>::Type 
+    inline typename Position<TSA>::Type
     upperBoundSA(
         TText const &text,
         TSA const &sa,
@@ -1063,7 +1063,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename TQuery,
         typename TFlatTreeSpec
     >
-    inline typename Position<TSA>::Type 
+    inline typename Position<TSA>::Type
     lowerBoundSA(
         TText const &text,
         TSA const &sa,
@@ -1078,7 +1078,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename TSA,
         typename TQuery
     >
-    inline typename Position<TSA>::Type 
+    inline typename Position<TSA>::Type
     lowerBoundSA(
         TText const &text,
         TSA const &sa,
@@ -1093,7 +1093,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename TQuery,
         typename TFlatTreeSpec
     >
-    inline typename Position<TSA>::Type 
+    inline typename Position<TSA>::Type
     upperBoundSA(
         TText const &text,
         TSA const &sa,
@@ -1108,7 +1108,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename TSA,
         typename TQuery
     >
-    inline typename Position<TSA>::Type 
+    inline typename Position<TSA>::Type
     upperBoundSA(
         TText const &text,
         TSA const &sa,
@@ -1197,13 +1197,13 @@ namespace SEQAN_NAMESPACE_MAIN
             TSAIter mid = first;
             goFurther(mid, delta2);
 
-            if (lcpLower > lcpUpper) 
+            if (lcpLower > lcpUpper)
             {
                 TLCPTreeIt leftChild = treeIter;
                 leftChild.left();
                 TDiff lcpMidLower = *leftChild;
 
-                if (lcpMidLower > lcpLower) 
+                if (lcpMidLower > lcpLower)
                 {
                     // second half
                     #ifdef SEQAN_PROFILE_LCPEFIND
@@ -1216,8 +1216,8 @@ namespace SEQAN_NAMESPACE_MAIN
                         delta = 0;
                     }
                     continue;
-                } 
-                else if (lcpMidLower < lcpLower) 
+                }
+                else if (lcpMidLower < lcpLower)
                 {
                     // first half
                     #ifdef SEQAN_PROFILE_LCPEFIND
@@ -1230,14 +1230,14 @@ namespace SEQAN_NAMESPACE_MAIN
                     continue;
                 }
                 lcp = lcpLower;
-            } 
-            else if (lcpLower < lcpUpper) 
+            }
+            else if (lcpLower < lcpUpper)
             {
                 TLCPTreeIt rightChild = treeIter;
                 rightChild.right();
                 TDiff lcpMidUpper = *rightChild;
 
-                if (lcpMidUpper > lcpUpper) 
+                if (lcpMidUpper > lcpUpper)
                 {
                     // first half
                     #ifdef SEQAN_PROFILE_LCPEFIND
@@ -1247,8 +1247,8 @@ namespace SEQAN_NAMESPACE_MAIN
                     if ((delta = delta2) == 1)
                         delta = 0;
                     continue;
-                } 
-                else if (lcpMidUpper < lcpUpper) 
+                }
+                else if (lcpMidUpper < lcpUpper)
                 {
                     // second half
                     #ifdef SEQAN_PROFILE_LCPEFIND
@@ -1280,7 +1280,7 @@ namespace SEQAN_NAMESPACE_MAIN
             #endif
             goFurther(t, lcp);
             goFurther(q, lcp);
-            for(TDiff i = _min(difference(t, tEnd), difference(q, qEnd)); 
+            for(TDiff i = _min(difference(t, tEnd), difference(q, qEnd));
                 i && ordEqual(*t, convert<TTextAlphabet>(*q));
                 --i, ++t, ++q, ++lcp) ;
 
@@ -1319,7 +1319,7 @@ namespace SEQAN_NAMESPACE_MAIN
             TTextIter    tEnd = end(suf, Standard());
 
             goFurther(t, lcp);
-            for(TDiff i = _min(difference(t, tEnd), difference(q, qEnd)); 
+            for(TDiff i = _min(difference(t, tEnd), difference(q, qEnd));
                 i && ordEqual(*t, convert<TTextAlphabet>(*q));
                  --i, ++t, ++q) ;
 
@@ -1394,13 +1394,13 @@ namespace SEQAN_NAMESPACE_MAIN
             TSAIter mid = first;
             goFurther(mid, delta2);
 
-            if (lcpLower > lcpUpper) 
+            if (lcpLower > lcpUpper)
             {
                 TLCPTreeIt leftChild = treeIter;
                 leftChild.left();
                 TDiff lcpMidLower = *leftChild;
 
-                if (lcpMidLower > lcpLower) 
+                if (lcpMidLower > lcpLower)
                 {
                     // second half
                     first = mid;
@@ -1410,8 +1410,8 @@ namespace SEQAN_NAMESPACE_MAIN
                         delta = 0;
                     }
                     continue;
-                } 
-                else if (lcpMidLower < lcpLower) 
+                }
+                else if (lcpMidLower < lcpLower)
                 {
                     // first half
                     lcpUpper = lcpMidLower;
@@ -1420,14 +1420,14 @@ namespace SEQAN_NAMESPACE_MAIN
                         delta = 0;
                     continue;
                 }
-            } 
-            else if (lcpLower < lcpUpper) 
+            }
+            else if (lcpLower < lcpUpper)
             {
                 TLCPTreeIt rightChild = treeIter;
                 rightChild.right();
                 TDiff lcpMidUpper = *rightChild;
 
-                if (lcpMidUpper > lcpUpper) 
+                if (lcpMidUpper > lcpUpper)
                 {
                     // first half
                     treeIter.left();
@@ -1435,7 +1435,7 @@ namespace SEQAN_NAMESPACE_MAIN
                         delta = 0;
                     continue;
                 }
-                else if (lcpMidUpper < lcpUpper) 
+                else if (lcpMidUpper < lcpUpper)
                 {
                     // second half
                     lcpLower = lcpMidUpper;
@@ -1568,13 +1568,13 @@ namespace SEQAN_NAMESPACE_MAIN
             TSAIter mid = first;
             goFurther(mid, delta2);
 
-            if (lcpLower > lcpUpper) 
+            if (lcpLower > lcpUpper)
             {
                 TLCPTreeIt leftChild = treeIter;
                 leftChild.left();
                 TDiff lcpMidLower = *leftChild;
 
-                if (lcpMidLower > lcpLower) 
+                if (lcpMidLower > lcpLower)
                 {
                     // second half
                     first = mid;
@@ -1585,7 +1585,7 @@ namespace SEQAN_NAMESPACE_MAIN
                     }
                     continue;
                 }
-                else if (lcpMidLower < lcpLower) 
+                else if (lcpMidLower < lcpLower)
                 {
                     // first half
                     lcpUpper = lcpMidLower;
@@ -1594,22 +1594,22 @@ namespace SEQAN_NAMESPACE_MAIN
                         delta = 0;
                     continue;
                 }
-            } 
-            else if (lcpLower < lcpUpper) 
+            }
+            else if (lcpLower < lcpUpper)
             {
                 TLCPTreeIt rightChild = treeIter;
                 rightChild.right();
                 TDiff lcpMidUpper = *rightChild;
 
-                if (lcpMidUpper > lcpUpper) 
+                if (lcpMidUpper > lcpUpper)
                 {
                     // first half
                     treeIter.left();
                     if ((delta = delta2) == 1)
                         delta = 0;
                     continue;
-                } 
-                else if (lcpMidUpper < lcpUpper) 
+                }
+                else if (lcpMidUpper < lcpUpper)
                 {
                     // second half
                     lcpLower = lcpMidUpper;
@@ -1655,7 +1655,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 treeIter.left();
                 if ((delta = delta2) == 1)
                     delta = 0;
-            } 
+            }
             else
             {    // range straddles mid, find each end and return
                 typename Infix<TSA>::Type leftRange(sa, first, mid);
@@ -1730,7 +1730,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename TLCPE,
         typename TQuery
     >
-    inline typename Position<TLCPE>::Type 
+    inline typename Position<TLCPE>::Type
     lowerBoundLcpe(
         TText const &text,
         TSA const &sa,
@@ -1746,7 +1746,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename TLCPE,
         typename TQuery
     >
-    inline typename Position<TLCPE>::Type 
+    inline typename Position<TLCPE>::Type
     upperBoundLcpe(
         TText const &text,
         TSA const &sa,
@@ -1832,7 +1832,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename TLCPE,
         typename TQuery
     >
-    inline typename Position<TLCPE>::Type 
+    inline typename Position<TLCPE>::Type
     lowerBoundLcpe(
         TText const &text,
         TSA const &sa,
@@ -1848,7 +1848,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename TLCPE,
         typename TQuery
     >
-    inline typename Position<TLCPE>::Type 
+    inline typename Position<TLCPE>::Type
     upperBoundLcpe(
         TText const &text,
         TSA const &sa,
@@ -1919,7 +1919,7 @@ namespace SEQAN_NAMESPACE_MAIN
 // _findFirstIndex implementation
 
     template < typename TText, typename TSpec, typename TSpecFinder, typename TPattern >
-    inline void 
+    inline void
     _findFirstIndex(
         Finder< Index<TText, TSpec>, TSpecFinder > &finder,
         TPattern const &pattern,
@@ -1931,7 +1931,7 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template < typename TText, typename TSpec, typename TSpecFinder, typename TPattern >
-    inline void 
+    inline void
     _findFirstIndex(
         Finder< Index<TText, TSpec>, TSpecFinder > &finder,
         TPattern const &pattern,
@@ -1953,7 +1953,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef Index<TText, TSpec>                             TIndex;
         typedef typename Fibre<TIndex, FibreSA>::Type            TSA;
         typedef typename Iterator<TSA const, Standard>::Type    TIterator;
-        
+
         TIndex &index = haystack(finder);
         typename Iterator<TIndex, TopDown<EmptyEdges> >::Type it(index);
         TIterator saIt = begin(indexSA(index), Standard());

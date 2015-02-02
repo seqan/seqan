@@ -47,12 +47,12 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends Pattern
  * @headerfile <seqan/find.h>
  * @brief A brute force online searching algorithm.
- * 
+ *
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, Simple>;
- * 
+ *
  * @tparam TNeedle The needle type.  Types: @link ContainerConcept @endlink.
- * 
+ *
  * This specialization should only be used if no other is applicable.
  */
 
@@ -81,7 +81,7 @@ public:
 
     ~Pattern(){}
 
-    Pattern const & 
+    Pattern const &
     operator = (Pattern const & other)
     {
         data_host = other.data_host;
@@ -97,14 +97,14 @@ public:
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, Simple> & me, 
-              TNeedle2 & needle) 
+void setHost (Pattern<TNeedle, Simple> & me,
+              TNeedle2 & needle)
 {
     setValue(me.data_host, needle);
 }
 template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, Simple> & me, 
-              TNeedle2 const & needle) 
+void setHost (Pattern<TNeedle, Simple> & me,
+              TNeedle2 const & needle)
 {
     setValue(me.data_host, needle);
 }
@@ -136,7 +136,7 @@ inline bool find(TFinder & finder,
 
     _setFinderEnd(finder, (res - begin(hstk, Standard())) + length(ndl));
     setPosition(finder, beginPosition(finder));
-    return true; 
+    return true;
 
 /*
     TSize n = length(hstk);
@@ -146,7 +146,7 @@ inline bool find(TFinder & finder,
         if (ndl == infix(hstk, position(finder), position(finder)+m))
         {
             _setFinderEnd(finder, position(finder)+m);
-            return true; 
+            return true;
         }
         ++finder;
     }

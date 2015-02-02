@@ -294,7 +294,7 @@ void IntervalTreeTest_FindIntervalsIntervals() {
             if(result[i]==check){ found = check; break;}
         }
         SEQAN_ASSERT(found == check);
-    
+
         check = 1;
         found = 100;
         for(unsigned i = 0; i < length(result); ++i)
@@ -650,7 +650,7 @@ SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_QueryAtBoundary)
 {
     typedef IntervalAndCargo<int, double> TInterval;
     typedef String<TInterval, Alloc<Exact> > TIntervalList;
-    
+
     TIntervalList tmpL;
     appendValue(tmpL, TInterval(0,30,1.4));
     appendValue(tmpL, TInterval(30,40,2.2));

@@ -58,7 +58,7 @@ _loadSequences(TPath const& in_path,
 {
 //IOREV _nodoc_ uses custom IO, with ifstream, should be adapted to File()
     typedef typename Size<TStringSet>::Type TSize;
-    
+
     // Count sequences and read names
     TSize seqCount = 0;
     std::ifstream file;

@@ -77,7 +77,7 @@ struct GraphIterator;
 
 template<typename TGraph, typename TIteratorSpec>
 struct Host<Iter<TGraph, GraphIterator<TIteratorSpec> > >
-{    
+{
     typedef TGraph Type;
 };
 
@@ -85,7 +85,7 @@ struct Host<Iter<TGraph, GraphIterator<TIteratorSpec> > >
 
 template<typename TGraph, typename TIteratorSpec>
 struct Host<Iter<TGraph const, GraphIterator<TIteratorSpec> > >
-{    
+{
     typedef TGraph const Type;
 };
 

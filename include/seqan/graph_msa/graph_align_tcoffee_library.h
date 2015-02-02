@@ -141,7 +141,7 @@ _alignSmithWatermanTrace(TAlign& align,
     TTraceValue Diagonal = 0; TTraceValue Horizontal = 1; TTraceValue Vertical = 2; TTraceValue Stop = 3;
 
     TId id1 = positionToId(const_cast<TStringSet&>(str), 0);
-    TId id2 = positionToId(const_cast<TStringSet&>(str), 1);     
+    TId id2 = positionToId(const_cast<TStringSet&>(str), 1);
     TSize len1 = indexPair[1];
     TSize len2 = indexPair[0];
     if ((indexPair[0] == 0) || (indexPair[1] == 0)) return;
@@ -150,10 +150,10 @@ _alignSmithWatermanTrace(TAlign& align,
     if (len1 < numCols) _alignTracePrint(align, str[0], str[1], id1, len1, id2, len2, numCols - len1, Horizontal);
     if (len2 < numRowsOrig) _alignTracePrint(align, str[0], str[1], id1, len1, id2, len2, numRowsOrig - len2, Vertical);
     TSize numRows = (numRowsOrig >> 1) + (numRowsOrig & 1);
-    
-    
 
-    // Initialize everything    
+
+
+    // Initialize everything
     TTraceValue nextTraceValue = (len2 & 1) ? trace[(len1 - 1)*numRows + ((len2 - 1) >> 1)] >> 4 : trace[(len1 - 1)*numRows + ((len2 - 1) >> 1)];
     TTraceValue tv = Diagonal;
     if (initialDir == Diagonal) tv = (nextTraceValue & 3);
@@ -171,13 +171,13 @@ _alignSmithWatermanTrace(TAlign& align,
     do {
         nextTraceValue = (len2 & 1) ? trace[(len1 - 1)*numRows + ((len2 - 1) >> 1)] >> 4 : trace[(len1 - 1)*numRows + ((len2 - 1) >> 1)];
         if ((nextTraceValue & 3) == Stop) break;
-        _setForbiddenCell(forbidden, len1, len2, numRowsOrig);    
+        _setForbiddenCell(forbidden, len1, len2, numRowsOrig);
         if (tv == Diagonal) tv = (nextTraceValue & 3);
         else if (tv == Horizontal) {
-            if ((nextTraceValue >> 2) & 1) tv = Diagonal; 
+            if ((nextTraceValue >> 2) & 1) tv = Diagonal;
             else tv =  Horizontal;
         } else if (tv == Vertical) {
-            if ((nextTraceValue >> 3) & 1) tv =  Diagonal; 
+            if ((nextTraceValue >> 3) & 1) tv =  Diagonal;
             else tv =  Vertical;
         }
         if (tv == Diagonal) {
@@ -240,7 +240,7 @@ _alignSmithWaterman(TTrace& trace,
     SEQAN_CHECKPOINT
     typedef typename Size<TTrace>::Type TSize;
     typedef typename Value<TTrace>::Type TTraceValue;
-    
+
     // TraceBack values for Smith Waterman
     TTraceValue Diagonal = 0; TTraceValue Horizontal = 1; TTraceValue Vertical = 2; TTraceValue Stop = 3;
 
@@ -258,7 +258,7 @@ _alignSmithWaterman(TTrace& trace,
     // Initialization
     typedef typename Value<TStringSet>::Type TString;
     TString const& str1 = str[0];
-    TString const& str2 = str[1];        
+    TString const& str2 = str[1];
     TSize len1 = length(str1);
     TSize len2 = length(str2);
     resize(mat, (len2+1));   // One column for the diagonal matrix
@@ -270,7 +270,7 @@ _alignSmithWaterman(TTrace& trace,
     TScoreValue score_max = 0;
     indexPair[0] = 0; indexPair[1] = 0;
     initialDir = Stop;
-    
+
     // Classical DP
     TScoreValue max_val = 0;
     TScoreValue a = 0;
@@ -309,18 +309,18 @@ _alignSmithWaterman(TTrace& trace,
                                                   sequenceEntryForScore(sc, str2, row-1));
                 b = vert + scoreGapExtendVertical(sc, sequenceEntryForScore(sc, str1, col-1),
                                                   sequenceEntryForScore(sc, str2, row-1));
-                if (a > b) { vert = a; *it |= 1;} 
+                if (a > b) { vert = a; *it |= 1;}
                 else vert = b;
-    
+
                 // Get the new maximum for horizontal
                 *it <<= 1;
                 a = *(++matIt) + scoreGapOpenHorizontal(sc, sequenceEntryForScore(sc, str1, col-1),
                                                         sequenceEntryForScore(sc, str2, row-1));
                 b = *(++horiIt) + scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, col-1),
                                                            sequenceEntryForScore(sc, str2, row-1));
-                if (a > b) {*horiIt = a; *it |= 1; } 
+                if (a > b) {*horiIt = a; *it |= 1; }
                 else *horiIt =  b;
-    
+
                 // Get the new maximum for mat
                 *it <<= 2;
                 max_val = diagValMat + score(const_cast<TScore&>(sc), sequenceEntryForScore(sc, str1, col-1),
@@ -381,16 +381,16 @@ _localAlignment(TAlign& align,
     SEQAN_CHECKPOINT
     typedef typename Value<TScore>::Type TScoreValue;
     typedef typename Size<TStringSet>::Type TSize;
-      
+
     TScoreValue maxScore;
     TSize indexPair[2];
-    
+
     // Trace
     String<unsigned char> trace;
     unsigned char initialDir;
 
     // Create the trace
-    maxScore = _alignSmithWaterman(trace, str, sc, initialDir, indexPair, forbidden);    
+    maxScore = _alignSmithWaterman(trace, str, sc, initialDir, indexPair, forbidden);
 
     //// Debug code
     //for(TSize i= 0; i<length(str[1]);++i) {
@@ -400,10 +400,10 @@ _localAlignment(TAlign& align,
     //    std::cout << std::endl;
     //}
     //std::cout << std::endl;
-    
+
     // Follow the trace and create the alignment
     _alignSmithWatermanTrace(align, str, trace, initialDir, indexPair, forbidden);
-    
+
     return maxScore;
 }
 
@@ -419,7 +419,7 @@ _localAlignment(StringSet<TString, Dependent<> > const& str,
     SEQAN_CHECKPOINT
     typedef typename Value<TScore>::Type TScoreValue;
     typedef typename Size<TMatches>::Type TSize;
-  
+
     // For clumpping remember the used positions
     TSize len0 = length(str[0]);
     TSize len1 = length(str[1]);
@@ -437,7 +437,7 @@ _localAlignment(StringSet<TString, Dependent<> > const& str,
         if (2 * local_score < last_score) {
             resize(matches, from, Generous());
             break;
-        } 
+        }
         last_score = local_score;
         resize(scores, to);
         for(TSize k = from; k<to; ++k) scores[k] = local_score;
@@ -469,7 +469,7 @@ _multiLocalAlignment(StringSet<TString, Dependent<> > const& str,
 
 // Dummy function selecting all pairs
 template<typename TString, typename TSpec, typename TSize2, typename TSpec2>
-inline void 
+inline void
 selectPairs(StringSet<TString, TSpec> const& str,
             String<TSize2, TSpec2>& pList)
 {
@@ -499,7 +499,7 @@ selectPairs(StringSet<TString, TSpec> const& str,
 // TODO(holtgrew): Hard-code TSize1 as __int64, size_t?
 
 template<typename TFragment, typename TSpec1, typename TStringSet, typename TPos, typename TSize1>
-inline void 
+inline void
 getAlignmentStatistics(String<TFragment, TSpec1> const& matches,
                        TStringSet& str,
                        TPos const from,
@@ -513,12 +513,12 @@ getAlignmentStatistics(String<TFragment, TSpec1> const& matches,
     typedef typename Id<TFragmentMatches>::Type TId;
     typedef typename Iterator<TFragmentMatches, Standard>::Type TFragIter;
     typedef typename Value<TStringSet>::Type TString;
-    typedef typename Value<TString>::Type TAlphabet; 
+    typedef typename Value<TString>::Type TAlphabet;
     matchLength = 0;
     TSize len1 = length(str[0]);
     TSize len2 = length(str[1]);
 
-    
+
     TSize minId1 = len1 + len2;
     TSize minId2 = len1 + len2;
     TSize maxId1 = 0;
@@ -550,7 +550,7 @@ getAlignmentStatistics(String<TFragment, TSpec1> const& matches,
         TInfixIter sIt2 = begin(inf2, Standard());
         TInfixIter sIt1End = end(inf1, Standard());
         matchMismatch_length += fragLen;
-        for(;sIt1 != sIt1End; ++sIt1, ++sIt2) 
+        for(;sIt1 != sIt1End; ++sIt1, ++sIt2)
             if ( (TAlphabet) *sIt1  == (TAlphabet) *sIt2) ++matchLength;
     }
     alignLength = static_cast<TSize1>(matchMismatch_length + (len1 - matchMismatch_length) + (len2 - matchMismatch_length));
@@ -565,7 +565,7 @@ getAlignmentStatistics(String<TFragment, TSpec1> const& matches,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TSegmentMatches, typename TScores>
-inline void 
+inline void
 appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      String<TSize2, TSpec2> const& pList,
                      TSegmentMatches& matches,
@@ -671,7 +671,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TString, typename TSpec, typename TSegmentMatches, typename TScores, typename TSize>
-inline void 
+inline void
 appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      TSegmentMatches& matches,
                      TScores& scores,
@@ -685,7 +685,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TString, typename TSpec, typename TSegmentMatches, typename TScores>
-inline void 
+inline void
 appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      TSegmentMatches& matches,
                      TScores& scores,
@@ -699,7 +699,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TScore, typename TSegmentMatches, typename TScores>
-inline void 
+inline void
 appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      String<TSize2, TSpec2> const& pList,
                      TScore const& score_type,
@@ -732,7 +732,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 
 template<typename TValue, typename TSpec, typename TSize>
 inline void
-_resizeWithRespectToDistance(String<TValue, TSpec>& dist, 
+_resizeWithRespectToDistance(String<TValue, TSpec>& dist,
                               TSize nseq)
 {
     SEQAN_CHECKPOINT;
@@ -763,9 +763,9 @@ _resizeWithRespectToDistance(Nothing&, TSize)
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TFragment, typename TSpec1, typename TString, typename TSpec2, typename TValue,  typename TSpec, typename TSize>
-inline void 
+inline void
 _setDistanceValue(String<TFragment, TSpec1>& matches,
-                   StringSet<TString, TSpec2>& pairSet,            
+                   StringSet<TString, TSpec2>& pairSet,
                    String<TValue, TSpec>& dist,
                    TSize i,
                    TSize j,
@@ -774,13 +774,13 @@ _setDistanceValue(String<TFragment, TSpec1>& matches,
 {
     SEQAN_CHECKPOINT
     typedef typename Position<String<TFragment, TSpec1> >::Type TPos;
-    
+
     // Determine a sequence weight
     TValue matchLen = 0;
     TValue overlapLen = 0;
     TValue alignLen = 0;
     getAlignmentStatistics(matches, pairSet, (TPos) from, (TPos) length(matches),  matchLen, overlapLen, alignLen);
-            
+
     // Calculate sequence similarity
     TValue x = SEQAN_DISTANCE_UNITY - static_cast<TValue>(static_cast<double>(matchLen) / static_cast<double>(alignLen) * static_cast<double>(SEQAN_DISTANCE_UNITY));
     if (i < j)
@@ -792,7 +792,7 @@ _setDistanceValue(String<TFragment, TSpec1>& matches,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TFragment, typename TSpec1, typename TString, typename TSpec2, typename TCargo,  typename TSpec, typename TSize>
-inline void 
+inline void
 _setDistanceValue(String<TFragment, TSpec1>& matches,
                    StringSet<TString, TSpec2>& pairSet,
                    Graph<Undirected<TCargo, TSpec> >& dist,
@@ -802,13 +802,13 @@ _setDistanceValue(String<TFragment, TSpec1>& matches,
                    TSize from)
 {
     SEQAN_CHECKPOINT
-        
+
     // Determine a sequence weight
     TCargo matchLen = 0;
     TCargo overlapLen = 0;
     TCargo alignLen = 0;
     getAlignmentStatistics(matches, pairSet, (TSize) from, (TSize) length(matches),  matchLen, overlapLen, alignLen);
-            
+
     // Calculate sequence similarity
     TCargo normalizedSimilarity = SEQAN_DISTANCE_UNITY - (TCargo) (((double) matchLen / (double) overlapLen) * ((double) overlapLen / (double) alignLen) * (double) SEQAN_DISTANCE_UNITY);
 
@@ -819,7 +819,7 @@ _setDistanceValue(String<TFragment, TSpec1>& matches,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TFragment, typename TSpec, typename TString, typename TSpec2, typename TSize>
-inline void 
+inline void
 _setDistanceValue(String<TFragment, TSpec>&,
                    StringSet<TString, TSpec2>&,
                    Nothing&,
@@ -834,7 +834,7 @@ _setDistanceValue(String<TFragment, TSpec>&,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TScore, typename TSegmentMatches, typename TScoreValues, typename TDistance, typename TAlignConfig>
-inline void 
+inline void
 appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      String<TSize2, TSpec2> const& pList,
                      TScore const& score_type,
@@ -854,7 +854,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
     // Initialization
     TSize nseq = length(str);
     _resizeWithRespectToDistance(dist, nseq);
-    
+
     // Pairwise alignments
     TPairIter itPair = begin(pList, Standard());
     TPairIter itPairEnd = end(pList, Standard());
@@ -865,7 +865,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
         TId id2 = positionToId(str, *itPair);
         assignValueById(pairSet, const_cast<TStringSet&>(str), id1);
         assignValueById(pairSet, const_cast<TStringSet&>(str), id2);
-                
+
         // Alignment
         TSize from = length(matches);
         TScoreValue myScore = globalAlignment(matches, pairSet, score_type, ac, Gotoh() );
@@ -878,7 +878,7 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
         TScoreIter itScoreEnd = end(scores, Standard());
         itScore+=from;
         for(;itScore != itScoreEnd; ++itScore) *itScore = myScore;
-            
+
         // Get the alignment statistics
         _setDistanceValue(matches, pairSet, dist, (TSize) *(itPair-1), (TSize) *itPair, (TSize) nseq, (TSize)from);
     }
@@ -888,13 +888,13 @@ appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TString, typename TSpec, typename TSize2, typename TSpec2, typename TScore, typename TSegmentMatches, typename TScoreValues, typename TDistance>
-inline void 
+inline void
 appendSegmentMatches(StringSet<TString, Dependent<TSpec> > const& str,
                      String<TSize2, TSpec2> const& pList,
                      TScore const& score_type,
                      TSegmentMatches& matches,
                      TScoreValues& scores,
-                     TDistance& dist,                     
+                     TDistance& dist,
                      GlobalPairwiseLibrary)
 {
     SEQAN_CHECKPOINT

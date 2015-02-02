@@ -45,7 +45,7 @@ void Test_Distances() {
     typedef String<AminoAcid> TString;
     typedef StringSet<TString, Dependent<> > TStringSet;
     typedef Graph<Alignment<TStringSet, unsigned int> > TGraph;
-    
+
     TString str1 = "GARFIELDTHELASTFATCAT";
     TString str2 = "GARFIELDTHEFASTCAT";
     TString str3 = "GARFIELDTHEVERYFASTCAT";
@@ -79,8 +79,8 @@ void Test_Distances() {
 
 //////////////////////////////////////////////////////////////////////////////
 
-void 
-testquickAlign__(Graph<Alignment<StringSet<String<AminoAcid>, Dependent<> >, unsigned int> >& g) 
+void
+testquickAlign__(Graph<Alignment<StringSet<String<AminoAcid>, Dependent<> >, unsigned int> >& g)
 {
     Graph<Alignment<StringSet<String<AminoAcid>, Dependent<> >, void, WithoutEdgeId> > gOut(stringSet(g));
     tripletLibraryExtension(g);
@@ -90,7 +90,7 @@ testquickAlign__(Graph<Alignment<StringSet<String<AminoAcid>, Dependent<> >, uns
     njTree(distForGuideTree, guideTree);
     progressiveAlignment(g, guideTree, gOut);
     //std::cout << gOut << std::endl;
-    String<char> alignMat;    
+    String<char> alignMat;
     convertAlignment(gOut,alignMat);
     unsigned int len = length(alignMat) / 4;
     SEQAN_ASSERT(String<char>(infix(alignMat, 0, 8)) == "GARFIELD");
@@ -105,7 +105,7 @@ void Test_Libraries() {
     typedef String<AminoAcid> TString;
     typedef StringSet<TString, Dependent<> > TStringSet;
     typedef Graph<Alignment<TStringSet, unsigned int> > TGraph;
-    
+
     TString str1 = "GARFIELDTHELASTFATCAT";
     TString str2 = "GARFIELDTHEFASTCAT";
     TString str3 = "GARFIELDTHEVERYFASTCAT";
@@ -159,7 +159,7 @@ void Test_ExternalLibraries() {
     typedef StringSet<TName, Owner<> > TNameSet;
     typedef String<AminoAcid> TSequence;
     typedef StringSet<TSequence, Owner<> > TSequenceSet;
-    
+
     TSequenceSet seqSet;
     appendValue(seqSet, "GARFIELDTHELASTFATCAT");
     appendValue(seqSet, "GARFIELDTHEFASTCAT");
@@ -241,7 +241,7 @@ void Test_ExternalLibraries() {
     strmBlast.close();
     //_debugRefinedMatches(g);
     testquickAlign__(g);
-    
+
     // Reading
     clear(g);
     assignStringSet(g, seqSet);
@@ -400,7 +400,7 @@ void Test_Progressive() {
     typedef String<AminoAcid> TSequence;
     typedef StringSet<TSequence, Owner<> > TSequenceSet;
     typedef StringSet<TSequence, Dependent<> > TDependentSequenceSet;
-    
+
     TSequenceSet seqSet;
     appendValue(seqSet, "GARFIELDTHELASTFATCAT");
     appendValue(seqSet, "GARFIELDTHEFASTCAT");
@@ -470,18 +470,18 @@ SEQAN_DEFINE_TEST(test_distances)
 {
     Test_Distances();
 }
-    
+
 SEQAN_DEFINE_TEST(test_libraries)
 {
-    Test_Libraries();    
+    Test_Libraries();
 }
 SEQAN_DEFINE_TEST(test_external_libraries)
 {
-    Test_ExternalLibraries();    
+    Test_ExternalLibraries();
 }
 SEQAN_DEFINE_TEST(test_triplet_extension)
 {
-    Test_TripletExtension();    
+    Test_TripletExtension();
 }
 SEQAN_DEFINE_TEST(test_sop)
 {

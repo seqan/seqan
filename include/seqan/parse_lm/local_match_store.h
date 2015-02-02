@@ -57,35 +57,35 @@ namespace seqan {
  * @class LocalMatch
  * @headerfile <seqan/parse_lm.h>
  * @brief Stores information about local matches.
- * 
+ *
  * @signature template <typename TId, typename TPosition>
  *            class LocalMatch;
- * 
+ *
  * @tparam TId       Type to use for subject/query id.
  * @tparam TPosition Type to use for storing positions.
- * 
+ *
  * Matches on the reverse-complement are encoded by the begin position being greater than the end position.
- * 
+ *
  * Sequence names are not stored in LocalMatch objects but in the @link LocalMatchStore @endlink they belong to.
- * 
+ *
  * @see LocalMatchStore
- * 
+ *
  *
  * @var TId LocalMatch::queryId
  * @brief The id of the query.
- * 
+ *
  * @var TPosition LocalMatch::queryBeginPos
  * @brief Begin position of local match in the query.
- * 
+ *
  * @var TPosition LocalMatch::queryEndPos
  * @brief End position of local match in the query.
- * 
+ *
  * @var TPosition LocalMatch::subjectBeginPos
  * @brief Begin position of local match in the subject.
- * 
+ *
  * @var TPosition LocalMatch::subjectEndPos
  * @brief End position of local match in the subject.
- * 
+ *
  * @var TId LocalMatch::subjectId
  * @brief The id of the subject.
  */
@@ -140,7 +140,7 @@ public:
  * @class LocalMatchStoreConfig
  * @headerfile <seqan/parse_lm.h>
  * @brief Stores information about local matches.
- * 
+ *
  * @signature template <typename TSpec>
  *            struct LocalMatchStoreConfig;
  *
@@ -167,34 +167,34 @@ struct LocalMatchStoreConfig
  * @class LocalMatchStore
  * @headerfile <seqan/parse_lm.h>
  * @brief Stores information about local matches.
- * 
+ *
  * @signature template <typename TSpec = void, TConfig = LocalMatchStoreConfig<TSpec> >
  *            struct LocalMatchStore;
- * 
+ *
  * @tparam TSpec   Specialization tag.
  * @tparam TConfig Configuration class.
- * 
+ *
  * The LocalMatchStore provides information about matches.  Similar to the @link FragmentStore @endlink, the
  * information is split into multiple sub stores.  Each sub store stores a part of the information.
- * 
+ *
  * The LocalMatchStore#matchStore stores the information about a match.  The LocalMatchStore#sequenceNameStore stores
  * the sequence names.  These both sub stores are "core stores", they are filled with consistent information, i.e. for
  * each sequence id in the matchStore, there has to be a valid entry in the sequenceNameStore.
- * 
+ *
  * The LocalMatchStore#cigarStore optionally stores CIGAR strings for the matches.  Its entries are referenced by
  * <tt>matchStore[i].id</tt>.
- * 
+ *
  * @section Examples
- * 
+ *
  * Read Lastz matches from a link RecordReader and then print them to stdout.
- * 
+ *
  * @code{.cpp}
  * // Read local alignments from record reader.  Note that in real-world code,
  * // you should have error handling.
  * LocalMatchStore<> lmStore;
  * while (!atEnd(recordReader))
  *     readRecord(lmStore, recordReader, StellarGff());
- *  
+ *
  * // Print local alignment information to stdout.
  * std::cout << "# Reverse strandness is indicated by end < begin\n"
  *           << "#db\tdb_beg\tdb_end\tquery\tq_beg\tq_end\n";
@@ -207,30 +207,30 @@ struct LocalMatchStoreConfig
  *               << lmStore.matchStore[i].subjectEndPos << "\n";
  * @endcode
  * @see LocalMatch
- * 
+ *
  * @var TMatchStore LocalMatchStore::matchStore
  * @brief String storing the LocalMatch local matches.
- * 
+ *
  * @var TStringSet LocalMatchStore::sequenceNameStore
  * @brief StringSet storing the sequence names.
- * 
+ *
  * @var TCigarString LocalMatchStore::cigarStore
  * @brief String storing the CIGAR strings.
  */
 
 /*!
  * @fn LocalMatchStore#readRecord
- * 
+ *
  * @headerfile <seqan/parse_lm.h>
- * 
+ *
  * @brief Read Lastz "general" format record.
- * 
+ *
  * @signature int readRecord(store, reader, tag);
- * 
+ *
  * @param[in,out] store  LocalMatchStore object to read into.
  * @param[in,out] stream SinglePassRecordReader to read from.
  * @param[in]     tag    The tag for selecting the format, one of BlastnTabular, LastzGeneral, and StellarGff.
- * 
+ *
  * @return int 0 on success, non-0 on errors and EOF
  */
 
@@ -244,20 +244,20 @@ public:
 
     typedef typename TConfig::TId TId;
     typedef typename TConfig::TPosition TPosition;
-    
+
     typedef LocalMatch<TId, TPosition> TLocalMatch;
     typedef String<TLocalMatch> TMatchStore;
 
     typedef String<CigarElement<> > TCigarString;
     typedef String<TCigarString> TCigarStore;
-    
+
     typedef StringSet<CharString> TNameStore;
     typedef NameStoreCache<TNameStore> TNameStoreCache_;
 
     // ----------------------------------------------------------------------------
     // Member Variables
     // ----------------------------------------------------------------------------
-    
+
     TNameStore       sequenceNameStore;
     TNameStoreCache_ _sequenceNameStoreCache;
 
@@ -301,10 +301,10 @@ registerSequenceName(TLocalMatchStore & store,
 /*!
  * @fn LocalMatchStore#appendLocalMatch
  * @brief Append a new local match to a @link LocalMatchStore @endlink
- * 
+ *
  * @signature void appendLocalMatchStore(store, subjectId, subjectBeginPos, subjectEndPos, queryId, queryBeginPos, queryEndPos);
  * @signature void appendLocalMatchStore(store, subjectName, subjectBeginPos, subjectEndPos, queryName, queryBeginPos, queryEndPos, cigarStringBuffer);
- * 
+ *
  * @param[in,out] store             The LocalMatchStore to add the local match to.
  * @param[in]     subjectId         Numeric subject sequence identifier, @link IntegerConcept @endlink.
  * @param[in]     subjectName       The textual name of the query sequence, @link CharString @endlink.
@@ -315,7 +315,7 @@ registerSequenceName(TLocalMatchStore & store,
  * @param[in]     queryBegin        The begin position of the match in the query, @link IntegerConcept @endlink.
  * @param[in]     queryEnd          The end position of the match in the query, @link IntegerConcept @endlink.
  * @param[in]     cigarStringBuffer Buffer with the cigar string of the local alignment,  @link CharString @endlink.
- * 
+ *
  * Matches on the reverse-complement are encoded by the begin position being greater than the begin position.
  */
 

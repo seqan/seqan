@@ -73,7 +73,7 @@ struct TranslateTableCharToDna_
 };
 
 template <typename T>
-char const TranslateTableCharToDna_<T>::VALUE[256] = 
+char const TranslateTableCharToDna_<T>::VALUE[256] =
 {
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //0
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //1
@@ -84,13 +84,13 @@ char const TranslateTableCharToDna_<T>::VALUE[256] =
 //   ,   A,   B,   C,   D,   E,   D,   G,   H,   I,   J,   K,   L,   M,   N,   O,
 
     0,   0,   0,   0,   3,   3,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //5
-//  P,   Q,   R,   S,   T,   U,   V,   W,   X,   Y,   Z,    ,    ,    ,    ,    
+//  P,   Q,   R,   S,   T,   U,   V,   W,   X,   Y,   Z,    ,    ,    ,    ,
 
     0,   0,   0,   1,   0,   0,   0,   2,   0,   0,   0,   0,   0,   0,   0,   0, //6
 //   ,   a,   b,   c,   d,   e,   f,   g,   h,   i,   j,   k,   l,   m,   n,   o,
 
     0,   0,   0,   0,   3,   3,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //7
-//  p,   q,   r,   s,   t,   u,   v,   w,   x,   y,   z,    ,    ,    ,    ,   
+//  p,   q,   r,   s,   t,   u,   v,   w,   x,   y,   z,    ,    ,    ,    ,
 
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //8
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //9
@@ -110,7 +110,7 @@ struct TranslateTableCharToDna5_
 };
 
 template <typename T>
-char const TranslateTableCharToDna5_<T>::VALUE[256] = 
+char const TranslateTableCharToDna5_<T>::VALUE[256] =
 {
     4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //0
     4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //1
@@ -121,13 +121,13 @@ char const TranslateTableCharToDna5_<T>::VALUE[256] =
 //   ,   A,   B,   C,   D,   E,   D,   G,   H,   I,   J,   K,   L,   M,   N,   O,
 
     4,   4,   4,   4,   3,   3,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //5
-//  P,   Q,   R,   S,   T,   U,   V,   W,   X,   Y,   Z,    ,    ,    ,    ,    
+//  P,   Q,   R,   S,   T,   U,   V,   W,   X,   Y,   Z,    ,    ,    ,    ,
 
     4,   0,   4,   1,   4,   4,   4,   2,   4,   4,   4,   4,   4,   4,   4,   4, //6
 //   ,   a,   b,   c,   d,   e,   f,   g,   h,   i,   j,   k,   l,   m,   n,   o,
 
     4,   4,   4,   4,   3,   3,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //7
-//  p,   q,   r,   s,   t,   u,   v,   w,   x,   y,   z,    ,    ,    ,    ,   
+//  p,   q,   r,   s,   t,   u,   v,   w,   x,   y,   z,    ,    ,    ,    ,
 
     4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //8
     4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4,   4, //9
@@ -146,7 +146,7 @@ struct TranslateTableByteToDna_
 };
 
 template <typename T>
-char const TranslateTableByteToDna_<T>::VALUE[256] = 
+char const TranslateTableByteToDna_<T>::VALUE[256] =
 {
     0,   1,   2,   3,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //0
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, //1
@@ -204,7 +204,7 @@ struct TranslateTableRna5ToChar_
 };
 
 template <typename T>
-char const TranslateTableRna5ToChar_<T>::VALUE[5] = {'A', 'C', 'G', 'U', 'N'}; 
+char const TranslateTableRna5ToChar_<T>::VALUE[5] = {'A', 'C', 'G', 'U', 'N'};
 
 // other tables identical to Dna(5)
 
@@ -219,7 +219,7 @@ struct TranslateTableIupacToChar_
 };
 
 template <typename T>
-char const TranslateTableIupacToChar_<T>::VALUE[16] = 
+char const TranslateTableIupacToChar_<T>::VALUE[16] =
 {        //TGCA
     '=', //0000=0 = or U
     'A', //0001=1
@@ -246,7 +246,7 @@ struct TranslateTableIupacToDna_
 };
 
 template <typename T>
-char const TranslateTableIupacToDna_<T>::VALUE[16] = 
+char const TranslateTableIupacToDna_<T>::VALUE[16] =
 {      //TGCA
     0, //0000=0 = or U
     0, //0001=1
@@ -273,7 +273,7 @@ struct TranslateTableIupacToDna5_
 };
 
 template <typename T>
-char const TranslateTableIupacToDna5_<T>::VALUE[16] = 
+char const TranslateTableIupacToDna5_<T>::VALUE[16] =
 {      //TGCA
     3, //0000=0 = or U
     0, //0001=1
@@ -300,7 +300,7 @@ struct TranslateTableCharToIupac_
 };
 
 template <typename T>
-char const TranslateTableCharToIupac_<T>::VALUE[256] = 
+char const TranslateTableCharToIupac_<T>::VALUE[256] =
 {
     15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,
     15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,
@@ -332,7 +332,7 @@ struct TranslateTableByteToIupac_
 };
 
 template <typename T>
-char const TranslateTableByteToIupac_<T>::VALUE[256] = 
+char const TranslateTableByteToIupac_<T>::VALUE[256] =
 {
     0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,  13,  14,  15, //0
     15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15,  15, //1
@@ -362,34 +362,34 @@ struct TranslateTableAAToChar_
     static char const VALUE[26];
 };
 template <typename T>
-char const TranslateTableAAToChar_<T>::VALUE[26] = 
+char const TranslateTableAAToChar_<T>::VALUE[26] =
 {
-    'A', // Ala Alanine                 
-    'B', // Aspartic Acid, Asparagine   
-    'C', // Cys Cystine                 
-    'D', // Asp Aspartic Acid           
-    'E', // Glu Glutamic Acid           
-    'F', // Phe Phenylalanine           
-    'G', // Gly Glycine                 
-    'H', // His Histidine               
-    'I', // Ile Isoleucine              
+    'A', // Ala Alanine
+    'B', // Aspartic Acid, Asparagine
+    'C', // Cys Cystine
+    'D', // Asp Aspartic Acid
+    'E', // Glu Glutamic Acid
+    'F', // Phe Phenylalanine
+    'G', // Gly Glycine
+    'H', // His Histidine
+    'I', // Ile Isoleucine
     'J', // Leucine, Isoleucine.........
-    'K', // Lys Lysine                  
-    'L', // Leu Leucine                 
-    'M', // Met Methionine              
-    'N', // Asn Asparagine              
-    'P', // Pro Proline                 
-    'Q', // Gln Glutamine               
-    'R', // Arg Arginine                
-    'S', // Ser Serine                  
-    'T', // Thr Threonine               
+    'K', // Lys Lysine
+    'L', // Leu Leucine
+    'M', // Met Methionine
+    'N', // Asn Asparagine
+    'P', // Pro Proline
+    'Q', // Gln Glutamine
+    'R', // Arg Arginine
+    'S', // Ser Serine
+    'T', // Thr Threonine
     'U', // Selenocystein...............
-    'V', // Val Valine                  
-    'W', // Trp Tryptophan              
-    'Y', // Tyr Tyrosine                
-    'Z', // Glutamic Acid, Glutamine    
-    'X', // Unknown                     
-    '*'  // Terminator                  
+    'V', // Val Valine
+    'W', // Trp Tryptophan
+    'Y', // Tyr Tyrosine
+    'Z', // Glutamic Acid, Glutamine
+    'X', // Unknown
+    '*'  // Terminator
 };
 
 template <typename T = void>
@@ -399,7 +399,7 @@ struct TranslateTableCharToAA_
 };
 
 template <typename T>
-char const TranslateTableCharToAA_<T>::VALUE[256] = 
+char const TranslateTableCharToAA_<T>::VALUE[256] =
 {
     24,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24, //0
     24,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24, //1
@@ -435,7 +435,7 @@ struct TranslateTableByteToAA_
 };
 
 template <typename T>
-char const TranslateTableByteToAA_<T>::VALUE[256] = 
+char const TranslateTableByteToAA_<T>::VALUE[256] =
 {
     0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,  15, //0
     16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  24,  24,  24,  24,  24,  24, //1

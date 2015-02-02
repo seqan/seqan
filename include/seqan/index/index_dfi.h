@@ -54,7 +54,7 @@ namespace SEQAN_NAMESPACE_MAIN
 // constant frequency predicate
 
     template <bool Result>
-    struct DfiPredDefault_ 
+    struct DfiPredDefault_
     {
         inline bool operator()(DfiEntry_ const &) const {
             return Result;
@@ -69,45 +69,45 @@ namespace SEQAN_NAMESPACE_MAIN
  * @class IndexDfi
  * @extends IndexWotd
  * @headerfile <seqan/index.h>
- * 
+ *
  * @brief The Deferred Frequency Index (see Weese and Schulz, "Efficient string mining under constraints via
  *        the deferred frequency index").
- * 
+ *
  * @signature template <typename TText, typename TPredHull, typename TPred>
  *            class Index<TText, IndexWotd< Dfi<TPredHull, TPred> > >;
- * 
+ *
  * @tparam TText     The @link TextConcept text @endlink.
  * @tparam TPred     An arbitrary frequency predicate.
  * @tparam TPredHull A monotonic hull of <tt>TPred</tt>
- * 
+ *
  * This index is based on a lazy suffix tree (see @link IndexWotd @endlink).  All <tt>TPredHull</tt> sufficing
  * nodes can be iterated using a @link TopDownIterator @endlink.  To iterate the exact solution set of <tt>TPred</tt>,
  * use a @link TopDownHistoryIterator @endlink of this index.
  */
 
-/*! 
+/*!
  * @defgroup DfiIndexFibres Dfi Index Fibres
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of an @link
  *        IndexDfi @endlink index.
- * 
+ *
  * These tags can be used to get @link Fibre @endlink of an @link IndexDfi @endlink.
- * 
+ *
  * @see Fibre
  * @see Index#getFibre
  * @see IndexDfi
- * 
+ *
  * @tag DfiIndexFibres#DfiDir
  * @brief The child table.
- * 
+ *
  * @tag DfiIndexFibres#DfiRawSA
  * @brief The raw suffix array.
- * 
+ *
  * @tag DfiIndexFibres#DfiText
  * @brief The original text the index should be based on.
- * 
+ *
  * @tag DfiIndexFibres#DfiRawText
  * @brief The raw text the index is really based on.
- * 
+ *
  * @tag DfiIndexFibres#DfiSA
  * @brief The suffix array.
  */
@@ -124,15 +124,15 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @return TSa A reference to the @link DfiIndexFibres#DfiSA @endlink fibre (partially sorted suffix array).
  */
- 
+
 /*!
  * @fn IndexDfi#indexDir
  * @headerfile <seqan/index.h>
  * @brief Shortcut for <tt>getFibre(.., DfiDir())</tt>.
  * @signature TFibre indexDir(index);
- * 
+ *
  * @param[in] index The @link IndexDfi @endlink object holding the fibre.
- * 
+ *
  * @return TFibre A reference to the @link DfiIndexFibres#DfiDir @endlink fibre (tree structure).
  */
 
@@ -158,10 +158,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Shortcut for <tt>value(indexDir(index), position)</tt>.
  *
  * @signature TFibre dirAt(position, index);
- * 
+ *
  * @param[in] index    The @link IndexDfi @endlink object holding the fibre.
  * @param[in] position A position in the array on which the value should be accessed.
- * 
+ *
  * @return TFibre A reference to the @link DfiIndexFibres#DfiDir @endlink fibre.
  */
 
@@ -171,23 +171,23 @@ namespace SEQAN_NAMESPACE_MAIN
     >
     struct Dfi;
 
-    template < 
+    template <
         typename TObject,
         typename TPredHull,
         typename TPred
     >
     class Index<TObject, IndexWotd< Dfi<TPredHull, TPred> > >:
-        public Index<TObject, IndexWotd<> > 
+        public Index<TObject, IndexWotd<> >
     {
     public:
-        
+
         typedef Index<TObject, IndexWotd<> >    TBase;
 
         // extending base class
         typedef typename TBase::TText    TText;
         typedef typename TBase::TValue    TValue;
         typedef typename TBase::TSize    TSize;
-        
+
         using TBase::LEAF;
         using TBase::LAST_CHILD;
         using TBase::UNEVALUATED;
@@ -196,7 +196,7 @@ namespace SEQAN_NAMESPACE_MAIN
         // frequency strings for Dfi
         typedef DfiEntry_                        TDFIEntry;
         typedef String<
-            TDFIEntry, 
+            TDFIEntry,
             Array<ValueSize<TValue>::VALUE> >    TDFIEntries;
         typedef String<unsigned>                TDFIDatasets;
 
@@ -214,7 +214,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         TPredHull        predHull;
         TPred            pred;
-        
+
         Index() {}
 
         Index(Index &other):
@@ -247,9 +247,9 @@ namespace SEQAN_NAMESPACE_MAIN
             pred(_pred) {}
     };
 
-    
-    template < 
-        typename TText, 
+
+    template <
+        typename TText,
         typename TPredHull,
         typename TPred,
         typename TSpec
@@ -261,8 +261,8 @@ namespace SEQAN_NAMESPACE_MAIN
         return (dirAt(value(it).node, container(it)) & TIndex::DFI_PRED) != 0;
     }
 
-    template < 
-        typename TText, 
+    template <
+        typename TText,
         typename TPredHull,
         typename TPred,
         typename TSpec
@@ -297,7 +297,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef typename Iterator<TCounter, Standard>::Type        TCntIterator;
         typedef typename Size<TText>::Type                        TSize;
         typedef typename Value<TText>::Type                        TValue;
-        
+
         StringSet<TText, TSpec> const &stringSet = indexText(index);
         TCounter &occ = index.tempOcc;
         TCounter &bound = index.tempBound;
@@ -308,7 +308,7 @@ namespace SEQAN_NAMESPACE_MAIN
         index.nodeEntry.lastSeqSeen = -1;
         for(unsigned j = 0; j < length(index.nodeEntry.freq); ++j)
             index.nodeEntry.freq[j] = 0;
-        for(unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i) 
+        for(unsigned i = 0; i < ValueSize<TValue>::VALUE; ++i)
         {
             TDFIEntry &childEntry = index.childEntry[i];
             childEntry.lastSeqSeen = -1;
@@ -325,7 +325,7 @@ namespace SEQAN_NAMESPACE_MAIN
         // 4. fill suffix array
         unsigned dsNo = 0;
         TDFIDatasetsIterator currentDS = begin(index.ds, Standard()) + 1;
-        for(unsigned seqNo = 0; seqNo < length(stringSet); ++seqNo) 
+        for(unsigned seqNo = 0; seqNo < length(stringSet); ++seqNo)
         {
             // search for surrounding dataset
             while (seqNo >= *currentDS) {
@@ -344,13 +344,13 @@ namespace SEQAN_NAMESPACE_MAIN
             TText const &text = value(stringSet, seqNo);
             TTextIterator itText = begin(text, Standard());
             TTextIterator itTextEnd = end(text, Standard());
-            for(; itText != itTextEnd; ++itText) 
+            for(; itText != itTextEnd; ++itText)
             {
                 unsigned ord = ordValue(*itText);
                 TDFIEntry &childEntry = index.childEntry[ord];
                 // new sequence is seen for <ord> character
                 // -> increment frequency of current dataset
-                if (childEntry.lastSeqSeen != seqNo) 
+                if (childEntry.lastSeqSeen != seqNo)
                 {
                     childEntry.lastSeqSeen = seqNo;
                     ++childEntry.freq[dsNo];
@@ -372,7 +372,7 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TText, typename TSpec, typename TPredHull, typename TPred, typename TBeginPos, typename TEndPos, typename TSize >
     TSize _sortWotdBucket(
         Index<StringSet<TText, TSpec>, IndexWotd<Dfi<TPredHull, TPred> > > &index,
-        TBeginPos left, 
+        TBeginPos left,
         TEndPos right,
         TSize prefixLen)
     {
@@ -426,7 +426,7 @@ namespace SEQAN_NAMESPACE_MAIN
             unsigned lastSeqSeen = (unsigned)-1;
             unsigned dsNo = 0;
             Pair<unsigned, TTextSize> lPos;
-            for (; itSA != itSAEnd; ++itSA) 
+            for (; itSA != itSAEnd; ++itSA)
             {
                 posLocalize(lPos, *itSA, stringSetLimits(index));
                 if (lastSeqSeen != getSeqNo(lPos))
@@ -434,7 +434,7 @@ namespace SEQAN_NAMESPACE_MAIN
                     lastSeqSeen = getSeqNo(lPos);
 
                     // search for surrounding dataset
-                    while (lastSeqSeen >= *currentDS) 
+                    while (lastSeqSeen >= *currentDS)
                     {
                         ++dsNo;
                         ++currentDS;
@@ -445,13 +445,13 @@ namespace SEQAN_NAMESPACE_MAIN
                     textLength = length(stringSet[lastSeqSeen]) - prefixLen;
                     itText = begin(stringSet[lastSeqSeen], Standard()) + prefixLen;
                 }
-                if (textLength > getSeqOffset(lPos)) 
+                if (textLength > getSeqOffset(lPos))
                 {
                     unsigned ord = ordValue(*(itText + getSeqOffset(lPos)));
                     TDFIEntry &childEntry = index.childEntry[ord];
                     // new sequence is seen for <ord> character
                     // -> increment frequency of current dataset
-                    if (childEntry.lastSeqSeen != lastSeqSeen) 
+                    if (childEntry.lastSeqSeen != lastSeqSeen)
                     {
                         childEntry.lastSeqSeen = lastSeqSeen;
                         ++childEntry.freq[dsNo];
@@ -516,7 +516,7 @@ namespace SEQAN_NAMESPACE_MAIN
     // store buckets into directory
     // storing SA links and topology links in Dir
     template <typename TText, typename TPredHull, typename TPred, typename TSize>
-    inline void 
+    inline void
     _storeWotdChildren(
         Index<TText, IndexWotd<Dfi<TPredHull, TPred> > > &index,
         TSize dirOfs,
@@ -651,7 +651,7 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
 //////////////////////////////////////////////////////////////////////////////
-// interface for automatic index creation 
+// interface for automatic index creation
 
     template <typename TText, typename TPredHull, typename TPred>
     inline bool indexCreate(Index<TText, IndexWotd<Dfi<TPredHull, TPred> > > &index, WotdDir const, Default const)

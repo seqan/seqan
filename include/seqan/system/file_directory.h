@@ -50,10 +50,10 @@
  * _tested_
  * _windows_
  *
- * 
+ *
  * used by file/file_format_mmap.h and some apps
  * no documentation at all
- * 
+ *
  */
 
 
@@ -69,7 +69,7 @@ namespace SEQAN_NAMESPACE_MAIN
     {
 //IOREV _nodoc_ _windows_
     protected:
-    
+
         intptr_t            handle;
         struct _finddata_t    entry;
         bool                _atEnd;
@@ -89,17 +89,17 @@ namespace SEQAN_NAMESPACE_MAIN
             handle = 0;
             _atEnd = true;
         }
-        
+
         Directory(char const *dirName)
         {
             open(*this, dirName);
         }
-        
+
         ~Directory()
         {
             close(*this);
         }
-        
+
         inline char const * operator* () const
         {
             return value(*this);
@@ -109,14 +109,14 @@ namespace SEQAN_NAMESPACE_MAIN
         {
             return goNext(*this);
         }
-        
+
         inline operator bool () const
         {
             return !_atEnd;
         }
     };
 
-//////////////////////////////////////////////////////////////////////////////    
+//////////////////////////////////////////////////////////////////////////////
 
     inline bool
     open(Directory &dir, char const *dirName)
@@ -169,30 +169,30 @@ namespace SEQAN_NAMESPACE_MAIN
 //IOREV _nodoc_
         return dir._atEnd;
     }
-    
+
     inline bool
     atEnd(Directory const &dir)
     {
 //IOREV _nodoc_
         return dir._atEnd;
     }
-    
-//////////////////////////////////////////////////////////////////////////////    
-    
-    
+
+//////////////////////////////////////////////////////////////////////////////
+
+
 #else
 
 
-//////////////////////////////////////////////////////////////////////////////    
+//////////////////////////////////////////////////////////////////////////////
 
     class Directory
     {
 //IOREV _nodoc_
     protected:
-    
+
         DIR        *handle;
         dirent    *it;
-        
+
         friend inline bool open(Directory &dir, char const *dirName);
         friend inline bool close(Directory &dir);
         friend inline char const * value(Directory &dir);
@@ -209,17 +209,17 @@ namespace SEQAN_NAMESPACE_MAIN
             handle = NULL;
             it = NULL;
         }
-        
+
         Directory(char const *dirName)
         {
             open(*this, dirName);
         }
-        
+
         ~Directory()
         {
             close(*this);
         }
-        
+
         inline char const * operator* () const
         {
             return value(*this);
@@ -229,15 +229,15 @@ namespace SEQAN_NAMESPACE_MAIN
         {
             return goNext(*this);
         }
-        
+
         inline operator bool () const
         {
             return !atEnd(*this);
         }
     };
-    
-//////////////////////////////////////////////////////////////////////////////    
-    
+
+//////////////////////////////////////////////////////////////////////////////
+
     inline bool
     open(Directory &dir, char const *dirName)
     {
@@ -300,14 +300,14 @@ namespace SEQAN_NAMESPACE_MAIN
 //IOREV _nodoc_
         return dir.it == NULL;
     }
-    
+
     inline bool
     atEnd(Directory const &dir)
     {
 //IOREV _nodoc_
         return dir.it == NULL;
     }
-    
+
 #endif
 
 }

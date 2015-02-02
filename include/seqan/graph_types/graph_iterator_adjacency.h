@@ -71,24 +71,24 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
 template<typename TGraph, typename TSpec>
-class Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > > 
+class Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >
 {
 public:
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor_;
     typedef typename Iterator<TGraph, OutEdgeIterator>::Type TOutEdgeIterator_;
     TOutEdgeIterator_ data_edge_it;
 
-    Iter()    
+    Iter()
     {
         SEQAN_CHECKPOINT
     }
-    
-    Iter(TGraph const& _graph, TVertexDescriptor_ const v) : 
+
+    Iter(TGraph const& _graph, TVertexDescriptor_ const v) :
         data_edge_it(_graph, v)
     {
         SEQAN_CHECKPOINT
     }
-    
+
     ~Iter() {
         SEQAN_CHECKPOINT
     }
@@ -116,13 +116,13 @@ public:
 
 template<typename TGraph>
 struct Iterator<TGraph, AdjacencyIterator>
-{    
+{
     typedef Iter<TGraph, GraphIterator<InternalAdjacencyIterator<AdjacencyIterator> > > Type;
 };
 
 template<typename TGraph>
 struct Iterator<TGraph const, AdjacencyIterator>
-{    
+{
     typedef Iter<TGraph const, GraphIterator<InternalAdjacencyIterator<AdjacencyIterator> > > Type;
 };
 
@@ -224,7 +224,7 @@ hostGraph(Iter<TGraph, GraphIterator<InternalAdjacencyIterator<TSpec> > >& it)
 {
     SEQAN_CHECKPOINT
     return hostGraph(it.data_edge_it);
-} 
+}
 
 //////////////////////////////////////////////////////////////////////////////
 

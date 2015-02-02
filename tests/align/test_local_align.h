@@ -52,7 +52,7 @@ SEQAN_DEFINE_TEST(testLocalAlign) {
     //align two sequences using Smith-Waterman-algorithm
     String<char> str0 = "ataagcgtctcg";
     String<char> str1 = "tcatagagttgc";
-    
+
     Align< String<char>, ArrayGaps> ali;
     resize(rows(ali), 2);
     setSource(row(ali, 0), str0);
@@ -60,22 +60,22 @@ SEQAN_DEFINE_TEST(testLocalAlign) {
 
     Score<int> score_type = Score<int>(2,-1,-2,0) ;
     LocalAlignmentFinder<int> sw_finder = LocalAlignmentFinder<int>();
-    
+
     int cutoff = 0;
 
     int score = _smithWaterman(ali,sw_finder,score_type,cutoff);
-    
+
     SEQAN_ASSERT_EQ(score, 9);
     SEQAN_ASSERT(row(ali,0) == "ataagcgt");
     SEQAN_ASSERT(row(ali,1) == "ata-gagt");
-    
+
     int i = 1;
     while (true){
-        
+
         score = _smithWatermanGetNext(ali,sw_finder,score_type,cutoff);
 
         if(score==0){
-    //        cout <<"No more alignments satisfying score > "<<cutoff<<"found.\n";        
+    //        cout <<"No more alignments satisfying score > "<<cutoff<<"found.\n";
             break;
         }
         if(i == 1){
@@ -170,8 +170,8 @@ SEQAN_DEFINE_TEST(testLocalAlign) {
         }
         ++i;
     }
-    
-//test if every cell has been reduced to 0 
+
+//test if every cell has been reduced to 0
 //only makes sense if cutoff=0
     if(cutoff==0){
         int str0len = length(str0) + 1;
@@ -206,7 +206,7 @@ SEQAN_DEFINE_TEST(testLocalAlign2) {
 
     String<char> str0 = "ataagcgtctcg";
     String<char> str1 = "tcatagagttgc";
-    
+
     Align< String<char>, ArrayGaps> ali;
     resize(rows(ali), 2);
     setSource(row(ali, 0), str0);
@@ -214,12 +214,12 @@ SEQAN_DEFINE_TEST(testLocalAlign2) {
 
     Score<int> score_type = Score<int>(2,-1,-2,0) ;
     LocalAlignmentFinder<int> sw_finder = LocalAlignmentFinder<int>();
-    
+
     int score = localAlignment(ali, sw_finder, score_type, 5);
     SEQAN_ASSERT_EQ(score, 9);
     SEQAN_ASSERT(row(ali,0) == "ataagcgt");
     SEQAN_ASSERT(row(ali,1) == "ata-gagt");
-    
+
     score = localAlignment(ali, sw_finder, score_type, 5);
     SEQAN_ASSERT_EQ(score, 5);
     SEQAN_ASSERT(row(ali,0) == "tc-tcg");
@@ -236,7 +236,7 @@ SEQAN_DEFINE_TEST(testBandedLocalAlign) {
     TString str1("aaaacttagctctaaaa");
 
     Score<int> score_type = Score<int>(2,-1,-2,-2);
-    
+
     Align<TString> align;
     resize(rows(align), 2);
     assignSource(row(align, 0), str0);
@@ -268,7 +268,7 @@ SEQAN_DEFINE_TEST(testBandedLocalAlign) {
     SEQAN_ASSERT_EQ(score, 0);
 
 
-    
+
     Align<TString> align1;
     resize(rows(align1), 2);
     assignSource(row(align1, 0), "gcagaattaaggaggattacaagtgggaatttgaagagcttttgaaatcc");

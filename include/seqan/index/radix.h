@@ -40,9 +40,9 @@ namespace SEQAN_NAMESPACE_MAIN
 
     // stably sort a[0..n-1] to b[0..n-1] with keys in 0..K-1 from r
     template <
-        typename TSortedArray, 
-        typename TUnsortedArray, 
-        typename TCountArray, 
+        typename TSortedArray,
+        typename TUnsortedArray,
+        typename TCountArray,
         typename TText >
     void radixPass(
         TSortedArray &b,            // result array (sorted by 1 character)
@@ -55,17 +55,17 @@ namespace SEQAN_NAMESPACE_MAIN
 
         TSize i, sum = 0, n = length(a);
         arrayFill(begin(c, Standard()), begin(c, Standard()) + K, 0);    // reset counters
-        
+
         for (i = 0;  i < n;  i++)                                        // count occurrences
             c[ordValue(getValue(r,getValue(a,i)))]++;
-            
+
         for (i = 0;  i < K;  i++)
         {                                                                // exclusive prefix sums
             TSize t = getValue(c,i);
             c[i] = sum;
             sum += t;
         }
-        
+
         for (i = 0;  i < n;  i++)
         {
             TSize j = getValue(a,i);                                    // sort
@@ -74,10 +74,10 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template <
-        typename TSortedArray, 
-        typename TUnsortedArray, 
-        typename TCountArray, 
-        typename TText, 
+        typename TSortedArray,
+        typename TUnsortedArray,
+        typename TCountArray,
+        typename TText,
         typename TShift >
     void radixPass(
         TSortedArray &b,            // result array (sorted by 1 character)
@@ -91,26 +91,26 @@ namespace SEQAN_NAMESPACE_MAIN
 
         TSize i, sum = 0, n = length(a), sn = length(r);
         arrayFill(begin(c, Standard()), begin(c, Standard()) + K, 0);    // reset counters
-        
+
         for (i = 0;  i < n;  i++)
         {
             TSize j = getValue(a,i) + shift;                            // count occurrences
             if (j < sn) c[ordValue(getValue(r,j))]++;
             else        sum++;
         }
-        
+
         for (i = 0;  i < K;  i++)
         {                                                                // exclusive prefix sums
             TSize t = getValue(c,i);
             c[i] = sum;
             sum += t;
         }
-        
+
         for (i = 0, sum = 0;  i < n;  i++)
         {                                                                // sort
             TSize j = getValue(a,i);
             TSize k = j + shift;
-            if (k < sn) 
+            if (k < sn)
                 b[c[ordValue(getValue(r,k))]++] = j;    // On Exception: Make sure, you have resized your sufarray
             else
                 b[sum++] = j;                            // before calling createSuffixArray(..) to length(text)?
@@ -119,9 +119,9 @@ namespace SEQAN_NAMESPACE_MAIN
 
     // stably sort a[0..n-1] to b[0..n-1] with keys in 0..K-1 from r
     template <
-        typename TSortedArray, 
-        typename TUnsortedArray, 
-        typename TCountArray, 
+        typename TSortedArray,
+        typename TUnsortedArray,
+        typename TCountArray,
         typename TText >
     void radixExtend(
         TSortedArray &b,            // result array (sorted by 1 character)
@@ -134,17 +134,17 @@ namespace SEQAN_NAMESPACE_MAIN
 
         TSize i, sum = 0, n = length(a);
         arrayFill(begin(c, Standard()), begin(c, Standard()) + K, 0);    // reset counters
-        
+
         for (i = 0;  i < n;  i++)                                        // count occurrences
             c[ordValue(getValue(r,getValue(a,i)-1))]++;
-            
-        for (i = 0;  i < K;  i++) 
+
+        for (i = 0;  i < K;  i++)
         {                                                                // exclusive prefix sums
             TSize t = getValue(c,i);
             c[i] = sum;
             sum += t;
         }
-        
+
         for (i = 0;  i < n;  i++)
         {
             TSize j = getValue(a,i);                                    // sort
@@ -154,9 +154,9 @@ namespace SEQAN_NAMESPACE_MAIN
 
     // stably sort a[0..n-1] to b[0..n-1] with keys in 0..K-1 from r
     template <
-        typename TSortedArray, 
-        typename TUnsortedArray, 
-        typename TCountArray, 
+        typename TSortedArray,
+        typename TUnsortedArray,
+        typename TCountArray,
         typename TText >
     void radixExtendClip(
         TSortedArray &b,            // result array (sorted by 1 character)
@@ -169,20 +169,20 @@ namespace SEQAN_NAMESPACE_MAIN
 
         TSize i, sum = 0, n = length(a);
         arrayFill(begin(c, Standard()), begin(c, Standard()) + K, 0);    // reset counters
-        
+
         for (i = 0;  i < n;  i++)
         {                                                                // count occurrences
             TSize j = getValue(a,i);
             if (j > 0) c[ordValue(getValue(r,j-1))]++;
         }
-        
+
         for (i = 0;  i < K;  i++)
         {                                                                // exclusive prefix sums
             TSize t = getValue(c,i);
             c[i] = sum;
             sum += t;
         }
-        
+
         for (i = 0;  i < n;  i++)
         {
             TSize j = getValue(a,i);                                    // sort

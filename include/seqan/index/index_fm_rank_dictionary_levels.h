@@ -180,7 +180,7 @@ template <typename TValue, typename TSpec, typename TConfig>
 struct RankDictionaryValues_<TValue, Levels<TSpec, TConfig> >
 {
     typedef RankDictionary<TValue, Levels<TSpec, TConfig> >                 TRankDictionary_;
-    
+
     typedef Tuple<TValue, TRankDictionary_::_VALUES_PER_WORD, BitPacked<> > TValues;
     typedef typename TValues::TBitVector                                    TWord;
     typedef Tuple<TValues, TRankDictionary_::_WORDS_PER_BLOCK>              Type;
@@ -233,15 +233,15 @@ struct RankDictionaryEntry_<TValue, Levels<TSpec, TConfig> >
  * @class TwoLevelRankDictionary
  * @extends RankDictionary
  * @headerfile <seqan/index.h>
- * 
+ *
  * @brief A TwoLevelRankDictionary is a @link RankDictionary @endlink consisting of two levels.
- * 
+ *
  * @signature template <typename TValue, typename TSpec, typename TConfig>
  *            class RankDictionary<TValue, WaveletTree<TSpec> >;
- * 
+ *
  * @tparam TValue The alphabet type of the wavelet tree.
  * @tparam TSpec  A tag for specialization purposes. Default: <tt>void</tt>
- * 
+ *
  * This @link RankDictionary @endlink consists of two levels of rank
  * infromation, in which one stores information of blocks and the other
  * information until a specified block. Combining those two informations

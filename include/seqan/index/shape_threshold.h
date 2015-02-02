@@ -124,7 +124,7 @@ int qgramThreshold(TShape const & shape, TPatternSize patternLength, TErrors err
             ++thresh;
 
     return thresh;
-}    
+}
 
 
 
@@ -147,7 +147,7 @@ int qgramThreshold(TShape const & shape, TPatternSize patternLength, TErrors err
     template <typename T>
     char const TranslateTableErrorToChar_<T>::VALUE[4] = {'.', 'M', 'I', 'D'};
 
-    inline void assign(char & c_target, 
+    inline void assign(char & c_target,
                        ErrorAlphabet const & source)
     {
     SEQAN_CHECKPOINT
@@ -178,7 +178,7 @@ int qgramThreshold(TShape const & shape, TPatternSize patternLength, TErrors err
         SEQAN_INSERT   = 2,
         SEQAN_DELETE   = 3
     };
-    
+
     template <typename TDistance>
     struct ErrorTypes {
         enum { VALUE = 4 };
@@ -335,7 +335,7 @@ struct ErrorPatternLess
         if (length(a) <= length(b))
         {
             itEnd = begin(a, Standard());
-            for (; itA != itEnd;) 
+            for (; itA != itEnd;)
             {
                 --itA;
                 --itB;
@@ -343,10 +343,10 @@ struct ErrorPatternLess
                 if (*itA > *itB) return false;
             }
             return false;
-        } else 
+        } else
         {
             itEnd = begin(b, Standard());
-            for (; itB != itEnd;) 
+            for (; itB != itEnd;)
             {
                 --itA;
                 --itB;
@@ -359,7 +359,7 @@ struct ErrorPatternLess
 };
 
 template <typename TPatternStore, typename TPattern>
-inline int 
+inline int
 _getErrorPatternIndex(TPatternStore const &patternStore, TPattern const &pattern)
 {
     typedef typename Iterator<TPatternStore const>::Type TIter;
@@ -378,7 +378,7 @@ _getErrorPatternIndex(TPatternStore const &patternStore, TPattern const &pattern
 
 // Cut 1 read character and trailing INSERTs of the pattern
 template <typename TPattern>
-inline int 
+inline int
 _cutErrorPattern(TPattern &_pattern)
 {
     typedef typename Iterator<TPattern const, Standard>::Type TIter;
@@ -407,7 +407,7 @@ _cutErrorPattern(TPattern &_pattern)
 }
 
 template < typename TLogErrorDistr >
-typename Value<TLogErrorDistr>::Type 
+typename Value<TLogErrorDistr>::Type
 _getProb(TLogErrorDistr const &logError, int errorType, int readPos)
 {
     int maxN = length(logError) / 4;
@@ -461,7 +461,7 @@ void initPatterns(
 
     typedef typename Iterator<TPattern, Standard>::Type            TIter;
     typedef typename Value<TStateString>::Type                    TState;
-    
+
     ErrorType lastErrorType = (IsSameType<TDistance, HammingDistance>::VALUE)? SEQAN_MISMATCH: SEQAN_DELETE;
 
     SEQAN_ASSERT_EQ(SEQAN_MATCH, 0);
@@ -480,13 +480,13 @@ void initPatterns(
 
     //////////////////////////////////////////////////////////////////////////////
     // Enumerate all edit-modification patterns with up to k errors
-    if (maxErrors == 0) 
+    if (maxErrors == 0)
     {
         resize(pattern, span, (ErrorAlphabet)SEQAN_MATCH);
         appendValue(patternStore, pattern, Generous());
     }
     else
-    do 
+    do
     {
         clear(pattern);
         resize(pattern, span, (ErrorAlphabet)SEQAN_MATCH);
@@ -511,34 +511,34 @@ void initPatterns(
             case SEQAN_INSERT:
                 insertValue(pattern, mods[i].i1, (ErrorAlphabet)SEQAN_INSERT);
                 break;
-                
+
             case SEQAN_MATCH:
                 break;
             }
         }
 
         // remove redundant patterns
-        if (!skip) 
+        if (!skip)
         {
             TIter it = begin(pattern, Standard());
             TIter itEnd = end(pattern, Standard());
             int left = getValue(it);
             int right;
-            for (++it; (it != itEnd) && !skip; ++it, left = right) 
+            for (++it; (it != itEnd) && !skip; ++it, left = right)
             {
                 right = getValue(it);
 
 #ifdef NON_REDUNDANT
-                if (left == SEQAN_MISMATCH && right == SEQAN_DELETE) 
+                if (left == SEQAN_MISMATCH && right == SEQAN_DELETE)
                     skip = true;    // MISMATCH before DELETE is DELETE before MISMATCH (already enumerated)
 
-                if (left == SEQAN_MISMATCH && right == SEQAN_INSERT) 
+                if (left == SEQAN_MISMATCH && right == SEQAN_INSERT)
                     skip = true;    // MISMATCH before INSERT is INSERT before MISMATCH (already enumerated)
 
-                if (left == SEQAN_INSERT && right == SEQAN_DELETE) 
+                if (left == SEQAN_INSERT && right == SEQAN_DELETE)
                     skip = true;    // INSERT before DELETE is one MISMATCH (already enumerated)
-                
-                if (left == SEQAN_DELETE && right == SEQAN_INSERT) 
+
+                if (left == SEQAN_DELETE && right == SEQAN_INSERT)
                     skip = true;    // DELETE before INSERT is one MISMATCH (already enumerated)
 #endif
             }
@@ -558,7 +558,7 @@ void initPatterns(
         {
             if (mods[i].i2 == SEQAN_MATCH) continue;
             int endPos = (mods[i].i2 == SEQAN_INSERT)? span + 1: span;
-            if (++mods[i].i1 < endPos) 
+            if (++mods[i].i1 < endPos)
             {
                 for(--i; i >= 0; --i)
                     mods[i].i1 = mods[i + 1].i1;
@@ -570,7 +570,7 @@ void initPatterns(
 
         for (i = 0; i < maxErrors; ++i)
             mods[i].i1 = 0;
-        
+
         // next state combination
         for (i = 0; i < maxErrors; ++i)
         {
@@ -580,12 +580,12 @@ void initPatterns(
                 mods[i].i2 = SEQAN_MISMATCH;
             break;
         }
-        
+
         if (i == maxErrors) break;
 
     } while (true);
-    
-    if (!optionMinOutput) 
+
+    if (!optionMinOutput)
         std::cout << "Stored " << length(patternStore) << " modification patterns" << std::flush;
 
     reserve(patternStore, length(patternStore), Exact());
@@ -596,7 +596,7 @@ void initPatterns(
             std::cerr << "  !Found duplicate! " << patternStore[p] << std::endl;
     }
 
-    if (!optionMinOutput) 
+    if (!optionMinOutput)
         std::cout << " and sorted them." << std::endl;
 
     //////////////////////////////////////////////////////////////////////////////
@@ -614,7 +614,7 @@ void initPatterns(
         for (int i = 0; i < (int)length(pattern); ++i)
             if ((int)getValue(pattern, i) != SEQAN_MATCH)
                 ++errors;
-                
+
         state.len = length(pattern);
         state.errors = errors;
         state.intermediate = (int)getValue(pattern, 0) == SEQAN_INSERT;
@@ -635,7 +635,7 @@ void initPatterns(
 
                 case SEQAN_DELETE:
                     ++del;
-    
+
                 case SEQAN_INSERT:
                     ++err;
                     break;
@@ -655,11 +655,11 @@ void initPatterns(
 
                 case SEQAN_DELETE:
                     ++del;
-    
+
                 case SEQAN_INSERT:
                     ++err;
                     break;
-            
+
                 default:;
             }
             if (del > 0 && del <= err)
@@ -672,7 +672,7 @@ void initPatterns(
         // and check if shape is recognized in the genome
         state.qgramHit = false;
         int delta = 0;
-        for (int j = 0, readPos = 0, genomePos = 0; j < (int)length(pattern); ++j) 
+        for (int j = 0, readPos = 0, genomePos = 0; j < (int)length(pattern); ++j)
         {
             switch ((int)getValue(pattern, j))
             {
@@ -703,7 +703,7 @@ void initPatterns(
                 case SEQAN_INSERT:
                     ++genomePos;
 //                    std::cout << 'x';
-            }                
+            }
         }
 //        std::cout << std::endl;
 
@@ -728,7 +728,7 @@ void initPatterns(
             else
                 state.transition[SEQAN_MISMATCH] = -1;
         }
-        
+
         // prepend DELETE
         if ((int)SEQAN_DELETE < (int)state.TRANSITIONS)
         {
@@ -749,7 +749,7 @@ void initPatterns(
             else
                 state.transition[SEQAN_MATCH] = -1;
         }
-/*        
+/*
         std::cout << "\t" << state.errors;
         std::cout << "\t" << state.qgramHit;
         std::cout << "\t" << state.leftError;
@@ -760,14 +760,14 @@ void initPatterns(
         std::cout << "\t" << state.transition[3];
         std::cout << std::endl;
 */    }
-    if (!optionMinOutput) 
+    if (!optionMinOutput)
         std::cout << "Preprocessing finished." << std::endl;
 }
 
 //////////////////////////////////////////////////////////////////////////////
 // Compute filtering loss of any q-gram filter (given a states-string)
 template <
-    typename TThreshString, 
+    typename TThreshString,
     typename TStateString >
 void computeExactQGramThreshold(
     TThreshString &treshPerError,
@@ -784,11 +784,11 @@ void computeExactQGramThreshold(
     int statesCount = length(states);
 //    int span = length(bitShape);
 
-    // columns n-1 and n for recursion 
+    // columns n-1 and n for recursion
     TMatrixCol col0;    // addressing is colx[errors * statesCount + state]
     TMatrixCol col1;
     const TThresh infty = MaxValue<TThresh>::VALUE >> 1;
-    
+
     resize(col0, maxErrors * statesCount, infty);
     resize(col1, maxErrors * statesCount);
 
@@ -812,20 +812,20 @@ void computeExactQGramThreshold(
     std::cout << " :1";
     dump(col0, 1,statesCount);
 #endif
-    
+
 
     // RECURSION
     //
     // thresh(n,q,e) = min(thresh(n-1,0|(q>>1),e),              delta=1/0 <-> q hat 0/>0 error
     //                     thresh(n-1,1|(q>>1),e-1)) + delta
-        
+
     for (int n = span; n < maxN; ++n)
     {
         for (int e = 0; e < maxErrors * statesCount; e += statesCount)
-        {        
+        {
             for (int s = 0; s < statesCount; ++s)
             {
-                TState const &state = states[s];                
+                TState const &state = states[s];
 
                 // MATCH
                 TThresh t = (*colPrev)[e + state.transition[SEQAN_MATCH]];
@@ -863,12 +863,12 @@ void computeExactQGramThreshold(
         dump(*colPrev, 2,statesCount);
 #endif
     }
-    
+
     if (!optionMinOutput)
         std::cout << std::endl;
 
     resize(treshPerError, maxErrors);
-    
+
     // RECURSION END
     for (int eSum = 0; eSum < maxErrors; ++eSum)
     {
@@ -896,8 +896,8 @@ void computeExactQGramThreshold(
 //////////////////////////////////////////////////////////////////////////////
 // Compute filtering loss of any q-gram filter (given a states-string)
 template <
-    typename TLossString, 
-    typename TLogErrorDistr, 
+    typename TLossString,
+    typename TLogErrorDistr,
     typename TStateString >
 void computeQGramFilteringSensitivity(
     TLossString &found,
@@ -923,7 +923,7 @@ void computeQGramFilteringSensitivity(
     const bool optionAbsolute = false;
 //    int span = length(bitShape);
 
-    // columns n-1 and n for recursion 
+    // columns n-1 and n for recursion
     TMatrixCol col0;
     TMatrixCol col1;
     resize(col0, maxErrors * statesCount * maxT, (TFloat)_transform(0.0));
@@ -938,7 +938,7 @@ void computeQGramFilteringSensitivity(
 #endif
 
     // RECURSION BEGIN
-    for (int s = 0; s < statesCount; ++s) 
+    for (int s = 0; s < statesCount; ++s)
     {
         TState const &state = states[s];
 
@@ -975,24 +975,24 @@ void computeQGramFilteringSensitivity(
     std::cout << " :1";
     dump(col0, 1,statesCount);
 #endif
-    
+
 
     // RECURSION
     //
     // found(n,q,t,e) = (1-errorProb[n-span]) * found(n-1,0|(q>>1),t-delta,e) delta=1/0 <-> q hat 0/>0 fehler
     //               + errorProb[n-span] * found(n-1,1|(q>>1),t-delta,e-1)
-    
+
     // rekursion (fuer q-gram matches <=1 fehler)
     // found(n,q,t,e) = (1-errorProb[n-span]) * found(n-1,0|(q>>1),t-delta,e) delta=1/0 <-> q hat <=1/>1 fehler
     //               + errorProb[n-span] * found(n-1,1|(q>>1),t-delta,e-1)
-    
+
     for (int n = span; n < maxN; ++n)
     {
         for (int e = 0; e < maxErrors * statesCount; e += statesCount)
-        {        
+        {
             for (int s = 0; s < statesCount; ++s)
             {
-                TState const &state = states[s];                
+                TState const &state = states[s];
                 for (int t = 0; t < maxT; ++t)
                 {
                     int _t = t;
@@ -1036,13 +1036,13 @@ void computeQGramFilteringSensitivity(
         dump(*colPrev, 2,statesCount);
 #endif
     }
-    
+
     if (!optionMinOutput)
         std::cout << std::endl;
 
     // RECURSION END
     for (int eSum = 0; eSum < maxErrors; ++eSum)
-        for (int t = 0; t < maxT; ++t) 
+        for (int t = 0; t < maxT; ++t)
         {
             TFloat recovered = _transform(0.0);
             for (int s = 0; s < statesCount; ++s)
@@ -1082,11 +1082,11 @@ int qgramThreshold(TShape const & shape, TPatternSize patternLength, TErrors err
     String<ThreshDPState_<TDistance> > states;
     String<unsigned> thresh;
     String<char> bitString;
-    
+
     shapeToString(bitString, shape);
     initPatterns(states, bitString, errors, Nothing(), dist, true);
     computeExactQGramThreshold(thresh, states, length(bitString), errors + 1, patternLength, true);
-    
+
     return thresh[errors];
 }
 
@@ -1098,12 +1098,12 @@ int qgramThreshold(TShape const & shape, TPatternSize patternLength, TErrors err
 
 template <typename TSensitivityMatrix, typename TShape, typename TPatternSize, typename TErrors, typename TThresh, typename TDistance, typename TErrorDist>
 void qgramFilteringSensitivity(
-    TSensitivityMatrix & sensMat, 
-    TShape const & shape, 
-    TPatternSize patternLength, 
-    TErrors errors, 
-    TThresh maxThresh, 
-    TDistance const dist, 
+    TSensitivityMatrix & sensMat,
+    TShape const & shape,
+    TPatternSize patternLength,
+    TErrors errors,
+    TThresh maxThresh,
+    TDistance const dist,
     ThreshExact const,
     TErrorDist const & logErrorDistribution)
 {
@@ -1111,7 +1111,7 @@ void qgramFilteringSensitivity(
     String<SensitivityDPState_<TDistance, TFloat> > states;
     String<unsigned> thresh;
     String<char> bitString;
-    
+
     maxThresh = _min(maxThresh, patternLength - length(shape) + 1);
     resize(sensMat, (maxThresh + 1) * (errors + 1));
     shapeToString(bitString, shape);

@@ -81,7 +81,7 @@ public:
     // ----------------------------------------------------------------------
     // Subscription operators; have to be defined in class def.
     // ----------------------------------------------------------------------
-    
+
     template <typename TPos>
     inline typename Reference<Dequeue>::Type
     operator[] (TPos pos)
@@ -89,7 +89,7 @@ public:
         SEQAN_CHECKPOINT;
         return value(*this, pos);
     }
-    
+
     template <typename TPos>
     inline typename Reference<Dequeue const>::Type
     operator[] (TPos pos) const
@@ -119,25 +119,25 @@ struct Reference<Dequeue<TValue, TSpec> const >
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TValue, typename TSpec>
-struct Iterator<Dequeue<TValue, TSpec>, Standard> 
+struct Iterator<Dequeue<TValue, TSpec>, Standard>
 {
     typedef Iter<Dequeue<TValue, TSpec>, PositionIterator> Type;
 };
 
 template<typename TValue, typename TSpec>
-struct Iterator<Dequeue<TValue, TSpec> const, Standard> 
+struct Iterator<Dequeue<TValue, TSpec> const, Standard>
 {
     typedef Iter<Dequeue<TValue, TSpec> const, PositionIterator> Type;
 };
 
 template<typename TValue, typename TSpec>
-struct Iterator<Dequeue<TValue, TSpec>, Rooted> 
+struct Iterator<Dequeue<TValue, TSpec>, Rooted>
 {
     typedef Iter<Dequeue<TValue, TSpec>, PositionIterator> Type;
 };
 
 template<typename TValue, typename TSpec>
-struct Iterator<Dequeue<TValue, TSpec> const, Rooted> 
+struct Iterator<Dequeue<TValue, TSpec> const, Rooted>
 {
     typedef Iter<Dequeue<TValue, TSpec> const, PositionIterator> Type;
 };
@@ -174,7 +174,7 @@ value(Dequeue<TValue, TSpec> &me, TPos pos)
 {
     typedef typename Size<Dequeue<TValue, TSpec> >::Type TSize;
     TSize wrap = length(me.data_string) - (me.data_front - me.data_begin);
-    
+
     if ((TSize)pos < wrap)
         return value(me.data_front + pos);
     else
@@ -187,7 +187,7 @@ value(Dequeue<TValue, TSpec> const &me, TPos pos)
 {
     typedef typename Size<Dequeue<TValue, TSpec> >::Type TSize;
     TSize wrap = length(me.data_string) - (me.data_front - me.data_begin);
-    
+
     if ((TSize)pos < wrap)
         return value(me.data_front + pos);
     else
@@ -271,13 +271,13 @@ pushFront(Dequeue<TValue, TSpec> &me, TValue const & _value)
 {
     typedef typename Dequeue<TValue, TSpec>::TIter TIter;
 
-    if (me.data_empty) 
+    if (me.data_empty)
     {
         if (me.data_begin == me.data_end)
             reserve(me, computeGenerousCapacity(me, length(me.data_string) + 1), Generous());
         me.data_empty = false;
     }
-    else 
+    else
     {
         TIter new_front = me.data_front;
         if (new_front == me.data_begin)
@@ -303,13 +303,13 @@ pushBack(Dequeue<TValue, TSpec> &me, TValue const & _value)
 {
     typedef typename Dequeue<TValue, TSpec>::TIter TIter;
 
-    if (me.data_empty) 
+    if (me.data_empty)
     {
         if (me.data_begin == me.data_end)
             reserve(me, computeGenerousCapacity(me, length(me.data_string) + 1), Generous());
         me.data_empty = false;
     }
-    else 
+    else
     {
         TIter new_back = me.data_back;
         if (++new_back == me.data_end)

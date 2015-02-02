@@ -73,11 +73,11 @@ namespace SEQAN_NAMESPACE_MAIN
 
             const TStoredValue *sa = a.i2.i;
             const TStoredValue *sb = b.i2.i;
-            
+
             TSize n = LENGTH<TTriplet>::VALUE;
             if (a.i1 < n) n = a.i1;
             if (b.i1 < n) n = b.i1;
-            
+
             // compare the overlap of septets (the first n bases)
             for (TSize i = 0; i < n; i++, ++sa, ++sb)
             {

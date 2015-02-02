@@ -45,13 +45,13 @@ namespace seqan {
  * @class Repeat
  * @headerfile <seqan/index.h>
  * @brief Store information about a repeat.
- * 
+ *
  * @signature template <typename TPos, typename TPeriod>
  *            struct Repeat;
- * 
+ *
  * @tparam TPeriod Type to use for storing the repeat period. Default: 1
  * @tparam TPos Type to use for storing positions.
- * 
+ *
  * @see findRepeats
  *
  * @var TPos Repeat::endPosition;
@@ -92,7 +92,7 @@ namespace seqan {
     struct TRepeatFinder;
 
     template <typename TText>
-    struct Cargo<Index<TText, IndexWotd<TRepeatFinder> > > 
+    struct Cargo<Index<TText, IndexWotd<TRepeatFinder> > >
     {
         typedef Index<TText, IndexWotd<TRepeatFinder> >    TIndex;
         typedef typename Size<TIndex>::Type                    TSize;
@@ -102,7 +102,7 @@ namespace seqan {
 
     // node predicate
     template <typename TText, typename TSpec>
-    bool nodePredicate(Iter<Index<TText, IndexWotd<TRepeatFinder> >, TSpec> &it) 
+    bool nodePredicate(Iter<Index<TText, IndexWotd<TRepeatFinder> >, TSpec> &it)
     {
 //        return countOccurrences(it) * nodeDepth(it) >= cargo(container(it)).minRepeatLen;
         return countOccurrences(it) * repLength(it) >= cargo(container(it)).minRepeatLen;
@@ -110,7 +110,7 @@ namespace seqan {
 
     // monotonic hull
     template <typename TText, typename TSpec>
-    bool nodeHullPredicate(Iter<Index<TText, IndexWotd<TRepeatFinder> >, TSpec> &it) 
+    bool nodeHullPredicate(Iter<Index<TText, IndexWotd<TRepeatFinder> >, TSpec> &it)
     {
 //        return nodeDepth(it) <= cargo(container(it)).maxPeriod;
         return repLength(it) <= cargo(container(it)).maxPeriod;
@@ -126,32 +126,32 @@ namespace seqan {
     };
 
     template <typename TValue>
-    inline bool _repeatMaskValue(TValue const &) 
+    inline bool _repeatMaskValue(TValue const &)
     {
         // TODO(holtgrew): Maybe use unknownValue<TValue>() instead of specializing for all alphabets, especially since we have Rna5 now and might want Rna5Q later.
         return false;
     }
 
     template <>
-    inline bool _repeatMaskValue(Dna5 const &val) 
+    inline bool _repeatMaskValue(Dna5 const &val)
     {
         return val == unknownValue<Dna5>(); // 'N'
     }
 
     template <>
-    inline bool _repeatMaskValue(Dna5Q const &val) 
+    inline bool _repeatMaskValue(Dna5Q const &val)
     {
         return val == unknownValue<Dna5Q>(); // 'N'
     }
 
     template <>
-    inline bool _repeatMaskValue(Iupac const &val) 
+    inline bool _repeatMaskValue(Iupac const &val)
     {
         return val == unknownValue<Iupac>(); // 'N'
     }
 /*
     template <>
-    inline bool _repeatMaskValue(AminoAcid val) 
+    inline bool _repeatMaskValue(AminoAcid val)
     {
         return val == 'X';
     }
@@ -160,18 +160,18 @@ namespace seqan {
  * @fn findRepeats
  * @headerfile <seqan/index.h>
  * @brief Search for repeats in a text.
- * 
+ *
  * @signature void findRepeats(repeatString, text, minRepeatLength[, maxPeriod]);
- * 
+ *
  * @param[out] repeatString    A @link String @endlink of @link Repeat @endlink objects.
  * @param[in]  text            The text to search repeats in.  Types: @link ContainerConcept @endlink
  * @param[in]  minRepeatLength The minimum length each reported repeat must have.
  * @param[in]  maxPeriod       Optionally, the maximal period that reported repeats can have. Default: 1
- * 
+ *
  * Subsequences of undefined values/<tt>N</tt>s will always be reported.
- * 
+ *
  * @section Examples
- * 
+ *
  * The following demonstrates finding repeats of period 3.
  *
  * @include demos/index/find_repeats.cpp
@@ -202,7 +202,7 @@ namespace seqan {
 
     // period-1 optimization
     template <typename TRepeatStore, typename TString, typename TRepeatSize>
-    inline void findRepeats(TRepeatStore &repString, TString const &text, TRepeatSize minRepeatLen) 
+    inline void findRepeats(TRepeatStore &repString, TString const &text, TRepeatSize minRepeatLen)
     {
         typedef typename Value<TRepeatStore>::Type    TRepeat;
         typedef typename Iterator<TString const>::Type    TIterator;
@@ -224,7 +224,7 @@ namespace seqan {
             String<TRepeatStore> threadLocalStores;
 
             // Each threads finds repeats on its chunk in parallel.
-            #pragma omp parallel 
+            #pragma omp parallel
             {
                 // We have to determine the number of available threads at this point.  We will use the number of thread
                 // local stores to determin the number of available threads later on.
@@ -258,7 +258,7 @@ namespace seqan {
                     TSize repLeft = 0;
                     TSize repRight = 1;
 
-                    for (++it; it != itEnd; ++it, ++repRight) 
+                    for (++it; it != itEnd; ++it, ++repRight)
                     {
                         if (*it != last)
                         {
@@ -324,7 +324,7 @@ namespace seqan {
                 {
                     if (fromPositions[i].i1 == fromPositions[i].i2)
                         continue;  // Skip empty buckets.
-                    
+
                     if (lastNonEmpty != -1)
                     {
                         bool const adjacent = back(threadLocalStores[lastNonEmpty]).endPosition == front(threadLocalStores[i]).beginPosition;
@@ -336,7 +336,7 @@ namespace seqan {
                             fromPositions[i].i1 += 1;
                         }
                     }
-                    
+
                     if (fromPositions[i].i1 != fromPositions[i].i2)
                         lastNonEmpty = i;
                 }
@@ -402,7 +402,7 @@ namespace seqan {
             if (it == itEnd) return;
 
             TSize repLen = 1;
-            for (++it; it != itEnd; ++it) 
+            for (++it; it != itEnd; ++it)
             {
                 if (*it != *(it-1))
                 {
@@ -441,7 +441,7 @@ namespace seqan {
 
     // TODO(holtgrew): Why for TString const and StringSet<> const?
     template <typename TRepeatStore, typename TString, typename TSpec, typename TRepeatSize>
-    inline void findRepeats(TRepeatStore &repString, StringSet<TString, TSpec> const &text, TRepeatSize minRepeatLen) 
+    inline void findRepeats(TRepeatStore &repString, StringSet<TString, TSpec> const &text, TRepeatSize minRepeatLen)
     {
         typedef typename Value<TRepeatStore>::Type    TRepeat;
         typedef typename Iterator<TString>::Type    TIterator;
@@ -464,7 +464,7 @@ namespace seqan {
             rep.beginPosition.i1 = i;
             rep.endPosition.i1 = i;
 
-            for (++it; it != itEnd; ++it, ++repRight) 
+            for (++it; it != itEnd; ++it, ++repRight)
             {
                 if (last != *it)
                 {
@@ -493,7 +493,7 @@ namespace seqan {
 
     // main function
     template <typename TRepeatStore, typename TText, typename TRepeatSize, typename TPeriodSize>
-    void findRepeats(TRepeatStore &repString, TText const &text, TRepeatSize minRepeatLen, TPeriodSize maxPeriod) 
+    void findRepeats(TRepeatStore &repString, TText const &text, TRepeatSize minRepeatLen, TPeriodSize maxPeriod)
     {
         typedef Index<TText, IndexWotd<TRepeatFinder> >                    TIndex;
         typedef typename Size<TIndex>::Type                                    TSize;
@@ -508,7 +508,7 @@ namespace seqan {
         typedef std::map<TOcc,TRepeat,RepeatLess_<TOcc> >                    TRepeatList;
 
         if (maxPeriod < 1) return;
-        if (maxPeriod == 1) 
+        if (maxPeriod == 1)
         {
             findRepeats(repString, text, minRepeatLen);
             return;

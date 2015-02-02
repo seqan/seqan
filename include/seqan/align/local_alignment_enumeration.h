@@ -91,15 +91,15 @@ class LocalAlignmentEnumerator;
  * @code{.cpp}
  * SimpleScore scoringScheme(2, -1, -1, -2);
  * LocalAlignmentEnumerator<SimpleScore, Unbanded> enumerator(scoringScheme, 5);
- * 
+ *
  * Dna5String seqH = "CGAGAGAGACCGAGA";
  * Dna5String seqV = "TTCTGAGATCCGTTTTT";
- * 
+ *
  * Align<Dna5String> align;
  * resize(rows(align), 2);@s
  * assignSource(row(align), 0, seqH);
  * assignSource(row(align), 1, seqV);
- * 
+ *
  * int i = 0;
  * while (nextLocalAlignment(align, enumerator))
  * {
@@ -138,15 +138,15 @@ class LocalAlignmentEnumerator;
  * @code{.cpp}
  * SimpleScore scoringScheme(2, -1, -1, -2);
  * LocalAlignmentEnumerator<SimpleScore, Banded> enumerator(scoringScheme, -3, 0, 5);
- * 
+ *
  * Dna5String seqH = "CGAGAGAGACCGAGA";
  * Dna5String seqV = "TTCTGAGATCCGTTTTT";
- * 
+ *
  * Align<Dna5String> align;
  * resize(rows(align), 2);
  * assignSource(row(align), 0, seqH);
  * assignSource(row(align), 1, seqV);
- * 
+ *
  * int i = 0;
  * while (nextLocalAlignment(align, enumerator))
  * {
@@ -189,7 +189,7 @@ class LocalAlignmentEnumerator;
  * @signature TScoreVal getScore(enumerator);
  *
  * @param[in] enumerator The LocalAlignmentEnumerator to query.
- * 
+ *
  * @return TScoreVal The current alignment score (@link Score#Value @endlink of <tt>TScore</tt>).
  */
 
@@ -209,7 +209,7 @@ class LocalAlignmentEnumerator;
  * @param[in] gapsH      @link Gaps @endlink object to use for the first/horizontal sequence in the alignment matrix.
  * @param[in] gapsV      @link Gaps @endlink object to use for the second/vertical sequence in the alignment matrix.
  * @param[in] enumerator The LocalAlignmentEnumerator to advance.
- * 
+ *
  * @return bool <tt>true</tt> if another suboptimal alignment above the given threshold was found and <tt> false
  *              otherwise.
  */

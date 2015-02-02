@@ -131,7 +131,7 @@ _writeBedRecord(TTarget & target, BedRecord<Bed12> const & record, CharString co
 }
 
 template <typename TTarget, typename TRecordSpec>
-inline void 
+inline void
 writeRecord(TTarget & target, BedRecord<TRecordSpec> const & record, Bed const & /*tag*/)
 {
     _writeBedRecord(target, record, record.ref);

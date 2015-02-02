@@ -192,7 +192,7 @@ createSetOracle(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
             TIterator & it = _here_it[i];
             TIterator it_end = end(keywords[i], Standard());
             TVertexDescriptor & _parent = _here_v[i];
-            
+
             if (it != it_end)
             {
                 TVertexDescriptor _current = getSuccessor(g, _parent, *it);

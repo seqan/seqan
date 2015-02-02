@@ -59,7 +59,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     // *** COMPARATORS & MAPS ***
-        
+
     template <typename TValue, typename TResult = int>
     struct _skew7NComp :
         public std::binary_function<TValue, TValue, TResult>
@@ -73,7 +73,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
             const TStoredValue *sa = a.i2.i;
             const TStoredValue *sb = b.i2.i;
-            
+
             TSize n = LENGTH<TSeptet>::VALUE;
             if (a.i1 < n) n = a.i1;
             if (b.i1 < n) n = b.i1;
@@ -107,7 +107,7 @@ namespace SEQAN_NAMESPACE_MAIN
         {
             if (a.i2 < b.i2) return -1;
             if (a.i2 > b.i2) return 1;
-            if (a.i1 < 7 || b.i1 < 7) 
+            if (a.i1 < 7 || b.i1 < 7)
                 return (a.i1 < b.i1)? -1 : 1;
             return 0;
         }
@@ -132,14 +132,14 @@ namespace SEQAN_NAMESPACE_MAIN
         public std::unary_function<TValue, TResult>
     {
         TResult off[5];
-        
+
         _skew7NMapSliced(TResult BN_)
-        { 
+        {
             off[0] = 0;
-            off[1] = BN_ - 1; 
-            off[2] = (2*BN_)/3 - 1; 
+            off[1] = BN_ - 1;
+            off[2] = (2*BN_)/3 - 1;
             off[3] = 0;
-            off[4] = BN_/3 - 1; 
+            off[4] = BN_/3 - 1;
         }
 
         inline TResult operator() (const TValue& x) const
@@ -154,14 +154,14 @@ namespace SEQAN_NAMESPACE_MAIN
         public std::unary_function<TValue, TResult>
     {
         TResult o1, o2, o4, n4, n24;
-        
+
         _skew7UnslicerFunc(TResult N) :
             o1(N - (N + 6) % 7),
             o2(N - (N + 5) % 7),
             o4(N - (N + 3) % 7),
             n4((N + 3) / 7),
             n24((N + 5) / 7 + n4) {}
-        
+
         inline TResult operator() (const TValue& x) const
         {
             return (x < n4)  ? o4 -  x        * 7:
@@ -202,7 +202,7 @@ namespace SEQAN_NAMESPACE_MAIN
         public std::binary_function<
             Triple<T1,T2,Tuple<T,_size, BitPacked<> >, Pack>,
             Triple<T1,T2,Tuple<T,_size, BitPacked<> >, Pack>,
-            TResult> 
+            TResult>
     {
         inline TResult operator() (
             const Triple<T1,T2,Tuple<T,_size, BitPacked<> >, Pack> &a,
@@ -246,7 +246,7 @@ namespace SEQAN_NAMESPACE_MAIN
         // *** SPECIALIZATION ***
 
         // use packing if lessorequal 16 different values per char
-        typedef typename IfC< 
+        typedef typename IfC<
             (BitsPerValue<TypeOf_(TInput)>::VALUE > 0) &&
             (BitsPerValue<TypeOf_(TInput)>::VALUE <= 4),
             BitPacked<>,
@@ -279,7 +279,7 @@ namespace SEQAN_NAMESPACE_MAIN
             typedef Pipe< TUnslicerInMem, Counter > TRenamerInMem;
 
         typedef Pool< TypeOf_(TRenamer), MapperSpec< MapperConfigSize< nmap_linear_t, TSizeOf_(TRenamer) > > > TNames_Linear;
-        
+
         // step 2
         typedef Pipe< Bundle2< TInput, TNames_Linear >, Extender7<TPack> > TExtender;
                                         typedef _skew7ExtendComp<TypeOf_(typename TExtender::Out0),3> extend0_comp_t;
@@ -302,7 +302,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TSorterS6   sortedS6;
         TSorterS124 sortedS124;
         TMerger     in;
-            
+
         Pipe():
             in(bundle5(sortedS0, sortedS3, sortedS5, sortedS6, sortedS124)) {}
 
@@ -311,7 +311,7 @@ namespace SEQAN_NAMESPACE_MAIN
         {
             process(_textIn);
         }
-        
+
         template < typename TInput_ >
         bool process(TInput_ &textIn) {
 
@@ -370,7 +370,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 TFilter                     filter(names_sliced);
                 TNames_Linear               names_linear(map_linear);
 
-                if (length(filter) > 128*1024*1024) 
+                if (length(filter) > 128*1024*1024)
                 {
                     // recursion
                     TRecurse                    recurse(filter);
@@ -408,10 +408,10 @@ namespace SEQAN_NAMESPACE_MAIN
                     #endif
 
                     names_linear << renamer;
-                } 
+                }
 
                 SEQAN_PROMARK("Mapper (10) - ISA124 konstruieren");
-               
+
                 // step 2
                 #ifdef SEQAN_DEBUG_INDEX
                     std::cerr << "  prepare merge" << std::endl;
@@ -419,7 +419,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 _skew7Extend(textIn, names_linear, sortedS0, sortedS3, sortedS5, sortedS6, sortedS124);
                 SEQAN_PROMARK("Mapper (12), Sorter (13-16) - merge SA124, SA3, SA5, SA6, SA0");
             }
-            
+
             // step 3
             // ... is done on-demand by merger
             }
@@ -435,11 +435,11 @@ namespace SEQAN_NAMESPACE_MAIN
         inline typename Value<Pipe>::Type const operator*() {
             return *in;
         }
-        
+
         inline Pipe& operator++() {
             ++in;
             return *this;
-        }        
+        }
     };
 
     // not sure which interface is more intuitive, we support both
@@ -497,7 +497,7 @@ namespace SEQAN_NAMESPACE_MAIN
         }
         return _leqSkew7 (sa, s124[tpos[a] + adjust[a][b]],   sb, s124[tpos[b] + adjust[b][a]],   shft);
     }
-    
+
     template <typename TSAOut, typename TText, typename TSAIn, typename TEnable>
     inline bool _fastTupleSortSkew7(TSAOut &, TText const &, TSAIn const &, TEnable)
     {
@@ -511,13 +511,13 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef typename Value<TSAOut>::Type TSize;
         typedef typename Iterator<TText const, Standard>::Type TValueIter;
         typedef typename Iterator<TSAIn const, Standard>::Type TSAIter;
-        
+
         // optimized tuple sort for short alphabets
         Shape<TValue, UngappedShape<7> > shape;
         String<TSize, Alloc<> > cnt;
         resize(cnt, _fullDir2Length(shape), 0, Exact());
-        
-        TValueIter textBegin = begin(s, Standard());            
+
+        TValueIter textBegin = begin(s, Standard());
         TSAIter it = begin(s124, Standard());
         TSAIter itEnd = end(s124, Standard());
 
@@ -530,7 +530,7 @@ namespace SEQAN_NAMESPACE_MAIN
         it = begin(s124, Standard());
         for(; it != itEnd; ++it)
             SA124[cnt[hash2(shape, textBegin + *it, n - *it) + 1]++] = *it;
-        
+
         return true;
     }
 
@@ -542,7 +542,7 @@ namespace SEQAN_NAMESPACE_MAIN
     // the alphabet {0..K}.
     //
     // The following algorithm divides the suffixes in seven residue classes
-    // according to their lengths and uses a difference cover {1,2,4}. 
+    // according to their lengths and uses a difference cover {1,2,4}.
     // That approach results in an algorithm that is more space and time efficient
     // than the original skew algorithm with a difference cover {1,2} of Z_3.
     //
@@ -706,7 +706,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
                     radixPass(SA5, s5, s, cnt, K);
                     SEQAN_PROMARK("SA5 konstruiert");
-        
+
                     // stably sort the mod 6 suffixes from SA5 by their first character
 
                     if (_n[5] == _n[6]) radixExtend    (SA6, SA5, s, cnt, K);
@@ -716,7 +716,7 @@ namespace SEQAN_NAMESPACE_MAIN
                     // stably sort the mod 0 suffixes from SA6 by their first character
 
                     if (_n[6] == _n[0]) radixExtend    (SA0, SA6, s, cnt, K);
-                    else                radixExtendClip(SA0, SA6, s, cnt, K);        
+                    else                radixExtendClip(SA0, SA6, s, cnt, K);
                     SEQAN_PROMARK("SA0 konstruiert");
                 }
             }
@@ -866,7 +866,7 @@ namespace SEQAN_NAMESPACE_MAIN
                     for (;  k < n;  ++k) { TSize ii = *(pos[1]++); SA[k] = SEQAN_GET_ISKEW7(ii); }
                 else
                     for (;  k < n;  ++k) SA[k] = *(pos[a]++);
-            }        
+            }
         }
         SEQAN_PROMARK("SA124, SA3, SA5, SA6, SA0 verschmolzen");
 

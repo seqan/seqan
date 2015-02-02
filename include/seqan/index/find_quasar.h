@@ -63,7 +63,7 @@ public:
 
 //____________________________________________________________________________
 
-    Pattern() {    
+    Pattern() {
     }
 
     template <typename TNeedle2>
@@ -101,15 +101,15 @@ struct Host< Pattern<TNeedle, Quasar> const>
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TNeedle2>
-inline void 
-setHost (Pattern<TNeedle, Quasar> & me, TNeedle2 const& needle) 
+inline void
+setHost (Pattern<TNeedle, Quasar> & me, TNeedle2 const& needle)
 {
     SEQAN_CHECKPOINT
     setValue(me.data_host, needle);
 }
 
 template <typename TNeedle, typename TNeedle2>
-inline void 
+inline void
 setHost (Pattern<TNeedle, Quasar> & me, TNeedle2 & needle)
 {
     setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
@@ -119,7 +119,7 @@ setHost (Pattern<TNeedle, Quasar> & me, TNeedle2 & needle)
 
 
 template <typename TNeedle>
-inline void _patternInit (Pattern<TNeedle, Quasar> & /*me*/) 
+inline void _patternInit (Pattern<TNeedle, Quasar> & /*me*/)
 {
 SEQAN_CHECKPOINT
 }
@@ -128,7 +128,7 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 
 template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, Quasar>const>::Type & 
+inline typename Host<Pattern<TNeedle, Quasar>const>::Type &
 host(Pattern<TNeedle, Quasar> & me)
 {
 SEQAN_CHECKPOINT
@@ -136,7 +136,7 @@ SEQAN_CHECKPOINT
 }
 
 template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, Quasar>const>::Type & 
+inline typename Host<Pattern<TNeedle, Quasar>const>::Type &
 host(Pattern<TNeedle, Quasar> const & me)
 {
 SEQAN_CHECKPOINT
@@ -147,11 +147,11 @@ SEQAN_CHECKPOINT
 
 
 template <typename TFinder, typename TNeedle>
-inline bool 
-find(TFinder & finder, Pattern<TNeedle, Quasar> & me) 
+inline bool
+find(TFinder & finder, Pattern<TNeedle, Quasar> & me)
 {
     SEQAN_CHECKPOINT
-    
+
     if (empty(finder)) {
         _patternInit(me);
         _finderSetNonEmpty(finder);

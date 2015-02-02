@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// A data type to represent rational numbers. 
+// A data type to represent rational numbers.
 // Taken from the Rational Number Library in Boost version 1.47 adapted
 // to SeqAn's code conventions.
 // ==========================================================================
@@ -46,7 +46,7 @@ namespace seqan {
 // ============================================================================
 
 template < typename IntegerType >
-inline IntegerType 
+inline IntegerType
 greatestCommonDivisor( IntegerType const &a, IntegerType const &b );
 
 template < typename IntegerType >

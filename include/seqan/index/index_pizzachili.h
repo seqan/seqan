@@ -42,20 +42,20 @@ namespace SEQAN_NAMESPACE_MAIN {
 
 /*!
  * @defgroup PizzaChiliIndexFibres Pizza &amp; Chili Index Fibres
- * 
+ *
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of a @link
  *        PizzaChiliIndex @endlink index.
- * 
+ *
  * Pizza &amp; Chili indices are compressed indices. Hence, this fibre is used for
  * searching in the index.
- * 
+ *
  * @see Fibre
  * @see Index#getFibre
  * @see PizzaChiliIndex
- * 
+ *
  * @tag PizzaChiliIndexFibres#PizzaChiliText
  * @brief The original text the index is based on.
- * 
+ *
  * @tag PizzaChiliIndexFibres#PizzaChiliCompressed
  * @brief The compressed suffix array.
  */
@@ -70,20 +70,20 @@ typedef FibrePizzaChiliCompressed PizzaChiliCompressed;
 
 /*!
  * @class PizzaChiliIndex Pizza & Chili Index
- * 
+ *
  * @extends Index
- * 
+ *
  * @headerfile <seqan/index.h>
- * 
+ *
  * @brief An adapter for the Pizza &amp; Chili index API.
- * 
+ *
  * @signature template <typename TText, typename TSpec>
  *            class Index<TText, PizzaChili<TSpec> >;
- * 
+ *
  * @tparam TSpec Tag specifying the Pizza &amp; Chili index library to use. Types:
  *               @link PizzaChiliIndexTags @endlink
  * @tparam TText The text type. Types: @link String @endlink
- * 
+ *
  * @see PizzaChiliString
  * @see PizzaChiliIndexFibres
  * @see IndexFindAlgorithm

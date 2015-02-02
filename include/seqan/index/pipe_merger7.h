@@ -89,7 +89,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TValue      i;
         unsigned    stream;
     };
-    
+
     template <typename TValue>
     std::ostream& operator<<(std::ostream &out, const SkewDCStream<TValue> &s)
     {
@@ -112,7 +112,7 @@ namespace SEQAN_NAMESPACE_MAIN
                                         bool >
     {
         inline bool operator()(const SkewDCStream<TValue> &a,
-                               const SkewDCStream<TValue> &b) const 
+                               const SkewDCStream<TValue> &b) const
         {
             typedef typename Value<TValue, 2>::Type     TNameTuple;
             typedef typename Value<TNameTuple>::Type    TName;
@@ -124,7 +124,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 if (a.i.i3[i] < b.i.i3[i]) return false;
                 if (a.i.i3[i] > b.i.i3[i]) return true;
             }
-            
+
             TName na = a.i.i2[SkewNIndex_<7>::VALUE[a.stream][shft]];
             TName nb = b.i.i2[SkewNIndex_<7>::VALUE[b.stream][shft]];
             if (na < nb) return false;
@@ -146,11 +146,11 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         typedef Tuple<T,SIZE, BitPacked<> > T3;
         inline bool operator()(const SkewDCStream<Triple<T1, T2, T3, Pack> > &a,
-                               const SkewDCStream<Triple<T1, T2, T3, Pack> > &b) const 
+                               const SkewDCStream<Triple<T1, T2, T3, Pack> > &b) const
         {
             typedef typename Value<T2>::Type TName;
             typedef typename Value<T3>::Type TValue3;
-            
+
             int shft = SkewShift_<7>::VALUE[a.stream][b.stream];
             typename T3::TBitVector mask = ~((1 << ((SIZE - shft) * BitsPerValue<TValue3>::VALUE)) - 1);
 
@@ -221,7 +221,7 @@ namespace SEQAN_NAMESPACE_MAIN
             TInput6,
             TInput124 > in;
         TSize N;
-        
+
         Pipe(Bundle5< TInput0, TInput3, TInput5, TInput6, TInput124 > _in):
             first(0), in(_in), N(0)
         {}
@@ -314,7 +314,7 @@ namespace SEQAN_NAMESPACE_MAIN
             // ... and insert the new one
             rank[right-1] = stream;
         }
-        
+
         Pipe& operator++()
         {
             insertStream(rank[first]);
@@ -335,7 +335,7 @@ namespace SEQAN_NAMESPACE_MAIN
             --first;    insertStream(1);
         }
     };
-    
+
 
     //////////////////////////////////////////////////////////////////////////////
     // merger7 class for multiple sequences
@@ -366,7 +366,7 @@ namespace SEQAN_NAMESPACE_MAIN
             TInput6,
             TInput124 > in;
         TLimitsString const &limits;
-        
+
         Pipe(Bundle5< TInput0, TInput3, TInput5, TInput6, TInput124 > _in, TLimitsString const &_limits):
             in(_in), limits(_limits)
         {}
@@ -459,7 +459,7 @@ namespace SEQAN_NAMESPACE_MAIN
             // ... and insert the new one
             rank[right-1] = stream;
         }
-        
+
         Pipe& operator++()
         {
             insertStream(rank[first]);
@@ -480,7 +480,7 @@ namespace SEQAN_NAMESPACE_MAIN
             --first;    insertStream(1);
         }
     };
-    
+
 
     //////////////////////////////////////////////////////////////////////////////
     // global pipe functions
@@ -492,7 +492,7 @@ namespace SEQAN_NAMESPACE_MAIN
         me.fill();
         return true;
     }
-    
+
     template < typename TInput >
     inline bool control(Pipe< TInput, Merger7 > &me, ControlEof const &)
     {
@@ -510,7 +510,7 @@ namespace SEQAN_NAMESPACE_MAIN
     length(Pipe< TInput, Merger7 > const &me)
     {
         return length(me.in.in1) +
-               length(me.in.in2) + 
+               length(me.in.in2) +
                length(me.in.in3) +
                length(me.in.in4) +
                length(me.in.in5);
@@ -526,7 +526,7 @@ namespace SEQAN_NAMESPACE_MAIN
         me.fill();
         return true;
     }
-    
+
     template < typename TInput, typename TLimitsString >
     inline bool control(Pipe< TInput, Merger7Multi<TLimitsString> > &me, ControlEof const &)
     {
@@ -543,7 +543,7 @@ namespace SEQAN_NAMESPACE_MAIN
     inline typename Size< Pipe< TInput, Merger7Multi<TLimitsString> > >::Type
     length(Pipe< TInput, Merger7Multi<TLimitsString> > const &me) {
         return length(me.in.in1) +
-               length(me.in.in2) + 
+               length(me.in.in2) +
                length(me.in.in3) +
                length(me.in.in4) +
                length(me.in.in5);

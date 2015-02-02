@@ -89,7 +89,7 @@ void testAlignBasics()
 
 //____________________________________________________________________________
 // Test Column Access
-    
+
     typedef typename Cols<TAlign>::Type TCols;
     typedef typename Cols<TAlign const>::Type TConstCols;
     TCols cols1 = cols(ali1);                //cols
@@ -147,7 +147,7 @@ void testAlignColsBase()
     typedef typename Iterator<TCols const, Rooted>::Type TConstColsIterator;
 
     TColsIterator col_it1 = begin(cols1);  //begin
-    TConstColsIterator const_col_it1 = begin(c_cols1); 
+    TConstColsIterator const_col_it1 = begin(c_cols1);
     SEQAN_ASSERT(value(col_it1, 0) == row(ali1, 0)[beginPosition(cols1)]);
     SEQAN_ASSERT(value(col_it1, 1) == row(ali1, 1)[beginPosition(cols1)]);
     SEQAN_ASSERT(value(const_col_it1, 0) == row(ali1, 0)[beginPosition(cols1)]);
@@ -219,7 +219,7 @@ void testAlignColsBase()
     SEQAN_ASSERT_NOT(c_col_it1 == col_it2) ;
     SEQAN_ASSERT_NOT(col_it2 == c_col_it1) ;
     SEQAN_ASSERT_NOT(c_col_it1 == c_col_it2)   ;
-    
+
     --col_it2;
 
     SEQAN_ASSERT(col_it1 == col_it2);            //operator ==
@@ -245,7 +245,7 @@ void testAlignColsBase()
     char c = 'X';
     assignValue(col_it1, 0, 'x');                //assignValue
     SEQAN_ASSERT(row(ali1, 0) == "ax---cdef");
-    assignValue(col_it1, 0, c);                
+    assignValue(col_it1, 0, c);
     SEQAN_ASSERT(row(ali1, 0) == "aX---cdef");
 
     c = 'Y';
@@ -258,7 +258,7 @@ void testAlignColsBase()
     c = 'X';
     moveValue(col_it1, 0, 'x');                    //moveValue
     SEQAN_ASSERT(row(ali1, 0) == "ax---cdef");
-    moveValue(col_it1, 0, c);                
+    moveValue(col_it1, 0, c);
     SEQAN_ASSERT(row(ali1, 0) == "aX---cdef");
 
     c = 'Y';
@@ -277,11 +277,11 @@ template <typename TAlign>
 void testGotohAlign()
 {
     typedef typename Value<TAlign>::Type TValue;
-    
+
     //align two sequences using Smith-Waterman-algorithm
     String<TValue> str0 = "atgt";
     String<TValue> str1 = "atagat";
-    
+
     TAlign ali;
     resize(rows(ali), 2);
     assignSource(row(ali, 0), str0);
@@ -302,8 +302,8 @@ void testGotohAlign()
     SEQAN_ASSERT(score == -2);
     SEQAN_ASSERT((row(ali,0) == "at--gt") || (row(ali,0) == "atg--t" ));
     SEQAN_ASSERT(row(ali,1) == "atagat" );
-    
-    
+
+
 
 }
 
@@ -317,7 +317,7 @@ void testAlignBasics2()
     appendValue(ss, "ccactagggg");
 
     TAlign aa(ss);
-    cout << ss[0]; 
+    cout << ss[0];
     SEQAN_ASSERT(row(aa, 0) == "accagtta");
     SEQAN_ASSERT(getObjectId(row(aa, 0)) == getObjectId(value(ss, 0)));
     SEQAN_ASSERT(row(aa, 1) == "ccactagggg");

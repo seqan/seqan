@@ -399,7 +399,7 @@ lowerDiagonal(Seed<TSpec, TConfig> const & seed)
  */
 
 template <typename TSpec, typename TConfig, typename TDiagonal>
-inline void 
+inline void
 setLowerDiagonal(Seed<TSpec, TConfig> & seed, TDiagonal newDiag)
 {
     seed._lowerDiagonal = newDiag;
@@ -442,8 +442,8 @@ upperDiagonal(Seed<TSpec, TConfig> const & seed)
  */
 
 template <typename TSpec, typename TConfig, typename TPosition>
-inline void 
-setUpperDiagonal(Seed<TSpec, TConfig> & seed, 
+inline void
+setUpperDiagonal(Seed<TSpec, TConfig> & seed,
                  TPosition newDiag)
 {
     seed._upperDiagonal = newDiag;

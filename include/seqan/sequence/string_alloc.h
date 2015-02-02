@@ -88,7 +88,7 @@ public:
             assign(*this, source);
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
     }
-    
+
     template <typename TSource>
     String(TSource const & source)
         : data_begin(0),
@@ -99,7 +99,7 @@ public:
             assign(*this, source);
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
     }
-    
+
     String(String & source)
         : data_begin(0),
           data_end(0),
@@ -121,7 +121,7 @@ public:
             assign(*this, source);
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
     }
-    
+
     String(String & source, Move const &)
         : data_begin(0),
           data_end(0),
@@ -130,7 +130,7 @@ public:
         move(*this, source);
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
     }
-    
+
 #ifdef SEQAN_CXX11_STANDARD
     String(String && source, Move const &)
         : data_begin(0),
@@ -152,7 +152,7 @@ public:
             assign(*this, source, limit);
         SEQAN_ASSERT_LEQ_MSG(data_begin, data_end, "String end is before begin!");
     }
-    
+
     template <typename TSource, typename TSize>
     String(TSource const & source, TSize limit)
             : data_begin(0),

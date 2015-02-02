@@ -120,7 +120,7 @@ template <typename TContigSeq_, typename TGapAnchor_, typename TSpec_ = void>
 struct ContigStoreElement
 {
     typedef typename Id<ContigStoreElement>::Type    TId;
-    
+
     typedef TContigSeq_            TContigSeq;
     typedef TGapAnchor_            TGapAnchor;
     typedef TSpec_                TSpec;
@@ -131,7 +131,7 @@ struct ContigStoreElement
 
     TContigSeq    seq;
     TGapAnchors    gaps;
-    
+
 // dynamic loading and disposing of contigs
     unsigned    usage;            // number of threads,... using this contig
     TId            fileId;
@@ -153,9 +153,9 @@ struct ContigStoreElement
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TContigSeq_, typename TGapAnchor_, typename TSpec_> 
-const typename Id<ContigStoreElement<TContigSeq_, TGapAnchor_, TSpec_> >::Type 
-ContigStoreElement<TContigSeq_, TGapAnchor_, TSpec_>::INVALID_ID = MaxValue<typename Id<ContigStoreElement<TContigSeq_, TGapAnchor_, TSpec_> >::Type>::VALUE; 
+template <typename TContigSeq_, typename TGapAnchor_, typename TSpec_>
+const typename Id<ContigStoreElement<TContigSeq_, TGapAnchor_, TSpec_> >::Type
+ContigStoreElement<TContigSeq_, TGapAnchor_, TSpec_>::INVALID_ID = MaxValue<typename Id<ContigStoreElement<TContigSeq_, TGapAnchor_, TSpec_> >::Type>::VALUE;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -205,9 +205,9 @@ struct ContigFile
 
 //////////////////////////////////////////////////////////////////////////////
 
-template <typename TSpec_> 
-const typename Id<ContigFile<TSpec_> >::Type 
-ContigFile<TSpec_>::INVALID_ID = MaxValue<typename Id<ContigFile<TSpec_> >::Type>::VALUE; 
+template <typename TSpec_>
+const typename Id<ContigFile<TSpec_> >::Type
+ContigFile<TSpec_>::INVALID_ID = MaxValue<typename Id<ContigFile<TSpec_> >::Type>::VALUE;
 
 //////////////////////////////////////////////////////////////////////////////
 

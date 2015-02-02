@@ -125,7 +125,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @tparam TSeq The segmentable sequence type to get suffix type for.
  * @return Type The suffix type.
- * 
+ *
  * The suffix type of a suffix is a suffix, the suffix of any other segment type is an infix.
  */
 

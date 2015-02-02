@@ -113,15 +113,15 @@ struct EditEnvironment;
  * @extends StringEnumerator
  * @headerfile <seqan/misc/edit_environment.h>
  * @brief Enumerate all strings within a given edit distance of a "center string" (of edit distance &lt; 3).
- * 
+ *
  * @signature template <typename TString, unsigned DISTANCE>
  *            class StringEnumerator<TString, EditEnvironment<LevenshteinDistance, DISTANCE> >;
- * 
+ *
  * @tparam TString  Type of the string to enumerate the environment of.
  * @tparam DISTANCE The maximal distance to generate strings with.
- * 
+ *
  * See @link StringEnumerator @endlink for examples.
- * 
+ *
  * @note The @link StringEnumerator#length LevenshteinStringEnumerator#length @endlink function does not work for
  *       <tt>DISTANCE &gt; 2</tt>.
  */

@@ -93,15 +93,15 @@ struct Value<Score<TValue, TSpec> > {
  *
  * @note This is used for unified interfaces for position dependent and independent scores.
  * @brief Returns representation type for a character of a position in a sequence.
- * 
+ *
  * @signature SequenceEntryForScore<TScore, TSequence>::Type;
- * 
+ *
  * @tparam TScore    The score type to use. Types: Score
  * @tparam TSequence The underlying sequence of the alignments or gaps. Types: ContainerConcept
- * 
+ *
  * @return Type The type to use for representing a character in a sequence over its position.
- * 
- * 
+ *
+ *
  * @see Score#SequenceEntryForScore
  * @see Score#sequenceEntryForScore
  * @see ConsensusScoreSequenceEntry
@@ -120,13 +120,13 @@ struct SequenceEntryForScore
 /*!
  * @fn Score#sequenceEntryForScore
  * @brief Helper function for element access, depending on score type.
- * 
+ *
  * @signature TAlphabet sequenceEntryForScore(scoringScheme, seq, pos);
- * 
+ *
  * @param[in] scoringScheme The Score to get the representation for.
  * @param[in] pos           The position of the character.
  * @param[in] seq           The sequence to get the representation for.
- * 
+ *
  * @return TAlphabet The value of <tt>seq</tt> at <tt>pos</tt>.
  */
 
@@ -141,17 +141,17 @@ sequenceEntryForScore(TScore const & /*scoringScheme*/, TSequence const & seq, T
 /*!
  * @fn Score#scoreGapOpenHorizontal
  * @brief Returns the score for opening a gap in horizontal direction.
- * 
+ *
  * @signature TValue scoreGapOpenHorizontal(score, entryH, entryV);
- * 
+ *
  * @param[in] score  The Score to query.
  * @param[in] entryH Entry in sequence one (horizontal), type from Score#SequenceEntryForScore.
  * @param[in] entryV Entry in sequence two (vertical), type from Score#SequenceEntryForScore.
  *
  * @return TValue The score open cost for gaps at the given position/entry.  TValue is the value type of score.
- * 
+ *
  * @section Remarks
- * 
+ *
  * Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
  */
 
@@ -169,17 +169,17 @@ scoreGapOpenHorizontal(
 /*!
  * @fn Score#scoreGapOpenVertical
  * @brief Returns the score for opening a gap in vertical direction.
- * 
+ *
  * @signature TValue scoreGapOpenVertical(score, entryH, entryV);
- * 
+ *
  * @param[in] score  The Score to query.
  * @param[in] entryH Entry in sequence one (horizontal), type from Score#SequenceEntryForScore.
  * @param[in] entryV Entry in sequence two (vertical), type from Score#SequenceEntryForScore.
  *
  * @return TValue The score open cost for gaps at the given position/entry.  TValue is the value type of score.
- * 
+ *
  * @section Remarks
- * 
+ *
  * Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
  */
 
@@ -207,7 +207,7 @@ scoreGapOpenVertical(
  * @return TValue The score extension cost for gaps at the given position/entry.  TValue is the value type of score.
  *
  * @section Remarks
- * 
+ *
  * Corresponds to a deletion event in sequence two and an insertion event in sequence one, respectively.
  */
 
@@ -235,7 +235,7 @@ scoreGapExtendHorizontal(
  * @return TValue The score extension cost for gaps at the given position/entry.  TValue is the value type of score.
  *
  * @section Remarks
- * 
+ *
  * Corresponds to a deletion event in sequence one and an insertion event in sequence two, respectively.
  */
 

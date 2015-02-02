@@ -42,7 +42,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     // compare two suffices of a given text
     template < typename TSAValue, typename TText >
-    struct SuffixLess_ : 
+    struct SuffixLess_ :
         public std::binary_function < TSAValue, TSAValue, bool >
     {
         typedef typename Iterator<TText const, Standard>::Type TIter;
@@ -58,7 +58,7 @@ namespace SEQAN_NAMESPACE_MAIN
             _begin(begin(text, Standard()) + offset),
             _end(end(text, Standard())) {}
 
-        inline bool operator() (TSAValue const a, TSAValue const b) const 
+        inline bool operator() (TSAValue const a, TSAValue const b) const
         {
             if (a == b) return false;
             TIter itA = _begin + a;
@@ -85,20 +85,20 @@ namespace SEQAN_NAMESPACE_MAIN
         public std::binary_function < TSAValue, TSAValue, bool >
     {
         typedef StringSet<TString, TSetSpec> const TText;
-        
+
         typename Size<TString>::Type _offset;
         TText &_text;
 
         SuffixLess_(TText &text):
             _text(text) {}
-            
+
         // skip the first <offset> characters
         template <typename TSize>
         SuffixLess_(TText &text, TSize offset):
             _text(text),
             _offset(offset) {}
-        
-        inline bool operator() (TSAValue const a, TSAValue const b) const 
+
+        inline bool operator() (TSAValue const a, TSAValue const b) const
         {
             typedef typename Iterator<TString const, Standard>::Type TIter;
             if (a == b) return false;
@@ -121,22 +121,22 @@ namespace SEQAN_NAMESPACE_MAIN
                     return false;
                 return getSeqNo(a) > getSeqNo(b);
             }
-        }    
+        }
     };
 
     // compare two suffices of a given text and skip the first <lcp> characters
     template < typename TSAValue, typename TText >
-    struct SuffixLessOffset_: SuffixLess_<TSAValue, TText> 
+    struct SuffixLessOffset_: SuffixLess_<TSAValue, TText>
     {
         // skip the first <offset> characters
         template <typename TSize>
-        SuffixLessOffset_(TText &text, TSize offset): 
+        SuffixLessOffset_(TText &text, TSize offset):
             SuffixLess_<TSAValue, TText> (text, offset) {}
     };
 
-        
-        
-    template < typename TSA, 
+
+
+    template < typename TSA,
             typename TText,
             typename TSize>
     void _sortBucketQuickSort(
@@ -147,8 +147,8 @@ namespace SEQAN_NAMESPACE_MAIN
     SEQAN_CHECKPOINT
         // sort bucket with quicksort
         std::sort(
-            begin(sa, Standard()), 
-            end(sa, Standard()), 
+            begin(sa, Standard()),
+            end(sa, Standard()),
             SuffixLessOffset_<typename Value<TSA>::Type, TText>(text, lcp));
     }
 
@@ -171,8 +171,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
         // 2. Sort suffix array with quicksort
         std::sort(
-            begin(SA, Standard()), 
-            end(SA, Standard()), 
+            begin(SA, Standard()),
+            end(SA, Standard()),
             SuffixLess_<typename Value<TSA>::Type, TText const>(s));
     }
 
@@ -200,8 +200,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
         // 2. Sort suffix array with quicksort
         std::sort(
-            begin(SA, Standard()), 
-            end(SA, Standard()), 
+            begin(SA, Standard()),
+            end(SA, Standard()),
             SuffixLess_<typename Value<TSA>::Type, TText const>(s));
     }
 
@@ -233,11 +233,11 @@ namespace SEQAN_NAMESPACE_MAIN
         inline typename Value<TSource>::Type const & operator*() {
             return *in;
         }
-        
+
         inline Pipe& operator++() {
             ++in;
             return *this;
-        }        
+        }
     };
 
 }

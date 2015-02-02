@@ -43,22 +43,22 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends Map
  * @headerfile <seqan/map.h>
  * @brief A fast map for small key types.
- * 
+ *
  * @signature template <typename TValue[, typename TSpec]>
  *            class Map<TValue, VectorSet<TSpec> >;
- * 
+ *
  * @tparam TValue The type of value stored in the map.
  * @tparam TSpec  The specializing type.  <tt>TSpec</tt> is used as specialization for the String type that is
  *                used to store the values, defaults to <tt>Alloc&lt;&gt;</tt>.
- * 
+ *
  * The memory needed is linear to the number different values the Key type of <tt>TValue</tt> can
  * get.  So do not use this map for large key types.
  */
 
 //////////////////////////////////////////////////////////////////////////////
-// 
+//
 //    VectorSet
-// 
+//
 //////////////////////////////////////////////////////////////////////////////
 
 
@@ -113,7 +113,7 @@ public:
 
     Map()
     {
-        resize(data_elements, (TSize) ValueSize<TKey>::VALUE); 
+        resize(data_elements, (TSize) ValueSize<TKey>::VALUE);
         clear(*this);
     }
 
@@ -122,7 +122,7 @@ public:
         resize(data_elements, (TSize) _vectorSize);
         clear(*this);
     }
-    
+
     template <typename TKey>
     inline typename MapValue<Map>::Type
     operator [] (TKey const & key)
@@ -137,12 +137,12 @@ public:
 // set meta-functions
 
 template <typename TValue, typename TSpec>
-struct Value< Map<TValue, VectorSet<TSpec> > > 
+struct Value< Map<TValue, VectorSet<TSpec> > >
 {
     typedef TValue Type;
 };
 template <typename TValue, typename TSpec>
-struct Reference< Map<TValue, VectorSet<TSpec> > > 
+struct Reference< Map<TValue, VectorSet<TSpec> > >
 {
     typedef Map<TValue, VectorSet<TSpec> > TMap_;
     typedef typename Iterator<TMap_>::Type TIterator_;
@@ -166,8 +166,8 @@ struct Cargo< Map<TValue, VectorSet<TSpec> > > :
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TValue, typename TSpec>
-inline typename Size< Map<TValue, VectorSet<TSpec> > >::Type 
-length(Map<TValue, VectorSet<TSpec>  > const &set) 
+inline typename Size< Map<TValue, VectorSet<TSpec> > >::Type
+length(Map<TValue, VectorSet<TSpec>  > const &set)
 {
     return set.data_length;
 }
@@ -178,7 +178,7 @@ length(Map<TValue, VectorSet<TSpec>  > const &set)
 struct VectorSetIterator;
 
 template <typename TMap>
-class Iter<TMap,  VectorSetIterator> 
+class Iter<TMap,  VectorSetIterator>
 {
 public:
     typedef typename Size<TMap>::Type TSize;
@@ -188,12 +188,12 @@ public:
 
     TElementsIterator data_iterator;
 
-    Iter() 
+    Iter()
     {    }
-    Iter(TElementsIterator it) 
+    Iter(TElementsIterator it)
         : data_iterator(it)
-    {    
-        if (!atEnd(*this) && !(*data_iterator).data_valid) 
+    {
+        if (!atEnd(*this) && !(*data_iterator).data_valid)
         {
             goNext(*this);
         }
@@ -226,7 +226,7 @@ public:
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TObject, typename TSpec, typename TIteratorSpec>
-struct Iterator< Map<TObject, VectorSet<TSpec> >, TIteratorSpec > 
+struct Iterator< Map<TObject, VectorSet<TSpec> >, TIteratorSpec >
 {
     typedef Map<TObject, VectorSet<TSpec> > TMap_;
     typedef Iter<TMap_, VectorSetIterator> Type;
@@ -235,8 +235,8 @@ struct Iterator< Map<TObject, VectorSet<TSpec> >, TIteratorSpec >
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TValue, typename TSpec>
-inline void 
-clear(Map<TValue, VectorSet<TSpec> > & me) 
+inline void
+clear(Map<TValue, VectorSet<TSpec> > & me)
 {
     typedef Map<TValue, VectorSet<TSpec> > TMap;
     typedef typename VectorSetElements_<TMap>::Type TElements;
@@ -255,11 +255,11 @@ template <typename TCargo>
 struct VectorSetInsert_
 {
     template <typename TValue, typename TSpec, typename TElement>
-    static inline void 
+    static inline void
     insert_(Map<TValue, VectorSet<TSpec> > & set,
-        TElement const &element) 
+        TElement const &element)
     {
-        if (!set.data_elements[ordValue(key(element))].data_valid) 
+        if (!set.data_elements[ordValue(key(element))].data_valid)
         {
             ++set.data_length;
             set.data_elements[ordValue(key(element))].data_valid = true;
@@ -271,11 +271,11 @@ template <>
 struct VectorSetInsert_<Nothing>
 {
     template <typename TValue, typename TSpec, typename TElement>
-    static inline void 
+    static inline void
     insert_(Map<TValue, VectorSet<TSpec> > & set,
-        TElement const &element) 
+        TElement const &element)
     {
-        if (!set.data_elements[ordValue(key(element))].data_valid) 
+        if (!set.data_elements[ordValue(key(element))].data_valid)
         {
             ++set.data_length;
             set.data_elements[ordValue(key(element))].data_valid = true;
@@ -284,19 +284,19 @@ struct VectorSetInsert_<Nothing>
 };
 
 template <typename TValue, typename TSpec, typename TElement>
-inline void 
+inline void
 insert(Map<TValue, VectorSet<TSpec> > & set,
-       TElement const &element) 
+       TElement const &element)
 {
     typedef Map<TValue, VectorSet<TSpec> > TMap;
     typedef typename Cargo<TMap>::Type TCargo;
     VectorSetInsert_<TCargo>::insert_(set, element);
 }
 template <typename TValue, typename TSpec, typename TKey, typename TCargo>
-inline void 
+inline void
 insert(Map<TValue, VectorSet<TSpec> > &set,
        TKey const & _key,
-       TCargo const & _cargo) 
+       TCargo const & _cargo)
 {
     typedef Map<TValue, VectorSet<TSpec> > TMap;
     typedef typename Value<TMap>::Type TValue2;
@@ -309,11 +309,11 @@ insert(Map<TValue, VectorSet<TSpec> > &set,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TValue, typename TSpec, typename T>
-inline void 
-erase(Map<TValue, VectorSet<TSpec> > &set, 
+inline void
+erase(Map<TValue, VectorSet<TSpec> > &set,
       T const & tokill)  //can be an element, a key, or an iterator
 {
-    if (set.data_elements[ordValue(key(tokill))].data_valid) 
+    if (set.data_elements[ordValue(key(tokill))].data_valid)
     {
         --set.data_length;
         set.data_elements[ordValue(key(tokill))].data_valid = false;
@@ -323,8 +323,8 @@ erase(Map<TValue, VectorSet<TSpec> > &set,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TKey, typename TValue, typename TSpec>
-inline bool 
-hasKey(Map<TValue, VectorSet<TSpec> > const &set, TKey const &key) 
+inline bool
+hasKey(Map<TValue, VectorSet<TSpec> > const &set, TKey const &key)
 {
     return set.data_elements[ordValue(key)].data_valid;
 }
@@ -332,9 +332,9 @@ hasKey(Map<TValue, VectorSet<TSpec> > const &set, TKey const &key)
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TKey, typename TKey2, typename TSpec>
-inline typename Iterator< Map<TKey2, VectorSet<TSpec> > >::Type 
-find(Map<TKey2, VectorSet<TSpec> > & set, 
-     TKey const &key) 
+inline typename Iterator< Map<TKey2, VectorSet<TSpec> > >::Type
+find(Map<TKey2, VectorSet<TSpec> > & set,
+     TKey const &key)
 {
     typedef Map<TKey2, VectorSet<TSpec> > TMap;
     typedef typename Iterator<TMap>::Type TIterator;
@@ -345,8 +345,8 @@ find(Map<TKey2, VectorSet<TSpec> > & set,
 
 template <typename TKey, typename TSpec, typename TKey2>
 inline typename Cargo< Map<TKey, VectorSet<TSpec> > >::Type &
-cargo(Map<TKey, VectorSet<TSpec> > & set, 
-      TKey2 const & _key) 
+cargo(Map<TKey, VectorSet<TSpec> > & set,
+      TKey2 const & _key)
 {
     if (!hasKey(set, _key))
     {
@@ -362,8 +362,8 @@ cargo(Map<TKey, VectorSet<TSpec> > & set,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TElement, typename TSpec>
-inline typename Iterator< Map<TElement, VectorSet<TSpec> > >::Type 
-begin(Map<TElement, VectorSet<TSpec> > & set) 
+inline typename Iterator< Map<TElement, VectorSet<TSpec> > >::Type
+begin(Map<TElement, VectorSet<TSpec> > & set)
 {
     typedef Map<TElement, VectorSet<TSpec> > TMap;
     typedef typename Iterator<TMap>::Type TIterator;
@@ -373,8 +373,8 @@ begin(Map<TElement, VectorSet<TSpec> > & set)
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TElement, typename TSpec>
-inline typename Iterator< Map<TElement, VectorSet<TSpec> > >::Type 
-end(Map<TElement, VectorSet<TSpec> > &set) 
+inline typename Iterator< Map<TElement, VectorSet<TSpec> > >::Type
+end(Map<TElement, VectorSet<TSpec> > &set)
 {
     typedef Map<TElement, VectorSet<TSpec> > TMap;
     typedef typename Iterator<TMap>::Type TIterator;
@@ -384,16 +384,16 @@ end(Map<TElement, VectorSet<TSpec> > &set)
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TSet>
-inline bool 
-operator==(Iter<TSet, VectorSetIterator> const &a, 
-           Iter<TSet, VectorSetIterator> const &b) 
+inline bool
+operator==(Iter<TSet, VectorSetIterator> const &a,
+           Iter<TSet, VectorSetIterator> const &b)
 {
     return a.data_iterator == b.data_iterator;
 }
 template <typename TSet>
-inline bool 
-operator!=(Iter<TSet, VectorSetIterator> const &a, 
-           Iter<TSet, VectorSetIterator> const &b) 
+inline bool
+operator!=(Iter<TSet, VectorSetIterator> const &a,
+           Iter<TSet, VectorSetIterator> const &b)
 {
     return a.data_iterator != b.data_iterator;
 }
@@ -401,14 +401,14 @@ operator!=(Iter<TSet, VectorSetIterator> const &a,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TSet>
-inline bool 
-atEnd(Iter<TSet, VectorSetIterator> & a) 
+inline bool
+atEnd(Iter<TSet, VectorSetIterator> & a)
 {
     return atEnd(a.data_iterator);
 }
 template <typename TSet>
-inline bool 
-atEnd(Iter<TSet, VectorSetIterator> const & a) 
+inline bool
+atEnd(Iter<TSet, VectorSetIterator> const & a)
 {
     return atEnd(a.data_iterator);
 }
@@ -417,13 +417,13 @@ atEnd(Iter<TSet, VectorSetIterator> const & a)
 
 template <typename TSet>
 inline typename Key<TSet>::Type
-key(Iter<TSet, VectorSetIterator> &it) 
+key(Iter<TSet, VectorSetIterator> &it)
 {
     return position(it.data_iterator);
 }
 template <typename TSet>
 inline typename Key<TSet>::Type
-key(Iter<TSet, VectorSetIterator> const &it) 
+key(Iter<TSet, VectorSetIterator> const &it)
 {
     return position(it.data_iterator);
 }
@@ -444,15 +444,15 @@ cargo(Iter<TSet, VectorSetIterator> const &it) {
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TSet>
-inline typename Reference<TSet>::Type 
-value(Iter<TSet, VectorSetIterator> &it) 
+inline typename Reference<TSet>::Type
+value(Iter<TSet, VectorSetIterator> &it)
 {
     typedef typename Reference<TSet>::Type TReference;
     return TReference(it);
 }
 template <typename TSet>
-inline typename Reference<TSet>::Type 
-value(Iter<TSet, VectorSetIterator> const &it) 
+inline typename Reference<TSet>::Type
+value(Iter<TSet, VectorSetIterator> const &it)
 {
     typedef typename Reference<TSet>::Type TReference;
     return TReference(it);
@@ -463,12 +463,12 @@ value(Iter<TSet, VectorSetIterator> const &it)
 
 template <typename TSet>
 inline void
-goNext(Iter<TSet, VectorSetIterator> & it) 
+goNext(Iter<TSet, VectorSetIterator> & it)
 {
     ++it.data_iterator;
     while (!atEnd(it.data_iterator))
     {
-        if ((*it.data_iterator).data_valid) 
+        if ((*it.data_iterator).data_valid)
             break;
         ++it.data_iterator;
     }
@@ -479,13 +479,13 @@ goNext(Iter<TSet, VectorSetIterator> & it)
 
 template <typename TSet>
 inline typename Key<TSet>::Type
-key(Proxy<IteratorProxy<Iter<TSet, VectorSetIterator> > > & pr) 
+key(Proxy<IteratorProxy<Iter<TSet, VectorSetIterator> > > & pr)
 {
     return key(iter(pr));
 }
 template <typename TSet>
 inline typename Key<TSet>::Type
-key(Proxy<IteratorProxy<Iter<TSet, VectorSetIterator> > > const & pr) 
+key(Proxy<IteratorProxy<Iter<TSet, VectorSetIterator> > > const & pr)
 {
     return key(iter(pr));
 }
@@ -494,13 +494,13 @@ key(Proxy<IteratorProxy<Iter<TSet, VectorSetIterator> > > const & pr)
 
 template <typename TSet>
 inline typename Cargo<TSet>::Type &
-cargo(Proxy<IteratorProxy<Iter<TSet, VectorSetIterator> > >& pr) 
+cargo(Proxy<IteratorProxy<Iter<TSet, VectorSetIterator> > >& pr)
 {
     return cargo(iter(pr));
 }
 template <typename TSet>
 inline typename Cargo<TSet>::Type &
-cargo(Proxy<IteratorProxy<Iter<TSet, VectorSetIterator> > > const & pr) 
+cargo(Proxy<IteratorProxy<Iter<TSet, VectorSetIterator> > > const & pr)
 {
     return cargo(iter(pr));
 }

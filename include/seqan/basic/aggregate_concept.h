@@ -47,11 +47,11 @@ namespace seqan {
 
 /*!
  * @concept AggregateConcept
- * 
+ *
  * @brief Aggregate types contain a fixed number of fixed-size values (pairs, triples, tuples).
- * 
+ *
  * Stream output operators are not shown in the function list below, but required.
- * 
+ *
  * Comparison operators are not shown in the function list below, but required.
  */
 

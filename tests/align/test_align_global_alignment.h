@@ -1001,7 +1001,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_shorter_interfaces_nw)
     TStringSet strings;
     appendValue(strings, strH);
     appendValue(strings, strV);
-    
+
     TAlign refAlign(strings);
 
     TGaps refGapsH(strH);
@@ -1030,7 +1030,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_shorter_interfaces_nw)
         res1 = globalAlignment(align, scoringScheme, NeedlemanWunsch());
         SEQAN_ASSERT_EQ(res1, refRes);
         SEQAN_ASSERT(align == refAlign);
-        
+
         TGaps gapsH(strH), gapsV(strV);
         res1 = globalAlignment(gapsH, gapsV, scoringScheme, NeedlemanWunsch());
         SEQAN_ASSERT_EQ(res1, refRes);
@@ -1057,7 +1057,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_shorter_interfaces_nw)
         res1 = globalAlignment(align, scoringScheme, alignConfig);
         SEQAN_ASSERT_EQ(res1, refRes);
         SEQAN_ASSERT(align == refAlign);
-        
+
         TGaps gapsH(strH), gapsV(strV);
         res1 = globalAlignment(gapsH, gapsV, scoringScheme, alignConfig);
         SEQAN_ASSERT_EQ(res1, refRes);
@@ -1084,7 +1084,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_shorter_interfaces_nw)
         res1 = globalAlignment(align, scoringScheme);
         SEQAN_ASSERT_EQ(res1, refRes);
         SEQAN_ASSERT(align == refAlign);
-        
+
         TGaps gapsH(strH), gapsV(strV);
         res1 = globalAlignment(gapsH, gapsV, scoringScheme);
         SEQAN_ASSERT_EQ(res1, refRes);
@@ -1125,7 +1125,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_shorter_interfaces_gotoh)
     TStringSet strings;
     appendValue(strings, strH);
     appendValue(strings, strV);
-    
+
     TAlign refAlign(strings);
 
     TGaps refGapsH(strH);
@@ -1154,7 +1154,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_shorter_interfaces_gotoh)
         res1 = globalAlignment(align, scoringScheme, Gotoh());
         SEQAN_ASSERT_EQ(res1, refRes);
         SEQAN_ASSERT(align == refAlign);
-        
+
         TGaps gapsH(strH), gapsV(strV);
         res1 = globalAlignment(gapsH, gapsV, scoringScheme, Gotoh());
         SEQAN_ASSERT_EQ(res1, refRes);
@@ -1181,7 +1181,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_shorter_interfaces_gotoh)
         res1 = globalAlignment(align, scoringScheme, alignConfig);
         SEQAN_ASSERT_EQ(res1, refRes);
         SEQAN_ASSERT(align == refAlign);
-        
+
         TGaps gapsH(strH), gapsV(strV);
         res1 = globalAlignment(gapsH, gapsV, scoringScheme, alignConfig);
         SEQAN_ASSERT_EQ(res1, refRes);
@@ -1208,7 +1208,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_shorter_interfaces_gotoh)
         res1 = globalAlignment(align, scoringScheme);
         SEQAN_ASSERT_EQ(res1, refRes);
         SEQAN_ASSERT(align == refAlign);
-        
+
         TGaps gapsH(strH), gapsV(strV);
         res1 = globalAlignment(gapsH, gapsV, scoringScheme);
         SEQAN_ASSERT_EQ(res1, refRes);

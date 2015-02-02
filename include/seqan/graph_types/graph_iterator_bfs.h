@@ -70,7 +70,7 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
 template<typename TGraph, typename TSpec>
-class Iter<TGraph, GraphIterator<InternalBfsIterator<TSpec> > > 
+class Iter<TGraph, GraphIterator<InternalBfsIterator<TSpec> > >
 {
 public:
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor_;
@@ -95,16 +95,16 @@ public:
     {
         SEQAN_CHECKPOINT
     }
-    
-    Iter(TGraph const& _graph, TVertexDescriptor_ v) : 
+
+    Iter(TGraph const& _graph, TVertexDescriptor_ v) :
         data_host(&_graph),
         data_source(v)
     {
         SEQAN_CHECKPOINT
         _init();
     }
-    
-    
+
+
     ~Iter() {
         SEQAN_CHECKPOINT
     }
@@ -136,13 +136,13 @@ public:
 //////////////////////////////////////////////////////////////////////////////
 template<typename TGraph>
 struct Iterator<TGraph, BfsIterator>
-{    
+{
     typedef Iter<TGraph, GraphIterator<InternalBfsIterator<BfsIterator> > > Type;
 };
 
 template<typename TGraph>
 struct Iterator<TGraph const, BfsIterator>
-{    
+{
     typedef Iter<TGraph const, GraphIterator<InternalBfsIterator<BfsIterator> > > Type;
 };
 

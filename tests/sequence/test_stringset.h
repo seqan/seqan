@@ -35,7 +35,7 @@
 
 template <typename TSpec>
 void Test_StringSet()
-{    
+{
     typedef StringSet<CharString, TSpec> TStringSet;
     TStringSet set;
 
@@ -130,7 +130,7 @@ void Test_StringSet_Concat()
     SEQAN_ASSERT_EQ(stringSetLimits(set)[4], 23u);
 
     StringSet<CharString, TSpec> const &cset = set;
-    
+
     all = concat(cset);
     SEQAN_ASSERT_EQ(concat(cset)[10], 'a');
     SEQAN_ASSERT(isEqual(all, "Hallo schlauer Hamster!"));
@@ -195,11 +195,11 @@ void Test_StringSetIdHolder() {
     SEQAN_ASSERT_EQ(getValueById(str, id4), "e");
     SEQAN_ASSERT_EQ(length(str), 2u);
     String<char> bla5("f");
-    TId id5 = assignValueById(str, bla5); 
+    TId id5 = assignValueById(str, bla5);
     SEQAN_ASSERT_EQ(getValueById(str, id0), "a");
     SEQAN_ASSERT_EQ(getValueById(str, id4), "e");
     SEQAN_ASSERT_EQ(getValueById(str, id5), "f");
-    assignValueById(str, bla5, id4); 
+    assignValueById(str, bla5, id4);
     SEQAN_ASSERT_EQ(getValueById(str, id0), "a");
     SEQAN_ASSERT_EQ(getValueById(str, id4), "f");
     SEQAN_ASSERT_EQ(getValueById(str, id5), "f");
@@ -210,7 +210,7 @@ void Test_StringSetIdHolder() {
     clear(str);
     id1 = assignValueById(str, bla1);
     id2 = assignValueById(str, bla2);
-    id3 = assignValueById(str, bla3);    
+    id3 = assignValueById(str, bla3);
     SEQAN_ASSERT_EQ(getValueById(str, id1), "b");
     SEQAN_ASSERT_EQ(getValueById(str, id2), "c");
     SEQAN_ASSERT_EQ(getValueById(str, id3), "d");
@@ -222,7 +222,7 @@ void Test_StringSetIdHolder() {
 
 template <typename TSpec>
 void Test_StringSet_Id()
-{    
+{
     StringSet<CharString, Owner<Default> > origin;
     StringSet<CharString, TSpec> set;
 
@@ -251,7 +251,7 @@ void Test_StringSet_Id()
     SEQAN_ASSERT_EQ(stringSetLimits(set)[3], 23u);
 
     StringSet<CharString, TSpec> const &cset = set;
-    
+
     all = concat(cset);
     SEQAN_ASSERT_EQ(concat(cset)[10], 'a');
     SEQAN_ASSERT(isEqual(all, "Hallo schlauer Hamster!"));
@@ -302,7 +302,7 @@ struct TestContainer
         std::cerr << "DEFAULT CONSTRUCTING TestContainer " << (void*)(this) << std::endl;
         std::cerr << "  string.data_begin " << (void*)(string.data_begin) << std::endl;
     }
-    
+
     TestContainer(TestContainer const & other)
         : string(other.string)
     {
@@ -310,7 +310,7 @@ struct TestContainer
         std::cerr << "  other " << (void*)(&other) << std::endl;
         std::cerr << "  string.data_begin " << (void*)(string.data_begin) << std::endl;
     }
-    
+
     ~TestContainer()
     {
         std::cerr << "DECONSTRUCTING TestContainer " << (void*)(this) << std::endl;
@@ -326,7 +326,7 @@ SEQAN_DEFINE_TEST(test_find_motif_memory_leak_ticket_364)
 //        StringSet<String<TestContainer> > x;
 //        TestContainer c;
 //        appendValue(x, c);
-//    }    
+//    }
     {
         String<TestContainer> x;
         TestContainer c;

@@ -56,20 +56,20 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tparam TNeedle The needle type, a string of keywords.
  *
  * The types of the keywords in the needle container and the haystack have to match.
- * 
+ *
  * Matching positions do not come in order because we report beginning positions of matches.
- * 
+ *
  * Likewise, if multiple keywords match at a given position no pre-specified order is guaranteed.
- * 
+ *
  * @section Examples
- * 
+ *
  * The following example program searches for three needles (<tt>queries</tt>) in two haystack sequences (<tt>db</tt>)
  * using the Aho-Corasick algorithm.
- * 
+ *
  * @include demos/find/finder_aho_corasick.cpp
- * 
+ *
  * When executed, this program will create the following output.
- * 
+ *
  * @code{.console}
  * DB      POS     ENDPOS  TEXT
  * 0       0       4       MARD
@@ -98,7 +98,7 @@ public:
     typedef typename Value<TKeyword>::Type TAlphabet;
     typedef Graph<Automaton<TAlphabet> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-    
+
     Holder<TNeedle> data_host;
     String<TVertexDescriptor> data_supplyMap;
     String<String<TSize> > data_terminalStateMap;
@@ -189,7 +189,7 @@ _createAcTrie(Pattern<TNeedle, AhoCorasick> & me)
         TAlphabet sigma = getProperty(parentCharMap, *it);
         TVertexDescriptor down = getProperty(me.data_supplyMap, parent);
         while ((down != nilVal) &&
-            (getSuccessor(me.data_graph, down, sigma) == nilVal)) 
+            (getSuccessor(me.data_graph, down, sigma) == nilVal))
         {
             down = getProperty(me.data_supplyMap, down);
         }
@@ -241,7 +241,7 @@ void setHost (Pattern<TNeedle, AhoCorasick> & me, TNeedle2 const & needle) {
 }
 
 template <typename TNeedle, typename TNeedle2>
-inline void 
+inline void
 setHost (Pattern<TNeedle, AhoCorasick> & me, TNeedle2 & needle)
 {
     setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
@@ -251,7 +251,7 @@ setHost (Pattern<TNeedle, AhoCorasick> & me, TNeedle2 & needle)
 
 
 template <typename TNeedle>
-inline void _patternInit (Pattern<TNeedle, AhoCorasick> & me) 
+inline void _patternInit (Pattern<TNeedle, AhoCorasick> & me)
 {
 SEQAN_CHECKPOINT
     clear(me.data_endPositions);

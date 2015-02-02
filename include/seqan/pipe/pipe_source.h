@@ -50,10 +50,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends Pipe
  * @headerfile <seqan/pipe.h>
  * @brief Pipelining adaptor for arbitrary containers or iterators.
- * 
+ *
  * @signature template <typename TInput>
  *            class Pipe<TInput, Source<> >;
- * 
+ *
  * @tparam TInput The type of container or iterator this module reads from.
  */
 
@@ -75,7 +75,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         inline typename Value<TInput>::Type const & operator*()
         { return val = getValue(cur); }
-    
+
         inline Pipe& operator++()
         {
             ++cur;
@@ -105,7 +105,7 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
     // simple buffer adaption for fast random accessable containers
     template < typename TContainer >
-    struct ContainerBuffer 
+    struct ContainerBuffer
     {
         TContainer *cont;
 
@@ -113,7 +113,7 @@ namespace SEQAN_NAMESPACE_MAIN
         ContainerBuffer(TContainer &_cont): cont(&_cont) {}
 
         template <typename TSize>
-        inline typename Reference<TContainer>::Type 
+        inline typename Reference<TContainer>::Type
         operator[] (TSize i) {
             return (*cont)[i];
         }
@@ -145,7 +145,7 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
     // simple buffer adaption for fast random accessable iterators
     template < typename TIterator >
-    struct IteratorBuffer 
+    struct IteratorBuffer
     {
         TIterator                        begin;
         typename Size<TIterator>::Type    size;
@@ -155,7 +155,7 @@ namespace SEQAN_NAMESPACE_MAIN
         IteratorBuffer(TIterator &_begin, TSize _size): begin(&_begin), size(_size) {}
 
         template <typename TSize>
-        inline typename Reference<TIterator>::Type 
+        inline typename Reference<TIterator>::Type
         operator[] (TSize i) {
             return *(begin + i);
         }
@@ -347,7 +347,7 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TInput, typename TSpec >
     struct BufReadHandler< Pipe<TInput, TSpec> >
     {
-        typedef            
+        typedef
             typename IfC<
                 AllowsFastRandomAccess<TInput>::VALUE,
                 SourceNonCachingSpec,
@@ -360,18 +360,18 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TValue, typename TConfig, typename TSpec >
     struct BufReadHandler< Pipe< String<TValue, External<TConfig> >, TSpec > >
     {
-        typedef BufferHandler< 
-            Pipe< String<TValue, External<TConfig> >, TSpec >, 
-            ExtStringSourceCachingSpec 
+        typedef BufferHandler<
+            Pipe< String<TValue, External<TConfig> >, TSpec >,
+            ExtStringSourceCachingSpec
         > Type;
     };
 
     template < typename TValue, typename TConfig, typename TSpec >
     struct BufReadHandler< Pipe< String<TValue, External<TConfig> > const, TSpec > >
     {
-        typedef BufferHandler< 
-            Pipe< String<TValue, External<TConfig> > const, TSpec >, 
-            ExtStringSourceCachingSpec 
+        typedef BufferHandler<
+            Pipe< String<TValue, External<TConfig> > const, TSpec >,
+            ExtStringSourceCachingSpec
         > Type;
     };
 
@@ -388,14 +388,14 @@ namespace SEQAN_NAMESPACE_MAIN
         me.cur = begin(me.in, Rooted());
         return true;
     }
-    
+
     template < typename TInput, typename TSpec >
     inline bool control(Pipe< TInput, Source<TSpec> > &me, ControlEndRead const &)
     {
         me.cur = end(me.in, Rooted());
         return true;
     }
-    
+
     template < typename TInput, typename TSpec >
     inline bool control(Pipe< TInput, Source<TSpec> > &me, ControlEof const &)
     {

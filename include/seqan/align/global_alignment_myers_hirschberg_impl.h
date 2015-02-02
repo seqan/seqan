@@ -64,7 +64,7 @@ namespace seqan {
 //IOREV _notio_ not relevant for iorev
         int l1 = length(s1);
         int l2 = length(s2);
-        
+
         int i,j,sg,sd;
 
         String<String<int> > fMatrix,rMatrix,tMatrix;
@@ -94,20 +94,20 @@ namespace seqan {
             {
                 sg = -1 + ((fMatrix[i-1][j] > fMatrix[i][j-1]) ? fMatrix[i-1][j] : fMatrix[i][j-1]);
                 sd = fMatrix[i-1][j-1] + ((s1[i - 1] == s2[j-1]) ? 0 : -1 );
-        
+
                 fMatrix[i][j] = ((sg > sd) ? sg : sd);
             }
         }
 
         // calculate reverse matrix
         for(j = l2 - 1;j >= 0;--j)
-        {    
+        {
             rMatrix[l1][j] = (l2 - j)*(-1);
             for(i = l1 - 1;i >= 0;--i)
             {
                 sg = -1 + ((rMatrix[i+1][j] > rMatrix[i][j+1]) ? rMatrix[i+1][j] : rMatrix[i][j+1]);
                 sd = rMatrix[i+1][j+1] + ((s1[i] == s2[j]) ? 0 : -1 );
-        
+
                 rMatrix[i][j] = ((sg > sd) ? sg : sd);
             }
         }
@@ -119,7 +119,7 @@ namespace seqan {
 
         std::cout << std::endl << "-;";
         for(j = 0;j <= l2;++j)
-        {    
+        {
             if(j != 0) std::cout << s2[j-1] << ";";
             for(i = 0;i <= l1;++i)
             {
@@ -134,7 +134,7 @@ namespace seqan {
         std::cout << "-;" << std::endl;
 
         for(j = 0;j <= l2;++j)
-        {    
+        {
             if(j != l2) std::cout << s2[j] << ";";
             else std::cout << "-;";
             for(i = 0;i <= l1;++i)
@@ -151,7 +151,7 @@ namespace seqan {
 
         std::cout << std::endl << "-;";
         for(j = 0;j <= l2;++j)
-        {    
+        {
             if(j != 0) std::cout << s2[j-1] << ";";
             for(i = 0;i <= l1;++i)
             {
@@ -181,7 +181,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
     // to fit into less words.
     if (length(source(gapsH)) < length(source(gapsV)))
         return _globalAlignment(gapsV, gapsH, algorithmTag);
-    
+
     clearGaps(gapsH);
     clearGaps(gapsV);
     clearClipping(gapsH);
@@ -219,7 +219,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
     // string to store the score values for the currently active cell
     String<TScoreValue> c_score;
     resize(c_score, len_x + 1, 0);
-    
+
     // scoring-scheme specific score values
     TScoreValue score_match = 0;
     TScoreValue score_mismatch = -1;
@@ -281,7 +281,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 #ifdef MYERS_HIRSCHBERG_VERBOSE
             std::cout << "align y " << _begin2(target) << " to " << _end2(target) << std::endl;
             std::cout << "align " << infix(y,_begin2(target),_end2(target)) << std::endl << std::endl;
-#endif    
+#endif
             for(i = 0;i < (_end2(target) - _begin2(target));++i)
             {
                 insertGap(target_0);
@@ -291,7 +291,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
         }
         else if(_begin2(target) + 1 == _end2(target))
         {
-            /* ALIGN */            
+            /* ALIGN */
 #ifdef MYERS_HIRSCHBERG_VERBOSE
             std::cout << "align x " << _begin1(target) << " to " << _end1(target) << " and y " << _begin2(target) << " to " << _end2(target) << std::endl;
             std::cout << "align " << infix(x,_begin1(target),_end1(target)) << " and " << infix(y,_begin2(target),_end2(target)) << std::endl << std::endl;
@@ -349,8 +349,8 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                 border_ += score_gap;
                 v = border_;
 
-                finger2 = col_;        
-                goPrevious(col_, 1);    
+                finger2 = col_;
+                goPrevious(col_, 1);
                 finger1 = col_;
 
                 *finger1 = v;
@@ -373,7 +373,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                     }
                     *finger1 = v;
                 }
-            }    
+            }
 
             // if computed the whole matrix last value of v = alignment score
             if(target == hs_complete)   total_score = v;
@@ -422,7 +422,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                     insertGap(target_0);
                 }
 
-                if (gh) 
+                if (gh)
                 {
                     ++ys;
                     goNext(finger1, 1);
@@ -465,7 +465,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             /*
                 ---------------------------------------------------------------
                 Calculate cut position using extended Myers-Bitvector-Algorithm
-                --------------------------------------------------------------- 
+                ---------------------------------------------------------------
             */
 
             /* declare variables */
@@ -490,7 +490,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             int fSpannedBlocks = (fEndBlock - fStartBlock) + 1;
 
             unsigned int fScoreMask = 1 << ((mid  - 1) % BLOCK_SIZE);
-            
+
             unsigned int fOffSet = _begin2(target) % BLOCK_SIZE;
             unsigned int fSilencer = ~0;
             fSilencer <<= fOffSet;
@@ -500,7 +500,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             std::fill(begin(VN, Standard()) + fStartBlock, end(VN, Standard()) + fEndBlock + 1, 0);
 
             /* determine start-position and start-score */
-            int pos = _begin1(target);            
+            int pos = _begin1(target);
             score = (mid - _begin2(target)) * score_gap;
             c_score[pos] = score;
 
@@ -540,47 +540,47 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 
                     // computing first the top most block
                     X = (fSilencer & forwardBitMask[shift + fStartBlock]) | VN[fStartBlock];
-            
+
                     temp = VP[fStartBlock] + (X & VP[fStartBlock]);
                     carryD0 = temp < VP[fStartBlock];
-                    
+
                     D0 = (temp ^ VP[fStartBlock]) | X;
                     HN = VP[fStartBlock] & D0;
                     HP = VN[fStartBlock] | ~(VP[fStartBlock] | D0);
-                    
+
                     X = (HP << 1) | (1 << fOffSet);
                     carryHP = HP >> (BLOCK_SIZE - 1);
-                    
+
                     VN[fStartBlock] = X & D0;
 
                     temp = (HN << 1);
                     carryHN = HN >> (BLOCK_SIZE - 1);
-                                        
+
                      VP[fStartBlock] = temp | ~(X | D0);
 
                     // compute the remaining blocks
                     for (currentBlock = fStartBlock + 1; currentBlock <= fEndBlock; currentBlock++) {
                         X = forwardBitMask[shift + currentBlock] | VN[currentBlock];
-                
+
                         temp = VP[currentBlock] + (X & VP[currentBlock]) + carryD0;
-                        
+
                         carryD0 = ((carryD0) ? temp <= VP[currentBlock] : temp < VP[currentBlock]);
-                    
+
                         D0 = (temp ^ VP[currentBlock]) | X;
                         HN = VP[currentBlock] & D0;
                         HP = VN[currentBlock] | ~(VP[currentBlock] | D0);
-                        
+
                         X = (HP << 1) | carryHP;
                         carryHP = HP >> (BLOCK_SIZE-1);
-                        
+
                         VN[currentBlock] = X & D0;
 
                         temp = (HN << 1) | carryHN;
                         carryHN = HN >> (BLOCK_SIZE - 1);
-                                            
+
                          VP[currentBlock] = temp | ~(X | D0);
                     }
-                    
+
                     /* update score */
                     if (HP & fScoreMask)
                         score--;
@@ -594,7 +594,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 
             } /* end - long patten */
             /* compute with myers - forward - end */
-            
+
             /* compute blocks and score masks */
             int rStartBlock = (len_y - _end2(target)) / BLOCK_SIZE;
             int rEndBlock = (len_y - mid - 1) / BLOCK_SIZE;
@@ -610,7 +610,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             std::fill(begin(VN, Standard()) + rStartBlock, end(VN, Standard()) + rEndBlock + 1, 0);
 
             /* determine start-position and start-score */
-            pos = _end1(target)-1;            
+            pos = _end1(target)-1;
             score = (_end2(target) - mid) * score_gap;
 
             /* set start score */
@@ -665,44 +665,44 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 
                     // compute first the top most block
                     X = (rSilencer & reverseBitMask[shift + rStartBlock]) | VN[rStartBlock];
-            
+
                     temp = VP[rStartBlock] + (X & VP[rStartBlock]);
                     carryD0 = temp < VP[rStartBlock];
-                    
+
                     D0 = (temp ^ VP[rStartBlock]) | X;
                     HN = VP[rStartBlock] & D0;
                     HP = VN[rStartBlock] | ~(VP[rStartBlock] | D0);
-                    
+
                     X = (HP << 1) | (1 << rOffSet);
                     carryHP = HP >> (BLOCK_SIZE - 1);
-                    
+
                     VN[rStartBlock] = X & D0;
 
                     temp = (HN << 1);
                     carryHN = HN >> (BLOCK_SIZE - 1);
-                                        
+
                      VP[rStartBlock] = temp | ~(X | D0);
 
                     // compute the remaining blocks
                     for (currentBlock = rStartBlock + 1; currentBlock <= rEndBlock; currentBlock++) {
                         X = reverseBitMask[shift + currentBlock] | VN[currentBlock];
-                
+
                         temp = VP[currentBlock] + (X & VP[currentBlock]) + carryD0;
-                        
+
                         carryD0 = ((carryD0) ? temp <= VP[currentBlock] : temp < VP[currentBlock]);
-                    
+
                         D0 = (temp ^ VP[currentBlock]) | X;
                         HN = VP[currentBlock] & D0;
                         HP = VN[currentBlock] | ~(VP[currentBlock] | D0);
-                        
+
                         X = (HP << 1) | carryHP;
                         carryHP = HP >> (BLOCK_SIZE-1);
-                        
+
                         VN[currentBlock] = X & D0;
 
                         temp = (HN << 1) | carryHN;
                         carryHN = HN >> (BLOCK_SIZE - 1);
-                                            
+
                          VP[currentBlock] = temp | ~(X | D0);
                     }
 
@@ -712,7 +712,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                         ++score;
 
                     c_score[pos] += score;
-                    
+
                     /* check for optimality -- score extension*/
                     if(c_score[pos] > max)
                     {
@@ -720,11 +720,11 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                         max = c_score[pos];
                         rmax = score;
                     }
-                    
+
                     --pos;
                 }
 
-            }  /* end - long pattern */            
+            }  /* end - long pattern */
             /* compute with myers - reverse - end */
 
             // if computed the whole matrix max = alignment score
@@ -741,7 +741,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
         }
         /* END CUT */
     }
-    
+
     return total_score;
 }
 

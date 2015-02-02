@@ -126,9 +126,9 @@ struct ValueSize<float>
 
 // The internal value size is used for alphabets with piggyback qualities,
 // for example Dna5Q.  Here, the public value size is 5 but the internal
-// value size is 256.  
+// value size is 256.
 
-template <typename TValue> 
+template <typename TValue>
 struct InternalValueSize_
         : public ValueSize<TValue>
 {};
@@ -141,16 +141,16 @@ struct InternalValueSize_
  * @mfn BytesPerValue
  * @headerfile <seqan/basic.h>
  * @brief Number of bytes needed to store a value.
- * 
+ *
  * @signature BytesPerValue<T>::VALUE
- * 
+ *
  * @tparam T The type to query.
- * 
+ *
  * @return VALUE The number of bytes to store on T object.
  *
  * By default, this function returns <tt>ceil(BitsPerValue&lt;T&gt;::VALUE)</tt>.  For built-in types, this is the same
  * as <tt>sizeof(T)</tt>.
- * 
+ *
  * @see FiniteOrderedAlphabetConcept#ValueSize
  * @see AlphabetConcept#BitsPerValue
  * @see IntegralForValue
@@ -170,13 +170,13 @@ struct BytesPerValue
  * @mfn IntegralForValue
  * @headerfile <seqan/basic.h>
  * @brief Returns an itegral type that provides sufficient space to store a value.
- * 
+ *
  * @signature IntegralForValue<T>::Type;
- * 
+ *
  * @tparam T The type to query.
- * 
+ *
  * @return Type An integral type.
- * 
+ *
  * The type is the smallest unsigned integral type that has a size of at least BytesPerValue bytes.
  *
  * <table>
@@ -205,10 +205,10 @@ struct BytesPerValue
  *     <td><tt>__int64</tt></td>
  *   </tr>
  * </table>
- * 
+ *
  * Note that the returned integral type cannot store <tt>T</tt> values, if <tt>T</tt> takes more than 8 bytes, since
  * there exists no integral type that provides sufficient space to store types of this size.
- * 
+ *
  * @see FiniteOrderedAlphabetConcept#ValueSize
  * @see AlphabetConcept#BitsPerValue
  * @see BytesPerValue

@@ -60,7 +60,7 @@ struct TestAllocator
 
     TestAllocator() {}
 
-    ~TestAllocator() 
+    ~TestAllocator()
     {
         std::map<char *, size_t>::iterator it = data_allocated.begin();
         while (it != data_allocated.end())
@@ -73,9 +73,9 @@ struct TestAllocator
 };
 
 template <typename TValue, typename TSize, typename TUsage>
-void allocate(TestAllocator & me, 
-              TValue * & data_, 
-              TSize count, 
+void allocate(TestAllocator & me,
+              TValue * & data_,
+              TSize count,
               Tag<TUsage> const)
 {
     SEQAN_ASSERT_GT(count, static_cast<TSize>(0));
@@ -84,9 +84,9 @@ void allocate(TestAllocator & me,
 }
 
 template <typename TValue, typename TSize, typename TUsage>
-void deallocate(TestAllocator & me, 
-                TValue * data_, 
-                TSize count, 
+void deallocate(TestAllocator & me,
+                TValue * data_,
+                TSize count,
                 Tag<TUsage> const)
 {
     SEQAN_ASSERT_MSG(me.data_allocated.count((char *) data_), "memory block was not allocated");

@@ -43,15 +43,15 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends PoolSpec
  * @headerfile <seqan/pipe.h.
  * @brief Configuration of Pool.
- * 
+ *
  * @signature template <typename TSize[, typename TFile]>
  *            struct PoolConfigSize;
- * 
+ *
  * @tparam TSize The Pool's size type.
  * @tparam TFile The underlying File type, defaults to <tt>File&lt;&gt;</tt>.
- * 
+ *
  * @see PoolConfig
- */ 
+ */
 
     template < typename TSize,
                typename TFile = File<> >                        // default file type
@@ -65,15 +65,15 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends PoolSpec
  * @headerfile <seqan/pipe.h>
  * @brief Configuration of Pool.
- * 
+ *
  * @signature template <typename TFile>
  *            struct PoolConfig;
- * 
+ *
  * @tparam TFile The underlying File type, defaults to <tt>File&lt;&gt;</tt>.
- * 
+ *
  * Using this configuration spec., the Pool's size type is <tt>Size&lt;TFile&gt;::Type</tt>.  To use a custom size type
  * PoolConfigSize should be used.
- * 
+ *
  * @see PoolConfigSize
  */
 
@@ -88,14 +88,14 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends Pool
  * @headerfile <seqan/pipe.h>
  * @brief Stores/Retrieves all elements to/from disk.
- * 
+ *
  * @signature template <typename TValue, typename TConfig>
  *            class Pool<TValue, PoolSpec<TConfig> >;
- * 
+ *
  * @tparam TConfig Configuration Spec.  Defines destination function, size type, and file type.
  *                 Types: PoolConfig, PoolConfigSize
  * @tparam TValue  The value type, that is the type of the stream elements.
- * 
+ *
  * The Pool's input/output type is <tt>TValue</tt> and the size type is determined by the <tt>TConfig</tt>.
  */
 
@@ -108,15 +108,15 @@ namespace SEQAN_NAMESPACE_MAIN
  * @class Pool
  * @headerfile <seqan/pipe.h>
  * @brief Pools are push- and pop-passive pipeline modules.
- * 
+ *
  * @signature template <typename TValue[, typename TSpec]>
  *            class Pool;
- * 
+ *
  * @tparam TSpec  The specializing type. Default: PoolSpec&lt;&gt;, see PoolSpec.
  * @tparam TValue The value type, that is the type of the stream elements.
- * 
+ *
  * Use Value to get the output type of a given Pipe (returns <tt>Value&lt;TInput&gt;::Type</tt> by default).
- * 
+ *
  * Use Size to get the size type of a given Pipe (returns <tt>Size&lt;TInput&gt;::Type</tt> by default).
  */
 
@@ -274,7 +274,7 @@ namespace SEQAN_NAMESPACE_MAIN
         BufferHandler(TPool &_pool, size_t _requestedBufferSize, size_t _readAheadBuffers = 1):
             pool(_pool),
 //            pageSize(alignSize(_min(_pool.size(), _requestedBufferSize), _pool.pageSize)),
-            chain(_min(_readAheadBuffers, _pool.pages(pageSize = alignSize(_min(_pool.size(), _requestedBufferSize), _pool.pageSize)))) 
+            chain(_min(_readAheadBuffers, _pool.pages(pageSize = alignSize(_min(_pool.size(), _requestedBufferSize), _pool.pageSize))))
         {
             #ifdef SEQAN_HEADER_PIPE_DEBUG
                 std::cerr << "___BufferHandler___" << std::endl;
@@ -288,7 +288,7 @@ namespace SEQAN_NAMESPACE_MAIN
         {
             end();
         }
-        
+
         inline TBuffer & first()
         {
             _pages = pool.pages(pageSize);
@@ -321,7 +321,7 @@ namespace SEQAN_NAMESPACE_MAIN
             // read ahead
             chain.last->pageNo = readPageNo++;
             _read(*chain.last);
-            
+
             // retrieve the next buffer in order and wait for I/O transfer to complete
             bool waitResult = waitFor(*chain.first);
             if (!waitResult)
@@ -414,7 +414,7 @@ namespace SEQAN_NAMESPACE_MAIN
         ~BufferHandler() {
             cancel();
         }
-        
+
     public:
 
         inline TBuffer & first()
@@ -545,7 +545,7 @@ namespace SEQAN_NAMESPACE_MAIN
             delete handler1;
             delete handler2;
         }
-        
+
         inline TBuffer first() {
             if (handler1)    return handler1->first();
             else            return handler2->first();
@@ -597,7 +597,7 @@ namespace SEQAN_NAMESPACE_MAIN
             delete handler1;
             delete handler2;
         }
-        
+
         inline bool begin() {
             if (handler1)    return handler1->begin();
             else            return handler2->begin();
@@ -647,7 +647,7 @@ namespace SEQAN_NAMESPACE_MAIN
     struct BufReadHandler< Pool< TValue, TSpec > >
     {
         typedef BufferHandler< Bundle2<
-            BufferHandler< Pool< TValue, TSpec >, MemorySpec >, 
+            BufferHandler< Pool< TValue, TSpec >, MemorySpec >,
             BufferHandler< Pool< TValue, TSpec >, ReadFileSpec >
         >, MultiplexSpec > Type;
     };
@@ -656,7 +656,7 @@ namespace SEQAN_NAMESPACE_MAIN
     struct BufWriteHandler< Pool< TValue, TSpec > >
     {
         typedef BufferHandler< Bundle2<
-            BufferHandler< Pool< TValue, TSpec >, MemorySpec >, 
+            BufferHandler< Pool< TValue, TSpec >, MemorySpec >,
             BufferHandler< Pool< TValue, TSpec >, WriteFileSpec >
         >, MultiplexSpec > Type;
     };
@@ -715,7 +715,7 @@ namespace SEQAN_NAMESPACE_MAIN
         size_t              _lastPageSize;
 
         int                 listeners;
-       
+
         ReadHandler         *reader;
         WriteHandler        *writer;
 
@@ -733,14 +733,14 @@ namespace SEQAN_NAMESPACE_MAIN
             _init(_conf);
             _setSize(0);
         }
-        
+
         Pool(HandlerArgs const &args, PoolParameters const &_conf = PoolParameters()):
             file(NULL), handlerArgs(args), undefinedValue()
         {
             _init(_conf);
             _setSize(0);
         }
-        
+
         template < typename TInput, typename TPipeSpec >
         Pool(Pipe<TInput, TPipeSpec> &, const PoolParameters &_conf = PoolParameters()):
             file(NULL), undefinedValue()
@@ -748,7 +748,7 @@ namespace SEQAN_NAMESPACE_MAIN
             _init(_conf);
             _setSize(0);
         }
-        
+
         template < typename TInput, typename TPipeSpec >
         Pool(Pipe<TInput, TPipeSpec> &, HandlerArgs const &args, PoolParameters const &_conf = PoolParameters()):
             file(NULL), handlerArgs(args), undefinedValue()
@@ -756,7 +756,7 @@ namespace SEQAN_NAMESPACE_MAIN
             _init(_conf);
             _setSize(0);
         }
-        
+
         Pool(File &_file, const PoolParameters &_conf = PoolParameters()):
             file(_file), undefinedValue()
         {
@@ -766,7 +766,7 @@ namespace SEQAN_NAMESPACE_MAIN
             memBufferSize = 0;
             _setSize(seqan::length(file) / sizeof(TValue));
         }
-        
+
         Pool(const char *fileName, const PoolParameters &_conf = PoolParameters()) :
             file(NULL), undefinedValue()
         {
@@ -779,17 +779,17 @@ namespace SEQAN_NAMESPACE_MAIN
             else
                 _setSize(0);
         }
-        
+
         ~Pool()
         {
             endRead();
             endWrite();
-            if (_temporary) 
+            if (_temporary)
                 clear();
             else
                 if (_ownFile) close(file);
         }
-        
+
         inline void clear() {
             resize(0);
         }
@@ -893,7 +893,7 @@ namespace SEQAN_NAMESPACE_MAIN
         bool beginWrite() {
             _freeHandlers(); // if you forgot to call endRead/endWrite we have no trouble
             return (
-                (writer = new WriteHandler(*this)) && 
+                (writer = new WriteHandler(*this)) &&
                 writer->begin());
         }
 
@@ -959,7 +959,7 @@ namespace SEQAN_NAMESPACE_MAIN
             _lastPageSize = _size % pageSize;
         }
 
-        void _init(PoolParameters _conf = PoolParameters()) 
+        void _init(PoolParameters _conf = PoolParameters())
         {
             _conf.absolutize(16*1024/*sectorSize(file)*/, (TValue*)NULL);
             memBufferSize    = _conf.memBufferSize;
@@ -1127,15 +1127,15 @@ namespace SEQAN_NAMESPACE_MAIN
  * @fn Pool#pop
  * @headerfile <seqan/pipe.h>
  * @brief Pops the first element of the remaining stream.
- * 
+ *
  * @signature void pop(pool[, ref]);
- * 
+ *
  * @param[in,out] pool A pop-passive pipeline module.
  * @param[out]    ref    Reference to the result.  Result type is <tt>Value&lt;TObject&gt;::Type</tt> for <tt>object</tt>
  *                       type <tt>TObject</tt>.  Returns the first element of the remaining input stream.
- * 
+ *
  * In contrast to Pool#front this function also steps one element further.
- * 
+ *
  * Pool#front or Pool#pop can only be called within a read process surrounded by beginRead and endRead.
  */
     template < typename TValue, typename TSpec >
@@ -1151,12 +1151,12 @@ namespace SEQAN_NAMESPACE_MAIN
 /*!
  * @fn Pool#push
  * @brief Appends an item at the end of an input stream.
- * 
+ *
  * @signature void push(pool, val);
- * 
+ *
  * @param[in,out] pool A pool module.
  * @param[in]     val    Item to be pushed.
- * 
+ *
  * The function <tt>push</tt> can only be called within a write process surrounded by beginWrite and endWrite.
  */
 
@@ -1196,23 +1196,23 @@ namespace SEQAN_NAMESPACE_MAIN
         inline bool control(Pool< TValue, TSpec > &me, ControlEof const &) {
             return me.eof();
         }
-        
+
         template < typename TValue, typename TSpec >
         inline bool control(Pool< TValue, TSpec > &me, ControlEos const &) {
             return me.eof();
         }
-        
+
         template < typename TValue, typename TSpec >
         inline bool control(Pool< TValue, TSpec > &me, ControlClear const &) {
             me.clear();
             return true;
         }
-        
+
         template < typename TValue, typename TSpec >
         inline bool control(Pool< TValue, TSpec > &me, ControlBeginRead const &) {
             return me.beginRead();
         }
-        
+
         template < typename TValue, typename TSpec >
         inline bool control(Pool< TValue, TSpec > &me, ControlEndRead const &) {
             return me.endRead();
@@ -1222,17 +1222,17 @@ namespace SEQAN_NAMESPACE_MAIN
  * @fn Pool#beginWrite
  * @headerfile <seqan/pipe.h>
  * @brief Initiates a write process.
- * 
+ *
  * @signature bool beginWrite(pool);
- * 
+ *
  * @param[in,out] pool A pool module.
- * 
+ *
  * @return bool <tt>true</tt> on success, false on failure.
- * 
+ *
  * <tt>beginWrite</tt> prepares a pool for succeeding writes.
- * 
+ *
  * A write process must be terminated with endWrite.  Nested write processes are not allowed.
- * 
+ *
  * @see Pool#endWrite
 */
 
@@ -1245,15 +1245,15 @@ SEQAN_CHECKPOINT
 /*!
  * @fn Pool#endWrite
  * @brief Terminates a write process.
- * 
+ *
  * @signature bool endWrite(pool);
- * 
+ *
  * @param[in,out] pool A push-passive pipeline module.
- * 
+ *
  * @return bool true on success, false on failure.
- * 
- * <tt>endWrite</tt> closes the input stream and frees resources possibly allocated by beginWrite 
- * 
+ *
+ * <tt>endWrite</tt> closes the input stream and frees resources possibly allocated by beginWrite
+ *
  * @see Pool#beginWrite
  */
 
@@ -1283,15 +1283,15 @@ SEQAN_CHECKPOINT
  * @fn Pool#beginRead
  * @headerfile <seqan/pipe.h>
  * @brief Initiates a read process.
- * 
+ *
  * @signature bool beginRead(pool);
- * 
+ *
  * @param[in,out] pool A pool module.
- * 
+ *
  * @return bool true on success, false on failure.
- * 
+ *
  * A read process must be terminated with endRead. Nested read processes are not allowed.
- * 
+ *
  * @see Pool#endRead
  */
         template < typename TValue, typename TSpec >
@@ -1303,13 +1303,13 @@ SEQAN_CHECKPOINT
  * @fn Pool#endRead
  * @headerfile <seqan/pipe.h>
  * @brief Terminates a read process.
- * 
+ *
  * @signature bool endRead(pool);
- * 
+ *
  * @param[in,out] pool A pool module.
- * 
+ *
  * @return bool true on success, false on failure.
- * 
+ *
  * @see Pool#beginRead
  */
         template < typename TValue, typename TSpec >

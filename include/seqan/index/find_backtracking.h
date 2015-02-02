@@ -422,7 +422,7 @@ inline bool _align(SuffixAligner_<TSuffix, HammingDistance> & suffix_aligner,
         prefix_aligner.prefix_position++;
         prefix_aligner.global_position++;
     }
-    
+
     return true;
 }
 
@@ -544,7 +544,7 @@ inline bool _match(SuffixAligner_<TSuffix, HammingDistance> & suffix_aligner,
         prefix_aligner.prefix_position++;
         prefix_aligner.global_position++;
     }
-    
+
     return true;
 }
 
@@ -560,7 +560,7 @@ inline bool _match(SuffixAligner_<TSuffix, HammingDistance> & suffix_aligner,
 
     TSize extension = _min(suffix_aligner.suffix_length - suffix_aligner.suffix_position,
                            prefix_aligner.prefix_length - prefix_aligner.prefix_position);
-    
+
     if (extension > 0)
     {
         if (suffix != prefix[prefix_aligner.prefix_position])
@@ -832,7 +832,7 @@ _backtrack(Finder<Index<TText, TSpec>, Backtracking<TDistance, TBacktrackingSpec
     typedef typename Size<TIndex>::Type                     TSuffixSize;
 
     typedef typename BacktrackingState_<TNeedle, TDistance>::Type        TState;
-    
+
     setLength(pattern.prefix_aligner, length(needle(pattern)));
     setPosition(pattern.prefix_aligner, 0);
 
@@ -1156,7 +1156,7 @@ _search(Finder<Index<TText, TTextSpec>, Backtracking<TDistance, TBacktrackingSpe
     typedef typename Size<TNeedleIndex>::Type                           TPrefixSize;
 
     typedef typename BacktrackingState_<TNeedle, TDistance>::Type                    TState;
-    
+
     do
     {
         SEQAN_ASSERT_NOT(empty(pattern.state));

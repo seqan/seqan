@@ -44,15 +44,15 @@ namespace SEQAN_NAMESPACE_MAIN
  * @class Skiplist
  * @extends Map
  * @headerfile <seqan/map.h>
- * 
+ *
  * @brief General purpose map container.
- * 
+ *
  * @signature template <typename TValue, typename TSpec>
  *            class Map<TValue, Skiplist<TSpec> >;
- * 
+ *
  * @tparam TSpec  The specializing type.
  * @tparam TValue The type of value stored in the map.
- * 
+ *
  * The skiplist takes in average an oberhead of only two pointers per value stored in the map.
  */
 
@@ -179,7 +179,7 @@ public:
         for (unsigned char i = 0; i < MAX_HEIGHT; ++i)
         {
             data_recycle[i] = 0;
-            valueConstruct(data_border.data_next + i, NonMinimalCtor()); 
+            valueConstruct(data_border.data_next + i, NonMinimalCtor());
         }
     }
     Map(Map const & other)
@@ -330,7 +330,7 @@ _skiplistAllocateElement(Map<TValue, Skiplist<TSpec> > & me,
         if (buf_size < need_size)
         {//need new memory
             if (buf_size >= (int) (element_base_size + sizeof(TNext)))
-            {//link rest memory in recycle 
+            {//link rest memory in recycle
                 int rest_height = (buf_size - element_base_size) / sizeof(TNext) - 1; //must be < height, because buf_size < need_size
                 * reinterpret_cast<TElement **>(me.data_mem_begin) = me.data_recycle[rest_height];
                 me.data_recycle[rest_height] = reinterpret_cast<TElement *>(me.data_mem_begin);
@@ -374,7 +374,7 @@ _skiplistDeallocateElement(Map<TValue, Skiplist<TSpec> > & me,
     typedef SkiplistElement<TValue, TSpec> TElement;
     * reinterpret_cast<TElement **>(& el) = me.data_recycle[height];
     me.data_recycle[height] = reinterpret_cast<TElement *>(&el);
-    //the real deallocation is done by the allocator on destruction 
+    //the real deallocation is done by the allocator on destruction
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -449,7 +449,7 @@ _skiplistGetHeight(Map<TValue, Skiplist<TSpec> > & me,
 
 template <typename TValue, typename TSpec>
 inline unsigned char
-_skiplistGetHeight(Map<TValue, Skiplist<TSpec> > & me, 
+_skiplistGetHeight(Map<TValue, Skiplist<TSpec> > & me,
                    SkiplistElement<TValue, TSpec> & el)
 {
     typedef SkiplistPath<TValue, TSpec> TPath;
@@ -534,15 +534,15 @@ _skiplistFind(Map<TValue, Skiplist<TSpec> > & me,
  * @fn Map#find
  * @headerfile <seqan/map.h>
  * @brief Find a value in a map.
- * 
+ *
  * @signature TIterator find(map, key);
- * 
+ *
  * @param[in] map A map. Types: Map
  * @param[in] key A key.
- * 
+ *
  * @return TIterator An iterator to the first value in <tt>map</tt> of the given key, if there is any.  An iterator
  *                   to the fist value in <tt>map</tt> with key &gt; <tt>key</tt>, otherwise.
- * 
+ *
  * @see Map#value
  * @see Map#cargo
  */
@@ -551,7 +551,7 @@ template <typename TValue, typename TSpec, typename TFind>
 inline typename Iterator< Map<TValue, Skiplist<TSpec> > >::Type
 find(Map<TValue, Skiplist<TSpec> > & me,
      TFind const & _find, //can be a TKey or a SkiplistElement or GoEnd
-     SkiplistPath<TValue, TSpec> & path) 
+     SkiplistPath<TValue, TSpec> & path)
 {
     typedef typename Iterator< Map<TValue, Skiplist<TSpec> > >::Type TIterator;
 
@@ -571,7 +571,7 @@ find(Map<TValue, Skiplist<TSpec> > & me,
 //////////////////////////////////////////////////////////////////////////////
 
 //insert elements after at the position path points to
-//Requirements: 
+//Requirements:
 // - height <= height of the skiplist
 // - next must be filled at least up to height
 // - el.data_next must have space for at least height many entries
@@ -611,15 +611,15 @@ _skiplistInsertElement(Map<TValue, Skiplist<TSpec> > & me,
 /*!
  * @fn Map#value
  * @brief Returns a value given a key.
- * 
+ *
  * @signature TReference value(map, key);
- * 
+ *
  * @param[in] map A map.
  * @param[in] key A key.
- * 
+ *
  * @return TReference The first value in <tt>map</tt> of the given key, if there is any.  Otherwise, a new value
  *                    that is inserted to <tt>map</tt>.
- * 
+ *
  * @note Do not change the key of a value in the map.
  */
 
@@ -656,12 +656,12 @@ value(Map<TValue, Skiplist<TSpec> > & me,
 /*!
  * @fn Map#cargo
  * @brief Returns a cargo given a key.
- * 
+ *
  * @signature TCargo find(map, key);
- * 
+ *
  * @param[in,out] map A map.
  * @param[in]     key A key.
- * 
+ *
  * @return TReturn The cargo of the first value in <tt>map</tt> of the given key, if there is any.  Otherwise, the
  *                 cargo of a new value that is inserted to <tt>map</tt>.
  */
@@ -679,21 +679,21 @@ cargo(Map<TValue, Skiplist<TSpec> > & me,
 /*!
  * @fn Map#insert
  * @brief Insert new value into map.
- * 
+ *
  * @signature void insert(map, value);
  * @signature void insert(map, key, cargo);
- * 
+ *
  * @param[in,out] map   A map.
  * @param[in]     value A value that is added to <tt>map</tt>.
  * @param[in]     key   A key.
  * @param[in]     cargo A cargo.
- * 
+ *
  * If <tt>key</tt> and <tt>cargo</tt> are specified, a new value of that key and value is added.  If there is already a
  * value of that key in <tt>map</tt>, the value of this element is changed to <tt>cargo</tt>.
- * 
+ *
  * If <tt>value</tt> is specified, and there is already a value in map of that key, than the cargo of this value is
  * changed to cargo.cargo(value).
- * 
+ *
  * Use Map#add instead to insert multiple values of the same key.
  */
 
@@ -719,15 +719,15 @@ insert(Map<TValue, Skiplist<TSpec> > & me,
 /*!
  * @fn Map#add
  * @brief Insert another value into a multi map.
- * 
+ *
  * @signature void add(map, value);
  * @signature void add(map, key, cargo);
- * 
+ *
  * @param[in,out] map   A map. Types: Skiplist
  * @param[in]     value A value that is added to <tt>map</tt>.
  * @param[in]     cargo A cargo.
  * @param[in]     key   A key.
- * 
+ *
  * If <tt>key</tt> and <tt>cargo</tt> are specified, a new value of that key and value is added.
  */
 
@@ -782,16 +782,16 @@ _skiplistUnlinkElement(Map<TValue, Skiplist<TSpec> > & me,
 /*!
  * @fn Map#erase
  * @brief Removes a value from a map.
- * 
+ *
  * @signature void erase(map, key);
  * @signature void erase(map, iterator);
- * 
+ *
  * @param[in] map      A map. Types: Map
  * @param[in] key      The key of a value in <tt>map</tt>.
  * @param[in] iterator An iterator to a value in <tt>map</tt>.
- * 
+ *
  * Removes the first value in <tt>map</tt> of the given key, if there is any.
- * 
+ *
  * Use @link Map#eraseAll @endlink to remove all values of the given key in a multi map.
  */
 
@@ -823,12 +823,12 @@ erase(Map<TValue, Skiplist<TSpec> > & me,
 /*!
  * @fn Map#eraseAll
  * @brief Removes a value from a map.
- * 
+ *
  * @signature void eraseAll(map, key);
- * 
+ *
  * @param[in,out] map A map. Types: Skiplist
  * @param[in]     key The key of a value in <tt>map</tt>.
- * 
+ *
  * Removes all values in <tt>map</tt> of the given key, if there is any.
  */
 
@@ -863,7 +863,7 @@ clear(Map<TValue, Skiplist<TSpec> > & me)
     for (unsigned char i = 0; i < TSkiplist::MAX_HEIGHT; ++i)
     {
         me.data_recycle[i] = 0;
-        valueConstruct(me.data_border.data_next + i, NonMinimalCtor()); 
+        valueConstruct(me.data_border.data_next + i, NonMinimalCtor());
     }
 
     clear(value(me.data_allocator));
@@ -957,12 +957,12 @@ mapValue(Map<TValue, Skiplist<TSpec> > & me,
 /*!
  * @fn Map#hasKey
  * @brief Determines whether a map contains a value given key.
- * 
+ *
  * @signature bool hasKey(map, key);
- * 
+ *
  * @param[in] map A map. Types: Map
  * @param[in] key A key.
- * 
+ *
  * @return bool <tt>true</tt>, if there is a value in <tt>map</tt> of that key, <tt>false</tt> otherwise.
  */
 
@@ -1011,7 +1011,7 @@ public:
     {
     }
 
-    Iter const & 
+    Iter const &
     operator = (Iter const & other)
     {
         data_pointer = other.data_pointer;

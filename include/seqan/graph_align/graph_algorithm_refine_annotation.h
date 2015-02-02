@@ -64,10 +64,10 @@ public:
     {
     }
 
-    
+
     Annotation(TId_ seqId, TPos_ begin, TSize_ len, TValue label) :
             data_seq_id(seqId),
-            data_begin(begin), 
+            data_begin(begin),
             data_length(len),
             data_label(label)
     {
@@ -81,7 +81,7 @@ public:
 
 
 
-template<typename TSequence,typename TValue,typename TSpec>    
+template<typename TSequence,typename TValue,typename TSpec>
 typename Id<TSequence>::Type&
 sequenceId(Annotation<TSequence,TValue,TSpec> & me)
 {
@@ -89,7 +89,7 @@ SEQAN_CHECKPOINT
     return me.data_seq_id;
 }
 
-template<typename TSequence,typename TValue,typename TSpec>    
+template<typename TSequence,typename TValue,typename TSpec>
 typename Position<TSequence>::Type&
 fragmentBegin(Annotation<TSequence,TValue,TSpec> & me)
 {
@@ -97,7 +97,7 @@ SEQAN_CHECKPOINT
     return me.data_begin;
 }
 
-template<typename TSequence,typename TValue,typename TSpec>    
+template<typename TSequence,typename TValue,typename TSpec>
 typename Size<TSequence>::Type&
 fragmentLength(Annotation<TSequence,TValue,TSpec> & me)
 {
@@ -105,7 +105,7 @@ SEQAN_CHECKPOINT
     return me.data_length;
 }
 
-template<typename TSequence,typename TValue,typename TSpec>    
+template<typename TSequence,typename TValue,typename TSpec>
 TValue
 label(Annotation<TSequence,TValue,TSpec> & me)
 {
@@ -114,7 +114,7 @@ SEQAN_CHECKPOINT
 }
 
 
-template<typename TSequence,typename TValue,typename TSpec>    
+template<typename TSequence,typename TValue,typename TSpec>
 struct Value<Annotation<TSequence,TValue,TSpec> >
 {
     typedef TValue Type;
@@ -125,9 +125,9 @@ struct Value<Annotation<TSequence,TValue,TSpec> >
 template<typename TValue, typename TAliString, typename TGraph, typename TPropertyMap, typename TStringSet, typename TMap, typename TTagSpec>
 inline void
 _addAnnotationCuts(String<std::set<TValue> > &,
-                   TAliString &, 
-                   String<TGraph> &, 
-                   String<TPropertyMap> &, 
+                   TAliString &,
+                   String<TGraph> &,
+                   String<TPropertyMap> &,
                    TStringSet &,
                    TMap &,
                    bool,
@@ -145,9 +145,9 @@ SEQAN_CHECKPOINT
 template<typename TValue, typename TAliString, typename TGraph, typename TPropertyMap, typename TStringSet, typename TMap, typename TAnnoString, typename TTagSpec>
 inline void
 _addAnnotationCuts(String<std::set<TValue> > & all_nodes,
-                   TAliString & alis, 
-                   String<TGraph> & gs, 
-                   String<TPropertyMap> & pms, 
+                   TAliString & alis,
+                   String<TGraph> & gs,
+                   String<TPropertyMap> & pms,
                    TStringSet & seq,
                    TMap & seq_map,
                    TAnnoString & annotation,
@@ -165,21 +165,21 @@ SEQAN_CHECKPOINT
     //for each annotated stretch
     while(anno_it != anno_end)
     {
-        
+
         TValue seq_i_id = sequenceId(*anno_it);
         TValue begin_i = fragmentBegin(*anno_it);
         TValue end_i = begin_i + fragmentLength(*anno_it);
         TValue seq_i_pos = idToPosition(seq,seq_i_id);
-        
+
         //refine begin
-        TSetIterator iter = all_nodes[seq_i_pos].find(begin_i);        
+        TSetIterator iter = all_nodes[seq_i_pos].find(begin_i);
         if(_cutIsValid(all_nodes,seq_i_pos,begin_i,iter,min_fragment_len,tag))
         {
             all_nodes[seq_i_pos].insert(begin_i);
             _refine(begin_i, seq_i_id, seq, seq_map, alis, gs,pms,all_nodes,min_fragment_len,tag);//TStop());
         }
         //and end position
-        iter = all_nodes[seq_i_pos].find(end_i);        
+        iter = all_nodes[seq_i_pos].find(end_i);
         if(_cutIsValid(all_nodes,seq_i_pos,end_i,iter,min_fragment_len,tag))
         {
             all_nodes[seq_i_pos].insert(end_i);
@@ -187,9 +187,9 @@ SEQAN_CHECKPOINT
         }
         ++anno_it;
     }
-              
+
 }
-          
+
 
 // add annotation labels to nodes, as given in annotation, store as node properties in pm
 template<typename TPropertyMap, typename TStringSet, typename TMap, typename TAnnoString, typename TAliGraph,typename TTagSpec>
@@ -210,7 +210,7 @@ SEQAN_CHECKPOINT
     typedef typename Position<TAnnotation>::Type TPos;
     typedef typename Value<TAnnotation>::Type TLabel;
     typedef typename VertexDescriptor<TAliGraph>::Type TVertexDescriptor;
-    
+
     typedef typename Iterator<TAnnoString,Standard>::Type TAnnoIter;
     TAnnoIter anno_it = begin(annotation,Standard());
     TAnnoIter anno_end = end(annotation,Standard());
@@ -249,7 +249,7 @@ SEQAN_CHECKPOINT
 // compute annotation score: 2 if vd1 and vd2 share same annotation
 // 1 if they are not the same (--> edgescore = alignmentscore)
 template<typename TAliGraph,typename TScore, typename TPropertyMap>
-typename Value<TScore>::Type 
+typename Value<TScore>::Type
 _getRefinedAnnoScore(TAliGraph &,
              TPropertyMap & pm,
              typename VertexDescriptor<TAliGraph>::Type vd1,
@@ -281,7 +281,7 @@ SEQAN_CHECKPOINT
 
 // default score 1 --> edgescore = alignmentscore
 template<typename TAliGraph,typename TScore>
-typename Value<TScore>::Type 
+typename Value<TScore>::Type
 _getRefinedAnnoScore(TAliGraph &,
              bool,
              typename VertexDescriptor<TAliGraph>::Type,
@@ -300,7 +300,7 @@ template<typename TAlignmentString, typename TScoreValue,typename TScoreSpec,typ
 void
 matchRefinement(TAlignmentString & alis,
                 TAnnoString & anno,
-                StringSet<TSequence, TSetSpec> & seq, 
+                StringSet<TSequence, TSetSpec> & seq,
                 Score<TScoreValue,TScoreSpec> & score_type,
                 TOutGraph & ali_graph)
 {
@@ -315,7 +315,7 @@ template<typename TAlignmentString, typename TScoreValue,typename TScoreSpec,typ
 void
 matchRefinement(TAlignmentString & alis,
                 TAnnoString & anno,
-                StringSet<TSequence, TSetSpec> & seq, 
+                StringSet<TSequence, TSetSpec> & seq,
                 Score<TScoreValue,TScoreSpec> & score_type,
                 TOutGraph & ali_graph,
                 unsigned int min_frag_len)
@@ -334,7 +334,7 @@ template<typename TAlignmentString, typename TOutGraph, typename TAnnoString, ty
 void
 matchRefinement(TAlignmentString & alis,
                 TAnnoString & anno,
-                StringSet<TSequence, TSetSpec> & seq, 
+                StringSet<TSequence, TSetSpec> & seq,
                 TOutGraph & ali_graph,
                 unsigned int min_frag_len)
 {
@@ -346,7 +346,7 @@ SEQAN_CHECKPOINT
     else
         matchRefinement(alis,seq,fake_score,ali_graph,min_frag_len,anno,ExactRefinement());
 }
-    
+
 
 
 //annotation given,exact refinement, score type not given
@@ -354,7 +354,7 @@ template<typename TAlignmentString,typename TAnnoString, typename TOutGraph, typ
 void
 matchRefinement(TAlignmentString & alis,
                 TAnnoString & anno,
-                StringSet<TSequence, TSetSpec> & seq, 
+                StringSet<TSequence, TSetSpec> & seq,
                 TOutGraph & ali_graph)
 {
 SEQAN_CHECKPOINT

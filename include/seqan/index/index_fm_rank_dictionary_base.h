@@ -48,7 +48,7 @@ namespace seqan {
 /*!
  * @defgroup RankDictionaryFibres RankDictionary Fibres
  * @brief Tag to select a specific fibre of a SequenceBitMask.
- * 
+ *
  * @see Fibre
  * @see RankDictionary#getFibre
  *
@@ -85,10 +85,10 @@ struct RDConfig
  * @headerfile <seqan/index.h>
  * @brief A rank dictionary is a data structure storing the rank of an element in a sequence at every position of
  *        the sequence.
- * 
+ *
  * @signature template <typename TValue, typename TSpec>
  *            struct RankDictionary;
- * 
+ *
  * @tparam TSpec The rank dictionary specialisation. Default: @link WaveletTree @endlink, @link TwoLevelRankDictionary @endlink.
  */
 template <typename TValue, typename TSpec>
@@ -144,12 +144,12 @@ struct Value<RankDictionary<TValue, TSpec> const> :
  * @fn RankDictionary#getFibre
  * @headerfile <seqan/index.h>
  * @brief Returns a specific fibre of a dictionary.
- * 
+ *
  * @signature TFibre getFibre(dictionary, fibreTag);
- * 
+ *
  * @param[in] dictionary The dictionary holding the fibre.
  * @param[in] fibreTag   A tag that identifies the @link Fibre @endlink. Types: @link RankDictionaryFibres @endlink.
- * 
+ *
  * @return TFibre A reference to the @link Fibre @endlink object.
  */
 
@@ -176,9 +176,9 @@ getFibre(RankDictionary<TValue, TSpec> const & dict, FibreRanks)
  * @fn RankDictionary#clear
  * @headerfile <seqan/index.h>
  * @brief Resets the rank dictionary.
- * 
+ *
  * @signature void clear(dictionary);
- * 
+ *
  * @param[in,out] dictionary The rank dictionary to be cleared.
  */
 
@@ -196,11 +196,11 @@ inline void clear(RankDictionary<TValue, TSpec> & dict)
  * @fn RankDictionary#empty
  * @headerfile <seqan/index.h>
  * @brief Returns whether or not the rank dictionary is empty.
- * 
+ *
  * @signature bool empty(dictionary);
- * 
+ *
  * @param[in] dictionary The rank dictionary to be checked.
- * 
+ *
  * @return bool <tt>true</tt> if the dictionary is empty, <tt>false</tt> otherwise.
  */
 
@@ -217,9 +217,9 @@ SEQAN_HOST_DEVICE inline bool empty(RankDictionary<TValue, TSpec> const & dict)
  * @fn RankDictionary#createRankDictionary
  * @headerfile <seqan/index.h>
  * @brief This functions creates the dictionary.
- * 
+ *
  * @signature void createRankDictionary(dictionary, text);
- * 
+ *
  * @param[in]  text       A text to be transfered into a rank dictionary. Types: @link ContainerConcept @endlink
  * @param[out] dictionary The dictionary.
  */
@@ -250,10 +250,10 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
  * @fn RankDictionary#getRank
  * @headerfile <seqan/index.h>
  * @brief Returns the rank of a specified character up to a specified position.
- * 
+ *
  * @signature TSize countOccurrences(dictionary, pos[, character]);
- * 
- * @param[in] dictionary The dictionary. 
+ *
+ * @param[in] dictionary The dictionary.
  * @param[in] pos The position (which is also included in the rank computation).
  * @param[in] character The character of interest. Default: <tt>true</tt>
  *
@@ -269,9 +269,9 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
  * @fn RankDictionary#getValue
  * @headerfile <seqan/index.h>
  * @brief Returns the character of a specified position.
- * 
+ *
  * @signature TValue getValue(dictionary, pos);
- * 
+ *
  * @param[in] dictionary The dictionary.
  * @param[in] pos        The position. Types: @link UnsignedIntegerConcept @endlink.
  *
@@ -287,9 +287,9 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
  * @fn RankDictionary#setValue
  * @headerfile <seqan/index.h>
  * @brief Sets the character at a specified position.
- * 
+ *
  * @signature void setValue(dictionary, pos, character);
- * 
+ *
  * @param[in] dictionary The dictionary.
  * @param[in] pos        The position. Types: @link UnsignedIntegerConcept @endlink.
  * @param[in] character  The character to be set.
@@ -322,7 +322,7 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
  *
  * @param dict The @link RankDictionary @endlink.
  *
- * @return TSize The number of element in the rank dictionary. The result of the metafunction 
+ * @return TSize The number of element in the rank dictionary. The result of the metafunction
  *               Size&lt;RankDictionary&gt;::Type
  */
 
@@ -381,9 +381,9 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
  * @fn RankDictionary#open
  * @headerfile <seqan/index.h>
  * @brief This functions loads a rank dictionary from disk.
- * 
+ *
  * @signature bool open(dictionary, fileName[, openMode]);
- * 
+ *
  * @param[in,out] dictionary The dictionary.
  * @param[in]     fileName   C-style character string containing the file name.
  * @param[in]     openMode   The combination of flags defining how the file should be opened.To open a file read-only,
@@ -391,7 +391,7 @@ createRankDictionary(RankDictionary<TValue, TSpec> & dict, TText const & text)
  *                           <tt>OPEN_RDWR</tt>.To create or overwrite a file add <tt>OPEN_CREATE</tt>.To append a file
  *                           if existing add <tt>OPEN_APPEND</tt>.To circumvent problems, files are always opened in
  *                           binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE | OPEN_APPEND</tt>
- * 
+ *
  * @return bool <tt>true</tt> on success.
  */
 
@@ -414,9 +414,9 @@ inline bool open(RankDictionary<TValue, TSpec> & dict, const char * fileName)
  * @fn RankDictionary#save
  * @headerfile <seqan/index.h>
  * @brief This functions saves a dictionary to disk.
- * 
+ *
  * @signature bool save(dictionary, fileName[, openMode]);
- * 
+ *
  * @param[in] dictionary The dictionary.
  * @param[in] fileName   C-style character string containing the file name.
  * @param[in] openMode   The combination of flags defining how the file should be opened.To open a file read-only,
@@ -424,7 +424,7 @@ inline bool open(RankDictionary<TValue, TSpec> & dict, const char * fileName)
  *                       <tt>OPEN_RDWR</tt>.To create or overwrite a file add <tt>OPEN_CREATE</tt>.To append a file
  *                       if existing add <tt>OPEN_APPEND</tt>.To circumvent problems, files are always opened in
  *                       binary mode. Default: <tt>OPEN_RDWR | OPEN_CREATE | OPEN_APPEND</tt>
- * 
+ *
  * @return TReturn A <tt>bool</tt> which is <tt>true</tt> on success.
  */
 template <typename TValue, typename TSpec>
