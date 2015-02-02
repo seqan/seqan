@@ -140,13 +140,13 @@ struct Value<Gaps<TSequence, TSpec> const> : Value<Gaps<TSequence, TSpec> >
 template <typename TSequence, typename TSpec, typename TIteratorSpec>
 struct Iterator<Gaps<TSequence, TSpec>, TIteratorSpec>
 {
-	typedef Iter<Gaps<TSequence, TSpec>, GapsIterator<TSpec> > Type;
+    typedef Iter<Gaps<TSequence, TSpec>, GapsIterator<TSpec> > Type;
 };
 
 template <typename TSequence, typename TSpec, typename TIteratorSpec>
 struct Iterator<Gaps<TSequence, TSpec> const, TIteratorSpec>
 {
-	typedef Iter<Gaps<TSequence, TSpec> const, GapsIterator<TSpec> > Type;
+    typedef Iter<Gaps<TSequence, TSpec> const, GapsIterator<TSpec> > Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -183,15 +183,15 @@ struct Position<Gaps<TSequence, TSpec> const> : Position<Gaps<TSequence, TSpec> 
 template <typename TSequence, typename TSpec>
 struct Reference<Gaps<TSequence, TSpec> >
 {
-	typedef typename Iterator<Gaps<TSequence, TSpec>, Standard>::Type TIterator_;
-	typedef Proxy<IteratorProxy<TIterator_> > Type;
+    typedef typename Iterator<Gaps<TSequence, TSpec>, Standard>::Type TIterator_;
+    typedef Proxy<IteratorProxy<TIterator_> > Type;
 };
 
 template <typename TSequence, typename TSpec>
 struct Reference<Gaps<TSequence, TSpec> const>
 {
-	typedef typename Iterator<Gaps<TSequence, TSpec> const, Standard>::Type TIterator_;
-	typedef Proxy<IteratorProxy<TIterator_> > Type;
+    typedef typename Iterator<Gaps<TSequence, TSpec> const, Standard>::Type TIterator_;
+    typedef Proxy<IteratorProxy<TIterator_> > Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -767,18 +767,18 @@ countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
 template <typename TTarget, typename TSource, typename TSpec>
 inline void
 write(TTarget & target,
-	  Gaps<TSource, TSpec> const & source)
+      Gaps<TSource, TSpec> const & source)
 {
-	// Print gaps row
-	typedef typename Iterator<Gaps<TSource, TSpec> const>::Type TIter;
-	TIter begin_ = begin(source);
-	TIter end_ = end(source);
-	for (; begin_ != end_; ++begin_) {
-		if (isGap(begin_))
-			writeValue(target, gapValue<char>());
-		else
-			writeValue(target, convert<char>(getValue(begin_)));
-	}
+    // Print gaps row
+    typedef typename Iterator<Gaps<TSource, TSpec> const>::Type TIter;
+    TIter begin_ = begin(source);
+    TIter end_ = end(source);
+    for (; begin_ != end_; ++begin_) {
+        if (isGap(begin_))
+            writeValue(target, gapValue<char>());
+        else
+            writeValue(target, convert<char>(getValue(begin_)));
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -817,32 +817,32 @@ void _pumpTraceToGaps(Gaps<TSequenceH, TGapsSpecH> & gapsH,
     typedef typename Iterator<TGapsV, Standard>::Type TGapsVIter;
 
     // TODO(holtgrew): I don't understand the following.  Originally, this function used Align objects, but I did not understand it there either.
-	// TODO(rausch): Pump trace into align_ (note: this is relatively slow code here. it could be improved if specialized to the Align Specs).
+    // TODO(rausch): Pump trace into align_ (note: this is relatively slow code here. it could be improved if specialized to the Align Specs).
     clearGaps(gapsH);
     clearClipping(gapsH);
     clearGaps(gapsV);
     clearClipping(gapsV);
 
-	TSize i = length(trace.sizes);  // Scan trace backwards.
-	TGapsHIter itH = begin(gapsH);
-	TGapsVIter itV = begin(gapsV);
-	while (i > 0)
-	{
-		--i;
-		TSize size = trace.sizes[i];
-		switch ((int) trace.tvs[i])
-		{
-		case 1:  // Go horizontal.
-			insertGaps(itV, size);
-			break;
+    TSize i = length(trace.sizes);  // Scan trace backwards.
+    TGapsHIter itH = begin(gapsH);
+    TGapsVIter itV = begin(gapsV);
+    while (i > 0)
+    {
+        --i;
+        TSize size = trace.sizes[i];
+        switch ((int) trace.tvs[i])
+        {
+        case 1:  // Go horizontal.
+            insertGaps(itV, size);
+            break;
 
-		case 2:  // Go vertical.
-			insertGaps(itH, size);
-			break;
-		}
-		goFurther(itH, size);
-		goFurther(itV, size);
-	}
+        case 2:  // Go vertical.
+            insertGaps(itH, size);
+            break;
+        }
+        goFurther(itH, size);
+        goFurther(itV, size);
+    }
 }
 
 // ----------------------------------------------------------------------------

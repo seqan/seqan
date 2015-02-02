@@ -103,19 +103,19 @@ struct CDStruct
         moveConstructions += 1;
     }
 
-	CDStruct & operator=(CDStruct && other)
-	{
-		lastOther = &other;
-		moves += 1;
-		copiedFrom = -1;
-		assignedFrom = -1;
-		movedFrom = other.id;
-		setFrom = -1;
-		return *this;
-	}
+    CDStruct & operator=(CDStruct && other)
+    {
+        lastOther = &other;
+        moves += 1;
+        copiedFrom = -1;
+        assignedFrom = -1;
+        movedFrom = other.id;
+        setFrom = -1;
+        return *this;
+    }
 #endif
-	
-	~CDStruct()
+    
+    ~CDStruct()
     {
         destructions += 1;
     }

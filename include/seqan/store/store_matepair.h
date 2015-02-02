@@ -78,18 +78,18 @@ namespace SEQAN_NAMESPACE_MAIN
 template <typename TSpec = void>
 struct MatePairStoreElement
 {
-	typedef typename Id<MatePairStoreElement>::Type TId;
+    typedef typename Id<MatePairStoreElement>::Type TId;
 
-	static const TId INVALID_ID;
-	
-	TId		readId[2];	// refers to the two reads of a mate-pair, INVALID_ID if this is a singleton fragment (e.g. in afg: reads refer to fragments (mate pairs) and these refer to libraries, singletons refer to an empty fragment)
-	TId		libId;
+    static const TId INVALID_ID;
+    
+    TId        readId[2];    // refers to the two reads of a mate-pair, INVALID_ID if this is a singleton fragment (e.g. in afg: reads refer to fragments (mate pairs) and these refer to libraries, singletons refer to an empty fragment)
+    TId        libId;
 
-	MatePairStoreElement() : libId(INVALID_ID) 
-	{
-		readId[0] = INVALID_ID;
-		readId[1] = INVALID_ID;
-	}
+    MatePairStoreElement() : libId(INVALID_ID) 
+    {
+        readId[0] = INVALID_ID;
+        readId[1] = INVALID_ID;
+    }
 
     inline bool operator==(MatePairStoreElement const & other) const
     {

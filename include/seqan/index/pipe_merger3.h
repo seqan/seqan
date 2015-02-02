@@ -41,7 +41,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //namespace SEQAN_NAMESPACE_PIPELINING
 //{
 
-	struct Merger3;
+    struct Merger3;
 
     template < typename TInput0, typename TInput12 >
     struct Value< Pipe< Bundle2< TInput0, TInput12 >, Merger3 > >
@@ -146,14 +146,14 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
     // global pipe functions
     template < typename TInput >
-	inline bool control(Pipe< TInput, Merger3 > &me, ControlBeginRead const &command) {
+    inline bool control(Pipe< TInput, Merger3 > &me, ControlBeginRead const &command) {
         if (!control(me.in, command)) return false;
         me.twoStreams = !eof(me.in.in1);
         me.minStream = eof(me.in.in2)? -1: 1;
         me.N = length(me);
         me.getMin();
-		return true;
-	}
+        return true;
+    }
     
     template < typename TInput >
     inline typename Size< Pipe< TInput, Merger3 > >::Type

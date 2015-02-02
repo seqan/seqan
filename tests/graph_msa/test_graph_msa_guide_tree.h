@@ -85,93 +85,93 @@ void
 Test_UpgmaGuideTree(int seed) {
     using namespace seqan;
 
-	typedef unsigned int TSize;
+    typedef unsigned int TSize;
 
     Rng<MersenneTwister> rng(seed);
 
-	for(TSize i = 0; i < 10; ++i) {
-		// Set-up a sparse distance matrix
+    for(TSize i = 0; i < 10; ++i) {
+        // Set-up a sparse distance matrix
         Pdf<Uniform<TSize> > pdfN(2, 11);
-		TSize n = pickRandomNumber(rng, pdfN);
-		Graph<Undirected<double> > distGraph;
-		String<double> distMatrix;
-		resize(distMatrix, n * n, 0);
-		TSize all = (n * (n - 1)) / 2;
-		typedef std::set<double> TDistanceSet;
-		//typedef TDistanceSet::iterator TSetIt;
-		TDistanceSet distances;
-		String<double> myDist;
-		typedef Iterator<String<double> >::Type TStringIter;
-		while (distances.size() < all) {
+        TSize n = pickRandomNumber(rng, pdfN);
+        Graph<Undirected<double> > distGraph;
+        String<double> distMatrix;
+        resize(distMatrix, n * n, 0);
+        TSize all = (n * (n - 1)) / 2;
+        typedef std::set<double> TDistanceSet;
+        //typedef TDistanceSet::iterator TSetIt;
+        TDistanceSet distances;
+        String<double> myDist;
+        typedef Iterator<String<double> >::Type TStringIter;
+        while (distances.size() < all) {
             Pdf<Uniform<double> > pdf(0, 1000000);
-			double newVal = pickRandomNumber(rng, pdf);
-			if (distances.insert(newVal).second) {
-				appendValue(myDist, newVal);
-			}
-		}
-		double infCargo = _getInfinity<double>();
-		//clear(myDist); appendValue(myDist, infCargo); appendValue(myDist, infCargo); appendValue(myDist, 84);
-		TStringIter strIt = begin(myDist);
-		for(TSize row = 0; row < n; ++row)
+            double newVal = pickRandomNumber(rng, pdf);
+            if (distances.insert(newVal).second) {
+                appendValue(myDist, newVal);
+            }
+        }
+        double infCargo = _getInfinity<double>();
+        //clear(myDist); appendValue(myDist, infCargo); appendValue(myDist, infCargo); appendValue(myDist, 84);
+        TStringIter strIt = begin(myDist);
+        for(TSize row = 0; row < n; ++row)
             addVertex(distGraph);
-		for(TSize row = 0; row < n; ++row) {
-			for(TSize col = n - 1; col > row; --col) {
-				addEdge(distGraph, row, col, value(strIt));
-				value(distMatrix, row * n + col) = value(strIt);
-				goNext(strIt);
-			}
-		}
-		//removeEdge(distGraph, 0, 1);removeEdge(distGraph, 0, 2);
+        for(TSize row = 0; row < n; ++row) {
+            for(TSize col = n - 1; col > row; --col) {
+                addEdge(distGraph, row, col, value(strIt));
+                value(distMatrix, row * n + col) = value(strIt);
+                goNext(strIt);
+            }
+        }
+        //removeEdge(distGraph, 0, 1);removeEdge(distGraph, 0, 2);
         Graph<Undirected<double> > distGraphCopy;
         String<double> distMatrixCopy;
-		for(TSize row = 0; row < n; ++row) {
-			for(TSize col = n - 1; col > row; --col) {
+        for(TSize row = 0; row < n; ++row) {
+            for(TSize col = n - 1; col > row; --col) {
                 distGraphCopy = distGraph;
                 distMatrixCopy = distMatrix;
 
                 Pdf<Uniform<double> > pdf(0, 1.0);
-				if (pickRandomNumber(rng, pdf) < 0.5) {
-					value(distMatrix, row * n + col) = infCargo;
-					removeEdge(distGraph, row, col);
-				}
+                if (pickRandomNumber(rng, pdf) < 0.5) {
+                    value(distMatrix, row * n + col) = infCargo;
+                    removeEdge(distGraph, row, col);
+                }
 
                 String<size_t> _;
                 if (connectedComponents(_, distGraph)) {
                     move(distGraph, distGraphCopy);
                     move(distMatrix, distMatrixCopy);
                 }
-			}
-		}
-		// Guide Tree
-		Graph<Tree<double> > guideTreeGraph;
-		upgmaTree(distGraph, guideTreeGraph, TTag());
-		Graph<Tree<double> > guideTreeMat;
-		upgmaTree(distMatrix, guideTreeMat, TTag());
-		typedef Iterator<Graph<Tree<double> >, BfsIterator>::Type TBfsIterator;
-		String<TSize> set1;
-		TBfsIterator itBfs(guideTreeGraph, getRoot(guideTreeGraph));
-		for(;!atEnd(itBfs);goNext(itBfs)) appendValue(set1, value(itBfs));
-		String<TSize> set2;
-		TBfsIterator itBfs2(guideTreeMat, getRoot(guideTreeMat));
-		for(;!atEnd(itBfs2);goNext(itBfs2)) appendValue(set2, value(itBfs2));
+            }
+        }
+        // Guide Tree
+        Graph<Tree<double> > guideTreeGraph;
+        upgmaTree(distGraph, guideTreeGraph, TTag());
+        Graph<Tree<double> > guideTreeMat;
+        upgmaTree(distMatrix, guideTreeMat, TTag());
+        typedef Iterator<Graph<Tree<double> >, BfsIterator>::Type TBfsIterator;
+        String<TSize> set1;
+        TBfsIterator itBfs(guideTreeGraph, getRoot(guideTreeGraph));
+        for(;!atEnd(itBfs);goNext(itBfs)) appendValue(set1, value(itBfs));
+        String<TSize> set2;
+        TBfsIterator itBfs2(guideTreeMat, getRoot(guideTreeMat));
+        for(;!atEnd(itBfs2);goNext(itBfs2)) appendValue(set2, value(itBfs2));
         SEQAN_ASSERT(set1 == set1);
         /*
-		if (set1 != set2) {
-			std::cout << "Randomized test failed:" << std::endl;
-			std::cout << "Upgma Guide Trees:" << std::endl;
-			std::cout << guideTreeMat << std::endl;
-			std::cout << guideTreeGraph << std::endl;
-			for(TSize i=0;i<n;++i) {
-				for(TSize j=i+1;j<n;++j) {
-					std::cout << value(distMatrix, i*n+j) << ",";
-				}
-				std::cout << std::endl;
-			}
-			std::cout << std::endl;
-			exit(0);
-		}
+        if (set1 != set2) {
+            std::cout << "Randomized test failed:" << std::endl;
+            std::cout << "Upgma Guide Trees:" << std::endl;
+            std::cout << guideTreeMat << std::endl;
+            std::cout << guideTreeGraph << std::endl;
+            for(TSize i=0;i<n;++i) {
+                for(TSize j=i+1;j<n;++j) {
+                    std::cout << value(distMatrix, i*n+j) << ",";
+                }
+                std::cout << std::endl;
+            }
+            std::cout << std::endl;
+            exit(0);
+        }
         */
-	}
+    }
 }
 
 SEQAN_DEFINE_TEST(test_graph_msa_guide_tree_neighbour_joining)

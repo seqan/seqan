@@ -46,7 +46,7 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TTextInput, typename TNameInput >
     struct Pipe< Bundle2< TTextInput, TNameInput >, Extender3 >
     {
-		enum { maxShift = 2 };
+        enum { maxShift = 2 };
         typedef typename Size<Pipe>::Type                   TSize;
         typedef typename Value<TTextInput>::Type            TValue;
         typedef typename Value<TNameInput>::Type            TNameInputValue;
@@ -72,10 +72,10 @@ namespace SEQAN_NAMESPACE_MAIN
             beginRead(nameIn) &&
             beginWrite(out0) && 
             beginWrite(out12))) return false;
-		
-		typename Value<TOut0>::Type  o0 = typename Value<TOut0>::Type();
-		typename Value<TOut12>::Type o1 = typename Value<TOut12>::Type();
-		typename Value<TOut12>::Type o2 = typename Value<TOut12>::Type();
+        
+        typename Value<TOut0>::Type  o0 = typename Value<TOut0>::Type();
+        typename Value<TOut12>::Type o1 = typename Value<TOut12>::Type();
+        typename Value<TOut12>::Type o2 = typename Value<TOut12>::Type();
 
         unsigned r = (unsigned)(length(textIn) % 3);
         bool filled = (r != 0);

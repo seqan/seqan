@@ -41,24 +41,24 @@ namespace SEQAN_NAMESPACE_MAIN
 //namespace SEQAN_NAMESPACE_PIPELINING
 //{
 
-	struct Joiner;
+    struct Joiner;
 
-	template < typename TInput1, typename TInput2 >
+    template < typename TInput1, typename TInput2 >
     struct Value< Pipe< Bundle2< TInput1, TInput2 >, Joiner > > {
-		typedef Pair<
-			typename Value<TInput1>::Type,
-			typename Value<TInput2>::Type
-		> Type;
-	};
+        typedef Pair<
+            typename Value<TInput1>::Type,
+            typename Value<TInput2>::Type
+        > Type;
+    };
 
-	template < typename TInput1, typename TInput2, typename TInput3 >
+    template < typename TInput1, typename TInput2, typename TInput3 >
     struct Value< Pipe< Bundle3< TInput1, TInput2, TInput3 >, Joiner > > {
-		typedef Triple<
-			typename Value<TInput1>::Type,
-			typename Value<TInput2>::Type,
-			typename Value<TInput3>::Type
-		> Type;
-	};
+        typedef Triple<
+            typename Value<TInput1>::Type,
+            typename Value<TInput2>::Type,
+            typename Value<TInput3>::Type
+        > Type;
+    };
 
 /*!
  * @class Joiner
@@ -80,11 +80,11 @@ namespace SEQAN_NAMESPACE_MAIN
 
     //////////////////////////////////////////////////////////////////////////////
     // joiner class
-	template < typename TInput1, typename TInput2 >
+    template < typename TInput1, typename TInput2 >
     struct Pipe< Bundle2< TInput1, TInput2 >, Joiner >
     {
-		Bundle2< TInput1, TInput2 >	in;
-        typename Value<Pipe>::Type	tmp;
+        Bundle2< TInput1, TInput2 >    in;
+        typename Value<Pipe>::Type    tmp;
         
         Pipe(Bundle2< TInput1, TInput2 > _in):
             in(_in) {}
@@ -102,11 +102,11 @@ namespace SEQAN_NAMESPACE_MAIN
         }
     };
 
-	template < typename TInput1, typename TInput2, typename TInput3 >
+    template < typename TInput1, typename TInput2, typename TInput3 >
     struct Pipe< Bundle3< TInput1, TInput2, TInput3 >, Joiner >
     {
-		Bundle3< TInput1, TInput2, TInput3 >	in;
-        typename Value<Pipe>::Type				tmp;
+        Bundle3< TInput1, TInput2, TInput3 >    in;
+        typename Value<Pipe>::Type                tmp;
         
         Pipe(Bundle3< TInput1, TInput2, TInput3 > _in):
             in(_in) {}

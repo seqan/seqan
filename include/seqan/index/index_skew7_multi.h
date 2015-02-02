@@ -40,11 +40,11 @@ namespace SEQAN_NAMESPACE_MAIN
 
     //////////////////////////////////////////////////////////////////////////////
     // external Skew7 algorithm (optimized for multiple sequences)
-	//  - creates a suffix array of pairs (seqNo,seqPos)
+    //  - creates a suffix array of pairs (seqNo,seqPos)
     //////////////////////////////////////////////////////////////////////////////
 
 
-	template < typename TInput, typename TPair, typename TLimitsString >
+    template < typename TInput, typename TPair, typename TLimitsString >
     struct Value< Pipe< TInput, Multi<Skew7, TPair, TLimitsString> > >
     {
         typedef TPair Type;
@@ -57,8 +57,8 @@ namespace SEQAN_NAMESPACE_MAIN
     struct _skew7NCompMulti : public std::binary_function<TValue, TValue, TResult> {
         inline TResult operator() (const TValue &a, const TValue &b) const
         {
-			typedef typename Value<TValue, 1>::Type                 TPos;
-			typedef typename Value<TPos, 2>::Type                   TSize;
+            typedef typename Value<TValue, 1>::Type                 TPos;
+            typedef typename Value<TPos, 2>::Type                   TSize;
             typedef typename Value<TValue, 2>::Type                 TSeptet;
             typedef typename Value<TSeptet>::Type                   TSeptetValue;
             typedef typename StoredTupleValue_<TSeptetValue>::Type  TStoredValue;
@@ -67,8 +67,8 @@ namespace SEQAN_NAMESPACE_MAIN
             const TStoredValue *sb = b.i2.i;
 
             TSize n = LENGTH<TSeptet>::VALUE;
-			TSize aLeft = getValueI2(getValueI1(a));
-			TSize bLeft = getValueI2(getValueI1(b));
+            TSize aLeft = getValueI2(getValueI1(a));
+            TSize bLeft = getValueI2(getValueI1(b));
             if (aLeft < n) n = aLeft;
             if (bLeft < n) n = bLeft;
 
@@ -82,9 +82,9 @@ namespace SEQAN_NAMESPACE_MAIN
             if (n < LENGTH<TSeptet>::VALUE)
             {
                 // overlap is equal, now suffix lengths decide
-				if (aLeft < bLeft) return -1;
-				if (aLeft > bLeft) return 1;
-				return (getValueI1(getValueI1(a)) > getValueI1(getValueI1(b)))? -1 : 1;
+                if (aLeft < bLeft) return -1;
+                if (aLeft > bLeft) return 1;
+                return (getValueI1(getValueI1(a)) > getValueI1(getValueI1(b)))? -1 : 1;
             }
 
             return 0;
@@ -103,111 +103,111 @@ namespace SEQAN_NAMESPACE_MAIN
             const Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack > &b) const
         {
             typedef typename Value<T1, 2>::Type TSize;
-			TSize aLeft = getValueI2(getValueI1(a));
-			TSize bLeft = getValueI2(getValueI1(b));
+            TSize aLeft = getValueI2(getValueI1(a));
+            TSize bLeft = getValueI2(getValueI1(b));
 
-			if (aLeft >= 7 && bLeft >= 7)
+            if (aLeft >= 7 && bLeft >= 7)
             {
-				if (a.i2 < b.i2) return -1;
-				if (a.i2 > b.i2) return 1;
-				return 0;
-			}
+                if (a.i2 < b.i2) return -1;
+                if (a.i2 > b.i2) return 1;
+                return 0;
+            }
 
             TSize n = 7;
-			if (aLeft < n) n = aLeft;
+            if (aLeft < n) n = aLeft;
             if (bLeft < n) n = bLeft;
 
             // compare the overlap of septets (the first n bases)
             for(TSize i = 0; i < n; i++)
             {
-				if (a.i2[i] == b.i2[i]) continue;
-				return (a.i2[i] < b.i2[i])? -1 : 1;
-			}
+                if (a.i2[i] == b.i2[i]) continue;
+                return (a.i2[i] < b.i2[i])? -1 : 1;
+            }
 
             // overlap is equal, now suffix lengths decide
-			if (aLeft < bLeft) return -1;
-			if (aLeft > bLeft) return 1;
-			return (getValueI1(getValueI1(a)) > getValueI1(getValueI1(b)))? -1 : 1;
+            if (aLeft < bLeft) return -1;
+            if (aLeft > bLeft) return 1;
+            return (getValueI1(getValueI1(a)) > getValueI1(getValueI1(b)))? -1 : 1;
         }
     };
 
-	template <
-		typename TValue,
+    template <
+        typename TValue,
         typename TLimitsString,
         typename TResultSize = typename Value<TLimitsString>::Type,
-		typename TResult = Pair<TResultSize, typename Value<TValue,2>::Type, typename Spec<TValue>::Type>
+        typename TResult = Pair<TResultSize, typename Value<TValue,2>::Type, typename Spec<TValue>::Type>
     >
     struct _skew7GlobalSlicedMulti :
-		public std::unary_function<TValue, TResult>
+        public std::unary_function<TValue, TResult>
     {
     
-		typedef TResultSize TSize;
+        typedef TResultSize TSize;
 
-		TSize			n4, n2, n1;
-		TSize			n24;
-		TLimitsString	off[5];
+        TSize            n4, n2, n1;
+        TSize            n24;
+        TLimitsString    off[5];
 
-		_skew7GlobalSlicedMulti(TLimitsString const &limits)
-		{
-			typename Iterator<TLimitsString const, Standard>::Type it = begin(limits, Standard()), itEnd = end(limits, Standard());
+        _skew7GlobalSlicedMulti(TLimitsString const &limits)
+        {
+            typename Iterator<TLimitsString const, Standard>::Type it = begin(limits, Standard()), itEnd = end(limits, Standard());
 
-			n4 = n2 = n1 = n24 = 0;
+            n4 = n2 = n1 = n24 = 0;
 
-			if (it == itEnd) return;
+            if (it == itEnd) return;
 
-			// count the numbers of septets in residue class 1, 2, and 4
-			
-			TSize size, cur;
-			TSize old = *it; ++it;
+            // count the numbers of septets in residue class 1, 2, and 4
+            
+            TSize size, cur;
+            TSize old = *it; ++it;
 
-			while (it != itEnd) {
-				cur = *it;
-				size = cur - old;
-				old = cur;
-				
-				n4 += (size + 3) / 7;
-				n2 += (size + 5) / 7;
-				n1 += (size + 6) / 7;
+            while (it != itEnd) {
+                cur = *it;
+                size = cur - old;
+                old = cur;
+                
+                n4 += (size + 3) / 7;
+                n2 += (size + 5) / 7;
+                n1 += (size + 6) / 7;
 
-				++it;
-			}
+                ++it;
+            }
 
-			n24 = n2 + n4;
+            n24 = n2 + n4;
 
-			// precompute the begin positions (off) of septet names 
-			// in the sliced string for every sequence and every residue class
+            // precompute the begin positions (off) of septet names 
+            // in the sliced string for every sequence and every residue class
 
-			resize(off[1], length(limits) - 1);
-			resize(off[2], length(limits) - 1);
-			resize(off[4], length(limits) - 1);
+            resize(off[1], length(limits) - 1);
+            resize(off[2], length(limits) - 1);
+            resize(off[4], length(limits) - 1);
 
-			it = begin(limits, Standard());
-			old = *it; ++it;
+            it = begin(limits, Standard());
+            old = *it; ++it;
 
-			TSize seqNo = 0;
-			TSize off4 = 0, off2 = n4, off1 = n24;
-			while (it != itEnd) {
-				cur = *it;
-				size = cur - old;
-				old = cur;
-				
-				off4 += (size + 3) / 7;
-				off2 += (size + 5) / 7;
-				off1 += (size + 6) / 7;
+            TSize seqNo = 0;
+            TSize off4 = 0, off2 = n4, off1 = n24;
+            while (it != itEnd) {
+                cur = *it;
+                size = cur - old;
+                old = cur;
+                
+                off4 += (size + 3) / 7;
+                off2 += (size + 5) / 7;
+                off1 += (size + 6) / 7;
 
-				off[4][seqNo] = (off4)? off4-1 : 0;
-				off[2][seqNo] = (off2)? off2-1 : 0;
-				off[1][seqNo] = (off1)? off1-1 : 0;
+                off[4][seqNo] = (off4)? off4-1 : 0;
+                off[2][seqNo] = (off2)? off2-1 : 0;
+                off[1][seqNo] = (off1)? off1-1 : 0;
 
-				++it; ++seqNo;
-			}
-		}
+                ++it; ++seqNo;
+            }
+        }
 
-		inline TResult operator() (const TValue &x) const {
-			typename Value<TValue,1>::Type x_i1 = x.i1;
-			TSize seqOfs = getValueI2(x_i1);
-			return TResult(off[seqOfs % 7][getValueI1(x_i1)] - seqOfs/7, x.i2);
-		}
+        inline TResult operator() (const TValue &x) const {
+            typename Value<TValue,1>::Type x_i1 = x.i1;
+            TSize seqOfs = getValueI2(x_i1);
+            return TResult(off[seqOfs % 7][getValueI1(x_i1)] - seqOfs/7, x.i2);
+        }
     };
 
 
@@ -229,27 +229,27 @@ namespace SEQAN_NAMESPACE_MAIN
             Pack>::Type TPack;
 
         // step 1
-		typedef Pipe< TInput, Multi<Sampler<7, TPack>, TPair, TLimitsString> >  TSamplerDC7;
+        typedef Pipe< TInput, Multi<Sampler<7, TPack>, TPair, TLimitsString> >  TSamplerDC7;
                                         typedef _skew7NCompMulti<TypeOf_(TSamplerDC7)> ncomp_t;
         typedef Pool< TypeOf_(TSamplerDC7), SorterSpec< SorterConfigSize<ncomp_t, TSizeOf_(TSamplerDC7) > > > TSortTuples;
-		typedef Pipe< TSortTuples, Namer<ncomp_t> > TNamer;
+        typedef Pipe< TSortTuples, Namer<ncomp_t> > TNamer;
                                         typedef _skew7GlobalSlicedMulti<TypeOf_(TNamer), TLimitsString, TSizeOf_(TNamer)> func_slice_t;
 
-		typedef Pipe< TNamer, Filter<func_slice_t> > TSlicedPos;
+        typedef Pipe< TNamer, Filter<func_slice_t> > TSlicedPos;
         typedef Pool< TypeOf_(TSlicedPos), MapperSpec< MapperConfigSize< filterI1<TypeOf_(TSlicedPos)>, TSizeOf_(TSlicedPos) > > > TNames_Sliced;
 
         // non-unique names
         typedef Pipe< TNames_Sliced, Filter< filterI2<TypeOf_(TNames_Sliced)> > > TFilter;
 
-			// recursion
-			typedef Pipe< TFilter, Skew7 > TRecurse;
-			typedef Pipe< TRecurse, Counter > TRenamer;
+            // recursion
+            typedef Pipe< TFilter, Skew7 > TRecurse;
+            typedef Pipe< TRecurse, Counter > TRenamer;
 
-			// no recursion inMemory shortcut
-			typedef Pipe< TFilter, LarssonSadakane > TInMem;
-			typedef Pipe< TInMem, Counter > TRenamerInMem;
+            // no recursion inMemory shortcut
+            typedef Pipe< TFilter, LarssonSadakane > TInMem;
+            typedef Pipe< TInMem, Counter > TRenamerInMem;
 
-		typedef Pool< TypeOf_(TRenamer), MapperSpec< MapperConfigSize< filterI1<TypeOf_(TRenamer)>, TSizeOf_(TRenamer) > > > TNames_Linear;
+        typedef Pool< TypeOf_(TRenamer), MapperSpec< MapperConfigSize< filterI1<TypeOf_(TRenamer)>, TSizeOf_(TRenamer) > > > TNames_Linear;
 
         // step 2
         typedef Pipe< Bundle2< TInput, TNames_Linear >, Extender7Multi<TPair, TPack> > TExtender;
@@ -264,37 +264,37 @@ namespace SEQAN_NAMESPACE_MAIN
 
         // step 3
                                         typedef _skew7NMapExtended<TypeOf_(typename TExtender::Out124)> nmap_extended_t;
-		typedef Pool< TypeOf_(typename TExtender::Out124), MapperSpec< MapperConfigSize< nmap_extended_t, TSizeOf_(typename TExtender::Out124) > > > TSorterS124;
+        typedef Pool< TypeOf_(typename TExtender::Out124), MapperSpec< MapperConfigSize< nmap_extended_t, TSizeOf_(typename TExtender::Out124) > > > TSorterS124;
         typedef Pipe< Bundle5< TSorterS0, TSorterS3, TSorterS5, TSorterS6, TSorterS124 >, Merger7Multi<TLimitsString> > TMerger;
 
-        TSorterS0			sortedS0;
-        TSorterS3			sortedS3;
-        TSorterS5			sortedS5;
-        TSorterS6			sortedS6;
-        TSorterS124			sortedS124;
-        TMerger				in;
-		TLimitsString       const &limits;
+        TSorterS0            sortedS0;
+        TSorterS3            sortedS3;
+        TSorterS5            sortedS5;
+        TSorterS6            sortedS6;
+        TSorterS124            sortedS124;
+        TMerger                in;
+        TLimitsString       const &limits;
 
         // (weese): The SEQAN_CTOR_ENABLE_IF is necessary to avoid implicit casts and references to temporaries
 
         template <typename TLimitsString_>
         Pipe(TLimitsString_ const &_limits, SEQAN_CTOR_ENABLE_IF(IsSameType<TLimitsString, TLimitsString_>)) :
-			in(bundle5(sortedS0, sortedS3, sortedS5, sortedS6, sortedS124), _limits),
-			limits(_limits)
+            in(bundle5(sortedS0, sortedS3, sortedS5, sortedS6, sortedS124), _limits),
+            limits(_limits)
         {
             ignoreUnusedVariableWarning(dummy);
         }
 
         template <typename TLimitsString_>
         Pipe(TInput& _textIn, TLimitsString_ const &_limits, SEQAN_CTOR_ENABLE_IF(IsSameType<TLimitsString, TLimitsString_>)) :
-			in(bundle5(sortedS0, sortedS3, sortedS5, sortedS6, sortedS124), _limits),
-			limits(_limits)
-		{
+            in(bundle5(sortedS0, sortedS3, sortedS5, sortedS6, sortedS124), _limits),
+            limits(_limits)
+        {
             ignoreUnusedVariableWarning(dummy);
-			process(_textIn);
-		}
+            process(_textIn);
+        }
         
-	    template < typename TInput_ >
+        template < typename TInput_ >
         bool process(TInput_ &textIn) {
 
             SEQAN_PROADD(SEQAN_PRODEPTH, 1);
@@ -317,40 +317,40 @@ namespace SEQAN_NAMESPACE_MAIN
             sorter << sampler;
             SEQAN_PROMARK("Sorter (2) - sort 7-mers");
 
-			TNamer                      namer(sorter);
-            func_slice_t				func_slice(limits);
+            TNamer                      namer(sorter);
+            func_slice_t                func_slice(limits);
 
-			TSlicedPos					slicedPos(namer, func_slice);
+            TSlicedPos                    slicedPos(namer, func_slice);
             TNames_Sliced               names_sliced;
             #ifdef SEQAN_DEBUG_INDEX
                 std::cerr << "  slice names" << std::endl;
             #endif
             names_sliced << slicedPos;
 
-			if (namer.unique() || empty(names_sliced)) {
+            if (namer.unique() || empty(names_sliced)) {
                 // unique names
 
                 clear(sorter);
                 SEQAN_PROMARK("Mapper (4) - construct s124");
 
-				TNames_Linear               names_S1, names_S2, names_S4;
+                TNames_Linear               names_S1, names_S2, names_S4;
 
                 #ifdef SEQAN_DEBUG_INDEX
                     std::cerr << "  make names linear" << std::endl;
                 #endif
 
-				_skew7SeparateSlices(
-					names_sliced, func_slice, 
-					names_S1, names_S2, names_S4);
+                _skew7SeparateSlices(
+                    names_sliced, func_slice, 
+                    names_S1, names_S2, names_S4);
 
-				clear(names_sliced);
+                clear(names_sliced);
                 SEQAN_PROMARK("Mapper (10) - construct ISA124");
 
                 // step 2
                 _skew7ExtendMulti(
-					textIn, limits, 
-					names_S1, names_S2, names_S4, 
-					sortedS0, sortedS3, sortedS5, sortedS6, sortedS124);
+                    textIn, limits, 
+                    names_S1, names_S2, names_S4, 
+                    sortedS0, sortedS3, sortedS5, sortedS6, sortedS124);
 
             } else {
                 // non-unique names
@@ -359,43 +359,43 @@ namespace SEQAN_NAMESPACE_MAIN
                 SEQAN_PROMARK("Mapper (4) - construct s124");
 
                 TFilter                     filter(names_sliced);
-				TNames_Linear               names_S1, names_S2, names_S4;
+                TNames_Linear               names_S1, names_S2, names_S4;
 
-//				if (length(filter) > 128*1024*1024) 
-				{
-					// recursion
-					TRecurse                    recurse(filter);
+//                if (length(filter) > 128*1024*1024) 
+                {
+                    // recursion
+                    TRecurse                    recurse(filter);
 
-					#ifdef SEQAN_TEST_SKEW7
-					{
-						String<typename Value<TFilter>::Type, Alloc<> > _text;
-						_text << filter;
-						SEQAN_ASSERT(isSuffixArray(recurse, _text));
-					}
-					#endif
+                    #ifdef SEQAN_TEST_SKEW7
+                    {
+                        String<typename Value<TFilter>::Type, Alloc<> > _text;
+                        _text << filter;
+                        SEQAN_ASSERT(isSuffixArray(recurse, _text));
+                    }
+                    #endif
 
-					clear(filter);
-					TRenamer                    renamer(recurse);
+                    clear(filter);
+                    TRenamer                    renamer(recurse);
 
-					// partition SA by residue classes
+                    // partition SA by residue classes
 
-					#ifdef SEQAN_DEBUG_INDEX
-						std::cerr << "  rename names" << std::endl;
-					#endif
+                    #ifdef SEQAN_DEBUG_INDEX
+                        std::cerr << "  rename names" << std::endl;
+                    #endif
 
-					_skew7SeparateSlices(
-						renamer, func_slice, 
-						names_S1, names_S2, names_S4);
-				} 
-/*				else
-				{
-					TInMem						inMem(filter);
-					clear(filter);
-					TRenamerInMem               renamer(inMem);
-					_skew7SeparateSlices(
-						renamer, func_slice, 
-						names_S1, names_S2, names_S4);
-				} 
+                    _skew7SeparateSlices(
+                        renamer, func_slice, 
+                        names_S1, names_S2, names_S4);
+                } 
+/*                else
+                {
+                    TInMem                        inMem(filter);
+                    clear(filter);
+                    TRenamerInMem               renamer(inMem);
+                    _skew7SeparateSlices(
+                        renamer, func_slice, 
+                        names_S1, names_S2, names_S4);
+                } 
 */
                 SEQAN_PROMARK("Mapper (10) - construct ISA124");
                
@@ -404,9 +404,9 @@ namespace SEQAN_NAMESPACE_MAIN
                     std::cerr << "  prepare merge" << std::endl;
                 #endif
                 _skew7ExtendMulti(
-					textIn, limits, 
-					names_S1, names_S2, names_S4, 
-					sortedS0, sortedS3, sortedS5, sortedS6, sortedS124);
+                    textIn, limits, 
+                    names_S1, names_S2, names_S4, 
+                    sortedS0, sortedS3, sortedS5, sortedS6, sortedS124);
 
                 SEQAN_PROMARK("Mapper (12), Sorter (13-16) - merge SA124, SA3, SA5, SA6, SA0");
             }
@@ -436,7 +436,7 @@ namespace SEQAN_NAMESPACE_MAIN
     // not sure which interface is more intuitive, we support both
     // you can call "skew << pipe" or "skew_t skew(pipe); skew.process()"
     // for the first we would need no _in member
-	template < typename TInput, typename TObject, typename TPair, typename TLimitsString >
+    template < typename TInput, typename TObject, typename TPair, typename TLimitsString >
     inline bool operator<<(Pipe< TInput, Multi<Skew7, TPair, TLimitsString> > &me, TObject &textIn) {
         return me.process(textIn);
     }

@@ -92,8 +92,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
         inline bool close() {
             if (CloseHandle(hThread)) return true;
-			hThread = NULL;
-			return false;
+            hThread = NULL;
+            return false;
         }
 
         inline bool cancel(DWORD exitCode = 0) {
@@ -117,7 +117,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         static DWORD WINAPI _start(LPVOID _this) {
             reinterpret_cast<Thread*>(_this)->worker();
-			return 0;	// return value should indicate success/failure
+            return 0;    // return value should indicate success/failure
         }
     };
     
@@ -185,40 +185,40 @@ namespace SEQAN_NAMESPACE_MAIN
 
         static void* _start(void* _this) {
             reinterpret_cast<Thread*>(_this)->worker();
-			return 0;
+            return 0;
         }
     };
     
 #endif
 
 
-	//////////////////////////////////////////////////////////////////////////////
-	// global thread functions
+    //////////////////////////////////////////////////////////////////////////////
+    // global thread functions
 
-	template <typename TWorker>
-	inline bool open(Thread<TWorker> &m) {
-		return m.open();
-	}
+    template <typename TWorker>
+    inline bool open(Thread<TWorker> &m) {
+        return m.open();
+    }
 
-	template <typename TWorker>
-	inline bool run(Thread<TWorker> &m) {
-		return m.open();
-	}
+    template <typename TWorker>
+    inline bool run(Thread<TWorker> &m) {
+        return m.open();
+    }
 
-	template <typename TWorker>
-	inline bool close(Thread<TWorker> &m) {
-		return m.close();
-	}
+    template <typename TWorker>
+    inline bool close(Thread<TWorker> &m) {
+        return m.close();
+    }
 
-	template <typename TWorker>
-	inline bool kill(Thread<TWorker> &m) {
-		return m.close();
-	}
+    template <typename TWorker>
+    inline bool kill(Thread<TWorker> &m) {
+        return m.close();
+    }
 
-	template <typename TWorker>
-	inline bool waitFor(Thread<TWorker> &m) {
-		return m.wait();
-	}
+    template <typename TWorker>
+    inline bool waitFor(Thread<TWorker> &m) {
+        return m.wait();
+    }
 
 }
 

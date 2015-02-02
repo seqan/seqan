@@ -143,7 +143,7 @@ template <typename TSeed>
 struct Iterator<SeedSet<TSeed, Unordered>, Standard>
 {
     typedef SeedSet<TSeed, Unordered> TSeedSet_;
-	typedef typename TSeedSet_::TSet_ TMultiSet_;
+    typedef typename TSeedSet_::TSet_ TMultiSet_;
     typedef Iter<TMultiSet_, StdIteratorAdaptor> Type;
 };
 
@@ -151,7 +151,7 @@ template <typename TSeed>
 struct Iterator<SeedSet<TSeed, Unordered> const, Standard>
 {
     typedef SeedSet<TSeed, Unordered> const TSeedSet_;
-	typedef typename TSeedSet_::TSet_ const TMultiSet_;
+    typedef typename TSeedSet_::TSet_ const TMultiSet_;
     typedef Iter<TMultiSet_, StdIteratorAdaptor> Type;
 };
 
@@ -187,7 +187,7 @@ template <typename TSeed>
 inline typename Iterator<SeedSet<TSeed, Unordered> >::Type
 begin(SeedSet<TSeed, Unordered> & seedSet, Standard const &)
 {
-	return seedSet._seeds.begin();
+    return seedSet._seeds.begin();
 }
 
 template <typename TSeed>
@@ -280,7 +280,7 @@ _findSeedForCombination(
     {
         if (_seedsCombineable(*it, seed, maxDistance, bandwidth, tag))
         {
-//			std::cout << "Combineable: " << (*value(it)) << " and " << seed << std::endl;
+//            std::cout << "Combineable: " << (*value(it)) << " and " << seed << std::endl;
             // seed is to be merged into *it.
             mergePartner = it;
             seedIsOnTheLeft = false;
@@ -288,7 +288,7 @@ _findSeedForCombination(
         }
         else if (_seedsCombineable(seed, *it, maxDistance, bandwidth, tag))
         {
-//			std::cout << "Combineable: " << seed << " and " << (*value(it)) << std::endl;
+//            std::cout << "Combineable: " << seed << " and " << (*value(it)) << std::endl;
             // *it is to be merged into seed.
             mergePartner = it;
             seedIsOnTheLeft = true;

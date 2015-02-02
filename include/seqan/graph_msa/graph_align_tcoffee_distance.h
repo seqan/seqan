@@ -80,52 +80,52 @@ typedef Tag<KmerDistance_> const KmerDistance;
 template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix>
 inline void
 getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
-				  TMatrix& distanceMatrix,
-				  LibraryDistance)
+                  TMatrix& distanceMatrix,
+                  LibraryDistance)
 {
-	typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
-	typedef typename Size<TGraph>::Type TSize;
-	//typedef typename Id<TGraph>::Type TId;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	//typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
-	//typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
-	typedef typename Value<TMatrix>::Type TValue;
+    typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
+    typedef typename Size<TGraph>::Type TSize;
+    //typedef typename Id<TGraph>::Type TId;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    //typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
+    //typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
+    typedef typename Value<TMatrix>::Type TValue;
 
-	// Initialization
-	clear(distanceMatrix);
-	TStringSet& str = stringSet(g);
-	TSize nseq = length(str);
-	resize(distanceMatrix, nseq * nseq, 0);
+    // Initialization
+    clear(distanceMatrix);
+    TStringSet& str = stringSet(g);
+    TSize nseq = length(str);
+    resize(distanceMatrix, nseq * nseq, 0);
 
-	// All pairwise alignments
-	typedef String<String<TVertexDescriptor> > TSegmentString;
-	TValue maxScore = 0;
-	for(TSize i=0; i<nseq; ++i) {
-		TSegmentString seq1;
-		TSize len1 = length(str[i]);
-		_buildLeafString(g, i, seq1);
-		for(TSize j=i+1; j<nseq; ++j) {
-			// Align the 2 strings
-			TSegmentString seq2;
-			TSize len2 = length(str[j]);
-			_buildLeafString(g, j, seq2);
-			TSegmentString alignSeq;
-			TValue score = heaviestCommonSubsequence(g,seq1,seq2,alignSeq);
-			
-			// Normalize by distance
-			if (len1 > len2) score /= len1;
-			else score /= len2;
-			if (score > maxScore) maxScore = score;
-			
-			// Remember the value
-			distanceMatrix[i*nseq+j] = score;
-		}
-	}
+    // All pairwise alignments
+    typedef String<String<TVertexDescriptor> > TSegmentString;
+    TValue maxScore = 0;
+    for(TSize i=0; i<nseq; ++i) {
+        TSegmentString seq1;
+        TSize len1 = length(str[i]);
+        _buildLeafString(g, i, seq1);
+        for(TSize j=i+1; j<nseq; ++j) {
+            // Align the 2 strings
+            TSegmentString seq2;
+            TSize len2 = length(str[j]);
+            _buildLeafString(g, j, seq2);
+            TSegmentString alignSeq;
+            TValue score = heaviestCommonSubsequence(g,seq1,seq2,alignSeq);
+            
+            // Normalize by distance
+            if (len1 > len2) score /= len1;
+            else score /= len2;
+            if (score > maxScore) maxScore = score;
+            
+            // Remember the value
+            distanceMatrix[i*nseq+j] = score;
+        }
+    }
 
-	// Normalize values
-	for(TSize i=0; i<nseq; ++i) 
-		for(TSize j=i+1; j<nseq; ++j) 
-			distanceMatrix[i*nseq+j] = SEQAN_DISTANCE_UNITY - ((distanceMatrix[i*nseq+j] * SEQAN_DISTANCE_UNITY) / maxScore );
+    // Normalize values
+    for(TSize i=0; i<nseq; ++i) 
+        for(TSize j=i+1; j<nseq; ++j) 
+            distanceMatrix[i*nseq+j] = SEQAN_DISTANCE_UNITY - ((distanceMatrix[i*nseq+j] * SEQAN_DISTANCE_UNITY) / maxScore );
 }
 
 
@@ -139,21 +139,21 @@ getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix, typename TSize, typename TAlphabet>
 inline void
 getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
-				  TMatrix& distanceMatrix,
-				  TSize ktup,
-				  TAlphabet,
-				  KmerDistance)
+                  TMatrix& distanceMatrix,
+                  TSize ktup,
+                  TAlphabet,
+                  KmerDistance)
 {
-	//typedef typename Value<TMatrix>::Type TValue;
-	typedef typename Iterator<TMatrix, Standard>::Type TMatrixIterator;
+    //typedef typename Value<TMatrix>::Type TValue;
+    typedef typename Iterator<TMatrix, Standard>::Type TMatrixIterator;
 
-	getKmerSimilarityMatrix(stringSet(g), distanceMatrix, ktup, TAlphabet());
+    getKmerSimilarityMatrix(stringSet(g), distanceMatrix, ktup, TAlphabet());
 
-	// Similarity to distance conversion
-	TMatrixIterator matIt = begin(distanceMatrix, Standard());
-	TMatrixIterator endMatIt = end(distanceMatrix, Standard());
-	for(;matIt != endMatIt;++matIt)
-		*matIt = SEQAN_DISTANCE_UNITY - (*matIt);
+    // Similarity to distance conversion
+    TMatrixIterator matIt = begin(distanceMatrix, Standard());
+    TMatrixIterator endMatIt = end(distanceMatrix, Standard());
+    for(;matIt != endMatIt;++matIt)
+        *matIt = SEQAN_DISTANCE_UNITY - (*matIt);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -161,12 +161,12 @@ getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix, typename TSize>
 inline void 
 getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
-				  TMatrix& distanceMatrix,
-				  TSize ktup,
-				  KmerDistance)
+                  TMatrix& distanceMatrix,
+                  TSize ktup,
+                  KmerDistance)
 {
-	SEQAN_CHECKPOINT
-	getDistanceMatrix(g, distanceMatrix, ktup, typename Value<typename Value<TStringSet>::Type>::Type(), KmerDistance() );
+    SEQAN_CHECKPOINT
+    getDistanceMatrix(g, distanceMatrix, ktup, typename Value<typename Value<TStringSet>::Type>::Type(), KmerDistance() );
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -174,11 +174,11 @@ getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix>
 inline void 
 getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
-				  TMatrix& distanceMatrix,
-				  KmerDistance)
+                  TMatrix& distanceMatrix,
+                  KmerDistance)
 {
-	SEQAN_CHECKPOINT
-	getDistanceMatrix(g, distanceMatrix, 3, KmerDistance() );
+    SEQAN_CHECKPOINT
+    getDistanceMatrix(g, distanceMatrix, 3, KmerDistance() );
 }
 
 
@@ -203,10 +203,10 @@ getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix>
 inline void 
 getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
-				  TMatrix& distanceMatrix)
+                  TMatrix& distanceMatrix)
 {
-	SEQAN_CHECKPOINT
-	getDistanceMatrix(g, distanceMatrix, KmerDistance() );
+    SEQAN_CHECKPOINT
+    getDistanceMatrix(g, distanceMatrix, KmerDistance() );
 }
 
 

@@ -147,8 +147,8 @@ enum FileOpenMode {
     OPEN_CREATE     = 4,
     OPEN_APPEND     = 8,
     OPEN_ASYNC      = 16,
-    OPEN_TEMPORARY	= 32,
-    OPEN_QUIET		= 128
+    OPEN_TEMPORARY    = 32,
+    OPEN_QUIET        = 128
 }; //IOREV is it intended that two labels share the same value? What is OPEN_MASK anyway?
 
 // --------------------------------------------------------------------------

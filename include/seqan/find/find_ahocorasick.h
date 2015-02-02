@@ -88,38 +88,38 @@ template <typename TNeedle>
 class Pattern<TNeedle, AhoCorasick> {
 //____________________________________________________________________________
 private:
-	Pattern(Pattern const& other);
-	Pattern const& operator=(Pattern const & other);
+    Pattern(Pattern const& other);
+    Pattern const& operator=(Pattern const & other);
 
 //____________________________________________________________________________
 public:
-	typedef typename Size<TNeedle>::Type TSize;
-	typedef typename Value<TNeedle>::Type TKeyword;
-	typedef typename Value<TKeyword>::Type TAlphabet;
-	typedef Graph<Automaton<TAlphabet> > TGraph;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	
-	Holder<TNeedle> data_host;
-	String<TVertexDescriptor> data_supplyMap;
-	String<String<TSize> > data_terminalStateMap;
-	TGraph data_graph;
+    typedef typename Size<TNeedle>::Type TSize;
+    typedef typename Value<TNeedle>::Type TKeyword;
+    typedef typename Value<TKeyword>::Type TAlphabet;
+    typedef Graph<Automaton<TAlphabet> > TGraph;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    
+    Holder<TNeedle> data_host;
+    String<TVertexDescriptor> data_supplyMap;
+    String<String<TSize> > data_terminalStateMap;
+    TGraph data_graph;
 
-	// To restore the automaton after a hit
-	String<TSize> data_endPositions;	// All remaining keyword indices
-	TSize data_keywordIndex;			// Current keyword that produced a hit
-	TSize data_needleLength;			// Last length of needle to reposition finder
-	TVertexDescriptor data_lastState;   // Last state in the trie
+    // To restore the automaton after a hit
+    String<TSize> data_endPositions;    // All remaining keyword indices
+    TSize data_keywordIndex;            // Current keyword that produced a hit
+    TSize data_needleLength;            // Last length of needle to reposition finder
+    TVertexDescriptor data_lastState;   // Last state in the trie
 
 //____________________________________________________________________________
 
-	Pattern() : data_keywordIndex(0), data_needleLength(0)
-	{}
+    Pattern() : data_keywordIndex(0), data_needleLength(0)
+    {}
 
-	template <typename TNeedle2>
-	Pattern(TNeedle2 const & ndl) : data_keywordIndex(0), data_needleLength(0)
-	{
-		setHost(*this, ndl);
-	}
+    template <typename TNeedle2>
+    Pattern(TNeedle2 const & ndl) : data_keywordIndex(0), data_needleLength(0)
+    {
+        setHost(*this, ndl);
+    }
 
 //____________________________________________________________________________
 };
@@ -132,13 +132,13 @@ public:
 template <typename TNeedle>
 struct Host< Pattern<TNeedle, AhoCorasick> >
 {
-	typedef TNeedle Type;
+    typedef TNeedle Type;
 };
 
 template <typename TNeedle>
 struct Host< Pattern<TNeedle, AhoCorasick> const>
 {
-	typedef TNeedle const Type;
+    typedef TNeedle const Type;
 };
 
 
@@ -150,101 +150,101 @@ template <typename TNeedle>
 inline void
 _createAcTrie(Pattern<TNeedle, AhoCorasick> & me)
 {
-	typedef typename Position<TNeedle>::Type TPosition;
-	typedef typename Value<TNeedle>::Type TKeyword;
-	typedef typename Value<TKeyword>::Type TAlphabet;
-	typedef Graph<Automaton<TAlphabet> > TGraph;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-	TVertexDescriptor nilVal = getNil<TVertexDescriptor>();
+    typedef typename Position<TNeedle>::Type TPosition;
+    typedef typename Value<TNeedle>::Type TKeyword;
+    typedef typename Value<TKeyword>::Type TAlphabet;
+    typedef Graph<Automaton<TAlphabet> > TGraph;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    TVertexDescriptor nilVal = getNil<TVertexDescriptor>();
 
-	// Create regular trie
-	createTrie(me.data_graph,me.data_terminalStateMap, host(me));
+    // Create regular trie
+    createTrie(me.data_graph,me.data_terminalStateMap, host(me));
 
-	// Create parent map
-	String<TVertexDescriptor> parentMap;
-	String<TAlphabet> parentCharMap;
-	resizeVertexMap(parentMap, me.data_graph);
-	resizeVertexMap(parentCharMap, me.data_graph);
-	for(TPosition i = 0;i<length(parentMap);++i) {
-		assignProperty(parentMap, i, nilVal);
-	}
-	typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
-	TEdgeIterator itEd(me.data_graph);
-	for(;!atEnd(itEd);goNext(itEd)) {
-		assignProperty(parentMap, targetVertex(itEd), sourceVertex(itEd));
-		assignProperty(parentCharMap, targetVertex(itEd), label(itEd));
-	}
+    // Create parent map
+    String<TVertexDescriptor> parentMap;
+    String<TAlphabet> parentCharMap;
+    resizeVertexMap(parentMap, me.data_graph);
+    resizeVertexMap(parentCharMap, me.data_graph);
+    for(TPosition i = 0;i<length(parentMap);++i) {
+        assignProperty(parentMap, i, nilVal);
+    }
+    typedef typename Iterator<TGraph, EdgeIterator>::Type TEdgeIterator;
+    TEdgeIterator itEd(me.data_graph);
+    for(;!atEnd(itEd);goNext(itEd)) {
+        assignProperty(parentMap, targetVertex(itEd), sourceVertex(itEd));
+        assignProperty(parentCharMap, targetVertex(itEd), label(itEd));
+    }
 
-	// Build AC
-	TVertexDescriptor root = getRoot(me.data_graph);
-	resizeVertexMap(me.data_supplyMap, me.data_graph);
-	assignProperty(me.data_supplyMap, root, nilVal);
+    // Build AC
+    TVertexDescriptor root = getRoot(me.data_graph);
+    resizeVertexMap(me.data_supplyMap, me.data_graph);
+    assignProperty(me.data_supplyMap, root, nilVal);
 
-	// Bfs Traversal
-	typedef typename Iterator<TGraph, BfsIterator>::Type TBfsIterator;
-	TBfsIterator it(me.data_graph,root);
-	for(;!atEnd(it);goNext(it)) {
-		if (atBegin(it)) continue;
-		TVertexDescriptor parent = getProperty(parentMap, *it);
-		TAlphabet sigma = getProperty(parentCharMap, *it);
-		TVertexDescriptor down = getProperty(me.data_supplyMap, parent);
-		while ((down != nilVal) &&
-			(getSuccessor(me.data_graph, down, sigma) == nilVal)) 
-		{
-			down = getProperty(me.data_supplyMap, down);
-		}
-		if (down != nilVal) {
-			assignProperty(me.data_supplyMap, *it, getSuccessor(me.data_graph, down, sigma));
-			String<TPosition> endPositions = getProperty(me.data_terminalStateMap, getProperty(me.data_supplyMap, *it));
-			if (!empty(endPositions)) {
-				String<TPosition> endPositionsCurrent = getProperty(me.data_terminalStateMap, *it);
-				typedef typename Iterator<String<TPosition>, Rooted >::Type TStringIterator;
-				TStringIterator sit = begin(endPositions);
-				for(;!atEnd(sit);goNext(sit)) {
-					appendValue(endPositionsCurrent, *sit);
-				}
-				assignProperty(me.data_terminalStateMap, *it, endPositionsCurrent);
-			}
-		} else {
-			assignProperty(me.data_supplyMap, *it, root);
-		}
+    // Bfs Traversal
+    typedef typename Iterator<TGraph, BfsIterator>::Type TBfsIterator;
+    TBfsIterator it(me.data_graph,root);
+    for(;!atEnd(it);goNext(it)) {
+        if (atBegin(it)) continue;
+        TVertexDescriptor parent = getProperty(parentMap, *it);
+        TAlphabet sigma = getProperty(parentCharMap, *it);
+        TVertexDescriptor down = getProperty(me.data_supplyMap, parent);
+        while ((down != nilVal) &&
+            (getSuccessor(me.data_graph, down, sigma) == nilVal)) 
+        {
+            down = getProperty(me.data_supplyMap, down);
+        }
+        if (down != nilVal) {
+            assignProperty(me.data_supplyMap, *it, getSuccessor(me.data_graph, down, sigma));
+            String<TPosition> endPositions = getProperty(me.data_terminalStateMap, getProperty(me.data_supplyMap, *it));
+            if (!empty(endPositions)) {
+                String<TPosition> endPositionsCurrent = getProperty(me.data_terminalStateMap, *it);
+                typedef typename Iterator<String<TPosition>, Rooted >::Type TStringIterator;
+                TStringIterator sit = begin(endPositions);
+                for(;!atEnd(sit);goNext(sit)) {
+                    appendValue(endPositionsCurrent, *sit);
+                }
+                assignProperty(me.data_terminalStateMap, *it, endPositionsCurrent);
+            }
+        } else {
+            assignProperty(me.data_supplyMap, *it, root);
+        }
 
-	}
+    }
 }
 
 
 template <typename TNeedle, typename TNeedle2>
 void setHost (Pattern<TNeedle, AhoCorasick> & me, TNeedle2 const & needle) {
-	SEQAN_CHECKPOINT;
-	SEQAN_ASSERT_NOT(empty(needle));
-	setValue(me.data_host, needle);
-	clear(me.data_graph);
-	clear(me.data_supplyMap);
-	clear(me.data_endPositions);
-	clear(me.data_terminalStateMap);
-	_createAcTrie(me);
-	me.data_needleLength = 0;
+    SEQAN_CHECKPOINT;
+    SEQAN_ASSERT_NOT(empty(needle));
+    setValue(me.data_host, needle);
+    clear(me.data_graph);
+    clear(me.data_supplyMap);
+    clear(me.data_endPositions);
+    clear(me.data_terminalStateMap);
+    _createAcTrie(me);
+    me.data_needleLength = 0;
 
 
-	//fstream strm;
-	//strm.open(TEST_PATH "my_trie.dot", ios_base::out | ios_base::trunc);
-	//String<String<char> > nodeMap;
-	//_createTrieNodeAttributes(me.data_graph, me.data_terminalStateMap, nodeMap);
-	//String<String<char> > edgeMap;
-	//_createEdgeAttributes(me.data_graph,edgeMap);
-	//writeRecords(strm,me.data_graph,nodeMap,edgeMap,DotDrawing());
-	//strm.close();
-	// Supply links
-	//for(unsigned int i=0;i<length(me.data_supplyMap);++i) {
-	//	std::cout << i << "->" << getProperty(me.data_supplyMap,i) << std::endl;
-	//}
+    //fstream strm;
+    //strm.open(TEST_PATH "my_trie.dot", ios_base::out | ios_base::trunc);
+    //String<String<char> > nodeMap;
+    //_createTrieNodeAttributes(me.data_graph, me.data_terminalStateMap, nodeMap);
+    //String<String<char> > edgeMap;
+    //_createEdgeAttributes(me.data_graph,edgeMap);
+    //writeRecords(strm,me.data_graph,nodeMap,edgeMap,DotDrawing());
+    //strm.close();
+    // Supply links
+    //for(unsigned int i=0;i<length(me.data_supplyMap);++i) {
+    //    std::cout << i << "->" << getProperty(me.data_supplyMap,i) << std::endl;
+    //}
 }
 
 template <typename TNeedle, typename TNeedle2>
 inline void 
 setHost (Pattern<TNeedle, AhoCorasick> & me, TNeedle2 & needle)
 {
-	setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
+    setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
 }
 
 //____________________________________________________________________________
@@ -254,9 +254,9 @@ template <typename TNeedle>
 inline void _patternInit (Pattern<TNeedle, AhoCorasick> & me) 
 {
 SEQAN_CHECKPOINT
-	clear(me.data_endPositions);
-	me.data_keywordIndex = 0;
-	me.data_lastState = getRoot(me.data_graph);
+    clear(me.data_endPositions);
+    me.data_keywordIndex = 0;
+    me.data_lastState = getRoot(me.data_graph);
 }
 
 
@@ -267,67 +267,67 @@ template <typename TNeedle>
 inline typename Size<TNeedle>::Type
 position(Pattern<TNeedle, AhoCorasick> & me)
 {
-	return me.data_keywordIndex;
+    return me.data_keywordIndex;
 }
 
 
 template <typename TFinder, typename TNeedle>
 inline bool find(TFinder & finder, Pattern<TNeedle, AhoCorasick> & me) {
-	typedef typename Value<TNeedle>::Type TKeyword;
-	typedef typename Value<TKeyword>::Type TAlphabet;
-	typedef Graph<Automaton<TAlphabet> > TGraph;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef typename Value<TNeedle>::Type TKeyword;
+    typedef typename Value<TKeyword>::Type TAlphabet;
+    typedef Graph<Automaton<TAlphabet> > TGraph;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 
-	if (empty(finder)) {
-		_patternInit(me);
-		_finderSetNonEmpty(finder);
-	} else {
-		finder += me.data_needleLength;
-		++finder; // Set forward the finder
-	}
+    if (empty(finder)) {
+        _patternInit(me);
+        _finderSetNonEmpty(finder);
+    } else {
+        finder += me.data_needleLength;
+        ++finder; // Set forward the finder
+    }
 
-	// Process left-over hits
-	if (!empty(me.data_endPositions)) {
-		--finder; // Set back the finder
-		me.data_keywordIndex = me.data_endPositions[length(me.data_endPositions)-1];
-		me.data_needleLength = length(value(host(me), me.data_keywordIndex))-1;
-		if (length(me.data_endPositions) > 1) resize(me.data_endPositions, (length(me.data_endPositions)-1));
-		else clear(me.data_endPositions);
-		finder -= me.data_needleLength;
-		_setFinderLength(finder, me.data_needleLength+1);
-		_setFinderEnd(finder, position(finder)+length(finder));
-		return true;
-	}
+    // Process left-over hits
+    if (!empty(me.data_endPositions)) {
+        --finder; // Set back the finder
+        me.data_keywordIndex = me.data_endPositions[length(me.data_endPositions)-1];
+        me.data_needleLength = length(value(host(me), me.data_keywordIndex))-1;
+        if (length(me.data_endPositions) > 1) resize(me.data_endPositions, (length(me.data_endPositions)-1));
+        else clear(me.data_endPositions);
+        finder -= me.data_needleLength;
+        _setFinderLength(finder, me.data_needleLength+1);
+        _setFinderEnd(finder, position(finder)+length(finder));
+        return true;
+    }
 
-	TVertexDescriptor current = me.data_lastState;
-	TVertexDescriptor nilVal = getNil<TVertexDescriptor>();
-	while (!atEnd(finder)) {
-		while ((getSuccessor(me.data_graph, current, *finder) == nilVal) &&
-			(getProperty(me.data_supplyMap, current) != nilVal))
-		{
-			current = getProperty(me.data_supplyMap,current);
-		}
-		if (getSuccessor(me.data_graph, current, *finder) != nilVal) {
-			current = getSuccessor(me.data_graph, current, *finder);
-		}
-		else {
-			current = getRoot(me.data_graph);
-		}
-		me.data_endPositions = getProperty(me.data_terminalStateMap,current);
-		if (!empty(me.data_endPositions)) {
-			me.data_keywordIndex = me.data_endPositions[length(me.data_endPositions)-1];
-			me.data_needleLength = length(value(host(me), me.data_keywordIndex))-1;
-			if (length(me.data_endPositions) > 1) resize(me.data_endPositions, length(me.data_endPositions)-1);
-			else clear(me.data_endPositions);
-			me.data_lastState = current;
-			finder -= me.data_needleLength;
-			_setFinderLength(finder, me.data_needleLength+1);
-			_setFinderEnd(finder, position(finder)+length(finder));
-			return true;
-		}
-		++finder;
-	}
-	return false;
+    TVertexDescriptor current = me.data_lastState;
+    TVertexDescriptor nilVal = getNil<TVertexDescriptor>();
+    while (!atEnd(finder)) {
+        while ((getSuccessor(me.data_graph, current, *finder) == nilVal) &&
+            (getProperty(me.data_supplyMap, current) != nilVal))
+        {
+            current = getProperty(me.data_supplyMap,current);
+        }
+        if (getSuccessor(me.data_graph, current, *finder) != nilVal) {
+            current = getSuccessor(me.data_graph, current, *finder);
+        }
+        else {
+            current = getRoot(me.data_graph);
+        }
+        me.data_endPositions = getProperty(me.data_terminalStateMap,current);
+        if (!empty(me.data_endPositions)) {
+            me.data_keywordIndex = me.data_endPositions[length(me.data_endPositions)-1];
+            me.data_needleLength = length(value(host(me), me.data_keywordIndex))-1;
+            if (length(me.data_endPositions) > 1) resize(me.data_endPositions, length(me.data_endPositions)-1);
+            else clear(me.data_endPositions);
+            me.data_lastState = current;
+            finder -= me.data_needleLength;
+            _setFinderLength(finder, me.data_needleLength+1);
+            _setFinderEnd(finder, position(finder)+length(finder));
+            return true;
+        }
+        ++finder;
+    }
+    return false;
 }
 
 }// namespace SEQAN_NAMESPACE_MAIN

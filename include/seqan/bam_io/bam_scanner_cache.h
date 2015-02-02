@@ -74,7 +74,7 @@ struct BamScannerCacheKey_
 struct BamScannerCacheSearchKey_    
 {
     typedef __uint16 TFlag;
-	
+    
     BamScannerCacheKey_ cacheKey;
     TFlag flags;
     TFlag flagsMask;

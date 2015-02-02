@@ -45,29 +45,29 @@ namespace SEQAN_NAMESPACE_MAIN
 template <typename TSpec>
 struct GraphIterator;
 
-	// Vertex iterator
-	template <typename TSpec = Default>
-	struct InternalVertexIterator;
+    // Vertex iterator
+    template <typename TSpec = Default>
+    struct InternalVertexIterator;
 
-	// Edge iterator
-	template <typename TSpec = Default>
-	struct InternalEdgeIterator;
+    // Edge iterator
+    template <typename TSpec = Default>
+    struct InternalEdgeIterator;
 
-	// OutEdge iterator
-	template <typename TSpec = Default>
-	struct InternalOutEdgeIterator;
+    // OutEdge iterator
+    template <typename TSpec = Default>
+    struct InternalOutEdgeIterator;
 
-	// Adjacency iterator
-	template <typename TSpec = Default>
-	struct InternalAdjacencyIterator;
+    // Adjacency iterator
+    template <typename TSpec = Default>
+    struct InternalAdjacencyIterator;
 
-	// Bfs iterator
-	template <typename TSpec = Default>
-	struct InternalBfsIterator;
+    // Bfs iterator
+    template <typename TSpec = Default>
+    struct InternalBfsIterator;
 
-	// Dfs iterator
-	template <typename TSpec = Default>
-	struct InternalDfsIterator;
+    // Dfs iterator
+    template <typename TSpec = Default>
+    struct InternalDfsIterator;
 
 //////////////////////////////////////////////////////////////////////////////
 // Graph Iterators - Metafunctions
@@ -77,16 +77,16 @@ struct GraphIterator;
 
 template<typename TGraph, typename TIteratorSpec>
 struct Host<Iter<TGraph, GraphIterator<TIteratorSpec> > >
-{	
-	typedef TGraph Type;
+{    
+    typedef TGraph Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TGraph, typename TIteratorSpec>
 struct Host<Iter<TGraph const, GraphIterator<TIteratorSpec> > >
-{	
-	typedef TGraph const Type;
+{    
+    typedef TGraph const Type;
 };
 
 

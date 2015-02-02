@@ -104,7 +104,7 @@ struct Value<Rng<MersenneTwister> >
 
 template <>
 struct Value<const Rng<MersenneTwister> > : Value<Rng<MersenneTwister> > {};
-	
+    
 // ===========================================================================
 // Functions
 // ===========================================================================

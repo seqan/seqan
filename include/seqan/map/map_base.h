@@ -93,13 +93,13 @@ class Map;
 template <typename TKey, typename TObject, typename TSpec>
 struct Key< Pair<TKey, TObject, TSpec> > 
 {
-	typedef TKey Type;
+    typedef TKey Type;
 };
 
 template <typename TKey, typename TCargo, typename TSpec>
 struct Cargo< Pair<TKey, TCargo, TSpec> > 
 {
-	typedef TCargo Type;
+    typedef TCargo Type;
 };
 */
 
@@ -109,12 +109,12 @@ struct Cargo< Pair<TKey, TCargo, TSpec> >
 template <typename TMap, typename TCargo>
 struct MapValueImpl_
 {
-	typedef TCargo & Type;
+    typedef TCargo & Type;
 };
 template <typename TMap>
 struct MapValueImpl_<TMap, Nothing>
 {
-	typedef bool Type;
+    typedef bool Type;
 };
 
 /*!
@@ -129,7 +129,7 @@ struct MapValueImpl_<TMap, Nothing>
 
 template <typename TMap>
 struct MapValue :
-	MapValueImpl_< TMap, typename Cargo<TMap>::Type >
+    MapValueImpl_< TMap, typename Cargo<TMap>::Type >
 {
 };
 
@@ -138,25 +138,25 @@ struct MapValue :
 template <typename TCargo>
 struct ImplMapValue_
 {
-	template <typename TMap, typename TKey2>
-	static inline TCargo &
-	mapValue_(TMap & me,
-		TKey2 const & _key)
-	{
-		return cargo(me, _key);
-	}
+    template <typename TMap, typename TKey2>
+    static inline TCargo &
+    mapValue_(TMap & me,
+        TKey2 const & _key)
+    {
+        return cargo(me, _key);
+    }
 };
 
 template <>
 struct ImplMapValue_<Nothing>
 {
-	template <typename TMap, typename TKey2>
-	static inline bool
-	mapValue_(TMap & me,
-		TKey2 const & _key)
-	{
-		return hasKey(me, _key);
-	}
+    template <typename TMap, typename TKey2>
+    static inline bool
+    mapValue_(TMap & me,
+        TKey2 const & _key)
+    {
+        return hasKey(me, _key);
+    }
 };
 
 /*!
@@ -191,10 +191,10 @@ struct ImplMapValue_<Nothing>
 template <typename TMap, typename TKey>
 inline typename MapValue<TMap>::Type
 mapValue(TMap & me,
-		 TKey const & _key)
+         TKey const & _key)
 {
-	typedef typename Cargo<TMap>::Type TCargo;
-	return ImplMapValue_<TCargo>::mapValue_(me, _key);
+    typedef typename Cargo<TMap>::Type TCargo;
+    return ImplMapValue_<TCargo>::mapValue_(me, _key);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -203,26 +203,26 @@ template <typename TElement>
 inline TElement & 
 key(TElement & element) 
 {
-	return element;
+    return element;
 }
 template <typename TElement>
 inline TElement const & 
 key(TElement const & element) 
 {
-	return element;
+    return element;
 }
 
 template <typename TKey, typename TObject, typename TSpec>
 inline TKey & 
 key(Pair<TKey, TObject, TSpec> & element) 
 {
-	return element.i1;
+    return element.i1;
 }
 template <typename TKey, typename TObject, typename TSpec>
 inline TKey const &
 key(Pair<TKey, TObject, TSpec> const & element) 
 {
-	return element.i1;
+    return element.i1;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -230,16 +230,16 @@ key(Pair<TKey, TObject, TSpec> const & element)
 template <typename TElement, typename TSource>
 inline void
 setKey(TElement & element,
-	   TSource const & source) 
+       TSource const & source) 
 {
-	element = source;
+    element = source;
 }
 template <typename TKey, typename TObject, typename TSpec, typename TSource>
 inline void 
 setKey(Pair<TKey, TObject, TSpec> & element,
-	   TSource const & source) 
+       TSource const & source) 
 {
-	element.i1 = source;
+    element.i1 = source;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -249,13 +249,13 @@ template <typename TKey, typename TObject, typename TSpec>
 inline TObject & 
 cargo(Pair<TKey, TObject, TSpec> & element) 
 {
-	return element.i2;
+    return element.i2;
 }
 template <typename TKey, typename TObject, typename TSpec>
 inline TObject const &
 cargo(Pair<TKey, TObject, TSpec> const & element) 
 {
-	return element.i2;
+    return element.i2;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -263,9 +263,9 @@ cargo(Pair<TKey, TObject, TSpec> const & element)
 template <typename TKey, typename TObject, typename TSpec, typename TSource>
 inline void 
 setCargo(Pair<TKey, TObject, TSpec> & element,
-	   TSource const & source) 
+       TSource const & source) 
 {
-	element.i2 = source;
+    element.i2 = source;
 }
 
 //////////////////////////////////////////////////////////////////////////////

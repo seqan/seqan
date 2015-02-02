@@ -74,8 +74,8 @@ struct GappedValueType
 template <typename TValue, typename TSpec>
 struct GappedValueType<SimpleType<TValue, TSpec> >
 {
-	typedef SimpleType<TValue, TSpec> THost_;
-	typedef ModifiedAlphabet<THost_, ModExpand<'-'> > Type;
+    typedef SimpleType<TValue, TSpec> THost_;
+    typedef ModifiedAlphabet<THost_, ModExpand<'-'> > Type;
 };
 
 // ============================================================================

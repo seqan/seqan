@@ -263,7 +263,7 @@ template <typename TValue>
 SEQAN_HOST_DEVICE inline typename ValueSize<TValue>::Type
 ordValue(TValue const & c)
 {
-	return convert<unsigned>(static_cast<typename MakeUnsigned_<TValue>::Type const &>(c));
+    return convert<unsigned>(static_cast<typename MakeUnsigned_<TValue>::Type const &>(c));
 }
 
 // The internal ord value is used for alphabets with piggyback qualities.
@@ -272,7 +272,7 @@ template <typename TValue>
 SEQAN_HOST_DEVICE inline typename ValueSize<TValue>::Type
 _internalOrdValue(TValue const & c)
 {
-	return ordValue(c);
+    return ordValue(c);
 }
 
 // ----------------------------------------------------------------------------

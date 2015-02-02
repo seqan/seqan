@@ -59,11 +59,11 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
     template < typename TMap,
-		       typename TSize,
-		       typename TFile = File<> >						// default file type
+               typename TSize,
+               typename TFile = File<> >                        // default file type
     struct MapperConfigSize {
         typedef TMap        Map;
-		typedef TSize		SizeType;
+        typedef TSize        SizeType;
         typedef TFile       File;
     };
 
@@ -87,11 +87,11 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
     template < typename TMap,
-		       typename TFile = File<> >
+               typename TFile = File<> >
     struct MapperConfig {
-        typedef TMap						Map;
-		typedef typename Size<TFile>::Type	SizeType;
-        typedef TFile						File;
+        typedef TMap                        Map;
+        typedef typename Size<TFile>::Type    SizeType;
+        typedef TFile                        File;
     };
 
 /*!
@@ -116,49 +116,49 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
     template < typename TValue,
-			   typename TConfig >
+               typename TConfig >
     struct HandlerArgs< Pool< TValue, MapperSpec<TConfig> > >
     {
         typedef typename TConfig::Map Type;
     };
 
     struct ReadMapperSpec_;
-	typedef Tag<ReadMapperSpec_> ReadMapperSpec;
+    typedef Tag<ReadMapperSpec_> ReadMapperSpec;
 
 /*
     // mapping phase 2
     template < typename TValue,
-			   typename TConfig >
+               typename TConfig >
     inline Buffer<TValue> & processBuffer(
         PageFrame< TValue, typename TConfig::File, Dynamic> &buf,
         BufferHandler<Pool< TValue, MapperSpec<TConfig> >, ReadFileSpec> &_me)
     {
-		typedef BufferHandler<Pool< TValue, MapperSpec<TConfig> >, ReadMapperSpec> Handler;
+        typedef BufferHandler<Pool< TValue, MapperSpec<TConfig> >, ReadMapperSpec> Handler;
         Handler *me = static_cast<Handler*>(&_me);
         
         typename Size< Pool< TValue, MapperSpec<TConfig> > >::Type offset = buf.pageNo;
-	    offset *= (unsigned)capacity(buf);
+        offset *= (unsigned)capacity(buf);
 
-		typename TConfig::Map M = me->pool.handlerArgs;
+        typename TConfig::Map M = me->pool.handlerArgs;
         for(TValue *cur = buf.begin; cur != buf.end; ++cur) {
             #ifdef SEQAN_DEBUG
                 if (!(M(*cur) >= offset && M(*cur) < offset + capacity(buf))) {
-					std::cerr << "Mapper assertion failed: " << std::hex << M(*cur);
-					std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (cur - buf.begin);
+                    std::cerr << "Mapper assertion failed: " << std::hex << M(*cur);
+                    std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (cur - buf.begin);
                     std::cerr << " element is " << std::dec << *cur << std::endl;
                 }
             #endif
             SEQAN_ASSERT(M(*cur) >= offset && M(*cur) < offset + capacity(buf));
             me->mapBuffer[M(*cur) - offset] = *cur;
         }
-		resize(me->mapBuffer, size(buf));
+        resize(me->mapBuffer, size(buf));
         return me->mapBuffer;
     }
 */
 
     // mapping phase 2 (in-place)
     template < typename TValue,
-			   typename TConfig >
+               typename TConfig >
     inline Buffer<TValue> &
     processBuffer(
         Buffer<TValue, PageFrame<typename TConfig::File, Dynamic> > &buf,
@@ -166,81 +166,81 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         typedef typename Size< Pool< TValue, MapperSpec<TConfig> > >::Type TSize;
 
-		TSize undefinedPos = 0;
-		TSize offset = buf.pageNo;
-		TSize dstPos;
-	    offset *= capacity(buf);
+        TSize undefinedPos = 0;
+        TSize offset = buf.pageNo;
+        TSize dstPos;
+        offset *= capacity(buf);
 
-		typename TConfig::Map M = me.pool.handlerArgs;
-		bool partiallyFilled = me.pool._partiallyFilled;
+        typename TConfig::Map M = me.pool.handlerArgs;
+        bool partiallyFilled = me.pool._partiallyFilled;
 
-		if (partiallyFilled)
-			undefinedPos = M(me.pool.undefinedValue);
+        if (partiallyFilled)
+            undefinedPos = M(me.pool.undefinedValue);
 
-		for(TValue *cur = buf.begin; cur != buf.end; ++cur) {
+        for(TValue *cur = buf.begin; cur != buf.end; ++cur) {
 
-			dstPos = M(*cur);
+            dstPos = M(*cur);
 
-			if (partiallyFilled && dstPos == undefinedPos) 
-				continue;							// don't move undefined values
+            if (partiallyFilled && dstPos == undefinedPos) 
+                continue;                            // don't move undefined values
 
-			#ifdef SEQAN_DEBUG
+            #ifdef SEQAN_DEBUG
                 if (!(dstPos >= offset && dstPos < offset + (TSize)capacity(buf))) {
-					std::cerr << "Mapper assertion failed: " << std::hex << dstPos;
-					std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (cur - buf.begin);
+                    std::cerr << "Mapper assertion failed: " << std::hex << dstPos;
+                    std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (cur - buf.begin);
                     std::cerr << " element is " << std::dec << *cur << std::endl;
                 }
-			#endif
+            #endif
             SEQAN_ASSERT(dstPos >= offset && dstPos < offset + (TSize)capacity(buf));
 
             TValue *I = buf.begin + (dstPos - offset);
             if (I != cur) {
-				TValue tmp;
-				TValue *refPrev = cur, *refNext = &tmp;
+                TValue tmp;
+                TValue *refPrev = cur, *refNext = &tmp;
 
-				do {
-					*refNext = *I;
-					*I = *refPrev;
+                do {
+                    *refNext = *I;
+                    *I = *refPrev;
 
-					dstPos = M(*refNext);
+                    dstPos = M(*refNext);
 
-					if (partiallyFilled && dstPos == undefinedPos)
-						I = cur;					// move the undefined value to an arbitrary free position (*cur)
-					else 
-					{
-						#ifdef SEQAN_DEBUG
-							if (!(dstPos >= offset && dstPos < offset + (TSize)capacity(buf))) {
-								std::cerr << "Mapper assertion failed: " << std::hex << dstPos;
-								std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (refNext - buf.begin);
-								std::cerr << " element is " << std::dec << *refNext << std::endl;
-							}
-							TValue *oldI = I;
-						#endif
-						SEQAN_ASSERT(dstPos >= offset && dstPos < offset + (TSize)capacity(buf));
+                    if (partiallyFilled && dstPos == undefinedPos)
+                        I = cur;                    // move the undefined value to an arbitrary free position (*cur)
+                    else 
+                    {
+                        #ifdef SEQAN_DEBUG
+                            if (!(dstPos >= offset && dstPos < offset + (TSize)capacity(buf))) {
+                                std::cerr << "Mapper assertion failed: " << std::hex << dstPos;
+                                std::cerr << " not in [" << offset << "," << (offset + capacity(buf)) << ") at " << (refNext - buf.begin);
+                                std::cerr << " element is " << std::dec << *refNext << std::endl;
+                            }
+                            TValue *oldI = I;
+                        #endif
+                        SEQAN_ASSERT(dstPos >= offset && dstPos < offset + (TSize)capacity(buf));
 
-						I = buf.begin + (dstPos - offset);
+                        I = buf.begin + (dstPos - offset);
 
-						#ifdef SEQAN_DEBUG
-							if (!partiallyFilled && I < cur) {
-								std::cerr << "Mapper assertion failed: I=" << std::hex << I;
-								std::cerr << " < cur=" << cur << std::dec << std::endl;
-								break;
-							}
-							if (I == oldI) {
-								std::cerr << "Mapper assertion failed: I=" << std::hex << I;
-								std::cerr << " in endless loop" << std::dec << std::endl;
-								break;
-							}
-						#endif
-					}
+                        #ifdef SEQAN_DEBUG
+                            if (!partiallyFilled && I < cur) {
+                                std::cerr << "Mapper assertion failed: I=" << std::hex << I;
+                                std::cerr << " < cur=" << cur << std::dec << std::endl;
+                                break;
+                            }
+                            if (I == oldI) {
+                                std::cerr << "Mapper assertion failed: I=" << std::hex << I;
+                                std::cerr << " in endless loop" << std::dec << std::endl;
+                                break;
+                            }
+                        #endif
+                    }
 
-					TValue *_swap = refNext;
-					refNext = refPrev;
-					refPrev = _swap;
-				} while (I != cur);
+                    TValue *_swap = refNext;
+                    refNext = refPrev;
+                    refPrev = _swap;
+                } while (I != cur);
 
-				if (refPrev != cur)
-					*cur = *refPrev;
+                if (refPrev != cur)
+                    *cur = *refPrev;
             }
         }
         return buf;
@@ -253,9 +253,9 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         typedef BufferHandler<TPool, ReadFileSpec>    Base;
         typedef typename Base::Type                     Type;
-        typedef typename Base::Buffer					Buffer;
+        typedef typename Base::Buffer                    Buffer;
 
-        Buffer	mapBuffer;
+        Buffer    mapBuffer;
 
         BufferHandler(TPool &_pool):
             Base(_pool)
@@ -277,23 +277,23 @@ namespace SEQAN_NAMESPACE_MAIN
 */
 
     //////////////////////////////////////////////////////////////////////////////
-	// generic adapter for buffered memory writers
+    // generic adapter for buffered memory writers
     struct MapperMemAdapter;
 
-	template <typename TBufferHandler>
-	struct Handler<TBufferHandler, MapperMemAdapter>
+    template <typename TBufferHandler>
+    struct Handler<TBufferHandler, MapperMemAdapter>
     {
-		typedef typename TBufferHandler::TPool          TPool;
+        typedef typename TBufferHandler::TPool          TPool;
         typedef typename Value<TBufferHandler>::Type    TBuffer;
         typedef typename Value<Handler>::Type           TValue;
 
-		TPool			&pool;
+        TPool            &pool;
         TBufferHandler  handler;
-        TBuffer			buffer;
+        TBuffer            buffer;
 
         template <typename TPool>
         Handler(TPool &_pool):
-			pool(_pool),
+            pool(_pool),
             handler(_pool) { }
 
         inline void _initializeBuffer() {
@@ -315,8 +315,8 @@ namespace SEQAN_NAMESPACE_MAIN
             handler.end();
         }
 
-		inline bool eof() { return false; }
-		inline void process() {}
+        inline bool eof() { return false; }
+        inline void process() {}
     };
 
     template <typename TBufferHandler>
@@ -326,11 +326,11 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     //////////////////////////////////////////////////////////////////////////////
-	// cache bucket based synchronous write handler
+    // cache bucket based synchronous write handler
     struct MapperSyncWriter;
 
-	template <typename TValue, typename TSpec>
-	struct Handler<Pool<TValue, TSpec>, MapperSyncWriter>
+    template <typename TValue, typename TSpec>
+    struct Handler<Pool<TValue, TSpec>, MapperSyncWriter>
     {
         typedef Pool<TValue, TSpec>             TPool;
         typedef Buffer<TValue>                  TBuffer;
@@ -348,20 +348,20 @@ namespace SEQAN_NAMESPACE_MAIN
             cancel();
         }
         
-		struct insertBucket : public std::unary_function<TPageBucket,void>
+        struct insertBucket : public std::unary_function<TPageBucket,void>
         {
-			Handler &me;
-			insertBucket(Handler &_me): me(_me) {}
+            Handler &me;
+            insertBucket(Handler &_me): me(_me) {}
 
-			inline void operator() (TPageBucket const &cb) const
+            inline void operator() (TPageBucket const &cb) const
             {
                 me.cache.push_back(cb);
-			}
-		};
+            }
+        };
 
         bool begin()
         {
-    		cache.reserve(pool.pages);
+            cache.reserve(pool.pages);
             return equiDistantDistribution(
                 bucketBuffer, pool.bucketBufferSize, *this,
                 pool._size, pool.pageSize,
@@ -369,63 +369,63 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         inline void push(TValue const &item) {
-			unsigned pageNo = pool.handlerArgs(item) / pool.pageSize;
+            unsigned pageNo = pool.handlerArgs(item) / pool.pageSize;
             #ifdef SEQAN_DEBUG
                 if (!(pageNo < cache.size())) {
-					std::cerr << "Mapper push assertion failed: " << pageNo << " >= " << cache.size();
+                    std::cerr << "Mapper push assertion failed: " << pageNo << " >= " << cache.size();
                     std::cerr << " element is " << item << std::endl;
                 }
-			#endif
-    		SEQAN_ASSERT_LT(pageNo, cache.size());
-			TPageBucket &cb = cache[pageNo];
+            #endif
+            SEQAN_ASSERT_LT(pageNo, cache.size());
+            TPageBucket &cb = cache[pageNo];
 
-			*cb.cur = item;
-			if (++cb.cur == cb.end)
-				writeBucket(cb, pageNo, pool.pageSize, pool.file);
+            *cb.cur = item;
+            if (++cb.cur == cb.end)
+                writeBucket(cb, pageNo, pool.pageSize, pool.file);
         }
 
         inline void end()
         {
             // flush all cache buckets to disk and compact cache
-			pool._partiallyFilled = false;
-			unsigned pageNo = 0;
-			unsigned curOfs, endOfs;
-			for(typename TCache::iterator cb = cache.begin(); cb != cache.end(); ++cb, ++pageNo) {
-				curOfs = cb->pageOfs + (cb->cur - cb->begin);
-				endOfs = pool.dataSize(pageNo);
-				if (curOfs < endOfs) {
-					// this page is partially filled and needs to be filled up with undefined entries
-					for(unsigned i = curOfs; i < endOfs; ++i) {
-						*cb.cur = pool.undefinedValue;
-						if (++cb.cur == cb.end)
-							writeBucket(cb, pageNo, pool.pageSize, pool.file);
-					}
-					pool._partiallyFilled = true;
-				}
-				writeBucket(*cb, pageNo, pool.pageSize, pool.file);
-			}
-			flush(pool.file);
+            pool._partiallyFilled = false;
+            unsigned pageNo = 0;
+            unsigned curOfs, endOfs;
+            for(typename TCache::iterator cb = cache.begin(); cb != cache.end(); ++cb, ++pageNo) {
+                curOfs = cb->pageOfs + (cb->cur - cb->begin);
+                endOfs = pool.dataSize(pageNo);
+                if (curOfs < endOfs) {
+                    // this page is partially filled and needs to be filled up with undefined entries
+                    for(unsigned i = curOfs; i < endOfs; ++i) {
+                        *cb.cur = pool.undefinedValue;
+                        if (++cb.cur == cb.end)
+                            writeBucket(cb, pageNo, pool.pageSize, pool.file);
+                    }
+                    pool._partiallyFilled = true;
+                }
+                writeBucket(*cb, pageNo, pool.pageSize, pool.file);
+            }
+            flush(pool.file);
             cancel();
         }
 
         inline void cancel()
         {
             cache.clear();
-			cache.reserve(0);
+            cache.reserve(0);
             freePage(bucketBuffer, *this);
         }
         
-		inline bool eof() { return false; }
+        inline bool eof() { return false; }
         inline void process() {}
-	};
+    };
 
 
     //////////////////////////////////////////////////////////////////////////////
-	// cache bucket based synchronous write handler
+    // cache bucket based synchronous write handler
     struct MapperAsyncWriter;
 
-	template <typename TValue, typename TConfig>
-	struct Handler<Pool<TValue, MapperSpec<TConfig> >, MapperAsyncWriter>
+    template <typename TValue, typename TConfig>
+    struct Handler<Pool<TValue, MapperSpec<TConfig> >, MapperAsyncWriter>
     {
         typedef Pool<TValue, MapperSpec<TConfig> >          TPool;
         typedef typename TConfig::File                      TFile;
@@ -436,9 +436,9 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef PageChain<TPageFrame>                       TPageChain;
 
         TPool       &pool;
-        TBuffer		bucketBuffer;
-        TPageChain	chain;
-        TBuffer		writeCache;
+        TBuffer        bucketBuffer;
+        TPageChain    chain;
+        TBuffer        writeCache;
         Cache       cache;
         unsigned    clusterSize;
 
@@ -454,38 +454,38 @@ namespace SEQAN_NAMESPACE_MAIN
             cancel();
         }
         
-		struct insertBucket : public std::unary_function<TPageBucket,void>
+        struct insertBucket : public std::unary_function<TPageBucket,void>
         {
-			Handler &me;
-			insertBucket(Handler &_me): me(_me) {}
+            Handler &me;
+            insertBucket(Handler &_me): me(_me) {}
 
-			inline void operator() (TPageBucket const &cb) const {
+            inline void operator() (TPageBucket const &cb) const {
                 me.cache.push_back(cb);
-			}
-		};
+            }
+        };
 
         bool begin()
         {
-    		cache.reserve(pool.pages());
+            cache.reserve(pool.pages());
             clusterSize = equiDistantAlignedDistribution(
                 bucketBuffer, sectorSize(pool.file), pool.bucketBufferSize, pool.file,
                 pool._size, pool.pageSize,
                 insertBucket(*this));
 
-			if (clusterSize == 0) {
-				clusterSize = UINT_MAX;
-				#ifdef SEQAN_DEBUG
-					std::cerr << "mapper switched to synchronous mode" << std::endl;
-				#endif
-				return equiDistantDistribution(
-					bucketBuffer, pool.bucketBufferSize, pool.file,
-					pool._size, pool.pageSize,
-					insertBucket(*this));
-			}
+            if (clusterSize == 0) {
+                clusterSize = UINT_MAX;
+                #ifdef SEQAN_DEBUG
+                    std::cerr << "mapper switched to synchronous mode" << std::endl;
+                #endif
+                return equiDistantDistribution(
+                    bucketBuffer, pool.bucketBufferSize, pool.file,
+                    pool._size, pool.pageSize,
+                    insertBucket(*this));
+            }
 
-			#ifdef SEQAN_VERBOSE
-				std::cerr << "async mapper clustersize " << clusterSize << std::endl;
-			#endif
+            #ifdef SEQAN_VERBOSE
+                std::cerr << "async mapper clustersize " << clusterSize << std::endl;
+            #endif
             allocPage(writeCache, chain.maxFrames * clusterSize, pool.file);
 
             // distribute write back buffers
@@ -502,45 +502,45 @@ namespace SEQAN_NAMESPACE_MAIN
 
         inline void push(TValue const &item)
         {
-			unsigned pageNo = pool.handlerArgs(item) / pool.pageSize;
+            unsigned pageNo = pool.handlerArgs(item) / pool.pageSize;
             #ifdef SEQAN_DEBUG
                 if (!(pageNo < cache.size())) {
-					std::cerr << "Mapper push assertion failed: " << pageNo << " >= " << cache.size();
+                    std::cerr << "Mapper push assertion failed: " << pageNo << " >= " << cache.size();
                     std::cerr << " element is " << item << std::endl;
-					std::cerr << std::hex << pool.handlerArgs(item) << " / " << pool.pageSize;
-					std::cerr << " = " << pageNo << std::dec << std::endl;
+                    std::cerr << std::hex << pool.handlerArgs(item) << " / " << pool.pageSize;
+                    std::cerr << " = " << pageNo << std::dec << std::endl;
                 }
-			#endif
+            #endif
             SEQAN_ASSERT_LT(pageNo, cache.size());
-			TPageBucket &cb = cache[pageNo];
+            TPageBucket &cb = cache[pageNo];
 
-			*cb.cur = item;
-			if (++cb.cur == cb.end)
-				_writeBucket(cb, pageNo);
+            *cb.cur = item;
+            if (++cb.cur == cb.end)
+                _writeBucket(cb, pageNo);
         }
 
         inline void end()
         {
             // flush all cache buckets to disk and compact cache
-			pool._partiallyFilled = false;
-			unsigned pageNo = 0;
-			unsigned curOfs, endOfs;
-			for(typename Cache::iterator cb = cache.begin(); cb != cache.end(); ++cb, ++pageNo) {
-				curOfs = cb->pageOfs + (cb->cur - cb->begin);
-				endOfs = pool.dataSize(pageNo);
-				if (curOfs < endOfs) {
-					// this page is partially filled and needs to be filled up with undefined entries
-					for(unsigned i = curOfs; i < endOfs; ++i) {
-						*cb->cur = pool.undefinedValue;
-						if (++cb->cur == cb->end)
-							_writeBucket(*cb, pageNo);
-					}
-					pool._partiallyFilled = true;
-				} else
-					_writeBucket(*cb, pageNo);
-			}
+            pool._partiallyFilled = false;
+            unsigned pageNo = 0;
+            unsigned curOfs, endOfs;
+            for(typename Cache::iterator cb = cache.begin(); cb != cache.end(); ++cb, ++pageNo) {
+                curOfs = cb->pageOfs + (cb->cur - cb->begin);
+                endOfs = pool.dataSize(pageNo);
+                if (curOfs < endOfs) {
+                    // this page is partially filled and needs to be filled up with undefined entries
+                    for(unsigned i = curOfs; i < endOfs; ++i) {
+                        *cb->cur = pool.undefinedValue;
+                        if (++cb->cur == cb->end)
+                            _writeBucket(*cb, pageNo);
+                    }
+                    pool._partiallyFilled = true;
+                } else
+                    _writeBucket(*cb, pageNo);
+            }
             chain.waitForAll();
-			flush(pool.file);
+            flush(pool.file);
             cancel();
         }
 
@@ -548,12 +548,12 @@ namespace SEQAN_NAMESPACE_MAIN
         {
             chain.cancelAll(pool.file);
             cache.clear();
-			cache.reserve(0);
+            cache.reserve(0);
             freePage(writeCache, pool.file);
             freePage(bucketBuffer, pool.file);
         }
         
-		inline bool eof() { return false; }
+        inline bool eof() { return false; }
         inline void process() {}
 
     protected:
@@ -579,57 +579,57 @@ namespace SEQAN_NAMESPACE_MAIN
             pf->pageNo = pageNo;
             return writeBucket(*pf, cb.pageOfs, pool.file);
         }
-	};
+    };
 
 
-	//////////////////////////////////////////////////////////////////////////////
-	// character and buffer based handler definitions
-	template < typename TValue,
-			   typename TConfig >
+    //////////////////////////////////////////////////////////////////////////////
+    // character and buffer based handler definitions
+    template < typename TValue,
+               typename TConfig >
     struct BufReadHandler<Pool< TValue, MapperSpec<TConfig> > >
     {
         typedef BufferHandler< Bundle2<
-			BufferHandler<Pool< TValue, MapperSpec<TConfig> >, MemorySpec>,
-//			BufferHandler<Pool< TValue, MapperSpec<TConfig> >, ReadMapperSpec>
-			BufferHandler<Pool< TValue, MapperSpec<TConfig> >, ReadFileSpec>
-		>, MultiplexSpec > Type;
+            BufferHandler<Pool< TValue, MapperSpec<TConfig> >, MemorySpec>,
+//            BufferHandler<Pool< TValue, MapperSpec<TConfig> >, ReadMapperSpec>
+            BufferHandler<Pool< TValue, MapperSpec<TConfig> >, ReadFileSpec>
+        >, MultiplexSpec > Type;
     };
 
     template < typename TValue,
-			   typename TConfig >
+               typename TConfig >
     struct WriteHandler<Pool< TValue, MapperSpec<TConfig> > >
     {
         typedef Handler< Bundle2<
-			Handler<BufferHandler < Pool< TValue, MapperSpec<TConfig> >, MemorySpec >, MapperMemAdapter>,
-			Handler<Pool< TValue, MapperSpec<TConfig> >, MapperSyncWriter>
-		>, MultiplexSpec > Type;
-	};
+            Handler<BufferHandler < Pool< TValue, MapperSpec<TConfig> >, MemorySpec >, MapperMemAdapter>,
+            Handler<Pool< TValue, MapperSpec<TConfig> >, MapperSyncWriter>
+        >, MultiplexSpec > Type;
+    };
 
 
-	// use async MapperHandler for all async files classes
+    // use async MapperHandler for all async files classes
 
     template < typename TValue,
-   	           typename TMap,
-		       typename TSize,
-			   typename TSpec >
+                  typename TMap,
+               typename TSize,
+               typename TSpec >
     struct WriteHandler<Pool< TValue, MapperSpec< MapperConfigSize< TMap, TSize, File<Async<TSpec> > > > > >
     {
         typedef Handler< Bundle2<
-			Handler<BufferHandler	< Pool< TValue, MapperSpec<MapperConfigSize< TMap, TSize, File<Async<TSpec> > > > >, MemorySpec >, MapperMemAdapter>,
-			Handler<Pool< TValue, MapperSpec<MapperConfigSize< TMap, TSize, File<Async<TSpec> > > > >, MapperAsyncWriter>
-		>, MultiplexSpec > Type;
-	};
+            Handler<BufferHandler    < Pool< TValue, MapperSpec<MapperConfigSize< TMap, TSize, File<Async<TSpec> > > > >, MemorySpec >, MapperMemAdapter>,
+            Handler<Pool< TValue, MapperSpec<MapperConfigSize< TMap, TSize, File<Async<TSpec> > > > >, MapperAsyncWriter>
+        >, MultiplexSpec > Type;
+    };
 
     template < typename TValue,
-   	           typename TMap,
-			   typename TSpec >
+                  typename TMap,
+               typename TSpec >
     struct WriteHandler<Pool< TValue, MapperSpec< MapperConfig< TMap, File<Async<TSpec> > > > > >
     {
         typedef Handler< Bundle2<
-			Handler<BufferHandler < Pool< TValue, MapperSpec<MapperConfig< TMap, File<Async<TSpec> > > > >, MemorySpec >, MapperMemAdapter>,
-			Handler<Pool< TValue, MapperSpec<MapperConfig< TMap, File<Async<TSpec> > > > >, MapperAsyncWriter>
-		>, MultiplexSpec > Type;
-	};
+            Handler<BufferHandler < Pool< TValue, MapperSpec<MapperConfig< TMap, File<Async<TSpec> > > > >, MemorySpec >, MapperMemAdapter>,
+            Handler<Pool< TValue, MapperSpec<MapperConfig< TMap, File<Async<TSpec> > > > >, MapperAsyncWriter>
+        >, MultiplexSpec > Type;
+    };
 
 }
 

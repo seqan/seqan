@@ -106,21 +106,21 @@ struct IsSameType<Type1, Type1> : True {};
 template <typename T>
 struct MakeUnsigned
 {
-	typedef
-		typename If<typename IsSameType<T, __int8>::Type,       __uint8,
-		typename If<typename IsSameType<T, char>::Type,         unsigned char,
-		typename If<typename IsSameType<T, signed char>::Type,  unsigned char,
-		typename If<typename IsSameType<T, signed short>::Type, unsigned short,
-		typename If<typename IsSameType<T, signed int>::Type,   unsigned int,
-		typename If<typename IsSameType<T, signed long>::Type,  unsigned long,
-		typename If<typename IsSameType<T, __int64>::Type,      __uint64, T
-		>::Type>::Type>::Type>::Type>::Type>::Type>::Type Type;
+    typedef
+        typename If<typename IsSameType<T, __int8>::Type,       __uint8,
+        typename If<typename IsSameType<T, char>::Type,         unsigned char,
+        typename If<typename IsSameType<T, signed char>::Type,  unsigned char,
+        typename If<typename IsSameType<T, signed short>::Type, unsigned short,
+        typename If<typename IsSameType<T, signed int>::Type,   unsigned int,
+        typename If<typename IsSameType<T, signed long>::Type,  unsigned long,
+        typename If<typename IsSameType<T, __int64>::Type,      __uint64, T
+        >::Type>::Type>::Type>::Type>::Type>::Type>::Type Type;
 };
 
 template <typename T>
 struct MakeUnsigned<T const>
 {
-	typedef typename MakeUnsigned<T>::Type const Type;
+    typedef typename MakeUnsigned<T>::Type const Type;
 };
 
 // TODO(holtgrew): Internal metafunction unnecessary now?
@@ -154,21 +154,21 @@ struct MakeUnsigned_ : MakeUnsigned<T> {};
 template <typename T>
 struct MakeSigned
 {
-	typedef
-		typename If<typename IsSameType<T, char>::Type,           signed char,
-		typename If<typename IsSameType<T, __int8>::Type,         __int8,
-		typename If<typename IsSameType<T, unsigned char>::Type,  signed char,
-		typename If<typename IsSameType<T, unsigned short>::Type, signed short,
-		typename If<typename IsSameType<T, unsigned int>::Type,   signed int,
-		typename If<typename IsSameType<T, unsigned long>::Type,  signed long,
-		typename If<typename IsSameType<T, __uint64>::Type,       __int64, T
-		>::Type>::Type>::Type>::Type>::Type>::Type>::Type Type;
+    typedef
+        typename If<typename IsSameType<T, char>::Type,           signed char,
+        typename If<typename IsSameType<T, __int8>::Type,         __int8,
+        typename If<typename IsSameType<T, unsigned char>::Type,  signed char,
+        typename If<typename IsSameType<T, unsigned short>::Type, signed short,
+        typename If<typename IsSameType<T, unsigned int>::Type,   signed int,
+        typename If<typename IsSameType<T, unsigned long>::Type,  signed long,
+        typename If<typename IsSameType<T, __uint64>::Type,       __int64, T
+        >::Type>::Type>::Type>::Type>::Type>::Type>::Type Type;
 };
 
 template <typename T>
 struct MakeSigned<T const>
 {
-	typedef typename MakeSigned<T>::Type const Type;
+    typedef typename MakeSigned<T>::Type const Type;
 };
 
 // TODO(holtgrew): Internal metafunction unnecessary now?
@@ -197,7 +197,7 @@ struct MakeSigned_ : MakeSigned<T> {};
 template <typename T>
 struct RemoveReference
 {
-	typedef typename std::remove_reference<T>::type Type;
+    typedef typename std::remove_reference<T>::type Type;
 };
 
 #else
@@ -205,7 +205,7 @@ struct RemoveReference
 template <typename T>
 struct RemoveReference
 {
-	typedef T Type;
+    typedef T Type;
 };
 
 template <typename T>
@@ -234,7 +234,7 @@ struct RemoveReference<T &> : RemoveReference<T> {};
 template <typename T>
 struct RemovePointer
 {
-	typedef typename std::remove_pointer<T>::type Type;
+    typedef typename std::remove_pointer<T>::type Type;
 };
 
 #else
@@ -242,7 +242,7 @@ struct RemovePointer
 template <typename T>
 struct RemovePointer
 {
-	typedef T Type;
+    typedef T Type;
 };
 
 template <typename T>
@@ -287,7 +287,7 @@ struct IsPointer<T * const> : True {};
 template <typename T>
 struct RemoveConst
 {
-	typedef T Type;
+    typedef T Type;
 };
 
 template <typename T>
@@ -296,21 +296,21 @@ struct RemoveConst<T const> : public RemoveConst<T> {};
 template <typename T>
 struct RemoveConst<T &>
 {
-	typedef typename RemoveConst<T>::Type & Type;
+    typedef typename RemoveConst<T>::Type & Type;
 };
 
 /*
 template <typename T>
 struct RemoveConst<T const *>
 {
-	typedef typename RemoveConst<T>::Type * Type;
+    typedef typename RemoveConst<T>::Type * Type;
 };
 */
 
 template <typename T, size_t I>
 struct RemoveConst<T const [I]>
 {
-	typedef T Type[I];
+    typedef T Type[I];
 };
 
 // TODO(holtgrew): Internal metafunction superflous?
@@ -328,13 +328,13 @@ struct RemoveConst_ : RemoveConst<T> {};
 template <typename TFrom, typename TTo>
 struct CopyConst_
 {
-	typedef TTo Type;
+    typedef TTo Type;
 };
 
 template <typename TFrom, typename TTo>
 struct CopyConst_<TFrom const, TTo>
 {
-	typedef TTo const Type;
+    typedef TTo const Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -360,12 +360,12 @@ struct IsConst_<T const> : True
 template <typename T>
 struct ClassIdentifier_
 {
-	static inline void *
-	getID()
-	{
-		static bool _id_dummy;
-		return &_id_dummy;
-	}
+    static inline void *
+    getID()
+    {
+        static bool _id_dummy;
+        return &_id_dummy;
+    }
 };
 
 // ============================================================================

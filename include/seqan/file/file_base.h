@@ -78,16 +78,16 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 
     template < typename TSpec >
     inline bool open(File<TSpec> &me, const char *fileName, int openMode) 
-	{
+    {
 //IOREV resolves to member in file_(a)sync.h which resolves to fstream
         return me.open(fileName, openMode);
     }
 
     template < typename TSpec >
     inline bool open(File<TSpec> &me, const char *fileName) 
-	{
+    {
 //IOREV
-		return open(me, fileName, DefaultOpenMode<File<TSpec> >::VALUE);
+        return open(me, fileName, DefaultOpenMode<File<TSpec> >::VALUE);
     }
 
 /*!
@@ -110,23 +110,23 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 
     template < typename TSpec >
     inline bool openTemp(File<TSpec> &me) 
-	{
+    {
 //IOREV
         return me.openTemp();
     }
 
     template < typename TSpec >
     inline bool openTemp(File<TSpec> &me, int openMode) 
-	{
+    {
 //IOREV
         return me.openTemp(openMode);
     }
 
     template < typename File >
     inline void reopen(File &, int) 
-	{
+    {
 //IOREV _stub_ _nodoc_ This is currently a no-op. Is that intended?
-	}
+    }
 
 /*!
  * @fn File#close
@@ -141,14 +141,14 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 
     template < typename TSpec >
     inline bool close(File<TSpec> & me) 
-	{
+    {
 //IOREV
         return me.close();
     }
 
     template < typename TSpec >
     inline unsigned sectorSize(File<TSpec> const & /*me*/) 
-	{
+    {
 //IOREV _duplicate_ _nodoc_ duplicate or identical spec. in file_cstyle.h should'nt this be variable
         return 4096;
     }
@@ -174,13 +174,13 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * The records are read from the position pointed to by the current file pointer (see @link File#seek @endlink).
  */
 
-	template < typename TSpec, typename TValue, typename TSize >
+    template < typename TSpec, typename TValue, typename TSize >
     inline bool read(File<TSpec> & me, TValue *memPtr, TSize const count) 
-	{
+    {
 //IOREV
         typedef typename Size<File<TSpec> >::Type TFileSize;
         TFileSize nbytes = (TFileSize)count * (TFileSize)sizeof(TValue);
-		return me.read(memPtr, nbytes) == nbytes;
+        return me.read(memPtr, nbytes) == nbytes;
     }
 
 /*!
@@ -200,13 +200,13 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * The records are written at the position pointed to by th ecurrent file pointer (see @link File#seek @endlink).
  */
 
-	template < typename TSpec, typename TValue, typename TSize >
+    template < typename TSpec, typename TValue, typename TSize >
     inline bool write(File<TSpec> & me, TValue const *memPtr, TSize const count) 
-	{
+    {
 //IOREV
         typedef typename Size<File<TSpec> >::Type TFileSize;
         TFileSize nbytes = (TFileSize)count * (TFileSize)sizeof(TValue);
-		return me.write(memPtr, nbytes) == nbytes;
+        return me.write(memPtr, nbytes) == nbytes;
     }
 
 /*!
@@ -225,11 +225,11 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 
     template < typename TFile, typename TValue, typename TSize, typename TPos >
     inline bool readAt(TFile & me, TValue *memPtr, TSize const count, TPos const fileOfs) 
-	{
+    {
 //IOREV
-		typedef typename Position<TFile>::Type pos_t;
-		seek(me, (pos_t)fileOfs * (pos_t)sizeof(TValue));
-		return read(me, memPtr, count);
+        typedef typename Position<TFile>::Type pos_t;
+        seek(me, (pos_t)fileOfs * (pos_t)sizeof(TValue));
+        return read(me, memPtr, count);
     }
 
 /*!
@@ -248,11 +248,11 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 
     template < typename TFile, typename TValue, typename TSize, typename TPos >
     inline bool writeAt(TFile & me, TValue const *memPtr, TSize const count, TPos const fileOfs) 
-	{
+    {
 //IOREV
-		typedef typename Position<TFile>::Type pos_t;
-		seek(me, (pos_t)fileOfs * (pos_t)sizeof(TValue));
-		return write(me, memPtr, count);
+        typedef typename Position<TFile>::Type pos_t;
+        seek(me, (pos_t)fileOfs * (pos_t)sizeof(TValue));
+        return write(me, memPtr, count);
     }
 
 
@@ -275,26 +275,26 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  * @return TPosition The new file position measured in bytes from the beginning.
  */
 
-	template < typename TSpec, typename TPos >
+    template < typename TSpec, typename TPos >
     inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const fileOfs, int origin) 
-	{
+    {
 //IOREV
-		typedef typename Position< File<TSpec> >::Type TFilePos;
-		TFilePos newOfs = me.seek(fileOfs, origin);
+        typedef typename Position< File<TSpec> >::Type TFilePos;
+        TFilePos newOfs = me.seek(fileOfs, origin);
         #if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
-			if (origin == SEEK_BEGIN && newOfs != (TFilePos)fileOfs) {
-				std::cerr << "seek returned " << std::hex << newOfs << " instead of " << fileOfs << std::dec << std::endl;
-			}
+            if (origin == SEEK_BEGIN && newOfs != (TFilePos)fileOfs) {
+                std::cerr << "seek returned " << std::hex << newOfs << " instead of " << fileOfs << std::dec << std::endl;
+            }
         #endif
         return newOfs;
     }
     
-	template < typename TSpec, typename TPos >
+    template < typename TSpec, typename TPos >
     inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const fileOfs) 
-	{
+    {
 //IOREV
-		return seek(me, fileOfs, SEEK_BEGIN);
-	}
+        return seek(me, fileOfs, SEEK_BEGIN);
+    }
 
 /*!
  * @fn File#tell
@@ -309,7 +309,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 
     template < typename TSpec >
     inline typename Position< File<TSpec> >::Type tell(File<TSpec> &me) 
-	{
+    {
 //IOREV
         return me.tell();
     }
@@ -325,9 +325,9 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 
     template < typename File >
     inline void rewind(File &me) 
-	{
+    {
 //IOREV
-		seek(me, 0);
+        seek(me, 0);
     }
 
 /*!
@@ -343,7 +343,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 
     template < typename TSpec >
     inline typename Size<File<TSpec> >::Type length(File<TSpec> &me) 
-	{
+    {
 //IOREV
         typename Size<File<TSpec> >::Type old_pos = tell(me);
         typename Size<File<TSpec> >::Type result = seek(me, 0, SEEK_END);
@@ -363,7 +363,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 
     template < typename TSpec, typename TSize >
     inline void resize(File<TSpec> &me, TSize new_length) 
-	{
+    {
 //IOREV possibly not standard-conformant, see resize() in file_cstyle.h
         typename Size<File<TSpec> >::Type old_pos = tell(me);
         seek(me, new_length, SEEK_BEGIN);
@@ -384,10 +384,10 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 
     template < typename TSpec >
     inline bool setEof(File<TSpec> &/*me*/) 
-	{ 
+    { 
 //IOREV _noop_ specialized for async file access but not for sync
-		return true; 
-	}
+        return true; 
+    }
 
 
     //////////////////////////////////////////////////////////////////////
@@ -512,7 +512,7 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
     template < typename File, typename TValue, typename TSize, typename TPos,
                typename AsyncRequest >
     inline bool 
-	asyncReadAt(File & me, TValue *memPtr, TSize const count, TPos const fileOfs,
+    asyncReadAt(File & me, TValue *memPtr, TSize const count, TPos const fileOfs,
         AsyncRequest &)
     {
 //IOREV _stub_ see general discussion about AsynRequest
@@ -537,15 +537,15 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
     template < typename File, typename TValue, typename TSize, typename TPos,
                typename TAsyncRequest >
     inline bool
-	asyncWriteAt(File & me, TValue const *memPtr, TSize const count, TPos const fileOfs,
+    asyncWriteAt(File & me, TValue const *memPtr, TSize const count, TPos const fileOfs,
         TAsyncRequest &)
     {
 //IOREV _stub_ see general discussion about AsynRequest
         return writeAt(me, memPtr, count, fileOfs);
     }
 
-	
-	//////////////////////////////////////////////////////////////////////
+    
+    //////////////////////////////////////////////////////////////////////
     // pseudo queue specific functions
 
 /*!
@@ -559,9 +559,9 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 
     template < typename TSpec >
     inline void flush(File<TSpec> &) 
-	{
+    {
 //IOREV _noop_ specialized for async file access but not for sync
-	}
+    }
 
 /*!
  * @fn File#waitFor
@@ -582,25 +582,25 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
  */
 
     inline bool waitFor(AsyncDummyRequest &) 
-	{ 
+    { 
 //IOREV _noop_ see general discussion about AsynRequest
-		return true; 
-	}
+        return true; 
+    }
 
-	template < typename TTime >
+    template < typename TTime >
     inline bool waitFor(AsyncDummyRequest &, TTime, bool &inProgress)
-	{ 
+    { 
 //IOREV _noop_ see general discussion about AsynRequest
         inProgress = false;
-		return true; 
-	}
+        return true; 
+    }
 
-	// deprecated
-	template < typename TSpec, typename AsyncRequest >
+    // deprecated
+    template < typename TSpec, typename AsyncRequest >
     inline void release(File<TSpec> &, AsyncRequest &) 
-	{
+    {
 //IOREV _noop_ see general discussion about AsynRequest
-	}
+    }
 
 /*!
  * @fn File#cancel
@@ -616,30 +616,30 @@ inline typename Position< File<TSpec> >::Type seek(File<TSpec> &me, TPos const f
 
     template < typename TSpec, typename AsyncRequest >
     inline bool cancel(File<TSpec> &, AsyncRequest &) 
-	{
+    {
 //IOREV _noop_ see general discussion about AsynRequest
-		return true; 
-	}
+        return true; 
+    }
 
 
-	// little helpers
+    // little helpers
 
-	template <typename T1, typename T2> inline
-	T1 enclosingBlocks(T1 _size, T2 _blockSize) 
-	{
+    template <typename T1, typename T2> inline
+    T1 enclosingBlocks(T1 _size, T2 _blockSize) 
+    {
 //IOREV not sure what this does, but is used in several places
-		return (_size + (T1)_blockSize - (T1)1) / (T1)_blockSize;
-	}
+        return (_size + (T1)_blockSize - (T1)1) / (T1)_blockSize;
+    }
 
-	template <typename T1, typename T2> inline
-	T1 alignSize(T1 _size, T2 _aligning) 
-	{
+    template <typename T1, typename T2> inline
+    T1 alignSize(T1 _size, T2 _aligning) 
+    {
 //IOREV not sure what this does, but is used in several places
         if (_size < (T1)_aligning)
             return _aligning;
         else
-		    return (_size / (T1)_aligning) * (T1)_aligning;
-	}
+            return (_size / (T1)_aligning) * (T1)_aligning;
+    }
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_FILE_BASE_H_

@@ -40,42 +40,42 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     template < 
-		typename TInput, typename TFunctor,
-		typename TOut1, typename TOut2, typename TOut4 
-	>
+        typename TInput, typename TFunctor,
+        typename TOut1, typename TOut2, typename TOut4 
+    >
     static void _skew7SeparateSlices(
-		TInput &in, TFunctor const &funcSlice,
-		TOut1 &out1, TOut2 &out2, TOut4 &out4)
+        TInput &in, TFunctor const &funcSlice,
+        TOut1 &out1, TOut2 &out2, TOut4 &out4)
     {
-		beginRead(in);
+        beginRead(in);
 
-		resize(out1, funcSlice.n1);
-		resize(out2, funcSlice.n2);
-		resize(out4, funcSlice.n4);
+        resize(out1, funcSlice.n1);
+        resize(out2, funcSlice.n2);
+        resize(out4, funcSlice.n4);
 
-		beginWrite(out1);
-		beginWrite(out2);
-		beginWrite(out4);
+        beginWrite(out1);
+        beginWrite(out2);
+        beginWrite(out4);
 
-		typename Value<TInput>::Type i;
-		while (!eof(in)) {
-			pop(in, i);
-			if (i.i1 < funcSlice.n4) {
-				push(out4, i);
-			} else 
-				if (i.i1 < funcSlice.n24) {
-					i.i1 -= funcSlice.n4;
-					push(out2, i);
-				} else {
-					i.i1 -= funcSlice.n24;
-					push(out1, i);
-				}
-		}
+        typename Value<TInput>::Type i;
+        while (!eof(in)) {
+            pop(in, i);
+            if (i.i1 < funcSlice.n4) {
+                push(out4, i);
+            } else 
+                if (i.i1 < funcSlice.n24) {
+                    i.i1 -= funcSlice.n4;
+                    push(out2, i);
+                } else {
+                    i.i1 -= funcSlice.n24;
+                    push(out1, i);
+                }
+        }
 
-		endWrite(out4);
-		endWrite(out2);
-		endWrite(out1);
-		endRead(in);
+        endWrite(out4);
+        endWrite(out2);
+        endWrite(out1);
+        endRead(in);
     }
     
 //}

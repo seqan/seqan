@@ -37,73 +37,73 @@
 
 namespace SEQAN_NAMESPACE_MAIN
 {
-	
-	template <
-		class SAFwdIt,		// suffix array input iterator
-		class FlatOutIt >	// flat tree output iterator
-	inline FlatOutIt createSABTree(
-		SAFwdIt First_, SAFwdIt _Last,
-		FlatOutIt Dest_, unsigned BlockSize)
-	{
-        typedef typename Value<SAFwdIt>::Type	TSize;
+    
+    template <
+        class SAFwdIt,        // suffix array input iterator
+        class FlatOutIt >    // flat tree output iterator
+    inline FlatOutIt createSABTree(
+        SAFwdIt First_, SAFwdIt _Last,
+        FlatOutIt Dest_, unsigned BlockSize)
+    {
+        typedef typename Value<SAFwdIt>::Type    TSize;
 
         TSize size = difference(First_, _Last);
-		if (!size) return Dest_;
+        if (!size) return Dest_;
 
         // calculate the depth of the sa b-tree
-		TSize BlockElements = BlockSize - 1;
+        TSize BlockElements = BlockSize - 1;
 
-		unsigned treeLevels = 1;
-		TSize _xSize;
-		for(_xSize = 1; _xSize * BlockSize <= size; _xSize *= BlockSize, ++treeLevels) ;
-	
-		// get output iterators for every level in the flat tree
-		FlatOutIt *level = new FlatOutIt[treeLevels];
-		for(int i = treeLevels - 1; _xSize; --i, _xSize /= BlockSize) {
-			level[i] = Dest_;
-			goFurther(Dest_, ((size / _xSize + BlockSize - 1) / BlockSize) * BlockSize);
-		}
+        unsigned treeLevels = 1;
+        TSize _xSize;
+        for(_xSize = 1; _xSize * BlockSize <= size; _xSize *= BlockSize, ++treeLevels) ;
+    
+        // get output iterators for every level in the flat tree
+        FlatOutIt *level = new FlatOutIt[treeLevels];
+        for(int i = treeLevels - 1; _xSize; --i, _xSize /= BlockSize) {
+            level[i] = Dest_;
+            goFurther(Dest_, ((size / _xSize + BlockSize - 1) / BlockSize) * BlockSize);
+        }
 
-		// counter for each b-tree level
-		TSize *cnt = new TSize[treeLevels];
-		for(unsigned i = 0; i < treeLevels; ++i)
-			cnt[i] = 0;
+        // counter for each b-tree level
+        TSize *cnt = new TSize[treeLevels];
+        for(unsigned i = 0; i < treeLevels; ++i)
+            cnt[i] = 0;
 
-		// distribute to responsible levels
-		for(TSize j = 0; j < size; ++j, ++First_)
-			for(unsigned i = 0; i < treeLevels; ++i) {
-				*(level[i]) = *First_;
-				++(level[i]);
-				if (cnt[i] != BlockElements) {
-					++cnt[i];
-					break;
-				} else
-					cnt[i] = 0;
-			}
+        // distribute to responsible levels
+        for(TSize j = 0; j < size; ++j, ++First_)
+            for(unsigned i = 0; i < treeLevels; ++i) {
+                *(level[i]) = *First_;
+                ++(level[i]);
+                if (cnt[i] != BlockElements) {
+                    ++cnt[i];
+                    break;
+                } else
+                    cnt[i] = 0;
+            }
 
-		delete[] cnt;
-		delete[] level;
+        delete[] cnt;
+        delete[] level;
 
-		return Dest_;
+        return Dest_;
     }
 
 
-	template < typename TSize >
-	inline TSize sizeofSABTree(TSize n, unsigned BlockSize)
-	{
-		TSize size = 0;
-		for(TSize _xSize = 1; _xSize <= n; _xSize *= BlockSize)
-			size += (n / _xSize + BlockSize - 1) / BlockSize;
-		return size * BlockSize;
-	}
+    template < typename TSize >
+    inline TSize sizeofSABTree(TSize n, unsigned BlockSize)
+    {
+        TSize size = 0;
+        for(TSize _xSize = 1; _xSize <= n; _xSize *= BlockSize)
+            size += (n / _xSize + BlockSize - 1) / BlockSize;
+        return size * BlockSize;
+    }
 
-	template <
-		class SAFwdIt,		// suffix array input iterator
-		typename TSize >
-	inline void sizeofSABTree(SAFwdIt First_, SAFwdIt _Last, TSize &Size_, unsigned BlockSize)
-	{
-		Size_ = sizeofSABTree(difference(First_, _Last), BlockSize);
-	}
+    template <
+        class SAFwdIt,        // suffix array input iterator
+        typename TSize >
+    inline void sizeofSABTree(SAFwdIt First_, SAFwdIt _Last, TSize &Size_, unsigned BlockSize)
+    {
+        Size_ = sizeofSABTree(difference(First_, _Last), BlockSize);
+    }
 
 
     template < typename TSAB, typename TSA >
@@ -112,11 +112,11 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
 
-	template < typename TSize >
+    template < typename TSize >
     inline unsigned treeLevelsSAB(TSize saSize, unsigned BlockSize)
-	{
-		unsigned treeLevels = 1;
-		for (TSize _xSize = 1; _xSize <= saSize; _xSize *= BlockSize, ++treeLevels)
+    {
+        unsigned treeLevels = 1;
+        for (TSize _xSize = 1; _xSize <= saSize; _xSize *= BlockSize, ++treeLevels)
             continue;  // Get smallest 2^k that is > saSize.
         return treeLevels;
     }

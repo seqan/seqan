@@ -117,15 +117,15 @@ struct Difference<Iter<TGaps, GapsIterator<TSpec> > const> :
 template <typename TGaps, typename TSpec>
 struct Source<Iter<TGaps, GapsIterator<TSpec> > >
 {
-	typedef typename Source<TGaps>::Type TSource_;
-	typedef typename Iterator<TSource_, Rooted>::Type Type;
+    typedef typename Source<TGaps>::Type TSource_;
+    typedef typename Iterator<TSource_, Rooted>::Type Type;
 };
 
 template <typename TGaps, typename TSpec>
 struct Source<Iter<TGaps, GapsIterator<TSpec> > const>
 {
-	typedef typename Source<TGaps>::Type TSource_;
-	typedef typename Iterator<TSource_, Rooted>::Type Type;
+    typedef typename Source<TGaps>::Type TSource_;
+    typedef typename Iterator<TSource_, Rooted>::Type Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -135,11 +135,11 @@ struct Source<Iter<TGaps, GapsIterator<TSpec> > const>
 template <typename TGaps, typename TSpec>
 struct Value<Iter<TGaps, GapsIterator<TSpec> > >
 {
-	typedef typename Source<Iter<TGaps, GapsIterator<TSpec> > >::Type TSource_;
-	typedef typename Value<TSource_>::Type TSourceValue_;
+    typedef typename Source<Iter<TGaps, GapsIterator<TSpec> > >::Type TSource_;
+    typedef typename Value<TSource_>::Type TSourceValue_;
     //typedef TSourceValue_ Type;
     // TODO(holtgrew): We really want gapped values here but there are issues...
-	typedef typename GappedValueType<TSourceValue_>::Type Type;
+    typedef typename GappedValueType<TSourceValue_>::Type Type;
 };
 
 template <typename TGaps, typename TSpec>
@@ -152,13 +152,13 @@ struct Value<Iter<TGaps, GapsIterator<TSpec> > const> :
 
 template <typename TGaps, typename TSpec>
 struct GetValue<Iter<TGaps, GapsIterator<TSpec> > > :
-	Value<Iter<TGaps, GapsIterator<TSpec> > >
+    Value<Iter<TGaps, GapsIterator<TSpec> > >
 {
 };
 
 template <typename TGaps, typename TSpec>
 struct GetValue<Iter<TGaps, GapsIterator<TSpec> > const> :
-	Value<Iter<TGaps, GapsIterator<TSpec> > const>
+    Value<Iter<TGaps, GapsIterator<TSpec> > const>
 {
 };
 
@@ -169,15 +169,15 @@ struct GetValue<Iter<TGaps, GapsIterator<TSpec> > const> :
 template <typename TGaps, typename TSpec>
 struct Reference<Iter<TGaps, GapsIterator<TSpec> > >
 {
-	typedef Iter<TGaps, GapsIterator<TSpec> > TIterator_;
-	typedef Proxy<IteratorProxy<TIterator_> > Type;
+    typedef Iter<TGaps, GapsIterator<TSpec> > TIterator_;
+    typedef Proxy<IteratorProxy<TIterator_> > Type;
 };
 
 template <typename TGaps, typename TSpec>
 struct Reference<Iter<TGaps, GapsIterator<TSpec> > const>
 {
-	typedef Iter<TGaps, GapsIterator<TSpec> const > TIterator_;
-	typedef Proxy<IteratorProxy<TIterator_> > Type;
+    typedef Iter<TGaps, GapsIterator<TSpec> const > TIterator_;
+    typedef Proxy<IteratorProxy<TIterator_> > Type;
 };
 
 // ============================================================================
@@ -194,17 +194,17 @@ template <typename TGaps, typename TSpec>
 inline Iter<TGaps, GapsIterator<TSpec> > & 
 operator++(Iter<TGaps, GapsIterator<TSpec> > & it)
 {
-	goNext(it);
-	return it;
+    goNext(it);
+    return it;
 }
 
 template <typename TGaps, typename TSpec>
 inline Iter<TGaps, GapsIterator<TSpec> >
 operator++(Iter<TGaps, GapsIterator<TSpec> > & it, int)
 {
-	Iter<TGaps, GapsIterator<TSpec> > ret = it;
-	goNext(it);
-	return ret;
+    Iter<TGaps, GapsIterator<TSpec> > ret = it;
+    goNext(it);
+    return ret;
 }
 
 // ----------------------------------------------------------------------------
@@ -215,17 +215,17 @@ template <typename TGaps, typename TSpec>
 inline Iter<TGaps, GapsIterator<TSpec> > & 
 operator--(Iter<TGaps, GapsIterator<TSpec> > & it)
 {
-	goPrevious(it);
-	return it;
+    goPrevious(it);
+    return it;
 }
 
 template <typename TGaps, typename TSpec>
 inline Iter<TGaps, GapsIterator<TSpec> >
 operator--(Iter<TGaps, GapsIterator<TSpec> > & it, int)
 {
-	Iter<TGaps, GapsIterator<TSpec> > ret = it;
-	goPrevious(it);
-	return ret;
+    Iter<TGaps, GapsIterator<TSpec> > ret = it;
+    goPrevious(it);
+    return ret;
 }
 
 // ----------------------------------------------------------------------------
@@ -248,7 +248,7 @@ template <typename TGaps, typename TSpec>
 inline void
 insertGap(Iter<TGaps, GapsIterator<TSpec> > & it)
 {
-	insertGaps(it, 1);
+    insertGaps(it, 1);
 }
 
 // ----------------------------------------------------------------------------
@@ -269,7 +269,7 @@ insertGap(Iter<TGaps, GapsIterator<TSpec> > & it)
 template <typename TGaps, typename TSpec>
 bool isCharacter(Iter<TGaps, GapsIterator<TSpec> > const & it)
 {
-	return !isGap(it);
+    return !isGap(it);
 }
 
 // ----------------------------------------------------------------------------
@@ -353,7 +353,7 @@ template <typename TGaps, typename TSpec>
 inline typename Size<TGaps>::Type
 removeGap(Iter<TGaps, GapsIterator<TSpec> > & it)
 {
-	return removeGaps(it, 1);
+    return removeGaps(it, 1);
 }
 
 // ----------------------------------------------------------------------------
@@ -381,24 +381,24 @@ removeGap(Iter<TGaps, GapsIterator<TSpec> > & it)
 template <typename TGaps, typename TSpec, typename TValue>
 inline void
 assignValue(Iter<TGaps, GapsIterator<TSpec> > & me,
-			TValue const & val)
+            TValue const & val)
 {
-	if (!isGap(me)) 
-	{
-		assignValue(source(me), val);
-	}
+    if (!isGap(me)) 
+    {
+        assignValue(source(me), val);
+    }
     // TODO(holtgrew): Else, inserting gaps is problematic...
 }
 
 template <typename TGaps, typename TSpec, typename TValue>
 inline void
 assignValue(Iter<TGaps, GapsIterator<TSpec> > const & me,
-			TValue const & val)
+            TValue const & val)
 {
-	if (!isGap(me)) 
-	{
-		assignValue(source(me), val);
-	}
+    if (!isGap(me)) 
+    {
+        assignValue(source(me), val);
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -409,14 +409,14 @@ template <typename TGaps, typename TSpec>
 inline TGaps &
 container(Iter<TGaps, GapsIterator<TSpec> > & me)
 {
-	return *me._container;
+    return *me._container;
 }
 
 template <typename TGaps, typename TSpec>
 inline TGaps &
 container(Iter<TGaps, GapsIterator<TSpec> > const & me)
 {
-	return *me._container;
+    return *me._container;
 }
 
 // ----------------------------------------------------------------------------
@@ -474,9 +474,9 @@ operator-=(Iter<TGaps, GapsIterator<TSpec> > & it, TDiff diff)
 template <typename TGaps, typename TSpec, typename TDifference>
 inline void
 goFurther(Iter<TGaps, GapsIterator<TSpec> > & it,
-		  TDifference steps)
+          TDifference steps)
 {
-	typedef typename MakeSigned<TDifference>::Type TSignedDifference;
+    typedef typename MakeSigned<TDifference>::Type TSignedDifference;
     if (steps > TDifference(0))
         for (; steps; --steps)
             goNext(it);

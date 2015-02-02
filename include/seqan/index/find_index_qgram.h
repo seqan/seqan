@@ -41,16 +41,16 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // QGram finders
 
-	struct FinderQGramLookup_; //Finder that simply looks up the q-gram in the hash table
+    struct FinderQGramLookup_; //Finder that simply looks up the q-gram in the hash table
 
 // the docu is now in index_base.h
-	typedef Tag<FinderQGramLookup_> const QGramFindLookup;
+    typedef Tag<FinderQGramLookup_> const QGramFindLookup;
 
 //____________________________________________________________________________
 
 
-	template < typename TText, typename TShapeSpec, typename TSpec >
-	struct DefaultFinder<Index<TText, IndexQGram<TShapeSpec, TSpec> > > {
+    template < typename TText, typename TShapeSpec, typename TSpec >
+    struct DefaultFinder<Index<TText, IndexQGram<TShapeSpec, TSpec> > > {
         typedef QGramFindLookup Type;
     };
 
@@ -58,27 +58,27 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // _findFirstIndex implementation
 
-	template < typename TText, typename TSpec, typename TSpecFinder, typename TPattern >
-	inline void _findFirstIndex(
-		Finder< Index<TText, TSpec>, TSpecFinder > &finder,
-		TPattern const &pattern,
-		QGramFindLookup const)
-	{
-		typedef Index<TText, TSpec>									TIndex;
-		typedef typename Fibre<TIndex, QGramSA>::Type				TSA;
-		typedef typename Fibre<TIndex, QGramShape>::Type			TShape;
-		typedef typename Fibre<TIndex, QGramDir>::Type				TDir;
-		typedef typename Fibre<TIndex, QGramBucketMap>::Type		TBucketMap;
-		typedef typename Iterator<TSA const, Standard>::Type		TSAIterator;
-		typedef typename Iterator<TPattern const, Standard>::Type	TPatternIterator;
+    template < typename TText, typename TSpec, typename TSpecFinder, typename TPattern >
+    inline void _findFirstIndex(
+        Finder< Index<TText, TSpec>, TSpecFinder > &finder,
+        TPattern const &pattern,
+        QGramFindLookup const)
+    {
+        typedef Index<TText, TSpec>                                    TIndex;
+        typedef typename Fibre<TIndex, QGramSA>::Type                TSA;
+        typedef typename Fibre<TIndex, QGramShape>::Type            TShape;
+        typedef typename Fibre<TIndex, QGramDir>::Type                TDir;
+        typedef typename Fibre<TIndex, QGramBucketMap>::Type        TBucketMap;
+        typedef typename Iterator<TSA const, Standard>::Type        TSAIterator;
+        typedef typename Iterator<TPattern const, Standard>::Type    TPatternIterator;
 
-		TIndex &index = haystack(finder);
-		indexRequire(index, QGramSADir());
+        TIndex &index = haystack(finder);
+        indexRequire(index, QGramSADir());
 
-		TSAIterator saIt = begin(indexSA(index), Standard());
-		TPatternIterator pIt = begin(pattern, Standard());
-		TDir const &dir = indexDir(index);
-		TShape &shape = indexShape(index);
+        TSAIterator saIt = begin(indexSA(index), Standard());
+        TPatternIterator pIt = begin(pattern, Standard());
+        TDir const &dir = indexDir(index);
+        TShape &shape = indexShape(index);
 
         if (IsSameType<TBucketMap, Nothing>::VALUE)
         {
@@ -97,7 +97,7 @@ namespace SEQAN_NAMESPACE_MAIN
             finder.range.i1 = saIt + dir[bktNo];
             finder.range.i2 = saIt + dir[bktNo + 1];
         }
-	}
+    }
 
 
 //////////////////////////////////////////////////////////////////////////////

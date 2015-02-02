@@ -60,14 +60,14 @@ namespace SEQAN_NAMESPACE_MAIN
 {
 
  
-	template <typename TSpec /* = void */>
-	struct Async {};
+    template <typename TSpec /* = void */>
+    struct Async {};
 
 
 #ifdef PLATFORM_WINDOWS
 
-	template <typename TSpec>
-	class File<Async<TSpec> >
+    template <typename TSpec>
+    class File<Async<TSpec> >
     {
 //IOREV _windows_
     public:
@@ -77,7 +77,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef DWORD       SizeType_;
         typedef HANDLE      Handle;
 
-		Handle              handle, handleAsync;
+        Handle              handle, handleAsync;
         bool                noBuffering;
 
         File():
@@ -87,7 +87,7 @@ namespace SEQAN_NAMESPACE_MAIN
             handle(INVALID_HANDLE_VALUE) {}
 
         bool open(char const *fileName, int openMode = DefaultOpenMode<File>::VALUE) {
-			SEQAN_PROADD(SEQAN_PROOPENFILES, 1);
+            SEQAN_PROADD(SEQAN_PROOPENFILES, 1);
             noBuffering = (getExtraFlags(openMode | OPEN_ASYNC) & (FILE_FLAG_NO_BUFFERING | FILE_FLAG_OVERLAPPED)) != 0;
             handleAsync = CreateFileA(fileName,
                                 getFileAccess(openMode | OPEN_ASYNC),
@@ -98,13 +98,13 @@ namespace SEQAN_NAMESPACE_MAIN
                                 NULL);
 
             if (handleAsync == INVALID_HANDLE_VALUE) {
-				if (!(openMode & OPEN_QUIET))
-					std::cerr << "Open failed on file " << fileName << ". (ErrNo=" << GetLastError() << ")" << std::endl;
+                if (!(openMode & OPEN_QUIET))
+                    std::cerr << "Open failed on file " << fileName << ". (ErrNo=" << GetLastError() << ")" << std::endl;
                 return false;
             }
             #ifdef SEQAN_VERBOSE
-				if (!(openMode & OPEN_QUIET))
-	                std::cerr << "file opened asynchronously " << fileName << " handle " << std::hex << handleAsync << std::dec << std::endl;
+                if (!(openMode & OPEN_QUIET))
+                    std::cerr << "file opened asynchronously " << fileName << " handle " << std::hex << handleAsync << std::dec << std::endl;
             #endif
 
             if (noBuffering) {
@@ -116,13 +116,13 @@ namespace SEQAN_NAMESPACE_MAIN
                                 getExtraFlags(openMode & ~OPEN_ASYNC),
                                 NULL);
                 if (handle == INVALID_HANDLE_VALUE) {
-					if (!(openMode & OPEN_QUIET))
-	                	std::cerr << "Open failed on secondary file " << fileName << ". (ErrNo=" << GetLastError() << ")" << std::endl;
+                    if (!(openMode & OPEN_QUIET))
+                        std::cerr << "Open failed on secondary file " << fileName << ". (ErrNo=" << GetLastError() << ")" << std::endl;
                     return false;
                 }
-	            #ifdef SEQAN_VERBOSE
-					if (!(openMode & OPEN_QUIET))
-	                	std::cerr << "async file opened  " << fileName << " handle " << std::hex << handle << std::dec << std::endl;
+                #ifdef SEQAN_VERBOSE
+                    if (!(openMode & OPEN_QUIET))
+                        std::cerr << "async file opened  " << fileName << " handle " << std::hex << handle << std::dec << std::endl;
                 #endif
             } else
                 handle = handleAsync;
@@ -137,14 +137,14 @@ namespace SEQAN_NAMESPACE_MAIN
 #else
             char szTempPath[MAX_PATH];
             if (!GetTempPathA(MAX_PATH, szTempPath)) {
-				if (!(openMode & OPEN_QUIET))
-					std::cerr << "Couldn't get a temporary path name. (ErrNo=" << GetLastError() << ")" << std::endl;
+                if (!(openMode & OPEN_QUIET))
+                    std::cerr << "Couldn't get a temporary path name. (ErrNo=" << GetLastError() << ")" << std::endl;
                 return false;
             }
 #endif
             if (!GetTempFileNameA(szTempPath, "GNDX", 0, szTempName)) {
-				if (!(openMode & OPEN_QUIET))
-					std::cerr << "Couldn't get a temporary file name. (ErrNo=" << GetLastError() << ")" << std::endl;
+                if (!(openMode & OPEN_QUIET))
+                    std::cerr << "Couldn't get a temporary file name. (ErrNo=" << GetLastError() << ")" << std::endl;
                 return false;
             }
             return open(szTempName, openMode | OPEN_TEMPORARY);
@@ -160,15 +160,15 @@ namespace SEQAN_NAMESPACE_MAIN
             result &= CloseHandle(handle);
             handleAsync = INVALID_HANDLE_VALUE;
             handle = INVALID_HANDLE_VALUE;
-			SEQAN_PROSUB(SEQAN_PROOPENFILES, 1);
+            SEQAN_PROSUB(SEQAN_PROOPENFILES, 1);
             return result != FALSE;
         }
 
         inline DWORD read(void *memPtr, SizeType_ count) const {
             SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
             SEQAN_PROTIMESTART(tw);
-			DWORD _transferedBytes;
-		    ReadFile(handle, memPtr, count, &_transferedBytes, NULL);
+            DWORD _transferedBytes;
+            ReadFile(handle, memPtr, count, &_transferedBytes, NULL);
             SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
             return _transferedBytes;
         }
@@ -176,33 +176,33 @@ namespace SEQAN_NAMESPACE_MAIN
         inline DWORD write(void const *memPtr, SizeType_ count) const {
             SEQAN_PROADD(SEQAN_PROIO, (count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
             SEQAN_PROTIMESTART(tw);
-			DWORD _transferedBytes;
-		    WriteFile(handle, memPtr, count, &_transferedBytes, NULL);
+            DWORD _transferedBytes;
+            WriteFile(handle, memPtr, count, &_transferedBytes, NULL);
             SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
             return _transferedBytes;
         }
 
-		inline FilePtr seek(FilePtr _pos, DWORD origin = FILE_BEGIN) {
+        inline FilePtr seek(FilePtr _pos, DWORD origin = FILE_BEGIN) {
 //          LARGE_INTEGER li = _pos;
-//			return SetFilePointer(handleAsync, li.LowPart, &li.HighPart, MoveMethod);
+//            return SetFilePointer(handleAsync, li.LowPart, &li.HighPart, MoveMethod);
             LARGE_INTEGER new_pos, pos;
             pos.QuadPart = _pos;
             SetFilePointerEx(handle, pos, &new_pos, origin);
 //            position = new_pos.QuadPart;
             return new_pos.QuadPart;
-		}
-
-		inline FilePtr tell() {
-			return seek(0, FILE_CURRENT);
         }
 
-		inline FilePtr size() const {
+        inline FilePtr tell() {
+            return seek(0, FILE_CURRENT);
+        }
+
+        inline FilePtr size() const {
             LARGE_INTEGER result;
             DWORD dwError, high;
             result.LowPart = GetFileSize(handle, &high);
             result.HighPart = high;
             if (result.LowPart == INVALID_FILE_SIZE && (dwError = GetLastError()) != NO_ERROR) {
-				std::cerr << "Couldn't get file size. (ErrNo=" << dwError << ")" << std::endl;
+                std::cerr << "Couldn't get file size. (ErrNo=" << dwError << ")" << std::endl;
                 return 0;
             }
             return result.QuadPart;
@@ -212,9 +212,9 @@ namespace SEQAN_NAMESPACE_MAIN
             return SetEndOfFile(handle) != FALSE;
         }
 
-		inline static DWORD error() {
-			return GetLastError();
-		}
+        inline static DWORD error() {
+            return GetLastError();
+        }
 
         operator bool () const {
             return (handle != INVALID_HANDLE_VALUE) && (handleAsync != INVALID_HANDLE_VALUE);
@@ -230,8 +230,8 @@ namespace SEQAN_NAMESPACE_MAIN
                     return GENERIC_WRITE;
                 case OPEN_RDWR:
                     return GENERIC_READ | GENERIC_WRITE;
-				default:
-					return 0;
+                default:
+                    return 0;
             }
         }
 
@@ -274,67 +274,67 @@ namespace SEQAN_NAMESPACE_MAIN
 
         aiocb_win32(aiocb_win32 & other, Move) :
             overlapped(other.overlapped),
-			xmitDone(other.xmitDone, Move())
+            xmitDone(other.xmitDone, Move())
         {}
 
 #ifdef SEQAN_CXX11_STANDARD
         aiocb_win32(aiocb_win32 && other) :
             overlapped(other.overlapped),
-			xmitDone(other.xmitDone, Move())
+            xmitDone(other.xmitDone, Move())
         {}
 #endif
 
-	private:
-		aiocb_win32(aiocb_win32 const &)
-		{}
+    private:
+        aiocb_win32(aiocb_win32 const &)
+        {}
     };
 
     template <>
     struct HasMoveConstructor<aiocb_win32> : True {};
 
-	template <typename TSpec>
+    template <typename TSpec>
     struct AsyncRequest<File<Async<TSpec> > >
     {
         typedef aiocb_win32 Type;
     };
 /*
-	template <typename TSpec>
+    template <typename TSpec>
     struct aEvent<File<Async<TSpec> > >
     {
         typedef Event Type;
     };
 
 
-	template <typename TSpec>
+    template <typename TSpec>
     struct aQueue<File<Async<TSpec> > >
     {
         typedef IOQueue Type;
     };
 
-	template <typename TSpec>
+    template <typename TSpec>
     struct aHint<File<Async<TSpec> > >
     {
         typedef typename aQueue<File<Async<TSpec> > >::Type::aHint Type;
     };
 
-	template <typename TSpec>
+    template <typename TSpec>
     struct aCallback<File<Async<TSpec> > >
     {
         typedef typename aQueue<File<Async<TSpec> > >::Type::aCallback Type;
     };*/
 
 
-	template <typename TSpec>
+    template <typename TSpec>
     inline typename Size<File<Async<TSpec> > >::Type length(File<Async<TSpec> > &me) {
         return me.size();
     }
 
-	template <typename TSpec>
+    template <typename TSpec>
     inline bool setEof(File<Async<TSpec> > &me) {
         return me.setEof();
     }
 
-	template <typename TSpec>
+    template <typename TSpec>
     inline unsigned sectorSize(File<Async<TSpec> > const &) {
         DWORD SpC, nofC, tnoC, aligning;
         if (GetDiskFreeSpace(NULL, &SpC, &aligning, &nofC, &tnoC) == 0)  {
@@ -370,9 +370,9 @@ namespace SEQAN_NAMESPACE_MAIN
         }
         if (me.error() == ERROR_NO_SYSTEM_RESOURCES) {  // read synchronoulsy instead
             #if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
-            	std::cerr << "Warning: Falling back to sync. read. :( " << std::endl;
+                std::cerr << "Warning: Falling back to sync. read. :( " << std::endl;
             #endif
-			signal(request.xmitDone);
+            signal(request.xmitDone);
             return readAt(me, memPtr, count, fileOfs);
         }
         return false;
@@ -403,9 +403,9 @@ namespace SEQAN_NAMESPACE_MAIN
         }
         if (me.error() == ERROR_NO_SYSTEM_RESOURCES) {  // write synchronoulsy instead
             #if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
-            	std::cerr << "Warning: Falling back to sync. write. :( " << std::endl;
+                std::cerr << "Warning: Falling back to sync. write. :( " << std::endl;
             #endif
-			signal(request.xmitDone);
+            signal(request.xmitDone);
             return writeAt(me, memPtr, count, fileOfs);
         }
         return false;
@@ -417,25 +417,25 @@ namespace SEQAN_NAMESPACE_MAIN
     inline bool waitFor(aiocb_win32 &request) {
 //IOREV _doc_ 
         SEQAN_PROTIMESTART(tw);
-		bool inProgress;
-		bool waitResult = waitFor(request.xmitDone, 60000, inProgress);
-		if (inProgress)
+        bool inProgress;
+        bool waitResult = waitFor(request.xmitDone, 60000, inProgress);
+        if (inProgress)
             std::cerr << "waitFor timeout" << std::endl;
         SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
         return waitResult;
-	}
+    }
 
     template < typename TTime >
     inline bool waitFor(aiocb_win32 &request, TTime timeoutMilliSec, bool &inProgress) {
 //IOREV _doc_ 
         SEQAN_PROTIMESTART(tw);
-		bool waitResult = waitFor(request.xmitDone, timeoutMilliSec, inProgress);
+        bool waitResult = waitFor(request.xmitDone, timeoutMilliSec, inProgress);
         SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
         return waitResult;
-	}
+    }
 
-	template < typename TSize >
-	inline int waitForAny(aiocb_win32 const * const contexts[], TSize count, DWORD timeoutMilliSec = Event::Infinite) {
+    template < typename TSize >
+    inline int waitForAny(aiocb_win32 const * const contexts[], TSize count, DWORD timeoutMilliSec = Event::Infinite) {
 //IOREV _nodoc_ 
         Event::Handle *handles = new Event::Handle[count];
         for(TSize i = 0; i < count; ++i)
@@ -444,23 +444,23 @@ namespace SEQAN_NAMESPACE_MAIN
         SEQAN_PROTIMESTART(tw);
         DWORD result = WaitForMultipleObjects(count, handles, false, timeoutMilliSec);
         SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
-		delete[] handles;
+        delete[] handles;
         if (/*result >= WAIT_OBJECT_0 && */result < WAIT_OBJECT_0 + count)
-    		return result - WAIT_OBJECT_0;
+            return result - WAIT_OBJECT_0;
         return -1;
-	}
+    }
 
-	template <typename TSpec>
+    template <typename TSpec>
     inline bool cancel(File<Async<TSpec> > & me, aiocb_win32 const &request) {
 //IOREV _doc_ 
         return CancelIo(me.handleAsync);
     }
 
-	template <typename TSpec>
+    template <typename TSpec>
     inline bool flush(File<Async<TSpec> > & me) {
 //IOREV _doc_ 
-		if (me.handle != me.handleAsync)	// in case of equality no direct access was done -> no flush needed
-        	return FlushFileBuffers(me.handle) != 0;
+        if (me.handle != me.handleAsync)    // in case of equality no direct access was done -> no flush needed
+            return FlushFileBuffers(me.handle) != 0;
         else
             return true;
     }
@@ -619,7 +619,7 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////
     // queue specific functions
 
-	template <typename TSpec>
+    template <typename TSpec>
     inline void flush(File<Async<TSpec> > & me) {
         me.queue->flush();
     }
@@ -630,49 +630,49 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 */
 
-	//////////////////////////////////////////////////////////////////////////////
-	// page aligned allocate for direct file io
+    //////////////////////////////////////////////////////////////////////////////
+    // page aligned allocate for direct file io
 
-    struct TagAllocateAligned_;	//< allocate page aligned memory for direct i/o access
+    struct TagAllocateAligned_;    //< allocate page aligned memory for direct i/o access
     typedef Tag<TagAllocateAligned_> const TagAllocateAligned;
 
-	template <typename T, typename TValue, typename TSize>
-	inline void
-	allocate(T const &, 
-			 TValue * & data,
-			 TSize count,
-			 TagAllocateAligned const)
-	{
+    template <typename T, typename TValue, typename TSize>
+    inline void
+    allocate(T const &, 
+             TValue * & data,
+             TSize count,
+             TagAllocateAligned const)
+    {
 //IOREV _doc_ 
-		data = (TValue *) VirtualAlloc(NULL, count * sizeof(TValue), MEM_COMMIT, PAGE_READWRITE);
+        data = (TValue *) VirtualAlloc(NULL, count * sizeof(TValue), MEM_COMMIT, PAGE_READWRITE);
         if (data)
             SEQAN_PROADD(SEQAN_PROMEMORY, count * sizeof(TValue));
         else
-			std::cerr << "AlignAllocator: Could not allocate memory of size " << std::hex << count * sizeof(TValue) << std::dec << ". (ErrNo=" << GetLastError() << ")" << std::endl;
-	}
+            std::cerr << "AlignAllocator: Could not allocate memory of size " << std::hex << count * sizeof(TValue) << std::dec << ". (ErrNo=" << GetLastError() << ")" << std::endl;
+    }
 
-	//////////////////////////////////////////////////////////////////////////////
-	// page aligned deallocate for direct file io
+    //////////////////////////////////////////////////////////////////////////////
+    // page aligned deallocate for direct file io
 
-	template <typename T, typename TValue, typename TSize>
-	inline void 
-	deallocate( T const &,
-				TValue * data, 
-				TSize count,
-				TagAllocateAligned const)
-	{
+    template <typename T, typename TValue, typename TSize>
+    inline void 
+    deallocate( T const &,
+                TValue * data, 
+                TSize count,
+                TagAllocateAligned const)
+    {
 //IOREV _doc_ 
-		if (data) {
-			VirtualFree(data, 0, MEM_RELEASE);
-			if (count)	// .. to use count if SEQAN_PROFILE is not defined
-				SEQAN_PROSUB(SEQAN_PROMEMORY, count * sizeof(TValue));
-		}
-	}
+        if (data) {
+            VirtualFree(data, 0, MEM_RELEASE);
+            if (count)    // .. to use count if SEQAN_PROFILE is not defined
+                SEQAN_PROSUB(SEQAN_PROMEMORY, count * sizeof(TValue));
+        }
+    }
 
 #else
 
     
-	template <typename TSpec>
+    template <typename TSpec>
     class File<Async<TSpec> > : public File<Sync<TSpec> >
     {
 //IOREV _nodoc_ members are not well documented
@@ -680,67 +680,67 @@ namespace SEQAN_NAMESPACE_MAIN
 
         typedef File<Sync<TSpec> >  Base;
 
-        typedef off_t			FilePtr;
-		typedef off_t           SizeType;   // type of file size
+        typedef off_t            FilePtr;
+        typedef off_t           SizeType;   // type of file size
         typedef size_t          SizeType_;  // type of transfer size (for read or write)
-		typedef int				Handle;
+        typedef int                Handle;
 
         Handle handleAsync;
-		using Base::handle;
+        using Base::handle;
 
-		File(void * = NULL): 	// to be compatible with the FILE*(NULL) constructor
-			handleAsync(-1) {}
+        File(void * = NULL):     // to be compatible with the FILE*(NULL) constructor
+            handleAsync(-1) {}
 
         virtual ~File() {}
         
         bool open(char const *fileName, int openMode = DefaultOpenMode<File>::VALUE) {
             handle = ::open(fileName, Base::_getOFlag(openMode & ~OPEN_ASYNC), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-			if (handle == -1) 
-			{
-				handleAsync = handle;
-				if (!(openMode & OPEN_QUIET))
-					std::cerr << "Open failed on file " << fileName << ": \"" << ::strerror(errno) << '"' << std::endl;
-				return false;
-			}
+            if (handle == -1) 
+            {
+                handleAsync = handle;
+                if (!(openMode & OPEN_QUIET))
+                    std::cerr << "Open failed on file " << fileName << ": \"" << ::strerror(errno) << '"' << std::endl;
+                return false;
+            }
 
-			if (Base::_getOFlag(openMode | OPEN_ASYNC) & O_DIRECT) 
-			{
-				handleAsync = ::open(fileName, Base::_getOFlag(openMode | (OPEN_ASYNC & ~OPEN_CREATE)), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-				if (handleAsync == -1 || errno == EINVAL) {	// fall back to cached access
-					#if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
-						if (!(openMode & OPEN_QUIET))
-							std::cerr << "Warning: Direct access openening failed. \"" << ::strerror(errno) << '"' << std::endl;
-					#endif
-					handleAsync = handle;
-				}
-				#if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
-				    else
-						if (!(openMode & OPEN_QUIET))
-							std::cerr << "Direct access successfully initiated" << std::endl;
-				#endif
-			} else
-				handleAsync = handle;
+            if (Base::_getOFlag(openMode | OPEN_ASYNC) & O_DIRECT) 
+            {
+                handleAsync = ::open(fileName, Base::_getOFlag(openMode | (OPEN_ASYNC & ~OPEN_CREATE)), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+                if (handleAsync == -1 || errno == EINVAL) {    // fall back to cached access
+                    #if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
+                        if (!(openMode & OPEN_QUIET))
+                            std::cerr << "Warning: Direct access openening failed. \"" << ::strerror(errno) << '"' << std::endl;
+                    #endif
+                    handleAsync = handle;
+                }
+                #if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
+                    else
+                        if (!(openMode & OPEN_QUIET))
+                            std::cerr << "Direct access successfully initiated" << std::endl;
+                #endif
+            } else
+                handleAsync = handle;
 
-			if (sizeof(FilePtr) < 8 && !(openMode & OPEN_QUIET))
-				// To remove this warning, you have to options:
-				// 1. include the following line before including anything in your application
-				//    #define _FILE_OFFSET_BITS 64
-				// 2. include <seqan/platform.h> or <seqan/sequence.h> before any other include
-				std::cerr << "WARNING: FilePtr is not 64bit wide" << std::endl;
+            if (sizeof(FilePtr) < 8 && !(openMode & OPEN_QUIET))
+                // To remove this warning, you have to options:
+                // 1. include the following line before including anything in your application
+                //    #define _FILE_OFFSET_BITS 64
+                // 2. include <seqan/platform.h> or <seqan/sequence.h> before any other include
+                std::cerr << "WARNING: FilePtr is not 64bit wide" << std::endl;
 
 
-			SEQAN_PROADD(SEQAN_PROOPENFILES, 1);
+            SEQAN_PROADD(SEQAN_PROOPENFILES, 1);
             return true;
         }
 
-		bool close() {
-			bool result = true;
-			if (handleAsync != handle && handleAsync != -1)
-	            result &= (::close(handleAsync) == 0);
+        bool close() {
+            bool result = true;
+            if (handleAsync != handle && handleAsync != -1)
+                result &= (::close(handleAsync) == 0);
             result &= (::close(handle) == 0);
             handleAsync = -1;
             handle = -1;
-			SEQAN_PROSUB(SEQAN_PROOPENFILES, 1);
+            SEQAN_PROSUB(SEQAN_PROOPENFILES, 1);
             return result;
         }
     };
@@ -750,7 +750,7 @@ namespace SEQAN_NAMESPACE_MAIN
     // (SeqAn adaption)
     //////////////////////////////////////////////////////////////////////////////
 /*
-	template <typename TSpec>
+    template <typename TSpec>
     struct aQueue<File<Async<TSpec> > >
     {
         typedef void* Type;
@@ -781,14 +781,14 @@ namespace SEQAN_NAMESPACE_MAIN
     struct HasMoveConstructor<AiocbWrapper> : True {};
 
 
-	template <typename TSpec>
+    template <typename TSpec>
     struct AsyncRequest<File<Async<TSpec> > >
     {
 //IOREV _doc_ 
-		typedef AiocbWrapper Type;
+        typedef AiocbWrapper Type;
     };
 /*
-	template <typename TSpec>
+    template <typename TSpec>
     struct aEvent<File<Async<TSpec> > >
     {
         typedef aiocb Type;
@@ -800,20 +800,20 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //    enum { AsyncIOSignal_ = SIGIO };
 
-	inline void printRequest(AiocbWrapper &request, const char *_hint)
+    inline void printRequest(AiocbWrapper &request, const char *_hint)
     {
 //IOREV _nodoc_ _notinlined_
-		std::cerr << std::hex;
-		if (_hint)
-			std::cerr << _hint << std::endl;
-		std::cerr << "fildes:  " << request.aio_fildes << std::endl;
-		std::cerr << "buffer:  " << (unsigned long)request.aio_buf << std::endl;
-		std::cerr << "offset:  " << request.aio_offset<< std::endl;
-		std::cerr << "nbytes:  " << request.aio_nbytes << std::endl;
-		std::cerr << "event:   " << request.aio_sigevent.sigev_notify << std::endl;
-		std::cerr << "Raddr:   " << &request << std::endl;
-		std::cerr << std::dec;
-	}
+        std::cerr << std::hex;
+        if (_hint)
+            std::cerr << _hint << std::endl;
+        std::cerr << "fildes:  " << request.aio_fildes << std::endl;
+        std::cerr << "buffer:  " << (unsigned long)request.aio_buf << std::endl;
+        std::cerr << "offset:  " << request.aio_offset<< std::endl;
+        std::cerr << "nbytes:  " << request.aio_nbytes << std::endl;
+        std::cerr << "event:   " << request.aio_sigevent.sigev_notify << std::endl;
+        std::cerr << "Raddr:   " << &request << std::endl;
+        std::cerr << std::dec;
+    }
 
     inline void printRequest(AiocbWrapper &request)
     {
@@ -836,33 +836,33 @@ namespace SEQAN_NAMESPACE_MAIN
 /*      request.aio_sigevent.sigev_notify = SIGEV_SIGNAL;
         request.aio_sigevent.sigev_signo = AsyncIOSignal_;
         request.aio_sigevent.sigev_value.sival_ptr = &request;
-		#ifdef SEQAN_VVERBOSE
-			printRequest(request, "aio_read():");
-		#endif
+        #ifdef SEQAN_VVERBOSE
+            printRequest(request, "aio_read():");
+        #endif
 */      if (request.aio_nbytes == 0) return true;
-		SEQAN_PROADD(SEQAN_PROIO, (request.aio_nbytes + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
-		int result = aio_read(&request);
+        SEQAN_PROADD(SEQAN_PROIO, (request.aio_nbytes + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
+        int result = aio_read(&request);
         SEQAN_PROADD(SEQAN_PROIWAIT, SEQAN_PROTIMEDIFF(tw));
         if (result != 0)
-		{
-			request.aio_nbytes = 0;
-			if (errno == EAGAIN) {  // read synchronoulsy instead
+        {
+            request.aio_nbytes = 0;
+            if (errno == EAGAIN) {  // read synchronoulsy instead
 #if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
-            	std::cerr << "Warning: Falling back to sync. read. :( " << std::endl;
+                std::cerr << "Warning: Falling back to sync. read. :( " << std::endl;
 #endif
-				bool success = readAt(me, memPtr, count, fileOfs);
+                bool success = readAt(me, memPtr, count, fileOfs);
                 if (!success)
                     SEQAN_FAIL(
                         "readAt(%d, %d, %d, %d) failed: \"%s\"",
                         me.handle, (size_t)memPtr, count, fileOfs, strerror(errno));
                 return success;
-			}
+            }
 #if SEQAN_ENABLE_DEBUG
-			else
-				std::cerr << "aio_read failed (asyncReadAt). \"" << ::strerror(errno) << '"' << std::endl;
+            else
+                std::cerr << "aio_read failed (asyncReadAt). \"" << ::strerror(errno) << '"' << std::endl;
 #endif
         }
-		return result == 0;
+        return result == 0;
     }
     
     template < typename TSpec, typename TValue, typename TSize, typename TPos >
@@ -881,63 +881,63 @@ namespace SEQAN_NAMESPACE_MAIN
 /*      request.aio_sigevent.sigev_notify = SIGEV_SIGNAL;
         request.aio_sigevent.sigev_signo = AsyncIOSignal_;
         request.aio_sigevent.sigev_value.sival_ptr = &request;
-		#ifdef SEQAN_VVERBOSE
-			printRequest(request, "aio_write():");
-		#endif
+        #ifdef SEQAN_VVERBOSE
+            printRequest(request, "aio_write():");
+        #endif
 */      if (request.aio_nbytes == 0) return true;
-		SEQAN_PROADD(SEQAN_PROIO, (request.aio_nbytes + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
-		int result = aio_write(&request);
+        SEQAN_PROADD(SEQAN_PROIO, (request.aio_nbytes + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
+        int result = aio_write(&request);
         SEQAN_PROADD(SEQAN_PROIWAIT, SEQAN_PROTIMEDIFF(tw));
         if (result != 0)
-		{
-			request.aio_nbytes = 0;
+        {
+            request.aio_nbytes = 0;
             int errorNo = errno;
-			if (errorNo == EAGAIN)  // write synchronoulsy instead
+            if (errorNo == EAGAIN)  // write synchronoulsy instead
             {
 #if SEQAN_ENABLE_DEBUG || SEQAN_ENABLE_TESTING
-            	std::cerr << "Warning: Falling back to sync. write. :( " << std::endl;
+                std::cerr << "Warning: Falling back to sync. write. :( " << std::endl;
 #endif
-				bool success = writeAt(me, memPtr, count, fileOfs);
+                bool success = writeAt(me, memPtr, count, fileOfs);
                 if (!success)
                     SEQAN_FAIL(
                         "writeAt(%d, %d, %d, %d) failed: \"%s\"",
                         me.handle, (size_t)memPtr, count, fileOfs, strerror(errno));
                 return success;
-			}
+            }
 #if SEQAN_ENABLE_DEBUG
-			else
+            else
             {
-				std::cerr << "aio_write failed (asyncWriteAt): \"" << ::strerror(errno) << '"' << std::endl;
+                std::cerr << "aio_write failed (asyncWriteAt): \"" << ::strerror(errno) << '"' << std::endl;
             }
 #endif
         }
         return result == 0;
     }
 
-	template <typename TSpec>
+    template <typename TSpec>
     inline bool flush(File<Async<TSpec> > & me) {
 //IOREV _doc_ 
-		#if _POSIX_SYNCHRONIZED_IO > 0
-			return me.handle == me.handleAsync || fdatasync(me.handle) == 0;
-		#else
-			return me.handle == me.handleAsync || fsync(me.handle) == 0;
-		#endif
+        #if _POSIX_SYNCHRONIZED_IO > 0
+            return me.handle == me.handleAsync || fdatasync(me.handle) == 0;
+        #else
+            return me.handle == me.handleAsync || fsync(me.handle) == 0;
+        #endif
     }
 
     //////////////////////////////////////////////////////////////////////
     // queue specific functions
 
-	inline bool waitFor(AiocbWrapper &request)
+    inline bool waitFor(AiocbWrapper &request)
     {
 //IOREV _doc_ 
-/*		#ifdef SEQAN_VVERBOSE
-			printRequest(request, "aio_suspend():");
-		#endif
+/*        #ifdef SEQAN_VVERBOSE
+            printRequest(request, "aio_suspend():");
+        #endif
 */
-		if (request.aio_nbytes == 0) return true;
-		aiocb * cblist = &request;
+        if (request.aio_nbytes == 0) return true;
+        aiocb * cblist = &request;
         SEQAN_PROTIMESTART(tw);
-		int result = aio_suspend(&cblist, 1, NULL);
+        int result = aio_suspend(&cblist, 1, NULL);
         ssize_t nbytes = aio_return(&request);
         SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
 
@@ -949,40 +949,40 @@ namespace SEQAN_NAMESPACE_MAIN
             {
                 if (errorNo != ECANCELED)
                     errorNo = errno;
-				std::cerr << "Asynchronous I/O operation failed (waitFor): \"" << ::strerror(errorNo) << '"' << std::endl;
+                std::cerr << "Asynchronous I/O operation failed (waitFor): \"" << ::strerror(errorNo) << '"' << std::endl;
                 printRequest(request);
             }
         }
 //#endif
 
-		return (result == 0) && (nbytes == (ssize_t)request.aio_nbytes);
-	}
+        return (result == 0) && (nbytes == (ssize_t)request.aio_nbytes);
+    }
 
-	inline bool waitFor(AiocbWrapper &request, long timeoutMilliSec, bool &inProgress)
+    inline bool waitFor(AiocbWrapper &request, long timeoutMilliSec, bool &inProgress)
     {
 //IOREV _doc_ 
-/*		#ifdef SEQAN_VVERBOSE
-			printRequest(request, "aio_suspend_timeout():");
-		#endif
+/*        #ifdef SEQAN_VVERBOSE
+            printRequest(request, "aio_suspend_timeout():");
+        #endif
 */
-		if (request.aio_nbytes == 0)
+        if (request.aio_nbytes == 0)
         {
             inProgress = false;
             return true;
         }
 
-		int result;
-		if (timeoutMilliSec != 0)
+        int result;
+        if (timeoutMilliSec != 0)
         {
-			aiocb * cblist = &request;
-			timespec ts;
-			ts.tv_sec = timeoutMilliSec / 1000;
-			ts.tv_nsec = (timeoutMilliSec % 1000) * 1000;
-			SEQAN_PROTIMESTART(tw);
-			result = aio_suspend(&cblist, 1, &ts);
-			(void)result;  // never used
-			SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
-		}
+            aiocb * cblist = &request;
+            timespec ts;
+            ts.tv_sec = timeoutMilliSec / 1000;
+            ts.tv_nsec = (timeoutMilliSec % 1000) * 1000;
+            SEQAN_PROTIMESTART(tw);
+            result = aio_suspend(&cblist, 1, &ts);
+            (void)result;  // never used
+            SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
+        }
 
         result = aio_error(&request);
         inProgress = (result == EINPROGRESS);
@@ -997,7 +997,7 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         #if SEQAN_ENABLE_DEBUG
-			if (result != 0)
+            if (result != 0)
             {
                 int errorNo = aio_error(&request);
                 if (errorNo != EINPROGRESS)
@@ -1007,38 +1007,38 @@ namespace SEQAN_NAMESPACE_MAIN
                     std::cerr << "Asynchronous I/O operation failed (waitFor with timeOut=" << timeoutMilliSec << "ms): \"" << ::strerror(errorNo) << '"' << std::endl;
                     printRequest(request);
                 }
-			}
-		#endif
+            }
+        #endif
         return result == 0;
-	}
+    }
 
-	template < typename TSize >
-	inline TSize waitForAny(AiocbWrapper const * const contexts[], TSize count) {
+    template < typename TSize >
+    inline TSize waitForAny(AiocbWrapper const * const contexts[], TSize count) {
 //IOREV _nodoc_ 
         SEQAN_PROTIMESTART(tw);
-		bool result = aio_suspend(contexts, count, NULL);
+        bool result = aio_suspend(contexts, count, NULL);
         SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
         return result == 0;
-	}
+    }
 
-	template < typename TSize >
-	inline TSize waitForAny(AiocbWrapper const * const contexts[], TSize count, long timeoutMilliSec) {
+    template < typename TSize >
+    inline TSize waitForAny(AiocbWrapper const * const contexts[], TSize count, long timeoutMilliSec) {
 //IOREV _nodoc_ 
         timespec ts;
         ts.tv_sec = timeoutMilliSec / 1000;
         ts.tv_nsec = (timeoutMilliSec % 1000) * 1000;
         SEQAN_PROTIMESTART(tw);
-		bool result = aio_suspend(contexts, count, &ts);
+        bool result = aio_suspend(contexts, count, &ts);
         SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
         return result == 0;
-	}
+    }
 
-	template <typename TSpec>
+    template <typename TSpec>
     inline bool cancel(File<Async<TSpec> > & me, AiocbWrapper &request) {
 //IOREV _doc_ 
-/*		#ifdef SEQAN_VVERBOSE
-			printRequest(request, "aio_cancel():");
-		#endif
+/*        #ifdef SEQAN_VVERBOSE
+            printRequest(request, "aio_cancel():");
+        #endif
 */      return aio_cancel(me.handleAsync, &request) == 0;
     }
 
@@ -1052,7 +1052,7 @@ namespace SEQAN_NAMESPACE_MAIN
         return aio_return(&request);
     }
 
-	template <typename TSpec>
+    template <typename TSpec>
     inline void release(File<Async<TSpec> > & /*me*/, AiocbWrapper const & /*request*/) {
 //IOREV _nodoc_ 
     }
@@ -1080,83 +1080,83 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 */
     
-	//////////////////////////////////////////////////////////////////////////////
-	// page aligned allocate for direct file io
+    //////////////////////////////////////////////////////////////////////////////
+    // page aligned allocate for direct file io
 
-    struct TagAllocateAligned_;	//< allocate page aligned memory for direct i/o access
+    struct TagAllocateAligned_;    //< allocate page aligned memory for direct i/o access
     typedef Tag<TagAllocateAligned_> const TagAllocateAligned;
 
-	template <typename T, typename TValue, typename TSize>
-	inline void
-	allocate(T const & /*me*/, 
-			 TValue * & data,
-			 TSize count,
-			 TagAllocateAligned const)
-	{
+    template <typename T, typename TValue, typename TSize>
+    inline void
+    allocate(T const & /*me*/, 
+             TValue * & data,
+             TSize count,
+             TagAllocateAligned const)
+    {
 //IOREV _doc_ 
-		data = (TValue *) ::valloc(count * sizeof(TValue));
+        data = (TValue *) ::valloc(count * sizeof(TValue));
 #ifdef SEQAN_PROFILE 
         if (data)
-			SEQAN_PROADD(SEQAN_PROMEMORY, count * sizeof(TValue));
-		else
-			std::cerr << "AlignAllocator: Could not allocate memory of size " << std::hex << 
-				count * sizeof(TValue) << " with page alignment. (ErrNo=" << std::dec <<
-				errno << ")" << std::endl;
+            SEQAN_PROADD(SEQAN_PROMEMORY, count * sizeof(TValue));
+        else
+            std::cerr << "AlignAllocator: Could not allocate memory of size " << std::hex << 
+                count * sizeof(TValue) << " with page alignment. (ErrNo=" << std::dec <<
+                errno << ")" << std::endl;
 #endif
-	}
+    }
 
-	//////////////////////////////////////////////////////////////////////////////
-	// page aligned deallocate for direct file io
+    //////////////////////////////////////////////////////////////////////////////
+    // page aligned deallocate for direct file io
 
-	template <typename T, typename TValue, typename TSize>
-	inline void 
-	deallocate( T const & /*me*/,
-				TValue * data,
-				TSize
+    template <typename T, typename TValue, typename TSize>
+    inline void 
+    deallocate( T const & /*me*/,
+                TValue * data,
+                TSize
 #ifdef SEQAN_PROFILE 
-					count
+                    count
 #endif
-					,
-				TagAllocateAligned const)
-	{
+                    ,
+                TagAllocateAligned const)
+    {
 //IOREV _doc_ 
 #ifdef SEQAN_PROFILE 
-        if (data && count)	// .. to use count if SEQAN_PROFILE is not defined
-			SEQAN_PROSUB(SEQAN_PROMEMORY, count * sizeof(TValue));
+        if (data && count)    // .. to use count if SEQAN_PROFILE is not defined
+            SEQAN_PROSUB(SEQAN_PROMEMORY, count * sizeof(TValue));
 #endif
-		::free(data);
-	}
+        ::free(data);
+    }
 
     template < typename TSpec, typename TSize >
     inline void resize(File<Async<TSpec> > &me, TSize new_length) {
 //IOREV _doc_ 
-		if (!me.resize(new_length))
+        if (!me.resize(new_length))
             SEQAN_FAIL(
                 "resize(%d, %d) failed: \"%s\"",
                 me.handle, new_length, strerror(errno));
     }
-	
+    
 
 #endif
 
     //////////////////////////////////////////////////////////////////////////////
     // global functions
 
-	template <typename TSpec>
+    template <typename TSpec>
     struct Size< File<Async<TSpec> > >
     {
 //IOREV
         typedef typename File<Async<TSpec> >::SizeType Type;
     };
 
-	template <typename TSpec>
+    template <typename TSpec>
     struct Position< File<Async<TSpec> > >
     {
 //IOREV
         typedef typename File<Async<TSpec> >::FilePtr Type;
     };
 
-	template <typename TSpec>
+    template <typename TSpec>
     struct Difference< File<Async<TSpec> > >
     {
 //IOREV
@@ -1166,24 +1166,24 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     template < typename TSpec, typename TValue, typename TSize>
-	inline void
-	allocate( File<Async<TSpec> > const & me,
-			  TValue * & data, 
-			  TSize count)
-	{
+    inline void
+    allocate( File<Async<TSpec> > const & me,
+              TValue * & data, 
+              TSize count)
+    {
 //IOREV _doc_ 
-		allocate(me, data, count, TagAllocateAligned());
-	}
+        allocate(me, data, count, TagAllocateAligned());
+    }
 
     template <typename TSpec, typename TValue, typename TSize>
-	inline void
-	deallocate( File<Async<TSpec> > const & me,
-				TValue * data, 
-				TSize count)
-	{
+    inline void
+    deallocate( File<Async<TSpec> > const & me,
+                TValue * data, 
+                TSize count)
+    {
 //IOREV _doc_ 
-		deallocate(me, data, count, TagAllocateAligned());
-	}
+        deallocate(me, data, count, TagAllocateAligned());
+    }
 
 
 }

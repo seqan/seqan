@@ -87,8 +87,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
         inline bool close() {
             bool success = CloseHandle(hMutex);
-			hMutex = NULL;
-			return success;
+            hMutex = NULL;
+            return success;
         }
 
         inline bool lock(DWORD timeoutMilliSec = INFINITE) {
@@ -159,9 +159,9 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         inline bool close() {
-			bool success = (pthread_mutex_destroy(hMutex) == 0);
-			hMutex = NULL;
-			return success;
+            bool success = (pthread_mutex_destroy(hMutex) == 0);
+            hMutex = NULL;
+            return success;
         }
 
         inline bool lock() {
@@ -191,28 +191,28 @@ namespace SEQAN_NAMESPACE_MAIN
     template <>
     struct HasMoveConstructor<Mutex> : True {};
 
-	//////////////////////////////////////////////////////////////////////////////
-	// global mutex functions
+    //////////////////////////////////////////////////////////////////////////////
+    // global mutex functions
 
-	inline bool open(Mutex &m, bool initial) {
-		return m.open(initial);
-	}
+    inline bool open(Mutex &m, bool initial) {
+        return m.open(initial);
+    }
 
-	inline bool open(Mutex &m) {
-		return open(m, false);
-	}
+    inline bool open(Mutex &m) {
+        return open(m, false);
+    }
 
-	inline bool close(Mutex &m) {
-		return m.close();
-	}
+    inline bool close(Mutex &m) {
+        return m.close();
+    }
 
-	inline bool lock(Mutex &m) {
-		return m.lock();
-	}
+    inline bool lock(Mutex &m) {
+        return m.lock();
+    }
 
-	inline bool unlock(Mutex &m) {
-		return m.unlock();
-	}
+    inline bool unlock(Mutex &m) {
+        return m.unlock();
+    }
 
 }
 

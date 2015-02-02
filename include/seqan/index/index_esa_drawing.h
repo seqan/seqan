@@ -45,67 +45,67 @@ void writeRecords(
     DotDrawing) 
 {
 //IOREV _nodoc_
-	SEQAN_CHECKPOINT
-	typedef Index<TText, IndexEsa<TESASpec> > TIndex;
+    SEQAN_CHECKPOINT
+    typedef Index<TText, IndexEsa<TESASpec> > TIndex;
 
     typename DirectionIterator<TFile, Output>::Type iter = directionIterator(file, Output());
-	
-	write(iter, "digraph G {\n");
-	writeValue(iter, '\n');
-	write(iter, "/* Graph Attributes */\n");
-	write(iter, "graph [rankdir = LR];\n");
-	writeValue(iter, '\n');
-	write(iter, "/* Node Attributes */\n");
-	write(iter, "node [shape = ellipse, fillcolor = lightgrey, style = filled, fontname = \"Times-Italic\"];\n");
-	writeValue(iter, '\n');
-	write(iter, "/* Edge Attributes */\n");
-	write(iter, "edge [fontname = \"Times-Italic\", arrowsize = 0.75, fontsize = 16];\n");
-	writeValue(iter, '\n');
+    
+    write(iter, "digraph G {\n");
+    writeValue(iter, '\n');
+    write(iter, "/* Graph Attributes */\n");
+    write(iter, "graph [rankdir = LR];\n");
+    writeValue(iter, '\n');
+    write(iter, "/* Node Attributes */\n");
+    write(iter, "node [shape = ellipse, fillcolor = lightgrey, style = filled, fontname = \"Times-Italic\"];\n");
+    writeValue(iter, '\n');
+    write(iter, "/* Edge Attributes */\n");
+    write(iter, "edge [fontname = \"Times-Italic\", arrowsize = 0.75, fontsize = 16];\n");
+    writeValue(iter, '\n');
 
-	write(iter, "/* Edges */\n");
-	typedef typename Iterator<TIndex, TopDown<ParentLinks<Preorder> > >::Type TIterator;
-	typedef typename Iterator<TIndex, TopDown<> >::Type TIteratorSimple;
-	TIterator it(stree);
+    write(iter, "/* Edges */\n");
+    typedef typename Iterator<TIndex, TopDown<ParentLinks<Preorder> > >::Type TIterator;
+    typedef typename Iterator<TIndex, TopDown<> >::Type TIteratorSimple;
+    TIterator it(stree);
 
-	for(;!atEnd(it);++it) 
-	{
-		// dump node
+    for(;!atEnd(it);++it) 
+    {
+        // dump node
         write(iter, "\"[");
- 		appendNumber(iter, range(it).i1);
-		writeValue(iter, ':');
-		appendNumber(iter, range(it).i2);
+         appendNumber(iter, range(it).i1);
+        writeValue(iter, ':');
+        appendNumber(iter, range(it).i2);
         write(iter, ")\"");
         if (!isRightTerminal(it))
             write(iter, " [style = dashed]");
         write(iter, ";\n");
 
-		// dump edge from parent (if not root)
-		if (!isRoot(it))
+        // dump edge from parent (if not root)
+        if (!isRoot(it))
         {
-			TIteratorSimple src(container(it), nodeUp(it));
+            TIteratorSimple src(container(it), nodeUp(it));
 
-			write(iter, "\"[");
-			appendNumber(iter, range(src).i1);
-			writeValue(iter, ':');
-			appendNumber(iter, range(src).i2);
-			write(iter, ")\"");
+            write(iter, "\"[");
+            appendNumber(iter, range(src).i1);
+            writeValue(iter, ':');
+            appendNumber(iter, range(src).i2);
+            write(iter, ")\"");
 
-			write(iter, " -> ");
+            write(iter, " -> ");
 
-			write(iter, "\"[");
-			appendNumber(iter, range(it).i1);
-			writeValue(iter, ':');
-			appendNumber(iter, range(it).i2);
-			write(iter, ")\"");
+            write(iter, "\"[");
+            appendNumber(iter, range(it).i1);
+            writeValue(iter, ':');
+            appendNumber(iter, range(it).i2);
+            write(iter, ")\"");
 
-			write(iter, " [label = \"");
-			write(iter, parentEdgeLabel(it));
-			write(iter, "\"];\n");
-		}
-	}
-	writeValue(iter, '\n');
+            write(iter, " [label = \"");
+            write(iter, parentEdgeLabel(it));
+            write(iter, "\"];\n");
+        }
+    }
+    writeValue(iter, '\n');
 
-	write(iter, "}\n");
+    write(iter, "}\n");
 }
 
 }// namespace SEQAN_NAMESPACE_MAIN

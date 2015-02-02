@@ -41,29 +41,29 @@ namespace SEQAN_NAMESPACE_MAIN
 //namespace SEQAN_NAMESPACE_PIPELINING
 //{
 
-	template <int I, typename T = void>
-	struct SkewShift_;
+    template <int I, typename T = void>
+    struct SkewShift_;
 
-	template <int I, typename T = void>
-	struct SkewNIndex_;
+    template <int I, typename T = void>
+    struct SkewNIndex_;
 
 
-	template <typename T>
-	struct SkewShift_<7, T>
+    template <typename T>
+    struct SkewShift_<7, T>
     {
-		static const unsigned VALUE[7][7];
-	};
+        static const unsigned VALUE[7][7];
+    };
 
-	template <typename T>
-	struct SkewNIndex_<7, T>
+    template <typename T>
+    struct SkewNIndex_<7, T>
     {
-		static const unsigned VALUE[7][7];
-	};
+        static const unsigned VALUE[7][7];
+    };
 
 
-	template <typename T>
-	const unsigned SkewShift_<7, T>::VALUE[7][7] =
-								  {{0,6,5,6,3,3,5},
+    template <typename T>
+    const unsigned SkewShift_<7, T>::VALUE[7][7] =
+                                  {{0,6,5,6,3,3,5},
                                    {6,0,0,6,0,4,4},
                                    {5,0,0,1,0,1,5},
                                    {6,6,1,0,2,1,2},
@@ -72,9 +72,9 @@ namespace SEQAN_NAMESPACE_MAIN
                                    {5,4,5,2,2,4,0}};
 
 
-	template <typename T>
-	const unsigned SkewNIndex_<7, T>::VALUE[7][7] =
-								  {{0,0,0,0,0,1,2},
+    template <typename T>
+    const unsigned SkewNIndex_<7, T>::VALUE[7][7] =
+                                  {{0,0,0,0,0,1,2},
                                    {0,0,0,0,1,1,2},
                                    {0,1,1,1,1,2,2},
                                    {0,0,1,1,1,1,2},
@@ -91,20 +91,20 @@ namespace SEQAN_NAMESPACE_MAIN
     };
     
     template <typename TValue>
-	std::ostream& operator<<(std::ostream &out, const SkewDCStream<TValue> &s)
+    std::ostream& operator<<(std::ostream &out, const SkewDCStream<TValue> &s)
     {
-		out << "< " << s.i.i1 << " , [ ";
-		for(unsigned i = 0; i < 3; ++i)
-			out << s.i.i2[i] << " ";
-		out << "] , [ ";
-		for(unsigned i = 0; i < 6; ++i)
-			out << s.i.i3[i] << " ";
-		out << "] , " << s.stream << " >";
-		return out;
-	}
+        out << "< " << s.i.i1 << " , [ ";
+        for(unsigned i = 0; i < 3; ++i)
+            out << s.i.i2[i] << " ";
+        out << "] , [ ";
+        for(unsigned i = 0; i < 6; ++i)
+            out << s.i.i3[i] << " ";
+        out << "] , " << s.stream << " >";
+        return out;
+    }
 
 
-	// greater-operator for two SkewDCStreams
+    // greater-operator for two SkewDCStreams
     template <typename TValue>
     struct CompareSkewDCStream :
         public std::binary_function < SkewDCStream<TValue>,
@@ -112,7 +112,7 @@ namespace SEQAN_NAMESPACE_MAIN
                                         bool >
     {
         inline bool operator()(const SkewDCStream<TValue> &a,
-			                   const SkewDCStream<TValue> &b) const 
+                               const SkewDCStream<TValue> &b) const 
         {
             typedef typename Value<TValue, 2>::Type     TNameTuple;
             typedef typename Value<TNameTuple>::Type    TName;
@@ -130,14 +130,14 @@ namespace SEQAN_NAMESPACE_MAIN
             if (na < nb) return false;
             if (na > nb) return true;
 
-			// we get here, only if a septet crosses the border of
-			// the single text or a sequence in a multiple sequence text
-			return a.stream - 1 > b.stream - 1; // this is NOT the same as a.stream > b.stream, 0 should be bigger than 6
+            // we get here, only if a septet crosses the border of
+            // the single text or a sequence in a multiple sequence text
+            return a.stream - 1 > b.stream - 1; // this is NOT the same as a.stream > b.stream, 0 should be bigger than 6
         }
     };
 
 
-	// greater-operator for two SkewDCStreams (optimized for bit-packed character tuples)
+    // greater-operator for two SkewDCStreams (optimized for bit-packed character tuples)
     template <typename T1, typename T2, typename T, unsigned SIZE>
     struct CompareSkewDCStream< Triple<T1, T2, Tuple<T, SIZE, BitPacked<> >, Pack> > :
         public std::binary_function < SkewDCStream<Triple<T1, T2, Tuple<T, SIZE, BitPacked<> >, Pack> >,
@@ -146,7 +146,7 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         typedef Tuple<T,SIZE, BitPacked<> > T3;
         inline bool operator()(const SkewDCStream<Triple<T1, T2, T3, Pack> > &a,
-			                   const SkewDCStream<Triple<T1, T2, T3, Pack> > &b) const 
+                               const SkewDCStream<Triple<T1, T2, T3, Pack> > &b) const 
         {
             typedef typename Value<T2>::Type TName;
             typedef typename Value<T3>::Type TValue3;
@@ -162,32 +162,32 @@ namespace SEQAN_NAMESPACE_MAIN
             if (na < nb) return false;
             if (na > nb) return true;
 
-			// we get here, only if a septet crosses the border of
-			// the single text or a sequence in a multiple sequence text
-			return a.stream - 1 > b.stream - 1; // this is NOT the same as a.stream > b.stream, 0 should be bigger than 6
-		}
+            // we get here, only if a septet crosses the border of
+            // the single text or a sequence in a multiple sequence text
+            return a.stream - 1 > b.stream - 1; // this is NOT the same as a.stream > b.stream, 0 should be bigger than 6
+        }
     };
 
 
 
 
-	struct Merger7;
+    struct Merger7;
 
     template < typename TInput0, typename TInput3, typename TInput5, typename TInput6, typename TInput124 >
     struct Value< Pipe< Bundle5< TInput0, TInput3, TInput5, TInput6, TInput124 >, Merger7 > >
     {
-		typedef typename Value<TInput0>::Type       TInValue0;
+        typedef typename Value<TInput0>::Type       TInValue0;
         typedef typename Value<TInValue0, 1>::Type  Type;
     };
 
 
-	template <typename TLimitsString>
-	struct Merger7Multi;
+    template <typename TLimitsString>
+    struct Merger7Multi;
 
     template < typename TInput0, typename TInput3, typename TInput5, typename TInput6, typename TInput124, typename TLimitsString >
     struct Value< Pipe< Bundle5< TInput0, TInput3, TInput5, TInput6, TInput124 >, Merger7Multi<TLimitsString> > >
     {
-		typedef typename Value<TInput0>::Type       TInValue0;
+        typedef typename Value<TInput0>::Type       TInValue0;
         typedef typename Value<TInValue0, 1>::Type  Type;
     };
 
@@ -209,10 +209,10 @@ namespace SEQAN_NAMESPACE_MAIN
 
         typedef SkewDCStream<TInValue0>             TSkewDCStream;
 
-		TSkewDCStream								inValue[7];
-		unsigned									rank[5];
-		unsigned									first;
-        CompareSkewDCStream<TInValue0>				streamGreater;
+        TSkewDCStream                                inValue[7];
+        unsigned                                    rank[5];
+        unsigned                                    first;
+        CompareSkewDCStream<TInValue0>                streamGreater;
 
         Bundle5 <
             TInput0,
@@ -235,8 +235,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
         template <typename T1, typename T2, typename T, unsigned SIZE>
         inline static void _copy(TSkewDCStream &dst, Triple<T1,T2,Tuple<T,SIZE, BitPacked<> >, Pack> const &src)
-		{
-			typedef typename Value<TInValue0, 3>::Type TCharTuple;
+        {
+            typedef typename Value<TInValue0, 3>::Type TCharTuple;
             memcpy(&dst.i.i2, &src.i2, sizeof(T2));
             dst.i.i3 = src.i3;
             dst.i.i3 <<= LENGTH<TCharTuple>::VALUE - SIZE;
@@ -247,94 +247,94 @@ namespace SEQAN_NAMESPACE_MAIN
             return getValueI1(inValue[rank[first]].i);
         }
 
-		inline void insertStream(unsigned stream)
+        inline void insertStream(unsigned stream)
         {
             switch (stream) {
                 case 0:
-					if (eof(in.in1)) {
-						++first;
-						return;
-					}
-					inValue[0].i.i1 = N - (*in.in1).i1;
-					_copy(inValue[0], *in.in1);
-					++in.in1;
+                    if (eof(in.in1)) {
+                        ++first;
+                        return;
+                    }
+                    inValue[0].i.i1 = N - (*in.in1).i1;
+                    _copy(inValue[0], *in.in1);
+                    ++in.in1;
                     break;
 
                 case 3:
-					if (eof(in.in2)) {
-						++first;
-						return;
-					}
-					inValue[3].i.i1 = N - (*in.in2).i1;
-					_copy(inValue[3], *in.in2);
-					++in.in2;
+                    if (eof(in.in2)) {
+                        ++first;
+                        return;
+                    }
+                    inValue[3].i.i1 = N - (*in.in2).i1;
+                    _copy(inValue[3], *in.in2);
+                    ++in.in2;
                     break;
 
                 case 5:
-					if (eof(in.in3)) {
-						++first;
-						return;
-					}
-					inValue[5].i.i1 = N - (*in.in3).i1;
-					_copy(inValue[5], *in.in3);
-					++in.in3;
+                    if (eof(in.in3)) {
+                        ++first;
+                        return;
+                    }
+                    inValue[5].i.i1 = N - (*in.in3).i1;
+                    _copy(inValue[5], *in.in3);
+                    ++in.in3;
                     break;
 
                 case 6:
-					if (eof(in.in4)) {
-						++first;
-						return;
-					}
-					inValue[6].i.i1 = N - (*in.in4).i1;
-					_copy(inValue[6], *in.in4);
-					++in.in4;
-					break;
+                    if (eof(in.in4)) {
+                        ++first;
+                        return;
+                    }
+                    inValue[6].i.i1 = N - (*in.in4).i1;
+                    _copy(inValue[6], *in.in4);
+                    ++in.in4;
+                    break;
 
-				default:	// case 1, 2, or 4
-					if (eof(in.in5)) {
-						++first;
-						return;
-					}
-					// calculate residue class from the suffix length
-					inValue[1].stream = (*in.in5).i1 % 7;
-					inValue[1].i.i1 = N - (*in.in5).i1;
-					_copy(inValue[1], *in.in5);
-					++in.in5;
+                default:    // case 1, 2, or 4
+                    if (eof(in.in5)) {
+                        ++first;
+                        return;
+                    }
+                    // calculate residue class from the suffix length
+                    inValue[1].stream = (*in.in5).i1 % 7;
+                    inValue[1].i.i1 = N - (*in.in5).i1;
+                    _copy(inValue[1], *in.in5);
+                    ++in.in5;
             }
 
-			// linear search
-			int right;
-			for(right = first + 1;  right < 5;  ++right)
-				if (!streamGreater(inValue[stream],inValue[rank[right]])) break;
+            // linear search
+            int right;
+            for(right = first + 1;  right < 5;  ++right)
+                if (!streamGreater(inValue[stream],inValue[rank[right]])) break;
 
-			// remove the least suffix ...
-			for(int i = first + 1;  i < right;  ++i)
-				rank[i-1] = rank[i];
+            // remove the least suffix ...
+            for(int i = first + 1;  i < right;  ++i)
+                rank[i-1] = rank[i];
 
-			// ... and insert the new one
-			rank[right-1] = stream;
-		}
+            // ... and insert the new one
+            rank[right-1] = stream;
+        }
         
         Pipe& operator++()
         {
-			insertStream(rank[first]);
+            insertStream(rank[first]);
             return *this;
         }
 
         void fill()
         {
-			inValue[0].stream = 0;
-			inValue[3].stream = 3;
-			inValue[5].stream = 5;
-			inValue[6].stream = 6;
+            inValue[0].stream = 0;
+            inValue[3].stream = 3;
+            inValue[5].stream = 5;
+            inValue[6].stream = 6;
 
-			first = 4;	insertStream(0);
-			--first;    insertStream(3);
-			--first;    insertStream(5);
-			--first;    insertStream(6);
-			--first;	insertStream(1);
+            first = 4;    insertStream(0);
+            --first;    insertStream(3);
+            --first;    insertStream(5);
+            --first;    insertStream(6);
+            --first;    insertStream(1);
         }
-	};
+    };
     
 
     //////////////////////////////////////////////////////////////////////////////
@@ -354,10 +354,10 @@ namespace SEQAN_NAMESPACE_MAIN
 
         typedef SkewDCStream<TInValue0>             TSkewDCStream;
 
-		TSkewDCStream								inValue[7];
-		unsigned									rank[5];
-		unsigned									first;
-        CompareSkewDCStream<TInValue0>				streamGreater;
+        TSkewDCStream                                inValue[7];
+        unsigned                                    rank[5];
+        unsigned                                    first;
+        CompareSkewDCStream<TInValue0>                streamGreater;
 
         Bundle5 <
             TInput0,
@@ -365,11 +365,11 @@ namespace SEQAN_NAMESPACE_MAIN
             TInput5,
             TInput6,
             TInput124 > in;
-		TLimitsString const &limits;
+        TLimitsString const &limits;
         
         Pipe(Bundle5< TInput0, TInput3, TInput5, TInput6, TInput124 > _in, TLimitsString const &_limits):
             in(_in), limits(_limits)
-		{}
+        {}
 
         template <typename T1, typename T2, typename T3>
         inline static void _copy(TSkewDCStream &dst, Triple<T1,T2,T3, Pack> const &src)
@@ -381,8 +381,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
         template <typename T1, typename T2, typename T, unsigned SIZE>
         inline static void _copy(TSkewDCStream &dst, Triple<T1,T2,Tuple<T,SIZE, BitPacked<> >, Pack> const &src)
-		{
-			typedef typename Value<TInValue0, 3>::Type TCharTuple;
+        {
+            typedef typename Value<TInValue0, 3>::Type TCharTuple;
             memcpy(&dst.i.i1, &src.i1, sizeof(T1));
             memcpy(&dst.i.i2, &src.i2, sizeof(T2));
             dst.i.i3 = src.i3;
@@ -394,115 +394,115 @@ namespace SEQAN_NAMESPACE_MAIN
             return getValueI1(inValue[rank[first]].i);
         }
 
-		inline void insertStream(unsigned stream)
+        inline void insertStream(unsigned stream)
         {
             switch (stream) {
                 case 0:
-					if (eof(in.in1)) {
-						++first;
-						return;
-					}
-					_copy(inValue[0], *in.in1);
-					++in.in1;
+                    if (eof(in.in1)) {
+                        ++first;
+                        return;
+                    }
+                    _copy(inValue[0], *in.in1);
+                    ++in.in1;
                     break;
 
                 case 3:
-					if (eof(in.in2)) {
-						++first;
-						return;
-					}
-					_copy(inValue[3], *in.in2);
-					++in.in2;
+                    if (eof(in.in2)) {
+                        ++first;
+                        return;
+                    }
+                    _copy(inValue[3], *in.in2);
+                    ++in.in2;
                     break;
 
                 case 5:
-					if (eof(in.in3)) {
-						++first;
-						return;
-					}
-					_copy(inValue[5], *in.in3);
-					++in.in3;
+                    if (eof(in.in3)) {
+                        ++first;
+                        return;
+                    }
+                    _copy(inValue[5], *in.in3);
+                    ++in.in3;
                     break;
 
                 case 6:
-					if (eof(in.in4)) {
-						++first;
-						return;
-					}
-					_copy(inValue[6], *in.in4);
-					++in.in4;
-					break;
+                    if (eof(in.in4)) {
+                        ++first;
+                        return;
+                    }
+                    _copy(inValue[6], *in.in4);
+                    ++in.in4;
+                    break;
 
-				default:	// case 1, 2, or 4
-					if (eof(in.in5)) {
-						++first;
-						return;
-					}
-					// calculate residue class from the suffix length
-					typename Value<TInValue124,1>::Type in_in5_i1 = getValueI1(*in.in5);
-					unsigned seqNo = getValueI1(in_in5_i1);
-					inValue[1].stream = ((limits[seqNo + 1] - limits[seqNo]) - getValueI2(in_in5_i1)) % 7;
+                default:    // case 1, 2, or 4
+                    if (eof(in.in5)) {
+                        ++first;
+                        return;
+                    }
+                    // calculate residue class from the suffix length
+                    typename Value<TInValue124,1>::Type in_in5_i1 = getValueI1(*in.in5);
+                    unsigned seqNo = getValueI1(in_in5_i1);
+                    inValue[1].stream = ((limits[seqNo + 1] - limits[seqNo]) - getValueI2(in_in5_i1)) % 7;
 
-					_copy(inValue[1], *in.in5);
-					++in.in5;
+                    _copy(inValue[1], *in.in5);
+                    ++in.in5;
             }
 
-			// linear search
-			int right;
-			for(right = first + 1;  right < 5;  ++right)
-				if (!streamGreater(inValue[stream],inValue[rank[right]])) break;
+            // linear search
+            int right;
+            for(right = first + 1;  right < 5;  ++right)
+                if (!streamGreater(inValue[stream],inValue[rank[right]])) break;
 
-			// remove the least suffix ...
-			for(int i = first + 1;  i < right;  ++i)
-				rank[i-1] = rank[i];
+            // remove the least suffix ...
+            for(int i = first + 1;  i < right;  ++i)
+                rank[i-1] = rank[i];
 
-			// ... and insert the new one
-			rank[right-1] = stream;
-		}
+            // ... and insert the new one
+            rank[right-1] = stream;
+        }
         
         Pipe& operator++()
         {
-			insertStream(rank[first]);
+            insertStream(rank[first]);
             return *this;
         }
 
         void fill()
         {
-			inValue[0].stream = 0;
-			inValue[3].stream = 3;
-			inValue[5].stream = 5;
-			inValue[6].stream = 6;
+            inValue[0].stream = 0;
+            inValue[3].stream = 3;
+            inValue[5].stream = 5;
+            inValue[6].stream = 6;
 
-			first = 4;	insertStream(0);
-			--first;    insertStream(3);
-			--first;    insertStream(5);
-			--first;    insertStream(6);
-			--first;	insertStream(1);
+            first = 4;    insertStream(0);
+            --first;    insertStream(3);
+            --first;    insertStream(5);
+            --first;    insertStream(6);
+            --first;    insertStream(1);
         }
-	};
+    };
     
 
     //////////////////////////////////////////////////////////////////////////////
     // global pipe functions
     template < typename TInput >
-	inline bool control(Pipe< TInput, Merger7 > &me, ControlBeginRead const &command)
+    inline bool control(Pipe< TInput, Merger7 > &me, ControlBeginRead const &command)
     {
         if (!control(me.in, command)) return false;
         me.N = length(me);
         me.fill();
-		return true;
-	}
+        return true;
+    }
     
     template < typename TInput >
-	inline bool control(Pipe< TInput, Merger7 > &me, ControlEof const &)
+    inline bool control(Pipe< TInput, Merger7 > &me, ControlEof const &)
     {
-		return me.first == 5;
+        return me.first == 5;
     }
 
     template < typename TInput >
-	inline bool control(Pipe< TInput, Merger7 > &me, ControlEos const &)
+    inline bool control(Pipe< TInput, Merger7 > &me, ControlEos const &)
     {
-		return control(me, ControlEof());
+        return control(me, ControlEof());
     }
 
     template < typename TInput >
@@ -520,23 +520,23 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     template < typename TInput, typename TLimitsString >
-	inline bool control(Pipe< TInput, Merger7Multi<TLimitsString> > &me, ControlBeginRead const &command)
+    inline bool control(Pipe< TInput, Merger7Multi<TLimitsString> > &me, ControlBeginRead const &command)
     {
         if (!control(me.in, command)) return false;
         me.fill();
-		return true;
-	}
+        return true;
+    }
     
     template < typename TInput, typename TLimitsString >
-	inline bool control(Pipe< TInput, Merger7Multi<TLimitsString> > &me, ControlEof const &)
+    inline bool control(Pipe< TInput, Merger7Multi<TLimitsString> > &me, ControlEof const &)
     {
-		return me.first == 5;
+        return me.first == 5;
     }
 
     template < typename TInput, typename TLimitsString >
-	inline bool control(Pipe< TInput, Merger7Multi<TLimitsString> > &me, ControlEos const &)
+    inline bool control(Pipe< TInput, Merger7Multi<TLimitsString> > &me, ControlEos const &)
     {
-		return control(me, ControlEof());
+        return control(me, ControlEof());
     }
 
     template < typename TInput, typename TLimitsString >

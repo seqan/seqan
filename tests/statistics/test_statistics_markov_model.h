@@ -43,13 +43,13 @@
 
 SEQAN_DEFINE_TEST(test_statistics_markov_model)
 {
-	using namespace seqan;
+    using namespace seqan;
 
-	typedef Dna TAlphabet;
-	typedef String<TAlphabet> TSequence;
+    typedef Dna TAlphabet;
+    typedef String<TAlphabet> TSequence;
 
-	TSequence str2 = "CCCAAAGC";
-	TSequence str3 = "CCCAAAGTAAATT";
+    TSequence str2 = "CCCAAAGC";
+    TSequence str3 = "CCCAAAGTAAATT";
 
     TSequence str1a =
             "AGAAGCCTCAGATGAGGAGGGTTTTGCTGTGTGCTGCAAGTATCAGGGAGAAAGCATTTCTGCCCTCTCT"
@@ -92,7 +92,7 @@ SEQAN_DEFINE_TEST(test_statistics_markov_model)
             "TCCATTGTTTTATGATTTAGCCAGTGATTCCCCAAAGCAGCCTCTTAGTGTTTTAATATATTAATAACTG"
             "TTTTGTTAAAAATGATCATAGTGAATTTAAATCTTCACATGATCACCTATTTGAATAAGCAA";
 
-	TSequence str1b =
+    TSequence str1b =
             "TGAGGACCTCAGATGAGGAGGGTTTTGCTGTAAACAAGTATCAGGGAGAAAGCATTTCTGCCCTCTCTGC"
             "TGTGTGCTGCAAGTACTTCATCCCTGTAATGATATTGTTTGAATTTTCCATGAAAAATTGTCAGCATGAG"
             "AGTAAGAAAAGTGTACGATGGGAAAATATTGAACCAAACAGACAAAAATGGTAGAGTCACATGACCAGTT"
@@ -125,7 +125,7 @@ SEQAN_DEFINE_TEST(test_statistics_markov_model)
             "TCTGTAGATATTTCAGTCCATATAAAATAATACATCTTTACTAAACTTATATAAGGGGAGAGAAGTTTAC"
             "AAGGTAGTCTGGGATTACTAACAAAATAAACAAGAGCCTTTCTAGATAAATGTGTCCATATGCCAGTGCG"
             "GTTTAGGTCTTATTCAAGACACAAGTCATTACTT";
-	TSequence str1c =
+    TSequence str1c =
             "CATGGTGTGAACTTCATCCCTGTAATGATATTGTTTGAATTTTCCATGAAAAATTGTCAGCATGAGAGTA"
             "AGAAAAGTGTACGATGGGAAAATATTGAACCAAACAGACAAAAATGGTAGAGTCACATGACCAGTTTACT"
             "CATTGGTAAAGTTAATGAGAGGGTGAGATTAAACAGAAATTGGTAAAGTTAATGAGAGGGTGAGATTAAA"
@@ -157,18 +157,18 @@ SEQAN_DEFINE_TEST(test_statistics_markov_model)
             "TTAACAATTTATATGTAACTAAAACTTAAAGTCATTTGAAAAATATATAGAAACCTATTTACAACTTGTT"
             "AAGGACAATCAGACATAATGCAGAGTTAAGTAGTATTTGCTTAAAATTC";
 
-	StringSet<TSequence> X;
-	appendValue(X, str1a);
+    StringSet<TSequence> X;
+    appendValue(X, str1a);
     appendValue(X, str1b);
-	appendValue(X, str1c);
-	
+    appendValue(X, str1c);
+    
 
-	StringSet<TSequence> W;
-	appendValue(W,str2);
-	appendValue(W,str3);
+    StringSet<TSequence> W;
+    appendValue(W,str2);
+    appendValue(W,str3);
 
- 	MarkovModel<TAlphabet> mm(1);
-	buildMarkovModel(mm,X);
+     MarkovModel<TAlphabet> mm(1);
+    buildMarkovModel(mm,X);
 
     double x = emittedProbability(mm,W);
     SEQAN_ASSERT_IN_DELTA(x, 1.25542e-05, 1.25542e-07);

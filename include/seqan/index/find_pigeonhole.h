@@ -58,14 +58,14 @@ namespace seqan
 
     template <typename TSpec = void>
     struct Pigeonhole {
-        enum { ONE_PER_DIAGONAL = 1 };	// 1..record last seed diagonal and ignore seeds on the same diag. (heuristic)
-        enum { HAMMING_ONLY = 0 };		// 0..no indels; 1..allow indels
+        enum { ONE_PER_DIAGONAL = 1 };    // 1..record last seed diagonal and ignore seeds on the same diag. (heuristic)
+        enum { HAMMING_ONLY = 0 };        // 0..no indels; 1..allow indels
     };
 
     template <>
     struct Pigeonhole<Hamming_> {
-        enum { ONE_PER_DIAGONAL = 1 };	// 1..record last seed diagonal and ignore seeds on the same diag. (heuristic)
-        enum { HAMMING_ONLY = 1 };		// 0..no indels; 1..allow indels
+        enum { ONE_PER_DIAGONAL = 1 };    // 1..record last seed diagonal and ignore seeds on the same diag. (heuristic)
+        enum { HAMMING_ONLY = 1 };        // 0..no indels; 1..allow indels
     };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -74,12 +74,12 @@ namespace seqan
 //____________________________________________________________________________
 
 
-	template <typename TSpec, typename THstkPos>
-	struct PigeonholeHit_
-	{
-		THstkPos	hstkPos;			// seed diagonal begin in haystack
-		unsigned	ndlSeqNo;			// needle sequence number
-	};
+    template <typename TSpec, typename THstkPos>
+    struct PigeonholeHit_
+    {
+        THstkPos    hstkPos;            // seed diagonal begin in haystack
+        unsigned    ndlSeqNo;            // needle sequence number
+    };
 
     template <typename THaystack, typename TPattern, typename TPigeonholeSpec>
     struct FindResult<Finder<THaystack, Pigeonhole<TPigeonholeSpec> >, TPattern>
@@ -131,7 +131,7 @@ namespace seqan
         PigeonholeParameters() :
             overlap(0),
             delta(0),
-            printDots(false),		// print a . for every 100kbps mapped genome
+            printDots(false),        // print a . for every 100kbps mapped genome
             debug(false)
         {}
     };
@@ -195,82 +195,82 @@ namespace seqan
  */
 
 // docu is now in find_pattern_base.h
-	template <typename THaystack, typename TSpec>
-	class Finder<THaystack, Pigeonhole<TSpec> >
-	{
-	public:
-		typedef typename Iterator<THaystack, Rooted>::Type			TIterator;
-		typedef typename Position<THaystack>::Type					THstkPos;
-//		typedef PigeonholeHit_<TSpec, __int64>						TPigeonholeHit;
-		typedef typename FindResult<Finder>::Type                   TPigeonholeHit;
-		typedef typename WindowFindResult<Finder>::Type				THitString;
-		typedef typename Iterator<THitString, Standard>::Type		THitIterator;
-		typedef typename SAValue<THaystack>::Type					TSAValue;
-		typedef Repeat<TSAValue, unsigned>							TRepeat;
+    template <typename THaystack, typename TSpec>
+    class Finder<THaystack, Pigeonhole<TSpec> >
+    {
+    public:
+        typedef typename Iterator<THaystack, Rooted>::Type            TIterator;
+        typedef typename Position<THaystack>::Type                    THstkPos;
+//        typedef PigeonholeHit_<TSpec, __int64>                        TPigeonholeHit;
+        typedef typename FindResult<Finder>::Type                   TPigeonholeHit;
+        typedef typename WindowFindResult<Finder>::Type                THitString;
+        typedef typename Iterator<THitString, Standard>::Type        THitIterator;
+        typedef typename SAValue<THaystack>::Type                    TSAValue;
+        typedef Repeat<TSAValue, unsigned>                            TRepeat;
         // TODO(holtgrew): Make this a holder so we can share the actual string when copying.
-		typedef String<TRepeat>										TRepeatString;
-		typedef typename Iterator<TRepeatString, Standard>::Type	TRepeatIterator;
+        typedef String<TRepeat>                                        TRepeatString;
+        typedef typename Iterator<TRepeatString, Standard>::Type    TRepeatIterator;
 
-		TIterator		data_iterator;
-		TIterator		haystackEnd;
-		bool			_needReinit;	// if true, the Pattern needs to be reinitialized
-		THitString		hits;
-		THitIterator	curHit, endHit;
-		THstkPos		startPos, curPos, endPos;
+        TIterator        data_iterator;
+        TIterator        haystackEnd;
+        bool            _needReinit;    // if true, the Pattern needs to be reinitialized
+        THitString        hits;
+        THitIterator    curHit, endHit;
+        THstkPos        startPos, curPos, endPos;
         THstkPos        windowStart;
-		THstkPos		dotPos, dotPos2;
-		TRepeatString	data_repeats;
-		TRepeatIterator	curRepeat, endRepeat;
+        THstkPos        dotPos, dotPos2;
+        TRepeatString    data_repeats;
+        TRepeatIterator    curRepeat, endRepeat;
 
-		Finder():
-			_needReinit(true) { }
+        Finder():
+            _needReinit(true) { }
 
-		Finder(THaystack &haystack):
-			data_iterator(begin(haystack, Rooted())),
-			_needReinit(true) { }
+        Finder(THaystack &haystack):
+            data_iterator(begin(haystack, Rooted())),
+            _needReinit(true) { }
 
-		template <typename TRepeatSize, typename TPeriodSize>
-		Finder(THaystack &haystack, TRepeatSize minRepeatLen, TPeriodSize maxPeriod):
-			data_iterator(begin(haystack, Rooted())),
-			_needReinit(true)
-		{
-			findRepeats(data_repeats, haystack, minRepeatLen, maxPeriod);
-		}
+        template <typename TRepeatSize, typename TPeriodSize>
+        Finder(THaystack &haystack, TRepeatSize minRepeatLen, TPeriodSize maxPeriod):
+            data_iterator(begin(haystack, Rooted())),
+            _needReinit(true)
+        {
+            findRepeats(data_repeats, haystack, minRepeatLen, maxPeriod);
+        }
 
-		Finder(TIterator &iter):
-			data_iterator(iter),
-			_needReinit(true) { }
+        Finder(TIterator &iter):
+            data_iterator(iter),
+            _needReinit(true) { }
 
-		Finder(TIterator const &iter):
-			data_iterator(iter),
-			_needReinit(true) { }
+        Finder(TIterator const &iter):
+            data_iterator(iter),
+            _needReinit(true) { }
 
-		Finder(Finder const &orig):
-			data_iterator(orig.data_iterator),
-			haystackEnd(orig.haystackEnd),
-			_needReinit(orig._needReinit),
-			hits(orig.hits),
+        Finder(Finder const &orig):
+            data_iterator(orig.data_iterator),
+            haystackEnd(orig.haystackEnd),
+            _needReinit(orig._needReinit),
+            hits(orig.hits),
             startPos(orig.startPos),
             curPos(orig.curPos),
             endPos(orig.endPos),
             windowStart(orig.windowStart),
             dotPos(orig.dotPos),
             dotPos2(orig.dotPos2),
-			data_repeats(orig.data_repeats)
-		{
-			curHit = begin(hits, Standard()) + (orig.curHit - begin(orig.hits, Standard()));
-			endHit = end(hits, Standard());
-			curRepeat = begin(data_repeats, Standard()) + (orig.curRepeat - begin(orig.data_repeats, Standard()));
-			endRepeat = end(data_repeats, Standard());
-		}
+            data_repeats(orig.data_repeats)
+        {
+            curHit = begin(hits, Standard()) + (orig.curHit - begin(orig.hits, Standard()));
+            endHit = end(hits, Standard());
+            curRepeat = begin(data_repeats, Standard()) + (orig.curRepeat - begin(orig.data_repeats, Standard()));
+            endRepeat = end(data_repeats, Standard());
+        }
 
-		inline typename Reference<TIterator>::Type
-		operator* () { return value(hostIterator(*this)); }
+        inline typename Reference<TIterator>::Type
+        operator* () { return value(hostIterator(*this)); }
 
-		inline typename Reference<TIterator const>::Type
-		operator* () const { return value(hostIterator(*this)); }
+        inline typename Reference<TIterator const>::Type
+        operator* () const { return value(hostIterator(*this)); }
 
-		operator TIterator () const	{ return data_iterator;	}
+        operator TIterator () const    { return data_iterator;    }
 
         Finder & operator = (Finder const &orig)
         {
@@ -296,61 +296,61 @@ namespace seqan
 //____________________________________________________________________________
 
 
-	template <typename THaystack, typename TSpec>
-	inline bool
-	atEnd(Finder<THaystack, Pigeonhole<TSpec> > & me)
-	{
-		return hostIterator(hostIterator(me)) == hostIterator(me.haystackEnd);
-	}
+    template <typename THaystack, typename TSpec>
+    inline bool
+    atEnd(Finder<THaystack, Pigeonhole<TSpec> > & me)
+    {
+        return hostIterator(hostIterator(me)) == hostIterator(me.haystackEnd);
+    }
 
-	template <typename THaystack, typename TSpec>
-	inline void
-	goEnd(Finder<THaystack, Pigeonhole<TSpec> > & me)
-	{
-		hostIterator(me) = me.haystackEnd;
-	}
+    template <typename THaystack, typename TSpec>
+    inline void
+    goEnd(Finder<THaystack, Pigeonhole<TSpec> > & me)
+    {
+        hostIterator(me) = me.haystackEnd;
+    }
 
 
 //____________________________________________________________________________
 
 
-	template <typename TIndex, typename TSpec>
-	class Pattern<TIndex, Pigeonhole<TSpec> >
-	{
-	public:
-		typedef typename Size<TIndex>::Type								TSize;
-		typedef unsigned												TShortSize;
-		typedef typename Fibre<TIndex, Tag<FibreSA_> const >::Type		TSA;
-		typedef typename Fibre<TIndex, Tag<Fibre_Shape_> const >::Type	TShape;
-		typedef typename Iterator<TSA const, Standard>::Type			TIterator;
+    template <typename TIndex, typename TSpec>
+    class Pattern<TIndex, Pigeonhole<TSpec> >
+    {
+    public:
+        typedef typename Size<TIndex>::Type                                TSize;
+        typedef unsigned                                                TShortSize;
+        typedef typename Fibre<TIndex, Tag<FibreSA_> const >::Type        TSA;
+        typedef typename Fibre<TIndex, Tag<Fibre_Shape_> const >::Type    TShape;
+        typedef typename Iterator<TSA const, Standard>::Type            TIterator;
 
-		TShape					shape;
+        TShape                    shape;
         __int64                 curBeginPos, curEndPos;
-		__int64					finderLength;
-		__int64					seqDisabled;
-		TSize					finderPosOffset;						// these must be of
-		TSize					finderPosNextOffset;					// type TSize of TBucket
+        __int64                    finderLength;
+        __int64                    seqDisabled;
+        TSize                    finderPosOffset;                        // these must be of
+        TSize                    finderPosNextOffset;                    // type TSize of TBucket
         TSize                   maxSeqLen;
-		unsigned				curSeqNo;
-		String<__int64>         lastSeedDiag;
-		PigeonholeParameters    params;
-		double					_currentErrorRate;
+        unsigned                curSeqNo;
+        String<__int64>         lastSeedDiag;
+        PigeonholeParameters    params;
+        double                    _currentErrorRate;
 
-		Holder<TIndex>	data_host;
+        Holder<TIndex>    data_host;
 
-		Pattern()
-		{
-			clear(*this);
-		}
-		Pattern(TIndex &_index): data_host(_index)
-		{
-			clear(*this);
-		}
-		Pattern(TIndex const &_index): data_host(_index)
-		{
-			clear(*this);
-		}
-	};
+        Pattern()
+        {
+            clear(*this);
+        }
+        Pattern(TIndex &_index): data_host(_index)
+        {
+            clear(*this);
+        }
+        Pattern(TIndex const &_index): data_host(_index)
+        {
+            clear(*this);
+        }
+    };
 
 //____________________________________________________________________________
 
@@ -377,7 +377,7 @@ _pigeonholeUpdateShapeLength(Shape<TValue, SimpleShape> &shape, TSize newLength)
     TSize weight = _pigeonholeMaxShapeWeight(shape);
 
     if (weight > newLength)
-		weight = newLength;
+        weight = newLength;
 
     if (weight == length(shape))
         return false;
@@ -396,13 +396,13 @@ _pigeonholeUpdateShapeLength(Shape<TValue, OneGappedShape> &shape, TSize newLeng
     TSize weight = _pigeonholeMaxShapeWeight(shape);
 
     if (weight > newLength)
-		weight = newLength;
+        weight = newLength;
 
-	CharString str;
-	resize(str, weight / 2, '1');
-	resize(str, newLength - (weight + 1) / 2, '0');
-	resize(str, newLength, '1');
-	stringToShape(shape, str);
+    CharString str;
+    resize(str, weight / 2, '1');
+    resize(str, newLength - (weight + 1) / 2, '0');
+    resize(str, newLength, '1');
+    stringToShape(shape, str);
     return true;
 }
 
@@ -448,25 +448,25 @@ maskPatternSequence(Pattern<TIndex, Pigeonhole<TSpec> > & pattern, TSeqNo seqNo,
     SEQAN_ASSERT_NEQ_MSG((int)Pigeonhole<TSpec>::ONE_PER_DIAGONAL, 0,
                          "Disabling sequences in the pigeonhole filter requires the ONE_PER_DIAGONAL heuristic.");
 
-	if (enable)
-		pattern.lastSeedDiag[seqNo] = -(__int64)pattern.maxSeqLen;
-	else
-		pattern.lastSeedDiag[seqNo] = pattern.seqDisabled;
+    if (enable)
+        pattern.lastSeedDiag[seqNo] = -(__int64)pattern.maxSeqLen;
+    else
+        pattern.lastSeedDiag[seqNo] = pattern.seqDisabled;
 }
 
 template <typename TIndex, typename TFloat, typename TSpec>
 inline void _patternInit(Pattern<TIndex, Pigeonhole<TSpec> > &pattern, TFloat errorRate)
 {
-	typedef typename Size<TIndex>::Type TSize;
+    typedef typename Size<TIndex>::Type TSize;
 
-	double _newErrorRate = errorRate;
-	TSize seqCount = countSequences(host(pattern));
+    double _newErrorRate = errorRate;
+    TSize seqCount = countSequences(host(pattern));
 
-	if (pattern._currentErrorRate != _newErrorRate)
-	{
-		// settings have been changed -> initialize bucket parameters
+    if (pattern._currentErrorRate != _newErrorRate)
+    {
+        // settings have been changed -> initialize bucket parameters
 
-		pattern._currentErrorRate = _newErrorRate;
+        pattern._currentErrorRate = _newErrorRate;
 
         TSize minDelta = MaxValue<TSize>::VALUE;
         TSize maxDelta = 3;
@@ -477,17 +477,17 @@ inline void _patternInit(Pattern<TIndex, Pigeonhole<TSpec> > &pattern, TFloat er
             TSize length = sequenceLength(seqNo, host(pattern));
             if (maxSeqLen < length) maxSeqLen = length;
 
-			// sequence must have sufficient length
-			if (length <= pattern.params.overlap) continue;
+            // sequence must have sufficient length
+            if (length <= pattern.params.overlap) continue;
 
-			// cut overlap many characters from the end
+            // cut overlap many characters from the end
             TSize errors = (TSize) floor(errorRate * length);
-			length -= pattern.params.overlap;
+            length -= pattern.params.overlap;
             TSize delta = length / (errors + 1);
 
 
-			// ignore too short q-grams
-			if (delta < 3) continue;
+            // ignore too short q-grams
+            if (delta < 3) continue;
             if (minDelta > delta) minDelta = delta;
             if (maxDelta < delta) maxDelta = delta;
         }
@@ -495,20 +495,20 @@ inline void _patternInit(Pattern<TIndex, Pigeonhole<TSpec> > &pattern, TFloat er
         if (minDelta < 3) minDelta = maxDelta;
 
         TIndex &index = host(pattern);
-		pattern.finderPosOffset = 0;
-		pattern.finderPosNextOffset = pattern.maxSeqLen + pattern.finderLength;
+        pattern.finderPosOffset = 0;
+        pattern.finderPosNextOffset = pattern.maxSeqLen + pattern.finderLength;
 
         if (pattern.params.delta != 0)
-		{
-			// use user-defined delta
+        {
+            // use user-defined delta
             minDelta = pattern.params.delta;
         }
 
-		if (minDelta == MaxValue<TSize>::VALUE)
-		{
-			// disable index
-			minDelta = pattern.maxSeqLen + 1;
-		}
+        if (minDelta == MaxValue<TSize>::VALUE)
+        {
+            // disable index
+            minDelta = pattern.maxSeqLen + 1;
+        }
 
         if (_pigeonholeUpdateShapeLength(pattern.shape, minDelta + pattern.params.overlap) || getStepSize(index) != minDelta)
         {
@@ -524,40 +524,40 @@ inline void _patternInit(Pattern<TIndex, Pigeonhole<TSpec> > &pattern, TFloat er
         clear(pattern.lastSeedDiag);
         if (Pigeonhole<TSpec>::ONE_PER_DIAGONAL)
             resize(pattern.lastSeedDiag, seqCount, -(__int64)maxSeqLen);
-		pattern.seqDisabled = -(__int64)maxSeqLen - 1;
+        pattern.seqDisabled = -(__int64)maxSeqLen - 1;
     }
-	else
-	{
-		// settings are unchanged -> reset buckets
+    else
+    {
+        // settings are unchanged -> reset buckets
 
-		// finderPosOffset is used to circumvent expensive resetting of all buckets
-		pattern.finderPosOffset = pattern.finderPosNextOffset;
-		pattern.finderPosNextOffset += pattern.maxSeqLen + pattern.finderLength;
+        // finderPosOffset is used to circumvent expensive resetting of all buckets
+        pattern.finderPosOffset = pattern.finderPosNextOffset;
+        pattern.finderPosNextOffset += pattern.maxSeqLen + pattern.finderLength;
     }
 }
 
 template <
-	typename TFinder,
-	typename TIndex,
-	typename TSpec,
-	typename THValue
+    typename TFinder,
+    typename TIndex,
+    typename TSpec,
+    typename THValue
 >
 inline bool _pigeonholeProcessQGram(
-	TFinder &finder,
-	Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
-	THValue hash)
+    TFinder &finder,
+    Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
+    THValue hash)
 {
-	//typedef Pattern<TIndex, Pigeonhole<TSpec> >         TPattern;
-	//typedef typename TFinder::THstkPos					THstkPos;
+    //typedef Pattern<TIndex, Pigeonhole<TSpec> >         TPattern;
+    //typedef typename TFinder::THstkPos                    THstkPos;
 
     typedef typename Fibre<TIndex, QGramSA>::Type const TSA;
     typedef typename Iterator<TSA, Standard>::Type      TSAIter;
     typedef typename TFinder::TPigeonholeHit            THit;
 
-	TIndex const &index = host(pattern);
+    TIndex const &index = host(pattern);
 
-	// all previous matches reported -> search new ones
-	clear(finder.hits);
+    // all previous matches reported -> search new ones
+    clear(finder.hits);
 
     TSAIter saBegin = begin(indexSA(index), Standard());
     Pair<unsigned> ndlPos;
@@ -572,7 +572,7 @@ inline bool _pigeonholeProcessQGram(
         posLocalize(ndlPos, *occ, stringSetLimits(index));
         hit.hstkPos = finder.curPos;
         hit.hstkPos -= getSeqOffset(ndlPos);                    // bucket begin in haystack
-        hit.ndlSeqNo = getSeqNo(ndlPos);						// needle seq. number
+        hit.ndlSeqNo = getSeqNo(ndlPos);                        // needle seq. number
         if (Pigeonhole<TSpec>::ONE_PER_DIAGONAL)
         {
             __int64 diag = hit.hstkPos + (__int64)pattern.finderPosOffset;
@@ -580,25 +580,25 @@ inline bool _pigeonholeProcessQGram(
                 continue;
             pattern.lastSeedDiag[hit.ndlSeqNo] = diag;
         }
-		unsigned ndlLength = sequenceLength(hit.ndlSeqNo, host(pattern));
+        unsigned ndlLength = sequenceLength(hit.ndlSeqNo, host(pattern));
 
-		if (Pigeonhole<TSpec>::HAMMING_ONLY != 0)
-		{
-			hit.bucketWidth = ndlLength;
-		}
-		else
-		{
-			unsigned indels = (unsigned)floor(pattern._currentErrorRate * ndlLength);
-			hit.bucketWidth = ndlLength + (indels << 1);
-			hit.hstkPos -= indels;
-		}
+        if (Pigeonhole<TSpec>::HAMMING_ONLY != 0)
+        {
+            hit.bucketWidth = ndlLength;
+        }
+        else
+        {
+            unsigned indels = (unsigned)floor(pattern._currentErrorRate * ndlLength);
+            hit.bucketWidth = ndlLength + (indels << 1);
+            hit.hstkPos -= indels;
+        }
         appendValue(finder.hits, hit);
     }
 
-	finder.curHit = begin(finder.hits, Standard());
-	finder.endHit = end(finder.hits, Standard());
+    finder.curHit = begin(finder.hits, Standard());
+    finder.endHit = end(finder.hits, Standard());
 
-	return !empty(finder.hits);
+    return !empty(finder.hits);
 }
 
 
@@ -606,18 +606,18 @@ template <typename TIndex, typename TSpec>
 inline bool
 empty(Pattern<TIndex, Pigeonhole<TSpec> > & me)
 {
-	return me._currentErrorRate == -1;
+    return me._currentErrorRate == -1;
 }
 
 template <typename TIndex, typename TSpec>
 inline void
 clear(Pattern<TIndex, Pigeonhole<TSpec> > & me)
 {
-	me.finderPosOffset = 0;
-	me.finderPosNextOffset = 0;
-	me.finderLength = 0;
-	me._currentErrorRate = -1;
-	clear(me.lastSeedDiag);
+    me.finderPosOffset = 0;
+    me.finderPosNextOffset = 0;
+    me.finderLength = 0;
+    me._currentErrorRate = -1;
+    clear(me.lastSeedDiag);
 }
 
 //____________________________________________________________________________
@@ -626,15 +626,15 @@ template <typename THaystack, typename TSpec>
 inline typename Position<Finder<THaystack, Pigeonhole<TSpec> > >::Type
 position(Finder<THaystack, Pigeonhole<TSpec> > const & finder)
 {
-	typename Finder<THaystack, Pigeonhole<TSpec> >::TPigeonholeHit &hit = *finder.curHit;
-	return hit.hstkPos + hit.bucketWidth;
+    typename Finder<THaystack, Pigeonhole<TSpec> >::TPigeonholeHit &hit = *finder.curHit;
+    return hit.hstkPos + hit.bucketWidth;
 }
 
 template <typename THaystack, typename TSpec>
 inline typename Position<Finder<THaystack, Pigeonhole<TSpec> > >::Type
 position(Finder<THaystack, Pigeonhole<TSpec> > & finder)
 {
-	return position(const_cast<Finder<THaystack, Pigeonhole<TSpec> > const &>(finder));
+    return position(const_cast<Finder<THaystack, Pigeonhole<TSpec> > const &>(finder));
 }
 
 //____________________________________________________________________________
@@ -643,17 +643,17 @@ template <typename TIndex, typename TSpec>
 inline typename SAValue<TIndex>::Type
 position(Pattern<TIndex, Pigeonhole<TSpec> > const & pattern)
 {
-	typedef typename Size<TIndex>::Type TSize;
+    typedef typename Size<TIndex>::Type TSize;
     typename SAValue<TIndex >::Type pos;
-	posLocalToX(pos, Pair<unsigned, TSize>(pattern.curSeqNo, length(needle(pattern))), stringSetLimits(host(pattern)));
-	return pos;
+    posLocalToX(pos, Pair<unsigned, TSize>(pattern.curSeqNo, length(needle(pattern))), stringSetLimits(host(pattern)));
+    return pos;
 }
 
 template <typename TIndex, typename TSpec>
 inline typename SAValue<TIndex>::Type
 position(Pattern<TIndex, Pigeonhole<TSpec> > & pattern)
 {
-	return position(const_cast<Pattern<TIndex, Pigeonhole<TSpec> > const &>(pattern));
+    return position(const_cast<Pattern<TIndex, Pigeonhole<TSpec> > const &>(pattern));
 }
 
 //____________________________________________________________________________
@@ -662,14 +662,14 @@ template <typename THaystack, typename TSpec>
 inline __int64
 beginPosition(Finder<THaystack, Pigeonhole<TSpec> > const & finder)
 {
-	return (*finder.curHit).hstkPos;
+    return (*finder.curHit).hstkPos;
 }
 
 template <typename THaystack, typename TSpec>
 inline __int64
 beginPosition(Finder<THaystack, Pigeonhole<TSpec> > & finder)
 {
-	return beginPosition(const_cast<Finder<THaystack, Pigeonhole<TSpec> > const &>(finder));
+    return beginPosition(const_cast<Finder<THaystack, Pigeonhole<TSpec> > const &>(finder));
 }
 
 //____________________________________________________________________________
@@ -679,15 +679,15 @@ inline typename SAValue<TIndex >::Type
 beginPosition(Pattern<TIndex, Pigeonhole<TSpec> > const & pattern)
 {
     typename SAValue<TIndex >::Type pos;
-	posLocalToX(pos, Pair<unsigned>(pattern.curSeqNo, 0), stringSetLimits(host(pattern)));
-	return pos;
+    posLocalToX(pos, Pair<unsigned>(pattern.curSeqNo, 0), stringSetLimits(host(pattern)));
+    return pos;
 }
 
 template <typename TIndex, typename TSpec>
 inline typename SAValue<TIndex>::Type
 beginPosition(Pattern<TIndex, Pigeonhole<TSpec> > & pattern)
 {
-	return beginPosition(const_cast<Pattern<TIndex, Pigeonhole<TSpec> > const &>(pattern));
+    return beginPosition(const_cast<Pattern<TIndex, Pigeonhole<TSpec> > const &>(pattern));
 }
 
 //____________________________________________________________________________
@@ -696,15 +696,15 @@ template <typename THaystack, typename TSpec>
 inline typename Position<Finder<THaystack, Pigeonhole<TSpec> > >::Type
 endPosition(Finder<THaystack, Pigeonhole<TSpec> > const & finder)
 {
-	typename Finder<THaystack, Pigeonhole<TSpec> >::TPigeonholeHit &hit = *finder.curHit;
-	return hit.hstkPos + hit.bucketWidth;
+    typename Finder<THaystack, Pigeonhole<TSpec> >::TPigeonholeHit &hit = *finder.curHit;
+    return hit.hstkPos + hit.bucketWidth;
 }
 
 template <typename THaystack, typename TSpec>
 inline typename Position<Finder<THaystack, Pigeonhole<TSpec> > >::Type
 endPosition(Finder<THaystack, Pigeonhole<TSpec> > & finder)
 {
-	return endPosition(const_cast<Finder<THaystack, Pigeonhole<TSpec> > const &>(finder));
+    return endPosition(const_cast<Finder<THaystack, Pigeonhole<TSpec> > const &>(finder));
 }
 
 //____________________________________________________________________________
@@ -713,58 +713,58 @@ template <typename TIndex, typename TSpec>
 inline typename SAValue<TIndex >::Type
 endPosition(Pattern<TIndex, Pigeonhole<TSpec> > const & pattern)
 {
-	typedef typename Size<TIndex>::Type TSize;
-	typename SAValue<TIndex >::Type pos;
-	posLocalToX(pos, Pair<unsigned, TSize>(pattern.curSeqNo, length(needle(pattern))), stringSetLimits(host(pattern)));
-	return pos;
+    typedef typename Size<TIndex>::Type TSize;
+    typename SAValue<TIndex >::Type pos;
+    posLocalToX(pos, Pair<unsigned, TSize>(pattern.curSeqNo, length(needle(pattern))), stringSetLimits(host(pattern)));
+    return pos;
 }
 
 template <typename TIndex, typename TSpec>
 inline typename SAValue<TIndex>::Type
 endPosition(Pattern<TIndex, Pigeonhole<TSpec> > & pattern)
 {
-	return endPosition(const_cast<Pattern<TIndex, Pigeonhole<TSpec> > const &>(pattern));
+    return endPosition(const_cast<Pattern<TIndex, Pigeonhole<TSpec> > const &>(pattern));
 }
 
 template <typename THaystack, typename TSpec>
 inline Pair<typename Position<Finder<THaystack, Pigeonhole<TSpec> > >::Type>
 positionRangeNoClip(Finder<THaystack, Pigeonhole<TSpec> > const & finder)
 {
-	typedef typename Position<Finder<THaystack, Pigeonhole<TSpec> > >::Type TPosition;
-	typedef Pair<TPosition> TPair;
-	typename Finder<THaystack, Pigeonhole<TSpec> >::TPigeonholeHit &hit = *finder.curHit;
-	return TPair((TPosition)hit.hstkPos, (TPosition)(hit.hstkPos + hit.bucketWidth));
+    typedef typename Position<Finder<THaystack, Pigeonhole<TSpec> > >::Type TPosition;
+    typedef Pair<TPosition> TPair;
+    typename Finder<THaystack, Pigeonhole<TSpec> >::TPigeonholeHit &hit = *finder.curHit;
+    return TPair((TPosition)hit.hstkPos, (TPosition)(hit.hstkPos + hit.bucketWidth));
 }
 
 template <typename THaystack, typename TSpec>
 inline Pair<typename Position<Finder<THaystack, Pigeonhole<TSpec> > >::Type>
 positionRangeNoClip(Finder<THaystack, Pigeonhole<TSpec> > & finder)
 {
-	return positionRangeNoClip(const_cast<Finder<THaystack, Pigeonhole<TSpec> > const &>(finder));
+    return positionRangeNoClip(const_cast<Finder<THaystack, Pigeonhole<TSpec> > const &>(finder));
 }
 
 template <typename THaystack, typename TSpec>
 inline Pair<typename Position<Finder<THaystack, Pigeonhole<TSpec> > >::Type>
 positionRange(Finder<THaystack, Pigeonhole<TSpec> > const & finder)
 {
-	typedef typename Position<Finder<THaystack, Pigeonhole<TSpec> > >::Type TPosition;
-	typedef Pair<TPosition> TPair;
-	typename Finder<THaystack, Pigeonhole<TSpec> >::TPigeonholeHit &hit = *finder.curHit;
+    typedef typename Position<Finder<THaystack, Pigeonhole<TSpec> > >::Type TPosition;
+    typedef Pair<TPosition> TPair;
+    typename Finder<THaystack, Pigeonhole<TSpec> >::TPigeonholeHit &hit = *finder.curHit;
 
-	__int64 hitBegin = hit.hstkPos;
-	__int64 hitEnd = hit.hstkPos + hit.bucketWidth;
-	__int64 textEnd = length(haystack(finder));
+    __int64 hitBegin = hit.hstkPos;
+    __int64 hitEnd = hit.hstkPos + hit.bucketWidth;
+    __int64 textEnd = length(haystack(finder));
 
-	if (hitBegin < 0) hitBegin = 0;
-	if (hitEnd > textEnd) hitEnd = textEnd;
-	return TPair((TPosition)hitBegin, (TPosition)hitEnd);
+    if (hitBegin < 0) hitBegin = 0;
+    if (hitEnd > textEnd) hitEnd = textEnd;
+    return TPair((TPosition)hitBegin, (TPosition)hitEnd);
 }
 
 template <typename THaystack, typename TSpec>
 inline Pair<typename Position<Finder<THaystack, Pigeonhole<TSpec> > >::Type>
 positionRange(Finder<THaystack, Pigeonhole<TSpec> > & finder)
 {
-	return positionRange(const_cast<Finder<THaystack, Pigeonhole<TSpec> > const &>(finder));
+    return positionRange(const_cast<Finder<THaystack, Pigeonhole<TSpec> > const &>(finder));
 }
 
 //____________________________________________________________________________
@@ -773,7 +773,7 @@ template <typename TIndex, typename TSpec>
 inline Pair<typename SAValue<TIndex>::Type>
 positionRange(Pattern<TIndex, Pigeonhole<TSpec> > & pattern)
 {
-	return Pair<typename SAValue<TIndex>::Type> (beginPosition(pattern), endPosition(pattern));
+    return Pair<typename SAValue<TIndex>::Type> (beginPosition(pattern), endPosition(pattern));
 }
 
 //____________________________________________________________________________
@@ -782,21 +782,21 @@ template <typename TPigeonholeHit, typename TText>
 inline typename Infix<TText>::Type
 pigeonholeInfixNoClip(TPigeonholeHit const &hit, TText &text)
 {
-	return infix(text, hit.hstkPos, hit.hstkPos + hit.bucketWidth);
+    return infix(text, hit.hstkPos, hit.hstkPos + hit.bucketWidth);
 }
 
 template <typename TPigeonholeHit, typename TText>
 inline typename Infix<TText>::Type
 pigeonholeInfix(TPigeonholeHit const &hit, TText &text)
 {
-	__int64 hitBegin = hit.hstkPos;
-	__int64 hitEnd = hit.hstkPos + hit.bucketWidth;
-	__int64 textEnd = length(text);
+    __int64 hitBegin = hit.hstkPos;
+    __int64 hitEnd = hit.hstkPos + hit.bucketWidth;
+    __int64 textEnd = length(text);
 
-	if (hitBegin < 0) hitBegin = 0;
-	if (hitEnd > textEnd) hitEnd = textEnd;
-	SEQAN_ASSERT_LEQ(hitBegin, hitEnd);
-	return infix(text, hitBegin, hitEnd);
+    if (hitBegin < 0) hitBegin = 0;
+    if (hitEnd > textEnd) hitEnd = textEnd;
+    SEQAN_ASSERT_LEQ(hitBegin, hitEnd);
+    return infix(text, hitBegin, hitEnd);
 }
 
 //____________________________________________________________________________
@@ -806,14 +806,14 @@ inline typename Infix<THaystack>::Type
 infix(Finder<THaystack, Pigeonhole<TSpec> > &finder)
 {
     typename Parameter_<THaystack>::Type tmpHaystack = haystack(finder);
-	return swiftInfix(*finder.curHit, tmpHaystack);
+    return swiftInfix(*finder.curHit, tmpHaystack);
 }
 
 template <typename THaystack, typename TSpec, typename TText>
 inline typename Infix<TText>::Type
 infix(Finder<THaystack, Pigeonhole<TSpec> > &finder, TText &text)
 {
-	return swiftInfix(*finder.curHit, text);
+    return swiftInfix(*finder.curHit, text);
 }
 
 //____________________________________________________________________________
@@ -822,14 +822,14 @@ template <typename THaystack, typename TSpec>
 inline typename Infix<THaystack>::Type
 infixNoClip(Finder<THaystack, Pigeonhole<TSpec> > &finder)
 {
-	return swiftInfixNoClip(*finder.curHit, haystack(finder));
+    return swiftInfixNoClip(*finder.curHit, haystack(finder));
 }
 
 template <typename THaystack, typename TSpec, typename TText>
 inline typename Infix<TText>::Type
 infixNoClip(Finder<THaystack, Pigeonhole<TSpec> > &finder, TText &text)
 {
-	return swiftInfixNoClip(*finder.curHit, text);
+    return swiftInfixNoClip(*finder.curHit, text);
 }
 
 //____________________________________________________________________________
@@ -839,27 +839,27 @@ inline typename Infix<TText>::Type
 infix(Pattern<TIndex, Pigeonhole<TSpec> > const & pattern, TText &text)
 {
     __int64 hitBegin = pattern.curBeginPos;
-	__int64 hitEnd = pattern.curEndPos;
-	__int64 textLength = sequenceLength(pattern.curSeqNo, needle(pattern));
+    __int64 hitEnd = pattern.curEndPos;
+    __int64 textLength = sequenceLength(pattern.curSeqNo, needle(pattern));
 
-	if (hitEnd > textLength) hitEnd = textLength;
+    if (hitEnd > textLength) hitEnd = textLength;
     if (hitBegin < 0) hitBegin = 0;
 
-	return infix(text, hitBegin, hitEnd);
+    return infix(text, hitBegin, hitEnd);
 }
 
 template <typename TIndex, typename TSpec>
 inline typename Infix< typename GetSequenceByNo< TIndex const >::Type >::Type
 infix(Pattern<TIndex, Pigeonhole<TSpec> > const & pattern)
 {
-	return infix(getSequenceByNo(pattern.curSeqNo, needle(pattern)), 0, sequenceLength(pattern.curSeqNo, needle(pattern)));
+    return infix(getSequenceByNo(pattern.curSeqNo, needle(pattern)), 0, sequenceLength(pattern.curSeqNo, needle(pattern)));
 }
 
 template <typename TIndex, typename TSpec>
 inline typename Infix< typename GetSequenceByNo< TIndex const >::Type >::Type
 infix(Pattern<TIndex, Pigeonhole<TSpec> > & pattern)
 {
-	return infix(const_cast<Pattern<TIndex, Pigeonhole<TSpec> > const &>(pattern));
+    return infix(const_cast<Pattern<TIndex, Pigeonhole<TSpec> > const &>(pattern));
 }
 
 //____________________________________________________________________________
@@ -868,158 +868,158 @@ template <typename THaystack, typename TSpec>
 inline void
 _printDots(Finder<THaystack, Pigeonhole<TSpec> > &finder)
 {
-	while (finder.curPos >= finder.dotPos)
-	{
-		finder.dotPos += 100000;
-		if (finder.dotPos >= finder.dotPos2)
-		{
-			std::cerr << (finder.dotPos2 / 1000000) << "M" << std::flush;
-			finder.dotPos2 += 1000000;
-		} else
-			std::cerr << "." << std::flush;
-	}
+    while (finder.curPos >= finder.dotPos)
+    {
+        finder.dotPos += 100000;
+        if (finder.dotPos >= finder.dotPos2)
+        {
+            std::cerr << (finder.dotPos2 / 1000000) << "M" << std::flush;
+            finder.dotPos2 += 1000000;
+        } else
+            std::cerr << "." << std::flush;
+    }
 }
 
 template <typename TFinder, typename TIndex, typename TSpec>
 inline bool
 _nextNonRepeatRange(
-	TFinder &finder,
-	Pattern<TIndex, Pigeonhole<TSpec> > &pattern)
+    TFinder &finder,
+    Pattern<TIndex, Pigeonhole<TSpec> > &pattern)
 {
-	//typedef typename TFinder::TRepeat		TRepeat;
-	//typedef typename Value<TRepeat>::Type	TPos;
+    //typedef typename TFinder::TRepeat        TRepeat;
+    //typedef typename Value<TRepeat>::Type    TPos;
 
-	if (finder.curRepeat == finder.endRepeat) return false;
+    if (finder.curRepeat == finder.endRepeat) return false;
 
-	do
-	{
-		finder.startPos = (*finder.curRepeat).endPosition;
-		if (++finder.curRepeat == finder.endRepeat)
-		{
-			finder.endPos = length(host(finder));
-			if (finder.startPos + length(pattern.shape) > finder.endPos)
-				return false;
-			else
-				break;
-		} else
-			finder.endPos = (*finder.curRepeat).beginPosition;
-		// repeat until the shape fits in non-repeat range
-	} while (finder.startPos + length(pattern.shape) > finder.endPos);
+    do
+    {
+        finder.startPos = (*finder.curRepeat).endPosition;
+        if (++finder.curRepeat == finder.endRepeat)
+        {
+            finder.endPos = length(host(finder));
+            if (finder.startPos + length(pattern.shape) > finder.endPos)
+                return false;
+            else
+                break;
+        } else
+            finder.endPos = (*finder.curRepeat).beginPosition;
+        // repeat until the shape fits in non-repeat range
+    } while (finder.startPos + length(pattern.shape) > finder.endPos);
 
-	finder.curPos = finder.startPos;
-	hostIterator(finder) = begin(host(finder)) + finder.startPos;
-	finder.haystackEnd = begin(host(finder)) + (finder.endPos - length(pattern.shape) + 1);
+    finder.curPos = finder.startPos;
+    hostIterator(finder) = begin(host(finder)) + finder.startPos;
+    finder.haystackEnd = begin(host(finder)) + (finder.endPos - length(pattern.shape) + 1);
 
-//	if (pattern.params.printDots)
-//		std::cerr << std::endl << "  scan range (" << finder.startPos << ", " << finder.endPos << ") " << std::flush;
+//    if (pattern.params.printDots)
+//        std::cerr << std::endl << "  scan range (" << finder.startPos << ", " << finder.endPos << ") " << std::flush;
 
-	return true;
+    return true;
 }
 
 template <typename TFinder, typename TIndex, typename TSpec>
 inline bool
 _firstNonRepeatRange(
-	TFinder &finder,
-	Pattern<TIndex, Pigeonhole<TSpec> > &pattern)
+    TFinder &finder,
+    Pattern<TIndex, Pigeonhole<TSpec> > &pattern)
 {
-	//typedef typename TFinder::TRepeat		TRepeat;
-	//typedef typename Value<TRepeat>::Type	TPos;
+    //typedef typename TFinder::TRepeat        TRepeat;
+    //typedef typename Value<TRepeat>::Type    TPos;
 
-	finder.curRepeat = begin(finder.data_repeats, Standard());
-	finder.endRepeat = end(finder.data_repeats, Standard());
+    finder.curRepeat = begin(finder.data_repeats, Standard());
+    finder.endRepeat = end(finder.data_repeats, Standard());
 
-	if (finder.curRepeat == finder.endRepeat)
-		finder.endPos = length(host(finder));
-	else
-		finder.endPos = (*finder.curRepeat).beginPosition;
+    if (finder.curRepeat == finder.endRepeat)
+        finder.endPos = length(host(finder));
+    else
+        finder.endPos = (*finder.curRepeat).beginPosition;
 
-	if (length(pattern.shape) > finder.endPos)
-		return _nextNonRepeatRange(finder, pattern);
+    if (length(pattern.shape) > finder.endPos)
+        return _nextNonRepeatRange(finder, pattern);
 
-	finder.curPos = finder.startPos = 0;
-	hostIterator(finder) = begin(host(finder));
-	finder.haystackEnd = begin(host(finder)) + (finder.endPos - length(pattern.shape) + 1);
+    finder.curPos = finder.startPos = 0;
+    hostIterator(finder) = begin(host(finder));
+    finder.haystackEnd = begin(host(finder)) + (finder.endPos - length(pattern.shape) + 1);
 
-//	if (pattern.params.printDots)
-//		std::cerr << std::endl << "  scan range (" << finder.startPos << ", " << finder.endPos << ") " << std::flush;
+//    if (pattern.params.printDots)
+//        std::cerr << std::endl << "  scan range (" << finder.startPos << ", " << finder.endPos << ") " << std::flush;
 
-	return true;
+    return true;
 }
 
 template <typename TFinder, typename TIndex, typename TSpec>
 inline void
 _copyPigeonholeHit(
-	TFinder &finder,
-	Pattern<TIndex, Pigeonhole<TSpec> > &pattern)
+    TFinder &finder,
+    Pattern<TIndex, Pigeonhole<TSpec> > &pattern)
 {
-	pattern.curSeqNo = (*finder.curHit).ndlSeqNo;
-	pattern.curBeginPos = 0;
-	pattern.curEndPos = length(indexText(needle(pattern))[pattern.curSeqNo]);
+    pattern.curSeqNo = (*finder.curHit).ndlSeqNo;
+    pattern.curBeginPos = 0;
+    pattern.curEndPos = length(indexText(needle(pattern))[pattern.curSeqNo]);
 }
 
 template <typename THaystack, typename TIndex, typename TSpec>
 inline bool
 find(
-	Finder<THaystack, Pigeonhole<TSpec> > &finder,
-	Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
-	double errorRate)
+    Finder<THaystack, Pigeonhole<TSpec> > &finder,
+    Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
+    double errorRate)
 {
-	if (empty(finder))
-	{
-		pattern.finderLength = length(container(finder));
-		_patternInit(pattern, errorRate);
-		_finderSetNonEmpty(finder);
-		finder.dotPos = 100000;
-		finder.dotPos2 = 10 * finder.dotPos;
+    if (empty(finder))
+    {
+        pattern.finderLength = length(container(finder));
+        _patternInit(pattern, errorRate);
+        _finderSetNonEmpty(finder);
+        finder.dotPos = 100000;
+        finder.dotPos2 = 10 * finder.dotPos;
 
-		if (!_firstNonRepeatRange(finder, pattern)) return false;
-		if (_pigeonholeProcessQGram(finder, pattern, hash(pattern.shape, hostIterator(hostIterator(finder)))))
-		{
-			_copyPigeonholeHit(finder, pattern);
-			return true;
-		}
-	}
-	else
-	{
-		if (++finder.curHit < finder.endHit)
-		{
-			_copyPigeonholeHit(finder, pattern);
-			return true;
-		}
-	}
+        if (!_firstNonRepeatRange(finder, pattern)) return false;
+        if (_pigeonholeProcessQGram(finder, pattern, hash(pattern.shape, hostIterator(hostIterator(finder)))))
+        {
+            _copyPigeonholeHit(finder, pattern);
+            return true;
+        }
+    }
+    else
+    {
+        if (++finder.curHit < finder.endHit)
+        {
+            _copyPigeonholeHit(finder, pattern);
+            return true;
+        }
+    }
 
-	// all previous matches reported -> search new ones
-	clear(finder.hits);
+    // all previous matches reported -> search new ones
+    clear(finder.hits);
 
-	// are we at the end of the text?
-	if (atEnd(finder) && finder.curRepeat == finder.endRepeat)
-	{
-		finder.curHit = finder.endHit;
-		return false;
-	}
+    // are we at the end of the text?
+    if (atEnd(finder) && finder.curRepeat == finder.endRepeat)
+    {
+        finder.curHit = finder.endHit;
+        return false;
+    }
 
-	do
-	{
-		if (pattern.params.printDots) _printDots(finder);
-		if (atEnd(++finder))
-		{
-			if (!_nextNonRepeatRange(finder, pattern))
+    do
+    {
+        if (pattern.params.printDots) _printDots(finder);
+        if (atEnd(++finder))
+        {
+            if (!_nextNonRepeatRange(finder, pattern))
                 return false;
-			hash(pattern.shape, hostIterator(hostIterator(finder)));
-		}
-		else
-		{
-			++finder.curPos;
-			hashNext(pattern.shape, hostIterator(hostIterator(finder)));
-		}
+            hash(pattern.shape, hostIterator(hostIterator(finder)));
+        }
+        else
+        {
+            ++finder.curPos;
+            hashNext(pattern.shape, hostIterator(hostIterator(finder)));
+        }
 
-		if (_pigeonholeProcessQGram(finder, pattern, value(pattern.shape)))
-		{
-			_copyPigeonholeHit(finder, pattern);
-			return true;
-		}
+        if (_pigeonholeProcessQGram(finder, pattern, value(pattern.shape)))
+        {
+            _copyPigeonholeHit(finder, pattern);
+            return true;
+        }
 
-	} while (true);
+    } while (true);
 }
 
 /*!
@@ -1043,20 +1043,20 @@ find(
 template <typename THaystack, typename TIndex, typename TSpec>
 inline bool
 windowFindBegin(
-	Finder<THaystack, Pigeonhole<TSpec> > &finder,
-	Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
-	double errorRate)
+    Finder<THaystack, Pigeonhole<TSpec> > &finder,
+    Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
+    double errorRate)
 {
-	SEQAN_CHECKPOINT
+    SEQAN_CHECKPOINT
 
-	pattern.finderLength = pattern.maxSeqLen + length(container(finder));
-	_patternInit(pattern, errorRate);
-	_finderSetNonEmpty(finder);
-	finder.dotPos = 100000;
-	finder.dotPos2 = 10 * finder.dotPos;
+    pattern.finderLength = pattern.maxSeqLen + length(container(finder));
+    _patternInit(pattern, errorRate);
+    _finderSetNonEmpty(finder);
+    finder.dotPos = 100000;
+    finder.dotPos2 = 10 * finder.dotPos;
     finder.windowStart = 0;
 
-	if (!_firstNonRepeatRange(finder, pattern)) return false;
+    if (!_firstNonRepeatRange(finder, pattern)) return false;
 
     return true;
 }
@@ -1088,15 +1088,15 @@ windowFindBegin(
 template <typename THaystack, typename TIndex, typename TSpec, typename TSize>
 inline bool
 windowFindNext(
-	Finder<THaystack, Pigeonhole<TSpec> > &finder,
-	Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
-	TSize finderWindowLength)
+    Finder<THaystack, Pigeonhole<TSpec> > &finder,
+    Pattern<TIndex, Pigeonhole<TSpec> > &pattern,
+    TSize finderWindowLength)
 {
-	SEQAN_CHECKPOINT
+    SEQAN_CHECKPOINT
 
-	typedef typename Fibre<TIndex, QGramShape>::Type        TShape;
-	typedef Finder<THaystack, Pigeonhole<TSpec> >           TFinder;
-	typedef typename TFinder::THstkPos                      THstkPos;
+    typedef typename Fibre<TIndex, QGramShape>::Type        TShape;
+    typedef Finder<THaystack, Pigeonhole<TSpec> >           TFinder;
+    typedef typename TFinder::THstkPos                      THstkPos;
 
     typedef typename Fibre<TIndex, QGramSA>::Type           TSA;
     typedef typename Iterator<TSA const, Standard>::Type    TSAIter;
@@ -1104,15 +1104,15 @@ windowFindNext(
 
     TIndex const &index = host(pattern);
 
-	// all previous matches reported -> search new ones
-	clear(finder.hits);
+    // all previous matches reported -> search new ones
+    clear(finder.hits);
 
-	THstkPos windowEnd = finder.windowStart + finderWindowLength;
+    THstkPos windowEnd = finder.windowStart + finderWindowLength;
     TSAIter saBegin = begin(indexSA(index), Standard());
     Pair<unsigned> ndlPos;
     THit hit;
-	double errorRate = pattern._currentErrorRate;
-	__int64 seqDisabled = pattern.seqDisabled;
+    double errorRate = pattern._currentErrorRate;
+    __int64 seqDisabled = pattern.seqDisabled;
 
     // iterate over all non-repeat regions within the window
     for (; finder.curPos < windowEnd; )
@@ -1134,28 +1134,28 @@ windowFindNext(
                 TSAIter occ = saBegin + indexDir(index)[bktNo];
                 TSAIter occEnd = saBegin + indexDir(index)[bktNo + 1];
 
-				for(; occ != occEnd; ++occ)
-				{
-					posLocalize(ndlPos, *occ, stringSetLimits(index));
-					hit.hstkPos = finder.curPos;
+                for(; occ != occEnd; ++occ)
+                {
+                    posLocalize(ndlPos, *occ, stringSetLimits(index));
+                    hit.hstkPos = finder.curPos;
                     hit.hstkPos -= getSeqOffset(ndlPos);                    // bucket begin in haystack
-					hit.ndlSeqNo = getSeqNo(ndlPos);						// needle seq. number
+                    hit.ndlSeqNo = getSeqNo(ndlPos);                        // needle seq. number
 
-					if (Pigeonhole<TSpec>::ONE_PER_DIAGONAL)
-					{
-						__int64 lastDiag = pattern.lastSeedDiag[hit.ndlSeqNo];
-						if (lastDiag == seqDisabled) continue;
+                    if (Pigeonhole<TSpec>::ONE_PER_DIAGONAL)
+                    {
+                        __int64 lastDiag = pattern.lastSeedDiag[hit.ndlSeqNo];
+                        if (lastDiag == seqDisabled) continue;
 
-						__int64 diag = hit.hstkPos + (__int64)pattern.finderPosOffset;
-						if (lastDiag == diag)
-						{
-//							std::cout<<"double hit"<<std::endl;
-							continue;
-						}
-						pattern.lastSeedDiag[hit.ndlSeqNo] = diag;
-					}
+                        __int64 diag = hit.hstkPos + (__int64)pattern.finderPosOffset;
+                        if (lastDiag == diag)
+                        {
+//                            std::cout<<"double hit"<<std::endl;
+                            continue;
+                        }
+                        pattern.lastSeedDiag[hit.ndlSeqNo] = diag;
+                    }
 //                     std::cout<<"hit at:\thpos="<<finder.curPos<<"\tnpos="<<getSeqOffset(ndlPos)<<"\treadNo="<<hit.ndlSeqNo<<"\thash="<<value(shape)<<std::endl;
-					unsigned ndlLength = sequenceLength(hit.ndlSeqNo, host(pattern));
+                    unsigned ndlLength = sequenceLength(hit.ndlSeqNo, host(pattern));
                     if (Pigeonhole<TSpec>::HAMMING_ONLY != 0)
                     {
                         hit.bucketWidth = ndlLength;
@@ -1166,8 +1166,8 @@ windowFindNext(
                         hit.bucketWidth = ndlLength + (indels << 1);
                         hit.hstkPos -= indels;
                     }
-					appendValue(finder.hits, hit);
-				}
+                    appendValue(finder.hits, hit);
+                }
             }
         }
 
@@ -1181,7 +1181,7 @@ windowFindNext(
             }
     }
     finder.windowStart = windowEnd;
-	return true;
+    return true;
 }
 
 
@@ -1204,8 +1204,8 @@ windowFindNext(
 template <typename THaystack, typename TIndex, typename TSpec>
 inline void
 windowFindEnd(
-	Finder<THaystack, Pigeonhole<TSpec> > &,
-	Pattern<TIndex, Pigeonhole<TSpec> > &)
+    Finder<THaystack, Pigeonhole<TSpec> > &,
+    Pattern<TIndex, Pigeonhole<TSpec> > &)
 {
 }
 
@@ -1228,9 +1228,9 @@ template <typename THaystack, typename TSpec>
 inline typename Finder<THaystack, Pigeonhole<TSpec> >::THitString &
 getWindowFindHits(Finder<THaystack, Pigeonhole<TSpec> > &finder)
 {
-	SEQAN_CHECKPOINT
+    SEQAN_CHECKPOINT
 
-	return finder.hits;
+    return finder.hits;
 }
 
 /*!
@@ -1249,9 +1249,9 @@ template <typename TIndex, typename TSpec>
 inline typename Size<TIndex>::Type
 getMaxDeviationOfOrder(Pattern<TIndex, Pigeonhole<TSpec> > &pattern)
 {
-	SEQAN_CHECKPOINT;
+    SEQAN_CHECKPOINT;
 
-	return (pattern.maxSeqLen <= length(indexShape(host(pattern))))? 0: pattern.maxSeqLen - length(indexShape(host(pattern)));
+    return (pattern.maxSeqLen <= length(indexShape(host(pattern))))? 0: pattern.maxSeqLen - length(indexShape(host(pattern)));
 }
 
 }// namespace seqan

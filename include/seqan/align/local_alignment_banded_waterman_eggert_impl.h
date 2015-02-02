@@ -153,13 +153,13 @@ _alignBandedSmithWaterman(LocalAlignmentFinder<TScoreValue>& finder,
     }
  //   // Debug code
  //   std::cerr << std::endl;
-	//for(TSize i= 0; i<height; ++i) {
-	//	for(TSize j= 0; j<diagonalWidth; ++j) {
-	//		std::cerr << value(finder.matrix, j, i) << ',';
-	//	}
-	//	if (i > 0) std::cerr << " " << str2[i-1] << std::endl;
-	//	else std::cerr << std::endl;
-	//}
+    //for(TSize i= 0; i<height; ++i) {
+    //    for(TSize j= 0; j<diagonalWidth; ++j) {
+    //        std::cerr << value(finder.matrix, j, i) << ',';
+    //    }
+    //    if (i > 0) std::cerr << " " << str2[i-1] << std::endl;
+    //    else std::cerr << std::endl;
+    //}
  //   if(length(finder.pQ) > 0) std::cerr << "Max score: " << top(finder.pQ).value_ << std::endl;
 
     if(!empty(finder.pQ)) {
@@ -177,20 +177,20 @@ _alignBandedSmithWaterman(LocalAlignmentFinder<TScoreValue>& finder,
 template<typename TSpec, typename TSize>
 inline void
 _setForbiddenCell(String<bool, TSpec>& forbidden,
-				  TSize len1,
-				  TSize len2,
-				  TSize numRows)
+                  TSize len1,
+                  TSize len2,
+                  TSize numRows)
 {
-	forbidden[(len1 - 1)*numRows + (len2 - 1)] = true;
+    forbidden[(len1 - 1)*numRows + (len2 - 1)] = true;
 }
 
 
 template<typename TSize>
 inline void
 _setForbiddenCell(Nothing&,
-				  TSize,
-				  TSize,
-				  TSize)
+                  TSize,
+                  TSize,
+                  TSize)
 {
 }
 
@@ -213,7 +213,7 @@ _alignBandedSmithWatermanDeclump(LocalAlignmentFinder<TScoreValue>& finder,
     typedef unsigned char TTraceValue;
 
     // Traceback values
-	TTraceValue Diagonal = 0; TTraceValue Horizontal = 1; TTraceValue Vertical = 2;
+    TTraceValue Diagonal = 0; TTraceValue Horizontal = 1; TTraceValue Vertical = 2;
 
     TSequenceH const& str1 = seqH;
     TSequenceV const& str2 = seqV;
@@ -299,18 +299,18 @@ _alignBandedSmithWatermanDeclump(LocalAlignmentFinder<TScoreValue>& finder,
                 ++matIt2;
 
                 // horizontal
-				if (col > 0) {
-		            newVal = _max(newVal, *(matIt-1) +
-		                          scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, (int) actualCol-1),
-		                                                   sequenceEntryForScore(sc, str2, (int)actualRow-1)));
-				}
+                if (col > 0) {
+                    newVal = _max(newVal, *(matIt-1) +
+                                  scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, (int) actualCol-1),
+                                                           sequenceEntryForScore(sc, str2, (int)actualRow-1)));
+                }
 
                 // vertical
-				if (col+1 < maxCol) {
-					newVal = _max(newVal, *matIt2 +
-					              scoreGapExtendVertical(sc, sequenceEntryForScore(sc, str1, (int)actualCol-1),
-					                                     sequenceEntryForScore(sc, str2, (int)actualRow-1)));
-				}
+                if (col+1 < maxCol) {
+                    newVal = _max(newVal, *matIt2 +
+                                  scoreGapExtendVertical(sc, sequenceEntryForScore(sc, str1, (int)actualCol-1),
+                                                         sequenceEntryForScore(sc, str2, (int)actualRow-1)));
+                }
 
                 if (newVal != *matIt) {
                     // matrix entry changed
@@ -350,13 +350,13 @@ _alignBandedSmithWatermanDeclump(LocalAlignmentFinder<TScoreValue>& finder,
   //      for(TSize j = 0; j < diagonalWidth; ++j) {
   //          std::cerr << value(finder.matrix, j, i) << ',';
   //      }
-		//if (i > 0) std::cerr << " " << str2[i-1] << "    ";
-		//else std::cerr << "      ";
+        //if (i > 0) std::cerr << " " << str2[i-1] << "    ";
+        //else std::cerr << "      ";
   //      for (TSize j= 0; j<diagonalWidth; ++j) {
   //          std::cerr << value(finder.forbidden, j+i*diagonalWidth) << ',';
   //      }
   //      if (i > 0) std::cerr << " " << str2[i-1] << std::endl;
-		//else std::cerr << std::endl;
+        //else std::cerr << std::endl;
   //  }
 }
 
@@ -383,7 +383,7 @@ _alignBandedSmithWatermanTrace(LocalAlignmentFinder<TScoreValue> & finder,
     clear(finder.trace.tvs);
 
     // Traceback values
-	TTraceValue Diagonal = 0; TTraceValue Horizontal = 1; TTraceValue Vertical = 2; TTraceValue Stop = 3;
+    TTraceValue Diagonal = 0; TTraceValue Horizontal = 1; TTraceValue Vertical = 2; TTraceValue Stop = 3;
 
     // Initialization
     TSequenceH const& str1 = seqH;
@@ -404,18 +404,18 @@ _alignBandedSmithWatermanTrace(LocalAlignmentFinder<TScoreValue> & finder,
     TSize endRow = row + lo_row;
     TSize endCol = static_cast<TSize>(col + diagL + endRow);
 
-	TSize actualRow = row + lo_row;
+    TSize actualRow = row + lo_row;
     TSize actualCol = static_cast<TSize>(col + diagL + actualRow);
     if ((actualCol == 0) || (actualRow == 0)) 
         return Pair<Pair<TDiagonal> >();
 
-	if (actualCol < len1) _alignTracePrint(finder.trace, seqH, seqV, id1, actualCol, id2, actualRow, len1 - actualCol, Horizontal);
-	if (actualRow < len2) _alignTracePrint(finder.trace, seqH, seqV, id1, actualCol, id2, actualRow, len2 - actualRow, Vertical);
-	
+    if (actualCol < len1) _alignTracePrint(finder.trace, seqH, seqV, id1, actualCol, id2, actualRow, len1 - actualCol, Horizontal);
+    if (actualRow < len2) _alignTracePrint(finder.trace, seqH, seqV, id1, actualCol, id2, actualRow, len2 - actualRow, Vertical);
+    
     TTraceValue traceValue = Stop;
     TTraceValue nextTraceValue = Horizontal;
     TSize segLen = 0;
-	
+    
     while (nextTraceValue != Stop) {
         traceValue = nextTraceValue;
         if (*matIt == 0) {
@@ -457,9 +457,9 @@ _alignBandedSmithWatermanTrace(LocalAlignmentFinder<TScoreValue> & finder,
         }
     }
     
-	// Handle the remaining sequence
-	if (actualCol != 0) _alignTracePrint(finder.trace, seqH, seqV, (TId) id1, (TSize) 0, (TId) 0, (TSize) 0, (TSize) actualCol, Horizontal);
-	if (actualRow != 0) _alignTracePrint(finder.trace, seqH, seqV, (TId) 0, (TSize) 0, (TId) id2, (TSize) 0, (TSize) actualRow, Vertical);
+    // Handle the remaining sequence
+    if (actualCol != 0) _alignTracePrint(finder.trace, seqH, seqV, (TId) id1, (TSize) 0, (TId) 0, (TSize) 0, (TSize) actualCol, Horizontal);
+    if (actualRow != 0) _alignTracePrint(finder.trace, seqH, seqV, (TId) 0, (TSize) 0, (TId) id2, (TSize) 0, (TSize) actualRow, Vertical);
 
     goNext(matIt, 1); // assumes that each trace ends with a diagonal
     finder.bestBeginPos = position(matIt);
@@ -488,7 +488,7 @@ _initLocalAlignmentFinder(TSequenceH const & seqH,
     TSize len0 = length(seqH);
     if (len0 - lowerDiag < hi_row) hi_row = static_cast<TSize>(len0 - lowerDiag);
     TSize height = hi_row - lo_row + 1;
-	SEQAN_ASSERT_GEQ(upperDiag, lowerDiag);
+    SEQAN_ASSERT_GEQ(upperDiag, lowerDiag);
     TSize diagonalWidth = (TSize) (upperDiag - lowerDiag + 1);
 
     setDimension(finder.matrix, 2);
@@ -498,8 +498,8 @@ _initLocalAlignmentFinder(TSequenceH const & seqH,
 
     resize(finder.forbidden, height * diagonalWidth, false);
 
-	finder.bestEndPos = minValue<typename TFinder::TMatrixPosition>();
-	finder.bestBeginPos = minValue<typename TFinder::TMatrixPosition>();
+    finder.bestEndPos = minValue<typename TFinder::TMatrixPosition>();
+    finder.bestBeginPos = minValue<typename TFinder::TMatrixPosition>();
 }
 
 // ----------------------------------------------------------------------------
@@ -533,7 +533,7 @@ _localAlignment(LocalAlignmentFinder<TScoreValue> & finder,
     Pair<Pair<TDiagonal> > alignmentPositions = _alignBandedSmithWatermanTrace(finder, source(gapsH), source(gapsV), 0u, 0u, sc, diag1, diag2);
 
     // Fill the gaps following the trace path.
-	_pumpTraceToGaps(gapsH, gapsV, finder.trace);
+    _pumpTraceToGaps(gapsH, gapsV, finder.trace);
 
     // The following (using rightOfGaps = false) only works if the gap open cost is negative.  In this case, we can
     // assume that there are no leading or trailing gaps in either sequence.
@@ -544,10 +544,10 @@ _localAlignment(LocalAlignmentFinder<TScoreValue> & finder,
     // TODO(holtgrew): This should be done in a more robust way.  It would probably be better if alignmentPositions gave us the lengths of the local alignments!
     setClippedEndPosition(gapsH, toViewPosition(gapsH, alignmentPositions.i1.i2, false));
     setClippedEndPosition(gapsV, toViewPosition(gapsV, alignmentPositions.i2.i2, false));
-	setClippedBeginPosition(gapsH, toViewPosition(gapsH, alignmentPositions.i1.i1));
-	setClippedBeginPosition(gapsV, toViewPosition(gapsV, alignmentPositions.i2.i1));
+    setClippedBeginPosition(gapsH, toViewPosition(gapsH, alignmentPositions.i1.i1));
+    setClippedBeginPosition(gapsV, toViewPosition(gapsV, alignmentPositions.i2.i1));
 
-	pop(finder.pQ);
+    pop(finder.pQ);
 
     return maxScore;
 }
@@ -569,17 +569,17 @@ _localAlignmentNext(LocalAlignmentFinder<TScoreValue> & finder,
     // Declump the matrix and find new maximum score
     _alignBandedSmithWatermanDeclump(finder, source(gapsH), source(gapsV), sc, cutoff, diag1, diag2);
     typename LocalAlignmentFinder<TScoreValue>::TMatrixPosition nextBestEnd;
-	nextBestEnd = _getNextBestEndPosition(finder, cutoff);
-	if(nextBestEnd==0)
-		return 0;
+    nextBestEnd = _getNextBestEndPosition(finder, cutoff);
+    if(nextBestEnd==0)
+        return 0;
     TScoreValue maxScore = getValue(finder.matrix, nextBestEnd);
-	if(maxScore == 0) return 0;
+    if(maxScore == 0) return 0;
 
     // Follow the trace matrix and create a trace path
     Pair<Pair<TDiagonal> > alignmentPositions = _alignBandedSmithWatermanTrace(finder, source(gapsH), source(gapsV), 0u, 0u, sc, diag1, diag2);
 
     // Fill the gaps following the trace path.
-	_pumpTraceToGaps(gapsH, gapsV, finder.trace);
+    _pumpTraceToGaps(gapsH, gapsV, finder.trace);
 
     // The following (using rightOfGaps = false) only works if the gap open cost is negative.  In this case, we can
     // assume that there are no leading or trailing gaps in either sequence.
@@ -590,8 +590,8 @@ _localAlignmentNext(LocalAlignmentFinder<TScoreValue> & finder,
     // TODO(holtgrew): This should be done in a more robust way.  It would probably be better if alignmentPositions gave us the lengths of the local alignments!
     setClippedEndPosition(gapsH, toViewPosition(gapsH, alignmentPositions.i1.i2, false));
     setClippedEndPosition(gapsV, toViewPosition(gapsV, alignmentPositions.i2.i2, false));
-	setClippedBeginPosition(gapsH, toViewPosition(gapsH, alignmentPositions.i1.i1));
-	setClippedBeginPosition(gapsV, toViewPosition(gapsV, alignmentPositions.i2.i1));
+    setClippedBeginPosition(gapsH, toViewPosition(gapsH, alignmentPositions.i1.i1));
+    setClippedBeginPosition(gapsV, toViewPosition(gapsV, alignmentPositions.i2.i1));
 
     return maxScore;
 }

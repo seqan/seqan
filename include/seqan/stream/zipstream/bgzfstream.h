@@ -46,28 +46,28 @@ const unsigned BGZF_BLOCK_SIZE = BGZF_MAX_BLOCK_SIZE - BGZF_BLOCK_HEADER_LENGTH 
 /// Compression strategy, see bgzf doc.
 enum EStrategy
 {
-	StrategyFiltered = 1,
-	StrategyHuffmanOnly = 2,
-	DefaultStrategy = 0
+    StrategyFiltered = 1,
+    StrategyHuffmanOnly = 2,
+    DefaultStrategy = 0
 };
 
 template<
-	typename Elem, 
-	typename Tr = std::char_traits<Elem>,
+    typename Elem, 
+    typename Tr = std::char_traits<Elem>,
     typename ElemA = std::allocator<Elem>,
     typename ByteT = char,
     typename ByteAT = std::allocator<ByteT>
->	
+>    
 class basic_bgzf_streambuf : public std::basic_streambuf<Elem, Tr> 
 {
 public:
-	typedef std::basic_ostream<Elem, Tr>& ostream_reference;
+    typedef std::basic_ostream<Elem, Tr>& ostream_reference;
     typedef ElemA char_allocator_type;
-	typedef ByteT byte_type;
+    typedef ByteT byte_type;
     typedef ByteAT byte_allocator_type;
-	typedef byte_type* byte_buffer_type;
-	typedef typename Tr::char_type char_type;
-	typedef typename Tr::int_type int_type;
+    typedef byte_type* byte_buffer_type;
+    typedef typename Tr::char_type char_type;
+    typedef typename Tr::int_type int_type;
 
     typedef ConcurrentQueue<size_t, Suspendable<Limit> > TJobQueue;
 
@@ -163,7 +163,7 @@ public:
         numJobs(numThreads * jobsPerThread),
         jobQueue(numJobs),
         idleQueue(numJobs),
-		serializer(ostream_, numThreads * jobsPerThread)
+        serializer(ostream_, numThreads * jobsPerThread)
     {
         resize(jobs, numJobs, Exact());
         currentJobId = 0;
@@ -193,7 +193,7 @@ public:
 
         CompressionJob &job = jobs[currentJobId];
         job.outputBuffer = aquireValue(serializer);
-		this->setp(&job.buffer[0], &job.buffer[0] + (job.buffer.size() - 1));
+        this->setp(&job.buffer[0], &job.buffer[0] + (job.buffer.size() - 1));
     }
 
     ~basic_bgzf_streambuf()
@@ -247,7 +247,7 @@ public:
         }
     }
 
-	std::streamsize flush(bool flushEmptyBuffer = false)
+    std::streamsize flush(bool flushEmptyBuffer = false)
     {
         int w = static_cast<int>(this->pptr() - this->pbase());
         if ((w != 0 || flushEmptyBuffer) && compressBuffer(w))
@@ -263,17 +263,17 @@ public:
         // wait for running compressor threads
         waitForMinSize(idleQueue, numJobs - 1);
 
-		serializer.worker.ostream.flush();
-		return w;
+        serializer.worker.ostream.flush();
+        return w;
     }
 
-	int sync()
+    int sync()
     {
-		if (this->pptr() != this->pbase())
-		{
-			int c = overflow(EOF);
-			if (c == EOF)
-				return -1;
+        if (this->pptr() != this->pbase())
+        {
+            int c = overflow(EOF);
+            if (c == EOF)
+                return -1;
         }
         return 0;
     }
@@ -285,30 +285,30 @@ public:
             overflow(EOF);
     }
 
-	/// returns a reference to the output stream
-	ostream_reference get_ostream() const	{ return serializer.worker.ostream; };
+    /// returns a reference to the output stream
+    ostream_reference get_ostream() const    { return serializer.worker.ostream; };
 };
 
 template<
-	typename Elem, 
-	typename Tr = std::char_traits<Elem>,
+    typename Elem, 
+    typename Tr = std::char_traits<Elem>,
     typename ElemA = std::allocator<Elem>,
     typename ByteT = char,
     typename ByteAT = std::allocator<ByteT>
->	
+>    
 class basic_unbgzf_streambuf : 
-	public std::basic_streambuf<Elem, Tr> 
+    public std::basic_streambuf<Elem, Tr> 
 {
 public:
-	typedef std::basic_istream<Elem, Tr>& istream_reference;
+    typedef std::basic_istream<Elem, Tr>& istream_reference;
     typedef ElemA char_allocator_type;
-	typedef ByteT byte_type;
+    typedef ByteT byte_type;
     typedef ByteAT byte_allocator_type;
-	typedef byte_type* byte_buffer_type;
-	typedef typename Tr::char_type char_type;
-	typedef typename Tr::int_type int_type;
-	typedef typename Tr::off_type off_type;
-	typedef typename Tr::pos_type pos_type;
+    typedef byte_type* byte_buffer_type;
+    typedef typename Tr::char_type char_type;
+    typedef typename Tr::int_type int_type;
+    typedef typename Tr::off_type off_type;
+    typedef typename Tr::pos_type pos_type;
 
     typedef std::vector<char_type, char_allocator_type>     TBuffer;
     typedef ConcurrentQueue<int, Suspendable<Limit> >       TJobQueue;
@@ -507,7 +507,7 @@ public:
     basic_unbgzf_streambuf(istream_reference istream_,
                            size_t numThreads = 16,
                            size_t jobsPerThread = 8) :
-		serializer(istream_),
+        serializer(istream_),
         numThreads(numThreads),
         numJobs(numThreads * jobsPerThread),
         runningQueue(numJobs),
@@ -537,7 +537,7 @@ public:
         }
     }
 
-	~basic_unbgzf_streambuf()
+    ~basic_unbgzf_streambuf()
     {
         unlockWriting(todoQueue);
         unlockReading(runningQueue);
@@ -732,8 +732,8 @@ public:
         return seekoff(off_type(pos), std::ios_base::beg, openMode);
     }
 
-	/// returns the compressed input istream
-	istream_reference get_istream()	{ return serializer.istream;};
+    /// returns the compressed input istream
+    istream_reference get_istream()    { return serializer.istream;};
 };
 
 /* \brief Base class for zip ostreams
@@ -741,17 +741,17 @@ public:
 Contains a basic_bgzf_streambuf.
 */
 template<
-	typename Elem, 
-	typename Tr = std::char_traits<Elem>,
+    typename Elem, 
+    typename Tr = std::char_traits<Elem>,
     typename ElemA = std::allocator<Elem>,
     typename ByteT = char,
     typename ByteAT = std::allocator<ByteT>
->	
+>    
 class basic_bgzf_ostreambase : virtual public std::basic_ios<Elem,Tr>
 {
 public:
-	typedef std::basic_ostream<Elem, Tr>& ostream_reference;
-	typedef basic_bgzf_streambuf<
+    typedef std::basic_ostream<Elem, Tr>& ostream_reference;
+    typedef basic_bgzf_streambuf<
         Elem,
         Tr,
         ElemA,
@@ -759,25 +759,25 @@ public:
         ByteAT
         > bgzf_streambuf_type;
 
-	basic_bgzf_ostreambase(ostream_reference ostream_)
-		: m_buf(ostream_)
-	{
-		this->init(&m_buf );
-	};
-	
-	/// returns the underlying zip ostream object
-	bgzf_streambuf_type* rdbuf() { return &m_buf; };
+    basic_bgzf_ostreambase(ostream_reference ostream_)
+        : m_buf(ostream_)
+    {
+        this->init(&m_buf );
+    };
+    
+    /// returns the underlying zip ostream object
+    bgzf_streambuf_type* rdbuf() { return &m_buf; };
 
-	/// returns the bgzf error state
-	int get_zerr() const					{	return m_buf.get_err();};
-	/// returns the uncompressed data crc
-	long get_crc() const					{	return m_buf.get_crc();};
-	/// returns the compressed data size
-	long get_out_size() const				{	return m_buf.get_out_size();};
-	/// returns the uncompressed data size
-	long get_in_size() const				{	return m_buf.get_in_size();};
+    /// returns the bgzf error state
+    int get_zerr() const                    {    return m_buf.get_err();};
+    /// returns the uncompressed data crc
+    long get_crc() const                    {    return m_buf.get_crc();};
+    /// returns the compressed data size
+    long get_out_size() const                {    return m_buf.get_out_size();};
+    /// returns the uncompressed data size
+    long get_in_size() const                {    return m_buf.get_in_size();};
 private:
-	bgzf_streambuf_type m_buf;
+    bgzf_streambuf_type m_buf;
 };
 
 /* \brief Base class for unzip istreams
@@ -785,8 +785,8 @@ private:
 Contains a basic_unbgzf_streambuf.
 */
 template<
-	typename Elem, 
-	typename Tr = std::char_traits<Elem>,
+    typename Elem, 
+    typename Tr = std::char_traits<Elem>,
     typename ElemA = std::allocator<Elem>,
     typename ByteT = char,
     typename ByteAT = std::allocator<ByteT>
@@ -794,8 +794,8 @@ template<
 class basic_bgzf_istreambase : virtual public std::basic_ios<Elem,Tr>
 {
 public:
-	typedef std::basic_istream<Elem, Tr>& istream_reference;
-	typedef basic_unbgzf_streambuf<
+    typedef std::basic_istream<Elem, Tr>& istream_reference;
+    typedef basic_unbgzf_streambuf<
         Elem,
         Tr,
         ElemA,
@@ -803,25 +803,25 @@ public:
         ByteAT
         > unbgzf_streambuf_type;
 
-	basic_bgzf_istreambase(istream_reference ostream_)
-		: m_buf(ostream_)
-	{
-		this->init(&m_buf );
-	};
-	
-	/// returns the underlying unzip istream object
-	unbgzf_streambuf_type* rdbuf() { return &m_buf; };
+    basic_bgzf_istreambase(istream_reference ostream_)
+        : m_buf(ostream_)
+    {
+        this->init(&m_buf );
+    };
+    
+    /// returns the underlying unzip istream object
+    unbgzf_streambuf_type* rdbuf() { return &m_buf; };
 
-	/// returns the bgzf error state
-	int get_zerr() const					{	return m_buf.get_zerr();};
-	/// returns the uncompressed data crc
-	long get_crc() const					{	return m_buf.get_crc();};
-	/// returns the uncompressed data size
-	long get_out_size() const				{	return m_buf.get_out_size();};
-	/// returns the compressed data size
-	long get_in_size() const				{	return m_buf.get_in_size();};
+    /// returns the bgzf error state
+    int get_zerr() const                    {    return m_buf.get_zerr();};
+    /// returns the uncompressed data crc
+    long get_crc() const                    {    return m_buf.get_crc();};
+    /// returns the uncompressed data size
+    long get_out_size() const                {    return m_buf.get_out_size();};
+    /// returns the compressed data size
+    long get_in_size() const                {    return m_buf.get_in_size();};
 private:
-	unbgzf_streambuf_type m_buf;
+    unbgzf_streambuf_type m_buf;
 };
 
 /*brief A zipper ostream
@@ -840,41 +840,41 @@ ostringstream ostringstream_;
 // creating the zip layer
 bgzf_ostream zipper(ostringstream_);
 
-	
-// writing data	
+    
+// writing data    
 zipper<<f<<" "<<d<<" "<<ui<<" "<<ul<<" "<<us<<" "<<c<<" "<<dum;
 // zip ostream needs special flushing...
 zipper.zflush();
 \endcode
 */
 template<
-	typename Elem, 
-	typename Tr = std::char_traits<Elem>,
+    typename Elem, 
+    typename Tr = std::char_traits<Elem>,
     typename ElemA = std::allocator<Elem>,
     typename ByteT = char,
     typename ByteAT = std::allocator<ByteT>
->	
+>    
 class basic_bgzf_ostream : 
-	public basic_bgzf_ostreambase<Elem,Tr,ElemA,ByteT,ByteAT>, 
-	public std::basic_ostream<Elem,Tr>
+    public basic_bgzf_ostreambase<Elem,Tr,ElemA,ByteT,ByteAT>, 
+    public std::basic_ostream<Elem,Tr>
 {
 public:
-	typedef basic_bgzf_ostreambase<
+    typedef basic_bgzf_ostreambase<
         Elem,Tr,ElemA,ByteT,ByteAT> bgzf_ostreambase_type;
-	typedef std::basic_ostream<Elem,Tr> ostream_type;
+    typedef std::basic_ostream<Elem,Tr> ostream_type;
     typedef ostream_type& ostream_reference;
 
-	basic_bgzf_ostream(ostream_reference ostream_)
-	: 
-		bgzf_ostreambase_type(ostream_),
-		ostream_type(bgzf_ostreambase_type::rdbuf())
-	{}
+    basic_bgzf_ostream(ostream_reference ostream_)
+    : 
+        bgzf_ostreambase_type(ostream_),
+        ostream_type(bgzf_ostreambase_type::rdbuf())
+    {}
 
-	/// flush inner buffer and zipper buffer
-	basic_bgzf_ostream<Elem,Tr>& zflush()	
-	{	
-		this->flush(); this->rdbuf()->flush(); return *this;
-	};
+    /// flush inner buffer and zipper buffer
+    basic_bgzf_ostream<Elem,Tr>& zflush()    
+    {    
+        this->flush(); this->rdbuf()->flush(); return *this;
+    };
 
     ~basic_bgzf_ostream()
     {
@@ -907,44 +907,44 @@ unzipper>>f_r>>d_r>>ui_r>>ul_r>>us_r>>c_r>>dum_r;
 \endcode
 */
 template<
-	typename Elem, 
-	typename Tr = std::char_traits<Elem>,
+    typename Elem, 
+    typename Tr = std::char_traits<Elem>,
     typename ElemA = std::allocator<Elem>,
     typename ByteT = char,
     typename ByteAT = std::allocator<ByteT>
 >
 class basic_bgzf_istream : 
-	public basic_bgzf_istreambase<Elem,Tr,ElemA,ByteT,ByteAT>, 
-	public std::basic_istream<Elem,Tr>
+    public basic_bgzf_istreambase<Elem,Tr,ElemA,ByteT,ByteAT>, 
+    public std::basic_istream<Elem,Tr>
 {
 public:
-	typedef basic_bgzf_istreambase<
+    typedef basic_bgzf_istreambase<
         Elem,Tr,ElemA,ByteT,ByteAT> bgzf_istreambase_type;
-	typedef std::basic_istream<Elem,Tr> istream_type;
+    typedef std::basic_istream<Elem,Tr> istream_type;
     typedef istream_type& istream_reference;
-	typedef char byte_type;
+    typedef char byte_type;
 
-	basic_bgzf_istream(istream_reference istream_)
-	  : 
-		bgzf_istreambase_type(istream_),
-		istream_type(bgzf_istreambase_type::rdbuf()),
-		m_is_gzip(false),
-		m_gbgzf_data_size(0)
-	{};
+    basic_bgzf_istream(istream_reference istream_)
+      : 
+        bgzf_istreambase_type(istream_),
+        istream_type(bgzf_istreambase_type::rdbuf()),
+        m_is_gzip(false),
+        m_gbgzf_data_size(0)
+    {};
 
-	/// returns true if it is a gzip file
-	bool is_gzip() const				{	return m_is_gzip;};
-	/// return data size check
-	bool check_data_size() const		{	return this->get_out_size() == m_gbgzf_data_size;};
+    /// returns true if it is a gzip file
+    bool is_gzip() const                {    return m_is_gzip;};
+    /// return data size check
+    bool check_data_size() const        {    return this->get_out_size() == m_gbgzf_data_size;};
 
-	/// return the data size in the file 
-	long get_gbgzf_data_size() const		{	return m_gbgzf_data_size;};
+    /// return the data size in the file 
+    long get_gbgzf_data_size() const        {    return m_gbgzf_data_size;};
 protected:
     static void read_long(istream_reference in_, unsigned long& x_);
 
-	int check_header();
-	bool m_is_gzip;
-	unsigned long m_gbgzf_data_size;
+    int check_header();
+    bool m_is_gzip;
+    unsigned long m_gbgzf_data_size;
 
 #ifdef _WIN32
 private:

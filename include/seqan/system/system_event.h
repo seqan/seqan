@@ -357,7 +357,7 @@ inline bool signal(Event & e)
     // emulate events in a singlethreaded environment
 
     struct DummyEvent {
-        typedef	void Handle;
+        typedef    void Handle;
         DummyEvent(bool initial = false) {}
         inline bool wait(unsigned timeOut = NULL) { return true; }
         inline void reset() {}

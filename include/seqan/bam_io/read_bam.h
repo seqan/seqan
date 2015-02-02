@@ -58,7 +58,7 @@ typedef Tag<Bam_> Bam;
 template <typename T>
 struct FileExtensions<Bam, T>
 {
-    static char const * VALUE[1];	// default is one extension
+    static char const * VALUE[1];    // default is one extension
 };
 
 template <typename T>

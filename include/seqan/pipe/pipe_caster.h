@@ -41,16 +41,16 @@ namespace SEQAN_NAMESPACE_MAIN
 //namespace SEQAN_NAMESPACE_PIPELINING
 //{
 
-	struct CasterReinterpret;
-	struct CasterConvert;
+    struct CasterReinterpret;
+    struct CasterConvert;
     
     template < typename TValue, typename TSpec = CasterReinterpret >
     struct Caster;
 
-	template < typename TInput, typename TValue, typename TSpec >
+    template < typename TInput, typename TValue, typename TSpec >
     struct Value< Pipe< TInput, Caster<TValue, TSpec> > > {
-		typedef TValue Type;
-	};
+        typedef TValue Type;
+    };
 
 /*!
  * @class Caster
@@ -73,7 +73,7 @@ namespace SEQAN_NAMESPACE_MAIN
     template <typename TInput, typename TValue >
     struct Pipe< TInput, Caster<TValue, CasterReinterpret> >
     {
-		TInput      &in;
+        TInput      &in;
         
         Pipe(TInput& _in):
             in(_in) {}
@@ -86,12 +86,12 @@ namespace SEQAN_NAMESPACE_MAIN
             ++in;
             return *this;
         }
-	};
+    };
     
     template <typename TInput, typename TValue >
     struct Pipe< TInput, Caster<TValue, CasterConvert> >
     {
-		TInput      &in;
+        TInput      &in;
         
         Pipe(TInput& _in):
             in(_in) {}
@@ -104,7 +104,7 @@ namespace SEQAN_NAMESPACE_MAIN
             ++in;
             return *this;
         }
-	};
+    };
 //}
 
 }

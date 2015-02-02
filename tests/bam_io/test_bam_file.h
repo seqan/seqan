@@ -418,26 +418,26 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_sam_file_size)
 
     seqan::BamFileIn bamFile(toCString(filePath));
 
-	SEQAN_ASSERT_EQ((int)position(bamFile), 0);
+    SEQAN_ASSERT_EQ((int)position(bamFile), 0);
 
     seqan::BamHeader header;
     readHeader(header, bamFile);
 
-	SEQAN_ASSERT_EQ((int)position(bamFile), 51);
+    SEQAN_ASSERT_EQ((int)position(bamFile), 51);
 //    SEQAN_ASSERT_EQ(fileSize(bamFile), 226u);
 
     seqan::BamAlignmentRecord record;
     readRecord(record, bamFile);
 
-	SEQAN_ASSERT_EQ((int)position(bamFile), 110);
+    SEQAN_ASSERT_EQ((int)position(bamFile), 110);
 
     readRecord(record, bamFile);
 
-	SEQAN_ASSERT_EQ((int)position(bamFile), 169);
+    SEQAN_ASSERT_EQ((int)position(bamFile), 169);
 
     readRecord(record, bamFile);
 
-	SEQAN_ASSERT_EQ((int)position(bamFile), 226);
+    SEQAN_ASSERT_EQ((int)position(bamFile), 226);
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_size)
@@ -453,20 +453,20 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_size)
     readHeader(header, bamFile);
 
 //    SEQAN_ASSERT_EQ(fileSize(bamFile), 181u);
-	SEQAN_ASSERT_EQ((int)position(bamFile), 0x0051);
+    SEQAN_ASSERT_EQ((int)position(bamFile), 0x0051);
 
     seqan::BamAlignmentRecord record;
     readRecord(record, bamFile);
 
-	SEQAN_ASSERT_EQ((int)position(bamFile), 0x0096);  // [block begin in bam file] << 16 + [local offset]
+    SEQAN_ASSERT_EQ((int)position(bamFile), 0x0096);  // [block begin in bam file] << 16 + [local offset]
 
     readRecord(record, bamFile);
 
-	SEQAN_ASSERT_EQ((int)position(bamFile), 0x00db);
+    SEQAN_ASSERT_EQ((int)position(bamFile), 0x00db);
 
     readRecord(record, bamFile);
 
-	SEQAN_ASSERT_EQ((int)position(bamFile), 0x0120);
+    SEQAN_ASSERT_EQ((int)position(bamFile), 0x0120);
 }
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)

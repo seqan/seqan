@@ -693,7 +693,7 @@ inline bool
 operator==(ModifiedString<THost, TSpec> const & left, 
            TRight const & right)
 {
-	typename Comparator<ModifiedString<THost, TSpec> >::Type _lex(left, right);
+    typename Comparator<ModifiedString<THost, TSpec> >::Type _lex(left, right);
     return isEqual(_lex);
 }
 
@@ -702,7 +702,7 @@ inline bool
 operator==(TLeftValue * left,
            ModifiedString<THost, TSpec> const & right)
 {
-	typename Comparator<ModifiedString<THost, TSpec> >::Type _lex(left, right);
+    typename Comparator<ModifiedString<THost, TSpec> >::Type _lex(left, right);
     return isEqual(_lex);
 }
 
@@ -715,7 +715,7 @@ inline bool
 operator!=(ModifiedString<THost, TSpec> const & left, 
            TRight const & right)
 {
-	typename Comparator<ModifiedString<THost, TSpec> >::Type _lex(left, right);
+    typename Comparator<ModifiedString<THost, TSpec> >::Type _lex(left, right);
     return isNotEqual(_lex);
 }
 
@@ -724,7 +724,7 @@ inline bool
 operator!= (TLeftValue * left,
             ModifiedString<THost, TSpec> const & right)
 {
-	typename Comparator<ModifiedString<THost, TSpec> >::Type _lex(left, right);
+    typename Comparator<ModifiedString<THost, TSpec> >::Type _lex(left, right);
     return isNotEqual(_lex);
 }
 
@@ -737,7 +737,7 @@ inline bool
 operator<(ModifiedString<THost, TSpec> const & left, 
           TRight const & right)
 {
-	return isLess(left, right, typename DefaultPrefixOrder<ModifiedString<THost, TSpec> >::Type());
+    return isLess(left, right, typename DefaultPrefixOrder<ModifiedString<THost, TSpec> >::Type());
 }
 
 template <typename TLeftValue, typename THost, typename TSpec >
@@ -745,7 +745,7 @@ inline bool
 operator<(TLeftValue * left,
           ModifiedString<THost, TSpec> const & right)
 {
-	return isLess(left, right, typename DefaultPrefixOrder<TLeftValue *>::Type());
+    return isLess(left, right, typename DefaultPrefixOrder<TLeftValue *>::Type());
 }
 
 // --------------------------------------------------------------------------
@@ -757,7 +757,7 @@ inline bool
 operator<=(ModifiedString<THost, TSpec> const & left, 
            TRight const & right)
 {
-	return isLessOrEqual(left, right, typename DefaultPrefixOrder<ModifiedString<THost, TSpec> >::Type());
+    return isLessOrEqual(left, right, typename DefaultPrefixOrder<ModifiedString<THost, TSpec> >::Type());
 }
 
 template <typename TLeftValue, typename THost, typename TSpec >
@@ -765,7 +765,7 @@ inline bool
 operator<=(TLeftValue * left,
            ModifiedString<THost, TSpec> const & right)
 {
-	return isLessOrEqual(left, right, typename DefaultPrefixOrder<TLeftValue *>::Type());
+    return isLessOrEqual(left, right, typename DefaultPrefixOrder<TLeftValue *>::Type());
 }
 
 // --------------------------------------------------------------------------
@@ -777,7 +777,7 @@ inline bool
 operator>(ModifiedString<THost, TSpec> const & left, 
           TRight const & right)
 {
-	return isGreater(left, right, typename DefaultPrefixOrder<ModifiedString<THost, TSpec> >::Type());
+    return isGreater(left, right, typename DefaultPrefixOrder<ModifiedString<THost, TSpec> >::Type());
 }
 
 template <typename TLeftValue, typename THost, typename TSpec >
@@ -785,7 +785,7 @@ inline bool
 operator>(TLeftValue * left,
           ModifiedString<THost, TSpec> const & right)
 {
-	return isGreater(left, right, typename DefaultPrefixOrder<TLeftValue *>::Type());
+    return isGreater(left, right, typename DefaultPrefixOrder<TLeftValue *>::Type());
 }
 
 // --------------------------------------------------------------------------
@@ -797,7 +797,7 @@ inline bool
 operator>=(ModifiedString<THost, TSpec> const & left, 
            TRight const & right)
 {
-	return isGreaterOrEqual(left, right, typename DefaultPrefixOrder<ModifiedString<THost, TSpec> >::Type());
+    return isGreaterOrEqual(left, right, typename DefaultPrefixOrder<ModifiedString<THost, TSpec> >::Type());
 }
 
 template <typename TLeftValue, typename THost, typename TSpec >
@@ -805,7 +805,7 @@ inline bool
 operator>=(TLeftValue * left,
            ModifiedString<THost, TSpec> const & right)
 {
-	return isGreaterOrEqual(left, right, typename DefaultPrefixOrder<TLeftValue *>::Type());
+    return isGreaterOrEqual(left, right, typename DefaultPrefixOrder<TLeftValue *>::Type());
 }
 
 // --------------------------------------------------------------------------

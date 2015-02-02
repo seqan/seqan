@@ -118,7 +118,7 @@ public:
     }
 
     template <typename TString>
-	String(TString const & other) : _length(0)
+    String(TString const & other) : _length(0)
     {
         SEQAN_CHECKPOINT;
         assign(*this, other);
@@ -663,8 +663,8 @@ erase(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journal
       TEndPos posEnd)
 {
     SEQAN_CHECKPOINT;
-	SEQAN_ASSERT_GEQ(static_cast<TBeginPos>(journaledString._length), pos);
-	SEQAN_ASSERT_GEQ(static_cast<TEndPos>(journaledString._length), posEnd);
+    SEQAN_ASSERT_GEQ(static_cast<TBeginPos>(journaledString._length), pos);
+    SEQAN_ASSERT_GEQ(static_cast<TEndPos>(journaledString._length), posEnd);
     SEQAN_ASSERT_GEQ(static_cast<TBeginPos>(journaledString._length), static_cast<TBeginPos>(posEnd - pos));
     journaledString._length -= posEnd - pos;
     recordErase(journaledString._journalEntries, pos, posEnd);
@@ -1092,48 +1092,48 @@ template <typename TValue, typename THostSpec, typename TJournalSpec, typename T
 inline bool
 isFlat(String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > & journaledString)
 {
-	SEQAN_CHECKPOINT;
-	typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
-	typedef typename JournalType<TJournalString>::Type TJournalEntries;
-	typedef typename Iterator<TJournalEntries const, Standard>::Type TIteraror;
+    SEQAN_CHECKPOINT;
+    typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
+    typedef typename JournalType<TJournalString>::Type TJournalEntries;
+    typedef typename Iterator<TJournalEntries const, Standard>::Type TIteraror;
 
-	TIteraror it = begin(journaledString._journalEntries);
-	if ((*it).segmentSource == SOURCE_ORIGINAL)
-	{
-		if (((*it).physicalPosition == (*it).virtualPosition) && ((*it).length == length(host(journaledString))))
-		{
-			return true;
-		}
-	}
-	return false;
+    TIteraror it = begin(journaledString._journalEntries);
+    if ((*it).segmentSource == SOURCE_ORIGINAL)
+    {
+        if (((*it).physicalPosition == (*it).virtualPosition) && ((*it).length == length(host(journaledString))))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
 inline bool
 isFlat(String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > const & journaledString)
 {
-	SEQAN_CHECKPOINT;
-	typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
-	typedef typename JournalType<TJournalString>::Type TJournalEntries;
-	typedef typename Iterator<TJournalEntries const, Standard>::Type TIteraror;
+    SEQAN_CHECKPOINT;
+    typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > TJournalString;
+    typedef typename JournalType<TJournalString>::Type TJournalEntries;
+    typedef typename Iterator<TJournalEntries const, Standard>::Type TIteraror;
 
-	TIteraror it = begin(journaledString._journalEntries);
-	if ((*it).segmentSource == SOURCE_ORIGINAL)
-	{
-		if (((*it).physicalPosition == (*it).virtualPosition) && ((*it).length == length(host(journaledString))))
-		{
-			return true;
-		}
-	}
-	return false;
+    TIteraror it = begin(journaledString._journalEntries);
+    if ((*it).segmentSource == SOURCE_ORIGINAL)
+    {
+        if (((*it).physicalPosition == (*it).virtualPosition) && ((*it).length == length(host(journaledString))))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 // template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBuffSpec>
 // void
 // _deallocateStorage(String<TValue, Journaled<THostSpec, TJournalSpec, TBuffSpec> > & string,
-//				   size_t const & newCapacity)
+//                   size_t const & newCapacity)
 // {
-//	std::cout << "Now he is here but does not actually delete the contents." << std::endl;
+//    std::cout << "Now he is here but does not actually delete the contents." << std::endl;
 // }
 
 }  // namespace seqan

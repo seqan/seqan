@@ -37,116 +37,116 @@
 
 namespace SEQAN_NAMESPACE_MAIN
 {
-	
-	template <
-		class LCPFwdIt,		// lcp table input iterator
-		class FlatOutIt >	// flat tree output iterator
-	inline FlatOutIt createLcpBinTree(
-		LCPFwdIt First_, LCPFwdIt _Last,
-		FlatOutIt Dest_)
-	{
+    
+    template <
+        class LCPFwdIt,        // lcp table input iterator
+        class FlatOutIt >    // flat tree output iterator
+    inline FlatOutIt createLcpBinTree(
+        LCPFwdIt First_, LCPFwdIt _Last,
+        FlatOutIt Dest_)
+    {
         typedef typename Value<LCPFwdIt>::Type  TValue;
         typedef typename Size<LCPFwdIt>::Type   TSize;
 
         TSize size = difference(First_, _Last);
         if (size <= 1) return Dest_;
-		--size;
+        --size;
 
         // calculate the depth of the lcp tree
-		unsigned treeLevels = 1;
-		TSize _xSize = 1;
-		for(; size > _xSize; _xSize *= 2, ++treeLevels) ;
-	
-		// get output iterators for every level in the flat tree
-		FlatOutIt *level = new FlatOutIt[treeLevels];
-		for(unsigned i = treeLevels - 1; _xSize; --i, _xSize /= 2) {
-			level[i] = Dest_;
-			goFurther(Dest_, (size + _xSize - 1) / _xSize);
-		}
+        unsigned treeLevels = 1;
+        TSize _xSize = 1;
+        for(; size > _xSize; _xSize *= 2, ++treeLevels) ;
+    
+        // get output iterators for every level in the flat tree
+        FlatOutIt *level = new FlatOutIt[treeLevels];
+        for(unsigned i = treeLevels - 1; _xSize; --i, _xSize /= 2) {
+            level[i] = Dest_;
+            goFurther(Dest_, (size + _xSize - 1) / _xSize);
+        }
 
-		// fields to keep track of minimum elements and state
-		TValue *minVal = new TValue[treeLevels];
-		bool *half = new bool[treeLevels];
-		for(unsigned i = 0; i < treeLevels; ++i)
-			half[i] = false;
+        // fields to keep track of minimum elements and state
+        TValue *minVal = new TValue[treeLevels];
+        bool *half = new bool[treeLevels];
+        for(unsigned i = 0; i < treeLevels; ++i)
+            half[i] = false;
 
-		// it works like a binary counter of half[n]...half[1]half[0]
-		for(TSize j = 0; j < size; ++j, ++First_) {
-			*(level[0]) = minVal[0] = *First_;
-			++(level[0]);
-			for(unsigned i = 1; i < treeLevels; ++i) {
-				if (half[i]) {
-					if (minVal[i-1] < minVal[i]) minVal[i] = minVal[i-1];
-					*(level[i]) = minVal[i];	// min[i] is the minimum of last 2 values in min[i-1]
-					++(level[i]);
-					half[i] = false;
-				} else {
-					minVal[i] = minVal[i-1];
-					half[i] = true;
-					break;
-				}
-			}
-		}
+        // it works like a binary counter of half[n]...half[1]half[0]
+        for(TSize j = 0; j < size; ++j, ++First_) {
+            *(level[0]) = minVal[0] = *First_;
+            ++(level[0]);
+            for(unsigned i = 1; i < treeLevels; ++i) {
+                if (half[i]) {
+                    if (minVal[i-1] < minVal[i]) minVal[i] = minVal[i-1];
+                    *(level[i]) = minVal[i];    // min[i] is the minimum of last 2 values in min[i-1]
+                    ++(level[i]);
+                    half[i] = false;
+                } else {
+                    minVal[i] = minVal[i-1];
+                    half[i] = true;
+                    break;
+                }
+            }
+        }
 
-		// complete half filled nodes
-		bool carry = false;
-		for(unsigned i = 1; i < treeLevels; ++i)
-			if (half[i] || carry) {
-				if (half[i]) {
-					if (minVal[i-1] < minVal[i]) minVal[i] = minVal[i-1];
-				} else
-					minVal[i] = minVal[i-1];
-				*(level[i]) = minVal[i];
-				++(level[i]);
-				carry = true;
-			}
+        // complete half filled nodes
+        bool carry = false;
+        for(unsigned i = 1; i < treeLevels; ++i)
+            if (half[i] || carry) {
+                if (half[i]) {
+                    if (minVal[i-1] < minVal[i]) minVal[i] = minVal[i-1];
+                } else
+                    minVal[i] = minVal[i-1];
+                *(level[i]) = minVal[i];
+                ++(level[i]);
+                carry = true;
+            }
 
-		// trailing zero
-		*Dest_ = 0;
-		++Dest_;
+        // trailing zero
+        *Dest_ = 0;
+        ++Dest_;
 
-		delete[] half;
-		delete[] minVal;
-		delete[] level;
+        delete[] half;
+        delete[] minVal;
+        delete[] level;
 
-		return Dest_;
+        return Dest_;
     }
 
 
 
-	template < typename TSize >
-	inline TSize sizeofLcpe(TSize n)
-	{
-		if (n < 2) return n;	// 0 -> 0, 1 -> 1, 2 -> 2, 3 -> 4
-		--n;
-		TSize size = 2;
-		for(TSize _xSize = 1; _xSize < n; _xSize *= 2)
-			size += (n + _xSize - 1) / _xSize;
-		return size;
-	}
+    template < typename TSize >
+    inline TSize sizeofLcpe(TSize n)
+    {
+        if (n < 2) return n;    // 0 -> 0, 1 -> 1, 2 -> 2, 3 -> 4
+        --n;
+        TSize size = 2;
+        for(TSize _xSize = 1; _xSize < n; _xSize *= 2)
+            size += (n + _xSize - 1) / _xSize;
+        return size;
+    }
 
-	template < typename TSize >
-	inline TSize sizeofLcph(TSize n)
-	{
-		return sizeofLcpe(n);
-	}
+    template < typename TSize >
+    inline TSize sizeofLcph(TSize n)
+    {
+        return sizeofLcpe(n);
+    }
 
-	template <
-		class LCPFwdIt,		// lcp table input iterator
-		typename TSize >
-	inline void sizeofLcpe(LCPFwdIt First_, LCPFwdIt _Last, TSize &Size_)
-	{
-		Size_ = sizeofLcpe(difference(First_, _Last));
-	}
+    template <
+        class LCPFwdIt,        // lcp table input iterator
+        typename TSize >
+    inline void sizeofLcpe(LCPFwdIt First_, LCPFwdIt _Last, TSize &Size_)
+    {
+        Size_ = sizeofLcpe(difference(First_, _Last));
+    }
 
-	template <
-		class LCPFwdIt,		// lcp table input iterator
-		typename TSize >
-	inline void sizeofLcph(LCPFwdIt First_, LCPFwdIt _Last, TSize &Size_)
-	{
-		sizeofLcpe(First_, _Last, Size_);
-		return;
-	}
+    template <
+        class LCPFwdIt,        // lcp table input iterator
+        typename TSize >
+    inline void sizeofLcph(LCPFwdIt First_, LCPFwdIt _Last, TSize &Size_)
+    {
+        sizeofLcpe(First_, _Last, Size_);
+        return;
+    }
 
 
     template < typename TLCPE, typename TLCP >
@@ -155,13 +155,13 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
 
-	template < typename TSize >
+    template < typename TSize >
     inline unsigned _treeLevels(TSize lcpSize)
-	{
-		unsigned treeLevels = 1;
-		--lcpSize;
-		TSize _xSize = 1;
-		for (; lcpSize > _xSize; _xSize *= 2, ++treeLevels)
+    {
+        unsigned treeLevels = 1;
+        --lcpSize;
+        TSize _xSize = 1;
+        for (; lcpSize > _xSize; _xSize *= 2, ++treeLevels)
             continue;  // Get smallest 2^k that is <= lcpSize.
         return treeLevels;
     }

@@ -39,73 +39,73 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
-	//////////////////////////////////////////////////////////////////////////////
-	// In SeqAn sets and maps store elements as pairs of (key,object) 
-	// the elements of sets without objects are the keys.
-	//////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    // In SeqAn sets and maps store elements as pairs of (key,object) 
+    // the elements of sets without objects are the keys.
+    //////////////////////////////////////////////////////////////////////////////
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Key/Object meta-functions
-	//////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    // Key/Object meta-functions
+    //////////////////////////////////////////////////////////////////////////////
 
 /* moved to basic_h, see #6
-	template <typename TElement>
-	struct Key {
-		typedef TElement Type;
-	};
+    template <typename TElement>
+    struct Key {
+        typedef TElement Type;
+    };
 */
 /* moved to basic_aggregates
-	template <typename TKey, typename TObject, typename TSpec>
-	struct Key< Pair<TKey, TObject, TSpec> > 
-	{
-		typedef TKey Type;
-	};
+    template <typename TKey, typename TObject, typename TSpec>
+    struct Key< Pair<TKey, TObject, TSpec> > 
+    {
+        typedef TKey Type;
+    };
 */
 
 //////////////////////////////////////////////////////////////////////////////
 
-	template <typename TElement>
-	struct Object {
-		typedef Nothing Type;
-	};
+    template <typename TElement>
+    struct Object {
+        typedef Nothing Type;
+    };
 
-	template <typename TKey, typename TObject, typename TSpec>
-	struct Object< Pair<TKey, TObject, TSpec> > {
-		typedef TObject Type;
-	};
+    template <typename TKey, typename TObject, typename TSpec>
+    struct Object< Pair<TKey, TObject, TSpec> > {
+        typedef TObject Type;
+    };
 
 
-	//////////////////////////////////////////////////////////////////////////////
-	// keyOf function
-	//////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    // keyOf function
+    //////////////////////////////////////////////////////////////////////////////
 
-	template <typename TElement>
-	inline typename Key<TElement const>::Type & 
-	keyOf(TElement const & element) 
-	{
-		return element;
-	}
+    template <typename TElement>
+    inline typename Key<TElement const>::Type & 
+    keyOf(TElement const & element) 
+    {
+        return element;
+    }
 
-	template <typename TKey, typename TObject, typename TSpec>
-	inline TKey const &
-	keyOf(Pair<TKey, TObject, TSpec> const &element) {
-		return element.i1;
-	}
+    template <typename TKey, typename TObject, typename TSpec>
+    inline TKey const &
+    keyOf(Pair<TKey, TObject, TSpec> const &element) {
+        return element.i1;
+    }
 
-	//////////////////////////////////////////////////////////////////////////////
-	// objectOf
-	//////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    // objectOf
+    //////////////////////////////////////////////////////////////////////////////
 
-	template <typename TKey, typename TObject, typename TSpec>
-	inline TObject & 
-	objectOf(Pair<TKey, TObject, TSpec> &element) {
-		return element.i2;
-	}
-	template <typename TKey, typename TObject, typename TSpec>
-	inline TObject const &
-	objectOf(Pair<TKey, TObject, TSpec> const &element) {
-		return element.i2;
-	}
+    template <typename TKey, typename TObject, typename TSpec>
+    inline TObject & 
+    objectOf(Pair<TKey, TObject, TSpec> &element) {
+        return element.i2;
+    }
+    template <typename TKey, typename TObject, typename TSpec>
+    inline TObject const &
+    objectOf(Pair<TKey, TObject, TSpec> const &element) {
+        return element.i2;
+    }
 
 }
 
