@@ -321,7 +321,7 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
             if (DEBUG_INCONSISTENT_LEN)
                 std::cerr << "READ GAPS\t" << (it2 - begin(store.alignedReadStore, Standard())) << "\t>>>" << readGaps << "<<< (" << length(readGaps) << ")\n"
                           << "  beginPos == " << it2->beginPos << ", endPos == " << it2->endPos << ", gapCount == " << gapCount[it2->readId] << "\n";
-            if ((unsigned)abs(it2->endPos - it2->beginPos) != length(readGaps))
+            if ((unsigned)std::abs(it2->endPos - it2->beginPos) != length(readGaps))
             {
                 SEQAN_FAIL("Inconsistent begin/endPos");
             }

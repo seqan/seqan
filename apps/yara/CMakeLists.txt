@@ -74,6 +74,18 @@ if (YARA_ARCH_NATIVE)
 endif (YARA_ARCH_NATIVE)
 
 # ----------------------------------------------------------------------------
+# Disable Compiler Warnings
+# ----------------------------------------------------------------------------
+
+# Disables warning about conversion from 64 bit to 32 bit integrals.
+# Note that there is a runtime exception thrown if the type is not sufficient.
+# Unfortunately the VC does not detect it.
+if (MSVC)
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /wd4244")  # When compiling on 32 bit windows.
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /wd4267")  # When compiling on 64 bit windows.
+endif (MSVC)
+
+# ----------------------------------------------------------------------------
 # Build Setup
 # ----------------------------------------------------------------------------
 

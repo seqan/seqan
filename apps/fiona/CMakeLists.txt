@@ -25,6 +25,11 @@ if (NOT Boost_FOUND OR NOT OpenMP_FLAG_DETECTED)
     return ()
 endif ()
 
+if (MSVC)
+    message (STATUS "  Not building fiona under Visual Studio.")
+    return ()
+endif()
+
 # ----------------------------------------------------------------------------
 # Build Setup
 # ----------------------------------------------------------------------------

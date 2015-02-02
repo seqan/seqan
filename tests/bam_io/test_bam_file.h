@@ -471,6 +471,8 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_size)
 
 SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
 {
+    typedef seqan::Position<seqan::BamFileIn>::Type TPosition;
+
     std::string filePath = (std::string)SEQAN_PATH_TO_ROOT() + "/apps/ngs_roi/example/example.bam";
 
     seqan::BamFileIn bamFile(filePath.c_str());
@@ -480,14 +482,14 @@ SEQAN_DEFINE_TEST(test_bam_io_bam_file_bam_file_seek)
     seqan::BamHeader header;
     readHeader(header, bamFile);
 
-    seqan::String<seqan::Pair<off_t, int> > recs;
+    seqan::String<seqan::Pair<TPosition, int> > recs;
 
     seqan::BamAlignmentRecord record;
     while (!atEnd(bamFile))
     {
-        off_t ofs = position(bamFile);
+        TPosition ofs = position(bamFile);
         readRecord(record, bamFile);
-        appendValue(recs, seqan::Pair<off_t, int>(ofs, record.beginPos));
+        appendValue(recs, seqan::Pair<TPosition, int>(ofs, record.beginPos));
     }
 
     for (size_t j = 0; j < length(recs); ++j)
