@@ -180,7 +180,7 @@ struct Value<StringSet<THost, Segment<TSpec> > >
 template <typename THost, typename TSpec>
 struct Value<StringSet<THost, Segment<TSpec> > const>
     : Infix<THost const> {};
-    
+
 // --------------------------------------------------------------------------
 // Metafunction GetValue
 // --------------------------------------------------------------------------

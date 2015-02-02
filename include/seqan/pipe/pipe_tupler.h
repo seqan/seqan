@@ -52,12 +52,12 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-    template < 
-        typename TInput, 
-        unsigned SIZE, 
-        bool omitLast, 
+    template <
+        typename TInput,
+        unsigned SIZE,
+        bool omitLast,
         typename TPack,
-        typename TPair, 
+        typename TPair,
         typename TLimitsString >
     struct Value< Pipe< TInput, Multi< Tupler<SIZE, omitLast, TPack>, TPair, TLimitsString > > >
     {
@@ -124,21 +124,21 @@ namespace SEQAN_NAMESPACE_MAIN
  * @class Tupler
  * @extends Pipe
  * @headerfile <seqan/pipe.h>
- * 
+ *
  * @brief Outputs tuples of the <tt>SIZE</tt> consecutive elements of the input stream.
  *
  * @signature template <typename TInput, unsigned TUPLE_LEN, bool OMIT_LAST>
  *            class Pipe<TInput, Tupler<TUPLE_LEN, OMIT_LAST> >;
- * 
+ *
  * @tparam TInput    The type of the pipeline module this module reads from.
  * @tparam TUPLE_LEN The tuple length.The tuples contain elements <tt>in[i]in[i+1]...in[i+(SIZE-1)]</tt>.
  * @tparam OMIT_LAST Omit half filled tuples.  If <tt>true</tt>, the output stream is <tt>SIZE-1</tt> elements
  *                   shorter than the input stream.  If <tt>false</tt>, the lengths are identical and the last tuples
  *                   are filled with blanks (default constructed elements) for undefined entries.
- * 
+ *
  * The output type is a @link Tuple @endlink of input elements and length
  * <tt>SIZE</tt> (i.e. <tt>Tuple&lt;Value&lt;TInput&gt;::Type, TUPLE_LEN&gt;</tt>).
- * 
+ *
  * The tuples are sequences of the form
  * <tt>in[i]in[i-1]in[i-2]..in[i-SIZE+1]</tt>. For <tt>omitLast=false</tt>
  * <tt>i</tt> begins with 0 and for <tt>omitLast=true</tt> <tt>i</tt> begins
@@ -215,7 +215,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //____________________________________________________________________________
 
 
-    template < 
+    template <
         typename TInput,
         unsigned SIZE,
         bool omitLast,
@@ -235,7 +235,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename Size<TInput>::Type    seqLength, lastTuples;
 
         TLimitsString const &limits;
-        
+
         template <typename TLimitsString_>
         Pipe(TInput& _in, TLimitsString_ &_limits):  // const &_limits is intentionally omitted to suppress implicit casts (if types mismatch) and taking refs of them
             in(_in),
@@ -325,7 +325,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 assignValueI1(tmp.i1, getValueI1(value(localPos)));
                 unsigned charsRead = _tryFill(static_cast<TPack*>(NULL));
                 lastTuples = TuplerNumberOfLastTuples_<SIZE, omitLast>::VALUE;
-                
+
                 // eventually, reduce the number of half-filled tuples
                 if (lastTuples <= SIZE - charsRead)
                     lastTuples = 0;
@@ -345,27 +345,27 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
     // global pipe functions
     template < typename TInput, unsigned SIZE, bool omitLast, typename TPack >
-    inline bool 
+    inline bool
     control(
-        Pipe< TInput, Tupler<SIZE, omitLast, TPack> > &me, 
-        ControlBeginRead const &command) 
+        Pipe< TInput, Tupler<SIZE, omitLast, TPack> > &me,
+        ControlBeginRead const &command)
     {
         if (!control(me.in, command)) return false;
         me.fill();
         return true;
     }
-    
-    template < 
+
+    template <
         typename TInput,
         unsigned SIZE,
         bool omitLast,
         typename TPack,
-        typename TPair, 
+        typename TPair,
         typename TLimitsString >
-    inline bool 
+    inline bool
     control(
-        Pipe< TInput, Multi<Tupler<SIZE, omitLast, TPack>, TPair, TLimitsString> > &me, 
-        ControlBeginRead const &command) 
+        Pipe< TInput, Multi<Tupler<SIZE, omitLast, TPack>, TPair, TLimitsString> > &me,
+        ControlBeginRead const &command)
     {
         if (!control(me.in, command)) return false;
         setHost(me.localPos, me.limits);
@@ -373,58 +373,58 @@ namespace SEQAN_NAMESPACE_MAIN
         me.fill();
         return true;
     }
-    
+
     template < typename TInput, unsigned SIZE, bool omitLast, typename TPack >
-    inline bool 
+    inline bool
     control(
-        Pipe< TInput, Tupler<SIZE, omitLast, TPack> > &me, 
+        Pipe< TInput, Tupler<SIZE, omitLast, TPack> > &me,
         ControlEof const &)
     {
         return me.lastTuples == 0;
     }
 
-    template < 
+    template <
         typename TInput,
         unsigned SIZE,
         bool omitLast,
         typename TPack,
-        typename TPair, 
+        typename TPair,
         typename TLimitsString >
-    inline bool 
+    inline bool
     control(
-        Pipe< TInput, Multi<Tupler<SIZE, omitLast, TPack>, TPair, TLimitsString> > &me, 
-        ControlEof const &) 
+        Pipe< TInput, Multi<Tupler<SIZE, omitLast, TPack>, TPair, TLimitsString> > &me,
+        ControlEof const &)
     {
         return me.lastTuples == 0;
     }
 
     template < typename TInput, unsigned SIZE, bool omitLast, typename TPack >
-    inline bool 
+    inline bool
     control(
-        Pipe< TInput, Tupler<SIZE, omitLast, TPack> > &me, 
-        ControlEos const &) 
+        Pipe< TInput, Tupler<SIZE, omitLast, TPack> > &me,
+        ControlEos const &)
     {
         return control(me, ControlEof());
     }
 
-    template < 
+    template <
         typename TInput,
         unsigned SIZE,
         bool omitLast,
         typename TPack,
-        typename TPair, 
+        typename TPair,
         typename TLimitsString >
-    inline bool 
+    inline bool
     control(
-        Pipe< TInput, Multi<Tupler<SIZE, omitLast, TPack>, TPair, TLimitsString> > &me, 
-        ControlEos const &) 
+        Pipe< TInput, Multi<Tupler<SIZE, omitLast, TPack>, TPair, TLimitsString> > &me,
+        ControlEos const &)
     {
         return (getValueI1(me.tmp.i1) > 0) && (getValueI2(me.tmp.i1) == 0);
     }
 
     template < typename TInput, unsigned SIZE, bool omitLast, typename TPack >
     inline typename Size< Pipe< TInput, Tupler<SIZE, omitLast, TPack> > >::Type
-    length(Pipe< TInput, Tupler<SIZE, omitLast, TPack> > const &me) 
+    length(Pipe< TInput, Tupler<SIZE, omitLast, TPack> > const &me)
     {
         if (length(me.in) > (SIZE - TuplerNumberOfLastTuples_<SIZE, omitLast>::VALUE))
             return length(me.in) - (SIZE - TuplerNumberOfLastTuples_<SIZE, omitLast>::VALUE);
@@ -432,12 +432,12 @@ namespace SEQAN_NAMESPACE_MAIN
             return 0;
     }
 
-    template < 
+    template <
         typename TInput,
         unsigned SIZE,
         bool omitLast,
         typename TPack,
-        typename TPair, 
+        typename TPair,
         typename TLimitsString >
     inline typename Size<Pipe<TInput, Multi<Tupler<SIZE, omitLast, TPack>, TPair, TLimitsString> > >::Type
     length(Pipe<TInput, Multi<Tupler<SIZE, omitLast, TPack>, TPair, TLimitsString> > const &me)
@@ -464,12 +464,12 @@ namespace SEQAN_NAMESPACE_MAIN
         return 1;
     }
 
-    template < 
+    template <
         typename TInput,
         unsigned SIZE,
         bool omitLast,
         typename TPack,
-        typename TPair, 
+        typename TPair,
         typename TLimitsString >
     inline unsigned
     countSequences(Pipe< TInput, Multi<Tupler<SIZE, omitLast, TPack>, TPair, TLimitsString> > const &me)

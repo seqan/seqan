@@ -40,8 +40,8 @@
 /* IOREV
  * _tested_
  * _nodoc_
- * 
- * 
+ *
+ *
  * Tested by tests/file
  * documentation non-existent
  * relation to cstream.h not clear
@@ -90,8 +90,8 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
 
-    inline const char * 
-    _getCStyleOpenMode(int openMode) 
+    inline const char *
+    _getCStyleOpenMode(int openMode)
     {
 //IOREV double check whether this translates FileOpenMode correctly (doesnt look like it)
         switch (openMode & OPEN_MASK) {
@@ -116,70 +116,70 @@ namespace SEQAN_NAMESPACE_MAIN
         }
     }
 
-    inline bool 
-    open(FILE* &me, const char *fileName, int openMode) 
+    inline bool
+    open(FILE* &me, const char *fileName, int openMode)
     {
 //IOREV _duplicate_ of cstream.h's  "open"
         SEQAN_PROADD(SEQAN_PROOPENFILES, 1);
         return (me = fopen(fileName, _getCStyleOpenMode(openMode))) != NULL;
     }
 
-    inline bool 
-    open(FILE* &me, const char *fileName) 
+    inline bool
+    open(FILE* &me, const char *fileName)
     {
 //IOREV _duplicate_ of cstream.h's  "open"
         return open(me, fileName, DefaultOpenMode<FILE*>::VALUE);
     }
 
-    inline bool 
-    openTemp(FILE* &me) 
+    inline bool
+    openTemp(FILE* &me)
     {
 //IOREV
         SEQAN_PROSUB(SEQAN_PROOPENFILES, 1);
         return (me = tmpfile()) != NULL;
     }
 
-    inline bool 
-    close(FILE* me) 
+    inline bool
+    close(FILE* me)
     {
 //IOREV _duplicate_ of cstream.h's  "close"
         SEQAN_PROSUB(SEQAN_PROOPENFILES, 1);
         return fclose(me) == 0;
     }
 
-    inline unsigned 
-    sectorSize(FILE* const &) 
+    inline unsigned
+    sectorSize(FILE* const &)
     {
 //IOREV _duplicate_ _nodoc_ duplicate or identical spec. in file_base.h should'nt this be variable
         return 4096;
     }
 
     template < typename TPos >
-    inline Size<FILE*>::Type 
-    seek(FILE* me, TPos const fileOfs, int origin) 
+    inline Size<FILE*>::Type
+    seek(FILE* me, TPos const fileOfs, int origin)
     {
 //IOREV _duplicate_ overlaps in function with multiple function in cstream.h
         fseek(me, fileOfs, origin);
         return ftell(me);
     }
     template < typename TPos >
-    inline Size<FILE*>::Type 
-    seek(FILE* me, TPos const fileOfs) 
+    inline Size<FILE*>::Type
+    seek(FILE* me, TPos const fileOfs)
     {
 //IOREV shouldnt it be SEEK_SET instead of SEEK_BEGIN?
         return seek(me, fileOfs, SEEK_BEGIN);
     }
 
-    inline Size<FILE*>::Type 
-    tell(FILE* me) 
+    inline Size<FILE*>::Type
+    tell(FILE* me)
     {
 //IOREV _duplicate_ overlaps in function with multiple functions in cstream.h
         return ftell(me);
     }
 
     template < typename TValue, typename TSize >
-    inline bool 
-    read(FILE* me, TValue *memPtr, TSize const count) 
+    inline bool
+    read(FILE* me, TValue *memPtr, TSize const count)
     {
 //IOREV _duplicate_ of cstream.h's  "read"
         SEQAN_PROADD(SEQAN_PROIO, (sizeof(TValue) * count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
@@ -190,8 +190,8 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template < typename TValue, typename TSize >
-    inline bool 
-    write(FILE* me, TValue const *memPtr, TSize const count) 
+    inline bool
+    write(FILE* me, TValue const *memPtr, TSize const count)
     {
 //IOREV
         SEQAN_PROADD(SEQAN_PROIO, (sizeof(TValue) * count + SEQAN_PROPAGESIZE - 1) / SEQAN_PROPAGESIZE);
@@ -202,8 +202,8 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template < typename TValue, typename TSize, typename TPos >
-    inline bool 
-    readAt(FILE* me, TValue *memPtr, TSize const count, TPos const fileOfs) 
+    inline bool
+    readAt(FILE* me, TValue *memPtr, TSize const count, TPos const fileOfs)
     {
 //IOREV
         typedef typename Position<FILE*>::Type pos_t;
@@ -214,10 +214,10 @@ namespace SEQAN_NAMESPACE_MAIN
         SEQAN_PROADD(SEQAN_PROCWAIT, SEQAN_PROTIMEDIFF(tw));
         return result;
     }
-    
+
     template < typename TValue, typename TSize, typename TPos >
-    inline bool 
-    writeAt(FILE* me, TValue const *memPtr, TSize const count, TPos const fileOfs) 
+    inline bool
+    writeAt(FILE* me, TValue const *memPtr, TSize const count, TPos const fileOfs)
     {
 //IOREV
         typedef typename Position<FILE*>::Type pos_t;
@@ -229,8 +229,8 @@ namespace SEQAN_NAMESPACE_MAIN
         return result;
     }
 
-    inline Size<FILE*>::Type 
-    size(FILE* me) 
+    inline Size<FILE*>::Type
+    size(FILE* me)
     {
 //IOREV
         Size<FILE*>::Type old_pos = tell(me);
@@ -242,8 +242,8 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template < typename TSize >
-    inline void 
-    resize(FILE* me, TSize new_length) 
+    inline void
+    resize(FILE* me, TSize new_length)
     {
 //IOREV I think this is not c-standard and only works on POSIX-compliant systems
         Size<FILE*>::Type old_pos = tell(me);
@@ -251,26 +251,26 @@ namespace SEQAN_NAMESPACE_MAIN
         seek(me, old_pos, SEEK_BEGIN);
     }
 
-    inline bool 
-    flush(FILE*) 
+    inline bool
+    flush(FILE*)
     {
 //IOREV _notimplemented_
-        return true; 
+        return true;
     }
 
     template < typename AsyncRequest >
-    inline void 
-    release(FILE*, AsyncRequest &) 
+    inline void
+    release(FILE*, AsyncRequest &)
     {
 //IOREV _notimplemented_
     }
 
     template < typename AsyncRequest >
-    inline bool 
-    cancel(FILE*, AsyncRequest &) 
+    inline bool
+    cancel(FILE*, AsyncRequest &)
     {
 //IOREV _notimplemented_
-        return true; 
+        return true;
     }
 
 }

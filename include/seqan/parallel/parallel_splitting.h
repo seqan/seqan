@@ -47,24 +47,24 @@ typedef Tag<Equidistant_> Equidistant;
  * @class Splitter
  * @headerfile <seqan/parallel.h>
  * @brief Splits an interval into subintervals.
- * 
+ *
  * @signature template <typename TValue, typename TSpec>
  *            class Splitter;
- * 
+ *
  * @tparam TValue Type of the interval boundaries.
  * @tparam TSpec  Tag to select the way the values are sampled.
- * 
+ *
  * This class divides an interval into the disjoint union of subintervals and enumerates its boundaries.  It can be used
  * to parallelize large for-loops that iterate over a contiguous range of elements.  The interval and the number of
  * subintervals can be set in the constructor @link Splitter::Splitter @endlink.  @link Splitter#length @endlink and
  * @link Splitter#resize @endlink can be used to retrieve or change the number of subintervals later.  In contrast to
  * other containers the Splitter allows to access one more element than its length would imply to allow to retrieve the
  * right boundary of each subinterval (see example code below).
- * 
+ *
  * @section Examples
- * 
+ *
  * Simple example for equidistant (default) splitting.
- * 
+ *
  * @include demos/parallel/splitter_example.cpp
  *
  * The output is:
@@ -75,7 +75,7 @@ typedef Tag<Equidistant_> Equidistant;
 /*!
  * @fn Splitter::Splitter
  * @brief Constructor
- * 
+ *
  * @signature Splitter::Splitter(beginPos, endPos[, subintervalCount]);
  * @signature Splitter::Splitter(beginPos, endPos, parallelTag);
  *
@@ -96,19 +96,19 @@ typedef Tag<Equidistant_> Equidistant;
  * @extends Splitter
  * @headerfile <seqan/parallel.h>
  * @brief Splits an interval into equal-sized subintervals.
- * 
+ *
  * @signature template <typename TValue>
  *            class Splitter<TValue, Equidistant>;
- * 
+ *
  * @tparam TValue Type of the interval boundaries.
- * 
+ *
  * This @link Splitter @endlink specialization divides an interval into subintervals of (almost) equal length, i.e. two
  * subintervals differ by at most 1 in size.
- * 
+ *
  * @section Examples
- * 
+ *
  * Simple example for equidistant splitting.
- * 
+ *
  * @include demos/parallel/splitter_example.cpp
  *
  * Output:
@@ -120,7 +120,7 @@ typedef Tag<Equidistant_> Equidistant;
  * @endcode
  */
 
- 
+
 template <typename TValue, typename TSpec = Equidistant>
 class Splitter
 {
@@ -152,7 +152,7 @@ public:
         // we produce at most 1 job (or none if interval is empty)
         _resize(*this, endPos - beginPos, _min((TSize)(endPos - beginPos), (TSize)1));
     }
-    
+
     Splitter(TValue beginPos_, TValue endPos, TSize subintervalCount):
         beginPos(beginPos_)
     {
@@ -257,23 +257,23 @@ resize(Splitter<TValue, TSpec> &splitter, TSize newCount)
  * @fn computeSplitters
  * @headerfile <seqan/parallel.h>
  * @brief Compute splitters for a sequence of objects.
- * 
+ *
  * @signature void computeSplitters(splitters, size, count);
- * 
+ *
  * @param[out] splitters Resulting splitters, will be resized to contain <tt>count + 1</tt> elements, e.g. an
  *                       @link AllocString @endlink of integers.
  * @param[in]  size     The number of objects to split.
  * @param[in]  count     The number of chunks.
- * 
+ *
  * @section Remarks
- * 
+ *
  * The first <tt>count - 1</tt> chunks will have the size <tt>ceil(size / count)</tt>, the last chunk will contain the
  * rest.
- * 
+ *
  * @section Examples
- * 
+ *
  * Most simple case for splitting.
- * 
+ *
  * @code{.cpp}
  * String<unsigned> splitters;
  * computeSplitters(splitters, 10, 5);
@@ -281,7 +281,7 @@ resize(Splitter<TValue, TSpec> &splitter, TSize newCount)
  * @endcode
  *
  * In this case, the last chunks will stay empty.
- * 
+ *
  * @code{.cpp}
  * computeSplitters(splitters, 3, 5);
  * // splitters == {0, 1, 2, 3, 3, 3}

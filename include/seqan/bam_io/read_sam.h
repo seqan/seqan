@@ -159,7 +159,7 @@ readRecord(BamHeaderRecord & record,
         SEQAN_THROW(ParseError("Unknown SAM header type!"));
 
     CharString &buffer = context.buffer;
-    
+
     if (record.type == BAM_HEADER_COMMENT)
     {
         skipOne(iter, IsTab());

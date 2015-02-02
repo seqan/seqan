@@ -45,16 +45,16 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends MapperSpec
  * @headerfile <seqan/pipe.h>
  * @brief Configuration of Mapper.
- * 
+ *
  * @signature template <typename TMap, typename TSize[, typename TFile]>
  *            struct MapperConfigSize;
- * 
+ *
  * @tparam TMap  The destination function (see STL's <tt>unary_function</tt>).  This functions maps a stream element
  *               to its destined position.  The result type of this unary function should convertible to
  *               <tt>TSize</tt>.
  * @tparam TFile The underlying File type, defaults to <tt>File&lt;&gt;</tt>.
  * @tparam TSize The Mapper's size type.
- * 
+ *
  * @see MapperConfig
  */
 
@@ -72,17 +72,17 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends MapperSpec
  * @headerfile <seqan/pipe.h>
  * @brief Configuration of Mapper.
- * 
+ *
  * @signature template <typename TMap[, typename TFile]>
  *            struct MapperConfig;
- * 
+ *
  * @tparam TMap  The destination function (see STL's <tt>unary_function</tt>).  This functions maps a stream element to
  *               its destined position. The result type of this unary function should convertible to <tt>TSize</tt>.
  * @tparam TFile The underlying File type, defaults to <tt>File&lg;&gt;</tt>.
- * 
+ *
  * Using this configuration spec., the Mapper's size type is <tt>Size&lt;TFile&gt;::Type</tt>. To use a custom size type
  * MapperConfigSize should be used.
- * 
+ *
  * @see MapperConfigSize
  */
 
@@ -99,14 +99,14 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends Pool
  * @headerfile <seqan/pipe.h>
  * @brief Permutes all elements using a custom destination function.
- * 
+ *
  * @signature template <typename TValue, typename TConfig>
  *            class Pool<TValue, MapperSpec<TConfig> >;
- * 
+ *
  * @tparam TConfig Configuration Spec. Defines destination function, size type, and file type.
  *                 Types: MapperConfig, MapperConfigSize
  * @tparam TValue  The value type, that is the type of the stream elements.
- * 
+ *
  * The Pool's input/output type is <tt>TValue</tt> and the size type is determined by the <tt>TConfig</tt>.
  */
 
@@ -135,7 +135,7 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         typedef BufferHandler<Pool< TValue, MapperSpec<TConfig> >, ReadMapperSpec> Handler;
         Handler *me = static_cast<Handler*>(&_me);
-        
+
         typename Size< Pool< TValue, MapperSpec<TConfig> > >::Type offset = buf.pageNo;
         offset *= (unsigned)capacity(buf);
 
@@ -181,7 +181,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
             dstPos = M(*cur);
 
-            if (partiallyFilled && dstPos == undefinedPos) 
+            if (partiallyFilled && dstPos == undefinedPos)
                 continue;                            // don't move undefined values
 
             #ifdef SEQAN_DEBUG
@@ -206,7 +206,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
                     if (partiallyFilled && dstPos == undefinedPos)
                         I = cur;                    // move the undefined value to an arbitrary free position (*cur)
-                    else 
+                    else
                     {
                         #ifdef SEQAN_DEBUG
                             if (!(dstPos >= offset && dstPos < offset + (TSize)capacity(buf))) {
@@ -249,7 +249,7 @@ namespace SEQAN_NAMESPACE_MAIN
 /*
     // inherits buffered file reader and uses a map buffer
     template <typename TPool>
-    struct BufferHandler<TPool, ReadMapperSpec >: public BufferHandler< TPool, ReadFileSpec> 
+    struct BufferHandler<TPool, ReadMapperSpec >: public BufferHandler< TPool, ReadFileSpec>
     {
         typedef BufferHandler<TPool, ReadFileSpec>    Base;
         typedef typename Base::Type                     Type;
@@ -300,7 +300,7 @@ namespace SEQAN_NAMESPACE_MAIN
             if (empty(buffer)) return;
             arrayFill(seqan::begin(buffer, Standard()), seqan::end(buffer, Standard()), pool.undefinedValue);
         }
-        
+
         inline bool begin() {
             buffer = handler.first();
             _initializeBuffer();
@@ -347,7 +347,7 @@ namespace SEQAN_NAMESPACE_MAIN
         ~Handler() {
             cancel();
         }
-        
+
         struct insertBucket : public std::unary_function<TPageBucket,void>
         {
             Handler &me;
@@ -414,7 +414,7 @@ namespace SEQAN_NAMESPACE_MAIN
             cache.reserve(0);
             freePage(bucketBuffer, *this);
         }
-        
+
         inline bool eof() { return false; }
         inline void process() {}
     };
@@ -453,7 +453,7 @@ namespace SEQAN_NAMESPACE_MAIN
         ~Handler() {
             cancel();
         }
-        
+
         struct insertBucket : public std::unary_function<TPageBucket,void>
         {
             Handler &me;
@@ -552,7 +552,7 @@ namespace SEQAN_NAMESPACE_MAIN
             freePage(writeCache, pool.file);
             freePage(bucketBuffer, pool.file);
         }
-        
+
         inline bool eof() { return false; }
         inline void process() {}
 

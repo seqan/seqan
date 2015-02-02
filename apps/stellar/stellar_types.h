@@ -82,7 +82,7 @@ struct StellarOptions {
         qgramAbundanceCut = 1;
         verbose = false;
     }
-}; 
+};
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -141,7 +141,7 @@ struct StellarMatch {
     }
 };
 
-template <typename TSequence, typename TId> 
+template <typename TSequence, typename TId>
 const TId
 StellarMatch<TSequence, TId>::INVALID_ID = "###########";
 
@@ -152,9 +152,9 @@ StellarMatch<TSequence, TId>::INVALID_ID = "###########";
 ///////////////////////////////////////////////////////////////////////////////
 // to sort matches by position and remove overlapping matches
 template <typename TMatch>
-struct LessPos : public ::std::binary_function <TMatch, TMatch, bool> {        
+struct LessPos : public ::std::binary_function <TMatch, TMatch, bool> {
     LessPos() {}
-    
+
     inline int compare(TMatch const & a, TMatch const & b) const {
         // query number
         if ((a.id) < (b.id)) return -1;
@@ -195,7 +195,7 @@ struct LessPos : public ::std::binary_function <TMatch, TMatch, bool> {
 
         return 0;
     }
-        
+
     inline bool operator() (TMatch const & a, TMatch const & b) const {
         return compare(a, b) == -1;
     }
@@ -204,7 +204,7 @@ struct LessPos : public ::std::binary_function <TMatch, TMatch, bool> {
 ///////////////////////////////////////////////////////////////////////////////
 // to sort matches by length
 template <typename TMatch>
-struct LessLength : public ::std::binary_function <TMatch, TMatch, bool> {        
+struct LessLength : public ::std::binary_function <TMatch, TMatch, bool> {
     LessLength() {}
 
     inline int compare(TMatch const & a, TMatch const & b) const {
@@ -243,7 +243,7 @@ _isUpstream(StellarMatch<TSequence, TId> & match1, StellarMatch<TSequence, TId> 
     }
 
     if (e1 <= b2) return true;
-    
+
     TPos b1, e2;
     if (row == 0) {
         e2 = match2.end1;
@@ -256,7 +256,7 @@ _isUpstream(StellarMatch<TSequence, TId> & match1, StellarMatch<TSequence, TId> 
     if (b1 < b2 && (b2 - b1 >= minLength)) {
         if ((e1 < e2) && (e2 - e1 >= minLength)) return true;
     }
-    
+
     return false;
 }
 
@@ -266,8 +266,8 @@ template <typename TMatches, typename TFunctorLess>
 inline void
 sortMatches(TMatches & stellarMatches, TFunctorLess const & less) {
     std::stable_sort(
-        begin(stellarMatches, Standard()), 
-        end(stellarMatches, Standard()), 
+        begin(stellarMatches, Standard()),
+        end(stellarMatches, Standard()),
         less);
 }
 

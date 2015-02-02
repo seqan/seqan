@@ -44,7 +44,7 @@ void _numOccurrences(TFloat &nW, String<TAlphabet>& haystack, StringSet<String<T
  * @headerfile <seqan/statistics.h>
  * @brief Auxiliary function to compure the z-score index for a set of patterns w.r.t. a set of text strings and a
  *        MarkovMovel.
- * 
+ *
  * @signature TFloat _zscore(W, X, M, tag);
  *
  * @param[in] W   The StringSet to use as the words.
@@ -138,7 +138,7 @@ TFloat _computeExpectation(MarkovModel<TAlphabet, TFloat, TSpec> &mm,
  * @fn _computeVariance
  * @headerfile <seqan/statistics.h>
  * @brief Auxiliary function to compute the variance for a set of patterns w.r.t. a set of text strings and a MarkovModel.
- * 
+ *
  * @signature TFloat _computeVariance(W, X, M);
  *
  * @param[in] W The set of words.
@@ -292,7 +292,7 @@ TFloat _overlapExpectation(StringSet<String<TAlphabet> > W, MarkovModel<TAlphabe
  * @fn _addReverseComplemenents
  * @headerfile <seqan/statistics.h>
  * @brief Computes the reverse complemenets of a set of strings in the input.
- * 
+ *
  * @signature void _addReverseComplements(ss);
  *
  * @param[in,out] ss A String set to expand.
@@ -456,7 +456,7 @@ TFloat variance(StringSet<String<Dna> > W, StringSet<String<Dna> > &X, MarkovMod
 }
 
 /*!
- * @fn expectation 
+ * @fn expectation
  * @headerfile <seqan/statistics.h>
  * @brief Computes the expectation for a set of patterns w.r.t a set of text strings and a MarkovModel.
  *

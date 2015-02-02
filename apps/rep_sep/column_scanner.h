@@ -61,7 +61,7 @@ bool isCandidate(FragmentStore<TSpec, TConfig> const& fragStore,
     typedef FragmentStore<TSpec, TConfig> TFragmentStore;
     typedef typename Size<TFragmentStore>::Type TSize;
     //typedef typename TFragmentStore::TReadPos TReadPos;
-    
+
     // must be triplet
     typedef typename Value<TCandidateColumn>::Type TAssignedReadChar;
     typedef typename Value<TAssignedReadChar, 1>::Type TConsensusAlphabet;
@@ -69,7 +69,7 @@ bool isCandidate(FragmentStore<TSpec, TConfig> const& fragStore,
     // All fragment store element types
     //typedef typename Value<typename TFragmentStore::TReadStore>::Type TReadStoreElement;
     //typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type TAlignedElement;
-    
+
 
 #ifdef REPSEP_DEBUG_COLUMN_SCANNER
     cout << "--- called SimpleScanner on candidate column with consensus [" << _sequenceCharacter(consensus) << "] --- " << endl;
@@ -79,7 +79,7 @@ bool isCandidate(FragmentStore<TSpec, TConfig> const& fragStore,
     cout << endl;
 #endif
 
-    // cout deviations from consensus 
+    // cout deviations from consensus
     std::map< TConsensusAlphabet, TSize > vote_map;
     TSize simple_deviations = 0;
     for(TSize i = 0 ; i < length(candidate) ; ++i) {

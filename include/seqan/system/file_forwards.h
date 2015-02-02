@@ -32,8 +32,8 @@
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
 
-#ifndef SEQAN_HEADER_FILE_MANUAL_FORWARDS_H 
-#define SEQAN_HEADER_FILE_MANUAL_FORWARDS_H 
+#ifndef SEQAN_HEADER_FILE_MANUAL_FORWARDS_H
+#define SEQAN_HEADER_FILE_MANUAL_FORWARDS_H
 
 //SEQAN_NO_GENERATED_FORWARDS: no forwards are generated for this file
 

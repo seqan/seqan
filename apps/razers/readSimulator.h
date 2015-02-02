@@ -51,7 +51,7 @@ sample(TOperation m, TAlphabet base)
 template < typename TGenome >
 void simulateGenome(TGenome &genome, int size)
 {
-//    mtRandInit(); 
+//    mtRandInit();
     resize(genome, size);
     for(int i = 0; i < size; ++i)
         genome[i] = sample(0, (Dna)0);
@@ -60,7 +60,7 @@ void simulateGenome(TGenome &genome, int size)
 
 template<typename TPosString>
 void
-fillupStartpos(TPosString & sortedStartPos, 
+fillupStartpos(TPosString & sortedStartPos,
     int numReads,
     int readLength,
     int maxErrors,            // how many errors they may have
@@ -68,8 +68,8 @@ fillupStartpos(TPosString & sortedStartPos,
     int libError,
     int seqLength,            // maximal library size deviation
     double forwardProb)
-{    
-    
+{
+
     const int REVCOMP = 1 << (sizeof(int)*8-1);
     resize(sortedStartPos, numReads);
 
@@ -111,7 +111,7 @@ fillupStartpos(TPosString & sortedStartPos,
         numReads*=2;
     }
 
-    
+
 }
 
 
@@ -119,7 +119,7 @@ fillupStartpos(TPosString & sortedStartPos,
 //////////
 // Simulates a set of reads from a set of haplotypes with a certain error distribution
 //////////
-template < 
+template <
     typename TReadSet,
     typename TReadIDs,
     typename TGenomeSet,
@@ -155,12 +155,12 @@ void simulateReads(
     int readLength = length(errorDist)/4;
     const int REVCOMP = 1 << (sizeof(int)*8-1);
     //int KJ = 2*maxErrors;
-    
+
     srand ( time(NULL) );
-    
+
     String<int> bucketCounter;
     resize(bucketCounter,maxErrors,0);
-    
+
     String<int> kickOutCount;
     resize(kickOutCount,maxErrors,0);
 
@@ -185,18 +185,18 @@ void simulateReads(
                 lSize = round(rnorm(1, mean=librarySizes[currentLibrary], sd=librarySd[currentLibrary]))
                 if (start < end) {
                     if (start + libSize <= seqLength) {
-                        startMatePair = start + libSize - readLength + 1 
+                        startMatePair = start + libSize - readLength + 1
                         endMatePair = startMatePair + readLength - 1
                         readMate = sourceSeq[startMatePair:endMatePair]
                         readMate = reverseComplement(readMate)
-                        tmp = startMatePair 
-                        startMatePair = endMatePair 
+                        tmp = startMatePair
+                        startMatePair = endMatePair
                         endMatePair = tmp
                         invalidMatePair = 0
                     }
                 } else {
                     if (start - libSize >= 1) {
-                        startMatePair = start - libSize  
+                        startMatePair = start - libSize
                         endMatePair = startMatePair + readLength - 1
                         readMate = sourceSeq[startMatePair:endMatePair]
                         invalidMatePair = 0
@@ -220,14 +220,14 @@ void simulateReads(
         int  startPos = sortedStartPos[samplePosCounter] & ~REVCOMP;
         bool revComp  = (sortedStartPos[samplePosCounter] & REVCOMP) != 0;
         int  maxEnd   = startPos + readLength + maxErrors - 1;
-    
+
         TGenome read;
         resize(read,readLength);
-        
+
         TGenome readTemplate;// = infix(currentSource,startPos,maxEnd);
         resize(readTemplate,maxEnd-startPos);
         arrayCopy(iter(currentSource,startPos), iter(currentSource,maxEnd), begin(readTemplate)); //infix(currentSource,startPos,maxEnd);
-        
+
         if(revComp) reverseComplement(readTemplate);
 
         int lastOp = 0;
@@ -290,7 +290,7 @@ void simulateReads(
                 break;
             }
         }
-    
+
     /*
         if(successful)
         {
@@ -302,14 +302,14 @@ void simulateReads(
                     case SEQAN_MATCH:
                         ++del;
                         break;
-    
+
                     case SEQAN_DELETE:
                         ++del;
-        
+
                     case SEQAN_INSERT:
                         ++err;
                         break;
-    
+
                     default:;
                 }
                 if (del > 0 && del <= err)
@@ -328,14 +328,14 @@ void simulateReads(
                         case SEQAN_MATCH:
                             ++del;
                             break;
-        
+
                         case SEQAN_DELETE:
                             ++del;
-            
+
                         case SEQAN_INSERT:
                             ++err;
                             break;
-                    
+
                         default:;
                     }
                     if (del > 0 && del <= err)
@@ -348,7 +348,7 @@ void simulateReads(
             }
         }
         */
-        
+
 /*        countMateErrors = 0
         if (simulateMatePairs == 1) {
             for(pos in 1:length(readMate)) {
@@ -358,7 +358,7 @@ void simulateReads(
                 }
             }
         }*/
-    
+
         if(successful)
         {
             //verify that number of errors is correct
@@ -374,19 +374,19 @@ void simulateReads(
             if(revComp) reverseComplement(read);
             TMyersPattern forwardPattern(read);
             TMyersPattern &myersPattern = forwardPattern;
-            
+
             // find end of best semi-global alignment
             int maxScore = MinValue<int>::VALUE;
             int minScore = -(int)countErrors;
             TMyersFinder maxPos;
             while (find(myersFinder, myersPattern, minScore))
-                if (maxScore < getScore(myersPattern)) 
+                if (maxScore < getScore(myersPattern))
                 {
                     maxScore = getScore(myersPattern);
                     maxPos = myersFinder;
                 }
-            
-            if (maxScore >= minScore) 
+
+            if (maxScore >= minScore)
             {
                 TGenomeInfixRev        infRev(infix(currentSource, start1, start1+position(maxPos)+1));
                 TReadRev        readRev(read);
@@ -408,8 +408,8 @@ void simulateReads(
                     std::cerr << "rGENOME: " << infRev << std::endl;
                     std::cerr << "rREAD:   " << readRev << std::endl;
                 }
-            
-            } 
+
+            }
             if(revComp) reverseComplement(read);
             SEQAN_ASSERT(maxScore >= -(int)countErrors);
             if(maxScore != -(int)countErrors)
@@ -454,7 +454,7 @@ void simulateReads(
             else std::cout << "0\n";
         }
         std::cout << std::endl;
-        
+
         std::cout << "\nInvalid modification pattern count: "<<inValidModPat<<std::endl;
     }
 

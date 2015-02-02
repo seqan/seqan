@@ -39,9 +39,9 @@ namespace SEQAN_NAMESPACE_MAIN
 {
 
 
-    template < 
+    template <
         typename TInput, typename TFunctor,
-        typename TOut1, typename TOut2, typename TOut4 
+        typename TOut1, typename TOut2, typename TOut4
     >
     static void _skew7SeparateSlices(
         TInput &in, TFunctor const &funcSlice,
@@ -62,7 +62,7 @@ namespace SEQAN_NAMESPACE_MAIN
             pop(in, i);
             if (i.i1 < funcSlice.n4) {
                 push(out4, i);
-            } else 
+            } else
                 if (i.i1 < funcSlice.n24) {
                     i.i1 -= funcSlice.n4;
                     push(out2, i);
@@ -77,7 +77,7 @@ namespace SEQAN_NAMESPACE_MAIN
         endWrite(out1);
         endRead(in);
     }
-    
+
 //}
 
 }

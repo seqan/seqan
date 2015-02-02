@@ -47,12 +47,12 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends Pattern
  * @headerfile <seqan/find.h>
  * @brief Backward Nondeterministic Dawg Matching algorithm.  Exact string matching using bit parallelism.
- * 
+ *
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, BndmAlgo>;
- * 
+ *
  * @tparam TNeedle The needle type.  Types: String
- * 
+ *
  * The types of the needle and the haystack have to match.
  */
 
@@ -102,7 +102,7 @@ void setHost (Pattern<TNeedle, BndmAlgo> & me, TNeedle2 const& needle) {
     me.needleLength = length(needle);
     if (me.needleLength<1) me.blockCount=1;
     else me.blockCount=((me.needleLength-1) / BitsPerValue<TWord>::VALUE)+1;
-            
+
     clear(me.table);
     resize(me.table, me.blockCount * ValueSize<TValue>::VALUE, 0, Exact());
 
@@ -142,7 +142,7 @@ void setHost (Pattern<TNeedle, BndmAlgo> & me, TNeedle2 & needle)
 
 
 template <typename TNeedle>
-inline void _patternInit (Pattern<TNeedle, BndmAlgo> & me) 
+inline void _patternInit (Pattern<TNeedle, BndmAlgo> & me)
 {
 SEQAN_CHECKPOINT
     clear(me.activeFactors);
@@ -155,22 +155,22 @@ SEQAN_CHECKPOINT
 
 
 template <typename TFinder, typename TNeedle>
-inline bool _findBndmSmallNeedle(TFinder & finder, 
+inline bool _findBndmSmallNeedle(TFinder & finder,
                                   Pattern<TNeedle, BndmAlgo> & me) {
     SEQAN_CHECKPOINT
     typedef unsigned int TWord;
     if (me.haystackLength < me.needleLength) return false;
-    while (position(finder) <= me.haystackLength - me.needleLength) 
+    while (position(finder) <= me.haystackLength - me.needleLength)
     {
         me.last=me.needleLength;
         TWord j=me.needleLength;
         me.activeFactors[0]=~0;
-        while (me.activeFactors[0]!=0) 
+        while (me.activeFactors[0]!=0)
         {
             TWord pos = convert<TWord>(*(finder+j-1));
             me.activeFactors[0] = (me.activeFactors[0] & me.table[me.blockCount*pos]);
             j--;
-            if ((me.activeFactors[0] & 1) != 0) 
+            if ((me.activeFactors[0] & 1) != 0)
             {
                 if (j>0) me.last=j;
                 else
@@ -199,7 +199,7 @@ inline bool _findBndmLargeNeedle(TFinder & finder, Pattern<TNeedle, BndmAlgo> & 
         while (!zeroPrefSufMatch) {
             TWord pos = convert<TWord>(*(finder+j-1));
 
-            /*    
+            /*
             // Debug code
             std::cout << "   ";
             for(int j=0;j<me.blockCount;++j) {
@@ -212,10 +212,10 @@ inline bool _findBndmLargeNeedle(TFinder & finder, Pattern<TNeedle, BndmAlgo> & 
 
             for(TWord block=0;block<me.blockCount;++block) me.activeFactors[block] &= me.table[me.blockCount*pos+block];
             j--;
-            if ((me.activeFactors[0] & 1) != 0) 
+            if ((me.activeFactors[0] & 1) != 0)
             {
                 if (j>0) me.last=j;
-                else 
+                else
                 {
                     _setFinderEnd(finder, position(finder) + me.needleLength);
                     return true;
@@ -224,7 +224,7 @@ inline bool _findBndmLargeNeedle(TFinder & finder, Pattern<TNeedle, BndmAlgo> & 
             bool carry=0;
             zeroPrefSufMatch=true;
             for(int block=me.blockCount-1;block>=0;--block) {
-                bool newCarry=((me.activeFactors[block] & 1)!=0); 
+                bool newCarry=((me.activeFactors[block] & 1)!=0);
                 me.activeFactors[block]>>=1;
                 if (carry) me.activeFactors[block]|=carryPattern;
                 carry=newCarry;

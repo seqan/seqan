@@ -84,7 +84,7 @@ struct DefaultFindBeginPatternSpec<EditDistanceScore, THasState>
 //must be implemented for all patterns that do approximate infix finding
 
 template <typename TPattern>
-struct FindBeginPatternSpec 
+struct FindBeginPatternSpec
 {
     typedef void Type; //void means: no find begin (see FindBegin_)
 };
@@ -271,12 +271,12 @@ struct FindBeginImpl_<Myers<FindPrefix, THasState, void> >
     }
 };
 
-//default implementation of findBegin emulates the behaviour 
+//default implementation of findBegin emulates the behaviour
 //of findBegin for approximate string matching algorithms
 //for exact algorithms:
 //the first call returns true ("begin position found")
 //the next calls return false ("no further begin position found")
-//no searching needed, since the exact algorithms set the 
+//no searching needed, since the exact algorithms set the
 //match length manually via "_setFinderLength" (it's the needle length)
 
 template <>
@@ -328,7 +328,7 @@ _findBeginInit(TPattern & pattern, TNeedle & needle_)
 
 //////////////////////////////////////////////////////////////////////////////
 
-//find begin main interface 
+//find begin main interface
 
 /*!
  * @fn Finder#findBegin

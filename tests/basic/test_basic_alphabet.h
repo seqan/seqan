@@ -79,28 +79,28 @@ int Test1::m_copy_count = 0;
 int Test1::m_move_count = 0;
 
 
-inline void 
+inline void
 move(Test1 & target, Test1 & source)
 {
     ++Test1::m_move_count;
     target.x = source.x;
     source.x = 0x105e;
 }
-inline void 
+inline void
 move(Test1 const & target, Test1 & source)
 {
     ++Test1::m_move_count;
     target.x = source.x;
     source.x = 0x105e;
 }
-inline void 
+inline void
 move(Test1 & target, Test1 const & source)
 {
     ++Test1::m_move_count;
     target.x = source.x;
     source.x = 0x105e;
 }
-inline void 
+inline void
 move(Test1 const & target, Test1 const & source)
 {
     ++Test1::m_move_count;
@@ -156,7 +156,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_interface)
         }
 
         arrayCopyForward(a_buf1, a_buf1 + 100, a_buf2); //100 copy
-        
+
         for (int i=0; i < 100; ++i) a_buf1[i].x = i;
 
         arrayCopy(a_buf1, a_buf1 + 50, a_buf1 + 20); //50 copy
@@ -204,7 +204,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_interface)
            See http://trac.mi.fu-berlin.de/seqan/ticket/380 for more information.
         // TODO(holtgrew): Fix move construction
         arrayConstruct(a_buf2, a_buf2 + 23); //23 ctor
-        arrayConstructMove(a_buf2, a_buf2 + 23, a_buf1); // 23 move 
+        arrayConstructMove(a_buf2, a_buf2 + 23, a_buf1); // 23 move
         for (int i = 0; i < 23; ++i)
         {
             SEQAN_ASSERT_EQ(a_buf1[i].x, 0xfade);
@@ -212,7 +212,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_interface)
         }
 
         // TODO(holtgrew): Fix moving of values in arrays
-        arrayMove(a_buf1, a_buf1 + 23, a_buf1 + 5); // 23 move 
+        arrayMove(a_buf1, a_buf1 + 23, a_buf1 + 5); // 23 move
         for (int i = 0; i < 23; ++i)
         {
             SEQAN_ASSERT_EQ(a_buf1[i + 5].x, 0xfade);
@@ -222,7 +222,7 @@ SEQAN_DEFINE_TEST(test_basic_alphabet_interface)
             SEQAN_ASSERT_EQ(a_buf1[i].x, 0x105e);
         }
 
-        arrayMove(a_buf1 + 5, a_buf1 + 28, a_buf1); // 23 move 
+        arrayMove(a_buf1 + 5, a_buf1 + 28, a_buf1); // 23 move
 
         arrayDestruct(a_buf1, a_buf1 + 23); //23 dtor
         */
@@ -268,7 +268,7 @@ void TestArrayFunctions(T_ const _val1, T_ const _val2)
 
     arrayDestruct(a_buf1, a_buf1 + 100); //nothing happens
 
-    arrayConstructCopy(a_buf2, a_buf2 + 100, a_buf1); 
+    arrayConstructCopy(a_buf2, a_buf2 + 100, a_buf1);
     for (int i=0; i < 100; ++i)
     {
         SEQAN_ASSERT_EQ(a_buf1[i], val1);
@@ -276,7 +276,7 @@ void TestArrayFunctions(T_ const _val1, T_ const _val2)
 
     a = val2;
 
-    arrayFill(a_buf1, a_buf1 + 100, a); 
+    arrayFill(a_buf1, a_buf1 + 100, a);
     for (int i=0; i < 100; ++i)
     {
         SEQAN_ASSERT_EQ(a_buf1[i], val2);
@@ -287,16 +287,16 @@ void TestArrayFunctions(T_ const _val1, T_ const _val2)
     {
         SEQAN_ASSERT_EQ(a_buf2[i], val2);
     }
-    
+
     for (int i=0; i < 100; ++i) a_buf1[i] = (T) i;
 
-    arrayCopy(a_buf1, a_buf1 + 50, a_buf1 + 20); 
+    arrayCopy(a_buf1, a_buf1 + 50, a_buf1 + 20);
     for (int i=0; i < 50; ++i)
     {
         SEQAN_ASSERT_EQ(a_buf1[i+20], (T)i);
     }
 
-    arrayCopy(a_buf1 + 80, a_buf1 + 100, a_buf1 + 75); 
+    arrayCopy(a_buf1 + 80, a_buf1 + 100, a_buf1 + 75);
     for (int i=80; i < 100; ++i)
     {
         SEQAN_ASSERT_EQ(a_buf1[i-5], (T)i);
@@ -304,13 +304,13 @@ void TestArrayFunctions(T_ const _val1, T_ const _val2)
 
     for (int i=0; i < 100; ++i) a_buf1[i] = (T) i;
 
-    arrayClearSpace(a_buf1, 100, 50, 70); 
+    arrayClearSpace(a_buf1, 100, 50, 70);
     for (int i=50; i < 100; ++i)
     {
         SEQAN_ASSERT_EQ(a_buf1[i+20], (T)i);
     }
 
-    arrayClearSpace(a_buf1, 120, 70, 50); 
+    arrayClearSpace(a_buf1, 120, 70, 50);
     for (int i=50; i < 100; ++i)
     {
         SEQAN_ASSERT_EQ(a_buf1[i], (T)i);
@@ -339,15 +339,15 @@ void TestSimpleType()
     arrayConstruct(a_buf1, a_buf1 + 100);
     arrayConstruct(a_buf1, a_buf1 + 100, a);
     arrayDestruct(a_buf1, a_buf1 + 100);
-    arrayConstructCopy(a_buf2, a_buf2 + 100, a_buf1); 
-    arrayFill(a_buf1, a_buf1 + 100, a); 
+    arrayConstructCopy(a_buf2, a_buf2 + 100, a_buf1);
+    arrayFill(a_buf1, a_buf1 + 100, a);
     arrayCopyForward(a_buf1, a_buf1 + 100, a_buf2);
-    arrayCopy(a_buf1, a_buf1 + 50, a_buf1 + 20); 
-    arrayCopy(a_buf1 + 80, a_buf1 + 100, a_buf1 + 75); 
-    arrayMoveForward(a_buf1, a_buf1 + 10, a_buf3); 
-    arrayMoveBackward(a_buf3, a_buf3 + 10, a_buf1); 
-    arrayClearSpace(a_buf1, 100, 50, 70); 
-    arrayClearSpace(a_buf1, 120, 70, 50); 
+    arrayCopy(a_buf1, a_buf1 + 50, a_buf1 + 20);
+    arrayCopy(a_buf1 + 80, a_buf1 + 100, a_buf1 + 75);
+    arrayMoveForward(a_buf1, a_buf1 + 10, a_buf3);
+    arrayMoveBackward(a_buf3, a_buf3 + 10, a_buf1);
+    arrayClearSpace(a_buf1, 100, 50, 70);
+    arrayClearSpace(a_buf1, 120, 70, 50);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -381,10 +381,10 @@ void TestConversion()
     TTarget a_target[200];
 
     arrayCopyForward(a_source_1, a_source_1 + 100, a_target);
-    arrayCopy(a_source_1, a_source_1 + 50, a_target + 20); 
+    arrayCopy(a_source_1, a_source_1 + 50, a_target + 20);
     arrayCopyBackward(a_source_1, a_source_1 + 100, a_target);
     arrayMoveForward(a_source_1, a_source_1 + 100, a_target);
-    arrayMove(a_source_1, a_source_1 + 50, a_target + 20); 
+    arrayMove(a_source_1, a_source_1 + 50, a_target + 20);
     arrayMoveBackward(a_source_1, a_source_1 + 100, a_target);
 }
 

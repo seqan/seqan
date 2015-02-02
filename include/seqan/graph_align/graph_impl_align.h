@@ -200,7 +200,7 @@ public:
  * @code{.console}
  * Score = -8
  * Alignment matrix:
- *       0     .    :   
+ *       0     .    :
  *         ATCGAATGCGGA
  *         |     |||  |
  *         ACTCGTTGC--A
@@ -208,7 +208,7 @@ public:
  */
 
 template<typename TString, typename TSpecial, typename TCargo, typename TSpec>
-class Graph<Alignment<StringSet<TString, Dependent<TSpecial> >, TCargo, TSpec> > 
+class Graph<Alignment<StringSet<TString, Dependent<TSpecial> >, TCargo, TSpec> >
 {
     public:
         typedef typename Id<Graph>::Type TIdType_;
@@ -223,7 +223,7 @@ class Graph<Alignment<StringSet<TString, Dependent<TSpecial> >, TCargo, TSpec> >
 
         // Sequences
         Holder<StringSet<TString, Dependent<TSpecial> > > data_sequence;
-        
+
         // Alignment specific members
         String<TFragmentInfo_> data_fragment;
 
@@ -243,7 +243,7 @@ class Graph<Alignment<StringSet<TString, Dependent<TSpecial> >, TCargo, TSpec> >
             // Cover all sequences with nil vertices
             TVertexDescriptor_ nilVertex = getNil<TVertexDescriptor_>();
             TSize_ lenSet = length(sSet);
-            for(TSize_ k=0; k<lenSet;++k) 
+            for(TSize_ k=0; k<lenSet;++k)
                 data_pvMap.insert(std::make_pair(TKey_(positionToId(sSet,k), length(sSet[k])), nilVertex));
         }
 
@@ -256,7 +256,7 @@ class Graph<Alignment<StringSet<TString, Dependent<TSpecial> >, TCargo, TSpec> >
             // Cover all sequences with nil vertices
             TVertexDescriptor_ nilVertex = getNil<TVertexDescriptor_>();
             TSize_ lenSet = length(sSet);
-            for(TSize_ k=0; k<lenSet;++k) 
+            for(TSize_ k=0; k<lenSet;++k)
                 data_pvMap.insert(std::make_pair(TKey_(positionToId(const_cast<StringSet<TString, Owner<TDefault> >&>(sSet),k), length(sSet[k])), nilVertex));
         }
 
@@ -266,12 +266,12 @@ class Graph<Alignment<StringSet<TString, Dependent<TSpecial> >, TCargo, TSpec> >
             clear(*this);
         }
 
-        Graph(Graph const & _other) 
+        Graph(Graph const & _other)
         {
             SEQAN_CHECKPOINT
-            _copyGraph(_other, *this);    
+            _copyGraph(_other, *this);
         }
-    
+
         Graph const& operator = (Graph const & _other) {
             SEQAN_CHECKPOINT
             if (this == &_other) return *this;
@@ -324,7 +324,7 @@ template<typename TStringSet, typename TCargo, typename TSpec>
 inline void
 _copyGraph(Graph<Alignment<TStringSet, TCargo, TSpec> > const& source,
            Graph<Alignment<TStringSet, TCargo, TSpec> >& dest,
-           bool) 
+           bool)
 {
     SEQAN_CHECKPOINT
     clear(dest);
@@ -339,7 +339,7 @@ _copyGraph(Graph<Alignment<TStringSet, TCargo, TSpec> > const& source,
 template<typename TStringSet, typename TCargo, typename TSpec>
 inline void
 _copyGraph(Graph<Alignment<TStringSet, TCargo, TSpec> > const& source,
-           Graph<Alignment<TStringSet, TCargo, TSpec> >& dest) 
+           Graph<Alignment<TStringSet, TCargo, TSpec> >& dest)
 {
     _copyGraph(source, dest, false); // Never transpose, underlying graph is undirected
 }
@@ -353,7 +353,7 @@ _copyGraph(Graph<Alignment<TStringSet, TCargo, TSpec> > const& source,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec>
-inline void 
+inline void
 transpose(Graph<Alignment<TStringSet, TCargo, TSpec> > const& source,
           Graph<Alignment<TStringSet, TCargo, TSpec> >& dest)
 {
@@ -365,7 +365,7 @@ transpose(Graph<Alignment<TStringSet, TCargo, TSpec> > const& source,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec>
-inline void 
+inline void
 transpose(Graph<Alignment<TStringSet, TCargo, TSpec> >&)
 {
     SEQAN_CHECKPOINT
@@ -375,8 +375,8 @@ transpose(Graph<Alignment<TStringSet, TCargo, TSpec> >&)
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec>
-inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
-numEdges(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g) 
+inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
+numEdges(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
 {
     SEQAN_CHECKPOINT
     return numEdges(g.data_align);
@@ -385,8 +385,8 @@ numEdges(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec>
-inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
-numVertices(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g) 
+inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
+numVertices(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
 {
     SEQAN_CHECKPOINT
     return numVertices(g.data_align);
@@ -395,8 +395,8 @@ numVertices(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec>
-inline bool 
-empty(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g) 
+inline bool
+empty(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
 {
     SEQAN_CHECKPOINT
     return empty(g.data_align);
@@ -406,7 +406,7 @@ empty(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g)
 
 template<typename TStringSet, typename TCargo, typename TSpec>
 inline void
-clearEdges(Graph<Alignment<TStringSet, TCargo, TSpec> >& g) 
+clearEdges(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
 {
     SEQAN_CHECKPOINT
     clearEdges(g.data_align);
@@ -416,7 +416,7 @@ clearEdges(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
 
 template<typename TStringSet, typename TCargo, typename TSpec>
 inline void
-clearVertices(Graph<Alignment<TStringSet, TCargo, TSpec> >& g) 
+clearVertices(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
 {
     SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
@@ -433,7 +433,7 @@ clearVertices(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
     TVertexDescriptor nilVertex = getNil<TVertexDescriptor>();
     if(!empty(value(g.data_sequence))) {
         TSize lenSet = length(stringSet(g));
-        for(TSize k=0; k<lenSet;++k) 
+        for(TSize k=0; k<lenSet;++k)
             g.data_pvMap.insert(std::make_pair(TKey(positionToId(stringSet(g),k), length(stringSet(g)[k])), nilVertex));
     }
 }
@@ -441,8 +441,8 @@ clearVertices(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec>
-inline void 
-clear(Graph<Alignment<TStringSet, TCargo, TSpec> >& g) 
+inline void
+clear(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
 {
     SEQAN_CHECKPOINT
     // Only clear also removes the sequences
@@ -452,10 +452,10 @@ clear(Graph<Alignment<TStringSet, TCargo, TSpec> >& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor> 
-inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
-outDegree(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g, 
-          TVertexDescriptor const vertex) 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
+inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
+outDegree(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
+          TVertexDescriptor const vertex)
 {
     SEQAN_CHECKPOINT
     return outDegree(g.data_align, vertex);
@@ -463,10 +463,10 @@ outDegree(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor> 
-inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
-inDegree(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g, 
-         TVertexDescriptor const vertex) 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
+inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
+inDegree(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
+         TVertexDescriptor const vertex)
 {
     SEQAN_CHECKPOINT
     return inDegree(g.data_align, vertex);
@@ -474,10 +474,10 @@ inDegree(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor> 
-inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
+inline typename Size<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 degree(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
-       TVertexDescriptor const vertex) 
+       TVertexDescriptor const vertex)
 {
     SEQAN_CHECKPOINT
     return degree(g.data_align, vertex);
@@ -485,8 +485,8 @@ degree(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TId, typename TPos, typename TLength> 
-inline typename VertexDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TId, typename TPos, typename TLength>
+inline typename VertexDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 addVertex(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
           TId id,
           TPos begin,
@@ -593,11 +593,11 @@ removeVertex(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor> 
-inline typename EdgeDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
-addEdge(Graph<Alignment<TStringSet, TCargo, TSpec> >& g, 
-        TVertexDescriptor const source, 
-        TVertexDescriptor const target) 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
+inline typename EdgeDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
+addEdge(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
+        TVertexDescriptor const source,
+        TVertexDescriptor const target)
 {
     SEQAN_CHECKPOINT
     return addEdge(g.data_align, source, target);
@@ -605,12 +605,12 @@ addEdge(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor, typename TCargo2> 
-inline typename EdgeDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
-addEdge(Graph<Alignment<TStringSet, TCargo, TSpec> >& g, 
-        TVertexDescriptor const source, 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor, typename TCargo2>
+inline typename EdgeDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
+addEdge(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
+        TVertexDescriptor const source,
         TVertexDescriptor const target,
-        TCargo2 const cargo) 
+        TCargo2 const cargo)
 {
     SEQAN_CHECKPOINT
     return addEdge(g.data_align, source, target, cargo);
@@ -619,10 +619,10 @@ addEdge(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
-inline void 
-removeEdge(Graph<Alignment<TStringSet, TCargo, TSpec> >& g, 
-           TVertexDescriptor const source, 
-           TVertexDescriptor const target) 
+inline void
+removeEdge(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
+           TVertexDescriptor const source,
+           TVertexDescriptor const target)
 {
     SEQAN_CHECKPOINT
     removeEdge(g.data_align, source, target);
@@ -631,7 +631,7 @@ removeEdge(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TEdgeDescriptor>
-inline void 
+inline void
 removeEdge(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
            TEdgeDescriptor const edge)
 {
@@ -641,10 +641,10 @@ removeEdge(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor> 
-inline void 
-removeOutEdges(Graph<Alignment<TStringSet, TCargo, TSpec> >& g, 
-               TVertexDescriptor const v) 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
+inline void
+removeOutEdges(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
+               TVertexDescriptor const v)
 {
     SEQAN_CHECKPOINT
     removeOutEdges(g.data_align, v);
@@ -652,10 +652,10 @@ removeOutEdges(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor> 
-inline void 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
+inline void
 removeInEdges(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
-              TVertexDescriptor const v) 
+              TVertexDescriptor const v)
 {
     SEQAN_CHECKPOINT
     removeInEdges(g.data_align,v);
@@ -663,10 +663,10 @@ removeInEdges(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TEdgeDescriptor> 
-inline typename VertexDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TEdgeDescriptor>
+inline typename VertexDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 targetVertex(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
-             TEdgeDescriptor const edge) 
+             TEdgeDescriptor const edge)
 {
     SEQAN_CHECKPOINT
     return targetVertex(g.data_align, edge);
@@ -675,9 +675,9 @@ targetVertex(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TEdgeDescriptor>
-inline typename VertexDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
+inline typename VertexDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 sourceVertex(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
-             TEdgeDescriptor const edge) 
+             TEdgeDescriptor const edge)
 {
     SEQAN_CHECKPOINT
     return sourceVertex(g.data_align, edge);
@@ -687,8 +687,8 @@ sourceVertex(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix>
 inline void
-getAdjacencyMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g, 
-                   TMatrix& mat) 
+getAdjacencyMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
+                   TMatrix& mat)
 {
     SEQAN_CHECKPOINT
     getAdjacencyMatrix(g.data_align, mat);
@@ -697,7 +697,7 @@ getAdjacencyMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TVertexDescriptor>
-inline typename EdgeDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
+inline typename EdgeDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 findEdge(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
          TVertexDescriptor const v,
          TVertexDescriptor const w)
@@ -780,7 +780,7 @@ write(TFile & target,
     } else {
         TSize nseq = length(stringSet(g));
         TSize colLen = length(align) / nseq;
-        
+
         TSize baseCount=0;
         TSize leftSpace=6;
         TSize xPos = 0;
@@ -788,7 +788,7 @@ write(TFile & target,
         while (xPos < colLen) {
             TSize windowSize = 50;
             if ((xPos + windowSize)>colLen) windowSize = colLen - xPos;
-            
+
             // Print header line
             TSize offset=0;
             // Larger numbers need to be further left
@@ -809,13 +809,13 @@ write(TFile & target,
                 for(TSize col = 0;col<leftSpace+2;++col)
                     writeValue(target, ' ');
                 if ((row % 2)==0) {
-                    for(TSize col = xPos;col<xPos+windowSize;++col) 
+                    for(TSize col = xPos;col<xPos+windowSize;++col)
                         writeValue(target, align[(row/2)*colLen+col]);
                 } else {
                     for(TSize col = xPos;col<xPos+windowSize;++col) {
                         if ((align[((row-1)/2)*colLen + col] != gapValue<char>()) &&
                             (align[((row+1)/2)*colLen + col] != gapValue<char>()) &&
-                            (align[((row-1)/2)*colLen + col] == align[((row+1)/2)*colLen + col])) 
+                            (align[((row-1)/2)*colLen + col] == align[((row+1)/2)*colLen + col]))
                             writeValue(target, '|');
                         else
                             writeValue(target, ' ');
@@ -837,7 +837,7 @@ inline void
 write(TFile & file,
       Graph<TSpec> const& g,
       TNames const& names,
-      FastaFormat) 
+      FastaFormat)
 {
 //IOREV _nodoc_ specialization not documented
     SEQAN_CHECKPOINT
@@ -847,7 +847,7 @@ write(TFile & file,
     typename DirectionIterator<TFile, Output>::Type target = directionIterator(file, Output());
 
     String<char> align;
-    if (convertAlignment(g, align)) {    
+    if (convertAlignment(g, align)) {
         TSize nseq = length(stringSet(g));
         TSize colLen = length(align) / nseq;
         typedef typename Iterator<String<char>, Standard>::Type TIter;
@@ -859,7 +859,7 @@ write(TFile & file,
             TSize col = 0;
             while(col < colLen) {
                 TSize max = ((colLen - col) < 60) ? colLen - col : 60;
-                for(TSize finger = 0; finger<max; ++finger, ++col, ++it) 
+                for(TSize finger = 0; finger<max; ++finger, ++col, ++it)
                     writeValue(target, *it);
                 writeValue(target, '\n');
             }
@@ -876,7 +876,7 @@ inline void
 write(TFile & file,
       Graph<TSpec> const& g,
       TNames const& names,
-      MsfFormat) 
+      MsfFormat)
 {
 //IOREV _nodoc_ specialization not documented
     SEQAN_CHECKPOINT
@@ -886,10 +886,10 @@ write(TFile & file,
     typename DirectionIterator<TFile, Output>::Type target = directionIterator(file, Output());
 
     String<char> align;
-    if (convertAlignment(g, align)) {    
+    if (convertAlignment(g, align)) {
         TSize nseq = length(stringSet(g));
         TSize colLen = length(align) / nseq;
-    
+
         write(target,"PileUp\n");
         writeValue(target, '\n');
         write(target," MSF: ");
@@ -918,7 +918,7 @@ write(TFile & file,
             for(TSize i = 0; i<nseq; ++i) {
                 max = ((colLen - col) < 50) ? colLen - col : 50;
                 write(target,names[i]);
-                for(TSize j = 0; j<offset - length(names[i]); ++j) 
+                for(TSize j = 0; j<offset - length(names[i]); ++j)
                     writeValue(target, ' ');
                 for(TSize finger = col; finger<col+max; ++finger) {
                     if ((finger - col) % 10 == 0) writeValue(target, ' ');
@@ -1063,7 +1063,7 @@ write(TFile & file,
                     }
                 }
             }
-            write(target, "}\n");    
+            write(target, "}\n");
         }
     }
 }
@@ -1099,7 +1099,7 @@ assignStringSet(Graph<Alignment<StringSet<TString, Dependent<TDefault> >, TCargo
     clear(g);
     g.data_sequence = (StringSet<TString, Dependent<TDefault> >) sStr;
     TSize lenSet = length(sStr);
-    for(TSize k=0; k<lenSet;++k) 
+    for(TSize k=0; k<lenSet;++k)
         g.data_pvMap.insert(std::make_pair(TKey(positionToId(sStr,k), length(sStr[k])), nilVertex));
 }
 
@@ -1291,8 +1291,8 @@ fragmentLength(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  * <tt>getNil&lt;TVertexDescriptor&gt;()</tt> if none could be found.
  */
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId, typename TPos> 
-inline typename VertexDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId, typename TPos>
+inline typename VertexDescriptor<Graph<Alignment<TStringSet, TCargo, TSpec> > >::Type
 findVertex(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
            TSeqId id,
            TPos pos)
@@ -1303,7 +1303,7 @@ findVertex(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
     typedef typename Size<TGraph>::Type TSize;
     typedef typename Id<TGraph>::Type TIdType;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-    
+
     return (pos >= (TPos) length(getValueById(stringSet(g),id))) ? getNil<TVertexDescriptor>() : g.data_pvMap.upper_bound(TKey((TIdType)id, (TSize)pos))->second;
 }
 
@@ -1322,7 +1322,7 @@ findVertex(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
  * @param[out] pos2   The reuslting position of the sequence was was projected onto.
  */
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId, typename TPosition, typename TSeqId2, typename TPosition2> 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TSeqId, typename TPosition, typename TSeqId2, typename TPosition2>
 inline void
 getProjectedPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
                      TSeqId const id1,
@@ -1368,7 +1368,7 @@ getProjectedPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TStringSet, typename TValue, typename TCargo, typename TSpec, typename TSeqId, typename TPosition, typename TSeqId2, typename TPosition2> 
+template<typename TStringSet, typename TValue, typename TCargo, typename TSpec, typename TSeqId, typename TPosition, typename TSeqId2, typename TPosition2>
 inline void
 getProjectedPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
                      TValue seg_num,
@@ -1418,12 +1418,12 @@ getProjectedPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 /*!
  * @fn AlignmentGraph#getFirstCoveredPosition
  * @brief Finds the first position in a sequence that is not assigned to a nil vertex.
- * 
+ *
  * @signature TPos getFirstCoveredPosition(ag, id);
- * 
+ *
  * @param[in] ag An @link AlignmentGraph @endlink.
  * @param[in] id A sequence id.
- * 
+ *
  * @return TPos A sequence position.
  *
  * @see AlignmentGraph#getLastCoveredPosition
@@ -1460,12 +1460,12 @@ getFirstCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 /*!
  * @fn AlignmentGraph#getLastCoveredPosition
  * @brief Finds the last position in a sequence that is not assigned to a nil vertex.
- * 
+ *
  * @signature TPos getLastCoveredPosition(ag, id);
- * 
+ *
  * @param[in] ag An @link AlignmentGraph @endlink.
  * @param[in] id A sequence id.
- * 
+ *
  * @return TPos A sequence position.
  *
  * @see AlignmentGraph#getFirstCoveredPosition
@@ -1502,24 +1502,24 @@ getLastCoveredPosition(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 /*!
  * @fn AlignmentGraph#convertAlignment
  * @brief Converts an alignment graph into an alignment matrix.
- * 
+ *
  * @signature bool convertAlignment(g, component, order, compLength);
  * @signature bool convertAlignment(g, matrix);
- * 
+ *
  * @param[in]  g          AlignmentGraph to convert.  An alignment graph.
  * @param[out] component  Vertex to component mapping.
  * @param[out] order      The order of the component graph when sorting topologically.
  * @param[out] compLength Component sizes.
  * @param[out] matrix     A string that represents an alignment matrix.
- * 
+ *
  * @return bool true iff the alignment graph is a valid alignment and false otherwise.
- * 
+ *
  * @section Remarks
- * 
+ *
  * The variant with <tt>component</tt> and <tt>order</tt> computes a topological sorting of connected components.
  */
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TComponentMap, typename TOrderMap, typename TComponentLength> 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TComponentMap, typename TOrderMap, typename TComponentLength>
 inline bool
 convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                  TComponentMap& component,
@@ -1548,7 +1548,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     Graph<Directed<void, WithoutEdgeId> > componentGraph;
     reserve(_getVertexString(componentGraph), numComponents);
     for(TSize i = 0; i<numComponents;++i) addVertex(componentGraph);
-    
+
     TSize nseq = length(value(g.data_sequence));
     String<std::set<TComponent> > componentsPerSeq;
     typedef String<String<TComponent> > TOrderedComponents;
@@ -1560,8 +1560,8 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     for(;it1!=it1End;++it1) {
         // If sections are not assigned to a vertex -> no alignment
         if (it1->second == nilVertex) return false;
-        
-        // Remember the sequence that component belongs to 
+
+        // Remember the sequence that component belongs to
         TSize currentSeq = idToPosition(value(g.data_sequence), it1->first.first);
 
         // Append component
@@ -1572,7 +1572,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
         }
         appendValue(value(orderedComponentsPerSeq, currentSeq), c, Generous());
         // If two components appear twice in the same sequence -> no alignment
-        if (!((value(componentsPerSeq,currentSeq)).insert(c)).second) return false;    
+        if (!((value(componentsPerSeq,currentSeq)).insert(c)).second) return false;
     }
     clear(componentsPerSeq);
 
@@ -1586,7 +1586,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
             addEdge(componentGraph, value((*itBegin), i), value((*itBegin), i+1));
         }
     }
-    
+
     // Make a topological sort of the component graph
     topologicalSort(order, componentGraph);
 
@@ -1624,7 +1624,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix> 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix>
 inline bool
 convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                  TMatrix& mat)
@@ -1668,7 +1668,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
         }
         unsigned int c = getProperty(component, it->second);
         while ((compIndex < compIndexLen) && (order[compIndex] != c)) {
-            for(TSize i=0;i<compLength[order[compIndex]];++i, ++col) 
+            for(TSize i=0;i<compLength[order[compIndex]];++i, ++col)
                 mat[row*len + col] = gapValue<char>();
             ++compIndex;
         }
@@ -1677,7 +1677,7 @@ convertAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
         typedef typename Iterator<TStringSetStr, Standard>::Type TStringSetStrIter;
         TStringSetStrIter itStr = begin(str, Standard());
         TStringSetStrIter itStrEnd = end(str, Standard());
-        for(;itStr != itStrEnd; goNext(itStr), ++col) 
+        for(;itStr != itStrEnd; goNext(itStr), ++col)
             mat[row*len + col] = (TValue) (*itStr);
         for(TSize i = length(str); i < compLength[order[compIndex]]; ++i, ++col)
             mat[row*len + col] = gapValue<char>();
@@ -1828,9 +1828,9 @@ _heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const&,
                             TSize const,
                             TSize const,
                             TVertexDescriptor const,
-                            TString const&, 
                             TString const&,
-                            Nothing&) 
+                            TString const&,
+                            Nothing&)
 {
     SEQAN_CHECKPOINT
 }
@@ -1844,9 +1844,9 @@ _heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g
                             TPositions const& positions,
                             TSize const m,
                             TSize const n,
-                            TString const& str1, 
+                            TString const& str1,
                             TString const& str2,
-                            TOutString& align) 
+                            TOutString& align)
 {
     SEQAN_CHECKPOINT
     typedef typename Value<TString>::Type TVertexSet;
@@ -1876,7 +1876,7 @@ _heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g
 
         // In what order do we insert gaps? -> Only important at the beginning and at the end, not between matches
         bool firstI = true;
-        if ((i != posStr1) && (j != posStr2)) 
+        if ((i != posStr1) && (j != posStr2))
         {
             if ((posStr1 == 0) && (posStr2 == 0)) {
                 TStringIter tmpPointerStr1 = pointerStr1;
@@ -1962,9 +1962,9 @@ _heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g
 template<typename TStringSet, typename TCargo, typename TSpec, typename TString, typename TOutString>
 inline TCargo
 heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
-                          TString const& str1, 
+                          TString const& str1,
                           TString const& str2,
-                          TOutString& align) 
+                          TOutString& align)
 {
     SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
@@ -1977,7 +1977,7 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 
     // Size of the sequences
     // Note for profile alignments every member of the sequence is a String!!! of vertex descriptors
-    
+
     // Fill the vertex to position map for str1
     // Remember for each vertex descriptor the position in the sequence
     typedef String<TSize> TMapVertexPos;
@@ -1992,7 +1992,7 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     TVertexSetIterConst itVEnd;
     for(;itStr1 != itStrEnd1;++itStr1, ++pos) {
         itV = begin(*itStr1, Standard());
-        itVEnd = end(*itStr1, Standard());    
+        itVEnd = end(*itStr1, Standard());
         for(;itV != itVEnd;++itV) map[*itV] = pos;
     }
 
@@ -2013,7 +2013,7 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
             for(;!atEnd(itOut); ++itOut) {
                 // Target vertex must be in the map
                 pPos = map[targetVertex(itOut)];
-                if (pPos != MaxValue<TSize>::VALUE) 
+                if (pPos != MaxValue<TSize>::VALUE)
                     appendValue(occupiedPositions, pPos * n + (TSize) (n - posItStr2 - 1), Generous());
             }
         }
@@ -2050,7 +2050,7 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
             for(;!atEnd(itOut); ++itOut) {
                 // Target vertex must be in the map
                 pPos = map[targetVertex(itOut)];
-                if ( pPos != MaxValue<TSize>::VALUE) 
+                if ( pPos != MaxValue<TSize>::VALUE)
                     weights[std::distance(begin(slotToPos, Standard()), std::lower_bound(begin(slotToPos, Standard()), end(slotToPos, Standard()), pPos * n + (TSize) (n - posItStr2 - 1)))] += (TCargo) cargo(*itOut);
             }
         }
@@ -2065,8 +2065,8 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     TSeqIter itSeq = begin(seq, Standard());
     TSlotToPosIter itSlotPos = begin(slotToPos, Standard());
     TSlotToPosIter itSlotPosEnd = end(slotToPos, Standard());
-    for(;itSlotPos != itSlotPosEnd; ++itSlotPos, ++itSeq) 
-        *itSeq = n - 1 - (*itSlotPos % n); 
+    for(;itSlotPos != itSlotPosEnd; ++itSlotPos, ++itSeq)
+        *itSeq = n - 1 - (*itSlotPos % n);
 
     // Calculate the heaviest increasing subsequence
     String<TSize> positions;
@@ -2084,8 +2084,8 @@ heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 template<typename TStringSet, typename TCargo, typename TSpec, typename TString>
 inline TCargo
 heaviestCommonSubsequence(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
-                          TString const& str1, 
-                          TString const& str2) 
+                          TString const& str1,
+                          TString const& str2)
 {
     SEQAN_CHECKPOINT
     Nothing noth;

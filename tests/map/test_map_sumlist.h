@@ -44,7 +44,7 @@ using namespace std;
 using namespace seqan;
 
 //////////////////////////////////////////////////////////////////////////////
-// Simple Sum List Reference Implementation 
+// Simple Sum List Reference Implementation
 //////////////////////////////////////////////////////////////////////////////
 
 namespace seqan
@@ -96,7 +96,7 @@ length(SumList<DIM, TValue, Dummy_> & me)
 //////////////////////////////////////////////////////////////////////////////
 
 template <unsigned int DIM, typename TValue>
-inline typename Value< SumList<DIM, TValue, Dummy_> >::Type 
+inline typename Value< SumList<DIM, TValue, Dummy_> >::Type
 getSum(SumList<DIM, TValue, Dummy_> & me,
        unsigned int dim)
 {
@@ -105,7 +105,7 @@ getSum(SumList<DIM, TValue, Dummy_> & me,
 
     typedef typename Iterator<TString>::Type TIterator;
     TValue sum = 0;
-    
+
     for (TIterator it = begin(me.data); it != end(me.data); ++it)
     {
         sum += value(it)[dim];
@@ -148,14 +148,14 @@ end(SumList<DIM, TValue, Dummy_> & me)
 //////////////////////////////////////////////////////////////////////////////
 
 template <unsigned int DIM, typename TValue, typename TValues>
-inline void 
+inline void
 appendValues(SumList<DIM, TValue, Dummy_> & me,
              TValues const & new_values)
 {
     appendValue(me.data, new_values);
 }
 template <unsigned int DIM, typename TValue, typename TValue2>
-inline void 
+inline void
 appendValues(SumList<DIM, TValue, Dummy_> & me,
              TValue2 const * new_values)
 {
@@ -281,7 +281,7 @@ getSum(Iter<TSumList, DummySumListIterator_ > & it,
 
     typedef typename Iterator<TString>::Type TIterator;
     TValue sum = 0;
-    
+
     for (TIterator it2 = begin(it.container->data); it2 != it.iter; ++it2)
     {
         sum += value(it2)[dim];
@@ -311,7 +311,7 @@ searchSumList(Iter<TSumList, DummySumListIterator_> & it,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TSumList, typename TValue2>
-inline void 
+inline void
 assignValue(Iter<TSumList, DummySumListIterator_ > & it,
             int dim,
             TValue2 val)
@@ -322,7 +322,7 @@ assignValue(Iter<TSumList, DummySumListIterator_ > & it,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TSumList, typename TValues>
-inline void 
+inline void
 insertValues(Iter<TSumList, DummySumListIterator_ > & it,
              TValues const & vals)
 {
@@ -331,7 +331,7 @@ insertValues(Iter<TSumList, DummySumListIterator_ > & it,
     it.iter = begin(it.container->data) + position;
 }
 template <typename TSumList, typename TValue>
-inline void 
+inline void
 insertValues(Iter<TSumList, DummySumListIterator_ > & it,
              TValue const * p_vals)
 {
@@ -342,7 +342,7 @@ insertValues(Iter<TSumList, DummySumListIterator_ > & it,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TSumList>
-inline void 
+inline void
 removeValues(Iter<TSumList, DummySumListIterator_ > & it)
 {
     arrayCopyForward(it.iter + 1, end(it.container->data, Standard()), it.iter);
@@ -453,7 +453,7 @@ void Test_MiniSumList2()
     typedef Iterator<TSumList>::Type TIterator;
     typedef    SumListValues<3, int> TValues;
 
-    int const VALUES [][3] = 
+    int const VALUES [][3] =
     {
         {1, 2, 3},
         {2, 3, 1},
@@ -757,7 +757,7 @@ void Test_SkipSumListStress()
 
 
         //removeValues
-        if (i % 2) 
+        if (i % 2)
         {
             dim = rand() % DIM;
             find_sum = (rand() + (rand() << 16)) % getSum(ssl, dim);
@@ -785,7 +785,7 @@ void Test_SkipSumListStress()
 
 //////////////////////////////////////////////////////////////////////////////
 
-void Main_TestSumlist() 
+void Main_TestSumlist()
 {
     Test_MiniSumList_Entry();
     Test_MiniSumList<5>();

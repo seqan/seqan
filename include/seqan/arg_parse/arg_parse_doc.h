@@ -117,13 +117,13 @@ inline void addLine(ArgumentParser & me, TString const & line)
  *
  * @code{.cpp}
  * ArgumentParser parser;
- * 
+ *
  * [...] // init parser
- * 
+ *
  * addSection(parser, "In-/Output-Options");
  * addOption("i", ... );
  * addOption("o", ... );
- * 
+ *
  * addSection(parser, "Other Options");
  * addOption("x", ... );
  * @endcode

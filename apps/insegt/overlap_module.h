@@ -1,6 +1,6 @@
 /*==========================================================================
                 SeqAn - The Library for Sequence Analysis
-                          http://www.seqan.de 
+                          http://www.seqan.de
  ============================================================================
   Copyright (C) 2007
 
@@ -28,7 +28,7 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
-// Assign ContigId of children to parents    
+// Assign ContigId of children to parents
 template<typename TSpec, typename TConfig>
 inline void
 adjustParentEntries(FragmentStore<TSpec, TConfig> & fragStore)
@@ -51,7 +51,7 @@ adjustParentEntries(FragmentStore<TSpec, TConfig> & fragStore)
         }
     } while (goRight(it));
 }
-    
+
 //////////////////////////////////////////////////////////////////////////////
 // getIdsFroRead
 //////////////////////////////////////////////////////////////////////////////
@@ -69,11 +69,11 @@ getIdsForRead(TAnnoIds & ids, FragmentStore<TSpec, TConfig> & fragStore, TInterv
     typedef typename Iterator<TIntervals >::Type                 TIntervalIter;
     typedef typename Iterator<StringSet<TResult > >::Type            TResultIter;
     //typedef typename Iterator<TResult >::Type                TIdIter;
-    
+
     static const TId INVALID_ID = TAnnotationStoreElement::INVALID_ID;
-    
+
     resize(ids, length(alignIntervals));
-    
+
     TIntervalIter itI = begin(alignIntervals);
     TIntervalIter itIEnd = end(alignIntervals);
     TResultIter itR = begin(ids);
@@ -82,16 +82,16 @@ getIdsForRead(TAnnoIds & ids, FragmentStore<TSpec, TConfig> & fragStore, TInterv
     // search mapped annotations for each interval of the aligned read and store them in the corresponding list 'ids'
     for ( ; itI != itIEnd; goNext(itI), goNext(itR))
     {
-        findIntervalsForInterval(value(itR), intervalTree, getValue(itI), offsetInterval);    
+        findIntervalsForInterval(value(itR), intervalTree, getValue(itI), offsetInterval);
     }
-    
+
     // check for each aligment-interval, if the inner interval-borders fit to the borders of the annotation id:
     itI = begin(alignIntervals);
     itR = begin(ids);
     TId currentId;
     TContigPos beginPos;
     TContigPos endPos;
-    
+
     for ( ; itI != itIEnd; goNext(itI), goNext(itR))
     {
         for (unsigned i = 0; i < length(getValue(itR)); ++i)
@@ -99,7 +99,7 @@ getIdsForRead(TAnnoIds & ids, FragmentStore<TSpec, TConfig> & fragStore, TInterv
             currentId = getValue(getValue(itR), i);
             beginPos = getValue(fragStore.annotationStore, currentId).beginPos;
             endPos = getValue(fragStore.annotationStore, currentId).endPos;
-            
+
             if (beginPos > endPos)
             {
                 beginPos = endPos;
@@ -151,7 +151,7 @@ template <typename TId>
 struct ReadAnnoStoreElement
 {
     typedef StringSet<String<TId> > TAnnoIds;
-    
+
     TAnnoIds    annoIds;
     String<TId>     parentIds;     // not only for exon-annotations -> more than one parentId possible, only if whole read mapped in parent
     TId        contigId;
@@ -167,15 +167,15 @@ assignToReadAnnoStore(TReadAnnoStore &readAnnoStore, FragmentStore<TSpec, TConfi
 {
     typedef typename FragmentStore<TSpec, TConfig>::TAnnotationStore     TAnnotationStore;
     typedef typename Value<TAnnotationStore>::Type                 TAnnotationStoreElement;
-    typedef typename Iterator<TAnnoIds>::Type                TAnnoIdsIter;    
+    typedef typename Iterator<TAnnoIds>::Type                TAnnoIdsIter;
     typedef typename Value<TAnnoIds>::Type                    TIds;
     typedef typename Iterator<TIds>::Type                    TIdsIter;
-    
+
     static const TId INVALID_ID = TAnnotationStoreElement::INVALID_ID;
-    
+
     // assign annotationIds:
-    value(readAnnoStore, readId).annoIds = annoIds;    
-        
+    value(readAnnoStore, readId).annoIds = annoIds;
+
     // assign coresponding parentIds:
     clear (value(readAnnoStore, readId).parentIds);
     if(!empty(annoIds))
@@ -183,9 +183,9 @@ assignToReadAnnoStore(TReadAnnoStore &readAnnoStore, FragmentStore<TSpec, TConfi
         TIdsIter itId = begin(front(annoIds));
         TIdsIter itIdEnd = end(front(annoIds));
         for ( ; itId != itIdEnd; goNext(itId))        // read maps in gene, if all intervals map in gene: at least one exon of the gene has to occur in the id-list of the first interval
-            if (getValue(itId) != INVALID_ID && !isElement_unsorted(getValue(fragStore.annotationStore, getValue(itId)).parentId, getValue(readAnnoStore, readId).parentIds))    
+            if (getValue(itId) != INVALID_ID && !isElement_unsorted(getValue(fragStore.annotationStore, getValue(itId)).parentId, getValue(readAnnoStore, readId).parentIds))
                 appendValue(value(readAnnoStore, readId).parentIds, getValue(fragStore.annotationStore, getValue(itId)).parentId, Generous() );
-    
+
         if (!empty(getValue(readAnnoStore, readId).parentIds))
         {
             TAnnoIdsIter itA = begin(annoIds);
@@ -195,8 +195,8 @@ assignToReadAnnoStore(TReadAnnoStore &readAnnoStore, FragmentStore<TSpec, TConfi
             {
                 itId = begin(*itA);        // for each interval of read:
                 itIdEnd = end(*itA);
-                for (unsigned i = 0; i < length(getValue(readAnnoStore, readId).parentIds); ++i) // check if at least one child of the parentId occurs 
-                {                        
+                for (unsigned i = 0; i < length(getValue(readAnnoStore, readId).parentIds); ++i) // check if at least one child of the parentId occurs
+                {
                     for ( ; itId != itIdEnd; goNext(itId))
                     {
                         if (getValue(itId) != INVALID_ID && getValue(fragStore.annotationStore, getValue(itId)).parentId == getValue(getValue(readAnnoStore, readId).parentIds, i) )
@@ -220,7 +220,7 @@ assignToReadAnnoStore(TReadAnnoStore &readAnnoStore, FragmentStore<TSpec, TConfi
 template <typename TId>
 struct TupleCountStoreElement
 {
-    typedef String<TId>            TTuple;                
+    typedef String<TId>            TTuple;
     typedef String<TTuple >         TTupleList;
     typedef String<unsigned>        TTupleCounts;
     typedef String<double>            TTupleNorm;
@@ -228,7 +228,7 @@ struct TupleCountStoreElement
     TTupleList        readConnections;
     TTupleCounts        readConnectionCounts;
     TTupleNorm        readConnectionNorm;
-    TTupleList        matePairConnections; 
+    TTupleList        matePairConnections;
     TTupleCounts        matePairConnectionCounts;
     TTupleNorm        matePairConnectionNorm;
 };
@@ -237,10 +237,10 @@ struct TupleCountStoreElement
 //////////////////////////////////////////////////////////////////////////////
 template<typename TTupleCountStore, typename TSpec, typename TConfig, typename TReadAnnoStore>
 inline void
-buildTupleCountStore(TTupleCountStore & tupleCountStore, 
-             FragmentStore<TSpec, TConfig> &  fragStore, 
-             TReadAnnoStore & readAnnoStore, 
-             unsigned n, 
+buildTupleCountStore(TTupleCountStore & tupleCountStore,
+             FragmentStore<TSpec, TConfig> &  fragStore,
+             TReadAnnoStore & readAnnoStore,
+             unsigned n,
              bool exact_nTuple)
 {
     typedef typename FragmentStore<TSpec, TConfig>::TAnnotationStore     TAnnotationStore;
@@ -249,19 +249,19 @@ buildTupleCountStore(TTupleCountStore & tupleCountStore,
     typedef typename Value<TReadStore>::Type                 TReadStoreElement;
     typedef typename TReadStoreElement::TId                    TReadId;
     typedef typename Value<TAnnotationStore>::Type                 TAnnotationStoreElement;
-    typedef typename TAnnotationStoreElement::TId                 TId; 
+    typedef typename TAnnotationStoreElement::TId                 TId;
     typedef typename Iterator<TReadAnnoStore>::Type             TReadIter;
     typedef typename Value<TReadAnnoStore>::Type                TReadAnnoStoreElement;
     typedef typename TReadAnnoStoreElement::TAnnoIds            TAnnoIds;
     typedef typename Iterator<TAnnoIds>::Type                 TAnnoIdsIter;
     typedef typename Value<TAnnoIds>::Type                    TIds;
     typedef typename Iterator<TIds>::Type                    TIdsIter;
-    
+
     static const TReadId INVALID_READ_ID = TReadStoreElement::INVALID_ID;
     static const TId INVALID_ANNO_ID = TAnnotationStoreElement::INVALID_ID;
-    
-    resize(tupleCountStore, length(fragStore.annotationStore)); 
-    
+
+    resize(tupleCountStore, length(fragStore.annotationStore));
+
     bool validMate;
     TReadIter itRead = begin(readAnnoStore);
     TReadIter itReadEnd = end(readAnnoStore);
@@ -282,16 +282,16 @@ buildTupleCountStore(TTupleCountStore & tupleCountStore,
     TAnnoIdsIter itAnnoIds;
     TAnnoIdsIter itAnnoIdsEnd;
     TIds matePairTuple;
-    TPos beginPos1;    
+    TPos beginPos1;
     TPos endPos1;
     TPos beginPos2;
     TPos endPos2;
     unsigned pos;
-    
+
     for ( ; itRead != itReadEnd; goNext(itRead))
     {
         if (!empty(getValue(itRead).parentIds) )
-        { 
+        {
             itP = begin(getValue(itRead).parentIds);
             itPEnd = end(getValue(itRead).parentIds);
             for ( ; itP != itPEnd; goNext(itP) )
@@ -303,9 +303,9 @@ buildTupleCountStore(TTupleCountStore & tupleCountStore,
                 // create all Tuple of length n:
                 if (exact_nTuple && n <= length(annoIds)) create_nTuple(tupleSet, fragStore, annoIds, getValue(itP), n);
                 // create all max-Tuple (whole read) for current parentId:
-                else if (!exact_nTuple && n == 0) create_nTuple(tupleSet, fragStore, annoIds, getValue(itP), length(annoIds));    
+                else if (!exact_nTuple && n == 0) create_nTuple(tupleSet, fragStore, annoIds, getValue(itP), length(annoIds));
                 // create all tuple >= n for current parentId:
-                else if (!exact_nTuple) create_Tuple(tupleSet, fragStore, annoIds, getValue(itP), n);    
+                else if (!exact_nTuple) create_Tuple(tupleSet, fragStore, annoIds, getValue(itP), n);
                 if (!empty(tupleSet))
                 {
                     // create if necessary list of all possible tuples for second matepair-read:
@@ -318,42 +318,42 @@ buildTupleCountStore(TTupleCountStore & tupleCountStore,
                             secReadId = getValue(getValue(fragStore.matePairStore, matePairId).readId, 1);
                         else
                             secReadId = getValue(getValue(fragStore.matePairStore, matePairId).readId, 0);
-                
-                        if ( secReadId != INVALID_READ_ID )    
+
+                        if ( secReadId != INVALID_READ_ID )
                         {
-                            //if (!empty(getValue(readAnnoStore, secReadId).annoIds)) 
+                            //if (!empty(getValue(readAnnoStore, secReadId).annoIds))
                             if ( isElement_unsorted(getValue(itP), getValue(readAnnoStore, secReadId).parentIds) )    // p in parents of matepair? -> annoIds is not empty
                             {
                                 validMate = true;
                                 annoIds = getValue(readAnnoStore, secReadId).annoIds;
-                                firstAnnoId1 = front(front(tupleSet));    // ids necessary to check positions in aligment  
+                                firstAnnoId1 = front(front(tupleSet));    // ids necessary to check positions in aligment
                                 firstAnnoId2 = front(front(annoIds));    // can't be INVALID_ID, because parents was checked
-                            
+
                                 // check if current read-position is smaller than the position of the second read -> tuple are ordered by position
-                                if ( (getValue(fragStore.annotationStore, firstAnnoId1).beginPos <= 
-                                    getValue(fragStore.annotationStore,firstAnnoId1).endPos && 
-                                      getValue(fragStore.annotationStore, firstAnnoId1).beginPos < 
+                                if ( (getValue(fragStore.annotationStore, firstAnnoId1).beginPos <=
+                                    getValue(fragStore.annotationStore,firstAnnoId1).endPos &&
+                                      getValue(fragStore.annotationStore, firstAnnoId1).beginPos <
                                           getValue(fragStore.annotationStore, firstAnnoId2).endPos) ||
-                                     (getValue(fragStore.annotationStore, firstAnnoId1).beginPos > 
-                                         getValue(fragStore.annotationStore, firstAnnoId1).endPos && 
-                                      getValue(fragStore.annotationStore, firstAnnoId1).endPos < 
-                                          getValue(fragStore.annotationStore, firstAnnoId2).beginPos)  ) 
-                                {    
+                                     (getValue(fragStore.annotationStore, firstAnnoId1).beginPos >
+                                         getValue(fragStore.annotationStore, firstAnnoId1).endPos &&
+                                      getValue(fragStore.annotationStore, firstAnnoId1).endPos <
+                                          getValue(fragStore.annotationStore, firstAnnoId2).beginPos)  )
+                                {
                                     if (exact_nTuple && n <= length(annoIds)) create_nTuple(secTupleSet, fragStore, annoIds, getValue(itP), n);
-                                    else if (!exact_nTuple && n == 0) create_nTuple(secTupleSet, fragStore, annoIds, getValue(itP), length(annoIds));        
+                                    else if (!exact_nTuple && n == 0) create_nTuple(secTupleSet, fragStore, annoIds, getValue(itP), length(annoIds));
                                     else if (!exact_nTuple) create_Tuple(secTupleSet, fragStore, annoIds, getValue(itP), n);
                                 }
                             }
                         }
                     }
                     else validMate = true;
-            
+
                     // access to tupleCountStore for all tuple of current read:
                     if (validMate)
                     {
                         itTuple = begin(tupleSet);
                         itTupleEnd = end(tupleSet);
-                        for ( ; itTuple != itTupleEnd; goNext(itTuple))    
+                        for ( ; itTuple != itTupleEnd; goNext(itTuple))
                         {
                             firstAnnoId1 = front(getValue(itTuple));
                             erase(value(itTuple), 0);            // first id is not stored; is know by position in tupleCountStore
@@ -361,9 +361,9 @@ buildTupleCountStore(TTupleCountStore & tupleCountStore,
                             // readConnections:
                             if (!empty(getValue(itTuple)))
                             {
-                                if (searchValue(pos, getValue(itTuple), getValue(tupleCountStore, firstAnnoId1).readConnections)) 
+                                if (searchValue(pos, getValue(itTuple), getValue(tupleCountStore, firstAnnoId1).readConnections))
                                     ++value(value(tupleCountStore, firstAnnoId1).readConnectionCounts, pos);
-                                else 
+                                else
                                 {
                                     if (pos != endPosition(getValue(tupleCountStore, firstAnnoId1).readConnections) )
                                     {
@@ -378,7 +378,7 @@ buildTupleCountStore(TTupleCountStore & tupleCountStore,
                                     }
                                 }
                             }
-                            // matePairConnections: 
+                            // matePairConnections:
                             if (!empty(secTupleSet))
                             {
                                 itSecTuple = begin(secTupleSet);
@@ -387,15 +387,15 @@ buildTupleCountStore(TTupleCountStore & tupleCountStore,
                                 {
                                     matePairTuple = getValue(itTuple);
                                     // INVALID_ID: sign for connection by matepair (apart from that, there are no INVALID_IDs in the list)
-                                    appendValue(matePairTuple, INVALID_ANNO_ID, Generous());                
+                                    appendValue(matePairTuple, INVALID_ANNO_ID, Generous());
                                     if (!empty(getValue(itTuple)) && back(getValue(itTuple)) == front(getValue(itSecTuple)) )        // no id 2x allowed
-                                    {    
+                                    {
                                         if (exact_nTuple == 0 && n == 0) erase(value(itSecTuple), 0);
                                         else continue;                            // tupel would be created double or tupel wouldn't have the length n anymore
                                     }
                                     append(matePairTuple, getValue(itSecTuple), Generous());
-                    
-                                    if (empty(getValue(itTuple)))                             
+
+                                    if (empty(getValue(itTuple)))
                                     {
                                         beginPos1 = getValue(fragStore.annotationStore, firstAnnoId1).beginPos;
                                         endPos1 = getValue(fragStore.annotationStore, firstAnnoId1).endPos;
@@ -406,14 +406,14 @@ buildTupleCountStore(TTupleCountStore & tupleCountStore,
                                         endPos1 = getValue(fragStore.annotationStore, back(getValue(itTuple))).endPos;
                                     }
                                     // begin position of first annotation in tuple of second read
-                                    beginPos2 = getValue(fragStore.annotationStore, front(getValue(itSecTuple))).beginPos; 
+                                    beginPos2 = getValue(fragStore.annotationStore, front(getValue(itSecTuple))).beginPos;
                                     endPos2 = getValue(fragStore.annotationStore, front(getValue(itSecTuple))).endPos;
                                     if ( (beginPos1 <= endPos1 && endPos1 < beginPos2) ||            // no overlapping annotations allowed
                                          (endPos1 < beginPos1 && beginPos1 < endPos2) )
                                     {
                                         if (searchValue(pos, matePairTuple, getValue(tupleCountStore, firstAnnoId1).matePairConnections))
                                             ++value(value(tupleCountStore, firstAnnoId1).matePairConnectionCounts, pos);
-                                        else 
+                                        else
                                         {
                                             if (pos != endPosition(getValue(tupleCountStore, firstAnnoId1).matePairConnections) )
                                             {
@@ -457,12 +457,12 @@ buildAnnoCountStore(TAnnoCountStore & annoCountStore, FragmentStore<TSpec, TConf
     typedef typename Value<TIds>::Type                    TId;
     typedef typename FragmentStore<TSpec, TConfig>::TAnnotationStore     TAnnotationStore;
     typedef typename Value<TAnnotationStore>::Type                 TAnnotationStoreElement;
-    
+
     static const TId INVALID_READ_ID = TReadStoreElement::INVALID_ID;
     static const TId INVALID_ANNO_ID = TAnnotationStoreElement::INVALID_ID;
-    
+
     resize(annoCountStore, length(fragStore.annotationStore), 0);
-    
+
     TReadIter itRead = begin(readAnnoStore);
     TReadIter itReadEnd = end(readAnnoStore);
     TId readId;
@@ -475,8 +475,8 @@ buildAnnoCountStore(TAnnoCountStore & annoCountStore, FragmentStore<TSpec, TConf
     TAnnoIdsIter itAnnoIdsEnd;
     TIdsIter itId;
     TIdsIter itIdEnd;
-    
-    // increment for each read respective to its mapped ids the count in the annoCountStore 
+
+    // increment for each read respective to its mapped ids the count in the annoCountStore
     for ( ; itRead != itReadEnd; goNext(itRead))
     {
         if (!empty(getValue(itRead).annoIds) )
@@ -502,14 +502,14 @@ buildAnnoCountStore(TAnnoCountStore & annoCountStore, FragmentStore<TSpec, TConf
                     {
                         if (!isElement_unsorted(getValue(itP), getValue(readAnnoStore, secReadId).parentIds) )
                             continue; // if matepair read doesn't map in same parentId: no count (go to next parentId)
-                    
-                        // count annotations, which occur in both reads, shouldn't be increment for the read with the bigger readId 
-                        if (secReadId < readId )         
+
+                        // count annotations, which occur in both reads, shouldn't be increment for the read with the bigger readId
+                        if (secReadId < readId )
                         {
-                            clear(interSecIds);                                
+                            clear(interSecIds);
                             // just check the periphery annotations
-                            // if the end of the current read mapped in a same annotation as the start of the second read:  
-                            if ( interSec(interSecIds, back(getValue(itRead).annoIds), front(getValue(readAnnoStore, secReadId).annoIds)) ) 
+                            // if the end of the current read mapped in a same annotation as the start of the second read:
+                            if ( interSec(interSecIds, back(getValue(itRead).annoIds), front(getValue(readAnnoStore, secReadId).annoIds)) )
                             {
                                 for (unsigned i = 0; i < length(interSecIds); ++i)
                                 {
@@ -518,20 +518,20 @@ buildAnnoCountStore(TAnnoCountStore & annoCountStore, FragmentStore<TSpec, TConf
                                     // decrement the corresponding count
                                 }
                             }
-                            // or if the start of the current read mapped in a same annotation as the end of the second read: 
-                            else if ( interSec(interSecIds, front(getValue(itRead).annoIds), 
-                                  back(getValue(readAnnoStore, secReadId).annoIds)) )    
+                            // or if the start of the current read mapped in a same annotation as the end of the second read:
+                            else if ( interSec(interSecIds, front(getValue(itRead).annoIds),
+                                  back(getValue(readAnnoStore, secReadId).annoIds)) )
                             {
                                 for (unsigned i = 0; i < length(interSecIds); ++i)
                                 {
                                     if (getValue(fragStore.annotationStore, getValue(interSecIds, i) ).parentId ==  getValue(itP))
                                         --value(annoCountStore, getValue(interSecIds, i));
                                 }
-                            }    
+                            }
                             if (getValue(itP) != INVALID_ANNO_ID) --value(annoCountStore, getValue(itP));
                         }
                     }
-            
+
                     // count for all annoIds
                     itAnnoIds = begin(getValue(itRead).annoIds);
                     itAnnoIdsEnd = end(getValue(itRead).annoIds);
@@ -543,7 +543,7 @@ buildAnnoCountStore(TAnnoCountStore & annoCountStore, FragmentStore<TSpec, TConf
                             if (getValue(itId) != INVALID_ANNO_ID && getValue(fragStore.annotationStore, getValue(itId)).parentId == getValue(itP) )
                                 ++value(annoCountStore, getValue(itId));
                     }
-        
+
                     // count for parentIds (already selected)
                     if (getValue(itP) != INVALID_ANNO_ID) ++value(annoCountStore, getValue(itP));
                 }
@@ -560,8 +560,8 @@ template<typename TReadAnnoStore, typename TAnnoCountStore, typename TTupleCount
 inline void
 getResults(TReadAnnoStore & readAnnoStore,
        TAnnoCountStore & annoCountStore,
-       TTupleCountStore & tupleCountStore, 
-       FragmentStore<TSpec, TConfig> & fragStore, 
+       TTupleCountStore & tupleCountStore,
+       FragmentStore<TSpec, TConfig> & fragStore,
        unsigned tupelSize,
        bool exact_nTuple,
        unsigned offsetInterval,
@@ -575,16 +575,16 @@ getResults(TReadAnnoStore & readAnnoStore,
     typedef typename Iterator<TIntervalTreeStore>::Type            TIntervalTree;
     typedef typename Value<TReadAnnoStore>::Type                 TReadAnnoStoreElement;
     typedef typename TReadAnnoStoreElement::TAnnoIds             TAnnoIds;
-    
+
     typedef typename FragmentStore<TSpec, TConfig>::TAlignedReadStore    TAlignedReadStore;
     typedef typename Position<TAlignedReadStore>::Type             TAlignPos;
     typedef      String<AlignIntervalsStoreElement<> >             TAlignIntervalsStore;
     typedef typename Iterator<TAlignIntervalsStore>::Type             TAlignIntervalsStoreIter;
-    
+
     resize(readAnnoStore, length(fragStore.readStore));
-    
+
     TIntervalTree intervalTree;
-    
+
     // extract intervals from alignedReadStore and store them in AlignIntervalsStore:
     TAlignIntervalsStore alignIntervalsStore;
     buildAlignIntervalsStore(alignIntervalsStore, fragStore, thresholdGaps);
@@ -595,7 +595,7 @@ getResults(TReadAnnoStore & readAnnoStore,
         TId contigId;
         TId readId;
         TAnnoIds  ids;
-    
+
         TAlignIntervalsStoreIter it = begin(alignIntervalsStore);
         TAlignIntervalsStoreIter itEnd = end(alignIntervalsStore);
         // for each item in alignIntervalsStore:
@@ -608,9 +608,9 @@ getResults(TReadAnnoStore & readAnnoStore,
             // get respective intervalTree
             if (unknownO ||  getValue(fragStore.alignedReadStore, alignPos).beginPos <= getValue(fragStore.alignedReadStore, alignPos).endPos)
                 intervalTree = begin(fragStore.intervalTreeStore_F, Standard()) + contigId;     //getValue(fragStore.intervalTreeStore_F, contigId);
-            else 
+            else
                 intervalTree = begin(fragStore.intervalTreeStore_R, Standard()) + contigId;        //getValue(fragStore.intervalTreeStore_R, contigId);
-            
+
             // get annotationStore-Ids for these intervals:
             clear(ids);
             if ((*intervalTree).interval_counter != 0)
@@ -637,29 +637,29 @@ normalizeAnnoCounts(TAnnoNormStore &annoNormStore, TMapO &mapO, TAnnoCountStore 
     typedef typename TAnnotationStoreElement::TId                TId;
     typedef typename FragmentStore<TSpec, TConfig>::TContigPos        TPos;
     typedef typename FragmentStore<TSpec, TConfig>::TReadStore        TReadStore;
-    typedef typename Size<TReadStore>::Type                    TReadStoreSize; 
+    typedef typename Size<TReadStore>::Type                    TReadStoreSize;
     typedef typename Iterator<TAnnotationStore>::Type            TAnnoIter;
     typedef typename Iterator<TAnnoCountStore>::Type             TCountIter;
     typedef typename Iterator<TAnnoNormStore>::Type                TNormIter;
     typedef typename Size<TPos>::Type                    TSize;
     typedef      String<TSize>                        TChildrenLengths;
-    typedef typename Iterator<String<TSize> >::Type                TLengthIter;    
+    typedef typename Iterator<String<TSize> >::Type                TLengthIter;
     typedef      Pair<TId, TChildrenLengths>                TPair;
     typedef typename Value<TMapO>::Type                    TPairO;
     typedef      Map<TPair>                        TMap;
     typedef typename Iterator<TMap>::Type                    TMapIter;
-    
+
     static const TId INVALID_ID = TAnnotationStoreElement::INVALID_ID;
     static const TPos INVALID_POS = TAnnotationStoreElement::INVALID_POS;
-    
+
     resize(annoNormStore, length(annoCountStore), 0);
-    
+
     TReadStoreSize readNo = length(fragStore.readStore) - length(fragStore.matePairStore);
-    
+
     TMap map;
     clear(map);
     clear(mapO);
-    
+
     if(!empty(fragStore.annotationStore))
     {
         TAnnoIter itA = begin(fragStore.annotationStore);
@@ -670,7 +670,7 @@ normalizeAnnoCounts(TAnnoNormStore &annoNormStore, TMapO &mapO, TAnnoCountStore 
         TPair pair;
         TPairO pairO;
         TSize length;
-        
+
         for ( ; itA != itAEnd; goNext(itA), goNext(itC), goNext(itN) )
         {
             if (getValue(itA).beginPos == INVALID_POS && getValue(itA).parentId == INVALID_ID)     // make entry for each gene/parent in map:
@@ -679,20 +679,20 @@ normalizeAnnoCounts(TAnnoNormStore &annoNormStore, TMapO &mapO, TAnnoCountStore 
                 pair.i1 = position(itA, fragStore.annotationStore);
                 pair.i2 = childrenLengths;
                 insert(map, pair);                                // for lengths
-        
+
                 pairO.i1 = position(itA, fragStore.annotationStore);
                 pairO.i2 = 0;
                 insert(mapO, pairO);                                // for orientation
             }
-            else if (getValue(itA).beginPos != INVALID_POS)                        // for each exon/child: 
+            else if (getValue(itA).beginPos != INVALID_POS)                        // for each exon/child:
             {
                 if (getValue(itA).beginPos <= getValue(itA).endPos)
                     length = getValue(itA).endPos - getValue(itA).beginPos;
                 else
                     length = getValue(itA).beginPos - getValue(itA).endPos;
-        
+
                 value(itN) = ((double)1000000000 * (double)getValue(itC))/((double)readNo * (double)length);        // calculate normalized expression-value
-        
+
                 if (getValue(itA).parentId != INVALID_ID)                    // append length to gene/parent lengths
                 {
                     appendValue(mapValue(map, getValue(itA).parentId), length, Generous());
@@ -702,7 +702,7 @@ normalizeAnnoCounts(TAnnoNormStore &annoNormStore, TMapO &mapO, TAnnoCountStore 
             }
         }
     }
-    
+
     if (!empty(map))
     {
         TMapIter itM = begin(map);
@@ -746,12 +746,12 @@ normalizeTupleCounts(TTupleCountStore &tupleCountStore, FragmentStore<TSpec, TCo
     typedef typename FragmentStore<TSpec, TConfig>::TContigPos        TPos;
     typedef typename Size<TPos>::Type                    TSize;
     typedef typename FragmentStore<TSpec, TConfig>::TReadStore        TReadStore;
-    typedef typename Size<TReadStore>::Type                    TReadStoreSize; 
-    
+    typedef typename Size<TReadStore>::Type                    TReadStoreSize;
+
     static const TId INVALID_ID = TAnnotationStoreElement::INVALID_ID;
-    
+
     TReadStoreSize readNo = length(fragStore.readStore) - length(fragStore.matePairStore);
-    
+
     if (!empty(tupleCountStore))
     {
         TStoreIter itS = begin(tupleCountStore);
@@ -779,7 +779,7 @@ normalizeTupleCounts(TTupleCountStore &tupleCountStore, FragmentStore<TSpec, TCo
                     itId = begin(*itT);
                     itIdEnd = end(*itT);
                     for ( ; itId != itIdEnd; goNext(itId))
-                    {    
+                    {
                         if (getValue(fragStore.annotationStore, *itId).beginPos <= getValue(fragStore.annotationStore, *itId).endPos)
                             tupleLength += getValue(fragStore.annotationStore, *itId).endPos - getValue(fragStore.annotationStore, *itId).beginPos;
                         else
@@ -825,25 +825,25 @@ normalizeTupleCounts(TTupleCountStore &tupleCountStore, FragmentStore<TSpec, TCo
 template<typename TOptions>
 inline bool
 ngsOverlapper(TOptions &options)
-{    
+{
     FragmentStore<> fragStore;
 #ifdef DEBUG_OVERLAP_MODULE
-    SEQAN_PROTIMESTART(find1_time);    
-#endif 
+    SEQAN_PROTIMESTART(find1_time);
+#endif
     // build contigStore from FASTA file
 #ifdef DEBUG_OVERLAP_MODULE
     std::cout << "load Sam..." << std::endl;
-#endif 
+#endif
     // read aligned reads in FragmentStore from Sam files
     BamFileIn inSam(toCString(options.nameSAM));
     readRecords(fragStore, inSam);
 #ifdef DEBUG_OVERLAP_MODULE
     std::cout << "  loaded " << length(fragStore.readSeqStore) << " read records" << std::endl;
-#endif 
+#endif
 
 #ifdef DEBUG_OVERLAP_MODULE
     SEQAN_PROTIMESTART(find2_time);
-#endif 
+#endif
     // read annotations from GFF or GTF
     GffFileIn inGff(toCString(options.nameGFF));
     readRecords(fragStore, inGff);
@@ -853,25 +853,25 @@ ngsOverlapper(TOptions &options)
     // create IntervalTreeStore:
 #ifdef DEBUG_OVERLAP_MODULE
     SEQAN_PROTIMESTART(find3_time);
-#endif 
+#endif
     createIntervalTreeStore(fragStore, options.unknownO);
 #ifdef DEBUG_OVERLAP_MODULE
     std::cout << "create intervalTreeStores from annotationStore took: \t" << SEQAN_PROTIMEDIFF(find3_time) << " seconds" << std::endl;
-#endif 
-    
+#endif
+
     // build stores for results:
-    String<ReadAnnoStoreElement<unsigned> >            readAnnoStore;     
+    String<ReadAnnoStoreElement<unsigned> >            readAnnoStore;
     String<unsigned>                     annoCountStore;
     String<TupleCountStoreElement<unsigned> >        tupleCountStore;
     String<TupleCountStoreElement_Fusion<unsigned> >    tupleCountStore_Fusion;            // additional Store, if fusion genes should be checked
 
-    // get results with additional check for transfusion genes (will be changed later additionally) 
+    // get results with additional check for transfusion genes (will be changed later additionally)
     if (options.fusion == 1)
         getResults_Fusion(readAnnoStore, annoCountStore, tupleCountStore, tupleCountStore_Fusion, fragStore, options.nTuple, options.exact_nTuple, options.offsetInterval, options.thresholdGaps, options.unknownO);
     else // get normal results:
         getResults(readAnnoStore, annoCountStore, tupleCountStore, fragStore, options.nTuple, options.exact_nTuple, options.offsetInterval, options.thresholdGaps, options.unknownO);
-    
-    
+
+
     // normalize:
     String<double>            annoNormStore;
     Map<Pair<unsigned, bool> >     mapO;
@@ -888,14 +888,14 @@ ngsOverlapper(TOptions &options)
         std::cerr << "ERROR:  Could not open output file " << options.readOutputFileName << "\n";
     createReadCountGFF(readOutput, readAnnoStore, fragStore);
     readOutput.close();
-    
+
     std::fstream annoOutput;
     annoOutput.open(toCString(options.annoOutputFileName), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
     if (!annoOutput.good())
         std::cerr << "ERROR:  Could not open output file " << options.annoOutputFileName << "\n";
     createAnnoCountGFF(annoOutput, annoCountStore, annoNormStore, fragStore, mapO);
     annoOutput.close();
-    
+
     std::fstream tupleOutput;
     tupleOutput.open(toCString(options.tupleOutputFileName), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
     if (!tupleOutput.good())
@@ -912,12 +912,12 @@ ngsOverlapper(TOptions &options)
         tupleOutput_Fusion.close();
     }
 
-    
+
 #ifdef DEBUG_OVERLAP_MODULE
     std::cout << "ngsOverlapper-function took: \t" << SEQAN_PROTIMEDIFF(find1_time) << " seconds" << std::endl;
     std::cout << "ngsOverlapper-function without reading Sam took: \t" << SEQAN_PROTIMEDIFF(find2_time) << " seconds" << std::endl;
     std::cout << "ngsOverlapper-function and create IntervalTreeStore without reading Sam took:\t" << SEQAN_PROTIMEDIFF(find2_time) - SEQAN_PROTIMEDIFF(find3_time) << " seconds" << std::endl;
-#endif 
+#endif
     return true;
 }
 

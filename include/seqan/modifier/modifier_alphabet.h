@@ -101,7 +101,7 @@ convertImpl(Convert<TTarget, T> const convert_,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename THost, typename TSpec>
-inline unsigned ordValue(ModifiedAlphabet<THost,TSpec> const &c) 
+inline unsigned ordValue(ModifiedAlphabet<THost,TSpec> const &c)
 {
     SEQAN_CHECKPOINT;
     return ordValue(static_cast<THost const &>(c));
@@ -131,7 +131,7 @@ struct CompareType<ModifiedAlphabet<THost, TSpec>, TRight>
 
 template <typename THost, typename TSpec, typename TRight>
 inline bool
-operator==(ModifiedAlphabet<THost, TSpec> const & left_, 
+operator==(ModifiedAlphabet<THost, TSpec> const & left_,
            TRight const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -142,7 +142,7 @@ operator==(ModifiedAlphabet<THost, TSpec> const & left_,
 
 template <typename TLeft, typename THost, typename TSpec>
 inline bool
-operator==(TLeft const & left_, 
+operator==(TLeft const & left_,
            ModifiedAlphabet<THost, TSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -153,7 +153,7 @@ operator==(TLeft const & left_,
 
 template <typename TLeftHost, typename TLeftSpec, typename TRightHost, typename TRightSpec>
 inline bool
-operator==(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_, 
+operator==(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_,
            ModifiedAlphabet<TRightHost, TRightSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -165,7 +165,7 @@ operator==(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_,
 
 template <typename THost, typename TSpec>
 inline bool
-operator==(ModifiedAlphabet<THost, TSpec> const & left_, 
+operator==(ModifiedAlphabet<THost, TSpec> const & left_,
            ModifiedAlphabet<THost, TSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -176,7 +176,7 @@ operator==(ModifiedAlphabet<THost, TSpec> const & left_,
 
 template <typename TValue, typename TSpec, typename THost, typename TSpec2>
 inline bool
-operator==(SimpleType<TValue, TSpec> const & left_, 
+operator==(SimpleType<TValue, TSpec> const & left_,
            ModifiedAlphabet<THost, TSpec2> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -201,7 +201,7 @@ operator==(ModifiedAlphabet<THost, TSpec2> const & left_,
 
 template <typename TSpec, typename THost, typename TSpec2>
 inline bool
-operator==(Proxy<TSpec> const & left_, 
+operator==(Proxy<TSpec> const & left_,
            ModifiedAlphabet<THost, TSpec2> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -227,7 +227,7 @@ operator==(ModifiedAlphabet<THost, TSpec2> const & left_,
 
 template <typename THost, typename TSpec, typename TRight>
 inline bool
-operator!=(ModifiedAlphabet<THost, TSpec> const & left_, 
+operator!=(ModifiedAlphabet<THost, TSpec> const & left_,
            TRight const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -238,7 +238,7 @@ operator!=(ModifiedAlphabet<THost, TSpec> const & left_,
 
 template <typename TLeft, typename THost, typename TSpec>
 inline bool
-operator!=(TLeft const & left_, 
+operator!=(TLeft const & left_,
            ModifiedAlphabet<THost, TSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -249,7 +249,7 @@ operator!=(TLeft const & left_,
 
 template <typename TLeftHost, typename TLeftSpec, typename TRightHost, typename TRightSpec>
 inline bool
-operator!=(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_, 
+operator!=(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_,
              ModifiedAlphabet<TRightHost, TRightSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -261,7 +261,7 @@ operator!=(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_,
 
 template <typename THost, typename TSpec>
 inline bool
-operator!=(ModifiedAlphabet<THost, TSpec> const & left_, 
+operator!=(ModifiedAlphabet<THost, TSpec> const & left_,
            ModifiedAlphabet<THost, TSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -272,7 +272,7 @@ operator!=(ModifiedAlphabet<THost, TSpec> const & left_,
 
 template <typename TValue, typename TSpec, typename THost, typename TSpec2>
 inline bool
-operator!=(SimpleType<TValue, TSpec> const & left_, 
+operator!=(SimpleType<TValue, TSpec> const & left_,
            ModifiedAlphabet<THost, TSpec2> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -297,7 +297,7 @@ operator!=(ModifiedAlphabet<THost, TSpec2> const & left_,
 
 template <typename TSpec, typename THost, typename TSpec2>
 inline bool
-operator!=(Proxy<TSpec> const & left_, 
+operator!=(Proxy<TSpec> const & left_,
            ModifiedAlphabet<THost, TSpec2> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -323,7 +323,7 @@ operator!=(ModifiedAlphabet<THost, TSpec2> const & left_,
 
 template <typename THost, typename TSpec, typename TRight>
 inline bool
-operator<=(ModifiedAlphabet<THost, TSpec> const & left_, 
+operator<=(ModifiedAlphabet<THost, TSpec> const & left_,
            TRight const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -334,7 +334,7 @@ operator<=(ModifiedAlphabet<THost, TSpec> const & left_,
 
 template <typename TLeft, typename THost, typename TSpec>
 inline bool
-operator<=(TLeft const & left_, 
+operator<=(TLeft const & left_,
            ModifiedAlphabet<THost, TSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -345,7 +345,7 @@ operator<=(TLeft const & left_,
 
 template <typename TLeftHost, typename TLeftSpec, typename TRightHost, typename TRightSpec>
 inline bool
-operator<=(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_, 
+operator<=(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_,
              ModifiedAlphabet<TRightHost, TRightSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -357,7 +357,7 @@ operator<=(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_,
 
 template <typename THost, typename TSpec>
 inline bool
-operator<=(ModifiedAlphabet<THost, TSpec> const & left_, 
+operator<=(ModifiedAlphabet<THost, TSpec> const & left_,
            ModifiedAlphabet<THost, TSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -368,7 +368,7 @@ operator<=(ModifiedAlphabet<THost, TSpec> const & left_,
 
 template <typename TValue, typename TSpec, typename THost, typename TSpec2>
 inline bool
-operator<=(SimpleType<TValue, TSpec> const & left_, 
+operator<=(SimpleType<TValue, TSpec> const & left_,
            ModifiedAlphabet<THost, TSpec2> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -393,7 +393,7 @@ operator<=(ModifiedAlphabet<THost, TSpec2> const & left_,
 
 template <typename TSpec, typename THost, typename TSpec2>
 inline bool
-operator<=(Proxy<TSpec> const & left_, 
+operator<=(Proxy<TSpec> const & left_,
            ModifiedAlphabet<THost, TSpec2> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -419,7 +419,7 @@ operator<=(ModifiedAlphabet<THost, TSpec2> const & left_,
 
 template <typename THost, typename TSpec, typename TRight>
 inline bool
-operator<(ModifiedAlphabet<THost, TSpec> const & left_, 
+operator<(ModifiedAlphabet<THost, TSpec> const & left_,
           TRight const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -430,7 +430,7 @@ operator<(ModifiedAlphabet<THost, TSpec> const & left_,
 
 template <typename TLeft, typename THost, typename TSpec>
 inline bool
-operator<(TLeft const & left_, 
+operator<(TLeft const & left_,
           ModifiedAlphabet<THost, TSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -441,7 +441,7 @@ operator<(TLeft const & left_,
 
 template <typename TLeftHost, typename TLeftSpec, typename TRightHost, typename TRightSpec>
 inline bool
-operator<(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_, 
+operator<(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_,
           ModifiedAlphabet<TRightHost, TRightSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -453,7 +453,7 @@ operator<(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_,
 
 template <typename THost, typename TSpec>
 inline bool
-operator<(ModifiedAlphabet<THost, TSpec> const & left_, 
+operator<(ModifiedAlphabet<THost, TSpec> const & left_,
           ModifiedAlphabet<THost, TSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -464,7 +464,7 @@ operator<(ModifiedAlphabet<THost, TSpec> const & left_,
 
 template <typename TValue, typename TSpec, typename THost, typename TSpec2>
 inline bool
-operator<(SimpleType<TValue, TSpec> const & left_, 
+operator<(SimpleType<TValue, TSpec> const & left_,
           ModifiedAlphabet<THost, TSpec2> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -489,7 +489,7 @@ operator<(ModifiedAlphabet<THost, TSpec2> const & left_,
 
 template <typename TSpec, typename THost, typename TSpec2>
 inline bool
-operator<(Proxy<TSpec> const & left_, 
+operator<(Proxy<TSpec> const & left_,
           ModifiedAlphabet<THost, TSpec2> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -515,7 +515,7 @@ operator<(ModifiedAlphabet<THost, TSpec2> const & left_,
 
 template <typename THost, typename TSpec, typename TRight>
 inline bool
-operator>=(ModifiedAlphabet<THost, TSpec> const & left_, 
+operator>=(ModifiedAlphabet<THost, TSpec> const & left_,
            TRight const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -526,7 +526,7 @@ operator>=(ModifiedAlphabet<THost, TSpec> const & left_,
 
 template <typename TLeft, typename THost, typename TSpec>
 inline bool
-operator>=(TLeft const & left_, 
+operator>=(TLeft const & left_,
            ModifiedAlphabet<THost, TSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -537,7 +537,7 @@ operator>=(TLeft const & left_,
 
 template <typename TLeftHost, typename TLeftSpec, typename TRightHost, typename TRightSpec>
 inline bool
-operator>=(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_, 
+operator>=(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_,
            ModifiedAlphabet<TRightHost, TRightSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -549,7 +549,7 @@ operator>=(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_,
 
 template <typename THost, typename TSpec>
 inline bool
-operator>=(ModifiedAlphabet<THost, TSpec> const & left_, 
+operator>=(ModifiedAlphabet<THost, TSpec> const & left_,
            ModifiedAlphabet<THost, TSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -560,7 +560,7 @@ operator>=(ModifiedAlphabet<THost, TSpec> const & left_,
 
 template <typename TValue, typename TSpec, typename THost, typename TSpec2>
 inline bool
-operator>=(SimpleType<TValue, TSpec> const & left_, 
+operator>=(SimpleType<TValue, TSpec> const & left_,
            ModifiedAlphabet<THost, TSpec2> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -585,7 +585,7 @@ operator>=(ModifiedAlphabet<THost, TSpec2> const & left_,
 
 template <typename TSpec, typename THost, typename TSpec2>
 inline bool
-operator>=(Proxy<TSpec> const & left_, 
+operator>=(Proxy<TSpec> const & left_,
            ModifiedAlphabet<THost, TSpec2> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -611,7 +611,7 @@ operator>=(ModifiedAlphabet<THost, TSpec2> const & left_,
 
 template <typename THost, typename TSpec, typename TRight>
 inline bool
-operator>(ModifiedAlphabet<THost, TSpec> const & left_, 
+operator>(ModifiedAlphabet<THost, TSpec> const & left_,
           TRight const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -622,7 +622,7 @@ operator>(ModifiedAlphabet<THost, TSpec> const & left_,
 
 template <typename TLeft, typename THost, typename TSpec>
 inline bool
-operator>(TLeft const & left_, 
+operator>(TLeft const & left_,
           ModifiedAlphabet<THost, TSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -633,7 +633,7 @@ operator>(TLeft const & left_,
 
 template <typename TLeftHost, typename TLeftSpec, typename TRightHost, typename TRightSpec>
 inline bool
-operator>(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_, 
+operator>(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_,
           ModifiedAlphabet<TRightHost, TRightSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -645,7 +645,7 @@ operator>(ModifiedAlphabet<TLeftHost, TLeftSpec> const & left_,
 
 template <typename THost, typename TSpec>
 inline bool
-operator>(ModifiedAlphabet<THost, TSpec> const & left_, 
+operator>(ModifiedAlphabet<THost, TSpec> const & left_,
           ModifiedAlphabet<THost, TSpec> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -656,7 +656,7 @@ operator>(ModifiedAlphabet<THost, TSpec> const & left_,
 
 template <typename TValue, typename TSpec, typename THost, typename TSpec2>
 inline bool
-operator>(SimpleType<TValue, TSpec> const & left_, 
+operator>(SimpleType<TValue, TSpec> const & left_,
           ModifiedAlphabet<THost, TSpec2> const & right_)
 {
     SEQAN_CHECKPOINT;
@@ -681,7 +681,7 @@ operator>(ModifiedAlphabet<THost, TSpec2> const & left_,
 
 template <typename TSpec, typename THost, typename TSpec2>
 inline bool
-operator>(Proxy<TSpec> const & left_, 
+operator>(Proxy<TSpec> const & left_,
           ModifiedAlphabet<THost, TSpec2> const & right_)
 {
     SEQAN_CHECKPOINT;

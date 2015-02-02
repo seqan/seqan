@@ -59,13 +59,13 @@ struct WordGraph;
  */
 
 template<typename TAlphabet, typename TSpec>
-class Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > 
+class Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >
 {
     public:
         typedef typename VertexIdHandler<Graph>::Type TVertexIdManager_;
         typedef typename EdgeIdHandler<Graph>::Type TEdgeIdManager_;
         typedef typename VertexDescriptor<Graph>::Type TVertexDescriptor_;
-        typedef typename EdgeType<Graph>::Type TEdge_;    
+        typedef typename EdgeType<Graph>::Type TEdge_;
 
         String<AutomatonEdgeArray<TEdge_, TAlphabet> > data_vertex;        // List of tables
         TVertexIdManager_ data_id_managerV;
@@ -86,12 +86,12 @@ class Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >
             clear(*this);
         }
 
-        Graph(Graph const & _other) 
+        Graph(Graph const & _other)
         {
             SEQAN_CHECKPOINT
             _copyGraph(_other, *this);
         }
-    
+
         Graph const& operator = (Graph const & _other) {
             SEQAN_CHECKPOINT
             if (this == &_other) return *this;
@@ -104,20 +104,20 @@ class Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TAlphabet, typename TSpec, typename TVertexDescriptor>
-inline typename EdgeDescriptor<Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > >::Type 
-addEdge(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >& g, 
-        TVertexDescriptor const source, 
+inline typename EdgeDescriptor<Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > >::Type
+addEdge(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >& g,
+        TVertexDescriptor const source,
         TVertexDescriptor const target,
-        String<TAlphabet> const & label) 
+        String<TAlphabet> const & label)
 {
     SEQAN_CHECKPOINT;
     SEQAN_ASSERT(idInUse(g.data_id_managerV, source));
     SEQAN_ASSERT(idInUse(g.data_id_managerV, target));
-    
+
     typedef Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > TGraph;
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     typedef typename Id<TGraph>::Type TId;
-    
+
     TAlphabet firstChar = getValue(label, 0);
     TEdgeDescriptor e = findEdge(g, source, firstChar);
     TId id = obtainId(g.data_id_managerE);
@@ -131,11 +131,11 @@ addEdge(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TAlphabet, typename TSpec, typename TVertexDescriptor, typename TChars>
-inline typename EdgeDescriptor<Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > >::Type 
-addEdge(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >& g, 
-        TVertexDescriptor const source, 
+inline typename EdgeDescriptor<Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > >::Type
+addEdge(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >& g,
+        TVertexDescriptor const source,
         TVertexDescriptor const target,
-        TChars const* chars) 
+        TChars const* chars)
 {
     SEQAN_CHECKPOINT
     return addEdge(g,source,target,String<TAlphabet>(chars));
@@ -144,9 +144,9 @@ addEdge(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TAlphabet, typename TSpec, typename TVertexDescriptor, typename TLabel, typename TEdgeCargo>
-inline typename EdgeDescriptor<Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > >::Type 
-addEdge(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >& /*g*/, 
-        TVertexDescriptor const /*source*/, 
+inline typename EdgeDescriptor<Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > >::Type
+addEdge(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >& /*g*/,
+        TVertexDescriptor const /*source*/,
         TVertexDescriptor const /*target*/,
         TLabel const /*label*/,
         TEdgeCargo const /*cargo*/)
@@ -160,10 +160,10 @@ addEdge(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >& /*g*
 
 template<typename TAlphabet, typename TSpec, typename TVertexDescriptor>
 inline void
-removeEdge(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >& g, 
-        TVertexDescriptor const source, 
+removeEdge(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > >& g,
+        TVertexDescriptor const source,
         TVertexDescriptor const target,
-        String<TAlphabet> const& label) 
+        String<TAlphabet> const& label)
 {
     SEQAN_CHECKPOINT;
     (void)target;  // In case it is compiled without assertions.
@@ -229,7 +229,7 @@ write(TFile & target,
  */
 
 template<typename TAlphabet, typename TSpec, typename TVertexDescriptor, typename TCharacters>
-inline typename VertexDescriptor<Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > >::Type 
+inline typename VertexDescriptor<Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > >::Type
 getSuccessor(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > const& g,
              TVertexDescriptor vertex,
              TCharacters const& chars)
@@ -248,7 +248,7 @@ getSuccessor(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > 
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TAlphabet, typename TSpec, typename TVertexDescriptor, typename TCharacters>
-inline typename VertexDescriptor<Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > >::Type 
+inline typename VertexDescriptor<Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > >::Type
 getSuccessor(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > const& g,
              TVertexDescriptor vertex,
              TCharacters const* chars)
@@ -280,7 +280,7 @@ getSuccessor(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > 
  */
 
 template<typename TAlphabet, typename TSpec, typename TVertexDescriptor, typename TIterator>
-inline typename VertexDescriptor<Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > >::Type 
+inline typename VertexDescriptor<Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > >::Type
 parseString(Graph<Automaton<TAlphabet, String<TAlphabet>, WordGraph<TSpec> > > const& g,
             TVertexDescriptor const vertex,
             TIterator beginIt,

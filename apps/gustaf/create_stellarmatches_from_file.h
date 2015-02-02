@@ -81,7 +81,7 @@ bool _createStellarMatches(StringSet<TSequence> & queries,
     typedef typename Iterator<TMatchStore, Standard>::Type TMatchStoreIterator;
 
     omp_set_num_threads(numThreads);
-    Splitter<TMatchStoreIterator> setSplitter(begin(lmStore.matchStore, Standard()), end(lmStore.matchStore, Standard())); 
+    Splitter<TMatchStoreIterator> setSplitter(begin(lmStore.matchStore, Standard()), end(lmStore.matchStore, Standard()));
 
     SEQAN_OMP_PRAGMA(parallel for shared(stQueryMatches))
     for (int jobId = 0; jobId < static_cast<int>(length(setSplitter)); ++jobId)
@@ -260,7 +260,7 @@ bool _getStellarMatchesFromFile(StringSet<TSequence> & queries,
     }
     // Creating Stellar Matches from input
     resize(stQueryMatches, length(queries));
-    
+
     if (!_createStellarMatches(queries, sQueryIds, databases, databaseIDs, lmStore, stQueryMatches, numThreads))
         return 1;
 

@@ -93,11 +93,11 @@ getClrRange(FragmentStore<TSpec, TConfig> const& fragStore,
     typedef FragmentStore<TSpec, TConfig> TFragmentStore;
     typedef typename Size<TFragmentStore>::Type TSize;
     typedef typename Iterator<String<TGapAnchor> const, Standard>::Type TGapIter;
-    
+
     TSize lenRead = length(fragStore.readSeqStore[alignEl.readId]);
     TGapIter itGap = begin(alignEl.gaps, Standard());
     TGapIter itGapEnd = end(alignEl.gaps, Standard());
-    
+
     // Any gaps or clipped characters?
     if (itGap == itGapEnd) {
         begClr = 0;
@@ -111,7 +111,7 @@ getClrRange(FragmentStore<TSpec, TConfig> const& fragStore,
         else {
             int diff = (itGap != itGapEnd) ? (*(itGapEnd - 1)).gapPos - (*(itGapEnd-1)).seqPos : 0;
             int newDiff = itGapEnd->gapPos - itGapEnd->seqPos;
-            endClr = (newDiff < diff) ? lenRead - (diff - newDiff) : lenRead;    
+            endClr = (newDiff < diff) ? lenRead - (diff - newDiff) : lenRead;
         }
     }
 
@@ -903,7 +903,7 @@ write(TTarget & target,
  * @param[in]     tag   A tag for the sequence format.
  *
  * @return bool true on success, false on errors.
- */ 
+ */
 
 template <typename TSpec, typename TFSSpec, typename TFSConfig>
 bool writeContigs(FormattedFile<Fastq, Output, TSpec> & file, FragmentStore<TFSSpec, TFSConfig> & store)
@@ -944,7 +944,7 @@ bool loadContigs(FragmentStore<TFSSpec, TFSConfig> &store, StringSet<CharString>
     typedef typename TFragmentStore::TContigFileStore    TContigFileStore;
     typedef typename Value<TContigStore>::Type            TContig;
     typedef typename Value<TContigFileStore>::Type        TContigFile;
-    
+
     SeqFileIn seqFile;
     CharString meta, seq;
 
@@ -1027,7 +1027,7 @@ bool loadContig(FragmentStore<TSpec, TConfig> &store, TId _id)
     TContig &contig = store.contigStore[_id];
 
     if (contig.fileId >= length(store.contigFileStore)) return false;
-    
+
     TContigFile &contigFile = store.contigFileStore[contig.fileId];
     CharString meta;                                // dummy (seq name is already in the name store)
 

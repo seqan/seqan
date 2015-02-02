@@ -37,7 +37,7 @@ namespace SEQAN_NAMESPACE_MAIN
 // Default options
 
     template < bool DONT_VERIFY_ = false, bool DONT_DUMP_RESULTS_ = false >
-    struct RazerSSpec 
+    struct RazerSSpec
     {
         enum { DONT_VERIFY = DONT_VERIFY_ };                // omit verifying potential matches
         enum { DONT_DUMP_RESULTS = DONT_DUMP_RESULTS_ };    // omit dumping results
@@ -59,7 +59,7 @@ namespace SEQAN_NAMESPACE_MAIN
         bool        printVersion;        // print version number
         bool        hammingOnly;        // no indels
         int            trimLength;            // if >0, cut reads to #trimLength characters
-        
+
     // output format options
         unsigned    outputFormat;        // 0..Razer format
                                         // 1..enhanced Fasta
@@ -102,7 +102,7 @@ namespace SEQAN_NAMESPACE_MAIN
         double        timeLoadFiles;        // time for loading input files
         double        timeMapReads;        // time for mapping reads
         double        timeDumpResults;    // time for dumping the results
-        
+
         bool        lowMemory;        // set maximum shape weight to 13 to limit size of q-gram index
         bool        fastaIdQual;        // hidden option for special fasta+quality format we use
 
@@ -112,7 +112,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         SeqFileIn   readFile;           // left read's SeqFile (we have to keep it open and store it here to stream it only once)
 
-        RazerSOptions() 
+        RazerSOptions()
         {
             forward = true;
             reverse = true;
@@ -125,7 +125,7 @@ namespace SEQAN_NAMESPACE_MAIN
             printVersion = false;
             hammingOnly = false;
             trimLength = 0;
-            
+
             outputFormat = 0;
             dumpAlignment = false;
             genomeNaming = 0;
@@ -146,7 +146,7 @@ namespace SEQAN_NAMESPACE_MAIN
             libraryLength = 220;
             libraryError = 50;
             nextPairMatchId = 0;
-            
+
             for (unsigned i = 0; i < 4; ++i)
                 compMask[i] = 1 << i;
             compMask[4] = 0;
@@ -158,13 +158,13 @@ namespace SEQAN_NAMESPACE_MAIN
 
         }
     };
-    
+
 //////////////////////////////////////////////////////////////////////////////
 // Typedefs
 /*
     // definition of a Read match
     template <typename TGPos_>
-    struct ReadMatch 
+    struct ReadMatch
     {
         typedef typename MakeSigned_<TGPos_>::Type TGPos;
 
@@ -174,7 +174,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TGPos            gEnd;            // end position of the match in the genome
 #ifdef RAZERS_MATEPAIRS
         unsigned        pairId;            // unique id for the two mate-pair matches (0 if unpaired)
-        int                mateDelta:24;    // outer coordinate delta to the other mate 
+        int                mateDelta:24;    // outer coordinate delta to the other mate
         int                pairScore:8;    // combined score of both mates
 #endif
         unsigned short    editDist;        // Levenshtein distance
@@ -184,8 +184,8 @@ namespace SEQAN_NAMESPACE_MAIN
 #endif
         char            orientation;    // 'F'..forward strand, 'R'..reverse comp. strand
     };
-*/    
-    enum RAZERS_ERROR 
+*/
+    enum RAZERS_ERROR
     {
         RAZERS_INVALID_OPTIONS = -1,
         RAZERS_READS_FAILED    = -2,
@@ -224,19 +224,19 @@ namespace SEQAN_NAMESPACE_MAIN
 #ifdef RAZERS_MEMOPT
 
     template <typename TReadSet, typename TShape, typename TSpec>
-    struct SAValue< Index<TReadSet, IndexQGram<TShape, TSpec> > > 
+    struct SAValue< Index<TReadSet, IndexQGram<TShape, TSpec> > >
     {
         typedef Pair<
-            unsigned,                
+            unsigned,
             unsigned,
             BitPacked<22, 10>    // max. 4M reads of length < 1024
         > Type;
     };
-    
+
 #else
 
     template <typename TReadSet, typename TShape, typename TSpec>
-    struct SAValue< Index<TReadSet, IndexQGram<TShape, TSpec> > > 
+    struct SAValue< Index<TReadSet, IndexQGram<TShape, TSpec> > >
     {
         typedef Pair<
             unsigned,            // many reads
@@ -264,14 +264,14 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         typedef unsigned Type;
     };
-    
+
 
 #ifdef RAZERS_PRUNE_QGRAM_INDEX
 
     //////////////////////////////////////////////////////////////////////////////
     // Repeat masker
     template <typename TReadSet, typename TShape, typename TSpec>
-    inline bool _qgramDisableBuckets(Index<TReadSet, IndexQGram<TShape, TSpec> > &index) 
+    inline bool _qgramDisableBuckets(Index<TReadSet, IndexQGram<TShape, TSpec> > &index)
     {
         typedef Index<TReadSet, IndexQGram<TShape>    >        TReadIndex;
         typedef typename Fibre<TReadIndex, QGramDir>::Type    TDir;
@@ -287,7 +287,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TDirIterator it = begin(dir, Standard());
         TDirIterator itEnd = end(dir, Standard());
         for (; it != itEnd; ++it)
-            if (*it > thresh) 
+            if (*it > thresh)
             {
                 *it = (TSize)-1;
                 result = true;
@@ -304,7 +304,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     template <
-        typename TFragmentStore_, 
+        typename TFragmentStore_,
         typename TRazerSOptions_,
         typename TPreprocessing_,
         typename TSwiftPattern_
@@ -315,7 +315,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef TRazerSOptions_                                    TOptions;
         typedef TPreprocessing_                                    TPreprocessing;
         typedef TSwiftPattern_                                    TSwiftPattern;
-        
+
         typedef typename TFragmentStore::TAlignedReadStore        TAlignedReadStore;
         typedef typename TFragmentStore::TAlignQualityStore        TAlignQualityStore;
         typedef typename Value<TAlignedReadStore>::Type            TAlignedRead;
@@ -326,13 +326,13 @@ namespace SEQAN_NAMESPACE_MAIN
         TOptions        &options;            // RazerS options
         TPreprocessing    &preprocessing;
         TSwiftPattern    &swiftPattern;
-        
+
         TAlignedRead    m;
         TAlignQuality    q;
         bool            onReverseComplement;
         TSize            genomeLength;
         bool            oneMatchPerBucket;
-        
+
         MatchVerifier(TFragmentStore_ &_store, TOptions &_options, TPreprocessing &_preprocessing, TSwiftPattern &_swiftPattern):
             store(_store),
             options(_options),
@@ -343,10 +343,10 @@ namespace SEQAN_NAMESPACE_MAIN
             genomeLength = 0;
             oneMatchPerBucket = false;
         }
-        
+
         inline void push()
         {
-            if (onReverseComplement) 
+            if (onReverseComplement)
             {
                 // transform coordinates to the forward strand
                 m.beginPos = genomeLength - m.beginPos;
@@ -375,7 +375,7 @@ namespace SEQAN_NAMESPACE_MAIN
             ++options.countVerification;
         }
     };
- 
+
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -418,7 +418,7 @@ bool loadReads(
         }
 
         // store dna and quality together
-        assignQualities(seq, qual); 
+        assignQualities(seq, qual);
         if (options.trimLength > 0 && length(seq) > (unsigned)options.trimLength)
             resize(seq, options.trimLength);
 
@@ -447,7 +447,7 @@ bool loadReads(
         ::std::cerr << "Maximal read length of " << (unsigned)sa.i2 + 1 << " bps exceeded. Please remove \"#define RAZERS_MEMOPT\" in razers.cpp and recompile." << ::std::endl;
     }
 
-    if (options._debugLevel > 1 && kickoutcount > 0) 
+    if (options._debugLevel > 1 && kickoutcount > 0)
         ::std::cerr << "Ignoring " << kickoutcount << " low quality reads.\n";
     return success;
 }
@@ -476,19 +476,19 @@ inline int estimateReadLength(SeqFileIn &seqFile)
     readRecord(fastaId, seq, iter, seqFile.format);
     return length(seq);
 }
-    
-    
+
+
     template <typename TAlignedReadStore, typename TAlignedReadQualityStore>
-    struct LessRNoGPos : 
+    struct LessRNoGPos :
         public ::std::binary_function < typename Value<TAlignedReadStore>::Type, typename Value<TAlignedReadStore>::Type, bool >
     {
-        typedef typename Value<TAlignedReadStore>::Type TAlignedRead;        
+        typedef typename Value<TAlignedReadStore>::Type TAlignedRead;
         TAlignedReadQualityStore &qualStore;
-        
+
         LessRNoGPos(TAlignedReadQualityStore &_qualStore):
             qualStore(_qualStore) {}
-        
-        inline bool operator() (TAlignedRead const &a, TAlignedRead const &b) const 
+
+        inline bool operator() (TAlignedRead const &a, TAlignedRead const &b) const
         {
             // read number
             if (a.readId < b.readId) return true;
@@ -518,7 +518,7 @@ inline int estimateReadLength(SeqFileIn &seqFile)
             if (qa.pairScore < qb.pairScore) return false;
             if (qa.score > qb.score) return true;
             if (qb.score > qa.score) return false;
-            
+
             // prefer reads that support more of the reference
             return _max(a.beginPos, a.endPos) > _max(b.beginPos, b.endPos);
         }
@@ -526,18 +526,18 @@ inline int estimateReadLength(SeqFileIn &seqFile)
 
     // ... to sort matches and remove duplicates with equal gEnd
     template <typename TAlignedReadStore, typename TAlignedReadQualityStore>
-    struct LessRNoGEndPos : 
+    struct LessRNoGEndPos :
         public ::std::binary_function < typename Value<TAlignedReadStore>::Type, typename Value<TAlignedReadStore>::Type, bool >
     {
-        typedef typename Value<TAlignedReadStore>::Type TAlignedRead;        
+        typedef typename Value<TAlignedReadStore>::Type TAlignedRead;
         TAlignedReadQualityStore &qualStore;
-        
+
         LessRNoGEndPos(TAlignedReadQualityStore &_qualStore):
             qualStore(_qualStore) {}
-        
+
         inline bool operator() (
-            typename Value<TAlignedReadStore>::Type const &a, 
-            typename Value<TAlignedReadStore>::Type const &b) const 
+            typename Value<TAlignedReadStore>::Type const &a,
+            typename Value<TAlignedReadStore>::Type const &b) const
         {
             // read number
             if (a.readId < b.readId) return true;
@@ -567,24 +567,24 @@ inline int estimateReadLength(SeqFileIn &seqFile)
             if (qa.pairScore < qb.pairScore) return false;
             if (qa.score > qb.score) return true;
             if (qb.score > qa.score) return false;
-            
+
             // prefer reads that support more of the reference
             return _min(a.beginPos, a.endPos) < _min(b.beginPos, b.endPos);
         }
     };
-    
+
     template <typename TAlignedReadStore, typename TReadNameStore, typename TAlignedReadQualityStore>
-    struct LessRNameGPos : 
+    struct LessRNameGPos :
         public ::std::binary_function < typename Value<TAlignedReadStore>::Type, typename Value<TAlignedReadStore>::Type, bool >
     {
-        typedef typename Value<TAlignedReadStore>::Type TAlignedRead;        
+        typedef typename Value<TAlignedReadStore>::Type TAlignedRead;
         TReadNameStore &contigNames;
         TAlignedReadQualityStore &qualStore;
-        
+
         LessRNameGPos(TReadNameStore &contigNames, TAlignedReadQualityStore &_qualStore):
             contigNames(contigNames), qualStore(_qualStore) {}
-        
-        inline bool operator() (TAlignedRead const &a, TAlignedRead const &b) const 
+
+        inline bool operator() (TAlignedRead const &a, TAlignedRead const &b) const
         {
             // read name
             if (contigNames[a.readId] < contigNames[b.readId]) return true;
@@ -614,24 +614,24 @@ inline int estimateReadLength(SeqFileIn &seqFile)
             if (qa.pairScore < qb.pairScore) return false;
             if (qa.score > qb.score) return true;
             if (qb.score > qa.score) return false;
-            
+
             // prefer reads that support more of the reference
             return _max(a.beginPos, a.endPos) > _max(b.beginPos, b.endPos);
         }
     };
-    
+
     template <typename TAlignedReadStore, typename TAlignedReadQualityStore>
-    struct LessErrors : 
+    struct LessErrors :
         public ::std::binary_function < typename Value<TAlignedReadStore>::Type, typename Value<TAlignedReadStore>::Type, bool >
     {
         TAlignedReadQualityStore &qualStore;
-        
+
         LessErrors(TAlignedReadQualityStore &_qualStore):
             qualStore(_qualStore) {}
-        
+
         inline bool operator() (
-            typename Value<TAlignedReadStore>::Type const &a, 
-            typename Value<TAlignedReadStore>::Type const &b) const 
+            typename Value<TAlignedReadStore>::Type const &a,
+            typename Value<TAlignedReadStore>::Type const &b) const
         {
             typedef typename Value<TAlignedReadStore>::Type TAlignedRead;
 
@@ -647,7 +647,7 @@ inline int estimateReadLength(SeqFileIn &seqFile)
             return qualStore[a.id].errors < qualStore[b.id].errors;
         }
     };
-    
+
 
 //////////////////////////////////////////////////////////////////////////////
 // Mark duplicate matches for deletion
@@ -656,11 +656,11 @@ void maskDuplicates(TFragmentStore &store)
 {
     typedef typename TFragmentStore::TAlignedReadStore                TAlignedReadStore;
     typedef typename TFragmentStore::TAlignQualityStore                TAlignQualityStore;
-    
+
     typedef typename Iterator<TAlignedReadStore, Standard>::Type    TIterator;
     typedef typename Value<TAlignedReadStore>::Type                    TAlignedRead;
     typedef typename TFragmentStore::TContigPos                        TContigPos;
-    
+
     //////////////////////////////////////////////////////////////////////////////
     // remove matches with equal ends
 
@@ -675,12 +675,12 @@ void maskDuplicates(TFragmentStore &store)
     TIterator it = begin(store.alignedReadStore, Standard());
     TIterator itEnd = end(store.alignedReadStore, Standard());
 
-    for (; it != itEnd; ++it) 
+    for (; it != itEnd; ++it)
     {
         if ((*it).pairMatchId != TAlignedRead::INVALID_ID && getMateNo(store, it->readId) != 0) continue;    // remove only single reads or left mates
         TContigPos itEndPos = _max((*it).beginPos, (*it).endPos);
         if (endPos == itEndPos && orientation == ((*it).beginPos < (*it).endPos) &&
-            contigId == (*it).contigId && readId == (*it).readId) 
+            contigId == (*it).contigId && readId == (*it).readId)
         {
             (*it).contigId = TAlignedRead::INVALID_ID;    // mark this alignment for deletion
             continue;
@@ -700,7 +700,7 @@ void maskDuplicates(TFragmentStore &store)
     it = begin(store.alignedReadStore, Standard());
     itEnd = end(store.alignedReadStore, Standard());
 
-    for (; it != itEnd; ++it) 
+    for (; it != itEnd; ++it)
     {
         if ((*it).contigId == TAlignedRead::INVALID_ID) continue;
         if ((*it).pairMatchId != TAlignedRead::INVALID_ID && getMateNo(store, it->readId) != 0) continue;    // remove only single reads or left mates
@@ -728,23 +728,23 @@ void countMatches(TFragmentStore &store, TCounts &cnt)
 {
     typedef typename TFragmentStore::TAlignedReadStore                TAlignedReadStore;
     //typedef typename TFragmentStore::TAlignQualityStore                TAlignQualityStore;
-    
+
     typedef typename Value<TAlignedReadStore>::Type                    TAlignedRead;
     typedef typename Iterator<TAlignedReadStore, Standard>::Type    TIterator;
     typedef typename Value<TCounts>::Type                            TRow;
     typedef typename Value<TRow>::Type                                TValue;
-    
+
     TIterator it = begin(store.alignedReadStore, Standard());
     TIterator itEnd = end(store.alignedReadStore, Standard());
-    
+
     TValue maxVal = MaxValue<TValue>::VALUE;
     unsigned maxError = length(cnt);
-/*    
+/*
     for (; it != itEnd; ++it)
     {
         if (it->contigId == TAlignedRead::INVALID_ID) continue;
         unsigned errors = store.alignQualityStore[it->id].errors;
-        if (errors >= maxError) continue;        
+        if (errors >= maxError) continue;
         if (cnt[errors][it->readId] < maxVal)
             ++cnt[errors][it->readId];
     }
@@ -773,13 +773,13 @@ void countMatches(TFragmentStore &store, TCounts &cnt)
 //////////////////////////////////////////////////////////////////////////////
 
 template < typename TReadNo, typename TMaxErrors >
-inline void 
+inline void
 setMaxErrors(Nothing &, TReadNo, TMaxErrors)
 {
 }
 
 template < typename TSwift, typename TReadNo, typename TMaxErrors >
-inline void 
+inline void
 setMaxErrors(TSwift &swift, TReadNo readNo, TMaxErrors maxErrors)
 {
     int minT = _qgramLemma(swift, readNo, maxErrors);
@@ -811,12 +811,12 @@ void compactMatches(TFragmentStore &store, RazerSOptions<TSpec> &options, TSwift
     TIterator dit = it;
     TIterator ditBeg = it;
 
-    for (; it != itEnd; ++it) 
+    for (; it != itEnd; ++it)
     {
         if ((*it).contigId == TAlignedRead::INVALID_ID) continue;
         unsigned errors = store.alignQualityStore[(*it).id].errors;
         if (readNo == (*it).readId && (*it).pairMatchId == TAlignedRead::INVALID_ID)
-        { 
+        {
             if (errors >= errorsCutOff) continue;
             if (++hitCount >= hitCountCutOff)
             {
@@ -873,7 +873,7 @@ struct SemiGlobalEdit_;
 // Hamming verification
 template <
     typename TMatchVerifier,
-    typename TGenome, 
+    typename TGenome,
     typename TReadSet >
 inline bool
 matchVerify(
@@ -903,7 +903,7 @@ matchVerify(
     if (length(inf) < ndlLength) return false;
     TGenomeIterator git        = begin(inf, Standard());
     TGenomeIterator gitEnd    = end(inf, Standard()) - (ndlLength - 1);
-    
+
     unsigned maxErrors = (unsigned)(ndlLength * verifier.options.errorRate);
     unsigned minErrors = maxErrors + 1;
     unsigned errorThresh = (verifier.oneMatchPerBucket)? MaxValue<unsigned>::VALUE: maxErrors;
@@ -916,7 +916,7 @@ matchVerify(
             if ((verifier.options.compMask[ordValue(*g)] & verifier.options.compMask[ordValue(*r)]) == 0)
                 if (++errors > maxErrors)
                     break;
-        
+
         if (errors < minErrors)
         {
             minErrors = errors;
@@ -944,14 +944,14 @@ matchVerify(
         return true;
     }
     return false;
-}    
+}
 
 
 //////////////////////////////////////////////////////////////////////////////
 // Edit distance verification
 template <
     typename TMatchVerifier,
-    typename TGenome, 
+    typename TGenome,
     typename TReadSet >
 inline bool
 matchVerify(
@@ -1012,7 +1012,7 @@ matchVerify(
         TPosition pos = position(hostIterator(myersFinder));
         int score = getScore(myersPattern);
         // std::cerr << "found " << pos << ", " << length(host(inf)) - pos << ", " << score << std::endl;
-        
+
 #ifdef RAZERS_NOOUTERREADGAPS
         // Manually align the last base of the read
         //
@@ -1023,7 +1023,7 @@ matchVerify(
         SEQAN_ASSERT_LT(pos + 1, length(origInf));
         if ((verifier.options.compMask[ordValue(origInf[pos + 1])] & verifier.options.compMask[ordValue(back(readSet[readId]))]) == 0)
             if (--score < minScore) continue;
-#endif        
+#endif
         if (lastPos + minDistance < pos)
         {
             if (minScore <= maxScore)
@@ -1059,7 +1059,7 @@ matchVerify(
                     setBeginPosition(inf, endPosition(inf) - ndlLength + maxScore);
                 else
                     setBeginPosition(inf, 0);
-                
+
                 TGenomeInfixRev        infRev(inf);
                 TMyersFinderRev        myersFinderRev(infRev);
 
@@ -1081,7 +1081,7 @@ matchVerify(
                 maxScore = minScore - 1;
             }
         }
-        if (score >= maxScore) 
+        if (score >= maxScore)
         {
             maxScore = score;
             maxPos = pos;
@@ -1118,7 +1118,7 @@ matchVerify(
             setBeginPosition(inf, endPosition(inf) - ndlLength + maxScore);
         else
             setBeginPosition(inf, 0);
-        
+
         // find beginning of best semi-global alignment
         TGenomeInfixRev        infRev(inf);
         TMyersFinderRev        myersFinderRev(infRev);
@@ -1147,10 +1147,10 @@ matchVerify(
 //////////////////////////////////////////////////////////////////////////////
 // Find read matches in one genome sequence
 template <
-    typename TFragmentStore, 
+    typename TFragmentStore,
     typename TGenome,
-    typename TReadIndex, 
-    typename TSwiftSpec, 
+    typename TReadIndex,
+    typename TSwiftSpec,
     typename TPreprocessing,
     typename TRazerSOptions >
 void mapSingleReads(
@@ -1168,12 +1168,12 @@ void mapSingleReads(
 
     // VERIFICATION
     typedef MatchVerifier <
-        TFragmentStore, 
-        TRazerSOptions, 
-        TPreprocessing, 
+        TFragmentStore,
+        TRazerSOptions,
+        TPreprocessing,
         TSwiftPattern >                                                    TVerifier;
     typedef typename Fibre<TReadIndex, FibreText>::Type                    TReadSet;
-    
+
     // iterate all genomic sequences
     if (options._debugLevel >= 1)
     {
@@ -1203,10 +1203,10 @@ void mapSingleReads(
 //////////////////////////////////////////////////////////////////////////////
 // Find read matches in many genome sequences (import from Fasta)
 template <
-    typename TFSSpec, 
-    typename TFSConfig, 
+    typename TFSSpec,
+    typename TFSConfig,
     typename TGNoToFile,
-    typename TSpec, 
+    typename TSpec,
     typename TShape,
     typename TSwiftSpec >
 int mapSingleReads(
@@ -1267,7 +1267,7 @@ int mapSingleReads(
             _patternMatchNOfFinder(forwardPatterns[i], options.matchN);
         }
     }
-    
+
     // clear stats
     options.countFiltration = 0;
     options.countVerification = 0;
@@ -1277,10 +1277,10 @@ int mapSingleReads(
     unsigned numFiles = length(genomeFileNameList);
     unsigned gseqNo = 0;
 
-    // open genome files, one by one    
+    // open genome files, one by one
     for (unsigned filecount = 0; filecount < numFiles; ++filecount)
     {
-        // open genome file    
+        // open genome file
         SeqFileIn file;
         if (!open(file, toCString(genomeFileNameList[filecount])))
             return RAZERS_GENOME_FAILED;
@@ -1291,7 +1291,7 @@ int mapSingleReads(
         if (lastPos == genomeFile.npos) lastPos = genomeFile.find_last_of('\\') + 1;
         if (lastPos == genomeFile.npos) lastPos = 0;
         ::std::string genomeName = genomeFile.substr(lastPos);
-        
+
 
         CharString    fastaId;
         Dna5String    genome;
@@ -1304,9 +1304,9 @@ int mapSingleReads(
             cropAfterFirst(fastaId, IsWhitespace());    // crop id after the first whitespace
             if (options.genomeNaming == 0)
                 appendValue(store.contigNameStore, fastaId, Generous());
-            
+
             appendValue(gnoToFileMap, TGNoToFile(genomeName, gseqNoWithinFile));
-            
+
             if (options.forward)
                 mapSingleReads(store, genome, gseqNo, swiftPattern, forwardPatterns, 'F', options);
 
@@ -1336,10 +1336,10 @@ int mapSingleReads(
 //////////////////////////////////////////////////////////////////////////////
 // Find read matches in many genome sequences (given as StringSet)
 template <
-    typename TMatches, 
+    typename TMatches,
     typename TGenomeSet,
     typename TReadSet,
-    typename TSpec, 
+    typename TSpec,
     typename TShape,
     typename TSwiftSpec >
 int mapSingleReads(
@@ -1406,7 +1406,7 @@ int mapSingleReads(
         }
 
     }
-    
+
     options.timeMapReads += SEQAN_PROTIMEDIFF(find_time);
 
     if (options._debugLevel >= 1)
@@ -1423,7 +1423,7 @@ int mapSingleReads(
 //////////////////////////////////////////////////////////////////////////////
 // Wrapper for single/mate-pair mapping
 template <
-    typename TFSSpec, 
+    typename TFSSpec,
     typename TFSConfig,
     typename TGNoToFile,
     typename TSpec,
@@ -1446,10 +1446,10 @@ int mapReads(
 }
 
 template <
-    typename TMatches, 
+    typename TMatches,
     typename TGenomeSet,
-    typename TReadSet, 
-    typename TSpec, 
+    typename TReadSet,
+    typename TSpec,
     typename TShape,
     typename TSwiftSpec >
 int mapReads(
@@ -1488,18 +1488,18 @@ int mapReads(
         // select best-fitting shape
         if (stringToShape(ungapped, options.shape))
             return mapReads(store, genomeFileNameList, gnoToFileMap, options, ungapped, Swift<SwiftSemiGlobalHamming>());
-        
+
         if (stringToShape(onegapped, options.shape))
             return mapReads(store, genomeFileNameList, gnoToFileMap, options, onegapped, Swift<SwiftSemiGlobalHamming>());
 
         if (stringToShape(gapped, options.shape))
             return mapReads(store, genomeFileNameList, gnoToFileMap, options, gapped, Swift<SwiftSemiGlobalHamming>());
-    } 
-    else 
+    }
+    else
     {
         if (stringToShape(ungapped, options.shape))
             return mapReads(store, genomeFileNameList, gnoToFileMap, options, ungapped, Swift<SwiftSemiGlobal>());
-        
+
         if (stringToShape(onegapped, options.shape))
             return mapReads(store, genomeFileNameList, gnoToFileMap, options, onegapped, Swift<SwiftSemiGlobal>());
 
@@ -1514,7 +1514,7 @@ template <typename TMatches, typename TGenomeSet, typename TReadSet, typename TS
 int mapReads(
     TMatches &                matches,
     TGenomeSet &            genomeSet,
-    TReadSet const &        readSet, 
+    TReadSet const &        readSet,
     RazerSOptions<TSpec> &    options)
 {
     Shape<Dna, SimpleShape>        ungapped;
@@ -1528,18 +1528,18 @@ int mapReads(
         // select best-fitting shape
         if (stringToShape(ungapped, options.shape))
             return mapReads(matches, genomeSet, readSet, options, ungapped, Swift<SwiftSemiGlobalHamming>());
-        
+
         if (stringToShape(onegapped, options.shape))
             return mapReads(matches, genomeSet, readSet, options, onegapped, Swift<SwiftSemiGlobalHamming>());
 
         if (stringToShape(gapped, options.shape))
             return mapReads(matches, genomeSet, readSet, options, gapped, Swift<SwiftSemiGlobalHamming>());
-    } 
-    else 
+    }
+    else
     {
         if (stringToShape(ungapped, options.shape))
             return mapReads(matches, genomeSet, readSet, options, ungapped, Swift<SwiftSemiGlobal>());
-        
+
         if (stringToShape(onegapped, options.shape))
             return mapReads(matches, genomeSet, readSet, options, onegapped, Swift<SwiftSemiGlobal>());
 

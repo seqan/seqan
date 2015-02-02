@@ -490,7 +490,7 @@ removeGap(Gaps<TSequence, TSpec> & gaps, TPosition clippedViewPos)
 {
     return removeGaps(gaps, clippedViewPos, 1u);
 }
-    
+
 // ----------------------------------------------------------------------------
 // Function countGaps()
 // ----------------------------------------------------------------------------
@@ -631,10 +631,10 @@ countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
  *
  * @code{.txt}
  * clipping                   [     )
- *   (half-open interval)           
- * 
+ *   (half-open interval)
+ *
  * gapped sequence:          X--XXX-XX-
- * 
+ *
  * source position:          0111234456
  * unclipped view position:  0123456789
  * clipped view position:     0123456
@@ -661,10 +661,10 @@ countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
  *
  * @code{.txt}
  * clipping                   [     )
- *   (half-open interval)           
- * 
+ *   (half-open interval)
+ *
  * gapped sequence:          X--XXX-XX-
- * 
+ *
  * source position:          0111234456
  * unclipped view position:  0123456789
  * clipped view position:     0123456
@@ -720,10 +720,10 @@ countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
  *
  * @code{.txt}
  * clipping                   [     )
- *   (half-open interval)           
- * 
+ *   (half-open interval)
+ *
  * gapped sequence:          X--XXX-XX-
- * 
+ *
  * source position:          0111234456
  * unclipped view position:  0123456789
  * clipped view position:     0123456
@@ -750,10 +750,10 @@ countCharacters(Gaps<TSequence, TSpec> const & gaps, TPos clippedViewPos)
  *
  * @code{.txt}
  * clipping                   [     )
- *   (half-open interval)           
- * 
+ *   (half-open interval)
+ *
  * gapped sequence:          X--XXX-XX-
- * 
+ *
  * source position:          0111234456
  * unclipped view position:  0123456789
  * clipped view position:     0123456
@@ -858,7 +858,7 @@ void _pumpTraceToGaps(Gaps<TSequenceH, TGapsSpecH> & gapsH,
  * @signature TSource source(gaps);
  *
  * @param[in] gaps The Gaps object to return the underling sequence for.
- * 
+ *
  * @return TSource Reference to the source of the Gaps.
  */
 

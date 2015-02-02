@@ -73,7 +73,7 @@ template <typename TSpec = void>
 struct ReadStoreElement
 {
     typedef typename Id<ReadStoreElement>::Type TId;
-    
+
     static const TId INVALID_ID;
 
     TId matePairId;                // refers to the mate-pair, INVALID_ID if not part of a mate-pair

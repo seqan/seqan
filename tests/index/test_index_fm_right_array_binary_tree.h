@@ -97,7 +97,7 @@ void waveletTreeStructureConstructor(TRightArrayBinaryTree & /*tag*/)
                 leftCounter += freq[ordValue(left)];
             }
             int rightCounter = 0;
-            
+
             for (; left <= borderString[i].i2 && left > borderString[i].i1; ++left)
             {
                 rightCounter+= freq[ordValue(left)];
@@ -105,7 +105,7 @@ void waveletTreeStructureConstructor(TRightArrayBinaryTree & /*tag*/)
             int currentSum = leftCounter - rightCounter;
             if (currentSum < 0)
                 currentSum *= -1;
-                
+
             for (TChar newPivot = (unsigned)borderString[i].i1 + 1; newPivot <= borderString[i].i2 && newPivot > borderString[i].i1; ++newPivot)
             {
                 TChar newLeft = borderString[i].i1;
@@ -188,12 +188,12 @@ void waveletTreeStructureGetFibre(TRightArrayBinaryTree & /*tag*/)
 
     {
         TRightArrayBinaryTree waveletTreeStructure;
-        
+
         TWaveletTreeVertices & temp = getFibre(waveletTreeStructure, FibreTreeStructureEncoding());
         SEQAN_ASSERT_EQ(length(waveletTreeStructure.treeVertices), 0u);
 
         resize(temp, 10);
-        
+
         SEQAN_ASSERT_EQ(length(waveletTreeStructure.treeVertices), 10u);
     }
 }
@@ -208,12 +208,12 @@ void waveletTreeStructureLength(TRightArrayBinaryTree & /*tag*/)
 
     {
         TRightArrayBinaryTree waveletTreeStructure;
-        
+
         TWaveletTreeVertices & temp = getFibre(waveletTreeStructure, FibreTreeStructureEncoding());
         SEQAN_ASSERT_EQ(length(waveletTreeStructure), 0u);
 
         resize(temp, 10);
-        
+
         SEQAN_ASSERT_EQ(length(waveletTreeStructure), 10u);
     }
 }
@@ -228,22 +228,22 @@ void waveletTreeStructureResize(TRightArrayBinaryTree & /*tag*/)
 
     {
         TRightArrayBinaryTree waveletTreeStructure;
-        
+
         TWaveletTreeVertices & temp = getFibre(waveletTreeStructure, FibreTreeStructureEncoding());
         SEQAN_ASSERT_EQ(length(waveletTreeStructure), 0u);
 
         resize(temp, 10);
-        
+
         SEQAN_ASSERT_EQ(length(waveletTreeStructure), 10u);
     }
     {
         TRightArrayBinaryTree waveletTreeStructure;
-        
+
         TWaveletTreeVertices & temp = getFibre(waveletTreeStructure, FibreTreeStructureEncoding());
         SEQAN_ASSERT_EQ(length(waveletTreeStructure), 0u);
 
         resize(temp, 10, TWaveletTreeVertex(0, 10));
-        
+
         SEQAN_ASSERT_EQ(length(waveletTreeStructure), 10u);
         SEQAN_ASSERT_EQ(getFibre(waveletTreeStructure, FibreTreeStructureEncoding())[9],  TWaveletTreeVertex(0, 10));
     }
@@ -259,22 +259,22 @@ void waveletTreeStructureResize(TRightArrayBinaryTree & /*tag*/)
 //    //typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
 //    //typedef typename Value<TWaveletTreeVertex, 2>::Type TPos;
 //
-//    
+//
 //    TRightArrayBinaryTree waveletTreeStructure;
 //    _resize(waveletTreeStructure, 10, Exact());
 //
 //    CharString tempFilename = SEQAN_TEMP_FILENAME();
 //
 //    save(waveletTreeStructure, toCString(tempFilename));
-//    
+//
 //    TRightArrayBinaryTree openWaveletTreeStructure;
 //    open(openWaveletTreeStructure, toCString(tempFilename));
 //
-//    SEQAN_ASSERT(waveletTreeStructure == openWaveletTreeStructure); 
+//    SEQAN_ASSERT(waveletTreeStructure == openWaveletTreeStructure);
 //
 //    waveletTreeStructure = openWaveletTreeStructure;
-//    
-//    SEQAN_ASSERT(waveletTreeStructure == openWaveletTreeStructure); 
+//
+//    SEQAN_ASSERT(waveletTreeStructure == openWaveletTreeStructure);
 //}
 
 SEQAN_DEFINE_TEST(wavelet_tree_structure_constructor)

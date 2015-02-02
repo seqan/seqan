@@ -57,13 +57,13 @@ class LocalAlignmentEnumerator<TScore, Banded>
 {
 public:
     typedef typename Value<TScore>::Type TScoreValue_;
-    
+
     TScore _score;
     int _lowerDiag;
     int _upperDiag;
     TScoreValue_ _cutoff;
     LocalAlignmentFinder<TScoreValue_> _finder;
-    
+
     LocalAlignmentEnumerator(TScore const & score, int lowerDiag, int upperDiag) :
             _score(score), _lowerDiag(lowerDiag), _upperDiag(upperDiag), _cutoff(0)
     {}

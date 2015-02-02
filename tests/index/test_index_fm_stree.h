@@ -85,7 +85,7 @@ void fmIndexIteratorGoDown(TIter & /*tag*/)
     TText text;
     text = "ACGACG";
     TIndex fmIndex(text);
-    
+
     {
         TIter it(fmIndex);
         SEQAN_ASSERT_EQ(goDown(it), true);
@@ -132,7 +132,7 @@ void fmIndexIteratorIsLeaf(TIter & /*tag*/)
 
     TText text = "ACGACG";
     TIndex fmIndex(text);
-    
+
     {
         TIter it(fmIndex);
         SEQAN_ASSERT_EQ(isLeaf(it), false);
@@ -158,7 +158,7 @@ void fmIndexIteratorGoRight(TIter & /*tag*/)
 
     TText text = "ACGACG";
     TIndex fmIndex(text);
-    
+
     {
         TIter it(fmIndex);
         SEQAN_ASSERT_EQ(goDown(it), true);
@@ -180,7 +180,7 @@ void fmIndexIteratorGoUp(TIter & /*tag*/)
 
     TText text = "ACGACG";
     TIndex fmIndex(text);
-    
+
     {
         TIter it(fmIndex);
         SEQAN_ASSERT_EQ(goDown(it, "GCAGCA"), true);
@@ -210,7 +210,7 @@ void fmIndexIteratorIsRoot(TIter & /*tag*/)
 
     TText text = "ACGACG";
     TIndex fmIndex(text);
-    
+
     {
         TIter it(fmIndex);
 
@@ -228,7 +228,7 @@ void fmIndexIteratorRepresentative(TIter & /*tag*/)
 
     TText text = "ACGACG";
     TIndex fmIndex(text);
-    
+
     {
         TIter it(fmIndex);
 
@@ -245,7 +245,7 @@ void fmIndexIteratorCountOccurrences(TIter & /*tag*/)
     typedef typename Fibre<TIndex, FibreText>::Type TText;
     typedef Index<TText, IndexEsa<> > TEsaIndex;
     typedef typename Iterator<TEsaIndex, TopDown<ParentLinks<> > >::Type TEsaIter;
-    
+
     TText text;
     generateText(text);
 
@@ -254,7 +254,7 @@ void fmIndexIteratorCountOccurrences(TIter & /*tag*/)
 
     TIndex fmIndex(text);
     TEsaIndex esaIndex(text);
-        
+
     TIter it(fmIndex);
     TEsaIter esaIt(esaIndex);
 
@@ -280,7 +280,7 @@ void fmIndexIteratorRange(TIter & /*tag*/)
     typedef typename Fibre<TIndex, FibreText>::Type TText;
     typedef Index<TText, IndexEsa<> > TEsaIndex;
     typedef typename Iterator<TEsaIndex, TopDown<ParentLinks<> > >::Type TEsaIter;
-    
+
     TText text;
     generateText(text);
 
@@ -289,7 +289,7 @@ void fmIndexIteratorRange(TIter & /*tag*/)
 
     TIndex fmIndex(text);
     TEsaIndex esaIndex(text);
-        
+
     TIter it(fmIndex);
     TEsaIter esaIt(esaIndex);
 
@@ -318,7 +318,7 @@ SEQAN_DEFINE_TEST(fm_index_iterator_constuctor)
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
     DnaString genome = "AAA";
-    
+
     {
         Index<DnaString,TDefaultIndex> index(genome);
         Iterator<Index<DnaString,TDefaultIndex>, TIterSpec>::Type dnaTag(index);
@@ -362,7 +362,7 @@ SEQAN_DEFINE_TEST(fm_index_iterator_is_leaf)
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
     DnaString genome = "A";
-    
+
     {
         Index<DnaString,TDefaultIndex> index(genome);
         Iterator<Index<DnaString,TDefaultIndex>, TIterSpec>::Type dnaTag(index);
@@ -384,7 +384,7 @@ SEQAN_DEFINE_TEST(fm_index_iterator_go_right)
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
     DnaString genome = "A";
-    
+
     {
         Index<DnaString,TDefaultIndex> index(genome);
         Iterator<Index<DnaString,TDefaultIndex>, TIterSpec>::Type dnaTag(index);
@@ -405,7 +405,7 @@ SEQAN_DEFINE_TEST(fm_index_iterator_go_up)
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
     DnaString genome = "A";
-    
+
     {
         Index<DnaString,TDefaultIndex> index(genome);
         Iterator<Index<DnaString,TDefaultIndex>, TParentLinksIterSpec>::Type dnaTag(index);
@@ -421,7 +421,7 @@ SEQAN_DEFINE_TEST(fm_index_iterator_representative)
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
     DnaString genome = "A";
-    
+
     {
         Index<DnaString,TDefaultIndex> index(genome);
         Iterator<Index<DnaString,TDefaultIndex>, TParentLinksIterSpec>::Type dnaTag(index);
@@ -438,7 +438,7 @@ SEQAN_DEFINE_TEST(fm_index_iterator_is_root)
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
     DnaString genome = "A";
-    
+
     {
         Index<DnaString,TDefaultIndex> index(genome);
         Iterator<Index<DnaString,TDefaultIndex>, TIterSpec>::Type dnaTag(index);
@@ -458,7 +458,7 @@ SEQAN_DEFINE_TEST(fm_index_iterator_count_occurrences)
     typedef FMIndex<WT<>, void> TDefaultIndex;
     typedef TopDown<> TIterSpec;
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
-    
+
     {
         DnaString genome;
         Index<DnaString,TDefaultIndex> index(genome);
@@ -489,7 +489,7 @@ SEQAN_DEFINE_TEST(fm_index_iterator_range)
     typedef TopDown<ParentLinks<> > TParentLinksIterSpec;
 
     DnaString genome = "A";
-    
+
     {
         Index<DnaString,TDefaultIndex> index(genome);
         Iterator<Index<DnaString,TDefaultIndex>, TIterSpec>::Type dnaTag(index);

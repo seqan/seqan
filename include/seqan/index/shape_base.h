@@ -217,7 +217,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename Value<Shape>::Type    leftFactor2;
         TValue                        leftChar;
 //____________________________________________________________________________
-        
+
 /*!
  * @fn SimpleShape::Shape
  *
@@ -237,7 +237,7 @@ namespace SEQAN_NAMESPACE_MAIN
             leftFactor(0),
             leftFactor2(0),
             leftChar(0) {}
-        
+
         Shape(unsigned _span):
             hValue(0),
             XValue(0),
@@ -252,7 +252,7 @@ namespace SEQAN_NAMESPACE_MAIN
         Shape(Shape<TValue, UngappedShape<q> > const &other)
         {
             *this = other;
-        }    
+        }
 
 //____________________________________________________________________________
 
@@ -474,7 +474,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @include demos/index/shape_hash_init.cpp
  *
  * @code{.stdout}
- * 0    0    1    4    17    4    18    11    47    63    62    56    
+ * 0    0    1    4    17    4    18    11    47    63    62    56
  * 0    0    1    4    17    4    18    11    47    63    62    56
  * @endcode
  */
@@ -974,13 +974,13 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
 //____________________________________________________________________________
-    
+
     template <typename TValue, typename TSpec>
     inline void
     reverse(Shape<TValue, TSpec> &)
     {
     }
-    
+
 }    // namespace seqan
 
 #endif

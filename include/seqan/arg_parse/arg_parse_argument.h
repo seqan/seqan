@@ -439,7 +439,7 @@ inline bool isInputPrefixArgument(ArgParseArgument const & me)
 {
     return me._argumentType == ArgParseArgument::INPUTPREFIX;
 }
-    
+
 // ----------------------------------------------------------------------------
 // Function getArgumentLabel()
 // ----------------------------------------------------------------------------

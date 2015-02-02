@@ -34,12 +34,12 @@ namespace detail{
     const int gz_extra_field = 0x04; /* bit 2 set: extra field present */
     const int gz_orig_name  =  0x08; /* bit 3 set: original file name present */
     const int gz_comment    =  0x10; /* bit 4 set: file comment present */
-    const int gz_reserved   =  0xE0; /* bits 5..7: reserved */    
+    const int gz_reserved   =  0xE0; /* bits 5..7: reserved */
 
 }
 
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,
@@ -58,18 +58,18 @@ namespace detail{
         bool m_is_gzip;
 
         /* Check the gzip magic header */
-         for (len = 0; len < 2; len++) 
+         for (len = 0; len < 2; len++)
          {
             c = (int)istream.get();
             if (c != detail::gz_magic[len])
             {
-                if (len != 0) 
+                if (len != 0)
                     istream.unget();
-                if (c!= EOF) 
+                if (c!= EOF)
                 {
                     istream.unget();
                 }
-            
+
                 err = bgzf_stream.avail_in != 0 ? Z_OK : Z_STREAM_END;
                 m_is_gzip = false;
                 return err;
@@ -86,11 +86,11 @@ namespace detail{
         }
 
         /* Discard time, xflags and OS code: */
-        for (len = 0; len < 6; len++) 
+        for (len = 0; len < 6; len++)
             istream.get();
 
         if ((flags & detail::gz_extra_field) != 0)
-        { 
+        {
             /* skip the extra field */
             len  =  (uInt)istream.get();
             len += ((uInt)istream.get())<<8;
@@ -98,28 +98,28 @@ namespace detail{
             while (len-- != 0 && istream.get() != EOF) ;
         }
         if ((flags & detail::gz_orig_name) != 0)
-        { 
+        {
             /* skip the original file name */
             while ((c = istream.get()) != 0 && c != EOF) ;
         }
         if ((flags & detail::gz_comment) != 0)
-        {   
+        {
             /* skip the .gz file comment */
             while ((c = istream.get()) != 0 && c != EOF) ;
         }
         if ((flags & detail::gz_head_crc) != 0)
         {  /* skip the header crc */
-            for (len = 0; len < 2; len++) 
+            for (len = 0; len < 2; len++)
                 istream.get();
         }
         err = istream.eof() ? Z_DATA_ERROR : Z_OK;
 
         return err;
     }
-    
-        
+
+
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,
@@ -133,7 +133,7 @@ namespace detail{
     }
 
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr
     >
     void _putBinaryLong(std::basic_ostream<Elem,Tr> & out_, unsigned long x_)
@@ -143,9 +143,9 @@ namespace detail{
         static const int n_end = size_ul/size_c;
         out_.write(reinterpret_cast<typename Tr::char_type const*>(&x_), n_end);
     }
-   
+
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,
@@ -154,7 +154,7 @@ namespace detail{
     void basic_bgzf_istream<
             Elem,Tr,ElemA,ByteT,ByteAT
             >::read_long(
-                istream_reference in_, 
+                istream_reference in_,
             unsigned long& x_
             )
     {
@@ -163,9 +163,9 @@ namespace detail{
         static const int n_end = size_ul/size_c;
         in_.read(reinterpret_cast<char*>(&x_),n_end);
     }
-    
+
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,
@@ -174,7 +174,7 @@ namespace detail{
     void _addGZHeader(basic_bgzf_streambuf<Elem, Tr, ElemA, ByteT, ByteAT> *buf)
     {
         typename Tr::char_type zero=0;
-        
+
         buf->get_ostream()
             .put(static_cast<typename Tr::char_type>(detail::gz_magic[0]))
             .put(static_cast<typename Tr::char_type>(detail::gz_magic[1]))
@@ -186,7 +186,7 @@ namespace detail{
     }
 
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,

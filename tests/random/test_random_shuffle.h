@@ -48,7 +48,7 @@ SEQAN_DEFINE_TEST(test_random_shuffle)
     Rng<MersenneTwister> mt(0);
     CharString container = "Hello!";
     CharString const before = container;
-    
+
     shuffle(container, mt);
     SEQAN_ASSERT_NEQ(before, container);
 }

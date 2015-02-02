@@ -33,10 +33,10 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
     // Verification Token
     template <
-        typename TGenome, 
-        typename TReadSet, 
+        typename TGenome,
+        typename TReadSet,
         typename TSpec >
-    struct VerifierToken 
+    struct VerifierToken
     {
         Segment<TGenome, InfixSegment> genomeInf;   // potential match genome region
         TReadSet *readSet;                          // q-gram index
@@ -47,13 +47,13 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     //////////////////////////////////////////////////////////////////////////////
-    // Filtration Pipe 
+    // Filtration Pipe
     //   Input:  <none>
     //   Output: verification tokens
     template <
-        typename TGenome, 
+        typename TGenome,
         typename TSwiftFinder,
-        typename TSwiftPattern, 
+        typename TSwiftPattern,
         typename TOptionSpec >
     class FiltrationPipe: public tbb::filter
     {
@@ -62,14 +62,14 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef typename Host<TReadIndex>::Type                    TReadSet;
         typedef VerifierToken<TGenome, TReadSet, TOptionSpec>    TToken;
         typedef RazerSOptions<TOptionSpec> const                TOptions;
-        
+
         static const size_t nTokens = 8;
 
         TGenome            &genome;
         TSwiftPattern    swiftPattern;
         TSwiftFinder    swiftFinder;
         TOptions const    &options;
-        
+
         TToken          tokens[nTokens];
         unsigned        nextToken;
 
@@ -106,13 +106,13 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     //////////////////////////////////////////////////////////////////////////////
-    // Verification Pipe 
+    // Verification Pipe
     //   Input:  verification tokens
     //   Output: true matches
     template <
-        typename TMatches, 
-        typename TGenome, 
-        typename TReadSet, 
+        typename TMatches,
+        typename TGenome,
+        typename TReadSet,
         typename TVerificationPatterns,
         typename TOptionSpec,
         typename TSwiftSpec >
@@ -129,7 +129,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TVerificationPatterns    &verificationPatterns;
         TOptions                &options;
         __int64                    FP;
-        __int64                    TP;     
+        __int64                    TP;
 
 
         VerificationPipe(TMatches &_matches, TVerificationPatterns &_verificationPatterns, TOptions &_options):
@@ -155,12 +155,12 @@ namespace SEQAN_NAMESPACE_MAIN
         ::std::cout<<"Verify: "<<::std::endl;
         ::std::cout<<"Genome: "<<token.genomeInf<<"\t" << beginPosition(token.genomeInf) << "," << endPosition(token.genomeInf) << ::std::endl;
         ::std::cout<<"Read:   "<<(*token.readSet)[token.rseqNo]<<::std::endl;
-*/            
+*/
             TMatch m;
             if (matchVerify(m, token.genomeInf, token.rseqNo, *token.readSet, verificationPatterns, options, TSwiftSpec()))
             {
                 // transform coordinates to the forward strand
-                if (token.orientation == 'R') 
+                if (token.orientation == 'R')
                 {
                     TSize gLength = length(host(token.genomeInf));
                     TSize temp = m.gBegin;
@@ -198,10 +198,10 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // Find read matches in one genome sequence
 template <
-    typename TMatches, 
+    typename TMatches,
     typename TGenome,
-    typename TReadIndex, 
-    typename TSwiftSpec, 
+    typename TReadIndex,
+    typename TSwiftSpec,
     typename TVerifier,
     typename TOptionSpec >
 void findReads(
@@ -248,7 +248,7 @@ void findReads(
         TOptionSpec,
         TSwiftSpec > verificationPipe(matches, forwardPatterns, options);
     pipeline.add_filter(verificationPipe);
-    
+
     pipeline.run(filtrationPipe.nTokens);
     pipeline.clear();
 }

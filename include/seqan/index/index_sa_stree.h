@@ -387,7 +387,7 @@ inline bool _goDown(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<TSpe
     {
         value(it).range.i2 = saRange.i2;
     }
-    
+
     // Update child repLen, lastChar.
     value(it).repLen++;
     value(it).lastChar = cLeft;
@@ -578,7 +578,7 @@ inline typename VertexDescriptor<Index<TText, IndexSa<TIndexSpec> > >::Type
 nodeUp(Iter<Index<TText, IndexSa<TIndexSpec> >, VSTree<TopDown<ParentLinks<TSpec> > > > const & it)
 {
     typedef Index<TText, IndexSa<TIndexSpec> > TIndex;
-    
+
     if (!empty(it.history))
     {
         typename VertexDescriptor<TIndex>::Type desc;
@@ -669,7 +669,7 @@ template <typename TObject, typename TSpec>
 inline bool save(Index<TObject, IndexSa<TSpec> > & index, const char * fileName, int openMode)
 {
     String<char> name;
-    
+
     name = fileName;    append(name, ".txt");
     if ((!save(getFibre(index, FibreText()), toCString(name), openMode)) &&
         (!save(getFibre(index, FibreText()), fileName, openMode))) return false;

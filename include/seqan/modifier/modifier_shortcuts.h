@@ -188,10 +188,10 @@ typedef ReverseComplementString<Rna5String>::Type    Rna5StringReverseComplement
  * @fn complement
  * @headerfile <seqan/modifier.h>
  * @brief Complement a sequence or a StringSet in-place.
- * 
+ *
  * @signature void complement(sequence);
  * @signature void complement(stringSet);
- * 
+ *
  * @param[in,out] stringSet The StringSet to complement.
  * @param[in,out] sequence  The ContainerConcept to complement.
  *
@@ -200,16 +200,16 @@ typedef ReverseComplementString<Rna5String>::Type    Rna5StringReverseComplement
  */
 
 template <typename TSequence >
-inline void complement(TSequence & sequence) 
+inline void complement(TSequence & sequence)
 {
     convert(sequence, FunctorComplement<typename Value<TSequence>::Type>());
-} 
+}
 
 template <typename TSequence >
-inline void complement(TSequence const & sequence) 
+inline void complement(TSequence const & sequence)
 {
     convert(sequence, FunctorComplement<typename Value<TSequence>::Type>());
-} 
+}
 
 // --------------------------------------------------------------------------
 // Function complement()
@@ -257,10 +257,10 @@ complementString(THost const & host)
  * @fn reverseComplement
  * @headerfile <seqan/modifier.h>
  * @brief Reverse-complement a sequence or a StringSet in-place.
- * 
+ *
  * @signature void reverseComplement(sequence);
  * @signature void reverseComplement(stringSet);
- * 
+ *
  * @param[in,out] stringSet The StringSet to complement.
  * @param[in,out] sequence  The ContainerConcept to complement.
  *
@@ -277,7 +277,7 @@ inline void reverseComplement(TSequence & sequence, Tag<TParallelTag> parallelTa
 {
     complement(sequence);
     reverse(sequence, parallelTag);
-} 
+}
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
 // (weese:) it is possible for rvalue references like temporary Segments/ModifiedStrings
@@ -286,7 +286,7 @@ inline void reverseComplement(TSequence const & sequence, Tag<TParallelTag> para
 {
     complement(sequence);
     reverse(sequence, parallelTag);
-} 
+}
 
 template < typename TSequence, typename TSpec, typename TParallelTag >
 inline void reverseComplement(StringSet<TSequence, TSpec> & stringSet, Tag<TParallelTag>)
@@ -357,18 +357,18 @@ reverseComplementString(THost const & host)
  */
 
 template < typename TSequence >
-inline void toLower(TSequence & sequence) 
+inline void toLower(TSequence & sequence)
 {
     convert(sequence, FunctorLowcase<typename Value<TSequence>::Type>());
-} 
+}
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
 // (weese:) it is possible for rvalue references like temporary Segments/ModifiedStrings
 template < typename TSequence >
-inline void toLower(TSequence const & sequence) 
+inline void toLower(TSequence const & sequence)
 {
     convert(sequence, FunctorLowcase<typename Value<TSequence>::Type>());
-} 
+}
 
 template < typename TSequence, typename TSpec >
 inline void toLower(StringSet<TSequence, TSpec> & stringSet)
@@ -405,18 +405,18 @@ inline void toLower(StringSet<TSequence, TSpec> const & stringSet)
  */
 
 template < typename TSequence >
-inline void toUpper(TSequence & sequence) 
+inline void toUpper(TSequence & sequence)
 {
     convert(sequence, FunctorUpcase<typename Value<TSequence>::Type>());
-} 
+}
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
 // (weese:) it is possible for rvalue references like temporary Segments/ModifiedStrings
 template < typename TSequence >
-inline void toUpper(TSequence const & sequence) 
+inline void toUpper(TSequence const & sequence)
 {
     convert(sequence, FunctorUpcase<typename Value<TSequence>::Type>());
-} 
+}
 
 template < typename TSequence, typename TSpec >
 inline void toUpper(StringSet<TSequence, TSpec> & stringSet)

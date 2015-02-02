@@ -70,28 +70,28 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
 template<typename TGraph, typename TSpec>
-class Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > > 
+class Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >
 {
 public:
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor_;
     TGraph const* data_host;
     TVertexDescriptor_ data_pos;
 
-    Iter()    
-    {
-        SEQAN_CHECKPOINT
-    }
-    
-    Iter(TGraph const& _graph) : 
-        data_host(&_graph), 
-        data_pos(getIdLowerBound(_getVertexIdManager(*data_host))) 
+    Iter()
     {
         SEQAN_CHECKPOINT
     }
 
-    Iter(Iter const& _iter) : 
-        data_host(_iter.data_host), 
-        data_pos(_iter.data_pos) 
+    Iter(TGraph const& _graph) :
+        data_host(&_graph),
+        data_pos(getIdLowerBound(_getVertexIdManager(*data_host)))
+    {
+        SEQAN_CHECKPOINT
+    }
+
+    Iter(Iter const& _iter) :
+        data_host(_iter.data_host),
+        data_pos(_iter.data_pos)
     {
         SEQAN_CHECKPOINT
     }
@@ -118,13 +118,13 @@ public:
 
 template<typename TGraph>
 struct Iterator<TGraph, VertexIterator>
-{    
+{
     typedef Iter<TGraph, GraphIterator<InternalVertexIterator<VertexIterator> > > Type;
 };
 
 template<typename TGraph>
 struct Iterator<TGraph const, VertexIterator>
-{    
+{
     typedef Iter<TGraph const, GraphIterator<InternalVertexIterator<VertexIterator> > > Type;
 };
 
@@ -229,7 +229,7 @@ hostGraph(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
 {
     SEQAN_CHECKPOINT
     return *it.data_host;
-} 
+}
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -238,7 +238,7 @@ inline bool
 atBegin(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
 {
 SEQAN_CHECKPOINT
-    return (getValue(it) == getIdLowerBound(_getVertexIdManager(*it.data_host)));    
+    return (getValue(it) == getIdLowerBound(_getVertexIdManager(*it.data_host)));
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -258,7 +258,7 @@ inline bool
 atEnd(Iter<TGraph, GraphIterator<InternalVertexIterator<TSpec> > >& it)
 {
 SEQAN_CHECKPOINT
-    return (getValue(it) >= getIdUpperBound(_getVertexIdManager(*it.data_host)));    
+    return (getValue(it) >= getIdUpperBound(_getVertexIdManager(*it.data_host)));
 }
 
 //////////////////////////////////////////////////////////////////////////////

@@ -47,18 +47,18 @@ namespace SEQAN_NAMESPACE_MAIN
  * @class OneGappedShape
  * @extends Shape
  * @headerfile <seqan/index.h>
- * 
+ *
  * @brief A variable shape with one optional gap.
- * 
+ *
  * @signature template <typename TValue>
  *            class Shape<TValue, OneGappedShape>;
- * 
+ *
  * @tparam TValue The @link Value @endlink type of the string the shape is
  *                applied to (e.g. <tt>Dna</tt>).
- * 
+ *
  * A OneGappedShape must be initialized first with a valid shape. To do so, call
  * @link Shape#stringToShape @endlink.
- * 
+ *
  * @see GenericShape
  */
 
@@ -73,7 +73,7 @@ namespace SEQAN_NAMESPACE_MAIN
         unsigned blockLen1;
         unsigned gapLen;
         unsigned blockLen2;
-    
+
         typename Value<Shape>::Type    hValue;        // current hash value
 
         TValue                        leftChar;
@@ -111,7 +111,7 @@ namespace SEQAN_NAMESPACE_MAIN
             blockLen2(other.blockLen2),
             hValue(other.hValue),
             leftChar(other.leftChar),
-            factor1(other.factor1), 
+            factor1(other.factor1),
             factor2(other.factor2) {}
 
         template <typename TSpec>
@@ -119,7 +119,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 hValue(0), leftChar(0)
         {
             *this = other;
-        }    
+        }
 
         template <typename TSpec>
         Shape(GappedShape<TSpec> const &other) :
@@ -133,7 +133,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 hValue(0), leftChar(0)
         {
             *this = bitmap;
-        }    
+        }
 
 //____________________________________________________________________________
 
@@ -334,7 +334,7 @@ namespace SEQAN_NAMESPACE_MAIN
     template <typename TValue, typename TShapeString>
     inline bool
     stringToShape(
-        Shape<TValue, OneGappedShape> &me, 
+        Shape<TValue, OneGappedShape> &me,
         TShapeString const &bitmap)
     {
     SEQAN_CHECKPOINT
@@ -396,7 +396,7 @@ namespace SEQAN_NAMESPACE_MAIN
         me.blockLen2 = temp;
         me.factor2 = _intPow((THValue)ValueSize<TValue>::VALUE, me.blockLen2);
     }
-    
+
 }    // namespace seqan
 
 #endif

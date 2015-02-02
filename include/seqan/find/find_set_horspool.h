@@ -46,14 +46,14 @@ namespace SEQAN_NAMESPACE_MAIN
  * @class SetHorspoolPattern
  * @extends Pattern
  * @headerfile <seqan/find.h>
- * 
+ *
  * @brief Multiple exact string matching using set horspool algorithm.
- * 
+ *
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, SetHorspool>;
- * 
+ *
  * @tparam TNeedle The needle type, a string of keywords.  Types: @link ContainerConcept @endlink.
- * 
+ *
  * The types of all keywords in the needle and the haystack have to match.
  */
 
@@ -76,7 +76,7 @@ public:
     typedef typename Value<TValue>::Type TAlphabet;
     typedef Graph<Automaton<TAlphabet> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-    
+
     Holder<TNeedle> data_host;
     Graph<Automaton<TAlphabet> > data_reverseTrie;  // Search trie
     String<String<TSize> > data_terminalStateMap;
@@ -100,7 +100,7 @@ public:
 
     ~Pattern() {
         SEQAN_CHECKPOINT
-    }        
+    }
 //____________________________________________________________________________
 };
 
@@ -158,7 +158,7 @@ void setHost (Pattern<TNeedle, SetHorspool> & me, TNeedle2 const & needle) {
     goBegin(it);
     for(;!atEnd(it);goNext(it)) {
         for(TSize pos = 0;pos < length(*it) - 1; ++pos) {
-            TSize ind = ordValue((TAlphabet)(*it)[pos]);    
+            TSize ind = ordValue((TAlphabet)(*it)[pos]);
             if ((length(*it)- 1 - pos) < me.data_dMap[ind]) {
                 me.data_dMap[ind] = (length(*it) - 1 - pos);
             }
@@ -187,7 +187,7 @@ void setHost (Pattern<TNeedle, SetHorspool> & me, TNeedle2 & needle)
 
 
 template <typename TNeedle>
-inline void _patternInit (Pattern<TNeedle, SetHorspool> & me) 
+inline void _patternInit (Pattern<TNeedle, SetHorspool> & me)
 {
 SEQAN_CHECKPOINT
     clear(me.data_endPositions);
@@ -199,7 +199,7 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 
 template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, SetHorspool>const>::Type & 
+inline typename Host<Pattern<TNeedle, SetHorspool>const>::Type &
 host(Pattern<TNeedle, SetHorspool> & me)
 {
 SEQAN_CHECKPOINT
@@ -207,7 +207,7 @@ SEQAN_CHECKPOINT
 }
 
 template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, SetHorspool>const>::Type & 
+inline typename Host<Pattern<TNeedle, SetHorspool>const>::Type &
 host(Pattern<TNeedle, SetHorspool> const & me)
 {
 SEQAN_CHECKPOINT
@@ -234,7 +234,7 @@ inline bool find(TFinder & finder, Pattern<TNeedle, SetHorspool> & me) {
     typedef Graph<Automaton<TAlphabet> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 
-    TVertexDescriptor current = getRoot(me.data_reverseTrie); 
+    TVertexDescriptor current = getRoot(me.data_reverseTrie);
 
     // Process left-over hits
     if ((!empty(finder)) &&
@@ -266,7 +266,7 @@ inline bool find(TFinder & finder, Pattern<TNeedle, SetHorspool> & me) {
     bool oldMatch = true;
     // Do not change to !atEnd(finder) because of jump map!
     while(position(finder) < haystackLength) {
-        while ((position(finder)>=j) && 
+        while ((position(finder)>=j) &&
                 (getSuccessor(me.data_reverseTrie, current, *(finder-j))!= nilVal))
         {
             me.data_endPositions = getProperty(me.data_terminalStateMap,current);

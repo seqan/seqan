@@ -39,17 +39,17 @@
 namespace seqan {
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////    
+///////////////////////////////////////////////////////////////////////////////////////////////////////
 //Functions for Align<TSource,TSpec>
-//project onto other sequence 
+//project onto other sequence
 template<typename TSource,typename TSpec,typename TValue, typename TId1, typename TPos1, typename TId2, typename TPos2,typename TMap>
 void
-_getOtherSequenceAndProject(Align<TSource,TSpec> & segment, 
+_getOtherSequenceAndProject(Align<TSource,TSpec> & segment,
                 TValue seg_num,
-                            TMap & seq_map, 
-                           TId1 , 
-                           TPos1 node_i, 
-                           TId2 & seq_j_id, 
+                            TMap & seq_map,
+                           TId1 ,
+                           TPos1 node_i,
+                           TId2 & seq_j_id,
                            TPos2 & node_j)
 {
 SEQAN_CHECKPOINT
@@ -76,8 +76,8 @@ SEQAN_CHECKPOINT
 
 
 //unspektakul�re funktion, die die int ID zur�ckgibt (braucht man damit es f�r alle alignment typen geht)
-//template<typename TSource,typename TSpec, typename TValue, typename TSeqMap>                    
-//int 
+//template<typename TSource,typename TSpec, typename TValue, typename TSeqMap>
+//int
 //_getSeqMapId(TSeqMap & seq_map,
 //            Align<TSource,TSpec> & segment,
 //            TValue seq_i)
@@ -92,9 +92,9 @@ SEQAN_CHECKPOINT
 template<typename TAliSource,typename TAliSpec, typename TId, typename TPosition, typename TId2>
 void
 _getSeqBeginAndEnd(Align<TAliSource,TAliSpec> & segment,
-                  std::map<const void * ,int> & seq_map, 
-                  TId & seq_i_id, 
-                  TPosition & begin_i, 
+                  std::map<const void * ,int> & seq_map,
+                  TId & seq_i_id,
+                  TPosition & begin_i,
                   TPosition & end_i,
                   TId2 seq)
 {
@@ -116,7 +116,7 @@ struct Row;
 
 //for Align<TAliSource,TAliSpec>
 //get score for alignment of length len starting at pos_i on first sequence
-//and pos_j on second sequence 
+//and pos_j on second sequence
 template<typename TScoreValue,typename TScoreSpec,typename TStringSet,typename TAliSource,typename TAliSpec,typename TValue>
 TScoreValue
 _getRefinedMatchScore(Score<TScoreValue,TScoreSpec> & score_type,
@@ -127,10 +127,10 @@ _getRefinedMatchScore(Score<TScoreValue,TScoreSpec> & score_type,
          TValue len,
          TValue)
 {
-SEQAN_CHECKPOINT     
+SEQAN_CHECKPOINT
     typedef Align<TAliSource,TAliSpec> TAlign;
     typedef typename Row<TAlign>::Type TRow;
-//    typedef typename Iterator<TRow,GapsIterator<ArrayGaps> >::Type TIterator;    
+//    typedef typename Iterator<TRow,GapsIterator<ArrayGaps> >::Type TIterator;
     typedef typename Iterator<TRow, Rooted>::Type TIterator;
     TIterator row0_it, row1_it;
     row0_it = iter(row(segment,0),toViewPosition(row(segment,0),pos_i));
@@ -145,20 +145,20 @@ SEQAN_CHECKPOINT
         else
             ret_score += score(score_type,getValue(row0_it),getValue(row1_it));
         ++i;
-        ++row0_it; 
-        ++row1_it; 
+        ++row0_it;
+        ++row1_it;
     }
     return ret_score;
-}                
-                    
+}
 
-//get score for alignment starting at pos_i on first sequence 
+
+//get score for alignment starting at pos_i on first sequence
 //and pos_j on second sequence, if len1!=len2 then the refinement
 //process was stopped (the cut is not exact)
 //template<typename TScore,typename TStringSet, typename TAliSource,typename TAliSpec,typename TValue>
 //typename Value<TScore>::Type
 //_getRefinedMatchScore(TScore & score_type,
-//         TStringSet &, 
+//         TStringSet &,
 //         Align<TAliSource,TAliSpec> & segment,
 //         TValue pos_i,
 //         TValue pos_j,
@@ -168,7 +168,7 @@ SEQAN_CHECKPOINT
 //SEQAN_CHECKPOINT
 //    typedef Align<TAliSource,TAliSpec> TAlign;
 //    typedef typename Row<TAlign>::Type TRow;
-//    typedef typename Iterator<TRow>::Type TIterator;    
+//    typedef typename Iterator<TRow>::Type TIterator;
 //    TIterator row0_it, row1_it;
 //    TValue len;
 //    row0_it = iter(row(segment,0),toViewPosition(row(segment,0),pos_i));
@@ -178,7 +178,7 @@ SEQAN_CHECKPOINT
 //    len = (len1 < len2) ? len1 : len2;
 //    int i = 0;
 //    typename Value<TScore>::Type ret_score = 0;
-//    
+//
 //    //calculate score for aligned region
 //    while(i < len)
 //    {
@@ -190,9 +190,9 @@ SEQAN_CHECKPOINT
 //    //fill up with gaps if one sequence is longer than the other
 //    len = (len1 > len2) ? len1 : len2;
 //    ret_score += (len - i) * scoreGapExtend(score_type);
-//    
+//
 //    return ret_score;
-//}                
+//}
 
 }  // namespace seqan
 

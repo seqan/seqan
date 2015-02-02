@@ -514,7 +514,7 @@ reAlign(double &profileScore,
                 }
             } while (fragIt != fragItEnd);
         }
-        
+
         for (; readPos < (TReadPos)length(myRead); ++readPos) { // For rest not matched read positions
             int numGapsTop;
             int numGapsBottom;
@@ -577,13 +577,13 @@ reAlign(FragmentStore<TSpec, TConfig> & fragStore,
     typedef FragmentStore<TSpec, TConfig>                   TFragmentStore;
     typedef typename TFragmentStore::TAlignedReadStore      TAlignedReadStore;
     typedef typename TFragmentStore::TReadPos               TReadPos;
-    
+
     typedef typename TFragmentStore::TContigStore                            TContigStore;
     typedef typename Value<TContigStore>::Type                                TContig;
     typedef typename TFragmentStore::TContigPos                             TContigPos;
     typedef typename TFragmentStore::TContigSeq                             TContigSeq;
     typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >    TContigGaps;
-    
+
     typedef typename TFragmentStore::TReadSeq                       TReadSeq;
     typedef typename TFragmentStore::TReadGapAnchor                 TGapAnchor;
     typedef typename Value<TAlignedReadStore>::Type                 TAlignedElement;

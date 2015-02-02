@@ -68,7 +68,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         Pipe(Bundle2< TInput0, TInput12 > _in):
             in(_in) {}
-        
+
         static inline bool less1(const InType0& i0, const InType12& i12)
         { // lexic. order for pairs
             return (i0.i3[0] <  i12.i3[0] ||
@@ -102,7 +102,7 @@ namespace SEQAN_NAMESPACE_MAIN
         inline typename Value<Pipe>::Type const & operator*() const {
             return tmp;
         }
-        
+
         inline Pipe& operator++() {
             if (minStream) {
                 #ifdef SEQAN_TEST_SKEW3
@@ -154,7 +154,7 @@ namespace SEQAN_NAMESPACE_MAIN
         me.getMin();
         return true;
     }
-    
+
     template < typename TInput >
     inline typename Size< Pipe< TInput, Merger3 > >::Type
     length(Pipe< TInput, Merger3 > const &me) {

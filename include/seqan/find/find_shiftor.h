@@ -49,12 +49,12 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Exact string matching using bit parallelism.
  *
  * The Shift-Or algorithm is applicable to search small patterns in texts using a small alphabet.
- * 
+ *
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, ShiftOr>;
- * 
+ *
  * @tparam TNeedle The needle type. Types: @link String @endlink.
- * 
+ *
  * The types of the needle and the haystack have to match.
  */
 
@@ -74,7 +74,7 @@ public:
     String<TWord> bitMasks;            // Look up table for each character in the alphabet (called B in "Navarro")
     String<TWord> prefSufMatch;        // Set of all the prefixes of needle that match a suffix of haystack (called D in "Navarro")
     TWord needleLength;                // e.g., needleLength=33 --> blockCount=2 (iff w=32 bits)
-    TWord blockCount;                // #unsigned ints required to store needle    
+    TWord blockCount;                // #unsigned ints required to store needle
 
 //____________________________________________________________________________
 
@@ -95,19 +95,19 @@ public:
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TNeedle2>
-inline void 
-setHost(Pattern<TNeedle, ShiftOr> & me, TNeedle2 const & needle) 
+inline void
+setHost(Pattern<TNeedle, ShiftOr> & me, TNeedle2 const & needle)
 {
     SEQAN_CHECKPOINT
     typedef unsigned int TWord;
     typedef typename Value<TNeedle>::Type TValue;
-    
+
     me.needleLength = length(needle);
     if (me.needleLength < 1)
         me.blockCount = 1;
     else
         me.blockCount = (me.needleLength - 1) / BitsPerValue<TWord>::VALUE + 1;
-    
+
     clear(me.bitMasks);
     resize(me.bitMasks, me.blockCount * ValueSize<TValue>::VALUE, (TWord)~0, Exact());
 
@@ -139,7 +139,7 @@ setHost(Pattern<TNeedle, ShiftOr> & me, TNeedle2 const & needle)
 }
 
 template <typename TNeedle, typename TNeedle2>
-inline void 
+inline void
 setHost(Pattern<TNeedle, ShiftOr> & me, TNeedle2 & needle)
 {
     setHost(me, const_cast<TNeedle2 const &>(needle));
@@ -199,8 +199,8 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 
 template <typename TNeedle>
-inline void 
-_patternInit (Pattern<TNeedle, ShiftOr> & me) 
+inline void
+_patternInit (Pattern<TNeedle, ShiftOr> & me)
 {
 SEQAN_CHECKPOINT
     typedef unsigned int TWord;
@@ -222,7 +222,7 @@ bool _findShiftOrSmallNeedle(TFinder & finder, Pattern<TNeedle, ShiftOr> & me) {
         me.prefSufMatch[0] = (me.prefSufMatch[0] << 1) | me.bitMasks[me.blockCount*pos];
         if ((me.prefSufMatch[0] | compare) != (TWord) ~0) {
             finder-=(me.needleLength-1);
-            return true; 
+            return true;
         }
         goNext(finder);
     }
@@ -230,8 +230,8 @@ bool _findShiftOrSmallNeedle(TFinder & finder, Pattern<TNeedle, ShiftOr> & me) {
 }
 */
 template <typename TFinder, typename TNeedle>
-inline bool 
-_findShiftOrSmallNeedle(TFinder & finder, Pattern<TNeedle, ShiftOr> & me) 
+inline bool
+_findShiftOrSmallNeedle(TFinder & finder, Pattern<TNeedle, ShiftOr> & me)
 {
 SEQAN_CHECKPOINT
     typedef typename Haystack<TFinder>::Type THaystack;
@@ -253,23 +253,23 @@ SEQAN_CHECKPOINT
         pref_suf_match <<= 1;                //shift...
         pref_suf_match |= me.bitMasks[ordValue(convert<TValue>(getValue(hayit)))];    //...or
 
-        if (pref_suf_match & mask) 
+        if (pref_suf_match & mask)
             continue;
 
         //found a hit!
         //set finder to start position
         _setFinderEnd(finder, (hayit - begin(hstk, Standard())) + 1);
-        setPosition(finder,  beginPosition(finder)); 
+        setPosition(finder,  beginPosition(finder));
         //save machine state
-        me.prefSufMatch[0] = pref_suf_match; 
+        me.prefSufMatch[0] = pref_suf_match;
         return true;
     }
     return false;
 }
 
 template <typename TFinder, typename TNeedle>
-inline bool 
-_findShiftOrLargeNeedle(TFinder & finder, Pattern<TNeedle, ShiftOr> & me) 
+inline bool
+_findShiftOrLargeNeedle(TFinder & finder, Pattern<TNeedle, ShiftOr> & me)
 {
 SEQAN_CHECKPOINT
     typedef typename Value<TNeedle>::Type TValue;
@@ -289,11 +289,11 @@ SEQAN_CHECKPOINT
         }
         for(TWord block = 0; block < me.blockCount; ++block)
             me.prefSufMatch[block] |= me.bitMasks[me.blockCount * pos + block];
-        if ((me.prefSufMatch[me.blockCount - 1] | compare) != (TWord) ~0) 
+        if ((me.prefSufMatch[me.blockCount - 1] | compare) != (TWord) ~0)
         {
             _setFinderEnd(finder);
             finder -= me.needleLength - 1;
-            return true;  
+            return true;
         }
 
         /*
@@ -312,8 +312,8 @@ SEQAN_CHECKPOINT
 }
 
 template <typename TFinder, typename TNeedle>
-inline bool 
-find(TFinder & finder, Pattern<TNeedle, ShiftOr> & me) 
+inline bool
+find(TFinder & finder, Pattern<TNeedle, ShiftOr> & me)
 {
 SEQAN_CHECKPOINT
     if (empty(finder)) {

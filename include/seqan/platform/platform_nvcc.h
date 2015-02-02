@@ -100,7 +100,7 @@
  *
  * @section Remarks
  *
- * Note that a device function containing CUDA intrinsics will not compile on non CUDA-capable compilers. Therefore, to 
+ * Note that a device function containing CUDA intrinsics will not compile on non CUDA-capable compilers. Therefore, to
  * insure graceful compilation, it is still necessary to wrap CUDA-intrinsic code inside __CUDA_ARCH__ defines.
  */
 

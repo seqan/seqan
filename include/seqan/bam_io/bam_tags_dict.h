@@ -202,12 +202,12 @@ struct GetBamTypeSizeHelper_
 {
     int     &resultSize;
     char    typeC;
-    
+
     GetBamTypeSizeHelper_(int &resultSize, char typeC) :
         resultSize(resultSize),
         typeC(typeC)
     {}
-    
+
     template <typename Type>
     bool operator() (Type) const
     {
@@ -472,13 +472,13 @@ struct ExtractTagValueHelper_
     TResultType &result;
     TIter rawIter;
     char typeC;
-    
+
     ExtractTagValueHelper_(TResultType &result, char typeC, TIter rawIter) :
         result(result),
         rawIter(rawIter),
         typeC(typeC)
     {}
-    
+
     template <typename Type>
     bool operator() (Type) const
     {
@@ -510,7 +510,7 @@ extractTagValue(TResultValue & val, BamTagsDict const & tags, TId id)
     TIter it = begin(inf, Standard()) + 2;
     char typeC = getValue(it++);
     ExtractTagValueHelper_<TResultValue, TIter> func(val, typeC, it);
-    
+
     return tagApply(func, BamTagTypes());
 }
 
@@ -646,13 +646,13 @@ struct ToBamTagValueHelper_
     TBamValueSequence &result;
     TValue val;
     char typeC;
-    
+
     ToBamTagValueHelper_(TBamValueSequence &result, char typeC, TValue val) :
         result(result),
         val(val),
         typeC(typeC)
     {}
-    
+
     template <typename Type>
     bool operator() (Type) const
     {
@@ -693,7 +693,7 @@ _toBamTagValue(TBamValueSequence & result, TValue const & val, char typeC)
 {
     if (typeC != 'Z')
         return false;
-    
+
     appendValue(result, typeC);
     append(result, val);
     appendValue(result, '\0');

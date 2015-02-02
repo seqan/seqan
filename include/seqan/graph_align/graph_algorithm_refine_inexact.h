@@ -56,7 +56,7 @@ _cutIsValid(String<std::set<TValue> > & all_nodes,
         Tag<TagInexactRefinement_> const)
 {
 SEQAN_CHECKPOINT
-    
+
     //cut already exists
     if(iter != all_nodes[seq_i_pos].end())
         return false;
@@ -75,7 +75,7 @@ SEQAN_CHECKPOINT
 
 
 // returns node begin or end position closest to pos
-// i.e. closest refined position 
+// i.e. closest refined position
 template<typename TAliGraph, typename TVertexDescriptor, typename TId, typename TPosition>
 TPosition
 _getClosestRefinedNeighbor(TAliGraph & ali_g,
@@ -95,7 +95,7 @@ SEQAN_CHECKPOINT
 // and corresponding node (end_knot)
 template<typename TAliGraph, typename TId, typename TPosition>
 void
-_getCutEndPos(TAliGraph & ali_g, 
+_getCutEndPos(TAliGraph & ali_g,
               typename VertexDescriptor<TAliGraph>::Type & end_knot,
               TId seq,
               TPosition act_begin_pos,
@@ -110,7 +110,7 @@ SEQAN_CHECKPOINT
     {
         cut_end_pos = _getClosestRefinedNeighbor(ali_g,end_knot,seq,end_pos);
         if(cut_end_pos <= act_begin_pos) end_knot = getNil<typename VertexDescriptor<TAliGraph>::Type>();
-        else 
+        else
         {
             end_knot =  findVertex(ali_g,seq,cut_end_pos-1);
             SEQAN_ASSERT(cut_end_pos == fragmentBegin(ali_g,end_knot)+fragmentLength(ali_g,end_knot));
@@ -123,7 +123,7 @@ SEQAN_CHECKPOINT
 // and corresponding node (act_knot)
 template<typename TAliGraph, typename TId, typename TPosition>
 void
-_getCutBeginPos(TAliGraph & ali_g, 
+_getCutBeginPos(TAliGraph & ali_g,
               typename VertexDescriptor<TAliGraph>::Type & act_knot,
               TId seq,
               TPosition act_end_pos,
@@ -131,7 +131,7 @@ _getCutBeginPos(TAliGraph & ali_g,
               TPosition & cut_act_pos)
 {
 SEQAN_CHECKPOINT
-    
+
     act_knot = findVertex(ali_g,seq,act_pos);
     //if completely refined
     if(act_pos == fragmentBegin(ali_g,act_knot))
@@ -140,7 +140,7 @@ SEQAN_CHECKPOINT
     {
         cut_act_pos = _getClosestRefinedNeighbor(ali_g,act_knot,seq,act_pos);
         if(cut_act_pos > act_end_pos) act_knot = getNil<typename VertexDescriptor<TAliGraph>::Type>();
-        else 
+        else
         {
             act_knot =  findVertex(ali_g,seq,cut_act_pos); // have to watch out with cut_act_pos==seqLength!
             SEQAN_ASSERT(act_knot == getNil<typename VertexDescriptor<TAliGraph>::Type>() ||
@@ -151,7 +151,7 @@ SEQAN_CHECKPOINT
 
 
 
-//step 2 of constructing the refined alignment graph: add all edges    
+//step 2 of constructing the refined alignment graph: add all edges
 //version for inexact refinement
 template<typename TAlignmentString,typename TPropertyMap,typename TStringSet,typename TSeqMap, typename TScore,typename TAliGraph>
 void
@@ -194,15 +194,15 @@ SEQAN_CHECKPOINT
         TPosition cut_end_pos1;
         _getCutEndPos(ali_g,end_knot1,seq1,begin_pos1,end_pos1,cut_end_pos1);
         if(end_knot1 == nilVertex) // there is no node --> fragment disappeared in min_frag_len heuristic
-            continue; 
-    
+            continue;
+
         //get the node that represents the current interval (begin_pos until next_cut_pos or end_pos)
         TVertexDescriptor act_knot1;
         TPosition cut_act_pos1,act_pos1;
         act_pos1 = begin_pos1;
         _getCutBeginPos(ali_g,act_knot1,seq1,end_pos1,act_pos1,cut_act_pos1);
         if(act_knot1 == nilVertex) // there is no node, can this happen here?
-            continue; 
+            continue;
         TPosition act_end_pos1 = cut_act_pos1 + fragmentLength(ali_g,act_knot1);
         //walk through cuts on the first sequence
 //        while (act_end_pos1 <= cut_end_pos1)
@@ -212,13 +212,13 @@ SEQAN_CHECKPOINT
             //TId seq2;
             TPosition act_pos2;
             _getOtherSequenceAndProject(*ali_it,0,seq_map,seq1,act_pos1,seq2,act_pos2);
-        
+
             //get node that corresponds to that position
             TVertexDescriptor act_knot2;
             TPosition cut_act_pos2;
             _getCutBeginPos(ali_g,act_knot2,seq2,end_pos2,act_pos2,cut_act_pos2);
             if(act_knot2 == nilVertex) // there is no corresponding node in second sequence
-                break; 
+                break;
             //corresponding end on seq2 (there might be more than one node on seq2 that corresponds
             //to the same interval (=node) on seq1)
             TPosition act_end_pos2;
@@ -228,8 +228,8 @@ SEQAN_CHECKPOINT
             TPosition cut_act_end_pos2;
             _getCutEndPos(ali_g,act_end_knot2,seq2,begin_pos2,act_end_pos2,cut_act_end_pos2);
             if(act_end_knot2 == nilVertex) // there is no node at all in second sequence
-                break; 
-            
+                break;
+
             if(cut_act_pos2 == cut_act_end_pos2)
                 break;
             while(true)
@@ -241,7 +241,7 @@ SEQAN_CHECKPOINT
                 //seq2 = ...c.r...rc....
                 //bzw
                 //seq1 = ..cr.....x....   man will aber nur    ..cr......x....
-                //          |||||||-                             ---||||||  
+                //          |||||||-                             ---||||||
                 //seq2 = ...r.c...rc...                        ...r.c...rc....
                 typename Value<TScore>::Type score = 0;
                 score = _getRefinedMatchScore(score_type,seqs,*ali_it,act_pos1,act_pos2,act_end_pos1-act_pos1,cut_act_end_pos2);
@@ -286,9 +286,9 @@ SEQAN_CHECKPOINT
  * @headerfile <seqan/graph_align.h>
  * @brief Refines (i.e. cuts into smaller parts) a set of pairwise segment matches in such a way that none of the
  *        segments partly overlap. They are either identical (fully overlapping) or non-overlapping.
- * 
+ *
  * @signature void matchRefinement(matches, stringSet[, scoringScheme], refinedGraph);
- * 
+ *
  * @param[out] matches       The set of matches. Types: Fragment, Align, Alignment Graph
  * @param[out] refinedGraph  The resulting refined set of matches stored in a graph.  Types: Alignment Graph
  * @param[out] stringSet     The StringSet containing the sequences which the matches lie on. Types: StringSet
@@ -301,7 +301,7 @@ SEQAN_CHECKPOINT
 template<typename TAlignmentString, typename TScoreValue,typename TScoreSpec, typename TOutGraph, typename TSequence, typename TSetSpec>
 void
 matchRefinement(TAlignmentString & alis,
-                StringSet<TSequence, TSetSpec> & seq, 
+                StringSet<TSequence, TSetSpec> & seq,
                 Score<TScoreValue,TScoreSpec> & score_type,
                 TOutGraph & ali_graph,
                 unsigned int min_frag_len)
@@ -319,7 +319,7 @@ SEQAN_CHECKPOINT
 template<typename TAlignmentString, typename TOutGraph, typename TSequence, typename TSetSpec>
 void
 matchRefinement(TAlignmentString & alis,
-                StringSet<TSequence, TSetSpec> & seq, 
+                StringSet<TSequence, TSetSpec> & seq,
                 TOutGraph & ali_graph,
                 unsigned int min_frag_len)
 {
@@ -332,7 +332,7 @@ SEQAN_CHECKPOINT
     else
         matchRefinement(alis,seq,fake_score,ali_graph,min_frag_len,anno,ExactRefinement());
 }
-    
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_GRAPH_ALGORITHM_REFINE_INEXACT_H_

@@ -56,7 +56,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_align)
     {
         Dna5String strH("GGGGCTTAAGCTTGGGG");
         Dna5String strV("AAAACTTAGCTCTAAAA");
-        
+
         Align<Dna5String> align;
         resize(rows(align), 2);
         assignSource(row(align, 0), strH);
@@ -87,7 +87,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_gaps)
 
         Gaps<DnaString> gapsH(strH);
         Gaps<Dna5String> gapsV(strV);
-        
+
         SimpleScore scoringScheme(2, -1, -2, -2);
 
         int score = localAlignment(gapsH, gapsV, scoringScheme);
@@ -157,7 +157,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_banded_align)
     {
         Dna5String strH("GGGGCTTAAGCTTGGGG");
         Dna5String strV("AAAACTTAGCTCTAAAA");
-        
+
         Align<Dna5String> align;
         resize(rows(align), 2);
         assignSource(row(align, 0), strH);
@@ -188,7 +188,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_banded_gaps)
 
         Gaps<DnaString> gapsH(strH);
         Gaps<Dna5String> gapsV(strV);
-        
+
         SimpleScore scoringScheme(2, -1, -2, -2);
 
         int score = localAlignment(gapsH, gapsV, scoringScheme, -6, 6);
@@ -232,7 +232,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_align)
 
         Dna5String strH("ATAAGCGTCTCG");
         Dna5String strV("TCATAGAGTTGC");
-        
+
         Align<Dna5String> align;
         resize(rows(align), 2);
         assignSource(row(align, 0), strH);
@@ -266,7 +266,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_align)
 
         Dna5String strH("GGGGCTTAAGCTTGGGG");
         Dna5String strV("AAAACTTAGCTCTAAAA");
-        
+
         Align<Dna5String> align;
         resize(rows(align), 2);
         assignSource(row(align, 0), strH);
@@ -322,7 +322,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_align)
 
         Dna5String strH("GCAGAATTAAGGAGGATTACAAGTGGGAATTTGAAGAGCTTTTGAAATCC");
         Dna5String strV("CGGTTGAGCAGAACTTGGGCTACGAGACTCCCCCCGAGGAATTTGAAGGCTTTCTTCAAATCCAAAAGCA");
-        
+
         Align<Dna5String> align;
         resize(rows(align), 2);
         assignSource(row(align, 0), strH);
@@ -443,7 +443,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_gaps)
 
         Gaps<Dna5String, ArrayGaps> gapsH(strH);
         Gaps<DnaString, ArrayGaps> gapsV(strV);
-        
+
         SimpleScore scoringScheme(1, -9, -9, -9);
         int cutoff = 7;
 
@@ -477,7 +477,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_align)
 
         Dna5String strH("ATAAGCGTCTCG");
         Dna5String strV("TCATAGAGTTGC");
-        
+
         Align<Dna5String> align;
         resize(rows(align), 2);
         assignSource(row(align, 0), strH);
@@ -504,7 +504,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_align)
 
         Dna5String strH("GGGGCTTAAGCTTGGGG");
         Dna5String strV("AAAACTTAGCTCTAAAA");
-        
+
         Align<Dna5String> align;
         resize(rows(align), 2);
         assignSource(row(align, 0), strH);
@@ -560,7 +560,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_align)
 
         Dna5String strH("GCAGAATTAAGGAGGATTACAAGTGGGAATTTGAAGAGCTTTTGAAATCC");
         Dna5String strV("CGGTTGAGCAGAACTTGGGCTACGAGACTCCCCCCGAGGAATTTGAAGGCTTTCTTCAAATCCAAAAGCA");
-        
+
         Align<Dna5String> align;
         resize(rows(align), 2);
         assignSource(row(align, 0), strH);
@@ -674,7 +674,7 @@ SEQAN_DEFINE_TEST(test_align_local_alignment_enumeration_banded_gaps)
 
         Gaps<Dna5String, ArrayGaps> gapsH(strH);
         Gaps<DnaString, ArrayGaps> gapsV(strV);
-        
+
         SimpleScore scoringScheme(1, -9, -9, -9);
         int cutoff = 7;
 

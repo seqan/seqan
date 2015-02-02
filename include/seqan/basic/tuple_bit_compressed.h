@@ -222,7 +222,7 @@ getValue(Tuple<TValue, SIZE, BitPacked<> > const & me,
 {
     SEQAN_ASSERT_GEQ(static_cast<__int64>(k), 0);
     SEQAN_ASSERT_LT(static_cast<__int64>(k), static_cast<__int64>(SIZE));
-    
+
     return (me.i >> (SIZE - 1 - k) * BitsPerValue<TValue>::VALUE) & me.BIT_MASK;
 }
 
@@ -233,7 +233,7 @@ getValue(Tuple<TValue, SIZE, BitPacked<> > & me,
 {
     SEQAN_ASSERT_GEQ(static_cast<__int64>(k), 0);
     SEQAN_ASSERT_LT(static_cast<__int64>(k), static_cast<__int64>(SIZE));
-    
+
     return (me.i >> (SIZE - 1 - k) * BitsPerValue<TValue>::VALUE) & me.BIT_MASK;
 }
 
@@ -352,11 +352,11 @@ inline bool testAllOnes(Tuple<TValue, SIZE, BitPacked<> > const & me)
 // -----------------------------------------------------------------------
 // Function clear()
 // -----------------------------------------------------------------------
- 
+
 template <typename TValue, unsigned SIZE>
 inline void clear(Tuple<TValue, SIZE, BitPacked<> > & me)
 {
-    me.i = 0; 
+    me.i = 0;
 }
 
 // ----------------------------------------------------------------------------

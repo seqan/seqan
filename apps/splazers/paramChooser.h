@@ -56,7 +56,7 @@ int getDir(TPath path, TFilenameString &files)
 struct ParamChooserOptions
 {
     typedef double TFloat;
-    unsigned minThreshold;                    // minimum value for threshold parameter 
+    unsigned minThreshold;                    // minimum value for threshold parameter
     unsigned maxWeight;                                           // maximum value of q
     bool chooseOneGappedOnly;      // choose onegapped (or ungapped) shape (discard all other gapped shapes)
     bool chooseUngappedOnly;      // choose ungapped shape (discard all gapped shapes)
@@ -67,7 +67,7 @@ struct ParamChooserOptions
     unsigned totalK;                    // errors
     TFloat optionLossRate;        // in
     TFloat chosenLossRate;            // out
-    TFloat optionErrorRate;        // 
+    TFloat optionErrorRate;        //
     bool optionHammingOnly;
 
     bool extrapolate;
@@ -99,7 +99,7 @@ struct ParamChooserOptions
 
     ParamChooserOptions()
     {
-        minThreshold = 1;                    // minimum value for threshold parameter 
+        minThreshold = 1;                    // minimum value for threshold parameter
         maxWeight = 14;                                           // maximum value of q
 
         // global input parameters
@@ -107,7 +107,7 @@ struct ParamChooserOptions
         totalK = 2;                    // errors
         optionLossRate = (TFloat)0.01;        // in
         chosenLossRate = (TFloat)0.0;        // out
-        optionErrorRate = (TFloat)0.05;        // 
+        optionErrorRate = (TFloat)0.05;        //
         optionHammingOnly = false;
 
         extrapolate = false;
@@ -119,7 +119,7 @@ struct ParamChooserOptions
         chooseOneGappedOnly = false;      // choose onegapped (or ungapped) shape (discard all other gapped shapes)
         chooseUngappedOnly = false;      // choose ungapped shape (discard all gapped shapes)
         useDefaultShapes = true;
-        
+
         optionProbINSERT = (TFloat)0.0;
         optionProbDELETE = (TFloat)0.0;
 
@@ -130,11 +130,11 @@ struct ParamChooserOptions
         fname[0] = "";
         fname[1] = "";
         fprefix[0] =  "" ;
-        
+
         shapeFile = "";
         paramFolderPath = "";
         paramFolder = "";
-    
+
         appendToPrevious = false;
         verbose = true;
         solexaQual = true;
@@ -217,7 +217,7 @@ qualityDistributionFromPrbFile(TFile & file, TDistribution & avg, ParamChooserOp
 //            qualitySum[pos] += _convertSolexaQual2ErrProb((TFloat)qual);
 //            ++count[pos];
         }
-        if((int)(avgReadQual/pm_options.totalN) < pm_options.qualityCutoff) 
+        if((int)(avgReadQual/pm_options.totalN) < pm_options.qualityCutoff)
         {
             ++kickout;
             skipLine(reader);
@@ -409,13 +409,13 @@ interpolateErrorDistr(TError & errorDistr, ParamChooserOptions & pm_options)
 
     unsigned totalN = pm_options.extrapolN;
     unsigned totalLargeN = pm_options.totalN;
-    
-    // prepare log error distribution 
+
+    // prepare log error distribution
     TError shorterErrorDistr;
     resize(shorterErrorDistr, totalN);
     float x =(float) (totalLargeN-2)/(totalN-2);
     // transformed probs for seeing 1s at positions 0...optionMaxN-1
-    for(unsigned j = 0; j < totalN; ++j) 
+    for(unsigned j = 0; j < totalN; ++j)
     {
         typename Value<TError>::Type newVal;
         float index = j * x;
@@ -438,7 +438,7 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
 //IOREV see comments in other paramChooser.h
 
     typedef typename Value<TError>::Type TFloat;
-    
+
     unsigned totalN = pm_options.totalN;
     // unsigned totalK = pm_options.totalK;
     if(pm_options.extrapolate == true)
@@ -453,12 +453,12 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
     //unsigned maxErrors = 1 + (unsigned) totalN / 10;
     unsigned minErrors = 0;// (unsigned) totalN / 10;
     if(maxErrors<5 && totalN >= 30) maxErrors = 5;
-    
+
     typedef typename Value<TError>::Type TErrorValue;
     String<TErrorValue> logErrorDistribution;
-    
+
     String<CharString> shapeStrings;
-    
+
     if(*pm_options.shapeFile != 0)
     {
         ::std::fstream filestrm;
@@ -468,7 +468,7 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
         else if(pm_options.verbose) std::cerr << result <<" shapes parsed." << std::endl;
         filestrm.close();
     }
-    
+
     if(pm_options.useDefaultShapes)
     {
         //q=14
@@ -476,7 +476,7 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
         {
             appendValue(shapeStrings,"1111111111100000111");
             appendValue(shapeStrings,"11101110110001110110001");
-            appendValue(shapeStrings,"1111011010001110011011"); 
+            appendValue(shapeStrings,"1111011010001110011011");
         }
         else
         {
@@ -484,12 +484,12 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
             appendValue(shapeStrings,"111111111111101");
         }
         appendValue(shapeStrings,"11111111111111");
-    
+
         //q=13
         if(pm_options.optionHammingOnly)
         {
             appendValue(shapeStrings,"11111111110000111");
-            appendValue(shapeStrings,"110101111001100010111");  
+            appendValue(shapeStrings,"110101111001100010111");
         }
         else
         {
@@ -497,7 +497,7 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
             appendValue(shapeStrings,"11111111111101");
         }
         appendValue(shapeStrings,"1111111111111");
-    
+
         //q=12
         if(pm_options.optionHammingOnly)
         {
@@ -510,7 +510,7 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
             appendValue(shapeStrings,"1111111111101");
         }
         appendValue(shapeStrings,"111111111111");
-    
+
         //q=11
         if(pm_options.optionHammingOnly)
         {
@@ -523,7 +523,7 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
             appendValue(shapeStrings,"111111111101");
         }
         appendValue(shapeStrings,"11111111111");
-        
+
         //q=10
         if(pm_options.optionHammingOnly)
         {
@@ -536,8 +536,8 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
             appendValue(shapeStrings,"11111111101");
         }
         appendValue(shapeStrings,"1111111111");
-        
-        
+
+
         if(totalN < 50)
         {
             //q=9
@@ -553,7 +553,7 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
                 appendValue(shapeStrings,"1111111101");
             }
         }
-        
+
         if(totalN < 40)
         {
             //q=8
@@ -569,7 +569,7 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
                 appendValue(shapeStrings,"111111101");
             }
         }
-        
+
         if(totalN < 36)
         {
             //q=7
@@ -585,7 +585,7 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
                 appendValue(shapeStrings,"11111101");
             }
         }
-        
+
         if(totalN < 32)
         {
             //q=6
@@ -611,12 +611,12 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
         for(unsigned pos = 0; pos < length(shapeStrings[i]) ; ++pos)
             if(shapeStrings[i][pos] == '1')
                 ++weights[i];
-        
-    // prepare log error distribution 
+
+    // prepare log error distribution
     resize(logErrorDistribution, 4*totalN);
     // transformed probs for seeing 1s at positions 0...optionMaxN-1
     double remainingProb = 1.0 - pm_options.optionProbINSERT - pm_options.optionProbDELETE;
-    for(unsigned j = 0; j < totalN; ++j) 
+    for(unsigned j = 0; j < totalN; ++j)
     {
         logErrorDistribution[SEQAN_MISMATCH*totalN+j] = _transform(errorDistr[j]);
         logErrorDistribution[SEQAN_INSERT*totalN+j]   = _transform(pm_options.optionProbINSERT);
@@ -635,24 +635,24 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
     Rng<> rng(/*seed=*/time(NULL));
     simulateGenome(rng, testGenome[0], 500000);                    // generate 1Mbp genomic sequence
     simulateReads(rng,
-        testReads, dummyIDs, testGenome, 
+        testReads, dummyIDs, testGenome,
         50000, maxErrors+1, logErrorDistribution, 0, 0, 0.5, true);    // generate 50K reads
 
 #endif
 
 
     bool first = true;
-    
+
     for(int i = length(shapeStrings)-1; i >= 0; --i)
     {
         if(length(shapeStrings[i])>totalN) continue;
-        
+
         unsigned maxT = totalN-length(shapeStrings[i])+2;
         String<TFloat> sensMat;
 
         //if(pm_options.verbose)::std::cout << "do DP\n";
 //        if(pm_options.verbose)::std::cerr << "do loss rate DP" << std::endl;
-        try 
+        try
         {
             Shape<Dna, GenericShape> shape;
             stringToShape(shape, shapeStrings[i]);
@@ -663,12 +663,12 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
 //            initPatterns(states, shapeStrings[i], maxErrors-1, logErrorDistribution, pm_options.optionHammingOnly);
 //            computeFilteringLoss(found, states, length(shapeStrings[i]), maxT, maxErrors,  logErrorDistribution);
         }
-        catch (std::bad_alloc&) 
+        catch (std::bad_alloc&)
         {
             std::cout << shapeStrings[i] << " threw bad_alloc exception, skipping this shape." << std::endl;
             continue;
         }
-    
+
         for(unsigned e = minErrors; e < maxErrors; ++e) {
             bool highestOptimalFound = false;
             for(unsigned t = maxT-1; t > minT; --t) {
@@ -687,7 +687,7 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
                 datName << pm_options.fprefix[0]<<"_N" << totalN << "_";
                 if(!pm_options.optionHammingOnly) datName << "L.dat";
                 else datName <<"H.dat";
-                
+
                 // if datName-file doesnt exist, write the title on
                 if(!pm_options.appendToPrevious && first){
                     first = false;
@@ -697,7 +697,7 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
                     fout << ::std::endl << ::std::endl;
                     fout.close();
                 }
-                
+
 #ifdef RUN_RAZERS
                 // count verifications
                 String<ReadMatch<int> > matches;
@@ -727,7 +727,7 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
 #endif
                 fout << ::std::endl;
                 fout.close();
-                
+
             } // t-loop
         }
     }
@@ -949,7 +949,7 @@ template <typename TOptions>
 void
 extrapolateNK(TOptions & pm_options)
 {
-    
+
     pm_options.extrapolate = true;
 
     double recErrorRatio = (double)pm_options.totalN/pm_options.totalK;
@@ -967,7 +967,7 @@ extrapolateNK(TOptions & pm_options)
     }
     pm_options.extrapolN = bestN;
     pm_options.extrapolK = (unsigned)ceil(((double)bestN * 1.0/recErrorRatio)-0.00001);
-    
+
 
 }
 
@@ -977,7 +977,7 @@ bool
 chooseParams(RazerSOptions<TSpec> & r_options, ParamChooserOptions & pm_options)
 {
     typedef float TFloat;
-    static const TFloat epsilon = (TFloat)0.00000000001;    
+    static const TFloat epsilon = (TFloat)0.00000000001;
     pm_options.optionLossRate += epsilon;
 
 
@@ -990,23 +990,23 @@ chooseParams(RazerSOptions<TSpec> & r_options, ParamChooserOptions & pm_options)
         if(r_options.artSeedLength==30) r_options.shape = "111010011101001110100101";//q14
         if(r_options.artSeedLength==31) r_options.shape = "111010011101001110100101";//q14
         if(r_options.lowMemory && r_options.artSeedLength==29) r_options.shape = "10101001110100111010011";
-        r_options.threshold = 1; 
-        if(r_options.lowMemory && r_options.artSeedLength==30)        
+        r_options.threshold = 1;
+        if(r_options.lowMemory && r_options.artSeedLength==30)
         {
             r_options.shape = "111110101000011111";
-            r_options.threshold = 2;        
+            r_options.threshold = 2;
         }
-        if(r_options.lowMemory && r_options.artSeedLength==31)        
+        if(r_options.lowMemory && r_options.artSeedLength==31)
         {
             r_options.shape = "1101000110100011010001101";
-            r_options.threshold = 2;        
-        }  
+            r_options.threshold = 2;
+        }
         if(r_options.artSeedLength==32)        //perfect setting for queueing system
         {
             r_options.shape = "11110010001111001000111";
-            r_options.threshold = 2;        
+            r_options.threshold = 2;
         }
-        
+
         if(r_options.artSeedLength<28 || r_options.artSeedLength> 32)
             ::std::cerr << "Warning: This Version of RazerS nly supports quality-seed-lengths of 28 to 32. Using default filter parameters." << ::std::endl;
         else return true;
@@ -1019,17 +1019,17 @@ chooseParams(RazerSOptions<TSpec> & r_options, ParamChooserOptions & pm_options)
     else
         append(pm_options.fgparams, "gapped_params/");
 
-    
+
     if(pm_options.optionProbINSERT <= epsilon && pm_options.optionProbDELETE <= epsilon)
         pm_options.optionHammingOnly=true;
 
 
     pm_options.totalK = (int)(pm_options.optionErrorRate * pm_options.totalN);
-    
+
     if ((pm_options.optionHammingOnly && pm_options.totalN > pm_options.maxComputedHammingN )
         || (!pm_options.optionHammingOnly && pm_options.totalN > pm_options.maxComputedEditN ))
         extrapolateNK(pm_options);
-    
+
     // compute data specific loss rates
     if (pm_options.fnameCount0 || pm_options.fnameCount1)
     {
@@ -1092,7 +1092,7 @@ chooseParams(RazerSOptions<TSpec> & r_options, ParamChooserOptions & pm_options)
                ::std::cerr << "Recognition rate = " << 100.0*(1.0-pm_options.optionLossRate) << "%" << std::endl;
         if(pm_options.extrapolate) ::std::cerr << "Extrapolating from read length " << pm_options.extrapolN << " and " << pm_options.extrapolK << "errors." << std::endl;
         }
-    
+
     // parse loss rate file and find appropriate filter criterium
     if(pm_options.verbose) ::std::cerr << std::endl << "--> Reading " <<  paramsfile.str()<<::std::endl;
     ::std::fstream file;

@@ -69,7 +69,7 @@ struct Transportable_
         id = nextId++;
         value = i;
     }
-    
+
     Transportable_(const Transportable_ & other)
     {
         id = nextId++;
@@ -158,7 +158,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_pair_base_metafunctions)
 SEQAN_DEFINE_TEST(test_basic_aggregates_pair_base_constructors)
 {
     typedef Pair<int, unsigned> TPair;
-    
+
     // Default constructor.
     {
         TPair p;
@@ -476,7 +476,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_pair_packed_metafunctions)
 SEQAN_DEFINE_TEST(test_basic_aggregates_pair_packed_constructors)
 {
     typedef Pair<int, unsigned, Pack> TPair;
-    
+
     // Default constructor.
     {
         TPair p;
@@ -690,7 +690,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_pair_bit_packed_metafunctions)
 SEQAN_DEFINE_TEST(test_basic_aggregates_pair_bit_packed_constructors)
 {
     typedef Pair<int, unsigned, BitPacked<16, 16> > TPair;
-    
+
     // Default constructor.
     {
         TPair p;
@@ -898,7 +898,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_triple_base_metafunctions)
 SEQAN_DEFINE_TEST(test_basic_aggregates_triple_base_constructors)
 {
     typedef Triple<int, unsigned, double, Pack> TTriple;
-    
+
     // Default constructor.
     {
         TTriple t;
@@ -1112,7 +1112,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_triple_packed_metafunctions)
 SEQAN_DEFINE_TEST(test_basic_aggregates_triple_packed_constructors)
 {
     typedef Triple<int, unsigned, double, Pack> TTriple;
-    
+
     // Default constructor.
     {
         TTriple p;
@@ -1833,7 +1833,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_comparison_same_spec)
     clear(t00);
        assignValue(t00, 0, 0);
     assignValue(t00, 1, 0);
-    
+
     Tuple<char, 2, BitPacked<> > t01;
     clear(t01);
     assignValue(t01, 0, 0);
@@ -1874,7 +1874,7 @@ SEQAN_DEFINE_TEST(test_basic_aggregates_tuple_bit_packed_stream_output)
     std::stringstream s;
     s << t1;
     SEQAN_ASSERT_EQ(s.str(), "[a b]");
-    
+
 }
 
 #endif  // #ifndef TESTS_BASIC_TEST_BASIC_AGGREGATES_H_

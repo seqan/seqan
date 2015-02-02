@@ -123,16 +123,16 @@ score(Score<TValue, Quality<TQualityString> > const & me,
 
     // ... to sort matches and remove duplicates with equal beginPos
     template <typename TAlignedReadStore, typename TAlignedReadQualityStore>
-    struct LessGPosRNo : 
+    struct LessGPosRNo :
         public ::std::binary_function < typename Value<TAlignedReadStore>::Type, typename Value<TAlignedReadStore>::Type, bool >
     {
-        typedef typename Value<TAlignedReadStore>::Type TAlignedRead;        
+        typedef typename Value<TAlignedReadStore>::Type TAlignedRead;
         TAlignedReadQualityStore &qualStore;
-        
+
         LessGPosRNo(TAlignedReadQualityStore &_qualStore):
             qualStore(_qualStore) {}
-        
-        inline bool operator() (TAlignedRead const &a, TAlignedRead const &b) const 
+
+        inline bool operator() (TAlignedRead const &a, TAlignedRead const &b) const
         {
             // contig
             if (a.contigId < b.contigId) return true;
@@ -165,17 +165,17 @@ score(Score<TValue, Quality<TQualityString> > const & me,
     };
 
     template <typename TAlignedReadStore, typename TReadNameStore, typename TAlignedReadQualityStore>
-    struct LessGPosRName : 
+    struct LessGPosRName :
         public ::std::binary_function < typename Value<TAlignedReadStore>::Type, typename Value<TAlignedReadStore>::Type, bool >
     {
-        typedef typename Value<TAlignedReadStore>::Type TAlignedRead;        
+        typedef typename Value<TAlignedReadStore>::Type TAlignedRead;
         TReadNameStore & contigNames;
         TAlignedReadQualityStore &qualStore;
-        
+
         LessGPosRName(TReadNameStore & contigNames, TAlignedReadQualityStore &_qualStore):
             contigNames(contigNames), qualStore(_qualStore) {}
-        
-        inline bool operator() (TAlignedRead const &a, TAlignedRead const &b) const 
+
+        inline bool operator() (TAlignedRead const &a, TAlignedRead const &b) const
         {
             // contig
             if (a.contigId < b.contigId) return true;
@@ -212,29 +212,29 @@ score(Score<TValue, Quality<TQualityString> > const & me,
 template <typename TErrDistr, typename TFragmentStore, typename TOptions>
 inline unsigned
 getErrorDistribution(
-    TErrDistr &posError, 
-    TFragmentStore &store, 
+    TErrDistr &posError,
+    TFragmentStore &store,
     TOptions &options)
 {
     typedef typename TFragmentStore::TAlignedReadStore    TAlignedReadStore;
     typedef typename Value<TAlignedReadStore>::Type        TAlignedRead;
     typedef typename TFragmentStore::TContigPos            TContigPos;
-    
+
     typename Iterator<TAlignedReadStore, Standard>::Type    it = begin(store.alignedReadStore, Standard());
     typename Iterator<TAlignedReadStore, Standard>::Type    itEnd = end(store.alignedReadStore, Standard());
 
     Dna5String genome;
     TContigPos left, right;
     unsigned unique = 0;
-    
-    for (; it != itEnd; ++it) 
+
+    for (; it != itEnd; ++it)
     {
         if ((*it).contigId == TAlignedRead::INVALID_ID) continue;
 
         Dna5String const &read = store.readSeqStore[(*it).readId];
         left = (*it).beginPos;
         right = (*it).endPos;
-        
+
         if (left < right)
             genome = infix(store.contigStore[(*it).contigId].seq, left, right);
         else
@@ -244,7 +244,7 @@ getErrorDistribution(
         }
         for (unsigned i = 0; i < length(posError) && i < length(read); ++i)
             if ((options.compMask[ordValue(genome[i])] & options.compMask[ordValue(read[i])]) == 0)
-                ++posError[i]; 
+                ++posError[i];
         ++unique;
     }
     return unique;
@@ -256,7 +256,7 @@ getErrorDistribution(
     TErrDistr &posError,
     TCount1 &insertions,
     TCount2 &deletions,
-    TFragmentStore &store, 
+    TFragmentStore &store,
     RazerSOptions<TSpec> &options)
 {
     typedef typename TFragmentStore::TAlignedReadStore    TAlignedReadStore;
@@ -280,14 +280,14 @@ getErrorDistribution(
     resize(rows(align), 2);
 
     unsigned unique = 0;
-    for (; it != itEnd; ++it) 
+    for (; it != itEnd; ++it)
     {
         if ((*it).contigId == TAlignedRead::INVALID_ID) continue;
 
         assignSource(row(align, 0), store.readSeqStore[(*it).readId]);
         TContigPos left = (*it).beginPos;
         TContigPos right = (*it).endPos;
-        
+
         if (left < right)
             assignSource(row(align, 1), infix(store.contigStore[(*it).contigId].seq, left, right));
         else
@@ -296,17 +296,17 @@ getErrorDistribution(
             reverseComplement(source(row(align, 1)));
         }
         globalAlignment(align, scoreType);
-        
+
         TRow& row0 = row(align, 0);
         TRow& row1 = row(align, 1);
-        
+
         TPosition begin = beginPosition(cols(align));
         TPosition end = endPosition(cols(align));
-        
+
         TIter it0 = iter(row0, begin);
         TIter it1 = iter(row1, begin);
         TIter end0 = iter(row0, end);
-        
+
         unsigned pos = 0;
         for (; it0 != end0 && pos < length(posError); ++it0, ++it1)
         {
@@ -342,7 +342,7 @@ dumpAlignment(TFile & target, Align<TSource, TSpec> const & source)
     TRowsPosition row_count = length(rows(source));
     TPosition begin_ = beginPosition(cols(source));
     TPosition end_ = endPosition(cols(source));
-    
+
     // Print sequences
     for(TRowsPosition i=0;i<row_count;++i) {
         if (i == 0)
@@ -372,13 +372,13 @@ countCoocurrences(TMatches & matches, TCounts & cooc, TOptions & options)
     resize(cooc,maxSeedErrors+1,0);
     for (int i = 0; i < maxSeedErrors+1; ++i)
         cooc[i] = 1;
-    
+
     int count = 0;
     unsigned readNo = -1;
     int preEditDist = -1;
     typename Iterator<TMatches>::Type it = begin(matches,Standard());
     typename Iterator<TMatches>::Type itEnd = end(matches,Standard());
-    
+
     for(; it != itEnd; ++it)
     {
         if ((*it).readId == readNo)
@@ -416,7 +416,7 @@ template<typename TAlign, typename TString>
 void
 getCigarLine(TAlign & align, TString & cigar, TString & mutations)
 {
-    
+
     typedef typename Source<TAlign>::Type TSource;
     typedef typename Iterator<TSource, Rooted>::Type TStringIterator;
 
@@ -427,7 +427,7 @@ getCigarLine(TAlign & align, TString & cigar, TString & mutations)
     TAlignIterator ali_it1_stop = end(row(align, 1));
     TAlignIterator ali_it0 = begin(row(align, 0));
     TAlignIterator ali_it1 = begin(row(align, 1));
-    TStringIterator readBase = begin(source(row(align,0))); 
+    TStringIterator readBase = begin(source(row(align,0)));
     // std::cout << "getting cigar line\nali0 len = " <<ali_it0_stop-ali_it0 << " \t ali1 len = "<<ali_it1_stop-ali_it1<<"\n";
     int readPos = 0;
     bool first = true;
@@ -553,7 +553,7 @@ void dumpMatches(
     if (lastPos == _readName.npos) lastPos = _readName.find_last_of('\\') + 1;
     if (lastPos == _readName.npos) lastPos = 0;
     CharString readName = _readName.substr(lastPos);
-    
+
 
     Align<String<Dna5>, ArrayGaps> align;
     Score<int> scoreType = Score<int>(0, -999, -1001, -1000);    // levenshtein-score (match, mismatch, gapOpen, gapExtend)
@@ -568,12 +568,12 @@ void dumpMatches(
         success = open(file, toCString(options.output));
     else
         success = open(file, std::cout, Nothing());
- 
+
     if (!success) {
         std::cerr << "Failed to open output file" << std::endl;
         return;
     }
-    
+
 #ifndef RAZERS_DONTMASKDUPLICATES
     maskDuplicates(store);
 #endif
@@ -592,8 +592,8 @@ void dumpMatches(
             resize(stats[i], length(store.readStore), 0);
         countMatches(store, stats);
     }
-    
-    
+
+
     String<int> libSize;    // store outer library size for each pair match (indexed by pairMatchId)
     Nothing nothing;
 #ifdef RAZERS_MATEPAIRS
@@ -608,41 +608,41 @@ void dumpMatches(
 
 
     switch (options.sortOrder) {
-        case 0: 
+        case 0:
             sortAlignedReads(
-                store.alignedReadStore, 
+                store.alignedReadStore,
                 LessRNoGPos<TAlignedReadStore, TAlignQualityStore>(store.alignQualityStore));
             break;
 
         case 1:
             sortAlignedReads(
-                store.alignedReadStore, 
+                store.alignedReadStore,
                 LessGPosRNo<TAlignedReadStore, TAlignQualityStore>(store.alignQualityStore));
             break;
         case 2:
             sortAlignedReads(
-                store.alignedReadStore, 
+                store.alignedReadStore,
                 LessRNameGPos<TAlignedReadStore, TReadNameStore, TAlignQualityStore>(store.readNameStore, store.alignQualityStore));
             break;
         case 3:
             sortAlignedReads(
-                store.alignedReadStore, 
+                store.alignedReadStore,
                 LessGPosRName<TAlignedReadStore, TReadNameStore, TAlignQualityStore>(store.readNameStore, store.alignQualityStore));
             break;
     }
-    
+
     TAlignedReadIter it = begin(store.alignedReadStore, Standard());
     TAlignedReadIter itEnd = end(store.alignedReadStore, Standard());
-    
+
     Dna5String gInf;
     char _sep_ = '\t';
     unsigned currSeqNo = 0;
 
-    switch (options.outputFormat) 
+    switch (options.outputFormat)
     {
         case 0:    // Razer Format
 //            _sep_ = ',';
-            for(; it != itEnd; ++it) 
+            for(; it != itEnd; ++it)
             {
                 TQuality    qual = getValue(store.alignQualityStore, (*it).id);
                 unsigned    readLen = length(store.readSeqStore[(*it).readId]);
@@ -696,13 +696,13 @@ void dumpMatches(
                 }
                 file << std::endl;
 
-                if (options.dumpAlignment) 
+                if (options.dumpAlignment)
                 {
                     assignSource(row(align, 0), store.readSeqStore[(*it).readId]);
-                    
+
                     TContigPos left = (*it).beginPos;
                     TContigPos right = (*it).endPos;
-                    
+
                     if (left < right)
                         assignSource(row(align, 1), infix(store.contigStore[(*it).contigId].seq, left, right));
                     else
@@ -720,7 +720,7 @@ void dumpMatches(
 
         case 1:    // Enhanced Fasta Format
             _sep_ = ',';
-            for(unsigned matchReadNo = -1, matchReadCount = 0; it != itEnd; ++it) 
+            for(unsigned matchReadNo = -1, matchReadCount = 0; it != itEnd; ++it)
             {
                 TQuality    qual = getValue(store.alignQualityStore, (*it).id);
                 unsigned    readLen = length(store.readSeqStore[(*it).readId]);
@@ -742,7 +742,7 @@ void dumpMatches(
 
                 size_t left = fastaID.find_first_of('[');
                 size_t right = fastaID.find_last_of(']');
-                if (left != fastaID.npos && right != fastaID.npos && left < right) 
+                if (left != fastaID.npos && right != fastaID.npos && left < right)
                 {
                     fastaID.erase(right);
                     fastaID.erase(0, left + 1);
@@ -766,11 +766,11 @@ void dumpMatches(
                 else
                     // reverse strand (switch begin and end)
                     file << '>' << (*it).beginPos << _sep_ << ((*it).endPos + options.positionFormat);
-                    
+
                 unsigned ambig = 0;
                 for (unsigned i = 0; i <= qual.errors && i < length(stats); ++i)
                     ambig += stats[i][(*it).readId];
-                
+
                 file << "[id=" << id;
                 if (appendMatchId) file << "_" << matchReadCount;
                 file << ",fragId=" << fragId;
@@ -820,13 +820,13 @@ void dumpMatches(
                     unsigned bestMatches = 1;
                     if ((unsigned)qual.errors < length(stats))
                         bestMatches = stats[qual.errors][readNo];
-                    
+
                     if (bestMatches == 0) file << '?';    // impossible
                     if (bestMatches == 1) file << 'U';    // unique best match
                     if (bestMatches >  1) file << 'R';    // non-unique best matches
-                    
+
                     file << (unsigned)qual.errors << _sep_ << stats[0][readNo] << _sep_ << stats[1][readNo] << _sep_ << stats[2][readNo];
-                    
+
                     if (bestMatches == 1)
                     {
                         file << _sep_;
@@ -842,17 +842,17 @@ void dumpMatches(
                                 file.fill('0');
                                 file << gnoToFileMap[(*it).contigId].i1 << '#' << std::setw(gzeros) << gnoToFileMap[(*it).contigId].i2 + 1;
                         }
-                        
+
                         if ((*it).beginPos < (*it).endPos)
                             file << _sep_ << ((*it).beginPos + options.positionFormat) << _sep_ << 'F' << _sep_ << "..";
                         else
                             file << _sep_ << (*it).beginPos << _sep_ << 'R' << _sep_ << "..";
 
-                        if (qual.errors > 0 && options.dumpAlignment && options.hammingOnly) 
+                        if (qual.errors > 0 && options.dumpAlignment && options.hammingOnly)
                         {
                             TContigPos left = (*it).beginPos;
                             TContigPos right = (*it).endPos;
-                            
+
                             if (left < right)
                                 gInf = infix(store.contigStore[(*it).contigId].seq, left, right);
                             else
@@ -861,7 +861,7 @@ void dumpMatches(
                                 reverseComplement(gInf);
                             }
                             for (unsigned i = 0; i < length(gInf); ++i)
-                                if ((options.compMask[ordValue(store.readSeqStore[readNo][i])] & 
+                                if ((options.compMask[ordValue(store.readSeqStore[readNo][i])] &
                                     options.compMask[ordValue(gInf[i])]) == 0)
                                     file << _sep_ << i + 1 << gInf[i];
                         }
@@ -876,7 +876,7 @@ void dumpMatches(
             {
                 TQuality    qual = getValue(store.alignQualityStore, (*it).id);
 
-                // open genome file    
+                // open genome file
                 SeqFileIn gFile;
                 if (!open(gFile, toCString(genomeFileNameList[filecount])))
                 {
@@ -886,7 +886,7 @@ void dumpMatches(
 
                 CharString currId;
                 Dna5String currGenome;
-                
+
                 // iterate over genome sequences
                 for(; !atEnd(gFile); ++currSeqNo)
                 {
@@ -918,14 +918,14 @@ void dumpMatches(
                                 ++it;
                                 continue;
                             }
-                            
+
 //                            if((*it).mScore > 0) std::cout << (*it).mScore << "<-non uniq but score > 0\n";
 //                            ++it;
 //                            continue; // TODO: output non-unique matches
                         }
                     //    std::cout << "hier2\n";
                         unsigned readLen = length(store.readSeqStore[currReadNo]);
-        
+
                         switch (options.genomeNaming)
                         {
                             // 0..filename is the read's Fasta id
@@ -957,7 +957,7 @@ void dumpMatches(
                             file << '+' << '\t' << '.' <<'\t';
                         else
                             file << '-' << '\t' << '.' <<'\t';
-        
+
                         switch (options.readNaming)
                         {
                             // 0..filename is the read's Fasta id
@@ -965,7 +965,7 @@ void dumpMatches(
                             case 3:  // same as 0 if non-paired
                                 file << "ID=" <<store.readNameStore[currReadNo];
                                 break;
-                            
+
                             // 1..filename is the read filename + seqNo
                             case 1:
                                 file.fill('0');
@@ -974,7 +974,7 @@ void dumpMatches(
                         }
                     //    std::cout << "hier5\n";
                         if(suboptimal) file << ";suboptimal";
-                        else 
+                        else
                         {
                             if(unique==1) file << ";unique";
                             if(unique==0) file << ";multi";
@@ -985,7 +985,7 @@ void dumpMatches(
                             {
                                 TContigPos left = (*it).beginPos;
                                 TContigPos right = (*it).endPos;
-                                
+
                                 if (left < right)
                                     gInf = infix(store.contigStore[(*it).contigId].seq, left, right);
                                 else
@@ -1004,7 +1004,7 @@ void dumpMatches(
 //                                    ++i;
 //                                }
                                 for (; i < length(gInf); ++i)
-                                    if ((options.compMask[ordValue(store.readSeqStore[currReadNo][i])] & 
+                                    if ((options.compMask[ordValue(store.readSeqStore[currReadNo][i])] &
                                         options.compMask[ordValue(gInf[i])]) == 0)
                                     {
                 //                        if(first){ file << i + 1 << gInf[i]; first = false;}
@@ -1018,7 +1018,7 @@ void dumpMatches(
 //                                    else file <<','<< i + 1 << (Dna5)store.readSeqStore[currReadNo][i];
 //                                    ++i;
 //                                }
-                                
+
                             }
                             else
                             {
@@ -1041,7 +1041,7 @@ void dumpMatches(
 
                                 if(length(mutations.str())>0)
                                     file << ";mutations=" << mutations.str();
-                                
+
                             }
                         }
                         file << std::endl;
@@ -1061,25 +1061,25 @@ void dumpMatches(
                 convertMatchesToGlobalAlignment(store, scoreType, True());
 
             switch (options.sortOrder) {
-                case 0: 
+                case 0:
                     sortAlignedReads(
-                        store.alignedReadStore, 
+                        store.alignedReadStore,
                         LessRNoGPos<TAlignedReadStore, TAlignQualityStore>(store.alignQualityStore));
                     break;
 
                 case 1:
                     sortAlignedReads(
-                        store.alignedReadStore, 
+                        store.alignedReadStore,
                         LessGPosRNo<TAlignedReadStore, TAlignQualityStore>(store.alignQualityStore));
                     break;
                 case 2:
                     sortAlignedReads(
-                            store.alignedReadStore, 
+                            store.alignedReadStore,
                             LessRNameGPos<TAlignedReadStore, TReadNameStore, TAlignQualityStore>(store.readNameStore, store.alignQualityStore));
                     break;
                 case 3:
                     sortAlignedReads(
-                            store.alignedReadStore, 
+                            store.alignedReadStore,
                             LessGPosRName<TAlignedReadStore, TReadNameStore, TAlignQualityStore>(store.readNameStore, store.alignQualityStore));
                     break;
             }
@@ -1120,7 +1120,7 @@ void dumpMatches(
             unsigned insertions = 0;
             unsigned deletions = 0;
             resize(posError, maxReadLength, 0);
-            
+
             if (options.hammingOnly)
                 unique = getErrorDistribution(posError, store, options);
             else

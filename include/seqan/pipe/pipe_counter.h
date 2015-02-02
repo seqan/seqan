@@ -60,15 +60,15 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @signature template <typename TInput>
  *            class Pipe<TInput, Counter>;
- * 
+ *
  * @tparam TInput The type of the pipeline module this module reads from.
- * 
+ *
  * The output type is a Pair of input type and size type (i.e.  <tt>Pair&lt;Value&lt;TInput&gt;::Type, Size&lt;TInput&gt;::Type</tt>).
- * 
+ *
  * The first output field is the original input stream.
- * 
+ *
  * The second output field begins with 0 and increases by 1 per element.
- */ 
+ */
 
     //////////////////////////////////////////////////////////////////////////////
     // counter class
@@ -77,15 +77,15 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         TInput                      &in;
         typename Value<Pipe>::Type    tmp;
-        
+
         Pipe(TInput& _in):
             in(_in) {}
-        
+
         inline typename Value<Pipe>::Type const & operator*() {
             tmp.i1 = *in;
             return tmp;
         }
-        
+
         inline Pipe& operator++() {
             ++in;
             ++tmp.i2;
@@ -102,7 +102,7 @@ namespace SEQAN_NAMESPACE_MAIN
         me.tmp.i2 = 0;
         return true;
     }
-    
+
 //}
 
 }

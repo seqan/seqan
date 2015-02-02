@@ -44,9 +44,9 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
 
     // build suffix array with an external pipeling algorithm (skew3, skew7, ...)
-    template < 
-        typename TSA, 
-        typename TObject, 
+    template <
+        typename TSA,
+        typename TObject,
         typename TAlgSpec >
     void _createSuffixArrayPipelining(
         TSA &suffixArray,
@@ -77,9 +77,9 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     // build suffix array (external) for mutliple sequences
-    template < 
-        typename TSA, 
-        typename TString, 
+    template <
+        typename TSA,
+        typename TString,
         typename TSpec,
         typename TAlgSpec >
     void _createSuffixArrayPipelining(
@@ -94,8 +94,8 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef typename Concatenator<StringSet<TString, TSpec> >::Type            TConcat;
         typedef typename MakeUnsigned_< typename Value<TConcat>::Type >::Type    TUValue;
         typedef Multi<
-            TAlgSpec, 
-            typename Value<TSA>::Type, 
+            TAlgSpec,
+            typename Value<TSA>::Type,
             typename StringSetLimits<StringSet<TString, TSpec> >::Type >        MultiConstrSpec;
 
         // specialization
@@ -119,9 +119,9 @@ namespace SEQAN_NAMESPACE_MAIN
  * @fn createSuffixArray
  * @headerfile <seqan/index.h>
  * @brief Creates a suffix array from a given text.
- * 
+ *
  * @signature void createSuffixArray(suffixArray, text[, algoTag]);
- * 
+ *
  * @param[out] suffix  Array The resulting suffix array.
  * @param[in]  text    A given text. Types: @link ContainerConcept @endlink
  * @param[in]  algoTag A tag that identifies the algorithm which is used for creation.
@@ -129,7 +129,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * This function should not be called directly.  Please use @link Index#indexCreate
  * @endlink or @link Index#indexRequire @endlink.  The size of <tt>suffixArray</tt>
  * must be at least <tt>length(text)</tt> before calling this function.
- * 
+ *
  * @see DemoSuffixArray
  */
     template < typename TSA,
@@ -148,9 +148,9 @@ namespace SEQAN_NAMESPACE_MAIN
             createSuffixArray(sa, s, alg, ValueSize< typename Value<TText>::Type >::VALUE, 0);
     }
 
-    template < 
-        typename TSA, 
-        typename TText, 
+    template <
+        typename TSA,
+        typename TText,
         typename TAlgSpec >
     inline void _createSuffixArrayWrapper(
         TSA &sa,
@@ -163,9 +163,9 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     // always use external Skew7 for multiple strings
-    template < 
-        typename TSA, 
-        typename TSequence, 
+    template <
+        typename TSA,
+        typename TSequence,
         typename TSetSpec,
         typename TAlgSpec >
     inline void _createSuffixArrayWrapper(
@@ -178,8 +178,8 @@ namespace SEQAN_NAMESPACE_MAIN
         _createSuffixArrayPipelining(sa, s, Skew7());
     }
 
-    template < 
-        typename TSA, 
+    template <
+        typename TSA,
         typename TText,
         typename TAlgSpec >
     inline void _createSuffixArrayWrapper(
@@ -192,7 +192,7 @@ namespace SEQAN_NAMESPACE_MAIN
         _createSuffixArrayPipelining(sa, s, alg);
     }
 
-    template < 
+    template <
         typename TSA,
         typename TText,
         typename TAlgSpec >
@@ -258,9 +258,9 @@ namespace SEQAN_NAMESPACE_MAIN
     // LCP Table creation wrappers
     //////////////////////////////////////////////////////////////////////////////
 
-    template < 
+    template <
         typename TLCPTable,
-        typename TObject, 
+        typename TObject,
         typename TSA,
         typename TAlgSpec >
     void _createLCPTablePipelining(
@@ -288,7 +288,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     // build lcp table (external) for mutliple sequences
-    template < 
+    template <
         typename TLCPTable,
         typename TString,
         typename TSpec,
@@ -303,8 +303,8 @@ namespace SEQAN_NAMESPACE_MAIN
     SEQAN_CHECKPOINT
         typedef typename Concatenator<StringSet<TString, TSpec> >::Type TConcat;
         typedef Multi<
-            TAlgSpec, 
-            typename Value<TSA>::Type, 
+            TAlgSpec,
+            typename Value<TSA>::Type,
             typename StringSetLimits<StringSet<TString, TSpec> >::Type > MultiConstrSpec;
 
         // specialization
@@ -328,20 +328,20 @@ namespace SEQAN_NAMESPACE_MAIN
  * @fn createLcpTable
  * @headerfile <seqan/index.h>
  * @brief Creates a LCP table from a given text and suffix array.
- * 
+ *
  * @signature void createLcpTable(lcp, text, suffixArray[, algoTag]);
- * 
+ *
  * @param[out] lcp         The resulting lcp table.
  * @param[in]  text        A given text. Types: @link ContainerConcept @endlink
  * @param[in]  suffixArray The suffix array of <tt>text</tt>.
  * @param[in]  algoTag     A tag that identifies the algorithm which is used for creation.
- * 
+ *
  * This function should not be called directly.  Please use @link Index#indexCreate
  * @endlink or @link Index#indexRequire @endlink.  The size of <tt>lcp</tt> must be at
  * least <tt>length(text)</tt> before calling this function.
  */
 
-    template < 
+    template <
         typename TLCP,
         typename TText,
         typename TSA,
@@ -357,7 +357,7 @@ namespace SEQAN_NAMESPACE_MAIN
         _createLCPTableRandomAccess(lcp, s, sa, alg);
     }
 
-    template < 
+    template <
         typename TLCP,
         typename TText,
         typename TSA,
@@ -373,7 +373,7 @@ namespace SEQAN_NAMESPACE_MAIN
         _createLCPTablePipelining(lcp, s, sa, alg);
     }
 
-    template < 
+    template <
         typename TLCP,
         typename TText,
         typename TSA,
@@ -399,12 +399,12 @@ namespace SEQAN_NAMESPACE_MAIN
 
     // build enhanced LCP table with an external pipelining algorithm (ext kasai, ...)
     // and a dynamic programming tree construction alg
-    // (in contrast to the LCP table the enhanced LCP table contains the lcp-values 
+    // (in contrast to the LCP table the enhanced LCP table contains the lcp-values
     // of suffix intervals used in the binary search)
-    template < 
-        typename TValue, 
+    template <
+        typename TValue,
         typename TSpec,
-        typename TObject, 
+        typename TObject,
         typename TSA,
         typename TLCP,
         typename TAlgSpec >
@@ -529,9 +529,9 @@ namespace SEQAN_NAMESPACE_MAIN
  * @fn createBWTable
  * @headerfile <seqan/index.h>
  * @brief Creates a Burrows-Wheeler table from a given text and suffix array.
- * 
+ *
  * @signature void createBWTable(bwt, text, suffixArray[, algoTag]);
- * 
+ *
  * @param[out] bwt     The resulting Burrows-Wheeler table.
  * @param[in]  suffix  Array The suffix array of <tt>text</tt>.
  * @param[in]  text    A given text. Types: @link ContainerConcept @endlink
@@ -573,7 +573,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template <typename T1, typename T2, typename TPack>
     struct SAValueLess_< Pair<T1,T2,TPack> >:
-        public std::binary_function< Pair<T1,T2,TPack>, Pair<T1,T2,TPack>, bool> 
+        public std::binary_function< Pair<T1,T2,TPack>, Pair<T1,T2,TPack>, bool>
     {
         inline bool operator()(Pair<T1,T2,TPack> const &a, Pair<T1,T2,TPack> const &b) const {
             return    (getValueI1(a) < getValueI1(b)) ||
@@ -586,17 +586,17 @@ namespace SEQAN_NAMESPACE_MAIN
  * @fn orderOccurrences
  * @headerfile <seqan/index.h>
  * @brief Sorts a string of occurrences.
- * 
+ *
  * @signature void orderOccurrences(occString);
- * 
+ *
  * @param[in,out] occString String of occurrences.
  *
  * The occurrences are sorted by increasing positions.
- * 
+ *
  * @see DemoMummy
  * @see DemoSupermaximalRepeats
  * @see DemoMaximalUniqueMatches
- * 
+ *
  * @see VSTreeIterator#getOccurrences
  * @see IndexQGram#getOccurrences
  * @see SAValue
@@ -616,16 +616,16 @@ namespace SEQAN_NAMESPACE_MAIN
  * @fn Index#indexCreate
  * @headerfile <seqan/index.h>
  * @brief Creates a specific @link Fibre @endlink.
- * 
+ *
  * @signature bool indexCreate(index, fibreTag[, algoTag]);
- * 
+ *
  * @param[in]     fibreTag A tag that identifies the @link Fibre @endlink
  * @param[in]     algoTag  A tag that identifies the algorithm which is used to create the fibre.  Default: The
  *                         result of @link Index#DefaultIndexCreator @endlink.
  * @param[in,out] index    The @link Index @endlink object holding the fibre.
  *
  * @return bool <tt>true</tt> on a success and false <tt>otherwise</tt>
- * 
+ *
  * <tt>indexCreate</tt> calls the fibre corresponding <tt>createXXX(..)</tt> function (e.g. @link createSuffixArray
  * @endlink).
  */
@@ -722,12 +722,12 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
  * @fn Index#indexSupplied
  * @headerfile <seqan/index.h>
  * @brief Returns whether a specific @link Fibre @endlink is present.
- * 
+ *
  * @signature bool indexSupplied(index, fibreTag);
- * 
+ *
  * @param[in] index    The @link Index @endlink object holding the fibre.
  * @param[in] fibreTag A tag that identifies the @link Fibre @endlink Index Fibres.
- * 
+ *
  * @return bool <tt>true</tt>, iff the fibre is present.
  */
     template <typename TText, typename TSpec, typename TFibre>
@@ -742,14 +742,14 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
  * @fn Index#indexRequire
  * @headerfile <seqan/index.h>
  * @brief On-demand creation of a specific @link Fibre @endlink.
- * 
+ *
  * @signature bool indexRequire(index, fibreTag);
- * 
+ *
  * @param[in,out] index    The @link Index @endlink object holding the fibre.
  * @param[in]     fibreTag A tag that identifies the @link Fibre @endlink
- * 
+ *
  * @return bool <tt>true</tt> on a successful creation.
- * 
+ *
  * If the fibre already exists (@link Index#indexSupplied @endlink is true) then <tt>indexRequire</tt> does nothing. If
  * the fibre doesn't exist then @link Index#indexCreate @endlink is called to create it.
  *
@@ -845,7 +845,7 @@ inline bool indexCreate(Index<TText, TSpec> & index, FibreSA, Trie)
         if (!empty(extString)) assign(value, front(extString));
         return true;
     }
-    
+
     template <typename TValue>
     inline bool open(TValue & value, const char *fileName)
     {

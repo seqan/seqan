@@ -216,7 +216,7 @@ struct AsyncDummyRequest
 {
     AsyncDummyRequest()
     {}
-    
+
     AsyncDummyRequest(AsyncDummyRequest &, Move)
     {}
 

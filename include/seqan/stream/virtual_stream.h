@@ -474,7 +474,7 @@ _getUncompressedBasename(TFilename const & fileName, BgzfFile const &)
 {
     typedef typename Value<TFilename>::Type                                     TValue;
     typedef ModifiedString<TFilename const, ModView<FunctorLowcase<TValue> > >    TLowcase;
-    
+
     TLowcase lowcaseFileName(fileName);
 
     if (endsWith(lowcaseFileName, ".bgzf"))

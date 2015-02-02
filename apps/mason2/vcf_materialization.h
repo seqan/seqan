@@ -143,7 +143,7 @@ public:
     bool materializeNext(seqan::Dna5String & seq,
                          std::vector<SmallVarInfo> & varInfos,
                          std::vector<std::pair<int, int> > & breakpoints,
-                         int & rID, int & haplotype);   
+                         int & rID, int & haplotype);
 
     // Similar to the one above but loads methylation levels into levels.  Can only work if methFastFileName is not
     // empty.

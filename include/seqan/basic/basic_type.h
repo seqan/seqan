@@ -160,7 +160,7 @@ struct Host
  * @mfn Cargo
  * @headerfile <seqan/basic.h>
  * @brief Type of additional data stored in an object.
- * 
+ *
  * @signature Cargo<T>::Type;
  *
  * @tparam T Type for which the cargo tpye is queried.
@@ -219,7 +219,7 @@ struct VertexDescriptor<T const>:
  *
  * @return Type The resulting identifier type.
  */
-    
+
 // TODO(holtgrew): Should this have a default implementation?
 
 template<typename T>
@@ -259,7 +259,7 @@ struct Key<T const>:
 //____________________________________________________________________________
 
 template<typename T>
-struct Object; 
+struct Object;
 
 template <typename T>
 struct Object<T const>:
@@ -402,7 +402,7 @@ struct ConstParameter_<T const [I]>
  *
  * @see Fibre
  */
- 
+
 template <typename TObject, typename TSpec>
 struct Member;
 
@@ -512,7 +512,7 @@ _referenceCast(typename RemovePointer<T>::Type & ptr)
  * @signature LENGTH<T>::VALUE;
  *
  * @tparam T The type to query for its length.
- * 
+ *
  * @return VALUE The length of <tt>T</tt>.
  */
 
@@ -534,7 +534,7 @@ struct LENGTH<T const>:
 /*!
  * @mfn WEIGHT
  * @brief Number of relevant positions in a shape.
- * 
+ *
  * @signature WEIGHT<T>::VALUE;
  *
  * @tparam T     The Shape type to query.

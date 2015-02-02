@@ -148,7 +148,7 @@ void processN(TSeqs& seqs, TIds& ids, unsigned allowed, TSub substitute, General
         else
         {
             stats.uncalledBases += res[i];
-        } 
+        }
     }
     if (ex != 0)
     {
@@ -192,7 +192,7 @@ void processN(TSeqs& seqs, TIds& ids, unsigned allowed, GeneralStats& stats)
         {
             stats.uncalledBases += res[i];
         }
-    }   
+    }
     if (ex != 0)
     {
         resize(seqs, limit - ex);
@@ -315,7 +315,7 @@ void processN(TSeqs& seqs, TIds& ids, TMulti& multiplex, unsigned allowed, TSub 
     }
     stats.uncalledBases += uncalled;
     unsigned ex = 0;
-    for (int i = length(res) - 1; i >= 0 ; --i) 
+    for (int i = length(res) - 1; i >= 0 ; --i)
     {
         if (res[i] == -1)
         {
@@ -358,10 +358,10 @@ void processN(TSeqs& seqs, TIds& ids, TMulti& multiplex, unsigned allowed, Gener
     }
     stats.uncalledBases += uncalled;
     unsigned ex = 0;
-    for (int i = length(res) - 1; i >= 0 ; --i) 
+    for (int i = length(res) - 1; i >= 0 ; --i)
     {
         if (res[i] == -1)
-        {                               
+        {
             swap(seqs[i], seqs[limit - ex - 1]);
             swap(ids[i], ids[limit - ex - 1]);
             swap(multiplex[i], multiplex[limit - ex - 1]);
@@ -407,7 +407,7 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& mult
     }
     stats.uncalledBases += uncalled;
     unsigned ex = 0;
-    for (int i = length(res) - 1; i >= 0 ; --i) 
+    for (int i = length(res) - 1; i >= 0 ; --i)
     {
         if (res[i] == -1)
         {
@@ -459,7 +459,7 @@ void processN(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& mult
     }
     stats.uncalledBases += uncalled;
     unsigned ex = 0;
-    for (int i = length(res) - 1; i >= 0 ; --i) 
+    for (int i = length(res) - 1; i >= 0 ; --i)
     {
         if (res[i] == -1)
         {
@@ -709,7 +709,7 @@ void preTrim(TSeqs& seqs, TIds& ids, TMulti& multiplex, unsigned head, unsigned 
 }
 
 //Overload for paired end data
-template<typename TSeqs, typename TIds> 
+template<typename TSeqs, typename TIds>
 void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned head, unsigned tail, unsigned min,
     GeneralStats& stats)
 {
@@ -728,7 +728,7 @@ void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned head
                 erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
                 erase(seqsRev[i], 0, head);
                 erase(seqsRev[i], length(seqsRev[i]) - tail, length(seqsRev[i]));
-                if ((length(seqs[i]) >= min) && (length(seqsRev[i]) >= min)) 
+                if ((length(seqs[i]) >= min) && (length(seqsRev[i]) >= min))
                 {
                     rem[i] = false;
                 }
@@ -830,7 +830,7 @@ void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, unsigned head
 }
 
 //Overload for paired end data with multiplex barcodes
-template<typename TSeqs, typename TIds,  typename TMulti> 
+template<typename TSeqs, typename TIds,  typename TMulti>
 void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& multiplex, unsigned head, unsigned tail, unsigned min,
     GeneralStats& stats)
 {
@@ -849,7 +849,7 @@ void preTrim(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, TMulti& multi
                 erase(seqs[i], length(seqs[i]) - tail, length(seqs[i]));
                 erase(seqsRev[i], 0, head);
                 erase(seqsRev[i], length(seqsRev[i]) - tail, length(seqsRev[i]));
-                if ((length(seqs[i]) >= min) && (length(seqsRev[i]) >= min)) 
+                if ((length(seqs[i]) >= min) && (length(seqsRev[i]) >= min))
                 {
                     rem[i] = false;
                 }
@@ -965,14 +965,14 @@ void trimTo(TSeqs& seqs, TIds& ids, const unsigned len, GeneralStats& stats)
         {
             rem[i] = true;
         }
-        else 
+        else
         {
             rem[i] = false;
             if (length(seqs[i]) > len)
             {
                 erase(seqs[i], len, length(seqs[i]));
             }
-        }    
+        }
     }
     unsigned ex = 0;
     for (int j = limit - 1; j >= 0; --j)
@@ -1007,7 +1007,7 @@ void trimTo(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, const unsigned
         {
             rem[i] = true;
         }
-        else 
+        else
         {
             rem[i] = false;
             if (length(seqs[i]) > len)
@@ -1018,14 +1018,14 @@ void trimTo(TSeqs& seqs, TIds& ids, TSeqs& seqsRev, TIds& idsRev, const unsigned
             {
                 erase(seqsRev[i], len, length(seqsRev[i]));
             }
-        }    
+        }
     }
     unsigned ex = 0;
     for (int j = length(rem) - 1; j >= 0; --j)
     {
         if (rem[j])
         {
-            swap(seqs[j], seqs[limit - ex - 1]);            
+            swap(seqs[j], seqs[limit - ex - 1]);
             swap(seqsRev[j], seqsRev[limit - ex - 1]);
             swap(ids[j], ids[limit - ex - 1]);
             swap(idsRev[j], idsRev[limit - ex - 1]);

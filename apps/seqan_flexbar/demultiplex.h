@@ -84,9 +84,9 @@ bool check(TSeqs& seqs,  TIds& ids, TSeqs& seqsRev, TIds& idsRev, TBarcodes& bar
         }
     }   //Iterating backward to avoid error after deletion of a sequence
     unsigned ex = 0;
-    for (int i = length(seqs) - 1; i >= 0; --i)  
+    for (int i = length(seqs) - 1; i >= 0; --i)
     {   //integer necessary because unsigned would cause error after last iteration
-        if (length(seqs[i]) <= len)    
+        if (length(seqs[i]) <= len)
         {
             //Divinding the comming jobs between the threads
             //sorting all  sequences which shall be deleted to the end of the container
@@ -109,7 +109,7 @@ bool check(TSeqs& seqs,  TIds& ids, TSeqs& seqsRev, TIds& idsRev, TBarcodes& bar
 }
 //Overload for single-end data
 template <typename TSeqs, typename TIds, typename TBarcodes>
-bool check(TSeqs& seqs, TIds& ids,TBarcodes& barcodes, GeneralStats& stats) 
+bool check(TSeqs& seqs, TIds& ids,TBarcodes& barcodes, GeneralStats& stats)
 {
     unsigned len = length(barcodes[0]);
     for (unsigned i = 1; i < length(barcodes); ++i)
@@ -269,7 +269,7 @@ void group(StringSet<String<int> >& sortedSequences, const TMatches& matches, co
         {                                                   //offset by 1 is necessary since group 0 is...
             appendValue(sortedSequences[matches[i]+1], i);  //...reserved for unidentified sequences)
         }
-    }                                                  
+    }
 }
 
 //Overload if approximate search has been used.

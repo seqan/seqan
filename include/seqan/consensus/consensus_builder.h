@@ -304,7 +304,7 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
         for (TSetIt it = done.begin(); it != done.end(); ++it)
             activeReads[cl].erase(*it);
     }
- 
+
 // #if SEQAN_ENABLE_DEBUG
     {
         // Check for consistency.

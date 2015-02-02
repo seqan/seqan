@@ -58,17 +58,17 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
 template<typename TCargo,typename TSpec>
-class Graph<Undirected<TCargo, TSpec> > 
+class Graph<Undirected<TCargo, TSpec> >
 {
     public:
         typedef typename VertexIdHandler<Graph>::Type TVertexIdManager_;
         typedef typename EdgeIdHandler<Graph>::Type TEdgeIdManager_;
-        typedef typename EdgeType<Graph>::Type TEdgeStump_;    
+        typedef typename EdgeType<Graph>::Type TEdgeStump_;
         typedef Allocator<SinglePool<sizeof(TEdgeStump_)> > TAllocator_;
-        
+
         String<TEdgeStump_*> data_vertex;            // Pointers to EdgeStump lists
         TVertexIdManager_ data_id_managerV;
-        TEdgeIdManager_ data_id_managerE;        
+        TEdgeIdManager_ data_id_managerE;
         TAllocator_ data_allocator;
 
 //____________________________________________________________________________
@@ -88,9 +88,9 @@ class Graph<Undirected<TCargo, TSpec> >
             data_allocator(_other.data_allocator)
         {
             SEQAN_CHECKPOINT
-            _copyGraph(_other, *this);        
+            _copyGraph(_other, *this);
         }
-    
+
         Graph const& operator = (Graph const & _other) {
             SEQAN_CHECKPOINT
             if (this == &_other) return *this;
@@ -144,7 +144,7 @@ template<typename TCargo, typename TSpec>
 inline void
 _copyGraph(Graph<Undirected<TCargo, TSpec> > const& source,
            Graph<Undirected<TCargo, TSpec> >& dest,
-           bool) 
+           bool)
 {
     SEQAN_CHECKPOINT
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
@@ -170,7 +170,7 @@ _copyGraph(Graph<Undirected<TCargo, TSpec> > const& source,
             if (targetVertex != sourceVertex) {
                 // Create missing vertices, targetVertex is always bigger than sourceVertex
                 _createVertices(dest,targetVertex);
-            
+
                 // Add edge
                 TEdgeDescriptor e = addEdge(dest, sourceVertex, targetVertex);
                 _assignId(e, _getId(current));
@@ -190,7 +190,7 @@ _copyGraph(Graph<Undirected<TCargo, TSpec> > const& source,
 template<typename TCargo, typename TSpec>
 inline void
 _copyGraph(Graph<Undirected<TCargo, TSpec> > const& source,
-           Graph<Undirected<TCargo, TSpec> >& dest) 
+           Graph<Undirected<TCargo, TSpec> >& dest)
 {
     _copyGraph(source, dest, false); // Never transpose because undirected and transposed undirected graph are equal
 }
@@ -209,7 +209,7 @@ transpose(Graph<Undirected<TCargo, TSpec> > const& source,
     SEQAN_CHECKPOINT
     // Undirected graph, no transpose just copy
     _copyGraph(source, dest, false);
-    
+
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -224,8 +224,8 @@ transpose(Graph<Undirected<TCargo, TSpec> > const&)
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo, typename TSpec>
-inline typename Size<Graph<Undirected<TCargo, TSpec> > >::Type 
-numEdges(Graph<Undirected<TCargo, TSpec> > const& g) 
+inline typename Size<Graph<Undirected<TCargo, TSpec> > >::Type
+numEdges(Graph<Undirected<TCargo, TSpec> > const& g)
 {
     SEQAN_CHECKPOINT
     return idCount(g.data_id_managerE);
@@ -234,8 +234,8 @@ numEdges(Graph<Undirected<TCargo, TSpec> > const& g)
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo, typename TSpec>
-inline typename Size<Graph<Undirected<TCargo, TSpec> > >::Type 
-numVertices(Graph<Undirected<TCargo, TSpec> > const& g) 
+inline typename Size<Graph<Undirected<TCargo, TSpec> > >::Type
+numVertices(Graph<Undirected<TCargo, TSpec> > const& g)
 {
     SEQAN_CHECKPOINT
     return idCount(g.data_id_managerV);
@@ -244,8 +244,8 @@ numVertices(Graph<Undirected<TCargo, TSpec> > const& g)
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo, typename TSpec>
-inline bool 
-empty(Graph<Undirected<TCargo, TSpec> > const& g) 
+inline bool
+empty(Graph<Undirected<TCargo, TSpec> > const& g)
 {
     SEQAN_CHECKPOINT
     return (!(idCount(g.data_id_managerV)));
@@ -255,7 +255,7 @@ empty(Graph<Undirected<TCargo, TSpec> > const& g)
 
 template<typename TCargo, typename TSpec>
 inline void
-clearEdges(Graph<Undirected<TCargo, TSpec> >& g) 
+clearEdges(Graph<Undirected<TCargo, TSpec> >& g)
 {
     SEQAN_CHECKPOINT
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
@@ -290,7 +290,7 @@ clearEdges(Graph<Undirected<TCargo, TSpec> >& g)
     TStringIter edgeEndIt = end(edges, Standard());
     for(; edgeIt != edgeEndIt; ++edgeIt) {
         valueDestruct(*edgeIt);
-        deallocate(g.data_allocator, *edgeIt, 1);    
+        deallocate(g.data_allocator, *edgeIt, 1);
     }
     releaseAll(g.data_id_managerE);
 }
@@ -299,7 +299,7 @@ clearEdges(Graph<Undirected<TCargo, TSpec> >& g)
 
 template<typename TCargo, typename TSpec>
 inline void
-clearVertices(Graph<Undirected<TCargo, TSpec> >& g) 
+clearVertices(Graph<Undirected<TCargo, TSpec> >& g)
 {
     SEQAN_CHECKPOINT
     clearEdges(g);
@@ -310,8 +310,8 @@ clearVertices(Graph<Undirected<TCargo, TSpec> >& g)
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo, typename TSpec>
-inline void 
-clear(Graph<Undirected<TCargo, TSpec> >& g) 
+inline void
+clear(Graph<Undirected<TCargo, TSpec> >& g)
 {
     SEQAN_CHECKPOINT
     clearVertices(g);
@@ -319,10 +319,10 @@ clear(Graph<Undirected<TCargo, TSpec> >& g)
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
-inline typename Size<Graph<Undirected<TCargo, TSpec> > >::Type 
-outDegree(Graph<Undirected<TCargo, TSpec> > const& g, 
-          TVertexDescriptor const vertex) 
+template<typename TCargo, typename TSpec, typename TVertexDescriptor>
+inline typename Size<Graph<Undirected<TCargo, TSpec> > >::Type
+outDegree(Graph<Undirected<TCargo, TSpec> > const& g,
+          TVertexDescriptor const vertex)
 {
     SEQAN_CHECKPOINT
     SEQAN_ASSERT(idInUse(g.data_id_managerV, vertex));
@@ -342,10 +342,10 @@ outDegree(Graph<Undirected<TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
-inline typename Size<Graph<Undirected<TCargo, TSpec> > >::Type 
-inDegree(Graph<Undirected<TCargo, TSpec> > const& g, 
-         TVertexDescriptor const vertex) 
+template<typename TCargo, typename TSpec, typename TVertexDescriptor>
+inline typename Size<Graph<Undirected<TCargo, TSpec> > >::Type
+inDegree(Graph<Undirected<TCargo, TSpec> > const& g,
+         TVertexDescriptor const vertex)
 {
     SEQAN_CHECKPOINT
     // In-degree and out-degree are equal for undirected graphs
@@ -354,26 +354,26 @@ inDegree(Graph<Undirected<TCargo, TSpec> > const& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
-inline typename Size<Graph<Undirected<TCargo, TSpec> > >::Type 
+template<typename TCargo, typename TSpec, typename TVertexDescriptor>
+inline typename Size<Graph<Undirected<TCargo, TSpec> > >::Type
 degree(Graph<Undirected<TCargo, TSpec> > const& g,
-       TVertexDescriptor const vertex) 
+       TVertexDescriptor const vertex)
 {
     return outDegree(g,vertex);
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TCargo, typename TSpec> 
-inline typename VertexDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type 
-addVertex(Graph<Undirected<TCargo, TSpec> >& g) 
+template<typename TCargo, typename TSpec>
+inline typename VertexDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type
+addVertex(Graph<Undirected<TCargo, TSpec> >& g)
 {
     SEQAN_CHECKPOINT
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
     typedef typename EdgeType<TGraph>::Type TEdgeStump;
     TVertexDescriptor vd = obtainId(g.data_id_managerV);
-    if (vd == length(g.data_vertex)) appendValue(g.data_vertex, (TEdgeStump*) 0, Generous()); 
+    if (vd == length(g.data_vertex)) appendValue(g.data_vertex, (TEdgeStump*) 0, Generous());
     else g.data_vertex[vd] = (TEdgeStump*) 0;
     return vd;
 }
@@ -381,9 +381,9 @@ addVertex(Graph<Undirected<TCargo, TSpec> >& g)
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
-inline void 
-removeVertex(Graph<Undirected<TCargo, TSpec> >& g, 
-             TVertexDescriptor const v) 
+inline void
+removeVertex(Graph<Undirected<TCargo, TSpec> >& g,
+             TVertexDescriptor const v)
 {
     SEQAN_CHECKPOINT
     SEQAN_ASSERT(idInUse(g.data_id_managerV, v));
@@ -394,11 +394,11 @@ removeVertex(Graph<Undirected<TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
-inline typename EdgeDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type 
-addEdge(Graph<Undirected<TCargo, TSpec> >& g, 
-        TVertexDescriptor source, 
-        TVertexDescriptor target) 
+template<typename TCargo, typename TSpec, typename TVertexDescriptor>
+inline typename EdgeDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type
+addEdge(Graph<Undirected<TCargo, TSpec> >& g,
+        TVertexDescriptor source,
+        TVertexDescriptor target)
 {
     SEQAN_CHECKPOINT
     SEQAN_ASSERT_NEQ(source, target);
@@ -430,16 +430,16 @@ addEdge(Graph<Undirected<TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TCargo, typename TSpec, typename TVertexDescriptor, typename TCargo2> 
-inline typename EdgeDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type 
-addEdge(Graph<Undirected<TCargo, TSpec> >& g, 
-        TVertexDescriptor const source, 
+template<typename TCargo, typename TSpec, typename TVertexDescriptor, typename TCargo2>
+inline typename EdgeDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type
+addEdge(Graph<Undirected<TCargo, TSpec> >& g,
+        TVertexDescriptor const source,
         TVertexDescriptor const target,
-        TCargo2 const cargo) 
+        TCargo2 const cargo)
 {
     SEQAN_CHECKPOINT
     SEQAN_ASSERT_NEQ(source, target);
-    
+
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     TEdgeDescriptor e = addEdge(g,source,target);
@@ -450,15 +450,15 @@ addEdge(Graph<Undirected<TCargo, TSpec> >& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
-inline void 
-removeEdge(Graph<Undirected<TCargo, TSpec> >& g, 
-           TVertexDescriptor const source, 
-           TVertexDescriptor const target) 
+inline void
+removeEdge(Graph<Undirected<TCargo, TSpec> >& g,
+           TVertexDescriptor const source,
+           TVertexDescriptor const target)
 {
     SEQAN_CHECKPOINT;
     SEQAN_ASSERT(idInUse(g.data_id_managerV, source));
     SEQAN_ASSERT(idInUse(g.data_id_managerV, target));
-    
+
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename EdgeType<TGraph>::Type TEdgeStump;
 
@@ -478,7 +478,7 @@ removeEdge(Graph<Undirected<TCargo, TSpec> >& g,
             current = getNextT(current);
         }
     }
-    
+
     // Not found?
     if (current == (TEdgeStump*) 0) return;
 
@@ -499,98 +499,7 @@ removeEdge(Graph<Undirected<TCargo, TSpec> >& g,
         }
     }
 
-    
-    // Relink the next pointer of source predecessor
-    if (predSource != (TEdgeStump*) 0) {
-        if (source != (TVertexDescriptor) getTarget(current)) {
-            if (source != (TVertexDescriptor) getTarget(predSource)) assignNextS(predSource, getNextS(current));
-            else assignNextT(predSource, getNextS(current));
-        } else {
-            if (source != (TVertexDescriptor) getTarget(predSource)) assignNextS(predSource, getNextT(current));
-            else assignNextT(predSource, getNextT(current));
-        }
-    }
-    else {
-        if (source != (TVertexDescriptor) getTarget(current)) value(g.data_vertex, source) = getNextS(current);
-        else value(g.data_vertex, source) = getNextT(current);
-    }
 
-    // Relink the next pointer of target predecessor
-    if (predTarget != (TEdgeStump*) 0) {
-        if (target != (TVertexDescriptor) getTarget(current)) {
-            if (target != (TVertexDescriptor) getTarget(predTarget)) assignNextS(predTarget, getNextS(current));
-            else assignNextT(predTarget, getNextS(current));
-        } else {
-            if (target != (TVertexDescriptor) getTarget(predTarget)) assignNextS(predTarget, getNextT(current));
-            else assignNextT(predTarget, getNextT(current));
-        }
-    }
-    else {
-        if (target != (TVertexDescriptor) getTarget(current)) value(g.data_vertex, target) = getNextS(current);
-        else value(g.data_vertex, target) = getNextT(current);
-    }
-
-    // Deallocate
-    releaseId(g.data_id_managerE, _getId(current));
-    valueDestruct(current);
-    deallocate(g.data_allocator, current, 1);    
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-template<typename TCargo, typename TSpec, typename TEdgeDescriptor>
-inline void 
-removeEdge(Graph<Undirected<TCargo, TSpec> >& g,
-           TEdgeDescriptor const edge)
-{
-    
-    SEQAN_CHECKPOINT
-    SEQAN_ASSERT(idInUse(g.data_id_managerV, sourceVertex(g,edge)));
-    SEQAN_ASSERT(idInUse(g.data_id_managerV, targetVertex(g,edge)));
-    typedef Graph<Undirected<TCargo, TSpec> > TGraph;
-    typedef typename EdgeType<TGraph>::Type TEdgeStump;
-    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
-    TVertexDescriptor source = sourceVertex(g,edge);
-    TVertexDescriptor target = targetVertex(g,edge);
-
-    // Find edge and source predecessor
-    TEdgeStump* predSource = 0;
-    TEdgeStump* current = g.data_vertex[source];
-    while(current != (TEdgeStump*) 0) {
-        TVertexDescriptor adjV = (TVertexDescriptor) getTarget(current);
-        if (adjV != source) {
-            if ((adjV == target) && (current == edge)) break;
-            predSource = current;
-            current = getNextS(current);
-        } else {
-            adjV = (TVertexDescriptor) getSource(current);
-            if ((adjV == target) && (current == edge)) break;
-            predSource = current;
-            current = getNextT(current);
-        }
-    }
-    
-    // Not found?
-    if (current == (TEdgeStump*) 0) return;
-
-    // Find edge and target predecessor
-    TEdgeStump* predTarget = 0;
-    current = g.data_vertex[target];
-    while(current != (TEdgeStump*) 0) {
-        TVertexDescriptor adjV = (TVertexDescriptor) getTarget(current);
-        if (adjV != target) {
-            if ((adjV == source) && (current == edge)) break;
-            predTarget = current;
-            current = getNextS(current);
-        } else {
-            adjV = (TVertexDescriptor) getSource(current);
-            if ((adjV == source) && (current == edge)) break;
-            predTarget = current;
-            current = getNextT(current);
-        }
-    }
-
-    
     // Relink the next pointer of source predecessor
     if (predSource != (TEdgeStump*) 0) {
         if (source != (TVertexDescriptor) getTarget(current)) {
@@ -629,10 +538,101 @@ removeEdge(Graph<Undirected<TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
-inline void 
-removeOutEdges(Graph<Undirected<TCargo, TSpec> >& g, 
-               TVertexDescriptor const v) 
+template<typename TCargo, typename TSpec, typename TEdgeDescriptor>
+inline void
+removeEdge(Graph<Undirected<TCargo, TSpec> >& g,
+           TEdgeDescriptor const edge)
+{
+
+    SEQAN_CHECKPOINT
+    SEQAN_ASSERT(idInUse(g.data_id_managerV, sourceVertex(g,edge)));
+    SEQAN_ASSERT(idInUse(g.data_id_managerV, targetVertex(g,edge)));
+    typedef Graph<Undirected<TCargo, TSpec> > TGraph;
+    typedef typename EdgeType<TGraph>::Type TEdgeStump;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    TVertexDescriptor source = sourceVertex(g,edge);
+    TVertexDescriptor target = targetVertex(g,edge);
+
+    // Find edge and source predecessor
+    TEdgeStump* predSource = 0;
+    TEdgeStump* current = g.data_vertex[source];
+    while(current != (TEdgeStump*) 0) {
+        TVertexDescriptor adjV = (TVertexDescriptor) getTarget(current);
+        if (adjV != source) {
+            if ((adjV == target) && (current == edge)) break;
+            predSource = current;
+            current = getNextS(current);
+        } else {
+            adjV = (TVertexDescriptor) getSource(current);
+            if ((adjV == target) && (current == edge)) break;
+            predSource = current;
+            current = getNextT(current);
+        }
+    }
+
+    // Not found?
+    if (current == (TEdgeStump*) 0) return;
+
+    // Find edge and target predecessor
+    TEdgeStump* predTarget = 0;
+    current = g.data_vertex[target];
+    while(current != (TEdgeStump*) 0) {
+        TVertexDescriptor adjV = (TVertexDescriptor) getTarget(current);
+        if (adjV != target) {
+            if ((adjV == source) && (current == edge)) break;
+            predTarget = current;
+            current = getNextS(current);
+        } else {
+            adjV = (TVertexDescriptor) getSource(current);
+            if ((adjV == source) && (current == edge)) break;
+            predTarget = current;
+            current = getNextT(current);
+        }
+    }
+
+
+    // Relink the next pointer of source predecessor
+    if (predSource != (TEdgeStump*) 0) {
+        if (source != (TVertexDescriptor) getTarget(current)) {
+            if (source != (TVertexDescriptor) getTarget(predSource)) assignNextS(predSource, getNextS(current));
+            else assignNextT(predSource, getNextS(current));
+        } else {
+            if (source != (TVertexDescriptor) getTarget(predSource)) assignNextS(predSource, getNextT(current));
+            else assignNextT(predSource, getNextT(current));
+        }
+    }
+    else {
+        if (source != (TVertexDescriptor) getTarget(current)) value(g.data_vertex, source) = getNextS(current);
+        else value(g.data_vertex, source) = getNextT(current);
+    }
+
+    // Relink the next pointer of target predecessor
+    if (predTarget != (TEdgeStump*) 0) {
+        if (target != (TVertexDescriptor) getTarget(current)) {
+            if (target != (TVertexDescriptor) getTarget(predTarget)) assignNextS(predTarget, getNextS(current));
+            else assignNextT(predTarget, getNextS(current));
+        } else {
+            if (target != (TVertexDescriptor) getTarget(predTarget)) assignNextS(predTarget, getNextT(current));
+            else assignNextT(predTarget, getNextT(current));
+        }
+    }
+    else {
+        if (target != (TVertexDescriptor) getTarget(current)) value(g.data_vertex, target) = getNextS(current);
+        else value(g.data_vertex, target) = getNextT(current);
+    }
+
+    // Deallocate
+    releaseId(g.data_id_managerE, _getId(current));
+    valueDestruct(current);
+    deallocate(g.data_allocator, current, 1);
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+template<typename TCargo, typename TSpec, typename TVertexDescriptor>
+inline void
+removeOutEdges(Graph<Undirected<TCargo, TSpec> >& g,
+               TVertexDescriptor const v)
 {
     SEQAN_CHECKPOINT
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
@@ -647,10 +647,10 @@ removeOutEdges(Graph<Undirected<TCargo, TSpec> >& g,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TCargo, typename TSpec, typename TVertexDescriptor> 
-inline void 
-removeInEdges(Graph<Undirected<TCargo, TSpec> >& g, 
-               TVertexDescriptor const v) 
+template<typename TCargo, typename TSpec, typename TVertexDescriptor>
+inline void
+removeInEdges(Graph<Undirected<TCargo, TSpec> >& g,
+               TVertexDescriptor const v)
 {
     SEQAN_CHECKPOINT
     removeOutEdges(g,v);
@@ -659,9 +659,9 @@ removeInEdges(Graph<Undirected<TCargo, TSpec> >& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo, typename TSpec, typename TEdgeDescriptor>
-inline typename VertexDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type 
+inline typename VertexDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type
 targetVertex(Graph<Undirected<TCargo, TSpec> > const&,
-             TEdgeDescriptor const edge) 
+             TEdgeDescriptor const edge)
 {
     SEQAN_CHECKPOINT
     return getTarget(edge);
@@ -670,9 +670,9 @@ targetVertex(Graph<Undirected<TCargo, TSpec> > const&,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo, typename TSpec, typename TEdgeDescriptor>
-inline typename VertexDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type 
+inline typename VertexDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type
 sourceVertex(Graph<Undirected<TCargo, TSpec> > const&,
-             TEdgeDescriptor const edge) 
+             TEdgeDescriptor const edge)
 {
     SEQAN_CHECKPOINT
     return getSource(edge);
@@ -683,8 +683,8 @@ sourceVertex(Graph<Undirected<TCargo, TSpec> > const&,
 
 template<typename TCargo, typename TSpec, typename TMatrix>
 inline void
-getAdjacencyMatrix(Graph<Undirected<TCargo, TSpec> > const& g, 
-                   TMatrix& mat) 
+getAdjacencyMatrix(Graph<Undirected<TCargo, TSpec> > const& g,
+                   TMatrix& mat)
 {
     SEQAN_CHECKPOINT
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
@@ -718,7 +718,7 @@ getAdjacencyMatrix(Graph<Undirected<TCargo, TSpec> > const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo, typename TSpec, typename TVertexDescriptor>
-inline typename EdgeDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type 
+inline typename EdgeDescriptor<Graph<Undirected<TCargo, TSpec> > >::Type
 findEdge(Graph<Undirected<TCargo, TSpec> > const& g,
          TVertexDescriptor const v,
          TVertexDescriptor const w)
@@ -726,10 +726,10 @@ findEdge(Graph<Undirected<TCargo, TSpec> > const& g,
     SEQAN_CHECKPOINT;
     SEQAN_ASSERT(idInUse(g.data_id_managerV, v));
     SEQAN_ASSERT(idInUse(g.data_id_managerV, w));
-    
+
     typedef Graph<Undirected<TCargo, TSpec> > TGraph;
     typedef typename EdgeType<TGraph>::Type TEdgeStump;
-    
+
     TEdgeStump* current = g.data_vertex[v];
     while(current != (TEdgeStump*) 0) {
         TVertexDescriptor adjV = getTarget(current);

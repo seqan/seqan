@@ -62,7 +62,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     template < typename TTextInput, typename TInvertedSAInput, typename TDest >
-    static void _lcpProcess(TTextInput &textIn, TInvertedSAInput &invertedSAIn, 
+    static void _lcpProcess(TTextInput &textIn, TInvertedSAInput &invertedSAIn,
                             TDest &dest, LcpConfig conf)
     {
         typedef typename Value<TTextInput>::Type            TValue;
@@ -87,7 +87,7 @@ namespace SEQAN_NAMESPACE_MAIN
         //TSize _olaps = 0;
         //char *seenISA = new bool[n];
         //memset(seenISA, 0, length(invertedSAIn));
-        
+
         #ifdef SEQAN_DEBUG_INDEX
             TSize n = rest;
             TSize lcpMax = 0, lcpAvrg = 0, lcpNumer = 0, sigma = 1;    // for lcpMax, lcpMean, |Sigma|
@@ -213,8 +213,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template < typename TTextInput, typename TLimitsString, typename TInvertedSAInput, typename TDest >
     static void _lcpProcessMulti(
-        TTextInput &textIn, TLimitsString const &limits, 
-        TInvertedSAInput &invertedSAIn, 
+        TTextInput &textIn, TLimitsString const &limits,
+        TInvertedSAInput &invertedSAIn,
         TDest &dest, LcpConfig conf)
     {
         typedef typename Value<TTextInput>::Type            TValue;
@@ -330,10 +330,10 @@ namespace SEQAN_NAMESPACE_MAIN
                     }
                 }
 
-                if (out.i2) 
+                if (out.i2)
                     --out.i2;                               // if (h > 0) h = h - 1
-                else 
-                    ++textIn; 
+                else
+                    ++textIn;
 
                 ++invertedSAIn; //++_pops;
             }
@@ -372,8 +372,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template < typename TTextInput, typename TLimitsString, typename TInvertedSAInput, typename TDest >
     static void _lcpProcessMulti(
-        TTextInput &textIn, TLimitsString const &limits, 
-        TInvertedSAInput &invertedSAIn, 
+        TTextInput &textIn, TLimitsString const &limits,
+        TInvertedSAInput &invertedSAIn,
         TDest &dest)
     {
         _lcpProcessMulti(textIn, limits, invertedSAIn, dest, LcpConfig());

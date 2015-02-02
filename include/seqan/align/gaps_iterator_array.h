@@ -281,7 +281,7 @@ inline bool
 goPrevious(Iter<TGaps, GapsIterator<ArrayGaps> > & it)
 {
     typedef typename Position<TGaps>::Type TGapsPos;
-    
+
     if (atBegin(it))  // Handle case of being at the beginning of the gaps.
         return false;
 
@@ -303,7 +303,7 @@ goPrevious(Iter<TGaps, GapsIterator<ArrayGaps> > & it)
         it._sourcePosition -= 1;
     // Adjust clipped view position.
     it._unclippedViewPosition -= 1;
-    
+
     return true;
 }
 
@@ -487,7 +487,7 @@ insertGaps(Iter<TGaps, GapsIterator<ArrayGaps> > const & it,
 {
     if (count == TCount(0))
         return;  // Do nothing!
-    
+
     typedef typename TGaps::TArray_          TArray;
     typedef typename Position<TArray>::Type  TArrayPos;
 

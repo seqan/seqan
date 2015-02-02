@@ -49,12 +49,12 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Exact string matching using bit parallelism.
  *
  * The Shift-And algorithm is applicable to search small patterns in texts using a small alphabet.
- * 
+ *
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, ShiftAnd>;
- * 
+ *
  * @tparam TNeedle The needle type. Types: String
- * 
+ *
  * The types of the needle and the haystack have to match.
  */
 
@@ -74,7 +74,7 @@ public:
     String<TWord> bitMasks;            // Look up table for each character in the alphabet (called B in "Navarro")
     String<TWord> prefSufMatch;        // Set of all the prefixes of needle that match a suffix of haystack (called D in "Navarro")
     TWord needleLength;                // e.g., needleLength=33 --> blockCount=2 (iff w=32 bits)
-    TWord blockCount;                // #unsigned ints required to store needle    
+    TWord blockCount;                // #unsigned ints required to store needle
 
 //____________________________________________________________________________
 
@@ -96,18 +96,18 @@ public:
 
 template <typename TNeedle, typename TNeedle2>
 inline void
-setHost(Pattern<TNeedle, ShiftAnd> & me, TNeedle2 const & needle) 
+setHost(Pattern<TNeedle, ShiftAnd> & me, TNeedle2 const & needle)
 {
     SEQAN_CHECKPOINT
     typedef unsigned int TWord;
     typedef typename Value<TNeedle>::Type TValue;
-    
+
     me.needleLength = length(needle);
     if (me.needleLength < 1)
         me.blockCount = 1;
     else
         me.blockCount = (me.needleLength - 1) / BitsPerValue<TWord>::VALUE + 1;
-    
+
     clear(me.bitMasks);
     resize(me.bitMasks, me.blockCount * ValueSize<TValue>::VALUE, 0, Exact());
 
@@ -139,7 +139,7 @@ setHost(Pattern<TNeedle, ShiftAnd> & me, TNeedle2 const & needle)
 }
 
 template <typename TNeedle, typename TNeedle2>
-inline void 
+inline void
 setHost(Pattern<TNeedle, ShiftAnd> & me, TNeedle2 & needle)
 {
     setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
@@ -199,8 +199,8 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 
 template <typename TNeedle>
-inline void 
-_patternInit (Pattern<TNeedle, ShiftAnd> & me) 
+inline void
+_patternInit (Pattern<TNeedle, ShiftAnd> & me)
 {
 SEQAN_CHECKPOINT
     clear(me.prefSufMatch);
@@ -210,22 +210,22 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 
 template <typename TFinder, typename TNeedle>
-inline bool 
-_findShiftAndSmallNeedle(TFinder & finder, Pattern<TNeedle, ShiftAnd> & me) 
+inline bool
+_findShiftAndSmallNeedle(TFinder & finder, Pattern<TNeedle, ShiftAnd> & me)
 {
 SEQAN_CHECKPOINT
     typedef typename Value<TNeedle>::Type TValue;
     typedef unsigned int TWord;
     TWord compare = (TWord)1 << (me.needleLength - 1);
-    while (!atEnd(finder)) 
+    while (!atEnd(finder))
     {
         TWord pos = ordValue(convert<TValue>(getValue(finder)));
         me.prefSufMatch[0] = ((me.prefSufMatch[0] << 1) | (TWord)1) & me.bitMasks[pos];
-        if ((me.prefSufMatch[0] & compare) != 0) 
+        if ((me.prefSufMatch[0] & compare) != 0)
         {
             _setFinderEnd(finder);
             finder -= me.needleLength - 1;
-            return true; 
+            return true;
         }
         goNext(finder);
     }
@@ -233,32 +233,32 @@ SEQAN_CHECKPOINT
 }
 
 template <typename TFinder, typename TNeedle>
-inline bool 
-_findShiftAndLargeNeedle(TFinder & finder, Pattern<TNeedle, ShiftAnd> & me) 
+inline bool
+_findShiftAndLargeNeedle(TFinder & finder, Pattern<TNeedle, ShiftAnd> & me)
 {
 SEQAN_CHECKPOINT
     typedef typename Value<TNeedle>::Type TValue;
     typedef unsigned int TWord;
-    
+
     TWord compare = (TWord)1 << ((me.needleLength - 1) % BitsPerValue<TWord>::VALUE);
-    while (!atEnd(finder)) 
+    while (!atEnd(finder))
     {
         TWord pos = ordValue(convert<TValue>(getValue(finder)));
         TWord carry = 1;
         for(TWord block = 0; block < me.blockCount; ++block)
         {
-            bool newCarry = (me.prefSufMatch[block] & ((TWord)1<< (BitsPerValue<TWord>::VALUE - 1))) != 0; 
+            bool newCarry = (me.prefSufMatch[block] & ((TWord)1<< (BitsPerValue<TWord>::VALUE - 1))) != 0;
             me.prefSufMatch[block] <<= 1;
             me.prefSufMatch[block] |= carry;
             carry = newCarry;
         }
         for(TWord block = 0; block < me.blockCount; ++block)
             me.prefSufMatch[block] &= me.bitMasks[me.blockCount * pos + block];
-        if ((me.prefSufMatch[me.blockCount-1] & compare) != 0) 
+        if ((me.prefSufMatch[me.blockCount-1] & compare) != 0)
         {
             _setFinderEnd(finder);
             finder -= me.needleLength - 1;
-            return true; 
+            return true;
         }
 
         /*

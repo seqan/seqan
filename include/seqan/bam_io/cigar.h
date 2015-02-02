@@ -462,7 +462,7 @@ struct BamAlignFunctorSemiGlobalGotoh
     BamAlignFunctorSemiGlobalGotoh(Score<int> score_) :
         score(score_)
     {}
-    
+
     template <typename TGaps1, typename TGaps2, typename TErrors>
     inline int
     align(TGaps1 &gaps1, TGaps2 &gaps2, TErrors maxErrors)
@@ -493,7 +493,7 @@ _alignAndGetCigarString(
 
     clear(functor.contigAnchors);
     clear(functor.readAnchors);
-    
+
     TContigGaps contigGaps(contigInfix, functor.contigAnchors);
     TReadGaps readGaps(fwdReadSeq, functor.readAnchors);
 
@@ -521,7 +521,7 @@ alignAndGetCigarString(
     typedef typename Infix<TContigSeq const>::Type  TContigInfix;
 
     TContigInfix contigInfix;
-    
+
     if (alignedRead.beginPos <= alignedRead.endPos)
     {
         contigInfix = infix(contig.seq, alignedRead.beginPos, alignedRead.endPos);

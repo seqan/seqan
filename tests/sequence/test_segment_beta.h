@@ -134,12 +134,12 @@ typedef seqan::TagList<
             seqan::TagList<short, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
             seqan::TagList<char, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::SuffixSegment> > >, seqan::TagList<
             seqan::TagList<CountingChar, seqan::TagList<seqan::Alloc<>, seqan::TagList<seqan::SuffixSegment> > >//, seqan::TagList<
-//         > > > > > > > > > > > > 
+//         > > > > > > > > > > > >
         > > > > > > > > > > > >
-//         > > > > > > > > > 
+//         > > > > > > > > >
         > > > > > > > > > > > >
         > > > > > > > > > > > >
-//         > > > 
+//         > > >
         > > > > > > > > > > > >
         SegmentTestTypes;
 
@@ -343,7 +343,7 @@ SEQAN_TYPED_TEST(SegmentTestCommon, Constructible)
 
     typename TestFixture::TSegment seg;
     testSegmentConstructible(seg);
-    
+
     typename TestFixture::TSegment const constSeg;
     testSegmentConstructible(constSeg);
 
@@ -437,7 +437,7 @@ void testSuffixCopyConstructible(TSegment & /*Tag*/)
         SEQAN_ASSERT_EQ(suffixSeg, suffixSegCopy);
     }
 }
-    
+
 template <typename TString>
 void testSegmentCopyConstructible(Segment<TString, PrefixSegment> & seg)
 {
@@ -497,7 +497,7 @@ SEQAN_TYPED_TEST(SegmentTestCommon, CopyConstructible)
 
     typename TestFixture::TSegment seg;
     testSegmentCopyConstructible(seg);
-    
+
     typename TestFixture::TSegment const constSeg;
     testSegmentCopyConstructible(constSeg);
 
@@ -540,7 +540,7 @@ SEQAN_TYPED_TEST(SegmentTestCommon, DefaultConstructible)
 
     typename TestFixture::TSegment seg;
     testSegmentDefaultConstructible(seg);
-    
+
     typename TestFixture::TSegment const constSeg;
     testSegmentDefaultConstructible(constSeg);
 
@@ -603,7 +603,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Less)
 
     typename TestFixture::TString seg;
     testSegmentLess(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentLess(constSeg);
 
@@ -662,7 +662,7 @@ SEQAN_TYPED_TEST(SegmentTestString, LessEqual)
 
     typename TestFixture::TString seg;
     testSegmentLessEqual(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentLessEqual(constSeg);
 
@@ -721,7 +721,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Greater)
 
     typename TestFixture::TString seg;
     testSegmentGreater(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentGreater(constSeg);
 
@@ -780,7 +780,7 @@ SEQAN_TYPED_TEST(SegmentTestString, GreaterEqual)
 
     typename TestFixture::TString seg;
     testSegmentGreaterEqual(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentGreaterEqual(constSeg);
 
@@ -839,7 +839,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Equal)
 
     typename TestFixture::TString seg;
     testSegmentEqual(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentEqual(constSeg);
 
@@ -898,7 +898,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Unequal)
 
     typename TestFixture::TString seg;
     testSegmentUnequal(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentUnequal(constSeg);
 
@@ -910,13 +910,13 @@ SEQAN_TYPED_TEST(SegmentTestString, Unequal)
 // void testSegmentAssignable(TString & /*Tag*/)
 // {
 //     using namespace seqan;
-// 
+//
 //     typedef Segment<TString, PrefixSegment> TPrefix;
 //     typedef Segment<TString, InfixSegment> TInfix;
 //     typedef Segment<TString, SuffixSegment> TSuffix;
-// 
+//
 //     TString string("ACGTACGT");
-// 
+//
 //     // Test assign() function.
 //     {
 //         // Test with default segment (the segment has no host).
@@ -931,12 +931,12 @@ SEQAN_TYPED_TEST(SegmentTestString, Unequal)
 //             TInfix infixSeg2(string, 0, 5);
 //             assign(infixSeg1, infixSeg2);
 //             SEQAN_ASSERT_EQ(infixSeg1, infixSeg2);
-// 
+//
 //             TInfix infixSeg3;
 //             TPrefix prefixSeg(string, 5);
 //             assign(infixSeg3, prefixSeg);
 //             SEQAN_ASSERT_EQ(infixSeg3, prefixSeg);
-// 
+//
 //             TInfix infixSeg4;
 //             TSuffix suffixSeg(string, 3);
 //             assign(infixSeg4, suffixSeg);
@@ -972,7 +972,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Unequal)
 //             SEQAN_ASSERT_EQ(suffixSeg1, suffixSeg2);
 //         }
 //     }
-// 
+//
 //     // Test operator=()
 //     {
 //         // Test with default segment (the segment has no host).
@@ -987,12 +987,12 @@ SEQAN_TYPED_TEST(SegmentTestString, Unequal)
 //             TInfix infixSeg2(string, 0, 5);
 //             infixSeg1 = infixSeg2;
 //             SEQAN_ASSERT_EQ(infixSeg1, infixSeg2);
-// 
+//
 //             TInfix infixSeg3;
 //             TPrefix prefixSeg(string, 5);
 //             infixSeg3 = prefixSeg;
 //             SEQAN_ASSERT_EQ(infixSeg3, prefixSeg);
-// 
+//
 //             TInfix infixSeg4;
 //             TSuffix suffixSeg(string, 3);
 //             infixSeg4 = suffixSeg;
@@ -1029,24 +1029,24 @@ SEQAN_TYPED_TEST(SegmentTestString, Unequal)
 //         }
 //     }
 // }
-// 
+//
 // // Test of assignValue().
 // template <typename TString>
 // void testSegmentAssignValue(TString & /*Tag*/)
 // {
 //     using namespace seqan;
-// 
+//
 //     typedef typename Value<TString>::Type TValue;
 //     typedef Segment<TString, PrefixSegment> TPrefix;
 //     typedef Segment<TString, InfixSegment> TInfix;
 //     typedef Segment<TString, SuffixSegment> TSuffix;
-// 
+//
 //     TString string("ACGTACGTACGT");
-// 
+//
 //     TPrefix prefixSeg(string, 4);
 //     TInfix infixSeg(string, 4, 8);
 //     TSuffix suffixSeg(string, 8);
-// 
+//
 //     // TODO (singer): assignValue for segments not in docu.
 //     assignValue(prefixSeg, 0, TValue('G'));
 //     assignValue(infixSeg, 0, TValue('G'));
@@ -1055,7 +1055,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Unequal)
 //     SEQAN_ASSERT_EQ(string[4], TValue('G'));
 //     SEQAN_ASSERT_EQ(string[8], TValue('G'));
 // }
-// 
+//
 // // We need two back() tests, since back() returns a reference or a copy.
 // // We check whether we can modify the reference.
 // // Test of back() for non const strings.
@@ -1063,18 +1063,18 @@ SEQAN_TYPED_TEST(SegmentTestString, Unequal)
 // void testSegmentBack(TString & /*Tag*/)
 // {
 //     using namespace seqan;
-// 
+//
 //     typedef typename Value<TString>::Type TValue;
 //     typedef Segment<TString, PrefixSegment> TPrefix;
 //     typedef Segment<TString, InfixSegment> TInfix;
 //     typedef Segment<TString, SuffixSegment> TSuffix;
-// 
+//
 //     TString string("AAAAAAAAAA");
-// 
+//
 //     TPrefix prefixSeg(string, 3);
 //     TInfix infixSeg(string, 3, 8);
 //     TSuffix suffixSeg(string, 8);
-// 
+//
 //     // val is a reference in contrast to the const version of back().
 //     TValue & preVal = back(prefixSeg);
 //     preVal = 'C';
@@ -1117,7 +1117,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Back)
 
     typename TestFixture::TString seg;
     testSegmentBack(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentBack(constSeg);
 
@@ -1179,7 +1179,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Begin)
 
     typename TestFixture::TString seg;
     testSegmentBegin(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentBegin(constSeg);
 
@@ -1211,7 +1211,7 @@ SEQAN_TYPED_TEST(SegmentTestString, BeginPosition)
 
     typename TestFixture::TString seg;
     testSegmentBeginPosition(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentBeginPosition(constSeg);
 
@@ -1226,7 +1226,7 @@ void testSegmentClear(TString & /*Tag*/)
 //     typedef Segment<TString, PrefixSegment> TPrefix;
 //     typedef Segment<TString, InfixSegment> TInfix;
 //     typedef Segment<TString, SuffixSegment> TSuffix;
-// 
+//
 //     // Since clear does not have to free anything it is only
 //     // necessary that the code compiles.
 //     // TODO (singer): at the moment clear erases parts of the host.
@@ -1301,7 +1301,7 @@ SEQAN_TYPED_TEST(SegmentTestString, End)
 
     typename TestFixture::TString seg;
     testSegmentEnd(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentEnd(constSeg);
 
@@ -1334,7 +1334,7 @@ SEQAN_TYPED_TEST(SegmentTestString, EndPosition)
 
     typename TestFixture::TString seg;
     testSegmentEndPosition(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentEndPosition(constSeg);
 
@@ -1395,7 +1395,7 @@ void testSegmentFront(TString const & /*Tag*/)
     TValue suffVal = front(suffixSeg);
     SEQAN_ASSERT_EQ(suffVal, 'T');
 }
-  
+
 // TODO(singer)
 template <typename TValue>
 void testSegmentFront(String<TValue, Packed<> > & /*Tag*/) {}
@@ -1408,7 +1408,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Front)
 
     typename TestFixture::TString seg;
     testSegmentFront(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentFront(constSeg);
 
@@ -1448,7 +1448,7 @@ SEQAN_TYPED_TEST(SegmentTestString, GetValue)
 
     typename TestFixture::TString seg;
     testSegmentGetValue(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentGetValue(constSeg);
 
@@ -1518,7 +1518,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Iter)
 
     typename TestFixture::TString seg;
     testSegmentIter(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentIter(constSeg);
 
@@ -1551,7 +1551,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Length)
 
     typename TestFixture::TString seg;
     testSegmentLength(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentLength(constSeg);
 
@@ -1564,17 +1564,17 @@ template <typename TString>
 void testSegmentMoveValue(TString & /*Tag*/)
 {
 //     using namespace seqan;
-// 
+//
 //     typedef typename Value<TString>::Type TValue;
 //     typedef Segment<TString, PrefixSegment> TPrefix;
 //     typedef Segment<TString, InfixSegment> TInfix;
 //     typedef Segment<TString, SuffixSegment> TSuffix;
-// 
+//
 //     TString string("AAAAAAAAAAAA");
 //     TPrefix prefixSeg(string, 4);
 //     TInfix infixSeg(string, 4, 8);
 //     TSuffix suffixSeg(string, 8);
-// 
+//
 //     moveValue(prefixSeg, 3, 'C');
 //     moveValue(infixSeg, 1, 'C');
 //     moveValue(suffixSeg, 3, 'C');
@@ -1587,7 +1587,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Move)
 
     typename TestFixture::TString seg;
     testSegmentMoveValue(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentMoveValue(constSeg);
 
@@ -1659,13 +1659,13 @@ void testSegmentReplace(TString & /*Tag*/)
 SEQAN_TYPED_TEST(SegmentTestString, Replace)
 {
 //     CountingChar::clear();
-// 
+//
 //     typename TestFixture::TString seg;
 //     testSegmentReplace(seg);
-//     
+//
 //     typename TestFixture::TString const constSeg;
 //     testSegmentReplace(constSeg);
-// 
+//
 //     testConstructDeconstruct(typename Value<typename TestFixture::TString>::Type());
 }
 
@@ -1699,7 +1699,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Resize)
 
     typename TestFixture::TString seg;
     testSegmentResize(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentResize(constSeg);
 
@@ -1750,7 +1750,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Swap)
 
     typename TestFixture::TString seg;
     testSegmentSwap(seg);
-    
+
     typename TestFixture::TString const constSeg;
     testSegmentSwap(constSeg);
 
@@ -1797,11 +1797,11 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 
     typename TestFixture::TString seg;
     testSegmentValue(seg);
-    
+
     testConstructDeconstruct(typename Value<typename TestFixture::TString>::Type());
 }
 
-// 
+//
 // // --------------------------------------------------------------------------
 // // Testing Alloc Strings With Simple Types
 // // --------------------------------------------------------------------------
@@ -1829,7 +1829,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_char_constructible)
 // {
 //     using namespace seqan;
@@ -1854,7 +1854,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_short_constructible)
 // {
 //     using namespace seqan;
@@ -1879,7 +1879,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_counting_char_constructible)
 // {
 //     using namespace seqan;
@@ -1908,7 +1908,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-//     
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_dna_constructible)
 // {
 // // TODO (singer): Segmentation fault: 11
@@ -1934,7 +1934,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testInfixConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_char_constructible)
 // {
 // // TODO (singer): Segmentation fault: 11
@@ -1960,7 +1960,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testInfixConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_short_constructible)
 // {
 // // TODO (singer): Segmentation fault: 11
@@ -1986,7 +1986,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testInfixConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_counting_char_constructible)
 // {
 // // TODO (singer): Segmentation fault: 11
@@ -2016,7 +2016,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_dna_constructible)
 // {
 //     using namespace seqan;
@@ -2041,7 +2041,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_char_constructible)
 // {
 //     using namespace seqan;
@@ -2066,7 +2066,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_short_constructible)
 // {
 // //     using namespace seqan;
@@ -2091,7 +2091,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testInfixConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_dna_constructible)
 // {
 //     using namespace seqan;
@@ -2116,7 +2116,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_char_constructible)
 // {
 //     using namespace seqan;
@@ -2141,7 +2141,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_short_constructible)
 // {
 //     using namespace seqan;
@@ -2166,7 +2166,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_counting_char_constructible)
 // {
 //     using namespace seqan;
@@ -2195,7 +2195,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_dna_constructible)
 // {
 //     using namespace seqan;
@@ -2220,7 +2220,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_char_constructible)
 // {
 //     using namespace seqan;
@@ -2245,7 +2245,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_short_constructible)
 // {
 //     using namespace seqan;
@@ -2270,7 +2270,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_counting_char_constructible)
 // {
 //     using namespace seqan;
@@ -2299,7 +2299,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_dna_constructible)
 // {
 //     using namespace seqan;
@@ -2324,7 +2324,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_char_constructible)
 // {
 //     using namespace seqan;
@@ -2349,7 +2349,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_short_constructible)
 // {
 //     using namespace seqan;
@@ -2374,7 +2374,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_counting_char_constructible)
 // {
 //     using namespace seqan;
@@ -2403,7 +2403,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_infix_char_constructible)
 // {
 // //     using namespace seqan;
@@ -2429,7 +2429,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //     }
 // }
 // //_______________________________________________________________________________
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_dna_constructible)
 // {
 //     using namespace seqan;
@@ -2454,7 +2454,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_char_constructible)
 // {
 //     using namespace seqan;
@@ -2479,7 +2479,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_short_constructible)
 // {
 //     using namespace seqan;
@@ -2504,7 +2504,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_counting_char_constructible)
 // {
 //     using namespace seqan;
@@ -2533,7 +2533,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-//     
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_dna_constructible)
 // {
 // // TODO (singer): Segmentation fault: 11
@@ -2559,7 +2559,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testPrefixConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_char_constructible)
 // {
 // // TODO (singer): Segmentation fault: 11
@@ -2585,7 +2585,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testPrefixConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_short_constructible)
 // {
 // // TODO (singer): Segmentation fault: 11
@@ -2611,7 +2611,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testPrefixConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_counting_char_constructible)
 // {
 // // TODO (singer): Segmentation fault: 11
@@ -2641,7 +2641,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_dna_constructible)
 // {
 //     using namespace seqan;
@@ -2666,7 +2666,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_char_constructible)
 // {
 //     using namespace seqan;
@@ -2691,7 +2691,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_short_constructible)
 // {
 // //     using namespace seqan;
@@ -2716,7 +2716,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testPrefixConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_dna_constructible)
 // {
 //     using namespace seqan;
@@ -2741,7 +2741,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_char_constructible)
 // {
 //     using namespace seqan;
@@ -2766,7 +2766,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_short_constructible)
 // {
 //     using namespace seqan;
@@ -2791,7 +2791,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_counting_char_constructible)
 // {
 //     using namespace seqan;
@@ -2820,7 +2820,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_dna_constructible)
 // {
 //     using namespace seqan;
@@ -2845,7 +2845,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_char_constructible)
 // {
 //     using namespace seqan;
@@ -2870,7 +2870,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_short_constructible)
 // {
 //     using namespace seqan;
@@ -2895,7 +2895,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_counting_char_constructible)
 // {
 //     using namespace seqan;
@@ -2924,7 +2924,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_dna_constructible)
 // {
 //     using namespace seqan;
@@ -2949,7 +2949,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_char_constructible)
 // {
 //     using namespace seqan;
@@ -2974,7 +2974,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_short_constructible)
 // {
 //     using namespace seqan;
@@ -2999,7 +2999,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_counting_char_constructible)
 // {
 //     using namespace seqan;
@@ -3028,7 +3028,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_prefix_char_constructible)
 // {
 // //     using namespace seqan;
@@ -3053,9 +3053,9 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testPrefixConstructible(tag);
 // //     }
 // }
-// 
+//
 // //_______________________________________________________________________________
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_dna_constructible)
 // {
 //     using namespace seqan;
@@ -3080,7 +3080,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_char_constructible)
 // {
 //     using namespace seqan;
@@ -3105,7 +3105,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_short_constructible)
 // {
 //     using namespace seqan;
@@ -3130,7 +3130,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_counting_char_constructible)
 // {
 //     using namespace seqan;
@@ -3159,7 +3159,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-//     
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_dna_constructible)
 // {
 // // TODO (singer): Segmenatation fault: 11
@@ -3185,7 +3185,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSuffixConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_char_constructible)
 // {
 // // TODO (singer): Segmenatation fault: 11
@@ -3211,7 +3211,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSuffixConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_short_constructible)
 // {
 // // TODO (singer): Segmenatation fault: 11
@@ -3237,7 +3237,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSuffixConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_counting_char_constructible)
 // {
 // // TODO (singer): Segmenatation fault: 11
@@ -3267,7 +3267,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_dna_constructible)
 // {
 //     using namespace seqan;
@@ -3292,7 +3292,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_char_constructible)
 // {
 //     using namespace seqan;
@@ -3317,7 +3317,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_short_constructible)
 // {
 // //     using namespace seqan;
@@ -3342,7 +3342,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSuffixConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_dna_constructible)
 // {
 //     using namespace seqan;
@@ -3367,7 +3367,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_char_constructible)
 // {
 //     using namespace seqan;
@@ -3392,7 +3392,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_short_constructible)
 // {
 //     using namespace seqan;
@@ -3417,7 +3417,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_counting_char_constructible)
 // {
 //     using namespace seqan;
@@ -3446,7 +3446,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_dna_constructible)
 // {
 //     using namespace seqan;
@@ -3471,7 +3471,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_char_constructible)
 // {
 //     using namespace seqan;
@@ -3496,7 +3496,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_short_constructible)
 // {
 //     using namespace seqan;
@@ -3521,7 +3521,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_counting_char_constructible)
 // {
 //     using namespace seqan;
@@ -3550,7 +3550,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_dna_constructible)
 // {
 //     using namespace seqan;
@@ -3575,7 +3575,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_char_constructible)
 // {
 //     using namespace seqan;
@@ -3600,7 +3600,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_short_constructible)
 // {
 //     using namespace seqan;
@@ -3625,7 +3625,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_counting_char_constructible)
 // {
 //     using namespace seqan;
@@ -3654,7 +3654,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_suffix_char_constructible)
 // {
 // //     using namespace seqan;
@@ -3679,7 +3679,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSuffixConstructible(tag);
 // //     }
 // }
-// 
+//
 // //_______________________________________________________________________________
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_dna_copy_constructible)
 // {
@@ -3705,7 +3705,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -3730,7 +3730,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_short_copy_constructible)
 // {
 //     using namespace seqan;
@@ -3755,7 +3755,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_counting_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -3784,7 +3784,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-//     
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_dna_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -3810,7 +3810,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testInfixCopyConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_char_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -3836,7 +3836,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testInfixCopyConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_short_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -3862,7 +3862,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testInfixCopyConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_counting_char_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -3892,7 +3892,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_dna_copy_constructible)
 // {
 //     using namespace seqan;
@@ -3917,7 +3917,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -3942,7 +3942,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_short_copy_constructible)
 // {
 // // TODO (singer): Shoult short work or not? Comparison with Proxy is problem.
@@ -3968,7 +3968,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testInfixCopyConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_dna_copy_constructible)
 // {
 //     using namespace seqan;
@@ -3993,7 +3993,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4018,7 +4018,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_short_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4043,7 +4043,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_counting_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4072,7 +4072,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_dna_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4097,7 +4097,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4122,7 +4122,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_short_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4147,7 +4147,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_counting_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4176,7 +4176,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_dna_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4201,7 +4201,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4226,7 +4226,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_short_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4251,7 +4251,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testInfixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_counting_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4280,7 +4280,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_infix_char_copy_constructible)
 // {
 // //     using namespace seqan;
@@ -4306,7 +4306,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //     }
 // }
 // //_______________________________________________________________________________
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_dna_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4331,7 +4331,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4356,7 +4356,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_short_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4381,7 +4381,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_counting_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4410,7 +4410,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-//     
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_dna_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -4436,7 +4436,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testPrefixCopyConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_char_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -4462,7 +4462,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testPrefixCopyConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_short_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -4488,7 +4488,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testPrefixCopyConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_counting_char_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -4518,7 +4518,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_dna_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4543,7 +4543,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4568,7 +4568,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_short_copy_constructible)
 // {
 // // TODO (singer): Should short work. Comparison with proxy is the problem.
@@ -4594,7 +4594,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testPrefixCopyConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_dna_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4619,7 +4619,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4644,7 +4644,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_short_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4669,7 +4669,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_counting_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4698,7 +4698,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_dna_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4723,7 +4723,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4748,7 +4748,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_short_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4773,7 +4773,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_counting_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4802,7 +4802,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_dna_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4827,7 +4827,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4852,7 +4852,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_short_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4877,7 +4877,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testPrefixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_counting_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4906,7 +4906,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_prefix_char_copy_constructible)
 // {
 // //     using namespace seqan;
@@ -4931,9 +4931,9 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testPrefixCopyConstructible(tag);
 // //     }
 // }
-// 
+//
 // //_______________________________________________________________________________
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_dna_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4958,7 +4958,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -4983,7 +4983,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_short_copy_constructible)
 // {
 //     using namespace seqan;
@@ -5008,7 +5008,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_counting_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -5037,7 +5037,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-//     
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_dna_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -5063,7 +5063,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSuffixCopyConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_char_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -5089,7 +5089,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSuffixCopyConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_short_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -5115,7 +5115,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSuffixCopyConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_counting_char_copy_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -5145,7 +5145,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_dna_copy_constructible)
 // {
 //     using namespace seqan;
@@ -5170,7 +5170,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -5195,7 +5195,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_short_copy_constructible)
 // {
 // // TODO (singer): Should short work. Comparison with proxy is the problem.
@@ -5221,7 +5221,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSuffixCopyConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_dna_copy_constructible)
 // {
 //     using namespace seqan;
@@ -5246,7 +5246,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -5271,7 +5271,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_short_copy_constructible)
 // {
 //     using namespace seqan;
@@ -5296,7 +5296,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_counting_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -5325,7 +5325,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_dna_copy_constructible)
 // {
 //     using namespace seqan;
@@ -5350,7 +5350,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -5375,7 +5375,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_short_copy_constructible)
 // {
 //     using namespace seqan;
@@ -5400,7 +5400,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_counting_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -5429,7 +5429,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_dna_copy_constructible)
 // {
 //     using namespace seqan;
@@ -5454,7 +5454,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -5479,7 +5479,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_short_copy_constructible)
 // {
 //     using namespace seqan;
@@ -5504,7 +5504,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSuffixCopyConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_counting_char_copy_constructible)
 // {
 //     using namespace seqan;
@@ -5533,7 +5533,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_suffix_char_copy_constructible)
 // {
 // //     using namespace seqan;
@@ -5558,9 +5558,9 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSuffixCopyConstructible(tag);
 // //     }
 // }
-// 
+//
 // //_______________________________________________________________________________
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_dna_default_constructible)
 // {
 // // error: invalid operands to binary expression ('typename Iterator<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment>, typename DefaultGetIteratorSpec<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment> >::Type>::Type' (aka 'Iter<TSequence_, AdaptorIterator<TIterator_> >') and 'typename Iterator<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, typename DefaultGetIteratorSpec<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > > >::Type>::Type' (aka 'ExtStringFwdIterator<String<seqan::SimpleType<unsigned char, seqan::Dna_>, External<seqan::ExternalConfig<seqan::File<seqan::Async<void> >, 4194304, 2> > > >'))
@@ -5586,7 +5586,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_char_default_constructible)
 // {
 // // error: invalid operands to binary expression ('typename Iterator<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment>, typename DefaultGetIteratorSpec<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment> >::Type>::Type' (aka 'Iter<TSequence_, AdaptorIterator<TIterator_> >') and 'typename Iterator<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, typename DefaultGetIteratorSpec<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > > >::Type>::Type' (aka 'ExtStringFwdIterator<String<seqan::SimpleType<unsigned char, seqan::Dna_>, External<seqan::ExternalConfig<seqan::File<seqan::Async<void> >, 4194304, 2> > > >'))
@@ -5612,7 +5612,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_short_default_constructible)
 // {
 // // error: invalid operands to binary expression ('typename Iterator<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment>, typename DefaultGetIteratorSpec<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment> >::Type>::Type' (aka 'Iter<TSequence_, AdaptorIterator<TIterator_> >') and 'typename Iterator<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, typename DefaultGetIteratorSpec<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > > >::Type>::Type' (aka 'ExtStringFwdIterator<String<seqan::SimpleType<unsigned char, seqan::Dna_>, External<seqan::ExternalConfig<seqan::File<seqan::Async<void> >, 4194304, 2> > > >'))
@@ -5638,7 +5638,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_infix_counting_char_default_constructible)
 // {
 // // error: invalid operands to binary expression ('typename Iterator<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment>, typename DefaultGetIteratorSpec<Segment<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, InfixSegment> >::Type>::Type' (aka 'Iter<TSequence_, AdaptorIterator<TIterator_> >') and 'typename Iterator<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > >, typename DefaultGetIteratorSpec<String<SimpleType<unsigned char, Dna_>, External<ExternalConfig<File<Async<void> >, 4194304, 2> > > >::Type>::Type' (aka 'ExtStringFwdIterator<String<seqan::SimpleType<unsigned char, seqan::Dna_>, External<seqan::ExternalConfig<seqan::File<seqan::Async<void> >, 4194304, 2> > > >'))
@@ -5668,7 +5668,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // }
-//     
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -5694,7 +5694,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -5720,7 +5720,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -5746,7 +5746,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_infix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -5776,7 +5776,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -5803,7 +5803,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -5830,7 +5830,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_infix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -5857,7 +5857,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_dna_default_constructible)
 // {
 //     using namespace seqan;
@@ -5882,7 +5882,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_char_default_constructible)
 // {
 //     using namespace seqan;
@@ -5907,7 +5907,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_short_default_constructible)
 // {
 //     using namespace seqan;
@@ -5932,7 +5932,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_infix_counting_char_default_constructible)
 // {
 //     using namespace seqan;
@@ -5961,7 +5961,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_dna_default_constructible)
 // {
 //     using namespace seqan;
@@ -5987,7 +5987,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_char_default_constructible)
 // {
 //     using namespace seqan;
@@ -6013,7 +6013,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_short_default_constructible)
 // {
 //     using namespace seqan;
@@ -6039,7 +6039,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_infix_counting_char_default_constructible)
 // {
 //     using namespace seqan;
@@ -6069,7 +6069,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6095,7 +6095,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6121,7 +6121,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6147,7 +6147,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_infix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6177,7 +6177,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_infix_char_default_constructible)
 // {
 //     using namespace seqan;
@@ -6203,7 +6203,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //     }
 // }
 // //_______________________________________________________________________________
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_dna_default_constructible)
 // {
 //     using namespace seqan;
@@ -6228,7 +6228,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_char_default_constructible)
 // {
 //     using namespace seqan;
@@ -6253,7 +6253,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_short_default_constructible)
 // {
 //     using namespace seqan;
@@ -6278,7 +6278,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_prefix_counting_char_default_constructible)
 // {
 //     using namespace seqan;
@@ -6307,7 +6307,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-//     
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6333,7 +6333,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6359,7 +6359,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6385,7 +6385,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_prefix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6415,7 +6415,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6442,7 +6442,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6469,7 +6469,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_prefix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6496,7 +6496,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_dna_default_constructible)
 // {
 //     using namespace seqan;
@@ -6521,7 +6521,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_char_default_constructible)
 // {
 //     using namespace seqan;
@@ -6546,7 +6546,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_short_default_constructible)
 // {
 //     using namespace seqan;
@@ -6571,7 +6571,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_prefix_counting_char_default_constructible)
 // {
 //     using namespace seqan;
@@ -6600,7 +6600,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_dna_default_constructible)
 // {
 //     using namespace seqan;
@@ -6626,7 +6626,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_char_default_constructible)
 // {
 //     using namespace seqan;
@@ -6652,7 +6652,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_short_default_constructible)
 // {
 //     using namespace seqan;
@@ -6678,7 +6678,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         testSegmentDefaultConstructible(tag);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_prefix_counting_char_default_constructible)
 // {
 //     using namespace seqan;
@@ -6708,7 +6708,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6734,7 +6734,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6760,7 +6760,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6786,7 +6786,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_prefix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6816,7 +6816,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_prefix_char_default_constructible)
 // {
 // //     using namespace seqan;
@@ -6841,9 +6841,9 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // //_______________________________________________________________________________
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6869,7 +6869,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6895,7 +6895,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6921,7 +6921,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_suffix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6951,7 +6951,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // }
-//     
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -6977,7 +6977,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7003,7 +7003,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7029,7 +7029,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_suffix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7059,7 +7059,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7086,7 +7086,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7113,7 +7113,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_suffix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7140,7 +7140,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7166,7 +7166,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7192,7 +7192,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7218,7 +7218,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_suffix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7248,7 +7248,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7275,7 +7275,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7302,7 +7302,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7329,7 +7329,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_suffix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7360,7 +7360,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_dna_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7386,7 +7386,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7412,7 +7412,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_short_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7438,7 +7438,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_suffix_counting_char_default_constructible)
 // {
 //     // TODO (singer): Segmentation fault: 11
@@ -7468,7 +7468,7 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     }
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_suffix_char_default_constructible)
 // {
 //     using namespace seqan;
@@ -7493,2157 +7493,2157 @@ SEQAN_TYPED_TEST(SegmentTestString, Value)
 // //         testSegmentDefaultConstructible(tag);
 // //     }
 // }
-// 
+//
 // //_______________________________________________________________________________
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_dna_less)
 // {
 //     using namespace seqan;
 //     String<Dna, External<> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<Dna, External<> > const constTag;
 //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_char_less)
 // {
 //     using namespace seqan;
 //     String<char, External<> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<char, External<> > const constTag;
 //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_short_less)
 // {
 //     using namespace seqan;
 //     String<short, External<> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<short, External<> > const constTag;
 //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_counting_char_less)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, External<> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<CountingChar, External<> > const constTag;
 //     testSegmentLess(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-//     
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_dna_less)
 // {
 //     // TODO (singer): Segementation fault: 11
 // //     using namespace seqan;
 // //     String<Dna, MMap<> > tag;
 // //     testSegmentLess(tag);
-// // 
+// //
 // //     String<Dna, MMap<> > const constTag;
 // //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_char_less)
 // {
 //     // TODO (singer): Segementation fault: 11
 // //     using namespace seqan;
 // //     String<char, MMap<> > tag;
 // //     testSegmentLess(tag);
-// // 
+// //
 // //     String<char, MMap<> > const constTag;
 // //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_short_less)
 // {
 //     // TODO (singer): Segementation fault: 11
 // //     using namespace seqan;
 // //     String<short, MMap<> > tag;
 // //     testSegmentLess(tag);
-// // 
+// //
 // //     String<short, MMap<> > const constTag;
 // //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_counting_char_less)
 // {
 //     // TODO (singer): Segementation fault: 11
 // //     using namespace seqan;
 // //     CountingChar::clear();
-// // 
+// //
 // //     String<CountingChar, MMap<> > tag;
 // //     testSegmentLess(tag);
-// // 
+// //
 // //     String<CountingChar, MMap<> > const constTag;
 // //     testSegmentLess(constTag);
-// // 
+// //
 // //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_dna_less)
 // {
 //     using namespace seqan;
 //     String<Dna, Packed<> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<Dna, Packed<> > const constTag;
 //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_char_less)
 // {
 //     using namespace seqan;
 //     String<char, Packed<> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<char, Packed<> > const constTag;
 //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_short_less)
 // {
 //     using namespace seqan;
 //     String<short, Packed<> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<short, Packed<> > const constTag;
 //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_dna_less)
 // {
 //     using namespace seqan;
 //     String<Dna, Array<100> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<Dna, Array<100> > const constTag;
 //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_char_less)
 // {
 //     using namespace seqan;
 //     String<char, Array<100> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<char, Array<100> > const constTag;
 //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_short_less)
 // {
 //     using namespace seqan;
 //     String<short, Array<100> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<short, Array<100> > const constTag;
 //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_counting_char_less)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Array<100> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<CountingChar, Array<100> > const constTag;
 //     testSegmentLess(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_dna_less)
 // {
 //     using namespace seqan;
 //     String<Dna, Block<> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<Dna, Block<> > const constTag;
 //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_char_less)
 // {
 //     using namespace seqan;
 //     String<char, Block<> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<char, Block<> > const constTag;
 //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_short_less)
 // {
 //     using namespace seqan;
 //     String<short, Block<> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<short, Block<> > const constTag;
 //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_counting_char_less)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Block<> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<CountingChar, Block<> > const constTag;
 //     testSegmentLess(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_less)
 // {
 //     using namespace seqan;
 //     String<Dna, Alloc<> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_char_less)
 // {
 //     using namespace seqan;
 //     String<char, Alloc<> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<char, Alloc<> > const constTag;
 //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_short_less)
 // {
 //     using namespace seqan;
 //     String<short, Alloc<> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<short, Alloc<> > const constTag;
 //     testSegmentLess(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_counting_char_less)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Alloc<> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<CountingChar, Alloc<> > const constTag;
 //     testSegmentLess(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_char_less)
 // {
 // //     using namespace seqan;
 // //     String<char, CStyle> tag;
 // //     testSegmentLess(tag);
-// // 
+// //
 // //     String<char, CStyle> const constTag;
 // //     testSegmentLess(constTag);
 // }
-// 
+//
 // // // Test operator<()
 // // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_less)
 // // {
 // //     using namespace seqan;
-// // 
+// //
 // //     String<Dna, Alloc<> > tag;
 // //     testSegmentLess(tag);
-// // 
+// //
 // //     String<Dna, Alloc<> > const constTag;
 // //     testSegmentLess(constTag);
 // // }
-// 
+//
 // //################################################################################
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_dna_less_equal)
 // {
 //     using namespace seqan;
 //     String<Dna, External<> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<Dna, External<> > const constTag;
 //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_char_less_equal)
 // {
 //     using namespace seqan;
 //     String<char, External<> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<char, External<> > const constTag;
 //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_short_less_equal)
 // {
 //     using namespace seqan;
 //     String<short, External<> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<short, External<> > const constTag;
 //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_counting_char_less_equal)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, External<> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<CountingChar, External<> > const constTag;
 //     testSegmentLessEqual(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-//     
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_dna_less_equal)
 // {
 //     // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     String<Dna, MMap<> > tag;
 // //     testSegmentLessEqual(tag);
-// // 
+// //
 // //     String<Dna, MMap<> > const constTag;
 // //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_char_less_equal)
 // {
 //     // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     String<char, MMap<> > tag;
 // //     testSegmentLessEqual(tag);
-// // 
+// //
 // //     String<char, MMap<> > const constTag;
 // //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_short_less_equal)
 // {
 //     // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     String<short, MMap<> > tag;
 // //     testSegmentLessEqual(tag);
-// // 
+// //
 // //     String<short, MMap<> > const constTag;
 // //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_counting_char_less_equal)
 // {
 //     // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     CountingChar::clear();
-// // 
+// //
 // //     String<CountingChar, MMap<> > tag;
 // //     testSegmentLessEqual(tag);
-// // 
+// //
 // //     String<CountingChar, MMap<> > const constTag;
 // //     testSegmentLessEqual(constTag);
-// // 
+// //
 // //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_dna_less_equal)
 // {
 //     using namespace seqan;
 //     String<Dna, Packed<> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<Dna, Packed<> > const constTag;
 //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_char_less_equal)
 // {
 //     using namespace seqan;
 //     String<char, Packed<> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<char, Packed<> > const constTag;
 //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_short_less_equal)
 // {
 //     using namespace seqan;
 //     String<short, Packed<> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<short, Packed<> > const constTag;
 //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_dna_less_equal)
 // {
 //     using namespace seqan;
 //     String<Dna, Array<100> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<Dna, Array<100> > const constTag;
 //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_char_less_equal)
 // {
 //     using namespace seqan;
 //     String<char, Array<100> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<char, Array<100> > const constTag;
 //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_short_less_equal)
 // {
 //     using namespace seqan;
 //     String<short, Array<100> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<short, Array<100> > const constTag;
 //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_counting_char_less_equal)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Array<100> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<CountingChar, Array<100> > const constTag;
 //     testSegmentLessEqual(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_dna_less_equal)
 // {
 //     using namespace seqan;
 //     String<Dna, Block<> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<Dna, Block<> > const constTag;
 //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_char_less_equal)
 // {
 //     using namespace seqan;
 //     String<char, Block<> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<char, Block<> > const constTag;
 //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_short_less_equal)
 // {
 //     using namespace seqan;
 //     String<short, Block<> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<short, Block<> > const constTag;
 //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_counting_char_less_equal)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Block<> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<CountingChar, Block<> > const constTag;
 //     testSegmentLessEqual(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_less_equal)
 // {
 //     using namespace seqan;
 //     String<Dna, Alloc<> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_char_less_equal)
 // {
 //     using namespace seqan;
 //     String<char, Alloc<> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<char, Alloc<> > const constTag;
 //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_short_less_equal)
 // {
 //     using namespace seqan;
 //     String<short, Alloc<> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<short, Alloc<> > const constTag;
 //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_counting_char_less_equal)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Alloc<> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<CountingChar, Alloc<> > const constTag;
 //     testSegmentLessEqual(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_char_less_equal)
 // {
 // //     using namespace seqan;
 // //     String<char, CStyle> tag;
 // //     testSegmentLessEqual(tag);
-// // 
+// //
 // //     String<char, CStyle> const constTag;
 // //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // // // Test operator<=()
 // // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_less_equal)
 // // {
 // //     using namespace seqan;
-// // 
+// //
 // //     String<Dna, Alloc<> > tag;
 // //     testSegmentLessEqual(tag);
-// // 
+// //
 // //     String<Dna, Alloc<> > const constTag;
 // //     testSegmentLessEqual(constTag);
 // // }
-// 
+//
 // // ########################################################
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_dna_greater)
 // {
 //     using namespace seqan;
 //     String<Dna, External<> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<Dna, External<> > const constTag;
 //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_char_greater)
 // {
 //     using namespace seqan;
 //     String<char, External<> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<char, External<> > const constTag;
 //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_short_greater)
 // {
 //     using namespace seqan;
 //     String<short, External<> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<short, External<> > const constTag;
 //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_counting_char_greater)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, External<> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<CountingChar, External<> > const constTag;
 //     testSegmentGreater(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-//     
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_dna_greater)
 // {
 // // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     String<Dna, MMap<> > tag;
 // //     testSegmentGreater(tag);
-// // 
+// //
 // //     String<Dna, MMap<> > const constTag;
 // //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_char_greater)
 // {
 // // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     String<char, MMap<> > tag;
 // //     testSegmentGreater(tag);
-// // 
+// //
 // //     String<char, MMap<> > const constTag;
 // //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_short_greater)
 // {
 // // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     String<short, MMap<> > tag;
 // //     testSegmentGreater(tag);
-// // 
+// //
 // //     String<short, MMap<> > const constTag;
 // //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_counting_char_greater)
 // {
 // // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     CountingChar::clear();
-// // 
+// //
 // //     String<CountingChar, MMap<> > tag;
 // //     testSegmentGreater(tag);
-// // 
+// //
 // //     String<CountingChar, MMap<> > const constTag;
 // //     testSegmentGreater(constTag);
-// // 
+// //
 // //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_dna_greater)
 // {
 //     using namespace seqan;
 //     String<Dna, Packed<> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<Dna, Packed<> > const constTag;
 //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_char_greater)
 // {
 //     using namespace seqan;
 //     String<char, Packed<> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<char, Packed<> > const constTag;
 //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_short_greater)
 // {
 //     using namespace seqan;
 //     String<short, Packed<> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<short, Packed<> > const constTag;
 //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_dna_greater)
 // {
 //     using namespace seqan;
 //     String<Dna, Array<100> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<Dna, Array<100> > const constTag;
 //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_char_greater)
 // {
 //     using namespace seqan;
 //     String<char, Array<100> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<char, Array<100> > const constTag;
 //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_short_greater)
 // {
 //     using namespace seqan;
 //     String<short, Array<100> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<short, Array<100> > const constTag;
 //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_counting_char_greater)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Array<100> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<CountingChar, Array<100> > const constTag;
 //     testSegmentGreater(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_dna_greater)
 // {
 //     using namespace seqan;
 //     String<Dna, Block<> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<Dna, Block<> > const constTag;
 //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_char_greater)
 // {
 //     using namespace seqan;
 //     String<char, Block<> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<char, Block<> > const constTag;
 //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_short_greater)
 // {
 //     using namespace seqan;
 //     String<short, Block<> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<short, Block<> > const constTag;
 //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_counting_char_greater)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Block<> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<CountingChar, Block<> > const constTag;
 //     testSegmentGreater(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_greater)
 // {
 //     using namespace seqan;
 //     String<Dna, Alloc<> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_char_greater)
 // {
 //     using namespace seqan;
 //     String<char, Alloc<> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<char, Alloc<> > const constTag;
 //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_short_greater)
 // {
 //     using namespace seqan;
 //     String<short, Alloc<> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<short, Alloc<> > const constTag;
 //     testSegmentGreater(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_counting_char_greater)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Alloc<> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<CountingChar, Alloc<> > const constTag;
 //     testSegmentGreater(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_char_greater)
 // {
 // //     using namespace seqan;
 // //     String<char, CStyle> tag;
 // //     testSegmentGreater(tag);
-// // 
+// //
 // //     String<char, CStyle> const constTag;
 // //     testSegmentGreater(constTag);
 // }
-// 
+//
 // // ########################################################
-// 
+//
 // // // Test operator>()
 // // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_greater)
 // // {
 // //     using namespace seqan;
-// // 
+// //
 // //     String<Dna, Alloc<> > tag;
 // //     testSegmentGreater(tag);
-// // 
+// //
 // //     String<Dna, Alloc<> > const constTag;
 // //     testSegmentGreater(constTag);
 // // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_dna_greater_equal)
 // {
 //     using namespace seqan;
 //     String<Dna, External<> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<Dna, External<> > const constTag;
 //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_char_greater_equal)
 // {
 //     using namespace seqan;
 //     String<char, External<> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<char, External<> > const constTag;
 //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_short_greater_equal)
 // {
 //     using namespace seqan;
 //     String<short, External<> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<short, External<> > const constTag;
 //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_counting_char_greater_equal)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, External<> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<CountingChar, External<> > const constTag;
 //     testSegmentGreaterEqual(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-//     
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_dna_greater_equal)
 // {
 // // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     String<Dna, MMap<> > tag;
 // //     testSegmentGreaterEqual(tag);
-// // 
+// //
 // //     String<Dna, MMap<> > const constTag;
 // //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_char_greater_equal)
 // {
 // // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     String<char, MMap<> > tag;
 // //     testSegmentGreaterEqual(tag);
-// // 
+// //
 // //     String<char, MMap<> > const constTag;
 // //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_short_greater_equal)
 // {
 // // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     String<short, MMap<> > tag;
 // //     testSegmentGreaterEqual(tag);
-// // 
+// //
 // //     String<short, MMap<> > const constTag;
 // //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_counting_char_greater_equal)
 // {
 // // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     CountingChar::clear();
-// // 
+// //
 // //     String<CountingChar, MMap<> > tag;
 // //     testSegmentGreaterEqual(tag);
-// // 
+// //
 // //     String<CountingChar, MMap<> > const constTag;
 // //     testSegmentGreaterEqual(constTag);
-// // 
+// //
 // //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_dna_greater_equal)
 // {
 //     using namespace seqan;
 //     String<Dna, Packed<> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<Dna, Packed<> > const constTag;
 //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_char_greater_equal)
 // {
 //     using namespace seqan;
 //     String<char, Packed<> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<char, Packed<> > const constTag;
 //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_short_greater_equal)
 // {
 //     using namespace seqan;
 //     String<short, Packed<> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<short, Packed<> > const constTag;
 //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_dna_greater_equal)
 // {
 //     using namespace seqan;
 //     String<Dna, Array<100> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<Dna, Array<100> > const constTag;
 //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_char_greater_equal)
 // {
 //     using namespace seqan;
 //     String<char, Array<100> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<char, Array<100> > const constTag;
 //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_short_greater_equal)
 // {
 //     using namespace seqan;
 //     String<short, Array<100> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<short, Array<100> > const constTag;
 //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_counting_char_greater_equal)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Array<100> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<CountingChar, Array<100> > const constTag;
 //     testSegmentGreaterEqual(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_dna_greater_equal)
 // {
 //     using namespace seqan;
 //     String<Dna, Block<> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<Dna, Block<> > const constTag;
 //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_char_greater_equal)
 // {
 //     using namespace seqan;
 //     String<char, Block<> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<char, Block<> > const constTag;
 //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_short_greater_equal)
 // {
 //     using namespace seqan;
 //     String<short, Block<> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<short, Block<> > const constTag;
 //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_counting_char_greater_equal)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Block<> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<CountingChar, Block<> > const constTag;
 //     testSegmentGreaterEqual(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_greater_equal)
 // {
 //     using namespace seqan;
 //     String<Dna, Alloc<> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_char_greater_equal)
 // {
 //     using namespace seqan;
 //     String<char, Alloc<> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<char, Alloc<> > const constTag;
 //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_short_greater_equal)
 // {
 //     using namespace seqan;
 //     String<short, Alloc<> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<short, Alloc<> > const constTag;
 //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_counting_char_greater_equal)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Alloc<> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<CountingChar, Alloc<> > const constTag;
 //     testSegmentGreaterEqual(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_char_greater_equal)
 // {
 // //     using namespace seqan;
 // //     String<char, CStyle> tag;
 // //     testSegmentGreaterEqual(tag);
-// // 
+// //
 // //     String<char, CStyle> const constTag;
 // //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // // ########################################################
-// 
+//
 // // // Test operator>=()
 // // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_greater_equal)
 // // {
 // //     using namespace seqan;
-// // 
+// //
 // //     String<Dna, Alloc<> > tag;
 // //     testSegmentGreaterEqual(tag);
-// // 
+// //
 // //     String<Dna, Alloc<> > const constTag;
 // //     testSegmentGreaterEqual(constTag);
 // // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_dna_equal)
 // {
 //     using namespace seqan;
 //     String<Dna, External<> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<Dna, External<> > const constTag;
 //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_char_equal)
 // {
 //     using namespace seqan;
 //     String<char, External<> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<char, External<> > const constTag;
 //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_short_equal)
 // {
 //     using namespace seqan;
 //     String<short, External<> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<short, External<> > const constTag;
 //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_counting_char_equal)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, External<> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<CountingChar, External<> > const constTag;
 //     testSegmentEqual(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-//     
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_dna_equal)
 // {
 // // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     String<Dna, MMap<> > tag;
 // //     testSegmentEqual(tag);
-// // 
+// //
 // //     String<Dna, MMap<> > const constTag;
 // //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_char_equal)
 // {
 // // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     String<char, MMap<> > tag;
 // //     testSegmentEqual(tag);
-// // 
+// //
 // //     String<char, MMap<> > const constTag;
 // //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_short_equal)
 // {
 // // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     String<short, MMap<> > tag;
 // //     testSegmentEqual(tag);
-// // 
+// //
 // //     String<short, MMap<> > const constTag;
 // //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_counting_char_equal)
 // {
 // // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     CountingChar::clear();
-// // 
+// //
 // //     String<CountingChar, MMap<> > tag;
 // //     testSegmentEqual(tag);
-// // 
+// //
 // //     String<CountingChar, MMap<> > const constTag;
 // //     testSegmentEqual(constTag);
-// // 
+// //
 // //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_dna_equal)
 // {
 //     using namespace seqan;
 //     String<Dna, Packed<> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<Dna, Packed<> > const constTag;
 //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_char_equal)
 // {
 //     using namespace seqan;
 //     String<char, Packed<> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<char, Packed<> > const constTag;
 //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_short_equal)
 // {
 //     using namespace seqan;
 //     String<short, Packed<> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<short, Packed<> > const constTag;
 //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_dna_equal)
 // {
 //     using namespace seqan;
 //     String<Dna, Array<100> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<Dna, Array<100> > const constTag;
 //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_char_equal)
 // {
 //     using namespace seqan;
 //     String<char, Array<100> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<char, Array<100> > const constTag;
 //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_short_equal)
 // {
 //     using namespace seqan;
 //     String<short, Array<100> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<short, Array<100> > const constTag;
 //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_counting_char_equal)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Array<100> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<CountingChar, Array<100> > const constTag;
 //     testSegmentEqual(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_dna_equal)
 // {
 //     using namespace seqan;
 //     String<Dna, Block<> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<Dna, Block<> > const constTag;
 //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_char_equal)
 // {
 //     using namespace seqan;
 //     String<char, Block<> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<char, Block<> > const constTag;
 //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_short_equal)
 // {
 //     using namespace seqan;
 //     String<short, Block<> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<short, Block<> > const constTag;
 //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_counting_char_equal)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Block<> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<CountingChar, Block<> > const constTag;
 //     testSegmentEqual(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_equal)
 // {
 //     using namespace seqan;
 //     String<Dna, Alloc<> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_char_equal)
 // {
 //     using namespace seqan;
 //     String<char, Alloc<> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<char, Alloc<> > const constTag;
 //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_short_equal)
 // {
 //     using namespace seqan;
 //     String<short, Alloc<> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<short, Alloc<> > const constTag;
 //     testSegmentEqual(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_counting_char_equal)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Alloc<> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<CountingChar, Alloc<> > const constTag;
 //     testSegmentEqual(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_char_equal)
 // {
 // //     using namespace seqan;
 // //     String<char, CStyle> tag;
 // //     testSegmentEqual(tag);
-// // 
+// //
 // //     String<char, CStyle> const constTag;
 // //     testSegmentEqual(constTag);
 // }
-// 
+//
 // // ########################################################
-// 
+//
 // // // Test operator==()
 // // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_equal)
 // // {
 // //     using namespace seqan;
-// // 
+// //
 // //     String<Dna, Alloc<> > tag;
 // //     testSegmentEqual(tag);
-// // 
+// //
 // //     String<Dna, Alloc<> > const constTag;
 // //     testSegmentEqual(constTag);
 // // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_dna_unequal)
 // {
 //     using namespace seqan;
 //     String<Dna, External<> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<Dna, External<> > const constTag;
 //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_char_unequal)
 // {
 //     using namespace seqan;
 //     String<char, External<> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<char, External<> > const constTag;
 //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_short_unequal)
 // {
 //     using namespace seqan;
 //     String<short, External<> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<short, External<> > const constTag;
 //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_external_segment_counting_char_unequal)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, External<> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<CountingChar, External<> > const constTag;
 //     testSegmentUnequal(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-//     
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_dna_unequal)
 // {
 // // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     String<Dna, MMap<> > tag;
 // //     testSegmentUnequal(tag);
-// // 
+// //
 // //     String<Dna, MMap<> > const constTag;
 // //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_char_unequal)
 // {
 // // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     String<char, MMap<> > tag;
 // //     testSegmentUnequal(tag);
-// // 
+// //
 // //     String<char, MMap<> > const constTag;
 // //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_short_unequal)
 // {
 // // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     String<short, MMap<> > tag;
 // //     testSegmentUnequal(tag);
-// // 
+// //
 // //     String<short, MMap<> > const constTag;
 // //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_mmap_segment_counting_char_unequal)
 // {
 // // TODO (singer): Segmentation fault: 11
 // //     using namespace seqan;
 // //     CountingChar::clear();
-// // 
+// //
 // //     String<CountingChar, MMap<> > tag;
 // //     testSegmentUnequal(tag);
-// // 
+// //
 // //     String<CountingChar, MMap<> > const constTag;
 // //     testSegmentUnequal(constTag);
-// // 
+// //
 // //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 // //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_dna_unequal)
 // {
 //     using namespace seqan;
 //     String<Dna, Packed<> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<Dna, Packed<> > const constTag;
 //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_char_unequal)
 // {
 //     using namespace seqan;
 //     String<char, Packed<> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<char, Packed<> > const constTag;
 //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_packed_segment_short_unequal)
 // {
 //     using namespace seqan;
 //     String<short, Packed<> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<short, Packed<> > const constTag;
 //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_dna_unequal)
 // {
 //     using namespace seqan;
 //     String<Dna, Array<100> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<Dna, Array<100> > const constTag;
 //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_char_unequal)
 // {
 //     using namespace seqan;
 //     String<char, Array<100> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<char, Array<100> > const constTag;
 //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_short_unequal)
 // {
 //     using namespace seqan;
 //     String<short, Array<100> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<short, Array<100> > const constTag;
 //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_array_segment_counting_char_unequal)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Array<100> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<CountingChar, Array<100> > const constTag;
 //     testSegmentUnequal(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_dna_unequal)
 // {
 //     using namespace seqan;
 //     String<Dna, Block<> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<Dna, Block<> > const constTag;
 //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_char_unequal)
 // {
 //     using namespace seqan;
 //     String<char, Block<> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<char, Block<> > const constTag;
 //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_short_unequal)
 // {
 //     using namespace seqan;
 //     String<short, Block<> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<short, Block<> > const constTag;
 //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_block_segment_counting_char_unequal)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Block<> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<CountingChar, Block<> > const constTag;
 //     testSegmentUnequal(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_unequal)
 // {
 //     using namespace seqan;
 //     String<Dna, Alloc<> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_char_unequal)
 // {
 //     using namespace seqan;
 //     String<char, Alloc<> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<char, Alloc<> > const constTag;
 //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_short_unequal)
 // {
 //     using namespace seqan;
 //     String<short, Alloc<> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<short, Alloc<> > const constTag;
 //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_counting_char_unequal)
 // {
 //     using namespace seqan;
 //     CountingChar::clear();
-// 
+//
 //     String<CountingChar, Alloc<> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<CountingChar, Alloc<> > const constTag;
 //     testSegmentUnequal(constTag);
-// 
+//
 //     SEQAN_ASSERT_EQ(CountingChar::numConstruct, CountingChar::numDeconstruct);
 //     SEQAN_ASSERT_GT(CountingChar::numConstruct, 0u);
 // }
-// 
+//
 // SEQAN_DEFINE_TEST(test_sequence_cstyle_segment_char_unequal)
 // {
 // //     using namespace seqan;
 // //     String<char, CStyle> tag;
 // //     testSegmentUnequal(tag);
-// // 
+// //
 // //     String<char, CStyle> const constTag;
 // //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // // ########################################################
-// 
+//
 // // // Test operator!=()
 // // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_unequal)
 // // {
 // //     using namespace seqan;
-// // 
+// //
 // //     String<Dna, Alloc<> > tag;
 // //     testSegmentUnequal(tag);
-// // 
+// //
 // //     String<Dna, Alloc<> > const constTag;
 // //     testSegmentUnequal(constTag);
 // // }
-// 
+//
 // // Test whether sequences are assignable.
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_assignable)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentAssignable(tag);
 // }
-// 
+//
 // // Test of assignValue().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_assign_value)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentAssignValue(tag);
 // }
-// 
+//
 // // Test of back().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_back)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentBack(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentBack(constTag);
 // }
-// 
+//
 // // Test of begin().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_begin)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentBegin(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentBegin(constTag);
 // }
-// 
+//
 // // Test of beginPosition().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_begin_position)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentBeginPosition(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     //testSegmentBeginPosition(constTag);
 // }
-// 
+//
 // // Test of clear().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_clear)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentClear(tag);
 // }
-// 
+//
 // // Test of end().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_end)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentEnd(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentEnd(constTag);
 // }
-// 
+//
 // // Test of endPosition().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_end_position)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentEndPosition(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentEndPosition(constTag);
 // }
-// 
+//
 // // Test of front().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_front)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentFront(tag);
-// 
+//
 //     String<Dna, Alloc<> > const consTag;
 //     testSegmentFront(consTag);
 // }
-// 
+//
 // // Test of getValue().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_get_value)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentGetValue(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentGetValue(constTag);
 // }
-// 
+//
 // // Test of iter().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_iter)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentIter(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentIter(constTag);
 // }
-// 
+//
 // // Test of length().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_length)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentLength(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentLength(constTag);
 // }
-// 
+//
 // // Test of moveValue().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_move_value)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentMoveValue(tag);
 // }
-// 
+//
 // // Test of replace().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_replace)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentReplace(tag);
 // }
-// 
+//
 // // Test of resize().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_resize)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentResize(tag);
 // }
-// 
+//
 // // Test of swap().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_swap)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentSwap(tag);
 // }
-// 
+//
 // // Test of value().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_value)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentValue(tag);
 // }
-// 
-// // TODO (singer): add tests to ensure that the underlying string of a segment is not modified. 
-// 
+//
+// // TODO (singer): add tests to ensure that the underlying string of a segment is not modified.
+//
 // //        String<Dna, Packed<> > tag;
 // //        testInfixConstructible(tag);
 // //        testPrefixConstructible(tag);
 // //        testSuffixConstructible(tag);
-//     } 
-// 
+//     }
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testInfixConstructible(constTag);
 //     testPrefixConstructible(constTag);
 //     testSuffixConstructible(constTag);
 // }
-// 
+//
 // // Test whether sequences are copy constructible.
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_copy_constructible)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testInfixCopyConstructible(tag);
 //     testPrefixCopyConstructible(tag);
 //     testSuffixCopyConstructible(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testInfixCopyConstructible(constTag);
 //     testPrefixCopyConstructible(constTag);
 //     testSuffixCopyConstructible(constTag);
 // }
-// 
+//
 // // Test whether sequences are default constructible.
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_default_constructible)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testPrefixDefaultConstructible(tag);
 //     testInfixDefaultConstructible(tag);
 //     testSuffixDefaultConstructible(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testPrefixDefaultConstructible(constTag);
 //     testInfixDefaultConstructible(constTag);
 //     testSuffixDefaultConstructible(constTag);
 // }
-// 
+//
 // // Test operator<()
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_less)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentLess(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentLess(constTag);
 // }
-// 
+//
 // // Test operator<=()
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_less_equal)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentLessEqual(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentLessEqual(constTag);
 // }
-// 
+//
 // // Test operator>()
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_greater)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentGreater(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentGreater(constTag);
 // }
-// 
+//
 // // Test operator>=()
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_greater_equal)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentGreaterEqual(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentGreaterEqual(constTag);
 // }
-// 
+//
 // // Test operator==()
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_equal)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentEqual(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentEqual(constTag);
 // }
-// 
+//
 // // Test operator!=()
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_unequal)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentUnequal(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentUnequal(constTag);
 // }
-// 
+//
 // // Test whether sequences are assignable.
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_assignable)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentAssignable(tag);
 // }
-// 
+//
 // // Test of assignValue().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_assign_value)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentAssignValue(tag);
 // }
-// 
+//
 // // Test of back().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_back)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentBack(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentBack(constTag);
 // }
-// 
+//
 // // Test of begin().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_begin)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentBegin(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentBegin(constTag);
 // }
-// 
+//
 // // Test of beginPosition().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_begin_position)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentBeginPosition(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     //testSegmentBeginPosition(constTag);
 // }
-// 
+//
 // // // Test of clear().
 // // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_clear)
 // // {
 // //     using namespace seqan;
-// // 
+// //
 // //     String<Dna, Alloc<> > tag;
 // //     testSegmentClear(tag);
 // // }
-// 
+//
 // // Test of end().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_end)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentEnd(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentEnd(constTag);
 // }
-// 
+//
 // // Test of endPosition().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_end_position)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentEndPosition(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentEndPosition(constTag);
 // }
-// 
+//
 // // Test of front().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_front)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentFront(tag);
-// 
+//
 //     String<Dna, Alloc<> > const consTag;
 //     testSegmentFront(consTag);
 // }
-// 
+//
 // // Test of getValue().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_get_value)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentGetValue(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentGetValue(constTag);
 // }
-// 
+//
 // // Test of iter().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_iter)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentIter(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentIter(constTag);
 // }
-// 
+//
 // // Test of length().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_length)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentLength(tag);
-// 
+//
 //     String<Dna, Alloc<> > const constTag;
 //     testSegmentLength(constTag);
 // }
-// 
+//
 // // Test of moveValue().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_move_value)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentMoveValue(tag);
 // }
-// 
+//
 // // Test of value().
 // SEQAN_DEFINE_TEST(test_sequence_alloc_segment_dna_value)
 // {
 //     using namespace seqan;
-// 
+//
 //     String<Dna, Alloc<> > tag;
 //     testSegmentValue(tag);
 // }
 
-// TODO (singer): add tests to ensure that the underlying string of a segment is not modified. 
+// TODO (singer): add tests to ensure that the underlying string of a segment is not modified.
 
 #endif // TESTS_SEQUENCE_TEST_INFIX_H_

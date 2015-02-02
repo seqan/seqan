@@ -44,14 +44,14 @@ namespace SEQAN_NAMESPACE_MAIN
 
 template<typename TString, typename TTupelString, typename TKTup, typename TAlphabet>
 inline void
-_getTupelString(TString const& str, 
+_getTupelString(TString const& str,
                 TTupelString& tupelString,
-                TKTup const ktup, 
-                TAlphabet) 
+                TKTup const ktup,
+                TAlphabet)
 {
     SEQAN_CHECKPOINT
     typedef typename Value<typename Value<TTupelString>::Type>::Type TWord;
-    
+
     // Alphabet size
     TWord alphabet_size = ValueSize<TAlphabet>::VALUE;
 
@@ -66,7 +66,7 @@ _getTupelString(TString const& str,
     TWord len = length(str);
     clear(tupelString);
     if(len < ktup) return;
-    resize(tupelString, len-(ktup - 1)); 
+    resize(tupelString, len-(ktup - 1));
     TWord tupelIndex = 0;
     TWord endTupel = 0;
     tupelString[tupelIndex] = 0;
@@ -87,10 +87,10 @@ _getTupelString(TString const& str,
 
 template<typename TString, typename TSpec, typename THitMatrix, typename TSize, typename TAlphabet>
 inline void
-getKmerSimilarityMatrix(StringSet<TString, TSpec> const& strSet, 
-                        THitMatrix& mat, 
-                        TSize ktup, 
-                        TAlphabet) 
+getKmerSimilarityMatrix(StringSet<TString, TSpec> const& strSet,
+                        THitMatrix& mat,
+                        TSize ktup,
+                        TAlphabet)
 {
     SEQAN_CHECKPOINT
     typedef TSize TWord;

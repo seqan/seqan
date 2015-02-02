@@ -81,7 +81,7 @@ namespace seqan {
  *            class BamIndex;
  *
  * This is an abstract class; don't use it itself but its specializations.
- * 
+ *
  * @see BamFileIn
  */
 
@@ -390,7 +390,7 @@ bool jumpToOrphans(FormattedFile<Bam, Input, TSpec> & bamFile,
 // ----------------------------------------------------------------------------
 
 /*!
- * @fn BamIndex#getUnalignedCount 
+ * @fn BamIndex#getUnalignedCount
  * @brief Query index for number of unaligned reads.
  *
  * @signature __uint64 getUnalignedCount(index);

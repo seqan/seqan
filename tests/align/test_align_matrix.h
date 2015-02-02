@@ -75,7 +75,7 @@ SEQAN_DEFINE_TEST(test_align_matrix)
     matrix3=matrix1*matrix2;
     matrix3=matrix1*5.0;
     SEQAN_ASSERT_EQ(matrix1 * 5.0, 5.0 * matrix1);
-    
+
     // n-dimensional matrix
     Matrix<double> matrixN;
     setDimension(matrixN,2);

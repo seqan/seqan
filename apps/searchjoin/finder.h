@@ -609,7 +609,7 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Parallel> & dbFind
         TTextIterator textIt(dbFinder.dbIndex.index);
         TPatternIterator patternIt(dbFinder.queryIndex.index[seedSet]);
         patternIt.depth = _min(dbFinder.queryIndex.seedLength, dbFinder.parallelDepth);
-        
+
         _setScoreThreshold(finderExt, 0);
         _initState(finderExt, textIt, patternIt);
         _find(finderExt, dbFinder, StageInitial_());

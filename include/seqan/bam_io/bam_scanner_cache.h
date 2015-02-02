@@ -71,10 +71,10 @@ struct BamScannerCacheKey_
     }
 };
 
-struct BamScannerCacheSearchKey_    
+struct BamScannerCacheSearchKey_
 {
     typedef __uint16 TFlag;
-    
+
     BamScannerCacheKey_ cacheKey;
     TFlag flags;
     TFlag flagsMask;
@@ -82,7 +82,7 @@ struct BamScannerCacheSearchKey_
 
 struct BamScannerCacheHash_ :
     std::unary_function<BamScannerCacheKey_, size_t>
-{    
+{
     size_t operator()(BamScannerCacheKey_ const &v) const
     {
         return std::hash<__int32>()(v.rID) ^ std::hash<__int32>()(v.beginPos) ^ std::hash<__uint64>()(v.qnameHash);
@@ -198,7 +198,7 @@ _recursivelyFindSegmentGraph(
 {
     typedef BamScannerCache::TMapIter TMapIter;
     typedef BamScannerCacheSearchKey_::TFlag TFlag;
-    
+
     // search for segment using contigId, position
     std::pair<TMapIter, TMapIter> range = cache.map.equal_range(searchKey.cacheKey);
     for (TMapIter iter = range.first; iter != range.second;)
@@ -245,7 +245,7 @@ _recursivelyFindSegmentGraph(
             }
         }
     }
-    
+
     return false;
 }
 

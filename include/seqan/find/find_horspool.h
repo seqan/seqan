@@ -46,12 +46,12 @@ namespace SEQAN_NAMESPACE_MAIN
  * @class HorspoolPattern
  * @extends Pattern
  * @headerfile <seqan/find.h>
- * 
+ *
  * @brief Exact string matching using Horspool's algorithm (1980).
- * 
+ *
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, Horspool>;
- * 
+ *
  * @tparam TNeedle The needle type. Types: String
  */
 
@@ -134,7 +134,7 @@ inline void _patternInit (Pattern<TNeedle, Horspool> &) {}
 
 template <typename TFinder, typename TNeedle2>
 bool
-_findHorspool(TFinder & finder, 
+_findHorspool(TFinder & finder,
               Pattern<TNeedle2, Horspool> & me,
               bool find_first)
 {
@@ -203,14 +203,14 @@ VALIDATE:
 /*
 template <typename TFinder, typename TNeedle2>
 bool
-find_horspool_sentinel(TFinder & finder, 
+find_horspool_sentinel(TFinder & finder,
                        Pattern<TNeedle2, Horspool> & me,
                        bool find_first)
 {
 SEQAN_CHECKPOINT
     typedef typename Haystack<TFinder>::Type THaystack;
     THaystack & hayst = haystack(finder);
-    
+
 
     typedef Pattern<TNeedle2, Horspool> TPattern;
     typedef typename Needle<TPattern>::Type TNeedle;
@@ -301,7 +301,7 @@ struct FileReader;
 
 template <typename TValue, typename TFormat, typename TFile, typename FileReaderTSpec, typename TFinderSpec, typename TNeedle2>
 bool
-_findHorspool(Finder<String<TValue, FileReader<TFormat, TFile, FileReaderTSpec> >, TFinderSpec > & finder, 
+_findHorspool(Finder<String<TValue, FileReader<TFormat, TFile, FileReaderTSpec> >, TFinderSpec > & finder,
               Pattern<TNeedle2, Horspool> & me,
               bool find_first)
 {
@@ -360,14 +360,14 @@ VALIDATE:
 }
 
 //____________________________________________________________________________
-/* groepl variante 
+/* groepl variante
 (Beruht vermutlich auf einem Missverstehen von Navarro/Raffinot Seite 26:
-Mit "the main loop can be 'unrolled'" ist dort naemlich 
+Mit "the main loop can be 'unrolled'" ist dort naemlich
 "the INNER loop can be 'unrolled'" gemeint.)
 
 template <typename TFinder, typename TNeedle2>
 bool
-_findHorspool(TFinder & finder, 
+_findHorspool(TFinder & finder,
     Pattern<TNeedle2, Horspool> & me,
     bool find_first)
 {
@@ -410,7 +410,7 @@ MOVE_FURTHER:
         {//found nothing
             return false;
         }
-        if (*it == last_needle_char) 
+        if (*it == last_needle_char)
         {
             break;
         }

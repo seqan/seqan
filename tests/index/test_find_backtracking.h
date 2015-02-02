@@ -92,7 +92,7 @@ testFinder(FinderTester<TText, Index<TPattern, TPatternIndexSpec>, TSpec> & test
 
     TTextSize textOccurrencesCount = length(textOccurrences);
     TPatternSize patternOccurrencesCount = length(patternOccurrences);
-    
+
     for (TTextSize i = 0; i < textOccurrencesCount; ++i)
         for (TPatternSize j = 0; j < patternOccurrencesCount; ++j)
         {

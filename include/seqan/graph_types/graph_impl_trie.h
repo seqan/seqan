@@ -176,7 +176,7 @@ createTrieOnReverse(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
  * @param[out] terminalStateMap An external property map; of type <tt>String&lt;String&lt;unsigned&gt; &gt;</tt>.
  * @param[in]  text             A @link TextConcept @endlink object.
  */
- 
+
 template <typename TAlphabet, typename TCargo, typename TSpec, typename TTerminalStateMap, typename TText>
 inline void
 createSuffixTrie(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,

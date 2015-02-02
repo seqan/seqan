@@ -294,7 +294,7 @@ _mapFile(FileMapping<TSpec> &mapping, TSize mappingSize)
             (LPTSTR) &lpMsgBuf,
             0,
             NULL);
-    
+
         SEQAN_FAIL("CreateFileMapping failed in resize: \"%s\"", lpMsgBuf /*strerror(GetLastError())*/);
         LocalFree(lpMsgBuf);
     }
@@ -406,7 +406,7 @@ openTemp(FileMapping<TSpec> &mapping)
 /*!
  * @fn FileMapping#close
  * @brief Close a file and its memory mapping.
- * 
+ *
  * @signature bool close(fileMapping);
  *
  * @param[in,out] fileMapping The FileMapping to close
@@ -461,7 +461,7 @@ closeAndResize(FileMapping<TSpec> &mapping, TSize newFileSize)
 /*!
  * @fn FileMapping#length
  * @brief Return the file size of a memory mapping.
- * 
+ *
  * @signature TSize length(fileMapping);
  *
  * @param[in] fileMapping The FileMapping to return the length for.

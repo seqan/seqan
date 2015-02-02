@@ -98,7 +98,7 @@ struct MagicHeader<BgzfFile, T>
 };
 
 template <typename T>
-char const MagicHeader<BgzfFile, T>::VALUE[18] = 
+char const MagicHeader<BgzfFile, T>::VALUE[18] =
 {
     MagicHeader<GZFile>::VALUE[0], MagicHeader<GZFile>::VALUE[1], MagicHeader<GZFile>::VALUE[2],
     4, 0, 0, 0, 0, 0, '\xff', 6, 0, 'B', 'C', 2, 0, 0, 0

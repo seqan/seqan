@@ -100,7 +100,7 @@ struct Device<TObject const>
  *
  * @see Device
  */
- 
+
 template <typename TObject>
 struct IsDevice : public False {};
 

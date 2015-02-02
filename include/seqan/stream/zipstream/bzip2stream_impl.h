@@ -24,7 +24,7 @@ Author: Jonathan de Halleux, dehalleux@pelikhan.com, 2003
 namespace bzip2_stream{
 
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,
@@ -34,12 +34,12 @@ namespace bzip2_stream{
         Elem,Tr,ElemA,ByteT,ByteAT
         >:: basic_bzip2_streambuf(
         ostream_reference ostream_,
-        size_t block_size_100k_, 
+        size_t block_size_100k_,
         size_t verbosity_,
         size_t work_factor_,
         size_t buffer_size_
         )
-    : 
+    :
         m_ostream(ostream_),
         m_output_buffer(buffer_size_,0),
         m_buffer(buffer_size_,0)
@@ -53,7 +53,7 @@ namespace bzip2_stream{
         m_bzip2_stream.next_out=NULL;
 
         m_err=BZ2_bzCompressInit(
-            &m_bzip2_stream, 
+            &m_bzip2_stream,
             std::min( 9, static_cast<int>(block_size_100k_) ),
             std::min( 4, static_cast<int>(verbosity_) ),
             std::min( 250, static_cast<int>(work_factor_) )
@@ -63,7 +63,7 @@ namespace bzip2_stream{
     }
 
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,
@@ -79,7 +79,7 @@ namespace bzip2_stream{
     }
 
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,
@@ -88,7 +88,7 @@ namespace bzip2_stream{
     int basic_bzip2_streambuf<
         Elem,Tr,ElemA,ByteT,ByteAT
         >::sync ()
-    { 
+    {
         if ( this->pptr() && this->pptr() > this->pbase())
         {
             int c = overflow( EOF);
@@ -101,7 +101,7 @@ namespace bzip2_stream{
     }
 
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,
@@ -109,7 +109,7 @@ namespace bzip2_stream{
     >
     typename basic_bzip2_streambuf<
         Elem,Tr,ElemA,ByteT,ByteAT
-        >::int_type 
+        >::int_type
             basic_bzip2_streambuf<
                 Elem,Tr,ElemA,ByteT,ByteAT
                 >::overflow (
@@ -117,7 +117,7 @@ namespace bzip2_stream{
                         Elem,Tr,ElemA,ByteT,ByteAT
                         >::int_type c
                     )
-    { 
+    {
         int w = static_cast<int>(this->pptr() - this->pbase());
         if (c != EOF) {
              *this->pptr() = c;
@@ -131,7 +131,7 @@ namespace bzip2_stream{
     }
 
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,
@@ -139,10 +139,10 @@ namespace bzip2_stream{
     >
     bool basic_bzip2_streambuf<
         Elem,Tr,ElemA,ByteT,ByteAT
-        >::bzip2_to_stream( 
+        >::bzip2_to_stream(
             typename basic_bzip2_streambuf<
                 Elem,Tr,ElemA,ByteT,ByteAT
-                >::char_type* buffer_, 
+                >::char_type* buffer_,
             std::streamsize buffer_size_
             )
     {
@@ -157,39 +157,39 @@ namespace bzip2_stream{
         do
         {
             m_err = BZ2_bzCompress (&m_bzip2_stream, BZ_RUN );
-    
+
             if (m_err == BZ_RUN_OK  || m_err == BZ_STREAM_END)
             {
                 written_byte_size= static_cast<std::streamsize>(m_output_buffer.size()) - m_bzip2_stream.avail_out;
                 total_written_byte_size+=written_byte_size;
                 // ouput buffer is full, dumping to ostream
-                m_ostream.write( 
-                    (const char_type*) &(m_output_buffer[0]), 
+                m_ostream.write(
+                    (const char_type*) &(m_output_buffer[0]),
                     static_cast<std::streamsize>( written_byte_size/sizeof(char_type) )
                     );
-                                                        
+
                 // checking if some bytes were not written.
                 if ( (remainder = written_byte_size%sizeof(char_type))!=0)
                 {
                     // copy to the beginning of the stream
                     std::memmove(
-                        &(m_output_buffer[0]), 
+                        &(m_output_buffer[0]),
                         &(m_output_buffer[written_byte_size-remainder]),
                         remainder);
-                    
+
                 }
-                
+
                 m_bzip2_stream.avail_out=static_cast<unsigned int>(m_output_buffer.size()-remainder);
                 m_bzip2_stream.next_out=&m_output_buffer[remainder];
             }
-        } 
+        }
         while (m_bzip2_stream.avail_in != 0 && m_err == BZ_RUN_OK);
-    
+
         return m_err == BZ_RUN_OK || m_err == BZ_FLUSH_OK;
     }
 
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,
@@ -219,22 +219,22 @@ namespace bzip2_stream{
                     - m_bzip2_stream.avail_out;
                 total_written_byte_size+=written_byte_size;
                 // ouput buffer is full, dumping to ostream
-                m_ostream.write( 
-                    (const char_type*) &(m_output_buffer[0]), 
+                m_ostream.write(
+                    (const char_type*) &(m_output_buffer[0]),
                     static_cast<std::streamsize>( written_byte_size/sizeof(char_type)*sizeof(char) )
                     );
-                
+
                 // checking if some bytes were not written.
                 if ( (remainder = written_byte_size%sizeof(char_type))!=0)
                 {
                     // copy to the beginning of the stream
                     std::memmove(
-                        &(m_output_buffer[0]), 
+                        &(m_output_buffer[0]),
                         &(m_output_buffer[written_byte_size-remainder]),
                         remainder);
-                    
+
                 }
-                
+
                 m_bzip2_stream.avail_out=static_cast<unsigned int>(m_output_buffer.size()-remainder);
                 m_bzip2_stream.next_out=&(m_output_buffer[remainder]);
             }
@@ -246,7 +246,7 @@ namespace bzip2_stream{
     }
 
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,
@@ -256,12 +256,12 @@ namespace bzip2_stream{
         Elem,Tr,ElemA,ByteT,ByteAT
         >::basic_unbzip2_streambuf(
             istream_reference istream_,
-            size_t verbosity_, 
+            size_t verbosity_,
             bool small_,
             size_t read_buffer_size_,
             size_t input_buffer_size_
     )
-    :  
+    :
         m_istream(istream_),
         m_input_buffer(input_buffer_size_),
         m_buffer(read_buffer_size_)
@@ -281,15 +281,15 @@ namespace bzip2_stream{
             std::min(4, static_cast<int>(verbosity_)),
             static_cast<int>(small_)
         );
-        
+
         this->setg(
             &(m_buffer[0])+4,     // beginning of putback area
             &(m_buffer[0])+4,     // read position
-            &(m_buffer[0])+4);    // end position    
+            &(m_buffer[0])+4);    // end position
     }
 
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,
@@ -300,15 +300,15 @@ namespace bzip2_stream{
         >::fill_input_buffer()
     {
         m_bzip2_stream.next_in=&(m_input_buffer[0]);
-        m_istream.read( 
-            (char_type*)(&(m_input_buffer[0])), 
-            static_cast<std::streamsize>(m_input_buffer.size()/sizeof(char_type)) 
-            ); 
+        m_istream.read(
+            (char_type*)(&(m_input_buffer[0])),
+            static_cast<std::streamsize>(m_input_buffer.size()/sizeof(char_type))
+            );
         return m_bzip2_stream.avail_in=m_istream.gcount()*sizeof(char_type);
     }
 
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,
@@ -332,7 +332,7 @@ namespace bzip2_stream{
 
 
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,
@@ -346,7 +346,7 @@ namespace bzip2_stream{
     }
 
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,
@@ -354,43 +354,43 @@ namespace bzip2_stream{
     >
     typename basic_unbzip2_streambuf<
         Elem,Tr,ElemA,ByteT,ByteAT
-        >::int_type 
+        >::int_type
             basic_unbzip2_streambuf<
                 Elem,Tr,ElemA,ByteT,ByteAT
-                >::underflow() 
-    { 
+                >::underflow()
+    {
         if ( this->gptr() && ( this->gptr() < this->egptr()))
             return * reinterpret_cast<unsigned char *>( this->gptr());
-     
+
        int n_putback = static_cast<int>(this->gptr() - this->eback());
        if ( n_putback > 4)
           n_putback = 4;
-       std::memmove( 
-            &(m_buffer[0]) + (4 - n_putback), 
+       std::memmove(
+            &(m_buffer[0]) + (4 - n_putback),
             this->gptr() - n_putback,
             n_putback*sizeof(char_type)
             );
-  
-       int num = unbzip2_from_stream( 
-           &(m_buffer[0])+4, 
+
+       int num = unbzip2_from_stream(
+           &(m_buffer[0])+4,
            static_cast<std::streamsize>((m_buffer.size()-4)*sizeof(char_type))
            );
         if (num <= 0) // ERROR or EOF
            return EOF;
-    
+
         // reset buffer pointers
         this->setg(
               &(m_buffer[0]) + (4 - n_putback),   // beginning of putback area
               &(m_buffer[0]) + 4,                 // read position
               &(m_buffer[0]) + 4 + num);          // end of buffer
-    
+
          // return next character
          return* reinterpret_cast<unsigned char *>( this->gptr());
      }
 
 
     template<
-        typename Elem, 
+        typename Elem,
         typename Tr,
         typename ElemA,
         typename ByteT,
@@ -398,8 +398,8 @@ namespace bzip2_stream{
     >
     std::streamsize basic_unbzip2_streambuf<
         Elem,Tr,ElemA,ByteT,ByteAT
-        >::unbzip2_from_stream( 
-            char_type* buffer_, 
+        >::unbzip2_from_stream(
+            char_type* buffer_,
             std::streamsize buffer_size_
             )
     {
@@ -417,7 +417,7 @@ namespace bzip2_stream{
                 m_err = BZ2_bzDecompress( &m_bzip2_stream );
             }
         } while (m_err==BZ_OK && m_bzip2_stream.avail_out != 0 && count != 0);
-        
+
         if (m_err == BZ_STREAM_END)
             put_back_from_bzip2_stream();
 

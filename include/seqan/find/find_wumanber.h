@@ -60,7 +60,7 @@ typedef Tag<WuManber_> WuManber;
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle>
-class Pattern<TNeedle, WuManber> 
+class Pattern<TNeedle, WuManber>
 {
 //____________________________________________________________________________
 public:
@@ -97,7 +97,7 @@ public:
         setHost(*this, ndl);
     }
 
-    ~Pattern() 
+    ~Pattern()
     {
     }
 //____________________________________________________________________________
@@ -117,7 +117,7 @@ struct WuManberHash_;
 
 
 //////////////////////////////////////////////////////////////////////////////
-//implementation kernel of WuManber 
+//implementation kernel of WuManber
 
 template <typename TNeedle, int Q>
 struct WuManberImpl_
@@ -136,7 +136,7 @@ struct WuManberImpl_
 
 //____________________________________________________________________________
 
-    enum 
+    enum
     {
         C = BitsPerValue<TValue>::VALUE, //bits per value
         W = (C*Q <= 16) ? C*Q : 16,    //bits per hash values
@@ -144,7 +144,7 @@ struct WuManberImpl_
         DIR_SIZE = 1 << W,            //size of verify_dir and shift_dir
 
         //shift width for Q = 2:
-        SHIFT = (W > 2*C) ? C : W-C,            
+        SHIFT = (W > 2*C) ? C : W-C,
 
         //shift widths for Q = 3:
         SHIFT_LEFT = (W > 3*C) ? 2*C : W-C,
@@ -201,7 +201,7 @@ struct WuManberImpl_
 
         //2: add up and convert to pointers
         TNeedlePosition * verify_ptr = begin(me.verify_tab);
-        
+
         me.verify[0] = verify_ptr;
         unsigned int sum = 0;
         for (unsigned int i = 0; i < DIR_SIZE; ++i)
@@ -230,7 +230,7 @@ struct WuManberImpl_
 
     template <typename TFinder>
     static inline bool
-    find(TFinder & finder, TPattern & me) 
+    find(TFinder & finder, TPattern & me)
     {
         typedef typename Haystack<TFinder>::Type THaystack;
         typedef typename Iterator<THaystack, Standard>::Type THaystackIterator;
@@ -240,14 +240,14 @@ struct WuManberImpl_
         THaystackIterator tit_end = haystack_end - Q + 1;
         unsigned short hash;
 
-        if (empty(finder)) 
+        if (empty(finder))
         {
 //START
             _patternInit(me);
             _finderSetNonEmpty(finder);
             tit = hostIterator(finder) + me.lmin-Q;
-        } 
-        else 
+        }
+        else
         {
 //RESUME
             tit = hostIterator(finder) + me.lmin-Q;
@@ -340,7 +340,7 @@ struct WuManberHash_<TNeedle, 3>
     inline static unsigned short
     hash(TIterator vals)
     {
-        return ordValue(*vals) 
+        return ordValue(*vals)
             + (ordValue(*(vals+1)) << WuManberImpl_<TNeedle, 3>::SHIFT_MIDDLE)
             + (ordValue(*(vals+2)) << WuManberImpl_<TNeedle, 3>::SHIFT_LEFT);
     }
@@ -349,7 +349,7 @@ struct WuManberHash_<TNeedle, 3>
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TNeedle2>
-void _setHostWuManber(Pattern<TNeedle, WuManber> & me, 
+void _setHostWuManber(Pattern<TNeedle, WuManber> & me,
                        TNeedle2 const & needle_)
 {
     SEQAN_CHECKPOINT;
@@ -377,7 +377,7 @@ void _setHostWuManber(Pattern<TNeedle, WuManber> & me,
     {
         me.q = 1;
     }
-    else 
+    else
     {
         //according to Wu & Manber: B = log_c(2mk) "is a good value"
         //i.e. C^B = 2mk
@@ -394,7 +394,7 @@ void _setHostWuManber(Pattern<TNeedle, WuManber> & me,
             me.q = 3;
         }
     }
-    if (me.q > me.lmin) 
+    if (me.q > me.lmin)
     {
         me.q = me.lmin;
     }
@@ -406,15 +406,15 @@ void _setHostWuManber(Pattern<TNeedle, WuManber> & me,
 }
 
 template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, WuManber> & me, 
-              TNeedle2 const & needle) 
+void setHost (Pattern<TNeedle, WuManber> & me,
+              TNeedle2 const & needle)
 {
     _setHostWuManber(me, needle);
 }
 
 template <typename TNeedle, typename TNeedle2>
-inline void 
-setHost(Pattern<TNeedle, WuManber> & me, 
+inline void
+setHost(Pattern<TNeedle, WuManber> & me,
         TNeedle2 & needle)
 {
     _setHostWuManber(me, needle);
@@ -423,7 +423,7 @@ setHost(Pattern<TNeedle, WuManber> & me,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, WuManber> >::Type & 
+inline typename Host<Pattern<TNeedle, WuManber> >::Type &
 host(Pattern<TNeedle, WuManber> & me)
 {
 SEQAN_CHECKPOINT
@@ -431,7 +431,7 @@ SEQAN_CHECKPOINT
 }
 
 template <typename TNeedle>
-inline typename Host<Pattern<TNeedle, WuManber> const>::Type & 
+inline typename Host<Pattern<TNeedle, WuManber> const>::Type &
 host(Pattern<TNeedle, WuManber> const & me)
 {
 SEQAN_CHECKPOINT
@@ -451,7 +451,7 @@ position(Pattern<TNeedle, WuManber> & me)
 
 //called when search begins
 template <typename TNeedle>
-inline void _patternInit (Pattern<TNeedle, WuManber> & me) 
+inline void _patternInit (Pattern<TNeedle, WuManber> & me)
 {
 SEQAN_CHECKPOINT
     me.to_verify_begin = 0;
@@ -461,8 +461,8 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TFinder, typename TNeedle>
-inline bool find(TFinder & finder, 
-                 Pattern<TNeedle, WuManber> & me) 
+inline bool find(TFinder & finder,
+                 Pattern<TNeedle, WuManber> & me)
 {
 SEQAN_CHECKPOINT
 

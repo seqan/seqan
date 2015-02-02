@@ -72,7 +72,7 @@ namespace seqan {
  *
  * @return Type  Either True or False, depending on whether T1 is the same type as T2.
  * @return VALUE The same as <tt>Type::VALUE</tt>.
- */ 
+ */
 
 template <typename Type1, typename Type2>
 struct IsSameType : False {};

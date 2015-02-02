@@ -90,8 +90,8 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TConfig = MMapConfig<> >
     struct MMap {};
 //IOREV
-    
-    
+
+
     //////////////////////////////////////////////////////////////////////////////
     // Memory Mapped String
     //////////////////////////////////////////////////////////////////////////////
@@ -204,7 +204,7 @@ namespace SEQAN_NAMESPACE_MAIN
             return *this;
         }
 
-        ~String() 
+        ~String()
         {
             close(*this);
         }
@@ -219,7 +219,7 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         template <typename TPos>
-        inline typename Reference<String const>::Type 
+        inline typename Reference<String const>::Type
         operator [] (TPos pos) const
         {
             return value(*this, pos);
@@ -227,7 +227,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //____________________________________________________________________________
 
-        inline operator bool() 
+        inline operator bool()
         {
             return mapping;
         }
@@ -280,7 +280,7 @@ SEQAN_CHECKPOINT
 
     template < typename TValue, typename TConfig >
     inline typename Size<String<TValue, MMap<TConfig> > >::Type
-    capacity(String<TValue, MMap<TConfig> > const & me) 
+    capacity(String<TValue, MMap<TConfig> > const & me)
     {
 //IOREV
 SEQAN_CHECKPOINT
@@ -290,9 +290,9 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 
     template < typename TValue, typename TConfig >
-    inline void 
+    inline void
     _setLength(
-        String<TValue, MMap<TConfig> > & me, 
+        String<TValue, MMap<TConfig> > & me,
         size_t new_length)
     {
 //IOREV
@@ -410,19 +410,19 @@ SEQAN_CHECKPOINT
     {
         return mmapAdvise(me, advise, beginPos, capacity(me) - beginPos);
     }
-        
+
     template <typename TValue, typename TConfig>
     inline int
     mmapAdvise(String<TValue, MMap<TConfig> > &me, FileMappingAdvise advise)
     {
         return mmapAdvise(me, advise, 0, capacity(me));
     }
-        
+
 //____________________________________________________________________________
 
     // cancel all transactions
     template < typename TValue, typename TConfig >
-    inline void 
+    inline void
     cancel(String<TValue, MMap<TConfig> > &me)
     {
         typedef typename Size<typename TConfig::TFile>::Type TFileSize;
@@ -442,11 +442,11 @@ SEQAN_CHECKPOINT
     {
         return flush(me) && mmapAdvise(me, MAP_DONTNEED);
     }
-    
+
 //____________________________________________________________________________
 
     template < typename TValue, typename TConfig >
-    inline bool 
+    inline bool
     _map(String<TValue, MMap<TConfig> > &me, size_t new_capacity)
     {
         typedef typename Size<typename TConfig::TFile>::Type TFileSize;
@@ -470,8 +470,8 @@ SEQAN_CHECKPOINT
     }
 
     template < typename TValue, typename TConfig >
-    inline bool 
-    _unmap(String<TValue, MMap<TConfig> > &me) 
+    inline bool
+    _unmap(String<TValue, MMap<TConfig> > &me)
     {
         bool result = true;
         if (me.data_begin != NULL)
@@ -484,8 +484,8 @@ SEQAN_CHECKPOINT
     }
 
     template < typename TValue, typename TConfig, typename TCapSize >
-    inline bool 
-    _remap(String<TValue, MMap<TConfig> > &me, TCapSize new_capacity) 
+    inline bool
+    _remap(String<TValue, MMap<TConfig> > &me, TCapSize new_capacity)
     {
         typedef typename Size<String<TValue, MMap<TConfig> > >::Type    TSize;
         typedef typename Size<typename TConfig::TFile>::Type            TFileSize;
@@ -527,8 +527,8 @@ SEQAN_CHECKPOINT
     }
 
     template < typename TValue, typename TConfig >
-    inline void 
-    clear(String<TValue, MMap<TConfig> > &me) 
+    inline void
+    clear(String<TValue, MMap<TConfig> > &me)
     {
 //IOREV
         cancel(me);
@@ -538,8 +538,8 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 
     template < typename TValue, typename TConfig, typename TSize >
-    inline typename Value<String<TValue, MMap<TConfig> > >::Type * 
-    _allocateStorage(String<TValue, MMap<TConfig> > &me, TSize new_capacity) 
+    inline typename Value<String<TValue, MMap<TConfig> > >::Type *
+    _allocateStorage(String<TValue, MMap<TConfig> > &me, TSize new_capacity)
     {
 //IOREV
         _map(me, _computeSizeForCapacity(me, new_capacity));
@@ -547,10 +547,10 @@ SEQAN_CHECKPOINT
     }
 
     template < typename TValue, typename TConfig, typename TSize >
-    inline typename Value<String<TValue, MMap<TConfig> > >::Type * 
+    inline typename Value<String<TValue, MMap<TConfig> > >::Type *
     _reallocateStorage(
         String<TValue, MMap<TConfig> > &me,
-        TSize new_capacity) 
+        TSize new_capacity)
     {
 //IOREV
         TSize size = _computeSizeForCapacity(me, new_capacity);
@@ -579,8 +579,8 @@ SEQAN_CHECKPOINT
  */
 
     template < typename TValue, typename TConfig >
-    inline bool 
-    open(String<TValue, MMap<TConfig> > &me, const char *fileName, int openMode) 
+    inline bool
+    open(String<TValue, MMap<TConfig> > &me, const char *fileName, int openMode)
     {
 //IOREV
         close(me);
@@ -590,8 +590,8 @@ SEQAN_CHECKPOINT
     }
 
     template < typename TValue, typename TConfig >
-    inline bool 
-    open(String<TValue, MMap<TConfig> > &me, const char *fileName) 
+    inline bool
+    open(String<TValue, MMap<TConfig> > &me, const char *fileName)
     {
 //IOREV
         typedef typename String<TValue, MMap<TConfig> >::TFile    TFile;
@@ -599,8 +599,8 @@ SEQAN_CHECKPOINT
     }
 
     template < typename TValue, typename TConfig >
-    inline bool 
-    open(String<TValue, MMap<TConfig> > &me, typename TConfig::TFile file) 
+    inline bool
+    open(String<TValue, MMap<TConfig> > &me, typename TConfig::TFile file)
     {
 //IOREV
         close(me);
@@ -621,8 +621,8 @@ SEQAN_CHECKPOINT
  */
 
     template < typename TValue, typename TConfig >
-    inline bool 
-    openTemp(String<TValue, MMap<TConfig> > &me) 
+    inline bool
+    openTemp(String<TValue, MMap<TConfig> > &me)
     {
 //IOREV
         close(me);
@@ -644,7 +644,7 @@ SEQAN_CHECKPOINT
 //____________________________________________________________________________
 
     template < typename TValue, typename TConfig >
-    inline bool 
+    inline bool
     save(String<TValue, MMap<TConfig> > const &/*me*/, const char * /*fileName*/, int /*openMode*/) {
 //IOREV _nodoc_ shouldn't we flush here? in case of abnormal termination...
         // Memory Mapped Strings are persistent, thus there is no need to save them
@@ -653,7 +653,7 @@ SEQAN_CHECKPOINT
     }
 
     template < typename TValue, typename TConfig >
-    inline bool 
+    inline bool
     save(String<TValue, MMap<TConfig> > const &/*me*/, const char * /*fileName*/) {
 //IOREV _nodoc_ shouldn't we flush here? in case of abnormal termination...
         // Memory Mapped Strings are persistent, thus there is no need to save them
@@ -662,7 +662,7 @@ SEQAN_CHECKPOINT
     }
 
     template < typename TValue, typename TConfig >
-    inline bool 
+    inline bool
     save(String<TValue, MMap<TConfig> > const &/*me*/, typename TConfig::TFile /*file*/) {
 //IOREV _nodoc_ shouldn't we flush here? in case of abnormal termination...
         // Memory Mapped Strings are persistent, thus there is no need to save them
@@ -682,8 +682,8 @@ SEQAN_CHECKPOINT
  */
 
     template < typename TValue, typename TConfig >
-    inline bool 
-    close(String<TValue, MMap<TConfig> > &me) 
+    inline bool
+    close(String<TValue, MMap<TConfig> > &me)
     {
         typedef typename Size<typename TConfig::TFile>::Type TFileSize;
 

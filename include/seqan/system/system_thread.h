@@ -82,12 +82,12 @@ namespace SEQAN_NAMESPACE_MAIN
 
         inline bool open(BOOL initital = false) {
             return hThread = CreateThread(
-                &ThreadDefaultAttributes,    // default security attributes 
-                0,                           // use default stack size  
-                &_start,                     // thread function 
-                this,                        // argument to thread function 
-                0,                           // use default creation flags 
-                &hThreadID);                 // returns the thread identifier 
+                &ThreadDefaultAttributes,    // default security attributes
+                0,                           // use default stack size
+                &_start,                     // thread function
+                this,                        // argument to thread function
+                0,                           // use default creation flags
+                &hThreadID);                 // returns the thread identifier
         }
 
         inline bool close() {
@@ -120,7 +120,7 @@ namespace SEQAN_NAMESPACE_MAIN
             return 0;    // return value should indicate success/failure
         }
     };
-    
+
 #else
 
     template <typename Worker>
@@ -141,7 +141,7 @@ namespace SEQAN_NAMESPACE_MAIN
         Thread(TArg const & arg) : data(), hThread(), worker(arg)
         {}
 
-        ~Thread() 
+        ~Thread()
         {
             if (*this)
                 close();
@@ -188,7 +188,7 @@ namespace SEQAN_NAMESPACE_MAIN
             return 0;
         }
     };
-    
+
 #endif
 
 

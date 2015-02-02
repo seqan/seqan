@@ -48,23 +48,23 @@ namespace SEQAN_NAMESPACE_MAIN
 
 /*!
  * @class Shifter
- * 
+ *
  * @extends Pipe
- * 
+ *
  * @headerfile <seqan/pipe.h>
- * 
+ *
  * @brief Shifts the input stream by <tt>delta</tt> elements.
- * 
+ *
  * @signature template <typename TInput, int DELTA[, bool OMIT_BLANK]>
  *            class Pipe<TInput, Shifter<DELTA, OMIT_BLANK> >;
- * 
+ *
  * @tparam TInput     The type of the pipeline module this module reads from.
  * @tparam OMIT_BLANK Omit undefined entries.  If <tt>true</tt>, the output stream is <tt>|delta|</tt> elements shorter
  *                    than the input stream.  If <tt>false</tt>, the lengths are equal and blanks (default constructed
  *                    elements) are inserted on the cut-off-opposite side, defaults to false.
  * @tparam DELTA      The shift size. For the output stream holds <tt>out[i]=in[i+delta]</tt>.  For <tt>delta>0</tt>
  *                    the input stream is cut of at the beginning and for <tt>delta<0</tt> at the end.
- * 
+ *
  * The output type equals the input type.
  */
 
@@ -76,7 +76,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TInput                      &in;
         typename Size<Pipe>::Type    blankCounter, charCounter;
         typename Value<Pipe>::Type    blank;
-        
+
         Pipe(TInput& _in):
             in(_in),
             blank()    {}
@@ -104,7 +104,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TInput                      &in;
         typename Size<Pipe>::Type    blankCounter, charCounter;
         typename Value<Pipe>::Type    blank;
-        
+
         Pipe(TInput& _in):
             in(_in),
             blank()    {}

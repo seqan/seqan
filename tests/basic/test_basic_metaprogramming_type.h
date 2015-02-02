@@ -45,7 +45,7 @@
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_type_same_type)
 {
     using namespace seqan;
-    
+
     // Test for the values of the VALUE members.
     SEQAN_ASSERT_EQ((+IsSameType<bool, int>::VALUE),  +false);
     SEQAN_ASSERT_EQ((+IsSameType<bool, bool>::VALUE), +true);

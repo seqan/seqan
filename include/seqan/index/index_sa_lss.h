@@ -124,7 +124,7 @@ struct ContextLss_
     inline TValue choose_pivot(TValue *p, TValue n) {
        TValue *pl, *pm, *pn;
        TValue s;
-       
+
        pm=p+(n>>1);                 /* small arrays, middle element.*/
        if (n>7) {
           pl=p;
@@ -207,7 +207,7 @@ struct ContextLss_
 
        Output: x is V and p is I after the initial sorting stage of the refined
        suffix sorting algorithm.*/
-          
+
     inline void bucketsort(TValue *x, TValue *p, TValue n, TValue k)
     {
        TValue *pi, i, c, d, g;
@@ -244,7 +244,7 @@ struct ContextLss_
        for any symbol during transformation: q must be at least k-l; if q<=n,
        compaction is guaranteed; if k-l>n, compaction is never done; if q is
        INT_MAX, the maximum number of symbols are aggregated into one.
-       
+
        Output: Returns an integer j in the range 1...q representing the size of the
        new alphabet. If j<=n+1, the alphabet is compacted. The global variable r is
        set to the number of old symbols grouped into one. Only x[n] is 0.*/
@@ -253,7 +253,7 @@ struct ContextLss_
     {
        TValue b, c, d, e, i, j, m, s;
        TValue *pi, *pj;
-       
+
        for (s=0, i=k-l; i; i>>=1)
           ++s;                      /* s is number of bits in old symbol.*/
        e=MaxValue<TValue>::VALUE>>s; /* e is for overflow checking.*/
@@ -309,10 +309,10 @@ struct ContextLss_
     {
        TValue *pi, *pk;
        TValue i, j, s, sl;
-       
+
        V=x;                         /* set global values.*/
        I=p;
-       
+
        if (n>=k-l) {                /* if bucketing possible,*/
           j=transform(V, I, n, k, l, n);
           bucketsort(V, I, n, j);   /* bucketsort on first r positions.*/
@@ -324,7 +324,7 @@ struct ContextLss_
           sort_split(I, n+1);       /* quicksort on first r positions.*/
        }
        h=r;                         /* number of symbols aggregated by transform.*/
-       
+
        while (*I>=-n) {
           pi=I;                     /* pi is first position of group.*/
           sl=0;                     /* sl is negated length of sorted groups.*/
@@ -349,7 +349,7 @@ struct ContextLss_
 
        for (i=0; i<=n; ++i)         /* reconstruct suffix array from inverse.*/
           I[V[i]]=i;
-    }  
+    }
 };
 
 
@@ -426,11 +426,11 @@ struct ContextLss_
         inline typename Value<TSource>::Type const & operator*() {
             return *in;
         }
-        
+
         inline Pipe& operator++() {
             ++in;
             return *this;
-        }        
+        }
     };
 
     template < typename TInput >
@@ -439,7 +439,7 @@ struct ContextLss_
         ++me.in;
         return true;
     }
-    
+
     template < typename TInput >
     inline typename Size< Pipe< TInput, LarssonSadakane > >::Type
     length(Pipe< TInput, LarssonSadakane > const &me) {

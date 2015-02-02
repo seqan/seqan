@@ -110,7 +110,7 @@ public:
     // Window size, only relevant for insert sequencing
     // If window == 0, no insert sequencing is assumed
     int window;
-    
+
     // Output
     // 0: seqan style
     // 1: afg output format
@@ -137,7 +137,7 @@ public:
     std::string samfile;                // Sam file input
     std::string contigsfile;            // FASTA reference file for Sam input
     std::string outfile;                // Output file name
-    
+
     // Initialization
     ConsensusOptions() :
         method(0), rmethod(0), bandwidth(0), overlaps(0), matchlength(0), quality(0),
@@ -152,7 +152,7 @@ public:
 // positions of the alignments go into startEndPos.
 
 template<typename TValue, typename TStrSpec, typename TPosPair, typename TStringSpec, typename TSpec, typename TConfig, typename TId>
-inline void 
+inline void
 _loadContigReads(StringSet<TValue, Owner<TStrSpec> > & strSet,
                  String<TPosPair, TStringSpec> & startEndPos,
                  FragmentStore<TSpec, TConfig> const & fragStore,
@@ -196,7 +196,7 @@ _loadContigReads(StringSet<TValue, Owner<TStrSpec> > & strSet,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TConfig, typename TMatrix, typename TSize2, typename TSize, typename TReadSlot> 
+template<typename TSpec, typename TConfig, typename TMatrix, typename TSize2, typename TSize, typename TReadSlot>
 inline bool
 convertAlignment(FragmentStore<TSpec, TConfig>& fragStore,
                  TMatrix& mat,
@@ -213,7 +213,7 @@ convertAlignment(FragmentStore<TSpec, TConfig>& fragStore,
 
     // Sort according to contigId
     sortAlignedReads(fragStore.alignedReadStore, SortContigId());
-    
+
     // Find range of the given contig
     typedef typename Iterator<typename TFragmentStore::TAlignedReadStore, Standard>::Type TAlignIter;
     TAlignIter alignIt = lowerBoundAlignedReads(fragStore.alignedReadStore, contigId, SortContigId());
@@ -236,7 +236,7 @@ convertAlignment(FragmentStore<TSpec, TConfig>& fragStore,
         TPosIter itPos = begin(freePos, Standard());
         TPosIter itPosEnd = end(freePos, Standard());
         pos = 0;
-        for(;itPos != itPosEnd; ++itPos, ++pos) 
+        for(;itPos != itPosEnd; ++itPos, ++pos)
             if ((TContigPos)*itPos < _min(alignIt->beginPos, alignIt->endPos)) break;
         if (pos + 1 > length(freePos)) resize(freePos, pos+1, Generous());
         maxTmp = _max(alignIt->beginPos, alignIt->endPos);
@@ -258,7 +258,7 @@ convertAlignment(FragmentStore<TSpec, TConfig>& fragStore,
         typedef typename Iterator<String<typename TFragmentStore::TReadGapAnchor>, Standard>::Type TReadGapsIter;
         TReadGapsIter itGaps = begin(alignIt->gaps, Standard());
         TReadGapsIter itGapsEnd = end(alignIt->gaps, Standard());
-        
+
         // Place each read inside the matrix
         myRead = fragStore.readSeqStore[alignIt->readId];
         TSize lenRead = length(myRead);
@@ -286,18 +286,18 @@ convertAlignment(FragmentStore<TSpec, TConfig>& fragStore,
         for(;itGaps != itGapsEnd; ++itGaps) {
             // Any clipped sequence at the end
             stop =  itGaps->seqPos;
-            if (diff - ((int) itGaps->gapPos - (int) itGaps->seqPos) > 0) 
+            if (diff - ((int) itGaps->gapPos - (int) itGaps->seqPos) > 0)
                 clr2 = stop = lenRead - (diff - ((int) itGaps->gapPos - (int) itGaps->seqPos));
-            
-            for(;mySeqPos < stop; ++matIt, ++seqReadIt, ++mySeqPos) 
+
+            for(;mySeqPos < stop; ++matIt, ++seqReadIt, ++mySeqPos)
                 *matIt = *seqReadIt;
 
-            for(int i = 0; i < ((int) itGaps->gapPos - (int) itGaps->seqPos) - diff; ++i, ++matIt) 
+            for(int i = 0; i < ((int) itGaps->gapPos - (int) itGaps->seqPos) - diff; ++i, ++matIt)
                 *matIt = gapChar;
-    
+
             diff = (itGaps->gapPos - itGaps->seqPos);
         }
-        for(;mySeqPos < clr2; ++mySeqPos, ++seqReadIt, ++matIt) 
+        for(;mySeqPos < clr2; ++mySeqPos, ++seqReadIt, ++matIt)
             *matIt = *seqReadIt;
     }
     //for(TSize row = 0; row < coverage; ++row) {
@@ -311,7 +311,7 @@ convertAlignment(FragmentStore<TSpec, TConfig>& fragStore,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TConfig, typename TMatrix, typename TSize2, typename TSize> 
+template<typename TSpec, typename TConfig, typename TMatrix, typename TSize2, typename TSize>
 inline bool
 convertAlignment(FragmentStore<TSpec, TConfig>& fragStore,
                  TMatrix& mat,
@@ -324,7 +324,7 @@ convertAlignment(FragmentStore<TSpec, TConfig>& fragStore,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TConfig, typename TMatrix> 
+template<typename TSpec, typename TConfig, typename TMatrix>
 inline bool
 convertAlignment(FragmentStore<TSpec, TConfig>& fragStore,
                  TMatrix& mat)
@@ -337,7 +337,7 @@ convertAlignment(FragmentStore<TSpec, TConfig>& fragStore,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TConfig, typename TGappedConsensus, typename TSize> 
+template<typename TSpec, typename TConfig, typename TGappedConsensus, typename TSize>
 inline void
 getGappedConsensus(FragmentStore<TSpec, TConfig>& fragStore,
                    TGappedConsensus& gappedConsensus,
@@ -346,7 +346,7 @@ getGappedConsensus(FragmentStore<TSpec, TConfig>& fragStore,
     typedef FragmentStore<TSpec, TConfig> TFragmentStore;
     typedef typename Value<TGappedConsensus>::Type TValue;
     typedef typename TFragmentStore::TContigPos TContigPos;
-    
+
     TValue gapChar = gapValue<TValue>();
     typedef typename Iterator<typename TFragmentStore::TContigSeq, Standard>::Type TContigIter;
     TContigIter seqContigIt = begin(fragStore.contigStore[contigId].seq, Standard());
@@ -357,21 +357,21 @@ getGappedConsensus(FragmentStore<TSpec, TConfig>& fragStore,
     int diff = 0;
     TContigPos mySeqPos = 0;
     for(;itGaps != itGapsEnd; goNext(itGaps)) {
-        for(;mySeqPos < itGaps->seqPos; ++seqContigIt, ++mySeqPos) 
+        for(;mySeqPos < itGaps->seqPos; ++seqContigIt, ++mySeqPos)
             appendValue(gappedConsensus, *seqContigIt, Generous());
-            
-        for(int i = 0; i < ((int) itGaps->gapPos - (int) itGaps->seqPos) - diff; ++i) 
+
+        for(int i = 0; i < ((int) itGaps->gapPos - (int) itGaps->seqPos) - diff; ++i)
             appendValue(gappedConsensus, gapChar, Generous());
             diff = (itGaps->gapPos - itGaps->seqPos);
     }
-    for(;seqContigIt != seqContigItEnd; ++seqContigIt) 
+    for(;seqContigIt != seqContigItEnd; ++seqContigIt)
         appendValue(gappedConsensus, *seqContigIt, Generous());
 }
 
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TSpec, typename TConfig, typename TGappedConsensus, typename TSize> 
+template<typename TSpec, typename TConfig, typename TGappedConsensus, typename TSize>
 inline void
 assignGappedConsensus(FragmentStore<TSpec, TConfig>& fragStore,
                       TGappedConsensus& gappedCons,
@@ -397,7 +397,7 @@ assignGappedConsensus(FragmentStore<TSpec, TConfig>& fragStore,
     TReadPos gappedPos = 0;
     bool gapOpen = false;
     for(;seqIt != seqItEnd; ++seqIt, ++gappedPos) {
-        if (*seqIt == gapChar) gapOpen = true;                
+        if (*seqIt == gapChar) gapOpen = true;
         else {
             if (gapOpen) {
                 appendValue(contigEl.gaps, TContigGapAnchor(ungappedPos, gappedPos), Generous());
@@ -409,7 +409,7 @@ assignGappedConsensus(FragmentStore<TSpec, TConfig>& fragStore,
             ++ungappedPos;
         }
     }
-    if (gapOpen) 
+    if (gapOpen)
         appendValue(contigEl.gaps, TContigGapAnchor(ungappedPos, gappedPos), Generous());
 }
 
@@ -421,38 +421,38 @@ assignGappedConsensus(FragmentStore<TSpec, TConfig>& fragStore,
  * @fn consensusAlignment
  * @headerfile <seqan/consensus.h>
  * @brief Compute consensus alignment.
- * 
+ *
  * @signature void consensusAlignment(alignmentGraph, beginEndPos[, options])
- * 
+ *
  * @param[out] alignmentGraph  Alignment graph to build.
  * @param[in]  options         Optional settings for the consenus alignment, type: <tt>ConsensusOptions</tt>.
  * @param[in]  beginEndPos     Interval start and end position for the read's alignment; <tt>String&lt;Pair&lt;TPos, TPos&gt; &gt;</tt>.
- * 
+ *
  * @section Example
- * 
+ *
  * @code{.cpp}
  * #include <seqan/sequence.h>
  * #include <seqan/graph_align.h>
  * #include <seqan/consensus.h>
- *  
+ *
  * int main()
  * {
  *     using namespace seqan;
- *  
+ *
  *     typedef StringSet<Dna5String> TStringSet;
  *     typedef Graph<Alignment<TStringSet, void, WithoutEdgeId> > TAlignGraph;
- *  
+ *
  *     TStringSet readSet;
  *     String<Pair<TSize> > begEndPos;
- *  
+ *
  *     appendValue(readSet, "CCCAGTGA");
  *     appendValue(begEndPos, Pair<TSize>(0, 5));
  *     appendValue(readSet, "AGGGACTGT");
  *     appendValue(begEndPos, Pair<TSize>(3, 9));
- *  
+ *
  *     TAlignGraph alignmentGraph(readSet);
  *     consensusAlignment(alignmentGraph, begEndPos);
- *  
+ *
  *     return 0;
  * }
  * @endcode
@@ -462,7 +462,7 @@ template<typename TStringSet, typename TCargo, typename TSpec, typename TSize, t
 inline void
 consensusAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& gOut,
                    String<Pair<TSize, TSize> >& begEndPos,
-                   TConfigOptions const& consOpt) 
+                   TConfigOptions const& consOpt)
 {
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TOutGraph;
     typedef typename Id<TOutGraph>::Type TId;
@@ -480,8 +480,8 @@ consensusAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& gOut,
 
     // Set-up a sparse distance matrix
     Graph<Undirected<double> > pairGraph;
-    
-    // Containers for segment matches and corresponding scores 
+
+    // Containers for segment matches and corresponding scores
     typedef String<Fragment<> > TFragmentString;
     TFragmentString matches;
     typedef String<int> TScoreValues;
@@ -522,7 +522,7 @@ consensusAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& gOut,
 template<typename TStringSet, typename TCargo, typename TSpec, typename TSize>
 inline void
 consensusAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& gOut,
-                   String<Pair<TSize, TSize> >& begEndPos) 
+                   String<Pair<TSize, TSize> >& begEndPos)
 {
     ConsensusOptions consOpt;
     consensusAlignment(gOut, begEndPos, consOpt);
@@ -564,11 +564,11 @@ updateContig(FragmentStore<TFragSpec, TConfig>& fragStore,
     TComponentLength compLength;
     if (convertAlignment(g, component, order, compLength)) {
         TSize numOfComponents = length(order);
-        
+
         // Assign to each sequence the start and end (in terms of component ranks)
         typedef String<std::pair<TSize, TSize> > TComponentToRank;
         TComponentToRank compToRank;
-        for(TSize compIndex = 0; compIndex < numOfComponents; ++compIndex) 
+        for(TSize compIndex = 0; compIndex < numOfComponents; ++compIndex)
             appendValue(compToRank, std::make_pair(order[compIndex], compIndex), Generous());
         std::sort(begin(compToRank, Standard()), end(compToRank, Standard()));
 
@@ -581,7 +581,7 @@ updateContig(FragmentStore<TFragSpec, TConfig>& fragStore,
         for(;!atEnd(itVertex);++itVertex) {
             TVertexDescriptor vert = value(itVertex);
             TSize seq = idToPosition(strSet, sequenceId(g, vert));
-            if (fragmentBegin(g, vert) == 0) 
+            if (fragmentBegin(g, vert) == 0)
                 seqToRank[seq].i1 = std::lower_bound(begin(compToRank, Standard()), end(compToRank, Standard()), std::make_pair((TSize) component[vert], (TSize) 0))->second;
             if (fragmentBegin(g, vert) + fragmentLength(g, vert) == length(strSet[seq]))
                 seqToRank[seq].i2 = std::lower_bound(begin(compToRank, Standard()), end(compToRank, Standard()), std::make_pair((TSize) component[vert], (TSize) 0))->second;
@@ -603,10 +603,10 @@ updateContig(FragmentStore<TFragSpec, TConfig>& fragStore,
         while(finishedSeq < nseq) {
             TLeftOverIter itL = begin(leftOver, Standard());
             TLeftOverIter itLEnd = end(leftOver, Standard());
-            for(TSize pos = 0; itL != itLEnd; ++itL, ++pos) 
+            for(TSize pos = 0; itL != itLEnd; ++itL, ++pos)
                 if (*itL) appendValue(seqToBegin, std::make_pair((seqToRank[pos]).i1, pos), Generous());
             std::sort(begin(seqToBegin, Standard()), end(seqToBegin, Standard()));
-            
+
             TSize endPos = 0;
             TSeqToBeginIter itSB = begin(seqToBegin, Standard());
             TSeqToBeginIter itSBEnd = end(seqToBegin, Standard());
@@ -617,7 +617,7 @@ updateContig(FragmentStore<TFragSpec, TConfig>& fragStore,
                     endPos = (seqToRank[currentSeq]).i2 + 2;
                     leftOver[currentSeq] = false;
                     ++finishedSeq;
-                }    
+                }
             }
             clear(seqToBegin);
             ++maxCoverage;
@@ -650,7 +650,7 @@ updateContig(FragmentStore<TFragSpec, TConfig>& fragStore,
             TInfixIter sIt = begin(str, Standard());
             TInfixIter sItEnd = end(str, Standard());
             TSize i = compOffset[c];
-            for(TSize pCol = i;sIt!=sItEnd;++sIt, ++pCol, ++i) 
+            for(TSize pCol = i;sIt!=sItEnd;++sIt, ++pCol, ++i)
                 mat[row * len + pCol] = *sIt;
         }
         String<bool> active;
@@ -663,14 +663,14 @@ updateContig(FragmentStore<TFragSpec, TConfig>& fragStore,
 
             // Find the empty rows
             for(TSize i=0;i<nseq; ++i) {
-                if (((seqToRank[i]).i1 <= compIndex) && ((seqToRank[i]).i2 >= compIndex)) 
+                if (((seqToRank[i]).i1 <= compIndex) && ((seqToRank[i]).i2 >= compIndex))
                     active[(seqToRow[i])] = true;
             }
-            
+
             // Substitute false gaps with special gap character
             for(TSize i = 0; i < maxCoverage; ++i) {
                 if (!(active[i])) {
-                    for(TSize pCol = offset;pCol < offset + currentCompLength;++pCol) 
+                    for(TSize pCol = offset;pCol < offset + currentCompLength;++pCol)
                         mat[i * len + pCol] = specialGap;
                 }
             }
@@ -691,11 +691,11 @@ updateContig(FragmentStore<TFragSpec, TConfig>& fragStore,
     clear(order);
     compLength.clear();
 
-    
+
     //// Debug code
     //for(TSize row = 0; row<maxCoverage; ++row) {
     //    for(TSize col = 0; col<len; ++col) {
-    //        std::cout << mat[row * len + col];            
+    //        std::cout << mat[row * len + col];
     //    }
     //    std::cout << std::endl;
     //}
@@ -733,7 +733,7 @@ updateContig(FragmentStore<TFragSpec, TConfig>& fragStore,
         gappedPos = 0;
         gapOpen = false;
         for(TSize column = readBegEndRowPos[3*i]; column<readBegEndRowPos[3*i + 1]; ++column, ++gappedPos) {
-            if (mat[readBegEndRowPos[3*i + 2] * len + column] == gapChar) gapOpen = true;                
+            if (mat[readBegEndRowPos[3*i + 2] * len + column] == gapChar) gapOpen = true;
             else {
                 if (gapOpen) {
                     appendValue(alignIt->gaps, TContigGapAnchor(ungappedPos, gappedPos), Generous());
@@ -744,10 +744,10 @@ updateContig(FragmentStore<TFragSpec, TConfig>& fragStore,
         }
         if (gapOpen) appendValue(alignIt->gaps, TContigGapAnchor(ungappedPos, gappedPos), Generous());
         if (alignIt->beginPos < alignIt->endPos) {
-            if (endClr != (TContigPos)lenRead) 
+            if (endClr != (TContigPos)lenRead)
                 appendValue(alignIt->gaps, TContigGapAnchor(lenRead, lenRead + (gappedPos - ungappedPos) - (lenRead - endClr)), Generous());
         } else {
-            if (begClr != 0) 
+            if (begClr != 0)
                 appendValue(alignIt->gaps, TContigGapAnchor(lenRead, lenRead + (gappedPos - ungappedPos) - begClr), Generous());
         }
 
@@ -791,7 +791,7 @@ _countLetters(String<TValue, TSpec> const & mat,
         counterValues[i] = counter;
     }
 
-    // Count all 
+    // Count all
     TMatIter matIt = begin(mat, Standard());
     TMatIter matItEnd = end(mat, Standard());
     TCounterIt countIt = begin(counterValues, Standard());
@@ -837,7 +837,7 @@ consensusCalling(String<TValue, TSpec> const& mat,
     TSize len = length(mat) / maxCoverage;
     TProbabilityDistribution backroundDist;
     resize(backroundDist, alphabetSize + 1, ((TProbability) 1 / (TProbability) (alphabetSize + 1)));
-    
+
     // Get an initial consensus
     typedef typename Iterator<TCounters, Standard>::Type TCounterIt;
     TCounterIt countIt = begin(counterValues, Standard());
@@ -878,17 +878,17 @@ consensusCalling(String<TValue, TSpec> const& mat,
         resize(nI, alphabetSize + 1, 0);
         TPosPrDistIter itPosPrDist = begin(posPrDist, Standard());
         TPosPrDistIter itPosPrDistEnd = end(posPrDist, Standard());
-        for(;itPosPrDist!=itPosPrDistEnd; ++itPosPrDist) 
-            for(TSize i = 0; i<(alphabetSize + 1); ++i) 
+        for(;itPosPrDist!=itPosPrDistEnd; ++itPosPrDist)
+            for(TSize i = 0; i<(alphabetSize + 1); ++i)
                 nI[i] += (*itPosPrDist)[i];
-    
+
         // Composition probabilities
         clear(pI);
         resize(pI, alphabetSize + 1);
         TProbability lenPosPrDist = (TProbability) length(posPrDist);
-        for(TSize i = 0; i<length(pI); ++i) 
+        for(TSize i = 0; i<length(pI); ++i)
             pI[i] = nI[i] / lenPosPrDist;
-        
+
 
         // Count all letters that agree / disagree with the consensus
         TProbabilityDistribution nIJ;
@@ -904,8 +904,8 @@ consensusCalling(String<TValue, TSpec> const& mat,
             TValue c = *matIt;
             if (c != specialGap) {
                 TSize fragJ = (c != gapChar) ? ordValue(TAlphabet(c)) : alphabetSize;
-                for(TSize consI = 0; consI<(alphabetSize + 1); ++consI) 
-                    nIJ[consI * (alphabetSize + 1) + fragJ] += (*itPosPrDist)[consI];    
+                for(TSize consI = 0; consI<(alphabetSize + 1); ++consI)
+                    nIJ[consI * (alphabetSize + 1) + fragJ] += (*itPosPrDist)[consI];
             }
         }
 
@@ -914,10 +914,10 @@ consensusCalling(String<TValue, TSpec> const& mat,
         resize(pIJ, (alphabetSize + 1) * (alphabetSize + 1));
         TProbability sumIJ = 0;
         for(TSize diag = 0; diag<(alphabetSize + 1); ++diag) sumIJ += nIJ[diag * (alphabetSize + 1) + diag];
-        for(TSize consI = 0; consI<(alphabetSize + 1); ++consI) 
+        for(TSize consI = 0; consI<(alphabetSize + 1); ++consI)
             for(TSize fragJ = 0; fragJ<(alphabetSize + 1); ++fragJ)
                 pIJ[consI * (alphabetSize + 1) + fragJ] = nIJ[consI * (alphabetSize + 1) + fragJ] / sumIJ;
-    
+
         // Recompute positional probability distribution
         itPosPrDist = begin(posPrDist, Standard());
         TSize col = 0;
@@ -933,9 +933,9 @@ consensusCalling(String<TValue, TSpec> const& mat,
                         TValue c = mat[row * len + col];
                         if (c != specialGap) {
                             TSize fragJ = (c != gapChar) ? ordValue(TAlphabet(c)) : alphabetSize;
-                            if (allI == consI) 
-                                numerator *= pIJ[allI * (alphabetSize + 1) + fragJ]; 
-                            denominatorSub *= pIJ[allI * (alphabetSize + 1) + fragJ]; 
+                            if (allI == consI)
+                                numerator *= pIJ[allI * (alphabetSize + 1) + fragJ];
+                            denominatorSub *= pIJ[allI * (alphabetSize + 1) + fragJ];
                         }
                     }
                     denominator += denominatorSub;
@@ -943,7 +943,7 @@ consensusCalling(String<TValue, TSpec> const& mat,
                 prDist[consI] = numerator / denominator;
             }
             *itPosPrDist = prDist;
-        }    
+        }
 
         // Check termination criterion
         TProbability eps = 0.00001;
@@ -989,7 +989,7 @@ consensusCalling(String<TValue, TSpec> const& mat,
             run = 0;
         }
     }
-    
+
     // Compute the most likely consensus
     TPosPrDistIter itPosPrDist = begin(posPrDist, Standard());
     TPosPrDistIter itPosPrDistEnd = end(posPrDist, Standard());
@@ -1053,13 +1053,13 @@ consensusCalling(String<TValue, TSpec> const& mat,
     typedef typename Size<String<TValue, TSpec> >::Type TSize;
     TSize alphabetSize = ValueSize<TAlphabet>::VALUE;
     TValue gapChar = gapValue<TValue>();
-    
+
     // Set-up the counters
     typedef String<TSize> TCounter;
     typedef String<TCounter> TCounters;
     TCounters counterValues;
     _countLetters(mat, counterValues, maxCoverage, TAlphabet() );
-    
+
     // Get the consensus
     typedef typename Iterator<TCounters, Standard>::Type TCounterIt;
     TCounterIt countIt = begin(counterValues, Standard());
@@ -1069,7 +1069,7 @@ consensusCalling(String<TValue, TSpec> const& mat,
     TValue c = TValue();
     TSize pos = 0;
     for(;countIt != countItEnd; ++countIt) {
-        max = 0;    
+        max = 0;
         typedef typename Iterator<TCounter, Standard>::Type TCIt;
         TCIt cIt = begin(*countIt, Standard());
         TCIt cItEnd = end(*countIt, Standard());
@@ -1158,7 +1158,7 @@ write(
         String<TSize> readSlot;
         convertAlignment(fragStore, mat, idCount, maxCoverage, readSlot);
         TSize len = length(mat) / maxCoverage;
-        
+
         // Gapped consensus sequence
         typedef String<TMultiReadChar> TGappedConsensus;
         TGappedConsensus gappedConsensus;
@@ -1210,12 +1210,12 @@ write(
                 writeValue(target, '\n');
             }
             writeValue(target, '\n');
-    
+
             // Consensus
             for(int i = 0; i<offset; ++i)
                 writeValue(target, ' ');
             write(target, "C: ");
-            for(unsigned int local_col = column; local_col<window_end; ++local_col, ++itCons) 
+            for(unsigned int local_col = column; local_col<window_end; ++local_col, ++itCons)
                 writeValue(target, *itCons);
             writeValue(target, '\n');
             for(int i = 0; i<offset-1; ++i)
@@ -1238,7 +1238,7 @@ write(
 
         // Sort according to contigId
         sortAlignedReads(fragStore.alignedReadStore, SortContigId());
-    
+
         // Find range of the given contig
         typedef typename Iterator<typename TFragmentStore::TAlignedReadStore, Standard>::Type TAlignIter;
         TAlignIter alignIt = lowerBoundAlignedReads(fragStore.alignedReadStore, idCount, SortContigId());
@@ -1250,7 +1250,7 @@ write(
         TAlignIter alignItTmpEnd = upperBoundAlignedReads(fragStore.alignedReadStore, idCount, SortContigId());
         String<std::pair<TSize, TSize> > idToPos;
         reserve(idToPos, alignItTmpEnd - alignItTmp);
-        for(TSize iCount = 0; alignItTmp!=alignItTmpEnd; ++iCount, ++alignItTmp) 
+        for(TSize iCount = 0; alignItTmp!=alignItTmpEnd; ++iCount, ++alignItTmp)
             appendValue(idToPos, std::make_pair(alignItTmp->id, readSlot[iCount]));
         std::sort(begin(idToPos, Standard()), end(idToPos, Standard()));
 
@@ -1341,7 +1341,7 @@ return;
 //    typedef typename Value<typename TFragmentStore::TMatePairStore>::Type TMatePairElement;
 //    typedef typename Value<typename TFragmentStore::TReadStore>::Type TReadStoreElement;
 //    typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type TAlignedElement;
-//    
+//
 //
 //    // All maps to mirror file ids to our internal ids
 //    typedef std::map<TId, TId> TIdMap;
@@ -1387,7 +1387,7 @@ return;
 //                return 1;
 //            if (!lexicalCast2(alignEl.endPos, buffer))
 //                return 1;
-//            
+//
 //            // Any attributes?
 //            String<char> eid;
 //            String<char> qlt;
@@ -1449,7 +1449,7 @@ return;
 //                if (res != 0 && res != EOF_BEFORE_SUCCESS)
 //                    return 1;
 //            }
-//            
+//
 //            // Set quality
 //            typedef typename Iterator<TReadSeq, Standard>::Type TReadIter;
 //            typedef typename Iterator<String<char> >::Type TQualIter;
@@ -1546,7 +1546,7 @@ return;
 //            TId id = 0;
 //            if (!lexicalCast2(id, buffer))
 //                return 1;
-//            
+//
 //            // Any attributes?
 //            std::stringstream input;
 //            input << "F" << id;
@@ -1638,7 +1638,7 @@ return;
 //            TId id = 0;
 //            if (!lexicalCast2(id, buffer))
 //                return 1;
-//            
+//
 //            // Any attributes?
 //            std::stringstream input;
 //            input << "L" << id;
@@ -1701,7 +1701,7 @@ return;
 //        }
 //    }
 //    fclose(strmLib);
-//    
+//
 //    // Renumber all ids
 //    typedef typename TIdMap::const_iterator TIdMapIter;
 //    typedef typename Iterator<typename TFragmentStore::TMatePairStore>::Type TMateIter;
@@ -1757,11 +1757,11 @@ return;
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TFile, typename TSpec, typename TConfig>
-inline void 
+inline void
 _writeCeleraFrg(TFile& file,
-                FragmentStore<TSpec, TConfig>& fragStore) 
+                FragmentStore<TSpec, TConfig>& fragStore)
 {
-//IOREV _nodoc_ 
+//IOREV _nodoc_
     typedef FragmentStore<TSpec, TConfig> TFragmentStore;
     typedef typename Size<TFragmentStore>::Type TSize;
     typedef typename TFragmentStore::TReadPos TReadPos;

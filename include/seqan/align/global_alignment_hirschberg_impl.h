@@ -76,7 +76,7 @@ public:
         SEQAN_ASSERT_LEQ(b1, b2);
     }
 
-    HirschbergSet_ & 
+    HirschbergSet_ &
     operator=(HirschbergSet_ const & other_)
     {
         x1 = other_.x1;
@@ -101,13 +101,13 @@ public:
 // Function _begin1()
 // ----------------------------------------------------------------------------
 
-inline int& 
+inline int&
 _begin1(HirschbergSet_ & me) {
     return me.x1;
 }
 
 
-inline int const& 
+inline int const&
 _begin1(HirschbergSet_ const & me) {
     return me.x1;
 }
@@ -130,7 +130,7 @@ _end1(HirschbergSet_ & me) {
     return me.x2;
 }
 
-inline int const& 
+inline int const&
 _end1(HirschbergSet_ const & me) {
     return me.x2;
 }
@@ -228,8 +228,8 @@ _setScore(HirschbergSet_ & me,int new_score) {
 //      are only active in SEQAN_DEBUG
 // //////////////////////////////////////////////////////////////////////////////////////////////
 #ifdef SEQAN_DEBUG
-    
-inline 
+
+inline
 void
 print(HirschbergSet_ const & me)
 {
@@ -242,7 +242,7 @@ print(HirschbergSet_ const & me)
 // ----------------------------------------------------------------------------
 
 inline bool
-operator==(HirschbergSet_ const & lhs, 
+operator==(HirschbergSet_ const & lhs,
            HirschbergSet_ const & rhs)
 {
     return ((_begin1(lhs) == _begin1(rhs)) && (_end1(lhs) == _end1(rhs)) &&
@@ -259,7 +259,7 @@ operator==(HirschbergSet_ const & lhs,
     {
         int l1 = length(s1);
         int l2 = length(s2);
-        
+
         int i,j,sg,sd;
 
         String<String<int> > fMatrix,rMatrix,tMatrix;
@@ -289,20 +289,20 @@ operator==(HirschbergSet_ const & lhs,
             {
                 sg = -1 + ((fMatrix[i-1][j] > fMatrix[i][j-1]) ? fMatrix[i-1][j] : fMatrix[i][j-1]);
                 sd = fMatrix[i-1][j-1] + ((s1[i - 1] == s2[j-1]) ? 0 : -1 );
-        
+
                 fMatrix[i][j] = ((sg > sd) ? sg : sd);
             }
         }
 
         // calculate reverse matrix
         for(j = l2 - 1;j >= 0;--j)
-        {    
+        {
             rMatrix[l1][j] = (l2 - j)*(-1);
             for(i = l1 - 1;i >= 0;--i)
             {
                 sg = -1 + ((rMatrix[i+1][j] > rMatrix[i][j+1]) ? rMatrix[i+1][j] : rMatrix[i][j+1]);
                 sd = rMatrix[i+1][j+1] + ((s1[i] == s2[j]) ? 0 : -1 );
-        
+
                 rMatrix[i][j] = ((sg > sd) ? sg : sd);
             }
         }
@@ -314,7 +314,7 @@ operator==(HirschbergSet_ const & lhs,
 
         std::cout << std::endl << "-;";
         for(j = 0;j <= l2;++j)
-        {    
+        {
             if(j != 0) std::cout << s2[j-1] << ";";
             for(i = 0;i <= l1;++i)
             {
@@ -329,7 +329,7 @@ operator==(HirschbergSet_ const & lhs,
         std::cout << "-;" << std::endl;
 
         for(j = 0;j <= l2;++j)
-        {    
+        {
             if(j != l2) std::cout << s2[j] << ";";
             else std::cout << "-;";
             for(i = 0;i <= l1;++i)
@@ -346,7 +346,7 @@ operator==(HirschbergSet_ const & lhs,
 
         std::cout << std::endl << "-;";
         for(j = 0;j <= l2;++j)
-        {    
+        {
             if(j != 0) std::cout << s2[j-1] << ";";
             for(i = 0;i <= l1;++i)
             {
@@ -359,7 +359,7 @@ operator==(HirschbergSet_ const & lhs,
 
 #endif
 
-// debug flag .. define to see where Hirschberg cuts the sequences    
+// debug flag .. define to see where Hirschberg cuts the sequences
 //#define SEQAN_HIRSCHBERG_DEBUG_CUT
 
 // ----------------------------------------------------------------------------
@@ -376,13 +376,13 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 {
     TSequenceH const & s1 = source(gapsH);
     TSequenceV const & s2 = source(gapsV);
-    
+
     TScoreValue total_score = 0;
 
     typedef typename Value<TSequenceV>::Type TValueV;
 
     typedef typename Size<TSequenceH>::Type TStringSize;
-    
+
     typedef typename Iterator<TSequenceH const, Standard>::Type TSequenceHIter;
     typedef typename Iterator<TSequenceV const, Standard>::Type TSequenceVIter;
 
@@ -416,9 +416,9 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
 
     std::stack<HirschbergSet_> to_process;
     HirschbergSet_ target;
-    
+
     int i,j;
-    
+
     HirschbergSet_ hs_complete(0,len1,0,len2,0);
     to_process.push(hs_complete);
 
@@ -447,7 +447,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
         }
         else if(_begin1(target) + 1 == _end1(target) || _begin2(target) + 1 == _end2(target))
         {
-            /* ALIGN */            
+            /* ALIGN */
 #ifdef SEQAN_HIRSCHBERG_DEBUG_CUT
             std::cout << "align s1 " << _begin1(target) << " to " << _end1(target) << " and s2 " << _begin2(target) << " to " << _end2(target) << std::endl;
             std::cout << "align " << infix(s1,_begin1(target),_end1(target)) << " and " << infix(s2,_begin2(target),_end2(target)) << std::endl << std::endl;
@@ -504,7 +504,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                 border_ += score_gap;
                 v = border_;
 
-                finger2 = col_;    
+                finger2 = col_;
                 goPrevious(col_, 1);
                 finger1 = col_;
 
@@ -578,7 +578,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                     insertGap(target_0);
                 }
 
-                if (gh) 
+                if (gh)
                 {
                     ++y;
                     goNext(finger1, 1);
@@ -611,9 +611,9 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             /* END ALIGN */
         }
         else
-        {    
-            /* 
-                Calculate cut using the algorithm as proposed in the lecture of Clemens Gröpl 
+        {
+            /*
+                Calculate cut using the algorithm as proposed in the lecture of Clemens Gröpl
                 using a backpointer to remember the position where the optimal alignment passes
                 the mid column
             */
@@ -632,7 +632,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
             for(i = _begin2(target);i <= _end2(target);++i)
             {
                 c_score[i] = border;
-                border += score_gap; 
+                border += score_gap;
                 pointer[i] = i;
             }
 
@@ -650,7 +650,7 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                     sd = s + ((v == getValue(s2,j-1)) ? score_match : score_mismatch);
 
                     s = c_score[j];
-                    c_score[j] = (sg > sd) ? sg : sd;    
+                    c_score[j] = (sg > sd) ? sg : sd;
                 }
             }
 
@@ -661,9 +661,9 @@ _globalAlignment(Gaps<TSequenceH, TGapsSpecH> & gapsH,
                 c_score[_begin2(target)] = border;
                 border += score_gap;
                 v = getValue(s1,i-1);
-            
+
                 dp = _begin2(target);
-            
+
                 for(j = _begin2(target) + 1;j <= _end2(target);++j)
                 {
                     sg1 = score_gap + c_score[j];

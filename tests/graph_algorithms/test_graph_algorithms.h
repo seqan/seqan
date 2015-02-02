@@ -40,14 +40,14 @@ namespace SEQAN_NAMESPACE_MAIN
 {
 
 template<typename TGraph>
-inline void 
+inline void
 _createRandomGraph(TGraph& g)
 {
     int const SEED = 0;
     seqan::Rng<> rng(SEED);
     seqan::Pdf<Uniform<int> > vertexPdf(0, 49);
     seqan::Pdf<Uniform<int> > edgePdf(0, 99);
-    
+
     clear(g);
     unsigned int nVertices = pickRandomNumber(rng, vertexPdf) + 10;
     seqan::Pdf<Uniform<int> > stPdf(0, nVertices - 1);
@@ -173,7 +173,7 @@ void Test_HeapTree() {
     SEQAN_ASSERT(heapExtractRoot(firstKeyedHeap).i2 == 1);
     SEQAN_ASSERT(empty(firstKeyedHeap) == true);
     SEQAN_ASSERT(length(firstKeyedHeap) == 0);
-    
+
     // Change value only for keyed heaps
     buildHeap(firstKeyedHeap, begin(keyedTest), end(keyedTest));
     heapChangeValue(firstKeyedHeap, 'c', 20);
@@ -196,9 +196,9 @@ void Test_HeapTree() {
 
     int const SEED = 0;
     seqan::Rng<> rng(SEED);
-    
+
     for(unsigned int i=0; i<1000; ++i) {
-    
+
         TValue val = pickRandomNumber(rng, Pdf<Uniform<int> >(0, 9999)) - 5000;
         appendValue(result1, val);
         appendValue(result2, val);
@@ -218,7 +218,7 @@ void Test_HeapTree() {
     typedef int TValue;
     clear(result1);
     clear(result2);
-    
+
     for(unsigned int i=0; i<1000; ++i) {
         TValue val = pickRandomNumber(rng, Pdf<Uniform<int> >(0, 9999)) - 5000;
         appendValue(result1, val);
@@ -249,7 +249,7 @@ void Test_BreadthFirstSearch() {
     TSize numEdges = 10;
     //Source, Target, Source, Target, Source, ...
     TVertexDescriptor edges[] = {0,1, 0,4, 1,5, 2,5, 2,6, 2,3, 3,6, 3,7, 5,6, 6,7};
-    
+
     //Create the graph
     TGraph g;
     addEdges(g, edges, numEdges);
@@ -260,7 +260,7 @@ void Test_BreadthFirstSearch() {
 
     // Bfs
     breadthFirstSearch(predMap, distMap, g, 1);
-    
+
     SEQAN_ASSERT(getProperty(distMap, 0) == 1);
     SEQAN_ASSERT(getProperty(distMap, 1) == 0);
     SEQAN_ASSERT(getProperty(distMap, 2) == 2);
@@ -338,14 +338,14 @@ void Test_TopologicalSort() {
     TSize numEdges = 9;
     //Source, Target, Source, Target, Source, ...
     TVertexDescriptor edges[] = {0,3, 0,1, 1,2, 3,2, 5,7, 5,6, 6,7, 6,3, 8,7};
-    
+
     //Create the graph
     Graph<> g;
     addEdges(g,edges, numEdges);
 
     // Predecessor and distance map
     String<TVertexDescriptor> order;
-    
+
     // Topological sort
     topologicalSort(order, g);
 
@@ -381,7 +381,7 @@ void Test_StronglyConnectedComponents() {
 
     // Predecessor and distance map
     String<unsigned int> component;
-    
+
     // Strongly Connected Components
     stronglyConnectedComponents(component, g);
 
@@ -417,7 +417,7 @@ void Test_ConnectedComponents() {
 
     //Components
     String<unsigned int> component;
-    
+
     //Connected Components
     connectedComponents(component, g);
 
@@ -451,7 +451,7 @@ void Test_PrimsAlgorithm() {
     String<unsigned int> weightMap;
     assignEdgeMap(weightMap, g, weights);
 
-    // Tree and predecessor map 
+    // Tree and predecessor map
     String<TVertexDescriptor> predMap;
 
     primsAlgorithm(predMap, g, 0, weightMap);
@@ -518,7 +518,7 @@ void Test_KruskalsAlgorithm() {
 void Test_MST_All() {
     int const SEED = 0;
     seqan::Rng<> rng(SEED);
-    
+
     //while (true) {
         Graph<Undirected<> > myGraph;
         _createRandomGraph(myGraph);
@@ -528,7 +528,7 @@ void Test_MST_All() {
         String<unsigned int> weightMapInput;
         assignEdgeMap(weightMapInput, myGraph, initialWeights);
         clear(initialWeights);
-    
+
         // Prim1
         String<unsigned int> predMapOut;
         primsAlgorithmSpaceEfficient(predMapOut, myGraph, 0, weightMapInput);
@@ -581,7 +581,7 @@ void Test_DagShortestPath() {
     //Source, Target, Source, Target, Source, ...
     TVertexDescriptor edges[] = {0,2, 0,1, 1,3, 1,2, 2,5, 2,4, 2,3, 3,5, 3,4, 4,5};
     int weights[] =             {3,   5,   6,   2,   2,   4,   7,   1,   -1,  -2};
-    
+
     //Create the graph
     Graph<> g;
     addEdges(g,edges, numEdges);
@@ -595,7 +595,7 @@ void Test_DagShortestPath() {
 
     // DAG-Shortest path(Graph, sourceVertex_vertex, weightMap, predMap, distMap)
     dagShortestPath(predMap, distMap, g, 1, weightMap);
-    
+
     SEQAN_ASSERT(getProperty(distMap, 1) == 0);
     SEQAN_ASSERT(getProperty(distMap, 2) == 2);
     SEQAN_ASSERT(getProperty(distMap, 3) == 6);
@@ -628,7 +628,7 @@ void Test_BellmanFord() {
     //Create the graph
     Graph<> g;
     addEdges(g,edges, numEdges);
-    
+
     String<unsigned int> weightMap;
     assignEdgeMap(weightMap, g, weights);
 
@@ -713,8 +713,8 @@ void Test_AllPairsShortestPath() {
     //Create the graph
     Graph<> g;
     addEdges(g,edges, numEdges);
-    
-    String<int> weightMap;    
+
+    String<int> weightMap;
     assignEdgeMap(weightMap, g, weights);
 
     // Out parameter
@@ -796,8 +796,8 @@ void Test_FloydWarshall() {
     //Create the graph
     Graph<> g;
     addEdges(g,edges, numEdges);
-    
-    String<int> weightMap;    
+
+    String<int> weightMap;
     assignEdgeMap(weightMap, g, weights);
 
     // Out parameter
@@ -875,7 +875,7 @@ void Test_TransitiveClosure() {
     TSize numEdges = 5;
     //Source, Target, Source, Target, Source, ...
     TVertexDescriptor edges[] = {3,0, 1,2, 2,1, 1,3, 3,2};
-        
+
     //Create the graph
     Graph<> g;
     addEdges(g,edges, numEdges);
@@ -883,7 +883,7 @@ void Test_TransitiveClosure() {
     // Transitive-Closure
     String<bool> closure;
     transitiveClosure(closure, g);
-    
+
     unsigned int len = (unsigned int) sqrt((double) length(closure));
     SEQAN_ASSERT(getValue(closure, 0*len + 0) == 1);
     SEQAN_ASSERT(getValue(closure, 0*len + 1) == 0);
@@ -923,13 +923,13 @@ void Test_FordFulkerson() {
     //Create the graph
     Graph<> g;
     addEdges(g,edges, numEdges);
-    String<unsigned int> capMap;    
+    String<unsigned int> capMap;
     assignEdgeMap(capMap, g, capacity);
 
     // Out-parameter
-    String<unsigned int> flow;    
+    String<unsigned int> flow;
     unsigned int valF = fordFulkersonAlgorithm(flow, g, 0, 3, capMap);
-    
+
     SEQAN_ASSERT(valF == 23);
     TEdgeIterator itEdge(g);
     for(;!atEnd(itEdge);goNext(itEdge)) {
@@ -961,7 +961,7 @@ void Test_PathGrowingAlgorithm() {
     assignEdgeMap(weightMap, g, weights);
 
     // Path growing algorithm
-    String<bool> edgeMap;    
+    String<bool> edgeMap;
 
     // EdgeMap indicates whether an edge is selected or not
     unsigned int weight = pathGrowingAlgorithm(edgeMap, g, weightMap);
@@ -1090,7 +1090,7 @@ void Test_HmmAlgorithms() {
     typedef VertexDescriptor<THmm>::Type TVertexDescriptor;
     //typedef EdgeDescriptor<THmm>::Type TEdgeDescriptor;
     TSize alph_size = ValueSize<TAlphabet>::VALUE;
-    
+
     Dna dnaA = Dna('A');
     Dna dnaC = Dna('C');
     Dna dnaG = Dna('G');
@@ -1172,7 +1172,7 @@ SEQAN_DEFINE_TEST(test_heap_tree)
     Test_HeapTree();
 }
     // Elementary graph algorithms
-SEQAN_DEFINE_TEST(test_breadth_first_search)    
+SEQAN_DEFINE_TEST(test_breadth_first_search)
 {
     Test_BreadthFirstSearch();
 }
@@ -1198,7 +1198,7 @@ SEQAN_DEFINE_TEST(test_prims_algorithm)
     Test_PrimsAlgorithm();
 }
 SEQAN_DEFINE_TEST(test_kruskals_algorithm)
-{    
+{
     Test_KruskalsAlgorithm();
 }
 SEQAN_DEFINE_TEST(test_mst_all)
@@ -1215,7 +1215,7 @@ SEQAN_DEFINE_TEST(test_bellmann_ford)
     Test_BellmanFord();
 }
 SEQAN_DEFINE_TEST(test_dijkstra)
-{    
+{
     Test_Dijkstra();
 }
     // All-Pairs Shortest paths
@@ -1226,7 +1226,7 @@ SEQAN_DEFINE_TEST(test_all_pairs_shortest_path)
 SEQAN_DEFINE_TEST(test_floyd_warshall)
 {
     Test_FloydWarshall();
-}    
+}
 SEQAN_DEFINE_TEST(test_transitive_closure)
 {
     Test_TransitiveClosure();
@@ -1249,7 +1249,7 @@ SEQAN_DEFINE_TEST(test_longest_increasing_subsequence)
 SEQAN_DEFINE_TEST(test_longest_common_subsequence)
 {
     Test_LongestCommonSubsequence();
-}    
+}
 SEQAN_DEFINE_TEST(test_heaviest_increasing_subsequence)
 {
     Test_HeaviestIncreasingSubsequence();
@@ -1258,7 +1258,7 @@ SEQAN_DEFINE_TEST(test_heaviest_increasing_subsequence)
 
     // Hmm algorithms
 SEQAN_DEFINE_TEST(test_hmm_algorithm)
-{    
+{
     Test_HmmAlgorithms();
 }
 

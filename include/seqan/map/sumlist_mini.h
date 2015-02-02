@@ -51,7 +51,7 @@ struct MiniListEntry_
         LIMIT_2 = 1 << 30
     };
 
-    static const unsigned char SIZES [4]; 
+    static const unsigned char SIZES [4];
 
     union _union
     {
@@ -190,7 +190,7 @@ public:
         arrayCopyForward(other.data_, other.data_ + SIZE, data_);
     }
 
-    ~SumList() 
+    ~SumList()
     {}
 
     SumList const &
@@ -305,7 +305,7 @@ end(SumList<DIM, TValue, MiniSumList<SIZE, TSpec> > const& me)
 
 //changes the value at ptr (which is at the dim-th tuple position) to new_value
 template <unsigned int DIM, typename TValue, unsigned short SIZE, typename TSpec, typename TValue2>
-inline bool 
+inline bool
 _miniSumListAssignValue(SumList<DIM, TValue, MiniSumList<SIZE, TSpec> > & me,
                          unsigned char * ptr,
                          int dim,
@@ -348,7 +348,7 @@ _miniSumListSizeOfValues(SumListValues<DIM, TValue> const & vals)
 //inserts DIM-tupel at byte_position
 //returns false on capacity owerflow, true otherwise
 template <unsigned int DIM, typename TValue, unsigned short SIZE, typename TSpec, typename TPosition, typename TValue2>
-inline bool 
+inline bool
 _miniSumListInsertValues(SumList<DIM, TValue, MiniSumList<SIZE, TSpec> > & me,
                           TPosition byte_pos,
                           TValue2 const & new_values,
@@ -372,7 +372,7 @@ _miniSumListInsertValues(SumList<DIM, TValue, MiniSumList<SIZE, TSpec> > & me,
         entr.assignValue(new_values[i]);
         ptr += entr.size();
     }
-    
+
     me.data_size = new_size;
     me.data_sum += new_values;
     ++me.data_length;
@@ -381,7 +381,7 @@ _miniSumListInsertValues(SumList<DIM, TValue, MiniSumList<SIZE, TSpec> > & me,
 
 
 template <typename TSumList, typename TValues>
-inline bool 
+inline bool
 _insertValues(TSumList & me,
               Iter<TSumList, MiniSumListValueIterator_> it,
               TValues const & new_values,
@@ -390,7 +390,7 @@ _insertValues(TSumList & me,
     return _miniSumListInsertValues(me, it.data_ptr - me.data_, new_values, new_values_size);
 }
 template <typename TSumList, typename TValue>
-inline bool 
+inline bool
 _insertValues(TSumList & me,
               Iter<TSumList, MiniSumListValueIterator_> it,
               TValue const * new_values,
@@ -404,7 +404,7 @@ _insertValues(TSumList & me,
 //appends DIM-tupel
 //returns false on capacity owerflow, true otherwise
 template <unsigned int DIM, typename TValue, unsigned short SIZE, typename TSpec, typename TValues>
-inline bool 
+inline bool
 appendValues(SumList<DIM, TValue, MiniSumList<SIZE, TSpec> > & me,
              TValues const & new_values)
 {
@@ -412,7 +412,7 @@ appendValues(SumList<DIM, TValue, MiniSumList<SIZE, TSpec> > & me,
     return _miniSumListInsertValues(me, me.data_size, new_values, dummy);
 }
 template <unsigned int DIM, typename TValue, unsigned short SIZE, typename TSpec, typename TValue2>
-inline bool 
+inline bool
 appendValues(SumList<DIM, TValue, MiniSumList<SIZE, TSpec> > & me,
              TValue2 const * new_values)
 {
@@ -535,7 +535,7 @@ splitSumList(SumList<DIM, TValue, MiniSumList<SIZE, TSpec> > & me,
 //    ~Iter()
 //    {
 //    }
-//    inline Iter const & 
+//    inline Iter const &
 //    operator = (Iter const & other)
 //    {
 //        data_container = other.data_container;
@@ -574,13 +574,13 @@ public:
     ~Iter()
     {
     }
-    inline Iter const & 
+    inline Iter const &
     operator = (Iter const & other)
     {
         data_ptr = other.data_ptr;
         return *this;
     }
-    inline Iter const & 
+    inline Iter const &
     operator = (TUnsignedChar * ptr)
     {
         data_ptr = ptr;
@@ -698,7 +698,7 @@ public:
     ~Iter()
     {
     }
-    inline Iter const & 
+    inline Iter const &
     operator = (Iter const & other)
     {
         container_ = other.container_;
@@ -832,7 +832,7 @@ searchSumList(Iter< TSumList, MiniSumListIterator > & it,
 //////////////////////////////////////////////////////////////////////////////
 
 template <unsigned int DIM, typename TValue, unsigned short SIZE, typename TSpec, typename TValue2>
-inline bool 
+inline bool
 assignValue(Iter<SumList<DIM, TValue, MiniSumList<SIZE, TSpec> >, MiniSumListIterator > & it,
             int dim,
             TValue2 val)
@@ -882,7 +882,7 @@ assignValue(Iter<SumList<DIM, TValue, MiniSumList<SIZE, TSpec> >, MiniSumListIte
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TSumList, typename TValues>
-inline bool 
+inline bool
 insertValues(Iter<TSumList, MiniSumListIterator > & it,
              TValues const & vals)
 {
@@ -896,7 +896,7 @@ insertValues(Iter<TSumList, MiniSumListIterator > & it,
     return ret;
 }
 template <typename TSumList, typename TValue>
-inline bool 
+inline bool
 insertValues(Iter<TSumList, MiniSumListIterator > & it,
              TValue const * p_vals)
 {
@@ -907,7 +907,7 @@ insertValues(Iter<TSumList, MiniSumListIterator > & it,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TSumList>
-inline void 
+inline void
 removeValues(Iter<TSumList, MiniSumListIterator > & it)
 {
     //adjust sums

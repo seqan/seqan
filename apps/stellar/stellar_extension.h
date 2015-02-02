@@ -120,7 +120,7 @@ _isEpsMatch(Triple<TPos, TPos, TPos> const & left,
 // Identifies the longest epsilon match in align and sets the view positions of
 // align to start and end position of the longest epsilon match
 template<typename TSource, typename TSize, typename TFloat>
-bool 
+bool
 longestEpsMatch(Align<TSource> & align,
                 TSize matchMinLength,
                 TFloat epsilon) {
@@ -139,7 +139,7 @@ longestEpsMatch(Align<TSource> & align,
     TPosition beginPos = 0;
     TPosition endPos = 0;
     TSize minLength = matchMinLength - 1;
-    
+
     while ((*leftIt).i2 + minLength < (*rightIt).i1) {
         while ((*leftIt).i2 + minLength < (*rightIt).i1) {
             if(_isEpsMatch(*leftIt, *rightIt, epsilon)) {
@@ -258,14 +258,14 @@ _align_banded_nw_best_ends(TTrace& trace,
     // Initialization
     TTraceValue Diagonal = 0; TTraceValue Horizontal = 1; TTraceValue Vertical = 2;
     TString const& str1 = str[0];
-    TString const& str2 = str[1];        
+    TString const& str2 = str[1];
     TSize len1 = length(str1) + 1;
     TSize len2 = length(str2) + 1;
     TSize diagonalWidth = (TSize) (diagU - diagL + 1);
     TSize hi_diag = diagonalWidth;
     TSize lo_diag = 0;
     if (diagL > 0) lo_diag = 0;
-    else lo_diag = (diagU < 0) ? hi_diag : (TSize) (1 - diagL); 
+    else lo_diag = (diagU < 0) ? hi_diag : (TSize) (1 - diagL);
     TSize lo_row = (diagU <= 0) ? -diagU : 0;
     TSize hi_row = len2;
     if (len1 - diagL < hi_row) hi_row = len1 - diagL;
@@ -313,7 +313,7 @@ _align_banded_nw_best_ends(TTrace& trace,
                     *matIt = verti_val;
                     *traceIt = Vertical;
                     *lenIt = *(lenIt+1) + 1;
-                }                        
+                }
                 if ((hori_val = (col > 0) ? hori_val +
                     scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
                                              sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : MinValue<TScoreValue>::VALUE) > *matIt)
@@ -324,7 +324,7 @@ _align_banded_nw_best_ends(TTrace& trace,
                 }
                 hori_val = *matIt;
                 hori_len = *lenIt;
-            } else {            
+            } else {
                 // Usual initialization for first row and column
                 if (actualRow == 0) {
                     *matIt = actualCol * scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
@@ -371,7 +371,7 @@ _reverseLeftExtension(Segment<TSequenceA, InfixSegment> const & infH,
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// Computes the banded alignment matrix for the left extension and 
+// Computes the banded alignment matrix for the left extension and
 //   returns a string with possible start positions of an eps-match.
 // Caution: The infixes of the left extension is reversed in place in hosts of infH and infV!
 template<typename TMatrix, typename TPossEnd, typename TSequence, typename TSeed, typename TScore>
@@ -421,7 +421,7 @@ _fillMatrixBestEndsLeft(TMatrix & matrixLeft,
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// Computes the banded alignment matrix for the right extension and 
+// Computes the banded alignment matrix for the right extension and
 //   returns a string with possible end positions of an eps-match.
 template<typename TMatrix, typename TPossEnd, typename TSequence, typename TSeed, typename TScore>
 void
@@ -445,7 +445,7 @@ _fillMatrixBestEndsRight(TMatrix & matrixRight,
     //           << "0: " << infixH << "\n"
     //           << "1: " << infixV << "\n";
 
-    // _align_banded_nw_best_ends(matrixRight, possibleEndsRight, str, scoreMatrix, 
+    // _align_banded_nw_best_ends(matrixRight, possibleEndsRight, str, scoreMatrix,
     //                            lowerDiagonal(seedOld) - upperDiagonal(seed),
     //                            lowerDiagonal(seedOld) - lowerDiagonal(seed));
 
@@ -502,9 +502,9 @@ _alignBandedNeedlemanWunschTrace(TAlign & align,
         // Find initial direction
         TTraceValue tv = trace[row * diagonalWidth + col];
         if (tv == Horizontal) --col;
-        else if (tv == Vertical) {--row; ++col;} 
+        else if (tv == Vertical) {--row; ++col;}
         else --row;
-    
+
         // Walk until we hit a border
         TSize seqLen = 1;
         TTraceValue newTv = tv;
@@ -516,7 +516,7 @@ _alignBandedNeedlemanWunschTrace(TAlign & align,
             // Check if we hit a border
             if ((actualRow == 0) || (actualCol == 0)) break;
             else {
-                //std::cout << row << ',' << col << ':' << value(originalMat, actualRow * len1 + actualCol) << std::endl; 
+                //std::cout << row << ',' << col << ':' << value(originalMat, actualRow * len1 + actualCol) << std::endl;
                 if (tv == Diagonal) {
                     if (newTv == Horizontal) {
                         _alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
@@ -528,7 +528,7 @@ _alignBandedNeedlemanWunschTrace(TAlign & align,
                         --row; ++seqLen;
                     }
                 } else {
-                    if (tv == Horizontal) { 
+                    if (tv == Horizontal) {
                         if (newTv == Diagonal) {
                             _alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
                             --row; seqLen = 1;
@@ -538,7 +538,7 @@ _alignBandedNeedlemanWunschTrace(TAlign & align,
                         } else {
                             --col; ++seqLen;
                         }
-                    } else { 
+                    } else {
                         if (newTv == Diagonal) {
                             _alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
                             --row; seqLen = 1;
@@ -553,7 +553,7 @@ _alignBandedNeedlemanWunschTrace(TAlign & align,
                 tv = newTv;
             }
         }
-    
+
         // Align left overs
         if (seqLen) _alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
     }
@@ -666,7 +666,7 @@ _tracebackRight(TMatrix const & matrixRight,
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// Computes the banded alignment matrix and fills a string with possible start 
+// Computes the banded alignment matrix and fills a string with possible start
 //   and end positions of an eps-match. Determines the optimal start and end
 //   position for the longest eps-match and writes the trace into align.
 template<typename TInfix, typename TSeed, typename TPos, typename TDir, typename TScore,
@@ -707,7 +707,7 @@ _bestExtension(TInfix const & infH,
     Pair<TEndIterator> endPair = longestEpsMatch(possibleEndsLeft, possibleEndsRight, alignLen, alignErr, minLength, eps);
 
     if (endPair == Pair<TEndIterator>(0, 0)) { // no eps-match found
-        if (direction != 1) 
+        if (direction != 1)
             _reverseLeftExtension(infH, infV, seed, seedOld); // back to original orientation
         return false;
     }

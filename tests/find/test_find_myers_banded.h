@@ -64,30 +64,30 @@ void dumpMat(TMatrix &mat, TSeq1 &seq1, TSeq2 &seq2)
 // seq1 .. Pattern
 // seq2 .. Text
 template <typename TFindSpec, typename TString>
-bool testMyersUkkonen(TString seq1, TString seq2, int leftClip = 0, bool dump = true) 
+bool testMyersUkkonen(TString seq1, TString seq2, int leftClip = 0, bool dump = true)
 {
     Finder<TString> finder(seq2);
 //    Pattern<TString, MyersUkkonenBanded> pattern(seq1);
     PatternState_<TString, Myers<AlignTextBanded<TFindSpec, NMatchesN_, NMatchesN_>, True, void> > state;
-    
+
     state.leftClip = leftClip;
 
     bool equal = true;
     int delta = length(seq2) - length(seq1);
-    
+
     clear(mat);
     resize(mat, (length(seq1)+1) * (length(seq2)+1), -9, Exact());
 
     // initialize first DP column
     for (unsigned i = 0; i <= length(seq1); ++i)
         mat[i] = i;
-    
+
     if (IsSameType<TFindSpec, FindInfix>::VALUE)
     {
         for (unsigned i = 0; i <= length(seq2); ++i)
             mat[i * (length(seq1) + 1)] = (i < length(seq1))? 0 : i - length(seq1) + 1;
     }
-    else 
+    else
     {
         for (unsigned i = 0; i <= length(seq2); ++i)
             mat[i * (length(seq1) + 1)] = i;
@@ -103,7 +103,7 @@ bool testMyersUkkonen(TString seq1, TString seq2, int leftClip = 0, bool dump = 
 
     // banded DP alignment
     for(unsigned j = 1; j <= length(seq2); ++j)
-        for(unsigned i = 1; i <= length(seq1); ++i) 
+        for(unsigned i = 1; i <= length(seq1); ++i)
         {
             int diag = j+leftClip - i;
             if (0 <= diag && (diag <= delta || i+delta >= length(seq1)))
@@ -148,13 +148,13 @@ bool testMyersUkkonen(TString seq1, TString seq2, int leftClip = 0, bool dump = 
 #endif
 
     for(unsigned j = 1; j <= length(seq2); ++j)
-        for(unsigned i = 1; i <= length(seq1); ++i) 
+        for(unsigned i = 1; i <= length(seq1); ++i)
         {
             unsigned pos = j * (length(seq1)+1) + i;
             if (mat[pos] != state.DPMat[pos])
                 equal = false;
         }
-    
+
     if (equal) return true;
 
     if (dump)
@@ -163,12 +163,12 @@ bool testMyersUkkonen(TString seq1, TString seq2, int leftClip = 0, bool dump = 
         dumpMat(mat, seq1, seq2);
 
         for(unsigned j = 1; j <= length(seq2); ++j)
-            for(unsigned i = 1; i <= length(seq1); ++i) 
+            for(unsigned i = 1; i <= length(seq1); ++i)
             {
                 unsigned pos = j * (length(seq1)+1) + i;
                 SEQAN_ASSERT_EQ(mat[pos], state.DPMat[pos]);
             }
-    }    
+    }
 
     return equal;
 }
@@ -218,12 +218,12 @@ void testMyersFindBanded()
     {
         //std::cout<<'.'<<std::flush;
         for (unsigned lj=li; lj<=length(seq2) && lj-li<8; ++lj)
-            for (unsigned i=0; i+li<=length(seq1); ++i) 
+            for (unsigned i=0; i+li<=length(seq1); ++i)
                 for (unsigned leftClip = 0; leftClip < lj; ++leftClip)
                 if (li > 8)
                 {
                     String<TValue> s1 = infix(seq1, i, i+li);
-                    for(unsigned j=0; j+lj<=length(seq2); ++j) 
+                    for(unsigned j=0; j+lj<=length(seq2); ++j)
                     {
                         String<TValue> s2 = infix(seq2, j, j+lj);
                         if (!testMyersUkkonen<TFindSpec>(s1, s2, leftClip, false)) {

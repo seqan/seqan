@@ -55,54 +55,54 @@ namespace seqan {
  * @brief The strategy for resizing containers.
  *
  * Changing the capacity of a container can invalidate the iterators of this container.
- * 
+ *
  * If no overflow tag is specified, most operations use the default overflow strategy given by @link
  * DefaultOverflowImplicit @endlink or @link DefaultOverflowExplicit @endlink, depending on the kind of operation.
- * 
+ *
  * @see StringConcept#computeGenerousCapacity
  * @see DefaultOverflowImplicit
  * @see DefaultOverflowExplicit
- * 
+ *
  * @tag OverflowStrategyTags#Limit
- * @headerfile <seqan/sequence.h> 
+ * @headerfile <seqan/sequence.h>
  * @brief Limit the contents to current capacity.
- * 
+ *
  * @signature typedef Tag<TagLimit_> Limit;
  *
  * All entries that exceed the capacity are lost.
  *
  * @tag OverflowStrategyTags#Generous
- * @headerfile <seqan/sequence.h> 
+ * @headerfile <seqan/sequence.h>
  * @brief Expand if needed, get precautionary extra space.
- * 
+ *
  * @signature typedef Tag<TagGenerous_> Generous;
  *
  * Whenever the capacity has to be increased, the new capacity is choosen somewhat large than actually needed.  This
  * strategy limits the number of capacity changes, so that resizing takes armotized constant time.  Use this strategy if
  * the total amount of storage is unkown at first.
- * 
+ *
  * The new capacity is computed by @link StringConcept#computeGenerousCapacity @endlink. By default, it is
  * guaranteed not to exceed about three halfs of the space that is used to store the data.  The user can overload
  * @link StringConcept#computeGenerousCapacity @endlink in order to change this behavior.
- * 
+ *
  * @tag OverflowStrategyTags#Exact
- * @headerfile <seqan/sequence.h> 
+ * @headerfile <seqan/sequence.h>
  * @brief Expand as far as needed.
- * 
+ *
  * @signature typedef Tag<TagExact_> Exact;
  *
  * The capacity is only changed if the current capacity is not large enough.  If the capacity can only be expanded up to
  * a certain ammount, it will be increased as far as possible  and the contents are limited to the new capacity.
- * 
+ *
  * Note that the capacity will never be shrinked.  Use @link ContainerConcept#shrinkToFit @endlink to resize the
  * capacity down to the current length.
- * 
+ *
  * @tag OverflowStrategyTags#Insist
- * @headerfile <seqan/sequence.h> 
+ * @headerfile <seqan/sequence.h>
  * @brief No capacity check.
  *
  * @signature typedef Tag<TagInsist_> Insist;
- * 
+ *
  * @note The user has to ensure that the container's capacity is large enough.
  */
 
@@ -295,7 +295,7 @@ getObjectId(T const & me)
  * @fn shareResources
  * @headerfile <seqan/sequence.h>
  * @brief Determines whether two sequences share the same resource.
- * 
+ *
  * @signature bool shareResources(s1, s2);
  *
  * @param[in] s1 First sequence.
@@ -1292,28 +1292,28 @@ _capacityReturned(T &,
 /*!
  * @fn String#reserve
  * @brief Increases the capacity.
- * 
+ *
  * @signature TSize reserve(str, new_capacity[, tag]);
- * 
+ *
  * @param[in,out] str         The String to reserve space in.
  * @param[in]     newCapacity The new capacity <tt>str</tt> will get.
  * @param[in]     tag         Specifies the strategy that is applied for changing the capacity.
- * 
+ *
  * @return TSize The amount of the requested capacity that was available.  That is the function returns the minimum of
  *               <tt>newCapacity</tt> and <tt>capacity(me)</tt>.
- * 
+ *
  * This function allows to increase the capacity but not the length of a container.
- * 
+ *
  * Use @link StringConcept#resize @endlink if you want to change the size of a container.
- * 
+ *
  * @section Remarks
- * 
+ *
  * At the end of the operation, <tt>capacity(me)</tt> can be larger than <tt>new_capacity</tt>.  If
  * <tt>new_capacity</tt> is smaller than <tt>capacity(me)</tt> at the beginning of the operation, the operation need not
  * to change the capacity at all.
- * 
+ *
  * This operation does not changes the content of <tt>object</tt>.
- * 
+ *
  * This operation may invalidate iterators of <tt>object</tt>.
  */
 
@@ -1369,9 +1369,9 @@ resize(T & me,
  * @fn String#resizeSpace
  * @headerfile <seqan/sequence.h>
  * @brief Makes free space in container
- * 
+ *
  * @signature TSize resizeSpace(str, size, posBegin, posEnd [, limit][, resizeTag]);
- * 
+ *
  * @param[in,out] str       The String to modify.
  * @param[in]     size      Number of characters that should be freed.
  * @param[in]     posEnd    Position behind the last item in <tt>object</tt> that is to be destroyed.  If
@@ -1380,7 +1380,7 @@ resize(T & me,
  * @param[in]     limit     Maximal length <tt>object</tt> can get after this operation. (optional)
  * @param[in]     resizeTag Strategy that is applied if <tt>object</tt> has not enough capacity to store the
  *                          complete content. (optional)
- * 
+ *
  * @return TSize The number of free characters.Depeding on resizeTag, this could be <tt>size</tt> or less than
  *               <tt>size</tt> if <tt>object</tt> has not enough <tt>capacity</tt>.
  */

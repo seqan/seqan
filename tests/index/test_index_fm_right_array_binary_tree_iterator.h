@@ -68,7 +68,7 @@ void waveletTreeStructureIteratorBegin(TIter & /*tag*/)
 //    String<TChar> text = "ACGTNACGTNACGTN";
 //    TRightArrayBinaryTree waveletTreeStructure(text);
 //
-//    TIter it(waveletTreeStructure, 0);    
+//    TIter it(waveletTreeStructure, 0);
 //
 //    SEQAN_ASSERT(container(it) == waveletTreeStructure);
 //}
@@ -163,10 +163,10 @@ void waveletTreeStructureIteratorGetNumChildVertices(TIter & /*tag*/)
 
     goDown(it);
     SEQAN_ASSERT_EQ(getSubTreeSize(it), 0u);
-  
+
     goRight(it);
     SEQAN_ASSERT_EQ(getSubTreeSize(it), 1u);
-    
+
     goDown(it);
     SEQAN_ASSERT_EQ(getSubTreeSize(it), 0u);
 }
@@ -215,7 +215,7 @@ void waveletTreeStructureIteratorGoChild(TIter & /*tag*/)
     SEQAN_ASSERT_EQ(getPosition(it), 1u);
 
     goRight(it);
-    
+
     SEQAN_ASSERT_EQ(goLeftChild(it), false);
     SEQAN_ASSERT_EQ(goRightChild(it), true);
     SEQAN_ASSERT_EQ(getPosition(it), 3u);
@@ -292,7 +292,7 @@ void waveletTreeStructureIteratorGoToPosition(TIter & /*tag*/)
 
     SEQAN_ASSERT_EQ(goToPosition(it, 1u), true);
     SEQAN_ASSERT_EQ(getPosition(it), 1u);
-    
+
     SEQAN_ASSERT_EQ(goToPosition(it, 3u), true);
     SEQAN_ASSERT_EQ(getPosition(it), 3u);
 }
@@ -465,17 +465,17 @@ void _waveletTreeStructureSetChildVertices(TIter & /*tag*/)
     TIter it(waveletTreeStructure, 0);
 
     _setChildVertices(it, borderString, pst);
-    
+
     SEQAN_ASSERT_EQ(getLeftChildPos(it), 1u);
     SEQAN_ASSERT_EQ(getCharacter(it), 'G');
-   
+
     waveletTreeStructure.treeVertices[0].i2 = 4;
     appendValue(waveletTreeStructure.treeVertices, TWaveletTreeVertex('C', 0u));
     appendValue(waveletTreeStructure.treeVertices, TWaveletTreeVertex('A', 0u));
 
     goRightChild(it);
     appendValue(borderString, Pair<unsigned>(2, 4));
-    
+
     _setChildVertices(it, borderString, pst);
 
     SEQAN_ASSERT_EQ(getLeftChildPos(it), 0u);
@@ -491,25 +491,25 @@ void _waveletTreeStructureSetLeftChildPos(TIter & /*tag*/)
     typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
     //typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
     //typedef String<TChar> TString;
- 
+
     TRightArrayBinaryTree waveletTreeStructure;
     appendValue(waveletTreeStructure.treeVertices, TWaveletTreeVertex('A', 0u));
 
     TIter it(waveletTreeStructure, 0);
 
-    SEQAN_ASSERT_EQ(_setLeftChildPos(it), true);  
+    SEQAN_ASSERT_EQ(_setLeftChildPos(it), true);
     SEQAN_ASSERT_EQ(getLeftChildPos(it), 1u);
 
     waveletTreeStructure.treeVertices[0].i2 = 1;
-    SEQAN_ASSERT_EQ(_setLeftChildPos(it), false);  
+    SEQAN_ASSERT_EQ(_setLeftChildPos(it), false);
     SEQAN_ASSERT_EQ(waveletTreeStructure.treeVertices[0].i2, 1u);
 
     waveletTreeStructure.treeVertices[0].i2 = 2;
-    SEQAN_ASSERT_EQ(_setLeftChildPos(it), true);  
+    SEQAN_ASSERT_EQ(_setLeftChildPos(it), true);
     SEQAN_ASSERT_EQ(getLeftChildPos(it), 1u);
 
     waveletTreeStructure.treeVertices[0].i2 = 3;
-    SEQAN_ASSERT_EQ(_setLeftChildPos(it), false);  
+    SEQAN_ASSERT_EQ(_setLeftChildPos(it), false);
     SEQAN_ASSERT_EQ(waveletTreeStructure.treeVertices[0].i2, 3u);
 }
 
@@ -521,7 +521,7 @@ void _waveletTreeStructureSetPosition(TIter & /*tag*/)
     typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
     //typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
     //typedef String<TChar> TString;
- 
+
     TRightArrayBinaryTree waveletTreeStructure;
     appendValue(waveletTreeStructure.treeVertices, TWaveletTreeVertex('A', 0u));
     resize(waveletTreeStructure.treeVertices, 10);
@@ -530,7 +530,7 @@ void _waveletTreeStructureSetPosition(TIter & /*tag*/)
 
     goToPosition(it, 9u);
 
-    SEQAN_ASSERT_EQ(getPosition(it), 9u);  
+    SEQAN_ASSERT_EQ(getPosition(it), 9u);
 }
 
 template <typename TIter>
@@ -541,28 +541,28 @@ void _waveletTreeStructureSetRightChildPos(TIter & /*tag*/)
     typedef typename Value<TWaveletTreeVertices>::Type TWaveletTreeVertex;
     //typedef typename Value<TWaveletTreeVertex, 1>::Type TChar;
     //typedef String<TChar> TString;
- 
+
     TRightArrayBinaryTree waveletTreeStructure;
     appendValue(waveletTreeStructure.treeVertices, TWaveletTreeVertex('A', 0u));
 
     TIter it(waveletTreeStructure, 0);
 
-    SEQAN_ASSERT_EQ(_setRightChildPos(it, 0u), true);  
+    SEQAN_ASSERT_EQ(_setRightChildPos(it, 0u), true);
     SEQAN_ASSERT_EQ(getLeftChildPos(it), 0u);
     SEQAN_ASSERT_EQ(getRightChildPos(it), 1u);
 
     waveletTreeStructure.treeVertices[0].i2 = 1;
-    SEQAN_ASSERT_EQ(_setRightChildPos(it, 0u), true);  
+    SEQAN_ASSERT_EQ(_setRightChildPos(it, 0u), true);
     SEQAN_ASSERT_EQ(getLeftChildPos(it), 0u);
     SEQAN_ASSERT_EQ(getRightChildPos(it), 1u);
 
     waveletTreeStructure.treeVertices[0].i2 = 2;
-    SEQAN_ASSERT_EQ(_setRightChildPos(it, 11u), true);  
+    SEQAN_ASSERT_EQ(_setRightChildPos(it, 11u), true);
     SEQAN_ASSERT_EQ(getLeftChildPos(it), 1u);
     SEQAN_ASSERT_EQ(getRightChildPos(it), 11u);
 
     waveletTreeStructure.treeVertices[0].i2 = 3;
-    SEQAN_ASSERT_EQ(_setRightChildPos(it, 11u), false);  
+    SEQAN_ASSERT_EQ(_setRightChildPos(it, 11u), false);
     SEQAN_ASSERT_EQ(waveletTreeStructure.treeVertices[0].i2, 3u);
 }
 

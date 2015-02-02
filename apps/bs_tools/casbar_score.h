@@ -130,7 +130,7 @@ assignTargetFreqs(Score<TValue, BsTagList<TBsProfileScore, TModel, TCellDescript
 
     for(TSize i = 0; i < length(profile); ++i) {
         resize(me.targetFreqs[i], 5);
-        
+
         double sum = 0; // For normalization, since the sum of all freqs should be 1
         for (TSize j = 0; j < 4; ++j)
             sum += profile[i].count[j];
@@ -214,7 +214,7 @@ assignTargetFreqs(Score<TValue, BsTagList<TBsProfileScore, TModel, TCellDescript
 
     for(TSize i = 0; i < length(profile); ++i) {
         resize(me.targetFreqs[i], 5);
-        
+
         double sum = 0; // For normalization, since the sum of all freqs should be 1
         for (TSize j = 4; j < 8; ++j)
             sum += profile[i].count[j];
@@ -287,7 +287,7 @@ assignTargetFreqs(Score<TValue, BsTagList<BsProfileScoreRef, TModel, TCellDescri
 
     for(TSize i = 0; i < length(profile); ++i) {
         resize(me.targetFreqs[i], 2*5); // TODO size not necessary anymore
-        
+
         double sumF = 0;
         double sumR = 0;
         sumF += profile[i].count[0];    // TODO think: sum over all?

@@ -42,7 +42,7 @@ template <typename TSAValue1, typename TSAValue2>
 struct AddResultsFunctor
 {
     String<Pair<TSAValue1, String<TSAValue2> > > results;
-    
+
     template <typename TIter1, typename TIter2>
     void operator() (TIter1 &iter1, TIter2 &iter2)
     {
@@ -59,13 +59,13 @@ struct AddResultsFunctor
 template <
     bool enumerateA,
     bool enumerateB,
-    typename TOnFoundFunctor, 
-    typename TTreeIteratorA, 
-    typename TIterPosA, 
-    typename TTreeIteratorB, 
-    typename TIterPosB, 
+    typename TOnFoundFunctor,
+    typename TTreeIteratorA,
+    typename TIterPosA,
+    typename TTreeIteratorB,
+    typename TIterPosB,
     typename TErrors >
-inline void 
+inline void
 _exactTreeSearch(
     TOnFoundFunctor    &onFoundFunctor,    // functor to store matches
     TTreeIteratorA    iterA,              // pattern tree iterator
@@ -132,7 +132,7 @@ _exactTreeSearch(
                 if (!goRight(iterA))
                     return;
             }
-            
+
             // search pairs of edges with the same character
             while (true)
             {
@@ -160,13 +160,13 @@ _exactTreeSearch(
 template <
     bool enumerateA,
     bool enumerateB,
-    typename TOnFoundFunctor, 
-    typename TTreeIteratorA, 
-    typename TIterPosA, 
-    typename TTreeIteratorB, 
-    typename TIterPosB, 
+    typename TOnFoundFunctor,
+    typename TTreeIteratorA,
+    typename TIterPosA,
+    typename TTreeIteratorB,
+    typename TIterPosB,
     typename TErrors >
-inline void 
+inline void
 _approximateTreeSearch(
     TOnFoundFunctor    &onFoundFunctor,    // functor to store matches
     TTreeIteratorA    iterA,              // pattern tree iterator
@@ -175,24 +175,24 @@ _approximateTreeSearch(
     TIterPosB        iterPosB,           // position in representative
     TErrors            errorsLeft)         // tolerated errors left
 {
-    if (enumerateA && !goDown(iterA)) 
+    if (enumerateA && !goDown(iterA))
     {
         onFoundFunctor(iterA, iterB_);
         return;
     }
     if (enumerateB && !goDown(iterB_)) return;
-    
-    do 
+
+    do
     {
         TTreeIteratorB iterB = iterB_;
-        do 
+        do
         {
             TErrors e = errorsLeft;
             TIterPosA ipA = iterPosA;
             TIterPosB ipB = iterPosB;
-            
+
             if (ipB == repLength(iterB)) continue;
-            
+
             while (true)
             {
                 if (ipA == repLength(iterA))
@@ -202,7 +202,7 @@ _approximateTreeSearch(
                     else
                         _approximateTreeSearch<true,false>(onFoundFunctor, iterA, ipA, iterB, ipB, e);
                     break;
-                } 
+                }
                 else if (ipB == repLength(iterB))
                 {
                     _approximateTreeSearch<false,true>(onFoundFunctor, iterA, ipA, iterB, ipB, e);
@@ -211,7 +211,7 @@ _approximateTreeSearch(
 
                 if (representative(iterA)[ipA] != representative(iterB)[ipB])
                     if (e-- == 0) break;
-                
+
                 ++ipA;
                 ++ipB;
             }
@@ -224,7 +224,7 @@ template <typename TSAValue>
 struct AddSingleResultsFunctor
 {
     String<TSAValue> results;
-    
+
     template <typename TPattern, typename TIter>
     void operator() (TPattern & /*pattern*/, TIter &iter)
     {
@@ -234,16 +234,16 @@ struct AddSingleResultsFunctor
 
 
 template <
-    typename TOnFoundFunctor, 
-    typename TString, 
-    typename TStringPos, 
-    typename TTreeIterator, 
-    typename TIterPos, 
+    typename TOnFoundFunctor,
+    typename TString,
+    typename TStringPos,
+    typename TTreeIterator,
+    typename TIterPos,
     typename TErrors >
-inline void 
+inline void
 _approximateStringSearch(
     TOnFoundFunctor    &onFoundFunctor,    // functor to store matches
-    TString const &string,              // search pattern 
+    TString const &string,              // search pattern
     TStringPos stringPos,               // position in pattern
     TTreeIterator iter,                 // text suffix tree iterator
     TIterPos iterPos,                   // position in representative
@@ -255,27 +255,27 @@ _approximateStringSearch(
             onFoundFunctor(string, iter);
         return;
     }
-    
+
     if (!goDown(iter)) return;
-    do 
+    do
     {
         TErrors e = errorsLeft;
         TStringPos sp = stringPos;
         TIterPos ip = iterPos;
-        
+
         if (ip == repLength(iter)) continue;
-        
+
         while (true)
         {
             if (representative(iter)[ip] != string[sp])
                 if (e-- == 0) break;
-            
+
             if (++sp == length(string))
             {
                 onFoundFunctor(string, iter);
                 break;
             }
-            
+
             if (++ip == repLength(iter))
             {
                 _approximateStringSearch(onFoundFunctor, string, sp, iter, ip, e);
@@ -286,43 +286,43 @@ _approximateStringSearch(
 }
 
 template <
-    typename TOnFoundFunctor, 
-    typename TString, 
-    typename TTreeIterator, 
+    typename TOnFoundFunctor,
+    typename TString,
+    typename TTreeIterator,
     typename TErrors>
-inline void 
+inline void
 approximateStringSearch(
-    TOnFoundFunctor &onFoundFunctor, 
-    TString const &string, 
-    TTreeIterator &iter, 
+    TOnFoundFunctor &onFoundFunctor,
+    TString const &string,
+    TTreeIterator &iter,
     TErrors errorsLeft)
 {
     if (length(string) <= errorsLeft)
     {
         onFoundFunctor(string, iter);
         return;
-    }    
+    }
     _approximateStringSearch(onFoundFunctor, string, 0u, iter, repLength(iter), errorsLeft);
 }
 
 template <
-    typename TOnFoundFunctor, 
-    typename TTreeIteratorA, 
-    typename TTreeIteratorB, 
+    typename TOnFoundFunctor,
+    typename TTreeIteratorA,
+    typename TTreeIteratorB,
     typename TErrors>
-inline void 
+inline void
 approximateTreeSearch(
-    TOnFoundFunctor &onFoundFunctor, 
-    TTreeIteratorA const &iterA, 
-    TTreeIteratorB const &iterB, 
+    TOnFoundFunctor &onFoundFunctor,
+    TTreeIteratorA const &iterA,
+    TTreeIteratorB const &iterB,
     TErrors errorsLeft)
 {
     _approximateTreeSearch<true,true>(
-        onFoundFunctor, 
-        iterA, 
-        repLength(iterA), 
-        iterB, 
-        repLength(iterB), 
+        onFoundFunctor,
+        iterA,
+        repLength(iterA),
+        iterB,
+        repLength(iterB),
         errorsLeft);
 }
 

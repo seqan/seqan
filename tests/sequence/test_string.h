@@ -58,7 +58,7 @@ SEQAN_DEFINE_TEST(Sequence_Interface)
     SEQAN_ASSERT_EQ(end(d, Standard()), & d + 1);
 
     SEQAN_ASSERT_EQ(beginPosition(c), 0u);            //beginPosition
-    SEQAN_ASSERT_EQ(beginPosition(d), 0u);            
+    SEQAN_ASSERT_EQ(beginPosition(d), 0u);
     SEQAN_ASSERT_EQ(endPosition(c), (size_t)(end(c) - begin(c))); //endPosition
     SEQAN_ASSERT_EQ(endPosition(d), (size_t)(end(d) - begin(d)));
 
@@ -96,7 +96,7 @@ SEQAN_DEFINE_TEST(Sequence_Interface)
     // assign(infix(str, 0, 5), str);
     // assign(infix(str, 0, 5), infix(str, 0, 5));
     // SEQAN_ASSERT(isEqual(str, "hallo"));
-    
+
     // assign(str, str, 5);
     // assign(str, infix(str, 0, 5), 5);
     // assign(infix(str, 0, 5), str, 5);
@@ -106,7 +106,7 @@ SEQAN_DEFINE_TEST(Sequence_Interface)
     // append(str, infix(str, 0, 5));
     // append(infix(str, 0, 5), str);
     // append(infix(str, 0, 5), infix(str, 0, 5));
-    
+
     // append(str, str, 5);
     // append(str, infix(str, 0, 5), 5);
     // append(infix(str, 0, 5), str, 5);
@@ -114,13 +114,13 @@ SEQAN_DEFINE_TEST(Sequence_Interface)
 
     // replace(str, 2, 3, str);
     // replace(str, 2, 3, infix(str, 0, 5));
-    // replace(infix(str, 0, 5), 2, 3, str); 
-    // replace(infix(str, 0, 5), 2, 3, infix(str, 0, 5)); 
-    
+    // replace(infix(str, 0, 5), 2, 3, str);
+    // replace(infix(str, 0, 5), 2, 3, infix(str, 0, 5));
+
     // replace(str, 2, 3, str, 5);
     // replace(str, 2, 3, infix(str, 0, 5), 5);
-    // replace(infix(str, 0, 5), 2, 3, str, 5); 
-    // replace(infix(str, 0, 5), 2, 3, infix(str, 0, 5), 5); 
+    // replace(infix(str, 0, 5), 2, 3, str, 5);
+    // replace(infix(str, 0, 5), 2, 3, infix(str, 0, 5), 5);
 
 //____________________________________________________________________________
 
@@ -210,7 +210,7 @@ void Test_String_Base_Assignments(TMe & str)
 
     append(str, "goldfish", 8, TExpand());
     SEQAN_ASSERT(isEqual(str,"goldgold"));
-    
+
     append(str, "goldfish", 16, TExpand());
     SEQAN_ASSERT(isEqual(str,"goldgoldgoldfish"));
 
@@ -640,8 +640,8 @@ SEQAN_DEFINE_TEST(String_Pointer)
     SEQAN_ASSERT_EQ(length("hello"), 5u);
 
     clear(str1);
-    SEQAN_ASSERT_EQ(length(str1), 0u);    
-    SEQAN_ASSERT(empty(str1));    
+    SEQAN_ASSERT_EQ(length(str1), 0u);
+    SEQAN_ASSERT(empty(str1));
 
     SEQAN_ASSERT_EQ(reserve(str1, 100, Insist()), 100u);
     SEQAN_ASSERT_EQ(reserve(str1, 100, Limit()), capacity(str1));
@@ -653,7 +653,7 @@ SEQAN_DEFINE_TEST(String_Pointer)
     SEQAN_ASSERT(isEqual(str1, "AAAAAAAAAA"));
 
 //____________________________________________________________________________
-// compare operators 
+// compare operators
 
 //operators disabled due to ambiguity pointer/iterator vs. c-style string
 /*
@@ -688,7 +688,7 @@ SEQAN_DEFINE_TEST(String_CStyle)
     SEQAN_CHECKPOINT;
     String<char, CStyle> str1;
     char strq [200] = "hello seqan";
-    
+
     String<char, CStyle> str2(strq);
     SEQAN_ASSERT_EQ(str2, strq);
     SEQAN_ASSERT_EQ(strlen(str2), strlen(strq));
@@ -941,13 +941,13 @@ SEQAN_DEFINE_TEST(Segment)
 */
 
 //____________________________________________________________________________
-// compare operators 
+// compare operators
 
     str_1 = "hellohello";
     Infix<String<char> >::Type infix_6(str_1, 0, 10);
 
 //     SEQAN_ASSERT_EQ(infix_6, str_1);
-// 
+//
 //     infix_6 += str_1;
     SEQAN_ASSERT(isEqual(infix_6, "hellohello"));
 
@@ -1279,12 +1279,12 @@ SEQAN_DEFINE_TEST(Combinatoric)
 SEQAN_DEFINE_TEST(ticket901)
 {
     using namespace seqan;
-    
+
     String<char> source = "acgtgcat";
     String<Dna> target;
     // The in-place move conversion.
     move(target, source);
-    
+
     SEQAN_ASSERT_EQ(length(source), 0u);
     SEQAN_ASSERT_EQ(target, DnaString("acgtgcat"));
 }

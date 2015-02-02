@@ -76,7 +76,7 @@ class String<TValue_, Journaled<THostSpec_, TJournalSpec_, TBufferSpec_> >
 {
 public:
     typedef String<TValue_, Journaled<THostSpec_, TJournalSpec_, TBufferSpec_> > TThis_;
-    
+
     typedef TValue_ TValue;
     typedef THostSpec_ THostSpec;
     typedef TJournalSpec_ TJournalSpec;
@@ -104,7 +104,7 @@ public:
     {}
 
     // Note: Defining both, constructors from same type and other for clarity.
-    
+
     String(THost & host) : _length(0)
     {
         SEQAN_CHECKPOINT;
@@ -383,7 +383,7 @@ operator<<(TStream & stream, String<TValue, Journaled<THostSpec, TJournalSpec, T
     typedef String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > TString;
     typedef typename TString::TJournalEntries TJournalEntries;
     typedef typename Iterator<TJournalEntries const, Standard>::Type TIterator;
-    
+
     for (TIterator it = begin(s._journalEntries), itend = end(s._journalEntries); it != itend; ++it) {
         if (value(it).segmentSource == SOURCE_ORIGINAL) {
             stream << infix(value(s._holder), value(it).physicalPosition, value(it).physicalPosition + value(it).length);
@@ -608,7 +608,7 @@ reset(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & journal
  * @signature void flatten(js);
  *
  * @param[in,out] js The JournaledString to flatten.
- */ 
+ */
 
 // TODO(holtgrew): What about non-destructive version that creates a new copy and sets holder to it?
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec>
@@ -823,24 +823,24 @@ length(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TPos>
 inline
 typename Reference<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > >::Type
-value(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & me, 
+value(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > & me,
       TPos pos)
 {
     SEQAN_CHECKPOINT;
-    
+
     return *iter(me, pos, Standard());
-} 
+}
 
 template <typename TValue, typename THostSpec, typename TJournalSpec, typename TBufferSpec, typename TPos>
 inline
 typename Reference<String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const>::Type
-value(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & me, 
+value(String<TValue, Journaled<THostSpec, TJournalSpec, TBufferSpec> > const & me,
       TPos pos)
 {
     SEQAN_CHECKPOINT;
-    
+
     return *iter(me, pos, Standard());
-} 
+}
 
 
 // TODO(holtgrew): Maybe better use template parameter TPos?

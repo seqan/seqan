@@ -191,7 +191,7 @@ struct Reference<Iter<TGaps, GapsIterator<TSpec> > const>
 // TODO(holtgrew): Could be general forward
 
 template <typename TGaps, typename TSpec>
-inline Iter<TGaps, GapsIterator<TSpec> > & 
+inline Iter<TGaps, GapsIterator<TSpec> > &
 operator++(Iter<TGaps, GapsIterator<TSpec> > & it)
 {
     goNext(it);
@@ -212,7 +212,7 @@ operator++(Iter<TGaps, GapsIterator<TSpec> > & it, int)
 // ----------------------------------------------------------------------------
 
 template <typename TGaps, typename TSpec>
-inline Iter<TGaps, GapsIterator<TSpec> > & 
+inline Iter<TGaps, GapsIterator<TSpec> > &
 operator--(Iter<TGaps, GapsIterator<TSpec> > & it)
 {
     goPrevious(it);
@@ -383,7 +383,7 @@ inline void
 assignValue(Iter<TGaps, GapsIterator<TSpec> > & me,
             TValue const & val)
 {
-    if (!isGap(me)) 
+    if (!isGap(me))
     {
         assignValue(source(me), val);
     }
@@ -395,7 +395,7 @@ inline void
 assignValue(Iter<TGaps, GapsIterator<TSpec> > const & me,
             TValue const & val)
 {
-    if (!isGap(me)) 
+    if (!isGap(me))
     {
         assignValue(source(me), val);
     }

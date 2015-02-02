@@ -221,14 +221,14 @@ struct ScoringScheme<TNeedle const>:
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TSpec>
-inline Holder<TNeedle> & 
-_dataHost(Pattern<TNeedle, TSpec> & me) 
-{ 
+inline Holder<TNeedle> &
+_dataHost(Pattern<TNeedle, TSpec> & me)
+{
     return me.data_host;
 }
 template <typename TNeedle, typename TSpec>
-inline Holder<TNeedle> & 
-_dataHost(Pattern<TNeedle, TSpec> const & me) 
+inline Holder<TNeedle> &
+_dataHost(Pattern<TNeedle, TSpec> const & me)
 {
     return const_cast<Holder<TNeedle> &>(me.data_host);
 }
@@ -238,30 +238,30 @@ _dataHost(Pattern<TNeedle, TSpec> const & me)
 
 //???TODO: Diese Funktion entfernen! (sobald setHost bei anderen pattern nicht mehr eine Art "assignHost" ist)
 template <typename TNeedle, typename TSpec, typename TNeedle2>
-inline void 
+inline void
 setHost(Pattern<TNeedle, TSpec> & me,
-        TNeedle2 const & ndl) 
+        TNeedle2 const & ndl)
 {
      me.data_host = ndl; //assign => Pattern haelt eine Kopie => doof!
 }
 template <typename TNeedle, typename TSpec, typename TNeedle2>
-inline void 
+inline void
 setHost(Pattern<TNeedle, TSpec> & me,
-        TNeedle2 & ndl) 
-{ 
+        TNeedle2 & ndl)
+{
      me.data_host = ndl; //assign => Pattern haelt eine Kopie => doof!
 }
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TSpec>
-inline typename Position<Pattern<TNeedle, TSpec> >::Type & 
-beginPosition(Pattern<TNeedle, TSpec> & me) 
+inline typename Position<Pattern<TNeedle, TSpec> >::Type &
+beginPosition(Pattern<TNeedle, TSpec> & me)
 {
     return me.data_begin_position;
 }
 template <typename TNeedle, typename TSpec>
-inline typename Position<Pattern<TNeedle, TSpec> const >::Type & 
-beginPosition(Pattern<TNeedle, TSpec> const & me) 
+inline typename Position<Pattern<TNeedle, TSpec> const >::Type &
+beginPosition(Pattern<TNeedle, TSpec> const & me)
 {
     return me.data_begin_position;
 }
@@ -269,8 +269,8 @@ beginPosition(Pattern<TNeedle, TSpec> const & me)
 
 template <typename TNeedle, typename TSpec, typename TPosition>
 inline void
-setBeginPosition(Pattern<TNeedle, TSpec> & me, 
-                 TPosition _pos) 
+setBeginPosition(Pattern<TNeedle, TSpec> & me,
+                 TPosition _pos)
 {
     me.data_begin_position = _pos;
 }
@@ -278,22 +278,22 @@ setBeginPosition(Pattern<TNeedle, TSpec> & me,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TSpec>
-inline typename Position<Pattern<TNeedle, TSpec> >::Type & 
-endPosition(Pattern<TNeedle, TSpec> & me) 
+inline typename Position<Pattern<TNeedle, TSpec> >::Type &
+endPosition(Pattern<TNeedle, TSpec> & me)
 {
     return me.data_end_position;
 }
 template <typename TNeedle, typename TSpec>
-inline typename Position<Pattern<TNeedle, TSpec> const >::Type & 
-endPosition(Pattern<TNeedle, TSpec> const & me) 
+inline typename Position<Pattern<TNeedle, TSpec> const >::Type &
+endPosition(Pattern<TNeedle, TSpec> const & me)
 {
     return me.data_end_position;
 }
 
 template <typename TNeedle, typename TSpec, typename TPosition>
 inline void
-setEndPosition(Pattern<TNeedle, TSpec> & me, 
-               TPosition _pos) 
+setEndPosition(Pattern<TNeedle, TSpec> & me,
+               TPosition _pos)
 {
     me.data_end_position = _pos;
 }
@@ -301,15 +301,15 @@ setEndPosition(Pattern<TNeedle, TSpec> & me,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TSpec>
-inline typename Infix<TNeedle>::Type 
-segment(Pattern<TNeedle, TSpec> & me) 
+inline typename Infix<TNeedle>::Type
+segment(Pattern<TNeedle, TSpec> & me)
 {
     typedef typename Infix<TNeedle>::Type TInfix;
     return TInfix(host(me), me.data_begin_position, me.data_end_position);
 }
 template <typename TNeedle, typename TSpec>
-inline typename Infix<TNeedle>::Type 
-segment(Pattern<TNeedle, TSpec> const & me) 
+inline typename Infix<TNeedle>::Type
+segment(Pattern<TNeedle, TSpec> const & me)
 {
     typedef typename Infix<TNeedle>::Type TInfix;
     return TInfix(host(me), me.data_begin_position, me.data_end_position);
@@ -329,7 +329,7 @@ segment(Pattern<TNeedle, TSpec> const & me)
  */
 
 template <typename TNeedle, typename TSpec>
-inline typename Host<Pattern<TNeedle, TSpec> >::Type & 
+inline typename Host<Pattern<TNeedle, TSpec> >::Type &
 host(Pattern<TNeedle, TSpec> & me)
 {
 SEQAN_CHECKPOINT
@@ -337,7 +337,7 @@ SEQAN_CHECKPOINT
 }
 
 template <typename TNeedle, typename TSpec>
-inline typename Host<Pattern<TNeedle, TSpec> const>::Type & 
+inline typename Host<Pattern<TNeedle, TSpec> const>::Type &
 host(Pattern<TNeedle, TSpec> const & me)
 {
 SEQAN_CHECKPOINT
@@ -363,14 +363,14 @@ SEQAN_CHECKPOINT
 
 template < typename TObject >
 inline typename Needle<TObject>::Type &
-needle(TObject &obj) 
+needle(TObject &obj)
 {
     return obj;
 }
 
 template < typename TObject >
 inline typename Needle<TObject const>::Type &
-needle(TObject const &obj) 
+needle(TObject const &obj)
 {
     return obj;
 }
@@ -389,14 +389,14 @@ needle(TObject const &obj)
 
 template < typename TNeedle, typename TSpec >
 inline typename Needle< Pattern<TNeedle, TSpec> >::Type &
-needle(Pattern<TNeedle, TSpec> & obj) 
+needle(Pattern<TNeedle, TSpec> & obj)
 {
     return host(obj);
 }
 
 template < typename TNeedle, typename TSpec >
 inline typename Needle< Pattern<TNeedle, TSpec> const>::Type &
-needle(Pattern<TNeedle, TSpec> const & obj) 
+needle(Pattern<TNeedle, TSpec> const & obj)
 {
     return host(obj);
 }
@@ -432,14 +432,14 @@ setNeedle(Pattern<TNeedle, TSpec> &obj, TNeedle const &ndl) {
  */
 
 template <typename TNeedle, typename TSpec>
-inline typename ScoringScheme<Pattern<TNeedle, TSpec> >::Type 
+inline typename ScoringScheme<Pattern<TNeedle, TSpec> >::Type
 scoringScheme(Pattern<TNeedle, TSpec> &)
 {
 SEQAN_CHECKPOINT
     return typename ScoringScheme<Pattern<TNeedle, TSpec> >::Type();
 }
 template <typename TNeedle, typename TSpec>
-inline typename ScoringScheme<Pattern<TNeedle, TSpec> const>::Type 
+inline typename ScoringScheme<Pattern<TNeedle, TSpec> const>::Type
 scoringScheme(Pattern<TNeedle, TSpec> const &)
 {
 SEQAN_CHECKPOINT
@@ -460,7 +460,7 @@ SEQAN_CHECKPOINT
 
 template <typename TNeedle, typename TSpec, typename TScore2>
 inline void
-setScoringScheme(Pattern<TNeedle, TSpec> & /*me*/, 
+setScoringScheme(Pattern<TNeedle, TSpec> & /*me*/,
                  TScore2 & /*score*/)
 {
 //dummy implementation for compatibility reasons

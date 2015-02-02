@@ -1,6 +1,6 @@
  /*==========================================================================
                 SeqAn - The Library for Sequence Analysis
-                          http://www.seqan.de 
+                          http://www.seqan.de
  ============================================================================
   Copyright (C) 2007
 
@@ -30,20 +30,20 @@ namespace SEQAN_NAMESPACE_MAIN
 template<typename TFile, typename TReadAnnoStore, typename TSpec, typename TConfig>
 inline void
 createReadCountGFF(TFile & readOutput, TReadAnnoStore & readAnnoStore, FragmentStore<TSpec, TConfig> & fragStore)
-{    
+{
     typedef typename Iterator<TReadAnnoStore>::Type             TCountIter;
     typedef typename Value<TReadAnnoStore>::Type                TReadAnnoStoreElement;
     typedef typename TReadAnnoStoreElement::TAnnoIds            TAnnoIds;
     typedef typename Iterator<TAnnoIds>::Type                TAnnoIdsIter;
     typedef typename Value<TAnnoIds>::Type                    TIds;
-    typedef typename Iterator<TIds>::Type                    TIdsIter;    
-                    
+    typedef typename Iterator<TIds>::Type                    TIdsIter;
+
     typedef typename FragmentStore<TSpec, TConfig>::TAnnotationStore     TAnnotationStore;
     typedef typename Value<TAnnotationStore>::Type                 TAnnotationStoreElement;
     typedef typename TAnnotationStoreElement::TId                 TId;
-    
+
     static const TId INVALID_ID = TAnnotationStoreElement::INVALID_ID;
-    
+
     TCountIter itCountStore = begin(readAnnoStore);
     TCountIter itCountStoreEnd = end(readAnnoStore);
     TAnnoIdsIter itAnnoIds;
@@ -61,7 +61,7 @@ createReadCountGFF(TFile & readOutput, TReadAnnoStore & readAnnoStore, FragmentS
         // read-name:
         readOutput << getValue(fragStore.readNameStore, position(itCountStore, readAnnoStore))
                    << '\t';
-        
+
         if (empty(getValue(itCountStore).annoIds) )
         {
             readOutput << ".\t.\t.\t.\t.";
@@ -71,18 +71,18 @@ createReadCountGFF(TFile & readOutput, TReadAnnoStore & readAnnoStore, FragmentS
             // contig-name:
             readOutput << getValue(fragStore.contigNameStore, getValue(itCountStore).contigId)
                                    << '\t';
-            
+
             itAnnoIds = begin(getValue(itCountStore).annoIds);
             itAnnoIdsEnd = end(getValue(itCountStore).annoIds);
             while (itAnnoIds != itAnnoIdsEnd && front(getValue(itAnnoIds)) == INVALID_ID)
             {
                 goNext(itAnnoIds);
             }
-    
+
             if (itAnnoIds != itAnnoIdsEnd) // not only INVALID_IDS
             {
                 firstId = front(getValue(itAnnoIds));
-                
+
                 // orientation:
                 if (getValue(fragStore.annotationStore, firstId).beginPos <= getValue(fragStore.annotationStore, firstId).endPos)
                 {
@@ -92,9 +92,9 @@ createReadCountGFF(TFile & readOutput, TReadAnnoStore & readAnnoStore, FragmentS
                 {
                     readOutput << "-\t";
                 }
-                
+
                 // Annotation-Ids:
-                
+
                 allParentIds =  getValue(itCountStore).parentIds;
                 // output for first parentId if possible; get other parentIds, in which the read doesn't map (entirely with all of his intervals)
                 itAnnoIds = begin(getValue(itCountStore).annoIds);
@@ -114,7 +114,7 @@ createReadCountGFF(TFile & readOutput, TReadAnnoStore & readAnnoStore, FragmentS
                             readOutput << getValue(fragStore.annotationNameStore, getValue(itId));
                             help = true;
                         }
-                        else if (getValue(itId) != INVALID_ID && getValue(fragStore.annotationStore, getValue(itId)).parentId != INVALID_ID &&    // get other parentIds 
+                        else if (getValue(itId) != INVALID_ID && getValue(fragStore.annotationStore, getValue(itId)).parentId != INVALID_ID &&    // get other parentIds
                             !isElement_unsorted(getValue(fragStore.annotationStore, getValue(itId)).parentId, allParentIds) ) //?
                         {
                             appendValue(allParentIds, getValue(fragStore.annotationStore, getValue(itId)).parentId, Generous() );
@@ -136,7 +136,7 @@ createReadCountGFF(TFile & readOutput, TReadAnnoStore & readAnnoStore, FragmentS
                     for ( ; itAnnoIds != itAnnoIdsEnd; goNext(itAnnoIds))
                     {
                         invalid = true;                // if no annotation for the current parent in  interval -> UNKOWN_REGION
-                        itId = begin(*itAnnoIds);    
+                        itId = begin(*itAnnoIds);
                         itIdEnd = end(*itAnnoIds);
                         for ( ; itId != itIdEnd; goNext(itId))
                         {
@@ -162,9 +162,9 @@ createReadCountGFF(TFile & readOutput, TReadAnnoStore & readAnnoStore, FragmentS
                 }
             }
             else  // only INVALID_IDS
-            {    
+            {
                 readOutput << ".\t";
-                        
+
                 // invalid_ids for each interval
                 itAnnoIds = begin(getValue(itCountStore).annoIds);
                 itAnnoIdsEnd = end(getValue(itCountStore).annoIds);
@@ -178,7 +178,7 @@ createReadCountGFF(TFile & readOutput, TReadAnnoStore & readAnnoStore, FragmentS
             }
         }
         readOutput << "\n";
-    }    
+    }
 }
 
 
@@ -198,7 +198,7 @@ createAnnoCountGFF(TFile & annoOutput, TAnnoCountStore & annoCountStore, TAnnoNo
     typedef typename Iterator<TAnnoCountStore>::Type             TCountIter;
     typedef typename Iterator<TAnnoNormStore>::Type                TNormIter;
     typedef typename Iterator<TAnnotationStore>::Type             TAnnoIter;
-    
+
     static const TId INVALID_ID = TAnnotationStoreElement::INVALID_ID;
     static const TContigPos INVALID_POS = TAnnotationStoreElement::INVALID_POS;
 
@@ -206,18 +206,18 @@ createAnnoCountGFF(TFile & annoOutput, TAnnoCountStore & annoCountStore, TAnnoNo
     TCountIter itCountEnd = end(annoCountStore);
     TAnnoIter itAnno = begin(fragStore.annotationStore);
     TNormIter itNorm = begin(annoNormStore);
-    
+
     for ( ; itCount != itCountEnd; goNext(itCount), goNext(itAnno), goNext(itNorm))
     {
         if (getValue(itAnno).typeId != INVALID_ID)
-            if (fragStore.annotationTypeStore[getValue(itAnno).typeId] == "<root>") continue;  
+            if (fragStore.annotationTypeStore[getValue(itAnno).typeId] == "<root>") continue;
         // contig-name
         if (getValue(itAnno).contigId == INVALID_ID )
             annoOutput << "INVALID_ID\t";
         else
             annoOutput << getValue(fragStore.contigNameStore, getValue(itAnno).contigId) << '\t';
         annoOutput << "Annotation_Count\tregion\t";
-        // startposition endposition orientation . 
+        // startposition endposition orientation .
         if (getValue(itAnno).beginPos == INVALID_POS)
         {
             annoOutput << ".\t.\t" << getValue(itCount);
@@ -277,7 +277,7 @@ createTupleCountGFF(TFile & tupleOutput, TTupleCountStore & tupleCountStore, Fra
     typedef typename FragmentStore<TSpec, TConfig>::TAnnotationStore     TAnnotationStore;
     typedef typename Value<TAnnotationStore>::Type                 TAnnotationStoreElement;
     typedef typename TAnnotationStoreElement::TId                 TId;
-    
+
     typedef typename Iterator<TTupleCountStore>::Type             TCountStoreIter;
     typedef typename Value<TTupleCountStore>::Type                TTupleCountStoreElement;
     typedef typename TTupleCountStoreElement::TTupleList            TTupleList;
@@ -288,9 +288,9 @@ createTupleCountGFF(TFile & tupleOutput, TTupleCountStore & tupleCountStore, Fra
     typedef typename Iterator<TTupleCounts>::Type                TCountIter;
     typedef typename Iterator<TTupleNorm>::Type                TNormIter;
     typedef typename Iterator<TTupel>::Type                    TTupelIter;
-    
+
     static const TId INVALID_ID = TAnnotationStoreElement::INVALID_ID;
-    
+
     if (!empty(tupleCountStore))
     {
         TCountStoreIter itCountStore = begin(tupleCountStore);
@@ -305,7 +305,7 @@ createTupleCountGFF(TFile & tupleOutput, TTupleCountStore & tupleCountStore, Fra
         for ( ; itCountStore != itCountStoreEnd; goNext(itCountStore))
         {
             currentElement = getValue(fragStore.annotationStore, position(itCountStore, tupleCountStore));
-    
+
             itT = begin(getValue(itCountStore).readConnections);
             itTEnd = end(getValue(itCountStore).readConnections);
             itC = begin(getValue(itCountStore).readConnectionCounts);

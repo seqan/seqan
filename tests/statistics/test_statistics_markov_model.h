@@ -161,7 +161,7 @@ SEQAN_DEFINE_TEST(test_statistics_markov_model)
     appendValue(X, str1a);
     appendValue(X, str1b);
     appendValue(X, str1c);
-    
+
 
     StringSet<TSequence> W;
     appendValue(W,str2);

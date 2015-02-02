@@ -42,14 +42,14 @@ template <typename TFile, typename TText, typename TESASpec>
 void writeRecords(
     TFile & file,
     Index<TText, IndexEsa<TESASpec> > & stree,
-    DotDrawing) 
+    DotDrawing)
 {
 //IOREV _nodoc_
     SEQAN_CHECKPOINT
     typedef Index<TText, IndexEsa<TESASpec> > TIndex;
 
     typename DirectionIterator<TFile, Output>::Type iter = directionIterator(file, Output());
-    
+
     write(iter, "digraph G {\n");
     writeValue(iter, '\n');
     write(iter, "/* Graph Attributes */\n");
@@ -67,7 +67,7 @@ void writeRecords(
     typedef typename Iterator<TIndex, TopDown<> >::Type TIteratorSimple;
     TIterator it(stree);
 
-    for(;!atEnd(it);++it) 
+    for(;!atEnd(it);++it)
     {
         // dump node
         write(iter, "\"[");

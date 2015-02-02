@@ -47,13 +47,13 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends Pattern
  * @headerfile <seqan/find.h>
  * @brief Multi-Pattern Backward Factor Automaton Matching.
- * 
+ *
  * @signature template <typename TNeedle, typename TAutomaton>
  *            class Pattern<TNeedle, MultiBfam<TAutomaton> >;
- * 
+ *
  * @tparam TAutomaton A tag that specifies the used automaton. Default: @link OracleMultiBfamPattern @endlink.
  * @tparam TNeedle    The needle type. Types: String
- * 
+ *
  * @see BfamPattern
  */
 
@@ -62,12 +62,12 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends MultiBfamPattern
  * @headerfile <seqan/find.h>
  * @brief Multi-Pattern Backward Factor Automaton Matching using an oracle automaton.
- * 
+ *
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, MultiBfam<Oracle> >;
- * 
+ *
  * @tparam TNeedle The needle type. Types: String
- * 
+ *
  * @see OracleBfamPattern
  */
 
@@ -81,7 +81,7 @@ typedef MultiBfam<Oracle> SBomAlgo; //deprecated
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TSpec>
-class Pattern<TNeedle, MultiBfam<TSpec> > 
+class Pattern<TNeedle, MultiBfam<TSpec> >
 {
 //____________________________________________________________________________
 public:
@@ -117,7 +117,7 @@ public:
         setHost(*this, ndl);
     }
 
-    ~Pattern() 
+    ~Pattern()
     {
     }
 //____________________________________________________________________________
@@ -134,7 +134,7 @@ private:
 
 template <typename TNeedle, typename TStrs>
 inline void
-_buildAutomatonMultiBfam(Pattern<TNeedle, MultiBfam<Oracle> > & me, 
+_buildAutomatonMultiBfam(Pattern<TNeedle, MultiBfam<Oracle> > & me,
                           TStrs const & strs)
 {
     createSetOracle(me.automaton, me.terminals, strs);
@@ -142,7 +142,7 @@ _buildAutomatonMultiBfam(Pattern<TNeedle, MultiBfam<Oracle> > & me,
 
 template <typename TNeedle, typename TStrs>
 inline void
-_buildAutomatonMultiBfam(Pattern<TNeedle, MultiBfam<Trie> > & me, 
+_buildAutomatonMultiBfam(Pattern<TNeedle, MultiBfam<Trie> > & me,
                           TStrs const & strs)
 {
     createSetSuffixTrie(me.automaton, me.terminals, strs);
@@ -151,7 +151,7 @@ _buildAutomatonMultiBfam(Pattern<TNeedle, MultiBfam<Trie> > & me,
 //____________________________________________________________________________
 
 template <typename TNeedle, typename TAutomaton, typename TNeedle2>
-void _setHostMultiBfam(Pattern<TNeedle, MultiBfam<TAutomaton> > & me, 
+void _setHostMultiBfam(Pattern<TNeedle, MultiBfam<TAutomaton> > & me,
                         TNeedle2 const & needle_)
 {
     typedef typename Value<TNeedle>::Type TKeyword;
@@ -196,15 +196,15 @@ void _setHostMultiBfam(Pattern<TNeedle, MultiBfam<TAutomaton> > & me,
 }
 
 template <typename TNeedle, typename TAutomaton, typename TNeedle2>
-void setHost (Pattern<TNeedle, MultiBfam<TAutomaton> > & me, 
-              TNeedle2 const & needle) 
+void setHost (Pattern<TNeedle, MultiBfam<TAutomaton> > & me,
+              TNeedle2 const & needle)
 {
     _setHostMultiBfam(me, needle);
 }
 
 template <typename TNeedle, typename TAutomaton, typename TNeedle2>
-inline void 
-setHost(Pattern<TNeedle, MultiBfam<TAutomaton> > & me, 
+inline void
+setHost(Pattern<TNeedle, MultiBfam<TAutomaton> > & me,
         TNeedle2 & needle)
 {
     _setHostMultiBfam(me, needle);
@@ -213,7 +213,7 @@ setHost(Pattern<TNeedle, MultiBfam<TAutomaton> > & me,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TAutomaton>
-inline typename Host<Pattern<TNeedle, MultiBfam<TAutomaton> > >::Type & 
+inline typename Host<Pattern<TNeedle, MultiBfam<TAutomaton> > >::Type &
 host(Pattern<TNeedle, MultiBfam<TAutomaton> > & me)
 {
 SEQAN_CHECKPOINT
@@ -221,7 +221,7 @@ SEQAN_CHECKPOINT
 }
 
 template <typename TNeedle, typename TAutomaton>
-inline typename Host<Pattern<TNeedle, MultiBfam<TAutomaton> > const>::Type & 
+inline typename Host<Pattern<TNeedle, MultiBfam<TAutomaton> > const>::Type &
 host(Pattern<TNeedle, MultiBfam<TAutomaton> > const & me)
 {
 SEQAN_CHECKPOINT
@@ -241,7 +241,7 @@ position(Pattern<TNeedle, MultiBfam<TAutomaton> > & me)
 
 //called when search begins
 template <typename TNeedle, typename TAutomaton>
-inline void _patternInit (Pattern<TNeedle, MultiBfam<TAutomaton> > & me) 
+inline void _patternInit (Pattern<TNeedle, MultiBfam<TAutomaton> > & me)
 {
 SEQAN_CHECKPOINT
     me.position = 0;
@@ -254,18 +254,18 @@ SEQAN_CHECKPOINT
 //the Haystack is long enough that *(it+me.lmin) is a valid value.
 //default implementation: it is assumed that if me.automaton parses a me.lmin-length string S, then S is a pattern
 template <typename TNeedle, typename TAutomaton, typename THaystackIterator>
-inline bool 
-_startVerifyMultiBfam(Pattern<TNeedle, MultiBfam<TAutomaton> > &, 
-                       THaystackIterator) 
+inline bool
+_startVerifyMultiBfam(Pattern<TNeedle, MultiBfam<TAutomaton> > &,
+                       THaystackIterator)
 {
     return true;
 }
 
 //specialization for oracles: must test explicitely, since set-oracles may also parse me.lmin-length strings that are no patterns
 template <typename TNeedle, typename THaystackIterator>
-inline bool 
-_startVerifyMultiBfam(Pattern<TNeedle, MultiBfam<Oracle> > & me, 
-                       THaystackIterator tit) 
+inline bool
+_startVerifyMultiBfam(Pattern<TNeedle, MultiBfam<Oracle> > & me,
+                       THaystackIterator tit)
 {
     typedef typename Value<TNeedle>::Type TKeyword;
     typedef typename Iterator<TKeyword, Standard>::Type TKeywordIterator;
@@ -288,8 +288,8 @@ _startVerifyMultiBfam(Pattern<TNeedle, MultiBfam<Oracle> > & me,
 //____________________________________________________________________________
 
 template <typename TFinder, typename TAutomaton, typename TNeedle>
-inline bool find(TFinder & finder, 
-                 Pattern<TNeedle, MultiBfam<TAutomaton> > & me) 
+inline bool find(TFinder & finder,
+                 Pattern<TNeedle, MultiBfam<TAutomaton> > & me)
 {
 SEQAN_CHECKPOINT
     typedef typename Haystack<TFinder>::Type THaystack;
@@ -318,14 +318,14 @@ SEQAN_CHECKPOINT
     TKeyword * p_keyword;
     TSize len;
 
-    if (empty(finder)) 
+    if (empty(finder))
     {
 //START
         _patternInit(me);
         _finderSetNonEmpty(finder);
         it1 = hostIterator(finder);
-    } 
-    else 
+    }
+    else
     {
 //RESUME
         it1 = hostIterator(finder);

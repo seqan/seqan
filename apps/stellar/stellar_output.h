@@ -64,7 +64,7 @@ _computeLengthAdjustment(TSize dbLength, TSize queryLength) {
         }
     } // end scope of mb and c
 
-    for(TSize i = 1; i <= maxIterations; i++) {  
+    for(TSize i = 1; i <= maxIterations; i++) {
         totalLen = (m - val) * (n - val);
         double val_new  = alphaByLambda * (logK + log(totalLen)) + beta;  // proposed next value of val
         if(val_new >= val) { // val is no bigger than the true fixed point
@@ -110,7 +110,7 @@ _computeLengthAdjustment(TSize dbLength, TSize queryLength) {
 // Computes a CIGAR string and mutations from rows of StellarMatch.
 template<typename TRow, typename TString>
 void
-_getCigarLine(TRow const & row0, TRow const & row1, TString & cigar, TString & mutations) { 
+_getCigarLine(TRow const & row0, TRow const & row1, TString & cigar, TString & mutations) {
     typedef typename Size<TRow>::Type TSize;
 
     TSize pos = 0;
@@ -291,7 +291,7 @@ _writeMatch(TId const & databaseID,
             TRow const & row0,
             TRow const & row1,
             TFile & file) {
-//IOREV _recordreading_ _stub_ 
+//IOREV _recordreading_ _stub_
     typedef typename Value<typename Source<TRow>::Type>::Type TAlphabet;
 
     // write database ID
@@ -318,7 +318,7 @@ _writeMatch(TId const & databaseID,
     file << beginPosition(row1) + beginPosition(source(row1));
     file << ".." << endPosition(row1) + beginPosition(source(row1));
     file << std::endl;
-    
+
     if (IsSameType<TAlphabet, Dna5>::VALUE || IsSameType<TAlphabet, Rna5>::VALUE)
     {
         // write e-value
@@ -409,7 +409,7 @@ _outputMatches(StringSet<QueryMatches<StellarMatch<TInfix, TQueryId> > > & match
                 if (!(*it).orientation) {
                     if (format == "gff")
                         _writeMatchGff((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment, (*it).row1, (*it).row2, file);
-                    else 
+                    else
                         _writeMatch((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment, (*it).row1, (*it).row2, file);
                 }
                 ++it;
@@ -436,8 +436,8 @@ _outputMatches(StringSet<QueryMatches<StellarMatch<TInfix, TQueryId> > > & match
 // Writes disabled query sequences to disabledFile.
 template<typename TInfix, typename TQueryId, typename TQueries, typename TDatabases, typename TIds,
          typename TMode, typename TFile, typename TString>
-bool 
-_outputMatches(StringSet<QueryMatches<StellarMatch<TInfix, TQueryId> > > & matches, 
+bool
+_outputMatches(StringSet<QueryMatches<StellarMatch<TInfix, TQueryId> > > & matches,
                TQueries & queries,
                TIds const & ids,
                TDatabases & databases,
@@ -494,7 +494,7 @@ _outputMatches(StringSet<QueryMatches<StellarMatch<TInfix, TQueryId> > > & match
                 if (format == "gff")
                     _writeMatchGff((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment,
                                    (*it).row1, (*it).row2, file);
-                else 
+                else
                     _writeMatch((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment,
                                 (*it).row1, (*it).row2, file);
             }
@@ -506,7 +506,7 @@ _outputMatches(StringSet<QueryMatches<StellarMatch<TInfix, TQueryId> > > & match
     if (IsSameType<TAlphabet, Dna5>::VALUE || IsSameType<TAlphabet, Rna5>::VALUE)
     {
         reverseComplement(databases);
-    
+
         // output matches on positive database strand
         for (TSize i = 0; i < length(matches); i++) {
             QueryMatches<TMatch> &queryMatches = value(matches, i);
@@ -518,7 +518,7 @@ _outputMatches(StringSet<QueryMatches<StellarMatch<TInfix, TQueryId> > > & match
                     if (format == "gff")
                         _writeMatchGff((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment,
                                        (*it).row1, (*it).row2, file);
-                    else 
+                    else
                         _writeMatch((*it).id, ids[i], (*it).orientation, queryMatches.lengthAdjustment,
                                     (*it).row1, (*it).row2, file);
                 }

@@ -129,11 +129,11 @@ public:
 /*!
  * @fn ConsensusScoreSequenceEntry#host
  * @brief Returns reference to sequence from entry.
- * 
+ *
  * @signature TSequence host(entry);
- * 
+ *
  * @param[in] entry The ConsensusScoreSequenceEntry to query for its host.
- * 
+ *
  * @return TSequence A reference to the underlying sequence.
  */
 
@@ -154,11 +154,11 @@ host(ConsensusScoreSequenceEntry<TSequence> const & entry)
 /*!
  * @fn ConsensusScoreSequenceEntry#position
  * @brief Returns position stored in <tt>entry</tt>.
- * 
+ *
  * @signature TPosition position(entry);
- * 
+ *
  * @param[in] entry The ConsensusScoreSequenceEntry to query.
- * 
+ *
  * @return TPosition The position of the entry.  The type is
  *                   <tt>ConsensusScoreSequenceEntry&lt;TSequence&gt;::TPosition</tt>.
  */
@@ -173,7 +173,7 @@ position(ConsensusScoreSequenceEntry<TSequence> const & entry)
 /*!
  * @fn ConsensusScoreSequenceEntry#value
  * @brief Returns value of character referenced by <tt>entry</tt>.
- * 
+ *
  * @signature TValue value(entry);
  *
  * @param[in] entry The ConsensusScoreSequenceEntry to query.
@@ -378,7 +378,7 @@ assignProfile(Score<TValue, FractionalScore> & me,
     for (; it!=itEnd; ++it, ++itSum)
     {
         *itSum = 0;
-        for (TSize i = 0; i < (TSize) ValueSize<typename Value<TString>::Type>::VALUE; ++i) 
+        for (TSize i = 0; i < (TSize) ValueSize<typename Value<TString>::Type>::VALUE; ++i)
             *itSum += (*it).count[i];
     }
 }

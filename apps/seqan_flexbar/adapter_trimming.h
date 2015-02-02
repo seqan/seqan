@@ -33,7 +33,7 @@
 // Author: Sebastian Roskosch <serosko@zedat.fu-berlin.de>
 // ==========================================================================
 // This file provides the adapter trimming functionality of seqan-flexbar
-// which is based in the implementation of the original flexbar program in 
+// which is based in the implementation of the original flexbar program in
 // [1].
 // [1] Dodt, M.; Roehr, J.T.; Ahmed, R.; Dieterich, C.  FLEXBAR—Flexible
 // Barcode and Adapter Processing for Next-Generation Sequencing Platforms.
@@ -322,7 +322,7 @@ unsigned stripPairBatch(seqan::StringSet<TSeq>& set1, seqan::StringSet<TId>& idS
     stats.overlapSum += overlapSum;
     unsigned batch_min = *std::min_element(begin(minOverlap), end(minOverlap));
     unsigned batch_max = *std::max_element(begin(maxOverlap), end(maxOverlap));
-    if (batch_min < stats.minOverlap) 
+    if (batch_min < stats.minOverlap)
     {
         stats.minOverlap = batch_min;
     }

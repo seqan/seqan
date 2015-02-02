@@ -128,7 +128,7 @@ SEQAN_DEFINE_TEST(testBuild)
 }
 
 template <typename TIter>
-inline void _printNode(TIter const it) 
+inline void _printNode(TIter const it)
 {
         std::cout << countOccurrences(it) << "\t";
         std::cout << representative(it) << "\t";
@@ -293,7 +293,7 @@ void compareTreeIterators(TIndex1 &index1, TIndex2 &index2)
     Iter<TIndex1, VSTree< TopDown< ParentLinks<Preorder> > > > it1(index1);
     Iter<TIndex2, VSTree< TopDown< ParentLinks<Preorder> > > > it2(index2);
 
-    while (!atEnd(it1) && !atEnd(it2)) 
+    while (!atEnd(it1) && !atEnd(it2))
     {
         SEQAN_ASSERT_EQ(representative(it1), representative(it2));
         SEQAN_ASSERT_EQ(parentEdgeLabel(it1), parentEdgeLabel(it2));
@@ -423,7 +423,7 @@ template <typename TPair>
 struct PairLess_ :
         public std::binary_function<TPair, TPair, bool>
 {
-        inline bool 
+        inline bool
         operator() (TPair const& a1, TPair const& a2) const
         {
                 if (a1.i1 == a2.i1) return (a1.i2 < a2.i2);
@@ -448,9 +448,9 @@ SEQAN_DEFINE_TEST(testMaxRepeats)
         Iterator< Index<TText>, MaxRepeats >::Type it(esa, 3);
         typedef MaxRepeat< Index<TText> > TRepeat;
         typedef Value<TRepeat>::Type TPair;
-        
+
         int found = 0;
-        while (!atEnd(it)) 
+        while (!atEnd(it))
         {
 //            std::cout << representative(it) << ":";
             Iterator<TRepeat, MaxRepeatOccurrences>::Type mit(it);
@@ -491,7 +491,7 @@ SEQAN_DEFINE_TEST(testMaxRepeats)
                     SEQAN_ASSERT_EQ(occs[0], TPair(1,6));
                 else
                     SEQAN_ASSERT_EQ(occs[0], TPair(1,16));
-            } else 
+            } else
             {
                 SEQAN_ASSERT_FAIL("Unknown maximal repeat found!");
             }
@@ -566,13 +566,13 @@ void _testSuperMaxRepeats()
                 SEQAN_ASSERT_EQ(length(occs), 2u);
                 SEQAN_ASSERT_EQ(occs[0], 5u);
                 SEQAN_ASSERT_EQ(occs[1], 15u);
-            } else 
+            } else
             if (representative(it) == "HALL")
             {
                 SEQAN_ASSERT_EQ(length(occs), 2u);
                 SEQAN_ASSERT_EQ(occs[0], 0u);
                 SEQAN_ASSERT_EQ(occs[1], 10u);
-            } else 
+            } else
             {
                 SEQAN_ASSERT_FAIL("Unknown supermaximal repeat found!");
             }
@@ -616,7 +616,7 @@ SEQAN_DEFINE_TEST(testMUMs)
 
         int found = 0;
 //        std::cout << std::resetiosflags(std::ios::left);
-        while (!atEnd(it)) 
+        while (!atEnd(it))
         {
             occs = getOccurrences(it);                    // gives hit positions (seqNo,seqOfs)
             orderOccurrences(occs);                        // order them by seqNo
@@ -626,7 +626,7 @@ SEQAN_DEFINE_TEST(testMUMs)
 //                std::cout << "\t" << getValueI2(occs[i]);
 //            std::cout << std::endl;
 //            std::cout << alignment(it) << std::endl;
-            
+
             if (representative(it) == "alloball")
             {
                 SEQAN_ASSERT_EQ(length(occs), 3u);
@@ -659,7 +659,7 @@ void testFind()
         Finder<Index< String<char> >, TAlgorithmSpec> finder(index);
 
         String<char> needle1("ist");
-        seqan::Pattern<String<char> > pattern(needle1);    
+        seqan::Pattern<String<char> > pattern(needle1);
 
         while (find(finder, pattern))
             appendValue(pos,position(finder));
@@ -698,10 +698,10 @@ SEQAN_DEFINE_TEST(testMultipleStrings_Ticket1109)
     appendValue(text, "How many");
     appendValue(text, " wood would");
     appendValue(text, " a woodchuck chuck?");
-    
+
     typedef Index<StringSet<CharString> > TIndex;
     TIndex index(text);
-    
+
     Iterator< TIndex, TopDown<> >::Type it(index);
 }
 

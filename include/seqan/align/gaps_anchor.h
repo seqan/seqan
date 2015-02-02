@@ -154,7 +154,7 @@ public:
         data_cutBegin(0),
         data_cutEnd(0),
         data_viewCutBegin(0),
-        data_viewCutEnd(0)        
+        data_viewCutEnd(0)
     {
     }
 
@@ -171,17 +171,17 @@ public:
     // is often given as a temporary.
 
     Gaps(TSource & source, TGapAnchors & anchors) :
-        data_source(source), 
+        data_source(source),
         data_gaps(anchors),
         data_cutBegin(0),
         data_cutEnd(0),
         data_viewCutBegin(0),
-        data_viewCutEnd(0)        
+        data_viewCutEnd(0)
     {
     }
 
     Gaps(TSource & source, TGapAnchors const & anchors) :
-        data_source(source), 
+        data_source(source),
         data_gaps(anchors),
         data_cutBegin(0),
         data_cutEnd(0),
@@ -194,8 +194,8 @@ public:
 
     template <typename TSource2>
     Gaps(TSource2 & source, TGapAnchors & anchors) :
-        data_source(source), 
-        data_gaps(anchors), 
+        data_source(source),
+        data_gaps(anchors),
         data_cutBegin(0),
         data_cutEnd(0),
         data_viewCutBegin(0),
@@ -205,7 +205,7 @@ public:
 
     template <typename TSource2>
     Gaps(TSource2 & source, TGapAnchors const & anchors) :
-        data_source(source), 
+        data_source(source),
         data_gaps(anchors),
         data_cutBegin(0),
         data_cutEnd(0),
@@ -217,7 +217,7 @@ public:
     template <typename TSource2>
     Gaps(TSource2 const & source, TGapAnchors & anchors) :
         data_source(source),
-        data_gaps(anchors), 
+        data_gaps(anchors),
         data_cutBegin(0),
         data_cutEnd(0),
         data_viewCutBegin(0),
@@ -744,11 +744,11 @@ assignSource(Gaps<TSequence, AnchorGaps<TGapAnchor> > & gaps, TSequence2 const &
  * typedef typename Value<TContigStore>::Type                           TContig;
  * typedef typename TFragmentStore::TContigSeq                          TContigSeq;
  * typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> > TContigGaps;
- * 
+ *
  * typedef typename TFragmentStore::TAlignedReadStore                   TAlignedReadStore;
  * typedef typename Value<TAlignedReadStore>::Type                      TAlignedRead;
  * typedef typename TAlignedRead::TPos                                  TAlignedReadPos;
- * 
+ *
  * unsigned contigId = alignedReadStore[idx].contigId;
  * TContigGaps contigGaps(contigStore[contigId].seq, contigStore[contigId].gaps);
  * TAlignedRead const & alignedRead = alignedReadStore[idx];
@@ -763,11 +763,11 @@ assignSource(Gaps<TSequence, AnchorGaps<TGapAnchor> > & gaps, TSequence2 const &
  * typedef typename TFragmentStore::TContigStore                        TContigStore;
  * typedef typename Value<TContigStore>::Type                           TContig;
  * typedef Gaps<Nothing, AnchorGaps<typename TContig::TGapAnchors> > TContigGaps;
- * 
+ *
  * typedef typename TFragmentStore::TAlignedReadStore                   TAlignedReadStore;
  * typedef typename Value<TAlignedReadStore>::Type                      TAlignedRead;
  * typedef typename TAlignedRead::TPos                                  TAlignedReadPos;
- * 
+ *
  * unsigned contigId = alignedReadStore[idx].contigId;
  * TContigGaps contigGaps(Nothing(), contigStore[contigId].gaps);
  * TAlignedRead const & alignedRead = alignedReadStore[idx];
@@ -840,7 +840,7 @@ positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition p
  * typedef typename Value<TContigStore>::Type                           TContig;
  * typedef typename TFragmentStore::TContigSeq                          TContigSeq;
  * typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> > TContigGaps;
- * 
+ *
  * TContigGaps contigGaps(contigStore[contigId].seq, contigStore[contigId].gaps);
  * TAlignedReadPos pos = positionGapToSeq(contigGaps, 33);
  * @endcode
@@ -851,7 +851,7 @@ positionGapToSeq(Gaps<TSource, AnchorGaps<TGapAnchors> > const & me, TPosition p
  * typedef typename TFragmentStore::TContigStore                        TContigStore;
  * typedef typename Value<TContigStore>::Type                           TContig;
  * typedef Gaps<Nothing, AnchorGaps<typename TContig::TGapAnchors> > TContigGaps;
- * 
+ *
  * TContigGaps contigGaps(Nothing(), contigStore[contigId].gaps);
  * TAlignedReadPos endPos = positionGapToSeq(contigGaps, 33);
  * @endcode

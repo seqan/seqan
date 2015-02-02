@@ -99,7 +99,7 @@ struct FindPrefix;
  */
 
 template < typename TObject >
-struct DefaultFinder 
+struct DefaultFinder
 {
     typedef void Type;
 };
@@ -117,7 +117,7 @@ struct DefaultFinder
  */
 
 template < typename TObject >
-struct DefaultPattern 
+struct DefaultPattern
 {
     typedef void Type;
 };
@@ -136,7 +136,7 @@ struct DefaultPattern
  */
 
 template <typename TFinder>
-struct Haystack 
+struct Haystack
 {
     typedef typename Container<TFinder>::Type Type;
 };
@@ -154,19 +154,19 @@ struct Haystack
  */
 
 template <typename TPattern>
-struct Needle 
+struct Needle
 {
     typedef typename Host<TPattern>::Type Type;
 };
 
 template <typename THost, typename TSpec>
-struct Needle<Segment<THost, TSpec> > 
+struct Needle<Segment<THost, TSpec> >
 {
     typedef Segment<THost, TSpec> Type;
 };
 
 template <typename THost, typename TSpec>
-struct Needle<Segment<THost, TSpec> const> 
+struct Needle<Segment<THost, TSpec> const>
 {
     typedef Segment<THost, TSpec> const Type;
 };
@@ -181,7 +181,7 @@ struct Needle<Segment<THost, TSpec> const>
  *
  * @signature bool find(finder, pattern[, k]);
  *
- * @param[in,out] finder  The @link Finder @endlink object to search through. 
+ * @param[in,out] finder  The @link Finder @endlink object to search through.
  * @param[in]     pattern The @link Pattern @endlink to search for.  For index finders, pattern can also be a text.
  *                        Types: @link Pattern @endlink, @link TextConcept @endlink.
  * @param[in]     k       Desired minimal score (for approximate matching).  <tt>k</tt> is a number <tt>&lt;= 0</tt>.
@@ -215,14 +215,14 @@ struct Needle<Segment<THost, TSpec> const>
 
 /*!
  * @class Finder
- * 
+ *
  * @headerfile <seqan/find.h>
- * 
+ *
  * @brief Holds the haystack and a current search context.
- * 
+ *
  * @signature template <typename THaystack[, typename TSpec]>
  *            class Finder;
- * 
+ *
  * @tparam TSpec The index-algorithm to search with (Optional).Leave empty for
  *               online pattern matching (see @link Pattern @endlink).If
  *               <tt>THaystack</tt> is an @link Index @endlink, then
@@ -230,35 +230,35 @@ struct Needle<Segment<THost, TSpec> const>
  *               Pigeonhole, Swift, Backtracking Default: The result of @link
  *               DefaultFinder @endlink
  * @tparam THaystack The haystack type. Types: String, Index
- * 
+ *
  * <tt>position(finder)</tt> returns the position of the current hit in the haystack.  If <tt>THaystack</tt> is a set of
  * strings or an index of a set of strings, then <tt>position(finder)</tt> returns a @link Pair @endlink <tt>(hayNo,
  * pos)</tt>, in which <tt>hayNo</tt> is the haystack index and <tt>pos</tt> the local position of the hit.
- * 
+ *
  * To reset the finder object and use it on another text or different text position, use <tt>clear(finder)</tt> Note
  * that <tt>clear(finder)</tt> doesn't move the text iterator. To start the search from the beginning or somewhere else
  * in the text, use @link Finder#goBegin @endlink or @link Finder#setPosition @endlink.
- * 
+ *
  * @section Examples
- * 
+ *
  * The following example shows how to restart a search from the beginning of a
  * text.
- * 
+ *
  * @code{.cpp}
  * CharString hstck = "I spy with my little eye something that is yellow";
  * Finder<CharString> finder(hstck);
- *  
+ *
  * Pattern<CharString, Horspool> p1("y");
  * findAll(finder, p1);
- *  
+ *
  * goBegin(finder);    // move Finder to the beginning of the text
  * clear(finder);      // reset Finder
- *  
+ *
  * Pattern<CharString, Horspool> p2("t");
  * findAll(finder, p2);
  * @endcode
  * Demo: Demo.Index Finder StringSet
- * 
+ *
  * Demo: Demo.Index Finder
  */
 
@@ -301,7 +301,7 @@ public:
         : data_iterator(begin(haystack, Rooted()))
         , data_endPos(0)
         , data_length(0)
-        , _needReinit(true) 
+        , _needReinit(true)
         , _beginFind_called(false)
     {}
 
@@ -309,7 +309,7 @@ public:
         : data_iterator(iter)
         , data_endPos(0)
         , data_length(0)
-        , _needReinit(true) 
+        , _needReinit(true)
         , _beginFind_called(false)
     {}
 
@@ -317,15 +317,15 @@ public:
         : data_iterator(iter)
         , data_endPos(0)
         , data_length(0)
-        , _needReinit(true) 
+        , _needReinit(true)
         , _beginFind_called(false)
     {}
-    
+
     Finder(Finder const &orig)
         : data_iterator(orig.data_iterator)
         , data_endPos(orig.data_endPos)
         , data_length(orig.data_length)
-        , _needReinit(orig._needReinit) 
+        , _needReinit(orig._needReinit)
         , _beginFind_called(orig._beginFind_called)
     {}
 
@@ -346,14 +346,14 @@ public:
 
 //____________________________________________________________________________
 
-    inline typename Reference<TIterator>::Type 
-    operator* () 
+    inline typename Reference<TIterator>::Type
+    operator* ()
     {
 SEQAN_CHECKPOINT
         return value(hostIterator(*this));
     }
 
-    inline typename Reference<TIterator const>::Type 
+    inline typename Reference<TIterator const>::Type
     operator* () const
     {
 SEQAN_CHECKPOINT
@@ -426,7 +426,7 @@ _setFinderLength(Finder<THaystack, TSpec> & me,
  */
 
 template <typename THaystack, typename TSpec>
-inline typename Position<THaystack>::Type 
+inline typename Position<THaystack>::Type
 beginPosition(Finder<THaystack, TSpec> & me)
 {
 SEQAN_CHECKPOINT
@@ -486,7 +486,7 @@ SEQAN_CHECKPOINT
  */
 
 template <typename THaystack, typename TSpec>
-inline typename Position<THaystack>::Type 
+inline typename Position<THaystack>::Type
 endPosition(Finder<THaystack, TSpec> & me)
 {
 SEQAN_CHECKPOINT
@@ -544,14 +544,14 @@ SEQAN_CHECKPOINT
  */
 
 template <typename THaystack, typename TSpec>
-inline typename Size<THaystack>::Type 
+inline typename Size<THaystack>::Type
 length(Finder<THaystack, TSpec> & me)
 {
 SEQAN_CHECKPOINT
     return me.data_length;
 }
 template <typename THaystack, typename TSpec>
-inline typename Size<THaystack const>::Type 
+inline typename Size<THaystack const>::Type
 length(Finder<THaystack, TSpec> const & me)
 {
 SEQAN_CHECKPOINT
@@ -592,7 +592,7 @@ infix(Finder<THaystack, TSpec> const & me)
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename THaystack, typename TSpec>
-inline typename Parameter_<THaystack>::Type 
+inline typename Parameter_<THaystack>::Type
 host(Finder<THaystack, TSpec> & me)
 {
 SEQAN_CHECKPOINT
@@ -600,7 +600,7 @@ SEQAN_CHECKPOINT
 }
 
 template <typename THaystack, typename TSpec>
-inline typename Parameter_<THaystack>::Type 
+inline typename Parameter_<THaystack>::Type
 host(Finder<THaystack, TSpec> const & me)
 {
 SEQAN_CHECKPOINT
@@ -608,14 +608,14 @@ SEQAN_CHECKPOINT
 }
 
 template <typename THaystack, typename TSpec>
-inline typename Parameter_<THaystack>::Type 
+inline typename Parameter_<THaystack>::Type
 container(Finder<THaystack, TSpec> & me)
 {
     return container(hostIterator(me));
 }
 
 template <typename THaystack, typename TSpec>
-inline typename Parameter_<THaystack>::Type 
+inline typename Parameter_<THaystack>::Type
 container(Finder<THaystack, TSpec> const & me)
 {
 SEQAN_CHECKPOINT
@@ -626,7 +626,7 @@ SEQAN_CHECKPOINT
 
 template <typename THaystack, typename TSpec>
 inline void
-setHost(Finder<THaystack, TSpec> & me, 
+setHost(Finder<THaystack, TSpec> & me,
         typename Parameter_<THaystack>::Type container_)
 {
 SEQAN_CHECKPOINT
@@ -636,7 +636,7 @@ SEQAN_CHECKPOINT
 
 template <typename THaystack, typename TSpec>
 inline void
-setContainer(Finder<THaystack, TSpec> & me, 
+setContainer(Finder<THaystack, TSpec> & me,
              typename Parameter_<THaystack>::Type container_)
 {
 SEQAN_CHECKPOINT
@@ -772,7 +772,7 @@ SEQAN_CHECKPOINT
  * @brief Return current position of the finder in the haystack.
  *
  * @signature TPosition position(finder);
- * 
+ *
  * @param[in] finder The Finder to query.
  *
  * @return TPosition The current position.  TPosition is the position type of the haystack.
@@ -809,7 +809,7 @@ SEQAN_CHECKPOINT
  */
 
 template <typename THaystack, typename TSpec, typename TPosition>
-inline void 
+inline void
 setPosition(Finder<THaystack, TSpec> & me, TPosition pos_)
 {
 SEQAN_CHECKPOINT

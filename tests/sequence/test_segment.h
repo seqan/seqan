@@ -113,13 +113,13 @@ SEQAN_DEFINE_TEST(Infix)
     goNext(infix_1);
     SEQAN_ASSERT(atEnd(infix_1));
 //____________________________________________________________________________
-// compare operators 
+// compare operators
 
     str_1 = "hellohello";
     Infix<String<char> >::Type infix_6(str_1, 0, 10);
 
 //     SEQAN_ASSERT_EQ(infix_6, str_1);
-// 
+//
 //     infix_6 += str_1;
     SEQAN_ASSERT(isEqual(infix_6, "hellohello"));
 
@@ -234,7 +234,7 @@ SEQAN_DEFINE_TEST(ticket317)
 {
     SEQAN_CHECKPOINT;
     // http://trac.mi.fu-berlin.de/seqan/ticket/317
-    
+
     CharString text = "thisisatext";
     Infix<CharString>::Type sub1 = infix(text, 2, 8);
     Infix<Infix<CharString>::Type>::Type sub2 = infix(sub1, 1, 3);

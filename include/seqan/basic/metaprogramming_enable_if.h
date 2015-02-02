@@ -174,18 +174,18 @@ struct DisableIf<False, T>
  */
 
 //
-// Example for enable-if function: 
+// Example for enable-if function:
 //
 //    template <typename TContainer>
 //    typename EnableIf<
 //        IsContainer<TContainer>,                  // 1st arg: enable-if condition
 //        typename Size<TContainer>::Type >::Type   // 2nd arg: return type
-//    length(TContainer & cont) 
+//    length(TContainer & cont)
 //    {
 //        SEQAN_CONCEPT_ASSERT((ContainerConcept<TContainer>));
 //        return end(cont) - begin(cont);
 //    }
-    
+
 template <bool b, typename T>
 struct EnableIf2;
 

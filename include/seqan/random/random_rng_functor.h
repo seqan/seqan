@@ -46,7 +46,7 @@ namespace seqan {
 // Tag for selecting the Rng functor specialization.
 template <typename TRng, typename TPdf>
 struct RngFunctor {};
-    
+
 // ===========================================================================
 // Classes
 // ===========================================================================
@@ -85,7 +85,7 @@ public:
     Rng(TRng & rng, TPdf & pdf)
         : _rng(rng), _pdf(pdf)
     {}
-    
+
     inline
     typename Value<TPdf>::Type
     operator()()
@@ -116,7 +116,7 @@ struct MinValue<RngFunctor<TRng, TPdf> > : MinValue<TPdf> {};
 
 template <typename TRng, typename TPdf>
 struct MinValue<RngFunctor<TRng, TPdf> const> : MinValue<TPdf> {};
-    
+
 // ===========================================================================
 // Functions
 // ===========================================================================
@@ -126,7 +126,7 @@ inline unsigned
 pickRandomNumber(Rng<RngFunctor<TRng, TPdf> > & rng)
 {
     SEQAN_CHECKPOINT;
-    
+
     return pickRandomNumber(rng._rng, rng._pdf);
 }
 

@@ -52,7 +52,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     // *** COMPARATORS & MAPS ***
-        
+
     template <typename TValue, typename TResult = int>
     struct _skew7NCompMulti : public std::binary_function<TValue, TValue, TResult> {
         inline TResult operator() (const TValue &a, const TValue &b) const
@@ -62,7 +62,7 @@ namespace SEQAN_NAMESPACE_MAIN
             typedef typename Value<TValue, 2>::Type                 TSeptet;
             typedef typename Value<TSeptet>::Type                   TSeptetValue;
             typedef typename StoredTupleValue_<TSeptetValue>::Type  TStoredValue;
-            
+
             const TStoredValue *sa = a.i2.i;
             const TStoredValue *sb = b.i2.i;
 
@@ -97,7 +97,7 @@ namespace SEQAN_NAMESPACE_MAIN
         public std::binary_function<
             Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack >,
             Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack >,
-            TResult> {       
+            TResult> {
         inline TResult operator() (
             const Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack > &a,
             const Pair<T1, Tuple<TValue, 7, BitPacked<> >, Pack > &b) const
@@ -140,7 +140,7 @@ namespace SEQAN_NAMESPACE_MAIN
     struct _skew7GlobalSlicedMulti :
         public std::unary_function<TValue, TResult>
     {
-    
+
         typedef TResultSize TSize;
 
         TSize            n4, n2, n1;
@@ -156,7 +156,7 @@ namespace SEQAN_NAMESPACE_MAIN
             if (it == itEnd) return;
 
             // count the numbers of septets in residue class 1, 2, and 4
-            
+
             TSize size, cur;
             TSize old = *it; ++it;
 
@@ -164,7 +164,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 cur = *it;
                 size = cur - old;
                 old = cur;
-                
+
                 n4 += (size + 3) / 7;
                 n2 += (size + 5) / 7;
                 n1 += (size + 6) / 7;
@@ -174,7 +174,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
             n24 = n2 + n4;
 
-            // precompute the begin positions (off) of septet names 
+            // precompute the begin positions (off) of septet names
             // in the sliced string for every sequence and every residue class
 
             resize(off[1], length(limits) - 1);
@@ -190,7 +190,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 cur = *it;
                 size = cur - old;
                 old = cur;
-                
+
                 off4 += (size + 3) / 7;
                 off2 += (size + 5) / 7;
                 off1 += (size + 6) / 7;
@@ -217,13 +217,13 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TInput, typename TPair_, typename TLimitsString >
     struct Pipe< TInput, Multi<Skew7, TPair_, TLimitsString> >
     {
-  
+
         // *** SPECIALIZATION ***
 
         // use packing if lessorequal 16 different values per char
         typedef typename MakePacked<TPair_>::Type TPair;
-        typedef typename IfC< 
-            (BitsPerValue<TypeOf_(TInput)>::VALUE > 0) && 
+        typedef typename IfC<
+            (BitsPerValue<TypeOf_(TInput)>::VALUE > 0) &&
             (BitsPerValue<TypeOf_(TInput)>::VALUE <= 4),
             BitPacked<>,
             Pack>::Type TPack;
@@ -293,7 +293,7 @@ namespace SEQAN_NAMESPACE_MAIN
             ignoreUnusedVariableWarning(dummy);
             process(_textIn);
         }
-        
+
         template < typename TInput_ >
         bool process(TInput_ &textIn) {
 
@@ -340,7 +340,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 #endif
 
                 _skew7SeparateSlices(
-                    names_sliced, func_slice, 
+                    names_sliced, func_slice,
                     names_S1, names_S2, names_S4);
 
                 clear(names_sliced);
@@ -348,8 +348,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
                 // step 2
                 _skew7ExtendMulti(
-                    textIn, limits, 
-                    names_S1, names_S2, names_S4, 
+                    textIn, limits,
+                    names_S1, names_S2, names_S4,
                     sortedS0, sortedS3, sortedS5, sortedS6, sortedS124);
 
             } else {
@@ -361,7 +361,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 TFilter                     filter(names_sliced);
                 TNames_Linear               names_S1, names_S2, names_S4;
 
-//                if (length(filter) > 128*1024*1024) 
+//                if (length(filter) > 128*1024*1024)
                 {
                     // recursion
                     TRecurse                    recurse(filter);
@@ -384,33 +384,33 @@ namespace SEQAN_NAMESPACE_MAIN
                     #endif
 
                     _skew7SeparateSlices(
-                        renamer, func_slice, 
+                        renamer, func_slice,
                         names_S1, names_S2, names_S4);
-                } 
+                }
 /*                else
                 {
                     TInMem                        inMem(filter);
                     clear(filter);
                     TRenamerInMem               renamer(inMem);
                     _skew7SeparateSlices(
-                        renamer, func_slice, 
+                        renamer, func_slice,
                         names_S1, names_S2, names_S4);
-                } 
+                }
 */
                 SEQAN_PROMARK("Mapper (10) - construct ISA124");
-               
+
                 // step 2
                 #ifdef SEQAN_DEBUG_INDEX
                     std::cerr << "  prepare merge" << std::endl;
                 #endif
                 _skew7ExtendMulti(
-                    textIn, limits, 
-                    names_S1, names_S2, names_S4, 
+                    textIn, limits,
+                    names_S1, names_S2, names_S4,
                     sortedS0, sortedS3, sortedS5, sortedS6, sortedS124);
 
                 SEQAN_PROMARK("Mapper (12), Sorter (13-16) - merge SA124, SA3, SA5, SA6, SA0");
             }
- 
+
             // step 3
             // ... is done on-demand by merger
             }
@@ -426,11 +426,11 @@ namespace SEQAN_NAMESPACE_MAIN
         inline typename Value<Pipe>::Type const operator*() {
             return *in;
         }
-        
+
         inline Pipe& operator++() {
             ++in;
             return *this;
-        }        
+        }
     };
 
     // not sure which interface is more intuitive, we support both

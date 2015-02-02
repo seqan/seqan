@@ -251,7 +251,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_score_myers)
     appendValue(strings, strV);
 
     int res = 0;
-    
+
     res = globalAlignmentScore(strH, strV, MyersBitVector());
     SEQAN_ASSERT_EQ(res, -8);
 
@@ -271,7 +271,7 @@ SEQAN_DEFINE_TEST(test_align_global_alignment_score_myers_hirschberg)
     appendValue(strings, strV);
 
     int res = 0;
-    
+
     res = globalAlignmentScore(strH, strV, MyersHirschberg());
     SEQAN_ASSERT_EQ(res, -8);
 

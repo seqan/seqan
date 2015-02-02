@@ -53,17 +53,17 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
     template < typename TCompare >
-    struct AdaptorCompare2Less : 
+    struct AdaptorCompare2Less :
         public std::binary_function <
-            typename TCompare::first_argument_type, 
-            typename TCompare::second_argument_type, 
+            typename TCompare::first_argument_type,
+            typename TCompare::second_argument_type,
             bool >
     {
         TCompare const & C;
         AdaptorCompare2Less(TCompare const & tmpC): C(tmpC) { }
         inline bool operator() (
-            typename TCompare::first_argument_type const &a, 
-            typename TCompare::second_argument_type const &b) const 
+            typename TCompare::first_argument_type const &a,
+            typename TCompare::second_argument_type const &b) const
         {
             return C(a, b) < 0;
         }
@@ -73,16 +73,16 @@ namespace SEQAN_NAMESPACE_MAIN
  * @class SorterConfigSize
  * @extends SorterSpec
  * @headerfile <seqan/pipe.h>
- * 
+ *
  * @brief Configuration of Sorter.
- * 
+ *
  * @signature template <typename TCompare, typename TSize[, typename TFile>
  *            struct SorterConfigSize;
- * 
+ *
  * @tparam TCompare The compare function (see STL's <tt>binary_function</tt>).
  * @tparam TSize    The Sorter's size type.
  * @tparam TFile    The underlying File type.  <tt>File&lt;&gt;</tt>
- * 
+ *
  * The requirement on TCompare are as follows: let <tt>comp</tt> be an object of type <tt>TCompare</tt>.  <tt>comp(a,
  * b)</tt> should return a value less, equal, or greater than 0 if <tt>a &lt; b</tt>, <tt>a == b</tt>, or <tt>a &gt;
  * b</tt>.
@@ -107,17 +107,17 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @signature template <typename TCompare[, typename TFile]>
  *            struct SorterConfig;
- * 
+ *
  * @tparam TCompare The compare function (see STL's <tt>binary_function</tt>).
  * @tparam TFile The underlying File type, defaults to <tt>File&lt;&gt;</tt>.
- * 
+ *
  * The requirement on TCompare are as follows: let <tt>comp</tt> be an object of type <tt>TCompare</tt>.  <tt>comp(a,
  * b)</tt> should return a value less, equal, or greater than 0 if <tt>a &lt; b</tt>, <tt>a == b</tt>, or <tt>a &gt;
  * b</tt>.
  *
  * Using this configuration spec., the Sorter's size type is <tt>Size&lt;TFile&gt;::Type</tt>.  To use a custom size
  * type @link SorterConfigSize @endlink should be used.
- * 
+ *
  * @see SorterConfigSize
  */
 
@@ -136,12 +136,12 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @signature template <typename TValue, typename TConfig>
  *            struct Pool<TValue, SorterSpec<TConfig > >;
- * 
+ *
  * @tparam TConfig Configuration Spec.  Defines compare function, size type, and file type.
  * @tparam TValue  The value type, that is the type of the stream elements.
- * 
+ *
  * The Pool's input/output type is <tt>TValue</tt> and the size type is determined by the <tt>TConfig</tt>.
- * 
+ *
  * If there exists an explicit function mapping input elements to their destined positions in the output
  * stream, @link MapperSpec @endlink should be preferred.
  *
@@ -232,7 +232,7 @@ namespace SEQAN_NAMESPACE_MAIN
             return *(top(pqueue).cur);
         }
 
-        inline void pop(TValue &Ref_) 
+        inline void pop(TValue &Ref_)
         {
             TPageBucket &pb = top(pqueue);
             SEQAN_ASSERT_LEQ(pb.cur, pb.end);
@@ -272,7 +272,7 @@ namespace SEQAN_NAMESPACE_MAIN
         {
             cancel();
         }
-        
+
         void cancel()
         {
             clear(pqueue);
@@ -313,7 +313,7 @@ namespace SEQAN_NAMESPACE_MAIN
             pool(_pool),
             mergeBufferSize(_min(_pool.size(), _requestedBufferSize)),
             pqueue(StreamComparer(_pool.handlerData.compare)) { }
-        
+
         ~BufferHandler() {
             cancel();
         }
@@ -348,7 +348,7 @@ namespace SEQAN_NAMESPACE_MAIN
         inline void end() {
             cancel();
         }
-        
+
         void cancel()
         {
             clear(pqueue);
@@ -363,7 +363,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TBuffer & merge()
         {
             // 2. merge streams into mergeBuffer
-            
+
             typename TPrioQueue::size_type pqsize = length(pqueue);
             if (!pqsize) {
                 resize(tmpBuffer, 0);
@@ -414,7 +414,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 }
                 resize(mergeBuffer, pageSize(mergeBuffer));
             }
-            
+
             return mergeBuffer;
         }
     };

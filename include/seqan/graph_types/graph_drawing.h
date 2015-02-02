@@ -60,7 +60,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TAlphabet, typename TCargo, typename TSpec, typename TVertexDescriptor, typename TAttributes>
-inline void 
+inline void
 _markRootVertex(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
                 TVertexDescriptor const& v,
                 TAttributes& str)
@@ -74,7 +74,7 @@ _markRootVertex(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TCargo, typename TSpec, typename TVertexDescriptor, typename TAttributes>
-inline void 
+inline void
 _markRootVertex(Graph<Directed<TCargo, TSpec> > const&,
                 TVertexDescriptor const&,
                 TAttributes&)
@@ -85,7 +85,7 @@ _markRootVertex(Graph<Directed<TCargo, TSpec> > const&,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TCargo, typename TSpec, typename TVertexDescriptor, typename TAttributes>
-inline void 
+inline void
 _markRootVertex(Graph<Undirected<TCargo, TSpec> > const&,
                 TVertexDescriptor const&,
                 TAttributes&)
@@ -97,7 +97,7 @@ _markRootVertex(Graph<Undirected<TCargo, TSpec> > const&,
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TCargo, typename TSpec, typename TVertexDescriptor, typename TAttributes>
-inline void 
+inline void
 _markRootVertex(Graph<Tree<TCargo, TSpec> > const& g,
                 TVertexDescriptor const& v,
                 TAttributes& str)
@@ -137,7 +137,7 @@ _createTrieNodeAttributes(Graph<Automaton<TAlphabet, TCargo, TSpec> > const& g,
             }
             s << "}";
         }
-        
+
         append(tmp, "label = \"");
         append(tmp, s.str().c_str());
         append(tmp, "\"");
@@ -184,7 +184,7 @@ _createNodeAttributes(Graph<TSpec> const& g,
     typedef typename Iterator<TGraph, VertexIterator>::Type TConstIter;
     TConstIter it(g);
     for(;!atEnd(it);++it) {
-        std::ostringstream outs; 
+        std::ostringstream outs;
         outs << "label = \"";
         outs << getProperty(nameMap,*it);
         outs << "\"";
@@ -256,7 +256,7 @@ _createEdgeAttributes(Graph<Tree<TCargo, TSpec> > const& g,
     typedef typename Iterator<TGraph, EdgeIterator>::Type TConstEdIter;
     TConstEdIter itEd(g);
     for(;!atEnd(itEd);++itEd) {
-        std::ostringstream outs; 
+        std::ostringstream outs;
         outs << "label = \"";
         outs << (TCargo) getCargo(*itEd);
         outs << "\"";
@@ -544,9 +544,9 @@ template <typename TFile, typename TSpec, typename TNodeAttributes>
 inline void
 writeRecords(
     TFile & file,
-    Graph<TSpec> const& g, 
+    Graph<TSpec> const& g,
     TNodeAttributes const& nodeMap,
-    DotDrawing) 
+    DotDrawing)
 {
 //IOREV _doc_ _batchreading_
     String<String<char> > edgeMap;
@@ -562,7 +562,7 @@ inline void
 writeRecords(
     TFile & file,
     Graph<TSpec> const& g,
-    DotDrawing) 
+    DotDrawing)
 {
 //IOREV _doc_ _batchreading_
     String<String<char> > nodeMap;
@@ -588,7 +588,7 @@ _addNode(Graph<TSpec>& g,
          TStatement& node_id,
          TStatement& attr_list,
          TNodeAttributes& nodeMap,
-         TEdgeAttributes&,              
+         TEdgeAttributes&,
          TNodeIdMap& nodeIdMap)
 {
     typedef Graph<TSpec> TGraph;
@@ -694,7 +694,7 @@ _addEdge(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
     typedef typename Value<TStatement>::Type TValue;
     typedef typename Iterator<TStatement>::Type TIter;
     typedef typename Position<TIter>::Type TPos;
-    
+
     String<TValue> label;
     TIter it = begin(attr_list);
     bool found = false;
@@ -705,7 +705,7 @@ _addEdge(Graph<Automaton<TAlphabet, TCargo, TSpec> >& g,
         } else if (found) {
             append(label, *it);
         } else if ((pos + 5 < length(attr_list)) &&
-            (infix(attr_list, it, it + 5) == "label")) 
+            (infix(attr_list, it, it + 5) == "label"))
         {
                 found = true;
                 it += 5;
@@ -757,11 +757,11 @@ _processNodeStatement(Graph<TSpec>& g,
                       TStatement& stmt,
                       TNodeAttributes& nodeMap,
                       TEdgeAttributes& edgeMap,
-                      TNodeIdMap& nodeIdMap) 
+                      TNodeIdMap& nodeIdMap)
 {
     typedef typename Value<TStatement>::Type TValue;
     typedef typename Iterator<TStatement>::Type TIter;
-    
+
     String<TValue> node_id;
     String<TValue> attr_list;  // Multiple attribute lists are ignored
     bool inAttr = false;
@@ -796,11 +796,11 @@ _processEdgeStatement(Graph<TSpec>& g,
                       TNodeAttributes& nodeMap,
                       TEdgeAttributes& edgeMap,
                       TPosition pos,
-                      TNodeIdMap& nodeIdMap) 
+                      TNodeIdMap& nodeIdMap)
 {
     typedef typename Value<TStatement>::Type TValue;
     typedef typename Iterator<TStatement>::Type TIter;
-    
+
     String<TValue> left_node_id;
     String<TValue> right_node_id;
     String<TValue> attr_list;  // Multiple attribute lists are ignored
@@ -838,7 +838,7 @@ _processStatement(Graph<TSpec>& g,
                   TStatement& stmt,
                   TNodeAttributes& nodeMap,
                   TEdgeAttributes& edgeMap,
-                  TNodeIdMap& nodeIdMap) 
+                  TNodeIdMap& nodeIdMap)
 {
     // Clear everything up to the last line
     typedef typename Value<TStatement>::Type TValue;
@@ -855,7 +855,7 @@ _processStatement(Graph<TSpec>& g,
         if ((_id == "graph") || (_id == "node") || (_id == "edge") || (_id == "subgraph") || (length(_id)<1)) {
           clear(stmt);
           return;
-        } else break; 
+        } else break;
       }
     }
 

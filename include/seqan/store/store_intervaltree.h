@@ -52,15 +52,15 @@ createIntervalTreeStore(FragmentStore<TSpec, TConfig> & me, const bool &unknownO
     typedef typename Value<TAnnotationStore>::Type                 TAnnotationStoreElement;
     typedef typename TAnnotationStoreElement::TId                 TId;
     typedef typename Iterator<TAnnotationStore>::Type             TAnnotationIterator;
-    
+
     typedef    typename FragmentStore<TSpec, TConfig>::TIntervalTreeStore     TIntervalTreeStore;
     typedef typename Value<TIntervalTreeStore>::Type             TIntervalTree;
     typedef typename TIntervalTree::TInterval                 TInterval;
     typedef      String<TInterval>                    TIntervals;
     typedef typename Iterator<String<TIntervals> >::Type            TCIter;
-    
+
     static const TId INVALID_ID = TAnnotationStoreElement::INVALID_ID;
-    
+
     // get intervals for each contig (R- and F-strand):
     if (!empty(me.annotationStore) && !unknownO)
     {
@@ -71,7 +71,7 @@ createIntervalTreeStore(FragmentStore<TSpec, TConfig> & me, const bool &unknownO
         String<TIntervals> contigIntervals_R;
         resize(contigIntervals_F, length(me.contigStore));
         resize(contigIntervals_R, length(me.contigStore));
-        
+
         TAnnotationIterator itAnno = begin(me.annotationStore);
         TAnnotationIterator itAnnoEnd = end(me.annotationStore);
         TId beginPos;
@@ -88,18 +88,18 @@ createIntervalTreeStore(FragmentStore<TSpec, TConfig> & me, const bool &unknownO
                     interval.i1 = beginPos;
                     interval.i2 = endPos;
                     interval.cargo = position(itAnno, me.annotationStore);
-                    appendValue(value(contigIntervals_F,  getValue(itAnno).contigId), interval, Generous());        
+                    appendValue(value(contigIntervals_F,  getValue(itAnno).contigId), interval, Generous());
                 }
                 else if (beginPos != INVALID_ID  && beginPos > endPos)
                 {
-                    interval.i1 = endPos;                    
+                    interval.i1 = endPos;
                     interval.i2 = beginPos;
                     interval.cargo = position(itAnno, me.annotationStore);
                     appendValue(value(contigIntervals_R, getValue(itAnno).contigId), interval, Generous() );
                 }
             }
         }
-    
+
         // build trees for each contig and each strand:
         TCIter itF = begin(contigIntervals_F);
         TCIter itFEnd = end(contigIntervals_F);
@@ -108,12 +108,12 @@ createIntervalTreeStore(FragmentStore<TSpec, TConfig> & me, const bool &unknownO
         {
             TIntervalTree intervalTree_F(getValue(itF), ComputeCenter());
             TIntervalTree intervalTree_R(getValue(itR), ComputeCenter());
-                
-            assignValue(me.intervalTreeStore_F, position(itF, contigIntervals_F), intervalTree_F);  
+
+            assignValue(me.intervalTreeStore_F, position(itF, contigIntervals_F), intervalTree_F);
             assignValue(me.intervalTreeStore_R, position(itR, contigIntervals_R), intervalTree_R);
         }
     }
-    
+
     // if read orientation is not known:
     // get intervals for each contig:
     if (!empty(me.annotationStore) && unknownO)
@@ -147,7 +147,7 @@ createIntervalTreeStore(FragmentStore<TSpec, TConfig> & me, const bool &unknownO
                         interval.i2 = beginPos;
                     }
                     interval.cargo = position(itAnno, me.annotationStore);
-                    appendValue(value(contigIntervals,  getValue(itAnno).contigId), interval, Generous());        
+                    appendValue(value(contigIntervals,  getValue(itAnno).contigId), interval, Generous());
                 }
             }
         }
@@ -157,8 +157,8 @@ createIntervalTreeStore(FragmentStore<TSpec, TConfig> & me, const bool &unknownO
         for ( ; itC != itCEnd; goNext(itC))
         {
             TIntervalTree intervalTree(getValue(itC), ComputeCenter());
-                
-            assignValue(me.intervalTreeStore_F, position(itC, contigIntervals), intervalTree); 
+
+            assignValue(me.intervalTreeStore_F, position(itC, contigIntervals), intervalTree);
         }
     }
 }
@@ -178,12 +178,12 @@ findIntervalsForInterval(String<TCargo> & result, TIntervalTree & intervalTree, 
 {
     String<TCargo> result1;
     String<TCargo> result2;
-    
+
     findIntervals(result1, intervalTree.g, intervalTree.pm, interval.i1 + offsetInterval);
     findIntervals(result2, intervalTree.g, intervalTree.pm, interval.i2 - offsetInterval);
-    
-    interSec(result, result1, result2); 
-    
+
+    interSec(result, result1, result2);
+
 }
 
 

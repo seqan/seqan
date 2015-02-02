@@ -51,7 +51,7 @@ SEQAN_DEFINE_TEST(test_align_stream_gaps_write)
 
     std::stringstream ss;
     ss << gaps;
-    
+
     std::stringstream expected;
     expected << "--CGATT-TAT--";
     SEQAN_ASSERT_EQ(expected.str(), ss.str());
@@ -69,7 +69,7 @@ SEQAN_DEFINE_TEST(test_align_stream_gaps_stream)
 
     std::stringstream ss;
     ss << gaps;
-    
+
     std::stringstream expected;
     expected << "--CGATT-TAT--";
     SEQAN_ASSERT_EQ(expected.str(), ss.str());
@@ -87,7 +87,7 @@ SEQAN_DEFINE_TEST(test_align_stream_align_write)
 
     std::stringstream ss;
     ss << align;
-    
+
     std::stringstream expected;
     expected << "      0     .     \n"
              << "        CGATTAGTG\n"
@@ -108,7 +108,7 @@ SEQAN_DEFINE_TEST(test_align_stream_align_stream)
 
     std::stringstream ss;
     ss << align;
-    
+
     std::stringstream expected;
     expected << "      0     .     \n"
              << "        CGATTAGTG\n"

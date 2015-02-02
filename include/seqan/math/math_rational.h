@@ -31,7 +31,7 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// A data type to represent Rational numbers. 
+// A data type to represent Rational numbers.
 // Taken from the Rational Number Library in Boost version 1.47.
 // ==========================================================================
 
@@ -88,7 +88,7 @@ class Rational :
 public:
     typedef TInt int_type;
     Rational() : num(0), den(1) {}
-    
+
     template <typename T>
     Rational(T const & n, SEQAN_CTOR_ENABLE_IF( IsInteger<T> ) ) : num(n), den(1) { (void)dummy; }
     Rational(param_type n, param_type d) : num(n), den(d) { normalize(); }
@@ -124,10 +124,10 @@ public:
     bool operator!() const { return !num; }
 
     // Boolean conversion
-    
+
 
     operator bool_type() const { return operator !() ? 0 : &helper::parts; }
-    operator double() const 
+    operator double() const
     {
         SEQAN_ASSERT_NEQ (den, TInt(0));
         return (double)num / (double)den;
@@ -486,7 +486,7 @@ std::istream& operator>> (std::istream& is, Rational<TInt>& r)
 
     is >> n;
     if (!is) return is;
-    
+
     c = is.get();
     if (c == '/')
     {
@@ -502,8 +502,8 @@ std::istream& operator>> (std::istream& is, Rational<TInt>& r)
         }
         c = is.get();
         // read digits as long we can store them
-        while ('0' <= c && c <= '9' && 
-                (n < (TInt)MaxValue<TInt>::VALUE / (TInt)10 - (TInt)9) && 
+        while ('0' <= c && c <= '9' &&
+                (n < (TInt)MaxValue<TInt>::VALUE / (TInt)10 - (TInt)9) &&
                 (d < (TInt)MaxValue<TInt>::VALUE / (TInt)10))
         {
             n = 10 * n + (c - '0');
@@ -514,7 +514,7 @@ std::istream& operator>> (std::istream& is, Rational<TInt>& r)
         while ('0' <= c && c <= '9')
             is.get();
         is.unget();
-        
+
         if (negative) n = -n;
     }
     r.assign(n, d);
@@ -571,7 +571,7 @@ inline TInt ceil(const Rational<TInt>& r)
     TInt zero(0);
 
     SEQAN_ASSERT_NEQ (r.denominator(), zero);
-    
+
     if (r.numerator() > zero)
         return ((r.numerator() - 1) / r.denominator()) + 1;
     else

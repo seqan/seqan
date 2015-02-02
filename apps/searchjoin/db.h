@@ -921,7 +921,7 @@ void _buildSA(TIndexSAFibre & sa,
         TTextSize textLength = length(text);
 
         TErrors errors = getErrors(db, dbId);
-        
+
         TTextSize seedCount = _max(textLength / seedLength, 1u);
         TSeedErrors seedErrors_ = errors / seedCount;
         TTextSize seedCountHigh = (errors % seedCount) + 1;

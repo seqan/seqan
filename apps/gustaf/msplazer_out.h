@@ -54,7 +54,7 @@ struct DotDrawingMSplazerBestChain_;
 typedef Tag<DotDrawingMSplazer_> DotDrawingMSplazerBestchain;
 
 
-template <typename TGraph, typename TVertexDescriptor, typename TScoreAlloc, typename TMatch, // typename TFile, 
+template <typename TGraph, typename TVertexDescriptor, typename TScoreAlloc, typename TMatch, // typename TFile,
           typename TBreakpoint, typename TPos, typename TMatchAlloc, typename TID>
 // typename TBreakpointAlloc, typename TMatchAlloc> // Requires Value<SparsePropertyMap> specialisation in msplazer.h
 void
@@ -847,7 +847,7 @@ inline bool _writeVcfTranslocation(VcfFileOut & vcfOut, TBreakpoint & bp, TSeque
         alt4 << ':';
         if (bp.startSeqPos > 0)
             alt4 << bp.startSeqPos - 1 + 1; // 1-based adjustment
-        else 
+        else
             alt4 << 0; // NO(!) 1-based adjustment
         alt4 << "]";
         append(record.alt, alt4.str());

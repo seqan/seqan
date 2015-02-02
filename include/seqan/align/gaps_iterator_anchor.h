@@ -72,7 +72,7 @@ public:
     mutable int                anchorIdx;
 
 public:
-    Iter() 
+    Iter()
     {
 SEQAN_CHECKPOINT
         data_container = NULL;
@@ -303,7 +303,7 @@ blockLength(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > & me)
 // ----------------------------------------------------------------------------
 
 template <typename TGaps, typename TGapAnchors>
-inline bool 
+inline bool
 atBegin(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > & me)
 {
 //    return me.current.seqPos == 0 && me.current.gapPos == 0;
@@ -311,7 +311,7 @@ atBegin(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > & me)
 }
 
 template <typename TGaps, typename TGapAnchors>
-inline bool 
+inline bool
 atBegin(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me)
 {
 //    return me.current.seqPos == 0 && me.current.gapPos == 0;
@@ -323,7 +323,7 @@ atBegin(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me)
 // ----------------------------------------------------------------------------
 
 template <typename TGaps, typename TGapAnchors>
-inline bool 
+inline bool
 atEnd(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > & me)
 {
 //    return me.current == me.nextAnchor;
@@ -331,7 +331,7 @@ atEnd(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > & me)
 }
 
 template <typename TGaps, typename TGapAnchors>
-inline bool 
+inline bool
 atEnd(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me)
 {
 //    return me.current == me.nextAnchor;
@@ -343,7 +343,7 @@ atEnd(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me)
 // ----------------------------------------------------------------------------
 
 template <typename TGaps, typename TGapAnchors>
-inline bool 
+inline bool
 operator == (
     Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & left,
     Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & right)
@@ -356,7 +356,7 @@ operator == (
 // ----------------------------------------------------------------------------
 
 template <typename TGaps, typename TGapAnchors>
-inline bool 
+inline bool
 operator != (
     Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & left,
     Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & right)
@@ -369,7 +369,7 @@ operator != (
 // ----------------------------------------------------------------------------
 
 template <typename TGaps, typename TGapAnchors>
-inline bool 
+inline bool
 operator < (
     Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & left,
     Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & right)
@@ -382,7 +382,7 @@ operator < (
 // ----------------------------------------------------------------------------
 
 template <typename TGaps, typename TGapAnchors>
-inline bool 
+inline bool
 operator<=(
     Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & left,
     Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & right)
@@ -395,7 +395,7 @@ operator<=(
 // ----------------------------------------------------------------------------
 
 template <typename TGaps, typename TGapAnchors>
-inline bool 
+inline bool
 operator > (
     Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & left,
     Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & right)
@@ -451,7 +451,7 @@ insertGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & me,
             if (me.current.gapPos <= me.viewEnd.gapPos)
             {
                 container(me).data_cutEnd -= size;
-                me.viewEnd.gapPos += size;                
+                me.viewEnd.gapPos += size;
             }
             return;
         }
@@ -515,10 +515,10 @@ removeGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & it,
     // static_cast<TPos>(Nothing());
     if (it.current.gapPos + size > it.nextAnchor.gapPos)
         size = it.nextAnchor.gapPos - it.current.gapPos;
-    
+
     if (it.prevAnchor.gapPos + it.current.seqPos == it.current.gapPos + it.prevAnchor.seqPos &&
         it.current.gapPos + size == it.nextAnchor.gapPos)
-    {    
+    {
         // remove the gap
         if (it.anchorIdx < (int)length(anchors))
             erase(anchors, it.anchorIdx);
@@ -572,7 +572,7 @@ removeGaps(Iter<TGaps, GapsIterator<AnchorGaps<TGapAnchors> > > const & it,
 // ----------------------------------------------------------------------------
 
 template <typename T>
-inline void 
+inline void
 _goNextGapAnchorIterator(T & me)
 {
     if (me.current.gapPos < me.nextAnchor.gapPos)
@@ -593,9 +593,9 @@ _goNextGapAnchorIterator(T & me)
 // ----------------------------------------------------------------------------
 
 template <typename T>
-inline void 
+inline void
 _goPreviousGapAnchorIterator(T & me)
-{    
+{
     while (me.current.gapPos == me.prevAnchor.gapPos)
     {
         me.current = me.nextAnchor = me.prevAnchor;
@@ -613,7 +613,7 @@ _goPreviousGapAnchorIterator(T & me)
 // ----------------------------------------------------------------------------
 
 template <typename T, typename TPos>
-inline void 
+inline void
 _goToGapAnchorIterator(T & me, TPos pos)
 {
     typedef typename T::TGapAnchors                 TGapAnchors;

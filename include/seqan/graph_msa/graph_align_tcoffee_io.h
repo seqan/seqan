@@ -129,12 +129,12 @@ read(TFile & file,
 
     typename DirectionIterator<TFile, Input>::Type reader = directionIterator(file, Input());
     CharString buffer;
-    
+
     // Map the names to slots
     typedef std::map<TName, TSize> TNameToPosition;
     TNameToPosition namePosMap;
     for(TSize i = 0;i<length(names);++i) namePosMap.insert(std::make_pair(names[i], i));
-    
+
     // Remember the correct spots
     if (atEnd(reader))
         return;
@@ -160,11 +160,11 @@ read(TFile & file,
     bool seq1ToN = false;
     if (atEnd(reader))
         return;
-    
+
     typedef std::pair<std::pair<TSize, TSize>, TScoreValue> TResiduePair;
     typedef std::set<TResiduePair> TResiduePairSet;
     String<TResiduePairSet> resPair;
-    resize(resPair, nseq * nseq);    
+    resize(resPair, nseq * nseq);
     TSize seq1 = 0;
     TSize seq2 = 0;
     bool firstPass = true;
@@ -215,7 +215,7 @@ read(TFile & file,
             } else {
                 TSize index = seq2 * nseq + seq1;
                 resPair[index].insert(std::make_pair(std::make_pair(--res2,--res1), weight));
-            }        
+            }
         }
     }
     for(TSize i = 0; i<length(resPair); ++i) {
@@ -256,11 +256,11 @@ read(TFile & file,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TFile, typename TString, typename TSpec, typename TNames>
-void 
+void
 read(TFile & file,
      StringSet<TString, TSpec>& oriStr,
      TNames& names,
-     TCoffeeLib) 
+     TCoffeeLib)
 {
 //IOREV _nodoc_ _notinlined_ specialization not documented
     typedef typename Size<TNames>::Type TSize;
@@ -275,7 +275,7 @@ read(TFile & file,
 
     // Ignore first line
     skipLine(reader);
-    
+
     // Read number of sequences
     clear(buffer);
     readUntil(buffer, reader, IsWhitespace());
@@ -301,10 +301,10 @@ read(TFile & file,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TFile, typename TStringSet, typename TCargo, typename TSpec, typename TNames>
-void write(TFile & file, 
+void write(TFile & file,
            Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
            TNames& names,
-           TCoffeeLib) 
+           TCoffeeLib)
 {
 //IOREV _nodoc_ _notinlined_ specialization not documented
     SEQAN_CHECKPOINT
@@ -313,13 +313,13 @@ void write(TFile & file,
     //typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     typedef typename Value<TStringSet>::Type TString;
     typedef typename Size<TStringSet>::Type TSize;
-    
+
     typedef std::pair<std::pair<TSize, TSize>, TCargo> TResiduePair;
     typedef std::set<TResiduePair> TResiduePairSet;
     TSize nseq = length(stringSet(g));
     String<TResiduePairSet> resPair;
     resize(resPair, nseq * nseq);
-    
+
     typedef typename Iterator<TGraph, EdgeIterator>::Type TIter;
     TIter it(g);
     for(;!atEnd(it);++it) {
@@ -360,7 +360,7 @@ void write(TFile & file,
         appendNumber(file, seq1 + 1);
         writeValue(file, ' ');
         appendNumber(file, seq2 + 1);
-        writeValue(file, '\n');    
+        writeValue(file, '\n');
         typename TResiduePairSet::const_iterator pos = resPair[i].begin();
         typename TResiduePairSet::const_iterator posEnd = resPair[i].end();
         while(pos != posEnd) {
@@ -369,7 +369,7 @@ void write(TFile & file,
             appendNumber(file, pos->first.second + 1);
             writeValue(file, ' ');
             appendNumber(file, pos->second);
-            writeValue(file, '\n');    
+            writeValue(file, '\n');
             ++pos;
         }
     }
@@ -385,11 +385,11 @@ void write(TFile & file,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TFile, typename TString, typename TSpec, typename TNames>
-void 
+void
 read(TFile & file,
      StringSet<TString, TSpec>& oriStr,
      TNames& names,
-     FastaAlign) 
+     FastaAlign)
 {
 //IOREV _nodoc_ _notinlined_ specialization not documented
     SEQAN_CHECKPOINT
@@ -439,11 +439,11 @@ read(TFile & file,
 
 
 template<typename TValue, typename TSpec2, typename TFragment, typename TSpec, typename TScores, typename TSize>
-void 
+void
 _collectSegmentMatches(String<TValue, TSpec2> const& mat,
                        String<TFragment, TSpec>& matches,
                        TScores& scores,
-                       TSize nseq) 
+                       TSize nseq)
 {
     SEQAN_CHECKPOINT
     TSize len = length(mat) / nseq;
@@ -455,7 +455,7 @@ _collectSegmentMatches(String<TValue, TSpec2> const& mat,
     typedef std::pair<TSize, TSize> TResiduePair;
     typedef std::set<TResiduePair> TResiduePairSet;
     String<TResiduePairSet> resPair;
-    resize(resPair, nseq * nseq);    
+    resize(resPair, nseq * nseq);
     for(TSize seq1 = 0; seq1 < nseq - 1; ++seq1) {
         for(TSize seq2 = seq1 + 1; seq2 < nseq; ++seq2) {
             TSize index = seq1 * nseq + seq2;
@@ -502,19 +502,19 @@ _collectSegmentMatches(String<TValue, TSpec2> const& mat,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TFile, typename TFragment, typename TSpec, typename TScoreValue, typename TSpec2, typename TNames>
-void 
+void
 read(TFile & file,
      String<TFragment, TSpec>& matches,
      String<TScoreValue, TSpec2>& scores,
      TNames const& origNames,
-     FastaAlign) 
+     FastaAlign)
 {
 //IOREV _nodoc_ _notinlined_ specialization not documented
     SEQAN_CHECKPOINT
     typedef typename Size<TNames>::Type TSize;
     typedef typename Value<TFile>::Type TValue;
     typedef typename Value<TNames>::Type TName;
-    
+
     CharString buffer;
     typename DirectionIterator<TFile, Input>::Type reader = directionIterator(file, Input());
     if (atEnd(reader))
@@ -565,7 +565,7 @@ read(TFile & file,
     clear(mat);
 
     // Collect the segment matches
-    _collectSegmentMatches(finalMat, matches, scores, nseq); 
+    _collectSegmentMatches(finalMat, matches, scores, nseq);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -575,13 +575,13 @@ read(TFile & file,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TSizeSpec, typename TSpec1, typename TSpec2, typename TSize>
-inline void 
-_appendFragment(String<Fragment<TSizeSpec, ExactReversableFragment<TSpec1> >, TSpec2>& matches, 
-                  TSize seq1Id, 
-                  TSize beg1, 
-                  TSize seq2Id, 
-                  TSize beg2, 
-                  TSize len, 
+inline void
+_appendFragment(String<Fragment<TSizeSpec, ExactReversableFragment<TSpec1> >, TSpec2>& matches,
+                  TSize seq1Id,
+                  TSize beg1,
+                  TSize seq2Id,
+                  TSize beg2,
+                  TSize len,
                   bool reversed)
 {
     SEQAN_CHECKPOINT
@@ -592,13 +592,13 @@ _appendFragment(String<Fragment<TSizeSpec, ExactReversableFragment<TSpec1> >, TS
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TSizeSpec, typename TSpec1, typename TSpec2, typename TSize>
-inline void 
-_appendFragment(String<Fragment<TSizeSpec, ExactFragment<TSpec1> >, TSpec2>& matches, 
-                  TSize seq1Id, 
-                  TSize beg1, 
-                  TSize seq2Id, 
-                  TSize beg2, 
-                  TSize len, 
+inline void
+_appendFragment(String<Fragment<TSizeSpec, ExactFragment<TSpec1> >, TSpec2>& matches,
+                  TSize seq1Id,
+                  TSize beg1,
+                  TSize seq2Id,
+                  TSize beg2,
+                  TSize len,
                   bool reversed)
 {
     SEQAN_CHECKPOINT
@@ -609,24 +609,24 @@ _appendFragment(String<Fragment<TSizeSpec, ExactFragment<TSpec1> >, TSpec2>& mat
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TFile, typename TFragment, typename TSpec1, typename TScoreValue, typename TSpec2, typename TNames>
-inline void 
+inline void
 read(TFile & file,
      String<TFragment, TSpec1>& matches,
      String<TScoreValue, TSpec2>& scores,
      TNames& names,
-     BlastLib) 
+     BlastLib)
 {
 //IOREV _nodoc_ specialization not documented
     SEQAN_CHECKPOINT
     typedef typename Size<TNames>::Type TSize;
     //typedef typename Value<TFile>::Type TValue;
     typedef typename Value<TNames>::Type TName;
-    
+
     // Map the names to slots
     typedef std::map<TName, TSize> TNameToPosition;
     TNameToPosition namePosMap;
     for(TSize i = 0;i<length(names);++i) namePosMap.insert(std::make_pair(names[i], i));
-    
+
     CharString buffer;
     typename DirectionIterator<TFile, Input>::Type reader = directionIterator(file, Input());
 
@@ -703,11 +703,11 @@ read(TFile & file,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TFile, typename TStringSet, typename TCargo, typename TSpec, typename TNames, typename TEdgeMap>
-void write(TFile & file, 
+void write(TFile & file,
            Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
            TNames& names,
            TEdgeMap& edgeMap,
-           BlastLib) 
+           BlastLib)
 {
 //IOREV _nodoc_ _notinlined_ specialization not documented
     SEQAN_CHECKPOINT
@@ -716,9 +716,9 @@ void write(TFile & file,
     //typedef typename EdgeDescriptor<TGraph>::Type TEdgeDescriptor;
     //typedef typename Value<TStringSet>::Type TString;
     typedef typename Size<TStringSet>::Type TSize;
-    
+
     TStringSet& str = stringSet(g);
-    
+
     typedef typename Iterator<TGraph, EdgeIterator>::Type TIter;
     TIter it(g);
     for(;!atEnd(it);++it) {
@@ -736,25 +736,25 @@ void write(TFile & file,
         TSize seq2 = idToPosition(str, sequenceId(g,tV));
         TCargo my_carg =  getCargo(*it);
         write(file, names[seq1]);
-        writeValue(file, '\t');    
+        writeValue(file, '\t');
         write(file, names[seq2]);
         write(file, "\t0\t");
         appendNumber(file, fragLen);
         write(file, "\t0\t0\t");
         appendNumber(file, fragPos1+1);
-        writeValue(file, '\t');    
+        writeValue(file, '\t');
         appendNumber(file, fragPos1 + fragLen);
-        writeValue(file, '\t');    
+        writeValue(file, '\t');
         if (!property(edgeMap, *it)) {
             appendNumber(file, fragPos2+1);
-            writeValue(file, '\t');    
+            writeValue(file, '\t');
             appendNumber(file, fragPos2 + fragLen);
-            writeValue(file, '\t');    
+            writeValue(file, '\t');
         } else {
             appendNumber(file, fragPos2 + fragLen);
-            writeValue(file, '\t');        
+            writeValue(file, '\t');
             appendNumber(file, fragPos2+1);
-            writeValue(file, '\t');    
+            writeValue(file, '\t');
         }
         write(file, "0\t");
         write(file, my_carg);
@@ -765,10 +765,10 @@ void write(TFile & file,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TFile, typename TStringSet, typename TCargo, typename TSpec, typename TNames>
-void write(TFile & file, 
+void write(TFile & file,
            Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
            TNames& names,
-           BlastLib) 
+           BlastLib)
 {
 //IOREV _nodoc_ _notinlined_ specialization not documented
     SEQAN_CHECKPOINT
@@ -787,7 +787,7 @@ void write(TFile & file,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TPos, typename TSpec2, typename TSpec1, typename TScores, typename TId, typename TSize>
-inline void 
+inline void
 _appendNewMatch(String<Fragment<TPos, ExactReversableFragment<TSpec2> >, TSpec1>& matches,
                  TScores& scores,
                  TId seq1Id,
@@ -795,7 +795,7 @@ _appendNewMatch(String<Fragment<TPos, ExactReversableFragment<TSpec2> >, TSpec1>
                  TSize beg1,
                  TSize beg2,
                  TSize len,
-                 bool) 
+                 bool)
 {
     typedef Fragment<TPos, ExactReversableFragment<TSpec2> > TFragment;
     appendValue(matches, TFragment(seq1Id, beg1, seq2Id, beg2, len));
@@ -805,7 +805,7 @@ _appendNewMatch(String<Fragment<TPos, ExactReversableFragment<TSpec2> >, TSpec1>
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TPos, typename TSpec2, typename TSpec1, typename TScores, typename TId, typename TSize>
-inline void 
+inline void
 _appendNewMatch(String<Fragment<TPos, ExactFragment<TSpec2> >, TSpec1>& matches,
                  TScores& scores,
                  TId seq1Id,
@@ -813,7 +813,7 @@ _appendNewMatch(String<Fragment<TPos, ExactFragment<TSpec2> >, TSpec1>& matches,
                  TSize beg1,
                  TSize beg2,
                  TSize len,
-                 bool reversed) 
+                 bool reversed)
 {
     typedef Fragment<TPos, ExactFragment<TSpec2> > TFragment;
     if (!reversed) {
@@ -825,13 +825,13 @@ _appendNewMatch(String<Fragment<TPos, ExactFragment<TSpec2> >, TSpec1>& matches,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TFile, typename TFragment, typename TSpec1, typename TScoreValue, typename TSpec2, typename TStringSet, typename TNames>
-inline void 
+inline void
 read(TFile & file,
      String<TFragment, TSpec1>& matches,
      String<TScoreValue, TSpec2>& scores,
      TStringSet const& strSet,
      TNames const& names,
-     MummerLib) 
+     MummerLib)
 {
 //IOREV _nodoc_ specialization not documented
     SEQAN_CHECKPOINT
@@ -846,7 +846,7 @@ read(TFile & file,
     typedef std::map<TName, TSize> TNameToPosition;
     TNameToPosition namePosMap;
     for(TSize i = 0;i<length(names);++i) namePosMap.insert(std::make_pair(value(names, i), i));
-    
+
     // Read the Mummer file
     if (atEnd(reader))
         return ;
@@ -898,7 +898,7 @@ read(TFile & file,
             skipLine(reader);
             if (seq1Id == seq2Id)
                 continue;
-            
+
             if (!reversed)
                 _appendNewMatch(matches, scores, seq1Id, seq2Id, --beg1, --beg2, len, reversed);
             else
@@ -914,11 +914,11 @@ read(TFile & file,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TFile, typename TCargo, typename TSpec, typename TNames>
-void 
+void
 read(TFile & file,
      Graph<Tree<TCargo, TSpec> >& guideTree,
      TNames& names,
-     NewickFormat) 
+     NewickFormat)
 {
 //IOREV _nodoc_ _notinlined_ specialization not documented
     typedef Graph<Tree<TCargo, TSpec> > TGuideTree;
@@ -1012,8 +1012,8 @@ read(TFile & file,
             lastChild = nameToId[tmp];
         }
     }
-    
-    // Root the tree if necessary 
+
+    // Root the tree if necessary
     if (outDegree(guideTree, lastChild) > 2) {
         TVertexDescriptor myRoot = addVertex(guideTree);
         assignRoot(guideTree, myRoot);
@@ -1039,12 +1039,12 @@ read(TFile & file,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo, typename TSpec, typename TNames, typename TNewickString, typename TVertexDescriptor>
-void 
+void
 _buildNewickString(Graph<Tree<TCargo, TSpec> >& guideTree,
                    TNames& names,
                    TNewickString& str,
                    TVertexDescriptor v,
-                   bool collapseRoot) 
+                   bool collapseRoot)
 {
     typedef Graph<Tree<TCargo, TSpec> > TGuideTree;
     typedef typename EdgeDescriptor<TGuideTree>::Type TEdgeDescriptor;

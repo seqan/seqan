@@ -343,7 +343,7 @@ clear(Map<TValue, Skiplist< Skipsumlist_<DIM, TSpec> > > & me)
     for (unsigned char i = 0; i < TSkiplist::MAX_HEIGHT; ++i)
     {
         me.data_recycle[i] = 0;
-        valueConstruct(me.data_border.data_next + i, NonMinimalCtor()); 
+        valueConstruct(me.data_border.data_next + i, NonMinimalCtor());
     }
     clear(me.data_border.minilist); //thats new
 
@@ -375,7 +375,7 @@ public:
     {
         assign(*this, other);
     }
-    ~SumList() 
+    ~SumList()
     {}
     SumList const & operator = (SumList const & other)
     {
@@ -410,7 +410,7 @@ length(SumList<DIM, TValue, SkipSumList<TSpec> > const & me)
 //////////////////////////////////////////////////////////////////////////////
 
 template <unsigned int DIM, typename TValue, typename TSpec>
-inline typename Value< SumList<DIM, TValue, SkipSumList<TSpec> > >::Type 
+inline typename Value< SumList<DIM, TValue, SkipSumList<TSpec> > >::Type
 getSum(SumList<DIM, TValue, SkipSumList<TSpec> > const & me,
        unsigned int dim)
 {
@@ -496,7 +496,7 @@ _skiplistCreateHeight(SumList<DIM, TValue, SkipSumList<TSpec> > & me,
 //////////////////////////////////////////////////////////////////////////////
 
 template <unsigned int DIM, typename TValue, typename TSpec, typename TValues>
-inline void 
+inline void
 appendValues(SumList<DIM, TValue, SkipSumList<TSpec> > & me,
              TValues const & vals)
 {
@@ -549,7 +549,7 @@ appendValues(SumList<DIM, TValue, SkipSumList<TSpec> > & me,
     ++me.length;
 }
 template <unsigned int DIM, typename TValue, typename TSpec>
-inline void 
+inline void
 appendValues(SumList<DIM, TValue, SkipSumList<TSpec> > & me,
              TValue * p_vals)
 {
@@ -557,7 +557,7 @@ appendValues(SumList<DIM, TValue, SkipSumList<TSpec> > & me,
     appendValues(me, vals);
 }
 template <unsigned int DIM, typename TValue, typename TSpec>
-inline void 
+inline void
 appendValues(SumList<DIM, TValue, SkipSumList<TSpec> > & me,
              TValue const * p_vals)
 {
@@ -651,7 +651,7 @@ public:
     ~Iter()
     {
     }
-    inline Iter const & 
+    inline Iter const &
     operator = (Iter const & other)
     {
         container = other.container;
@@ -729,7 +729,7 @@ goEnd(Iter<TSumList, SkipSumListIterator> & it)
 //////////////////////////////////////////////////////////////////////////////
 
 template <unsigned int DIM, typename TValue, typename TSpec>
-inline void 
+inline void
 goBeforeEnd(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterator > & it)
 {
     typedef SkiplistPath<TValue, Skipsumlist_<DIM, TSpec> > TPath;
@@ -819,7 +819,7 @@ getSum(Iter<TSumList, SkipSumListIterator > const & it,
 //path must be a path to it.element
 //path and it are adjusted to the new element if necessary
 template <unsigned int DIM, typename TValue, typename TSpec, typename TPath>
-inline void 
+inline void
 _splitMiniList(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterator > & it,
                TPath & path)
 {
@@ -911,7 +911,7 @@ _splitMiniList(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterat
 //////////////////////////////////////////////////////////////////////////////
 
 template <unsigned int DIM, typename TValue, typename TSpec, typename TValue2>
-inline void 
+inline void
 assignValue(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterator > & it,
             int dim,
             TValue2 val)
@@ -949,7 +949,7 @@ assignValue(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterator 
 //////////////////////////////////////////////////////////////////////////////
 
 template <unsigned int DIM, typename TValue, typename TSpec, typename TValues>
-inline void 
+inline void
 insertValues(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterator > & it,
              TValues const & vals)
 {
@@ -977,7 +977,7 @@ insertValues(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterator
     ++it.container->length;
 }
 template <unsigned int DIM, typename TValue, typename TSpec>
-inline void 
+inline void
 insertValues(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterator > & it,
              TValue * p_vals)
 {
@@ -985,7 +985,7 @@ insertValues(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterator
     insertValues(it, vals);
 }
 template <unsigned int DIM, typename TValue, typename TSpec>
-inline void 
+inline void
 insertValues(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterator > & it,
              TValue const * p_vals)
 {
@@ -996,7 +996,7 @@ insertValues(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterator
 //////////////////////////////////////////////////////////////////////////////
 
 template <unsigned int DIM, typename TValue, typename TSpec>
-inline void 
+inline void
 removeValues(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterator > & it)
 {
     typedef SkiplistPath<TValue, Skipsumlist_<DIM, TSpec> > TPath;
@@ -1018,7 +1018,7 @@ removeValues(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterator
 
     //remove values
     removeValues(it.iter);
-        
+
     if (atEnd(it.iter))
     {//move to next element
         it.element = it.element->data_next[0].data_element;
@@ -1034,12 +1034,12 @@ removeValues(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterator
 //////////////////////////////////////////////////////////////////////////////
 
 //template <unsigned int DIM, typename TValue, typename TSpec, typename TValue2>
-//inline void 
+//inline void
 //searchSumList(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterator > & it,
 //              TValue2 const & val,
 //              int dim)
 template <unsigned int DIM, typename TValue, typename TSpec, typename TSumList, typename TValue2>
-inline void 
+inline void
 _searchSumlistSkip(Iter<TSumList, SkipSumListIterator > & it,
                     TValue2 const & val,
                     int dim)
@@ -1067,7 +1067,7 @@ _searchSumlistSkip(Iter<TSumList, SkipSumListIterator > & it,
 }
 
 template <unsigned int DIM, typename TValue, typename TSpec, typename TValue2>
-inline void 
+inline void
 searchSumList(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterator > & it,
               TValue2 const & val,
               int dim)
@@ -1075,7 +1075,7 @@ searchSumList(Iter<SumList<DIM, TValue, SkipSumList<TSpec> >, SkipSumListIterato
     _searchSumlistSkip<DIM, TValue, TSpec>(it, val, dim);
 }
 template <unsigned int DIM, typename TValue, typename TSpec, typename TValue2>
-inline void 
+inline void
 searchSumList(Iter<SumList<DIM, TValue, SkipSumList<TSpec> > const, SkipSumListIterator > & it,
               TValue2 const & val,
               int dim)
@@ -1083,7 +1083,7 @@ searchSumList(Iter<SumList<DIM, TValue, SkipSumList<TSpec> > const, SkipSumListI
     _searchSumlistSkip<DIM, TValue, TSpec>(it, val, dim);
 }
 //template <unsigned int DIM, typename TValue, typename TSpec, typename TValue2>
-//inline void 
+//inline void
 //searchSumList(Iter<SumList<DIM, TValue, SkipSumList<TSpec> > const, SkipSumListIterator > & it,
 //              TValue2 const & val,
 //              int dim)

@@ -139,7 +139,7 @@ bool loadReads(
     while (!atEnd(leftMates) && !atEnd(rightMates))
     {
         ++seqCount;
-        
+
         readRecord(seqId[0], seq[0], qual[0], leftMates);
         readRecord(seqId[1], seq[1], qual[1], rightMates);
 

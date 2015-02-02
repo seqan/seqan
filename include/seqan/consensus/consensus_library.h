@@ -41,7 +41,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TSize, typename TCargo1, typename TCargo2>
-inline void 
+inline void
 _getAlignmentStatistics(Nothing&,
                          TSize,
                          TSize,
@@ -55,7 +55,7 @@ _getAlignmentStatistics(Nothing&,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TValue, typename TSpec, typename TSize, typename TCargo1, typename TCargo2>
-inline void 
+inline void
 _getAlignmentStatistics(String<TValue, TSpec>& dist,
                          TSize i,
                          TSize j,
@@ -70,7 +70,7 @@ _getAlignmentStatistics(String<TValue, TSpec>& dist,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo, typename TSpec, typename TSize, typename TCargo1, typename TCargo2>
-inline void 
+inline void
 _getAlignmentStatistics(Graph<Undirected<TCargo, TSpec> >& dist,
                          TSize i,
                          TSize j,
@@ -90,7 +90,7 @@ template<typename TSize>
 struct LessPair_ :
     public std::unary_function<Pair<TSize, TSize>, bool>
 {
-    inline bool 
+    inline bool
     operator() (Pair<TSize, TSize> const& a1, Pair<TSize, TSize> const& a2) const {
         if (a1.i1 == a2.i1) return (a1.i2 < a2.i2);
         else return (a1.i1 < a2.i1);
@@ -101,7 +101,7 @@ template<typename TSize>
 struct _LessTripel :
     public std::unary_function<Pair<TSize, Triple<TSize, TSize, TSize> >, bool>
 {
-    inline bool 
+    inline bool
     operator() (Pair<TSize, Triple<TSize, TSize, TSize> > const& a1, Pair<TSize, Triple<TSize, TSize, TSize> > const& a2) {
         return (a1.i1 < a2.i1);
     }
@@ -134,7 +134,7 @@ selectPairsAssembly(StringSet<TString, TSpec> const & str,
 #else
     TSize contained_offset=0;
 #endif
-    
+
     // Sort the reads by their first index position
     TBegEndIter begEndIt = begin(begEndPos, Standard());
     TBegEndIter begEndItEnd = end(begEndPos, Standard());
@@ -145,7 +145,7 @@ selectPairsAssembly(StringSet<TString, TSpec> const & str,
     resize(posIndex, length(begEndPos));
     TPosIter posIndexIt = begin(posIndex, Standard());
     TPosIter posIndexItEnd = end(posIndex, Standard());
-    for(TSize index = 0;begEndIt != begEndItEnd; ++begEndIt, ++posIndexIt, ++index) 
+    for(TSize index = 0;begEndIt != begEndItEnd; ++begEndIt, ++posIndexIt, ++index)
         *posIndexIt = ((*begEndIt).i1 < (*begEndIt).i2) ? Pair<TSize, TInfo>((*begEndIt).i1,TInfo(index, (*begEndIt).i1, (*begEndIt).i2)) : Pair<TSize, TInfo>((*begEndIt).i2,TInfo(index, (*begEndIt).i1, (*begEndIt).i2));
     std::sort(begin(posIndex, Standard() ), end(posIndex, Standard() ), _LessTripel<TSize>() );
 
@@ -179,7 +179,7 @@ selectPairsAssembly(StringSet<TString, TSpec> const & str,
             TPos posJi2 = ((*posIndexIt2).i2).i3;
 
             // Diagonal boundaries of the band
-            // Initialization values are used if one read is contained in the other 
+            // Initialization values are used if one read is contained in the other
             TSize lenJ = (posJi1 < posJi2) ? posJi2 - posJi1 : posJi1 - posJi2;
             bool forwardJ = (posJi1 < posJi2) ? true : false;
             TPos diagLow = -1 * (TPos) lenJ;
@@ -226,7 +226,7 @@ selectPairsAssembly(StringSet<TString, TSpec> const & str,
                         if (offset + radius < diagHigh) diagHigh = offset + radius;
                         if (offset - radius > diagLow) diagLow = offset - radius;
                     } else {
-                        radius += contained_offset;  
+                        radius += contained_offset;
                         if (posIi1 < posJi2) {
                             TPos offset = (posJi2 - posIi1);
                             radius += (posJi1 - posJi2) >> lengthDivider;
@@ -237,10 +237,10 @@ selectPairsAssembly(StringSet<TString, TSpec> const & str,
                             radius += (posIi2 - posIi1) >> lengthDivider;
                             if (-1 * offset + radius < diagHigh) diagHigh = -1 * offset + radius;
                             if (-1 * offset - radius > diagLow) diagLow = -1 * offset - radius;
-                        }    
+                        }
                     }
                 }
-            } else { 
+            } else {
                 // 3) Reverse - Forward
                 if (forwardJ) {
                     if ((posIi1 > posJi2) && (posIi2 > posJi1)) {
@@ -254,7 +254,7 @@ selectPairsAssembly(StringSet<TString, TSpec> const & str,
                         if (offset + radius < diagHigh) diagHigh = offset + radius;
                         if (offset - radius > diagLow) diagLow = offset - radius;
                     } else {
-                        radius += contained_offset;  
+                        radius += contained_offset;
                         if (posIi2 < posJi1) {
                             TPos offset = (posJi1 - posIi2);
                             radius += (posJi2 - posJi1) >> lengthDivider;
@@ -279,7 +279,7 @@ selectPairsAssembly(StringSet<TString, TSpec> const & str,
                         if (offset + radius < diagHigh) diagHigh = offset + radius;
                         if (offset - radius > diagLow) diagLow = offset - radius;
                     } else {
-                        radius += contained_offset;  
+                        radius += contained_offset;
                         if (posIi2 < posJi2) {
                             TPos offset = (posJi2 - posIi2);
                             radius += (posJi1 - posJi2) >> lengthDivider;
@@ -306,7 +306,7 @@ selectPairsAssembly(StringSet<TString, TSpec> const & str,
             // Estimate the overlap quality
             TPos avgDiag = (diagLow + diagHigh) / 2;
             if (avgDiag < 0) avgDiag *= -1;
-            appendValue(ovlIndex, Pair<TSize, TSize>((TSize) (avgDiag), pairLen), Generous()); 
+            appendValue(ovlIndex, Pair<TSize, TSize>((TSize) (avgDiag), pairLen), Generous());
             ++pairLen;
         }
     }
@@ -330,7 +330,7 @@ selectPairsAssembly(StringSet<TString, TSpec> const & str,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TString, typename TSpec, typename TBegEndPos, typename TSize, typename TPairList, typename TPos, typename TSpec2>
-inline void 
+inline void
 selectPairsAllAgainstAll(StringSet<TString, TSpec> const & str,
                          TBegEndPos const & begEndPos,
                          TSize lookAround,
@@ -342,7 +342,7 @@ selectPairsAllAgainstAll(StringSet<TString, TSpec> const & str,
     typedef Pair<TPos, TPos> TDiagPair;
     typedef typename Value<TPairList>::Type TPair;
     typedef typename Iterator<TBegEndPos const, Standard>::Type TBegEndIter;
-    
+
     TBegEndIter beIt = begin(begEndPos, Standard());
     TBegEndIter beItEnd = end(begEndPos, Standard());
     TSize index1 = 0;
@@ -367,7 +367,7 @@ selectPairsAllAgainstAll(StringSet<TString, TSpec> const & str,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TString, typename TSpec, typename TId, typename TDiagList, typename TBegEndPos, typename TScore, typename TSize, typename TSegmentMatches, typename TScoreValues, typename TDistance>
-inline void 
+inline void
 appendSegmentMatches(StringSet<TString, TSpec> const & str,
                      String<Pair<TId, TId> > const & pList,
                      TDiagList const & dList,
@@ -396,7 +396,7 @@ appendSegmentMatches(StringSet<TString, TSpec> const & str,
     String<TSize> backOvl;
     resize(frontOvl, nseq, 0);
     resize(backOvl, nseq, 0);
-    
+
     // Pairwise alignments
     String<bool> aligned;
     resize(aligned, length(pList), true);
@@ -422,7 +422,7 @@ appendSegmentMatches(StringSet<TString, TSpec> const & str,
         TStringSet pairSet;
         assignValueById(pairSet, const_cast<StringSet<TString, TSpec>&>(str), id1);
         assignValueById(pairSet, const_cast<StringSet<TString, TSpec>&>(str), id2);
-        
+
 
         // Overlap alignment
         TSize from = length(matches);
@@ -452,18 +452,18 @@ appendSegmentMatches(StringSet<TString, TSpec> const & str,
             // Create a corresponding edge
             if (seq1<seq2) _getAlignmentStatistics(dist, seq1, seq2, nseq, matchLen, (matchLen * 100) / overlapLen);
             else _getAlignmentStatistics(dist, seq2, seq1, nseq, matchLen, (matchLen * 100) / overlapLen);
-            
+
             // Record the scores
             resize(scores, to);
             typedef typename Iterator<TScoreValues, Standard>::Type TScoreIter;
             TScoreIter itScore = begin(scores, Standard());
             TScoreIter itScoreEnd = end(scores, Standard());
             itScore += from;
-            for(;itScore != itScoreEnd; ++itScore) 
+            for(;itScore != itScoreEnd; ++itScore)
                 *itScore = myScore;
 
             // Update the overlap counter
-            TSize lenLast = matches[from].len; 
+            TSize lenLast = matches[from].len;
             if (matches[to - 1].begin1 == 0) ++frontOvl[seq1];
             if (matches[to - 1].begin2 == 0) ++frontOvl[seq2];
             if (matches[from].begin1 + lenLast == length(pairSet[0])) ++backOvl[seq1];
@@ -514,7 +514,7 @@ appendSegmentMatches(StringSet<TString, TSpec> const & str,
     if (countUnalignedReads > 0) {
         // Sort unaligned reads
         std::sort(begin(unalignedReads, Standard()), end(unalignedReads, Standard()));
-        
+
         // Realign all unaligned sequences
         itPair = begin(pList, Standard());
         itDiag = begin(dList, Standard());
@@ -526,17 +526,17 @@ appendSegmentMatches(StringSet<TString, TSpec> const & str,
             TSize seq1 = idToPosition(str, id1);
             TSize seq2 = idToPosition(str, id2);
             if ((!std::binary_search(begin(unalignedReads, Standard()), end(unalignedReads, Standard()), seq1)) &&
-                (!std::binary_search(begin(unalignedReads, Standard()), end(unalignedReads, Standard()), seq2))) 
+                (!std::binary_search(begin(unalignedReads, Standard()), end(unalignedReads, Standard()), seq2)))
                 continue;
             if ((frontOvl[seq1] > maxOvl) && (backOvl[seq1] > maxOvl) &&
-                (frontOvl[seq2] > maxOvl) && (backOvl[seq2] > maxOvl)) 
+                (frontOvl[seq2] > maxOvl) && (backOvl[seq2] > maxOvl))
                 continue;
 
             // Make a pairwise string-set
             TStringSet pairSet;
             assignValueById(pairSet, const_cast<StringSet<TString, TSpec>&>(str), id1);
             assignValueById(pairSet, const_cast<StringSet<TString, TSpec>&>(str), id2);
-        
+
             // Overlap alignment
             TSize from = length(matches);
             TScoreValue myScore = globalAlignment(matches, pairSet, score_type, AlignConfig<true,true,true,true>(), Gotoh() );
@@ -562,7 +562,7 @@ appendSegmentMatches(StringSet<TString, TSpec> const & str,
                 for(;itScore != itScoreEnd; ++itScore) *itScore = myScore;
 
                 // Update the overlap counter
-                TSize lenLast = matches[from].len; 
+                TSize lenLast = matches[from].len;
                 if (matches[to - 1].begin1 == 0) ++frontOvl[seq1];
                 if (matches[to - 1].begin2 == 0) ++frontOvl[seq2];
                 if (matches[from].begin1 + lenLast == length(pairSet[0])) ++backOvl[seq1];

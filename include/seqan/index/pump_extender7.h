@@ -82,7 +82,7 @@ namespace SEQAN_NAMESPACE_MAIN
     static finline Src const cp___(Dest &dst, Ofs const ofs, Src const src) {
         return dst.i3.assignValue(ofs, src);
     }
-        
+
     template < typename TTextInput, typename TNameInput,
                typename TOut0, typename TOut3, typename TOut5, typename TOut6, typename TOut124 >
     static bool _skew7Extend(TTextInput &textIn, TNameInput &nameIn,
@@ -114,7 +114,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename Value<TOut124>::Type o4 = o1;
         typename Value<TOut5>::Type   o5;
         typename Value<TOut6>::Type   o6;
-        
+
         o0.i1 = typename Value<typename Value<TOut0>::Type, 1>::Type();
         o0.i2 = typename Value<typename Value<TOut0>::Type, 2>::Type();
         o0.i3 = typename Value<typename Value<TOut0>::Type, 3>::Type();
@@ -147,14 +147,14 @@ namespace SEQAN_NAMESPACE_MAIN
         case 4:
 /* 4 */                                                 o4.i2[0] = o5.i2[0] = o6.i2[0] = (*nameIn).i2; ++nameIn; o4.i1 = p--;
                                                      cp___(o4,0,cp___(o5,1,cp___(o6,2,    *textIn))); ++textIn;
-            
+
         case 3:
 /* 3 */                                   cp___(o3,0,cp___(o4,1,cp___(o5,2,cp___(o6,3,   *textIn)))); ++textIn; o3.i1 = p--;
-                
+
         case 2:
 /* 2 */                           o2.i2[0] = o3.i2[0] = o4.i2[1] = o5.i2[1] = o6.i2[1] = (*nameIn).i2; ++nameIn; o2.i1 = p--;
                                cp___(o2,0,cp___(o3,1,cp___(o4,2,cp___(o5,3,cp___(o6,4,    *textIn))))); ++textIn;
-                
+
         case 1:
 /* 1 */                o1.i2[0] = o2.i2[1] = o3.i2[1] = o4.i2[2] = o5.i2[2] = o6.i2[2] = (*nameIn).i2; ++nameIn; o1.i1 = p--;
                     cp___(o1,0,cp___(o2,1,cp___(o3,2,                                     *textIn))); ++textIn;
@@ -169,22 +169,22 @@ namespace SEQAN_NAMESPACE_MAIN
 
         if (!eof(nameIn)) {
 /* 0 */  cp___(o0,0,cp___(o1,1,cp___(o2,2,cp___(o3,3,                                     *textIn)))); ++textIn; o0.i1 = p--;
-                
+
 /* 6 */  cp___(o0,1,cp___(o1,2,cp___(o2,3,cp___(o3,4,                      cp___(o6,0,    *textIn))))); ++textIn; o6.i1 = p--;
-                
+
 /* 5 */  cp___(o0,2,cp___(o1,3,cp___(o2,4,cp___(o3,5,           cp___(o5,0,cp___(o6,1,    *textIn)))))); ++textIn; o5.i1 = p--;
 
 /* 4 */     o0.i2[0] = o1.i2[1] = o2.i2[2] = o3.i2[2] = o4.i2[0] = o5.i2[0] = o6.i2[0] = (*nameIn).i2; ++nameIn; o4.i1 = p--;
          cp___(o0,3,cp___(o1,4,                      cp___(o4,0,cp___(o5,1,cp___(o6,2,    *textIn))))); ++textIn;
             if (r >= 3) push(out3, o3);
             if (r >= 2) push(out124, o2);
-                
+
 /* 3 */  cp___(o0,4,cp___(o1,5,           cp___(o3,0,cp___(o4,1,cp___(o5,2,cp___(o6,3,    *textIn)))))); ++textIn; o3.i1 = p--;
-                
+
 /* 2 */     o0.i2[1] = o1.i2[2] = o2.i2[0] = o3.i2[0] = o4.i2[1] = o5.i2[1] = o6.i2[1] = (*nameIn).i2; ++nameIn; o2.i1 = p--;
          cp___(o0,5,           cp___(o2,0,cp___(o3,1,cp___(o4,2,cp___(o5,3,cp___(o6,4,    *textIn)))))); ++textIn;
             if (r >= 1) push(out124, o1);
-                
+
 /* 1 */     o0.i2[2] = o1.i2[0] = o2.i2[1] = o3.i2[1] = o4.i2[2] = o5.i2[2] = o6.i2[2] = (*nameIn).i2; ++nameIn; o1.i1 = p--;
                     cp___(o1,0,cp___(o2,1,cp___(o3,2,                                     *textIn))); ++textIn;
             push(out0, o0);
@@ -195,25 +195,25 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         // MAIN Loop: PUSH FULLY FILLED TRIPLES
-        
+
         while (!eof(nameIn)) {
 /* 0 */  cp___(o0,0,cp___(o1,1,cp___(o2,2,cp___(o3,3,                                     *textIn)))); ++textIn; o0.i1 -= 7;
-                
+
 /* 6 */  cp___(o0,1,cp___(o1,2,cp___(o2,3,cp___(o3,4,                      cp___(o6,0,    *textIn))))); ++textIn; o6.i1 -= 7;
-                
+
 /* 5 */  cp___(o0,2,cp___(o1,3,cp___(o2,4,cp___(o3,5,           cp___(o5,0,cp___(o6,1,    *textIn)))))); ++textIn; o5.i1 -= 7;
 
 /* 4 */     o0.i2[0] = o1.i2[1] = o2.i2[2] = o3.i2[2] = o4.i2[0] = o5.i2[0] = o6.i2[0] = (*nameIn).i2; ++nameIn; o4.i1 -= 7;
          cp___(o0,3,cp___(o1,4,                      cp___(o4,0,cp___(o5,1,cp___(o6,2,    *textIn))))); ++textIn;
             push(out3, o3);
             push(out124, o2);
-                
+
 /* 3 */  cp___(o0,4,cp___(o1,5,           cp___(o3,0,cp___(o4,1,cp___(o5,2,cp___(o6,3,    *textIn)))))); ++textIn; o3.i1 -= 7;
-                
+
 /* 2 */     o0.i2[1] = o1.i2[2] = o2.i2[0] = o3.i2[0] = o4.i2[1] = o5.i2[1] = o6.i2[1] = (*nameIn).i2; ++nameIn; o2.i1 -= 7;
          cp___(o0,5,           cp___(o2,0,cp___(o3,1,cp___(o4,2,cp___(o5,3,cp___(o6,4,    *textIn)))))); ++textIn;
             push(out124, o1);
-                
+
 /* 1 */     o0.i2[2] = o1.i2[0] = o2.i2[1] = o3.i2[1] = o4.i2[2] = o5.i2[2] = o6.i2[2] = (*nameIn).i2; ++nameIn; o1.i1 -= 7;
                     cp___(o1,0,cp___(o2,1,cp___(o3,2,                                     *textIn))); ++textIn;
             push(out0, o0);
@@ -226,7 +226,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         {
 /* 0 */             cp___(o1,1,cp___(o2,2,cp___(o3,3,   0)));
-                
+
 /* 6 */             cp___(o1,2,cp___(o2,3,cp___(o3,4,   0)));
 
 /* 5 */             cp___(o1,3,cp___(o2,4,cp___(o3,5,   0)));
@@ -240,9 +240,9 @@ namespace SEQAN_NAMESPACE_MAIN
 
 /* 2 */                o1.i2[2] =                        0;
             if (r >= 1) push(out124, o1);
-        
+
         }
-                
+
         endWrite(out124);
         endWrite(out6);
         endWrite(out5);
@@ -292,8 +292,8 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TTextInput, typename TLimitsString, typename TNameInput,
                typename TOut0, typename TOut3, typename TOut5, typename TOut6, typename TOut124 >
     static bool _skew7ExtendMulti(
-        TTextInput &textIn, TLimitsString const &limits, 
-        TNameInput &nameIn1, TNameInput &nameIn2, TNameInput &nameIn4, 
+        TTextInput &textIn, TLimitsString const &limits,
+        TNameInput &nameIn1, TNameInput &nameIn2, TNameInput &nameIn4,
         TOut0 &out0, TOut3 &out3, TOut5 &out5, TOut6 &out6, TOut124 &out124)
     {
         typedef typename Value<TLimitsString>::Type TSize;
@@ -305,14 +305,14 @@ namespace SEQAN_NAMESPACE_MAIN
             TSize n0 = 0, n3 = 0, n5 = 0, n6 = 0, n124 = 0;
 
             // count the numbers of septets in residue class 1, 2, and 4
-            
+
             TSize size;
             TSize old = *it; ++it;
 
             while (it != itEnd) {
                 size = *it - old;
                 old = *it;
-                
+
                 n0   +=  size      / 7;
                 n3   += (size + 4) / 7;
                 n5   += (size + 2) / 7;
@@ -353,7 +353,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typename Value<TOut124>::Type o4 = o1;
         typename Value<TOut5>::Type   o5;
         typename Value<TOut6>::Type   o6;
-        
+
         o0.i1 = typename Value<typename Value<TOut0>::Type, 1>::Type();
         o0.i2 = typename Value<typename Value<TOut0>::Type, 2>::Type();
         o0.i3 = typename Value<typename Value<TOut0>::Type, 3>::Type();
@@ -377,7 +377,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         typedef typename Value<TOut0>::Type         TOutValue0;
         typedef typename Value<TOutValue0, 1>::Type TPair;
-        
+
         PairIncrementer_<TPair, TLimitsString> p;
         setHost(p, limits);
 
@@ -400,14 +400,14 @@ namespace SEQAN_NAMESPACE_MAIN
             case 4:
     /* 4 */                                                 o4.i2[0] = o5.i2[0] = o6.i2[0] = (*nameIn4).i2; ++nameIn4; o4.i1 = p; ++p;
                                                         cp___(o4,0,cp___(o5,1,cp___(o6,2,    *textIn))); ++textIn;
-                
+
             case 3:
     /* 3 */                                   cp___(o3,0,cp___(o4,1,cp___(o5,2,cp___(o6,3,   *textIn)))); ++textIn; o3.i1 = p; ++p;
-                    
+
             case 2:
     /* 2 */                           o2.i2[0] = o3.i2[0] = o4.i2[1] = o5.i2[1] = o6.i2[1] = (*nameIn2).i2; ++nameIn2; o2.i1 = p; ++p;
                                 cp___(o2,0,cp___(o3,1,cp___(o4,2,cp___(o5,3,cp___(o6,4,    *textIn))))); ++textIn;
-                    
+
             case 1:
     /* 1 */                o1.i2[0] = o2.i2[1] = o3.i2[1] = o4.i2[2] = o5.i2[2] = o6.i2[2] = (*nameIn1).i2; ++nameIn1; o1.i1 = p; ++p;
                         cp___(o1,0,cp___(o2,1,cp___(o3,2,                                     *textIn))); ++textIn;
@@ -422,22 +422,22 @@ namespace SEQAN_NAMESPACE_MAIN
 
             if (rounds != 0) {
     /* 0 */  cp___(o0,0,cp___(o1,1,cp___(o2,2,cp___(o3,3,                                     *textIn)))); ++textIn; o0.i1 = p; ++p;
-                    
+
     /* 6 */  cp___(o0,1,cp___(o1,2,cp___(o2,3,cp___(o3,4,                      cp___(o6,0,    *textIn))))); ++textIn; o6.i1 = p; ++p;
-                    
+
     /* 5 */  cp___(o0,2,cp___(o1,3,cp___(o2,4,cp___(o3,5,           cp___(o5,0,cp___(o6,1,    *textIn)))))); ++textIn; o5.i1 = p; ++p;
 
     /* 4 */     o0.i2[0] = o1.i2[1] = o2.i2[2] = o3.i2[2] = o4.i2[0] = o5.i2[0] = o6.i2[0] = (*nameIn4).i2; ++nameIn4; o4.i1 = p; ++p;
             cp___(o0,3,cp___(o1,4,                      cp___(o4,0,cp___(o5,1,cp___(o6,2,    *textIn))))); ++textIn;
                 if (r >= 3) push(out3, o3);
                 if (r >= 2) push(out124, o2);
-                    
+
     /* 3 */  cp___(o0,4,cp___(o1,5,           cp___(o3,0,cp___(o4,1,cp___(o5,2,cp___(o6,3,    *textIn)))))); ++textIn; o3.i1 = p; ++p;
-                    
+
     /* 2 */     o0.i2[1] = o1.i2[2] = o2.i2[0] = o3.i2[0] = o4.i2[1] = o5.i2[1] = o6.i2[1] = (*nameIn2).i2; ++nameIn2; o2.i1 = p; ++p;
             cp___(o0,5,           cp___(o2,0,cp___(o3,1,cp___(o4,2,cp___(o5,3,cp___(o6,4,    *textIn)))))); ++textIn;
                 if (r >= 1) push(out124, o1);
-                    
+
     /* 1 */     o0.i2[2] = o1.i2[0] = o2.i2[1] = o3.i2[1] = o4.i2[2] = o5.i2[2] = o6.i2[2] = (*nameIn1).i2; ++nameIn1; o1.i1 = p; ++p;
                         cp___(o1,0,cp___(o2,1,cp___(o3,2,                                     *textIn))); ++textIn;
                 push(out0, o0);
@@ -449,25 +449,25 @@ namespace SEQAN_NAMESPACE_MAIN
             }
 
             // MAIN Loop: PUSH FULLY FILLED TRIPLES
-            
+
             while (rounds != 0) {
     /* 0 */  cp___(o0,0,cp___(o1,1,cp___(o2,2,cp___(o3,3,                                     *textIn)))); ++textIn; o0.i1 = p; ++p;
-                    
+
     /* 6 */  cp___(o0,1,cp___(o1,2,cp___(o2,3,cp___(o3,4,                      cp___(o6,0,    *textIn))))); ++textIn; o6.i1 = p; ++p;
-                    
+
     /* 5 */  cp___(o0,2,cp___(o1,3,cp___(o2,4,cp___(o3,5,           cp___(o5,0,cp___(o6,1,    *textIn)))))); ++textIn; o5.i1 = p; ++p;
 
     /* 4 */     o0.i2[0] = o1.i2[1] = o2.i2[2] = o3.i2[2] = o4.i2[0] = o5.i2[0] = o6.i2[0] = (*nameIn4).i2; ++nameIn4; o4.i1 = p; ++p;
             cp___(o0,3,cp___(o1,4,                      cp___(o4,0,cp___(o5,1,cp___(o6,2,    *textIn))))); ++textIn;
                 push(out3, o3);
                 push(out124, o2);
-                    
+
     /* 3 */  cp___(o0,4,cp___(o1,5,           cp___(o3,0,cp___(o4,1,cp___(o5,2,cp___(o6,3,    *textIn)))))); ++textIn; o3.i1 = p; ++p;
-                    
+
     /* 2 */     o0.i2[1] = o1.i2[2] = o2.i2[0] = o3.i2[0] = o4.i2[1] = o5.i2[1] = o6.i2[1] = (*nameIn2).i2; ++nameIn2; o2.i1 = p; ++p;
             cp___(o0,5,           cp___(o2,0,cp___(o3,1,cp___(o4,2,cp___(o5,3,cp___(o6,4,    *textIn)))))); ++textIn;
                 push(out124, o1);
-                    
+
     /* 1 */     o0.i2[2] = o1.i2[0] = o2.i2[1] = o3.i2[1] = o4.i2[2] = o5.i2[2] = o6.i2[2] = (*nameIn1).i2; ++nameIn1; o1.i1 = p; ++p;
                         cp___(o1,0,cp___(o2,1,cp___(o3,2,                                     *textIn))); ++textIn;
                 push(out0, o0);
@@ -481,7 +481,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
             {
     /* 0 */             cp___(o1,1,cp___(o2,2,cp___(o3,3,   0)));
-                    
+
     /* 6 */             cp___(o1,2,cp___(o2,3,cp___(o3,4,   0)));
 
     /* 5 */             cp___(o1,3,cp___(o2,4,cp___(o3,5,   0)));
@@ -495,10 +495,10 @@ namespace SEQAN_NAMESPACE_MAIN
 
     /* 2 */                o1.i2[2] =                        0;
                 if (r >= 1) push(out124, o1);
-            
+
             }
         }
-                    
+
         endWrite(out124);
         endWrite(out6);
         endWrite(out5);

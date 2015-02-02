@@ -59,10 +59,10 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef value_type*                        pointer;
         typedef value_type&                        reference;
         typedef const value_type&                const_reference;
-        
+
         TInput*            in;
         difference_type    rest;
-        
+
         IPipeIterator():
             in(NULL),
             rest(0) {}
@@ -81,13 +81,13 @@ namespace SEQAN_NAMESPACE_MAIN
         const_value_type operator* () const {
             return **in;
         }
-    
+
         //const_reference operator* () const {
         //    return **in;
         //}
-    
+
         iterator& operator++ () {
-            ++(*in); 
+            ++(*in);
             if (!--rest) endRead(*in);
             return *this;
         }
@@ -103,16 +103,16 @@ namespace SEQAN_NAMESPACE_MAIN
                 ++*this;
             return *this;
         }
-        
+
         difference_type operator- (const iterator &I) const {
             return I.rest - rest;
         }
-        
+
         bool Equal_(const iterator &I) const {
             return rest == I.rest;
         }
     };
-    
+
     template <typename TInput>
     bool operator==(const IPipeIterator<TInput>& _Left, const IPipeIterator<TInput>& Right_)
     {
@@ -129,11 +129,11 @@ namespace SEQAN_NAMESPACE_MAIN
 
     //////////////////////////////////////////////////////////////////////////////
     // output pipe iterator
-    // interface between algorithms working with iterators and pipe modules 
+    // interface between algorithms working with iterators and pipe modules
 
     template <typename TOutput>
     struct OPipeIterator
-    {        
+    {
         //////////////////////////////////////////////////////////////////////////////
         // public iterator interface
 
@@ -144,10 +144,10 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef iterator*                        pointer;
         typedef iterator&                        reference;
         typedef value_type const &                const_reference;
-        
+
         TOutput*        out;
         difference_type    rest;
-        
+
         OPipeIterator():
             out(NULL),
             rest(0) {}
@@ -171,7 +171,7 @@ namespace SEQAN_NAMESPACE_MAIN
             out->push(_v);
             return *this;
         }
-    
+
         iterator& operator++ () {
             ++(*out);
             if (!--rest) endWrite(*out);
@@ -187,7 +187,7 @@ namespace SEQAN_NAMESPACE_MAIN
         difference_type operator- (const iterator &I) const {
             return I.rest - rest;
         }
-        
+
         bool Equal_(const iterator &I) const {
             return rest == I.rest;
         }

@@ -43,7 +43,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TPosition, typename TSequence>
-inline void 
+inline void
 _buildLeafString(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                  TPosition const pos,
                  TSequence& alignSeq)
@@ -79,10 +79,10 @@ _buildLeafString(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TSegmentString, typename TOutGraph>
-inline void 
+inline void
 _createAlignmentGraph(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                       TSegmentString& alignSeq,
-                      TOutGraph& gOut)             
+                      TOutGraph& gOut)
 {
     SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
@@ -128,10 +128,10 @@ _createAlignmentGraph(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
  */
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TGuideTree, typename TOutGraph>
-inline void 
+inline void
 progressiveAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
                      TGuideTree& tree,
-                     TOutGraph& gOut)             
+                     TOutGraph& gOut)
 {
     SEQAN_CHECKPOINT
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
@@ -141,7 +141,7 @@ progressiveAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
     typedef typename Iterator<TGuideTree, AdjacencyIterator>::Type TAdjacencyIterator;
     typedef String<TVertexDescriptor> TVertexString;
     typedef String<TVertexString> TSegmentString;
-    
+
     // Initialization
     TVertexDescriptor rootVertex = getRoot(tree);
     TSize nVertices = numVertices(tree);
@@ -153,14 +153,14 @@ progressiveAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
     // All Strings of Strings of vertices for each node of the guide tree
     String<TSegmentString> segString;
     resize(segString, nVertices);
-    
-    // Walk through the tree in bfs order    
+
+    // Walk through the tree in bfs order
     typedef typename Iterator<TVertexString, Standard>::Type TVertexIter;
     TVertexIter itVert = begin(vertices, Standard());
     TVertexIter itVertEnd = end(vertices, Standard());
     --itVertEnd;
     TBfsIterator bfsIt(tree, rootVertex);
-    for(;!atEnd(bfsIt);goNext(bfsIt), --itVertEnd) 
+    for(;!atEnd(bfsIt);goNext(bfsIt), --itVertEnd)
         *itVertEnd = *bfsIt;
 
     // Progressive alignment
@@ -192,12 +192,12 @@ progressiveAlignment(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TSegmentString, typename TEdgeMap, typename TOutGraph>
-inline void 
+inline void
 _createMatchingGraph(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                      TSegmentString& alignSeq,
                      TEdgeMap& edgeMap,
                      TOutGraph& gOut,
-                     TEdgeMap& edgeMapOut)             
+                     TEdgeMap& edgeMapOut)
 {
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef typename Size<TGraph>::Type TSize;
@@ -219,12 +219,12 @@ _createMatchingGraph(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
                 TVertexDescriptor v1 = getValue(alignSeq_i, j);
                 TVertexDescriptor v2 = getValue(alignSeq_i, k);
                 if ((v1 == nilVertex) || (v2 == nilVertex)) continue;
-                
+
                 TVertexDescriptor v1New = findVertex(gOut, sequenceId(g, v1), fragmentBegin(g,v1));
                 if (v1New == nilVertex) v1New = addVertex(gOut, sequenceId(g, v1), fragmentBegin(g,v1), fragmentLength(g,v1));
                 TVertexDescriptor v2New = findVertex(gOut, sequenceId(g, v2), fragmentBegin(g,v2));
                 if (v2New == nilVertex) v2New = addVertex(gOut, sequenceId(g, v2), fragmentBegin(g,v2), fragmentLength(g,v2));
-            
+
                 TEdgeDescriptor e = findEdge(g, v1, v2);
                 addEdge(gOut, v1New, v2New, cargo(e));
                 appendValue(edgeMapOut, property(edgeMap, e));
@@ -238,9 +238,9 @@ _createMatchingGraph(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
 template<typename TStringSet, typename TCargo, typename TSpec, typename TString, typename TOutString>
 inline TCargo
 heaviestMatching(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
-                 TString const& str1, 
+                 TString const& str1,
                  TString const& str2,
-                 TOutString& align) 
+                 TOutString& align)
 {
     typedef Graph<Alignment<TStringSet, TCargo, TSpec> > TGraph;
     typedef __int64 TLargeSize;
@@ -256,7 +256,7 @@ heaviestMatching(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     // Note for profile alignments every member of the sequence is a String!!! of vertex descriptors
     TCargo divider = (TCargo) length(str1[0]) * (TCargo) length(str2[0]);
     TVertexDescriptor nilVertex = getNil<TVertexDescriptor>();
-    
+
     // Fill the vertex to position map for str1
     // Remember for each vertex descriptor the position in the sequence
     typedef std::map<TVertexDescriptor, TSize> TVertexToPosMap;
@@ -267,7 +267,7 @@ heaviestMatching(Graph<Alignment<TStringSet, TCargo, TSpec> > const& g,
     TStringIterConst itStrEnd1 = end(str1);
     TSize pos = 0;
     for(TStringIterConst itStr1 = begin(str1);itStr1 != itStrEnd1;++itStr1, ++pos) {
-        TVertexSetIterConst itVEnd = end(getValue(itStr1));    
+        TVertexSetIterConst itVEnd = end(getValue(itStr1));
         for(TVertexSetIterConst itV = begin(getValue(itStr1));itV != itVEnd;++itV) {
             if (*itV != nilVertex) map.insert(std::make_pair(*itV, pos));
         }

@@ -48,7 +48,7 @@ unsigned const SEED = 41;
 
 // ==========================================================================
 // Functions
-// ========================================================================== 
+// ==========================================================================
 
 // --------------------------------------------------------------------------
 // Function generateText
@@ -379,7 +379,7 @@ bool sleq__(TIt s1, TIt s2, ST n1, ST n2) {
         }
     }
     return (n1 < n2);
-} 
+}
 
 // is SA a sorted suffix array for s?
 template <typename TSequence, typename TText>
@@ -396,7 +396,7 @@ bool isSorted(TSequence const &SA, TText const &s) {
 */                return false;
         }
     }
-    return true;  
+    return true;
 }
 
 template <typename TInput, typename TSpec, typename TText>
@@ -419,7 +419,7 @@ bool isSorted(Pipe<TInput, TSpec> &SA, TText const &s) {
         prev = *SA;
     }
     endRead(SA);
-    return true;  
+    return true;
 }
 
 template <typename TInput, typename TSpec, typename TText>
@@ -439,7 +439,7 @@ bool sleqLcp__(TIt s1, TIt s2, ST n1, ST n2, ST lcp) {
         }
     }
     return (n1 < n2) && (n == lcp);
-} 
+}
 
 // is SA a sorted suffix array and LCP the correct LCP-Table for s?
 /*    template <
@@ -454,7 +454,7 @@ bool isSortedLCP(String<TSize1, TSpec1> &LCP, String<TSize2, TSpec2> &SA, TText 
             return false;
         }
     }
-    return true;  
+    return true;
 }
 */
 
@@ -493,7 +493,7 @@ bool isSortedLCP(TLCP &LCP, TSA &SA, TText const &s) {
         }
         prev = *sa;
     }
-    return true;  
+    return true;
 }
 
 template <typename TSufArray, typename TText>
@@ -502,7 +502,7 @@ bool isSuffixArray(TSufArray &SA, TText const &s) {
         std::cerr<<"isSuffixArray: length is bad: SA="<<length(SA)<<", s="<<length(s)<<std::endl;
         return false;
     }
-    
+
     if (!isPermutation(SA)) {
         std::cerr<<"isSuffixArray: SA is not a permutation!"<<std::endl;
         return false;
@@ -558,12 +558,12 @@ bool isLCPTable(TLCP &LCP, TSufArray &SA, TText const &s) {
         printf("isLCPTable: length is bad: SA=%d, s=%d\n", (int)length(SA), (int)length(s));
         return false;
     }
-    
+
     if (length(LCP) != length(s)) {
         printf("isLCPTable: length is bad: LCP=%d, s=%d\n", (int)length(LCP), (int)length(s));
         return false;
     }
-    
+
     if (!isPermutation(SA)) {
         std::cerr<<"isLCPTable: SA is not a permutation!\n";
         return false;
@@ -603,7 +603,7 @@ bool isEqual(TA &_a, TB &_b) {
 
 // ==========================================================================
 // Types
-// ========================================================================== 
+// ==========================================================================
 
 // --------------------------------------------------------------------------
 // Index Types
@@ -632,9 +632,9 @@ typedef
 
 typedef FMIndexTypes TrieIndexTypes;
 
-// ========================================================================== 
+// ==========================================================================
 // Test Classes
-// ========================================================================== 
+// ==========================================================================
 
 // --------------------------------------------------------------------------
 // Class IndexTest

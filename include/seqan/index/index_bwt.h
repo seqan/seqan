@@ -37,7 +37,7 @@
 
 namespace SEQAN_NAMESPACE_MAIN
 {
-    
+
 //namespace SEQAN_NAMESPACE_PIPELINING
 //{
 
@@ -73,7 +73,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         TLinearMapper        mapper;
         TFilter                in;
-        
+
         Pipe():
             in(mapper) {}
 
@@ -91,7 +91,7 @@ namespace SEQAN_NAMESPACE_MAIN
             TSA                            sa(suffixArrayIn);
             TInverter                    inverter;
             TCounterFilter                filter(inverter);
-            
+
             #ifdef SEQAN_DEBUG_INDEX
                 std::cerr << "  invert suffix array" << std::endl;
             #endif
@@ -100,7 +100,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
             TShiftText                    shifter(textIn);
             TJoiner                        joiner(bundle2(filter, shifter));
-            
+
             #ifdef SEQAN_DEBUG_INDEX
                 std::cerr << "  de-invert suffix array" << std::endl;
             #endif
@@ -113,7 +113,7 @@ namespace SEQAN_NAMESPACE_MAIN
         inline typename Value<Pipe>::Type const operator*() const {
             return *in;
         }
-        
+
         inline Pipe& operator++() {
             ++in;
             return *this;
@@ -176,7 +176,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TFilter                in;
 
         TLimitsString const    &limits;
-        
+
         Pipe(TLimitsString const &_limits):
             in(mapper),
             limits(_limits)    {}
@@ -202,12 +202,12 @@ namespace SEQAN_NAMESPACE_MAIN
             for(int i=0;i<length(limits);++i)
                 std::cout << limits[i]<<"  ";
             std::cout<<std::endl;
-            
+
             TGlobalizer                    globalizer(suffixArrayIn, limits);
             TSA                            sa(globalizer);
             TInverter                    inverter;
             TCounterFilter                filter(inverter);
-            
+
             #ifdef SEQAN_DEBUG_INDEX
                 std::cerr << "  invert suffix array" << std::endl;
             #endif
@@ -216,7 +216,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
             TShiftText                    shifter(textIn);
             TJoiner                        joiner(bundle2(filter, shifter));
-            
+
             #ifdef SEQAN_DEBUG_INDEX
                 std::cerr << "  de-invert suffix array" << std::endl;
             #endif
@@ -229,7 +229,7 @@ namespace SEQAN_NAMESPACE_MAIN
         inline typename Value<Pipe>::Type const operator*() const {
             return *in;
         }
-        
+
         inline Pipe& operator++() {
             ++in;
             return *this;

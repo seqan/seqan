@@ -47,15 +47,15 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends Pattern
  * @headerfile <seqan/find.h>
  * @brief Backward Factor Automaton Matching algorithm.
- * 
+ *
  * @signature template <typename TNeedle, typename TAutomaton>
  *            class Pattern<TNeedle, Bfam<TAutomaton> >;
- * 
+ *
  * @tparam TAutomaton A tag that specifies the used automaton. Default: <tt>Bfam&lt;Oracle&gt;.
  * @tparam TNeedle    The needle type. Types: String
- * 
+ *
  * To be used in combination with the default specialization of @link Finder @endlink.
- * 
+ *
  * @see MultiBfamPattern
  */
 
@@ -64,14 +64,14 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends BfamPattern
  * @headerfile <seqan/find.h>
  * @brief Backward Oracle Matching algorithm.
- * 
+ *
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, Bfam<Oracle> >;
- * 
+ *
  * @tparam TNeedle The needle type. Types: String
- * 
+ *
  * To be used in combination with the default specialization of @link Finder @endlink.
- * 
+ *
  * @see TrieBfamPattern
  * @see OracleMultiBfamPattern
  */
@@ -81,14 +81,14 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends BfamPattern
  * @headerfile <seqan/find.h>
  * @brief Backward Suffix Trie Matching algorithm.
- * 
+ *
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, Bfam<Trie> >;
- * 
+ *
  * @tparam TNeedle The needle type. Types: String
- * 
+ *
  * To be used in combination with the default specialization of @link Finder @endlink.
- * 
+ *
  * @see OracleBfamPattern
  */
 
@@ -155,8 +155,8 @@ struct Host< Pattern<TNeedle, BomAlgo> const>
 
 //Bfam<Oracle>: BOM Algorithm
 template <typename TNeedle, typename TNeedle2>
-inline void 
-setHost (Pattern<TNeedle, Bfam<Oracle> > & me, TNeedle2 const& needle) 
+inline void
+setHost (Pattern<TNeedle, Bfam<Oracle> > & me, TNeedle2 const& needle)
 {
     SEQAN_CHECKPOINT
     me.needleLength = length(needle);
@@ -167,8 +167,8 @@ setHost (Pattern<TNeedle, Bfam<Oracle> > & me, TNeedle2 const& needle)
 
 //Bfam<Trie>: BTM Algorithm (the same as BOM, but with an trie)
 template <typename TNeedle, typename TNeedle2>
-inline void 
-setHost (Pattern<TNeedle, Bfam<Trie> > & me, TNeedle2 const& needle) 
+inline void
+setHost (Pattern<TNeedle, Bfam<Trie> > & me, TNeedle2 const& needle)
 {
     SEQAN_CHECKPOINT;
     typedef typename Position<TNeedle>::Type TPosition;
@@ -186,7 +186,7 @@ setHost (Pattern<TNeedle, Bfam<Trie> > & me, TNeedle2 const& needle)
 }
 
 template <typename TNeedle, typename TNeedle2, typename TSpec>
-inline void 
+inline void
 setHost (Pattern<TNeedle, Bfam<TSpec> > & me, TNeedle2 & needle)
 {
     setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
@@ -196,7 +196,7 @@ setHost (Pattern<TNeedle, Bfam<TSpec> > & me, TNeedle2 & needle)
 
 
 template <typename TNeedle, typename TSpec>
-inline void _patternInit (Pattern<TNeedle, Bfam<TSpec> > & me) 
+inline void _patternInit (Pattern<TNeedle, Bfam<TSpec> > & me)
 {
 SEQAN_CHECKPOINT
     me.step = 0;

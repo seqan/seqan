@@ -101,7 +101,7 @@ SEQAN_DEFINE_TEST(test_align_fragment)
 SEQAN_DEFINE_TEST(test_align_reversable_fragment)
 {
     using namespace seqan;
-    
+
     typedef StringSet<CharString, Dependent<> > CharStringSet;
     typedef    Id<CharStringSet>::Type TId;
     typedef    Size<CharStringSet>::Type TSize;

@@ -40,8 +40,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
 template<typename TScore, typename TSc>
 inline void
-_matchScore(TScore&, 
-             TSc) 
+_matchScore(TScore&,
+             TSc)
 {
     // No operation
 }
@@ -50,8 +50,8 @@ _matchScore(TScore&,
 
 template<typename TScore, typename TSc>
 inline void
-_mismatchScore(TScore&, 
-                TSc) 
+_mismatchScore(TScore&,
+                TSc)
 {
     // No operation
 }
@@ -60,8 +60,8 @@ _mismatchScore(TScore&,
 
 template<typename TValue, typename TSc>
 inline void
-_matchScore(Score<TValue, Simple>& sc, 
-             TSc msc) 
+_matchScore(Score<TValue, Simple>& sc,
+             TSc msc)
 {
     sc.data_match = msc;
 }
@@ -70,8 +70,8 @@ _matchScore(Score<TValue, Simple>& sc,
 
 template<typename TValue, typename TSc>
 inline void
-_mismatchScore(Score<TValue, Simple>& sc, 
-                TSc mmsc) 
+_mismatchScore(Score<TValue, Simple>& sc,
+                TSc mmsc)
 {
     sc.data_mismatch = mmsc;
 }
@@ -95,13 +95,13 @@ public:
     Score() {}
 
     template<typename TSpec>
-    Score(Score<TValue, TSpec>& old_sc) 
+    Score(Score<TValue, TSpec>& old_sc)
     {
         sc.data_gap_extend = scoreGapExtend(old_sc);
         sc.data_gap_open = scoreGapOpen(old_sc);
     }
 
-    Score(Score<TValue, Simple>& old_sc) 
+    Score(Score<TValue, Simple>& old_sc)
     {
         sc.data_gap_extend = scoreGapExtend(old_sc);
         sc.data_gap_open = scoreGapOpen(old_sc);
@@ -109,7 +109,7 @@ public:
         _mismatchScore(sc, scoreMismatch(old_sc));
     }
 
-    Score(TValue gap_extend, TValue gap_open) 
+    Score(TValue gap_extend, TValue gap_open)
     {
         sc.data_gap_extend = gap_extend;
         sc.data_gap_open = gap_open;
@@ -277,7 +277,7 @@ score(Score<TValue, ProfileProfileScore<TScoreMember> > const & me,
 
 //////////////////////////////////////////////////////////////////////////////
 
-template<typename TValue, typename TSpec, typename TSize, typename TAlphabet, typename TScore> 
+template<typename TValue, typename TSpec, typename TSize, typename TAlphabet, typename TScore>
 inline void
 _msaRefinement(String<TValue, TSpec>& mat,
                TSize nseq,
@@ -413,7 +413,7 @@ _msaRefinement(String<TValue, TSpec>& mat,
     typedef String<Fragment<> > TFragmentString;
     TFragmentString matches;
     globalAlignment(matches, pairSet, sc, Gotoh());
-    
+
     typedef typename Iterator<TFragmentString, Standard>::Type TFragIter;
     TFragIter fragIt = end(matches, Standard() );
     TFragIter fragItEnd = begin(matches, Standard() );
@@ -441,7 +441,7 @@ _msaRefinement(String<TValue, TSpec>& mat,
     appendValue(insertPattern2, alignLen2 - begin2Pos, Generous());
     appendValue(insertPattern2, alignLen1 - begin1Pos, Generous());
     clear(matches);
-    
+
     TInsertIter itInsert = begin(insertPattern1, Standard());
     TInsertIter itInsertEnd = end(insertPattern1, Standard());
     TSize totalAlignLen = 0;
@@ -464,7 +464,7 @@ _msaRefinement(String<TValue, TSpec>& mat,
             ++itInsert;
         }
     }
-    
+
     itInsertEnd = end(insertPattern2, Standard());
     itMat2 = begin(mat2, Standard());
     TMatIter itMat2End = end(mat2, Standard());
@@ -483,7 +483,7 @@ _msaRefinement(String<TValue, TSpec>& mat,
             ++itInsert;
         }
     }
-    
+
     //// Debug code
     //for(TSize row = 0; row < nseq; ++row) {
     //    for(TSize col = 0; col < totalAlignLen; ++col) {
@@ -495,7 +495,7 @@ _msaRefinement(String<TValue, TSpec>& mat,
 
 
 
-template<typename TStringSet, typename TCargo, typename TSpec, typename TScore> 
+template<typename TStringSet, typename TCargo, typename TSpec, typename TScore>
 inline void
 msaRefinement(Graph<Alignment<TStringSet, TCargo, TSpec> >& gAlign,
               TScore& sc)

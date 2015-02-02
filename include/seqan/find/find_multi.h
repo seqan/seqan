@@ -42,7 +42,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 struct MultiPatternFinder_;
 typedef Tag<MultiPatternFinder_> MultipatternFinder;
-    
+
 //____________________________________________________________________________
 
 template <typename THaystack>
@@ -71,7 +71,7 @@ SEQAN_CHECKPOINT
     }
 //____________________________________________________________________________
 
-    Finder & 
+    Finder &
     operator = (Finder const & other_)
     {
 SEQAN_CHECKPOINT

@@ -1263,7 +1263,7 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
         if (bp.dupMiddlePos != maxValue<unsigned>() && tempBP.dupMiddlePos != maxValue<unsigned>()
         && bp.dupMiddlePos < tempBP.dupMiddlePos)
             {
-                tempBP.dupMiddlePos = bp.dupMiddlePos; 
+                tempBP.dupMiddlePos = bp.dupMiddlePos;
         }
         if (bp.startSeqPos < tempBP.startSeqPos)
         tempBP.startSeqPos = bp.startSeqPos;

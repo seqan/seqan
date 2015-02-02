@@ -73,7 +73,7 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @var TStd LibraryStoreElementstd;
  * @brief The library size standard deviation.
- */ 
+ */
 
 template <typename TMean = double, typename TStd = double, typename TSpec = void>
 struct LibraryStoreElement

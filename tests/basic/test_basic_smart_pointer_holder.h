@@ -60,7 +60,7 @@ struct CDStruct
     int movedFrom;
     int assignedFrom;
     int setFrom;
-    
+
     CDStruct() : copiedFrom(-1), movedFrom(-1), assignedFrom(-1), setFrom(-1)
     {
         id = nextId++;

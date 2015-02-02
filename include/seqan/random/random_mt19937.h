@@ -82,7 +82,7 @@ public:
 
     Rng(unsigned seed) : _mtRand(seed)
     { SEQAN_CHECKPOINT; }
-    
+
     inline
     unsigned
     operator()()
@@ -104,7 +104,7 @@ struct Value<Rng<MersenneTwister> >
 
 template <>
 struct Value<const Rng<MersenneTwister> > : Value<Rng<MersenneTwister> > {};
-    
+
 // ===========================================================================
 // Functions
 // ===========================================================================

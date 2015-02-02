@@ -77,32 +77,32 @@ struct Cargo< Index<TMPReadSet, TShape> > {
 //////////////////////////////////////////////////////////////////////////////
 // Repeat masker
 template <typename TShape>
-inline bool _qgramDisableBuckets(Index<TMPReadSet, IndexQGram<TShape> > &index) 
+inline bool _qgramDisableBuckets(Index<TMPReadSet, IndexQGram<TShape> > &index)
 {
     typedef Index<TReadSet, IndexQGram<TShape>    >        TReadIndex;
     typedef typename Fibre<TReadIndex, QGramDir>::Type    TDir;
     typedef typename Iterator<TDir, Standard>::Type        TDirIterator;
     typedef typename Value<TDir>::Type                    TSize;
-    
+
     TDir &dir    = indexDir(index);
     bool result  = false;
     unsigned counter = 0;
     TSize thresh = (TSize)(length(index) * cargo(index).abundanceCut);
     if (thresh < 100) thresh = 100;
-    
+
     TDirIterator it = begin(dir, Standard());
     TDirIterator itEnd = end(dir, Standard());
     for (; it != itEnd; ++it)
-        if (*it > thresh) 
+        if (*it > thresh)
         {
             *it = (TSize)-1;
             result = true;
             ++counter;
         }
-    
+
     if (counter > 0 && cargo(index)._debugLevel >= 1)
         ::std::cerr << "Removed " << counter << " k-mers" << ::std::endl;
-    
+
     return result;
 }
 
@@ -134,7 +134,7 @@ bool loadReads(
     CharString fastaId[2];
     String<Dna5Q> seq[2];
     CharString qual[2];
-    
+
     unsigned kickoutcount = 0;
     unsigned maxReadLength = 0;
     while (!atEnd(leftMates) && !atEnd(rightMates))
@@ -149,16 +149,16 @@ bool loadReads(
             appendValue(fastaIDs, fastaId[0]);
             appendValue(fastaIDs, fastaId[1]);
         }
-        
+
         reverseComplement(seq[1]);
         reverse(qual[1]);
-        
+
         if (countN)
         {
             for (int j = 0; j < 2; ++j)
             {
                 int maxBase = (int)(0.8 * length(seq[j]));
-                int allowed[5] = 
+                int allowed[5] =
                     { maxBase, maxBase, maxBase, maxBase, (int)(options.errorRate * length(seq[j]))};
                 for (unsigned k = 0; k < length(seq[j]); ++k)
                     if (--allowed[ordValue(getValue(seq[j], k))] == 0)
@@ -171,12 +171,12 @@ bool loadReads(
                     }
             }
         }
-        
+
         for (int j = 0; j < 2; ++j)
         {
             // store dna and quality together
             assignQualities(seq[j], qual[j]);
-            
+
             if (options.trimLength > 0 && length(seq[j]) > (unsigned)options.trimLength)
                 resize(seq[j], options.trimLength);
         }
@@ -199,7 +199,7 @@ bool loadReads(
     TSAValue sa(0, 0);
     sa.i1 = ~sa.i1;
     sa.i2 = ~sa.i2;
-    
+
     success = true;
     if ((unsigned)sa.i1 < length(reads) - 1)
     {
@@ -211,8 +211,8 @@ bool loadReads(
         ::std::cerr << "Maximal read length of " << (unsigned)sa.i2 + 1 << " bps exceeded. Please remove \"#define RAZERS_MEMOPT\" in razers.cpp and recompile." << ::std::endl;
         success = false;
     }
-    
-    if (options._debugLevel > 1 && kickoutcount > 0) 
+
+    if (options._debugLevel > 1 && kickoutcount > 0)
         ::std::cerr << "Ignoring " << kickoutcount << " low quality mate-pairs.\n";
     return success;
 }
@@ -220,7 +220,7 @@ bool loadReads(
     template <typename TReadMatch>
     struct LessPairErrors : public ::std::binary_function < TReadMatch, TReadMatch, bool >
     {
-        inline bool operator() (TReadMatch const &a, TReadMatch const &b) const 
+        inline bool operator() (TReadMatch const &a, TReadMatch const &b) const
         {
             // read number
             if ((a.rseqNo >> 1) < (b.rseqNo >> 1)) return true;
@@ -236,7 +236,7 @@ bool loadReads(
 #endif
         }
     };
-    
+
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -246,7 +246,7 @@ void compactPairMatches(TMatches &matches, TCounts & /*cnts*/, RazerSOptions<TSp
 {
     typedef typename Value<TMatches>::Type                    TMatch;
     typedef typename Iterator<TMatches, Standard>::Type        TIterator;
-    
+
     unsigned readNo = -1;
     unsigned hitCount = 0;
     unsigned hitCountCutOff = options.maxHits;
@@ -259,15 +259,15 @@ void compactPairMatches(TMatches &matches, TCounts & /*cnts*/, RazerSOptions<TSp
 
     int scoreRangeBest = (options.distanceRange == 0u)? MinValue<int>::VALUE: -(int)options.distanceRange;
 
-    // sort 
+    // sort
     ::std::sort(it, itEnd, LessPairErrors<TMatch>());
 
-    for (; it != itEnd; ++it) 
+    for (; it != itEnd; ++it)
     {
         if ((*it).orientation == '-' || (*it).pairId == 0) continue;
-        
+
         if (readNo == ((*it).rseqNo >> 1))
-        { 
+        {
             if ((*it).pairScore <= scoreDistCutOff) continue;
             if (++hitCount >= hitCountCutOff)
             {
@@ -278,7 +278,7 @@ void compactPairMatches(TMatches &matches, TCounts & /*cnts*/, RazerSOptions<TSp
                     int maxErrors = -1 - (*it).pairScore;
                     if (options.purgeAmbiguous && (*it).pairScore > scoreRangeBest)
                         maxErrors = -1;
-                    
+
                     setMaxErrors(swiftL, readNo, maxErrors);
                     setMaxErrors(swiftR, readNo, maxErrors);
 
@@ -290,7 +290,7 @@ void compactPairMatches(TMatches &matches, TCounts & /*cnts*/, RazerSOptions<TSp
                         if ((*it).pairScore > scoreRangeBest || compactFinal)
                         {
                             dit = ditBeg;
-                        } 
+                        }
                         else
                         {
                             *dit = *it;    ++dit; ++it;
@@ -324,10 +324,10 @@ void compactPairMatches(TMatches &matches, TCounts & /*cnts*/, RazerSOptions<TSp
 //////////////////////////////////////////////////////////////////////////////
 // Find read matches in one genome sequence
 template <
-    typename TMatches, 
+    typename TMatches,
     typename TGenome,
-    typename TReadIndex, 
-    typename TSwiftSpec, 
+    typename TReadIndex,
+    typename TSwiftSpec,
     typename TVerifier,
     typename TCounts,
     typename TSpec >
@@ -421,11 +421,11 @@ void mapMatePairReads(
     mR.gseqNo = gseqNo;
     fL.i2.orientation = orientation;
     mR.orientation = (orientation == 'F')? 'R': 'F';
-    
+
 //    unsigned const preFetchMatches = 2048;
 
     // iterate all verification regions returned by SWIFT
-    while (find(swiftFinderR, swiftPatternR, options.errorRate)) 
+    while (find(swiftFinderR, swiftPatternR, options.errorRate))
     {
         unsigned rseqNo = swiftPatternR.curSeqNo;
         TGPos rEndPos = endPosition(swiftFinderR) + scanShift;
@@ -437,7 +437,7 @@ void mapMatePairReads(
             popFront(fifo);
             ++firstNo;
         }
-/*        
+/*
         if (empty(fifo) || back(fifo).gEnd + minDistance < (TSignedGPos)(rEndPos + doubleParWidth))
             for (unsigned i = 0; i < preFetchMatches; ++i)
                 if (find(swiftFinderL, swiftPatternL, options.errorRate))
@@ -460,14 +460,14 @@ void mapMatePairReads(
                     fL.i2.rseqNo = swiftPatternL.curSeqNo | NOT_VERIFIED;
                     fL.i2.gBegin = gPair.i1;
                     fL.i2.gEnd = gPair.i2;
-                    
+
                     pushBack(fifo, fL);
                 }
             } else {
                 break;
             }
         }
-        
+
         int    bestLeftErrors = MaxValue<int>::VALUE;
         int bestLibSizeError = MaxValue<int>::VALUE;
         TDequeueIterator bestLeft = TDequeueIterator();
@@ -480,7 +480,7 @@ void mapMatePairReads(
         for (i = lastPotMatchNo[rseqNo]; firstNo <= i; i = (*it).i1)
         {
             it = &value(fifo, i - firstNo);
-            
+
             // search left mate
 //            if (((*it).i2.rseqNo & ~NOT_VERIFIED) == rseqNo)
             {
@@ -490,8 +490,8 @@ void mapMatePairReads(
                     if ((TSignedGPos)(*it).i2.gEnd + minDistance < (TSignedGPos)(rEndPos + doubleParWidth))
                     {
                         if (matchVerify(
-                                (*it).i2, infix(genome, (*it).i2.gBegin, (*it).i2.gEnd), 
-                                rseqNo, readSetL, forwardPatternsL, 
+                                (*it).i2, infix(genome, (*it).i2.gBegin, (*it).i2.gEnd),
+                                rseqNo, readSetL, forwardPatternsL,
                                 options, TSwiftSpec()))
                         {
                             (*it).i2.rseqNo &= ~NOT_VERIFIED;               // has been verified positively
@@ -516,7 +516,7 @@ void mapMatePairReads(
                         value(fifo, lastValid - firstNo).i1 = i;
                 }
                 lastValid = i;
-                
+
                 if (!rightVerified)                                            // here a verfied left match is available
                 {
                     if (matchVerify(
@@ -525,7 +525,7 @@ void mapMatePairReads(
                             options, TSwiftSpec()))
                     {
                         rightVerified = true;
-                    } 
+                    }
                     else
                     {
                         // Break out of lastPotMatch loop, rest of find(right SWIFT results loop will not
@@ -535,13 +535,13 @@ void mapMatePairReads(
                         break;
                     }
                 }
-                                
+
                 if ((*it).i2.rseqNo == rseqNo)
                 {
                     if (bestLeftErrors >= (*it).i2.editDist)
                     {
                         int libSizeError = options.libraryLength - (int)((__int64)mR.gEnd - (__int64)(*it).i2.gBegin);
-                        if (libSizeError < 0) 
+                        if (libSizeError < 0)
                             libSizeError = -libSizeError;
                         if (libSizeError > options.libraryError)
                             continue;
@@ -574,7 +574,7 @@ void mapMatePairReads(
             else
                 value(fifo, lastValid - firstNo).i1 = i;
         }
-        
+
         // verify right mate, if left mate matches
         if (bestLeftErrors != MaxValue<int>::VALUE)
         {
@@ -584,13 +584,13 @@ void mapMatePairReads(
 //                options.libraryLength <= dist + options.libraryError)
             {
                 fL.i2 = (*bestLeft).i2;
-                
+
                 // transform mate readNo to global readNo
                 fL.i2.rseqNo = 2*rseqNo;
                 mR.rseqNo   = 2*rseqNo + 1;
-                
+
                 // transform coordinates to the forward strand
-                if (orientation == 'R') 
+                if (orientation == 'R')
                 {
                     TSize temp = fL.i2.gBegin;
                     fL.i2.gBegin = gLength - fL.i2.gEnd;
@@ -600,19 +600,19 @@ void mapMatePairReads(
                     mR.gEnd = gLength - temp;
                     dist = -dist;
                 }
-                
+
                 // set a unique pair id
                 fL.i2.pairId = mR.pairId = options.nextMatePairId;
                 if (++options.nextMatePairId == 0)
                     options.nextMatePairId = 1;
-                
+
                 // score the whole match pair
                 fL.i2.pairScore = mR.pairScore = 0 - fL.i2.editDist - mR.editDist;
-                
+
                 // relative positions
                 fL.i2.mateDelta = dist;
                 mR.mateDelta = -dist;
-                
+
                 // both mates match with correct library size
                 /*                                std::cout << "found " << rseqNo << " on " << orientation << gseqNo;
                  std::cout << " dist:" << dist;
@@ -640,7 +640,7 @@ void mapMatePairReads(
                 }
                 ++options.TP;
             }
-        } 
+        }
     }
 }
 #endif
@@ -649,10 +649,10 @@ void mapMatePairReads(
 //////////////////////////////////////////////////////////////////////////////
 // Find read matches in many genome sequences (import from Fasta)
 template <
-    typename TMatches, 
-    typename TReadSet_, 
+    typename TMatches,
+    typename TReadSet_,
     typename TCounts,
-    typename TSpec, 
+    typename TSpec,
     typename TShape,
     typename TSwiftSpec >
 int mapMatePairReads(
@@ -699,7 +699,7 @@ int mapMatePairReads(
     TIndex swiftIndexL(readSetL, shape);
     TIndex swiftIndexR(readSetR, shape);
     reverse(indexShape(swiftIndexR));        // right mate qualities are reversed -> reverse right shape
-    
+
     cargo(swiftIndexL).abundanceCut = options.abundanceCut;
     cargo(swiftIndexR).abundanceCut = options.abundanceCut;
     cargo(swiftIndexL)._debugLevel = options._debugLevel;
@@ -743,10 +743,10 @@ int mapMatePairReads(
     unsigned numFiles = length(genomeFileNameList);
     unsigned gseqNo = 0;
 
-    // open genome files, one by one    
+    // open genome files, one by one
     for (unsigned filecount = 0; filecount < numFiles; ++filecount)
     {
-        // open genome file    
+        // open genome file
         SeqFileIn file;
         if (!open(file, toCString(genomeFileNameList[filecount])))
             return RAZERS_GENOME_FAILED;
@@ -757,7 +757,7 @@ int mapMatePairReads(
         if (lastPos == genomeFile.npos) lastPos = genomeFile.find_last_of('\\') + 1;
         if (lastPos == genomeFile.npos) lastPos = 0;
         ::std::string genomeName = genomeFile.substr(lastPos);
-        
+
         CharString    id;
         Dna5String    genome;
         unsigned gseqNoWithinFile = 0;
@@ -772,7 +772,7 @@ int mapMatePairReads(
                 appendValue(genomeNames, id, Generous());
 
             gnoToFileMap.insert(::std::make_pair(gseqNo,::std::make_pair(genomeName,gseqNoWithinFile)));
-            
+
             if (options.forward)
                 mapMatePairReads(matches, genome, gseqNo, swiftPatternL, swiftPatternR, forwardPatternsL, forwardPatternsR, cnts, 'F', options);
 

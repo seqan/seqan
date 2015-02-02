@@ -252,7 +252,7 @@ unsigned dropReads(seqan::StringSet<TId> & idSet1, seqan::StringSet<TSeq> & seqS
             rem[i] = false;
             ++dropped2;
             seqan::moveValue(seqSet2, i, TSeq("N"));
-        } 
+        }
         else
         {
             rem[i] = false;

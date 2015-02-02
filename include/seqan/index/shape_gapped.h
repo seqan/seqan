@@ -46,54 +46,54 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends GappedShape
  * @headerfile <seqan/index.h>
  * @brief A structure to define a fixed gapped shape.
- * 
+ *
  * @signature template <typename TValue, typename P1[, typename P2[, ..., typename Pn]]>
  *            class Shape<TValue, HardwiredShape<P1[, P2[, ..., Pn]]> >;
  *
  * @tparam TValue The type to use for the values.
  * @tparam Pi     Pi is the distance of the i'th '1' to the next '1' in the shape.At
  *                most 20 parameters are allowed, so the maximal shape weight is 21.
- * 
+ *
  * You can use this structure to define your one gapped shapes in conjunction
  * with @link GappedShape @endlink.
- * 
+ *
  * The shape <tt>1100101</tt> corresponds to <tt>HardwiredShape<1,3,2></tt>.
- * 
+ *
  * Note The following predefined shapes are already available in <tt>seqan/index/shape_predefined.h</tt>:
- * 
+ *
  * @include include/seqan/index/shape_predefined.h
- * 
+ *
  * @see GappedShape
  * @see GenericShape
  */
 
     // Pxx = spaces between '1's
     template <
-        int P00 = 0, int P01 = 0, int P02 = 0, int P03 = 0, int P04 = 0, 
+        int P00 = 0, int P01 = 0, int P02 = 0, int P03 = 0, int P04 = 0,
         int P05 = 0, int P06 = 0, int P07 = 0, int P08 = 0, int P09 = 0,
         int P10 = 0, int P11 = 0, int P12 = 0, int P13 = 0, int P14 = 0,
-        int P15 = 0, int P16 = 0, int P17 = 0, int P18 = 0, int P19 = 0    
+        int P15 = 0, int P16 = 0, int P17 = 0, int P18 = 0, int P19 = 0
     >
     struct HardwiredShape {
         static const int DIFFS[];
     };
 
     template <
-        int P00, int P01, int P02, int P03, int P04, 
+        int P00, int P01, int P02, int P03, int P04,
         int P05, int P06, int P07, int P08, int P09,
         int P10, int P11, int P12, int P13, int P14,
-        int P15, int P16, int P17, int P18, int P19    
+        int P15, int P16, int P17, int P18, int P19
     >
     const int HardwiredShape<
         P00,P01,P02,P03,P04,
         P05,P06,P07,P08,P09,
         P10,P11,P12,P13,P14,
-        P15,P16,P17,P18,P19 
+        P15,P16,P17,P18,P19
     >::DIFFS[] = {
         P00,P01,P02,P03,P04,
         P05,P06,P07,P08,P09,
         P10,P11,P12,P13,P14,
-        P15,P16,P17,P18,P19, 0 
+        P15,P16,P17,P18,P19, 0
     };
 
 
@@ -111,10 +111,10 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
     template <
-        int P00, int P01, int P02, int P03, int P04, 
+        int P00, int P01, int P02, int P03, int P04,
         int P05, int P06, int P07, int P08, int P09,
         int P10, int P11, int P12, int P13, int P14,
-        int P15, int P16, int P17, int P18, int P19    
+        int P15, int P16, int P17, int P18, int P19
     >
     struct LENGTH< HardwiredShape<
         P00,P01,P02,P03,P04,
@@ -131,22 +131,22 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template <
         typename TValue,
-        int P00, int P01, int P02, int P03, int P04, 
+        int P00, int P01, int P02, int P03, int P04,
         int P05, int P06, int P07, int P08, int P09,
         int P10, int P11, int P12, int P13, int P14,
-        int P15, int P16, int P17, int P18, int P19    
+        int P15, int P16, int P17, int P18, int P19
     >
     struct LENGTH< Shape<TValue, GappedShape< HardwiredShape<
         P00,P01,P02,P03,P04,
         P05,P06,P07,P08,P09,
         P10,P11,P12,P13,P14,
-        P15,P16,P17,P18,P19 
+        P15,P16,P17,P18,P19
     > > > >:
     LENGTH< HardwiredShape<
         P00,P01,P02,P03,P04,
         P05,P06,P07,P08,P09,
         P10,P11,P12,P13,P14,
-        P15,P16,P17,P18,P19 
+        P15,P16,P17,P18,P19
     > > {};
 
 
@@ -164,10 +164,10 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
     template <
-        int P00, int P01, int P02, int P03, int P04, 
+        int P00, int P01, int P02, int P03, int P04,
         int P05, int P06, int P07, int P08, int P09,
         int P10, int P11, int P12, int P13, int P14,
-        int P15, int P16, int P17, int P18, int P19    
+        int P15, int P16, int P17, int P18, int P19
     >
     struct WEIGHT< HardwiredShape<
         P00,P01,P02,P03,P04,
@@ -184,22 +184,22 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template <
         typename TValue,
-        int P00, int P01, int P02, int P03, int P04, 
+        int P00, int P01, int P02, int P03, int P04,
         int P05, int P06, int P07, int P08, int P09,
         int P10, int P11, int P12, int P13, int P14,
-        int P15, int P16, int P17, int P18, int P19    
+        int P15, int P16, int P17, int P18, int P19
     >
     struct WEIGHT< Shape<TValue, GappedShape< HardwiredShape<
         P00,P01,P02,P03,P04,
         P05,P06,P07,P08,P09,
         P10,P11,P12,P13,P14,
-        P15,P16,P17,P18,P19 
+        P15,P16,P17,P18,P19
     > > > >:
     WEIGHT< HardwiredShape<
         P00,P01,P02,P03,P04,
         P05,P06,P07,P08,P09,
         P10,P11,P12,P13,P14,
-        P15,P16,P17,P18,P19 
+        P15,P16,P17,P18,P19
     > > {};
 
 
@@ -210,16 +210,16 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends Shape
  * @headerfile <seqan/index.h>
  * @brief A variable gapped shape.
- * 
+ *
  * @signature template <typename TValue>
  *            class Shape<TValue, GenericShape>;
- * 
+ *
  * @tparam TValue The @link Value @endlink type of the string the shape is
  *                applied to (e.g. <tt>Dna</tt>).
- * 
+ *
  * A GenericShape must be initialized first with a valid shape.  To do so, call
  * @link Shape#stringToShape @endlink.
- * 
+ *
  * @see GappedShape
  * @see OneGappedShape
  */
@@ -236,27 +236,27 @@ namespace SEQAN_NAMESPACE_MAIN
         unsigned span;
         unsigned weight;
         String<int> diffs;
-    
+
         typename Value<Shape>::Type    hValue;        // current hash value
 //____________________________________________________________________________
 
 /*!
  * @fn GenericShape::Shape
- * 
+ *
  * @brief Constructor
- * 
+ *
  * @signature Shape::Shape();
  * @signature Shape::Shape(q);
  * @signature Shape::Shape(shape);
  * @signature Shape::Shape(bitmap);
  * @signature Shape::Shape(predefined);
- * 
+ *
  * @param predefined Any instance of a predefined shape spec (e.g.
  *                   <tt>ShapePatternHunter</tt>).
  * @param q Creates an ungapped q-gram.
  * @param shape Any other gapped/ungapped shape.
  * @param bitmap Bitmap string. Sequence of '0's and '1's. See @link Shape#stringToShape @endlink
- * 
+ *
  * @see HardwiredShape
  */
         Shape():
@@ -283,13 +283,13 @@ namespace SEQAN_NAMESPACE_MAIN
             span(other.span),
             weight(other.weight),
             diffs(other.diffs),
-            hValue(other.hValue) {}    
+            hValue(other.hValue) {}
 
         template <typename TSpec>
         Shape(Shape<TValue, TSpec> const &other)
         {
             *this = other;
-        }    
+        }
 
         template <typename TSpec>
         Shape(GappedShape<TSpec> const &other)
@@ -301,7 +301,7 @@ namespace SEQAN_NAMESPACE_MAIN
         Shape(String<TStringValue, TSpec> const &bitmap)
         {
             *this = bitmap;
-        }    
+        }
 
 //____________________________________________________________________________
 
@@ -358,20 +358,20 @@ namespace SEQAN_NAMESPACE_MAIN
  * @class GappedShape
  * @extends Shape
  * @headerfile <seqan/index.h>
- * 
+ *
  * @brief A fixed gapped shape.
- * 
+ *
  * @signature template <typename TValue, typename TSpec>
  *            class Shape<TValue, GappedShape<TSpec> >;
- * 
+ *
  * @tparam TSpec A structure to store the shape at compile-time. Types:
  *               @link HardwiredShape @endlink
  * @tparam TValue The @link Value @endlink type of the string the shape is
  *                applied to (e.g. <tt>Dna</tt>).
- * 
+ *
  * There are predefined shapes in <tt>index/shape_predefined.h</tt>. You can
  * simply use them with <tt>Shape<TValue, ShapePatternHunter></tt> for example.
- * 
+ *
  * @see HardwiredShape
  * @see GenericShape
  */
@@ -391,7 +391,7 @@ namespace SEQAN_NAMESPACE_MAIN
         enum { span = LENGTH<Shape>::VALUE };
         enum { weight = WEIGHT<Shape>::VALUE };
         const int *diffs;
-    
+
         typename Value<Shape>::Type    hValue;        // current hash value
 //____________________________________________________________________________
 
@@ -400,7 +400,7 @@ namespace SEQAN_NAMESPACE_MAIN
             hValue(0) {}
 
         Shape(Shape const &other):
-            diffs(other.diffs),    
+            diffs(other.diffs),
             hValue(other.hValue) {}
 //____________________________________________________________________________
 
@@ -577,13 +577,13 @@ namespace SEQAN_NAMESPACE_MAIN
         P00,P01,P02,P03,P04,
         P05,P06,P07,P08,P09,
         P10,P11,P12,P13,P14,
-        P15,P16,P17,P18,P19 
+        P15,P16,P17,P18,P19
     > > > >::Type
     hash(Shape<TValue, GappedShape< HardwiredShape<
         P00,P01,P02,P03,P04,
         P05,P06,P07,P08,P09,
         P10,P11,P12,P13,P14,
-        P15,P16,P17,P18,P19 
+        P15,P16,P17,P18,P19
     > > > &me, TIter it)
     {
     SEQAN_CHECKPOINT
@@ -606,7 +606,7 @@ namespace SEQAN_NAMESPACE_MAIN
     hashInit(Shape<TValue, GappedShape<TSpec> > &, TIter &)
     {
     }
-    
+
     template <typename TValue, typename TSpec, typename TIter>
     inline typename Value< Shape<TValue, GappedShape<TSpec> > >::Type
     hashNext(Shape<TValue, GappedShape<TSpec> > &me, TIter &it)
@@ -620,7 +620,7 @@ namespace SEQAN_NAMESPACE_MAIN
     template <typename TValue, typename TSpec, typename TShapeString>
     inline bool
     stringToShape(
-        Shape<TValue, GappedShape<TSpec> > &me, 
+        Shape<TValue, GappedShape<TSpec> > &me,
         TShapeString const &bitmap)
     {
     SEQAN_CHECKPOINT
@@ -638,7 +638,7 @@ namespace SEQAN_NAMESPACE_MAIN
             me.span = 0;
             return false;
         }
-        
+
         resize(me.diffs, oneCount - 1);
 
         unsigned diff = 1;
@@ -646,16 +646,16 @@ namespace SEQAN_NAMESPACE_MAIN
         TShapeIter itS = begin(me.diffs, Standard());
 
         it = begin(bitmap, Standard());
-        
+
         // skip leading zeros
         for(; it != itEnd && *it == '0' ; ++it) ;
 
         if (*it != '1')
             return false;
 
-        for(++it; it != itEnd; ++it) 
+        for(++it; it != itEnd; ++it)
         {
-            if (*it == '1') 
+            if (*it == '1')
             {
                 me.span += diff;
                 *itS = diff;
@@ -680,8 +680,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
         clear(bitmap);
         if (weight(me) == 0) return;
-        
-        reserve(bitmap, length(me));    
+
+        reserve(bitmap, length(me));
         appendValue(bitmap, '1');
         for (unsigned i = 0; i < weight(me) - 1; ++i)
         {

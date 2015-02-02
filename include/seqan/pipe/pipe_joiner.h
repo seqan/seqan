@@ -65,16 +65,16 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends Pipe
  * @headerfile <seqan/pipe.h>
  * @brief Joins two or three input streams.
- * 
+ *
  * @signature template <typename TInput1, typename TInput2>
  *            class Pipe<Bundle2<TInput1, TInput2>, Joiner>;
  * @signature template <typename TInput1, typename TInput2, typename TInput3>
  *            class Pipe<Bundle3<TInput1, TInput2, TInput3>, Joiner>;
- * 
+ *
  * @tparam TInput1 The type of the first pipeline module this module reads from.
  * @tparam TInput2 The type of the second pipeline module this module reads from.
  * @tparam TInput3 The type of the third pipeline module this module reads from.
- * 
+ *
  * The output type is a packed @link  Pair  @endlink or @link Triple @endlink of the input types <tt>Value&lt;TInputX&gt;::Type</tt>.
  */
 
@@ -85,16 +85,16 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         Bundle2< TInput1, TInput2 >    in;
         typename Value<Pipe>::Type    tmp;
-        
+
         Pipe(Bundle2< TInput1, TInput2 > _in):
             in(_in) {}
-        
+
         inline typename Value<Pipe>::Type const & operator*() {
             tmp.i1 = *in.in1;
             tmp.i2 = *in.in2;
             return tmp;
         }
-        
+
         inline Pipe& operator++() {
             ++in.in1;
             ++in.in2;
@@ -107,17 +107,17 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         Bundle3< TInput1, TInput2, TInput3 >    in;
         typename Value<Pipe>::Type                tmp;
-        
+
         Pipe(Bundle3< TInput1, TInput2, TInput3 > _in):
             in(_in) {}
-        
+
         inline typename Value<Pipe>::Type const & operator*() {
             tmp.i1 = *in.in1;
             tmp.i2 = *in.in2;
             tmp.i3 = *in.in3;
             return tmp;
         }
-        
+
         inline Pipe& operator++() {
             ++in.in1;
             ++in.in2;

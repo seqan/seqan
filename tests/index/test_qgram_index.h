@@ -79,7 +79,7 @@ SEQAN_DEFINE_TEST(testUngappedShapes)
     SEQAN_ASSERT(shape1.leftFactor == shape2.leftFactor);
     SEQAN_ASSERT(length(shape1) == length(shape2));
     SEQAN_ASSERT(weight(shape1) == weight(shape2));
-    
+
 
     Shape<Dna,SimpleShape> shape3 = Shape<Dna,SimpleShape>(4);
     SEQAN_ASSERT(shape3.leftFactor == 64);
@@ -136,11 +136,11 @@ void testQGramIndexSchnell()
 
     typedef Position<String<Dna> >::Type TPosition;
     String<TPosition> pos;
-    resize(pos, length(text) - q + 2);    
-    
-    String<TPosition> dir;    
+    resize(pos, length(text) - q + 2);
+
+    String<TPosition> dir;
     int pos_size = _intPow((unsigned)ValueSize<Dna>::VALUE, weight(shape));
-    pos_size += 1;    
+    pos_size += 1;
     resize(dir, pos_size);
 
     start = clock();
@@ -149,8 +149,8 @@ void testQGramIndexSchnell()
     finish = clock();
     duration = (double)(finish - start) / CLOCKS_PER_SEC;
     //std::cout << "\nQGramIndex bauen dauert: " << duration << " Sekunden.\n\n";
-    
-    
+
+
 }
 */
 /*
@@ -165,15 +165,15 @@ void testGappedQGramIndex()
     typedef Position<String<Dna> >::Type TPosition;
     String<TPosition> pos;
     resize(pos, length(text) - q + 2);
-    
+
     String<TPosition> dir;
     int pos_size = _intPow((unsigned)ValueSize<Dna>::VALUE, weight(shape));
-    pos_size += 1;    
+    pos_size += 1;
     resize(dir, pos_size);
 
     Nothing nothing;
     createQGramIndex(pos, dir, nothing, text, shape, 1);
-    
+
     SEQAN_ASSERT(dir[0] == 0);
     SEQAN_ASSERT(dir[1] == 1);
     SEQAN_ASSERT(dir[2] == 5);
@@ -206,7 +206,7 @@ void testGappedQGramIndex()
     SEQAN_ASSERT(pos[11] == 2);
     SEQAN_ASSERT(pos[12] == 8);
     SEQAN_ASSERT(pos[13] == 1);
-    
+
 }
 */
 SEQAN_DEFINE_TEST(testUngappedQGramIndex)
@@ -219,7 +219,7 @@ SEQAN_DEFINE_TEST(testUngappedQGramIndex)
     typedef Position<String<Dna> >::Type TPosition;
     String<TPosition> pos;
     resize(pos, length(text) - q + 1);
-    
+
     String<TPosition> dir;
     int pos_size = _intPow((unsigned)ValueSize<Dna>::VALUE, q);
     pos_size += 1;
@@ -227,8 +227,8 @@ SEQAN_DEFINE_TEST(testUngappedQGramIndex)
 
     Nothing nothing;
     createQGramIndex(pos, dir, nothing, text, shape, 1);
-    
-    
+
+
     SEQAN_ASSERT(dir[0] == 0);
     SEQAN_ASSERT(dir[1] == 3);
     SEQAN_ASSERT(dir[2] == 5);
@@ -277,11 +277,11 @@ SEQAN_DEFINE_TEST(testUngappedQGramIndexMulti)
     //typedef String<TSAValue>                        TPos;
     typedef Shape<Dna, UngappedShape<3> >           TShape;
     typedef Index<TStrings, IndexQGram<TShape> >    TIndex;
-    
+
     TStrings strings;
     TIndex refIndex(strings);
     TIndex testIndex(strings);
-    
+
                        //           111111
                        // 0123456789012345
     appendValue(strings, "CTGAACCCTAAACCCT");

@@ -60,9 +60,9 @@ inline bool _verifyFast(TTag) {
 // Appends a segment of only error positions from align to queue.
 template<typename TAlign, typename TPos, typename TScoreValue>
 inline void
-_appendNegativeSegment(TAlign const & align, 
-                       TPos & pos, TPos len, 
-                       Score<TScoreValue> const & scoreMatrix, 
+_appendNegativeSegment(TAlign const & align,
+                       TPos & pos, TPos len,
+                       Score<TScoreValue> const & scoreMatrix,
                        String<Triple<TPos, TPos, TScoreValue> > & queue) {
     typedef Triple<TPos, TPos, TScoreValue> TMerger;
     TPos beginPos = pos;
@@ -86,16 +86,16 @@ _appendNegativeSegment(TAlign const & align,
 // Appends a segment of only matching positions from align to queue.
 template<typename TAlign, typename TPos, typename TScoreValue>
 inline void
-_appendPositiveSegment(TAlign const & align, 
-                       TPos & pos, TPos len, 
-                       Score<TScoreValue> const & scoreMatrix, 
+_appendPositiveSegment(TAlign const & align,
+                       TPos & pos, TPos len,
+                       Score<TScoreValue> const & scoreMatrix,
                        String<Triple<TPos, TPos, TScoreValue> > & queue) {
     if (pos == len) return;
     typedef Triple<TPos, TPos, TScoreValue> TMerger;
     TPos beginPos = pos;
 
     TScoreValue score = 0;
-    while ((pos < len) && 
+    while ((pos < len) &&
            (!isGap(row(align, 0), pos) &&
             !isGap(row(align, 1), pos) &&
             (value(row(align, 0), pos) == value(row(align, 1), pos)))) {
@@ -122,7 +122,7 @@ _negativeMerge(String<TMerger> & queue) {
         return false;
     } else {
         String<TMerger> newMerger;
-        appendValue(newMerger, TMerger(ab.i1, cd.i2, ab.i3 + bc.i3 + cd.i3)); 
+        appendValue(newMerger, TMerger(ab.i1, cd.i2, ab.i3 + bc.i3 + cd.i3));
         replace(queue, len-3, len, newMerger);
 
         return true;
@@ -148,7 +148,7 @@ _positiveMerge(String<TMerger> & queue) {
         return false;
     } else {
         String<TMerger> newMerger;
-        appendValue(newMerger, TMerger(bc.i1, de.i2, bc.i3 + cd.i3 + de.i3)); 
+        appendValue(newMerger, TMerger(bc.i1, de.i2, bc.i3 + cd.i3 + de.i3));
         replace(queue, len-4, len-1, newMerger);
 
         return true;
@@ -167,7 +167,7 @@ _splitAtXDrops(TAlign & align,
                String<TAlign> & alignmentString) {
     typedef typename Position<Row<TAlign> >::Type TPos;
     typedef Triple<TPos, TPos, TScoreValue> TMerger;
-    
+
     // initialization
     String<TMerger> queue;
     TPos pos = _min(toViewPosition(row(align, 0), beginPosition(row(align, 0))),
@@ -224,7 +224,7 @@ _splitAtXDrops(TAlign & align,
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
-// Checks whether two matches overlap *in seq2* and 
+// Checks whether two matches overlap *in seq2* and
 //  whether the non-overlaping parts are shorter than minLength.
 template<typename TMatch, typename TSize>
 bool
@@ -243,7 +243,7 @@ checkOverlap(TMatch & matchA, TMatch & matchB, TSize minLength) {
             }
         }
         // check whether offset is the same in both sequences
-        if (toViewPosition(matchA.row2, matchA.begin2) - toViewPosition(matchB.row2, matchB.begin2) != 
+        if (toViewPosition(matchA.row2, matchA.begin2) - toViewPosition(matchB.row2, matchB.begin2) !=
             toViewPosition(matchA.row1, matchA.begin1) - toViewPosition(matchB.row1, matchB.begin1)) {
             return false;
         }
@@ -256,7 +256,7 @@ checkOverlap(TMatch & matchA, TMatch & matchB, TSize minLength) {
             }
         }
         // check whether offset is the same in both sequences
-        if (toViewPosition(matchB.row2, matchB.begin2) - toViewPosition(matchA.row2, matchA.begin2) != 
+        if (toViewPosition(matchB.row2, matchB.begin2) - toViewPosition(matchA.row2, matchA.begin2) !=
             toViewPosition(matchB.row1, matchB.begin1) - toViewPosition(matchA.row1, matchA.begin1)) {
             return false;
         }
@@ -319,7 +319,7 @@ void maskOverlaps(String<StellarMatch<TSequence, TId> > & matches, TSize minLeng
         if ((*it).id == TMatch::INVALID_ID) continue;
 
         TPos insertPos = 0;
-        
+
         // iterate potentially overlapping matches
         TOverlapIter overlapIt = begin(overlaps);
         for (; overlapIt != end(overlaps); ++overlapIt)
@@ -365,10 +365,10 @@ void
 compactMatches(String<StellarMatch<TSequence, TId> > & matches, TSize numMatches) {
     typedef StellarMatch<TSequence, TId>                        TMatch;
     typedef typename Iterator<String<TMatch>, Standard>::Type    TIterator;
-    
+
     // sort matches by length (and validity)
     sortMatches(matches, LessLength<TMatch>());
-    
+
     // count valid matches
     TSize num = 0;
 

@@ -46,7 +46,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @class AlphabetExpansion
  * @headerfile <seqan/modifier.h>
  * @brief Modifier that adds a character to an alphabet.
- * 
+ *
  * @signature template <typename TAlphabet, char CHAR[, typename TSpec]>
  *            class ModifiedAlphabet<TAlphabet, ModExpand<CHAR,TSpec> >;
  *
@@ -92,7 +92,7 @@ public:
         : data(_internalOrdValue(convert<ModifiedAlphabet>(other_data)))
     {}
 
-    ModifiedAlphabet const & 
+    ModifiedAlphabet const &
     operator = (ModifiedAlphabet const & other)
     {
         data = other.data;
@@ -100,7 +100,7 @@ public:
     }
 
     template <typename TOther>
-    ModifiedAlphabet const & 
+    ModifiedAlphabet const &
     operator = (TOther const & other_data)
     {
         data = _internalOrdValue(convert<ModifiedAlphabet>(other_data));
@@ -310,7 +310,7 @@ template <>
 struct ConvertImplModExpand_<1>
 {
     template <typename THost, char CHAR, typename TSpec, typename T, typename TSource>
-    inline 
+    inline
     static typename Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, TSource>::Type
     _convertImpl(Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, T> const,
         TSource const & source_)
@@ -352,7 +352,7 @@ convertImpl(Convert<ModifiedAlphabet<SimpleType<TSourceValue, TSourceSpec>, ModE
     SEQAN_CHECKPOINT;
     typedef SimpleType<TSourceValue, TSourceSpec> TSource;
     typedef ModifiedAlphabet<TSource, ModExpand<CHAR, TSpec> > TTarget;
-    
+
     TTarget tmp;
     tmp.data = _internalOrdValue(source_);
     return tmp;
@@ -449,9 +449,9 @@ convertImpl(Convert<SimpleType<TTargetValue, TTargetSpec>, ModifiedAlphabet<Simp
 
 
 /*
-template 
+template
 <
-    typename TTargetHost, char TARGET_CHAR, typename TTargetSpec, typename T, 
+    typename TTargetHost, char TARGET_CHAR, typename TTargetSpec, typename T,
     typename TSourceHost, char SOURCE_CHAR, typename TSourceSpec
 >
 inline typename Convert<ModifiedAlphabet<TTargetHost, ModExpand<TARGET_CHAR, TTargetSpec> > , ModifiedAlphabet<TSourceHost, ModExpand<SOURCE_CHAR, TSourceSpec> > >::Type
@@ -464,7 +464,7 @@ convertImpl(Convert<ModifiedAlphabet<TTargetHost, ModExpand<TARGET_CHAR, TTarget
 }
 */
 
-//no conversion 
+//no conversion
 template <typename THost, char CHAR, typename TSpec, typename T>
 inline ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >
 convertImpl(Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, T> const,
@@ -478,14 +478,14 @@ convertImpl(Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, T> const,
 
 template <typename THost, char CHAR, typename TSpec>
 inline unsigned
-_internalOrdValue(ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const & c) 
+_internalOrdValue(ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const & c)
 {
     return c.data;
 }
 
 template <typename THost, char CHAR, typename TSpec>
 inline unsigned
-ordValue(ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const & c) 
+ordValue(ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const & c)
 {
     SEQAN_CHECKPOINT;
     typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TSource;
@@ -523,6 +523,6 @@ struct CompareType<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, TRight>
 
 //////////////////////////////////////////////////////////////////////////////
 
-}// namespace 
+}// namespace
 
 #endif

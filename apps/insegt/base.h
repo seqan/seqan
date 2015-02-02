@@ -1,6 +1,6 @@
  /*==========================================================================
                 SeqAn - The Library for Sequence Analysis
-                          http://www.seqan.de 
+                          http://www.seqan.de
  ============================================================================
   Copyright (C) 2007
 
@@ -29,16 +29,16 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 template<typename TStringSet, typename TSpec, typename TConfig, typename TId>
 inline void
-create_nTuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &fragStore, const TStringSet &annoIds, const TId &parentId, const unsigned &n)    
+create_nTuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &fragStore, const TStringSet &annoIds, const TId &parentId, const unsigned &n)
 {
     typedef typename Iterator<TStringSet>::Type                 TSetIter;
     typedef typename Value<TStringSet>::Type                 TString;
     typedef typename Iterator<TString const>::Type            TStringIter;
     typedef typename FragmentStore<TSpec, TConfig>::TAnnotationStore     TAnnotationStore;
     typedef typename Value<TAnnotationStore>::Type                 TAnnotationStoreElement;
-    
+
     static const TId INVALID_ANNO_ID = TAnnotationStoreElement::INVALID_ID;
-    
+
     clear(tupleSet);
     TStringIter itStr;
     TStringIter itStrEnd;
@@ -47,7 +47,7 @@ create_nTuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &fragStore, co
     TStringSet tempAnnoIds;
     resize(tempAnnoIds, n);
     TStringSet tempTupleSet;
-    
+
     for (unsigned i = 0; i <= length(annoIds) - n; ++i)
     {
         for ( unsigned j = i; j < i + n; ++j)
@@ -63,7 +63,7 @@ create_nTuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &fragStore, co
                 }
             }
         }
-        
+
         clear(tempTupleSet);
         createCombinations(tempTupleSet, tempAnnoIds);
         itSet = begin(tempTupleSet);
@@ -81,10 +81,10 @@ create_nTuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &fragStore, co
 //////////////////////////////////////////////////////////////////////////////
 template<typename TStringSet, typename TSpec, typename TConfig, typename TId>
 inline void
-create_Tuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &fragStore, const TStringSet &annoIds, const TId &parentId, const unsigned &n)    
+create_Tuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &fragStore, const TStringSet &annoIds, const TId &parentId, const unsigned &n)
 {
     typedef typename Iterator<TStringSet>::Type TIter;
-    
+
     clear(tupleSet);
     TIter it;
     TIter itEnd;
@@ -93,7 +93,7 @@ create_Tuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &fragStore, con
     {
         clear(tempTupleSet);
         create_nTuple(tempTupleSet, fragStore, annoIds, parentId, i);
-        
+
         it = begin(tempTupleSet);
         itEnd = end(tempTupleSet);
         for ( ; it != itEnd; goNext(it))
@@ -105,7 +105,7 @@ create_Tuple(TStringSet &tupleSet, FragmentStore<TSpec, TConfig> &fragStore, con
 
 
 //////////////////////////////////////////////////////////////////////////////
-// create possible tuples: 
+// create possible tuples:
 //////////////////////////////////////////////////////////////////////////////
 template<typename TStringSet>
 inline void
@@ -115,30 +115,30 @@ createCombinations(TStringSet &tupleSet, TStringSet &annoIds)
     //typedef typename Value<TString>::Type        TId;
     typedef typename Iterator<TStringSet>::Type     TStringSetIter;
     //typedef typename Iterator<TString>::Type    TStringIter;
-    
+
     if (!empty(annoIds))
     {
         TStringSetIter itStrSet = begin(annoIds);
         TStringSetIter itStrSetEnd = end(annoIds);
-    
+
         unsigned n = 1;
         for ( ; itStrSet != itStrSetEnd; goNext(itStrSet))
         {
             n = n * length(getValue(itStrSet));
         }
-    
+
         clear(tupleSet);
         resize(tupleSet, n);
         /*
-        TStringSetIter itT = begin(tupleSet);            
+        TStringSetIter itT = begin(tupleSet);
         TStringSetIter itTEnd = end(tupleSet);
-    
+
         for ( ; itT != itTEnd; goNext(itT))
         {
             resize(value(itT), length(annoIds));
         }
         */
-    
+
         // TId id;
         unsigned pos;
         unsigned help = n;
@@ -172,13 +172,13 @@ inline void
 getDifference(TString &difference, const TString &string1, const TString &string2)
 {
     typedef typename Iterator<TString>::Type TIter;
-    
+
     resize(difference, length(string1));
     TString str1 = string1;
     TString str2 = string2;
     std::stable_sort(begin(str1), end(str1));
     std::stable_sort(begin(str2), end(str2));
-    
+
     TIter it = std::set_difference(begin(str1), end(str1), begin(str2), end(str2), begin(difference));
     erase(difference, position(it, difference), endPosition(difference));
 }
@@ -191,10 +191,10 @@ inline bool
 searchValue(TPos & pos, TValue const & value, TString const & string)
 {
     typedef typename Iterator<TString const>::Type TIter;
-    
+
     TIter it = std::lower_bound(begin(string), end(string), value);
     pos = position(it, string);
-    
+
     if (it == end(string) || getValue(it) != value) return false;
     else return true;
 }
@@ -210,18 +210,18 @@ interSec(TList &result, const TList &list1, const TList  &list2)
 {
     //typedef typename Value<TList>::Type TValue;
     typedef typename Iterator<TList>::Type TIter;
-    
+
     resize(result, length(list1));
     TList sort1 = list1;
     TList sort2 = list2;
     std::stable_sort(begin(sort1), end(sort1));
     std::stable_sort(begin(sort2), end(sort2));
-    
+
     TIter itR = std::set_intersection(begin(sort1), end(sort1), begin(sort2), end(sort2), begin(result));
-    
+
     erase(result, position(itR, result), endPosition(result));
     if (empty(result)) return false;
-    else return true; 
+    else return true;
 }
 
 
@@ -234,7 +234,7 @@ template<typename TValue>
 inline bool
 isElement(const TValue &value, const String<TValue> &string)
 {
-    return std::binary_search(begin(string), end(string), value);    
+    return std::binary_search(begin(string), end(string), value);
 }
 
 
@@ -247,9 +247,9 @@ inline bool
 isElement_unsorted(TValue const & value, String<TValue> const & string)
 {
     typedef typename Iterator<String<TValue> const>::Type TIter;
-    
+
     TIter it = std::find(begin(string), end(string), value);
-    
+
     if (atEnd(it, string)) return false;
     else return true;
 }

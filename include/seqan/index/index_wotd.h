@@ -42,29 +42,29 @@ namespace SEQAN_NAMESPACE_MAIN
 //////////////////////////////////////////////////////////////////////////////
 // wotd tree index fibres
 
-/*! 
+/*!
  * @defgroup WOTDIndexFibres WOTD Index Fibres
  * @brief Tag to select a specific fibre (e.g. table, object, ...) of an @link
  *        IndexWotd @endlink index.
- * 
+ *
  * These tags can be used to get @link Fibre @endlink of an @link IndexWotd @endlink.
- * 
+ *
  * @see Fibre
  * @see Index#getFibre
  * @see IndexWotd
- * 
+ *
  * @tag WOTDIndexFibres#WotdDir
  * @brief The child table.
- * 
+ *
  * @tag WOTDIndexFibres#WotdRawSA
  * @brief The raw suffix array.
- * 
+ *
  * @tag WOTDIndexFibres#WotdText
  * @brief The original text the index should be based on.
- * 
+ *
  * @tag WOTDIndexFibres#WotdRawText
  * @brief The raw text the index is really based on.
- * 
+ *
  * @tag WOTDIndexFibres#WotdSA
  * @brief The suffix array.
  */
@@ -81,15 +81,15 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @return TSa A reference to the @link WOTDIndexFibres#WotdSA @endlink fibre (partially sorted suffix array).
  */
- 
+
 /*!
  * @fn IndexWotd#indexDir
  * @headerfile <seqan/index.h>
  * @brief Shortcut for <tt>getFibre(.., WotdDir())</tt>.
  * @signature TFibre indexDir(index);
- * 
+ *
  * @param[in] index The @link IndexWotd @endlink object holding the fibre.
- * 
+ *
  * @return TFibre A reference to the @link WOTDIndexFibres#WotdDir @endlink fibre (tree structure).
  */
 
@@ -115,10 +115,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Shortcut for <tt>value(indexDir(index), position)</tt>.
  *
  * @signature TFibre dirAt(position, index);
- * 
+ *
  * @param[in] index    The @link IndexWotd @endlink object holding the fibre.
  * @param[in] position A position in the array on which the value should be accessed.
- * 
+ *
  * @return TFibre A reference to the @link WOTDIndexFibres#WotdDir @endlink fibre.
  */
 
@@ -138,20 +138,20 @@ namespace SEQAN_NAMESPACE_MAIN
  * @headerfile <seqan/index.h>
  * @brief An index based on a lazy suffix tree (see Giegerich et al., "Efficient implementation of lazy suffix
  *        trees").
- * 
+ *
  * @signature template <typename TText, typename TSpec>
  *            class Index<TText, IndexWotd<TSpec> >;
- * 
+ *
  * @tparam TText The @link TextConcept @endlink text type.
  * @tparam TSpec The type for further specialization of the Index type.
- * 
+ *
  * The fibres (see @link Index @endlink and @link Fibre @endlink) of this index are a partially sorted suffix array
  * (see @link WOTDIndexFibres#WotdSA @endlink) and the wotd tree (see @link WOTDIndexFibres#WotdDir @endlink).
- * 
+ *
  * Demo: Demo.Constraint Iterator
- * 
+ *
  * @see WOTDIndexFibres
- */ 
+ */
 
     struct WotdOriginal_;
     typedef Tag<WotdOriginal_> const WotdOriginal;
@@ -161,16 +161,16 @@ namespace SEQAN_NAMESPACE_MAIN
 
 /*
     template < typename TObject, typename TSpec >
-    struct Fibre< Index<TObject, IndexWotd<TSpec> >, FibreDir> 
+    struct Fibre< Index<TObject, IndexWotd<TSpec> >, FibreDir>
     {
         typedef Index<TObject, IndexWotd<TSpec> > TIndex;
-        typedef String< 
+        typedef String<
             typename typename Size<TIndex>::Type,
             Alloc<>
         > Type;
     };
 */
-    
+
     template < typename TObject, typename TSpec >
     class Index<TObject, IndexWotd<TSpec> > {
     public:
@@ -208,7 +208,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         TSize            sentinelOcc;
         TSize            sentinelBound;
-        bool            interSentinelNodes;    // should virtually one (true) $-sign or many (false) $_i-signs be appended to the strings in text 
+        bool            interSentinelNodes;    // should virtually one (true) $-sign or many (false) $_i-signs be appended to the strings in text
 
         Index():
             interSentinelNodes(false) {}
@@ -350,7 +350,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     };
 
     template < typename TText, typename TSpec >
-    void _indexRequireTopDownIteration(Index<TText, IndexWotd<TSpec> > &index) 
+    void _indexRequireTopDownIteration(Index<TText, IndexWotd<TSpec> > &index)
     {
         indexRequire(index, WotdDir());
     }
@@ -374,7 +374,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     };
 
     template < typename TText, typename TSpec >
-    struct HistoryStackEntry_< Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree< TopDown< ParentLinks<TSpec> > > > > 
+    struct HistoryStackEntry_< Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree< TopDown< ParentLinks<TSpec> > > > >
     {
         typedef Index<TText, IndexWotd<WotdOriginal> >    TIndex;
         typedef typename Size<TIndex>::Type                TSize;
@@ -391,16 +391,16 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 
 
     template < typename TText, typename TSpec >
-    inline void 
-    _historyPush(Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree< TopDown<TSpec> > > &it) 
+    inline void
+    _historyPush(Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree< TopDown<TSpec> > > &it)
     {
         it._parentDesc = value(it);
         value(it).parentRepLen += parentEdgeLength(it);
     }
 
     template < typename TText, typename TIndexSpec, typename TSpec >
-    inline void 
-    _historyPush(Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree< TopDown<TSpec> > > &it) 
+    inline void
+    _historyPush(Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree< TopDown<TSpec> > > &it)
     {
         it._parentDesc = value(it);
         value(it).parentRepLen += parentEdgeLength(it);
@@ -408,8 +408,8 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     }
 
     template < typename TText, typename TSpec >
-    inline void 
-    _historyPush(Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree< TopDown< ParentLinks<TSpec> > > > &it) 
+    inline void
+    _historyPush(Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree< TopDown< ParentLinks<TSpec> > > > &it)
     {
         typedef typename Size< Index<TText, IndexWotd<WotdOriginal> > >::Type TSize;
         TSize edgeLen = parentEdgeLength(it);
@@ -419,8 +419,8 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     }
 
     template < typename TText, typename TIndexSpec, typename TSpec >
-    inline void 
-    _historyPush(Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree< TopDown< ParentLinks<TSpec> > > > &it) 
+    inline void
+    _historyPush(Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree< TopDown< ParentLinks<TSpec> > > > &it)
     {
         typedef typename Size< Index<TText, IndexWotd<TIndexSpec> > >::Type TSize;
         TSize edgeLen = parentEdgeLength(it);
@@ -453,28 +453,28 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 */
     template < typename TSize >
     inline typename Id< VertexWotdOriginal_<TSize> const >::Type
-    _getId(VertexWotdOriginal_<TSize> const &desc) 
+    _getId(VertexWotdOriginal_<TSize> const &desc)
     {
         return desc.node;
     }
 
     template < typename TSize >
     inline typename Id< VertexWotdOriginal_<TSize> >::Type
-    _getId(VertexWotdOriginal_<TSize> &desc) 
+    _getId(VertexWotdOriginal_<TSize> &desc)
     {
         return _getId(const_cast<VertexWotdOriginal_<TSize> const &>(desc));
     }
 
     template < typename TSize >
     inline typename Id< VertexWotdModified_<TSize> const >::Type
-    _getId(VertexWotdModified_<TSize> const &desc) 
+    _getId(VertexWotdModified_<TSize> const &desc)
     {
         return desc.node;
     }
 
     template < typename TSize >
     inline typename Id< VertexWotdModified_<TSize> >::Type
-    _getId(VertexWotdModified_<TSize> &desc) 
+    _getId(VertexWotdModified_<TSize> &desc)
     {
         return _getId(const_cast<VertexWotdModified_<TSize> const &>(desc));
     }
@@ -490,7 +490,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     template < typename TSize >
     inline bool _isRoot(VertexWotdModified_<TSize> const &value)
     {
-        return value.node == 0; 
+        return value.node == 0;
     }
 
     // is this a leaf? (including empty $-edges)
@@ -578,7 +578,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     template < typename TText, typename TIndexSpec, typename TSpec >
     inline typename Size< Index<TText, IndexWotd<TIndexSpec> > >::Type
     parentEdgeLength(Iter<
-        Index<TText, IndexWotd<TIndexSpec> >, 
+        Index<TText, IndexWotd<TIndexSpec> >,
         VSTree< TopDown<TSpec> > > const &it)
     {
         typedef Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree< TopDown<TSpec> > > TIter;
@@ -588,7 +588,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     template < typename TText, typename TIndexSpec, typename TSpec >
     inline typename Size< Index<TText, IndexWotd<TIndexSpec> > >::Type
     parentRepLength(Iter<
-        Index<TText, IndexWotd<TIndexSpec> >, 
+        Index<TText, IndexWotd<TIndexSpec> >,
         VSTree< TopDown<TSpec> > > const &it)
     {
         return value(it).parentRepLen;
@@ -597,7 +597,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     template < typename TText, typename TIndexSpec, typename TSpec >
     inline typename Size< Index<TText, IndexWotd<TIndexSpec> > >::Type
     parentRepLength(Iter<
-        Index<TText, IndexWotd<TIndexSpec> >, 
+        Index<TText, IndexWotd<TIndexSpec> >,
         VSTree< TopDown< ParentLinks<TSpec> > > > const &it)
     {
         return value(it).parentRepLen;
@@ -606,8 +606,8 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     template < typename TText, typename TIndexSpec, typename TSpec >
     inline typename Size< Index<TText, IndexWotd<TIndexSpec> > >::Type
     repLength(Iter<
-        Index<TText, IndexWotd<TIndexSpec> >, 
-        VSTree< TopDown<TSpec> > > const &it) 
+        Index<TText, IndexWotd<TIndexSpec> >,
+        VSTree< TopDown<TSpec> > > const &it)
     {
         return parentRepLength(it) + parentEdgeLength(it);
     }
@@ -615,8 +615,8 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 
     // parentEdgeLabel - ORIGINAL VERSION (doesn't work if TText is a StringSet)
     template < typename TText, typename TSpec >
-    inline typename Infix< typename Fibre<Index<TText, IndexWotd<WotdOriginal> >, EsaText>::Type const >::Type 
-    parentEdgeLabel(Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree< TopDown<TSpec> > > const &it) 
+    inline typename Infix< typename Fibre<Index<TText, IndexWotd<WotdOriginal> >, EsaText>::Type const >::Type
+    parentEdgeLabel(Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree< TopDown<TSpec> > > const &it)
     {
         typedef Index<TText, IndexWotd<WotdOriginal> >    TIndex;
         typedef typename Size<TIndex>::Type                TSize;
@@ -633,14 +633,14 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 
     // getOccurrence - ORIGINAL VERSION
     template < typename TText, typename TSpec >
-    inline typename SAValue<Index<TText, IndexWotd<WotdOriginal> > >::Type 
+    inline typename SAValue<Index<TText, IndexWotd<WotdOriginal> > >::Type
     getOccurrence(Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree<TSpec> > const &it) {
         return _getNodeLP(container(it), value(it).node) - value(it).parentRepLen;
     }
 
     template < typename TText, typename TIndexSpec, typename TSpec >
     inline bool
-    emptyParentEdge(Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree<TopDown<TSpec> > > const &it) 
+    emptyParentEdge(Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree<TopDown<TSpec> > > const &it)
     {
         typedef Index<TText, IndexWotd<TIndexSpec> > TIndex;
 
@@ -653,7 +653,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     // to avoid ambiguity
     template < typename TText, typename TIndexSpec, typename TSpec >
     inline bool
-    emptyParentEdge(Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree<TopDown<ParentLinks<TSpec> > > > const &it) 
+    emptyParentEdge(Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree<TopDown<ParentLinks<TSpec> > > > const &it)
     {
         typedef Index<TText, IndexWotd<TIndexSpec> > TIndex;
 
@@ -666,10 +666,10 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 
 
     template < typename TText, typename TSpec >
-    inline void 
+    inline void
     goRoot(Iter<
-        Index<TText, IndexWotd<WotdOriginal> >, 
-        VSTree<TSpec> > &it) 
+        Index<TText, IndexWotd<WotdOriginal> >,
+        VSTree<TSpec> > &it)
     {
         _historyClear(it);
         value(it).node = 0;            // start in root node (first entry in dir)
@@ -678,10 +678,10 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     }
 
     template < typename TText, typename TIndexSpec, typename TSpec >
-    inline void 
+    inline void
     goRoot(Iter<
-        Index<TText, IndexWotd<TIndexSpec> >, 
-        VSTree<TSpec> > &it) 
+        Index<TText, IndexWotd<TIndexSpec> >,
+        VSTree<TSpec> > &it)
     {
         _historyClear(it);
         value(it).range.i1 = 0;        // start in root node with range (0,infty)
@@ -692,23 +692,23 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     }
 
     template < typename TText, typename TSpec >
-    inline bool atEnd(Iter<Index<TText, IndexWotd<WotdOriginal> >, VSTree<TSpec> > &it) 
+    inline bool atEnd(Iter<Index<TText, IndexWotd<WotdOriginal> >, VSTree<TSpec> > &it)
     {
         return _isSizeInval(value(it).node);
     }
 
     template < typename TText, typename TSpec >
-    inline bool atEnd(Iter<Index<TText, IndexWotd<WotdOriginal> >, VSTree<TSpec> > const &it) 
+    inline bool atEnd(Iter<Index<TText, IndexWotd<WotdOriginal> >, VSTree<TSpec> > const &it)
     {
         return _isSizeInval(value(it).node);
     }
 
-        
+
     // adjust iterator's right border of SA range
     template < typename TText, typename TSpec >
     inline void
     _adjustRightBorder(
-        Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree< TopDown<TSpec> > > &) 
+        Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree< TopDown<TSpec> > > &)
     {}
 
     template < typename TText, typename TIndexSpec, typename TSpec >
@@ -736,7 +736,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 
     // go down the leftmost edge (including empty $-edges)
     template < typename TText, typename TSpec, typename TDfsOrder, typename THideEmptyEdges >
-    inline bool 
+    inline bool
     _goDown(
         Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree< TopDown<TSpec> > > &it,
         VSTreeIteratorTraits<TDfsOrder, THideEmptyEdges> const)
@@ -759,7 +759,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
         value(it).node = childNode & index.BITMASK1;
         value(it).edgeLen = -1;
 
-        // go right if parent edge is empty 
+        // go right if parent edge is empty
         // or hull predicate is false
         if ((THideEmptyEdges::VALUE && emptyParentEdge(it)) || !nodeHullPredicate(it))
             if (!goRight(it)) {
@@ -772,7 +772,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 
     // go down the leftmost edge (excluding empty $-edges)
     template < typename TText, typename TIndexSpec, typename TSpec, typename TDfsOrder, typename THideEmptyEdges >
-    inline bool 
+    inline bool
     _goDown(
         Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree< TopDown<TSpec> > > &it,
         VSTreeIteratorTraits<TDfsOrder, THideEmptyEdges> const)
@@ -808,10 +808,10 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 
     // go right to the lexic. next sibling
     template < typename TText, typename TSpec, typename TDfsOrder, typename THideEmptyEdges >
-    inline bool 
+    inline bool
     _goRight(
         Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree< TopDown<TSpec> > > &it,
-        VSTreeIteratorTraits<TDfsOrder, THideEmptyEdges> const) 
+        VSTreeIteratorTraits<TDfsOrder, THideEmptyEdges> const)
     {
         typedef Index<TText, IndexWotd<WotdOriginal> >    TIndex;
         typedef typename Size<TIndex>::Type                TSize;
@@ -832,10 +832,10 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     }
 
     template < typename TText, typename TIndexSpec, typename TSpec, typename TDfsOrder, typename THideEmptyEdges >
-    inline bool 
+    inline bool
     _goRight(
         Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree< TopDown<TSpec> > > &it,
-        VSTreeIteratorTraits<TDfsOrder, THideEmptyEdges> const) 
+        VSTreeIteratorTraits<TDfsOrder, THideEmptyEdges> const)
     {
         typedef Index<TText, IndexWotd<TIndexSpec> >    TIndex;
         typedef typename Size<TIndex>::Type                TSize;
@@ -859,8 +859,8 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     // go up one edge (returns false if in root node)
     // can be used at most once, as no history stack is available
     template < typename TText, typename TWotdSpec, typename TSpec >
-    inline bool 
-    _goUp(Iter< Index<TText, IndexWotd<TWotdSpec> >, VSTree< TopDown<TSpec> > > &it) 
+    inline bool
+    _goUp(Iter< Index<TText, IndexWotd<TWotdSpec> >, VSTree< TopDown<TSpec> > > &it)
     {
         if (!isRoot(it)) {
             value(it) = it._parentDesc;
@@ -871,8 +871,8 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 
     // go up one edge (returns false if in root node)
     template < typename TText, typename TSpec >
-    inline bool 
-    _goUp(Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree< TopDown< ParentLinks<TSpec> > > > &it) 
+    inline bool
+    _goUp(Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree< TopDown< ParentLinks<TSpec> > > > &it)
     {
         typedef typename Size< Index<TText, IndexWotd<WotdOriginal> > >::Type TSize;
 
@@ -888,12 +888,12 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     }
 
     template < typename TText, typename TIndexSpec, typename TSpec >
-    inline bool 
-    _goUp(Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree< TopDown< ParentLinks<TSpec> > > > &it) 
+    inline bool
+    _goUp(Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree< TopDown< ParentLinks<TSpec> > > > &it)
     {
         typedef typename Size< Index<TText, IndexWotd<TIndexSpec> > >::Type TSize;
 
-        if (!empty(it.history)) 
+        if (!empty(it.history))
         {
             HistoryStackWotdModified_<TSize> const &entry = back(it.history);
             value(it).node = entry.node;
@@ -911,7 +911,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     // return vertex descriptor of parent's node
     template < typename TText, typename TSpec >
     inline typename VertexDescriptor< Index<TText, IndexWotd<WotdOriginal> > >::Type
-    nodeUp(Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree< TopDown< ParentLinks<TSpec> > > > const &it) 
+    nodeUp(Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree< TopDown< ParentLinks<TSpec> > > > const &it)
     {
         typedef Index<TText, IndexWotd<WotdOriginal> > TIndex;
         typedef typename Size<TIndex>::Type TSize;
@@ -934,7 +934,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     // return vertex descriptor of parent's node
     template < typename TText, typename TIndexSpec, typename TSpec >
     inline typename VertexDescriptor< Index<TText, IndexWotd<TIndexSpec> > >::Type
-    nodeUp(Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree< TopDown< ParentLinks<TSpec> > > > const &it) 
+    nodeUp(Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree< TopDown< ParentLinks<TSpec> > > > const &it)
     {
         typedef Index<TText, IndexWotd<TIndexSpec> > TIndex;
         typedef typename Size<TIndex>::Type TSize;
@@ -975,7 +975,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     {
         typedef typename Iterator<TText const, Standard>::Type TTextIterator;
 
-        for(unsigned seqNo = 0; seqNo < length(stringSet); ++seqNo) 
+        for(unsigned seqNo = 0; seqNo < length(stringSet); ++seqNo)
         {
             TText const &text = value(stringSet, seqNo);
             TTextIterator itText = begin(text, Standard());
@@ -989,8 +989,8 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     template < typename TBuckets, typename TText, typename TSA, typename TSize >
     inline typename Size<TText>::Type
     _wotdCountCharsWotdOriginal(
-        TBuckets &buckets, 
-        TText const &text, 
+        TBuckets &buckets,
+        TText const &text,
         TSA &sa,
         TSize prefixLen)
     {
@@ -1004,7 +1004,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 
         TTextSize sentinels = 0;
         TTextSize textLength = length(text);
-        for (; itSA != itSAEnd; ++itSA) 
+        for (; itSA != itSAEnd; ++itSA)
         {
             // add prefix on entries in sa
             TTextSize saValue = (*itSA += prefixLen);
@@ -1019,8 +1019,8 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     template < typename TBuckets, typename TText, typename TSA, typename TSize >
     inline typename Size<TText>::Type
     _wotdCountChars(
-        TBuckets &buckets, 
-        TText const &text, 
+        TBuckets &buckets,
+        TText const &text,
         TSA const &sa,
         TSize prefixLen)
     {
@@ -1034,7 +1034,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 
         TTextSize sentinels = 0;
         TTextSize textLength = length(text) - prefixLen;
-        for (; itSA != itSAEnd; ++itSA) 
+        for (; itSA != itSAEnd; ++itSA)
         {
             TTextSize saValue = *itSA;
             if (textLength > saValue)
@@ -1045,16 +1045,16 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
         return sentinels;
     }
 
-    template < 
-        typename TBuckets, 
-        typename TText, 
-        typename TSpec, 
-        typename TSA, 
-        typename TSize 
+    template <
+        typename TBuckets,
+        typename TText,
+        typename TSpec,
+        typename TSA,
+        typename TSize
     >
     inline typename Size<TText>::Type
     _wotdCountChars(
-        TBuckets &buckets, 
+        TBuckets &buckets,
         StringSet<TText, TSpec> const &stringSet,
         TSA const &sa,
         TSize prefixLen)
@@ -1074,7 +1074,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
         TTextSize textLength = 0;
         unsigned lastSeqSeen = (unsigned)-1;
         Pair<unsigned, TTextSize> lPos;
-        for (; itSA != itSAEnd; ++itSA) 
+        for (; itSA != itSAEnd; ++itSA)
         {
             posLocalize(lPos, *itSA, stringSetLimits(stringSet));
             if (lastSeqSeen != getSeqNo(lPos))
@@ -1136,14 +1136,14 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
  * @fn IndexWotd#createWotdIndex
  * @headerfile <seqan/index.h>
  * @brief Builds a the WOTD index.
- * 
+ *
  * @signature void createWotdIndex(sa, dir, text);
- * 
- * @param[out] sa  The resulting list in which all <i>q</i>-grams are sorted alphabetically. 
+ *
+ * @param[out] sa  The resulting list in which all <i>q</i>-grams are sorted alphabetically.
  * @param[out] dir The resulting array that indicates at which position in index the corresponding <i>q</i>-grams
  *                 can be found.
  * @param[in] text The sequence. Types: @link ContainerConcept @endlink
- * 
+ *
  * The resulting <tt>index</tt> contains the sorted list of qgrams.  For each possible <i>q</i>-gram pos contains
  * the first position in index that corresponds to this <i>q</i>-gram.
  */
@@ -1161,7 +1161,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
         typedef typename Iterator<TSA, Standard>::Type            TSAIterator;
         typedef typename Iterator<TCounter, Standard>::Type        TCntIterator;
         typedef typename Size<TText>::Type                        TSize;
-        
+
         TText const &text = indexText(index);
         TCounter &occ = index.tempOcc;
         TCounter &bound = index.tempBound;
@@ -1220,7 +1220,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
         TSize requiredSize = _wotdCummulativeSum(bound, occ);
 
         // 4. fill suffix array
-        for(unsigned seqNo = 0; seqNo < length(stringSet); ++seqNo) 
+        for(unsigned seqNo = 0; seqNo < length(stringSet); ++seqNo)
         {
             TSA &sa = indexSA(index);
             TSAIterator saBeg = begin(sa, Standard());
@@ -1233,7 +1233,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
             TText const &text = value(stringSet, seqNo);
             TTextIterator itText = begin(text, Standard());
             TTextIterator itTextEnd = end(text, Standard());
-            for(; itText != itTextEnd; ++itText) 
+            for(; itText != itTextEnd; ++itText)
             {
                 *(saBeg + (*(boundBeg + ordValue(getValue(itText))))++) = localPos;
                 assignValueI2(localPos, getValueI2(localPos) + 1);
@@ -1255,7 +1255,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     template < typename TText, typename TBeginPos, typename TEndPos, typename TSize >
     TSize _sortWotdBucket(
         Index<TText, IndexWotd<WotdOriginal> > &index,
-        TBeginPos left, 
+        TBeginPos left,
         TEndPos right,
         TSize prefixLen)
     {
@@ -1369,7 +1369,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     template < typename TIndex, typename TBeginPos, typename TEndPos, typename TSize >
     TSize _sortWotdBucket(
         TIndex &index,
-        TBeginPos left, 
+        TBeginPos left,
         TEndPos right,
         TSize prefixLen)
     {
@@ -1435,7 +1435,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     template < typename TText, typename TSpec, typename TIndexSpec, typename TBeginPos, typename TEndPos, typename TSize >
     TSize _sortWotdBucket(
         Index<StringSet<TText, TSpec>, TIndexSpec> &index,
-        TBeginPos left, 
+        TBeginPos left,
         TEndPos right,
         TSize prefixLen)
     {
@@ -1518,7 +1518,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 
 
     template < typename TSA, typename TText >
-    typename Size<TText>::Type 
+    typename Size<TText>::Type
     _bucketLcp(TSA const &sa, TText const &text)
     {
         typedef typename Iterator<TText const, Standard>::Type    TTextIterator;
@@ -1527,7 +1527,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
         typedef typename Size<TText>::Type                        TTextSize;
 
         TTextSize prefixLen = 0;
-        
+
         if (length(sa) < 2) return prefixLen;
 
         TTextIterator itText = begin(text, Standard());
@@ -1551,7 +1551,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     }
 
     template < typename TSA, typename TText, typename TSize >
-    typename Size<TText>::Type 
+    typename Size<TText>::Type
     _bucketLcp(TSA const &sa, TText const &text, TSize prefixLen)
     {
         typedef typename Iterator<TText const, Standard>::Type    TTextIterator;
@@ -1582,7 +1582,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     }
 
     template < typename TSA, typename TText, typename TSpec, typename TSize >
-    typename Size<TText>::Type 
+    typename Size<TText>::Type
     _bucketLcp(TSA const &sa, StringSet<TText, TSpec> const &stringSet, TSize prefixLen)
     {
         typedef typename Iterator<TText const, Standard>::Type    TTextIterator;
@@ -1632,7 +1632,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     template <typename TText, typename TSpec, typename TPos>
     inline TPos
     _getNodeLP(
-        Index<TText, IndexWotd<TSpec> > const &index, 
+        Index<TText, IndexWotd<TSpec> > const &index,
         TPos pos)
     {
         TPos w0 = dirAt(pos, index);
@@ -1646,10 +1646,10 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
             return w0 & index.BITMASK0;
     }
 
-    // store buckets into directory 
+    // store buckets into directory
     // ORIGINAL VERSION: storing SA entries and topology links in Dir
     template <typename TText, typename TPos>
-    inline void 
+    inline void
     _storeWotdChildren(
         Index<TText, IndexWotd<WotdOriginal> > &index,
         TPos dirOfs)
@@ -1707,7 +1707,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     // store buckets into directory
     // MODIFIED VERSION: storing SA links and topology links in Dir
     template <typename TText, typename TSpec, typename TSize>
-    inline void 
+    inline void
     _storeWotdChildren(
         Index<TText, IndexWotd<TSpec> > &index,
         TSize dirOfs,
@@ -1735,7 +1735,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
         if (index.sentinelOcc != 0)
         {
             if (index.sentinelOcc > 1 && index.interSentinelNodes)    // occurs on multiseqs
-            { 
+            {
                 itPrev = itDir;
                 *itDir = index.sentinelBound - index.sentinelOcc;    ++itDir;
                 *itDir = index.sentinelBound | index.UNEVALUATED;    ++itDir;
@@ -1769,7 +1769,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 
 
     template < typename TText, typename TSpec >
-    inline typename Size< Index<TText, IndexWotd<WotdOriginal> > >::Type 
+    inline typename Size< Index<TText, IndexWotd<WotdOriginal> > >::Type
     _wotdEvaluate(Iter< Index<TText, IndexWotd<WotdOriginal> >, VSTree<TSpec> > const &it)
     {
         typedef Index<TText, IndexWotd<WotdOriginal> >    TIndex;
@@ -1787,9 +1787,9 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
             TSize dst = length(indexDir(index));
 
             TSize size = _sortWotdBucket(
-                index, 
-                w0 & index.BITMASK0, 
-                w1 & index.BITMASK1, 
+                index,
+                w0 & index.BITMASK0,
+                w1 & index.BITMASK1,
                 parentEdgeLength(it));
 
             resize(indexDir(index), dst + size, Generous());
@@ -1815,7 +1815,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     }
 
     template < typename TText, typename TIndexSpec, typename TSpec >
-    inline typename Size< Index<TText, IndexWotd<TIndexSpec> > >::Type 
+    inline typename Size< Index<TText, IndexWotd<TIndexSpec> > >::Type
     _wotdEvaluate(Iter< Index<TText, IndexWotd<TIndexSpec> >, VSTree<TSpec> > const &it)
     {
         typedef Index<TText, IndexWotd<TIndexSpec> >    TIndex;
@@ -1826,17 +1826,17 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
         TSize w1 = dirAt(pos + 1, index);
 
         // test for evaluation
-        if (w1 & index.UNEVALUATED) 
+        if (w1 & index.UNEVALUATED)
         {
             TSize dst = length(indexDir(index));
 
             TSize size = _sortWotdBucket(
-                index, 
-                value(it).range.i1, 
-                w1 & index.BITMASK1, 
+                index,
+                value(it).range.i1,
+                w1 & index.BITMASK1,
                 repLength(it));
 /*
-            if (globalDumpFlag) 
+            if (globalDumpFlag)
             {
                 std::cerr << '"' << representative(it) << '"' << std::endl;
                 for (int i=0;i<length(getOccurrences(it));++i)
@@ -1939,7 +1939,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     inline bool
     _getNodeByChar(
         Iter< Index<TText, IndexWotd<TSpec> >, VSTree<TSpec> > const &it,
-        TValue c, 
+        TValue c,
         typename VertexDescriptor< Index<TText, IndexWotd<TSpec> > >::Type &childDesc)
     {
         typedef Index<TText, IndexWotd<TSpec> >            TIndex;
@@ -1964,7 +1964,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 */
 
 //////////////////////////////////////////////////////////////////////////////
-// interface for automatic index creation 
+// interface for automatic index creation
 
     template <typename TText, typename TSpec>
     inline void _wotdCreateFirstLevel(Index<TText, IndexWotd<TSpec> > &index)
@@ -1985,8 +1985,8 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
         {
             size = _sortWotdBucket(index, 0, length(indexSA(index)), 0);
         }
-        
-        if (size > 0) 
+
+        if (size > 0)
         {
             resize(indexDir(index), size + 2, Generous());
             _storeWotdChildren(index, 2, 0);
@@ -2033,7 +2033,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 
     template < typename TText, typename TSpec >
     inline bool open(
-        Index< TText, IndexWotd<TSpec> > &index, 
+        Index< TText, IndexWotd<TSpec> > &index,
         const char *fileName,
         int openMode)
     {
@@ -2043,7 +2043,7 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
         String<char> name;
 
         name = fileName;    append(name, ".txt");
-        if ((!open(getFibre(index, WotdText()), toCString(name), openMode)) && 
+        if ((!open(getFibre(index, WotdText()), toCString(name), openMode)) &&
             (!open(getFibre(index, WotdText()), fileName, openMode))) return false;
 
         name = fileName;    append(name, ".sa");
@@ -2062,8 +2062,8 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
     }
     template < typename TText, typename TSpec >
     inline bool open(
-        Index< TText, IndexWotd<TSpec> > &index, 
-        const char *fileName) 
+        Index< TText, IndexWotd<TSpec> > &index,
+        const char *fileName)
     {
         return open(index, fileName, OPEN_RDONLY);
     }
@@ -2074,14 +2074,14 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
 
     template < typename TText, typename TSpec >
     inline bool save(
-        Index< TText, IndexWotd<TSpec> > &index, 
+        Index< TText, IndexWotd<TSpec> > &index,
         const char *fileName,
         int openMode)
     {
         String<char> name;
 
         name = fileName;    append(name, ".txt");
-        if ((!save(getFibre(index, WotdText()), toCString(name), openMode)) && 
+        if ((!save(getFibre(index, WotdText()), toCString(name), openMode)) &&
             (!save(getFibre(index, WotdText()), fileName, openMode))) return false;
 
         name = fileName;    append(name, ".sa");
@@ -2089,12 +2089,12 @@ SEQAN_CONCEPT_IMPL((Index<TText, IndexWotd<TSpec> > const), (StringTreeConcept))
         name = fileName;    append(name, ".dir");
 
         if (!save(getFibre(index, WotdDir()), toCString(name), openMode)) return false;
-        
+
         return true;
     }
     template < typename TText, typename TSpec >
     inline bool save(
-        Index< TText, IndexWotd<TSpec> > &index, 
+        Index< TText, IndexWotd<TSpec> > &index,
         const char *fileName)
     {
         return save(index, fileName, OPEN_WRONLY | OPEN_CREATE);

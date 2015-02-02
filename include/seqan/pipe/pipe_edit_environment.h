@@ -49,19 +49,19 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends Pipe
  * @headerfile <seqan/pipe.h>
  * @brief Outputs tuples of the <tt>tupleLen</tt> consecutive elements of the input stream.
- * 
+ *
  * @signature template <typename TInput, unsigned TUPLE_LEN, bool OMIT_LAST>
  *            class Pipe<TInput, Tupler<TUPLE_LEN, OMIT_LAST> >;
- * 
+ *
  * @tparam OMIT_LAST Omit half filled tuples.  If <tt>true</tt>, the output stream is <tt>tupleLen-1</tt> elements
  *                   shorter than the input stream.  If <tt>false</tt>, the lengths are identical and the last
  *                   tuples are filled with blanks (default constructed elements) for undefined entries.
  * @tparam TInput    The type of the pipeline module this module reads from.
  * @tparam TUPLE_LEN The tuple length.The tuples contain elements <tt>in[i]in[i+1]...in[i+(tupleLen-1)]</tt>.
- * 
+ *
  * The output type is a @link Tuple @endlink of input elements and length <tt>tupleLen</tt> (i.e.
  * <tt>Tuple&lt;Value&lt;TInput&gt;::Type, tupleLen&gt;</tt>).
- * 
+ *
  * The tuples are sequences of the form <tt>in[i]in[i-1]in[i-2]..in[i-tupleLen+1]</tt>. For <tt>omitLast=false</tt>
  * <tt>i</tt> begins with 0 and for <tt>omitLast=true</tt> <tt>i</tt> begins with <tt>tupleLen-1</tt>.
  */
@@ -77,9 +77,9 @@ namespace SEQAN_NAMESPACE_MAIN
         TInput                      &in;
         typename Value<Pipe>::Type    tmp, orig;
         unsigned                    errorPos;        // position of substitution
-        unsigned                    character;        // replacement character 
-        unsigned                    skipChar;        // skip the original character 
-        
+        unsigned                    character;        // replacement character
+        unsigned                    skipChar;        // skip the original character
+
         Pipe(TInput& _in):
             in(_in) {}
 
@@ -93,7 +93,7 @@ namespace SEQAN_NAMESPACE_MAIN
                     // next replacement value
                     assignValue(tmp.i2, errorPos, (TValue) character);
                 else {
-                    // next error position                    
+                    // next error position
                     assignValue(tmp.i2, errorPos, orig.i2[errorPos]);
                     character = 0;
                     if (++errorPos < length(tmp.i2)) {
@@ -112,7 +112,7 @@ namespace SEQAN_NAMESPACE_MAIN
                     }
                 }
             // output the original tuple only once
-            } while ((errorPos > 0) && (character == skipChar)); 
+            } while ((errorPos > 0) && (character == skipChar));
 
             return *this;
         }
@@ -132,8 +132,8 @@ namespace SEQAN_NAMESPACE_MAIN
         TInput                      &in;
         typename Value<Pipe>::Type    tmp, orig, prev;
         unsigned                    errorPos;        // position of substitution
-        unsigned                    character;        // replacement character 
-        unsigned                    skipChar;        // skip the original character 
+        unsigned                    character;        // replacement character
+        unsigned                    skipChar;        // skip the original character
         TState                        state;
 
         Pipe(TInput& _in):
@@ -216,7 +216,7 @@ namespace SEQAN_NAMESPACE_MAIN
                     // next replacement value
                     assignValue(tmp.i2, errorPos, (TValue) character);
                 else {
-                    // next insert position                    
+                    // next insert position
                     assignValue(tmp.i2, errorPos, orig.i2[errorPos]);
                     character = 0;
                     if (++errorPos >= length(tmp.i2) - 1 && state == INSERT_) {
@@ -245,7 +245,7 @@ namespace SEQAN_NAMESPACE_MAIN
                     assignValue(tmp.i2, errorPos, (TValue) 0);
                 }
             default:;
-            }            
+            }
             return *this;
         }
     };
@@ -254,10 +254,10 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
     // global pipe functions
     template < typename TInput, unsigned STEP_SIZE >
-    inline bool 
+    inline bool
     control(
-        Pipe< TInput, EditEnvironment< Tag<HammingDistance_>, STEP_SIZE > > &me, 
-        ControlBeginRead const &command) 
+        Pipe< TInput, EditEnvironment< Tag<HammingDistance_>, STEP_SIZE > > &me,
+        ControlBeginRead const &command)
     {
         if (!control(me.in, command)) return false;
 
@@ -267,12 +267,12 @@ namespace SEQAN_NAMESPACE_MAIN
 
         return true;
     }
-    
+
     template < typename TInput, unsigned STEP_SIZE >
-    inline bool 
+    inline bool
     control(
-        Pipe< TInput, EditEnvironment< Tag<LevenshteinDistance_>, STEP_SIZE > > &me, 
-        ControlBeginRead const &command) 
+        Pipe< TInput, EditEnvironment< Tag<LevenshteinDistance_>, STEP_SIZE > > &me,
+        ControlBeginRead const &command)
     {
         if (!control(me.in, command)) return false;
 
@@ -296,21 +296,21 @@ namespace SEQAN_NAMESPACE_MAIN
 
         return true;
     }
-    
+
     template < typename TInput, unsigned STEP_SIZE >
-    inline bool 
+    inline bool
     control(
-        Pipe< TInput, EditEnvironment< Tag<LevenshteinDistance_>, STEP_SIZE > > &me, 
-        ControlEof const &) 
+        Pipe< TInput, EditEnvironment< Tag<LevenshteinDistance_>, STEP_SIZE > > &me,
+        ControlEof const &)
     {
         return me.state == me.Eof_;
     }
 
     template < typename TInput, unsigned STEP_SIZE >
-    inline bool 
+    inline bool
     control(
-        Pipe< TInput, EditEnvironment< Tag<LevenshteinDistance_>, STEP_SIZE > > &me, 
-        ControlEos const &) 
+        Pipe< TInput, EditEnvironment< Tag<LevenshteinDistance_>, STEP_SIZE > > &me,
+        ControlEos const &)
     {
         return me.state == me.Eof_ || me.state == me.INSERT_EOS;
     }
@@ -339,7 +339,7 @@ namespace SEQAN_NAMESPACE_MAIN
         // TODO: We run into problems when one sequence contains 1 or less tuples
         // length should be ommitted in future, but Pools or the skew algorithm needs to know the stream length
         if (length(me.in) >= seqs)
-            return 
+            return
                   (length(me.in) / STEP_SIZE)     * (1 + length(me.tmp.i2) * (alphabetSize - 1)) +            // substitutions and original
                  ((length(me.in) / STEP_SIZE) - seqs) * (length(me.tmp.i2) - 3) +                            // deletions
                 (((length(me.in) / STEP_SIZE) + seqs) * (length(me.tmp.i2) - 2) + 2 * seqs) * alphabetSize;    // insertions

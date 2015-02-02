@@ -187,7 +187,7 @@ beginPositionH(Seed<Simple, TConfig> const & seed)
 // ---------------------------------------------------------------------------
 
 template <typename TConfig, typename TPosition>
-inline void 
+inline void
 setBeginPositionH(Seed<Simple, TConfig> & seed, TPosition pos)
 {
     seed._beginPositionH = pos;
@@ -209,7 +209,7 @@ endPositionH(Seed<Simple, TConfig> const & seed)
 // ---------------------------------------------------------------------------
 
 template <typename TConfig, typename TPosition>
-inline void 
+inline void
 setEndPositionH(Seed<Simple, TConfig> & seed, TPosition pos)
 {
     seed._endPositionH = pos;
@@ -231,7 +231,7 @@ beginPositionV(Seed<Simple, TConfig> const & seed)
 // ---------------------------------------------------------------------------
 
 template <typename TConfig, typename TPosition>
-inline void 
+inline void
 setBeginPositionV(Seed<Simple, TConfig> & seed, TPosition pos)
 {
     seed._beginPositionV = pos;
@@ -253,7 +253,7 @@ endPositionV(Seed<Simple, TConfig> const & seed)
 // ---------------------------------------------------------------------------
 
 template <typename TConfig, typename TPosition>
-inline void 
+inline void
 setEndPositionV(Seed<Simple, TConfig> & seed, TPosition pos)
 {
     seed._endPositionV = pos;

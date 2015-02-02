@@ -54,15 +54,15 @@ struct SparseString;
 /*!
  * @defgroup SparseStringFibres Sparse String Fibres
  * @brief Tag to select a specific fibre of a @link FMIndex @endlink.
- * 
+ *
  * These tags can be used to get @link Fibre Fibres @endlink of a FM index.
- * 
+ *
  * @see Fibre
  * @see SparseString#getFibre
- * 
+ *
  * @tag SparseStringFibres#FibreValueString
  * @brief The String containing the stored values.
- * 
+ *
  * @tag SparseStringFibres#FibreIndicatorString
  * @brief The string storing for each position if a value different from a default value is stored.
  */
@@ -199,10 +199,10 @@ struct Iterator<SparseString<TFibreValues, TSpec> const, Rooted>:
  * @class SparseString
  * @headerfile <seqan/index.h>
  * @brief A string storing only a fraction of the values of the original string.
- * 
+ *
  * @signature template <typename TValueString, typename TSpec>
  *            class SparseString;
- * 
+ *
  * @tparam TSpec        The specialisation tag. Default: void.
  * @tparam TValueString The type of the @link String string @endlink containing the values.
  */
@@ -241,9 +241,9 @@ inline void _assignValueInValueString(SparseString<TFibreValues, TSpec> & string
  * @fn SparseString#clear
  * @headerfile <seqan/index.h>
  * @brief Resets the @link SparseString @endlink.
- * 
+ *
  * @signature void clear(sparseString);
- * 
+ *
  * @param[in,out] sparseString The @link SparseString @endlink to be cleared.
  */
 
@@ -262,10 +262,10 @@ inline void clear(SparseString<TFibreValues, TSpec> & string)
  * @fn SparseString#empty
  * @headerfile <seqan/index.h>
  * @brief Returns whether or not the @link SparseString @endlink is empty.
- * 
+ *
  * @signature bool empty(sparseString);
- * 
- * @param[in] sparseString The SparseString to be checked. 
+ *
+ * @param[in] sparseString The SparseString to be checked.
  *
  * @return bool <tt>true</tt> if there are no elements in the sparse string and <tt>false</tt> otherwise.
  */
@@ -304,11 +304,11 @@ assignValue(SparseString<TFibreValues, TSpec> & string, TPos pos, TValue value)
  * @fn SparseString#getValue
  * @headerfile <seqan/index.h>
  * @brief Returns the value of a SparseString.
- * 
+ *
  * @signature TValue getValue(sparseString, pos);
- * 
- * @param[in] sparseString The @link SparseString @endlink. 
- * @param[in] pos          The position at which a value should be assign to the sparse string. 
+ *
+ * @param[in] sparseString The @link SparseString @endlink.
+ * @param[in] pos          The position at which a value should be assign to the sparse string.
  *                         Types: @link UnsignedIntegerConcept @endlink
  *
  * @return TValue The type @link GetValue @endlink of @link SparseString @endlink is returned.
@@ -320,7 +320,7 @@ getValue(SparseString<TFibreValues, TSpec> & string, TPos pos)
 {
     if (_isContained(string, pos))
         return getValue(getFibre(string, FibreValues()), getRank(getFibre(string, FibreIndicators()), pos) - 1);
-    else 
+    else
         return DefaultValue<SparseString<TFibreValues, TSpec> >::VALUE;
 }
 
@@ -330,7 +330,7 @@ getValue(SparseString<TFibreValues, TSpec> const & string, TPos pos)
 {
     if (_isContained(string, pos))
         return getValue(getFibre(string, FibreValues()), getRank(getFibre(string, FibreIndicators()), pos) - 1);
-    else 
+    else
         return DefaultValue<SparseString<TFibreValues, TSpec> const>::VALUE;
 }
 
@@ -341,18 +341,18 @@ getValue(SparseString<TFibreValues, TSpec> const & string, TPos pos)
  * @fn SparseString#value
  * @headerfile <seqan/index.h>
  * @brief Returns the value of a @link SparseString @endlink.
- * 
+ *
  * @signature TReference value(sparseString, pos);
- * 
- * @param[in] sparseString The @link SparseString @endlink. 
- * @param[in] pos          The position at which a value should be assign to the sparse string. 
+ *
+ * @param[in] sparseString The @link SparseString @endlink.
+ * @param[in] pos          The position at which a value should be assign to the sparse string.
  *                         Types: @link UnsignedIntegerConcept @endlink
  *
  * @return TReference The type @link Reference @endlink of @link SparseString @endlink is returned.
  */
 
 template <typename TFibreValues, typename TSpec, typename TPos>
-SEQAN_HOST_DEVICE inline typename Reference<SparseString<TFibreValues, TSpec> >::Type 
+SEQAN_HOST_DEVICE inline typename Reference<SparseString<TFibreValues, TSpec> >::Type
 value(SparseString<TFibreValues, TSpec> & string, TPos pos)
 {
     return getValue(string, pos);
@@ -372,13 +372,13 @@ value(SparseString<TFibreValues, TSpec> const & string, TPos pos)
  * @fn SparseString#getFibre
  * @headerfile <seqan/index.h>
  * @brief Returns a specific fibre of a @link SparseString @endlink.
- * 
+ *
  * @signature TFibre getFibre(sparseString, fibreTag);
- * 
+ *
  * @param[in] sparseString The sparseString holding the fibre.
  * @param[in] fibreTag     A tag that identifies the @link Fibre @endlink. Types:
  *                         @link SparseStringFibres SparseString Fibres @endlink
- * 
+ *
  * @return TFibre A reference to the @link Fibre @endlink object.
  */
 
@@ -418,9 +418,9 @@ getFibre(SparseString<TFibreValues, TSpec> & sparseString, FibreIndicators)
  * @fn SparseString#length
  * @headerfile <seqan/index.h>
  * @brief Returns the number of elements in the @link SparseString @endlink.
- * 
+ *
  * @signature TSize length(sparseString);
- * 
+ *
  * @param[in] sparseString The sparse string suffix array.
  *
  * @return TSize The number of elements in the sparse string array. Types: The result of @link Size @endlink of the
@@ -463,9 +463,9 @@ length(SparseString<TFibreValues, TSpec> const & string)
  * @fn SparseString#resize
  * @headerfile <seqan/index.h>
  * @brief Resets the number of elements in the compressed suffix array.
- * 
+ *
  * @signature TSize resize(sparseString, newLength);
- * 
+ *
  * @param[in,out] sparseString The sparse string.
  * @param[in]     newLength    The number of elements which should be stored in the  sparse string.  Types:
  *                             @link UnsignedIntegerConcept @endlink.
@@ -494,9 +494,9 @@ resize(SparseString<TFibreValues, TSpec> & string, TSize size, Tag<TExpand> tag)
  * @fn SparseString#open
  * @headerfile <seqan/index.h>
  * @brief This functions open a sparse string from disk.
- * 
+ *
  * @signature bool open(string, fileName[, openMode]);
- * 
+ *
  * @param[in] string   The string to be opened. Types: SparseString
  * @param[in] fileName C-style character string containing the file name.
  * @param[in] openMode The combination of flags defining how the file should be
@@ -507,7 +507,7 @@ resize(SparseString<TFibreValues, TSpec> & string, TSize size, Tag<TExpand> tag)
  *                     <tt>OPEN_APPEND</tt>.  To circumvent problems, files are always
  *                     opened in binary mode.  Default: <tt>OPEN_RDWR | OPEN_CREATE |
  *                     OPEN_APPEND</tt>
- * 
+ *
  * @return bool <tt>true</tt> on success.
  */
 
@@ -545,13 +545,13 @@ inline bool open(SparseString<TFibreValues, TSpec> & sparseString, const char * 
 // ----------------------------------------------------------------------------
 /*!
  * @fn SparseString#save
- * 
+ *
  * @headerfile <seqan/index.h>
- * 
+ *
  * @brief This functions saves a sparse string to disk.
- * 
+ *
  * @signature bool save(string, fileName[, openMode]);
- * 
+ *
  * @param[in] string   The string to be saved.  Types: SparseString
  * @param[in] fileName C-style character string containing the file name.
  * @param[in] openMode The combination of flags defining how the file should be
@@ -562,7 +562,7 @@ inline bool open(SparseString<TFibreValues, TSpec> & sparseString, const char * 
  *                     <tt>OPEN_APPEND</tt>.  To circumvent problems, files are always
  *                     opened in binary mode.  Default: <tt>OPEN_RDWR | OPEN_CREATE |
  *                     OPEN_APPEND</tt>
- * 
+ *
  * @return bool <tt>true</tt> on success.
  */
 template <typename TFibreValues, typename TSpec>

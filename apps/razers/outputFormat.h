@@ -125,7 +125,7 @@ score(Score<TValue, Quality<TQualityString> > const & me,
     template <typename TReadMatch>
     struct LessGPosRNo : public ::std::binary_function < TReadMatch, TReadMatch, bool >
     {
-        inline bool operator() (TReadMatch const &a, TReadMatch const &b) const 
+        inline bool operator() (TReadMatch const &a, TReadMatch const &b) const
         {
             // genome position and orientation
             if (a.gseqNo < b.gseqNo) return true;
@@ -153,10 +153,10 @@ score(Score<TValue, Quality<TQualityString> > const & me,
 template <typename TErrDistr, typename TMatches, typename TReads, typename TGenomes, typename TOptions>
 inline unsigned
 getErrorDistribution(
-    TErrDistr &posError, 
-    TMatches &matches, 
-    TReads &reads, 
-    TGenomes &genomes, 
+    TErrDistr &posError,
+    TMatches &matches,
+    TReads &reads,
+    TGenomes &genomes,
     TOptions &options)
 {
     typename Iterator<TMatches, Standard>::Type    it = begin(matches, Standard());
@@ -164,7 +164,7 @@ getErrorDistribution(
 
     Dna5String genome;
     unsigned unique = 0;
-    for (; it != itEnd; ++it) 
+    for (; it != itEnd; ++it)
     {
         if ((*it).orientation == '-') continue;
 
@@ -174,7 +174,7 @@ getErrorDistribution(
             reverseComplement(genome);
         for (unsigned i = 0; i < length(posError) && i < length(read); ++i)
             if ((options.compMask[ordValue(genome[i])] & options.compMask[ordValue(read[i])]) == 0)
-                ++posError[i]; 
+                ++posError[i];
         ++unique;
     }
     return unique;
@@ -186,9 +186,9 @@ getErrorDistribution(
     TErrDistr &posError,
     TCount1 &insertions,
     TCount2 &deletions,
-    TMatches &matches, 
-    TReads &reads, 
-    TGenomes &genomes, 
+    TMatches &matches,
+    TReads &reads,
+    TGenomes &genomes,
     RazerSOptions<TSpec> &options)
 {
     typedef Align<String<Dna5>, ArrayGaps> TAlign;
@@ -208,7 +208,7 @@ getErrorDistribution(
     resize(rows(align), 2);
 
     unsigned unique = 0;
-    for (; it != itEnd; ++it) 
+    for (; it != itEnd; ++it)
     {
         if ((*it).orientation == '-') continue;
 
@@ -217,17 +217,17 @@ getErrorDistribution(
         if ((*it).orientation == 'R')
             reverseComplement(source(row(align, 1)));
         globalAlignment(align, scoreType);
-        
+
         TRow& row0 = row(align, 0);
         TRow& row1 = row(align, 1);
-        
+
         TPosition begin = beginPosition(cols(align));
         TPosition end = endPosition(cols(align));
-        
+
         TIter it0 = iter(row0, begin);
         TIter it1 = iter(row1, begin);
         TIter end0 = iter(row0, end);
-        
+
         unsigned pos = 0;
         for (; it0 != end0 && pos < length(posError); ++it0, ++it1)
         {
@@ -290,13 +290,13 @@ countCoocurrences(TMatches & matches, TCounts & cooc, TOptions & options)
     resize(cooc,maxSeedErrors+1,0);
     for (int i = 0; i < maxSeedErrors+1; ++i)
         cooc[i] = 1;
-    
+
     int count = 0;
     unsigned readNo = -1;
     int preEditDist = -1;
     typename Iterator<TMatches>::Type it = begin(matches,Standard());
     typename Iterator<TMatches>::Type itEnd = end(matches,Standard());
-    
+
     for(; it != itEnd; ++it)
     {
         if ((*it).rseqNo == readNo)
@@ -334,14 +334,14 @@ template<typename TAlign, typename TString, typename TIter>
 void
 getCigarLine(TAlign & align, TString & cigar, TString & mutations, TIter ali_it0, TIter ali_it0_stop, TIter ali_it1, TIter ali_it1_stop)
 {
-    
+
     typedef typename Source<TAlign>::Type TSource;
     typedef typename Iterator<TSource, Rooted>::Type TStringIterator;
 
 //     typedef typename Row<TAlign>::Type TRow;
 //     typedef typename Iterator<TRow, Rooted>::Type TAlignIterator;
 
-    TStringIterator readBase = begin(source(row(align,0))); 
+    TStringIterator readBase = begin(source(row(align,0)));
 
     int readPos = 0;
     bool first = true;
@@ -404,7 +404,7 @@ getCigarLine(TAlign & align, TString & cigar, TString & mutations, TIter ali_it0
         ++inserted;
     }
     if(inserted>0) cigar << inserted << "I";
-    
+
 }
 
 
@@ -417,23 +417,23 @@ void assignMappingQuality(TMatches &matches, TReads & reads, TCooc & cooc, TCoun
     typedef typename Value<TMatches>::Type                TMatch;
     typedef typename Iterator<TMatches, Standard>::Type        TIterator;
 
-    //matches are already sorted    
+    //matches are already sorted
     //::std::sort(
     //    begin(matches, Standard()),
-    //    end(matches, Standard()), 
+    //    end(matches, Standard()),
     //    LessRNoMQ<TMatch>());
-    
-    
+
+
     int maxSeedErrors = (int)(options.errorRate*options.artSeedLength)+1;
     unsigned readNo = -1;
-    
+
     TIterator it = begin(matches, Standard());
     TIterator itEnd = end(matches, Standard());
     TIterator dit = it;
 
     int bestQualSum, secondBestQualSum;
     int secondBestDist = -1 ,secondBestMatches = -1;
-    for (; it != itEnd; ++it) 
+    for (; it != itEnd; ++it)
     {
         if ((*it).orientation == '-') continue;
         bool mappingQualityFound = false;
@@ -442,7 +442,7 @@ void assignMappingQuality(TMatches &matches, TReads & reads, TCooc & cooc, TCoun
 
         readNo = (*it).rseqNo;
         bestQualSum = (*it).mScore;
-        
+
         if(++it!=itEnd && (*it).rseqNo==readNo)
         {
             secondBestQualSum = (*it).mScore;
@@ -476,7 +476,7 @@ void assignMappingQuality(TMatches &matches, TReads & reads, TCooc & cooc, TCoun
                 // lossrate 0.42 => -10 log10(0.42) = 4
                 int kPrimeLoss = 4; // options.kPrimeLoss; // bezieht sich auf 3 fehler in 28bp
                 qualTerm2 = kPrimeLoss + cooc[maxSeedErrors-kPrime];
-                
+
                 for(unsigned j = 0; j<options.artSeedLength; ++j)
                 {
                     int q = getQualityValue(reads[readNo][j]);//(int)((unsigned char)(reads[readNo][j])>>3);
@@ -492,7 +492,7 @@ void assignMappingQuality(TMatches &matches, TReads & reads, TCooc & cooc, TCoun
         if (!mappingQualityFound) mappingQuality = (qualTerm1<qualTerm2) ? qualTerm1:qualTerm2;
         if (mappingQuality < 0) mappingQuality = 0;
         (*it).mScore = mappingQuality;
-        
+
         *dit = *it;
     //    if(secondBestQualSum != -1000) ++it;
         ++dit;
@@ -589,7 +589,7 @@ void dumpMatches(
     if (lastPos == _readName.npos) lastPos = _readName.find_last_of('\\') + 1;
     if (lastPos == _readName.npos) lastPos = 0;
     CharString readName = _readName.substr(lastPos);
-    
+
 
     typedef Align<String<Dna5>, ArrayGaps> TAlign;
     TAlign align;
@@ -611,7 +611,7 @@ void dumpMatches(
         ::std::cerr << "Failed to open output file" << ::std::endl;
         return;
     }
-    
+
 #ifdef RAZERS_SPLICED
     //maskPairDuplicates(matches);
 #else
@@ -650,9 +650,9 @@ void dumpMatches(
         countCoocurrences(matches,cooc,options);    //coocurrence statistics are filled
         assignMappingQuality(matches,reads,cooc,stats,options);//mapping qualities are assigned and only one match per read is kept
     }
-    else     
+    else
 #endif
-    
+
 #ifdef RAZERS_MICRO_RNA
     if(options.microRNA)purgeAmbiguousRnaMatches(matches,options);
     else
@@ -670,33 +670,33 @@ void dumpMatches(
         case 0:
             ::std::sort(
                 begin(matches, Standard()),
-                end(matches, Standard()), 
+                end(matches, Standard()),
                 LessRNoGPos<TMatch>());
             break;
 
         case 1:
             ::std::sort(
                 begin(matches, Standard()),
-                end(matches, Standard()), 
+                end(matches, Standard()),
                 LessGPosRNo<TMatch>());
             break;
-            
+
     }
-    
+
     typename Iterator<TMatches, Standard>::Type    it = begin(matches, Standard());
     typename Iterator<TMatches, Standard>::Type    itEnd = end(matches, Standard());
-    
-    
+
+
     Dna5String gInf;
     char _sep_ = '\t';
     unsigned viewPosReadFirst = 0;
     unsigned viewPosReadLast  = 0;
 
-    switch (options.outputFormat) 
+    switch (options.outputFormat)
     {
         case 0:    // Razer Format
 //            _sep_ = ',';
-            for(; it != itEnd; ++it) 
+            for(; it != itEnd; ++it)
             {
                 unsigned    readLen = length(reads[(*it).rseqNo]);
                 double        percId = 100.0 * (1.0 - (double)(*it).editDist / (double)readLen);
@@ -735,7 +735,7 @@ void dumpMatches(
                         file.fill('0');
                         file << gnoToFileMap[(*it).gseqNo].first << '#' << ::std::setw(gzeros) << gnoToFileMap[(*it).gseqNo].second + 1;
                 }
-                
+
                 // get alignment to dump or to fix end coordinates
                 if (options.dumpAlignment || !options.hammingOnly)
                 {
@@ -752,7 +752,7 @@ void dumpMatches(
 #endif
                     if ((*it).orientation == 'R')
                         reverseComplement(source(row(align, 1)));
-                
+
                     globalAlignment(align, scoreType, AlignConfig<false,true,true,false>(), Gotoh());
 
                     // transform first and last read character to genomic positions
@@ -792,7 +792,7 @@ void dumpMatches(
 
         case 1:    // Enhanced Fasta Format
             _sep_ = ',';
-            for(unsigned matchReadNo = -1, matchReadCount = 0; it != itEnd; ++it) 
+            for(unsigned matchReadNo = -1, matchReadCount = 0; it != itEnd; ++it)
             {
                 unsigned    readLen = length(reads[(*it).rseqNo]);
                 double        percId = 100.0 * (1.0 - (double)(*it).editDist / (double)readLen);
@@ -813,7 +813,7 @@ void dumpMatches(
 
                 size_t left = fastaID.find_first_of('[');
                 size_t right = fastaID.find_last_of(']');
-                if (left != fastaID.npos && right != fastaID.npos && left < right) 
+                if (left != fastaID.npos && right != fastaID.npos && left < right)
                 {
                     fastaID.erase(right);
                     fastaID.erase(0, left + 1);
@@ -837,11 +837,11 @@ void dumpMatches(
                 else
                     // reverse strand (switch begin and end)
                     file << '>' << (*it).gEnd << _sep_ << ((*it).gBegin + options.positionFormat);
-                    
+
                 unsigned ambig = 0;
                 for (unsigned i = 0; i <= (*it).editDist && i < length(stats); ++i)
                     ambig += stats[i][(*it).rseqNo];
-                
+
                 file << "[id=" << id;
                 if (appendMatchId) file << "_" << matchReadCount;
                 file << ",fragId=" << fragId;
@@ -888,13 +888,13 @@ void dumpMatches(
                     unsigned bestMatches = 1;
                     if ((unsigned)(*it).editDist < length(stats))
                         bestMatches = stats[(*it).editDist][readNo];
-                    
+
                     if (bestMatches == 0) file << '?';    // impossible
                     if (bestMatches == 1) file << 'U';    // unique best match
                     if (bestMatches >  1) file << 'R';    // non-unique best matches
-                    
+
                     file << (*it).editDist << _sep_ << stats[0][readNo] << _sep_ << stats[1][readNo] << _sep_ << stats[2][readNo];
-                    
+
                     if (bestMatches == 1)
                     {
                         file << _sep_;
@@ -910,19 +910,19 @@ void dumpMatches(
                                 file.fill('0');
                                 file << gnoToFileMap[(*it).gseqNo].first << '#' << ::std::setw(gzeros) << gnoToFileMap[(*it).gseqNo].second + 1;
                         }
-                        
+
                         if ((*it).orientation == 'F')
                             file << _sep_ << ((*it).gBegin + options.positionFormat) << _sep_ << 'F' << _sep_ << "..";
                         else
                             file << _sep_ << (*it).gEnd << _sep_ << 'R' << _sep_ << "..";
 
-                        if ((*it).editDist > 0 && options.dumpAlignment && options.hammingOnly) 
+                        if ((*it).editDist > 0 && options.dumpAlignment && options.hammingOnly)
                         {
                             gInf = infix(genomes[(*it).gseqNo], (*it).gBegin, (*it).gEnd);
                             if ((*it).orientation == 'R')
                                 reverseComplement(gInf);
                             for (unsigned i = 0; i < length(gInf); ++i)
-                                if ((options.compMask[ordValue(reads[readNo][i])] & 
+                                if ((options.compMask[ordValue(reads[readNo][i])] &
                                     options.compMask[ordValue(gInf[i])]) == 0)
                                     file << _sep_ << i + 1 << gInf[i];
                         }
@@ -935,7 +935,7 @@ void dumpMatches(
         case 3: // Gff:  printf "$chr $name_$format read $pos %ld . $dir . ID=$col[0]$unique$rest\n",$pos+$len-1;
             for (unsigned filecount = 0; filecount < length(genomeFileNameList); ++filecount)
             {
-                // open genome file    
+                // open genome file
                 SeqFileIn gFile;
                 if (!open(gFile, toCString(genomeFileNameList[filecount])))
                 {
@@ -945,7 +945,7 @@ void dumpMatches(
 
                 CharString currId;
                 Dna5String currGenome;
-                
+
                 // iterate over genome sequences
                 for(; !atEnd(gFile); ++currSeqNo)
                 {
@@ -976,17 +976,17 @@ void dumpMatches(
                                 if( -(*it).pairScore < (int)length(stats))
                                     bestMatches = stats[-(*it).pairScore][currReadNo]/2;
                             }
-                            else 
+                            else
 #endif
                                 if (bestMatches == 0 && (unsigned)(*it).editDist < length(stats))
                                 bestMatches = stats[(*it).editDist][currReadNo];
 
                         }
-                        
+
                         bool suboptimal = false;
                         if (
 #ifdef RAZERS_DIRECT_MAQ_MAPPING
-                            !options.maqMapping && 
+                            !options.maqMapping &&
 #endif
                             (unsigned)(*it).editDist > 0
 #ifdef RAZERS_SPLICED
@@ -1004,7 +1004,7 @@ void dumpMatches(
                                 if (stats[d][currReadNo]>0) suboptimal=true;
                         }
 #endif
-                        
+
                         if (bestMatches !=  1)
                         {
                             unique = 0;
@@ -1013,7 +1013,7 @@ void dumpMatches(
                                 ++it;
                                 continue;
                             }
-                            
+
 //                            if((*it).mScore > 0) std::cout << (*it).mScore << "<-non uniq but score > 0\n";
 //                            ++it;
 //                            continue; // TODO: output non-unique matches (concerns maq mapping only)
@@ -1049,7 +1049,7 @@ void dumpMatches(
                                 file << gnoToFileMap[(*it).gseqNo].first << '#' << ::std::setw(gzeros) << gnoToFileMap[(*it).gseqNo].second + 1 << '\t';
                                 break;
                         }
-                        
+
                         // get alignment to dump or to fix end coordinates
                         if (!options.hammingOnly)
                         {
@@ -1086,7 +1086,7 @@ void dumpMatches(
                                 }
                             }
                         }
-                        
+
                         //file <<  options.runID << "_razers\tread";
                         file << "razers\tread";
                         file << '\t' << ((*it).gBegin + options.positionFormat) << '\t' << (*it).gEnd << '\t';
@@ -1102,14 +1102,14 @@ void dumpMatches(
                             file << '+' << '\t' << '.' <<'\t';
                         else
                             file << '-' << '\t' << '.' <<'\t';
-        
+
                         switch (options.readNaming)
                         {
                             // 0..filename is the read's Fasta id
                             case 0:
                                 file << "ID=" <<readIDs[currReadNo];
                                 break;
-                            
+
                             // 1..filename is the read filename + seqNo
                             case 1:
                                 file.fill('0');
@@ -1117,12 +1117,12 @@ void dumpMatches(
                                 break;
                         }
                         if(suboptimal) file << ";suboptimal";
-                        else 
+                        else
                         {
                             if(unique==1) file << ";unique";
                             if(unique==0) file << ";multi";
                         }
-                        
+
 #ifdef RAZERS_SPLICED
                         if(options.minMatchLen > 0)
                         {
@@ -1130,7 +1130,7 @@ void dumpMatches(
                             file << ";pairErr=" << -(*it).pairScore;
                         }
 #endif
-                        
+
                         if ((*it).editDist > 0)
                         {
                             if (options.hammingOnly)
@@ -1142,13 +1142,13 @@ void dumpMatches(
                                 file << ";cigar=" << readLen << "M";
                                 file << ";mutations=";
                                 for (unsigned i = 0; i < length(gInf); ++i)
-                                    if ((options.compMask[ordValue(readInf[i])] & 
+                                    if ((options.compMask[ordValue(readInf[i])] &
                                         options.compMask[ordValue(gInf[i])]) == 0)
                                     {
                                         if(first){ file << i + 1 << (Dna5)readInf[i]; first = false;}
                                         else file <<','<< i + 1 << (Dna5)readInf[i];
                                     }
-                                
+
                             }
                             else
                             {
@@ -1172,14 +1172,14 @@ void dumpMatches(
                                 getCigarLine(align,cigar,mutations,ali_it0,ali_it0stop,ali_it1,ali_it1stop);
                                 file << ";cigar="<<cigar.str();
                                 if(length(mutations.str())>0)
-                                    file << ";mutations=" << mutations.str();                                
+                                    file << ";mutations=" << mutations.str();
                             }
                         }
-                        
-                        
+
+
                         if(
 #ifdef RAZERS_DIRECT_MAQ_MAPPING
-                        options.maqMapping || 
+                        options.maqMapping ||
 #endif
                         options.fastaIdQual)
                         {
@@ -1219,7 +1219,7 @@ void dumpMatches(
             unsigned insertions = 0;
             unsigned deletions = 0;
             resize(posError, maxReadLength, 0);
-            
+
             if (options.hammingOnly)
                 unique = getErrorDistribution(posError, matches, reads, genomes, options);
             else

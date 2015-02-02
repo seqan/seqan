@@ -35,7 +35,7 @@
 
 namespace SEQAN_NAMESPACE_MAIN
 {
-    
+
     //////////////////////////////////////////////////////////////////////////////
     // more sophisticated algorithms on suffix trees of
     // multiple sequences (generalized suffix tree)
@@ -46,17 +46,17 @@ namespace SEQAN_NAMESPACE_MAIN
  * @class MumsIterator Mums Iterator
  * @extends BottomUpIterator
  * @headerfile <seqan/index.h>
- * 
+ *
  * @brief Iterator to search for all maximum unique matches.
- * 
+ *
  * @signature Iterator<TContainer, Mums>::Type;
  * @signature template <typename TContainer>
  *            class Iter<TContainer, VSTree< BottomUp<Mums> > >;
- * 
+ *
  * @tparam TContainer Type of an index that can be iterated with a bottom-up
  *                    iterator. Types: @link IndexEsa @endlink
  *
- * @note Instead of using the class Iter directly we recommend to use the result of the metafunction 
+ * @note Instead of using the class Iter directly we recommend to use the result of the metafunction
  *       Iterator&lt;TContainer, Mums>::Type (which is Iter&lt;TContainer, VSTree&lt; BottomUp&lt;Mums> > >).
  */
 /*!
@@ -83,7 +83,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template < typename TSTree >
     class Iter< TSTree, VSTree< BottomUp<Mums> > >:
-        public Iter< TSTree, VSTree< BottomUp<> > > 
+        public Iter< TSTree, VSTree< BottomUp<> > >
     {
     public:
         typedef Iter< TSTree, VSTree< BottomUp<> > >    TBase;
@@ -101,7 +101,7 @@ namespace SEQAN_NAMESPACE_MAIN
             minLength(0),
             seqCount(0)
         {}
-        
+
         Iter(TSTree &_tree):
             TBase(_tree),
             minLength(1),
@@ -136,31 +136,31 @@ namespace SEQAN_NAMESPACE_MAIN
     inline void goNext(Iter< TSTree, VSTree< BottomUp<Mums> > > &it) {
         do {
             goNext(it, PostorderEmptyEdges());
-        } while (!atEnd(it) && 
-                 !(    (countOccurrences(it) == it.seqCount) && 
+        } while (!atEnd(it) &&
+                 !(    (countOccurrences(it) == it.seqCount) &&
                     (repLength(it) >= it.minLength) &&
-                    isUnique(it, it.seqSet) && 
+                    isUnique(it, it.seqSet) &&
                     isLeftMaximal(it)) );
     }
 
 
 
-    
+
 /*!
  * @class MultiMemsIterator Multi Mems Iterator
  * @extends BottomUpIterator
  * @headerfile <seqan/index.h>
- * 
+ *
  * @brief Iterator to search for MultiMems.
- * 
+ *
  * @signature Iterator<TContainer, MultiMems>::Type;
  * @signature template <typename TContainer>
  *            class Iter<TContainer, VSTree< BottomUp<MultiMems> > >;
- * 
+ *
  * @tparam TContainer Type of an index that can be iterated with a bottom-up
  *                    iterator. Types: IndexEsa
  *
- * @note Instead of using the class Iter directly we recommend to use the result of the metafunction 
+ * @note Instead of using the class Iter directly we recommend to use the result of the metafunction
  *       Iterator&lt;TContainer, MultiMems&gt;::Type (which is Iter<TContainer, VSTree< BottomUp<MultiMems&gt; &gt; &gt;).
  */
 /*!
@@ -192,7 +192,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template < typename TSTree >
     class Iter< TSTree, VSTree< BottomUp<MultiMems> > >:
-        public Iter< TSTree, VSTree< BottomUp<> > > 
+        public Iter< TSTree, VSTree< BottomUp<> > >
     {
     public:
         typedef Iter< TSTree, VSTree< BottomUp<> > >    TBase;
@@ -202,7 +202,7 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef FractionMultiCompound_<TValue, TSize>    TMultiCompound;
         typedef String<TMultiCompound, Block<> >        TSetStack;
         typedef String<TSize>                            TPositionList;
-        
+
         typedef typename TMultiCompound::TSet            TSet;
         typedef typename Iterator<TSet>::Type            TSetIterator;
 
@@ -225,7 +225,7 @@ namespace SEQAN_NAMESPACE_MAIN
             maxSupport(0),
             canMerge(0)
         {}
-        
+
         Iter(TSTree &_index):
             TBase(_index, MinimalCtor()),
             minSupport(countSequences(_index)),
@@ -237,7 +237,7 @@ namespace SEQAN_NAMESPACE_MAIN
             indexRequire(_index, EsaBwt());
             resize(posList, length(_index));
 
-            if (!empty(indexSA(_index))) 
+            if (!empty(indexSA(_index)))
             {
                 TStackEntry e;
                 e.range.i1 = 0;
@@ -262,7 +262,7 @@ namespace SEQAN_NAMESPACE_MAIN
             indexRequire(_index, EsaBwt());
             resize(posList, length(_index));
 
-            if (!empty(indexSA(_index))) 
+            if (!empty(indexSA(_index)))
             {
                 TStackEntry e;
                 e.range.i1 = 0;
@@ -283,7 +283,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //____________________________________________________________________________
 
-        inline bool hasRepeats() 
+        inline bool hasRepeats()
         {
             if (length(setStack) < 2) return false;
 
@@ -321,7 +321,7 @@ namespace SEQAN_NAMESPACE_MAIN
             return false;
         }
 /*
-        inline TSize countRepeats() 
+        inline TSize countRepeats()
         {
             if (length(setStack) < 2) return 0;
 
@@ -378,7 +378,7 @@ namespace SEQAN_NAMESPACE_MAIN
     // add bwt partitions of child to parent node
     template < typename TSTree, typename TSpec, typename TValue, typename TSize >
     inline void _fractionMerge(
-        Iter<TSTree, VSTree< BottomUp<TSpec> > > &it, 
+        Iter<TSTree, VSTree< BottomUp<TSpec> > > &it,
         FractionMultiCompound_<TValue, TSize> &parent,
         FractionMultiCompound_<TValue, TSize> &child)
     {
@@ -401,7 +401,7 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template < typename TSTree >
-    inline void _dfsOnLeaf(Iter<TSTree, VSTree< BottomUp<MultiMems> > > &it) 
+    inline void _dfsOnLeaf(Iter<TSTree, VSTree< BottomUp<MultiMems> > > &it)
     {
         typedef Iter<TSTree, VSTree< BottomUp<> > > TBase;
         _dfsOnLeaf((TBase&)it);
@@ -430,7 +430,7 @@ namespace SEQAN_NAMESPACE_MAIN
             insert(
                 TFraction(
                     bwtAt(gPos, container(it)),
-                    TFractionHeader(gPos, gPos, 1)), 
+                    TFractionHeader(gPos, gPos, 1)),
                 compound.set);
         else
             compound.leftmost = TFractionHeader(gPos, gPos, 1);
@@ -465,20 +465,20 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     template <typename TSTree>
-    inline typename Size< MultiMem<TSTree> >::Type 
+    inline typename Size< MultiMem<TSTree> >::Type
     length(MultiMem<TSTree> const &repeat) {
         return repeat.it.countRepeats();
     }
 
 /*
     template <typename TSTree>
-    inline typename Iterator< MultiMem<TSTree> >::Type 
+    inline typename Iterator< MultiMem<TSTree> >::Type
     begin(MultiMem<TSTree> &repeat) {
         return Iterator< MultiMem<TSTree> >::Type(repeat.it);
     }
 
     template <typename TSTree>
-    inline typename Iterator< MultiMem<TSTree> const >::Type 
+    inline typename Iterator< MultiMem<TSTree> const >::Type
     begin(MultiMem<TSTree> const &repeat) {
         return Iterator< MultiMem<TSTree> >::Type(repeat.it);
     }
@@ -505,21 +505,21 @@ namespace SEQAN_NAMESPACE_MAIN
         bool        _atEnd;
         unsigned    seqCount;
         TPair        tmp;
-    
-        
+
+
         // for every sequence there is a SubState stucture
         // storing the current enumeration state
         // that is necessary to enumerate every combination
         // of left maximal multi match
 
-        struct SubState 
+        struct SubState
         {
             SubState            *prevState;
             TPositionList        *posList;
             TFractionCompound    *child, *parent;
             TSize                childPtr, parentPtr;            // per seq. suffix iterators
             TSetIterator        childFraction,  childBegin,  childEnd;
-            TSetIterator        parentFraction, parentBegin, parentEnd;    
+            TSetIterator        parentFraction, parentBegin, parentEnd;
             bool                leftmostChild, leftmostParent;    // use undef. bwt (leftmost) set
             TValue                leftChar;                        // are the keys of seq[1..i] equal?
             bool                charsEqual;
@@ -557,7 +557,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 leftChar = keyOf(parentFraction);
             }
 
-            inline void _firstChildFraction() 
+            inline void _firstChildFraction()
             {
                 childBegin        = childFraction        = begin(child->set);
                 childEnd        = end(child->set);
@@ -571,7 +571,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 }
             }
 
-            inline bool _nextParentFraction() 
+            inline bool _nextParentFraction()
             {
                 if (leftmostParent) return false;
 
@@ -587,7 +587,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 return true;
             }
 
-            inline bool _nextChildFraction() 
+            inline bool _nextChildFraction()
             {
                 if (leftmostChild) return false;
 
@@ -604,7 +604,7 @@ namespace SEQAN_NAMESPACE_MAIN
             }
 
             // single per-sequence enumeration step
-            inline bool _outerStep() 
+            inline bool _outerStep()
             {
                 if (!_nextChildFraction()) {
                     _firstChildFraction();
@@ -625,7 +625,7 @@ namespace SEQAN_NAMESPACE_MAIN
             _atEnd(true),
             seqCount(0)
         {}
-        
+
         inline Iter(Iter<TSTree, VSTree<BottomUp<MultiMems> > > const &_maxIt):
             mmemIt(&_maxIt),
             seqCount(countSequences(container(_maxIt)))
@@ -636,7 +636,7 @@ namespace SEQAN_NAMESPACE_MAIN
         inline bool _isLeftMaximal() {
             return !subState[seqCount - 1].charsEqual;
         }
-        
+
         // inner enumeration
         inline bool _innerStep() {
             for(unsigned seq = 0; seq < seqCount; ++seq)
@@ -656,7 +656,7 @@ namespace SEQAN_NAMESPACE_MAIN
             return !_atEnd;
         }
 
-        inline void _init() 
+        inline void _init()
         {
             if (length(mmemIt->setStack) < 2) {
                 _atEnd = true;

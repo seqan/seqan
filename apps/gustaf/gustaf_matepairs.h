@@ -105,7 +105,7 @@ _importSequences(CharString const & fileNameL,
         clear(seq);
         clear(qual);
     }
-    
+
     // Check for dupliacte id entries.
     StringSet<TId> uniqueIds = ids;
     std::sort(begin(uniqueIds, Standard()), end(uniqueIds, Standard()), IdComparator<TId>());  // O(n*log(n))

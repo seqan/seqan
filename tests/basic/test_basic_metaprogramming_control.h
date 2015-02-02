@@ -112,7 +112,7 @@ SEQAN_DEFINE_TEST(test_basic_metaprogramming_control_loop)
 SEQAN_DEFINE_TEST(test_basic_metaprogramming_control_loop_reverse)
 {
     using namespace seqan;
-    
+
     int i[5] = { 1, 2, 3, 4, 5 };
     LoopReverse<LoopTestWorker_, 5>::run(i);
 

@@ -111,20 +111,20 @@ getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
             _buildLeafString(g, j, seq2);
             TSegmentString alignSeq;
             TValue score = heaviestCommonSubsequence(g,seq1,seq2,alignSeq);
-            
+
             // Normalize by distance
             if (len1 > len2) score /= len1;
             else score /= len2;
             if (score > maxScore) maxScore = score;
-            
+
             // Remember the value
             distanceMatrix[i*nseq+j] = score;
         }
     }
 
     // Normalize values
-    for(TSize i=0; i<nseq; ++i) 
-        for(TSize j=i+1; j<nseq; ++j) 
+    for(TSize i=0; i<nseq; ++i)
+        for(TSize j=i+1; j<nseq; ++j)
             distanceMatrix[i*nseq+j] = SEQAN_DISTANCE_UNITY - ((distanceMatrix[i*nseq+j] * SEQAN_DISTANCE_UNITY) / maxScore );
 }
 
@@ -159,7 +159,7 @@ getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix, typename TSize>
-inline void 
+inline void
 getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
                   TMatrix& distanceMatrix,
                   TSize ktup,
@@ -172,7 +172,7 @@ getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix>
-inline void 
+inline void
 getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
                   TMatrix& distanceMatrix,
                   KmerDistance)
@@ -198,10 +198,10 @@ getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
  * @param[in]  alphabet For KMerDistance, the alphabet to use for k-mer counting (e.g. compressed alphabets).
  * @param[in]  tag      See @link DistanceCalculationTags @endlink.  Default: <tt>KMerDistance</tt>.
  */
- 
+
 
 template<typename TStringSet, typename TCargo, typename TSpec, typename TMatrix>
-inline void 
+inline void
 getDistanceMatrix(Graph<Alignment<TStringSet, TCargo, TSpec> >& g,
                   TMatrix& distanceMatrix)
 {

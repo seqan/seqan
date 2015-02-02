@@ -49,7 +49,7 @@ using namespace seqan;
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TMap>
-void Test_STLSet() 
+void Test_STLSet()
 {
     //typedef typename Value<TMap>::Type TValue;
     typedef typename Iterator<TMap>::Type TIterator;
@@ -86,7 +86,7 @@ void Test_STLSet()
     SEQAN_ASSERT(it == it2);
     SEQAN_ASSERT(key(it) == 2);
     SEQAN_ASSERT(key(it2) == 2);
-    
+
     goNext(it2);
     SEQAN_ASSERT(it != it2);
 
@@ -102,7 +102,7 @@ void Test_STLSet()
 
 
 template <typename TMap>
-void Test_NoCargo_Single() 
+void Test_NoCargo_Single()
 {
     //typedef typename Value<TMap>::Type TValue;
     typedef typename Iterator<TMap>::Type TIterator;
@@ -145,7 +145,7 @@ void Test_NoCargo_Single()
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TMap>
-void Test_STLMap() 
+void Test_STLMap()
 {
     typedef typename Value<TMap>::Type TValue;
     typedef typename Iterator<TMap>::Type TIterator;
@@ -233,7 +233,7 @@ void Test_STLMap()
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TMap>
-void Test_Cargo_Single() 
+void Test_Cargo_Single()
 {
     typedef typename Value<TMap>::Type TValue;
     typedef typename Iterator<TMap>::Type TIterator;
@@ -313,7 +313,7 @@ void Test_Cargo_Single()
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TMap>
-void Test_Cargo_Multiple() 
+void Test_Cargo_Multiple()
 {
     //typedef typename Value<TMap>::Type TValue;
     //typedef typename Iterator<TMap>::Type TIterator;
@@ -442,16 +442,16 @@ void Test_Skiplist_Stress()
 
 //////////////////////////////////////////////////////////////////////////////
 
-void Main_Test_Map() 
+void Main_Test_Map()
 {
     Test_Cargo_Single< Map< Pair<char, int>, Skiplist< > > >();
     Test_Cargo_Single< Map< Pair<char, int>, VectorSet< > > >();
-    
+
     Test_STLMap< std::map<char, int> >();
 
     Test_NoCargo_Single< Map< char, Skiplist< > > >();
     Test_NoCargo_Single< Map< char, VectorSet< > > >();
-    
+
     Test_STLSet< std::set<char> >();
 
        Test_Cargo_Multiple< Map< Pair<char, int>, Skiplist< > > >();

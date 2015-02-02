@@ -46,18 +46,18 @@ namespace SEQAN_NAMESPACE_MAIN
 
     //////////////////////////////////////////////////////////////////////////////
     // Single seed of
-    // B.Ma and J.Tromp and M.Li, 
+    // B.Ma and J.Tromp and M.Li,
     // "PatternHunter: faster and more sensitive homology search"
     // Bioinformatics 18, 2002
     //
-    // weight:11 
+    // weight:11
     // length:18
-    // 
+    //
     // shape:
     // 111010010100110111
 
-    typedef GappedShape< 
-        HardwiredShape< 1, 1, 2, 3, 2, 3, 1, 2, 1, 1 > 
+    typedef GappedShape<
+        HardwiredShape< 1, 1, 2, 3, 2, 3, 1, 2, 1, 1 >
     > ShapePatternHunter;
 
 
@@ -67,8 +67,8 @@ namespace SEQAN_NAMESPACE_MAIN
     // L.Ilie and S.Ilie, "Fast Computation of Good Multiple Spaced Seeds"
     // WABI, 2007
     //
-    // weight:9 
-    // length:15 
+    // weight:9
+    // length:15
     //
     // shapes:
     // 111010100100111
@@ -79,16 +79,16 @@ namespace SEQAN_NAMESPACE_MAIN
     // 65% 0.747975        70% 0.897741
     // 75% 0.973134        80% 0.996226
 
-    typedef GappedShape< 
-        HardwiredShape< 1, 1, 2, 2, 3, 3, 1, 1 > 
+    typedef GappedShape<
+        HardwiredShape< 1, 1, 2, 2, 3, 3, 1, 1 >
     > ShapeIlieA1;
 
-    typedef GappedShape< 
-        HardwiredShape< 1, 2, 3, 1, 3, 1, 1, 2 > 
+    typedef GappedShape<
+        HardwiredShape< 1, 2, 3, 1, 3, 1, 1, 2 >
     > ShapeIlieA2;
 
-    typedef GappedShape< 
-        HardwiredShape< 1, 1, 2, 4, 2, 1, 2, 1 > 
+    typedef GappedShape<
+        HardwiredShape< 1, 1, 2, 4, 2, 1, 2, 1 >
     > ShapeIlieA3;
 
 
@@ -98,8 +98,8 @@ namespace SEQAN_NAMESPACE_MAIN
     // L.Ilie and S.Ilie, "Fast Computation of Good Multiple Spaced Seeds"
     // WABI 2007
     //
-    // weight:9 
-    // length:13..23 
+    // weight:9
+    // length:13..23
     //
     // shapes:
     // 1110110100111
@@ -110,16 +110,16 @@ namespace SEQAN_NAMESPACE_MAIN
     // 65% 0.767413        70% 0.910949
     // 75% 0.978558        80% 0.997357
 
-    typedef GappedShape< 
-        HardwiredShape< 1, 1, 2, 1, 2, 3, 1, 1 > 
+    typedef GappedShape<
+        HardwiredShape< 1, 1, 2, 1, 2, 3, 1, 1 >
     > ShapeIlieB1;
 
-    typedef GappedShape< 
-        HardwiredShape< 1, 2, 5, 1, 3, 2, 1, 1 > 
+    typedef GappedShape<
+        HardwiredShape< 1, 2, 5, 1, 3, 2, 1, 1 >
     > ShapeIlieB2;
 
-    typedef GappedShape< 
-        HardwiredShape< 1, 1, 4, 3, 5, 2, 2, 1 > 
+    typedef GappedShape<
+        HardwiredShape< 1, 1, 4, 3, 5, 2, 2, 1 >
     > ShapeIlieB3;
 
 

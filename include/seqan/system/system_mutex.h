@@ -111,13 +111,13 @@ namespace SEQAN_NAMESPACE_MAIN
             // we only support move construction (no copy-construction)
         }
     };
-    
+
 #else
 
     struct Mutex
     {
         typedef pthread_mutex_t* Handle;
-        
+
         pthread_mutex_t data, *hMutex;
 
         Mutex():
@@ -185,7 +185,7 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
     };
-    
+
 #endif
 
     template <>
