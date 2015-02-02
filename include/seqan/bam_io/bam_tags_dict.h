@@ -329,7 +329,7 @@ inline void
 setHost(BamTagsDict & me, THost & host_)
 {
     SEQAN_CHECKPOINT;
-	setValue(_dataHost(me), host_);
+    setValue(_dataHost(me), host_);
     clear(me._positions);
 }
 
@@ -338,7 +338,7 @@ inline void
 setHost(BamTagsDict & me, THost const & host_)
 {
     SEQAN_CHECKPOINT;
-	setValue(_dataHost(me), host_);
+    setValue(_dataHost(me), host_);
     clear(me._positions);
 }
 

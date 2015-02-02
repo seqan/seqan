@@ -60,25 +60,25 @@ TFloat _zscore(TStringSet W,  TStringSet& X, MarkovModel<TAlphabet, TFloat, TSpe
 {
 
 
-	TFloat z_score=0;
-	TFloat nW=0;
-	//compute occurrances
-	for(unsigned int i=0; i< length(X); i++)
-	{
-		String<TAlphabet> temp = getValueById(X, i);
-		_numOccurrences(nW, temp, W, TAlgorithm());
-	}
+    TFloat z_score=0;
+    TFloat nW=0;
+    //compute occurrances
+    for(unsigned int i=0; i< length(X); i++)
+    {
+        String<TAlphabet> temp = getValueById(X, i);
+        _numOccurrences(nW, temp, W, TAlgorithm());
+    }
 
-	//compute expectation
-	TFloat E = expectation(W, X, M);
+    //compute expectation
+    TFloat E = expectation(W, X, M);
 //std::cout<<"\nE:"<<E;
-	//compute variance
-	TFloat V = _computeVariance(W, X, M, E);
+    //compute variance
+    TFloat V = _computeVariance(W, X, M, E);
 //std::cout<<"\nV:"<<V;
-	//compute z-score
-	z_score=(nW-E)/sqrt(V);
+    //compute z-score
+    z_score=(nW-E)/sqrt(V);
 
-	return z_score;
+    return z_score;
 
 }
 
@@ -99,13 +99,13 @@ TFloat _zscore(TStringSet W,  TStringSet& X, MarkovModel<TAlphabet, TFloat, TSpe
 template <typename TAlgorithm, typename TFloat, typename TAlphabet>
 void _numOccurrences(TFloat &nW, String<TAlphabet> &haystack, StringSet<String<TAlphabet> > &needle, TAlgorithm const &)
 {
-	SEQAN_CHECKPOINT;
-	Finder<String<TAlphabet> > finder(haystack);
-	Pattern<StringSet<String<TAlphabet> >, TAlgorithm> pattern(needle);
-	while (find(finder, pattern))
-	{
-		nW++;
-	}
+    SEQAN_CHECKPOINT;
+    Finder<String<TAlphabet> > finder(haystack);
+    Pattern<StringSet<String<TAlphabet> >, TAlgorithm> pattern(needle);
+    while (find(finder, pattern))
+    {
+        nW++;
+    }
 }
 
 /*
@@ -123,14 +123,14 @@ void _numOccurrences(TFloat &nW, String<TAlphabet> &haystack, StringSet<String<T
 
 template <typename TAlphabet, typename TFloat, typename TSpec>
 TFloat _computeExpectation(MarkovModel<TAlphabet, TFloat, TSpec> &mm,
-					 StringSet<String<TAlphabet> > &W, unsigned int n)
+                     StringSet<String<TAlphabet> > &W, unsigned int n)
 {
-	TFloat E=0;
-	for (unsigned int i=0; i<length(W); i++){
-		String<TAlphabet> temp = getValueById(W, i);
-		E += (n - length(temp) + 1)*mm.emittedProbability(temp);
-	}
-	return E;
+    TFloat E=0;
+    for (unsigned int i=0; i<length(W); i++){
+        String<TAlphabet> temp = getValueById(W, i);
+        E += (n - length(temp) + 1)*mm.emittedProbability(temp);
+    }
+    return E;
 }
 
 
@@ -158,88 +158,88 @@ TFloat _computeExpectation(MarkovModel<TAlphabet, TFloat, TSpec> &mm,
 template <typename TFloat, typename TAlphabet, typename TSpec>
 TFloat _computeVariance( StringSet<String<TAlphabet> > W,  StringSet<String<TAlphabet> > &X, MarkovModel<TAlphabet, TFloat, TSpec> &M, TFloat &E)
 {
-	//V=B+2C-E^2
-	TFloat V = E;
+    //V=B+2C-E^2
+    TFloat V = E;
 
-	//C=D+A
+    //C=D+A
 
-	//compute A and D
+    //compute A and D
 
-	TFloat A = 0;
-	TFloat D = 0;
-	TFloat tmpA, eQPPPe, eQPPQPPe;
-	unsigned int sizeW=length(W);
-	unsigned int n;
+    TFloat A = 0;
+    TFloat D = 0;
+    TFloat tmpA, eQPPPe, eQPPQPPe;
+    unsigned int sizeW=length(W);
+    unsigned int n;
 
-	String <TFloat> pStar;
-	resize(pStar, sizeW, 0);
+    String <TFloat> pStar;
+    resize(pStar, sizeW, 0);
 
-	Shape<TAlphabet, SimpleShape> orderShape;
-	resize(orderShape, M.order);
+    Shape<TAlphabet, SimpleShape> orderShape;
+    resize(orderShape, M.order);
 
-	for(unsigned int j=0; j<sizeW; j++){
-		String<TAlphabet> string =getValueById(W, j);
+    for(unsigned int j=0; j<sizeW; j++){
+        String<TAlphabet> string =getValueById(W, j);
 
-		int row = hash(orderShape,begin(string));
-		TFloat p = 1;
-		for(unsigned int i=1; i<length(string)-M.order+1; i++)
-		{
-			int column=hash(orderShape,begin(string)+i);
-			p*=value(M.transition,row,column);
-			row = column;
-		}
-		value(pStar, j) = p;
-	}
-
-
-
-	for(unsigned int z=0; z<length(X); z++){
-
-	  for(unsigned int i=0; i<length(X); i++){
-
-	 	n = length(getValueById(X, i));
-
-		 for(unsigned int j=0; j<sizeW; j++){
-
-			String<TAlphabet> Wj =getValueById(W, j);
-
-			TFloat q = (TFloat) (n-(2*length(Wj))+2);
-
-			for(unsigned int k=0; k<sizeW; k++){
-
-				tmpA=value(pStar,j)*value(pStar,k);
-
-				unsigned int jfirst, jlast, kfirst;
-
-				jfirst = hash(orderShape,begin(Wj));
-
-				jlast = hash(orderShape,end(Wj)-M.order);
-
-				kfirst = hash(orderShape,begin(getValueById(W, k)));
-
-				eQPPPe = value(M._qppp, jlast,kfirst);
-
-				eQPPQPPe = value(M._qppqpp, jlast,kfirst);
-
-				tmpA  *= value(M.stationaryDistribution, jfirst) * ((q*(q+1)/2)* value(M.stationaryDistribution, kfirst) - (q-1)*eQPPPe - eQPPQPPe);
-
-				A += tmpA;
-			}
-		 }
-	  }
-
-	  // Compute D
-	  D+= _overlapExpectation(W,M,length(getValueById(X, z)));
-	}
+        int row = hash(orderShape,begin(string));
+        TFloat p = 1;
+        for(unsigned int i=1; i<length(string)-M.order+1; i++)
+        {
+            int column=hash(orderShape,begin(string)+i);
+            p*=value(M.transition,row,column);
+            row = column;
+        }
+        value(pStar, j) = p;
+    }
 
 
 
+    for(unsigned int z=0; z<length(X); z++){
 
-	//Compute Variance
-	V += (2*A) + (2*D) -  std::pow((double) E, (int) 2);
+      for(unsigned int i=0; i<length(X); i++){
 
-	//return V;
-	return V;
+         n = length(getValueById(X, i));
+
+         for(unsigned int j=0; j<sizeW; j++){
+
+            String<TAlphabet> Wj =getValueById(W, j);
+
+            TFloat q = (TFloat) (n-(2*length(Wj))+2);
+
+            for(unsigned int k=0; k<sizeW; k++){
+
+                tmpA=value(pStar,j)*value(pStar,k);
+
+                unsigned int jfirst, jlast, kfirst;
+
+                jfirst = hash(orderShape,begin(Wj));
+
+                jlast = hash(orderShape,end(Wj)-M.order);
+
+                kfirst = hash(orderShape,begin(getValueById(W, k)));
+
+                eQPPPe = value(M._qppp, jlast,kfirst);
+
+                eQPPQPPe = value(M._qppqpp, jlast,kfirst);
+
+                tmpA  *= value(M.stationaryDistribution, jfirst) * ((q*(q+1)/2)* value(M.stationaryDistribution, kfirst) - (q-1)*eQPPPe - eQPPQPPe);
+
+                A += tmpA;
+            }
+         }
+      }
+
+      // Compute D
+      D+= _overlapExpectation(W,M,length(getValueById(X, z)));
+    }
+
+
+
+
+    //Compute Variance
+    V += (2*A) + (2*D) -  std::pow((double) E, (int) 2);
+
+    //return V;
+    return V;
 }
 
 /*
@@ -259,33 +259,33 @@ TFloat _computeVariance( StringSet<String<TAlphabet> > W,  StringSet<String<TAlp
 template <typename TFloat, typename TAlphabet, typename TSpec>
 TFloat _overlapExpectation(StringSet<String<TAlphabet> > W, MarkovModel<TAlphabet, TFloat, TSpec> &M, unsigned int n)
 {
-	TFloat E_overlap = 0;
-	unsigned int sizeW = length(W);
-	for(unsigned int i=0; i<sizeW; i++)
-	{
-		String<TAlphabet> patt1 = getValueById(W, i);
-		unsigned int size1 = length(patt1);
-		for(unsigned int j=0; j<sizeW; j++)
-		{
-			String<TAlphabet> patt2 = getValueById(W, j);
-			unsigned int k=1;
-			unsigned int size2 = length(patt2);
-			if(size1>size2)
-			{
-				k = size1 - size2 + 1;
-			}
-			for(; k<size1; k++)
-			{
-				if(isEqual(infix(patt1,begin(patt1)+k,end(patt1)),infix(patt2,begin(patt2),begin(patt2)+k-1)))
-				{
-					String<TAlphabet> temp = infix(patt1, begin(patt1),begin(patt1)+k-1);
-					append(temp,infix(patt2,begin(patt2),end(patt2)));
-					E_overlap += (n - size1 + 1)*M.emittedProbability(temp);
-				}
-			}
-		}
-	}
-	return E_overlap;
+    TFloat E_overlap = 0;
+    unsigned int sizeW = length(W);
+    for(unsigned int i=0; i<sizeW; i++)
+    {
+        String<TAlphabet> patt1 = getValueById(W, i);
+        unsigned int size1 = length(patt1);
+        for(unsigned int j=0; j<sizeW; j++)
+        {
+            String<TAlphabet> patt2 = getValueById(W, j);
+            unsigned int k=1;
+            unsigned int size2 = length(patt2);
+            if(size1>size2)
+            {
+                k = size1 - size2 + 1;
+            }
+            for(; k<size1; k++)
+            {
+                if(isEqual(infix(patt1,begin(patt1)+k,end(patt1)),infix(patt2,begin(patt2),begin(patt2)+k-1)))
+                {
+                    String<TAlphabet> temp = infix(patt1, begin(patt1),begin(patt1)+k-1);
+                    append(temp,infix(patt2,begin(patt2),end(patt2)));
+                    E_overlap += (n - size1 + 1)*M.emittedProbability(temp);
+                }
+            }
+        }
+    }
+    return E_overlap;
 }
 
 /*
@@ -301,12 +301,12 @@ TFloat _overlapExpectation(StringSet<String<TAlphabet> > W, MarkovModel<TAlphabe
 template <typename TAlphabet>
 void _addReveseComplements(StringSet<String<TAlphabet> > &stringSet)
 {
-	unsigned int num= length(stringSet);
+    unsigned int num= length(stringSet);
 
-	for(unsigned int i=0; i< num; i++){
-  	     DnaStringReverseComplement mycom(getValueById(stringSet, i));
-		 appendValue(stringSet, mycom);
-	}
+    for(unsigned int i=0; i< num; i++){
+           DnaStringReverseComplement mycom(getValueById(stringSet, i));
+         appendValue(stringSet, mycom);
+    }
 }
 
 
@@ -336,8 +336,8 @@ typedef String<TDnaAlphabet> TDnaSequence;
 template <typename TAlgorithm, typename TFloat, typename TSpec, typename TStringSet, typename TAlphabet>
 TFloat zscore(TStringSet W,  TStringSet &X, MarkovModel<TAlphabet, TFloat, TSpec> &M, TAlgorithm const & algorithmTag)
 {
-	ensureAuxMatrices(M);
-   	return _zscore(W,X,M, algorithmTag);
+    ensureAuxMatrices(M);
+       return _zscore(W,X,M, algorithmTag);
 }
 
 template <typename TAlgorithm, typename TFloat, typename TSpec, typename TDnaSequence>
@@ -346,52 +346,52 @@ TFloat zscore(StringSet<TDnaSequence> W,  StringSet<TDnaSequence> &X, MarkovMode
    //add-reverse complements
    _addReveseComplements(W);
 
-	ensureAuxMatrices(M);
+    ensureAuxMatrices(M);
 
    TFloat z_score=0;
    TFloat nW=0;
    //compute occurrences
    for(unsigned int i=0; i < length(X); i++)
    {
-		 String<Dna> temp = getValueById(X, i);
-		_numOccurrences(nW, temp, W, TAlgorithm());
-	}
+         String<Dna> temp = getValueById(X, i);
+        _numOccurrences(nW, temp, W, TAlgorithm());
+    }
 
-	//compute expectation
-	TFloat E = expectation(W, X, M);
-	//std::cout<<"\nE: "<<E<<"\n";
-	//compute variance
-	TFloat V = _computeVariance(W, X, M, E);
-	//std::cout<<"\nV: "<<V<<"\n";
-	//compute correction factor
-	TFloat correction = 0;
+    //compute expectation
+    TFloat E = expectation(W, X, M);
+    //std::cout<<"\nE: "<<E<<"\n";
+    //compute variance
+    TFloat V = _computeVariance(W, X, M, E);
+    //std::cout<<"\nV: "<<V<<"\n";
+    //compute correction factor
+    TFloat correction = 0;
 
-	unsigned int n;
-	unsigned int sizeW= length(W);
+    unsigned int n;
+    unsigned int sizeW= length(W);
 
-	for(unsigned int j=0; j<length(X); j++){
+    for(unsigned int j=0; j<length(X); j++){
 
-	 	n = length(getValueById(X, j));
+         n = length(getValueById(X, j));
 
-		for(unsigned int i=0; i<sizeW; i++)
-		{
-			String<Dna> patt = getValueById(W, i);
-			DnaStringReverseComplement revpatt(patt);
-			String<Dna> revc= revpatt;
-			if (isEqual(patt,revc))
-			{
-				correction += (n-length(patt)+1)*M.emittedProbability(revc);
-			}
-		}
-	}
+        for(unsigned int i=0; i<sizeW; i++)
+        {
+            String<Dna> patt = getValueById(W, i);
+            DnaStringReverseComplement revpatt(patt);
+            String<Dna> revc= revpatt;
+            if (isEqual(patt,revc))
+            {
+                correction += (n-length(patt)+1)*M.emittedProbability(revc);
+            }
+        }
+    }
 
-	V+= correction;
+    V+= correction;
 
-	//compute z-score
-	z_score=(nW-E)/sqrt(V);
-	//std::cout<<"\nnW: "<<nW<<"\n";
-	//std::cout<<"\nZ: "<<z_score<<"\n";
-	return z_score;
+    //compute z-score
+    z_score=(nW-E)/sqrt(V);
+    //std::cout<<"\nnW: "<<nW<<"\n";
+    //std::cout<<"\nZ: "<<z_score<<"\n";
+    return z_score;
 }
 
 /*!
@@ -422,35 +422,35 @@ TFloat variance(StringSet<String<Dna> > W, StringSet<String<Dna> > &X, MarkovMod
 {
 
    //add-reverse complements
-	_addReveseComplements(W);
+    _addReveseComplements(W);
 
-	TFloat E = expectation(W, X, M);
+    TFloat E = expectation(W, X, M);
 
-	TFloat var =  _computeVariance(W,X,M,E);
+    TFloat var =  _computeVariance(W,X,M,E);
 
-	//compute correction factor
-	TFloat correction = 0;
+    //compute correction factor
+    TFloat correction = 0;
 
-	unsigned int n;
-	unsigned int sizeW= length(W);
+    unsigned int n;
+    unsigned int sizeW= length(W);
 
 
    for(unsigned int j=0; j<length(X); j++){
 
-	 	n = length(getValueById(X, j));
+         n = length(getValueById(X, j));
 
-		for(unsigned int i=0; i<sizeW; i++)
-		{
-			String<Dna> patt = getValueById(W, i);
-			DnaStringReverseComplement revpatt(patt);
-			String<Dna> revc= revpatt;
-			if (isEqual(patt,revc))
-			{
-				correction += (n-length(patt)+1)*M.emittedProbability(revc);
-			}
-		}
-	}
-	var+=correction;
+        for(unsigned int i=0; i<sizeW; i++)
+        {
+            String<Dna> patt = getValueById(W, i);
+            DnaStringReverseComplement revpatt(patt);
+            String<Dna> revc= revpatt;
+            if (isEqual(patt,revc))
+            {
+                correction += (n-length(patt)+1)*M.emittedProbability(revc);
+            }
+        }
+    }
+    var+=correction;
 
   return var;
 }
@@ -474,13 +474,13 @@ TFloat variance(StringSet<String<Dna> > W, StringSet<String<Dna> > &X, MarkovMod
 template <typename TAlphabet, typename TFloat, typename TSpec>
 TFloat expectation(StringSet<String<TAlphabet> > & W, StringSet<String<TAlphabet> > &X, MarkovModel<TAlphabet, TFloat, TSpec> &M)
 {
-	unsigned int n;
-	TFloat E = 0;
+    unsigned int n;
+    TFloat E = 0;
 
-	for(unsigned int i=0; i<length(X); i++){
-	 	n = length(getValueById(X, i));
+    for(unsigned int i=0; i<length(X); i++){
+         n = length(getValueById(X, i));
         E += _computeExpectation(M, W, n);
-	}
+    }
 
     return E;
 }

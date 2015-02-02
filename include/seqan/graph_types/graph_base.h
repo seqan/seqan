@@ -268,7 +268,7 @@ class EdgeStump;
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec>
 struct VertexDescriptor<EdgeStump<TCargo, TList, TSource, TId, TSpec> > 
 {
-	typedef typename Id<EdgeStump<TCargo, TList, TSource, TId, TSpec> >::Type Type;
+    typedef typename Id<EdgeStump<TCargo, TList, TSource, TId, TSpec> >::Type Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -276,7 +276,7 @@ struct VertexDescriptor<EdgeStump<TCargo, TList, TSource, TId, TSpec> >
 template<typename TCargo, bool TList, bool TSource, bool TId, typename TSpec>
 struct VertexDescriptor<EdgeStump<TCargo, TList, TSource, TId, TSpec> const> 
 {
-	typedef typename Id<EdgeStump<TCargo, TList, TSource, TId, TSpec> >::Type Type;
+    typedef typename Id<EdgeStump<TCargo, TList, TSource, TId, TSpec> >::Type Type;
 };
 
 
@@ -295,21 +295,21 @@ class IdManager;
 
 template<typename TCargo, bool TList, bool TSource, typename TSpec>
 struct EdgeIdHandler<EdgeStump<TCargo, TList, TSource, false, TSpec> > {
-	typedef IdManager<void> Type;
+    typedef IdManager<void> Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename TCargo, bool TList, bool TSource, typename TSpec>
 struct EdgeIdHandler<EdgeStump<TCargo, TList, TSource, true, TSpec> > {
-	typedef IdManager<typename Id<EdgeStump<TCargo, TList, TSource, true, TSpec> >::Type> Type;
+    typedef IdManager<typename Id<EdgeStump<TCargo, TList, TSource, true, TSpec> >::Type> Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
 
 template<typename T>
 struct VertexIdHandler {
-	typedef IdManager<> Type;
+    typedef IdManager<> Type;
 };
 
 }// namespace SEQAN_NAMESPACE_MAIN

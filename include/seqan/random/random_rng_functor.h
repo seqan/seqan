@@ -83,7 +83,7 @@ public:
  */
 
     Rng(TRng & rng, TPdf & pdf)
-	    : _rng(rng), _pdf(pdf)
+        : _rng(rng), _pdf(pdf)
     {}
     
     inline

@@ -93,9 +93,9 @@ template <>
 class Pdf<Uniform<bool> >
 {
 public:
-	Pdf() {}
+    Pdf() {}
 };
-	
+    
 // ===========================================================================
 // Metafunctions
 // ===========================================================================
@@ -159,8 +159,8 @@ typename Value<Pdf<Uniform<bool> > >::Type
 pickRandomNumber(TRNG & rng, Pdf<Uniform<bool> > const &)
 {
     SEQAN_CHECKPOINT;
-	typename Value<TRNG>::Type x = pickRandomNumber(rng);
-	return x % 2;
+    typename Value<TRNG>::Type x = pickRandomNumber(rng);
+    return x % 2;
 }
 
 }  // namespace seqan

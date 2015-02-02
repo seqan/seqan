@@ -310,14 +310,14 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_nested_modifier)
         Dna5String const EXPECTED_STRING = "NATCG";
 
         ModifiedString<
-			ModifiedString<	Dna5String, ModView< FunctorComplement<Dna5> > >, 
-			ModReverse
-		> modifiedString1(str);
+            ModifiedString<    Dna5String, ModView< FunctorComplement<Dna5> > >, 
+            ModReverse
+        > modifiedString1(str);
 
         ModifiedString<
-			ModifiedString<	Dna5String, ModReverse >,
-			ModView< FunctorComplement<Dna5> >
-		> modifiedString2(str);
+            ModifiedString<    Dna5String, ModReverse >,
+            ModView< FunctorComplement<Dna5> >
+        > modifiedString2(str);
         
         SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedString1);
         SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedString2);
@@ -329,34 +329,34 @@ SEQAN_DEFINE_TEST(test_modifier_view_string_nested_modifier)
 
         // test independence of nesting order
         ModifiedString<
-			ModifiedString<	Dna5String const, ModView< FunctorComplement<Dna5> > >,
-			ModReverse
-		> modifiedString1(str);
+            ModifiedString<    Dna5String const, ModView< FunctorComplement<Dna5> > >,
+            ModReverse
+        > modifiedString1(str);
 
         ModifiedString<
-			ModifiedString<	Dna5String const, ModReverse >,
-			ModView< FunctorComplement<Dna5> >
-		> modifiedString2(str);
+            ModifiedString<    Dna5String const, ModReverse >,
+            ModView< FunctorComplement<Dna5> >
+        > modifiedString2(str);
 
         ModifiedString<
-			ModifiedString<	Dna5String const, ModView< FunctorComplement<Dna5> > > const,
-			ModReverse
-		> modifiedString3(str);
+            ModifiedString<    Dna5String const, ModView< FunctorComplement<Dna5> > > const,
+            ModReverse
+        > modifiedString3(str);
 
         ModifiedString<
-			ModifiedString<	Dna5String const, ModReverse > const,
-			ModView< FunctorComplement<Dna5> >
-		> modifiedString4(str);
+            ModifiedString<    Dna5String const, ModReverse > const,
+            ModView< FunctorComplement<Dna5> >
+        > modifiedString4(str);
         
         ModifiedString<
-			ModifiedString<	Dna5String, ModReverse > const,
-			ModView< FunctorComplement<Dna5> >
-		> modifiedString5(str);
+            ModifiedString<    Dna5String, ModReverse > const,
+            ModView< FunctorComplement<Dna5> >
+        > modifiedString5(str);
         
         ModifiedString<
-			ModifiedString<	Dna5String, ModReverse > const,
-			ModView< FunctorComplement<Dna5> >
-		> modifiedString6(str);
+            ModifiedString<    Dna5String, ModReverse > const,
+            ModView< FunctorComplement<Dna5> >
+        > modifiedString6(str);
         
         SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedString1);
         SEQAN_ASSERT_EQ(EXPECTED_STRING, modifiedString2);

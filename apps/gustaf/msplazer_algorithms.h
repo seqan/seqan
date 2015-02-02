@@ -367,7 +367,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
             // std::cout << "chain matches " << m1Begin << " " << m1End << " " << m2Begin << " " << m2End << std::endl;
             // Returns false, if next match is def. not compatible anymore
             takeNextMatch = _checkMatchComp(m1Begin, m1End, m2Begin, m2End, doBP, insertEdge, msplazerOptions);
-	    refOrder = true;
+        refOrder = true;
 
             //std::cout << "insertEdge: " << insertEdge << " doBP: " << doBP << std::endl;
             // match is compatible
@@ -381,7 +381,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                 diffStrandPen =
                     (diffDBPen > 0 || _checkMatchStrands(stMatch1, stMatch2)) ? 0 : msplazerOptions.diffStrandPen;
                 // Different order in reference than in read penalty
-		refOrder = _checkMatchOrderInDB(stMatch1, stMatch2);
+        refOrder = _checkMatchOrderInDB(stMatch1, stMatch2);
                 diffOrderPen =
                     (diffDBPen > 0 || diffStrandPen > 0 || refOrder) ? 0 : msplazerOptions.diffOrderPen;
                 // Penalty if there are no confirming mate matches
@@ -474,8 +474,8 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                 // Imprecise breakpoint?
                 // if (!doBP) bp.imprecise = true;
 
-		//std::cout << bp << std::endl;
-		//std::cout << stMatch1 << stMatch2 << std::endl;
+        //std::cout << bp << std::endl;
+        //std::cout << stMatch1 << stMatch2 << std::endl;
                 // Returns true for insertion type, get insertion infix then
                 if (setSVType(bp, refOrder))
                 {
@@ -488,7 +488,7 @@ void _chainMatches(QueryMatches<StellarMatch<TSequence, TId> > & queryMatches,
                         setInsertionSeq(bp, inSeq);
                     }
                 }
-		//std::cout << bp << std::endl;
+        //std::cout << bp << std::endl;
                 // TODO(ktrappe): needs adjustment of positions?
                 if (bp.svtype == TBreakpoint::DISPDUPLICATION && _isTandemOverlap(stMatch1.begin1, startSeqPos, endSeqPos, msplazerOptions.tandemThresh))
                 {
@@ -569,7 +569,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
         for (unsigned m2 = m1 + 1; m2 < length(queryMatches.matches); ++m2)
         {
             swap = false;
-	    refOrder = true;
+        refOrder = true;
             // /////////////////////////////////////////////////////////////////////////////////////////////////////////
             // Compatibility check
             TMatch * stMatch2 = &queryMatches.matches[m2];
@@ -602,7 +602,7 @@ void _chainMatchesReference(QueryMatches<StellarMatch<TSequence, TId> > & queryM
                     diffStrandPen = (_checkMatchStrands(*stMatch1, *stMatch2)) ? 0 : msplazerOptions.diffStrandPen;
                     // Different order in reference than in read penalty
                     diffOrderPen = 0;
-		    refOrder = _checkMatchOrderInDB(*stMatch1, *stMatch2);
+            refOrder = _checkMatchOrderInDB(*stMatch1, *stMatch2);
                     if (swap)
                         diffOrderPen =
                             (diffStrandPen > 0 || refOrder) ? 0 : msplazerOptions.diffOrderPen;
@@ -1260,15 +1260,15 @@ inline void _insertBreakpoint(String<TBreakpoint> & countedBP, TBreakpoint & bp,
         else if (_similarBreakpoints(bp, tempBP, bpPosRange))
         {
             appendSupportId(tempBP, bp.supportIds);
-	    if (bp.dupMiddlePos != maxValue<unsigned>() && tempBP.dupMiddlePos != maxValue<unsigned>()
-		&& bp.dupMiddlePos < tempBP.dupMiddlePos)
+        if (bp.dupMiddlePos != maxValue<unsigned>() && tempBP.dupMiddlePos != maxValue<unsigned>()
+        && bp.dupMiddlePos < tempBP.dupMiddlePos)
             {
                 tempBP.dupMiddlePos = bp.dupMiddlePos; 
-	    }
-	    if (bp.startSeqPos < tempBP.startSeqPos)
-		tempBP.startSeqPos = bp.startSeqPos;
-	    if (bp.endSeqPos < tempBP.endSeqPos)
-		tempBP.endSeqPos = bp.endSeqPos;
+        }
+        if (bp.startSeqPos < tempBP.startSeqPos)
+        tempBP.startSeqPos = bp.startSeqPos;
+        if (bp.endSeqPos < tempBP.endSeqPos)
+        tempBP.endSeqPos = bp.endSeqPos;
             // Very special case, should be no other support likely
             newBP = false;
             //bp.similar = tempBP.similar;

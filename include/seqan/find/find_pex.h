@@ -41,7 +41,7 @@
 namespace SEQAN_NAMESPACE_MAIN 
 {
 
-struct Hierarchical;			
+struct Hierarchical;            
 struct NonHierarchical;
 
 
@@ -55,7 +55,7 @@ typedef Pex<NonHierarchical,AhoCorasick>   PexNonHierarchical;
 
 template <typename TNeedle, typename TVerification, typename TMultiFinder>
 struct FindBeginPatternSpec< Pattern<TNeedle, Pex<TVerification , TMultiFinder > > >:
-	DefaultFindBeginPatternSpec<>
+    DefaultFindBeginPatternSpec<>
 {
 };
 
@@ -147,7 +147,7 @@ struct PexRange_{
 
 template <typename TNeedle, typename TVerification, typename TMultiFinder>
 class Pattern<TNeedle, Pex<TVerification, TMultiFinder > >:
-	public FindBegin_<Pattern<TNeedle, Pex<TVerification, TMultiFinder > > >
+    public FindBegin_<Pattern<TNeedle, Pex<TVerification, TMultiFinder > > >
 {
  public:
    typedef typename Position<TNeedle>::Type TPosition;
@@ -314,7 +314,7 @@ SEQAN_CHECKPOINT
 template <typename TNeedle, typename TScoreValue,typename TVerification, typename TMultiFinder>
 inline void 
 setScoreLimit(Pattern<TNeedle, Pex<TVerification,TMultiFinder > > & me, 
-			  TScoreValue _limit)
+              TScoreValue _limit)
 {
 SEQAN_CHECKPOINT
   me.patternNeedsInit = true;
@@ -351,7 +351,7 @@ SEQAN_CHECKPOINT
     pr.end = (c == me.limit ? me.needleLength : s + seg_len);
     pr.error = 0;
 
-	insert(me.range_table,i,pr);
+    insert(me.range_table,i,pr);
     appendValue(me.splitted_needles,infix(value(me.data_host),pr.start,pr.end));
     s += (c == me.limit ? me.needleLength : seg_len);
     ++c;
@@ -372,7 +372,7 @@ SEQAN_CHECKPOINT
     pr.end = (pos = me.needleLength * (i + 1) / k);
     pr.error = 0;
 
-	insert(me.range_table, i, pr);
+    insert(me.range_table, i, pr);
     appendValue(me.splitted_needles, infix(value(me.data_host), pr.start, pr.end));
   }
 //*/
@@ -450,12 +450,12 @@ SEQAN_CHECKPOINT
     {
       unsigned nP = start + position(f);
       if(nP > startPos){
-	// compute new position
-	unsigned offset = nP - position(finder);
-	finder += offset;
-	me.findNext = true;
-	_setFinderEnd(finder);
-	return true;
+    // compute new position
+    unsigned offset = nP - position(finder);
+    finder += offset;
+    me.findNext = true;
+    _setFinderEnd(finder);
+    return true;
       }
     }
     // reset mf finder to old position
@@ -480,14 +480,14 @@ SEQAN_CHECKPOINT
     {
       unsigned nP = s + position(f);
       if(nP > startPos){
-	// compute new position
-	unsigned offset = nP - position(finder);
-	finder += offset;
-	me.lastFPos = position(mf);
-	me.lastFNdl = position(me.multiPattern);
-	me.findNext = true;	  
-	_setFinderEnd(finder);
-	return true;
+    // compute new position
+    unsigned offset = nP - position(finder);
+    finder += offset;
+    me.lastFPos = position(mf);
+    me.lastFNdl = position(me.multiPattern);
+    me.findNext = true;      
+    _setFinderEnd(finder);
+    return true;
       }
     }
   }
@@ -506,7 +506,7 @@ SEQAN_CHECKPOINT
 /*
 template <typename TNeedle, typename TMultiFinder>
 void _createTree(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me, unsigned start, unsigned end,
-		 unsigned k, unsigned parent, unsigned direction ,unsigned idx, unsigned plen)
+         unsigned k, unsigned parent, unsigned direction ,unsigned idx, unsigned plen)
 {
   //create tree like proposed in Navarro & Raffinot
   // direction == 0 .. choose left child in the tree
@@ -562,12 +562,12 @@ void _createTree(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me, unsign
 */
 template <typename TNeedle, typename TMultiFinder>
 void _createTree(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me, 
-				 unsigned start, unsigned end,
-				 unsigned k, 
-				 unsigned parent, 
-				 unsigned direction,
-				 unsigned idx, 
-				 unsigned plen)
+                 unsigned start, unsigned end,
+                 unsigned k, 
+                 unsigned parent, 
+                 unsigned direction,
+                 unsigned idx, 
+                 unsigned plen)
 {
   typedef typename Position<TNeedle>::Type TPosition;
   typedef unsigned TScore;
@@ -594,13 +594,13 @@ void _createTree(Pattern<TNeedle, Pex<Hierarchical, TMultiFinder > > &me,
   }
   else
   {
-	  unsigned int lower_2power = 1 << log2(k+1);
-	  unsigned int len = end - start+1;
-	  unsigned int right_k = lower_2power/2-1;
-	  unsigned int left_k = k - right_k-1;
-	  unsigned int left_len = len * (left_k+1) / (k+1);
-	  _createTree(me, start, start + left_len-1, left_k, cur_idx, 0, idx,plen);
-	  _createTree(me, start + left_len, end, right_k, cur_idx, 1, idx + (left_k+1),plen);
+      unsigned int lower_2power = 1 << log2(k+1);
+      unsigned int len = end - start+1;
+      unsigned int right_k = lower_2power/2-1;
+      unsigned int left_k = k - right_k-1;
+      unsigned int left_len = len * (left_k+1) / (k+1);
+      _createTree(me, start, start + left_len-1, left_k, cur_idx, 0, idx,plen);
+      _createTree(me, start + left_len, end, right_k, cur_idx, 1, idx + (left_k+1),plen);
   }
 }
 
@@ -680,14 +680,14 @@ SEQAN_CHECKPOINT
     {
       unsigned nP = p1 + position(f);
       if(nP > startPos)
-	{
-	  // compute new position
-	  unsigned offset = nP - position(finder);
-	  finder += offset;
-	  me.findNext = true;
-	  _setFinderEnd(finder);
-	  return true;
-	}      
+    {
+      // compute new position
+      unsigned offset = nP - position(finder);
+      finder += offset;
+      me.findNext = true;
+      _setFinderEnd(finder);
+      return true;
+    }      
     }
     // reset mf finder to old position
     unsigned mf_offset = position(finder) - me.lastFPos;
@@ -731,18 +731,18 @@ SEQAN_CHECKPOINT
       THSFinder f(i);
       while(find(f,me.range_table[node].verifier))
       {
-	unsigned nP = p1 + position(f);
-	if(nP > startPos)
-	{
-	  // compute new position
-	  unsigned offset = nP - position(finder);
-	  finder += offset;
-	  me.lastFPos = position(mf);
-	  me.lastFNdl = position(me.multiPattern);
-	  me.findNext = true;
-	  _setFinderEnd(finder);
-	  return true;
-	}      
+    unsigned nP = p1 + position(f);
+    if(nP > startPos)
+    {
+      // compute new position
+      unsigned offset = nP - position(finder);
+      finder += offset;
+      me.lastFPos = position(mf);
+      me.lastFNdl = position(me.multiPattern);
+      me.findNext = true;
+      _setFinderEnd(finder);
+      return true;
+    }      
       }
     }
   }

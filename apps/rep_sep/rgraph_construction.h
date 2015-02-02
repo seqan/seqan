@@ -32,7 +32,7 @@ void construct(ReadGraph<TColumnAlphabet,TAlignedReadStoreElement,TPosition> & m
           TId const contigId)
 {
     // fragmentstore typedefs
-  	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
+      typedef FragmentStore<TSpec, TConfig> TFragmentStore;
     //typedef typename Size<TFragmentStore>::Type TSize;
     //typedef typename TFragmentStore::TReadPos TReadPos;
 

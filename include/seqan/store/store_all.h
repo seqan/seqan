@@ -49,25 +49,25 @@ namespace SEQAN_NAMESPACE_MAIN
 template <typename TSpec = void>
 struct FragmentStoreConfig 
 {
-	typedef String<Dna5Q>	TReadSeq;
-	typedef String<Dna5Q>	TContigSeq;
-	
-	typedef double			TMean;
-	typedef double			TStd;
-	typedef signed char		TMappingQuality;
-		
-	typedef void					TReadStoreElementSpec;
-	typedef Owner<ConcatDirect<> >	TReadSeqStoreSpec;
-	typedef void					TMatePairStoreElementSpec;
-	typedef void					TLibraryStoreElementSpec;
-	typedef void					TContigStoreElementSpec;
-	typedef void					TContigFileSpec;
-	typedef void					TAlignedReadStoreElementSpec;
-	typedef Owner<ConcatDirect<> >	TAlignedReadTagStoreSpec;
-	typedef void					TAnnotationStoreElementSpec;
+    typedef String<Dna5Q>    TReadSeq;
+    typedef String<Dna5Q>    TContigSeq;
     
-    typedef Alloc<>					TReadNameSpec;
-	typedef Owner<ConcatDirect<> >	TReadNameStoreSpec;
+    typedef double            TMean;
+    typedef double            TStd;
+    typedef signed char        TMappingQuality;
+        
+    typedef void                    TReadStoreElementSpec;
+    typedef Owner<ConcatDirect<> >    TReadSeqStoreSpec;
+    typedef void                    TMatePairStoreElementSpec;
+    typedef void                    TLibraryStoreElementSpec;
+    typedef void                    TContigStoreElementSpec;
+    typedef void                    TContigFileSpec;
+    typedef void                    TAlignedReadStoreElementSpec;
+    typedef Owner<ConcatDirect<> >    TAlignedReadTagStoreSpec;
+    typedef void                    TAnnotationStoreElementSpec;
+    
+    typedef Alloc<>                    TReadNameSpec;
+    typedef Owner<ConcatDirect<> >    TReadNameStoreSpec;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -405,132 +405,132 @@ template <typename TSpec = void, typename TConfig = FragmentStoreConfig<TSpec> >
 class FragmentStore
 {
 private:
-	typedef typename TConfig::TReadStoreElementSpec			TReadStoreElementSpec;
-	typedef typename TConfig::TReadSeqStoreSpec				TReadSeqStoreSpec;
-    typedef typename TConfig::TReadNameSpec					TReadNameSpec;
-	typedef typename TConfig::TReadNameStoreSpec			TReadNameStoreSpec;
-	typedef typename TConfig::TMatePairStoreElementSpec		TMatePairStoreElementSpec;
-	typedef typename TConfig::TLibraryStoreElementSpec		TLibraryStoreElementSpec;
-	typedef typename TConfig::TContigStoreElementSpec		TContigStoreElementSpec;
-	typedef typename TConfig::TContigFileSpec				TContigFileSpec;
-	typedef typename TConfig::TAlignedReadStoreElementSpec	TAlignedReadStoreElementSpec;
-	typedef typename TConfig::TAlignedReadTagStoreSpec		TAlignedReadTagStoreSpec;
-	typedef typename TConfig::TAnnotationStoreElementSpec	TAnnotationStoreElementSpec;
+    typedef typename TConfig::TReadStoreElementSpec            TReadStoreElementSpec;
+    typedef typename TConfig::TReadSeqStoreSpec                TReadSeqStoreSpec;
+    typedef typename TConfig::TReadNameSpec                    TReadNameSpec;
+    typedef typename TConfig::TReadNameStoreSpec            TReadNameStoreSpec;
+    typedef typename TConfig::TMatePairStoreElementSpec        TMatePairStoreElementSpec;
+    typedef typename TConfig::TLibraryStoreElementSpec        TLibraryStoreElementSpec;
+    typedef typename TConfig::TContigStoreElementSpec        TContigStoreElementSpec;
+    typedef typename TConfig::TContigFileSpec                TContigFileSpec;
+    typedef typename TConfig::TAlignedReadStoreElementSpec    TAlignedReadStoreElementSpec;
+    typedef typename TConfig::TAlignedReadTagStoreSpec        TAlignedReadTagStoreSpec;
+    typedef typename TConfig::TAnnotationStoreElementSpec    TAnnotationStoreElementSpec;
 
 public:
-	typedef typename TConfig::TMean					TMean;
-	typedef typename TConfig::TStd					TStd;
-	typedef typename TConfig::TMappingQuality		TMappingQuality;
-	
-	typedef typename TConfig::TReadSeq				TReadSeq;
-	typedef typename TConfig::TContigSeq			TContigSeq;
-
-	typedef typename Position<TReadSeq>::Type		TRSeqPos_;
-	typedef typename Position<TContigSeq>::Type     TCSeqPos_;
-	typedef typename MakeSigned_<TRSeqPos_>::Type	TReadPos;
-	typedef typename MakeSigned_<TCSeqPos_>::Type	TContigPos;
-	
-	typedef GapAnchor<TReadPos>						TReadGapAnchor;
-	typedef GapAnchor<TContigPos>					TContigGapAnchor;
-	
-	typedef StringSet<CharString>					TNameStore;
-
-	typedef AnnotationStoreElement< TContigPos, TAnnotationStoreElementSpec >	TAnnotationStoreElement;
-	typedef typename TAnnotationStoreElement::TId								TAnnotationStoreElementId;
-
-	typedef String< ReadStoreElement< TReadStoreElementSpec > >												TReadStore;
-	typedef String< MatePairStoreElement< TMatePairStoreElementSpec > >										TMatePairStore;
-	typedef String< LibraryStoreElement< TMean, TStd, TLibraryStoreElementSpec > >							TLibraryStore;
-	typedef String< ContigStoreElement< TContigSeq, TContigGapAnchor, TContigStoreElementSpec > >			TContigStore;
-	typedef String< ContigFile< TContigFileSpec > >															TContigFileStore;
-	typedef String< AlignedReadStoreElement< TContigPos, TReadGapAnchor, TAlignedReadStoreElementSpec > >	TAlignedReadStore;
-	typedef String< AlignQualityStoreElement< TMappingQuality >	>											TAlignQualityStore;
-	typedef StringSet<CharString, TAlignedReadTagStoreSpec>													TAlignedReadTagStore;
-	typedef String< TAnnotationStoreElement >																TAnnotationStore;
-	typedef String< IntervalTree< TContigPos, TAnnotationStoreElementId > >									TIntervalTreeStore;
-	typedef StringSet<TReadSeq, TReadSeqStoreSpec>															TReadSeqStore;
-	
-	typedef StringSet< String<char, TReadNameSpec>, TReadNameStoreSpec>										TReadNameStore;
-	typedef TNameStore																						TMatePairNameStore;
-	typedef TNameStore																						TLibraryNameStore;
-	typedef TNameStore																						TContigNameStore;
-	typedef TNameStore																						TAnnotationNameStore;
-	typedef TNameStore																						TAnnotationTypeStore;
-	typedef TNameStore																						TAnnotationKeyStore;
-	
-	// main containers
-	TReadStore			readStore;              // readId       -> matePairId
-	TMatePairStore		matePairStore;          // matePairId   -> readId0, readId1, libraryId
-	TLibraryStore		libraryStore;           // libraryId    -> libSizeMean, libSizeStd
-	TContigStore		contigStore;            // contigId     -> contigSeq, contigGaps, contigFileId
-	TContigFileStore	contigFileStore;        // contigFileId -> fileName, firstContigId
-	TAlignedReadStore	alignedReadStore;       //              -> id, readId, contigId, pairMatchId (not matePairId!), beginPos, endPos, gaps
-	TAnnotationStore	annotationStore;        // annoId       -> parentId, contigId, beginPos, endPos
-	TIntervalTreeStore	intervalTreeStore_F;	// treeId (same as contigId)	-> intervalTree (F: forward strand)
-	TIntervalTreeStore	intervalTreeStore_R;	// 						(R: reverse complement strand)
-
-											// REMARKS: 
-											// 1)
-											//    beginPos <= endPos     forward strand
-											//    beginPos >  endPos     backward strand (reverse complement)
-											// 2) 
-											//    The alignedReadStore can arbitrarily be resorted. The unique identifier id should
-											//    be used to address additional information for each alignedRead in additional tables.
-
-	// we store the read sequences in a seperate stringset to reduce the memory overhead 
-	TReadSeqStore		readSeqStore;
-
-	// extra Sam fields
-	TAlignQualityStore		alignQualityStore;
-	TAlignedReadTagStore	alignedReadTagStore;
-
-	// retrieve the names of reads, mate-pairs, libraries, contigs, annotations by their ids
-	TReadNameStore			readNameStore;
-	TMatePairNameStore		matePairNameStore;
-	TLibraryNameStore		libraryNameStore;
-	TContigNameStore		contigNameStore;
-	TAnnotationNameStore	annotationNameStore;
-	TAnnotationTypeStore	annotationTypeStore;
-	TAnnotationKeyStore		annotationKeyStore;
-	
-	NameStoreCache<TReadNameStore, CharString>			readNameStoreCache;
-	NameStoreCache<TContigNameStore, CharString>		contigNameStoreCache;
-	NameStoreCache<TAnnotationNameStore, CharString>	annotationNameStoreCache;
-	NameStoreCache<TAnnotationTypeStore, CharString>	annotationTypeStoreCache;
-	NameStoreCache<TAnnotationKeyStore, CharString>		annotationKeyStoreCache;
-
-	enum {
-		ANNO_ROOT,
-		ANNO_DELETED,
-		ANNO_GENE,
-		ANNO_MRNA,
-		ANNO_CDS,
-		ANNO_EXON,
-		ANNO_FIVE_PRIME_UTR,
-		ANNO_INTRON,
-		ANNO_THREE_PRIME_UTR,
-		ANNO_PREDEFINED
-	};
+    typedef typename TConfig::TMean                    TMean;
+    typedef typename TConfig::TStd                    TStd;
+    typedef typename TConfig::TMappingQuality        TMappingQuality;
     
-	FragmentStore():
-		readNameStoreCache(readNameStore),
-		contigNameStoreCache(contigNameStore),
-		annotationNameStoreCache(annotationNameStore),
-		annotationTypeStoreCache(annotationTypeStore),
-		annotationKeyStoreCache(annotationKeyStore)
-	{
-		// ATTENTION: The order of these keywords must correspond to the order of the enums above.
-		appendName(annotationTypeStore, "<root>", annotationTypeStoreCache);
-		appendName(annotationTypeStore, "<deleted>", annotationTypeStoreCache);
-		appendName(annotationTypeStore, "gene", annotationTypeStoreCache);
-		appendName(annotationTypeStore, "mRNA", annotationTypeStoreCache);
-		appendName(annotationTypeStore, "CDS", annotationTypeStoreCache);
-		appendName(annotationTypeStore, "exon", annotationTypeStoreCache);
-		appendName(annotationTypeStore, "five_prime_UTR", annotationTypeStoreCache);
-		appendName(annotationTypeStore, "intron", annotationTypeStoreCache);
-		appendName(annotationTypeStore, "three_prime_UTR", annotationTypeStoreCache);
-		_storeClearAnnotations(*this);
-	}
+    typedef typename TConfig::TReadSeq                TReadSeq;
+    typedef typename TConfig::TContigSeq            TContigSeq;
+
+    typedef typename Position<TReadSeq>::Type        TRSeqPos_;
+    typedef typename Position<TContigSeq>::Type     TCSeqPos_;
+    typedef typename MakeSigned_<TRSeqPos_>::Type    TReadPos;
+    typedef typename MakeSigned_<TCSeqPos_>::Type    TContigPos;
+    
+    typedef GapAnchor<TReadPos>                        TReadGapAnchor;
+    typedef GapAnchor<TContigPos>                    TContigGapAnchor;
+    
+    typedef StringSet<CharString>                    TNameStore;
+
+    typedef AnnotationStoreElement< TContigPos, TAnnotationStoreElementSpec >    TAnnotationStoreElement;
+    typedef typename TAnnotationStoreElement::TId                                TAnnotationStoreElementId;
+
+    typedef String< ReadStoreElement< TReadStoreElementSpec > >                                                TReadStore;
+    typedef String< MatePairStoreElement< TMatePairStoreElementSpec > >                                        TMatePairStore;
+    typedef String< LibraryStoreElement< TMean, TStd, TLibraryStoreElementSpec > >                            TLibraryStore;
+    typedef String< ContigStoreElement< TContigSeq, TContigGapAnchor, TContigStoreElementSpec > >            TContigStore;
+    typedef String< ContigFile< TContigFileSpec > >                                                            TContigFileStore;
+    typedef String< AlignedReadStoreElement< TContigPos, TReadGapAnchor, TAlignedReadStoreElementSpec > >    TAlignedReadStore;
+    typedef String< AlignQualityStoreElement< TMappingQuality >    >                                            TAlignQualityStore;
+    typedef StringSet<CharString, TAlignedReadTagStoreSpec>                                                    TAlignedReadTagStore;
+    typedef String< TAnnotationStoreElement >                                                                TAnnotationStore;
+    typedef String< IntervalTree< TContigPos, TAnnotationStoreElementId > >                                    TIntervalTreeStore;
+    typedef StringSet<TReadSeq, TReadSeqStoreSpec>                                                            TReadSeqStore;
+    
+    typedef StringSet< String<char, TReadNameSpec>, TReadNameStoreSpec>                                        TReadNameStore;
+    typedef TNameStore                                                                                        TMatePairNameStore;
+    typedef TNameStore                                                                                        TLibraryNameStore;
+    typedef TNameStore                                                                                        TContigNameStore;
+    typedef TNameStore                                                                                        TAnnotationNameStore;
+    typedef TNameStore                                                                                        TAnnotationTypeStore;
+    typedef TNameStore                                                                                        TAnnotationKeyStore;
+    
+    // main containers
+    TReadStore            readStore;              // readId       -> matePairId
+    TMatePairStore        matePairStore;          // matePairId   -> readId0, readId1, libraryId
+    TLibraryStore        libraryStore;           // libraryId    -> libSizeMean, libSizeStd
+    TContigStore        contigStore;            // contigId     -> contigSeq, contigGaps, contigFileId
+    TContigFileStore    contigFileStore;        // contigFileId -> fileName, firstContigId
+    TAlignedReadStore    alignedReadStore;       //              -> id, readId, contigId, pairMatchId (not matePairId!), beginPos, endPos, gaps
+    TAnnotationStore    annotationStore;        // annoId       -> parentId, contigId, beginPos, endPos
+    TIntervalTreeStore    intervalTreeStore_F;    // treeId (same as contigId)    -> intervalTree (F: forward strand)
+    TIntervalTreeStore    intervalTreeStore_R;    //                         (R: reverse complement strand)
+
+                                            // REMARKS: 
+                                            // 1)
+                                            //    beginPos <= endPos     forward strand
+                                            //    beginPos >  endPos     backward strand (reverse complement)
+                                            // 2) 
+                                            //    The alignedReadStore can arbitrarily be resorted. The unique identifier id should
+                                            //    be used to address additional information for each alignedRead in additional tables.
+
+    // we store the read sequences in a seperate stringset to reduce the memory overhead 
+    TReadSeqStore        readSeqStore;
+
+    // extra Sam fields
+    TAlignQualityStore        alignQualityStore;
+    TAlignedReadTagStore    alignedReadTagStore;
+
+    // retrieve the names of reads, mate-pairs, libraries, contigs, annotations by their ids
+    TReadNameStore            readNameStore;
+    TMatePairNameStore        matePairNameStore;
+    TLibraryNameStore        libraryNameStore;
+    TContigNameStore        contigNameStore;
+    TAnnotationNameStore    annotationNameStore;
+    TAnnotationTypeStore    annotationTypeStore;
+    TAnnotationKeyStore        annotationKeyStore;
+    
+    NameStoreCache<TReadNameStore, CharString>            readNameStoreCache;
+    NameStoreCache<TContigNameStore, CharString>        contigNameStoreCache;
+    NameStoreCache<TAnnotationNameStore, CharString>    annotationNameStoreCache;
+    NameStoreCache<TAnnotationTypeStore, CharString>    annotationTypeStoreCache;
+    NameStoreCache<TAnnotationKeyStore, CharString>        annotationKeyStoreCache;
+
+    enum {
+        ANNO_ROOT,
+        ANNO_DELETED,
+        ANNO_GENE,
+        ANNO_MRNA,
+        ANNO_CDS,
+        ANNO_EXON,
+        ANNO_FIVE_PRIME_UTR,
+        ANNO_INTRON,
+        ANNO_THREE_PRIME_UTR,
+        ANNO_PREDEFINED
+    };
+    
+    FragmentStore():
+        readNameStoreCache(readNameStore),
+        contigNameStoreCache(contigNameStore),
+        annotationNameStoreCache(annotationNameStore),
+        annotationTypeStoreCache(annotationTypeStore),
+        annotationKeyStoreCache(annotationKeyStore)
+    {
+        // ATTENTION: The order of these keywords must correspond to the order of the enums above.
+        appendName(annotationTypeStore, "<root>", annotationTypeStoreCache);
+        appendName(annotationTypeStore, "<deleted>", annotationTypeStoreCache);
+        appendName(annotationTypeStore, "gene", annotationTypeStoreCache);
+        appendName(annotationTypeStore, "mRNA", annotationTypeStoreCache);
+        appendName(annotationTypeStore, "CDS", annotationTypeStoreCache);
+        appendName(annotationTypeStore, "exon", annotationTypeStoreCache);
+        appendName(annotationTypeStore, "five_prime_UTR", annotationTypeStoreCache);
+        appendName(annotationTypeStore, "intron", annotationTypeStoreCache);
+        appendName(annotationTypeStore, "three_prime_UTR", annotationTypeStoreCache);
+        _storeClearAnnotations(*this);
+    }
 
     void swap(FragmentStore & other)
     {
@@ -579,8 +579,8 @@ inline void swap(FragmentStore<TSpec, TConfig> & lhs, FragmentStore<TSpec, TConf
 template < typename TSpec, typename TConfig >
 struct VertexDescriptor< FragmentStore<TSpec, TConfig> > 
 {
-	typedef FragmentStore<TSpec, TConfig>		TFragmentStore_;
-	typedef typename Id<TFragmentStore_>::Type	Type;
+    typedef FragmentStore<TSpec, TConfig>        TFragmentStore_;
+    typedef typename Id<TFragmentStore_>::Type    Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -588,14 +588,14 @@ template < typename TConfig, typename TSpec, typename TIterSpec >
 inline typename Iterator<FragmentStore<TSpec, TConfig>, TIterSpec >::Type
 begin(FragmentStore<TSpec, TConfig> &store, TIterSpec const) 
 {
-	return Iter<FragmentStore<TSpec, TConfig>, TIterSpec>(store);
+    return Iter<FragmentStore<TSpec, TConfig>, TIterSpec>(store);
 }
 
 template < typename TConfig, typename TSpec, typename TIterSpec >
 inline typename Iterator<FragmentStore<TSpec, TConfig> const, TIterSpec >::Type
 begin(FragmentStore<TSpec, TConfig> const &store, TIterSpec const) 
 {
-	return Iter<FragmentStore<TSpec, TConfig> const, TIterSpec>(store);
+    return Iter<FragmentStore<TSpec, TConfig> const, TIterSpec>(store);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -603,14 +603,14 @@ template < typename TConfig, typename TSpec, typename TIterSpec >
 inline typename Iterator<FragmentStore<TSpec, TConfig>, TIterSpec >::Type
 end(FragmentStore<TSpec, TConfig> &store, TIterSpec const) 
 {
-	return Iter<FragmentStore<TSpec, TConfig>, TIterSpec>(store, MinimalCtor());
+    return Iter<FragmentStore<TSpec, TConfig>, TIterSpec>(store, MinimalCtor());
 }
 
 template < typename TConfig, typename TSpec, typename TIterSpec >
 inline typename Iterator<FragmentStore<TSpec, TConfig> const, TIterSpec >::Type
 end(FragmentStore<TSpec, TConfig> const &store, TIterSpec const) 
 {
-	return Iter<FragmentStore<TSpec, TConfig> const, TIterSpec>(store, MinimalCtor());
+    return Iter<FragmentStore<TSpec, TConfig> const, TIterSpec>(store, MinimalCtor());
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -619,47 +619,47 @@ template < typename TConfig, typename TSpec >
 inline void
 _storeClearAnnotations(FragmentStore<TSpec, TConfig> & me)
 {
-	typedef FragmentStore<TSpec, TConfig>				TFragmentStore;
-	typedef typename TFragmentStore::TAnnotationStore	TAnnotationStore;
-	typedef typename Value<TAnnotationStore>::Type		TAnnotation;
-	
-	resize(me.annotationStore, 1);
-	resize(me.annotationNameStore, 1);
-	resize(me.annotationTypeStore, (unsigned)TFragmentStore::ANNO_PREDEFINED);
-	
-	TAnnotation root;
-	root.typeId = 0;
-	me.annotationStore[0] = root;
-	me.annotationNameStore[0] = "<root>";
+    typedef FragmentStore<TSpec, TConfig>                TFragmentStore;
+    typedef typename TFragmentStore::TAnnotationStore    TAnnotationStore;
+    typedef typename Value<TAnnotationStore>::Type        TAnnotation;
+    
+    resize(me.annotationStore, 1);
+    resize(me.annotationNameStore, 1);
+    resize(me.annotationTypeStore, (unsigned)TFragmentStore::ANNO_PREDEFINED);
+    
+    TAnnotation root;
+    root.typeId = 0;
+    me.annotationStore[0] = root;
+    me.annotationNameStore[0] = "<root>";
 }
 
 template < typename TConfig, typename TSpec >
 inline void
 _storeRemoveTempAnnoNames(FragmentStore<TSpec, TConfig> & me)
 {
-	typedef FragmentStore<TSpec, TConfig>						TFragmentStore;
-	typedef typename TFragmentStore::TAnnotationStore			TAnnotationStore;
-	typedef typename TFragmentStore::TAnnotationNameStore		TAnnotationNameStore;
-	typedef typename TFragmentStore::TAnnotationTypeStore		TAnnotationTypeStore;
+    typedef FragmentStore<TSpec, TConfig>                        TFragmentStore;
+    typedef typename TFragmentStore::TAnnotationStore            TAnnotationStore;
+    typedef typename TFragmentStore::TAnnotationNameStore        TAnnotationNameStore;
+    typedef typename TFragmentStore::TAnnotationTypeStore        TAnnotationTypeStore;
 
-	typedef typename GetValue<TAnnotationNameStore>::Type		TName;
-	typedef typename GetValue<TAnnotationTypeStore>::Type		TType;
-	typedef typename Iterator<TAnnotationStore, Standard>::Type	TAnnoIter;
-	typedef typename Position<TAnnotationStore>::Type			TPosition;
-	
-	TAnnoIter it = end(me.annotationStore, Standard()) - 1;
-	TAnnoIter itBegin = begin(me.annotationStore, Standard());
-	TPosition pos = it - itBegin;
-	for (; itBegin <= it; --it, --pos)
-	{
-		if ((*it).typeId >= length(me.annotationTypeStore))
-			continue;
-		TName name = me.annotationNameStore[pos];
-		TType type = me.annotationTypeStore[(*it).typeId];
-		if (length(name) > length(type) + 3)
-			if (prefix(name, 2) == "__" && infix(name, 2, 2 + length(type)) == type && name[2 + length(type)] == '_')
-				assignValue(me.annotationNameStore, pos, "");
-	}
+    typedef typename GetValue<TAnnotationNameStore>::Type        TName;
+    typedef typename GetValue<TAnnotationTypeStore>::Type        TType;
+    typedef typename Iterator<TAnnotationStore, Standard>::Type    TAnnoIter;
+    typedef typename Position<TAnnotationStore>::Type            TPosition;
+    
+    TAnnoIter it = end(me.annotationStore, Standard()) - 1;
+    TAnnoIter itBegin = begin(me.annotationStore, Standard());
+    TPosition pos = it - itBegin;
+    for (; itBegin <= it; --it, --pos)
+    {
+        if ((*it).typeId >= length(me.annotationTypeStore))
+            continue;
+        TName name = me.annotationNameStore[pos];
+        TType type = me.annotationTypeStore[(*it).typeId];
+        if (length(name) > length(type) + 3)
+            if (prefix(name, 2) == "__" && infix(name, 2, 2 + length(type)) == type && name[2 + length(type)] == '_')
+                assignValue(me.annotationNameStore, pos, "");
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -668,26 +668,26 @@ template <typename TSpec, typename TConfig, typename TId>
 inline typename GetValue<typename FragmentStore<TSpec, TConfig>::TAnnotationNameStore>::Type
 getAnnoName(FragmentStore<TSpec, TConfig> const & store, TId id)
 {
-	return store.annotationNameStore[id];
+    return store.annotationNameStore[id];
 }
 
 template <typename TSpec, typename TConfig, typename TId>
 inline typename GetValue<typename FragmentStore<TSpec, TConfig>::TAnnotationTypeStore>::Type
 getAnnoType(FragmentStore<TSpec, TConfig> const & store, TId id)
 {
-	return store.annotationTypeStore[id];
+    return store.annotationTypeStore[id];
 }
 
 template <typename TSpec, typename TConfig, typename TId>
 inline CharString
 getAnnoUniqueName(FragmentStore<TSpec, TConfig> const & store, TId id)
 {
-	if (id < length(store.annotationNameStore) && !empty(getAnnoName(store, id)))
-		return getAnnoName(store, id);
-	
-	std::stringstream tmp;
-	tmp << "__" << getAnnoType(store, store.annotationStore[id].typeId) << '_' << id;
-	return tmp.str();
+    if (id < length(store.annotationNameStore) && !empty(getAnnoName(store, id)))
+        return getAnnoName(store, id);
+    
+    std::stringstream tmp;
+    tmp << "__" << getAnnoType(store, store.annotationStore[id].typeId) << '_' << id;
+    return tmp.str();
 }
 
 
@@ -706,18 +706,18 @@ getAnnoUniqueName(FragmentStore<TSpec, TConfig> const & store, TId id)
 template <typename TSpec, typename TConfig, typename TId, typename TName, typename TString, typename TFlag, typename TContext>
 inline bool 
 _storeAppendRead (
-	FragmentStore<TSpec, TConfig> & fragStore, 
-	TId & readId, 
-	TName const & qname,
-	TString const & readSeq,
-	TFlag const flag,
-	TContext &)
+    FragmentStore<TSpec, TConfig> & fragStore, 
+    TId & readId, 
+    TName const & qname,
+    TString const & readSeq,
+    TFlag const flag,
+    TContext &)
 {
-	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
-	typedef typename Value<typename TFragmentStore::TMatePairStore>::Type TMatePairElement;
+    typedef FragmentStore<TSpec, TConfig> TFragmentStore;
+    typedef typename Value<typename TFragmentStore::TMatePairStore>::Type TMatePairElement;
 
-	// search for readId by name (could be me or my mate)
-	bool found = getIdByName(fragStore.readNameStore, qname, readId, fragStore.readNameStoreCache);
+    // search for readId by name (could be me or my mate)
+    bool found = getIdByName(fragStore.readNameStore, qname, readId, fragStore.readNameStoreCache);
     
     // if naming scheme is xx/1, xx/2 or xx/L, xx/R try to look up my mate
     if (!found && (flag & 1) == 1 && length(qname) >= 2 && qname[length(qname) - 2] == '/')
@@ -738,59 +738,59 @@ _storeAppendRead (
         found = getIdByName(fragStore.readNameStore, mate, readId, fragStore.readNameStoreCache);
     }
     
-	if (found)
+    if (found)
     {
-		if ((flag & 1) == 1)
-		{
-			// if the read is in the store and paired
-			// check the mate pair store if it is the same mate of the pair
-			// assuming that only one flag 0x040 or 0x0080 is 1
-			int inPair = 1 - ((flag & 0x40) >> 6);	// bit 7 is set => inPair = 0
-													// else inPair = 1 (even if bits 6 and 7 are not set)
-			
-			TId matePairId = fragStore.readStore[readId].matePairId;
-			if (matePairId != TMatePairElement::INVALID_ID)
-			{
-				readId = fragStore.matePairStore[matePairId].readId[inPair];
-				if (readId == TMatePairElement::INVALID_ID)
-				{
-					// create new entry in read and read name store
-					// set sequence and mate pair ID in new read store element
-					readId = appendRead(fragStore, readSeq, matePairId);
-					// add the identifier to the read name store
-					appendName(fragStore.readNameStore, qname, fragStore.readNameStoreCache);
-					// set the ID in the mate pair store
-					fragStore.matePairStore[matePairId].readId[inPair] = readId;
+        if ((flag & 1) == 1)
+        {
+            // if the read is in the store and paired
+            // check the mate pair store if it is the same mate of the pair
+            // assuming that only one flag 0x040 or 0x0080 is 1
+            int inPair = 1 - ((flag & 0x40) >> 6);    // bit 7 is set => inPair = 0
+                                                    // else inPair = 1 (even if bits 6 and 7 are not set)
+            
+            TId matePairId = fragStore.readStore[readId].matePairId;
+            if (matePairId != TMatePairElement::INVALID_ID)
+            {
+                readId = fragStore.matePairStore[matePairId].readId[inPair];
+                if (readId == TMatePairElement::INVALID_ID)
+                {
+                    // create new entry in read and read name store
+                    // set sequence and mate pair ID in new read store element
+                    readId = appendRead(fragStore, readSeq, matePairId);
+                    // add the identifier to the read name store
+                    appendName(fragStore.readNameStore, qname, fragStore.readNameStoreCache);
+                    // set the ID in the mate pair store
+                    fragStore.matePairStore[matePairId].readId[inPair] = readId;
                     return true;
-				} 
+                } 
                 // else == I am already in the store
-			}
+            }
             // else == my mate said he has no mate (do nothing)
-		}
+        }
         return false;
-	}
+    }
 
-	// if the read name is not in the store
-	// create new entry in read and read name store
-	readId = length(fragStore.readStore);
+    // if the read name is not in the store
+    // create new entry in read and read name store
+    readId = length(fragStore.readStore);
 
-	// if the read is paired
-	if ((flag & 1) == 1)
-	{
-		TMatePairElement mateElem;
-		// set the first or second read ID in the mate pair element
-		TId matePairId = length(fragStore.matePairStore);
-		mateElem.readId[(flag & 0x80) >> 7] = readId;
-		// get a new mate pair ID and add the new mate pair element
-		appendValue(fragStore.matePairStore, mateElem);
-		// set the new mate pair ID in the read element
-		appendRead(fragStore, readSeq, matePairId);
-	} 
-	// if read is not paired
-	else
-		appendRead(fragStore, readSeq);
-	
-	appendName(fragStore.readNameStore, qname, fragStore.readNameStoreCache);
+    // if the read is paired
+    if ((flag & 1) == 1)
+    {
+        TMatePairElement mateElem;
+        // set the first or second read ID in the mate pair element
+        TId matePairId = length(fragStore.matePairStore);
+        mateElem.readId[(flag & 0x80) >> 7] = readId;
+        // get a new mate pair ID and add the new mate pair element
+        appendValue(fragStore.matePairStore, mateElem);
+        // set the new mate pair ID in the read element
+        appendRead(fragStore, readSeq, matePairId);
+    } 
+    // if read is not paired
+    else
+        appendRead(fragStore, readSeq);
+    
+    appendName(fragStore.readNameStore, qname, fragStore.readNameStoreCache);
     return true;
 }
 
@@ -803,23 +803,23 @@ _storeAppendRead (
 template <typename TSpec, typename TConfig, typename TId, typename TName>
 inline void 
 _storeAppendContig (
-	FragmentStore<TSpec, TConfig> & fragStore, 
-	TId & contigId, 
-	TName & rName)
+    FragmentStore<TSpec, TConfig> & fragStore, 
+    TId & contigId, 
+    TName & rName)
 {
-	typedef FragmentStore<TSpec, TConfig> TFragmentStore;
-	typedef typename Value<typename TFragmentStore::TContigStore>::Type TContigElement;
-	
-	if (!getIdByName(fragStore.contigNameStore, rName, contigId, fragStore.contigNameStoreCache))
-	{
-		// if the contig is not in the store yet
-		// set the ID on the last entry after appending
-		contigId = length(fragStore.contigStore);
-		// append contig store
-		appendName(fragStore.contigNameStore, rName, fragStore.contigNameStoreCache);
-		appendValue(fragStore.contigStore, TContigElement());
-//		std::cout << "added contig:" << rName << std::endl;	
-	}
+    typedef FragmentStore<TSpec, TConfig> TFragmentStore;
+    typedef typename Value<typename TFragmentStore::TContigStore>::Type TContigElement;
+    
+    if (!getIdByName(fragStore.contigNameStore, rName, contigId, fragStore.contigNameStoreCache))
+    {
+        // if the contig is not in the store yet
+        // set the ID on the last entry after appending
+        contigId = length(fragStore.contigStore);
+        // append contig store
+        appendName(fragStore.contigNameStore, rName, fragStore.contigNameStoreCache);
+        appendValue(fragStore.contigStore, TContigElement());
+//        std::cout << "added contig:" << rName << std::endl;    
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -831,13 +831,13 @@ _storeAppendContig (
 template <typename TSpec, typename TConfig, typename TId, typename TName, typename TTypeId>
 inline void
 _storeAppendAnnotationName (
-	FragmentStore<TSpec, TConfig> & fragStore,
-	TId & annotationId,
-	TName & annotationName,
+    FragmentStore<TSpec, TConfig> & fragStore,
+    TId & annotationId,
+    TName & annotationName,
     TTypeId typeId)
 {
     SEQAN_ASSERT_EQ(length(fragStore.annotationStore), length(fragStore.annotationNameStore));
-	if (!empty(annotationName) && getIdByName(fragStore.annotationNameStore, annotationName, annotationId, fragStore.annotationNameStoreCache))
+    if (!empty(annotationName) && getIdByName(fragStore.annotationNameStore, annotationName, annotationId, fragStore.annotationNameStoreCache))
     {
         do
         {
@@ -847,11 +847,11 @@ _storeAppendAnnotationName (
             ++annotationId;
         } while (annotationId < length(fragStore.annotationNameStore) && fragStore.annotationNameStore[annotationId] == annotationName);
     }
-	// if the annotation is not in the store yet
-	// set the ID on the last entry after appending
-	annotationId = length(fragStore.annotationNameStore);
-	// append to annotationName store
-	appendName(fragStore.annotationNameStore, annotationName, fragStore.annotationNameStoreCache);
+    // if the annotation is not in the store yet
+    // set the ID on the last entry after appending
+    annotationId = length(fragStore.annotationNameStore);
+    // append to annotationName store
+    appendName(fragStore.annotationNameStore, annotationName, fragStore.annotationNameStoreCache);
     // we also need to append an annotation to store the typeId in case of duplicate annotation names
     resize(fragStore.annotationStore, length(fragStore.annotationStore) + 1);
     back(fragStore.annotationStore).typeId = typeId;
@@ -860,9 +860,9 @@ _storeAppendAnnotationName (
 template <typename TSpec, typename TConfig, typename TId, typename TName>
 inline void 
 _storeAppendAnnotationName (
-	FragmentStore<TSpec, TConfig> & fragStore, 
-	TId & annotationId,
-	TName & annotationName)
+    FragmentStore<TSpec, TConfig> & fragStore, 
+    TId & annotationId,
+    TName & annotationName)
 {
     _storeAppendAnnotationName(fragStore, annotationId, annotationName, maxValue<TId>());
 }
@@ -870,39 +870,39 @@ _storeAppendAnnotationName (
 template <typename TSpec, typename TConfig, typename TId, typename TName>
 inline void 
 _storeAppendType (
-	FragmentStore<TSpec, TConfig> & fragStore, 
-	TId & typeId, 
-	TName & annotationType)
+    FragmentStore<TSpec, TConfig> & fragStore, 
+    TId & typeId, 
+    TName & annotationType)
 {
-	if (!getIdByName(fragStore.annotationTypeStore, annotationType, typeId, fragStore.annotationTypeStoreCache))
-	{
-		// if the annotation type name is not in the store yet
-		// set the ID on the last entry after appending
-		typeId = length(fragStore.annotationTypeStore);
-		// append to annotationType store
-		if (!empty(annotationType))
-			appendName(fragStore.annotationTypeStore, annotationType, fragStore.annotationTypeStoreCache);
-//		std::cout << "added type:" << annotationType << std::endl;	
-	}
+    if (!getIdByName(fragStore.annotationTypeStore, annotationType, typeId, fragStore.annotationTypeStoreCache))
+    {
+        // if the annotation type name is not in the store yet
+        // set the ID on the last entry after appending
+        typeId = length(fragStore.annotationTypeStore);
+        // append to annotationType store
+        if (!empty(annotationType))
+            appendName(fragStore.annotationTypeStore, annotationType, fragStore.annotationTypeStoreCache);
+//        std::cout << "added type:" << annotationType << std::endl;    
+    }
 }
 
 template <typename TSpec, typename TConfig, typename TId, typename TName>
 inline void 
 _storeAppendKey (
-	FragmentStore<TSpec, TConfig> & fragStore, 
-	TId & keyId,
-	TName & annotationKey)
+    FragmentStore<TSpec, TConfig> & fragStore, 
+    TId & keyId,
+    TName & annotationKey)
 {
-	if (!getIdByName(fragStore.annotationKeyStore, annotationKey, keyId, fragStore.annotationKeyStoreCache))
-	{
-		// if the key name is not in the store yet
-		// set the ID on the last entry after appending
-		keyId = length(fragStore.annotationKeyStore);
-		// append to annotationKey store
-		if (!empty(annotationKey))
-			appendName(fragStore.annotationKeyStore, annotationKey, fragStore.annotationKeyStoreCache);
-//		std::cout << "added key:" << annotationKey << std::endl;	
-	}
+    if (!getIdByName(fragStore.annotationKeyStore, annotationKey, keyId, fragStore.annotationKeyStoreCache))
+    {
+        // if the key name is not in the store yet
+        // set the ID on the last entry after appending
+        keyId = length(fragStore.annotationKeyStore);
+        // append to annotationKey store
+        if (!empty(annotationKey))
+            appendName(fragStore.annotationKeyStore, annotationKey, fragStore.annotationKeyStoreCache);
+//        std::cout << "added key:" << annotationKey << std::endl;    
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -910,60 +910,60 @@ _storeAppendKey (
 template <typename TSpec, typename TConfig, typename TAnnotation, typename TKey, typename TValue>
 inline void 
 annotationAssignValueByKey (
-	FragmentStore<TSpec, TConfig> & fragStore, 
-	TAnnotation & annotation,
-	TKey const & key,
-	TValue const & value)
+    FragmentStore<TSpec, TConfig> & fragStore, 
+    TAnnotation & annotation,
+    TKey const & key,
+    TValue const & value)
 {
-	typedef typename TAnnotation::TValues	TValues;
-	typedef typename Size<TValues>::Type	TKeyId;
-	
-	TKeyId keyId = 0;	
-	_storeAppendKey(fragStore, keyId, key);
-	if (length(annotation.values) <= keyId)
-		resize(annotation.values, keyId + 1);
-	assignValue(annotation.values, keyId, value);
+    typedef typename TAnnotation::TValues    TValues;
+    typedef typename Size<TValues>::Type    TKeyId;
+    
+    TKeyId keyId = 0;    
+    _storeAppendKey(fragStore, keyId, key);
+    if (length(annotation.values) <= keyId)
+        resize(annotation.values, keyId + 1);
+    assignValue(annotation.values, keyId, value);
 }
 
 template <typename TSpec, typename TConfig, typename TAnnotation, typename TKey, typename TValue>
 inline bool 
 annotationGetValueByKey (
     TValue & value,
-	FragmentStore<TSpec, TConfig> & fragStore, 
-	TAnnotation const & annotation,
-	TKey const & key)
+    FragmentStore<TSpec, TConfig> & fragStore, 
+    TAnnotation const & annotation,
+    TKey const & key)
 {
-	typedef typename TAnnotation::TValues	TValues;
-	typedef typename Size<TValues>::Type	TKeyId;
-	
-	TKeyId keyId = 0;	
-	if (!getIdByName(fragStore.annotationKeyStore, key, keyId, fragStore.annotationKeyStoreCache))
-		return false;
-	
-	if (keyId >= length(annotation.values))
-		return false;
+    typedef typename TAnnotation::TValues    TValues;
+    typedef typename Size<TValues>::Type    TKeyId;
+    
+    TKeyId keyId = 0;    
+    if (!getIdByName(fragStore.annotationKeyStore, key, keyId, fragStore.annotationKeyStoreCache))
+        return false;
+    
+    if (keyId >= length(annotation.values))
+        return false;
 
-	if (empty(annotation.values[keyId]))
-		return false;
-	
-	assign(value, annotation.values[keyId]);
+    if (empty(annotation.values[keyId]))
+        return false;
+    
+    assign(value, annotation.values[keyId]);
     return true;
 }
 
 template <typename TSpec, typename TConfig, typename TAnnotation, typename TKey>
 inline typename Id<TAnnotation>::Type
 annotationGetValueIdByKey (
-	FragmentStore<TSpec, TConfig> & fragStore, 
-	TAnnotation const & annotation,
-	TKey const & key)
+    FragmentStore<TSpec, TConfig> & fragStore, 
+    TAnnotation const & annotation,
+    TKey const & key)
 {
-	typedef typename TAnnotation::TValues           TValues;
-	typedef typename Size<TValues>::Type            TKeyId;
+    typedef typename TAnnotation::TValues           TValues;
+    typedef typename Size<TValues>::Type            TKeyId;
 
     static const typename Value<typename TAnnotation::TValues const>::Type emptyString;
 
-	TKeyId keyId = 0;
-	if (getIdByName(fragStore.annotationKeyStore, key, keyId, fragStore.annotationKeyStoreCache))
+    TKeyId keyId = 0;
+    if (getIdByName(fragStore.annotationKeyStore, key, keyId, fragStore.annotationKeyStoreCache))
         if (keyId < length(annotation.values) && !empty(annotation.values[keyId]))
             return keyId;
     return TAnnotation::INVALID_ID;
@@ -984,9 +984,9 @@ template <typename TSpec, typename TConfig>
 inline void
 clearContigs(FragmentStore<TSpec, TConfig> &me)
 {
-	clear(me.contigStore);
-	clear(me.contigNameStore);
-	refresh(me.contigNameStoreCache);
+    clear(me.contigStore);
+    clear(me.contigNameStore);
+    refresh(me.contigNameStoreCache);
 }
 
 
@@ -1010,9 +1010,9 @@ template <typename TSpec, typename TConfig>
 inline void
 clearReads(FragmentStore<TSpec, TConfig> &me)
 {
-	clear(me.readStore);
-	clear(me.readSeqStore);
-	clear(me.readNameStore);
+    clear(me.readStore);
+    clear(me.readSeqStore);
+    clear(me.readNameStore);
     refresh(me.readNameStoreCache);
 }
 
@@ -1042,64 +1042,64 @@ clearReads(FragmentStore<TSpec, TConfig> &me)
 template <typename TSpec, typename TConfig, typename TRead, typename TId>
 inline typename Size<typename FragmentStore<TSpec, TConfig>::TReadStore>::Type
 appendRead(
-	FragmentStore<TSpec, TConfig> &me, 
-	TRead const &read, 
-	TId matePairId)
+    FragmentStore<TSpec, TConfig> &me, 
+    TRead const &read, 
+    TId matePairId)
 {
-	SEQAN_ASSERT_EQ(length(me.readStore), length(me.readSeqStore));
+    SEQAN_ASSERT_EQ(length(me.readStore), length(me.readSeqStore));
 
-	typedef typename FragmentStore<TSpec, TConfig>::TReadStore TReadStore;
-	typename Value<TReadStore>::Type r;
-	r.matePairId = matePairId;
+    typedef typename FragmentStore<TSpec, TConfig>::TReadStore TReadStore;
+    typename Value<TReadStore>::Type r;
+    r.matePairId = matePairId;
 
-	appendValue(me.readStore, r, Generous());
-	appendValue(me.readSeqStore, read, Generous());
-	return length(me.readStore) - 1;
+    appendValue(me.readStore, r, Generous());
+    appendValue(me.readSeqStore, read, Generous());
+    return length(me.readStore) - 1;
 }
 
 template <typename TSpec, typename TConfig, typename TRead, typename TId>
 inline typename Size<typename FragmentStore<TSpec, TConfig>::TReadStore>::Type
 appendRead(
-	FragmentStore<TSpec, TConfig> &me, 
-	TRead const &read, 
-	CharString const &name,
-	TId matePairId)
+    FragmentStore<TSpec, TConfig> &me, 
+    TRead const &read, 
+    CharString const &name,
+    TId matePairId)
 {
-	SEQAN_ASSERT_EQ(length(me.readStore), length(me.readSeqStore));
+    SEQAN_ASSERT_EQ(length(me.readStore), length(me.readSeqStore));
 
-	typedef typename FragmentStore<TSpec, TConfig>::TReadStore TReadStore;
-	typename Value<TReadStore>::Type r;
-	r.matePairId = matePairId;
+    typedef typename FragmentStore<TSpec, TConfig>::TReadStore TReadStore;
+    typename Value<TReadStore>::Type r;
+    r.matePairId = matePairId;
 
-	appendValue(me.readStore, r, Generous());
-	appendValue(me.readSeqStore, read, Generous());
-	appendValue(me.readNameStore, name, Generous());
-	return length(me.readStore) - 1;
+    appendValue(me.readStore, r, Generous());
+    appendValue(me.readSeqStore, read, Generous());
+    appendValue(me.readNameStore, name, Generous());
+    return length(me.readStore) - 1;
 }
 
 template <typename TSpec, typename TConfig, typename TRead>
 inline typename Size<typename FragmentStore<TSpec, TConfig>::TReadStore>::Type
 appendRead(
-	FragmentStore<TSpec, TConfig> &me, 
-	TRead const &read)
+    FragmentStore<TSpec, TConfig> &me, 
+    TRead const &read)
 {
-	typedef typename FragmentStore<TSpec, TConfig>::TReadStore TReadStore;
+    typedef typename FragmentStore<TSpec, TConfig>::TReadStore TReadStore;
     typedef typename Value<TReadStore>::Type TReadStoreElement;
     
-	return appendRead(me, read, TReadStoreElement::INVALID_ID);
+    return appendRead(me, read, TReadStoreElement::INVALID_ID);
 }
 
 template <typename TSpec, typename TConfig, typename TRead>
 inline typename Size<typename FragmentStore<TSpec, TConfig>::TReadStore>::Type
 appendRead(
-	FragmentStore<TSpec, TConfig> &me, 
-	TRead const &read,
-	CharString const &name)
+    FragmentStore<TSpec, TConfig> &me, 
+    TRead const &read,
+    CharString const &name)
 {
-	typedef typename FragmentStore<TSpec, TConfig>::TReadStore TReadStore;
+    typedef typename FragmentStore<TSpec, TConfig>::TReadStore TReadStore;
     typedef typename Value<TReadStore>::Type TReadStoreElement;
     
-	return appendRead(me, read, name, TReadStoreElement::INVALID_ID);
+    return appendRead(me, read, name, TReadStoreElement::INVALID_ID);
 }
 
 /*!
@@ -1118,10 +1118,10 @@ appendRead(
 template <typename TSpec, typename TConfig, typename TId>
 inline typename Value<typename FragmentStore<TSpec, TConfig>::TReadSeqStore>::Type
 getRead(
-	FragmentStore<TSpec, TConfig> &me, 
-	TId id)
+    FragmentStore<TSpec, TConfig> &me, 
+    TId id)
 {
-	return value(me.readSeqStore, id);
+    return value(me.readSeqStore, id);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1162,7 +1162,7 @@ appendAlignedRead(
         TPairMatchId const & pairMatchId)
 {
     SEQAN_CHECKPOINT;
-	typedef typename FragmentStore<TSpec, TConfig>::TAlignedReadStore TAlignedReadStore;
+    typedef typename FragmentStore<TSpec, TConfig>::TAlignedReadStore TAlignedReadStore;
     typedef typename Value<TAlignedReadStore>::Type TAlignedReadStoreElement;
 
     TAlignedReadStoreElement element(length(store.alignedReadStore), readId, contigId, beginPos, endPos);
@@ -1182,7 +1182,7 @@ appendAlignedRead(
         TPos const & endPos)
 {
     SEQAN_CHECKPOINT;
-	typedef typename FragmentStore<TSpec, TConfig>::TAlignedReadStore TAlignedReadStore;
+    typedef typename FragmentStore<TSpec, TConfig>::TAlignedReadStore TAlignedReadStore;
     typedef typename Value<TAlignedReadStore>::Type TAlignedReadStoreElement;
     return appendAlignedRead(store, readId, contigId, beginPos, endPos, TAlignedReadStoreElement::INVALID_ID);
 }
@@ -1214,57 +1214,57 @@ appendAlignedRead(
 template <typename TSpec, typename TConfig, typename TRead>
 inline typename Size<typename FragmentStore<TSpec, TConfig>::TMatePairStore>::Type
 appendMatePair(
-	FragmentStore<TSpec, TConfig> &me, 
-	TRead const &read1, 
-	TRead const &read2)
+    FragmentStore<TSpec, TConfig> &me, 
+    TRead const &read1, 
+    TRead const &read2)
 {
-	typedef FragmentStore<TSpec, TConfig>			TFragmentStore;
-	typedef typename TFragmentStore::TReadStore		TReadStore;
-	typedef typename TFragmentStore::TMatePairStore	TMatePairStore;
+    typedef FragmentStore<TSpec, TConfig>            TFragmentStore;
+    typedef typename TFragmentStore::TReadStore        TReadStore;
+    typedef typename TFragmentStore::TMatePairStore    TMatePairStore;
 
-	typename Value<TReadStore>::Type r;
-	typename Value<TMatePairStore>::Type mp;
-	r.matePairId = length(me.matePairStore);
-	mp.readId[0] = length(me.readStore);
-	mp.readId[1] = length(me.readStore) + 1;
+    typename Value<TReadStore>::Type r;
+    typename Value<TMatePairStore>::Type mp;
+    r.matePairId = length(me.matePairStore);
+    mp.readId[0] = length(me.readStore);
+    mp.readId[1] = length(me.readStore) + 1;
 
-	appendValue(me.readStore, r, Generous());
-	appendValue(me.readStore, r, Generous());
-	appendValue(me.matePairStore, mp, Generous());
-	appendValue(me.readSeqStore, read1, Generous());
-	appendValue(me.readSeqStore, read2, Generous());
-	return length(me.matePairStore) - 1;
+    appendValue(me.readStore, r, Generous());
+    appendValue(me.readStore, r, Generous());
+    appendValue(me.matePairStore, mp, Generous());
+    appendValue(me.readSeqStore, read1, Generous());
+    appendValue(me.readSeqStore, read2, Generous());
+    return length(me.matePairStore) - 1;
 }
 
 template <typename TSpec, typename TConfig, typename TRead>
 inline typename Size<typename FragmentStore<TSpec, TConfig>::TMatePairStore>::Type
 appendMatePair(
-	FragmentStore<TSpec, TConfig> &me, 
-	TRead const &read1, 
-	TRead const &read2, 
-	CharString const &name1,
-	CharString const &name2)
+    FragmentStore<TSpec, TConfig> &me, 
+    TRead const &read1, 
+    TRead const &read2, 
+    CharString const &name1,
+    CharString const &name2)
 {
-	SEQAN_ASSERT_EQ(length(me.readStore), length(me.readSeqStore));
+    SEQAN_ASSERT_EQ(length(me.readStore), length(me.readSeqStore));
 
-	typedef FragmentStore<TSpec, TConfig>			TFragmentStore;
-	typedef typename TFragmentStore::TReadStore		TReadStore;
-	typedef typename TFragmentStore::TMatePairStore	TMatePairStore;
+    typedef FragmentStore<TSpec, TConfig>            TFragmentStore;
+    typedef typename TFragmentStore::TReadStore        TReadStore;
+    typedef typename TFragmentStore::TMatePairStore    TMatePairStore;
 
-	typename Value<TReadStore>::Type r;
-	typename Value<TMatePairStore>::Type mp;
-	r.matePairId = length(me.matePairStore);
-	mp.readId[0] = length(me.readStore);
-	mp.readId[1] = length(me.readStore) + 1;
+    typename Value<TReadStore>::Type r;
+    typename Value<TMatePairStore>::Type mp;
+    r.matePairId = length(me.matePairStore);
+    mp.readId[0] = length(me.readStore);
+    mp.readId[1] = length(me.readStore) + 1;
 
-	appendValue(me.readStore, r, Generous());
-	appendValue(me.readStore, r, Generous());
-	appendValue(me.matePairStore, mp, Generous());
-	appendValue(me.readSeqStore, read1, Generous());
-	appendValue(me.readSeqStore, read2, Generous());
-	appendValue(me.readNameStore, name1, Generous());
-	appendValue(me.readNameStore, name2, Generous());
-	return length(me.matePairStore) - 1;
+    appendValue(me.readStore, r, Generous());
+    appendValue(me.readStore, r, Generous());
+    appendValue(me.matePairStore, mp, Generous());
+    appendValue(me.readSeqStore, read1, Generous());
+    appendValue(me.readSeqStore, read2, Generous());
+    appendValue(me.readNameStore, name1, Generous());
+    appendValue(me.readNameStore, name2, Generous());
+    return length(me.matePairStore) - 1;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1294,40 +1294,40 @@ template <typename TSpec, typename TConfig>
 inline typename Size<typename FragmentStore<TSpec, TConfig>::TAlignedReadStore>::Type
 compactAlignedReads(FragmentStore<TSpec, TConfig> &me)
 {
-	typedef FragmentStore<TSpec, TConfig>							TFragmentStore;
-	typedef typename TFragmentStore::TAlignedReadStore				TAlignedReadStore;
-	typedef typename TFragmentStore::TAlignQualityStore				TAlignQualityStore;
+    typedef FragmentStore<TSpec, TConfig>                            TFragmentStore;
+    typedef typename TFragmentStore::TAlignedReadStore                TAlignedReadStore;
+    typedef typename TFragmentStore::TAlignQualityStore                TAlignQualityStore;
 
-	typedef typename Value<TAlignedReadStore>::Type					TAlignedRead;
-	typedef typename Id<TAlignedRead>::Type							TId;
-	typedef typename Size<TAlignQualityStore>::Type					TAQSize;
-	typedef typename Iterator<TAlignedReadStore, Standard>::Type	TAlignedReadIter;
-	typedef typename Iterator<TAlignQualityStore, Standard>::Type	TAlignQualityIter;
-	
-	sortAlignedReads(me.alignedReadStore, SortId());
-	
-	TAlignedReadIter itAR = begin(me.alignedReadStore, Standard());
-	TAlignedReadIter itARend = end(me.alignedReadStore, Standard());
-	TAlignQualityIter itAQ = begin(me.alignQualityStore, Standard());
-	TAlignQualityIter itAQbegin = itAQ;
-	TAQSize aqSize = length(me.alignQualityStore);
-	TId newId = 0;
-	
-	for (; itAR != itARend; ++itAR, ++newId)
-	{
-		TId id = (*itAR).id;
-		if (id == TAlignedRead::INVALID_ID) break;	// we assume that invalid ids are at the end of the AlignedReadStore
-		if (id < aqSize)
-		{
-			*itAQ = *(itAQbegin + id);
-			++itAQ;
-		}
-		(*itAR).id = newId;
-	}
-	
-	resize(me.alignedReadStore, newId, Exact());
-	resize(me.alignQualityStore, itAQ - itAQbegin, Exact());
-	return newId;
+    typedef typename Value<TAlignedReadStore>::Type                    TAlignedRead;
+    typedef typename Id<TAlignedRead>::Type                            TId;
+    typedef typename Size<TAlignQualityStore>::Type                    TAQSize;
+    typedef typename Iterator<TAlignedReadStore, Standard>::Type    TAlignedReadIter;
+    typedef typename Iterator<TAlignQualityStore, Standard>::Type    TAlignQualityIter;
+    
+    sortAlignedReads(me.alignedReadStore, SortId());
+    
+    TAlignedReadIter itAR = begin(me.alignedReadStore, Standard());
+    TAlignedReadIter itARend = end(me.alignedReadStore, Standard());
+    TAlignQualityIter itAQ = begin(me.alignQualityStore, Standard());
+    TAlignQualityIter itAQbegin = itAQ;
+    TAQSize aqSize = length(me.alignQualityStore);
+    TId newId = 0;
+    
+    for (; itAR != itARend; ++itAR, ++newId)
+    {
+        TId id = (*itAR).id;
+        if (id == TAlignedRead::INVALID_ID) break;    // we assume that invalid ids are at the end of the AlignedReadStore
+        if (id < aqSize)
+        {
+            *itAQ = *(itAQbegin + id);
+            ++itAQ;
+        }
+        (*itAR).id = newId;
+    }
+    
+    resize(me.alignedReadStore, newId, Exact());
+    resize(me.alignQualityStore, itAQ - itAQbegin, Exact());
+    return newId;
 }
 
 /*!
@@ -1353,33 +1353,33 @@ template <typename TSpec, typename TConfig>
 inline typename Size<typename FragmentStore<TSpec, TConfig>::TAlignedReadStore>::Type
 compactPairMatchIds(FragmentStore<TSpec, TConfig> &me)
 {
-	typedef FragmentStore<TSpec, TConfig>							TFragmentStore;
-	typedef typename TFragmentStore::TAlignedReadStore				TAlignedReadStore;
+    typedef FragmentStore<TSpec, TConfig>                            TFragmentStore;
+    typedef typename TFragmentStore::TAlignedReadStore                TAlignedReadStore;
 
-	typedef typename Value<TAlignedReadStore>::Type					TAlignedRead;
-	typedef typename Id<TAlignedRead>::Type							TId;
-	typedef typename Iterator<TAlignedReadStore, Standard>::Type	TAlignedReadIter;
-	
-	sortAlignedReads(me.alignedReadStore, SortPairMatchId());
-	
-	TAlignedReadIter itAR = begin(me.alignedReadStore, Standard());
-	TAlignedReadIter itARend = end(me.alignedReadStore, Standard());
-	if (itAR == itARend) return 0;
-	
-	TId lastId = (*itAR).pairMatchId;
-	TId newId = 0;
-	for (; itAR != itARend; ++itAR)
-	{
-		TId id = (*itAR).pairMatchId;
-		if (id == TAlignedRead::INVALID_ID) break;	// we assume that invalid ids are at the end of the AlignedReadStore
-		if (lastId < id)
-		{
-			lastId = id;
-			++newId;
-		}
-		(*itAR).pairMatchId = newId;
-	}
-	return newId + 1;
+    typedef typename Value<TAlignedReadStore>::Type                    TAlignedRead;
+    typedef typename Id<TAlignedRead>::Type                            TId;
+    typedef typename Iterator<TAlignedReadStore, Standard>::Type    TAlignedReadIter;
+    
+    sortAlignedReads(me.alignedReadStore, SortPairMatchId());
+    
+    TAlignedReadIter itAR = begin(me.alignedReadStore, Standard());
+    TAlignedReadIter itARend = end(me.alignedReadStore, Standard());
+    if (itAR == itARend) return 0;
+    
+    TId lastId = (*itAR).pairMatchId;
+    TId newId = 0;
+    for (; itAR != itARend; ++itAR)
+    {
+        TId id = (*itAR).pairMatchId;
+        if (id == TAlignedRead::INVALID_ID) break;    // we assume that invalid ids are at the end of the AlignedReadStore
+        if (lastId < id)
+        {
+            lastId = id;
+            ++newId;
+        }
+        (*itAR).pairMatchId = newId;
+    }
+    return newId + 1;
 }
 
 /*!
@@ -1402,34 +1402,34 @@ template <typename TLibSizeString, typename TSpec, typename TConfig>
 inline void
 calculateInsertSizes(TLibSizeString &insertSizes, FragmentStore<TSpec, TConfig> &me)
 {
-	typedef FragmentStore<TSpec, TConfig>							TFragmentStore;
-	typedef typename TFragmentStore::TAlignedReadStore				TAlignedReadStore;
-	
-	typedef typename Value<TAlignedReadStore>::Type					TAlignedRead;
-	typedef typename Id<TAlignedRead>::Type							TId;
-	typedef typename Iterator<TAlignedReadStore, Standard>::Type	TAlignedReadIter;
-	typedef typename TFragmentStore::TContigPos						TGPos;
+    typedef FragmentStore<TSpec, TConfig>                            TFragmentStore;
+    typedef typename TFragmentStore::TAlignedReadStore                TAlignedReadStore;
+    
+    typedef typename Value<TAlignedReadStore>::Type                    TAlignedRead;
+    typedef typename Id<TAlignedRead>::Type                            TId;
+    typedef typename Iterator<TAlignedReadStore, Standard>::Type    TAlignedReadIter;
+    typedef typename TFragmentStore::TContigPos                        TGPos;
 
-	TAlignedReadIter it = begin(me.alignedReadStore, Standard());
-	TAlignedReadIter itEnd = end(me.alignedReadStore, Standard());
+    TAlignedReadIter it = begin(me.alignedReadStore, Standard());
+    TAlignedReadIter itEnd = end(me.alignedReadStore, Standard());
 
-	resize(insertSizes, compactPairMatchIds(me), Exact());
-	TId lastId = TAlignedRead::INVALID_ID;
-	TGPos leftMatePos = 0;
-	for (; it != itEnd; ++it)
-	{
-		TId id = (*it).pairMatchId;
-		if (id == TAlignedRead::INVALID_ID) break;	// we assume that invalid ids are at the end of the AlignedReadStore
-		if (id != lastId) {
-			leftMatePos = (*it).beginPos;
-			lastId = id;
-		} else {
+    resize(insertSizes, compactPairMatchIds(me), Exact());
+    TId lastId = TAlignedRead::INVALID_ID;
+    TGPos leftMatePos = 0;
+    for (; it != itEnd; ++it)
+    {
+        TId id = (*it).pairMatchId;
+        if (id == TAlignedRead::INVALID_ID) break;    // we assume that invalid ids are at the end of the AlignedReadStore
+        if (id != lastId) {
+            leftMatePos = (*it).beginPos;
+            lastId = id;
+        } else {
             if ((*it).beginPos < leftMatePos)
                 insertSizes[id] = leftMatePos - (*it).beginPos;
             else
                 insertSizes[id] = (*it).beginPos - leftMatePos;
         }
-	}
+    }
 }
 
 /*!
@@ -1449,24 +1449,24 @@ template <typename TSpec, typename TConfig, typename TId>
 inline int
 getMateNo(FragmentStore<TSpec, TConfig> const & me, TId readId)
 {
-	typedef FragmentStore<TSpec, TConfig>			TFragmentStore;
-	typedef typename TFragmentStore::TReadStore		TReadStore;
-	typedef typename TFragmentStore::TMatePairStore	TMatePairStore;
+    typedef FragmentStore<TSpec, TConfig>            TFragmentStore;
+    typedef typename TFragmentStore::TReadStore        TReadStore;
+    typedef typename TFragmentStore::TMatePairStore    TMatePairStore;
 
-	typedef typename Value<TReadStore>::Type		TRead;
-	typedef typename Value<TMatePairStore>::Type	TMatePair;
-	
-	if (readId != TRead::INVALID_ID)
-	{
-		TRead const &r = me.readStore[readId];
-		if (r.matePairId != TRead::INVALID_ID)
-		{
-			TMatePair const &mp = me.matePairStore[r.matePairId];
-			if (mp.readId[0] == readId) return 0;
-			if (mp.readId[1] == readId) return 1;
-		}
-	}
-	return -1;
+    typedef typename Value<TReadStore>::Type        TRead;
+    typedef typename Value<TMatePairStore>::Type    TMatePair;
+    
+    if (readId != TRead::INVALID_ID)
+    {
+        TRead const &r = me.readStore[readId];
+        if (r.matePairId != TRead::INVALID_ID)
+        {
+            TMatePair const &mp = me.matePairStore[r.matePairId];
+            if (mp.readId[0] == readId) return 0;
+            if (mp.readId[1] == readId) return 1;
+        }
+    }
+    return -1;
 }
 
 /*!
@@ -1525,15 +1525,15 @@ calculateMateIndices(TMateIndexString & mateIndices, FragmentStore<TSpec, TConfi
  * alignment in the multiple sequence alignment and contigId the id of the reference contig.
  */
 
-	
+    
 struct AlignedReadLayout
 {
-	typedef String<unsigned>	TRow;
-	typedef String<TRow>		TRows;
-	typedef String<TRows>		TContigRows;
-	
-	TContigRows contigRows;			// rows string, each row is a string of ids of alignedReads from left to right
-	String<Pair<int> > mateCoords;	// coords of mate pair
+    typedef String<unsigned>    TRow;
+    typedef String<TRow>        TRows;
+    typedef String<TRows>        TContigRows;
+    
+    TContigRows contigRows;            // rows string, each row is a string of ids of alignedReads from left to right
+    String<Pair<int> > mateCoords;    // coords of mate pair
 };
 
 /*!
@@ -1553,95 +1553,95 @@ struct AlignedReadLayout
 template <typename TSpec, typename TConfig>
 void layoutAlignment(AlignedReadLayout &layout, FragmentStore<TSpec, TConfig> &store)
 {
-	typedef FragmentStore<TSpec, TConfig>							TFragmentStore;
+    typedef FragmentStore<TSpec, TConfig>                            TFragmentStore;
 
-	typedef typename TFragmentStore::TAlignedReadStore				TAlignedReadStore;
-	typedef typename Value<TAlignedReadStore>::Type					TAlignedRead;
-	typedef typename Iterator<TAlignedReadStore, Standard>::Type	TAlignedReadIter;
+    typedef typename TFragmentStore::TAlignedReadStore                TAlignedReadStore;
+    typedef typename Value<TAlignedReadStore>::Type                    TAlignedRead;
+    typedef typename Iterator<TAlignedReadStore, Standard>::Type    TAlignedReadIter;
 
-	typedef typename Id<TAlignedRead>::Type							TId;
-	typedef typename TFragmentStore::TContigPos						TContigPos;
-	
-	typedef typename AlignedReadLayout::TRows						TRows;
-	typedef typename AlignedReadLayout::TRow						TRow;
-	typedef typename Iterator<TRows>::Type							TRowsIter;
-	
-	// sort matches by increasing begin positions
-	sortAlignedReads(store.alignedReadStore, SortBeginPos());
-	sortAlignedReads(store.alignedReadStore, SortContigId());
+    typedef typename Id<TAlignedRead>::Type                            TId;
+    typedef typename TFragmentStore::TContigPos                        TContigPos;
+    
+    typedef typename AlignedReadLayout::TRows                        TRows;
+    typedef typename AlignedReadLayout::TRow                        TRow;
+    typedef typename Iterator<TRows>::Type                            TRowsIter;
+    
+    // sort matches by increasing begin positions
+    sortAlignedReads(store.alignedReadStore, SortBeginPos());
+    sortAlignedReads(store.alignedReadStore, SortContigId());
 
-	clear(layout.contigRows);
-	TAlignedReadIter it = begin(store.alignedReadStore, Standard());
-	TAlignedReadIter itEnd = end(store.alignedReadStore, Standard());
+    clear(layout.contigRows);
+    TAlignedReadIter it = begin(store.alignedReadStore, Standard());
+    TAlignedReadIter itEnd = end(store.alignedReadStore, Standard());
 
-	for (TId id = 0; it != itEnd; ++it, ++id)
-	{
-		if ((*it).contigId == TAlignedRead::INVALID_ID) continue;
-		if (length(layout.contigRows) <= (*it).contigId)
-			resize(layout.contigRows, (*it).contigId + 1);
-		
-		TRowsIter lit = begin(layout.contigRows[(*it).contigId], Standard());
-		TRowsIter litEnd = end(layout.contigRows[(*it).contigId], Standard());
-		
-		TContigPos beginPos = _min((*it).beginPos, (*it).endPos);
-		
-		for (; lit != litEnd; ++lit)
-		{
-			if (empty(*lit)) break;
-			TAlignedRead &align = store.alignedReadStore[back(*lit)];
-			if (_max(align.beginPos, align.endPos) < beginPos)			// maybe <= would be better
-				break;													// but harder to differ between reads borders
-		}
-			
-		if (lit == litEnd)
-		{
-			TRow s;
-			appendValue(s, id);
-			appendValue(layout.contigRows[(*it).contigId], s);
-		} else
-			appendValue(*lit, id);
-	}
+    for (TId id = 0; it != itEnd; ++it, ++id)
+    {
+        if ((*it).contigId == TAlignedRead::INVALID_ID) continue;
+        if (length(layout.contigRows) <= (*it).contigId)
+            resize(layout.contigRows, (*it).contigId + 1);
+        
+        TRowsIter lit = begin(layout.contigRows[(*it).contigId], Standard());
+        TRowsIter litEnd = end(layout.contigRows[(*it).contigId], Standard());
+        
+        TContigPos beginPos = _min((*it).beginPos, (*it).endPos);
+        
+        for (; lit != litEnd; ++lit)
+        {
+            if (empty(*lit)) break;
+            TAlignedRead &align = store.alignedReadStore[back(*lit)];
+            if (_max(align.beginPos, align.endPos) < beginPos)            // maybe <= would be better
+                break;                                                    // but harder to differ between reads borders
+        }
+            
+        if (lit == litEnd)
+        {
+            TRow s;
+            appendValue(s, id);
+            appendValue(layout.contigRows[(*it).contigId], s);
+        } else
+            appendValue(*lit, id);
+    }
 }
 
 template <typename TStream, typename TContigGaps, typename TReadGaps, typename TAlignedRead, typename TLine>
 inline void _printRead(
-	TStream &stream, 
-	AlignedReadLayout &,
-	TContigGaps &contigGaps,
-	TReadGaps &readGaps,
-	TAlignedRead &alignedRead,
-	TLine)
+    TStream &stream, 
+    AlignedReadLayout &,
+    TContigGaps &contigGaps,
+    TReadGaps &readGaps,
+    TAlignedRead &alignedRead,
+    TLine)
 {
-//	stream << readGaps;
+//    stream << readGaps;
 
-	typedef typename Iterator<TContigGaps, Standard>::Type TContigIterator;
-	typedef typename Iterator<TReadGaps, Standard>::Type TIterator;
+    typedef typename Iterator<TContigGaps, Standard>::Type TContigIterator;
+    typedef typename Iterator<TReadGaps, Standard>::Type TIterator;
 
-	TContigIterator cit = begin(contigGaps, Standard()) + (_min(alignedRead.beginPos, alignedRead.endPos) + beginPosition(readGaps));
-	TIterator it = begin(readGaps, Standard());
-	TIterator itEnd = end(readGaps, Standard());
+    TContigIterator cit = begin(contigGaps, Standard()) + (_min(alignedRead.beginPos, alignedRead.endPos) + beginPosition(readGaps));
+    TIterator it = begin(readGaps, Standard());
+    TIterator itEnd = end(readGaps, Standard());
 
     char identityChar = (alignedRead.beginPos < alignedRead.endPos)? '.' : ',';
     
-	for (; it != itEnd; ++it, ++cit)
-	{
-		if (isGap(it))
+    for (; it != itEnd; ++it, ++cit)
+    {
+        if (isGap(it))
             stream << '*';
         else if (convert<Dna5>(*cit) == convert<Dna5>(*it))
             stream << identityChar;
         else
             stream << convert<Dna5>(*it);
-	}
+    }
 }
 
 template <typename TStream, typename TContigGaps, typename TContigName>
 inline void _printContig(
-	TStream &stream,
-	AlignedReadLayout &,
-	TContigGaps &contigGaps,
-	TContigName const &)
+    TStream &stream,
+    AlignedReadLayout &,
+    TContigGaps &contigGaps,
+    TContigName const &)
 {
-	stream << contigGaps;
+    stream << contigGaps;
 }
 
 /*!
@@ -1666,122 +1666,122 @@ inline void _printContig(
 
 template <typename TStream, typename TSpec, typename TConfig, typename TContigId, typename TPos, typename TNum>
 void printAlignment(
-	TStream &stream, 
-	AlignedReadLayout &layout,
-	FragmentStore<TSpec, TConfig> &store, 
-	TContigId contigId,
-	TPos posBegin, TPos posEnd,
-	TNum lineBegin, TNum lineEnd)
+    TStream &stream, 
+    AlignedReadLayout &layout,
+    FragmentStore<TSpec, TConfig> &store, 
+    TContigId contigId,
+    TPos posBegin, TPos posEnd,
+    TNum lineBegin, TNum lineEnd)
 {
-	typedef FragmentStore<TSpec, TConfig>							TFragmentStore;
+    typedef FragmentStore<TSpec, TConfig>                            TFragmentStore;
 
-	typedef typename TFragmentStore::TAlignedReadStore				TAlignedReadStore;
-	typedef typename TFragmentStore::TContigStore					TContigStore;
+    typedef typename TFragmentStore::TAlignedReadStore                TAlignedReadStore;
+    typedef typename TFragmentStore::TContigStore                    TContigStore;
 
-	typedef typename Value<TContigStore>::Type						TContig;
-	typedef typename Value<TAlignedReadStore>::Type					TAlignedRead;
-	typedef typename TFragmentStore::TReadSeq						TReadSeq;
-	typedef typename Id<TAlignedRead>::Type							TId;
-	typedef typename TFragmentStore::TContigPos						TContigPos;
-	typedef typename TContig::TContigSeq							TContigSeq;
+    typedef typename Value<TContigStore>::Type                        TContig;
+    typedef typename Value<TAlignedReadStore>::Type                    TAlignedRead;
+    typedef typename TFragmentStore::TReadSeq                        TReadSeq;
+    typedef typename Id<TAlignedRead>::Type                            TId;
+    typedef typename TFragmentStore::TContigPos                        TContigPos;
+    typedef typename TContig::TContigSeq                            TContigSeq;
 
-	typedef AlignedReadLayout::TRows								TRows;
-	typedef typename Value<TRows>::Type								TRow;
-	typedef typename Size<TRows>::Type								TRowsSize;
-	typedef typename Iterator<TRows>::Type							TRowsIter;
-	typedef typename Iterator<TRow>::Type							TRowIter;
+    typedef AlignedReadLayout::TRows                                TRows;
+    typedef typename Value<TRows>::Type                                TRow;
+    typedef typename Size<TRows>::Type                                TRowsSize;
+    typedef typename Iterator<TRows>::Type                            TRowsIter;
+    typedef typename Iterator<TRow>::Type                            TRowIter;
 
-	typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >	TContigGaps;
-	typedef Gaps<CharString, AnchorGaps<typename TAlignedRead::TGapAnchors> >	TReadGaps;
+    typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >    TContigGaps;
+    typedef Gaps<CharString, AnchorGaps<typename TAlignedRead::TGapAnchors> >    TReadGaps;
 
     typedef typename DirectionIterator<TStream, Output>::Type       TOutIter;
 
-	TContigGaps	contigGaps;
-	if ((TId)contigId < length(store.contigStore))
-	{
-		set(contigGaps.data_source, store.contigStore[contigId].seq);
-		set(contigGaps.data_gaps, store.contigStore[contigId].gaps);
-//		TContigGaps	contigGaps(store.contigStore[contigId].seq, store.contigStore[contigId].gaps);
-		setClippedBeginPosition(contigGaps, posBegin);
-		setClippedEndPosition(contigGaps, posEnd);
-		_printContig(stream, layout, contigGaps, store.contigNameStore[contigId]);
-	};
+    TContigGaps    contigGaps;
+    if ((TId)contigId < length(store.contigStore))
+    {
+        set(contigGaps.data_source, store.contigStore[contigId].seq);
+        set(contigGaps.data_gaps, store.contigStore[contigId].gaps);
+//        TContigGaps    contigGaps(store.contigStore[contigId].seq, store.contigStore[contigId].gaps);
+        setClippedBeginPosition(contigGaps, posBegin);
+        setClippedEndPosition(contigGaps, posEnd);
+        _printContig(stream, layout, contigGaps, store.contigNameStore[contigId]);
+    };
     TOutIter iter = directionIterator(stream, Output());
     writeValue(iter, '\n');
 
-	if ((TId)contigId >= length(layout.contigRows))
-		return;
-	
-	if ((TRowsSize)lineEnd > length(layout.contigRows[contigId])) lineEnd = length(layout.contigRows[contigId]);
-	if ((TRowsSize)lineBegin >= (TRowsSize)lineEnd) return;
+    if ((TId)contigId >= length(layout.contigRows))
+        return;
+    
+    if ((TRowsSize)lineEnd > length(layout.contigRows[contigId])) lineEnd = length(layout.contigRows[contigId]);
+    if ((TRowsSize)lineBegin >= (TRowsSize)lineEnd) return;
 
-	TRowsIter lit = begin(layout.contigRows[contigId], Standard()) + lineBegin;
-	TRowsIter litEnd = begin(layout.contigRows[contigId], Standard()) + lineEnd;
-	TReadSeq readSeq;
-	CharString readSeqString;
+    TRowsIter lit = begin(layout.contigRows[contigId], Standard()) + lineBegin;
+    TRowsIter litEnd = begin(layout.contigRows[contigId], Standard()) + lineEnd;
+    TReadSeq readSeq;
+    CharString readSeqString;
     clearClipping(contigGaps);
 
-	for (TNum line = 1; lit < litEnd; ++lit, ++line)
-	{
-		TRowIter itEnd = end(*lit, Standard());
-		TRowIter left = begin(*lit, Standard());
-		TRowIter right = itEnd;
-		TRowIter mid = itEnd;
+    for (TNum line = 1; lit < litEnd; ++lit, ++line)
+    {
+        TRowIter itEnd = end(*lit, Standard());
+        TRowIter left = begin(*lit, Standard());
+        TRowIter right = itEnd;
+        TRowIter mid = itEnd;
 
-		while (left < right)
-		{
-			mid = left + (right - left) / 2;
-			TAlignedRead &align = store.alignedReadStore[*mid];
+        while (left < right)
+        {
+            mid = left + (right - left) / 2;
+            TAlignedRead &align = store.alignedReadStore[*mid];
 
-			if (align.contigId < (TId)contigId || (align.contigId == (TId)contigId && (TPos)_max(align.beginPos, align.endPos) <= posBegin))
-				left = mid + 1;	// what we search is in the right part
-			else
-				right = mid;	//            ...           left part
-		}
-		
-		TPos cursor = posBegin;
-		for (; mid < itEnd; ++mid)
-		{
-//			if (*mid >= lastRead) continue;
-			TAlignedRead &align = store.alignedReadStore[*mid];
-			if (align.contigId != (TId)contigId) break;
+            if (align.contigId < (TId)contigId || (align.contigId == (TId)contigId && (TPos)_max(align.beginPos, align.endPos) <= posBegin))
+                left = mid + 1;    // what we search is in the right part
+            else
+                right = mid;    //            ...           left part
+        }
+        
+        TPos cursor = posBegin;
+        for (; mid < itEnd; ++mid)
+        {
+//            if (*mid >= lastRead) continue;
+            TAlignedRead &align = store.alignedReadStore[*mid];
+            if (align.contigId != (TId)contigId) break;
 
-			TReadGaps   readGaps(readSeqString, align.gaps);
-			TContigPos  left = align.beginPos;
-			TContigPos	right = align.endPos;
-			TContigPos	cBegin = _min(left, right);
-			TContigPos	cEnd = _max(left, right);
-			
-			if ((TPos)cEnd <= posBegin) continue; // shouldn't occur
-			if (posEnd <= (TPos)cBegin) break;
-			
-			readSeq = store.readSeqStore[align.readId];
-			if (left > right)
-			{
-				reverseComplement(readSeq);
-				readSeqString = readSeq;
-				toLower(readSeqString);
-			} else
-				readSeqString = readSeq;
-			
-			if ((TPos)cBegin < posBegin)
-				setClippedBeginPosition(readGaps, posBegin - (TPos)cBegin);
-			else
+            TReadGaps   readGaps(readSeqString, align.gaps);
+            TContigPos  left = align.beginPos;
+            TContigPos    right = align.endPos;
+            TContigPos    cBegin = _min(left, right);
+            TContigPos    cEnd = _max(left, right);
+            
+            if ((TPos)cEnd <= posBegin) continue; // shouldn't occur
+            if (posEnd <= (TPos)cBegin) break;
+            
+            readSeq = store.readSeqStore[align.readId];
+            if (left > right)
+            {
+                reverseComplement(readSeq);
+                readSeqString = readSeq;
+                toLower(readSeqString);
+            } else
+                readSeqString = readSeq;
+            
+            if ((TPos)cBegin < posBegin)
+                setClippedBeginPosition(readGaps, posBegin - (TPos)cBegin);
+            else
             {
                 TOutIter iter = directionIterator(stream, Output());
-				for (; cursor < (TPos)cBegin; ++cursor)
+                for (; cursor < (TPos)cBegin; ++cursor)
                     writeValue(iter, ' ');
             }
 
-			if (posEnd < (TPos)cEnd)
-				setClippedEndPosition(readGaps, posEnd - (TPos)cBegin);
-			
-			_printRead(stream, layout, contigGaps, readGaps, align, line);
-			cursor = cEnd;
-		}
+            if (posEnd < (TPos)cEnd)
+                setClippedEndPosition(readGaps, posEnd - (TPos)cBegin);
+            
+            _printRead(stream, layout, contigGaps, readGaps, align, line);
+            cursor = cEnd;
+        }
         TOutIter iter = directionIterator(stream, Output());
         writeValue(iter, '\n');
-	}
+    }
 }
 
 /*!
@@ -1813,93 +1813,93 @@ void printAlignment(
 template <typename TSpec, typename TConfig, typename TScore, typename TShrinkMatches>
 void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScore const & score, TShrinkMatches const &)
 {
-	typedef FragmentStore<TSpec, TConfig>							TFragmentStore;
+    typedef FragmentStore<TSpec, TConfig>                            TFragmentStore;
 
-	//typedef typename TFragmentStore::TReadStore						TReadStore;
-	//typedef typename TFragmentStore::TReadSeqStore					TReadSeqStore;
-	typedef typename TFragmentStore::TAlignedReadStore				TAlignedReadStore;
-	typedef typename TFragmentStore::TContigStore					TContigStore;
+    //typedef typename TFragmentStore::TReadStore                        TReadStore;
+    //typedef typename TFragmentStore::TReadSeqStore                    TReadSeqStore;
+    typedef typename TFragmentStore::TAlignedReadStore                TAlignedReadStore;
+    typedef typename TFragmentStore::TContigStore                    TContigStore;
 
-	//typedef typename Value<TReadStore>::Type						TRead;
-	typedef typename Value<TContigStore>::Type						TContig;
-	typedef typename Value<TAlignedReadStore>::Type					TAlignedRead;
+    //typedef typename Value<TReadStore>::Type                        TRead;
+    typedef typename Value<TContigStore>::Type                        TContig;
+    typedef typename Value<TAlignedReadStore>::Type                    TAlignedRead;
 
-	typedef typename TFragmentStore::TReadSeq						TReadSeq;
-	typedef typename Iterator<TAlignedReadStore, Standard>::Type	TAlignedReadIter;
-	typedef typename Id<TAlignedRead>::Type							TId;
-	typedef typename TFragmentStore::TContigPos						TContigPos;
+    typedef typename TFragmentStore::TReadSeq                        TReadSeq;
+    typedef typename Iterator<TAlignedReadStore, Standard>::Type    TAlignedReadIter;
+    typedef typename Id<TAlignedRead>::Type                            TId;
+    typedef typename TFragmentStore::TContigPos                        TContigPos;
 
-	typedef typename TContig::TContigSeq							TContigSeq;
-	typedef Align<TReadSeq, ArrayGaps>								TAlign;
-	typedef Gaps<TReadSeq, ArrayGaps>								TGaps;
+    typedef typename TContig::TContigSeq                            TContigSeq;
+    typedef Align<TReadSeq, ArrayGaps>                                TAlign;
+    typedef Gaps<TReadSeq, ArrayGaps>                                TGaps;
 
-	typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >	TContigGaps;
-	typedef Gaps<TReadSeq, AnchorGaps<typename TAlignedRead::TGapAnchors> >	TReadGaps;
-	typedef typename Iterator<TContigGaps>::Type							TContigIter;
-	typedef typename Iterator<TReadGaps>::Type								TReadIter;
+    typedef Gaps<TContigSeq, AnchorGaps<typename TContig::TGapAnchors> >    TContigGaps;
+    typedef Gaps<TReadSeq, AnchorGaps<typename TAlignedRead::TGapAnchors> >    TReadGaps;
+    typedef typename Iterator<TContigGaps>::Type                            TContigIter;
+    typedef typename Iterator<TReadGaps>::Type                                TReadIter;
 
     // Number of alignments with a quality score (edit distance) before computing global alignment.  We will fill the
     // store for all alignments if there are no scores yet.
     unsigned alignQualityStoreLengthPre = length(store.alignQualityStore);
     if (alignQualityStoreLengthPre == 0u)
         resize(store.alignQualityStore, length(store.alignedReadStore));
-	
-	// sort matches by increasing begin positions
-	sortAlignedReads(store.alignedReadStore, SortBeginPos());
-	sortAlignedReads(store.alignedReadStore, SortContigId());
+    
+    // sort matches by increasing begin positions
+    sortAlignedReads(store.alignedReadStore, SortBeginPos());
+    sortAlignedReads(store.alignedReadStore, SortContigId());
 
-	TReadSeq readSeq;
-	TId lastContigId = TAlignedRead::INVALID_ID;
-	TAlignedReadIter it = begin(store.alignedReadStore, Standard());
-	TAlignedReadIter itEnd = end(store.alignedReadStore, Standard());
-	TAlignedReadIter firstOverlap = begin(store.alignedReadStore, Standard());
+    TReadSeq readSeq;
+    TId lastContigId = TAlignedRead::INVALID_ID;
+    TAlignedReadIter it = begin(store.alignedReadStore, Standard());
+    TAlignedReadIter itEnd = end(store.alignedReadStore, Standard());
+    TAlignedReadIter firstOverlap = begin(store.alignedReadStore, Standard());
 
 //    TAlignedReadIter theIt = it;
-//	for (; theIt != itEnd; ++theIt)
-//	{
+//    for (; theIt != itEnd; ++theIt)
+//    {
 //        if (theIt->id == 29971)
 //            break;
 //    }
-//	TReadSeq theReadSeq = store.readSeqStore[theIt->readId];
+//    TReadSeq theReadSeq = store.readSeqStore[theIt->readId];
 //    if (theIt->beginPos > theIt->endPos)
 //        reverseComplement(theReadSeq);
     
-//    TContigPos	cBeginPrev = 0;
-	for (; it != itEnd;)
-	{
-		TContigPos	left = (*it).beginPos;
-		TContigPos	right = (*it).endPos;
-		TContigPos	cBegin = _min(left, right);
+//    TContigPos    cBeginPrev = 0;
+    for (; it != itEnd;)
+    {
+        TContigPos    left = (*it).beginPos;
+        TContigPos    right = (*it).endPos;
+        TContigPos    cBegin = _min(left, right);
 //    if (cBegin<cBeginPrev)
 //    {
 //        std::cout<<"SORTING ERROR"<<std::endl;
 //    }
 //    cBeginPrev=cBegin;
-		TContigPos	cEnd = _max(left, right);
-		TContigGaps	contigGaps(store.contigStore[(*it).contigId].seq, store.contigStore[(*it).contigId].gaps);
-		TReadGaps	readGaps(readSeq, (*it).gaps);
-		
-		readSeq = store.readSeqStore[(*it).readId];
-		if (left > right)
-			reverseComplement(readSeq);
-				
-		// 1. Calculate pairwise alignment
-		TAlign align;
-		resize(rows(align), 2);
-		assignSource(row(align, 0), infix(store.contigStore[it->contigId].seq, cBegin, cEnd));
-		assignSource(row(align, 1), readSeq);
+        TContigPos    cEnd = _max(left, right);
+        TContigGaps    contigGaps(store.contigStore[(*it).contigId].seq, store.contigStore[(*it).contigId].gaps);
+        TReadGaps    readGaps(readSeq, (*it).gaps);
+        
+        readSeq = store.readSeqStore[(*it).readId];
+        if (left > right)
+            reverseComplement(readSeq);
+                
+        // 1. Calculate pairwise alignment
+        TAlign align;
+        resize(rows(align), 2);
+        assignSource(row(align, 0), infix(store.contigStore[it->contigId].seq, cBegin, cEnd));
+        assignSource(row(align, 1), readSeq);
 //        int ud = store.alignQualityStore[it->id].errors;
 //        int ld = -ud;
-//		if (IsSameType<TShrinkMatches, True>::VALUE)
-//		    globalAlignment(align, score, AlignConfig<true, false, false, true>(), ld, ud, Gotoh());
+//        if (IsSameType<TShrinkMatches, True>::VALUE)
+//            globalAlignment(align, score, AlignConfig<true, false, false, true>(), ld, ud, Gotoh());
 //        else
-//		    globalAlignment(align, score, ld, ud);
+//            globalAlignment(align, score, ld, ud);
 
         int qualValue = 0;
-		if (IsSameType<TShrinkMatches, True>::VALUE)
-		    qualValue = globalAlignment(align, score, AlignConfig<true, false, false, true>(), Gotoh());
+        if (IsSameType<TShrinkMatches, True>::VALUE)
+            qualValue = globalAlignment(align, score, AlignConfig<true, false, false, true>(), Gotoh());
         else
-		    qualValue = globalAlignment(align, score);
+            qualValue = globalAlignment(align, score);
         // Update quality score entry if there were no scores before convertMatchesToGlobal() call.
         if (alignQualityStoreLengthPre > 0u && it->id >= alignQualityStoreLengthPre)
         {
@@ -1919,7 +1919,7 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
 //        }
 //
 //        TReadGaps readGaps(theReadSeq, theIt->gaps);
-//        TContigGaps	contigGaps(store.contigStore[theIt->contigId].seq, store.contigStore[theIt->contigId].gaps);
+//        TContigGaps    contigGaps(store.contigStore[theIt->contigId].seq, store.contigStore[theIt->contigId].gaps);
 //        if ((*theIt).beginPos <= (*theIt).endPos) 
 //        {
 //            setBeginPosition(contigGaps, (*theIt).beginPos);
@@ -1984,50 +1984,50 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
         }
         SEQAN_ASSERT_EQ(toViewPosition(row(align, 1), 0), 0u);
 
-		// 2. Skip non-overlapping matches
-		cBegin = positionSeqToGap(contigGaps, cBegin);
-		if (lastContigId != (*it).contigId)
-		{
-			firstOverlap = it;
-			lastContigId = (*it).contigId;
-		} else
-			while (firstOverlap != it && _max((*firstOverlap).beginPos, (*firstOverlap).endPos) <= cBegin)
-				++firstOverlap;
+        // 2. Skip non-overlapping matches
+        cBegin = positionSeqToGap(contigGaps, cBegin);
+        if (lastContigId != (*it).contigId)
+        {
+            firstOverlap = it;
+            lastContigId = (*it).contigId;
+        } else
+            while (firstOverlap != it && _max((*firstOverlap).beginPos, (*firstOverlap).endPos) <= cBegin)
+                ++firstOverlap;
 
-		// 3. Iterate over alignment
-		setClippedBeginPosition(contigGaps, cBegin);
-		
-		TContigIter cIt = begin(contigGaps);
-		TReadIter rIt = begin(readGaps);
-		typename Iterator<TGaps>::Type it1 = begin(row(align, 0));
-		typename Iterator<TGaps>::Type it2 = begin(row(align, 1));
+        // 3. Iterate over alignment
+        setClippedBeginPosition(contigGaps, cBegin);
+        
+        TContigIter cIt = begin(contigGaps);
+        TReadIter rIt = begin(readGaps);
+        typename Iterator<TGaps>::Type it1 = begin(row(align, 0));
+        typename Iterator<TGaps>::Type it2 = begin(row(align, 1));
 
         unsigned beginLocalContigGaps = toViewPosition(row(align, 0), 0);
         //std::cerr << "CONTIG\t" << contigGaps << "\n";
-		// Heuristic (hack) for gaps in the beginning, so the following 
-		// does not happen:
-		//
-		// contig: XXXX------AAA
-		//             CCC---AAA
-		//                CCCAAA
-		//
-		// But instead, the C's are all aligned.
-		if (beginLocalContigGaps > 0u) {
-			unsigned i = beginLocalContigGaps;
-			do {
-				goPrevious(cIt);
-				i -= 1;
-				cBegin -= 1;
-			} while (isGap(cIt) && i > 0u);
-			if (!isGap(cIt)) {
-				goNext(cIt);
-				cBegin += 1;
-			}
-		}
-		
-		// We will clip off trailing gaps in the read row.
-		unsigned charsEndPos = toViewPosition(row(align, 1), length(source(row(align, 1))));
-		setClippedEndPosition(row(align, 0), charsEndPos);
+        // Heuristic (hack) for gaps in the beginning, so the following 
+        // does not happen:
+        //
+        // contig: XXXX------AAA
+        //             CCC---AAA
+        //                CCCAAA
+        //
+        // But instead, the C's are all aligned.
+        if (beginLocalContigGaps > 0u) {
+            unsigned i = beginLocalContigGaps;
+            do {
+                goPrevious(cIt);
+                i -= 1;
+                cBegin -= 1;
+            } while (isGap(cIt) && i > 0u);
+            if (!isGap(cIt)) {
+                goNext(cIt);
+                cBegin += 1;
+            }
+        }
+        
+        // We will clip off trailing gaps in the read row.
+        unsigned charsEndPos = toViewPosition(row(align, 1), length(source(row(align, 1))));
+        setClippedEndPosition(row(align, 0), charsEndPos);
 
 //        std::cerr << "firstOverlap - theIt == " << firstOverlap - theIt << std::endl;
 //        if (firstOverlap - theIt > 0)
@@ -2036,94 +2036,94 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
 //                std::cerr << "INVARIANT DOES NOT HOLD" << std::endl;
 //        }
        
-		for (; !atEnd(cIt) && !atEnd(it1); goNext(cIt), goNext(rIt))
-		{
-			bool isGapContig = isGap(cIt);
-			if (isGapContig != isGap(it1))
-			{
-				if (isGapContig)
-				{
-					// *** gap in contig of the global alignment ***
-					// copy exisiting contig gap
-					insertGaps(rIt, 1);
-					continue;
-				} else
-				{
-					// *** gap in contig of the pairwise alignment ***
-					// insert padding gaps in contig and reads
-					TContigPos insPos = cIt.current.gapPos;
-					insertGaps(cIt, 1);
-					for (TAlignedReadIter j = firstOverlap; j != it; ++j)
-					{
-						TContigPos rBegin = _min(j->beginPos, j->endPos);
-						TContigPos rEnd = _max(j->beginPos, j->endPos);
-						if (rBegin < insPos && insPos < rEnd)
-						{
+        for (; !atEnd(cIt) && !atEnd(it1); goNext(cIt), goNext(rIt))
+        {
+            bool isGapContig = isGap(cIt);
+            if (isGapContig != isGap(it1))
+            {
+                if (isGapContig)
+                {
+                    // *** gap in contig of the global alignment ***
+                    // copy exisiting contig gap
+                    insertGaps(rIt, 1);
+                    continue;
+                } else
+                {
+                    // *** gap in contig of the pairwise alignment ***
+                    // insert padding gaps in contig and reads
+                    TContigPos insPos = cIt.current.gapPos;
+                    insertGaps(cIt, 1);
+                    for (TAlignedReadIter j = firstOverlap; j != it; ++j)
+                    {
+                        TContigPos rBegin = _min(j->beginPos, j->endPos);
+                        TContigPos rEnd = _max(j->beginPos, j->endPos);
+                        if (rBegin < insPos && insPos < rEnd)
+                        {
 //                    if (j->id == 29971)
 //                    {
 //                        std::cerr << "OK computer" << std::endl;
 //                    }
-							if (rBegin < insPos)
-							{
-								TReadGaps gaps(store.readSeqStore[j->readId], j->gaps);
-								insertGap(gaps, insPos - rBegin);
-							} else
-							{
-								// shift beginPos if insertion was at the front of the read
-								if (j->beginPos < j->endPos)
-									++j->beginPos;
-								else
-									++j->endPos;
-							}
-							// shift endPos as the alignment was elongated or shifted
-							if (j->beginPos < j->endPos)
-								++j->endPos;
-							else
-								++j->beginPos;
-						} else if (insPos <= rBegin) {
+                            if (rBegin < insPos)
+                            {
+                                TReadGaps gaps(store.readSeqStore[j->readId], j->gaps);
+                                insertGap(gaps, insPos - rBegin);
+                            } else
+                            {
+                                // shift beginPos if insertion was at the front of the read
+                                if (j->beginPos < j->endPos)
+                                    ++j->beginPos;
+                                else
+                                    ++j->endPos;
+                            }
+                            // shift endPos as the alignment was elongated or shifted
+                            if (j->beginPos < j->endPos)
+                                ++j->endPos;
+                            else
+                                ++j->beginPos;
+                        } else if (insPos <= rBegin) {
                             ++j->endPos;
                             ++j->beginPos;
                         }
-					}
-				}
-			}
-			if (isGap(it2))
-			{
-				// *** gap in read of pairwise alignment ***
-				// copy gaps from alignment
-				insertGaps(rIt, 1);
-			}
+                    }
+                }
+            }
+            if (isGap(it2))
+            {
+                // *** gap in read of pairwise alignment ***
+                // copy gaps from alignment
+                insertGaps(rIt, 1);
+            }
             goNext(it1);
-			goNext(it2);
-		}
+            goNext(it2);
+        }
 
-		// store new gap-space alignment borders
-		cEnd = cBegin + length(readGaps);
-		if (left < right)
-		{
-			(*it).beginPos = cBegin;
-			(*it).endPos = cEnd;
-		} else
-		{
-			(*it).beginPos = cEnd;
-			(*it).endPos = cBegin;
-		}
+        // store new gap-space alignment borders
+        cEnd = cBegin + length(readGaps);
+        if (left < right)
+        {
+            (*it).beginPos = cBegin;
+            (*it).endPos = cEnd;
+        } else
+        {
+            (*it).beginPos = cEnd;
+            (*it).endPos = cBegin;
+        }
         
         ++it;  // Go to next alignment.
-/*		
-//		if (interesting)
-		{
-			String<String<unsigned> > layout;
-			layoutAlignment(layout, store, (*it).contigId);
-			std::cout << store.readNameStore[(*it).readId] << std::endl;
-			std::cout << readGaps << '\t' << cBegin << '\t' << cEnd << std::endl << std::endl;
-			printAlignment(std::cout, layout, store, (*it).contigId, (int)cBegin-20, (int)cEnd+20, 0, 40, 1 + (it - begin(store.alignedReadStore, Standard())));
-//			getc(stdin);
-		}
+/*        
+//        if (interesting)
+        {
+            String<String<unsigned> > layout;
+            layoutAlignment(layout, store, (*it).contigId);
+            std::cout << store.readNameStore[(*it).readId] << std::endl;
+            std::cout << readGaps << '\t' << cBegin << '\t' << cEnd << std::endl << std::endl;
+            printAlignment(std::cout, layout, store, (*it).contigId, (int)cBegin-20, (int)cEnd+20, 0, 40, 1 + (it - begin(store.alignedReadStore, Standard())));
+//            getc(stdin);
+        }
 */
-//		if (store.readNameStore[(*it).readId] == "read3305")
-//			return;
-	}
+//        if (store.readNameStore[(*it).readId] == "read3305")
+//            return;
+    }
 
     // AlignedReadLayout layout;
     // layoutAlignment(layout, store);
@@ -2154,7 +2154,7 @@ void convertMatchesToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TScor
 
 template <typename TFragmentStore>
 struct LessConvertPairWiseToGlobalAlignment:
-	public std::binary_function<
+    public std::binary_function<
         typename Value<typename TFragmentStore::TAlignedReadStore>::Type,
         typename Value<typename TFragmentStore::TAlignedReadStore>::Type,
         bool>
@@ -2163,12 +2163,12 @@ struct LessConvertPairWiseToGlobalAlignment:
     typedef typename Value<TAlignedReadStore>::Type         TAlignedRead;
     typedef typename Size<TAlignedReadStore>::Type          TSize;
 
-	typedef typename TFragmentStore::TContigStore           TContigStore;
-	typedef typename Value<TContigStore>::Type              TContig;
-	typedef typename TFragmentStore::TContigPos             TContigPos;
-	typedef typename TContig::TContigSeq                    TContigSeq;
+    typedef typename TFragmentStore::TContigStore           TContigStore;
+    typedef typename Value<TContigStore>::Type              TContig;
+    typedef typename TFragmentStore::TContigPos             TContigPos;
+    typedef typename TContig::TContigSeq                    TContigSeq;
     typedef typename TContig::TGapAnchors                   TContigAnchors;
-	typedef Gaps<TContigSeq, AnchorGaps<TContigAnchors> >   TContigGaps;
+    typedef Gaps<TContigSeq, AnchorGaps<TContigAnchors> >   TContigGaps;
 
     TFragmentStore &store;
     TSize offset;
@@ -2177,8 +2177,8 @@ struct LessConvertPairWiseToGlobalAlignment:
         store(store_),
         offset(offset_) {}
 
-	inline bool 
-	operator() (TAlignedRead const& a1, TAlignedRead const& a2) const
+    inline bool 
+    operator() (TAlignedRead const& a1, TAlignedRead const& a2) const
     {
 //        if (a1.contigId < a2.contigId) return true;
 //        if (a1.contigId > a2.contigId) return false;
@@ -2189,13 +2189,13 @@ struct LessConvertPairWiseToGlobalAlignment:
 //
 //        if (a1.id < offset)
 //        {
-//            TContigGaps	contigGaps(contig.seq, contig.gaps);
+//            TContigGaps    contigGaps(contig.seq, contig.gaps);
 //            pos1 = positionGapToSeq(contigGaps, pos1);
 //        }
 //
 //        if (a2.id < offset)
 //        {
-//            TContigGaps	contigGaps(contig.seq, contig.gaps);
+//            TContigGaps    contigGaps(contig.seq, contig.gaps);
 //            pos2 = positionGapToSeq(contigGaps, pos2);
 //        }
 //
@@ -2207,8 +2207,8 @@ struct LessConvertPairWiseToGlobalAlignment:
 
         TContigPos pos1 = _min(a1.beginPos, a1.endPos);
         TContigPos pos2 = _min(a2.beginPos, a2.endPos);
-		return pos1 < pos2;
-	}
+        return pos1 < pos2;
+    }
 };
 
 
@@ -2220,9 +2220,9 @@ void _alignedReadsInsertGaps(
     TSize blkLen,
     TReadSeqStore &readSeqStore)
 {
-	typedef typename Value<TReadSeqStore>::Type                             TReadSeq;
+    typedef typename Value<TReadSeqStore>::Type                             TReadSeq;
     typedef typename Value<TAlignedReadIter>::Type                          TAlignedRead;
-	typedef Gaps<TReadSeq, AnchorGaps<typename TAlignedRead::TGapAnchors> > TReadGaps;
+    typedef Gaps<TReadSeq, AnchorGaps<typename TAlignedRead::TGapAnchors> > TReadGaps;
     typedef __int64                                                         TContigPos;
 
     for (TAlignedReadIter j = alignedReadsBegin; j != alignedReadsEnd; ++j)
@@ -2276,10 +2276,10 @@ void _twoWayMergeAlignments(
     TAlignedReadIter overlappingAlignedReadsEnd2,
     TReadSeqStore &readSeqStore)
 {
-	// gap iterators
-	typedef typename Iterator<TContigGapsGlobal>::Type  TContigGlobalIter;	
-	typedef typename Iterator<TContigGapsPW>::Type      TContigPWIter;
-	typedef typename Iterator<TReadGaps>::Type          TReadIter;
+    // gap iterators
+    typedef typename Iterator<TContigGapsGlobal>::Type  TContigGlobalIter;    
+    typedef typename Iterator<TContigGapsPW>::Type      TContigPWIter;
+    typedef typename Iterator<TReadGaps>::Type          TReadIter;
     typedef __int64                                     TContigPos;
 
     TContigGlobalIter cIt = begin(contigGapsGlobal);
@@ -2333,67 +2333,67 @@ void _twoWayMergeAlignments(
 template <typename TSpec, typename TConfig, typename TContigGapsString>
 void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TContigGapsString &gaps)
 {
-	typedef FragmentStore<TSpec, TConfig>							TFragmentStore;
+    typedef FragmentStore<TSpec, TConfig>                            TFragmentStore;
 
-	// stores
-	//typedef typename TFragmentStore::TReadStore						TReadStore;
-	typedef typename TFragmentStore::TReadSeqStore					TReadSeqStore;
-	typedef typename TFragmentStore::TAlignedReadStore				TAlignedReadStore;
-	typedef typename TFragmentStore::TContigStore					TContigStore;
-	//typedef typename TFragmentStore::TContigSeq  					TContigSeq;
+    // stores
+    //typedef typename TFragmentStore::TReadStore                        TReadStore;
+    typedef typename TFragmentStore::TReadSeqStore                    TReadSeqStore;
+    typedef typename TFragmentStore::TAlignedReadStore                TAlignedReadStore;
+    typedef typename TFragmentStore::TContigStore                    TContigStore;
+    //typedef typename TFragmentStore::TContigSeq                      TContigSeq;
 
-	// store elements
-	//typedef typename Value<TReadStore>::Type						TRead;
-	typedef typename Value<TReadSeqStore>::Type						TReadSeq;
-	typedef typename Value<TContigStore>::Type						TContig;
-	typedef typename Value<TAlignedReadStore>::Type					TAlignedRead;
+    // store elements
+    //typedef typename Value<TReadStore>::Type                        TRead;
+    typedef typename Value<TReadSeqStore>::Type                        TReadSeq;
+    typedef typename Value<TContigStore>::Type                        TContig;
+    typedef typename Value<TAlignedReadStore>::Type                    TAlignedRead;
 
-	typedef typename Iterator<TAlignedReadStore, Standard>::Type	TAlignedReadIter;
-	typedef typename Id<TAlignedRead>::Type							TId;
-	typedef typename TFragmentStore::TContigPos						TContigPos;
+    typedef typename Iterator<TAlignedReadStore, Standard>::Type    TAlignedReadIter;
+    typedef typename Id<TAlignedRead>::Type                            TId;
+    typedef typename TFragmentStore::TContigPos                        TContigPos;
 
-	// gap structures
-	//typedef Gaps<TContigSeq/*Nothing*/, AnchorGaps<typename TContig::TGapAnchors> >			TContigGapsGlobal;
-	//typedef Gaps<TContigSeq/*Nothing*/, AnchorGaps<typename Value<TContigGapsString>::Type> >	TContigGapsPW;
+    // gap structures
+    //typedef Gaps<TContigSeq/*Nothing*/, AnchorGaps<typename TContig::TGapAnchors> >            TContigGapsGlobal;
+    //typedef Gaps<TContigSeq/*Nothing*/, AnchorGaps<typename Value<TContigGapsString>::Type> >    TContigGapsPW;
     typedef Gaps</*TContigSeq*/Nothing, AnchorGaps<typename TContig::TGapAnchors> >             TContigGapsGlobal;
-	typedef Gaps</*TContigSeq*/Nothing, AnchorGaps<typename Value<TContigGapsString>::Type> >	TContigGapsPW;
+    typedef Gaps</*TContigSeq*/Nothing, AnchorGaps<typename Value<TContigGapsString>::Type> >    TContigGapsPW;
     typedef Gaps<TReadSeq, AnchorGaps<typename TAlignedRead::TGapAnchors> >                     TReadGaps;
 
     typename Size<TAlignedReadStore>::Type offsetRecord = length(store.alignedReadStore) - length(gaps);
 
-	// sort matches by increasing begin positions
+    // sort matches by increasing begin positions
     LessConvertPairWiseToGlobalAlignment<TFragmentStore> lessFunctor(store, offsetRecord);
     sortAlignedReads(store.alignedReadStore, lessFunctor);
 
-	TReadSeq readSeq;
-	TId lastContigId = TAlignedRead::INVALID_ID;
-	TAlignedReadIter it = begin(store.alignedReadStore, Standard());
-	TAlignedReadIter itEnd = end(store.alignedReadStore, Standard());
+    TReadSeq readSeq;
+    TId lastContigId = TAlignedRead::INVALID_ID;
+    TAlignedReadIter it = begin(store.alignedReadStore, Standard());
+    TAlignedReadIter itEnd = end(store.alignedReadStore, Standard());
 
     TAlignedReadIter firstOverlapOld = begin(store.alignedReadStore, Standard());
     TAlignedReadIter lastOverlapOld = firstOverlapOld;
     TAlignedReadIter firstNew = begin(store.alignedReadStore, Standard()) + offsetRecord;
     TAlignedReadIter firstOverlapNew = firstNew;
 
-	for (; it != itEnd; ++it)
-	{
+    for (; it != itEnd; ++it)
+    {
         if ((*it).id < offsetRecord)
             continue;
 
-    	TContigPos	left = it->beginPos;
-    	TContigPos	right = it->endPos;
-		TContigPos	cBegin = _min(left, right);
-		TContigPos	cEnd = _max(left, right);
-		
-		// 1. Initialize gap structures
-    	TContigGapsGlobal   contigGapsGlobal(/*store.contigStore[it->contigId].seq, */store.contigStore[it->contigId].gaps);
-		/*
-    	TContigSeq contigInfix = infix(store.contigStore[it->contigId].seq, cBegin, cEnd);
-		if (left > right)
-		    reverseComplement(contigInfix);
-		*/
-    	TContigGapsPW       contigGapsPW(/*contigInfix, */gaps[it->id - offsetRecord]);
-    	TReadGaps           readGaps(store.readSeqStore[it->readId], it->gaps);
+        TContigPos    left = it->beginPos;
+        TContigPos    right = it->endPos;
+        TContigPos    cBegin = _min(left, right);
+        TContigPos    cEnd = _max(left, right);
+        
+        // 1. Initialize gap structures
+        TContigGapsGlobal   contigGapsGlobal(/*store.contigStore[it->contigId].seq, */store.contigStore[it->contigId].gaps);
+        /*
+        TContigSeq contigInfix = infix(store.contigStore[it->contigId].seq, cBegin, cEnd);
+        if (left > right)
+            reverseComplement(contigInfix);
+        */
+        TContigGapsPW       contigGapsPW(/*contigInfix, */gaps[it->id - offsetRecord]);
+        TReadGaps           readGaps(store.readSeqStore[it->readId], it->gaps);
 
         SEQAN_ASSERT(dependent(contigGapsGlobal.data_gaps));
         SEQAN_ASSERT(dependent(readGaps.data_gaps));
@@ -2407,7 +2407,7 @@ void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TCon
         //  |cBegin---cEnd)
 
         TId contigId = it->contigId;
-		cBegin = positionSeqToGap(contigGapsGlobal, cBegin);
+        cBegin = positionSeqToGap(contigGapsGlobal, cBegin);
 
         // 2a. Skip non-overlapping old alignments
         while (firstOverlapOld != firstNew &&
@@ -2421,8 +2421,8 @@ void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TCon
                (lastOverlapOld->contigId < contigId || _min(lastOverlapOld->beginPos, lastOverlapOld->endPos) < cEnd))
             ++lastOverlapOld;
 
-    	// 2b. Skip non-overlapping new matches
-    	if (lastContigId != contigId)
+        // 2b. Skip non-overlapping new matches
+        if (lastContigId != contigId)
         {
             firstOverlapNew = it;
             lastContigId = contigId;
@@ -2433,27 +2433,27 @@ void convertPairWiseToGlobalAlignment(FragmentStore<TSpec, TConfig> &store, TCon
                 ++firstOverlapNew;
         }
 
-		// 3. Iterate over alignment
-		setClippedBeginPosition(contigGapsGlobal, cBegin);
+        // 3. Iterate over alignment
+        setClippedBeginPosition(contigGapsGlobal, cBegin);
 
         _twoWayMergeAlignments(
                 contigGapsGlobal, contigGapsPW, readGaps,
                 firstOverlapOld, lastOverlapOld, firstOverlapNew, it,
                 store.readSeqStore);
 
-		// store new gap-space alignment borders
-		cEnd = cBegin + length(readGaps);
-		if (left < right)
-		{
-			(*it).beginPos = cBegin;
-			(*it).endPos = cEnd;
-		}
+        // store new gap-space alignment borders
+        cEnd = cBegin + length(readGaps);
+        if (left < right)
+        {
+            (*it).beginPos = cBegin;
+            (*it).endPos = cEnd;
+        }
         else
-		{
-			(*it).beginPos = cEnd;
-			(*it).endPos = cBegin;
-		}
-	}
+        {
+            (*it).beginPos = cEnd;
+            (*it).endPos = cBegin;
+        }
+    }
 }
 
 }// namespace SEQAN_NAMESPACE_MAIN

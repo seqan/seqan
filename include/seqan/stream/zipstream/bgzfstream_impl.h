@@ -26,15 +26,15 @@ Author: David Weese, dave.weese@gmail.com, 2014             (extension to parall
 namespace seqan {
 
 namespace detail{
-	const int gz_magic[2] = {0x1f, 0x8b}; /* gzip magic header */
+    const int gz_magic[2] = {0x1f, 0x8b}; /* gzip magic header */
 
-	/* gzip flag byte */
-	const int gz_ascii_flag =  0x01; /* bit 0 set: file probably ascii text */
-	const int gz_head_crc    = 0x02; /* bit 1 set: header CRC present */
-	const int gz_extra_field = 0x04; /* bit 2 set: extra field present */
-	const int gz_orig_name  =  0x08; /* bit 3 set: original file name present */
-	const int gz_comment    =  0x10; /* bit 4 set: file comment present */
-	const int gz_reserved   =  0xE0; /* bits 5..7: reserved */	
+    /* gzip flag byte */
+    const int gz_ascii_flag =  0x01; /* bit 0 set: file probably ascii text */
+    const int gz_head_crc    = 0x02; /* bit 1 set: header CRC present */
+    const int gz_extra_field = 0x04; /* bit 2 set: extra field present */
+    const int gz_orig_name  =  0x08; /* bit 3 set: original file name present */
+    const int gz_comment    =  0x10; /* bit 4 set: file comment present */
+    const int gz_reserved   =  0xE0; /* bits 5..7: reserved */    
 
 }
 
@@ -119,50 +119,50 @@ namespace detail{
     
         
     template<
-		typename Elem, 
-		typename Tr,
-		typename ElemA,
-		typename ByteT,
-		typename ByteAT
-	>
-	int basic_bgzf_istream<
-		Elem,Tr,ElemA,ByteT,ByteAT
-		>::check_header()
-	{
-	    return _checkGZHeader(this->rdbuf());
-	}
+        typename Elem, 
+        typename Tr,
+        typename ElemA,
+        typename ByteT,
+        typename ByteAT
+    >
+    int basic_bgzf_istream<
+        Elem,Tr,ElemA,ByteT,ByteAT
+        >::check_header()
+    {
+        return _checkGZHeader(this->rdbuf());
+    }
 
-	template<
-		typename Elem, 
-		typename Tr
-	>
+    template<
+        typename Elem, 
+        typename Tr
+    >
     void _putBinaryLong(std::basic_ostream<Elem,Tr> & out_, unsigned long x_)
     {
-		static const int size_ul = sizeof(unsigned long);
-		static const int size_c = sizeof(typename Tr::char_type);
+        static const int size_ul = sizeof(unsigned long);
+        static const int size_c = sizeof(typename Tr::char_type);
         static const int n_end = size_ul/size_c;
-		out_.write(reinterpret_cast<typename Tr::char_type const*>(&x_), n_end);
+        out_.write(reinterpret_cast<typename Tr::char_type const*>(&x_), n_end);
     }
    
-	template<
-		typename Elem, 
-		typename Tr,
-		typename ElemA,
-		typename ByteT,
-		typename ByteAT
-	>
+    template<
+        typename Elem, 
+        typename Tr,
+        typename ElemA,
+        typename ByteT,
+        typename ByteAT
+    >
     void basic_bgzf_istream<
-			Elem,Tr,ElemA,ByteT,ByteAT
-			>::read_long(
-				istream_reference in_, 
-			unsigned long& x_
-			)
-	{
-		static const int size_ul = sizeof(unsigned long);
-		static const int size_c = sizeof(typename Tr::char_type);
+            Elem,Tr,ElemA,ByteT,ByteAT
+            >::read_long(
+                istream_reference in_, 
+            unsigned long& x_
+            )
+    {
+        static const int size_ul = sizeof(unsigned long);
+        static const int size_c = sizeof(typename Tr::char_type);
         static const int n_end = size_ul/size_c;
-		in_.read(reinterpret_cast<char*>(&x_),n_end);
-	}
+        in_.read(reinterpret_cast<char*>(&x_),n_end);
+    }
     
     template<
         typename Elem, 
@@ -173,16 +173,16 @@ namespace detail{
     >
     void _addGZHeader(basic_bgzf_streambuf<Elem, Tr, ElemA, ByteT, ByteAT> *buf)
     {
-	    typename Tr::char_type zero=0;
-	    
+        typename Tr::char_type zero=0;
+        
         buf->get_ostream()
-			.put(static_cast<typename Tr::char_type>(detail::gz_magic[0]))
-			.put(static_cast<typename Tr::char_type>(detail::gz_magic[1]))
-			.put(static_cast<typename Tr::char_type>(Z_DEFLATED))
-			.put(zero) //flags
-			.put(zero).put(zero).put(zero).put(zero) // time
-			.put(zero) //xflags
-			.put(static_cast<typename Tr::char_type>(OS_CODE));
+            .put(static_cast<typename Tr::char_type>(detail::gz_magic[0]))
+            .put(static_cast<typename Tr::char_type>(detail::gz_magic[1]))
+            .put(static_cast<typename Tr::char_type>(Z_DEFLATED))
+            .put(zero) //flags
+            .put(zero).put(zero).put(zero).put(zero) // time
+            .put(zero) //xflags
+            .put(static_cast<typename Tr::char_type>(OS_CODE));
     }
 
     template<
@@ -193,10 +193,10 @@ namespace detail{
         typename ByteAT
     >
     void _addGZFooter(basic_bgzf_streambuf<Elem, Tr, ElemA, ByteT, ByteAT> *buf)
-	{
-		_putBinaryLong( buf->get_ostream(), buf->get_crc() );
-		_putBinaryLong( buf->get_ostream(), buf->get_in_size() );
-	}
+    {
+        _putBinaryLong( buf->get_ostream(), buf->get_crc() );
+        _putBinaryLong( buf->get_ostream(), buf->get_in_size() );
+    }
 
 }  // namespace seqan
 

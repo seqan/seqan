@@ -89,7 +89,7 @@ typedef Tag<ModReverse_> ModReverse;
 template <typename THost>
 struct Cargo<ModifiedIterator<THost, ModReverse> >
 {
-    typedef Cargo Type;		// to reduce namespace pollution
+    typedef Cargo Type;        // to reduce namespace pollution
     bool _atEnd;
 
     Cargo() : _atEnd(false)
@@ -611,7 +611,7 @@ template <typename THost>
 inline ModifiedString<THost, ModReverse>
 reverseString(THost & host)
 {
-	return ModifiedString<THost, ModReverse>(host);
+    return ModifiedString<THost, ModReverse>(host);
 }
 
 }

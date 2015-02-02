@@ -41,39 +41,39 @@ using namespace seqan;
 template <typename TIter>
 void fmIndexIteratorConstuctor(TIter & /*tag*/)
 {
-	typedef typename Container<TIter>::Type TIndex;
+    typedef typename Container<TIter>::Type TIndex;
     typedef typename Fibre<TIndex, FibreText>::Type TText;
 
-	TText text;
-	generateText(text);
+    TText text;
+    generateText(text);
 
-	Index<TText> esa(text);
-	typename Iterator<Index<TText>, TopDown<> >::Type esaIt(esa);
-	goDown(esaIt);
+    Index<TText> esa(text);
+    typename Iterator<Index<TText>, TopDown<> >::Type esaIt(esa);
+    goDown(esaIt);
 
-	TIndex fmIndex(text, 10);
-	TIter it(fmIndex);
+    TIndex fmIndex(text, 10);
+    TIter it(fmIndex);
 
-	SEQAN_ASSERT_EQ(isRoot(it), true);
-	SEQAN_ASSERT_EQ(repLength(it), 0u);
-	SEQAN_ASSERT_EQ(goDown(it), true);
-	SEQAN_ASSERT_EQ(isRoot(it), false);
-	SEQAN_ASSERT_EQ(repLength(it), 1u);
-	SEQAN_ASSERT_EQ(representative(it), 'A');
-	SEQAN_ASSERT_EQ(goRight(it), true);
-	SEQAN_ASSERT_EQ(representative(it), 'C');
-	SEQAN_ASSERT_EQ(repLength(it), 1u);
-	SEQAN_ASSERT_EQ(goRight(it), true);
-	SEQAN_ASSERT_EQ(representative(it), 'G');
-	SEQAN_ASSERT_EQ(repLength(it), 1u);
-	SEQAN_ASSERT_EQ(goRight(it), true);
-	SEQAN_ASSERT_EQ(representative(it), 'T');
-	SEQAN_ASSERT_EQ(repLength(it), 1u);
-	SEQAN_ASSERT_EQ(goRight(it), false);
-	SEQAN_ASSERT_EQ(representative(it), 'T');
-	SEQAN_ASSERT_EQ(repLength(it), 1u);
-	SEQAN_ASSERT_EQ(goDown(it), true);
-	SEQAN_ASSERT_EQ(goDown(it), true);
+    SEQAN_ASSERT_EQ(isRoot(it), true);
+    SEQAN_ASSERT_EQ(repLength(it), 0u);
+    SEQAN_ASSERT_EQ(goDown(it), true);
+    SEQAN_ASSERT_EQ(isRoot(it), false);
+    SEQAN_ASSERT_EQ(repLength(it), 1u);
+    SEQAN_ASSERT_EQ(representative(it), 'A');
+    SEQAN_ASSERT_EQ(goRight(it), true);
+    SEQAN_ASSERT_EQ(representative(it), 'C');
+    SEQAN_ASSERT_EQ(repLength(it), 1u);
+    SEQAN_ASSERT_EQ(goRight(it), true);
+    SEQAN_ASSERT_EQ(representative(it), 'G');
+    SEQAN_ASSERT_EQ(repLength(it), 1u);
+    SEQAN_ASSERT_EQ(goRight(it), true);
+    SEQAN_ASSERT_EQ(representative(it), 'T');
+    SEQAN_ASSERT_EQ(repLength(it), 1u);
+    SEQAN_ASSERT_EQ(goRight(it), false);
+    SEQAN_ASSERT_EQ(representative(it), 'T');
+    SEQAN_ASSERT_EQ(repLength(it), 1u);
+    SEQAN_ASSERT_EQ(goDown(it), true);
+    SEQAN_ASSERT_EQ(goDown(it), true);
 }
 
 template <typename TIter>
@@ -82,10 +82,10 @@ void fmIndexIteratorGoDown(TIter & /*tag*/)
     typedef typename Container<TIter>::Type TIndex;
     typedef typename Fibre<TIndex, FibreText>::Type TText;
 
-	TText text;
-	text = "ACGACG";
-	TIndex fmIndex(text);
-	
+    TText text;
+    text = "ACGACG";
+    TIndex fmIndex(text);
+    
     {
         TIter it(fmIndex);
         SEQAN_ASSERT_EQ(goDown(it), true);
@@ -103,7 +103,7 @@ void fmIndexIteratorGoDown(TIter & /*tag*/)
         SEQAN_ASSERT_EQ(goDown(it, 'G'), false);
         SEQAN_ASSERT_EQ(representative(it), "G");
     }
-	{
+    {
         TIter it(fmIndex);
         SEQAN_ASSERT_EQ(goDown(it, 'G'), true);
         SEQAN_ASSERT_EQ(goDown(it, 'C'), true);
@@ -115,7 +115,7 @@ void fmIndexIteratorGoDown(TIter & /*tag*/)
         SEQAN_ASSERT_EQ(goDown(it, 'G'), false);
         SEQAN_ASSERT_EQ(representative(it), "ACGACG");
     }
-	{
+    {
         TIter it(fmIndex);
         SEQAN_ASSERT_EQ(goDown(it, "GCAGCA"), true);
         SEQAN_ASSERT_EQ(representative(it), "ACGACG");
@@ -130,9 +130,9 @@ void fmIndexIteratorIsLeaf(TIter & /*tag*/)
     typedef typename Container<TIter>::Type TIndex;
     typedef typename Fibre<TIndex, FibreText>::Type TText;
 
-	TText text = "ACGACG";
-	TIndex fmIndex(text);
-	
+    TText text = "ACGACG";
+    TIndex fmIndex(text);
+    
     {
         TIter it(fmIndex);
         SEQAN_ASSERT_EQ(isLeaf(it), false);
@@ -156,9 +156,9 @@ void fmIndexIteratorGoRight(TIter & /*tag*/)
     typedef typename Container<TIter>::Type TIndex;
     typedef typename Fibre<TIndex, FibreText>::Type TText;
 
-	TText text = "ACGACG";
-	TIndex fmIndex(text);
-	
+    TText text = "ACGACG";
+    TIndex fmIndex(text);
+    
     {
         TIter it(fmIndex);
         SEQAN_ASSERT_EQ(goDown(it), true);
@@ -178,9 +178,9 @@ void fmIndexIteratorGoUp(TIter & /*tag*/)
     typedef typename Container<TIter>::Type TIndex;
     typedef typename Fibre<TIndex, FibreText>::Type TText;
 
-	TText text = "ACGACG";
-	TIndex fmIndex(text);
-	
+    TText text = "ACGACG";
+    TIndex fmIndex(text);
+    
     {
         TIter it(fmIndex);
         SEQAN_ASSERT_EQ(goDown(it, "GCAGCA"), true);
@@ -208,9 +208,9 @@ void fmIndexIteratorIsRoot(TIter & /*tag*/)
     typedef typename Container<TIter>::Type TIndex;
     typedef typename Fibre<TIndex, FibreText>::Type TText;
 
-	TText text = "ACGACG";
-	TIndex fmIndex(text);
-	
+    TText text = "ACGACG";
+    TIndex fmIndex(text);
+    
     {
         TIter it(fmIndex);
 
@@ -226,9 +226,9 @@ void fmIndexIteratorRepresentative(TIter & /*tag*/)
     typedef typename Container<TIter>::Type TIndex;
     typedef typename Fibre<TIndex, FibreText>::Type TText;
 
-	TText text = "ACGACG";
-	TIndex fmIndex(text);
-	
+    TText text = "ACGACG";
+    TIndex fmIndex(text);
+    
     {
         TIter it(fmIndex);
 
@@ -247,13 +247,13 @@ void fmIndexIteratorCountOccurrences(TIter & /*tag*/)
     typedef typename Iterator<TEsaIndex, TopDown<ParentLinks<> > >::Type TEsaIter;
     
     TText text;
-	generateText(text);
+    generateText(text);
 
-	StringSet<String<typename Value<TIndex>::Type> > pattern;
-	generatePattern(pattern, text);
+    StringSet<String<typename Value<TIndex>::Type> > pattern;
+    generatePattern(pattern, text);
 
-	TIndex fmIndex(text);
-	TEsaIndex esaIndex(text);
+    TIndex fmIndex(text);
+    TEsaIndex esaIndex(text);
         
     TIter it(fmIndex);
     TEsaIter esaIt(esaIndex);
@@ -282,12 +282,12 @@ void fmIndexIteratorRange(TIter & /*tag*/)
     typedef typename Iterator<TEsaIndex, TopDown<ParentLinks<> > >::Type TEsaIter;
     
     TText text;
-	generateText(text);
+    generateText(text);
 
-	StringSet<String<typename Value<TIndex>::Type> > pattern;
-	generatePattern(pattern, text);
+    StringSet<String<typename Value<TIndex>::Type> > pattern;
+    generatePattern(pattern, text);
 
-	TIndex fmIndex(text);
+    TIndex fmIndex(text);
     TEsaIndex esaIndex(text);
         
     TIter it(fmIndex);

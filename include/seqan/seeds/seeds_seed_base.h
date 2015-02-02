@@ -402,7 +402,7 @@ template <typename TSpec, typename TConfig, typename TDiagonal>
 inline void 
 setLowerDiagonal(Seed<TSpec, TConfig> & seed, TDiagonal newDiag)
 {
-	seed._lowerDiagonal = newDiag;
+    seed._lowerDiagonal = newDiag;
 }
 
 // ---------------------------------------------------------------------------
@@ -444,9 +444,9 @@ upperDiagonal(Seed<TSpec, TConfig> const & seed)
 template <typename TSpec, typename TConfig, typename TPosition>
 inline void 
 setUpperDiagonal(Seed<TSpec, TConfig> & seed, 
-				 TPosition newDiag)
+                 TPosition newDiag)
 {
-	seed._upperDiagonal = newDiag;
+    seed._upperDiagonal = newDiag;
 }
 
 // ---------------------------------------------------------------------------
@@ -618,7 +618,7 @@ _updateSeedsScoreMerge(Seed<TSpec, TConfig> & seed, Seed<TSpec, TConfig> const &
     double fracSeed = static_cast<double>(seedSize(seed) - 0.5 * overlap) / static_cast<double>(total);
     double fracOther = static_cast<double>(seedSize(other) - 0.5 * overlap) / static_cast<double>(total);
     typedef typename SeedScore<TSeed>::Type TScoreValue;
-	TScoreValue newScore = static_cast<TScoreValue>(round(fracSeed * score(seed) + fracOther * score(other)));
+    TScoreValue newScore = static_cast<TScoreValue>(round(fracSeed * score(seed) + fracOther * score(other)));
     setScore(seed, newScore);
 }
 

@@ -85,46 +85,46 @@ class Pattern<TNeedle, MultiBfam<TSpec> >
 {
 //____________________________________________________________________________
 public:
-	typedef typename Value<TNeedle>::Type TKeyword;
-	typedef typename Position<TNeedle>::Type TNeedlePosition;
-	typedef typename Size<TKeyword>::Type TSize;
-	typedef typename Value<TKeyword>::Type TValue;
-	typedef Graph<Automaton<TValue, void, WithoutEdgeId> > TGraph;
+    typedef typename Value<TNeedle>::Type TKeyword;
+    typedef typename Position<TNeedle>::Type TNeedlePosition;
+    typedef typename Size<TKeyword>::Type TSize;
+    typedef typename Value<TKeyword>::Type TValue;
+    typedef Graph<Automaton<TValue, void, WithoutEdgeId> > TGraph;
 
-	//searching data: these members are initialized in _patternInit or during search
-	TNeedlePosition * position;		//pointer to last found position
-	TNeedlePosition * position_end; //end of list in verify
-			//note: if to_verify_begin == to_verify_end then searching in Haystack must go on
+    //searching data: these members are initialized in _patternInit or during search
+    TNeedlePosition * position;        //pointer to last found position
+    TNeedlePosition * position_end; //end of list in verify
+            //note: if to_verify_begin == to_verify_end then searching in Haystack must go on
 
-	//preprocessed data: these members are initialized in setHost
-	Holder<TNeedle> needle;
-	TGraph automaton; //automaton of the reverse lmin-prefixes of the keywords
-	String<String<TNeedlePosition> > terminals; //map of terminal states in automaton
+    //preprocessed data: these members are initialized in setHost
+    Holder<TNeedle> needle;
+    TGraph automaton; //automaton of the reverse lmin-prefixes of the keywords
+    String<String<TNeedlePosition> > terminals; //map of terminal states in automaton
 
-	TSize lmin;	//min length of keyword
+    TSize lmin;    //min length of keyword
 
 //____________________________________________________________________________
 
-	Pattern():
-		lmin(0)
-	{
-	}
+    Pattern():
+        lmin(0)
+    {
+    }
 
-	template <typename TNeedle2>
-	Pattern(TNeedle2 const & ndl)
-	{
-		SEQAN_CHECKPOINT
-		setHost(*this, ndl);
-	}
+    template <typename TNeedle2>
+    Pattern(TNeedle2 const & ndl)
+    {
+        SEQAN_CHECKPOINT
+        setHost(*this, ndl);
+    }
 
-	~Pattern() 
-	{
-	}
+    ~Pattern() 
+    {
+    }
 //____________________________________________________________________________
 
 private:
-	Pattern(Pattern const& other);
-	Pattern const & operator=(Pattern const & other);
+    Pattern(Pattern const& other);
+    Pattern const & operator=(Pattern const & other);
 
 //____________________________________________________________________________
 };
@@ -135,79 +135,79 @@ private:
 template <typename TNeedle, typename TStrs>
 inline void
 _buildAutomatonMultiBfam(Pattern<TNeedle, MultiBfam<Oracle> > & me, 
-						  TStrs const & strs)
+                          TStrs const & strs)
 {
-	createSetOracle(me.automaton, me.terminals, strs);
+    createSetOracle(me.automaton, me.terminals, strs);
 }
 
 template <typename TNeedle, typename TStrs>
 inline void
 _buildAutomatonMultiBfam(Pattern<TNeedle, MultiBfam<Trie> > & me, 
-						  TStrs const & strs)
+                          TStrs const & strs)
 {
-	createSetSuffixTrie(me.automaton, me.terminals, strs);
+    createSetSuffixTrie(me.automaton, me.terminals, strs);
 }
 
 //____________________________________________________________________________
 
 template <typename TNeedle, typename TAutomaton, typename TNeedle2>
 void _setHostMultiBfam(Pattern<TNeedle, MultiBfam<TAutomaton> > & me, 
-						TNeedle2 const & needle_)
+                        TNeedle2 const & needle_)
 {
-	typedef typename Value<TNeedle>::Type TKeyword;
-	typedef typename Value<TKeyword>::Type TValue;
-	typedef typename Size<TKeyword>::Type TSize;
+    typedef typename Value<TNeedle>::Type TKeyword;
+    typedef typename Value<TKeyword>::Type TValue;
+    typedef typename Size<TKeyword>::Type TSize;
 
-	//me.needle
-	setValue(me.needle, needle_);
-	TNeedle & ndl = needle(me);
+    //me.needle
+    setValue(me.needle, needle_);
+    TNeedle & ndl = needle(me);
 
-	//determine lmin
-	TSize len = length(ndl);
-	if (len == 0)
-	{
-		me.lmin = 0;
-		return;
-	}
+    //determine lmin
+    TSize len = length(ndl);
+    if (len == 0)
+    {
+        me.lmin = 0;
+        return;
+    }
 
-	me.lmin = length(ndl[0]);
-	for (TSize i = 1; i < len; ++i)
-	{
-		TSize len = length(ndl[i]);
-		if (len < me.lmin)
-		{
-			me.lmin = len;
-		}
-	}
+    me.lmin = length(ndl[0]);
+    for (TSize i = 1; i < len; ++i)
+    {
+        TSize len = length(ndl[i]);
+        if (len < me.lmin)
+        {
+            me.lmin = len;
+        }
+    }
 
-	if (me.lmin == 0) return;
+    if (me.lmin == 0) return;
 
-	//collect reverse prefixes for automaton
-	String<String<TValue> > strs;
-	resize(strs, len);
-	for (unsigned int i = 0; i < len; ++i)
-	{
-		strs[i] = prefix(ndl[i], me.lmin);
-		reverse(strs[i]);
-	}
+    //collect reverse prefixes for automaton
+    String<String<TValue> > strs;
+    resize(strs, len);
+    for (unsigned int i = 0; i < len; ++i)
+    {
+        strs[i] = prefix(ndl[i], me.lmin);
+        reverse(strs[i]);
+    }
 
-	//build automaton
-	_buildAutomatonMultiBfam(me, strs);
+    //build automaton
+    _buildAutomatonMultiBfam(me, strs);
 }
 
 template <typename TNeedle, typename TAutomaton, typename TNeedle2>
 void setHost (Pattern<TNeedle, MultiBfam<TAutomaton> > & me, 
-			  TNeedle2 const & needle) 
+              TNeedle2 const & needle) 
 {
-	_setHostMultiBfam(me, needle);
+    _setHostMultiBfam(me, needle);
 }
 
 template <typename TNeedle, typename TAutomaton, typename TNeedle2>
 inline void 
 setHost(Pattern<TNeedle, MultiBfam<TAutomaton> > & me, 
-		TNeedle2 & needle)
+        TNeedle2 & needle)
 {
-	_setHostMultiBfam(me, needle);
+    _setHostMultiBfam(me, needle);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -217,7 +217,7 @@ inline typename Host<Pattern<TNeedle, MultiBfam<TAutomaton> > >::Type &
 host(Pattern<TNeedle, MultiBfam<TAutomaton> > & me)
 {
 SEQAN_CHECKPOINT
-	return value(me.needle);
+    return value(me.needle);
 }
 
 template <typename TNeedle, typename TAutomaton>
@@ -225,7 +225,7 @@ inline typename Host<Pattern<TNeedle, MultiBfam<TAutomaton> > const>::Type &
 host(Pattern<TNeedle, MultiBfam<TAutomaton> > const & me)
 {
 SEQAN_CHECKPOINT
-	return value(me.needle);
+    return value(me.needle);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -234,7 +234,7 @@ template <typename TNeedle, typename TAutomaton>
 inline typename Size<TNeedle>::Type
 position(Pattern<TNeedle, MultiBfam<TAutomaton> > & me)
 {
-	return *(me.position);
+    return *(me.position);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -244,8 +244,8 @@ template <typename TNeedle, typename TAutomaton>
 inline void _patternInit (Pattern<TNeedle, MultiBfam<TAutomaton> > & me) 
 {
 SEQAN_CHECKPOINT
-	me.position = 0;
-	me.position_end = 0;
+    me.position = 0;
+    me.position_end = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -256,142 +256,142 @@ SEQAN_CHECKPOINT
 template <typename TNeedle, typename TAutomaton, typename THaystackIterator>
 inline bool 
 _startVerifyMultiBfam(Pattern<TNeedle, MultiBfam<TAutomaton> > &, 
-					   THaystackIterator) 
+                       THaystackIterator) 
 {
-	return true;
+    return true;
 }
 
 //specialization for oracles: must test explicitely, since set-oracles may also parse me.lmin-length strings that are no patterns
 template <typename TNeedle, typename THaystackIterator>
 inline bool 
 _startVerifyMultiBfam(Pattern<TNeedle, MultiBfam<Oracle> > & me, 
-					   THaystackIterator tit) 
+                       THaystackIterator tit) 
 {
-	typedef typename Value<TNeedle>::Type TKeyword;
-	typedef typename Iterator<TKeyword, Standard>::Type TKeywordIterator;
-	TKeyword & keyword = needle(me)[*(me.position)];
-	TKeywordIterator kit = begin(keyword);
-	TKeywordIterator kit_end = kit + me.lmin;
-	while (kit != kit_end)
-	{
-		if (*kit != *tit)
-		{
-			return false;
-		}
-		++kit;
-		++tit;
-	}
+    typedef typename Value<TNeedle>::Type TKeyword;
+    typedef typename Iterator<TKeyword, Standard>::Type TKeywordIterator;
+    TKeyword & keyword = needle(me)[*(me.position)];
+    TKeywordIterator kit = begin(keyword);
+    TKeywordIterator kit_end = kit + me.lmin;
+    while (kit != kit_end)
+    {
+        if (*kit != *tit)
+        {
+            return false;
+        }
+        ++kit;
+        ++tit;
+    }
 
-	return true;
+    return true;
 }
 
 //____________________________________________________________________________
 
 template <typename TFinder, typename TAutomaton, typename TNeedle>
 inline bool find(TFinder & finder, 
-				 Pattern<TNeedle, MultiBfam<TAutomaton> > & me) 
+                 Pattern<TNeedle, MultiBfam<TAutomaton> > & me) 
 {
 SEQAN_CHECKPOINT
-	typedef typename Haystack<TFinder>::Type THaystack;
-	typedef typename Iterator<THaystack, Standard>::Type THaystackIterator;
-	typedef typename Value<TNeedle>::Type TKeyword;
-	typedef typename Value<TKeyword>::Type TValue;
-	typedef typename Size<TKeyword>::Type TSize;
-	typedef typename Iterator<TKeyword, Standard>::Type TKeywordIterator;
-	typedef Graph<Automaton<TValue, void, WithoutEdgeId> > TGraph;
-	typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
+    typedef typename Haystack<TFinder>::Type THaystack;
+    typedef typename Iterator<THaystack, Standard>::Type THaystackIterator;
+    typedef typename Value<TNeedle>::Type TKeyword;
+    typedef typename Value<TKeyword>::Type TValue;
+    typedef typename Size<TKeyword>::Type TSize;
+    typedef typename Iterator<TKeyword, Standard>::Type TKeywordIterator;
+    typedef Graph<Automaton<TValue, void, WithoutEdgeId> > TGraph;
+    typedef typename VertexDescriptor<TGraph>::Type TVertexDescriptor;
 
-	if (me.lmin == 0) return false;
+    if (me.lmin == 0) return false;
 
-	//some variables
-	THaystackIterator haystack_end = end(haystack(finder));
-	THaystackIterator it1;
-	THaystackIterator it1_end = haystack_end - me.lmin + 1;
-	THaystackIterator it2;
-	TGraph & automaton = me.automaton;
-	TVertexDescriptor root = getRoot(automaton);
-	TVertexDescriptor nil_ = getNil<TVertexDescriptor>();
-	TVertexDescriptor current;
-	TKeywordIterator kit;
-	TKeywordIterator kit_end;
-	THaystackIterator tit;
-	TKeyword * p_keyword;
-	TSize len;
+    //some variables
+    THaystackIterator haystack_end = end(haystack(finder));
+    THaystackIterator it1;
+    THaystackIterator it1_end = haystack_end - me.lmin + 1;
+    THaystackIterator it2;
+    TGraph & automaton = me.automaton;
+    TVertexDescriptor root = getRoot(automaton);
+    TVertexDescriptor nil_ = getNil<TVertexDescriptor>();
+    TVertexDescriptor current;
+    TKeywordIterator kit;
+    TKeywordIterator kit_end;
+    THaystackIterator tit;
+    TKeyword * p_keyword;
+    TSize len;
 
-	if (empty(finder)) 
-	{
+    if (empty(finder)) 
+    {
 //START
-		_patternInit(me);
-		_finderSetNonEmpty(finder);
-		it1 = hostIterator(finder);
-	} 
-	else 
-	{
+        _patternInit(me);
+        _finderSetNonEmpty(finder);
+        it1 = hostIterator(finder);
+    } 
+    else 
+    {
 //RESUME
-		it1 = hostIterator(finder);
-		goto VERIFY_NEXT;
-	}
+        it1 = hostIterator(finder);
+        goto VERIFY_NEXT;
+    }
 
 //SEARCH
-	while (it1 < it1_end)
-	{
-		it2 = it1 + me.lmin; //me.lmin > 0 => it1 != it2
-		current = root;
-		while (true)
-		{
-			--it2;
-			current = getSuccessor(automaton, current, *it2);
-			if (current == nil_)
-			{
+    while (it1 < it1_end)
+    {
+        it2 = it1 + me.lmin; //me.lmin > 0 => it1 != it2
+        current = root;
+        while (true)
+        {
+            --it2;
+            current = getSuccessor(automaton, current, *it2);
+            if (current == nil_)
+            {
 //SKIP
-				it1 = it2 + 1;
-				break;
-			}
-			if (it1 == it2)
-			{
+                it1 = it2 + 1;
+                break;
+            }
+            if (it1 == it2)
+            {
 //VERIFY
-				me.position = begin(property(me.terminals, current), Standard());
-				me.position_end = end(property(me.terminals, current), Standard());
-				SEQAN_ASSERT_NEQ(me.position, me.position_end);
+                me.position = begin(property(me.terminals, current), Standard());
+                me.position_end = end(property(me.terminals, current), Standard());
+                SEQAN_ASSERT_NEQ(me.position, me.position_end);
 
-				if (_startVerifyMultiBfam(me, it1)) //this returns true if the lmin-length prefixe matches
-				{
-					while (me.position != me.position_end)
-					{
-						p_keyword = & needle(me)[*me.position];
-						len = length(*p_keyword);
-						if ((it1 + len) <= haystack_end)
-						{
-							//compare rest
-							kit = begin(*p_keyword) + me.lmin;
-							kit_end = end(*p_keyword);
-							tit = it1 + me.lmin;
-							while (true)
-							{
-								if (kit == kit_end)
-								{
+                if (_startVerifyMultiBfam(me, it1)) //this returns true if the lmin-length prefixe matches
+                {
+                    while (me.position != me.position_end)
+                    {
+                        p_keyword = & needle(me)[*me.position];
+                        len = length(*p_keyword);
+                        if ((it1 + len) <= haystack_end)
+                        {
+                            //compare rest
+                            kit = begin(*p_keyword) + me.lmin;
+                            kit_end = end(*p_keyword);
+                            tit = it1 + me.lmin;
+                            while (true)
+                            {
+                                if (kit == kit_end)
+                                {
 //MATCH FOUND
-									setPosition(finder, it1 - begin(haystack(finder), Standard()));
-									_setFinderLength(finder, length(needle(*p_keyword)));
-									_setFinderEnd(finder, position(finder) + length(finder));
-									return true;
-								}
-								if (*kit != *tit) break;
-								++kit;
-								++tit;
-							}
-						}
+                                    setPosition(finder, it1 - begin(haystack(finder), Standard()));
+                                    _setFinderLength(finder, length(needle(*p_keyword)));
+                                    _setFinderEnd(finder, position(finder) + length(finder));
+                                    return true;
+                                }
+                                if (*kit != *tit) break;
+                                ++kit;
+                                ++tit;
+                            }
+                        }
 VERIFY_NEXT:
-						++me.position;
-					}
-				}
-				++it1;
-				break;
-			}
+                        ++me.position;
+                    }
+                }
+                ++it1;
+                break;
+            }
 
-		}
-	}
-	return false;
+        }
+    }
+    return false;
 }
 
 //////////////////////////////////////////////////////////////////////////////

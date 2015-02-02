@@ -763,7 +763,7 @@ bool getCanonicalLabel(TMat & leastmat, seqan::Graph<TSpec> const & graph)
     typedef StringSet<TString>                                             TMatrix;
     typedef std::deque<TVertexDescriptor>                                  TVertexString;
     typedef std::unordered_map<TVertexDescriptor, bool>                    TCandMap;
-	typedef typename Value<TMat>::Type                                     TMatValue;
+    typedef typename Value<TMat>::Type                                     TMatValue;
 
     TFlag    flag = false;
     TMat     mat;

@@ -69,26 +69,26 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tag DfsOrder#Postorder
  * @brief Visit the node after its children.
  */
-	// predefined iterator traits
-	struct Preorder:			VSTreeIteratorTraits<Preorder_,  True> {};
-	struct Postorder:			VSTreeIteratorTraits<Postorder_, True> {};
-	struct PreorderEmptyEdges:	VSTreeIteratorTraits<Preorder_,  False> {};	// also iterate over
-	struct PostorderEmptyEdges:	VSTreeIteratorTraits<Postorder_, False> {};	// empty edges (with $-label)
+    // predefined iterator traits
+    struct Preorder:            VSTreeIteratorTraits<Preorder_,  True> {};
+    struct Postorder:            VSTreeIteratorTraits<Postorder_, True> {};
+    struct PreorderEmptyEdges:    VSTreeIteratorTraits<Preorder_,  False> {};    // also iterate over
+    struct PostorderEmptyEdges:    VSTreeIteratorTraits<Postorder_, False> {};    // empty edges (with $-label)
 
-	// traits for TopDown iterators (w/o ParentLinks) for which postorder/preorder is ignored
-	struct HideEmptyEdges:		VSTreeIteratorTraits<Postorder_, True> {};
-	struct EmptyEdges:			VSTreeIteratorTraits<Postorder_, False> {};	// empty edges (with $-label)
+    // traits for TopDown iterators (w/o ParentLinks) for which postorder/preorder is ignored
+    struct HideEmptyEdges:        VSTreeIteratorTraits<Postorder_, True> {};
+    struct EmptyEdges:            VSTreeIteratorTraits<Postorder_, False> {};    // empty edges (with $-label)
 
-	// MultiMems are more specialized MaxRepeats
-	template <typename TSpec = void>
-	struct MaxRepeats_;	// base class
-	struct MultiMems_;	// subclass tag
+    // MultiMems are more specialized MaxRepeats
+    template <typename TSpec = void>
+    struct MaxRepeats_;    // base class
+    struct MultiMems_;    // subclass tag
 
 
 
-	// virtual suffix tree iterators
-	template <typename TSpec = void>
-	struct VSTree;
+    // virtual suffix tree iterators
+    template <typename TSpec = void>
+    struct VSTree;
 
 /*!
  * @defgroup TopDown Top-Down Iteration
@@ -127,13 +127,13 @@ namespace SEQAN_NAMESPACE_MAIN
  * @brief Post-order traversal of the virtual string tree.
  */
 
-		// top down traversal iterators
-		template <typename TSpec = Preorder>
-		struct TopDown {};					// starts in the suffix tree root and can go down and go right
+        // top down traversal iterators
+        template <typename TSpec = Preorder>
+        struct TopDown {};                    // starts in the suffix tree root and can go down and go right
 
-			// allows an top-down iterator to go up
-			template < typename TSpec = Preorder >
-			struct ParentLinks {};			// .. can also go up
+            // allows an top-down iterator to go up
+            template < typename TSpec = Preorder >
+            struct ParentLinks {};            // .. can also go up
 
 /*!
  * @defgroup BottomUp Bottom-Up Iteration
@@ -158,18 +158,18 @@ namespace SEQAN_NAMESPACE_MAIN
  * @tag BottomUp#Postorder
  * @brief Post-order traversal of the virtual string tree.
  */
-		// bottom up traversal iterators
-		template <typename TSpec = Postorder>
-		struct BottomUp {};					// starts in the first node of a depth-first-search and can go next
+        // bottom up traversal iterators
+        template <typename TSpec = Postorder>
+        struct BottomUp {};                    // starts in the first node of a depth-first-search and can go next
 
-			struct	SuperMaxRepeats;					// maximal repeat and not part of a longer repeat
-			struct	SuperMaxRepeatsFast;
-			struct	Mums;								// Maximal Unique Match (unique in every sequence)
+            struct    SuperMaxRepeats;                    // maximal repeat and not part of a longer repeat
+            struct    SuperMaxRepeatsFast;
+            struct    Mums;                                // Maximal Unique Match (unique in every sequence)
 
-			typedef MaxRepeats_<void>		MaxRepeats;	// maximal repeat
-			struct	MaxRepeatOccurrences;
-			typedef MaxRepeats_<MultiMems_> MultiMems;	// Multiple Maximal Exact Match
-			struct	MultiMemOccurences;					// i.e. maximal match over different sequences
+            typedef MaxRepeats_<void>        MaxRepeats;    // maximal repeat
+            struct    MaxRepeatOccurrences;
+            typedef MaxRepeats_<MultiMems_> MultiMems;    // Multiple Maximal Exact Match
+            struct    MultiMemOccurences;                    // i.e. maximal match over different sequences
 
 
 /*!
@@ -188,52 +188,52 @@ namespace SEQAN_NAMESPACE_MAIN
  *                 or <tt>VSTree&lt;TopDown&lt;ParentLinks&lt;Preorder&gt; &gt; &gt;</tt>.
  */
 
-	template <typename TIterator>
-	struct GetVSTreeIteratorTraits:
-		DeepestSpec<TIterator> {};
+    template <typename TIterator>
+    struct GetVSTreeIteratorTraits:
+        DeepestSpec<TIterator> {};
 
 //////////////////////////////////////////////////////////////////////////////
 
-	template <typename TSize>
-	struct VertexEsa {
-		Pair<TSize> range;			// current SA interval of hits (unique node identifier)
-		TSize		parentRight;	// right boundary of parent node's range (allows to go right)
+    template <typename TSize>
+    struct VertexEsa {
+        Pair<TSize> range;            // current SA interval of hits (unique node identifier)
+        TSize        parentRight;    // right boundary of parent node's range (allows to go right)
 
         SEQAN_HOST_DEVICE
-		VertexEsa() : range(0, 0), parentRight(0) {}
+        VertexEsa() : range(0, 0), parentRight(0) {}
 
         SEQAN_HOST_DEVICE
-		VertexEsa(MinimalCtor):
-			range(0,0),
-			parentRight(0) {}
+        VertexEsa(MinimalCtor):
+            range(0,0),
+            parentRight(0) {}
 
         SEQAN_HOST_DEVICE
-		VertexEsa(TSize otherRangeLeft, TSize otherRangeRight, TSize otherParentRight):
-			range(Pair<TSize>(otherRangeLeft, otherRangeRight)),
-			parentRight(otherParentRight) {}
+        VertexEsa(TSize otherRangeLeft, TSize otherRangeRight, TSize otherParentRight):
+            range(Pair<TSize>(otherRangeLeft, otherRangeRight)),
+            parentRight(otherParentRight) {}
 
         SEQAN_HOST_DEVICE
-		VertexEsa(Pair<TSize> const &otherRange, TSize otherParentRight):
-			range(otherRange),
-			parentRight(otherParentRight) {}
+        VertexEsa(Pair<TSize> const &otherRange, TSize otherParentRight):
+            range(otherRange),
+            parentRight(otherParentRight) {}
 
         SEQAN_HOST_DEVICE
-		VertexEsa(VertexEsa const &other):
-			range(other.range),
-			parentRight(other.parentRight) {}
-	};
+        VertexEsa(VertexEsa const &other):
+            range(other.range),
+            parentRight(other.parentRight) {}
+    };
 
-	template <typename TSize>
+    template <typename TSize>
     SEQAN_HOST_DEVICE inline bool operator==(VertexEsa<TSize> const &a, VertexEsa<TSize> const &b)
-	{
-		return a.range == b.range;
-	}
+    {
+        return a.range == b.range;
+    }
 
-	template <typename TSize>
-	SEQAN_HOST_DEVICE inline bool operator!=(VertexEsa<TSize> const &a, VertexEsa<TSize> const &b)
-	{
-		return a.range != b.range;
-	}
+    template <typename TSize>
+    SEQAN_HOST_DEVICE inline bool operator!=(VertexEsa<TSize> const &a, VertexEsa<TSize> const &b)
+    {
+        return a.range != b.range;
+    }
 
 //////////////////////////////////////////////////////////////////////////////
 /*!
@@ -248,21 +248,21 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return Type The resulting vertex descriptor type.
  */
 
-	template < typename TText, typename TSpec >
-	struct VertexDescriptor< Index<TText, IndexEsa<TSpec> > > {
-		typedef typename Size< Index<TText, IndexEsa<TSpec> > >::Type TSize;
-		typedef VertexEsa<TSize> Type;
-	};
+    template < typename TText, typename TSpec >
+    struct VertexDescriptor< Index<TText, IndexEsa<TSpec> > > {
+        typedef typename Size< Index<TText, IndexEsa<TSpec> > >::Type TSize;
+        typedef VertexEsa<TSize> Type;
+    };
 
 
 //////////////////////////////////////////////////////////////////////////////
 // needful forward declarations
 
-	struct ArrayGaps_;
+    struct ArrayGaps_;
     typedef Tag<ArrayGaps_> ArrayGaps;
 
-	template <typename TSource, typename TSpec>
-	class Align;
+    template <typename TSource, typename TSpec>
+    class Align;
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -393,13 +393,13 @@ namespace SEQAN_NAMESPACE_MAIN
     class Index<TText, IndexEsa<TSpec> > {
     public:
         typename Member<Index, EsaText>::Type       text;
-        typename Fibre<Index, EsaSA>::Type          sa;			// suffix array
+        typename Fibre<Index, EsaSA>::Type          sa;            // suffix array
         typename Fibre<Index, EsaIsa>::Type         isa;        // inverse suffix array
-        typename Fibre<Index, EsaLcp>::Type         lcp;		// longest-common-prefix table
-        typename Fibre<Index, EsaLcpe>::Type        lcpe;		// extended lcp table
-        typename Fibre<Index, EsaChildtab>::Type    childtab;	// child table (tree topology)
-        typename Fibre<Index, EsaBwt>::Type         bwt;		// burrows-wheeler table
-        typename Cargo<Index>::Type                 cargo;		// user-defined cargo
+        typename Fibre<Index, EsaLcp>::Type         lcp;        // longest-common-prefix table
+        typename Fibre<Index, EsaLcpe>::Type        lcpe;        // extended lcp table
+        typename Fibre<Index, EsaChildtab>::Type    childtab;    // child table (tree topology)
+        typename Fibre<Index, EsaBwt>::Type         bwt;        // burrows-wheeler table
+        typename Cargo<Index>::Type                 cargo;        // user-defined cargo
 
         Index() {}
 
@@ -434,20 +434,20 @@ namespace SEQAN_NAMESPACE_MAIN
 
 //////////////////////////////////////////////////////////////////////////////
 
-	template < typename TText, typename TSpec >
-	SEQAN_HOST_DEVICE inline void _indexRequireTopDownIteration(Index<TText, IndexEsa<TSpec> > &index)
-	{
-		indexRequire(index, EsaSA());
-		indexRequire(index, EsaLcp());
-		indexRequire(index, EsaChildtab());
-	}
+    template < typename TText, typename TSpec >
+    SEQAN_HOST_DEVICE inline void _indexRequireTopDownIteration(Index<TText, IndexEsa<TSpec> > &index)
+    {
+        indexRequire(index, EsaSA());
+        indexRequire(index, EsaLcp());
+        indexRequire(index, EsaChildtab());
+    }
 
-	template < typename TText, typename TSpec >
-	void _indexRequireBottomUpIteration(Index<TText, IndexEsa<TSpec> > &index)
-	{
-		indexRequire(index, EsaSA());
-		indexRequire(index, EsaLcp());
-	}
+    template < typename TText, typename TSpec >
+    void _indexRequireBottomUpIteration(Index<TText, IndexEsa<TSpec> > &index)
+    {
+        indexRequire(index, EsaSA());
+        indexRequire(index, EsaLcp());
+    }
 
 //////////////////////////////////////////////////////////////////////////////
 /*!
@@ -459,97 +459,97 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in,out] index The index to be cleared.
  */
 
-	template <typename TText, typename TSpec>
-	inline void clear(Index<TText, IndexEsa<TSpec> > &index) {
-		clear(getFibre(index, EsaSA()));
-		clear(getFibre(index, EsaIsa()));
-		clear(getFibre(index, EsaLcp()));
-		clear(getFibre(index, EsaLcpe()));
-		clear(getFibre(index, EsaChildtab()));
-		clear(getFibre(index, EsaBwt()));
-	}
+    template <typename TText, typename TSpec>
+    inline void clear(Index<TText, IndexEsa<TSpec> > &index) {
+        clear(getFibre(index, EsaSA()));
+        clear(getFibre(index, EsaIsa()));
+        clear(getFibre(index, EsaLcp()));
+        clear(getFibre(index, EsaLcpe()));
+        clear(getFibre(index, EsaChildtab()));
+        clear(getFibre(index, EsaBwt()));
+    }
 
 // ----------------------------------------------------------------------------
 // Function open
 // ----------------------------------------------------------------------------
 
-	template < typename TObject, typename TSpec >
-	inline bool open(
-		Index< TObject, IndexEsa<TSpec> > &index,
-		const char *fileName,
-		int openMode)
-	{
-		String<char> name;
+    template < typename TObject, typename TSpec >
+    inline bool open(
+        Index< TObject, IndexEsa<TSpec> > &index,
+        const char *fileName,
+        int openMode)
+    {
+        String<char> name;
 
-		name = fileName;	append(name, ".txt");
-		if ((!open(getFibre(index, EsaText()), toCString(name), openMode)) &&
-			(!open(getFibre(index, EsaText()), fileName, openMode))) return false;
+        name = fileName;    append(name, ".txt");
+        if ((!open(getFibre(index, EsaText()), toCString(name), openMode)) &&
+            (!open(getFibre(index, EsaText()), fileName, openMode))) return false;
 
-		name = fileName;	append(name, ".sa");
+        name = fileName;    append(name, ".sa");
         if (!open(getFibre(index, EsaSA()), toCString(name), openMode)) return false;
 
         name = fileName;    append(name, ".isa");
         if (!open(getFibre(index, EsaIsa()), toCString(name), openMode)) return false;
 
-		name = fileName;	append(name, ".lcp");
+        name = fileName;    append(name, ".lcp");
         if (!open(getFibre(index, EsaLcp()), toCString(name), openMode)) return false;
 
-		name = fileName;	append(name, ".child");
+        name = fileName;    append(name, ".child");
         if (!open(getFibre(index, EsaChildtab()), toCString(name), openMode)) return false;
 
-		name = fileName;	append(name, ".bwt");
+        name = fileName;    append(name, ".bwt");
         if (!open(getFibre(index, EsaBwt()), toCString(name), openMode)) return false;
 
-		return true;
-	}
-	template < typename TObject, typename TSpec >
-	inline bool open(
-		Index< TObject, IndexEsa<TSpec> > &index,
-		const char *fileName)
-	{
-		return open(index, fileName, DefaultOpenMode<Index< TObject, IndexEsa<TSpec> > >::VALUE);
-	}
+        return true;
+    }
+    template < typename TObject, typename TSpec >
+    inline bool open(
+        Index< TObject, IndexEsa<TSpec> > &index,
+        const char *fileName)
+    {
+        return open(index, fileName, DefaultOpenMode<Index< TObject, IndexEsa<TSpec> > >::VALUE);
+    }
 
 // ----------------------------------------------------------------------------
 // Function save
 // ----------------------------------------------------------------------------
 
-	template < typename TObject, typename TSpec >
-	inline bool save(
-		Index< TObject, IndexEsa<TSpec> > const &index,
-		const char *fileName,
-		int openMode)
-	{
-		String<char> name;
+    template < typename TObject, typename TSpec >
+    inline bool save(
+        Index< TObject, IndexEsa<TSpec> > const &index,
+        const char *fileName,
+        int openMode)
+    {
+        String<char> name;
 
-		name = fileName;	append(name, ".txt");
-		if ((!save(getFibre(index, EsaText()), toCString(name), openMode)) &&
-			(!save(getFibre(index, EsaText()), fileName, openMode))) return false;
+        name = fileName;    append(name, ".txt");
+        if ((!save(getFibre(index, EsaText()), toCString(name), openMode)) &&
+            (!save(getFibre(index, EsaText()), fileName, openMode))) return false;
 
-		name = fileName;	append(name, ".sa");
+        name = fileName;    append(name, ".sa");
         if (!save(getFibre(index, EsaSA()), toCString(name), openMode)) return false;
 
         name = fileName;    append(name, ".isa");
         if (!save(getFibre(index, EsaIsa()), toCString(name), openMode)) return false;
 
-		name = fileName;	append(name, ".lcp");
+        name = fileName;    append(name, ".lcp");
         if (!save(getFibre(index, EsaLcp()), toCString(name), openMode)) return false;
 
-		name = fileName;	append(name, ".child");
+        name = fileName;    append(name, ".child");
         if (!save(getFibre(index, EsaChildtab()), toCString(name), openMode)) return false;
 
-		name = fileName;	append(name, ".bwt");
+        name = fileName;    append(name, ".bwt");
         if (!save(getFibre(index, EsaBwt()), toCString(name), openMode)) return false;
 
-		return true;
-	}
-	template < typename TObject, typename TSpec >
-	inline bool save(
-		Index< TObject, IndexEsa<TSpec> > const &index,
-		const char *fileName)
-	{
-		return save(index, fileName, DefaultOpenMode<Index< TObject, IndexEsa<TSpec> > >::VALUE);
-	}
+        return true;
+    }
+    template < typename TObject, typename TSpec >
+    inline bool save(
+        Index< TObject, IndexEsa<TSpec> > const &index,
+        const char *fileName)
+    {
+        return save(index, fileName, DefaultOpenMode<Index< TObject, IndexEsa<TSpec> > >::VALUE);
+    }
 
 }
 

@@ -140,10 +140,10 @@ namespace seqan
  * @signature typedef ModifiedString<ModifiedString<Rna5String, ModView<FunctorComplement<Rna55> >, ModReverse> Rna5StringReverseComplement;
  */
 
-typedef ModView<FunctorComplement<Dna> >	ModComplementDna;
-typedef ModView<FunctorComplement<Dna5> >	ModComplementDna5;
-typedef ModView<FunctorComplement<Rna> >	ModComplementRna;
-typedef ModView<FunctorComplement<Rna5> >	ModComplementRna5;
+typedef ModView<FunctorComplement<Dna> >    ModComplementDna;
+typedef ModView<FunctorComplement<Dna5> >    ModComplementDna5;
+typedef ModView<FunctorComplement<Rna> >    ModComplementRna;
+typedef ModView<FunctorComplement<Rna5> >    ModComplementRna5;
 
 template <typename THost>
 struct ReverseString
@@ -175,10 +175,10 @@ typedef ReverseString<Dna5String>::Type             Dna5StringReverse;
 typedef ReverseString<RnaString>::Type              RnaStringReverse;
 typedef ReverseString<Rna5String>::Type             Rna5StringReverse;
 
-typedef ReverseComplementString<DnaString>::Type	DnaStringReverseComplement;
-typedef ReverseComplementString<Dna5String>::Type	Dna5StringReverseComplement;
-typedef ReverseComplementString<RnaString>::Type	RnaStringReverseComplement;
-typedef ReverseComplementString<Rna5String>::Type	Rna5StringReverseComplement;
+typedef ReverseComplementString<DnaString>::Type    DnaStringReverseComplement;
+typedef ReverseComplementString<Dna5String>::Type    Dna5StringReverseComplement;
+typedef ReverseComplementString<RnaString>::Type    RnaStringReverseComplement;
+typedef ReverseComplementString<Rna5String>::Type    Rna5StringReverseComplement;
 
 // --------------------------------------------------------------------------
 // Function complement()
@@ -202,13 +202,13 @@ typedef ReverseComplementString<Rna5String>::Type	Rna5StringReverseComplement;
 template <typename TSequence >
 inline void complement(TSequence & sequence) 
 {
-	convert(sequence, FunctorComplement<typename Value<TSequence>::Type>());
+    convert(sequence, FunctorComplement<typename Value<TSequence>::Type>());
 } 
 
 template <typename TSequence >
 inline void complement(TSequence const & sequence) 
 {
-	convert(sequence, FunctorComplement<typename Value<TSequence>::Type>());
+    convert(sequence, FunctorComplement<typename Value<TSequence>::Type>());
 } 
 
 // --------------------------------------------------------------------------
@@ -218,17 +218,17 @@ inline void complement(TSequence const & sequence)
 template < typename TSequence, typename TSpec >
 inline void complement(StringSet<TSequence, TSpec> & stringSet)
 {
-	unsigned seqCount = length(stringSet);
-	for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
-		complement(stringSet[seqNo]);
+    unsigned seqCount = length(stringSet);
+    for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
+        complement(stringSet[seqNo]);
 }
 
 template < typename TSequence, typename TSpec >
 inline void complement(StringSet<TSequence, TSpec> const & stringSet)
 {
-	unsigned seqCount = length(stringSet);
-	for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
-		complement(stringSet[seqNo]);
+    unsigned seqCount = length(stringSet);
+    for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
+        complement(stringSet[seqNo]);
 }
 
 // --------------------------------------------------------------------------
@@ -239,14 +239,14 @@ template <typename THost>
 inline ModifiedString<THost, ModView<FunctorComplement<typename Value<THost>::Type> > >
 complementString(THost & host)
 {
-	return ModifiedString<THost, ModView<FunctorComplement<typename Value<THost>::Type> > >(host);
+    return ModifiedString<THost, ModView<FunctorComplement<typename Value<THost>::Type> > >(host);
 }
 
 template <typename THost>
 inline ModifiedString<THost const, ModView<FunctorComplement<typename Value<THost>::Type> > >
 complementString(THost const & host)
 {
-	return ModifiedString<THost const, ModView<FunctorComplement<typename Value<THost>::Type> > >(host);
+    return ModifiedString<THost const, ModView<FunctorComplement<typename Value<THost>::Type> > >(host);
 }
 
 // --------------------------------------------------------------------------
@@ -275,8 +275,8 @@ complementString(THost const & host)
 template < typename TSequence, typename TParallelTag >
 inline void reverseComplement(TSequence & sequence, Tag<TParallelTag> parallelTag)
 {
-	complement(sequence);
-	reverse(sequence, parallelTag);
+    complement(sequence);
+    reverse(sequence, parallelTag);
 } 
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
@@ -284,17 +284,17 @@ inline void reverseComplement(TSequence & sequence, Tag<TParallelTag> parallelTa
 template < typename TSequence, typename TParallelTag >
 inline void reverseComplement(TSequence const & sequence, Tag<TParallelTag> parallelTag)
 {
-	complement(sequence);
-	reverse(sequence, parallelTag);
+    complement(sequence);
+    reverse(sequence, parallelTag);
 } 
 
 template < typename TSequence, typename TSpec, typename TParallelTag >
 inline void reverseComplement(StringSet<TSequence, TSpec> & stringSet, Tag<TParallelTag>)
 {
-	int seqCount = length(stringSet);
+    int seqCount = length(stringSet);
     SEQAN_OMP_PRAGMA(parallel for if(IsSameType<Tag<TParallelTag>, Parallel>::VALUE))
-	for(int seqNo = 0; seqNo < seqCount; ++seqNo)
-		reverseComplement(stringSet[seqNo], Serial());
+    for(int seqNo = 0; seqNo < seqCount; ++seqNo)
+        reverseComplement(stringSet[seqNo], Serial());
 }
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
@@ -302,10 +302,10 @@ inline void reverseComplement(StringSet<TSequence, TSpec> & stringSet, Tag<TPara
 template < typename TSequence, typename TSpec, typename TParallelTag >
 inline void reverseComplement(StringSet<TSequence, TSpec> const & stringSet, Tag<TParallelTag>)
 {
-	int seqCount = length(stringSet);
+    int seqCount = length(stringSet);
     SEQAN_OMP_PRAGMA(parallel for if(IsSameType<Tag<TParallelTag>, Parallel>::VALUE))
-	for(int seqNo = 0; seqNo < seqCount; ++seqNo)
-		reverseComplement(stringSet[seqNo], Serial());
+    for(int seqNo = 0; seqNo < seqCount; ++seqNo)
+        reverseComplement(stringSet[seqNo], Serial());
 }
 
 template <typename TText>
@@ -329,7 +329,7 @@ inline typename ReverseComplementString<THost>::Type
 reverseComplementString(THost & host)
 {
     typedef typename ReverseComplementString<THost>::Type TRevComp;
-	return TRevComp(host);
+    return TRevComp(host);
 }
 
 template <typename THost>
@@ -337,7 +337,7 @@ inline typename ReverseComplementString<THost const>::Type
 reverseComplementString(THost const & host)
 {
     typedef typename ReverseComplementString<THost const>::Type TRevComp;
-	return TRevComp(host);
+    return TRevComp(host);
 }
 
 // --------------------------------------------------------------------------
@@ -359,7 +359,7 @@ reverseComplementString(THost const & host)
 template < typename TSequence >
 inline void toLower(TSequence & sequence) 
 {
-	convert(sequence, FunctorLowcase<typename Value<TSequence>::Type>());
+    convert(sequence, FunctorLowcase<typename Value<TSequence>::Type>());
 } 
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
@@ -367,15 +367,15 @@ inline void toLower(TSequence & sequence)
 template < typename TSequence >
 inline void toLower(TSequence const & sequence) 
 {
-	convert(sequence, FunctorLowcase<typename Value<TSequence>::Type>());
+    convert(sequence, FunctorLowcase<typename Value<TSequence>::Type>());
 } 
 
 template < typename TSequence, typename TSpec >
 inline void toLower(StringSet<TSequence, TSpec> & stringSet)
 {
-	unsigned seqCount = length(stringSet);
-	for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
-		toLower(stringSet[seqNo]);
+    unsigned seqCount = length(stringSet);
+    for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
+        toLower(stringSet[seqNo]);
 }
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
@@ -383,9 +383,9 @@ inline void toLower(StringSet<TSequence, TSpec> & stringSet)
 template < typename TSequence, typename TSpec >
 inline void toLower(StringSet<TSequence, TSpec> const & stringSet)
 {
-	unsigned seqCount = length(stringSet);
-	for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
-		toLower(stringSet[seqNo]);
+    unsigned seqCount = length(stringSet);
+    for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
+        toLower(stringSet[seqNo]);
 }
 
 // --------------------------------------------------------------------------
@@ -407,7 +407,7 @@ inline void toLower(StringSet<TSequence, TSpec> const & stringSet)
 template < typename TSequence >
 inline void toUpper(TSequence & sequence) 
 {
-	convert(sequence, FunctorUpcase<typename Value<TSequence>::Type>());
+    convert(sequence, FunctorUpcase<typename Value<TSequence>::Type>());
 } 
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
@@ -415,15 +415,15 @@ inline void toUpper(TSequence & sequence)
 template < typename TSequence >
 inline void toUpper(TSequence const & sequence) 
 {
-	convert(sequence, FunctorUpcase<typename Value<TSequence>::Type>());
+    convert(sequence, FunctorUpcase<typename Value<TSequence>::Type>());
 } 
 
 template < typename TSequence, typename TSpec >
 inline void toUpper(StringSet<TSequence, TSpec> & stringSet)
 {
-	unsigned seqCount = length(stringSet);
-	for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
-		toUpper(stringSet[seqNo]);
+    unsigned seqCount = length(stringSet);
+    for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
+        toUpper(stringSet[seqNo]);
 }
 
 // TODO(holtgrew): How is doing anything in-place on a const value possible?
@@ -432,9 +432,9 @@ template < typename TSequence, typename TSpec >
 inline void toUpper(StringSet<TSequence, TSpec> const & stringSet)
 {
 
-	unsigned seqCount = length(stringSet);
-	for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
-		toUpper(stringSet[seqNo]);
+    unsigned seqCount = length(stringSet);
+    for(unsigned seqNo = 0; seqNo < seqCount; ++seqNo)
+        toUpper(stringSet[seqNo]);
 }
 
 // --------------------------------------------------------------------------

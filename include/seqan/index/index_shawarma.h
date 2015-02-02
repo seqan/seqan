@@ -45,54 +45,54 @@ extern "C" {
 
 namespace SEQAN_NAMESPACE_MAIN {
 
-/*	namespace shawarma {
+/*    namespace shawarma {
 
-		extern void ds_ssort(unsigned char *t, int *sa, int n);
-		extern int init_ds_ssort(int adist, int bs_ratio);
+        extern void ds_ssort(unsigned char *t, int *sa, int n);
+        extern int init_ds_ssort(int adist, int bs_ratio);
 
-	}
+    }
 */
 //////////////////////////////////////////////////////////////////////////////
 // SeqAn interface
 
-	template <typename TSpec>
-	struct Shawarma {};
+    template <typename TSpec>
+    struct Shawarma {};
 
-	struct MSufSort{};			// MSufSort
-	struct DivSufSort{};		// DivSufSort
-	struct DeepShallow{};		// Deep-Shallow sort
-	struct QSufSort{};			// QSufSort
+    struct MSufSort{};            // MSufSort
+    struct DivSufSort{};        // DivSufSort
+    struct DeepShallow{};        // Deep-Shallow sort
+    struct QSufSort{};            // QSufSort
 
-	// WARNING:
-	// 1. text value must have char size
-	// 2. SA value must have int size
-	// 3. Deep-Shallow sort expects overshoot bytes behind the text
-	// 4. SA must be contiguous
-	//
+    // WARNING:
+    // 1. text value must have char size
+    // 2. SA value must have int size
+    // 3. Deep-Shallow sort expects overshoot bytes behind the text
+    // 4. SA must be contiguous
+    //
 
     template < typename TSA,
                typename TText >
     void createSuffixArray(
-		TSA &SA,
-		TText const &s,
-		Shawarma<DeepShallow> const)
-	{
-		typedef typename Value<TText>::Type	TValue   SEQAN_TYPEDEF_FOR_DEBUG;
-		typedef typename Value<TSA>::Type	TSAValue SEQAN_TYPEDEF_FOR_DEBUG;
+        TSA &SA,
+        TText const &s,
+        Shawarma<DeepShallow> const)
+    {
+        typedef typename Value<TText>::Type    TValue   SEQAN_TYPEDEF_FOR_DEBUG;
+        typedef typename Value<TSA>::Type    TSAValue SEQAN_TYPEDEF_FOR_DEBUG;
 
-		SEQAN_ASSERT_EQ(sizeof(TValue), sizeof(unsigned char));
-		SEQAN_ASSERT_EQ(sizeof(TSAValue), sizeof(int));
-//		SEQAN_ASSERT(IsContiguous<TSA>::VALUE);
+        SEQAN_ASSERT_EQ(sizeof(TValue), sizeof(unsigned char));
+        SEQAN_ASSERT_EQ(sizeof(TSAValue), sizeof(int));
+//        SEQAN_ASSERT(IsContiguous<TSA>::VALUE);
 
-		int overshoot = init_ds_ssort(500, 2000);
+        int overshoot = init_ds_ssort(500, 2000);
 
-		SEQAN_ASSERT_GT(overshoot, 0);
-		reserve(s, length(s) + overshoot);
-		ds_ssort(
-			(unsigned char*)toCString(s),		// text
-			(int*)begin(SA, Standard()),		// SA
-			length(s));							// n
-	}
+        SEQAN_ASSERT_GT(overshoot, 0);
+        reserve(s, length(s) + overshoot);
+        ds_ssort(
+            (unsigned char*)toCString(s),        // text
+            (int*)begin(SA, Standard()),        // SA
+            length(s));                            // n
+    }
 
 
 } // namespace SEQAN_NAMESPACE_MAIN

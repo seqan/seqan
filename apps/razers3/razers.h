@@ -226,7 +226,7 @@ struct RazerSCoreOptions
 
     // statistics
     typedef LogProb<> TProb;
-//		typedef double TProb;
+//        typedef double TProb;
     String<unsigned> readLengths;       // read length histogram (i -> #reads of length i)
     String<double>   avrgQuality;       // average error quality per base
     String<TProb>    errorProb;         // error probability per base
@@ -604,12 +604,12 @@ struct MatchVerifier
 
                     if (length(*matches) * 4 > oldSize)                 // the threshold should not be raised
                     {       // fprintf(stderr, "[raising threshold]");
-                            // options->compactThresh += (options->compactThresh >> 1);	// if too many matches were removed
+                            // options->compactThresh += (options->compactThresh >> 1);    // if too many matches were removed
                         options->compactThresh = (__int64)(options->compactThresh * options->compactMult);
                     }
 
-//						if (options._debugLevel >= 2)
-//							std::cerr << '(' << oldSize - length(store.alignedReadStore) << " matches removed)";
+//                        if (options._debugLevel >= 2)
+//                            std::cerr << '(' << oldSize - length(store.alignedReadStore) << " matches removed)";
                     double endTime = sysTime();
                     compactionTime += (endTime - beginTime);
                 }
@@ -628,39 +628,39 @@ struct MatchVerifier
 template<typename TSpec>
 int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFileNames, RazerSCoreOptions<TSpec> &options)
 {
-	std::ifstream file;
-	file.open(toCString(filename), std::ios_base::in | std::ios_base::binary);
-	if (!file.is_open())
-		return RAZERS_GENOME_FAILED;
+    std::ifstream file;
+    file.open(toCString(filename), std::ios_base::in | std::ios_base::binary);
+    if (!file.is_open())
+        return RAZERS_GENOME_FAILED;
 
     DirectionIterator<std::fstream, Input>::Type reader(file);
     if (!atEnd(reader))
         return 0;
 
     clear(genomeFileNames);
-	if (*reader == '>' && *reader != '@')	//if file does not start with a fasta header --> list of multiple reference genome files
-	{
-		if(options._debugLevel >=1)
-			std::cout << std::endl << "Reading multiple genome files:" << std::endl;
-		
-		unsigned i = 1;
+    if (*reader == '>' && *reader != '@')    //if file does not start with a fasta header --> list of multiple reference genome files
+    {
+        if(options._debugLevel >=1)
+            std::cout << std::endl << "Reading multiple genome files:" << std::endl;
+        
+        unsigned i = 1;
         CharString line;
-		while (!atEnd(reader))
-		{
+        while (!atEnd(reader))
+        {
             readLine(line, reader);
             cropOuter(line, IsWhitespace());
-			appendValue(genomeFileNames, line);
-			if(options._debugLevel >=2)
-				std::cout <<"Genome file #"<< i <<": " << back(genomeFileNames) << std::endl;
-			++i;
-		}
-		if(options._debugLevel >=1)
-			std::cout << i-1 << " genome files total." << std::endl;
-	}
-	else		//if file starts with a fasta header --> regular one-genome-file input
-		appendValue(genomeFileNames, filename, Exact());
-	file.close();
-	return 0;
+            appendValue(genomeFileNames, line);
+            if(options._debugLevel >=2)
+                std::cout <<"Genome file #"<< i <<": " << back(genomeFileNames) << std::endl;
+            ++i;
+        }
+        if(options._debugLevel >=1)
+            std::cout << i-1 << " genome files total." << std::endl;
+    }
+    else        //if file starts with a fasta header --> regular one-genome-file input
+        appendValue(genomeFileNames, filename, Exact());
+    file.close();
+    return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -668,7 +668,7 @@ int getGenomeFileNameList(CharString filename, StringSet<CharString> & genomeFil
 template <typename TFSSpec, typename TFSConfig, typename TRazerSOptions>
 bool loadReads(
     FragmentStore<TFSSpec, TFSConfig> & store,
-	SeqFileIn &seqFile,
+    SeqFileIn &seqFile,
     TRazerSOptions & options)
 {
     bool countN = !(options.matchN || options.outputFormat == 1);
@@ -711,7 +711,7 @@ bool loadReads(
                         break;
                     }
 // low qual. reads are empty to output them and their id later as LQ reads
-//			if (count > cutoffCount) continue;
+//            if (count > cutoffCount) continue;
         }
 
         // store dna and quality together
@@ -816,8 +816,8 @@ bool loadReads(
 // and return its length
 inline int estimateReadLength(SeqFileIn &seqFile)
 {
-	if (atEnd(seqFile))
-		return 0;
+    if (atEnd(seqFile))
+        return 0;
 
     typedef String<char, Array<1000> > TBuffer;
 
@@ -1409,13 +1409,13 @@ void maskDuplicates(TMatches & matches, TOptions & options, TRazerSMode const & 
 template <typename TFragmentStore, typename TCounts, typename TBinFunctor, typename TRazerSMode>
 void countMatches(TFragmentStore &store, TCounts &cnt, TBinFunctor &binF, TRazerSMode)
 {
-    typedef typename TFragmentStore::TAlignedReadStore				TAlignedReadStore;
-    typedef typename TFragmentStore::TAlignQualityStore				TAlignQualityStore;
+    typedef typename TFragmentStore::TAlignedReadStore                TAlignedReadStore;
+    typedef typename TFragmentStore::TAlignQualityStore                TAlignQualityStore;
 
-    typedef typename Value<TAlignedReadStore>::Type					TAlignedRead;
-    typedef typename Iterator<TAlignedReadStore, Standard>::Type	TIterator;
-    typedef typename Value<TCounts>::Type							TRow;
-    typedef typename Value<TRow>::Type								TValue;
+    typedef typename Value<TAlignedReadStore>::Type                    TAlignedRead;
+    typedef typename Iterator<TAlignedReadStore, Standard>::Type    TIterator;
+    typedef typename Value<TCounts>::Type                            TRow;
+    typedef typename Value<TRow>::Type                                TValue;
 
     sortAlignedReads(store.alignedReadStore, LessScore<TAlignedReadStore, TAlignQualityStore, TRazerSMode>(store.alignQualityStore));
 
@@ -1532,7 +1532,7 @@ setMaxErrors(Pattern<TIndex, Swift<TSwiftSpec> > & filterPattern, TReadNo readNo
     int minT = _qgramLemma(filterPattern, readNo, maxErrors);
     if (minT > 1)
     {
-//		std::cout<<" read:"<<readNo<<" newThresh:"<<minT;
+//        std::cout<<" read:"<<readNo<<" newThresh:"<<minT;
         if (maxErrors < 0)
             minT = MaxValue<int>::VALUE;
         setMinThreshold(filterPattern, readNo, (unsigned)minT);
@@ -1845,7 +1845,7 @@ matchVerify(
     typedef typename Iterator<TGenomeInfix, Standard>::Type TGenomeIterator;
     typedef typename Iterator<TRead const, Standard>::Type  TReadIterator;
 
-//	unsigned maxErrors = (unsigned)(verifier.options->prefixSeedLength * verifier.options->errorRate);
+//    unsigned maxErrors = (unsigned)(verifier.options->prefixSeedLength * verifier.options->errorRate);
     unsigned maxErrors = verifier.options->errorCutOff[readId];
     if (maxErrors == 0)
         return false;
@@ -2217,9 +2217,9 @@ matchVerify(
 #endif
                     setEndPosition(inf, newInfEndPos);
 
-//					// limit the beginning to needle length plus errors (== -maxScore)
-//					if (length(inf) > ndlLength - maxScore)
-//						setBeginPosition(inf, endPosition(inf) - ndlLength + maxScore);
+//                    // limit the beginning to needle length plus errors (== -maxScore)
+//                    if (length(inf) > ndlLength - maxScore)
+//                        setBeginPosition(inf, endPosition(inf) - ndlLength + maxScore);
 
                     // we eventually have to search before the beginning of our parallelogram
                     // otherwise alignments of an island in the previous parallelogram
@@ -2306,7 +2306,7 @@ matchVerify(
     {
         verifier.m.endPos = beginPosition(inf) + maxPos + 1;
         verifier.m.pairScore = verifier.m.score = maxScore;
-//		verifier.m.errors = -maxScore;
+//        verifier.m.errors = -maxScore;
 
         if (maxScore == 0)
             verifier.m.beginPos = verifier.m.endPos - ndlLength;
@@ -2320,9 +2320,9 @@ matchVerify(
 #endif
             setEndPosition(inf, newInfEndPos);
 
-//					// limit the beginning to needle length plus errors (== -maxScore)
-//					if (length(inf) > ndlLength - maxScore)
-//						setBeginPosition(inf, endPosition(inf) - ndlLength + maxScore);
+//                    // limit the beginning to needle length plus errors (== -maxScore)
+//                    if (length(inf) > ndlLength - maxScore)
+//                        setBeginPosition(inf, endPosition(inf) - ndlLength + maxScore);
 
             // we eventually have to search before the beginning of our parallelogram
             // otherwise alignments of an island in the previous parallelogram
@@ -2437,7 +2437,7 @@ estimateErrorDistributionFromQualities(TOptions & options)
     typedef typename TOptions::TProb TFloat;
 
     resize(options.errorProb, length(options.avrgQuality));
-//	std::cout<< "ERROR PROBS:"<<std::endl;
+//    std::cout<< "ERROR PROBS:"<<std::endl;
     for (unsigned i = 0; i < length(options.avrgQuality); ++i)
     {
         //    qual = -10 log_10 p
@@ -2447,11 +2447,11 @@ estimateErrorDistributionFromQualities(TOptions & options)
         double e = options.avrgQuality[i] * log(10.0) / -10.0;
         TFloat sequencingError;
         sequencingError.data_value = e;
-//		sequencingError = exp(e);
+//        sequencingError = exp(e);
         options.errorProb[i] = (TFloat)1.0 - ((TFloat)1.0 - sequencingError) * ((TFloat)1.0 - options.mutationRate);
-//		std::cout<<e<<':'<<options.errorProb[i]<<'\t';
+//        std::cout<<e<<':'<<options.errorProb[i]<<'\t';
     }
-//	std::cout<<std::endl<<std::endl;
+//    std::cout<<std::endl<<std::endl;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -2496,13 +2496,13 @@ void computeQGramLengths(TDelta & minDelta, TOptions const & options)
         }
     }
 
-//	std::cout<< "Deltas:"<<std::endl;
+//    std::cout<< "Deltas:"<<std::endl;
 //    for (unsigned ol = 0; ol < length(minDelta); ++ol)
-//	{
+//    {
 //        if (minDelta[ol] < 3) minDelta[ol] = maxDelta[ol];
-//		std::cout<<minDelta[ol]+ol<<'\t';
-//	}
-//	std::cout<<std::endl<<std::endl;
+//        std::cout<<minDelta[ol]+ol<<'\t';
+//    }
+//    std::cout<<std::endl<<std::endl;
 }
 
 template <typename TEstLosses, typename TDelta, typename TOptions>
@@ -2539,12 +2539,12 @@ unsigned estimatePigeonholeLosses(TEstLosses & estLosses, TDelta const & delta, 
     clear(estLosses);
     resize(estLosses, maxErrors1 + 2, 0.0);
     double maxLoss = 0.0;
-//		std::cout << "len:"<<0<<"  "<<options.readLengths[0]<<std::endl;
+//        std::cout << "len:"<<0<<"  "<<options.readLengths[0]<<std::endl;
     for (unsigned len = 1; len <= maxLength; ++len)
     {
         if (options.readLengths[len] == 0)
             continue;
-//		std::cout << "len:"<<len<<"  "<<options.readLengths[len]<<'\t'<<(TFloat)options.readLengths[len]<<'\t'<<(double)(TFloat)options.readLengths[len]<<'\t'<<std::endl;
+//        std::cout << "len:"<<len<<"  "<<options.readLengths[len]<<'\t'<<(TFloat)options.readLengths[len]<<'\t'<<(double)(TFloat)options.readLengths[len]<<'\t'<<std::endl;
 
         unsigned errors = (unsigned) floor(options.errorRate * len);
         TFloat sum = 0.0;
@@ -2648,8 +2648,8 @@ unsigned estimatePigeonholeLosses(TEstLosses & estLosses, TDelta const & delta, 
             }
             else
                 M[idx] = p[(stepSize - 1) * maxErrors1 + e0];
-//		std::cout<<"p(C_"<<0<<'='<<e0<<")="<<p[( (stepSize - 1)) * maxErrors1 + e0]<<std::endl;
-//		std::cout<<"p(X_"<<0<<'='<<e0<<")="<<p[( (q - 1)) * maxErrors1 + e0]<<std::endl;
+//        std::cout<<"p(C_"<<0<<'='<<e0<<")="<<p[( (stepSize - 1)) * maxErrors1 + e0]<<std::endl;
+//        std::cout<<"p(X_"<<0<<'='<<e0<<")="<<p[( (q - 1)) * maxErrors1 + e0]<<std::endl;
         }
 /*
     SEQAN_OMP_PRAGMA(critical)
@@ -2662,7 +2662,7 @@ unsigned estimatePigeonholeLosses(TEstLosses & estLosses, TDelta const & delta, 
                 std::cerr<<"p_last("<<i<<'='<<e0<<")="<<p_last[i * maxErrors1 + e0]<<std::endl;
     }
 */
-//		std::cout<<"=============================="<<std::endl;
+//        std::cout<<"=============================="<<std::endl;
 
         // M[s,e,x] at position ((s * maxErrors1) + e) * maxErrors1 + x
         for (unsigned s = 1; s < maxSegments; ++s)
@@ -2702,14 +2702,14 @@ unsigned estimatePigeonholeLosses(TEstLosses & estLosses, TDelta const & delta, 
                 }
             }
 
-//		// no overlap => no loss => no estimation required
-//		if (ol == 0) continue;
+//        // no overlap => no loss => no estimation required
+//        if (ol == 0) continue;
 
         // ------------------------------------------------------------------------------------------------
         // sum up the expected numbers of lost reads for every read length 0,...,maxLength
         // ------------------------------------------------------------------------------------------------
         double loss = 0.0;
-//		std::cout<< "LOSSES FOR OVERLAP " << ol <<":"<<std::endl;
+//        std::cout<< "LOSSES FOR OVERLAP " << ol <<":"<<std::endl;
 
         appendValue(estLosses, (double)ol);
         appendValue(estLosses, (double)q);
@@ -2724,14 +2724,14 @@ unsigned estimatePigeonholeLosses(TEstLosses & estLosses, TDelta const & delta, 
             unsigned errors = (unsigned) floor(options.errorRate * len);
             unsigned segments = (len - ol) / stepSize;
 
-//			TFloat divider = p_prefix[(len - 1) * maxErrors1];
-//			std::cout<<"DIVIDER"<<0<< ':'<<p_prefix[(len - 1) * maxErrors1]<<std::endl;
-//			for (unsigned e = 1; e <= errors; ++e)
-//			{
-//				divider += p_prefix[(len - 1) * maxErrors1 + e];
-//				std::cout<<"DIVIDER"<<e<< ':'<<p_prefix[(len - 1) * maxErrors1 + e]<<std::endl;
-//			}
-//			std::cout<<"DIVIDERSUM:"<<divider<<std::endl;
+//            TFloat divider = p_prefix[(len - 1) * maxErrors1];
+//            std::cout<<"DIVIDER"<<0<< ':'<<p_prefix[(len - 1) * maxErrors1]<<std::endl;
+//            for (unsigned e = 1; e <= errors; ++e)
+//            {
+//                divider += p_prefix[(len - 1) * maxErrors1 + e];
+//                std::cout<<"DIVIDER"<<e<< ':'<<p_prefix[(len - 1) * maxErrors1 + e]<<std::endl;
+//            }
+//            std::cout<<"DIVIDERSUM:"<<divider<<std::endl;
 
             TFloat lossPerLength = 0.0;
             unsigned segmentedLen = segments * stepSize + ol;
@@ -2759,16 +2759,16 @@ unsigned estimatePigeonholeLosses(TEstLosses & estLosses, TDelta const & delta, 
                 }
             }
 
-//			lossPerLength /= divider;
+//            lossPerLength /= divider;
             loss += options.readLengths[len] * (double)lossPerLength;
-//			std::cout<<len<<':'<<options.readLengths[len] * (double)lossPerLength<<'\t';
+//            std::cout<<len<<':'<<options.readLengths[len] * (double)lossPerLength<<'\t';
 
-//			if (len >= delta[ol] * (errors + 2) + ol) continue;
-//			loss += options.readLengths[len] * (q0[len * options.maxOverlap + ol - 1] / p[len * maxErrors1 + errors]);
+//            if (len >= delta[ol] * (errors + 2) + ol) continue;
+//            loss += options.readLengths[len] * (q0[len * options.maxOverlap + ol - 1] / p[len * maxErrors1 + errors]);
         }
         if (loss > maxLoss)
             break;
-//		std::cout<<std::endl<<std::endl;
+//        std::cout<<std::endl<<std::endl;
 
         overlap = ol;
     }
@@ -3012,7 +3012,7 @@ int _mapSingleReads(
 
     //typedef typename Value<TReadSeqStore>::Type const   TRead;
     //typedef Pattern<TRead, MyersUkkonen>                TMyersPattern;  // verifier
-    // typedef Pattern<TRead, Myers<FindInfix, False, void> >	TMyersPattern;	// verifier
+    // typedef Pattern<TRead, Myers<FindInfix, False, void> >    TMyersPattern;    // verifier
 
     typedef typename TFragmentStore::TContigSeq TContigSeq;
     typedef typename Position<TContigSeq>::Type TContigPos;
@@ -3169,21 +3169,21 @@ int _mapSingleReads(
     typedef FragmentStore<TFSSpec, TFSConfig>               TFragmentStore;
     typedef typename TFragmentStore::TReadSeqStore          TReadSeqStore;
 
-//	typedef typename Value<TReadSeqStore>::Type				TRead;
-//	typedef typename Infix<TRead>::Type						TReadInfix;
-//	typedef StringSet<TReadInfix>							TReadSet;
+//    typedef typename Value<TReadSeqStore>::Type                TRead;
+//    typedef typename Infix<TRead>::Type                        TReadInfix;
+//    typedef StringSet<TReadInfix>                            TReadSet;
     typedef TReadSeqStore                                   TReadSet;
     typedef Index<TReadSet, IndexQGram<TShape> >            TIndex;         // q-gram index
 
-//	TReadSet readSet;
-//	unsigned readCount = length(store.readSeqStore);
-//	resize(readSet, readCount, Exact());
+//    TReadSet readSet;
+//    unsigned readCount = length(store.readSeqStore);
+//    resize(readSet, readCount, Exact());
 //
-//	for (unsigned i = 0; i < readCount; ++i)
-//		assign(readSet[i], prefix(store.readSeqStore[i], _min(length(store.readSeqStore[i]), options.prefixSeedLength)));
+//    for (unsigned i = 0; i < readCount; ++i)
+//        assign(readSet[i], prefix(store.readSeqStore[i], _min(length(store.readSeqStore[i]), options.prefixSeedLength)));
 //
-//	// configure q-gram index
-//	TIndex swiftIndex(readSet, shape);
+//    // configure q-gram index
+//    TIndex swiftIndex(readSet, shape);
     TIndex swiftIndex(store.readSeqStore, shape);
     cargo(swiftIndex).abundanceCut = options.abundanceCut;
     cargo(swiftIndex)._debugLevel = options._debugLevel;
@@ -3375,8 +3375,8 @@ int _mapReads(
     if (stringToShape(ungapped, options.shape))
         return _mapReads(store, cnts, options, ungapped, mode);
 
-//	if (stringToShape(onegapped, options.shape))
-//		return _mapReads(store, cnts, options, onegapped, mode);
+//    if (stringToShape(onegapped, options.shape))
+//        return _mapReads(store, cnts, options, onegapped, mode);
     if (stringToShape(gapped, options.shape))
         return _mapReads(store, cnts, options, gapped, mode);
 
@@ -3395,7 +3395,7 @@ int _mapReads(
     if (options.scoreMode == RAZERS_ERRORS)
         return _mapReads(store, cnts, options, RazerSMode<TAlignMode, TGapMode, RazerSErrors, TMatchNPolicy>());
 
-/*	if (options.scoreMode == RAZERS_SCORE)
+/*    if (options.scoreMode == RAZERS_SCORE)
         return _mapReads(store, cnts, options, RazerSMode<TAlignMode, TGapMode, RazerSScore, TMatchNPolicy>());
     if (options.scoreMode == RAZERS_QUALITY)
         return _mapReads(store, cnts, options, RazerSMode<TAlignMode, TGapMode, RazerSQuality<>, TMatchNPolicy>());

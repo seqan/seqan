@@ -40,13 +40,13 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
-	template <unsigned q>
-	struct UngappedShape {};
-	typedef UngappedShape<0> SimpleShape;
+    template <unsigned q>
+    struct UngappedShape {};
+    typedef UngappedShape<0> SimpleShape;
 
-	template <typename TSpec>
-	struct GappedShape {};
-	typedef GappedShape<Default> GenericShape;
+    template <typename TSpec>
+    struct GappedShape {};
+    typedef GappedShape<Default> GenericShape;
 
 
 /*!
@@ -67,8 +67,8 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * To get the span or the weight of a shape call @link Shape#length @endlink or @link Shape#weight @endlink.
  */
-	template <typename TValue = Dna, typename TSpec = SimpleShape>
-	class Shape;
+    template <typename TValue = Dna, typename TSpec = SimpleShape>
+    class Shape;
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -83,11 +83,11 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return Type The value type of the shape.
  */
 
-	template <typename TValue, typename TSpec>
-	struct Value<Shape<TValue,TSpec> >
-	{
-		typedef __uint64 Type;
-	};
+    template <typename TValue, typename TSpec>
+    struct Value<Shape<TValue,TSpec> >
+    {
+        typedef __uint64 Type;
+    };
 
 /*!
  * @mfn Shape#Size
@@ -100,11 +100,11 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return Type The size type of the shape.
  */
 
-	template <typename TValue, typename TSpec>
-	struct Size<Shape<TValue,TSpec> >
-	{
-		typedef unsigned long Type;
-	};
+    template <typename TValue, typename TSpec>
+    struct Size<Shape<TValue,TSpec> >
+    {
+        typedef unsigned long Type;
+    };
 
 /*!
  * @mfn Shape#LENGTH
@@ -118,10 +118,10 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
     template <typename TValue, unsigned q>
-	struct LENGTH< Shape<TValue, UngappedShape<q> > >
-	{
-		enum { VALUE = q };
-	};
+    struct LENGTH< Shape<TValue, UngappedShape<q> > >
+    {
+        enum { VALUE = q };
+    };
 
 /*!
  * @mfn Shape#WEIGHT
@@ -135,10 +135,10 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
     template <typename TValue, unsigned q>
-	struct WEIGHT< Shape<TValue, UngappedShape<q> > >
-	{
-		enum { VALUE = q };
-	};
+    struct WEIGHT< Shape<TValue, UngappedShape<q> > >
+    {
+        enum { VALUE = q };
+    };
 
 /*!
  * @mfn Shape#ValueSize
@@ -151,14 +151,14 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return Type Type to use for the value size.
  */
 
-	template <typename TValue, typename TSpec>
-	struct ValueSize< Shape<TValue, TSpec> >
-	{
-		typedef typename Value<Shape<TValue, TSpec> >::Type THashValue;
-		static const THashValue VALUE = Power<
-						ValueSize<TValue>::VALUE,
-						WEIGHT< Shape<TValue, TSpec> >::VALUE >::VALUE;
-	};
+    template <typename TValue, typename TSpec>
+    struct ValueSize< Shape<TValue, TSpec> >
+    {
+        typedef typename Value<Shape<TValue, TSpec> >::Type THashValue;
+        static const THashValue VALUE = Power<
+                        ValueSize<TValue>::VALUE,
+                        WEIGHT< Shape<TValue, TSpec> >::VALUE >::VALUE;
+    };
 
 /*!
  * @mfn Shape#Host
@@ -171,11 +171,11 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return Type Type to use for the host (= value) size.
  */
 
-	template <typename TValue, typename TSpec>
-	struct Host<Shape<TValue,TSpec> >
-	{
-		typedef TValue Type;
-	};
+    template <typename TValue, typename TSpec>
+    struct Host<Shape<TValue,TSpec> >
+    {
+        typedef TValue Type;
+    };
 
 
 //////////////////////////////////////////////////////////////////////////////
@@ -200,24 +200,24 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see UngappedShape
  */
 
-	//////////////////////////////////////////////////////////////////////////////
-	// ungapped shape with variable length
-	//////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    // ungapped shape with variable length
+    //////////////////////////////////////////////////////////////////////////////
 
-	template <typename TValue>
-	class Shape<TValue, SimpleShape>
-	{
-	public:
+    template <typename TValue>
+    class Shape<TValue, SimpleShape>
+    {
+    public:
 //____________________________________________________________________________
 
-		unsigned					span;
-		typename Value<Shape>::Type	hValue;
-		typename Value<Shape>::Type	XValue;
-		typename Value<Shape>::Type	leftFactor;
-		typename Value<Shape>::Type	leftFactor2;
-		TValue						leftChar;
+        unsigned                    span;
+        typename Value<Shape>::Type    hValue;
+        typename Value<Shape>::Type    XValue;
+        typename Value<Shape>::Type    leftFactor;
+        typename Value<Shape>::Type    leftFactor2;
+        TValue                        leftChar;
 //____________________________________________________________________________
-		
+        
 /*!
  * @fn SimpleShape::Shape
  *
@@ -230,49 +230,49 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in] shape Other Shape object (copy constructor).
  * @param[in] q     Length of the ungapped q-gram (@link IntegerConcept @endlink).
  */
-		Shape():
-			span(0),
-			hValue(0),
-			XValue(0),
-			leftFactor(0),
-			leftFactor2(0),
+        Shape():
+            span(0),
+            hValue(0),
+            XValue(0),
+            leftFactor(0),
+            leftFactor2(0),
             leftChar(0) {}
-		
-		Shape(unsigned _span):
-			hValue(0),
-			XValue(0),
-			leftFactor(0),
-			leftFactor2(0),
-			leftChar(0)
-		{
-			resize(*this, _span);
-		}
+        
+        Shape(unsigned _span):
+            hValue(0),
+            XValue(0),
+            leftFactor(0),
+            leftFactor2(0),
+            leftChar(0)
+        {
+            resize(*this, _span);
+        }
 
-		template <unsigned q>
-		Shape(Shape<TValue, UngappedShape<q> > const &other)
-		{
-			*this = other;
-		}	
+        template <unsigned q>
+        Shape(Shape<TValue, UngappedShape<q> > const &other)
+        {
+            *this = other;
+        }    
 
 //____________________________________________________________________________
 
-		template <unsigned q>
-		inline Shape &
-		operator=(Shape<TValue, UngappedShape<q> > const &other)
-		{
-			span = other.span;
-			hValue = other.hValue;
-			XValue = other.XValue;
-			leftFactor = other.leftFactor;
-			leftFactor2 = other.leftFactor2;
-			leftChar = other.leftChar;
-			return *this;
-		}
-	};
+        template <unsigned q>
+        inline Shape &
+        operator=(Shape<TValue, UngappedShape<q> > const &other)
+        {
+            span = other.span;
+            hValue = other.hValue;
+            XValue = other.XValue;
+            leftFactor = other.leftFactor;
+            leftFactor2 = other.leftFactor2;
+            leftChar = other.leftChar;
+            return *this;
+        }
+    };
 
-	//////////////////////////////////////////////////////////////////////////////
-	// ungapped shape with fixed length q
-	//////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
+    // ungapped shape with fixed length q
+    //////////////////////////////////////////////////////////////////////////////
 
 /*!
  * @class UngappedShape
@@ -290,29 +290,29 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see SimpleShape
  */
 
-	template <typename TValue, unsigned q>
-	class Shape<TValue, UngappedShape<q> >
-	{
-	public:
-		typedef typename Value<Shape>::Type THashValue;
+    template <typename TValue, unsigned q>
+    class Shape<TValue, UngappedShape<q> >
+    {
+    public:
+        typedef typename Value<Shape>::Type THashValue;
 //____________________________________________________________________________
 
-		static const unsigned span = q;
-		static const THashValue leftFactor = Power<ValueSize<TValue>::VALUE, q - 1>::VALUE;
-		static const THashValue leftFactor2 = (Power<ValueSize<TValue>::VALUE, q>::VALUE - 1) / (ValueSize<TValue>::VALUE - 1);
-		// Sigma^(q-1) + Sigma^(q-2) + ... + Sigma + 1
+        static const unsigned span = q;
+        static const THashValue leftFactor = Power<ValueSize<TValue>::VALUE, q - 1>::VALUE;
+        static const THashValue leftFactor2 = (Power<ValueSize<TValue>::VALUE, q>::VALUE - 1) / (ValueSize<TValue>::VALUE - 1);
+        // Sigma^(q-1) + Sigma^(q-2) + ... + Sigma + 1
 
-		THashValue	hValue;		// current hash value
-		THashValue	XValue;		// Sum_{i=0..q-1} (x_i + 1)
-		TValue		leftChar;	// leftmost character
+        THashValue    hValue;        // current hash value
+        THashValue    XValue;        // Sum_{i=0..q-1} (x_i + 1)
+        TValue        leftChar;    // leftmost character
 //____________________________________________________________________________
 
         SEQAN_HOST_DEVICE
         Shape():
-			hValue(0),
-			XValue(0),
+            hValue(0),
+            XValue(0),
             leftChar(0) {}
-	};
+    };
 
 
 
@@ -330,19 +330,19 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return TValue The hash value of the shape.
  */
 
-	template <typename TValue, typename TSpec>
-	inline typename Value< Shape<TValue, TSpec> >::Type
-	value(Shape<TValue, TSpec> &me)
-	{
-		return me.hValue;
-	}
+    template <typename TValue, typename TSpec>
+    inline typename Value< Shape<TValue, TSpec> >::Type
+    value(Shape<TValue, TSpec> &me)
+    {
+        return me.hValue;
+    }
 
-	template <typename TValue, typename TSpec>
-	inline typename Value< Shape<TValue, TSpec> >::Type
-	value(Shape<TValue, TSpec> const &me)
-	{
-		return me.hValue;
-	}
+    template <typename TValue, typename TSpec>
+    inline typename Value< Shape<TValue, TSpec> >::Type
+    value(Shape<TValue, TSpec> const &me)
+    {
+        return me.hValue;
+    }
 
 
 //____________________________________________________________________________
@@ -356,14 +356,14 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @return TSize The number of elements of the shape (span) (Metafunction: @link Shape#Size @endlink).
  */
-	template <typename TValue, typename TSpec>
-	inline SEQAN_HOST_DEVICE
-	typename Size< Shape<TValue, TSpec> >::Type
-	length(Shape<TValue, TSpec> const &me)
-	{
-	SEQAN_CHECKPOINT
-		return me.span;
-	}
+    template <typename TValue, typename TSpec>
+    inline SEQAN_HOST_DEVICE
+    typename Size< Shape<TValue, TSpec> >::Type
+    length(Shape<TValue, TSpec> const &me)
+    {
+    SEQAN_CHECKPOINT
+        return me.span;
+    }
 
 //____________________________________________________________________________
 
@@ -380,14 +380,14 @@ namespace SEQAN_NAMESPACE_MAIN
  * For ungapped shapes the return value is the result of the @link Shape#length
  * @endlink function.  For gapped shapes this is the number of '1's.
  */
-	template <typename TValue, typename TSpec>
-	inline SEQAN_HOST_DEVICE
+    template <typename TValue, typename TSpec>
+    inline SEQAN_HOST_DEVICE
     typename Size< Shape<TValue, TSpec> >::Type
-	weight(Shape<TValue, TSpec> const &me)
-	{
-	SEQAN_CHECKPOINT
-		return length(me);
-	}
+    weight(Shape<TValue, TSpec> const &me)
+    {
+    SEQAN_CHECKPOINT
+        return length(me);
+    }
 
 //____________________________________________________________________________
 
@@ -402,16 +402,16 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @return TSize The new span of type  (Metafunction: @link Shape#Size @endlink).
  */
-	template <typename TValue, typename TSize>
-	inline typename Size< Shape<TValue, SimpleShape> >::Type
-	resize(Shape<TValue, SimpleShape> & me, TSize new_length)
-	{
-	SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, SimpleShape> >::Type	THValue;
-		me.leftFactor = _intPow((THValue)ValueSize<TValue>::VALUE, new_length - 1);
-		me.leftFactor2 = (_intPow((THValue)ValueSize<TValue>::VALUE, new_length) - 1) / (ValueSize<TValue>::VALUE - 1);
-		return me.span = new_length;
-	}
+    template <typename TValue, typename TSize>
+    inline typename Size< Shape<TValue, SimpleShape> >::Type
+    resize(Shape<TValue, SimpleShape> & me, TSize new_length)
+    {
+    SEQAN_CHECKPOINT
+        typedef typename Value< Shape<TValue, SimpleShape> >::Type    THValue;
+        me.leftFactor = _intPow((THValue)ValueSize<TValue>::VALUE, new_length - 1);
+        me.leftFactor2 = (_intPow((THValue)ValueSize<TValue>::VALUE, new_length) - 1) / (ValueSize<TValue>::VALUE - 1);
+        return me.span = new_length;
+    }
 
 //____________________________________________________________________________
 
@@ -435,22 +435,22 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see Shape#hash2
  * @see Shape#unhash
  */
-	template <typename TValue, typename TIter>
-	inline typename Value< Shape<TValue, SimpleShape> >::Type
-	hash(Shape<TValue, SimpleShape> &me, TIter it)
-	{
-		//typedef typename Value< Shape<TValue, SimpleShape> >::Type	THValue;
-		typedef typename Size< Shape<TValue, SimpleShape> >::Type	TSize;
+    template <typename TValue, typename TIter>
+    inline typename Value< Shape<TValue, SimpleShape> >::Type
+    hash(Shape<TValue, SimpleShape> &me, TIter it)
+    {
+        //typedef typename Value< Shape<TValue, SimpleShape> >::Type    THValue;
+        typedef typename Size< Shape<TValue, SimpleShape> >::Type    TSize;
 
-		SEQAN_ASSERT_GT((unsigned)me.span, 0u);
+        SEQAN_ASSERT_GT((unsigned)me.span, 0u);
 
-		me.hValue = ordValue(me.leftChar = *it);
-		for(TSize i = 1; i < me.span; ++i) {
-			++it;
-			me.hValue = me.hValue * ValueSize<TValue>::VALUE + ordValue((TValue)*it);
-		}
-		return me.hValue;
-	}
+        me.hValue = ordValue(me.leftChar = *it);
+        for(TSize i = 1; i < me.span; ++i) {
+            ++it;
+            me.hValue = me.hValue * ValueSize<TValue>::VALUE + ordValue((TValue)*it);
+        }
+        return me.hValue;
+    }
 
 /*!
  * @fn Shape#hashInit
@@ -474,163 +474,163 @@ namespace SEQAN_NAMESPACE_MAIN
  * @include demos/index/shape_hash_init.cpp
  *
  * @code{.stdout}
- * 0	0	1	4	17	4	18	11	47	63	62	56	
- * 0	0	1	4	17	4	18	11	47	63	62	56
+ * 0    0    1    4    17    4    18    11    47    63    62    56    
+ * 0    0    1    4    17    4    18    11    47    63    62    56
  * @endcode
  */
 
-	template <typename TValue, typename TIter>
-	inline void
-	hashInit(Shape<TValue, SimpleShape> &me, TIter it)
-	{
-		//typedef typename Value< Shape<TValue, SimpleShape> >::Type	THValue;
-		typedef typename Size< Shape<TValue, SimpleShape> >::Type	TSize;
+    template <typename TValue, typename TIter>
+    inline void
+    hashInit(Shape<TValue, SimpleShape> &me, TIter it)
+    {
+        //typedef typename Value< Shape<TValue, SimpleShape> >::Type    THValue;
+        typedef typename Size< Shape<TValue, SimpleShape> >::Type    TSize;
 
-		SEQAN_ASSERT_GT((unsigned)me.span, 0u);
+        SEQAN_ASSERT_GT((unsigned)me.span, 0u);
 
         me.leftChar = 0;
-		me.hValue = ordValue(*it);
-		for(TSize i = 2; i < me.span; ++i) {
-			++it;
-			me.hValue = me.hValue * ValueSize<TValue>::VALUE + ordValue((TValue)*it);
-		}
-	}
+        me.hValue = ordValue(*it);
+        for(TSize i = 2; i < me.span; ++i) {
+            ++it;
+            me.hValue = me.hValue * ValueSize<TValue>::VALUE + ordValue((TValue)*it);
+        }
+    }
 
 //____________________________________________________________________________
 // fixed ungapped shapes
 
-	// loop unrolling ...
-	template <typename THValue, typename TValue, typename TIter>
-	SEQAN_HOST_DEVICE inline THValue
-	_hashFixedShape(THValue hash, TIter &, TValue const, UngappedShape<1> const) {
-		return hash;
-	}
+    // loop unrolling ...
+    template <typename THValue, typename TValue, typename TIter>
+    SEQAN_HOST_DEVICE inline THValue
+    _hashFixedShape(THValue hash, TIter &, TValue const, UngappedShape<1> const) {
+        return hash;
+    }
 
-	template <typename THValue, typename TValue, typename TIter, unsigned q>
-	SEQAN_HOST_DEVICE inline THValue
-	_hashFixedShape(THValue hash, TIter &it, TValue const, UngappedShape<q> const) {
-		++it;
-		return _hashFixedShape(
-			hash * ValueSize<TValue>::VALUE + ordValue((TValue)*it),
-			it, TValue(), UngappedShape<q - 1>());
-	}
+    template <typename THValue, typename TValue, typename TIter, unsigned q>
+    SEQAN_HOST_DEVICE inline THValue
+    _hashFixedShape(THValue hash, TIter &it, TValue const, UngappedShape<q> const) {
+        ++it;
+        return _hashFixedShape(
+            hash * ValueSize<TValue>::VALUE + ordValue((TValue)*it),
+            it, TValue(), UngappedShape<q - 1>());
+    }
 
-	// ... for fixed ungapped shapes
-	template <typename TValue, unsigned q, typename TIter>
-	SEQAN_HOST_DEVICE inline typename Value< Shape<TValue, UngappedShape<q> > >::Type
-	hash(Shape<TValue, UngappedShape<q> > &me, TIter it)
-	{
-		//typedef typename Value< Shape<TValue, UngappedShape<q> > >::Type	THValue;
-		//typedef typename Size< Shape<TValue, UngappedShape<q> > >::Type     TSize;
+    // ... for fixed ungapped shapes
+    template <typename TValue, unsigned q, typename TIter>
+    SEQAN_HOST_DEVICE inline typename Value< Shape<TValue, UngappedShape<q> > >::Type
+    hash(Shape<TValue, UngappedShape<q> > &me, TIter it)
+    {
+        //typedef typename Value< Shape<TValue, UngappedShape<q> > >::Type    THValue;
+        //typedef typename Size< Shape<TValue, UngappedShape<q> > >::Type     TSize;
 
-		me.hValue = ordValue(me.leftChar = *it);
-		return me.hValue = _hashFixedShape(me.hValue, it, TValue(), UngappedShape<q>());
-	}
+        me.hValue = ordValue(me.leftChar = *it);
+        return me.hValue = _hashFixedShape(me.hValue, it, TValue(), UngappedShape<q>());
+    }
 
-	template <typename TValue, unsigned q, typename TIter>
-	inline typename Value< Shape<TValue, UngappedShape<q> > >::Type
-	hashInit(Shape<TValue, UngappedShape<q> > &me, TIter it)
-	{
-		//typedef typename Value< Shape<TValue, UngappedShape<q> > >::Type	THValue;
-		//typedef typename Size< Shape<TValue, UngappedShape<q> > >::Type	TSize;
+    template <typename TValue, unsigned q, typename TIter>
+    inline typename Value< Shape<TValue, UngappedShape<q> > >::Type
+    hashInit(Shape<TValue, UngappedShape<q> > &me, TIter it)
+    {
+        //typedef typename Value< Shape<TValue, UngappedShape<q> > >::Type    THValue;
+        //typedef typename Size< Shape<TValue, UngappedShape<q> > >::Type    TSize;
 
         me.leftChar = 0;
-		me.hValue = ordValue(*it);
+        me.hValue = ordValue(*it);
 
         if (q > 1)
             me.hValue = _hashFixedShape(me.hValue, it, TValue(), UngappedShape<q-1>());
 
-		return me.hValue;
+        return me.hValue;
     }
 
-	template <typename TValue, typename TSpec, typename TIter, typename TSize>
-	inline typename Value< Shape<TValue, TSpec> >::Type
-	hash(Shape<TValue, TSpec> &me, TIter it, TSize charsLeft)
-	{
-		//typedef typename Value< Shape<TValue, TSpec> >::Type	THValue;
+    template <typename TValue, typename TSpec, typename TIter, typename TSize>
+    inline typename Value< Shape<TValue, TSpec> >::Type
+    hash(Shape<TValue, TSpec> &me, TIter it, TSize charsLeft)
+    {
+        //typedef typename Value< Shape<TValue, TSpec> >::Type    THValue;
 
-		SEQAN_ASSERT_GT((unsigned)me.span, 0u);
+        SEQAN_ASSERT_GT((unsigned)me.span, 0u);
 
-		TSize iEnd = me.span;
-		if (iEnd > charsLeft) iEnd = charsLeft;
+        TSize iEnd = me.span;
+        if (iEnd > charsLeft) iEnd = charsLeft;
 
-		TSize i = 0;
-		if (iEnd > 0) {
-			me.hValue = ordValue(me.leftChar = *it);
-			for(i = 1; i < iEnd; ++i) {
-				++it;
-				me.hValue = me.hValue * ValueSize<TValue>::VALUE + ordValue((TValue)*it);
-			}
-		} else
-			return me.hValue = 0;
+        TSize i = 0;
+        if (iEnd > 0) {
+            me.hValue = ordValue(me.leftChar = *it);
+            for(i = 1; i < iEnd; ++i) {
+                ++it;
+                me.hValue = me.hValue * ValueSize<TValue>::VALUE + ordValue((TValue)*it);
+            }
+        } else
+            return me.hValue = 0;
 
-		// fill shape with zeros
-		for(; i < (TSize)me.span; ++i)
-			me.hValue *= ValueSize<TValue>::VALUE;
-		return me.hValue;
-	}
+        // fill shape with zeros
+        for(; i < (TSize)me.span; ++i)
+            me.hValue *= ValueSize<TValue>::VALUE;
+        return me.hValue;
+    }
 
 //____________________________________________________________________________
 // Tuple -> fixed ungapped shapes
 
-	template <typename THValue, typename TValue, typename TTValue, unsigned SIZE, typename TPack>
-	inline THValue
-	_hashTuple2FixedShape(
-		THValue const,
-		Tuple<TTValue, SIZE, TPack> const &tuple,
-		TValue const,
-		UngappedShape<1> const)
-	{
-		return ordValue(tuple[0]);
-	}
+    template <typename THValue, typename TValue, typename TTValue, unsigned SIZE, typename TPack>
+    inline THValue
+    _hashTuple2FixedShape(
+        THValue const,
+        Tuple<TTValue, SIZE, TPack> const &tuple,
+        TValue const,
+        UngappedShape<1> const)
+    {
+        return ordValue(tuple[0]);
+    }
 
-	template <typename THValue, typename TValue, typename TTValue, unsigned SIZE, typename TPack, unsigned q>
-	inline THValue
-	_hashTuple2FixedShape(
-		THValue const,
-		Tuple<TTValue, SIZE, TPack> const &tuple,
-		TValue const,
-		UngappedShape<q> const)
-	{
-		return _hashTuple2FixedShape(THValue(), tuple, TValue(), UngappedShape<q - 1>())
-			* ValueSize<TValue>::VALUE + ordValue(tuple[q-1]);
-	}
+    template <typename THValue, typename TValue, typename TTValue, unsigned SIZE, typename TPack, unsigned q>
+    inline THValue
+    _hashTuple2FixedShape(
+        THValue const,
+        Tuple<TTValue, SIZE, TPack> const &tuple,
+        TValue const,
+        UngappedShape<q> const)
+    {
+        return _hashTuple2FixedShape(THValue(), tuple, TValue(), UngappedShape<q - 1>())
+            * ValueSize<TValue>::VALUE + ordValue(tuple[q-1]);
+    }
 
-	// ... for fixed ungapped shapes
-	template <
-		typename TValue,
-		typename TTValue,
-		unsigned SIZE,
-		unsigned q>
-	typename Value< Shape<TValue, UngappedShape<q> > >::Type
-	hash(
-		Shape<TValue, UngappedShape<q> > &me,
-		Tuple<TTValue, SIZE, BitPacked<> > /*const &*/tuple)
-	{
-	SEQAN_CHECKPOINT
-		if (ValueSize<TValue>::VALUE == (1 << BitsPerValue<TTValue>::VALUE))
-			if (q == SIZE)
-				return tuple.i;
-			else
-				return tuple >> (q - SIZE);
-		else
-			return me.hValue = _hashTuple2FixedShape(me.hValue, tuple, TValue(), UngappedShape<q>());
-	}
+    // ... for fixed ungapped shapes
+    template <
+        typename TValue,
+        typename TTValue,
+        unsigned SIZE,
+        unsigned q>
+    typename Value< Shape<TValue, UngappedShape<q> > >::Type
+    hash(
+        Shape<TValue, UngappedShape<q> > &me,
+        Tuple<TTValue, SIZE, BitPacked<> > /*const &*/tuple)
+    {
+    SEQAN_CHECKPOINT
+        if (ValueSize<TValue>::VALUE == (1 << BitsPerValue<TTValue>::VALUE))
+            if (q == SIZE)
+                return tuple.i;
+            else
+                return tuple >> (q - SIZE);
+        else
+            return me.hValue = _hashTuple2FixedShape(me.hValue, tuple, TValue(), UngappedShape<q>());
+    }
 
-	template <
-		typename TValue,
-		typename TTValue,
-		unsigned SIZE,
-		typename TPack,
-		unsigned q>
-	typename Value< Shape<TValue, UngappedShape<q> > >::Type
-	hash(
-		Shape<TValue, UngappedShape<q> > &me,
-		Tuple<TTValue, SIZE, TPack> /*const &*/tuple)
-	{
-	SEQAN_CHECKPOINT
-		return me.hValue = _hashTuple2FixedShape(me.hValue, tuple, TValue(), UngappedShape<q>());
-	}
+    template <
+        typename TValue,
+        typename TTValue,
+        unsigned SIZE,
+        typename TPack,
+        unsigned q>
+    typename Value< Shape<TValue, UngappedShape<q> > >::Type
+    hash(
+        Shape<TValue, UngappedShape<q> > &me,
+        Tuple<TTValue, SIZE, TPack> /*const &*/tuple)
+    {
+    SEQAN_CHECKPOINT
+        return me.hValue = _hashTuple2FixedShape(me.hValue, tuple, TValue(), UngappedShape<q>());
+    }
 
 //____________________________________________________________________________
 
@@ -655,33 +655,33 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see Shape#hash
  */
 
-	template <typename TValue, typename TSpec, typename TIter, typename TSize>
-	inline typename Value< Shape<TValue, TSpec> >::Type
-	hashUpper(Shape<TValue, TSpec> &me, TIter it, TSize charsLeft)
-	{
-		//typedef typename Value< Shape<TValue, TSpec> >::Type	THValue;
+    template <typename TValue, typename TSpec, typename TIter, typename TSize>
+    inline typename Value< Shape<TValue, TSpec> >::Type
+    hashUpper(Shape<TValue, TSpec> &me, TIter it, TSize charsLeft)
+    {
+        //typedef typename Value< Shape<TValue, TSpec> >::Type    THValue;
 
-		SEQAN_ASSERT_GT((unsigned)me.span, 0u);
+        SEQAN_ASSERT_GT((unsigned)me.span, 0u);
 
-		TSize iEnd = me.span;
-		if (iEnd > charsLeft) iEnd = charsLeft;
+        TSize iEnd = me.span;
+        if (iEnd > charsLeft) iEnd = charsLeft;
 
-		TSize i = 0;
-		if (iEnd > 0) {
-			me.hValue = ordValue(me.leftChar = *it);
-			for(i = 1; i < iEnd; ++i) {
-				++it;
-				me.hValue = me.hValue * ValueSize<TValue>::VALUE + ordValue((TValue)*it);
-			}
-			++me.hValue;
-		} else
-			me.hValue = 1;
+        TSize i = 0;
+        if (iEnd > 0) {
+            me.hValue = ordValue(me.leftChar = *it);
+            for(i = 1; i < iEnd; ++i) {
+                ++it;
+                me.hValue = me.hValue * ValueSize<TValue>::VALUE + ordValue((TValue)*it);
+            }
+            ++me.hValue;
+        } else
+            me.hValue = 1;
 
-		// fill shape with zeros
-		for(; i < (TSize)me.span; ++i)
-			me.hValue *= ValueSize<TValue>::VALUE;
-		return me.hValue;
-	}
+        // fill shape with zeros
+        for(; i < (TSize)me.span; ++i)
+            me.hValue *= ValueSize<TValue>::VALUE;
+        return me.hValue;
+    }
 
 //____________________________________________________________________________
 
@@ -701,23 +701,23 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @see Shape#hash
  */
-	template <typename TValue, typename TSpec, typename TIter>
-	inline typename Value< Shape<TValue, TSpec> >::Type
-	hashNext(Shape<TValue, TSpec> &me, TIter const &it)
-	{
-	SEQAN_CHECKPOINT
-		// remove first, shift left, and add next character
-		typedef typename Value< Shape<TValue, TSpec> >::Type	THValue;
-		typedef typename Size< Shape<TValue, TSpec> >::Type		TSize;
+    template <typename TValue, typename TSpec, typename TIter>
+    inline typename Value< Shape<TValue, TSpec> >::Type
+    hashNext(Shape<TValue, TSpec> &me, TIter const &it)
+    {
+    SEQAN_CHECKPOINT
+        // remove first, shift left, and add next character
+        typedef typename Value< Shape<TValue, TSpec> >::Type    THValue;
+        typedef typename Size< Shape<TValue, TSpec> >::Type        TSize;
 
-		SEQAN_ASSERT_GT((unsigned)me.span, 0u);
+        SEQAN_ASSERT_GT((unsigned)me.span, 0u);
 
-		me.hValue =
-			(me.hValue - ordValue(me.leftChar) * (THValue)me.leftFactor) * ValueSize<TValue>::VALUE
-			+ ordValue((TValue)*(it + ((TSize)me.span - 1)));
-		me.leftChar = *it;
-		return me.hValue;
-	}
+        me.hValue =
+            (me.hValue - ordValue(me.leftChar) * (THValue)me.leftFactor) * ValueSize<TValue>::VALUE
+            + ordValue((TValue)*(it + ((TSize)me.span - 1)));
+        me.leftChar = *it;
+        return me.hValue;
+    }
 
 //____________________________________________________________________________
 
@@ -740,35 +740,35 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see Shape#hash
  */
 
-	template <typename TValue, typename TSpec, typename TIter, typename TSize>
-	inline typename Value< Shape<TValue, TSpec> >::Type
-	hash2(Shape<TValue, TSpec> &me, TIter it, TSize charsLeft)
-	{
-		//typedef typename Value< Shape<TValue, TSpec> >::Type	THValue;
+    template <typename TValue, typename TSpec, typename TIter, typename TSize>
+    inline typename Value< Shape<TValue, TSpec> >::Type
+    hash2(Shape<TValue, TSpec> &me, TIter it, TSize charsLeft)
+    {
+        //typedef typename Value< Shape<TValue, TSpec> >::Type    THValue;
 
-		SEQAN_ASSERT_GT((unsigned)me.span, 0u);
+        SEQAN_ASSERT_GT((unsigned)me.span, 0u);
 
-		TSize iEnd = me.span;
-		if (iEnd > charsLeft) iEnd = charsLeft;
+        TSize iEnd = me.span;
+        if (iEnd > charsLeft) iEnd = charsLeft;
 
-		TSize i = 0;
-		if (iEnd > 0) {
-			me.hValue = me.XValue = ordValue(me.leftChar = *it);
-			for(i = 1; i < iEnd; ++i) {
-				++it;
-				// update sum of x_i
-				me.XValue += ordValue((TValue)*it);
-				// shift hash
-				me.hValue = me.hValue * ValueSize<TValue>::VALUE + me.XValue;
-			}
-		} else
-			return me.hValue = me.XValue = 0;
+        TSize i = 0;
+        if (iEnd > 0) {
+            me.hValue = me.XValue = ordValue(me.leftChar = *it);
+            for(i = 1; i < iEnd; ++i) {
+                ++it;
+                // update sum of x_i
+                me.XValue += ordValue((TValue)*it);
+                // shift hash
+                me.hValue = me.hValue * ValueSize<TValue>::VALUE + me.XValue;
+            }
+        } else
+            return me.hValue = me.XValue = 0;
 
-		// fill shape with zeros
-		for(; i < (TSize)me.span; ++i)
-			me.hValue = me.hValue * ValueSize<TValue>::VALUE + me.XValue;
-		return me.hValue += iEnd;
-	}
+        // fill shape with zeros
+        for(; i < (TSize)me.span; ++i)
+            me.hValue = me.hValue * ValueSize<TValue>::VALUE + me.XValue;
+        return me.hValue += iEnd;
+    }
 
 /*!
  * @fn Shape#hash2Upper
@@ -791,42 +791,42 @@ namespace SEQAN_NAMESPACE_MAIN
  *
  * @see Shape#hash2
  */
-	template <typename TValue, typename TSpec, typename TIter, typename TSize>
-	inline typename Value< Shape<TValue, TSpec> >::Type
-	hash2Upper(Shape<TValue, TSpec> &me, TIter it, TSize charsLeft)
-	{
-	SEQAN_CHECKPOINT
-		typedef typename Value< Shape<TValue, TSpec> >::Type	THValue;
+    template <typename TValue, typename TSpec, typename TIter, typename TSize>
+    inline typename Value< Shape<TValue, TSpec> >::Type
+    hash2Upper(Shape<TValue, TSpec> &me, TIter it, TSize charsLeft)
+    {
+    SEQAN_CHECKPOINT
+        typedef typename Value< Shape<TValue, TSpec> >::Type    THValue;
 
-		SEQAN_ASSERT_GT((unsigned)me.span, 0u);
+        SEQAN_ASSERT_GT((unsigned)me.span, 0u);
 
-		TSize iEnd = me.span;
-		if (iEnd > charsLeft) iEnd = charsLeft;
+        TSize iEnd = me.span;
+        if (iEnd > charsLeft) iEnd = charsLeft;
 
-		THValue hValue, XValue;
-		TSize i = 0;
-		if (iEnd > 0) {
-			hValue = XValue = ordValue((TValue)*it);
-			for(i = 1; i < iEnd; ++i) {
-				++it;
-				// update sum of x_i
-				XValue += ordValue((TValue)*it);
-				// shift hash
-				hValue = hValue * ValueSize<TValue>::VALUE + XValue;
-			}
-		} else
-			hValue = XValue = 0;
+        THValue hValue, XValue;
+        TSize i = 0;
+        if (iEnd > 0) {
+            hValue = XValue = ordValue((TValue)*it);
+            for(i = 1; i < iEnd; ++i) {
+                ++it;
+                // update sum of x_i
+                XValue += ordValue((TValue)*it);
+                // shift hash
+                hValue = hValue * ValueSize<TValue>::VALUE + XValue;
+            }
+        } else
+            hValue = XValue = 0;
 
-		if (charsLeft <= me.span) {
-			++XValue;
-			++hValue;
-		}
+        if (charsLeft <= me.span) {
+            ++XValue;
+            ++hValue;
+        }
 
-		// fill shape with zeros
-		for(; i < (TSize)me.span; ++i)
-			hValue = hValue * ValueSize<TValue>::VALUE + XValue;
-		return hValue += iEnd;
-	}
+        // fill shape with zeros
+        for(; i < (TSize)me.span; ++i)
+            hValue = hValue * ValueSize<TValue>::VALUE + XValue;
+        return hValue += iEnd;
+    }
 
 //____________________________________________________________________________
 
@@ -847,33 +847,33 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see Shape#hash2
  */
 
-	template <typename TValue, typename TSpec, typename TIter, typename TSize>
-	inline typename Value< Shape<TValue, TSpec> >::Type
-	hash2Next(Shape<TValue, TSpec> &me, TIter &it, TSize charsLeft)
-	{
-	SEQAN_CHECKPOINT
-		// remove first, shift left, and add next character
-		typedef typename Value< Shape<TValue, TSpec> >::Type	THValue;
+    template <typename TValue, typename TSpec, typename TIter, typename TSize>
+    inline typename Value< Shape<TValue, TSpec> >::Type
+    hash2Next(Shape<TValue, TSpec> &me, TIter &it, TSize charsLeft)
+    {
+    SEQAN_CHECKPOINT
+        // remove first, shift left, and add next character
+        typedef typename Value< Shape<TValue, TSpec> >::Type    THValue;
 
-		SEQAN_ASSERT_GT((unsigned)me.span, 0u);
+        SEQAN_ASSERT_GT((unsigned)me.span, 0u);
 
-		if (charsLeft >= me.span) {
-			// update sum of x_i
-			me.XValue = me.XValue + ordValue((TValue)*(it + me.span - 1)) - ordValue(me.leftChar);
-			// shift hash
-			me.hValue = (me.hValue - ordValue(me.leftChar) * (THValue)me.leftFactor2) * ValueSize<TValue>::VALUE + me.XValue
-						- me.span * (ValueSize<TValue>::VALUE - 1);
-		} else {
-			// update sum of x_i
-			me.XValue -= ordValue(me.leftChar);
-			// shift hash
-			me.hValue = (me.hValue - ordValue(me.leftChar) * (THValue)me.leftFactor2) * ValueSize<TValue>::VALUE + me.XValue
-				        - charsLeft * (ValueSize<TValue>::VALUE - 1) - ValueSize<TValue>::VALUE;
-		}
+        if (charsLeft >= me.span) {
+            // update sum of x_i
+            me.XValue = me.XValue + ordValue((TValue)*(it + me.span - 1)) - ordValue(me.leftChar);
+            // shift hash
+            me.hValue = (me.hValue - ordValue(me.leftChar) * (THValue)me.leftFactor2) * ValueSize<TValue>::VALUE + me.XValue
+                        - me.span * (ValueSize<TValue>::VALUE - 1);
+        } else {
+            // update sum of x_i
+            me.XValue -= ordValue(me.leftChar);
+            // shift hash
+            me.hValue = (me.hValue - ordValue(me.leftChar) * (THValue)me.leftFactor2) * ValueSize<TValue>::VALUE + me.XValue
+                        - charsLeft * (ValueSize<TValue>::VALUE - 1) - ValueSize<TValue>::VALUE;
+        }
 
-		me.leftChar = *it;
-		return me.hValue;
-	}
+        me.leftChar = *it;
+        return me.hValue;
+    }
 
 /*!
  * @fn Shape#unhash
@@ -889,19 +889,19 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see Shape#hash
  * @see Shape#hash2
  */
-	template <typename TString, typename THash>
-	inline void unhash(TString &result, THash hash, unsigned q)
-	{
-	SEQAN_CHECKPOINT
-		typedef typename Value<TString>::Type	TValue;
+    template <typename TString, typename THash>
+    inline void unhash(TString &result, THash hash, unsigned q)
+    {
+    SEQAN_CHECKPOINT
+        typedef typename Value<TString>::Type    TValue;
 
-		resize(result, q);
-		for (unsigned i = q; i > 0; )
-		{
-			result[--i] = (TValue)(hash % ValueSize<TValue>::VALUE);
-			hash /= ValueSize<TValue>::VALUE;
-		}
-	}
+        resize(result, q);
+        for (unsigned i = q; i > 0; )
+        {
+            result[--i] = (TValue)(hash % ValueSize<TValue>::VALUE);
+            hash /= ValueSize<TValue>::VALUE;
+        }
+    }
 
 //____________________________________________________________________________
 
@@ -924,28 +924,28 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see Shape#shapeToString
  * @see reverse
  */
-	template <typename TValue, typename TShapeString>
-	inline bool
-	stringToShape(
-		Shape<TValue, SimpleShape> &me,
-		TShapeString const &bitmap)
-	{
-	SEQAN_CHECKPOINT
-		typedef typename Iterator<TShapeString const>::Type		TIter;
-		typedef typename Size<TShapeString const>::Type			TSize;
+    template <typename TValue, typename TShapeString>
+    inline bool
+    stringToShape(
+        Shape<TValue, SimpleShape> &me,
+        TShapeString const &bitmap)
+    {
+    SEQAN_CHECKPOINT
+        typedef typename Iterator<TShapeString const>::Type        TIter;
+        typedef typename Size<TShapeString const>::Type            TSize;
 
-		TIter it = begin(bitmap, Standard());
-		TIter itEnd = end(bitmap, Standard());
+        TIter it = begin(bitmap, Standard());
+        TIter itEnd = end(bitmap, Standard());
 
-		TSize ones = 0;
-		for(; it != itEnd && *it == '0' ; ++it) ;
-		for(; it != itEnd && *it == '1' ; ++it)	++ones;
-		for(; it != itEnd && *it == '0' ; ++it) ;
+        TSize ones = 0;
+        for(; it != itEnd && *it == '0' ; ++it) ;
+        for(; it != itEnd && *it == '1' ; ++it)    ++ones;
+        for(; it != itEnd && *it == '0' ; ++it) ;
 
-		resize(me, ones);
+        resize(me, ones);
 
-		return it == itEnd;
-	}
+        return it == itEnd;
+    }
 
 //____________________________________________________________________________
 
@@ -961,26 +961,26 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see Shape#stringToShape
  */
 
-	template <typename TShapeString, typename TValue, unsigned q>
-	inline void
-	shapeToString(
-		TShapeString &bitmap,
-		Shape<TValue, UngappedShape<q> > const &me)
-	{
-	SEQAN_CHECKPOINT
+    template <typename TShapeString, typename TValue, unsigned q>
+    inline void
+    shapeToString(
+        TShapeString &bitmap,
+        Shape<TValue, UngappedShape<q> > const &me)
+    {
+    SEQAN_CHECKPOINT
 
-		clear(bitmap);
-		resize(bitmap, length(me), '1');
-	}
+        clear(bitmap);
+        resize(bitmap, length(me), '1');
+    }
 
 //____________________________________________________________________________
-	
-	template <typename TValue, typename TSpec>
-	inline void
-	reverse(Shape<TValue, TSpec> &)
-	{
-	}
-	
-}	// namespace seqan
+    
+    template <typename TValue, typename TSpec>
+    inline void
+    reverse(Shape<TValue, TSpec> &)
+    {
+    }
+    
+}    // namespace seqan
 
 #endif

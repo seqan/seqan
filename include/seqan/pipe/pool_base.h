@@ -53,10 +53,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see PoolConfig
  */ 
 
-	template < typename TSize,
-		       typename TFile = File<> >						// default file type
+    template < typename TSize,
+               typename TFile = File<> >                        // default file type
     struct PoolConfigSize {
-		typedef TSize SizeType;
+        typedef TSize SizeType;
         typedef TFile File;
     };
 
@@ -77,9 +77,9 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see PoolConfigSize
  */
 
-	template < typename TFile = File<> >						// default file type
+    template < typename TFile = File<> >                        // default file type
     struct PoolConfig {
-		typedef typename Size<TFile>::Type SizeType;
+        typedef typename Size<TFile>::Type SizeType;
         typedef TFile File;
     };
 
@@ -158,7 +158,7 @@ namespace SEQAN_NAMESPACE_MAIN
 */
 
 /*
-        enum { DefaultMemBufferSize     = 0*8192,//64 * 1024,	// low memory config [kB]
+        enum { DefaultMemBufferSize     = 0*8192,//64 * 1024,    // low memory config [kB]
                DefaultPageSize          = 2 * 1024,             // [kB]
                DefaultBucketBufferSize  = 6 * 1024,             // [kB]
                DefaultReadAheadBuffers  = 4,
@@ -205,9 +205,9 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     //////////////////////////////////////////////////////////////////////////////
-	// handler that manages a simple memory buffer
+    // handler that manages a simple memory buffer
     struct MemorySpec_;
-	typedef Tag<MemorySpec_> MemorySpec;
+    typedef Tag<MemorySpec_> MemorySpec;
 
     template <typename TValue, typename TPoolSpec>
     struct BufferHandler<Pool<TValue, TPoolSpec>, MemorySpec>
@@ -215,14 +215,14 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef Pool<TValue, TPoolSpec> TPool;
         typedef Buffer<TValue>          TBuffer;
 
-		TPool	&pool;
-        TBuffer	empty;
+        TPool    &pool;
+        TBuffer    empty;
 
-		BufferHandler(TPool &_pool):
-			pool(_pool) {}
+        BufferHandler(TPool &_pool):
+            pool(_pool) {}
 
-		BufferHandler(TPool &_pool, size_t):
-			pool(_pool) {}
+        BufferHandler(TPool &_pool, size_t):
+            pool(_pool) {}
 
         inline TBuffer & first()
         {
@@ -245,15 +245,15 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
     //////////////////////////////////////////////////////////////////////////////
-	// generic block based asynchronous read handler
+    // generic block based asynchronous read handler
     struct ReadFileSpec_;
 //IOREV _notio_ not directly relevant to iorev
-	typedef Tag<ReadFileSpec_> ReadFileSpec; //IOREV _notio_ not directly relevant to iorev
+    typedef Tag<ReadFileSpec_> ReadFileSpec; //IOREV _notio_ not directly relevant to iorev
 
     template <typename TValue, typename TSpec>
     struct BufferHandler<Pool<TValue, TSpec>, ReadFileSpec >
     {
-		typedef Pool<TValue, TSpec>                         TPool;
+        typedef Pool<TValue, TSpec>                         TPool;
         typedef typename TPool::File                        TFile;
 
         typedef Buffer<TValue>                              TBuffer;
@@ -264,24 +264,24 @@ namespace SEQAN_NAMESPACE_MAIN
         TPageChain  chain;
         size_t      pageSize;
         size_t      readPageNo, _pages;
-        TBuffer	    empty;
+        TBuffer        empty;
 
         BufferHandler(TPool &_pool):
             pool(_pool),
             chain(_min(_pool.readAheadBuffers, _pool.pages())),
-			pageSize(_pool.pageSize) {}
+            pageSize(_pool.pageSize) {}
 
         BufferHandler(TPool &_pool, size_t _requestedBufferSize, size_t _readAheadBuffers = 1):
             pool(_pool),
 //            pageSize(alignSize(_min(_pool.size(), _requestedBufferSize), _pool.pageSize)),
             chain(_min(_readAheadBuffers, _pool.pages(pageSize = alignSize(_min(_pool.size(), _requestedBufferSize), _pool.pageSize)))) 
         {
-			#ifdef SEQAN_HEADER_PIPE_DEBUG
-				std::cerr << "___BufferHandler___" << std::endl;
-				std::cerr << "pagesize: " << pageSize << std::endl;
-				std::cerr << "readaheadbuffers: " << chain.maxFrames << std::endl;
-				std::cerr << "pages: " << pool.pages(pageSize) << std::endl;
-			#endif
+            #ifdef SEQAN_HEADER_PIPE_DEBUG
+                std::cerr << "___BufferHandler___" << std::endl;
+                std::cerr << "pagesize: " << pageSize << std::endl;
+                std::cerr << "readaheadbuffers: " << chain.maxFrames << std::endl;
+                std::cerr << "pages: " << pool.pages(pageSize) << std::endl;
+            #endif
         }
 
         ~BufferHandler()
@@ -341,7 +341,7 @@ namespace SEQAN_NAMESPACE_MAIN
         {
             TPageFrame *p = chain.first;
             while (p) {
-				seqan::cancel(*p, pool.file);
+                seqan::cancel(*p, pool.file);
                 freePage(*p, pool.file);
                 p = p->next;
             }
@@ -350,7 +350,7 @@ namespace SEQAN_NAMESPACE_MAIN
         inline void process() {}
 
     private:
-		bool _error() {
+        bool _error() {
 //            std::cerr << "Error in BufWriteFileHandler::_read " << pool.file.error() << std::endl;
             return true;
         }
@@ -377,16 +377,16 @@ namespace SEQAN_NAMESPACE_MAIN
     };
 
 
-	//////////////////////////////////////////////////////////////////////////////
-	// generic block based asynchronous write handler
+    //////////////////////////////////////////////////////////////////////////////
+    // generic block based asynchronous write handler
     struct WriteFileSpec_;
 //IOREV _notio_ not directly relevant to iorev
-	typedef Tag<WriteFileSpec_> WriteFileSpec; //IOREV _notio_ not directly relevant to iorev
+    typedef Tag<WriteFileSpec_> WriteFileSpec; //IOREV _notio_ not directly relevant to iorev
 
     template < typename TValue, typename TSpec >
     struct BufferHandler<Pool<TValue, TSpec>, WriteFileSpec>
     {
-		typedef Pool<TValue, TSpec>                 TPool;
+        typedef Pool<TValue, TSpec>                 TPool;
         typedef typename TPool::File                TFile;
 
         typedef Buffer<TValue>                              TBuffer;
@@ -397,19 +397,19 @@ namespace SEQAN_NAMESPACE_MAIN
         TPageChain  chain;
         size_t      pageSize;
         size_t      writePageNo, _pages;
-        TBuffer	    empty;
+        TBuffer        empty;
 
         BufferHandler(TPool &_pool):
             pool(_pool),
             chain(_min(_pool.writeBackBuffers, _pool.pages())),
-			pageSize(_pool.pageSize),
-			writePageNo(0),
-			_pages(0) {}
+            pageSize(_pool.pageSize),
+            writePageNo(0),
+            _pages(0) {}
 
         BufferHandler(TPool &_pool, size_t _requestedBufferSize, size_t _writeBackBuffers = 1):
             pool(_pool),
             chain(_min(_writeBackBuffers, _pool.pages(pageSize))),
-			pageSize(alignSize(_min(_pool.size(), _requestedBufferSize), _pool.pageSize)) {}
+            pageSize(alignSize(_min(_pool.size(), _requestedBufferSize), _pool.pageSize)) {}
 
         ~BufferHandler() {
             cancel();
@@ -470,7 +470,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 freePage(*p, pool.file);
                 p = p->next;
             }
-			seqan::flush(pool.file);
+            seqan::flush(pool.file);
         }
 
         inline void cancel()
@@ -506,159 +506,159 @@ namespace SEQAN_NAMESPACE_MAIN
         }
     };
 
-	//////////////////////////////////////////////////////////////////////////////
-	// generic buffered multiplex handler
+    //////////////////////////////////////////////////////////////////////////////
+    // generic buffered multiplex handler
     struct MultiplexSpec_;
-	typedef Tag<MultiplexSpec_> MultiplexSpec;
+    typedef Tag<MultiplexSpec_> MultiplexSpec;
 
-	template < typename TBufferHandler1, typename TBufferHandler2 >
+    template < typename TBufferHandler1, typename TBufferHandler2 >
     struct BufferHandler< Bundle2< TBufferHandler1, TBufferHandler2 >, MultiplexSpec >
-	{
+    {
         typedef typename Value<TBufferHandler1>::Type TBuffer;
 
-		TBufferHandler1 *handler1;
-		TBufferHandler2 *handler2;
+        TBufferHandler1 *handler1;
+        TBufferHandler2 *handler2;
 
-		template <typename TPool>
-		BufferHandler(TPool &_pool) {
-			if (_pool.memBuffer.begin || _pool._size == 0) {	// decision to choose handler1 or handler2
-				handler1 = new TBufferHandler1(_pool);
-				handler2 = NULL;
-			} else {
-				handler1 = NULL;
-				handler2 = new TBufferHandler2(_pool);
-			}
-		}
+        template <typename TPool>
+        BufferHandler(TPool &_pool) {
+            if (_pool.memBuffer.begin || _pool._size == 0) {    // decision to choose handler1 or handler2
+                handler1 = new TBufferHandler1(_pool);
+                handler2 = NULL;
+            } else {
+                handler1 = NULL;
+                handler2 = new TBufferHandler2(_pool);
+            }
+        }
 
-		template <typename TPool>
-		BufferHandler(TPool &_pool, size_t _requestedBufferSize) {
-			if (_pool.memBuffer.begin || _pool._size == 0) {	// decision to choose handler1 or handler2
-				handler1 = new TBufferHandler1(_pool, _requestedBufferSize);
-				handler2 = NULL;
-			} else {
-				handler1 = NULL;
-				handler2 = new TBufferHandler2(_pool, _requestedBufferSize);
-			}
-		}
+        template <typename TPool>
+        BufferHandler(TPool &_pool, size_t _requestedBufferSize) {
+            if (_pool.memBuffer.begin || _pool._size == 0) {    // decision to choose handler1 or handler2
+                handler1 = new TBufferHandler1(_pool, _requestedBufferSize);
+                handler2 = NULL;
+            } else {
+                handler1 = NULL;
+                handler2 = new TBufferHandler2(_pool, _requestedBufferSize);
+            }
+        }
 
-		~BufferHandler() {
-			delete handler1;
-			delete handler2;
-		}
-		
+        ~BufferHandler() {
+            delete handler1;
+            delete handler2;
+        }
+        
         inline TBuffer first() {
-			if (handler1)	return handler1->first();
-			else			return handler2->first();
-		}
+            if (handler1)    return handler1->first();
+            else            return handler2->first();
+        }
 
-		inline TBuffer next() {
-			if (handler1)	return handler1->next();
-			else			return handler2->next();
-		}
+        inline TBuffer next() {
+            if (handler1)    return handler1->next();
+            else            return handler2->next();
+        }
 
-		inline void end() {
-			if (handler1)	handler1->end();
-			else			handler2->end();
-		}
+        inline void end() {
+            if (handler1)    handler1->end();
+            else            handler2->end();
+        }
 
-		inline void process() {
-			if (handler1)	handler1->process();
-			else			handler2->process();
-		}
+        inline void process() {
+            if (handler1)    handler1->process();
+            else            handler2->process();
+        }
 
-		inline void cancel() {
-			if (handler1)	handler1->cancel();
-			else			handler2->cancel();
-		}
-	};
+        inline void cancel() {
+            if (handler1)    handler1->cancel();
+            else            handler2->cancel();
+        }
+    };
 
 
-	template < typename THandler1, typename THandler2 >
+    template < typename THandler1, typename THandler2 >
     struct Handler< Bundle2< THandler1, THandler2 >, MultiplexSpec >
-	{
+    {
         typedef typename Value<Handler>::Type TValue;
 
         THandler1 *handler1;
-		THandler2 *handler2;
+        THandler2 *handler2;
 
-		template <typename TPool>
-		Handler(TPool &_pool)
+        template <typename TPool>
+        Handler(TPool &_pool)
         {
-			if (_pool.memBuffer.begin || _pool._size == 0) {	// decision to choose handler1 or handler2
-				handler1 = new THandler1(_pool);
-				handler2 = NULL;
-			} else {
-				handler1 = NULL;
-				handler2 = new THandler2(_pool);
-			}
-		}
+            if (_pool.memBuffer.begin || _pool._size == 0) {    // decision to choose handler1 or handler2
+                handler1 = new THandler1(_pool);
+                handler2 = NULL;
+            } else {
+                handler1 = NULL;
+                handler2 = new THandler2(_pool);
+            }
+        }
 
-		~Handler() {
-			delete handler1;
-			delete handler2;
-		}
-		
+        ~Handler() {
+            delete handler1;
+            delete handler2;
+        }
+        
         inline bool begin() {
-			if (handler1)	return handler1->begin();
-			else			return handler2->begin();
-		}
+            if (handler1)    return handler1->begin();
+            else            return handler2->begin();
+        }
 
         inline TValue const & front() const {
-            if (handler1)	return handler1->front();
-			else			return handler2->front();
+            if (handler1)    return handler1->front();
+            else            return handler2->front();
         }
 
         inline void pop() {
-            if (handler1)	handler1->pop();
-			else			handler2->pop();
+            if (handler1)    handler1->pop();
+            else            handler2->pop();
         }
 
         inline void pop(TValue &Ref_) {
-            if (handler1)	handler1->pop(Ref_);
-			else			handler2->pop(Ref_);
+            if (handler1)    handler1->pop(Ref_);
+            else            handler2->pop(Ref_);
         }
 
         inline void push(TValue const & Val_) {
-            if (handler1)	handler1->push(Val_);
-			else			handler2->push(Val_);
+            if (handler1)    handler1->push(Val_);
+            else            handler2->push(Val_);
         }
 
         inline bool eof() const {
-            if (handler1)	return handler1->eof();
-			else			return handler2->eof();
+            if (handler1)    return handler1->eof();
+            else            return handler2->eof();
         }
 
-		inline void end() {
-			if (handler1)	handler1->end();
-			else			handler2->end();
-		}
+        inline void end() {
+            if (handler1)    handler1->end();
+            else            handler2->end();
+        }
 
-		inline void process() {
-			if (handler1)	handler1->process();
-			else			handler2->process();
-		}
-	};
+        inline void process() {
+            if (handler1)    handler1->process();
+            else            handler2->process();
+        }
+    };
 
 
 
-	//////////////////////////////////////////////////////////////////////////////
-	// character and buffer based handler definitions
+    //////////////////////////////////////////////////////////////////////////////
+    // character and buffer based handler definitions
     template < typename TValue, typename TSpec >
     struct BufReadHandler< Pool< TValue, TSpec > >
     {
         typedef BufferHandler< Bundle2<
-			BufferHandler< Pool< TValue, TSpec >, MemorySpec >, 
-			BufferHandler< Pool< TValue, TSpec >, ReadFileSpec >
-		>, MultiplexSpec > Type;
+            BufferHandler< Pool< TValue, TSpec >, MemorySpec >, 
+            BufferHandler< Pool< TValue, TSpec >, ReadFileSpec >
+        >, MultiplexSpec > Type;
     };
 
     template < typename TValue, typename TSpec >
     struct BufWriteHandler< Pool< TValue, TSpec > >
     {
         typedef BufferHandler< Bundle2<
-			BufferHandler< Pool< TValue, TSpec >, MemorySpec >, 
-			BufferHandler< Pool< TValue, TSpec >, WriteFileSpec >
-		>, MultiplexSpec > Type;
+            BufferHandler< Pool< TValue, TSpec >, MemorySpec >, 
+            BufferHandler< Pool< TValue, TSpec >, WriteFileSpec >
+        >, MultiplexSpec > Type;
     };
 
 
@@ -672,12 +672,12 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template < typename TPool >
     struct HandlerArgs {
-		typedef Nothing Type;
-	};
+        typedef Nothing Type;
+    };
 
 
     //////////////////////////////////////////////////////////////////////////////
-	// base class of all pool classes like Pool, Mapper, Sorter
+    // base class of all pool classes like Pool, Mapper, Sorter
 
     template < typename TValue,
                typename TSpec >
@@ -688,14 +688,14 @@ namespace SEQAN_NAMESPACE_MAIN
         typedef typename Config::SizeType   SizeType;
         typedef Buffer<TValue>              TBuffer;
 
-		// public handlers to read simultanously buffer- or character-wise
+        // public handlers to read simultanously buffer- or character-wise
         typedef typename ReadHandler<Pool>::Type    ReadHandler;
         typedef typename WriteHandler<Pool>::Type   WriteHandler;
-		typedef typename HandlerArgs<Pool>::Type	HandlerArgs;
+        typedef typename HandlerArgs<Pool>::Type    HandlerArgs;
 
-		File				file;
+        File                file;
         bool                _temporary, _ownFile;
-		SizeType			_size;
+        SizeType            _size;
         size_t              _pages;
         size_t              pageSize;
         size_t              bucketBufferSize;
@@ -703,12 +703,12 @@ namespace SEQAN_NAMESPACE_MAIN
         size_t              writeBackBuffers;
         size_t              writeBackBuckets;
 
-        TBuffer				memBuffer;
+        TBuffer                memBuffer;
         size_t              memBufferSize;
         HandlerArgs         handlerArgs;
 
-		bool				_partiallyFilled;		// the pool is partially filled (it contains undefined values)
-		TValue				undefinedValue;			// value to represent undefined (unwritten) entries
+        bool                _partiallyFilled;        // the pool is partially filled (it contains undefined values)
+        TValue                undefinedValue;            // value to represent undefined (unwritten) entries
 
     protected:
         size_t              _lastPageNo;
@@ -723,21 +723,21 @@ namespace SEQAN_NAMESPACE_MAIN
     public:
 
         //////////////////////////////////////////////////////////////////////////////
-		// public iterator types
+        // public iterator types
 
-		typedef SizeType				size_type;
+        typedef SizeType                size_type;
 
         Pool(const PoolParameters &_conf = PoolParameters()) :
             file(NULL), undefinedValue()
         {
-			_init(_conf);
+            _init(_conf);
             _setSize(0);
         }
         
-		Pool(HandlerArgs const &args, PoolParameters const &_conf = PoolParameters()):
+        Pool(HandlerArgs const &args, PoolParameters const &_conf = PoolParameters()):
             file(NULL), handlerArgs(args), undefinedValue()
         {
-			_init(_conf);
+            _init(_conf);
             _setSize(0);
         }
         
@@ -745,32 +745,32 @@ namespace SEQAN_NAMESPACE_MAIN
         Pool(Pipe<TInput, TPipeSpec> &, const PoolParameters &_conf = PoolParameters()):
             file(NULL), undefinedValue()
         {
-			_init(_conf);
+            _init(_conf);
             _setSize(0);
         }
         
         template < typename TInput, typename TPipeSpec >
-		Pool(Pipe<TInput, TPipeSpec> &, HandlerArgs const &args, PoolParameters const &_conf = PoolParameters()):
+        Pool(Pipe<TInput, TPipeSpec> &, HandlerArgs const &args, PoolParameters const &_conf = PoolParameters()):
             file(NULL), handlerArgs(args), undefinedValue()
         {
-			_init(_conf);
+            _init(_conf);
             _setSize(0);
         }
         
         Pool(File &_file, const PoolParameters &_conf = PoolParameters()):
             file(_file), undefinedValue()
         {
-			_init(_conf);
+            _init(_conf);
             _ownFile = false;
             _temporary = false;
             memBufferSize = 0;
-			_setSize(seqan::length(file) / sizeof(TValue));
+            _setSize(seqan::length(file) / sizeof(TValue));
         }
         
         Pool(const char *fileName, const PoolParameters &_conf = PoolParameters()) :
             file(NULL), undefinedValue()
         {
-			_init(_conf);
+            _init(_conf);
             _temporary = false;
             memBufferSize = 0;
             _ownFile = open(file, fileName);
@@ -794,43 +794,43 @@ namespace SEQAN_NAMESPACE_MAIN
             resize(0);
         }
 
-		inline size_type size() const {
-			return _size;
-		}
+        inline size_type size() const {
+            return _size;
+        }
 
         // this is not a real resize
         void resize(size_type _newSize) {
-			typedef typename Size<File>::Type TFSize SEQAN_UNUSED_TYPEDEF;
+            typedef typename Size<File>::Type TFSize SEQAN_UNUSED_TYPEDEF;
             if (_newSize == _size) return;
 
-            _freeHandlers();	// if you forgot to call endRead/endWrite we have no trouble
+            _freeHandlers();    // if you forgot to call endRead/endWrite we have no trouble
 
-			if (_temporary && _ownFile) {
-				if (_size != 0) {
-					if (memBuffer.begin)
-						freePage(memBuffer, *this);
+            if (_temporary && _ownFile) {
+                if (_size != 0) {
+                    if (memBuffer.begin)
+                        freePage(memBuffer, *this);
                     else {
-						close(file);
+                        close(file);
                         SEQAN_PROSUB(SEQAN_PROIOVOLUME, (_proFloat)((TFSize)_size * (TFSize)sizeof(TValue)));
                     }
-				}
+                }
 
-				if (_newSize != 0) {
-					if (_newSize <= (size_type)memBufferSize)
-						allocPage(memBuffer, _newSize, *this);
+                if (_newSize != 0) {
+                    if (_newSize <= (size_type)memBufferSize)
+                        allocPage(memBuffer, _newSize, *this);
                     else {
-						openTemp(file);
+                        openTemp(file);
                         SEQAN_PROADD(SEQAN_PROIOVOLUME, (_proFloat)((TFSize)_newSize * (TFSize)sizeof(TValue)));
                     }
-				}
-			}
+                }
+            }
 
             _setSize(_newSize);
         }
 
 
         //////////////////////////////////////////////////////////////////////////////
-		// auto-disposal interface (deprecated)
+        // auto-disposal interface (deprecated)
 
         inline void addListener() {
             if (!listeners) return;
@@ -846,27 +846,27 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
         //////////////////////////////////////////////////////////////////////////////
-		// queue interface
+        // queue interface
 
         inline TValue const & front() const
         {
             return reader->front();
         }
 
-		inline TValue const & operator*() const
+        inline TValue const & operator*() const
         {
-			return reader->front();
-		}
+            return reader->front();
+        }
 
         inline void pop()
         {
-			reader->pop();
+            reader->pop();
         }
 
         inline Pool& operator++()
         {
-			reader->pop();
-			return *this;
+            reader->pop();
+            return *this;
         }
 
         inline void pop(TValue &Ref_)
@@ -888,20 +888,20 @@ namespace SEQAN_NAMESPACE_MAIN
 
 
         //////////////////////////////////////////////////////////////////////////////
-		// flow control
+        // flow control
 
         bool beginWrite() {
             _freeHandlers(); // if you forgot to call endRead/endWrite we have no trouble
-			return (
+            return (
                 (writer = new WriteHandler(*this)) && 
                 writer->begin());
         }
 
         bool endWrite() {
-			if (writer) {
-				writer->end();
-				writer->process();
-			}
+            if (writer) {
+                writer->end();
+                writer->process();
+            }
             delete writer;
             writer = NULL;
             return true;
@@ -909,7 +909,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         bool beginRead() {
             _freeHandlers(); // if you forgot to call endRead/endWrite we have no trouble
-			return (
+            return (
                 (reader = new ReadHandler(*this)) &&
                 reader->begin());
         }
@@ -959,11 +959,11 @@ namespace SEQAN_NAMESPACE_MAIN
             _lastPageSize = _size % pageSize;
         }
 
-		void _init(PoolParameters _conf = PoolParameters()) 
-		{
+        void _init(PoolParameters _conf = PoolParameters()) 
+        {
             _conf.absolutize(16*1024/*sectorSize(file)*/, (TValue*)NULL);
             memBufferSize    = _conf.memBufferSize;
-            pageSize		 = _conf.pageSize;
+            pageSize         = _conf.pageSize;
             bucketBufferSize = _conf.bucketBufferSize;
             readAheadBuffers = _conf.readAheadBuffers;
             writeBackBuffers = _conf.writeBackBuffers;
@@ -974,36 +974,36 @@ namespace SEQAN_NAMESPACE_MAIN
             writer = NULL;
             _ownFile = true;
             _temporary = true;
-		}
+        }
 
     };
 
     template < typename TValue, typename TSpec, typename TIteratorSpec>
-	struct Iterator< Pool< TValue, TSpec > const, TIteratorSpec> {
-		typedef IPipeIterator< Pool< TValue, TSpec > > Type;
-	};
+    struct Iterator< Pool< TValue, TSpec > const, TIteratorSpec> {
+        typedef IPipeIterator< Pool< TValue, TSpec > > Type;
+    };
 
     template < typename TValue, typename TSpec, typename TIteratorSpec>
-	struct Iterator< Pool< TValue, TSpec >, TIteratorSpec> {
-		typedef OPipeIterator< Pool< TValue, TSpec > > Type;
-	};
+    struct Iterator< Pool< TValue, TSpec >, TIteratorSpec> {
+        typedef OPipeIterator< Pool< TValue, TSpec > > Type;
+    };
 
     template < typename TValue, typename TSpec >
-	OPipeIterator< Pool< TValue, TSpec > >
-	begin(Pool< TValue, TSpec > &pool) {
-		return OPipeIterator< Pool< TValue, TSpec > >(pool);
-	}
+    OPipeIterator< Pool< TValue, TSpec > >
+    begin(Pool< TValue, TSpec > &pool) {
+        return OPipeIterator< Pool< TValue, TSpec > >(pool);
+    }
 
     template < typename TValue, typename TSpec >
-	OPipeIterator< Pool< TValue, TSpec > >
-	end(Pool< TValue, TSpec > &/*pool*/) {
-		return OPipeIterator< Pool< TValue, TSpec > >();
-	}
+    OPipeIterator< Pool< TValue, TSpec > >
+    end(Pool< TValue, TSpec > &/*pool*/) {
+        return OPipeIterator< Pool< TValue, TSpec > >();
+    }
 
 
 
     //////////////////////////////////////////////////////////////////////////////
-	// a pool is a queue-like container for a large amount of data
+    // a pool is a queue-like container for a large amount of data
     // in contrast to a queue you can read the whole content more than once
     // but can't pop directly after a push
     // instead, access to a pool looks like the following:
@@ -1023,13 +1023,13 @@ namespace SEQAN_NAMESPACE_MAIN
     //template < typename TValue, typename TFile = File<> >
     //struct Pool: public Pool< TValue, PoolSpec< PoolConfig< TFile > > >
     //{
-    //    typedef TValue	                    Type;
+    //    typedef TValue                        Type;
     //    typedef TFile                       File;
     //    typedef typename Size<TFile>::Type  SizeType;
     //};
 
 
-	// seqan namespace traits
+    // seqan namespace traits
     template < typename TValue, typename TSpec >
     struct Value< Pool< TValue, TSpec > > {
         typedef TValue Type;
@@ -1047,7 +1047,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template < typename TValue, typename TSpec >
     struct Difference< Pool< TValue, TSpec > > {
-		typedef typename MakeSigned_<typename Size<Pool< TValue, TSpec > >::Type>::Type Type;
+        typedef typename MakeSigned_<typename Size<Pool< TValue, TSpec > >::Type>::Type Type;
     };
 
 /*!
@@ -1064,7 +1064,7 @@ namespace SEQAN_NAMESPACE_MAIN
         return me.clear();
     }
 
-	// deprecated
+    // deprecated
     template < typename TValue, typename TSpec >
     inline typename Size< Pool<TValue, TSpec> >::Type
     size(Pool<TValue, TSpec> const &me)
@@ -1084,7 +1084,7 @@ namespace SEQAN_NAMESPACE_MAIN
  * @return    TSize The number of elements in the pool.
  */
 
-	template < typename TValue, typename TSpec >
+    template < typename TValue, typename TSpec >
     inline typename Size< Pool<TValue, TSpec> >::Type
     length(Pool<TValue, TSpec> const &me)
     {
@@ -1101,10 +1101,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * @param[in]     len  Length to resize <tt>pool</tt> to.
  */
 
-	template < typename TValue, typename TSpec, typename TSize >
+    template < typename TValue, typename TSpec, typename TSize >
     inline TSize resize(Pool<TValue, TSpec> &me, TSize new_length)
     {
-	    me.resize(new_length);
+        me.resize(new_length);
         return me.size();
     }
 
@@ -1120,7 +1120,7 @@ namespace SEQAN_NAMESPACE_MAIN
  */
 
     template < typename TValue, typename TSpec >
-	inline typename Value< Pool<TValue, TSpec> >::Type const & front(Pool<TValue, TSpec> &me) {
+    inline typename Value< Pool<TValue, TSpec> >::Type const & front(Pool<TValue, TSpec> &me) {
         return me.front();
     }
 /*!
@@ -1169,54 +1169,54 @@ namespace SEQAN_NAMESPACE_MAIN
     std::ostream& operator<<(std::ostream &out, Pool<TValue, TSpec> &p) {
         beginRead(p);
         while (!eof(p)) {
-		    out << front(p) << std::endl;
+            out << front(p) << std::endl;
             pop(p);
         }
         endRead(p);
-		return out;
-	}
+        return out;
+    }
 
 
-	// the pipe interface of pool classes
-	//namespace SEQAN_NAMESPACE_PIPELINING
-	//{
-		//template < typename TValue, typename TSpec >
-		//struct Value< Pool< TValue, TSpec > >
-		//{
-		//	typedef TValue Type;
-		//};
+    // the pipe interface of pool classes
+    //namespace SEQAN_NAMESPACE_PIPELINING
+    //{
+        //template < typename TValue, typename TSpec >
+        //struct Value< Pool< TValue, TSpec > >
+        //{
+        //    typedef TValue Type;
+        //};
 
-		//template < typename TValue, typename TSpec >
-		//struct Size< Pool< TValue, TSpec > >
-		//{
-		//	typedef typename Size< TFile >::Type Type;
-		//};
+        //template < typename TValue, typename TSpec >
+        //struct Size< Pool< TValue, TSpec > >
+        //{
+        //    typedef typename Size< TFile >::Type Type;
+        //};
 
-		template < typename TValue, typename TSpec >
-	    inline bool control(Pool< TValue, TSpec > &me, ControlEof const &) {
-		    return me.eof();
-	    }
-    	
-		template < typename TValue, typename TSpec >
-	    inline bool control(Pool< TValue, TSpec > &me, ControlEos const &) {
-		    return me.eof();
-	    }
-    	
-		template < typename TValue, typename TSpec >
-	    inline bool control(Pool< TValue, TSpec > &me, ControlClear const &) {
-		    me.clear();
-		    return true;
-	    }
-    	
-		template < typename TValue, typename TSpec >
-	    inline bool control(Pool< TValue, TSpec > &me, ControlBeginRead const &) {
-		    return me.beginRead();
-	    }
-    	
-		template < typename TValue, typename TSpec >
-	    inline bool control(Pool< TValue, TSpec > &me, ControlEndRead const &) {
-		    return me.endRead();
-	    }
+        template < typename TValue, typename TSpec >
+        inline bool control(Pool< TValue, TSpec > &me, ControlEof const &) {
+            return me.eof();
+        }
+        
+        template < typename TValue, typename TSpec >
+        inline bool control(Pool< TValue, TSpec > &me, ControlEos const &) {
+            return me.eof();
+        }
+        
+        template < typename TValue, typename TSpec >
+        inline bool control(Pool< TValue, TSpec > &me, ControlClear const &) {
+            me.clear();
+            return true;
+        }
+        
+        template < typename TValue, typename TSpec >
+        inline bool control(Pool< TValue, TSpec > &me, ControlBeginRead const &) {
+            return me.beginRead();
+        }
+        
+        template < typename TValue, typename TSpec >
+        inline bool control(Pool< TValue, TSpec > &me, ControlEndRead const &) {
+            return me.endRead();
+        }
 
 /*!
  * @fn Pool#beginWrite
@@ -1236,10 +1236,10 @@ namespace SEQAN_NAMESPACE_MAIN
  * @see Pool#endWrite
 */
 
-		template < typename TValue, typename TSpec >
-	    inline bool beginWrite(Pool< TValue, TSpec > &me) {
+        template < typename TValue, typename TSpec >
+        inline bool beginWrite(Pool< TValue, TSpec > &me) {
 SEQAN_CHECKPOINT
-		    return me.beginWrite();
+            return me.beginWrite();
         }
 
 /*!
@@ -1257,9 +1257,9 @@ SEQAN_CHECKPOINT
  * @see Pool#beginWrite
  */
 
-		template < typename TValue, typename TSpec >
-	    inline bool endWrite(Pool< TValue, TSpec > &me) {
-		    return me.endWrite();
+        template < typename TValue, typename TSpec >
+        inline bool endWrite(Pool< TValue, TSpec > &me) {
+            return me.endWrite();
         }
 
 /*!
@@ -1273,8 +1273,8 @@ SEQAN_CHECKPOINT
  * @return bool true in case of the pool being at the end, false otherwise.
  */
 
-		template < typename TValue, typename TSpec >
-	    inline bool eof(Pool< TValue, TSpec > &me) {
+        template < typename TValue, typename TSpec >
+        inline bool eof(Pool< TValue, TSpec > &me) {
 SEQAN_CHECKPOINT
             return control(me, ControlEof());
         }
@@ -1294,8 +1294,8 @@ SEQAN_CHECKPOINT
  * 
  * @see Pool#endRead
  */
-		template < typename TValue, typename TSpec >
-	    inline bool beginRead(Pool< TValue, TSpec > &me) {
+        template < typename TValue, typename TSpec >
+        inline bool beginRead(Pool< TValue, TSpec > &me) {
 SEQAN_CHECKPOINT
             return control(me, ControlBeginRead());
         }
@@ -1312,13 +1312,13 @@ SEQAN_CHECKPOINT
  * 
  * @see Pool#beginRead
  */
-		template < typename TValue, typename TSpec >
-	    inline bool endRead(Pool< TValue, TSpec > &me) {
+        template < typename TValue, typename TSpec >
+        inline bool endRead(Pool< TValue, TSpec > &me) {
 SEQAN_CHECKPOINT
             return control(me, ControlEndRead());
         }
 
-	//}
+    //}
 
     // pipe/pool -> pool
     template < typename TValue,
@@ -1343,7 +1343,7 @@ SEQAN_CHECKPOINT
     inline bool append(Pool<TValue, TSpec> &dest, String<TValue, TStringSpec> &src) {
         typedef typename Iterator< String<TValue, TStringSpec> const, Standard >::Type TIter;
         TIter _cur = begin(src, Standard());
-		TIter _end = end(src, Standard());
+        TIter _end = end(src, Standard());
         while (_cur != _end) {
             push(dest, *_cur);
             ++_cur;
@@ -1382,16 +1382,16 @@ SEQAN_CHECKPOINT
 
     // pool -> string
     template < typename TValue1,
-			   typename TStringSpec,
-			   typename TValue2,
-			   typename TSpec >
+               typename TStringSpec,
+               typename TValue2,
+               typename TSpec >
     inline bool assign(String<TValue1, TStringSpec> &dest, Pool<TValue2, TSpec> &src) {
         typedef typename Iterator< String<TValue1, TStringSpec>, Standard >::Type TIter;
         typename Size< String<TValue1, TStringSpec> >::Type _size = length(src);
         resize(dest, _size);
         if (!beginRead(src)) return false;
         TIter _cur = begin(dest, Standard());
-		TIter _end = end(dest, Standard());
+        TIter _end = end(dest, Standard());
         while (_cur != _end) {
             *_cur = *src;
             ++_cur;
@@ -1402,9 +1402,9 @@ SEQAN_CHECKPOINT
     }
 
     template < typename TValue1,
-			   typename TStringSpec,
-			   typename TValue2,
-			   typename TSpec >
+               typename TStringSpec,
+               typename TValue2,
+               typename TSpec >
     inline bool operator<<(String<TValue1, TStringSpec> &dest, Pool<TValue2, TSpec> &src) {
         return assign(dest, src);
     }

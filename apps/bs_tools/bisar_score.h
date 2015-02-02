@@ -8,9 +8,9 @@ struct MyFragmentStoreConfig;
 
 template<>
 struct FragmentStoreConfig<MyFragmentStoreConfig> :
-	public FragmentStoreConfig<>
+    public FragmentStoreConfig<>
 {
-	typedef double		TMappingQuality;    // ?
+    typedef double        TMappingQuality;    // ?
 };
 
 template <typename T = void>

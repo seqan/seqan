@@ -224,7 +224,7 @@ SEQAN_DEFINE_TEST(test_store_io_read_gff)
 
     SEQAN_ASSERT_EQ(getType(it), "exon");
     SEQAN_ASSERT_EQ(getAnnotation(it).beginPos, 1049);
-    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 1500	);
+    SEQAN_ASSERT_EQ(getAnnotation(it).endPos, 1500    );
     SEQAN_ASSERT_EQ(value(it), 3u);
     SEQAN_ASSERT_EQ(getAnnotation(it).parentId, 1u);
     SEQAN_ASSERT_EQ(getParentName(it), "mrna0001");

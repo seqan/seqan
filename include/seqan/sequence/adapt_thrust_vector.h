@@ -108,13 +108,13 @@ struct Reference<thrust::device_vector<TChar, TAlloc> const>
 template <typename TValue>
 struct Reference<thrust::detail::normal_iterator<thrust::device_ptr<TValue> > > 
 {
-	typedef thrust::device_reference<TValue> Type;
+    typedef thrust::device_reference<TValue> Type;
 };
 
 template <typename TValue>
 struct Reference<thrust::detail::normal_iterator<thrust::device_ptr<TValue> > const> 
 {
-	typedef thrust::device_reference<TValue> const Type;
+    typedef thrust::device_reference<TValue> const Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -150,13 +150,13 @@ struct Iterator<thrust::device_vector<TChar, TAlloc> const, Rooted>
 template <typename TChar,  typename TAlloc>
 struct Iterator<thrust::device_vector<TChar, TAlloc>, Standard>
 {
-	typedef typename thrust::device_vector<TChar, TAlloc>::iterator Type;
+    typedef typename thrust::device_vector<TChar, TAlloc>::iterator Type;
 };
 
 template <typename TChar,  typename TAlloc>
 struct Iterator<thrust::device_vector<TChar, TAlloc> const, Standard>
 {
-	typedef typename thrust::device_vector<TChar, TAlloc>::const_iterator Type;
+    typedef typename thrust::device_vector<TChar, TAlloc>::const_iterator Type;
 };
 
 // ----------------------------------------------------------------------------

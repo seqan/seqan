@@ -35,17 +35,17 @@
 #define SEQAN_PLATFORM_H
 
 #ifdef __MINGW32__
-	#include "platform/platform_mingw.h"
+    #include "platform/platform_mingw.h"
 #elif _MSC_VER
-	#include "platform/platform_windows.h"
+    #include "platform/platform_windows.h"
 #elif __SUNPRO_C
-	#include "platform/platform_solaris.h"
+    #include "platform/platform_solaris.h"
 #elif __ICC
-	#include "platform/platform_icc.h"
+    #include "platform/platform_icc.h"
 #elif __PGI
-	#include "platform/platform_pgi.h"
+    #include "platform/platform_pgi.h"
 #else
-	#include "platform/platform_gcc.h"
+    #include "platform/platform_gcc.h"
 #endif
 
 // NOTE(esiragusa): nvcc header must be included even if __CUDACC__ is not defined.

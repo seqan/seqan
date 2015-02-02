@@ -78,10 +78,10 @@ namespace SEQAN_NAMESPACE_MAIN
 template <typename TMean = double, typename TStd = double, typename TSpec = void>
 struct LibraryStoreElement
 {
-	TMean		mean;		// mean library size in bps
-	TStd		std;	// library size variance
+    TMean        mean;        // mean library size in bps
+    TStd        std;    // library size variance
 
-	LibraryStoreElement() : mean(0), std(0) {}
+    LibraryStoreElement() : mean(0), std(0) {}
 
     inline bool operator==(LibraryStoreElement const & other) const
     {

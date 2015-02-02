@@ -338,17 +338,17 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
                                    Graph<Undirected<double> > const & distances,
                                    bool logging)
 {
-	typedef std::map<unsigned, unsigned> TComponentLength;
+    typedef std::map<unsigned, unsigned> TComponentLength;
 
     // -----------------------------------------------------------------------
     // Compute connected components and get topological sorting of them.
     // -----------------------------------------------------------------------
-	  String<unsigned> component;
-	  String<unsigned> order;
-	  TComponentLength componentLength;
+      String<unsigned> component;
+      String<unsigned> order;
+      TComponentLength componentLength;
     if (empty(g))
         return true;  // Nothing to do for empty graphs.
-	  if (!convertAlignment(g, component, order, componentLength))
+      if (!convertAlignment(g, component, order, componentLength))
         return false;
     unsigned numComponents = length(order);
 

@@ -393,7 +393,7 @@ SEQAN_DEFINE_TEST(test_alignment_algorithms_align_global_affine_banded)
         assignSource(row(align, 1), strV);
 
         int score = globalAlignment(align, scoringScheme, alignConfig, -3, 2, Gotoh());
-    //		 std::cerr << align << "\n";
+    //         std::cerr << align << "\n";
 
         SEQAN_ASSERT_EQ(score, 2);
 

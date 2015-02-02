@@ -217,11 +217,11 @@ qualityDistributionFromPrbFile(TFile & file, TDistribution & avg, ParamChooserOp
             avgReadQual += qual;
             tempReadQual[pos] = qual;
 
-//			std::cout << qual << " ";
-//			f = _convertSolexaQual2ErrProb(f);
+//            std::cout << qual << " ";
+//            f = _convertSolexaQual2ErrProb(f);
 
-//			qualitySum[pos] += _convertSolexaQual2ErrProb((TFloat)qual);
-//			++count[pos];
+//            qualitySum[pos] += _convertSolexaQual2ErrProb((TFloat)qual);
+//            ++count[pos];
         }
         if ((int)(avgReadQual / pm_options.totalN) < pm_options.qualityCutoff)
         {
@@ -231,12 +231,12 @@ qualityDistributionFromPrbFile(TFile & file, TDistribution & avg, ParamChooserOp
         {
             for (unsigned pos = 0; (pos < pm_options.totalN); ++pos)
             {
-                //			qualitySum[pos] += _convertSolexaQual2ErrProb((TFloat)qual);
+                //            qualitySum[pos] += _convertSolexaQual2ErrProb((TFloat)qual);
                 qualitySum[pos] += tempReadQual[pos];
                 ++count[pos];
             }
         }
-//		std::cout << std::endl;
+//        std::cout << std::endl;
 
         skipLine(reader);
     }
@@ -317,7 +317,7 @@ getAvgFromPrbDirectory(TPath prbPath, TError & errorDistribution, ParamChooserOp
             filestrm.close();
             for (unsigned j = 0; j < pm_options.totalN; ++j)
             {
-//				std::cout << " " << avg_act[j];
+//                std::cout << " " << avg_act[j];
                 errorDistribution[j] += avg_act[j];
             }
             ++countPrbs;
@@ -336,7 +336,7 @@ getAvgFromPrbDirectory(TPath prbPath, TError & errorDistribution, ParamChooserOp
             filestrm.close();
             for (unsigned j = 0; j < pm_options.totalN; ++j)
             {
-//				std::cout << " " << avg_act[j];
+//                std::cout << " " << avg_act[j];
                 errorDistribution[j] += avg_act[j];
             }
             ++countPrbs;
@@ -429,7 +429,7 @@ interpolateErrorDistr(TError & errorDistr, ParamChooserOptions & pm_options)
             newVal = errorDistr[(int)index] + add * (errorDistr[(int)index + 1] - errorDistr[(int)index]);
         else
             newVal = errorDistr[totalLargeN - 1];
-//		std::cout << newVal << std::endl;
+//        std::cout << newVal << std::endl;
         shorterErrorDistr[j] = newVal;
     }
     clear(errorDistr);
@@ -660,7 +660,7 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
         String<TFloat> sensMat;
 
         //if(pm_options.verbose)std::cout << "do DP\n";
-//		if(pm_options.verbose)std::cerr << "do loss rate DP" << std::endl;
+//        if(pm_options.verbose)std::cerr << "do loss rate DP" << std::endl;
         try
         {
             Shape<Dna, GenericShape> shape;
@@ -669,8 +669,8 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
                 qgramFilteringSensitivity(sensMat, shape, totalN, maxErrors - 1, maxT - 1, HammingDistance(), ThreshExact(), logErrorDistribution);
             else
                 qgramFilteringSensitivity(sensMat, shape, totalN, maxErrors - 1, maxT - 1, EditDistance(), ThreshExact(), logErrorDistribution);
-//			initPatterns(states, shapeStrings[i], maxErrors-1, logErrorDistribution, pm_options.optionHammingOnly);
-//			computeFilteringLoss(found, states, length(shapeStrings[i]), maxT, maxErrors,  logErrorDistribution);
+//            initPatterns(states, shapeStrings[i], maxErrors-1, logErrorDistribution, pm_options.optionHammingOnly);
+//            computeFilteringLoss(found, states, length(shapeStrings[i]), maxT, maxErrors,  logErrorDistribution);
         }
         catch (std::bad_alloc &)
         {
@@ -694,7 +694,7 @@ makeSelectedStatsFile(TError & errorDistr, ParamChooserOptions & pm_options)
                 if (lossrate > 0.2)
                     continue;
 
-//				unsigned gminCov = getMinCov(weights[i], length(shapeStrings[i]), t);
+//                unsigned gminCov = getMinCov(weights[i], length(shapeStrings[i]), t);
 
                 // create the whole file name
                 std::stringstream datName;
@@ -1210,8 +1210,8 @@ chooseParams(RazerSOptions<TSpec> & r_options, ParamChooserOptions & pm_options)
         if (!pm_options.prefixCount)
         {
             pm_options.fprefix[0] = "results";
-//			pm_options.fprefix[0] = "userdef";
-//			std::cerr << "\nNo session id given, using prefix 'userdef'"<<std::endl;
+//            pm_options.fprefix[0] = "userdef";
+//            std::cerr << "\nNo session id given, using prefix 'userdef'"<<std::endl;
         }
         String<TFloat> errorDistribution;
         resize(errorDistribution, pm_options.totalN);

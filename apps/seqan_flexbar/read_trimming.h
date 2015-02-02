@@ -55,19 +55,19 @@ struct Tail {};
 struct BWA {};
 //brief The tagging structure for the window trimming algorithm.
 struct Mean {
-	unsigned window;	// The window size used for quality calculations.
-	Mean(unsigned w) : window(w) {}
+    unsigned window;    // The window size used for quality calculations.
+    Mean(unsigned w) : window(w) {}
 };
 
 struct QualityTrimmingStats
 {
-	unsigned dropped_1, dropped_2;
-	QualityTrimmingStats() : dropped_1(0), dropped_2(0) {};
-	void clear()
-	{
-		dropped_1 = 0;
-		dropped_2 = 0;
-	}
+    unsigned dropped_1, dropped_2;
+    QualityTrimmingStats() : dropped_1(0), dropped_2(0) {};
+    void clear()
+    {
+        dropped_1 = 0;
+        dropped_2 = 0;
+    }
 };
 
 // ============================================================================
@@ -84,7 +84,7 @@ struct QualityTrimmingStats
 
 inline unsigned getQuality(const seqan::String<seqan::Dna5Q>& seq, unsigned i)
 {
-	return seqan::getQualityValue(seq[i]);
+    return seqan::getQualityValue(seq[i]);
 }
 
 // Trimming methods
@@ -92,80 +92,80 @@ inline unsigned getQuality(const seqan::String<seqan::Dna5Q>& seq, unsigned i)
 template <typename TSeq>
 unsigned _trimRead(const TSeq& seq, unsigned const cutoff, Tail const &)
 {
-	for (int i = length(seq) - 1; i >= 0; --i)
+    for (int i = length(seq) - 1; i >= 0; --i)
     {
-		if (getQuality(seq, i) >= cutoff)
+        if (getQuality(seq, i) >= cutoff)
         {
-			return i + 1;
+            return i + 1;
         }
     }
-	return 0;
+    return 0;
 }
 
 //Trimming mechanism using BWA. Trim to argmax_x sum_{i=x+1}^l {cutoff - q_i}
 template <typename TSeq>
 unsigned _trimRead(const TSeq& seq, unsigned const cutoff, BWA const &)
 {
-	int max_arg = length(seq) - 1, sum = 0, max = 0;
-	for (int i = length(seq) - 1; i >= 0; --i)
-	{
-		sum += cutoff - getQuality(seq, i);
-		if (sum < 0)
+    int max_arg = length(seq) - 1, sum = 0, max = 0;
+    for (int i = length(seq) - 1; i >= 0; --i)
+    {
+        sum += cutoff - getQuality(seq, i);
+        if (sum < 0)
         {
-			break;
+            break;
         }
-		if (sum > max)
-		{
-			max = sum;
-			max_arg = i;
-		}
-	}
-	return max_arg + 1;
+        if (sum > max)
+        {
+            max = sum;
+            max_arg = i;
+        }
+    }
+    return max_arg + 1;
 }
 
 // Trim by shifting a window over the sequence and cut where avg. qual. in window turns bad the first time.
 template <typename TSeq>
 unsigned _trimRead(const TSeq& seq, unsigned const _cutoff, Mean const & spec)
 {
-	unsigned window = spec.window;
-	unsigned avg = 0, i = 0;
-	// Work with absolute cutoff in window to avoid divisions.
-	unsigned cutoff = _cutoff*window;
-	// Calculate average quality of initial window.
-	for (i = 0; i < window; ++i)
+    unsigned window = spec.window;
+    unsigned avg = 0, i = 0;
+    // Work with absolute cutoff in window to avoid divisions.
+    unsigned cutoff = _cutoff*window;
+    // Calculate average quality of initial window.
+    for (i = 0; i < window; ++i)
     {
-		avg += getQuality(seq, i);
+        avg += getQuality(seq, i);
     }
-	// Shift window over read and keep mean quality, update in constant time.
-	for (i = 0; i < length(seq) && avg >= cutoff; ++i)
-	{   // Take care only not to go over the end of the sequence. Shorten window near the end.
-		avg -= getQuality(seq, i);
-		avg += i + window < length(seq) ? getQuality(seq, i + window) : 0;
-	}
-	return i;   // i now holds the start of the first window that turned bad.
+    // Shift window over read and keep mean quality, update in constant time.
+    for (i = 0; i < length(seq) && avg >= cutoff; ++i)
+    {   // Take care only not to go over the end of the sequence. Shorten window near the end.
+        avg -= getQuality(seq, i);
+        avg += i + window < length(seq) ? getQuality(seq, i + window) : 0;
+    }
+    return i;   // i now holds the start of the first window that turned bad.
 }
 
 template <typename TSeq, typename TSpec>
 unsigned trimRead(TSeq& seq, unsigned const cutoff, TSpec const & spec)
 {
-	unsigned ret, cut_pos;
-	cut_pos = _trimRead(seq, cutoff, spec);
-	ret = length(seq) - cut_pos;
-	erase(seq, cut_pos, length(seq));
+    unsigned ret, cut_pos;
+    cut_pos = _trimRead(seq, cutoff, spec);
+    ret = length(seq) - cut_pos;
+    erase(seq, cut_pos, length(seq));
     return ret;
 }
 template <typename TSet, typename TIdSet, typename TSpec>
 unsigned _trimReads(TSet & seqSet, TIdSet& idSet, unsigned const cutoff, TSpec const & spec, bool tagOpt)
 {
-	typedef typename seqan::Value<TSet>::Type TSeq;
-	int trimmedReads = 0;
-	int len = length(seqSet);
-	SEQAN_OMP_PRAGMA(parallel for schedule(static) reduction(+:trimmedReads))
-	for (int i=0; i < len; ++i)
-	{
-		TSeq& read = value(seqSet, i);
-		unsigned trimmed = trimRead(read, cutoff, spec);
-		if (trimmed > 0)
+    typedef typename seqan::Value<TSet>::Type TSeq;
+    int trimmedReads = 0;
+    int len = length(seqSet);
+    SEQAN_OMP_PRAGMA(parallel for schedule(static) reduction(+:trimmedReads))
+    for (int i=0; i < len; ++i)
+    {
+        TSeq& read = value(seqSet, i);
+        unsigned trimmed = trimRead(read, cutoff, spec);
+        if (trimmed > 0)
         {
             ++trimmedReads;
             if (tagOpt)
@@ -173,15 +173,15 @@ unsigned _trimReads(TSet & seqSet, TIdSet& idSet, unsigned const cutoff, TSpec c
                 append(idSet[i], "[Trimmed]");
             }
         }
-	}
-	return trimmedReads;
+    }
+    return trimmedReads;
 }
 
 template <typename TId, typename TSeq>
 unsigned dropReads(seqan::StringSet<TId> & idSet, seqan::StringSet<TSeq> & seqSet,
-		unsigned const min_length, QualityTrimmingStats& stats)
+        unsigned const min_length, QualityTrimmingStats& stats)
 {
-	int len = length(seqSet);
+    int len = length(seqSet);
     seqan::StringSet<bool> rem;
     resize(rem, len);
     SEQAN_OMP_PRAGMA(parallel for default(shared) schedule(static))
@@ -198,33 +198,33 @@ unsigned dropReads(seqan::StringSet<TId> & idSet, seqan::StringSet<TSeq> & seqSe
     }
 
     unsigned ex = 0;
-	for (int i = len - 1; i >= 0; --i)
-	{
-		if (rem[i])
+    for (int i = len - 1; i >= 0; --i)
+    {
+        if (rem[i])
         {
             seqan::swap(seqSet[i], seqSet[len - ex - 1]);
             seqan::swap(idSet[i], idSet[len - ex - 1]);
             ++ex;
         }
-	}
+    }
     if (ex != 0)
     {
         seqan::resize(seqSet, len - ex);
         seqan::resize(idSet, len - ex);
         stats.dropped_1 += ex;
     }
-	return 0;
+    return 0;
 }
 
 //overload for paired end data
 template <typename TId, typename TSeq>
 unsigned dropReads(seqan::StringSet<TId> & idSet1, seqan::StringSet<TSeq> & seqSet1,
-		  seqan::StringSet<TId> & idSet2, seqan::StringSet<TSeq> & seqSet2, unsigned const min_length, QualityTrimmingStats& stats)
+          seqan::StringSet<TId> & idSet2, seqan::StringSet<TSeq> & seqSet2, unsigned const min_length, QualityTrimmingStats& stats)
 {
-	// Iterate over the set and drop filter out those reads that are
-	// too short. If only one read of the pair is too short, mark it
-	// with a single N. If both reads are too short, remove them.
-	// Possible feature for the future generation: Write out orphaned reads to extra file.
+    // Iterate over the set and drop filter out those reads that are
+    // too short. If only one read of the pair is too short, mark it
+    // with a single N. If both reads are too short, remove them.
+    // Possible feature for the future generation: Write out orphaned reads to extra file.
     int len = length(seqSet1);
     seqan::StringSet<bool> rem;
     resize(rem, len);
@@ -234,7 +234,7 @@ unsigned dropReads(seqan::StringSet<TId> & idSet1, seqan::StringSet<TSeq> & seqS
     for (int i = 0; i < len; ++i)
     {
         bool drop1 = length(seqSet1[i]) < min_length;
-		bool drop2 = length(seqSet2[i]) < min_length;
+        bool drop2 = length(seqSet2[i]) < min_length;
         if (drop1 && drop2)
         {
             rem[i] = true;
@@ -245,13 +245,13 @@ unsigned dropReads(seqan::StringSet<TId> & idSet1, seqan::StringSet<TSeq> & seqS
         {
             rem[i] = false;
             ++dropped1;
-			seqan::moveValue(seqSet1, i, TSeq("N"));
+            seqan::moveValue(seqSet1, i, TSeq("N"));
         }
         else if (drop2)
         {
             rem[i] = false;
             ++dropped2;
-			seqan::moveValue(seqSet2, i, TSeq("N"));
+            seqan::moveValue(seqSet2, i, TSeq("N"));
         } 
         else
         {
@@ -279,15 +279,15 @@ unsigned dropReads(seqan::StringSet<TId> & idSet1, seqan::StringSet<TSeq> & seqS
         resize(seqSet2, len - ex);
         resize(idSet2, len - ex);
     }
-	return 0;
+    return 0;
 }
 
 template <typename TSeq, typename TId, typename TSpec>
 unsigned trimBatch(seqan::StringSet<TSeq>& seqSet, seqan::StringSet<TId>& idSet, unsigned const cutoff,
     TSpec const& spec, bool tagOpt)
 {
-	unsigned trimmedReads = _trimReads(seqSet, idSet, cutoff, spec, tagOpt);
-	return trimmedReads;
+    unsigned trimmedReads = _trimReads(seqSet, idSet, cutoff, spec, tagOpt);
+    return trimmedReads;
 }
 
 template <typename TSeq, typename TId, typename TSpec>
@@ -295,8 +295,8 @@ seqan::Pair<unsigned, unsigned> trimPairBatch(seqan::StringSet<TSeq>& seqSet1, s
     seqan::StringSet<TSeq> & seqSet2, seqan::StringSet<TId>& idSet2, unsigned const cutoff,
     TSpec const & spec, bool tagOpt)
 {
-	unsigned trimmedReads1 = _trimReads(seqSet1, idSet1, cutoff, spec, tagOpt);
-	unsigned trimmedReads2 = _trimReads(seqSet2, idSet2, cutoff, spec, tagOpt);
-	return seqan::Pair<unsigned, unsigned>(trimmedReads1, trimmedReads2);
+    unsigned trimmedReads1 = _trimReads(seqSet1, idSet1, cutoff, spec, tagOpt);
+    unsigned trimmedReads2 = _trimReads(seqSet2, idSet2, cutoff, spec, tagOpt);
+    return seqan::Pair<unsigned, unsigned>(trimmedReads1, trimmedReads2);
 }
 #endif  // #ifndef SANDBOX_GROUP3_APPS_SEQDPT_READTRIMMING_H_

@@ -52,7 +52,7 @@ namespace seqan {
 namespace detail 
 {
 
-	template <typename T> class empty_base {};
+    template <typename T> class empty_base {};
 
 } // namespace detail
 

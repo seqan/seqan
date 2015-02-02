@@ -989,7 +989,7 @@ _backtrack(Finder<Index<TText, TTextSpec>, Backtracking<TDistance, TBacktracking
 
 #ifdef SEQAN_DEBUG
         std::cout << "Stack Height:   " << length(pattern.state) << std::endl;
-        std::cout << "Suffix:         "	<< representative(finder.index_iterator) << std::endl;
+        std::cout << "Suffix:         "    << representative(finder.index_iterator) << std::endl;
         std::cout << "Prefix:         " << representative(pattern.index_iterator) << std::endl;
 #endif
 
@@ -1164,7 +1164,7 @@ _search(Finder<Index<TText, TTextSpec>, Backtracking<TDistance, TBacktrackingSpe
 #ifdef SEQAN_DEBUG
         std::cout << "Stack Height:   " << length(pattern.state) << std::endl;
         std::cout << "Exact Height:   " << pattern.exact << std::endl;
-        std::cout << "Suffix:         "	<< representative(finder.index_iterator) << std::endl;
+        std::cout << "Suffix:         "    << representative(finder.index_iterator) << std::endl;
         std::cout << "Prefix:         " << representative(pattern.index_iterator) << std::endl;
 #endif
 
@@ -1344,7 +1344,7 @@ find(Finder<Index<TText, TTextSpec>, Backtracking<TDistance, TBacktrackingSpec> 
         else
         {
             // Resume from last matching node and backtrack until next match
-//				if (_resume(finder, pattern) && _backtrack(finder, pattern, errors))
+//                if (_resume(finder, pattern) && _backtrack(finder, pattern, errors))
             if (_resume(finder, pattern, errors))
             {
                 // Set data iterator range to the interval containing matches
@@ -1353,10 +1353,10 @@ find(Finder<Index<TText, TTextSpec>, Backtracking<TDistance, TBacktrackingSpec> 
                 finder.range.i2 = hostIterator(finder) + finder.index_range.i2;
                 hostIterator(finder) = finder.range.i1;
 
-				hostIterator(pattern) = begin(indexSA(host(pattern)), Standard());
-				pattern.range.i1 = hostIterator(pattern) + pattern.index_range.i1;
-				pattern.range.i2 = hostIterator(pattern) + pattern.index_range.i2;
-				hostIterator(pattern) = pattern.range.i1;
+                hostIterator(pattern) = begin(indexSA(host(pattern)), Standard());
+                pattern.range.i1 = hostIterator(pattern) + pattern.index_range.i1;
+                pattern.range.i2 = hostIterator(pattern) + pattern.index_range.i2;
+                hostIterator(pattern) = pattern.range.i1;
 
                 // Set match length
                 _setFinderLength(finder, pattern.prefix_aligner.global_position);
@@ -1369,9 +1369,9 @@ find(Finder<Index<TText, TTextSpec>, Backtracking<TDistance, TBacktrackingSpec> 
                 finder.range.i1 = hostIterator(finder);
                 finder.range.i2 = hostIterator(finder);
 
-				hostIterator(pattern) = begin(indexSA(host(pattern)), Standard());
-				pattern.range.i1 = hostIterator(pattern);
-				pattern.range.i2 = hostIterator(pattern);
+                hostIterator(pattern) = begin(indexSA(host(pattern)), Standard());
+                pattern.range.i1 = hostIterator(pattern);
+                pattern.range.i2 = hostIterator(pattern);
             }
         }
 

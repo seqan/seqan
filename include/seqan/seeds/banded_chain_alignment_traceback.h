@@ -203,23 +203,23 @@ template <typename TScoreValue, typename TTraceValue>
 inline void
 _correctDPCellForAffineGaps(DPCell_<TScoreValue, LinearGaps> const &, TTraceValue /*lastTraceValue*/)
 {
-	//no-op
+    //no-op
 }
 
 template <typename TScoreValue, typename TTraceValue>
 inline void
 _correctDPCellForAffineGaps(DPCell_<TScoreValue, AffineGaps> & dpCell, TTraceValue lastTraceValue)
 {
-	typedef DPCell_<TScoreValue, AffineGaps> TDPCell;
-	if (lastTraceValue & TraceBitMap_::DIAGONAL)
-	{
-		dpCell._verticalScore = DPCellDefaultInfinity<TDPCell>::VALUE;
-		dpCell._horizontalScore = DPCellDefaultInfinity<TDPCell>::VALUE;
-	}
-	else if (lastTraceValue & TraceBitMap_::VERTICAL)
-		dpCell._horizontalScore = DPCellDefaultInfinity<TDPCell>::VALUE;
-	else
-		dpCell._verticalScore = DPCellDefaultInfinity<TDPCell>::VALUE;
+    typedef DPCell_<TScoreValue, AffineGaps> TDPCell;
+    if (lastTraceValue & TraceBitMap_::DIAGONAL)
+    {
+        dpCell._verticalScore = DPCellDefaultInfinity<TDPCell>::VALUE;
+        dpCell._horizontalScore = DPCellDefaultInfinity<TDPCell>::VALUE;
+    }
+    else if (lastTraceValue & TraceBitMap_::VERTICAL)
+        dpCell._horizontalScore = DPCellDefaultInfinity<TDPCell>::VALUE;
+    else
+        dpCell._verticalScore = DPCellDefaultInfinity<TDPCell>::VALUE;
 }
 
 // ----------------------------------------------------------------------------
@@ -227,7 +227,7 @@ _correctDPCellForAffineGaps(DPCell_<TScoreValue, AffineGaps> & dpCell, TTraceVal
 // ----------------------------------------------------------------------------
 
 template<typename TTarget, typename TDPTraceMatrixNavigator, typename TDPCell, typename TScoutSpec,
-		 typename TSequenceH, typename TSequenceV, typename TBandFlag, typename TFreeEndGaps, typename TDPMatrixLocation,
+         typename TSequenceH, typename TSequenceV, typename TBandFlag, typename TFreeEndGaps, typename TDPMatrixLocation,
          typename TGapCosts, typename TTracebackSpec>
 void _computeTraceback(TTarget & target,
                        TDPTraceMatrixNavigator & matrixNavigator,
@@ -241,27 +241,27 @@ void _computeTraceback(TTarget & target,
     typedef DPScout_<TDPCell, TScoutSpec> TDPScout_;
     typedef typename TDPScout_::TScoutState TScoutState_;
     typedef typename TScoutState_::TInitCell TInitCell;
-	typedef typename Container<TDPTraceMatrixNavigator>::Type TContainer;
-	typedef typename Size<TContainer>::Type TSize;
-	//typedef typename MakeSigned<TSize>::Type TSignedSize;
-	typedef typename Position<TContainer>::Type TPosition;
-	typedef typename MakeSigned<TPosition>::Type TSignedPosition;
+    typedef typename Container<TDPTraceMatrixNavigator>::Type TContainer;
+    typedef typename Size<TContainer>::Type TSize;
+    //typedef typename MakeSigned<TSize>::Type TSignedSize;
+    typedef typename Position<TContainer>::Type TPosition;
+    typedef typename MakeSigned<TPosition>::Type TSignedPosition;
     typedef typename Size<TSequenceH>::Type TSizeSeqH;
     typedef typename Size<TSequenceV>::Type TSizeSeqV;
-	typedef typename TraceBitMap_::TTraceValue TTraceValue;
+    typedef typename TraceBitMap_::TTraceValue TTraceValue;
 
-	if (IsSameType<TTracebackSpec, TracebackOff>::VALUE)
-		return;
+    if (IsSameType<TTracebackSpec, TracebackOff>::VALUE)
+        return;
 
-	TSizeSeqH seqHSize = length(seqH);
-	TSizeSeqV seqVSize = length(seqV);
+    TSizeSeqH seqHSize = length(seqH);
+    TSizeSeqV seqVSize = length(seqV);
 
     // Determine whether or not we place gaps to the left.
     typedef typename IsGapsLeft_<TTracebackSpec>::Type TIsGapsLeft; 
 
     // TODO(rmaerker): Define separate function for this.
     // Set to the correct position within the trace matrix.
-	_setToPosition(matrixNavigator, maxHostPosition);
+    _setToPosition(matrixNavigator, maxHostPosition);
 
     SEQAN_ASSERT_LEQ(coordinate(matrixNavigator, +DPMatrixDimension_::HORIZONTAL), seqHSize);
     SEQAN_ASSERT_LEQ(coordinate(matrixNavigator, +DPMatrixDimension_::VERTICAL), seqVSize);

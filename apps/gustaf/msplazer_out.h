@@ -537,7 +537,7 @@ inline bool _setVcfRecordDuplicationPos(TBreakpoint & bp, TPos & begin, TPos & e
 {
     if (bp.dupMiddlePos != maxValue<unsigned>())
     {
-	// Downstream duplication dup(middlePos, endPos, startPos)
+    // Downstream duplication dup(middlePos, endPos, startPos)
         if (bp.dupTargetPos == bp.startSeqPos)
         {
             begin = bp.dupMiddlePos;
@@ -545,7 +545,7 @@ inline bool _setVcfRecordDuplicationPos(TBreakpoint & bp, TPos & begin, TPos & e
             target = bp.startSeqPos;
             return true;
         }
-	// Upstream duplication dup(startPos, middlePos, endPos)
+    // Upstream duplication dup(startPos, middlePos, endPos)
         begin = bp.startSeqPos;
         end = bp.dupMiddlePos;
         target = bp.endSeqPos;
@@ -1027,7 +1027,7 @@ __int32 _getrID(StringSet<TId> & databaseIDs, TId dbID)
     for (unsigned i = 0; i < length(databaseIDs); ++i)
     {
         TId sID;
-	_getShortId(sID, databaseIDs[i]);
+    _getShortId(sID, databaseIDs[i]);
         if (sID == dbID)
             return static_cast<__int32>(i);
     }

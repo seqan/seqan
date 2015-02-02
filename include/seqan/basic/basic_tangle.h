@@ -130,7 +130,7 @@ _assignQualities(TDest &dst, TSource const &src, True)
     typedef typename Iterator<TDest>::Type TDestIter;
     typedef typename Iterator<TSource const>::Type TSourceIter;
 
-	if (length(dst) < length(src))
+    if (length(dst) < length(src))
         resize(dst, length(src));
 
     TDestIter itDst = begin(dst, Standard());

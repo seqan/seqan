@@ -41,24 +41,24 @@ namespace SEQAN_NAMESPACE_MAIN
 //namespace SEQAN_NAMESPACE_PIPELINING
 //{
 
-	struct Skew3 {};
+    struct Skew3 {};
 
 
     //////////////////////////////////////////////////////////////////////////////
     // external Skew3 algorithm
     //////////////////////////////////////////////////////////////////////////////
 
-	template <typename T>
-	struct SkewDC_<3, T>
+    template <typename T>
+    struct SkewDC_<3, T>
     {
-		static const unsigned VALUE[];
-	};
+        static const unsigned VALUE[];
+    };
 
-	template <typename T>
-	const unsigned SkewDC_<3, T>::VALUE[] = { 2,   1, 2 };
+    template <typename T>
+    const unsigned SkewDC_<3, T>::VALUE[] = { 2,   1, 2 };
 
 
-	// *** COMPARATORS & MAPS ***
+    // *** COMPARATORS & MAPS ***
 
     template <typename TValue, typename TResult = int>
     struct _skew3NComp :
@@ -66,7 +66,7 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         inline TResult operator() (const TValue &a, const TValue &b) const
         {
-			typedef typename Value<TValue, 1>::Type                 TSize;
+            typedef typename Value<TValue, 1>::Type                 TSize;
             typedef typename Value<TValue, 2>::Type                 TTriplet;
             typedef typename Value<TTriplet>::Type                  TTripletValue;
             typedef typename StoredTupleValue_<TTripletValue>::Type TStoredValue;
@@ -176,10 +176,10 @@ namespace SEQAN_NAMESPACE_MAIN
         // *** SPECIALIZATION ***
 
         // step 1
-		typedef Pipe< TInput, Sampler<3> >  TSamplerDC3;
+        typedef Pipe< TInput, Sampler<3> >  TSamplerDC3;
                                         typedef _skew3NComp<TypeOf_(TSamplerDC3)> ncomp_t;
         typedef Pool< TypeOf_(TSamplerDC3), SorterSpec< SorterConfigSize<ncomp_t, TSizeOf_(TSamplerDC3) > > > TSortTuples;
-		typedef Pipe< TSortTuples, Namer<ncomp_t> > TNamer;
+        typedef Pipe< TSortTuples, Namer<ncomp_t> > TNamer;
                                         typedef _skew3NMapSliced<TypeOf_(TNamer)> nmap_sliced_t;
                                         typedef _skew3NMapLinear<TypeOf_(TNamer)> nmap_linear_t;
         typedef Pool< TypeOf_(TNamer), MapperSpec< MapperConfigSize< nmap_sliced_t, TSizeOf_(TNamer) > > > TNames_Sliced;
@@ -202,7 +202,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         // step 3
                                         typedef _skew3NMapExtended<TypeOf_(typename TExtender::Out12)> nmap_extended_t;
-		typedef Pool< TypeOf_(typename TExtender::Out12), MapperSpec< MapperConfigSize< nmap_extended_t, TSizeOf_(typename TExtender::Out12) > > > TSorterS12;
+        typedef Pool< TypeOf_(typename TExtender::Out12), MapperSpec< MapperConfigSize< nmap_extended_t, TSizeOf_(typename TExtender::Out12) > > > TSorterS12;
         typedef Pipe< Bundle2< TSorterS0, TSorterS12 >, Merger3 > TMerger;
 
         TSorterS0   sortedS0;
@@ -210,15 +210,15 @@ namespace SEQAN_NAMESPACE_MAIN
         TMerger     in;
 
         Pipe() :
-			in(bundle2(sortedS0, sortedS12)) {}
+            in(bundle2(sortedS0, sortedS12)) {}
 
         Pipe(TInput& _textIn) :
-			in(bundle2(sortedS0, sortedS12))
-		{
-			process(_textIn);
-		}
+            in(bundle2(sortedS0, sortedS12))
+        {
+            process(_textIn);
+        }
 
-	    template < typename TInput_ >
+        template < typename TInput_ >
         bool process(TInput_ &textIn)
         {
 
@@ -262,7 +262,7 @@ namespace SEQAN_NAMESPACE_MAIN
                     std::cerr << "  make names linear" << std::endl;
                 #endif
                 names_linear << names_sliced;
-				clear(names_sliced);
+                clear(names_sliced);
                 SEQAN_PROMARK("Mapper (10) - ISA12 konstruieren");
 
                 // step 2
@@ -287,8 +287,8 @@ namespace SEQAN_NAMESPACE_MAIN
                 }
                 #endif
 
-				clear(filter);
-				unslicer_func_t             func(length(textIn));
+                clear(filter);
+                unslicer_func_t             func(length(textIn));
                 TUnslicer                   unslicer(recurse, func);
                 TRenamer                    renamer(unslicer);
 
@@ -297,14 +297,14 @@ namespace SEQAN_NAMESPACE_MAIN
                     std::cerr << "  rename names" << std::endl;
                 #endif
                 names_linear << renamer;
-				clear(renamer);
+                clear(renamer);
                 SEQAN_PROMARK("Mapper (10) - ISA12 konstruieren");
 
                 // step 2
                 #ifdef SEQAN_DEBUG_INDEX
                     std::cerr << "  prepare merge" << std::endl;
                 #endif
-				_skew3Extend(textIn, names_linear, sortedS0, sortedS12);
+                _skew3Extend(textIn, names_linear, sortedS0, sortedS12);
                 SEQAN_PROMARK("Mapper (12), Sorter (13) - SA12 und SA0 verschmelzen");
             }
 
@@ -334,25 +334,25 @@ namespace SEQAN_NAMESPACE_MAIN
     // not sure which interface is more intuitive, we support both
     // you can call "skew << pipe" or "skew_t skew(pipe); skew.process()"
     // for the first we would need no _in member
-	template < typename TInput, typename TObject >
+    template < typename TInput, typename TObject >
     inline bool operator<<(Pipe< TInput, Skew3 > &me, TObject &textIn)
     {
         return me.process(textIn);
     }
 
-	template <
-		typename TSA,
-		typename TValue,
-		typename TConfig >
-	inline void createSuffixArray(
-		TSA &SA,
-		String< TValue, External<TConfig> > &s,
-		Skew3 const &spec,
-		unsigned /*K*/,
+    template <
+        typename TSA,
+        typename TValue,
+        typename TConfig >
+    inline void createSuffixArray(
+        TSA &SA,
+        String< TValue, External<TConfig> > &s,
+        Skew3 const &spec,
+        unsigned /*K*/,
         unsigned /*maxdepth*/)
-	{
+    {
         createSuffixArrayExt(SA, s, spec);
-	}
+    }
 
 
     //////////////////////////////////////////////////////////////////////////////
@@ -360,7 +360,7 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////////////////////////////
-	// typedefs and helpers
+    // typedefs and helpers
 
     template <typename T, typename ST> inline
     bool _leqSkew3(T a1, ST a2,   T b1, ST b2)
@@ -387,22 +387,22 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TSA,
                typename TText >
     void createSuffixArray(
-		TSA &SA,
-		TText &s,
-		Skew3 const &,
-		unsigned K,
+        TSA &SA,
+        TText &s,
+        Skew3 const &,
+        unsigned K,
         unsigned maxdepth,
         unsigned depth)
     {
-		typedef typename Value<TSA>::Type TSize;
-		typedef typename Value<TText>::Type TValue;
+        typedef typename Value<TSA>::Type TSize;
+        typedef typename Value<TText>::Type TValue;
 
         #ifdef SEQAN_DEBUG_INDEX
             std::cerr << "--- CREATE SUFFIX ARRAY ---" << std::endl;
             std::cerr << "Skew3 [random access]" << std::endl;
         #endif
 
-		TSize n = length(s);
+        TSize n = length(s);
         if (n < 1) return;
 
         TSize n0=n/3, n1=(n+2)/3, n2=(n+1)/3, n12=n1+n2;
@@ -412,131 +412,131 @@ namespace SEQAN_NAMESPACE_MAIN
         SEQAN_PROSET(SEQAN_PROEXTRA1, K);
         SEQAN_PROMARK("Rekursionsabstieg");
         #ifdef SEQAN_DEBUG_INDEX
-			std::cerr << "enter level " << depth << " (" << n << ")" << std::endl;
+            std::cerr << "enter level " << depth << " (" << n << ")" << std::endl;
         #endif
 
         String<TSize, Alloc<> > s12;
         resize(s12, n12, Exact());
-		// we use SA[n0..n-1] as a temporary buffer instead of allocating one;
-		typename Suffix<TSA>::Type SA12 = suffix(SA, n0);
+        // we use SA[n0..n-1] as a temporary buffer instead of allocating one;
+        typename Suffix<TSA>::Type SA12 = suffix(SA, n0);
 
 
-		// generate positions of mod 1 and mod 2 suffixes
-		{
-			//for (TSize i=0, j=0;  i < n;  i++) if ((n-i)%3) s12[j++] = i;
-			s12[0] = o1;
-			for (TSize i=o2, j=n1-n2;  i < n;  i++)
+        // generate positions of mod 1 and mod 2 suffixes
+        {
+            //for (TSize i=0, j=0;  i < n;  i++) if ((n-i)%3) s12[j++] = i;
+            s12[0] = o1;
+            for (TSize i=o2, j=n1-n2;  i < n;  i++)
             {
-				s12[j++] = i++;
-				s12[j++] = i++;
-			}
-		}
+                s12[j++] = i++;
+                s12[j++] = i++;
+            }
+        }
 
 
-		// lsb radix sort the mod 1 and mod 2 triples
-		{
-			String<TSize, Alloc<> > cnt;
-			resize(cnt, K, Exact());	// counter array
+        // lsb radix sort the mod 1 and mod 2 triples
+        {
+            String<TSize, Alloc<> > cnt;
+            resize(cnt, K, Exact());    // counter array
 
-			radixPass(SA12, s12, s, cnt, K, 2);
-			radixPass(s12, SA12, s, cnt, K, 1);
-			radixPass(SA12, s12, s, cnt, K);
-		}
+            radixPass(SA12, s12, s, cnt, K, 2);
+            radixPass(s12, SA12, s, cnt, K, 1);
+            radixPass(SA12, s12, s, cnt, K);
+        }
         SEQAN_PROMARK("Triplets sortiert");
 
         // find lexicographic names of triples
-		TSize name = 0;
+        TSize name = 0;
 
         bool differ = true;
-		TValue c0 = TValue(), c1 = TValue(), c2 = TValue();
-		for (TSize i = 0, clip = _max(n, (TSize)2) - 2, l;  i < n12;  i++)
+        TValue c0 = TValue(), c1 = TValue(), c2 = TValue();
+        for (TSize i = 0, clip = _max(n, (TSize)2) - 2, l;  i < n12;  i++)
         {
-			if ((l = SA12[i]) < clip)
+            if ((l = SA12[i]) < clip)
             {
-				if (differ || s[l] != c0 || s[l+1] != c1 || s[l+2] != c2)
+                if (differ || s[l] != c0 || s[l+1] != c1 || s[l+2] != c2)
                 {
-					name++;  c0 = s[l];  c1 = s[l+1];  c2 = s[l+2];
-					differ = false;
-				}
-			}
+                    name++;  c0 = s[l];  c1 = s[l+1];  c2 = s[l+2];
+                    differ = false;
+                }
+            }
             else
             {
-				name++;
-				differ = true;  // the last 2 triples always differ from the rest
-			}
-			s12[(n-l) % 3 == 2 ? l/3 : l/3 + n2] = name - 1;    // left or right half
-		}
+                name++;
+                differ = true;  // the last 2 triples always differ from the rest
+            }
+            s12[(n-l) % 3 == 2 ? l/3 : l/3 + n2] = name - 1;    // left or right half
+        }
         SEQAN_PROMARK("s12 konstruiert");
 
-		// recurse if names are not yet unique
-		if (name < n12)
+        // recurse if names are not yet unique
+        if (name < n12)
         {
             if (depth != maxdepth)
             {
-			    createSuffixArray(SA12, s12, Skew3(), name, maxdepth, depth + 1);
+                createSuffixArray(SA12, s12, Skew3(), name, maxdepth, depth + 1);
                 #ifdef SEQAN_TEST_SKEW3
                     SEQAN_ASSERT(isSuffixArray(SA12, s12));
                 #endif
             }
-			// store unique names in s12 using the suffix array
-			for (TSize i = 0;  i < n12;  i++) s12[SA12[i]] = i;
-		}
+            // store unique names in s12 using the suffix array
+            for (TSize i = 0;  i < n12;  i++) s12[SA12[i]] = i;
+        }
         else // generate the suffix array of s12 directly
-			for (TSize i = 0;  i < n12;  i++) SA12[s12[i]] = i;
+            for (TSize i = 0;  i < n12;  i++) SA12[s12[i]] = i;
 
 
 
-		// use SA[0...n0-1] as a temporary buffer instead of s0
-		// and allocate SA0
+        // use SA[0...n0-1] as a temporary buffer instead of s0
+        // and allocate SA0
 
-		{
-			String<TSize, Alloc<> > SA0;
-			resize(SA0, n0, Exact());
-			typename Infix<TSA>::Type s0 = infix(SA, 0, n0);
+        {
+            String<TSize, Alloc<> > SA0;
+            resize(SA0, n0, Exact());
+            typename Infix<TSA>::Type s0 = infix(SA, 0, n0);
 
-			// stably sort the mod 0 suffixes from SA12 by their first character
-			{
-				String<TSize, Alloc<> > cnt;
-				resize(cnt, K, Exact());	// counter array
+            // stably sort the mod 0 suffixes from SA12 by their first character
+            {
+                String<TSize, Alloc<> > cnt;
+                resize(cnt, K, Exact());    // counter array
 
-				for (TSize i=0, j=0, l;  i < n12;  i++)
-					if ((l = SA12[i]) < n2)
-						if ((l = o2 + (3 * l) ) > 0)
-							s0[j++] = l - 1;
-				radixPass(SA0, s0, s, cnt, K);
-			}
+                for (TSize i=0, j=0, l;  i < n12;  i++)
+                    if ((l = SA12[i]) < n2)
+                        if ((l = o2 + (3 * l) ) > 0)
+                            s0[j++] = l - 1;
+                radixPass(SA0, s0, s, cnt, K);
+            }
             SEQAN_PROMARK("SA0 konstruiert");
 
-			// merge sorted SA0 suffixes and sorted SA12 suffixes
-			#define SEQAN_GET_ISKEW3(ii) (ii < n2 ? ii * 3 + o2 : (ii - n2) * 3 + o1)
-			if (n0)
-			{
-				for (TSize p=0,  t=0,  k=0,  clip = n - 1;  k < n;  k++)
+            // merge sorted SA0 suffixes and sorted SA12 suffixes
+            #define SEQAN_GET_ISKEW3(ii) (ii < n2 ? ii * 3 + o2 : (ii - n2) * 3 + o1)
+            if (n0)
+            {
+                for (TSize p=0,  t=0,  k=0,  clip = n - 1;  k < n;  k++)
                 {
-					TSize ii = SA12[t];					// pos of current interleave offset 12 suffix
-					TSize i  = SEQAN_GET_ISKEW3(ii);	// pos of current offset 12 suffix
-					TSize j  = SA0[p];					// pos of current offset 0  suffix
-					if (ii < n2 ?
-						_leqSkew3<TValue, TSize> (s[i],       s12[ii + n1],     s[j],        s12[j/3 + n2  - n0]) :
-					(i < clip) ?     // clip if 12 suffix is the last
-						_leqSkew3<TValue, TSize> (s[i],s[i+1],s12[ii + 1 - n1], s[j],s[j+1], s12[j/3 + n12 - n0]) :
-						s[i] <= s[j])
+                    TSize ii = SA12[t];                    // pos of current interleave offset 12 suffix
+                    TSize i  = SEQAN_GET_ISKEW3(ii);    // pos of current offset 12 suffix
+                    TSize j  = SA0[p];                    // pos of current offset 0  suffix
+                    if (ii < n2 ?
+                        _leqSkew3<TValue, TSize> (s[i],       s12[ii + n1],     s[j],        s12[j/3 + n2  - n0]) :
+                    (i < clip) ?     // clip if 12 suffix is the last
+                        _leqSkew3<TValue, TSize> (s[i],s[i+1],s12[ii + 1 - n1], s[j],s[j+1], s12[j/3 + n12 - n0]) :
+                        s[i] <= s[j])
 
-					{ // suffix from SA12 is smaller
-						SA[k] = i;
-						if (++t == n12) // done --- only SA0 suffixes left
-							for (;  p < n0;  p++) SA[++k] = SA0[p];
-					}
+                    { // suffix from SA12 is smaller
+                        SA[k] = i;
+                        if (++t == n12) // done --- only SA0 suffixes left
+                            for (;  p < n0;  p++) SA[++k] = SA0[p];
+                    }
                     else
                     {
-						SA[k] = j;
-						if (++p == n0)  // done --- only SA12 suffixes left
-							for (;  t < n12;  t++) { ii = SA12[t]; SA[++k] = SEQAN_GET_ISKEW3(ii); }
-					}
-				}
-			} else
-				for (TSize t = 0;  t < n12;  t++) { TSize ii = SA12[t]; SA[t] = SEQAN_GET_ISKEW3(ii); }
-		}
+                        SA[k] = j;
+                        if (++p == n0)  // done --- only SA12 suffixes left
+                            for (;  t < n12;  t++) { ii = SA12[t]; SA[++k] = SEQAN_GET_ISKEW3(ii); }
+                    }
+                }
+            } else
+                for (TSize t = 0;  t < n12;  t++) { TSize ii = SA12[t]; SA[t] = SEQAN_GET_ISKEW3(ii); }
+        }
         SEQAN_PROMARK("SA12 und SA0 verschmolzen");
 
         #ifdef SEQAN_DEBUG_INDEX
@@ -549,23 +549,23 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TSA,
                typename TText >
     inline void createSuffixArray(
-		TSA &SA,
-		TText &s,
-		Skew3 const &alg,
-		unsigned K,
+        TSA &SA,
+        TText &s,
+        Skew3 const &alg,
+        unsigned K,
         unsigned maxdepth)
-	{
-		createSuffixArray(SA, s, alg, K, maxdepth, 1);
-	}
+    {
+        createSuffixArray(SA, s, alg, K, maxdepth, 1);
+    }
 
     // creates suffix array sorted by the first maxLCP chars of suffixes
     template < typename TSA,
                typename TText,
                typename TSize >
     inline void createSuffixArrayPart(
-		TSA &SA,
-		TText &s,
-		Skew3 const &_dummy,
+        TSA &SA,
+        TText &s,
+        Skew3 const &_dummy,
         TSize maxLCP,
         unsigned K)
     {
@@ -579,13 +579,13 @@ namespace SEQAN_NAMESPACE_MAIN
                typename TText,
                typename TSize >
     inline void createSuffixArrayPart(
-		TSA &SA,
-		TText &s,
-		Skew3 const &_dummy,
+        TSA &SA,
+        TText &s,
+        Skew3 const &_dummy,
         TSize maxLCP)
     {
-    	SEQAN_CHECKPOINT;
-    	createSuffixArrayPart(SA, s, _dummy, maxLCP, ValueSize< typename Value<TText>::Type >::VALUE);
+        SEQAN_CHECKPOINT;
+        createSuffixArrayPart(SA, s, _dummy, maxLCP, ValueSize< typename Value<TText>::Type >::VALUE);
     }
 
 //}

@@ -38,27 +38,27 @@
 
 namespace seqan {
 
-	
-///////////////////////////////////////////////////////////////////////////////////////////////////////	
+    
+///////////////////////////////////////////////////////////////////////////////////////////////////////    
 //Functions for Fragments
 //project onto other sequence for Graph<Alignment>
 template<typename TFragSize, typename TFragSpec,typename TValue,typename TId1, typename TPos1, typename TId2, typename TPos2, typename TMap>
 void
 _getOtherSequenceAndProject(Fragment<TFragSize,TFragSpec> & segment,
-						TValue seg_num,
-						   TMap &,
-						   TId1 seq_i_id,
-						   TPos1 pos_i,
-						   TId2 & seq_j_id,
-						   TPos2 & pos_j)
+                        TValue seg_num,
+                           TMap &,
+                           TId1 seq_i_id,
+                           TPos1 pos_i,
+                           TId2 & seq_j_id,
+                           TPos2 & pos_j)
 {
 SEQAN_CHECKPOINT
-	getProjectedPosition(segment,seg_num, seq_i_id, pos_i,seq_j_id,pos_j);
-	
-	//if(seq_i_id == sequenceId(segment,0))
-	//	seq_j_id = sequenceId(segment,1);
-	//else
-	//	seq_j_id = sequenceId(segment,0);
+    getProjectedPosition(segment,seg_num, seq_i_id, pos_i,seq_j_id,pos_j);
+    
+    //if(seq_i_id == sequenceId(segment,0))
+    //    seq_j_id = sequenceId(segment,1);
+    //else
+    //    seq_j_id = sequenceId(segment,0);
 }
 
 
@@ -68,19 +68,19 @@ SEQAN_CHECKPOINT
 template<typename TFragSize, typename TFragSpec, typename TId, typename TPosition, typename TId2>
 void
 _getSeqBeginAndEnd(Fragment<TFragSize,TFragSpec> & segment,
-				  std::map<const void * ,int> &, 
-				  TId & seq_i_id, 
-				  TPosition & begin_i, 
-				  TPosition & end_i,
-				  TId2 seq)
+                  std::map<const void * ,int> &, 
+                  TId & seq_i_id, 
+                  TPosition & begin_i, 
+                  TPosition & end_i,
+                  TId2 seq)
 {
 SEQAN_CHECKPOINT
-	seq_i_id = sequenceId(segment,seq);
-	if(seq==0)
-		begin_i = segment.begin1; // fragmentBegin(segment,seq_i_id);
-	else
-		begin_i = segment.begin2; // fragmentBegin(segment,seq_i_id);
-	end_i = begin_i + segment.len; //fragmentLength(segment,seq_i_id);
+    seq_i_id = sequenceId(segment,seq);
+    if(seq==0)
+        begin_i = segment.begin1; // fragmentBegin(segment,seq_i_id);
+    else
+        begin_i = segment.begin2; // fragmentBegin(segment,seq_i_id);
+    end_i = begin_i + segment.len; //fragmentLength(segment,seq_i_id);
 }
 
 
@@ -93,28 +93,28 @@ SEQAN_CHECKPOINT
 //template<typename TScore,typename TStringSet,typename TFragId,typename TFragPos,typename TFragSize, typename TFragSpec,typename TValue>
 //typename Value<TScore>::Type
 //_getRefinedMatchScore(TScore & score_type, 
-//		 TStringSet & seqs,
-//		 Fragment<TFragId,TFragPos,TFragSize,TFragSpec> & segment, 
-//		 TValue pos_i, 
-//		 TValue pos_j,
-//		 TValue len1, 
-//		 TValue len2)
+//         TStringSet & seqs,
+//         Fragment<TFragId,TFragPos,TFragSize,TFragSpec> & segment, 
+//         TValue pos_i, 
+//         TValue pos_j,
+//         TValue len1, 
+//         TValue len2)
 //{
 //SEQAN_CHECKPOINT
-//	typename Infix<typename Value<TStringSet>::Type>::Type label0 = label(segment,seqs,sequenceId(segment,0));
-//	typename Infix<typename Value<TStringSet>::Type>::Type label1 = label(segment,seqs,sequenceId(segment,1));
-//	int i = 0;
-//	typename Value<TScore>::Type ret_score = 0;
-//	TValue len = (len1 < len2) ? len1 : len2;
-//	while(i < len)
-//	{
-//		ret_score += score(score_type,label0[i],label1[i]);
-//		++i;
-//	}
-//	len = (len1 > len2) ? len1 : len2;
-//	ret_score += (len - i) * scoreGapExtend(score_type);
-//	return ret_score;
-//}				
+//    typename Infix<typename Value<TStringSet>::Type>::Type label0 = label(segment,seqs,sequenceId(segment,0));
+//    typename Infix<typename Value<TStringSet>::Type>::Type label1 = label(segment,seqs,sequenceId(segment,1));
+//    int i = 0;
+//    typename Value<TScore>::Type ret_score = 0;
+//    TValue len = (len1 < len2) ? len1 : len2;
+//    while(i < len)
+//    {
+//        ret_score += score(score_type,label0[i],label1[i]);
+//        ++i;
+//    }
+//    len = (len1 > len2) ? len1 : len2;
+//    ret_score += (len - i) * scoreGapExtend(score_type);
+//    return ret_score;
+//}                
 //
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -127,31 +127,31 @@ SEQAN_CHECKPOINT
 //template<typename TScoreValue,typename TStringSet,typename TFragId,typename TFragPos,typename TFragSize, typename TFragSpec>
 //TScoreValue
 //_getRefinedMatchScore(Score<TScoreValue, Simple> & score_type,
-//		 TStringSet & seqs, 
-//		 Fragment<TFragId,TFragPos,TFragSize,TFragSpec> & segment, 
-//		 TFragPos pos_i, 
-//		 TFragPos pos_j, 
-//		 TFragSize len1, 
-//		 TFragSize len2)
+//         TStringSet & seqs, 
+//         Fragment<TFragId,TFragPos,TFragSize,TFragSpec> & segment, 
+//         TFragPos pos_i, 
+//         TFragPos pos_j, 
+//         TFragSize len1, 
+//         TFragSize len2)
 //{
 //SEQAN_CHECKPOINT
-//	typename Infix<typename Value<TStringSet>::Type>::Type label0 = label(segment,seqs,sequenceId(segment,0));
-//	typename Infix<typename Value<TStringSet>::Type>::Type label1 = label(segment,seqs,sequenceId(segment,1));
-//	TScoreValue ret_score = 0;
-//	TFragSize len;
-//	if (len1 < len2) len = len1;
-//	else len = len2;
-//	if(len1 <= len2)
-//	{
-//		ret_score += len1 * scoreMatch(score_type);
-//		ret_score += (len2 - len1) * scoreGapExtend(score_type);
-//	}
-//	else{
-//		ret_score += len2 * scoreMatch(score_type);
-//		ret_score += (len1 - len2) * scoreGapExtend(score_type);
-//	}
-//	return ret_score;
-//}				
+//    typename Infix<typename Value<TStringSet>::Type>::Type label0 = label(segment,seqs,sequenceId(segment,0));
+//    typename Infix<typename Value<TStringSet>::Type>::Type label1 = label(segment,seqs,sequenceId(segment,1));
+//    TScoreValue ret_score = 0;
+//    TFragSize len;
+//    if (len1 < len2) len = len1;
+//    else len = len2;
+//    if(len1 <= len2)
+//    {
+//        ret_score += len1 * scoreMatch(score_type);
+//        ret_score += (len2 - len1) * scoreGapExtend(score_type);
+//    }
+//    else{
+//        ret_score += len2 * scoreMatch(score_type);
+//        ret_score += (len1 - len2) * scoreGapExtend(score_type);
+//    }
+//    return ret_score;
+//}                
 
 
 //get score for alignment of length len starting at pos_i on one sequence (first sequence if i_am_first==true)
@@ -159,30 +159,30 @@ SEQAN_CHECKPOINT
 template<typename TScoreValue,typename TScoreSpec,typename TStringSet,typename TFragment,typename TFragPos,typename TFragSize>
 TScoreValue
 _getRefinedMatchScore(Score<TScoreValue,TScoreSpec> & score_type,
-		 TStringSet & seqs,
-		 TFragment& segment,
-		 TFragPos pos_i,
-		 TFragPos pos_j,
-		 TFragSize len,
-		 TFragSize)
+         TStringSet & seqs,
+         TFragment& segment,
+         TFragPos pos_i,
+         TFragPos pos_j,
+         TFragSize len,
+         TFragSize)
 {
 SEQAN_CHECKPOINT
-	typedef typename Infix<typename Value<TStringSet>::Type>::Type TSegmentLabel;
-	TSegmentLabel label0 = label(segment,seqs, sequenceId(segment, 0));
-	TSegmentLabel label1 = label(segment,seqs, sequenceId(segment, 1));
-	typename Iterator<TSegmentLabel, Rooted>::Type label_it0 = begin(label0) + (pos_i - fragmentBegin(segment,sequenceId(segment,0)));
-	typename Iterator<TSegmentLabel, Rooted>::Type label_it1 = begin(label1) + (pos_j - fragmentBegin(segment,sequenceId(segment,1)));
-	int i = 0;
-	TScoreValue ret_score = 0;
-	while(i < (int) len)
-	{
-		ret_score += score(score_type,*label_it0,*label_it1);
-		++label_it0;
-		++label_it1;
-		++i;
-	}
-	return ret_score;
-}				
+    typedef typename Infix<typename Value<TStringSet>::Type>::Type TSegmentLabel;
+    TSegmentLabel label0 = label(segment,seqs, sequenceId(segment, 0));
+    TSegmentLabel label1 = label(segment,seqs, sequenceId(segment, 1));
+    typename Iterator<TSegmentLabel, Rooted>::Type label_it0 = begin(label0) + (pos_i - fragmentBegin(segment,sequenceId(segment,0)));
+    typename Iterator<TSegmentLabel, Rooted>::Type label_it1 = begin(label1) + (pos_j - fragmentBegin(segment,sequenceId(segment,1)));
+    int i = 0;
+    TScoreValue ret_score = 0;
+    while(i < (int) len)
+    {
+        ret_score += score(score_type,*label_it0,*label_it1);
+        ++label_it0;
+        ++label_it1;
+        ++i;
+    }
+    return ret_score;
+}                
 
 
 //get score for alignment of length len starting at pos_i on one sequence (first sequence if i_am_first==true)
@@ -190,16 +190,16 @@ SEQAN_CHECKPOINT
 template<typename TScoreValue,typename TStringSet,typename TFragPos,typename TFragSize, typename TSpec>
 TScoreValue
 _getRefinedMatchScore(Score<TScoreValue, Simple> & score_type,
-		 TStringSet &,
-		 Fragment<TFragSize,ExactFragment<TSpec> > &,
-		 TFragPos,
-		 TFragPos,
-		 TFragSize len,
-		 TFragSize)
+         TStringSet &,
+         Fragment<TFragSize,ExactFragment<TSpec> > &,
+         TFragPos,
+         TFragPos,
+         TFragSize len,
+         TFragSize)
 {
 SEQAN_CHECKPOINT
-	return len*scoreMatch(score_type);
-}				
+    return len*scoreMatch(score_type);
+}                
 
 
 }  // namespace

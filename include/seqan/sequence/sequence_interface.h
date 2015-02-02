@@ -1461,7 +1461,7 @@ inline void eraseBack(T & me)
 {
     SEQAN_CHECKPOINT;
     SEQAN_ASSERT_GT_MSG(length(me), 0u, "String must have more than 0 characters in eraseBack()!");
-	resize(me, length(me) - 1);
+    resize(me, length(me) - 1);
 }
 
 // --------------------------------------------------------------------------

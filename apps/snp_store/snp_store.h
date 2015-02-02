@@ -49,8 +49,8 @@ template<>
 struct FragmentStoreConfig<SnpStoreSpec_> :
     public FragmentStoreConfig<>
 {
-    typedef Owner<>	TReadSeqStoreSpec;
-    typedef Owner<>	TAlignedReadTagStoreSpec;
+    typedef Owner<>    TReadSeqStoreSpec;
+    typedef Owner<>    TAlignedReadTagStoreSpec;
     typedef Owner<> TReadNameStoreSpec;
 };
 
@@ -58,8 +58,8 @@ template<>
 struct FragmentStoreConfig<SnpStoreGroupSpec_> :
     public FragmentStoreConfig<>
 {
-    typedef Dependent<>	TReadSeqStoreSpec;
-    typedef Owner<>		TAlignedReadTagStoreSpec;
+    typedef Dependent<>    TReadSeqStoreSpec;
+    typedef Owner<>        TAlignedReadTagStoreSpec;
     typedef Dependent<> TReadNameStoreSpec;
 };
 
@@ -2599,11 +2599,11 @@ _doSnpCall(TCounts & countF,
         if(extraV)
         {
             std::cout << "refAllele = " << refAllele << std::endl;
-        	std::cout << "best = " << best << " with " << countF[best]+countR[best] << std::endl;
-        	std::cout << "secondbest = " << secondBest << " with " << countF[secondBest]+countR[secondBest] << std::endl;
-        	std::cout << "pHet = " << pHet << std::endl;
-        	std::cout << "pHomo1 = " << pHomo1 << std::endl;
-        	std::cout << "pHomo2 = " << pHomo2 << std::endl;
+            std::cout << "best = " << best << " with " << countF[best]+countR[best] << std::endl;
+            std::cout << "secondbest = " << secondBest << " with " << countF[secondBest]+countR[secondBest] << std::endl;
+            std::cout << "pHet = " << pHet << std::endl;
+            std::cout << "pHomo1 = " << pHomo1 << std::endl;
+            std::cout << "pHomo2 = " << pHomo2 << std::endl;
         }
 #endif
 

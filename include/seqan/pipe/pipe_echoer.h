@@ -42,7 +42,7 @@ namespace SEQAN_NAMESPACE_MAIN
 //{
 
     //////////////////////////////////////////////////////////////////////////////
-	// some metaprogramming to unrool fixed-size loops
+    // some metaprogramming to unrool fixed-size loops
     struct EchoerFillWorker_ {
         template <typename Arg>
         static inline void body(Arg &arg, unsigned I) {
@@ -53,7 +53,7 @@ namespace SEQAN_NAMESPACE_MAIN
     struct EchoerClearWorker_ {
         template <typename Arg>
         static inline void body(Arg &arg, unsigned I) {
-			arg.i2[I] = typename Value< typename Value<Arg, 2>::Type >::Type ();
+            arg.i2[I] = typename Value< typename Value<Arg, 2>::Type >::Type ();
         }
     };
     
@@ -70,8 +70,8 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template < typename TInput, unsigned echoRepeats, bool omitFirst >
     struct Value< Pipe< TInput, Echoer< echoRepeats, omitFirst > > > {
-        typedef Tuple<typename Value<TInput>::Type, echoRepeats>	EchoType;
-        typedef Pair<typename Size<TInput>::Type, EchoType>			Type;
+        typedef Tuple<typename Value<TInput>::Type, echoRepeats>    EchoType;
+        typedef Pair<typename Size<TInput>::Type, EchoType>            Type;
     };
 
 /*!
@@ -104,8 +104,8 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         typedef typename Value<Pipe>::Type TValue;
 
-        TInput	&in;
-        TValue	tmp;
+        TInput    &in;
+        TValue    tmp;
 
         Pipe(TInput& _in):
             in(_in),
@@ -116,10 +116,10 @@ namespace SEQAN_NAMESPACE_MAIN
         }
 
         inline Pipe& operator++() {
-			++in;
+            ++in;
             if (eof(in)) return *this;
             LoopReverse<EchoerShiftWorker_, echoRepeats - 1>::run(this->tmp);
-			++tmp.i1;
+            ++tmp.i1;
             tmp.i2[0] = *in;
             return *this;
         }
@@ -129,13 +129,13 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
     // global pipe functions
     template < typename TInput, unsigned echoRepeats, bool omitFirst >
-	inline bool control(Pipe< TInput, Echoer< echoRepeats, omitFirst > > &me, ControlBeginRead const &command) {
+    inline bool control(Pipe< TInput, Echoer< echoRepeats, omitFirst > > &me, ControlBeginRead const &command) {
         if (!control(me.in, command)) return false;
         me.tmp.i1 = 0;
         Loop<EchoerClearWorker_, echoRepeats - 1>::run(me.tmp);
         if (!eof(me.in)) me.tmp.i2[0] = *me.in;
-		return true;
-	}
+        return true;
+    }
     
     template < typename TInput, unsigned echoRepeats >
     inline bool control(Pipe< TInput, Echoer< echoRepeats, true > > &me, ControlBeginRead const &command) {
@@ -143,7 +143,7 @@ namespace SEQAN_NAMESPACE_MAIN
         me.tmp.i1 = 0;
         LoopReverse<EchoerFillWorker_, echoRepeats - 1>::run(me);
         if (!eof(me.in)) me.tmp.i2[0] = *me.in;
-		return true;
+        return true;
     }
 
     template < typename TInput, unsigned echoRepeats >

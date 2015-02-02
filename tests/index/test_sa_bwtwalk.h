@@ -45,30 +45,30 @@ namespace SEQAN_NAMESPACE_MAIN
 
 template < typename TSA, typename TText>
 void print_sa(TSA &sa, TText &s) {
-	typedef typename Iterator<TSA>::Type TIter;
-	int i = 0;
-	for (TIter it = begin(sa); it!=end(sa); ++it, ++i) {
-// 		std::cout << i << " " << *it << " " << suffix(s,*it) << std::endl;
-		std::cout << i << " " << *it << " " << infix(s,*it, min(length(s),*it+100)) << std::endl;
-	}
-	std::cout << std::endl;
+    typedef typename Iterator<TSA>::Type TIter;
+    int i = 0;
+    for (TIter it = begin(sa); it!=end(sa); ++it, ++i) {
+//         std::cout << i << " " << *it << " " << suffix(s,*it) << std::endl;
+        std::cout << i << " " << *it << " " << infix(s,*it, min(length(s),*it+100)) << std::endl;
+    }
+    std::cout << std::endl;
 }
 
 template < typename TSA1, typename TSA2 >
 bool compare_sa(TSA1 &sa1, TSA2 &sa2) {
-	if (length(sa1) != length(sa2)) return false;
-	typedef typename Iterator<TSA1>::Type TIter1;
-	typedef typename Iterator<TSA2>::Type TIter2;
-	TIter1 it1 = begin(sa1);
-	TIter2 it2 = begin(sa2);
-	int i = 0;
-	for (; it1!=end(sa1); ++it1, ++it2, ++i) {
-		if (*it1!=*it2) {
-			std::cout << "Mismatch at position " << i << std::endl;
-			return false;
-		}
-	}
-	return true;
+    if (length(sa1) != length(sa2)) return false;
+    typedef typename Iterator<TSA1>::Type TIter1;
+    typedef typename Iterator<TSA2>::Type TIter2;
+    TIter1 it1 = begin(sa1);
+    TIter2 it2 = begin(sa2);
+    int i = 0;
+    for (; it1!=end(sa1); ++it1, ++it2, ++i) {
+        if (*it1!=*it2) {
+            std::cout << "Mismatch at position " << i << std::endl;
+            return false;
+        }
+    }
+    return true;
 }
 
 //template < typename TText, typename TTag, typename TValue, typename TAllowsFastRandomAccess >
@@ -80,12 +80,12 @@ bool compare_sa(TSA1 &sa1, TSA2 &sa2) {
 template < typename TText, typename TTag, typename TValue>
 bool check_sa_algorithm(TText& text, const False&)
 {
-	String<TValue> sa;
-	resize(sa, length(text));
-//	std::cout << "check_sa_algorithm<" << typeid(TTag).name() << "," << typeid(TValue).name() << ",False> ... " << std::flush;
-	createSuffixArray(sa, text, TTag());
-//	std::cout << "done" << std::endl;
-	return isSuffixArray(sa, text);
+    String<TValue> sa;
+    resize(sa, length(text));
+//    std::cout << "check_sa_algorithm<" << typeid(TTag).name() << "," << typeid(TValue).name() << ",False> ... " << std::flush;
+    createSuffixArray(sa, text, TTag());
+//    std::cout << "done" << std::endl;
+    return isSuffixArray(sa, text);
 }
 
 // a suffix array of 'text' is computed using the algorithm indicated by 'tag'
@@ -94,13 +94,13 @@ bool check_sa_algorithm(TText& text, const False&)
 template < typename TText, typename TTag, typename TValue>
 bool check_sa_algorithm(TText& text, const True&)
 {
-	String<TValue, External<> > sa;
-	resize(sa, length(text));
-//	std::cout << "check_sa_algorithm<" << typeid(TTag).name() << "," << typeid(TValue).name() << ",True> ... " << std::flush;
-	createSuffixArray(sa, text, TTag());
-//	std::cout << "done" << std::endl;
-	bool ok = isSuffixArray(sa, text);
-	return ok;
+    String<TValue, External<> > sa;
+    resize(sa, length(text));
+//    std::cout << "check_sa_algorithm<" << typeid(TTag).name() << "," << typeid(TValue).name() << ",True> ... " << std::flush;
+    createSuffixArray(sa, text, TTag());
+//    std::cout << "done" << std::endl;
+    bool ok = isSuffixArray(sa, text);
+    return ok;
 }
 
 #define MYASSERT(tag, type, use64) if (!check_sa_algorithm<CharString, BwtWalk<tag>, type>(text, use64())) { std::cerr << "Assertion failed in line " << __LINE__ << ": " << #tag << " " << #type << " " << #use64 << std::endl; exit(1); }
@@ -109,29 +109,29 @@ SEQAN_DEFINE_TEST(testBWTWalk)
 {
 //#if defined(__GNUC__)
 //#  if defined(__OPTIMIZE__)
-//	std::cout << "Optimized build: Yes\n";
+//    std::cout << "Optimized build: Yes\n";
 //#  else
-//	std::cout << "Optimized build: No\n";
+//    std::cout << "Optimized build: No\n";
 //#  endif
 //#endif
 
     std::string path = (std::string)SEQAN_PATH_TO_ROOT() + "/tests/index/m_tuberculosis_h37rv.fa";
     
-	SeqFileIn inputFile(path.c_str());
-	CharString text, id;
-	readRecord(id, text, inputFile);
-	resize(text, 10000);
-//	std::cout << "textsize: " << length(text) << std::endl;
+    SeqFileIn inputFile(path.c_str());
+    CharString text, id;
+    readRecord(id, text, inputFile);
+    resize(text, 10000);
+//    std::cout << "textsize: " << length(text) << std::endl;
 
-	MYASSERT(BwtWalkFast, unsigned, False);
-	MYASSERT(BwtWalkFast, unsigned, True);
-	MYASSERT(BwtWalkFast, __uint64, False);
-	MYASSERT(BwtWalkFast, __uint64, True);
+    MYASSERT(BwtWalkFast, unsigned, False);
+    MYASSERT(BwtWalkFast, unsigned, True);
+    MYASSERT(BwtWalkFast, __uint64, False);
+    MYASSERT(BwtWalkFast, __uint64, True);
 
-	MYASSERT(BwtWalkInPlace, unsigned, False);
-	MYASSERT(BwtWalkInPlace, unsigned, True);
-	MYASSERT(BwtWalkInPlace, __uint64, False);
-	MYASSERT(BwtWalkInPlace, __uint64, True);
+    MYASSERT(BwtWalkInPlace, unsigned, False);
+    MYASSERT(BwtWalkInPlace, unsigned, True);
+    MYASSERT(BwtWalkInPlace, __uint64, False);
+    MYASSERT(BwtWalkInPlace, __uint64, True);
 }
 
 //////////////////////////////////////////////////////////////////////////////

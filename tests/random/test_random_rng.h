@@ -89,14 +89,14 @@ SEQAN_DEFINE_TEST(test_random_mt19937_pick)
 // Test metafunctiosn for mersenne twister RNG.
 SEQAN_DEFINE_TEST(test_random_mt19937_metafunctions)
 {
-	using namespace seqan;
-	
-	typedef Value<Rng<MersenneTwister> >::Type TValue;
-	
-	TValue m = MinValue<Rng<MersenneTwister> >::VALUE;
-	SEQAN_ASSERT_EQ(MinValue<TValue>::VALUE, m);
-	TValue M = MaxValue<Rng<MersenneTwister> >::VALUE;
-	SEQAN_ASSERT_EQ(MaxValue<TValue>::VALUE, M);
+    using namespace seqan;
+    
+    typedef Value<Rng<MersenneTwister> >::Type TValue;
+    
+    TValue m = MinValue<Rng<MersenneTwister> >::VALUE;
+    SEQAN_ASSERT_EQ(MinValue<TValue>::VALUE, m);
+    TValue M = MaxValue<Rng<MersenneTwister> >::VALUE;
+    SEQAN_ASSERT_EQ(MaxValue<TValue>::VALUE, M);
 }
 
 // Construct RngFunctor specialization in all possible ways.
@@ -104,8 +104,8 @@ SEQAN_DEFINE_TEST(test_random_rng_functor_constructors)
 {
     using namespace seqan;
     
-	typedef Rng<MersenneTwister> TMersenneTwister;
-	typedef Pdf<Uniform<int> > TUniformPdf;
+    typedef Rng<MersenneTwister> TMersenneTwister;
+    typedef Pdf<Uniform<int> > TUniformPdf;
     
     {
         TMersenneTwister mt;
@@ -124,14 +124,14 @@ SEQAN_DEFINE_TEST(test_random_rng_functor_pick)
     const int SEED = 10;
 
     typedef Rng<MersenneTwister> TMersenneTwister;
-	typedef Pdf<Uniform<int> > TUniformPdf;
+    typedef Pdf<Uniform<int> > TUniformPdf;
     typedef Rng<RngFunctor<TMersenneTwister, TUniformPdf> > TRngFunctor;
 
     // Compute by using the raw MT and uniform Pdf.
     String<int> rawInts;
     {
-	    TMersenneTwister mt(SEED);
-    	TUniformPdf uniform(10, 100);
+        TMersenneTwister mt(SEED);
+        TUniformPdf uniform(10, 100);
         
         for (int i = 0; i < 100; ++i)
             appendValue(rawInts, pickRandomNumber(mt, uniform));
@@ -139,9 +139,9 @@ SEQAN_DEFINE_TEST(test_random_rng_functor_pick)
     
     // Use RngFunctor with pickRandomNumber() and check equality.
     {
-	    TMersenneTwister mt(SEED);
-    	TUniformPdf uniform(10, 100);
-	    TRngFunctor rngFunctor(mt, uniform);
+        TMersenneTwister mt(SEED);
+        TUniformPdf uniform(10, 100);
+        TRngFunctor rngFunctor(mt, uniform);
         
         for (int i = 0; i < 100; ++i) {
             SEQAN_ASSERT_EQ_MSG(unsigned(rawInts[i]), pickRandomNumber(rngFunctor), "i = %d", i);
@@ -150,9 +150,9 @@ SEQAN_DEFINE_TEST(test_random_rng_functor_pick)
     
     // Use RngFunctor with operator() and check equality.
     {
-	    TMersenneTwister mt(SEED);
-    	TUniformPdf uniform(10, 100);
-	    TRngFunctor rngFunctor(mt, uniform);
+        TMersenneTwister mt(SEED);
+        TUniformPdf uniform(10, 100);
+        TRngFunctor rngFunctor(mt, uniform);
         
         for (int i = 0; i < 100; ++i) {
             SEQAN_ASSERT_EQ_MSG(rawInts[i], rngFunctor(), "i = %d", i);

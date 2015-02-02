@@ -72,13 +72,13 @@ namespace SEQAN_NAMESPACE_MAIN
 template <typename TSpec = void>
 struct ReadStoreElement
 {
-	typedef typename Id<ReadStoreElement>::Type TId;
-	
-	static const TId INVALID_ID;
+    typedef typename Id<ReadStoreElement>::Type TId;
+    
+    static const TId INVALID_ID;
 
-	TId matePairId;				// refers to the mate-pair, INVALID_ID if not part of a mate-pair
+    TId matePairId;                // refers to the mate-pair, INVALID_ID if not part of a mate-pair
 
-	ReadStoreElement() : matePairId(INVALID_ID) {}
+    ReadStoreElement() : matePairId(INVALID_ID) {}
 
     inline
     bool

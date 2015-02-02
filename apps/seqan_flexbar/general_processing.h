@@ -61,7 +61,7 @@ using namespace seqan;
 
 struct GeneralStats
 {
-	unsigned removedSeqs;       //Number of deleted sequences due to N's
+    unsigned removedSeqs;       //Number of deleted sequences due to N's
     unsigned long uncalledBases;//Number of uncalled bases (evtl. Masked) in surviving sequences
     unsigned removedSeqsShort;  //Number of deleted sequences due to shortness.
 

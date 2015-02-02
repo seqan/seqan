@@ -70,28 +70,28 @@ _globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
     if (length(seqH) < length(seqV))
         return _globalAlignmentScore(seqV, seqH, algorithmTag);
 
-	// Use size of unsigned int as blocksize for bit-vectors.
-	const unsigned int BLOCK_SIZE = BitsPerValue<unsigned int>::VALUE;
+    // Use size of unsigned int as blocksize for bit-vectors.
+    const unsigned int BLOCK_SIZE = BitsPerValue<unsigned int>::VALUE;
 
     typedef String<TAlphabetH, TSpecH> const TSequenceH;
     typedef String<TAlphabetV, TSpecV> const TSequenceV;
 
-	typedef typename Value<TSequenceV>::Type TPatternAlphabet;
-	typedef typename Size<TSequenceH>::Type  TSourceSize;
+    typedef typename Value<TSequenceV>::Type TPatternAlphabet;
+    typedef typename Size<TSequenceH>::Type  TSourceSize;
 
     TSequenceH const & x = seqH;
     TSequenceV const & y = seqV;
 
-	TSourceSize len_x = length(x);
-	unsigned int pos = 0;
+    TSourceSize len_x = length(x);
+    unsigned int pos = 0;
 
-	// init variables
-	unsigned int len_y = length(y);
-	int score = (-1)*len_y;
-	unsigned int patternAlphabetSize = ValueSize<TPatternAlphabet>::VALUE;
-	unsigned int blockCount = (len_y + BLOCK_SIZE - 1) / BLOCK_SIZE;
+    // init variables
+    unsigned int len_y = length(y);
+    int score = (-1)*len_y;
+    unsigned int patternAlphabetSize = ValueSize<TPatternAlphabet>::VALUE;
+    unsigned int blockCount = (len_y + BLOCK_SIZE - 1) / BLOCK_SIZE;
 
-	unsigned int scoreMask = 1 << ((len_y % BLOCK_SIZE) - 1);	// the mask with a bit set at the position of the last active cell
+    unsigned int scoreMask = 1 << ((len_y % BLOCK_SIZE) - 1);    // the mask with a bit set at the position of the last active cell
 
     String<unsigned> VP;
     resize(VP, blockCount, maxValue<unsigned>());
@@ -100,100 +100,100 @@ _globalAlignmentScore(String<TAlphabetH, TSpecH> const & seqH,
     String<unsigned> bitMask;
     resize(bitMask, patternAlphabetSize * blockCount, 0);
 
-	// encoding the letters as bit-vectors
+    // encoding the letters as bit-vectors
     for (unsigned int j = 0; j < len_y; j++)
-		bitMask[blockCount * ordValue(getValue(y,j)) + j/BLOCK_SIZE] = bitMask[blockCount * ordValue(getValue(y,j)) + j/BLOCK_SIZE] | 1 << (j%BLOCK_SIZE);
+        bitMask[blockCount * ordValue(getValue(y,j)) + j/BLOCK_SIZE] = bitMask[blockCount * ordValue(getValue(y,j)) + j/BLOCK_SIZE] | 1 << (j%BLOCK_SIZE);
 
-	// compute score
-	unsigned int X, D0, HN, HP;
-	if(blockCount == 1)
-	{
-		while (pos < len_x) {
-			X = bitMask[ordValue(static_cast<TPatternAlphabet>(getValue(x,pos)))] | VN[0];
+    // compute score
+    unsigned int X, D0, HN, HP;
+    if(blockCount == 1)
+    {
+        while (pos < len_x) {
+            X = bitMask[ordValue(static_cast<TPatternAlphabet>(getValue(x,pos)))] | VN[0];
 
-			D0 = ((VP[0] + (X & VP[0])) ^ VP[0]) | X;
-			HN = VP[0] & D0;
-			HP = VN[0] | ~(VP[0] | D0);
+            D0 = ((VP[0] + (X & VP[0])) ^ VP[0]) | X;
+            HN = VP[0] & D0;
+            HP = VN[0] | ~(VP[0] | D0);
 
-			// customized to compute edit distance
-			X = (HP << 1) | 1;
-			VN[0] = X & D0;
-			VP[0] = (HN << 1) | ~(X | D0);
+            // customized to compute edit distance
+            X = (HP << 1) | 1;
+            VN[0] = X & D0;
+            VP[0] = (HN << 1) | ~(X | D0);
 
-			if (HP & scoreMask)
-				score--;
-			else if (HN & scoreMask)
-				score++;
+            if (HP & scoreMask)
+                score--;
+            else if (HN & scoreMask)
+                score++;
 
-			++pos;
-		}
-	} // end compute score - short pattern
-	else
-	{
-		unsigned int temp, shift, currentBlock;
-		unsigned int carryD0, carryHP, carryHN;
+            ++pos;
+        }
+    } // end compute score - short pattern
+    else
+    {
+        unsigned int temp, shift, currentBlock;
+        unsigned int carryD0, carryHP, carryHN;
 
-		while (pos < len_x) 
-		{
-			// set vars
-			carryD0 = carryHP = carryHN = 0;
-			shift = blockCount * ordValue(static_cast<TPatternAlphabet>(getValue(x,pos)));
+        while (pos < len_x) 
+        {
+            // set vars
+            carryD0 = carryHP = carryHN = 0;
+            shift = blockCount * ordValue(static_cast<TPatternAlphabet>(getValue(x,pos)));
 
-			// computing first the top most block
-			X = bitMask[shift] | VN[0];
-	
-			temp = VP[0] + (X & VP[0]);
-			carryD0 = temp < VP[0];
-			
-			D0 = (temp ^ VP[0]) | X;
-			HN = VP[0] & D0;
-			HP = VN[0] | ~(VP[0] | D0);
-			
-			// customized to compute edit distance
-			X = (HP << 1) | 1;
-			carryHP = HP >> (BLOCK_SIZE - 1);
-			
-			VN[0] = X & D0;
+            // computing first the top most block
+            X = bitMask[shift] | VN[0];
+    
+            temp = VP[0] + (X & VP[0]);
+            carryD0 = temp < VP[0];
+            
+            D0 = (temp ^ VP[0]) | X;
+            HN = VP[0] & D0;
+            HP = VN[0] | ~(VP[0] | D0);
+            
+            // customized to compute edit distance
+            X = (HP << 1) | 1;
+            carryHP = HP >> (BLOCK_SIZE - 1);
+            
+            VN[0] = X & D0;
 
-			temp = (HN << 1);
-			carryHN = HN >> (BLOCK_SIZE - 1);
-								
-		 	VP[0] = temp | ~(X | D0);
+            temp = (HN << 1);
+            carryHN = HN >> (BLOCK_SIZE - 1);
+                                
+             VP[0] = temp | ~(X | D0);
 
-			// computing the necessary blocks, carries between blocks following one another are stored
-			for (currentBlock = 1; currentBlock < blockCount; currentBlock++) {
-				X = bitMask[shift + currentBlock] | VN[currentBlock];
-		
-				temp = VP[currentBlock] + (X & VP[currentBlock]) + carryD0;
-				
-				carryD0 = ((carryD0) ? temp <= VP[currentBlock] : temp < VP[currentBlock]);
-			
-				D0 = (temp ^ VP[currentBlock]) | X;
-				HN = VP[currentBlock] & D0;
-				HP = VN[currentBlock] | ~(VP[currentBlock] | D0);
-				
-				X = (HP << 1) | carryHP;
-				carryHP = HP >> (BLOCK_SIZE-1);
-				
-				VN[currentBlock] = X & D0;
+            // computing the necessary blocks, carries between blocks following one another are stored
+            for (currentBlock = 1; currentBlock < blockCount; currentBlock++) {
+                X = bitMask[shift + currentBlock] | VN[currentBlock];
+        
+                temp = VP[currentBlock] + (X & VP[currentBlock]) + carryD0;
+                
+                carryD0 = ((carryD0) ? temp <= VP[currentBlock] : temp < VP[currentBlock]);
+            
+                D0 = (temp ^ VP[currentBlock]) | X;
+                HN = VP[currentBlock] & D0;
+                HP = VN[currentBlock] | ~(VP[currentBlock] | D0);
+                
+                X = (HP << 1) | carryHP;
+                carryHP = HP >> (BLOCK_SIZE-1);
+                
+                VN[currentBlock] = X & D0;
 
-				temp = (HN << 1) | carryHN;
-				carryHN = HN >> (BLOCK_SIZE - 1);
-									
-		 		VP[currentBlock] = temp | ~(X | D0);
-			}
+                temp = (HN << 1) | carryHN;
+                carryHN = HN >> (BLOCK_SIZE - 1);
+                                    
+                 VP[currentBlock] = temp | ~(X | D0);
+            }
 
-			// update score with the HP and HN values of the last block the last block
-			if (HP & scoreMask)
-				score--;
-			else if (HN & scoreMask)
-				score++;
-			++pos;
-		}
+            // update score with the HP and HN values of the last block the last block
+            if (HP & scoreMask)
+                score--;
+            else if (HN & scoreMask)
+                score++;
+            ++pos;
+        }
 
-	}  // end compute score - long pattern
+    }  // end compute score - long pattern
 
-	return score;
+    return score;
 }
 
 }  // namespace seqan

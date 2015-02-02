@@ -86,7 +86,7 @@ parseContig(FragmentStore<TSpec, TConfig> const& fragStore,
     // must be triplet
     typedef typename Value<TCandidateColumn>::Type TAssignedReadChar;
 
-	// All fragment store element types
+    // All fragment store element types
     //typedef typename Value<typename TFragmentStore::TReadStore>::Type TReadStoreElement;
     typedef typename Value<typename TFragmentStore::TAlignedReadStore>::Type TAlignedElement;
 
@@ -96,7 +96,7 @@ parseContig(FragmentStore<TSpec, TConfig> const& fragStore,
 
     // Sort by begin position .. 
     sortAlignedReads(fragStore.alignedReadStore, SortBeginPos());
-	// Sort aligned reads according to contig id
+    // Sort aligned reads according to contig id
     sortAlignedReads(fragStore.alignedReadStore, SortContigId());
 
     TGappedSequence gapped_consensus;
@@ -180,16 +180,16 @@ parseContig(FragmentStore<TSpec, TConfig> const& fragStore,
             TReadPos offset = _min(iter_cr->beginPos, iter_cr->endPos);
             TGappedSequence gapped_read;        
 
-	        TReadPos begClr = 0;
-	        TReadPos endClr = 0;
-	        getClrRange(fragStore, *iter_cr, begClr, endClr);        
+            TReadPos begClr = 0;
+            TReadPos endClr = 0;
+            getClrRange(fragStore, *iter_cr, begClr, endClr);        
             String<Dna5Q> ungapped_seq = fragStore.readSeqStore[iter_cr->readId];
             if(iter_cr->beginPos > iter_cr->endPos) {
                 reverseComplement(ungapped_seq);
                 // swap the clr's
-	            TReadPos tmp = begClr;
-	            begClr = length(ungapped_seq) - endClr;
-	            endClr = length(ungapped_seq) - tmp;
+                TReadPos tmp = begClr;
+                begClr = length(ungapped_seq) - endClr;
+                endClr = length(ungapped_seq) - tmp;
             }
             _gap_sequence(iter_cr->gaps, ungapped_seq, begClr, endClr, gapped_read);
             

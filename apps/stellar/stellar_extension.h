@@ -31,17 +31,17 @@
 // Container for storing possible end positions in extension of eps-core
 template<typename TPos_>
 struct ExtensionEndPosition {
-	typedef TPos_			TPosition;
-	typedef Pair<TPosition>	TCoordinate;
+    typedef TPos_            TPosition;
+    typedef Pair<TPosition>    TCoordinate;
 
-	TPosition length;
-	TCoordinate coord;
+    TPosition length;
+    TCoordinate coord;
 
-	ExtensionEndPosition():
-		length(0), coord(TCoordinate(0,0)) {}
+    ExtensionEndPosition():
+        length(0), coord(TCoordinate(0,0)) {}
 
-	ExtensionEndPosition(TPosition len, TPosition row, TPosition col):
-		length(len), coord(TCoordinate(row, col)) {}
+    ExtensionEndPosition(TPosition len, TPosition row, TPosition col):
+        length(len), coord(TCoordinate(row, col)) {}
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -69,9 +69,9 @@ _fillGapsString(Align<TSource> const & align,
                 String<Triple<TPos, TPos, TPos> > & gaps) {
     typedef Triple<TPos, TPos, TPos> TGapInfo;
     TPos totalErrors = 0;
-	typename Row<Align<TSource> >::Type row0 = row(align, 0);
+    typename Row<Align<TSource> >::Type row0 = row(align, 0);
     TPos i = 0;
-	TPos endPos = length(row0);
+    TPos endPos = length(row0);
     TPos gapBegin = i;
 
     // append gap starting at beginPosition (also if its length is 0!)
@@ -112,7 +112,7 @@ _isEpsMatch(Triple<TPos, TPos, TPos> const & left,
     TPos len = right.i1 - left.i2;
 
     // check error rate
-	double const DELTA = 0.000001;  // Small delta against floating point precision problems.
+    double const DELTA = 0.000001;  // Small delta against floating point precision problems.
     return errors/(TFloat)(len) <= eps + DELTA;
 }
 
@@ -157,20 +157,20 @@ longestEpsMatch(Align<TSource> & align,
     // Set view positions to the eps-match
     TPosition viewBeginRow0 = toSourcePosition(row(align, 0), 0);
     TPosition viewBeginRow1 = toSourcePosition(row(align, 1), 0);
-	setClippedEndPosition(row(align, 0), viewBeginRow0 + endPos);
-	setClippedEndPosition(row(align, 1), viewBeginRow1 + endPos);
+    setClippedEndPosition(row(align, 0), viewBeginRow0 + endPos);
+    setClippedEndPosition(row(align, 1), viewBeginRow1 + endPos);
     setClippedBeginPosition(row(align, 0), viewBeginRow0 + beginPos);
     setClippedBeginPosition(row(align, 1), viewBeginRow1 + beginPos);
-	// setClippedBeginPosition(row(align, 0), toSourcePosition(row(align, 0), beginPos));
-	// setClippedBeginPosition(row(align, 1), toSourcePosition(row(align, 1), beginPos));
-	// setBeginPosition(row(align, 0), beginPos);
-	// setBeginPosition(row(align, 1), beginPos);
-	// setClippedEndPosition(row(align, 0), toSourcePosition(row(align, 0), endPos));
-	// setClippedEndPosition(row(align, 1), toSourcePosition(row(align, 1), endPos));
+    // setClippedBeginPosition(row(align, 0), toSourcePosition(row(align, 0), beginPos));
+    // setClippedBeginPosition(row(align, 1), toSourcePosition(row(align, 1), beginPos));
+    // setBeginPosition(row(align, 0), beginPos);
+    // setBeginPosition(row(align, 1), beginPos);
+    // setClippedEndPosition(row(align, 0), toSourcePosition(row(align, 0), endPos));
+    // setClippedEndPosition(row(align, 1), toSourcePosition(row(align, 1), endPos));
     SEQAN_ASSERT_EQ(length(row(align, 0)), length(row(align, 1)));
 
-	if (endPos == 0 && beginPos == 0) return 1;
-	return 0;
+    if (endPos == 0 && beginPos == 0) return 1;
+    return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -179,60 +179,60 @@ longestEpsMatch(Align<TSource> & align,
 template<typename TLength, typename TSize, typename TEps>
 Pair<typename Iterator<String<ExtensionEndPosition<TLength> > const>::Type>
 longestEpsMatch(String<ExtensionEndPosition<TLength> > const & possEndsLeft,
-				String<ExtensionEndPosition<TLength> > const & possEndsRight,
-				TLength const alignLen,
-				TLength const alignErr,
-				TSize const matchMinLength,
-				TEps const epsilon) {
-	typedef ExtensionEndPosition<TLength>               TEnd;
-	typedef typename Iterator<String<TEnd> const>::Type TIterator;
+                String<ExtensionEndPosition<TLength> > const & possEndsRight,
+                TLength const alignLen,
+                TLength const alignErr,
+                TSize const matchMinLength,
+                TEps const epsilon) {
+    typedef ExtensionEndPosition<TLength>               TEnd;
+    typedef typename Iterator<String<TEnd> const>::Type TIterator;
 
     // Identify longest eps match by iterating over combinations of left and right positions
     TIterator rightIt = end(possEndsRight) - 1;
     TIterator leftIt = end(possEndsLeft) - 1;
-	TIterator right = begin(possEndsRight);
+    TIterator right = begin(possEndsRight);
     TIterator left = begin(possEndsLeft);
 
-	/*for (int i = 0; i < length(possEndsRight); ++i) {
-		std::cout << possEndsRight[i].length << "  " << possEndsRight[i].coord.i1 << "," << possEndsRight[i].coord.i2 << std::endl;
-	}
-	for (int i = 0; i < length(possEndsLeft); ++i) {
-		std::cout << possEndsLeft[i].length << "  " << possEndsLeft[i].coord.i1 << "," << possEndsLeft[i].coord.i2 << std::endl;
-	}*/
+    /*for (int i = 0; i < length(possEndsRight); ++i) {
+        std::cout << possEndsRight[i].length << "  " << possEndsRight[i].coord.i1 << "," << possEndsRight[i].coord.i2 << std::endl;
+    }
+    for (int i = 0; i < length(possEndsLeft); ++i) {
+        std::cout << possEndsLeft[i].length << "  " << possEndsLeft[i].coord.i1 << "," << possEndsLeft[i].coord.i2 << std::endl;
+    }*/
 
-	TSize leftErr = length(possEndsLeft) - 1;
+    TSize leftErr = length(possEndsLeft) - 1;
 
     TSize minLength = matchMinLength;
-	bool found = false;
+    bool found = false;
     // DELTA is used below against floating point rounding errors.
-	double const DELTA = 0.000001;
+    double const DELTA = 0.000001;
 
-	while (leftIt >= begin(possEndsLeft)) {
-		TSize totalLen = (*leftIt).length + alignLen + (*rightIt).length;
-		if (totalLen < minLength) break;
-		TSize totalErr = leftErr + alignErr + length(possEndsRight) - 1;
-		while (rightIt >= begin(possEndsRight)) {
-			totalLen = (*leftIt).length + alignLen + (*rightIt).length;
-			if (totalLen < minLength) break;
-			if ((TEps)totalErr/(TEps)totalLen < epsilon + DELTA) {
-				right = rightIt;
-				left = leftIt;
-				//std::cout << totalLen << std::endl;
-				minLength = totalLen;
-				found = true;
-				break;
-			}
-			--rightIt;
-			--totalErr;
-		}
-		rightIt = end(possEndsRight) - 1;
-		--leftIt;
-		--leftErr;
-	}
+    while (leftIt >= begin(possEndsLeft)) {
+        TSize totalLen = (*leftIt).length + alignLen + (*rightIt).length;
+        if (totalLen < minLength) break;
+        TSize totalErr = leftErr + alignErr + length(possEndsRight) - 1;
+        while (rightIt >= begin(possEndsRight)) {
+            totalLen = (*leftIt).length + alignLen + (*rightIt).length;
+            if (totalLen < minLength) break;
+            if ((TEps)totalErr/(TEps)totalLen < epsilon + DELTA) {
+                right = rightIt;
+                left = leftIt;
+                //std::cout << totalLen << std::endl;
+                minLength = totalLen;
+                found = true;
+                break;
+            }
+            --rightIt;
+            --totalErr;
+        }
+        rightIt = end(possEndsRight) - 1;
+        --leftIt;
+        --leftErr;
+    }
 
-	if (found)
+    if (found)
         return Pair<TIterator>(left, right);
-	else
+    else
         return Pair<TIterator>(0,0);
 }
 
@@ -242,118 +242,118 @@ longestEpsMatch(String<ExtensionEndPosition<TLength> > const & possEndsLeft,
 template <typename TTrace, typename TEnd, typename TStringSet, typename TScore, typename TDiagonal>
 inline void
 _align_banded_nw_best_ends(TTrace& trace,
-						   String<TEnd> & bestEnds,
-						   TStringSet const & str,
-						   TScore const & sc,
-						   TDiagonal const diagL,
-						   TDiagonal const diagU)
+                           String<TEnd> & bestEnds,
+                           TStringSet const & str,
+                           TScore const & sc,
+                           TDiagonal const diagL,
+                           TDiagonal const diagU)
 {
-	typedef typename Value<TTrace>::Type TTraceValue;
-	typedef typename Value<TScore>::Type TScoreValue;
-	typedef typename Value<TStringSet>::Type TString;
-	typedef typename Size<TTrace>::Type TSize;
+    typedef typename Value<TTrace>::Type TTraceValue;
+    typedef typename Value<TScore>::Type TScoreValue;
+    typedef typename Value<TStringSet>::Type TString;
+    typedef typename Size<TTrace>::Type TSize;
 
-	SEQAN_ASSERT_GEQ(diagU, diagL);
+    SEQAN_ASSERT_GEQ(diagU, diagL);
 
-	// Initialization
-	TTraceValue Diagonal = 0; TTraceValue Horizontal = 1; TTraceValue Vertical = 2;
-	TString const& str1 = str[0];
-	TString const& str2 = str[1];		
-	TSize len1 = length(str1) + 1;
-	TSize len2 = length(str2) + 1;
-	TSize diagonalWidth = (TSize) (diagU - diagL + 1);
-	TSize hi_diag = diagonalWidth;
-	TSize lo_diag = 0;
-	if (diagL > 0) lo_diag = 0;
-	else lo_diag = (diagU < 0) ? hi_diag : (TSize) (1 - diagL); 
-	TSize lo_row = (diagU <= 0) ? -diagU : 0;
-	TSize hi_row = len2;
-	if (len1 - diagL < hi_row) hi_row = len1 - diagL;
-	TSize height = hi_row - lo_row;
+    // Initialization
+    TTraceValue Diagonal = 0; TTraceValue Horizontal = 1; TTraceValue Vertical = 2;
+    TString const& str1 = str[0];
+    TString const& str2 = str[1];        
+    TSize len1 = length(str1) + 1;
+    TSize len2 = length(str2) + 1;
+    TSize diagonalWidth = (TSize) (diagU - diagL + 1);
+    TSize hi_diag = diagonalWidth;
+    TSize lo_diag = 0;
+    if (diagL > 0) lo_diag = 0;
+    else lo_diag = (diagU < 0) ? hi_diag : (TSize) (1 - diagL); 
+    TSize lo_row = (diagU <= 0) ? -diagU : 0;
+    TSize hi_row = len2;
+    if (len1 - diagL < hi_row) hi_row = len1 - diagL;
+    TSize height = hi_row - lo_row;
 
-	typedef String<TScoreValue> TRow;
-	TRow mat, len;
-	resize(mat, diagonalWidth);
-	resize(len, diagonalWidth);
-	resize(trace, height * diagonalWidth);
+    typedef String<TScoreValue> TRow;
+    TRow mat, len;
+    resize(mat, diagonalWidth);
+    resize(len, diagonalWidth);
+    resize(trace, height * diagonalWidth);
 
-	// Classical DP with affine gap costs
-	typedef typename Iterator<TRow, Standard>::Type TRowIter;
-	typedef typename Iterator<TTrace, Standard>::Type TTraceIter;
-	TSize actualCol = 0;
-	TSize actualRow = 0;
-	TScoreValue verti_val = 0;
-	TScoreValue hori_val = 0;
-	TScoreValue hori_len = len1+len2+1;
-	TSize errors;
+    // Classical DP with affine gap costs
+    typedef typename Iterator<TRow, Standard>::Type TRowIter;
+    typedef typename Iterator<TTrace, Standard>::Type TTraceIter;
+    TSize actualCol = 0;
+    TSize actualRow = 0;
+    TScoreValue verti_val = 0;
+    TScoreValue hori_val = 0;
+    TScoreValue hori_len = len1+len2+1;
+    TSize errors;
 
-	for(TSize row = 0; row < height; ++row) {
-		actualRow = row + lo_row;
-		if (lo_diag > 0) --lo_diag;
-		if ((TDiagonal)actualRow >= (TDiagonal)len1 - diagU) --hi_diag;
-		TTraceIter traceIt = begin(trace, Standard()) + row * diagonalWidth + lo_diag;
-		TRowIter matIt = begin(mat, Standard()) + lo_diag;
-		TRowIter lenIt = begin(len, Standard()) + lo_diag;
-		hori_val = MinValue<TScoreValue>::VALUE;
-		hori_len = len1+len2+1;
-		for(TSize col = lo_diag; col<hi_diag; ++col, ++matIt, ++traceIt, ++lenIt) {
-			actualCol = col + diagL + actualRow;
-			if (actualCol >= len1) break;
+    for(TSize row = 0; row < height; ++row) {
+        actualRow = row + lo_row;
+        if (lo_diag > 0) --lo_diag;
+        if ((TDiagonal)actualRow >= (TDiagonal)len1 - diagU) --hi_diag;
+        TTraceIter traceIt = begin(trace, Standard()) + row * diagonalWidth + lo_diag;
+        TRowIter matIt = begin(mat, Standard()) + lo_diag;
+        TRowIter lenIt = begin(len, Standard()) + lo_diag;
+        hori_val = MinValue<TScoreValue>::VALUE;
+        hori_len = len1+len2+1;
+        for(TSize col = lo_diag; col<hi_diag; ++col, ++matIt, ++traceIt, ++lenIt) {
+            actualCol = col + diagL + actualRow;
+            if (actualCol >= len1) break;
 
-			if ((actualRow != 0) && (actualCol != 0)) {
-				// Get the new maximum for mat
-				*matIt += score(const_cast<TScore&>(sc), sequenceEntryForScore(const_cast<TScore&>(sc), str1, ((int) actualCol - 1)),
-				                sequenceEntryForScore(const_cast<TScore&>(sc), str2, ((int) actualRow - 1)));
-				*traceIt = Diagonal;
-				++(*lenIt);
-				if ((verti_val = (col < diagonalWidth - 1) ? *(matIt+1) +
-				    scoreGapExtendVertical(sc,sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
-				                           sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : MinValue<TScoreValue>::VALUE) > *matIt)
-				{
-					*matIt = verti_val;
-					*traceIt = Vertical;
-					*lenIt = *(lenIt+1) + 1;
-				}						
-				if ((hori_val = (col > 0) ? hori_val +
-				    scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
-				                             sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : MinValue<TScoreValue>::VALUE) > *matIt)
-				{
-					*matIt = hori_val;
-					*traceIt = Horizontal;
-					*lenIt = hori_len + 1;
-				}
-				hori_val = *matIt;
-				hori_len = *lenIt;
-			} else {			
-				// Usual initialization for first row and column
-				if (actualRow == 0) {
-					*matIt = actualCol * scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
-					                                              sequenceEntryForScore(sc, str2, -1));
-					*lenIt = actualCol;
-				}
-				else {
-					*matIt = actualRow * scoreGapExtendVertical(sc, sequenceEntryForScore(sc, str1, -1),
-					                                            sequenceEntryForScore(sc, str2, ((int) actualRow - 1)));
-					*lenIt = actualRow;
-					hori_val = *matIt;
-					hori_len = actualRow;
-				}
-			}
-			errors = (*matIt - (*lenIt * scoreMatch(const_cast<TScore&>(sc)))) /
-						(scoreGap(const_cast<TScore&>(sc)) - scoreMatch(const_cast<TScore&>(sc)));
-			SEQAN_ASSERT_LEQ(errors, length(bestEnds));
-			if (errors == length(bestEnds)) {
-					appendValue(bestEnds, TEnd(*lenIt, row, col));
-			} else if (*lenIt > static_cast<TScoreValue>(value(bestEnds, errors).length))
-				value(bestEnds, errors) = TEnd(*lenIt, row, col);
-			//std::cerr << row << ',' << col << ':' << *matIt << std::endl;
-		}
-	}
-	TSize newLength = length(bestEnds) - 1;
-	while (newLength > 0 && bestEnds[newLength].length <= bestEnds[newLength-1].length) {
-		--newLength;
-	}
-	resize(bestEnds, newLength + 1);
+            if ((actualRow != 0) && (actualCol != 0)) {
+                // Get the new maximum for mat
+                *matIt += score(const_cast<TScore&>(sc), sequenceEntryForScore(const_cast<TScore&>(sc), str1, ((int) actualCol - 1)),
+                                sequenceEntryForScore(const_cast<TScore&>(sc), str2, ((int) actualRow - 1)));
+                *traceIt = Diagonal;
+                ++(*lenIt);
+                if ((verti_val = (col < diagonalWidth - 1) ? *(matIt+1) +
+                    scoreGapExtendVertical(sc,sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
+                                           sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : MinValue<TScoreValue>::VALUE) > *matIt)
+                {
+                    *matIt = verti_val;
+                    *traceIt = Vertical;
+                    *lenIt = *(lenIt+1) + 1;
+                }                        
+                if ((hori_val = (col > 0) ? hori_val +
+                    scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
+                                             sequenceEntryForScore(sc, str2, ((int) actualRow - 1))) : MinValue<TScoreValue>::VALUE) > *matIt)
+                {
+                    *matIt = hori_val;
+                    *traceIt = Horizontal;
+                    *lenIt = hori_len + 1;
+                }
+                hori_val = *matIt;
+                hori_len = *lenIt;
+            } else {            
+                // Usual initialization for first row and column
+                if (actualRow == 0) {
+                    *matIt = actualCol * scoreGapExtendHorizontal(sc, sequenceEntryForScore(sc, str1, ((int) actualCol - 1)),
+                                                                  sequenceEntryForScore(sc, str2, -1));
+                    *lenIt = actualCol;
+                }
+                else {
+                    *matIt = actualRow * scoreGapExtendVertical(sc, sequenceEntryForScore(sc, str1, -1),
+                                                                sequenceEntryForScore(sc, str2, ((int) actualRow - 1)));
+                    *lenIt = actualRow;
+                    hori_val = *matIt;
+                    hori_len = actualRow;
+                }
+            }
+            errors = (*matIt - (*lenIt * scoreMatch(const_cast<TScore&>(sc)))) /
+                        (scoreGap(const_cast<TScore&>(sc)) - scoreMatch(const_cast<TScore&>(sc)));
+            SEQAN_ASSERT_LEQ(errors, length(bestEnds));
+            if (errors == length(bestEnds)) {
+                    appendValue(bestEnds, TEnd(*lenIt, row, col));
+            } else if (*lenIt > static_cast<TScoreValue>(value(bestEnds, errors).length))
+                value(bestEnds, errors) = TEnd(*lenIt, row, col);
+            //std::cerr << row << ',' << col << ':' << *matIt << std::endl;
+        }
+    }
+    TSize newLength = length(bestEnds) - 1;
+    while (newLength > 0 && bestEnds[newLength].length <= bestEnds[newLength-1].length) {
+        --newLength;
+    }
+    resize(bestEnds, newLength + 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -361,13 +361,13 @@ _align_banded_nw_best_ends(TTrace& trace,
 template<typename TSequenceA, typename TSequenceB, typename TSeed>
 void
 _reverseLeftExtension(Segment<TSequenceA, InfixSegment> const & infH,
-					  Segment<TSequenceB, InfixSegment> const & infV,
-					  TSeed & seed,
-					  TSeed & seedOld) {
-	Segment<TSequenceA, InfixSegment> infixH(host(infH), beginPositionH(seed), beginPositionH(seedOld));
-	Segment<TSequenceB, InfixSegment> infixV(host(infV), beginPositionV(seed), beginPositionV(seedOld));
-	reverse(infixH);
-	reverse(infixV);
+                      Segment<TSequenceB, InfixSegment> const & infV,
+                      TSeed & seed,
+                      TSeed & seedOld) {
+    Segment<TSequenceA, InfixSegment> infixH(host(infH), beginPositionH(seed), beginPositionH(seedOld));
+    Segment<TSequenceB, InfixSegment> infixV(host(infV), beginPositionV(seed), beginPositionV(seedOld));
+    reverse(infixH);
+    reverse(infixV);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -377,28 +377,28 @@ _reverseLeftExtension(Segment<TSequenceA, InfixSegment> const & infH,
 template<typename TMatrix, typename TPossEnd, typename TSequence, typename TSeed, typename TScore>
 void
 _fillMatrixBestEndsLeft(TMatrix & matrixLeft,
-						String<TPossEnd> & possibleEndsLeft,
-						Segment<TSequence, InfixSegment> const & infH,
-						Segment<TSequence, InfixSegment> const & infV,
-						TSeed & seed,
-						TSeed & seedOld,
-						TScore const & scoreMatrix) {
+                        String<TPossEnd> & possibleEndsLeft,
+                        Segment<TSequence, InfixSegment> const & infH,
+                        Segment<TSequence, InfixSegment> const & infV,
+                        TSeed & seed,
+                        TSeed & seedOld,
+                        TScore const & scoreMatrix) {
 
-	typedef Segment<TSequence, InfixSegment> TInfix;
+    typedef Segment<TSequence, InfixSegment> TInfix;
 
-	TInfix infixH(host(infH), beginPositionH(seed), beginPositionH(seedOld));
-	TInfix infixV(host(infV), beginPositionV(seed), beginPositionV(seedOld));
+    TInfix infixH(host(infH), beginPositionH(seed), beginPositionH(seedOld));
+    TInfix infixV(host(infV), beginPositionV(seed), beginPositionV(seedOld));
 
-	reverse(infixH);
-	reverse(infixV);
+    reverse(infixH);
+    reverse(infixV);
 
-	StringSet<TInfix> str;
-	appendValue(str, infixH);
-	appendValue(str, infixV);
+    StringSet<TInfix> str;
+    appendValue(str, infixH);
+    appendValue(str, infixV);
 
-	// _align_banded_nw_best_ends(matrixLeft, possibleEndsLeft, str, scoreMatrix,
-	// 						   upperDiagonal(seedOld) - upperDiagonal(seed),
-	// 						   upperDiagonal(seedOld) - lowerDiagonal(seed));
+    // _align_banded_nw_best_ends(matrixLeft, possibleEndsLeft, str, scoreMatrix,
+    //                            upperDiagonal(seedOld) - upperDiagonal(seed),
+    //                            upperDiagonal(seedOld) - lowerDiagonal(seed));
 
     // Compute diagonals for updated seeds module with infixH/first alignment row being in the horizontal direction.
     typedef typename Diagonal<TSeed>::Type TDiagonal;
@@ -426,28 +426,28 @@ _fillMatrixBestEndsLeft(TMatrix & matrixLeft,
 template<typename TMatrix, typename TPossEnd, typename TSequence, typename TSeed, typename TScore>
 void
 _fillMatrixBestEndsRight(TMatrix & matrixRight,
-						 String<TPossEnd> & possibleEndsRight,
-						 Segment<TSequence, InfixSegment> const & infH,
-						 Segment<TSequence, InfixSegment> const & infV,
-						 TSeed & seed,
-						 TSeed & seedOld,
-						 TScore const & scoreMatrix) {
-	typedef Segment<TSequence, InfixSegment> TInfix;
+                         String<TPossEnd> & possibleEndsRight,
+                         Segment<TSequence, InfixSegment> const & infH,
+                         Segment<TSequence, InfixSegment> const & infV,
+                         TSeed & seed,
+                         TSeed & seedOld,
+                         TScore const & scoreMatrix) {
+    typedef Segment<TSequence, InfixSegment> TInfix;
 
-	TInfix infixH(host(infH), endPositionH(seedOld), endPositionH(seed));
-	TInfix infixV(host(infV), endPositionV(seedOld), endPositionV(seed));
+    TInfix infixH(host(infH), endPositionH(seedOld), endPositionH(seed));
+    TInfix infixV(host(infV), endPositionV(seedOld), endPositionV(seed));
 
-	StringSet<TInfix> str;
-	appendValue(str, infixH);
-	appendValue(str, infixV);
+    StringSet<TInfix> str;
+    appendValue(str, infixH);
+    appendValue(str, infixV);
 
     // std::cerr << "FILL MATRIX RIGHT SEQS\n"
     //           << "0: " << infixH << "\n"
     //           << "1: " << infixV << "\n";
 
-	// _align_banded_nw_best_ends(matrixRight, possibleEndsRight, str, scoreMatrix, 
-	// 						   lowerDiagonal(seedOld) - upperDiagonal(seed),
-	// 						   lowerDiagonal(seedOld) - lowerDiagonal(seed));
+    // _align_banded_nw_best_ends(matrixRight, possibleEndsRight, str, scoreMatrix, 
+    //                            lowerDiagonal(seedOld) - upperDiagonal(seed),
+    //                            lowerDiagonal(seedOld) - lowerDiagonal(seed));
 
     // Compute diagonals for updated seeds module with infixH/first alignment row being in the horizontal direction.
     typedef typename Diagonal<TSeed>::Type TDiagonal;
@@ -470,97 +470,97 @@ _fillMatrixBestEndsRight(TMatrix & matrixRight,
 template <typename TAlign, typename TStringSet, typename TTrace, typename TCoord, typename TDiagonal>
 inline void
 _alignBandedNeedlemanWunschTrace(TAlign & align,
-								 TStringSet const & str,
-								 TTrace const & trace,
-								 TCoord const & coordinate,
-								 TDiagonal const diagL,
-								 TDiagonal const diagU)
+                                 TStringSet const & str,
+                                 TTrace const & trace,
+                                 TCoord const & coordinate,
+                                 TDiagonal const diagL,
+                                 TDiagonal const diagU)
 {
-	//typedef typename Value<TStringSet>::Type TString;
-	typedef typename Id<TStringSet>::Type TId;
-	typedef typename Size<TTrace>::Type TSize;
-	typedef typename Value<TTrace>::Type TTraceValue;
+    //typedef typename Value<TStringSet>::Type TString;
+    typedef typename Id<TStringSet>::Type TId;
+    typedef typename Size<TTrace>::Type TSize;
+    typedef typename Value<TTrace>::Type TTraceValue;
 
-	// Traceback values
-	TTraceValue Diagonal = 0; TTraceValue Horizontal = 1; TTraceValue Vertical = 2;
+    // Traceback values
+    TTraceValue Diagonal = 0; TTraceValue Horizontal = 1; TTraceValue Vertical = 2;
 
-	// Initialization
-	TId id1 = positionToId(const_cast<TStringSet&>(str), 0);
-	TId id2 = positionToId(const_cast<TStringSet&>(str), 1);
-	TSize lo_row = (diagU <= 0) ? -1 * diagU : 0;
-	TSize diagonalWidth = (TSize) (diagU - diagL + 1);
+    // Initialization
+    TId id1 = positionToId(const_cast<TStringSet&>(str), 0);
+    TId id2 = positionToId(const_cast<TStringSet&>(str), 1);
+    TSize lo_row = (diagU <= 0) ? -1 * diagU : 0;
+    TSize diagonalWidth = (TSize) (diagU - diagL + 1);
 
-	// Start the trace from the cell with the max value
-	TSize row = coordinate.i1;
-	TSize col = coordinate.i2;
+    // Start the trace from the cell with the max value
+    TSize row = coordinate.i1;
+    TSize col = coordinate.i2;
 
-	// Handle the skipped sequence parts
-	TSize actualRow = row + lo_row;
-	TSize actualCol = col + diagL + actualRow;
+    // Handle the skipped sequence parts
+    TSize actualRow = row + lo_row;
+    TSize actualCol = col + diagL + actualRow;
 
-	if ((actualRow != 0) && (actualCol != 0)) {
-		// Find initial direction
-		TTraceValue tv = trace[row * diagonalWidth + col];
-		if (tv == Horizontal) --col;
-		else if (tv == Vertical) {--row; ++col;} 
-		else --row;
-	
-		// Walk until we hit a border
-		TSize seqLen = 1;
-		TTraceValue newTv = tv;
-		while(true) {
-			actualRow = row + lo_row;
-			actualCol = col + diagL + actualRow;
-			newTv = trace[row * diagonalWidth + col];
+    if ((actualRow != 0) && (actualCol != 0)) {
+        // Find initial direction
+        TTraceValue tv = trace[row * diagonalWidth + col];
+        if (tv == Horizontal) --col;
+        else if (tv == Vertical) {--row; ++col;} 
+        else --row;
+    
+        // Walk until we hit a border
+        TSize seqLen = 1;
+        TTraceValue newTv = tv;
+        while(true) {
+            actualRow = row + lo_row;
+            actualCol = col + diagL + actualRow;
+            newTv = trace[row * diagonalWidth + col];
 
-			// Check if we hit a border
-			if ((actualRow == 0) || (actualCol == 0)) break;
-			else {
-				//std::cout << row << ',' << col << ':' << value(originalMat, actualRow * len1 + actualCol) << std::endl; 
-				if (tv == Diagonal) {
-					if (newTv == Horizontal) {
-						_alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
-						--col; seqLen = 1;
-					} else if (newTv == Vertical) {
-						_alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
-						--row; ++col; seqLen = 1;
-					} else {
-						--row; ++seqLen;
-					}
-				} else {
-					if (tv == Horizontal) { 
-						if (newTv == Diagonal) {
-							_alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
-							--row; seqLen = 1;
-						} else if (newTv == Vertical) {
-							_alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
-							--row; ++col; seqLen = 1;
-						} else {
-							--col; ++seqLen;
-						}
-					} else { 
-						if (newTv == Diagonal) {
-							_alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
-							--row; seqLen = 1;
-						} else if (newTv == Horizontal) {
-							_alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
-							--col; seqLen = 1;
-						} else {
-							--row; ++col; ++seqLen;
-						}
-					}
-				}
-				tv = newTv;
-			}
-		}
-	
-		// Align left overs
-		if (seqLen) _alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
-	}
+            // Check if we hit a border
+            if ((actualRow == 0) || (actualCol == 0)) break;
+            else {
+                //std::cout << row << ',' << col << ':' << value(originalMat, actualRow * len1 + actualCol) << std::endl; 
+                if (tv == Diagonal) {
+                    if (newTv == Horizontal) {
+                        _alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
+                        --col; seqLen = 1;
+                    } else if (newTv == Vertical) {
+                        _alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
+                        --row; ++col; seqLen = 1;
+                    } else {
+                        --row; ++seqLen;
+                    }
+                } else {
+                    if (tv == Horizontal) { 
+                        if (newTv == Diagonal) {
+                            _alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
+                            --row; seqLen = 1;
+                        } else if (newTv == Vertical) {
+                            _alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
+                            --row; ++col; seqLen = 1;
+                        } else {
+                            --col; ++seqLen;
+                        }
+                    } else { 
+                        if (newTv == Diagonal) {
+                            _alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
+                            --row; seqLen = 1;
+                        } else if (newTv == Horizontal) {
+                            _alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
+                            --col; seqLen = 1;
+                        } else {
+                            --row; ++col; ++seqLen;
+                        }
+                    }
+                }
+                tv = newTv;
+            }
+        }
+    
+        // Align left overs
+        if (seqLen) _alignTracePrint(align, str[0], str[1], id1, actualCol, id2, actualRow, seqLen, tv);
+    }
 
-	// Handle the remaining sequence
-	if (actualCol != 0) _alignTracePrint(align, str[0], str[1], (TId) id1, (TSize) 0, (TId) 0, (TSize) 0, (TSize) actualCol,  Horizontal);
-	else if (actualRow != 0) _alignTracePrint(align, str[0], str[1], (TId) 0, (TSize) 0, (TId) id2, (TSize) 0, (TSize) actualRow,  Vertical);
+    // Handle the remaining sequence
+    if (actualCol != 0) _alignTracePrint(align, str[0], str[1], (TId) id1, (TSize) 0, (TId) 0, (TSize) 0, (TSize) actualCol,  Horizontal);
+    else if (actualRow != 0) _alignTracePrint(align, str[0], str[1], (TId) 0, (TSize) 0, (TId) id2, (TSize) 0, (TSize) actualRow,  Vertical);
 
 }
 
@@ -570,48 +570,48 @@ _alignBandedNeedlemanWunschTrace(TAlign & align,
 template<typename TMatrix, typename TCoord, typename TSequence, typename TSeed, typename TPos, typename TAlign>
 void
 _tracebackLeft(TMatrix const & matrixLeft,
-			   TCoord const & coordinate,
-			   Segment<TSequence, InfixSegment> const & infH,
-			   Segment<TSequence, InfixSegment> const & infV,
-			   TSeed & seed,
-			   TSeed & seedOld,
-			   TPos const endLeftH,
-			   TPos const endLeftV,
-			   TAlign & align) {
-	typedef Segment<TSequence, InfixSegment>			TInfix;
+               TCoord const & coordinate,
+               Segment<TSequence, InfixSegment> const & infH,
+               Segment<TSequence, InfixSegment> const & infV,
+               TSeed & seed,
+               TSeed & seedOld,
+               TPos const endLeftH,
+               TPos const endLeftV,
+               TAlign & align) {
+    typedef Segment<TSequence, InfixSegment>            TInfix;
 
-	StringSet<TInfix> str;
-	TInfix infixH(host(infH), beginPositionH(seed), beginPositionH(seedOld));
-	TInfix infixV(host(infV), beginPositionV(seed), beginPositionV(seedOld));
-	appendValue(str, infixH);
-	appendValue(str, infixV);
+    StringSet<TInfix> str;
+    TInfix infixH(host(infH), beginPositionH(seed), beginPositionH(seedOld));
+    TInfix infixV(host(infV), beginPositionV(seed), beginPositionV(seedOld));
+    appendValue(str, infixH);
+    appendValue(str, infixV);
 
     typedef typename Diagonal<TSeed>::Type TDiagonal;
     TDiagonal diagLower = lowerDiagonal(seedOld) - upperDiagonal(seed);
     TDiagonal diagUpper = lowerDiagonal(seedOld) - lowerDiagonal(seed);
 
-	AlignTraceback<TPos> traceBack;
-	_alignBandedNeedlemanWunschTrace(traceBack, str, matrixLeft, coordinate,
+    AlignTraceback<TPos> traceBack;
+    _alignBandedNeedlemanWunschTrace(traceBack, str, matrixLeft, coordinate,
                                      -diagUpper, -diagLower);
                                      // upperDiagonal(seedOld) - upperDiagonal(seed), upperDiagonal(seedOld) - lowerDiagonal(seed));
   //std::cerr << "TRACEBACK\n";
-	//for (unsigned i = 0; i < length(traceBack.tvs); ++i)
+    //for (unsigned i = 0; i < length(traceBack.tvs); ++i)
   //  std::cerr << (int)traceBack.tvs[i] << "\t" << traceBack.sizes[i] << "\n";
   //std::cerr << "---------\n";
 
-	reverse(traceBack.sizes);
-	reverse(traceBack.tvs);
+    reverse(traceBack.sizes);
+    reverse(traceBack.tvs);
 
-	Align<TInfix> infixAlign;
-	resize(rows(infixAlign), 2);
-	assignSource(row(infixAlign, 0), infix(str[0], length(str[0]) - endLeftH, length(str[0])));
-	assignSource(row(infixAlign, 1), infix(str[1], length(str[1]) - endLeftV, length(str[1])));
+    Align<TInfix> infixAlign;
+    resize(rows(infixAlign), 2);
+    assignSource(row(infixAlign, 0), infix(str[0], length(str[0]) - endLeftH, length(str[0])));
+    assignSource(row(infixAlign, 1), infix(str[1], length(str[1]) - endLeftV, length(str[1])));
 
     // std::cerr << "\nLEFT SEQS\n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
-	_pumpTraceToGaps(row(infixAlign, 0), row(infixAlign, 1), traceBack);
+    _pumpTraceToGaps(row(infixAlign, 0), row(infixAlign, 1), traceBack);
     // std::cerr << "INFIX ALIGN AFTER LEFT TRACEBACK\n\n" << infixAlign << "\n";
     // std::cerr << "ALIGN BEFORE INTEGRATION WITH INFIX ALIGN\n\n" << align << "\n";
-	integrateAlign(align, infixAlign);
+    integrateAlign(align, infixAlign);
     // std::cerr << "ALIGN AFTER INTEGRATION WITH INFIX ALIGN\n\n" << align << "\n";
 }
 
@@ -622,46 +622,46 @@ _tracebackLeft(TMatrix const & matrixLeft,
 template<typename TMatrix, typename TCoord, typename TSequence, typename TSeed, typename TPos, typename TAlign>
 void
 _tracebackRight(TMatrix const & matrixRight,
-			   TCoord const & coordinate,
-			   Segment<TSequence, InfixSegment> const & infH,
-			   Segment<TSequence, InfixSegment> const & infV,
-			   TSeed & seed,
-			   TSeed & seedOld,
-			   TPos const endRightH,
-			   TPos const endRightV,
-			   TAlign & align) {
-	typedef Segment<TSequence, InfixSegment>			TInfix;
+               TCoord const & coordinate,
+               Segment<TSequence, InfixSegment> const & infH,
+               Segment<TSequence, InfixSegment> const & infV,
+               TSeed & seed,
+               TSeed & seedOld,
+               TPos const endRightH,
+               TPos const endRightV,
+               TAlign & align) {
+    typedef Segment<TSequence, InfixSegment>            TInfix;
 
-	TInfix infixH(host(infH), endPositionH(seedOld), endPositionH(seed));
-	TInfix infixV(host(infV), endPositionV(seedOld), endPositionV(seed));
+    TInfix infixH(host(infH), endPositionH(seedOld), endPositionH(seed));
+    TInfix infixV(host(infV), endPositionV(seedOld), endPositionV(seed));
 
-	StringSet<TInfix> str;
-	appendValue(str, infixH);
-	appendValue(str, infixV);
+    StringSet<TInfix> str;
+    appendValue(str, infixH);
+    appendValue(str, infixV);
 
     typedef typename Diagonal<TSeed>::Type TDiagonal;
     TDiagonal diagLower = upperDiagonal(seedOld) - upperDiagonal(seed);
     TDiagonal diagUpper = upperDiagonal(seedOld) - lowerDiagonal(seed);
 
-	AlignTraceback<TPos> traceBack;
-	_alignBandedNeedlemanWunschTrace(traceBack, str, matrixRight, coordinate,
+    AlignTraceback<TPos> traceBack;
+    _alignBandedNeedlemanWunschTrace(traceBack, str, matrixRight, coordinate,
                                      -diagUpper, -diagLower);
-				// lowerDiagonal(seedOld) - upperDiagonal(seed), lowerDiagonal(seedOld) - lowerDiagonal(seed));
+                // lowerDiagonal(seedOld) - upperDiagonal(seed), lowerDiagonal(seedOld) - lowerDiagonal(seed));
   //std::cerr << "TRACEBACK\n";
-	//for (unsigned i = 0; i < length(traceBack.tvs); ++i)
+    //for (unsigned i = 0; i < length(traceBack.tvs); ++i)
   //  std::cerr << (int)traceBack.tvs[i] << "\t" << traceBack.sizes[i] << "\n";
   //std::cerr << "---------\n";
 
-	Align<TInfix> infixAlign;
-	resize(rows(infixAlign), 2);
-	assignSource(row(infixAlign, 0), infix(str[0], 0, endRightH));
-	assignSource(row(infixAlign, 1), infix(str[1], 0, endRightV));
+    Align<TInfix> infixAlign;
+    resize(rows(infixAlign), 2);
+    assignSource(row(infixAlign, 0), infix(str[0], 0, endRightH));
+    assignSource(row(infixAlign, 1), infix(str[1], 0, endRightV));
 
     // std::cerr << "\nRIGHT SEQS\n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
-	_pumpTraceToGaps(row(infixAlign, 0), row(infixAlign, 1), traceBack);
+    _pumpTraceToGaps(row(infixAlign, 0), row(infixAlign, 1), traceBack);
     // std::cerr << "INFIX ALIGN AFTER RIGHT TRACEBACK\n\n" << infixAlign << "\n";
     // std::cerr << "ALIGN BEFORE INTEGRATION WITH INFIX ALIGN\n\n" << align << "\n";
-	integrateAlign(align, infixAlign);
+    integrateAlign(align, infixAlign);
     // std::cerr << "ALIGN AFTER INTEGRATION WITH INFIX ALIGN\n\n" << align << "\n";
 }
 
@@ -670,91 +670,91 @@ _tracebackRight(TMatrix const & matrixRight,
 //   and end positions of an eps-match. Determines the optimal start and end
 //   position for the longest eps-match and writes the trace into align.
 template<typename TInfix, typename TSeed, typename TPos, typename TDir, typename TScore,
-		 typename TSize, typename TEps, typename TAlign>
+         typename TSize, typename TEps, typename TAlign>
 bool
 _bestExtension(TInfix const & infH,
-			   TInfix const & infV,
-			   TSeed & seed,
-			   TSeed & seedOld,
-			   TPos const alignLen,
-			   TPos const alignErr,
-			   TScore const & scoreMatrix,
-			   TDir const direction,
-			   TSize const minLength,
-			   TEps const eps,
-			   TAlign & align)
+               TInfix const & infV,
+               TSeed & seed,
+               TSeed & seedOld,
+               TPos const alignLen,
+               TPos const alignErr,
+               TScore const & scoreMatrix,
+               TDir const direction,
+               TSize const minLength,
+               TEps const eps,
+               TAlign & align)
 {
-	typedef String<TraceBack>							    TAlignmentMatrix;
-	typedef ExtensionEndPosition<TPos>                      TEndInfo;
-	typedef typename Iterator<String<TEndInfo> const>::Type TEndIterator;
+    typedef String<TraceBack>                                TAlignmentMatrix;
+    typedef ExtensionEndPosition<TPos>                      TEndInfo;
+    typedef typename Iterator<String<TEndInfo> const>::Type TEndIterator;
 
-	// variables for banded alignment and possible ends of match
-	TAlignmentMatrix matrixRight, matrixLeft;
-	String<TEndInfo> possibleEndsLeft, possibleEndsRight;
+    // variables for banded alignment and possible ends of match
+    TAlignmentMatrix matrixRight, matrixLeft;
+    String<TEndInfo> possibleEndsLeft, possibleEndsRight;
 
-	// fill banded matrix and gaps string for ...
-	if (direction == EXTEND_BOTH || direction == EXTEND_LEFT) { // ... extension to the left
-		_fillMatrixBestEndsLeft(matrixLeft, possibleEndsLeft, infH, infV, seed, seedOld, scoreMatrix);
-		// Caution: left extension infix is now reversed in host(infH and infV) !!!
+    // fill banded matrix and gaps string for ...
+    if (direction == EXTEND_BOTH || direction == EXTEND_LEFT) { // ... extension to the left
+        _fillMatrixBestEndsLeft(matrixLeft, possibleEndsLeft, infH, infV, seed, seedOld, scoreMatrix);
+        // Caution: left extension infix is now reversed in host(infH and infV) !!!
         SEQAN_ASSERT_NOT(empty(possibleEndsLeft));
-	} else appendValue(possibleEndsLeft, TEndInfo());
-	if (direction == EXTEND_BOTH || direction == EXTEND_RIGHT) { // ... extension to the right
-		_fillMatrixBestEndsRight(matrixRight, possibleEndsRight, infH, infV, seed, seedOld, scoreMatrix);
+    } else appendValue(possibleEndsLeft, TEndInfo());
+    if (direction == EXTEND_BOTH || direction == EXTEND_RIGHT) { // ... extension to the right
+        _fillMatrixBestEndsRight(matrixRight, possibleEndsRight, infH, infV, seed, seedOld, scoreMatrix);
         SEQAN_ASSERT_NOT(empty(possibleEndsRight));
-	} else appendValue(possibleEndsRight, TEndInfo());
+    } else appendValue(possibleEndsRight, TEndInfo());
 
-	// longest eps match on poss ends string
-	Pair<TEndIterator> endPair = longestEpsMatch(possibleEndsLeft, possibleEndsRight, alignLen, alignErr, minLength, eps);
+    // longest eps match on poss ends string
+    Pair<TEndIterator> endPair = longestEpsMatch(possibleEndsLeft, possibleEndsRight, alignLen, alignErr, minLength, eps);
 
-	if (endPair == Pair<TEndIterator>(0, 0)) { // no eps-match found
-		if (direction != 1) 
-			_reverseLeftExtension(infH, infV, seed, seedOld); // back to original orientation
-		return false;
-	}
+    if (endPair == Pair<TEndIterator>(0, 0)) { // no eps-match found
+        if (direction != 1) 
+            _reverseLeftExtension(infH, infV, seed, seedOld); // back to original orientation
+        return false;
+    }
 
-	// determine end positions of maximal eps-match in ...
-	TPos endLeftH = 0, endLeftV = 0;
-	TPos endRightH = 0, endRightV = 0;
-	if((*endPair.i1).length != 0) { // ... extension to the left
-		endLeftV = (*endPair.i1).coord.i1;
-		// correction for banded coordinates to unbanded:
-		if (upperDiagonal(seed) - lowerDiagonal(seedOld)  <= 0)
-			endLeftV -= (TPos)(upperDiagonal(seed) - lowerDiagonal(seedOld));
-		endLeftH = (TPos)((*endPair.i1).coord.i2 + endLeftV + lowerDiagonal(seed) - lowerDiagonal(seedOld));
-	}
-	if((*endPair.i2).length != 0) { // ... extension to the right
-		endRightV = (*endPair.i2).coord.i1;
-		// correction for banded coordinates to unbanded:
-		if (upperDiagonal(seed) - upperDiagonal(seedOld) <= 0)
-			endRightV -= (TPos)(upperDiagonal(seed) - upperDiagonal(seedOld));
-		endRightH = (TPos)((*endPair.i2).coord.i2 + endRightV + lowerDiagonal(seed) - upperDiagonal(seedOld));
-	}
+    // determine end positions of maximal eps-match in ...
+    TPos endLeftH = 0, endLeftV = 0;
+    TPos endRightH = 0, endRightV = 0;
+    if((*endPair.i1).length != 0) { // ... extension to the left
+        endLeftV = (*endPair.i1).coord.i1;
+        // correction for banded coordinates to unbanded:
+        if (upperDiagonal(seed) - lowerDiagonal(seedOld)  <= 0)
+            endLeftV -= (TPos)(upperDiagonal(seed) - lowerDiagonal(seedOld));
+        endLeftH = (TPos)((*endPair.i1).coord.i2 + endLeftV + lowerDiagonal(seed) - lowerDiagonal(seedOld));
+    }
+    if((*endPair.i2).length != 0) { // ... extension to the right
+        endRightV = (*endPair.i2).coord.i1;
+        // correction for banded coordinates to unbanded:
+        if (upperDiagonal(seed) - upperDiagonal(seedOld) <= 0)
+            endRightV -= (TPos)(upperDiagonal(seed) - upperDiagonal(seedOld));
+        endRightH = (TPos)((*endPair.i2).coord.i2 + endRightV + lowerDiagonal(seed) - upperDiagonal(seedOld));
+    }
 
-	// set begin and end positions of align
-	setBeginPosition(row(align, 0), beginPositionH(seedOld) - endLeftH);
-	setBeginPosition(row(align, 1), beginPositionV(seedOld) - endLeftV);
-	setEndPosition(row(align, 0), endPositionH(seedOld) + endRightH);
-	setEndPosition(row(align, 1), endPositionV(seedOld) + endRightV);
-	// setClippedBeginPosition(row(align, 0), beginPositionH(seedOld) - endLeftH);
-	// setClippedBeginPosition(row(align, 1), beginPositionV(seedOld) - endLeftV);
-	// setBeginPosition(row(align, 0), 0);
-	// setBeginPosition(row(align, 1), 0);
-	// setClippedEndPosition(row(align, 0), endPositionH(seedOld) + endRightH);
-	// setClippedEndPosition(row(align, 1), endPositionV(seedOld) + endRightV);
+    // set begin and end positions of align
+    setBeginPosition(row(align, 0), beginPositionH(seedOld) - endLeftH);
+    setBeginPosition(row(align, 1), beginPositionV(seedOld) - endLeftV);
+    setEndPosition(row(align, 0), endPositionH(seedOld) + endRightH);
+    setEndPosition(row(align, 1), endPositionV(seedOld) + endRightV);
+    // setClippedBeginPosition(row(align, 0), beginPositionH(seedOld) - endLeftH);
+    // setClippedBeginPosition(row(align, 1), beginPositionV(seedOld) - endLeftV);
+    // setBeginPosition(row(align, 0), 0);
+    // setBeginPosition(row(align, 1), 0);
+    // setClippedEndPosition(row(align, 0), endPositionH(seedOld) + endRightH);
+    // setClippedEndPosition(row(align, 1), endPositionV(seedOld) + endRightV);
 
-	// traceback through matrix from begin/end pos on ...
-	if((*endPair.i1).length != 0) { // ... extension to the left
-		_tracebackLeft(matrixLeft, (*endPair.i1).coord, infH, infV, seed, seedOld, endLeftH, endLeftV, align);
-	}
-	if((*endPair.i2).length != 0) { // ... extension to the right
-		_tracebackRight(matrixRight, (*endPair.i2).coord, infH, infV, seed, seedOld, endRightH, endRightV, align);
-	}
+    // traceback through matrix from begin/end pos on ...
+    if((*endPair.i1).length != 0) { // ... extension to the left
+        _tracebackLeft(matrixLeft, (*endPair.i1).coord, infH, infV, seed, seedOld, endLeftH, endLeftV, align);
+    }
+    if((*endPair.i2).length != 0) { // ... extension to the right
+        _tracebackRight(matrixRight, (*endPair.i2).coord, infH, infV, seed, seedOld, endRightH, endRightV, align);
+    }
     SEQAN_ASSERT_EQ(length(row(align, 0)), length(row(align, 1)));
 
-	if (direction == EXTEND_BOTH || direction == EXTEND_LEFT)
-		_reverseLeftExtension(infH, infV, seed, seedOld); // back to original orientation
+    if (direction == EXTEND_BOTH || direction == EXTEND_LEFT)
+        _reverseLeftExtension(infH, infV, seed, seedOld); // back to original orientation
 
-	return true;
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -762,20 +762,20 @@ _bestExtension(TInfix const & infH,
 template <typename TSource, typename TSpec1, typename TSpec2>
 void
 integrateAlign(Align<TSource, TSpec1> & align,
-			   Align<Segment<typename Infix<TSource>::Type, InfixSegment>, TSpec2> const & infixAlign) {
-	typedef typename Size<TSource>::Type TSize;
-	typedef typename Position<typename Row<Align<TSource, TSpec1> >::Type>::Type TPos;
+               Align<Segment<typename Infix<TSource>::Type, InfixSegment>, TSpec2> const & infixAlign) {
+    typedef typename Size<TSource>::Type TSize;
+    typedef typename Position<typename Row<Align<TSource, TSpec1> >::Type>::Type TPos;
 
-	String<TPos> viewPos;
-	TPos pos;
-	for (TSize i = 0; i < length(rows(infixAlign)); ++i) {
-		pos = beginPosition(source(row(infixAlign, i))) + beginPosition(row(infixAlign, i));
-		pos += beginPosition(host(source(row(infixAlign, i))));
-		appendValue(viewPos, toViewPosition(row(align, i), pos));
-	}
+    String<TPos> viewPos;
+    TPos pos;
+    for (TSize i = 0; i < length(rows(infixAlign)); ++i) {
+        pos = beginPosition(source(row(infixAlign, i))) + beginPosition(row(infixAlign, i));
+        pos += beginPosition(host(source(row(infixAlign, i))));
+        appendValue(viewPos, toViewPosition(row(align, i), pos));
+    }
 
     // std::cerr << "HAHA infixAlign == \n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
-	integrateAlign(align, infixAlign, viewPos);
+    integrateAlign(align, infixAlign, viewPos);
     // std::cerr << "HAHA infixAlign == \n" << row(infixAlign, 0) << "\n" << row(infixAlign, 1) << "\n";
 }
 
@@ -785,14 +785,14 @@ integrateAlign(Align<TSource, TSpec1> & align,
 template<typename TScoreValue, typename TScore, typename TSequence, typename TSize, typename TEps, typename TAlign>
 bool
 _extendAndExtract(Align<Segment<Segment<TSequence, InfixSegment>, InfixSegment> > const & localAlign,
-				  TScoreValue scoreDropOff,
-				  TScore const & scoreMatrix,
-				  Segment<typename Infix<TSequence>::Type, InfixSegment> const & infH,
-				  Segment<typename Infix<TSequence>::Type, InfixSegment>  const & infV,
-				  ExtensionDirection direction,
-				  TSize minLength,
-				  TEps eps,
-				  TAlign & align) {
+                  TScoreValue scoreDropOff,
+                  TScore const & scoreMatrix,
+                  Segment<typename Infix<TSequence>::Type, InfixSegment> const & infH,
+                  Segment<typename Infix<TSequence>::Type, InfixSegment>  const & infV,
+                  ExtensionDirection direction,
+                  TSize minLength,
+                  TEps eps,
+                  TAlign & align) {
     typedef typename Position<TSequence>::Type TPos;
     typedef Seed<Simple> TSeed;
 
@@ -802,60 +802,60 @@ _extendAndExtract(Align<Segment<Segment<TSequence, InfixSegment>, InfixSegment> 
     //std::cerr << __LINE__ << "\tLOCAL ALIGN\n" << row(localAlign, 0) << "\n" << row(localAlign, 1) << "\n";
     //std::cerr << __LINE__ << "\tALIGN\n" << row(align, 0) << "\n" << row(align, 1) << "\n";
 
-	// Get begin and end position of local alignment (seed) as source positions
-	// in underlying sequences.
-	TPos seedBeginH = beginPosition(row(localAlign, 0)) + beginPosition(infH);
-	TPos seedBeginV = beginPosition(row(localAlign, 1)) + beginPosition(infV);
-	TPos seedEndH = endPosition(row(localAlign, 0)) + beginPosition(infH);
-	TPos seedEndV = endPosition(row(localAlign, 1)) + beginPosition(infV);
+    // Get begin and end position of local alignment (seed) as source positions
+    // in underlying sequences.
+    TPos seedBeginH = beginPosition(row(localAlign, 0)) + beginPosition(infH);
+    TPos seedBeginV = beginPosition(row(localAlign, 1)) + beginPosition(infV);
+    TPos seedEndH = endPosition(row(localAlign, 0)) + beginPosition(infH);
+    TPos seedEndV = endPosition(row(localAlign, 1)) + beginPosition(infV);
 
-	if (direction == EXTEND_NONE) {
-		// set begin and end positions of align
-		setBeginPosition(row(align, 0), seedBeginH);
-		setBeginPosition(row(align, 1), seedBeginV);
-		setEndPosition(row(align, 0), seedEndH);
-		setEndPosition(row(align, 1), seedEndV);
+    if (direction == EXTEND_NONE) {
+        // set begin and end positions of align
+        setBeginPosition(row(align, 0), seedBeginH);
+        setBeginPosition(row(align, 1), seedBeginV);
+        setEndPosition(row(align, 0), seedEndH);
+        setEndPosition(row(align, 1), seedEndV);
 
-		if ((TSize)length(row(align, 0)) < minLength)
-			return false;
+        if ((TSize)length(row(align, 0)) < minLength)
+            return false;
 
-		longestEpsMatch(align, minLength, eps);
-	} else {
-		// gapped X-drop extension of local alignment (seed)
-		TSeed seed(seedBeginH, seedBeginV, seedEndH, seedEndV);
-		TSeed seedOld(seed);
-		extendSeed(seed, host(infH), host(infV), direction, scoreMatrix, scoreDropOff, GappedXDrop());
+        longestEpsMatch(align, minLength, eps);
+    } else {
+        // gapped X-drop extension of local alignment (seed)
+        TSeed seed(seedBeginH, seedBeginV, seedEndH, seedEndV);
+        TSeed seedOld(seed);
+        extendSeed(seed, host(infH), host(infV), direction, scoreMatrix, scoreDropOff, GappedXDrop());
 
-		if (static_cast<__int64>(seedSize(seed)) < minLength - (int)floor(minLength*eps))
-			return false;
+        if (static_cast<__int64>(seedSize(seed)) < minLength - (int)floor(minLength*eps))
+            return false;
 
-		// determine length and number of error columns of local alignment (seed)
-		TPos alignLen = _max(length(row(localAlign, 0)), length(row(localAlign, 1)));
-		TPos alignErr = 0;
-		for (TPos i = 0; i < alignLen; ++i) {
-			if (!isMatch(localAlign, i)) ++alignErr;
-		}
+        // determine length and number of error columns of local alignment (seed)
+        TPos alignLen = _max(length(row(localAlign, 0)), length(row(localAlign, 1)));
+        TPos alignErr = 0;
+        for (TPos i = 0; i < alignLen; ++i) {
+            if (!isMatch(localAlign, i)) ++alignErr;
+        }
 
-		// convert seeds from positions in host(seq) to positions in host(host(seq))
-		setBeginPositionH(seedOld, beginPositionH(seedOld) + beginPosition(host(infH)));
-		setEndPositionH(seedOld, endPositionH(seedOld) + beginPosition(host(infH)));
-		setBeginPositionV(seedOld, beginPositionV(seedOld) + beginPosition(host(infV)));
-		setEndPositionV(seedOld, endPositionV(seedOld) + beginPosition(host(infV)));
-		setBeginPositionH(seed, beginPositionH(seed) + beginPosition(host(infH)));
-		setEndPositionH(seed, endPositionH(seed) + beginPosition(host(infH)));
-		setBeginPositionV(seed, beginPositionV(seed) + beginPosition(host(infV)));
-		setEndPositionV(seed, endPositionV(seed) + beginPosition(host(infV)));
+        // convert seeds from positions in host(seq) to positions in host(host(seq))
+        setBeginPositionH(seedOld, beginPositionH(seedOld) + beginPosition(host(infH)));
+        setEndPositionH(seedOld, endPositionH(seedOld) + beginPosition(host(infH)));
+        setBeginPositionV(seedOld, beginPositionV(seedOld) + beginPosition(host(infV)));
+        setEndPositionV(seedOld, endPositionV(seedOld) + beginPosition(host(infV)));
+        setBeginPositionH(seed, beginPositionH(seed) + beginPosition(host(infH)));
+        setEndPositionH(seed, endPositionH(seed) + beginPosition(host(infH)));
+        setBeginPositionV(seed, beginPositionV(seed) + beginPosition(host(infV)));
+        setEndPositionV(seed, endPositionV(seed) + beginPosition(host(infV)));
 
-		// determine best extension lengths and write the trace into align
-		typename Infix<TSequence>::Type infixH = infix(host(infH), beginPosition(infH), endPosition(infH));
-		typename Infix<TSequence>::Type infixV = infix(host(infV), beginPosition(infV), endPosition(infV));
-		if (!_bestExtension(infixH, infixV, seed, seedOld, alignLen, alignErr, scoreMatrix, direction, minLength, eps, align))
-			return false;
-		SEQAN_ASSERT_EQ(length(row(align, 0)), length(row(align, 1)));
-	}
+        // determine best extension lengths and write the trace into align
+        typename Infix<TSequence>::Type infixH = infix(host(infH), beginPosition(infH), endPosition(infH));
+        typename Infix<TSequence>::Type infixV = infix(host(infV), beginPosition(infV), endPosition(infV));
+        if (!_bestExtension(infixH, infixV, seed, seedOld, alignLen, alignErr, scoreMatrix, direction, minLength, eps, align))
+            return false;
+        SEQAN_ASSERT_EQ(length(row(align, 0)), length(row(align, 1)));
+    }
     SEQAN_ASSERT_EQ(length(row(align, 0)), length(row(align, 1)));
     //std::cerr << "extracted alignment\n-------------\n" << align << "----------------\n";
-	return true;
+    return true;
 }
 
 #endif

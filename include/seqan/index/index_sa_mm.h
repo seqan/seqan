@@ -38,7 +38,7 @@
 namespace SEQAN_NAMESPACE_MAIN
 {
 
-	struct ManberMyers {};
+    struct ManberMyers {};
 
 
     //////////////////////////////////////////////////////////////////////////////
@@ -48,134 +48,134 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TSA,
                typename TText >
     void createSuffixArray(
-		TSA &SA,
-		TText const &s,
-		ManberMyers const &,
-		unsigned K,
+        TSA &SA,
+        TText const &s,
+        ManberMyers const &,
+        unsigned K,
         unsigned maxdepth)
-	{
-		typedef typename Value<TSA>::Type	TSize;
-		typedef typename Value<TText>::Type	TValue;
+    {
+        typedef typename Value<TSA>::Type    TSize;
+        typedef typename Value<TText>::Type    TValue;
 
-		typedef String<TSize, Alloc<> >		TString;
-		typedef String<bool, Alloc<> >		TBoolString;
+        typedef String<TSize, Alloc<> >        TString;
+        typedef String<bool, Alloc<> >        TBoolString;
 
-		typedef typename Iterator<TString, Standard>::Type	TIter;
+        typedef typename Iterator<TString, Standard>::Type    TIter;
 
-		TSize n = length(s);
+        TSize n = length(s);
 
         TString ISA;        resize(ISA, n, Exact());
         TString count;
-        TBoolString Bh;		resize(Bh, n, Exact());
-		TBoolString B2h;	resize(B2h, n, Exact());
+        TBoolString Bh;        resize(Bh, n, Exact());
+        TBoolString B2h;    resize(B2h, n, Exact());
 
-		// sort the first character (h=1)
-		{
-			resize(count, _max((TSize)K, n), Exact());
-			TIter it = begin(ISA, Standard());
-			for(TSize i = 0; i < n; ++i, ++it)
-				*it = i;
-			SEQAN_PROMARK("Suffix-Array invertiert");
+        // sort the first character (h=1)
+        {
+            resize(count, _max((TSize)K, n), Exact());
+            TIter it = begin(ISA, Standard());
+            for(TSize i = 0; i < n; ++i, ++it)
+                *it = i;
+            SEQAN_PROMARK("Suffix-Array invertiert");
 
-			radixPass(SA, ISA, s, count, length(count));
-			arrayFill(begin(Bh, Standard()), end(Bh, Standard()), false);
-		}
+            radixPass(SA, ISA, s, count, length(count));
+            arrayFill(begin(Bh, Standard()), end(Bh, Standard()), false);
+        }
 
-		// update bucket borders Bh
-		{
-			TValue c = 0, d;
-			for(TSize i = 0; i < n; ++i) {
-				if (c != (d = s[SA[i]])) {
-					c = d;
-					Bh[i] = true;
-				}
-			}
-		}
+        // update bucket borders Bh
+        {
+            TValue c = 0, d;
+            for(TSize i = 0; i < n; ++i) {
+                if (c != (d = s[SA[i]])) {
+                    c = d;
+                    Bh[i] = true;
+                }
+            }
+        }
 
-		// extend h-sort to 2h-sort
-		{
-			resize(count, n, Exact());
-			TSize j, k, l, Ti, cd = 0;
+        // extend h-sort to 2h-sort
+        {
+            resize(count, n, Exact());
+            TSize j, k, l, Ti, cd = 0;
 
-			// set necessary number of rounds cd
-			for(TSize h = 1; h < n; h <<= 1, ++cd) ;
-			if (maxdepth > 0 && maxdepth < cd) 
-				cd = maxdepth;
+            // set necessary number of rounds cd
+            for(TSize h = 1; h < n; h <<= 1, ++cd) ;
+            if (maxdepth > 0 && maxdepth < cd) 
+                cd = maxdepth;
 
-			for(TSize h = 1; cd > 0; h <<= 1, --cd) {
+            for(TSize h = 1; cd > 0; h <<= 1, --cd) {
 
-				#ifdef SEQAN_DEBUG_INDEX
-					std::cerr << "[" << cd << "] ";
-				#endif
-				SEQAN_PROADD(SEQAN_PRODEPTH, 1);
-				SEQAN_PROMARK("Beginne Durchlauf");
-				arrayFill(begin(count, Standard()), end(count, Standard()), 0);
-				arrayFill(begin(B2h, Standard()), end(B2h, Standard()), false);
+                #ifdef SEQAN_DEBUG_INDEX
+                    std::cerr << "[" << cd << "] ";
+                #endif
+                SEQAN_PROADD(SEQAN_PRODEPTH, 1);
+                SEQAN_PROMARK("Beginne Durchlauf");
+                arrayFill(begin(count, Standard()), end(count, Standard()), 0);
+                arrayFill(begin(B2h, Standard()), end(B2h, Standard()), false);
 
-				l = 0;
-				for(TSize i = 0; i < n; ++i) {
-					if (Bh[i]) l = i;
-					ISA[SA[i]] = l;
-				}
+                l = 0;
+                for(TSize i = 0; i < n; ++i) {
+                    if (Bh[i]) l = i;
+                    ISA[SA[i]] = l;
+                }
 
-				SEQAN_ASSERT_GEQ(n, h);
-				Ti = n - h;
-				TIter p = begin(ISA, Standard()) + Ti;
+                SEQAN_ASSERT_GEQ(n, h);
+                Ti = n - h;
+                TIter p = begin(ISA, Standard()) + Ti;
 
-				SEQAN_ASSERT_LT(*p, n);
-				j = count[*p]++;
-				*p += j;
+                SEQAN_ASSERT_LT(*p, n);
+                j = count[*p]++;
+                *p += j;
 
-				SEQAN_ASSERT_LT(*p, n);
-				B2h[*p] = true;
+                SEQAN_ASSERT_LT(*p, n);
+                B2h[*p] = true;
 
-				l = 0;
-				for(TSize i = 0; i < n; ++i) {
+                l = 0;
+                for(TSize i = 0; i < n; ++i) {
 
-					if ((Ti = SA[i]) >= h) {
-						Ti -= h;
-						p = begin(ISA) + Ti;
+                    if ((Ti = SA[i]) >= h) {
+                        Ti -= h;
+                        p = begin(ISA) + Ti;
 
-						SEQAN_ASSERT_LT(*p, n);
-						j = count[*p]++;
-						*p += j;
+                        SEQAN_ASSERT_LT(*p, n);
+                        j = count[*p]++;
+                        *p += j;
 
-						SEQAN_ASSERT_LT(*p, n);
-						B2h[*p] = true;
-					}
+                        SEQAN_ASSERT_LT(*p, n);
+                        B2h[*p] = true;
+                    }
 
-					if (i + 1 == n || Bh[i + 1]) {
-						for(j = l; j <= i; ++j)
-							if ((Ti = SA[j]) >= h) {
-								Ti -= h;
-								if (B2h[k = ISA[Ti]])
-									while (++k < n && !Bh[k] && B2h[k])
-										B2h[k] = false;
-							}
-						l = i + 1;
-					}
-				}
+                    if (i + 1 == n || Bh[i + 1]) {
+                        for(j = l; j <= i; ++j)
+                            if ((Ti = SA[j]) >= h) {
+                                Ti -= h;
+                                if (B2h[k = ISA[Ti]])
+                                    while (++k < n && !Bh[k] && B2h[k])
+                                        B2h[k] = false;
+                            }
+                        l = i + 1;
+                    }
+                }
 
-				for(TSize i = 0; i < n; ++i) {
-					SA[ISA[i]] = i;
-					Bh[i] |= B2h[i];
-				}
-			}
-		}
+                for(TSize i = 0; i < n; ++i) {
+                    SA[ISA[i]] = i;
+                    Bh[i] |= B2h[i];
+                }
+            }
+        }
         SEQAN_PROSET(SEQAN_PRODEPTH, 0);
         #ifdef SEQAN_DEBUG_INDEX
-			std::cerr << std::endl;
+            std::cerr << std::endl;
         #endif
-	}
+    }
 
     // creates suffix array sorted by the first maxLCP chars of suffixes
     template < typename TSA,
                typename TText,
                typename TSize >
     inline void createSuffixArrayPart(
-		TSA &SA,
-		TText &s,
-		ManberMyers const &alg,
+        TSA &SA,
+        TText &s,
+        ManberMyers const &alg,
         TSize maxLCP,
         unsigned K)
     {
@@ -188,9 +188,9 @@ namespace SEQAN_NAMESPACE_MAIN
                typename TText,
                typename TSize >
     inline void createSuffixArrayPart(
-		TSA &SA,
-		TText &s,
-		ManberMyers const &alg,
+        TSA &SA,
+        TText &s,
+        ManberMyers const &alg,
         TSize maxLCP)
     {
         SEQAN_CHECKPOINT;

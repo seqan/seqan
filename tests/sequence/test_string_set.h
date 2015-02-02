@@ -873,16 +873,16 @@ void testStringSetConcat(TStringSet & /*Tag*/)
         TString str3("GGGG");
         TString str4("TTTT");
 
-    	TNonConstStringSet nonConstStringSet;
-    	appendValue(nonConstStringSet, str1); 
-    	appendValue(nonConstStringSet, str2); 
-    	appendValue(nonConstStringSet, str3); 
-    	appendValue(nonConstStringSet, str4); 
-    	TString string("AAAACCCCGGGGTTTT");
+        TNonConstStringSet nonConstStringSet;
+        appendValue(nonConstStringSet, str1); 
+        appendValue(nonConstStringSet, str2); 
+        appendValue(nonConstStringSet, str3); 
+        appendValue(nonConstStringSet, str4); 
+        TString string("AAAACCCCGGGGTTTT");
         TStringSet stringSet(nonConstStringSet);
         TConcat concatString = concat(stringSet);
         for (unsigned i = 0; i < length(string); ++i)
-        	SEQAN_ASSERT_EQ(string[i], concatString[i]);
+            SEQAN_ASSERT_EQ(string[i], concatString[i]);
     }
 }
 
@@ -1507,7 +1507,7 @@ void testStringSetIter(TStringSet & /*Tag*/)
 
     // Test on an empty string set.
     {
-    	TStringSet stringSet;
+        TStringSet stringSet;
         TIterator iterator = iter(stringSet, 0);
         TStandardIterator standardIterator = iter(stringSet, 0);
         TRootedIterator rootedIterator = iter(stringSet, 0);
@@ -1521,11 +1521,11 @@ void testStringSetIter(TStringSet & /*Tag*/)
         TString str1("AAAA");
         TString str2("CCCC");
         TString str3("GGGG");
-    	TNonConstStringSet nonConstStringSet;
-    	appendValue(nonConstStringSet, str1);
-    	appendValue(nonConstStringSet, str2);
-    	appendValue(nonConstStringSet, str3);
-    	TStringSet stringSet(nonConstStringSet);
+        TNonConstStringSet nonConstStringSet;
+        appendValue(nonConstStringSet, str1);
+        appendValue(nonConstStringSet, str2);
+        appendValue(nonConstStringSet, str3);
+        TStringSet stringSet(nonConstStringSet);
         TIterator iterator = iter(stringSet, 0);
         TStandardIterator standardIterator = iter(stringSet, 0);
         TRootedIterator rootedIterator = iter(stringSet, 0);
@@ -1541,12 +1541,12 @@ void testStringSetIter(TStringSet & /*Tag*/)
         TString str2("CCCC");
         TString str3("GGGG");
         TString str4("TTTT");
-    	TNonConstStringSet nonConstStringSet;
-    	appendValue(nonConstStringSet, str1);
-    	appendValue(nonConstStringSet, str2);
-    	appendValue(nonConstStringSet, str3);
-    	appendValue(nonConstStringSet, str4);
-    	TStringSet stringSet(nonConstStringSet);
+        TNonConstStringSet nonConstStringSet;
+        appendValue(nonConstStringSet, str1);
+        appendValue(nonConstStringSet, str2);
+        appendValue(nonConstStringSet, str3);
+        appendValue(nonConstStringSet, str4);
+        TStringSet stringSet(nonConstStringSet);
         TIterator iterator = iter(stringSet, 3);
         TStandardIterator standardIterator = iter(stringSet, 3);
         TRootedIterator rootedIterator = iter(stringSet, 3);
@@ -1591,16 +1591,16 @@ void testStringSetLength(TStringSet & /*Tag*/)
 
     // Test on an empty string.
     {
-    	TStringSet stringSet;
-    	SEQAN_ASSERT_EQ(length(stringSet), 0u);
+        TStringSet stringSet;
+        SEQAN_ASSERT_EQ(length(stringSet), 0u);
     }
 
     // Test on a non empty string.
     {
-    	TNonConstStringSet nonConstStringSet;
-    	resize(nonConstStringSet, 10u);
-    	TStringSet stringSet(nonConstStringSet);
-    	SEQAN_ASSERT_EQ(length(stringSet), 10u);
+        TNonConstStringSet nonConstStringSet;
+        resize(nonConstStringSet, 10u);
+        TStringSet stringSet(nonConstStringSet);
+        SEQAN_ASSERT_EQ(length(stringSet), 10u);
     }
 }
 

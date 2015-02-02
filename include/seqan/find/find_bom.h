@@ -106,29 +106,29 @@ template <typename TNeedle, typename TSpec>
 class Pattern<TNeedle, Bfam<TSpec> > {
 //____________________________________________________________________________
 public:
-	typedef typename Value<TNeedle>::Type TAlphabet;
-	typedef typename Size<TNeedle>::Type TSize;
-	Holder<TNeedle> data_host;
-	TSize needleLength;
-	TSize haystackLength;
-	TSize step;
-	Graph<Automaton<TAlphabet, void, WithoutEdgeId> > automaton;
+    typedef typename Value<TNeedle>::Type TAlphabet;
+    typedef typename Size<TNeedle>::Type TSize;
+    Holder<TNeedle> data_host;
+    TSize needleLength;
+    TSize haystackLength;
+    TSize step;
+    Graph<Automaton<TAlphabet, void, WithoutEdgeId> > automaton;
 
 //____________________________________________________________________________
 
-	Pattern() {
-	}
+    Pattern() {
+    }
 
-	template <typename TNeedle2>
-	Pattern(TNeedle2 const & ndl)
-	{
+    template <typename TNeedle2>
+    Pattern(TNeedle2 const & ndl)
+    {
 SEQAN_CHECKPOINT
-		setHost(*this, ndl);
-	}
+        setHost(*this, ndl);
+    }
 
-	~Pattern() {
-		SEQAN_CHECKPOINT
-	}
+    ~Pattern() {
+        SEQAN_CHECKPOINT
+    }
 //____________________________________________________________________________
 };
 
@@ -139,13 +139,13 @@ SEQAN_CHECKPOINT
 template <typename TNeedle>
 struct Host< Pattern<TNeedle, BomAlgo> >
 {
-	typedef TNeedle Type;
+    typedef TNeedle Type;
 };
 
 template <typename TNeedle>
 struct Host< Pattern<TNeedle, BomAlgo> const>
 {
-	typedef TNeedle const Type;
+    typedef TNeedle const Type;
 };
 
 
@@ -158,11 +158,11 @@ template <typename TNeedle, typename TNeedle2>
 inline void 
 setHost (Pattern<TNeedle, Bfam<Oracle> > & me, TNeedle2 const& needle) 
 {
-	SEQAN_CHECKPOINT
-	me.needleLength = length(needle);
-	clear(me.automaton);
-	createOracleOnReverse(me.automaton,needle);
-	setValue(me.data_host, needle);
+    SEQAN_CHECKPOINT
+    me.needleLength = length(needle);
+    clear(me.automaton);
+    createOracleOnReverse(me.automaton,needle);
+    setValue(me.data_host, needle);
 }
 
 //Bfam<Trie>: BTM Algorithm (the same as BOM, but with an trie)
@@ -170,26 +170,26 @@ template <typename TNeedle, typename TNeedle2>
 inline void 
 setHost (Pattern<TNeedle, Bfam<Trie> > & me, TNeedle2 const& needle) 
 {
-	SEQAN_CHECKPOINT;
-	typedef typename Position<TNeedle>::Type TPosition;
-	me.needleLength = length(needle);
-	clear(me.automaton);
+    SEQAN_CHECKPOINT;
+    typedef typename Position<TNeedle>::Type TPosition;
+    me.needleLength = length(needle);
+    clear(me.automaton);
 
-	String<String<TPosition> > terminal_state_map; //dummy
-	typedef typename Value<TNeedle2 const>::Type TValue;
-	String<TValue> reverse_string = needle;
-	reverse(reverse_string);
+    String<String<TPosition> > terminal_state_map; //dummy
+    typedef typename Value<TNeedle2 const>::Type TValue;
+    String<TValue> reverse_string = needle;
+    reverse(reverse_string);
 
-	createSuffixTrie(me.automaton, terminal_state_map, reverse_string);
+    createSuffixTrie(me.automaton, terminal_state_map, reverse_string);
 
-	setValue(me.data_host, needle);
+    setValue(me.data_host, needle);
 }
 
 template <typename TNeedle, typename TNeedle2, typename TSpec>
 inline void 
 setHost (Pattern<TNeedle, Bfam<TSpec> > & me, TNeedle2 & needle)
 {
-	setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
+    setHost(me, reinterpret_cast<TNeedle2 const &>(needle));
 }
 
 //____________________________________________________________________________
@@ -199,7 +199,7 @@ template <typename TNeedle, typename TSpec>
 inline void _patternInit (Pattern<TNeedle, Bfam<TSpec> > & me) 
 {
 SEQAN_CHECKPOINT
-	me.step = 0;
+    me.step = 0;
 }
 
 
@@ -210,37 +210,37 @@ template <typename TFinder, typename TNeedle, typename TSpec>
 inline bool
 find(TFinder & finder, Pattern<TNeedle, Bfam<TSpec> > & me)
 {
-	if (empty(finder)) {
-		_patternInit(me);
-		_setFinderLength(finder, length(needle(me)));
-		_finderSetNonEmpty(finder);
-		me.haystackLength = length(container(finder));
-	} else
-		finder+=me.step;
+    if (empty(finder)) {
+        _patternInit(me);
+        _setFinderLength(finder, length(needle(me)));
+        _finderSetNonEmpty(finder);
+        me.haystackLength = length(container(finder));
+    } else
+        finder+=me.step;
 
-	if (me.haystackLength < me.needleLength) return false;
-	typedef typename Value<TNeedle>::Type TAlphabet;
-	typedef Graph<Automaton<TAlphabet> > TOracle;
-	typedef typename Size<TNeedle>::Type TSize;
-	typedef typename VertexDescriptor<TOracle>::Type TVertexDescriptor;
-	TVertexDescriptor nilVal = getNil<TVertexDescriptor>();
-	while (position(finder) <= me.haystackLength - me.needleLength) {
-		TVertexDescriptor current = getRoot(me.automaton);
-		TSize j = me.needleLength;
-		while ((j>0) &&	(current != nilVal))
-		{
-			TAlphabet c = *(finder+(j-1));
-			current = targetVertex(me.automaton, findEdge(me.automaton, current, c));
-			--j;
-		}
-		if (current != nilVal) {
-			me.step = j + 1;
-			_setFinderEnd(finder, position(finder) + me.needleLength);
-			return true;
-		}
-		finder += j + 1;
-	}
-	return false;
+    if (me.haystackLength < me.needleLength) return false;
+    typedef typename Value<TNeedle>::Type TAlphabet;
+    typedef Graph<Automaton<TAlphabet> > TOracle;
+    typedef typename Size<TNeedle>::Type TSize;
+    typedef typename VertexDescriptor<TOracle>::Type TVertexDescriptor;
+    TVertexDescriptor nilVal = getNil<TVertexDescriptor>();
+    while (position(finder) <= me.haystackLength - me.needleLength) {
+        TVertexDescriptor current = getRoot(me.automaton);
+        TSize j = me.needleLength;
+        while ((j>0) &&    (current != nilVal))
+        {
+            TAlphabet c = *(finder+(j-1));
+            current = targetVertex(me.automaton, findEdge(me.automaton, current, c));
+            --j;
+        }
+        if (current != nilVal) {
+            me.step = j + 1;
+            _setFinderEnd(finder, position(finder) + me.needleLength);
+            return true;
+        }
+        finder += j + 1;
+    }
+    return false;
 }
 
 }// namespace SEQAN_NAMESPACE_MAIN

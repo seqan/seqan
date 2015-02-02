@@ -119,26 +119,26 @@ namespace SEQAN_NAMESPACE_MAIN
 template <typename TContigSeq_, typename TGapAnchor_, typename TSpec_ = void>
 struct ContigStoreElement
 {
-	typedef typename Id<ContigStoreElement>::Type	TId;
-	
-	typedef TContigSeq_			TContigSeq;
-	typedef TGapAnchor_			TGapAnchor;
-	typedef TSpec_				TSpec;
-	typedef __int64				TPos;
-	typedef String<TGapAnchor>	TGapAnchors;
+    typedef typename Id<ContigStoreElement>::Type    TId;
+    
+    typedef TContigSeq_            TContigSeq;
+    typedef TGapAnchor_            TGapAnchor;
+    typedef TSpec_                TSpec;
+    typedef __int64                TPos;
+    typedef String<TGapAnchor>    TGapAnchors;
 
-	static const TId INVALID_ID;
+    static const TId INVALID_ID;
 
-	TContigSeq	seq;
-	TGapAnchors	gaps;
-	
+    TContigSeq    seq;
+    TGapAnchors    gaps;
+    
 // dynamic loading and disposing of contigs
-	unsigned	usage;			// number of threads,... using this contig
-	TId			fileId;
-	TPos		fileBeginPos;
-	TPos		fileEndPos;
+    unsigned    usage;            // number of threads,... using this contig
+    TId            fileId;
+    TPos        fileBeginPos;
+    TPos        fileEndPos;
 
-	ContigStoreElement() : usage(0), fileId(INVALID_ID), fileBeginPos(0), fileEndPos(0) {}
+    ContigStoreElement() : usage(0), fileId(INVALID_ID), fileBeginPos(0), fileEndPos(0) {}
 
     inline bool operator==(ContigStoreElement const & other) const
     {
@@ -187,13 +187,13 @@ template <typename TSpec_ = void>
 struct ContigFile
 {
 //IOREV instead of storing filename and format store TFile ?
-	typedef typename Id<ContigFile>::Type	TId;
+    typedef typename Id<ContigFile>::Type    TId;
 
-	static const TId INVALID_ID;
+    static const TId INVALID_ID;
 
-	CharString		fileName;
-	AutoSeqFormat	format;
-	TId				firstContigId;	// first sequence of the file corresponds to this contigId
+    CharString        fileName;
+    AutoSeqFormat    format;
+    TId                firstContigId;    // first sequence of the file corresponds to this contigId
 
     inline bool operator==(ContigFile const & other) const
     {

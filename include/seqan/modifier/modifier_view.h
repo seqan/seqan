@@ -88,7 +88,7 @@ struct ModView {};
 template <typename TFunctor>
 struct ModViewCargo
 {
-    TFunctor	func;
+    TFunctor    func;
 
     ModViewCargo() : func()
     {}
@@ -292,7 +292,7 @@ public:
 template <typename THost, typename TFunctor>
 struct Cargo<ModifiedIterator<THost, ModView<TFunctor> > >
 {
-    typedef ModViewCargo<TFunctor>	Type;
+    typedef ModViewCargo<TFunctor>    Type;
 };
 
 // --------------------------------------------------------------------------
@@ -302,7 +302,7 @@ struct Cargo<ModifiedIterator<THost, ModView<TFunctor> > >
 template <typename THost, typename TFunctor>
 struct Value<ModifiedIterator<THost, ModView<TFunctor> > >
 {
-    typedef typename TFunctor::result_type			TResult_;
+    typedef typename TFunctor::result_type            TResult_;
     typedef typename RemoveConst_<TResult_>::Type   Type;
 };
 
@@ -331,7 +331,7 @@ struct Reference<ModifiedIterator<THost, ModView<TFunctor> > >
 template <typename THost, typename TFunctor>
 struct Cargo< ModifiedString<THost, ModView<TFunctor> > >
 {
-    typedef ModViewCargo<TFunctor>	Type;
+    typedef ModViewCargo<TFunctor>    Type;
 };
 
 // ==========================================================================
@@ -434,21 +434,21 @@ inline void
 convert(TSequence & sequence, TFunctor const &F)
 {
 #if defined (_OPENMP) && defined (SEQAN_PARALLEL)
-	// OpenMP does not support for loop with iterators. Therefore use index variables.
-	typedef typename Position<TSequence>::Type	TPos;
-	typedef typename MakeSigned_<TPos>::Type	TSignedPos;
+    // OpenMP does not support for loop with iterators. Therefore use index variables.
+    typedef typename Position<TSequence>::Type    TPos;
+    typedef typename MakeSigned_<TPos>::Type    TSignedPos;
 
-	#pragma omp parallel for if(length(sequence) > 1000000)
-	for(TSignedPos p = 0; p < (TSignedPos)length(sequence); ++p)
-		sequence[p] = F(sequence[p]);
-	
+    #pragma omp parallel for if(length(sequence) > 1000000)
+    for(TSignedPos p = 0; p < (TSignedPos)length(sequence); ++p)
+        sequence[p] = F(sequence[p]);
+    
 #else
-	typedef typename Iterator<TSequence, Standard>::Type	TIter;
+    typedef typename Iterator<TSequence, Standard>::Type    TIter;
 
-	TIter it = begin(sequence, Standard());
-	TIter itEnd = end(sequence, Standard());
-	for(; it != itEnd; ++it)
-		*it = F(*it);
+    TIter it = begin(sequence, Standard());
+    TIter itEnd = end(sequence, Standard());
+    for(; it != itEnd; ++it)
+        *it = F(*it);
 #endif
 }
 
@@ -457,21 +457,21 @@ inline void
 convert(TSequence const & sequence, TFunctor const &F)
 {
 #if defined (_OPENMP) && defined (SEQAN_PARALLEL)
-	// OpenMP does not support for loop with iterators. Therefore use index variables.
-	typedef typename Position<TSequence>::Type	TPos;
-	typedef typename MakeSigned_<TPos>::Type	TSignedPos;
+    // OpenMP does not support for loop with iterators. Therefore use index variables.
+    typedef typename Position<TSequence>::Type    TPos;
+    typedef typename MakeSigned_<TPos>::Type    TSignedPos;
 
-	#pragma omp parallel for if(length(sequence) > 1000000)
-	for(TSignedPos p = 0; p < (TSignedPos)length(sequence); ++p)
-		sequence[p] = F(sequence[p]);
-	
+    #pragma omp parallel for if(length(sequence) > 1000000)
+    for(TSignedPos p = 0; p < (TSignedPos)length(sequence); ++p)
+        sequence[p] = F(sequence[p]);
+    
 #else
-	typedef typename Iterator<TSequence const, Standard>::Type	TIter;
+    typedef typename Iterator<TSequence const, Standard>::Type    TIter;
 
-	TIter it = begin(sequence, Standard());
-	TIter itEnd = end(sequence, Standard());
-	for(; it != itEnd; ++it)
-		*it = F(*it);
+    TIter it = begin(sequence, Standard());
+    TIter itEnd = end(sequence, Standard());
+    for(; it != itEnd; ++it)
+        *it = F(*it);
 #endif
 }
 

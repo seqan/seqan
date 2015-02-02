@@ -80,7 +80,7 @@ class Rational :
 
     // Helper types
 //    typedef typename boost::call_traits<TInt>::param_type param_type;
-	typedef const TInt & param_type;
+    typedef const TInt & param_type;
 
     struct helper { TInt parts[2]; };
     typedef TInt (helper::* bool_type)[2];
@@ -88,8 +88,8 @@ class Rational :
 public:
     typedef TInt int_type;
     Rational() : num(0), den(1) {}
-	
-	template <typename T>
+    
+    template <typename T>
     Rational(T const & n, SEQAN_CTOR_ENABLE_IF( IsInteger<T> ) ) : num(n), den(1) { (void)dummy; }
     Rational(param_type n, param_type d) : num(n), den(d) { normalize(); }
 
@@ -127,11 +127,11 @@ public:
     
 
     operator bool_type() const { return operator !() ? 0 : &helper::parts; }
-	operator double() const 
-	{
-		SEQAN_ASSERT_NEQ (den, TInt(0));
-		return (double)num / (double)den;
-	}
+    operator double() const 
+    {
+        SEQAN_ASSERT_NEQ (den, TInt(0));
+        return (double)num / (double)den;
+    }
 
     // Comparison operators
     bool operator< (const Rational& r) const;
@@ -485,39 +485,39 @@ std::istream& operator>> (std::istream& is, Rational<TInt>& r)
     char c = 0;
 
     is >> n;
-	if (!is) return is;
-	
+    if (!is) return is;
+    
     c = is.get();
     if (c == '/')
-	{
-		is >> std::noskipws >> d;
-	}
-	else if (c == '.')
-	{
-		bool negative = false;
-		if (n < TInt(0))
-		{
-			n = -n;
-			negative = true;
-		}
-		c = is.get();
-		// read digits as long we can store them
-		while ('0' <= c && c <= '9' && 
-				(n < (TInt)MaxValue<TInt>::VALUE / (TInt)10 - (TInt)9) && 
-				(d < (TInt)MaxValue<TInt>::VALUE / (TInt)10))
-		{
-			n = 10 * n + (c - '0');
-			d *= 10;
-			c = is.get();
-		}
-		// ignore remaining digits
-		while ('0' <= c && c <= '9')
-			is.get();
-		is.unget();
-		
-		if (negative) n = -n;
-	}
-	r.assign(n, d);
+    {
+        is >> std::noskipws >> d;
+    }
+    else if (c == '.')
+    {
+        bool negative = false;
+        if (n < TInt(0))
+        {
+            n = -n;
+            negative = true;
+        }
+        c = is.get();
+        // read digits as long we can store them
+        while ('0' <= c && c <= '9' && 
+                (n < (TInt)MaxValue<TInt>::VALUE / (TInt)10 - (TInt)9) && 
+                (d < (TInt)MaxValue<TInt>::VALUE / (TInt)10))
+        {
+            n = 10 * n + (c - '0');
+            d *= 10;
+            c = is.get();
+        }
+        // ignore remaining digits
+        while ('0' <= c && c <= '9')
+            is.get();
+        is.unget();
+        
+        if (negative) n = -n;
+    }
+    r.assign(n, d);
 
     return is;
 }
@@ -559,9 +559,9 @@ inline TInt floor(const Rational<TInt>& r)
     SEQAN_ASSERT_NEQ (r.denominator(), zero);
 
     if (r.numerator() >= zero)
-		return r.numerator() / r.denominator();
-	else
-		return ((r.numerator() + 1) / r.denominator()) - 1;
+        return r.numerator() / r.denominator();
+    else
+        return ((r.numerator() + 1) / r.denominator()) - 1;
 }
 
 template <typename TInt>
@@ -571,11 +571,11 @@ inline TInt ceil(const Rational<TInt>& r)
     TInt zero(0);
 
     SEQAN_ASSERT_NEQ (r.denominator(), zero);
-	
+    
     if (r.numerator() > zero)
-		return ((r.numerator() - 1) / r.denominator()) + 1;
-	else
-		return r.numerator() / r.denominator();
+        return ((r.numerator() - 1) / r.denominator()) + 1;
+    else
+        return r.numerator() / r.denominator();
 }
 
 

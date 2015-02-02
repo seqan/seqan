@@ -416,19 +416,19 @@ inline void pairAlignMain(Options const & options)
         else if (options.config == "tfff")
             pairAlignGlobal_1000(options);
         else if (options.config == "fttt")
-        	pairAlignGlobal_0111(options);
+            pairAlignGlobal_0111(options);
         else if (options.config == "fttf")
-        	pairAlignGlobal_0110(options);
+            pairAlignGlobal_0110(options);
         else if (options.config == "ftft")
-        	pairAlignGlobal_0101(options);
+            pairAlignGlobal_0101(options);
         else if (options.config == "ftff")
-        	pairAlignGlobal_0100(options);
+            pairAlignGlobal_0100(options);
         else if (options.config == "fftt")
-        	pairAlignGlobal_0011(options);
+            pairAlignGlobal_0011(options);
         else if (options.config == "fftf")
-        	pairAlignGlobal_0010(options);
+            pairAlignGlobal_0010(options);
         else if (options.config == "ffft")
-        	pairAlignGlobal_0001(options);
+            pairAlignGlobal_0001(options);
         else
             pairAlignGlobal_0000(options);
     }

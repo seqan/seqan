@@ -91,7 +91,7 @@ namespace seqan {
 ..param.barBaz:Another parameter.
 ...type:nolink:$int$
  */
-	
+    
 // template <>
 // class MyClass<Our>
 // {

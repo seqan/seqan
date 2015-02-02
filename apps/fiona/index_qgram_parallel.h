@@ -73,7 +73,7 @@ struct Integer
 template < typename TIndex, typename TParallelTag >
 inline bool _qgramDisableBuckets(TIndex &index, Tag<TParallelTag>)
 {
-	// use the serial version (if no parallel overload is available)
+    // use the serial version (if no parallel overload is available)
     return _qgramDisableBuckets(index);
 }
 
@@ -177,10 +177,10 @@ SEQAN_CHECKPOINT
         SEQAN_OMP_PRAGMA(parallel for firstprivate(shape))
         for (int job = 0; job < (int)length(seqSplitter); ++job)
         {
-			for(unsigned seqNo = seqSplitter[job]; seqNo < seqSplitter[job + 1]; ++seqNo)
-			{
-				TString const &sequence = value(stringSet, seqNo);
-				if (length(sequence) < length(shape)) continue;
+            for(unsigned seqNo = seqSplitter[job]; seqNo < seqSplitter[job + 1]; ++seqNo)
+            {
+                TString const &sequence = value(stringSet, seqNo);
+                if (length(sequence) < length(shape)) continue;
 
                 TIterator itText = begin(stringSet[seqNo], Standard());
                 TIterator itTextEnd = itText + (length(sequence) - length(shape) + 1);
@@ -195,10 +195,10 @@ SEQAN_CHECKPOINT
         SEQAN_OMP_PRAGMA(parallel for firstprivate(shape))
         for (int job = 0; job < (int)length(seqSplitter); ++job)
         {
-			for(unsigned seqNo = seqSplitter[job]; seqNo < seqSplitter[job + 1]; ++seqNo)
-			{
-				TString const &sequence = value(stringSet, seqNo);
-				if (length(sequence) < length(shape)) continue;
+            for(unsigned seqNo = seqSplitter[job]; seqNo < seqSplitter[job + 1]; ++seqNo)
+            {
+                TString const &sequence = value(stringSet, seqNo);
+                if (length(sequence) < length(shape)) continue;
 
                 TIterator itText = begin(stringSet[seqNo], Standard());
                 TIterator itTextEnd = itText + ((length(sequence) - length(shape)) / stepSize + 1) * stepSize;
@@ -420,17 +420,17 @@ SEQAN_CHECKPOINT
         SEQAN_OMP_PRAGMA(parallel for firstprivate(shape))
         for (int job = 0; job < (int)length(seqSplitter); ++job)
         {
-			for(unsigned seqNo = seqSplitter[job]; seqNo < seqSplitter[job + 1]; ++seqNo)
-			{
-				TString const &sequence = value(stringSet, seqNo);
-				if (length(sequence) < length(shape)) continue;
+            for(unsigned seqNo = seqSplitter[job]; seqNo < seqSplitter[job + 1]; ++seqNo)
+            {
+                TString const &sequence = value(stringSet, seqNo);
+                if (length(sequence) < length(shape)) continue;
 
                 TIterator itText = begin(stringSet[seqNo], Standard());
                 TIterator itTextEnd = itText + (length(sequence) - length(shape) + 1);
 
-				typename Value<TSA>::Type localPos;
-				assignValueI1(localPos, seqNo);
-				assignValueI2(localPos, 0);
+                typename Value<TSA>::Type localPos;
+                assignValueI1(localPos, seqNo);
+                assignValueI2(localPos, 0);
 
                 // first hash
                 register TDirIterator const bktPtr = dirBegin1 + getBucket(bucketMap, hash(shape, itText));
@@ -452,17 +452,17 @@ SEQAN_CHECKPOINT
         SEQAN_OMP_PRAGMA(parallel for firstprivate(shape))
         for (int job = 0; job < (int)length(seqSplitter); ++job)
         {
-			for(unsigned seqNo = seqSplitter[job]; seqNo < seqSplitter[job + 1]; ++seqNo)
-			{
-				TString const &sequence = value(stringSet, seqNo);
-				if (length(sequence) < length(shape)) continue;
+            for(unsigned seqNo = seqSplitter[job]; seqNo < seqSplitter[job + 1]; ++seqNo)
+            {
+                TString const &sequence = value(stringSet, seqNo);
+                if (length(sequence) < length(shape)) continue;
 
                 TIterator itText = begin(stringSet[seqNo], Standard());
                 TIterator itTextEnd = itText + ((length(sequence) - length(shape)) / stepSize + 1) * stepSize;
 
-				typename Value<TSA>::Type localPos;
-				assignValueI1(localPos, seqNo);
-				assignValueI2(localPos, 0);
+                typename Value<TSA>::Type localPos;
+                assignValueI1(localPos, seqNo);
+                assignValueI2(localPos, 0);
 
                 for (; itText != itTextEnd; ++itText)
                 {

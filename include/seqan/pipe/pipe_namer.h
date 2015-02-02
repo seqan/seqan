@@ -44,14 +44,14 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TCompare >
     struct Namer;
 
-	template < typename TInput, typename TCompare >
+    template < typename TInput, typename TCompare >
     struct Value< Pipe< TInput, Namer<TCompare> > >
     {
         typedef Pair<
             typename Value<typename Value<TInput>::Type, 1>::Type,
-			typename Size<TInput>::Type,
-			Pack
-		> Type;
+            typename Size<TInput>::Type,
+            Pack
+        > Type;
     };
 
 /*!
@@ -81,7 +81,7 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TInput, typename TCompare >
     struct Pipe< TInput, Namer<TCompare> >
     {
-		TInput                          &in;
+        TInput                          &in;
         TCompare                        C;
         typename Value<Pipe>::Type      tmp;
         typename Value<TInput>::Type    last;
@@ -117,7 +117,7 @@ namespace SEQAN_NAMESPACE_MAIN
                 last = *in;
                 ++tmp.i2;
             }
-			return *this;
+            return *this;
         }
 
         bool unique() const
@@ -130,7 +130,7 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
     // global pipe functions
     template < typename TInput, typename TCompare >
-	inline bool control(Pipe< TInput, Namer<TCompare> > &me, ControlBeginRead const &command)
+    inline bool control(Pipe< TInput, Namer<TCompare> > &me, ControlBeginRead const &command)
     {
         if (!control(me.in, command)) return false;
         if (!eof(me.in))
@@ -139,8 +139,8 @@ namespace SEQAN_NAMESPACE_MAIN
             me.tmp.i1 = me.last.i1;
         }
         me.tmp.i2 = 0;
-		return true;
-	}
+        return true;
+    }
     
 //}
 

@@ -674,13 +674,13 @@ void execute(DbFinder<TText, TIndex, TDbQuerySpec, TDelegate, Exact> & dbFinder)
     TSize sortedPrefix = dbFinder.dbIndex.sortedPrefix;
 
     SEQAN_OMP_PRAGMA(parallel for schedule(dynamic,1))
-	for (int i = 1; i < (int)length(dir); ++i)
-	{
+    for (int i = 1; i < (int)length(dir); ++i)
+    {
         size_t bktBegin = dir[i - 1];
         size_t bktEnd = dir[i];
 
         // We need at least 2 suffixes.
-		if (bktBegin + 2 > bktEnd)
+        if (bktBegin + 2 > bktEnd)
             continue;
 
         TSize runBegin = bktBegin;

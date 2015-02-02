@@ -524,7 +524,7 @@ _computeCell(TDPScout & scout,
 }
 
 // ----------------------------------------------------------------------------
-// Function _computeCell()		  [BandedChainAlignment, FullColumn, FirstCell]
+// Function _computeCell()          [BandedChainAlignment, FullColumn, FirstCell]
 // ----------------------------------------------------------------------------
 
 // For DPInnerColumn.

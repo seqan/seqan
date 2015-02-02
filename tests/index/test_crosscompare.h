@@ -48,51 +48,51 @@ namespace SEQAN_NAMESPACE_MAIN
 template <typename TIter>
 inline void _dumpState(TIter const it) 
 {
-	std::cout << typeid(it).name() << std::endl;
-	std::cout << "  range:            " << value(it).range << std::endl;
-	std::cout << "  countOccurrences: " << countOccurrences(it) << std::endl;
-	std::cout << "  representative:   " << representative(it)   << std::endl;
-	std::cout << "  parentEdgeLabel:  " << parentEdgeLabel(it)  << std::endl;
-	std::cout << "  Occurrences:      ";
-	for(unsigned i=0;i<countOccurrences(it);++i)
-		std::cout << getOccurrences(it)[i] << " ";
-	std::cout << std::endl;
+    std::cout << typeid(it).name() << std::endl;
+    std::cout << "  range:            " << value(it).range << std::endl;
+    std::cout << "  countOccurrences: " << countOccurrences(it) << std::endl;
+    std::cout << "  representative:   " << representative(it)   << std::endl;
+    std::cout << "  parentEdgeLabel:  " << parentEdgeLabel(it)  << std::endl;
+    std::cout << "  Occurrences:      ";
+    for(unsigned i=0;i<countOccurrences(it);++i)
+        std::cout << getOccurrences(it)[i] << " ";
+    std::cout << std::endl;
 }
 
 template <typename TIterSpec, typename TIndex1, typename TIndex2>
 void crossBottomUp(TIndex1 &index1, TIndex2 &index2)
 {
-	typename Iterator<TIndex1, TIterSpec>::Type iter1(index1);
-	typename Iterator<TIndex2, TIterSpec>::Type iter2(index2);
+    typename Iterator<TIndex1, TIterSpec>::Type iter1(index1);
+    typename Iterator<TIndex2, TIterSpec>::Type iter2(index2);
 
-	while (!atEnd(iter1) && !atEnd(iter2)) 
-	{
-		SEQAN_ASSERT_EQ(representative(iter1), representative(iter2));
-		SEQAN_ASSERT_EQ(countOccurrences(iter1), countOccurrences(iter2));
-		SEQAN_ASSERT_EQ(parentEdgeLength(iter1), parentEdgeLength(iter2));
-		goNext(iter1);
-		goNext(iter2);
-	}
-	SEQAN_ASSERT_EQ(atEnd(iter1), atEnd(iter2));
+    while (!atEnd(iter1) && !atEnd(iter2)) 
+    {
+        SEQAN_ASSERT_EQ(representative(iter1), representative(iter2));
+        SEQAN_ASSERT_EQ(countOccurrences(iter1), countOccurrences(iter2));
+        SEQAN_ASSERT_EQ(parentEdgeLength(iter1), parentEdgeLength(iter2));
+        goNext(iter1);
+        goNext(iter2);
+    }
+    SEQAN_ASSERT_EQ(atEnd(iter1), atEnd(iter2));
 }
 
 template <typename TIndexSpec1, typename TIndexSpec2, typename TText>
 void crossIndex(TText &text)
 {
-	Index<TText, TIndexSpec1> index1(text);
-	Index<TText, TIndexSpec2> index2(text);
+    Index<TText, TIndexSpec1> index1(text);
+    Index<TText, TIndexSpec2> index2(text);
 
-/*	crossBottomUp< TopDown<ParentLinks<Preorder> > > (index1, index2);
-	crossBottomUp< TopDown<ParentLinks<Postorder> > > (index1, index2);
-*/	crossBottomUp< TopDown<ParentLinks<PreorderEmptyEdges> > > (index1, index2);
-	crossBottomUp< TopDown<ParentLinks<PostorderEmptyEdges> > > (index1, index2);
+/*    crossBottomUp< TopDown<ParentLinks<Preorder> > > (index1, index2);
+    crossBottomUp< TopDown<ParentLinks<Postorder> > > (index1, index2);
+*/    crossBottomUp< TopDown<ParentLinks<PreorderEmptyEdges> > > (index1, index2);
+    crossBottomUp< TopDown<ParentLinks<PostorderEmptyEdges> > > (index1, index2);
 }
 
 template <typename TIndexSpec, typename TText1, typename TText2>
 void crossSameIndex(TText1 &text1, TText2 &text2)
 {
-	Index<TText1, TIndexSpec> index1(text1);
-	Index<TText2, TIndexSpec> index2(text2);
+    Index<TText1, TIndexSpec> index1(text1);
+    Index<TText2, TIndexSpec> index2(text2);
 
     SEQAN_ASSERT(text1 == text2);
     SEQAN_ASSERT(indexText(index1) == indexText(index2));
@@ -102,78 +102,78 @@ void crossSameIndex(TText1 &text1, TText2 &text2)
         SEQAN_ASSERT_EQ(indexSA(index1), indexSA(index2));
     }
 
-	crossBottomUp< TopDown<ParentLinks<PreorderEmptyEdges> > > (index1, index2);
-	crossBottomUp< TopDown<ParentLinks<PostorderEmptyEdges> > > (index1, index2);
+    crossBottomUp< TopDown<ParentLinks<PreorderEmptyEdges> > > (index1, index2);
+    crossBottomUp< TopDown<ParentLinks<PostorderEmptyEdges> > > (index1, index2);
 }
 
 template <typename TIndexSpec1, typename TIndexSpec2>
 void crossIndicesChar()
 {
-/*	{
-		CharString text("mississippi");
-		crossIndex<TIndexSpec1,TIndexSpec2> (text);
-	}
-	{
-		DnaString text("acaaacatat");
-		crossIndex<TIndexSpec1,TIndexSpec2> (text);
-	}
-*/	{
-		StringSet<CharString> t;
-		resize(t, 6);
-		t[0] = "caterpillar";
-		t[1] = "catwoman";
-		t[2] = "pillow";
-		t[3] = "willow";
-		t[4] = "ill";
-		t[5] = "wow";
-		crossIndex<TIndexSpec1,TIndexSpec2> (t);
+/*    {
+        CharString text("mississippi");
+        crossIndex<TIndexSpec1,TIndexSpec2> (text);
+    }
+    {
+        DnaString text("acaaacatat");
+        crossIndex<TIndexSpec1,TIndexSpec2> (text);
+    }
+*/    {
+        StringSet<CharString> t;
+        resize(t, 6);
+        t[0] = "caterpillar";
+        t[1] = "catwoman";
+        t[2] = "pillow";
+        t[3] = "willow";
+        t[4] = "ill";
+        t[5] = "wow";
+        crossIndex<TIndexSpec1,TIndexSpec2> (t);
   }
-	/*{
-		StringSet<DnaString> t;
-		resize(t, 6);
-		t[0] = "caggctcgcgt";
-		t[1] = "caggaacg";
-		t[2] = "tcgttg";
-		t[3] = "tggtcg";
-		t[4] = "agg";
-		t[5] = "ctg";
-		crossIndex<TIndexSpec1,TIndexSpec2> (t);
-	}*/
+    /*{
+        StringSet<DnaString> t;
+        resize(t, 6);
+        t[0] = "caggctcgcgt";
+        t[1] = "caggaacg";
+        t[2] = "tcgttg";
+        t[3] = "tggtcg";
+        t[4] = "agg";
+        t[5] = "ctg";
+        crossIndex<TIndexSpec1,TIndexSpec2> (t);
+    }*/
 }
 
 template <typename TIndexSpec1, typename TIndexSpec2>
 void crossIndicesDna()
 {
-/*	{
-		CharString text("mississippi");
-		crossIndex<TIndexSpec1,TIndexSpec2> (text);
-	}
-	{
-		DnaString text("acaaacatat");
-		crossIndex<TIndexSpec1,TIndexSpec2> (text);
-	}
-*//*	{
-		StringSet<CharString> t;
-		resize(t, 6);
-		t[0] = "caterpillar";
-		t[1] = "catwoman";
-		t[2] = "pillow";
-		t[3] = "willow";
-		t[4] = "ill";
-		t[5] = "wow";
-		crossIndex<TIndexSpec1,TIndexSpec2> (t);
-	}*/
-	{
-		StringSet<DnaString> t;
-		resize(t, 6);
-		t[0] = "caggctcgcgt";
-		t[1] = "caggaacg";
-		t[2] = "tcgttg";
-		t[3] = "tggtcg";
-		t[4] = "agg";
-		t[5] = "ctg";
-		crossIndex<TIndexSpec1,TIndexSpec2> (t);
-	}
+/*    {
+        CharString text("mississippi");
+        crossIndex<TIndexSpec1,TIndexSpec2> (text);
+    }
+    {
+        DnaString text("acaaacatat");
+        crossIndex<TIndexSpec1,TIndexSpec2> (text);
+    }
+*//*    {
+        StringSet<CharString> t;
+        resize(t, 6);
+        t[0] = "caterpillar";
+        t[1] = "catwoman";
+        t[2] = "pillow";
+        t[3] = "willow";
+        t[4] = "ill";
+        t[5] = "wow";
+        crossIndex<TIndexSpec1,TIndexSpec2> (t);
+    }*/
+    {
+        StringSet<DnaString> t;
+        resize(t, 6);
+        t[0] = "caggctcgcgt";
+        t[1] = "caggaacg";
+        t[2] = "tcgttg";
+        t[3] = "tggtcg";
+        t[4] = "agg";
+        t[5] = "ctg";
+        crossIndex<TIndexSpec1,TIndexSpec2> (t);
+    }
 }
 
 template <typename TIndexSpec, typename TStringSpec1, typename TStringSpec2>
@@ -193,40 +193,40 @@ void crossStringsDna()
 
 SEQAN_DEFINE_TEST(testIndexCrossCompareChar)
 {
-	crossIndicesChar<IndexEsa<>, IndexWotd<> >();
-	// crossIndicesChar<IndexWotd<>, IndexWotd<Dfi<> > >();
+    crossIndicesChar<IndexEsa<>, IndexWotd<> >();
+    // crossIndicesChar<IndexWotd<>, IndexWotd<Dfi<> > >();
 }
 
 SEQAN_DEFINE_TEST(testIndexCrossCompareCharDfi)
 {
-	// crossIndicesChar<IndexEsa<>, IndexWotd<> >();
-	crossIndicesChar<IndexWotd<>, IndexWotd<Dfi<> > >();
+    // crossIndicesChar<IndexEsa<>, IndexWotd<> >();
+    crossIndicesChar<IndexWotd<>, IndexWotd<Dfi<> > >();
 }
 
 SEQAN_DEFINE_TEST(testIndexCrossCompareDna)
 {
-	crossIndicesDna<IndexEsa<>, IndexWotd<> >();
-	// crossIndicesDna<IndexWotd<>, IndexWotd<Dfi<> > >();
+    crossIndicesDna<IndexEsa<>, IndexWotd<> >();
+    // crossIndicesDna<IndexWotd<>, IndexWotd<Dfi<> > >();
 }
 
 
 SEQAN_DEFINE_TEST(testIndexCrossCompareDnaStrings)
 {
-	crossStringsDna<IndexEsa<>, Alloc<>, Alloc<> >();
-	crossStringsDna<IndexEsa<>, Alloc<>, Packed<> >();
-	crossStringsDna<IndexEsa<>, Alloc<>, External<> >();
-	crossStringsDna<IndexEsa<>, Alloc<>, MMap<> >();
+    crossStringsDna<IndexEsa<>, Alloc<>, Alloc<> >();
+    crossStringsDna<IndexEsa<>, Alloc<>, Packed<> >();
+    crossStringsDna<IndexEsa<>, Alloc<>, External<> >();
+    crossStringsDna<IndexEsa<>, Alloc<>, MMap<> >();
 
-	crossStringsDna<IndexWotd<>, Alloc<>, Alloc<> >();
-	crossStringsDna<IndexWotd<>, Alloc<>, Packed<> >();
-	crossStringsDna<IndexWotd<>, Alloc<>, External<> >();
-	crossStringsDna<IndexWotd<>, Alloc<>, MMap<> >();
+    crossStringsDna<IndexWotd<>, Alloc<>, Alloc<> >();
+    crossStringsDna<IndexWotd<>, Alloc<>, Packed<> >();
+    crossStringsDna<IndexWotd<>, Alloc<>, External<> >();
+    crossStringsDna<IndexWotd<>, Alloc<>, MMap<> >();
 }
 
 SEQAN_DEFINE_TEST(testIndexCrossCompareDnaDfi)
 {
-	// crossIndicesDna<IndexEsa<>, IndexWotd<> >();
-	crossIndicesDna<IndexWotd<>, IndexWotd<Dfi<> > >();
+    // crossIndicesDna<IndexEsa<>, IndexWotd<> >();
+    crossIndicesDna<IndexWotd<>, IndexWotd<Dfi<> > >();
 }
 
 //////////////////////////////////////////////////////////////////////////////

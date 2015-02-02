@@ -74,52 +74,52 @@ namespace SEQAN_NAMESPACE_MAIN
     struct Pipe< TInput, Shifter<delta, omitBlank, true> >
     {
         TInput                      &in;
-        typename Size<Pipe>::Type	blankCounter, charCounter;
-		typename Value<Pipe>::Type	blank;
+        typename Size<Pipe>::Type    blankCounter, charCounter;
+        typename Value<Pipe>::Type    blank;
         
         Pipe(TInput& _in):
             in(_in),
-			blank()	{}
+            blank()    {}
 
         inline typename Value<Pipe>::Type const & operator*() {
-			if (blankCounter)	return blank;
-			else				return *in;
+            if (blankCounter)    return blank;
+            else                return *in;
         }
 
         inline Pipe& operator++() {
-			if (blankCounter)
-				--blankCounter;
-			else {
-				++in;
-				--charCounter;
-			}
+            if (blankCounter)
+                --blankCounter;
+            else {
+                ++in;
+                --charCounter;
+            }
             return *this;
         }
     };
 
 
-	template < typename TInput, int delta, bool omitBlank >
+    template < typename TInput, int delta, bool omitBlank >
     struct Pipe< TInput, Shifter<delta, omitBlank, false> >
     {
         TInput                      &in;
-        typename Size<Pipe>::Type	blankCounter, charCounter;
-		typename Value<Pipe>::Type	blank;
+        typename Size<Pipe>::Type    blankCounter, charCounter;
+        typename Value<Pipe>::Type    blank;
         
         Pipe(TInput& _in):
             in(_in),
-			blank()	{}
+            blank()    {}
 
         inline typename Value<Pipe>::Type const & operator*() {
-			if (charCounter)	return *in;
-			else				return blank;
+            if (charCounter)    return *in;
+            else                return blank;
         }
 
         inline Pipe& operator++() {
-			if (charCounter) {
-				++in;
-				--charCounter;
-			} else
-				--blankCounter;
+            if (charCounter) {
+                ++in;
+                --charCounter;
+            } else
+                --blankCounter;
             return *this;
         }
     };
@@ -128,22 +128,22 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
     // global pipe functions
     template < typename TInput, int delta, bool omitBlank >
-	inline bool control(Pipe< TInput, Shifter< delta, omitBlank, false > > &me, ControlBeginRead const &command) {
+    inline bool control(Pipe< TInput, Shifter< delta, omitBlank, false > > &me, ControlBeginRead const &command) {
         if (!control(me.in, command)) return false;
-		for(typename Size<TInput>::Type i = 0; i < delta && !eof(me.in); ++i)
-			++me.in;
-		me.blankCounter = (omitBlank)? 0: delta;
-		me.charCounter = length(me.in) - delta;
-		return !eof(me.in);
-	}
+        for(typename Size<TInput>::Type i = 0; i < delta && !eof(me.in); ++i)
+            ++me.in;
+        me.blankCounter = (omitBlank)? 0: delta;
+        me.charCounter = length(me.in) - delta;
+        return !eof(me.in);
+    }
 
     template < typename TInput, int delta, bool omitBlank >
-	inline bool control(Pipe< TInput, Shifter< delta, omitBlank, true > > &me, ControlBeginRead const &command) {
+    inline bool control(Pipe< TInput, Shifter< delta, omitBlank, true > > &me, ControlBeginRead const &command) {
         if (!control(me.in, command)) return false;
-		me.blankCounter = (omitBlank)? 0: -delta;
-		me.charCounter = length(me.in) + delta;
-		return true;
-	}
+        me.blankCounter = (omitBlank)? 0: -delta;
+        me.charCounter = length(me.in) + delta;
+        return true;
+    }
 
 
 
@@ -155,13 +155,13 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
     template < typename TInput, int delta, bool omitBlank, bool _echoing >
-	inline bool control(Pipe< TInput, Shifter< delta, omitBlank, _echoing > > &me, ControlEof const &/*command*/) {
-		return me.charCounter == 0 && me.blankCounter == 0;
+    inline bool control(Pipe< TInput, Shifter< delta, omitBlank, _echoing > > &me, ControlEof const &/*command*/) {
+        return me.charCounter == 0 && me.blankCounter == 0;
     }
 
     template < typename TInput, int delta, bool omitBlank, bool _echoing >
-	inline bool control(Pipe< TInput, Shifter< delta, omitBlank, _echoing > > &me, ControlEos const &/*command*/) {
-		return control(me, ControlEof());
+    inline bool control(Pipe< TInput, Shifter< delta, omitBlank, _echoing > > &me, ControlEos const &/*command*/) {
+        return control(me, ControlEof());
     }
 
 //}

@@ -78,8 +78,8 @@ _sequenceCharacter(GraphCargo<TColumnAlphabet, TAlignedReadStoreElement,TPositio
 template <typename TColumnAlphabet, typename TAlignedReadStoreElement, typename TPosition>
 void addColumn(GraphCargo<TColumnAlphabet, TAlignedReadStoreElement,TPosition> & me, TPosition pos, TColumnAlphabet col)
 {
-	typedef typename GraphCargo<TColumnAlphabet,TAlignedReadStoreElement,TPosition>::TColumnInfo TCargoColumnInfo;
-	TCargoColumnInfo col_info(pos,col);
+    typedef typename GraphCargo<TColumnAlphabet,TAlignedReadStoreElement,TPosition>::TColumnInfo TCargoColumnInfo;
+    TCargoColumnInfo col_info(pos,col);
     appendValue(me.spanned_columns, col_info);
 }
 

@@ -72,11 +72,11 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TFunctor >
     struct Filter;
 
-	template < typename TInput, typename TFunctor >
+    template < typename TInput, typename TFunctor >
     struct Value< Pipe< TInput, Filter<TFunctor> > >
     {
-		typedef typename TFunctor::result_type Type;
-	};
+        typedef typename TFunctor::result_type Type;
+    };
 
 /*!
  * @class Filter
@@ -94,12 +94,12 @@ namespace SEQAN_NAMESPACE_MAIN
  * The output type of this pipe is the result type of <tt>TFunctor</tt>.
  */
 
-	//////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
     // filter class
     template <typename TInput, typename TFunctor >
     struct Pipe< TInput, Filter<TFunctor> >
     {
-		TInput      &in;
+        TInput      &in;
         TFunctor    F;
 
 /*!

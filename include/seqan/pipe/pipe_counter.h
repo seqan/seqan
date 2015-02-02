@@ -41,16 +41,16 @@ namespace SEQAN_NAMESPACE_MAIN
 //namespace SEQAN_NAMESPACE_PIPELINING
 //{
 
-	struct Counter;
+    struct Counter;
 
-	template < typename TInput >
+    template < typename TInput >
     struct Value< Pipe< TInput, Counter > > {
-		typedef Pair<
-			typename Value<TInput>::Type,
-			typename Size<TInput>::Type,
-			Pack
-		> Type;
-	};
+        typedef Pair<
+            typename Value<TInput>::Type,
+            typename Size<TInput>::Type,
+            Pack
+        > Type;
+    };
 
 /*!
  * @class Counter
@@ -75,8 +75,8 @@ namespace SEQAN_NAMESPACE_MAIN
     template < typename TInput >
     struct Pipe< TInput, Counter >
     {
-		TInput                      &in;
-        typename Value<Pipe>::Type	tmp;
+        TInput                      &in;
+        typename Value<Pipe>::Type    tmp;
         
         Pipe(TInput& _in):
             in(_in) {}
@@ -97,11 +97,11 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
     // global pipe functions
     template < typename TInput >
-	inline bool control(Pipe< TInput, Counter > &me, ControlBeginRead const &command) {
+    inline bool control(Pipe< TInput, Counter > &me, ControlBeginRead const &command) {
         if (!control(me.in, command)) return false;
         me.tmp.i2 = 0;
-		return true;
-	}
+        return true;
+    }
     
 //}
 

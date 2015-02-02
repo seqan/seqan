@@ -77,106 +77,106 @@ template <typename THost, char CHAR, typename TSpec>
 class ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >
 {
 public:
-	typedef typename IntegralForValue<ModifiedAlphabet>::Type TData;
-	TData data;
+    typedef typename IntegralForValue<ModifiedAlphabet>::Type TData;
+    TData data;
 
-	ModifiedAlphabet() : data()
-	{}
+    ModifiedAlphabet() : data()
+    {}
 
-	ModifiedAlphabet(ModifiedAlphabet const & other)
-		: data(_internalOrdValue(other))
-	{}
+    ModifiedAlphabet(ModifiedAlphabet const & other)
+        : data(_internalOrdValue(other))
+    {}
 
-	template <typename TOther>
-	ModifiedAlphabet(TOther const & other_data)
-		: data(_internalOrdValue(convert<ModifiedAlphabet>(other_data)))
-	{}
+    template <typename TOther>
+    ModifiedAlphabet(TOther const & other_data)
+        : data(_internalOrdValue(convert<ModifiedAlphabet>(other_data)))
+    {}
 
-	ModifiedAlphabet const & 
-	operator = (ModifiedAlphabet const & other)
-	{
-		data = other.data;
-		return *this;
-	}
+    ModifiedAlphabet const & 
+    operator = (ModifiedAlphabet const & other)
+    {
+        data = other.data;
+        return *this;
+    }
 
-	template <typename TOther>
-	ModifiedAlphabet const & 
-	operator = (TOther const & other_data)
-	{
-		data = _internalOrdValue(convert<ModifiedAlphabet>(other_data));
-		return *this;
-	}
+    template <typename TOther>
+    ModifiedAlphabet const & 
+    operator = (TOther const & other_data)
+    {
+        data = _internalOrdValue(convert<ModifiedAlphabet>(other_data));
+        return *this;
+    }
 
-/*	operator TData ()
-	{
-		return data;
-	}
+/*    operator TData ()
+    {
+        return data;
+    }
 
-	operator THost()
-	{
-		return convert<THost>(data);
-	}
+    operator THost()
+    {
+        return convert<THost>(data);
+    }
 */
 //____________________________________________________________________________
 
-	//TODO(weese): investigate the issue below
-	//this cannot be a template since a template would be in conflict to
-	//the template c'tor
+    //TODO(weese): investigate the issue below
+    //this cannot be a template since a template would be in conflict to
+    //the template c'tor
 
 /*
-	// weese: I tried the template below without problems in the tests
-	template <typename TValue>
-	operator TValue() const
-	{
+    // weese: I tried the template below without problems in the tests
+    template <typename TValue>
+    operator TValue() const
+    {
 SEQAN_CHECKPOINT
-		return convert<TValue>(*this);
-	}
+        return convert<TValue>(*this);
+    }
 */
-	operator long() const
-	{
+    operator long() const
+    {
 SEQAN_CHECKPOINT
-		return convert<long>(*this);
-	}
-	operator unsigned long() const
-	{
+        return convert<long>(*this);
+    }
+    operator unsigned long() const
+    {
 SEQAN_CHECKPOINT
-		return convert<unsigned long>(*this);
-	}
-	operator int() const
-	{
+        return convert<unsigned long>(*this);
+    }
+    operator int() const
+    {
 SEQAN_CHECKPOINT
-		return convert<int>(*this);
-	}
-	operator unsigned int() const
-	{
+        return convert<int>(*this);
+    }
+    operator unsigned int() const
+    {
 SEQAN_CHECKPOINT
-		return convert<unsigned int>(*this);
-	}
-	operator short() const
-	{
+        return convert<unsigned int>(*this);
+    }
+    operator short() const
+    {
 SEQAN_CHECKPOINT
-		return convert<short>(*this);
-	}
-	operator unsigned short() const
-	{
+        return convert<short>(*this);
+    }
+    operator unsigned short() const
+    {
 SEQAN_CHECKPOINT
-		return convert<unsigned short>(*this);
-	}
-	operator char() const
-	{
+        return convert<unsigned short>(*this);
+    }
+    operator char() const
+    {
 SEQAN_CHECKPOINT
-		return convert<char>(*this);
-	}
-	operator signed char() const
-	{
+        return convert<char>(*this);
+    }
+    operator signed char() const
+    {
 SEQAN_CHECKPOINT
-		return convert<signed char>(*this);
-	}
-	operator unsigned char() const
-	{
+        return convert<signed char>(*this);
+    }
+    operator unsigned char() const
+    {
 SEQAN_CHECKPOINT
-		return convert<unsigned char>(*this);
-	}
+        return convert<unsigned char>(*this);
+    }
 };
 
 
@@ -199,8 +199,8 @@ unknownValueImpl(ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > *)
 template <typename THost, char CHAR, typename TSpec>
 struct BitsPerValue<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > >
 {
-	typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TValue;
-	enum { VALUE = Log2< ValueSize<TValue>::VALUE >::VALUE };
+    typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TValue;
+    enum { VALUE = Log2< ValueSize<TValue>::VALUE >::VALUE };
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -208,13 +208,13 @@ struct BitsPerValue<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > >
 template <typename THost, char CHAR, typename TSpec>
 struct ValueSize<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > >
 {
-	enum { VALUE = ValueSize<THost>::VALUE + 1 };
+    enum { VALUE = ValueSize<THost>::VALUE + 1 };
 };
 
 template <typename THost, char CHAR, typename TSpec>
 struct InternalValueSize_<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > >
 {
-	enum { VALUE = InternalValueSize_<THost>::VALUE + 1 };
+    enum { VALUE = InternalValueSize_<THost>::VALUE + 1 };
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -225,16 +225,16 @@ template <typename TValue, typename TNum>
 inline TValue
 _internalCreateChar(TValue const &, TNum i)
 {
-	return convert<TValue>(i);
+    return convert<TValue>(i);
 }
 
 template <typename TValue, typename TSpec, typename TNum>
 inline SimpleType<TValue, TSpec>
 _internalCreateChar(SimpleType<TValue, TSpec> const &, TNum i)
 {
-	SimpleType<TValue, TSpec> s;
-	s.value = i;
-	return s;
+    SimpleType<TValue, TSpec> s;
+    s.value = i;
+    return s;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -267,79 +267,79 @@ gapValueImpl(ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > /*const*/ *)
 template <typename THost, char CHAR, typename TSpec, typename TSource>
 inline void
 _initializeAlphabetConversionTable(ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > * buf,
-								   TSource const &)
+                                   TSource const &)
 {
-	//assure that the conversion from TSource to THost is possible
-//	AlphabetConversionTable_<THost, TSource>::initialize();
+    //assure that the conversion from TSource to THost is possible
+//    AlphabetConversionTable_<THost, TSource>::initialize();
 
-	//copy the conversion table for converting TSouce => THost
-	//maybe, if there is no CHAR in TSource, the entry for CHAR is overwritten now
-	for (int i = InternalValueSize_<TSource>::VALUE; i > 0; )
-	{
-		--i;
-		buf[i].data = _internalOrdValue(convert<THost>(_internalCreateChar(TSource(), i)));
-	}
+    //copy the conversion table for converting TSouce => THost
+    //maybe, if there is no CHAR in TSource, the entry for CHAR is overwritten now
+    for (int i = InternalValueSize_<TSource>::VALUE; i > 0; )
+    {
+        --i;
+        buf[i].data = _internalOrdValue(convert<THost>(_internalCreateChar(TSource(), i)));
+    }
 
-	//add the new character CHAR to the table
-	buf[_internalOrdValue(convert<TSource>(CHAR))].data = InternalValueSize_<THost>::VALUE;
+    //add the new character CHAR to the table
+    buf[_internalOrdValue(convert<TSource>(CHAR))].data = InternalValueSize_<THost>::VALUE;
 }
 
 template <int SIZE_OF_SOURCE>
 struct ConvertImplModExpand_
 {
-	//default implementation for large source types
-	template <typename THost, char CHAR, typename TSpec, typename T, typename TSource>
-	inline
-	static typename Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, TSource>::Type
-	_convertImpl(Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, T> const,
-		TSource const & source_)
-	{
-		typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TTarget;
-		if (source_ == ValueSize<THost>::VALUE)
-		{// the extra character
-			TTarget tmp;
-			tmp.data = InternalValueSize_<THost>::VALUE;
-			return tmp;
-		}
-		return convert<TTarget>(convert<THost>(source_));
-	}
+    //default implementation for large source types
+    template <typename THost, char CHAR, typename TSpec, typename T, typename TSource>
+    inline
+    static typename Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, TSource>::Type
+    _convertImpl(Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, T> const,
+        TSource const & source_)
+    {
+        typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TTarget;
+        if (source_ == ValueSize<THost>::VALUE)
+        {// the extra character
+            TTarget tmp;
+            tmp.data = InternalValueSize_<THost>::VALUE;
+            return tmp;
+        }
+        return convert<TTarget>(convert<THost>(source_));
+    }
 };
 
 //for 1 byte source: use translation table
 template <>
 struct ConvertImplModExpand_<1>
 {
-	template <typename THost, char CHAR, typename TSpec, typename T, typename TSource>
-	inline 
-	static typename Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, TSource>::Type
-	_convertImpl(Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, T> const,
-		TSource const & source_)
-	{
-		typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TTarget;
-		TTarget * table = AlphabetConversionTable_<TTarget, TSource>::table;
-		return table[_internalOrdValue(source_)];
-	}
+    template <typename THost, char CHAR, typename TSpec, typename T, typename TSource>
+    inline 
+    static typename Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, TSource>::Type
+    _convertImpl(Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, T> const,
+        TSource const & source_)
+    {
+        typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TTarget;
+        TTarget * table = AlphabetConversionTable_<TTarget, TSource>::table;
+        return table[_internalOrdValue(source_)];
+    }
 };
 
 //generic source: dispatch for size of BytesPerValue
 template <typename THost, char CHAR, typename TSpec, typename T, typename TSource>
 inline typename Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, TSource>::Type
 convertImpl(Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, T> const convert_,
-			TSource const & source_)
+            TSource const & source_)
 {
-	return ConvertImplModExpand_<BytesPerValue<TSource>::VALUE>::_convertImpl(convert_, source_);
+    return ConvertImplModExpand_<BytesPerValue<TSource>::VALUE>::_convertImpl(convert_, source_);
 }
 
 //for SimpleType sources
 template <typename THost, char CHAR, typename TSpec, typename T, typename TSourceValue, typename TSourceSpec>
 inline typename Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, SimpleType<TSourceValue, TSourceSpec> >::Type
 convertImpl(Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, T> const,
-			SimpleType<TSourceValue, TSourceSpec> const & source_)
+            SimpleType<TSourceValue, TSourceSpec> const & source_)
 {
 SEQAN_CHECKPOINT
-	typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TTarget;
-	typedef SimpleType<TSourceValue, TSourceSpec> TSource;
-	return AlphabetConversionTable_<TTarget, TSource>::table[_internalOrdValue(source_)];
+    typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TTarget;
+    typedef SimpleType<TSourceValue, TSourceSpec> TSource;
+    return AlphabetConversionTable_<TTarget, TSource>::table[_internalOrdValue(source_)];
 }
 
 
@@ -347,15 +347,15 @@ SEQAN_CHECKPOINT
 template <char CHAR, typename TSpec, typename T, typename TSourceValue, typename TSourceSpec>
 inline typename Convert<ModifiedAlphabet<SimpleType<TSourceValue, TSourceSpec>, ModExpand<CHAR, TSpec> >, SimpleType<TSourceValue, TSourceSpec> >::Type
 convertImpl(Convert<ModifiedAlphabet<SimpleType<TSourceValue, TSourceSpec>, ModExpand<CHAR, TSpec> >, T> const,
-			SimpleType<TSourceValue, TSourceSpec> const & source_)
+            SimpleType<TSourceValue, TSourceSpec> const & source_)
 {
     SEQAN_CHECKPOINT;
-	typedef SimpleType<TSourceValue, TSourceSpec> TSource;
-	typedef ModifiedAlphabet<TSource, ModExpand<CHAR, TSpec> > TTarget;
-	
-	TTarget tmp;
-	tmp.data = _internalOrdValue(source_);
-	return tmp;
+    typedef SimpleType<TSourceValue, TSourceSpec> TSource;
+    typedef ModifiedAlphabet<TSource, ModExpand<CHAR, TSpec> > TTarget;
+    
+    TTarget tmp;
+    tmp.data = _internalOrdValue(source_);
+    return tmp;
 }
 
 
@@ -363,11 +363,11 @@ convertImpl(Convert<ModifiedAlphabet<SimpleType<TSourceValue, TSourceSpec>, ModE
 template <typename THost, char CHAR, typename TSpec, typename T, typename TSpec2>
 inline typename Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, Proxy<TSpec2> >::Type
 convertImpl(Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, T> const,
-			Proxy<TSpec2> const & source_)
+            Proxy<TSpec2> const & source_)
 {
 SEQAN_CHECKPOINT
-	typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TTarget;
-	return convert<TTarget>(getValue(source_));
+    typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TTarget;
+    return convert<TTarget>(getValue(source_));
 }
 
 
@@ -376,39 +376,39 @@ SEQAN_CHECKPOINT
 template <typename TTarget, typename THost, char CHAR, typename TSpec>
 inline void
 _initializeAlphabetConversionTable(TTarget * buf,
-								   ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const &)
+                                   ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const &)
 {
-	//assure that the conversion from THost to TTarget is possible
-	AlphabetConversionTable_<TTarget, THost>::initialize();
+    //assure that the conversion from THost to TTarget is possible
+    AlphabetConversionTable_<TTarget, THost>::initialize();
 
-	//copy the conversion table for converting THost => TTarget
-	for (int i = InternalValueSize_<THost>::VALUE; i > 0; )
-	{
-		--i;
-		buf[i] = convert<TTarget>(_internalCreateChar(THost(), i));
-	}
+    //copy the conversion table for converting THost => TTarget
+    for (int i = InternalValueSize_<THost>::VALUE; i > 0; )
+    {
+        --i;
+        buf[i] = convert<TTarget>(_internalCreateChar(THost(), i));
+    }
 
-	//add the new character CHAR to the table
-	buf[InternalValueSize_<THost>::VALUE] = convert<TTarget, char>(CHAR);
+    //add the new character CHAR to the table
+    buf[InternalValueSize_<THost>::VALUE] = convert<TTarget, char>(CHAR);
 }
 
 template <typename TTarget, typename THost, char CHAR, typename TSpec>
 inline void
 _initializeAlphabetOrdTable(TTarget * buf,
-							ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const &)
+                            ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const &)
 {
-	//assure that the conversion from THost to TTarget is possible
-	AlphabetOrdTable_<THost>::initialize();
+    //assure that the conversion from THost to TTarget is possible
+    AlphabetOrdTable_<THost>::initialize();
 
-	//copy the conversion table for converting THost => TTarget
-	for (int i = InternalValueSize_<THost>::VALUE; i > 0; )
-	{
-		--i;
-		buf[i] = ordValue(_internalCreateChar(THost(), i));
-	}
+    //copy the conversion table for converting THost => TTarget
+    for (int i = InternalValueSize_<THost>::VALUE; i > 0; )
+    {
+        --i;
+        buf[i] = ordValue(_internalCreateChar(THost(), i));
+    }
 
-	//add the new character CHAR to the table
-	buf[InternalValueSize_<THost>::VALUE] = ValueSize<THost>::VALUE;
+    //add the new character CHAR to the table
+    buf[InternalValueSize_<THost>::VALUE] = ValueSize<THost>::VALUE;
 }
 
 
@@ -420,11 +420,11 @@ _initializeAlphabetOrdTable(TTarget * buf,
 template <typename TTarget, typename T, typename THost, char CHAR, typename TSpec>
 inline typename Convert<TTarget, ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > >::Type
 convertImpl(Convert<TTarget, T> const,
-			ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const & source_)
+            ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const & source_)
 {
     SEQAN_CHECKPOINT;
-	typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TSource;
-	return AlphabetConversionTable_<TTarget, TSource>::table[_internalOrdValue(source_)];
+    typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TSource;
+    return AlphabetConversionTable_<TTarget, TSource>::table[_internalOrdValue(source_)];
 }
 
 
@@ -432,15 +432,15 @@ convertImpl(Convert<TTarget, T> const,
 template <typename TTargetValue, typename TTargetSpec, char CHAR, typename TSpec>
 inline typename Convert<SimpleType<TTargetValue, TTargetSpec>, ModifiedAlphabet<SimpleType<TTargetValue, TTargetSpec>, ModExpand<CHAR, TSpec> > >::Type
 convertImpl(Convert<SimpleType<TTargetValue, TTargetSpec>, ModifiedAlphabet<SimpleType<TTargetValue, TTargetSpec>, ModExpand<CHAR, TSpec> > > const,
-			ModifiedAlphabet<SimpleType<TTargetValue, TTargetSpec>, ModExpand<CHAR, TSpec> > const & source_)
+            ModifiedAlphabet<SimpleType<TTargetValue, TTargetSpec>, ModExpand<CHAR, TSpec> > const & source_)
 {
     SEQAN_CHECKPOINT;
     typedef SimpleType<TTargetValue, TTargetSpec> TTarget;
     TTarget target;
-	if (source_.data == InternalValueSize_<TTarget>::VALUE)
-		assign(target, CHAR);
-	else
-		target.value = source_.data;
+    if (source_.data == InternalValueSize_<TTarget>::VALUE)
+        assign(target, CHAR);
+    else
+        target.value = source_.data;
     return target;
 }
 
@@ -451,16 +451,16 @@ convertImpl(Convert<SimpleType<TTargetValue, TTargetSpec>, ModifiedAlphabet<Simp
 /*
 template 
 <
-	typename TTargetHost, char TARGET_CHAR, typename TTargetSpec, typename T, 
-	typename TSourceHost, char SOURCE_CHAR, typename TSourceSpec
+    typename TTargetHost, char TARGET_CHAR, typename TTargetSpec, typename T, 
+    typename TSourceHost, char SOURCE_CHAR, typename TSourceSpec
 >
 inline typename Convert<ModifiedAlphabet<TTargetHost, ModExpand<TARGET_CHAR, TTargetSpec> > , ModifiedAlphabet<TSourceHost, ModExpand<SOURCE_CHAR, TSourceSpec> > >::Type
 convertImpl(Convert<ModifiedAlphabet<TTargetHost, ModExpand<TARGET_CHAR, TTargetSpec> >, T> const,
-			ModifiedAlphabet<TSourceHost, ModExpand<SOURCE_CHAR, TSourceSpec> > const & source_)
+            ModifiedAlphabet<TSourceHost, ModExpand<SOURCE_CHAR, TSourceSpec> > const & source_)
 {
-	ModifiedAlphabet<TTargetHost, ModExpand<TARGET_CHAR, TTargetSpec> > TTarget;
-	ModifiedAlphabet<TSourceHost, ModExpand<SOURCE_CHAR, TSourceSpec> > TSource;
-	return convert<TTarget>(convert<TTargetHost>(convert<TSourceHost>(source_)));
+    ModifiedAlphabet<TTargetHost, ModExpand<TARGET_CHAR, TTargetSpec> > TTarget;
+    ModifiedAlphabet<TSourceHost, ModExpand<SOURCE_CHAR, TSourceSpec> > TSource;
+    return convert<TTarget>(convert<TTargetHost>(convert<TSourceHost>(source_)));
 }
 */
 
@@ -468,9 +468,9 @@ convertImpl(Convert<ModifiedAlphabet<TTargetHost, ModExpand<TARGET_CHAR, TTarget
 template <typename THost, char CHAR, typename TSpec, typename T>
 inline ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >
 convertImpl(Convert<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, T> const,
-			ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const & source_)
+            ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const & source_)
 {
-	return source_;
+    return source_;
 }
 
 
@@ -480,7 +480,7 @@ template <typename THost, char CHAR, typename TSpec>
 inline unsigned
 _internalOrdValue(ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const & c) 
 {
-	return c.data;
+    return c.data;
 }
 
 template <typename THost, char CHAR, typename TSpec>
@@ -488,8 +488,8 @@ inline unsigned
 ordValue(ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const & c) 
 {
     SEQAN_CHECKPOINT;
-	typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TSource;
-	return AlphabetOrdTable_<TSource>::table[_internalOrdValue(c)];
+    typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TSource;
+    return AlphabetOrdTable_<TSource>::table[_internalOrdValue(c)];
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -499,26 +499,26 @@ ordValue(ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > const & c)
 template <typename TModExpand, typename THost, typename TRight, typename TCompareHostRight>
 struct CompareTypeModExpandImpl_
 {
-	typedef TCompareHostRight Type; //fallback
+    typedef TCompareHostRight Type; //fallback
 };
 template <typename TModExpand, typename THost, typename TRight>
 struct CompareTypeModExpandImpl_<TModExpand, THost, TRight, THost>
 {
-	typedef TModExpand Type;
+    typedef TModExpand Type;
 };
 template <typename TModExpand, typename THost, typename TRight>
 struct CompareTypeModExpandImpl_<TModExpand, THost, TRight, TRight>
 {
-	typedef TRight Type;
+    typedef TRight Type;
 };
 
 
 template <typename THost, char CHAR, typename TSpec, typename TRight>
 struct CompareType<ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> >, TRight>
 {
-	typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TModExpand;
-	typedef typename CompareType<THost, TRight>::Type TCompareHostRight;
-	typedef typename CompareTypeModExpandImpl_<TModExpand, THost, TRight, TCompareHostRight>::Type Type;
+    typedef ModifiedAlphabet<THost, ModExpand<CHAR, TSpec> > TModExpand;
+    typedef typename CompareType<THost, TRight>::Type TCompareHostRight;
+    typedef typename CompareTypeModExpandImpl_<TModExpand, THost, TRight, TCompareHostRight>::Type Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////

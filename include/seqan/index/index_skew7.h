@@ -41,24 +41,24 @@ namespace SEQAN_NAMESPACE_MAIN
 //namespace SEQAN_NAMESPACE_PIPELINING
 //{
 
-	struct Skew7 {};
+    struct Skew7 {};
 
 
     //////////////////////////////////////////////////////////////////////////////
     // external Skew7 algorithm
     //////////////////////////////////////////////////////////////////////////////
 
-	template <typename T>
-	struct SkewDC_<7, T>
+    template <typename T>
+    struct SkewDC_<7, T>
     {
-		static const unsigned VALUE[];
-	};
+        static const unsigned VALUE[];
+    };
 
-	template <typename T>
-	const unsigned SkewDC_<7, T>::VALUE[] = { 3,   1, 2, 4 };
+    template <typename T>
+    const unsigned SkewDC_<7, T>::VALUE[] = { 3,   1, 2, 4 };
 
 
-	// *** COMPARATORS & MAPS ***
+    // *** COMPARATORS & MAPS ***
         
     template <typename TValue, typename TResult = int>
     struct _skew7NComp :
@@ -66,7 +66,7 @@ namespace SEQAN_NAMESPACE_MAIN
     {
         inline TResult operator() (const TValue &a, const TValue &b) const
         {
-			typedef typename Value<TValue, 1>::Type                 TSize;
+            typedef typename Value<TValue, 1>::Type                 TSize;
             typedef typename Value<TValue, 2>::Type                 TSeptet;
             typedef typename Value<TSeptet>::Type                   TSeptetValue;
             typedef typename StoredTupleValue_<TSeptetValue>::Type  TStoredValue;
@@ -122,7 +122,7 @@ namespace SEQAN_NAMESPACE_MAIN
         _skew7NMapLinear(TResult BN_): BN4(BN_+1), BN(BN_) {}
 
         inline TResult operator() (const TValue& x) const
-		{
+        {
             TResult i = x.i1; return (i%7 == 4)? BN4-(i-(i/7)*4): BN-(i-(i/7)*4);
         }
     };
@@ -135,12 +135,12 @@ namespace SEQAN_NAMESPACE_MAIN
         
         _skew7NMapSliced(TResult BN_)
         { 
-			off[0] = 0;
-			off[1] = BN_ - 1; 
-			off[2] = (2*BN_)/3 - 1; 
-			off[3] = 0;
-			off[4] = BN_/3 - 1; 
-		}
+            off[0] = 0;
+            off[1] = BN_ - 1; 
+            off[2] = (2*BN_)/3 - 1; 
+            off[3] = 0;
+            off[4] = BN_/3 - 1; 
+        }
 
         inline TResult operator() (const TValue& x) const
         {
@@ -215,7 +215,7 @@ namespace SEQAN_NAMESPACE_MAIN
     };
     */
 
-	template < typename TInput >
+    template < typename TInput >
     struct Value< Pipe< TInput, Skew7 > > :
         public Size<TInput> {};
 
@@ -225,9 +225,9 @@ namespace SEQAN_NAMESPACE_MAIN
 
     template <typename T, typename TStringSpec>
     struct Skew7StringSpec_<String<T, TStringSpec> >
-	{
+    {
         typedef TStringSpec Type;
-	};
+    };
 
     template <typename T, typename TSegmentSpec>
     struct Skew7StringSpec_<Segment<T, TSegmentSpec> >:
@@ -253,10 +253,10 @@ namespace SEQAN_NAMESPACE_MAIN
             Pack>::Type TPack;
 
         // step 1
-		typedef Pipe< TInput, Sampler<7, TPack> >  TSamplerDC7;
+        typedef Pipe< TInput, Sampler<7, TPack> >  TSamplerDC7;
                                         typedef _skew7NComp<TypeOf_(TSamplerDC7)> ncomp_t;
         typedef Pool< TypeOf_(TSamplerDC7), SorterSpec< SorterConfigSize<ncomp_t, TSizeOf_(TSamplerDC7) > > > TSortTuples;
-		typedef Pipe< TSortTuples, Namer<ncomp_t> > TNamer;
+        typedef Pipe< TSortTuples, Namer<ncomp_t> > TNamer;
                                         typedef _skew7NMapSliced<TypeOf_(TNamer)> nmap_sliced_t;
                                         typedef _skew7NMapLinear<TypeOf_(TNamer)> nmap_linear_t;
         typedef Pool< TypeOf_(TNamer), MapperSpec< MapperConfigSize< nmap_sliced_t, TSizeOf_(TNamer) > > > TNames_Sliced;
@@ -267,16 +267,16 @@ namespace SEQAN_NAMESPACE_MAIN
         // non-unique names
         typedef Pipe< TNames_Sliced, Filter< filterI2<TypeOf_(TNames_Sliced)> > > TFilter;
 
-			// recursion
-			typedef Pipe< TFilter, Skew3 > TRecurse;
-										typedef _skew7UnslicerFunc<TypeOf_(TRecurse)> unslicer_func_t;
-			typedef Pipe< TRecurse, Filter<unslicer_func_t> > TUnslicer;
-			typedef Pipe< TUnslicer, Counter > TRenamer;
+            // recursion
+            typedef Pipe< TFilter, Skew3 > TRecurse;
+                                        typedef _skew7UnslicerFunc<TypeOf_(TRecurse)> unslicer_func_t;
+            typedef Pipe< TRecurse, Filter<unslicer_func_t> > TUnslicer;
+            typedef Pipe< TUnslicer, Counter > TRenamer;
 
-			// no recursion inMemory shortcut
-			typedef Pipe< TFilter, LarssonSadakane > TInMem;
-			typedef Pipe< TInMem, Filter<unslicer_func_t> > TUnslicerInMem;
-			typedef Pipe< TUnslicerInMem, Counter > TRenamerInMem;
+            // no recursion inMemory shortcut
+            typedef Pipe< TFilter, LarssonSadakane > TInMem;
+            typedef Pipe< TInMem, Filter<unslicer_func_t> > TUnslicerInMem;
+            typedef Pipe< TUnslicerInMem, Counter > TRenamerInMem;
 
         typedef Pool< TypeOf_(TRenamer), MapperSpec< MapperConfigSize< nmap_linear_t, TSizeOf_(TRenamer) > > > TNames_Linear;
         
@@ -293,7 +293,7 @@ namespace SEQAN_NAMESPACE_MAIN
 
         // step 3
                                         typedef _skew7NMapExtended<TypeOf_(typename TExtender::Out124)> nmap_extended_t;
-		typedef Pool< TypeOf_(typename TExtender::Out124), MapperSpec< MapperConfigSize< nmap_extended_t, TSizeOf_(typename TExtender::Out124) > > > TSorterS124;
+        typedef Pool< TypeOf_(typename TExtender::Out124), MapperSpec< MapperConfigSize< nmap_extended_t, TSizeOf_(typename TExtender::Out124) > > > TSorterS124;
         typedef Pipe< Bundle5< TSorterS0, TSorterS3, TSorterS5, TSorterS6, TSorterS124 >, Merger7 > TMerger;
 
         TSorterS0   sortedS0;
@@ -304,22 +304,22 @@ namespace SEQAN_NAMESPACE_MAIN
         TMerger     in;
             
         Pipe():
-			in(bundle5(sortedS0, sortedS3, sortedS5, sortedS6, sortedS124)) {}
+            in(bundle5(sortedS0, sortedS3, sortedS5, sortedS6, sortedS124)) {}
 
-		Pipe(TInput& _textIn):
-			in(bundle5(sortedS0, sortedS3, sortedS5, sortedS6, sortedS124))
-		{
-			process(_textIn);
-		}
+        Pipe(TInput& _textIn):
+            in(bundle5(sortedS0, sortedS3, sortedS5, sortedS6, sortedS124))
+        {
+            process(_textIn);
+        }
         
-	    template < typename TInput_ >
+        template < typename TInput_ >
         bool process(TInput_ &textIn) {
 
             SEQAN_PROADD(SEQAN_PRODEPTH, 1);
             SEQAN_PROMARK("Enter recursion");
             #ifdef SEQAN_DEBUG_INDEX
                 std::cerr << "enter level " << SEQAN_PROVAL(SEQAN_PRODEPTH) << " bit-packing: ";
-				std::cerr << IsSameType<TPack, BitPacked<> >::VALUE << " " << BitsPerValue<TypeOf_(TInput)>::VALUE << std::endl;
+                std::cerr << IsSameType<TPack, BitPacked<> >::VALUE << " " << BitsPerValue<TypeOf_(TInput)>::VALUE << std::endl;
             #endif
             {
 
@@ -355,7 +355,7 @@ namespace SEQAN_NAMESPACE_MAIN
                     std::cerr << "  make names linear" << std::endl;
                 #endif
                 names_linear << names_sliced;
-				clear(names_sliced);
+                clear(names_sliced);
                 SEQAN_PROMARK("Mapper (10) - construct ISA124");
 
                 // step 2
@@ -368,47 +368,47 @@ namespace SEQAN_NAMESPACE_MAIN
                 SEQAN_PROMARK("Mapper (4) - construct s124");
 
                 TFilter                     filter(names_sliced);
-				TNames_Linear               names_linear(map_linear);
+                TNames_Linear               names_linear(map_linear);
 
-				if (length(filter) > 128*1024*1024) 
-				{
-					// recursion
-					TRecurse                    recurse(filter);
+                if (length(filter) > 128*1024*1024) 
+                {
+                    // recursion
+                    TRecurse                    recurse(filter);
 
-					#ifdef SEQAN_TEST_SKEW7
-					{
-						String<typename Value<TFilter>::Type, Alloc<> > _text;
-						_text << filter;
-						SEQAN_ASSERT(isSuffixArray(recurse, _text));
-					}
-					#endif
+                    #ifdef SEQAN_TEST_SKEW7
+                    {
+                        String<typename Value<TFilter>::Type, Alloc<> > _text;
+                        _text << filter;
+                        SEQAN_ASSERT(isSuffixArray(recurse, _text));
+                    }
+                    #endif
 
-					clear(filter);
-					unslicer_func_t             func(length(textIn));
-					TUnslicer                   unslicer(recurse, func);
-					TRenamer                    renamer(unslicer);
+                    clear(filter);
+                    unslicer_func_t             func(length(textIn));
+                    TUnslicer                   unslicer(recurse, func);
+                    TRenamer                    renamer(unslicer);
 
-					#ifdef SEQAN_DEBUG_INDEX
-						std::cerr << "  rename names" << std::endl;
-					#endif
+                    #ifdef SEQAN_DEBUG_INDEX
+                        std::cerr << "  rename names" << std::endl;
+                    #endif
 
-					names_linear << renamer;
-				}
-				else
-				{
-					TInMem						inMem(filter);
+                    names_linear << renamer;
+                }
+                else
+                {
+                    TInMem                        inMem(filter);
 
-					clear(filter);
-					unslicer_func_t				func(length(textIn));
-					TUnslicerInMem              unslicer(inMem, func);
-					TRenamerInMem               renamer(unslicer);
+                    clear(filter);
+                    unslicer_func_t                func(length(textIn));
+                    TUnslicerInMem              unslicer(inMem, func);
+                    TRenamerInMem               renamer(unslicer);
 
-					#ifdef SEQAN_DEBUG_INDEX
-						std::cerr << "  rename names" << std::endl;
-					#endif
+                    #ifdef SEQAN_DEBUG_INDEX
+                        std::cerr << "  rename names" << std::endl;
+                    #endif
 
-					names_linear << renamer;
-				} 
+                    names_linear << renamer;
+                } 
 
                 SEQAN_PROMARK("Mapper (10) - ISA124 konstruieren");
                
@@ -445,7 +445,7 @@ namespace SEQAN_NAMESPACE_MAIN
     // not sure which interface is more intuitive, we support both
     // you can call "skew << pipe" or "skew_t skew(pipe); skew.process()"
     // for the first we would need no _in member
-	template < typename TInput, typename TObject >
+    template < typename TInput, typename TObject >
     inline bool operator<<(Pipe< TInput, Skew7 > &me, TObject &textIn) {
         return me.process(textIn);
     }
@@ -456,9 +456,9 @@ namespace SEQAN_NAMESPACE_MAIN
     //////////////////////////////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////////////////////////////
-	// typedefs and helpers
+    // typedefs and helpers
 
-	// compares n characters and in case of equality the names a2 and b2 (no clipping)
+    // compares n characters and in case of equality the names a2 and b2 (no clipping)
     template <typename TTextIter, typename TSize> inline
     bool _leqSkew7(TTextIter a1, TSize a2,   TTextIter b1, TSize b2,   TSize n)
     {
@@ -470,7 +470,7 @@ namespace SEQAN_NAMESPACE_MAIN
         return (a2 <= b2);
     }
 
-	// compares at most the last n characters (a) with b (clipping)
+    // compares at most the last n characters (a) with b (clipping)
     template <typename TTextIter, typename TSize> inline
     bool _leqSkew7(TTextIter a,   TTextIter b,   TSize n)
     { // lexic. order for n-tupels
@@ -478,16 +478,16 @@ namespace SEQAN_NAMESPACE_MAIN
             if (ordLess(*a, *b)) return true;
             if (ordLess(*b, *a)) return false;
         }
-        return true;	// a is shorter than b
+        return true;    // a is shorter than b
     }
 
-	// compares two suffixes of residue classes a and b
+    // compares two suffixes of residue classes a and b
     template <typename TTextIter, typename TSize, typename TString> inline
     bool _leqSkew7(unsigned a, unsigned b,   TTextIter spos[], const TSize tpos[], const bool islast[], const TString &s124, const TSize adjust[7][7])
     {
         TTextIter sa = spos[a];
         TTextIter sb = spos[b];
-		TSize shft = SkewShift_<7>::VALUE[a][b];
+        TSize shft = SkewShift_<7>::VALUE[a][b];
         if (sa > sb) {
             if ((a != 0) && (a < shft) && islast[a]) // do we need to clip?
                 return _leqSkew7 (sa,   sb,   a);
@@ -508,9 +508,9 @@ namespace SEQAN_NAMESPACE_MAIN
     inline bool _fastTupleSortSkew7(TSAOut &SA124, TText const &s, TSAIn const &s124, True)
     {
         typedef typename Value<TText>::Type TValue;
-		typedef typename Value<TSAOut>::Type TSize;
-		typedef typename Iterator<TText const, Standard>::Type TValueIter;
-		typedef typename Iterator<TSAIn const, Standard>::Type TSAIter;
+        typedef typename Value<TSAOut>::Type TSize;
+        typedef typename Iterator<TText const, Standard>::Type TValueIter;
+        typedef typename Iterator<TSAIn const, Standard>::Type TSAIter;
         
         // optimized tuple sort for short alphabets
         Shape<TValue, UngappedShape<7> > shape;
@@ -521,7 +521,7 @@ namespace SEQAN_NAMESPACE_MAIN
         TSAIter it = begin(s124, Standard());
         TSAIter itEnd = end(s124, Standard());
 
-		TSize n = length(s);
+        TSize n = length(s);
         for(; it != itEnd; ++it)
             ++cnt[hash2(shape, textBegin + *it, n - *it)];
 
@@ -535,339 +535,339 @@ namespace SEQAN_NAMESPACE_MAIN
     }
 
 
-	//////////////////////////////////////////////////////////////////////////////
-	// Skew algorithm with difference cover of Z_7
-	//
-	// Construct the suffix array SA of s[0..n-1], where s is a string over
-	// the alphabet {0..K}.
-	//
-	// The following algorithm divides the suffixes in seven residue classes
-	// according to their lengths and uses a difference cover {1,2,4}. 
-	// That approach results in an algorithm that is more space and time efficient
-	// than the original skew algorithm with a difference cover {1,2} of Z_3.
-	//
-	// * no trailing 0's required
-	// * no dummy triples in special cases
+    //////////////////////////////////////////////////////////////////////////////
+    // Skew algorithm with difference cover of Z_7
+    //
+    // Construct the suffix array SA of s[0..n-1], where s is a string over
+    // the alphabet {0..K}.
+    //
+    // The following algorithm divides the suffixes in seven residue classes
+    // according to their lengths and uses a difference cover {1,2,4}. 
+    // That approach results in an algorithm that is more space and time efficient
+    // than the original skew algorithm with a difference cover {1,2} of Z_3.
+    //
+    // * no trailing 0's required
+    // * no dummy triples in special cases
 
     template < typename TSA,
                typename TText >
     void createSuffixArray(
-		TSA &SA,
-		TText &s,
-		Skew7 const &,
-		unsigned K,
+        TSA &SA,
+        TText &s,
+        Skew7 const &,
+        unsigned K,
         unsigned maxdepth,
-		unsigned depth)
+        unsigned depth)
     {
-		typedef typename Value<TSA>::Type TSize;
-		typedef typename Value<TText>::Type TValue;
+        typedef typename Value<TSA>::Type TSize;
+        typedef typename Value<TText>::Type TValue;
         typedef String<TSize, Alloc<> > TBuffer;
-		typedef typename Iterator<TSA, Standard>::Type TSAIter;
-		//typedef typename Iterator<TBuffer, Standard>::Type TBufferIter;
-		typedef typename Iterator<TText const, Standard>::Type TValueIter;
+        typedef typename Iterator<TSA, Standard>::Type TSAIter;
+        //typedef typename Iterator<TBuffer, Standard>::Type TBufferIter;
+        typedef typename Iterator<TText const, Standard>::Type TValueIter;
 
-		SEQAN_ASSERT(AllowsFastRandomAccess<TText>::VALUE == true);
-		SEQAN_ASSERT(AllowsFastRandomAccess<TSA>::VALUE == true);
+        SEQAN_ASSERT(AllowsFastRandomAccess<TText>::VALUE == true);
+        SEQAN_ASSERT(AllowsFastRandomAccess<TSA>::VALUE == true);
 
         #ifdef SEQAN_DEBUG_INDEX
             std::cerr << "--- CREATE SUFFIX ARRAY ---" << std::endl;
             std::cerr << "Skew7 [random access]" << std::endl;
         #endif
 
-		TSize n = length(s);
+        TSize n = length(s);
         if (n < 1) return;
 
-		TSize _n[7];
-		TSize _o[7];
+        TSize _n[7];
+        TSize _o[7];
 
-		_n[0] = n/7;
-		_o[0] = n%7;
-		TSize j = n + 6;
-		for(int i = 1; i < 7; ++i, --j) {
-			_n[i] = j/7;
-			_o[i] = j%7;
-		}
+        _n[0] = n/7;
+        _o[0] = n%7;
+        TSize j = n + 6;
+        for(int i = 1; i < 7; ++i, --j) {
+            _n[i] = j/7;
+            _o[i] = j%7;
+        }
 
-		TSize _n24  = _n[2]+_n[4];
-		TSize _n124 = _n[1]+_n24;
+        TSize _n24  = _n[2]+_n[4];
+        TSize _n124 = _n[1]+_n24;
 
         SEQAN_PROSET(SEQAN_PRODEPTH, depth);
         SEQAN_PROSET(SEQAN_PROEXTRA1, K);
         SEQAN_PROMARK("Rekursionsabstieg");
         #ifdef SEQAN_DEBUG_INDEX
-			std::cerr << "enter level " << depth << " (" << n << ")" << std::endl;
+            std::cerr << "enter level " << depth << " (" << n << ")" << std::endl;
         #endif
 
         TBuffer s124;
         resize(s124, _n124, Exact());
-		// we use SA[n-n124..n-1] as a temporary buffer instead of allocating one
-		typename Suffix<TSA>::Type SA124 = suffix(SA, n - _n124);
+        // we use SA[n-n124..n-1] as a temporary buffer instead of allocating one
+        typename Suffix<TSA>::Type SA124 = suffix(SA, n - _n124);
 
 
-		// generate positions of mod 3, mod 5 and mod 6 suffixes
-		{
-			TSize j = 0;
-			if (_n[2] > _n[4]) s124[j++] = _o[2];
-			if (_n[1] > _n[4]) s124[j++] = _o[1];
+        // generate positions of mod 3, mod 5 and mod 6 suffixes
+        {
+            TSize j = 0;
+            if (_n[2] > _n[4]) s124[j++] = _o[2];
+            if (_n[1] > _n[4]) s124[j++] = _o[1];
 
-			for (TSize i=_o[4];  i < n;  i+=7) {
-				s124[j++] = i;
-				s124[j++] = i + 2;
-				s124[j++] = i + 3;
-			}
-		}
+            for (TSize i=_o[4];  i < n;  i+=7) {
+                s124[j++] = i;
+                s124[j++] = i + 2;
+                s124[j++] = i + 3;
+            }
+        }
 
 
-		// lsb radix sort the mod 3, mod 5 and mod 6 7-tupels
+        // lsb radix sort the mod 3, mod 5 and mod 6 7-tupels
         if (!_fastTupleSortSkew7(SA124, s, s124, typename Eval<BitsPerValue<TValue>::VALUE < 4>::Type()))
-		{
-			String<TSize, Alloc<> > cnt;
-			resize(cnt, K, Exact());	// counter array
+        {
+            String<TSize, Alloc<> > cnt;
+            resize(cnt, K, Exact());    // counter array
 
-			radixPass(SA124, s124,  s, cnt, K, 6);
-			radixPass(s124,  SA124, s, cnt, K, 5);
-			radixPass(SA124, s124,  s, cnt, K, 4);
-			radixPass(s124,  SA124, s, cnt, K, 3);
-			radixPass(SA124, s124,  s, cnt, K, 2);
-			radixPass(s124,  SA124, s, cnt, K, 1);
-			radixPass(SA124, s124,  s, cnt, K);
-		}
+            radixPass(SA124, s124,  s, cnt, K, 6);
+            radixPass(s124,  SA124, s, cnt, K, 5);
+            radixPass(SA124, s124,  s, cnt, K, 4);
+            radixPass(s124,  SA124, s, cnt, K, 3);
+            radixPass(SA124, s124,  s, cnt, K, 2);
+            radixPass(s124,  SA124, s, cnt, K, 1);
+            radixPass(SA124, s124,  s, cnt, K);
+        }
         SEQAN_PROMARK("7-lets sortiert");
 
-		// find lexicographic names of 7-tupel
-		TSize name = 0;
-		{
-			TSize ofs[7] = {0, _n24, _n[4], 0, 0, 0, 0};
-			bool differ = true;
-			TValue c0 = TValue(0), c1 = TValue(0), c2 = TValue(0), c3 = TValue(0), c4 = TValue(0), c5 = TValue(0), c6 = TValue(0);
-			for (TSize i = 0, clip = _max(n, (TSize)6) - 6, l;  i < _n124;  i++) {
-				if ((l = SA124[i]) < clip) {
-					if (differ || s[l] != c0 || s[l+1] != c1 || s[l+2] != c2 || s[l+3] != c3 ||
-												s[l+4] != c4 || s[l+5] != c5 || s[l+6] != c6) {
-						name++;  c0 = s[l];  c1 = s[l+1];  c2 = s[l+2];  c3 = s[l+3];
-											 c4 = s[l+4];  c5 = s[l+5];  c6 = s[l+6];
-						differ = false;
-					}
-				} else {
-					name++;
-					differ = true;  // the last 6 7-tupels always differ from the rest
-				}
-				s124[(l/7) + ofs[(n-l) % 7]] = name - 1;   // select a third
-			}
-		}
+        // find lexicographic names of 7-tupel
+        TSize name = 0;
+        {
+            TSize ofs[7] = {0, _n24, _n[4], 0, 0, 0, 0};
+            bool differ = true;
+            TValue c0 = TValue(0), c1 = TValue(0), c2 = TValue(0), c3 = TValue(0), c4 = TValue(0), c5 = TValue(0), c6 = TValue(0);
+            for (TSize i = 0, clip = _max(n, (TSize)6) - 6, l;  i < _n124;  i++) {
+                if ((l = SA124[i]) < clip) {
+                    if (differ || s[l] != c0 || s[l+1] != c1 || s[l+2] != c2 || s[l+3] != c3 ||
+                                                s[l+4] != c4 || s[l+5] != c5 || s[l+6] != c6) {
+                        name++;  c0 = s[l];  c1 = s[l+1];  c2 = s[l+2];  c3 = s[l+3];
+                                             c4 = s[l+4];  c5 = s[l+5];  c6 = s[l+6];
+                        differ = false;
+                    }
+                } else {
+                    name++;
+                    differ = true;  // the last 6 7-tupels always differ from the rest
+                }
+                s124[(l/7) + ofs[(n-l) % 7]] = name - 1;   // select a third
+            }
+        }
         SEQAN_PROMARK("s12 konstruiert");
 
-		// recurse if names are not yet unique
-		if (name < _n124) {
+        // recurse if names are not yet unique
+        if (name < _n124) {
             if (depth != maxdepth)
             {
-			    createSuffixArray(SA124, s124, Skew7(), name, maxdepth, depth + 1);
-			    #ifdef SEQAN_TEST_SKEW7
-				    SEQAN_ASSERT(isSuffixArray(SA124, s124));
-			    #endif
+                createSuffixArray(SA124, s124, Skew7(), name, maxdepth, depth + 1);
+                #ifdef SEQAN_TEST_SKEW7
+                    SEQAN_ASSERT(isSuffixArray(SA124, s124));
+                #endif
             }
-			// store unique names in s124 using the suffix array
-			for (TSize i = 0;  i < _n124;  i++) s124[SA124[i]] = i;
-		} else // generate the suffix array of s124 directly
-			for (TSize i = 0;  i < _n124;  i++) SA124[s124[i]] = i;
+            // store unique names in s124 using the suffix array
+            for (TSize i = 0;  i < _n124;  i++) s124[SA124[i]] = i;
+        } else // generate the suffix array of s124 directly
+            for (TSize i = 0;  i < _n124;  i++) SA124[s124[i]] = i;
 
 
-		// use SA[0...n3-1] and SA[n3...n3+n5-1] as a temporary buffers instead of allocating some
-		// and allocate SA0, SA3, SA5 and SA6
+        // use SA[0...n3-1] and SA[n3...n3+n5-1] as a temporary buffers instead of allocating some
+        // and allocate SA0, SA3, SA5 and SA6
 
-		{
-			typename Infix<TSA>::Type s3 = infix(SA, 0, _n[3]), s5 = infix(SA, _n[3], _n[3] + _n[5]);
-			String<TSize, typename Skew7StringSpec_<TSA>::Type> SA0, SA3, SA5, SA6;
+        {
+            typename Infix<TSA>::Type s3 = infix(SA, 0, _n[3]), s5 = infix(SA, _n[3], _n[3] + _n[5]);
+            String<TSize, typename Skew7StringSpec_<TSA>::Type> SA0, SA3, SA5, SA6;
 
-			resize(SA0, _n[0], Exact());
-			resize(SA3, _n[3], Exact());
-			resize(SA5, _n[5], Exact());
-			resize(SA6, _n[6], Exact());
+            resize(SA0, _n[0], Exact());
+            resize(SA3, _n[3], Exact());
+            resize(SA5, _n[5], Exact());
+            resize(SA6, _n[6], Exact());
 
-			// stably sort the mod 5 and mod 3 suffixes from SA124 by their first character
-			{
-				for (TSize i=0, j3=0, j5=0, l;  i < _n124;  i++) {
-					l = SA124[i];
-					if (l < _n[4]) {
-						if ((l = _o[4] + (7 * l)) > 0)
-							s5[j5++] = l - 1;
-					} else if (l < _n24) {
-						if ((l = _o[2] + (7 * (l - _n[4]))) > 0)
-							s3[j3++] = l - 1;
-					}
-				}
+            // stably sort the mod 5 and mod 3 suffixes from SA124 by their first character
+            {
+                for (TSize i=0, j3=0, j5=0, l;  i < _n124;  i++) {
+                    l = SA124[i];
+                    if (l < _n[4]) {
+                        if ((l = _o[4] + (7 * l)) > 0)
+                            s5[j5++] = l - 1;
+                    } else if (l < _n24) {
+                        if ((l = _o[2] + (7 * (l - _n[4]))) > 0)
+                            s3[j3++] = l - 1;
+                    }
+                }
 
-				{
-					String<TSize, Alloc<> > cnt;
-					resize(cnt, K, Exact());	// counter array
+                {
+                    String<TSize, Alloc<> > cnt;
+                    resize(cnt, K, Exact());    // counter array
 
-					radixPass(SA3, s3, s, cnt, K);
+                    radixPass(SA3, s3, s, cnt, K);
                     SEQAN_PROMARK("SA3 konstruiert");
 
-					radixPass(SA5, s5, s, cnt, K);
+                    radixPass(SA5, s5, s, cnt, K);
                     SEQAN_PROMARK("SA5 konstruiert");
-	    
-					// stably sort the mod 6 suffixes from SA5 by their first character
+        
+                    // stably sort the mod 6 suffixes from SA5 by their first character
 
-					if (_n[5] == _n[6]) radixExtend    (SA6, SA5, s, cnt, K);
-					else                radixExtendClip(SA6, SA5, s, cnt, K);
+                    if (_n[5] == _n[6]) radixExtend    (SA6, SA5, s, cnt, K);
+                    else                radixExtendClip(SA6, SA5, s, cnt, K);
                     SEQAN_PROMARK("SA6 konstruiert");
 
-					// stably sort the mod 0 suffixes from SA6 by their first character
+                    // stably sort the mod 0 suffixes from SA6 by their first character
 
-					if (_n[6] == _n[0]) radixExtend    (SA0, SA6, s, cnt, K);
-					else                radixExtendClip(SA0, SA6, s, cnt, K);	    
+                    if (_n[6] == _n[0]) radixExtend    (SA0, SA6, s, cnt, K);
+                    else                radixExtendClip(SA0, SA6, s, cnt, K);        
                     SEQAN_PROMARK("SA0 konstruiert");
-				}
-			}
+                }
+            }
 
-			// MULTIWAY MERGE all SA_ streams
-			{
-				// a helper matrix to lex-name-compare every combination of suffixes
-				TSize adjust[7][7] =
-					//      0               1              2             3             4              5               6
-				   {{0             , _n124-_n[0]   , _n24-_n[0]  , _n124-_n[0] , _n[4]-_n[0] , _n[4]-_n[0]   , _n24-_n[0]    },  // 0
-					{1-_n[1]       , 0             , 0           , 1-_n[1]     , 0           , 1-_n[1]-_n[2] , 1-_n[1]-_n[2] },  // 1*
-					{1-_n[2]       , 0             , 0           , _n[1]       , 0           , _n[1]         , 1-_n[2]       },  // 2*
-					{1+_n[4]-_n[3] , 1+_n[4]-_n[3] , _n24-_n[3]  , 0           , _n124-_n[3] , _n24-_n[3]    , _n124-_n[3]   },  // 3
-					{_n[1]+_n[2]   , 0             , 0           ,_n[2]        , 0           , _n[1]+_n[2]   , _n[2]         },  // 4*
-					{_n24-_n[5]    , _n124-_n[5]   , _n[4]-_n[5] , _n[4]-_n[5] , _n24-_n[5]  , 0             , _n124-_n[5]   },  // 5
-					{_n124-_n[6]   , _n24-_n[6]    , _n124-_n[6] , _n[4]-_n[6] , _n[4]-_n[6] , _n24-_n[6]    , 0             }}; // 6
+            // MULTIWAY MERGE all SA_ streams
+            {
+                // a helper matrix to lex-name-compare every combination of suffixes
+                TSize adjust[7][7] =
+                    //      0               1              2             3             4              5               6
+                   {{0             , _n124-_n[0]   , _n24-_n[0]  , _n124-_n[0] , _n[4]-_n[0] , _n[4]-_n[0]   , _n24-_n[0]    },  // 0
+                    {1-_n[1]       , 0             , 0           , 1-_n[1]     , 0           , 1-_n[1]-_n[2] , 1-_n[1]-_n[2] },  // 1*
+                    {1-_n[2]       , 0             , 0           , _n[1]       , 0           , _n[1]         , 1-_n[2]       },  // 2*
+                    {1+_n[4]-_n[3] , 1+_n[4]-_n[3] , _n24-_n[3]  , 0           , _n124-_n[3] , _n24-_n[3]    , _n124-_n[3]   },  // 3
+                    {_n[1]+_n[2]   , 0             , 0           ,_n[2]        , 0           , _n[1]+_n[2]   , _n[2]         },  // 4*
+                    {_n24-_n[5]    , _n124-_n[5]   , _n[4]-_n[5] , _n[4]-_n[5] , _n24-_n[5]  , 0             , _n124-_n[5]   },  // 5
+                    {_n124-_n[6]   , _n24-_n[6]    , _n124-_n[6] , _n[4]-_n[6] , _n[4]-_n[6] , _n24-_n[6]    , 0             }}; // 6
 
-				TSAIter pos[7] = {begin(SA0, Standard())      , begin(SA124, Standard())      , begin(SA124, Standard())      ,
-								  begin(SA3, Standard())      , begin(SA124, Standard())      , begin(SA5, Standard())        , begin(SA6, Standard())      };
-				TSAIter max[7] = {begin(SA0, Standard())+_n[0], begin(SA124, Standard())+_n124, begin(SA124, Standard())+_n124,
-								  begin(SA3, Standard())+_n[3], begin(SA124, Standard())+_n124, begin(SA5, Standard())+_n[5]  , begin(SA6, Standard())+_n[6]};
-				TValueIter spos[7];
-				TSize tpos[7];
-				bool islast[7];
+                TSAIter pos[7] = {begin(SA0, Standard())      , begin(SA124, Standard())      , begin(SA124, Standard())      ,
+                                  begin(SA3, Standard())      , begin(SA124, Standard())      , begin(SA5, Standard())        , begin(SA6, Standard())      };
+                TSAIter max[7] = {begin(SA0, Standard())+_n[0], begin(SA124, Standard())+_n124, begin(SA124, Standard())+_n124,
+                                  begin(SA3, Standard())+_n[3], begin(SA124, Standard())+_n124, begin(SA5, Standard())+_n[5]  , begin(SA6, Standard())+_n[6]};
+                TValueIter spos[7];
+                TSize tpos[7];
+                bool islast[7];
 
-				int a, b, rank[5];
-				int fill = 0;
-				TSize k = 0;
+                int a, b, rank[5];
+                int fill = 0;
+                TSize k = 0;
 
-				#define SEQAN_GET_ISKEW7(ii) (ii < _n[4] ? (ii * 7) + _o[4] : (ii < _n24 ? ((ii - _n[4]) * 7) + _o[2] : ((ii - _n24) * 7) + _o[1]))
-				#define SEQAN_GET_ASKEW7(ii) (ii < _n[4] ? 4 : (ii < _n24 ? 2 : 1))
+                #define SEQAN_GET_ISKEW7(ii) (ii < _n[4] ? (ii * 7) + _o[4] : (ii < _n24 ? ((ii - _n[4]) * 7) + _o[2] : ((ii - _n24) * 7) + _o[1]))
+                #define SEQAN_GET_ASKEW7(ii) (ii < _n[4] ? 4 : (ii < _n24 ? 2 : 1))
 
-				// fill the stream ranking list
-				for(int i = 0; i < 7; ++i) {
-					if (!_n[i]) continue;
-					if (i == 2 || i == 4) continue; // insert only the least suffix of SA124
+                // fill the stream ranking list
+                for(int i = 0; i < 7; ++i) {
+                    if (!_n[i]) continue;
+                    if (i == 2 || i == 4) continue; // insert only the least suffix of SA124
 
-					if (i == 1) {
+                    if (i == 1) {
 
-						TSize ii  = *(pos[1]);
-						a         = SEQAN_GET_ASKEW7(ii);
-						TSize j	  = SEQAN_GET_ISKEW7(ii);
+                        TSize ii  = *(pos[1]);
+                        a         = SEQAN_GET_ASKEW7(ii);
+                        TSize j      = SEQAN_GET_ISKEW7(ii);
 
-						tpos[a]   = ii;
-						spos[a]   = begin(s, Standard()) + j;
-						islast[a] = (j + 7 >= n);
+                        tpos[a]   = ii;
+                        spos[a]   = begin(s, Standard()) + j;
+                        islast[a] = (j + 7 >= n);
 
-					} else {
+                    } else {
 
-						a = i;
-						TSize j   = *(pos[a]);
+                        a = i;
+                        TSize j   = *(pos[a]);
 
-						tpos[a]   = j / 7;
-						spos[a]   = begin(s, Standard()) + j;
-						islast[a] = (j + 7 >= n);
+                        tpos[a]   = j / 7;
+                        spos[a]   = begin(s, Standard()) + j;
+                        islast[a] = (j + 7 >= n);
 
-					}
+                    }
 
-					// get the rank of stream a's suffix
-					int j;
-					for(j = 0;  j < fill;  ++j) {
-						b = rank[j];
-						if (_leqSkew7 (a,  b,   spos, tpos, islast, s124, adjust)) break;
-					}
+                    // get the rank of stream a's suffix
+                    int j;
+                    for(j = 0;  j < fill;  ++j) {
+                        b = rank[j];
+                        if (_leqSkew7 (a,  b,   spos, tpos, islast, s124, adjust)) break;
+                    }
 
-					// insert the suffix
-					for(int i = fill; i > j; --i)
-						rank[i] = rank[i-1];
-					rank[j] = a;
-					fill++;
-				}
+                    // insert the suffix
+                    for(int i = fill; i > j; --i)
+                        rank[i] = rank[i-1];
+                    rank[j] = a;
+                    fill++;
+                }
 
-				// main merge loop
-				// in order to find the least suffix in every step we use a stream ranking list
-				// so we only need to keep up the ordering and thus rank[0] is always the least suffix
-				while (fill > 1) {
+                // main merge loop
+                // in order to find the least suffix in every step we use a stream ranking list
+                // so we only need to keep up the ordering and thus rank[0] is always the least suffix
+                while (fill > 1) {
 
-					// add the least suffix to SA and get the next of the corresponding stream
-					a = rank[0];
-					SA[k++] = spos[a] - begin(s, Standard());
-					if (a == 1 || a == 2 || a == 4)
-						pos[4] = pos[2] = ++pos[1];
-					else
-						++pos[a];
+                    // add the least suffix to SA and get the next of the corresponding stream
+                    a = rank[0];
+                    SA[k++] = spos[a] - begin(s, Standard());
+                    if (a == 1 || a == 2 || a == 4)
+                        pos[4] = pos[2] = ++pos[1];
+                    else
+                        ++pos[a];
 
-					if (pos[a] < max[a]) {
+                    if (pos[a] < max[a]) {
 
-						// set corresponding spos, tpos, islast values and adapt a if necessary
-						if (a == 1 || a == 2 || a == 4) {
+                        // set corresponding spos, tpos, islast values and adapt a if necessary
+                        if (a == 1 || a == 2 || a == 4) {
 
-							TSize ii  = *(pos[1]);
-							a		  = SEQAN_GET_ASKEW7(ii);
-							TSize j   = SEQAN_GET_ISKEW7(ii);
+                            TSize ii  = *(pos[1]);
+                            a          = SEQAN_GET_ASKEW7(ii);
+                            TSize j   = SEQAN_GET_ISKEW7(ii);
 
-							tpos[a]   = ii;
-							spos[a]   = begin(s, Standard()) + j;
-							islast[a] = (j + 7 >= n);
+                            tpos[a]   = ii;
+                            spos[a]   = begin(s, Standard()) + j;
+                            islast[a] = (j + 7 >= n);
 
-						} else {
+                        } else {
 
-							TSize j   = *(pos[a]);
+                            TSize j   = *(pos[a]);
 
-							tpos[a]   = j / 7;
-							spos[a]   = begin(s, Standard()) + j;
-							islast[a] = (j + 7 >= n);
+                            tpos[a]   = j / 7;
+                            spos[a]   = begin(s, Standard()) + j;
+                            islast[a] = (j + 7 >= n);
 
-						}
+                        }
 
-						// get the rank of stream a's suffix
+                        // get the rank of stream a's suffix
 
-						// linear search
-						int right;
-						for(right = 1;  right < fill;  right++) {
-							b = rank[right];
-							if (_leqSkew7 (a,  b,   spos, tpos, islast, s124, adjust)) break;
-						}
+                        // linear search
+                        int right;
+                        for(right = 1;  right < fill;  right++) {
+                            b = rank[right];
+                            if (_leqSkew7 (a,  b,   spos, tpos, islast, s124, adjust)) break;
+                        }
 /*
-						// binary search
-						int left = 0;
-						int right = fill;
-						while (left + 1 != right) {
-							int middle = (left + right) >> 2;
-							if (leq<TValue, TSize> (a,  rank[middle],   spos, tpos, islast, s124, adjust))
-								right = middle;
-							else
-								left = middle;
-						}*/
+                        // binary search
+                        int left = 0;
+                        int right = fill;
+                        while (left + 1 != right) {
+                            int middle = (left + right) >> 2;
+                            if (leq<TValue, TSize> (a,  rank[middle],   spos, tpos, islast, s124, adjust))
+                                right = middle;
+                            else
+                                left = middle;
+                        }*/
 
-						// remove the least suffix ...
-						for(int i = 1; i < right; ++i)
-							rank[i-1] = rank[i];
+                        // remove the least suffix ...
+                        for(int i = 1; i < right; ++i)
+                            rank[i-1] = rank[i];
 
-						// ... and insert the new one
-						rank[right-1] = a;
+                        // ... and insert the new one
+                        rank[right-1] = a;
 
-					} else {
-						// only remove the least suffix
-						fill--;
-						for(int i = 0; i < fill; ++i)
-							rank[i] = rank[i+1];
-					}
-				}
+                    } else {
+                        // only remove the least suffix
+                        fill--;
+                        for(int i = 0; i < fill; ++i)
+                            rank[i] = rank[i+1];
+                    }
+                }
 
-				// only one (or less) stream left to fill SA with
-				a = rank[0];
-				if (a == 1 || a == 2 || a == 4)
-					for (;  k < n;  ++k) { TSize ii = *(pos[1]++); SA[k] = SEQAN_GET_ISKEW7(ii); }
-				else
-					for (;  k < n;  ++k) SA[k] = *(pos[a]++);
-			}	    
-		}
+                // only one (or less) stream left to fill SA with
+                a = rank[0];
+                if (a == 1 || a == 2 || a == 4)
+                    for (;  k < n;  ++k) { TSize ii = *(pos[1]++); SA[k] = SEQAN_GET_ISKEW7(ii); }
+                else
+                    for (;  k < n;  ++k) SA[k] = *(pos[a]++);
+            }        
+        }
         SEQAN_PROMARK("SA124, SA3, SA5, SA6, SA0 verschmolzen");
 
         #ifdef SEQAN_DEBUG_INDEX
@@ -875,28 +875,28 @@ namespace SEQAN_NAMESPACE_MAIN
         #endif
         SEQAN_PROMARK("Rekursionsaufstieg");
         SEQAN_PROSUB(SEQAN_PRODEPTH, 1);
-	}
+    }
 
     template < typename TSA,
                typename TText >
     inline void createSuffixArray(
-		TSA &SA,
-		TText &s,
-		Skew7 const &alg,
-		unsigned K,
+        TSA &SA,
+        TText &s,
+        Skew7 const &alg,
+        unsigned K,
         unsigned maxdepth)
-	{
-		createSuffixArray(SA, s, alg, K, maxdepth, 1);
-	}
+    {
+        createSuffixArray(SA, s, alg, K, maxdepth, 1);
+    }
 
     // creates suffix array sorted by the first maxLCP chars of suffixes
     template < typename TSA,
                typename TText,
                typename TSize >
     inline void createSuffixArrayPart(
-		TSA &SA,
-		TText &s,
-		Skew7 const &_dummy,
+        TSA &SA,
+        TText &s,
+        Skew7 const &_dummy,
         TSize maxLCP,
         unsigned K)
     {
@@ -911,13 +911,13 @@ namespace SEQAN_NAMESPACE_MAIN
                typename TText,
                typename TSize >
     inline void createSuffixArrayPart(
-		TSA &SA,
-		TText &s,
-		Skew7 const &_dummy,
+        TSA &SA,
+        TText &s,
+        Skew7 const &_dummy,
         TSize maxLCP)
     {
-    	SEQAN_CHECKPOINT;
-    	createSuffixArrayPart(SA, s, _dummy, maxLCP, ValueSize< typename Value<TText>::Type >::VALUE);
+        SEQAN_CHECKPOINT;
+        createSuffixArrayPart(SA, s, _dummy, maxLCP, ValueSize< typename Value<TText>::Type >::VALUE);
     }
 //}
 

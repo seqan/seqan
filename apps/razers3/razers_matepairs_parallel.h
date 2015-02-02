@@ -439,14 +439,14 @@ void workVerification(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore
     typedef typename TFragmentStore::TContigSeq             TGenome;
 
     typedef typename TFragmentStore::TMatePairStore         TMatePairStore;
-    // typedef typename TFragmentStore::TAlignedReadStore		TAlignedReadStore;
-    // typedef typename TFragmentStore::TAlignQualityStore		TAlignQualityStore;
+    // typedef typename TFragmentStore::TAlignedReadStore        TAlignedReadStore;
+    // typedef typename TFragmentStore::TAlignQualityStore        TAlignQualityStore;
     typedef typename Value<TMatePairStore>::Type            TMatePair;
-    // typedef typename Value<TAlignedReadStore>::Type			TAlignedRead;
-    // typedef typename Value<TAlignQualityStore>::Type		TAlignQuality;
+    // typedef typename Value<TAlignedReadStore>::Type            TAlignedRead;
+    // typedef typename Value<TAlignQualityStore>::Type        TAlignQuality;
     typedef typename TThreadLocalStorage::TReadSet TReadSet;
     //typedef Index<TReadSet, IndexQGram<TShape>  >   TReadIndex;
-    // typedef typename Id<TAlignedRead>::Type					TId;
+    // typedef typename Id<TAlignedRead>::Type                    TId;
 
     typedef typename TFragmentStore::TContigSeq             TGenome;
     typedef typename Size<TGenome>::Type                    TSize;
@@ -543,7 +543,7 @@ void workVerification(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore
     TMatch mR;
     TDequeueValue fL(-2, mR);   // to supress uninitialized warnings
 
-    //	unsigned const preFetchMatches = 2048;
+    //    unsigned const preFetchMatches = 2048;
 
     // -----------------------------------------------------------------------
     // Enqueue hits from the previous left window.
@@ -678,9 +678,9 @@ void workVerification(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore
             it = &value(tls.fifo, i - tls.fifoFirstNo);
 
             // search left mate
-            //			if (((*it).i2.readId & ~NOT_VERIFIED) == leftReadId)
-            //			        ^== we need not to test anymore, as only corr. left mates are traversed
-            //						via the linked list beginning from lastPotMatchNo[matePairId]
+            //            if (((*it).i2.readId & ~NOT_VERIFIED) == leftReadId)
+            //                    ^== we need not to test anymore, as only corr. left mates are traversed
+            //                        via the linked list beginning from lastPotMatchNo[matePairId]
             {
                 // verify left mate (equal seqNo), if not done already
                 if ((*it).i2.readId & NOT_VERIFIED)
@@ -725,7 +725,7 @@ void workVerification(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore
                         lastValid = i;
                         continue;                                           // left pot. hit is out of tolerance window
                     }
-                } //else {}													// left match is verified already
+                } //else {}                                                    // left match is verified already
 
                 // short-cut negative matches
                 if (last != lastValid)
@@ -804,7 +804,7 @@ void workVerification(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore
                             bestLeftScore = score;
                             bestLibSizeError = libSizeError;
                             bestLeft = it;
-                            // if (bestLeftScore == 0) break;	// TODO: replace if we have real qualities
+                            // if (bestLeftScore == 0) break;    // TODO: replace if we have real qualities
                         }
                     }
                 }
@@ -860,14 +860,14 @@ void workVerification(ThreadLocalStorage<MapPairedReads<TMatches, TFragmentStore
             fL.i2.libDiff = mR.libDiff = bestLibSizeError;
 
             // both mates match with correct library size
-            /*								std::cout << "found " << matePairId << " on " << orientation << contigId;
+            /*                                std::cout << "found " << matePairId << " on " << orientation << contigId;
                                             std::cout << " dist:" << dist;
                                             if (orientation=='F')
                                             std::cout << " \t_" << fL.i2.beginPos+1 << "_" << mR.endPos;
                                             else
                                             std::cout << " \t_" << mR.beginPos+1 << "_" << mL.endPos;
-                                            //							std::cout << " L_" << (*bestLeft).beginPos << "_" << (*bestLeft).endPos << "_" << (*bestLeft).editDist;
-                                            //							std::cout << " R_" << mR.beginPos << "_" << mR.endPos << "_" << mR.editDist;
+                                            //                            std::cout << " L_" << (*bestLeft).beginPos << "_" << (*bestLeft).endPos << "_" << (*bestLeft).editDist;
+                                            //                            std::cout << " R_" << mR.beginPos << "_" << mR.endPos << "_" << mR.editDist;
                                             std::cout << std::endl;
             */
             if (!options.spec.DONT_DUMP_RESULTS)
@@ -1222,10 +1222,10 @@ void _mapMatePairReadsParallel(
 #endif  // #ifdef RAZERS_PROFILE
             double filterStart = sysTime();
 
-            // TDequeue fifo;						// stores left-mate potential matches  // XXX
-            // String<__int64> lastPotMatchNo;		// last number of a left-mate potential // XXX
-            // __int64 lastNo = 0;					// last number over all left-mate pot. matches in the queue // XXX
-            // __int64 firstNo = 0;				// first number over all left-mate pot. match in the queue // XXX
+            // TDequeue fifo;                        // stores left-mate potential matches  // XXX
+            // String<__int64> lastPotMatchNo;        // last number of a left-mate potential // XXX
+            // __int64 lastNo = 0;                    // last number over all left-mate pot. matches in the queue // XXX
+            // __int64 firstNo = 0;                // first number over all left-mate pot. match in the queue // XXX
             // Pair<TGPos> gPair;
 
             // resize(lastPotMatchNo, length(host(filterPatternL)), (__int64)-1, Exact());  // XXX
@@ -1234,7 +1234,7 @@ void _mapMatePairReadsParallel(
 
             // TAlignedRead mR;
             // TAlignQuality qR;
-            // TDequeueValue fL(-1, mR, qR);	// to supress uninitialized warnings
+            // TDequeueValue fL(-1, mR, qR);    // to supress uninitialized warnings
 
             // Search for hits from next window.
             int delta = windowsDone == 0 ? scanShift : 0;  // First window of right finder is smaller.
@@ -1338,8 +1338,8 @@ void _mapMatePairReadsParallel(
 
     // NOTE: We never re-reverse complement since this function is only called
     // twice, in the right order regarding the orientation parameters.
-    // if (!unlockAndFreeContig(store, contigId))						// if the contig is still used
-    //  if (orientation == 'R')	reverseComplement(genome);	// we have to restore original orientation
+    // if (!unlockAndFreeContig(store, contigId))                        // if the contig is still used
+    //  if (orientation == 'R')    reverseComplement(genome);    // we have to restore original orientation
 #ifdef RAZERS_PROFILE
     timelineEndTask(TASK_ON_CONTIG);
 #endif  // #ifdef RAZERS_PROFILE

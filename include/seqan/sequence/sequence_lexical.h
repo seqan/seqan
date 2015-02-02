@@ -85,7 +85,7 @@ typedef Tag<TagPrefixGreater_> const TagPrefixGreater;
 template <typename T>
 struct DefaultPrefixOrder
 {
-	typedef TagPrefixLess Type;
+    typedef TagPrefixLess Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -116,15 +116,15 @@ struct DefaultPrefixOrder
  * @code{.cpp}
  * if (isLess(str1, str2)) //first comparison
  * {
- * 	//str1 < str2
+ *     //str1 < str2
  * }
  * else if (isGreater(str1, str2)) //second comparison
  * {
- * 	//str1 > str2
+ *     //str1 > str2
  * }
  * else
  * {
- * 	//str == str2
+ *     //str == str2
  * }
  * @endcode
  *
@@ -134,15 +134,15 @@ struct DefaultPrefixOrder
  * Lexical <> comparator(str1, str2); //comparison is executed here
  * if (isLess(comparator))
  * {
- * 	//str1 < str2
+ *     //str1 < str2
  * }
  * else if (lexGreater(comparator))
  * {
- * 	//str1 > str2
+ *     //str1 > str2
  * }
  * else
  * {
- * 	//str == str2
+ *     //str == str2
  * }
  * @endcode
  *
@@ -156,48 +156,48 @@ template <typename TSpec = size_t>
 struct Lexical
 {
 public:
-	typename Size<Lexical>::Type data_lcp;
-	char data_compare;
+    typename Size<Lexical>::Type data_lcp;
+    char data_compare;
 
 public:
-	Lexical()
-	{
+    Lexical()
+    {
 SEQAN_CHECKPOINT
-	}
+    }
 
-	template <typename TLeft, typename TRight>
-	Lexical(TLeft const & left, TRight const & right)
-	{
+    template <typename TLeft, typename TRight>
+    Lexical(TLeft const & left, TRight const & right)
+    {
 SEQAN_CHECKPOINT
-		compare(*this, left, right);
-	}
+        compare(*this, left, right);
+    }
 
-	Lexical(Lexical const & other):
-		data_lcp(other.data_lcp),
-		data_compare(other.data_compare)
-	{
+    Lexical(Lexical const & other):
+        data_lcp(other.data_lcp),
+        data_compare(other.data_compare)
+    {
 SEQAN_CHECKPOINT
-	}
+    }
 
-	Lexical & operator=(Lexical const & other)
-	{
+    Lexical & operator=(Lexical const & other)
+    {
 SEQAN_CHECKPOINT
-		data_compare = other.data_compare;
-		data_lcp = other.data_lcp;
-		return *this;
-	}
+        data_compare = other.data_compare;
+        data_lcp = other.data_lcp;
+        return *this;
+    }
 
-	~Lexical() {}
+    ~Lexical() {}
 //____________________________________________________________________________
 
-	enum
-	{
-		EQUAL = 1,
-		LESS = 2,
-		GREATER = 4,
-		LEFT_IS_PREFIX = 8,
-		RIGHT_IS_PREFIX = 16
-	};
+    enum
+    {
+        EQUAL = 1,
+        LESS = 2,
+        GREATER = 4,
+        LEFT_IS_PREFIX = 8,
+        RIGHT_IS_PREFIX = 16
+    };
 };
 
 
@@ -225,7 +225,7 @@ SEQAN_CHECKPOINT
 template <typename T>
 struct Comparator
 {
-	typedef Lexical<typename Size<T>::Type> Type;
+    typedef Lexical<typename Size<T>::Type> Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -234,13 +234,13 @@ struct Comparator
 template <typename TSpec>
 struct Size<Lexical<TSpec> >
 {
-	typedef TSpec Type;
+    typedef TSpec Type;
 };
 
 template <typename TSpec>
 struct Size<Lexical<TSpec> const>
 {
-	typedef TSpec Type;
+    typedef TSpec Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -249,13 +249,13 @@ struct Size<Lexical<TSpec> const>
 template <typename TSpec>
 struct Spec<Lexical<TSpec> >
 {
-	typedef TSpec Type;
+    typedef TSpec Type;
 };
 
 template <typename TSpec>
 struct Spec<Lexical<TSpec> const>
 {
-	typedef TSpec Type;
+    typedef TSpec Type;
 };
 
 
@@ -283,48 +283,48 @@ struct Spec<Lexical<TSpec> const>
 template <typename TSpec, typename TLeft, typename TRight>
 inline void
 compare_(Lexical<TSpec> & lexical,
-		 TLeft & left,
-		 TRight & right)
+         TLeft & left,
+         TRight & right)
 {
-	typename Iterator<TLeft, Standard>::Type left_it = begin(left, Standard());
-	typename Size<TLeft>::Type left_length = length(left);
-	typename Iterator<TRight, Standard>::Type right_it = begin(right, Standard());
-	typename Size<TRight>::Type right_length = length(right);
+    typename Iterator<TLeft, Standard>::Type left_it = begin(left, Standard());
+    typename Size<TLeft>::Type left_length = length(left);
+    typename Iterator<TRight, Standard>::Type right_it = begin(right, Standard());
+    typename Size<TRight>::Type right_length = length(right);
 
-	if (left_length == right_length) lexical.data_compare = Lexical<TSpec>::EQUAL;
-	else if (left_length < right_length) lexical.data_compare = Lexical<TSpec>::LEFT_IS_PREFIX;
-	else
-	{
-		lexical.data_compare = Lexical<TSpec>::RIGHT_IS_PREFIX;
-		left_length = right_length;
-	}
+    if (left_length == right_length) lexical.data_compare = Lexical<TSpec>::EQUAL;
+    else if (left_length < right_length) lexical.data_compare = Lexical<TSpec>::LEFT_IS_PREFIX;
+    else
+    {
+        lexical.data_compare = Lexical<TSpec>::RIGHT_IS_PREFIX;
+        left_length = right_length;
+    }
 
-	lexical.data_lcp = 0;
-	for (lexical.data_lcp = 0; lexical.data_lcp < left_length; ++lexical.data_lcp)
-	{
-		if (*left_it < *right_it)
-		{
-			lexical.data_compare = Lexical<TSpec>::LESS;
-			break;
-		}
-		if (*left_it > *right_it)
-		{
-			lexical.data_compare = Lexical<TSpec>::GREATER;
-			break;
-		}
-		++left_it;
-		++right_it;
-	}
+    lexical.data_lcp = 0;
+    for (lexical.data_lcp = 0; lexical.data_lcp < left_length; ++lexical.data_lcp)
+    {
+        if (*left_it < *right_it)
+        {
+            lexical.data_compare = Lexical<TSpec>::LESS;
+            break;
+        }
+        if (*left_it > *right_it)
+        {
+            lexical.data_compare = Lexical<TSpec>::GREATER;
+            break;
+        }
+        ++left_it;
+        ++right_it;
+    }
 }
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TSpec, typename TLeft, typename TRight>
 inline void
 compare(Lexical<TSpec> & lexical,
-		TLeft const & left,
-		TRight const & right)
+        TLeft const & left,
+        TRight const & right)
 {
-	compare_(lexical, left, right);
+    compare_(lexical, left, right);
 }
 
 // TODO(holtgrew): Are these bugs present in currently supported VC++ versions or is this only a legacy issue?
@@ -332,26 +332,26 @@ compare(Lexical<TSpec> & lexical,
 template <typename TSpec, typename TLeftValue, typename TRight>
 inline void
 compare(Lexical<TSpec> & lexical,
-		TLeftValue const * left,
-		TRight const & right)
+        TLeftValue const * left,
+        TRight const & right)
 {
-	compare_(lexical, left, right);
+    compare_(lexical, left, right);
 }
 template <typename TSpec, typename TLeftValue, typename TRightValue>
 inline void
 compare(Lexical<TSpec> & lexical,
-		TLeftValue const * left,
-		TRightValue const * right)
+        TLeftValue const * left,
+        TRightValue const * right)
 {
-	compare_(lexical, left, right);
+    compare_(lexical, left, right);
 }
 template <typename TSpec, typename TLeft, typename TRightValue>
 inline void
 compare(Lexical<TSpec> & lexical,
-		TLeft const & left,
-		TRightValue const * right)
+        TLeft const & left,
+        TRightValue const * right)
 {
-	compare_(lexical, left, right);
+    compare_(lexical, left, right);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -378,10 +378,10 @@ compare(Lexical<TSpec> & lexical,
 template <typename TLeft, typename TRight >
 inline bool
 isEqual(TLeft const & left,
-		TRight const & right)
+        TRight const & right)
 {
 SEQAN_CHECKPOINT
-	return left == right;
+    return left == right;
 }
 
 template <typename TSpec>
@@ -389,7 +389,7 @@ inline bool
 isEqual(Lexical<TSpec> const & _lex)
 {
 SEQAN_CHECKPOINT
-	return (_lex.data_compare & Lexical<TSpec>::EQUAL);
+    return (_lex.data_compare & Lexical<TSpec>::EQUAL);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -414,10 +414,10 @@ SEQAN_CHECKPOINT
 template <typename TLeft, typename TRight >
 inline bool
 isNotEqual(TLeft const & left,
-		 TRight const & right)
+         TRight const & right)
 {
 SEQAN_CHECKPOINT
-	return left != right;
+    return left != right;
 }
 
 template <typename TSpec>
@@ -425,7 +425,7 @@ inline bool
 isNotEqual(Lexical<TSpec> const & _lex)
 {
 SEQAN_CHECKPOINT
-	return !(_lex.data_compare & Lexical<TSpec>::EQUAL);
+    return !(_lex.data_compare & Lexical<TSpec>::EQUAL);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -450,26 +450,26 @@ SEQAN_CHECKPOINT
 template <typename TLeft, typename TRight, typename TPrefixOrder >
 inline bool
 isLess(TLeft const & left,
-	   TRight const & right,
-	   Tag<TPrefixOrder> const tag)
+       TRight const & right,
+       Tag<TPrefixOrder> const tag)
 {
 SEQAN_CHECKPOINT
-	typename Comparator<TLeft>::Type _lex(left, right);
+    typename Comparator<TLeft>::Type _lex(left, right);
     return isLess(_lex, tag);
 }
 template <typename TLeft, typename TRight>
 inline bool
 isLess(TLeft const & left,
-	   TRight const & right)
+       TRight const & right)
 {
 SEQAN_CHECKPOINT
-	return left < right;
+    return left < right;
 }
 
 template <typename TSpec>
 inline bool
 isLess(Lexical<TSpec> const & _lex,
-	   TagPrefixLess)
+       TagPrefixLess)
 {
 SEQAN_CHECKPOINT
    return (_lex.data_compare & (Lexical<TSpec>::LESS | Lexical<TSpec>::LEFT_IS_PREFIX)) != 0;
@@ -477,7 +477,7 @@ SEQAN_CHECKPOINT
 template <typename TSpec>
 inline bool
 isLess(Lexical<TSpec> const & _lex,
-	   TagPrefixGreater)
+       TagPrefixGreater)
 {
 SEQAN_CHECKPOINT
    return (_lex.data_compare & (Lexical<TSpec>::LESS | Lexical<TSpec>::RIGHT_IS_PREFIX)) != 0;
@@ -487,7 +487,7 @@ inline bool
 isLess(Lexical<TSpec> const & _lex)
 {
 SEQAN_CHECKPOINT
-	return isLess(_lex, typename DefaultPrefixOrder< Lexical<TSpec> >::Type());
+    return isLess(_lex, typename DefaultPrefixOrder< Lexical<TSpec> >::Type());
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -512,26 +512,26 @@ SEQAN_CHECKPOINT
 template <typename TLeft, typename TRight, typename TPrefixOrder >
 inline bool
 isLessOrEqual(TLeft const & left,
-		TRight const & right,
-		Tag<TPrefixOrder> const tag)
+        TRight const & right,
+        Tag<TPrefixOrder> const tag)
 {
 SEQAN_CHECKPOINT
-	typename Comparator<TLeft>::Type _lex(left, right);
+    typename Comparator<TLeft>::Type _lex(left, right);
     return isLessOrEqual(_lex, tag);
 }
 template <typename TLeft, typename TRight>
 inline bool
 isLessOrEqual(TLeft const & left,
-		TRight const & right)
+        TRight const & right)
 {
 SEQAN_CHECKPOINT
-	return left <= right;
+    return left <= right;
 }
 
 template <typename TSpec>
 inline bool
 isLessOrEqual(Lexical<TSpec> const & _lex,
-		TagPrefixLess)
+        TagPrefixLess)
 {
 SEQAN_CHECKPOINT
    return (_lex.data_compare & (Lexical<TSpec>::LESS | Lexical<TSpec>::EQUAL | Lexical<TSpec>::LEFT_IS_PREFIX)) != 0;
@@ -539,7 +539,7 @@ SEQAN_CHECKPOINT
 template <typename TSpec>
 inline bool
 isLessOrEqual(Lexical<TSpec> const & _lex,
-		TagPrefixGreater)
+        TagPrefixGreater)
 {
 SEQAN_CHECKPOINT
    return (_lex.data_compare & (Lexical<TSpec>::LESS | Lexical<TSpec>::EQUAL | Lexical<TSpec>::RIGHT_IS_PREFIX)) != 0;
@@ -549,7 +549,7 @@ inline bool
 isLessOrEqual(Lexical<TSpec> const & _lex)
 {
 SEQAN_CHECKPOINT
-	return isLessOrEqual(_lex, typename DefaultPrefixOrder< Lexical<TSpec> >::Type());
+    return isLessOrEqual(_lex, typename DefaultPrefixOrder< Lexical<TSpec> >::Type());
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -574,26 +574,26 @@ SEQAN_CHECKPOINT
 template <typename TLeft, typename TRight, typename TPrefixOrder >
 inline bool
 isGreater(TLeft const & left,
-		TRight const & right,
-		Tag<TPrefixOrder> const tag)
+        TRight const & right,
+        Tag<TPrefixOrder> const tag)
 {
 SEQAN_CHECKPOINT
-	typename Comparator<TLeft>::Type _lex(left, right);
+    typename Comparator<TLeft>::Type _lex(left, right);
     return isGreater(_lex, tag);
 }
 template <typename TLeft, typename TRight>
 inline bool
 isGreater(TLeft const & left,
-		TRight const & right)
+        TRight const & right)
 {
 SEQAN_CHECKPOINT
-	return left > right;
+    return left > right;
 }
 
 template <typename TSpec>
 inline bool
 isGreater(Lexical<TSpec> const & _lex,
-		TagPrefixLess)
+        TagPrefixLess)
 {
 SEQAN_CHECKPOINT
    return (_lex.data_compare & (Lexical<TSpec>::GREATER | Lexical<TSpec>::RIGHT_IS_PREFIX)) != 0;
@@ -601,7 +601,7 @@ SEQAN_CHECKPOINT
 template <typename TSpec>
 inline bool
 isGreater(Lexical<TSpec> const & _lex,
-		TagPrefixGreater)
+        TagPrefixGreater)
 {
 SEQAN_CHECKPOINT
    return (_lex.data_compare & (Lexical<TSpec>::GREATER | Lexical<TSpec>::LEFT_IS_PREFIX)) != 0;
@@ -611,7 +611,7 @@ inline bool
 isGreater(Lexical<TSpec> const & _lex)
 {
 SEQAN_CHECKPOINT
-	return isGreater(_lex, typename DefaultPrefixOrder< Lexical<TSpec> >::Type());
+    return isGreater(_lex, typename DefaultPrefixOrder< Lexical<TSpec> >::Type());
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -636,26 +636,26 @@ SEQAN_CHECKPOINT
 template <typename TLeft, typename TRight, typename TPrefixOrder >
 inline bool
 isGreaterOrEqual(TLeft const & left,
-		TRight const & right,
-		Tag<TPrefixOrder> const tag)
+        TRight const & right,
+        Tag<TPrefixOrder> const tag)
 {
 SEQAN_CHECKPOINT
-	typename Comparator<TLeft>::Type _lex(left, right);
+    typename Comparator<TLeft>::Type _lex(left, right);
     return isGreaterOrEqual(_lex, tag);
 }
 template <typename TLeft, typename TRight>
 inline bool
 isGreaterOrEqual(TLeft const & left,
-		TRight const & right)
+        TRight const & right)
 {
 SEQAN_CHECKPOINT
-	return left >= right;
+    return left >= right;
 }
 
 template <typename TSpec>
 inline bool
 isGreaterOrEqual(Lexical<TSpec> const & _lex,
-		TagPrefixLess)
+        TagPrefixLess)
 {
 SEQAN_CHECKPOINT
    return (_lex.data_compare & (Lexical<TSpec>::GREATER | Lexical<TSpec>::EQUAL | Lexical<TSpec>::RIGHT_IS_PREFIX)) != 0;
@@ -663,7 +663,7 @@ SEQAN_CHECKPOINT
 template <typename TSpec>
 inline bool
 isGreaterOrEqual(Lexical<TSpec> const & _lex,
-		TagPrefixGreater)
+        TagPrefixGreater)
 {
 SEQAN_CHECKPOINT
    return (_lex.data_compare & (Lexical<TSpec>::GREATER | Lexical<TSpec>::EQUAL | Lexical<TSpec>::LEFT_IS_PREFIX)) != 0;
@@ -673,7 +673,7 @@ inline bool
 isGreaterOrEqual(Lexical<TSpec> const & _lex)
 {
 SEQAN_CHECKPOINT
-	return isGreaterOrEqual(_lex, typename DefaultPrefixOrder< Lexical<TSpec> >::Type());
+    return isGreaterOrEqual(_lex, typename DefaultPrefixOrder< Lexical<TSpec> >::Type());
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -700,10 +700,10 @@ SEQAN_CHECKPOINT
 template <typename TLeft, typename TRight >
 inline bool
 isPrefix(TLeft const & left,
-		TRight const & right)
+        TRight const & right)
 {
 SEQAN_CHECKPOINT
-	typename Comparator<TLeft>::Type _lex(left, right);
+    typename Comparator<TLeft>::Type _lex(left, right);
     return isPrefix(_lex);
 }
 template <typename TSpec>
@@ -739,10 +739,10 @@ SEQAN_CHECKPOINT
 template <typename TLeft, typename TRight >
 inline bool
 hasPrefix(TLeft const & left,
-		TRight const & right)
+        TRight const & right)
 {
 SEQAN_CHECKPOINT
-	typename Comparator<TLeft>::Type _lex(left, right);
+    typename Comparator<TLeft>::Type _lex(left, right);
     return hasPrefix(_lex);
 }
 template <typename TSpec>
@@ -780,7 +780,7 @@ inline typename Size<TLeft>::Type
 lcpLength(TLeft const & left, TRight const & right)
 {
 SEQAN_CHECKPOINT
-	typename Comparator<TLeft>::Type _lex(left, right);
+    typename Comparator<TLeft>::Type _lex(left, right);
     return lcpLength(_lex);
 }
 

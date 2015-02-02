@@ -287,7 +287,7 @@ registerSequenceName(TLocalMatchStore & store,
                      CharString const & sequenceName)
 {
     unsigned id = 0;
-	if (!getIdByName(store.sequenceNameStore, sequenceName, id, store._sequenceNameStoreCache))
+    if (!getIdByName(store.sequenceNameStore, sequenceName, id, store._sequenceNameStoreCache))
     {
         id = length(store.sequenceNameStore);
         appendName(store.sequenceNameStore, sequenceName, store._sequenceNameStoreCache);
@@ -358,13 +358,13 @@ appendLocalMatch(TLocalMatchStore & store,
 
     // Get id for subject and query sequences;  Insert sequences into name stores/caches if not already there.
     TId subjectId = 0;
-	if (!getIdByName(store.sequenceNameStore, subjectName, subjectId, store._sequenceNameStoreCache))
+    if (!getIdByName(store.sequenceNameStore, subjectName, subjectId, store._sequenceNameStoreCache))
     {
         subjectId = length(store.sequenceNameStore);
         appendName(store.sequenceNameStore, subjectName, store._sequenceNameStoreCache);
     }
     TId queryId = 0;
-	if (!getIdByName(store.sequenceNameStore, queryName, queryId, store._sequenceNameStoreCache))
+    if (!getIdByName(store.sequenceNameStore, queryName, queryId, store._sequenceNameStoreCache))
     {
         queryId = length(store.sequenceNameStore);
         appendName(store.sequenceNameStore, queryName, store._sequenceNameStoreCache);

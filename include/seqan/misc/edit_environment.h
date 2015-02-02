@@ -172,7 +172,7 @@ public:
     typedef StringEnumeratorHammingModifier_<TSignedSize> TModifier;
 
     TObject & orig;
-//		typename RemoveConst_<TObject>::Type	tmp;
+//        typename RemoveConst_<TObject>::Type    tmp;
     String<TValue>                          tmp;
 
     TModifier   mod[DISTANCE];
@@ -236,7 +236,7 @@ public:
     typedef StringEnumeratorLevenshteinModifier_<TSignedSize> TModifier;
 
     TObject & orig;
-//		typename RemoveConst_<TObject>::Type	tmp;
+//        typename RemoveConst_<TObject>::Type    tmp;
     String<TValue>                          tmp;
 
     TModifier   mod[DISTANCE + 1];
@@ -989,8 +989,8 @@ operator++(Iter<StringEnumerator<TObject, EditEnvironment<LevenshteinDistance, D
         if (mod->errorPos >= 0 && static_cast<unsigned>(mod->errorPos) < length(it.tmp))
             assignValue(it.tmp, mod->errorPos, it.orig[mod->errorPosOrig]);
 
-//					int iMax = (TSignedSize)(length(it.tmp) - i);
-//					if (mod->state == mod->INSERT_) ++iMax;
+//                    int iMax = (TSignedSize)(length(it.tmp) - i);
+//                    if (mod->state == mod->INSERT_) ++iMax;
 
         // next error position
         if (++(mod->errorPos) < mod->errorPosEnd)

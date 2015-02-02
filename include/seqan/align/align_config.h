@@ -106,11 +106,11 @@ class AlignConfig
 template<bool TTop, bool TRight, bool TBottom, typename TSpec, typename TElement, typename TCost>
 inline void
 _initFirstColumn(AlignConfig<TTop, false, TRight, TBottom, TSpec> const,
-				 TElement& element,
-				 TCost const cost)
+                 TElement& element,
+                 TCost const cost)
 {
-	SEQAN_CHECKPOINT
-	element = cost;
+    SEQAN_CHECKPOINT
+    element = cost;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -118,11 +118,11 @@ _initFirstColumn(AlignConfig<TTop, false, TRight, TBottom, TSpec> const,
 template<bool TTop, bool TRight, bool TBottom, typename TSpec, typename TElement, typename TCost>
 inline void
 _initFirstColumn(AlignConfig<TTop, true, TRight, TBottom, TSpec> const,
-				 TElement& element,
-				 TCost const)
+                 TElement& element,
+                 TCost const)
 {
-	SEQAN_CHECKPOINT
-	element = 0;
+    SEQAN_CHECKPOINT
+    element = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -130,11 +130,11 @@ _initFirstColumn(AlignConfig<TTop, true, TRight, TBottom, TSpec> const,
 template<bool TLeft, bool TRight, bool TBottom, typename TSpec, typename TElement, typename TCost>
 inline void
 _initFirstRow(AlignConfig<false, TLeft, TRight, TBottom, TSpec> const,
-			  TElement& element,
-			  TCost const cost)
+              TElement& element,
+              TCost const cost)
 {
-	SEQAN_CHECKPOINT
-	element = cost;
+    SEQAN_CHECKPOINT
+    element = cost;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -142,11 +142,11 @@ _initFirstRow(AlignConfig<false, TLeft, TRight, TBottom, TSpec> const,
 template<bool TLeft, bool TRight, bool TBottom, typename TSpec, typename TElement, typename TCost>
 inline void
 _initFirstRow(AlignConfig<true, TLeft, TRight, TBottom, TSpec> const,
-			  TElement& element,
-			  TCost const)
+              TElement& element,
+              TCost const)
 {
-	SEQAN_CHECKPOINT
-	element = 0;
+    SEQAN_CHECKPOINT
+    element = 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -157,13 +157,13 @@ _initFirstRow(AlignConfig<true, TLeft, TRight, TBottom, TSpec> const,
 template<bool TTop, bool TLeft, bool TRight, typename TSpec, typename TValue1, typename TIndex1, typename TValue2, typename TIndex2>
 inline void
 _lastRow(AlignConfig<TTop, TLeft, TRight, false, TSpec> const,
-		 TValue1&,
-		 TIndex1&,
-		 TValue2 const,
-		 TIndex2 const)
+         TValue1&,
+         TIndex1&,
+         TValue2 const,
+         TIndex2 const)
 {
-	SEQAN_CHECKPOINT
-	// Nop
+    SEQAN_CHECKPOINT
+    // Nop
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -171,16 +171,16 @@ _lastRow(AlignConfig<TTop, TLeft, TRight, false, TSpec> const,
 template<bool TTop, bool TLeft, bool TRight, typename TSpec, typename TValue1, typename TIndex1, typename TValue2, typename TIndex2>
 inline void
 _lastRow(AlignConfig<TTop, TLeft, TRight, true, TSpec> const,
-		 TValue1& maxValue,
-		 TIndex1& maxIndex,
-		 TValue2 const val,
-		 TIndex2 const index)
+         TValue1& maxValue,
+         TIndex1& maxIndex,
+         TValue2 const val,
+         TIndex2 const index)
 {
-	SEQAN_CHECKPOINT
-	if (val > maxValue[0]) {
-		maxValue[0] = val;
-		maxIndex[0] = index;
-	}
+    SEQAN_CHECKPOINT
+    if (val > maxValue[0]) {
+        maxValue[0] = val;
+        maxIndex[0] = index;
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -188,12 +188,12 @@ _lastRow(AlignConfig<TTop, TLeft, TRight, true, TSpec> const,
 template<bool TTop, bool TLeft, bool TBottom, typename TSpec, typename TValue1, typename TIndex1, typename TColumn>
 inline void
 _lastColumn(AlignConfig<TTop, TLeft, false, TBottom, TSpec> const,
-			TValue1& maxValue,
-			TIndex1&,
-			TColumn const& column)
+            TValue1& maxValue,
+            TIndex1&,
+            TColumn const& column)
 {
-	SEQAN_CHECKPOINT
-	maxValue[1] = column[length(column) - 1];
+    SEQAN_CHECKPOINT
+    maxValue[1] = column[length(column) - 1];
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -201,23 +201,23 @@ _lastColumn(AlignConfig<TTop, TLeft, false, TBottom, TSpec> const,
 template<bool TTop, bool TLeft, bool TBottom, typename TSpec, typename TValue1, typename TIndex1, typename TColumn>
 inline void
 _lastColumn(AlignConfig<TTop, TLeft, true, TBottom, TSpec> const,
-			TValue1& maxValue,
-			TIndex1& maxIndex,
-			TColumn const& column)
+            TValue1& maxValue,
+            TIndex1& maxIndex,
+            TColumn const& column)
 {
-	SEQAN_CHECKPOINT;
-	typedef typename Size<TColumn>::Type TSize;
-	typedef typename Iterator<TColumn, Standard>::Type TColIter;
-	TSize limit = length(column) - 1;
-	maxValue[1] = column[limit];
-	TColIter itCol = begin(column, Standard());
-	TColIter itColEnd = end(column, Standard());
-	for(TSize i = 0;itCol != itColEnd; ++i, ++itCol) {
-		if (*itCol > maxValue[1]) {
-			maxValue[1] = *itCol;
-			maxIndex[1] = i;
-		}
-	}
+    SEQAN_CHECKPOINT;
+    typedef typename Size<TColumn>::Type TSize;
+    typedef typename Iterator<TColumn, Standard>::Type TColIter;
+    TSize limit = length(column) - 1;
+    maxValue[1] = column[limit];
+    TColIter itCol = begin(column, Standard());
+    TColIter itColEnd = end(column, Standard());
+    for(TSize i = 0;itCol != itColEnd; ++i, ++itCol) {
+        if (*itCol > maxValue[1]) {
+            maxValue[1] = *itCol;
+            maxIndex[1] = i;
+        }
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -225,13 +225,13 @@ _lastColumn(AlignConfig<TTop, TLeft, true, TBottom, TSpec> const,
 template<typename TScoreValue, bool TTop, bool TLeft, typename TSpec, typename TValue, typename TIndex, typename TSize>
 inline TScoreValue
 _maxOfAlignment(AlignConfig<TTop, TLeft, false, false, TSpec> const,
-				TValue& maxValue,
-				TIndex&,
-				TSize const,
-				TSize const)
+                TValue& maxValue,
+                TIndex&,
+                TSize const,
+                TSize const)
 {
-	SEQAN_CHECKPOINT
-	return maxValue[1];
+    SEQAN_CHECKPOINT
+    return maxValue[1];
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -239,14 +239,14 @@ _maxOfAlignment(AlignConfig<TTop, TLeft, false, false, TSpec> const,
 template<typename TScoreValue, bool TTop, bool TLeft, typename TSpec, typename TValue, typename TIndex, typename TSize>
 inline TScoreValue
 _maxOfAlignment(AlignConfig<TTop, TLeft, true, false, TSpec> const,
-				TValue& maxValue,
-				TIndex& maxIndex,
-				TSize const len1,
-				TSize const)
+                TValue& maxValue,
+                TIndex& maxIndex,
+                TSize const len1,
+                TSize const)
 {
-	SEQAN_CHECKPOINT
-	maxIndex[0] = len1;
-	return maxValue[1];
+    SEQAN_CHECKPOINT
+    maxIndex[0] = len1;
+    return maxValue[1];
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -254,14 +254,14 @@ _maxOfAlignment(AlignConfig<TTop, TLeft, true, false, TSpec> const,
 template<typename TScoreValue, bool TTop, bool TLeft, typename TSpec, typename TValue, typename TIndex, typename TSize>
 inline TScoreValue
 _maxOfAlignment(AlignConfig<TTop, TLeft, false, true, TSpec> const,
-				TValue& maxValue,
-				TIndex& maxIndex,
-				TSize const,
-				TSize const len2)
+                TValue& maxValue,
+                TIndex& maxIndex,
+                TSize const,
+                TSize const len2)
 {
-	SEQAN_CHECKPOINT
-	maxIndex[1] = len2;
-	return maxValue[0];
+    SEQAN_CHECKPOINT
+    maxIndex[1] = len2;
+    return maxValue[0];
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -269,16 +269,16 @@ _maxOfAlignment(AlignConfig<TTop, TLeft, false, true, TSpec> const,
 template<typename TScoreValue, bool TTop, bool TLeft, typename TSpec, typename TValue, typename TIndex, typename TSize>
 inline TScoreValue
 _maxOfAlignment(AlignConfig<TTop, TLeft, true, true, TSpec> const,
-				TValue& maxValue,
-				TIndex& maxIndex,
-				TSize const len1,
-				TSize const len2)
+                TValue& maxValue,
+                TIndex& maxIndex,
+                TSize const len1,
+                TSize const len2)
 {
-	SEQAN_CHECKPOINT
-	// Find the maximum
-	if (maxValue[1] > maxValue[0]) maxIndex[0] = len1;
-	else maxIndex[1] = len2;
-	return (maxValue[0] > maxValue[1]) ? maxValue[0] : maxValue[1];
+    SEQAN_CHECKPOINT
+    // Find the maximum
+    if (maxValue[1] > maxValue[0]) maxIndex[0] = len1;
+    else maxIndex[1] = len2;
+    return (maxValue[0] > maxValue[1]) ? maxValue[0] : maxValue[1];
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -286,14 +286,14 @@ _maxOfAlignment(AlignConfig<TTop, TLeft, true, true, TSpec> const,
 template<bool TTop, bool TLeft, bool TBottom, typename TSpec, typename TValue1, typename TIndex1, typename TValue2, typename TIndex2>
 inline void
 _lastColumn(AlignConfig<TTop, TLeft, false, TBottom, TSpec> const,
-			TValue1& maxValue,
-			TIndex1& maxIndex,
-			TValue2 const val,	
-			TIndex2 const row,
-			TIndex2 const col)
+            TValue1& maxValue,
+            TIndex1& maxIndex,
+            TValue2 const val,    
+            TIndex2 const row,
+            TIndex2 const col)
 {
-	SEQAN_CHECKPOINT
-	maxValue[1] = val; maxIndex[2] = row; maxIndex[3] = col;
+    SEQAN_CHECKPOINT
+    maxValue[1] = val; maxIndex[2] = row; maxIndex[3] = col;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -301,29 +301,29 @@ _lastColumn(AlignConfig<TTop, TLeft, false, TBottom, TSpec> const,
 template<bool TTop, bool TLeft, bool TBottom, typename TSpec, typename TValue1, typename TIndex1, typename TValue2, typename TIndex2>
 inline void
 _lastColumn(AlignConfig<TTop, TLeft, true, TBottom, TSpec> const,
-			TValue1& maxValue,
-			TIndex1& maxIndex,
-			TValue2 const val,
-			TIndex2 const row,
-			TIndex2 const col)
+            TValue1& maxValue,
+            TIndex1& maxIndex,
+            TValue2 const val,
+            TIndex2 const row,
+            TIndex2 const col)
 {
-	SEQAN_CHECKPOINT
-	if (val > maxValue[1]) {maxValue[1] = val; maxIndex[2] = row; maxIndex[3] = col; }
+    SEQAN_CHECKPOINT
+    if (val > maxValue[1]) {maxValue[1] = val; maxIndex[2] = row; maxIndex[3] = col; }
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
 template<bool TTop, bool TLeft, bool TRight, typename TSpec, typename TValue1, typename TIndex1, typename TValue2, typename TIndex2>
 inline void
-_lastRow(AlignConfig<TTop, TLeft, TRight, false, TSpec> const,		
-		 TValue1& maxValue,
-		 TIndex1& maxIndex,
-		 TValue2 const val,
-		 TIndex2 const row,
-		 TIndex2 const col)
+_lastRow(AlignConfig<TTop, TLeft, TRight, false, TSpec> const,        
+         TValue1& maxValue,
+         TIndex1& maxIndex,
+         TValue2 const val,
+         TIndex2 const row,
+         TIndex2 const col)
 {
-	SEQAN_CHECKPOINT
-	maxValue[0] = val; maxIndex[0] = row; maxIndex[1] = col;
+    SEQAN_CHECKPOINT
+    maxValue[0] = val; maxIndex[0] = row; maxIndex[1] = col;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -331,14 +331,14 @@ _lastRow(AlignConfig<TTop, TLeft, TRight, false, TSpec> const,
 template<bool TTop, bool TLeft, bool TRight, typename TSpec, typename TValue1, typename TIndex1, typename TValue2, typename TIndex2>
 inline void
 _lastRow(AlignConfig<TTop, TLeft, TRight, true, TSpec> const,
-		 TValue1& maxValue,
-		 TIndex1& maxIndex,
-		 TValue2 const val,
-		 TIndex2 const row,
-		 TIndex2 const col)
+         TValue1& maxValue,
+         TIndex1& maxIndex,
+         TValue2 const val,
+         TIndex2 const row,
+         TIndex2 const col)
 {
-	SEQAN_CHECKPOINT
-	if (val > maxValue[0]) {maxValue[0] = val; maxIndex[0] = row; maxIndex[1] = col; }
+    SEQAN_CHECKPOINT
+    if (val > maxValue[0]) {maxValue[0] = val; maxIndex[0] = row; maxIndex[1] = col; }
 }
 
 
@@ -348,14 +348,14 @@ template<bool TLeft, bool TRight, bool TBottom, typename TSpec>
 inline bool
 _configValueTop(AlignConfig<true, TLeft, TRight, TBottom, TSpec> const)
 {
-	return true;
+    return true;
 }
 
 template<bool TLeft, bool TRight, bool TBottom, typename TSpec>
 inline bool
 _configValueTop(AlignConfig<false, TLeft, TRight, TBottom, TSpec> const)
 {
-	return false;
+    return false;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -364,14 +364,14 @@ template<bool TTop, bool TRight, bool TBottom, typename TSpec>
 inline bool
 _configValueLeft(AlignConfig<TTop, true, TRight, TBottom, TSpec> const)
 {
-	return true;
+    return true;
 }
 
 template<bool TTop, bool TRight, bool TBottom, typename TSpec>
 inline bool
 _configValueLeft(AlignConfig<TTop, false, TRight, TBottom, TSpec> const)
 {
-	return false;
+    return false;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -380,14 +380,14 @@ template<bool TTop, bool TLeft, bool TBottom, typename TSpec>
 inline bool
 _configValueRight(AlignConfig<TTop, TLeft, true, TBottom, TSpec> const)
 {
-	return true;
+    return true;
 }
 
 template<bool TTop, bool TLeft, bool TBottom, typename TSpec>
 inline bool
 _configValueRight(AlignConfig<TTop, TLeft, false, TBottom, TSpec> const)
 {
-	return false;
+    return false;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -396,14 +396,14 @@ template<bool TTop, bool TLeft, bool TRight, typename TSpec>
 inline bool
 _configValueBottom(AlignConfig<TTop, TLeft, TRight, true, TSpec> const)
 {
-	return true;
+    return true;
 }
 
 template<bool TTop, bool TLeft, bool TRight, typename TSpec>
 inline bool
 _configValueBottom(AlignConfig<TTop, TLeft, TRight, false, TSpec> const)
 {
-	return false;
+    return false;
 }
 
 }  // namespace seqan

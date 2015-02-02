@@ -50,7 +50,7 @@ sample(TOperation m, TAlphabet base)
 template <typename TGenome>
 void simulateGenome(TGenome & genome, int size)
 {
-//	mtRandInit();
+//    mtRandInit();
     resize(genome, size);
     for (int i = 0; i < size; ++i)
         genome[i] = sample(0, (Dna)0);
@@ -141,12 +141,12 @@ void simulateReads(
     //typedef Finder<TGenomeInfix>                        TMyersFinder;
     //typedef Pattern<TRead, MyersUkkonen>                TMyersPattern;
 
-//	typedef Finder<TGenomeInfix>						TMyersFinderRev;
+//    typedef Finder<TGenomeInfix>                        TMyersFinderRev;
     //typedef Finder<TGenomeInfixRev>                     TMyersFinderRev;
     //typedef Pattern<TReadRev, MyersUkkonenGlobal>       TMyersPatternRev;
 
-//	mtRandInit();
-//	typedef TGenome TRevComp;
+//    mtRandInit();
+//    typedef TGenome TRevComp;
 
     int readLength = length(errorDist) / 4;
     const int REVCOMP = 1 << (sizeof(int) * 8 - 1);
@@ -176,7 +176,7 @@ void simulateReads(
         fragmentSize = libSize + libError;
 
     String<int> sortedStartPos;
-/*				# Pick a library size
+/*                # Pick a library size
                 currentLibrary = sample(1:(length(librarySizes)), 1)
                 lSize = round(rnorm(1, mean=librarySizes[currentLibrary], sd=librarySd[currentLibrary]))
                 if (start < end) {
@@ -240,7 +240,7 @@ void simulateReads(
         {
             lastOp = currOp;
             double prob = (double)rand() / TEMP_RAND_MAX;
-            //	std::cout << "prob = " << prob << "\t";
+            //    std::cout << "prob = " << prob << "\t";
             int m;
             for (m = 0; m < 4; ++m)
             {
@@ -254,7 +254,7 @@ void simulateReads(
             }
             if (m == 4)
                 std::cout << "HUH?";
-            //	std::cout << "operation = " << operation << "\t";
+            //    std::cout << "operation = " << operation << "\t";
             if (pos == 0 &&  currOp == SEQAN_INSERT) // (currOp==SEQAN_DELETE || currOp == SEQAN_INSERT))
             {
                 currOp = 0;
@@ -279,13 +279,13 @@ void simulateReads(
                 ++trueLength;                        //if read nucleotide is not deleted
             if (currOp != SEQAN_DELETE)
                 ++pos;                        //if read nucleotide is not an insert
-//			if((lastOp==SEQAN_DELETE && currOp==SEQAN_INSERT) || (currOp==SEQAN_DELETE && lastOp==SEQAN_INSERT))
-//			{
-//				--countErrors;
-//				currOp = SEQAN_MISMATCH;
-//			//	std::cout << "ID=DI=M\n";
-//			}
-            //	std::cout << "true len = " << trueLength << std::endl;
+//            if((lastOp==SEQAN_DELETE && currOp==SEQAN_INSERT) || (currOp==SEQAN_DELETE && lastOp==SEQAN_INSERT))
+//            {
+//                --countErrors;
+//                currOp = SEQAN_MISMATCH;
+//            //    std::cout << "ID=DI=M\n";
+//            }
+            //    std::cout << "true len = " << trueLength << std::endl;
             if (trueLength == readLength || countErrors >= maxErrors)
             {
                 if (countErrors < maxErrors) // && currOp != SEQAN_INSERT)
@@ -352,7 +352,7 @@ void simulateReads(
             }
             */
 
-/*		countMateErrors = 0
+/*        countMateErrors = 0
         if (simulateMatePairs == 1) {
             for(pos in 1:length(readMate)) {
                 if (runif(1) <= _transformBack(errorDist[pos])) {
@@ -366,7 +366,7 @@ void simulateReads(
         {
             //verify that number of errors is correct
             bool kickOut = false;
-/*			int start1 = startPos;
+/*            int start1 = startPos;
             int maxEnd1 = maxEnd;
             while(start1 > 0 && (startPos - start1) < countErrors) --start1;
             while(maxEnd1 > 0 && (maxEnd1 - maxEnd) < countErrors) ++maxEnd1;
@@ -391,10 +391,10 @@ void simulateReads(
 
             if (maxScore >= minScore)
             {
-                TGenomeInfixRev		infRev(infix(currentSource, start1, start1+position(maxPos)+1));
-                TReadRev		readRev(read);
-                TMyersFinderRev		myersFinderRev(infRev);
-                TMyersPatternRev	myersPatternRev(readRev);
+                TGenomeInfixRev        infRev(infix(currentSource, start1, start1+position(maxPos)+1));
+                TReadRev        readRev(read);
+                TMyersFinderRev        myersFinderRev(infRev);
+                TMyersPatternRev    myersPatternRev(readRev);
                 // find beginning of best semi-global alignment
                 if (find(myersFinderRev, myersPatternRev, maxScore))
                     start1 = start1 + position(maxPos) - (position(myersFinderRev) + 1);
@@ -445,11 +445,11 @@ void simulateReads(
 
         }
         ++samplePosCounter;
-//		else std::cout << "Not successful\n";
+//        else std::cout << "Not successful\n";
     }
-//	if (simulateMatePairs == 1) {
-//		print(bucketCounter / (2* numOfReads))
-//	} else {
+//    if (simulateMatePairs == 1) {
+//        print(bucketCounter / (2* numOfReads))
+//    } else {
     if (verbose)
     {
         std::cout << "\n\nBucket frequencies:\n";
@@ -469,10 +469,10 @@ void simulateReads(
         std::cout << "\nInvalid modification pattern count: " << inValidModPat << std::endl;
     }
 
-//	if (simulateMatePairs == 1) {
-//		write(scan(tmpPath, what = 'character'), file=readPath, sep=std::endl, append = TRUE)
-//		unlink(tmpPath)
-//	}
+//    if (simulateMatePairs == 1) {
+//        write(scan(tmpPath, what = 'character'), file=readPath, sep=std::endl, append = TRUE)
+//        unlink(tmpPath)
+//    }
 }
 
 }

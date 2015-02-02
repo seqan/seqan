@@ -46,22 +46,22 @@ template<>
 struct FragmentStoreConfig<SnpStoreSpec_> :
     public FragmentStoreConfig<>
 {
-    typedef Owner<>	TReadSeqStoreSpec;
-    typedef Owner<>	TAlignedReadTagStoreSpec;
+    typedef Owner<>    TReadSeqStoreSpec;
+    typedef Owner<>    TAlignedReadTagStoreSpec;
     typedef Owner<> TReadNameStoreSpec;
 
-	typedef double		TMappingQuality;    // -> mapq up to 255
+    typedef double        TMappingQuality;    // -> mapq up to 255
 };
 
 template<>
 struct FragmentStoreConfig<SnpStoreGroupSpec_> :
     public FragmentStoreConfig<>
 {
-    typedef Dependent<>	TReadSeqStoreSpec;
-    typedef Owner<>		TAlignedReadTagStoreSpec;
+    typedef Dependent<>    TReadSeqStoreSpec;
+    typedef Owner<>        TAlignedReadTagStoreSpec;
     typedef Dependent<> TReadNameStoreSpec;
 
-	typedef double		TMappingQuality;    //
+    typedef double        TMappingQuality;    //
 };
 }
 

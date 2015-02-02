@@ -69,7 +69,7 @@ struct MagicHeader<Roi, T> :
 template <typename T>
 struct FileExtensions<Roi, T>
 {
-    static char const * VALUE[1];	// default is one extension
+    static char const * VALUE[1];    // default is one extension
 };
 
 template <typename T>

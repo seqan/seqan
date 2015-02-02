@@ -69,22 +69,22 @@ template < typename TNeedle >
 class Pattern<TNeedle, void>
 {
 public:
-	typedef typename Position<TNeedle>::Type TNeedlePosition;
+    typedef typename Position<TNeedle>::Type TNeedlePosition;
 
-	Holder<TNeedle> data_host;
-	TNeedlePosition data_begin_position;
-	TNeedlePosition data_end_position;
+    Holder<TNeedle> data_host;
+    TNeedlePosition data_begin_position;
+    TNeedlePosition data_end_position;
 
-	Pattern() : data_begin_position(), data_end_position()
-	{}
+    Pattern() : data_begin_position(), data_end_position()
+    {}
 
-	template <typename TNeedle_>
-	Pattern(TNeedle_ & ndl) : data_host(ndl), data_begin_position(), data_end_position()
-	{}
+    template <typename TNeedle_>
+    Pattern(TNeedle_ & ndl) : data_host(ndl), data_begin_position(), data_end_position()
+    {}
 
-	template <typename TNeedle_>
-	Pattern(TNeedle_ const & ndl) : data_host(ndl), data_begin_position(), data_end_position()
-	{}
+    template <typename TNeedle_>
+    Pattern(TNeedle_ const & ndl) : data_host(ndl), data_begin_position(), data_end_position()
+    {}
 
 };
 //////////////////////////////////////////////////////////////////////////////
@@ -102,12 +102,12 @@ public:
 
 template <typename TNeedle, typename TSpec>
 struct Container< Pattern<TNeedle, TSpec> > {
-	typedef TNeedle Type;
+    typedef TNeedle Type;
 };
 
 template <typename TNeedle, typename TSpec>
 struct Container< Pattern<TNeedle, TSpec> const > {
-	typedef TNeedle const Type;
+    typedef TNeedle const Type;
 };
 
 /*!
@@ -123,12 +123,12 @@ struct Container< Pattern<TNeedle, TSpec> const > {
 
 template <typename TNeedle, typename TSpec>
 struct Host< Pattern<TNeedle, TSpec> > {
-	typedef TNeedle Type;
+    typedef TNeedle Type;
 };
 
 template <typename TNeedle, typename TSpec>
 struct Host< Pattern<TNeedle, TSpec> const > {
-	typedef TNeedle const Type;
+    typedef TNeedle const Type;
 };
 
 /*!
@@ -144,7 +144,7 @@ struct Host< Pattern<TNeedle, TSpec> const > {
 
 template <typename TPattern, typename TSpec>
 struct Value< Pattern<TPattern, TSpec> > {
-	typedef typename Value<TPattern>::Type Type;
+    typedef typename Value<TPattern>::Type Type;
 };
 
 /*!
@@ -160,7 +160,7 @@ struct Value< Pattern<TPattern, TSpec> > {
 
 template <typename TPattern, typename TSpec>
 struct Position< Pattern<TPattern, TSpec> > {
-	typedef typename Position<TPattern>::Type Type;
+    typedef typename Position<TPattern>::Type Type;
 };
 
 /*!
@@ -176,7 +176,7 @@ struct Position< Pattern<TPattern, TSpec> > {
 
 template <typename TPattern, typename TSpec>
 struct Difference< Pattern<TPattern, TSpec> > {
-	typedef typename Difference<TPattern>::Type Type;
+    typedef typename Difference<TPattern>::Type Type;
 };
 
 /*!
@@ -192,7 +192,7 @@ struct Difference< Pattern<TPattern, TSpec> > {
 
 template <typename TPattern, typename TSpec>
 struct Size< Pattern<TPattern, TSpec> > {
-	typedef typename Size<TPattern>::Type Type;
+    typedef typename Size<TPattern>::Type Type;
 };
 
 
@@ -210,11 +210,11 @@ struct Size< Pattern<TPattern, TSpec> > {
 template <typename TNeedle>
 struct ScoringScheme
 {
-	typedef EditDistanceScore Type;
+    typedef EditDistanceScore Type;
 };
 template <typename TNeedle>
 struct ScoringScheme<TNeedle const>:
-	ScoringScheme<TNeedle>
+    ScoringScheme<TNeedle>
 {
 };
 
@@ -224,13 +224,13 @@ template <typename TNeedle, typename TSpec>
 inline Holder<TNeedle> & 
 _dataHost(Pattern<TNeedle, TSpec> & me) 
 { 
-	return me.data_host;
+    return me.data_host;
 }
 template <typename TNeedle, typename TSpec>
 inline Holder<TNeedle> & 
 _dataHost(Pattern<TNeedle, TSpec> const & me) 
 {
-	return const_cast<Holder<TNeedle> &>(me.data_host);
+    return const_cast<Holder<TNeedle> &>(me.data_host);
 }
 
 //host access: see basic_host.h
@@ -240,16 +240,16 @@ _dataHost(Pattern<TNeedle, TSpec> const & me)
 template <typename TNeedle, typename TSpec, typename TNeedle2>
 inline void 
 setHost(Pattern<TNeedle, TSpec> & me,
-		TNeedle2 const & ndl) 
+        TNeedle2 const & ndl) 
 {
-	 me.data_host = ndl; //assign => Pattern haelt eine Kopie => doof!
+     me.data_host = ndl; //assign => Pattern haelt eine Kopie => doof!
 }
 template <typename TNeedle, typename TSpec, typename TNeedle2>
 inline void 
 setHost(Pattern<TNeedle, TSpec> & me,
-		TNeedle2 & ndl) 
+        TNeedle2 & ndl) 
 { 
-	 me.data_host = ndl; //assign => Pattern haelt eine Kopie => doof!
+     me.data_host = ndl; //assign => Pattern haelt eine Kopie => doof!
 }
 //////////////////////////////////////////////////////////////////////////////
 
@@ -257,22 +257,22 @@ template <typename TNeedle, typename TSpec>
 inline typename Position<Pattern<TNeedle, TSpec> >::Type & 
 beginPosition(Pattern<TNeedle, TSpec> & me) 
 {
-	return me.data_begin_position;
+    return me.data_begin_position;
 }
 template <typename TNeedle, typename TSpec>
 inline typename Position<Pattern<TNeedle, TSpec> const >::Type & 
 beginPosition(Pattern<TNeedle, TSpec> const & me) 
 {
-	return me.data_begin_position;
+    return me.data_begin_position;
 }
 
 
 template <typename TNeedle, typename TSpec, typename TPosition>
 inline void
 setBeginPosition(Pattern<TNeedle, TSpec> & me, 
-				 TPosition _pos) 
+                 TPosition _pos) 
 {
-	me.data_begin_position = _pos;
+    me.data_begin_position = _pos;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -281,21 +281,21 @@ template <typename TNeedle, typename TSpec>
 inline typename Position<Pattern<TNeedle, TSpec> >::Type & 
 endPosition(Pattern<TNeedle, TSpec> & me) 
 {
-	return me.data_end_position;
+    return me.data_end_position;
 }
 template <typename TNeedle, typename TSpec>
 inline typename Position<Pattern<TNeedle, TSpec> const >::Type & 
 endPosition(Pattern<TNeedle, TSpec> const & me) 
 {
-	return me.data_end_position;
+    return me.data_end_position;
 }
 
 template <typename TNeedle, typename TSpec, typename TPosition>
 inline void
 setEndPosition(Pattern<TNeedle, TSpec> & me, 
-			   TPosition _pos) 
+               TPosition _pos) 
 {
-	me.data_end_position = _pos;
+    me.data_end_position = _pos;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -304,15 +304,15 @@ template <typename TNeedle, typename TSpec>
 inline typename Infix<TNeedle>::Type 
 segment(Pattern<TNeedle, TSpec> & me) 
 {
-	typedef typename Infix<TNeedle>::Type TInfix;
-	return TInfix(host(me), me.data_begin_position, me.data_end_position);
+    typedef typename Infix<TNeedle>::Type TInfix;
+    return TInfix(host(me), me.data_begin_position, me.data_end_position);
 }
 template <typename TNeedle, typename TSpec>
 inline typename Infix<TNeedle>::Type 
 segment(Pattern<TNeedle, TSpec> const & me) 
 {
-	typedef typename Infix<TNeedle>::Type TInfix;
-	return TInfix(host(me), me.data_begin_position, me.data_end_position);
+    typedef typename Infix<TNeedle>::Type TInfix;
+    return TInfix(host(me), me.data_begin_position, me.data_end_position);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -333,7 +333,7 @@ inline typename Host<Pattern<TNeedle, TSpec> >::Type &
 host(Pattern<TNeedle, TSpec> & me)
 {
 SEQAN_CHECKPOINT
-	return value(me.data_host);
+    return value(me.data_host);
 }
 
 template <typename TNeedle, typename TSpec>
@@ -341,7 +341,7 @@ inline typename Host<Pattern<TNeedle, TSpec> const>::Type &
 host(Pattern<TNeedle, TSpec> const & me)
 {
 SEQAN_CHECKPOINT
-	return value(me.data_host);
+    return value(me.data_host);
 }
 
 
@@ -365,14 +365,14 @@ template < typename TObject >
 inline typename Needle<TObject>::Type &
 needle(TObject &obj) 
 {
-	return obj;
+    return obj;
 }
 
 template < typename TObject >
 inline typename Needle<TObject const>::Type &
 needle(TObject const &obj) 
 {
-	return obj;
+    return obj;
 }
 
 
@@ -391,14 +391,14 @@ template < typename TNeedle, typename TSpec >
 inline typename Needle< Pattern<TNeedle, TSpec> >::Type &
 needle(Pattern<TNeedle, TSpec> & obj) 
 {
-	return host(obj);
+    return host(obj);
 }
 
 template < typename TNeedle, typename TSpec >
 inline typename Needle< Pattern<TNeedle, TSpec> const>::Type &
 needle(Pattern<TNeedle, TSpec> const & obj) 
 {
-	return host(obj);
+    return host(obj);
 }
 
 /*!
@@ -414,7 +414,7 @@ needle(Pattern<TNeedle, TSpec> const & obj)
 template < typename TNeedle, typename TSpec >
 inline void
 setNeedle(Pattern<TNeedle, TSpec> &obj, TNeedle const &ndl) {
-	setHost(obj, ndl);
+    setHost(obj, ndl);
 }
 
 
@@ -436,14 +436,14 @@ inline typename ScoringScheme<Pattern<TNeedle, TSpec> >::Type
 scoringScheme(Pattern<TNeedle, TSpec> &)
 {
 SEQAN_CHECKPOINT
-	return typename ScoringScheme<Pattern<TNeedle, TSpec> >::Type();
+    return typename ScoringScheme<Pattern<TNeedle, TSpec> >::Type();
 }
 template <typename TNeedle, typename TSpec>
 inline typename ScoringScheme<Pattern<TNeedle, TSpec> const>::Type 
 scoringScheme(Pattern<TNeedle, TSpec> const &)
 {
 SEQAN_CHECKPOINT
-	return typename ScoringScheme<Pattern<TNeedle, TSpec> const>::Type();
+    return typename ScoringScheme<Pattern<TNeedle, TSpec> const>::Type();
 }
 
 //____________________________________________________________________________
@@ -461,7 +461,7 @@ SEQAN_CHECKPOINT
 template <typename TNeedle, typename TSpec, typename TScore2>
 inline void
 setScoringScheme(Pattern<TNeedle, TSpec> & /*me*/, 
-				 TScore2 & /*score*/)
+                 TScore2 & /*score*/)
 {
 //dummy implementation for compatibility reasons
 }

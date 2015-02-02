@@ -70,14 +70,14 @@ struct Myers;
 template <typename TScore = EditDistanceScore, typename THasState = True>
 struct DefaultFindBeginPatternSpec
 {
-	typedef DPSearch<TScore, FindPrefix, void> Type;
+    typedef DPSearch<TScore, FindPrefix, void> Type;
 };
 
 template <typename THasState>
 struct DefaultFindBeginPatternSpec<EditDistanceScore, THasState>
 {
-	// typedef Myers<FindPrefix, void, True> Type;
-	typedef Myers<FindPrefix, THasState, void> Type;
+    // typedef Myers<FindPrefix, void, True> Type;
+    typedef Myers<FindPrefix, THasState, void> Type;
 };
 
 //____________________________________________________________________________
@@ -86,7 +86,7 @@ struct DefaultFindBeginPatternSpec<EditDistanceScore, THasState>
 template <typename TPattern>
 struct FindBeginPatternSpec 
 {
-	typedef void Type; //void means: no find begin (see FindBegin_)
+    typedef void Type; //void means: no find begin (see FindBegin_)
 };
 
 //____________________________________________________________________________
@@ -95,10 +95,10 @@ struct FindBeginPatternSpec
 template <typename TPattern>
 struct FindBeginPattern
 {
-	typedef typename Needle<TPattern>::Type TNeedle_;
-	typedef ModifiedString<TNeedle_, ModReverse> TReverseNeedle_;
-	typedef typename FindBeginPatternSpec<TPattern>::Type TFindBeginPatternSpec_;
-	typedef Pattern<TReverseNeedle_, TFindBeginPatternSpec_> Type;
+    typedef typename Needle<TPattern>::Type TNeedle_;
+    typedef ModifiedString<TNeedle_, ModReverse> TReverseNeedle_;
+    typedef typename FindBeginPatternSpec<TPattern>::Type TFindBeginPatternSpec_;
+    typedef Pattern<TReverseNeedle_, TFindBeginPatternSpec_> Type;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -107,9 +107,9 @@ struct FindBeginPattern
 template <typename TPattern, typename TFindBeginPatternSpec = typename FindBeginPatternSpec<TPattern>::Type >
 struct FindBegin_
 {
-	typedef typename FindBeginPattern<TPattern>::Type TFindBeginPattern_;
+    typedef typename FindBeginPattern<TPattern>::Type TFindBeginPattern_;
 
-	TFindBeginPattern_ data_findBeginPattern;
+    TFindBeginPattern_ data_findBeginPattern;
 };
 
 template <typename TPattern>
@@ -124,75 +124,75 @@ struct FindBegin_ <TPattern, void>
 template <typename TFindBeginPatternSpec>
 struct FindBeginImpl_
 {
-	template <typename TPattern, typename TNeedle>
-	static inline void
-	_findBeginInit(TPattern & pattern, TNeedle & needle_)
-	{
-//		setNeedle(pattern.data_findBeginPattern, reverseString(needle(pattern)));
-		setHost(needle(pattern.data_findBeginPattern), needle_);
-		setScoringScheme(pattern.data_findBeginPattern, scoringScheme(pattern));
-	}
+    template <typename TPattern, typename TNeedle>
+    static inline void
+    _findBeginInit(TPattern & pattern, TNeedle & needle_)
+    {
+//        setNeedle(pattern.data_findBeginPattern, reverseString(needle(pattern)));
+        setHost(needle(pattern.data_findBeginPattern), needle_);
+        setScoringScheme(pattern.data_findBeginPattern, scoringScheme(pattern));
+    }
 //____________________________________________________________________________
 
-	template <typename TFinder, typename TPattern, typename TLimit>
-	static inline bool
-	findBegin(TFinder & finder, TPattern & pattern, TLimit limit)
-	{
-		typedef typename FindBeginPattern<TPattern>::Type TFindBeginPattern;
-		typedef typename Haystack<TFinder>::Type THaystack;
-		typedef ModifiedString<THaystack, ModReverse> TReverseHaystack;
-		typedef Finder<TReverseHaystack> TBeginFinder;
-		typedef typename Position<THaystack>::Type TPosition;
+    template <typename TFinder, typename TPattern, typename TLimit>
+    static inline bool
+    findBegin(TFinder & finder, TPattern & pattern, TLimit limit)
+    {
+        typedef typename FindBeginPattern<TPattern>::Type TFindBeginPattern;
+        typedef typename Haystack<TFinder>::Type THaystack;
+        typedef ModifiedString<THaystack, ModReverse> TReverseHaystack;
+        typedef Finder<TReverseHaystack> TBeginFinder;
+        typedef typename Position<THaystack>::Type TPosition;
 
-		TFindBeginPattern & find_begin_pattern = pattern.data_findBeginPattern;
-		setScoreLimit(find_begin_pattern, limit);
+        TFindBeginPattern & find_begin_pattern = pattern.data_findBeginPattern;
+        setScoreLimit(find_begin_pattern, limit);
 
-		//build begin_finder
-		TBeginFinder begin_finder;
-		THaystack & hayst = haystack(finder);
-		setContainer(host(hostIterator(begin_finder)), hayst);
-		TPosition begin_finder_beginPosition = position(finder);
-		TPosition begin_finder_position;
+        //build begin_finder
+        TBeginFinder begin_finder;
+        THaystack & hayst = haystack(finder);
+        setContainer(host(hostIterator(begin_finder)), hayst);
+        TPosition begin_finder_beginPosition = position(finder);
+        TPosition begin_finder_position;
 
-		if (!finder._beginFind_called)
-		{//start finding
-			finder._beginFind_called = true;
-			_setFinderLength(finder, 0);
-			clear(begin_finder);
-			begin_finder_position = begin_finder_beginPosition;
-		}
-		else
-		{//resume finding
-			_finderSetNonEmpty(begin_finder);
-			SEQAN_ASSERT_GT(length(finder), 0u);
-			begin_finder_position = endPosition(finder) - length(finder);
-		}
-		setPosition(host(hostIterator(begin_finder)), begin_finder_position);
-		_setFinderEnd(begin_finder);
-		_setFinderLength(begin_finder, length(finder));
+        if (!finder._beginFind_called)
+        {//start finding
+            finder._beginFind_called = true;
+            _setFinderLength(finder, 0);
+            clear(begin_finder);
+            begin_finder_position = begin_finder_beginPosition;
+        }
+        else
+        {//resume finding
+            _finderSetNonEmpty(begin_finder);
+            SEQAN_ASSERT_GT(length(finder), 0u);
+            begin_finder_position = endPosition(finder) - length(finder);
+        }
+        setPosition(host(hostIterator(begin_finder)), begin_finder_position);
+        _setFinderEnd(begin_finder);
+        _setFinderLength(begin_finder, length(finder));
 
-		bool begin_found = find(begin_finder, find_begin_pattern);
-		if (begin_found)
-		{//new begin found: report in finder
-			_setFinderLength(finder, begin_finder_beginPosition - position(host(hostIterator(begin_finder)))+1);
-		}
-		return begin_found;
-	}
-	template <typename TFinder, typename TPattern>
-	static inline bool
-	findBegin(TFinder & finder, TPattern & pattern)
-	{
-		return findBegin(finder, pattern, scoreLimit(pattern));
-	}
+        bool begin_found = find(begin_finder, find_begin_pattern);
+        if (begin_found)
+        {//new begin found: report in finder
+            _setFinderLength(finder, begin_finder_beginPosition - position(host(hostIterator(begin_finder)))+1);
+        }
+        return begin_found;
+    }
+    template <typename TFinder, typename TPattern>
+    static inline bool
+    findBegin(TFinder & finder, TPattern & pattern)
+    {
+        return findBegin(finder, pattern, scoreLimit(pattern));
+    }
 
 //____________________________________________________________________________
 
-	template <typename TPattern>
-	static inline typename Value<typename ScoringScheme<TPattern>::Type>::Type
-	getBeginScore(TPattern & pattern)
-	{
-		return getScore(pattern.data_findBeginPattern);
-	}
+    template <typename TPattern>
+    static inline typename Value<typename ScoringScheme<TPattern>::Type>::Type
+    getBeginScore(TPattern & pattern)
+    {
+        return getScore(pattern.data_findBeginPattern);
+    }
 };
 
 
@@ -200,75 +200,75 @@ struct FindBeginImpl_
 template <typename THasState>
 struct FindBeginImpl_<Myers<FindPrefix, THasState, void> >
 {
-	template <typename TPattern, typename TNeedle>
-	static inline void
-	_findBeginInit(TPattern & pattern, TNeedle & needle_)
-	{
-//		setNeedle(pattern.data_findBeginPattern, reverseString(needle(pattern)));
-		setHost(pattern.data_findBeginPattern, reverseString(needle_));
+    template <typename TPattern, typename TNeedle>
+    static inline void
+    _findBeginInit(TPattern & pattern, TNeedle & needle_)
+    {
+//        setNeedle(pattern.data_findBeginPattern, reverseString(needle(pattern)));
+        setHost(pattern.data_findBeginPattern, reverseString(needle_));
 //         _patternFirstInit(pattern.data_findBeginPattern, host(pattern));
-	}
+    }
 //____________________________________________________________________________
 
-	template <typename TFinder, typename TPattern, typename TLimit>
-	static inline bool
-	findBegin(TFinder & finder, TPattern & pattern, TLimit limit)
-	{
-		typedef typename FindBeginPattern<TPattern>::Type TFindBeginPattern;
-		typedef typename Haystack<TFinder>::Type THaystack;
-		typedef ModifiedString<THaystack, ModReverse> TReverseHaystack;
-		typedef Finder<TReverseHaystack> TBeginFinder;
-		typedef typename Position<THaystack>::Type TPosition;
+    template <typename TFinder, typename TPattern, typename TLimit>
+    static inline bool
+    findBegin(TFinder & finder, TPattern & pattern, TLimit limit)
+    {
+        typedef typename FindBeginPattern<TPattern>::Type TFindBeginPattern;
+        typedef typename Haystack<TFinder>::Type THaystack;
+        typedef ModifiedString<THaystack, ModReverse> TReverseHaystack;
+        typedef Finder<TReverseHaystack> TBeginFinder;
+        typedef typename Position<THaystack>::Type TPosition;
 
-		TFindBeginPattern & find_begin_pattern = pattern.data_findBeginPattern;
-		setScoreLimit(find_begin_pattern, limit);
+        TFindBeginPattern & find_begin_pattern = pattern.data_findBeginPattern;
+        setScoreLimit(find_begin_pattern, limit);
 
-		//build begin_finder
-		TBeginFinder begin_finder;
-		typename Parameter_<THaystack>::Type hayst = haystack(finder);
-		setContainer(host(hostIterator(begin_finder)), hayst);
-		TPosition begin_finder_beginPosition = position(finder);
-		TPosition begin_finder_position;
+        //build begin_finder
+        TBeginFinder begin_finder;
+        typename Parameter_<THaystack>::Type hayst = haystack(finder);
+        setContainer(host(hostIterator(begin_finder)), hayst);
+        TPosition begin_finder_beginPosition = position(finder);
+        TPosition begin_finder_position;
 
-		if (!finder._beginFind_called)
-		{//start finding
-			finder._beginFind_called = true;
-			_setFinderLength(finder, 0);
-			clear(begin_finder);
-			begin_finder_position = begin_finder_beginPosition;
-		}
-		else
-		{//resume finding
-			_finderSetNonEmpty(begin_finder);
-			SEQAN_ASSERT_GT(length(finder), 0u);
-			begin_finder_position = endPosition(finder) - length(finder);
-		}
-		setPosition(host(hostIterator(begin_finder)), begin_finder_position);
-		_setFinderEnd(begin_finder);
-		_setFinderLength(begin_finder, length(finder));
+        if (!finder._beginFind_called)
+        {//start finding
+            finder._beginFind_called = true;
+            _setFinderLength(finder, 0);
+            clear(begin_finder);
+            begin_finder_position = begin_finder_beginPosition;
+        }
+        else
+        {//resume finding
+            _finderSetNonEmpty(begin_finder);
+            SEQAN_ASSERT_GT(length(finder), 0u);
+            begin_finder_position = endPosition(finder) - length(finder);
+        }
+        setPosition(host(hostIterator(begin_finder)), begin_finder_position);
+        _setFinderEnd(begin_finder);
+        _setFinderLength(begin_finder, length(finder));
 
-		bool begin_found = find(begin_finder, find_begin_pattern);
-		if (begin_found)
-		{//new begin found: report in finder
-			_setFinderLength(finder, begin_finder_beginPosition - position(host(hostIterator(begin_finder)))+1);
-		}
-		return begin_found;
-	}
-	template <typename TFinder, typename TPattern>
-	static inline bool
-	findBegin(TFinder & finder, TPattern & pattern)
-	{
-		return findBegin(finder, pattern, scoreLimit(pattern));
-	}
+        bool begin_found = find(begin_finder, find_begin_pattern);
+        if (begin_found)
+        {//new begin found: report in finder
+            _setFinderLength(finder, begin_finder_beginPosition - position(host(hostIterator(begin_finder)))+1);
+        }
+        return begin_found;
+    }
+    template <typename TFinder, typename TPattern>
+    static inline bool
+    findBegin(TFinder & finder, TPattern & pattern)
+    {
+        return findBegin(finder, pattern, scoreLimit(pattern));
+    }
 
 //____________________________________________________________________________
 
-	template <typename TPattern>
-	static inline typename Value<typename ScoringScheme<TPattern>::Type>::Type
-	getBeginScore(TPattern & pattern)
-	{
-		return getScore(pattern.data_findBeginPattern);
-	}
+    template <typename TPattern>
+    static inline typename Value<typename ScoringScheme<TPattern>::Type>::Type
+    getBeginScore(TPattern & pattern)
+    {
+        return getScore(pattern.data_findBeginPattern);
+    }
 };
 
 //default implementation of findBegin emulates the behaviour 
@@ -282,36 +282,36 @@ struct FindBeginImpl_<Myers<FindPrefix, THasState, void> >
 template <>
 struct FindBeginImpl_<void>
 {
-	template <typename TPattern, typename TNeedle>
-	static inline void
-	_findBeginInit(TPattern &, TNeedle &)
-	{
-	}
+    template <typename TPattern, typename TNeedle>
+    static inline void
+    _findBeginInit(TPattern &, TNeedle &)
+    {
+    }
 
-	template <typename TFinder, typename TPattern, typename TLimit>
-	static inline bool
-	findBegin(TFinder & finder, TPattern &, TLimit)
-	{
-		if (!finder._beginFind_called)
-		{
-			finder._beginFind_called = true;
-			return true;
-		}
-		return false;
-	}
-	template <typename TFinder, typename TPattern>
-	static inline bool
-	findBegin(TFinder & finder, TPattern & pattern)
-	{
-		return findBegin(finder, pattern, 0);
-	}
+    template <typename TFinder, typename TPattern, typename TLimit>
+    static inline bool
+    findBegin(TFinder & finder, TPattern &, TLimit)
+    {
+        if (!finder._beginFind_called)
+        {
+            finder._beginFind_called = true;
+            return true;
+        }
+        return false;
+    }
+    template <typename TFinder, typename TPattern>
+    static inline bool
+    findBegin(TFinder & finder, TPattern & pattern)
+    {
+        return findBegin(finder, pattern, 0);
+    }
 
-	template <typename TPattern>
-	static inline typename Value<typename ScoringScheme<TPattern>::Type>::Type
-	getBeginScore(TPattern & pattern)
-	{
-		return getScore(pattern);
-	}
+    template <typename TPattern>
+    static inline typename Value<typename ScoringScheme<TPattern>::Type>::Type
+    getBeginScore(TPattern & pattern)
+    {
+        return getScore(pattern);
+    }
 };
 
 
@@ -322,8 +322,8 @@ template <typename TPattern, typename TNeedle>
 inline void
 _findBeginInit(TPattern & pattern, TNeedle & needle_)
 {
-	typedef typename FindBeginPatternSpec<TPattern>::Type TFindBeginPatternSpec;
-	return FindBeginImpl_<TFindBeginPatternSpec>::_findBeginInit(pattern, needle_);
+    typedef typename FindBeginPatternSpec<TPattern>::Type TFindBeginPatternSpec;
+    return FindBeginImpl_<TFindBeginPatternSpec>::_findBeginInit(pattern, needle_);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -351,19 +351,19 @@ _findBeginInit(TPattern & pattern, TNeedle & needle_)
 template <typename TFinder, typename TPattern>
 inline bool
 findBegin(TFinder & finder,
-		  TPattern & pattern)
+          TPattern & pattern)
 {
-	typedef typename FindBeginPatternSpec<TPattern>::Type TFindBeginPatternSpec;
-	return FindBeginImpl_<TFindBeginPatternSpec>::findBegin(finder, pattern);
+    typedef typename FindBeginPatternSpec<TPattern>::Type TFindBeginPatternSpec;
+    return FindBeginImpl_<TFindBeginPatternSpec>::findBegin(finder, pattern);
 }
 template <typename TFinder, typename TPattern, typename TLimit>
 inline bool
 findBegin(TFinder & finder,
-		  TPattern & pattern,
-		  TLimit limit)
+          TPattern & pattern,
+          TLimit limit)
 {
-	typedef typename FindBeginPatternSpec<TPattern>::Type TFindBeginPatternSpec;
-	return FindBeginImpl_<TFindBeginPatternSpec>::findBegin(finder, pattern, limit);
+    typedef typename FindBeginPatternSpec<TPattern>::Type TFindBeginPatternSpec;
+    return FindBeginImpl_<TFindBeginPatternSpec>::findBegin(finder, pattern, limit);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -385,8 +385,8 @@ template <typename TPattern>
 inline typename Value<typename ScoringScheme<TPattern>::Type>::Type
 getBeginScore(TPattern & pattern)
 {
-	typedef typename FindBeginPatternSpec<TPattern>::Type TFindBeginPatternSpec;
-	return FindBeginImpl_<TFindBeginPatternSpec>::getBeginScore(pattern);
+    typedef typename FindBeginPatternSpec<TPattern>::Type TFindBeginPatternSpec;
+    return FindBeginImpl_<TFindBeginPatternSpec>::getBeginScore(pattern);
 }
 
 //////////////////////////////////////////////////////////////////////////////

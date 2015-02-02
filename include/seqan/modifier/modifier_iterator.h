@@ -82,7 +82,7 @@ public:
 
     template <typename TOtherHost>
     ModifiedIterator(ModifiedIterator<TOtherHost, TSpec> const & origin):
-			_host(origin._host), _cargo(origin._cargo)
+            _host(origin._host), _cargo(origin._cargo)
     {}
 
     explicit
@@ -297,8 +297,8 @@ container(ModifiedIterator<THost, TSpec> const & me)
 template <typename TIteratorHost, typename TSpec, typename TStringHost>
 inline void
 setContainer(
-		ModifiedIterator<TIteratorHost, TSpec> & me, 
-		ModifiedString<TStringHost, TSpec> & cont) 
+        ModifiedIterator<TIteratorHost, TSpec> & me, 
+        ModifiedString<TStringHost, TSpec> & cont) 
 {
     setContainer(host(me), host(cont));
     _copyCargo(me, cont);
@@ -307,8 +307,8 @@ setContainer(
 template <typename TIteratorHost, typename TSpec, typename TStringHost>
 inline void
 setContainer(
-		ModifiedIterator<TIteratorHost, TSpec> & me, 
-		ModifiedString<TStringHost, TSpec> const & cont) 
+        ModifiedIterator<TIteratorHost, TSpec> & me, 
+        ModifiedString<TStringHost, TSpec> const & cont) 
 {
     setContainer(host(me), host(const_cast<ModifiedString<TStringHost, TSpec> &>(cont)));
     _copyCargo(me, cont);
@@ -654,17 +654,17 @@ atEnd(ModifiedIterator<THost, TSpec> const & me)
 // Adapt SeqAn modified to std.
 namespace std
 {
-	template<typename THost, typename TSpec>
-	struct iterator_traits<seqan::ModifiedIterator<THost, TSpec> >
-	{
-		typedef seqan::ModifiedIterator<THost, TSpec> TIter;
+    template<typename THost, typename TSpec>
+    struct iterator_traits<seqan::ModifiedIterator<THost, TSpec> >
+    {
+        typedef seqan::ModifiedIterator<THost, TSpec> TIter;
 
-		typedef random_access_iterator_tag iterator_category;
-		typedef typename seqan::Value<TIter>::Type value_type;
-		typedef typename seqan::Difference<TIter>::Type difference_type;
-		typedef typename seqan::Value<TIter>::Type * pointer;
-		typedef typename seqan::Reference<TIter>::Type reference;
-	};
+        typedef random_access_iterator_tag iterator_category;
+        typedef typename seqan::Value<TIter>::Type value_type;
+        typedef typename seqan::Difference<TIter>::Type difference_type;
+        typedef typename seqan::Value<TIter>::Type * pointer;
+        typedef typename seqan::Reference<TIter>::Type reference;
+    };
 }
 
 #endif

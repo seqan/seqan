@@ -37,7 +37,7 @@
 
 namespace seqan {
 
-	// shortcuts to ease pipeline construction
+    // shortcuts to ease pipeline construction
     #define TypeOf_(TObject)  typename Value<TObject>::Type
     #define TSizeOf_(TObject) typename Size<TObject>::Type
 
@@ -74,11 +74,11 @@ namespace seqan {
         Pipe(TInput &_in): in(_in) {}
     };
 
-	// base class for multiple sequence algorithms
-	// to hold extra information about desired position type (TPair)
-	// and the type storing absolute sequence offsets (TLimitsString)
+    // base class for multiple sequence algorithms
+    // to hold extra information about desired position type (TPair)
+    // and the type storing absolute sequence offsets (TLimitsString)
     template <typename TSpec, typename TPair, typename TLimitsString>
-	struct Multi;
+    struct Multi;
 
 /*!
  * @class Bundle2
@@ -127,11 +127,11 @@ namespace seqan {
  * @see Bundle2
  */
 
-	template < typename TInput1, typename TInput2 >
-	inline Bundle2< TInput1, TInput2 >
-	bundle2(TInput1 &_in1, TInput2 &_in2) {
-		return Bundle2< TInput1, TInput2 >(_in1, _in2);
-	}
+    template < typename TInput1, typename TInput2 >
+    inline Bundle2< TInput1, TInput2 >
+    bundle2(TInput1 &_in1, TInput2 &_in2) {
+        return Bundle2< TInput1, TInput2 >(_in1, _in2);
+    }
 /*!
  * @class Bundle3
  * 
@@ -186,11 +186,11 @@ namespace seqan {
  * @see Bundle3
  */
 
-	template < typename TInput1, typename TInput2, typename TInput3 >
-	inline Bundle3< TInput1, TInput2, TInput3 >
-	bundle3(TInput1 &_in1, TInput2 &_in2, TInput3 &_in3) {
-		return Bundle3< TInput1, TInput2, TInput3 >(_in1, _in2, _in3);
-	}
+    template < typename TInput1, typename TInput2, typename TInput3 >
+    inline Bundle3< TInput1, TInput2, TInput3 >
+    bundle3(TInput1 &_in1, TInput2 &_in2, TInput3 &_in3) {
+        return Bundle3< TInput1, TInput2, TInput3 >(_in1, _in2, _in3);
+    }
 
 /*!
  * @class Bundle5
@@ -259,10 +259,10 @@ namespace seqan {
  */
 
     template < typename TIn1, typename TIn2, typename TIn3, typename TIn4, typename TIn5 >
-	inline Bundle5< TIn1, TIn2, TIn3, TIn4, TIn5 >
-	bundle5(TIn1 &_in1, TIn2 &_in2, TIn3 &_in3, TIn4 &_in4, TIn5 &_in5) {
-		return Bundle5< TIn1, TIn2, TIn3, TIn4, TIn5 >(_in1, _in2, _in3, _in4, _in5);
-	}
+    inline Bundle5< TIn1, TIn2, TIn3, TIn4, TIn5 >
+    bundle5(TIn1 &_in1, TIn2 &_in2, TIn3 &_in3, TIn4 &_in4, TIn5 &_in5) {
+        return Bundle5< TIn1, TIn2, TIn3, TIn4, TIn5 >(_in1, _in2, _in3, _in4, _in5);
+    }
 
     template < typename TValue, typename TSize >
     struct AbstractSource {};
@@ -331,34 +331,34 @@ namespace seqan {
 
     template < typename TInput, typename TSpec >
     struct Difference< Pipe<TInput, TSpec> > {
-		typedef typename MakeSigned_<typename Size<Pipe<TInput, TSpec> >::Type>::Type Type;
+        typedef typename MakeSigned_<typename Size<Pipe<TInput, TSpec> >::Type>::Type Type;
     };
 /*
     template < typename TInput, typename TSpec >
-	struct Iterator< Pipe<TInput, TSpec> >;
+    struct Iterator< Pipe<TInput, TSpec> >;
 
     template < typename TInput, typename TSpec >
-	struct Iterator< Pipe<TInput, TSpec> const >:
-		Iterator< Pipe<TInput, TSpec> > {};
+    struct Iterator< Pipe<TInput, TSpec> const >:
+        Iterator< Pipe<TInput, TSpec> > {};
 */
 
-	template <typename T>
-	struct Source;
+    template <typename T>
+    struct Source;
 
-	template <typename TInput, typename TSpec>
-	struct Source<Pipe<TInput, TSpec> >
-	{
-		typedef TInput Type;
-	};
+    template <typename TInput, typename TSpec>
+    struct Source<Pipe<TInput, TSpec> >
+    {
+        typedef TInput Type;
+    };
 
-	template < typename TInput, typename TSpec >
+    template < typename TInput, typename TSpec >
     inline TInput const &
     source(Pipe<TInput, TSpec> const &me) {
 SEQAN_CHECKPOINT
         return me.in;
     }
 
-	template < typename TInput, typename TSpec >
+    template < typename TInput, typename TSpec >
     inline TInput &
     source(Pipe<TInput, TSpec> &me) {
 SEQAN_CHECKPOINT
@@ -377,7 +377,7 @@ SEQAN_CHECKPOINT
  * @return    TSize The size of the pipe.
  */
 
-	template < typename TInput, typename TSpec >
+    template < typename TInput, typename TSpec >
     inline typename Size< Pipe<TInput, TSpec> >::Type
     length(Pipe<TInput, TSpec> const &me) {
 SEQAN_CHECKPOINT
@@ -408,7 +408,7 @@ SEQAN_CHECKPOINT
 //////////////////////////////////////////////////////////////////////////////
 
 
-	template < typename TInput, typename TSpec >
+    template < typename TInput, typename TSpec >
     inline typename Size< Pipe<TInput, TSpec> >::Type
     countSequences(Pipe<TInput, TSpec> const &me) {
 SEQAN_CHECKPOINT
@@ -503,38 +503,38 @@ SEQAN_CHECKPOINT
     //////////////////////////////////////////////////////////////////////////////
     // pipe flow control
 
-	struct ControlEof_;			// end of stream
-	struct ControlEos_;			// end of sequence (for multiple sequences)
-	struct ControlClear_;		// clear previous pool
-	struct ControlBeginRead_;	// begin read process
-	struct ControlEndRead_;		// end read process
+    struct ControlEof_;            // end of stream
+    struct ControlEos_;            // end of sequence (for multiple sequences)
+    struct ControlClear_;        // clear previous pool
+    struct ControlBeginRead_;    // begin read process
+    struct ControlEndRead_;        // end read process
 
-	typedef Tag<ControlEof_>		ControlEof;
-	typedef Tag<ControlEos_>		ControlEos;
-	typedef Tag<ControlClear_>		ControlClear;
-	typedef Tag<ControlBeginRead_>	ControlBeginRead;
-	typedef Tag<ControlEndRead_>	ControlEndRead;
+    typedef Tag<ControlEof_>        ControlEof;
+    typedef Tag<ControlEos_>        ControlEos;
+    typedef Tag<ControlClear_>        ControlClear;
+    typedef Tag<ControlBeginRead_>    ControlBeginRead;
+    typedef Tag<ControlEndRead_>    ControlEndRead;
 
     template < typename TInput, typename TSpec, typename TCommand >
-	inline bool control(Pipe<TInput, TSpec> &me, TCommand const &command) {
+    inline bool control(Pipe<TInput, TSpec> &me, TCommand const &command) {
 SEQAN_CHECKPOINT
         return control(me.in, command);
     }
 
     template < typename TInput, typename TSpec >
-	inline bool eof(Pipe<TInput, TSpec> &me) {
+    inline bool eof(Pipe<TInput, TSpec> &me) {
 SEQAN_CHECKPOINT
         return control(me, ControlEof());
     }
 
     template < typename TInput, typename TSpec >
-	inline bool eos(Pipe<TInput, TSpec> &me) {
+    inline bool eos(Pipe<TInput, TSpec> &me) {
 SEQAN_CHECKPOINT
         return control(me, ControlEos());
     }
 
     template < typename TInput, typename TSpec >
-	inline bool clear(Pipe<TInput, TSpec> &me) {
+    inline bool clear(Pipe<TInput, TSpec> &me) {
 SEQAN_CHECKPOINT
         return control(me, ControlClear());
     }
@@ -559,7 +559,7 @@ SEQAN_CHECKPOINT
  */
 
     template < typename TInput, typename TSpec >
-	inline bool beginRead(Pipe<TInput, TSpec> &me)
+    inline bool beginRead(Pipe<TInput, TSpec> &me)
     {
         return control(me, ControlBeginRead());
     }
@@ -582,7 +582,7 @@ SEQAN_CHECKPOINT
  */
 
     template < typename TInput, typename TSpec >
-	inline bool endRead(Pipe<TInput, TSpec> &me) {
+    inline bool endRead(Pipe<TInput, TSpec> &me) {
         return control(me, ControlEndRead());
     }
 
@@ -591,28 +591,28 @@ SEQAN_CHECKPOINT
     // 2->1 pipe flow control
     template < typename TInput1, typename TInput2, typename TCommand >
     inline bool control(Bundle2<TInput1, TInput2> &me, TCommand const &command) {
-        return	control(me.in1, command) &&
-				control(me.in2, command);
+        return    control(me.in1, command) &&
+                control(me.in2, command);
     }
 
     //////////////////////////////////////////////////////////////////////////////
     // 3->1 pipe flow control
     template < typename TInput1, typename TInput2, typename TInput3, typename TCommand >
     inline bool control(Bundle3<TInput1, TInput2, TInput3> &me, TCommand const &command) {
-        return	control(me.in1, command) &&
-				control(me.in2, command) &&
-				control(me.in3, command);
+        return    control(me.in1, command) &&
+                control(me.in2, command) &&
+                control(me.in3, command);
     }
 
     //////////////////////////////////////////////////////////////////////////////
     // 5->1 pipe flow control
     template < typename TIn1, typename TIn2, typename TIn3, typename TIn4, typename TIn5, typename TCommand >
     inline bool control(Bundle5<TIn1, TIn2, TIn3, TIn4, TIn5 > &me, TCommand const &command) {
-        return	control(me.in1, command) &&
-				control(me.in2, command) &&
-				control(me.in3, command) &&
-				control(me.in4, command) &&
-				control(me.in5, command);
+        return    control(me.in1, command) &&
+                control(me.in2, command) &&
+                control(me.in3, command) &&
+                control(me.in4, command) &&
+                control(me.in5, command);
     }
 /*!
  * @fn Pipe#assign
@@ -626,7 +626,7 @@ SEQAN_CHECKPOINT
  *
  * Assign value of source to target.
  */
-	//////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
     // pipe -> string
 
     // We cannot use the most-generic TObject as first argument, as operator << specialized somewhere else in
@@ -677,19 +677,19 @@ SEQAN_CHECKPOINT
         assign(dest, src);
     }
 
-	//////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////
     // pipe -> out_stream
     template <typename TInput, typename TSpec>
-	std::ostream& operator << (std::ostream &out, Pipe<TInput, TSpec> &src)
+    std::ostream& operator << (std::ostream &out, Pipe<TInput, TSpec> &src)
     {
         beginRead(src);
         while (!eof(src)) {
-			out << *src << std::endl;
+            out << *src << std::endl;
             ++src;
         }
         endRead(src);
-		return out;
-	}
+        return out;
+    }
 
 
     template < typename TObject, typename TSpec >
@@ -719,23 +719,23 @@ SEQAN_CHECKPOINT
 
 
 
-	//////////////////////////////////////////////////////////////////////////////
-	// generic adapter for buffered readers/writers
+    //////////////////////////////////////////////////////////////////////////////
+    // generic adapter for buffered readers/writers
 
-	template <typename TValue, typename TSpec, typename TSize >
+    template <typename TValue, typename TSpec, typename TSize >
     inline void resize(Buffer<TValue, TSpec> &me, TSize size);
 
-	struct AdapterSpec;
+    struct AdapterSpec;
 
-	template <typename TBufferHandler>
+    template <typename TBufferHandler>
     struct Handler<TBufferHandler, AdapterSpec>
     {
         typedef typename Value<TBufferHandler>::Type        TBuffer;
         typedef typename Value<TBuffer>::Type               TValue;
-		typedef typename Iterator<TBuffer, Standard>::Type  TIterator;
+        typedef typename Iterator<TBuffer, Standard>::Type  TIterator;
 
         TBufferHandler  handler;
-        TBuffer			buffer;
+        TBuffer            buffer;
         TIterator       cur;
 
         template < typename TObject >
@@ -756,11 +756,11 @@ SEQAN_CHECKPOINT
 
         inline void pop()
         {
-			if (++cur == seqan::end(buffer, Standard()))
+            if (++cur == seqan::end(buffer, Standard()))
             {
                 buffer = handler.next();
-				cur = seqan::begin(buffer, Standard());
-			}
+                cur = seqan::begin(buffer, Standard());
+            }
         }
 
         inline void pop(TValue &Ref_)
@@ -815,240 +815,240 @@ SEQAN_CHECKPOINT
     };
 
 
-	//////////////////////////////////////////////////////////////////////////////
-	// pair incrementer
-	//
-	// used by pipes processing multiples sequences 
-	// for generating pairs (seqNo, seqOffs)
+    //////////////////////////////////////////////////////////////////////////////
+    // pair incrementer
+    //
+    // used by pipes processing multiples sequences 
+    // for generating pairs (seqNo, seqOffs)
 
-	template <typename TPair, typename TLimits>
-	struct PairIncrementer_
+    template <typename TPair, typename TLimits>
+    struct PairIncrementer_
     {
         typedef typename Iterator<TLimits const, Standard>::Type            TIter;
         typedef typename RemoveConst_<typename Value<TLimits>::Type>::Type  TSize;
         typedef typename Value<TPair, 2>::Type                              TOffset;
 
         TIter   it, itEnd;
-		TSize   old;
+        TSize   old;
         TOffset localEnd;
 
-		TPair pos;
-		inline operator TPair () const
+        TPair pos;
+        inline operator TPair () const
         {
-			return pos;
-		}
+            return pos;
+        }
 
-		inline TPair const & operator++ ()
+        inline TPair const & operator++ ()
         {
-			TOffset i2 = getValueI2(pos) + 1;
-			if (i2 >= localEnd)
+            TOffset i2 = getValueI2(pos) + 1;
+            if (i2 >= localEnd)
             {
-				i2 = 0;
-				localEnd = 0;
-				while (!localEnd && (it != itEnd))
-				{
+                i2 = 0;
+                localEnd = 0;
+                while (!localEnd && (it != itEnd))
+                {
                     typename Value<TPair,1>::Type i1 = getValueI1(pos);
                     assignValueI1(pos, i1 + 1);
-					localEnd = (*it - old);
+                    localEnd = (*it - old);
                     // test for overflows
                     SEQAN_ASSERT_LT_MSG(i1, getValueI1(pos), "Overflow detected. Use a bigger type for the *first* value in the SAValue pair!");
                     SEQAN_ASSERT_EQ_MSG((TSize)localEnd, (*it - old), "Overflow detected. Use a bigger type for the *second* value in the SAValue pair!");
-					old = *it;
-					++it;
-				}
-				if (!localEnd && it == itEnd)
-					assignValueI1(pos, getValueI1(pos) + 1);	// set pos behind the last sequence
-			}
-			assignValueI2(pos, i2);
-			return pos;
-		}
-	};
+                    old = *it;
+                    ++it;
+                }
+                if (!localEnd && it == itEnd)
+                    assignValueI1(pos, getValueI1(pos) + 1);    // set pos behind the last sequence
+            }
+            assignValueI2(pos, i2);
+            return pos;
+        }
+    };
 
-	template <typename TPair, typename TLimits, typename TLimits2>
-	void setHost(PairIncrementer_<TPair, TLimits> &me, TLimits2 const &limits)
+    template <typename TPair, typename TLimits, typename TLimits2>
+    void setHost(PairIncrementer_<TPair, TLimits> &me, TLimits2 const &limits)
     {
-		me.it = begin(limits, Standard());
-		me.itEnd = end(limits, Standard());
-		me.old = 0;
-		me.localEnd = 0;
+        me.it = begin(limits, Standard());
+        me.itEnd = end(limits, Standard());
+        me.old = 0;
+        me.localEnd = 0;
         me.pos = TPair(0, 0);
-		if (length(limits) > 1)
+        if (length(limits) > 1)
         {
-			++me.it;
-			++me;
-			assignValueI1(me.pos, getValueI1(me.pos) - 1);
-		}
-	}
+            ++me.it;
+            ++me;
+            assignValueI1(me.pos, getValueI1(me.pos) - 1);
+        }
+    }
 
-	template <typename TPair, typename TLimits, typename TLimits2>
-	void setHost(PairIncrementer_<TPair, TLimits> &me, TLimits2 &limits)
+    template <typename TPair, typename TLimits, typename TLimits2>
+    void setHost(PairIncrementer_<TPair, TLimits> &me, TLimits2 &limits)
     {
         setHost(me, const_cast<TLimits2 const &>(limits));
     }
 //____________________________________________________________________________
 
-	template <typename TPair, typename TLimits>
-	TPair const & value(PairIncrementer_<TPair, TLimits> const &me) {
-		return me.pos;
-	}
+    template <typename TPair, typename TLimits>
+    TPair const & value(PairIncrementer_<TPair, TLimits> const &me) {
+        return me.pos;
+    }
 
-	template <typename TPair, typename TLimits>
-	TPair & value(PairIncrementer_<TPair, TLimits> &me) {
-		return me.pos;
-	}
+    template <typename TPair, typename TLimits>
+    TPair & value(PairIncrementer_<TPair, TLimits> &me) {
+        return me.pos;
+    }
 
 
-	//////////////////////////////////////////////////////////////////////////////
-	// pair decrementer
-	//
-	// used by pipes processing multiples sequences 
-	// for generating pairs (seqNo, seqOffs)
+    //////////////////////////////////////////////////////////////////////////////
+    // pair decrementer
+    //
+    // used by pipes processing multiples sequences 
+    // for generating pairs (seqNo, seqOffs)
 
-	template <typename TPair, typename TLimits, unsigned m = 0>
-	struct PairDecrementer_
+    template <typename TPair, typename TLimits, unsigned m = 0>
+    struct PairDecrementer_
     {
         typedef typename Iterator<TLimits const, Standard>::Type            TIter;
         typedef typename RemoveConst_<typename Value<TLimits>::Type>::Type  TSize;
         
         TIter       it, itEnd;
-		TSize       old;
-		TPair		pos;
-		unsigned	residue;
+        TSize       old;
+        TPair        pos;
+        unsigned    residue;
 
-		PairDecrementer_() : it(), itEnd(), old(), pos(), residue() {}
-		PairDecrementer_(TLimits const &_limits) : it(), itEnd(), old(), pos(), residue()
-		{ setHost(*this, _limits); }
+        PairDecrementer_() : it(), itEnd(), old(), pos(), residue() {}
+        PairDecrementer_(TLimits const &_limits) : it(), itEnd(), old(), pos(), residue()
+        { setHost(*this, _limits); }
 
-		inline operator TPair () const
-		{
-			return pos;
-		}
-
-		inline TPair const & operator-- ()
+        inline operator TPair () const
         {
-			typename Value<TPair,2>::Type i2 = getValueI2(pos);
-			if (i2 > 1)
+            return pos;
+        }
+
+        inline TPair const & operator-- ()
+        {
+            typename Value<TPair,2>::Type i2 = getValueI2(pos);
+            if (i2 > 1)
             {
-				--i2;
-				if (residue == 0) residue = m;
-				--residue;
-			}
-			else
-			{
-				i2 = 0;
-				while (!i2 && (it != itEnd))
-				{
+                --i2;
+                if (residue == 0) residue = m;
+                --residue;
+            }
+            else
+            {
+                i2 = 0;
+                while (!i2 && (it != itEnd))
+                {
                     typename Value<TPair,1>::Type i1 = getValueI1(pos);
-					assignValueI1(pos, i1 + 1);
-					i2 = (*it - old);
+                    assignValueI1(pos, i1 + 1);
+                    i2 = (*it - old);
                     // test for overflows
                     SEQAN_ASSERT_LT_MSG(i1, getValueI1(pos), "Overflow detected. Use a bigger type for the *first* value in the SAValue pair!");
                     SEQAN_ASSERT_EQ_MSG((TSize)i2, *it - old, "Overflow detected. Use a bigger type for the *second* value in the SAValue pair!");
-					old = *it;
-					++it;
-				} 
-				residue = i2 % m;
-			}
-			assignValueI2(pos, i2);
-			return pos;
-		}
-	};
+                    old = *it;
+                    ++it;
+                } 
+                residue = i2 % m;
+            }
+            assignValueI2(pos, i2);
+            return pos;
+        }
+    };
 
-	template <typename TPair, typename TLimits, unsigned m, typename TLimits2>
-	void setHost(PairDecrementer_<TPair, TLimits, m> &me, TLimits2 const &limits)
+    template <typename TPair, typename TLimits, unsigned m, typename TLimits2>
+    void setHost(PairDecrementer_<TPair, TLimits, m> &me, TLimits2 const &limits)
     {
-		me.it = begin(limits);
-		me.itEnd = end(limits);
-		me.old = 0;
+        me.it = begin(limits);
+        me.itEnd = end(limits);
+        me.old = 0;
         me.pos = TPair(0, 0);
-		if (length(limits) > 1)
+        if (length(limits) > 1)
         {
-			++me.it;
-			--me;
-			assignValueI1(me.pos, getValueI1(me.pos) - 1);
-		} else
-			me.residue = 0;
-	}
+            ++me.it;
+            --me;
+            assignValueI1(me.pos, getValueI1(me.pos) - 1);
+        } else
+            me.residue = 0;
+    }
 
-	template <typename TPair, typename TLimits, unsigned m, typename TLimits2>
-	void setHost(PairDecrementer_<TPair, TLimits, m> &me, TLimits2 &limits)
+    template <typename TPair, typename TLimits, unsigned m, typename TLimits2>
+    void setHost(PairDecrementer_<TPair, TLimits, m> &me, TLimits2 &limits)
     {
         setHost(me, const_cast<TLimits const &>(limits));
     }
 //____________________________________________________________________________
 
-	template <typename TPair, typename TLimits>
-	struct PairDecrementer_<TPair, TLimits, 0>
+    template <typename TPair, typename TLimits>
+    struct PairDecrementer_<TPair, TLimits, 0>
     {
         typedef typename Iterator<TLimits const, Standard>::Type            TIter;
         typedef typename RemoveConst_<typename Value<TLimits>::Type>::Type  TSize;
 
         TIter       it, itEnd;
-		TSize       old;
-		TPair		pos;
+        TSize       old;
+        TPair        pos;
 
-		PairDecrementer_() {}
-		PairDecrementer_(TLimits const &_limits) { setHost(*this, _limits); }
+        PairDecrementer_() {}
+        PairDecrementer_(TLimits const &_limits) { setHost(*this, _limits); }
 
-		inline operator TPair () const {
-			return pos;
-		}
+        inline operator TPair () const {
+            return pos;
+        }
 
-		inline TPair const & operator-- ()
+        inline TPair const & operator-- ()
         {
-			typename Value<TPair,2>::Type i2 = getValueI2(pos);
-			if (i2 > 1)
-				--i2;
-			else
-			{
-				i2 = 0;
-				while (!i2 && (it != itEnd))
-				{
+            typename Value<TPair,2>::Type i2 = getValueI2(pos);
+            if (i2 > 1)
+                --i2;
+            else
+            {
+                i2 = 0;
+                while (!i2 && (it != itEnd))
+                {
                     typename Value<TPair,1>::Type i1 = getValueI1(pos);
-					assignValueI1(pos, i1 + 1);
-					i2 = (*it - old);
+                    assignValueI1(pos, i1 + 1);
+                    i2 = (*it - old);
                     // test for overflows
                     SEQAN_ASSERT_LT_MSG(i1, getValueI1(pos), "Overflow detected. Use a bigger type for the *first* value in the SAValue pair!");
                     SEQAN_ASSERT_EQ_MSG((TSize)i2, *it - old, "Overflow detected. Use a bigger type for the *second* value in the SAValue pair!");
-					old = *it;
-					++it;
-				} 
-			}
-			assignValueI2(pos, i2);
-			return pos;
-		}
-	};
+                    old = *it;
+                    ++it;
+                } 
+            }
+            assignValueI2(pos, i2);
+            return pos;
+        }
+    };
 
-	template <typename TPair, typename TLimits, typename TLimits2>
-	void setHost(PairDecrementer_<TPair, TLimits, 0> &me, TLimits2 const &limits) {
-		me.it = begin(limits);
-		me.itEnd = end(limits);
-		me.old = 0;
-		assignValueI1(me.pos, 0);
-		assignValueI2(me.pos, 0);
-		if (length(limits) > 1) {
-			++me.it;
-			--me;
-			assignValueI1(me.pos, getValueI1(me.pos) - 1);
-		}
-	}
+    template <typename TPair, typename TLimits, typename TLimits2>
+    void setHost(PairDecrementer_<TPair, TLimits, 0> &me, TLimits2 const &limits) {
+        me.it = begin(limits);
+        me.itEnd = end(limits);
+        me.old = 0;
+        assignValueI1(me.pos, 0);
+        assignValueI2(me.pos, 0);
+        if (length(limits) > 1) {
+            ++me.it;
+            --me;
+            assignValueI1(me.pos, getValueI1(me.pos) - 1);
+        }
+    }
 
-	template <typename TPair, typename TLimits, typename TLimits2>
-	void setHost(PairDecrementer_<TPair, TLimits, 0> &me, TLimits2 &limits)
+    template <typename TPair, typename TLimits, typename TLimits2>
+    void setHost(PairDecrementer_<TPair, TLimits, 0> &me, TLimits2 &limits)
     {
         setHost(me, const_cast<TLimits const &>(limits));
     }
 //____________________________________________________________________________
 
-	template <typename TPair, typename TLimits, unsigned m>
-	TPair const & value(PairDecrementer_<TPair, TLimits, m> const &me) {
-		return me.pos;
-	}
+    template <typename TPair, typename TLimits, unsigned m>
+    TPair const & value(PairDecrementer_<TPair, TLimits, m> const &me) {
+        return me.pos;
+    }
 
-	template <typename TPair, typename TLimits, unsigned m>
-	TPair & value(PairDecrementer_<TPair, TLimits, m> &me) {
-		return me.pos;
-	}
+    template <typename TPair, typename TLimits, unsigned m>
+    TPair & value(PairDecrementer_<TPair, TLimits, m> &me) {
+        return me.pos;
+    }
 
 }
 

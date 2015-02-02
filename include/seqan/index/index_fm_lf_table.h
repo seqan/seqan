@@ -512,7 +512,7 @@ _createBwt(LF<TText, TSpec, TConfig> & lf, TBwt & bwt, TOtherText const & text, 
     TSAIter saItEnd = end(sa, Standard());
     TBwtIter bwtIt = begin(bwt, Standard());
 
-	assignValue(bwtIt, back(text));
+    assignValue(bwtIt, back(text));
     ++bwtIt;
 
     for (; saIt != saItEnd; ++saIt, ++bwtIt)

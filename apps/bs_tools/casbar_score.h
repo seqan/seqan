@@ -73,12 +73,12 @@ public:
     TValue scalingFactorDelErrors;
 
     template <typename TOptions>
-	Score(TOptions &options,
-	        TValue const * &_seqErrorFreqs,
+    Score(TOptions &options,
+            TValue const * &_seqErrorFreqs,
             TValue const * &_insErrorFreqs,
             TValue const * &_delErrorFreqs,
             TValue _scalingFactorDelErrors)
-	{
+    {
         (*this).delRate = options.delRate;
         (*this).delErrorRate = options.delErrorRate;
         (*this).insErrorRate = options.insErrorRate;
@@ -86,7 +86,7 @@ public:
         (*this).endGapScore = options.endGapScore;
         (*this).scoreLimit = options.scoreLimit;
 
-	    (*this).readBaseFreqs = ReadBaseFreqs<TValue, TModel>::getData();
+        (*this).readBaseFreqs = ReadBaseFreqs<TValue, TModel>::getData();
         (*this).refBaseFreqs = RefBaseFreqs<TValue, TModel>::getData();
 
         (*this).seqErrorFreqs = _seqErrorFreqs;
@@ -96,10 +96,10 @@ public:
     }
 
     template <typename TCellDescriptor2>
-	Score(Score<TValue, BsTagList<TBsProfileScore, TModel, TCellDescriptor2> > const &_score)
-	{
-	    (*this).targetFreqs = _score.targetFreqs;
-	    (*this).gapFreqs = _score.gapFreqs;
+    Score(Score<TValue, BsTagList<TBsProfileScore, TModel, TCellDescriptor2> > const &_score)
+    {
+        (*this).targetFreqs = _score.targetFreqs;
+        (*this).gapFreqs = _score.gapFreqs;
 
         (*this).delRate = _score.delRate;
         (*this).delErrorRate = _score.delErrorRate;
@@ -108,7 +108,7 @@ public:
         (*this).endGapScore = _score.endGapScore;
         (*this).scoreLimit = _score.scoreLimit;
 
-	    (*this).readBaseFreqs = _score.readBaseFreqs;
+        (*this).readBaseFreqs = _score.readBaseFreqs;
         (*this).refBaseFreqs = _score.refBaseFreqs;
 
         (*this).seqErrorFreqs = _score.seqErrorFreqs;
@@ -122,16 +122,16 @@ public:
 template <typename TValue, typename TString, typename TBsProfileScore, typename TModel, typename TCellDescriptor, typename TMethOptions>
 inline void
 assignTargetFreqs(Score<TValue, BsTagList<TBsProfileScore, TModel, TCellDescriptor> > &me,
-			      TString const & profile, TMethOptions &/*options*/, BsTop const &)
+                  TString const & profile, TMethOptions &/*options*/, BsTop const &)
 {
-	typedef typename Size<TString>::Type TSize;
-	resize(me.targetFreqs, length(profile));
-	resize(me.gapFreqs, length(profile));
+    typedef typename Size<TString>::Type TSize;
+    resize(me.targetFreqs, length(profile));
+    resize(me.gapFreqs, length(profile));
 
-	for(TSize i = 0; i < length(profile); ++i) {
-	    resize(me.targetFreqs[i], 5);
-		
-	    double sum = 0; // For normalization, since the sum of all freqs should be 1
+    for(TSize i = 0; i < length(profile); ++i) {
+        resize(me.targetFreqs[i], 5);
+        
+        double sum = 0; // For normalization, since the sum of all freqs should be 1
         for (TSize j = 0; j < 4; ++j)
             sum += profile[i].count[j];
 
@@ -206,16 +206,16 @@ assignTargetFreqs(Score<TValue, BsTagList<TBsProfileScore, TModel, TCellDescript
 template <typename TValue, typename TString, typename TBsProfileScore, typename TModel, typename TCellDescriptor, typename TMethOptions>
 inline void
 assignTargetFreqs(Score<TValue, BsTagList<TBsProfileScore, TModel, TCellDescriptor> > &me,
-			      TString const & profile, TMethOptions &/*options*/, BsBottom const &)
+                  TString const & profile, TMethOptions &/*options*/, BsBottom const &)
 {
-	typedef typename Size<TString>::Type TSize;
-	resize(me.targetFreqs, length(profile));
-	resize(me.gapFreqs, length(profile));
+    typedef typename Size<TString>::Type TSize;
+    resize(me.targetFreqs, length(profile));
+    resize(me.gapFreqs, length(profile));
 
-	for(TSize i = 0; i < length(profile); ++i) {
-	    resize(me.targetFreqs[i], 5);
-		
-	    double sum = 0; // For normalization, since the sum of all freqs should be 1
+    for(TSize i = 0; i < length(profile); ++i) {
+        resize(me.targetFreqs[i], 5);
+        
+        double sum = 0; // For normalization, since the sum of all freqs should be 1
         for (TSize j = 4; j < 8; ++j)
             sum += profile[i].count[j];
 
@@ -279,18 +279,18 @@ assignTargetFreqs(Score<TValue, BsTagList<TBsProfileScore, TModel, TCellDescript
 template <typename TValue, typename TString, typename TModel, typename TCellDescriptor, typename TMethOptions>
 inline void
 assignTargetFreqs(Score<TValue, BsTagList<BsProfileScoreRef, TModel, TCellDescriptor> > &me,
-			      TString const & profile, TMethOptions &/*Options*/)
+                  TString const & profile, TMethOptions &/*Options*/)
 {
-	typedef typename Size<TString>::Type TSize;
-	resize(me.targetFreqs, length(profile));
-	resize(me.gapFreqs, length(profile));
+    typedef typename Size<TString>::Type TSize;
+    resize(me.targetFreqs, length(profile));
+    resize(me.gapFreqs, length(profile));
 
-	for(TSize i = 0; i < length(profile); ++i) {
-	    resize(me.targetFreqs[i], 2*5); // TODO size not necessary anymore
-		
-	    double sumF = 0;
-	    double sumR = 0;
-	    sumF += profile[i].count[0];    // TODO think: sum over all?
+    for(TSize i = 0; i < length(profile); ++i) {
+        resize(me.targetFreqs[i], 2*5); // TODO size not necessary anymore
+        
+        double sumF = 0;
+        double sumR = 0;
+        sumF += profile[i].count[0];    // TODO think: sum over all?
         sumF += profile[i].count[2];
         sumR += profile[i].count[5];
         sumR += profile[i].count[7];
@@ -386,7 +386,7 @@ _computeCell(TDPScout & scout,
                 _computeScore(activeCell, previousDiagonal, previousHorizontal, previousVertical, seqHVal, seqVVal,
                               scoringSchemeDummy, typename RecursionDirection_<TMetaColumn, TCellDescriptor>::Type(),
                               TDPProfile()));
-//	std::cout << "("<< activeCell._score << "," << previousDiagonal._score << "," << previousHorizontal._score << "," << previousVertical._score << ") ";
+//    std::cout << "("<< activeCell._score << "," << previousDiagonal._score << "," << previousHorizontal._score << "," << previousVertical._score << ") ";
     if (TrackingEnabled_<TMetaColumn, TCellDescriptor>::VALUE)
     {
         bool isLastColumn = IsSameType<typename TColumnDescriptor::TColumnProperty, DPFinalColumn>::VALUE;
@@ -425,7 +425,7 @@ _computeCell(TDPScout & scout,
                 _computeScore(activeCell, previousDiagonal, previousHorizontal, previousVertical, seqHVal, seqVVal,
                               scoringSchemeDummy, typename RecursionDirection_<TMetaColumn, TCellDescriptor>::Type(),
                               TDPProfile()));
-//	std::cout << "("<< activeCell._score << "," << previousDiagonal._score << "," << previousHorizontal._score << "," << previousVertical._score << ") ";
+//    std::cout << "("<< activeCell._score << "," << previousDiagonal._score << "," << previousHorizontal._score << "," << previousVertical._score << ") ";
     if (TrackingEnabled_<TMetaColumn, TCellDescriptor>::VALUE)
     {
         bool isLastColumn = IsSameType<typename TColumnDescriptor::TColumnProperty, DPFinalColumn>::VALUE;
@@ -447,28 +447,28 @@ _computeCell(TDPScout & scout,
 template <typename TValue, typename TBsProfileScore, typename TModel, typename TSeq1, typename TSeq2>
 inline TValue
 scoreGapExtendHorizontal(
-	Score<TValue, BsTagList<TBsProfileScore, TModel, FirstCell> > const &me,
+    Score<TValue, BsTagList<TBsProfileScore, TModel, FirstCell> > const &me,
     ConsensusScoreSequenceEntry<TSeq1> const & /*entry1*/,
     ConsensusScoreSequenceEntry<TSeq2> const & /*entry2*/)
 {
-	return std::log10(me.endGapScore);
+    return std::log10(me.endGapScore);
 }
 // For end gaps
 template <typename TValue, typename TBsProfileScore, typename TModel, typename TSeq1, typename TSeq2>
 inline TValue
 scoreGapExtendHorizontal(
-	Score<TValue, BsTagList<TBsProfileScore, TModel, LastCell> > const &me,
+    Score<TValue, BsTagList<TBsProfileScore, TModel, LastCell> > const &me,
     ConsensusScoreSequenceEntry<TSeq1> const & /*entry1*/,
     ConsensusScoreSequenceEntry<TSeq2> const & /*entry2*/)
 {
-	return std::log10(me.endGapScore);
+    return std::log10(me.endGapScore);
 }
 
 // Top strand, original (forward strand)
 template <typename TValue, typename TModel, typename TSeq1, typename TSeq2>
 inline TValue
 scoreGapExtendHorizontal(
-	Score<TValue, BsTagList<BsProfileScoreCT, TModel, InnerCell> > const &me,
+    Score<TValue, BsTagList<BsProfileScoreCT, TModel, InnerCell> > const &me,
     ConsensusScoreSequenceEntry<TSeq1> const & entry1,
     ConsensusScoreSequenceEntry<TSeq2> const & /*entry2*/)
 {
@@ -477,14 +477,14 @@ scoreGapExtendHorizontal(
     {
         sc += (me.targetFreqs[position(entry1)][i] / me.readBaseFreqs[i]) * me.delErrorRate * me.delErrorFreqs[i]; //  * me.scalingFactorDelErrors;      // P(Xb)/f(b) * derErrorRate * seqError(b -> -)
     }
-	return  ((std::log10(sc/2.0) > -10)? std::log10(sc/2.0):-10);
+    return  ((std::log10(sc/2.0) > -10)? std::log10(sc/2.0):-10);
 }
 
 // Top strand, rev. compl. of original (projected from reverse to forward strand)
 template <typename TValue, typename TModel, typename TSeq1, typename TSeq2>
 inline TValue
 scoreGapExtendHorizontal(
-	Score<TValue, BsTagList<BsProfileScoreCTRight, TModel, InnerCell> > const &me,
+    Score<TValue, BsTagList<BsProfileScoreCTRight, TModel, InnerCell> > const &me,
     ConsensusScoreSequenceEntry<TSeq1> const & entry1,
     ConsensusScoreSequenceEntry<TSeq2> const & /*entry2*/)
 {
@@ -494,14 +494,14 @@ scoreGapExtendHorizontal(
     {
         sc += (me.targetFreqs[position(entry1)][i] / me.readBaseFreqs[i]) * me.delErrorRate * me.delErrorFreqs[fCompl(i)]; // * me.scalingFactorDelErrors;     No scaling, because we sum up!
     }
-	return  ((std::log10(sc/2.0) > -10)? std::log10(sc/2.0):-10);
+    return  ((std::log10(sc/2.0) > -10)? std::log10(sc/2.0):-10);
 }
 
 // Bottom strand, original (projected from reverse to forward strand)
 template <typename TValue, typename TModel, typename TSeq1, typename TSeq2>
 inline TValue
 scoreGapExtendHorizontal(
-	Score<TValue, BsTagList<BsProfileScoreGA, TModel, InnerCell> > const &me,
+    Score<TValue, BsTagList<BsProfileScoreGA, TModel, InnerCell> > const &me,
     ConsensusScoreSequenceEntry<TSeq1> const & entry1,
     ConsensusScoreSequenceEntry<TSeq2> const & /*entry2*/)
 {
@@ -511,7 +511,7 @@ scoreGapExtendHorizontal(
     {
         sc += (me.targetFreqs[position(entry1)][i] / me.readBaseFreqs[fCompl(i)]) * me.delErrorRate * me.delErrorFreqs[fCompl(i)]; //  * me.scalingFactorDelErrors;
     }
-	return  ((std::log10(sc/2.0) > -10)? std::log10(sc/2.0):-10);
+    return  ((std::log10(sc/2.0) > -10)? std::log10(sc/2.0):-10);
 
 }
 
@@ -519,7 +519,7 @@ scoreGapExtendHorizontal(
 template <typename TValue, typename TModel, typename TSeq1, typename TSeq2>
 inline TValue
 scoreGapExtendHorizontal(
-	Score<TValue, BsTagList<BsProfileScoreGARight, TModel, InnerCell> > const &me,
+    Score<TValue, BsTagList<BsProfileScoreGARight, TModel, InnerCell> > const &me,
     ConsensusScoreSequenceEntry<TSeq1> const & entry1,
     ConsensusScoreSequenceEntry<TSeq2> const & /*entry2*/)
 {
@@ -529,20 +529,20 @@ scoreGapExtendHorizontal(
     {
         sc += (me.targetFreqs[position(entry1)][i] / me.readBaseFreqs[fCompl(i)]) * me.delErrorRate * me.delErrorFreqs[i]; //  * me.scalingFactorDelErrors;
     }
-	return  ((std::log10(sc/2.0) > -10)? std::log10(sc/2.0):-10);
+    return  ((std::log10(sc/2.0) > -10)? std::log10(sc/2.0):-10);
 }
 
 
 template <typename TValue, typename TModel, typename TSeq1, typename TSeq2>
 inline TValue
 scoreGapExtendHorizontal(
-	Score<TValue, BsTagList<BsProfileScoreRef, TModel, InnerCell> > const &me,
+    Score<TValue, BsTagList<BsProfileScoreRef, TModel, InnerCell> > const &me,
     ConsensusScoreSequenceEntry<TSeq1> const & entry1,
     ConsensusScoreSequenceEntry<TSeq2> const & /*entry2*/)
 {
     // TODO free ends?
     TValue sc = me.gapFreqs[position(entry1)] / me.delRate;                                   // P(X-)/f(-)  // insRate?
-	return  ((std::log10(sc/2.0) > -10)? std::log10(sc/2.0):-10);
+    return  ((std::log10(sc/2.0) > -10)? std::log10(sc/2.0):-10);
 }
 
 
@@ -553,7 +553,7 @@ scoreGapExtendHorizontal(
 template <typename TValue, typename TBsProfileScore, typename TModel, typename TCellDescriptor, typename TSeq1, typename TSeq2>
 inline TValue
 scoreGapOpenHorizontal(
-	Score<TValue, BsTagList<TBsProfileScore, TModel, TCellDescriptor> > const &me,
+    Score<TValue, BsTagList<TBsProfileScore, TModel, TCellDescriptor> > const &me,
     ConsensusScoreSequenceEntry<TSeq1> const & entry1,
     ConsensusScoreSequenceEntry<TSeq2> const & entry2)
 {
@@ -571,97 +571,97 @@ scoreGapOpenHorizontal(
 template <typename TValue, typename TModel, typename TCellDescriptor, typename TSeq1, typename TSeq2>
 inline TValue
 scoreGapExtendVertical(
-	Score<TValue, BsTagList<BsProfileScoreCT, TModel, TCellDescriptor> > const & me,
+    Score<TValue, BsTagList<BsProfileScoreCT, TModel, TCellDescriptor> > const & me,
     ConsensusScoreSequenceEntry<TSeq1> const & /*entry1*/,  // Curr. column profile
     ConsensusScoreSequenceEntry<TSeq2> const & entry2)      // Curr. read base
 {
 
-	TValue e =  pow(10, -(long double)value(entry2).count[1]/10.0);
-	TValue pseudoMinVal = 0; /* 0.00000005/(value(entry1).count[0] + value(entry1).count[1] + value(entry1).count[2] + value(entry1).count[3] +
-	                            value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
+    TValue e =  pow(10, -(long double)value(entry2).count[1]/10.0);
+    TValue pseudoMinVal = 0; /* 0.00000005/(value(entry1).count[0] + value(entry1).count[1] + value(entry1).count[2] + value(entry1).count[3] +
+                                value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
                                 value(entry1).count[10] + value(entry1).count[11] +
                                 1     // for ref
-	                            );  */  // Use count of bases from position before, the more reads, the lower the prob to insert gap into profile
+                                );  */  // Use count of bases from position before, the more reads, the lower the prob to insert gap into profile
     TValue sc = (pseudoMinVal/me.readBaseFreqs[(unsigned)value(entry2).count[0]]) * (1.0-e);          // prob. to insert gap into profile (pseudo, assume we observed one with low quality)
     sc += 1.0 * e * me.insErrorRate * me.insErrorFreqs[(unsigned)value(entry2).count[0]];                               // 1 * e * seqError(- -> a)
-	return  ((std::log10(sc) > -10)? std::log10(sc):-10);
+    return  ((std::log10(sc) > -10)? std::log10(sc):-10);
 }
 
 // Top strand, rev. compl. of original (projected from reverse to forward strand)
 template <typename TValue, typename TModel, typename TCellDescriptor, typename TSeq1, typename TSeq2>
 inline TValue
 scoreGapExtendVertical(
-	Score<TValue, BsTagList<BsProfileScoreCTRight, TModel, TCellDescriptor> > const & me,
+    Score<TValue, BsTagList<BsProfileScoreCTRight, TModel, TCellDescriptor> > const & me,
     ConsensusScoreSequenceEntry<TSeq1> const & /*entry1*/,  // Curr. column profile
     ConsensusScoreSequenceEntry<TSeq2> const & entry2)      // Curr. read base
 {
     FunctorDna5OrdValueComplement<int> fCompl;
-	TValue e =  pow(10, -(long double)value(entry2).count[1]/10.0);
-	TValue pseudoMinVal = 0; /* 0.00000005/(value(entry1).count[0] + value(entry1).count[1] + value(entry1).count[2] + value(entry1).count[3] +
-	                            value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
+    TValue e =  pow(10, -(long double)value(entry2).count[1]/10.0);
+    TValue pseudoMinVal = 0; /* 0.00000005/(value(entry1).count[0] + value(entry1).count[1] + value(entry1).count[2] + value(entry1).count[3] +
+                                value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
                                 value(entry1).count[10] + value(entry1).count[11] +
                                 1     // for ref
-	                            ); */   // Use count of bases from position before, the more reads, the lower the prob to insert gap into profile
+                                ); */   // Use count of bases from position before, the more reads, the lower the prob to insert gap into profile
     TValue sc = (pseudoMinVal/me.readBaseFreqs[(unsigned)value(entry2).count[0]]) * (1.0-e);          // prob. to insert gap into profile (pseudo, assume we observed one with low quality)
     sc += 1.0 * e * me.insErrorRate * me.insErrorFreqs[fCompl((int)value(entry2).count[0])];                               // 1 * e * seqError(- -> a)
-	return  ((std::log10(sc) > -10)? std::log10(sc):-10);
+    return  ((std::log10(sc) > -10)? std::log10(sc):-10);
 }
 
 // Bottom strand, original (projected from reverse to forward strand)
 template <typename TValue, typename TModel, typename TCellDescriptor, typename TSeq1, typename TSeq2>
 inline TValue
 scoreGapExtendVertical(
-	Score<TValue, BsTagList<BsProfileScoreGA, TModel, TCellDescriptor> > const & me,
+    Score<TValue, BsTagList<BsProfileScoreGA, TModel, TCellDescriptor> > const & me,
     ConsensusScoreSequenceEntry<TSeq1> const & /*entry1*/,  // Curr. column profile
     ConsensusScoreSequenceEntry<TSeq2> const & entry2)      // Curr. read base
 {
     FunctorDna5OrdValueComplement<int> fCompl;
-	TValue e =  pow(10, -(long double)value(entry2).count[1]/10.0);
-	TValue pseudoMinVal = 0; /*0.00000005/(value(entry1).count[0] + value(entry1).count[1] + value(entry1).count[2] + value(entry1).count[3] +
-	                            value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
+    TValue e =  pow(10, -(long double)value(entry2).count[1]/10.0);
+    TValue pseudoMinVal = 0; /*0.00000005/(value(entry1).count[0] + value(entry1).count[1] + value(entry1).count[2] + value(entry1).count[3] +
+                                value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
                                 value(entry1).count[10] + value(entry1).count[11] +
                                 1     // for ref
-	                            ); */ // Use count of bases from position before, the more reads, the lower the prob to insert gap into profile
-	TValue sc = (pseudoMinVal/me.readBaseFreqs[fCompl((int)value(entry2).count[0])]) * (1.0-e);          // prob. to insert gap into profile (pseudo, assume we observed one with low quality); read base freq. regarding original strand
+                                ); */ // Use count of bases from position before, the more reads, the lower the prob to insert gap into profile
+    TValue sc = (pseudoMinVal/me.readBaseFreqs[fCompl((int)value(entry2).count[0])]) * (1.0-e);          // prob. to insert gap into profile (pseudo, assume we observed one with low quality); read base freq. regarding original strand
     sc += 1.0 * e * me.insErrorRate * me.insErrorFreqs[fCompl((int)value(entry2).count[0])];          // 1 * e * seqError(- -> a)
-	return  ((std::log10(sc) > -10)? std::log10(sc):-10);
+    return  ((std::log10(sc) > -10)? std::log10(sc):-10);
 }
 
 // Bottom strand, rev. compl. of original (forward strand)
 template <typename TValue, typename TModel, typename TCellDescriptor, typename TSeq1, typename TSeq2>
 inline TValue
 scoreGapExtendVertical(
-	Score<TValue, BsTagList<BsProfileScoreGARight, TModel, TCellDescriptor> > const & me,
+    Score<TValue, BsTagList<BsProfileScoreGARight, TModel, TCellDescriptor> > const & me,
     ConsensusScoreSequenceEntry<TSeq1> const & /*entry1*/,  // Curr. column profile
     ConsensusScoreSequenceEntry<TSeq2> const & entry2)      // Curr. read base
 {
     FunctorDna5OrdValueComplement<int> fCompl;
-	TValue e =  pow(10, -(long double)value(entry2).count[1]/10.0);
-	TValue pseudoMinVal = 0; /*0.00000005/(value(entry1).count[0] + value(entry1).count[1] + value(entry1).count[2] + value(entry1).count[3] +
-	                            value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
+    TValue e =  pow(10, -(long double)value(entry2).count[1]/10.0);
+    TValue pseudoMinVal = 0; /*0.00000005/(value(entry1).count[0] + value(entry1).count[1] + value(entry1).count[2] + value(entry1).count[3] +
+                                value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
                                 value(entry1).count[10] + value(entry1).count[11] +
                                 1     // for ref
-	                            );*/  // Use count of bases from position before, the more reads, the lower the prob to insert gap into profile
-	TValue sc = (pseudoMinVal/me.readBaseFreqs[fCompl((int)value(entry2).count[0])]) * (1.0-e);          // prob. to insert gap into profile (pseudo, assume we observed one with low quality); read base freq. regarding original strand
+                                );*/  // Use count of bases from position before, the more reads, the lower the prob to insert gap into profile
+    TValue sc = (pseudoMinVal/me.readBaseFreqs[fCompl((int)value(entry2).count[0])]) * (1.0-e);          // prob. to insert gap into profile (pseudo, assume we observed one with low quality); read base freq. regarding original strand
     sc += 1.0 * e * me.insErrorRate * me.insErrorFreqs[(unsigned)value(entry2).count[0]];          // 1 * e * seqError(- -> a)
-	return  ((std::log10(sc) > -10)? std::log10(sc):-10);
+    return  ((std::log10(sc) > -10)? std::log10(sc):-10);
 }
 
 
 template <typename TValue, typename TModel, typename TCellDescriptor, typename TSeq1, typename TSeq2>
 inline TValue
 scoreGapExtendVertical(
-	Score<TValue, BsTagList<BsProfileScoreRef, TModel, TCellDescriptor> > const & me,
+    Score<TValue, BsTagList<BsProfileScoreRef, TModel, TCellDescriptor> > const & me,
     ConsensusScoreSequenceEntry<TSeq1> const & /*entry1*/,      // Curr. column profile
     ConsensusScoreSequenceEntry<TSeq2> const & entry2)      // Curr. read base
 {
- 	TValue pseudoMinVal = 0; /*0.00000005/(value(entry1).count[0] + value(entry1).count[1] + value(entry1).count[2] + value(entry1).count[3] +
-	                            value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
+     TValue pseudoMinVal = 0; /*0.00000005/(value(entry1).count[0] + value(entry1).count[1] + value(entry1).count[2] + value(entry1).count[3] +
+                                value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
                                 value(entry1).count[10] + value(entry1).count[11] +
                                 1     // for ref
-	                            ); */
-	TValue sc = pseudoMinVal/me.refBaseFreqs[(unsigned)value(entry2).count[0]];                       // prob. to insert gap into profile (pseudo, assume we observed one with low quality)
-	return  ((std::log10(sc) > -10)? std::log10(sc):-10);
+                                ); */
+    TValue sc = pseudoMinVal/me.refBaseFreqs[(unsigned)value(entry2).count[0]];                       // prob. to insert gap into profile (pseudo, assume we observed one with low quality)
+    return  ((std::log10(sc) > -10)? std::log10(sc):-10);
 }
 
 
@@ -672,7 +672,7 @@ scoreGapExtendVertical(
 template <typename TValue, typename TBsProfileScore, typename TModel, typename TCellDescriptor, typename TSeq1, typename TSeq2>
 inline TValue
 scoreGapOpenVertical(
-	Score<TValue, BsTagList<TBsProfileScore, TModel, TCellDescriptor> > const & me,
+    Score<TValue, BsTagList<TBsProfileScore, TModel, TCellDescriptor> > const & me,
     ConsensusScoreSequenceEntry<TSeq1> const & entry1,
     ConsensusScoreSequenceEntry<TSeq2> const & entry2)
 {
@@ -702,7 +702,7 @@ score(Score<TValue, BsTagList<BsProfileScoreCT, TModel, TCellDescriptor> > const
     if (me.targetFreqs[position(entry1)][0] + me.targetFreqs[position(entry1)][1] +
         me.targetFreqs[position(entry1)][2] + me.targetFreqs[position(entry1)][3] < 0.001)     {
         TValue pseudoMinVal = 0; /* 0.00001/(value(entry1).count[0] + value(entry1).count[1] + value(entry1).count[2] + value(entry1).count[3] +
-	                                value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
+                                    value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
                                     value(entry1).count[10] + value(entry1).count[11] +
                                     1) ; */                                     // Use count of gaps, the more reads, the lower the prob to insert
         sc = (pseudoMinVal/me.readBaseFreqs[(unsigned)value(entry2).count[0]]) * (1.0-e);           // prob. to insert gap into profile (pseudo, assume we observed one with low quality)
@@ -710,7 +710,7 @@ score(Score<TValue, BsTagList<BsProfileScoreCT, TModel, TCellDescriptor> > const
     }
     // TODO:   for pe reads: if right mate: we need to use seqErrorFreqs from complements, since read was projected on rev.compl. strand
     // other freqs are the same
-	return  ((std::log10(sc) > -10)? std::log10(sc):-10);
+    return  ((std::log10(sc) > -10)? std::log10(sc):-10);
 }
 
 // Top strand, rev. compl. of original (projected from reverse to forward strand)
@@ -733,7 +733,7 @@ score(Score<TValue, BsTagList<BsProfileScoreCTRight, TModel, TCellDescriptor> > 
     if (me.targetFreqs[position(entry1)][0] + me.targetFreqs[position(entry1)][1] +
         me.targetFreqs[position(entry1)][2] + me.targetFreqs[position(entry1)][3] < 0.001)     {
         TValue pseudoMinVal = 0; /* 0.00001/(value(entry1).count[0] + value(entry1).count[1] + value(entry1).count[2] + value(entry1).count[3] +
-	                                value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
+                                    value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
                                     value(entry1).count[10] + value(entry1).count[11] +
                                     1) ;    */                                  // Use count of gaps, the more reads, the lower the prob to insert
         sc = (pseudoMinVal/me.readBaseFreqs[(unsigned)value(entry2).count[0]]) * (1.0-e);           // prob. to insert gap into profile (pseudo, assume we observed one with low quality)
@@ -741,7 +741,7 @@ score(Score<TValue, BsTagList<BsProfileScoreCTRight, TModel, TCellDescriptor> > 
     }
     // TODO:   for pe reads: if right mate: we need to use seqErrorFreqs from complements, since read was projected on rev.compl. strand
     // other freqs are the same
-	return  ((std::log10(sc) > -10)? std::log10(sc):-10);
+    return  ((std::log10(sc) > -10)? std::log10(sc):-10);
 }
 
 
@@ -768,13 +768,13 @@ score(Score<TValue, BsTagList<BsProfileScoreGA, TModel, TCellDescriptor> > const
     if (me.targetFreqs[position(entry1)][0] + me.targetFreqs[position(entry1)][1] +
         me.targetFreqs[position(entry1)][2] + me.targetFreqs[position(entry1)][3] < 0.001)     {
         TValue pseudoMinVal = 0; /*0.00001/(value(entry1).count[0] + value(entry1).count[1] + value(entry1).count[2] + value(entry1).count[3] +
-	                                  value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
+                                      value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
                                       value(entry1).count[10] + value(entry1).count[11] +
                                       1) ;  */                                    // Use count of gaps, the more reads, the lower the prob to insert
         sc = (pseudoMinVal/me.readBaseFreqs[fCompl((int)value(entry2).count[0])]) * (1.0-e);           // prob. to insert gap into profile (pseudo, assume we observed one with low quality)
         sc += 1.0 * e * me.insErrorRate * me.insErrorFreqs[fCompl((int)value(entry2).count[0])];                         // 1 * e * seqError(- -> a)
     }
-	return  ((std::log10(sc) > -10)? std::log10(sc):-10);
+    return  ((std::log10(sc) > -10)? std::log10(sc):-10);
 }
 
 // Bottom strand, rev. compl. of original (forward strand)
@@ -800,13 +800,13 @@ score(Score<TValue, BsTagList<BsProfileScoreGARight, TModel, TCellDescriptor> > 
     if (me.targetFreqs[position(entry1)][0] + me.targetFreqs[position(entry1)][1] +
         me.targetFreqs[position(entry1)][2] + me.targetFreqs[position(entry1)][3] < 0.001)     {
         TValue pseudoMinVal = 0; /*0.00001/(value(entry1).count[0] + value(entry1).count[1] + value(entry1).count[2] + value(entry1).count[3] +
-	                                  value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
+                                      value(entry1).count[4] + value(entry1).count[5] + value(entry1).count[6] + value(entry1).count[7] +
                                       value(entry1).count[10] + value(entry1).count[11] +
                                       1) ;    */                                  // Use count of gaps, the more reads, the lower the prob to insert
         sc = (pseudoMinVal/me.readBaseFreqs[fCompl((int)value(entry2).count[0])]) * (1.0-e);           // prob. to insert gap into profile (pseudo, assume we observed one with low quality)
         sc += 1.0 * e * me.insErrorRate * me.insErrorFreqs[(unsigned)value(entry2).count[0]];                         // 1 * e * seqError(- -> a)
     }
-	return  ((std::log10(sc) > -10)? std::log10(sc):-10);
+    return  ((std::log10(sc) > -10)? std::log10(sc):-10);
 
 }
 
@@ -817,21 +817,21 @@ score(Score<TValue, BsTagList<BsProfileScoreRef, TModel, TCellDescriptor> > cons
       ConsensusScoreSequenceEntry<TSeq2> const & entry2)    // Curr. read base
 {
     TValue sc = 0;
-	if (value(entry2).count[0] == ordValue(Dna5('A')))
+    if (value(entry2).count[0] == ordValue(Dna5('A')))
         sc = me.targetFreqs[position(entry1)][0];       // For the beginning: use profile value from non bs (regarding this ref. base) strand
-	else if (value(entry2).count[0] == ordValue(Dna5('C')))
+    else if (value(entry2).count[0] == ordValue(Dna5('C')))
         sc = me.targetFreqs[position(entry1)][5];
-	else if (value(entry2).count[0] == ordValue(Dna5('G')))
+    else if (value(entry2).count[0] == ordValue(Dna5('G')))
         sc = me.targetFreqs[position(entry1)][2];
-	else if (value(entry2).count[0] == ordValue(Dna5('T')))
+    else if (value(entry2).count[0] == ordValue(Dna5('T')))
         sc = me.targetFreqs[position(entry1)][7];
 
-	else if (value(entry2).count[0] == ordValue(Dna5('N')))
+    else if (value(entry2).count[0] == ordValue(Dna5('N')))
         sc = 1.0/4.0;   // ?
 
     sc = sc/me.refBaseFreqs[(unsigned)value(entry2).count[0]];
 
-	return  ((std::log10(sc) > -10)? std::log10(sc):-10);
+    return  ((std::log10(sc) > -10)? std::log10(sc):-10);
 }
 
 

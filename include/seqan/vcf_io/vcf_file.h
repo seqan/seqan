@@ -124,7 +124,7 @@ unsigned char const MagicHeader<Bcf, T>::VALUE[5] = { 'B', 'C', 'F', '\2', '\1' 
 template <typename T>
 struct FileExtensions<Vcf, T>
 {
-    static char const * VALUE[1];	// default is one extension
+    static char const * VALUE[1];    // default is one extension
 };
 
 template <typename T>
@@ -136,7 +136,7 @@ char const * FileExtensions<Vcf, T>::VALUE[1] =
 template <typename T>
 struct FileExtensions<Bcf, T>
 {
-    static char const * VALUE[1];	// default is one extension
+    static char const * VALUE[1];    // default is one extension
 };
 
 template <typename T>
