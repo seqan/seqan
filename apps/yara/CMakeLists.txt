@@ -52,6 +52,8 @@ endif (NOT SEQAN_HAS_BZIP2)
 # App-Level Configuration
 # ----------------------------------------------------------------------------
 
+set (SEQAN_APP_VERSION "0.9.3")
+
 option (YARA_LARGE_CONTIGS "Set to ON to enable support for more than 32k contigs or contigs longer than 4Gbp." OFF)
 if (YARA_LARGE_CONTIGS)
   add_definitions (-DYARA_LARGE_CONTIGS=1)
@@ -98,6 +100,7 @@ add_definitions (${SEQAN_DEFINITIONS})
 # Add definitions set by the build system.
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
 add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
+add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
