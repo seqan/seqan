@@ -475,21 +475,14 @@ endmacro (seqan_get_version)
 # ---------------------------------------------------------------------------
 # Function seqan_get_repository_info()
 #
-# Sets the variables SEQAN_DATE and SEQAN_REVISION determined from the git or
-# svn repository.
+# Sets the variables SEQAN_DATE and SEQAN_REVISION determined from git.
 # ---------------------------------------------------------------------------
 
 macro (seqan_get_repository_info)
-  set (_SEQAN_SVN_DIR "${CMAKE_SOURCE_DIR}/.svn")
   set (_SEQAN_GIT_DIR "${CMAKE_SOURCE_DIR}/.git")
 
-  # Get SVN or Git information.
-  if (EXISTS ${_SEQAN_SVN_DIR})
-    find_package (Subversion QUIET)
-    if (Subversion_FOUND)
-      Subversion_WC_INFO (${CMAKE_SOURCE_DIR} _SEQAN)
-    endif ()
-  elseif (EXISTS ${_SEQAN_GIT_DIR})
+  # Get Git information.
+  if (EXISTS ${_SEQAN_GIT_DIR})
     find_package (GitInfo QUIET)
     if (GIT_FOUND)
       GIT_WC_INFO (${CMAKE_SOURCE_DIR} _SEQAN)
