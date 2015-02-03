@@ -44,7 +44,7 @@ template<typename TScoreValue,typename TStringSet,typename TAlign,typename TValu
 TScoreValue
 _getRefinedMatchScore(TScoreValue const &, TStringSet const &, TAlign const &, TValue, TValue, TSize, TSize)
 {
-	return 1;
+    return 1;
 }
 
 }  // namespace seqan

@@ -114,11 +114,11 @@ template <typename TString> struct ForAllNeedlesFunctor {
 template <typename TString>struct ForAllHaystacksFunctor {
     size_t needle_len_min;
     size_t needle_len_max;
-    
+
     ForAllHaystacksFunctor(size_t needle_len_min_, size_t needle_len_max_)
             : needle_len_min(needle_len_min_),
               needle_len_max(needle_len_max_) {}
-              
+
     void operator()(TString &haystack) {
         std::cout << "Haystack == " << haystack << std::endl;
         TString needle;

@@ -60,7 +60,7 @@ void write(TTarget & target,
     // Create text of header.
     for (unsigned i = 0; i < length(header); ++i)
         write(context.buffer, header[i], context, Sam());
-    
+
     // Note that we do not write out a null-character to terminate the header.  This would be valid by the SAM standard
     // but the samtools do not expect this and write out the '\0' when converting from BAM to SAM.
     // appendValue(context.buffer, '\0');

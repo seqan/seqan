@@ -295,7 +295,7 @@ inline void _readUntil(TTarget &target,
                 advanceChunk(target, optr - ochunk.begin); // extend target string size
                 return;
             }
-            
+
             if (SEQAN_UNLIKELY(ignoreFunctor(*iptr)))
                 continue;
 
@@ -611,17 +611,17 @@ inline void
 strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence, TFunctor const &sep, bool allowEmptyStrings, TSize maxSplit)
 {
     typedef typename Iterator<TSequence const, Standard>::Type TIter;
-    
+
     TIter itBeg = begin(sequence, Standard());
     TIter itEnd = end(sequence, Standard());
     TIter itFrom = itBeg;
-    
+
     if (maxSplit == 0)
     {
         appendValue(result, sequence);
         return;
     }
-    
+
     for (TIter it = itBeg; it != itEnd; ++it)
         if (sep(getValue(it)))
         {
@@ -637,16 +637,16 @@ strSplit(StringSet<TString, TSpec> & result, TSequence const &sequence, TFunctor
                     }
                     else
                         ++it;
-                    
+
                     if (it != itEnd)
                         appendValue(result, infix(sequence, it - itBeg, itEnd - itBeg));
-                    
+
                     return;
                 }
             }
             itFrom = it + 1;
         }
-    
+
     if (allowEmptyStrings || itFrom != itEnd)
         appendValue(result, infix(sequence, itFrom - itBeg, itEnd - itBeg));
 }

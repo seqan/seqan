@@ -61,13 +61,13 @@ struct NameStoreLess_
 
     TNameStore *nameStore;
     TName *name;
-    
+
     NameStoreLess_() {}
 
     NameStoreLess_(TNameStore &_nameStore, TName &_name):
         nameStore(&_nameStore),
         name(&_name) {}
-    
+
     template <typename TId>
     inline bool operator() (TId a, TId b) const
     {
@@ -148,7 +148,7 @@ public:
     typedef typename Position<TNameStore>::Type TId;
     typedef NameStoreLess_<TNameStore, TName> TLess;
     typedef std::set<TId, TLess> TSet;
-    
+
     TSet nameSet;
     // TODO(holtgrew): Mutable here necessary for conceptual const-ness.  However, we would rather have a thread-safe interface!
     TName mutable name;
@@ -333,7 +333,7 @@ template <typename TPos, typename TNameStore, typename TName>
 bool getIdByName(TPos & pos, TNameStore const & nameStore, TName const & name)
 {
     typedef typename Iterator<TNameStore const, Standard>::Type TNameStoreIter;
-    
+
     // Iterator over read names
     for (TNameStoreIter iter = begin(nameStore, Standard()); iter != end(nameStore, Standard()); ++iter)
     {
@@ -370,7 +370,7 @@ getIdByName(TPos & pos, NameStoreCache<TCNameStore, TCName> const & context, TNa
         context.name = name;
         it = set.find(maxValue<TId>());
     }
-    
+
     if (it != set.end())
     {
         pos = *it;

@@ -92,7 +92,7 @@ typedef Tag<NameStoreCacheMember_> NameStoreCacheMember;
 
 struct LengthStoreMember_;
 typedef Tag<LengthStoreMember_> LengthStoreMember;
- 
+
 // ============================================================================
 // Classes
 // ============================================================================
@@ -206,7 +206,7 @@ public:
 // ----------------------------------------------------------------------------
 
 template <typename TNameStore, typename TNameStoreCache, typename TStorageSpec>
-struct Member<BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>, 
+struct Member<BamIOContext<TNameStore, TNameStoreCache, TStorageSpec>,
               NameStoreMember>
 {
     typedef TNameStore Type;

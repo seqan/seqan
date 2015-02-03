@@ -87,19 +87,19 @@ struct Atomic
  * @fn AtomicPrimitives#atomicInc
  * @headerfile <seqan/parallel.h>
  * @brief Atomically increment an integer.
- * 
+ *
  * @signature TResult atomicInc(x);
- * 
+ *
  * @param[in,out] x An integer, by reference.
- * 
+ *
  * @return TResult The old value of $x$, <tt>TResult</tt> has the same type as <tt>x</tt>.
- * 
+ *
  * @section Remarks
- * 
+ *
  * This is equivalent to an atomic <tt>++x</tt>.
- * 
+ *
  * Note that atomic increments are limited to 32 bit and 64 bit with MSVC (64 bit is only available on 64 bit Windows).
- * 
+ *
  * You are responsible for correctly aligning <tt>x</tt> such that the atomic increment works on the hardware you
  * target.
  */
@@ -108,19 +108,19 @@ struct Atomic
  * @fn AtomicPrimitives#atomicDec
  * @headerfile <seqan/parallel.h>
  * @brief Atomically decrement an integer.
- * 
+ *
  * @signature TResult atomicDec(x);
- * 
+ *
  * @param[in,out] x An integer, by reference.
- * 
+ *
  * @return TResult The old value of $x$, <tt>TResult</tt> has the same type as <tt>x</tt>.
- * 
+ *
  * @section Remarks
- * 
+ *
  * This is equivalent to an atomic <tt>--x</tt>.
- * 
+ *
  * Note that atomic decrements are limited to 32 bit and 64 bit with MSVC (64 bit is only available on 64 bit Windows).
- * 
+ *
  * You are responsible for correctly aligning <tt>x</tt> such that the atomic decrement works on the hardware you
  * target.
  */
@@ -129,21 +129,21 @@ struct Atomic
  * @fn AtomicPrimitives#atomicAdd
  * @headerfile <seqan/parallel.h>
  * @brief Atomically add an integer to another integer.
- * 
+ *
  * @signature TResult atomicAdd(x, y)
- * 
+ *
  * @param[in,out] x Integer, by reference.
  * @param[in]     y Integer to add to <tt>x</tt>.
- * 
+ *
  * @return TResult The old value of <tt>x</tt>.
- * 
+ *
  * @section Remarks
- * 
+ *
  * This is equivalent to an atomic <tt>x += y</tt>.
- * 
+ *
  * Note that atomic fetch-and-add is limited to 32 bit and 64 bit with MSVC (64 bit is only available on 64 bit
  * Windows).
- * 
+ *
  * You are responsible for correctly aligning <tt>x</tt> such that the atomic increment works on the hardware you
  * target.
  */
@@ -152,23 +152,23 @@ struct Atomic
  * @fn AtomicPrimitives#atomicOr
  * @headerfile <seqan/parallel.h>
  * @brief Atomically combine two integers with <tt>OR</tt> operation.
- * 
+ *
  * @signature TResult atomicOr(x, y);
- * 
+ *
  * @param[in,out] x Integer, by reference.
  * @param[in]     y Integer to combine with <tt>OR</tt> operation.
- * 
+ *
  * @return TResult The old value of <tt>x</tt>, <tt>TResult</tt> is the type of <tt>x</tt>.
- * 
+ *
  * @section Remarks
- * 
+ *
  * This is equivalent to an atomic <tt>x |= y</tt>.
- * 
+ *
  * Atomic fetch-and-or for 64 bit integers is only available on 64 bit processors when targeting Intel.
- * 
+ *
  * Atomic fetch-and-or does not work in VS8 on 64 bit Windows, you can only use <tt>atomicOr()</tt> portably on 32 and
  * 64 bit integers.
- * 
+ *
  * You are responsible for correctly aligning <tt>x</tt> such that the atomic increment works on the hardware you
  * target.
  */
@@ -177,23 +177,23 @@ struct Atomic
  * @fn AtomicPrimitives#atomicXor
  * @headerfile <seqan/parallel.h>
  * @brief Atomically combine two integers with <tt>XOR</tt> operation.
- * 
+ *
  * @signature TResult atomicXor(x, y);
- * 
+ *
  * @param[in,out] x Integer, by reference.
  * @param[in]     y Integer to combine with <tt>XOR</tt> operation.
- * 
+ *
  * @return TResult The old value of <tt>x</tt>, <tt>TResult</tt> is the type of <tt>x</tt>.
- * 
+ *
  * @section Remarks
- * 
+ *
  * This is equivalent to an atomic <tt>x ^= y</tt>.
- * 
+ *
  * Atomic fetch-and-xor fxor 64 bit integers is only available on 64 bit processxors when targeting Intel.
- * 
+ *
  * Atomic fetch-and-xor does not wxork in VS8 on 64 bit Windows, you can only use <tt>atomicXor()</tt> pxortably on 32 and
  * 64 bit integers.
- * 
+ *
  * You are responsible fxor cxorrectly aligning <tt>x</tt> such that the atomic increment wxorks on the hardware you
  * target.
  */
@@ -202,19 +202,19 @@ struct Atomic
  * @fn AtomicPrimitives#atomicCas
  * @headerfile <seqan/parallel.h>
  * @brief Atomic ompare-and-Swap operation.
- * 
+ *
  * @signature TResult atomicCas(x, cmp, y)
- * 
+ *
  * @param[in,out] x   Pointer to the integer to swap.
  * @param[in,out] cmp Value to compare <tt>x</tt> with.
  * @param[in]     y   Value to set <tt>x</tt> to if it is equal to <tt>cmp</tt>.
  *
  * @return TResult Returns the original value of x.
- * 
+ *
  * @section Remarks
- * 
+ *
  * The pseudo code for this is as follows:
- * 
+ *
  * @code{.cpp}
  * atomic {
  *     T val = *(&x);
@@ -223,9 +223,9 @@ struct Atomic
  *     return val;
  * }
  * @endcode
- * 
+ *
  * On Windows, atomic CAS is only available for 16, 32, and 64 bit integers, 64 bit is only available on 64 bit Windows.
- * 
+ *
  * You are responsible for correctly aligning <tt>x</tt> such that the atomic increment works on the hardware you
  * target.
  */
@@ -307,9 +307,9 @@ inline T atomicCas(T volatile &x, S cmp, U y) { return _atomicCas(x, ConstInt<si
 template <typename T, typename S, typename U>
 inline bool atomicCasBool(T volatile &x, S cmp, U y) { return _atomicCas(x, ConstInt<sizeof(T)>(), cmp, y) == cmp; }
 
-template <typename T> 
+template <typename T>
 inline T atomicPostInc(T volatile & x) { return atomicInc(x) - 1; }
-template <typename T> 
+template <typename T>
 inline T atomicPostDec(T volatile & x) { return atomicDec(x) + 1; }
 
 

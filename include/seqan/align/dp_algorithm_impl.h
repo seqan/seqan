@@ -315,7 +315,7 @@ _computeTrack(TDPScout & scout,
                  previousCellVertical(dpScoreMatrixNavigator), seqHValue, seqVValue, scoringScheme,
                  TColumnDescriptor(), FirstCell(), TDPProfile());
 //    std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << " \t";
-//	std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << "(" << _horizontalScoreOfCell(value(dpScoreMatrixNavigator)) << "," << _verticalScoreOfCell(value(dpScoreMatrixNavigator)) << ")" << " \t";
+//    std::cerr << _scoreOfCell(value(dpScoreMatrixNavigator)) << "(" << _horizontalScoreOfCell(value(dpScoreMatrixNavigator)) << "," << _verticalScoreOfCell(value(dpScoreMatrixNavigator)) << ")" << " \t";
 
     TSeqVIterator iter = seqBegin;
     TSeqVIterator itEnd = (seqEnd - 1);
@@ -350,8 +350,8 @@ _computeTrack(TDPScout & scout,
 
 // TODO(rmaerker): Debug code!
 //template <typename TDPScout, typename TDPScoreMatrixNavigator, typename TDPTraceMatrixNavigator, typename TSeqHValue,
-//			typename TSeqVValue, typename TSeqVIterator, typename TScoringScheme, typename TDPProfile,
-//			typename TColumnDescriptor>
+//            typename TSeqVValue, typename TSeqVIterator, typename TScoringScheme, typename TDPProfile,
+//            typename TColumnDescriptor>
 //inline void
 //_computeTrack(TDPScout & scout,
 //              TDPScoreMatrixNavigator & dpScoreMatrixNavigator,
@@ -372,52 +372,52 @@ _computeTrack(TDPScout & scout,
 //    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), FirstCell());
 //
 //    // Compute the first cell.
-//	_computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-//			previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-//			previousCellVertical(dpScoreMatrixNavigator), seqHValue, seqVValue, scoringScheme,
-//			TColumnDescriptor(), FirstCell(), TDPProfile());
-//	// TODO(rmaerker): remove debug code
-////	std::cout << _scoreOfCell(value(dpScoreMatrixNavigator)) << "\t";
-//	std::stringstream stream;
-//	stream << _scoreOfCell(value(dpScoreMatrixNavigator));
-////	stream << col + row;
-//	testMatrix[col + row] = stream.str();
-//	++row;
+//    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
+//            previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
+//            previousCellVertical(dpScoreMatrixNavigator), seqHValue, seqVValue, scoringScheme,
+//            TColumnDescriptor(), FirstCell(), TDPProfile());
+//    // TODO(rmaerker): remove debug code
+////    std::cout << _scoreOfCell(value(dpScoreMatrixNavigator)) << "\t";
+//    std::stringstream stream;
+//    stream << _scoreOfCell(value(dpScoreMatrixNavigator));
+////    stream << col + row;
+//    testMatrix[col + row] = stream.str();
+//    ++row;
 //
-//	TSeqVIterator iter = seqBegin;
-//	TSeqVIterator itEnd = (seqEnd - 1);
-//	// Compute the inner cells of the current track.
+//    TSeqVIterator iter = seqBegin;
+//    TSeqVIterator itEnd = (seqEnd - 1);
+//    // Compute the inner cells of the current track.
 //    for (; iter != itEnd; ++iter, ++row)  // He will out of scope....
 //    {
 //      // Set the iterator to the next cell within the track.
 //      _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), InnerCell());
 //      _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), InnerCell());
 //      // Compute the inner cell.
-//		_computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-//				previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-//				previousCellVertical(dpScoreMatrixNavigator), seqHValue, value(iter), scoringScheme,
-//				TColumnDescriptor(), InnerCell(), TDPProfile());
-//		// TODO(rmaerker): remove debug code
-////		std::cout << _scoreOfCell(value(dpScoreMatrixNavigator)) << "\t";
-//		stream.str("");
-//		stream << _scoreOfCell(value(dpScoreMatrixNavigator));
-////		stream << col + row;
-//		testMatrix[col + row] = stream.str();
+//        _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
+//                previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
+//                previousCellVertical(dpScoreMatrixNavigator), seqHValue, value(iter), scoringScheme,
+//                TColumnDescriptor(), InnerCell(), TDPProfile());
+//        // TODO(rmaerker): remove debug code
+////        std::cout << _scoreOfCell(value(dpScoreMatrixNavigator)) << "\t";
+//        stream.str("");
+//        stream << _scoreOfCell(value(dpScoreMatrixNavigator));
+////        stream << col + row;
+//        testMatrix[col + row] = stream.str();
 //    }
 //    // Set the iterator to the last cell of the track.
-//	_goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), LastCell());
-//	_goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), LastCell());
-//	// Compute the last cell.
-//	_computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
-//			previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
-//			previousCellVertical(dpScoreMatrixNavigator), seqHValue, value(iter), scoringScheme,
-//			TColumnDescriptor(), LastCell(), TDPProfile());
-//	// TODO(rmaerker): remove debug code
-////	std::cout << _scoreOfCell(value(dpScoreMatrixNavigator)) << "\n";
-//	stream.str("");
-//		stream << _scoreOfCell(value(dpScoreMatrixNavigator));
-////		stream << col + row;
-//	testMatrix[col + row] = stream.str();
+//    _goNextCell(dpScoreMatrixNavigator, TColumnDescriptor(), LastCell());
+//    _goNextCell(dpTraceMatrixNavigator, TColumnDescriptor(), LastCell());
+//    // Compute the last cell.
+//    _computeCell(scout, dpTraceMatrixNavigator, value(dpScoreMatrixNavigator),
+//            previousCellDiagonal(dpScoreMatrixNavigator), previousCellHorizontal(dpScoreMatrixNavigator),
+//            previousCellVertical(dpScoreMatrixNavigator), seqHValue, value(iter), scoringScheme,
+//            TColumnDescriptor(), LastCell(), TDPProfile());
+//    // TODO(rmaerker): remove debug code
+////    std::cout << _scoreOfCell(value(dpScoreMatrixNavigator)) << "\n";
+//    stream.str("");
+//        stream << _scoreOfCell(value(dpScoreMatrixNavigator));
+////        stream << col + row;
+//    testMatrix[col + row] = stream.str();
 //}
 
 // ----------------------------------------------------------------------------

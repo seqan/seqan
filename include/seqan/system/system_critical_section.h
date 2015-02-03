@@ -56,7 +56,7 @@ struct CriticalSection
         DeleteCriticalSection(&data_cs);
     }
 };
-    
+
 #else
 
 struct CriticalSection

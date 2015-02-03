@@ -87,7 +87,7 @@ void testStreamEof(TStream & stream, bool checkTell = true)
     typename DirectionIterator<TStream, Output>::Type iter = directionIterator(stream, Output());
 
     const char buffer[] = "This is a test.";
-    
+
     SEQAN_ASSERT_NOT(atEnd(iter));
     char c;
     for (int i = 0; i < 15; ++i)

@@ -47,12 +47,12 @@ SEQAN_DEFINE_TEST(test_bam_io_sam_write_header)
     typedef typename BamHeaderRecord::TTag    TTag;
 
     // Prepare input.
-    
+
     StringSet<CharString> contigNameStore;
     appendValue(contigNameStore, "REF");
     NameStoreCache<StringSet<CharString> > contigNameStoreCache(contigNameStore);
     BamIOContext<StringSet<CharString> > bamIOContext(contigNameStore, contigNameStoreCache);
-    
+
     BamHeader header;
     appendValue(contigLengths(bamIOContext), 10000);
 

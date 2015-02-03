@@ -47,12 +47,12 @@ namespace SEQAN_NAMESPACE_MAIN {
  * @extends Pattern
  * @headerfile <seqan/find.h>
  * @brief A brute force online searching algorithm for approximate string matching with hamming distance.
- * 
+ *
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, HammingSimple>;
- * 
+ *
  * @tparam TNeedle The needle type. Types: String
- * 
+ *
  * This specialization should only be used if no other is applicable or for verification purposes.
  */
 
@@ -109,7 +109,7 @@ inline void _patternMatchNOfFinder(Pattern<TNeedle, HammingSimple> & pattern, bo
 
 
 template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, HammingSimple> & me, 
+void setHost (Pattern<TNeedle, HammingSimple> & me,
               const TNeedle2 & needle, int k) {
     SEQAN_CHECKPOINT;
 
@@ -195,7 +195,7 @@ inline bool _findHammingSimpleCharsEqual(Dna5Q const & a, Dna5Q const & b, Patte
 
 
 template <typename TFinder, typename TNeedle>
-inline bool find(TFinder &finder, 
+inline bool find(TFinder &finder,
                  Pattern<TNeedle, HammingSimple> &me,
                  int minScore) {
     SEQAN_CHECKPOINT;
@@ -265,11 +265,11 @@ inline bool find(TFinder &finder,
 
     _setFinderEnd(finder, i + length(ndl));
     setPosition(finder, beginPosition(finder));
-    return true; 
+    return true;
 }
 
 template <typename TFinder, typename TNeedle>
-inline bool find(TFinder &finder, 
+inline bool find(TFinder &finder,
                  Pattern<TNeedle, HammingSimple> &me)
 {
     return find(finder, me, -me.maxDistance);

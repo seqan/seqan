@@ -242,7 +242,7 @@ _adaptTraceSegmentsTo(String<Fragment<TSize, TFragmentSpec>, TStringSpec> & matc
 }
 
 // ----------------------------------------------------------------------------
-// Function _adaptTraceSegmentsTo()						     [VertexDescriptor]
+// Function _adaptTraceSegmentsTo()                             [VertexDescriptor]
 // ----------------------------------------------------------------------------
 
 //// TODO (rmaerker): Check if we really need this!

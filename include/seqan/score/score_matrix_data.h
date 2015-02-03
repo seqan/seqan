@@ -496,15 +496,15 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam40> {
 
     static inline int const * getData() {
         SEQAN_CHECKPOINT;
-        // 
+        //
         // This matrix was produced by "pam" Version 1.0.6 [28-Jul-93]
-        // 
+        //
         // PAM 40 substitution matrix, scale = ln(2)/2 = 0.346574
-        // 
+        //
         // Expected score = -4.27, Entropy = 2.26 bits
-        // 
+        //
         // Lowest score = -15, Highest score = 13
-        // 
+        //
         static int const _data[TAB_SIZE] = {
              6,  -3,  -6,  -3,  -2,  -7,  -1,  -6,  -4,  -5,  -6,  -5,  -4,  -3,  -1,  -3,  -6,   0,   0,  -3,  -2, -12,  -7,  -2,  -3, -15,
             -3,   6, -11,   6,   2,  -9,  -2,  -1,  -5,  -7,  -2,  -8,  -8,   6,  -6,  -2,  -6,  -1,  -2,  -4,  -7,  -9,  -6,   1,  -4, -15,
@@ -592,13 +592,13 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam120> {
     static inline int const * getData() {
         SEQAN_CHECKPOINT;
         // This matrix was produced by "pam" Version 1.0.6 [28-Jul-93]
-        // 
+        //
         // PAM 120 substitution matrix, scale = ln(2)/2 = 0.346574
-        // 
+        //
         // Expected score = -1.64, Entropy = 0.979 bits
-        // 
+        //
         // Lowest score = -8, Highest score = 12
-        // 
+        //
         static int const _data[TAB_SIZE] = {
              3,  0, -3,  0,  0, -4,  1, -3, -1, -2, -2, -3, -2, -1,  1, -1, -3,  1,  1, -1,  0, -7, -4, -1, -1, -8,
              0,  4, -6,  4,  3, -5,  0,  1, -3, -4,  0, -4, -4,  3, -2,  0, -2,  0,  0, -1, -3, -6, -3,  2, -1, -8,
@@ -686,13 +686,13 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam200> {
     static inline int const * getData() {
         SEQAN_CHECKPOINT;
         // This matrix was produced by "pam" Version 1.0.6 [28-Jul-93]
-        // 
+        //
         // PAM 200 substitution matrix, scale = ln(2)/3 = 0.231049
-        // 
+        //
         // Expected score = -1.23, Entropy = 0.507 bits
-        // 
+        //
         // Lowest score = -9, Highest score = 18
-        // 
+        //
         static int const _data[TAB_SIZE] = {
              3,  0, -3,  0,  0, -4,  1, -2, -1, -2, -2, -2, -2,  0,  1, -1, -2,  1,  1,  0,  0, -7, -4,  0,  0, -9,
              0,  3, -5,  4,  3, -6,  0,  1, -3, -4,  0, -4, -3,  3, -1,  1, -1,  1,  0, -1, -3, -6, -4,  2, -1, -9,
@@ -780,13 +780,13 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecPam250> {
     static inline int const * getData() {
         SEQAN_CHECKPOINT;
         // This matrix was produced by "pam" Version 1.0.6 [28-Jul-93]
-        // 
+        //
         // PAM 250 substitution matrix, scale = ln(2)/3 = 0.231049
-        // 
+        //
         // Expected score = -0.844, Entropy = 0.354 bits
-        // 
+        //
         // Lowest score = -8, Highest score = 17
-        // 
+        //
         static int const _data[TAB_SIZE] = {
              2,  0, -2,  0,  0, -3,  1, -1, -1, -2, -1, -2, -1,  0,  1,  0, -2,  1,  1,  0,  0, -6, -3,  0,  0, -8,
              0,  3, -4,  3,  3, -4,  0,  1, -2, -3,  1, -3, -2,  2, -1,  1, -1,  0,  0, -1, -2, -5, -3,  2, -1, -8,
@@ -856,7 +856,7 @@ typedef Vtml200_ ScoreSpecVtml200;
  * Z  -1  1 -4  2  4 -4 -2  1 -3 -3  2 -3 -2  1 -1  4  0  0 -1 -1 -3 -6 -3  4
  * X  -1 -1 -1 -2 -1 -1 -2  0 -1 -1 -1 -1 -1 -1 -2 -1 -1 -1 -1 -1 -1 -2 -1 -1 -1
  * *  -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6 -6  1
- * 
+ *
  *     A  B  C  D  E  F  G  H  I  J  K  L  M  N  P  Q  R  S  T  U  V  W  Y  Z  X  *
  * @endcode
  */
@@ -874,28 +874,28 @@ struct ScoringMatrixData_<int, AminoAcid, ScoreSpecVtml200> {
     static inline int const * getData() {
         SEQAN_CHECKPOINT;
         // VTML200
-        // 
+        //
         // This matrix was produced by scripts written by
         // Kai Kneutgen and Tobias Mueller [Mai-2002]
-        // 
+        //
         // VTML200  substitution matrix, Units = Third-Bits
-        // 
+        //
         // Expected Score = -1.038 Third-Bits
         // Lowest Score   = -6.432
         // Highest Score  = 15.127
         // Entropy H      = 0.420 Bits
-        // 
-        // 
+        //
+        //
         // For further information on the VTML substitution model, see
-        // 
+        //
         // Estimating Amino Acid Substitution Models:
         // A Comparison of Dayhoff's Estimator, the Resolvent Approach and a Maximum Likelihood Method.
         // T. Mueller, R. Spang and M. Vingron
         // Mol Biol Evol 19(1): 8-13. 2002.
-        // 
+        //
         // or mail to
         // Tobias.Mueller@molgen.mpg.de
-        // 
+        //
         // The latest version of this perl script can be downloaded at
         // http://www.molgen.mpg.de/~muelle_t
         static int const _data[TAB_SIZE] = {

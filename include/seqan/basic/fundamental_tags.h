@@ -58,33 +58,33 @@ namespace seqan {
  * @class Tag
  * @headerfile <seqan/basic.h>
  * @brief Template for tag definition.
- * 
+ *
  * @signature template <typename T>
  *            struct Tag;
  *
  * @tparam T Any parameterless types.
- * 
+ *
  * This <tt>struct</tt> is defined such that parameter less tags are easier recognizeable.  This is best explained with
  * the example below.
- * 
+ *
  * @section Examples
- * 
+ *
  * Usually, tags are defined in the following way.
- * 
+ *
  * @code{.cpp}
  * struct SomeTag_;
  * typedef Tag<SomeTag_> SomeTag;
  * @endcode
  *
  * They are then used as follows.
- * 
+ *
  * @code{.cpp}
  * template <typename T>
  * void f(T const & x, SomeTag const & tag)
  * {
  *     // ...
  * }
- *  
+ *
  * // Somewhere else:
  * f(3, SomeTag());
  * @endcode
@@ -149,13 +149,13 @@ typedef Tag<Raw_> Raw;
  * @brief Switch to force move.
  *
  * @signature typedef Tag<Move_> Move;
- * 
+ *
  * The difference between move constructor and copy constructor is that the source object is not copied but moved into
  * the target object.  The source object can lose its content and will be empty after this operation in this case.  A
  * move constructor can sigificantly faster than a copy constructor.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * String source("hello");
  * String target(source, Move()); // source is moved to target
@@ -164,16 +164,16 @@ typedef Tag<Raw_> Raw;
  * @endcode
  *
  * Move constructors are like copy-constructors.  However, their argument is not const.
- * 
+ *
  * @code{.cpp}
  * class Klass
  * {
  * public:
  *     seqan::String m;
- *  
+ *
  *     // Copy constructor, other is left untouched.
  *     Klass(Klass const & other) { ... }
- *  
+ *
  *     // Move constructor, leaves other and its members in an "empty" state.
  *     Klass(Klass & other, seqan::Move const &) { ... }
  * };
@@ -252,10 +252,10 @@ struct TagList
  * @class TagSelector
  * @headerfile <seqan/basic.h>
  * @brief A structure to select a tag from a @link TagList @endlink.
- * 
+ *
  * @signature template <typename TTagList>
  *            struct TagSelector;
- * 
+ *
  * @tparam TTagList A tag list.
  */
 
@@ -360,7 +360,7 @@ struct LevenshteinDistance_;
 
 typedef Tag<HammingDistance_>       HammingDistance;
 typedef Tag<LevenshteinDistance_>   LevenshteinDistance;
-typedef Tag<LevenshteinDistance_>   EditDistance; 
+typedef Tag<LevenshteinDistance_>   EditDistance;
 
 
 // ----------------------------------------------------------------------------
@@ -452,25 +452,25 @@ struct TagListValue<TagList<TTag, TSubList>, I>:
  * @mfn Find
  * @headerfile <seqan/basic.h>
  * @brief A metafunction to retrieve the index of a tag in the TagList.
- * 
+ *
  * @signature Find<TTagList, TSearchTag>::VALUE;
- * 
+ *
  * @tparam TSearchTag A tag to retrieve the index of.
  * @tparam TTagList   A tag list.
- * 
+ *
  * @return VALUE This meta-function can be used to test whether the value of a TagSelector equals a specific tag.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * AutoSeqFormat format;
  * if (format.tagId == Find<AutoSeqFormat, Fasta>::VALUE)
  * {
  *     // do something specific to Fasta format
  * }
- *  
+ *
  * // or even shorter:
- *  
+ *
  * if (isEqual(format.tagId, Fasta()))
  * {
  *     // do something specific to Fasta format

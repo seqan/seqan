@@ -41,30 +41,30 @@ namespace SEQAN_NAMESPACE_MAIN
 //namespace SEQAN_NAMESPACE_PIPELINING
 //{
 
-	struct CasterReinterpret;
-	struct CasterConvert;
-    
+    struct CasterReinterpret;
+    struct CasterConvert;
+
     template < typename TValue, typename TSpec = CasterReinterpret >
     struct Caster;
 
-	template < typename TInput, typename TValue, typename TSpec >
+    template < typename TInput, typename TValue, typename TSpec >
     struct Value< Pipe< TInput, Caster<TValue, TSpec> > > {
-		typedef TValue Type;
-	};
+        typedef TValue Type;
+    };
 
 /*!
  * @class Caster
  * @extends Pipe
  * @headerfile <seqan/pipe.h>
  * @brief Casts the input type in a specific output type.
- * 
+ *
  * @signature template <typename TInput, typename TValue[, typename TSpec]>
  *            class Pipe<TInput, Caster<TValue, TSpec> >;
- * 
+ *
  * @tparam TInput The type of the pipeline module this module reads from.
  * @tparam TValue The new output type.
  * @tparam TSpec  <tt>CasterReinterpret</tt> (default) or <tt>CasterConvert</tt>.
- * 
+ *
  * The input stream is casted using <tt>reinterpret_cast&lt;TValue&gt;</tt>.
  */
 
@@ -73,11 +73,11 @@ namespace SEQAN_NAMESPACE_MAIN
     template <typename TInput, typename TValue >
     struct Pipe< TInput, Caster<TValue, CasterReinterpret> >
     {
-		TInput      &in;
-        
+        TInput      &in;
+
         Pipe(TInput& _in):
             in(_in) {}
-        
+
         inline TValue const & operator*() const {
             return reinterpret_cast<TValue const &>(*in);
         }
@@ -86,16 +86,16 @@ namespace SEQAN_NAMESPACE_MAIN
             ++in;
             return *this;
         }
-	};
-    
+    };
+
     template <typename TInput, typename TValue >
     struct Pipe< TInput, Caster<TValue, CasterConvert> >
     {
-		TInput      &in;
-        
+        TInput      &in;
+
         Pipe(TInput& _in):
             in(_in) {}
-        
+
         inline TValue operator*() const {
             return TValue(*in);
         }
@@ -104,7 +104,7 @@ namespace SEQAN_NAMESPACE_MAIN
             ++in;
             return *this;
         }
-	};
+    };
 //}
 
 }

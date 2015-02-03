@@ -154,7 +154,7 @@ struct IfView
  * @fn TView view
  * @headerfile <seqan/basic.h>
  * @brief Returns the view of a given object.
- * 
+ *
  * @signature TView view(object);
  *
  * @param[in] object A generic object.
@@ -163,7 +163,7 @@ struct IfView
  * @see View
  * @see IsView
  */
- 
+
 template <typename TObject>
 inline typename View<TObject>::Type
 view(TObject & object)

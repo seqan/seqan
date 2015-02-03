@@ -125,14 +125,14 @@ namespace seqan
     };
 
     const char ProfileValueType_[] = {
-        SEQAN_PROTIME, 
-        SEQAN_PROTIME, 
-        SEQAN_PROINT + SEQAN_PROSTATE, 
+        SEQAN_PROTIME,
+        SEQAN_PROTIME,
+        SEQAN_PROINT + SEQAN_PROSTATE,
         SEQAN_PROINT,
         SEQAN_PROINT,
-        SEQAN_PROINT + SEQAN_PROSTATE, 
-        SEQAN_PROINT + SEQAN_PROSTATE, 
-        SEQAN_PROINT + SEQAN_PROSTATE, 
+        SEQAN_PROINT + SEQAN_PROSTATE,
+        SEQAN_PROINT + SEQAN_PROSTATE,
+        SEQAN_PROINT + SEQAN_PROSTATE,
         SEQAN_PROFLOAT,
         SEQAN_PROFLOAT,
         SEQAN_PROFLOAT + SEQAN_PROSTATE,
@@ -155,7 +155,7 @@ namespace seqan
         static ProfileTStates_  _proValue;
         static ProfileTTimes    _proLastUpdate;
         static int          _proExtraCount;
-        
+
         static clock_t      _proCpuTimeLast;            // clock_t wraps around every 72mins
         static ProfileInt_      _proCpuTimeOffset;          // we have to work around this
 
@@ -181,15 +181,15 @@ namespace seqan
  * @fn cpuTime
  * @headerfile <seqan/basic.h>
  * @brief Returns the cpu time in seconds.
- * 
+ *
  * @signature double cpuTime();
- * 
+ *
  * @return double CPU time stamp in seconds.
- * 
+ *
  * Calls <tt>clock</tt> to retrieve the processor time used by the running thread. This implies that the thread's
  * processor time does not tick if the thread is suspended. While this has its advantages, benchmarks should generally
  * focus on wall clock time, not processor time. Wall clock time is returned by sysTime.
- * 
+ *
  * @see sysTime
  */
 
@@ -210,28 +210,28 @@ namespace seqan
  * @fn sysTime
  * @headerfile <seqan/basic.h>
  * @brief Returns the system time in seconds.
- * 
+ *
  * @signature double sysTime();
- * 
+ *
  * @return double A <tt>double</tt>, system time stamp in seconds. Types: nolink:double
- * 
+ *
  * In contrast to @link cpuTime @endlink, the system time corresponds to the wall clock time under Linux and Mac OS X.
  * Under Windows sysTime returns the result of cpuTime.
- * 
+ *
  * Use this for benchmarking uner Linux and Mac Os X.
- * 
+ *
  * Calls <tt>clock_gettime</tt> under Linux and <tt>gettimeofday</tt> under Mac OS X.
- * 
+ *
  * @section Examples
- * 
+ *
  * We can use sysTime to instrument our code for profiling/timing information quite robustly. The following demonstrates
  * how the Function.sysTime is used in many SeqAn apps for collecting timing information.
- * 
+ *
  * @code{.cpp}
  * bool printTiming = true;
- *  
+ *
  * // ...
- *  
+ *
  * double startTime = sysTime();
  * // Do some complex calculation.
  * if (printTiming)
@@ -252,12 +252,12 @@ namespace seqan
             #define SEQAN_USE_CLOCKGETTIME
             #endif
         #endif
-        
+
         #ifndef SEQAN_USE_CLOCKGETTIME
         /* some systems e.g. darwin have no clock_gettime */
-        
+
             #include <sys/time.h>
-            
+
             inline _proFloat sysTime() {
                 struct timeval tp;
                 gettimeofday(&tp, NULL);
@@ -276,7 +276,7 @@ namespace seqan
 
     #endif
 
-    
+
     struct ProfileFile_ {
 //IOREV not generic, uses FILE* instead of File() and custom IO
 
@@ -284,7 +284,7 @@ namespace seqan
         bool   running;
 
         _proFloat dumpStep;            // 0 .. manual dump mode, >0 .. live stream
-        _proFloat dumpNext;        
+        _proFloat dumpNext;
 
         ProfileTStates_ all, last;
         std::string mark;
@@ -421,7 +421,7 @@ namespace seqan
                 dumpValue(stat, SEQAN_PROINDEXCOUNT - SEQAN_PROEXTRACOUNT + i);
             }
     }
-    
+
         inline void dumpMark() {
             if (!mark.empty()) {
                 dumpTab();
@@ -468,7 +468,7 @@ namespace seqan
                 }
             }
         }
-        
+
         inline void reset() {
             syncTime(last);
         }
@@ -481,7 +481,7 @@ namespace seqan
         }
 
     private:
-        
+
         bool bol;   // begin of line
     };
 
@@ -497,7 +497,7 @@ namespace seqan
     inline void _profileSet(int valNum, _proFloat value);
     inline void _profileAdd(int valNum, _proFloat value);
     inline void _profileSub(int valNum, _proFloat value);
-    
+
     // simple interface for external programs
     inline void *_profileMalloc(size_t size);
     inline void _profileFree(void *_ptr);
@@ -569,7 +569,7 @@ namespace seqan
         ProfileData_<>::_proLastUpdate[valNum] = now;
         _profileSignalDumpTest(now);
     }
-    
+
     // simple interface for external programs
     inline void *_profileMalloc(size_t size) {
 //IOREV _notio_

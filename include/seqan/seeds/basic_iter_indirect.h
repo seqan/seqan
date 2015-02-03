@@ -55,7 +55,7 @@ class Iter<TContainer, Indirect<TWrappedIter> >
 {
 public:
     TWrappedIter _wrappedIter;
-    
+
     Iter() : _wrappedIter(0)
     {}
 

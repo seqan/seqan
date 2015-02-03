@@ -70,7 +70,7 @@ inline TValue _intPow(TValue a, TExponent b)
         if (b & 1) ret *= a;
         a *= a;
         b >>= 1;
-    }   
+    }
     return ret;
 }
 
@@ -82,11 +82,11 @@ inline TValue _intPow(TValue a, TExponent b)
  * @fn log2
  * @headerfile <seqan/basic.h>
  * @brief Computes floored logarithm of base 2 for integer types
- * 
+ *
  * @signature unsigned log2(i);
- * 
+ *
  * @param[in] i An integer type.
- * 
+ *
  * @return unsigned The largest integer smaller or equal than the logarithm of <tt>i</tt>.
  */
 

@@ -70,15 +70,15 @@ void IntervalTreeTest_Random(TValue minValue, TValue maxValue) {
     {
         TValue iBegin = (TValue)((double)rand()/((double)RAND_MAX+1) * (maxValue-minValue)) + minValue;
         TValue iEnd = (TValue)((double)rand()/((double)RAND_MAX+1) * (maxValue-minValue)) + minValue;
-		if(iEnd < iBegin)
-		{
-		     TValue tmp = iEnd;
-		     iEnd = iBegin;
-		     iBegin = tmp;
-		}
-		appendValue(intervalBegins,iBegin);
-		appendValue(intervalEnds,iEnd);
-		appendValue(intervalCargos,i);
+        if(iEnd < iBegin)
+        {
+             TValue tmp = iEnd;
+             iEnd = iBegin;
+             iBegin = tmp;
+        }
+        appendValue(intervalBegins,iBegin);
+        appendValue(intervalEnds,iEnd);
+        appendValue(intervalCargos,i);
     }
 
     // create interval tree
@@ -88,20 +88,20 @@ void IntervalTreeTest_Random(TValue minValue, TValue maxValue) {
     unsigned numQueries = rand() % 10 + 1;
     for(unsigned i = 0; i < numQueries; ++i)
     {
-		TValue query = (TValue)((double)rand()/((double)RAND_MAX+1) * (maxValue-minValue)) + minValue;
-		String<TCargo> itreeResult;
-		findIntervals(itreeResult,itree,query);
-		String<TCargo> naiveResult;
-		for(unsigned j = 0; j < numIntervals; ++j)
-		{
-		    if(intervalBegins[j] <= query && intervalEnds[j] > query)
-				appendValue(naiveResult,intervalCargos[j]);
-		}
-		std::sort(begin(itreeResult),end(itreeResult));
-		std::sort(begin(naiveResult),end(naiveResult));
-		SEQAN_ASSERT_EQ(length(itreeResult),length(naiveResult));
-		for(unsigned j = 0; j < length(naiveResult); ++j)
-			SEQAN_ASSERT_EQ(itreeResult[j],naiveResult[j]);
+        TValue query = (TValue)((double)rand()/((double)RAND_MAX+1) * (maxValue-minValue)) + minValue;
+        String<TCargo> itreeResult;
+        findIntervals(itreeResult,itree,query);
+        String<TCargo> naiveResult;
+        for(unsigned j = 0; j < numIntervals; ++j)
+        {
+            if(intervalBegins[j] <= query && intervalEnds[j] > query)
+                appendValue(naiveResult,intervalCargos[j]);
+        }
+        std::sort(begin(itreeResult),end(itreeResult));
+        std::sort(begin(naiveResult),end(naiveResult));
+        SEQAN_ASSERT_EQ(length(itreeResult),length(naiveResult));
+        for(unsigned j = 0; j < length(naiveResult); ++j)
+            SEQAN_ASSERT_EQ(itreeResult[j],naiveResult[j]);
     }
 }
 
@@ -257,7 +257,7 @@ void IntervalTreeTest_FindIntervalsIntervals() {
     // Define some types to test.
     typedef int                                     TCargo;
     typedef IntervalAndCargo<TValue, TCargo>        TInterval;
-    typedef IntervalTree<TValue, TCargo>			TIntervalTree;
+    typedef IntervalTree<TValue, TCargo>            TIntervalTree;
 
     // Constant test fixture data.
     const size_t kValuesLen = 10;
@@ -281,45 +281,45 @@ void IntervalTreeTest_FindIntervalsIntervals() {
 
     // Query for interval [10.0,20.0) and check for the expected result.
     {
-		String<TCargo> result;
-		findIntervals(result, itree, (TValue)10.0, (TValue)20.0);
+        String<TCargo> result;
+        findIntervals(result, itree, (TValue)10.0, (TValue)20.0);
 
-		// intervals 0, 1, 3, and 4 should be returned
-	    SEQAN_ASSERT_EQ(length(result), 4u);
+        // intervals 0, 1, 3, and 4 should be returned
+        SEQAN_ASSERT_EQ(length(result), 4u);
 
-		TCargo check = 0;
-		TCargo found = 100;
-		for(unsigned i = 0; i < length(result); ++i)
-		{
-			if(result[i]==check){ found = check; break;}
-		}
-        SEQAN_ASSERT(found == check);
-    
-		check = 1;
-		found = 100;
-		for(unsigned i = 0; i < length(result); ++i)
-		{
-			if(result[i]==check){ found = check; break;}
-		}
+        TCargo check = 0;
+        TCargo found = 100;
+        for(unsigned i = 0; i < length(result); ++i)
+        {
+            if(result[i]==check){ found = check; break;}
+        }
         SEQAN_ASSERT(found == check);
 
-		check = 3;
-		found = 100;
-		for(unsigned i = 0; i < length(result); ++i)
-		{
-			if(result[i]==check){ found = check; break;}
-		}
+        check = 1;
+        found = 100;
+        for(unsigned i = 0; i < length(result); ++i)
+        {
+            if(result[i]==check){ found = check; break;}
+        }
         SEQAN_ASSERT(found == check);
 
-		check = 4;
-		found = 100;
-		for(unsigned i = 0; i < length(result); ++i)
-		{
-			if(result[i]==check){ found = check; break;}
-		}
+        check = 3;
+        found = 100;
+        for(unsigned i = 0; i < length(result); ++i)
+        {
+            if(result[i]==check){ found = check; break;}
+        }
         SEQAN_ASSERT(found == check);
 
-	}
+        check = 4;
+        found = 100;
+        for(unsigned i = 0; i < length(result); ++i)
+        {
+            if(result[i]==check){ found = check; break;}
+        }
+        SEQAN_ASSERT(found == check);
+
+    }
 
 
 
@@ -650,7 +650,7 @@ SEQAN_DEFINE_TEST(Interval_Tree__IntervalTreeTest_QueryAtBoundary)
 {
     typedef IntervalAndCargo<int, double> TInterval;
     typedef String<TInterval, Alloc<Exact> > TIntervalList;
-    
+
     TIntervalList tmpL;
     appendValue(tmpL, TInterval(0,30,1.4));
     appendValue(tmpL, TInterval(30,40,2.2));

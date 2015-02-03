@@ -1225,7 +1225,7 @@ minLength(StringSet<TString, TSpec> const & me)
  */
 
 template <typename TString>
-inline typename LengthSum<TString>::Type 
+inline typename LengthSum<TString>::Type
 lengthSum(TString const & me)
 {
     return length(me);
@@ -1291,7 +1291,7 @@ resize(StringSet<TString, TSpec > & me, TSize new_size, Tag<TExpand> tag)
     //
     //        if (_validStringSetLimits(me))
     //            resize(me.limits, new_size + 1, back(me.limits), tag);
-    
+
     return resize(me.strings, new_size, tag);
 }
 

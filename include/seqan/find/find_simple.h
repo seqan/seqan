@@ -47,12 +47,12 @@ namespace SEQAN_NAMESPACE_MAIN
  * @extends Pattern
  * @headerfile <seqan/find.h>
  * @brief A brute force online searching algorithm.
- * 
+ *
  * @signature template <typename TNeedle>
  *            class Pattern<TNeedle, Simple>;
- * 
+ *
  * @tparam TNeedle The needle type.  Types: @link ContainerConcept @endlink.
- * 
+ *
  * This specialization should only be used if no other is applicable.
  */
 
@@ -62,31 +62,31 @@ template <typename TNeedle>
 class Pattern<TNeedle, Simple> {
 //____________________________________________________________________________
 public:
-	Holder<TNeedle> data_host;
+    Holder<TNeedle> data_host;
 
 //____________________________________________________________________________
 
-	Pattern() {}
+    Pattern() {}
 
-	Pattern(Pattern const & other):
-		data_host(other.data_host)
-	{
-	}
+    Pattern(Pattern const & other):
+        data_host(other.data_host)
+    {
+    }
 
-	template <typename TNeedle2>
-	Pattern(TNeedle2 const & ndl)
-	{
-		setHost(*this, ndl);
-	}
+    template <typename TNeedle2>
+    Pattern(TNeedle2 const & ndl)
+    {
+        setHost(*this, ndl);
+    }
 
-	~Pattern(){}
+    ~Pattern(){}
 
-	Pattern const & 
-	operator = (Pattern const & other)
-	{
-		data_host = other.data_host;
-		return *this;
-	}
+    Pattern const &
+    operator = (Pattern const & other)
+    {
+        data_host = other.data_host;
+        return *this;
+    }
 
 //____________________________________________________________________________
 };
@@ -97,16 +97,16 @@ public:
 //////////////////////////////////////////////////////////////////////////////
 
 template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, Simple> & me, 
-			  TNeedle2 & needle) 
+void setHost (Pattern<TNeedle, Simple> & me,
+              TNeedle2 & needle)
 {
-	setValue(me.data_host, needle);
+    setValue(me.data_host, needle);
 }
 template <typename TNeedle, typename TNeedle2>
-void setHost (Pattern<TNeedle, Simple> & me, 
-			  TNeedle2 const & needle) 
+void setHost (Pattern<TNeedle, Simple> & me,
+              TNeedle2 const & needle)
 {
-	setValue(me.data_host, needle);
+    setValue(me.data_host, needle);
 }
 
 //____________________________________________________________________________
@@ -114,43 +114,43 @@ void setHost (Pattern<TNeedle, Simple> & me,
 
 template <typename TFinder, typename TNeedle>
 inline bool find(TFinder & finder,
-				 Pattern<TNeedle, Simple> & me)
+                 Pattern<TNeedle, Simple> & me)
 {
-	typedef typename Haystack<TFinder>::Type THaystack;
-	typedef typename Parameter_<THaystack const>::Type TParamHaystack;
-	typedef typename Iterator<THaystack const, Standard>::Type THaystackIterator;
+    typedef typename Haystack<TFinder>::Type THaystack;
+    typedef typename Parameter_<THaystack const>::Type TParamHaystack;
+    typedef typename Iterator<THaystack const, Standard>::Type THaystackIterator;
 
-	if (empty(finder))
-	{
-		_setFinderLength(finder, length(needle(me)));
-		_finderSetNonEmpty(finder);
-	}
-	else ++finder;
+    if (empty(finder))
+    {
+        _setFinderLength(finder, length(needle(me)));
+        _finderSetNonEmpty(finder);
+    }
+    else ++finder;
 
-	TParamHaystack hstk = haystack(finder);
-	TNeedle const & ndl = needle(me);
+    TParamHaystack hstk = haystack(finder);
+    TNeedle const & ndl = needle(me);
 
-	THaystackIterator res = std::search(begin(hstk, Standard())+position(finder), end(hstk, Standard()), begin(ndl, Standard()), end(ndl, Standard()));
+    THaystackIterator res = std::search(begin(hstk, Standard())+position(finder), end(hstk, Standard()), begin(ndl, Standard()), end(ndl, Standard()));
 
-	if (res == end(hstk, Standard())) return false;
+    if (res == end(hstk, Standard())) return false;
 
-	_setFinderEnd(finder, (res - begin(hstk, Standard())) + length(ndl));
-	setPosition(finder, beginPosition(finder));
-	return true; 
+    _setFinderEnd(finder, (res - begin(hstk, Standard())) + length(ndl));
+    setPosition(finder, beginPosition(finder));
+    return true;
 
 /*
-	TSize n = length(hstk);
-	TSize m = length(ndl);
-	while (position(finder)+m <= n)
-	{
-		if (ndl == infix(hstk, position(finder), position(finder)+m))
-		{
-			_setFinderEnd(finder, position(finder)+m);
-			return true; 
-		}
-		++finder;
-	}
-	return false;
+    TSize n = length(hstk);
+    TSize m = length(ndl);
+    while (position(finder)+m <= n)
+    {
+        if (ndl == infix(hstk, position(finder), position(finder)+m))
+        {
+            _setFinderEnd(finder, position(finder)+m);
+            return true;
+        }
+        ++finder;
+    }
+    return false;
 */
 }
 

@@ -42,7 +42,7 @@
 #include <seqan/sequence.h>
 #include "test_sequence.h"
 
-// TODO(singer): The Value metafunction of a concat direct string set returns an infix. 
+// TODO(singer): The Value metafunction of a concat direct string set returns an infix.
 // This should be changed!
 // The following metafunction is just a workaround.
 
@@ -284,7 +284,7 @@ void testStringSetLessGreaterEqual(TStringSet & /*Tag*/)
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
 
-    // nothing - nohing   
+    // nothing - nohing
     {
         TNonConstStringSet nonConstStringSet1;
         TNonConstStringSet nonConstStringSet2;
@@ -391,13 +391,13 @@ void testStringSetLessGreaterEqual(TStringSet & /*Tag*/)
 SEQAN_TYPED_TEST(StringSetTestCommon, Comparison)
 {
 //     CountingChar::clear();
-// 
+//
 //     typename TestFixture::TStringSet strSet;
 //     testStringSetLessGreaterEqual(strSet);
-// 
+//
 //     typename TestFixture::TStringSet const constStrSet;
 //     testStringSetLessGreaterEqual(constStrSet);
-// 
+//
 //     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 
@@ -426,10 +426,10 @@ void testStringSetAppend(TStringSet & /*Tag*/)
 SEQAN_TYPED_TEST(StringSetTestCommon, Append)
 {
 //     CountingChar::clear();
-// 
+//
 //     typename TestFixture::TStringSet strSet;
 //     testStringSetAppend(strSet);
-// 
+//
 //     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 
@@ -486,7 +486,7 @@ void testStringSetAssign(TStringSet & /*Tag*/)
     {
         TStringSet stringSet1;
         TStringSet stringSet2;
-        
+
         assign(stringSet1, stringSet2);
         SEQAN_ASSERT_EQ(length(stringSet1), 0u);
         SEQAN_ASSERT(begin(stringSet1) == end(stringSet1));
@@ -586,7 +586,7 @@ void testStringSetAssignValueById(TStringSet & /*Tag*/)
     // Assigning a string from a string set.
     TString str2("AAAA");
     TString str3("TTTT");
-    
+
     TStringSet stringSet2;
     appendValue(stringSet2, str2);
     appendValue(stringSet2, str3);
@@ -594,7 +594,7 @@ void testStringSetAssignValueById(TStringSet & /*Tag*/)
     id = assignValueById(stringSet1, stringSet2, 1u);
 
     SEQAN_ASSERT_EQ(length(stringSet1), 2u);
-    SEQAN_ASSERT_EQ(stringSet1[0], string); 
+    SEQAN_ASSERT_EQ(stringSet1[0], string);
     SEQAN_ASSERT_EQ(stringSet1[1], str3);
     SEQAN_ASSERT_EQ(id, 1u);
 }
@@ -631,13 +631,13 @@ void testStringSetBack(TStringSet & /*Tag*/)
     using namespace seqan;
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
-    
+
     TString str("CCCC");
     TString str2("ACGT");
     TStringSet stringSet;
     appendValue(stringSet, str);
     appendValue(stringSet, str2);
-    
+
     // val is a reference in contrast to the const version of back()
     TString & val = back(stringSet);
     val = "TTTT";
@@ -673,9 +673,9 @@ template <typename TValue, typename TStringSpec>
 void testStringSetBack(StringSet<String<TValue, TStringSpec>, Owner<ConcatDirect<> > > & /*Tag*/) {}
 template <typename TValue, typename TStringSpec>
 void testStringSetBack(StringSet<String<TValue, TStringSpec>, Owner<ConcatDirect<> > > const & /*Tag*/) {}
-template <typename TValue> 
+template <typename TValue>
 void testStringSetBack(StringSet<String<TValue, External<> >, Owner<> > & /*Tag*/) {}
-template <typename TValue> 
+template <typename TValue>
 void testStringSetBack(StringSet<String<TValue, External<> >, Owner<> > const & /*Tag*/) {}
 template <typename TValue, typename TStringSpec, typename TStringSetSpec>
 void testStringSetBack(StringSet<String<TValue, TStringSpec>, Dependent<TStringSetSpec> > & /*Tag*/) {}
@@ -688,7 +688,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Back)
 
     typename TestFixture::TStringSet strSet;
     testStringSetBack(strSet);
-    
+
     typename TestFixture::TStringSet const constStrSet;
     testStringSetBack(constStrSet);
 
@@ -737,7 +737,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Begin)
 
     typename TestFixture::TStringSet strSet;
     testStringSetBegin(strSet);
-    
+
     typename TestFixture::TStringSet const constStrSet;
     testStringSetBegin(constStrSet);
 
@@ -765,8 +765,8 @@ void testStringSetBeginPosition(TStringSet & /*Tag*/)
     {
         resize(nonConstStringSet, 0u);
         TString str("ACGT");
-        appendValue(nonConstStringSet, str); 
-        appendValue(nonConstStringSet, str); 
+        appendValue(nonConstStringSet, str);
+        appendValue(nonConstStringSet, str);
         TStringSet stringSet(nonConstStringSet);
         SEQAN_ASSERT_EQ(beginPosition(stringSet), 0u);
     }
@@ -792,7 +792,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, BeginPosition)
 
     typename TestFixture::TStringSet strSet;
     testStringSetBeginPosition(strSet);
-    
+
     typename TestFixture::TStringSet const constStrSet;
     testStringSetBeginPosition(constStrSet);
 
@@ -873,16 +873,16 @@ void testStringSetConcat(TStringSet & /*Tag*/)
         TString str3("GGGG");
         TString str4("TTTT");
 
-    	TNonConstStringSet nonConstStringSet;
-    	appendValue(nonConstStringSet, str1); 
-    	appendValue(nonConstStringSet, str2); 
-    	appendValue(nonConstStringSet, str3); 
-    	appendValue(nonConstStringSet, str4); 
-    	TString string("AAAACCCCGGGGTTTT");
+        TNonConstStringSet nonConstStringSet;
+        appendValue(nonConstStringSet, str1);
+        appendValue(nonConstStringSet, str2);
+        appendValue(nonConstStringSet, str3);
+        appendValue(nonConstStringSet, str4);
+        TString string("AAAACCCCGGGGTTTT");
         TStringSet stringSet(nonConstStringSet);
         TConcat concatString = concat(stringSet);
         for (unsigned i = 0; i < length(string); ++i)
-        	SEQAN_ASSERT_EQ(string[i], concatString[i]);
+            SEQAN_ASSERT_EQ(string[i], concatString[i]);
     }
 }
 
@@ -951,7 +951,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, End)
 
     typename TestFixture::TStringSet strSet;
     testStringSetEnd(strSet);
-    
+
     typename TestFixture::TStringSet const constStrSet;
     testStringSetEnd(constStrSet);
 
@@ -1004,7 +1004,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, EndPosition)
 
     typename TestFixture::TStringSet strSet;
     testStringSetEndPosition(strSet);
-    
+
     typename TestFixture::TStringSet const constStrSet;
     testStringSetEndPosition(constStrSet);
 
@@ -1064,7 +1064,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Erase)
 
     typename TestFixture::TStringSet strSet;
     testStringSetErase(strSet);
-    
+
     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 
@@ -1113,7 +1113,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, EraseBack)
 
     typename TestFixture::TStringSet strSet;
     testStringSetEraseBack(strSet);
-    
+
     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 
@@ -1196,10 +1196,10 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Front)
 
     typename TestFixture::TStringSet strSet;
     testStringSetFront(strSet);
-    
+
     typename TestFixture::TStringSet const constStrSet;
     testStringSetFront(constStrSet);
-    
+
     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 
@@ -1241,10 +1241,10 @@ SEQAN_TYPED_TEST(StringSetTestCommon, GetValue)
 
     typename TestFixture::TStringSet strSet;
     testStringSetGetValue(strSet);
-    
+
     typename TestFixture::TStringSet const constStrSet;
     testStringSetGetValue(constStrSet);
-    
+
     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 
@@ -1289,7 +1289,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, GetValueById)
 // TODO (singer): not defined for const string sets.
 //     typename TestFixture::TStringSet const constStrSet;
 //     testStringSetGetValueById(constStrSet);
-    
+
     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 
@@ -1354,10 +1354,10 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Infix)
 
     typename TestFixture::TStringSet strSet;
     testStringSetInfix(strSet);
-    
+
     typename TestFixture::TStringSet const constStrSet;
     testStringSetInfix(constStrSet);
-    
+
     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 
@@ -1421,10 +1421,10 @@ SEQAN_TYPED_TEST(StringSetTestCommon, InfixWithLength)
 
     typename TestFixture::TStringSet strSet;
     testStringSetInfixWithLength(strSet);
-    
+
     typename TestFixture::TStringSet const constStrSet;
     testStringSetInfixWithLength(constStrSet);
-    
+
     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 
@@ -1434,43 +1434,43 @@ SEQAN_TYPED_TEST(StringSetTestCommon, InfixWithLength)
 // void testStringSetInsert(TStringSet & /*Tag*/)
 // {
 //     using namespace seqan;
-// 
+//
 //     // Test of inserting an empty string.
 //     TStringSet stringSet1;
 //     resize(stringSet1, 1u);
 //     TStringSet stringSet2;
 //     insert(stringSet1, 0u, stringSet2);
 //     SEQAN_ASSERT_EQ(length(stringSet1), 1u);
-// 
+//
 //     resize(stringSet2, 3u);
 //     stringSet2[0] = "ACGT";
 //     insert(stringSet1, 0u, stringSet2);
 //     SEQAN_ASSERT_EQ(length(stringSet1), 4u);
 //     SEQAN_ASSERT_EQ(stringSet1[1], "ACGT");
 // }
-// 
+//
 // SEQAN_TYPED_TEST(StringSetTestCommon, Insert)
 // {
 //     CountingChar::clear();
-// 
+//
 //     typename TestFixture::TStringSet strSet;
 //     testStringSetInsert(strSet);
-//     
+//
 //     typename TestFixture::TStringSet const constStrSet;
 //     testStringSetInsert(constStrSet);
-//     
+//
 //     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 // }
-// 
+//
 // Test of insertValue().
 // TODO (singer): no insertValue function implemented.
 // template <typename TStringSet>
 // void testStringSetInsertValue(TStringSet & /*Tag*/)
 // {
 //     using namespace seqan;
-//     
+//
 //     typedef typename TestStringSetValue_<TStringSet>::Type TString;
-// 
+//
 //     // Test of inserting an empty string.
 //     TStringSet stringSet;
 //     resize(stringSet, 1u);
@@ -1479,17 +1479,17 @@ SEQAN_TYPED_TEST(StringSetTestCommon, InfixWithLength)
 //     SEQAN_ASSERT_EQ(stringSet[0], "ACGT");
 //     SEQAN_ASSERT_EQ(stringSet[1], TString());
 // }
-// 
+//
 // SEQAN_TYPED_TEST(StringSetTestCommon, InsertValue)
 // {
 //     CountingChar::clear();
-// 
+//
 //     typename TestFixture::TStringSet strSet;
 //     testStringSetInsertValue(strSet);
-//     
+//
 //     typename TestFixture::TStringSet const constStrSet;
 //     testStringSetInsertValue(constStrSet);
-//     
+//
 //     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 // }
 
@@ -1507,7 +1507,7 @@ void testStringSetIter(TStringSet & /*Tag*/)
 
     // Test on an empty string set.
     {
-    	TStringSet stringSet;
+        TStringSet stringSet;
         TIterator iterator = iter(stringSet, 0);
         TStandardIterator standardIterator = iter(stringSet, 0);
         TRootedIterator rootedIterator = iter(stringSet, 0);
@@ -1521,11 +1521,11 @@ void testStringSetIter(TStringSet & /*Tag*/)
         TString str1("AAAA");
         TString str2("CCCC");
         TString str3("GGGG");
-    	TNonConstStringSet nonConstStringSet;
-    	appendValue(nonConstStringSet, str1);
-    	appendValue(nonConstStringSet, str2);
-    	appendValue(nonConstStringSet, str3);
-    	TStringSet stringSet(nonConstStringSet);
+        TNonConstStringSet nonConstStringSet;
+        appendValue(nonConstStringSet, str1);
+        appendValue(nonConstStringSet, str2);
+        appendValue(nonConstStringSet, str3);
+        TStringSet stringSet(nonConstStringSet);
         TIterator iterator = iter(stringSet, 0);
         TStandardIterator standardIterator = iter(stringSet, 0);
         TRootedIterator rootedIterator = iter(stringSet, 0);
@@ -1541,12 +1541,12 @@ void testStringSetIter(TStringSet & /*Tag*/)
         TString str2("CCCC");
         TString str3("GGGG");
         TString str4("TTTT");
-    	TNonConstStringSet nonConstStringSet;
-    	appendValue(nonConstStringSet, str1);
-    	appendValue(nonConstStringSet, str2);
-    	appendValue(nonConstStringSet, str3);
-    	appendValue(nonConstStringSet, str4);
-    	TStringSet stringSet(nonConstStringSet);
+        TNonConstStringSet nonConstStringSet;
+        appendValue(nonConstStringSet, str1);
+        appendValue(nonConstStringSet, str2);
+        appendValue(nonConstStringSet, str3);
+        appendValue(nonConstStringSet, str4);
+        TStringSet stringSet(nonConstStringSet);
         TIterator iterator = iter(stringSet, 3);
         TStandardIterator standardIterator = iter(stringSet, 3);
         TRootedIterator rootedIterator = iter(stringSet, 3);
@@ -1574,10 +1574,10 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Iter)
 
     typename TestFixture::TStringSet strSet;
     testStringSetIter(strSet);
-    
+
     typename TestFixture::TStringSet const constStrSet;
     testStringSetIter(constStrSet);
-    
+
     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 
@@ -1591,16 +1591,16 @@ void testStringSetLength(TStringSet & /*Tag*/)
 
     // Test on an empty string.
     {
-    	TStringSet stringSet;
-    	SEQAN_ASSERT_EQ(length(stringSet), 0u);
+        TStringSet stringSet;
+        SEQAN_ASSERT_EQ(length(stringSet), 0u);
     }
 
     // Test on a non empty string.
     {
-    	TNonConstStringSet nonConstStringSet;
-    	resize(nonConstStringSet, 10u);
-    	TStringSet stringSet(nonConstStringSet);
-    	SEQAN_ASSERT_EQ(length(stringSet), 10u);
+        TNonConstStringSet nonConstStringSet;
+        resize(nonConstStringSet, 10u);
+        TStringSet stringSet(nonConstStringSet);
+        SEQAN_ASSERT_EQ(length(stringSet), 10u);
     }
 }
 
@@ -1610,10 +1610,10 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Length)
 
     typename TestFixture::TStringSet strSet;
     testStringSetLength(strSet);
-    
+
     typename TestFixture::TStringSet const constStrSet;
     testStringSetLength(constStrSet);
-    
+
     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 
@@ -1654,10 +1654,10 @@ SEQAN_TYPED_TEST(StringSetTestCommon, MoveValue)
 {
     // TODO(singer); Simply not working at all!
 //     CountingChar::clear();
-// 
+//
 //     typename TestFixture::TStringSet strSet;
 //     testStringSetMoveValue(strSet);
-//     
+//
 //     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 
@@ -1709,10 +1709,10 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Prefix)
 
     typename TestFixture::TStringSet strSet;
     testStringSetPrefix(strSet);
-    
+
     typename TestFixture::TStringSet const constStrSet;
     testStringSetPrefix(constStrSet);
-    
+
     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 
@@ -1758,14 +1758,14 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Prefix)
 //    SEQAN_ASSERT_EQ(stringSet2[2], "TTTT");
 //
 //}
-// 
+//
 // SEQAN_TYPED_TEST(StringSetTestCommon, Replace)
 // {
 //     CountingChar::clear();
-// 
+//
 //     typename TestFixture::TStringSet strSet;
 //     testStringSetReplace(strSet);
-//         
+//
 //     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 // }
 
@@ -1816,7 +1816,7 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Resize)
 
     typename TestFixture::TStringSet strSet;
     testStringSetResize(strSet);
-        
+
     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 
@@ -1869,10 +1869,10 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Suffix)
 
     typename TestFixture::TStringSet strSet;
     testStringSetSuffix(strSet);
-    
+
     typename TestFixture::TStringSet const constStrSet;
     testStringSetSuffix(constStrSet);
-    
+
     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 
@@ -1923,13 +1923,13 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Suffix)
 // SEQAN_TYPED_TEST(StringSetTestCommon, Swap)
 // {
 //     CountingChar::clear();
-// 
+//
 //     typename TestFixture::TStringSet strSet;
 //     testStringSetSwap(strSet);
-//     
+//
 //     typename TestFixture::TStringSet const constStrSet;
 //     testStringSetSwap(constStrSet);
-//     
+//
 //     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 // }
 
@@ -1940,7 +1940,7 @@ void testStringSetValue(TStringSet & /*Tag*/)
     using namespace seqan;
 
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
-    
+
     // In contrast to getValue(), value() does not return a copy but a reference.
     // We test this using the variable value_.
 
@@ -1968,7 +1968,7 @@ void testStringSetValue(TStringSet const & /*Tag*/)
 
     typedef typename RemoveConst<TStringSet>::Type TNonConstStringSet;
     typedef typename TestStringSetValue_<TStringSet>::Type TString;
-    
+
     // In contrast to getValue(), value() does not return a copy but a reference.
     // We test this using the variable value_.
 
@@ -2021,10 +2021,10 @@ SEQAN_TYPED_TEST(StringSetTestCommon, Value)
 
     typename TestFixture::TStringSet strSet;
     testStringSetValue(strSet);
-    
+
     typename TestFixture::TStringSet const constStrSet;
     testStringSetValue(constStrSet);
-    
+
     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 
@@ -2066,7 +2066,7 @@ void testStringSetValueById(TStringSet const & /*Tag*/)
 
     // In contrast to getValue(), value() does not return a copy but a reference.
     // We test this using the variable value_.
-  
+
     TString str1("ACAC");
     TString str2("AAAA");
     TString str3("TTTT");
@@ -2074,7 +2074,7 @@ void testStringSetValueById(TStringSet const & /*Tag*/)
     appendValue(nonConstStringSet, str1);
     appendValue(nonConstStringSet, str2);
     appendValue(nonConstStringSet, str3);
-    
+
     TStringSet stringSet(nonConstStringSet);
     TString value_ = valueById(stringSet, 0);
     SEQAN_ASSERT_EQ(value_, str1);
@@ -2117,10 +2117,10 @@ SEQAN_TYPED_TEST(StringSetTestCommon, ValueById)
 
     typename TestFixture::TStringSet strSet;
     testStringSetValueById(strSet);
-    
+
     typename TestFixture::TStringSet const constStrSet;
     testStringSetValueById(constStrSet);
-    
+
     testConstructDeconstruct(typename Value<typename Value<typename TestFixture::TStringSet>::Type>::Type());
 }
 #endif // TESTS_SEQUENCE_TEST_STRINGSET_H_

@@ -54,8 +54,8 @@ namespace seqan {
  * @param[in] record The @link BamAlignmentRecord @endlink to query.
  * @param[in] file The @link BamFileIn @endlink or @link BamFileOut @endlink where the record belongs to.
  *
- * @return TNameString The name of the reference contig. <tt>TNameString</tt> is the @link Value @endlink type of the NameStore. 
- *         The NameStore type can be determined using the @link Member @endlink metafunction 
+ * @return TNameString The name of the reference contig. <tt>TNameString</tt> is the @link Value @endlink type of the NameStore.
+ *         The NameStore type can be determined using the @link Member @endlink metafunction
  *         for the @link BamIOContext @endlink in conjunction with the @link BamIOContextMemberTag#NameStoreMember @endlink tag.
  */
 
@@ -79,8 +79,8 @@ getContigName(BamAlignmentRecord const & record, FormattedFile<Bam, TDirection, 
  * @param[in] record The @link BamAlignmentRecord @endlink to query.
  * @param[in] file The @link BamFileIn @endlink or @link BamFileOut @endlink where the record belongs to.
  *
- * @return TLength The length of the reference contig. <tt>TLength</tt> is the @link Value @endlink type of the LengthStore. 
- *         The LengthStore type can be determined using the @link Member @endlink metafunction 
+ * @return TLength The length of the reference contig. <tt>TLength</tt> is the @link Value @endlink type of the LengthStore.
+ *         The LengthStore type can be determined using the @link Member @endlink metafunction
  *         for the @link BamIOContext @endlink in conjunction with the @link BamIOContextMemberTag#LengthStoreMember @endlink tag.
  */
 

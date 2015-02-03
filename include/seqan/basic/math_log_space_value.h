@@ -56,21 +56,21 @@ namespace seqan {
  * @class LogProb
  * @headerfile <seqan/basic.h>
  * @brief Value type for computation in log-space.
- * 
+ *
  * @signature template <[typename T]>
  *            class LogProb;
- * 
+ *
  * @tparam T Floating number type to use as the basic, defaults to <tt>double</tt>.
- * 
+ *
  * @section Remarks
- * 
+ *
  * Internally, the logarithms of the original values are stored.  This is numerically more stable for multiplications
  * and large numbers.
- * 
+ *
  * This type can be used like an ordinary <tt>double</tt> or <tt>float</tt> value.
- * 
+ *
  * @section Examples
- * 
+ *
  * @code{.cpp}
  * LogProb<double> x = 10;
  * x *= 3;
@@ -105,13 +105,13 @@ log(TValue const & value)
 template<typename TValue, typename TSpec>
 class LogProb
 {
-  public:   
+  public:
     TValue data_value;
 
     // ------------------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------------------
-    
+
     LogProb() : data_value(std::log(0.0)) {}
 
     template <typename TValue2>
@@ -123,7 +123,7 @@ class LogProb
     // ------------------------------------------------------------------------
     // Type conversion operators;  Have to be defined in class.
     // ------------------------------------------------------------------------
-    
+
     template <typename TResult>
     inline TResult _convert(False) const
     {
@@ -389,7 +389,7 @@ operator-(LogProb<TValue, TSpec> const & lhs,
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TSpec, typename TRhs>
-inline 
+inline
 bool
 operator==(LogProb<TValue, TSpec> const & lhs,
            TRhs const & rhs)
@@ -475,7 +475,7 @@ operator<<(TStream & stream, LogProb<TValue, TSpec> const & rhs)
 {
     return stream << std::exp(rhs.data_value);
 }
-    
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_INCLUDE_SEQAN_BASIC_MATH_LOG_SPACE_VALUE_H_

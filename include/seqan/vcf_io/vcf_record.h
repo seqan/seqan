@@ -52,17 +52,17 @@ namespace seqan {
  * @implements FormattedFileRecordConcept
  * @headerfile <seqan/vcf_io.h>
  * @brief Information for one VCF record.
- * 
+ *
  * @signature class VcfRecord;
- * 
+ *
  * We store most information as strings and without structure since the VCF format's definition is quite loose.  We plan
  * to provide classes for structured access to these strings later.
- * 
+ *
  * @section Remarks
- * 
+ *
  * Although all positions in the VCF text format are 1-based, they are stored 0-based in the @link VcfRecord @endlink.
  * Positions in string members are stored verbatim in the @link VcfRecord @endlink's members, e.g. 1-based.
- * 
+ *
  * Invalid qualities are stored as a float <tt>NaN</tt> (not a number).  To test a float quality <tt>q</tt> for being
  * <tt>NaN</tt>, test for <tt>q != q</tt>.  Only <tt>NaN</tt> has the property that <tt>NaN != NaN</tt>.
  */
@@ -70,7 +70,7 @@ namespace seqan {
 /*!
  * @fn VcfRecord::MISSING_QUAL
  * @brief Return IEEE <tt>NaN</tt> float value.
- * 
+ *
  * @signature float VcfRecord::MISSING_QUAL();
  *
  * @section Remarks
@@ -82,7 +82,7 @@ namespace seqan {
 /*!
  * @fn VcfRecord::VcfRecord
  * @brief Default constructor.
- * 
+ *
  * @signature VcfRecord::VcfRecord();
  */
 
@@ -98,28 +98,28 @@ namespace seqan {
  *
  * @var VariableType VcfRecord::INVALID_REFID
  * @brief Static member as marker for invalid reference (<tt>__int32</tt>)
- * 
+ *
  * @var VariableType VcfRecord::format
  * @brief Value of the VCF FORMAT field, empty if "." in VCF file (@link CharString @endlink).
- * 
+ *
  * @var VariableType VcfRecord::alt
  * @brief Alternative bases in the variants, comma-separated if multiple (@link CharString @endlink).
- * 
+ *
  * @var VariableType VcfRecord::qual
  * @brief Quality, <tt>NaN</tt> if invalid (<tt>float</tt>).
- * 
+ *
  * @var VariableType VcfRecord::filter
  * @brief Value of FILTER field, empty if "." in VCF file (@link CharString @endlink).
- * 
+ *
  * @var VariableType VcfRecord::rID
  * @brief Static member as marker for invalid reference (<tt>__int32</tt>)
- * 
+ *
  * @var VariableType VcfRecord::beginPos
  * @brief Position of the VCF record (<tt>__int32</tt>).
- * 
+ *
  * @var VariableType VcfRecord::INVALID_POS
  * @brief Static member as marker for invalid position (<tt>__int32</tt>)
- * 
+ *
  * @var VariableType VcfRecord::id
  * @brief Textual identifier of the variant (@link CharString @endlink).
  */
