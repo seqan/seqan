@@ -63,8 +63,8 @@ using namespace seqan;
 
 
 // load entire genome into memory
-template <typename TGenomeSet, typename TGenomeNames>
-bool loadGenomes(TGenomeSet &genomes, StringSet<CharString> &fileNameList, ::std::map<CharString,unsigned> &gIdStringToIdNumMap, TGenomeNames & genomeNames)
+template <typename TGenomeSet, typename TGenomeSetSize, typename TGenomeNames>
+bool loadGenomes(TGenomeSet &genomes, StringSet<CharString> &fileNameList, ::std::map<CharString, TGenomeSetSize> &gIdStringToIdNumMap, TGenomeNames & genomeNames)
 {
     unsigned gSeqNo = 0;
     unsigned filecount = 0;
@@ -612,7 +612,8 @@ int detectSNPs(SNPCallingOptions<TSpec> &options)
 
     typedef String<String<TContigPos > >            TPositions;
     typedef typename Iterator<String<TContigPos > >::Type TPosIterator;
-    typedef ::std::map<CharString,unsigned>         TGenomeMap;
+    typedef typename Size<TGenomeSet>::Type         TGenomeSetSize;
+    typedef ::std::map<CharString, TGenomeSetSize>  TGenomeMap;
     //typedef typename TGenomeMap::iterator           TMapIter;
     typedef String<unsigned>                TReadCounts;
     typedef String<Pair<int,int> >              TReadClips;
