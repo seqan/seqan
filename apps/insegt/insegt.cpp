@@ -68,9 +68,16 @@ parseCommandLine(InsegtOptions & options, int argc, char const ** argv)
     // Set short description, version, and date.
     setShortDescription(parser, "INtersecting SEcond Generation sequencing daTa with annotation");
     setCategory(parser, "Utilities");
-    setVersion(parser, "1.0");
-    string date = "$Date: 2012-09-11 11:21:13 +0200 (Mo, 11. Sep 2012) $";
-    setDate(parser, date.substr(7, _min((int)date.size() - 8, 10)));
+#ifdef SEQAN_APP_VERSION
+    #ifdef SEQAN_REVISION
+        setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    #else
+        setVersion(parser, SEQAN_APP_VERSION);
+    #endif
+#endif
+#ifdef SEQAN_DATE
+    setDate(parser, SEQAN_DATE);
+#endif
     // Define usage line and long description.
     addUsageLine(parser,
                  "[\\fIOPTIONS\\fP] <\\fIALIGMENTS-FILE\\fP> <\\fIANNOTATIONS-FILE\\fP> ");

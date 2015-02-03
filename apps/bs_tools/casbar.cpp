@@ -996,8 +996,16 @@ parseCommandLine(SNPCallingOptions & options, TMethOptions &methOptions, int arg
     ArgumentParser parser("casbar");
     // Set short description, version, and date.
     setShortDescription(parser, "SNP and methylation level calling");
-    setVersion(parser, "0.1");
-    setDate(parser, "May 2014");
+#ifdef SEQAN_APP_VERSION
+    #ifdef SEQAN_REVISION
+        setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    #else
+        setVersion(parser, SEQAN_APP_VERSION);
+    #endif
+#endif
+#ifdef SEQAN_DATE
+    setDate(parser, SEQAN_DATE);
+#endif
     setCategory(parser, "BS-Seq Analysis");
 
     // Define usage line and long description.
