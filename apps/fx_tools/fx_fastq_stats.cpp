@@ -239,8 +239,16 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     // Set short description, version, and date.
     setShortDescription(parser, "Compute FASTQ statistics.");
     setCategory(parser, "NGS Quality Control");
-    setVersion(parser, "0.1");
-    setDate(parser, "August 2012");
+#ifdef SEQAN_APP_VERSION
+    #ifdef SEQAN_REVISION
+        setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    #else
+        setVersion(parser, SEQAN_APP_VERSION);
+    #endif
+#endif
+#ifdef SEQAN_DATE
+    setDate(parser, SEQAN_DATE);
+#endif
 
     // Define usage line and long description.
     addUsageLine(parser, "\\fB-i\\fP \\fIINPUT.fq\\fP \\fB-o\\fP \\fIOUTPUT.fq.stats.tsv\\fP");
