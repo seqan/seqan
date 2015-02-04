@@ -33,20 +33,6 @@ To build tests, demos, and official SeqAn applications you also need:
 
 Some of the official applications might have additional requirements or work only on a subset of platforms.
 
-For the Impatient
------------------
-
-Assuming that you have checked out the repository into the folder ``seqan`` (relative to your current directory), all prerequisites are installed and you are on Linux or Mac OS X.
-
-::
-
-    # mkdir seqan-build/Debug
-    # cd seqan-build/Debug
-    # cmake ../../seqan -DCMAKE_BUILD_TYPE=Debug
-    # make test_basic
-    # ./bin/test_basic
-    ... the tests for module basic will run ...
-
 Documentation Resources
 -----------------------
 
