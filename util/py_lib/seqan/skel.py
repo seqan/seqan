@@ -422,16 +422,11 @@ def main():
                       help='Overwrite existing files and directories.',
                       default=False)
     options, args = parser.parse_args()
-    if options.infos_only and options.cmakelists_only:
-        print >>sys.stderr, 'Only one of --info-only and --cmakelists-only can be given.'
-        return 1
     options.create_cmakelists = True
     options.create_infos = True
     options.create_dirs = True
     options.create_programs = True
-    if options.infos_only or options.cmakelists_only:
-        options.create_cmakelists = not options.infos_only
-        options.create_infos = not options.cmakelists_only
+    if options.cmakelists_only:
         options.create_dirs = False
         options.create_programs = False
 
