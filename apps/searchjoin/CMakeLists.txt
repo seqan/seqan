@@ -10,6 +10,8 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_searchjoin)
 message (STATUS "Configuring apps/searchjoin")
 
+set (SEQAN_APP_VERSION "0.4")
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
@@ -29,8 +31,11 @@ include_directories (${SEQAN_INCLUDE_DIRS})
 add_definitions (${SEQAN_DEFINITIONS})
 
 # Add definitions set by the build system.
+add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
 add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
+
+# Lightweight CI builds.
 if (NOT SEQAN_TRAVIS_BUILD)
     add_definitions (-DSEARCHJOIN_HUGEDB=TRUE)
 else (NOT SEQAN_TRAVIS_BUILD)

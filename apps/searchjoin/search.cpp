@@ -128,14 +128,8 @@ void setupArgumentParser(ArgumentParser & parser)
     setShortDescription(parser, "EDBT/ICDT 2013 Search");
     setCategory(parser, "Databases");
 
-#ifdef SEQAN_REVISION
-    setVersion(parser, "0.3 [" + std::string(SEQAN_REVISION) + "]");
-#else
-    setVersion(parser, "0.3");
-#endif
-#ifdef SEQAN_DATE
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIDATABASE FILE\\fP> <\\fIQUERY FILE\\fP>");
 

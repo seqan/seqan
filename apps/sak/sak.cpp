@@ -139,8 +139,8 @@ parseArgs(SakOptions & options,
 {
     seqan::ArgumentParser parser("sak");
     setShortDescription(parser, "Slicing and dicing of FASTA/FASTQ files..");
-    setVersion(parser, "0.2");
-    setDate(parser, "November 2012");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
     setCategory(parser, "Utilities");
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] [\\fB-o\\fP \\fIOUT.{fa,fq}\\fP] \\fIIN.{fa,fq}\\fP");

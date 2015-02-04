@@ -34,9 +34,8 @@ using namespace seqan;
 void
 _setVersion(ArgumentParser & parser)
 {
-	::std::string rev = "$Revision: 4663 $";
-	setVersion(parser, "0.23.1 Revision: " + rev.substr(11, 4) + "");
-	setDate(parser, "Nov 21, 2012");
+	setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+	setDate(parser, SEQAN_DATE);
 }
 
 seqan::ArgumentParser::ParseResult parseCommandLine(ConsensusOptions & consOpt, int argc, const char * argv[])

@@ -1095,14 +1095,8 @@ parseCommandLine(SNPCallingOptions<TSpec> & options, int argc, char const ** arg
     // Set short description, version, and date.
     setShortDescription(parser, "SnpStore");
     setCategory(parser, "Variant Detection");
-    options.version = "1.1";
-#ifdef SEQAN_REVISION
-    options.version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
-#endif
-#ifdef SEQAN_DATE
+	setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
-	setVersion(parser, options.version);
 
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIGENOME FILE\\fP> <\\fIALIGNMENT FILE\\fP> [<\\fIALIGNMENT FILE\\fP> ...]");
