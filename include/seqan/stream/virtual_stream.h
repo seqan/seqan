@@ -517,7 +517,8 @@ open(VirtualStream<TValue, TDirection, TTraits> &stream, TStream &fileStream, TC
     typedef typename TVirtualStream::TBufferedStream TBufferedStream;
 
     // peek the first character to initialize the underlying streambuf (for in_avail)
-    fileStream.rdbuf()->sgetc();
+    if (IsSameType<TDirection, Input>::VALUE)  // Only getc if input stream.
+        fileStream.rdbuf()->sgetc();
 
     if (IsSameType<TDirection, Input>::VALUE &&
         !IsSameType<TStream, TBufferedStream>::VALUE &&
