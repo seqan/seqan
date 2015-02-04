@@ -10,6 +10,8 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_snp_store)
 message (STATUS "Configuring apps/snp_store")
 
+set (SEQAN_APP_VERSION "1.2")
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
@@ -38,6 +40,7 @@ include_directories (SYSTEM ${Boost_INCLUDE_DIRS})
 add_definitions (${SEQAN_DEFINITIONS})
 
 # Add definitions set by the build system.
+add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
 add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 

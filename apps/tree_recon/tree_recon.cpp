@@ -90,8 +90,8 @@ int main(int argc, const char *argv[])
 
     // Set short description, version, date.
     setShortDescription(parser, "Tree reconstruction");
-    setVersion(parser, "1.02");
-    setDate(parser, "July 17, 2012");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
     setCategory(parser, "Phylogeneny");
 
     // Usage line and description.

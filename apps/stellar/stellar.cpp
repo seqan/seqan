@@ -483,8 +483,8 @@ _parseOptions(ArgumentParser & parser, TOptions & options)
 void _setParser(ArgumentParser & parser)
 {
     setShortDescription(parser, "the SwifT Exact LocaL AligneR");
-    setDate(parser, "October 2012");
-    setVersion(parser, "1.3");
+    setDate(parser, SEQAN_DATE);
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setCategory(parser, "Local Alignment");
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIFASTA FILE 1\\fP> <\\fIFASTA FILE 2\\fP>");

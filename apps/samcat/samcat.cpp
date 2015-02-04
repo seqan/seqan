@@ -161,8 +161,8 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     ArgumentParser parser("samcat");
     // Set short description, version, and date.
     setCategory(parser, "Utilities");
-    setVersion(parser, "0.1");
-    setDate(parser, "May 2014");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
 
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIINFILE\\fP> [<\\fIINFILE\\fP> ...] [-o <\\fIOUTFILE\\fP>]");

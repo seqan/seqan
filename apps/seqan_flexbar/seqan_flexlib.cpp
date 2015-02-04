@@ -350,14 +350,8 @@ void FilteringParserBuilder::addHeader(seqan::ArgumentParser & parser)
             "C.  FLEXBAR—Flexible Barcode and Adapter Processing for "
             "Next-Generation Sequencing Platforms. Biology 2012, 1, 895-905.");
 
-    std::string version = "1.0.1";
-#ifdef SEQAN_REVISION
-    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
-#endif
-#ifdef SEQAN_DATE
+    seqan::setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
-    seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
     setValidValues(fileArg, SeqFileIn::getFileExtensions());
@@ -402,14 +396,10 @@ void AdapterRemovalParserBuilder::addHeader(seqan::ArgumentParser & parser)
             "C.  FLEXBAR—Flexible Barcode and Adapter Processing for "
             "Next-Generation Sequencing Platforms. Biology 2012, 1, 895-905.");
 
-    std::string version = "1.0.1";
-#ifdef SEQAN_REVISION
-    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
-#endif
+    seqan::setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
 #ifdef SEQAN_DATE
     seqan::setDate(parser, SEQAN_DATE);
 #endif
-    seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
     setValidValues(fileArg, SeqFileIn::getFileExtensions());
@@ -455,14 +445,8 @@ void DemultiplexingParserBuilder::addHeader(seqan::ArgumentParser & parser)
             "Next-Generation Sequencing Platforms. Biology 2012, 1, 895-905.");
 
 
-    std::string version = "1.0.1";
-#ifdef SEQAN_REVISION
-    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
-#endif
-#ifdef SEQAN_DATE
+    seqan::setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
-    seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
     setValidValues(fileArg, SeqFileIn::getFileExtensions());
@@ -508,14 +492,8 @@ void QualityControlParserBuilder::addHeader(seqan::ArgumentParser & parser)
             "C.  FLEXBAR—Flexible Barcode and Adapter Processing for "
             "Next-Generation Sequencing Platforms. Biology 2012, 1, 895-905.");
 
-    std::string version = "1.0.1";
-#ifdef SEQAN_REVISION
-    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
-#endif
-#ifdef SEQAN_DATE
+    seqan::setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
-    seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
     setValidValues(fileArg, SeqFileIn::getFileExtensions());
@@ -567,14 +545,8 @@ void AllStepsParserBuilder::addHeader(seqan::ArgumentParser & parser)
 
     addDescription(parser, "(c) Copyright 2008-2013 by Sebastian Roskosch.");
 
-    std::string version = "1.0.1";
-#ifdef SEQAN_REVISION
-    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
-#endif
-#ifdef SEQAN_DATE
+    seqan::setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
-    seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
     setValidValues(fileArg, SeqFileIn::getFileExtensions());
