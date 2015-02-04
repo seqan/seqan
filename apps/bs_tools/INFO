@@ -1,8 +1,0 @@
-Name: bs_tools
-Author: Sabrina Krakau <sabrina.krakau@fu-berlin.de>
-Maintainer: Sabrina Krakau <sabrina.krakau@fu-berlin.de>
-License: GPL v3
-Copyright: 2006-2015, FU Berlin
-Status: under development
-Description: From bisulfite read mapping to SNP and methylation level calling.
- .
