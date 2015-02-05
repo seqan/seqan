@@ -220,16 +220,8 @@ int main(int argc, const char *argv[])
 
     addDescription(parser, "(c) Copyright 2009 by Anne-Katrin Emde.");
     setCategory(parser, "Read Mapping");
-#ifdef SEQAN_APP_VERSION
-    #ifdef SEQAN_REVISION
-        setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
-    #else
-        setVersion(parser, SEQAN_APP_VERSION);
-    #endif
-#endif
-#ifdef SEQAN_DATE
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));
     setValidValues(parser, 0, seqan::SeqFileIn::getFileExtensions());
