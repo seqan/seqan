@@ -14,8 +14,6 @@ SEQAN_DEFINE_TEST(test_index_minimizer_getOccurrences)
     typedef Infix<TText>::Type                                    TTextInfix;
     typedef Iterator<TText, Standard>::Type                       TTextIter;
     typedef Index<TText, IndexQGram<MinimizerShape<30,10> > >     TIndex;
-//    typedef Index<TText, IndexQGram<UngappedShape<10> > >     TIndex;
-
     typedef Fibre<TIndex, FibreSA>::Type const                    TSA;
     typedef Infix<TSA>::Type                                      TOccurrences;
 

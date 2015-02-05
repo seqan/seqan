@@ -1349,9 +1349,9 @@ _qgramRefineSuffixArray(TSA & /* sa */, TText const & /* text */, TShape const &
 {
 }
 
-template <typename TSA, typename TText, typename TValue, unsigned TSPAN, unsigned TWEIGHT, typename TDir>
+template <typename TSA, typename TText, typename TValue, unsigned TSPAN, unsigned TWEIGHT, typename TSpec, typename TDir>
 inline void
-_qgramRefineSuffixArray(TSA & sa, TText const & text, Shape<TValue, MinimizerShape<TSPAN, TWEIGHT> > const & shape, TDir const & dir)
+_qgramRefineSuffixArray(TSA & sa, TText const & text, Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TSpec> > const & shape, TDir const & dir)
 {
     _refineQGramIndex(sa, dir, text, 0, length(shape));
 }

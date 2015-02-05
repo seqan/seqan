@@ -98,64 +98,31 @@ weight(Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TSpec> > const &me)
     return me.weight;
 }
 
-//return  lexicographically smaller of S as the minimizer
-template <typename TValue, unsigned TSPAN, unsigned TWEIGHT, typename TSpec, typename TIter> 
+// ----------------------------------------------------------------------------
+// Function _minHash()
+// ----------------------------------------------------------------------------
+// return lexicographically smaller hash as the minimizer
+
+template <typename TValue, unsigned TSPAN, unsigned TWEIGHT, typename TSpec, typename TString>
 inline typename Value< Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TSpec> > >::Type 
-_getMinimizer(Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TSpec> > &me, TIter const &it)
+_minHash(Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TSpec> > &me, TString const & str)
 {
-    typedef typename Value<Shape<TValue, UngappedShape<TWEIGHT> > >::Type THValue;
+    typedef typename Iterator<TString const, Standard>::Type                TIter;
+    typedef typename Value<Shape<TValue, UngappedShape<TWEIGHT> > >::Type   THValue;
   
     SEQAN_ASSERT_GT((unsigned)me.span, 0u);
     SEQAN_ASSERT_GT((unsigned)me.span, (unsigned)me.weight); 
 
     Shape<TValue, UngappedShape<TWEIGHT> > tmpShape;
-    TIter leftIt = it;
-    THValue miniTmp = hash(tmpShape, leftIt);
-    for (unsigned i = 1; i < me.span - me.weight + 1; i++)
-    {
-        if(miniTmp > hashNext(tmpShape, leftIt + i))
-            miniTmp = tmpShape.hValue;        
-    }
-    me.hValue = miniTmp;
-    return me.hValue;
 
-}
+    TIter strIt = begin(str, Standard());
+    TIter strEnd = end(str, Standard()) - weight(me) + 1;
 
-//return  lexicographically smaller of S and the reverse complement of S as the minimizer 
-template <typename TValue, unsigned TSPAN, unsigned TWEIGHT, typename TIter>
-inline typename Value< Shape<TValue, MinimizerShape<TSPAN, TWEIGHT> > >::Type
-_getMinimizer(Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, ReverseComplement> > &me, TIter const &it)
-{
-    typedef typename Value<Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, ReverseComplement> > >::Type THValue;
+    THValue miniTmp = hash(tmpShape, strIt);
+    for (strIt++; strIt != strEnd; strIt++)
+        miniTmp = _min(miniTmp, hashNext(tmpShape, strIt));
 
-    SEQAN_ASSERT_GT((unsigned)me.span, 0u);
-    SEQAN_ASSERT_GT((unsigned)me.span, (unsigned)me.weight); 
-    TIter leftIt = it;
-    Shape<TValue, UngappedShape<TWEIGHT> > tmpShape;
-    hashInit(tmpShape, leftIt);
-    THValue miniTmp = hash(tmpShape, leftIt);
-
-    for (int i = 1 ; i < tmpShape.span; i++)
-    {
-        if(miniTmp > hashNext(tmpShape, leftIt + i))
-            miniTmp = tmpShape.hValue;        
-    }
-
-    String<TValue> rc;
-    resize(rc, leftIt -it + me.span - 1 );
-    TIter rcIt = begin(rc);
-    arrayCopy(it, leftIt + length(me), rcIt);
-    reverseComplement(rc);
-    leftIt = begin(rc);
-
-    THValue miniTmpRC = hash(tmpShape, leftIt);
-    for (int i = 1 ; i < tmpShape.span; i++)
-    {
-        if(miniTmpRC > hashNext(tmpShape, leftIt + i))
-            miniTmpRC = me.hValue;
-    }
-    me.hValue = (miniTmp < miniTmpRC ? miniTmp : miniTmpRC);
-    return me.hValue;
+    return miniTmp;
 }
 
 // ----------------------------------------------------------------------------
@@ -166,7 +133,33 @@ template <typename TValue, unsigned TSPAN, unsigned TWEIGHT, typename TSpec, typ
 inline typename Value<Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TSpec> > >::Type
 hash(Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TSpec> > &me, TIter const &it)
 {
-    return _getMinimizer(me, it);
+    Range<TIter> range(it, it + length(me));
+
+    me.hValue = _minHash(me, range);
+    return me.hValue;
+}
+
+// ----------------------------------------------------------------------------
+// Function hash(); ReverseComplement
+// ----------------------------------------------------------------------------
+// Uses the lexicographically smaller of S and the reverse complement of S as the minimizer
+
+template <typename TValue, unsigned TSPAN, unsigned TWEIGHT, typename TIter>
+inline typename Value<Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, ReverseComplement> > >::Type
+hash(Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, ReverseComplement> > &me, TIter const &it)
+{
+    typedef Range<TIter>                        TContainer;
+    typedef typename Value<TContainer>::Type    TAlphabet;
+    typedef typename RemoveConst<TAlphabet>::Type TNCAlphabet;
+    typedef ModifiedString<TContainer, ModView<FunctorComplement<TNCAlphabet> > > TComplement;
+    typedef ModifiedString<TComplement, ModReverse>                             TRC;
+
+    Range<TIter> range(it, it + length(me));
+    TRC revComplRange(range);
+
+    me.hValue = _min(_minHash(me, range), _minHash(me, revComplRange));
+
+    return me.hValue;
 }
 
 // ----------------------------------------------------------------------------
