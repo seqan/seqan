@@ -30,7 +30,7 @@ Usually, read mappers compute pairwise alignments of each read and the reference
 In the absence of indels, such pairwise alignments can be converted to a multi-read alignment without larger problems.
 However, when multiple alignments are close, something as in the following figure can happen.
 
-.. figure: raw_alignment.png
+.. figure:: raw_alignment.png
     :alt: MSA as interpolated from pairwise alignments.
 
 The task of improving such an alignment is called **realignment** and there is a small number of algorithms and tools available for realignment.

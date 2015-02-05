@@ -55,7 +55,7 @@ Finally, we call :dox:`globalMsaAlignment` and print ``align`` to the standard o
 We use the :dox:`Blosum62` score matrix with the penalties from above.
 
 .. includefrags:: demos/tutorial/alignments/alignment_msa.cpp
-   :fragment: init
+   :fragment: alignment
 
 The output of the program look as follows.
 

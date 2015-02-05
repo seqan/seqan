@@ -12,7 +12,7 @@ int main()
         return 1;
     }
     // Open output file, BamFileOut accepts also an ostream and a format tag.
-    BamFileOut bamFileOut(std::cout, Sam());
+    BamFileOut bamFileOut(context(bamFileIn), std::cout, Sam());
 
     try
     {
