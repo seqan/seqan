@@ -670,14 +670,8 @@ void setUpArgumentParser(ArgumentParser & parser, DFIOptions const &)
     setAppName(parser, "dfi");
     setShortDescription(parser, "Fast String Mining of Multiple Databases under Frequency Constraints");
     setCategory(parser, "Data Mining");
-#ifdef SEQAN_REVISION
-    setVersion(parser, "2.1 [" + std::string(SEQAN_REVISION) + "]");
-#else
-    setVersion(parser, "2.1");
-#endif
-#ifdef SEQAN_DATE
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
 
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE, "DATABASE", true));
     setValidValues(parser, 0, SeqFileIn::getFileExtensions());

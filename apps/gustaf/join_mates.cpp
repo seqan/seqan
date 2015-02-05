@@ -82,8 +82,8 @@ parseCommandLine(JoinMatesOptions & options, int argc, char const ** argv)
     seqan::ArgumentParser parser("gustaf_mate_joining");
     // Set short description, version, and date.
     setShortDescription(parser, "Joining paired-end files.");
-    setVersion(parser, "0.1");
-    setDate(parser, "July 2012");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
 
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \"\\fIMATES1 FASTA/FASTQ FILE\\fP\" \"\\fIMATES2 FASTA/FASTQ FILE\\fP\"");

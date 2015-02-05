@@ -45,7 +45,6 @@
 #include <seqan/bam_io.h>
 
 #include "roi_builder.h"
-#include "version.h"
 
 // ==========================================================================
 // Classes
@@ -134,8 +133,8 @@ parseCommandLine(Options & options, int argc, char const ** argv)
 
     // Set short description, version, and date.
     setShortDescription(parser, "Create ROI from BAM file.");
-    setVersion(parser, VERSION);
-    setDate(parser, DATE);
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
 
     // Define usage line and long description.
     addUsageLine(parser, "\\fB-if\\fP \\fIIN.bam\\fP \\fB-of\\fP \\fIOUT.roi\\fP");

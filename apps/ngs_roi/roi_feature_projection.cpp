@@ -47,7 +47,6 @@
 
 #include "project_interval.h"
 #include "project_spliced.h"
-#include "version.h"
 
 // ==========================================================================
 // Classes
@@ -657,8 +656,8 @@ parseCommandLine(RoiIntersectOptions & options, int argc, char const ** argv)
 
     // Set short description, version, and date.
     setShortDescription(parser, "Region Of Interest Projection.");
-    setVersion(parser, VERSION);
-    setDate(parser, DATE);
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
 
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fB-ir\\fP \\fIIN.roi\\fP \\fB-if\\fP \\fIIN.{bed,gff,gtf}\\fP \\fB-or\\fP \\fIOUT.roi\\fP");
