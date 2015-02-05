@@ -22,10 +22,11 @@ def escapeForXml(s):
 
 def escapeName(name):
     """Escape a name such that it is safe to use for files and anchors."""
+    """TODO(rmaerker): Encode special chars using urllib.quote(c.encode('utf8'))"""
     escape = '_'
     xs = []
     for c in name:
-        if c.isalpha() or c in ['-']:
+        if c.isalnum() or c in ['-']:
             xs.append(c)
         else:
             xs += [escape, str(ord(c))]
