@@ -87,7 +87,7 @@ Assignment 1
    Solution
      .. container:: foldable
 
-        .. includefrags: demos/tutorial/seed_and_extend/solution1.cpp
+        .. includefrags:: demos/tutorial/seed_and_extend/solution1.cpp
 
 Seed Extension
 ~~~~~~~~~~~~~~

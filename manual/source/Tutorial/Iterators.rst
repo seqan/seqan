@@ -119,7 +119,7 @@ Note that :dox:`BidirectionalIteratorConcept#goPrevious` is called before the va
 Remember that the end position of a container is always the position behind the last item in the container.
 
 .. includefrags:: demos/tutorial/iterators/sequence_iterator_demo.cpp
-   :fragment: iterator-reverse
+   :fragment: iterators-reverse
 
 :dox:`RandomAccessContainerConcept#assignValue` can be used to change the value of an iterator.
 
@@ -149,7 +149,7 @@ Assignment 1
      Adjust the code to use iterators to traverse the container.
      Use the :dox:`ContainerIteratorTags#Standard` iterator.
 
-     .. code-block::cpp
+     .. code-block:: cpp
 
         #include <iostream>
         #include <seqan/sequence.h>

@@ -369,7 +369,7 @@ Assignment 3
         If you add the shorter sequence at first to ``strings``, then you simply have to flip the ``bool`` values of the AlignConfig object.
 
         .. includefrags:: demos/tutorial/alignments/alignment_global_assignment3.cpp
-           :fragment: alignments
+           :fragment: alignment
 
         .. includefrags:: demos/tutorial/alignments/alignment_global_assignment3.cpp
            :fragment: view
@@ -646,7 +646,7 @@ Assignment 5
          We store the begin position of the hit in `locations`.
 
          .. includefrags:: demos/tutorial/alignments/pairwise_sequence_alignment_assignment5.cpp
-            :fragment: verfication
+            :fragment: verification
 
          In the second part of the algorithm we iterate over all reported locations.
          This time we compute a semi-global alignment since we won't penalize gaps at the beginning and at the end of our pattern.

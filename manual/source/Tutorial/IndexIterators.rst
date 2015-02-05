@@ -224,7 +224,7 @@ The following two figures give an example in which order the tree nodes are visi
 
 .. _figure-stree-postorder:
 
-.. figure:: streePreorder.png
+.. figure:: streePostorder.png
    :align: right
 
    Postorder DFS

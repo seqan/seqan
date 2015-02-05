@@ -270,7 +270,7 @@ Assignment 3
 
      .. code-block:: cpp
 
-        void computeLocalScore(seqan::String<char> const & subText, seqan::String<char> const & pattern)
+        int computeLocalScore(seqan::String<char> const & subText, seqan::String<char> const & pattern)
 
    Solution
      .. container:: foldable
