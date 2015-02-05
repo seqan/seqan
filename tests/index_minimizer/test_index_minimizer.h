@@ -10,10 +10,12 @@ using namespace seqan;
 
 SEQAN_DEFINE_TEST(test_index_minimizer_getOccurrences)
 {
-    typedef CharString                                            TText;
+    typedef DnaString                                             TText;
     typedef Infix<TText>::Type                                    TTextInfix;
     typedef Iterator<TText, Standard>::Type                       TTextIter;
     typedef Index<TText, IndexQGram<MinimizerShape<30,10> > >     TIndex;
+//    typedef Index<TText, IndexQGram<UngappedShape<10> > >     TIndex;
+
     typedef Fibre<TIndex, FibreSA>::Type const                    TSA;
     typedef Infix<TSA>::Type                                      TOccurrences;
 
@@ -27,21 +29,10 @@ SEQAN_DEFINE_TEST(test_index_minimizer_getOccurrences)
         hash(indexShape(index), textIt);
         TTextInfix textInfix = infix(text, textIt, textIt + length(indexShape(index)));
 
-        std::cout << textInfix << std::endl;
-        std::cout << value(indexShape(index)) << std::endl;
-
-//        Shape<Dna, UngappedShape<10> > tmpShape;
-//        tmpShape.
-
         TOccurrences occ = getOccurrences(index, indexShape(index), textInfix);
 
         for (unsigned i = 0; i < length(occ); i++)
-        {
-            std::cout << infix(text, occ[i], occ[i] + length(indexShape(index))) << std::endl;
-//            SEQAN_ASSERT_EQ(infix(text, occ[i], occ[i] + length(indexShape(index))), textInfix);
-        }
-
-        std::cout << "-----------------" << std::endl;
+            SEQAN_ASSERT_EQ(infix(text, occ[i], occ[i] + length(indexShape(index))), textInfix);
     }
 }
 

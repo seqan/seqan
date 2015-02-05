@@ -2717,6 +2717,18 @@ getOccurrences(Index<TText, IndexQGram<MinimizerShape<TSPAN, TWEIGHT, TShapeSpec
     return infix(indexSA(index), range.i1, range.i2);
 }
 
+template <typename TText, unsigned TSPAN, unsigned TWEIGHT, typename TShapeSpec, typename TSpec, typename TValue, typename TPattern>
+inline typename Infix<typename Fibre<Index<TText, IndexQGram<MinimizerShape<TSPAN, TWEIGHT, TShapeSpec>, TSpec> >, FibreSA>::Type const>::Type
+getOccurrences(Index<TText, IndexQGram<MinimizerShape<TSPAN, TWEIGHT, TShapeSpec>, TSpec> > &index,
+               Shape<TValue, MinimizerShape<TSPAN, TWEIGHT, TShapeSpec> > const &shape,
+               TPattern const & pattern)
+{
+    typedef Index<TText, IndexQGram<MinimizerShape<TSPAN, TWEIGHT, TShapeSpec>, TSpec> >    TIndex;
+
+    indexRequire(index, QGramSADir());
+    return getOccurrences(const_cast<TIndex const &>(index), shape, pattern);
+}
+
 //////////////////////////////////////////////////////////////////////////////
 /*!
  * @fn IndexQGram#countOccurrences
