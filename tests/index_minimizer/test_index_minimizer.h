@@ -10,42 +10,39 @@ using namespace seqan;
 
 SEQAN_DEFINE_TEST(test_index_minimizer_getOccurrences)
 {
-    DnaString text = "ACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTA";
-    Index<DnaString, IndexQGram< MinimizerShape<30,10> > > index(text);
-    Shape<Dna, MinimizerShape<30, 10> > myShape;
-    Shape<Dna, UngappedShape<30> > shape;
-//    std::cout << text << std::endl;
-//    std::cout << length(myShape) << " " << weight(myShape) << std::endl;
- //   for (int i = 0; i < length(text) - length(myShape) + 1; i++)
-  //  {
-   //     std::cout << hashNext(myShape, begin(text) + i) << " " << std::endl;
-   // } 
-//    hashInit(myShape, begin(text)); 
- //   for (int i=0; i < 10; i++) 
-  //      std::cout << hash(myShape, begin(text) + i) << " ";
-        //std::cout << hashNext(myShape, begin(text) + i) << std::endl;
- /*   resize(indexSA(index), _qgramQGramCount(index), Exact());
-    resize(indexDir(index), _fullDirLength(index), Exact());
-    _qgramClearDir(indexDir(index), index.bucketMap); 
-    _qgramCountQGrams(indexDir(index), indexBucketMap(index), indexText(index), myShape, getStepSize(index));
-    for (unsigned i = 0; i < _fullDirLength(index) ; i++)
-        std::cout << indexDir(index)[i] << " " ; 
-    std::cout << "done" << std::endl;
-    _qgramCummulativeSum(index.dir, False());
-    for (unsigned i = 0; i < _fullDirLength(index); i++)
-       std::cout << indexDir(index)[i] << " "; 
-    std::cout << std::endl;
-    _qgramFillSuffixArray(indexSA(index), indexText(index), indexShape(index), indexDir(index), indexBucketMap(index), getStepSize(index), False());
-*/
-    indexRequire(index, FibreSA());
-    for (unsigned k = 0; k < length(indexText(index)) - 30 + 1; k++)
+    typedef CharString                                            TText;
+    typedef Infix<TText>::Type                                    TTextInfix;
+    typedef Iterator<TText, Standard>::Type                       TTextIter;
+    typedef Index<TText, IndexQGram<MinimizerShape<30,10> > >     TIndex;
+    typedef Fibre<TIndex, FibreSA>::Type const                    TSA;
+    typedef Infix<TSA>::Type                                      TOccurrences;
+
+    TText text = "ACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTAACGCATTTTGCATTA";
+
+    TIndex index(text);
+
+    TTextIter textEnd = end(text, Standard()) - length(indexShape(index)) + 1;
+    for (TTextIter textIt = begin(text, Standard()); textIt != textEnd; textIt++)
     {
-        //std::cout << " searched k-mer starts at " << k <<"th position of the text" << std::endl;
-        hash(indexShape(index), begin(indexText(index)) + k);
-        for (unsigned i = 0; i < length(getOccurrences(index, indexShape(index))); i++) 
-        //std::cout << getOccurrences(index, indexShape(index))[i] <<" ";
-        SEQAN_ASSERT( hash(shape, begin(indexText(index)) + getOccurrences(index, indexShape(index))[i]) == indexShape(index).nhValue);
-    } 
+        hash(indexShape(index), textIt);
+        TTextInfix textInfix = infix(text, textIt, textIt + length(indexShape(index)));
+
+        std::cout << textInfix << std::endl;
+        std::cout << value(indexShape(index)) << std::endl;
+
+//        Shape<Dna, UngappedShape<10> > tmpShape;
+//        tmpShape.
+
+        TOccurrences occ = getOccurrences(index, indexShape(index), textInfix);
+
+        for (unsigned i = 0; i < length(occ); i++)
+        {
+            std::cout << infix(text, occ[i], occ[i] + length(indexShape(index))) << std::endl;
+//            SEQAN_ASSERT_EQ(infix(text, occ[i], occ[i] + length(indexShape(index))), textInfix);
+        }
+
+        std::cout << "-----------------" << std::endl;
+    }
 }
 
 /*SEQAN_DEFINE_TEST(testMinimizerFind)
