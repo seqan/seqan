@@ -136,8 +136,16 @@ parseCommandLine(AppOptions & options, int argc, char const ** argv)
     ArgumentParser parser("bisar");
     // Set short description, version, and date.
     setShortDescription(parser, "Pairwise four-letter realignment computation for bisulfite reads");
-    setVersion(parser, "0.1");
-    setDate(parser, "May 2014");
+#ifdef SEQAN_APP_VERSION
+    #ifdef SEQAN_REVISION
+        setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    #else
+        setVersion(parser, SEQAN_APP_VERSION);
+    #endif
+#endif
+#ifdef SEQAN_DATE
+    setDate(parser, SEQAN_DATE);
+#endif
     setCategory(parser, "BS-Seq Analysis");
 
     // Define usage line and long description.
