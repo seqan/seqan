@@ -191,9 +191,10 @@ macro (seqan_build_system_init)
 
     if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
         ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY"))
-        # Install SeqAn README.rst and LICENSE files.
+        # Install SeqAn LICENSE, README.rst, CHANGELOG.rst files.
         install (FILES LICENSE
                        README.rst
+                       CHANGELOG.rst
                  DESTINATION share/doc/seqan)
     endif ()
 
