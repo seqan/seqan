@@ -10,7 +10,7 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_mason2)
 message (STATUS "Configuring apps/mason2")
 
-set (SEQAN_APP_VERSION "2.0.0-beta2")
+set (SEQAN_APP_VERSION "2.0.0")
 
 # ----------------------------------------------------------------------------
 # Dependencies
