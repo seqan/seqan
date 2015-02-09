@@ -3,14 +3,13 @@
 {% block title %}{{ typedef.title|e }}{% endblock %}
 
 {% block content %}
-<h1 data-lang-entity="typedef" data-pimped="true"><a href="page_LanguageEntities.html#typedef">Typedef</a> <span>{{ typedef.title|e }}<div>{{ sections.brief(typedef) }}</div></span></h1>
+<h1 data-lang-entity="typedef" data-pimped="true">
+  <a href="page_LanguageEntities.html#typedef">Typedef</a> <span>{{ typedef.title|e }}<div>{{ sections.brief(typedef) }}</div></span>
+</h1>
 
-<div class="overview">
-	{{ sections.top_box(typedef) }}
+{{ sections.top_box(typedef) }}
 
-	{{ sections.signatures(typedef) }}
-</div>
-
+{% if typedef.internals or typedef.deprecation_msgs or typedef.warnings or typedef.notes or typedef.akas or not typedef.body.empty %}
 <h2>Overview</h2>
 <div class="docstring">
   <div class="discussion">
@@ -59,6 +58,7 @@
     {{ sections.body(typedef) }}
   </div>
 </div>
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(typedef) }}

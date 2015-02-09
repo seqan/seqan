@@ -1,0 +1,111 @@
+# ===========================================================================
+#                  SeqAn - The Library for Sequence Analysis
+# ===========================================================================
+# File: /apps/gustaf/CMakeLists.txt
+#
+# CMakeLists.txt file for gustaf.
+# ===========================================================================
+
+cmake_minimum_required (VERSION 2.8.2)
+project (seqan_apps_gustaf)
+message (STATUS "Configuring apps/gustaf")
+
+set (SEQAN_APP_VERSION "1.0.1")
+
+# ----------------------------------------------------------------------------
+# Dependencies
+# ----------------------------------------------------------------------------
+
+# Search SeqAn and select dependencies.
+#set (SEQAN_FIND_DEPENDENCIES NONE)
+find_package (SeqAn REQUIRED)
+
+# ----------------------------------------------------------------------------
+# Build Setup
+# ----------------------------------------------------------------------------
+
+# Add include directories.
+include_directories (${SEQAN_INCLUDE_DIRS})
+
+# Add definitions set by find_package (SeqAn).
+add_definitions (${SEQAN_DEFINITIONS})
+
+# Add definitions set by the build system.
+add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
+add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
+add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
+
+# Update the list of file names below if you add source files to your application.
+add_executable (gustaf gustaf.cpp
+                create_stellarmatches_from_file.h
+                gustaf_matepairs.h
+                msplazer.h
+                msplazer_algorithms.h
+                msplazer_main.h
+                msplazer_out.h
+                msplazer_parse_options.h
+                stellar_routines.h
+)
+
+add_executable (gustaf_mate_joining join_mates.cpp
+                create_stellarmatches_from_file.h
+                gustaf_matepairs.h
+                msplazer.h
+                msplazer_algorithms.h
+                msplazer_main.h
+                msplazer_out.h
+                msplazer_parse_options.h
+                stellar_routines.h
+)
+
+# Add dependencies found by find_package (SeqAn).
+target_link_libraries (gustaf ${SEQAN_LIBRARIES})
+target_link_libraries (gustaf_mate_joining ${SEQAN_LIBRARIES})
+
+# Add CXX flags found by find_package (SeqAn).
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+
+# ----------------------------------------------------------------------------
+# Installation
+# ----------------------------------------------------------------------------
+
+# Set variables for installing, depending on the selected build type.
+if (NOT SEQAN_PREFIX_SHARE_DOC)
+  seqan_setup_install_vars (gustaf)
+endif (NOT SEQAN_PREFIX_SHARE_DOC)
+
+# Install gustaf in ${PREFIX}/bin directory
+install (TARGETS gustaf gustaf_mate_joining
+         DESTINATION bin)
+
+# Install non-binary files for the package to "." for app builds and
+# ${PREFIX}/share/doc/gustaf for SeqAn release builds.
+install (FILES LICENSE
+               README
+         DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
+install (FILES example/adeno.fa
+               example/adeno_modified.fa
+               example/adeno_modified_reads.fa
+               example/stellar.gff
+         DESTINATION ${SEQAN_PREFIX_SHARE_DOC}/example)
+
+# ----------------------------------------------------------------------------
+# App Test
+# ----------------------------------------------------------------------------
+
+seqan_add_app_test (gustaf)
+
+
+# ----------------------------------------------------------------------------
+# CPack Install
+# ----------------------------------------------------------------------------
+
+if (SEQAN_BUILD_SYSTEM STREQUAL "APP:gustaf")
+  set (CPACK_PACKAGE_NAME "gustaf")
+  set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Gustaf - Generic multi-split alignment finder")
+  set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Kathrin Trappe <kathrin.trappe@fu-berlin.de>")
+  set (CPACK_PACKAGE_VENDOR "Kathrin Trappe <kathrin.trappe@fu-berlin.de>")
+
+  seqan_configure_cpack_app (gustaf "gustaf")
+endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:gustaf")
+

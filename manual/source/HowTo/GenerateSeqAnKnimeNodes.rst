@@ -73,11 +73,11 @@ The following example will demonstrate the creation of a SeqAn app and its regis
 
 .. code-block:: console
 
-   ~ # svn co http://svn.seqan.de/seqan/trunk seqan-trunk
-   ~ # cd seqan-trunk
-   ~ # ./util/bin/skel.py app knime_node sandbox/my_sandbox
+   ~ # git clone http://github.com/seqan/seqan seqan-src
+   ~ # cd seqan-src
+   ~ # ./util/bin/skel.py app knime_node .
 
-Now open the file *seqan-trunk/sandbox/my_sandbox/apps/knime_node/knime_node.cpp* and replace its content with the one found in *seqan-trunk/core/demos/knime_node.cpp*.
+Now open the file *seqan-src/apps/knime_node/knime_node.cpp* and replace its content with the one found in *seqan-src/demos/knime_node.cpp*.
 The code implements the reading of a read file and its storage somewhere on the disk.
 
 In order to register the app ``knime_node``, you simply add the line
@@ -86,7 +86,7 @@ In order to register the app ``knime_node``, you simply add the line
 
     set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} knime_node CACHE INTERNAL "")
 
-to *seqan-trunk/sandbox/my_sandbox/apps/knime_node/CMakeList.txt*.
+to *seqan-trunk/apps/knime_node/CMakeList.txt*.
 
 Then, you can generate the Knime Nodes/Eclipse plugin.
 First, change to the directory GenericKnimeNodes that we cloned using git earlier.
@@ -94,18 +94,19 @@ We then execute ant and pass the variables ``knime.sdk`` with the path to the KN
 
 .. code-block:: console
 
-   ~ # mkdir -p seqan-trunk-build/release
-   ~ # seqan-trunk-build/release
-   ~ # cd seqan-trunk-build/release
-   release # cmake ../../seqan-trunk
+   ~ # mkdir -p seqan-build/release
+   ~ # seqan-build/release
+   ~ # cd seqan-build/release
+   release # cmake ../../seqan-src
    release # make prepare_workflow_plugin
    release # cd ~/knime_node/GenericKnimeNodes
    GenericKnimeNodes # ant -Dknime.sdk=${HOME}/eclipse_knime_2.8.0 \
-                         -Dplugin.dir=${HOME}/seqan-trunk-build/release/workflow_plugin_dir
+                         -Dplugin.dir=${HOME}/seqan-build/release/workflow_plugin_dir
 
 The generated files are within the *generated_plugin* directory of the directory *GenericKnimeNodes*.
 
-If you ran into problems, you may copy the file :download:`my_sandbox.zip <my_sandbox.zip>`, which contains a fully functional sandbox with the ``knime_node`` app and the adjusted *CMakeList.txt* file.
+If you ran into problems, you may copy the file :download:`knime_node_app.zip <knime_node_app.zip>`, which contains the ``knime_node`` app and the adjusted *CMakeList.txt* file.
+Unpack this file in the ``apps`` directory.
 You still have to call *ant* though.
 
 Importing the Generated Projects into Eclipse

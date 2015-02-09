@@ -83,6 +83,14 @@
 #  SEQAN_LIBRARIES
 #  SEQAN_DEFINITIONS
 #
+# Additionally, the following two variables are set.  The first contains
+# the include paths for SeqAn, the second for dependencies.  This allows to
+# include the dependency headers using include_directories (SYSTEM ...),
+# such that warnings from these headers do not appear in the nightly builds.
+#
+#  SEQAN_INCLUDE_DIRS_MAIN
+#  SEQAN_INCLUDE_DIRS_DEPS
+#
 # The C++ compiler flags to set.
 #
 #  SEQAN_CXX_FLAGS
@@ -95,10 +103,6 @@
 #  SEQAN_VERSION_MINOR
 #  SEQAN_VERSION_PATCH
 #
-# When you want to use the SeqAn build system and the core/extras/sandbox
-# layout then you can switch this on by setting the following variable to ON.
-#
-#  SEQAN_USE_SEQAN_BUILD_SYSTEM
 # ============================================================================
 
 include(FindPackageMessage)
@@ -220,12 +224,12 @@ endif (MSVC)
 # Search for directory seqan.
 # ----------------------------------------------------------------------------
 
-option (SEQAN_USE_SEQAN_BUILD_SYSTEM "Whether or not to expect the SeqAn build system with core/extras structure." OFF)
+option (SEQAN_USE_SEQAN_BUILD_SYSTEM "Whether or not to expect the SeqAn build system." OFF)
 
 if (SEQAN_USE_SEQAN_BUILD_SYSTEM)
   # When using the SeqAn build system, we scan all entries in
   # CMAKE_INCLUDE_PATH for a subdirectory seqan and add all paths to the
-  # variable SEQAN_INCLUDE_DIRS.
+  # variable SEQAN_INCLUDE_DIRS_MAIN.
   set (_SEQAN_INCLUDE_DIRS "")
   foreach (_SEQAN_BASEDIR ${CMAKE_INCLUDE_PATH})
     if (EXISTS ${_SEQAN_BASEDIR}/seqan)
@@ -236,7 +240,7 @@ if (SEQAN_USE_SEQAN_BUILD_SYSTEM)
 
   if (_SEQAN_INCLUDE_DIRS)
     set(SEQAN_FOUND        TRUE)
-    set(SEQAN_INCLUDE_DIRS ${SEQAN_INCLUDE_DIRS} ${_SEQAN_INCLUDE_DIRS})
+    set(SEQAN_INCLUDE_DIRS_MAIN ${SEQAN_INCLUDE_DIRS_MAIN} ${_SEQAN_INCLUDE_DIRS})
   else (_SEQAN_INCLUDE_DIRS)
     set(SEQAN_FOUND        FALSE)
   endif (_SEQAN_INCLUDE_DIRS)
@@ -247,7 +251,7 @@ else (SEQAN_USE_SEQAN_BUILD_SYSTEM)
   mark_as_advanced(_SEQAN_BASEDIR)
   if (_SEQAN_BASEDIR)
     set(SEQAN_FOUND        TRUE)
-    set(SEQAN_INCLUDE_DIRS ${SEQAN_INCLUDE_DIRS} ${_SEQAN_BASEDIR})
+    set(SEQAN_INCLUDE_DIRS_MAIN ${SEQAN_INCLUDE_DIRS_MAIN} ${_SEQAN_BASEDIR})
   else ()
     set(SEQAN_FOUND        FALSE)
   endif ()
@@ -267,10 +271,12 @@ endif ()
 # Search for dependencies.
 # ----------------------------------------------------------------------------
 
-# librt -- implicit, on Linux only
+# librt, libpthread -- implicit, on Linux only
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt)
+  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} rt pthread)
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
+  set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} pthread)
 endif ()
 
 # libexecinfo -- implicit
@@ -279,6 +285,9 @@ check_include_files(execinfo.h _SEQAN_HAVE_EXECINFO)
 mark_as_advanced(_SEQAN_HAVE_EXECINFO)
 if (_SEQAN_HAVE_EXECINFO)
   set(SEQAN_DEFINITIONS ${SEQAN_DEFINITIONS} "-DSEQAN_HAS_EXECINFO=1")
+  if (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
+    set (SEQAN_LIBRARIES ${SEQAN_LIBRARIES} execinfo)
+  endif (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
 endif (_SEQAN_HAVE_EXECINFO)
 
 
@@ -298,9 +307,9 @@ if (NOT _SEQAN_FIND_ZLIB EQUAL -1)
   find_package(ZLIB QUIET)
   if (ZLIB_FOUND)
     set (SEQAN_HAS_ZLIB     TRUE)
-    set (SEQAN_LIBRARIES    ${SEQAN_LIBRARIES}    ${ZLIB_LIBRARIES})
-    set (SEQAN_INCLUDE_DIRS ${SEQAN_INCLUDE_DIRS} ${ZLIB_INCLUDE_DIRS})
-    set (SEQAN_DEFINITIONS  ${SEQAN_DEFINITIONS}  "-DSEQAN_HAS_ZLIB=1")
+    set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${ZLIB_LIBRARIES})
+    set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${ZLIB_INCLUDE_DIRS})
+    set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_ZLIB=1")
   endif ()
 endif ()
 
@@ -314,9 +323,9 @@ if (NOT _SEQAN_FIND_BZIP2 EQUAL -1)
   find_package(BZip2 QUIET)
   if (BZIP2_FOUND)
     set (SEQAN_HAS_BZIP2    TRUE)
-    set (SEQAN_LIBRARIES    ${SEQAN_LIBRARIES}    ${BZIP2_LIBRARIES})
-    set (SEQAN_INCLUDE_DIRS ${SEQAN_INCLUDE_DIRS} ${BZIP2_INCLUDE_DIRS})
-    set (SEQAN_DEFINITIONS  ${SEQAN_DEFINITIONS}  "-DSEQAN_HAS_BZIP2=1")
+    set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${BZIP2_LIBRARIES})
+    set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${BZIP2_INCLUDE_DIRS})
+    set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_BZIP2=1")
   endif ()
 endif()
 
@@ -334,18 +343,29 @@ if (NOT _SEQAN_FIND_OPENMP EQUAL -1)
   # only the C++ compiler (e.g. on winter 2013's Mac Os X).
   if (OpenMP_CXX_FLAGS)
     set (SEQAN_HAS_OPENMP   TRUE)
-    set (SEQAN_LIBRARIES    ${SEQAN_LIBRARIES}    ${OpenMP_LIBRARIES})
-    set (SEQAN_INCLUDE_DIRS ${SEQAN_INCLUDE_DIRS} ${OpenMP_INCLUDE_DIRS})
-    set (SEQAN_DEFINITIONS  ${SEQAN_DEFINITIONS}  "-DSEQAN_HAS_OPENMP=1")
-    set (SEQAN_CXX_FLAGS    "${SEQAN_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set (SEQAN_LIBRARIES         ${SEQAN_LIBRARIES}         ${OpenMP_LIBRARIES})
+    set (SEQAN_INCLUDE_DIRS_DEPS ${SEQAN_INCLUDE_DIRS_DEPS} ${OpenMP_INCLUDE_DIRS})
+    set (SEQAN_DEFINITIONS       ${SEQAN_DEFINITIONS}       "-DSEQAN_HAS_OPENMP=1")
+    set (SEQAN_CXX_FLAGS        "${SEQAN_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
   endif ()
 endif ()
 
 # CUDA
 
-set (SEQAN_HAS_CUDA       FALSE)
+list(FIND SEQAN_FIND_DEPENDENCIES "CUDA" _SEQAN_FIND_CUDA)
+mark_as_advanced(_SEQAN_FIND_CUDA)
 
-# TODO(holtgrew): Implement search for CUDA.
+set (SEQAN_HAS_CUDA FALSE)
+if (SEQAN_ENABLE_CUDA AND NOT _SEQAN_FIND_CUDA EQUAL -1)
+  find_package(CUDA QUIET)
+  if (CUDA_FOUND)
+    set (SEQAN_HAS_CUDA TRUE)
+  endif ()
+endif (SEQAN_ENABLE_CUDA AND NOT _SEQAN_FIND_CUDA EQUAL -1)
+
+# Build SEQAN_INCLUDE_DIRS from SEQAN_INCLUDE_DIRS_MAIN and SEQAN_INCLUDE_DIRS_DEPS
+
+set (SEQAN_INCLUDE_DIRS ${SEQAN_INCLUDE_DIRS_MAIN} ${SEQAN_INCLUDE_DIRS_DEPS})
 
 # ----------------------------------------------------------------------------
 # Determine and set SEQAN_VERSION_* variables.
@@ -360,7 +380,7 @@ if (NOT DEFINED SEQAN_VERSION_STRING)
            _SEQAN_COMPILE_RESULT
            ${CMAKE_BINARY_DIR}/CMakeFiles/SeqAnVersion
            ${CMAKE_CURRENT_LIST_DIR}/SeqAnVersion.cpp
-           CMAKE_FLAGS "-DINCLUDE_DIRECTORIES:STRING=${SEQAN_INCLUDE_DIRS}"
+           CMAKE_FLAGS "-DINCLUDE_DIRECTORIES:STRING=${SEQAN_INCLUDE_DIRS_MAIN}"
            COMPILE_OUTPUT_VARIABLE _COMPILE_OUTPUT
            RUN_OUTPUT_VARIABLE _RUN_OUTPUT)
   if (NOT _RUN_OUTPUT)
@@ -415,6 +435,8 @@ if (SEQAN_FIND_DEBUG)
   message("  SEQAN_HAS_CUDA             ${SEQAN_HAS_CUDA}")
   message("")
   message("  SEQAN_INCLUDE_DIRS         ${SEQAN_INCLUDE_DIRS}")
+  message("  SEQAN_INCLUDE_DIRS_DEPS    ${SEQAN_INCLUDE_DIRS_DEPS}")
+  message("  SEQAN_INCLUDE_DIRS_MAIN    ${SEQAN_INCLUDE_DIRS_MAIN}")
   message("  SEQAN_LIBRARIES            ${SEQAN_LIBRARIES}")
   message("  SEQAN_DEFINITIONS          ${SEQAN_DEFINITIONS}")
   message("  SEQAN_CXX_FLAGS            ${SEQAN_CXX_FLAGS}")

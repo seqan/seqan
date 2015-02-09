@@ -26,10 +26,15 @@ SeqAn Manual
 ------------
 
 The SeqAn manual is created using the `Sphinx <http://sphinx-doc.org/>`_ documentation system.
-You can build it from the `manual` folder:
+
+Follow these instructions to setup a local sphinx environment and build the manual:
 
 .. code-block:: console
 
-   manual # make html
+    $ virtualenv ~/seqan-manual-env
+    $ source ~/seqan-manual-env/bin/activate
+    (seqan-manual-env) $ cd ~/seqan/manual
+    (seqan-manual-env) $ pip install -r requirements.txt
+    (seqan-manual-env) $ make html
 
 Note that you have to first build the dox documentation since plugins for generating the ``:dox:`` links rely on the generated search index for checks.

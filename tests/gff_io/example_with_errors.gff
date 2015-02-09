@@ -1,0 +1,19 @@
+ctg123	.	mRNA	1300	9000	.	+	.	ID=mrna0001;Name="sonichedgehog;hehe"
+ctg123	.	exon	1300	1500	.	+	.	ID=exon00001;Parent=mrn a0001;Name
+ytg123
+atg123	
+wtg123	.
+ftg123	.	
+gtg123	.	exon
+atg123	.	exon	
+btg123	.	exon	1050
+ctg123	.	exon	1050	
+dtg123	.	exon	1050	1500
+etg123	.	exon	1050	1500	
+ftg123	.	exon	1050	1500	.
+gtg123	.	exon	1050	1500	.	
+htg123	.	exon	1050	1500	.	+
+itg123	.	exon	1050	1500	.	+	
+jtg123	.	exon	1050	1500	.	+	.	
+ctg123	.	exon	1050	1500	.	+	.	ID=exon00002;Name;Parent=mrna0001
+ctg123	.	exon	1550	1500	.	+	.	ID=exon00002;Name;Parent=mrna0001

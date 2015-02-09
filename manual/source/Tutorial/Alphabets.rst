@@ -157,4 +157,4 @@ Assignment 1
 
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/alphabets/alphabet_assignment_1_solution.cpp
+        .. includefrags:: demos/tutorial/alphabets/alphabet_assignment_1_solution.cpp

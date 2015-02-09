@@ -1,0 +1,168 @@
+                                    Bisar
+            Pairwise four-letter realignment computation for bisulfite reads
+
+                                Version 0.1
+                                 May, 2014
+
+---------------------------------------------------------------------------
+Table of Contents
+---------------------------------------------------------------------------
+  1.   Overview
+  3.   Usage
+  4.   Output Format
+  5.   Example
+  6.   Contact
+  7.   References
+
+---------------------------------------------------------------------------
+1. Overview
+---------------------------------------------------------------------------
+
+Bisar reads three-letter mappings of bisulfite reads and computes 
+local pairwise four-letter realignments using an advanced statistical 
+alignment model. The alignment scoring scheme incorporates the global 
+methylation rate, the bisulfite conversion rate and base qualities combined 
+with base dependent sequencing error frequencies.
+Mapping qualities are computed and after the final verification step only 
+unique four-letter alignments are given out in a SAM file.
+
+---------------------------------------------------------------------------
+3. Usage
+---------------------------------------------------------------------------
+
+To get a short usage description of Bisar, you can execute bisar -h or 
+bisar --help.
+
+Usage: bisar [OPTION]... <MAPPED READ FILE> <GENOME FILE> <READS FILE>
+       bisar [OPTION]... <MAPPED READ FILE> <GENOME FILE> <PE-READS FILE1> <PE-READS FILE2>
+
+
+---------------------------------------------------------------------------
+3.1. Main Options
+---------------------------------------------------------------------------
+
+
+  [ -o  FILE ],  [--output-file FILE ]
+
+  Mapping output file. Valid filetype is: .sam.
+  
+  [ -e3 NUM ],  [ --max3-error NUM ]
+
+  Max. error rate in 3-letter alphabet. In range [0..100]. Default: 3.
+
+  [ -e4 NUM ],  [ --max4-error NUM ]
+
+  Max. error rate in 4-letter alphabet. In range [0..100]. Default: 4.
+
+  [ -mq NUM ],  [ --min-mapq NUM ]
+
+  Min required mapping quality. In range [0..inf]. Default: 1.
+
+  [ -nse ],  [ --ns-subst-errors ]
+
+  Use empirical substitution error frequencies of Illumina sequencing
+  data for alignment scoring scheme (corresponding to Dohm et al. 2008).
+   
+  [ -nsi ],  [ --ns-ins-errors ]
+
+  Use empirical insertion error frequencies of Illumina sequencing data for 
+  alignment scoring scheme (corresponding to Minoche et al. 2011).
+
+  [ -nsd ],  [ --ns-del-errors ]
+
+  Use empirical deletion error frequencies of Illumina sequencing data for 
+  alignment scoring scheme (corresponding to Minoche et al. 2011).
+
+  [ -der NUM ],  [ --del-error-rate NUM ]
+
+  Deletion error rate. In range [0..1]. Default: 0.001.
+
+  [ -gas NUM ],  [ --gap-open-score NUM ]
+
+  Gap open score (original, must be proportional to mismatch scores).
+  Default: -4.5.
+
+  [ -ges NUM ],  [ --gap-extend-score NUM ]
+
+  Gap extend score. Default: -2.
+
+  [ -bsc NUM ],  [ --bs-conversion-rate NUM ]
+
+  Bisulfite conversion rate. In range [0..1]. Default: 0.99.
+
+  [ -gmr NUM ],  [ --global-meth-rate NUM ]
+
+  Global methylation rate. In range [0..1]. Default: 0.5.
+
+  [ -i NUM ],  [ --seq-identity NUM ]
+
+  Sequence identity used for substitution matrix. In range [0..1].
+  Default: 0.9.
+
+  [ -rn NUM ],  [ --ref-n NUM ]
+
+  Rate of Ns in reference sequence. In range [0..1]. Default: 0.01.
+
+  [ -q ],  [ --quiet ]
+
+  Set verbosity to a minimum.
+
+  [ -v ],  [ --verbose ]
+
+  Enable verbose output.
+
+  [ -vv ],  [ --very-verbose ]#
+
+  Enable very verbose output.
+
+  [ -h ],  [ --help ]
+
+  Displays this help message.
+  
+  [ --version ]
+
+  Display version information.
+
+
+---------------------------------------------------------------------------
+4. Output Format
+---------------------------------------------------------------------------
+
+The verified four-letter pairwise alignments are given out in SAM format.
+
+See http://samtools.sourceforge.net/ for more details.
+
+---------------------------------------------------------------------------
+5. Example
+---------------------------------------------------------------------------
+
+In order to compute realignments for all reads with up to 4% errors in their 
+three-letter alignment, while allowing up to 5% errors in four-letter 
+alignments call:
+
+  bisar -e3 4 -e4 5 -o mapped_reads_verified.sam mapped_reads.sam \
+   genome.fa reads.fastq
+
+To compute the respective realignments for paired-end reads call:
+
+  bisar -e3 4 -e4 5 -o mapped_reads_verified.sam mapped_reads.sam \
+   genome.fa reads_L.fastq reads_R.fastq
+
+---------------------------------------------------------------------------
+6. Contact
+---------------------------------------------------------------------------
+
+For questions or comments, contact:
+  Sabrina Krakau <sabrina.krakau@fu-berlin.de>
+or
+  David Weese <david.weese@fu-berlin.de>
+
+---------------------------------------------------------------------------
+7. References
+---------------------------------------------------------------------------
+
+More detailed information about the underlying method you can find in the 
+following document:
+http://www.mi.fu-berlin.de/en/inf/groups/abi/theses/master_dipl/krakau/
+msc_thesis_krakau.pdf?1394119375
+

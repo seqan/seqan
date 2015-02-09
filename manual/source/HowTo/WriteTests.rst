@@ -42,15 +42,15 @@ A skeleton and example for a test suite program look as follows:
 Getting Started With Our Test Template
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To make creating tests easier, the :ref:`code generator skel.py <how-to-use-the-code-generator>` has a command to generate test skelletons for you.
-As parameters, you give it the name of the module you want to test and the path to the repository (core, extras or a sandbox).
-For example, use ``skel.py tests my_module sandbox/my_sandbox`` to create tests for the module *my_module* in the sandbox *sandbox/my_sandbox*:
+To make creating tests easier the code generator ``util/bin/skel.py`` has a command to generate test skelletons for you.
+As parameters, you give it the name of the module you want to test and the path to the repository.
+For example, use ``skel.py tests my_module .`` to create tests for the module *my_module* in the directory ``tests``:
 
 .. code-block:: console
 
-   seqan $ ./util/bin/skel.py test my_module sandbox/my_sandbox
+   seqan $ ./util/bin/skel.py test my_module .
    ...
-   sandbox/my_sandbox/tests/my_module/
+   tests/my_module/
    ├── CMakeLists.txt
    ├── test_my_module.cpp
    └── test_my_module.h
@@ -63,10 +63,10 @@ Afterwards, you can compile and run the tests:
    $ cd build/Debug
    $ cmake ../..
    $ make test_my_module
-   $ ./core/tests/my_module/test_my_module
+   $ ./tests/my_module/test_my_module
    ...
 
-Note that when adding new tests then you have to add them to the dependencies of the test target in *sandbox/my_sandbox/tests/my_module/CMakeLists.txt*.
+Note that when adding new tests then you have to add them to the dependencies of the test target in *tests/my_module/CMakeLists.txt*.
 
 Test Macros
 ~~~~~~~~~~~

@@ -58,12 +58,12 @@ Exact Search
 The following code snippet illustrates the usage of online search algorithms in SeqAn using the example of the Hoorspool algorithm :cite:`Horspool1980`.
 We begin by creating two strings of type ``char`` containing the ``haystack`` and the ``needle``.
 
-.. includefrags:: core/demos/tutorial/find/find_exact.cpp
+.. includefrags:: demos/tutorial/find/find_exact.cpp
    :fragment: initialization
 
 We then create :dox:`Finder` and :dox:`Pattern` objects of these strings and choose :dox:`HorspoolPattern Horspool` as the specialization in the second template argument of :dox:`Pattern`.
 
-.. includefrags:: core/demos/tutorial/find/find_exact.cpp
+.. includefrags:: demos/tutorial/find/find_exact.cpp
    :fragment: output
 
 Program output:
@@ -127,7 +127,7 @@ Assignment 1
    Hint
      Online search algorithms for multiple sequences simply expect needles of type ``String<String<...> >``.
 
-     .. includefrags:: core/demos/tutorial/find/find_assignment1.cpp
+     .. includefrags:: demos/tutorial/find/find_assignment1.cpp
 
      You can use the specialization :dox:`WuManberPattern WuManber`.
 
@@ -136,7 +136,7 @@ Assignment 1
 
       .. container:: foldable
 
-         .. includefrags:: core/demos/tutorial/find/find_assignment1_solution.cpp
+         .. includefrags:: demos/tutorial/find/find_assignment1_solution.cpp
 
 	 We use a :dox:`Pattern` specialized with the :dox:`WuManberPattern WuManber` algorithm for the search and initialize it with our ``needles`` string.
 	 For every match found by :dox:`Finder#find` we output the begin and end position and the match region in the ``haystack`` as well as the index of the found ``needle`` which is returned by ``position(pattern)``.
@@ -161,7 +161,7 @@ We want to find all semi-global alignments of a ``needle`` "more" with a :dox:`S
 
 Again, we create ``haystack`` and ``needle`` strings first:
 
-.. includefrags:: core/demos/tutorial/find/find_approx.cpp
+.. includefrags:: demos/tutorial/find/find_approx.cpp
    :fragment: initialization
 
 We then create :dox:`Finder` and :dox:`Pattern` objects of these strings and choose :dox:`DPSearchPattern DPSearch` as the specialization in the second template argument of :dox:`Pattern`.
@@ -172,7 +172,7 @@ If such a semi-global alignment end position is found the begin position is sear
 Please note that we have to set the minimum score to the score of the match found (:dox:`LocalAlignmentEnumerator#getScore`) in order to find the begin of a best match.
 We then output all begin and end positions and the corresponding ``haystack`` segment for each match found.
 
-.. includefrags:: core/demos/tutorial/find/find_approx.cpp
+.. includefrags:: demos/tutorial/find/find_approx.cpp
    :fragment: output
 
 Program output:
@@ -219,7 +219,7 @@ Assignment 2
 
       .. container:: foldable
 
-         .. includefrags:: core/demos/tutorial/find/find_assignment2_solution.cpp
+         .. includefrags:: demos/tutorial/find/find_assignment2_solution.cpp
 
 	 We again set the ``needle`` to ``"more"``.
 	 We then change the specialization tag of the :dox:`Pattern` to :dox:`MyersPattern Myers` with default arguments.
@@ -256,18 +256,18 @@ The following source illustrates the usage of an index based search in SeqAn usi
 This is the default index specialization if no second template argument for the index is given.
 We begin to create an index object of our ``haystack`` ``"tobeornottobe"`` and a ``needle`` ``"be"``.
 
-.. includefrags:: core/demos/tutorial/find/find_index.cpp
+.. includefrags:: demos/tutorial/find/find_index.cpp
    :fragment: initialization
 
 We proceed to create a :dox:`Pattern` of the needle and conduct the search in the usual way.
 
-.. includefrags:: core/demos/tutorial/find/find_index.cpp
+.. includefrags:: demos/tutorial/find/find_index.cpp
    :fragment: output
 
 Instead of creating and using a pattern solely storing the ``needle`` we can pass the needle directly to :dox:`Finder#find`.
 Please note that an :dox:`Index` based :dox:`Finder` has to be reset with :dox:`Finder#clear` before conducting another search.
 
-.. includefrags:: core/demos/tutorial/find/find_index.cpp
+.. includefrags:: demos/tutorial/find/find_index.cpp
    :fragment: output_short
 
 Program output:
@@ -282,12 +282,12 @@ Program output:
 All indices also support :dox:`StringSet` texts and can therefore be used to search multiple ``haystacks`` as the following example shows.
 We simply exchange the :dox:`CharString` of the haystack with a :dox:`StringSet` of :dox:`CharString` and append some strings to it.
 
-.. includefrags:: core/demos/tutorial/find/find_index_multiple.cpp
+.. includefrags:: demos/tutorial/find/find_index_multiple.cpp
    :fragment: initialization
 
 The rest of the program remains unchanged.
 
-.. includefrags:: core/demos/tutorial/find/find_index_multiple.cpp
+.. includefrags:: demos/tutorial/find/find_index_multiple.cpp
    :fragment: output
 
 .. code-block:: console
@@ -330,7 +330,7 @@ Assignment 3
 
       .. container:: foldable
 
-         .. includefrags:: core/demos/tutorial/find/find_assignment3_solution.cpp
+         .. includefrags:: demos/tutorial/find/find_assignment3_solution.cpp
 
 	 We simply add a second template argument to the definition of the :dox:`Index` as described in the documentation of the :dox:`OpenAddressingQGramIndex Open Adressing QGram Index`.
 	 As shape we can use an :dox:`UngappedShape` of length 4.

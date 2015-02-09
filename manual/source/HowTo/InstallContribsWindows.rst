@@ -35,12 +35,12 @@ You now have to re-run CMake to find the libraries.
 You also have to remove the CMake Cache so it finds the new libraries.
 You might also need to update your SeqAn Checkout.
 
-The following assumes that your checkout is in ``c:\seqan-trunk`` and your build directory is ``c:\seqan-build\vs10``.
+The following assumes that your git clone is in ``c:\seqan-src`` and your build directory is ``c:\seqan-build\vs10``.
 
 .. code-block:: console
 
-    > cd c:\seqan-trunk
-    > svn update .
+    > cd c:\seqan-src
+    > git pull
     > cd c:\seqan-build\vs10
     > del CMakeCache.txt
-    > cmake c:\seqan-trunk -G "Visual Studio 2010"
+    > cmake c:\seqan-src -G "Visual Studio 2010"
