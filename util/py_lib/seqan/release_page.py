@@ -9,6 +9,7 @@ import re
 import sys
 import time
 import xml.sax.saxutils
+from distutils.version import StrictVersion
 
 import pyratemp
 
@@ -182,7 +183,9 @@ class RssWriter(object):
         """Create output RSS files."""
         for sname, software in self.package_db.softwares.items():
             feed = RssFeed(sname, '', '')
-            for vname, version in software.versions.items():
+            vnames = [key for key in software.versions.keys()]
+            vnames.sort(key=StrictVersion, reverse=True)
+            for vname in vnames:
                 description = 'Version %s of %s.' % (vname, sname)
                 link = '%s/%s#%s' % (self.base_url, sname, vname)
                 item = RssItem('%s %s' % (sname, vname), description, link)
