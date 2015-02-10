@@ -59,11 +59,11 @@ namespace SEQAN_NAMESPACE_MAIN
  * @headerfile <seqan/file.h>
  * @brief Standard configuration for the @link ExternalString @endlink.
  *
- * @signature template <[typename TFile[, unsigned PAGE_SIZE[, unsigned FRAMES]]>
+ * @signature template <[typename TFile[, unsigned PAGESIZE[, unsigned FRAMES]]>
  *            struct ExternalConfig;
  *
  * @tparam TFile     The @link File @endlink type to use.  Default: <tt>File&lt;&gt;</tt>.
- * @tparam PAGE_SIZE The number of values in one page.  This should be a power of 2 to speed up transfer and
+ * @tparam PAGESIZE The number of values in one page.  This should be a power of 2 to speed up transfer and
  *                   calculations.  Default: 2<sup>20</sup>.
  * @tparam FRAMES    The number of pages that should reside in internal memory.  To enable prefetching and automatic
  *                   swap-out, <tt>frames</tt> should be greater than 1.  Default: 2.
@@ -81,11 +81,11 @@ namespace SEQAN_NAMESPACE_MAIN
  * @headerfile <seqan/file.h>
  * @brief Large size type configuration for the @link ExternalString @endlink.
  *
- * @signature template <[typename TFile[, unsigned PAGE_SIZE[, unsigned FRAMES]]>
+ * @signature template <[typename TFile[, unsigned PAGESIZE[, unsigned FRAMES]]>
  *            struct ExternalConfigLarge;
  *
  * @tparam TFile     The @link File @endlink type to use.  Default: <tt>File&lt;&gt;</tt>.
- * @tparam PAGE_SIZE The number of values in one page.  This should be a power of 2 to speed up transfer and
+ * @tparam PAGESIZE The number of values in one page.  This should be a power of 2 to speed up transfer and
  *                   calculations.  Default: 2<sup>20</sup>.
  * @tparam FRAMES    The number of pages that should reside in internal memory.  To enable prefetching and automatic
  *                   swap-out, <tt>frames</tt> should be greater than 1.  Default: 2.
@@ -106,12 +106,12 @@ namespace SEQAN_NAMESPACE_MAIN
  * @headerfile <seqan/file.h>
  * @brief Arbitrary size type configuration for @link ExternalString @endlink.
  *
- * @signature template <typename TSize[, typename TFile[, unsigned PAGE_SIZE[, unsigned FRAMEs]]]>
+ * @signature template <typename TSize[, typename TFile[, unsigned PAGESIZE[, unsigned FRAMEs]]]>
  *            class ExternalConfigSize;
  *
  * @tparam TSize The size type of the ExternalString.
  * @tparam TFile Type of file the ExternalString will be based on.  Defaults to <tt>File&lt;&gt;</tt>.
- * @tparam PAGE_SIZE The number of values in one page.  This should be a power of 2 to speed up transfer and
+ * @tparam PAGESIZE The number of values in one page.  This should be a power of 2 to speed up transfer and
  *                   calculations.  Default: 2<sup>20</sup>.
  * @tparam FRAMES    The number of pages that should reside in internal memory.  To enable prefetching and automatic
  *                   swap-out, <tt>frames</tt> should be greater than 1.  Default: 2.
