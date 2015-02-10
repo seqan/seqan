@@ -292,8 +292,7 @@ struct Difference<ContainerView<TContainer, TSpec> >
 template <typename TContainer, typename TSpec>
 struct Size<ContainerView<TContainer, TSpec> >
 {
-    typedef typename Difference<TContainer>::Type       TDifference;
-    typedef typename MakeUnsigned<TDifference>::Type    Type;
+    typedef typename Size<TContainer>::Type Type;
 };
 
 // ----------------------------------------------------------------------------
