@@ -32,6 +32,11 @@ if (MSVC)
     return ()
 endif()
 
+if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
+    message (STATUS "  Not building fiona on 32bit architectures.")
+    return ()
+endif()
+
 # ----------------------------------------------------------------------------
 # Build Setup
 # ----------------------------------------------------------------------------
