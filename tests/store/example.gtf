@@ -1,0 +1,8 @@
+140	.	inter	5141	8522	.	-	.	gene_id "gene1"; transcript_id "trans2";
+140	.	inter_CNS	8523	9711	.	-	.	gene_id "gene1"; transcript_id "trans2";
+140	.	inter	9712	13182	.	-	.	gene_id "gene1"; transcript_id "trans2";
+140	.	3UTR	65149	65487	.	-	.	gene_id "140.000"; transcript_id "140.000.1";
+140	.	3UTR	66823	66992	.	-	.	gene_id "140.000"; transcript_id "140.000.1";
+140	.	stop_codon	66993	66995	.	-	.	gene_id "140.000"; transcript_id "140.000.1";
+140	.	CDS	66996	66999	.	-	.	gene_id "140.000"; transcript_id "140.000.1";
+140	.	intron_CNS	70103	70151	.	-	.	gene_id "140.000"; transcript_id "140.000.1";

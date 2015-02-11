@@ -9,10 +9,13 @@ import re
 import sys
 import time
 import xml.sax.saxutils
+from distutils.version import StrictVersion
 
 import pyratemp
 
-# Patterns matching seqan apps and library.
+# Patterns matching seqan srcs, apps and library.
+SRC_PATTERN = (r'seqan-src-([0-9])\.([0-9])(?:\.([0-9]))?\.'
+                   '(tar\.gz|tar\.bz2|zip)')
 LIBRARY_PATTERN = (r'seqan-library-([0-9])\.([0-9])(?:\.([0-9]))?\.'
                    '(tar\.gz|tar\.bz2|zip)')
 APPS_PATTERN = (r'seqan-apps-([0-9])\.([0-9])(?:\.([0-9]))?-'
@@ -70,6 +73,7 @@ class PackageDatabase(object):
         self.path = path
         self.seqan_apps = Software('SeqAn Apps')
         self.seqan_library = Software('SeqAn Library')
+        self.seqan_src = Software('SeqAn Sources')
         self.softwares = {}
 
     def load(self):
@@ -80,7 +84,17 @@ class PackageDatabase(object):
                 for y in os.listdir(os.path.join(self.path, x)):
                     xs.append(y)
         for x in xs:
-            if re.match(LIBRARY_PATTERN, x):
+            if re.match(SRC_PATTERN, x):
+                major, minor, patch, suffix = re.match(SRC_PATTERN, x).groups()
+                if not patch:
+                    patch = '0'
+                major_minor_patch = '%s.%s.%s' % (major, minor, patch)
+                software = self.seqan_src
+                if not major_minor_patch in software.versions:
+                    software.versions[major_minor_patch] = Version(major_minor_patch)
+                version = software.versions[major_minor_patch]
+                version.packages['src'].archs['src'].files[suffix] = x
+            elif re.match(LIBRARY_PATTERN, x):
                 major, minor, patch, suffix = re.match(LIBRARY_PATTERN, x).groups()
                 if not patch:
                     patch = '0'
@@ -169,7 +183,9 @@ class RssWriter(object):
         """Create output RSS files."""
         for sname, software in self.package_db.softwares.items():
             feed = RssFeed(sname, '', '')
-            for vname, version in software.versions.items():
+            vnames = [key for key in software.versions.keys()]
+            vnames.sort(key=StrictVersion, reverse=True)
+            for vname in vnames:
                 description = 'Version %s of %s.' % (vname, sname)
                 link = '%s/%s#%s' % (self.base_url, sname, vname)
                 item = RssItem('%s %s' % (sname, vname), description, link)
@@ -192,6 +208,7 @@ def work(options):
         f.write(tpl(FORMATS=FORMATS,
                     seqan_apps=db.seqan_apps,
                     seqan_library=db.seqan_library,
+                    seqan_src=db.seqan_src,
                     softwares=db.softwares,
                     utc_time=time.strftime('%a, %d %b %Y %H:%M:%S UTC', time.gmtime()),
                     sorted=sorted))

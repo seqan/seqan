@@ -15,7 +15,7 @@ Creating A New Built-In Score Matrix
 
 The following program demonstrate how to implement a new built-in score matrix.
 
-.. includefrags:: core/demos/howto/scores/init_score.cpp
+.. includefrags:: demos/howto/scores/init_score.cpp
    :fragment: includes
 
 Then, we perform the necessary definitions for the matrix.
@@ -26,12 +26,12 @@ This consists of three steps:
 
 Note how we use enum values to compute the matrix size which itself is retrieved from the :dox:`FiniteOrderedAlphabetConcept#ValueSize` metafunction.
 
-.. includefrags:: core/demos/howto/scores/init_score.cpp
+.. includefrags:: demos/howto/scores/init_score.cpp
    :fragment: user-defined-matrix
 
 We define a function ``showScoringMatrix`` for displaying a matrix.
 
-.. includefrags:: core/demos/howto/scores/init_score.cpp
+.. includefrags:: demos/howto/scores/init_score.cpp
    :fragment: show-scoring-matrix
 
 Finally, the function ``main`` function demostrates some of the things you can do with scores:
@@ -42,7 +42,7 @@ Finally, the function ``main`` function demostrates some of the things you can d
 * Programatically fill the matrix with the user-defined matrix values (3.3)
 * Directly create a score matrix with the user-defined matrix values (4)
 
-.. includefrags:: core/demos/howto/scores/init_score.cpp
+.. includefrags:: demos/howto/scores/init_score.cpp
    :fragment: main
 
 Here is the output of the program:
@@ -170,21 +170,21 @@ Loading Score Matrices From File
 ------------------------------------
 
 This small demo program shows how to load a score matrix from a file.
-Examples for score file are ``core/demos/howto/scores/dna_example.txt`` for DNA alphabets and ``core/tests/score/PAM250`` for amino acids.
+Examples for score file are ``demos/howto/scores/dna_example.txt`` for DNA alphabets and ``tests/sPAM250`` for amino acids.
 
 Include the necessary headers.
 
-.. includefrags:: core/demos/howto/scores/load_score.cpp
+.. includefrags:: demos/howto/scores/load_score.cpp
    :fragment: includes
 
 We define a function that can show a scoring matrix.
 
-.. includefrags:: core/demos/howto/scores/load_score.cpp
+.. includefrags:: demos/howto/scores/load_score.cpp
    :fragment: show-scoring-matrix
 
 Finally, the main program loads the scoring matrix from the file given on the command line and then shows it.
 
-.. includefrags:: core/demos/howto/scores/load_score.cpp
+.. includefrags:: demos/howto/scores/load_score.cpp
    :fragment: main
 
 Here's the program output.

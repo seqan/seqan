@@ -10,4 +10,4 @@ file:///Users/YOURUSERNAME/seqan-trunk/util/ports
 
 Then install the SeqAn port by:
 
-sudo port install seqan
+sudo port install seqan seqan-apps

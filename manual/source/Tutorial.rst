@@ -41,9 +41,10 @@ Tutorial
 
    Tutorial/Graphs
 
-   Tutorial/BasicSequenceIO
+   Tutorial/InputOutputOverview
+   Tutorial/SequenceIO
    Tutorial/IndexedFastaIO
-   Tutorial/BasicSamBamIO
+   Tutorial/SamBamIO
    Tutorial/VcfIO
    Tutorial/BedIO
    Tutorial/GffGtfIO
@@ -58,14 +59,10 @@ Tutorial
 
    Tutorial/AnnotationStore
 
-   Tutorial/InputOutputOverview
-   Tutorial/SequenceFileIO
-   Tutorial/SamBamIO
-   Tutorial/FileIO
-   Tutorial/LexicalCasting
-   Tutorial/Parsing
-
    Tutorial/FragmentStore
+   Tutorial/ConsensusAlignment
+   Tutorial/Realignment
+
    Tutorial/SimpleRnaSeq
    Tutorial/SimpleReadMapping
    Tutorial/MiniBowtie
@@ -162,25 +159,32 @@ The article :ref:`build-manual-integration-with-your-own-build-system` contains 
   This section of the tutorial introduces you to the graph type in SeqAn.
   We will discuss the various graph specializations and show you how to create directed and undirected graphs as well as HMMs, how to store additional information for edges and vertices and last but not least how to apply standard algorithms to the graphs.
 
-.. rubric:: :rubric-heading2:`I/O Basics`
+.. rubric:: :rubric-heading2:`Input/Output`
 
-:ref:`tutorial-basic-sequence-io`
-  Basic Sequence I/O This tutorial explains how to use the high-level API for reading and writing sequence files.
+:ref:`tutorial-input-output-overview`
+  This article gives an overview of the formatted file I/O functionality in SeqAn.
+
+:ref:`tutorial-sequence-io`
+  This tutorial explains how to access FASTA, FASTQ, EMBL and GenBank sequence files.
 
 :ref:`tutorial-indexed-fasta-io`
-  Indexed FASTA I/O This tutorial explains how to use FASTA index files for quick random access within FASTA files: read contigs or just sections without having to read through whole FASTA file.
+  This tutorial explains how to use FASTA index files for quick random access within FASTA files: read contigs or just sections without having to read through whole FASTA file.
 
-:ref:`tutorial-basic-sam-bam-io`
-  Basic SAM and BAM I/O This tutorial explains how to use the high-level API for reading and writing SAM and BAM files.
+:ref:`tutorial-sam-bam-io`
+  This tutorial explains how to access SAM and BAM files.
 
 :ref:`tutorial-vcf-io`
-  VCF I/O This tutorial explains how to use the high-level API for reading and writing VCF files.
+  This tutorial explains how to access VCF files.
 
 :ref:`tutorial-bed-io`
-  BED I/O This tutorial explains how to use the high-level API for reading and writing BED files.
+  This tutorial explains how to access BED files.
 
 :ref:`tutorial-gff-and-gtf-io`
-  GFF and GTF I/O This tutorial explains how to use the high-level API for reading and writing GFF and GTF files.
+  This tutorial explains how to access GFF and GTF files.
+
+.. DISABLED :ref:`tutorial-custom-io`
+  This tutorial explains how to access files in your own format.
+
 
 .. rubric:: :rubric-heading2:`Modifiers`
 
@@ -208,37 +212,6 @@ The article :ref:`build-manual-integration-with-your-own-build-system` contains 
 :ref:`tutorial-genome-annotations`
   You will learn how to work with annotations in SeqAn and analyzing them, using the :dox:`FragmentStore::annotationStore` which is part of SeqAn's :dox:`FragmentStore`.
 
-.. rubric:: :rubric-heading2:`More I/O`
-
-These tutorials explain how to use the I/O functionality in SeqAn beyond the basic sequence, SAM/BAM and indexed FASTA I/O from above.
-The tutorials are targeted at developers that either want to use the lower level I/O routines in SeqAn or write their own parsers.
-We recommended to start out reading the I/O Overview and then jump to the chapter that interests you most.
-In this Section we introduce the three main techniques of programming in SeqAn, namely the ''global function interface'', the use of
-''Metafunctions'', and the concept of  ''Template subclassing''.
-
-:ref:`tutorial-input-output-overview`
-  This article gives an overview of the I/O functionality in SeqAn.
-
-After reading, you will have a better understanding of the different bits in this section of the library.
-The following tutorials introduce the lower level I/O routines for specific file formats.
-
-:ref:`tutorial-sequence-file-io`
-  This tutorial explains the RecordReader- and Stream-based interface for reading sequence files.
-
-:ref:`tutorial-sam-bam-io`
-  This tutorial explains the lower level API for reading and writing SAM and BAM files.
-
-Read the following tutorials to learn how to write your own I/O routines.
-
-:ref:`tutorial-file-io`
-  This chapter shows how to use the file I/O facilities of SeqAn, including streams, compressed streams and memory mapped files.
-
-:ref:`tutorial-lexical-casting`
-  This tutorial explains the :dox:`lexicalCast` and :dox:`lexicalCast2` functions that allow to convert strings representing numbers into their numeric values.
-
-:ref:`tutorial-parsing`
-  In this part of the tutorial, you will be introduced to the parsing and tokenizing functionality using the RecordReader class.
-  You will get the necessary information to write your own file parsers.
 
 .. rubric:: :rubric-heading1:`Advanced Tutorials`
 
@@ -246,6 +219,13 @@ Read the following tutorials to learn how to write your own I/O routines.
   This tutorial shows how to use the fragment store which is a database for read mapping, sequence assembly or gene annotation.
   It supports to read/write multiple read alignments in SAM or AMOS format and access and modify them.
   It supports to read/write gene annotations in GFF/GTF and UCSC format, to create custom annotation types, and to traverse and modify the annotation tree.
+
+:ref:`tutorial-consensus-alignment`
+  This tutorial describes how to compute consensus alignments from NGS reads or other nucleic sequence, such as transcripts.
+  The DNA sequences are stored in a fragment store, such that rough alignment information is available.
+
+:ref:`tutorial-realignment`
+  This tutorial describes how to use SeqAn's realignment module for refining multi-read alignment (or other sequences) stored in a fragment store.
 
 :ref:`tutorial-simple-rna-seq`
   In this tutorial you will learn how to implement a simple RNA-Seq based gene quantification tool, that computes RPKM expression levels based on a given genome annotation and RNA-Seq read alignments.

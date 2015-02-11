@@ -74,9 +74,9 @@ Lines starting with a hash show the command line where the user types in
 the command.
 
 Generally, we do not give full paths to the binary. For example, if we
-just compiled the example application ``core/demos/graph_algo_bfs.cpp``
+just compiled the example application ``demos/graph_algo_bfs.cpp``
 and call it, the shell would use ``graph_algo_bfs`` instead of
-``./core/demos/graph_algo_bfs`` in the call.
+``./demos/graph_algo_bfs`` in the call.
 
 ::
 

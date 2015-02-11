@@ -2,7 +2,7 @@
 
 # get some infos from git to embed it in the build name
 export SOURCE_DIRECTORY=`pwd`
-mkdir _build
+mkdir -p _build
 
 # define the build name
 if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then

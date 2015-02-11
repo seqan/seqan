@@ -24,7 +24,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-EN">
     <head>
-        <title>Package Releases | SeqAn</title>
+        <title>Packages | SeqAn</title>
         <!-- Meta Tags --> 
         <meta http-equiv="X-UA-Compatible" content="IE=9">
         <!-- Enable IE9 Standards mode --> <!-- WordPress --> 
@@ -119,15 +119,14 @@
                                     <p class="hideme">Breadcrumbs</p>
                                     <ul>
                                         <li class="first"><a href="http://www.seqan.de">SeqAn</a></li>
-                                        <li class="active">Package Releases</li>
+                                        <li class="active">Packages</li>
                                     </ul>
                                 </div>
-                                <h1 class="main_headline" style="margin-top:0;">Package Releases</h1>
+                                <h1 class="main_headline" style="margin-top:0;">Packages</h1>
 <!-- custom -->
     <h2>SeqAn Library</h2>
     <p>
-      Below, you find links to the SeqAn library releases.
-      The releases contain the library and demo source code as well as the API documentation.
+      The following packages contain SeqAn library headers and their HTML API documentation.
     </p>
 
     <table>
@@ -149,39 +148,37 @@
       <!--(end)-->
     </table>
 
-    <h2>SeqAn Apps Bundle</h2>
+    <h2>SeqAn Sources</h2>
     <p>
-      On each SeqAn release, the apps are also released in a bundle.
-      The version number is the same as the one of the corresponding SeqAn release.
-      See below for individual app releases.
+      The following packages contain the whole SeqAn repository.
     </p>
 
     <table>
       <tr>
         <th>Version</th>
-        <th>Linux</th>
-        <th>Mac</th>
-        <th>Windows</th>
+        <th>Platform Independent Download</th>
       </tr>
-      <!--(for version in sorted(seqan_apps.versions.values(), key=lambda x:x.version, reverse=True))-->
+      <!--(for version in sorted(seqan_src.versions.values(), key=lambda x:x.version, reverse=True))-->
       <tr>
-        <td>@!version.version!@</td>
-        @!packages_cell(prefix='seqan-apps', packages=version.packages['Linux'])!@
-        @!packages_cell(prefix='seqan-apps', packages=version.packages['Mac'])!@
-        @!packages_cell(prefix='seqan-apps', packages=version.packages['Windows'])!@
+        <td id="@!version.version!@">@!version.version!@</td>
+        <td>
+        <!--(for f in FORMATS)-->#!
+          <!--(if version.packages['src'].archs['src'].files.get(f))-->#!
+           <a href="seqan-src/@!version.packages['src'].archs['src'].files[f]!@">@!f!@</a>
+          <!--(end)-->
+        <!--(end)-->
+        </td>
       </tr>
       <!--(end)-->
     </table>
 
-    <h2>Individual App Releases</h2>
+    <h2>Individual Apps</h2>
     <p>
-      The SeqAn apps are also released independently of the apps bundle release.
-      You can find the builds below.
-      The version numbers are independent of any SeqAn release number.
+      The following packages contain individual SeqAn apps.
     </p>
 
     <ul>
-    <!--(for software in sorted(softwares.values(), key=lambda x:x.name, reverse=True))-->
+    <!--(for software in sorted(softwares.values(), key=lambda x:x.name))-->
       <li><a href="@!software.name!@">@!software.name!@</a></li>
     <!--(end)-->
 <!-- end: custom -->

@@ -67,8 +67,11 @@ include (SeqAnUsabilityAnalyzer)
 # ---------------------------------------------------------------------------
 
 # We need the /bigobj switch on windows (for 64 bit builds only actually).
+# Set target system to be Windows Vista and later.
 if (MSVC)
-  add_definitions (/bigobj)
+  add_definitions (/bigobj /D_WIN32_WINNT=0x0600 /DWINVER=0x0600)
+elseif (MINGW)
+  add_definitions (-D_WIN32_WINNT=0x0600 -DWINVER=0x0600)
 endif (MSVC)
 
 # ---------------------------------------------------------------------------
@@ -79,7 +82,9 @@ endif (MSVC)
 # ---------------------------------------------------------------------------
 
 if (MINGW)
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=i586")
+	if ("${CMAKE_SIZEOF_VOID_P}" EQUAL "4")
+	    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=i586")
+	endif ("${CMAKE_SIZEOF_VOID_P}" EQUAL "4")
 endif (MINGW)
 
 # ---------------------------------------------------------------------------
@@ -109,10 +114,8 @@ function (add_executable NAME)
     # Call overwritten _add_executable.
     _add_executable(${ARGV})
 
-    # Add dependencies on parts of the SeqAn library.
-    foreach (PART ${SEQAN_LIBRARY_PARTS})
-        add_dependencies(${NAME} ${PART})
-    endforeach ()
+    # Add dependencies on the SeqAn library.
+    add_dependencies(${NAME} seqan_library)
 
     # Add dependency on the SUA target.
     seqan_add_sua_dependency (${NAME})
@@ -188,21 +191,20 @@ macro (seqan_build_system_init)
 
     if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
         ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY"))
-        # Install SeqAn README.rst and LICENSE files.
+        # Install SeqAn LICENSE, README.rst, CHANGELOG.rst files.
         install (FILES LICENSE
                        README.rst
+                       CHANGELOG.rst
                  DESTINATION share/doc/seqan)
     endif ()
 
     set (SEQAN_BUILD_SYSTEM "DEVELOP" CACHE STRING "Build/Release mode to select. One of DEVELOP SEQAN_RELEASE, APP:\${APP_NAME}. Defaults to DEVELOP.")
 
+    set (_CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/include")
+    set (CMAKE_INCLUDE_PATH ${_CMAKE_INCLUDE_PATH} CACHE STRING "")
+
     SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY
          ${PROJECT_BINARY_DIR}/bin)
-
-    # TODO(holtgrew): The initialization stuff from the old build system.
-
-    # Enable testing if configured so.
-    seqan_setup_sua ()
 endmacro (seqan_build_system_init)
 
 # ---------------------------------------------------------------------------
@@ -231,20 +233,20 @@ macro (seqan_add_app_test APP_NAME)
 endmacro (seqan_add_app_test APP_NAME)
 
 # ---------------------------------------------------------------------------
-# Macro seqan_setup_library (NAME [OTHER_NAMES])
+# Macro seqan_setup_library ()
 #
 # * Creates install targets for the library.
 # * Writes list SeqAn headers to ${_SEQAN_HEADERS}
-# * Appends NAME and all other names to SEQAN_LIBRARY_PARTS.
 # ---------------------------------------------------------------------------
 
-macro (seqan_setup_library NAME)
+macro (seqan_setup_library)
     # Only install the library if the virtual build packages "SEQAN_RELEASE"
     # or "SEQAN_LIBRARY_ONLY" are chosen.
     if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
         ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY"))
         file (GLOB HEADERS
               RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+              include/seqan/[A-z]*/[A-z]/[A-z]*.h
               include/seqan/[A-z]*/[A-z]*.h
               include/seqan/[A-z]*.h)
         foreach (HEADER ${HEADERS})
@@ -256,6 +258,12 @@ macro (seqan_setup_library NAME)
     # Get list of header and super header files.
     file (GLOB SUPER_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan/[A-z]*.h)
     file (GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan/[A-z]*/[A-z]*.h)
+    file (GLOB SUB_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include/seqan/[A-z]*/[A-z]*/[A-z]*.h)
+
+    # Sort headers for Xcode, ...
+    if (SUB_HEADERS)
+        list (SORT SUB_HEADERS)
+    endif (SUB_HEADERS)
 
     # Sort headers for Xcode, ...
     if (HEADERS)
@@ -286,14 +294,8 @@ macro (seqan_setup_library NAME)
     # Add pseudo target for the library part.  Note that the IDE_SOURCES
     # variable includes the "SOURCES" argument for add_custom_target when
     # building with a generator for an IDE.
-    set (TARGET_NAME seqan_${NAME})
-    add_custom_target (${TARGET_NAME} SOURCES ${HEADERS} ${SUPER_HEADERS})
-
-    # Register the SeqAn library part (e.g. core, extras) as a target name.
-    foreach (PART_NAME ${ARGV})
-        list (APPEND SEQAN_LIBRARY_PARTS seqan_${PART_NAME})
-    endforeach (PART_NAME ${ARGV})
-endmacro (seqan_setup_library NAME)
+    add_custom_target (seqan_library SOURCES ${SUB_HEADERS} ${HEADERS} ${SUPER_HEADERS})
+endmacro (seqan_setup_library)
 
 # ---------------------------------------------------------------------------
 # Macro seqan_setup_install_vars (APP_NAME)
@@ -381,6 +383,65 @@ macro (seqan_configure_cpack_app APP_NAME APP_DIR)
   include (CPack)
 endmacro (seqan_configure_cpack_app)
 
+
+# ---------------------------------------------------------------------------
+# Macro seqan_setup_cuda_vars ([DISABLE_WARNINGS] [DEBUG_DEVICE]
+#                              [ARCH sm_xx] [FLAGS flags ...])
+#
+# Setup CUDA variables.
+# ---------------------------------------------------------------------------
+
+macro (seqan_setup_cuda_vars)
+  cmake_parse_arguments(_SEQAN_CUDA
+                        "DISABLE_WARNINGS;DEBUG_DEVICE"
+                        "ARCH"
+                        "FLAGS"
+                        ${ARGN})
+  if (SEQAN_HAS_CUDA)
+    # Wrap nvcc to make cudafe output gcc-like.
+    find_program (COLOR_NVCC colornvcc PATHS ${CMAKE_SOURCE_DIR}/util NO_DEFAULT_PATH)
+    set (CUDA_NVCC_EXECUTABLE ${COLOR_NVCC})
+
+    # Build CUDA targets from the given architecture upwards.
+    set (CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -arch ${_SEQAN_CUDA_ARCH} ${_SEQAN_CUDA_FLAGS}")
+
+    # Add debug symbols to device code.
+    if (_SEQAN_CUDA_DISABLE_WARNINGS)
+      set (CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -G")
+    endif ()
+
+    # Add flags for the CUDA compiler.
+    list (APPEND CUDA_NVCC_FLAGS_RELEASE "-O3")
+    list (APPEND CUDA_NVCC_FLAGS_MINSIZEREL "-O3")
+    list (APPEND CUDA_NVCC_FLAGS_RELWITHDEBINFO "-O3 -g -lineinfo")
+    list (APPEND CUDA_NVCC_FLAGS_DEBUG "-O0 -g -lineinfo")
+
+    if (_SEQAN_CUDA_DISABLE_WARNINGS)
+      # Disable all CUDA warnings.
+      set (CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} --disable-warnings")
+    else ()
+      # Disable only Thrust warnings.
+      string (REGEX REPLACE "-Wall" ""
+              SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS}")
+      string (REGEX REPLACE "-pedantic" ""
+              SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS}")
+      if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -Wno-unused-parameter")
+      endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+    endif ()
+
+    # Fix CUDA on OSX.
+    if (APPLE AND COMPILER_IS_CLANG)
+      # (weese:) I had to deactivate the C compiler override to make it compile again
+      # NVCC mistakes /usr/bin/cc as gcc.
+      #list (APPEND CUDA_NVCC_FLAGS "-ccbin /usr/bin/clang")
+      # NVCC does not support libc++.
+      set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -stdlib=libstdc++")
+    endif ()
+  endif ()
+endmacro (seqan_setup_cuda_vars)
+
+
 # ---------------------------------------------------------------------------
 # Function seqan_get_version()
 #
@@ -393,7 +454,7 @@ macro (seqan_get_version)
           _SEQAN_COMPILE_RESULT
           ${CMAKE_BINARY_DIR}/CMakeFiles/SeqAnVersion
           ${CMAKE_CURRENT_SOURCE_DIR}/util/cmake/SeqAnVersion.cpp
-          CMAKE_FLAGS -DINCLUDE_DIRECTORIES:STRING=${CMAKE_CURRENT_SOURCE_DIR}/core/include
+          CMAKE_FLAGS -DINCLUDE_DIRECTORIES:STRING=${CMAKE_CURRENT_SOURCE_DIR}/include
           COMPILE_OUTPUT_VARIABLE _COMPILE_OUTPUT
           RUN_OUTPUT_VARIABLE _RUN_OUTPUT)
   if (NOT _RUN_OUTPUT)
@@ -406,30 +467,23 @@ macro (seqan_get_version)
   string(REGEX REPLACE ".*SEQAN_VERSION_MINOR:([0-9a-zA-Z]+).*" "\\1" SEQAN_VERSION_MINOR ${_RUN_OUTPUT})
   string(REGEX REPLACE ".*SEQAN_VERSION_PATCH:([0-9a-zA-Z]+).*" "\\1" SEQAN_VERSION_PATCH ${_RUN_OUTPUT})
   string(REGEX REPLACE ".*SEQAN_VERSION_PRE_RELEASE:([0-9a-zA-Z]+).*" "\\1" SEQAN_VERSION_PRE_RELEASE ${_RUN_OUTPUT})
-    set(SEQAN_VERSION "${SEQAN_VERSION_MAJOR}.${SEQAN_VERSION_MINOR}.${SEQAN_VERSION_PATCH}")
-  if (SEQAN_VERSION_PRE_RELEASE STREQUAL 1)
-    set(SEQAN_VERSION "pre${SEQAN_VERSION}")
-  endif (SEQAN_VERSION_PRE_RELEASE STREQUAL 1)
+  set(SEQAN_VERSION "${SEQAN_VERSION_MAJOR}.${SEQAN_VERSION_MINOR}.${SEQAN_VERSION_PATCH}")
+#  if (SEQAN_VERSION_PRE_RELEASE STREQUAL 1)
+#    set(SEQAN_VERSION "pre${SEQAN_VERSION}")
+#  endif (SEQAN_VERSION_PRE_RELEASE STREQUAL 1)
 endmacro (seqan_get_version)
 
 # ---------------------------------------------------------------------------
 # Function seqan_get_repository_info()
 #
-# Sets the variables SEQAN_DATE and SEQAN_REVISION determined from the git or
-# svn repository.
+# Sets the variables SEQAN_DATE and SEQAN_REVISION determined from git.
 # ---------------------------------------------------------------------------
 
 macro (seqan_get_repository_info)
-  set (_SEQAN_SVN_DIR "${CMAKE_SOURCE_DIR}/.svn")
   set (_SEQAN_GIT_DIR "${CMAKE_SOURCE_DIR}/.git")
 
-  # Get SVN or Git information.
-  if (EXISTS ${_SEQAN_SVN_DIR})
-    find_package (Subversion QUIET)
-    if (Subversion_FOUND)
-      Subversion_WC_INFO (${CMAKE_SOURCE_DIR} _SEQAN)
-    endif ()
-  elseif (EXISTS ${_SEQAN_GIT_DIR})
+  # Get Git information.
+  if (EXISTS ${_SEQAN_GIT_DIR})
     find_package (GitInfo QUIET)
     if (GIT_FOUND)
       GIT_WC_INFO (${CMAKE_SOURCE_DIR} _SEQAN)
@@ -451,6 +505,7 @@ macro (seqan_get_repository_info)
     set (SEQAN_REVISION "${_SEQAN_WC_REVISION}" CACHE INTERNAL "SeqAn repository revision.")
     message (STATUS "  Determined repository revision is ${SEQAN_REVISION}")
    else ()
+    set (SEQAN_REVISION "tarball" CACHE INTERNAL "SeqAn repository revision.")
     message (STATUS "  Repository revision not determined.")
   endif ()
 endmacro (seqan_get_repository_info)
@@ -520,40 +575,44 @@ macro (seqan_install_demos_release)
     set (CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DSEQAN_ENABLE_DEBUG=0")
     set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DSEQAN_ENABLE_DEBUG=1")
 
-    # Get a list of all .cpp files in the current directory.
+    # Get a list of all .cpp and .cu files in the current directory.
     file (GLOB ENTRIES
           RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-          ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cpp)
+          ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cpp
+          ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cu)
 
     # Get path to current source directory, relative from root.  Will be used to install demos in.
     file (RELATIVE_PATH INSTALL_DIR "${SEQAN_ROOT_SOURCE_DIR}" "${CMAKE_CURRENT_SOURCE_DIR}")
-    # Strip prefixes "core/" and "extras/".
-    string (REPLACE "core/" "" INSTALL_DIR "${INSTALL_DIR}")
-    string (REPLACE "extras/" "" INSTALL_DIR "${INSTALL_DIR}")
 
     # Install all demo files into "share/doc/seqan/demos" (demos comes from INSTALL_DIR).
     install (FILES ${ENTRIES} DESTINATION "share/doc/seqan/${INSTALL_DIR}")
 endmacro (seqan_install_demos_release)
 
 macro (seqan_build_demos_develop PREFIX)
-    # Get a list of all .cpp files in the current directory.
+    # Get a list of all .cpp and .cu files in the current directory.
     file (GLOB_RECURSE ENTRIES
           RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-          ${CMAKE_CURRENT_SOURCE_DIR}/**.cpp)
+          ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cpp
+          ${CMAKE_CURRENT_SOURCE_DIR}/[!.]*.cu)
 
     # Find SeqAn with all dependencies.
     set (SEQAN_FIND_DEPENDENCIES ALL)
     find_package (SeqAn REQUIRED)
 
-    # Add flags for SeqAn.
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
+    # Setup include directories and definitions for SeqAn; flags follow below.
     include_directories (${SEQAN_INCLUDE_DIRS})
     add_definitions (${SEQAN_DEFINITIONS})
 
     # Supress unused parameter warnings for demos.
     if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
-        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
+        set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} -Wno-unused-parameter")
     endif (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
+
+    # Setup flags for CUDA demos.
+    seqan_setup_cuda_vars(ARCH sm_20 DEBUG_DEVICE DISABLE_WARNINGS)
+
+    # Add SeqAn flags to CXX and NVCC flags.
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
     # Add all demos with found flags in SeqAn.
     foreach (ENTRY ${ENTRIES})
@@ -562,12 +621,20 @@ macro (seqan_build_demos_develop PREFIX)
         get_filename_component (BIN_NAME "${BIN_NAME}" NAME_WE)
 
         get_filename_component (FILE_NAME "${ENTRY}" NAME)
-        if (NOT "${FILE_NAME}" MATCHES "^\\.")
+        if ("${FILE_NAME}" MATCHES "\\.cu$")
+            if (SEQAN_HAS_CUDA)
+                cuda_add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
+                target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
+                if (APPLE AND COMPILER_IS_CLANG)
+                    set_target_properties (${PREFIX}${BIN_NAME} PROPERTIES LINK_FLAGS -stdlib=libstdc++)
+                endif ()
+                _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
+            endif ()
+        else ()
             add_executable(${PREFIX}${BIN_NAME} ${ENTRY})
             target_link_libraries (${PREFIX}${BIN_NAME} ${SEQAN_LIBRARIES})
+            _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
         endif ()
-
-        _seqan_setup_demo_test (${ENTRY} ${PREFIX}${BIN_NAME})
     endforeach (ENTRY ${ENTRIES})
 endmacro (seqan_build_demos_develop)
 
@@ -607,6 +674,12 @@ macro (seqan_register_tests)
     set (SEQAN_FIND_ENABLE_DEBUG TRUE)
     set (SEQAN_FIND_ENABLE_TESTING TRUE)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+
+    # Remove NDEBUG definition for tests.
+    string (REGEX REPLACE "-DNDEBUG" ""
+            CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+    string (REGEX REPLACE "-DNDEBUG" ""
+            CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
 
     # Conditionally enable coverage mode by setting the appropriate flags.
     if (MODEL STREQUAL "NightlyCoverage")

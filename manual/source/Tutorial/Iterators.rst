@@ -88,42 +88,42 @@ A Working Example
 Let us now clarify the usage of iterators with a working example.
 The following program demonstrates the usage of iterators.
 
-.. includefrags:: core/demos/tutorial/iterators/sequence_iterator_demo.cpp
+.. includefrags:: demos/tutorial/iterators/sequence_iterator_demo.cpp
    :fragment: includes
 
 The metafunction :dox:`ContainerConcept#Iterator` returns the iterator type for a given container type.
 In this case the default implementation :dox:`ContainerIteratorTags#Standard` is used.
 
-.. includefrags:: core/demos/tutorial/iterators/sequence_iterator_demo.cpp
+.. includefrags:: demos/tutorial/iterators/sequence_iterator_demo.cpp
    :fragment: metafunctions
 
 We can use iterators to iterate over the elements of a container, e.g.  to print the elements.
 
-.. includefrags:: core/demos/tutorial/iterators/sequence_iterator_demo.cpp
+.. includefrags:: demos/tutorial/iterators/sequence_iterator_demo.cpp
    :fragment: iterators
 
 Instead of comparing the two iterators ``it`` and ``itEnd``, we could also use the function :dox:`RootedIteratorConcept#atEnd` to check whether we reached the end of the container.
 
-.. includefrags:: core/demos/tutorial/iterators/sequence_iterator_demo.cpp
+.. includefrags:: demos/tutorial/iterators/sequence_iterator_demo.cpp
    :fragment: standard-iterators
 
 Next we will use :dox:`RootedIteratorConcept Rooted Iterators`.
 Since :dox:`RootedIteratorConcept Rooted Iterators` know their container, the functions :dox:`RootedRandomAccessIteratorConcept#goBegin` and :dox:`RootedIteratorConcept#atEnd` do not need to get the container as an argument.
 The following example prints for each element of the :dox:`Dna5String Dna5 String` ``genome`` its complement:
 
-.. includefrags:: core/demos/tutorial/iterators/sequence_iterator_demo.cpp
+.. includefrags:: demos/tutorial/iterators/sequence_iterator_demo.cpp
    :fragment: rooted-iterators
 
 Some iterators support iteration in reverse order with :dox:`BidirectionalIteratorConcept#goPrevious` as you can see in the next example.
 Note that :dox:`BidirectionalIteratorConcept#goPrevious` is called before the value of ``it2`` is accessed.
 Remember that the end position of a container is always the position behind the last item in the container.
 
-.. includefrags:: core/demos/tutorial/iterators/sequence_iterator_demo.cpp
-   :fragment: iterator-reverse
+.. includefrags:: demos/tutorial/iterators/sequence_iterator_demo.cpp
+   :fragment: iterators-reverse
 
 :dox:`RandomAccessContainerConcept#assignValue` can be used to change the value of an iterator.
 
-.. includefrags:: core/demos/tutorial/iterators/sequence_iterator_demo.cpp
+.. includefrags:: demos/tutorial/iterators/sequence_iterator_demo.cpp
    :fragment: assign-value
 
 The output of the program is as follows.
@@ -149,7 +149,7 @@ Assignment 1
      Adjust the code to use iterators to traverse the container.
      Use the :dox:`ContainerIteratorTags#Standard` iterator.
 
-     .. code-block::cpp
+     .. code-block:: cpp
 
         #include <iostream>
         #include <seqan/sequence.h>
@@ -174,7 +174,7 @@ Assignment 1
 
       .. container:: foldable
 
-         .. includefrags:: core/demos/tutorial/iterators/iterators_assignment_1_solution.cpp
+         .. includefrags:: demos/tutorial/iterators/iterators_assignment_1_solution.cpp
 
 Assignment 2
 ^^^^^^^^^^^^
@@ -193,7 +193,7 @@ Assignment 2
 
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/iterators/iterators_assignment_2_solution.cpp
+        .. includefrags:: demos/tutorial/iterators/iterators_assignment_2_solution.cpp
 
 Workshop Assignment 3
 ^^^^^^^^^^^^^^^^^^^^^
@@ -289,7 +289,7 @@ Workshop Assignment 3
 
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/iterators/iterators_assignment_3_workshop_solution.cpp
+        .. includefrags:: demos/tutorial/iterators/iterators_assignment_3_workshop_solution.cpp
 
 Workshop Assignment 4
 ^^^^^^^^^^^^^^^^^^^^^
@@ -307,4 +307,4 @@ Workshop Assignment 4
 
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/iterators/iterators_assignment_4_workshop_solution.cpp
+        .. includefrags:: demos/tutorial/iterators/iterators_assignment_4_workshop_solution.cpp

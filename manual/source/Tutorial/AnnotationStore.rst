@@ -167,7 +167,7 @@ Asignment 1
 
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/annotation_store/assignment_1_hint.cpp
+        .. includefrags:: demos/tutorial/annotation_store/assignment_1_hint.cpp
 
      Hints
        In the given data the left-most leaf is a child of mRNA and has siblings.
@@ -178,7 +178,7 @@ Asignment 1
 
       .. container:: foldable
 
-         .. includefrags:: core/demos/tutorial/annotation_store/assignment_1_solution.cpp
+         .. includefrags:: demos/tutorial/annotation_store/assignment_1_solution.cpp
 
          .. code-block:: console
 
@@ -205,7 +205,7 @@ Assignment 2
 
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/annotation_store/assignment_2_solution.cpp
+        .. includefrags:: demos/tutorial/annotation_store/assignment_2_solution.cpp
 
         .. code-block:: console
 
@@ -313,7 +313,7 @@ Assignment 3
 
     .. container:: foldable
 
-       .. includefrags:: core/demos/tutorial/annotation_store/assignment_3_solution.cpp
+       .. includefrags:: demos/tutorial/annotation_store/assignment_3_solution.cpp
 
        .. code-block:: console
 
@@ -338,14 +338,14 @@ Assignment 4
        #. Output the average number of mRNAs for genes.
        #. Output the average number of exons for mRNAs.
        #. Additionally output the average exon length.
-       #. Test your program also on large data, e.g. the annotation of the mouse genome [raw-attachment:Mus_musculus.NCBIM37.61.gtf.zip:wiki:Tutorial/SimpleRnaSeq Mus_musculus.NCBIM37.61.gtf.zip] (don't forget to unzip first).
+       #. Test your program also on large data, e.g. the annotation of the mouse genome `sim40mio_onlyY.sam.zip <http://ftp.seqan.de/manual_files/seqan-1.4/sim40mio_onlyY.sam.zip>`_ (don't forget to unzip first).
 
      Solution
       Click **more...** to see one possible solution.
 
       .. container:: foldable
 
-         .. includefrags:: core/demos/tutorial/annotation_store/assignment_4_solution.cpp
+         .. includefrags:: demos/tutorial/annotation_store/assignment_4_solution.cpp
 
          .. code-block:: console
 

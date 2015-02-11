@@ -1,0 +1,94 @@
+      0     .    :    .    :    .    :    .    :    .    : 
+        -GCGGGTCACTGAG-GGCTGGGATGA------------------------
+          |   | ||     |||    | ||                        
+        --C---T-AC-----GGC----A-GA------------------------
+          |   | ||     |||    | ||                        
+        --C---T-AC-----GGC----A-GA------------------------
+          |   |  |     |||    | ||                        
+        TGC---T-GCT-GCTGGC---GA-GATGTCTGCTGGTGCTGCTTGTCTCC
+
+     50     .    :    .    :    .    :    .    :    .    : 
+        ---------------------------------------GG---------
+                                                |         
+        ---------------------------------------AG---------
+                                               ||         
+        ---------------------------------------AG---------
+                                               ||         
+        TCGCTGTTGATGTGCTCGGGGCTGGCGTGCGGACCCGGCAGGGGATTTGG
+
+    100     .    :    .    :    .    :    .    :    .    : 
+        -ACGGCCAC--C---ACTTCGAGGAGTCCCTTCACTACGAGGGCAGGGCC
+         | |   |   |   |          |||    |  |  |    |  || 
+        -AAG---A---C---A----------TCC---GA--A-AA----A--GC-
+         |||   |   |   |          |||    |  |  |    |  || 
+        -AAG---A---C---A----------TCC---CA--A-GA----A--GC-
+         |||   |   |   |           ||   ||  |  |    |  || 
+        CAAG---A-GGCGGAA----------CCC---CA--A-AA----A--GC-
+
+    150     .    :    .    :    .    :    .    :    .    : 
+        GTGGACATCACCACGTCAGACAGGGACAAGAGCAAG--TACGGCACCCTG
+         | ||   |||| | || | |    |||  ||| ||   |    | ||| 
+        -T-GA---CACCTC-TC-GCC---TACA--AGC-AGTTCA---TA-CCT-
+         | ||   |||||| || |||   ||||  ||| |||| |   || ||| 
+        -T-GA---CACCTC-TC-GCC---TACA--AGC-AGTTTA---TA-CCT-
+         | ||   | |||  |  |||   ||||  ||| ||||||   |  ||  
+        -T-GA---CCCCTT-TA-GCC---TACA--AGC-AGTTTA---TC-CCC-
+
+    200     .    :    .    :    .    :    .    :    .    : 
+        TCCAGACTG--GCGGTGGAAGCTGGGTTCGACTGGGTCTACTATGAGTCC
+           | | ||  ||||  |||         |||     ||  || | | ||
+        ---A-A-TGTCGCGG-AGAA---------GAC-----CT--TA-GGGGCC
+           | | |||||||| ||||         |||     ||  || ||||||
+        ---A-A-TGTCGCGG-AGAA---------GAC-----CT--TA-GGGGCC
+           | |  || |||| ||||         |||     |   || ||||||
+        ---A-A-CGTGGCGG-AGAA---------GAC-----CC--TA-GGGGCC
+
+    250     .    :    .    :    .    :    .    :    .    : 
+        AAAGC-GCACATCCACTGCTCTGTGAAAGCAGAAAGCTCAGTCGCT-GCA
+          ||| ||| ||  || |    | |   ||   ||| | |  |||  || 
+        --AGCGGCAGAT--AC-G---AG-G---GC---AAGATAA--CGC--GC-
+          ||||||||||  || |   || |   ||   ||||| |  |||  || 
+        --AGCGGCAGAT--AC-G---AG-G---GC---AAGATCA--CGC--GC-
+          || || ||||  |  |   || |   |    |||||||  | |  |  
+        --AGTGGAAGAT--AT-G---AG-G---GG---AAGATCA--C-C-AGA-
+
+    300     .    :    .    :    .    :    .    :    .    : 
+        AAGTCGGGCGGTTGCTTCCCAG-GATCCTCCACGGTCACCCTGGAAAATG
+        || ||||             || |||  |      |        |||   
+        AATTCGG-------------AGAGAT--T------T--------AAA---
+        |||||||             ||||||  |      |        |||   
+        AATTCGG-------------AGAGAT--T------T--------AAA---
+        || || |             || |||  |      |        ||    
+        AACTCAG-------------AGCGAT--T------T--------AAG---
+
+    350     .    :    .    :    .    :    .    :    .    : 
+        GCACCCAGAGGCCCGTCAAAGATCTCCAA-CCCGGGGACAGAGTACTGGC
+        | ||  |    | |  |||  || | ||| |||   |||  | || |   
+        GAACTTA----CTC--CAA--AT-TACAATCCC---GAC--ATTA-T---
+        |||||||    |||  |||  || |||||||||   |||  |||| |   
+        GAACTTA----CTC--CAA--AT-TACAATCCC---GAC--ATTA-T---
+        ||||| |    | |  | |  || ||||| |||                 
+        GAACTCA----CCC--CCA--AT-TACAA-CCC-----------------
+
+    400     .    :    .    :    .    :    .    :    .    : 
+        CGCGGA-TTACGACGGA--AACCCGGTTTATACCGACTTCATCATGTTCA
+          |    |||  | |||  |    ||   |    ||    | || |    
+        --C---TTTA--A-GGATGA----GG---A----GA----A-CACG----
+          |   ||||  | ||||||    ||   |    ||    | |||     
+        --C---TTTA--A-GGATGA----GG---A----GA----A-CACT----
+                                                          
+        --------------------------------------------------
+
+    450   
+        A
+         
+        -
+         
+        -
+         
+        -
+
+
+
+consensus sequence is
+GCTACTGGCGAGAAGAAGACATCCCAAAAAGCTGACACCTCTCGCCTACAAGCAGTTTATACCTAATGTCGCGGAGAAGACCTTAGGGGCCAGCGGCAGATACGAGGGCAAGATCACGCGCAATTCGGAGAGATTTAAAGAACTCACCCCAAATTACAATCCCGACATTATCTTTAAGGATGAGGAGAACACG

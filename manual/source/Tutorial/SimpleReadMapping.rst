@@ -26,18 +26,18 @@ There are severe limitations to its capabilities but it's a read mapper in **12 
 Try It
 ------
 
-You can find the source code in the directory ``core/demos/tutorial/read_mapping/core/demos/tutorial/read_mapping``.
+You can find the source code in the directory ``demos/tutorial/read_mapping/demos/tutorial/read_mapping``.
 Copy over the FASTA files into your build directory and test it:
 
 .. code-block:: console
 
-   $ cp .../core/demos/tutorial/read_mapping/*.fasta .
+   $ cp .../demos/tutorial/read_mapping/*.fasta .
    $ make demo_tutorial_minimapper
    ...
-   $ ./core/demos/tutorial/read_mapping/demo_tutorial_minimapper
+   $ ./demos/tutorial/read_mapping/demo_tutorial_minimapper
    Invalid number of arguments.
    USAGE: minimapper GENOME.fasta READS.fasta OUT.sam
-   $ ./core/demos/tutorial/read_mapping/tutorial_minimapper nc_001454.fasta reads_hamming.fasta out.sam
+   $ ./demos/tutorial/read_mapping/tutorial_minimapper nc_001454.fasta reads_hamming.fasta out.sam
    $ cat out.sam
    @HD VN:1.0
    @SQ SN:gi|9626553|ref|NC_001454.1|  LN:34214
@@ -51,70 +51,70 @@ Code Walkthrough
 
 First, include the headers of the SeqAn modules we will use.
 
-.. includefrags:: core/demos/tutorial/read_mapping/minimapper.cpp
+.. includefrags:: demos/tutorial/read_mapping/minimapper.cpp
    :fragment: includes
 
 We will now use some typedefs for the FragmentStore and SWIFT filter to get shortcuts to types used below.
 
-.. includefrags:: core/demos/tutorial/read_mapping/minimapper.cpp
+.. includefrags:: demos/tutorial/read_mapping/minimapper.cpp
    :fragment: typedefs
 
 We define the global constant ``EPSILON`` (:math:`\vareps`), the allowed error rate.
 
-.. includefrags:: core/demos/tutorial/read_mapping/minimapper.cpp
+.. includefrags:: demos/tutorial/read_mapping/minimapper.cpp
    :fragment: global-constants
 
 Evaluate the arguments from the command line.
 Use the functions :dox:`FragmentStore#loadContigs` and :dox:`FragmentStore#loadReads` to load the reference sequence (possibly more than one if the FASTA file contains more than one sequence) and reads into the FragmentStore.
 Note that these functions will automatically guess the file type for you.
 
-.. includefrags:: core/demos/tutorial/read_mapping/minimapper.cpp
+.. includefrags:: demos/tutorial/read_mapping/minimapper.cpp
    :fragment: main-input
 
 Initialize :dox:`Finder` and :dox:`Pattern` for the q-gram index used by the swift filter.
 
-.. includefrags:: core/demos/tutorial/read_mapping/minimapper.cpp
+.. includefrags:: demos/tutorial/read_mapping/minimapper.cpp
    :fragment: pattern-finder
 
 Now, iterate over all input sequence contigs and enumerate all SWIFT hits.
 These hits will contain all possible matches of the reads in the FragmentStore with up to :math:`\varepsilon \cdot \ell` (with :math:`\ell =` :dox:`ContainerConcept#length length(read)`) errors.
 Mismatches and indels are taken into consideration.
 
-.. includefrags:: core/demos/tutorial/read_mapping/minimapper.cpp
+.. includefrags:: demos/tutorial/read_mapping/minimapper.cpp
    :fragment: swift
 
 Now, verify each possible match using a :dox:`HammingSimplePattern`.
 The verified matches will have Hamming distance :math:`< \lfloor \varepsilon \cdot \ell \rfloor`, edit distance is not considered.
 
-.. includefrags:: core/demos/tutorial/read_mapping/minimapper.cpp
+.. includefrags:: demos/tutorial/read_mapping/minimapper.cpp
    :fragment: verification
 
 Finally, write out the resulting multiple read alignment to the SAM file with the file name on the command line.
 
-.. includefrags:: core/demos/tutorial/read_mapping/minimapper.cpp
+.. includefrags:: demos/tutorial/read_mapping/minimapper.cpp
    :fragment: main-output
 
 Hands On!
 ---------
 
 Programming can only be learned by programming, so let's get started.
-We create a new sandbox and a new app for the minimapper.
-If you already have a sandbox, then you can skip the first step
+We create a new demo for the minimapper.
 
 .. code-block:: console
-
-   $ ./util/bin/skel.py repository sandbox/my_sandbox
-   $ ./util/bin/skel.py app minimapper sandbox/my_sandbox
+	
+    ~ $ cd seqan-src/demos
+    demos $ mkdir minimapper
+    demos $ mkdir minimapper/minimapper.cpp
 
 Now, we copy over the code from the original location into our new app and build it.
 
 .. code-block:: console
 
-   $ cp core/demos/tutorial/read_mapping/minimapper.cpp sandbox/my_sandbox/apps/minimapper/minimapper.cpp
-   $ cd build/Debug
+   demos $ cp tutorial/read_mapping/minimapper.cpp minimapper/minimapper.cpp
+   $ cd ../../build/Debug
    $ cmake .
-   $ make minimapper
-   $ ./sandbox/my_sandbox/apps/minimapper/minimapper
+   $ make demo_minimapper_minimapper
+   $ ./bin/demo_minimapper_minimapper
    Invalid number of arguments.
    USAGE: minimapper GENOME.fasta READS.fasta OUT.sam
 

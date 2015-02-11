@@ -94,7 +94,7 @@ An empty ``FragmentStore`` can simply be created with:
 
    FragmentStore<> store;
 
-Files can be read from disk with the function :dox:`File#read` that expects an open stream (e.g. a STL `ifstream <http://www.cplusplus.com/reference/iostream/ifstream>`_), a ``FragmentStore`` object, and a :dox:`SequenceStream::FileFormat File Format` tag.
+Files can be read from disk with the function :dox:`File#read` that expects an open stream (e.g. a STL `ifstream <http://www.cplusplus.com/reference/iostream/ifstream>`_), a ``FragmentStore`` object, and a :dox:`FileFormats File Format` tag.
 The contents of different files can be loaded with subsequent calls of ``read``.
 As we want the user to specify the files via command line, our application will parse them using the :dox:`ArgumentParser` and store them in an option object.
 
@@ -114,7 +114,7 @@ Assignment 1
 
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_assignment1.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment1.cpp
 
    Hint
      * Open STL `std::fstream <http://www.cplusplus.com/reference/iostream/ifstream>`_ objects and use the function :dox:`File#read` with a SAM or GTF tag.
@@ -125,7 +125,7 @@ Assignment 1
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_solution1.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_solution1.cpp
            :fragment: solution
 
 Extract Gene Intervals
@@ -135,7 +135,7 @@ Now that the Fragment Store contains the whole annotation tree, we want to trave
 In the annotation tree, genes are (the only) children of the root node.
 To efficiently retrieve the genes that overlap read alignments later, we want to use interval trees, one for each contig.
 To construct an interval tree, we first need to collect :dox:`IntervalAndCargo` objects in a string and pass them to :dox:`IntervalTree#createIntervalTree`.
-See the interval tree demo in ``core/demos/interval_tree.cpp`` for more details.
+See the interval tree demo in ``demos/interval_tree.cpp`` for more details.
 As cargo we use the gene's annotation id to later retrieve all gene specific information.
 The strings of ``IntervalAndCargo`` objects should be grouped by ``contigId`` and stored in an (outer) string of strings.
 For the sake of simplicity we don't differ between genes on the forward or reverse strand and instead always consider the corresponding intervals on the forward strand.
@@ -178,22 +178,22 @@ Assignment 2
 
         Extend the definitions:
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_assignment2.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment2.cpp
            :fragment: definitions
 
         Add a function:
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_assignment2.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment2.cpp
            :fragment: yourcode
 
         Extend the ``main`` function:
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_assignment2.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment2.cpp
            :fragment: main
 
         and
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_assignment2.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment2.cpp
            :fragment: main2
 
    Hint
@@ -211,12 +211,12 @@ Assignment 2
 
            resize(intervals, length(store.contigStore));
 
-        Use :dox:`SequenceConcept#appendValue` to add a new ``TInverval`` object to the inner string, see :dox:`IntervalAndCargo::IntervalAndCargo IntervalAndCargo constructor` for the constructor.
+        Use :dox:`StringConcept#appendValue` to add a new ``TInverval`` object to the inner string, see :dox:`IntervalAndCargo::IntervalAndCargo IntervalAndCargo constructor` for the constructor.
 
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_solution2.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_solution2.cpp
            :fragment: solution
 
 Construct Interval Trees
@@ -251,22 +251,22 @@ Assignment 3
 
         Extend the definitions:
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_assignment3.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment3.cpp
            :fragment: definitions
 
         Add a function:
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_assignment3.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment3.cpp
            :fragment: yourcode
 
         Extend the ``main`` function:
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_assignment3.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment3.cpp
            :fragment: main
 
         and
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_assignment3.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment3.cpp
            :fragment: main2
 
    Hint
@@ -288,7 +288,7 @@ Assignment 3
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_solution3.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_solution3.cpp
            :fragment: solution
 
 Compute Gene Coverage
@@ -335,22 +335,22 @@ Assignment 4
 
         Extend the definitions:
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_assignment4.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment4.cpp
            :fragment: definitions
 
         Add a function:
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_assignment4.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment4.cpp
            :fragment: yourcode
 
         Extend the ``main`` function:
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_assignment4.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment4.cpp
            :fragment: main
 
         and
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_assignment4.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment4.cpp
            :fragment: main2
 
    Hint
@@ -377,7 +377,7 @@ Assignment 4
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_solution4.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_solution4.cpp
            :fragment: solution
 
 
@@ -421,7 +421,7 @@ Output the gene names and their RPKM values separated by tabs as follows:
 
 .. todo: Move the files to somewhere else.
 
-Download and decompress the attached mouse annotation ([raw-attachment:Mus_musculus.NCBIM37.61.gtf.zip Mus_musculus.NCBIM37.61.gtf.zip]) and the alignment file of RNA-Seq reads aligned to chromosome Y ([raw-attachment:sim40mio_onlyY.sam.zip sim40mio_onlyY.sam.zip]).
+Download and decompress the attached mouse annotation (`Mus_musculus.NCBIM37.61.gtf.zip <http://ftp.seqan.de/manual_files/seqan-1.4/Mus_musculus.NCBIM37.61.gtf.zip>`_ and the alignment file of RNA-Seq reads aligned to chromosome Y (`sim40mio_onlyY.sam.zip <http://ftp.seqan.de/manual_files/seqan-1.4/sim40mio_onlyY.sam.zip>`_).
 Test your program and compare your output with the output above.
 
 Assignment 5
@@ -440,12 +440,12 @@ Assignment 5
 
         Add a function:
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_assignment5.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment5.cpp
            :fragment: yourcode
 
         Extend the ``main`` function:
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_assignment5.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_assignment5.cpp
            :fragment: main
 
    Hint
@@ -461,13 +461,13 @@ Assignment 5
    Solution
      .. container:: foldable
 
-        .. includefrags:: core/demos/tutorial/rnaseq/genequant_solution5.cpp
+        .. includefrags:: demos/tutorial/rnaseq/genequant_solution5.cpp
            :fragment: solution
 
 Next Steps
 ----------
 
 * See :cite:`Mortazavi2008` for further reading.
-* Read the :ref:`tutorial-basic-sam-bam-io` Tutorial and change your program to stream a SAM file instead of loading it as a whole.
+* Read the :ref:`tutorial-sam-bam-io` Tutorial and change your program to stream a SAM file instead of loading it as a whole.
 * Change the program such that it attaches the RPKM value as a key-value pair (see :dox:`AnnotationTreeIterator#assignValueByKey`) to the annotation of each gene and output a GFF file.
 * Continue with the :ref:`tutorial` rest of the tutorials]].

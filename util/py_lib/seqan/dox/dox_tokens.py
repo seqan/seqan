@@ -19,9 +19,10 @@ def escapeLiterals(s):
 WHITESPACE = set(['SPACE', 'EMPTYLINE', 'BREAK'])
 ITEM_STARTING = set(['COMMAND_CLASS', 'COMMAND_CONCEPT', 'COMMAND_FUNCTION', 'COMMAND_MACRO',
                      'COMMAND_METAFUNCTION', 'COMMAND_PAGE', 'COMMAND_MAINPAGE', 'COMMAND_DEFGROUP',
-                     'COMMAND_VARIABLE', 'COMMAND_TAG', 'COMMAND_ENUM', 'COMMAND_TYPEDEF', 'COMMAND_ADAPTION'])
+                     'COMMAND_VARIABLE', 'COMMAND_VALUE', 'COMMAND_TAG', 'COMMAND_ENUM',
+                     'COMMAND_TYPEDEF', 'COMMAND_ADAPTION'])
 CLAUSE_STARTING = set(['COMMAND_SIGNATURE', 'COMMAND_CODE', 'COMMAND_SEE', 'COMMAND_BRIEF',
-                       'COMMAND_RETURN', 'COMMAND_PARAM', 'COMMAND_TPARAM',
+                       'COMMAND_RETURN', 'COMMAND_THROW', 'COMMAND_PARAM', 'COMMAND_TPARAM',
                        'COMMAND_SECTION', 'COMMAND_SUBSECTION', 'COMMAND_INCLUDE',
                        'COMMAND_EXTENDS', 'COMMAND_IMPLEMENTS', 'COMMAND_SNIPPET',
                        'COMMAND_HEADERFILE', 'COMMAND_DEPRECATED', 'COMMAND_NOTE', 'COMMAND_WARNING',
@@ -38,6 +39,7 @@ LEXER_TOKENS = (
     ('COMMAND_MACRO',        r'@macro'),
     ('COMMAND_METAFUNCTION', r'@mfn'),
     ('COMMAND_VARIABLE',     r'@var'),
+    ('COMMAND_VALUE',        r'@val'),
     ('COMMAND_TAG',          r'@tag'),
     ('COMMAND_ENUM',         r'@enum'),
     ('COMMAND_PAGE',         r'@page'),
@@ -58,6 +60,7 @@ LEXER_TOKENS = (
     ('COMMAND_BRIEF',        r'@brief'),
     ('COMMAND_SEE',          r'@see'),
     ('COMMAND_RETURN',       r'@return'),
+    ('COMMAND_THROW',        r'@throw'),
     ('COMMAND_PARAM',        r'@param'),
     ('COMMAND_TPARAM',       r'@tparam'),
     ('COMMAND_SECTION',      r'@section'),

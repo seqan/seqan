@@ -1,0 +1,37 @@
+SeqCons
+=======
+
+__OPTIONS____________________________________________________________________
+
+VERBOSITY              	NORMAL
+OPERATION              	convert only
+
+INPUT FILE             	alns1.sam
+OUTPUT READS           	alns1.nop.txt
+OUTPUT CONSENSUS       	
+
+OVERLAP MIN LENGTH     	20
+OVERLAP MAX ERR-RATE   	5
+OVERLAP MIN COUNT      	3
+OVERLAP WINDOW SIZE    	20
+
+K-MER SIZE             	20
+K-MER MAX OCCURENCES   	200
+
+REALIGNMENT BANDWIDTH  	10
+REALIGNMENT ENVIRONMENT	20
+
+__LOADING DATA_______________________________________________________________
+
+  Loading alignments from alns1.sam...OK
+
+__COMPUTATION________________________________________________________________
+
+
+__WRITING RESULT_____________________________________________________________
+
+Writing alignments to alns1.nop.txt ... OK
+
+Overall time: 0.00297983 s
+
+Done.  Have a nice day.

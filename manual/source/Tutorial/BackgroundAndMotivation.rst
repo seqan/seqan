@@ -73,7 +73,7 @@ The objects are constructed when the code execution enters the scope/block they 
 Allocation of resources (e.g. memory) happens on construction and deallocation happens when the current block is left.
 This is best explained in an example.
 
-.. code-block: cpp
+.. code-block:: cpp
 
    #include <seqan/sequence.h>
 

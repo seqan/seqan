@@ -10,15 +10,14 @@ Getting Started With SeqAn On Windows Using Visual Studio
 
 This tutorial explains how to get started with SeqAn on Windows using Visual Studio.
 
-We use Visual Studio 9 here, but you should be able to easily follow the tutorial if you are using any other supported version (8, 9, 10).
+We use Visual Studio 12 here, but you should be able to easily follow the tutorial if you are using any other supported version (9, 10, 11).
 
 Prerequisites
 ~~~~~~~~~~~~~
 
 We assume that you have the following software installed:
 
-* `TortoiseSVN <http://tortoisesvn.net/downloads.html>`_ for version
-  control and retrieving
+* `GitHub for Windows <https://windows.github.com>`_ for version control and retrieving
 * Microsoft Visual Studio for compiling C++ code.
   If you do not have Visual Studio yet, you can download the `free Visual Studio Express Edition from Microsoft <http://www.microsoft.com/express/>`_.
   Note that at some point, you can pick between the Express Edition and a demo of the full version.
@@ -37,69 +36,98 @@ Replace ``seqan_dev`` by your actual user name in the steps below.
 Install
 ~~~~~~~
 
-First, create a new folder in your Windows Explorer for the SeqAn files (e.g. ``C:\Users\seqan_dev\Development\seqan-trunk``).
-Right click on this folder and choose ``SVN Checkout...`` from the context menu.
+.. important::
+	
+	In the following we describe the easiest way to get up and running with SeqAn.
+	This is especially recommended for novel users working through the tutorials in the beginning.
+	If you are planning to contribute to SeqAn at any point, you need to read the :ref:`infrastructure-seqan-git-workflow` instructions first. 
+	This manual will guide you through the SeqAn workflow required to submit bug-fixes and new features.
 
-.. image:: win_tortoise.png
+Open a new Git Shell (``Start > All Programs > GitHub, Inc > Git Shell``).
+Note that within in the shell you can use the common unix commands to operate within the filesystem and more.
+Go to the directory you want to keep your SeqAn install in (e.g. ``Development`` in your home folder).
 
-Type the following in the field ``URL of repository``
+.. code-block:: console
 
-::
+    ~ # cd Development
 
-    https://github.com/seqan/seqan/branches/master
+Then, use git to retrieve the current SeqAn source-base:
 
-The ``Checkout repository`` should be the folder you just created.
-Leave the other settings set to their default (``fully recursive``, ``HEAD revision``) and click ``OK``.
+.. code-block:: console
+
+    # Development # git clone https://github.com/seqan/seqan.git seqan-src
+
+You can now find the whole tree with the SeqAn library and applications in the explorer in the following path ``C:\Users\seqan_dev\Development\seqan-src``.
+
+.. tip::
+
+    By default git creates a local branch pointing to the stable master branch.
+    This branch is only updated when hot fixes are applied or a new release is published.
+    
+    If you want to have access to regular updates and new features you can switch to the ``develop`` branch of SeqAn:
+    
+    .. code-block:: console
+
+		# Development # cd seqan-src
+		# seqan-src # git checkout -b develop origin/develop
+	
+    For more help on git, please read the documentation ``git help`` and consult the homepage `Git`__.
+
+.. __: http://git-scm.com/
 
 A First Build
 ~~~~~~~~~~~~~
 
-Next, we will use CMake to create a Visual Studio 9 project for building the applications, demo programs (short: demos), and tests.
+Next, we will use CMake to create a Visual Studio 12 project for building the applications, demo programs (short: demos), and tests.
 
-We will do this using the command prompt. Start a Windows command prompt (``Start > All Programs > Accessories > Command Prompt``).
-Then, go to the parent directory of ``seqan-trunk``.
-There, we create a separate folder ``seqan-trunk-build``:
+Within the Git Shell go back to the parent directory of ``seqan-src``.
+There, we create a separate folder ``seqan-build``:
 
 .. code-block:: console
 
-    C:\Users\seqan_dev> C:
-    C:\Users\seqan_dev> cd C:\Users\seqan_dev\Development
-    C:\Users\seqan_dev\Development\> mkdir seqan-trunk-build
+    # seqan-src # cd ../
+    # Development # mkdir seqan-build
 
 In the future, we might create a different set of project files (e.g. when we upgrade our Visual Studio version or switch to 64 bit builds).
-Thus, we create a subdirectory called ``vs9`` for our Visual Studio 9 project.
+Thus, we create a subdirectory called ``release`` for release builds and within this folder we create a subfolder called ``vs12`` for our Visual Studio 12 project.
 
 .. code-block:: console
 
-    C:\Users\seqan_dev\Development> mkdir seqan-trunk-build\vs9
-    C:\Users\seqan_dev\Development> cd seqan-trunk-build\vs9
+    # Development # cd seqan-build
+    # seqan-build # mkdir -p debug-vs12
 
 The resulting directory structure will look as follows.
 
 ::
 
        ~/Development
-         ├─ seqan-trunk                 source directory
-         └─ seqan-trunk-build
-            └─ vs9                      Visual Studio 9 project
+         ├─ seqan-src                    source directory
+         └─ seqan-build
+            └─ debug-vs12                Visual Studio 12 project
 
-Within the **build directory** ``vs9``, we call CMake to generate the Visual Studio 9 project:
+Within the **build directory** ``debug-vs12``, we call CMake to generate the Visual Studio 12 project:
 
 .. code-block:: console
 
-    C:\Users\seqan_dev\Development\seqan-trunk-build\vs9> cmake ..\..\seqan-trunk -G "Visual Studio 9 2008"
+    # debug-vs12 # cmake ../../seqan-src -G "Visual Studio 12 2013" -DCMAKE_BUILD_TYPE=Debug
 
 .. tip::
 
-   Using a different version or multiple versions of Visual Studio.
+   It is possible to use a different version or multiple versions of Visual Studio and different build types.
 
-   Using a different Visual Studio version is easy:
-   Simply use the appropriate generator.
-   For example, here is how to use the Visual Studio 10 generator:
+   To build a release version for Visual Studio 10 project files follow the subsequent steps:
+   
+   .. code-block:: console
+       
+       # Development # cd seqan-build
+       # seqan-build # mkdir release-vs10
+       # seqan-build # cd release-vs10
+       
+   Then, use the appropriate generator:
 
    .. code-block:: console
 
-      C:\...\seqan-trunk-build\vs10> cmake ..\..\seqan-trunk -G "Visual Studio 10"
+      # release-vs10 # cmake ../../seqan-src -G "Visual Studio 10 2010"
 
    Also, if you want to create 64 bit builds, you need to use another generator.
    Changing generators in an existing project directory is not possible.
@@ -108,19 +136,19 @@ Within the **build directory** ``vs9``, we call CMake to generate the Visual Stu
     * If you plan to use different versions of Visual Studio then follow :ref:`how-to-use-parallel-build-directories`.
     *  Note that you have to choose the `Win64` variants of the `Visual Studio` generators if you want to build 64 bit binaries.
 
-Now, you can open the project file from the Windows explorer: go to the ``C:\Users\seqan_dev\Development\seqan-trunk-build\vs9\core\apps`` directory and double click on the file ``seqan_core_apps.sln``.
-In the ``Solution Explorer`` to the left you will find all applications of the SeqAn core.
+Now, you can open the project file from the Windows explorer: go to the ``C:\Users\seqan_dev\Development\seqan-build\debug-vs12\apps`` directory and double click on the file ``seqan_apps.sln``.
+In the ``Solution Explorer`` you will find all applications of the SeqAn core.
 
-.. image:: win_solution_explorer.png
+.. image:: vs-solution-explorer.png
 
-As an example you can open, compile, and execute the program RazerS 2.  Click on the ``+``/``▷`` in front of ``razers2`` in the Solution Explorer and also on the ``+``/``▷`` in front of ``Source Files``.
+As an example you can open, compile, and execute the program RazerS 2.  
+Click on the ``+``/``▷`` in front of ``razers2`` in the Solution Explorer and also on the ``+``/``▷`` in front of ``Source Files``.
 Double click on the file ``razers.cpp`` to open it in the main window.
 Right click on ``razers2`` in the Solution Explorer and choose ``Set as StartUp Project`` from the context menu.
 
-.. image:: win_start_up_project.png
+.. image:: vs-startup-project.png
 
 To compile and execute RazerS 2, choose ``Debug > Start Without Debugging`` from the main menu or press ``Ctrl`` + ``F5``.
-
 On successful compilation and execution, a terminal windows should pop up and display:
 
 .. code-block:: console
@@ -136,7 +164,7 @@ On successful compilation and execution, a terminal windows should pop up and di
 
 .. tip ::
 
-    'Starting with and without Debugging in Visual Studio
+    Starting with and without Debugging in Visual Studio
 
     Starting a program without debugger in Visual Studio will make the program wait for the user pressing a key.
     This is very useful for inspecting the output.
@@ -146,24 +174,23 @@ On successful compilation and execution, a terminal windows should pop up and di
 Hello World!
 ~~~~~~~~~~~~
 
-Now, let us create a **sandbox** for you.
-This sandbox will be your local workspace and you might want to have it versionized on your own Subversion repository at a later point.
-All of your development will happen in your sandbox.
+Now it is time to write your first little application within SeqAn.
+Go to the demos folder in the ``seqan-src`` directory and create a new folder with the same name as your username.
+In this tutorial we use ``seqan_dev``.
+Create a new cpp file called ``hello_seqan.cpp``
 
-We go back to the source directory and then use the SeqAn code generator to create a new sandbox.
+.. code-block:: console
+	
+    # debug-vs12 # cd ../../seqan-src/demos
+    # demos # mkdir seqan_dev; cd seqan_dev
+    # seqan_dev # echo "" > hello_seqan.cpp
+
+Now, we go back into the build directory and call CMake again to make it detect the new source file.
 
 .. code-block:: console
 
-    C:\Users\seqan_dev\Development\seqan-trunk-build\vs9> cd ..\..\seqan-trunk
-    C:\Users\seqan_dev\Development\seqan-trunk> python util\bin\skel.py repository sandbox\my_sandbox
-
-Within this sandbox, we can now create a new application using the code generator.
-
-.. code-block:: console
-
-    C:\Users\seqan_dev\Development\seqan-trunk> python util\bin\skel.py app first_app sandbox\my_sandbox
-
-Details about the code generator are explained in :ref:`how-to-use-the-code-generator`.
+    # seqan-src # cd ../../../seqan-build/debug-vs12
+    # debug-vs12 # cmake .
 
 .. tip::
 
@@ -177,21 +204,20 @@ Details about the code generator are explained in :ref:`how-to-use-the-code-gene
 
     .. code-block:: console
 
-       C:\ # cd C:\Users\seqan_dev\Development\seqan-trunk-build\vs9
-       vs9 # cmake .
+       ~ # cd Development/seqan-build/debug-vs12
+       # debug-vs12 # cmake .
 
-Do not try to call "``cmake .``" from within the ``seqan-trunk`` directory **but only from your build directory**.
+    Do not try to call "``cmake .``" from within the ``seqan-src`` directory **but only from your build directory**.
 
-The step above creates the starting point for a real-world application, including an argument parser and several other things that are a bit too complicated to fit into the Getting Started tutorial.
-Therefore, we will replace the program of the app ``first_app`` with a very simple example program.
-
-Open the file ``C:\Users\seqan_dev\Development\seqan-trunk\sandbox\my_sandbox\first_app\first_app.cpp`` with the Visual Studio text editor and replace its contents with the following:
+Now, you can open the project file ``C:\Users\seqan_dev\Development\seqan-build\debug-vs12\demos\seqan_demos.sln`` using Visual Studio.
+Right-click ``demo_seqan_dev_hello_seqan`` in the ``Solution Explorer`` and click ``Set as StartUp Project``.
+Open the source file ``hello_seqan.cpp`` and replace its contents with the following:
 
 .. code-block:: cpp
 
     #include <iostream>
     #include <seqan/sequence.h>  // CharString, ...
-    #include <seqan/file.h>      // to stream a CharString into cout
+    #include <seqan/stream.h>    // to stream a CharString into cout
 
     int main(int, char const **)
     {
@@ -201,19 +227,10 @@ Open the file ``C:\Users\seqan_dev\Development\seqan-trunk\sandbox\my_sandbox\fi
         return 1;
     }
 
-Now, we go back into the build directory and call CMake again to make it detect the added app.
 
-::
-
-    C:\Users\seqan_dev\Development\seqan-trunk> cd ..\seqan-trunk-build\vs9
-    C:\Users\seqan_dev\Development\seqan-trunk-build\vs9> cmake .
-
-Now, you can open the project file ``C:\Users\seqan_dev\Development\seqan-trunk-build\vs9\sandbox\my_sandbox\seqan_sandbox_my_sandbox.sln`` for your sandbox using Visual Studio.
-Right-click ``first_app`` in the ``Solution Explorer`` and click ``Set as StartUp Project``.
 Now, start the program without debugging using ``Debug > Start Without Debugging``.
-
-Visual Studio will now compile your program and execute it. A command
-line window will pop up and should display the following.
+Visual Studio will now compile your program and execute it. 
+A command line window will pop up and should display the following.
 
 .. code-block:: console
 
@@ -231,6 +248,6 @@ As a next step, we suggest the following:
 * :ref:`Continue with the Tutorials <tutorial>`
 * If you have not done so, install optional dependencies of SeqAn.
   To read and write compressed files, follow :ref:`how-to-install-contribs-on-windows`.
-* Look around in the files in ``sandbox/my_sandbox/apps/first_app`` or the demos in ``core/demos`` and ``extras/demos``.
 * For the tutorial, using the SeqAn build system is great!
   If you later want to use SeqAn as a library, have a look at :ref:`build-manual-integration-with-your-own-build-system`.
+* If you plan to contribute to SeqAn, please read the following document: :ref:`infrastructure-seqan-git-workflow`.

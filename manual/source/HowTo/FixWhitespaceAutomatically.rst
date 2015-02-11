@@ -35,7 +35,7 @@ Then, we load SeqAn's *uncrustify.cfg* which is located in *${CHECKOUT}/misc*. W
 
 .. figure:: uig-3.png
 
-Then, we load a file from the SeqAn repository, for example *core/apps/sak/sak.cpp*.
+Then, we load a file from the SeqAn repository, for example *apps/sak/sak.cpp*.
 
 .. figure:: uig-4.png
 
@@ -76,6 +76,6 @@ Here you add the attached ruby script.
 
 .. figure:: Xcode - Behavior.png
 
-**Note:** The script does **not** uncrustify the currently opened source file but all source files that were changed in your current svn checkout.
+**Note:** The script does **not** uncrustify the currently opened source file but all source files that were changed in your current branch.
 Xcode does not provide the information which source file is currently opened.
 

@@ -51,7 +51,7 @@ Before we start implementing our online search algorithm, we show you how to wor
 To get access to the Journaled String implementation you have to include the ``<seqan/sequence_journaled.h>`` header file.
 Note that you will need the ``<seqan/file.h>`` too in order to print the sequences.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_journal_string_basic.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_journal_string_basic.cpp
    :fragment: main
 
 In the next step we define the Journaled String type.
@@ -69,7 +69,7 @@ Additionally, we use a ``Sorted Array`` as the model to manage the recorded diff
 
 We use the metafunction :dox:`HostedConcept#Host` to get the type of the underlying host string used for the Journaled String.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_journal_string_basic.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_journal_string_basic.cpp
    :fragment: typedef
 
 Now we can define the variables holding data structures.
@@ -77,7 +77,7 @@ First, we construct our host sequence and after that we construct the Journaled 
 Then, we set the host sequence using the function :dox:`JournaledString#setHost`.
 Afterwards, we examine the data structure in more detail and print the host sequence the constructed journaled sequence and the nodes of it.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_journal_string_basic.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_journal_string_basic.cpp
    :fragment: init
 
 .. tip::
@@ -95,14 +95,14 @@ We insert the string ``"modified"`` at position ``7`` and delete the suffix ``"s
 Note that position ``19`` refers to the string after the insertion of ``"modified"`` at position ``7``.
 Again we print the host, the journaled sequence and the nodes that represent the modifications to see how our changes affect the host and the journaled sequence.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_journal_string_basic.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_journal_string_basic.cpp
    :fragment: modification
 
 All of this is followed by calling :dox:`JournaledString#flatten` on our journeld string.
 This call applies all journaled changes to the host sequence.
 Again we print the sequences to see the effects.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_journal_string_basic.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_journal_string_basic.cpp
    :fragment: flatten
 
 Here is the output of our small program.
@@ -145,7 +145,7 @@ Then we define a type for journaled sequences.
 After that we define our Journal Set.
 The Journal Set is a specialization of the :dox:`OwnerStringSet Owner` concept of StringSets and is defined as ``StringSet<TJournalString, Owner<JournaledSet> >``.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_join.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_join.cpp
    :fragment: main
 
 In the subsequent steps we want to set a reference sequence to the Journal Set and add some sequences to it.
@@ -154,7 +154,7 @@ This function stores only a pointer to the given sequence.
 In some cases it might be necessary to copy the reference sequence instead.
 For this purpose you can use the function :dox:`JournaledSet#createHost`.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_join.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_join.cpp
    :fragment: init
 
 Just adding sequences to the Journal Set does not automatically journal them to the global reference sequence of the set.
@@ -163,7 +163,7 @@ This function takes as parameters the Journal Set and the position of the contai
 Thus, the programmer is free in the decision which sequence has to be journaled and which not.
 Furthermore, we can use the :dox:`JoinConfig` object to specify the method that shall be used for the journaling process.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_join.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_join.cpp
    :fragment: join
 
 .. tip::
@@ -205,7 +205,7 @@ Assignment 1
    Objective
      Download the fasta file :download:`sequences.fasta <sequences.fasta>` which contains some DNA sequences.
      Write a method called ``loadAndJoin`` that gets a Journal Set and a stream file pointing to the downloaded fasta file.
-     The method reads in the sequences one after another using SeqAn's :dox:`RecordReader`.
+     The method reads in the sequences one after another using SeqAn's :dox:`SeqFileIn`.
      The first read sequences is set to the reference sequence.
      All following sequences are first appended to the StringSet and afterwards joined to the StringSet using a global alignment strategy and the most compact form.
 
@@ -214,13 +214,13 @@ Assignment 1
 
         You can start using the following code snippet. Replace the path of the iostream such that it points to your path and fill in the missing parts ``A``, ``B`` and ``C`` in the function ``loadAndJoin`` (Altogether, you will need 4 lines of code.).
 
-       .. includefrags:: extras/demos/tutorial/data_journaling/example_online_search_assignment1_hint.cpp
+       .. includefrags:: demos/tutorial/data_journaling/example_online_search_assignment1_hint.cpp
           :fragment: main
 
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment1.cpp
+        .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment1.cpp
            :fragment: main
 
 Now we have loaded and journaled our sequences and we use the minimal possible memory requirements for our sequences.
@@ -231,20 +231,20 @@ If not we abort the search since we cannot guarantee a correct search when the r
 We also have to clear our ``hitSet`` to ensure there remain no phantom hits from previous searches.
 Then we resize it to the number of contained Journaled Strings plus an additional space for the global reference sequence.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_online_search.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_online_search.cpp
    :fragment: searchPatternPart1
 
 Before we can search for the pattern in the Journaled Strings we have to find all occurrences in the reference sequence.
 Therefore we call the function ``findPatternInReference`` which takes a ``String<int>`` which we use to store the hits, the global reference and the pattern.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_online_search.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_online_search.cpp
    :fragment: searchPatternPart2
 
 After that we implement the body to search for occurrences in the Journaled Strings.
 Therefore we use ``for``-loop to iterate over all contained sequences and call for each sequence the function ``findPatternInJournalString``.
 The function gets as parameters the corresponding ``String<int>`` from the ``hitSet``, the journaled sequence the pattern and the identified hits in the reference sequence.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_online_search.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_online_search.cpp
    :fragment: searchPatternPart3
 
 So far our program won't compile. We have to first implement the both functions ``findPatternInReference`` and ``findPatternInJournalString``.
@@ -266,7 +266,7 @@ Assignment 2
      .. container:: foldable
         The following code snippet provides you with the backbone for the search algorithm. Fill in the missing parts ``[A]``, ``[B]``, ``[C]`` and ``[D]``.
 
-        .. includefrags:: extras/demos/tutorial/data_journaling/example_online_search_assignment2_hint.cpp
+        .. includefrags:: demos/tutorial/data_journaling/example_online_search_assignment2_hint.cpp
            :fragment: findPatternInReferenceHint
 
    Solution
@@ -275,39 +275,39 @@ Assignment 2
         Here is the solution for this function.
         Click **more...** below, to see a complete solution of everything we have done so far.
 
-        .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment2.cpp
+        .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment2.cpp
            :fragment: findPatternInReference
 
         .. container:: foldable
 
            Include the necessary headers.
 
-           .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment2.cpp
+           .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment2.cpp
               :fragment: include
 
            Implementation of the `findPatternInReference` function.
 
-           .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment2.cpp
+           .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment2.cpp
               :fragment: findPatternInReference
 
            Implementation of the `searchPattern` function. Note that we haven't implemented the function `findPatternInJournalString` yet.
 
-           .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment2.cpp
+           .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment2.cpp
               :fragment: searchPattern
 
            Implementation of the `loadAndJoin` function.
 
-           .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment2.cpp
+           .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment2.cpp
               :fragment: loadAndJoin
 
            Implementation of the `main` function.
 
-           .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment2.cpp
+           .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment2.cpp
               :fragment: main
 
            Printing the hits of the reference sequence.
 
-           .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment2.cpp
+           .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment2.cpp
               :fragment: printResult
 
            And here is the result.
@@ -331,14 +331,14 @@ Afterwards we define an Iterator over the so called ``TJournalEntries`` data str
 
 Again we check first whether the pattern fits into our sequence.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_online_search.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_online_search.cpp
    :fragment: findPatternInJournalStringPart1
 
 We then iterate over all nodes beginning from the first until we have reached the node in which the pattern reaches the end of the Journaled Sequence.
 The function findInJournalEntries helps us to find the corresponding node.
 We increment the position of the iterator by one such that it points behind the last element which is included by the search.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_online_search.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_online_search.cpp
    :fragment: findPatternInJournalStringPart2
 
 Now we search in each node until we have reached the end.
@@ -346,7 +346,7 @@ For each node we first check the type of the journaled operation.
 If we are in an "original" node we call the function ``_findInOriginalNode``.
 If we are in a "patch" node we call the function ``_findInPatchNode`` and in the end we call the function ``_searchAtBorder`` which is called for each node type and scans all possible hits at the border of a node.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_online_search.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_online_search.cpp
    :fragment: findPatternInJournalStringPart3
 
 Let us begin with the implementation of the function ``_findInOriginalNode``.
@@ -373,7 +373,7 @@ Assignment 3
 
        Use the STL function `std::upper_bound <http://www.cplusplus.com/reference/algorithm/upper_bound/>`_ to conduct a binary search to find the first possible hit from the reference that is also represented by the current node.
 
-       .. includefrags:: extras/demos/tutorial/data_journaling/example_online_search_assignment3_hint.cpp
+       .. includefrags:: demos/tutorial/data_journaling/example_online_search_assignment3_hint.cpp
           :fragment: findInOriginalNode
 
    Solution
@@ -382,14 +382,14 @@ Assignment 3
        Here is the solution to this function.
        Click **more...** below, to see a complete solution of everything we have done so far.
 
-       .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
+       .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
           :fragment: findInOriginalNode
 
        .. container:: foldable
 
           Include the necessary headers.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
              :fragment: include
 
           We know implement the method to search for hits in an original node.
@@ -398,42 +398,42 @@ Assignment 3
           Since, we've found an upper bound we have to check additionally if there exists a previous hit that lies directly on the physical begin position of our current node.
           We then include all hits that fit into this current node until we have found the first position where the pattern would cross the border of this node or we have reached the end of the reference hit set.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
             :fragment: findInOriginalNode
 
           Implementing the backbone to search for a pattern in the reference string.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
             :fragment: findPatternInJournalString
 
           Implementing the search within the reference sequence.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
             :fragment: findPatternInReference
 
           Implementing the backbone of the search.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
             :fragment: searchPattern
 
           Implement the `laodAndJoin` method.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
             :fragment: loadAndJoin
 
           Implementing the main method.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
             :fragment: main
 
           Printing the hits of the reference sequence.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
             :fragment: printResultReference
 
           Printing the hits of the journaled sequences.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment3.cpp
             :fragment: printResultJournalSequence
 
           And here is the result.
@@ -455,19 +455,19 @@ We basically had this already implemented when we wrote the search function for 
 
 First we write the body of our function and define now an Iterator over the Journaled String.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_online_search.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_online_search.cpp
    :fragment: findInPatchNodePart1
 
 We know specify the range in which we are searching for the pattern.
 This range starts at the current physical position of the insertion buffer and ends at the last position of this node where the pattern completely fits.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_online_search.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_online_search.cpp
    :fragment: findInPatchNodePart2
 
 We need to use a second temporary iterator which is used to compare the current value with the pattern.
 If all positions matches then we report a match at the current virtual position.
 
-.. includefrags:: extras/demos/tutorial/data_journaling/example_online_search.cpp
+.. includefrags:: demos/tutorial/data_journaling/example_online_search.cpp
    :fragment: findInPatchNodePart3
 
 To ensure that we are not missing any hits we also have to scan the regions where the pattern is leaving the current node.
@@ -490,7 +490,7 @@ Assignment 4
        The following code snippet provides you with the backbone for this function.
        Fill in the missing parts ``[A]``, ``[B]``, ``[C]`` and ``[D]``.
 
-       .. includefrags:: extras/demos/tutorial/data_journaling/example_online_search_assignment4_hint.cpp
+       .. includefrags:: demos/tutorial/data_journaling/example_online_search_assignment4_hint.cpp
           :fragment: searchAtBorder
 
    Solution
@@ -499,59 +499,59 @@ Assignment 4
         Here is the solution to this function.
         Click **more...** below, to see a complete solution of everything we have done so far.
 
-       .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
+       .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
           :fragment: searchAtBorder
 
        .. container:: foldable
 
           Include the necessary headers.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
             :fragment: include
 
           Search at the border the current node for the pattern.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
             :fragment: searchAtBorder
 
           Search for the pattern in the insertion region covered by the current node.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
             :fragment: findInPatchNode
 
           Check if hit was reported for this region in the reference sequence.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
             :fragment: findInOriginalNode
 
           Implementing the backbone of the search for the Journaled String.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
             :fragment: findPatternInJournalStringPart1
 
           Implementing the search for the reference sequence.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
             :fragment: findPatternInReference
 
           The backbone of the search method.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
             :fragment: searchPatternPart1
 
           Loading and joining the sequences.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
             :fragment: loadAndJoin
 
           Implementing the main function.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
             :fragment: main
 
           Reporting the identified hits.
 
-          .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
+          .. includefrags:: demos/tutorial/data_journaling/solution_online_search_assignment4.cpp
             :fragment: printResult
 
           And here is the result.
@@ -600,7 +600,7 @@ Assignment 5
         Now we want to replace the brute force methods with some cool pattern matching algorithms.
         Therefore we include the header `<seqan/finder.h>`.
 
-        .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_finder.cpp
+        .. includefrags:: demos/tutorial/data_journaling/solution_online_search_finder.cpp
           :fragment: include
 
         Now we can use the :dox:`Finder` interface of SeqAn.
@@ -614,44 +614,44 @@ Assignment 5
         Be careful when storing the position that the Finder is returning.
         We have to recompute the correct virtual position since we used an infix of the original search text.
 
-        .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_finder.cpp
+        .. includefrags:: demos/tutorial/data_journaling/solution_online_search_finder.cpp
           :fragment: searchAtBorder
 
         So the biggest change is done.
         We simply repeat the changes from above and watch to get the correct virtual position.
 
-        .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_finder.cpp
+        .. includefrags:: demos/tutorial/data_journaling/solution_online_search_finder.cpp
           :fragment: findInPatchNodePart1
 
         Of course we don't need to change anything for the original nodes.
 
-        .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_finder.cpp
+        .. includefrags:: demos/tutorial/data_journaling/solution_online_search_finder.cpp
           :fragment: findInOriginalNode
 
         Also the function `findPatternInJournalString` remains the same.
 
-        .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_finder.cpp
+        .. includefrags:: demos/tutorial/data_journaling/solution_online_search_finder.cpp
           :fragment: findPatternInJournalString
 
         We will switch to the Finder concept for the function `findPatternInReference` too.
         This is done quickly, since we have the basis already laid down in the previous functions.
 
-        .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_finder.cpp
+        .. includefrags:: demos/tutorial/data_journaling/solution_online_search_finder.cpp
           :fragment: findPatternInReference
 
         From here on, we don't have to change anything.
 
-        .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_finder.cpp
+        .. includefrags:: demos/tutorial/data_journaling/solution_online_search_finder.cpp
           :fragment: searchPatternPart1
 
         We write the same main body ...
 
-        .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_finder.cpp
+        .. includefrags:: demos/tutorial/data_journaling/solution_online_search_finder.cpp
           :fragment: laodAndJoin
 
         and finally print the results.
 
-        .. includefrags:: extras/demos/tutorial/data_journaling/solution_online_search_finder.cpp
+        .. includefrags:: demos/tutorial/data_journaling/solution_online_search_finder.cpp
           :fragment: main
 
         And here is the result using the Finder and Pattern concept of SeqAn.

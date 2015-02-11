@@ -9,7 +9,7 @@ BED I/O
 =======
 
 Learning Objective
-  In this tutorial, you will learn how to use the high-level interface :dox:`BedStream` class to read and write BED files.
+  In this tutorial, you will learn how to read and write BED files.
 
 Difficulty
   Average
@@ -18,9 +18,9 @@ Duration
   45min
 
 Prerequisites
-  Exposure to the BED format is useful.
+  :ref:`tutorial-sequences`, :ref:`tutorial-input-output-overview`, `BED Format Specification <http://genome.ucsc.edu/FAQ/FAQformat.html#format1>`_
 
-This tutorial deals with how to easily read and write BED files using the :dox:`BedStream` class.
+This tutorial shows how to read and write BED files using the :dox:`BedFileIn` and :dox:`BedFileOut` classes.
 It starts out with a quick reminder on the structure of BED files and will then continue with how to read and write BED files.
 
 Originally, the BED format was designed for storing annotation tracks in the UCSC genome browser.
@@ -40,8 +40,8 @@ There also is the `bedtools <https://code.google.com/p/bedtools/>`_ suite with a
 
 The SeqAn module ``bed_io`` allows the reading and writing of BED files.
 
-BED File Structure
-------------------
+BED Format
+----------
 
 The following is an example of a BED file:
 
@@ -109,78 +109,37 @@ blockSizes (12)
 A First Working Example
 -----------------------
 
-The following example shows an example of a program that reads the file with the path ``example.bed`` and prints its contents back to the user on stdout.
-If you want to try out this program then create a file with the sample BED content from above and adjust the path ``"example.bed"`` in the program below to the path to your BED file (e.g. ``"path/to/my_example.bed"``).
+The following example shows an example of a program that reads the file with the path ``example.bed`` and prints its contents back to the user on standard output.
 
-.. includefrags:: extras/demos/tutorial/bed_io/example1.cpp
+.. includefrags:: demos/tutorial/bed_io/example1.cpp
 
-The program first opens a :dox:`BedStream` for reading, then one for writing.
-You can read from stdin and write to stdout using ``"-"`` as the file name.
-
-The member ``sequenceNames`` of your :dox:`BedStream` object ``bedIn`` contains the names of the reference sequences that have been seen in records so far.
-This :dox:`StringSet` of :dox:`CharString` thus gets new elements as you read the BED file.
-For the translation between reference names and numeric ids, a cache is used.
-The function :dox:`BedStream#addSequenceName` can be used to register the sequence name with the ``bedOut`` stream.
-This will also update the cache.
-
+The program first opens a :dox:`BedFileIn` for reading and a :dox:`BedFileOut` for writing.
 The BED records are read into :dox:`BedRecord` objects which we will focus on below.
 In this case, we use the :dox:`Bed3Record` specialization of the :dox:`BedRecord` class.
-
-.. tip::
-
-   BED records and additional data.
-
-   This means that the first three columns are read and interpreted and available in the class members.
-   The remaining data is stored in the ``data`` member variable of the record.
-   This means that the data stored after the first three columns could be empty or of an arbitrary format.
-
-Note that the example above is missing error handling.
-This means that if the input format is ill-formed, error return codes are not handled appropriately and the program might do something unexpected in the case of an error.
-We will fix this in `Assignment 1`_.
-
-You can see the output of the program below when called with the input file from above.
-
-.. code-block:: console
-
-   chr1    66999824    67210768    NM_032291   0   +   6700004167208778    0   25  227,64,25,72,57,55,176,12,12,25,52,86,93,75,501,128,127,60,112,156,133,203,65,165,2013, 0,91705,98928,101802,105635,108668,109402,126371,133388,136853,137802,139139,142862,145536,147727,155006,156048,161292,185152,195122,199606,205193,206516,207130,208931,
-   chr1    48998526    50489626    NM_032785   0   -   4899984450489468    0   14  1439,27,97,163,153,112,115,90,40,217,95,125,123,192,    0,2035,6787,54149,57978,101638,120482,130297,334336,512729,712915,1164458,1318541,1490908,
-   chr1    16767166    16786584    NM_018090   0   +   1676725616785385    0   8   182,101,105,82,109,178,76,1248, 0,2960,7198,7388,8421,11166,15146,18170,
-   chr1    33546713    33585995    NM_052998   0   +   3354785033585783    0   12  182,121,212,177,174,173,135,166,163,113,215,351,0,275,488,1065,2841,10937,12169,13435,15594,16954,36789,38931,
-   chr1    16767166    16786584    NM_001145278    0   +   1676725616785385    0   8   104,101,105,82,109,178,76,1248, 0,2960,7198,7388,8421,11166,15146,18170,
-
-To add error handling, we have to check return values.
-The :dox:`BedStream#readRecord` call returns a status code different from ``0``, indicating an error.
-
-In `Assignment 1`_, we will add error handling to the program.
 
 Assignment 1
 """"""""""""
 
 .. container:: assignment
 
-   Adding Error Handling
-
    Type
-     Review
+     Reproduction
 
    Objective
-     Add error handling using the hints below.
-
-   Hints
-     The functions :dox:`BedStream#readRecord` and :dox:`BedStream#writeRecord` return a status code ``int``, ``0`` on success, ``1`` on errors.
-     The function :dox:`BedStream#isGood` checks whether the state of a :dox:`BedStream` is errorneous.
+     Create a file with the sample BED content from above and adjust the path ``"example.bed"`` to the path to your BED file (e.g. ``"/path/to/my_example.bed"``).
 
    Solution
-     .. container:: foldable
+      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/bed_io/solution1.cpp
+         .. includefrags:: demos/tutorial/bed_io/solution1.cpp
 
-The Class :dox:`BedRecord`
---------------------------
+
+Accessing the Records
+---------------------
 
 The class :dox:`BedRecord` stores one record in a BED file.
 Note that there are various specializations, each storing a different number of fields.
-We show the quasi-definition of :dox:`Bed12Record` below.
+We show the quasi-definition of :dox:`BedRecord` below.
 The other specializations have less fields.
 
 .. code-block:: cpp
@@ -191,7 +150,7 @@ The other specializations have less fields.
    {
    public:
        CharString ref;      // reference name
-       __int32 rID;         // index in sequenceNames of BedStream
+       __int32 rID;         // index in sequenceNames of BedFile
        __int32 beginPos;    // begin position of the interval
        __int32 endPos;      // end position of the interval
        CharString name;     // name of the interval
@@ -216,13 +175,6 @@ The other specializations have less fields.
 
 The static members ``INVALID_POS``, ``INVALID_REFID`` store sentinel values for marking positions and reference sequence ids as invalid.
 
-The member ``ref`` stores the contig/reference name of the genomic interval.
-This information is somewhat redundant with the ``rID`` member that is filled automatically when reading from a :dox:`BedStream` such that the BedStream's ``sequenceNames[record.rID] == record.ref``.
-Translating reference names to integers is useful in many applications.
-
-When writing and ``record.rID == INVALID_REFID`` then ``record.ref`` is written out as the reference name and ``sequenceNames[record.rID]`` is written out otherwise.
-The user has to take care that ``record.rID`` is a valid reference id in this case.
-
 Assignment 2
 """"""""""""
 
@@ -239,7 +191,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/bed_io/solution2.cpp
+        .. includefrags:: demos/tutorial/bed_io/solution2.cpp
 
         The output is
 
@@ -247,6 +199,9 @@ Assignment 2
 
            RECORDS ON CONTIGS
            chr1    5
+
+Creating a New File
+-------------------
 
 Assignment 3
 """"""""""""
@@ -260,7 +215,7 @@ Assignment 3
 
    Objective
      Write a program that prints the following BED file.
-     Create ``BedRecord<Bed6>`` objects and write them to a ``BedStream`` using ``writeRecord()``.
+     Create ``BedRecord<Bed6>`` objects and write them to a ``BedFileOut`` using ``writeRecord()``.
 
      .. code-block:: console
 
@@ -271,7 +226,7 @@ Assignment 3
    Solution
     .. container:: foldable
 
-       .. includefrags:: extras/demos/tutorial/bed_io/solution3.cpp
+       .. includefrags:: demos/tutorial/bed_io/solution3.cpp
 
 Next Steps
 ----------
