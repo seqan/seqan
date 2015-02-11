@@ -7,6 +7,10 @@ This file summarizes the changes to the SeqAn library and apps.
 Release 2.0.0
 ~~~~~~~~~~~~~
 
+Major release with many new features and applications. 
+Note, the majority of the modules are backward compatible to the previous version.
+Some modules, e.g. I/O-modules, have some adapted easier-to-use or unified interfaces.
+
 Library Updates
 ^^^^^^^^^^^^^^^
 
@@ -21,7 +25,6 @@ Library Updates
     - Packed Strings.
 - New alignment modules:
     - X-Drop extension for alignments (``align_extend``)
-    - Split alignments (``align_split``)
     - Sequence-profile alignments (``align_profile``)
 - New AminoAcid-Dna translation module (``translation``)
 - The motif finding module (``find_module``) has been removed.
