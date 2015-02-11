@@ -419,10 +419,10 @@ Then, you can generate the Knime Nodes/Eclipse plugins as described above using 
 
 .. code-block:: console
 
-    ~ # svn co http://svn.seqan.de/seqan/trunk seqan-trunk
-    ~ # mkdir -p seqan-trunk-build/release
-    ~ # seqan-trunk-build/release
-    release # cmake ../../seqan-trunk
+    ~ # git clone https://github.com/seqan/seqan seqan-src
+    ~ # mkdir -p seqan-build/release
+    ~ # cd seqan-build/release
+    release # cmake ../../seqan-src
     release # make prepare_workflow_plugin
     release # cd ~/knime_samtools/GenericKnimeNodes
     GenericKnimeNodes # ant -Dknime.sdk=${HOME}/eclipse_knime_2.8.0 \

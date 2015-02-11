@@ -2,7 +2,7 @@
 SET (CTEST_PROJECT_NAME "SeqAn")
 
 # define build name&co for easier identification on CDash
-set(CTEST_BUILD_NAME "travis-ci-$ENV{TRAVIS_REPO_SLUG}-$ENV{TRAVIS_BRANCH}-$ENV{BUILD_NAME}-$ENV{CXX}")
+set(CTEST_BUILD_NAME "travis-$ENV{TRAVIS_BUILD_NUMBER}-$ENV{TRAVIS_REPO_SLUG}-$ENV{TRAVIS_BRANCH}-$ENV{BUILD_NAME}-$ENV{CXX}")
 set(CTEST_SITE "travis-ci-build-server")
 set(CTEST_SOURCE_DIRECTORY "$ENV{SOURCE_DIRECTORY}")
 set(CTEST_BINARY_DIRECTORY "${CTEST_SOURCE_DIRECTORY}/_build")
@@ -10,9 +10,10 @@ set(CTEST_BINARY_DIRECTORY "${CTEST_SOURCE_DIRECTORY}/_build")
 message(STATUS "CTEST_SOURCE_DIRECTORY: ${CTEST_SOURCE_DIRECTORY}")
 message(STATUS "CTEST_BINARY_DIRECTORY: ${CTEST_BINARY_DIRECTORY}")
 
-set(INITIAL_CACHE "CMAKE_BUILD_TYPE=Release")
-
-# create cache
+# create cache - mind the newline between variables!
+set(INITIAL_CACHE
+"CMAKE_BUILD_TYPE=Release
+SEQAN_TRAVIS_BUILD:BOOL=ON")
 file(WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" ${INITIAL_CACHE})
 
 # customize reporting of errors in CDash
@@ -20,7 +21,11 @@ set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_ERRORS 1000)
 set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_WARNINGS 1000)
 
 # try to speed up the builds so we don't get killed
-set(CTEST_BUILD_FLAGS -j4)
+if ("$ENV{CXX}" MATCHES ".*(clang\\+\\+-?.*)")
+  set(CTEST_BUILD_FLAGS -j6)
+else ("$ENV{CXX}" MATCHES ".*(clang\\+\\+-?.*)")
+  set(CTEST_BUILD_FLAGS -j4)
+endif ("$ENV{CXX}" MATCHES ".*(clang\\+\\+-?.*)")
 
 # we want makefiles
 set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
@@ -38,7 +43,7 @@ ctest_start     (Continuous)
 
 ctest_configure (BUILD "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE _configure_ret)
 ctest_build     (BUILD "${CTEST_BINARY_DIRECTORY}" NUMBER_ERRORS _build_errors)
-ctest_test      (BUILD "${CTEST_BINARY_DIRECTORY}" PARALLEL_LEVEL 3)
+ctest_test      (BUILD "${CTEST_BINARY_DIRECTORY}" PARALLEL_LEVEL 8)
 ctest_submit()
 
 # indicate errors

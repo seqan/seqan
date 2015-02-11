@@ -17,11 +17,13 @@ It should be very simple for you to tailor these instructions to your requiremen
 Prerequisites
 ~~~~~~~~~~~~~
 
-Use the following command line to install the required dependencies: the `Subversion <http://subversion.apache.org/>`_ client, the `GNU C++ compiler <http://gcc.gnu.org/>`_, `CMake <http://cmake.org>`_ for the build system and the `Python <http://python.org>`_ script interpreter for running helper scripts.
+Use the following command line to install the required dependencies: the `Git`__ client, the `GNU C++ compiler <http://gcc.gnu.org/>`_, `CMake <http://cmake.org>`_ for the build system and the `Python <http://python.org>`_ script interpreter for running helper scripts.
+
+.. __: http://git-scm.com/
 
 .. code-block:: console
 
-    ~ # sudo apt-get install subversion g++ cmake python
+    ~ # sudo apt-get install git g++ cmake python
 
 The following command line installs optional dependencies:
 developer versions of `zlib <http://zlib.org>`_ and `libbzip2 <http://bzip.org>`_ (for compressed I/O support) and the `Boost <http://boost.org>`_ library (required by a few apps).
@@ -33,29 +35,57 @@ developer versions of `zlib <http://zlib.org>`_ and `libbzip2 <http://bzip.org>`
 Install
 ~~~~~~~
 
-Now, go to the directory you want to keep your SeqAn install in (e.g. ``Development`` in your home folder).
+.. important::
+	
+	In the following we describe the easiest way to get up and running with SeqAn.
+	This is especially recommended for novel users working through the tutorials in the beginning.
+	If you are planning to contribute to SeqAn at any point, you need to read the :ref:`infrastructure-seqan-git-workflow` instructions first. 
+	This manual will guide you through the SeqAn workflow required to submit bug-fixes and new features.
+
+Go to the directory you want to keep your SeqAn install in (e.g. ``Development`` in your home folder).
 
 .. code-block:: console
 
     ~ # cd $HOME/Development
 
-Then, use Subversion to retrieve the current SeqAn trunk:
+Then, use git to retrieve the current SeqAn source-base:
 
 .. code-block:: console
 
-    Development # svn co https://github.com/seqan/seqan/branches/master seqan-trunk
+    # Development # git clone https://github.com/seqan/seqan.git seqan-src
 
-You can now find the whole tree with the SeqAn library and applications in ``$HOME/Development/seqan-trunk``.
+You can now find the whole tree with the SeqAn library and applications in ``$HOME/Development/seqan-src``.
+
+.. tip::
+
+    By default git creates a local branch pointing to the stable master branch.
+    This branch is only updated when hot fixes are applied or a new release is published.
+    
+    If you want to have access to regular updates and new features you can switch to the ``develop`` branch of SeqAn:
+    
+    .. code-block:: console
+
+		# Development # cd seqan-src
+		# Development/seqan-src # git checkout -b develop origin/develop
+	
+    For more help on git, please read the documentation ``git help`` and consult the homepage `Git`__.
+
+.. __: http://git-scm.com/
+
+.. warning::
+
+    Note that the state of develop is not guaranteed to be stable at any time.
+
 
 A First Build
 ~~~~~~~~~~~~~
 
 Next, we will use CMake to create Makefiles for building the applications, demo programs (short: demos), and tests.
-For this, we create a separate folder ``seqan-trunk-build`` on the same level as the folder ``seqan-trunk``.
+For this, we create a separate folder ``seqan-build`` on the same level as the folder ``seqan-src``.
 
 .. code-block:: console
 
-    Development # mkdir seqan-trunk-build
+    # Development # mkdir seqan-build
 
 When using Makefiles, we have to create separate Makefiles for debug builds (including debug symbols with no optimization) and release builds (debug symbols are stripped, optimization is high).
 Thus, we create a subdirectory for each build type.
@@ -73,61 +103,53 @@ debug symbols are enabled and assertions are active.
 
 .. code-block:: console
 
-    Development # mkdir seqan-trunk-build/debug
-    Development # cd seqan-trunk-build/debug
+    # Development # mkdir seqan-build/debug
+    # Development # cd seqan-build/debug
 
 The resulting directory structure will look as follows.
 
 ::
 
        ~/Development
-         ├─ seqan-trunk                 source directory
-         └─ seqan-trunk-build
-            └─ debug                    build directory with debug symbols
+         ├─ seqan-src                 source directory
+         └─ seqan-build
+            └─ debug                  build directory with debug symbols
 
 Within the **build directory** ``debug``, we call CMake to generate Makefiles in *Debug* mode.
 
 .. code-block:: console
 
-    debug # cmake ../../seqan-trunk -DCMAKE_BUILD_TYPE=Debug
+    # debug # cmake ../../seqan-src -DCMAKE_BUILD_TYPE=Debug
 
 We can then build one application, for example RazerS 2:
 
 .. code-block:: console
 
-    debug # make razers2
+    # debug # make razers2
 
 Optionally, we could also use "``make``\ " instead of "``make razers2``\ ".
-However, this **can take a long time and is not really necessary**.
+However, this builds all demos, tests and applications, which **can take a long time and is not really necessary**.
 
 Hello World!
 ~~~~~~~~~~~~
 
-Now, let us create a **sandbox** for you.
-This sandbox will be your local workspace and you might want to have it versionized on your own Subversion repository at a later point.
-All of your development will happen in your sandbox.
+Now it is time to write your first little application in SeqAn.
+Go to the demos folder in the ``seqan-src`` directory and create a new folder with the same name as your username.
+In this tutorial we use ``seqan_dev`` as the username.
+Create a new cpp file called ``hello_seqan.cpp``
 
-We go back to the source directory and then use the SeqAn code generator to create a new sandbox.
+.. code-block:: console
+	
+    # debug # cd ../../seqan-src/demos
+    # demos # mkdir seqan_dev; cd seqan_dev
+    # seqan_dev # echo "" > hello_seqan.cpp
+
+Now, we go back into the build directory and call CMake again to make it detect the new source file.
 
 .. code-block:: console
 
-    debug # cd ../../seqan-trunk
-    seqan-trunk # ./util/bin/skel.py repository sandbox/my_sandbox
-
-Now that you have your own working space, we create a new application ``first_app``.
-
-.. code-block:: console
-
-    seqan-trunk # ./util/bin/skel.py app first_app sandbox/my_sandbox
-
-Details about the code generator are explained in :ref:`how-to-use-the-code-generator`.
-
-Now, we go back into the build directory and call CMake again:
-
-.. code-block:: console
-
-    seqan-trunk # cd ../seqan-trunk-build/debug
-    debug # cmake .
+    # seqan_dev # cd ../../../seqan-build/debug
+    # debug # cmake .
 
 .. tip::
 
@@ -141,25 +163,22 @@ Now, we go back into the build directory and call CMake again:
 
     .. code-block:: console
 
-       ~ # cd $HOME/Development/seqan-trunk-build/debug
-       debug # cmake .
+       ~ # cd $HOME/Development/seqan-build/debug
+       # debug # cmake .
 
-    Do not try to call "``cmake .``" from within the ``seqan-trunk`` directory **but only from your build directory**.
+    Do not try to call "``cmake .``" from within the ``seqan-src`` directory **but only from your build directory**.
 
 .. raw:: html
 
    </pre>
 
-The step above creates the starting point for a real-world application, including an argument parser and several other things that are a bit too complicated to fit into the Getting Started tutorial.
-Therefore, we will replace the program of the app **first_app** with a very simple example program.
-
-Open the file ``sandbox/my_sandbox/apps/first_app/first_app.cpp`` (in your ``seqan-trunk`` directory) with a text editor and replace its contents with the following:
+Open the file ``demos/seqan_dev/hello_seqan.cpp`` (in your ``seqan-src`` directory) with a text editor and replace its contents with the following:
 
 .. code-block:: cpp
 
     #include <iostream>
     #include <seqan/sequence.h>  // CharString, ...
-    #include <seqan/file.h>      // to stream a CharString into cout
+    #include <seqan/stream.h>    // to stream a CharString into cout
 
     int main(int, char const **)
     {
@@ -173,8 +192,8 @@ Afterwards, you can simply compile and run your application:
 
 .. code-block:: console
 
-    debug # make first_app
-    debug # ./bin/first_app
+    # debug # make demo_seqan_dev_hello_seqan
+    # debug # ./bin/demo_seqan_dev_hello_seqan
 
 On completion, you should see the following output:
 
@@ -191,6 +210,6 @@ Further Steps
 As a next step, we suggest the following:
 
 * :ref:`Continue with the Tutorials <tutorial>`
-* Look around in the files in ``sandbox/my_sandbox/apps/first_app`` or the demos in ``core/demos`` and ``extras/demos``.
 * For the tutorial, using the SeqAn build system is great!
   If you later want to use SeqAn as a library, have a look at :ref:`build-manual-integration-with-your-own-build-system`.
+* If you plan to contribute to SeqAn, please read the following document: :ref:`infrastructure-seqan-git-workflow`.

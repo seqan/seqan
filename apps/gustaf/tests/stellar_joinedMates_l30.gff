@@ -1,0 +1,9 @@
+gi|1234567|	Stellar	eps-matches	976	1120	96.5986	+	.	deletion;seq2Range=75,220;eValue=4.79714e-64;cigar=1M1D1M1I2M1I140M;mutations=1A,3A,5A,6A
+gi|9632547|ref|NC_002077.1|	Stellar	eps-matches	4546	4690	96.5986	+	.	deletion;seq2Range=75,220;eValue=1.98992e-63;cigar=1M1D1M1I2M1I140M;mutations=1A,3A,5A,6A
+gi|9632547|ref|NC_002077.1|	Stellar	eps-matches	1	97	100	+	.	deletion;seq2Range=124,220;eValue=2.43894e-45;cigar=97M;mutations=
+gi|9632547|ref|NC_002077.1|	Stellar	eps-matches	3532	3578	95.8333	+	.	deletion;seq2Range=1,47;eValue=6.48299e-17;cigar=41M1I2M1D3M;mutations=42C
+gi|1234567|	Stellar	eps-matches	136	181	95.6521	+	.	deletion;seq2Range=36,80;eValue=1.68866e-16;cigar=3M1D42M;mutations=3T
+gi|9632547|ref|NC_002077.1|	Stellar	eps-matches	3706	3751	95.6521	+	.	deletion;seq2Range=36,80;eValue=7.00481e-16;cigar=3M1D42M;mutations=3T
+gi|9632547|ref|NC_002077.1|	Stellar	eps-matches	75	143	95.6521	-	.	deletion;seq2Range=106,174;eValue=3.22989e-26;cigar=69M;mutations=61T,64G,67C
+gi|1234567|	Stellar	eps-matches	1101	1148	95.8333	-	.	deletion;seq2Range=124,171;eValue=1.56286e-17;cigar=48M;mutations=43T,46G
+gi|9632547|ref|NC_002077.1|	Stellar	eps-matches	4671	4718	95.8333	-	.	deletion;seq2Range=124,171;eValue=6.48299e-17;cigar=48M;mutations=43T,46G

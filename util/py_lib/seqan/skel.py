@@ -95,7 +95,7 @@ library modules, tests, apps, app tests, and demos inside a sandbox.
 #
 #This command creates a new library module in sandbox/john_doe/include/seqan.
 #It consists of the directory my_module, the files my_module.h and
-#my_module/my_module_base.h as well as the info file my_module/INFO.
+#my_module/my_module_base.h.
 #
 #  %prog test my_module sandbox/john_doe
 #
@@ -216,13 +216,6 @@ def createModule(name, location, options):
         replacements = buildReplacements('module', name, seqan_path, target_file, options)
         res = configureFile(target_file, source_file, replacements, options.dry_run, options)
         if res: return res
-    if options.create_infos:
-        # Copy over INFO file for app and perform replacements.
-        source_file = paths.pathToTemplate('module_template', 'INFO')
-        target_file = os.path.join(module_path, 'INFO')
-        replacements = buildReplacements('app', name, location, target_file, options)
-        res = configureFile(target_file, source_file, replacements, options.dry_run, options)
-        if res: return res
     return 0
 
 def createTest(name, location, options):
@@ -270,13 +263,6 @@ def createApp(name, location, options):
         # Copy over .cpp file for app and perform replacements.
         source_file = paths.pathToTemplate('app_template', 'app.cpp')
         target_file = os.path.join(target_path, '%s.cpp' % name)
-        replacements = buildReplacements('app', name, location, target_file, options)
-        res = configureFile(target_file, source_file, replacements, options.dry_run, options)
-        if res: return res
-    if options.create_infos:
-        # Copy over INFO file for app and perform replacements.
-        source_file = paths.pathToTemplate('app_template', 'INFO')
-        target_file = os.path.join(target_path, 'INFO')
         replacements = buildReplacements('app', name, location, target_file, options)
         res = configureFile(target_file, source_file, replacements, options.dry_run, options)
         if res: return res
@@ -432,24 +418,15 @@ def main():
                       action='store_true',
                       help='Only create CMakeLists.txt files',
                       default=False)
-    parser.add_option('-i', '--infos-only', dest='infos_only',
-                      action='store_true',
-                      help='Only create INFO files',
-                      default=False)
     parser.add_option('--force', dest='force', action='store_true',
                       help='Overwrite existing files and directories.',
                       default=False)
     options, args = parser.parse_args()
-    if options.infos_only and options.cmakelists_only:
-        print >>sys.stderr, 'Only one of --info-only and --cmakelists-only can be given.'
-        return 1
     options.create_cmakelists = True
     options.create_infos = True
     options.create_dirs = True
     options.create_programs = True
-    if options.infos_only or options.cmakelists_only:
-        options.create_cmakelists = not options.infos_only
-        options.create_infos = not options.cmakelists_only
+    if options.cmakelists_only:
         options.create_dirs = False
         options.create_programs = False
 

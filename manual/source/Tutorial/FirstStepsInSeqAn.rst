@@ -58,7 +58,7 @@ This is only a toy example for explanatory reasons and we ignore any more advanc
 
 In SeqAn the program could look like this (we will explain every line of code shortly):
 
-.. includefrags:: extras/demos/tutorial/first_steps/basic_code.cpp
+.. includefrags:: demos/tutorial/first_steps/basic_code.cpp
    :fragment: all
 
 Whenever we use SeqAn classes or functions we have to explicitly write the namespace qualifier ``seqan::`` in front of the class name or function.
@@ -105,7 +105,7 @@ Assignment 1
 
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/first_steps/solution_1.cpp
+        .. includefrags:: demos/tutorial/first_steps/solution_1.cpp
 
 SeqAn and Templates
 ~~~~~~~~~~~~~~~~~~~
@@ -114,7 +114,7 @@ Let us now have a detailed look at the program.
 
 We first include the IOStreams library that we need to print to the screen and the SeqAn's ``<seqan/file.h>`` as well as ``<seqan/sequence.h>`` module from the SeqAn library that provides SeqAn :dox:`String`.
 
-.. includefrags:: extras/demos/tutorial/first_steps/basic_code_detailed.cpp
+.. includefrags:: demos/tutorial/first_steps/basic_code_detailed.cpp
    :fragment: includes
 
 The :dox:`String String class` is one of the most fundamental classes in SeqAn, which comes as no surprise since SeqAn is used to analyse sequences (there is an extra tutorial for SeqAn :ref:`sequences <tutorial-sequences>` and :ref:`alphabets <tutorial-alphabets>`).
@@ -132,20 +132,20 @@ Even though we provide further tutorials on templates in SeqAn (:ref:`tutorial-b
 
 The following two lines make use of template programming to define two strings of type char, a text and a pattern.
 
-.. includefrags:: extras/demos/tutorial/first_steps/basic_code_detailed.cpp
+.. includefrags:: demos/tutorial/first_steps/basic_code_detailed.cpp
    :fragment: sequences
 
 In order to store the similarities between the pattern and different text positions we additionally create a string storing integer values.
 
-.. includefrags:: extras/demos/tutorial/first_steps/basic_code_detailed.cpp
+.. includefrags:: demos/tutorial/first_steps/basic_code_detailed.cpp
    :fragment: score
 
 Note that in contrast to the first two string definitions we do not know the values of the different positions in the string in advance.
-In order to dynamically adjust the length of the new string to the text we can use the function :dox:`SequenceConcept#resize`.
+In order to dynamically adjust the length of the new string to the text we can use the function :dox:`StringConcept#resize`.
 The resize function is not a member function of the string class because SeqAn is not object oriented in the typical sence (we will see later how we adapt SeqAn to object oriented programming).
 Therefore, instead of writing ``string.resize(newLength)`` we use ``resize(string, newLength)``.
 
-.. includefrags:: extras/demos/tutorial/first_steps/basic_code_detailed.cpp
+.. includefrags:: demos/tutorial/first_steps/basic_code_detailed.cpp
    :fragment: resize
 
 .. note::
@@ -170,7 +170,7 @@ In this toy example we simply take the pattern and shift it over the text from l
 After each step, we check how many characters are equal between the corresponding substring of the text and the pattern.
 We implement this using two loops; the outer one iterates over the given text and the inner loop over the given pattern:
 
-.. includefrags:: extras/demos/tutorial/first_steps/basic_code_detailed.cpp
+.. includefrags:: demos/tutorial/first_steps/basic_code_detailed.cpp
    :fragment: similarity
 
 There are two things worth mentioning here: (1) SeqAn containers or strings start at position 0 and (2) you will notice that we use ``++variable`` instead of ``variable++`` wherever possible.
@@ -179,7 +179,7 @@ The reason is that ``++variable`` is slightly faster than its alternative, since
 In the last step we simply print the result that we stored in the variable ``````score`` on screen.
 This gives the similarity of the pattern to the string at each position.
 
-.. includefrags:: extras/demos/tutorial/first_steps/basic_code_detailed.cpp
+.. includefrags:: demos/tutorial/first_steps/basic_code_detailed.cpp
    :fragment: print
 
 Code Encapsulation
@@ -190,7 +190,7 @@ However, in order to make it easier to maintain and reuse parts of the code we n
 In this example the interesting piece of code is the similarity computation, which consists of an outer and inner loop.
 We encapsulate the outer loop in function ``computeScore`` and the inner loop in function ``computeLocalScore`` as can be seen in the following code.
 
-.. includefrags:: extras/demos/tutorial/first_steps/code_encapsulation.cpp
+.. includefrags:: demos/tutorial/first_steps/code_encapsulation.cpp
    :fragment: all
 
 The function computeScore() now contains the fundamental part of the code and can be reused by other functions.
@@ -221,7 +221,7 @@ Assignment 2
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/first_steps/solution_2.cpp
+        .. includefrags:: demos/tutorial/first_steps/solution_2.cpp
 
 The Role of References in SeqAn
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -270,12 +270,12 @@ Assignment 3
 
      .. code-block:: cpp
 
-        void computeLocalScore(seqan::String<char> const & subText, seqan::String<char> const & pattern)
+        int computeLocalScore(seqan::String<char> const & subText, seqan::String<char> const & pattern)
 
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/first_steps/solution_3.cpp
+        .. includefrags:: demos/tutorial/first_steps/solution_3.cpp
 
 Generic and Reusable Code
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -334,7 +334,7 @@ Assignment 4
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/first_steps/solution_4.cpp
+        .. includefrags:: demos/tutorial/first_steps/solution_4.cpp
 
 From Object-Oriented Programming to SeqAn
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -423,7 +423,7 @@ Assignment 5
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/first_steps/solution_5.cpp
+        .. includefrags:: demos/tutorial/first_steps/solution_5.cpp
 
 Tags in SeqAn
 ~~~~~~~~~~~~~
@@ -540,7 +540,7 @@ Assignment 6
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/first_steps/solution_6.cpp
+        .. includefrags:: demos/tutorial/first_steps/solution_6.cpp
 
 Obviously this is only a toy example in which we could have named the two ``print()`` functions differently.
 However, often this is not the case when the programs become more complex.
@@ -558,5 +558,5 @@ Now you are ready to explore more of the SeqAn library.
 There are several tutorials which will teach you how to use the different SeqAn data structures and algorithms.
 Below you find the complete code for our example with the corresponding output.
 
-.. includefrags:: extras/demos/tutorial/first_steps/final_result.cpp
+.. includefrags:: demos/tutorial/first_steps/final_result.cpp
    :fragment: result

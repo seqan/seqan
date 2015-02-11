@@ -1,0 +1,16 @@
+Initial alignment
+
+--------------------------------------------------------------------------------
+AATGGATGGCAAAATAGTTGTTCCATGAATACATCTCTAAAGAGCTTT
+            AAAGTAGTTGTTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTT
+              AGTTGTCCATGAATACATCTCTAAAGAGCTTTGATGCTAATTTAGTCAATTTTCAATACTGTA
+                  ACATCTCTTAAAGAGCTTTGATGCTAATTTAGTCAAATT
+                         AGAGCTTTGATGCTAATTTAGTCAAATTTTCAATACTGTACAATCTTCTCTAG
+Final alignment
+
+AATGGATGGCAAAATAGTTGTTCCATGAATACATCTC-TAAAGAGCTTTGATGCTAATTTAGTCAAATTTTCAATACTGT
+.....................................*...........
+          ...G.......................*......................
+               .....*................*..........................*...............
+                              .......T...............................
+                                         .......................................

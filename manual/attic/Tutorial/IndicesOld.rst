@@ -82,14 +82,14 @@ output the substrings represented by tree nodes in preorder dfs. All
 index related data structures are defined in ``seqan/index.h``, so we
 have to include this header (``seqan/sequence.h`` is included
 implicitly).
-.. includefrags:: core/demos/tutorial/index/index_preorder.cpp
+.. includefrags:: demos/tutorial/index/index_preorder.cpp
    :fragment: includes
 
 Next we create the string "abracadabra" and an index specialized with
 the type of this string. The string can be given to the index
 constructor.
 
-.. includefrags:: core/demos/tutorial/index/index_preorder.cpp
+.. includefrags:: demos/tutorial/index/index_preorder.cpp
    :fragment: initialization
 
 The seqan:Metafunction.Iterator metafunction expects two arguments, the
@@ -103,7 +103,7 @@ the seqan:Concept.Iterator concept, they can be used via
 seqan:Function.goNext, seqan:Function.atEnd, etc. The string that
 represents the node the iterator points to is returned by
 seqan:Function.representative.
-.. includefrags:: core/demos/tutorial/index/index_preorder.cpp
+.. includefrags:: demos/tutorial/index/index_preorder.cpp
    :fragment: iteration
 
 Program output:
@@ -172,20 +172,20 @@ efficiently search a text for exact matches of a pattern. We therefore
 want to use seqan:Function.goDown which has an overload to go down an
 edge beginning with a specific character. First we create an index of
 the text "How many wood would a woodchuck chuck."
-.. includefrags:: core/demos/tutorial/index/index_search.cpp
+.. includefrags:: demos/tutorial/index/index_search.cpp
    :fragment: initialization
 
 The main search can then be implemented as follows. The algorithm
 descends the suffix tree along edges beginning with the corresponding
 pattern character. In each step the unseen edge characters have to be
 verified.
-.. includefrags:: core/demos/tutorial/index/index_search.cpp
+.. includefrags:: demos/tutorial/index/index_search.cpp
    :fragment: iteration
 
 If all pattern characters could successfully be compared we end in the
 topmost node pattern is a prefix of. Thus, the suffixes represented by
 this node are the occurrences of our pattern.
-.. includefrags:: core/demos/tutorial/index/index_search.cpp
+.. includefrags:: demos/tutorial/index/index_search.cpp
    :fragment: output
 
 Program output:
@@ -206,7 +206,7 @@ Program output:
 
 Alternatively, we could have used seqan:Function.goDown to go down the
 path of a pattern instead single characters:
-.. includefrags:: core/demos/tutorial/index/index_search2.cpp
+.. includefrags:: demos/tutorial/index/index_search2.cpp
    :fragment: output
 
 ::
@@ -281,7 +281,7 @@ sufficient size. The following example iterates over all nodes in
 preorder dfs and recursively assigns the node depth to each node. First
 we create a seqan:Class.String of ``int`` to store the node depth for
 each suffix tree node.
-.. includefrags:: core/demos/tutorial/index/index_property_maps.cpp
+.. includefrags:: demos/tutorial/index/index_property_maps.cpp
    :fragment: initialization
 The main loop iterates over all nodes in preorder DFS, i.e. parents are
 visited prior children. The node depth for the root node is 0 and for
@@ -291,11 +291,11 @@ seqan:Function.property must be called with a
 seqan:Metafunction.VertexDescriptor. The vertex descriptor of the
 iterator node is returned by seqan:Function.value and the descriptor of
 the parent node is returned by seqan:Function.nodeUp.
-.. includefrags:: core/demos/tutorial/index/index_property_maps.cpp
+.. includefrags:: demos/tutorial/index/index_property_maps.cpp
    :fragment: iteration
 At the end we again iterate over all nodes and output the calculated
 node depth.
-.. includefrags:: core/demos/tutorial/index/index_property_maps.cpp
+.. includefrags:: demos/tutorial/index/index_property_maps.cpp
    :fragment: output
 Program output:
 
@@ -450,7 +450,7 @@ seqan:Spec.IndexQGram, the second template argument of
 seqan:Class.Index. Next we create the string "CATGATTACATA" and
 specialize the first index template argument with the type of this
 string. The string can be given to the index constructor.
-.. includefrags:: core/demos/tutorial/index/index_qgram.cpp
+.. includefrags:: demos/tutorial/index/index_qgram.cpp
    :fragment: initialization
 
 To get all occurrences of a q-gram, we first have to hash it with a
@@ -459,7 +459,7 @@ shape returned by seqan:Function.indexShape). The hash value returned by
 seqan:Function.hash or seqan:Function.hashNext is also stored in the
 shape and is used by the function seqan:Function.getOccurrences to
 retrieve all occurrences of our 3-gram.
-.. includefrags:: core/demos/tutorial/index/index_qgram.cpp
+.. includefrags:: demos/tutorial/index/index_qgram.cpp
    :fragment: output
 
 Program output:

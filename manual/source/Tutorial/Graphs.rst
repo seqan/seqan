@@ -45,7 +45,7 @@ The general header file for all types of graphs is ``<seqan/graph_types.h>``.
 It comprises the class :dox:`Graph` and its specializations, all functions for basic graph operations, and different iterators.
 Later, for computing the shortest path we will also need ``<seqan/graph_algorithms.h>`` which includes the implementations of most of SeqAn's graph algorithms.
 
-.. includefrags:: core/demos/tutorial/graph/graph_dijkstra.cpp
+.. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: includes
 
 We want to model the network of cities as an undirected graph and label the edges with distances.
@@ -58,7 +58,7 @@ This enables us to store the distances between the cities, our edge labels, usin
 Using the cargo argument, we have to provide a distance when adding an edge.
 And when we remove an edge we also remove the distance.
 
-.. includefrags:: core/demos/tutorial/graph/graph_dijkstra.cpp
+.. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: main-typedefs
 
 Each vertex and each edge in a graph is identified by a so-called descriptor.
@@ -78,13 +78,13 @@ Vertices can be added to ``g`` by a call to the function :dox:`Graph#addVertex`.
 The function returns the descriptor of the created vertex.
 These descriptors are needed to add the edges afterwards.
 
-.. includefrags:: core/demos/tutorial/graph/graph_dijkstra.cpp
+.. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: create-vertices
 
 The function :dox:`Graph#addEdge` adds an edge to the graph.
 The arguments of this function are the graph to which the edge is added, the vertices that it connects, and the cargo (which is in our case the distance between the two cities).
 
-.. includefrags:: core/demos/tutorial/graph/graph_dijkstra.cpp
+.. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: create-edges
 
 Once we have created the graph we may want to have a look at it.
@@ -93,7 +93,7 @@ With a tool like `Graphviz <http://www.graphviz.org/>`_ you can then visualize t
 
 The only thing that we have to do is to call the function :dox:`Graph#write` on a file stream with the tag ``DotDrawing()`` and pass over our graph ``g``.
 
-.. includefrags:: core/demos/tutorial/graph/graph_dijkstra.cpp
+.. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: main-graph-io
 
 After executing this example, there should be a file ``graph.dot`` in your directory.
@@ -123,7 +123,7 @@ Assignment 1
 
      .. container:: foldable
 
-	.. includefrags:: core/demos/tutorial/graph/solution_1.cpp
+	.. includefrags:: demos/tutorial/graph/solution_1.cpp
 
 Assignment 2
 """"""""""""
@@ -147,18 +147,18 @@ Assignment 2
 	We first have to include the corresponding header file for graphs.
 	Instead of ``<seqan/graph_types.h>``, we can also include ``<seqan/graph_algorithms.h>`` as it already includes ``<seqan/graph_types.h>``.
 
-	.. includefrags:: core/demos/tutorial/graph/graph_algo_scc.cpp
+	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
 	   :fragment: includes
 
 	This time we define a :dox:`DirectedGraph` without cargo at the edges.
 
-	.. includefrags:: core/demos/tutorial/graph/graph_algo_scc.cpp
+	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
 	   :fragment: typedefs
 
 	The function :dox:`Graph#addEdges` takes as parameters an array of vertex descriptors and the number of edges.
 	The array of vertex descriptors is sorted in the way predecessor1, successor1, predecessor2, successor2, ...
 
-	.. includefrags:: core/demos/tutorial/graph/graph_algo_scc.cpp
+	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
 	   :fragment: main-graph-construction
 
 	The screen output of the graph consists of an adjacency list for the vertices and an edge list:
@@ -228,7 +228,7 @@ Assignment 3
 	In this example you could include ``<seqan/graph_types.h>`` instead of the algorithms header file.
 	However, it is likely that if you define a graph, you will call a graph algorithm as well.
 
-	.. includefrags:: core/demos/tutorial/graph/graph_hmm.cpp
+	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp
 	   :fragment: includes
 
 	Next, we define our types.
@@ -238,12 +238,12 @@ Assignment 3
 	In our case, we define the transitions to be the logarithm of the probilities (:dox:`LogProb`) and hereby simplify multiplications to summations.
 	For the specialization we explicitly use the ``Default`` tag.
 
-	.. includefrags:: core/demos/tutorial/graph/graph_hmm.cpp
+	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp
 	   :fragment: typedefs
 
 	After that, we define some variables, especially one of our type ``THmm``.
 
-	.. includefrags:: core/demos/tutorial/graph/graph_hmm.cpp
+	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp
 	   :fragment: variables
 
 	Now we can start with defining the states.
@@ -253,18 +253,18 @@ Assignment 3
 	That is why we have to define an extra begin state and tell the program that this is the initial state of the HMM.
 	The latter is done by calling the function :dox:`HmmGraph#assignBeginState`.
 
-	.. includefrags:: core/demos/tutorial/graph/graph_hmm.cpp
+	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp
 	   :fragment: begin-state
 
 	For our three main states we also add a vertex to the HMM with :dox:`Graph#addVertex`.
 	Additionally, we assign the emission probabilities for all possible characters of our alphabet using :dox:`HmmGraph#emissionProbability`.
 
-	.. includefrags:: core/demos/tutorial/graph/graph_hmm.cpp
+	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp
 	   :fragment: main-states-emissions
 
 	Finally, we need to define the end state and call :dox:`HmmGraph#assignEndState`.
 
-	.. includefrags:: core/demos/tutorial/graph/graph_hmm.cpp
+	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp
 	   :fragment: end-state
 
 	For the HMM, only the transition probabilities are still missing.
@@ -274,7 +274,7 @@ Assignment 3
 	Since the sequences always start with an exon, we set the transition probability from the begin state to the exon state to 1.0 calling the already well-known function :dox:`Graph#addEdge`.
 	And also the other transitions can be defined in the same way.
 
-	.. includefrags:: core/demos/tutorial/graph/graph_hmm.cpp
+	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp
 	   :fragment: transitions
 
 	To check the HMM we can simply output it to the screen:
@@ -310,7 +310,7 @@ Property Maps And Iterators
 So far, the vertices in our graph can only be distinguished by their vertex descriptor.
 We will now see how to associate the city names with the vertices.
 
-SeqAn uses :dox:`ExternalPropertyMap External Property Map` to attach auxiliary information to the vertices and edges of a graph.
+SeqAn uses :dox:`PropertyMapConcept Property Maps` to attach auxiliary information to the vertices and edges of a graph.
 The cargo parameter that we used above associated distances to the edges.
 In most scenarios you should use an external property map to attach information to a graph.
 Be aware that the word external is a hint that the information is stored independently of the graph and functions like :dox:`Graph#removeVertex` do not affect the property map.
@@ -320,13 +320,13 @@ Lets see how we can define a vertex property map for the city names.
 Our property type is a :dox:`String` of a city name type, a char string.
 We only have to create and :dox:`Graph#resizeVertexMap resize` this map so that it can hold information on all vertices.
 
-.. includefrags:: core/demos/tutorial/graph/graph_dijkstra.cpp
+.. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: definition-property-map
 
 Next, we can enter the city names for each vertex.
 Note that this is completely independent from our graph object ``g``.
 
-.. includefrags:: core/demos/tutorial/graph/graph_dijkstra.cpp
+.. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: enter-properties
 
 If we now want to output all vertices including their associated information we can iterate through the graph and use the iterators value to access the information in the property map.
@@ -339,9 +339,9 @@ To output all vertices of our graph in an arbitrary order, we can define an iter
 The functions :dox:`RootedIteratorConcept#atEnd` and :dox:`InputIteratorConcept#goNext` also work for graph iterators as for all other iterators in SeqAn.
 
 The :dox:`IteratorAssociatedTypesConcept#value` of any type of vertex iterator is the vertex descriptor.
-To print out all city names we have to call the function :dox:`ExternalPropertyMap#getProperty` on our property map ``cityNames`` with the corresponding vertex descriptor that is returned by the value function.
+To print out all city names we have to call the function :dox:`PropertyMapConcept#getProperty` on our property map ``cityNames`` with the corresponding vertex descriptor that is returned by the value function.
 
-.. includefrags:: core/demos/tutorial/graph/graph_dijkstra.cpp
+.. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: iterate-and-output-properties
 
 The output of this piece of code should look as follows:
@@ -366,7 +366,7 @@ Assignment 4
      Add a vertex map to the program from task 2:
 
      #. The map shall assign a lower-case letter to each of the seven vertices.
-        Find a way to assign the properties to all vertices at once in a single function call (*without* using the function :dox:`ExternalPropertyMap#assignProperty` for each vertex separately).
+        Find a way to assign the properties to all vertices at once in a single function call (*without* using the function :dox:`PropertyMapConcept#assignProperty` for each vertex separately).
      #. Show that the graph is not connected by iterating through the graph in depth-first-search ordering.
         Output the properties of the reached vertices.
 
@@ -379,14 +379,14 @@ Assignment 4
 	The function :dox:`Graph#assignVertexMap` does not only resize the vertex map (as :dox:`Graph#resizeVertexMap` does) but also initializes it.
 	If we specify the optional parameter ``prop``, the values from the array ``prop`` are assigned to the items in the property map.
 
-	.. includefrags:: core/demos/tutorial/graph/graph_algo_scc.cpp
+	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
 	   :fragment: vertex-map
 
-	To iterate through the graph in depth-first-search ordering we have to define an :dox:`Container#Iterator` with the specialization :dox:`DfsPreorderIterator`.
+	To iterate through the graph in depth-first-search ordering we have to define an :dox:`ContainerConcept#Iterator` with the specialization :dox:`DfsPreorderIterator`.
 
 	The vertex descriptor of the first vertex is ``0`` and we choose this vertex as a starting point for the depth-first-search through our graph ``g`` with the iterator ``dfsIt``:
 
-	.. includefrags:: core/demos/tutorial/graph/graph_algo_scc.cpp
+	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
 	   :fragment: iterate-dfs
 
 	For the chosen starting point, only two other vertices can be reached:
@@ -455,15 +455,15 @@ Indeed this is the case for our graph type but it is not in general.
 The cargo of a graph might as well be a string of characters or any other type.
 So, we first have to find out how to access our internal edge map.
 We do not need to copy the information to a new map.
-Instead we can define an object of the type :dox:`InternalMap` of our type ``TCargo``.
-It will automatically find the edge labels in the graph when the function :dox:`ExternalPropertyMap#property` or :dox:`ExternalPropertyMap#getProperty` is called on it with the corresponding edge descriptor.
+Instead we can define an object of the type :dox:`InternalPropertyMap` of our type ``TCargo``.
+It will automatically find the edge labels in the graph when the function :dox:`PropertyMapConcept#property` or :dox:`PropertyMapConcept#getProperty` is called on it with the corresponding edge descriptor.
 
 The output containers of the shortest-path algorithm are two property maps, ``predMap`` and ``distMap``.
 The ``predMap`` is a vertex map that determines a shortest-paths-tree by mapping the predecessor to each vertex.
 Even though we are not interested in this information, we have to define it and pass it to the function.
 The ``distMap`` indicates the length of the shortest path to each vertex.
 
-.. includefrags:: core/demos/tutorial/graph/graph_dijkstra.cpp
+.. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: dijkstra-containers
 
 Having defined all these property maps, we can then call the function :dox:`dijkstra`:
@@ -473,9 +473,9 @@ Having defined all these property maps, we can then call the function :dox:`dijk
    dijkstra(g,vertHannover,cargoMap,predMap,distMap);
 
 Finally, we have to output the result.
-Therefore, we define a second vertex iterator ``itV2`` and access the distances just like the city names with the function :dox:`ExternalPropertyMap#property` on the corresponding property map.
+Therefore, we define a second vertex iterator ``itV2`` and access the distances just like the city names with the function :dox:`PropertyMapConcept#property` on the corresponding property map.
 
-.. includefrags:: core/demos/tutorial/graph/graph_dijkstra.cpp
+.. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: dijkstra-output
 
 Assignments 5
@@ -498,13 +498,13 @@ Assignments 5
 	The second parameter is an output parameter.
 	It is a vertex map that will map a component id to each vertex. Vertices that share the same id are in the same component.
 
-	.. includefrags:: core/demos/tutorial/graph/graph_algo_scc.cpp
+	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
 	   :fragment: connected-components
 
-	Now, the only thing left to do is to walk through our graph and ouput each vertex and the corresponding component using the function :dox:`ExternalPropertyMap#getProperty`.
+	Now, the only thing left to do is to walk through our graph and ouput each vertex and the corresponding component using the function :dox:`PropertyMapConcept#getProperty`.
 	One way of doing so is to define a :dox:`VertexIterator`.
 
-	.. includefrags:: core/demos/tutorial/graph/graph_algo_scc.cpp
+	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
 	   :fragment: output-connected-components
 
 	The output for the graph defined in the `Assignment 4`_ looks as follows:
@@ -561,7 +561,7 @@ Assignment 6
 	This is because the HMM may have silent states, e.g. the begin and end state.
 	To check if a state is silent SeqAn provides the function :dox:`HmmGraph#isSilent`.
 
-	.. includefrags:: core/demos/tutorial/graph/graph_hmm.cpp
+	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp
 	   :fragment: viterbi
 
 	The output of the above piece of code is:
@@ -578,12 +578,12 @@ Assignment 6
 	It is even simpler to use the forward algorithm in SeqAn since it needs only the HMM and the sequence as parameters and returns a single probability.
 	This is the probability of the HMM to generate the given sequence. The corresponding function is named :dox:`HmmAlgorithms#forwardAlgorithm`.
 
-	.. includefrags:: core/demos/tutorial/graph/graph_hmm.cpp
+	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp
 	   :fragment: forward-algorithm
 
 	Analogously, the function :dox:`HmmAlgorithms#backwardAlgorithm` implements the backward algorithm in SeqAn.
 
-	.. includefrags:: core/demos/tutorial/graph/graph_hmm.cpp
+	.. includefrags:: demos/tutorial/graph/graph_hmm.cpp
 	   :fragment: backward-algorithm
 
 	The output of these two code fragments is:

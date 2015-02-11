@@ -16,18 +16,6 @@ project (seqan)
 cmake_minimum_required (VERSION 2.8.2)
 
 # ===========================================================================
-# Iff the file INST or SUA exists in the source root
-# turn on SeqAn instrumentation for experimental data collection.
-# ===========================================================================
-
-if (EXISTS ${CMAKE_SOURCE_DIR}/INST OR EXISTS ${CMAKE_SOURCE_DIR}/SUA OR EXISTS ${CMAKE_SOURCE_DIR}/../SUA)
-  set (SEQAN_INSTRUMENTATION YES)
-else (EXISTS ${CMAKE_SOURCE_DIR}/INST OR EXISTS ${CMAKE_SOURCE_DIR}/SUA OR EXISTS ${CMAKE_SOURCE_DIR}/../SUA)
-  set (SEQAN_INSTRUMENTATION NO)
-endif (EXISTS ${CMAKE_SOURCE_DIR}/INST OR EXISTS ${CMAKE_SOURCE_DIR}/SUA OR EXISTS ${CMAKE_SOURCE_DIR}/../SUA)
-
-
-# ===========================================================================
 # Warn People About the Perils Of In-Source Builds
 # ===========================================================================
 
@@ -82,6 +70,16 @@ endif (NOT CMAKE_BUILD_TYPE)
 set (SEQAN_CTD_EXECUTABLES CACHE INTERNAL "Global list of executables for workflow integration.")
 
 # ===========================================================================
+# Build System Configuration Variables
+# ===========================================================================
+
+# Setting SEQAN_ENABLE_CUDA to ON through the command line or CMakeCache.txt
+# enables CUDA, provided the CUDA toolkit is found.
+option (SEQAN_ENABLE_CUDA
+        "Enable CUDA, if the toolkit is available."
+	OFF)
+
+# ===========================================================================
 # Setup Modules and Find Packages.
 # ===========================================================================
 
@@ -119,18 +117,34 @@ seqan_get_repository_info ()
 # Include Subdirectories
 # ===========================================================================
 
-message (STATUS "Configuring core")
-add_subdirectory (core)
-message (STATUS "Configuring extras")
-add_subdirectory (extras)
-message (STATUS "Configuring docs")
-add_subdirectory (docs)
+# Tests are only built when building in DEVELOP mode.
+if ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP")
+    message (STATUS "Configuring tests")
+    add_subdirectory (tests)
+endif ()
+
+# Demos are required when doing a whole SeqAn release (copy demos) or when
+# developing (build demos).
+if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
+    ("${SEQAN_BUILD_SYSTEM}" STREQUAL "DEVELOP"))
+    message (STATUS "Configuring demos")
+    add_subdirectory (demos)
+endif ()
+
+message (STATUS "Configuring apps")
+add_subdirectory (apps)
+message (STATUS "Configuring dox")
+add_subdirectory (dox)
 message (STATUS "Configuring manual")
 add_subdirectory (manual)
-message (STATUS "Configuring sandbox")
-add_subdirectory (sandbox)
 message (STATUS "Configuring util/py_lib")
 add_subdirectory (util/py_lib)
+
+# ===========================================================================
+# Register Libraries (for GUI project generators)
+# ===========================================================================
+
+seqan_setup_library ()
 
 # ===========================================================================
 # Include CPack

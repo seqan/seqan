@@ -147,8 +147,8 @@ and to access a single values:
 +----------------------------------------------+---------------------------------------------------------+
 | :dox:`IndexEsa#saAt saAt(pos, index)`        | :dox:`IndexEsa#indexSA indexSA(index)[pos]`             |
 +----------------------------------------------+---------------------------------------------------------+
-| :dox:`Index#textAt textAt(pos, index)`       | :dox:`Index#indexText indexText(index)[pos]`            |
+| :dox:`IndexEsa#textAt textAt(pos, index)`    | :dox:`Index#indexText indexText(index)[pos]`            |
 +----------------------------------------------+---------------------------------------------------------+
 
-Please note that :dox:`Index#textAt` can also be used if the index text is a :dox:`StringSet`.
+Please note that :dox:`IndexEsa#textAt` can also be used if the index text is a :dox:`StringSet`.
 ``pos`` can then be a :dox:`SAValue`.

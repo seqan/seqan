@@ -1,7 +1,5 @@
 build
 dox/html
-docs/html
-docs2/html
 manual/build
 sandbox
 !sandbox/CMakeLists.txt

@@ -21,6 +21,66 @@ SeqAn ships with such a module in ``util/cmake/FindSeqAn.cmake``.
 
 This article describes how to use this module.
 
+A Running Example
+~~~~~~~~~~~~~~~~~
+
+In the directory ``util/raw_cmake_project``, you can find a small example project that uses the ``FindSeqAn.cmake`` module outside the SeqAn build system.
+The directory sturcture looks as follows:
+
+.. code-block:: text
+
+   .
+   |-- CMakeLists.txt
+   |-- README
+   `-- src
+       |-- CMakeLists.txt
+       `-- main.cpp
+
+The Project's Contents
+^^^^^^^^^^^^^^^^^^^^^^
+
+The file ``src/main.cpp`` contains a minimal SeqAn program.
+
+.. includefrags:: util/raw_cmake_project/src/main.cpp
+
+The root ``CMakeLists.txt`` file just sets up the project name, defines a minimal CMake version, makes all binaries go to the ``bin`` subdirectory, and then includes ``src/CMakeLists.txt``.
+
+.. includefrags:: util/raw_cmake_project/CMakeLists.txt
+
+This included file calls ``find_package(SeqAn REQUIRED)``.
+If the library could not be found, the ``REQUIRED`` parameter will make the ``find_package()`` call fail.
+Before this, the variable ``SEQAN_FIND_DEPENDENCIES`` is set such that zlib and libbz2 are searched for the in ``find_package()`` call and enabled in the SeqAn library through compiler defines.
+
+.. includefrags:: util/raw_cmake_project/src/CMakeLists.txt
+
+This is followed by adding the include directory, definitions, and compiler flags required for compiling a program against the SeqAn library,
+Finally, the source file ``main.cpp`` is compiled into a program called ``main`` and the libraries that SeqAn was configured with are linked to ``main``.
+Note that SeqAn itself does not require a linking step but when using compression (e.g. for the BAM format), we have to link to ``zlib``.
+
+Building The Project
+^^^^^^^^^^^^^^^^^^^^
+
+By default, the ``cmake`` program will look for ``FindSeqAn.cmake`` in its module directory.
+Usually, this is located in ``/usr/share/cmake-2.8/Modules`` or a similar location that is available system-wide.
+Installing ``FindSeqAn.cmake`` there is one option of making it available in your ``CMakeLists.txt``.
+A better option might be to pass the path to the ``util/cmake`` directory of your SeqAn checkout to the ``CMAKE_MODULE_PATH`` CMake variable through the command line.
+
+Also, CMake will look for the SeqAn include files in central location such as ``/usr/local/include``.
+Instead of installing SeqAn there, you can pass additional directories to search in using the CMake variable ``SEQAN_INCLUDE_PATH``.
+
+Putting this together, you can execute ``cmake`` for the example CMake project with the following command line:
+
+.. code-block:: console
+
+   # mkdir -p ~/tmp/cmake_example_build
+   # cd ~/tmp/cmake_example_build
+   # cmake path/to/raw_cmake_project \
+       -DCMAKE_MODULE_PATH=~/seqan_checkout/util/cmake \
+       -DSEQAN_INCLUDE_PATH=~/seqan_checkout/include
+   [...]
+   # make main && ./bin/main
+   Hello SeqAn!
+
 Input / Output of the FindSeqAn Module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -72,7 +132,7 @@ Currently, you can specify the following dependencies:
   CUDA language extensions to C/C++
 
 If you want ``FindSeqAn.cmake`` to expect the SeqAn build system layout then set the variable ``SEQAN_USE_SEQAN_BUILD_SYSTEM`` to ``TRUE``.
-In this case, it will try to locate the library parts from ``core`` and ``extras``.
+In this case, it will try to locate the library parts from root of the SeqAn source files.
 
 Output
 ~~~~~~
@@ -139,7 +199,7 @@ Below you can find a minimal example ``CMakeLists.txt`` file that uses the ``Fin
 .. code-block:: cmake
 
    cmake_minimum_required (VERSION 2.8.2)
-   project (core_apps_dfi)
+   project (apps_dfi)
 
    # ----------------------------------------------------------------------------
    # Dependencies

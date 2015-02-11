@@ -60,15 +60,14 @@ Building the Index
 The class :dox:`FaiIndex` allows for building and loading FAI indices.
 fo build such an index, we use the function :dox:`FaiIndex#build` of the class :dox:`FaiIndex`.
 The first parameter is the :dox:`FaiIndex` object, the second is the path to the FASTA file.
-The function returns an integer indicating the result (as usual, ``0`` for no errors, a value different from ``0`` indicating an error).
+The function returns a ``bool`` indicating whether the mapping was successful (``true`` on success, ``false`` on failure).
 
 .. code-block:: cpp
 
    #include <seqan/seq_io.h>
 
    seqan::FaiIndex faiIndex;
-   int res = build(faiIndex, "path/to/file.fasta");
-   if (res != 0)
+   if (!build(faiIndex, "path/to/file.fasta"))
        std::cerr << "ERROR: Could not build the index!\n";
 
 There is an alternative variant of this function where you can pass the path to the FAI file that is to be built as third parameter.
@@ -79,11 +78,10 @@ The FAI file name will be stored in the :dox:`FaiIndex`.
    #include <seqan/seq_io.h>
 
    seqan::FaiIndex faiIndex;
-   int res = build(faiIndex, "path/to/file.fasta", "another/path/file.fasta.fai");
-   if (res != 0)
+   if (!build(faiIndex, "path/to/file.fasta", "another/path/file.fasta.fai"))
        std::cerr << "ERROR: Could not build the index!\n";
 
-We can write out the index after building it using the function :dox:`FaiIndex#write`:
+We can write out the index after building it using the function :dox:`FaiIndex#save`:
 
 .. code-block:: cpp
 
@@ -92,9 +90,8 @@ We can write out the index after building it using the function :dox:`FaiIndex#w
    seqan::FaiIndex faiIndex;
    // ... index building here ...
 
-   int res = write(faiIndex, "path/to/file.fasta.fai");
-   if (res != 0)
-       std::cerr << "ERROR: Could not write the index to file!\n";
+   if (!save(faiIndex, "path/to/file.fasta.fai"))
+       std::cerr << "ERROR: Could not save the index to file!\n";
 
 Assignment 1
 """"""""""""
@@ -118,24 +115,21 @@ Assignment 1
    Solution
      .. container:: foldable
 
-        .. includefrags:: extras/demos/tutorial/indexed_fasta_io/solution1.cpp
+        .. includefrags:: demos/tutorial/indexed_fasta_io/solution1.cpp
 
 Using the Index
 ---------------
 
-To load a FAI file, we use the function :dox:`FaiIndex#read`: We
-pass the :dox:`FaiIndex` object as the first and the path to the
-FASTA file as the second parameter. The function returns an ``int``
-indicating success (value ``0``) or failure (non-``0`` value).
+To load a FAI file, we use the function :dox:`FaiIndex#open`: We pass the :dox:`FaiIndex` object as the first and the path to the FASTA file as the second parameter.
+The function returns a ``bool`` indicating whether the mapping was successful (``true`` on success, ``false`` on failure).
 
 .. code-block:: cpp
 
    #include <seqan/seq_io.h>
 
    seqan::FaiIndex faiIndex;
-   int res = read(faiIndex, "path/to/file.fasta");
-   if (res != 0)
-       std::cerr << "ERROR: Could not read FAI index path/to/file.fasta.fai\n";
+   if (!open(faiIndex, "path/to/file.fasta"))
+       std::cerr << "ERROR: Could not open FAI index path/to/file.fasta.fai\n";
 
 In the example above, the FAI file ``"path/to/file.fasta.fai"`` would be
 loaded. Optionally, we can specify an extra path to the FAI file:
@@ -145,8 +139,7 @@ loaded. Optionally, we can specify an extra path to the FAI file:
    #include <seqan/seq_io.h>
 
    seqan::FaiIndex faiIndex;
-   int res = read(faiIndex, "path/to/file.fasta", "path/to/index.fai");
-   if (res != 0)
+   if (!open(faiIndex, "path/to/file.fasta", "path/to/index.fai"))
        std::cerr << "ERROR: Could not load FAI index path/to/index.fai\n";
 
 After loading the index, we can then use the index to map a sequence id to its (zero-based) position (a position *i* meaning that it is the *i*-th sequence) in the FASTA file using :dox:`FaiIndex#getIdByName`.
@@ -156,7 +149,7 @@ It returns a ``bool`` indicating whether the mapping was successful (``true`` on
 .. code-block:: cpp
 
    unsigned idx = 0;
-   if (getIdByName(faiIndex, "chr1", idx))
+   if (!getIdByName(faiIndex, "chr1", idx))
        std::cerr << "ERROR: FAI index has no entry for chr1.\n";
 
 Once we have the index for the sequence in the FASTA file, we can then query the :dox:`FaiIndex` for the length of the sequence using :dox:`FaiIndex#sequenceLength`, get the whole sequence using :dox:`FaiIndex#readSequence`, or get just a part of the sequence using :dox:`FaiIndex#readRegion`.
@@ -167,13 +160,11 @@ Once we have the index for the sequence in the FASTA file, we can then query the
 
    // Load first 1000 characters of chr1.
    seqan::CharString seqChr1Prefix;
-   if (readRegion(seqChr1Prefix, faiIndex, idx, 0, 1000) != 0)
-       std::cerr << "ERROR: Could not load chr1.\n";
+   readRegion(seqChr1Prefix, faiIndex, idx, 0, 1000);
 
    // Load all of chr1.
    seqan::CharString seqChr1;
-   if (readSequence(seqChr1, faiIndex, idx) != 0)
-       std::cerr << "ERROR: Could not load chr1.\n";
+   readSequence(seqChr1, faiIndex, idx);
 
 The sequence length can be determined by only looking at the index.
 When loading the sequence or a sequence infix, only the relevant part of the file will be touched.
@@ -197,14 +188,14 @@ Assignment 2
   Hint
     .. container:: foldable
 
-       Use the function :dox:`lexicalCast2` to convert strings of numbers into integers.
+       Use the function :dox:`lexicalCast` to convert strings of numbers into integers.
 
   Solution
     .. container:: foldable
 
        The program appears to be very long, but most is error handling, as usual with robust I/O code.
 
-       .. includefrags:: extras/demos/tutorial/indexed_fasta_io/solution2.cpp
+       .. includefrags:: demos/tutorial/indexed_fasta_io/solution2.cpp
 
 
 Next Steps

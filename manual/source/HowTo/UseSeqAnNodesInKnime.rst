@@ -56,10 +56,10 @@ Adapt your applications to use the argument parser
 Follow the :ref:`tutorial-parsing-command-line-arguments` tutorial and adapt your application to use only the :dox:`ArgumentParser` to parse command line arguments.
 Especially, take care to:
 
-#. Declare your input and output file names as such via ``ArgParseArgument::INPUTFILE`` and ``ArgParseArgument::OUTPUTFILE``.
+#. Declare your input and output file names as such via ``ArgParseArgument::INPUT_FILE`` and ``ArgParseArgument::OUTPUT_FILE``.
 #. Detect the file format from the file extension (and not from a dedicated file format option).
    This can be done, for example, with :dox:`guessFormatFromFilename guessFormatFromFilename()` on an :dox:`AutoSeqFormat` object to detect a particular sequence format (e.g. FASTA) in a predefined set of formats.
-#. For input/output files define a list of possible extensions via :dox:`ArgumentParser#setValidValues setValidValues()` (e.g. "fa fasta"). This list of possible extensions can be generated with :dox:`ArgumentParser#getFileFormatExtensions getFileFormatExtensions()` for a :dox:`TagSelector` of predefined file formats (e.g. AutoSeqFormat).
+#. For input/output files define a list of possible extensions via :dox:`ArgumentParser#setValidValues setValidValues()` (e.g. "fa fasta"). This list of possible extensions can be generated with :dox:`ArgumentParser#getFileExtensions getFileExtensions()` for a :dox:`TagSelector` of predefined file formats (e.g. AutoSeqFormat).
 #. Avoid mutual exclusive options or other constraints that cannot be not represented by the ArgumentParser, simply ignore one of them (depending on a behavioral option).
    See the ArgumentParser tutorial if you need to define a numerical interval of possible values or a finite set of argument options.
 #. Give default values.

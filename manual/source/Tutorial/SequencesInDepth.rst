@@ -48,19 +48,19 @@ Specialization :dox:`AllocString Alloc String`
   * **Applications**
     The default string implementation that can be used for general purposes.
   * **Limitations**
-    Changing the :dox:`SequenceConcept#capacity` can be very costly since all values must be copied.
+    Changing the :dox:`StringConcept#capacity` can be very costly since all values must be copied.
 
 Specialization :dox:`ArrayString Array String`
   * **Description**
     Fast but non-expandable string.Fast storing of fixed-size sequences.
   * **Limitations**
-    :dox:`SequenceConcept#capacity Capacity` must already be known at compile time. Not suitable for storing large sequences.
+    :dox:`StringConcept#capacity Capacity` must already be known at compile time. Not suitable for storing large sequences.
 
 Specialization :dox:`BlockString Block String`
   * **Description**
     String that stores its sequence characters in blocks.
   * **Applications**
-    The :dox:`SequenceConcept#capacity` of the string can quickly be increased. Good choice for growing strings or stacks.
+    The :dox:`StringConcept#capacity` of the string can quickly be increased. Good choice for growing strings or stacks.
   * **Limitations**
     Iteration and random access to values is slightly slower than for :dox:`AllocString Alloc String`.
 
@@ -101,8 +101,8 @@ Overflow Strategies
 The following section will describe how you can improve capacity changes for your sequences.
 
 Each sequence object has a capacity, i.e. the reserved space for this object.
-The capacity can be set explicitly by functions such as :dox:`String#reserve` or :dox:`SequenceConcept#resize`.
-It can also bet set implicitly by functions like :dox:`ContainerConcept#append`, :dox:`AssignableConcept#assign`, :dox:`SequenceConcept#insert` or :dox:`SequenceConcept#replace`, if the operation's result exceeds the length of the target sequence.
+The capacity can be set explicitly by functions such as :dox:`String#reserve` or :dox:`StringConcept#resize`.
+It can also bet set implicitly by functions like :dox:`ContainerConcept#append`, :dox:`AssignableConcept#assign`, :dox:`StringConcept#insert` or :dox:`StringConcept#replace`, if the operation's result exceeds the length of the target sequence.
 
 If the current capacity of a sequence is exceeded by chaning the length, we say that the sequence overflows.
 There are several overflow strategies that determine what actually happens when a string should be expanded beyond its capacity.
@@ -162,4 +162,4 @@ Workshop Assignment 1
 
       .. container:: foldable
 
-         .. includefrags:: core/demos/tutorial/sequences_in_depth/assignment_exact_generous_solution.cpp
+         .. includefrags:: demos/tutorial/sequences_in_depth/assignment_exact_generous_solution.cpp

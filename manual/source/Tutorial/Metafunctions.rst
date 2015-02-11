@@ -103,7 +103,7 @@ For example the following piece of code uses the metafunction ``Iterator`` to de
    Iterator<String<char> >::Type it = begin(str);
    while (! atEnd(it, str))
    {
-       ::std::cout << *it;
+       std::cout << *it;
        ++it;
    }
 
@@ -131,7 +131,7 @@ For example the following function prints the length of a fixed sized string usi
    template <typename T>
    void printLenOfFixedSizeString(T const &)
    {
-       ::std::cout << LENGTH<T>::VALUE;
+       std::cout << LENGTH<T>::VALUE;
    }
 
    String<char, Array<100> > my_str;
@@ -162,46 +162,46 @@ Assignment 1
 
         Hence we could define the function as follows:
 
-        .. includefrags:: core/demos/tutorial/basics/swap.cpp
+        .. includefrags:: demos/tutorial/basics/swap.cpp
            :fragment: swap-declaration
 
         The function is now quite generic allowing any container of type ``T``.
         In addition we specify two positions that should be swapped (as integers which is not really generic, but it suffices for the demo) an the length of the swapped region.
         Now we can define a helper variable ``help``, which can be of type ``T``.
 
-        .. includefrags:: core/demos/tutorial/basics/swap.cpp
+        .. includefrags:: demos/tutorial/basics/swap.cpp
            :fragment: swap-metafunction
 
         and do the swapping
 
-        .. includefrags:: core/demos/tutorial/basics/swap.cpp
+        .. includefrags:: demos/tutorial/basics/swap.cpp
            :fragment: swap-work
 
         Thats it.
         We can now test our generic swap function using for example a `String` of characters or a `String` of integers.
 
-        .. includefrags:: core/demos/tutorial/basics/swap.cpp
+        .. includefrags:: demos/tutorial/basics/swap.cpp
            :fragment: swap-apply
 
 
         The whole program taken together looks as follows:
 
-        .. includefrags:: core/demos/tutorial/basics/swap.cpp
+        .. includefrags:: demos/tutorial/basics/swap.cpp
            :fragment: swap-headers
 
-        .. includefrags:: core/demos/tutorial/basics/swap.cpp
+        .. includefrags:: demos/tutorial/basics/swap.cpp
            :fragment: swap-declaration
 
-        .. includefrags:: core/demos/tutorial/basics/swap.cpp
+        .. includefrags:: demos/tutorial/basics/swap.cpp
            :fragment: swap-metafunction
 
-        .. includefrags:: core/demos/tutorial/basics/swap.cpp
+        .. includefrags:: demos/tutorial/basics/swap.cpp
            :fragment: swap-work
 
-        .. includefrags:: core/demos/tutorial/basics/swap.cpp
+        .. includefrags:: demos/tutorial/basics/swap.cpp
            :fragment: swap-main
 
-        .. includefrags:: core/demos/tutorial/basics/swap.cpp
+        .. includefrags:: demos/tutorial/basics/swap.cpp
            :fragment: swap-apply
 
 

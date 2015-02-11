@@ -3,13 +3,11 @@
 {% block title %}{{ adaption.title|transtext(top=False) }}{% endblock %}
 
 {% block content %}
-<h1 data-lang-entity="adaption" data-pimped="true"><a href="page_LanguageEntities.html#adaption">foreign::</a> <span>{{ adaption.title|transtext(top=False) }}<div>{{ sections.brief(adaption) }}</div></span></h1>
+<h1 data-lang-entity="adaption" data-pimped="true">
+  <a href="page_LanguageEntities.html#adaption">foreign::</a> <span>{{ adaption.title|transtext(top=False) }}<div>{{ sections.brief(adaption) }}</div></span>
+</h1>
 
-<div class="overview">
-	{{ sections.top_box(adaption) }}
-
-	{{ sections.signatures(adaption) }}
-</div>
+{{ sections.top_box(adaption) }}
 
 <!-- Template Parameters -->
 {{ sections.tparams(adaption) }}
@@ -38,6 +36,7 @@
  =============================================================================
 -->
 
+{% if adaption.internals or adaption.deprecation_msgs or adaption.warnings or adaption.notes or adaption.akas or not adaption.body.empty %}
 <h2>Detailed Description</h2>
 <div class="docstring">
   <div class="discussion">
@@ -86,6 +85,7 @@
     {{ sections.body(adaption) }}
   </div>
 </div>
+{% endif %}
 
 <!-- @see -->
 {{ sections.see_also(adaption) }}

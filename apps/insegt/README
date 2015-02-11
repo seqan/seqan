@@ -1,0 +1,255 @@
+*** INSEGT - INtersecting SEcond Generation sequencing daTa with annotation ***
+
+---------------------------------------------------------------------------
+Table of Contents
+---------------------------------------------------------------------------
+  1.   Overview
+  2.   Installation
+  3.   Usage
+  4.   Input Format
+  5.   Output Format
+  6.   Contact
+
+---------------------------------------------------------------------------
+1. Overview
+---------------------------------------------------------------------------
+
+INSEGT is a tool to analyse alignments of RNA-Seq reads (single-end or 
+paired-end) by using gene annotations.
+It can measure exon, transcript and gene expression levels of given 
+annotations. If read alignments span more than one exon, INSEGT can also 
+compute possible exon combinations (tuple) and their expression levels.
+According to requirements it computes maximal tuple or tuple with a certain 
+length. For paired-end reads INSEGT builds also tuple, whose exons are 
+connected by matepairs.
+Briefly it searches the intervals of the read alignments in the intervals 
+of the given annotations. It counts the mapped reads for each annotation and 
+its parent annotation and stores the mapped annotations for each read.
+INSEGT produces three output files:
+The first contains the expression levels of the given annotations.
+The second contains for each given read the mapped annotations.
+If the read mapped in not annotated regions, an UNKNOWN_REGION in the output will mark
+this.
+And the third file contains exon tuple and their expression levels.  
+(For further informations see: 
+http://www.inf.fu-berlin.de/en/groups/abi/theses/bachelor/finished/krakau/bsc_thesis_krakau.pdf)
+
+---------------------------------------------------------------------------
+2. Installation
+---------------------------------------------------------------------------
+
+INSEGT is distributed with SeqAn - The C++ Sequence Analysis Library (see 
+http://www.seqan.de). To build INSEGT do the following:
+
+Follow the "Getting Started" section on http://trac.seqan.de/wiki and check
+out the latest SVN trunk. Instead of creating a project file in Debug mode,
+switch to Release mode (-DCMAKE_BUILD_TYPE=Release) and compile insegt. This
+can be done as follows:
+
+  svn co http://svn.mi.fu-berlin.de/seqan/trunk/seqan seqan-trunk
+  mkdir seqan-trunk-build
+  mkdir seqan-trunk-build/release
+  cd seqan-trunk-build/release
+  cmake ../../seqan-trunk -DCMAKE_BUILD_TYPE=Release
+  make insegt
+
+
+---------------------------------------------------------------------------
+3. Usage
+---------------------------------------------------------------------------
+
+Usage: insegt [OPTIONS] <ALIGNMENTS-FILE> <ANNOTATIONS-FILE> 
+
+INSEGT expects at least two files:
+A SAM file which contains the alignments of the reads and a GFF file which 
+contains the gene annotations (annotations can be also given in the
+GTF format, but this has would have to be specified additionally with the 
+option -z).
+Without any additional parameters INSEGT would compute all tuple up to the 
+length 2. That means that it builds only 2-tuple, whose exons are connected 
+by matepairs.  
+The default behaviour can be modified by adding the following options to 
+the command line:
+
+---------------------------------------------------------------------------
+3.1. Options
+---------------------------------------------------------------------------
+
+  [ -p PATH ],  [ --output-path TEXT ]
+
+  Path to the directory, where the output files should be stored. 
+  The default value is the insegt directory.
+
+  [ -n NUM ],  [ --ntuple INT ]
+
+  Tuple length parameter. By default it is 2.	
+
+  [ -o NUM ],  [ --offset-interval INT ]
+
+  The offset-parameter to short alignment intervals to search them in the
+  given annotation regions. The default value is 5.
+
+  [ -t NUM ],  [ --threshold-gaps INT ]
+
+  The number of gaps, which are allowed in the read alignments, for which 
+  the gaps are not interpreted as introns. The default value is 5.
+
+  [ -c NUM ],  [ --threshold-count INT ]
+
+  Threshold for min. count of tuple, for which the tuple are given out.
+  The default value is 1. 
+  
+  [ -r NUM ],  [ --threshold-rpkm DOUBLE ]
+  
+  Threshold for min. RPKM-value of tuple, for which the tuple are given out.
+  The default value is 0.0.
+  
+  [ -m],  [ --max-tuple ]
+
+  Only maximal tuple are computed, which are spanned by the whole read. 
+
+  [ -e ],  [ --exact-ntuple ]
+  
+  Only tuple of the given length are computed. By default all tuple up to 
+  the given length are computed. (If -m is set, -e will be ignored) 
+  
+  [ -u ],  [ --unknown-orientation ]
+  
+  Read-orientations are unknown. The alignment intervals are searched in the 
+  annotations of both strands. By default they're just searched in the 
+  annotations corresponding to the given orientation of the read.
+
+  [ -f],   [ --fusion-genes ]
+
+  Check for fusion genes. A separate output for matepair tupel, which map in 
+  different genes, is created. By default there is no check for fusion genes.
+
+  [ -z],   [ --gtf-format ]
+
+  The gene annotations are given in a GTF file (instead of GFF).
+  By default INSEGT expects a GFF file.
+
+---------------------------------------------------------------------------
+4. Input General Feature Format
+---------------------------------------------------------------------------
+
+INSEGT expects a GFF file which contains the gene annotations.
+
+The General Feature Format (GFF) is specified by the Sanger Institute as a tab-
+delimited text format with the following columns:
+
+<seqname> <src> <feat> <start> <end> <score> <strand> <frame> [attr] [cmts]
+
+See also: http://www.sanger.ac.uk/Software/formats/GFF/GFF_Spec.shtml
+
+INSEGT requires additional specifications for the input of the exon- and genenames.
+
+Input columns:
+(Irrelevant fields are represented as "<>", their contents doesn't matter)
+
+<Sequenzname> < > < > <Start> <Ende> < > <Strang> < > <ID;ParentID> 
+
+Example:
+
+ chr1          .   .   200     1000   .   +        .   ID=ENSG1
+ chr1          .   .   300     450    .   +        .   ID=ENSG1-1;ParentID=ENSG1
+ chr1          .   .   700     600    .   -        .   ID=ENSG2-1;ParentID=ENSG2
+
+The order of the row-entries doesn't matter.
+If no entry exists for the parent of an exon, INSEGT generates it automatically.
+Moreover parent entries don't need start- and end-positions.
+
+
+---------------------------------------------------------------------------
+5. Output Formats
+---------------------------------------------------------------------------
+
+INSEGT output files are GFF files. The first output file contains the annotations 
+similar to the GFF input and additionally the counts of the mapped 
+reads and the normalized expression levels in RPKM (reads per kilobase of 
+exon model per million mapped reads).
+The two other output files have different specifications.
+
+
+---------------------------------------------------------------------------
+5.1. Output for annotations (annoOutput.gff):
+---------------------------------------------------------------------------
+
+Output columns:
+
+<sequencename> < > < > <start> <end> <count> <strand> < > \
+    <ID=annotationname;[ParentID=parentname;]expression-level (RPKM)> 
+
+Example:
+
+ chr1           .   .   30      .     60      +        .   ID=P1;30.0;
+ chr1           .   .   75      300   20      +        .   ID=E1;ParentID=P1;25.0;  
+ 
+
+---------------------------------------------------------------------------
+5.2. Output for reads (readOutput.gff):
+---------------------------------------------------------------------------
+
+The read-output of INSEGT contains the mapped annotations followed by their 
+parent annotation. If the read mapped in annotations of different parents,
+the annotations are presented one after another corresponding to their parents.
+Consecutive mapped annotations are separated by ":".
+Overlapping annotations which are mapped by the same read interval are separated by ";". 
+
+Output columns:
+
+<readname> <sequencename> <strand> <annotationnames> <parentname1> \
+   [<annotationnames>   <parentname2> ...]
+
+Example:
+
+ read_1     chr1           +        E1:E2-1;E2-2:E3   P1            E10:UNKNOWN_REGION  P2   
+
+
+---------------------------------------------------------------------------
+5.3. Output for tuple (tupleOutput.gff):
+---------------------------------------------------------------------------
+
+In the tuple-output of INSEGT exons which are connected by a single read are 
+separated by ":" and exons which are connected by a matepair are separated by "^".
+
+Output columns:
+
+<sequencename> <parentname> <strand> <tupel of annotationnames> <count> <expression-level (RPKM)>
+
+
+Example:
+
+ chr1           P1           +        E1:E2-1:E3^E7              50      30.0
+ chr1           P1           +        E1:E2-2:E3^E7              10      11.32
+
+
+---------------------------------------------------------------------------
+6. Example
+---------------------------------------------------------------------------
+
+There are small example files in the folder 
+seqan-trunk/apps/insegt/example/ containing alignments and 
+annotations. In the following you can see how to use INSEGT with default 
+paramters to analyze the alignments of the reads using the given annotations:
+
+ 1) ./apps/insegt/insegt \
+        ../../seqan-trunk/apps/insegt/example/alignments.sam \
+        ../../seqan-trunk/apps/insegt/example/annotations.gff 
+
+This computes all tuple up to the length 2 and outputs them. To only output 
+tuple with a min. count of 2 you can use the option -c:
+
+ 2) ./apps/insegt/insegt -c 2 \
+        ../../seqan-trunk/apps/insegt/example/alignments.sam \
+        ../../seqan-trunk/apps/insegt/example/annotations.gff 
+
+
+---------------------------------------------------------------------------
+7. Contact
+---------------------------------------------------------------------------
+
+For questions or comments, contact:
+  David Weese <weese@inf.fu-berlin.de>
+  Marcel H. Schulz <marcel.schulz@molgen.mpg.de>
+  Sabrina Krakau <krakau@mi.fu-berlin.de>
