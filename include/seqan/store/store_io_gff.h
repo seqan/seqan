@@ -227,9 +227,13 @@ _storeOneAnnotation(
 
     SEQAN_ASSERT_EQ(length(fragStore.annotationStore), length(fragStore.annotationNameStore));
 
+    // add contig and type name
+    _storeAppendContig(fragStore, ctx.annotation.contigId, ctx.contigName);
+    _storeAppendType(fragStore, ctx.annotation.typeId, ctx.typeName);
+
     // for lines in Gtf format get/add the parent gene first
     TId geneId = TAnnotation::INVALID_ID;
-    if (!empty(ctx.gtfGeneId))
+    if (!empty(ctx.gtfGeneId) && ctx.annotation.typeId != TFragmentStore::ANNO_GENE)
         _storeAppendAnnotationName(fragStore, geneId, ctx.gtfGeneId, (TId) TFragmentStore::ANNO_GENE);
 
     // if we have a parent transcript, get/add the parent transcript then
@@ -251,10 +255,6 @@ _storeOneAnnotation(
     }
     else
         ctx.annotation.parentId = 0;    // if we have no parent, we are a child of the root
-
-    // add contig and type name
-    _storeAppendContig(fragStore, ctx.annotation.contigId, ctx.contigName);
-    _storeAppendType(fragStore, ctx.annotation.typeId, ctx.typeName);
 
     // add annotation name of the current line
     _storeAppendAnnotationName(fragStore, ctx.annotationId, ctx.annotationName, ctx.annotation.typeId);
