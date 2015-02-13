@@ -592,6 +592,7 @@ struct Finite;
 template <typename TValue, unsigned SIZE>
 struct ValueSize<SimpleType<TValue, Finite<SIZE> > >
 {
+    //TODO(meiers): this needs to be change to hold SIZE many values
     typedef __uint8 Type;
     static const Type VALUE = SIZE;
 };
