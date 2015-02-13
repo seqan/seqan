@@ -1318,13 +1318,13 @@ reserve(
 }
 
 // ----------------------------------------------------------------------------
-// Function testEqual()
+// Function isEqual()
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename THostSpec>
 inline bool
-testEqual(String<TValue, Packed<THostSpec> > const & lhs,
-          String<TValue, Packed<THostSpec> > const & rhs)
+isEqual(String<TValue, Packed<THostSpec> > const & lhs,
+        String<TValue, Packed<THostSpec> > const & rhs)
 {
     typedef String<TValue, Packed<THostSpec> > TPackedString;
     typedef typename Host<TPackedString>::Type TPackedHost;
@@ -1356,11 +1356,13 @@ testEqual(String<TValue, Packed<THostSpec> > const & lhs,
 // Function operator==()
 // ----------------------------------------------------------------------------
 
+// Note the special implementation of the opertor== is needed to work around the
+// comparator stuff used when calling the string_base.h version of this operator.
 template <typename TValue, typename TSpec>
 inline bool operator==(String<TValue, Packed<TSpec> > const & lhs,
                        String<TValue, Packed<TSpec> > const & rhs)
 {
-    return testEqual(lhs, rhs);
+    return isEqual(lhs, rhs);
 }
 
 // ----------------------------------------------------------------------------
@@ -1371,7 +1373,7 @@ template <typename TValue, typename TSpec>
 inline bool operator!=(String<TValue, Packed<TSpec> > const & lhs,
                        String<TValue, Packed<TSpec> > const & rhs)
 {
-    return !testEqual(lhs, rhs);
+    return !isEqual(lhs, rhs);
 }
 
 // ----------------------------------------------------------------------------
