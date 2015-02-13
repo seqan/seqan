@@ -611,7 +611,7 @@ void testStringPackedExtensionTestEqual()
         TPackedString strL, strR;
 
         resize(strL, 1243, Exact());
-        SEQAN_ASSERT_NOT(testEqual(strL, strR));
+        SEQAN_ASSERT_NOT(isEqual(strL, strR));
         SEQAN_ASSERT_NOT(strL == strR);
         SEQAN_ASSERT(strL != strR);
     }
@@ -621,7 +621,7 @@ void testStringPackedExtensionTestEqual()
         resize(strL, +TTraits::VALUES_PER_HOST_VALUE, TValue());
         resize(strR, +TTraits::VALUES_PER_HOST_VALUE * 2, TValue());
 
-        SEQAN_ASSERT_NOT(testEqual(strL, strR));
+        SEQAN_ASSERT_NOT(isEqual(strL, strR));
         SEQAN_ASSERT_NOT(strL == strR);
         SEQAN_ASSERT(strL != strR);
     }
@@ -643,7 +643,7 @@ void testStringPackedExtensionTestEqual()
         // Manipulate inactive bits at end.
         *(end(host(strL), Standard()) - 1) |= ((1 << (3 * BitsPerValue<TValue>::VALUE)) - 1);
 
-        SEQAN_ASSERT(testEqual(strL, strR));
+        SEQAN_ASSERT(isEqual(strL, strR));
         SEQAN_ASSERT(strL == strR);
         SEQAN_ASSERT_NOT(strL != strR);
 
@@ -668,7 +668,7 @@ void testStringPackedExtensionTestEqual()
         // Manipulate inactive bits at end.
         *(end(host(strL), Standard()) - 1) |= ((1 << (3 * BitsPerValue<TValue>::VALUE)) - 1);
 
-        SEQAN_ASSERT(testEqual(strL, strR));
+        SEQAN_ASSERT(isEqual(strL, strR));
         SEQAN_ASSERT(strL == strR);
         SEQAN_ASSERT_NOT(strL != strR);
 
@@ -676,14 +676,14 @@ void testStringPackedExtensionTestEqual()
         TValue tmp = strR[pos];
         strR[pos] = convert<TValue>(~ordValue(tmp));  // Invert value.
 
-        SEQAN_ASSERT_NOT(testEqual(strL, strR));
+        SEQAN_ASSERT_NOT(isEqual(strL, strR));
         SEQAN_ASSERT_NOT(strL == strR);
         SEQAN_ASSERT(strL != strR);
 
         strR[pos] = tmp;
         *(end(strL, Standard()) - 1) = convert<TValue>(~ordValue(getValue(end(strL, Standard()) - 1)));  // Invert last value.
 
-        SEQAN_ASSERT_NOT(testEqual(strL, strR));
+        SEQAN_ASSERT_NOT(isEqual(strL, strR));
         SEQAN_ASSERT_NOT(strL == strR);
         SEQAN_ASSERT(strL != strR);
     }
