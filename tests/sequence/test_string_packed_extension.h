@@ -598,6 +598,97 @@ void testStringPackedExtensionTestAllOnes()
     }
 }
 
+void testStringPackedExtensionTestEqual()
+{
+    typedef String<bool, Packed<> > TPackedString;
+    typedef Value<TPackedString>::Type TValue;
+    typedef PackedTraits_<TPackedString> TTraits;
+    typedef TTraits::THostValue THostValue;
+    typedef THostValue::TBitVector TBitVector;
+    typedef Iterator<TPackedString, Standard>::Type TIter;
+
+    {  // Empty host.
+        TPackedString strL, strR;
+
+        resize(strL, 1243, Exact());
+        SEQAN_ASSERT_NOT(testEqual(strL, strR));
+        SEQAN_ASSERT_NOT(strL == strR);
+        SEQAN_ASSERT(strL != strR);
+    }
+
+    {  // Different Size.
+        TPackedString strL, strR;
+        resize(strL, +TTraits::VALUES_PER_HOST_VALUE, TValue());
+        resize(strR, +TTraits::VALUES_PER_HOST_VALUE * 2, TValue());
+
+        SEQAN_ASSERT_NOT(testEqual(strL, strR));
+        SEQAN_ASSERT_NOT(strL == strR);
+        SEQAN_ASSERT(strL != strR);
+    }
+
+    {  // Test Equal.
+
+        // Random string with size: TTraits::VALUES_PER_HOST_VALUE - 3
+        CharString testString = "1110000011010011110011110110011001011111101011010111000000010";
+        Iterator<CharString, Standard>::Type testStrIt = begin(testString, Standard());
+
+        TPackedString strL, strR;
+        resize(strL, length(testString), Exact());
+        for (TIter it = begin(strL, Standard()); it != end(strL, Standard()); ++it, ++testStrIt)
+            assignValue(it, (*testStrIt == '1') ? true : false);
+
+        strR = strL;
+        // Manipulate wasted bits.
+        *(begin(host(strR), Standard()) + 1) |= ~(~static_cast<TBitVector>(0) >> TTraits::WASTED_BITS);
+        // Manipulate inactive bits at end.
+        *(end(host(strL), Standard()) - 1) |= ((1 << (3 * BitsPerValue<TValue>::VALUE)) - 1);
+
+        SEQAN_ASSERT(testEqual(strL, strR));
+        SEQAN_ASSERT(strL == strR);
+        SEQAN_ASSERT_NOT(strL != strR);
+
+        // Random string with size: 8 * TTraits::VALUES_PER_HOST_VALUE - 3
+        testString = "0101110010111101011101111101001100001001110101100111110010001001"
+                     "0100001001110110101000110001101101010100000000010000111110111011"
+                     "0001110011001000111111110010111101011010100001111110110100011000"
+                     "1111110111011001111000100000001010101111111101010000001001110001"
+                     "1001111001110111000001100101000111010001111101111111111010100001"
+                     "1100101001010000100101101100101100101000001000101111000110101010"
+                     "0011100011100101100111101110010110110111100000000010101101101110"
+                     "0011011011111000101111000110011101111001011000010010010000111";
+
+        testStrIt = begin(testString, Standard());
+        resize(strL, length(testString), TValue(), Exact());
+        for (TIter it = begin(strL, Standard()); it != end(strL, Standard()); ++it)
+            assignValue(it, (*testStrIt == '1') ? true : false);
+
+        strR = strL;
+        // Manipulate wasted bits.
+        *(begin(host(strR), Standard()) + 4) |= ~(~static_cast<TBitVector>(0) >> TTraits::WASTED_BITS);
+        // Manipulate inactive bits at end.
+        *(end(host(strL), Standard()) - 1) |= ((1 << (3 * BitsPerValue<TValue>::VALUE)) - 1);
+
+        SEQAN_ASSERT(testEqual(strL, strR));
+        SEQAN_ASSERT(strL == strR);
+        SEQAN_ASSERT_NOT(strL != strR);
+
+        unsigned pos = 3 * TTraits::VALUES_PER_HOST_VALUE + 2;
+        TValue tmp = strR[pos];
+        strR[pos] = convert<TValue>(~ordValue(tmp));  // Invert value.
+
+        SEQAN_ASSERT_NOT(testEqual(strL, strR));
+        SEQAN_ASSERT_NOT(strL == strR);
+        SEQAN_ASSERT(strL != strR);
+
+        strR[pos] = tmp;
+        *(end(strL, Standard()) - 1) = convert<TValue>(~ordValue(getValue(end(strL, Standard()) - 1)));  // Invert last value.
+
+        SEQAN_ASSERT_NOT(testEqual(strL, strR));
+        SEQAN_ASSERT_NOT(strL == strR);
+        SEQAN_ASSERT(strL != strR);
+    }
+}
+
 void testStringPackedExtensionBitScanForward()
 {
     typedef String<bool, Packed<> > TBitString;
@@ -678,6 +769,7 @@ SEQAN_DEFINE_TEST(String_Packed_Extension)
     testStringPackedExtensionBitwiseNot();
     testStringPackedExtensionTestAllZeros();
     testStringPackedExtensionTestAllOnes();
+    testStringPackedExtensionTestEqual();
     testStringPackedExtensionBitScanForward();
     testStringPackedExtensionBitScanReverse();
 }
