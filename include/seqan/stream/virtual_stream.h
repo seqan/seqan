@@ -480,6 +480,9 @@ _getUncompressedBasename(TFilename const & fileName, BgzfFile const &)
     if (endsWith(lowcaseFileName, ".bgzf"))
         return prefix(fileName, length(fileName) - 5);
 
+    if (endsWith(lowcaseFileName, ".gz"))
+        return prefix(fileName, length(fileName) - 3);
+
     return prefix(fileName, length(fileName));
 }
 

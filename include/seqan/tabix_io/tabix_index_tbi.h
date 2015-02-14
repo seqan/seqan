@@ -53,6 +53,17 @@ struct TabixIndexBinData_
 };
 
 // ----------------------------------------------------------------------------
+// Helper Class TabixRecord_
+// ----------------------------------------------------------------------------
+
+struct TabixRecord_
+{
+    CharString refName;
+    __int32 posBeg;
+    __int32 posEnd;
+};
+
+// ----------------------------------------------------------------------------
 // Class TabixIndex
 // ----------------------------------------------------------------------------
 
@@ -105,7 +116,8 @@ public:
         colEnd(3),
         meta('#'),
         skip(0),
-        unalignedCount(maxValue<__uint64>())
+        unalignedCount(maxValue<__uint64>()),
+        _nameStoreCache(_nameStore)
     {}
 };
 
@@ -133,6 +145,54 @@ _tbiReg2bins(String<__uint16> & list, __uint32 beg, __uint32 end)
 }
 
 // ----------------------------------------------------------------------------
+// Function _readTabixRecord()
+// ----------------------------------------------------------------------------
+
+// TODO(weese:) In order to suppor the SAM format here, one has to read the cigar and compute posEnd from it
+template <typename TIter>
+bool _readTabixRecord(TabixRecord_ & record, CharString & buffer, TIter & iter, TabixIndex const & index)
+{
+    clear(record.refName);
+    record.posBeg = 0;
+    record.posEnd = 0;
+
+    // Skip comment lines.
+    while (!atEnd(iter) && *iter == (char)index.meta)
+        skipLine(iter);
+
+    if (atEnd(iter))
+        return false;
+    
+    // Extract columns.
+    __int32 maxCol = std::max(index.colSeq, std::max(index.colBeg, index.colEnd));
+    for (__int32 col = 1; col <= maxCol; ++col)
+    {
+        // Read column.
+        clear(buffer);
+        if (col < maxCol)
+        {
+            readUntil(buffer, iter, IsTab());
+            skipOne(iter, IsTab());
+        }
+        else
+        {
+            readUntil(buffer, iter, OrFunctor<IsTab, IsNewline>());
+        }
+        
+        if (col == index.colSeq)
+            record.refName = buffer;
+        else if (col == index.colBeg)
+            record.posBeg = lexicalCast<__int32>(buffer);
+        else if (col == index.colEnd)
+            record.posEnd = lexicalCast<__int32>(buffer);
+    }
+
+    // Go to next line.
+    skipLine(iter);
+    return true;
+}
+
+// ----------------------------------------------------------------------------
 // Function jumpToRegion()
 // ----------------------------------------------------------------------------
 
@@ -140,16 +200,16 @@ _tbiReg2bins(String<__uint16> & list, __uint32 beg, __uint32 end)
  * @fn TabixIndex#jumpToRegion
  * @brief Seek in VcfFileIn or BedFileIn using an index.
  *
- * You provide a region <tt>[pos, posEnd)</tt> on the reference <tt>refID</tt> that you want to jump to and the function
- * jumps to the first alignment in this region, if any.
+ * You provide a region <tt>[posBeg, posEnd)</tt> on the reference <tt>refName</tt> that you want to jump to and the function
+ * jumps to the first entry in this region, if any.
  *
- * @signature bool jumpToRegion(bamFileIn, hasAlignments, refID, pos, posEnd, index);
+ * @signature bool jumpToRegion(fileIn, hasEntries, refName, posBeg, posEnd, index);
  *
- * @param[in,out] bamFileIn     The @link BamFileIn @endlink to jump with.
- * @param[out]    hasAlignments A <tt>bool</tt> that is set true if the region <tt>[pos, posEnd)</tt> has any
- *                              alignments.
- * @param[in]     refID         The reference id to jump to (<tt>__int32</tt>).
- * @param[in]     pos           The begin of the region to jump to (<tt>__int32</tt>).
+ * @param[in,out] fileIn        The @link BamFileIn @endlink to jump with.
+ * @param[out]    hasEntries    A <tt>bool</tt> that is set true if the region <tt>[posBeg, posEnd)</tt> has any
+ *                              entries.
+ * @param[in]     refName       The reference name to jump to.
+ * @param[in]     posBeg        The begin of the region to jump to (<tt>__int32</tt>).
  * @param[in]     posEnd        The end of the region to jump to (<tt>__int32</tt>).
  * @param[in]     index         The @link TabixIndex @endlink to use for the jumping.
  *
@@ -157,37 +217,36 @@ _tbiReg2bins(String<__uint16> & list, __uint32 beg, __uint32 end)
  *
  * @section Remarks
  *
- * This function fails if <tt>refID</tt>/<tt>pos</tt> are invalid.
+ * This function fails if <tt>refName</tt>/<tt>pos</tt> wasn't found.
  */
 
-template <typename TFormat, typename TSpec, typename TName>
+template <typename TFileFormat, typename TSpec, typename TName>
 inline bool
-jumpToRegion(FormattedFile<TFormat, Input, TSpec> & file,
-             TName seqName,
-             __int32 pos,
+jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
+             bool & hasEntries,
+             TName const & refName,
+             __int32 posBeg,
              __int32 posEnd,
              TabixIndex const & index)
 {
-    if (!isEqual(format(bamFile), Bam()))
-        return false;
+    hasEntries = false;
 
-    hasAlignments = false;
-    if (refId < 0)
-        return false;  // Cannot seek to invalid reference.
-    if (static_cast<unsigned>(refId) >= length(index._binIndices))
-        return false;  // Cannot seek to invalid reference.
+    // Get id of given contig name
+    unsigned refId = 0;
+    if (!getIdByName(refId, index._nameStoreCache, refName))
+        return false;
 
     // ------------------------------------------------------------------------
     // Compute offset in BGZF file.
     // ------------------------------------------------------------------------
     __uint64 offset = MaxValue<__uint64>::VALUE;
 
-    // Retrieve the candidate bin identifiers for [pos, posEnd).
+    // Retrieve the candidate bin identifiers for [posBeg, posEnd).
     String<__uint16> candidateBins;
-    _tbiReg2bins(candidateBins, pos, posEnd);
+    _tbiReg2bins(candidateBins, posBeg, posEnd);
 
     // Retrieve the smallest required offset from the linear index.
-    unsigned windowIdx = pos >> 14;  // Linear index consists of 16kb windows.
+    unsigned windowIdx = posBeg >> 14;  // Linear index consists of 16kb windows.
     __uint64 linearMinOffset = 0;
     if (windowIdx >= length(index._linearIndices[refId]))
     {
@@ -252,30 +311,32 @@ jumpToRegion(FormattedFile<TFormat, Input, TSpec> & file,
     //
     // TODO(holtgrew): Can this be optimized similar to how bamtools does it?
     typedef typename TOffsetCandidates::const_iterator TOffsetCandidateIter;
-    BamAlignmentRecord record;
+
+    CharString buffer;
+    TabixRecord_ record;
     for (TOffsetCandidateIter candIt = offsetCandidates.begin(); candIt != offsetCandidates.end(); ++candIt)
     {
-        setPosition(bamFile, *candIt);
+        setPosition(fileIn, *candIt);
 
-        readRecord(record, bamFile);
+        if (!_readTabixRecord(record, buffer, fileIn.iter, index))
+            break;
 
-        // std::cerr << "record.beginPos == " << record.beginPos << "\n";
-        // __int32 endPos = record.beginPos + getAlignmentLengthInRef(record);
-        if (record.rID != refId)
+        if (record.refName != refName)
             continue;  // Wrong contig.
-        if (!hasAlignments || record.beginPos <= pos)
+        
+        if (!hasEntries || record.posBeg <= posBeg)
         {
             // Found a valid alignment.
-            hasAlignments = true;
+            hasEntries = true;
             offset = *candIt;
         }
 
-        if (record.beginPos >= posEnd)
+        if (record.posBeg >= posEnd)
             break;  // Cannot find overlapping any more.
     }
 
     if (offset != MaxValue<__uint64>::VALUE)
-        setPosition(bamFile, offset);
+        setPosition(fileIn, offset);
 
     // Finding no overlapping alignment is not an error, hasAlignments is false.
     return true;
@@ -332,7 +393,7 @@ open(TabixIndex & index, char const * filename)
     read(magic, iter, 4);
     if (magic != "TBI\1")
         SEQAN_THROW(ParseError("Not in TBI format."));
-    
+
     // Read parameters.
     __int32 nRef = 0;
     readRawPod(nRef, iter);
@@ -352,6 +413,7 @@ open(TabixIndex & index, char const * filename)
     // Split concatenated names at \0's.
     clear(index._nameStore);
     strSplit(index._nameStore, tmp, EqualsChar<'\0'>(), true, nRef - 1);
+    refresh(index._nameStoreCache);
 
     clear(index._linearIndices);
     clear(index._binIndices);
@@ -372,7 +434,7 @@ open(TabixIndex & index, char const * filename)
             readRawPod(bin, iter);
             readRawPod(nChunk, iter);
 
-            resize(data, nChunk);
+            resize(data.chunkBegEnds, nChunk);
             for (int k = 0; k < nChunk; ++k)  // For each chunk;
             {
                 readRawPod(data.chunkBegEnds[k].i1, iter);
@@ -389,15 +451,15 @@ open(TabixIndex & index, char const * filename)
 
         resize(index._linearIndices[i], nIntv);
         for (int j = 0; j < nIntv; ++j)
-            readRawPod(index._linearIndices[i], iter);
+            readRawPod(index._linearIndices[i][j], iter);
     }
 
 
     // Read (optional) number of alignments without coordinate.
     if (!atEnd(iter))
-        readRawPod(index._unalignedCount, iter);
+        readRawPod(index.unalignedCount, iter);
     else
-        index._unalignedCount = maxValue<__uint64>();
+        index.unalignedCount = maxValue<__uint64>();
 
     return true;
 }
