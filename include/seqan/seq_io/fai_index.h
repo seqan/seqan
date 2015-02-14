@@ -138,8 +138,7 @@ public:
     // A cache for fast access to the sequence name store.
     NameStoreCache<StringSet<CharString> > seqNameStoreCache;
 
-    // We use this memory mapped string (opened read-only) to read from the file.
-    String<char, MMap<> > mmapString;
+    mutable std::ifstream file;
 
     FaiIndex() :
         seqNameStoreCache(seqNameStore)
@@ -296,8 +295,6 @@ inline void readRegion(String<TValue, TSpec> & str,
                        TBeginPos beginPos,
                        TEndPos endPos)
 {
-    typedef String<char, MMap<> > const TFastaFile;
-
     FaiIndexEntry_ const & entry = index.indexEntryStore[rID];
 
     // Limit region to the infix, make sure that beginPos < endPos, compute character to read.
@@ -305,9 +302,13 @@ inline void readRegion(String<TValue, TSpec> & str,
     beginPos = std::min((TEndPos)beginPos, seqLen);
     endPos = std::min(std::max((TEndPos)beginPos, endPos), seqLen);
     TEndPos toRead = endPos - beginPos;
+    
+    clear(str);
+    if (toRead == 0)
+        return;
 
     // seek to start position
-    DirectionIterator<TFastaFile, Input>::Type reader = directionIterator(index.mmapString, Input());
+    DirectionIterator<std::ifstream, Input>::Type reader = directionIterator(index.file, Input());
     setPosition(
         reader,
         index.indexEntryStore[rID].offset +
@@ -319,7 +320,6 @@ inline void readRegion(String<TValue, TSpec> & str,
     IsWhitespace ignWhiteSpace;
 
     // read characters
-    clear(str);
     skipUntil(reader, countDownIgnore);
     readUntil(str, reader, countDownData, ignWhiteSpace);
     if (!countDownData)
@@ -476,7 +476,7 @@ inline bool open(FaiIndex & index, char const * fastaFilename, char const * faiF
     index.fastaFilename = fastaFilename;
     index.faiFilename = faiFilename;
 
-    if (!open(index.mmapString, toCString(fastaFilename), OPEN_RDONLY))
+    if (!open(index.file, toCString(fastaFilename), OPEN_RDONLY))
         return false;  // Could not open file.
 
     // Open file.
