@@ -31,6 +31,17 @@
 // ==========================================================================
 // Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
+// (Read-only) Tabix index support.
+//
+// A Tabix index (Heng Li) allows to randomly seek in a tab-seperated genome
+// related file, e.g. VCF, GFF, SAM, BED, etc. The corresponding file only
+// needs to be sorted by chromosomal position in advance and optionally
+// compressed with 'bgzip'. The resulting file must be indexed with 'tabix'.
+//
+// TODOs:
+//  - clean jumpToRegion(), I simply adapted the one from bam_index.h
+//  - implement Tabix index creation (and BAM index creation as well)
+// ==========================================================================
 
 #ifndef INCLUDE_SEQAN_TABIX_IO_TABIX_INDEX_TBI_H_
 #define INCLUDE_SEQAN_TABIX_IO_TABIX_INDEX_TBI_H_
@@ -148,7 +159,6 @@ _tbiReg2bins(String<__uint16> & list, __uint32 beg, __uint32 end)
 // Function _readTabixRecord()
 // ----------------------------------------------------------------------------
 
-// TODO(weese:) In order to suppor the SAM format here, one has to read the cigar and compute posEnd from it
 template <typename TIter>
 bool _readTabixRecord(TabixRecord_ & record, CharString & buffer, TIter & iter, TabixIndex const & index)
 {
@@ -198,14 +208,14 @@ bool _readTabixRecord(TabixRecord_ & record, CharString & buffer, TIter & iter, 
 
 /*!
  * @fn TabixIndex#jumpToRegion
- * @brief Seek in VcfFileIn or BedFileIn using an index.
+ * @brief Seek in a tab-separated genome related file using a Tabix index.
  *
- * You provide a region <tt>[posBeg, posEnd)</tt> on the reference <tt>refName</tt> that you want to jump to and the function
+ * You provide a region <tt>[posBeg, posEnd)</tt> on the contig <tt>refName</tt> that you want to jump to and the function
  * jumps to the first entry in this region, if any.
  *
  * @signature bool jumpToRegion(fileIn, hasEntries, refName, posBeg, posEnd, index);
  *
- * @param[in,out] fileIn        The @link BamFileIn @endlink to jump with.
+ * @param[in,out] fileIn        The @link VcfFileIn @endlink, @link GffFileIn @endlink, or @link BedFileIn @endlink to jump with.
  * @param[out]    hasEntries    A <tt>bool</tt> that is set true if the region <tt>[posBeg, posEnd)</tt> has any
  *                              entries.
  * @param[in]     refName       The reference name to jump to.
@@ -368,7 +378,7 @@ getUnalignedCount(TabixIndex const & index)
 
 /*!
  * @fn TabixIndex#open
- * @brief Load a BAM index from a given file name.
+ * @brief Load a Tabix index from file.
  * @signature bool open(index, filename);
 
  * @param[in,out] index    Target data structure.
