@@ -592,7 +592,7 @@ struct Finite;
 template <typename TValue, unsigned SIZE>
 struct ValueSize<SimpleType<TValue, Finite<SIZE> > >
 {
-    typedef __uint64 Type;
+    typedef unsigned Type;
     static const Type VALUE = SIZE;
 };
 
