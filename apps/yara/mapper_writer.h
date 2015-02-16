@@ -296,6 +296,7 @@ inline void _writeMappedReadImpl(MatchesWriter<TSpec, Traits> & me, TReadId read
     // Find the primary match in the list of matches.
     TIter it = findMatch(matches, primary);
     TSize primaryPos = position(it, matches);
+    SEQAN_ASSERT_LT(primaryPos, length(matches));
 
     if (!me.options.outputSecondary)
         _fillXa(me, matches, primaryPos);
@@ -303,7 +304,7 @@ inline void _writeMappedReadImpl(MatchesWriter<TSpec, Traits> & me, TReadId read
     _writeRecord(me);
 
     if (me.options.outputSecondary)
-        _writeSecondary(me, matches, bestCount, primaryPos);
+        _writeSecondary(me, matches, primaryPos);
 }
 
 template <typename TSpec, typename Traits, typename TReadId, typename TMatch>
@@ -349,35 +350,18 @@ inline void _writeMappedReadImpl(MatchesWriter<TSpec, Traits> & me, TReadId read
     _writeRecord(me);
 
     if (me.options.outputSecondary)
-        _writeSecondary(me, matches, bestCount, primaryPos);
+        _writeSecondary(me, matches, primaryPos);
 }
 
 // ----------------------------------------------------------------------------
 // Function _writeSecondary()
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename Traits, typename TMatches, typename TCount, typename TPos>
-inline void _writeSecondary(MatchesWriter<TSpec, Traits> & me, TMatches const & matches, TCount bestCount, TPos primaryPos)
-{
-    _writeSecondaryImpl(me, matches, bestCount, primaryPos, typename Traits::TStrategy());
-}
-
-template <typename TSpec, typename Traits, typename TMatches, typename TCount, typename TPos>
-inline void _writeSecondaryImpl(MatchesWriter<TSpec, Traits> & me, TMatches const & matches, TCount /* bestCount */, TPos primaryPos, All)
+template <typename TSpec, typename Traits, typename TMatches, typename TPos>
+inline void _writeSecondary(MatchesWriter<TSpec, Traits> & me, TMatches const & matches, TPos primaryPos)
 {
     _writeSecondary(me, prefix(matches, primaryPos));
-    _writeSecondary(me, suffix(matches, primaryPos + 1));
-}
-
-template <typename TSpec, typename Traits, typename TMatches, typename TCount, typename TPos>
-inline void _writeSecondaryImpl(MatchesWriter<TSpec, Traits> & me, TMatches const & matches, TCount bestCount, TPos primaryPos, Strata)
-{
-    if (primaryPos < bestCount)
-    {
-        TMatches const & cooptimal = prefix(matches, bestCount);
-        _writeSecondary(me, prefix(cooptimal, primaryPos));
-        _writeSecondary(me, suffix(cooptimal, primaryPos + 1));
-    }
+    _writeSecondary(me, suffix(matches, _min(primaryPos + 1, length(matches))));
 }
 
 template <typename TSpec, typename Traits, typename TMatches>
