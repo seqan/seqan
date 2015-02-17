@@ -233,7 +233,7 @@ chainSeedsGlobally(
                     intermediateSolutions.insert(sol);
                 }
             }
-            
+
             // Delete all intermediate solutions where end1 >= end1 of k and have a lower quality than k.
             TIntermediateSolutionsIterator itDel = intermediateSolutions.upper_bound(referenceSolution);
             TIntermediateSolutionsIterator itDelEnd = intermediateSolutions.end();

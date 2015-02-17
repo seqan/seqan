@@ -128,11 +128,11 @@ them like STL strings, for example:
 
 Each sequence object has a capacity, i.e. the maximum length of a sequence that can be stored in this object.
 While some sequence types have a fixed capacity, the capacity of other sequence classes like :dox:`AllocString Alloc String` or ``std::basic_string`` can be changed at runtime.
-The capacity can be set explicitly by functions such as :dox:`String#reserve` or :dox:`SequenceConcept#resize`.
-It can also be set implicitly by functions like :dox:`SequenceConcept#append` or :dox:`SequenceConcept#replace`, if the operation's result exceeds the length of the target string.
+The capacity can be set explicitly by functions such as :dox:`String#reserve` or :dox:`StringConcept#resize`.
+It can also be set implicitly by functions like :dox:`StringConcept#append` or :dox:`StringConcept#replace`, if the operation's result exceeds the length of the target string.
 
-In the following example, a :dox:`String` of :dox:`Dna5String`, we first set the new length of the container with :dox:`SequenceConcept#resize` to two elements.
-After assigning two elements we append one more element with :dox:`SequenceConcept#appendValue`.
+In the following example, a :dox:`String` of :dox:`Dna5String`, we first set the new length of the container with :dox:`StringConcept#resize` to two elements.
+After assigning two elements we append one more element with :dox:`StringConcept#appendValue`.
 In the last step the capacity is implicitly changed.
 
 .. code-block:: cpp
@@ -155,7 +155,7 @@ Using the function :dox:`ContainerConcept#length`, we can now get the length of 
    3
    10
 
-To empty a :dox:`String`, the function :dox:`SequenceConcept#clear` resets the object.
+To empty a :dox:`String`, the function :dox:`StringConcept#clear` resets the object.
 
 .. code-block:: cpp
 

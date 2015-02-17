@@ -100,9 +100,9 @@ parseArgs(FxBamCoverageOptions & options,
     seqan::ArgumentParser parser("fx_bam_coverage");
     setShortDescription(parser, "Read Coverage Computation.");
     setCategory(parser, "Utilities");
-    setVersion(parser, "0.2");
-    setDate(parser, "August 2013");
-    
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
+
     addUsageLine(parser,
                  "[\\fIOPTIONS\\fP] \\fB-o\\fP \\fIOUT.bam.coverage.tsv\\fP \\fB-r\\fP \\fIGENOME.fa\\fP "
                  "\\fB-m\\fP \\fIMAPPING.bam\\fP");

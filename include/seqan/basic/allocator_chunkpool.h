@@ -51,8 +51,8 @@ namespace seqan {
 // ============================================================================
 
 template <
-    size_t SIZE, 
-    size_t MAX_COUNT = 26, 
+    size_t SIZE,
+    size_t MAX_COUNT = 26,
     typename TParentAllocator = Allocator<SimpleAlloc<Default> > >
 struct ChunkPool;
 
@@ -180,7 +180,7 @@ clear(Allocator<ChunkPool<SIZE, MAX_COUNT, TParentAllocator> > & me)
 
 template <size_t SIZE, size_t MAX_COUNT, typename TParentAllocator, typename TValue, typename TSize, typename TUsage>
 inline void
-allocate(Allocator<ChunkPool<SIZE, MAX_COUNT, TParentAllocator> > & me, 
+allocate(Allocator<ChunkPool<SIZE, MAX_COUNT, TParentAllocator> > & me,
          TValue * & data,
          TSize count,
          Tag<TUsage> const tag_)

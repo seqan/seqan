@@ -1739,9 +1739,9 @@ int readMatchesFromSamBam_Batch(
 
 ///////////////////////////////////////////////////////////////////////////////////////////////7
 // simple position stats analysis
-template <typename TPositions, typename TOptions>
+template <typename TPositions, typename TGenomeSetSize, typename TOptions>
 bool loadPositions(TPositions & positions,
-                   ::std::map<CharString,unsigned> &gIdStringToIdNumMap,
+                   ::std::map<CharString, TGenomeSetSize> &gIdStringToIdNumMap,
                    char const * filename,
                    TOptions & options)
 {
@@ -1753,7 +1753,7 @@ bool loadPositions(TPositions & positions,
     CharString chrId;
 
     int numPos = 0;
-    typename ::std::map<CharString,unsigned>::const_iterator it;
+    typename ::std::map<CharString, TGenomeSetSize>::const_iterator it;
     unsigned contigId;
     typename DirectionIterator<std::ifstream, Input>::Type fileIter = directionIterator(file, Input());
     while (!atEnd(fileIter))

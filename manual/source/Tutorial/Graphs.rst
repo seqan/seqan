@@ -310,7 +310,7 @@ Property Maps And Iterators
 So far, the vertices in our graph can only be distinguished by their vertex descriptor.
 We will now see how to associate the city names with the vertices.
 
-SeqAn uses :dox:`ExternalPropertyMap External Property Map` to attach auxiliary information to the vertices and edges of a graph.
+SeqAn uses :dox:`PropertyMapConcept Property Maps` to attach auxiliary information to the vertices and edges of a graph.
 The cargo parameter that we used above associated distances to the edges.
 In most scenarios you should use an external property map to attach information to a graph.
 Be aware that the word external is a hint that the information is stored independently of the graph and functions like :dox:`Graph#removeVertex` do not affect the property map.
@@ -339,7 +339,7 @@ To output all vertices of our graph in an arbitrary order, we can define an iter
 The functions :dox:`RootedIteratorConcept#atEnd` and :dox:`InputIteratorConcept#goNext` also work for graph iterators as for all other iterators in SeqAn.
 
 The :dox:`IteratorAssociatedTypesConcept#value` of any type of vertex iterator is the vertex descriptor.
-To print out all city names we have to call the function :dox:`ExternalPropertyMap#getProperty` on our property map ``cityNames`` with the corresponding vertex descriptor that is returned by the value function.
+To print out all city names we have to call the function :dox:`PropertyMapConcept#getProperty` on our property map ``cityNames`` with the corresponding vertex descriptor that is returned by the value function.
 
 .. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: iterate-and-output-properties
@@ -366,7 +366,7 @@ Assignment 4
      Add a vertex map to the program from task 2:
 
      #. The map shall assign a lower-case letter to each of the seven vertices.
-        Find a way to assign the properties to all vertices at once in a single function call (*without* using the function :dox:`ExternalPropertyMap#assignProperty` for each vertex separately).
+        Find a way to assign the properties to all vertices at once in a single function call (*without* using the function :dox:`PropertyMapConcept#assignProperty` for each vertex separately).
      #. Show that the graph is not connected by iterating through the graph in depth-first-search ordering.
         Output the properties of the reached vertices.
 
@@ -382,7 +382,7 @@ Assignment 4
 	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
 	   :fragment: vertex-map
 
-	To iterate through the graph in depth-first-search ordering we have to define an :dox:`Container#Iterator` with the specialization :dox:`DfsPreorderIterator`.
+	To iterate through the graph in depth-first-search ordering we have to define an :dox:`ContainerConcept#Iterator` with the specialization :dox:`DfsPreorderIterator`.
 
 	The vertex descriptor of the first vertex is ``0`` and we choose this vertex as a starting point for the depth-first-search through our graph ``g`` with the iterator ``dfsIt``:
 
@@ -455,8 +455,8 @@ Indeed this is the case for our graph type but it is not in general.
 The cargo of a graph might as well be a string of characters or any other type.
 So, we first have to find out how to access our internal edge map.
 We do not need to copy the information to a new map.
-Instead we can define an object of the type :dox:`InternalMap` of our type ``TCargo``.
-It will automatically find the edge labels in the graph when the function :dox:`ExternalPropertyMap#property` or :dox:`ExternalPropertyMap#getProperty` is called on it with the corresponding edge descriptor.
+Instead we can define an object of the type :dox:`InternalPropertyMap` of our type ``TCargo``.
+It will automatically find the edge labels in the graph when the function :dox:`PropertyMapConcept#property` or :dox:`PropertyMapConcept#getProperty` is called on it with the corresponding edge descriptor.
 
 The output containers of the shortest-path algorithm are two property maps, ``predMap`` and ``distMap``.
 The ``predMap`` is a vertex map that determines a shortest-paths-tree by mapping the predecessor to each vertex.
@@ -473,7 +473,7 @@ Having defined all these property maps, we can then call the function :dox:`dijk
    dijkstra(g,vertHannover,cargoMap,predMap,distMap);
 
 Finally, we have to output the result.
-Therefore, we define a second vertex iterator ``itV2`` and access the distances just like the city names with the function :dox:`ExternalPropertyMap#property` on the corresponding property map.
+Therefore, we define a second vertex iterator ``itV2`` and access the distances just like the city names with the function :dox:`PropertyMapConcept#property` on the corresponding property map.
 
 .. includefrags:: demos/tutorial/graph/graph_dijkstra.cpp
    :fragment: dijkstra-output
@@ -501,7 +501,7 @@ Assignments 5
 	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp
 	   :fragment: connected-components
 
-	Now, the only thing left to do is to walk through our graph and ouput each vertex and the corresponding component using the function :dox:`ExternalPropertyMap#getProperty`.
+	Now, the only thing left to do is to walk through our graph and ouput each vertex and the corresponding component using the function :dox:`PropertyMapConcept#getProperty`.
 	One way of doing so is to define a :dox:`VertexIterator`.
 
 	.. includefrags:: demos/tutorial/graph/graph_algo_scc.cpp

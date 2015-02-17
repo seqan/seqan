@@ -299,11 +299,11 @@ template <typename TFwdIterator>
 void testHelperReadEmblSingle(TFwdIterator & iter)
 {
     using namespace seqan;
-    
+
     CharString k, v;
 
     // First record.
-    
+
     // Read EMBL headers, split ID header, skip rest.
     readRecord(k, v, iter, EmblHeader());
     SEQAN_ASSERT_EQ(k, CharString("ID"));
@@ -354,7 +354,7 @@ void testHelperReadEmblRecord(TFwdIterator & iter)
 SEQAN_DEFINE_TEST(test_stream_read_embl_single_char_array_stream)
 {
     using namespace seqan;
-    
+
     typedef CharString TStream;
 
     char const * emblString = testHelperReturnEmblFile();
@@ -367,7 +367,7 @@ SEQAN_DEFINE_TEST(test_stream_read_embl_single_char_array_stream)
 SEQAN_DEFINE_TEST(test_stream_read_embl_record_char_array_stream)
 {
     using namespace seqan;
-    
+
     typedef CharString TStream;
 
     char const * emblString = testHelperReturnEmblFile();

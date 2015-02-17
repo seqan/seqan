@@ -81,7 +81,7 @@ The FAI file name will be stored in the :dox:`FaiIndex`.
    if (!build(faiIndex, "path/to/file.fasta", "another/path/file.fasta.fai"))
        std::cerr << "ERROR: Could not build the index!\n";
 
-We can write out the index after building it using the function :dox:`FaiIndex#write`:
+We can write out the index after building it using the function :dox:`FaiIndex#save`:
 
 .. code-block:: cpp
 

@@ -57,50 +57,50 @@ struct PizzaChiliCodeProvider {
 
 /*!
  * @defgroup PizzaChiliIndexTags Pizza &amp; Chili Index Tags
- * 
+ *
  * @brief Tag specifying the Pizza &amp; Chili library to use.
- * 
+ *
  * @section Remarks
- * 
+ *
  * More information for all the index libraries can be found at <a href="dcc.uchile.cl">original documentation</a> (or the <a href="di.unipi.it">Italian mirror</a>).
- * 
+ *
  * @see PizzaChiliIndex
  * @see PizzaChiliString
- * 
+ *
  * @tag PizzaChiliIndexTags#PizzaChiliSada
- * 
+ *
  * @brief the compressed suffix array index.
- * 
+ *
  * @section Remarks
- * 
+ *
  * The index cannot be saved and loaded.
- * 
+ *
  * @tag PizzaChiliIndexTags#PizzaChiliAF
- * 
+ *
  * @brief The alphabet-friendly FM index.
- * 
+ *
  * @tag PizzaChiliIndexTags#PizzaChiili_RSA
- * 
+ *
  * @brief The repair suffix array index.
- * 
+ *
  * @section Remarks
- * 
+ *
  * The index cannot be saved and loaded.
- * 
+ *
  * @tag PizzaChiliIndexTags#PizzaChiliSA
- * 
+ *
  * @brief The simple suffix array index.
- * 
+ *
  * @section Remarks
- * 
+ *
  * The index cannot be saved and loaded.
- * 
+ *
  * @tag PizzaChiliIndexTags#PizzaChiliFM
- * 
+ *
  * @brief The FM (full-text in minute space) index.
- * 
+ *
  * @tag PizzaChiliIndexTags#PizzaChiliCcsa
- * 
+ *
  * @brief The compressed compact suffix array index.
  */
 

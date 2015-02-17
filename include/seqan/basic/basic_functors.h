@@ -141,7 +141,7 @@ struct CountDownFunctor
             --remaining;
         return false;
     }
-    
+
     operator bool()
     {
         return remaining == 0;

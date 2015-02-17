@@ -198,7 +198,7 @@ _allocatorBlockNumber(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > &,
 
 template <typename TParentAllocator, unsigned int BLOCKING_LIMIT, typename TValue, typename TSize, typename TUsage>
 inline void
-allocate(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > & me, 
+allocate(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > & me,
          TValue * & data,
          TSize count,
          Tag<TUsage> const & tag_)
@@ -241,9 +241,9 @@ allocate(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > & me,
 // ----------------------------------------------------------------------------
 
 template <typename TParentAllocator, unsigned int BLOCKING_LIMIT, typename TValue, typename TSize, typename TUsage>
-inline void 
+inline void
 deallocate(Allocator<MultiPool<TParentAllocator, BLOCKING_LIMIT> > & me,
-           TValue * data, 
+           TValue * data,
            TSize count,
            Tag<TUsage> const tag_)
 {

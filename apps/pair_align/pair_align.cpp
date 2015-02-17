@@ -26,8 +26,8 @@ parseCommandLine(Options & options, int argc, char const ** argv)
     seqan::ArgumentParser parser("pair_align");
     // Set short description, version, and date.
     setShortDescription(parser, "Pairwise alignment");
-    setVersion(parser, "1.1");
-    setDate(parser, "December 2014");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
 
     // Define usage line and long description.
     addUsageLine(parser, "[\\fIOPTIONS\\fP] \\fB-s\\fP \\fIIN\\fP");

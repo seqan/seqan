@@ -63,9 +63,11 @@ class BufferedStreamBuf;
 // Class BufferedStream
 // ----------------------------------------------------------------------------
 
+// TODO(esiragusa): @extends BasicStream::Type
+
 /*!
  * @class BufferedStream
- * @extends BasicStream
+ * @implements StreamConcept
  * @headerfile <seqan/stream.h>
  * @brief Adds a buffer to another @link StreamConcept stream @endlink.
  *
@@ -149,7 +151,7 @@ class BufferedStreamBuf :
 {
 protected:
     typedef std::basic_streambuf<TValue, TTraits>                   TStreamBuf;
-	typedef typename TTraits::int_type                              TInt;
+    typedef typename TTraits::int_type                              TInt;
 
     static const size_t defaultBufferSize = 1024;   // size of the data buffer
     static const size_t defaultPutbackSize = 256;   // size of the buffer that should be used as putback area

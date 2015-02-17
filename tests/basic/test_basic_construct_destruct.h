@@ -64,7 +64,7 @@ struct CDStruct
     int movedFrom;
     int assignedFrom;
     int setFrom;
-    
+
     CDStruct() : copiedFrom(-1), movedFrom(-1), assignedFrom(-1), setFrom(-1)
     {
         id = nextId++;
@@ -202,7 +202,7 @@ SEQAN_DEFINE_TEST(test_basic_construct_destruct_construct_value_pointer)
 
         CDStruct * ptr = reinterpret_cast<CDStruct * >(&space[0]);
         valueConstruct(ptr, other);
-        
+
         SEQAN_ASSERT_EQ(ptr->copiedFrom, other.id);
         SEQAN_ASSERT_EQ(ptr->movedFrom, -1);
         SEQAN_ASSERT_EQ(ptr->assignedFrom, -1);
@@ -263,7 +263,7 @@ SEQAN_DEFINE_TEST(test_basic_construct_destruct_destruct_value_pointer)
 
         valueConstruct(reinterpret_cast<CDStruct * >(&space[0]));
         valueDestruct(reinterpret_cast<CDStruct * >(&space[0]));
-        
+
         SEQAN_ASSERT_EQ(CDStruct::lastOther, static_cast<CDStruct *>(0));
         SEQAN_ASSERT_EQ(CDStruct::defaultConstructions, 1);
         SEQAN_ASSERT_EQ(CDStruct::copyConstructions, 0);
@@ -284,7 +284,7 @@ SEQAN_DEFINE_TEST(test_basic_construct_destruct_array_construct_pointer)
         CDStruct * itBeg = reinterpret_cast<CDStruct *>(&space[0]);
         CDStruct * itEnd = itBeg + 2;
         arrayConstruct(itBeg, itEnd);
-        
+
         SEQAN_ASSERT_EQ(CDStruct::lastOther, static_cast<CDStruct *>(0));
         SEQAN_ASSERT_EQ(CDStruct::defaultConstructions, 2);
         SEQAN_ASSERT_EQ(CDStruct::copyConstructions, 0);
@@ -310,7 +310,7 @@ SEQAN_DEFINE_TEST(test_basic_construct_destruct_array_construct_pointer)
         SEQAN_ASSERT_EQ(itBeg[1].copiedFrom, prototype.id);
         SEQAN_ASSERT_EQ(itBeg[1].movedFrom, -1);
         SEQAN_ASSERT_EQ(itBeg[1].assignedFrom, -1);
-        
+
         SEQAN_ASSERT_EQ(CDStruct::lastOther, &prototype);
         SEQAN_ASSERT_EQ(CDStruct::defaultConstructions, 0);
         SEQAN_ASSERT_EQ(CDStruct::copyConstructions, 2);
@@ -341,7 +341,7 @@ SEQAN_DEFINE_TEST(test_basic_construct_destruct_array_construct_copy_pointer)
     SEQAN_ASSERT_EQ(targetBeg[1].copiedFrom, itBeg[1].id);
     SEQAN_ASSERT_EQ(targetBeg[1].movedFrom, -1);
     SEQAN_ASSERT_EQ(targetBeg[1].assignedFrom, -1);
-        
+
     SEQAN_ASSERT_EQ(CDStruct::lastOther, &(itBeg[1]));
     SEQAN_ASSERT_EQ(CDStruct::defaultConstructions, 0);
     SEQAN_ASSERT_EQ(CDStruct::copyConstructions, 2);
@@ -376,7 +376,7 @@ SEQAN_DEFINE_TEST(test_basic_construct_destruct_array_construct_move_pointer)
     SEQAN_ASSERT_EQ(targetBeg[1].copiedFrom, itBeg[1].id);
     SEQAN_ASSERT_EQ(targetBeg[1].movedFrom, -1);
     SEQAN_ASSERT_EQ(targetBeg[1].assignedFrom, -1);
-        
+
     SEQAN_ASSERT_EQ(CDStruct::lastOther, &(itBeg[1]));
     SEQAN_ASSERT_EQ(CDStruct::defaultConstructions, 0);
     // SEQAN_ASSERT_EQ(CDStruct::copyConstructions, 0);
@@ -398,7 +398,7 @@ SEQAN_DEFINE_TEST(test_basic_construct_destruct_array_destruct_pointer)
     CDStruct * itEnd = itBeg + 2;
     arrayConstruct(itBeg, itEnd);
     arrayDestruct(itBeg, itEnd);
-        
+
     SEQAN_ASSERT_EQ(CDStruct::lastOther, static_cast<CDStruct *>(0));
     SEQAN_ASSERT_EQ(CDStruct::defaultConstructions, 2);
     SEQAN_ASSERT_EQ(CDStruct::copyConstructions, 0);
@@ -425,7 +425,7 @@ SEQAN_DEFINE_TEST(test_basic_construct_destruct_array_fill_pointer)
     SEQAN_ASSERT_EQ(itBeg[1].copiedFrom, -1);
     SEQAN_ASSERT_EQ(itBeg[1].movedFrom, -1);
     SEQAN_ASSERT_EQ(itBeg[1].assignedFrom, prototype.id);
-        
+
     SEQAN_ASSERT_EQ(CDStruct::lastOther, &prototype);
     SEQAN_ASSERT_EQ(CDStruct::defaultConstructions, 0);
     SEQAN_ASSERT_EQ(CDStruct::copyConstructions, 0);
@@ -633,7 +633,7 @@ SEQAN_DEFINE_TEST(test_basic_construct_destruct_array_clear_space_pointer)
         resetCDStructStatics();
 
         arrayClearSpace(arrPtr, 4, 4, 0);
-        
+
         SEQAN_ASSERT_EQ(CDStruct::lastOther, static_cast<CDStruct *>(0));
         SEQAN_ASSERT_EQ(CDStruct::defaultConstructions, 0);
         SEQAN_ASSERT_EQ(CDStruct::copyConstructions, 0);
@@ -642,7 +642,7 @@ SEQAN_DEFINE_TEST(test_basic_construct_destruct_array_clear_space_pointer)
         SEQAN_ASSERT_EQ(CDStruct::destructions, 4);
         SEQAN_ASSERT_EQ(CDStruct::assignments, 0);
     }
-        
+
     // Do not move, clear first entry.
     {
         char arr[6 * sizeof(CDStruct)];
@@ -651,7 +651,7 @@ SEQAN_DEFINE_TEST(test_basic_construct_destruct_array_clear_space_pointer)
         resetCDStructStatics();
 
         arrayClearSpace(arrPtr, 4, 1, 1);
-        
+
         SEQAN_ASSERT_EQ(CDStruct::lastOther, static_cast<CDStruct *>(0));
         SEQAN_ASSERT_EQ(CDStruct::defaultConstructions, 0);
         SEQAN_ASSERT_EQ(CDStruct::copyConstructions, 0);
@@ -675,7 +675,7 @@ SEQAN_DEFINE_TEST(test_basic_construct_destruct_array_clear_space_pointer)
         SEQAN_ASSERT_EQ(arrPtr[0].movedFrom, oldId1);
         SEQAN_ASSERT_EQ(arrPtr[1].movedFrom, oldId2);
         SEQAN_ASSERT_EQ(arrPtr[2].movedFrom, oldId3);
-        
+
         SEQAN_ASSERT_EQ(CDStruct::lastOther, static_cast<CDStruct *>(&arrPtr[3]));
         SEQAN_ASSERT_EQ(CDStruct::defaultConstructions, 0);
         SEQAN_ASSERT_EQ(CDStruct::copyConstructions, 0);
@@ -697,7 +697,7 @@ SEQAN_DEFINE_TEST(test_basic_construct_destruct_array_clear_space_pointer)
         arrayClearSpace(arrPtr, 4, 2, 0);
         SEQAN_ASSERT_EQ(arrPtr[0].movedFrom, oldId2);
         SEQAN_ASSERT_EQ(arrPtr[1].movedFrom, oldId3);
-        
+
         SEQAN_ASSERT_EQ(CDStruct::lastOther, static_cast<CDStruct *>(&arrPtr[3]));
         SEQAN_ASSERT_EQ(CDStruct::defaultConstructions, 0);
         SEQAN_ASSERT_EQ(CDStruct::copyConstructions, 0);
@@ -721,7 +721,7 @@ SEQAN_DEFINE_TEST(test_basic_construct_destruct_array_clear_space_pointer)
         // SEQAN_ASSERT_EQ(arrPtr[4].movedFrom, oldId3);
         SEQAN_ASSERT_EQ(arrPtr[4].movedFrom, -1);
         SEQAN_ASSERT_EQ(arrPtr[4].copiedFrom, oldId3);
-        
+
         SEQAN_ASSERT_EQ(CDStruct::lastOther, static_cast<CDStruct *>(&arrPtr[2]));
         SEQAN_ASSERT_EQ(CDStruct::defaultConstructions, 0);
         // SEQAN_ASSERT_EQ(CDStruct::copyConstructions, 0);
@@ -747,7 +747,7 @@ SEQAN_DEFINE_TEST(test_basic_construct_destruct_array_clear_space_pointer)
         // SEQAN_ASSERT_EQ(arrPtr[5].movedFrom, oldId3);
         SEQAN_ASSERT_EQ(arrPtr[4].copiedFrom, oldId2);
         SEQAN_ASSERT_EQ(arrPtr[5].copiedFrom, oldId3);
-        
+
         SEQAN_ASSERT_EQ(CDStruct::lastOther, static_cast<CDStruct *>(&arrPtr[3]));
         SEQAN_ASSERT_EQ(CDStruct::defaultConstructions, 0);
         // SEQAN_ASSERT_EQ(CDStruct::copyConstructions, 0);

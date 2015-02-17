@@ -105,25 +105,16 @@ The content of this object can be ignored for now, it will be covered in the :re
 .. includefrags:: demos/tutorial/base_io/example1.cpp
    :fragment: header
 
-Function :dox:`BamFileIn#readHeader` reads the header from the input SAM file and :dox:`BamFileOut#writeHeader` writes it to the BAM output file.
+Function :dox:`FormattedFileIn#readHeader` reads the header from the input SAM file and :dox:`FormattedFileOut#writeHeader` writes it to the BAM output file.
 
 Accessing the Records
 """""""""""""""""""""
 
-There are three use cases for reading or writing record-based files:
-
-#. read or write the file **record by record**;
-#. read or write a **batch of records**, e.g. 100k records at a time;
-#. read or write **all records** from or to the file.
-
-These use cases are supported respectively by the functions :dox:`BamFileIn#readRecord` and :dox:`BamFileIn#readRecords`, or :dox:`BamFileIn#writeRecord` and :dox:`BamFileIn#writeRecords`.
-
-In this example, we are going to read and write the files record by record.
-Again, to access each record, we need an object representing the format-specific record.
+Again, to access records, we need an object representing format-specific information.
 In this case, we use an object of type :dox:`BamAlignmentRecord`.
-Each call to :dox:`BamFileIn#readRecord` reads one record from the SAM input file and moves the :dox:`BamFileIn` forward.
-Each call to :dox:`BamFileOut#writeRecord` writes the record just read to the BAM output files.
-We check the end of the input file by calling :dox:`BamFileIn#atEnd`.
+Each call to :dox:`FormattedFileIn#readRecord` reads one record from the SAM input file and moves the :dox:`BamFileIn` forward.
+Each call to :dox:`FormattedFileOut#writeRecord` writes the record just read to the BAM output files.
+We check the end of the input file by calling :dox:`FormattedFile#atEnd`.
 
 .. includefrags:: demos/tutorial/base_io/example1.cpp
    :fragment: records
@@ -144,7 +135,7 @@ Error handling in SeqAn is implemented by means of exceptions.
 I/O Errors
 """"""""""
 
-All :dox:`FormattedFileIn#FormattedFileIn` and :dox:`FormattedFileOut#FormattedFileOut` constructors and functions throw exceptions of type :dox:`IOError` to signal *low-level* file I/O errors.
+All :dox:`FormattedFile#FormattedFile FormattedFileIn` and :dox:`FormattedFile#FormattedFile FormattedFileOut` constructors and functions throw exceptions of type :dox:`IOError` to signal *low-level* file I/O errors.
 Therefore, it is sufficient to catch these exceptions to handle I/O errors properly.
 
 There is only one exception to this rule.
@@ -194,13 +185,13 @@ Assignment 2
 Streams
 -------
 
-The :dox:`FormattedFileIn#FormattedFileIn` and :dox:`FormattedFileOut#FormattedFileOut constructors` accept not only filenames, but also standard C++ streams, or any other class implementing the :dox:`StreamConcept Stream` concept.
-For instance, you can pass `std::cin` to any :dox:`FormattedFileIn#FormattedFileIn constructor` and `std::cout` to any :dox:`FormattedFileOut#FormattedFileOut constructor`.
+The :dox:`FormattedFile#FormattedFile FormattedFileIn` and :dox:`FormattedFile#FormattedFile FormattedFileOut` constructors accept not only filenames, but also standard C++ streams, or any other class implementing the :dox:`StreamConcept Stream` concept.
+For instance, you can pass `std::cin` to any :dox:`FormattedFile#FormattedFile FormattedFileIn constructor` and `std::cout` to any :dox:`FormattedFile#FormattedFile FormattedFileOut constructor`.
 
 .. note::
 
     When writing to `std::cout`, classes of type :dox:`FormattedFileOut` cannot guess the file format from the filename extension.
-    Therefore, the file format has to be specified explicitly by providing a tag, e.g. :dox:`Sam` or :dox:`Bam`.
+    Therefore, the file format has to be specified explicitly by providing a tag, e.g. :dox:`FileFormats#Sam` or :dox:`FileFormats#Bam`.
 
 Assignment 3
 """"""""""""

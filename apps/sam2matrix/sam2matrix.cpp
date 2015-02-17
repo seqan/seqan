@@ -79,8 +79,8 @@ parseCommandLine(SamToGasicOptions& options, int argc, char const ** argv)
     seqan::ArgumentParser parser("sam2matrix");
     // Set short description, version, and date.
     setShortDescription(parser, "This program outputs for each read the ids of references it maps to.");
-    setVersion(parser, "0.1");
-    setDate(parser, "April 2014");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
     setCategory(parser, "Metagenomics");
 
     // Define usage line and long description.

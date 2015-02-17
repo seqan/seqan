@@ -1,5 +1,5 @@
-.. image:: https://readthedocs.org/projects/seqan/badge/?version=master
-   :target: https://seqan.readthedocs.org/en/master?badge=master
+.. image:: https://readthedocs.org/projects/seqan/badge/?version=develop
+   :target: https://seqan.readthedocs.org/en/develop?badge=develop
    :alt: Documentation Status
 
 SeqAn - The Library for Sequence Analysis
@@ -18,33 +18,20 @@ License
 The SeqAn library itself, the tests and demos are licensed under the very permissing 3-clause BSD License.
 The licenses for the applications themselves can be found in the LICENSE files.
 
-Supported Platforms
+Prerequisites
 -------------------
 
-* Visual C++ 8, 9, 10, 11
-* MinGW
-* LLVM >= 3.0
-* GCC >= 4.1
+The library is tested on the following compilers:
+  * GCC >= 4.7 (e.g. Debian stable/wheezy)
+  * Clang >= 3.3 (e.g. Xcode >= 5)
+  * Visual C++ 10 (2010), 11 (2012), 12 (2013)
 
-Prerequisites
--------------
+All operating systems supported by the respective compilers should work with SeqAn. We test on 32-bit and 64-bit Intel/AMD architectures.
 
-* Supported C++ compiler
-* CMake (http://cmake.org/)
+To build tests, demos, and official SeqAn applications you also need:
+  * CMake >= 2.8.2 (http://cmake.org/)
 
-For the Impatient
------------------
-
-Assuming that you have checked out the repository already, all prerequisites are installed and you are on Linux or Mac Os X.
-
-::
-
-    # mkdir build/Debug
-    # cd build/Debug
-    # cmake ../.. -DCMAKE_BUILD_TYPE=Debug
-    # make test_basic
-    # ./tests/basic/test_basic
-    ... the tests for module basic will run ...
+Some of the official applications might have additional requirements or work only on a subset of platforms.
 
 Documentation Resources
 -----------------------
@@ -53,7 +40,7 @@ Documentation Resources
 * `Manual <http://seqan.readthedocs.org/en/master>`_
 * `Tutorial <http://seqan.readthedocs.org/en/master/Tutorial.html>`_
 * `How-Tos <http://seqan.readthedocs.org/en/master/HowTo.html>`_
-* `API Documentation (stable) <http://docs.seqan.de/seqan/1.4.1/>`_
+* `API Documentation (stable) <http://docs.seqan.de/seqan/master/>`_
 
 
 Contact

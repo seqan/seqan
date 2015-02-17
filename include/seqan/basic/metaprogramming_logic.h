@@ -218,10 +218,10 @@ struct Eval<true> : True {};
  * Now, we can write the following code using Not.
  *
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type not
- */ 
+ */
 
 template <typename TBool1>
-struct Not : Not<typename TBool1::Type> {}; 
+struct Not : Not<typename TBool1::Type> {};
 
 template <>
 struct Not<False> : True {};
@@ -254,7 +254,7 @@ struct Not<True> : False {};
  * Now, we can write the following code using NotC.
  *
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type notc
- */ 
+ */
 
 template <bool B>
 struct NotC;
@@ -291,10 +291,10 @@ struct NotC<true> : False {};
  * Now, we can write the following code using Or.
  *
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type or
- */ 
+ */
 
 template <typename TBool1, typename TBool2>
-struct Or : Or<typename TBool1::Type, typename TBool2::Type> {}; 
+struct Or : Or<typename TBool1::Type, typename TBool2::Type> {};
 
 template <>
 struct Or<False, False> : False {};
@@ -373,10 +373,10 @@ struct OrC<true, true> : True {};
  * Now, we can write the following code using And.
  *
  * @snippet demos/basic/metaprogramming_logic.cpp print bool type and
- */ 
+ */
 
 template <typename TBool1, typename TBool2>
-struct And : And<typename TBool1::Type, typename TBool2::Type> {}; 
+struct And : And<typename TBool1::Type, typename TBool2::Type> {};
 
 template <>
 struct And<False, False> : False {};

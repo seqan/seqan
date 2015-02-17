@@ -162,19 +162,19 @@ public:
                                                          (IsSameType<TDirection, Input>::VALUE)? std::ios_base::in: std::ios_base::out);
 
                 // if seek doesn't work manually skip characters (when reading)
-				if (res == typename TTraits::pos_type(typename TTraits::off_type(-1)))
-				{
-					if (IsSameType<TDirection, Input>::VALUE)
-					{
-						for (; ofs != 0; --ofs)
-							this->sbumpc();
-					}
-					if (IsSameType<TDirection, Output>::VALUE)
-					{
-						for (; ofs != 0; --ofs)
-							this->sputc('\0');
-					}
-				}
+                if (res == typename TTraits::pos_type(typename TTraits::off_type(-1)))
+                {
+                    if (IsSameType<TDirection, Input>::VALUE)
+                    {
+                        for (; ofs != 0; --ofs)
+                            this->sbumpc();
+                    }
+                    if (IsSameType<TDirection, Output>::VALUE)
+                    {
+                        for (; ofs != 0; --ofs)
+                            this->sputc('\0');
+                    }
+                }
                 return;
             }
         }

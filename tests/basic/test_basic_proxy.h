@@ -44,41 +44,41 @@ SEQAN_DEFINE_TEST(test_basic_proxy_iterator)
 {
     using namespace seqan;
 
-	int i1[] = {10, 20, 30};
-	int * pi1 = i1;
-	Proxy<IteratorProxy<int *> > px(pi1);
-	SEQAN_ASSERT_EQ(px, 10);
+    int i1[] = {10, 20, 30};
+    int * pi1 = i1;
+    Proxy<IteratorProxy<int *> > px(pi1);
+    SEQAN_ASSERT_EQ(px, 10);
 
 //assign
-	px = 11;
-	SEQAN_ASSERT_EQ(i1[0], 11);
+    px = 11;
+    SEQAN_ASSERT_EQ(i1[0], 11);
 
-	int i2 = 12;
-	px = i2;
-	SEQAN_ASSERT_EQ(i1[0], 12);
+    int i2 = 12;
+    px = i2;
+    SEQAN_ASSERT_EQ(i1[0], 12);
 
-	int * pi2 = i1 + 1;
-	Proxy<IteratorProxy<int *> > px2(pi2);
-	px = px2;
-	SEQAN_ASSERT_EQ(i1[0], 20);
-	SEQAN_ASSERT_EQ(px, 20);
+    int * pi2 = i1 + 1;
+    Proxy<IteratorProxy<int *> > px2(pi2);
+    px = px2;
+    SEQAN_ASSERT_EQ(i1[0], 20);
+    SEQAN_ASSERT_EQ(px, 20);
 
 //copy ctor
-	Proxy<IteratorProxy<int *> > px3(px2);
-	SEQAN_ASSERT_EQ(px3, 20);
+    Proxy<IteratorProxy<int *> > px3(px2);
+    SEQAN_ASSERT_EQ(px3, 20);
 
 
 //assign
-	char s1[100] = "";
-	char * it1 = s1;
-	Proxy<IteratorProxy<char *> > px4(it1);
+    char s1[100] = "";
+    char * it1 = s1;
+    Proxy<IteratorProxy<char *> > px4(it1);
 
-	assign(px4, 'X');
-	SEQAN_ASSERT_EQ(px4, 'X');
+    assign(px4, 'X');
+    SEQAN_ASSERT_EQ(px4, 'X');
 
-	char c1 = 'a';
-	assign(px4, c1);
-	SEQAN_ASSERT_EQ(px4, 'a');
+    char c1 = 'a';
+    assign(px4, c1);
+    SEQAN_ASSERT_EQ(px4, 'a');
 
    SEQAN_ASSERT_FAIL("Move me to other tests in this header!");
 }

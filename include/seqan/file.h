@@ -70,7 +70,7 @@
 
 #include <seqan/file/file_interface.h>
 #include <seqan/file/file_base.h>
-#include <seqan/system.h>	// async file (default file type of File<>)
+#include <seqan/system.h>    // async file (default file type of File<>)
 
 // ===========================================================================
 // External Strings.

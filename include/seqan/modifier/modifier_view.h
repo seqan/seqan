@@ -88,7 +88,7 @@ struct ModView {};
 template <typename TFunctor>
 struct ModViewCargo
 {
-    TFunctor	func;
+    TFunctor    func;
 
     ModViewCargo() : func()
     {}
@@ -237,7 +237,7 @@ public:
     {
         ignoreUnusedVariableWarning(dummy);
     }
-    
+
     // Constructor for innermost type; hand down to _host which is a ModifiedString itself.  Non-const variant with
     // functor.
     template <typename THost_>
@@ -263,18 +263,18 @@ public:
         ignoreUnusedVariableWarning(dummy);
         cargo(*this).func = functor;
     }
-    
+
 #endif
 
     template <typename TPos>
-    inline typename Reference<ModifiedString>::Type 
+    inline typename Reference<ModifiedString>::Type
     operator[](TPos pos)
     {
         return value(*this, pos);
     }
 
     template <typename TPos>
-    inline typename Reference<ModifiedString const>::Type 
+    inline typename Reference<ModifiedString const>::Type
     operator[](TPos pos) const
     {
         return value(*this, pos);
@@ -292,7 +292,7 @@ public:
 template <typename THost, typename TFunctor>
 struct Cargo<ModifiedIterator<THost, ModView<TFunctor> > >
 {
-    typedef ModViewCargo<TFunctor>	Type;
+    typedef ModViewCargo<TFunctor>    Type;
 };
 
 // --------------------------------------------------------------------------
@@ -302,7 +302,7 @@ struct Cargo<ModifiedIterator<THost, ModView<TFunctor> > >
 template <typename THost, typename TFunctor>
 struct Value<ModifiedIterator<THost, ModView<TFunctor> > >
 {
-    typedef typename TFunctor::result_type			TResult_;
+    typedef typename TFunctor::result_type            TResult_;
     typedef typename RemoveConst_<TResult_>::Type   Type;
 };
 
@@ -331,7 +331,7 @@ struct Reference<ModifiedIterator<THost, ModView<TFunctor> > >
 template <typename THost, typename TFunctor>
 struct Cargo< ModifiedString<THost, ModView<TFunctor> > >
 {
-    typedef ModViewCargo<TFunctor>	Type;
+    typedef ModViewCargo<TFunctor>    Type;
 };
 
 // ==========================================================================
@@ -343,7 +343,7 @@ struct Cargo< ModifiedString<THost, ModView<TFunctor> > >
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TFunctor>
-inline typename Reference<ModifiedIterator<THost, ModView<TFunctor> > >::Type 
+inline typename Reference<ModifiedIterator<THost, ModView<TFunctor> > >::Type
 value(ModifiedIterator<THost, ModView<TFunctor> > & me)
 {
     me.tmp_value = cargo(me).func(getValue(host(me)));
@@ -351,7 +351,7 @@ value(ModifiedIterator<THost, ModView<TFunctor> > & me)
 }
 
 template <typename THost, typename TFunctor>
-inline typename Reference<ModifiedIterator<THost, ModView<TFunctor> > const>::Type 
+inline typename Reference<ModifiedIterator<THost, ModView<TFunctor> > const>::Type
 value(ModifiedIterator<THost, ModView<TFunctor> > const & me)
 {
     me.tmp_value = cargo(me).func(getValue(host(me)));
@@ -363,14 +363,14 @@ value(ModifiedIterator<THost, ModView<TFunctor> > const & me)
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TFunctor>
-inline typename GetValue<ModifiedIterator<THost, ModView<TFunctor> > >::Type 
+inline typename GetValue<ModifiedIterator<THost, ModView<TFunctor> > >::Type
 getValue(ModifiedIterator<THost, ModView<TFunctor> > & me)
 {
     return cargo(me).func(getValue(host(me)));
 }
 
 template <typename THost, typename TFunctor>
-inline typename GetValue<ModifiedIterator<THost, ModView<TFunctor> > const>::Type 
+inline typename GetValue<ModifiedIterator<THost, ModView<TFunctor> > const>::Type
 getValue(ModifiedIterator<THost, ModView<TFunctor> > const & me)
 {
     return cargo(me).func(getValue(host(me)));
@@ -381,7 +381,7 @@ getValue(ModifiedIterator<THost, ModView<TFunctor> > const & me)
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TFunctor, typename TPos>
-inline typename Reference<ModifiedString<THost, ModView<TFunctor> > >::Type 
+inline typename Reference<ModifiedString<THost, ModView<TFunctor> > >::Type
 value(ModifiedString<THost, ModView<TFunctor> > & me, TPos pos)
 {
     me.tmp_value = cargo(me).func(getValue(host(me), pos));
@@ -389,7 +389,7 @@ value(ModifiedString<THost, ModView<TFunctor> > & me, TPos pos)
 }
 
 template <typename THost, typename TFunctor, typename TPos>
-inline typename Reference<ModifiedString<THost, ModView<TFunctor> > const>::Type 
+inline typename Reference<ModifiedString<THost, ModView<TFunctor> > const>::Type
 value(ModifiedString<THost, ModView<TFunctor> > const & me, TPos pos)
 {
     me.tmp_value = cargo(me).func(getValue(host(me), pos));
@@ -401,14 +401,14 @@ value(ModifiedString<THost, ModView<TFunctor> > const & me, TPos pos)
 // --------------------------------------------------------------------------
 
 template <typename THost, typename TFunctor, typename TPos>
-inline typename GetValue<ModifiedString<THost, ModView<TFunctor> > >::Type 
+inline typename GetValue<ModifiedString<THost, ModView<TFunctor> > >::Type
 getValue(ModifiedString<THost, ModView<TFunctor> > & me, TPos pos)
 {
     return cargo(me).func(getValue(host(me), pos));
 }
 
 template <typename THost, typename TFunctor, typename TPos>
-inline typename GetValue<ModifiedString<THost, ModView<TFunctor> > const>::Type 
+inline typename GetValue<ModifiedString<THost, ModView<TFunctor> > const>::Type
 getValue(ModifiedString<THost, ModView<TFunctor> > const & me, TPos pos)
 {
     return cargo(me).func(getValue(host(me), pos));
@@ -434,21 +434,21 @@ inline void
 convert(TSequence & sequence, TFunctor const &F)
 {
 #if defined (_OPENMP) && defined (SEQAN_PARALLEL)
-	// OpenMP does not support for loop with iterators. Therefore use index variables.
-	typedef typename Position<TSequence>::Type	TPos;
-	typedef typename MakeSigned_<TPos>::Type	TSignedPos;
+    // OpenMP does not support for loop with iterators. Therefore use index variables.
+    typedef typename Position<TSequence>::Type    TPos;
+    typedef typename MakeSigned_<TPos>::Type    TSignedPos;
 
-	#pragma omp parallel for if(length(sequence) > 1000000)
-	for(TSignedPos p = 0; p < (TSignedPos)length(sequence); ++p)
-		sequence[p] = F(sequence[p]);
-	
+    #pragma omp parallel for if(length(sequence) > 1000000)
+    for(TSignedPos p = 0; p < (TSignedPos)length(sequence); ++p)
+        sequence[p] = F(sequence[p]);
+
 #else
-	typedef typename Iterator<TSequence, Standard>::Type	TIter;
+    typedef typename Iterator<TSequence, Standard>::Type    TIter;
 
-	TIter it = begin(sequence, Standard());
-	TIter itEnd = end(sequence, Standard());
-	for(; it != itEnd; ++it)
-		*it = F(*it);
+    TIter it = begin(sequence, Standard());
+    TIter itEnd = end(sequence, Standard());
+    for(; it != itEnd; ++it)
+        *it = F(*it);
 #endif
 }
 
@@ -457,21 +457,21 @@ inline void
 convert(TSequence const & sequence, TFunctor const &F)
 {
 #if defined (_OPENMP) && defined (SEQAN_PARALLEL)
-	// OpenMP does not support for loop with iterators. Therefore use index variables.
-	typedef typename Position<TSequence>::Type	TPos;
-	typedef typename MakeSigned_<TPos>::Type	TSignedPos;
+    // OpenMP does not support for loop with iterators. Therefore use index variables.
+    typedef typename Position<TSequence>::Type    TPos;
+    typedef typename MakeSigned_<TPos>::Type    TSignedPos;
 
-	#pragma omp parallel for if(length(sequence) > 1000000)
-	for(TSignedPos p = 0; p < (TSignedPos)length(sequence); ++p)
-		sequence[p] = F(sequence[p]);
-	
+    #pragma omp parallel for if(length(sequence) > 1000000)
+    for(TSignedPos p = 0; p < (TSignedPos)length(sequence); ++p)
+        sequence[p] = F(sequence[p]);
+
 #else
-	typedef typename Iterator<TSequence const, Standard>::Type	TIter;
+    typedef typename Iterator<TSequence const, Standard>::Type    TIter;
 
-	TIter it = begin(sequence, Standard());
-	TIter itEnd = end(sequence, Standard());
-	for(; it != itEnd; ++it)
-		*it = F(*it);
+    TIter it = begin(sequence, Standard());
+    TIter itEnd = end(sequence, Standard());
+    for(; it != itEnd; ++it)
+        *it = F(*it);
 #endif
 }
 

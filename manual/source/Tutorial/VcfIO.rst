@@ -39,7 +39,7 @@ For simple variants such as SNPs and small indels, each record corresponds to a 
 More complex variants can be stored in multiple records (see the VCF standard on "breakends" for more information).
 
 The ``vcf_io`` module of SeqAn allows to read and write VCF files record-wise.
-Since the structure of the fields in the VCF format often is very complex and the format undergoes changes in this respect, SeqAn only offers basic parsing functionality: The position is stored as a 0-based integer, reference names are stored in a reference name store (similar as in the :ref:`tutorial-basic-sam-bam-io` Tutorial), and the quality is stored as a ``float`` value.
+Since the structure of the fields in the VCF format often is very complex and the format undergoes changes in this respect, SeqAn only offers basic parsing functionality: The position is stored as a 0-based integer, reference names are stored in a reference name store (similar as in the :ref:`tutorial-sam-bam-io` Tutorial), and the quality is stored as a ``float`` value.
 
 The remaining fields have to be parsed from and composed as strings in the user's application.
 
@@ -176,7 +176,7 @@ Accessing the Header
 --------------------
 
 Sequence information from the VCF header is stored in the :dox:`VcfIOContext`.
-The :dox:`VcfIOContext` of a :dox:`VcfFileIn` can be accessed through the function :dox:`VcfFileIn#context`.
+The :dox:`VcfIOContext` of a :dox:`VcfFileIn` can be accessed through the function :dox:`FormattedFile#context`.
 The VCF sequence informations can be in turn accessed through functions :dox:`VcfIOContext#contigNames` and :dox:`VcfIOContext#sampleNames`.
 All remaining VCF header information is stored in the class :dox:`VcfHeader`.
 
@@ -237,7 +237,7 @@ Assignment 2
 
    Hints
      The reference sequence information from the VCF header is stored inside the :dox:`VcfIOContext` of its :dox:`VcfFileIn`.
-     You can obtain the number of contigs from the :dox:`StringSet#length` of the :dox:`VcfIOContext#contigNames`.
+     You can obtain the number of contigs from the :dox:`ContainerConcept#length` of the :dox:`VcfIOContext#contigNames`.
 
    Solution
      .. container:: foldable

@@ -56,7 +56,7 @@ namespace seqan {
  *
  * @see GffRecord
  */
- 
+
 typedef FormattedFile<Gff, Input>   GffFileIn;
 
 // ----------------------------------------------------------------------------

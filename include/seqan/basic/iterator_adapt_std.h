@@ -146,7 +146,7 @@ public:
     // ------------------------------------------------------------------------
     // Pointer Operators;  Have to be defined within class.
     // ------------------------------------------------------------------------
-    
+
     typename Value<Iter>::Type *
     operator->()
     {
@@ -286,14 +286,14 @@ hostIterator(Iter<TContainer, StdIteratorAdaptor> const & me)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer>
-inline typename Reference<Iter<TContainer, StdIteratorAdaptor> >::Type 
+inline typename Reference<Iter<TContainer, StdIteratorAdaptor> >::Type
 value(Iter<TContainer, StdIteratorAdaptor> & me)
 {
     return *(me.data_iterator);
 }
 
 template <typename TContainer>
-inline typename Reference<Iter<TContainer, StdIteratorAdaptor> const>::Type 
+inline typename Reference<Iter<TContainer, StdIteratorAdaptor> const>::Type
 value(Iter<TContainer, StdIteratorAdaptor> const & me)
 {
     return *(me.data_iterator);
@@ -304,14 +304,14 @@ value(Iter<TContainer, StdIteratorAdaptor> const & me)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer>
-inline typename Reference<Iter<TContainer, StdIteratorAdaptor> >::Type 
+inline typename Reference<Iter<TContainer, StdIteratorAdaptor> >::Type
 operator*(Iter<TContainer, StdIteratorAdaptor> & me)
 {
     return *(me.data_iterator);
 }
 
 template <typename TContainer>
-inline typename Reference<Iter<TContainer, StdIteratorAdaptor> const>::Type 
+inline typename Reference<Iter<TContainer, StdIteratorAdaptor> const>::Type
 operator*(Iter<TContainer, StdIteratorAdaptor> const & me)
 {
     return *(me.data_iterator);
@@ -322,7 +322,7 @@ operator*(Iter<TContainer, StdIteratorAdaptor> const & me)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TValue>
-inline void 
+inline void
 assignValue(Iter<TContainer, StdIteratorAdaptor> & me,
             TValue & val)
 {
@@ -330,7 +330,7 @@ assignValue(Iter<TContainer, StdIteratorAdaptor> & me,
 }
 
 template <typename TContainer, typename TValue>
-inline void 
+inline void
 assignValue(Iter<TContainer, StdIteratorAdaptor> & me,
             TValue const & val)
 {
@@ -342,14 +342,14 @@ assignValue(Iter<TContainer, StdIteratorAdaptor> & me,
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TValue>
-inline void 
+inline void
 moveValue(Iter<TContainer, StdIteratorAdaptor> & me,
           TValue & val)
 {
     move(*(me.data_iterator), val);
 }
 template <typename TContainer, typename TValue>
-inline void 
+inline void
 moveValue(Iter<TContainer, StdIteratorAdaptor> & me,
           TValue const & val)
 {
@@ -361,7 +361,7 @@ moveValue(Iter<TContainer, StdIteratorAdaptor> & me,
 // ----------------------------------------------------------------------------
 
 template <typename TContainer>
-inline bool 
+inline bool
 operator==(Iter<TContainer, StdIteratorAdaptor> const & left,
            Iter<TContainer, StdIteratorAdaptor> const & right)
 {
@@ -374,7 +374,7 @@ operator==(Iter<TContainer, StdIteratorAdaptor> const & left,
 // ----------------------------------------------------------------------------
 
 template <typename TContainer>
-inline bool 
+inline bool
 operator!=(Iter<TContainer, StdIteratorAdaptor> const & left,
            Iter<TContainer, StdIteratorAdaptor> const & right)
 {
@@ -387,7 +387,7 @@ operator!=(Iter<TContainer, StdIteratorAdaptor> const & left,
 // ----------------------------------------------------------------------------
 
 template <typename TContainer>
-inline bool 
+inline bool
 operator<(Iter<TContainer, StdIteratorAdaptor> const & left,
           Iter<TContainer, StdIteratorAdaptor> const & right)
 {
@@ -400,7 +400,7 @@ operator<(Iter<TContainer, StdIteratorAdaptor> const & left,
 // ----------------------------------------------------------------------------
 
 template <typename TContainer>
-inline bool 
+inline bool
 operator>(Iter<TContainer, StdIteratorAdaptor> const & left,
           Iter<TContainer, StdIteratorAdaptor> const & right)
 {
@@ -413,7 +413,7 @@ operator>(Iter<TContainer, StdIteratorAdaptor> const & left,
 // ----------------------------------------------------------------------------
 
 template <typename TContainer>
-inline bool 
+inline bool
 operator<=(Iter<TContainer, StdIteratorAdaptor> const & left,
            Iter<TContainer, StdIteratorAdaptor> const & right)
 {
@@ -425,7 +425,7 @@ operator<=(Iter<TContainer, StdIteratorAdaptor> const & left,
 // ----------------------------------------------------------------------------
 
 template <typename TContainer>
-inline bool 
+inline bool
 operator>=(Iter<TContainer, StdIteratorAdaptor> const & left,
            Iter<TContainer, StdIteratorAdaptor> const & right)
 {
@@ -462,7 +462,7 @@ goPrevious(Iter<TContainer, StdIteratorAdaptor> & me)
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TIntegral>
-inline Iter<TContainer, StdIteratorAdaptor>  
+inline Iter<TContainer, StdIteratorAdaptor>
 operator+(Iter<TContainer, StdIteratorAdaptor> const & left,
           TIntegral right)
 {
@@ -472,7 +472,7 @@ operator+(Iter<TContainer, StdIteratorAdaptor> const & left,
 
 // for <anonymous enum> types
 template <typename TContainer>
-inline Iter<TContainer, StdIteratorAdaptor>  
+inline Iter<TContainer, StdIteratorAdaptor>
 operator+(Iter<TContainer, StdIteratorAdaptor> const & left,
           int right)
 {
@@ -481,7 +481,7 @@ operator+(Iter<TContainer, StdIteratorAdaptor> const & left,
 }
 
 template <typename TContainer, typename TIntegral>
-inline Iter<TContainer, StdIteratorAdaptor>  
+inline Iter<TContainer, StdIteratorAdaptor>
 operator+(TIntegral left,
           Iter<TContainer, StdIteratorAdaptor> const & right)
 {
@@ -491,7 +491,7 @@ operator+(TIntegral left,
 
 // for <anonymous enum> types
 template <typename TContainer>
-inline Iter<TContainer, StdIteratorAdaptor>  
+inline Iter<TContainer, StdIteratorAdaptor>
 operator+(int left,
           Iter<TContainer, StdIteratorAdaptor> const & right)
 {
@@ -529,7 +529,7 @@ operator+=(Iter<TContainer, StdIteratorAdaptor> & left,
 // ----------------------------------------------------------------------------
 
 template <typename TContainer, typename TIntegral>
-inline Iter<TContainer, StdIteratorAdaptor>  
+inline Iter<TContainer, StdIteratorAdaptor>
 operator-(Iter<TContainer, StdIteratorAdaptor> const & left,
           TIntegral right)
 {
@@ -539,7 +539,7 @@ operator-(Iter<TContainer, StdIteratorAdaptor> const & left,
 
 // for <anonymous enum> types
 template <typename TContainer>
-inline Iter<TContainer, StdIteratorAdaptor>  
+inline Iter<TContainer, StdIteratorAdaptor>
 operator-(Iter<TContainer, StdIteratorAdaptor> const & left,
           int right)
 {
@@ -548,7 +548,7 @@ SEQAN_CHECKPOINT
 }
 
 template <typename TContainer>
-inline typename Difference<Iter<TContainer, StdIteratorAdaptor> >::Type  
+inline typename Difference<Iter<TContainer, StdIteratorAdaptor> >::Type
 operator-(Iter<TContainer, StdIteratorAdaptor> const & left,
           Iter<TContainer, StdIteratorAdaptor> const & right)
 {

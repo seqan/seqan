@@ -46,6 +46,13 @@ namespace seqan {
 // Tag Vcf
 // ----------------------------------------------------------------------------
 
+/*!
+ * @tag FileFormats#Vcf
+ * @headerfile <seqan/vcf_io.h>
+ * @brief Variant callinf format file.
+ *
+ * @signature typedef Tag<Vcf_> Vcf;
+ */
 struct Vcf_;
 typedef Tag<Vcf_> Vcf;
 
@@ -56,11 +63,6 @@ typedef Tag<Vcf_> Vcf;
 // ----------------------------------------------------------------------------
 // Function readRecord()                                            [VcfHeader]
 // ----------------------------------------------------------------------------
-
-/*!
- * @defgroup VcfIO VCF I/O
- * @brief Routines for VCF I/O.
- */
 
 inline void
 _parseVcfContig(CharString & chromName, CharString const & headerValue)

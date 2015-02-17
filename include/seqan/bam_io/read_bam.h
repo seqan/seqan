@@ -44,15 +44,10 @@ namespace seqan {
 // ============================================================================
 
 /*!
- * @defgroup SamBamIO SAM/BAM I/O
- * @brief Tags for identifying SAM/BAM format.
- */
-
-/*!
- * @tag SamBamIO#Bam
+ * @tag FileFormats#Bam
  * @brief Identify the BAM format.
  *
- * @tag SamBamIO#Sam
+ * @tag FileFormats#Sam
  * @brief Identify the SAM format.
  */
 
@@ -63,7 +58,7 @@ typedef Tag<Bam_> Bam;
 template <typename T>
 struct FileExtensions<Bam, T>
 {
-    static char const * VALUE[1];	// default is one extension
+    static char const * VALUE[1];    // default is one extension
 };
 
 template <typename T>
@@ -183,7 +178,7 @@ _readBamRecord(TBuffer & rawRecord, TForwardIter & iter, Bam)
 {
     __int32 recordLen = 0;
     readRawPod(recordLen, iter);
-    
+
     // fail, if we read "BAM\1" (did you miss to call readRecord(header, bamFile) first?)
     if (recordLen == 0x014D4142)
         SEQAN_THROW(ParseError("Unexpected BAM header encountered."));

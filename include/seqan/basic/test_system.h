@@ -158,7 +158,7 @@ public:
                 (*it)->instance->runTest();
                 (*it)->instance->tearDown();
             } catch(seqan::ClassTest::AssertionFailedException e) {
-                /* Swallow exception, go on with next test. */       
+                /* Swallow exception, go on with next test. */
                 (void) e;  /* Get rid of unused variable warning. */
             } catch (seqan::Exception const & e) {
                 std::cerr << "Unexpected exception of type "

@@ -62,8 +62,8 @@ int main(int argc, const char * argv[])
 
     // Set short description, version, date.
     setShortDescription(parser, "Alignment free sequence comparison");
-    setVersion(parser, "1.1");
-    setDate(parser, "January 5, 2012");
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
+    setDate(parser, SEQAN_DATE);
     setCategory(parser, "Sequence Comparison");
 
     // Usage line and description.

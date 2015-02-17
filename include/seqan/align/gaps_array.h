@@ -181,11 +181,11 @@ public:
     // Array Subscript Operator
     // -----------------------------------------------------------------------
 
-	inline TValue_
-	operator[](TPosition_ clippedViewPos) const
-	{
+    inline TValue_
+    operator[](TPosition_ clippedViewPos) const
+    {
         return value(*this, clippedViewPos);
-	}
+    }
 };
 
 // ----------------------------------------------------------------------------

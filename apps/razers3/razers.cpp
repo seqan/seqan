@@ -302,13 +302,8 @@ void setUpArgumentParser(ArgumentParser & parser, RazerSOptions<> & options, Par
     setShortDescription(parser, "Faster, fully sensitive read mapping");
     setCategory(parser, "Read Mapping");
     options.version = "3.3";
-#ifdef SEQAN_REVISION
-    options.version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
-#endif
-#ifdef SEQAN_DATE
+	setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
-	setVersion(parser, options.version);
 
     // Need genome and reads (hg18.fa reads.fq)
     addArgument(parser, ArgParseArgument(ArgParseArgument::INPUT_FILE));

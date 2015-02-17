@@ -191,9 +191,10 @@ macro (seqan_build_system_init)
 
     if (("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE") OR
         ("${SEQAN_BUILD_SYSTEM}" STREQUAL "SEQAN_RELEASE_LIBRARY"))
-        # Install SeqAn README.rst and LICENSE files.
+        # Install SeqAn LICENSE, README.rst, CHANGELOG.rst files.
         install (FILES LICENSE
                        README.rst
+                       CHANGELOG.rst
                  DESTINATION share/doc/seqan)
     endif ()
 
@@ -466,30 +467,23 @@ macro (seqan_get_version)
   string(REGEX REPLACE ".*SEQAN_VERSION_MINOR:([0-9a-zA-Z]+).*" "\\1" SEQAN_VERSION_MINOR ${_RUN_OUTPUT})
   string(REGEX REPLACE ".*SEQAN_VERSION_PATCH:([0-9a-zA-Z]+).*" "\\1" SEQAN_VERSION_PATCH ${_RUN_OUTPUT})
   string(REGEX REPLACE ".*SEQAN_VERSION_PRE_RELEASE:([0-9a-zA-Z]+).*" "\\1" SEQAN_VERSION_PRE_RELEASE ${_RUN_OUTPUT})
-    set(SEQAN_VERSION "${SEQAN_VERSION_MAJOR}.${SEQAN_VERSION_MINOR}.${SEQAN_VERSION_PATCH}")
-  if (SEQAN_VERSION_PRE_RELEASE STREQUAL 1)
-    set(SEQAN_VERSION "pre${SEQAN_VERSION}")
-  endif (SEQAN_VERSION_PRE_RELEASE STREQUAL 1)
+  set(SEQAN_VERSION "${SEQAN_VERSION_MAJOR}.${SEQAN_VERSION_MINOR}.${SEQAN_VERSION_PATCH}")
+#  if (SEQAN_VERSION_PRE_RELEASE STREQUAL 1)
+#    set(SEQAN_VERSION "pre${SEQAN_VERSION}")
+#  endif (SEQAN_VERSION_PRE_RELEASE STREQUAL 1)
 endmacro (seqan_get_version)
 
 # ---------------------------------------------------------------------------
 # Function seqan_get_repository_info()
 #
-# Sets the variables SEQAN_DATE and SEQAN_REVISION determined from the git or
-# svn repository.
+# Sets the variables SEQAN_DATE and SEQAN_REVISION determined from git.
 # ---------------------------------------------------------------------------
 
 macro (seqan_get_repository_info)
-  set (_SEQAN_SVN_DIR "${CMAKE_SOURCE_DIR}/.svn")
   set (_SEQAN_GIT_DIR "${CMAKE_SOURCE_DIR}/.git")
 
-  # Get SVN or Git information.
-  if (EXISTS ${_SEQAN_SVN_DIR})
-    find_package (Subversion QUIET)
-    if (Subversion_FOUND)
-      Subversion_WC_INFO (${CMAKE_SOURCE_DIR} _SEQAN)
-    endif ()
-  elseif (EXISTS ${_SEQAN_GIT_DIR})
+  # Get Git information.
+  if (EXISTS ${_SEQAN_GIT_DIR})
     find_package (GitInfo QUIET)
     if (GIT_FOUND)
       GIT_WC_INFO (${CMAKE_SOURCE_DIR} _SEQAN)
@@ -511,6 +505,7 @@ macro (seqan_get_repository_info)
     set (SEQAN_REVISION "${_SEQAN_WC_REVISION}" CACHE INTERNAL "SeqAn repository revision.")
     message (STATUS "  Determined repository revision is ${SEQAN_REVISION}")
    else ()
+    set (SEQAN_REVISION "tarball" CACHE INTERNAL "SeqAn repository revision.")
     message (STATUS "  Repository revision not determined.")
   endif ()
 endmacro (seqan_get_repository_info)

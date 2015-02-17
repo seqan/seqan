@@ -100,8 +100,8 @@ Design & Layout Conventions
        (``:dox:`AllocString```)
      * :dox:`AllocString Alloc String`
        (``:dox:`AllocString Alloc String```)
-     * :dox:`SequenceConcept`
-       (``:dox:`SequenceConcept```)
+     * :dox:`StringConcept`
+       (``:dox:`StringConcept```)
 
 Structure
 ---------

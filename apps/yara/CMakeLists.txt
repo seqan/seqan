@@ -52,6 +52,8 @@ endif (NOT SEQAN_HAS_BZIP2)
 # App-Level Configuration
 # ----------------------------------------------------------------------------
 
+set (SEQAN_APP_VERSION "0.9.3")
+
 option (YARA_LARGE_CONTIGS "Set to ON to enable support for more than 32k contigs or contigs longer than 4Gbp." OFF)
 if (YARA_LARGE_CONTIGS)
   add_definitions (-DYARA_LARGE_CONTIGS=1)
@@ -74,6 +76,18 @@ if (YARA_ARCH_NATIVE)
 endif (YARA_ARCH_NATIVE)
 
 # ----------------------------------------------------------------------------
+# Disable Compiler Warnings
+# ----------------------------------------------------------------------------
+
+# Disables warning about conversion from 64 bit to 32 bit integrals.
+# Note that there is a runtime exception thrown if the type is not sufficient.
+# Unfortunately the VC does not detect it.
+if (MSVC)
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /wd4244")  # When compiling on 32 bit windows.
+    set (SEQAN_CXX_FLAGS "${SEQAN_CXX_FLAGS} /wd4267")  # When compiling on 64 bit windows.
+endif (MSVC)
+
+# ----------------------------------------------------------------------------
 # Build Setup
 # ----------------------------------------------------------------------------
 
@@ -86,6 +100,7 @@ add_definitions (${SEQAN_DEFINITIONS})
 # Add definitions set by the build system.
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
 add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
+add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS} ${CXX11_CXX_FLAGS}")
@@ -148,7 +163,7 @@ install (TARGETS yara_indexer yara_mapper
 
 # Install non-binary files for the package to "." for app builds and
 # ${PREFIX}/share/doc/yara for SeqAn release builds.
-install (FILES LICENSE README
+install (FILES LICENSE README.rst
          DESTINATION ${SEQAN_PREFIX_SHARE_DOC})
 
 # ----------------------------------------------------------------------------
@@ -174,6 +189,7 @@ if (SEQAN_BUILD_SYSTEM STREQUAL "APP:yara")
   set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Yara - Yet Another Read Aligner")
   set (CPACK_DEBIAN_PACKAGE_MAINTAINER "Enrico Siragusa <enrico.siragusa@fu-berlin.de>")
   set (CPACK_PACKAGE_VENDOR "SeqAn Team, FU Berlin")
+  set (CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.rst")
 
   seqan_configure_cpack_app (yara "yara")
 endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:yara")

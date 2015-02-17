@@ -224,7 +224,7 @@ The following two figures give an example in which order the tree nodes are visi
 
 .. _figure-stree-postorder:
 
-.. figure:: streePreorder.png
+.. figure:: streePostorder.png
    :align: right
 
    Postorder DFS
@@ -303,7 +303,7 @@ Assignment 4
      .. container:: foldable
 
 	First we have to create a :dox:`StringSet` of :dox:`CharString` (shortcut for ``String<char>``) and append the 3 strings to it.
-	This could also be done by using :dox:`SequenceConcept#resize` and then assigning the members with ``operator[]``.
+	This could also be done by using :dox:`StringConcept#resize` and then assigning the members with ``operator[]``.
 	The first template argument of the index class has to be adapted and is now a StringSet.
 
 	.. includefrags:: demos/tutorial/index/index_assignment1.cpp

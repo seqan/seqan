@@ -20,77 +20,63 @@ versioning applications and the whole project works.
 Repository Structure and Versioning
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The SVN repository follows the classical structure with ``/trunk``,
-``/branches``, ``/tags`` directories. Below the ``trunk``, project is
-separated into the ``core`` and ``extras`` part. Each of these parts
-contains apps and library modules as well as tests and demos for the
-library modules.
+The SeqAn library including all applications, demos and documentation are hosted under the repository https://github.com/seqan/seqan.
+For a more detailed view over the repository structure please read this :ref:`document <infrastructure-repository-structure>`.
+
+The SeqAn workflow is a mix between the **git-workflow** and the **forking-workflow** as described :ref:`here <infrastructure-seqan-git-workflow>`.
+Please read the document and all linked sources carefully before you start developing tools and modules for SeqAn.
 
 Note that there is no separation between apps and the library.
+This means that all apps are released together with a new **library release** and are updated along with the chaneges in the ``develop`` branch.
+A **library release** is achieved by tagging the corresponding commit to the ``master`` with the new version number, e.g. ``seqan-v2.0.0`` as described in the git-workflow.
 
-When performing a **library release**, the ``/trunk`` directory is
-copied to ``/tags`` with a name like ``seqan-release-1.4``. Note that
-this creates a tag for both the library and the apps. When a bug is
-found then the tag has to be copied to ``/branches`` where bugs can be
-fixed. When the version has been corrected, it can be tagged again.
+Independently of this, an **app release** can be performed by tagging the new version with an increased version number, e.g. as ``yara-v0.9.0`` for the app Yara in version 0.9.0.
+The tagged commit can either point to the ``master`` or to the ``develop`` branch, depending where it was applied.
 
-Independently of this, an **app release** is performed by copying the
-``/trunk`` directory to ``/branches`` if stabilization is required or
-directly tagged, e.g. as ``/tags/masai-0.6.0`` for the app Masai in
-version 0.6.0.
-
-Note that tags are final and a new tag has to be created if any code is
-to be changed.
+Note that tags are final and a new tag has to be created if any code is to be changed.
 
 User Perspective
 ~~~~~~~~~~~~~~~~
 
-The user can checkout ``/trunk`` or a copy thereof (e.g.
-``/tags/masai-0.7.0`` or ``/branches/seqan-release-1.4``) to his local
-computer. The user could then proceed as the developer (see below) but
-there are dedicated modes in the SeqAn build system for easier
-installation. A user might also want to install the library to an
-include folder. We will look at both use cases.
+The user can clone either the ``master`` or the ``develop`` branch or any tagged version (e.g. ``yara-v0.9.0`` or ``seqan-v1.4.2``) to his local computer. 
+The user could then proceed as the developer (see below) but there are dedicated modes in the SeqAn build system for easier installation. 
+A user might also want to install the library to an include folder. 
+We will look at both use cases.
 
 User App Installation
 ^^^^^^^^^^^^^^^^^^^^^
 
-Let us first consider a user wanting to build RazerS 3 from the trunk as
-the developer would.
+Note that we assume Unixoid systems in this document and only refer to makefile based build systems.
+The easiest way to install an application is described in the :ref:`getting started tutorials using linux makefiles <tutorial-getting-started-linux-makefiles>`.
+By default the binaries are deployed in the bin folder of the build directory, e.g., ``${HOME}/Development/build-seqan/release/bin``.
+
+However, it will be more convenient for the user to build the app and then install it, for example to a certain directory like ``~/local/bin/app``:
+Here is an example for the application Razers 3.
 
 .. code-block:: console
 
-    ~ # svn co http://svn.seqan.de/seqan/trunk seqan-trunk
-    ~ # mkdir -p seqan-trunk-build/Release
-    ~ # cd seqan-trunk-build/Release
-    Release # cmake ../../seqan-trunk
-    Release # make razers3
+    ~ # git clone https://github.com/seqan/seqan seqan-src
+    ~ # mkdir -p seqan-build/release-razers3
+    ~ # cd seqan-build/release-razers3
+    release-razers3 # cmake ../../seqan-src -DCMAKE_INSTALL_PREFIX=~/local/bin/razers3 \
+                      -DSEQAN_BUILD_SYSTEM=APP:razers3
+    release-razers3 # make install
 
-This will check out the SeqAn trunk and create the binary ``razers3`` in
-the directory ``~/seqan-trunk-build/Release/bin``.
+.. hint::
+    
+    
+	The user can of course install any tagged version by using the command
+	
+	.. code-block:: console
+	    
+	    # git clone -b <tag> https://github.com/seqan/seqan tag-src
 
-However, it will be more convenient for the user to build the app and
-then install it, for example to ``~/local/razers3``:
-
-.. code-block:: console
-
-    ~ # svn co http://svn.seqan.de/seqan/trunk seqan-trunk
-    ~ # mkdir -p seqan-trunk-build/razers3
-    ~ # cd seqan-trunk-build/razers3
-    razers3 # cmake ../../seqan-trunk -DCMAKE_INSTALL_PREFIX=~/local/razers3 \
-                -DSEQAN_BUILD_SYSTEM=APP:razers3
-    razers3 # make install
-
-The user could install a released version of the RazerS 3 program by
-using the URL ``http://svn.seqan.de/seqan/tags/razers3-3.2.0``, for example.
-
-After executing this, the user will find the following structure in
-``~/local/razers3``, including the example files and documentation.
+After executing this, the user will find the following structure in ``~/local/bin/razers3``, including the example files and documentation.
 
 .. code-block:: console
 
-    razers3 # tree ~/local/razers3
-    /home/${USER}/local/razers3/
+    razers3 # tree ~/local/bin/razers3
+    /home/${USER}/local/bin/razers3/
     ├── bin
     │   └── razers3
     ├── example
@@ -103,17 +89,16 @@ After executing this, the user will find the following structure in
 User Library Installation
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The user could also want to install the library headers only. The
-checkout step is the same as above, but he has to create a new build
-directory and execute CMake with different parameters. The library will
-be installed to ``~/local/seqan``.
+The user could also want to install the library headers only.
+The checkout step is the same as above, but he has to create a new build directory and execute CMake with different parameters. 
+The library will be installed to ``~/local/seqan``.
 
 .. code-block:: console
 
-    ~ # svn co http://svn.seqan.de/seqan/trunk seqan-trunk
-    ~ # mkdir -p seqan-trunk-build/library_only
-    ~ # cd seqan-trunk-build/library_only
-    library_only # cmake ../../seqan-trunk -DCMAKE_INSTALL_PREFIX=~/local/seqan \
+    ~ # git clone https://github.com/seqan/seqan seqan-src
+    ~ # mkdir -p seqan-build/library_only
+    ~ # cd seqan-build/library_only
+    library_only # cmake ../../seqan-src -DCMAKE_INSTALL_PREFIX=~/local/seqan \
                      -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_LIBRARY
     library_only # make docs
     library_only # make install
@@ -160,7 +145,7 @@ We will give examples for Unixoid operating systems.
 
 Note that the packaging described below can be automatized. App and
 project releases can simply be tagged in the Subversion repository. A
-script that runs nightly can then pick up new tags from the Subversion
+script that runs nightly can then pick up new tags from the GitHub
 repository and create binary packages for them. This can also automatize
 nightly builds on different platforms without much work for the release
 manager.
@@ -169,37 +154,36 @@ Packaging Individual Apps
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The release manager would check out an app in a specific revision, e.g.
-through a tag or the trunk version:
+through a tag or the current master version:
 
 .. code-block:: console
 
-    ~ # svn co http://svn.seqan.de/seqan/tags/masai-0.6.1 masai-0.6.1
-    ~ # mkdir masai-0.6.1-build
-    ~ # cd masai-0.6.1-build
-    masai-0.6.1-build # cmake ../masai-0.6.1 -DSEQAN_BUILD_SYSTEM=APP:masai \
-                          -DSEQAN_APP_VERSION=0.6.1
-    masai-0.6.1-build # make package
+    ~ # git clone -b yara-v0.9.2 https://github.com/seqan/seqan yara-v0.9.2
+    ~ # mkdir yara-v0.9.2-build
+    ~ # cd yara-0.v9.2-build
+    yara-0.9.2-build # cmake ../yara-v0.9.2 -DSEQAN_BUILD_SYSTEM=APP:yara \
+                          -DSEQAN_APP_VERSION=0.9.2
+    yara-0.9.2-build # make package
 
 On Unix, this will create a Tarball (``.tar.bz2``) and a ZIP file with
 the binaries, documentation, and example files:
 
 .. code-block:: console
 
-    masai-0.6.1-build # ls -l masai-0.6.1-Linux-x86_64.*
-    -rw-rw-r-- 1 USER GROUP 1094198 Nov 20 13:36 masai-0.6.1-Linux-x86_64.tar.bz2
-    -rw-rw-r-- 1 USER GROUP 1243428 Nov 20 13:36 masai-0.6.1-Linux-x86_64.zip
+    yara-0.9.2-build # ls -l yara-0.9.2-Linux-x86_64.*
+    -rw-rw-r-- 1 USER GROUP  918587 Jan 16 18:15 yara-0.9.2-Linux-x86_64.tar.bz2
+    -rw-rw-r-- 1 USER GROUP 1238990 Jan 16 18:15 yara-0.9.2-Linux-x86_64.zip
 
 The packages have the following structure:
 
 .. code-block:: console
 
-    masai-0.6.1-build # tar tjf masai-0.6.1-Linux-x86_64.tar.bz2
-    masai-0.6.1-Linux-x86_64/bin/masai_mapper
-    masai-0.6.1-Linux-x86_64/bin/masai_indexer
-    masai-0.6.1-Linux-x86_64/bin/masai_output_se
-    masai-0.6.1-Linux-x86_64/bin/masai_output_pe
-    masai-0.6.1-Linux-x86_64/README
-    masai-0.6.1-Linux-x86_64/LICENSE
+    yara-0.9.2-build # tar tjf yara-0.9.2-Linux-x86_64.tar.bz2
+    yara-0.9.2-Linux-x86_64/bin/yara_mapper
+    yara-0.9.2-Linux-x86_64/bin/yara_indexer
+    yara-0.9.2-Linux-x86_64/LICENSE
+    yara-0.9.2-Linux-x86_64/README.rst
+    
 
 Packaging Library Releases
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -217,10 +201,10 @@ whether it is a pre-release of the next version.
 
 .. code-block:: console
 
-    ~ # svn co http://svn.seqan.de/seqan/trunk seqan-trunk
-    ~ # mkdir -p seqan-trunk-build/release_library
-    ~ # cd seqan-trunk-build/release_library
-    release_library # cmake ../../seqan-trunk -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_LIBRARY
+    ~ # git clone https://github.com/seqan/seqan seqan-src
+    ~ # mkdir -p seqan-build/release_library
+    ~ # cd seqan-build/release_library
+    release_library # cmake ../../seqan-src -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_LIBRARY
     release_library # make docs
     release_library # make package
 
@@ -269,10 +253,10 @@ It is simple to create a SeqAn Apps release:
 
 .. code-block:: console
 
-    ~ # svn co http://svn.seqan.de/seqan/trunk seqan-trunk
-    ~ # mkdir -p seqan-trunk-build/release_apps
+    ~ # git clone https://github.com/seqan/seqan seqan-src
+    ~ # mkdir -p seqan-build/release_apps
     ~ # cd release_apps
-    release_apps # cmake ../../seqan-trunk -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS
+    release_apps # cmake ../../seqan-src -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS
     release_apps # make package
     release_apps # ls -l seqan-apps-pre1.4.0-Linux*
     -rw-rw-r-- 1 USER GROUP 532 Nov 20 14:22 seqan-apps-pre1.4.0-Linux.deb
@@ -321,17 +305,15 @@ One App
 
 .. code-block:: console
 
-    masai-build # cmake ../masai-0.6.1 -DSEQAN_BUILD_SYSTEM=APP:masai \
+    masai-build # cmake ../yara-v0.9.2 -DSEQAN_BUILD_SYSTEM=APP:yara \
                           -DSEQAN_NIGHTLY_RELEASE=TRUE
     masai-build # make package
-    masai-build # ls -l masai-20121120-Linux-x86_64.*
-    -rw-rw-r-- 1 USER GROUP 1091927 Nov 20 14:11 masai-20121120-Linux-x86_64.tar.bz2
-    -rw-rw-r-- 1 USER GROUP 1241259 Nov 20 14:11 masai-20121120-Linux-x86_64.zip
+    masai-build # ls -l yara-20121120-Linux-x86_64.*
+    -rw-rw-r-- 1 USER GROUP  918587 Nov 20 14:11 yara-20121120-Linux-x86_64.tar.bz2
+    -rw-rw-r-- 1 USER GROUP 1238990 Nov 20 14:11 yara-20121120-Linux-x86_64.zip
     masai-build # tar tjf masai-20121120-Linux-x86_64.tar.bz2
     masai-20121120-Linux-x86_64/bin/masai_mapper
     masai-20121120-Linux-x86_64/bin/masai_indexer
-    masai-20121120-Linux-x86_64/bin/masai_output_se
-    masai-20121120-Linux-x86_64/bin/masai_output_pe
     masai-20121120-Linux-x86_64/README
     masai-20121120-Linux-x86_64/LICENSE
 
@@ -340,7 +322,7 @@ All Apps
 
 .. code-block:: console
 
-    release_apps # cmake ../../seqan-trunk -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS \
+    release_apps # cmake ../../seqan-src -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS \
                      -DSEQAN_NIGHTLY_RELEASE=TRUE
     release_apps # make package
     release_apps #  ls -l seqan-apps-20121120-*
@@ -353,7 +335,7 @@ Library Only
 
 .. code-block:: console
 
-    release_library # cmake ../../seqan-trunk -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_LIBRARY \
+    release_library # cmake ../../seqan-src -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_LIBRARY \
                         -DSEQAN_NIGHTLY_RELEASE=TRUE
     release_library # make docs
     release_library # make package
@@ -366,33 +348,16 @@ SeqAn Developer Perspective
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 SeqAn developers want to develop their own applications using SeqAn.
-When they want to use the SeqAn build system, they can follow these
-instructions to (1) setup their sandbox, (2) setup their apps in their
-sandbox and later ``core``/``extras``, and (3) create releases of the
-applications.
+When they want to use the SeqAn build system, they can follow these 
+instructions to (1) fork the application template from github, 
+(2) setup their apps, and (3) create releases of the applications.
 
-Creating Sandboxes
-^^^^^^^^^^^^^^^^^^
+Getting the Template
+^^^^^^^^^^^^^^^^^^^^
 
-Creating sandboxes is easy with the ``util/skel.py`` script (also see :ref:`how-to-use-the-code-generator`).
-
-.. code-block:: console
-
-    seqan # ./util/bin/skel.py repository sandbox/my_sandbox
-
-We will not go into detail on the structure of generated CMakeLists.txt
-files.
-
-Creating Apps
-^^^^^^^^^^^^^
-
-Simply use the ``util/skel.py`` script (also see :ref:`how-to-use-the-code-generator`).
-
-.. code-block:: console
-
-    seqan-trunk # ./util/bin/skel.py app my_app sandbox/my_sandbox
-
-This will generate a ``CMakeLists.txt`` file in ``sandbox/my_sandbox/apps/my_app``.
+Getting the application template can be achieved by forking the project ``https://github.com/seqan/APP_TEMPLATE.git``. 
+This repository contains a template structure for the application containing all necessary files and a starting point from which to begin the development.
+One of the files already present is the template repository is the ``CMakeLists.txt`` file.
 Since you will have to adjust the file to your project, let us have a look at the file in detail.
 You can look up details in the `CMake documentation <http://www.cmake.org/cmake/help/v2.8.8/cmake.html>`_ in case that some CMake functions are not clear to you.
 
@@ -404,14 +369,14 @@ This is useful when having many ``CMakeLists.txt`` files open and you want to qu
    # ===========================================================================
    #                  SeqAn - The Library for Sequence Analysis
    # ===========================================================================
-   # File: /sandbox/my_sandbox/apps/my_app/CMakeLists.txt
+   # File: src/CMakeLists.txt
    #
    # CMakeLists.txt file for my_app.
    # ===========================================================================
 
    cmake_minimum_required (VERSION 2.8.2)
-   project (sandbox_my_sandbox_apps_my_app)
-   message (STATUS "Configuring sandbox/my_sandbox/apps/my_app")
+   project (src_my_app)
+   message (STATUS "Configuring src/my_app")
 
 Then comes the section that searches for the app's dependencies.
 By default, the app only depends on the package SeqAn.
@@ -520,8 +485,7 @@ If you want to add an app test for your program then simply uncomment the ``seqa
 
     #seqan_add_app_test(dfi)
 
-Finally, we configure the application packaging system for building
-individual apps.
+Finally, we configure the application packaging system for building individual apps.
 
 .. code-block:: console
 
@@ -538,72 +502,69 @@ individual apps.
       seqan_configure_cpack_app(my_app "My App")
     endif (SEQAN_BUILD_SYSTEM STREQUAL "APP:my_app")
 
+.. hint::
+
+    If you use the markdown feature for your ``README`` with the file ending ``*.rst``, then you need to explicitly tell **CPack**, which the correct README file is.
+    You can do this by adding the following line to the **CPack Install** section.
+    
+    .. code-block:: console
+        
+        set (CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.rst")
+        
+    Also make sure to replace all occurrences of ``README`` with ``README.rst`` in the **INSTALLATION** section.
+
 Building Apps
 ^^^^^^^^^^^^^
 
 Simply use CMake to generate project files for the whole SeqAn
-repository and your sandbox. Let us say that we want to build the app
-``my_app`` in your sandbox:
+repository. Let us say that we want to build the app
+``my_app``:
 
 .. code-block:: console
 
-    ~ # mkdir -p seqan-trunk-build/Release
-    ~ # cd seqan-trunk-build/Release
-    Release # cmake ../../seqan-trunk
-    Release # make my_app
+    ~ # mkdir -p seqan-build/release
+    ~ # cd seqan-build/release
+    release # cmake ../../seqan-src
+    release # make my_app
 
-Note that the default build type is the Release mode. The binaries will
-be built with optimization and without debug symbols. To build apps with
-debug symbols and without optimization with Makefiles, use the CMake
-paraemter ``-DCMAKE_BUILD_TYPE=Debug``. When using IDE files such as for
-Xcode, you can select the optimization state from within the IDE.
+Note that the default build type is the release mode. 
+The binaries will be built with optimization and without debug symbols. 
+To build apps with debug symbols and without optimization with Makefiles, use the CMake paraemter ``-DCMAKE_BUILD_TYPE=Debug``.
+When using IDE files such as for Xcode, you can select the optimization state from within the IDE.
 
 .. code-block:: console
 
     Release # cd ../..
-    ~ # mkdir -p seqan-trunk-build/Debug
-    ~ # cd seqan-trunk-build/Debug
-    Debug # cmake ../../seqan-trunk
-    Debug # make my_app
+    ~ # mkdir -p seqan-build/debug
+    ~ # cd seqan-build/debug
+    debug # cmake ../../seqan-src
+    debug # make my_app
 
 Windows Notes
 ~~~~~~~~~~~~~
 
-The descriptions above apply to Linux/Mac systems. On Windows, things
-are only slightly different:
+The descriptions above apply to Linux/Mac systems. 
+On Windows we can use the GitHub client which can be downloaded `here <https://windows.github.com>`_.
+Following the installation instructions will install a GitHub GUI client to manage your repository and a command line tool called ``Git Shell`` which emulates a unix like system so we can use the same commands as described before.
 
--  There are packages available that provide the ``svn.exe`` command
-   line client or users might use the GUI client
-   `TortoiseSVN <http://tortoisesvn.net/>`_.
--  The ``mkdir`` command differs slightly (the ``-p`` parameter can be
-   omitted).
--  Instead of using the backslash ``\`` two split one command over two
-   lines in the Command Prompt, we have to use the Windows equivalent
-   ``^``.
--  The ``cmake`` command line program is also available for Windows.
+However, the main difference is that when building with the Visual Studio tools, one does not use ``make`` for building applications. 
+When developing, users can simply open the generated Visual Studio ``*.sln`` solution files and then use Visual Studio for building the applications. 
+When packaging, users can use the ``msbuild`` command as described below.
 
-The main difference is that when building with the Visual Studio tools,
-one does not use ``make`` for building applications. When developing,
-users can simply open the generated Visual Studio ``*.sln`` solution
-files and then use Visual Studio for building the applications. When
-packaging, users can use the ``msbuild`` command as described below.
-
-As an example, we adapt the description of creating an application release for Masai on Windows.The next steps are typed into the Command Prompt (``Start > All Programs > Accessories > Command``).
+As an example, we adapt the description of creating an SeqAn application release on Windows.
+The next steps are typed into the Command Prompt (``Start > All Programs > GitHub, Inc > Git Shell``).
 
 .. code-block:: console
 
-    C:\> svn co http://svn.seqan.de/seqan/tags/masai-0.6.1 masai-0.6.1
-    C:\> mkdir masai-0.6.1-build
-    C:\> cd masai-0.6.1-build
-    C:\masai-0.6.1-build> cmake ..\masai-0.6.1 -DSEQAN_BUILD_SYSTEM=APP:masai ^
-                           -DSEQAN_APP_VERSION=0.6.1
+    ~ # git clone https://github.com/seqan/seqan seqan-src
+    ~ # mkdir seqan-build
+    ~ # cd seqan-build
+    seqan-build # cmake ../seqan-src -DSEQAN_BUILD_SYSTEM=SEQAN_RELEASE_APPS
 
-So far, the only difference to the Unix descriptions is the using
-backslashes instead of forward slashes for paths. You can then open the
-generated ``seqan.sln`` file in ``C:\masai-0.6.1-build`` with Visual
-studio and build the packages from there.
+You can then open the generated ``seqan.sln`` file in ``C:\seqan-build`` with Visual Studio and build the packages from there.
 
-Alternatively, ``msbuild`` can be used. This program is only available when using the Visual Studio Command Prompt.
+Alternatively, ``msbuild`` can be used. 
+This program is only available when using the Visual Studio Command Prompt.
 For Visual Studio 2010, you can start it through the start menu as follows:
 ``Start > Programs > Microsoft Visual Studio 2010 > Visual Studio Tools > Visual Studio Command Prompt 2010``.
 For other Visual Studio versions, the path is similar.
@@ -611,54 +572,9 @@ If you want 64 bit builds then you have to start ``Visual Studio x86 Win64 Comma
 
 .. code-block:: console
 
-    C:\> cd masai-0.6.1-build
-    C:\masai-0.6.1-build> msbuild /p:Configuration=Release PACKAGE.vcxproj
+    C:\> cd seqan-build
+    C:\seqan-build> msbuild /p:Configuration=Release PACKAGE.vcxproj
 
-This will create a ZIP file with the app build of Masai.
+This will create a ZIP file with the app build of the seqan apps.
 
-Note that you could also input the first part of commands from this
-example into the Visual Studio Command Prompt.
-
-Using CUDA
-~~~~~~~~~~
-
-To use cuda, simply insert the following section into your
-``CMakeLists.txt`` behind the Dependencies section.
-
-This consists of the following step:
-
-#. Find CUDA package
-#. If CUDA could not be found then stop.
-#. Disabling propagating host flags to the cuda compiler, some visual studio configuration.
-#. Removing the ``-pedantic`` flag from the compiler flags.
-#. Register ``.cu`` as the extension for C++ files, required for linking.
-#. Register the include directory for the ``cut`` (CUDA Toolkit) library.
-
-.. code-block:: cmake
-
-    # ----------------------------------------------------------------------------
-    # CUDA Setup
-    # ----------------------------------------------------------------------------
-
-    # The CUDA setup is a bit verbose so it gets its own section.
-
-    # Search for CUDA.
-    find_package (CUDA)
-
-    # Stop here if we cannot find CUDA.
-    if (NOT CUDA_FOUND)
-        message (STATUS "  CUDA not found, not building cuda_ex.")
-        return ()
-    endif (NOT CUDA_FOUND)
-
-    # Set CUDA options.
-    set (CUDA_PROPAGATE_HOST_FLAGS OFF)
-    set (CUDA_ATTACH_VS_BUILD_RULE_TO_CUDA_FILE OFF)
-    # Remove -pedantic flag.
-    string (REGEX REPLACE "\\-pedantic" ""
-            CUDA_CXX_FLAGS ${CUDA_NVCC_FLAGS} ${CMAKE_CXX_FLAGS})
-
-    # Enable .cu as a CXX source file extension for linking.
-    list (APPEND CMAKE_CXX_SOURCE_FILE_EXTENSIONS "cu")
-    # Add CUT include directories for CUDA.
-    cuda_include_directories(${CUDA_CUT_INCLUDE_DIR})
+Note that you could also input the first part of commands from this example into the Visual Studio Command Prompt.

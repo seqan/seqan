@@ -350,14 +350,8 @@ void FilteringParserBuilder::addHeader(seqan::ArgumentParser & parser)
             "C.  FLEXBAR—Flexible Barcode and Adapter Processing for "
             "Next-Generation Sequencing Platforms. Biology 2012, 1, 895-905.");
 
-    std::string version = "1.0.1";
-#ifdef SEQAN_REVISION
-    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
-#endif
-#ifdef SEQAN_DATE
+    seqan::setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
-    seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
     setValidValues(fileArg, SeqFileIn::getFileExtensions());
@@ -402,14 +396,10 @@ void AdapterRemovalParserBuilder::addHeader(seqan::ArgumentParser & parser)
             "C.  FLEXBAR—Flexible Barcode and Adapter Processing for "
             "Next-Generation Sequencing Platforms. Biology 2012, 1, 895-905.");
 
-    std::string version = "1.0.1";
-#ifdef SEQAN_REVISION
-    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
-#endif
+    seqan::setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
 #ifdef SEQAN_DATE
     seqan::setDate(parser, SEQAN_DATE);
 #endif
-    seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
     setValidValues(fileArg, SeqFileIn::getFileExtensions());
@@ -455,14 +445,8 @@ void DemultiplexingParserBuilder::addHeader(seqan::ArgumentParser & parser)
             "Next-Generation Sequencing Platforms. Biology 2012, 1, 895-905.");
 
 
-    std::string version = "1.0.1";
-#ifdef SEQAN_REVISION
-    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
-#endif
-#ifdef SEQAN_DATE
+    seqan::setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
-    seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
     setValidValues(fileArg, SeqFileIn::getFileExtensions());
@@ -508,14 +492,8 @@ void QualityControlParserBuilder::addHeader(seqan::ArgumentParser & parser)
             "C.  FLEXBAR—Flexible Barcode and Adapter Processing for "
             "Next-Generation Sequencing Platforms. Biology 2012, 1, 895-905.");
 
-    std::string version = "1.0.1";
-#ifdef SEQAN_REVISION
-    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
-#endif
-#ifdef SEQAN_DATE
+    seqan::setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
-    seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
     setValidValues(fileArg, SeqFileIn::getFileExtensions());
@@ -567,14 +545,8 @@ void AllStepsParserBuilder::addHeader(seqan::ArgumentParser & parser)
 
     addDescription(parser, "(c) Copyright 2008-2013 by Sebastian Roskosch.");
 
-    std::string version = "1.0.1";
-#ifdef SEQAN_REVISION
-    version += std::string(" [") + std::string(SEQAN_REVISION) + "]";
-#endif
-#ifdef SEQAN_DATE
+    seqan::setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
-    seqan::setVersion(parser, version);
 
     seqan::ArgParseArgument fileArg(seqan::ArgParseArgument::INPUT_FILE, "READS", true);
     setValidValues(fileArg, SeqFileIn::getFileExtensions());
@@ -1099,7 +1071,7 @@ int loadProgramParams(seqan::ArgumentParser const & parser, ProgramParams & para
         {
             return 1;
         }
-        if (value(params.fileStream1.format) != value(params.fileStream2.format))
+        if (value(format(params.fileStream1)) != value(format(params.fileStream2)))
         {
             std::cerr << "Input files must have the same file format.\n";
             return 1;
@@ -1123,9 +1095,9 @@ int checkParams(ProgramParams const & programParams, ProcessingParams const & pr
     // If quality trimming was selected, check if file format includes qualities.
     if (qualityTrimmingParams.run)
     {
-        if ((value(programParams.fileStream1.format) != Find<SeqFileIn::TFileFormat, Fastq>::VALUE) ||
+        if ((value(format(programParams.fileStream1)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fastq>::VALUE) ||
             ((programParams.fileCount == 2) &&
-            (value(programParams.fileStream2.format) != Find<SeqFileIn::TFileFormat, Fastq>::VALUE)))
+            (value(format(programParams.fileStream2)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fastq>::VALUE)))
         {
             std::cerr << "\nQuality trimming requires quality information, please specify fq files." << std::endl;
             return 1;
@@ -1909,8 +1881,8 @@ int flexbarMain(int argc, char const ** argv)
     //--------------------------------------------------
 
     // Prepare output stream object and initial mapping from StringSets to files.
-    bool noQuality = (value(programParams.fileStream1.format) ==
-                      Find<seqan::SeqFileIn::TFileFormat, Fasta>::VALUE);
+    bool noQuality = (value(format(programParams.fileStream1)) ==
+                      Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE);
     if (isSet(parser, "nq"))
     {
         noQuality = true;
@@ -1969,12 +1941,12 @@ int flexbarMain(int argc, char const ** argv)
             std::cout << "\tCompress output: NO" << "\n";
         }
         */
-        if (isSet(parser, "nq") && (value(programParams.fileStream1.format) !=
-                                    Find<seqan::SeqFileIn::TFileFormat, Fasta>::VALUE))
+        if (isSet(parser, "nq") && (value(format(programParams.fileStream1)) !=
+                                    Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE))
         {
             std::cout << "\tForce no-quality output: YES\n";
         }
-        else if (value(programParams.fileStream1.format) != Find<seqan::SeqFileIn::TFileFormat, Fasta>::VALUE)
+        else if (value(format(programParams.fileStream1)) != Find<FileFormat<seqan::SeqFileIn>::Type, Fasta>::VALUE)
         {
             std::cout << "\tForce no-quality output: NO\n";
         }

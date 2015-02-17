@@ -10,9 +10,10 @@ set(CTEST_BINARY_DIRECTORY "${CTEST_SOURCE_DIRECTORY}/_build")
 message(STATUS "CTEST_SOURCE_DIRECTORY: ${CTEST_SOURCE_DIRECTORY}")
 message(STATUS "CTEST_BINARY_DIRECTORY: ${CTEST_BINARY_DIRECTORY}")
 
-set(INITIAL_CACHE "CMAKE_BUILD_TYPE=Release")
-
-# create cache
+# create cache - mind the newline between variables!
+set(INITIAL_CACHE
+"CMAKE_BUILD_TYPE=Release
+SEQAN_TRAVIS_BUILD:BOOL=ON")
 file(WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" ${INITIAL_CACHE})
 
 # customize reporting of errors in CDash
@@ -21,7 +22,7 @@ set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_WARNINGS 1000)
 
 # try to speed up the builds so we don't get killed
 if ("$ENV{CXX}" MATCHES ".*(clang\\+\\+-?.*)")
-  set(CTEST_BUILD_FLAGS -j10)
+  set(CTEST_BUILD_FLAGS -j6)
 else ("$ENV{CXX}" MATCHES ".*(clang\\+\\+-?.*)")
   set(CTEST_BUILD_FLAGS -j4)
 endif ("$ENV{CXX}" MATCHES ".*(clang\\+\\+-?.*)")

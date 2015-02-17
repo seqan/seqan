@@ -67,7 +67,7 @@ namespace seqan {
  *
  * <tt>seq</tt> will be aligned to <tt>profile</tt> using @link globalAlignment @endlink. To compute a banded alignment
  * <tt>lDiag</tt> and <tt>uDiag</tt> have to be given.
- * The resulting alignment will then be integrated into <tt>profile</tt> by incrementing the <tt>count</tt> values of 
+ * The resulting alignment will then be integrated into <tt>profile</tt> by incrementing the <tt>count</tt> values of
  * the <tt>profile</tt> entries that correspond to the <tt>seq</tt> row of the alignment.
  *
  * @signature void addToProfile(profile, seq[, lDiag, uDiag]);

@@ -128,14 +128,8 @@ void setupArgumentParser(ArgumentParser & parser)
     setShortDescription(parser, "EDBT/ICDT 2013 Search");
     setCategory(parser, "Databases");
 
-#ifdef SEQAN_REVISION
-    setVersion(parser, "0.3 [" + std::string(SEQAN_REVISION) + "]");
-#else
-    setVersion(parser, "0.3");
-#endif
-#ifdef SEQAN_DATE
+    setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
-#endif
 
     addUsageLine(parser, "[\\fIOPTIONS\\fP] <\\fIDATABASE FILE\\fP> <\\fIQUERY FILE\\fP>");
 
@@ -156,7 +150,9 @@ void setupArgumentParser(ArgumentParser & parser)
     setRequired(parser, "input-type", true);
 
     // Add huge db option.
+#ifdef SEARCHJOIN_HUGEDB
     addOption(parser, ArgParseOption("g", "huge", "Required if the db contains more than 16M entries."));
+#endif // SEARCHJOIN_HUGEDB
 
     // Add output file option.
     addOption(parser, ArgParseOption("o", "output-file", "Specify an output file.", ArgParseOption::STRING));
@@ -200,7 +196,9 @@ parseCommandLine(Options & options, ArgumentParser & parser, int argc, char cons
     getOptionValue(options.inputType, parser, "input-type");
 
     // Parse huge db option.
+#ifdef SEARCHJOIN_HUGEDB
     options.hugeDb = isSet(parser, "huge");
+#endif // SEARCHJOIN_HUGEDB
 
     // Parse output file.
     getOptionValue(options.resultsFile, parser, "output-file");
@@ -506,6 +504,7 @@ int mainWithOptions(Options & options)
         }
         else
         {
+#ifdef SEARCHJOIN_HUGEDB
             if (options.hugeDb)
             {
                 if (options.threadsCount > 1)
@@ -515,12 +514,15 @@ int mainWithOptions(Options & options)
             }
             else
             {
+#endif // SEARCHJOIN_HUGEDB
                 if (options.threadsCount > 1)
                     return runSearcher(options, TDbDna(), TDbDnaSaSmall(), Parallel(), Nothing());
                 else
                     return runSearcher(options, TDbDna(), TDbDnaSaSmall(), Nothing(), Nothing());
             }
+#ifdef SEARCHJOIN_HUGEDB
         }
+#endif // SEARCHJOIN_HUGEDB
     }
     else if (isEqual(options.inputType, "geo"))
     {
@@ -530,6 +532,7 @@ int mainWithOptions(Options & options)
         }
         else
         {
+#ifdef SEARCHJOIN_HUGEDB
             if (options.hugeDb)
             {
                 if (options.threadsCount > 1)
@@ -539,11 +542,14 @@ int mainWithOptions(Options & options)
             }
             else
             {
+#endif // SEARCHJOIN_HUGEDB
                 if (options.threadsCount > 1)
                     return runSearcher(options, TDbGeo(), TDbGeoSaSmall(), Parallel(), Online());
                 else
                     return runSearcher(options, TDbGeo(), TDbGeoSaSmall(), Nothing(), Online());
+#ifdef SEARCHJOIN_HUGEDB
             }
+#endif // SEARCHJOIN_HUGEDB
         }
     }
     else

@@ -54,15 +54,15 @@ namespace seqan {
  * @extends String
  * @headerfile <seqan/sequence.h>
  * @brief String optimized for appendValue, back, and eraseBack (Stack behaviour).
- * 
+ *
  * @signature template <typename TValue, unsigned SPACE = 4096>
  *            class String<TValue, Block<SIZE> >;
- * 
+ *
  * @tparam TValue The value type, that is the type of the items/characters stored in the string.  Use
  *                @link ContainerConcept#Value @endlink to get the value type for a given class.
  * @tparam SIZE A positive integer that specifies the number of values in each
  *              allocated block.  Size should be a power of 2, e.g., 1024.
- * 
+ *
  */
 
 template<size_t SPACE = 4096>
@@ -491,10 +491,10 @@ inline void
 eraseBack(String<TValue, Block<SPACE> >& me)
 {
     typedef typename String<TValue, Block<SPACE> >::TBlockIter TBlockIter;
-    
+
     SEQAN_CHECKPOINT;
     SEQAN_ASSERT_NOT_MSG(empty(me), "eraseBack() called on an empty string.");
-    
+
     if (me.lastValue == me.blockFirst) {
         typename Size< String<TValue, Block<SPACE> > >::Type last = length(me.blocks);
 

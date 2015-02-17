@@ -10,6 +10,8 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_fiona)
 message (STATUS "Configuring apps/fiona")
 
+set (SEQAN_APP_VERSION "0.2.1")
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
@@ -25,6 +27,16 @@ if (NOT Boost_FOUND OR NOT OpenMP_FLAG_DETECTED)
     return ()
 endif ()
 
+if (MSVC)
+    message (STATUS "  Not building fiona under Visual Studio.")
+    return ()
+endif()
+
+if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
+    message (STATUS "  Not building fiona on 32bit architectures.")
+    return ()
+endif()
+
 # ----------------------------------------------------------------------------
 # Build Setup
 # ----------------------------------------------------------------------------
@@ -38,6 +50,7 @@ add_definitions (${SEQAN_DEFINITIONS})
 #add_definitions("-DQGRAM_LENGTH=5")
 
 # Add definitions set by the build system.
+add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
 add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 

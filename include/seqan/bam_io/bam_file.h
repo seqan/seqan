@@ -244,7 +244,7 @@ readRecord(BamAlignmentRecord & record, FormattedFile<Bam, Input, TSpec> & file)
 template <typename TRecords, typename TSpec, typename TSize>
 inline SEQAN_FUNC_ENABLE_IF(And<IsSameType<typename Value<TRecords>::Type, BamAlignmentRecord>,
                                 IsInteger<TSize> >, TSize)
-readBatch(TRecords & records, FormattedFile<Bam, Input, TSpec> & file, TSize maxRecords)
+readRecords(TRecords & records, FormattedFile<Bam, Input, TSpec> & file, TSize maxRecords)
 {
     String<CharString> & buffers = context(file).buffers;
     if ((TSize)length(buffers) < maxRecords)

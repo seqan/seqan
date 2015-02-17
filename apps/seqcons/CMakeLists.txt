@@ -10,6 +10,8 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_seqcons)
 message (STATUS "Configuring apps/seqcons")
 
+set (SEQAN_APP_VERSION "0.23.2")
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
@@ -27,6 +29,11 @@ include_directories (${SEQAN_INCLUDE_DIRS})
 
 # Add definitions set by find_package (SeqAn).
 add_definitions (${SEQAN_DEFINITIONS})
+
+# Add definitions set by the build system.
+add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
+add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
+add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 
 # Update the list of file names below if you add source files to your application.
 add_executable (seqcons seqcons.cpp)

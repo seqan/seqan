@@ -46,16 +46,11 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 /*!
- * @defgroup GffFileIO GFF and GTF File I/O
- * @brief I/O functionality for the GFF and GTF file formats.
+ * @tag FileFormats#Gff
+ * @brief Tag for selecting the GFF format.
  *
  * Both the GFF and the GTF file format are represented by @link GffRecord @endlink in SeqAn.
  * Tags and functions in this group can be used for I/O of both formats to and from @link GffRecord @endlink objects.
- */
-
-/*!
- * @tag GffFileIO#Gff
- * @brief Tag for selecting the GFF format.
  *
  * @signature typedef Tag<TagGff_> Gff;
  */
@@ -67,7 +62,7 @@ typedef Tag<TagGff_> Gff;
 // ----------------------------------------------------------------------------
 
 /*!
- * @tag GffFileIO#Gtf
+ * @tag FileFormats#Gtf
  * @brief Tag for selecting the GTF format.
  *
  * @signature typedef Tag<TagGtf_> Gtf;
@@ -94,7 +89,7 @@ struct MagicHeader<Gff, T> :
 template <typename T>
 struct FileExtensions<Gff, T>
 {
-    static char const * VALUE[2];	// default is one extension
+    static char const * VALUE[2];    // default is one extension
 };
 
 template <typename T>
@@ -107,7 +102,7 @@ char const * FileExtensions<Gff, T>::VALUE[2] =
 template <typename T>
 struct FileExtensions<Gtf, T>
 {
-    static char const * VALUE[1];	// default is one extension
+    static char const * VALUE[1];    // default is one extension
 };
 
 template <typename T>
@@ -336,9 +331,8 @@ inline void clear(GffRecord & record)
 // Function readRecord
 // ----------------------------------------------------------------------------
 
-// TODO(holtgrew): Add variant with tags?
-
-/*!
+// NOTE(esiragusa): dox disabled.
+/*
  * @fn GffFileIO#readRecord
  * @brief Read one GFF/GTF record from a SinglePassRecordReader.
  *
@@ -483,7 +477,8 @@ _writePossiblyInQuotes(TTarget& target, TString & source, TMustBeQuotedFunctor c
 // Function writeRecord()
 // ----------------------------------------------------------------------------
 
-/*!
+// NOTE(esiragusa): dox disabled.
+/*
  * @fn GffFileIO#writeRecord
  * @brief Writes a @link GffRecord @endlink to a stream as GFF or GTF.
  *
@@ -628,7 +623,7 @@ writeRecord(TTarget & target, GffRecord const & record, Tag<TFormat> const & tag
     if (record.score != record.score)
         writeValue(target, '.');
     else
-        writeValue(target, record.score);
+        appendNumber(target, record.score);
     writeValue(target, '\t');
 
     // write column 7: strand

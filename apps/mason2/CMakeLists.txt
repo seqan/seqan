@@ -10,6 +10,8 @@ cmake_minimum_required (VERSION 2.8.2)
 project (seqan_apps_mason2)
 message (STATUS "Configuring apps/mason2")
 
+set (SEQAN_APP_VERSION "2.0.0")
+
 # ----------------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------------
@@ -23,10 +25,10 @@ if (NOT ZLIB_FOUND)
   return ()
 endif (NOT ZLIB_FOUND)
 
-# Mason2 does not work correctly with Visual Studio Version <10 on 64 bit systems.
-if (MSVC AND MSVC_VERSION LESS 1600)
-  message (STATUS "  Visual Studio Version <10: MASON2 will not be built.")
-endif (MSVC AND MSVC_VERSION LESS 1600)
+if (MSVC)
+  message (STATUS "  Not building MASON2 under Visual Studio.")
+  return ()
+endif()
 
 # Enable C++11 in GCC and/or CLANG.
 #if (CMAKE_COMPILER_IS_GNUCXX OR COMPILER_IS_CLANG)
@@ -47,6 +49,7 @@ add_definitions (${SEQAN_DEFINITIONS})
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 
 # Add definitions set by the build system.
+add_definitions (-DSEQAN_APP_VERSION="${SEQAN_APP_VERSION}")
 add_definitions (-DSEQAN_REVISION="${SEQAN_REVISION}")
 add_definitions (-DSEQAN_DATE="${SEQAN_DATE}")
 

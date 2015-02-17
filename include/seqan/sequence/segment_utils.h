@@ -80,8 +80,8 @@ struct LengthLess
  *
  * @signature bool endsWith(str, suffix);
  *
- * @param[in] str    The string to check.
- * @param[in] suffix The suffix to check for.
+ * @param[in] str    The string to check (A @link SegmentableConcept @endlink).
+ * @param[in] suffix The suffix to check for (A @link ContainerConcept @endlink).
  *
  * @return bool <tt>true</tt> if <tt>suffix</tt> is a suffix of <tt>str</tt>.
  */
@@ -108,8 +108,8 @@ inline bool endsWith(TLhs const & lhs, TRhs const & rhs)
  *
  * @signature bool startsWith(str, prefix);
  *
- * @param[in] str    The string to check (A @link SequenceConcept sequence @endlink).
- * @param[in] prefix The prefix to check for (A @link SequenceConcept sequence @endlink)..
+ * @param[in] str    The string to check (A @link SegmentableConcept @endlink).
+ * @param[in] prefix The prefix to check for (A @link ContainerConcept @endlink).
  *
  * @return bool <tt>true</tt> if <tt>prefix</tt> is a prefix of <tt>str</tt>.
  */

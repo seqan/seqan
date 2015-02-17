@@ -48,9 +48,9 @@ namespace seqan {
 // ----------------------------------------------------------------------------
 
 template <typename TIterator, typename TValue, typename TParallelTag>
-inline void 
+inline void
 arrayFill(TIterator begin_,
-          TIterator end_, 
+          TIterator end_,
           TValue const & value,
           Tag<TParallelTag> parallelTag)
 {
@@ -123,9 +123,9 @@ sum(TSequence const &seq)
  * @fn partialSum
  * @headerfile <seqan/parallel.h>
  * @brief Computes the partial sum of a sequence.
- * 
+ *
  * @signature TValue partialSum(target, source[, parallelTag]);
- * 
+ *
  * @param[in]  source      A sequence of elements that should be partially summed.  The sequence alphabet must support
  *                         the <tt>operator+</tt> and conversion from zero, the type is <tt>TSource</tt>.
  * @param[in]  parallelTag Tag to enable/disable parallelism, one of <tt>Serial</tt>, <tt>Parallel</tt>, default is
@@ -133,10 +133,10 @@ sum(TSequence const &seq)
  * @param[out] target      The resulting partial sum.  This sequence will have the same length as <tt>source</tt> and
  *                         contains at position <tt>i</tt> the sum of elements <tt>source[0]</tt>, <tt>source[1]</tt>,
  *                         ..., <tt>source[i]</tt>.
- * 
+ *
  * @return TValue The sum of all elements in <tt>source</tt>.  The returned value equals the last value in target.
  *                <tt>TValue</tt> is <tt>Value&lt;TSource&gt;::Type</tt>.
- * 
+ *
  * @see sum
  */
 
@@ -148,7 +148,7 @@ partialSum(TTarget &target, TSource const &source, Tag<TParallelTag> parallelTag
     typedef typename Size<TSource>::Type TSize;
     typedef typename Iterator<TSource const, Standard>::Type TConstIterator;
     typedef typename Iterator<TTarget, Standard>::Type TIterator;
-    
+
     resize(target, length(source), Exact());
     if (empty(target))
         return 0;
@@ -185,7 +185,7 @@ partialSum(TTarget &target, TSource const &source, Tag<TParallelTag> parallelTag
         }
         localSums[job] = sum;
     }
-    
+
     return back(localSums);
 }
 

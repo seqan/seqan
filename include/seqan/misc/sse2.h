@@ -44,13 +44,13 @@
 
 namespace SEQAN_NAMESPACE_MAIN
 {
-    
+
 //  #define __int128 Sse2Int128
-    
+
     #ifndef SEQAN_SSE2_INT128
     #define SEQAN_SSE2_INT128
     #endif
-        
+
     // ATTENTION:
     // The Sse2Int128 struct must be 16-byte aligned. Some allocators
     // don't ensure the correct alignment, e.g. the STL allocators.
@@ -79,12 +79,12 @@ namespace SEQAN_NAMESPACE_MAIN
 
         template <typename TValue>
         Sse2Int128(TValue const &);
-        
+
         //____________________________________________________________________________
-        
+
         template <typename TValue>
         Sse2Int128 & operator = (TValue const &);
-        
+
         //____________________________________________________________________________
 
         operator __m128i () const;
@@ -99,7 +99,7 @@ namespace SEQAN_NAMESPACE_MAIN
         operator signed char ();
         operator unsigned char ();
 */  };
-    
+
     template <> struct IsSimple_<__m128i> { typedef True Type; };
     template <> struct IsSimple_<Sse2Int128> { typedef True Type; };
 
@@ -131,7 +131,7 @@ inline Sse2Int128::operator __m128i () const
 {
     return data.v;
 }
-    
+
 // 64bit => 128bit
 inline void
 assign(Sse2Int128 &me, __int64 other)
@@ -230,7 +230,7 @@ inline Sse2Int128::operator unsigned char ()
 {
     return _mm_extract_epi16(data.v, 0);
 }
-    
+
 inline Sse2Int128::operator bool () const
 {
     return (__int64)(Sse2Int128)_mm_or_si128(data.v, _mm_unpackhi_epi64(data.v, data.v));
@@ -243,7 +243,7 @@ inline Sse2Int128::Sse2Int128()
 {
     clear(*this);
 }
-    
+
 inline Sse2Int128::Sse2Int128(Sse2Int128 const &other)
 {
     assign(*this, other);
@@ -273,7 +273,7 @@ inline Sse2Int128::Sse2Int128(
 {
     data.v = _mm_set_epi16(q7, q6, q5, q4, q3, q2, q1, q0);
 }
-    
+
 template <typename TValue>
 inline Sse2Int128::Sse2Int128(TValue const &other)
 {
@@ -290,7 +290,7 @@ Sse2Int128::operator = (TValue const &other)
     assign(*this, other);
     return *this;
 }
-    
+
 //____________________________________________________________________________
 // logical operators
 
@@ -453,7 +453,7 @@ operator + (Sse2Int128 const &a, Sse2Int128 const &b)
         __uint64 v64[2];
         __m128i v;
     } _sum;
-    
+
     _sum.v = _mm_add_epi64((__m128i)a, (__m128i)b);
     if (_sum.v64[0] >= a.data.v64[0])
         return _sum.v;
@@ -471,7 +471,7 @@ operator - (Sse2Int128 const &a, Sse2Int128 const &b)
         __uint64 v64[2];
         __m128i v;
     } _diff;
-    
+
     _diff.v = _mm_sub_epi64((__m128i)a, (__m128i)b);
     if (_diff.v64[0] <= a.data.v64[0])
         return _diff.v;
@@ -497,7 +497,7 @@ operator != (Sse2Int128 const &a, Sse2Int128 const &b)
     __m128i _e = _mm_cmpeq_epi32((__m128i)a, (__m128i)b);
     return ((__int64)(Sse2Int128)_mm_and_si128(_e, _mm_unpackhi_epi64(_e, _e))) != ~(__int64)0;
 }
-    
+
 // TODO: operator <, <=, >, >=
 
 } //namespace SEQAN_NAMESPACE_MAIN

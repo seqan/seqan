@@ -67,31 +67,31 @@ public:
     static const int INVALID_POS = -1;
 
     // Chromosome that this region is on.
-	CharString ref;
+    CharString ref;
 
     // Begin and end position.
-	int beginPos;
-	int endPos;
+    int beginPos;
+    int endPos;
 
     // The strand of this region.
-	char strand;  // TODO(holtgrew): Rename to strand and make char?
+    char strand;  // TODO(holtgrew): Rename to strand and make char?
 
     // The name of the region.
-	CharString name;
+    CharString name;
 
     // The coverage over the length of the region.
-	String<unsigned> count;  // TODO(holtgrew): Rename to coverages/counts?
+    String<unsigned> count;  // TODO(holtgrew): Rename to coverages/counts?
 
     // The length of the region.
-	unsigned len;
+    unsigned len;
 
     // The largest count.
-	unsigned countMax;  // TODO(holtgrew): Rename to maxCount/maxCoverages?
+    unsigned countMax;  // TODO(holtgrew): Rename to maxCount/maxCoverages?
 
     // Additional data as string.
     seqan::StringSet<seqan::CharString> data;
 
-	RoiRecord() : beginPos(INVALID_POS), endPos(INVALID_POS), strand('.'), len(0), countMax(0)
+    RoiRecord() : beginPos(INVALID_POS), endPos(INVALID_POS), strand('.'), len(0), countMax(0)
     {}
 };
 

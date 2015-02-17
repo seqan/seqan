@@ -153,9 +153,9 @@ template <typename TFilename, typename TFormat_>
 inline bool guessFormatFromFilename(TFilename const & fileName, Tag<TFormat_> /*formatTag*/)
 {
     typedef typename Value<TFilename>::Type                                     TValue;
-    typedef ModifiedString<TFilename const, ModView<FunctorLowcase<TValue> > >	TLowcase;
+    typedef ModifiedString<TFilename const, ModView<FunctorLowcase<TValue> > >    TLowcase;
     typedef Tag<TFormat_>                                                       TFormat;
-    
+
     TLowcase lowcaseFileName(fileName);
     for (unsigned i = 0; i < sizeof(FileExtensions<TFormat>::VALUE) / sizeof(char*); ++i)
         if (endsWith(lowcaseFileName, lowerString(FileExtensions<TFormat>::VALUE[i])))
@@ -169,9 +169,9 @@ inline typename Prefix<TFilename const>::Type
 getBasename(TFilename const & fileName, Tag<TFormat_> const & /*formatTag*/)
 {
     typedef typename Value<TFilename>::Type                                     TValue;
-    typedef ModifiedString<TFilename const, ModView<FunctorLowcase<TValue> > >	TLowcase;
+    typedef ModifiedString<TFilename const, ModView<FunctorLowcase<TValue> > >    TLowcase;
     typedef Tag<TFormat_>                                                       TFormat;
-    
+
     TLowcase lowcaseFileName(fileName);
     for (unsigned i = 0; i < sizeof(FileExtensions<TFormat>::VALUE) / sizeof(char*); ++i)
         if (endsWith(lowcaseFileName, lowerString(FileExtensions<TFormat>::VALUE[i])))

@@ -304,7 +304,7 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
         for (TSetIt it = done.begin(); it != done.end(); ++it)
             activeReads[cl].erase(*it);
     }
- 
+
 // #if SEQAN_ENABLE_DEBUG
     {
         // Check for consistency.
@@ -321,7 +321,7 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
             if (DEBUG_INCONSISTENT_LEN)
                 std::cerr << "READ GAPS\t" << (it2 - begin(store.alignedReadStore, Standard())) << "\t>>>" << readGaps << "<<< (" << length(readGaps) << ")\n"
                           << "  beginPos == " << it2->beginPos << ", endPos == " << it2->endPos << ", gapCount == " << gapCount[it2->readId] << "\n";
-            if ((unsigned)abs(it2->endPos - it2->beginPos) != length(readGaps))
+            if ((unsigned)std::abs(it2->endPos - it2->beginPos) != length(readGaps))
             {
                 SEQAN_FAIL("Inconsistent begin/endPos");
             }
@@ -338,17 +338,17 @@ bool alignmentGraphToFragmentStore(TFragmentStore & store,
                                    Graph<Undirected<double> > const & distances,
                                    bool logging)
 {
-	typedef std::map<unsigned, unsigned> TComponentLength;
+    typedef std::map<unsigned, unsigned> TComponentLength;
 
     // -----------------------------------------------------------------------
     // Compute connected components and get topological sorting of them.
     // -----------------------------------------------------------------------
-	  String<unsigned> component;
-	  String<unsigned> order;
-	  TComponentLength componentLength;
+      String<unsigned> component;
+      String<unsigned> order;
+      TComponentLength componentLength;
     if (empty(g))
         return true;  // Nothing to do for empty graphs.
-	  if (!convertAlignment(g, component, order, componentLength))
+      if (!convertAlignment(g, component, order, componentLength))
         return false;
     unsigned numComponents = length(order);
 
