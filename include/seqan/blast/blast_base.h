@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2014, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Hannes Hauswedell <hauswedell@mi.fu-berlin.de>
+// Author: Hannes Hauswedell <hannes.hauswedell@fu-berlin.de>
 // ==========================================================================
 // Module for handling NCBI Blast I/O and E-Value computation
 // ==========================================================================
@@ -323,7 +323,6 @@ qNumFrames(BlastFormat<f,p,g> const & /**/)
     using TFormat = BlastFormat<f,p,g>;
     return (qIsTranslated(TFormat())
             ? 6
-//             : 1);
             : (qHasRevComp(TFormat())
                 ? 2
                 : 1));
@@ -422,92 +421,81 @@ sNumFrames(BlastFormat<f,p,g> const & /**/)
  * This is a constexpr function.
  */
 
-template< typename TQueryAlph, typename TSubjAlph>
-constexpr
-BlastFormatProgram
-getBlastProgramType(TQueryAlph const &, TSubjAlph const &)
-{
-    return BlastFormatProgram::INVALID_Program;
-}
-
-template<typename TQueryAlph, typename TSubjAlph,
-         typename TSpec, typename TSpec2>
-constexpr
-BlastFormatProgram
-getBlastProgramType(String<TQueryAlph, TSpec> const &,
-                    String<TSubjAlph, TSpec2> const &)
-{
-    // needs constexpr constructors of Alphabet types
-    return getBlastProgramType(TQueryAlph(), TSubjAlph());
-}
-
-// --- DNA vs DNA ---
-// NOTE that Dna VS Dna could also be TBlastX, but BlastN is more common
-constexpr
-BlastFormatProgram
-getBlastProgramType(Dna const &, Dna const &)
-{
-    return BlastFormatProgram::BLASTN;
-}
-
-constexpr
-BlastFormatProgram
-getBlastProgramType(Dna const &, Dna5 const &)
-{
-    return BlastFormatProgram::BLASTN;
-}
-
-constexpr
-BlastFormatProgram
-getBlastProgramType(Dna5 const &, Dna const &)
-{
-    return BlastFormatProgram::BLASTN;
-}
-
-constexpr
-BlastFormatProgram
-getBlastProgramType(Dna5 const &, Dna5 const &)
-{
-    return BlastFormatProgram::BLASTN;
-}
-
-// --- Protein vs Protein ---
-constexpr
-BlastFormatProgram
-getBlastProgramType(AminoAcid const &, AminoAcid const &)
-{
-    return BlastFormatProgram::BLASTP;
-}
-
-// --- Dna vs Protein ---
-constexpr
-BlastFormatProgram
-getBlastProgramType(Dna const &, AminoAcid const &)
-{
-    return BlastFormatProgram::BLASTX;
-}
-
-constexpr
-BlastFormatProgram
-getBlastProgramType(Dna5 const &, AminoAcid const &)
-{
-    return BlastFormatProgram::BLASTX;
-}
-
-// --- Protein vs Dna ---
-constexpr
-BlastFormatProgram
-getBlastProgramType(AminoAcid const &, Dna const &)
-{
-    return BlastFormatProgram::TBLASTX;
-}
-
-constexpr
-BlastFormatProgram
-getBlastProgramType(AminoAcid const &, Dna5 const &)
-{
-    return BlastFormatProgram::TBLASTX;
-}
+// template< typename TQueryAlph, typename TSubjAlph>
+// constexpr BlastFormatProgram
+// getBlastProgramType(TQueryAlph const &, TSubjAlph const &)
+// {
+//     return BlastFormatProgram::INVALID_Program;
+// }
+//
+// template<typename TQueryAlph, typename TSubjAlph,
+//          typename TSpec, typename TSpec2>
+// constexpr BlastFormatProgram
+// getBlastProgramType(String<TQueryAlph, TSpec> const &,
+//                     String<TSubjAlph, TSpec2> const &)
+// {
+//     // needs constexpr constructors of Alphabet types
+//     return getBlastProgramType(TQueryAlph(), TSubjAlph());
+// }
+//
+// // --- DNA vs DNA ---
+// // NOTE that Dna VS Dna could also be TBlastX, but BlastN is more common
+// constexpr BlastFormatProgram
+// getBlastProgramType(Dna const &, Dna const &)
+// {
+//     return BlastFormatProgram::BLASTN;
+// }
+//
+// constexpr BlastFormatProgram
+// getBlastProgramType(Dna const &, Dna5 const &)
+// {
+//     return BlastFormatProgram::BLASTN;
+// }
+//
+// constexpr BlastFormatProgram
+// getBlastProgramType(Dna5 const &, Dna const &)
+// {
+//     return BlastFormatProgram::BLASTN;
+// }
+//
+// constexpr BlastFormatProgram
+// getBlastProgramType(Dna5 const &, Dna5 const &)
+// {
+//     return BlastFormatProgram::BLASTN;
+// }
+//
+// // --- Protein vs Protein ---
+// constexpr BlastFormatProgram
+// getBlastProgramType(AminoAcid const &, AminoAcid const &)
+// {
+//     return BlastFormatProgram::BLASTP;
+// }
+//
+// // --- Dna vs Protein ---
+// constexpr BlastFormatProgram
+// getBlastProgramType(Dna const &, AminoAcid const &)
+// {
+//     return BlastFormatProgram::BLASTX;
+// }
+//
+// constexpr BlastFormatProgram
+// getBlastProgramType(Dna5 const &, AminoAcid const &)
+// {
+//     return BlastFormatProgram::BLASTX;
+// }
+//
+// // --- Protein vs Dna ---
+// constexpr BlastFormatProgram
+// getBlastProgramType(AminoAcid const &, Dna const &)
+// {
+//     return BlastFormatProgram::TBLASTX;
+// }
+//
+// constexpr BlastFormatProgram
+// getBlastProgramType(AminoAcid const &, Dna5 const &)
+// {
+//     return BlastFormatProgram::TBLASTX;
+// }
 
 // ============================================================================
 // Functions
@@ -565,55 +553,43 @@ blastScoringScheme2seqanScoringScheme(Score<TValue, TSpec> & scheme)
 template <BlastFormatFile f,
           BlastFormatProgram p,
           BlastFormatGeneration g>
-constexpr
-const char * _programTagToString(BlastFormat<f,
-                                             p,
-                                             g> const & /*tag*/)
+constexpr const char *
+_programTagToString(BlastFormat<f, p, g> const & /*tag*/)
 {
     return "UNKOWN BLAST PROGRAM";
 }
 
 template <BlastFormatFile f, BlastFormatGeneration g>
-constexpr
-const char * _programTagToString(BlastFormat<f,
-                                             BlastFormatProgram::BLASTN,
-                                             g> const & /*tag*/)
+constexpr const char *
+_programTagToString(BlastFormat<f, BlastFormatProgram::BLASTN, g> const &)
 {
     return "BlastN";
 }
 
 template <BlastFormatFile f, BlastFormatGeneration g>
-constexpr
-const char * _programTagToString(BlastFormat<f,
-                                             BlastFormatProgram::BLASTP,
-                                             g> const & /*tag*/)
+constexpr const char *
+_programTagToString(BlastFormat<f, BlastFormatProgram::BLASTP, g> const &)
 {
     return "BLASTP";
 }
 
 template <BlastFormatFile f, BlastFormatGeneration g>
-constexpr
-const char * _programTagToString(BlastFormat<f,
-                                             BlastFormatProgram::BLASTX,
-                                             g> const & /*tag*/)
+constexpr const char *
+_programTagToString(BlastFormat<f, BlastFormatProgram::BLASTX, g> const &)
 {
     return "BLASTX";
 }
 
 template <BlastFormatFile f, BlastFormatGeneration g>
-constexpr
-const char * _programTagToString(BlastFormat<f,
-                                             BlastFormatProgram::TBLASTN,
-                                             g> const & /*tag*/)
+constexpr const char *
+_programTagToString(BlastFormat<f, BlastFormatProgram::TBLASTN, g> const &)
 {
     return "TBLASTN";
 }
 
 template <BlastFormatFile f, BlastFormatGeneration g>
-constexpr
-const char * _programTagToString(BlastFormat<f,
-                                             BlastFormatProgram::TBLASTX,
-                                             g> const & /*tag*/)
+constexpr const char *
+_programTagToString(BlastFormat<f, BlastFormatProgram::TBLASTX, g> const &)
 {
     return "TBLASTX";
 }

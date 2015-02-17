@@ -29,7 +29,7 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Hannes Hauswedell <hauswedell@mi.fu-berlin.de>
+// Author: Hannes Hauswedell <hannes.hauswedell@fu-berlin.de>
 // ==========================================================================
 // Module for handling NCBI Blast I/O and E-Value computation
 // ==========================================================================

@@ -8,7 +8,7 @@
 
 cmake_minimum_required (VERSION 2.8.2)
 project (seqan_extras_tests_blast)
-message (STATUS "Configuring extras/tests/blast")
+message (STATUS "Configuring tests/blast")
 
 # ----------------------------------------------------------------------------
 # Dependencies
@@ -35,7 +35,7 @@ include_directories (${SEQAN_INCLUDE_DIRS})
 add_definitions (${SEQAN_DEFINITIONS})
 
 # Update the list of file names below if you add source files to your test.
-add_executable (test_blast test_blast.cpp test_blast.h)
+add_executable (test_blast test_blast.cpp test_blast_statistics.h test_blast_output.h test_blast_input.h)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_blast ${SEQAN_LIBRARIES})
