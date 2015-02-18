@@ -7,7 +7,7 @@ Table of Contents
   1.   Overview
   2.   Installation
   3.   Usage
-  4.   Output Format
+  4.   Output Formats
   5.   Examples
   6.   Contact
   7.   References
@@ -44,7 +44,8 @@ bit-parallel approximate string search algorithm proposed by Myers (1999). The
 found matches are recorded, duplicate-filtered, and ranked by the number of
 errors (and deviation from a given paired-end insert size). At the end, the
 results are written to an output file (-o FILENAME). Besides others, RazerS 3
-supports a very efficient native format and the SAM format (-of sam).
+supports a very efficient native format (.razers) and the commonly used SAM
+and BAM formats (.sam or .bam).
 
 ------------------------------------------------------------------------------
 2. Installation
@@ -191,7 +192,7 @@ pairs.
   [ -o FILE ],  [ --output FILE ]
 
   Change the output filename to FILE. By default, this is the (first) read
-  filename extended by the suffix '.result'.
+  filename extended by the suffix '.razers'.
 
   [ -v ],  [ --verbose ]
 
@@ -213,12 +214,6 @@ pairs.
 ------------------------------------------------------------------------------
 3.2. Output Format Options
 ------------------------------------------------------------------------------
-
-  [ -of STRING ], [ --output-format STRING ]
-
-  Select the output format used for writing the results. Valid values are
-  razer (default), fasta, eland, gff, sam, and amos. See section 4, for more
-  details
 
   [ -a ],  [ --alignment ]
 
@@ -379,15 +374,15 @@ pairs.
 4. Output Formats
 ------------------------------------------------------------------------------
 
-RazerS 3 supports currently 4 different output formats selectable via the
-"--output-format NUM" option. The following values for NUM are possible:
+RazerS 3 supports currently 5 different output formats which are automatically
+chosen from the output filename suffix.
 
-  0 = Razer Format
-  1 = Enhanced Fasta Format
-  2 = Eland Format
-  3 = General Feature Format (GFF)
-  4 = Sequence Alignment and Mapping Format (SAM)
-
+  .razers    = Razer Format
+  .fa|.fasta = Enhanced Fasta Format
+  .eland     = Eland Format
+  .sam|.bam  = Sequence Alignment and Mapping Format (SAM)
+  .afg       = AMOS assembler format 
+  
 ------------------------------------------------------------------------------
 4.1. Razer Format
 ------------------------------------------------------------------------------
@@ -470,65 +465,20 @@ Additional value description:
                (e.g. 12A: 12'th base was A in the genome)
 
 ------------------------------------------------------------------------------
-4.4. General Feature Format
-------------------------------------------------------------------------------
-
-The General Feature Format is specified by the Sanger Institute as a tab-
-delimited text format with the following columns:
-
-<seqname> <src> <feat> <start> <end> <score> <strand> <frame> [attr] [cmts]
-
-See also: http://www.sanger.ac.uk/Software/formats/GFF/GFF_Spec.shtml
-Consistent with this specification razers3 GFF output looks as follows:
-
-GNAME razers read GBEGIN GEND PERCID GSTRAND . ATTRIBUTES
-
-Match value description:
-
-  GNAME        Name of the genome sequence (see --genome-naming)
-  razers       Constant
-  read         Constant
-  GBEGIN       Beginning position in the genome sequence
-               (positions are counted from 1)
-  GEND         End position in the genome sequence (included!)
-  PERCID       Percent identity (see --percent-identity)
-  GSTRAND      '+'=forward strand or '-'=reverse strand
-  .            Constant
-  ATTRIBUTES   A list of attributes in the format <tag_name>[=<tag>]
-               separated by ';'
-
-Attributes are:
-
-  ID=          Name of the read
-  quality=     Ascii coded quality values of the read
-  cigar=       Read-reference alignment description in cigar format*
-  mutations=   Positions and bases that differ from the reference
-               with respect to the read (counting from 1)
-  unique       This is the best read match and it is unique
-  multi        This is one of multiple best machtes
-  suboptimal   This is a suboptimal read match
-
-The original read sequence can be retrieved using the genomic subsequence
-and the information contained in the 'cigar' and 'mutations' tags.
-
-For matches on the reverse strand, GBEGIN and GEND are positions on the
-related forward strand. It holds GBEGIN < GEND, regardless of GSTRAND.
-
-*http://may2005.archive.ensembl.org/Docs/wiki/html/EnsemblDocs/CigarFormat.html
-
-------------------------------------------------------------------------------
-4.5. SAM Output Format
+4.4. SAM or BAM Output Format
 ------------------------------------------------------------------------------
 
 The SAM output format has established itself as the standard output format for
 read alignments. Altough SAM is capable of representing a multiple alignment
 between reads and contig (with paddings), RazerS 3 only outputs pairwise
 alignments as this way has established to be the defacto standard.
+The BAM format is the binary representation of SAM compressed with gzip.
+Whenever possible the more compact BAM format should be preferred over SAM.
 
 See http://samtools.sourceforge.net/ for more details.
 
 ------------------------------------------------------------------------------
-4.6. AMOS Output Format
+4.5. AMOS Output Format
 ------------------------------------------------------------------------------
 
 The AMOS assembly format (aka AFG format) is used by the AMOS assembler and
