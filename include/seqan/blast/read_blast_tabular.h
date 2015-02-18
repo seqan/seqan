@@ -134,8 +134,7 @@ onMatch(TFwdIterator & iter,
                     p,
                     g>       const & /*tag*/)
 {
-    onMatch(iter,
-                   BlastFormat<BlastFormatFile::TABULAR,p,g>());
+    onMatch(iter, BlastFormat<BlastFormatFile::TABULAR,p,g>());
 }
 
 
@@ -151,9 +150,9 @@ _verifyFields(StringSet<TString>    const & fields,
                           p,
                           g>        const & /*tag*/)
 {
-//     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-//                         p,
-//                         BlastFormatGeneration::BLAST>  TFormat;
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        p,
+                        g>  TFormat;
 
     if (g == BlastFormatGeneration::BLAST_PLUS)
         if ((hits == 0) && length(fields) )
@@ -161,11 +160,16 @@ _verifyFields(StringSet<TString>    const & fields,
 
 
     CharString fieldStr;
-    joinStringSet(fieldStr, fields, ", ");
+    joinStringSet(fieldStr, fields, _seperatorString(TFormat());
 
-    // it is only relevant that the firtst 12 fields by as expected
-    prefix(fieldStr, length(BlastMatchField<g>::defaults))
-              == BlastMatchField<g>::defaults;
+    // compare the first twelve fields
+
+    // will be == 0 for always be zero but this is cleaner
+    const uint8_t std = static_cast<uint8_t>(BlastMatchField<g>::Enum::STD);
+
+    if (prefix(fieldStr, length(BlastMatchField<g>::columnLabels[std])) !=
+        BlastMatchField<g>::columnLabels[std])
+        throw std::ios_base::failure(BAD_FORMAT);
 }
 
 // ----------------------------------------------------------------------------
@@ -291,7 +295,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
     }
 
     if (!strict)
-        0;
+        return;
 
     if (g == BlastFormatGeneration::BLAST_LEGACY)
         if (  keyCorrect                &&
@@ -299,7 +303,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
              (dbLinePresent      == 1)  &&
              (fieldsLinePresent  == 1)  &&
              (length(otherLines) == 0)   )
-            0;
+            return;
 
     if (g == BlastFormatGeneration::BLAST_PLUS)
         if (( keyCorrect                                   &&
@@ -309,7 +313,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
              ( (fieldsLinePresent == 1) || (hits==0) )     &&
              (length(otherLines)  == 0)                     ) ||
              ( (lastLine          == 1) && atEnd(iter))   )
-            0;
+            return;
 
     throw std::ios_base::failure(BAD_FORMAT);
 }
@@ -328,9 +332,8 @@ _readHeaderImplBlastTab(TqId                                    & qId,
  * @param[out]  otherLines  StringSet to hold any comment or header lines that are not identified otherwise
  * @param[in,out]   iter  RecordReader
  * @param[in]   strict  bool to signify whether the function should error on a non-conforming header or just "get whatever possible". If not using strict, it is recommended to pass fields and otherLines and verify these manually.
- * @param[in]   tag     BlastFormat specialization, with BlastFormat::_m == TABULAR || TABULAR_WITH_HEADER
+ * @param[in]   tag     @link BlastFormat @endlink tag, only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported.
  *
- * @    0 on success, and non-zero otherwise
  * @see BlastFormat#onMatch
  * @headerfile seqan/blast.h
  * @section Remarks
@@ -588,7 +591,7 @@ readHeader(TqId                                             & qId,
  *
  * @param[in,out]   iter  RecordReader
  * @param[in]   strict  bool to signify whether the function should error on a non-conforming header or just "skip whatever possible".
- * @param[in]   tag     BlastFormat specialization, with BlastFormat::_m == TABULAR || TABULAR_WITH_HEADER
+ * @param[in]   tag     @link BlastFormat @endlink tag, only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported.
  *
  * @see BlastFormat#skipUntilMatch
  * @    0 on success, and non-zero otherwise
@@ -646,7 +649,7 @@ skipHeader(TFwdIterator & iter,
  * @fn BlastFormat#skipUntilMatch
  * @brief skip arbitrary number of headers and/or comment lines until the beginning of a match is reached
  *
- * @signature int skipUntilMatch(iterator/stream, tag);
+ * @signature skipUntilMatch(iterator/stream, tag);
  *
  * @param[in,out]   iter  RecordReader
  * @param[in]       tag     BlastFormat specialization,
@@ -667,7 +670,7 @@ template <typename TFwdIterator,
           BlastFormatGeneration g>
 inline void
 skipUntilMatch(TFwdIterator & iter,
-                BlastFormat<m,p,g>      const & /*tag*/)
+               BlastFormat<m,p,g>      const & /*tag*/)
 {
     while ((!atEnd(iter)) && value(iter) == '#') // skip comments
         skipLine(iter);
@@ -677,113 +680,341 @@ skipUntilMatch(TFwdIterator & iter,
 // Function readMatch()                               [Single pass]
 // ----------------------------------------------------------------------------
 
+template <typename TqId,
+          typename TsId,
+          typename TPos,
+          typename TAlign,
+          BlastFormatGeneration g>
+inline void
+_readField(BlastMatch<TqId, TsId, TAlign, TPos> & match,
+           CharString const & buffer,
+           typename BlastMatchField<g>::Enum const fieldId)
+{
+    typedef typename BlastMatchField<g>::Enum ENUM;
+    switch (fieldId)
+    {
+        case ENUM::STD: // this is cought in the calling function
+            break;
+        case ENUM::Q_SEQ_ID:
+            match.qId = buffer;
+            break;
+//         case ENUM::Q_GI: write(s,  * ); break;
+//         case ENUM::Q_ACC: write(s,  * ); break;
+//         case ENUM::Q_ACCVER: write(s,  * ); break;
+        case ENUM::Q_LEN:
+            match.qLength = lexicalCast<TPos>(buffer);
+            break;
+        case ENUM::S_SEQ_ID:
+            sId = buffer;
+            break;
+//         case ENUM::S_ALL_SEQ_ID: write(s,  * ); break;
+//         case ENUM::S_GI: write(s,  * ); break;
+//         case ENUM::S_ALL_GI: write(s,  * ); break;
+//         case ENUM::S_ACC: write(s,  * ); break;
+//         case ENUM::S_ACCVER: write(s,  * ); break;
+//         case ENUM::S_ALLACC: write(s,  * ); break;
+        case ENUM::S_LEN:
+            match.sLength = lexicalCast<TPos>(buffer);
+            break;
+        case ENUM::Q_START:
+            match.qStart = lexicalCast<TPos>(buffer);
+            break;
+        case ENUM::Q_END:
+            match.qEnd = lexicalCast<TPos>(buffer);
+            break;
+        case ENUM::S_START:
+            match.sStart = lexicalCast<TPos>(buffer);
+            break;
+        case ENUM::S_END:
+            match.sEnd = lexicalCast<TPos>(buffer);
+            break;
+//         case ENUM::Q_SEQ: write(s,  * ); break;
+//         case ENUM::S_SEQ: write(s,  * ); break;
+        case ENUM::E_VALUE:
+            match.eValue = lexicalCast<double>(buffer);
+            break;
+        case ENUM::BIT_SCORE:
+            match.bitScore = lexicalCast<double>(buffer);
+            break;
+        case ENUM::SCORE:
+            match.score = lexicalCast<TPos>(buffer);
+            break;
+        case ENUM::LENGTH:
+            match.aliLength = lexicalCast<TPos>(buffer);
+            break;
+        case ENUM::P_IDENT:
+            // we don't have pIdent in the object, so instead we check if
+            // N_IDENT is set already. If not we set N_IDENT to P_IDENT*100
+            // and fix it later
+            if (!_memberIsSet(match.identities))
+                match.identities = lexicalCast<TPos>(buffer) * 100;
+            break;
+        case ENUM::N_IDENT:
+            match.identities = lexicalCast<TPos>(buffer);
+            break;
+        case ENUM::MISMATCH:
+            match.mismatches = lexicalCast<TPos>(buffer);
+            break;
+        case ENUM::POSITIVE:
+            match.positives = lexicalCast<TPos>(buffer);
+            break;
+        case ENUM::GAP_OPEN:
+            match.gapOpenings = lexicalCast<TPos>(buffer);
+            break;
+        case ENUM::GAPS:
+            match.gaps = lexicalCast<TPos>(buffer);
+            break;
+        case ENUM::P_POS:
+            // we don't have P_POS in the object, so instead we check if
+            // POSITIVE is set already. If not we set POSITIVE to P_POS*100
+            // and fix it later
+            if (!_memberIsSet(match.positives))
+                match.positives = lexicalCast<TPos>(buffer) * 100;
+        case ENUM::FRAMES:
+        {
+            StringSet<CharString> buffers;
+            strSplit(buffers, buffer, '/');
+            if (length(buffers) != 2)
+                throw std::ios_base::failure(BAD_FORMAT);
+            match.qFrameShift = lexicalCast<int8_t>(buffers[0]);
+            match.sFrameShift = lexicalCast<int8_t>(buffers[1]);
+        } break;
+        case ENUM::Q_FRAME:
+            match.qFrameShift = lexicalCast<int8_t>(buffer);
+            break;
+        case ENUM::S_FRAME:
+            match.sFrameShift = lexicalCast<int8_t>(buffer);
+            break;
+//         case ENUM::BTOP: write( * ); break;
+//         case ENUM::S_TAX_IDS: write( * ); break;
+//         case ENUM::S_SCI_NAMES: write( * ); break;
+//         case ENUM::S_COM_NAMES: write( * ); break;
+//         case ENUM::S_BLAST_NAMES: write( * ); break;
+//         case ENUM::S_S_KINGDOMS: write( * ); break;
+//         case ENUM::S_TITLE: write( * ); break;
+//         case ENUM::S_ALL_TITLES: write( * ); break;
+//         case ENUM::S_STRAND: write( * ); break;
+//         case ENUM::Q_COV_S: write( * ); break;
+//         case ENUM::Q_COV_HSP:
+    };
+}
+
+template <typename TqId,
+          typename TsId,
+          typename TFwdIterator,
+          typename TPos,
+          typename TAlign,
+          typename TFieldList,
+          BlastFormatProgram    p,
+          BlastFormatGeneration g>
+inline void
+_readMatchImpl(BlastMatch<TqId, TsId, TAlign, TPos>      & match,
+               TFwdIterator & iter,
+               TFieldList const & fieldList,
+               BlastFormat<BlastFormatFile::TABULAR,
+                           p,
+                           g> const & /*tag*/)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,p,g> TFormat;
+    // header should have been read or skipped
+    if (SEQAN_UNLIKELY(!onMatch(iter, TFormat())))
+        throw std::ios_base::failure(BAD_FORMAT);
+
+    match._maxInitialize(); // mark all members as not set
+
+    CharString line;
+    readLine(line, iter);
+
+    StringSet<CharString> fields;
+    strSplit(fields, line, _seperatorString(TFormat()) /* == '\t' */);
+
+    bool hadPIDENT = false;
+    bool hasPPOS = false;
+
+    auto it = begin(fields);
+    auto itEnd = end(fields);
+    for (BlastMatchField<g>::Enum const f : fieldList)
+    {
+        // this field represents multiple fields
+        if (SEQAN_UNLIKELY(f == BlastMatchField<g>::Enum::STD))
+        {
+            for (BlastMatchField<g>::Enum const f2 :
+                 BlastMatchField<g>::defaults)
+            {
+                if (SEQAN_UNLIKELY(it == itEnd))
+                    throw std::ios_base::failure(BAD_FORMAT);
+
+                _readField(match, *it, f2);
+                ++it;
+            }
+            hasPIDENT = true;
+        } else
+        {
+            if (SEQAN_UNLIKELY(it == itEnd))
+                throw std::ios_base::failure(BAD_FORMAT);
+
+            _readField(match, *it, f);
+            ++it;
+            if (f == BlastMatchField<g>::Enum::P_IDENT)
+                hasPIDENT = true;
+            if (f == BlastMatchField<g>::Enum::P_POS)
+                hasPPOS = true;
+        }
+        skipLine(iter); // skip possibly remaining fields and goto next line
+    }
+
+    // retransform the percentages to real numbers and compute gaps
+    if (_memberIsSet(match.aliLength) && (hasPIDENT))
+        match.identities = std::round((match.aliLength * match.identities) /
+                                       10000);
+    if (_memberIsSet(match.aliLength) && (hasPPOS))
+        match.positives = std::round((match.aliLength * match.positives) /
+                                       10000);
+     if (_memberIsSet(match.aliLength) && _memberIsSet(match.identities) &&
+         _memberIsSet(match.mismatches) && !_memberIsSet(match.gaps))
+        match.gaps = match.aliLength - match.mismatches - match.identities;
+}
+
 /*!
- * @fn BlastFormat#readMatch
+ * @fn BlastMatch#readMatch
  * @brief read a match from a file in BlastFormat
  *
- * @signature int readMatch(blastMatch, iterator/stream, BlastFormat);
+ * @signature int readMatch(blastMatch, iterator/stream, [fieldList,] BlastFormat);
  *
- * @param[out]      blastMatch A BlastMatch object to hold all relevant info
- * @param[in,out]   iter  RecordReader
- * @param[in]       tag     BlastFormat specialization, with BlastFormat::_m == TABULAR || TABULAR_WITH_HEADER
+ * @param[out]      blastMatch  A @link BlastMatch @endlink object to hold all relevant info
+ * @param[in,out]   iter        An interator or stream
+ * @param[in]       fieldList   the expected columns in the file, defaults to
+ * @param[in]       tag         @link BlastFormat @endlink tag, only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported.
  *
- * @signature int readMatch(qId, sId, identities, aliLength, numMismatches, gapOpenings, qStart, qEnd, sStart, sEnd, eValue, bitScore, iterator/stream, BlastFormat);
- * @param[out]   qId ID-String of the query
- * @param[out]   sId ID-String of the subject (sequence in database)
- * @param[out]   identities number of identies in alignment (not percentage!)
- * @param[out]   aliLength length of alignment
- * @param[out]   numMismatches number of mismatches in alignment
- * @param[out]   gapOpenings number consecutive gaps per alignment
- * @param[out]   qStart alignment begin position on query
- * @param[out]   qEnd alignment end position on query
- * @param[out]   sStart alignment begin position on subject
- * @param[out]   sEnd alignment end position on subject
- * @param[out]   eValue alignment e-Value
- * @param[out]   bitScore alignment bit-Score
- * @param[in,out]    iter  RecordReader
- * @param[in]    tag     BlastFormat specialization, with BlastFormat::_m == TABULAR || TABULAR_WITH_HEADER
+ * This signature works with @link BlastMatch @endlinkes which is the recommended
+ * way. The fieldList parameter can be specified if the file if you expect a
+ * custom column composition (this only works for BlastFormatGeneration ==
+ * BLAST_PLUS).
  *
- * @signature int readMatch(fields, iterator/stream, BlastFormat);
+ * Please note that the only transformations made to the data are the following:
  *
- * @param[out]      fields a StringSet with all the columns as entries
- * @param[in,out]   iter  RecordReader
- * @param[in]       tag     BlastFormat specialization, with BlastFormat::_m == TABULAR || TABULAR_WITH_HEADER
+ *  * computation of the number of identities (from the percentage) [default]
+ *  * computation of the number of positives (from the percentage) [if given]
+ *  * number of gaps computed from other values [default]
  *
+ * In contrast to @link BlastMatch#writeMatch @endlink no other transformations
+ * are made, e.g. the positions are still one-indexed and
+ * flipped for reverse strand matches. This is due to the required fields for
+ * retransformation (sequence lengths, frames) not being available in the
+ * default columns.
  *
- * @    0 on success, and non-zero otherwise
+ * Instead of using this signature you may also use @link BlastFormat#readMatch
+ * @endlink which works without a @link BlastMatch @endlink parameter and
+ * supports arbitrary columns.
+ *
  * @headerfile seqan/blast.h
  */
 
-// template <typename TString,
-//           typename TFile,
-//           typename TPass>
-// inline void
-// _readMatchImplBlastTabArbitrary(StringSet<TString>          & fields,
-//                                 TFwdIterator & iter)
-// {
-//     CharString buf;
-//     readLine(buf, iter);
-//     strSplit(fields, buf, '\t', false);
-// }
-//
-// template <typename TqId,
-//           typename TsId,
-//           typename TFwdIterator,
-//           typename TPos>
-// inline void
-// _readMatchImplBlastTabDefault(TqId      & qId,
-//                               TsId      & sId,
-//                               unsigned  & identities,
-//                               unsigned  & ali_length,
-//                               unsigned  & num_mismatches,
-//                               unsigned  & gap_openings,
-//                               TPos      & qStart,
-//                               TPos      & qEnd,
-//                               TPos      & sStart,
-//                               TPos      & sEnd,
-//                               double    & eval,
-//                               double    & bitScore,
-//                               TFwdIterator & iter)
-// {
-//     int ret = 0;
-//     double percentIdent = 0;
-//
-//     for (int i = 0; i < 12; ++i)
-//     {
-//         CharString buf;
-//         if (i < 11)
-//         {
-//             readUntilChar(buf, iter, '\t');
-//             goNext(iter); //skip '\t', go to begin of next field
-//         } else
-//         {
-//             readUntilTabOrLineBreak(buf, iter);
-//             skipLine(iter); // skip extra fields or '\n'
-//         }
-//
-//         switch(i)
-//         {
-//             case  0: ret = lexicalCast2(qId,            buf); break;
-//             case  1: ret = lexicalCast2(sId,            buf); break;
-//             case  2: ret = lexicalCast2(percentIdent,   buf); break;
-//             case  3: ret = lexicalCast2(ali_length,     buf); break;
-//             case  4: ret = lexicalCast2(num_mismatches, buf); break;
-//             case  5: ret = lexicalCast2(gap_openings,   buf); break;
-//             case  6: ret = lexicalCast2(qStart,         buf); break;
-//             case  7: ret = lexicalCast2(qEnd,           buf); break;
-//             case  8: ret = lexicalCast2(sStart,         buf); break;
-//             case  9: ret = lexicalCast2(sEnd,           buf); break;
-//             case 10: ret = lexicalCast2(eval,           buf); break;
-//             case 11: ret = lexicalCast2(bitScore,       buf); break;
-//         }
-//         ret = !ret; // lexicalCast2 returns true when successful
-//         if (ret)
-//             throw std::ios_base::failure(BAD_FORMAT);
-//     }
-//
-//     identities = std::ceil(percentIdent * ali_length / 100);
-// }
+template <typename TqId,
+          typename TsId,
+          typename TFwdIterator,
+          typename TPos,
+          typename TAlign,
+          typename TFieldList,
+          BlastFormatProgram p>
+inline void
+readMatch(BlastMatch<TqId, TsId, TAlign, TPos> & match,
+          TFwdIterator & iter,
+          TFieldList const & fieldList,
+          BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                      p,
+                      BlastFormatGeneration::BLAST_PLUS> const & /*tag*/)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        p,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    _readMatchImpl(match, iter, fieldList, TFormat());
+}
 
+template <typename TqId,
+          typename TsId,
+          typename TFwdIterator,
+          typename TPos,
+          typename TAlign,
+          typename TFieldList,
+          BlastFormatProgram    p>
+inline void
+readMatch(BlastMatch<TqId, TsId, TAlign, TPos> & match,
+          TFwdIterator & iter,
+          TFieldList const & fieldList,
+          BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                      p,
+                      BlastFormatGeneration::BLAST_PLUS> const & /*tag*/)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        p,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    _readMatchImpl(match, iter, fieldList, TFormat());
+}
+
+
+// default fields
+template <typename TqId,
+          typename TsId,
+          typename TFwdIterator,
+          typename TPos,
+          typename TAlign,
+          BlastFormatProgram    p,
+          BlastFormatGeneration g>
+inline void
+readMatch(BlastMatch<TqId, TsId, TAlign, TPos>      & match,
+          TFwdIterator & iter,
+          BlastFormat<BlastFormatFile::TABULAR,
+                       p,
+                       g>                     const & /*tag*/)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,p,g> TFormat;
+    _readMatchImpl(match, iter, BlastMatchField<g>::defaults, TFormat());
+}
+
+// default fields
+template <typename TqId,
+          typename TsId,
+          typename TFwdIterator,
+          typename TPos,
+          typename TAlign,
+          BlastFormatProgram    p,
+          BlastFormatGeneration g>
+inline void
+readMatch(BlastMatch<TqId, TsId, TAlign, TPos>      & match,
+          TFwdIterator & iter,
+          BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                       p,
+                       g>                     const & /*tag*/)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,p,g> TFormat; // same as above
+    _readMatchImpl(match, iter, BlastMatchField<g>::defaults, TFormat());
+}
+
+/*!
+ * @fn BlastFormat#readMatch
+ * @brief read arbitrary columsn from a file in BlastFormat
+ *
+ * @signature int readMatch(iterator/stream, BlastFormat, args ...);
+ *
+ * @param[in,out]   iter        An interator or stream
+ * @param[in]       tag         Only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported
+ * @param[out]      args        Arbitrary typed variables
+ *
+ * Use this signature only if you do not or cannot use @link BlastMatch
+ * @endlinkes. You can specify any number of arguments that are expecting
+ * to be able to hold the values in the columns read.
+ *
+ * You may specify less columns that are available in the file, all but the first
+ * n will be discarded.
+ *
+ * No transformations are made on the data, e.g. the positions are still
+ * one-indexed and flipped for reverse strand matches.
+ *
+ * @headerfile seqan/blast.h
+ */
+
+// arbitrary columns
 template <typename TTarget,
           typename std::enable_if<IsSequence<TTarget>>::VALUE> = 0>
 inline void
@@ -835,114 +1066,6 @@ _readMatchImplBlastTab(TFwdIterator & iter, TArg & arg, TArgs & args ...)
     _readMatchImplBlastTab(iter, args);
 }
 
-// template <typename TqId,
-//           typename TsId,
-//           typename TFwdIterator,
-//           typename TPos,
-//           BlastFormatProgram    p,
-//           BlastFormatGeneration g>
-// inline void
-// readMatch(TqId                         & qId,
-//           TsId                         & sId,
-//           TPos                         & identities,
-//           TPos                         & ali_length,
-//           TPos                         & num_mismatches,
-//           TPos                         & gap_openings,
-//           TPos                         & qStart,
-//           TPos                         & qEnd,
-//           TPos                         & sStart,
-//           TPos                         & sEnd,
-//           double                       & eval,
-//           double                       & bitScore,
-//           TFwdIterator & iter,
-//           BlastFormat<BlastFormatFile::TABULAR,p,g>     const & /*tag*/)
-// {
-//     _readMatchImplBlastTab(iter, qId, sId, identities, ali_length, num_mismatches,
-//                gap_openings, qStart, qEnd, sStart, sEnd, eval, bitScore);
-// }
-//
-// template <typename TqId,
-//           typename TsId,
-//           typename TFwdIterator,
-//           typename TPos,
-//           BlastFormatProgram    p,
-//           BlastFormatGeneration g>
-// inline void
-// readMatch(TqId                         & qId,
-//           TsId                         & sId,
-//           TPos                         & identities,
-//           TPos                         & ali_length,
-//           TPos                         & num_mismatches,
-//           TPos                         & gap_openings,
-//           TPos                         & qStart,
-//           TPos                         & qEnd,
-//           TPos                         & sStart,
-//           TPos                         & sEnd,
-//           double                       & eval,
-//           double                       & bitScore,
-//           TFwdIterator & iter,
-//           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,p,g> const &/*tag*/)
-// {
-//     _readMatchImplBlastTab(iter, qId, sId, identities, ali_length, num_mismatches,
-//                gap_openings, qStart, qEnd, sStart, sEnd, eval, bitScore);
-// }
-
-template <typename TqId,
-          typename TsId,
-          typename TFwdIterator,
-          typename TPos,
-          typename TAlign,
-          BlastFormatProgram    p,
-          BlastFormatGeneration g>
-inline void
-readMatch(BlastMatch<TqId, TsId, TAlign, TPos>      & match,
-          TFwdIterator & iter,
-          BlastFormat<BlastFormatFile::TABULAR,
-                       p,
-                       g>                     const & /*tag*/)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR,p,g> TFormat;
-    // header should have been read or skipped
-    if (!onMatch(iter, TFormat()))
-        throw std::ios_base::failure(BAD_FORMAT);
-
-    // TODO load identities into buffer
-
-    _readMatchImplBlastTab(iter,
-                                  match.qId,
-                                  match.sId,
-                                  match.identities,
-                                  match.aliLength,
-                                  match.mismatches,
-                                  match.gapOpenings,
-                                  match.qStart,
-                                  match.qEnd,
-                                  match.sStart,
-                                  match.sEnd,
-                                  match.eval,
-                                  match.bitScore);
-    // TODO calculate some more things from given knowledge
-    // TODO retransform coordinates
-}
-
-template <typename TqId,
-          typename TsId,
-          typename TFwdIterator,
-          typename TPos,
-          typename TAlign,
-          BlastFormatProgram    p,
-          BlastFormatGeneration g>
-inline void
-readMatch(BlastMatch<TqId, TsId, TAlign, TPos>      & match,
-          TFwdIterator & iter,
-          BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                       p,
-                       g>                     const & /*tag*/)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR,p,g> TFormat; // same as above
-    readMatch(match, iter, TFormat());
-}
-
 // custom arguments
 template <typename TFwdIterator,
           typename ... Targs,
@@ -955,7 +1078,7 @@ readMatch(TFwdIterator & iter,
 {
     typedef BlastFormat<BlastFormatFile::TABULAR,p,g> TFormat;
     // header should have been read or skipped
-    if (!onMatch(iter, TFormat()))
+    if (SEQAN_UNLIKELY(!onMatch(iter, TFormat())))
         throw std::ios_base::failure(BAD_FORMAT);
 
     _readMatchImplBlastTab(match, iter, args);
@@ -971,25 +1094,8 @@ readMatch(TFwdIterator & iter,
           TArgs ... args)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR,p,g> TFormat; // same as above
-    readMatch(match, iter, TFormat());
+    readMatch(match, iter, TFormat(), args);
 }
-
-// template <typename TFwdIterator,
-//           typename TString,
-//           BlastFormatFile m,
-//           BlastFormatProgram p,
-//           BlastFormatGeneration g>
-// inline void
-// readMatch(StringSet<TString>            & fields,
-//            TFwdIterator & iter,
-//            BlastFormat<m,p,g>     const & /*tag*/)
-// {
-//     // header should have been read or skipped
-//     if (!onMatch(iter, BlastFormat<m,p,g>()))
-//         throw std::ios_base::failure(BAD_FORMAT);
-//
-//     _readMatchImplBlastTabArbitrary(fields, iter);
-// }
 
 // ----------------------------------------------------------------------------
 // Function readRecord()                               [Single pass]
@@ -1005,7 +1111,6 @@ readMatch(TFwdIterator & iter,
  * @param[in,out]   iter      RecordReader
  * @param[in]       tag         BlastFormat specialization
  *
- * @    0 on success, and non-zero otherwise
  *
  * @headerfile seqan/blast.h
  */
@@ -1054,7 +1159,6 @@ readRecord(BlastRecord<TDbName, TQId, TSId, TAlign, TPos>   & blastRecord,
                                             iter);
         appendValue(blastRecord.matches, match);
     }
-    0;
 }
 
 template <typename TFwdIterator,

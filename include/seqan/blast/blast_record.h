@@ -164,8 +164,8 @@ struct BlastMatch
     double          eValue        = 0;
     double          bitScore      = 0;
 
-    signed char     qFrameShift   = 1;
-    signed char     sFrameShift   = 1;
+    int8_t          qFrameShift   = 1;
+    int8_t          sFrameShift   = 1;
 
     TAlign          align;
 
@@ -239,7 +239,51 @@ struct BlastMatch
 //             return true;
         return false;
     }
+
+    inline void _maxInitialize()
+    {
+        qId           = "not init";
+        sId           = "not init";
+
+        score         = std::numeric_limits<long>::max();
+
+        qStart        = std::numeric_limits<TPos>::max();
+        qEnd          = std::numeric_limits<TPos>::max();
+        sStart        = std::numeric_limits<TPos>::max();
+        sEnd          = std::numeric_limits<TPos>::max();
+
+        qLength       = std::numeric_limits<TPos>::max();
+        sLength       = std::numeric_limits<TPos>::max();
+
+        aliLength     = std::numeric_limits<TPos>::max();
+        identities    = std::numeric_limits<TPos>::max();
+        positives     = std::numeric_limits<TPos>::max();
+        mismatches    = std::numeric_limits<TPos>::max();
+        gaps          = std::numeric_limits<TPos>::max();
+        gapOpenings   = std::numeric_limits<TPos>::max();
+
+        eValue        = std::numeric_limits<double>::max();
+        bitScore      = std::numeric_limits<double>::max();
+
+        qFrameShift   = std::numeric_limits<int8_t>::max();
+        sFrameShift   = std::numeric_limits<int8_t>::max();
+    }
 };
+
+
+inline bool
+_memberIsSet(CharString const & in)
+{
+    return in != "not init";
+}
+
+template <typename T,
+          typename std::enable_if<Is<NumericConcept<T>>::VALUE> = 0>
+inline bool
+_memberIsSet(TNumber const & in)
+{
+    return in != std::numeric_limits<TNumber>::max();
+}
 
 /*!
  * @class BlastRecord
