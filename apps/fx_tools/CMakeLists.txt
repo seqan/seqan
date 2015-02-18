@@ -43,6 +43,10 @@ target_link_libraries (fx_bam_coverage ${SEQAN_LIBRARIES})
 add_executable (fx_read_depth fx_read_depth.cpp)
 target_link_libraries (fx_read_depth ${SEQAN_LIBRARIES})
 
+# Computation of variant density.
+add_executable (fx_variant_density fx_variant_density.cpp)
+target_link_libraries (fx_variant_density ${SEQAN_LIBRARIES})
+
 # Computation of statistics on FASTQ files.
 add_executable (fx_fastq_stats fx_fastq_stats.cpp)
 target_link_libraries (fx_fastq_stats ${SEQAN_LIBRARIES})
@@ -57,7 +61,7 @@ if (NOT SEQAN_PREFIX_SHARE_DOC)
 endif (NOT SEQAN_PREFIX_SHARE_DOC)
 
 # Install fx_tools in ${PREFIX}/bin directory
-install (TARGETS fx_bam_coverage fx_read_depth fx_fastq_stats
+install (TARGETS fx_bam_coverage fx_read_depth fx_variant_density fx_fastq_stats
          DESTINATION bin)
 
 # Install non-binary files for the package to "." for app builds and
@@ -80,7 +84,7 @@ install (FILES LICENSE
 # ----------------------------------------------------------------------------
 
 # Include executable razers in CTD structure.
-set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} fx_fastq_stats fx_bam_coverage fx_read_depth CACHE INTERNAL "")
+set (SEQAN_CTD_EXECUTABLES ${SEQAN_CTD_EXECUTABLES} fx_fastq_stats fx_bam_coverage fx_read_depth fx_variant_density CACHE INTERNAL "")
 
 # ----------------------------------------------------------------------------
 # CPack Install
