@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2013, Hannes Hauswedell, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,20 +29,30 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Hannes Hauswedell <hauswedell@mi.fu-berlin.de>
+// Author: Hannes Hauswedell <hannes.hauswedell@fu-berlin.de>
 // ==========================================================================
 // Module for handling NCBI Blast I/O and E-Value computation
 // ==========================================================================
 
-#ifndef SEQAN_EXTRAS_BLAST_H
-#define SEQAN_EXTRAS_BLAST_H
+#ifndef SEQAN_BLAST_H
+#define SEQAN_BLAST_H
 
 #ifdef SEQAN_CXX11_STANDARD
 
+#include <cinttypes>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <sstream>
+
+// FREEBSD lacks some defines in its libc
+#ifdef __FreeBSD__
+#define _GLIBCXX_USE_C99 1
+#include <math.h>
+#define ROUND round
+#else
+#define ROUND std::round
+#endif
 
 #include <seqan/basic.h>
 #include <seqan/version.h>
@@ -52,10 +62,10 @@
 #include "blast/blast_base.h"
 #include "blast/blast_record.h"
 #include "blast/blast_statistics.h"
-// #include "blast/read_blast_report.h"
-// #include "blast/read_blast_tabular.h"
-#include "blast/write_blast_report.h"
-#include "blast/write_blast_tabular.h"
+#include "blast/blast_tabular.h"
+#include "blast/blast_tabular_read.h"
+#include "blast/blast_tabular_write.h"
+#include "blast/blast_report_write.h"
 
 #else //SEQAN_C++11_STANDARD
 

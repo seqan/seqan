@@ -1,7 +1,7 @@
 // ==========================================================================
 //                 SeqAn - The Library for Sequence Analysis
 // ==========================================================================
-// Copyright (c) 2014, Knut Reinert, FU Berlin
+// Copyright (c) 2006-2015, Knut Reinert, FU Berlin
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,8 @@
 #ifndef SEQAN_EXTRAS_BLAST_BLAST_RECORD_H_
 #define SEQAN_EXTRAS_BLAST_BLAST_RECORD_H_
 
-namespace seqan {
+namespace seqan
+{
 
 /*!
  * @class BlastMatch
@@ -277,8 +278,8 @@ _memberIsSet(CharString const & in)
     return in != "not init";
 }
 
-template <typename T,
-          typename std::enable_if<Is<NumericConcept<T>>::VALUE> = 0>
+template <typename TNumber,
+          typename std::enable_if<Is<NumberConcept<TNumber>>::VALUE>::type = 0>
 inline bool
 _memberIsSet(TNumber const & in)
 {
@@ -288,7 +289,7 @@ _memberIsSet(TNumber const & in)
 /*!
  * @class BlastRecord
  * @headerfile <seqan/blast.h>
- * @signature struct BlastRecord<TDbName, TQId, TSId, TPos, TAlign> { ... };
+ * @signature struct BlastRecord<TQId, TSId, TPos, TAlign> { ... };
  * @brief A record of blast-matches (belonging to one query).
 
  * @tparam TQId  Type of qId, defaults to @link CharString @endlink
@@ -298,7 +299,7 @@ _memberIsSet(TNumber const & in)
  * <tt>Align<CharString, ArrayGaps></tt>
  *
  * @typedef BlastRecord::TBlastMatch
- * @signature typedef BlastMatch<TQId, TSId, TAlign, TPos> TBlastMatch;
+ * @signature typedef BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
  * @brief type of the contained matches
  *
  * @var TQId BlastRecord::qId;
@@ -327,7 +328,7 @@ struct BlastRecord
         qId(TQId()), qLength(0), matches()
     {}
 
-    BlastRecord(TQId const &_qId) :
+    BlastRecord(TQId const & _qId) :
         qId(_qId), qLength(0), matches()
     {}
 

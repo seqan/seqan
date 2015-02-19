@@ -44,7 +44,8 @@
 #include <seqan/basic.h>
 #include <seqan/file.h>
 
-#include "test_blast.h"
+#include "test_blast_statistics.h"
+#include "test_blast_output.h"
 
 SEQAN_BEGIN_TESTSUITE(test_blast)
 {

@@ -37,14 +37,6 @@
 #ifndef SEQAN_EXTRAS_BLAST_WRITE_BLAST_REPORT_H_
 #define SEQAN_EXTRAS_BLAST_WRITE_BLAST_REPORT_H_
 
-#ifdef __FreeBSD__
-#define _GLIBCXX_USE_C99 1
-#include <math.h>
-#define ROUND round
-#else
-#define ROUND std::round
-#endif
-
 namespace seqan {
 
 // ============================================================================
