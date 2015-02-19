@@ -54,6 +54,51 @@ namespace seqan {
  *
  * @headerfile seqan/blast.h
  *
+ * The following table lists the available BlastFormatFile values. The
+ * corresponding command line arguments of legacy BLAST (<tt>blastall</tt>
+ * binary) and BLAST+ (individual binaries for <tt>blastn</tt>, <tt>blastx</tt>
+ * etc) are given and the corresponding version after which this implementation
+ * was modelled. It should work with newer versions, but as the format is
+ * sometimes changed without notice, this might not always be the case.
+ *
+ * Only the most important formats are implemented, see the respective input and
+ * output columns.
+ *
+ *
+ * @htmlonly
+ * <span style="font-size:90%"><table>
+ * <tr><th> BlastFormatFile::            </th><th>   #  </th><th> blast* 2.2.26+  </th><th>  blastall-2.2.26 </th><th>  output   </th><th>  input     </th><th> description                                       </th></tr>
+ * <tr><td> PAIRWISE                     </td><td>   0  </td><td>-outfmt 0        </td><td>   -m 0           </td><td>   &#9745; </td><td>  &#9744;   </td><td> pairwise                                          </td></tr>
+ * <tr><td> MASTER_SLAVE_IDENT           </td><td>   1  </td><td>-outfmt 1        </td><td>   -m 1           </td><td>   &#9744; </td><td>  &#9744;   </td><td> query-anchored showing identities                 </td></tr>
+ * <tr><td> MASTER_SLAVE_NO_IDENT        </td><td>   2  </td><td>-outfmt 2        </td><td>   -m 2           </td><td>   &#9744; </td><td>  &#9744;   </td><td> query-anchored no identities                      </td></tr>
+ * <tr><td> FLAT_MASTER_SLAVE_IDENT      </td><td>   3  </td><td>-outfmt 3        </td><td>   -m 3           </td><td>   &#9744; </td><td>  &#9744;   </td><td> flat query-anchored, show identities              </td></tr>
+ * <tr><td> FLAT_MASTER_SLAVE_NO_IDENT   </td><td>   4  </td><td>-outfmt 4        </td><td>   -m 4           </td><td>   &#9744; </td><td>  &#9744;   </td><td> flat query-anchored, no identities                </td></tr>
+ * <tr><td> XML                          </td><td>   5  </td><td>-outfmt 5        </td><td>   -m 7           </td><td>   &#9744; </td><td>  &#9744;   </td><td> XML Blast output                                  </td></tr>
+ * <tr><td> TABULAR                      </td><td>   6  </td><td>-outfmt 6        </td><td>   -m 8           </td><td>   &#9745; </td><td>  &#9745;   </td><td> tabular                                           </td></tr>
+ * <tr><td> TABULAR_WITH_HEADER          </td><td>   7  </td><td>-outfmt 7        </td><td>   -m 9           </td><td>   &#9745; </td><td>  &#9745;   </td><td> tabular with comment lines                        </td></tr>
+ * <tr><td> TEXT_ASN1                    </td><td>   8  </td><td>-outfmt 8        </td><td>   -m 10          </td><td>   &#9744; </td><td>  &#9744;   </td><td> Text ASN.1                                        </td></tr>
+ * <tr><td> BIN_ASN1                     </td><td>   9  </td><td>-outfmt 9        </td><td>   -m 11          </td><td>   &#9744; </td><td>  &#9744;   </td><td> Binary ASN.1                                      </td></tr>
+ * <tr><td> CSV                          </td><td>  10  </td><td>-outfmt 10       </td><td>                  </td><td>   &#9744; </td><td>  &#9744;   </td><td> Comma-separated values                            </td></tr>
+ * <tr><td> BLAST_AR_ASN1                </td><td>  11  </td><td>-outfmt 11       </td><td>                  </td><td>   &#9744; </td><td>  &#9744;   </td><td> BLAST archive format (ASN.1)                      </td></tr>
+ * <tr><td> MASTER_SLAVE_BLUNT_ENDS      </td><td>  12  </td><td>                 </td><td>   -m 5           </td><td>   &#9744; </td><td>  &#9744;   </td><td> query-anchored no identities and blunt ends       </td></tr>
+ * <tr><td> FLAT_MASTER_SLAVE_BLUNT_ENDS </td><td>  13  </td><td>                 </td><td>   -m 6           </td><td>   &#9744; </td><td>  &#9744;   </td><td> flat query-anchored, no identities and blunt ends </td></tr>
+ * </table></span>
+ * @endhtmlonly
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+
+/*
  * SeqAn can currently write PAIRWISE, TABULAR and TABULAR_WITH_HEADER. It can
  * read TABULAR and TABULAR_WITH_HEADER.
  *
@@ -107,15 +152,15 @@ enum class BlastFormatFile : uint8_t
     MASTER_SLAVE_NO_IDENT = 2,
     FLAT_MASTER_SLAVE_IDENT = 3,
     FLAT_MASTER_SLAVE_NO_IDENT = 4,
-    MASTER_SLAVE_BLUNT_ENDS = 5,       // only available in Generation==Blast
-    FLAT_MASTER_SLAVE_BLUNT_ENDS = 6,   // only available in Generation==Blast
-    XML = 7,
-    TABULAR = 8,
-    TABULAR_WITH_HEADER = 9,
-    TEXT_ASN1 = 10,                 // only available in Generation==Blast+
-    BIN_ASN1 = 11,                  // only available in Generation==Blast+
-    CSV = 12,                      // only available in Generation==Blast+
-    BLAST_AR_ASN1 = 13,              // only available in Generation==Blast+
+    XML = 5,
+    TABULAR = 6,
+    TABULAR_WITH_HEADER = 7,
+    TEXT_ASN1 = 8,                 // only available in Generation==Blast+
+    BIN_ASN1 = 9,                  // only available in Generation==Blast+
+    CSV = 10,                      // only available in Generation==Blast+
+    BLAST_AR_ASN1 = 11,              // only available in Generation==Blast+
+    MASTER_SLAVE_BLUNT_ENDS = 12,       // only available in Generation==Blast
+    FLAT_MASTER_SLAVE_BLUNT_ENDS = 13,   // only available in Generation==Blast
     INVALID_File=255
 };
 
@@ -634,17 +679,21 @@ writeTop(TStream                    & /**/,
  * @headerfile seqan/blast.h
  * @brief write a @link BlastRecord @endlink including it's
  *  @link BlastMatch @endlinkes and possible headers to a file.
- * @signature writeRecord(stream, blastRecord, blastDbSpecs, blastFormatTag)
+ * @signature writeRecord(stream, blastRecord, blastDbSpecs, [fieldList,] blastFormatTag)
  *
- * @param[in,out] stream        The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param[in] blastRecord   The @link BlastRecord @endlink you wish to print.
- * @param[in] blastDbSpecs  The @link BlastDbSpecs @endlink .
+ * @param[in,out] stream     The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param[in] blastRecord    The @link BlastRecord @endlink you wish to print.
+ * @param[in] blastDbSpecs   The @link BlastDbSpecs @endlink.
+ * @param[in] fieldList      A Sequence of @link BlastMatchField::Enum @endlink to print.
  * @param[in] blastFormatTag The @link BlastFormat @endlink specifier.
+ *
+ * The fieldList parameter may only be specified when @link BlastFormatFile
+ * @endlink is TABULAR or TABULAR_WITH_HEADER and if @link
+ * BlastFormatGeneration @endlink is BLAST_PLUS.
  *
  * @see BlastFormat
  * @see BlastRecord
  */
-
 
 // ----------------------------------------------------------------------------
 // Function writeBottom()

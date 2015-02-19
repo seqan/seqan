@@ -46,6 +46,7 @@
 
 #include "test_blast_statistics.h"
 #include "test_blast_output.h"
+#include "test_blast_input.h"
 
 SEQAN_BEGIN_TESTSUITE(test_blast)
 {
@@ -68,6 +69,9 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_write_tabular_with_header_customcolumns_legacy);
 
     SEQAN_CALL_TEST(test_blast_write_pairwise);
+
+
+    SEQAN_CALL_TEST(test_blast_read_tabular_basics);
 }
 SEQAN_END_TESTSUITE
 

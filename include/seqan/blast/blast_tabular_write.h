@@ -407,7 +407,8 @@ _writeHeaderWithoutColumnLabels(TStream & stream,
 /*!
  * @fn BlastFormat#writeHeader
  * @headerfile seqan/blast.h
- * @brief write the header for @link BlastFormatFile::TABULAR_WITH_HEADER @endlink without @link BlastRecord @endlink-object
+ * @brief write the header for @link BlastFormatFile
+ * @endlink::TABULAR_WITH_HEADER  without @link BlastRecord @endlink-object
  * @signature writeHeader(stream, qryId, dbname, [matchCount,] blastFormatTag[, labels...])
  *
  * This function writes the header of a record if @link BlastFormatFile @endlink
@@ -731,8 +732,8 @@ writeHeader(TStream & /**/,
  * @signature writeMatch(stream, blastMatch, [fields,] blastFormatTag)
  *
  * This function writes a single match if @link BlastFormatFile @endlink
- * is @link BlastFormatFile::TABULAR_WITH_HEADER @endlink or
- * @link BlastFormatFile::TABULAR @endlink. Not specifying <tt>fields</tt> causes default
+ * is BlastFormatFile::TABULAR_WITH_HEADER or
+ * BlastFormatFile::TABULAR. Not specifying <tt>fields</tt> causes default
  * columns to be printed, which is described <a href="https://www.ncbi.nlm.nih.gov/staff/tao/URLAPI/blastall/blastall_node93.html">
  * here</a>. Please note that BLAST is 1-indexed and considers the last position
  * to be the back, not the end, i.e. last one included in a match/sequence/...,
@@ -756,7 +757,7 @@ writeHeader(TStream & /**/,
  * does not require a @link BlastMatch @endlink object.
  *
  * @param[in,out] stream    The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param[in] fields    A @link Sequence @endlink of @link BlastMatchField::Enum @endlink
+ * @param[in] fields        A Sequence of @link BlastMatchField::Enum @endlink
  * @param[in] blastMatch    The @link BlastMatch @endlink you wish to print.
  * @param[in] blastFormatTag The @link BlastFormat @endlink specifier.
  *
@@ -904,6 +905,8 @@ writeMatch(TStream & stream,
 // Function writeRecord()
 // ----------------------------------------------------------------------------
 
+// dox in blast_base.h
+
 template <typename TStream,
           typename TRecord,
           typename TDbSpecs,
@@ -930,26 +933,6 @@ _writeRecordImplTab(TStream                    & stream,
         writeMatch(stream, *it, TFormat());
     }
 }
-
-// main dox in blast_base.h; this only contains extra sig for fieldList
-/*!
- * @fn BlastRecord#writeRecord
- * @headerfile seqan/blast.h
- * @brief write a @link BlastRecord @endlink including it's
- *  @link BlastMatch @endlink es to a file, manually specifying the fields
- * @signature writeRecord(stream, blastRecord, blastDbSpecs, fieldList, blastFormatTag)
- *
- * @param[in,out] stream        The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param[in] blastRecord   The @link BlastRecord @endlink you wish to print.
- * @param[in] blastDbSpecs  The @link BlastDbSpecs @endlink .
- * @param[in] blastField    A Sequence of @link BlastMatchField::Enum @endlink to print.
- * @param[in] blastFormatTag The @link BlastFormat @endlink specifier of which
- *  @link BlastFormatFile @endlink must be @link BlastFormatFile::TABULAR @endlink
- *  or @link BlastFormatFile::TABULAR_WITH_HEADER @endlink
- *
- * @see BlastFormat
- * @see BlastRecord
- */
 
 template <typename TStream,
           typename TRecord,

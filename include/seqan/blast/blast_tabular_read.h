@@ -654,18 +654,16 @@ readHeader(TqId                                             & qId,
  *
  * @signature int skipHeader(iterator/stream, [strict,] tag);
  *
- * @param[in,out]   iter  RecordReader
- * @param[in]   strict  bool to signify whether the function should error on a non-conforming header or just "skip whatever possible".
- * @param[in]   tag     @link BlastFormat @endlink tag, only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported.
- *
- * @see BlastFormat#skipUntilMatch
- * @    0 on success, and non-zero otherwise
- * @headerfile seqan/blast.h
- * @section Remarks
+ * @param[in,out] iter  RecordReader
+ * @param[in]     strict  bool to signify whether the function should error on a non-conforming header or just "skip whatever possible".
+ * @param[in]     tag     @link BlastFormat @endlink tag, only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported.
  *
  * call this function whenever you want to skip exactly one header. If you want
  * to go directly to the beginning of the next match (possibly skipping multiple
  * headers that have no succeeding matches) use skipUntilMatch instead.
+ *
+ * @see BlastFormat#skipUntilMatch
+ * @headerfile seqan/blast.h
  */
 
 template <typename TFwdIterator,
@@ -720,13 +718,12 @@ skipHeader(TFwdIterator & iter,
  * @param[in]       tag     BlastFormat specialization,
  * with BlastFormat::_m == BlastFormatFile::TABULAR || BlastFormatFile::TABULAR_WITH_HEADER
  *
- * @    0 on success, and non-zero otherwise
- * @see BlastFormat#skipHeader
- * @headerfile seqan/blast.h
  * @section Remarks
  *
  * call this function whenever you are on a comment character ('#') in the file and want to jump to the beginning of the next record. If you want skip only a single header (to count skipped headers or verify its conformance
 to standards), use BlastFormat#skipHeader instead.
+ * @see BlastFormat#skipHeader
+ * @headerfile seqan/blast.h
  */
 
 template <typename TFwdIterator,
@@ -748,14 +745,14 @@ skipUntilMatch(TFwdIterator & iter,
 template <typename TqId,
           typename TsId,
           typename TPos,
-          typename TAlign,
-          BlastFormatGeneration g>
+          typename TAlign>
 inline void
-_readField(BlastMatch<TqId, TsId, TAlign, TPos> & match,
+_readField(BlastMatch<TqId, TsId, TPos, TAlign> & match,
            CharString const & buffer,
-           typename BlastMatchField<g>::Enum const fieldId)
+           typename BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum
+             const fieldId)
 {
-    typedef typename BlastMatchField<g>::Enum ENUM;
+    typedef decltype(fieldId) ENUM;
     switch (fieldId)
     {
         case ENUM::STD: // this is cought in the calling function
@@ -861,6 +858,9 @@ _readField(BlastMatch<TqId, TsId, TAlign, TPos> & match,
 //         case ENUM::S_STRAND: write( * ); break;
 //         case ENUM::Q_COV_S: write( * ); break;
 //         case ENUM::Q_COV_HSP:
+        default:
+            throw std::ios_base::failure("This column type is not yet "
+                                         "implemented.");
     };
 }
 
@@ -873,7 +873,7 @@ template <typename TqId,
           BlastFormatProgram    p,
           BlastFormatGeneration g>
 inline void
-_readMatchImpl(BlastMatch<TqId, TsId, TAlign, TPos>      & match,
+_readMatchImpl(BlastMatch<TqId, TsId, TPos, TAlign>      & match,
                TFwdIterator & iter,
                TFieldList const & fieldList,
                BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
@@ -990,7 +990,7 @@ template <typename TqId,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline void
-readMatch(BlastMatch<TqId, TsId, TAlign, TPos> & match,
+readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
           TFwdIterator & iter,
           TFieldList const & fieldList,
           BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
@@ -1012,7 +1012,7 @@ template <typename TqId,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline void
-readMatch(BlastMatch<TqId, TsId, TAlign, TPos> & match,
+readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
           TFwdIterator & iter,
           TFieldList const & fieldList,
           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
@@ -1035,7 +1035,7 @@ template <typename TqId,
           BlastFormatProgram    p,
           BlastFormatGeneration g>
 inline void
-readMatch(BlastMatch<TqId, TsId, TAlign, TPos>      & match,
+readMatch(BlastMatch<TqId, TsId, TPos, TAlign>      & match,
           TFwdIterator & iter,
           BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
 {
@@ -1052,7 +1052,7 @@ template <typename TqId,
           BlastFormatProgram    p,
           BlastFormatGeneration g>
 inline void
-readMatch(BlastMatch<TqId, TsId, TAlign, TPos>      & match,
+readMatch(BlastMatch<TqId, TsId, TPos, TAlign>      & match,
           TFwdIterator & iter,
           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
 {
@@ -1202,7 +1202,7 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
-    typedef BlastMatch<TQId, TSId, TAlign, TPos> TBlastMatch;
+    typedef BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
 
     CharString versionString; // -> /dev/null
 
@@ -1243,7 +1243,7 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
                   "BlastFormatGeneration::BLAST_PLUS");
 
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
-    typedef BlastMatch<TQId, TSId, TAlign, TPos> TBlastMatch;
+    typedef BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
 
     CharString versionString; // -> /dev/null
 
@@ -1284,7 +1284,7 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
                   "BlastFormatGeneration::BLAST_PLUS");
 
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
-    typedef BlastMatch<TQId, TSId, TAlign, TPos> TBlastMatch;
+    typedef BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
     typedef std::vector<BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum>
             TFieldList;
 
@@ -1322,7 +1322,7 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
            BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g>  TFormat;
-    typedef BlastMatch<TQId, TSId, TAlign, TPos> TBlastMatch;
+    typedef BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
 
     CharString curId, lastId;
     TBlastMatch match;
@@ -1363,7 +1363,7 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
            BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g>  TFormat;
-    typedef BlastMatch<TQId, TSId, TAlign, TPos> TBlastMatch;
+    typedef BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
 
     CharString curId, lastId;
     TBlastMatch match;
