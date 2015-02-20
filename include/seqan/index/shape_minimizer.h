@@ -36,8 +36,8 @@
 namespace seqan
 {
 
-struct ReverseComplement_;
-typedef Tag<ReverseComplement_> const   ReverseComplement;
+struct ReverseComplementTag_;
+typedef Tag<ReverseComplementTag_> const   ReverseComplement;
 
 // ----------------------------------------------------------------------------
 // Struct MinimizerShape
