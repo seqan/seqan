@@ -117,7 +117,7 @@ parseArgs(FxVariantDensityOptions & options,
 
     addSection(parser, "Main Options");
     addOption(parser, seqan::ArgParseOption("w", "window-size", "Set the size of the non-overlapping windows in base pairs.", seqan::ArgParseArgument::INTEGER, "NUM"));
-    setDefaultValue(parser, "window-size", "10000");
+    setDefaultValue(parser, "window-size", options.windowSize);
 
     addSection(parser, "Output Options");
     addOption(parser, seqan::ArgParseOption("o", "out-path", "Path to the resulting file.  If omitted, result is printed to stdout.", seqan::ArgParseArgument::OUTPUT_FILE, "BED"));
@@ -130,6 +130,7 @@ parseArgs(FxVariantDensityOptions & options,
     {
         getOptionValue(options.inVcfPath, parser, "in-variants");
         getOptionValue(options.outPath, parser, "out-path");
+        getOptionValue(options.windowSize, parser, "window-size");
 
         if (isSet(parser, "verbose"))
             options.verbosity = 2;
