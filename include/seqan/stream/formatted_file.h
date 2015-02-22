@@ -400,6 +400,11 @@ struct FormattedFileContext
     typedef Nothing Type;
 };
 
+template <typename TFormattedFile, typename TStorageSpec>
+struct FormattedFileContext<TFormattedFile const, TStorageSpec> :
+    FormattedFileContext<TFormattedFile, TStorageSpec>
+{};
+
 // ----------------------------------------------------------------------------
 // Metafunction StorageSwitch
 // ----------------------------------------------------------------------------
