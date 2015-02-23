@@ -49,9 +49,9 @@
 #ifdef __FreeBSD__
 #define _GLIBCXX_USE_C99 1
 #include <math.h>
-#define ROUND round
+#define ROUND lround
 #else
-#define ROUND std::round
+#define ROUND std::lround
 #endif
 
 #include <seqan/basic.h>

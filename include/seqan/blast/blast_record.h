@@ -275,15 +275,14 @@ struct BlastMatch
 inline bool
 _memberIsSet(CharString const & in)
 {
-    return in != "not init";
+    return (in != "not init");
 }
 
-template <typename TNumber,
-          typename std::enable_if<Is<NumberConcept<TNumber>>::VALUE>::type = 0>
-inline bool
+template <typename TNumber>
+inline SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TNumber> >, bool)
 _memberIsSet(TNumber const & in)
 {
-    return in != std::numeric_limits<TNumber>::max();
+    return (in != std::numeric_limits<TNumber>::max());
 }
 
 /*!

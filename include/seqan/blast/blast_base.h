@@ -233,7 +233,7 @@ enum class BlastFormatGeneration : uint8_t
  *
  * The easiest way to use the BLAST module is to organize your data in the
  * structures provided, i.e. create records (@link BlastRecord @endlink)
- * that contain all matches (@link BlastMatch @endlink) of one query
+ * that contain matches (@link BlastMatch @endlink) of one query
  * sequence. Store some general information of your database in a
  * @link BlastDbSpecs @endlink object.
  *

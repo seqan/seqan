@@ -50,11 +50,13 @@
 
 SEQAN_BEGIN_TESTSUITE(test_blast)
 {
+    // STATISTICS
     SEQAN_CALL_TEST(test_blast_scoring_scheme_conversion);
     SEQAN_CALL_TEST(test_blast_scoring_adapter);
     SEQAN_CALL_TEST(test_blast_blastmatch_stats_and_score);
     SEQAN_CALL_TEST(test_blast_blastmatch_bit_score_e_value);
 
+    // WRITING
     SEQAN_CALL_TEST(test_blast_write_tabular);
     SEQAN_CALL_TEST(test_blast_write_tabular_legacy);
     SEQAN_CALL_TEST(test_blast_write_tabular_with_header);
@@ -70,8 +72,9 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
 
     SEQAN_CALL_TEST(test_blast_write_pairwise);
 
-
-    SEQAN_CALL_TEST(test_blast_read_tabular_basics);
+    // READING
+    SEQAN_CALL_TEST(test_blast_read_tabular_basics_match);
+    SEQAN_CALL_TEST(test_blast_read_tabular_basics_match_legacy);
 }
 SEQAN_END_TESTSUITE
 
