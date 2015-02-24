@@ -58,10 +58,6 @@ int main(int argc, char const * argv[])
         if (record.rID == -1 || contigNames(context(vcfFile))[record.rID] != argv[2] || record.beginPos >= endPos)
             break;
         
-        // If we are left of the selected position then we skip this record.
-        if (record.beginPos < begPos)
-            continue;
-        
         std::cout << record.beginPos << '\t' << record.ref << '\t' << record.alt << std::endl;
     }
 

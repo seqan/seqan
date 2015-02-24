@@ -49,6 +49,13 @@
 namespace seqan {
 
 // ============================================================================
+// Forwards
+// ============================================================================
+
+class TabixIndex;
+bool open(TabixIndex & index, char const * filename);
+
+// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
@@ -130,6 +137,20 @@ public:
         unalignedCount(maxValue<__uint64>()),
         _nameStoreCache(_nameStore)
     {}
+
+    TabixIndex(char const * fileName) :
+        format(0),
+        colSeq(1),
+        colBeg(2),
+        colEnd(3),
+        meta('#'),
+        skip(0),
+        unalignedCount(maxValue<__uint64>()),
+        _nameStoreCache(_nameStore)
+    {
+        if (!open(*this, fileName))
+            SEQAN_THROW(FileOpenError(fileName));
+    }
 };
 
 // ============================================================================
@@ -197,6 +218,13 @@ bool _readTabixRecord(TabixRecord_ & record, CharString & buffer, TIter & iter, 
             record.posEnd = lexicalCast<__int32>(buffer);
     }
 
+    if (index.colEnd == 0 || index.colEnd == index.colBeg)
+        record.posEnd = record.posBeg + 1;
+    
+    // all text-based file formats are 1-based (we use 0-based positions internally)
+    --record.posBeg;
+    --record.posEnd;
+    
     // Go to next line.
     skipLine(iter);
     return true;
@@ -213,7 +241,7 @@ bool _readTabixRecord(TabixRecord_ & record, CharString & buffer, TIter & iter, 
  * You provide a region <tt>[posBeg, posEnd)</tt> on the contig <tt>refName</tt> that you want to jump to and the function
  * jumps to the first entry in this region, if any.
  *
- * @signature bool jumpToRegion(fileIn, hasEntries, refName, posBeg, posEnd, index);
+ * @signature bool jumpToRegion(fileIn, hasEntries, refName, posBeg, posEnd, index[, firstMatch]);
  *
  * @param[in,out] fileIn        The @link VcfFileIn @endlink, @link GffFileIn @endlink, or @link BedFileIn @endlink to jump with.
  * @param[out]    hasEntries    A <tt>bool</tt> that is set true if the region <tt>[posBeg, posEnd)</tt> has any
@@ -222,6 +250,9 @@ bool _readTabixRecord(TabixRecord_ & record, CharString & buffer, TIter & iter, 
  * @param[in]     posBeg        The begin of the region to jump to (<tt>__int32</tt>).
  * @param[in]     posEnd        The end of the region to jump to (<tt>__int32</tt>).
  * @param[in]     index         The @link TabixIndex @endlink to use for the jumping.
+ * @param[in]     firstMatch    A <tt>bool</tt>, if <tt>true</tt> (default) this function seeks to the first
+ *                              overlapping record. Otherwise, the function potentially stops before the first
+ *                              overlapping record.
  *
  * @return bool true if seeking was successful, false if not.
  *
@@ -237,7 +268,8 @@ jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
              TName const & refName,
              __int32 posBeg,
              __int32 posEnd,
-             TabixIndex const & index)
+             TabixIndex const & index,
+             bool firstMatch = true)
 {
     hasEntries = false;
 
@@ -336,7 +368,7 @@ jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
         
         if (!hasEntries || record.posBeg <= posBeg)
         {
-            // Found a valid alignment.
+            // Found a valid record.
             hasEntries = true;
             offset = *candIt;
         }
@@ -346,9 +378,27 @@ jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
     }
 
     if (offset != MaxValue<__uint64>::VALUE)
+    {
         setPosition(fileIn, offset);
+        
+        if (firstMatch)
+        {
+            // skip to the first overlapping record
+            while (!atEnd(fileIn) && !(posBeg < record.posEnd && record.posBeg < posEnd))
+            {
+                offset = position(fileIn);
+                _readTabixRecord(record, buffer, fileIn.iter, index);
+                if (record.posBeg >= posEnd)
+                {
+                    hasEntries = false;
+                    return true;
+                }
+            }
+            setPosition(fileIn, offset);
+        }
+    }
 
-    // Finding no overlapping alignment is not an error, hasAlignments is false.
+    // Finding no overlapping records is not an error, hasEntries is false.
     return true;
 }
 
