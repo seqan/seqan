@@ -49,6 +49,13 @@
 namespace seqan {
 
 // ============================================================================
+// Forwards
+// ============================================================================
+
+class TabixIndex;
+bool open(TabixIndex & index, char const * filename);
+
+// ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
 
@@ -130,6 +137,20 @@ public:
         unalignedCount(maxValue<__uint64>()),
         _nameStoreCache(_nameStore)
     {}
+
+    TabixIndex(char const * fileName) :
+        format(0),
+        colSeq(1),
+        colBeg(2),
+        colEnd(3),
+        meta('#'),
+        skip(0),
+        unalignedCount(maxValue<__uint64>()),
+        _nameStoreCache(_nameStore)
+    {
+        if (!open(*this, fileName))
+            SEQAN_THROW(FileOpenError(fileName));
+    }
 };
 
 // ============================================================================
@@ -197,6 +218,13 @@ bool _readTabixRecord(TabixRecord_ & record, CharString & buffer, TIter & iter, 
             record.posEnd = lexicalCast<__int32>(buffer);
     }
 
+    if (index.colEnd == 0 || index.colEnd == index.colBeg)
+        record.posEnd = record.posBeg + 1;
+    
+    // all text-based file formats are 1-based (we use 0-based positions internally)
+    --record.posBeg;
+    --record.posEnd;
+    
     // Go to next line.
     skipLine(iter);
     return true;
@@ -237,7 +265,8 @@ jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
              TName const & refName,
              __int32 posBeg,
              __int32 posEnd,
-             TabixIndex const & index)
+             TabixIndex const & index,
+             bool firstMatch = true)
 {
     hasEntries = false;
 
@@ -346,7 +375,25 @@ jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
     }
 
     if (offset != MaxValue<__uint64>::VALUE)
+    {
         setPosition(fileIn, offset);
+        
+        if (firstMatch)
+        {
+            // skip to the first overlapping record
+            while (!atEnd(fileIn) && !(posBeg < record.posEnd && record.posBeg < posEnd))
+            {
+                offset = position(fileIn);
+                _readTabixRecord(record, buffer, fileIn.iter, index);
+                if (record.posBeg >= posEnd)
+                {
+                    hasEntries = false;
+                    return false;
+                }
+            }
+            setPosition(fileIn, offset);
+        }
+    }
 
     // Finding no overlapping alignment is not an error, hasAlignments is false.
     return true;
