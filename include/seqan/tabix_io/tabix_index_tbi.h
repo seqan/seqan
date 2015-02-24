@@ -241,7 +241,7 @@ bool _readTabixRecord(TabixRecord_ & record, CharString & buffer, TIter & iter, 
  * You provide a region <tt>[posBeg, posEnd)</tt> on the contig <tt>refName</tt> that you want to jump to and the function
  * jumps to the first entry in this region, if any.
  *
- * @signature bool jumpToRegion(fileIn, hasEntries, refName, posBeg, posEnd, index);
+ * @signature bool jumpToRegion(fileIn, hasEntries, refName, posBeg, posEnd, index[, firstMatch]);
  *
  * @param[in,out] fileIn        The @link VcfFileIn @endlink, @link GffFileIn @endlink, or @link BedFileIn @endlink to jump with.
  * @param[out]    hasEntries    A <tt>bool</tt> that is set true if the region <tt>[posBeg, posEnd)</tt> has any
@@ -250,6 +250,9 @@ bool _readTabixRecord(TabixRecord_ & record, CharString & buffer, TIter & iter, 
  * @param[in]     posBeg        The begin of the region to jump to (<tt>__int32</tt>).
  * @param[in]     posEnd        The end of the region to jump to (<tt>__int32</tt>).
  * @param[in]     index         The @link TabixIndex @endlink to use for the jumping.
+ * @param[in]     firstMatch    A <tt>bool</tt>, if <tt>true</tt> (default) this function seeks to the first
+ *                              overlapping record. Otherwise, the function potentially stops before the first 
+ *                              overlapping record.
  *
  * @return bool true if seeking was successful, false if not.
  *
