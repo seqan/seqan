@@ -251,7 +251,7 @@ bool _readTabixRecord(TabixRecord_ & record, CharString & buffer, TIter & iter, 
  * @param[in]     posEnd        The end of the region to jump to (<tt>__int32</tt>).
  * @param[in]     index         The @link TabixIndex @endlink to use for the jumping.
  * @param[in]     firstMatch    A <tt>bool</tt>, if <tt>true</tt> (default) this function seeks to the first
- *                              overlapping record. Otherwise, the function potentially stops before the first 
+ *                              overlapping record. Otherwise, the function potentially stops before the first
  *                              overlapping record.
  *
  * @return bool true if seeking was successful, false if not.
@@ -368,7 +368,7 @@ jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
         
         if (!hasEntries || record.posBeg <= posBeg)
         {
-            // Found a valid alignment.
+            // Found a valid record.
             hasEntries = true;
             offset = *candIt;
         }
@@ -391,14 +391,14 @@ jumpToRegion(FormattedFile<TFileFormat, Input, TSpec> & fileIn,
                 if (record.posBeg >= posEnd)
                 {
                     hasEntries = false;
-                    return false;
+                    return true;
                 }
             }
             setPosition(fileIn, offset);
         }
     }
 
-    // Finding no overlapping alignment is not an error, hasAlignments is false.
+    // Finding no overlapping records is not an error, hasEntries is false.
     return true;
 }
 
