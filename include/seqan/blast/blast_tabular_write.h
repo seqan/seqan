@@ -232,19 +232,28 @@ _writeField(TStream & s,
                                              / match.aliLength));
             break;
         case ENUM::FRAMES:
-//             if (match.qFrameShift > 0)
-//                 write(s, '+');
-            write(s, FormattedNumber<signed char>("%+i", match.qFrameShift));
+            // for formats that don't have frames, blast says 0 instead of +1
+            if (qNumFrames(TFormat()) > 1)
+                write(s, FormattedNumber<int8_t>("%i", match.qFrameShift));
+            else
+                write(s, FormattedNumber<int8_t>("%i", 0));
             write(s, '/');
-//             if (match.sFrameShift > 0)
-//                 write(s, '+');
-            write(s, FormattedNumber<signed char>("%+i", match.sFrameShift));
+            if (sNumFrames(TFormat()) > 1)
+                write(s, FormattedNumber<int8_t>("%i", match.qFrameShift));
+            else
+                write(s, FormattedNumber<int8_t>("%i", 0));
             break;
         case ENUM::Q_FRAME:
-            write(s, FormattedNumber<signed char>("%+i", match.qFrameShift));
+            if (qNumFrames(TFormat()) > 1)
+                write(s, FormattedNumber<int8_t>("%i", match.qFrameShift));
+            else
+                write(s, FormattedNumber<int8_t>("%i", 0));
             break;
         case ENUM::S_FRAME:
-            write(s, FormattedNumber<signed char>("%+i", match.sFrameShift));
+            if (sNumFrames(TFormat()) > 1)
+                write(s, FormattedNumber<int8_t>("%i", match.qFrameShift));
+            else
+                write(s, FormattedNumber<int8_t>("%i", 0));
             break;
 //         case ENUM::BTOP: write( * ); break;
 //         case ENUM::S_TAX_IDS: write( * ); break;

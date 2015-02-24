@@ -116,13 +116,13 @@ namespace seqan
  * @brief one out of { -3, -2, -1, +1, +2, +3 } where the absolute value -1 is
  * shift of the translation frame and a negative sign indicates the reverse
  * complement strand [query sequence, only applies for BlastFormatProgram ==
- * TBLASTN | TBLASTX]
+ * BLASTX | TBLASTX]
  *
  * @var char BlastMatch::sFrameShift;
  * @brief one out of { -3, -2, -1, +1, +2, +3 } where the absolute value -1 is
  * shift of the translation frame and a negative sign indicates the reverse
  * complement strand [subject sequence, only applies for BlastFormatProgram ==
- * BLASTX | TBLASTX]
+ * TBLASTN | TBLASTX]
  *
  * @var TAlign BlastMatch::align;
  * @brief @link Align @endlink object of the alignment

@@ -73,8 +73,12 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_write_pairwise);
 
     // READING
-    SEQAN_CALL_TEST(test_blast_read_tabular_basics_match);
-    SEQAN_CALL_TEST(test_blast_read_tabular_basics_match_legacy);
+    SEQAN_CALL_TEST(test_blast_read_tabular_match);
+    SEQAN_CALL_TEST(test_blast_read_tabular_match_legacy);
+    SEQAN_CALL_TEST(test_blast_read_tabular_match_customfields);
+
+    SEQAN_CALL_TEST(test_blast_read_tabular_match_customcolumns);
+    SEQAN_CALL_TEST(test_blast_read_tabular_match_customcolumns_legacy);
 }
 SEQAN_END_TESTSUITE
 

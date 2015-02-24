@@ -144,12 +144,10 @@ onMatch(TFwdIterator & iter,
 // fields as string of blastmatchfield::enum
 template <typename TFieldList,
           BlastFormatProgram p,
-          BlastFormatGeneration g,
-          typename std::enable_if<IsSequence<TFieldList>::VALUE>::type = 0,
-          typename std::enable_if<
-            std::is_same<typename Value<TFieldList>::Type,
-                         typename BlastMatchField<g>::Enum>::value>::type = 0>
-inline void
+          BlastFormatGeneration g>
+inline SEQAN_FUNC_ENABLE_IF(And<IsSequence<TFieldList>,
+                                IsSameType<typename Value<TFieldList>::Type,
+                                           typename BlastMatchField<g>::Enum>>)
 _verifyFields(TFieldList const & fields,
               unsigned const hits, // irrelevant for traditional header
               BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
@@ -410,7 +408,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
  * @param[out]  hits    Numerical to hold the number of hits that will follow the header (only available in BlastPlus spec of BlastFormat)
  * @param[out]  fields  StringSet to hold column identifiers, useful if non-defaults are expected
  * @param[out]  otherLines  StringSet to hold any comment or header lines that are not identified otherwise
- * @param[in,out]   reader  RecordReader
+ * @param[in,out]   reader  An iterator over a stream or a string
  * @param[in]   strict  bool to signify whether the function should error on a non-conforming header or just "get whatever possible". If not using strict, it is recommended to pass fields and otherLines and verify these manually.
  * @param[in]   tag     @link BlastFormat @endlink tag, only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported.
  *
@@ -721,10 +719,11 @@ skipHeader(TFwdIterator & iter,
  * @param[in]       tag     @link BlastFormat @endlink specialization,
  * with BlastFormatFile == BlastFormatFile::TABULAR || BlastFormatFile::TABULAR_WITH_HEADER
  *
- * @section Remarks
+ * Call this function whenever you are on a comment character ('#') in the file
+ * and want to jump to the beginning of the next match. If you want to skip only
+ * a single header (to count skipped headers or to verify its conformance
+ * to standards), use BlastFormat#skipHeader instead.
  *
- * call this function whenever you are on a comment character ('#') in the file and want to jump to the beginning of the next record. If you want skip only a single header (to count skipped headers or verify its conformance
-to standards), use BlastFormat#skipHeader instead.
  * @see BlastFormat#skipHeader
  * @headerfile seqan/blast.h
  */
@@ -992,6 +991,11 @@ _readMatchImpl(BlastMatch<TqId, TsId, TPos, TAlign>      & match,
         BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::defaults;
 
     _readMatchImpl(match, iter, plusDefaults, TFormat());
+
+    // since gaps are included in the mismatch count in BLAST_LEGACY the gaps
+    // computed here will always be zero, so we instead reset them to signify
+    // that they are unknown
+    match.gaps = std::numeric_limits<TPos>::max();
 }
 
 /*!
@@ -1145,24 +1149,21 @@ readMatch(BlastMatch<TqId, TsId, TPos, TAlign>      & match,
  */
 
 // arbitrary columns
-template <typename TTarget,
-          typename std::enable_if<IsSequence<TTarget>::VALUE>::type = 0>
-inline void
+template <typename TTarget>
+inline SEQAN_FUNC_ENABLE_IF(IsSequence<TTarget>)
 _assignOrCast(TTarget & target, CharString const & source)
 {
-    target = source;
+    assign(target, source);
 }
 
-template <typename TTarget,
-          typename std::enable_if<Is<NumberConcept<TTarget>>::VALUE>::type = 0>
-inline void
+template <typename TTarget>
+inline SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TTarget>>)
 _assignOrCast(TTarget & target, CharString const & source)
 {
     target = lexicalCast<TTarget>(source);
 }
 
 template <typename TFwdIterator,
-          typename TPos,
           typename TArg>
 inline void
 _readMatchImplBlastTab(TFwdIterator & iter, TArg & arg)
@@ -1170,7 +1171,7 @@ _readMatchImplBlastTab(TFwdIterator & iter, TArg & arg)
     CharString buf;
     try
     {
-        readUntilChar(buf, iter, OrFunctor<IsTab,IsNewline>());
+        readUntil(buf, iter, OrFunctor<IsTab,IsNewline>());
         _assignOrCast(arg, buf);
     } catch (UnexpectedEnd const &)
     {
@@ -1181,14 +1182,13 @@ _readMatchImplBlastTab(TFwdIterator & iter, TArg & arg)
 }
 
 template <typename TFwdIterator,
-          typename TPos,
           typename TArg,
           typename... TArgs>
 inline void
 _readMatchImplBlastTab(TFwdIterator & iter, TArg & arg, TArgs & ... args)
 {
     CharString buf;
-    readUntilChar(buf, iter, IsTab());
+    readUntil(buf, iter, IsTab());
     goNext(iter); //skip '\t', go to begin of next field
     _assignOrCast(arg, buf);
 
