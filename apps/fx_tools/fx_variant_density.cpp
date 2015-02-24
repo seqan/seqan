@@ -29,10 +29,9 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Computes coverage and C+G content of a genome given a SAM or BAM file,
-// window-based.
+// Computes density of variants given a VCF file, window-based.
 // ==========================================================================
 
 #include <sstream>
@@ -42,23 +41,20 @@
 #include <seqan/modifier.h>
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
-#include <seqan/bam_io.h>
+#include <seqan/vcf_io.h>
 #include <seqan/seq_io.h>
 
 // --------------------------------------------------------------------------
-// Class FxBamCoverageOptions
+// Class FxVariantDensityOptions
 // --------------------------------------------------------------------------
 
-struct FxBamCoverageOptions
+struct FxVariantDensityOptions
 {
     // Verbosity level.  0 - quiet, 1 - normal, 2 - verbose, 3 - very verbose.
     int verbosity;
     
-    // Path to Genome file.
-    seqan::CharString inGenomePath;
-
     // Path to SAM file.
-    seqan::CharString inBamPath;
+    seqan::CharString inVcfPath;
 
     // Path to output file.
     seqan::CharString outPath;
@@ -66,7 +62,7 @@ struct FxBamCoverageOptions
     // Window size to use for computation.
     __int32 windowSize;
 
-    FxBamCoverageOptions() : verbosity(1), windowSize(10*1000)
+    FxVariantDensityOptions() : verbosity(1), windowSize(10*1000)
     {}
 };
 
@@ -81,10 +77,8 @@ struct BinData
     unsigned coverage;
     // Length of underlying sequence.
     unsigned length;
-    // Percentag C+G.
-    double cgContent;
     
-    BinData() : coverage(0), length(0), cgContent(0)
+    BinData() : coverage(0), length(0)
     {}
 };
 
@@ -93,31 +87,26 @@ struct BinData
 // --------------------------------------------------------------------------
 
 seqan::ArgumentParser::ParseResult
-parseArgs(FxBamCoverageOptions & options,
+parseArgs(FxVariantDensityOptions & options,
           int argc,
           char const ** argv)
 {
-    seqan::ArgumentParser parser("fx_bam_coverage");
-    setShortDescription(parser, "Read Coverage Computation.");
+    seqan::ArgumentParser parser("fx_variant_density");
+    setShortDescription(parser, "Variant Density Computation.");
     setCategory(parser, "Utilities");
     setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
 
     addUsageLine(parser,
-                 "[\\fIOPTIONS\\fP] \\fB-o\\fP \\fIOUT.bam.coverage.tsv\\fP \\fB-r\\fP \\fIGENOME.fa\\fP "
-                 "\\fB-m\\fP \\fIMAPPING.bam\\fP");
-    addDescription(parser, "Compute read coverage and C+G content for a genome.");
+                 "[\\fIOPTIONS\\fP] \\fB-o\\fP \\fIOUT.bed\\fP "
+                 "\\fB-i\\fP \\fIVARIANTS.vcf\\fP");
+    addDescription(parser, "Compute variant density for a genome.");
 
-    // Two input files: Genome, and mapping.
-    addOption(parser, seqan::ArgParseOption("r", "in-reference", "Path to the reference file.",
-                                            seqan::ArgParseArgument::INPUT_FILE, "IN.fa"));
-    setValidValues(parser, "in-reference", "fasta fa");
-    setRequired(parser, "in-reference");
-
-    addOption(parser, seqan::ArgParseOption("m", "in-mapping", "Path to the mapping file to analyze.",
+    // Input files: vcf.
+    addOption(parser, seqan::ArgParseOption("i", "in-variants", "Path to the variant file to analyze.",
                                             seqan::ArgParseArgument::INPUT_FILE));
-    setValidValues(parser, "in-mapping", "sam bam");
-    setRequired(parser, "in-mapping");
+    setValidValues(parser, "in-variants", seqan::VcfFileIn::getFileExtensions());
+    setRequired(parser, "in-variants");
 
     // TODO(holtgrew): I want a custom help text!
     // addOption(parser, seqan::ArgParseOption("h", "help", "This helpful screen."));
@@ -131,16 +120,15 @@ parseArgs(FxBamCoverageOptions & options,
     setDefaultValue(parser, "window-size", options.windowSize);
 
     addSection(parser, "Output Options");
-    addOption(parser, seqan::ArgParseOption("o", "out-path", "Path to the resulting file.  If omitted, result is printed to stdout.", seqan::ArgParseArgument::OUTPUT_FILE, "TSV"));
+    addOption(parser, seqan::ArgParseOption("o", "out-path", "Path to the resulting file.  If omitted, result is printed to stdout.", seqan::ArgParseArgument::OUTPUT_FILE, "BED"));
     setRequired(parser, "out-path");
-    setValidValues(parser, "out-path", "bam_coverage_tsv");
+    setValidValues(parser, "out-path", "bed");
 
     seqan::ArgumentParser::ParseResult res = parse(parser, argc, argv);
 
     if (res == seqan::ArgumentParser::PARSE_OK)
     {
-        getOptionValue(options.inGenomePath, parser, "in-reference");
-        getOptionValue(options.inBamPath, parser, "in-mapping");
+        getOptionValue(options.inVcfPath, parser, "in-variants");
         getOptionValue(options.outPath, parser, "out-path");
         getOptionValue(options.windowSize, parser, "window-size");
 
@@ -164,7 +152,7 @@ int main(int argc, char const ** argv)
     // -----------------------------------------------------------------------
     // Parse command line.
     // -----------------------------------------------------------------------
-    FxBamCoverageOptions options;
+    FxVariantDensityOptions options;
     seqan::ArgumentParser::ParseResult res = parseArgs(options, argc, argv);
     if (res != seqan::ArgumentParser::PARSE_OK)
         return res == seqan::ArgumentParser::PARSE_ERROR;  // 1 on errors, 0 otherwise
@@ -177,62 +165,9 @@ int main(int argc, char const ** argv)
         std::cerr << "____OPTIONS___________________________________________________________________\n"
                   << "\n"
                   << "VERBOSITY    " << options.verbosity << "\n"
-                  << "GENOME       " << options.inGenomePath << "\n"
-                  << "SAM/BAM      " << options.inBamPath << "\n"
+                  << "SAM/BAM      " << options.inVcfPath << "\n"
                   << "OUT          " << options.outPath << "\n"
                   << "WINDOW SIZE  " << options.windowSize << "\n";
-    }
-
-    // -----------------------------------------------------------------------
-    // Load Genome FAI Index
-    // -----------------------------------------------------------------------
-
-    std::cerr << "\n"
-              << "___PREPRATION_____________________________________________________________________\n"
-              << "\n"
-              << "Indexing GENOME file  " << options.inGenomePath << " ...";
-    seqan::FaiIndex faiIndex;
-    if (build(faiIndex, toCString(options.inGenomePath)) != 0)
-    {
-        std::cerr << "Could not build FAI index.\n";
-        return 1;
-    }
-    std::cerr << " OK\n";
-
-    // Prepare bins.
-    seqan::String<seqan::String<BinData> > bins;
-    resize(bins, numSeqs(faiIndex));
-
-    // -----------------------------------------------------------------------
-    // Compute C+G content 
-    // -----------------------------------------------------------------------
-
-    std::cerr << "\n"
-              << "___C+G CONTENT COMPUTATION________________________________________________________\n"
-              << "\n";
-
-    for (unsigned i = 0; i < numSeqs(faiIndex); ++i)
-    {
-        std::cerr << "[" << sequenceName(faiIndex, i) << "] ...";
-        unsigned numBins = (sequenceLength(faiIndex, i) + options.windowSize - 1) / options.windowSize;
-        resize(bins[i], numBins);
-        seqan::Dna5String contigSeq;
-        readSequence(contigSeq, faiIndex, i);
-
-        for (unsigned bin = 0; bin < numBins; ++bin)
-        {
-            unsigned cgCounter = 0;
-            unsigned binSize = 0;
-            bins[i][bin].length = options.windowSize;
-            if ((bin + 1) * options.windowSize > length(contigSeq))
-                bins[i][bin].length = length(contigSeq) - bin * options.windowSize;
-            for (unsigned pos = bin * options.windowSize; pos < length(contigSeq) && pos < (bin + 1) * options.windowSize; ++pos, ++binSize)
-                cgCounter += (contigSeq[pos] == 'C' || contigSeq[pos] == 'G');
-            if (binSize == 0u)  // prevent div-by-zero below
-                binSize = 1;
-            bins[i][bin].cgContent = 1.0 * cgCounter / binSize;
-        }
-        std::cerr << "DONE\n";
     }
 
     // -----------------------------------------------------------------------
@@ -240,34 +175,33 @@ int main(int argc, char const ** argv)
     // -----------------------------------------------------------------------
 
     std::cerr << "\n"
-              << "___COVERAGE COMPUATATION________________________________________________________\n"
+              << "___DENSITY COMPUTATION________________________________________________________\n"
               << "\n"
-              << "Computing Coverage...";
+              << "Computing Density...";
 
-    seqan::BamFileIn bamFile;
-    if (!open(bamFile, toCString(options.inBamPath)))
+    seqan::VcfFileIn vcfFile;
+    if (!open(vcfFile, toCString(options.inVcfPath)))
     {
-        std::cerr << "Could not open " << options.inBamPath << "!\n";
+        std::cerr << "Could not open " << options.inVcfPath << "!\n";
         return 1;
     }
+    
+    seqan::String<seqan::String<BinData> > bins;
 
-    seqan::BamAlignmentRecord record;
-    while (!atEnd(bamFile))
+    seqan::VcfHeader header;
+    readHeader(header, vcfFile);
+
+    seqan::VcfRecord record;
+    while (!atEnd(vcfFile))
     {
-        readRecord(record, bamFile);
+        readRecord(record, vcfFile);
 
-        if (hasFlagUnmapped(record) || hasFlagSecondary(record) || record.rID == seqan::BamAlignmentRecord::INVALID_REFID)
-            continue;  // Skip these records.
-
-        int contigId = 0;
-        seqan::CharString const & contigName = contigNames(context(bamFile))[record.rID];
-        if (!getIdByName(contigId, faiIndex, contigName))
-        {
-            std::cerr << "ERROR: Alignment to unknown contig " << contigId << "!\n";
-            return 1;
-        }
         unsigned binNo = record.beginPos / options.windowSize;
-        bins[contigId][binNo].coverage += 1;
+        if (length(bins) <= (unsigned)record.rID)
+            resize(bins, record.rID + 1);
+        if (length(bins[record.rID]) <= binNo)
+            resize(bins[record.rID], binNo + 1);
+        bins[record.rID][binNo].coverage++;
     }
 
     std::cerr << "DONE\n";
@@ -289,18 +223,14 @@ int main(int argc, char const ** argv)
         out = &outFile;
     }
 
-    (*out) << "#BIN\tREF_NAME\tREF_BIN\tBIN_BEGIN\tBIN_LENGTH\tCOVERAGE\tCG_CONTENT\n";
     for (unsigned i = 0, globalBin = 0; i < length(bins); ++i)
     {
         for (unsigned refBin = 0; refBin < length(bins[i]); ++refBin, ++globalBin)
         {
-            (*out) << globalBin << '\t'
-                   << sequenceName(faiIndex, i) << '\t'
-                   << refBin << '\t'
+            (*out) << contigNames(context(vcfFile))[i] << '\t'
                    << refBin * options.windowSize << '\t'
-                   << bins[i][refBin].length << '\t'
-                   << bins[i][refBin].coverage << '\t'
-                   << bins[i][refBin].cgContent << '\n';
+                   << (refBin + 1) * options.windowSize << '\t'
+                   << bins[i][refBin].coverage << '\n';
         }
     }
 

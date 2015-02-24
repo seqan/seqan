@@ -29,10 +29,9 @@
 // DAMAGE.
 //
 // ==========================================================================
-// Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
+// Author: David Weese <david.weese@fu-berlin.de>
 // ==========================================================================
-// Computes coverage and C+G content of a genome given a SAM or BAM file,
-// window-based.
+// Computes coverage a genome given a SAM or BAM file, window-based.
 // ==========================================================================
 
 #include <sstream>
@@ -53,9 +52,6 @@ struct FxBamCoverageOptions
 {
     // Verbosity level.  0 - quiet, 1 - normal, 2 - verbose, 3 - very verbose.
     int verbosity;
-    
-    // Path to Genome file.
-    seqan::CharString inGenomePath;
 
     // Path to SAM file.
     seqan::CharString inBamPath;
@@ -66,27 +62,57 @@ struct FxBamCoverageOptions
     // Window size to use for computation.
     __int32 windowSize;
 
-    FxBamCoverageOptions() : verbosity(1), windowSize(10*1000)
+    FxBamCoverageOptions() : verbosity(1), windowSize(0)
     {}
 };
 
 
 // --------------------------------------------------------------------------
-// Class BinData
+// Class Range
 // --------------------------------------------------------------------------
 
-struct BinData
+struct Range
 {
-    // Number of reads whose alignment starts here.
-    unsigned coverage;
-    // Length of underlying sequence.
-    unsigned length;
-    // Percentag C+G.
-    double cgContent;
+    // Reference id.
+    __int32 rID;
+    // Coordinates.
+    __int32 beginPos;
+    __int32 endPos;
+    // Number of reads whose alignment cover this range.
+    double coverage;
     
-    BinData() : coverage(0), length(0), cgContent(0)
+    seqan::CharString contigName;
+    
+    Range() :
+        rID(-1),
+        beginPos(0),
+        endPos(0),
+        coverage(0)
+    {}
+
+    Range(int32_t rID, int32_t beginPos, int32_t endPos, double coverage) :
+        rID(rID),
+        beginPos(beginPos),
+        endPos(endPos),
+        coverage(coverage)
     {}
 };
+
+void clear(Range & range, int rID)
+{
+    range.rID = rID;
+    range.beginPos = 0;
+    range.endPos = 0;
+    range.coverage = 0;
+}
+
+std::ostream & operator<< (std::ostream & stream, Range const & range)
+{
+    stream << range.beginPos << '\t'
+           << range.endPos << '\t'
+           << range.coverage << '\n';
+    return stream;
+}
 
 // --------------------------------------------------------------------------
 // Function parseArgs()
@@ -97,22 +123,19 @@ parseArgs(FxBamCoverageOptions & options,
           int argc,
           char const ** argv)
 {
-    seqan::ArgumentParser parser("fx_bam_coverage");
+    seqan::ArgumentParser parser("fx_read_depth");
     setShortDescription(parser, "Read Coverage Computation.");
     setCategory(parser, "Utilities");
     setVersion(parser, SEQAN_APP_VERSION " [" SEQAN_REVISION "]");
     setDate(parser, SEQAN_DATE);
 
     addUsageLine(parser,
-                 "[\\fIOPTIONS\\fP] \\fB-o\\fP \\fIOUT.bam.coverage.tsv\\fP \\fB-r\\fP \\fIGENOME.fa\\fP "
+                 "[\\fIOPTIONS\\fP] \\fB-o\\fP \\fIOUT.bed\\fP "
                  "\\fB-m\\fP \\fIMAPPING.bam\\fP");
-    addDescription(parser, "Compute read coverage and C+G content for a genome.");
-
-    // Two input files: Genome, and mapping.
-    addOption(parser, seqan::ArgParseOption("r", "in-reference", "Path to the reference file.",
-                                            seqan::ArgParseArgument::INPUT_FILE, "IN.fa"));
-    setValidValues(parser, "in-reference", "fasta fa");
-    setRequired(parser, "in-reference");
+    addDescription(parser, "Compute read depth, i.e. the number of reads covering a genomic position. "
+                           "The result is a bed file with intervals and the maximal read depth in each interval. "
+                           "Intervals start at multiples of the windows size, if given. "
+                           "If no window size is given, positions with identical read depth are aggregated as intervals.");
 
     addOption(parser, seqan::ArgParseOption("m", "in-mapping", "Path to the mapping file to analyze.",
                                             seqan::ArgParseArgument::INPUT_FILE));
@@ -131,15 +154,13 @@ parseArgs(FxBamCoverageOptions & options,
     setDefaultValue(parser, "window-size", options.windowSize);
 
     addSection(parser, "Output Options");
-    addOption(parser, seqan::ArgParseOption("o", "out-path", "Path to the resulting file.  If omitted, result is printed to stdout.", seqan::ArgParseArgument::OUTPUT_FILE, "TSV"));
-    setRequired(parser, "out-path");
-    setValidValues(parser, "out-path", "bam_coverage_tsv");
+    addOption(parser, seqan::ArgParseOption("o", "out-path", "Path to the resulting file.  If omitted, result is printed to stdout.", seqan::ArgParseArgument::OUTPUT_FILE, "OUTFILE"));
+    setValidValues(parser, "out-path", ".bed");
 
     seqan::ArgumentParser::ParseResult res = parse(parser, argc, argv);
 
     if (res == seqan::ArgumentParser::PARSE_OK)
     {
-        getOptionValue(options.inGenomePath, parser, "in-reference");
         getOptionValue(options.inBamPath, parser, "in-mapping");
         getOptionValue(options.outPath, parser, "out-path");
         getOptionValue(options.windowSize, parser, "window-size");
@@ -152,6 +173,46 @@ parseArgs(FxBamCoverageOptions & options,
 
     return res;
 }
+
+template <typename TBamContext>
+void writeRange(std::ostream & stream, Range & lastBin, Range const & range, FxBamCoverageOptions & options, TBamContext & bamContext, bool lastOfContig)
+{
+    SEQAN_ASSERT_EQ(lastBin.rID, range.rID);
+    
+    if (options.windowSize > 0)
+    {
+        unsigned binNo     = lastBin.endPos / options.windowSize;
+        unsigned binNoEnd  = range.endPos / options.windowSize;
+        unsigned binOfsEnd = range.endPos % options.windowSize;
+        
+        for (; binNo < binNoEnd; ++binNo)
+        {
+            // aggregate the max coverage
+            if (lastBin.coverage < range.coverage)
+                lastBin.coverage = range.coverage;
+            lastBin.endPos = (binNo + 1) * options.windowSize;
+            stream << contigNames(bamContext)[range.rID] << '\t' << lastBin;
+
+            lastBin.beginPos = lastBin.endPos;
+            lastBin.coverage = 0;
+        }
+        if (binOfsEnd != 0)
+        {
+            // aggregate the max coverage
+            if (lastBin.coverage < range.coverage)
+                lastBin.coverage = range.coverage;
+            lastBin.endPos = range.endPos;
+            
+            if (lastOfContig)
+                stream << contigNames(bamContext)[lastBin.rID] << '\t' << lastBin;
+        }
+    }
+    else
+    {
+        stream << contigNames(bamContext)[range.rID] << '\t' << range;
+    }
+}
+
 
 // ---------------------------------------------------------------------------
 // Function main()
@@ -177,108 +238,18 @@ int main(int argc, char const ** argv)
         std::cerr << "____OPTIONS___________________________________________________________________\n"
                   << "\n"
                   << "VERBOSITY    " << options.verbosity << "\n"
-                  << "GENOME       " << options.inGenomePath << "\n"
                   << "SAM/BAM      " << options.inBamPath << "\n"
                   << "OUT          " << options.outPath << "\n"
                   << "WINDOW SIZE  " << options.windowSize << "\n";
     }
 
     // -----------------------------------------------------------------------
-    // Load Genome FAI Index
-    // -----------------------------------------------------------------------
-
-    std::cerr << "\n"
-              << "___PREPRATION_____________________________________________________________________\n"
-              << "\n"
-              << "Indexing GENOME file  " << options.inGenomePath << " ...";
-    seqan::FaiIndex faiIndex;
-    if (build(faiIndex, toCString(options.inGenomePath)) != 0)
-    {
-        std::cerr << "Could not build FAI index.\n";
-        return 1;
-    }
-    std::cerr << " OK\n";
-
-    // Prepare bins.
-    seqan::String<seqan::String<BinData> > bins;
-    resize(bins, numSeqs(faiIndex));
-
-    // -----------------------------------------------------------------------
-    // Compute C+G content 
-    // -----------------------------------------------------------------------
-
-    std::cerr << "\n"
-              << "___C+G CONTENT COMPUTATION________________________________________________________\n"
-              << "\n";
-
-    for (unsigned i = 0; i < numSeqs(faiIndex); ++i)
-    {
-        std::cerr << "[" << sequenceName(faiIndex, i) << "] ...";
-        unsigned numBins = (sequenceLength(faiIndex, i) + options.windowSize - 1) / options.windowSize;
-        resize(bins[i], numBins);
-        seqan::Dna5String contigSeq;
-        readSequence(contigSeq, faiIndex, i);
-
-        for (unsigned bin = 0; bin < numBins; ++bin)
-        {
-            unsigned cgCounter = 0;
-            unsigned binSize = 0;
-            bins[i][bin].length = options.windowSize;
-            if ((bin + 1) * options.windowSize > length(contigSeq))
-                bins[i][bin].length = length(contigSeq) - bin * options.windowSize;
-            for (unsigned pos = bin * options.windowSize; pos < length(contigSeq) && pos < (bin + 1) * options.windowSize; ++pos, ++binSize)
-                cgCounter += (contigSeq[pos] == 'C' || contigSeq[pos] == 'G');
-            if (binSize == 0u)  // prevent div-by-zero below
-                binSize = 1;
-            bins[i][bin].cgContent = 1.0 * cgCounter / binSize;
-        }
-        std::cerr << "DONE\n";
-    }
-
-    // -----------------------------------------------------------------------
-    // Compute Coverage
-    // -----------------------------------------------------------------------
-
-    std::cerr << "\n"
-              << "___COVERAGE COMPUATATION________________________________________________________\n"
-              << "\n"
-              << "Computing Coverage...";
-
-    seqan::BamFileIn bamFile;
-    if (!open(bamFile, toCString(options.inBamPath)))
-    {
-        std::cerr << "Could not open " << options.inBamPath << "!\n";
-        return 1;
-    }
-
-    seqan::BamAlignmentRecord record;
-    while (!atEnd(bamFile))
-    {
-        readRecord(record, bamFile);
-
-        if (hasFlagUnmapped(record) || hasFlagSecondary(record) || record.rID == seqan::BamAlignmentRecord::INVALID_REFID)
-            continue;  // Skip these records.
-
-        int contigId = 0;
-        seqan::CharString const & contigName = contigNames(context(bamFile))[record.rID];
-        if (!getIdByName(contigId, faiIndex, contigName))
-        {
-            std::cerr << "ERROR: Alignment to unknown contig " << contigId << "!\n";
-            return 1;
-        }
-        unsigned binNo = record.beginPos / options.windowSize;
-        bins[contigId][binNo].coverage += 1;
-    }
-
-    std::cerr << "DONE\n";
-
-    // -----------------------------------------------------------------------
-    // Write Output
+    // Open Output
     // -----------------------------------------------------------------------
 
     std::ostream * out = &std::cout;
     std::ofstream outFile;
-    if (options.outPath != "-")
+    if (!empty(options.outPath))
     {
         outFile.open(toCString(options.outPath), std::ios::binary | std::ios::out);
         if (!outFile.good())
@@ -289,20 +260,120 @@ int main(int argc, char const ** argv)
         out = &outFile;
     }
 
-    (*out) << "#BIN\tREF_NAME\tREF_BIN\tBIN_BEGIN\tBIN_LENGTH\tCOVERAGE\tCG_CONTENT\n";
-    for (unsigned i = 0, globalBin = 0; i < length(bins); ++i)
+    // -----------------------------------------------------------------------
+    // Compute Coverage
+    // -----------------------------------------------------------------------
+
+    std::cerr << "\n"
+              << "___COVERAGE COMPUTATION________________________________________________________\n"
+              << "\n"
+              << "Computing Coverage...";
+
+    seqan::BamFileIn bamFile;
+    if (!open(bamFile, toCString(options.inBamPath)))
     {
-        for (unsigned refBin = 0; refBin < length(bins[i]); ++refBin, ++globalBin)
+        std::cerr << "Could not open " << options.inBamPath << "!\n";
+        return 1;
+    }
+
+    seqan::BamHeader header;
+    readHeader(header, bamFile);
+
+    // Prepare bins.
+    seqan::PriorityType<__int32, std::greater<__int32> > heap;
+    
+//    seqan::String<seqan::String<Range> > bins;
+//    resize(bins, length(contigNames(context(bamFile))));
+//    for (unsigned i = 0; i < length(bins); ++i)
+//    {
+//        resize(bins[i], (contigLengths(context(bamFile))[i] + options.windowSize - 1) / options.windowSize, options.windowSize);
+//        back(bins[i]).length = (contigLengths(context(bamFile))[i] + options.windowSize - 1) % options.windowSize + 1;
+//    }
+//
+    typedef int32_t TPos;
+    
+    int lastID = -1;
+    TPos lastBreak = 0;
+    int coverage = 0;
+    seqan::BamAlignmentRecord record;
+    Range lastBin;
+
+    if (!atEnd(bamFile))
+    {
+        readRecord(record, bamFile);
+        clear(lastBin, record.rID);
+        lastID = record.rID;
+    }
+    
+    while (!atEnd(bamFile))
+    {
+        while (!empty(heap) && top(heap) <= record.beginPos)
         {
-            (*out) << globalBin << '\t'
-                   << sequenceName(faiIndex, i) << '\t'
-                   << refBin << '\t'
-                   << refBin * options.windowSize << '\t'
-                   << bins[i][refBin].length << '\t'
-                   << bins[i][refBin].coverage << '\t'
-                   << bins[i][refBin].cgContent << '\n';
+            TPos endPos = top(heap);
+            Range range(record.rID, lastBreak, endPos, coverage);
+            writeRange(*out, lastBin, range, options, context(bamFile), lastID != record.rID);
+            lastBreak = endPos;
+
+            // remove all reads ending here and update coverage
+            while (!empty(heap) && top(heap) == endPos)
+            {
+                --coverage;
+                pop(heap);
+            }
+        }
+
+        if (record.rID == lastID)
+        {
+            // output next range
+            Range range(record.rID, lastBreak, record.beginPos, coverage);
+            writeRange(*out, lastBin, range, options, context(bamFile), false);
+        }
+        else
+        {
+            SEQAN_ASSERT_EQ(coverage, 0u);
+            
+            // output last range
+            if (lastBreak != contigLengths(context(bamFile))[record.rID])
+            {
+                Range range(lastID, lastBreak, contigLengths(context(bamFile))[lastID], 0u);
+                writeRange(*out, lastBin, range, options, context(bamFile), true);
+            }
+            clear(lastBin, record.rID);
+            if (record.beginPos != 0)
+            {
+                Range range(record.rID, 0, record.beginPos, 0u);
+                writeRange(*out, lastBin, range, options, context(bamFile), false);
+            }
+                
+            coverage = 0;
+            lastID = record.rID;
+        }
+        lastBreak = record.beginPos;
+
+        // consume all read at the current position until the next position
+        while (true)
+        {
+            ++coverage;
+            
+            TPos len = 0;
+            _getLengthInRef(len, record.cigar);
+            push(heap, record.beginPos + len);
+
+            while (!atEnd(bamFile))
+            {
+                readRecord(record, bamFile);
+
+                if (!hasFlagUnmapped(record) && !hasFlagSecondary(record) && record.rID != seqan::BamAlignmentRecord::INVALID_REFID)
+                    break;  // Only use aligned records.
+            }
+            
+            if (atEnd(bamFile) || record.beginPos != lastBreak || record.rID != lastID)
+                break;
+            
         }
     }
+
+    std::cerr << "DONE\n";
 
     if (options.verbosity >= 2)
         std::cerr << "Took " << (seqan::sysTime() - startTime) << " s\n";
