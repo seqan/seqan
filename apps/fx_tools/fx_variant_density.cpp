@@ -42,7 +42,7 @@
 #include <seqan/sequence.h>
 #include <seqan/stream.h>
 #include <seqan/vcf_io.h>
-#include <seqan/seq_io.h>
+#include <seqan/bed_io.h>
 
 // --------------------------------------------------------------------------
 // Class FxVariantDensityOptions
@@ -100,7 +100,8 @@ parseArgs(FxVariantDensityOptions & options,
     addUsageLine(parser,
                  "[\\fIOPTIONS\\fP] \\fB-o\\fP \\fIOUT.bed\\fP "
                  "\\fB-i\\fP \\fIVARIANTS.vcf\\fP");
-    addDescription(parser, "Compute variant density for a genome.");
+    addDescription(parser, "Compute variant densities over a genome given a variant file "
+                           "in non-overlapping windows of a fixed size.");
 
     // Input files: vcf.
     addOption(parser, seqan::ArgParseOption("i", "in-variants", "Path to the variant file to analyze.",
@@ -118,11 +119,11 @@ parseArgs(FxVariantDensityOptions & options,
     addSection(parser, "Main Options");
     addOption(parser, seqan::ArgParseOption("w", "window-size", "Set the size of the non-overlapping windows in base pairs.", seqan::ArgParseArgument::INTEGER, "NUM"));
     setDefaultValue(parser, "window-size", options.windowSize);
+    setMinValue(parser, "window-size", "1");
 
     addSection(parser, "Output Options");
     addOption(parser, seqan::ArgParseOption("o", "out-path", "Path to the resulting file.  If omitted, result is printed to stdout.", seqan::ArgParseArgument::OUTPUT_FILE, "BED"));
-    setRequired(parser, "out-path");
-    setValidValues(parser, "out-path", "bed");
+    setValidValues(parser, "out-path", seqan::BedFileOut::getFileExtensions());
 
     seqan::ArgumentParser::ParseResult res = parse(parser, argc, argv);
 
@@ -160,7 +161,7 @@ int main(int argc, char const ** argv)
     // -----------------------------------------------------------------------
     // Show options.
     // -----------------------------------------------------------------------
-    if (options.verbosity >= 1)
+    if (options.verbosity > 1)
     {
         std::cerr << "____OPTIONS___________________________________________________________________\n"
                   << "\n"
@@ -174,16 +175,26 @@ int main(int argc, char const ** argv)
     // Compute Coverage
     // -----------------------------------------------------------------------
 
-    std::cerr << "\n"
-              << "___DENSITY COMPUTATION________________________________________________________\n"
-              << "\n"
-              << "Computing Density...";
+    if (options.verbosity > 1)
+    {
+        std::cerr << "\n"
+                  << "___DENSITY COMPUTATION________________________________________________________\n"
+                  << "\n"
+                  << "Computing Density...";
+    }
 
     seqan::VcfFileIn vcfFile;
-    if (!open(vcfFile, toCString(options.inVcfPath)))
+    if (!empty(options.inVcfPath))
     {
-        std::cerr << "Could not open " << options.inVcfPath << "!\n";
-        return 1;
+        if (!open(vcfFile, toCString(options.inVcfPath)))
+        {
+            std::cerr << "Could not open " << options.inVcfPath << "!\n";
+            return 1;
+        }
+    }
+    else
+    {
+        open(vcfFile, std::cin);
     }
     
     seqan::String<seqan::String<BinData> > bins;
@@ -204,33 +215,35 @@ int main(int argc, char const ** argv)
         bins[record.rID][binNo].coverage++;
     }
 
-    std::cerr << "DONE\n";
+    if (options.verbosity > 1)
+        std::cerr << "DONE\n";
 
     // -----------------------------------------------------------------------
     // Write Output
     // -----------------------------------------------------------------------
 
-    std::ostream * out = &std::cout;
-    std::ofstream outFile;
-    if (options.outPath != "-")
+    seqan::BedFileOut outFile;
+    if (!empty(options.outPath))
     {
-        outFile.open(toCString(options.outPath), std::ios::binary | std::ios::out);
-        if (!outFile.good())
+        if (!open(outFile, toCString(options.outPath)))
         {
             std::cerr << "ERROR: Could not open output file " << options.outPath << "!\n";
             return 1;
         }
-        out = &outFile;
     }
-
+    else
+    {
+        open(outFile, std::cout);
+    }
+    
     for (unsigned i = 0, globalBin = 0; i < length(bins); ++i)
     {
         for (unsigned refBin = 0; refBin < length(bins[i]); ++refBin, ++globalBin)
         {
-            (*out) << contigNames(context(vcfFile))[i] << '\t'
-                   << refBin * options.windowSize << '\t'
-                   << (refBin + 1) * options.windowSize << '\t'
-                   << bins[i][refBin].coverage << '\n';
+            outFile.stream << contigNames(context(vcfFile))[i] << '\t'
+                           << refBin * options.windowSize << '\t'
+                           << (refBin + 1) * options.windowSize << '\t'
+                           << bins[i][refBin].coverage << '\n';
         }
     }
 
