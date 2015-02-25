@@ -53,8 +53,11 @@ namespace seqan
 // ============================================================================
 
 // ============================================================================
-// Functions
+// Private Functions
 // ============================================================================
+
+namespace impl
+{
 
 // ----------------------------------------------------------------------------
 // Function _computeCrc()                                               [8-bit]
@@ -105,6 +108,11 @@ inline void _computeCrc(TCrcVal & crc, TVal /*val*/, ConstUInt<SIZE>)
 {
     crc = 0;
 }
+}  // namespace impl
+
+// ============================================================================
+// Public Functions
+// ============================================================================
 
 // ----------------------------------------------------------------------------
 // Function computeCrc()
@@ -136,7 +144,7 @@ computeCrc(TSequence const & seq)
 
     unsigned int crc;
     for (TIterator it = begin(seq, Standard()); it != end(seq, Standard()); ++it)
-        _computeCrc(crc, static_cast<TUnsignedValue>(*it), ConstUInt<sizeof(TUnsignedValue)>());
+        impl::computeCrc(crc, static_cast<TUnsignedValue>(*it), ConstUInt<sizeof(TUnsignedValue)>());
     return crc;
 }
 #else  //__SSE4_2_
