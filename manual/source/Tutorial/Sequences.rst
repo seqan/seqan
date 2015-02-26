@@ -184,7 +184,7 @@ Assignment 1
 
         #include <seqan/sequence.h>
         #include <seqan/basic.h>
-        #include <iostream>
+        #include <seqan/stream.h>
         #include <seqan/file.h>
         #include <seqan/modifier.h>
 
@@ -228,7 +228,7 @@ Assignment 1
 
            #include <seqan/sequence.h>
            #include <seqan/basic.h>
-           #include <iostream>
+           #include <seqan/stream.h>
            #include <seqan/file.h>
            #include <seqan/modifier.h>
 
@@ -282,7 +282,7 @@ Workshop Assignment 1
 
    .. code-block:: cpp
 
-      #include <iostream>
+      #include <seqan/stream.h>
       #include <seqan/sequence.h>
       #include <seqan/file.h>
 
@@ -460,7 +460,7 @@ Assignment 2
 
      .. code-block:: cpp
 
-        #include <iostream>
+        #include <seqan/stream.h>
         #include <seqan/sequence.h>
         #include <seqan/file.h>
 
@@ -486,7 +486,7 @@ Assignment 2
 
         .. code-block:: cpp
 
-           #include <iostream>
+           #include <seqan/stream.h>
            #include <seqan/sequence.h>
            #include <seqan/file.h>
 
