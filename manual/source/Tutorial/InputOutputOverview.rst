@@ -29,6 +29,8 @@ Often, they start out with a header that itself contains different header record
 For example, the Binary Sequence Alignment/Map (SAM/BAM) format starts with an header that lists all contigs of the reference sequence.
 The BAM header is followed by a list of BAM alignment records that contain query sequences aligned to some reference contig.
 
+.. _tutorial-input-output-overview-formatted-files:
+
 Formatted Files
 """""""""""""""
 
@@ -41,7 +43,6 @@ These types of classes provide the following I/O operations on formatted files:
 #. open a file given its filename or attach to an existing stream like `std::cin` or `std::cout`;
 #. guess the file format from the file content or filename extension;
 #. access compressed or uncompressed files transparently.
-
 
 .. warning::
 
