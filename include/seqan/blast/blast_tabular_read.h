@@ -114,6 +114,10 @@ typedef Tag<DetectFields_> DetectFields;
  * @param[in] iter    An input iterator over a stream or any fwd-iterator over a string
  * @param[in] tag     @link BlastFormat @endlink specialization
  *
+ * @section Exceptions
+ *
+ * Will throw std::basic_ios::exceptions on low-level IO-problems.
+ *
  * @return    true or false
  */
 
@@ -152,7 +156,10 @@ _verifyFields(TFieldList const & fields,
               unsigned const hits, // irrelevant for traditional header
               BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
 {
-//     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g>  TFormat;
+    // In BLAST_PLUS, iff hits are zero no fields line is printed
+    if (g == BlastFormatGeneration::BLAST_PLUS)
+        if ((hits == 0) && length(fields) == 0 )
+            return;
 
     if (length(fields) != BlastMatchField<g>::defaults)
         SEQAN_THROW(RecoverableParseError("Default fields and header "
@@ -166,7 +173,6 @@ _verifyFields(TFieldList const & fields,
                                               "fields were not default."));
 }
 
-
 // fields as strings
 template <typename TString,
           BlastFormatProgram p,
@@ -178,10 +184,10 @@ _verifyFields(StringSet<TString> const & fields,
 {
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g>  TFormat;
 
-//     // TODO(h4nn3s): what was this supposed to do?
-//     if (g == BlastFormatGeneration::BLAST_PLUS)
-//         if ((hits == 0) && length(fields) )
-//             0;
+    // In BLAST_PLUS, iff hits are zero no fields line is printed
+    if (g == BlastFormatGeneration::BLAST_PLUS)
+        if ((hits == 0) && length(fields) == 0 )
+            return;
 
     CharString fieldStr;
     joinStringSet(fieldStr, fields, _seperatorString(TFormat()));
@@ -342,7 +348,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
     SEQAN_THROW(RecoverableParseError("Header did not meet strict requirements."));
 }
 
-// fieldList is actually a list of fields and not a string
+// user wants fieldList as a list of fields and not a string
 template <typename TqId,
           typename TDBName,
           typename TVersionString,
@@ -400,6 +406,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
 /*!
  * @fn BlastFormat#readHeader
  * @brief read a Header from a Blast output file
+ * @headerfile seqan/blast.h
  *
  * @signature int readHeader(qId, dbName, versionString, [hits,] [fields, [otherLines,]] iter, strict, tag);
  *
@@ -413,11 +420,21 @@ _readHeaderImplBlastTab(TqId                                    & qId,
  * @param[in]   strict  bool to signify whether the function should error on a non-conforming header or just "get whatever possible". If not using strict, it is recommended to pass fields and otherLines and verify these manually.
  * @param[in]   tag     @link BlastFormat @endlink tag, only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported.
  *
- * @see BlastFormat#onMatch
- * @headerfile seqan/blast.h
- * @section Remarks
+ * Call this function on every line beginning that is not "onMatch". Please note
+ * that the strictness behaviour is slightly different, depending on whether you
+ * specify a fieldList parameter or not. If you don't, strictness which check
+ * whether the fields are default, if you do, strictness will not (because
+ * you can check yourself!).
  *
- * call this function on every line beginning that is not "onMatch"
+ * @section Exceptions
+ *
+ * Will throw std::basic_ios::exceptions on low-level IO-problems. Will throw
+ * @link ParseError @endlink on format specific errors. Will throw
+ * @link RecoverableParseError @endlink if the strictness condition is violated;
+ * it is safe to catch this (and e.g. print some debug message) and then just
+ * continue program operation.
+ *
+ * @see BlastFormat#onMatch
  */
 
 // default traditional Blast or BlastPlus
@@ -664,6 +681,14 @@ readHeader(TqId                                             & qId,
  * to go directly to the beginning of the next match (possibly skipping multiple
  * headers that have no succeeding matches) use skipUntilMatch instead.
  *
+ * @section Exceptions
+ *
+ * Will throw std::basic_ios::exceptions on low-level IO-problems. Will throw
+ * @link ParseError @endlink on format specific errors. Will throw
+ * @link RecoverableParseError @endlink if the strictness condition is violated;
+ * it is safe to catch this (and e.g. print some debug message) and then just
+ * continue program operation.
+ *
  * @see BlastFormat#skipUntilMatch
  * @headerfile seqan/blast.h
  */
@@ -724,6 +749,11 @@ skipHeader(TFwdIterator & iter,
  * and want to jump to the beginning of the next match. If you want to skip only
  * a single header (to count skipped headers or to verify its conformance
  * to standards), use BlastFormat#skipHeader instead.
+ *
+ * @section Exceptions
+ *
+ * Will throw std::basic_ios::exceptions on low-level IO-problems. Will throw
+ * @link ParseError @endlink on format specific errors.
  *
  * @see BlastFormat#skipHeader
  * @headerfile seqan/blast.h
@@ -1041,6 +1071,11 @@ _readMatchImpl(BlastMatch<TqId, TsId, TPos, TAlign>      & match,
  * @endlink which works without a @link BlastMatch @endlink parameter and
  * supports arbitrary columns.
  *
+ * @section Exceptions
+ *
+ * Will throw std::basic_ios::exceptions on low-level IO-problems. Will throw
+ * @link ParseError @endlink on format specific errors.
+ *
  * @headerfile seqan/blast.h
  */
 
@@ -1175,11 +1210,11 @@ inline void
 _readMatchImplBlastTab(TFwdIterator & iter, TArg & arg)
 {
     CharString buf;
-    try
+    SEQAN_TRY
     {
         readUntil(buf, iter, OrFunctor<IsTab,IsNewline>());
         _assignOrCast(arg, buf);
-    } catch (UnexpectedEnd const &)
+    } SEQAN_CATCH (UnexpectedEnd const &)
     {
         return;
     }
@@ -1252,6 +1287,14 @@ readMatch(TFwdIterator & iter,
  * This function always checks whether it is on a line that is not a comment and
  * can optionally check that skipped lines are indeed matches.
  *
+ * @section Exceptions
+ *
+ * Will throw std::basic_ios::exceptions on low-level IO-problems. Will throw
+ * @link ParseError @endlink on format specific errors. Will throw
+ * @link RecoverableParseError @endlink if the strictness condition is violated;
+ * it is safe to catch this (and e.g. print some debug message) and then just
+ * continue program operation.
+
  * @see BlastFormat#skipHeader
  * @headerfile seqan/blast.h
  */
@@ -1295,7 +1338,13 @@ skipMatch(TFwdIterator & iter,
         return skipMatch(iter, TFormat());
 
     BlastMatch<> m;
-    readMatch(m, iter, TFormat());
+    SEQAN_TRY
+    {
+        readMatch(m, iter, TFormat());
+    } SEQAN_CATCH (ParseError const & e)
+    {
+        SEQAN_THROW(RecoverableParseError(e.what()));
+    }
 }
 
 template <typename TFwdIterator,
@@ -1324,6 +1373,10 @@ skipMatch(TFwdIterator & iter,
  * @param[in,out]   iter        An input iterator over a stream or any fwd-iterator over a string
  * @param[in]       tag         @link BlastFormat @endlink specialization
  *
+ * @section Exceptions
+ *
+ * Will throw std::basic_ios::exceptions on low-level IO-problems. Will throw
+ * @link ParseError @endlink on format specific errors.
  *
  * @headerfile seqan/blast.h
  */
