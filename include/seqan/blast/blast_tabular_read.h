@@ -107,11 +107,11 @@ typedef Tag<DetectFields_> DetectFields;
 
 /*!
  * @fn BlastFormat#onMatch
- * @brief returns whether RecordReader is on beginning of match
+ * @brief returns whether the iterator is on beginning of match
  *
  * @signature bool onMatch(iter, tag)
  *
- * @param[in] iter    FwdIterator or Stream
+ * @param[in] iter    An input iterator over a stream or any fwd-iterator over a string
  * @param[in] tag     @link BlastFormat @endlink specialization
  *
  * @return    true or false
@@ -155,13 +155,15 @@ _verifyFields(TFieldList const & fields,
 //     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g>  TFormat;
 
     if (length(fields) != BlastMatchField<g>::defaults)
-        SEQAN_THROW(ParseError("Default fields and header verification "
-                               "requested, but fields were not default."));
+        SEQAN_THROW(RecoverableParseError("Default fields and header "
+                                          "verification requested, but "
+                                          "fields were not default."));
 
     for (unsigned i = 0; i < length(fields); ++i)
         if (fields[i] != BlastMatchField<g>::defaults[i])
-            SEQAN_THROW(ParseError("Default fields and header verification "
-                                   "requested, but fields were not default."));
+            SEQAN_THROW(RecoverableParseError("Default fields and header "
+                                              "verification requested, but "
+                                              "fields were not default."));
 }
 
 
@@ -190,8 +192,9 @@ _verifyFields(StringSet<TString> const & fields,
     // compare the first twelve fields
     if (prefix(fieldStr, length(BlastMatchField<g>::columnLabels[std])) !=
         BlastMatchField<g>::columnLabels[std])
-        SEQAN_THROW(ParseError("Default fields and header verification "
-                               "requested, but fields were not default."));
+        SEQAN_THROW(RecoverableParseError("Default fields and header "
+                                          "verification requested, but "
+                                          "fields were not default."));
 }
 
 // ----------------------------------------------------------------------------
@@ -336,7 +339,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
              ( (lastLine          == 1) && atEnd(iter))   )
             return;
 
-    SEQAN_THROW(ParseError("Header did not meet strict requirements."));
+    SEQAN_THROW(RecoverableParseError("Header did not meet strict requirements."));
 }
 
 // fieldList is actually a list of fields and not a string
@@ -347,12 +350,10 @@ template <typename TqId,
           typename TString,
           typename TFieldList,
           BlastFormatProgram p,
-          BlastFormatGeneration g,
-          typename std::enable_if<IsSequence<TFieldList>::VALUE>::type = 0,
-          typename std::enable_if<
-            std::is_same<typename Value<TFieldList>::Type,
-                         typename BlastMatchField<g>::Enum>::value>::type = 0>
-inline void
+          BlastFormatGeneration g>
+inline SEQAN_FUNC_ENABLE_IF(And<IsSequence<TFieldList>,
+                                IsSameType<typename Value<TFieldList>::Type,
+                                           typename BlastMatchField<g>::Enum>>)
 _readHeaderImplBlastTab(TqId                                    & qId,
                         TDBName                                 & dbName,
                         TVersionString                          & versionString,
@@ -400,7 +401,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
  * @fn BlastFormat#readHeader
  * @brief read a Header from a Blast output file
  *
- * @signature int readHeader(qId, dbName, versionString, [hits,] [fields, [otherLines,]] reader, strict, tag);
+ * @signature int readHeader(qId, dbName, versionString, [hits,] [fields, [otherLines,]] iter, strict, tag);
  *
  * @param[out]  qId     String to hold the query ID from the header
  * @param[out]  dbName  String to hold the database name from the header
@@ -408,7 +409,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
  * @param[out]  hits    Numerical to hold the number of hits that will follow the header (only available in BlastPlus spec of BlastFormat)
  * @param[out]  fields  StringSet to hold column identifiers, useful if non-defaults are expected
  * @param[out]  otherLines  StringSet to hold any comment or header lines that are not identified otherwise
- * @param[in,out]   reader  An iterator over a stream or a string
+ * @param[in,out] iter  An input iterator over a stream or any fwd-iterator over a string
  * @param[in]   strict  bool to signify whether the function should error on a non-conforming header or just "get whatever possible". If not using strict, it is recommended to pass fields and otherLines and verify these manually.
  * @param[in]   tag     @link BlastFormat @endlink tag, only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported.
  *
@@ -653,9 +654,9 @@ readHeader(TqId                                             & qId,
  * @fn BlastFormat#skipHeader
  * @brief skip a header from a Blast tabular output file, optionally verifying it for format compliance.
  *
- * @signature int skipHeader(reader, [strict,] tag);
+ * @signature int skipHeader(iter, [strict,] tag);
  *
- * @param[in,out] iter  RecordReader
+ * @param[in,out] iter    An input iterator over a stream or any fwd-iterator over a string
  * @param[in]     strict  bool to signify whether the function should error on a non-conforming header or just "skip whatever possible".
  * @param[in]     tag     @link BlastFormat @endlink tag, only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported.
  *
@@ -713,10 +714,10 @@ skipHeader(TFwdIterator & iter,
  * @fn BlastFormat#skipUntilMatch
  * @brief skip arbitrary number of headers and/or comment lines until the beginning of a match is reached
  *
- * @signature skipUntilMatch(reader, tag);
+ * @signature skipUntilMatch(iter, tag);
  *
- * @param[in,out]   reader  RecordReader
- * @param[in]       tag     @link BlastFormat @endlink specialization,
+ * @param[in,out]   iter  An input iterator over a stream or any fwd-iterator over a string
+ * @param[in]       tag   @link BlastFormat @endlink specialization,
  * with BlastFormatFile == BlastFormatFile::TABULAR || BlastFormatFile::TABULAR_WITH_HEADER
  *
  * Call this function whenever you are on a comment character ('#') in the file
@@ -1002,10 +1003,10 @@ _readMatchImpl(BlastMatch<TqId, TsId, TPos, TAlign>      & match,
  * @fn BlastMatch#readMatch
  * @brief read a match from a file in BlastFormat
  *
- * @signature int readMatch(blastMatch, reader, [fieldList,] BlastFormat);
+ * @signature int readMatch(blastMatch, iter, [fieldList,] BlastFormat);
  *
  * @param[out]      blastMatch  A @link BlastMatch @endlink object to hold all relevant info
- * @param[in,out]   reader    An iterator on a sequence or stream
+ * @param[in,out]   iter        An input iterator over a stream or any fwd-iterator over a string
  * @param[in]       fieldList   A Sequence of @link BlastMatchField @endlink
  * @param[in]       tag         @link BlastFormat @endlink tag, only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported.
  *
@@ -1126,11 +1127,11 @@ readMatch(BlastMatch<TqId, TsId, TPos, TAlign>      & match,
  * @fn BlastFormat#readMatch
  * @brief read arbitrary columsn from a file in BlastFormat
  *
- * @signature int readMatch(reader, BlastFormat, args ...);
+ * @signature int readMatch(iter, BlastFormat, args ...);
  *
- * @param[in,out]   reader    An iterator on a sequence or stream
- * @param[in]       tag         Only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported
- * @param[out]      args        Arbitrary typed variables
+ * @param[in,out]   iter    An input iterator over a stream or any fwd-iterator over a string
+ * @param[in]       tag     Only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported
+ * @param[out]      args    Arbitrary typed variables
  *
  * Use this signature only if you do not or cannot use @link BlastMatch
  * @endlinkes. You can specify any number of arguments that are expected
@@ -1144,6 +1145,11 @@ readMatch(BlastMatch<TqId, TsId, TPos, TAlign>      & match,
  *
  * No transformations are made on the data, e.g. the positions are still
  * one-indexed and flipped for reverse strand matches.
+ *
+ * @section Exceptions
+ *
+ * Will throw std::basic_ios::exceptions on low-level IO-problems. Will throw
+ * @link ParseError @endlink on format specific errors.
  *
  * @headerfile seqan/blast.h
  */
@@ -1189,7 +1195,7 @@ _readMatchImplBlastTab(TFwdIterator & iter, TArg & arg, TArgs & ... args)
 {
     CharString buf;
     readUntil(buf, iter, IsTab());
-    goNext(iter); //skip '\t', go to begin of next field
+    skipOne(iter, IsTab());
     _assignOrCast(arg, buf);
 
     // recurse to next argument
@@ -1236,10 +1242,10 @@ readMatch(TFwdIterator & iter,
  * @fn BlastMatch#skipMatch
  * @brief skip a line that contains a match
  *
- * @signature skipMatch(reader, [strict,]  tag);
+ * @signature skipMatch(iter, [strict,]  tag);
  *
- * @param[in,out]   reader   An iterator on sequence or stream
- * @param[in]       strict   Verify that the line skipped has default columns (defaults to false)
+ * @param[in,out]   iter   An input iterator over a stream or any fwd-iterator over a string
+ * @param[in]       strict Verify that the line skipped has default columns (defaults to false)
  * @param[in]       tag    @link BlastFormat @endlink specialization,
  * with BlastFormatFile == BlastFormatFile::TABULAR || BlastFormatFile::TABULAR_WITH_HEADER
  *
@@ -1312,10 +1318,10 @@ skipMatch(TFwdIterator & iter,
  * @fn BlastRecord#readRecord
  * @brief read a record from a file in BlastFormat
  *
- * @signature int readRecord(blastRecord, reader, BlastFormat);
+ * @signature int readRecord(blastRecord, iter, BlastFormat);
  *
- * @param[out]      blastRecord A BlastMatch object to hold all relevant info
- * @param[in,out]   reader      RecordReader
+ * @param[out]      blastRecord A @link BlastRecord @endlink to hold all relevant info
+ * @param[in,out]   iter        An input iterator over a stream or any fwd-iterator over a string
  * @param[in]       tag         @link BlastFormat @endlink specialization
  *
  *

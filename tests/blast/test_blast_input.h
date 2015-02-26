@@ -425,7 +425,8 @@ inline void
 _test_blast_read_tabular_match_columns(char const * string,
                                        TFormat const &)
 {
-    auto it = directionIterator(string, Input());
+//     auto it = directionIterator(string, Input());
+    auto it = begin(string);
 
     // first line is header
     SEQAN_ASSERT(!onMatch(it, TFormat()));
@@ -565,6 +566,11 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_match_customcolumns_legacy)
 //     CharString versionString;
 //     unsigned hits = 0;
 //     String<typename TField::Enum> fieldList;
+//     StringSet<CharString> otherLines;
+//
+//     // back on header
+//     SEQAN_ASSERT(!onMatch(it, TFormat()));
+//
 //
 //     readHeader(
 //
