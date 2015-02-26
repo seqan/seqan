@@ -297,11 +297,12 @@ struct Is< NumberConcept< FormattedNumber<TValue> > > :
 
 /*!
  * @class ParseError
+ * @extends RuntimeError
  * @headerfile <seqan/basic.h>
  *
  * @brief Exception class for parser errors.
  *
- * @signature struct ParserError : RuntimeError;
+ * @signature struct ParseError : RuntimeError;
  */
 
 struct ParseError : RuntimeError
@@ -324,11 +325,46 @@ struct ParseError : RuntimeError
 };
 
 // ----------------------------------------------------------------------------
+// Exception RecoverableParseError
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class RecoverableParseError
+ * @extends ParseError
+ * @headerfile <seqan/basic.h>
+ *
+ * @brief Exception class for non-critical parser errors, i.e. minor deviations
+ * from standard or any issue that does not impede program execution
+ *
+ * @signature struct RecoverableParseError : ParseError;
+ */
+
+struct RecoverableParseError : ParseError
+{
+    /*!
+     * @fn RecoverableParseError::RecoverableParseError
+     * @headerfile <seqan/basic.h>
+     *
+     * @brief Constructor.
+     *
+     * @signature RecoverableParseError::RecoverableParseError(message);
+     *
+     * @param[in] message The error message to use, <tt>std::string</tt> or <tt>char const * </tt>.
+     */
+
+    template <typename TString>
+    RecoverableParseError(TString const & message) :
+        ParseError(message)
+    {}
+};
+
+// ----------------------------------------------------------------------------
 // Exception UnexpectedEnd
 // ----------------------------------------------------------------------------
 
 /*!
  * @class UnexpectedEnd
+ * @extends ParseError
  * @headerfile <seqan/basic.h>
  *
  * @brief Exception class for "unexpected end of input" errors.
@@ -358,6 +394,7 @@ struct UnexpectedEnd : ParseError
 
 /*!
  * @class EmptyFieldError
+ * @extends ParseError
  * @headerfile <seqan/basic.h>
  *
  * @brief Exception class for "empty field" errors.
