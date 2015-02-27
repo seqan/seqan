@@ -1,0 +1,124 @@
+[submodule "apps/alf"]
+	path = apps/alf
+	url = https://github.com/seqan/alf
+	branch = master
+[submodule "apps/bs_tools"]
+	path = apps/bs_tools
+	url = https://github.com/seqan/bs_tools
+	branch = master
+[submodule "apps/dfi"]
+	path = apps/dfi
+	url = https://github.com/seqan/dfi
+	branch = master
+[submodule "apps/fiona"]
+	path = apps/fiona
+	url = https://github.com/seqan/fiona
+	branch = master
+[submodule "apps/fx_tools"]
+	path = apps/fx_tools
+	url = https://github.com/seqan/fx_tools
+	branch = master
+[submodule "apps/gustaf"]
+	path = apps/gustaf
+	url = https://github.com/seqan/gustaf
+	branch = master
+[submodule "apps/insegt"]
+	path = apps/insegt
+	url = https://github.com/seqan/insegt
+	branch = master
+[submodule "apps/mason2"]
+	path = apps/mason2
+	url = https://github.com/seqan/mason2
+	branch = master
+[submodule "apps/micro_razers"]
+	path = apps/micro_razers
+	url = https://github.com/seqan/micro_razers
+	branch = master
+[submodule "apps/ngs_roi"]
+	path = apps/ngs_roi
+	url = https://github.com/seqan/ngs_roi
+	branch = master
+[submodule "apps/pair_align"]
+	path = apps/pair_align
+	url = https://github.com/seqan/pair_align
+	branch = master
+[submodule "apps/param_chooser"]
+	path = apps/param_chooser
+	url = https://github.com/seqan/param_chooser
+	branch = master
+[submodule "apps/rabema"]
+	path = apps/rabema
+	url = https://github.com/seqan/rabema
+	branch = master
+[submodule "apps/razers"]
+	path = apps/razers
+	url = https://github.com/seqan/razers
+	branch = master
+[submodule "apps/razers2"]
+	path = apps/razers2
+	url = https://github.com/seqan/razers2
+	branch = master
+[submodule "apps/razers3"]
+	path = apps/razers3
+	url = https://github.com/seqan/razers3
+	branch = master
+[submodule "apps/rep_sep"]
+	path = apps/rep_sep
+	url = https://github.com/seqan/rep_sep
+	branch = master
+[submodule "apps/sak"]
+	path = apps/sak
+	url = https://github.com/seqan/sak
+	branch = master
+[submodule "apps/sam2matrix"]
+	path = apps/sam2matrix
+	url = https://github.com/seqan/sam2matrix
+	branch = master
+[submodule "apps/samcat"]
+	path = apps/samcat
+	url = https://github.com/seqan/samcat
+	branch = master
+[submodule "apps/searchjoin"]
+	path = apps/searchjoin
+	url = https://github.com/seqan/searchjoin
+	branch = master
+[submodule "apps/seqan_flexbar"]
+	path = apps/seqan_flexbar
+	url = https://github.com/seqan/seqan_flexbar
+	branch = master
+[submodule "apps/seqan_tcoffee"]
+	path = apps/seqan_tcoffee
+	url = https://github.com/seqan/seqan_tcoffee
+	branch = master
+[submodule "apps/seqcons"]
+	path = apps/seqcons
+	url = https://github.com/seqan/seqcons
+	branch = master
+[submodule "apps/seqcons2"]
+	path = apps/seqcons2
+	url = https://github.com/seqan/seqcons2
+	branch = master
+[submodule "apps/sgip"]
+	path = apps/sgip
+	url = https://github.com/seqan/sgip
+	branch = master
+[submodule "apps/snp_store"]
+	path = apps/snp_store
+	url = https://github.com/seqan/snp_store
+	branch = master
+[submodule "apps/splazers"]
+	path = apps/splazers
+	url = https://github.com/seqan/splazers
+	branch = master
+[submodule "apps/stellar"]
+	path = apps/stellar
+	url = https://github.com/seqan/stellar
+	branch = master
+[submodule "apps/tree_recon"]
+	path = apps/tree_recon
+	url = https://github.com/seqan/tree_recon
+	branch = master
+[submodule "apps/yara"]
+	path = apps/yara
+	url = https://github.com/seqan/yara
+	branch = master
