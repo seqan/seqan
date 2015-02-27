@@ -1,2 +1,0 @@
-chr22	human-reads2.gff	insertion	6879	6879	0.529412	+	.	ID=6880;size=-1;count=18;seq=A;ebiDepth=34;depth=34;homorun=9;bsi;geno=het
-chr22	human-reads2.gff	deletion	8963	8963	0.913043	+	.	ID=8963;size=1;count=21;ebiDepth=23;depth=23;homorun=3;geno=hom

@@ -1,6 +1,0 @@
-read1/L	0	27	F	contig1	47	73	92.593	1	-3	217
-read1/R	0	27	R	contig1	237	264	96.296	1	-3	-217
-read2/L	0	27	R	contig2	228	255	96.296	3	-1	-207
-read2/R	0	27	F	contig2	48	75	100	3	-1	207
-read3/L	0	27	F	contig2	335	362	100	2	0	221
-read3/R	0	27	R	contig2	529	556	100	2	0	-221

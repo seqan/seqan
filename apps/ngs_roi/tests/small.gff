@@ -1,3 +1,0 @@
-NC_003131	text	gff2_region1_51-300	51	300	.	+	0	Parent=Gene1
-NC_003131	text	gff2_region2_751-800	751	800	.	+	0	Parent=Gene2
-NC_003131	text	gff2_region3_1900-3020	1900	3020	.	+	0	Parent=Gene1
