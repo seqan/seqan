@@ -38,6 +38,15 @@
 
 using namespace seqan;
 
+
+template <typename TNum,
+          typename std::enable_if<Is<NumberConcept<TNum>>::VALUE, int>::type = 0>
+inline void
+clear(TNum & num)
+{
+    num = 0;
+}
+
 template <typename TArg,
           typename... TArgs>
 inline void
@@ -618,7 +627,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header)
     SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26+");
     SEQAN_ASSERT_EQ(hits,               17u);
     SEQAN_ASSERT_EQ(length(fieldList),  1u);
-    SEQAN_ASSERT_EQ(fieldList[0],       TField::Enum::STD);
+    SEQAN_ASSERT_EQ((uint8_t)fieldList[0], (uint8_t)TField::Enum::STD);
     SEQAN_ASSERT_EQ(length(otherLines), 0u);
 
     clear(qId, dbName, versionString, hits, fieldStrings, fieldStringsConcat,
@@ -631,7 +640,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header)
     readHeader(qId, dbName, versionString, hits, fieldStrings, it,
                true, TFormat());
 
-    joinStringSet(fieldStringsConcat, fieldStrings, ", ");
+    fieldStringsConcat = concat(fieldStrings, ", ");
 
     SEQAN_ASSERT_EQ(qId,                "SHAA004TR");
     SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");

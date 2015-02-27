@@ -37,6 +37,8 @@
 #ifndef SEQAN_BLAST_BLAST_TABULAR_READ_H_
 #define SEQAN_BLAST_BLAST_TABULAR_READ_H_
 
+#include <regex>
+
 /* IMPLEMENTATION NOTES
 
 BLAST TABULAR example:
@@ -45,12 +47,12 @@ The format of a blast tabular output file is less simple than it looks, here's
 the general form
 
 HEADER
- RECORD
- RECORD
- RECORD
- RECORD
+ MATCH
+ MATCH
+ MATCH
+ MATCH
 HEADER
- RECORD
+ MATCH
 HEADER
 HEADER
 ...
@@ -73,15 +75,11 @@ The "number of hits"-line is always printed by NCBI Blast+, and never by NCBI Bl
 
 Possibly other lines can be written as comments.
 
-Because 0 records are allowed, multiple Headers can succeed each other, the criterium for seperation employed by this implementation is that an NCBI Blast
-records always ends after the "Fields" line and NCBI Blast+ records end after
+Because 0 matches are allowed, multiple Headers can succeed each other, the
+criterium for seperation employed by this implementation is that an NCBI Blast
+headers always ends after the "Fields" line and NCBI Blast+ records end after
 the "number of hits"-line.
-A file is considered NCBI Blast+ format, when it has comment line that starts
-with "# BLAST" and ends with "+". In all other cases it is considered
-traditional Blast format.
 */
-
-#define BAD_FORMAT "File is non-standard and could not be read."
 
 namespace seqan
 {
@@ -104,6 +102,32 @@ typedef Tag<DetectFields_> DetectFields;
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function strSplit()
+// ----------------------------------------------------------------------------
+
+template <typename TString,
+          typename TSpec,
+          typename TSequence>
+inline void
+strSplit(StringSet<TString, TSpec> & result,
+         TSequence const & sequence,
+         std::regex const & regex,
+         bool allowEmptyStrings = true)
+{
+    if (!allowEmptyStrings)
+        SEQAN_FAIL("This strSplit overload only if emptyStrings allowed");
+
+    std::string in(toCString(sequence));
+    in = std::regex_replace(in, regex, "\x7F");
+    strSplit(result, in, EqualsChar<'\x7F'>(), true);
+}
+
+
+// ----------------------------------------------------------------------------
+// Function onMatch()
+// ----------------------------------------------------------------------------
 
 /*!
  * @fn BlastFormat#onMatch
@@ -189,8 +213,7 @@ _verifyFields(StringSet<TString> const & fields,
         if ((hits == 0) && length(fields) == 0 )
             return;
 
-    CharString fieldStr;
-    joinStringSet(fieldStr, fields, _seperatorString(TFormat()));
+    CharString fieldStr = concat(fields, _seperatorString(TFormat()));
 
     // will always be zero but this is cleaner
     const uint8_t std = static_cast<uint8_t>(BlastMatchField<g>::Enum::STD);
@@ -245,10 +268,10 @@ _readHeaderImplBlastTab(TqId                                    & qId,
         // skip '#'
         goNext(iter);
         //skip blanks following the '#'
-        skipBlanks(iter);
+        skipUntil(iter, IsGraph());
 
         CharString key = "";
-        readUntilWhitespace(key, iter);
+        readUntil(key, iter, IsBlank());
 
         if (key == _programTagToString(TFormat()))
         {
@@ -263,23 +286,23 @@ _readHeaderImplBlastTab(TqId                                    & qId,
         }
         else if (key == "Query:")
         {
-            skipBlanks(iter);
+            skipUntil(iter, IsGraph());
             readLine(qId, iter);
             ++queryLinePresent;
         }
         else if (key == "Database:")
         {
-            skipBlanks(iter);
+            skipUntil(iter, IsGraph());
             readLine(dbName, iter);
             ++dbLinePresent;
         }
         else if (key == "Fields:")
         {
-            skipBlanks(iter);
+            skipUntil(iter, IsGraph());
 
             CharString buf;
             readLine(buf, iter);
-            strSplit(fields, buf, ", ");
+            strSplit(fields, buf, std::regex(", "));
 
             ++fieldsLinePresent;
             if (g == BlastFormatGeneration::BLAST_LEGACY)
@@ -309,7 +332,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
                          ++i)
                         append(hitsString, fullLine[i], Generous());
 
-                    hits = lexicalCast<decltype(hits)>(hitsString);
+                    hits = lexicalCast<unsigned long>(hitsString);
 //                     if (ret && strict)
 //                         throw std::ios_base::failure(BAD_FORMAT);
 
@@ -355,11 +378,10 @@ template <typename TqId,
           typename TFwdIterator,
           typename TString,
           typename TFieldList,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
+          BlastFormatProgram p>
 inline SEQAN_FUNC_ENABLE_IF(And<IsSequence<TFieldList>,
                                 IsSameType<typename Value<TFieldList>::Type,
-                                           typename BlastMatchField<g>::Enum>>)
+                                           typename BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum>>)
 _readHeaderImplBlastTab(TqId                                    & qId,
                         TDBName                                 & dbName,
                         TVersionString                          & versionString,
@@ -518,7 +540,9 @@ template <typename TqId,
           typename TFieldList,
           typename TFwdIterator,
           BlastFormatProgram p,
-          BlastFormatGeneration g>
+          BlastFormatGeneration g,
+          typename std::enable_if<
+            Is<ContainerConcept<TFieldList>>::VALUE, int>::type = 0>
 inline void
 readHeader(TqId                                             & qId,
            TDBName                                          & dbName,
@@ -553,7 +577,9 @@ template <typename TqId,
           typename TVersionString,
           typename TFieldList,
           typename TFwdIterator,
-          BlastFormatProgram p>
+          BlastFormatProgram p,
+          typename std::enable_if<
+            Is<ContainerConcept<TFieldList>>::VALUE, int>::type = 0>
 inline void
 readHeader(TqId                                             & qId,
            TDBName                                          & dbName,
@@ -595,7 +621,9 @@ template <typename TqId,
           typename TOtherString,
           typename TFwdIterator,
           BlastFormatProgram p,
-          BlastFormatGeneration g>
+          BlastFormatGeneration g,
+          typename std::enable_if<
+            Is<ContainerConcept<TFieldList>>::VALUE, int>::type = 0>
 inline void
 readHeader(TqId                                             & qId,
            TDBName                                          & dbName,
@@ -631,7 +659,9 @@ template <typename TqId,
           typename TFieldList,
           typename TOtherString,
           typename TFwdIterator,
-          BlastFormatProgram p>
+          BlastFormatProgram p,
+          typename std::enable_if<
+            Is<ContainerConcept<TFieldList>>::VALUE, int>::type = 0>
 inline void
 readHeader(TqId                                             & qId,
            TDBName                                          & dbName,

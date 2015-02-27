@@ -44,6 +44,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <sstream>
+#include <type_traits>
 
 // FREEBSD lacks some defines in its libc
 #ifdef __FreeBSD__

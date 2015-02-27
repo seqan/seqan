@@ -207,8 +207,6 @@ _statsBlock(char                    * buffer,
             m.gaps,       m.aliLength,
             int(ROUND(double(m.gaps)       * 100 / m.aliLength)),
             m.qFrameShift, m.sFrameShift);
-            //TODO verify that the order is actually qFS/sFS and
-            // not the other way around
     //TODO there is an N-column beside e-value here, whats that?
 }
 
