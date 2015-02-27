@@ -81,6 +81,7 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_read_tabular_match_customcolumns_legacy);
 
     SEQAN_CALL_TEST(test_blast_read_tabular_with_header);
+    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_legacy);
 }
 SEQAN_END_TESTSUITE
 

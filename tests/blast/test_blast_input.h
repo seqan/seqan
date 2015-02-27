@@ -132,15 +132,17 @@ static constexpr char const * legacyout =
 "SHAA004TF\tsp|P0CF27|INSB3_ECOLI\t94.44\t18\t1\t0\t803\t750\t150\t167\t0.004\t40.8\n"
 "SHAA004TF\tsp|P0CF26|INSB2_ECOLI\t94.44\t18\t1\t0\t803\t750\t150\t167\t0.004\t40.8\n"
 "# BLASTX 2.2.26 [Sep-21-2011]\n"
-"# Query: SHAA004TR\tSample 1 Mate SHAA004TF trimmed_to 20 853\n"
+"# Query: SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853\n"
 "# Database: /tmp/uniprot_sprot.fasta\n"
 "# Fields: Query id, Subject id, % identity, alignment length, mismatches, gap openings, q. start, q. end, s. start, s. end, e-value, bit score\n"
 "SHAA004TR\tsp|Q0HTA5|META_SHESR\t100.00\t77\t0\t0\t232\t2\t1\t77\t3e-42\t152\n"
 "SHAA004TR\tsp|Q0HGZ8|META_SHESM\t100.00\t77\t0\t0\t232\t2\t1\t77\t3e-42\t152\n"
 "# BLASTX 2.2.26 [Sep-21-2011]\n"
 "# Query: SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960\n"
-"# Database: /tmp/uniprot_sprot.fasta\n"
+"# Datacase: /tmp/uniprot_sprot.fasta\n"
 "# Fields: Query id, Subject id, % identity, alignment length, mismatches, gap openings, q. start, q. end, s. start, s. end, e-value, bit score\n";
+// I introduced an artificial typo in the last "Database" to test for strictness
+// implementations
 
 static constexpr char const * out_custom1 =
 "# BLASTX 2.2.26+\n"
@@ -678,12 +680,107 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header)
     SEQAN_ASSERT_EQ(otherLines[0],      "Datacase: /tmp/uniprot_sprot.fasta");
 }
 
+SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_legacy)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTX,
+                        BlastFormatGeneration::BLAST_LEGACY> TFormat;
+    typedef BlastMatchField<BlastFormatGeneration::BLAST_LEGACY> TField;
 
-// SEQAN_DEFINE_TEST(test_blast_read_tabular_basics_header)
-// {
-//     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-//                         BlastFormatProgram::BLASTX,
-//                         BlastFormatGeneration::BLAST_PLUS> TFormat;
-//     _test_blast_read_tabular_basics_match(TFormat());
-// }
+    auto it = begin(legacyout);
+
+    // first line is header
+    SEQAN_ASSERT(!onMatch(it, TFormat()));
+
+    CharString qId;
+    std::string dbName;
+    CharString versionString;
+    StringSet<CharString> fieldStrings;
+    CharString fieldStringsConcat;
+    String<typename TField::Enum> fieldList;
+    StringSet<CharString> otherLines;
+
+    // back on header
+    SEQAN_ASSERT(!onMatch(it, TFormat()));
+
+    // all parameters, strict == false
+    readHeader(qId, dbName, versionString, fieldStrings, otherLines, it,
+               false, TFormat());
+    fieldStringsConcat = concat(fieldStrings, ", ");
+
+    SEQAN_ASSERT_EQ(qId,                "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
+    SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26 [Sep-21-2011]");
+    SEQAN_ASSERT_EQ(length(fieldStrings), 12u);
+    SEQAN_ASSERT_EQ(fieldStringsConcat, TField::columnLabels[0]);
+    SEQAN_ASSERT_EQ(length(otherLines), 0u);
+
+    clear(qId, dbName, versionString, fieldStrings, fieldStringsConcat,
+          fieldList, otherLines);
+
+    // without otherLines parameter, strict == false
+    readHeader(qId, dbName, versionString, fieldStrings, it, false, TFormat());
+
+    fieldStringsConcat = concat(fieldStrings, ", ");
+
+    SEQAN_ASSERT_EQ(qId,                "SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935");
+    SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26 [Sep-21-2011]");
+    SEQAN_ASSERT_EQ(length(fieldStrings), 12u);
+    SEQAN_ASSERT_EQ(fieldStringsConcat, TField::columnLabels[0]);
+
+    clear(qId, dbName, versionString, fieldStrings, fieldStringsConcat,
+          fieldList, otherLines);
+
+    // without fieldlist, strict == true,
+    readHeader(qId, dbName, versionString, otherLines, it, true, TFormat());
+
+    SEQAN_ASSERT_EQ(qId,                "SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828");
+    SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26 [Sep-21-2011]");
+
+    clear(qId, dbName, versionString, fieldStrings, fieldStringsConcat,
+          fieldList, otherLines);
+
+    while (onMatch(it, TFormat()))
+        skipMatch(it, TFormat());
+
+    // without otherlines parameter, without fieldlist,  strict == true
+    readHeader(qId, dbName, versionString, it, true, TFormat());
+
+    SEQAN_ASSERT_EQ(qId,                "SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853");
+    SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26 [Sep-21-2011]");
+
+    clear(qId, dbName, versionString, fieldStrings, fieldStringsConcat,
+          fieldList, otherLines);
+
+    while (onMatch(it, TFormat()))
+        skipMatch(it, TFormat());
+
+    // check if exceptions are properly thrown
+    CharString exceptComment;
+    SEQAN_TRY
+    {
+        // all parameters, strict == true
+        // artifical type Datacase instead of Database should trigger exception
+        readHeader(qId, dbName, versionString, fieldStrings, otherLines, it,
+                   true, TFormat());
+    } SEQAN_CATCH (RecoverableParseError const & e)
+    {
+        exceptComment = e.what();
+    }
+
+    SEQAN_ASSERT_EQ(exceptComment, "Header did not meet strict requirements.");
+
+    fieldStringsConcat = concat(fieldStrings, ", ");
+
+    SEQAN_ASSERT_EQ(qId,                "SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960");
+    SEQAN_ASSERT_EQ(dbName,             ""); // couldnt be retrieved
+    SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26 [Sep-21-2011]");
+    SEQAN_ASSERT_EQ(length(fieldStrings), 12u);
+    SEQAN_ASSERT_EQ(fieldStringsConcat, TField::columnLabels[0]);
+    SEQAN_ASSERT_EQ(length(otherLines), 1u);
+    SEQAN_ASSERT_EQ(otherLines[0],      "Datacase: /tmp/uniprot_sprot.fasta");
+}
 
