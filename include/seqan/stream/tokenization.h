@@ -255,7 +255,7 @@ template <typename TTarget, typename TFwdIterator, typename TStopFunctor, typena
 inline void
 _readUntil(TTarget &target, TFwdIterator &iter, TStopFunctor &stopFunctor, TIgnoreFunctor &ignoreFunctor, TIChunk, TOChunk)
 {
-    typename Value<TFwdIterator>::Type val;
+    typename RemoveConst<typename Value<TFwdIterator>::Type>::Type val;
     for (; !atEnd(iter); ++iter)
     {
         if (SEQAN_UNLIKELY(stopFunctor(val = *iter)))
