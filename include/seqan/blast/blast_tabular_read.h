@@ -339,6 +339,10 @@ _readHeaderImplBlastTab(TqId                                    & qId,
                     ++hitsLinePresent;
                     break; // header is finished
                 }
+                else
+                {
+                    appendValue(otherLines, fullLine, Generous());
+                }
             }
             else
             {
@@ -412,16 +416,28 @@ _readHeaderImplBlastTab(TqId                                    & qId,
                             strict,
                             TFormat());
 
-    for (CharString const & s : fieldStrings)
+    if (length(fieldStrings) == 0)
+        return;
+
+    bool defaults = true;
+    for (uint8_t j = 0; j < length(fieldStrings); ++j)
     {
         for (uint8_t i = 0; i < length(TMatchField::columnLabels); ++i)
         {
-            if (s == TMatchField::columnLabels[i])
+            if (fieldStrings[j] == TMatchField::columnLabels[i])
             {
                 appendValue(fields, static_cast<TMatchField::Enum>(i));
+                if (static_cast<TMatchField::Enum>(i) !=
+                    TMatchField::defaults[j])
+                    defaults = false;
                 break;
             }
         }
+    }
+    if (defaults) // replace multiple fields with the default meta field
+    {
+        clear(fields);
+        appendValue(fields, TMatchField::Enum::STD);
     }
 }
 

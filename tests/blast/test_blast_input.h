@@ -595,7 +595,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header)
     readHeader(qId, dbName, versionString, hits, fieldStrings, otherLines, it,
                false, TFormat());
 
-    SEQAN_ASSERT_EQ(qId,                "SHAA003TF");
+    SEQAN_ASSERT_EQ(qId,                "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
     SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26+");
     SEQAN_ASSERT_EQ(hits,               0u);
@@ -610,7 +610,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header)
     readHeader(qId, dbName, versionString, hits, fieldList, it,
                false, TFormat());
 
-    SEQAN_ASSERT_EQ(qId,                "SHAA003TR");
+    SEQAN_ASSERT_EQ(qId,                "SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935");
     SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26+");
     SEQAN_ASSERT_EQ(length(fieldList),  0u);
@@ -622,7 +622,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header)
     readHeader(qId, dbName, versionString, hits, fieldList, otherLines, it,
                true, TFormat());
 
-    SEQAN_ASSERT_EQ(qId,                "SHAA004TF");
+    SEQAN_ASSERT_EQ(qId,                "SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828");
     SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26+");
     SEQAN_ASSERT_EQ(hits,               17u);
@@ -642,7 +642,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header)
 
     fieldStringsConcat = concat(fieldStrings, ", ");
 
-    SEQAN_ASSERT_EQ(qId,                "SHAA004TR");
+    SEQAN_ASSERT_EQ(qId,                "SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853");
     SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26+");
     SEQAN_ASSERT_EQ(hits,               2u);
@@ -650,6 +650,9 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header)
 
     clear(qId, dbName, versionString, hits, fieldStrings, fieldStringsConcat,
           fieldList, otherLines);
+
+    while (onMatch(it, TFormat()))
+        skipMatch(it, TFormat());
 
     // check if exceptions are properly thrown
     CharString exceptComment;
@@ -666,13 +669,13 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header)
 
     SEQAN_ASSERT_EQ(exceptComment, "Header did not meet strict requirements.");
 
-    SEQAN_ASSERT_EQ(qId,                "SHAA005TR");
+    SEQAN_ASSERT_EQ(qId,                "SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960");
     SEQAN_ASSERT_EQ(dbName,             ""); // couldnt be retrieved
     SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26+");
     SEQAN_ASSERT_EQ(hits,               0u);
     SEQAN_ASSERT_EQ(length(fieldStrings), 0u);
     SEQAN_ASSERT_EQ(length(otherLines), 1u);
-    SEQAN_ASSERT_EQ(otherLines[0],      "# Datacase: /tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(otherLines[0],      "Datacase: /tmp/uniprot_sprot.fasta");
 }
 
 
