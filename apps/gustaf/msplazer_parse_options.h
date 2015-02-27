@@ -60,6 +60,16 @@ _parseOptions(ArgumentParser & parser, StellarOptions & options, MSplazerOptions
         std::cerr << "Please provide an input (Stellar) match file when using paired-end mode!" << std::endl;
         return false;
     }
+    if (length(msplazerOptions.queryFile) > 1 && !isSet(parser, "ll"))
+    {
+        std::cerr << "Please provide library length when using paired-end mode!" << std::endl;
+        return false;
+    }
+    if (length(msplazerOptions.queryFile) > 1 && !isSet(parser, "le"))
+    {
+        std::cerr << "Please provide library error when using paired-end mode!" << std::endl;
+        return false;
+    }
     // getOptionValue(msplazerOptions.queryFile2, parser, "q2");
     // getOptionValue(msplazerOptions.outDir, parser, "i");
     getOptionValue(msplazerOptions.vcfOutFile, parser, "vcf");
@@ -202,9 +212,7 @@ void _setupArgumentParser(ArgumentParser & parser)
     addOption(parser, ArgParseOption("mst", "mate-support", "Number of supporting concordant mates", ArgParseArgument::INTEGER, "INT"));
     setDefaultValue(parser, "mst", "2");
     addOption(parser, ArgParseOption("ll", "library-size", "Library size of paired-end reads", ArgParseArgument::INTEGER, "INT"));
-    setDefaultValue(parser, "ll", "220");
     addOption(parser, ArgParseOption("le", "library-error", "Library error (sd) of paired-end reads", ArgParseArgument::INTEGER, "INT"));
-    setDefaultValue(parser, "le", "50");
     addOption(parser, ArgParseOption("rc", "revcompl", "Disable reverse complementing second mate pair input file."));
     // set min values?
 
