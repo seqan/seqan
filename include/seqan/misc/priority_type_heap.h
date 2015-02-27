@@ -196,7 +196,7 @@ SEQAN_CHECKPOINT
 // Copy element to heap position h.
 template <typename TValue, typename TLess, typename TSize>
 inline void
-_copyHeapElement (PriorityType<TValue, TLess, PriorityHeap> & me, TValue const & element, TSize h)
+_insertHeapElement (PriorityType<TValue, TLess, PriorityHeap> & me, TValue const & element, TSize h)
 {
 SEQAN_CHECKPOINT
     me.heap[h] = element;
@@ -248,7 +248,7 @@ SEQAN_CHECKPOINT
     // root index is zero
     if (empty(me.heap)) {
         resize(me.heap, 1, Generous());
-        _copyHeapElement (me, element, 0);
+        _insertHeapElement (me, element, 0);
         return;
     }
     typedef typename Size<PriorityType<TValue, TLess, PriorityHeap> >::Type TSize;
@@ -275,7 +275,7 @@ SEQAN_CHECKPOINT
         else
             break;
     }
-    _copyHeapElement ( me, element, h );
+    _insertHeapElement ( me, element, h );
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -336,7 +336,7 @@ SEQAN_CHECKPOINT
     }
     if ( i == heapsize && less ( element, me.heap[i-1] ) )
         _copyHeapElement ( me, i-1, h );
-    _copyHeapElement ( me, element, h );
+    _insertHeapElement ( me, element, h );
 }
 
 
