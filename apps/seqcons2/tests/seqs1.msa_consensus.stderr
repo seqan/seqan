@@ -1,1 +1,0 @@
-seqcons2: the given value 'msa_consensus' is not in the list of allowed values [nop, realign, align_consensus, overlap_consensus, contig_consensus, pos_consensus]
