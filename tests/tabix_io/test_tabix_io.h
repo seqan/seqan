@@ -96,7 +96,7 @@ SEQAN_DEFINE_TEST(test_tabix_io_read_indexed_vcf)
     SEQAN_ASSERT_EQ(record.beginPos, 62369);
 
     // 3rd - test failures
-    SEQAN_ASSERT_NOT(jumpToRegion(vcfFile,
+    SEQAN_ASSERT(jumpToRegion(vcfFile,
                                   hasEntries,
                                   "chr7",
                                   62368,
