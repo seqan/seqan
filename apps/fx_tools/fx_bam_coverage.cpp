@@ -104,7 +104,7 @@ parseArgs(FxBamCoverageOptions & options,
     setDate(parser, SEQAN_DATE);
 
     addUsageLine(parser,
-                 "[\\fIOPTIONS\\fP] \\fB-o\\fP \\fIOUT.bam.coverage.tsv\\fP \\fB-r\\fP \\fIGENOME.fa\\fP "
+                 "[\\fIOPTIONS\\fP] \\fB-o\\fP \\fIOUT.coverage.tsv\\fP \\fB-r\\fP \\fIGENOME.fa\\fP "
                  "\\fB-m\\fP \\fIMAPPING.bam\\fP");
     addDescription(parser, "Compute read coverage and C+G content for a genome.");
 
@@ -133,7 +133,7 @@ parseArgs(FxBamCoverageOptions & options,
     addSection(parser, "Output Options");
     addOption(parser, seqan::ArgParseOption("o", "out-path", "Path to the resulting file.  If omitted, result is printed to stdout.", seqan::ArgParseArgument::OUTPUT_FILE, "TSV"));
     setRequired(parser, "out-path");
-    setValidValues(parser, "out-path", "bam_coverage_tsv");
+    setValidValues(parser, "out-path", ".coverage.tsv");
 
     seqan::ArgumentParser::ParseResult res = parse(parser, argc, argv);
 
@@ -188,14 +188,19 @@ int main(int argc, char const ** argv)
     // -----------------------------------------------------------------------
 
     std::cerr << "\n"
-              << "___PREPRATION_____________________________________________________________________\n"
-              << "\n"
-              << "Indexing GENOME file  " << options.inGenomePath << " ...";
+              << "___PREPARATION____________________________________________________________________\n"
+              << "\n";
+
     seqan::FaiIndex faiIndex;
-    if (build(faiIndex, toCString(options.inGenomePath)) != 0)
+    if (!open(faiIndex, toCString(options.inGenomePath)))
     {
-        std::cerr << "Could not build FAI index.\n";
-        return 1;
+        std::cerr << "Indexing GENOME file  " << options.inGenomePath << " ...";
+        if (!build(faiIndex, toCString(options.inGenomePath)))
+        {
+            std::cerr << "Could not build FAI index of " << options.inGenomePath << "!\n";
+            return 1;
+        }
+        save(faiIndex);
     }
     std::cerr << " OK\n";
 
@@ -211,12 +216,13 @@ int main(int argc, char const ** argv)
               << "___C+G CONTENT COMPUTATION________________________________________________________\n"
               << "\n";
 
+    seqan::Dna5String contigSeq;
     for (unsigned i = 0; i < numSeqs(faiIndex); ++i)
     {
         std::cerr << "[" << sequenceName(faiIndex, i) << "] ...";
         unsigned numBins = (sequenceLength(faiIndex, i) + options.windowSize - 1) / options.windowSize;
         resize(bins[i], numBins);
-        seqan::Dna5String contigSeq;
+        clear(contigSeq);
         readSequence(contigSeq, faiIndex, i);
 
         for (unsigned bin = 0; bin < numBins; ++bin)
@@ -240,7 +246,7 @@ int main(int argc, char const ** argv)
     // -----------------------------------------------------------------------
 
     std::cerr << "\n"
-              << "___COVERAGE COMPUATATION________________________________________________________\n"
+              << "___COVERAGE COMPUTATION_________________________________________________________\n"
               << "\n"
               << "Computing Coverage...";
 
@@ -250,6 +256,9 @@ int main(int argc, char const ** argv)
         std::cerr << "Could not open " << options.inBamPath << "!\n";
         return 1;
     }
+
+    seqan::BamHeader header;
+    readHeader(header, bamFile);
 
     seqan::BamAlignmentRecord record;
     while (!atEnd(bamFile))
@@ -263,7 +272,7 @@ int main(int argc, char const ** argv)
         seqan::CharString const & contigName = contigNames(context(bamFile))[record.rID];
         if (!getIdByName(contigId, faiIndex, contigName))
         {
-            std::cerr << "ERROR: Alignment to unknown contig " << contigId << "!\n";
+            std::cerr << "ERROR: Alignment to unknown contig " << contigName << "!\n";
             return 1;
         }
         unsigned binNo = record.beginPos / options.windowSize;
