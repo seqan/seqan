@@ -1,3 +1,0 @@
-chr22	human-reads2.sam	insertion	6880	6880	0.945946	+	.	ID=6881;size=-1;count=35;seq=A;depth=37;quality=24;homorun=9;bsi;seqContext=ACAACAAAAAAA;geno=hom
-chr22	human-reads2.sam	insertion	8882	8882	0.345455	+	.	ID=8883;size=-5;count=3;seq=GACAC;depth=11;quality=8;homorun=3;bsi;seqContext=AACAAAGACACA;geno=het
-chr22	human-reads2.sam	deletion	8963	8963	1	+	.	ID=8963;size=1;count=21;depth=21;quality=28;homorun=3;bsi;seqContext=TAAGAGAAAGCAG;geno=hom
