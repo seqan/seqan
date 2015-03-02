@@ -1,2 +1,0 @@
-contig1	razers	read	31	94	100	+	.	ID=read1_contig1_pos30_ins6;unique;pairScore=64;split;cigar=30M6I34M;mutations=31G,32T,33A,34C,35C,36A
-contig2	razers	read	201	280	100	+	.	ID=read2_contig2_pos200_del10;unique;pairScore=70;split;cigar=33M10D37M
