@@ -84,18 +84,6 @@ namespace seqan {
  * <tr><td> FLAT_MASTER_SLAVE_BLUNT_ENDS </td><td>  13  </td><td>                 </td><td>   -m 6           </td><td>   &#9744; </td><td>  &#9744;   </td><td> flat query-anchored, no identities and blunt ends </td></tr>
  * </table></span>
  * @endhtmlonly
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
- *
  */
 
 /*
@@ -236,7 +224,6 @@ enum class BlastFormatGeneration : uint8_t
  * that contain matches (@link BlastMatch @endlink) of one query
  * sequence. Store some general information of your database in a
  * @link BlastDbSpecs @endlink object.
- *
  *
  * @section E-Value statistics
  *

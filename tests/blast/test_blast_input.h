@@ -851,3 +851,24 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_legacy)
     SEQAN_ASSERT(onMatch(it, TFormat()));
 }
 
+template <typename TFormat>
+void _test_blast_read_tabular_with_header_record(char const * string,
+                                                 bool defaults,
+                                                 TFormat const &)
+{
+    auto it = begin(legacyout);
+
+    BlastRecord<> r;
+    std::string dbName;
+
+    // first line is header
+    SEQAN_ASSERT(!onMatch(it, TFormat()));
+
+
+    readRecord(r, it, TFormat());
+
+    SEQAN_ASSERT_EQ(r.qId,      "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
+    SEQAN_ASSERT_EQ(r.qId,      "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
+
+}
+

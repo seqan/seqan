@@ -241,6 +241,32 @@ struct BlastMatch
         return false;
     }
 
+    inline void clear()
+    {
+        clear(qId);
+        clear(sId);
+
+        score         = 0;
+        qStart        = 0;
+        qEnd          = 0;
+        sStart        = 0;
+        sEnd          = 0;
+        qLength       = 0;
+        sLength       = 0;
+        aliLength     = 0;
+        identities    = 0;
+        positives     = 0;
+        mismatches    = 0;
+        gaps          = 0;
+        gapOpenings   = 0;
+        eValue        = 0;
+        bitScore      = 0;
+        qFrameShift   = 1;
+        sFrameShift   = 1;
+
+        clear(align);;
+    }
+
     inline void _maxInitialize()
     {
         qId           = "not init";
@@ -283,6 +309,16 @@ inline SEQAN_FUNC_ENABLE_IF(Is<NumberConcept<TNumber> >, bool)
 _memberIsSet(TNumber const & in)
 {
     return (in != std::numeric_limits<TNumber>::max());
+}
+
+template <typename TQId = CharString,
+          typename TSId = CharString,
+          typename TPos = uint32_t,
+          typename TAlign = Align<CharString, ArrayGaps>>
+inline void
+clear(BlastMatch<TQId, TSId, TPos, TAlign> & match)
+{
+    match.clear();
 }
 
 /*!
@@ -334,8 +370,21 @@ struct BlastRecord
     BlastRecord(TQId && _qId) :
         qId(std::move(_qId)), qLength(0), matches()
     {}
+
+    inline void clear()
+    {
+        clear(qId);
+        qLength = 0;
+        clear(matches);
+    }
 };
 
+template <typename TQId, typename TSId, typename TPos, typename TAlign>
+inline void
+clear(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord)
+{
+    blastRecord.clear();
+}
 
 /*!
  * @class BlastDbSpecs
@@ -373,7 +422,21 @@ struct BlastDbSpecs
     BlastDbSpecs(TDbName && _dbName) :
         dbName(std::move(_dbName)), dbTotalLength(0), dbNumberOfSeqs(0)
     {}
+
+    inline void clear()
+    {
+        clear(dbName);
+        dbTotalLength = 0;
+        dbNumberOfSeqs = 0;
+    }
 };
+
+template <typename TDbName>
+inline void
+clear(BlastDbSpecs<TDbName> & dbSpecs)
+{
+    dbSpecs.clear();
+}
 
 }
 
