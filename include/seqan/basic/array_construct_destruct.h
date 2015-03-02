@@ -251,7 +251,8 @@ struct ValueConstructor_
     {
         typedef typename Value<TIterator>::Type    TValue;
         typedef typename RemoveConst<TValue>::Type TNonConstValue;
-        new( (void*) & value(it) ) TNonConstValue(SEQAN_FORWARD(TParam, param_));
+        new( (void*) & value(it) ) TNonConstValue();
+        assign(*it, SEQAN_FORWARD(TParam, param_));
     }
 
 #ifndef SEQAN_CXX11_STANDARD
