@@ -94,10 +94,6 @@ namespace seqan
 // Tags, Classes, Enums
 // ============================================================================
 
-// TODO document
-struct DetectFields_;
-typedef Tag<DetectFields_> DetectFields;
-
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -1301,7 +1297,7 @@ template <typename TFwdIterator,
 inline void
 readMatch(TFwdIterator & iter,
           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &,
-          TArgs ... args)
+          TArgs & ... args)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat; // same as above
     readMatch(iter, TFormat(), args...);
@@ -1403,22 +1399,27 @@ skipMatch(TFwdIterator & iter,
  * @fn BlastRecord#readRecord
  * @brief read a record from a file in BlastFormat
  *
- * @signature int readRecord(blastRecord, dbName, iter[, FieldList | detectFields,] BlastFormat);
+ * @signature int readRecord(blastRecord, dbName, [fieldList,] iter, [fieldList,] BlastFormat);
  *
  * @param[out]      blastRecord A @link BlastRecord @endlink to hold all relevant info
  * @param[out]      dbName      String to hold the database name from the header
+ * @param[out]      fieldList   Read the @link BlastMatchField @endlinks from the header
+ * (only TABULAR_WITH_HEADER)
  * @param[in,out]   iter        An input iterator over a stream or any fwd-iterator over a string
- * @param[in]       fieldList   A Sequence of @link BlastMatchField @endlink
- * @param[in]       detectFields A @link DetectFields @endlink tag to signal auto-detection of fields
+ * @param[in]       fieldList   Expect this fieldList in the matches.
  * @param[in]       tag         @link BlastFormat @endlink specialization
  *
- * The fieldList parameter and the detectFields parameter are optional and mutually
- * exclusive. The fieldList parameter indicates that you know that the columns
- * are the specified composition.
+ * The fieldList parameter can indeed be specified as either an in-parameter
+ * (both TABULAR and TABULAR_WITH_HEADER) or an out-parameter (only
+ * TABULAR_WITH_HEADER). Using it as an in-parameter indicates that you know
+ * that the columns are the specified composition and you don't care whatever
+ * is written in the header. Using it as an out-parameter will result in the
+ * fieldList being read from the header and then used as in-parameter for reading
+ * the matches (and being returned to you via the parameter).
  *
- * DetectFields is only available for TABULAR_WITH_HEADER. When using this
- * parameter, the column composition will be read from the header before reading
- * the matches.
+ * Both fieldList parameters can only be used with
+ * @link BlastFormatGeneration @endlink::BLAST_PLUS and the out-parameter is
+ * only available with @link BlastFormatFile @endlink::TABULAR_WITH_HEADER.
  *
  * Please note that for the TABULAR format (without headers) the boundary
  * between records is inferred from the indentity of the first field, i.e.
@@ -1432,11 +1433,11 @@ skipMatch(TFwdIterator & iter,
  */
 
 template <typename TFwdIterator,
-          typename TDbName = CharString,
-          typename TQId = CharString,
-          typename TSId = CharString,
-          typename TAlign = Align<CharString, ArrayGaps>,
-          typename TPos = unsigned,
+          typename TDbName,
+          typename TQId,
+          typename TSId,
+          typename TAlign,
+          typename TPos,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline void
@@ -1448,6 +1449,7 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
 
     clear(blastRecord);
+    clear(dbName);
 
     std::string versionString; // -> /dev/null
 
@@ -1460,18 +1462,18 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
 
     while ((!atEnd(iter)) && onMatch(iter, TFormat()))
     {
-        resize(blastRecord.matches, length(blastRecord.matches) + 1);
-        readMatch(back(blastRecord.matches), iter);
+        blastRecord.matches.emplace_back();
+        readMatch(back(blastRecord.matches), iter, TFormat());
     }
 }
 
 // custom fields
 template <typename TFwdIterator,
-          typename TDbName = CharString,
-          typename TQId = CharString,
-          typename TSId = CharString,
-          typename TAlign = Align<CharString, ArrayGaps>,
-          typename TPos = unsigned,
+          typename TDbName,
+          typename TQId,
+          typename TSId,
+          typename TAlign,
+          typename TPos,
           typename TFieldList,
           BlastFormatProgram p,
           BlastFormatGeneration g>
@@ -1489,6 +1491,7 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
 
     clear(blastRecord);
+    clear(dbName);
 
     std::string versionString; // -> /dev/null
 
@@ -1501,41 +1504,41 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
 
     while ((!atEnd(iter)) && onMatch(iter, TFormat()))
     {
-        resize(blastRecord.matches, length(blastRecord.matches) + 1);
+        blastRecord.matches.emplace_back();
         //                   only difference to above ↓
-        readMatch(back(blastRecord.matches), iter, fieldList);
+        readMatch(back(blastRecord.matches), iter, fieldList, TFormat());
     }
 }
 
 // detect fields
 template <typename TFwdIterator,
-          typename TDbName = CharString,
-          typename TQId = CharString,
-          typename TSId = CharString,
-          typename TAlign = Align<CharString, ArrayGaps>,
-          typename TPos = unsigned,
+          typename TDbName,
+          typename TQId,
+          typename TSId,
+          typename TAlign,
+          typename TPos,
+          typename TFieldList,
           BlastFormatProgram p,
-          BlastFormatGeneration g>
+          BlastFormatGeneration g,
+          typename std::enable_if<IsSequence<TFieldList>::VALUE, int>::type = 0>
 inline void
 readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
            TDbName & dbName,
+           TFieldList & fieldList,
            TFwdIterator & iter,
-           DetectFields const &,
            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
 {
     static_assert(g == BlastFormatGeneration::BLAST_PLUS,
-                  "DetectFields parameter may only be specified for "
+                  "fieldList parameter may only be specified for "
                   "BlastFormatGeneration::BLAST_PLUS");
 
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
-    typedef std::vector<BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum>
-            TFieldList;
 
     clear(blastRecord);
+    clear(dbName);
 
     std::string versionString; // -> /dev/null
 
-    TFieldList fieldList;
     readHeader(blastRecord.qId,
                dbName,
                versionString,
@@ -1546,9 +1549,9 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
 
     while ((!atEnd(iter)) && onMatch(iter, TFormat()))
     {
-        resize(blastRecord.matches, length(blastRecord.matches) + 1);
+        blastRecord.matches.emplace_back();
         //                   in-parameter to readMatch ↓
-        readMatch(back(blastRecord.matches), iter, fieldList);
+        readMatch(back(blastRecord.matches), iter, fieldList, TFormat());
     }
 }
 
@@ -1561,7 +1564,7 @@ template <typename TFwdIterator,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline void
-readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
+readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
            TFwdIterator & iter,
            BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
 {
@@ -1580,8 +1583,8 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
         if ((curId != lastId) && (lastId != ""))
             return; // new Record reached
 
-        resize(blastRecord.matches, length(blastRecord.matches) + 1);
-        readMatch(back(blastRecord.matches), iter);
+        blastRecord.matches.emplace_back();
+        readMatch(back(blastRecord.matches), iter, TFormat());
     }
 
     if (length(blastRecord.matches) == 0)
@@ -1602,9 +1605,12 @@ template <typename TFwdIterator,
 inline void
 readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
            TFwdIterator & iter,
-           TFieldList & fieldList,
+           TFieldList const & fieldList,
            BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
 {
+    static_assert(g == BlastFormatGeneration::BLAST_PLUS,
+                  "fieldList parameter may only be specified for "
+                  "BlastFormatGeneration::BLAST_PLUS");
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g>  TFormat;
 
     clear(blastRecord);
@@ -1622,8 +1628,8 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
         if ((curId != lastId) && (lastId != ""))
             return; // new Record reached
 
-        resize(blastRecord.matches, length(blastRecord.matches) + 1);
-        readMatch(back(blastRecord.matches), iter, fieldList);
+        blastRecord.matches.emplace_back();
+        readMatch(back(blastRecord.matches), iter, fieldList, TFormat());
     }
 
     if (length(blastRecord.matches) == 0)

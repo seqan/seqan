@@ -55,8 +55,8 @@ namespace seqan
  * @link BlastMatch#calcStatsAndScore @endlink and
  * @link BlastMatch#calcBitScoreAndEValue @endlink.
  *
- * @tparam TQId  Type of qId, defaults to @link CharString @endlink
- * @tparam TSId  Type of sId, defaults to @link CharString @endlink
+ * @tparam TQId  Type of qId, defaults to std::string
+ * @tparam TSId  Type of sId, defaults to std::string
  * @tparam TPos  Position type of the sequences, defaults to <tt>uint32_t</tt>
  * @tparam TAlign Type of the @link Align @endlink member, defaults to
  * <tt>Align<CharString, ArrayGaps></tt>
@@ -136,10 +136,10 @@ namespace seqan
  *
  */
 
-template <typename TQId = CharString,
-          typename TSId = CharString,
+template <typename TQId = std::string,
+          typename TSId = std::string,
           typename TPos = uint32_t,
-          typename TAlign = Align<CharString, ArrayGaps>>
+          typename TAlign = Align<std::string, ArrayGaps>>
 struct BlastMatch
 {
     TQId            qId;
@@ -327,8 +327,8 @@ clear(BlastMatch<TQId, TSId, TPos, TAlign> & match)
  * @signature struct BlastRecord<TQId, TSId, TPos, TAlign> { ... };
  * @brief A record of blast-matches (belonging to one query).
 
- * @tparam TQId  Type of qId, defaults to @link CharString @endlink
- * @tparam TSId  Type of sId, defaults to @link CharString @endlink
+ * @tparam TQId  Type of qId, defaults to @link std::string @endlink
+ * @tparam TSId  Type of sId, defaults to @link std::string @endlink
  * @tparam TPos  Position type of the sequences, defaults to <tt>uint32_t</tt>
  * @tparam TAlign Type of the @link Align @endlink member, defaults to
  * <tt>Align<CharString, ArrayGaps></tt>
@@ -347,10 +347,10 @@ clear(BlastMatch<TQId, TSId, TPos, TAlign> & match)
  * @brief list of the contained matches
  */
 
-template <typename TQId = CharString,
-          typename TSId = CharString,
+template <typename TQId = std::string,
+          typename TSId = std::string,
           typename TPos = uint32_t,
-          typename TAlign = Align<CharString, ArrayGaps>>
+          typename TAlign = Align<std::string, ArrayGaps>>
 struct BlastRecord
 {
     typedef         BlastMatch<TQId, TSId, TPos, TAlign> TBlastMatch;
@@ -371,19 +371,19 @@ struct BlastRecord
         qId(std::move(_qId)), qLength(0), matches()
     {}
 
-    inline void clear()
-    {
-        clear(qId);
-        qLength = 0;
-        clear(matches);
-    }
+//     inline void clear()
+//     {
+//
+//     }
 };
 
 template <typename TQId, typename TSId, typename TPos, typename TAlign>
 inline void
-clear(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord)
+clear(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord)
 {
-    blastRecord.clear();
+    clear(blastRecord.qId);
+    blastRecord.qLength = 0;
+    clear(blastRecord.matches);
 }
 
 /*!

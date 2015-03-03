@@ -551,6 +551,38 @@ template <typename TVoidSpec>
 constexpr std::array<typename BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::Enum const, 12>
 BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::defaults;
 
+
+// TODO document
+// struct FieldsDefault : public Default;
+//
+// template <typename TFieldList =
+//  std::vector<typename BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum>>
+// struct FieldsCustom
+// {
+//     TFieldList const & fieldList;
+//
+//     FieldsDetect(TFieldList const & _fieldList) :
+//         fieldList(_fieldList)
+//     {}
+//
+// };
+//
+// template <typename TFieldList =
+//  std::vector<typename BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum>>
+// struct FieldsDetect
+// {
+//     TFieldList & fieldList;
+//
+//     FieldsDetect() :
+//         fieldList()
+//     {}
+//
+//     FieldsDetect(TFieldList & _fieldList) :
+//         fieldList(_fieldList)
+//     {}
+//
+// };
+
 // ============================================================================
 // Metafunctions and global const-expressions
 // ============================================================================
