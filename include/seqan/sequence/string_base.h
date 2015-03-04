@@ -1316,8 +1316,7 @@ struct AppendValueToString_
         TSize me_length = length(me);
         if (capacity(me) <= me_length)
         {
-            TTargetValue temp_copy;
-            assign(temp_copy, SEQAN_FORWARD(TValue, _value)); //temp copy because resize could invalidate _value
+            TTargetValue temp_copy(SEQAN_FORWARD(TValue, _value)); //temp copy because resize could invalidate _value
             // TODO(holtgrew): The resize() function will default construct the last element. This is slow. Get rid of this.
             TSize new_length = reserve(me, me_length + 1, TExpand());
             if (me_length < new_length)
