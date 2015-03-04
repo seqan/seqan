@@ -134,40 +134,40 @@ struct SimdMatrixParams_
     SEQAN_CONCEPT_IMPL((TSimdVector const), (SimdVectorConcept));
 
 #ifdef __AVX__
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector32Char,     char,           32);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector32SChar,    signed char,    32);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector32UChar,    unsigned char,  32);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector16Short,    short,          32);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector16UShort,   unsigned short, 32);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8Int,       int,            32);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8UInt,      unsigned int,   32);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Int64,     __int64,        32);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4UInt64,    __uint64,       32);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8Float,     float,          32);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Double,    double,         32);
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector32Char,     char,           32)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector32SChar,    signed char,    32)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector32UChar,    unsigned char,  32)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector16Short,    short,          32)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector16UShort,   unsigned short, 32)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8Int,       int,            32)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8UInt,      unsigned int,   32)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Int64,     __int64,        32)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4UInt64,    __uint64,       32)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8Float,     float,          32)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Double,    double,         32)
 #endif
 
 #ifdef __SSE3__
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8Char,      char,           8);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8SChar,     signed char,    8);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8UChar,     unsigned char,  8);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Short,     short,          8);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4UShort,    unsigned short, 8);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Int,       int,            8);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2UInt,      unsigned int,   8);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Float,     float,          8);
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8Char,      char,           8)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8SChar,     signed char,    8)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8UChar,     unsigned char,  8)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Short,     short,          8)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4UShort,    unsigned short, 8)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Int,       int,            8)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2UInt,      unsigned int,   8)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Float,     float,          8)
 
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector16Char,     char,           16);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector16SChar,    signed char,    16);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector16UChar,    unsigned char,  16);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8Short,     short,          16);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8UShort,    unsigned short, 16);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Int,       int,            16);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4UInt,      unsigned int,   16);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Int64,     __int64,        16);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2UInt64,    __uint64,       16);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Float,     float,          16);
-SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Double,    double,         16);
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector16Char,     char,           16)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector16SChar,    signed char,    16)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector16UChar,    unsigned char,  16)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8Short,     short,          16)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector8UShort,    unsigned short, 16)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Int,       int,            16)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4UInt,      unsigned int,   16)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Int64,     __int64,        16)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2UInt64,    __uint64,       16)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector4Float,     float,          16)
+SEQAN_DEFINE_SIMD_VECTOR_(SimdVector2Double,    double,         16)
 #endif
 
 // ============================================================================
