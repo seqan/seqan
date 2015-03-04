@@ -688,6 +688,20 @@ toCString(std::string const & me)
     return me.c_str();
 }
 
+template <typename TIterator, typename TParam>
+inline SEQAN_FUNC_ENABLE_IF(IsSameType<
+                           typename Value<TIterator>::Type &,
+                           typename Reference<TIterator>::Type>)
+valueConstruct(TIterator it,
+               Segment<std::string, TParam> SEQAN_FORWARD_CARG param_)
+{
+    typedef typename Value<TIterator>::Type    TValue;
+    typedef typename RemoveConst<TValue>::Type TNonConstValue;
+
+    new( (void*) & value(it) ) TNonConstValue;
+    assign(*it, SEQAN_FORWARD(TParam, param_));
+}
+
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_SEQUENCE_ADAPT_STD_STRING_H_
