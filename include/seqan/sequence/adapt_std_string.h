@@ -688,19 +688,44 @@ toCString(std::string const & me)
     return me.c_str();
 }
 
-template <typename TIterator, typename TParam>
-inline SEQAN_FUNC_ENABLE_IF(IsSameType<
-                           typename Value<TIterator>::Type &,
-                           typename Reference<TIterator>::Type>)
-valueConstruct(TIterator it,
-               Segment<std::string, TParam> SEQAN_FORWARD_CARG param_)
+// make it possible to append seqan infixes of std::string to an stringset
+// of std::string
+template <typename TTargetValue,
+          typename TTargetSpec,
+          typename TValue,
+          typename TSpec,
+          typename TExpand>
+inline SEQAN_FUNC_ENABLE_IF(IsSameType<typename RemoveConst<TTargetValue>::Type,
+                            std::string>)
+appendValue(String<TTargetValue, TTargetSpec> & me,
+            Segment<TValue, TSpec> const & _value,
+            Tag<TExpand>)
 {
-    typedef typename Value<TIterator>::Type    TValue;
-    typedef typename RemoveConst<TValue>::Type TNonConstValue;
-
-    new( (void*) & value(it) ) TNonConstValue;
-    assign(*it, SEQAN_FORWARD(TParam, param_));
+    std::string temp_copy;
+    assign(temp_copy, _value);
+    appendValue(me, temp_copy, Tag<TExpand>());
 }
+
+#ifdef SEQAN_CXX11_STANDARD
+// second overload required to prevent possibly wrong overload resolution
+// to more general version in library which is defined with "universal 
+// reference type" due to unspecific type
+template <typename TTargetValue,
+          typename TTargetSpec,
+          typename TValue,
+          typename TSpec,
+          typename TExpand>
+inline SEQAN_FUNC_ENABLE_IF(IsSameType<typename RemoveConst<TTargetValue>::Type,
+                            std::string>)
+appendValue(String<TTargetValue, TTargetSpec> & me,
+            Segment<TValue, TSpec> && _value,
+            Tag<TExpand>)
+{
+    std::string temp_copy;
+    assign(temp_copy, std::move(_value));
+    appendValue(me, temp_copy, Tag<TExpand>());
+}
+#endif
 
 }  // namespace seqan
 
