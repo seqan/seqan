@@ -6,7 +6,7 @@ Getting Started
 This chapter gives you the necessary steps to get started with SeqAn:
 
 -  Necessary Prerequisites
--  Installing SeqAn from Subversion
+-  Installing SeqAn from GitHub
 -  Creating a first build.
 -  Creating your own first application.
 
