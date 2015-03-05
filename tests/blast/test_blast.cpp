@@ -91,7 +91,9 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_read_tabular_with_header_header_customfields);
 
     // READING (readRecord)
-    //TODO readRecord on tabular without header
+    SEQAN_CALL_TEST(test_blast_read_tabular_record);
+    SEQAN_CALL_TEST(test_blast_read_tabular_record_legacy);
+    SEQAN_CALL_TEST(test_blast_read_tabular_record_customfields);
 
     SEQAN_CALL_TEST(test_blast_read_tabular_with_header_record);
     SEQAN_CALL_TEST(test_blast_read_tabular_with_header_record_legacy);

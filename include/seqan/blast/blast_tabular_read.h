@@ -1572,25 +1572,30 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
 
     clear(blastRecord);
 
-    std::string curId, lastId;
+    std::string curId;
+    std::string lastId;
 
+    //TODO for custom fields we have to change this, i.e. read entire line
+    //and see if query id is contained
     while ((!atEnd(iter)) && onMatch(iter, TFormat()))
     {
+        clear(curId);
         // read current read ID and then rewind stream to beginning of line
         readUntil(curId, iter, OrFunctor<IsTab,IsNewline>());
-        iter = iter - length(curId) - 1;
+        iter -= length(curId);
 
-        if ((curId != lastId) && (lastId != ""))
-            return; // new Record reached
+        if ((curId != lastId) && (!empty(lastId)))
+            break;; // new Record reached
 
         blastRecord.matches.emplace_back();
         readMatch(back(blastRecord.matches), iter, TFormat());
+        lastId = curId;
     }
 
     if (length(blastRecord.matches) == 0)
         SEQAN_THROW(ParseError("No Matches could be read."));
 
-    blastRecord.qId = blastRecord.matches[0].qId;
+    blastRecord.qId = blastRecord.matches.front().qId;
 }
 
 // custom fields
@@ -1615,27 +1620,30 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
 
     clear(blastRecord);
 
-    std::string curId, lastId;
+    std::string curId;
+    std::string lastId;
 
     //TODO for custom fields we have to change this, i.e. read entire line
     //and see if query id is contained
     while ((!atEnd(iter)) && onMatch(iter, TFormat()))
     {
+        clear(curId);
         // read current read ID and then rewind stream to beginning of line
         readUntil(curId, iter, OrFunctor<IsTab,IsNewline>());
-        iter = iter - length(curId) - 1;
+        iter -= length(curId);
 
-        if ((curId != lastId) && (lastId != ""))
-            return; // new Record reached
+        if ((curId != lastId) && (!empty(lastId)))
+            break; // new Record reached
 
         blastRecord.matches.emplace_back();
         readMatch(back(blastRecord.matches), iter, fieldList, TFormat());
+        lastId = curId;
     }
 
     if (length(blastRecord.matches) == 0)
         SEQAN_THROW(ParseError("No matches could be read."));
 
-    blastRecord.qId = blastRecord.matches[0].qId;
+    blastRecord.qId = blastRecord.matches.front().qId;
 }
 
 } // namespace seqan

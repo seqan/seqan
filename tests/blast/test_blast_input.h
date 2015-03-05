@@ -144,7 +144,7 @@ static constexpr char const * legacyout =
 // I introduced an artificial typo in the last "Database" to test for strictness
 // implementations
 
-static constexpr char const * out_custom1 =
+static constexpr char const * out_custom =
 "# BLASTX 2.2.26+\n"
 "# Query: SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965\n"
 "# Database: /tmp/uniprot_sprot.fasta\n"
@@ -188,6 +188,48 @@ static constexpr char const * out_custom1 =
 "# 0 hits found\n";
 // I introduced an artificial typo in the last "Database" to test for strictness
 // implementations
+
+static constexpr char const * out_noheader =
+"SHAA004TF\tsp|P0A916|OMPW_SHIFL\t50.43\t115\t49\t2\t389\t733\t1\t107\t1e-26\t108\n"
+"SHAA004TF\tsp|P0A915|OMPW_ECOLI\t50.43\t115\t49\t2\t389\t733\t1\t107\t1e-26\t108\n"
+"SHAA004TF\tsp|P17266|OMPW_VIBCH\t52.21\t113\t45\t2\t410\t733\t4\t112\t5e-26\t106\n"
+"SHAA004TF\tsp|Q8ZP50|OMPW_SALTY\t50.43\t115\t49\t2\t389\t733\t1\t107\t3e-24\t101\n"
+"SHAA004TF\tsp|Q8Z7E2|OMPW_SALTI\t50.43\t115\t49\t2\t389\t733\t1\t107\t3e-24\t101\n"
+"SHAA004TF\tsp|P19766|INSB_SHISO\t100.00\t18\t0\t0\t803\t750\t114\t131\t4e-04\t43.1\n"
+"SHAA004TF\tsp|P19765|INSB_SHIFL\t100.00\t18\t0\t0\t803\t750\t114\t131\t4e-04\t43.1\n"
+"SHAA004TF\tsp|P03831|INBD_SHIDY\t100.00\t18\t0\t0\t803\t750\t114\t131\t4e-04\t43.1\n"
+"SHAA004TF\tsp|P59843|INSB_HAEDU\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
+"SHAA004TF\tsp|P0CF31|INSB_ECOLX\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
+"SHAA004TF\tsp|P0CF30|INSB8_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
+"SHAA004TF\tsp|P0CF29|INSB6_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
+"SHAA004TF\tsp|P0CF28|INSB5_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
+"SHAA004TF\tsp|P57998|INSB4_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
+"SHAA004TF\tsp|P0CF25|INSB1_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
+"SHAA004TF\tsp|P0CF27|INSB3_ECOLI\t94.44\t18\t1\t0\t803\t750\t150\t167\t0.004\t40.8\n"
+"SHAA004TF\tsp|P0CF26|INSB2_ECOLI\t94.44\t18\t1\t0\t803\t750\t150\t167\t0.004\t40.8\n"
+"SHAA004TR\tsp|Q0HTA5|META_SHESR\t100.00\t77\t0\t0\t232\t2\t1\t77\t3e-42\t152\n"
+"SHAA004TR\tsp|Q0HGZ8|META_SHESM\t100.00\t77\t0\t0\t232\t2\t1\t77\t3e-42\t152\n";
+
+static constexpr char const * out_custom_noheader =
+"SHAA004TF\tsp|P0A916|OMPW_SHIFL\t115\t58\t49\t72\t8\t389\t733\t1\t107\t2/0\t108\n"
+"SHAA004TF\tsp|P0A915|OMPW_ECOLI\t115\t58\t49\t72\t8\t389\t733\t1\t107\t2/0\t108\n"
+"SHAA004TF\tsp|P17266|OMPW_VIBCH\t113\t59\t45\t72\t9\t410\t733\t4\t112\t2/0\t106\n"
+"SHAA004TF\tsp|Q8ZP50|OMPW_SALTY\t115\t58\t49\t69\t8\t389\t733\t1\t107\t2/0\t101\n"
+"SHAA004TF\tsp|Q8Z7E2|OMPW_SALTI\t115\t58\t49\t69\t8\t389\t733\t1\t107\t2/0\t101\n"
+"SHAA004TF\tsp|P19766|INSB_SHISO\t18\t18\t0\t18\t0\t803\t750\t114\t131\t-1/0\t43.1\n"
+"SHAA004TF\tsp|P19765|INSB_SHIFL\t18\t18\t0\t18\t0\t803\t750\t114\t131\t-1/0\t43.1\n"
+"SHAA004TF\tsp|P03831|INBD_SHIDY\t18\t18\t0\t18\t0\t803\t750\t114\t131\t-1/0\t43.1\n"
+"SHAA004TF\tsp|P59843|INSB_HAEDU\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
+"SHAA004TF\tsp|P0CF31|INSB_ECOLX\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
+"SHAA004TF\tsp|P0CF30|INSB8_ECOLI\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
+"SHAA004TF\tsp|P0CF29|INSB6_ECOLI\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
+"SHAA004TF\tsp|P0CF28|INSB5_ECOLI\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
+"SHAA004TF\tsp|P57998|INSB4_ECOLI\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
+"SHAA004TF\tsp|P0CF25|INSB1_ECOLI\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
+"SHAA004TF\tsp|P0CF27|INSB3_ECOLI\t18\t17\t1\t17\t0\t803\t750\t150\t167\t-1/0\t40.8\n"
+"SHAA004TF\tsp|P0CF26|INSB2_ECOLI\t18\t17\t1\t17\t0\t803\t750\t150\t167\t-1/0\t40.8\n"
+"SHAA004TR\tsp|Q0HTA5|META_SHESR\t77\t77\t0\t77\t0\t232\t2\t1\t77\t-2/0\t152\n"
+"SHAA004TR\tsp|Q0HGZ8|META_SHESM\t77\t77\t0\t77\t0\t232\t2\t1\t77\t-2/0\t152\n";
 
 //legacy doesnt have interface with fieldList so we need to wrap around the call
 template <typename TMatch,
@@ -435,7 +477,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_match_customfields)
     typedef BlastFormat<BlastFormatFile::TABULAR,
                         BlastFormatProgram::BLASTX,
                         BlastFormatGeneration::BLAST_PLUS> TFormat;
-    _test_blast_read_tabular_match(out_custom1, false, TFormat());
+    _test_blast_read_tabular_match(out_custom, false, TFormat());
     // custom columns not supported in legacy format
 }
 
@@ -471,7 +513,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_match_customfields)
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         BlastFormatProgram::BLASTX,
                         BlastFormatGeneration::BLAST_PLUS> TFormat;
-    _test_blast_read_tabular_match(out_custom1, false, TFormat());
+    _test_blast_read_tabular_match(out_custom, false, TFormat());
     // custom columns not supported in legacy format
 }
 
@@ -657,7 +699,7 @@ _test_blast_read_tabular_with_header(bool custom = false)
         }
     };
 
-    auto it = custom ? begin(out_custom1) : begin(out);
+    auto it = custom ? begin(out_custom) : begin(out);
 
     // first line is header
     SEQAN_ASSERT(!onMatch(it, TFormat()));
@@ -909,6 +951,128 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_header_legacy)
     SEQAN_ASSERT(onMatch(it, TFormat()));
 }
 
+void _test_blast_read_tabular_record(bool defaults)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTX,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    typedef BlastMatchField<BlastFormatGeneration::BLAST_PLUS> TField;
+
+    auto it = (defaults ? begin(out_noheader) : begin(out_custom_noheader));
+
+    BlastRecord<> r;
+
+    std::vector<typename TField::Enum> fieldsIn;
+    if (defaults)
+    {
+        fieldsIn =
+        {
+            {
+                TField::Enum::STD
+            }
+        };
+    }
+    else
+    {
+        fieldsIn =
+        {
+            {
+                TField::Enum::Q_SEQ_ID,
+                TField::Enum::S_SEQ_ID,
+                TField::Enum::LENGTH,
+                TField::Enum::N_IDENT,
+                TField::Enum::MISMATCH,
+                TField::Enum::POSITIVE,
+                TField::Enum::GAPS,
+                TField::Enum::Q_START,
+                TField::Enum::Q_END,
+                TField::Enum::S_START,
+                TField::Enum::S_END,
+                TField::Enum::FRAMES,
+                TField::Enum::BIT_SCORE
+            }
+        };
+    }
+
+    // first line is onMatch
+    SEQAN_ASSERT(onMatch(it, TFormat()));
+
+    if (defaults) // try interface without fieldList
+        readRecord(r, it, TFormat());
+    else
+        readRecord(r, it, fieldsIn, TFormat());
+
+    SEQAN_ASSERT_EQ(r.qId,              "SHAA004TF");
+    SEQAN_ASSERT_EQ(length(r.matches),  17u);
+
+    for (auto const & m : r.matches)
+    {
+        SEQAN_ASSERT_EQ(m.qId,          "SHAA004TF"); // truncated at first space
+        // check bitscore as an example field that is both in default and custom
+        SEQAN_ASSERT_GEQ(m.bitScore,    40.8);
+        SEQAN_ASSERT_LEQ(m.bitScore,    108.0);
+    }
+
+    readRecord(r, it, fieldsIn, TFormat());
+    SEQAN_ASSERT_EQ(r.qId,              "SHAA004TR");
+    SEQAN_ASSERT_EQ(length(r.matches),  2u);
+
+    for (auto const & m : r.matches)
+    {
+        SEQAN_ASSERT_EQ(m.qId,          "SHAA004TR"); // truncated at first space
+        // check bitscore as an example field that is both in default and custom
+        SEQAN_ASSERT_EQ(m.bitScore,    152.0);
+    }
+
+}
+
+SEQAN_DEFINE_TEST(test_blast_read_tabular_record)
+{
+    _test_blast_read_tabular_record(true);
+}
+
+SEQAN_DEFINE_TEST(test_blast_read_tabular_record_customfields)
+{
+    _test_blast_read_tabular_record(false);
+}
+
+SEQAN_DEFINE_TEST(test_blast_read_tabular_record_legacy)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTX,
+                        BlastFormatGeneration::BLAST_LEGACY> TFormat;
+
+    auto it = begin(out_noheader);
+
+    BlastRecord<> r;
+
+    // first line is match
+    SEQAN_ASSERT(onMatch(it, TFormat()));
+
+    readRecord(r, it, TFormat());
+    SEQAN_ASSERT_EQ(r.qId,              "SHAA004TF");
+    SEQAN_ASSERT_EQ(length(r.matches),  17u);
+
+    for (auto const & m : r.matches)
+    {
+        SEQAN_ASSERT_EQ(m.qId,          "SHAA004TF"); // truncated at first space
+        // check bitscore as an example field that is both in default and custom
+        SEQAN_ASSERT_GEQ(m.bitScore,    40.8);
+        SEQAN_ASSERT_LEQ(m.bitScore,    108.0);
+    }
+
+    readRecord(r, it,TFormat());
+    SEQAN_ASSERT_EQ(r.qId,              "SHAA004TR");
+    SEQAN_ASSERT_EQ(length(r.matches),  2u);
+
+    for (auto const & m : r.matches)
+    {
+        SEQAN_ASSERT_EQ(m.qId,          "SHAA004TR"); // truncated at first space
+        // check bitscore as an example field that is both in default and custom
+        SEQAN_ASSERT_EQ(m.bitScore,    152.0);
+    }
+}
+
 void _test_blast_read_tabular_with_header_record(bool defaults)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
@@ -916,7 +1080,7 @@ void _test_blast_read_tabular_with_header_record(bool defaults)
                         BlastFormatGeneration::BLAST_PLUS> TFormat;
     typedef BlastMatchField<BlastFormatGeneration::BLAST_PLUS> TField;
 
-    auto it = (defaults ? begin(out) : begin(out_custom1));
+    auto it = (defaults ? begin(out) : begin(out_custom));
 
     BlastRecord<> r;
     std::string dbName;
