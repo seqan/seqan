@@ -231,13 +231,12 @@ struct BlastMatch
                        );
     }
 
+    // copy, move and assign implicitly
+
     inline bool operator< (BlastMatch const & bm2) const
     {
         if (bitScore >= bm2.bitScore)
             return true;
-        //TODO check this; comparison should be with numeric id, not strings
-//         if (qId <= bm2.qId)
-//             return true;
         return false;
     }
 
@@ -371,10 +370,7 @@ struct BlastRecord
         qId(std::move(_qId)), qLength(0), matches()
     {}
 
-//     inline void clear()
-//     {
-//
-//     }
+    // copy, move and assign implicitly
 };
 
 template <typename TQId, typename TSId, typename TPos, typename TAlign>
@@ -392,7 +388,7 @@ clear(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord)
  * @signature struct BlastRecord<TDbName> { ... };
  * @brief A record of blast-matches (belonging to one query).
  *
- * @tparam TDbName  Type of dbName, defaults to @link CharString @endlink
+ * @tparam TDbName  Type of dbName, defaults to @link std::string @endlink
  *
  * @var TDbName BlastDbSpecs::dbName;
  * @brief verbose name of the database
@@ -404,7 +400,7 @@ clear(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord)
  * @brief number of sequences in the database
  */
 
-template <typename TDbName = CharString>
+template <typename TDbName = std::string>
 struct BlastDbSpecs
 {
     TDbName         dbName;
