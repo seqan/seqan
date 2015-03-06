@@ -349,9 +349,15 @@ void readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
 {
     IsNewline isNewline;
 
-    clear(record);
+    if (value(iter) == '#') // skip this line and find another record
+    {
+        skipLine(iter);
+        readRecord(record, buffer, iter);
+        return;
+    }
 
-    skipUntil(iter, NotFunctor<OrFunctor<EqualsChar<'#'>, IsWhitespace> >());  //skip commments and empty lines
+    clear(record);
+    skipUntil(iter, NotFunctor<IsWhitespace>());  //skip empty lines
 
     // read column 1: seqid
     readUntil(record.ref, iter, OrFunctor<IsTab, AssertFunctor<NotFunctor<IsNewline>, ParseError, Gff> >());
