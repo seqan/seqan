@@ -350,7 +350,7 @@ void readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
     IsNewline isNewline;
 
     // skip commented lines
-    while(!atEnd(iter) && value(iter) == '#')
+    while (!atEnd(iter) && value(iter) == '#')
         skipLine(iter);
 
     clear(record);
