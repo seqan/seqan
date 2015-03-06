@@ -349,12 +349,9 @@ void readRecord(GffRecord & record, CharString & buffer, TFwdIterator & iter)
 {
     IsNewline isNewline;
 
-    if (value(iter) == '#') // skip this line and find another record
-    {
+    // skip commented lines
+    while( value(iter) == '#' )
         skipLine(iter);
-        readRecord(record, buffer, iter);
-        return;
-    }
 
     clear(record);
     skipUntil(iter, NotFunctor<IsWhitespace>());  //skip empty lines
