@@ -1302,8 +1302,6 @@ append(String<TTargetValue, TTargetSpec> & target,
 // Function appendValue()
 // ----------------------------------------------------------------------------
 
-//TODO(h4nn3): why do we have these weird extra class? the function inside
-// is only ever used in the function below and could reside directly there
 template <typename TExpand>
 struct AppendValueToString_
 {

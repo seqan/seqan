@@ -703,29 +703,12 @@ appendValue(String<TTargetValue, TTargetSpec> & me,
 {
     std::string temp_copy;
     assign(temp_copy, _value);
-    appendValue(me, temp_copy, Tag<TExpand>());
-}
+    if (capacity(me) <= length(me)) // allocate space without initialization
+        reserve(me, length(me) + 1, Tag<TExpand>());
 
-#ifdef SEQAN_CXX11_STANDARD
-// second overload required to prevent possibly wrong overload resolution
-// to more general version in library which is defined with "universal 
-// reference type" due to unspecific type
-template <typename TTargetValue,
-          typename TTargetSpec,
-          typename TValue,
-          typename TSpec,
-          typename TExpand>
-inline SEQAN_FUNC_ENABLE_IF(IsSameType<typename RemoveConst<TTargetValue>::Type,
-                            std::string>)
-appendValue(String<TTargetValue, TTargetSpec> & me,
-            Segment<TValue, TSpec> && _value,
-            Tag<TExpand>)
-{
-    std::string temp_copy;
-    assign(temp_copy, std::move(_value));
-    appendValue(me, temp_copy, Tag<TExpand>());
+    valueConstruct(begin(me, Standard()) + length(me), temp_copy);
+    _setLength(me, length(me) + 1);
 }
-#endif
 
 }  // namespace seqan
 
