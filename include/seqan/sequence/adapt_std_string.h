@@ -688,28 +688,6 @@ toCString(std::string const & me)
     return me.c_str();
 }
 
-// make it possible to append seqan infixes of std::string to an stringset
-// of std::string
-template <typename TTargetValue,
-          typename TTargetSpec,
-          typename TValue,
-          typename TSpec,
-          typename TExpand>
-inline SEQAN_FUNC_ENABLE_IF(IsSameType<typename RemoveConst<TTargetValue>::Type,
-                            std::string>)
-appendValue(String<TTargetValue, TTargetSpec> & me,
-            Segment<TValue, TSpec> const & _value,
-            Tag<TExpand>)
-{
-    std::string temp_copy;
-    assign(temp_copy, _value);
-    if (capacity(me) <= length(me)) // allocate space without initialization
-        reserve(me, length(me) + 1, Tag<TExpand>());
-
-    valueConstruct(begin(me, Standard()) + length(me), temp_copy);
-    _setLength(me, length(me) + 1);
-}
-
 }  // namespace seqan
 
 #endif  // #ifndef SEQAN_SEQUENCE_ADAPT_STD_STRING_H_
