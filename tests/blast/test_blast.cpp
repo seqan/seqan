@@ -98,6 +98,10 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
     SEQAN_CALL_TEST(test_blast_read_tabular_with_header_record);
     SEQAN_CALL_TEST(test_blast_read_tabular_with_header_record_legacy);
     SEQAN_CALL_TEST(test_blast_read_tabular_with_header_record_customfields);
+
+    // READING (formattedFile)
+    SEQAN_CALL_TEST(test_blast_read_tabular_formatted_file);
+    SEQAN_CALL_TEST(test_blast_read_tabular_with_header_formatted_file);
 }
 SEQAN_END_TESTSUITE
 

@@ -289,8 +289,6 @@ void _test_blast_read_tabular_match(char const * string,
         }
     };
 
-
-
     const char * tempFilename = SEQAN_TEMP_FILENAME();
     char filenameBuffer[1000];
     strcpy(filenameBuffer, tempFilename);
@@ -1239,4 +1237,117 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_record_legacy)
     SEQAN_ASSERT_EQ(r.qId,              "SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960");
     SEQAN_ASSERT_EQ(dbName,           ""); // couldn't be detected (typo)
     SEQAN_ASSERT_EQ(length(r.matches),  0u);
+}
+
+
+SEQAN_DEFINE_TEST(test_blast_read_tabular_formatted_file)
+{
+    const char * tempFilename = SEQAN_TEMP_FILENAME();
+    char filenameBuffer[1000];
+    strcpy(filenameBuffer, tempFilename);
+
+    std::fstream fstream(filenameBuffer, std::ios_base::in | std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
+    SEQAN_ASSERT(fstream.is_open());
+
+    fstream << out_noheader;
+    fstream.seekg(0, std::ios::beg); // go back to beginning
+    fstream.seekp(0, std::ios::beg); // go back to beginning
+
+    BlastTabularIn fileIn(filenameBuffer);
+//     fileIn.format = std::make_pair(BlastFormatFile::TABULAR,
+//                                    BlastFormatProgram::BLASTX);
+
+    SEQAN_ASSERT_EQ((uint8_t)std::get<0>(format(fileIn)),
+                    (uint8_t)BlastFormatFile::TABULAR);
+    BlastRecord<> r;
+
+    readRecord(r, fileIn);
+
+    SEQAN_ASSERT_EQ(r.qId,              "SHAA004TF");
+    SEQAN_ASSERT_EQ(length(r.matches),  17u);
+
+    for (auto const & m : r.matches)
+    {
+        SEQAN_ASSERT_EQ(m.qId,          "SHAA004TF"); // truncated at first space
+        // check bitscore as an example field that is both in default and custom
+        SEQAN_ASSERT_GEQ(m.bitScore,    40.8);
+        SEQAN_ASSERT_LEQ(m.bitScore,    108.0);
+    }
+
+    readRecord(r, fileIn);
+    SEQAN_ASSERT_EQ(r.qId,              "SHAA004TR");
+    SEQAN_ASSERT_EQ(length(r.matches),  2u);
+
+    for (auto const & m : r.matches)
+    {
+        SEQAN_ASSERT_EQ(m.qId,          "SHAA004TR"); // truncated at first space
+        // check bitscore as an example field that is both in default and custom
+        SEQAN_ASSERT_EQ(m.bitScore,    152.0);
+    }
+
+    fstream.close();
+}
+
+SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_formatted_file)
+{
+    const char * tempFilename = SEQAN_TEMP_FILENAME();
+    char filenameBuffer[1000];
+    strcpy(filenameBuffer, tempFilename);
+
+    std::fstream fstream(filenameBuffer, std::ios_base::in | std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
+    SEQAN_ASSERT(fstream.is_open());
+
+    fstream << out;
+    fstream.seekg(0, std::ios::beg); // go back to beginning
+    fstream.seekp(0, std::ios::beg); // go back to beginning
+
+    BlastTabularIn fileIn(filenameBuffer);
+//     fileIn.format = std::make_pair(BlastFormatFile::TABULAR_WITH_HEADER,
+//                                    BlastFormatProgram::BLASTX);
+
+    SEQAN_ASSERT_EQ((uint8_t)std::get<0>(format(fileIn)),
+                    (uint8_t)BlastFormatFile::TABULAR_WITH_HEADER);
+    BlastRecord<> r;
+
+    readRecord(r, fileIn);
+    SEQAN_ASSERT_EQ(r.qId,                 "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
+    SEQAN_ASSERT_EQ(context(fileIn).dbSpecs.dbName, "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(length(r.matches),  0u);
+
+    readRecord(r, fileIn);
+    SEQAN_ASSERT_EQ(r.qId,              "SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935");
+    SEQAN_ASSERT_EQ(context(fileIn).dbSpecs.dbName,"/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(length(r.matches),  0u);
+
+    readRecord(r, fileIn);
+    SEQAN_ASSERT_EQ(r.qId,              "SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828");
+    SEQAN_ASSERT_EQ(context(fileIn).dbSpecs.dbName,"/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(length(r.matches),  17u);
+
+    for (auto const & m : r.matches)
+    {
+        SEQAN_ASSERT_EQ(m.qId,          "SHAA004TF"); // truncated at first space
+        // check bitscore as an example field that is both in default and custom
+        SEQAN_ASSERT_GEQ(m.bitScore,    40.8);
+        SEQAN_ASSERT_LEQ(m.bitScore,    108.0);
+    }
+
+    readRecord(r, fileIn);
+    SEQAN_ASSERT_EQ(r.qId,              "SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853");
+    SEQAN_ASSERT_EQ(context(fileIn).dbSpecs.dbName,"/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(length(r.matches),  2u);
+
+    for (auto const & m : r.matches)
+    {
+        SEQAN_ASSERT_EQ(m.qId,          "SHAA004TR"); // truncated at first space
+        // check bitscore as an example field that is both in default and custom
+        SEQAN_ASSERT_EQ(m.bitScore,    152.0);
+    }
+
+    readRecord(r, fileIn);
+    SEQAN_ASSERT_EQ(r.qId,              "SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960");
+    SEQAN_ASSERT_EQ(context(fileIn).dbSpecs.dbName,""); // couldn't be detected (typo)
+    SEQAN_ASSERT_EQ(length(r.matches),  0u);
+
+    fstream.close();
 }

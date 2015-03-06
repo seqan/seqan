@@ -66,6 +66,7 @@
 #include "blast/blast_tabular.h"
 #include "blast/blast_tabular_read.h"
 #include "blast/blast_tabular_write.h"
+#include "blast/blast_tabular_formatted_file.h"
 #include "blast/blast_report_write.h"
 
 #else //SEQAN_C++11_STANDARD

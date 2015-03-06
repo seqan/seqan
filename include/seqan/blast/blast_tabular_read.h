@@ -1585,12 +1585,73 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
         iter -= length(curId);
 
         if ((curId != lastId) && (!empty(lastId)))
-            break;; // new Record reached
+            break; // new Record reached
 
         blastRecord.matches.emplace_back();
         readMatch(back(blastRecord.matches), iter, TFormat());
         lastId = curId;
     }
+
+    if (length(blastRecord.matches) == 0)
+        SEQAN_THROW(ParseError("No Matches could be read."));
+
+    blastRecord.qId = blastRecord.matches.front().qId;
+}
+
+// same as above but lastId comes from outside
+template <typename TFwdIterator,
+          typename TQId = CharString,
+          typename TSId = CharString,
+          typename TAlign = Align<CharString, ArrayGaps>,
+          typename TPos = unsigned,
+          BlastFormatProgram p>
+inline void
+_readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
+           std::string & lastId,
+           TFwdIterator & iter,
+           BlastFormat<BlastFormatFile::TABULAR, p, BlastFormatGeneration::BLAST_PLUS> const &)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR, p, BlastFormatGeneration::BLAST_PLUS>  TFormat;
+    typedef BlastMatchField<BlastFormatGeneration::BLAST_PLUS> TField;
+    clear(blastRecord);
+
+    std::string curId;
+
+    std::array<typename TField::Enum const, 11> defaultsMinusQId
+    {
+        {
+            TField::Enum::S_SEQ_ID,
+            TField::Enum::P_IDENT,
+            TField::Enum::LENGTH,
+            TField::Enum::MISMATCH,
+            TField::Enum::GAP_OPEN,
+            TField::Enum::Q_START,
+            TField::Enum::Q_END,
+            TField::Enum::S_START,
+            TField::Enum::S_END,
+            TField::Enum::E_VALUE,
+            TField::Enum::BIT_SCORE
+        }
+    };
+
+    while ((!atEnd(iter)) && onMatch(iter, TFormat()))
+    {
+        clear(curId);
+        // read current read ID and then rewind stream to beginning of line
+        readUntil(curId, iter, OrFunctor<IsTab,IsNewline>());
+//         iter -= length(curId);
+
+        if (SEQAN_UNLIKELY(empty(lastId)))
+            lastId = curId;
+        if (curId != lastId)
+            break; // new Record reached
+
+        blastRecord.matches.emplace_back();
+        back(blastRecord.matches).qId = curId;
+        readMatch(back(blastRecord.matches), iter, defaultsMinusQId, TFormat());
+        lastId = curId;
+    }
+    lastId = curId;
 
     if (length(blastRecord.matches) == 0)
         SEQAN_THROW(ParseError("No Matches could be read."));
