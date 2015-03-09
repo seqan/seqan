@@ -81,8 +81,6 @@ headers always ends after the "Fields" line and NCBI Blast+ records end after
 the "number of hits"-line.
 */
 
-//TODO optimize buffers
-
 namespace seqan
 {
 
@@ -93,6 +91,33 @@ namespace seqan
 // ============================================================================
 // Tags, Classes, Enums
 // ============================================================================
+
+template <typename TSpec = void>
+struct PrivateSpace_
+{
+    static std::vector<BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum>
+    const defaultsMinusQId;
+
+};
+
+template <typename TSpec>
+std::vector<BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum>
+const PrivateSpace_<TSpec>::defaultsMinusQId =
+{
+    {
+        BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum::S_SEQ_ID,
+        BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum::P_IDENT,
+        BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum::LENGTH,
+        BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum::MISMATCH,
+        BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum::GAP_OPEN,
+        BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum::Q_START,
+        BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum::Q_END,
+        BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum::S_START,
+        BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum::S_END,
+        BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum::E_VALUE,
+        BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum::BIT_SCORE
+    }
+};
 
 // ============================================================================
 // Metafunctions
@@ -444,7 +469,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
  * @brief read a Header from a Blast output file
  * @headerfile seqan/blast.h
  *
- * @signature int readHeader(qId, dbName, versionString, [hits,] [fields, [otherLines,]] iter, strict, tag);
+ * @signature readHeader(qId, dbName, versionString, [hits,] [fields, [otherLines,]] iter, strict, tag);
  *
  * @param[out]  qId     String to hold the query ID from the header
  * @param[out]  dbName  String to hold the database name from the header
@@ -458,7 +483,7 @@ _readHeaderImplBlastTab(TqId                                    & qId,
  *
  * Call this function on every line beginning that is not "onMatch". Please note
  * that the strictness behaviour is slightly different, depending on whether you
- * specify a fieldList parameter or not. If you don't, strictness which check
+ * specify a fieldList parameter or not. If you don't, strictness will check
  * whether the fields are default, if you do, strictness will not (because
  * you can check yourself!).
  *
@@ -1071,7 +1096,7 @@ _readMatchImpl(BlastMatch<TqId, TsId, TPos, TAlign>      & match,
  * @fn BlastMatch#readMatch
  * @brief read a match from a file in BlastFormat
  *
- * @signature int readMatch(blastMatch, iter, [fieldList,] BlastFormat);
+ * @signature readMatch(blastMatch, iter, [fieldList,] tag);
  *
  * @param[out]      blastMatch  A @link BlastMatch @endlink object to hold all relevant info
  * @param[in,out]   iter        An input iterator over a stream or any fwd-iterator over a string
@@ -1095,9 +1120,9 @@ _readMatchImpl(BlastMatch<TqId, TsId, TPos, TAlign>      & match,
  *
  * Please note that the only transformations made to the data are the following:
  *
- *  * computation of the number of identities (from the percentage) [default]
- *  * computation of the number of positives (from the percentage) [if given]
- *  * number of gaps computed from other values [default]
+ *  <li> computation of the number of identities (from the percentage) [default]</li>
+ *  <li> computation of the number of positives (from the percentage) [if given]</li>
+ *  <li> number of gaps computed from other values [default]</li>
  *
  * In contrast to @link BlastMatch#writeMatch @endlink no other transformations
  * are made, e.g. the positions are still one-indexed and
@@ -1198,7 +1223,7 @@ readMatch(BlastMatch<TqId, TsId, TPos, TAlign>      & match,
  * @fn BlastFormat#readMatch
  * @brief read arbitrary columsn from a file in BlastFormat
  *
- * @signature int readMatch(iter, BlastFormat, args ...);
+ * @signature readMatch(iter, BlastFormat, args ...);
  *
  * @param[in,out]   iter    An input iterator over a stream or any fwd-iterator over a string
  * @param[in]       tag     Only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported
@@ -1399,7 +1424,8 @@ skipMatch(TFwdIterator & iter,
  * @fn BlastRecord#readRecord
  * @brief read a record from a file in BlastFormat
  *
- * @signature int readRecord(blastRecord, dbName, [fieldList,] iter, [fieldList,] BlastFormat);
+ * @signature readRecord(blastRecord, dbName, [fieldList,] iter, [fieldList,] tag); [WITH_HEADER]
+ * readRecord(blastRecord, buffer, iter, [fieldList,] tag); [WITHOUT_HEADER]
  *
  * @param[out]      blastRecord A @link BlastRecord @endlink to hold all relevant info
  * @param[out]      dbName      String to hold the database name from the header
@@ -1423,8 +1449,9 @@ skipMatch(TFwdIterator & iter,
  *
  * Please note that for the TABULAR format (without headers) the boundary
  * between records is inferred from the indentity of the first field, i.e.
- * custom columns must also have Q_SEQ_ID as first field and the iter
- * must support going backwards, too.
+ * custom columns must also have Q_SEQ_ID as first field. Also you must pass
+ * an std::string buffer as in-out parameter to cache this field.
+ * @link BlastMatch#readMatch @endlink.
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
@@ -1556,6 +1583,52 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
 }
 
 // TABULAR FORMAT has no headers, so we compare first query id
+// template <typename TFwdIterator,
+//           typename TQId = CharString,
+//           typename TSId = CharString,
+//           typename TAlign = Align<CharString, ArrayGaps>,
+//           typename TPos = unsigned,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g,
+//           typename std::enable_if<
+//             Is<ReversibleContainerConcept<TFwdIterator> >::VALUE,
+//             int> = 0>
+// inline void
+// readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
+//            TFwdIterator & iter,
+//            BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
+// {
+//     typedef BlastFormat<BlastFormatFile::TABULAR, p, g>  TFormat;
+//
+//     clear(blastRecord);
+//
+//     std::string curId;
+//     std::string lastId;
+//
+//     //TODO for custom fields we have to change this, i.e. read entire line
+//     //and see if query id is contained
+//     while ((!atEnd(iter)) && onMatch(iter, TFormat()))
+//     {
+//         clear(curId);
+//         // read current read ID and then rewind stream to beginning of line
+//         readUntil(curId, iter, OrFunctor<IsTab,IsNewline>());
+//         iter -= length(curId);
+//
+//         if ((curId != lastId) && (!empty(lastId)))
+//             break; // new Record reached
+//
+//         blastRecord.matches.emplace_back();
+//         readMatch(back(blastRecord.matches), iter, TFormat());
+//         lastId = curId;
+//     }
+//
+//     if (length(blastRecord.matches) == 0)
+//         SEQAN_THROW(ParseError("No Matches could be read."));
+//
+//     blastRecord.qId = blastRecord.matches.front().qId;
+// }
+
+// same as above but lastId comes from outside
 template <typename TFwdIterator,
           typename TQId = CharString,
           typename TSId = CharString,
@@ -1565,93 +1638,43 @@ template <typename TFwdIterator,
           BlastFormatGeneration g>
 inline void
 readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
+           std::string & lastId,
            TFwdIterator & iter,
            BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
 {
-    typedef BlastFormat<BlastFormatFile::TABULAR, p, g>  TFormat;
-
-    clear(blastRecord);
-
-    std::string curId;
-    std::string lastId;
-
-    //TODO for custom fields we have to change this, i.e. read entire line
-    //and see if query id is contained
-    while ((!atEnd(iter)) && onMatch(iter, TFormat()))
-    {
-        clear(curId);
-        // read current read ID and then rewind stream to beginning of line
-        readUntil(curId, iter, OrFunctor<IsTab,IsNewline>());
-        iter -= length(curId);
-
-        if ((curId != lastId) && (!empty(lastId)))
-            break; // new Record reached
-
-        blastRecord.matches.emplace_back();
-        readMatch(back(blastRecord.matches), iter, TFormat());
-        lastId = curId;
-    }
-
-    if (length(blastRecord.matches) == 0)
-        SEQAN_THROW(ParseError("No Matches could be read."));
-
-    blastRecord.qId = blastRecord.matches.front().qId;
-}
-
-// same as above but lastId comes from outside
-template <typename TFwdIterator,
-          typename TQId = CharString,
-          typename TSId = CharString,
-          typename TAlign = Align<CharString, ArrayGaps>,
-          typename TPos = unsigned,
-          BlastFormatProgram p>
-inline void
-_readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
-           std::string & lastId,
-           TFwdIterator & iter,
-           BlastFormat<BlastFormatFile::TABULAR, p, BlastFormatGeneration::BLAST_PLUS> const &)
-{
+    // TABULAR WITHOUT HEADER is identical for both Generations
     typedef BlastFormat<BlastFormatFile::TABULAR, p, BlastFormatGeneration::BLAST_PLUS>  TFormat;
-    typedef BlastMatchField<BlastFormatGeneration::BLAST_PLUS> TField;
+//     typedef BlastMatchField<BlastFormatGeneration::BLAST_PLUS> TField;
     clear(blastRecord);
 
-    std::string curId;
-
-    std::array<typename TField::Enum const, 11> defaultsMinusQId
-    {
-        {
-            TField::Enum::S_SEQ_ID,
-            TField::Enum::P_IDENT,
-            TField::Enum::LENGTH,
-            TField::Enum::MISMATCH,
-            TField::Enum::GAP_OPEN,
-            TField::Enum::Q_START,
-            TField::Enum::Q_END,
-            TField::Enum::S_START,
-            TField::Enum::S_END,
-            TField::Enum::E_VALUE,
-            TField::Enum::BIT_SCORE
-        }
-    };
+    std::string curId = lastId;
 
     while ((!atEnd(iter)) && onMatch(iter, TFormat()))
     {
-        clear(curId);
-        // read current read ID and then rewind stream to beginning of line
-        readUntil(curId, iter, OrFunctor<IsTab,IsNewline>());
-//         iter -= length(curId);
+        // no ID in buffer, yet
+        if (SEQAN_LIKELY(empty(lastId) || empty(curId)))
+        {
+            // read current read ID
+            readUntil(curId, iter, OrFunctor<IsTab,IsNewline>());
+            skipOne(iter, IsTab());
+            if (SEQAN_UNLIKELY(empty(lastId)))
+                lastId = curId;
+        }
 
-        if (SEQAN_UNLIKELY(empty(lastId)))
-            lastId = curId;
         if (curId != lastId)
+        {
+            lastId = curId;
             break; // new Record reached
+        }
 
         blastRecord.matches.emplace_back();
+        // read remainder of line
+        readMatch(back(blastRecord.matches), iter,
+                  PrivateSpace_<>::defaultsMinusQId, TFormat());
         back(blastRecord.matches).qId = curId;
-        readMatch(back(blastRecord.matches), iter, defaultsMinusQId, TFormat());
-        lastId = curId;
+        std::swap(lastId, curId);
+        clear(curId);
     }
-    lastId = curId;
 
     if (length(blastRecord.matches) == 0)
         SEQAN_THROW(ParseError("No Matches could be read."));
@@ -1670,6 +1693,7 @@ template <typename TFwdIterator,
           BlastFormatGeneration g>
 inline void
 readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
+           std::string lastId,
            TFwdIterator & iter,
            TFieldList const & fieldList,
            BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
@@ -1677,32 +1701,66 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
     static_assert(g == BlastFormatGeneration::BLAST_PLUS,
                   "fieldList parameter may only be specified for "
                   "BlastFormatGeneration::BLAST_PLUS");
-    typedef BlastFormat<BlastFormatFile::TABULAR, p, g>  TFormat;
-
+    typedef BlastFormat<BlastFormatFile::TABULAR, p, BlastFormatGeneration::BLAST_PLUS>  TFormat;
+    typedef BlastMatchField<BlastFormatGeneration::BLAST_PLUS> TField;
     clear(blastRecord);
 
-    std::string curId;
-    std::string lastId;
+    std::string curId = lastId;
 
-    //TODO for custom fields we have to change this, i.e. read entire line
-    //and see if query id is contained
+    std::vector<typename TField::Enum> fieldListMinusFirst;
+    if (fieldList[0] == TField::Enum::STD)
+    {
+        fieldListMinusFirst = PrivateSpace_<>::defaultsMinusQId;
+        if (length(fieldList) > 1)
+            fieldListMinusFirst.insert(std::end(fieldListMinusFirst),
+                                       seqan::begin(fieldList) + 2,
+                                       seqan::end(fieldList));
+    }
+    else if (fieldList[0] == TField::Enum::Q_SEQ_ID)
+    {
+        // TODO fix this in a more efficient way!
+        assign(fieldListMinusFirst, suffix(fieldList, 1));
+//         fieldListMinusFirst.resize(length(fieldList) - 1);
+//         for (unsigned i = 0; i < length(fieldList) - 1 ; ++i)
+//             fieldListMinusFirst[i] = fieldList[i + 1];
+
+        SEQAN_ASSERT(fieldListMinusFirst[0] == TField::Enum::S_SEQ_ID);
+        SEQAN_ASSERT(fieldListMinusFirst[11] == TField::Enum::BIT_SCORE);
+    } else
+    {
+        SEQAN_FAIL("readRecord interface on header-less format with custom "
+                   "fields not supported, unless first custom field is "
+                   "Q_SEQ_ID. Use the readMatch interface instead.");
+    }
+
     while ((!atEnd(iter)) && onMatch(iter, TFormat()))
     {
-        clear(curId);
-        // read current read ID and then rewind stream to beginning of line
-        readUntil(curId, iter, OrFunctor<IsTab,IsNewline>());
-        iter -= length(curId);
+        // no ID in buffer, yet
+        if (SEQAN_LIKELY(empty(lastId) || empty(curId)))
+        {
+            // read current read ID
+            readUntil(curId, iter, OrFunctor<IsTab,IsNewline>());
+            skipOne(iter, IsTab());
+            if (SEQAN_UNLIKELY(empty(lastId)))
+                lastId = curId;
+        }
 
-        if ((curId != lastId) && (!empty(lastId)))
+        if (curId != lastId)
+        {
+            lastId = curId;
             break; // new Record reached
+        }
 
         blastRecord.matches.emplace_back();
-        readMatch(back(blastRecord.matches), iter, fieldList, TFormat());
-        lastId = curId;
+        // read remainder of line
+        readMatch(back(blastRecord.matches), iter, fieldListMinusFirst, TFormat());
+        back(blastRecord.matches).qId = curId;
+        std::swap(lastId, curId);
+        clear(curId);
     }
 
     if (length(blastRecord.matches) == 0)
-        SEQAN_THROW(ParseError("No matches could be read."));
+        SEQAN_THROW(ParseError("No Matches could be read."));
 
     blastRecord.qId = blastRecord.matches.front().qId;
 }

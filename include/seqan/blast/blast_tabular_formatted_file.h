@@ -127,7 +127,6 @@ typedef FormattedFile<BlastTabular, Output> BlastTabularOut;
 // Type BlastTabularIOContext_
 // ----------------------------------------------------------------------------
 
-
 struct BlastTabularIOContext_
 {
     BlastDbSpecs<>  dbSpecs;
@@ -188,6 +187,19 @@ inline bool guessFormat(FormattedFile<BlastTabular, Output, TSpec> &)
 }
 
 // ----------------------------------------------------------------------------
+// Function guessFormatFromFilename()
+// ----------------------------------------------------------------------------
+
+template <typename TString>
+inline bool
+guessFormatFromFilename(TString const &,
+                        std::pair<BlastFormatFile,
+                                  BlastFormatProgram> const &)
+{
+    return true;
+}
+
+// ----------------------------------------------------------------------------
 // Function readRecord(); BlastRecord
 // ----------------------------------------------------------------------------
 
@@ -224,7 +236,7 @@ __readRecord(
     FormattedFile<BlastTabular, Input, TSpec> & file)
 {
     typedef BlastFormat<f, p, BlastFormatGeneration::BLAST_PLUS> TFormat;
-    _readRecord(record, context(file).lastId, file.iter, TFormat());
+    readRecord(record, context(file).lastId, file.iter, TFormat());
 }
 
 // convient BlastFile variant
