@@ -401,9 +401,10 @@ struct FormattedFileContext
 };
 
 template <typename TFormattedFile, typename TStorageSpec>
-struct FormattedFileContext<TFormattedFile const, TStorageSpec> :
-    FormattedFileContext<TFormattedFile, TStorageSpec>
-{};
+struct FormattedFileContext<TFormattedFile const, TStorageSpec>
+{
+    typedef typename FormattedFileContext<TFormattedFile, TStorageSpec>::Type const Type;
+};
 
 // ----------------------------------------------------------------------------
 // Metafunction StorageSwitch
