@@ -1598,10 +1598,10 @@ concat(StringSet<TString, TSpec> const & constMe)
 }
 
 template <typename TStrings, typename TDelim>
-inline String<typename Value<typename Value<TStrings>::Type>::Type>
+inline typename Value<TStrings>::Type
 concat(TStrings const & strings, TDelim const & delimiter, bool ignoreEmptyStrings = false)
 {
-    String<typename Value<typename Value<TStrings>::Type>::Type> tmp;
+    typename Value<TStrings>::Type tmp;
 
     if (empty(strings))
         return tmp;

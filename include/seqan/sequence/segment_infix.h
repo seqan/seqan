@@ -152,6 +152,13 @@ SEQAN_CHECKPOINT
         assign(*this, source);
         return *this;
     }
+
+    template<typename T> explicit operator T () const
+    {
+        T temp_copy;
+        assign(temp_copy, *this);
+        return temp_copy;
+    }
 //____________________________________________________________________________
 
 public:
