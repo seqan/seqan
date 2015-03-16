@@ -1693,7 +1693,7 @@ template <typename TFwdIterator,
           BlastFormatGeneration g>
 inline void
 readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
-           std::string lastId,
+           std::string & lastId,
            TFwdIterator & iter,
            TFieldList const & fieldList,
            BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
@@ -1713,19 +1713,12 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign>   & blastRecord,
         fieldListMinusFirst = PrivateSpace_<>::defaultsMinusQId;
         if (length(fieldList) > 1)
             fieldListMinusFirst.insert(std::end(fieldListMinusFirst),
-                                       seqan::begin(fieldList) + 2,
+                                       seqan::begin(fieldList) + 1,
                                        seqan::end(fieldList));
     }
     else if (fieldList[0] == TField::Enum::Q_SEQ_ID)
     {
-        // TODO fix this in a more efficient way!
         assign(fieldListMinusFirst, suffix(fieldList, 1));
-//         fieldListMinusFirst.resize(length(fieldList) - 1);
-//         for (unsigned i = 0; i < length(fieldList) - 1 ; ++i)
-//             fieldListMinusFirst[i] = fieldList[i + 1];
-
-        SEQAN_ASSERT(fieldListMinusFirst[0] == TField::Enum::S_SEQ_ID);
-        SEQAN_ASSERT(fieldListMinusFirst[11] == TField::Enum::BIT_SCORE);
     } else
     {
         SEQAN_FAIL("readRecord interface on header-less format with custom "

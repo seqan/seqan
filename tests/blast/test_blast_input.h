@@ -463,7 +463,7 @@ void _test_blast_read_tabular_match(std::string const & path,
     ifstream.close();
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_match)
+SEQAN_DEFINE_TEST(test_blast_read_match_tabular)
 {
     // this tests BlastMatch#readMatch(), BlastMatch#skipMatch() and
     // BlastFormat#skipUntilMatch
@@ -477,7 +477,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_match)
     _test_blast_read_tabular_match(LEGACY_HEADER_DEFAULTS, true, TFormat());
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_match_legacy)
+SEQAN_DEFINE_TEST(test_blast_read_match_tabular_legacy)
 {
     // this tests BlastMatch#readMatch(), BlastMatch#skipMatch() and
     // BlastFormat#skipUntilMatch
@@ -492,7 +492,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_match_legacy)
     _test_blast_read_tabular_match(PLUS_HEADER_DEFAULTS, true, TFormat());
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_match_customfields)
+SEQAN_DEFINE_TEST(test_blast_read_match_customfields_tabular)
 {
     // this tests BlastMatch#readMatch(), BlastMatch#skipMatch() and
     // BlastFormat#skipUntilMatch
@@ -505,7 +505,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_match_customfields)
     // custom columns not supported in legacy format
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_match)
+SEQAN_DEFINE_TEST(test_blast_read_match_tabular_with_header)
 {
     // this tests BlastMatch#readMatch(), BlastMatch#skipMatch() and
     // BlastFormat#skipUntilMatch
@@ -517,7 +517,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_match)
     _test_blast_read_tabular_match(LEGACY_HEADER_DEFAULTS, true, TFormat());
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_match_legacy)
+SEQAN_DEFINE_TEST(test_blast_read_match_tabular_with_header_legacy)
 {
     // this tests BlastMatch#readMatch(), BlastMatch#skipMatch() and
     // BlastFormat#skipUntilMatch
@@ -530,7 +530,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_match_legacy)
     _test_blast_read_tabular_match(PLUS_HEADER_DEFAULTS, true, TFormat());
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_match_customfields)
+SEQAN_DEFINE_TEST(test_blast_read_match_customfields_tabular_with_header)
 {
     // this tests BlastMatch#readMatch(), BlastMatch#skipMatch() and
     // BlastFormat#skipUntilMatch
@@ -653,7 +653,7 @@ _test_blast_read_tabular_match_columns(std::string const & path,
     ifstream.close();
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_match_customcolumns)
+SEQAN_DEFINE_TEST(test_blast_read_match_customcolumns_tabular)
 {
     // this tests BlastMatch#readMatch(), BlastMatch#skipMatch() and
     // BlastFormat#skipUntilMatch
@@ -665,7 +665,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_match_customcolumns)
     _test_blast_read_tabular_match_columns(LEGACY_HEADER_DEFAULTS, TFormat());
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_match_customcolumns_legacy)
+SEQAN_DEFINE_TEST(test_blast_read_match_customcolumns_tabular_legacy)
 {
     // this tests BlastMatch#readMatch(), BlastMatch#skipMatch() and
     // BlastFormat#skipUntilMatch
@@ -677,7 +677,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_match_customcolumns_legacy)
     _test_blast_read_tabular_match_columns(LEGACY_HEADER_DEFAULTS, TFormat());
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_match_customcolumns)
+SEQAN_DEFINE_TEST(test_blast_read_match_customcolumns_tabular_with_header)
 {
     // this tests BlastMatch#readMatch(), BlastMatch#skipMatch() and
     // BlastFormat#skipUntilMatch
@@ -689,7 +689,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_match_customcolumns)
     _test_blast_read_tabular_match_columns(LEGACY_HEADER_DEFAULTS, TFormat());
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_match_customcolumns_legacy)
+SEQAN_DEFINE_TEST(test_blast_read_match_customcolumns_tabular_with_header_legacy)
 {
     // this tests BlastMatch#readMatch(), BlastMatch#skipMatch() and
     // BlastFormat#skipUntilMatch
@@ -872,17 +872,17 @@ _test_blast_read_tabular_with_header(bool custom = false)
     ifstream.close();
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_header)
+SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header)
 {
     _test_blast_read_tabular_with_header(false);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_header_customfields)
+SEQAN_DEFINE_TEST(test_blast_read_header_customfields_tabular_with_header)
 {
     _test_blast_read_tabular_with_header(true);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_header_legacy)
+SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         BlastFormatProgram::BLASTX,
@@ -1030,30 +1030,26 @@ void _test_blast_read_tabular_record(bool defaults)
     {
         fieldsIn =
         {
-            {
-                TField::Enum::STD
-            }
+            TField::Enum::STD
         };
     }
     else
     {
         fieldsIn =
         {
-            {
-                TField::Enum::Q_SEQ_ID,
-                TField::Enum::S_SEQ_ID,
-                TField::Enum::LENGTH,
-                TField::Enum::N_IDENT,
-                TField::Enum::MISMATCH,
-                TField::Enum::POSITIVE,
-                TField::Enum::GAPS,
-                TField::Enum::Q_START,
-                TField::Enum::Q_END,
-                TField::Enum::S_START,
-                TField::Enum::S_END,
-                TField::Enum::FRAMES,
-                TField::Enum::BIT_SCORE
-            }
+            TField::Enum::Q_SEQ_ID,
+            TField::Enum::S_SEQ_ID,
+            TField::Enum::LENGTH,
+            TField::Enum::N_IDENT,
+            TField::Enum::MISMATCH,
+            TField::Enum::POSITIVE,
+            TField::Enum::GAPS,
+            TField::Enum::Q_START,
+            TField::Enum::Q_END,
+            TField::Enum::S_START,
+            TField::Enum::S_END,
+            TField::Enum::FRAMES,
+            TField::Enum::BIT_SCORE
         };
     }
 
@@ -1074,6 +1070,13 @@ void _test_blast_read_tabular_record(bool defaults)
         // check bitscore as an example field that is both in default and custom
         SEQAN_ASSERT_GEQ(m.bitScore,    40.8);
         SEQAN_ASSERT_LEQ(m.bitScore,    108.0);
+        if (!defaults)
+        {
+            if (m.bitScore > 100)
+                SEQAN_ASSERT_EQ(m.qFrameShift, 2);
+            else
+                SEQAN_ASSERT_EQ(m.qFrameShift, -1);
+        }
     }
 
     readRecord(r, fieldBuffer, it, fieldsIn, TFormat());
@@ -1085,22 +1088,24 @@ void _test_blast_read_tabular_record(bool defaults)
         SEQAN_ASSERT_EQ(m.qId,          "SHAA004TR"); // truncated at first space
         // check bitscore as an example field that is both in default and custom
         SEQAN_ASSERT_EQ(m.bitScore,    152.0);
+        if (!defaults)
+            SEQAN_ASSERT_EQ(m.qFrameShift, -2);
     }
 
     ifstream.close();
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_record)
+SEQAN_DEFINE_TEST(test_blast_read_record_tabular)
 {
     _test_blast_read_tabular_record(true);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_record_customfields)
+SEQAN_DEFINE_TEST(test_blast_read_record_customfields_tabular)
 {
     _test_blast_read_tabular_record(false);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_record_legacy)
+SEQAN_DEFINE_TEST(test_blast_read_record_tabular_legacy)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR,
                         BlastFormatProgram::BLASTX,
@@ -1147,7 +1152,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_record_legacy)
     ifstream.close();
 }
 
-void _test_blast_read_tabular_with_header_record(bool defaults)
+void _test_blast_read_record(bool defaults)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         BlastFormatProgram::BLASTX,
@@ -1259,17 +1264,17 @@ void _test_blast_read_tabular_with_header_record(bool defaults)
     ifstream.close();
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_record)
+SEQAN_DEFINE_TEST(test_blast_read_record_tabular_with_header)
 {
-    _test_blast_read_tabular_with_header_record(true);
+    _test_blast_read_record(true);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_record_customfields)
+SEQAN_DEFINE_TEST(test_blast_read_record_customfields_tabular_with_header)
 {
-    _test_blast_read_tabular_with_header_record(false);
+    _test_blast_read_record(false);
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_record_legacy)
+SEQAN_DEFINE_TEST(test_blast_read_record_tabular_with_header_legacy)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         BlastFormatProgram::BLASTX,
@@ -1331,7 +1336,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_record_legacy)
 }
 
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_formatted_file)
+SEQAN_DEFINE_TEST(test_blast_read_formatted_file_tabular)
 {
     std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) +
                          std::string(NOHEADER_DEFAULTS);
@@ -1376,7 +1381,7 @@ SEQAN_DEFINE_TEST(test_blast_read_tabular_formatted_file)
     }
 }
 
-SEQAN_DEFINE_TEST(test_blast_read_tabular_with_header_formatted_file)
+SEQAN_DEFINE_TEST(test_blast_read_formatted_file_tabular_with_header)
 {
     std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) + PLUS_HEADER_DEFAULTS;
 

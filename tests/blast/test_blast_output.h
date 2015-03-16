@@ -171,11 +171,142 @@ _writeCustomFields(TFile & /**/,
 }
 
 template <typename TFile,
+          typename TRecords,
+          typename TDbSpecs,
+//           BlastFormatFile f,
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
+inline void
+test_blast_write_do(TFile & file,
+                    TRecords const & records,
+                    TDbSpecs const & dbSpecs,
+                    int const,
+                    int const,
+                    BlastFormat<BlastFormatFile::PAIRWISE, p, g> const & /**/)
+{
+    typedef BlastFormat<BlastFormatFile::PAIRWISE, p, g> TFormat;
+
+    for (auto const & r : records)
+        writeRecord(file, r, dbSpecs, TFormat());
+}
+
+template <typename TFile,
+          typename TRecords,
+          typename TDbSpecs,
+          BlastFormatFile f,
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
+//           typename std::enable_if<f != BlastFormatFile::PAIRWISE, int>::type = 0>
+inline void
+test_blast_write_do(TFile & file,
+                    TRecords const & records,
+                    TDbSpecs const & dbSpecs,
+                    int const format,
+                    int const custom,
+                    BlastFormat<f, p, g> const & /**/)
+{
+    typedef BlastFormat<f, p, g> TFormat;
+    typedef BlastFormat<f, p, BlastFormatGeneration::BLAST_PLUS> TPlusFormat;
+    typedef BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum TField;
+    String<TField> fields;
+    append(fields, TField::STD);
+    append(fields, TField::SCORE);
+    append(fields, TField::FRAMES);
+
+    switch (format)
+    {
+        case 0: // iterate over matches
+            for (auto const & r : records)
+            {
+                for (auto const & m : r.matches)
+                {
+                    if (custom == 0)
+                        writeMatch(file, m, TFormat());
+                    else if (custom == 1)
+                        writeMatch(file, m, fields, TPlusFormat());
+                    else
+                        writeMatch(file,
+                                   TFormat(),
+                                   m.qId,
+                                   m.sId,
+                                   m.aliLength,
+                                   m.mismatches,
+                                   m.gaps,
+                                   m.eValue,
+                                   m.bitScore);
+                }
+            }
+            break;
+        case 1: // iterate over headers and matches
+            for (auto const & r : records)
+            {
+                if (custom == 0)
+                    writeHeader(file, r, dbSpecs, TFormat());
+                else if (custom == 1)
+                    writeHeader(file, r, dbSpecs, fields, TPlusFormat());
+                else
+                    writeHeader(file,
+                                r.qId,
+                                dbSpecs.dbName,
+                                r.matches.size(),
+                                TFormat(),
+                                "Query id",
+                                "Subject id",
+                                "alignment length",
+                                "mismatches",
+                                "gaps",
+                                "e-value",
+                                "bit score");
+
+                for (auto const & m : r.matches)
+                {
+                    if (custom == 0)
+                        writeMatch(file, m, TFormat());
+                    else if (custom == 1)
+                        writeMatch(file, m, fields, TPlusFormat());
+                    else
+                        writeMatch(file,
+                                    TFormat(),
+                                    m.qId,
+                                    m.sId,
+                                    m.aliLength,
+                                    m.mismatches,
+                                    m.gaps,
+                                    m.eValue,
+                                    m.bitScore);
+                }
+            }
+            break;
+        case 2: // iteratre over records
+            for (auto const & r : records)
+            {
+                if (custom == 0)
+                    writeRecord(file, r, dbSpecs, TFormat());
+                else if (custom == 1)
+                    writeRecord(file, r, dbSpecs, fields, TPlusFormat());
+            }
+            break;
+        case 3: // formatted file out
+        {
+//             BlastTabularOut out(file);
+//             std::get<0>(out.format) = f;
+//             std::get<1>(out.format) = p;
+//             context(out).dbSpecs = dbSpecs;
+//
+//             for (auto const & r : records)
+//                 writeRecord(out, r);
+
+        } break;
+    }
+}
+
+template <typename TFile,
           BlastFormatFile f,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline void
 test_blast_write_record_match(TFile & file,
+                              int const format,
                               int const customFields,
                               BlastFormat<f, p, g> const & /**/)
 {
@@ -263,30 +394,15 @@ test_blast_write_record_match(TFile & file,
         }
     }
 
-    writeTop(file, dbSpecs, TFormat());
-
-    if (customFields == 0)
-    {
-        for (int q = 0; q < 2; ++q)
-            writeRecord(file, records[q], dbSpecs, TFormat());
-    } else if (customFields == 1) // only TABULAR, BLAST_PLUS
-    {
-//         std::cout << int(getFileType(TFormat())) << '\t'
-//                   << int(getProgramType(TFormat())) << '\t'
-//                   << int(getGenerationType(TFormat())) << "\n";
-        _writeCustomFields(file, records, dbSpecs, TFormat());
-    } else // only TABULAR
-    {
-        _writeCustomColumns(file, records, dbSpecs, TFormat());
-    }
-
-    writeBottom(file, dbSpecs, adapter, TFormat());
-
+    writeTop(file, dbSpecs, TFormat()); // noop for TABULARs
+    test_blast_write_do(file, records, dbSpecs, format, customFields, TFormat());
+    writeBottom(file, dbSpecs, adapter, TFormat()); // noop for TABULARs
 }
 
 template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
-void test_blast_write_tabular_impl(BlastFormat<f, p, g> const & /**/,
-                                   int customFields = 0)
+void test_blast_write_tabular_impl(int const format,
+                                   int const customFields,
+                                   BlastFormat<f, p, g> const & /**/)
 {
     typedef BlastFormat<f,p,g> TFormat;
     const char * tempFilename = SEQAN_TEMP_FILENAME();
@@ -296,7 +412,7 @@ void test_blast_write_tabular_impl(BlastFormat<f, p, g> const & /**/,
     std::fstream fstream(filenameBuffer, std::ios_base::in | std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
     SEQAN_ASSERT(fstream.is_open());
 
-    test_blast_write_record_match(fstream, customFields, TFormat());
+    test_blast_write_record_match(fstream, format, customFields, TFormat());
 
     std::string contents;
     resize(contents, fstream.tellg());
@@ -305,7 +421,7 @@ void test_blast_write_tabular_impl(BlastFormat<f, p, g> const & /**/,
     fstream.close();
 
     std::string compString;
-    if (f == BlastFormatFile::TABULAR_WITH_HEADER)
+    if ((f == BlastFormatFile::TABULAR_WITH_HEADER) && (format > 0))
     {
         std::string header = "# BLASTP I/O Module of SeqAn-";
         header.append(std::to_string(SEQAN_VERSION_MAJOR));
@@ -347,7 +463,7 @@ void test_blast_write_tabular_impl(BlastFormat<f, p, g> const & /**/,
         "Query_Numero_Uno\tSubject_Numero_Uno\t14\t2\t2\t0.000534696\t23.0978\n"
         "Query_Numero_Uno\tSubject_Numero_Dos\t8\t0\t0\t0.000912053\t22.3274\n");
 
-    if (f == BlastFormatFile::TABULAR_WITH_HEADER)
+    if ((f == BlastFormatFile::TABULAR_WITH_HEADER) && (format > 0))
     {
         std::string header = "# BLASTP I/O Module of SeqAn-";
         header.append(std::to_string(SEQAN_VERSION_MAJOR));
@@ -405,97 +521,267 @@ void test_blast_write_tabular_impl(BlastFormat<f, p, g> const & /**/,
     SEQAN_ASSERT_EQ(contents, compString);
 }
 
-// WITHOUT HEADER, DEFAULTS FIELDS
+// TEST MATCH, WITHOUT HEADER, DEFAULTS FIELDS
 
-SEQAN_DEFINE_TEST(test_blast_write_tabular)
+SEQAN_DEFINE_TEST(test_blast_write_match_tabular)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR,
                         BlastFormatProgram::BLASTP,
                         BlastFormatGeneration::BLAST_PLUS> TFormat;
-    test_blast_write_tabular_impl(TFormat());
+    test_blast_write_tabular_impl(0, 0, TFormat());
 }
 
-SEQAN_DEFINE_TEST(test_blast_write_tabular_legacy)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR,
-                        BlastFormatProgram::BLASTP,
-                        BlastFormatGeneration::BLAST_LEGACY> TFormat;
-    test_blast_write_tabular_impl(TFormat());
-}
-
-// WITH HEADER, DEFAULTS FIELDS
-
-SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        BlastFormatProgram::BLASTP,
-                        BlastFormatGeneration::BLAST_PLUS> TFormat;
-    test_blast_write_tabular_impl(TFormat());
-}
-
-SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header_legacy)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        BlastFormatProgram::BLASTP,
-                        BlastFormatGeneration::BLAST_LEGACY> TFormat;
-    test_blast_write_tabular_impl(TFormat());
-}
-
-// WITHOUT HEADER, CUSTOM FIELDS (through match object)
-
-SEQAN_DEFINE_TEST(test_blast_write_tabular_customfields)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR,
-                        BlastFormatProgram::BLASTP,
-                        BlastFormatGeneration::BLAST_PLUS> TFormat;
-    test_blast_write_tabular_impl(TFormat(), 1);
-}
-
-// WITH HEADER, CUSTOM FIELDS (through match object)
-
-SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header_customfields)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        BlastFormatProgram::BLASTP,
-                        BlastFormatGeneration::BLAST_PLUS> TFormat;
-    test_blast_write_tabular_impl(TFormat(), 1);
-}
-
-// WITHOUT HEADER, CUSTOM COLUMNS (arbitrary column support)
-
-SEQAN_DEFINE_TEST(test_blast_write_tabular_customcolumns)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR,
-                        BlastFormatProgram::BLASTP,
-                        BlastFormatGeneration::BLAST_PLUS> TFormat;
-    test_blast_write_tabular_impl(TFormat(), 2);
-}
-
-SEQAN_DEFINE_TEST(test_blast_write_tabular_customcolumns_legacy)
+SEQAN_DEFINE_TEST(test_blast_write_match_tabular_legacy)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR,
                         BlastFormatProgram::BLASTP,
                         BlastFormatGeneration::BLAST_LEGACY> TFormat;
-    test_blast_write_tabular_impl(TFormat(), 2);
+    test_blast_write_tabular_impl(0, 0, TFormat());
 }
 
-// WITHOUT HEADER, CUSTOM COLUMNS (arbitrary column support)
+// TEST MATCH, WITH HEADER, DEFAULTS FIELDS
 
-SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header_customcolumns)
+SEQAN_DEFINE_TEST(test_blast_write_match_tabular_with_header)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         BlastFormatProgram::BLASTP,
                         BlastFormatGeneration::BLAST_PLUS> TFormat;
-    test_blast_write_tabular_impl(TFormat(), 2);
+    test_blast_write_tabular_impl(0, 0, TFormat());
 }
 
-SEQAN_DEFINE_TEST(test_blast_write_tabular_with_header_customcolumns_legacy)
+SEQAN_DEFINE_TEST(test_blast_write_match_tabular_with_header_legacy)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         BlastFormatProgram::BLASTP,
                         BlastFormatGeneration::BLAST_LEGACY> TFormat;
-    test_blast_write_tabular_impl(TFormat(), 2);
+    test_blast_write_tabular_impl(0, 0, TFormat());
 }
+
+// TEST HEADER, WITHOUT HEADER, DEFAULTS FIELDS
+
+SEQAN_DEFINE_TEST(test_blast_write_header_tabular)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    test_blast_write_tabular_impl(1, 0, TFormat());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_header_tabular_legacy)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_LEGACY> TFormat;
+    test_blast_write_tabular_impl(1, 0, TFormat());
+}
+
+// TEST HEADER, WITH HEADER, DEFAULTS FIELDS
+
+SEQAN_DEFINE_TEST(test_blast_write_header_tabular_with_header)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    test_blast_write_tabular_impl(1, 0, TFormat());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_header_tabular_with_header_legacy)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_LEGACY> TFormat;
+    test_blast_write_tabular_impl(1, 0, TFormat());
+}
+
+// TEST MATCH, WITHOUT HEADER, CUSTOM FIELDS
+
+SEQAN_DEFINE_TEST(test_blast_write_match_customfields_tabular)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    test_blast_write_tabular_impl(0, 1, TFormat());
+}
+
+// TEST MATCH, WITH HEADER, CUSTOM FIELDS
+
+SEQAN_DEFINE_TEST(test_blast_write_match_customfields_tabular_with_header)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    test_blast_write_tabular_impl(0, 1, TFormat());
+}
+
+// TEST HEADER, WITHOUT HEADER, CUSTOM FIELDS
+
+SEQAN_DEFINE_TEST(test_blast_write_header_customfields_tabular)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    test_blast_write_tabular_impl(1, 1, TFormat());
+}
+
+// TEST HEADER, WITH HEADER, CUSTOM FIELDS
+
+SEQAN_DEFINE_TEST(test_blast_write_header_customfields_tabular_with_header)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    test_blast_write_tabular_impl(1, 1, TFormat());
+}
+
+// TEST MATCH, WITHOUT HEADER, CUSTOM COLUMNS
+
+SEQAN_DEFINE_TEST(test_blast_write_match_customcolumns_tabular)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    test_blast_write_tabular_impl(0, 2, TFormat());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_match_customcolumns_tabular_legacy)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_LEGACY> TFormat;
+    test_blast_write_tabular_impl(0, 2, TFormat());
+}
+
+// TEST MATCH, WITH HEADER, CUSTOM COLUMNS
+
+SEQAN_DEFINE_TEST(test_blast_write_match_customcolumns_tabular_with_header)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    test_blast_write_tabular_impl(0, 2, TFormat());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_match_customcolumns_tabular_with_header_legacy)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_LEGACY> TFormat;
+    test_blast_write_tabular_impl(0, 2, TFormat());
+}
+
+// TEST HEADER, WITHOUT HEADER, CUSTOM COLUMNS
+
+SEQAN_DEFINE_TEST(test_blast_write_header_customcolumns_tabular)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    test_blast_write_tabular_impl(1, 2, TFormat());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_header_customcolumns_tabular_legacy)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_LEGACY> TFormat;
+    test_blast_write_tabular_impl(1, 2, TFormat());
+}
+
+// TEST HEADER, WITH HEADER, CUSTOM COLUMNS
+
+SEQAN_DEFINE_TEST(test_blast_write_header_customcolumns_tabular_with_header)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    test_blast_write_tabular_impl(1, 2, TFormat());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_header_customcolumns_tabular_with_header_legacy)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_LEGACY> TFormat;
+    test_blast_write_tabular_impl(1, 2, TFormat());
+}
+
+
+// TEST RECORD, WITHOUT HEADER, DEFAULTS FIELDS
+
+SEQAN_DEFINE_TEST(test_blast_write_record_tabular)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    test_blast_write_tabular_impl(2, 0, TFormat());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_record_tabular_legacy)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_LEGACY> TFormat;
+    test_blast_write_tabular_impl(2, 0, TFormat());
+}
+
+// TEST RECORD, WITH HEADER, DEFAULTS FIELDS
+
+SEQAN_DEFINE_TEST(test_blast_write_record_tabular_with_header)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    test_blast_write_tabular_impl(2, 0, TFormat());
+}
+
+SEQAN_DEFINE_TEST(test_blast_write_record_tabular_with_header_legacy)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_LEGACY> TFormat;
+    test_blast_write_tabular_impl(2, 0, TFormat());
+}
+
+// TEST RECORD, WITHOUT HEADER, CUSTOM FIELDS
+
+SEQAN_DEFINE_TEST(test_blast_write_record_customfields_tabular)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    test_blast_write_tabular_impl(2, 1, TFormat());
+}
+
+// TEST RECORD, WITH HEADER, CUSTOM FIELDS
+
+SEQAN_DEFINE_TEST(test_blast_write_record_customfields_tabular_with_header)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    test_blast_write_tabular_impl(2, 1, TFormat());
+}
+
+// TEST FORMATTEDFILE, WITHOUT HEADER
+
+SEQAN_DEFINE_TEST(test_blast_write_formatted_file_tabular)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    test_blast_write_tabular_impl(3, 0, TFormat());
+}
+
+// TEST FORMATTEDFILE, WITH HEADER
+
+SEQAN_DEFINE_TEST(test_blast_write_formatted_file_tabular_with_header)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    test_blast_write_tabular_impl(3, 0, TFormat());
+}
+
 
 // PAIRWISE FORMAT
 
@@ -515,7 +801,7 @@ SEQAN_DEFINE_TEST(test_blast_write_pairwise)
                          std::ios_base::trunc);
     SEQAN_ASSERT(fstream.is_open());
 
-    test_blast_write_record_match(fstream, false, TFormat());
+    test_blast_write_record_match(fstream, 0, 0, TFormat());
 
     std::string contents;
     resize(contents, fstream.tellg());

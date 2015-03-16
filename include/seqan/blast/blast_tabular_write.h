@@ -601,24 +601,24 @@ writeHeader(TStream & stream,
  * @fn BlastRecord#writeHeader
  * @headerfile seqan/blast.h
  * @brief write the header of a @link BlastRecord @endlink to file
- * @signature writeHeader(stream, blastRecord, [fieldList,] blastFormatTag)
- * 
+ * @signature writeHeader(stream, blastRecord, dpSpecs, [fieldList,] blastFormatTag)
+ *
  * This function writes the header of a record if @link BlastFormatFile @endlink
  * is TABULAR_WITH_HEADER (for TABULAR this is a no-op). Custom column labels
  * can be specified by passing a sequence of
  * @link BlastMatchField::Enum @endlink. Use this in conjunction with the same 
  * options of @link BlastMatch#writeMatch @endlink .
  *
- * @param[in,out] stream    The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param[in,out] stream     The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
  * @param[in] blastRecord    The @link BlastRecord @endlink whose header you want to print.
- * @param[in] fieldList Sequence of @link BlastMatchField::Enum @endlink
+ * @param[in] dbSpecs        A @link BlastDbSpecs @endlink object with at least .dbname set.
+ * @param[in] fieldList      Sequence of @link BlastMatchField::Enum @endlink
  * @param[in] blastFormatTag The @link BlastFormat @endlink specifier.
  *
  * @see BlastFormat
  * @see BlastRecord
  * @see BlastRecord#writeRecord
  */
-
 
 // Record parameter
 template <typename TStream,
@@ -766,8 +766,8 @@ writeHeader(TStream & /**/,
  * does not require a @link BlastMatch @endlink object.
  *
  * @param[in,out] stream    The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param[in] fields        A Sequence of @link BlastMatchField::Enum @endlink
  * @param[in] blastMatch    The @link BlastMatch @endlink you wish to print.
+ * @param[in] fields        A Sequence of @link BlastMatchField::Enum @endlink
  * @param[in] blastFormatTag The @link BlastFormat @endlink specifier.
  *
  * @see BlastFormat
