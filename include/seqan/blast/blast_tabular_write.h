@@ -418,7 +418,7 @@ _writeHeaderWithoutColumnLabels(TStream & stream,
  * @headerfile seqan/blast.h
  * @brief write the header for @link BlastFormatFile
  * @endlink::TABULAR_WITH_HEADER  without @link BlastRecord @endlink-object
- * @signature writeHeader(stream, qryId, dbname, [matchCount,] blastFormatTag[, labels...])
+ * @signature writeHeader(stream, qryId, dbname, [matchCount,] tag[, labels...])
  *
  * This function writes the header of a record if @link BlastFormatFile @endlink
  * is TABULAR_WITH_HEADER (for TABULAR this is a no-op). In contrast to
@@ -426,16 +426,12 @@ _writeHeaderWithoutColumnLabels(TStream & stream,
  * is required. Custom column labels can be specified as variadic
  * columnlabel arguments (just pass a printable argument for each label).
  *
- * @param[in,out] stream    The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param[in] qryId     The full ID of the query sequence (e.g. FASTA
- * one-line description)
- * @param[in] dbName    The name of the database (NOT the ID of a subject sequence,
- * but the name of the database, e.g. "NCBI NR" or path to a file)
- * @param[in] matchCount The amount of matches in the record. Mandatory parameter
- * for @link BlastFormatGeneration::BLAST_PLUS @endlink, optional for
- * @link BlastFormatGeneration::BLAST_LEGACY @endlink
- * @param[in] blastFormatTag The @link BlastFormat @endlink specifier.
- * @param[in] labels...   Optional custom column labels
+ * @param[in,out] stream     The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param[in]     qryId      The full ID of the query sequence (e.g. FASTA one-line description)
+ * @param[in]     dbName     The name of the database (NOT the ID of a subject sequence, but the name of the database, e.g. "NCBI NR" or path to a file)
+ * @param[in]     matchCount The amount of matches in the record. Mandatory parameter for @link BlastFormatGeneration::BLAST_PLUS @endlink, optional for @link BlastFormatGeneration::BLAST_LEGACY @endlink
+ * @param[in]     tag        The @link BlastFormat @endlink specifier.
+ * @param[in]     labels...  Optional custom column labels
  *
  * @see BlastFormat
  * @see BlastRecord
@@ -601,7 +597,7 @@ writeHeader(TStream & stream,
  * @fn BlastRecord#writeHeader
  * @headerfile seqan/blast.h
  * @brief write the header of a @link BlastRecord @endlink to file
- * @signature writeHeader(stream, blastRecord, dpSpecs, [fieldList,] blastFormatTag)
+ * @signature writeHeader(stream, blastRecord, dpSpecs, [fieldList,] tag)
  *
  * This function writes the header of a record if @link BlastFormatFile @endlink
  * is TABULAR_WITH_HEADER (for TABULAR this is a no-op). Custom column labels
@@ -613,7 +609,7 @@ writeHeader(TStream & stream,
  * @param[in] blastRecord    The @link BlastRecord @endlink whose header you want to print.
  * @param[in] dbSpecs        A @link BlastDbSpecs @endlink object with at least .dbname set.
  * @param[in] fieldList      Sequence of @link BlastMatchField::Enum @endlink
- * @param[in] blastFormatTag The @link BlastFormat @endlink specifier.
+ * @param[in] tag The @link BlastFormat @endlink specifier.
  *
  * @see BlastFormat
  * @see BlastRecord
@@ -738,7 +734,7 @@ writeHeader(TStream & /**/,
  * @fn BlastMatch#writeMatch
  * @headerfile seqan/blast.h
  * @brief write a @link BlastMatch @endlink to file
- * @signature writeMatch(stream, blastMatch, [fields,] blastFormatTag)
+ * @signature writeMatch(stream, blastMatch, [fields,] tag)
  *
  * This function writes a single match if @link BlastFormatFile @endlink
  * is BlastFormatFile::TABULAR_WITH_HEADER or
@@ -768,7 +764,7 @@ writeHeader(TStream & /**/,
  * @param[in,out] stream    The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
  * @param[in] blastMatch    The @link BlastMatch @endlink you wish to print.
  * @param[in] fields        A Sequence of @link BlastMatchField::Enum @endlink
- * @param[in] blastFormatTag The @link BlastFormat @endlink specifier.
+ * @param[in] tag The @link BlastFormat @endlink specifier.
  *
  * @see BlastFormat
  * @see BlastRecord
@@ -844,7 +840,7 @@ writeMatch(TStream & stream,
  * @fn BlastFormat#writeMatch
  * @headerfile seqan/blast.h
  * @brief write blast tabular output without a @link BlastMatch @endlink object
- * @signature writeMatch(stream, blastFormatTag, columns...)
+ * @signature writeMatch(stream, tag, columns...)
  *
  * This function writes a single match if @link BlastFormatFile @endlink
  * is TABULAR_WITH_HEADER or TABULAR. In contrast to 
@@ -861,7 +857,7 @@ writeMatch(TStream & stream,
  * additional columns with additional (custom) data.
  *
  * @param[in,out] stream    The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param[in] blastFormatTag The @link BlastFormat @endlink specifier.
+ * @param[in] tag The @link BlastFormat @endlink specifier.
  * @param[in] columns...   Custom columns
  *
  * @see BlastFormat

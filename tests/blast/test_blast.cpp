@@ -90,8 +90,8 @@ SEQAN_BEGIN_TESTSUITE(test_blast)
 
     // WRITING (tests formattedFile's writeRecord() interface)
     // TODO
-//     SEQAN_CALL_TEST(test_blast_write_formatted_file_tabular);
-//     SEQAN_CALL_TEST(test_blast_write_formatted_file_tabular_with_header);
+    SEQAN_CALL_TEST(test_blast_write_formatted_file_tabular);
+    SEQAN_CALL_TEST(test_blast_write_formatted_file_tabular_with_header);
 
     // WRITING (tests writeTop(), writeRecord() and writeBottom() for
     //          PAIRWISE -- this is the only test for pairwise)

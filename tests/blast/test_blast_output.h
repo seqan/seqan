@@ -288,13 +288,15 @@ test_blast_write_do(TFile & file,
             break;
         case 3: // formatted file out
         {
-//             BlastTabularOut out(file);
-//             std::get<0>(out.format) = f;
-//             std::get<1>(out.format) = p;
-//             context(out).dbSpecs = dbSpecs;
-//
-//             for (auto const & r : records)
-//                 writeRecord(out, r);
+            typename FileFormat<BlastTabularOut>::Type format;
+            std::get<0>(format) = f;
+            std::get<1>(format) = p;
+            BlastTabularOut out(file, format);
+
+            context(out).dbSpecs.dbName = toCString(dbSpecs.dbName);
+
+            for (auto const & r : records)
+                writeRecord(out, r);
 
         } break;
     }
