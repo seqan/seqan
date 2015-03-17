@@ -645,16 +645,7 @@ inline bool open(FormattedFile<TFileFormat, TDirection, TSpec> & file,
 template <typename TFileFormat, typename TSpec, typename TStream, typename TFormat_>
 inline bool open(FormattedFile<TFileFormat, Output, TSpec> & file,
                  TStream &stream,
-                 Tag<TFormat_> format)
-{
-    setFormat(file, format);
-    return _open(file, stream, _mapFileFormatToCompressionFormat(file.format), False());
-}
-
-template <typename TFileFormat, typename TSpec, typename TStream, typename TFormats>
-inline bool open(FormattedFile<TFileFormat, Output, TSpec> & file,
-                 TStream &stream,
-                 TagSelector<TFormats> format)
+                 TFormat_ format)
 {
     setFormat(file, format);
     return _open(file, stream, _mapFileFormatToCompressionFormat(file.format), False());
