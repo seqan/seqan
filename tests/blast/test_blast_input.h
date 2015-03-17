@@ -36,6 +36,15 @@
 
 #include <fstream>
 
+// Files that are being read by this implementation
+#define PLUS_HEADER_DEFAULTS   "/tests/blast/plus_header_defaults.blast"
+#define LEGACY_HEADER_DEFAULTS "/tests/blast/legacy_header_defaults.blast"
+#define PLUS_HEADER_CUSTOM     "/tests/blast/plus_header_custom.m9"
+// same for HEADER and NOHEADERS:
+#define NOHEADER_DEFAULTS      "/tests/blast/noheader_defaults.m8"
+// same for HEADER and NOHEADERS:
+#define NOHEADER_CUSTOM        "/tests/blast/noheader_custom.m8"
+
 using namespace seqan;
 
 template <typename TNum,
@@ -54,191 +63,6 @@ clear(TArg & arg, TArgs & ... args)
     clear(arg);
     clear(args...);
 }
-
-// static constexpr char const * out =
-// "# BLASTX 2.2.26+\n"
-// "# Query: SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965\n"
-// "# Database: /tmp/uniprot_sprot.fasta\n"
-// "# 0 hits found\n"
-// "# BLASTX 2.2.26+\n"
-// "# Query: SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935\n"
-// "# Database: /tmp/uniprot_sprot.fasta\n"
-// "# 0 hits found\n"
-// "# BLASTX 2.2.26+\n"
-// "# Query: SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828\n"
-// "# Database: /tmp/uniprot_sprot.fasta\n"
-// "# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score\n"
-// "# 17 hits found\n"
-// "SHAA004TF\tsp|P0A916|OMPW_SHIFL\t50.43\t115\t49\t2\t389\t733\t1\t107\t1e-26\t108\n"
-// "SHAA004TF\tsp|P0A915|OMPW_ECOLI\t50.43\t115\t49\t2\t389\t733\t1\t107\t1e-26\t108\n"
-// "SHAA004TF\tsp|P17266|OMPW_VIBCH\t52.21\t113\t45\t2\t410\t733\t4\t112\t5e-26\t106\n"
-// "SHAA004TF\tsp|Q8ZP50|OMPW_SALTY\t50.43\t115\t49\t2\t389\t733\t1\t107\t3e-24\t101\n"
-// "SHAA004TF\tsp|Q8Z7E2|OMPW_SALTI\t50.43\t115\t49\t2\t389\t733\t1\t107\t3e-24\t101\n"
-// "SHAA004TF\tsp|P19766|INSB_SHISO\t100.00\t18\t0\t0\t803\t750\t114\t131\t4e-04\t43.1\n"
-// "SHAA004TF\tsp|P19765|INSB_SHIFL\t100.00\t18\t0\t0\t803\t750\t114\t131\t4e-04\t43.1\n"
-// "SHAA004TF\tsp|P03831|INBD_SHIDY\t100.00\t18\t0\t0\t803\t750\t114\t131\t4e-04\t43.1\n"
-// "SHAA004TF\tsp|P59843|INSB_HAEDU\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF31|INSB_ECOLX\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF30|INSB8_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF29|INSB6_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF28|INSB5_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P57998|INSB4_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF25|INSB1_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF27|INSB3_ECOLI\t94.44\t18\t1\t0\t803\t750\t150\t167\t0.004\t40.8\n"
-// "SHAA004TF\tsp|P0CF26|INSB2_ECOLI\t94.44\t18\t1\t0\t803\t750\t150\t167\t0.004\t40.8\n"
-// "# BLASTX 2.2.26+\n"
-// "# Query: SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853\n"
-// "# Database: /tmp/uniprot_sprot.fasta\n"
-// "# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score\n"
-// "# 2 hits found\n"
-// "SHAA004TR\tsp|Q0HTA5|META_SHESR\t100.00\t77\t0\t0\t232\t2\t1\t77\t3e-42\t152\n"
-// "SHAA004TR\tsp|Q0HGZ8|META_SHESM\t100.00\t77\t0\t0\t232\t2\t1\t77\t3e-42\t152\n"
-// "# BLASTX 2.2.26+\n"
-// "# Query: SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960\n"
-// "# Datacase: /tmp/uniprot_sprot.fasta\n"
-// "# 0 hits found\n";
-// // I introduced an artificial typo in the last "Database" to test for strictness
-// // implementations
-//
-// static constexpr char const * legacyout =
-// "# BLASTX 2.2.26 [Sep-21-2011]\n"
-// "# Query: SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965\n"
-// "# Database: /tmp/uniprot_sprot.fasta\n"
-// "# Fields: Query id, Subject id, % identity, alignment length, mismatches, gap openings, q. start, q. end, s. start, s. end, e-value, bit score\n"
-// "# BLASTX 2.2.26 [Sep-21-2011]\n"
-// "# Query: SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935\n"
-// "# Database: /tmp/uniprot_sprot.fasta\n"
-// "# Fields: Query id, Subject id, % identity, alignment length, mismatches, gap openings, q. start, q. end, s. start, s. end, e-value, bit score\n"
-// "# BLASTX 2.2.26 [Sep-21-2011]\n"
-// "# Query: SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828\n"
-// "# Database: /tmp/uniprot_sprot.fasta\n"
-// "# Fields: Query id, Subject id, % identity, alignment length, mismatches, gap openings, q. start, q. end, s. start, s. end, e-value, bit score\n"
-// "SHAA004TF\tsp|P0A916|OMPW_SHIFL\t50.43\t115\t57\t2\t389\t733\t1\t107\t1e-26\t108\n"
-// "SHAA004TF\tsp|P0A915|OMPW_ECOLI\t50.43\t115\t57\t2\t389\t733\t1\t107\t1e-26\t108\n"
-// "SHAA004TF\tsp|P17266|OMPW_VIBCH\t52.21\t113\t49\t2\t410\t733\t4\t112\t5e-26\t106\n"
-// "SHAA004TF\tsp|Q8ZP50|OMPW_SALTY\t50.43\t115\t57\t2\t389\t733\t1\t107\t3e-24\t101\n"
-// "SHAA004TF\tsp|Q8Z7E2|OMPW_SALTI\t50.43\t115\t57\t2\t389\t733\t1\t107\t3e-24\t101\n"
-// "SHAA004TF\tsp|P19766|INSB_SHISO\t100.00\t18\t0\t0\t803\t750\t114\t131\t4e-04\t43.1\n"
-// "SHAA004TF\tsp|P19765|INSB_SHIFL\t100.00\t18\t0\t0\t803\t750\t114\t131\t4e-04\t43.1\n"
-// "SHAA004TF\tsp|P03831|INBD_SHIDY\t100.00\t18\t0\t0\t803\t750\t114\t131\t4e-04\t43.1\n"
-// "SHAA004TF\tsp|P59843|INSB_HAEDU\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF31|INSB_ECOLX\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF30|INSB8_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF29|INSB6_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF28|INSB5_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P57998|INSB4_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF25|INSB1_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF27|INSB3_ECOLI\t94.44\t18\t1\t0\t803\t750\t150\t167\t0.004\t40.8\n"
-// "SHAA004TF\tsp|P0CF26|INSB2_ECOLI\t94.44\t18\t1\t0\t803\t750\t150\t167\t0.004\t40.8\n"
-// "# BLASTX 2.2.26 [Sep-21-2011]\n"
-// "# Query: SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853\n"
-// "# Database: /tmp/uniprot_sprot.fasta\n"
-// "# Fields: Query id, Subject id, % identity, alignment length, mismatches, gap openings, q. start, q. end, s. start, s. end, e-value, bit score\n"
-// "SHAA004TR\tsp|Q0HTA5|META_SHESR\t100.00\t77\t0\t0\t232\t2\t1\t77\t3e-42\t152\n"
-// "SHAA004TR\tsp|Q0HGZ8|META_SHESM\t100.00\t77\t0\t0\t232\t2\t1\t77\t3e-42\t152\n"
-// "# BLASTX 2.2.26 [Sep-21-2011]\n"
-// "# Query: SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960\n"
-// "# Datacase: /tmp/uniprot_sprot.fasta\n"
-// "# Fields: Query id, Subject id, % identity, alignment length, mismatches, gap openings, q. start, q. end, s. start, s. end, e-value, bit score\n";
-// // I introduced an artificial typo in the last "Database" to test for strictness
-// // implementations
-//
-// static constexpr char const * out_custom =
-// "# BLASTX 2.2.26+\n"
-// "# Query: SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965\n"
-// "# Database: /tmp/uniprot_sprot.fasta\n"
-// "# 0 hits found\n"
-// "# BLASTX 2.2.26+\n"
-// "# Query: SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935\n"
-// "# Database: /tmp/uniprot_sprot.fasta\n"
-// "# 0 hits found\n"
-// "# BLASTX 2.2.26+\n"
-// "# Query: SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828\n"
-// "# Database: /tmp/uniprot_sprot.fasta\n"
-// "# Fields: query id, subject id, alignment length, identical, mismatches, positives, gaps, q. start, q. end, s. start, s. end, query/sbjct frames, bit score\n"
-// "# 17 hits found\n"
-// "SHAA004TF\tsp|P0A916|OMPW_SHIFL\t115\t58\t49\t72\t8\t389\t733\t1\t107\t2/0\t108\n"
-// "SHAA004TF\tsp|P0A915|OMPW_ECOLI\t115\t58\t49\t72\t8\t389\t733\t1\t107\t2/0\t108\n"
-// "SHAA004TF\tsp|P17266|OMPW_VIBCH\t113\t59\t45\t72\t9\t410\t733\t4\t112\t2/0\t106\n"
-// "SHAA004TF\tsp|Q8ZP50|OMPW_SALTY\t115\t58\t49\t69\t8\t389\t733\t1\t107\t2/0\t101\n"
-// "SHAA004TF\tsp|Q8Z7E2|OMPW_SALTI\t115\t58\t49\t69\t8\t389\t733\t1\t107\t2/0\t101\n"
-// "SHAA004TF\tsp|P19766|INSB_SHISO\t18\t18\t0\t18\t0\t803\t750\t114\t131\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P19765|INSB_SHIFL\t18\t18\t0\t18\t0\t803\t750\t114\t131\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P03831|INBD_SHIDY\t18\t18\t0\t18\t0\t803\t750\t114\t131\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P59843|INSB_HAEDU\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P0CF31|INSB_ECOLX\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P0CF30|INSB8_ECOLI\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P0CF29|INSB6_ECOLI\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P0CF28|INSB5_ECOLI\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P57998|INSB4_ECOLI\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P0CF25|INSB1_ECOLI\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P0CF27|INSB3_ECOLI\t18\t17\t1\t17\t0\t803\t750\t150\t167\t-1/0\t40.8\n"
-// "SHAA004TF\tsp|P0CF26|INSB2_ECOLI\t18\t17\t1\t17\t0\t803\t750\t150\t167\t-1/0\t40.8\n"
-// "# BLASTX 2.2.26+\n"
-// "# Query: SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853\n"
-// "# Database: /tmp/uniprot_sprot.fasta\n"
-// "# Fields: query id, subject id, alignment length, identical, mismatches, positives, gaps, q. start, q. end, s. start, s. end, query/sbjct frames, bit score\n"
-// "# 2 hits found\n"
-// "SHAA004TR\tsp|Q0HTA5|META_SHESR\t77\t77\t0\t77\t0\t232\t2\t1\t77\t-2/0\t152\n"
-// "SHAA004TR\tsp|Q0HGZ8|META_SHESM\t77\t77\t0\t77\t0\t232\t2\t1\t77\t-2/0\t152\n"
-// "# BLASTX 2.2.26+\n"
-// "# Query: SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960\n"
-// "# Datacase: /tmp/uniprot_sprot.fasta\n"
-// "# 0 hits found\n";
-// // I introduced an artificial typo in the last "Database" to test for strictness
-// // implementations
-//
-// static constexpr char const * out_noheader =
-// "SHAA004TF\tsp|P0A916|OMPW_SHIFL\t50.43\t115\t49\t2\t389\t733\t1\t107\t1e-26\t108\n"
-// "SHAA004TF\tsp|P0A915|OMPW_ECOLI\t50.43\t115\t49\t2\t389\t733\t1\t107\t1e-26\t108\n"
-// "SHAA004TF\tsp|P17266|OMPW_VIBCH\t52.21\t113\t45\t2\t410\t733\t4\t112\t5e-26\t106\n"
-// "SHAA004TF\tsp|Q8ZP50|OMPW_SALTY\t50.43\t115\t49\t2\t389\t733\t1\t107\t3e-24\t101\n"
-// "SHAA004TF\tsp|Q8Z7E2|OMPW_SALTI\t50.43\t115\t49\t2\t389\t733\t1\t107\t3e-24\t101\n"
-// "SHAA004TF\tsp|P19766|INSB_SHISO\t100.00\t18\t0\t0\t803\t750\t114\t131\t4e-04\t43.1\n"
-// "SHAA004TF\tsp|P19765|INSB_SHIFL\t100.00\t18\t0\t0\t803\t750\t114\t131\t4e-04\t43.1\n"
-// "SHAA004TF\tsp|P03831|INBD_SHIDY\t100.00\t18\t0\t0\t803\t750\t114\t131\t4e-04\t43.1\n"
-// "SHAA004TF\tsp|P59843|INSB_HAEDU\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF31|INSB_ECOLX\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF30|INSB8_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF29|INSB6_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF28|INSB5_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P57998|INSB4_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF25|INSB1_ECOLI\t100.00\t18\t0\t0\t803\t750\t150\t167\t6e-04\t43.1\n"
-// "SHAA004TF\tsp|P0CF27|INSB3_ECOLI\t94.44\t18\t1\t0\t803\t750\t150\t167\t0.004\t40.8\n"
-// "SHAA004TF\tsp|P0CF26|INSB2_ECOLI\t94.44\t18\t1\t0\t803\t750\t150\t167\t0.004\t40.8\n"
-// "SHAA004TR\tsp|Q0HTA5|META_SHESR\t100.00\t77\t0\t0\t232\t2\t1\t77\t3e-42\t152\n"
-// "SHAA004TR\tsp|Q0HGZ8|META_SHESM\t100.00\t77\t0\t0\t232\t2\t1\t77\t3e-42\t152\n";
-//
-// static constexpr char const * out_custom_noheader =
-// "SHAA004TF\tsp|P0A916|OMPW_SHIFL\t115\t58\t49\t72\t8\t389\t733\t1\t107\t2/0\t108\n"
-// "SHAA004TF\tsp|P0A915|OMPW_ECOLI\t115\t58\t49\t72\t8\t389\t733\t1\t107\t2/0\t108\n"
-// "SHAA004TF\tsp|P17266|OMPW_VIBCH\t113\t59\t45\t72\t9\t410\t733\t4\t112\t2/0\t106\n"
-// "SHAA004TF\tsp|Q8ZP50|OMPW_SALTY\t115\t58\t49\t69\t8\t389\t733\t1\t107\t2/0\t101\n"
-// "SHAA004TF\tsp|Q8Z7E2|OMPW_SALTI\t115\t58\t49\t69\t8\t389\t733\t1\t107\t2/0\t101\n"
-// "SHAA004TF\tsp|P19766|INSB_SHISO\t18\t18\t0\t18\t0\t803\t750\t114\t131\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P19765|INSB_SHIFL\t18\t18\t0\t18\t0\t803\t750\t114\t131\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P03831|INBD_SHIDY\t18\t18\t0\t18\t0\t803\t750\t114\t131\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P59843|INSB_HAEDU\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P0CF31|INSB_ECOLX\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P0CF30|INSB8_ECOLI\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P0CF29|INSB6_ECOLI\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P0CF28|INSB5_ECOLI\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P57998|INSB4_ECOLI\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P0CF25|INSB1_ECOLI\t18\t18\t0\t18\t0\t803\t750\t150\t167\t-1/0\t43.1\n"
-// "SHAA004TF\tsp|P0CF27|INSB3_ECOLI\t18\t17\t1\t17\t0\t803\t750\t150\t167\t-1/0\t40.8\n"
-// "SHAA004TF\tsp|P0CF26|INSB2_ECOLI\t18\t17\t1\t17\t0\t803\t750\t150\t167\t-1/0\t40.8\n"
-// "SHAA004TR\tsp|Q0HTA5|META_SHESR\t77\t77\t0\t77\t0\t232\t2\t1\t77\t-2/0\t152\n"
-// "SHAA004TR\tsp|Q0HGZ8|META_SHESM\t77\t77\t0\t77\t0\t232\t2\t1\t77\t-2/0\t152\n";
-
-// Files that are being read by this implementation
-
-#define PLUS_HEADER_DEFAULTS   "/tests/blast/plus_header_defaults.blast"
-#define LEGACY_HEADER_DEFAULTS "/tests/blast/legacy_header_defaults.blast"
-#define PLUS_HEADER_CUSTOM     "/tests/blast/plus_header_custom.m9"
-// same for HEADER and NOHEADERS:
-#define NOHEADER_DEFAULTS      "/tests/blast/noheader_defaults.m8"
-// same for HEADER and NOHEADERS:
-#define NOHEADER_CUSTOM        "/tests/blast/noheader_custom.m8"
 
 //legacy doesnt have interface with fieldList so we need to wrap around the call
 template <typename TMatch,
@@ -1341,19 +1165,17 @@ SEQAN_DEFINE_TEST(test_blast_read_formatted_file_tabular)
     std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) +
                          std::string(NOHEADER_DEFAULTS);
 
-//     std::ifstream ifstream(toCString(inPath),
-//                            std::ios_base::in | std::ios_base::binary);
-//     SEQAN_ASSERT(ifstream.is_open());
-
-//     auto it = directionIterator(ifstream, Input());
-
     BlastTabularIn fileIn(toCString(inPath));
-//     fileIn.format = std::make_pair(BlastFormatFile::TABULAR,
-//                                    BlastFormatProgram::BLASTX);
+
     guessFormat(fileIn);
 
-    SEQAN_ASSERT_EQ((uint32_t)std::get<0>(format(fileIn)),
-                    (uint32_t)BlastFormatFile::TABULAR);
+    TagSelector<BlastTabularFormats> comparator;
+    assign(comparator, BlastFormat<BlastFormatFile::TABULAR,
+                                   BlastFormatProgram::BLASTN,
+                                   BlastFormatGeneration::BLAST_PLUS>());
+    // only the formatfile is actually detected
+    SEQAN_ASSERT_EQ(format(fileIn).tagId, comparator.tagId);
+
     BlastRecord<> r;
 
     readRecord(r, fileIn);
@@ -1385,19 +1207,17 @@ SEQAN_DEFINE_TEST(test_blast_read_formatted_file_tabular_with_header)
 {
     std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) + PLUS_HEADER_DEFAULTS;
 
-//     std::ifstream ifstream(toCString(inPath),
-//                            std::ios_base::in | std::ios_base::binary);
-//     SEQAN_ASSERT(ifstream.is_open());
-
-//     auto it = directionIterator(ifstream, Input());
 
     BlastTabularIn fileIn(toCString(inPath));
-//     fileIn.format = std::make_pair(BlastFormatFile::TABULAR_WITH_HEADER,
-//                                    BlastFormatProgram::BLASTX);
 
     guessFormat(fileIn);
-    SEQAN_ASSERT_EQ((uint32_t)std::get<0>(format(fileIn)),
-                    (uint32_t)BlastFormatFile::TABULAR_WITH_HEADER);
+    TagSelector<BlastTabularFormats> comparator;
+    assign(comparator, BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                                   BlastFormatProgram::BLASTN,
+                                   BlastFormatGeneration::BLAST_PLUS>());
+    // only the formatfile is actually detected
+    SEQAN_ASSERT_EQ(format(fileIn).tagId, comparator.tagId);
+
     BlastRecord<> r;
 
     readRecord(r, fileIn);

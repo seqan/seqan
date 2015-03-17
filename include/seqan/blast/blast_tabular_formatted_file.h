@@ -155,10 +155,49 @@ struct FormattedFileContext<FormattedFile<BlastTabular, TDirection, TSpec>, TSto
 // Metafunction FileFormats
 // ----------------------------------------------------------------------------
 
+typedef
+    // TABULAR
+    TagList<BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTN,
+                        BlastFormatGeneration::BLAST_PLUS>,
+    TagList<BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS>,
+    TagList<BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::BLASTX,
+                        BlastFormatGeneration::BLAST_PLUS>,
+    TagList<BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::TBLASTN,
+                        BlastFormatGeneration::BLAST_PLUS>,
+    TagList<BlastFormat<BlastFormatFile::TABULAR,
+                        BlastFormatProgram::TBLASTX,
+                        BlastFormatGeneration::BLAST_PLUS>,
+    // TABULAR WITH HEADER
+    TagList<BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTN,
+                        BlastFormatGeneration::BLAST_PLUS>,
+    TagList<BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTP,
+                        BlastFormatGeneration::BLAST_PLUS>,
+    TagList<BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTX,
+                        BlastFormatGeneration::BLAST_PLUS>,
+    TagList<BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::TBLASTN,
+                        BlastFormatGeneration::BLAST_PLUS>,
+    TagList<BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::TBLASTX,
+                        BlastFormatGeneration::BLAST_PLUS>
+    > > > > > > > > > > BlastTabularFormats;
+
+
+// typedef TagSelector<BlastTabularFormats> BlastTabularFormat;
+
+
 template <typename TDirection, typename TSpec>
 struct FileFormat<FormattedFile<BlastTabular, TDirection, TSpec> >
 {
-    typedef std::pair<BlastFormatFile, BlastFormatProgram> Type;
+    typedef TagSelector<BlastTabularFormats> Type;
 };
 
 // ============================================================================
@@ -172,11 +211,17 @@ struct FileFormat<FormattedFile<BlastTabular, TDirection, TSpec> >
 template <typename TSpec>
 inline bool guessFormat(FormattedFile<BlastTabular, Input, TSpec> & file)
 {
-    std::get<0>(file.format) = (value(file.iter) == '#')
-                                    ? BlastFormatFile::TABULAR_WITH_HEADER
-                                    : BlastFormatFile::TABULAR;
-    // doesnt matter for reading tabular formats really
-    std::get<1>(file.format) = BlastFormatProgram::BLASTX;
+    if (value(file.iter) == '#')
+        setFormat(file,
+                  BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                              BlastFormatProgram::BLASTN,
+                              BlastFormatGeneration::BLAST_PLUS>());
+    else
+        setFormat(file,
+                  BlastFormat<BlastFormatFile::TABULAR,
+                              BlastFormatProgram::BLASTN,
+                              BlastFormatGeneration::BLAST_PLUS>());
+    // Always BLASTN, but doesn't matter for reading
     return true;
 }
 
@@ -193,49 +238,145 @@ inline bool guessFormat(FormattedFile<BlastTabular, Output, TSpec> &)
 template <typename TString>
 inline bool
 guessFormatFromFilename(TString const &,
-                        std::pair<BlastFormatFile,
-                                  BlastFormatProgram> const &)
+                        TagSelector<BlastTabularFormats> &)
 {
     return true;
+}
+
+// ----------------------------------------------------------------------------
+// Function setFormat()
+// ----------------------------------------------------------------------------
+
+/*!
+ * @fn BlastTabularFileIn#setFormat
+ * @brief Convenience function in addition tp FormattedFile#setFormat
+ *
+ * @signature void setFormat(file, tag);
+ *
+ * @param[in,out] file The BlastTabularFileIn to change.
+ * @param[in]     tag  The @link BlastFormat @endlink to set.
+ */
+
+/*!
+ * @fn BlastTabularFileOut#setFormat
+ * @brief Convenience function in addition tp FormattedFile#setFormat
+ *
+ * @signature void setFormat(file, tag);
+ *
+ * @param[in,out] file The BlastTabularFileOut to change.
+ * @param[in]     tag  The @link BlastFormat @endlink to set.
+ */
+
+// template <typename TDirection,
+//           typename TSpec,
+//           BlastFormatFile f,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline void
+// setFormat(FormattedFile<BlastTabular, TDirection, TSpec> & file,
+//           BlastFormat<f, p, g> const &,
+//           TagList<BlastFormat<f, p, g>> const &)
+// {
+//     file.format.tagId = LENGTH<BlastTabularFormats>::VALUE - 1;
+// }
+//
+// template <typename TDirection,
+//           typename TSpec,
+//           typename TSubList,
+//           BlastFormatFile f,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline void
+// setFormat(FormattedFile<BlastTabular, TDirection, TSpec> & file,
+//           BlastFormat<f, p, g> const &,
+//           TagList<BlastFormat<f, p, g>, TSubList> const &)
+// {
+//     file.format.tagId = LENGTH<BlastTabularFormats>::VALUE -
+//                         LENGTH<TSubList>::VALUE + 1;
+// }
+//
+// template <typename TDirection,
+//           typename TSpec,
+//           typename TTag,
+//           BlastFormatFile f,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline void
+// setFormat(FormattedFile<BlastTabular, TDirection, TSpec> &,
+//           BlastFormat<f, p, g> const &,
+//           TagList<TTag> const &)
+// {
+//     SEQAN_FAIL("Given BlastFormat cannot be used as tag for FormattedFile.");
+// }
+//
+// template <typename TDirection,
+//           typename TSpec,
+//           typename TTag,
+//           typename TSubList,
+//           BlastFormatFile f,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline void
+// setFormat(FormattedFile<BlastTabular, TDirection, TSpec> & file,
+//           BlastFormat<f, p, g> const &,
+//           TagList<TTag, TSubList> const &)
+// {
+//     typedef BlastFormat<f, p, g> TFormat;
+//     setFormat(file, TFormat(), TSubList());
+// }
+
+template <typename TDirection,
+          typename TSpec,
+          BlastFormatFile f,
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
+inline void
+setFormat(FormattedFile<BlastTabular, TDirection, TSpec> & file,
+          BlastFormat<f, p, g> const &)
+{
+    typedef BlastFormat<f, p, g> TFormat;
+    assign(file.format, TFormat());
 }
 
 // ----------------------------------------------------------------------------
 // Function readRecord(); BlastRecord
 // ----------------------------------------------------------------------------
 
-// convient BlastFile variant
 template <typename TQId,
           typename TSId,
           typename TPos,
           typename TAlign,
           typename TSpec,
-          BlastFormatFile f,
-          BlastFormatProgram p,
-          typename std::enable_if<f == BlastFormatFile::TABULAR_WITH_HEADER, int>::type = 0>
+          BlastFormatProgram p>
 inline void
-__readRecord(
-    BlastRecord<TQId, TSId, TPos, TAlign> & record,
-    FormattedFile<BlastTabular, Input, TSpec> & file)
+readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & record,
+           FormattedFile<BlastTabular, Input, TSpec> & file,
+           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                       p,
+                       BlastFormatGeneration::BLAST_PLUS> const &)
 {
-    typedef BlastFormat<f, p, BlastFormatGeneration::BLAST_PLUS> TFormat;
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        p,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
     readRecord(record, context(file).dbSpecs.dbName, file.iter, TFormat());
 }
 
-// convient BlastFile variant
 template <typename TQId,
           typename TSId,
           typename TPos,
           typename TAlign,
           typename TSpec,
-          BlastFormatFile f,
-          BlastFormatProgram p,
-          typename std::enable_if<f == BlastFormatFile::TABULAR, int>::type = 0>
+          BlastFormatProgram p>
 inline void
-__readRecord(
-    BlastRecord<TQId, TSId, TPos, TAlign> & record,
-    FormattedFile<BlastTabular, Input, TSpec> & file)
+readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & record,
+           FormattedFile<BlastTabular, Input, TSpec> & file,
+           BlastFormat<BlastFormatFile::TABULAR,
+                       p,
+                       BlastFormatGeneration::BLAST_PLUS> const &)
 {
-    typedef BlastFormat<f, p, BlastFormatGeneration::BLAST_PLUS> TFormat;
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        p,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
     readRecord(record, context(file).lastId, file.iter, TFormat());
 }
 
@@ -244,58 +385,35 @@ template <typename TQId,
           typename TSId,
           typename TPos,
           typename TAlign,
-          typename TSpec,
-          BlastFormatFile f>
+          typename TSpec>
 inline void
-_readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & record,
-            FormattedFile<BlastTabular, Input, TSpec> & file)
+readRecord(BlastRecord<TQId, TSId, TPos, TAlign> &,
+           FormattedFile<BlastTabular, Input, TSpec> &,
+           TagSelector<> const &)
 {
-    switch(std::get<1>(file.format))
-    {
-        case BlastFormatProgram::BLASTN:
-            __readRecord<TQId,
-                         TSId,
-                         TPos,
-                         TAlign,
-                         TSpec,
-                         f,
-                         BlastFormatProgram::BLASTN>(record, file);
-            break;
-        case BlastFormatProgram::BLASTP:
-            __readRecord<TQId,
-                         TSId,
-                         TPos,
-                         TAlign,
-                         TSpec,
-                         f, BlastFormatProgram::BLASTP>(record, file);
-            break;
-        case BlastFormatProgram::BLASTX:
-            __readRecord<TQId,
-                         TSId,
-                         TPos,
-                         TAlign,
-                         TSpec,
-                         f, BlastFormatProgram::BLASTX>(record, file);
-            break;
-        case BlastFormatProgram::TBLASTN:
-            __readRecord<TQId,
-                         TSId,
-                         TPos,
-                         TAlign,
-                         TSpec,
-                         f, BlastFormatProgram::TBLASTN>(record, file);
-            break;
-        case BlastFormatProgram::TBLASTX:
-            __readRecord<TQId,
-                         TSId,
-                         TPos,
-                         TAlign,
-                         TSpec,
-                         f, BlastFormatProgram::TBLASTX>(record, file);
-            break;
-        default:
-            SEQAN_FAIL("Not a valid BlastFormatProgram.");
-    }
+    SEQAN_FAIL("Invalid TagId");
+}
+
+// convient BlastFile variant
+template <typename TQId,
+          typename TSId,
+          typename TPos,
+          typename TAlign,
+          typename TSpec,
+          typename TTagList>
+inline void
+readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & record,
+           FormattedFile<BlastTabular, Input, TSpec> & file,
+           TagSelector<TTagList> const & format)
+{
+    typedef typename TTagList::Type TFormat;
+
+    if (isEqual(format, TFormat()))
+        readRecord(record, file, TFormat());
+    else
+        readRecord(record,
+                   file,
+                   static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
 // convient BlastFile variant
@@ -308,55 +426,25 @@ inline void
 readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & record,
            FormattedFile<BlastTabular, Input, TSpec> & file)
 {
-    switch(std::get<0>(file.format))
-    {
-        case BlastFormatFile::TABULAR:
-            _readRecord<TQId, TSId, TPos, TAlign, TSpec, BlastFormatFile::TABULAR>(record, file);
-            break;
-        case BlastFormatFile::TABULAR_WITH_HEADER:
-            _readRecord<TQId, TSId, TPos, TAlign, TSpec, BlastFormatFile::TABULAR_WITH_HEADER>(record, file);
-            break;
-        default:
-            SEQAN_FAIL("Only TABULAR and TABULAR_WITH_HEADER supported in BlastTabularIn");
-    }
+    readRecord(record, file, file.format);
 }
 
 // ----------------------------------------------------------------------------
-// Function write(); BlastRecord
+// Function writeRecord(); Blast
 // ----------------------------------------------------------------------------
-
-// // convient BlastFile variant
-// template <typename TQId,
-//           typename TSId,
-//           typename TPos,
-//           typename TAlign,
-//           typename TSpec,
-//           BlastFormatFile f,
-//           BlastFormatProgram p,
-//           typename std::enable_if<f == BlastFormatFile::TABULAR_WITH_HEADER, int>::type = 0>
-// inline void
-// __writeRecord(FormattedFile<BlastTabular, Output, TSpec> & file,
-//               BlastRecord<TQId, TSId, TPos, TAlign> const & record)
-// {
-//     typedef BlastFormat<f, p, BlastFormatGeneration::BLAST_PLUS> TFormat;
-//     writeRecord(file.iter, record, context(file).dbSpecs, TFormat());
-// }
 
 // convient BlastFile variant
 template <typename TQId,
           typename TSId,
           typename TPos,
           typename TAlign,
-          typename TSpec,
-          BlastFormatFile f,
-          BlastFormatProgram p>
-//           typename std::enable_if<f == BlastFormatFile::TABULAR, int>::type = 0>
+          typename TSpec>
 inline void
-__writeRecord(FormattedFile<BlastTabular, Output, TSpec> & file,
-              BlastRecord<TQId, TSId, TPos, TAlign> const & record)
+writeRecord(FormattedFile<BlastTabular, Output, TSpec> & ,
+            BlastRecord<TQId, TSId, TPos, TAlign> const & ,
+            TagSelector<> const &)
 {
-    typedef BlastFormat<f, p, BlastFormatGeneration::BLAST_PLUS> TFormat;
-    writeRecord(file.iter, record, context(file).dbSpecs, TFormat());
+    SEQAN_FAIL("Invalid TagId");
 }
 
 // convient BlastFile variant
@@ -365,56 +453,20 @@ template <typename TQId,
           typename TPos,
           typename TAlign,
           typename TSpec,
-          BlastFormatFile f>
+          typename TTagList>
 inline void
-_writeRecord(FormattedFile<BlastTabular, Output, TSpec> & file,
-             BlastRecord<TQId, TSId, TPos, TAlign> const & record)
+writeRecord(FormattedFile<BlastTabular, Output, TSpec> & file,
+            BlastRecord<TQId, TSId, TPos, TAlign> const & record,
+            TagSelector<TTagList> const & format)
 {
-    switch(std::get<1>(file.format))
-    {
-        case BlastFormatProgram::BLASTN:
-            __writeRecord<TQId,
-                          TSId,
-                          TPos,
-                          TAlign,
-                          TSpec,
-                          f, BlastFormatProgram::BLASTN>(file, record);
-            break;
-        case BlastFormatProgram::BLASTP:
-            __writeRecord<TQId,
-                          TSId,
-                          TPos,
-                          TAlign,
-                          TSpec,
-                          f, BlastFormatProgram::BLASTP>(file, record);
-            break;
-        case BlastFormatProgram::BLASTX:
-            __writeRecord<TQId,
-                          TSId,
-                          TPos,
-                          TAlign,
-                          TSpec,
-                          f, BlastFormatProgram::BLASTX>(file, record);
-            break;
-        case BlastFormatProgram::TBLASTN:
-            __writeRecord<TQId,
-                          TSId,
-                          TPos,
-                          TAlign,
-                          TSpec,
-                          f, BlastFormatProgram::TBLASTN>(file, record);
-            break;
-        case BlastFormatProgram::TBLASTX:
-            __writeRecord<TQId,
-                          TSId,
-                          TPos,
-                          TAlign,
-                          TSpec,
-                          f, BlastFormatProgram::TBLASTX>(file, record);
-            break;
-        default:
-            SEQAN_FAIL("Not a valid BlastFormatProgram.");
-    }
+    typedef typename TTagList::Type TFormat;
+
+    if (isEqual(format, TFormat()))
+        writeRecord(file.iter, record, context(file).dbSpecs, TFormat());
+    else
+        writeRecord(file,
+                    record,
+                    static_cast<typename TagSelector<TTagList>::Base const &>(format));
 }
 
 // convient BlastFile variant
@@ -427,30 +479,8 @@ inline void
 writeRecord(FormattedFile<BlastTabular, Output, TSpec> & file,
             BlastRecord<TQId, TSId, TPos, TAlign> const & record)
 {
-    switch(std::get<0>(file.format))
-    {
-        case BlastFormatFile::TABULAR:
-            _writeRecord<TQId,
-                         TSId,
-                         TPos,
-                         TAlign,
-                         TSpec,
-                         BlastFormatFile::TABULAR>(file, record);
-            break;
-        case BlastFormatFile::TABULAR_WITH_HEADER:
-            _writeRecord<TQId,
-                         TSId,
-                         TPos,
-                         TAlign,
-                         TSpec,
-                         BlastFormatFile::TABULAR_WITH_HEADER>(file, record);
-            break;
-        default:
-            SEQAN_FAIL("Only TABULAR and TABULAR_WITH_HEADER supported in "
-                       "BlastTabularOut. Use setFormat()!");
-    }
+    writeRecord(file, record, file.format);
 }
-
 
 } // namespace seqan
 
