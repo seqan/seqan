@@ -56,7 +56,7 @@ struct DefaultFind<Index<THaystack, THaystackSpec>, TPattern>
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function _findImpl(..., Backtracking<Exact>)
+// Function _findImpl(index, sequence, Backtracking<Exact>)
 // ----------------------------------------------------------------------------
 
 template <typename TState, typename TIndex, typename TNeedle,
@@ -80,7 +80,7 @@ _findImpl(TState & /* state */,
 }
 
 // ----------------------------------------------------------------------------
-// Function _findImpl(..., Backtracking<Edit/HammingDistance>)
+// Function _findImpl(trieIndex, sequence, Backtracking<Edit/HammingDistance>)
 // ----------------------------------------------------------------------------
 
 template <typename TIndexIt, typename TNeedle, typename TNeedleIt,
@@ -142,7 +142,7 @@ _findBacktracking(TIndexIt indexIt,
 
 template <typename TState, typename TIndex, typename TNeedle,
           typename TThreshold, typename TDelegate, typename TDistance, typename TSpec>
-SEQAN_FUNC_ENABLE_IF(IsSequence<TNeedle>, void)
+SEQAN_FUNC_ENABLE_IF(And<Is<StringTrieConcept<TIndex> >, IsSequence<TNeedle> >, void)
 _findImpl(TState & /* indexIt */,
           TIndex & index,
           TNeedle const & needle,
@@ -161,7 +161,35 @@ _findImpl(TState & /* indexIt */,
 }
 
 // ----------------------------------------------------------------------------
-// Function find(index, index, errors, [](...){}, Backtracking<TDistance>());
+// Function _findImpl(treeIndex, sequence, Backtracking<HammingDistance>());
+// ----------------------------------------------------------------------------
+
+template <typename TState, typename TIndex, typename TNeedle,
+          typename TThreshold, typename TDelegate, typename TSpec>
+SEQAN_FUNC_ENABLE_IF(And<Is<StringTreeConcept<TIndex> >, IsSequence<TNeedle> >, void)
+_findImpl(TState & /* indexIt */,
+          TIndex & index,
+          TNeedle const & needle,
+          TThreshold threshold,
+          TDelegate && delegate,
+          Backtracking<HammingDistance, TSpec>)
+{
+    typedef typename Iterator<TIndex, TopDown<> >::Type     TIndexIt;
+
+    TIndexIt indexIt(index);
+
+    // This lambda is stored locally because approximateStringSearch() does not accept rvalue delegates.
+    std::function<void(TNeedle const &, TIndexIt const &)> delegator = [&](TNeedle const &, TIndexIt const & it)
+    {
+        // NOTE(esiragusa): the approximateStringSearch() functor doesn't know the score...
+        delegate(it, threshold);
+    };
+
+    approximateStringSearch(delegator, needle, indexIt, threshold);
+}
+
+// ----------------------------------------------------------------------------
+// Function find(index, index, Backtracking<TDistance>());
 // ----------------------------------------------------------------------------
 
 template <typename THaystack, typename THaystackSpec, typename TNeedle, typename TNeedleSpec,
@@ -173,9 +201,39 @@ find(Index<THaystack, THaystackSpec> & text,
      TDelegate && delegate,
      Backtracking<TDistance, TSpec>)
 {
-    typedef typename If<IsSameType<TDistance, Exact>,
-                        HammingDistance, TDistance>::Type   TDistance_;
-    typedef Backtracking<TDistance_, TSpec>                 TAlgorithm;
+    typedef Index<THaystack, THaystackSpec>                     TTextIndex;
+    typedef Index<TNeedle, TNeedleSpec>                         TPatternIndex;
+    typedef typename Iterator<TTextIndex, TopDown<> >::Type     TTextIndexIt;
+    typedef typename Iterator<TPatternIndex, TopDown<> >::Type  TPatternIndexIt;
+
+    TTextIndexIt textIt(text);
+    TPatternIndexIt patternIt(pattern);
+
+    // This lambda is stored locally because approximateTreeSearch() does not accept rvalue delegates.
+    std::function<void(TPatternIndexIt const &, TTextIndexIt const &)> delegator =
+    [&](TPatternIndexIt const & pIt, TTextIndexIt const & tIt)
+    {
+        // NOTE(esiragusa): the approximateTreeSearch() functor doesn't know the score...
+        delegate(tIt, pIt, threshold);
+    };
+
+    approximateTreeSearch(delegator, patternIt, textIt, threshold);
+}
+
+// ----------------------------------------------------------------------------
+// Function find(index, index, errors, [](...){}, Backtracking<EditDistance>());
+// ----------------------------------------------------------------------------
+
+template <typename THaystack, typename THaystackSpec, typename TNeedle, typename TNeedleSpec,
+          typename TThreshold, typename TDelegate, typename TDistance, typename TSpec>
+inline void
+find(Index<THaystack, THaystackSpec> & text,
+     Index<TNeedle, TNeedleSpec> & pattern,
+     TThreshold threshold,
+     TDelegate && delegate,
+     Backtracking<EditDistance, TSpec>)
+{
+    typedef Backtracking<EditDistance, TSpec>               TAlgorithm;
     typedef Index<THaystack, THaystackSpec>                 TText;
     typedef Index<TNeedle, TNeedleSpec>                     TPattern;
     typedef Finder_<TText, TPattern, TAlgorithm>            TFinder;
@@ -189,35 +247,6 @@ find(Index<THaystack, THaystackSpec> & text,
     };
 
     _find(finder, text, pattern, threshold, delegator);
-}
-
-// ----------------------------------------------------------------------------
-// Function find(index, wotdIndex, errors, [](...){}, Backtracking<TDistance>());
-// ----------------------------------------------------------------------------
-
-template <typename THaystack, typename THaystackSpec, typename TNeedle, typename TNeedleSpec,
-          typename TThreshold, typename TDelegate, typename TDistance, typename TSpec>
-inline void
-find(Index<THaystack, THaystackSpec> & text,
-     Index<TNeedle, IndexWotd<TNeedleSpec> > & pattern,
-     TThreshold threshold,
-     TDelegate && delegate,
-     Backtracking<TDistance, TSpec>)
-{
-    typedef Index<THaystack, THaystackSpec>                 TText;
-    typedef Index<TNeedle, IndexWotd<TNeedleSpec> >         TPattern;
-    typedef Backtracking<TDistance, TSpec>                  TAlgorithm;
-
-    typedef Finder<TText, TAlgorithm>                       TFinder_;
-    typedef Pattern<TPattern, TAlgorithm>                   TPattern_;
-
-    TFinder_ _finder(text);
-    TPattern_ _pattern(pattern, length(back(host(pattern))));
-
-    while (_resume(_finder, _pattern, threshold))
-    {
-        delegate(_finder.index_iterator, _pattern.index_iterator, _pattern.prefix_aligner.errors);
-    }
 }
 
 }
