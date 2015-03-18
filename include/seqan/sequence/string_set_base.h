@@ -1597,11 +1597,24 @@ concat(StringSet<TString, TSpec> const & constMe)
     return me.concat;
 }
 
+template <typename TStrings>
+struct ConcatReturnType_
+{
+    typedef typename Value<TStrings>::Type Type;
+};
+
+template <typename TString, typename TSpec>
+struct ConcatReturnType_<StringSet<TString, TSpec > >
+{
+    typedef TString Type;
+};
+
 template <typename TStrings, typename TDelim>
-inline typename Value<TStrings>::Type
+inline typename ConcatReturnType_<typename RemoveConst<TStrings>::Type>::Type
 concat(TStrings const & strings, TDelim const & delimiter, bool ignoreEmptyStrings = false)
 {
-    typename Value<TStrings>::Type tmp;
+    typedef typename ConcatReturnType_<typename RemoveConst<TStrings>::Type>::Type TString;
+    TString tmp;
 
     if (empty(strings))
         return tmp;
@@ -1619,7 +1632,7 @@ concat(TStrings const & strings, TDelim const & delimiter, bool ignoreEmptyStrin
     }
     else
     {
-        tmp = front(strings);
+        tmp = static_cast<TString>(front(strings));
         for (size_t i = 1; i < length(strings); ++i)
         {
             append(tmp, delimiter);
