@@ -56,7 +56,7 @@ struct DefaultFind<Index<THaystack, THaystackSpec>, TPattern>
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Function _findImpl(index, sequence, Backtracking<Exact>)
+// Function _findImpl(indexText, sequenceNeedle, Backtracking<Exact>)
 // ----------------------------------------------------------------------------
 
 template <typename TState, typename TIndex, typename TNeedle,
@@ -80,7 +80,7 @@ _findImpl(TState & /* state */,
 }
 
 // ----------------------------------------------------------------------------
-// Function _findImpl(trieIndex, sequence, Backtracking<Edit/HammingDistance>)
+// Function _findImpl(trieText, sequenceNeedle, Backtracking<Edit/HammingDistance>)
 // ----------------------------------------------------------------------------
 
 template <typename TIndexIt, typename TNeedle, typename TNeedleIt,
@@ -161,7 +161,7 @@ _findImpl(TState & /* indexIt */,
 }
 
 // ----------------------------------------------------------------------------
-// Function _findImpl(treeIndex, sequence, Backtracking<HammingDistance>());
+// Function _findImpl(treeText, sequenceNeedle, Backtracking<HammingDistance>());
 // ----------------------------------------------------------------------------
 
 template <typename TState, typename TIndex, typename TNeedle,
@@ -189,54 +189,76 @@ _findImpl(TState & /* indexIt */,
 }
 
 // ----------------------------------------------------------------------------
-// Function find(index, index, Backtracking<TDistance>());
+// Function find(treeText, trieNeedle, Backtracking<TDistance>());
 // ----------------------------------------------------------------------------
 
-template <typename THaystack, typename THaystackSpec, typename TNeedle, typename TNeedleSpec,
+template <typename TIndex, typename TNeedle,
           typename TThreshold, typename TDelegate, typename TDistance, typename TSpec>
-inline void
-find(Index<THaystack, THaystackSpec> & text,
-     Index<TNeedle, TNeedleSpec> & pattern,
+SEQAN_FUNC_ENABLE_IF(And<Is<StringTreeConcept<TIndex> >, Is<StringTrieConcept<TNeedle> > >, void)
+find(TIndex & text,
+     TNeedle & needle,
      TThreshold threshold,
      TDelegate && delegate,
      Backtracking<TDistance, TSpec>)
 {
-    typedef Index<THaystack, THaystackSpec>                     TTextIndex;
-    typedef Index<TNeedle, TNeedleSpec>                         TPatternIndex;
-    typedef typename Iterator<TTextIndex, TopDown<> >::Type     TTextIndexIt;
-    typedef typename Iterator<TPatternIndex, TopDown<> >::Type  TPatternIndexIt;
+    typedef typename Iterator<TIndex, TopDown<> >::Type     TTextIt;
+    typedef typename Iterator<TNeedle, TopDown<> >::Type    TNeedleIt;
 
-    TTextIndexIt textIt(text);
-    TPatternIndexIt patternIt(pattern);
+    TTextIt textIt(text);
+    TNeedleIt needleIt(needle);
 
     // This lambda is stored locally because approximateTreeSearch() does not accept rvalue delegates.
-    std::function<void(TPatternIndexIt const &, TTextIndexIt const &)> delegator =
-    [&](TPatternIndexIt const & pIt, TTextIndexIt const & tIt)
+    std::function<void(TNeedleIt const &, TTextIt const &)> delegator =
+    [&](TNeedleIt const & nIt, TTextIt const & tIt)
     {
         // NOTE(esiragusa): the approximateTreeSearch() functor doesn't know the score...
-        delegate(tIt, pIt, threshold);
+        delegate(tIt, nIt, threshold);
     };
 
-    approximateTreeSearch(delegator, patternIt, textIt, threshold);
+    approximateTreeSearch(delegator, needleIt, textIt, threshold);
 }
 
 // ----------------------------------------------------------------------------
-// Function find(index, index, errors, [](...){}, Backtracking<EditDistance>());
+// Function find(indexText, treeNeedle, errors, [](...){}, Backtracking<TDistance>());
 // ----------------------------------------------------------------------------
 
-template <typename THaystack, typename THaystackSpec, typename TNeedle, typename TNeedleSpec,
+template <typename TIndex, typename TNeedle,
           typename TThreshold, typename TDelegate, typename TDistance, typename TSpec>
-inline void
-find(Index<THaystack, THaystackSpec> & text,
-     Index<TNeedle, TNeedleSpec> & pattern,
+SEQAN_FUNC_ENABLE_IF(And<Is<StringIndexConcept<TIndex> >, Is<StringTreeConcept<TNeedle> > >, void)
+find(TIndex & index,
+     TNeedle & needle,
      TThreshold threshold,
      TDelegate && delegate,
-     Backtracking<EditDistance, TSpec>)
+     Backtracking<TDistance, TSpec>)
 {
-    typedef Backtracking<EditDistance, TSpec>               TAlgorithm;
-    typedef Index<THaystack, THaystackSpec>                 TText;
-    typedef Index<TNeedle, TNeedleSpec>                     TPattern;
-    typedef Finder_<TText, TPattern, TAlgorithm>            TFinder;
+    typedef Backtracking<TDistance, TSpec>                  TAlgorithm;
+    typedef Finder<TIndex, TAlgorithm>                      TFinder_;
+    typedef Pattern<TNeedle, TAlgorithm>                    TPattern_;
+
+    TFinder_ _finder(index);
+    TPattern_ _pattern(needle, length(back(host(needle))));
+
+    while (_resume(_finder, _pattern, threshold))
+    {
+        delegate(_finder.index_iterator, _pattern.index_iterator, _pattern.prefix_aligner.errors);
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Function find(trieText, trieNeedle, errors, [](...){}, Backtracking<TDistance>());
+// ----------------------------------------------------------------------------
+
+template <typename TIndex, typename TNeedle,
+          typename TThreshold, typename TDelegate, typename TDistance, typename TSpec>
+SEQAN_FUNC_ENABLE_IF(And<Is<StringTrieConcept<TIndex> >, Is<StringTrieConcept<TNeedle> > >, void)
+find(TIndex & index,
+     TNeedle & needle,
+     TThreshold threshold,
+     TDelegate && delegate,
+     Backtracking<TDistance, TSpec>)
+{
+    typedef Backtracking<TDistance, TSpec>                  TAlgorithm;
+    typedef Finder_<TIndex, TNeedle, TAlgorithm>            TFinder;
 
     TFinder finder;
 
@@ -246,7 +268,7 @@ find(Index<THaystack, THaystackSpec> & text,
         delegate(_textIterator(finder), _patternIterator(finder), _getScore(finder));
     };
 
-    _find(finder, text, pattern, threshold, delegator);
+    _find(finder, index, needle, threshold, delegator);
 }
 
 }
