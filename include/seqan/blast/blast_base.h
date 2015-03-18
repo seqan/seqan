@@ -234,7 +234,55 @@ enum class BlastFormatGeneration : uint8_t
  * @link BlastMatch#calcBitScoreAndEValue @endlink for your
  * @link BlastMatch @endlinkes.
  *
- * @section Output
+ * @code{.cpp}
+ * // the match object
+ * BlastMatch<> m;
+ * m.sId = "";
+ * m.qId = "FOOBAR11 the best read";
+ *
+ * String<AminoAcid> subj = "NSPGFRKVAYAQTKPRRLCFPNGGTRRGSF";
+ * String<AminoAcid> qry  =        "VAYAQ""PRKLCYP"         ;
+ * m.qLength = length(qry);
+ *
+ * // database specs
+ * BlastDbSpecs<> dbSpecs;
+ * dbSpecs.dbName = "The really non-redundant database";
+ * dbSpecs.dbNumberOfSeqs = 1;
+ * dbSpecs.dbTotalLength = length(subj); // usually sum of subject lengths
+ *
+ * // the scoring scheme
+ * Blosum62 scheme;
+ * setScoreGapOpen(scheme, -11);
+ * setScoreGapExtend(scheme, -1);
+ * blastScoringScheme2seqanScoringScheme(scheme);
+ * BlastScoringAdapter<Blosum62> adapter(scheme);
+ *
+ * // setup the align object and compute the alignment
+ * resize(rows(m.align), 2);
+ * assignSource(row(m.align, 0), subj);
+ * assignSource(row(m.align, 1), qry);
+ * localAlignment(m.align, scheme);
+ *
+ *
+ * // count identities, mismatches a.s.o.; compute raw score
+ * calcStatsAndScore(m, scheme);
+ * // calculate bit score and evalue
+ * calcBitScoreAndEValue(m, dbSpecs, adapter);
+ * @endcode
+ *
+ * @section Output (high-level)
+ *
+ * For a subset of formats and features there is high-level output support with
+ * @link BlastTabularFileOut @endlink. This is a short example of how to use it:
+ *
+ * @code{.cpp}
+ * BlastTabularOut out("/tmp/example.blast");
+ *
+ * BlastRecord<> r;
+ *
+ * TODO
+ * @endcode
+ *
  *
  * When writing Blast(-like) results to a file the easiest way to proceed
  * is to organize your matches in the data structures described above.

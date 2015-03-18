@@ -326,8 +326,8 @@ clear(BlastMatch<TQId, TSId, TPos, TAlign> & match)
  * @signature struct BlastRecord<TQId, TSId, TPos, TAlign> { ... };
  * @brief A record of blast-matches (belonging to one query).
 
- * @tparam TQId  Type of qId, defaults to @link std::string @endlink
- * @tparam TSId  Type of sId, defaults to @link std::string @endlink
+ * @tparam TQId  Type of qId, defaults to std::string
+ * @tparam TSId  Type of sId, defaults to std::string
  * @tparam TPos  Position type of the sequences, defaults to <tt>uint32_t</tt>
  * @tparam TAlign Type of the @link Align @endlink member, defaults to
  * <tt>Align<CharString, ArrayGaps></tt>
@@ -388,7 +388,7 @@ clear(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord)
  * @signature struct BlastRecord<TDbName> { ... };
  * @brief A record of blast-matches (belonging to one query).
  *
- * @tparam TDbName  Type of dbName, defaults to @link std::string @endlink
+ * @tparam TDbName  Type of dbName, defaults to std::string
  *
  * @var TDbName BlastDbSpecs::dbName;
  * @brief verbose name of the database

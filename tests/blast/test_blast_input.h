@@ -71,11 +71,12 @@ template <typename TMatch,
           BlastFormatFile f,
           BlastFormatProgram p>
 inline void
-_readMatchWrap(TMatch & match, TIt & it, TFields const &, bool,
+_readMatchWrap(TMatch & match, TIt & it, BlastInputContext & context,
+               TFields const &, bool,
                BlastFormat<f, p, BlastFormatGeneration::BLAST_LEGACY> const &)
 {
     typedef BlastFormat<f, p, BlastFormatGeneration::BLAST_LEGACY> TFormat;
-    readMatch(match, it, TFormat());
+    readMatch(match, it, context, TFormat());
 }
 
 template <typename TMatch,
@@ -84,14 +85,15 @@ template <typename TMatch,
           BlastFormatFile f,
           BlastFormatProgram p>
 inline void
-_readMatchWrap(TMatch & match, TIt & it, TFields const & fields, bool useFields,
+_readMatchWrap(TMatch & match, TIt & it, BlastInputContext & context,
+               TFields const & fields, bool useFields,
                BlastFormat<f, p, BlastFormatGeneration::BLAST_PLUS> const &)
 {
     typedef BlastFormat<f, p, BlastFormatGeneration::BLAST_PLUS> TFormat;
     if (useFields)
-        readMatch(match, it, TFormat());
+        readMatch(match, it, context, TFormat());
     else
-        readMatch(match, it, fields, TFormat());
+        readMatch(match, it, context, fields, TFormat());
 }
 
 template <typename TFormat>
@@ -129,6 +131,7 @@ void _test_blast_read_tabular_match(std::string const & path,
     SEQAN_ASSERT(ifstream.is_open());
 
     auto it = directionIterator(ifstream, Input());
+    BlastInputContext context;
 
 //     Iterator<std::ifstream, Rooted>::Type it = begin(ifstream);
 //     auto it = directionIterator(ifstream, Bidirectional());
@@ -143,7 +146,7 @@ void _test_blast_read_tabular_match(std::string const & path,
     SEQAN_ASSERT(onMatch(it, TFormat()));
 
     BlastMatch<> m;
-    _readMatchWrap(m, it, customFields, defaults, TFormat());
+    _readMatchWrap(m, it, context, customFields, defaults, TFormat());
 
     SEQAN_ASSERT_EQ(m.qId,          "SHAA004TF");
     SEQAN_ASSERT_EQ(m.sId,          "sp|P0A916|OMPW_SHIFL");
@@ -192,9 +195,9 @@ void _test_blast_read_tabular_match(std::string const & path,
         while (onMatch(it, TFormat()))
         {
             if (defaults) // skipMatch with verification
-                skipMatch(it, true, TFormat());
+                skipMatch(it, context, true, TFormat());
             else
-                skipMatch(it, false, TFormat());
+                skipMatch(it, context, false, TFormat());
 
             ++count;
         }
@@ -211,20 +214,20 @@ void _test_blast_read_tabular_match(std::string const & path,
         {
             SEQAN_ASSERT(onMatch(it, TFormat()));
             if (defaults) // skipMatch with verification
-                skipMatch(it, true, TFormat());
+                skipMatch(it, context, true, TFormat());
             else
-                skipMatch(it, false, TFormat());
+                skipMatch(it, context, false, TFormat());
         }
     }
 
     skipUntilMatch(it, TFormat());
 
     // skipMatch without verification
-    skipMatch(it, TFormat());
+    skipMatch(it, context, TFormat());
 
     //---- LAST MATCH ---- //
     // read another match
-    _readMatchWrap(m, it, customFields, defaults, TFormat());
+    _readMatchWrap(m, it, context, customFields, defaults, TFormat());
 
     SEQAN_ASSERT_EQ(m.qId,          "SHAA004TR");
     SEQAN_ASSERT_EQ(m.sId,          "sp|Q0HGZ8|META_SHESM");
@@ -263,7 +266,7 @@ void _test_blast_read_tabular_match(std::string const & path,
     {
         SEQAN_TRY
         {
-            readMatch(m, it, TFormat());
+            readMatch(m, it, context, TFormat());
         } SEQAN_CATCH (ParseError const & e)
         {
             exceptComment = e.what();
@@ -377,6 +380,7 @@ _test_blast_read_tabular_match_columns(std::string const & path,
     SEQAN_ASSERT(ifstream.is_open());
 
     auto it = directionIterator(ifstream, Input());
+    BlastInputContext context;
 
     // first line is header
     SEQAN_ASSERT(!onMatch(it, TFormat()));
@@ -400,7 +404,7 @@ _test_blast_read_tabular_match_columns(std::string const & path,
     double      field11;
     double      field12;
 
-    readMatch(it, TFormat(), field1, field2, field3, field4, field5, field6,
+    readMatch(it, context, TFormat(), field1, field2, field3, field4, field5, field6,
               field7, field8, field9, field10, field11, field12);
 
     SEQAN_ASSERT_EQ(field1,          "SHAA004TF");
@@ -420,7 +424,7 @@ _test_blast_read_tabular_match_columns(std::string const & path,
     SEQAN_ASSERT_LEQ(std::abs(field12 - 108), 1e-3);
 
     // SEQAN_TRY reading less coluumns than are present
-    readMatch(it, TFormat(), field1, field2, field3, field4, field5, field6,
+    readMatch(it, context, TFormat(), field1, field2, field3, field4, field5, field6,
               field7, field8, field9, field10);
 
     SEQAN_ASSERT_EQ(field1,          "SHAA004TF");
@@ -439,7 +443,7 @@ _test_blast_read_tabular_match_columns(std::string const & path,
 
     // read remaining matches
     while (onMatch(it, TFormat()))
-        readMatch(it, TFormat(), field1); // only one field
+        readMatch(it, context, TFormat(), field1); // only one field
 
     // go to last record with matches
     skipUntilMatch(it, TFormat());
@@ -452,7 +456,7 @@ _test_blast_read_tabular_match_columns(std::string const & path,
     SEQAN_TRY
     {
         // no strings here to take the strings
-        readMatch(it, TFormat(), field3, field4, field5, field6,
+        readMatch(it, context, TFormat(), field3, field4, field5, field6,
                   field7, field8, field9, field10, field11, field12);
     } SEQAN_CATCH (BadLexicalCast const & e)
     {
@@ -573,13 +577,14 @@ _test_blast_read_tabular_with_header(bool custom = false)
     CharString fieldStringsConcat;
     String<typename TField::Enum> fieldList;
     StringSet<CharString> otherLines;
+    BlastInputContext context;
 
     // back on header
     SEQAN_ASSERT(!onMatch(it, TFormat()));
 
     // all parameters, strict == false
     readHeader(qId, dbName, versionString, hits, fieldStrings, otherLines, it,
-               false, TFormat());
+               context, false, TFormat());
 
     SEQAN_ASSERT_EQ(qId,                "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
     SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
@@ -593,7 +598,7 @@ _test_blast_read_tabular_with_header(bool custom = false)
 
     // without hits-parameter, without otherLines parameter
     // strict == false,
-    readHeader(qId, dbName, versionString, hits, fieldList, it,
+    readHeader(qId, dbName, versionString, hits, fieldList, it, context,
                false, TFormat());
 
     SEQAN_ASSERT_EQ(qId,                "SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935");
@@ -606,7 +611,7 @@ _test_blast_read_tabular_with_header(bool custom = false)
 
     // all parameters, strict == true, fields as fields
     readHeader(qId, dbName, versionString, hits, fieldList, otherLines, it,
-               true, TFormat());
+               context, true, TFormat());
 
     SEQAN_ASSERT_EQ(qId,                "SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828");
     SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
@@ -628,11 +633,11 @@ _test_blast_read_tabular_with_header(bool custom = false)
           fieldList, otherLines);
 
     while (onMatch(it, TFormat()))
-        skipMatch(it, TFormat());
+        skipMatch(it, context, TFormat());
 
     // without otherlines parameter, strict == true, fields as strings
     readHeader(qId, dbName, versionString, hits, fieldStrings, it,
-               true, TFormat());
+               context, true, TFormat());
 
     fieldStringsConcat = concat(fieldStrings, ", ");
 
@@ -656,7 +661,7 @@ _test_blast_read_tabular_with_header(bool custom = false)
           fieldList, otherLines);
 
     while (onMatch(it, TFormat()))
-        skipMatch(it, TFormat());
+        skipMatch(it, context, TFormat());
 
     // check if exceptions are properly thrown
     CharString exceptComment;
@@ -664,8 +669,8 @@ _test_blast_read_tabular_with_header(bool custom = false)
     {
         // all parameters, strict == true
         // artifical type Datacase instead of Database should trigger exception
-        readHeader(qId, dbName, versionString, hits, fieldStrings, otherLines, it,
-                   true, TFormat());
+        readHeader(qId, dbName, versionString, hits, fieldStrings, otherLines,
+                   it, context, true, TFormat());
     } SEQAN_CATCH (RecoverableParseError const & e)
     {
         exceptComment = e.what();
@@ -688,9 +693,9 @@ _test_blast_read_tabular_with_header(bool custom = false)
 
     it = directionIterator(ifstream, Input());
 
-    skipHeader(it, TFormat());
-    skipHeader(it, false, TFormat());
-    skipHeader(it, true, TFormat());
+    skipHeader(it, context, TFormat());
+    skipHeader(it, context, false, TFormat());
+    skipHeader(it, context, true, TFormat());
     SEQAN_ASSERT(onMatch(it, TFormat()));
 
     ifstream.close();
@@ -731,13 +736,14 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
     CharString fieldStringsConcat;
     String<typename TField::Enum> fieldList;
     StringSet<CharString> otherLines;
+    BlastInputContext context;
 
     // back on header
     SEQAN_ASSERT(!onMatch(it, TFormat()));
 
     // all parameters, strict == false
     readHeader(qId, dbName, versionString, fieldStrings, otherLines, it,
-               false, TFormat());
+               context, false, TFormat());
     fieldStringsConcat = concat(fieldStrings, ", ");
 
     SEQAN_ASSERT_EQ(qId,                "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
@@ -751,7 +757,7 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
           fieldList, otherLines);
 
     // without otherLines parameter, strict == false
-    readHeader(qId, dbName, versionString, fieldStrings, it, false, TFormat());
+    readHeader(qId, dbName, versionString, fieldStrings, it, context, false, TFormat());
 
     fieldStringsConcat = concat(fieldStrings, ", ");
 
@@ -765,7 +771,7 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
           fieldList, otherLines);
 
     // without fieldlist, strict == true,
-    readHeader(qId, dbName, versionString, otherLines, it, true, TFormat());
+    readHeader(qId, dbName, versionString, otherLines, it, context, true, TFormat());
 
     SEQAN_ASSERT_EQ(qId,                "SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828");
     SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
@@ -775,10 +781,10 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
           fieldList, otherLines);
 
     while (onMatch(it, TFormat()))
-        skipMatch(it, TFormat());
+        skipMatch(it, context, TFormat());
 
     // strict == true
-    readHeader(qId, dbName, versionString, it, true, TFormat());
+    readHeader(qId, dbName, versionString, it, context, true, TFormat());
 
     SEQAN_ASSERT_EQ(qId,                "SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853");
     SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
@@ -788,7 +794,7 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
           fieldList, otherLines);
 
     while (onMatch(it, TFormat()))
-        skipMatch(it, TFormat());
+        skipMatch(it, context, TFormat());
 
     // check if exceptions are properly thrown
     CharString exceptComment;
@@ -797,7 +803,7 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
         // all parameters, strict == true
         // artifical type Datacase instead of Database should trigger exception
         readHeader(qId, dbName, versionString, fieldStrings, otherLines, it,
-                   true, TFormat());
+                   context, true, TFormat());
     } SEQAN_CATCH (RecoverableParseError const & e)
     {
         exceptComment = e.what();
@@ -822,9 +828,9 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
 
     it = directionIterator(ifstream, Input());
 
-    skipHeader(it, TFormat());
-    skipHeader(it, false, TFormat());
-    skipHeader(it, true, TFormat());
+    skipHeader(it, context, TFormat());
+    skipHeader(it, context, false, TFormat());
+    skipHeader(it, context, true, TFormat());
     SEQAN_ASSERT(onMatch(it, TFormat()));
 
     ifstream.close();
@@ -847,7 +853,7 @@ void _test_blast_read_tabular_record(bool defaults)
     auto it = directionIterator(ifstream, Input());
 
     BlastRecord<> r;
-    std::string fieldBuffer;
+    BlastInputContext context;
 
     std::vector<typename TField::Enum> fieldsIn;
     if (defaults)
@@ -881,9 +887,9 @@ void _test_blast_read_tabular_record(bool defaults)
     SEQAN_ASSERT(onMatch(it, TFormat()));
 
     if (defaults) // try interface without fieldList
-        readRecord(r, fieldBuffer, it, TFormat());
+        readRecord(r, it, context, TFormat());
     else
-        readRecord(r, fieldBuffer, it, fieldsIn, TFormat());
+        readRecord(r, it, context, fieldsIn, TFormat());
 
     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TF");
     SEQAN_ASSERT_EQ(length(r.matches),  17u);
@@ -903,7 +909,7 @@ void _test_blast_read_tabular_record(bool defaults)
         }
     }
 
-    readRecord(r, fieldBuffer, it, fieldsIn, TFormat());
+    readRecord(r, it, context, fieldsIn, TFormat());
     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TR");
     SEQAN_ASSERT_EQ(length(r.matches),  2u);
 
@@ -945,12 +951,12 @@ SEQAN_DEFINE_TEST(test_blast_read_record_tabular_legacy)
     auto it = directionIterator(ifstream, Input());
 
     BlastRecord<> r;
-    std::string fieldBuffer;
+    BlastInputContext context;
 
     // first line is match
     SEQAN_ASSERT(onMatch(it, TFormat()));
 
-    readRecord(r, fieldBuffer, it, TFormat());
+    readRecord(r, it, context, TFormat());
     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TF");
     SEQAN_ASSERT_EQ(length(r.matches),  17u);
 
@@ -962,7 +968,7 @@ SEQAN_DEFINE_TEST(test_blast_read_record_tabular_legacy)
         SEQAN_ASSERT_LEQ(m.bitScore,    108.0);
     }
 
-    readRecord(r, fieldBuffer, it, TFormat());
+    readRecord(r, it, context, TFormat());
     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TR");
     SEQAN_ASSERT_EQ(length(r.matches),  2u);
 
@@ -995,6 +1001,7 @@ void _test_blast_read_record(bool defaults)
     BlastRecord<> r;
     std::string dbName;
     std::vector<typename TField::Enum> fieldsOut;
+    BlastInputContext context;
 
     std::array<typename TField::Enum, 1> fieldsInDefault
     {
@@ -1024,20 +1031,20 @@ void _test_blast_read_record(bool defaults)
     SEQAN_ASSERT(!onMatch(it, TFormat()));
 
     // no fieldsList
-    readRecord(r, dbName, it, TFormat());
+    readRecord(r, dbName, it, context, TFormat());
     SEQAN_ASSERT_EQ(r.qId,              "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
     SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(length(r.matches),  0u);
 
     // fieldsList as out-parameter, but no fields, because no matches
-    readRecord(r, dbName, fieldsOut, it, TFormat());
+    readRecord(r, dbName, fieldsOut, it, context, TFormat());
     SEQAN_ASSERT_EQ(r.qId,              "SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935");
     SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(length(r.matches),  0u);
     SEQAN_ASSERT_EQ(length(fieldsOut),  0u);
 
     // fieldsList as out-parameter
-    readRecord(r, dbName, fieldsOut, it, TFormat());
+    readRecord(r, dbName, fieldsOut, it, context, TFormat());
     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828");
     SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(length(r.matches),  17u);
@@ -1065,9 +1072,9 @@ void _test_blast_read_record(bool defaults)
 
     // fieldsList as in-parameter
     if (defaults)
-        readRecord(r, dbName, it, fieldsInDefault, TFormat());
+        readRecord(r, dbName, it, context, fieldsInDefault, TFormat());
     else
-        readRecord(r, dbName, it, fieldsInCustom, TFormat());
+        readRecord(r, dbName, it, context, fieldsInCustom, TFormat());
     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853");
     SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(length(r.matches),  2u);
@@ -1080,7 +1087,7 @@ void _test_blast_read_record(bool defaults)
     }
 
     // no fieldsList
-    readRecord(r, dbName, it, TFormat());
+    readRecord(r, dbName, it, context, TFormat());
     SEQAN_ASSERT_EQ(r.qId,              "SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960");
     SEQAN_ASSERT_EQ(dbName,             ""); // couldn't be detected (typo)
     SEQAN_ASSERT_EQ(length(r.matches),  0u);
@@ -1114,21 +1121,22 @@ SEQAN_DEFINE_TEST(test_blast_read_record_tabular_with_header_legacy)
 
     BlastRecord<> r;
     std::string dbName;
+    BlastInputContext context;
 
     // first line is header
     SEQAN_ASSERT(!onMatch(it, TFormat()));
 
-    readRecord(r, dbName, it, TFormat());
+    readRecord(r, dbName, it, context, TFormat());
     SEQAN_ASSERT_EQ(r.qId,              "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
     SEQAN_ASSERT_EQ(dbName,           "/tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(length(r.matches),  0u);
 
-    readRecord(r, dbName, it, TFormat());
+    readRecord(r, dbName, it, context, TFormat());
     SEQAN_ASSERT_EQ(r.qId,              "SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935");
     SEQAN_ASSERT_EQ(dbName,           "/tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(length(r.matches),  0u);
 
-    readRecord(r, dbName, it, TFormat());
+    readRecord(r, dbName, it, context, TFormat());
     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828");
     SEQAN_ASSERT_EQ(dbName,           "/tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(length(r.matches),  17u);
@@ -1141,7 +1149,7 @@ SEQAN_DEFINE_TEST(test_blast_read_record_tabular_with_header_legacy)
         SEQAN_ASSERT_LEQ(m.bitScore,    108.0);
     }
 
-    readRecord(r, dbName, it, TFormat());
+    readRecord(r, dbName, it, context, TFormat());
     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853");
     SEQAN_ASSERT_EQ(dbName,           "/tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(length(r.matches),  2u);
@@ -1153,7 +1161,7 @@ SEQAN_DEFINE_TEST(test_blast_read_record_tabular_with_header_legacy)
         SEQAN_ASSERT_EQ(m.bitScore,    152.0);
     }
 
-    readRecord(r, dbName, it, TFormat());
+    readRecord(r, dbName, it, context, TFormat());
     SEQAN_ASSERT_EQ(r.qId,              "SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960");
     SEQAN_ASSERT_EQ(dbName,           ""); // couldn't be detected (typo)
     SEQAN_ASSERT_EQ(length(r.matches),  0u);

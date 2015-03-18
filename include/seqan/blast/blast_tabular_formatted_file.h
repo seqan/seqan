@@ -127,10 +127,15 @@ typedef FormattedFile<BlastTabular, Output> BlastTabularOut;
 // Type BlastTabularIOContext_
 // ----------------------------------------------------------------------------
 
-struct BlastTabularIOContext_
+struct BlastTabularInputContext_
 {
-    BlastDbSpecs<>  dbSpecs;
-    std::string     lastId;
+    BlastDbSpecs<>      dbSpecs;
+    BlastInputContext   context;
+};
+
+struct BlastTabularOutputContext_
+{
+    BlastDbSpecs<>      dbSpecs;
 };
 
 // ============================================================================
@@ -145,10 +150,16 @@ struct BlastTabularIOContext_
 // Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
 
-template <typename TDirection, typename TSpec, typename TStorageSpec>
-struct FormattedFileContext<FormattedFile<BlastTabular, TDirection, TSpec>, TStorageSpec>
+template <typename TSpec, typename TStorageSpec>
+struct FormattedFileContext<FormattedFile<BlastTabular, Input, TSpec>, TStorageSpec>
 {
-    typedef BlastTabularIOContext_ Type;
+    typedef BlastTabularInputContext_ Type;
+};
+
+template <typename TSpec, typename TStorageSpec>
+struct FormattedFileContext<FormattedFile<BlastTabular, Output, TSpec>, TStorageSpec>
+{
+    typedef BlastTabularOutputContext_ Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -358,7 +369,8 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & record,
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         p,
                         BlastFormatGeneration::BLAST_PLUS> TFormat;
-    readRecord(record, context(file).dbSpecs.dbName, file.iter, TFormat());
+    readRecord(record, context(file).dbSpecs.dbName, file.iter,
+               context(file).context, TFormat());
 }
 
 template <typename TQId,
@@ -377,7 +389,7 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & record,
     typedef BlastFormat<BlastFormatFile::TABULAR,
                         p,
                         BlastFormatGeneration::BLAST_PLUS> TFormat;
-    readRecord(record, context(file).lastId, file.iter, TFormat());
+    readRecord(record, file.iter, context(file).context, TFormat());
 }
 
 // convient BlastFile variant
