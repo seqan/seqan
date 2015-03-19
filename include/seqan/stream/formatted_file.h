@@ -642,8 +642,9 @@ inline bool _open(FormattedFile<TFileFormat, TDirection, TSpec> & file,
 }
 
 template <typename TFileFormat, typename TDirection, typename TSpec, typename TStream>
-inline bool open(FormattedFile<TFileFormat, TDirection, TSpec> & file,
-                 TStream &stream)
+inline SEQAN_FUNC_ENABLE_IF(Is<StreamConcept<TStream> >, bool)
+open(FormattedFile<TFileFormat, TDirection, TSpec> & file,
+     TStream &stream)
 {
     return _open(file, stream, _mapFileFormatToCompressionFormat(file.format), False());
 }
