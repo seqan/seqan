@@ -240,7 +240,7 @@ struct BlastMatch
         return false;
     }
 
-    inline void clear()
+    inline void _clear()
     {
         clear(qId);
         clear(sId);
@@ -263,7 +263,7 @@ struct BlastMatch
         qFrameShift   = 1;
         sFrameShift   = 1;
 
-        clear(align);;
+        clear(align.data_rows);
     }
 
     inline void _maxInitialize()
@@ -317,7 +317,7 @@ template <typename TQId = CharString,
 inline void
 clear(BlastMatch<TQId, TSId, TPos, TAlign> & match)
 {
-    match.clear();
+    match._clear();
 }
 
 /*!
@@ -421,7 +421,8 @@ struct BlastDbSpecs
 
     inline void clear()
     {
-        clear(dbName);
+//         clear(dbName);
+        dbName.clear(); // TODO fix this
         dbTotalLength = 0;
         dbNumberOfSeqs = 0;
     }

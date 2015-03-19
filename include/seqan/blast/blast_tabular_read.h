@@ -119,33 +119,6 @@ const PrivateSpace_<TSpec>::defaultsMinusQId =
     }
 };
 
-/*!
- * @class BlastInputContext
- * @headerfile <seqan/blast.h>
- * @signature struct BlastInputContext { ... };
- * @brief An object that holds buffers for BlastFile reading
- *
- * @remarks
- *
- * This needs to be passed to all read*() functions as a parameter. You should
- * re-use this object (i.e. only create it once in your program) and you do not
- * (and in fact you should not) clear() this. See @link BlastFormat @endlink for
- * an example.
- */
-
-struct BlastInputContext
-{
-    typedef std::string TString;
-
-    TString lastId;
-
-    TString buffer1;
-    TString buffer2;
-    StringSet<TString, Owner<ConcatDirect<>>> buffers1;
-    StringSet<TString, Owner<ConcatDirect<>>> buffers2;
-};
-
-
 // ============================================================================
 // Metafunctions
 // ============================================================================
@@ -188,7 +161,7 @@ strSplit(StringSet<TString, TSpec> & result,
  * @param[in] iter    An input iterator over a stream or any fwd-iterator over a string
  * @param[in] tag     @link BlastFormat @endlink specialization
  *
- * @throw std::basic_ios::exceptions on low-level IO-problems.
+ * @throw IOError On low-level I/O errors.
  *
  * @return    true or false
  */
@@ -224,7 +197,7 @@ template <typename TFieldList,
 inline SEQAN_FUNC_ENABLE_IF(And<IsSequence<TFieldList>,
                                 IsSameType<typename Value<TFieldList>::Type,
                                            typename BlastMatchField<g>::Enum>>)
-_verifyFields(BlastInputContext &,
+_verifyFields(BlastIOContext &,
               TFieldList const & fields,
               unsigned const hits, // irrelevant for traditional header
               BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
@@ -252,7 +225,7 @@ template <typename TString,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline void
-_verifyFields(BlastInputContext & context,
+_verifyFields(BlastIOContext & context,
               StringSet<TString, TSpec> const & fields,
               unsigned const hits, // irrelevant for traditional header
               BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
@@ -281,30 +254,56 @@ _verifyFields(BlastInputContext & context,
 // Function readHeader()
 // ----------------------------------------------------------------------------
 
-template <typename TqId,
-          typename TDBName,
-          typename TVersionString,
+/*!
+ * @fn BlastRecord#readHeader
+ * @brief read a Header from a Blast output file
+ * @headerfile seqan/blast.h
+ *
+ * @signature readHeader(blastRecord, iter, context, tag);
+ *
+ * @param[out]  blastRecord A @link BlastRecord @endlink whose
+ * @param[in,out] iter      An input iterator over a stream or any fwd-iterator over a string
+ * @param[in,out] context   An @link BlastIOContext @endlink with buffers.
+ * @param[in]   tag         @link BlastFormat @endlink tag, only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported.
+ *
+ * Call this function on every line beginning that is not "onMatch". Will
+ * set the @link BlastRecord::qId @endlink member of the record. For
+ * @link BlastFormatGeneration::BLAST_PLUS @endlink it will also resize
+ * the @link BlastRecord::matches @endlink member to the expected number of
+ * matches that will succeed the header.
+ *
+ * This function sets the following members of the @link BlastIOContext @endlink
+ * which may or may not intereset you:
+ * <li> @link BlastDbSpecs::dbName @endlink member of
+ * @link BlastIOContext::dbSpecs @endlink (name of the database)</li>
+ * <li> @link BlastIOContext::headerConformsToStandards @endlink a bool
+ * signafying whether the header contained no anomalies.</li>
+ * <li> @link BlastIOContext::fields @endlink: descriptors for the columns</li>
+ * <li> @link BlastIOContext::fieldsAsStrings @endlink: labels for the columns
+ * as they appear in the file</li>
+ * <li> @link BlastIOContext::otherLines @endlink: any unknown lines</li>
+ *
+ * @throw IOError On low-level I/O errors.
+ * @throw ParseError On high-level file format errors.
+ *
+ * @see BlastFormat#onMatch
+ */
+
+template <typename TQId,
+          typename TSId,
+          typename TPos,
+          typename TAlign,
           typename TFwdIterator,
-          typename TString,
-          typename TString2,
-          typename TSpec,
-          typename TSpec2,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline void
-_readHeaderImplBlastTab(TqId & qId,
-                        TDBName & dbName,
-                        TVersionString & versionString,
-                        StringSet<TString, TSpec> & fields,
-                        unsigned long & hits,
-                        StringSet<TString2, TSpec2> & otherLines,
-                        // any other lines
-                        TFwdIterator & iter,
-                        BlastInputContext & context,
-                        bool                              const   strict,
-                        BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
+_readHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
+                TFwdIterator & iter,
+                BlastIOContext & context,
+                BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
+    typedef BlastMatchField<BlastFormatGeneration::BLAST_PLUS> TMatchField;
 
     // this is a record instead of a header
     if (onMatch(iter, TFormat()))
@@ -332,27 +331,24 @@ _readHeaderImplBlastTab(TqId & qId,
         clear(key);
         readUntil(key, iter, IsBlank());
 
-        if (key == _programTagToString(TFormat()))
+        if (startsWith(key, "BLAST"))
         {
-            // get whole line
-            clear(buf);
-            readLine(buf, iter);
-            auto & fullLine = key;
-            append(fullLine, buf);
+            if (key == _programTagToString(TFormat()))
+                keyCorrect = true;
 
-            versionString = fullLine;
-            keyCorrect = true;
+            readLine(key, iter);
+            context.versionString = key;
         }
         else if (key == "Query:")
         {
             skipUntil(iter, IsGraph());
-            readLine(qId, iter);
+            readLine(r.qId, iter);
             ++queryLinePresent;
         }
         else if (key == "Database:")
         {
             skipUntil(iter, IsGraph());
-            readLine(dbName, iter);
+            readLine(context.dbSpecs.dbName, iter);
             ++dbLinePresent;
         }
         else if (key == "Fields:")
@@ -361,150 +357,225 @@ _readHeaderImplBlastTab(TqId & qId,
 
             clear(buf);
             readLine(buf, iter);
-            strSplit(fields, buf, std::regex(", "));
+            strSplit(context.fieldsAsStrings, buf, std::regex(", "));
 
             ++fieldsLinePresent;
             if (g == BlastFormatGeneration::BLAST_LEGACY)
                 break; // header is finished
+
+            if (context.ignoreFieldsInHeader)
+                break;
+
+            bool defaults = true;
+            resize(context.fields, length(context.fieldsAsStrings));
+            for (uint8_t j = 0; j < length(context.fieldsAsStrings); ++j)
+            {
+                for (uint8_t i = 0; i < length(TMatchField::columnLabels); ++i)
+                {
+                    if (context.fieldsAsStrings[j] ==
+                        TMatchField::columnLabels[i])
+                    {
+                        context.fields[j] =
+                            static_cast<TMatchField::Enum>(i);
+
+                        if ((j >= length(TMatchField::defaults)) &&
+                            (static_cast<TMatchField::Enum>(i) !=
+                             TMatchField::defaults[j]))
+                            defaults = false;
+                        break;
+                    }
+                }
+            }
+            if (defaults) // replace multiple fields with the default meta field
+            {
+                clear(context.fields);
+                appendValue(context.fields, TMatchField::Enum::STD);
+            }
         }
         else
         {
-            // get whole line
-            clear(buf);
-            readLine(buf, iter);
-            auto & fullLine = key;
-            append(fullLine, buf);
+            readLine(key, iter);
 
             if (g == BlastFormatGeneration::BLAST_PLUS)
             {
                 // last line of BlastPlus Format
-                if (hasPrefix(fullLine, "BLAST processed"))
+                if (startsWith(key, "BLAST processed"))
                 {
                     ++lastLine;
                 }
                 // is hits counter?
-                else if (endsWith(fullLine, "hits found"))
+                else if (endsWith(key, "hits found"))
                 {
                     clear(buf);
                     for (unsigned i = 0;
-                         (i < length(fullLine) && isdigit(fullLine[i]));
+                         (i < length(key) && isdigit(key[i]));
                          ++i)
-                        append(buf, fullLine[i], Generous());
+                        append(buf, key[i], Generous());
 
-                    hits = lexicalCast<unsigned long>(buf);
+                    uint64_t hits = lexicalCast<uint64_t>(buf);
 //                     if (ret && strict)
 //                         throw std::ios_base::failure(BAD_FORMAT);
+
+                    if (hits)
+                    {
+                        //resize(r.matches, hits);
+                        r.matches.resize(hits); // TODO fix this
+                    }
+                    else  // hits = 0 means no fieldList, restore default
+                    {
+                        appendValue(context.fields, TMatchField::Enum::STD);
+                        strSplit(context.fieldsAsStrings,
+                                 TMatchField::columnLabels[0],
+                                 std::regex(", "));
+                    }
 
                     ++hitsLinePresent;
                     break; // header is finished
                 }
                 else
                 {
-                    appendValue(otherLines, fullLine, Generous());
+                    appendValue(context.otherLines, key, Generous());
                 }
             }
             else
             {
-                appendValue(otherLines, fullLine, Generous());
+                appendValue(context.otherLines, key, Generous());
             }
         }
     }
 
-    if (!strict)
-        return;
 
     if (g == BlastFormatGeneration::BLAST_LEGACY)
-        if (  keyCorrect                &&
-             (queryLinePresent   == 1)  &&
-             (dbLinePresent      == 1)  &&
-             (fieldsLinePresent  == 1)  &&
-             (length(otherLines) == 0)   )
-            return;
+    {
+        if (!keyCorrect)
+            appendValue(context.conformancyErrors,
+                        std::string("Key incorrect, expected ") +
+                        std::string(_programTagToString(TFormat())));
 
-    if (g == BlastFormatGeneration::BLAST_PLUS)
-        if (( keyCorrect                                   &&
-             (queryLinePresent    == 1)                    &&
-             (dbLinePresent       == 1)                    &&
-             (hitsLinePresent     == 1)                    &&
-             ( (fieldsLinePresent == 1) || (hits==0) )     &&
-             (length(otherLines)  == 0)                     ) ||
-             ( (lastLine          == 1) && atEnd(iter))   )
-            return;
+        if (queryLinePresent != 1)
+            appendValue(context.conformancyErrors,
+                        "No or multiple query lines present.");
 
-    SEQAN_THROW(RecoverableParseError("Header did not meet strict requirements."));
+        if (dbLinePresent != 1)
+            appendValue(context.conformancyErrors,
+                        "No or multiple database lines present.");
+
+        if (fieldsLinePresent != 1)
+            appendValue(context.conformancyErrors,
+                        "No or multiple fields lines present.");
+
+        if (length(context.otherLines) == 0)
+            appendValue(context.conformancyErrors,
+                        "Unexpected lines present, see context.otherLines.");
+    }
+
+
+    if ((g == BlastFormatGeneration::BLAST_PLUS) &&
+        (!(lastLine == 1) && atEnd(iter)))
+    {
+        if (!keyCorrect)
+            appendValue(context.conformancyErrors,
+                        std::string("Key incorrect, expected ") +
+                        std::string(_programTagToString(TFormat())));
+
+        if (queryLinePresent != 1)
+            appendValue(context.conformancyErrors,
+                        "No or multiple query lines present.");
+
+        if (dbLinePresent != 1)
+            appendValue(context.conformancyErrors,
+                        "No or multiple database lines present.");
+        // is ommitted in BLAST_PLUS when there are no hits
+        if ((fieldsLinePresent != 1) && (length(r.matches) > 0))
+            appendValue(context.conformancyErrors,
+                        "No or multiple fields lines present.");
+
+        if (length(context.otherLines) == 0)
+            appendValue(context.conformancyErrors,
+                        "Unexpected lines present, see context.otherLines.");
+    }
 }
 
-// user wants fieldList as a list of fields and not a string
-template <typename TqId,
-          typename TDBName,
-          typename TVersionString,
+template <typename TQId,
+          typename TSId,
+          typename TPos,
+          typename TAlign,
           typename TFwdIterator,
-          typename TString,
-          typename TSpec,
-          typename TFieldList,
-          BlastFormatProgram p>
-inline SEQAN_FUNC_ENABLE_IF(And<IsSequence<TFieldList>,
-                                IsSameType<typename Value<TFieldList>::Type,
-                                           typename BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum>>)
-_readHeaderImplBlastTab(TqId & qId,
-                        TDBName & dbName,
-                        TVersionString & versionString,
-                        TFieldList & fields,
-                        unsigned long & hits,
-                        StringSet<TString, TSpec> & otherLines,
-                        // any other lines
-                        TFwdIterator & iter,
-                        BlastInputContext & context,
-                        bool const strict,
-                        BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                                    p,
-                                    BlastFormatGeneration::BLAST_PLUS> const &)
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
+inline void
+readHeader(BlastRecord<TQId, TSId, TPos, TAlign> & r,
+           TFwdIterator & iter,
+           BlastIOContext & context,
+           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
 {
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        p,
-                        BlastFormatGeneration::BLAST_PLUS> TFormat;
-    typedef BlastMatchField<BlastFormatGeneration::BLAST_PLUS> TMatchField;
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
+    clear(r);
+    clear(context.versionString);
+    clear(context.dbSpecs);
+    clear(context.otherLines);
+    clear(context.fields);
+    clear(context.fieldsAsStrings);
+    clear(context.conformancyErrors);
 
-    clear(context.buffers1);
-    auto & fieldStrings = context.buffers1;
-
-    _readHeaderImplBlastTab(qId,
-                            dbName,
-                            versionString,
-                            fieldStrings,
-                            hits,
-                            otherLines,
-                            iter,
-                            context,
-                            strict,
-                            TFormat());
-
-    if (length(fieldStrings) == 0)
-        return;
-
-    bool defaults = true;
-    for (uint8_t j = 0; j < length(fieldStrings); ++j)
-    {
-        for (uint8_t i = 0; i < length(TMatchField::columnLabels); ++i)
-        {
-            if (fieldStrings[j] == TMatchField::columnLabels[i])
-            {
-                appendValue(fields, static_cast<TMatchField::Enum>(i));
-                if (static_cast<TMatchField::Enum>(i) !=
-                    TMatchField::defaults[j])
-                    defaults = false;
-                break;
-            }
-        }
-    }
-    if (defaults) // replace multiple fields with the default meta field
-    {
-        clear(fields);
-        appendValue(fields, TMatchField::Enum::STD);
-    }
+    _readHeaderImpl(r, iter, context, TFormat());
 }
+
+template <typename TQId,
+          typename TSId,
+          typename TPos,
+          typename TAlign,
+          typename TFwdIterator,
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
+inline void
+readHeader(BlastRecord<TQId, TSId, TPos, TAlign> &,
+           TFwdIterator &,
+           BlastIOContext &,
+           BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
+{
+    // NOOP for TABULAR without header
+}
+
+// ----------------------------------------------------------------------------
+// Function skipHeader()
+// ----------------------------------------------------------------------------
 
 /*!
+ * @fn BlastFormat#skipHeader
+ * @brief skip a header from a Blast tabular output file, optionally verifying it for format compliance.
+ *
+ * @signature int skipHeader(iter, [strict,] tag);
+ *
+ * @param[in,out] iter    An input iterator over a stream or any fwd-iterator over a string
+ * @param[in,out] context A @link BlastIOContext @endlink with parameters and buffers.
+ * @param[in]     tag     @link BlastFormat @endlink tag, only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported.
+ *
+ * Call this function whenever you want to skip exactly one header. If you want
+ * to go directly to the beginning of the next match (possibly skipping multiple
+ * headers that have no succeeding matches) use skipUntilMatch instead.
+ *
+ * @throw IOError On low-level I/O errors.
+ * @throw ParseError On high-level file format errors.
+ *
+ * @see BlastFormat#skipUntilMatch
+ * @headerfile seqan/blast.h
+ */
+
+template <typename TFwdIterator,
+          BlastFormatFile m,
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
+inline void
+skipHeader(TFwdIterator & iter,
+           BlastIOContext & context,
+           BlastFormat<m, p, g> const & /*tag*/)
+{
+    BlastRecord<> r;
+    readHeader(r, iter, context, BlastFormat<m, p, g>());
+}
+
+/*
  * @fn BlastFormat#readHeader
  * @brief read a Header from a Blast output file
  * @headerfile seqan/blast.h
@@ -518,7 +589,7 @@ _readHeaderImplBlastTab(TqId & qId,
  * @param[out]  fields      StringSet to hold column identifiers, useful if non-defaults are expected
  * @param[out]  otherLines  StringSet to hold any comment or header lines that are not identified otherwise
  * @param[in,out] iter      An input iterator over a stream or any fwd-iterator over a string
- * @param[in,out] context   An @link BlastInputContext @endlink with buffers.
+ * @param[in,out] context   An @link BlastIOContext @endlink with buffers.
  * @param[in]   strict      bool to signify whether the function should error on a non-conforming header or just "get whatever possible". If not using strict, it is recommended to pass fields and otherLines and verify these manually.
  * @param[in]   tag         @link BlastFormat @endlink tag, only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported.
  *
@@ -537,271 +608,271 @@ _readHeaderImplBlastTab(TqId & qId,
  * @see BlastFormat#onMatch
  */
 
-// default traditional Blast or BlastPlus
-template <typename TqId,
-          typename TDBName,
-          typename TVersionString,
-          typename TFwdIterator,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline void
-readHeader(TqId & qId,
-           TDBName & dbName,
-           TVersionString & versionString,
-           TFwdIterator & iter,
-           BlastInputContext & context,
-           bool const strict,
-           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
-
-    clear(context.buffers1);
-    clear(context.buffers2);
-    auto & otherLines   = context.buffers1;
-    auto & fields       = context.buffers2;
-
-    unsigned long hits = 0;
-
-    _readHeaderImplBlastTab(qId,
-                            dbName,
-                            versionString,
-                            fields,
-                            hits,
-                            otherLines,
-                            iter,
-                            context,
-                            strict,
-                            TFormat());
-
-    if (strict)
-        _verifyFields(context, fields, hits, TFormat());
-}
-
-// BlastPlus with hit count
-template <typename TqId,
-          typename TDBName,
-          typename TVersionString,
-          typename TFwdIterator,
-          BlastFormatProgram p>
-inline void
-readHeader(TqId & qId,
-           TDBName & dbName,
-           TVersionString & versionString,
-           unsigned long & hits,
-           TFwdIterator & iter,
-           BlastInputContext & context,
-           bool const strict,
-           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                       p,
-                       BlastFormatGeneration::BLAST_PLUS> const & /*tag*/)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        p,
-                        BlastFormatGeneration::BLAST_PLUS> TFormat;
-
-    clear(context.buffers1);
-    clear(context.buffers2);
-    auto & otherLines   = context.buffers1;
-    auto & fields       = context.buffers2;
-
-    _readHeaderImplBlastTab(qId,
-                            dbName,
-                            versionString,
-                            fields,
-                            hits,
-                            otherLines,
-                            iter,
-                            context,
-                            strict,
-                            TFormat());
-
-    if (strict)
-         _verifyFields(context, fields, hits, TFormat());
-}
-
-// with fields
-template <typename TqId,
-          typename TDBName,
-          typename TVersionString,
-          typename TFieldList,
-          typename TFwdIterator,
-          BlastFormatProgram p,
-          BlastFormatGeneration g,
-          typename std::enable_if<
-            Is<ContainerConcept<TFieldList>>::VALUE, int>::type = 0>
-inline void
-readHeader(TqId & qId,
-           TDBName & dbName,
-           TVersionString & versionString,
-           TFieldList & fields,
-           TFwdIterator & iter,
-           BlastInputContext & context,
-           bool const strict,
-           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
-
-    clear(context.buffers1);
-    auto & otherLines   = context.buffers1;
-
-    unsigned long hits = 0;
-
-    _readHeaderImplBlastTab(qId,
-                            dbName,
-                            versionString,
-                            fields,
-                            hits,
-                            otherLines,
-                            iter,
-                            context,
-                            strict,
-                            TFormat());
-
-    // don't verify fields, if user specified that he wants the list
-    // of fields, because that implies that he expects non-defaults
-}
-
-// with fields and hits count
-template <typename TqId,
-          typename TDBName,
-          typename TVersionString,
-          typename TFieldList,
-          typename TFwdIterator,
-          BlastFormatProgram p,
-          typename std::enable_if<
-            Is<ContainerConcept<TFieldList>>::VALUE, int>::type = 0>
-inline void
-readHeader(TqId & qId,
-           TDBName & dbName,
-           TVersionString & versionString,
-           unsigned long & hits,
-           TFieldList & fields,
-           TFwdIterator & iter,
-           BlastInputContext & context,
-           bool const  strict,
-           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                       p,
-                       BlastFormatGeneration::BLAST_PLUS> const & /*tag*/)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        p,
-                        BlastFormatGeneration::BLAST_PLUS> TFormat;
-
-    clear(context.buffers1);
-    auto & otherLines   = context.buffers1;
-
-    _readHeaderImplBlastTab(qId,
-                            dbName,
-                            versionString,
-                            fields,
-                            hits,
-                            otherLines,
-                            iter,
-                            context,
-                            strict,
-                            TFormat());
-
-    // don't verify fields, if user specified that he wants the list
-    // of fields, because that implies that he expects non-defaults
-}
-
-
-// with fields and otherLines
-template <typename TqId,
-          typename TDBName,
-          typename TVersionString,
-          typename TFieldList,
-          typename TOtherString,
-          typename TFwdIterator,
-          BlastFormatProgram p,
-          BlastFormatGeneration g,
-          typename std::enable_if<
-            Is<ContainerConcept<TFieldList>>::VALUE, int>::type = 0>
-inline void
-readHeader(TqId & qId,
-           TDBName & dbName,
-           TVersionString & versionString,
-           TFieldList & fields,
-           StringSet<TOtherString> & otherLines,
-           TFwdIterator & iter,
-           BlastInputContext & context,
-           bool const strict,
-           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
-
-    unsigned long hits = 0;
-
-    _readHeaderImplBlastTab(qId,
-                            dbName,
-                            versionString,
-                            fields,
-                            hits,
-                            otherLines,
-                            iter,
-                            context,
-                            strict,
-                            TFormat());
-
-    // don't verify fields, if user specified that he wants the list
-    // of fields, because that implies that he expects non-defaults
-}
-
-// with fields and otherLines and hits count
-template <typename TqId,
-          typename TDBName,
-          typename TVersionString,
-          typename TFieldList,
-          typename TOtherString,
-          typename TFwdIterator,
-          BlastFormatProgram p,
-          typename std::enable_if<
-            Is<ContainerConcept<TFieldList>>::VALUE, int>::type = 0>
-inline void
-readHeader(TqId & qId,
-           TDBName & dbName,
-           TVersionString & versionString,
-           unsigned long & hits,
-           TFieldList & fields,
-           StringSet<TOtherString> & otherLines,
-           TFwdIterator & iter,
-           BlastInputContext & context,
-           bool const strict,
-           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                       p,
-                       BlastFormatGeneration::BLAST_PLUS> const & /*tag*/)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        p,
-                        BlastFormatGeneration::BLAST_PLUS> TFormat;
-
-    _readHeaderImplBlastTab(qId,
-                            dbName,
-                            versionString,
-                            fields,
-                            hits,
-                            otherLines,
-                            iter,
-                            context,
-                            strict,
-                            TFormat());
-
-    // don't verify fields, if user specified that he wants the list
-    // of fields, because that implies that he expects non-defaults
-}
+// // default traditional Blast or BlastPlus
+// template <typename TqId,
+//           typename TDBName,
+//           typename TVersionString,
+//           typename TFwdIterator,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline void
+// readHeader(TqId & qId,
+//            TDBName & dbName,
+//            TVersionString & versionString,
+//            TFwdIterator & iter,
+//            BlastIOContext & context,
+//            bool const strict,
+//            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
+// {
+//     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
+//
+//     clear(context.buffers1);
+//     clear(context.buffers2);
+//     auto & otherLines   = context.buffers1;
+//     auto & fields       = context.buffers2;
+//
+//     unsigned long hits = 0;
+//
+//     _readHeaderImplBlastTab(qId,
+//                             dbName,
+//                             versionString,
+//                             fields,
+//                             hits,
+//                             otherLines,
+//                             iter,
+//                             context,
+//                             strict,
+//                             TFormat());
+//
+//     if (strict)
+//         _verifyFields(context, fields, hits, TFormat());
+// }
+//
+// // BlastPlus with hit count
+// template <typename TqId,
+//           typename TDBName,
+//           typename TVersionString,
+//           typename TFwdIterator,
+//           BlastFormatProgram p>
+// inline void
+// readHeader(TqId & qId,
+//            TDBName & dbName,
+//            TVersionString & versionString,
+//            unsigned long & hits,
+//            TFwdIterator & iter,
+//            BlastIOContext & context,
+//            bool const strict,
+//            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+//                        p,
+//                        BlastFormatGeneration::BLAST_PLUS> const & /*tag*/)
+// {
+//     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+//                         p,
+//                         BlastFormatGeneration::BLAST_PLUS> TFormat;
+//
+//     clear(context.buffers1);
+//     clear(context.buffers2);
+//     auto & otherLines   = context.buffers1;
+//     auto & fields       = context.buffers2;
+//
+//     _readHeaderImplBlastTab(qId,
+//                             dbName,
+//                             versionString,
+//                             fields,
+//                             hits,
+//                             otherLines,
+//                             iter,
+//                             context,
+//                             strict,
+//                             TFormat());
+//
+//     if (strict)
+//          _verifyFields(context, fields, hits, TFormat());
+// }
+//
+// // with fields
+// template <typename TqId,
+//           typename TDBName,
+//           typename TVersionString,
+//           typename TFieldList,
+//           typename TFwdIterator,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g,
+//           typename std::enable_if<
+//             Is<ContainerConcept<TFieldList>>::VALUE, int>::type = 0>
+// inline void
+// readHeader(TqId & qId,
+//            TDBName & dbName,
+//            TVersionString & versionString,
+//            TFieldList & fields,
+//            TFwdIterator & iter,
+//            BlastIOContext & context,
+//            bool const strict,
+//            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
+// {
+//     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
+//
+//     clear(context.buffers1);
+//     auto & otherLines   = context.buffers1;
+//
+//     unsigned long hits = 0;
+//
+//     _readHeaderImplBlastTab(qId,
+//                             dbName,
+//                             versionString,
+//                             fields,
+//                             hits,
+//                             otherLines,
+//                             iter,
+//                             context,
+//                             strict,
+//                             TFormat());
+//
+//     // don't verify fields, if user specified that he wants the list
+//     // of fields, because that implies that he expects non-defaults
+// }
+//
+// // with fields and hits count
+// template <typename TqId,
+//           typename TDBName,
+//           typename TVersionString,
+//           typename TFieldList,
+//           typename TFwdIterator,
+//           BlastFormatProgram p,
+//           typename std::enable_if<
+//             Is<ContainerConcept<TFieldList>>::VALUE, int>::type = 0>
+// inline void
+// readHeader(TqId & qId,
+//            TDBName & dbName,
+//            TVersionString & versionString,
+//            unsigned long & hits,
+//            TFieldList & fields,
+//            TFwdIterator & iter,
+//            BlastIOContext & context,
+//            bool const  strict,
+//            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+//                        p,
+//                        BlastFormatGeneration::BLAST_PLUS> const & /*tag*/)
+// {
+//     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+//                         p,
+//                         BlastFormatGeneration::BLAST_PLUS> TFormat;
+//
+//     clear(context.buffers1);
+//     auto & otherLines   = context.buffers1;
+//
+//     _readHeaderImplBlastTab(qId,
+//                             dbName,
+//                             versionString,
+//                             fields,
+//                             hits,
+//                             otherLines,
+//                             iter,
+//                             context,
+//                             strict,
+//                             TFormat());
+//
+//     // don't verify fields, if user specified that he wants the list
+//     // of fields, because that implies that he expects non-defaults
+// }
+//
+//
+// // with fields and otherLines
+// template <typename TqId,
+//           typename TDBName,
+//           typename TVersionString,
+//           typename TFieldList,
+//           typename TOtherString,
+//           typename TFwdIterator,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g,
+//           typename std::enable_if<
+//             Is<ContainerConcept<TFieldList>>::VALUE, int>::type = 0>
+// inline void
+// readHeader(TqId & qId,
+//            TDBName & dbName,
+//            TVersionString & versionString,
+//            TFieldList & fields,
+//            StringSet<TOtherString> & otherLines,
+//            TFwdIterator & iter,
+//            BlastIOContext & context,
+//            bool const strict,
+//            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
+// {
+//     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
+//
+//     unsigned long hits = 0;
+//
+//     _readHeaderImplBlastTab(qId,
+//                             dbName,
+//                             versionString,
+//                             fields,
+//                             hits,
+//                             otherLines,
+//                             iter,
+//                             context,
+//                             strict,
+//                             TFormat());
+//
+//     // don't verify fields, if user specified that he wants the list
+//     // of fields, because that implies that he expects non-defaults
+// }
+//
+// // with fields and otherLines and hits count
+// template <typename TqId,
+//           typename TDBName,
+//           typename TVersionString,
+//           typename TFieldList,
+//           typename TOtherString,
+//           typename TFwdIterator,
+//           BlastFormatProgram p,
+//           typename std::enable_if<
+//             Is<ContainerConcept<TFieldList>>::VALUE, int>::type = 0>
+// inline void
+// readHeader(TqId & qId,
+//            TDBName & dbName,
+//            TVersionString & versionString,
+//            unsigned long & hits,
+//            TFieldList & fields,
+//            StringSet<TOtherString> & otherLines,
+//            TFwdIterator & iter,
+//            BlastIOContext & context,
+//            bool const strict,
+//            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+//                        p,
+//                        BlastFormatGeneration::BLAST_PLUS> const & /*tag*/)
+// {
+//     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+//                         p,
+//                         BlastFormatGeneration::BLAST_PLUS> TFormat;
+//
+//     _readHeaderImplBlastTab(qId,
+//                             dbName,
+//                             versionString,
+//                             fields,
+//                             hits,
+//                             otherLines,
+//                             iter,
+//                             context,
+//                             strict,
+//                             TFormat());
+//
+//     // don't verify fields, if user specified that he wants the list
+//     // of fields, because that implies that he expects non-defaults
+// }
 
 // ----------------------------------------------------------------------------
 // Function skipHeader()
 // ----------------------------------------------------------------------------
 
-/*!
+/*
  * @fn BlastFormat#skipHeader
  * @brief skip a header from a Blast tabular output file, optionally verifying it for format compliance.
  *
  * @signature int skipHeader(iter, [strict,] tag);
  *
  * @param[in,out] iter    An input iterator over a stream or any fwd-iterator over a string
- * @param[in,out] context A @link BlastInputContext @endlink with buffers.
+ * @param[in,out] context A @link BlastIOContext @endlink with parameters and buffers.
  * @param[in]     strict  bool to signify whether the function should error on a non-conforming header or just "skip whatever possible".
  * @param[in]     tag     @link BlastFormat @endlink tag, only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported.
  *
@@ -819,50 +890,50 @@ readHeader(TqId & qId,
  * @headerfile seqan/blast.h
  */
 
-template <typename TFwdIterator,
-          BlastFormatFile m,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline void
-skipHeader(TFwdIterator & iter,
-           BlastInputContext & context,
-           bool const strict,
-           BlastFormat<m, p, g> const & /*tag*/)
-{
-    clear(context.buffer1);
-    clear(context.buffers1);
-    clear(context.buffers2);
-    auto & qId              = context.buffer1;
-    auto & dbName           = context.buffer1;
-    auto & versionString    = context.buffer1;
-    auto & fields           = context.buffers1;
-    auto & otherLines       = context.buffers2;
-
-    unsigned long hits = 0;
-
-    _readHeaderImplBlastTab(qId,
-                            dbName,
-                            versionString,
-                            fields,
-                            hits,
-                            otherLines,
-                            iter,
-                            context,
-                            strict,
-                            BlastFormat<m, p, g>());
-}
-
-template <typename TFwdIterator,
-          BlastFormatFile m,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline void
-skipHeader(TFwdIterator & iter,
-           BlastInputContext & context,
-           BlastFormat<m, p, g> const & /*tag*/)
-{
-    skipHeader(iter, context, false, BlastFormat<m, p, g>());
-}
+// template <typename TFwdIterator,
+//           BlastFormatFile m,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline void
+// skipHeader(TFwdIterator & iter,
+//            BlastIOContext & context,
+//            bool const strict,
+//            BlastFormat<m, p, g> const & /*tag*/)
+// {
+//     clear(context.buffer1);
+//     clear(context.buffers1);
+//     clear(context.buffers2);
+//     auto & qId              = context.buffer1;
+//     auto & dbName           = context.buffer1;
+//     auto & versionString    = context.buffer1;
+//     auto & fields           = context.buffers1;
+//     auto & otherLines       = context.buffers2;
+//
+//     unsigned long hits = 0;
+//
+//     _readHeaderImplBlastTab(qId,
+//                             dbName,
+//                             versionString,
+//                             fields,
+//                             hits,
+//                             otherLines,
+//                             iter,
+//                             context,
+//                             strict,
+//                             BlastFormat<m, p, g>());
+// }
+//
+// template <typename TFwdIterator,
+//           BlastFormatFile m,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline void
+// skipHeader(TFwdIterator & iter,
+//            BlastIOContext & context,
+//            BlastFormat<m, p, g> const & /*tag*/)
+// {
+//     skipHeader(iter, context, false, BlastFormat<m, p, g>());
+// }
 
 // ----------------------------------------------------------------------------
 // Function skipUntilMatch()
@@ -914,7 +985,7 @@ template <typename TqId,
           typename TAlign>
 inline void
 _readField(BlastMatch<TqId, TsId, TPos, TAlign> & match,
-           BlastInputContext & context,
+           BlastIOContext & context,
            typename BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum
              const fieldId)
 {
@@ -1043,13 +1114,11 @@ template <typename TqId,
           typename TFwdIterator,
           typename TPos,
           typename TAlign,
-          typename TFieldList,
           BlastFormatProgram    p>
 inline void
 _readMatchImpl(BlastMatch<TqId, TsId, TPos, TAlign> & match,
                TFwdIterator & iter,
-               BlastInputContext & context,
-               TFieldList const & fieldList,
+               BlastIOContext & context,
                BlastFormat<BlastFormatFile::TABULAR,
                            p,
                            BlastFormatGeneration::BLAST_PLUS> const &)
@@ -1078,7 +1147,7 @@ _readMatchImpl(BlastMatch<TqId, TsId, TPos, TAlign> & match,
     int posIsPercent = -1;
 
     unsigned n = 0u;
-    for (typename TField::Enum const f : fieldList)
+    for (typename TField::Enum const f : context.fields)
     {
         // this field represents multiple fields
         if (f == TField::Enum::STD)
@@ -1130,13 +1199,11 @@ template <typename TqId,
           typename TFwdIterator,
           typename TPos,
           typename TAlign,
-          typename TFieldList,
           BlastFormatProgram    p>
 inline void
 _readMatchImpl(BlastMatch<TqId, TsId, TPos, TAlign> & match,
                TFwdIterator & iter,
-               BlastInputContext & context,
-               TFieldList const & fieldList,
+               BlastIOContext & context,
                BlastFormat<BlastFormatFile::TABULAR,
                            p,
                            BlastFormatGeneration::BLAST_LEGACY> const &)
@@ -1147,17 +1214,20 @@ _readMatchImpl(BlastMatch<TqId, TsId, TPos, TAlign> & match,
     typedef BlastFormat<BlastFormatFile::TABULAR,
                         p,
                         BlastFormatGeneration::BLAST_PLUS> TFormat;
+    typedef typename BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum TEnum;
 
-    auto const & legacyDefaults =
-        BlastMatchField<BlastFormatGeneration::BLAST_LEGACY>::defaults;
-    // this can always only be called with defaults
-    SEQAN_ASSERT(&fieldList == &legacyDefaults);
+    if (SEQAN_ENABLE_DEBUG)
+    {
+        if ((length(context.fields) != 1) || (context.fields[0] != TEnum::STD))
+            std::cerr << "custom fields set, but will be ignored for "
+                         "BlastFormatGeneration::BLAST_LEGACY\n";
+    }
 
+    // set defaults
+    clear(context.fields);
+    appendValue(context.fields, TEnum::STD);
 
-    auto const & plusDefaults =
-        BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::defaults;
-
-    _readMatchImpl(match, iter, context, plusDefaults, TFormat());
+    _readMatchImpl(match, iter, context, TFormat());
 
     // since gaps are included in the mismatch count in BLAST_LEGACY the gaps
     // computed here will always be zero, so we instead reset them to signify
@@ -1169,20 +1239,19 @@ _readMatchImpl(BlastMatch<TqId, TsId, TPos, TAlign> & match,
  * @fn BlastMatch#readMatch
  * @brief read a match from a file in BlastFormat
  *
- * @signature readMatch(blastMatch, iter, [fieldList,] tag);
+ * @signature readMatch(blastMatch, iter, tag);
  *
  * @param[out]    blastMatch  A @link BlastMatch @endlink object to hold all relevant info
  * @param[in,out] iter        An input iterator over a stream or any fwd-iterator over a string
- * @param[in,out] context     A @link BlastInputContext @endlink with buffers.
- * @param[in]     fieldList   A Sequence of @link BlastMatchField @endlink
+ * @param[in,out] context     A @link BlastIOContext @endlink with parameters and buffers.
  * @param[in]     tag         @link BlastFormat @endlink tag, only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported.
  *
  * This signature works with @link BlastMatch @endlinkes which is the recommended
- * way. The fieldList parameter can be specified if the file if you expect a
- * custom column composition (this only works for BlastFormatGeneration ==
- * BLAST_PLUS).
+ * way.
  *
- * Specifying the fieldList parameter implies that you know the columns are not
+ * The @link BlastIOContext::fields @endlink member of the context
+ * can be specified if you expect a custom column composition. Specifying this
+ * parameter implies that you know the columns are not
  * default and that they instead represent the given order and types.
  * You may specify less
  * fields than are actually present, in this case the additional fields will be
@@ -1219,22 +1288,17 @@ template <typename TqId,
           typename TFwdIterator,
           typename TPos,
           typename TAlign,
-          typename TFieldList,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline void
 readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
           TFwdIterator & iter,
-          BlastInputContext & context,
-          TFieldList const & fieldList,
+          BlastIOContext & context,
           BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
 {
-    static_assert(g == BlastFormatGeneration::BLAST_PLUS,
-                  "fieldList parameter may only be specified for "
-                  "BlastFormatGeneration::BLAST_PLUS");
-
+    clear(match);
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-    _readMatchImpl(match, iter, context, fieldList, TFormat());
+    _readMatchImpl(match, iter, context, TFormat());
 }
 
 template <typename TqId,
@@ -1242,69 +1306,85 @@ template <typename TqId,
           typename TFwdIterator,
           typename TPos,
           typename TAlign,
-          typename TFieldList,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline void
 readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
           TFwdIterator & iter,
-          BlastInputContext & context,
-          TFieldList const & fieldList,
+          BlastIOContext & context,
           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
 {
-    static_assert(g == BlastFormatGeneration::BLAST_PLUS,
-                  "fieldList parameter may only be specified for "
-                  "BlastFormatGeneration::BLAST_PLUS");
-
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-    _readMatchImpl(match, iter, context, fieldList, TFormat());
+    readMatch(match, iter, context, TFormat());
 }
 
-
-// default fields
-template <typename TqId,
-          typename TsId,
-          typename TFwdIterator,
-          typename TPos,
-          typename TAlign,
-          BlastFormatProgram    p,
-          BlastFormatGeneration g>
-inline void
-readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
-          TFwdIterator & iter,
-          BlastInputContext & context,
-          BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-    _readMatchImpl(match, iter, context, BlastMatchField<g>::defaults, TFormat());
-}
-
-// default fields
-template <typename TqId,
-          typename TsId,
-          typename TFwdIterator,
-          typename TPos,
-          typename TAlign,
-          BlastFormatProgram    p,
-          BlastFormatGeneration g>
-inline void
-readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
-          TFwdIterator & iter,
-          BlastInputContext & context,
-          BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat; // same as above
-    _readMatchImpl(match, iter, context, BlastMatchField<g>::defaults, TFormat());
-}
+// template <typename TqId,
+//           typename TsId,
+//           typename TFwdIterator,
+//           typename TPos,
+//           typename TAlign,
+//           typename TFieldList,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline void
+// readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
+//           TFwdIterator & iter,
+//           BlastIOContext & context,
+//           TFieldList const & fieldList,
+//           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
+// {
+//     static_assert(g == BlastFormatGeneration::BLAST_PLUS,
+//                   "fieldList parameter may only be specified for "
+//                   "BlastFormatGeneration::BLAST_PLUS");
+//
+//     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
+//     _readMatchImpl(match, iter, context, fieldList, TFormat());
+// }
+//
+//
+// // default fields
+// template <typename TqId,
+//           typename TsId,
+//           typename TFwdIterator,
+//           typename TPos,
+//           typename TAlign,
+//           BlastFormatProgram    p,
+//           BlastFormatGeneration g>
+// inline void
+// readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
+//           TFwdIterator & iter,
+//           BlastIOContext & context,
+//           BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
+// {
+//     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
+//     _readMatchImpl(match, iter, context, BlastMatchField<g>::defaults, TFormat());
+// }
+//
+// // default fields
+// template <typename TqId,
+//           typename TsId,
+//           typename TFwdIterator,
+//           typename TPos,
+//           typename TAlign,
+//           BlastFormatProgram    p,
+//           BlastFormatGeneration g>
+// inline void
+// readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
+//           TFwdIterator & iter,
+//           BlastIOContext & context,
+//           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
+// {
+//     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat; // same as above
+//     _readMatchImpl(match, iter, context, BlastMatchField<g>::defaults, TFormat());
+// }
 
 /*!
  * @fn BlastFormat#readMatch
  * @brief read arbitrary columns from a file in BlastFormat
  *
- * @signature readMatch(iter, BlastFormat, args ...);
+ * @signature readMatch(iter, tag, args ...);
  *
  * @param[in,out] iter    An input iterator over a stream or any fwd-iterator over a string
- * @param[in,out] context A @link BlastInputContext @endlink with buffers.
  * @param[in]     tag     Only BlastFormatFile == TABULAR || TABULAR_WITH_HEADER supported
  * @param[out]    args    Arbitrary typed variables
  *
@@ -1346,14 +1426,13 @@ template <typename TFwdIterator,
           typename TArg>
 inline void
 _readMatchImplBlastTab(TFwdIterator & iter,
-                       BlastInputContext & context,
                        TArg & arg)
 {
-    clear(context.buffer1);
+    std::string buffer;
     SEQAN_TRY
     {
-        readUntil(context.buffer1, iter, OrFunctor<IsTab,IsNewline>());
-        _assignOrCast(arg, context.buffer1);
+        readUntil(buffer, iter, OrFunctor<IsTab,IsNewline>());
+        _assignOrCast(arg, buffer);
     } SEQAN_CATCH (UnexpectedEnd const &)
     {
         return;
@@ -1367,17 +1446,16 @@ template <typename TFwdIterator,
           typename... TArgs>
 inline void
 _readMatchImplBlastTab(TFwdIterator & iter,
-                       BlastInputContext & context,
                        TArg & arg,
                        TArgs & ... args)
 {
-    clear(context.buffer1);
-    readUntil(context.buffer1, iter, IsTab());
+    std::string buffer;
+    readUntil(buffer, iter, IsTab());
     skipOne(iter, IsTab());
-    _assignOrCast(arg, context.buffer1);
+    _assignOrCast(arg, buffer);
 
     // recurse to next argument
-    _readMatchImplBlastTab(iter, context, args...);
+    _readMatchImplBlastTab(iter, args...);
 }
 
 // custom arguments
@@ -1387,7 +1465,6 @@ template <typename TFwdIterator,
           BlastFormatGeneration g>
 inline void
 readMatch(TFwdIterator & iter,
-          BlastInputContext & context,
           BlastFormat<BlastFormatFile::TABULAR, p, g> const &,
           TArgs & ... args)
 {
@@ -1397,7 +1474,7 @@ readMatch(TFwdIterator & iter,
         SEQAN_THROW(ParseError("Not on beginning of Match (you should have "
                                "skipped comments)."));
 
-    _readMatchImplBlastTab(iter, context, args...);
+    _readMatchImplBlastTab(iter, args...);
 }
 
 template <typename TFwdIterator,
@@ -1406,12 +1483,11 @@ template <typename TFwdIterator,
           BlastFormatGeneration g>
 inline void
 readMatch(TFwdIterator & iter,
-          BlastInputContext & context,
           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &,
           TArgs & ... args)
 {
     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat; // same as above
-    readMatch(iter, context, TFormat(), args...);
+    readMatch(iter, TFormat(), args...);
 }
 
 // ----------------------------------------------------------------------------
@@ -1422,41 +1498,65 @@ readMatch(TFwdIterator & iter,
  * @fn BlastMatch#skipMatch
  * @brief skip a line that contains a match
  *
- * @signature skipMatch(iter, [strict,]  tag);
+ * @signature skipMatch(iter, context, tag);
  *
  * @param[in,out] iter    An input iterator over a stream or any fwd-iterator over a string
- * @param[in,out] context A @link BlastInputContext @endlink with buffers.
- * @param[in]     strict  Verify that the line skipped has default columns (defaults to false)
+ * @param[in,out] context A @link BlastIOContext @endlink with parameters and buffers.
  * @param[in]     tag     @link BlastFormat @endlink specialization,
  * with BlastFormatFile == BlastFormatFile::TABULAR || BlastFormatFile::TABULAR_WITH_HEADER
  *
  * This function always checks whether it is on a line that is not a comment and
- * can optionally check that skipped lines are indeed matches.
+ * it does verify the line read as looking like a match. If you do not want this
+ * behaviour you can instead <texttt>skipLine(iter)</texttt> which is also
+ * faster.
  *
  * @throw IOError On low-level I/O errors.
  * @throw ParseError On high-level file format errors.
- * @throw RecoverableParseError if the strictness condition is violated;
- * it is safe to catch this (and e.g. print some debug message) and then just
- * continue program operation.
-
+ *
  * @see BlastFormat#skipHeader
  * @headerfile seqan/blast.h
  */
 
+// template <typename TFwdIterator,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline void
+// skipMatch(TFwdIterator & iter,
+//           BlastIOContext &,
+//           BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
+// {
+//     typedef  BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
+//     // header should have been read or skipped
+//     if (SEQAN_UNLIKELY(!onMatch(iter, TFormat())))
+//         SEQAN_THROW(ParseError("Not on beginning of Match (you should have "
+//                                "skipped comments)."));
+//     skipLine(iter);
+// }
+//
+// template <typename TFwdIterator,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline void
+// skipMatch(TFwdIterator & iter,
+//           BlastIOContext & context,
+//           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
+// {
+//     typedef  BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
+//     skipMatch(iter, context, TFormat());
+// }
+
 template <typename TFwdIterator,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline void
 skipMatch(TFwdIterator & iter,
-          BlastInputContext &,
+          BlastIOContext & context,
           BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
 {
     typedef  BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-    // header should have been read or skipped
-    if (SEQAN_UNLIKELY(!onMatch(iter, TFormat())))
-        SEQAN_THROW(ParseError("Not on beginning of Match (you should have "
-                               "skipped comments)."));
-    skipLine(iter);
+
+    BlastMatch<> m;
+    readMatch(m, iter, context, TFormat());
 }
 
 template <typename TFwdIterator,
@@ -1464,47 +1564,11 @@ template <typename TFwdIterator,
           BlastFormatGeneration g>
 inline void
 skipMatch(TFwdIterator & iter,
-          BlastInputContext & context,
+          BlastIOContext & context,
           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
 {
     typedef  BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
     skipMatch(iter, context, TFormat());
-}
-
-template <typename TFwdIterator,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline void
-skipMatch(TFwdIterator & iter,
-          BlastInputContext & context,
-          bool strict,
-          BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
-{
-    typedef  BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-    if (!strict)
-        return skipMatch(iter, context, TFormat());
-
-    BlastMatch<> m;
-    SEQAN_TRY
-    {
-        readMatch(m, iter, context, TFormat());
-    } SEQAN_CATCH (ParseError const & e)
-    {
-        SEQAN_THROW(RecoverableParseError(e.what()));
-    }
-}
-
-template <typename TFwdIterator,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline void
-skipMatch(TFwdIterator & iter,
-          BlastInputContext & context,
-          bool strict,
-          BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
-{
-    typedef  BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-    skipMatch(iter, context, strict, TFormat());
 }
 
 // ----------------------------------------------------------------------------
@@ -1512,6 +1576,210 @@ skipMatch(TFwdIterator & iter,
 // ----------------------------------------------------------------------------
 
 /*!
+ * @fn BlastRecord#readRecord
+ * @brief read a record from a file in BlastFormat
+ *
+ * @signature readRecord(blastRecord, iter, context, tag);
+ *
+ * @param[out]    blastRecord A @link BlastRecord @endlink to hold all relevant info
+ * @param[in,out] iter        An input iterator over a stream or any fwd-iterator over a string
+ * @param[in,out] context     A @link BlastIOContext @endlink with parameters and buffers.
+ * @param[in]     tag         @link BlastFormat @endlink specialization
+ *
+ * This function will read an entire record from a blast (tabular) file, i.e.
+ * a @link BlastRecord @endlink object including 0-n @link BlastMatch @endlink
+ * objects.
+ *
+ * In the case of the TABULAR_WITH_HEADER format, this function also sets the
+ * following members of the @link BlastIOContext @endlink
+ * which may or may not intereset you:
+ * <li> @link BlastDbSpecs::dbName @endlink member of
+ * @link BlastIOContext::dbSpecs @endlink (name of the database)</li>
+ * <li> @link BlastIOContext::headerConformsToStandards @endlink a bool
+ * signafying whether the header contained no anomalies.</li>
+ * <li> @link BlastIOContext::fields @endlink: descriptors for the columns</li>
+ * <li> @link BlastIOContext::fieldsAsStrings @endlink: labels for the columns
+ * as they appear in the file</li>
+ * <li> @link BlastIOContext::otherLines @endlink: any unknown lines</li>
+ *
+ * In @link BlastIOContext::fields @endlink member is read from the header and
+ * used as in-parameter for reading the matches, i.e. it reads the column
+ * labels and after that expects the values in the columns to correspond
+ * to this. If you do not want this behaviour, because you expect the header
+ * to be non-standard -- as is the case with many tools -- you can set
+ * context.@link BlastIOContext::ignoreFieldsInHeader @endlink to true.
+ * In this case the you can also set
+ * context.@link BlastIOContext::fields @endlink manually and these columns
+ * will be expected for the matches, independent of the header. The latter
+ * behaviour is also default for the TABULAR format without headers.
+ *
+ * For @link BlastFormatGeneration @endlink::BLAST_LEGACY the fields member is
+ * always ignored, however @link BlastIOContext::fieldsAsStrings @endlink is
+ * still read from the header.
+ *
+ * Please note that for the TABULAR format (without headers) the boundary
+ * between records is inferred from the indentity of the first field, i.e.
+ * custom columns must also have Q_SEQ_ID as first field. Also you must pass
+ * an std::string buffer as in-out parameter to cache this field.
+ * @link BlastMatch#readMatch @endlink.
+ *
+ * @throw IOError On low-level I/O errors.
+ * @throw ParseError On high-level file format errors.
+ *
+ * @headerfile seqan/blast.h
+ */
+
+template <typename TFwdIterator,
+          typename TQId,
+          typename TSId,
+          typename TAlign,
+          typename TPos,
+          BlastFormatProgram p>
+inline void
+readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
+           TFwdIterator & iter,
+           BlastIOContext & context,
+           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                       p,
+                       BlastFormatGeneration::BLAST_PLUS> const &)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                       p,
+                       BlastFormatGeneration::BLAST_PLUS> TFormat;
+
+    readHeader(blastRecord, iter, context, TFormat());
+
+    // .matches already resized for us
+    for (auto & m : blastRecord.matches)
+    {
+        if (!onMatch(iter, TFormat()))
+        {
+            appendValue(context.conformancyErrors,
+                        "Less matches than promised by header");
+            break;
+        }
+
+        readMatch(m, iter, context, TFormat());
+    }
+
+    if ((!atEnd(iter)) && onMatch(iter, TFormat()))
+        appendValue(context.conformancyErrors,
+                    "Less matches than promised by header");
+
+    while ((!atEnd(iter)) && onMatch(iter, TFormat()))
+    {
+        blastRecord.matches.emplace_back();
+        readMatch(back(blastRecord.matches), iter, context, TFormat());
+    }
+}
+
+template <typename TFwdIterator,
+          typename TQId,
+          typename TSId,
+          typename TAlign,
+          typename TPos,
+          BlastFormatProgram p>
+inline void
+readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
+           TFwdIterator & iter,
+           BlastIOContext & context,
+           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                       p,
+                       BlastFormatGeneration::BLAST_LEGACY> const &)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                       p,
+                       BlastFormatGeneration::BLAST_LEGACY> TFormat;
+
+    readHeader(blastRecord, iter, context, TFormat());
+
+    while ((!atEnd(iter)) && onMatch(iter, TFormat()))
+    {
+        blastRecord.matches.emplace_back();
+        readMatch(back(blastRecord.matches), iter, context, TFormat());
+    }
+}
+
+// TABULAR WITHOUT HEADER
+template <typename TQId,
+          typename TSId,
+          typename TAlign,
+          typename TPos,
+          typename TFwdIterator,
+          BlastFormatProgram p,
+          BlastFormatGeneration g>
+inline void
+readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
+           TFwdIterator & iter,
+           BlastIOContext & context,
+           BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
+{
+    typedef BlastFormat<BlastFormatFile::TABULAR,
+                        p,
+                        BlastFormatGeneration::BLAST_PLUS>  TFormat;
+    typedef BlastMatchField<BlastFormatGeneration::BLAST_PLUS> TField;
+    clear(blastRecord);
+
+    auto curId = context.lastId;
+
+    std::vector<typename TField::Enum> fieldListMinusFirst;
+    if (context.fields[0] == TField::Enum::STD)
+    {
+        fieldListMinusFirst = PrivateSpace_<>::defaultsMinusQId;
+        if (length(context.fields) > 1)
+            fieldListMinusFirst.insert(std::end(fieldListMinusFirst),
+                                       seqan::begin(context.fields) + 1,
+                                       seqan::end(context.fields));
+    }
+    else if (context.fields[0] == TField::Enum::Q_SEQ_ID)
+    {
+        assign(fieldListMinusFirst, suffix(context.fields, 1));
+    } else
+    {
+        SEQAN_FAIL("readRecord interface on header-less format with custom "
+                   "fields not supported, unless first custom field is "
+                   "Q_SEQ_ID. Use the readMatch interface instead.");
+    }
+
+    // use fieldListMinusFirst
+    context.fields.swap(fieldListMinusFirst);
+
+    while ((!atEnd(iter)) && onMatch(iter, TFormat()))
+    {
+        // no ID in buffer, yet
+        if (SEQAN_LIKELY(empty(context.lastId) || empty(curId)))
+        {
+            // read current read ID
+            readUntil(curId, iter, OrFunctor<IsTab,IsNewline>());
+            skipOne(iter, IsTab());
+            if (SEQAN_UNLIKELY(empty(context.lastId)))
+                context.lastId = curId;
+        }
+
+        if (curId != context.lastId)
+        {
+            context.lastId = curId;
+            break; // new Record reached
+        }
+
+        blastRecord.matches.emplace_back();
+        // read remainder of line
+        readMatch(back(blastRecord.matches), iter, context, TFormat());
+        back(blastRecord.matches).qId = curId;
+        std::swap(context.lastId, curId);
+        clear(curId);
+    }
+
+    // revert to original behaviour
+    context.fields.swap(fieldListMinusFirst);
+
+    if (length(blastRecord.matches) == 0)
+        SEQAN_THROW(ParseError("No Matches could be read."));
+
+    blastRecord.qId = blastRecord.matches.front().qId;
+}
+
+/*
  * @fn BlastRecord#readRecord
  * @brief read a record from a file in BlastFormat
  *
@@ -1523,7 +1791,7 @@ skipMatch(TFwdIterator & iter,
  * @param[out]    fieldList   Read the @link BlastMatchField @endlinks from the header
  * (only TABULAR_WITH_HEADER)
  * @param[in,out] iter        An input iterator over a stream or any fwd-iterator over a string
- * @param[in,out] context     A @link BlastInputContext @endlink with buffers.
+ * @param[in,out] context     A @link BlastIOContext @endlink with parameters and buffers.
  * @param[in]     fieldList   Expect this fieldList in the matches.
  * @param[in]     tag         @link BlastFormat @endlink specialization
  *
@@ -1551,139 +1819,139 @@ skipMatch(TFwdIterator & iter,
  * @headerfile seqan/blast.h
  */
 
-template <typename TFwdIterator,
-          typename TDbName,
-          typename TQId,
-          typename TSId,
-          typename TAlign,
-          typename TPos,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline void
-readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
-           TDbName & dbName,
-           TFwdIterator & iter,
-           BlastInputContext & context,
-           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
-
-    clear(blastRecord);
-    clear(dbName);
-
-    clear(context.buffer1);
-    auto & versionString = context.buffer1;
-
-    readHeader(blastRecord.qId,
-               dbName,
-               versionString,
-               iter,
-               context,
-               false,
-               TFormat());
-
-    while ((!atEnd(iter)) && onMatch(iter, TFormat()))
-    {
-        blastRecord.matches.emplace_back();
-        readMatch(back(blastRecord.matches), iter, context, TFormat());
-    }
-}
-
-// custom fields
-template <typename TFwdIterator,
-          typename TDbName,
-          typename TQId,
-          typename TSId,
-          typename TAlign,
-          typename TPos,
-          typename TFieldList,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline void
-readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
-           TDbName & dbName,
-           TFwdIterator & iter,
-           BlastInputContext & context,
-           TFieldList const & fieldList,
-           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
-{
-    static_assert(g == BlastFormatGeneration::BLAST_PLUS,
-                  "fieldList parameter may only be specified for "
-                  "BlastFormatGeneration::BLAST_PLUS");
-
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
-
-    clear(blastRecord);
-    clear(dbName);
-
-    clear(context.buffer1);
-    auto & versionString = context.buffer1;
-
-    readHeader(blastRecord.qId,
-               dbName,
-               versionString,
-               iter,
-               context,
-               false,
-               TFormat());
-
-    while ((!atEnd(iter)) && onMatch(iter, TFormat()))
-    {
-        blastRecord.matches.emplace_back();
-        //                              only difference to above ↓
-        readMatch(back(blastRecord.matches), iter, context, fieldList,
-                  TFormat());
-    }
-}
-
-// detect fields
-template <typename TFwdIterator,
-          typename TDbName,
-          typename TQId,
-          typename TSId,
-          typename TAlign,
-          typename TPos,
-          typename TFieldList,
-          BlastFormatProgram p,
-          BlastFormatGeneration g,
-          typename std::enable_if<IsSequence<TFieldList>::VALUE, int>::type = 0>
-inline void
-readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
-           TDbName & dbName,
-           TFieldList & fieldList,
-           TFwdIterator & iter,
-           BlastInputContext & context,
-           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
-{
-    static_assert(g == BlastFormatGeneration::BLAST_PLUS,
-                  "fieldList parameter may only be specified for "
-                  "BlastFormatGeneration::BLAST_PLUS");
-
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
-
-    clear(blastRecord);
-    clear(dbName);
-
-    clear(context.buffer1);
-    auto & versionString = context.buffer1;
-
-    readHeader(blastRecord.qId,
-               dbName,
-               versionString,
-               fieldList, // out-parameter to readHeader()
-               iter,
-               context,
-               false,
-               TFormat());
-
-    while ((!atEnd(iter)) && onMatch(iter, TFormat()))
-    {
-        blastRecord.matches.emplace_back();
-        //                             in-parameter to readMatch ↓
-        readMatch(back(blastRecord.matches), iter, context, fieldList,
-                  TFormat());
-    }
-}
+// template <typename TFwdIterator,
+//           typename TDbName,
+//           typename TQId,
+//           typename TSId,
+//           typename TAlign,
+//           typename TPos,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline void
+// readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
+//            TDbName & dbName,
+//            TFwdIterator & iter,
+//            BlastIOContext & context,
+//            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
+// {
+//     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
+//
+//     clear(blastRecord);
+//     clear(dbName);
+//
+//     clear(context.buffer1);
+//     auto & versionString = context.buffer1;
+//
+//     readHeader(blastRecord.qId,
+//                dbName,
+//                versionString,
+//                iter,
+//                context,
+//                false,
+//                TFormat());
+//
+//     while ((!atEnd(iter)) && onMatch(iter, TFormat()))
+//     {
+//         blastRecord.matches.emplace_back();
+//         readMatch(back(blastRecord.matches), iter, context, TFormat());
+//     }
+// }
+//
+// // custom fields
+// template <typename TFwdIterator,
+//           typename TDbName,
+//           typename TQId,
+//           typename TSId,
+//           typename TAlign,
+//           typename TPos,
+//           typename TFieldList,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline void
+// readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
+//            TDbName & dbName,
+//            TFwdIterator & iter,
+//            BlastIOContext & context,
+//            TFieldList const & fieldList,
+//            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
+// {
+//     static_assert(g == BlastFormatGeneration::BLAST_PLUS,
+//                   "fieldList parameter may only be specified for "
+//                   "BlastFormatGeneration::BLAST_PLUS");
+//
+//     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
+//
+//     clear(blastRecord);
+//     clear(dbName);
+//
+//     clear(context.buffer1);
+//     auto & versionString = context.buffer1;
+//
+//     readHeader(blastRecord.qId,
+//                dbName,
+//                versionString,
+//                iter,
+//                context,
+//                false,
+//                TFormat());
+//
+//     while ((!atEnd(iter)) && onMatch(iter, TFormat()))
+//     {
+//         blastRecord.matches.emplace_back();
+//         //                              only difference to above ↓
+//         readMatch(back(blastRecord.matches), iter, context, fieldList,
+//                   TFormat());
+//     }
+// }
+//
+// // detect fields
+// template <typename TFwdIterator,
+//           typename TDbName,
+//           typename TQId,
+//           typename TSId,
+//           typename TAlign,
+//           typename TPos,
+//           typename TFieldList,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g,
+//           typename std::enable_if<IsSequence<TFieldList>::VALUE, int>::type = 0>
+// inline void
+// readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
+//            TDbName & dbName,
+//            TFieldList & fieldList,
+//            TFwdIterator & iter,
+//            BlastIOContext & context,
+//            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
+// {
+//     static_assert(g == BlastFormatGeneration::BLAST_PLUS,
+//                   "fieldList parameter may only be specified for "
+//                   "BlastFormatGeneration::BLAST_PLUS");
+//
+//     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
+//
+//     clear(blastRecord);
+//     clear(dbName);
+//
+//     clear(context.buffer1);
+//     auto & versionString = context.buffer1;
+//
+//     readHeader(blastRecord.qId,
+//                dbName,
+//                versionString,
+//                fieldList, // out-parameter to readHeader()
+//                iter,
+//                context,
+//                false,
+//                TFormat());
+//
+//     while ((!atEnd(iter)) && onMatch(iter, TFormat()))
+//     {
+//         blastRecord.matches.emplace_back();
+//         //                             in-parameter to readMatch ↓
+//         readMatch(back(blastRecord.matches), iter, context, fieldList,
+//                   TFormat());
+//     }
+// }
 
 // TABULAR FORMAT has no headers, so we compare first query id
 // template <typename TFwdIterator,
@@ -1732,137 +2000,7 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
 // }
 
 // same as above but lastId comes from outside
-template <typename TFwdIterator,
-          typename TQId = CharString,
-          typename TSId = CharString,
-          typename TAlign = Align<CharString, ArrayGaps>,
-          typename TPos = unsigned,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline void
-readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
-           TFwdIterator & iter,
-           BlastInputContext & context,
-           BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
-{
-    // TABULAR WITHOUT HEADER is identical for both Generations
-    typedef BlastFormat<BlastFormatFile::TABULAR,
-                        p,
-                        BlastFormatGeneration::BLAST_PLUS>  TFormat;
 
-    clear(blastRecord);
-
-    auto curId = context.lastId;
-
-    while ((!atEnd(iter)) && onMatch(iter, TFormat()))
-    {
-        // no ID in buffer, yet
-        if (SEQAN_LIKELY(empty(context.lastId) || empty(curId)))
-        {
-            // read current read ID
-            readUntil(curId, iter, OrFunctor<IsTab,IsNewline>());
-            skipOne(iter, IsTab());
-            if (SEQAN_UNLIKELY(empty(context.lastId)))
-                context.lastId = curId;
-        }
-
-        if (curId != context.lastId)
-        {
-            context.lastId = curId;
-            break; // new Record reached
-        }
-
-        blastRecord.matches.emplace_back();
-        // read remainder of line
-        readMatch(back(blastRecord.matches), iter, context,
-                  PrivateSpace_<>::defaultsMinusQId, TFormat());
-        back(blastRecord.matches).qId = curId;
-        std::swap(context.lastId, curId);
-        clear(curId);
-    }
-
-    if (length(blastRecord.matches) == 0)
-        SEQAN_THROW(ParseError("No Matches could be read."));
-
-    blastRecord.qId = blastRecord.matches.front().qId;
-}
-
-// custom fields
-template <typename TFwdIterator,
-          typename TQId = CharString,
-          typename TSId = CharString,
-          typename TAlign = Align<CharString, ArrayGaps>,
-          typename TPos = unsigned,
-          typename TFieldList,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline void
-readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
-           TFwdIterator & iter,
-           BlastInputContext & context,
-           TFieldList const & fieldList,
-           BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
-{
-    static_assert(g == BlastFormatGeneration::BLAST_PLUS,
-                  "fieldList parameter may only be specified for "
-                  "BlastFormatGeneration::BLAST_PLUS");
-    typedef BlastFormat<BlastFormatFile::TABULAR, p, BlastFormatGeneration::BLAST_PLUS>  TFormat;
-    typedef BlastMatchField<BlastFormatGeneration::BLAST_PLUS> TField;
-    clear(blastRecord);
-
-    auto curId = context.lastId;
-
-    std::vector<typename TField::Enum> fieldListMinusFirst;
-    if (fieldList[0] == TField::Enum::STD)
-    {
-        fieldListMinusFirst = PrivateSpace_<>::defaultsMinusQId;
-        if (length(fieldList) > 1)
-            fieldListMinusFirst.insert(std::end(fieldListMinusFirst),
-                                       seqan::begin(fieldList) + 1,
-                                       seqan::end(fieldList));
-    }
-    else if (fieldList[0] == TField::Enum::Q_SEQ_ID)
-    {
-        assign(fieldListMinusFirst, suffix(fieldList, 1));
-    } else
-    {
-        SEQAN_FAIL("readRecord interface on header-less format with custom "
-                   "fields not supported, unless first custom field is "
-                   "Q_SEQ_ID. Use the readMatch interface instead.");
-    }
-
-    while ((!atEnd(iter)) && onMatch(iter, TFormat()))
-    {
-        // no ID in buffer, yet
-        if (SEQAN_LIKELY(empty(context.lastId) || empty(curId)))
-        {
-            // read current read ID
-            readUntil(curId, iter, OrFunctor<IsTab,IsNewline>());
-            skipOne(iter, IsTab());
-            if (SEQAN_UNLIKELY(empty(context.lastId)))
-                context.lastId = curId;
-        }
-
-        if (curId != context.lastId)
-        {
-            context.lastId = curId;
-            break; // new Record reached
-        }
-
-        blastRecord.matches.emplace_back();
-        // read remainder of line
-        readMatch(back(blastRecord.matches), iter, context, fieldListMinusFirst,
-                  TFormat());
-        back(blastRecord.matches).qId = curId;
-        std::swap(context.lastId, curId);
-        clear(curId);
-    }
-
-    if (length(blastRecord.matches) == 0)
-        SEQAN_THROW(ParseError("No Matches could be read."));
-
-    blastRecord.qId = blastRecord.matches.front().qId;
-}
 
 } // namespace seqan
 

@@ -71,7 +71,7 @@ template <typename TMatch,
           BlastFormatFile f,
           BlastFormatProgram p>
 inline void
-_readMatchWrap(TMatch & match, TIt & it, BlastInputContext & context,
+_readMatchWrap(TMatch & match, TIt & it, BlastIOContext & context,
                TFields const &, bool,
                BlastFormat<f, p, BlastFormatGeneration::BLAST_LEGACY> const &)
 {
@@ -85,7 +85,7 @@ template <typename TMatch,
           BlastFormatFile f,
           BlastFormatProgram p>
 inline void
-_readMatchWrap(TMatch & match, TIt & it, BlastInputContext & context,
+_readMatchWrap(TMatch & match, TIt & it, BlastIOContext & context,
                TFields const & fields, bool useFields,
                BlastFormat<f, p, BlastFormatGeneration::BLAST_PLUS> const &)
 {
@@ -103,26 +103,7 @@ void _test_blast_read_tabular_match(std::string const & path,
 {
     // only used when defaults == false
     typedef BlastMatchField<BlastFormatGeneration::BLAST_PLUS> TField;
-    std::array<typename TField::Enum, 12> customFields
-    {
-        {
-            TField::Enum::Q_SEQ_ID,
-            TField::Enum::S_SEQ_ID,
-            TField::Enum::LENGTH,
-            TField::Enum::N_IDENT,
-            TField::Enum::MISMATCH,
-            TField::Enum::POSITIVE,
-            TField::Enum::GAPS,
-            TField::Enum::Q_START,
-            TField::Enum::Q_END,
-            TField::Enum::S_START,
-            TField::Enum::S_END,
-            TField::Enum::FRAMES,
-            // actually BITSCORE is also in the file, but we are checking
-            // that the implementation copes with less requested fields
-            // than available ones which we defined as legal.
-        }
-    };
+
 
     std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) + std::string(path);
 
@@ -131,7 +112,31 @@ void _test_blast_read_tabular_match(std::string const & path,
     SEQAN_ASSERT(ifstream.is_open());
 
     auto it = directionIterator(ifstream, Input());
-    BlastInputContext context;
+    BlastIOContext context;
+    if (!defaults)
+    {
+        std::vector<typename TField::Enum> customFields
+        {
+            {
+                TField::Enum::Q_SEQ_ID,
+                TField::Enum::S_SEQ_ID,
+                TField::Enum::LENGTH,
+                TField::Enum::N_IDENT,
+                TField::Enum::MISMATCH,
+                TField::Enum::POSITIVE,
+                TField::Enum::GAPS,
+                TField::Enum::Q_START,
+                TField::Enum::Q_END,
+                TField::Enum::S_START,
+                TField::Enum::S_END,
+                TField::Enum::FRAMES,
+                // actually BITSCORE is also in the file, but we are checking
+                // that the implementation copes with less requested fields
+                // than available ones which we defined as legal.
+            }
+        };
+        context.fields = customFields;
+    }
 
 //     Iterator<std::ifstream, Rooted>::Type it = begin(ifstream);
 //     auto it = directionIterator(ifstream, Bidirectional());
@@ -146,7 +151,8 @@ void _test_blast_read_tabular_match(std::string const & path,
     SEQAN_ASSERT(onMatch(it, TFormat()));
 
     BlastMatch<> m;
-    _readMatchWrap(m, it, context, customFields, defaults, TFormat());
+//     _readMatchWrap(m, it, context, customFields, defaults, TFormat());
+    readMatch(m, it, context, TFormat());
 
     SEQAN_ASSERT_EQ(m.qId,          "SHAA004TF");
     SEQAN_ASSERT_EQ(m.sId,          "sp|P0A916|OMPW_SHIFL");
@@ -195,9 +201,9 @@ void _test_blast_read_tabular_match(std::string const & path,
         while (onMatch(it, TFormat()))
         {
             if (defaults) // skipMatch with verification
-                skipMatch(it, context, true, TFormat());
+                skipMatch(it, context, TFormat());
             else
-                skipMatch(it, context, false, TFormat());
+                skipMatch(it, context, TFormat());
 
             ++count;
         }
@@ -214,9 +220,9 @@ void _test_blast_read_tabular_match(std::string const & path,
         {
             SEQAN_ASSERT(onMatch(it, TFormat()));
             if (defaults) // skipMatch with verification
-                skipMatch(it, context, true, TFormat());
+                skipMatch(it, context, TFormat());
             else
-                skipMatch(it, context, false, TFormat());
+                skipMatch(it, context, TFormat());
         }
     }
 
@@ -227,7 +233,8 @@ void _test_blast_read_tabular_match(std::string const & path,
 
     //---- LAST MATCH ---- //
     // read another match
-    _readMatchWrap(m, it, context, customFields, defaults, TFormat());
+//     _readMatchWrap(m, it, context, customFields, defaults, TFormat());
+    readMatch(m, it, context, TFormat());
 
     SEQAN_ASSERT_EQ(m.qId,          "SHAA004TR");
     SEQAN_ASSERT_EQ(m.sId,          "sp|Q0HGZ8|META_SHESM");
@@ -380,7 +387,7 @@ _test_blast_read_tabular_match_columns(std::string const & path,
     SEQAN_ASSERT(ifstream.is_open());
 
     auto it = directionIterator(ifstream, Input());
-    BlastInputContext context;
+//     BlastIOContext context;
 
     // first line is header
     SEQAN_ASSERT(!onMatch(it, TFormat()));
@@ -404,7 +411,7 @@ _test_blast_read_tabular_match_columns(std::string const & path,
     double      field11;
     double      field12;
 
-    readMatch(it, context, TFormat(), field1, field2, field3, field4, field5, field6,
+    readMatch(it, TFormat(), field1, field2, field3, field4, field5, field6,
               field7, field8, field9, field10, field11, field12);
 
     SEQAN_ASSERT_EQ(field1,          "SHAA004TF");
@@ -424,7 +431,7 @@ _test_blast_read_tabular_match_columns(std::string const & path,
     SEQAN_ASSERT_LEQ(std::abs(field12 - 108), 1e-3);
 
     // SEQAN_TRY reading less coluumns than are present
-    readMatch(it, context, TFormat(), field1, field2, field3, field4, field5, field6,
+    readMatch(it, TFormat(), field1, field2, field3, field4, field5, field6,
               field7, field8, field9, field10);
 
     SEQAN_ASSERT_EQ(field1,          "SHAA004TF");
@@ -443,7 +450,7 @@ _test_blast_read_tabular_match_columns(std::string const & path,
 
     // read remaining matches
     while (onMatch(it, TFormat()))
-        readMatch(it, context, TFormat(), field1); // only one field
+        readMatch(it, TFormat(), field1); // only one field
 
     // go to last record with matches
     skipUntilMatch(it, TFormat());
@@ -456,7 +463,7 @@ _test_blast_read_tabular_match_columns(std::string const & path,
     SEQAN_TRY
     {
         // no strings here to take the strings
-        readMatch(it, context, TFormat(), field3, field4, field5, field6,
+        readMatch(it, TFormat(), field3, field4, field5, field6,
                   field7, field8, field9, field10, field11, field12);
     } SEQAN_CATCH (BadLexicalCast const & e)
     {
@@ -569,122 +576,147 @@ _test_blast_read_tabular_with_header(bool custom = false)
     // first line is header
     SEQAN_ASSERT(!onMatch(it, TFormat()));
 
-    CharString qId;
-    std::string dbName;
-    CharString versionString;
-    unsigned long hits = 0;
-    StringSet<CharString> fieldStrings;
-    CharString fieldStringsConcat;
-    String<typename TField::Enum> fieldList;
-    StringSet<CharString> otherLines;
-    BlastInputContext context;
+    BlastRecord<> r;
+    BlastIOContext context;
 
     // back on header
     SEQAN_ASSERT(!onMatch(it, TFormat()));
 
-    // all parameters, strict == false
-    readHeader(qId, dbName, versionString, hits, fieldStrings, otherLines, it,
-               context, false, TFormat());
+    readHeader(r, it, context, TFormat());
 
-    SEQAN_ASSERT_EQ(qId,                "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
-    SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
-    SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26+");
-    SEQAN_ASSERT_EQ(hits,               0u);
-    SEQAN_ASSERT_EQ(length(fieldStrings), 0u);
-    SEQAN_ASSERT_EQ(length(otherLines), 0u);
+    SEQAN_ASSERT_EQ(r.qId,
+                    "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
+    SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
+                    "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(context.versionString,
+                    "BLASTX 2.2.26+");
+    SEQAN_ASSERT_EQ(length(r.matches),
+                    0u);
+    SEQAN_ASSERT_EQ(length(context.fields),
+                    1u); // not overwritten because not available
+    SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
+                    12u); // not overwritten because not available
+    SEQAN_ASSERT_EQ(length(context.otherLines),
+                    0u);
+    SEQAN_ASSERT_EQ(length(context.conformancyErrors),
+                    0u);
 
-    clear(qId, dbName, versionString, hits, fieldStrings, fieldStringsConcat,
-          fieldList, otherLines);
 
-    // without hits-parameter, without otherLines parameter
-    // strict == false,
-    readHeader(qId, dbName, versionString, hits, fieldList, it, context,
-               false, TFormat());
+    readHeader(r, it, context, TFormat());
 
-    SEQAN_ASSERT_EQ(qId,                "SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935");
-    SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
-    SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26+");
-    SEQAN_ASSERT_EQ(length(fieldList),  0u);
+    SEQAN_ASSERT_EQ(r.qId,
+                    "SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935");
+    SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
+                    "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(context.versionString,
+                    "BLASTX 2.2.26+");
+    SEQAN_ASSERT_EQ(length(r.matches),
+                    0u);
+    SEQAN_ASSERT_EQ(length(context.fields),
+                    1u); // not overwritten because not available
+    SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
+                    12u); // not overwritten because not available
+    SEQAN_ASSERT_EQ(length(context.otherLines),
+                    0u);
+    SEQAN_ASSERT_EQ(length(context.conformancyErrors),
+                    0u);
 
-    clear(qId, dbName, versionString, hits, fieldStrings, fieldStringsConcat,
-          fieldList, otherLines);
+    readHeader(r, it, context, TFormat());
 
-    // all parameters, strict == true, fields as fields
-    readHeader(qId, dbName, versionString, hits, fieldList, otherLines, it,
-               context, true, TFormat());
-
-    SEQAN_ASSERT_EQ(qId,                "SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828");
-    SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
-    SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26+");
-    SEQAN_ASSERT_EQ(hits,               17u);
+    SEQAN_ASSERT_EQ(r.qId,
+                    "SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828");
+    SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
+                    "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(context.versionString,
+                    "BLASTX 2.2.26+");
+    SEQAN_ASSERT_EQ(length(r.matches),
+                    17u);
     if (custom)
     {
-        SEQAN_ASSERT_EQ(length(fieldList),  13u);
+        SEQAN_ASSERT_EQ(length(context.fields),
+                        13u);
+        SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
+                        13u);
         for (uint8_t i = 0; i < 13; ++i)
-            SEQAN_ASSERT_EQ((unsigned)fieldList[i], (unsigned)customFields[i]);
+            SEQAN_ASSERT_EQ((uint32_t)context.fields[i],
+                            (uint32_t)customFields[i]);
     } else
     {
-        SEQAN_ASSERT_EQ(length(fieldList),  1u);
-        SEQAN_ASSERT_EQ((uint8_t)fieldList[0], (uint8_t)TField::Enum::STD);
+        SEQAN_ASSERT_EQ(length(context.fields),
+                        1u);
+        SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
+                        12u); // defaults
+        SEQAN_ASSERT_EQ((uint32_t)context.fields[0],
+                        (uint32_t)TField::Enum::STD);
     }
-    SEQAN_ASSERT_EQ(length(otherLines), 0u);
-
-    clear(qId, dbName, versionString, hits, fieldStrings, fieldStringsConcat,
-          fieldList, otherLines);
+    SEQAN_ASSERT_EQ(length(context.otherLines),
+                    0u);
+    SEQAN_ASSERT_EQ(length(context.conformancyErrors),
+                    0u);
 
     while (onMatch(it, TFormat()))
         skipMatch(it, context, TFormat());
 
-    // without otherlines parameter, strict == true, fields as strings
-    readHeader(qId, dbName, versionString, hits, fieldStrings, it,
-               context, true, TFormat());
+    readHeader(r, it, context, TFormat());
 
-    fieldStringsConcat = concat(fieldStrings, ", ");
-
-    SEQAN_ASSERT_EQ(qId,                "SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853");
-    SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
-    SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26+");
-    SEQAN_ASSERT_EQ(hits,               2u);
+    SEQAN_ASSERT_EQ(r.qId,
+                    "SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853");
+    SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
+                    "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(context.versionString,
+                    "BLASTX 2.2.26+");
+    SEQAN_ASSERT_EQ(length(r.matches),
+                    2u);
     if (custom)
     {
-        SEQAN_ASSERT_EQ(length(fieldStrings),  13u);
-        SEQAN_ASSERT_EQ(fieldStringsConcat,
-                        "query id, subject id, alignment length, identical, mismatches, positives, gaps, q. start, q. end, s. start, s. end, query/sbjct frames, bit score");
+        SEQAN_ASSERT_EQ(length(context.fields),
+                        13u);
+        SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
+                        13u); // not overwritten because not available
+        for (uint8_t i = 0; i < 13; ++i)
+            SEQAN_ASSERT_EQ((uint32_t)context.fields[i],
+                            (uint32_t)customFields[i]);
     } else
     {
-        SEQAN_ASSERT_EQ(length(fieldStrings),  12u);
-        SEQAN_ASSERT_EQ(fieldStringsConcat, TField::columnLabels[0]);
+        SEQAN_ASSERT_EQ(length(context.fields),
+                        1u);
+        SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
+                        12u); // defaults
+        SEQAN_ASSERT_EQ((uint32_t)context.fields[0],
+                        (uint32_t)TField::Enum::STD);
     }
+    SEQAN_ASSERT_EQ(length(context.otherLines),
+                    0u);
+    SEQAN_ASSERT_EQ(length(context.conformancyErrors),
+                    0u);
 
-
-    clear(qId, dbName, versionString, hits, fieldStrings, fieldStringsConcat,
-          fieldList, otherLines);
 
     while (onMatch(it, TFormat()))
         skipMatch(it, context, TFormat());
 
-    // check if exceptions are properly thrown
-    CharString exceptComment;
-    SEQAN_TRY
-    {
-        // all parameters, strict == true
-        // artifical type Datacase instead of Database should trigger exception
-        readHeader(qId, dbName, versionString, hits, fieldStrings, otherLines,
-                   it, context, true, TFormat());
-    } SEQAN_CATCH (RecoverableParseError const & e)
-    {
-        exceptComment = e.what();
-    }
+    readHeader(r, it, context, TFormat());
 
-    SEQAN_ASSERT_EQ(exceptComment, "Header did not meet strict requirements.");
+    SEQAN_ASSERT_EQ(r.qId,
+                    "SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960");
+    SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
+                    "");
+    SEQAN_ASSERT_EQ(context.versionString,
+                    "BLASTX 2.2.26+");
+    SEQAN_ASSERT_EQ(length(r.matches),
+                    0u);
+    SEQAN_ASSERT_EQ(length(context.fields),
+                    1u); // not overwritten because not available
+    SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
+                    12u); // not overwritten because not available
+    SEQAN_ASSERT_EQ(length(context.otherLines),
+                    1u);
+    SEQAN_ASSERT_EQ(length(context.conformancyErrors),
+                    1u);
 
-    SEQAN_ASSERT_EQ(qId,                "SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960");
-    SEQAN_ASSERT_EQ(dbName,             ""); // couldnt be retrieved
-    SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26+");
-    SEQAN_ASSERT_EQ(hits,               0u);
-    SEQAN_ASSERT_EQ(length(fieldStrings), 0u);
-    SEQAN_ASSERT_EQ(length(otherLines), 1u);
-    SEQAN_ASSERT_EQ(otherLines[0],      "Datacase: /tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(context.otherLines[0],
+                    "Datacase: /tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(context.conformancyErrors[0],
+                    "No or multiple database lines present.");
 
     // test skipHeader
     ifstream.close();
@@ -694,8 +726,8 @@ _test_blast_read_tabular_with_header(bool custom = false)
     it = directionIterator(ifstream, Input());
 
     skipHeader(it, context, TFormat());
-    skipHeader(it, context, false, TFormat());
-    skipHeader(it, context, true, TFormat());
+    skipHeader(it, context, TFormat());
+    skipHeader(it, context, TFormat());
     SEQAN_ASSERT(onMatch(it, TFormat()));
 
     ifstream.close();
@@ -729,97 +761,109 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
     // first line is header
     SEQAN_ASSERT(!onMatch(it, TFormat()));
 
-    CharString qId;
-    std::string dbName;
-    CharString versionString;
-    StringSet<CharString> fieldStrings;
+    BlastRecord<> r;
     CharString fieldStringsConcat;
-    String<typename TField::Enum> fieldList;
-    StringSet<CharString> otherLines;
-    BlastInputContext context;
+    BlastIOContext context;
 
     // back on header
     SEQAN_ASSERT(!onMatch(it, TFormat()));
 
     // all parameters, strict == false
-    readHeader(qId, dbName, versionString, fieldStrings, otherLines, it,
-               context, false, TFormat());
-    fieldStringsConcat = concat(fieldStrings, ", ");
+    readHeader(r, it, context, TFormat());
+    fieldStringsConcat = concat(context.fieldsAsStrings, ", ");
 
-    SEQAN_ASSERT_EQ(qId,                "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
-    SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
-    SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26 [Sep-21-2011]");
-    SEQAN_ASSERT_EQ(length(fieldStrings), 12u);
-    SEQAN_ASSERT_EQ(fieldStringsConcat, TField::columnLabels[0]);
-    SEQAN_ASSERT_EQ(length(otherLines), 0u);
+    SEQAN_ASSERT_EQ(r.qId,
+                    "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
+    SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
+                    "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(context.versionString,
+                    "BLASTX 2.2.26 [Sep-21-2011]");
+    SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
+                    12u);
+    SEQAN_ASSERT_EQ(fieldStringsConcat,
+                    TField::columnLabels[0]);
+    SEQAN_ASSERT_EQ(length(context.otherLines),
+                    0u);
 
-    clear(qId, dbName, versionString, fieldStrings, fieldStringsConcat,
-          fieldList, otherLines);
+    readHeader(r, it, context, TFormat());
 
-    // without otherLines parameter, strict == false
-    readHeader(qId, dbName, versionString, fieldStrings, it, context, false, TFormat());
+    fieldStringsConcat = concat(context.fieldsAsStrings, ", ");
 
-    fieldStringsConcat = concat(fieldStrings, ", ");
+    SEQAN_ASSERT_EQ(r.qId,
+                    "SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935");
+    SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
+                    "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(context.versionString,
+                    "BLASTX 2.2.26 [Sep-21-2011]");
+    SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
+                    12u);
+    SEQAN_ASSERT_EQ(fieldStringsConcat,
+                    TField::columnLabels[0]);
+    SEQAN_ASSERT_EQ(length(context.otherLines),
+                    0u);
 
-    SEQAN_ASSERT_EQ(qId,                "SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935");
-    SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
-    SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26 [Sep-21-2011]");
-    SEQAN_ASSERT_EQ(length(fieldStrings), 12u);
-    SEQAN_ASSERT_EQ(fieldStringsConcat, TField::columnLabels[0]);
+    readHeader(r, it, context, TFormat());
+    fieldStringsConcat = concat(context.fieldsAsStrings, ", ");
 
-    clear(qId, dbName, versionString, fieldStrings, fieldStringsConcat,
-          fieldList, otherLines);
+    SEQAN_ASSERT_EQ(r.qId,
+                    "SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828");
+    SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
+                    "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(context.versionString,
+                    "BLASTX 2.2.26 [Sep-21-2011]");
+    SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
+                    12u);
+    SEQAN_ASSERT_EQ(fieldStringsConcat,
+                    TField::columnLabels[0]);
+    SEQAN_ASSERT_EQ(length(context.otherLines),
+                    0u);
 
-    // without fieldlist, strict == true,
-    readHeader(qId, dbName, versionString, otherLines, it, context, true, TFormat());
-
-    SEQAN_ASSERT_EQ(qId,                "SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828");
-    SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
-    SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26 [Sep-21-2011]");
-
-    clear(qId, dbName, versionString, fieldStrings, fieldStringsConcat,
-          fieldList, otherLines);
 
     while (onMatch(it, TFormat()))
         skipMatch(it, context, TFormat());
 
-    // strict == true
-    readHeader(qId, dbName, versionString, it, context, true, TFormat());
+    readHeader(r, it, context, TFormat());
+    fieldStringsConcat = concat(context.fieldsAsStrings, ", ");
 
-    SEQAN_ASSERT_EQ(qId,                "SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853");
-    SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
-    SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26 [Sep-21-2011]");
-
-    clear(qId, dbName, versionString, fieldStrings, fieldStringsConcat,
-          fieldList, otherLines);
+    SEQAN_ASSERT_EQ(r.qId,
+                    "SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853");
+    SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
+                    "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(context.versionString,
+                    "BLASTX 2.2.26 [Sep-21-2011]");
+    SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
+                    12u);
+    SEQAN_ASSERT_EQ(fieldStringsConcat,
+                    TField::columnLabels[0]);
+    SEQAN_ASSERT_EQ(length(context.otherLines),
+                    0u);
 
     while (onMatch(it, TFormat()))
         skipMatch(it, context, TFormat());
 
-    // check if exceptions are properly thrown
-    CharString exceptComment;
-    SEQAN_TRY
-    {
-        // all parameters, strict == true
-        // artifical type Datacase instead of Database should trigger exception
-        readHeader(qId, dbName, versionString, fieldStrings, otherLines, it,
-                   context, true, TFormat());
-    } SEQAN_CATCH (RecoverableParseError const & e)
-    {
-        exceptComment = e.what();
-    }
+    readHeader(r, it, context, TFormat());
 
-    SEQAN_ASSERT_EQ(exceptComment, "Header did not meet strict requirements.");
+    fieldStringsConcat = concat(context.fieldsAsStrings, ", ");
 
-    fieldStringsConcat = concat(fieldStrings, ", ");
+    SEQAN_ASSERT_EQ(r.qId,
+                    "SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960");
+    SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
+                    ""); // couldnt be retrieved
+    SEQAN_ASSERT_EQ(context.versionString,
+                    "BLASTX 2.2.26 [Sep-21-2011]");
+    SEQAN_ASSERT_EQ(length(context.fieldsAsStrings),
+                    12u);
+    SEQAN_ASSERT_EQ(fieldStringsConcat,
+                    TField::columnLabels[0]);
+    SEQAN_ASSERT_EQ(length(context.otherLines),
+                    1u);
+    SEQAN_ASSERT_EQ(length(context.conformancyErrors),
+                    1u);
 
-    SEQAN_ASSERT_EQ(qId,                "SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960");
-    SEQAN_ASSERT_EQ(dbName,             ""); // couldnt be retrieved
-    SEQAN_ASSERT_EQ(versionString,      "BLASTX 2.2.26 [Sep-21-2011]");
-    SEQAN_ASSERT_EQ(length(fieldStrings), 12u);
-    SEQAN_ASSERT_EQ(fieldStringsConcat, TField::columnLabels[0]);
-    SEQAN_ASSERT_EQ(length(otherLines), 1u);
-    SEQAN_ASSERT_EQ(otherLines[0],      "Datacase: /tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(context.otherLines[0],
+                    "Datacase: /tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(context.conformancyErrors[0],
+                    "No or multiple database lines present.");
 
     // test skipHeader
     ifstream.close();
@@ -829,8 +873,8 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
     it = directionIterator(ifstream, Input());
 
     skipHeader(it, context, TFormat());
-    skipHeader(it, context, false, TFormat());
-    skipHeader(it, context, true, TFormat());
+    skipHeader(it, context, TFormat());
+    skipHeader(it, context, TFormat());
     SEQAN_ASSERT(onMatch(it, TFormat()));
 
     ifstream.close();
@@ -853,19 +897,18 @@ void _test_blast_read_tabular_record(bool defaults)
     auto it = directionIterator(ifstream, Input());
 
     BlastRecord<> r;
-    BlastInputContext context;
+    BlastIOContext context;
 
-    std::vector<typename TField::Enum> fieldsIn;
     if (defaults)
     {
-        fieldsIn =
+        context.fields =
         {
             TField::Enum::STD
         };
     }
     else
     {
-        fieldsIn =
+        context.fields =
         {
             TField::Enum::Q_SEQ_ID,
             TField::Enum::S_SEQ_ID,
@@ -886,10 +929,7 @@ void _test_blast_read_tabular_record(bool defaults)
     // first line is onMatch
     SEQAN_ASSERT(onMatch(it, TFormat()));
 
-    if (defaults) // try interface without fieldList
-        readRecord(r, it, context, TFormat());
-    else
-        readRecord(r, it, context, fieldsIn, TFormat());
+    readRecord(r, it, context, TFormat());
 
     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TF");
     SEQAN_ASSERT_EQ(length(r.matches),  17u);
@@ -909,7 +949,7 @@ void _test_blast_read_tabular_record(bool defaults)
         }
     }
 
-    readRecord(r, it, context, fieldsIn, TFormat());
+    readRecord(r, it, context, TFormat());
     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TR");
     SEQAN_ASSERT_EQ(length(r.matches),  2u);
 
@@ -951,7 +991,7 @@ SEQAN_DEFINE_TEST(test_blast_read_record_tabular_legacy)
     auto it = directionIterator(ifstream, Input());
 
     BlastRecord<> r;
-    BlastInputContext context;
+    BlastIOContext context;
 
     // first line is match
     SEQAN_ASSERT(onMatch(it, TFormat()));
@@ -982,15 +1022,14 @@ SEQAN_DEFINE_TEST(test_blast_read_record_tabular_legacy)
     ifstream.close();
 }
 
-void _test_blast_read_record(bool defaults)
+template <typename TFormat>
+void _test_blast_read_record(bool defaults, const char * path, TFormat const &)
 {
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        BlastFormatProgram::BLASTX,
-                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+
     typedef BlastMatchField<BlastFormatGeneration::BLAST_PLUS> TField;
 
     std::string inPath = std::string(SEQAN_PATH_TO_ROOT());
-    inPath += (defaults ? PLUS_HEADER_DEFAULTS : PLUS_HEADER_CUSTOM);
+    inPath += path;
 
     std::ifstream ifstream(toCString(inPath),
                            std::ios_base::in | std::ios_base::binary);
@@ -999,17 +1038,15 @@ void _test_blast_read_record(bool defaults)
     auto it = directionIterator(ifstream, Input());
 
     BlastRecord<> r;
-    std::string dbName;
-    std::vector<typename TField::Enum> fieldsOut;
-    BlastInputContext context;
+    BlastIOContext context;
 
-    std::array<typename TField::Enum, 1> fieldsInDefault
+    std::vector<typename TField::Enum> fieldsDefault =
     {
         {
             TField::Enum::STD
         }
     };
-    std::array<typename TField::Enum, 13> fieldsInCustom
+    std::vector<typename TField::Enum> fieldsCustom =
     {
         {
             TField::Enum::Q_SEQ_ID,
@@ -1030,28 +1067,32 @@ void _test_blast_read_record(bool defaults)
     // first line is header
     SEQAN_ASSERT(!onMatch(it, TFormat()));
 
-    // no fieldsList
-    readRecord(r, dbName, it, context, TFormat());
-    SEQAN_ASSERT_EQ(r.qId,              "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
-    SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
-    SEQAN_ASSERT_EQ(length(r.matches),  0u);
+    // fieldsList as out-parameter, but no fields, because no matches
+    readRecord(r, it, context, TFormat());
+    SEQAN_ASSERT_EQ(r.qId,
+                    "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
+    SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
+                    "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(length(r.matches),
+                    0u);
 
     // fieldsList as out-parameter, but no fields, because no matches
-    readRecord(r, dbName, fieldsOut, it, context, TFormat());
-    SEQAN_ASSERT_EQ(r.qId,              "SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935");
-    SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
-    SEQAN_ASSERT_EQ(length(r.matches),  0u);
-    SEQAN_ASSERT_EQ(length(fieldsOut),  0u);
+    readRecord(r, it, context, TFormat());
+    SEQAN_ASSERT_EQ(r.qId,
+                    "SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935");
+    SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
+                    "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(length(r.matches),
+                    0u);
 
     // fieldsList as out-parameter
-    readRecord(r, dbName, fieldsOut, it, context, TFormat());
-    SEQAN_ASSERT_EQ(r.qId,              "SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828");
-    SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
-    SEQAN_ASSERT_EQ(length(r.matches),  17u);
-    if (defaults)
-        SEQAN_ASSERT_EQ(length(fieldsOut),  1u);
-    else
-        SEQAN_ASSERT_EQ(length(fieldsOut),  13u);
+    readRecord(r, it, context, TFormat());
+    SEQAN_ASSERT_EQ(r.qId,
+                    "SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828");
+    SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
+                    "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(length(r.matches),
+                    17u);
 
     for (auto const & m : r.matches)
     {
@@ -1063,21 +1104,31 @@ void _test_blast_read_record(bool defaults)
 
     if (defaults)
     {
-        SEQAN_ASSERT_EQ((uint8_t)fieldsOut[0], (uint8_t)TField::Enum::STD);
+        SEQAN_ASSERT_EQ(length(context.fields),  1u);
+        SEQAN_ASSERT_EQ((uint8_t)context.fields[0], (uint8_t)TField::Enum::STD);
     } else
     {
+        SEQAN_ASSERT_EQ(length(context.fields),  13u);
         for (unsigned i = 0; i < 13u; ++i)
-            SEQAN_ASSERT_EQ((uint8_t)fieldsOut[i], (uint8_t)fieldsInCustom[i]);
+            SEQAN_ASSERT_EQ((uint8_t)context.fields[i], (uint8_t)fieldsCustom[i]);
     }
 
     // fieldsList as in-parameter
     if (defaults)
-        readRecord(r, dbName, it, context, fieldsInDefault, TFormat());
+        context.fields = fieldsDefault;
     else
-        readRecord(r, dbName, it, context, fieldsInCustom, TFormat());
-    SEQAN_ASSERT_EQ(r.qId,              "SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853");
-    SEQAN_ASSERT_EQ(dbName,             "/tmp/uniprot_sprot.fasta");
-    SEQAN_ASSERT_EQ(length(r.matches),  2u);
+        context.fields = fieldsCustom;
+
+    context.ignoreFieldsInHeader = true;
+
+    readRecord(r, it, context, TFormat());
+
+    SEQAN_ASSERT_EQ(r.qId,
+                    "SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853");
+    SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
+                    "/tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(length(r.matches),
+                    2u);
 
     for (auto const & m : r.matches)
     {
@@ -1086,23 +1137,33 @@ void _test_blast_read_record(bool defaults)
         SEQAN_ASSERT_EQ(m.bitScore,    152.0);
     }
 
-    // no fieldsList
-    readRecord(r, dbName, it, context, TFormat());
-    SEQAN_ASSERT_EQ(r.qId,              "SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960");
-    SEQAN_ASSERT_EQ(dbName,             ""); // couldn't be detected (typo)
-    SEQAN_ASSERT_EQ(length(r.matches),  0u);
+    context.ignoreFieldsInHeader = false;
+
+    readRecord(r, it, context, TFormat());
+    SEQAN_ASSERT_EQ(r.qId,
+                    "SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960");
+    SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
+                    "");
+    SEQAN_ASSERT_EQ(length(r.matches),
+                    0u);
 
     ifstream.close();
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_record_tabular_with_header)
 {
-    _test_blast_read_record(true);
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTX,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    _test_blast_read_record(true, PLUS_HEADER_DEFAULTS, TFormat());
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_record_customfields_tabular_with_header)
 {
-    _test_blast_read_record(false);
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        BlastFormatProgram::BLASTX,
+                        BlastFormatGeneration::BLAST_PLUS> TFormat;
+    _test_blast_read_record(false, PLUS_HEADER_CUSTOM, TFormat());
 }
 
 SEQAN_DEFINE_TEST(test_blast_read_record_tabular_with_header_legacy)
@@ -1110,62 +1171,65 @@ SEQAN_DEFINE_TEST(test_blast_read_record_tabular_with_header_legacy)
     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
                         BlastFormatProgram::BLASTX,
                         BlastFormatGeneration::BLAST_LEGACY> TFormat;
+    _test_blast_read_record(true, LEGACY_HEADER_DEFAULTS, TFormat());
 
-    std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) + LEGACY_HEADER_DEFAULTS;
-
-    std::ifstream ifstream(toCString(inPath),
-                           std::ios_base::in | std::ios_base::binary);
-    SEQAN_ASSERT(ifstream.is_open());
-
-    auto it = directionIterator(ifstream, Input());
-
-    BlastRecord<> r;
-    std::string dbName;
-    BlastInputContext context;
-
-    // first line is header
-    SEQAN_ASSERT(!onMatch(it, TFormat()));
-
-    readRecord(r, dbName, it, context, TFormat());
-    SEQAN_ASSERT_EQ(r.qId,              "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
-    SEQAN_ASSERT_EQ(dbName,           "/tmp/uniprot_sprot.fasta");
-    SEQAN_ASSERT_EQ(length(r.matches),  0u);
-
-    readRecord(r, dbName, it, context, TFormat());
-    SEQAN_ASSERT_EQ(r.qId,              "SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935");
-    SEQAN_ASSERT_EQ(dbName,           "/tmp/uniprot_sprot.fasta");
-    SEQAN_ASSERT_EQ(length(r.matches),  0u);
-
-    readRecord(r, dbName, it, context, TFormat());
-    SEQAN_ASSERT_EQ(r.qId,              "SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828");
-    SEQAN_ASSERT_EQ(dbName,           "/tmp/uniprot_sprot.fasta");
-    SEQAN_ASSERT_EQ(length(r.matches),  17u);
-
-    for (auto const & m : r.matches)
-    {
-        SEQAN_ASSERT_EQ(m.qId,          "SHAA004TF"); // truncated at first space
-        // check bitscore as an example field that is both in default and custom
-        SEQAN_ASSERT_GEQ(m.bitScore,    40.8);
-        SEQAN_ASSERT_LEQ(m.bitScore,    108.0);
-    }
-
-    readRecord(r, dbName, it, context, TFormat());
-    SEQAN_ASSERT_EQ(r.qId,              "SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853");
-    SEQAN_ASSERT_EQ(dbName,           "/tmp/uniprot_sprot.fasta");
-    SEQAN_ASSERT_EQ(length(r.matches),  2u);
-
-    for (auto const & m : r.matches)
-    {
-        SEQAN_ASSERT_EQ(m.qId,          "SHAA004TR"); // truncated at first space
-        // check bitscore as an example field that is both in default and custom
-        SEQAN_ASSERT_EQ(m.bitScore,    152.0);
-    }
-
-    readRecord(r, dbName, it, context, TFormat());
-    SEQAN_ASSERT_EQ(r.qId,              "SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960");
-    SEQAN_ASSERT_EQ(dbName,           ""); // couldn't be detected (typo)
-    SEQAN_ASSERT_EQ(length(r.matches),  0u);
 }
+//  {
+//     std::string inPath = std::string(SEQAN_PATH_TO_ROOT()) + LEGACY_HEADER_DEFAULTS;
+//
+//     std::ifstream ifstream(toCString(inPath),
+//                            std::ios_base::in | std::ios_base::binary);
+//     SEQAN_ASSERT(ifstream.is_open());
+//
+//     auto it = directionIterator(ifstream, Input());
+//
+//     BlastRecord<> r;
+//     std::string dbName;
+//     BlastIOContext context;
+//
+//     // first line is header
+//     SEQAN_ASSERT(!onMatch(it, TFormat()));
+//
+//     readRecord(r, dbName, it, context, TFormat());
+//     SEQAN_ASSERT_EQ(r.qId,              "SHAA003TF  Sample 1 Mate SHAA003TR trimmed_to 27 965");
+//     SEQAN_ASSERT_EQ(dbName,           "/tmp/uniprot_sprot.fasta");
+//     SEQAN_ASSERT_EQ(length(r.matches),  0u);
+//
+//     readRecord(r, dbName, it, context, TFormat());
+//     SEQAN_ASSERT_EQ(r.qId,              "SHAA003TR  Sample 1 Mate SHAA003TF trimmed_to 17 935");
+//     SEQAN_ASSERT_EQ(dbName,           "/tmp/uniprot_sprot.fasta");
+//     SEQAN_ASSERT_EQ(length(r.matches),  0u);
+//
+//     readRecord(r, dbName, it, context, TFormat());
+//     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TF  Sample 1 Mate SHAA004TR trimmed_to 25 828");
+//     SEQAN_ASSERT_EQ(dbName,           "/tmp/uniprot_sprot.fasta");
+//     SEQAN_ASSERT_EQ(length(r.matches),  17u);
+//
+//     for (auto const & m : r.matches)
+//     {
+//         SEQAN_ASSERT_EQ(m.qId,          "SHAA004TF"); // truncated at first space
+//         // check bitscore as an example field that is both in default and custom
+//         SEQAN_ASSERT_GEQ(m.bitScore,    40.8);
+//         SEQAN_ASSERT_LEQ(m.bitScore,    108.0);
+//     }
+//
+//     readRecord(r, dbName, it, context, TFormat());
+//     SEQAN_ASSERT_EQ(r.qId,              "SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853");
+//     SEQAN_ASSERT_EQ(dbName,           "/tmp/uniprot_sprot.fasta");
+//     SEQAN_ASSERT_EQ(length(r.matches),  2u);
+//
+//     for (auto const & m : r.matches)
+//     {
+//         SEQAN_ASSERT_EQ(m.qId,          "SHAA004TR"); // truncated at first space
+//         // check bitscore as an example field that is both in default and custom
+//         SEQAN_ASSERT_EQ(m.bitScore,    152.0);
+//     }
+//
+//     readRecord(r, dbName, it, context, TFormat());
+//     SEQAN_ASSERT_EQ(r.qId,              "SHAA005TR  Sample 1 Mate SHAA005TF trimmed_to 22 960");
+//     SEQAN_ASSERT_EQ(dbName,           ""); // couldn't be detected (typo)
+//     SEQAN_ASSERT_EQ(length(r.matches),  0u);
+// }
 
 
 SEQAN_DEFINE_TEST(test_blast_read_formatted_file_tabular)

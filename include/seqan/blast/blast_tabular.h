@@ -583,6 +583,103 @@ BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::defaults;
 //
 // };
 
+//TODO find a better place for this
+/*!
+ * @class BlastIOContext
+ * @headerfile <seqan/blast.h>
+ * @signature struct BlastInputContext { ... };
+ * @brief An object that holds file global information and buffers for BlastIO
+ *
+ * This needs to be passed to most read*(), skip*() and write*() functions as
+ * a parameter. You should re-use this object (i.e. only create it once for
+ * every file that you write). And you don't need to and should not clear()
+ * this, ever.
+ *
+ * See @link BlastFormat @endlink for examples of usage.
+ */
+
+struct BlastIOContext
+{
+    typedef std::string TString;
+
+    /*!
+     * @var TString BlastIOContext::versionString;
+     * @brief when reading, this will hold the Blast version string read from
+     * the file (out-parameter); when writing this will be written to file iff
+     * it is set (in-parameter), otherwise a versionString will be generated
+     * from the current SeqAn version.
+     */
+    TString versionString;
+
+    /*!
+     * @var BlastDbSpecs<TString> BlastIOContext::dbSpecs;
+     * @brief a @link BlastDbSpecs @endlink object with information on the database
+     * used.
+     */
+    BlastDbSpecs<TString> dbSpecs;
+
+    /*!
+     * @var StringSet<TString> BlastIOContext::otherLines;
+     * @brief a StringSet that will contain all comment or header lines that
+     * could not be interpreted in another way. [out-parameter of readRecord and
+     * readHeader]
+     */
+    StringSet<TString, Owner<ConcatDirect<>>> otherLines;
+
+    /*!
+     * @var std::vector<BlastMatchField::Enum> BlastIOContext::fields;
+     * @brief the fields (types of columns) in tabular formats. Is an
+     * in-parameter to writeRecord, writeMatch, writeHeader and readMatch. In
+     * the latter case it signifies the expected fields. Is an out-parameter
+     * of readRecord and readHeader where it returns the fields specified in
+     * the header.
+     */
+    typedef typename BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum TEnum;
+    std::vector<TEnum> fields { { TEnum::STD } };
+
+    /*!
+     * @var StringSet<TString> BlastIOContext::fieldsAsStrings;
+     * @brief holds the fields found in a header, but as strings
+     * [out-parameter to readHeader()]; useful when the header does not conform to standards and
+     * you want to extract the verbatim column labels.
+     */
+     StringSet<TString, Owner<ConcatDirect<>>> fieldsAsStrings;
+
+    /*!
+     * @var bool BlastIOContext::ignoreFieldsInHeader;
+     * @brief when doing @link BlastRecord#readRecord @endlink, the
+     * @link BlastIOContext::fields @endlink member is used as in-parameter to
+     * readHeader() and as out-parameter to readMatch(); setting this bool
+     * deactivates the first behaviour. Use this when the header does not
+     * conform to standards (and the fields can't be read), but you know that
+     * the matches are in the given, e.g. default format.
+     */
+    bool ignoreFieldsInHeader = false;
+
+    /*!
+     * @var StringSet<TString> BlastIOContext::conformancyErrors;
+     * @brief after doing a @link BlastRecord#readRecord @endlink or
+     * @link BlastRecord#readHeader @endlink this will indicate whether the
+     * header or record contained non-fatal parse errors, usually the result
+     * of a file written by a sloppy blast implementation or a bug in SeqAn.
+     * An empty StringSet indicates that all is good.
+     */
+    StringSet<TString, Owner<ConcatDirect<>>> conformancyErrors;
+
+
+    // needed for readRecord of TABULAR
+    TString lastId;
+
+    // buffers
+    TString buffer1;
+    TString buffer2;
+    StringSet<TString, Owner<ConcatDirect<>>> buffers1;
+    StringSet<TString, Owner<ConcatDirect<>>> buffers2;
+};
+
+
+
+
 // ============================================================================
 // Metafunctions and global const-expressions
 // ============================================================================

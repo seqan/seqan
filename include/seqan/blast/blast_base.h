@@ -263,24 +263,55 @@ enum class BlastFormatGeneration : uint8_t
  * assignSource(row(m.align, 1), qry);
  * localAlignment(m.align, scheme);
  *
- *
  * // count identities, mismatches a.s.o.; compute raw score
  * calcStatsAndScore(m, scheme);
  * // calculate bit score and evalue
  * calcBitScoreAndEValue(m, dbSpecs, adapter);
  * @endcode
  *
- * @section Output (high-level)
+ * @section Input/Output (FormattedFile interface)
  *
- * For a subset of formats and features there is high-level output support with
- * @link BlastTabularFileOut @endlink. This is a short example of how to use it:
+ * For a subset of formats and features there is high-level ipnut and output
+ * support with @link BlastTabularFileIn @endlink and @link BlastTabularFileOut
+ * @endlink respectively. This interface is the most basic (and
+ * easy to use), but it is slightly slower than other interfaces and supports
+ * less features. See @link BlastTabularFileIn @endlink and
+ * @link BlastTabularFileOut @endlink for details.
+ *
+ * @section Output (recommended interface)
+ *
+ * As previously mentioned, organize your matches as @link BlastMatch @endlinkes
+ * inside @link BlastRecord @endlinks.
+ *
+ * Call @link BlastFormat#writeTop @endlink
+ * first, than iterate over the records, calling
+ * @link BlastRecord#writeRecord @endlink on each, and finishing with
+ * @link BlastFormat#writeBottom @endlink.
+ * Certain BlastFormats have additional more fine-grained functions, e.g.
+ * @link BlastRecord#writeHeader @endlink and
+ * @link BlastMatch#writeMatch @endlink .
+ *
+ * This is a short example of how to use it (assuming:
  *
  * @code{.cpp}
+ *
+ * void writeRecordsToFile(
  * BlastTabularOut out("/tmp/example.blast");
+ *
+ * context(out).dbSpecs.dbName = "Legendary Nucleotide Database";
  *
  * BlastRecord<> r;
  *
- * TODO
+ * for (/* ... *&#47;)
+ * {
+ *     BlastMatch<> m;
+ *
+ *     // "fill" the match object
+ *
+ *     appendValue(r.matches, m);
+ * }
+ *
+ * writeRecord(out, r);
  * @endcode
  *
  *

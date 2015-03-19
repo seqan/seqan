@@ -113,11 +113,45 @@ typedef FormattedFile<BlastTabular, Input> BlastTabularIn;
  * @headerfile <seqan/blast.h>
  * @brief FormattedFileOut abstraction for a subset of BlastFormats
  *
- * Only @link BlastFormatFile @endlink::TABULAR or
- * @link BlastFormatFile @endlink::TABULAR_WITH_HEADER and
- * @link BlastFormatGeneration @endlink == ::BLAST_PLUS
- * are supported with this interface. For more options, see
- * @link BlastFormat @endlink.
+ * @remarks
+ *
+ * This is a FormattedFile abstraction of the BlastIO module. It is the
+ * interface most basic (and easy to use), but it is slightly slower than other
+ * interfaces and supports less features. See @link BlastFormat @endlink
+ * for possibilities to write Blast compatible files with more fine-grained
+ * control.
+ *
+ * The subset of @link BlastFormat @endlinks supported are those that
+ * have @link BlastFormatFile @endlink == ::TABULAR or
+ * ::TABULAR_WITH_HEADER and @link BlastFormatGeneration @endlink ==
+ * ::BLAST_PLUS.
+ *
+ * It only contains the @link FormattedFileOut#writeRecord @endlink
+ * function (@link FormattedFileOut#writeHeader @endlink is a NOOP).
+ * Before calling it, make sure that the database name inside the context
+ * is set (see below).
+ *
+ * @example
+ * @code{.cpp}
+ * BlastTabularOut out("/tmp/example.blast");
+ *
+ * context(out).dbSpecs.dbName = "Legendary Nucleotide Database";
+ *
+ * BlastRecord<> r;
+ * r.qId = "FIRSTREAD abcdefg";
+ *
+ * for (/* ... * &frasl; )
+ * {
+ *     BlastMatch<> m;
+ *
+ *     // "fill" the match object
+ *
+ *     appendValue(r.matches, m);
+ * }
+ *
+ * writeRecord(out, r);
+ * @endcode
+ *
  * @see BlastRecord
  */
 
@@ -127,16 +161,16 @@ typedef FormattedFile<BlastTabular, Output> BlastTabularOut;
 // Type BlastTabularIOContext_
 // ----------------------------------------------------------------------------
 
-struct BlastTabularInputContext_
-{
-    BlastDbSpecs<>      dbSpecs;
-    BlastInputContext   context;
-};
-
-struct BlastTabularOutputContext_
-{
-    BlastDbSpecs<>      dbSpecs;
-};
+// struct BlastTabularInputContext_
+// {
+//     BlastDbSpecs<>      dbSpecs;
+//     BlastInputContext   context;
+// };
+//
+// struct BlastTabularOutputContext_
+// {
+//     BlastDbSpecs<>      dbSpecs;
+// };
 
 // ============================================================================
 // Typedefs
@@ -150,17 +184,12 @@ struct BlastTabularOutputContext_
 // Metafunction FormattedFileContext
 // ----------------------------------------------------------------------------
 
-template <typename TSpec, typename TStorageSpec>
-struct FormattedFileContext<FormattedFile<BlastTabular, Input, TSpec>, TStorageSpec>
+template <typename TSpec, typename TDirection, typename TStorageSpec>
+struct FormattedFileContext<FormattedFile<BlastTabular, TDirection, TSpec>, TStorageSpec>
 {
-    typedef BlastTabularInputContext_ Type;
+    typedef BlastIOContext Type;
 };
 
-template <typename TSpec, typename TStorageSpec>
-struct FormattedFileContext<FormattedFile<BlastTabular, Output, TSpec>, TStorageSpec>
-{
-    typedef BlastTabularOutputContext_ Type;
-};
 
 // ----------------------------------------------------------------------------
 // Metafunction FileFormats
@@ -260,7 +289,7 @@ guessFormatFromFilename(TString const &,
 
 /*!
  * @fn BlastTabularFileIn#setFormat
- * @brief Convenience function in addition tp FormattedFile#setFormat
+ * @brief Convenience function in addition to FormattedFile#setFormat
  *
  * @signature void setFormat(file, tag);
  *
@@ -270,7 +299,7 @@ guessFormatFromFilename(TString const &,
 
 /*!
  * @fn BlastTabularFileOut#setFormat
- * @brief Convenience function in addition tp FormattedFile#setFormat
+ * @brief Convenience function in addition to FormattedFile#setFormat
  *
  * @signature void setFormat(file, tag);
  *
@@ -353,44 +382,44 @@ setFormat(FormattedFile<BlastTabular, TDirection, TSpec> & file,
 // Function readRecord(); BlastRecord
 // ----------------------------------------------------------------------------
 
-template <typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign,
-          typename TSpec,
-          BlastFormatProgram p>
-inline void
-readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & record,
-           FormattedFile<BlastTabular, Input, TSpec> & file,
-           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                       p,
-                       BlastFormatGeneration::BLAST_PLUS> const &)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        p,
-                        BlastFormatGeneration::BLAST_PLUS> TFormat;
-    readRecord(record, context(file).dbSpecs.dbName, file.iter,
-               context(file).context, TFormat());
-}
-
-template <typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign,
-          typename TSpec,
-          BlastFormatProgram p>
-inline void
-readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & record,
-           FormattedFile<BlastTabular, Input, TSpec> & file,
-           BlastFormat<BlastFormatFile::TABULAR,
-                       p,
-                       BlastFormatGeneration::BLAST_PLUS> const &)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR,
-                        p,
-                        BlastFormatGeneration::BLAST_PLUS> TFormat;
-    readRecord(record, file.iter, context(file).context, TFormat());
-}
+// template <typename TQId,
+//           typename TSId,
+//           typename TPos,
+//           typename TAlign,
+//           typename TSpec,
+//           BlastFormatProgram p>
+// inline void
+// readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & record,
+//            FormattedFile<BlastTabular, Input, TSpec> & file,
+//            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+//                        p,
+//                        BlastFormatGeneration::BLAST_PLUS> const &)
+// {
+//     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+//                         p,
+//                         BlastFormatGeneration::BLAST_PLUS> TFormat;
+//     readRecord(record, context(file).dbSpecs.dbName, file.iter,
+//                context(file), TFormat());
+// }
+//
+// template <typename TQId,
+//           typename TSId,
+//           typename TPos,
+//           typename TAlign,
+//           typename TSpec,
+//           BlastFormatProgram p>
+// inline void
+// readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & record,
+//            FormattedFile<BlastTabular, Input, TSpec> & file,
+//            BlastFormat<BlastFormatFile::TABULAR,
+//                        p,
+//                        BlastFormatGeneration::BLAST_PLUS> const &)
+// {
+//     typedef BlastFormat<BlastFormatFile::TABULAR,
+//                         p,
+//                         BlastFormatGeneration::BLAST_PLUS> TFormat;
+//     readRecord(record, file.iter, context(file), TFormat());
+// }
 
 // convient BlastFile variant
 template <typename TQId,
@@ -421,7 +450,7 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & record,
     typedef typename TTagList::Type TFormat;
 
     if (isEqual(format, TFormat()))
-        readRecord(record, file, TFormat());
+        readRecord(record,  file.iter, context(file), TFormat());
     else
         readRecord(record,
                    file,
