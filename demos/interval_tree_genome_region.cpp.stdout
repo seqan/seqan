@@ -1,0 +1,8 @@
+length(tree) == 2
+
+query for point 15
+=> chr1:10-20 chr1:15-25
+
+query for interval [20, 30)
+=> chr1:15-25
+
