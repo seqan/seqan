@@ -190,65 +190,65 @@ onMatch(TFwdIterator & iter,
 // Function _verifyFields()
 // ----------------------------------------------------------------------------
 
-// fields as string of blastmatchfield::enum
-template <typename TFieldList,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline SEQAN_FUNC_ENABLE_IF(And<IsSequence<TFieldList>,
-                                IsSameType<typename Value<TFieldList>::Type,
-                                           typename BlastMatchField<g>::Enum>>)
-_verifyFields(BlastIOContext &,
-              TFieldList const & fields,
-              unsigned const hits, // irrelevant for traditional header
-              BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
-{
-    // In BLAST_PLUS, iff hits are zero no fields line is printed
-    if (g == BlastFormatGeneration::BLAST_PLUS)
-        if ((hits == 0) && length(fields) == 0 )
-            return;
-
-    if (length(fields) != BlastMatchField<g>::defaults)
-        SEQAN_THROW(RecoverableParseError("Default fields and header "
-                                          "verification requested, but "
-                                          "fields were not default."));
-
-    for (unsigned i = 0; i < length(fields); ++i)
-        if (fields[i] != BlastMatchField<g>::defaults[i])
-            SEQAN_THROW(RecoverableParseError("Default fields and header "
-                                              "verification requested, but "
-                                              "fields were not default."));
-}
-
-// fields as strings
-template <typename TString,
-          typename TSpec,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline void
-_verifyFields(BlastIOContext & context,
-              StringSet<TString, TSpec> const & fields,
-              unsigned const hits, // irrelevant for traditional header
-              BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g>  TFormat;
-
-    // In BLAST_PLUS, iff hits are zero no fields line is printed
-    if (g == BlastFormatGeneration::BLAST_PLUS)
-        if ((hits == 0) && length(fields) == 0 )
-            return;
-
-    context.buffer1 = concat(fields, _seperatorString(TFormat()));
-
-    // will always be zero but this is cleaner
-    const uint8_t std = static_cast<uint8_t>(BlastMatchField<g>::Enum::STD);
-
-    // compare the first twelve fields
-    if (prefix(context.buffer1, length(BlastMatchField<g>::columnLabels[std])) !=
-        BlastMatchField<g>::columnLabels[std])
-        SEQAN_THROW(RecoverableParseError("Default fields and header "
-                                          "verification requested, but "
-                                          "fields were not default."));
-}
+// // fields as string of blastmatchfield::enum
+// template <typename TFieldList,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline SEQAN_FUNC_ENABLE_IF(And<IsSequence<TFieldList>,
+//                                 IsSameType<typename Value<TFieldList>::Type,
+//                                            typename BlastMatchField<g>::Enum>>)
+// _verifyFields(BlastIOContext &,
+//               TFieldList const & fields,
+//               unsigned const hits, // irrelevant for traditional header
+//               BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
+// {
+//     // In BLAST_PLUS, iff hits are zero no fields line is printed
+//     if (g == BlastFormatGeneration::BLAST_PLUS)
+//         if ((hits == 0) && length(fields) == 0 )
+//             return;
+//
+//     if (length(fields) != BlastMatchField<g>::defaults)
+//         SEQAN_THROW(RecoverableParseError("Default fields and header "
+//                                           "verification requested, but "
+//                                           "fields were not default."));
+//
+//     for (unsigned i = 0; i < length(fields); ++i)
+//         if (fields[i] != BlastMatchField<g>::defaults[i])
+//             SEQAN_THROW(RecoverableParseError("Default fields and header "
+//                                               "verification requested, but "
+//                                               "fields were not default."));
+// }
+//
+// // fields as strings
+// template <typename TString,
+//           typename TSpec,
+//           BlastFormatProgram p,
+//           BlastFormatGeneration g>
+// inline void
+// _verifyFields(BlastIOContext & context,
+//               StringSet<TString, TSpec> const & fields,
+//               unsigned const hits, // irrelevant for traditional header
+//               BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
+// {
+//     typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g>  TFormat;
+//
+//     // In BLAST_PLUS, iff hits are zero no fields line is printed
+//     if (g == BlastFormatGeneration::BLAST_PLUS)
+//         if ((hits == 0) && length(fields) == 0 )
+//             return;
+//
+//     context.buffer1 = concat(fields, _seperatorString(TFormat()));
+//
+//     // will always be zero but this is cleaner
+//     const uint8_t std = static_cast<uint8_t>(BlastMatchField<g>::Enum::STD);
+//
+//     // compare the first twelve fields
+//     if (prefix(context.buffer1, length(BlastMatchField<g>::columnLabels[std])) !=
+//         BlastMatchField<g>::columnLabels[std])
+//         SEQAN_THROW(RecoverableParseError("Default fields and header "
+//                                           "verification requested, but "
+//                                           "fields were not default."));
+// }
 
 // ----------------------------------------------------------------------------
 // Function readHeader()
@@ -361,10 +361,16 @@ _readHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
 
             ++fieldsLinePresent;
             if (g == BlastFormatGeneration::BLAST_LEGACY)
+            {
+                // assume defaults for LEGACY
+                if (!context.ignoreFieldsInHeader)
+                    appendValue(context.fields, TMatchField::Enum::STD);
+
                 break; // header is finished
+            }
 
             if (context.ignoreFieldsInHeader)
-                break;
+                continue;
 
             bool defaults = true;
             resize(context.fields, length(context.fieldsAsStrings));
@@ -464,14 +470,13 @@ _readHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
             appendValue(context.conformancyErrors,
                         "No or multiple fields lines present.");
 
-        if (length(context.otherLines) == 0)
+        if (length(context.otherLines) != 0)
             appendValue(context.conformancyErrors,
                         "Unexpected lines present, see context.otherLines.");
     }
 
-
     if ((g == BlastFormatGeneration::BLAST_PLUS) &&
-        (!(lastLine == 1) && atEnd(iter)))
+        !((lastLine == 1) && atEnd(iter)))
     {
         if (!keyCorrect)
             appendValue(context.conformancyErrors,
@@ -490,7 +495,7 @@ _readHeaderImpl(BlastRecord<TQId, TSId, TPos, TAlign> & r,
             appendValue(context.conformancyErrors,
                         "No or multiple fields lines present.");
 
-        if (length(context.otherLines) == 0)
+        if (length(context.otherLines) != 0)
             appendValue(context.conformancyErrors,
                         "Unexpected lines present, see context.otherLines.");
     }
@@ -514,9 +519,11 @@ readHeader(BlastRecord<TQId, TSId, TPos, TAlign> & r,
     clear(context.versionString);
     clear(context.dbSpecs);
     clear(context.otherLines);
-    clear(context.fields);
-    clear(context.fieldsAsStrings);
     clear(context.conformancyErrors);
+    clear(context.fieldsAsStrings);
+
+    if (!context.ignoreFieldsInHeader)
+        clear(context.fields);
 
     _readHeaderImpl(r, iter, context, TFormat());
 }
@@ -609,14 +616,14 @@ skipHeader(TFwdIterator & iter,
  */
 
 // // default traditional Blast or BlastPlus
-// template <typename TqId,
+// template <typename TQId,
 //           typename TDBName,
 //           typename TVersionString,
 //           typename TFwdIterator,
 //           BlastFormatProgram p,
 //           BlastFormatGeneration g>
 // inline void
-// readHeader(TqId & qId,
+// readHeader(TQId & qId,
 //            TDBName & dbName,
 //            TVersionString & versionString,
 //            TFwdIterator & iter,
@@ -649,13 +656,13 @@ skipHeader(TFwdIterator & iter,
 // }
 //
 // // BlastPlus with hit count
-// template <typename TqId,
+// template <typename TQId,
 //           typename TDBName,
 //           typename TVersionString,
 //           typename TFwdIterator,
 //           BlastFormatProgram p>
 // inline void
-// readHeader(TqId & qId,
+// readHeader(TQId & qId,
 //            TDBName & dbName,
 //            TVersionString & versionString,
 //            unsigned long & hits,
@@ -691,7 +698,7 @@ skipHeader(TFwdIterator & iter,
 // }
 //
 // // with fields
-// template <typename TqId,
+// template <typename TQId,
 //           typename TDBName,
 //           typename TVersionString,
 //           typename TFieldList,
@@ -701,7 +708,7 @@ skipHeader(TFwdIterator & iter,
 //           typename std::enable_if<
 //             Is<ContainerConcept<TFieldList>>::VALUE, int>::type = 0>
 // inline void
-// readHeader(TqId & qId,
+// readHeader(TQId & qId,
 //            TDBName & dbName,
 //            TVersionString & versionString,
 //            TFieldList & fields,
@@ -733,7 +740,7 @@ skipHeader(TFwdIterator & iter,
 // }
 //
 // // with fields and hits count
-// template <typename TqId,
+// template <typename TQId,
 //           typename TDBName,
 //           typename TVersionString,
 //           typename TFieldList,
@@ -742,7 +749,7 @@ skipHeader(TFwdIterator & iter,
 //           typename std::enable_if<
 //             Is<ContainerConcept<TFieldList>>::VALUE, int>::type = 0>
 // inline void
-// readHeader(TqId & qId,
+// readHeader(TQId & qId,
 //            TDBName & dbName,
 //            TVersionString & versionString,
 //            unsigned long & hits,
@@ -778,7 +785,7 @@ skipHeader(TFwdIterator & iter,
 //
 //
 // // with fields and otherLines
-// template <typename TqId,
+// template <typename TQId,
 //           typename TDBName,
 //           typename TVersionString,
 //           typename TFieldList,
@@ -789,7 +796,7 @@ skipHeader(TFwdIterator & iter,
 //           typename std::enable_if<
 //             Is<ContainerConcept<TFieldList>>::VALUE, int>::type = 0>
 // inline void
-// readHeader(TqId & qId,
+// readHeader(TQId & qId,
 //            TDBName & dbName,
 //            TVersionString & versionString,
 //            TFieldList & fields,
@@ -819,7 +826,7 @@ skipHeader(TFwdIterator & iter,
 // }
 //
 // // with fields and otherLines and hits count
-// template <typename TqId,
+// template <typename TQId,
 //           typename TDBName,
 //           typename TVersionString,
 //           typename TFieldList,
@@ -829,7 +836,7 @@ skipHeader(TFwdIterator & iter,
 //           typename std::enable_if<
 //             Is<ContainerConcept<TFieldList>>::VALUE, int>::type = 0>
 // inline void
-// readHeader(TqId & qId,
+// readHeader(TQId & qId,
 //            TDBName & dbName,
 //            TVersionString & versionString,
 //            unsigned long & hits,
@@ -979,12 +986,12 @@ skipUntilMatch(TFwdIterator & iter,
 // Function readMatch()
 // ----------------------------------------------------------------------------
 
-template <typename TqId,
-          typename TsId,
+template <typename TQId,
+          typename TSId,
           typename TPos,
           typename TAlign>
 inline void
-_readField(BlastMatch<TqId, TsId, TPos, TAlign> & match,
+_readField(BlastMatch<TQId, TSId, TPos, TAlign> & match,
            BlastIOContext & context,
            typename BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum
              const fieldId)
@@ -1109,14 +1116,14 @@ _readField(BlastMatch<TqId, TsId, TPos, TAlign> & match,
     };
 }
 
-template <typename TqId,
-          typename TsId,
+template <typename TQId,
+          typename TSId,
           typename TFwdIterator,
           typename TPos,
           typename TAlign,
           BlastFormatProgram    p>
 inline void
-_readMatchImpl(BlastMatch<TqId, TsId, TPos, TAlign> & match,
+_readMatchImpl(BlastMatch<TQId, TSId, TPos, TAlign> & match,
                TFwdIterator & iter,
                BlastIOContext & context,
                BlastFormat<BlastFormatFile::TABULAR,
@@ -1194,14 +1201,14 @@ _readMatchImpl(BlastMatch<TqId, TsId, TPos, TAlign> & match,
         match.gaps = match.aliLength - match.mismatches - match.identities;
 }
 
-template <typename TqId,
-          typename TsId,
+template <typename TQId,
+          typename TSId,
           typename TFwdIterator,
           typename TPos,
           typename TAlign,
           BlastFormatProgram    p>
 inline void
-_readMatchImpl(BlastMatch<TqId, TsId, TPos, TAlign> & match,
+_readMatchImpl(BlastMatch<TQId, TSId, TPos, TAlign> & match,
                TFwdIterator & iter,
                BlastIOContext & context,
                BlastFormat<BlastFormatFile::TABULAR,
@@ -1283,15 +1290,15 @@ _readMatchImpl(BlastMatch<TqId, TsId, TPos, TAlign> & match,
  * @headerfile seqan/blast.h
  */
 
-template <typename TqId,
-          typename TsId,
+template <typename TQId,
+          typename TSId,
           typename TFwdIterator,
           typename TPos,
           typename TAlign,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline void
-readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
+readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
           TFwdIterator & iter,
           BlastIOContext & context,
           BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
@@ -1301,15 +1308,15 @@ readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
     _readMatchImpl(match, iter, context, TFormat());
 }
 
-template <typename TqId,
-          typename TsId,
+template <typename TQId,
+          typename TSId,
           typename TFwdIterator,
           typename TPos,
           typename TAlign,
           BlastFormatProgram p,
           BlastFormatGeneration g>
 inline void
-readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
+readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
           TFwdIterator & iter,
           BlastIOContext & context,
           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
@@ -1318,8 +1325,8 @@ readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
     readMatch(match, iter, context, TFormat());
 }
 
-// template <typename TqId,
-//           typename TsId,
+// template <typename TQId,
+//           typename TSId,
 //           typename TFwdIterator,
 //           typename TPos,
 //           typename TAlign,
@@ -1327,7 +1334,7 @@ readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
 //           BlastFormatProgram p,
 //           BlastFormatGeneration g>
 // inline void
-// readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
+// readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
 //           TFwdIterator & iter,
 //           BlastIOContext & context,
 //           TFieldList const & fieldList,
@@ -1343,15 +1350,15 @@ readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
 //
 //
 // // default fields
-// template <typename TqId,
-//           typename TsId,
+// template <typename TQId,
+//           typename TSId,
 //           typename TFwdIterator,
 //           typename TPos,
 //           typename TAlign,
 //           BlastFormatProgram    p,
 //           BlastFormatGeneration g>
 // inline void
-// readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
+// readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
 //           TFwdIterator & iter,
 //           BlastIOContext & context,
 //           BlastFormat<BlastFormatFile::TABULAR, p, g> const &)
@@ -1361,15 +1368,15 @@ readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
 // }
 //
 // // default fields
-// template <typename TqId,
-//           typename TsId,
+// template <typename TQId,
+//           typename TSId,
 //           typename TFwdIterator,
 //           typename TPos,
 //           typename TAlign,
 //           BlastFormatProgram    p,
 //           BlastFormatGeneration g>
 // inline void
-// readMatch(BlastMatch<TqId, TsId, TPos, TAlign> & match,
+// readMatch(BlastMatch<TQId, TSId, TPos, TAlign> & match,
 //           TFwdIterator & iter,
 //           BlastIOContext & context,
 //           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const &)
@@ -1664,7 +1671,7 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
 
     if ((!atEnd(iter)) && onMatch(iter, TFormat()))
         appendValue(context.conformancyErrors,
-                    "Less matches than promised by header");
+                    "More matches than promised by header");
 
     while ((!atEnd(iter)) && onMatch(iter, TFormat()))
     {
@@ -1728,8 +1735,8 @@ readRecord(BlastRecord<TQId, TSId, TPos, TAlign> & blastRecord,
         fieldListMinusFirst = PrivateSpace_<>::defaultsMinusQId;
         if (length(context.fields) > 1)
             fieldListMinusFirst.insert(std::end(fieldListMinusFirst),
-                                       seqan::begin(context.fields) + 1,
-                                       seqan::end(context.fields));
+                                       std::begin(context.fields) + 1,
+                                       std::end(context.fields));
     }
     else if (context.fields[0] == TField::Enum::Q_SEQ_ID)
     {

@@ -302,7 +302,7 @@ enum class BlastFormatGeneration : uint8_t
  *
  * BlastRecord<> r;
  *
- * for (/* ... *&#47;)
+ * for ( ... )
  * {
  *     BlastMatch<> m;
  *
@@ -713,11 +713,11 @@ _programTagToString(BlastFormat<f, BlastFormatProgram::TBLASTX, g> const &)
  * @fn BlastFormat#writeTop
  * @headerfile seqan/blast.h
  * @brief write the top-most section of a BLAST output file (NO-OP for tabular formats)
- * @signature writeTop(stream, blastDbSpecs, blastFormatTag)
+ * @signature writeTop(stream, context, tag)
  *
- * @param[in,out] stream     The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param[in] blastDbSpecs   The @link BlastDbSpecs @endlink of your database-
- * @param[in] blastFormatTag The @link BlastFormat @endlink specifier.
+ * @param[in,out] stream   The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param[in,out] context  A @link BlastIOContext @endlink with parameters and buffers.
+ * @param[in]     tag      The @link BlastFormat @endlink specifier.
  *
  * @see BlastFormat
  * @see BlastRecord
@@ -745,13 +745,12 @@ writeTop(TStream                    & /**/,
  * @headerfile seqan/blast.h
  * @brief write a @link BlastRecord @endlink including it's
  *  @link BlastMatch @endlinkes and possible headers to a file.
- * @signature writeRecord(stream, blastRecord, blastDbSpecs, [fieldList,] blastFormatTag)
+ * @signature writeRecord(stream, context, blastRecord, tag)
  *
  * @param[in,out] stream     The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param[in,out] context     A @link BlastIOContext @endlink with parameters and buffers.
  * @param[in] blastRecord    The @link BlastRecord @endlink you wish to print.
- * @param[in] blastDbSpecs   The @link BlastDbSpecs @endlink.
- * @param[in] fieldList      A Sequence of @link BlastMatchField::Enum @endlink to print.
- * @param[in] blastFormatTag The @link BlastFormat @endlink specifier.
+ * @param[in] tag         The @link BlastFormat @endlink specifier.
  *
  * The fieldList parameter may only be specified when @link BlastFormatFile
  * @endlink is TABULAR or TABULAR_WITH_HEADER and if @link
@@ -769,12 +768,12 @@ writeTop(TStream                    & /**/,
  * @fn BlastFormat#writeBottom
  * @headerfile seqan/blast.h
  * @brief write the top-most section of a BLAST output file (NO-OP for tabular formats)
- * @signature writeBottom(stream, blastDbSpecs, scoringAdapter, blastFormatTag)
+ * @signature writeBottom(stream, blastDbSpecs, scoringAdapter, tag)
  *
- * @param[in,out] stream            The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param[in] scoringAdapter    A @link BlastScoringAdapter @endlink with relevant information.
- * @param[in] blastDbSpecs      The @link BlastDbSpecs @endlink of your database-
- * @param[in] blastFormatTag The @link BlastFormat @endlink specifier.
+ * @param[in,out] stream         The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param[in,out] context        A @link BlastIOContext @endlink with parameters and buffers.
+ * @param[in]     scoringAdapter A @link BlastScoringAdapter @endlink with relevant information.
+ * @param[in]     tag            The @link BlastFormat @endlink specifier.
  *
  * @see BlastFormat
  * @see BlastRecord

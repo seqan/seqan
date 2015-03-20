@@ -310,10 +310,10 @@ _memberIsSet(TNumber const & in)
     return (in != std::numeric_limits<TNumber>::max());
 }
 
-template <typename TQId = CharString,
-          typename TSId = CharString,
-          typename TPos = uint32_t,
-          typename TAlign = Align<CharString, ArrayGaps>>
+template <typename TQId,
+          typename TSId,
+          typename TPos,
+          typename TAlign>
 inline void
 clear(BlastMatch<TQId, TSId, TPos, TAlign> & match)
 {

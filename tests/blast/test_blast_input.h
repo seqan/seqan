@@ -711,7 +711,7 @@ _test_blast_read_tabular_with_header(bool custom = false)
     SEQAN_ASSERT_EQ(length(context.otherLines),
                     1u);
     SEQAN_ASSERT_EQ(length(context.conformancyErrors),
-                    1u);
+                    2u);
 
     SEQAN_ASSERT_EQ(context.otherLines[0],
                     "Datacase: /tmp/uniprot_sprot.fasta");
@@ -818,7 +818,6 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
     SEQAN_ASSERT_EQ(length(context.otherLines),
                     0u);
 
-
     while (onMatch(it, TFormat()))
         skipMatch(it, context, TFormat());
 
@@ -858,7 +857,7 @@ SEQAN_DEFINE_TEST(test_blast_read_header_tabular_with_header_legacy)
     SEQAN_ASSERT_EQ(length(context.otherLines),
                     1u);
     SEQAN_ASSERT_EQ(length(context.conformancyErrors),
-                    1u);
+                    2u);
 
     SEQAN_ASSERT_EQ(context.otherLines[0],
                     "Datacase: /tmp/uniprot_sprot.fasta");
@@ -1075,6 +1074,10 @@ void _test_blast_read_record(bool defaults, const char * path, TFormat const &)
                     "/tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(length(r.matches),
                     0u);
+    SEQAN_ASSERT_EQ(length(context.otherLines),
+                    0u);
+    SEQAN_ASSERT_EQ(length(context.conformancyErrors),
+                    0u);
 
     // fieldsList as out-parameter, but no fields, because no matches
     readRecord(r, it, context, TFormat());
@@ -1083,6 +1086,10 @@ void _test_blast_read_record(bool defaults, const char * path, TFormat const &)
     SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
                     "/tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(length(r.matches),
+                    0u);
+    SEQAN_ASSERT_EQ(length(context.otherLines),
+                    0u);
+    SEQAN_ASSERT_EQ(length(context.conformancyErrors),
                     0u);
 
     // fieldsList as out-parameter
@@ -1093,6 +1100,10 @@ void _test_blast_read_record(bool defaults, const char * path, TFormat const &)
                     "/tmp/uniprot_sprot.fasta");
     SEQAN_ASSERT_EQ(length(r.matches),
                     17u);
+    SEQAN_ASSERT_EQ(length(context.otherLines),
+                    0u);
+    SEQAN_ASSERT_EQ(length(context.conformancyErrors),
+                    0u);
 
     for (auto const & m : r.matches)
     {
@@ -1127,8 +1138,13 @@ void _test_blast_read_record(bool defaults, const char * path, TFormat const &)
                     "SHAA004TR  Sample 1 Mate SHAA004TF trimmed_to 20 853");
     SEQAN_ASSERT_EQ(context.dbSpecs.dbName,
                     "/tmp/uniprot_sprot.fasta");
+
     SEQAN_ASSERT_EQ(length(r.matches),
                     2u);
+    SEQAN_ASSERT_EQ(length(context.otherLines),
+                    0u);
+    SEQAN_ASSERT_EQ(length(context.conformancyErrors),
+                    0u);
 
     for (auto const & m : r.matches)
     {
@@ -1146,6 +1162,15 @@ void _test_blast_read_record(bool defaults, const char * path, TFormat const &)
                     "");
     SEQAN_ASSERT_EQ(length(r.matches),
                     0u);
+    SEQAN_ASSERT_EQ(length(context.otherLines),
+                    1u);
+    SEQAN_ASSERT_EQ(length(context.conformancyErrors),
+                    2u);
+
+    SEQAN_ASSERT_EQ(context.otherLines[0],
+                    "Datacase: /tmp/uniprot_sprot.fasta");
+    SEQAN_ASSERT_EQ(context.conformancyErrors[0],
+                    "No or multiple database lines present.");
 
     ifstream.close();
 }

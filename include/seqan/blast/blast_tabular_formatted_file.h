@@ -140,7 +140,7 @@ typedef FormattedFile<BlastTabular, Input> BlastTabularIn;
  * BlastRecord<> r;
  * r.qId = "FIRSTREAD abcdefg";
  *
- * for (/* ... * &frasl; )
+ * for (...)
  * {
  *     BlastMatch<> m;
  *
