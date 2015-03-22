@@ -39,15 +39,14 @@
 
 #include <seqan/basic.h>
 
+#include <seqan/misc/interval_tree.h>
+
 namespace seqan
 {
 
 // ============================================================================
 // Forwards
 // ============================================================================
-
-struct Static_;
-typedef Tag<Static_> Static;
 
 // ============================================================================
 // Tags, Classes, Enums
@@ -69,7 +68,7 @@ typedef Tag<Static_> Static;
  * @tparam TValue Value to store in the tree.
  * @tparam TSpec  Specializing tag.
  */
-template <typename TValue, typename TSpec = Static>
+template <typename TValue, typename TSpec>
 class IntervalTree;
 
 // ============================================================================
@@ -104,17 +103,18 @@ struct Position<IntervalTree<TValue, TSpec> const>
  * @mfn IntervalTree#Value
  * @brief The value type of the <tt>IntervalTree</tt>.
  */
-template <typename TValue, typename TSpec>
-struct Value<IntervalTree<TValue, TSpec> >
-{
-    typedef TValue Type;
-};
+// TODO(holtgrew): Redefined in legacy module.
+// template <typename TValue, typename TSpec>
+// struct Value<IntervalTree<TValue, TSpec> >
+// {
+//     typedef TValue Type;
+// };
 
-template <typename TValue, typename TSpec>
-struct Value<IntervalTree<TValue, TSpec> const>
-{
-    typedef TValue Type;
-};
+// template <typename TValue, typename TSpec>
+// struct Value<IntervalTree<TValue, TSpec> const>
+// {
+//     typedef TValue Type;
+// };
 
 // ============================================================================
 // Functions

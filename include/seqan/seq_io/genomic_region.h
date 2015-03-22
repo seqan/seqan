@@ -282,7 +282,7 @@ parse(GenomicRegion & region, CharString const & regionString)
 // Function beginPos()
 // ---------------------------------------------------------------------------
 
-__int32 beginPos(GenomicRegion const & region)
+inline __int32 beginPos(GenomicRegion const & region)
 {
     return region.beginPos;
 }
@@ -291,7 +291,7 @@ __int32 beginPos(GenomicRegion const & region)
 // Function endPos()
 // ---------------------------------------------------------------------------
 
-__int32 endPos(GenomicRegion const & region)
+inline __int32 endPos(GenomicRegion const & region)
 {
     return region.endPos;
 }

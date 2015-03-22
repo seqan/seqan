@@ -160,7 +160,7 @@ IntervalTree<TValue, Static>::computeMaxEndProperties(
 
     entry.maxEnd = std::max(entry.maxEnd,
                             std::max(computeMaxEndProperties(beginIdx, centerIdx),
-                                     computeMaxEndProperties(centerIdx, endIdx)));
+                                     computeMaxEndProperties(centerIdx + 1, endIdx)));
     return entry.maxEnd;
 }
 

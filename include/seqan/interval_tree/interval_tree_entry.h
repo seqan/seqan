@@ -72,7 +72,7 @@ public:
 
     template <typename TPos> bool _allLeftOf(TPos point) const
     {
-        return (maxEnd < (TPosition_)point);
+        return (maxEnd <= (TPosition_)point);
     }
 
     template <typename TPos> bool _isLeftOf(TPos point) const

@@ -39,7 +39,7 @@
 
 SEQAN_DEFINE_TEST(test_interval_tree_empty)
 {
-    seqan::IntervalTree<seqan::Interval<unsigned, int>, seqan::Static> intervalTree;
+    seqan::IntervalTree<seqan::IntervalWithCargo<unsigned, int>, seqan::Static> intervalTree;
 
     SEQAN_ASSERT_EQ(0u, length(intervalTree));
     SEQAN_ASSERT(begin(intervalTree, seqan::Standard()) == end(intervalTree, seqan::Standard()));
@@ -47,29 +47,29 @@ SEQAN_DEFINE_TEST(test_interval_tree_empty)
 
 struct SmallIntervalTreeFixture
 {
-    typedef seqan::Interval<unsigned, int>                              TInterval;
-    typedef seqan::IntervalTree<TInterval, seqan::Static>               TIntervalTree;
+    typedef seqan::IntervalWithCargo<unsigned, int>                              TIntervalWithCargo;
+    typedef seqan::IntervalTree<TIntervalWithCargo, seqan::Static>               TIntervalTree;
     typedef seqan::Iterator<TIntervalTree const, seqan::Standard>::Type TIterator;
     typedef std::vector<TIterator>                                      TResult;
 
-    std::vector<TInterval> intervals;
+    std::vector<TIntervalWithCargo> intervals;
 
     SmallIntervalTreeFixture()
     {
-        intervals.push_back(TInterval(0, 1, 4));
-        intervals.push_back(TInterval(1, 5, 9));
-        intervals.push_back(TInterval(2, 4, 8));
-        intervals.push_back(TInterval(3, 5, 7));
-        intervals.push_back(TInterval(4, 16, 20));
-        intervals.push_back(TInterval(5, 11, 16));
-        intervals.push_back(TInterval(6, 30, 67));
+        intervals.push_back(TIntervalWithCargo(0, 1, 4));
+        intervals.push_back(TIntervalWithCargo(1, 5, 9));
+        intervals.push_back(TIntervalWithCargo(2, 4, 8));
+        intervals.push_back(TIntervalWithCargo(3, 5, 7));
+        intervals.push_back(TIntervalWithCargo(4, 16, 20));
+        intervals.push_back(TIntervalWithCargo(5, 11, 16));
+        intervals.push_back(TIntervalWithCargo(6, 30, 67));
     }
 };
 
 SEQAN_DEFINE_TEST(test_interval_tree_small_construction)
 {
     SmallIntervalTreeFixture fixture;
-    seqan::IntervalTree<seqan::Interval<unsigned, int>, seqan::Static> intervalTree(fixture.intervals);
+    seqan::IntervalTree<seqan::IntervalWithCargo<unsigned, int>, seqan::Static> intervalTree(fixture.intervals);
 
     SEQAN_ASSERT_EQ(7u, length(intervalTree));
     SEQAN_ASSERT(begin(intervalTree, seqan::Standard()) != end(intervalTree, seqan::Standard()));
@@ -78,7 +78,7 @@ SEQAN_DEFINE_TEST(test_interval_tree_small_construction)
 SEQAN_DEFINE_TEST(test_interval_tree_small_find_overlapping_with_point)
 {
     SmallIntervalTreeFixture fixture;
-    seqan::IntervalTree<seqan::Interval<unsigned, int>, seqan::Static> intervalTree(fixture.intervals);
+    seqan::IntervalTree<seqan::IntervalWithCargo<unsigned, int>, seqan::Static> intervalTree(fixture.intervals);
 
     SEQAN_ASSERT_EQ(7u, length(intervalTree));
     SEQAN_ASSERT(begin(intervalTree, seqan::Standard()) != end(intervalTree, seqan::Standard()));
@@ -106,23 +106,41 @@ SEQAN_DEFINE_TEST(test_interval_tree_small_find_overlapping_with_point)
     }
 }
 
+struct BugIntervalTreeFixture
+{
+    typedef seqan::IntervalWithCargo<unsigned, int>                              TIntervalWithCargo;
+    typedef seqan::IntervalTree<TIntervalWithCargo, seqan::Static>               TIntervalTree;
+    typedef seqan::Iterator<TIntervalTree const, seqan::Standard>::Type TIterator;
+    typedef std::vector<TIterator>                                      TResult;
+
+    std::vector<TIntervalWithCargo> intervals;
+
+    BugIntervalTreeFixture()
+    {
+        intervals.push_back(TIntervalWithCargo(0, 2985989, 2985990));
+        intervals.push_back(TIntervalWithCargo(1, 3102611, 3102757));
+        intervals.push_back(TIntervalWithCargo(2, 3102881, 3102984));
+        intervals.push_back(TIntervalWithCargo(3, 3103125, 3103127));
+    }
+};
+
 SEQAN_DEFINE_TEST(test_interval_tree_small_find_overlapping_with_interval)
 {
     SmallIntervalTreeFixture fixture;
-    seqan::IntervalTree<seqan::Interval<unsigned, int>, seqan::Static> intervalTree(fixture.intervals);
+    seqan::IntervalTree<seqan::IntervalWithCargo<unsigned, int>, seqan::Static> intervalTree(fixture.intervals);
 
     SEQAN_ASSERT_EQ(7u, length(intervalTree));
     SEQAN_ASSERT(begin(intervalTree, seqan::Standard()) != end(intervalTree, seqan::Standard()));
 
     // overlaps(0, 1) => {}
     {
-        SmallIntervalTreeFixture::TResult result;
+        BugIntervalTreeFixture::TResult result;
         findOverlappingWithInterval(intervalTree, 0, 1, result);
         SEQAN_ASSERT_EQ(length(result), 0u);
     }
     // overlaps(5, 6) => {1,2,3}
     {
-        SmallIntervalTreeFixture::TResult result;
+        BugIntervalTreeFixture::TResult result;
         findOverlappingWithInterval(intervalTree, 5, 6, result);
         SEQAN_ASSERT_EQ(length(result), 3u);
         SEQAN_ASSERT_EQ(cargo(*result[0]), 2u);
@@ -131,9 +149,26 @@ SEQAN_DEFINE_TEST(test_interval_tree_small_find_overlapping_with_interval)
     }
     // overlaps(67, 68) => {}
     {
-        SmallIntervalTreeFixture::TResult result;
+        BugIntervalTreeFixture::TResult result;
         findOverlappingWithInterval(intervalTree, 67, 68, result);
         SEQAN_ASSERT_EQ(length(result), 0u);
+    }
+}
+
+SEQAN_DEFINE_TEST(test_interval_tree_small_find_overlapping_with_interval_bug)
+{
+    BugIntervalTreeFixture fixture;
+    seqan::IntervalTree<seqan::IntervalWithCargo<unsigned, int>, seqan::Static> intervalTree(fixture.intervals);
+
+    SEQAN_ASSERT_EQ(4u, length(intervalTree));
+    SEQAN_ASSERT(begin(intervalTree, seqan::Standard()) != end(intervalTree, seqan::Standard()));
+
+    // overlaps(0, 1) => {}
+    {
+        BugIntervalTreeFixture::TResult result;
+        findOverlappingWithInterval(intervalTree, 3102981, 3103082, result);
+        SEQAN_ASSERT_EQ(length(result), 1u);
+         SEQAN_ASSERT_EQ(cargo(*result[0]), 2u);
     }
 }
 
@@ -143,5 +178,6 @@ SEQAN_BEGIN_TESTSUITE(test_interval_tree)
     SEQAN_CALL_TEST(test_interval_tree_small_construction);
     SEQAN_CALL_TEST(test_interval_tree_small_find_overlapping_with_point);
     SEQAN_CALL_TEST(test_interval_tree_small_find_overlapping_with_interval);
+    SEQAN_CALL_TEST(test_interval_tree_small_find_overlapping_with_interval_bug);
 }
 SEQAN_END_TESTSUITE

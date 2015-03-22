@@ -51,7 +51,7 @@ namespace seqan
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class Interval
+// Class IntervalWithCargo
 // ----------------------------------------------------------------------------
 
 /*!
@@ -63,29 +63,29 @@ namespace seqan
 // cargo()
 
 /*!
- * @class Interval
+ * @class IntervalWithCargo
  * @headerfile <seqan/interval_tree.h>
  * @implements IntervalConcept
  * @brief Half-open interval.
  *
  * @signature template <typename TCargo, typename TPos>
- *            class Interval;
+ *            class IntervalWithCargo;
  *
  * @tparam TCargo Type of the cargo  to store.
  * @tparam TPos   Type to use for positions.
  */
 template <typename TCargo, typename TPos>
-class Interval
+class IntervalWithCargo
 {
 public:
     TCargo cargo;
     TPos beginPos;
     TPos endPos;
 
-    Interval() : cargo(), beginPos(), endPos()
+    IntervalWithCargo() : cargo(), beginPos(), endPos()
     {}
 
-    Interval(TCargo const & cargo, TPos beginPos, TPos endPos) :
+    IntervalWithCargo(TCargo const & cargo, TPos beginPos, TPos endPos) :
             cargo(cargo), beginPos(beginPos), endPos(endPos)
     {}
 };
@@ -99,13 +99,13 @@ public:
 // ----------------------------------------------------------------------------
 
 template <typename TCargo, typename TPos>
-struct Position<Interval<TCargo, TPos> >
+struct Position<IntervalWithCargo<TCargo, TPos> >
 {
     typedef TPos Type;
 };
 
 template <typename TCargo, typename TPos>
-struct Position<Interval<TCargo, TPos> const>
+struct Position<IntervalWithCargo<TCargo, TPos> const>
 {
     typedef TPos Type;
 };
@@ -115,13 +115,13 @@ struct Position<Interval<TCargo, TPos> const>
 // ----------------------------------------------------------------------------
 
 template <typename TCargo, typename TPos>
-struct Value<Interval<TCargo, TPos> >
+struct Value<IntervalWithCargo<TCargo, TPos> >
 {
     typedef TCargo Type;
 };
 
 template <typename TCargo, typename TPos>
-struct Value<Interval<TCargo, TPos> const>
+struct Value<IntervalWithCargo<TCargo, TPos> const>
 {
     typedef TCargo Type;
 };
@@ -131,13 +131,13 @@ struct Value<Interval<TCargo, TPos> const>
 // ----------------------------------------------------------------------------
 
 template <typename TReference, typename TPos>
-struct Reference<Interval<TReference, TPos> >
+struct Reference<IntervalWithCargo<TReference, TPos> >
 {
     typedef TReference & Type;
 };
 
 template <typename TReference, typename TPos>
-struct Reference<Interval<TReference, TPos> const>
+struct Reference<IntervalWithCargo<TReference, TPos> const>
 {
     typedef TReference const & Type;
 };
@@ -147,25 +147,25 @@ struct Reference<Interval<TReference, TPos> const>
 // ============================================================================
 
 template <typename TCargo, typename TPos>
-TPos beginPos(Interval<TCargo, TPos> const & interval)
+TPos beginPos(IntervalWithCargo<TCargo, TPos> const & interval)
 {
     return interval.beginPos;
 }
 
 template <typename TCargo, typename TPos>
-TPos endPos(Interval<TCargo, TPos> const & interval)
+TPos endPos(IntervalWithCargo<TCargo, TPos> const & interval)
 {
     return interval.endPos;
 }
 
 template <typename TCargo, typename TPos>
-typename Reference<Interval<TCargo, TPos> const>::Type cargo(Interval<TCargo, TPos> const & interval)
+typename Reference<IntervalWithCargo<TCargo, TPos> const>::Type cargo(IntervalWithCargo<TCargo, TPos> const & interval)
 {
     return interval.cargo;
 }
 
 template <typename TCargo, typename TPos>
-typename Reference<Interval<TCargo, TPos> >::Type cargo(Interval<TCargo, TPos> & interval)
+typename Reference<IntervalWithCargo<TCargo, TPos> >::Type cargo(IntervalWithCargo<TCargo, TPos> & interval)
 {
     return interval.cargo;
 }

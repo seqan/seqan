@@ -14,10 +14,10 @@ using namespace seqan;
 
 int main()
 {
-    typedef Interval<unsigned, int> TInterval;
+    typedef IntervalWithCargo<unsigned, int> TInterval;
 
     // Using vector here, but any container will do.
-    std::vector<TInterval > intervals;
+    std::vector<TInterval> intervals;
     intervals.push_back(TInterval(0, 10, 20));
     intervals.push_back(TInterval(1, 15, 25));
 
