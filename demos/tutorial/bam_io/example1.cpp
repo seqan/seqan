@@ -8,8 +8,8 @@ int main()
     BamFileIn bamFileIn("example.sam");
 
     // Open output file, BamFileOut accepts also an ostream and a format tag.
-    BamFileOut bamFileOut(std::cout, Sam());
-
+    BamFileOut bamFileOut(context(bamFileIn), std::cout, Sam());
+    
     // Copy header.
     BamHeader header;
     readHeader(header, bamFileIn);
