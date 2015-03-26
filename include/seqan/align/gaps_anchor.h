@@ -116,6 +116,7 @@ public:
     typedef typename Position<TGapAnchor_>::Type TViewPosition_;
     typedef typename Position<Gaps>::Type      TPosition_;
     typedef typename Value<Gaps>::Type         TValue_;
+    typedef typename Not<typename IsSameType<TSource, typename RemoveConst<TSource>::Type>::Type>::Type TSourceIsConst;
 
     // -----------------------------------------------------------------------
     // Member Variables
@@ -167,13 +168,9 @@ public:
     {
     }
 
-    // Note: We need the variants with the first parameter "TSource const &" here because TSource can be a Segment which
-    // is often given as a temporary.
-    // TODO(holtgrew): These constructors are only here because of const-Holder issues.
-
-    template <typename TSource2>
-    Gaps(TSource2 & source, TGapAnchors & anchors) :
-        data_source(static_cast<TSource>(source)),
+    // everybody has const & constructors
+    Gaps(TSource const & source, TGapAnchors & anchors) :
+        data_source(source),
         data_gaps(anchors),
         data_cutBegin(0),
         data_cutEnd(0),
@@ -182,9 +179,8 @@ public:
     {
     }
 
-    template <typename TSource2>
-    Gaps(TSource2 & source, TGapAnchors const & anchors) :
-        data_source(static_cast<TSource>(source)),
+    Gaps(TSource const & source, TGapAnchors const & anchors) :
+        data_source(source),
         data_gaps(anchors),
         data_cutBegin(0),
         data_cutEnd(0),
@@ -193,26 +189,29 @@ public:
     {
     }
 
-    template <typename TSource2>
-    Gaps(TSource2 const & source, TGapAnchors & anchors) :
-        data_source(static_cast<TSource>(source)),
+    // if source is non-const (ref), there are also non-const ref constructors
+    Gaps(TSource & source, TGapAnchors & anchors,
+         SEQAN_CTOR_DISABLE_IF(TSourceIsConst)) :
+        data_source(source),
         data_gaps(anchors),
         data_cutBegin(0),
         data_cutEnd(0),
         data_viewCutBegin(0),
         data_viewCutEnd(0)
     {
+        ignoreUnusedVariableWarning(dummy);
     }
 
-    template <typename TSource2>
-    Gaps(TSource2 const & source, TGapAnchors const & anchors) :
-        data_source(static_cast<TSource>(source)),
+    Gaps(TSource & source, TGapAnchors const & anchors,
+        SEQAN_CTOR_DISABLE_IF(TSourceIsConst)) :
+        data_source(source),
         data_gaps(anchors),
         data_cutBegin(0),
         data_cutEnd(0),
         data_viewCutBegin(0),
         data_viewCutEnd(0)
     {
+        ignoreUnusedVariableWarning(dummy);
     }
 
     // -----------------------------------------------------------------------
