@@ -40,6 +40,8 @@
 #include <seqan/interval_tree/base_interval_tree.h>
 #include <seqan/interval_tree/static_interval_tree.h>
 #include <seqan/interval_tree/static_interval_tree_iterator.h>
+#include <seqan/interval_tree/base_genomic_interval_tree.h>
+#include <seqan/interval_tree/static_genomic_interval_tree.h>
 #include <seqan/interval_tree/interval.h>
 #include <seqan/interval_tree/interval_tree_entry.h>
 

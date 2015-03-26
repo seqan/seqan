@@ -31,9 +31,12 @@ add_definitions (${SEQAN_DEFINITIONS})
 # Update the list of file names below if you add source files to your test.
 add_executable (test_interval_tree
                 test_interval_tree.cpp)
+add_executable (test_genomic_interval_tree
+                test_genomic_interval_tree.cpp)
 
 # Add dependencies found by find_package (SeqAn).
 target_link_libraries (test_interval_tree ${SEQAN_LIBRARIES})
+target_link_libraries (test_genomic_interval_tree ${SEQAN_LIBRARIES})
 
 # Add CXX flags found by find_package (SeqAn).
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
@@ -43,3 +46,4 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SEQAN_CXX_FLAGS}")
 # ----------------------------------------------------------------------------
 
 add_test (NAME test_test_interval_tree COMMAND $<TARGET_FILE:test_interval_tree>)
+add_test (NAME test_test_genomic_interval_tree COMMAND $<TARGET_FILE:test_genomic_interval_tree>)

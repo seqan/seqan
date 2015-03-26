@@ -32,8 +32,8 @@
 // Author: Manuel Holtgrewe <manuel.holtgrewe@fu-berlin.de>
 // ==========================================================================
 
-#ifndef INCLUDE_SEQAN_INTERVAL_TREE_BASE_INTERVAL_TREE_H_
-#define INCLUDE_SEQAN_INTERVAL_TREE_BASE_INTERVAL_TREE_H_
+#ifndef INCLUDE_SEQAN_INTERVAL_TREE_BASE_GENOMIC_INTERVAL_TREE_H_
+#define INCLUDE_SEQAN_INTERVAL_TREE_BASE_GENOMIC_INTERVAL_TREE_H_
 
 #include <seqan/basic.h>
 
@@ -51,23 +51,25 @@ namespace seqan
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// Class IntervalTree
+// Class GenomicIntervalTree
 // ----------------------------------------------------------------------------
 
 /*!
- * @class IntervalTree
+ * @class GenomicIntervalTree
  * @implements ContainerConcept
  * @headerfile <seqan/interval_tree.h>
- * @brief Data structure for fast range queries on a set of intervals.
+ * @brief Data structure for fast range queries on a set of genomic intervals.
  *
  * @signature template <typename TValue, typename TSpec>
- *            class IntervalTree;
+ *            class GenomicIntervalTree;
  *
  * @tparam TValue Value to store in the tree.
  * @tparam TSpec  Specializing tag.
+ *
+ * @see IntervalTree
  */
 template <typename TValue, typename TSpec>
-class IntervalTree;
+class GenomicIntervalTree;
 
 // ============================================================================
 // Metafunctions
@@ -79,18 +81,18 @@ class IntervalTree;
 
 /**
  * @mfn IntervalTree#Position
- * @brief The position type of the <tt>IntervalTree</tt>, forwards to <tt>Position&lt;TValue&gt;</tt>.
+ * @brief The position type of the <tt>GenomicIntervalTree</tt>.
  */
 template <typename TValue, typename TSpec>
-struct Position<IntervalTree<TValue, TSpec> >
+struct Position<GenomicIntervalTree<TValue, TSpec> >
 {
-    typedef typename Position<TValue>::Type Type;
+    typedef Pair<int, typename Position<TValue>::Type> Type;
 };
 
 template <typename TValue, typename TSpec>
-struct Position<IntervalTree<TValue, TSpec> const>
+struct Position<GenomicIntervalTree<TValue, TSpec> const>
 {
-    typedef typename Position<TValue const>::Type Type;
+    typedef Pair<int, typename Position<TValue const>::Type> Type;
 };
 
 // ----------------------------------------------------------------------------
@@ -98,8 +100,8 @@ struct Position<IntervalTree<TValue, TSpec> const>
 // ----------------------------------------------------------------------------
 
 /**
- * @mfn IntervalTree#Value
- * @brief The value type of the <tt>IntervalTree</tt>.
+ * @mfn GenomicIntervalTree#Value
+ * @brief The value type of the <tt>GenomicIntervalTree</tt>.
  */
 // TODO(holtgrew): Redefined in legacy module.
 // template <typename TValue, typename TSpec>
@@ -120,4 +122,4 @@ struct Position<IntervalTree<TValue, TSpec> const>
 
 }  // namespace seqan
 
-#endif  // INCLUDE_SEQAN_INTERVAL_TREE_BASE_INTERVAL_TREE_H_
+#endif  // INCLUDE_SEQAN_INTERVAL_TREE_BASE_GENOMIC_INTERVAL_TREE_H_

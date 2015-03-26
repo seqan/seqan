@@ -98,9 +98,9 @@ public:
 
     std::vector<IntervalTreeEntry<TValue> > entries;
 
-private:
-
     template <typename TContainer> void initialize(TContainer const & container);
+
+private:
 
     typename Position<IntervalTreeEntry<TValue> >::Type
     computeMaxEndProperties(typename std::vector<TValue>::size_type beginIdx,
@@ -213,6 +213,17 @@ struct Iterator<IntervalTree<TValue, Static> const, TIterSpec>
 // ============================================================================
 // Functions
 // ============================================================================
+
+// ----------------------------------------------------------------------------
+// Function build()
+// ----------------------------------------------------------------------------
+
+template <typename TValue, typename TPos, typename TContainer>
+void build(IntervalTree<TValue, Static> & tree,
+           TContainer const & values)
+{
+    tree.initialize(values);
+}
 
 // ----------------------------------------------------------------------------
 // Function length()
@@ -353,10 +364,6 @@ void findOverlappingWithPoint(IntervalTree<TValue, Static> const & tree,
 
 // ----------------------------------------------------------------------------
 // Function findOverlappingWithInterval()
-// ----------------------------------------------------------------------------
-
-// ----------------------------------------------------------------------------
-// Function findOverlappingWithPoint()
 // ----------------------------------------------------------------------------
 
 template <typename TValue, typename TResult>
