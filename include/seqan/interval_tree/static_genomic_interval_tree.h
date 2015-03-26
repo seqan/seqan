@@ -175,7 +175,7 @@ struct Iterator<GenomicIntervalTree<TValue, Static> const, TIterSpec>
 // Function build()
 // ----------------------------------------------------------------------------
 
-template <typename TValue, typename TPos, typename TContainer>
+template <typename TValue, typename TContainer>
 void build(GenomicIntervalTree<TValue, Static> & tree,
            TContainer const & values)
 {
@@ -183,13 +183,14 @@ void build(GenomicIntervalTree<TValue, Static> & tree,
     tree.updateTotalSize();
 }
 
-template <typename TValue, typename TPos, typename TContainer>
+template <typename TValue, typename TContainer>
 void build(GenomicIntervalTree<TValue, Static> & tree,
            TContainer const & values,
            int rID)
 {
-    if (rID > (int)tree.contigTrees.size())
-        tree.contigTrees[rID].initialize(values);
+    if (rID >= (int)tree.contigTrees.size())
+        tree.contigTrees.resize(rID + 1);
+    tree.contigTrees[rID].initialize(values);
     tree.updateTotalSize();
 }
 
