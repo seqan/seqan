@@ -169,32 +169,11 @@ public:
 
     // Note: We need the variants with the first parameter "TSource const &" here because TSource can be a Segment which
     // is often given as a temporary.
-
-    Gaps(TSource & source, TGapAnchors & anchors) :
-        data_source(source),
-        data_gaps(anchors),
-        data_cutBegin(0),
-        data_cutEnd(0),
-        data_viewCutBegin(0),
-        data_viewCutEnd(0)
-    {
-    }
-
-    Gaps(TSource & source, TGapAnchors const & anchors) :
-        data_source(source),
-        data_gaps(anchors),
-        data_cutBegin(0),
-        data_cutEnd(0),
-        data_viewCutBegin(0),
-        data_viewCutEnd(0)
-    {
-    }
-
     // TODO(holtgrew): These constructors are only here because of const-Holder issues.
 
     template <typename TSource2>
     Gaps(TSource2 & source, TGapAnchors & anchors) :
-        data_source(source),
+        data_source(static_cast<TSource>(source)),
         data_gaps(anchors),
         data_cutBegin(0),
         data_cutEnd(0),
@@ -205,7 +184,7 @@ public:
 
     template <typename TSource2>
     Gaps(TSource2 & source, TGapAnchors const & anchors) :
-        data_source(source),
+        data_source(static_cast<TSource>(source)),
         data_gaps(anchors),
         data_cutBegin(0),
         data_cutEnd(0),
@@ -216,7 +195,7 @@ public:
 
     template <typename TSource2>
     Gaps(TSource2 const & source, TGapAnchors & anchors) :
-        data_source(source),
+        data_source(static_cast<TSource>(source)),
         data_gaps(anchors),
         data_cutBegin(0),
         data_cutEnd(0),
@@ -227,7 +206,7 @@ public:
 
     template <typename TSource2>
     Gaps(TSource2 const & source, TGapAnchors const & anchors) :
-        data_source(source),
+        data_source(static_cast<TSource>(source)),
         data_gaps(anchors),
         data_cutBegin(0),
         data_cutEnd(0),
