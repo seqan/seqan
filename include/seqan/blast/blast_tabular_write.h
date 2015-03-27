@@ -164,13 +164,13 @@ _writeHeaderWithoutColumnLabels(TFwdIterator & stream,
  * This function writes the header of a record if @link BlastFormatFile @endlink
  * is TABULAR_WITH_HEADER (for TABULAR this is a no-op).
  *
- * If context.@link versionString @endlink is set, this will be written,
- * otherwise one is generated. If either context.@link fields @endlink or
- * context.@link fieldsAsStrings @endlink is specified these will be printed
- * as column labels. If both are specified than @link fieldsAsStrings @endlink
+ * If context.@link BlastIOContext::versionString @endlink is set, this will be written,
+ * otherwise one is generated. If either context.@link BlastIOContext::fields @endlink or
+ * context.@link BlastIOContext::fieldsAsStrings @endlink is specified these will be printed
+ * as column labels. If both are specified than @link BlastIOContext::fieldsAsStrings @endlink
  * are given preference. Please note that it is recommended to use
- * @link fields @endlink and not @link fieldsAsStrings @endlink to stay
- * "standards"-compliant. Also only @link fields @endlink has an influence on
+ * @link BlastIOContext::fields @endlink and not @link BlastIOContext::fieldsAsStrings @endlink to stay
+ * "standards"-compliant. Also only @link BlastIOContext::fields @endlink has an influence on
  * the values printed by @link BlastMatch#writeMatch @endlink.
  *
  * @see BlastFormat
@@ -540,11 +540,11 @@ _writeFields(TFwdIterator & stream,
  * Please note also that query and subject IDs are truncated at the first space
  * character in NCBI BLAST, this is also done by default here.
  *
- * By setting context.@link fields @endlink you can specify which columns you
+ * By setting context.@link BlastIOContext::fields @endlink you can specify which columns you
  * wish to print; the same conversions mentioned above will me made. See
  * @link BlastMatchField::Enum @endlink for a list of fields available. For
  * @link BlastFormatGeneration @endlink ==
- * @link BlastFormatGeneration::BLAST_LEGACY @endlink the @link fields @endlink
+ * @link BlastFormatGeneration::BLAST_LEGACY @endlink the @link BlastIOContext::fields @endlink
  * variable is ignored.
  *
  * Many guides recommend always printing the default 12 columns and using only

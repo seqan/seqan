@@ -583,6 +583,15 @@ BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::defaults;
 //
 // };
 
+//TODO dox
+
+enum class BlastTabularSpec : int8_t
+{
+    UNKNOWN = -1,
+    NO_HEADER = 0,
+    HAS_HEADER = 1
+};
+
 //TODO find a better place for this
 /*!
  * @class BlastIOContext
@@ -598,9 +607,15 @@ BlastMatchField<BlastFormatGeneration::BLAST_PLUS, TVoidSpec>::defaults;
  * See @link BlastFormat @endlink for examples of usage.
  */
 
+template <typename TScore = Blosum62,
+          typename TString = std::string,
+          BlastProgram p = BlastProgram::UNKNOWN,
+          BlastTabularSpec h = BlastTabularSpec::UNKNOWN>
 struct BlastIOContext
 {
-    typedef std::string TString;
+
+    typedef BlastProgramTag<p> TBlastProgram;
+
 
     /*!
      * @var TString BlastIOContext::versionString;

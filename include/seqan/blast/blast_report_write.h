@@ -291,23 +291,13 @@ _writeAlignmentBlock(TStream                 & stream,
     TPos            effSStart   = m.sStart;
     TPos            effSEnd     = m.sEnd;
 
-    _untranslatePositions(effQStart, effQEnd, m.qFrameShift, m.qLength,
-                          QHasRevComp<TFormat>(), QIsTranslated<TFormat>());
-    _untranslatePositions(effSStart, effSEnd, m.sFrameShift, m.sLength,
-                          SHasRevComp<TFormat>(), SIsTranslated<TFormat>());
+    _untranslateQPositions(effQStart, effQEnd, m.qFrameShift, m.qLength, context.program, TProgramTag());
+    _untranslateSPositions(effSStart, effSEnd, m.sFrameShift, m.sLength, context.program, TProgramTag());
 
-    int8_t const     qStep = _step(m.qFrameShift,
-                                   QHasRevComp<TFormat>(),
-                                   QIsTranslated<TFormat>());
-    int8_t const     sStep = _step(m.sFrameShift,
-                                   SHasRevComp<TFormat>(),
-                                   SIsTranslated<TFormat>());
-    int8_t const  qStepOne = _step(m.qFrameShift,
-                                   QHasRevComp<TFormat>(),
-                                   False());
-    int8_t const  sStepOne = _step(m.sFrameShift,
-                                   SHasRevComp<TFormat>(),
-                                   False());
+    int8_t const  qStepOne = (m.qFrameShift < 0) ?  -1 : 1;
+    int8_t const  sStepOne = (m.sFrameShift < 0) ?  -1 : 1;
+    int8_t const     qStep = qIsTranslated(context.program, TProgramTag()) ? qStepOne * 3 : qStepOne;
+    int8_t const     sStep = sIsTranslated(context.program, TProgramTag()) ? sStepOne * 3 : sStepOne;
 
     auto    const & row0        = row(m.align, 0);
     auto    const & row1        = row(m.align, 1);
@@ -320,7 +310,7 @@ _writeAlignmentBlock(TStream                 & stream,
 //     std::cout << "m.aliLength: " << m.aliLength
 //               << "\t length(row0): " << length(row0)
 //               << "\t length(row1): " << length(row1)
-//               << "\n";
+//               << "\n";qStepOne
 
     while (aPos < m.aliLength)
     {

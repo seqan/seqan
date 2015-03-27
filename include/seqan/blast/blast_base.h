@@ -47,7 +47,7 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
-/*!
+/*
  * @enum BlastFormatFile
  * @brief Enum with BLAST file format specs
  * @signature enum class BlastFormatFile : uint8_t { ... };
@@ -133,57 +133,70 @@ namespace seqan {
  * @brief Blast Archive Format, Abstract Syntax Notation One (blast* -outfmt 11, not available in traditional BLAST)
  */
 
-enum class BlastFormatFile : uint8_t
-{
-    PAIRWISE = 0,
-    MASTER_SLAVE_IDENT = 1,
-    MASTER_SLAVE_NO_IDENT = 2,
-    FLAT_MASTER_SLAVE_IDENT = 3,
-    FLAT_MASTER_SLAVE_NO_IDENT = 4,
-    XML = 5,
-    TABULAR = 6,
-    TABULAR_WITH_HEADER = 7,
-    TEXT_ASN1 = 8,                 // only available in Generation==Blast+
-    BIN_ASN1 = 9,                  // only available in Generation==Blast+
-    CSV = 10,                      // only available in Generation==Blast+
-    BLAST_AR_ASN1 = 11,              // only available in Generation==Blast+
-    MASTER_SLAVE_BLUNT_ENDS = 12,       // only available in Generation==Blast
-    FLAT_MASTER_SLAVE_BLUNT_ENDS = 13,   // only available in Generation==Blast
-    INVALID_File=255
-};
+// enum class BlastFormatFile : uint8_t
+// {
+//     PAIRWISE = 0,
+//     MASTER_SLAVE_IDENT = 1,
+//     MASTER_SLAVE_NO_IDENT = 2,
+//     FLAT_MASTER_SLAVE_IDENT = 3,
+//     FLAT_MASTER_SLAVE_NO_IDENT = 4,
+//     XML = 5,
+//     TABULAR = 6,
+//     TABULAR_WITH_HEADER = 7,
+//     TEXT_ASN1 = 8,                 // only available in Generation==Blast+
+//     BIN_ASN1 = 9,                  // only available in Generation==Blast+
+//     CSV = 10,                      // only available in Generation==Blast+
+//     BLAST_AR_ASN1 = 11,              // only available in Generation==Blast+
+//     MASTER_SLAVE_BLUNT_ENDS = 12,       // only available in Generation==Blast
+//     FLAT_MASTER_SLAVE_BLUNT_ENDS = 13,   // only available in Generation==Blast
+//     INVALID_File=255
+// };
 
 /*!
- * @enum BlastFormatProgram
+ * @enum BlastProgram
  * @brief Enum with BLAST program spec
- * @signature enum class BlastFormatProgram : uint8_t { ... };
+ * @signature enum class BlastProgram : uint8_t { ... };
  *
  * @headerfile seqan/blast.h
  *
- * @val BlastFormatProgram BlastFormatProgram::BLASTN
+ * @val BlastProgram BlastProgram::BLASTN
  * @brief Nucleotide Query VS Nucleotide Subject
  *
- * @val BlastFormatProgram BlastFormatProgram::BLASTP
+ * @val BlastProgram BlastProgram::BLASTP
  * @brief Protein Query VS Protein Subject
  *
- * @val BlastFormatProgram BlastFormatProgram::BLASTX
+ * @val BlastProgram BlastProgram::BLASTX
  * @brief translated Nucleotide Query VS Protein Subject
  *
- * @val BlastFormatProgram BlastFormatProgram::TBLASTN
+ * @val BlastProgram BlastProgram::TBLASTN
  * @brief Protein Query VS translated Nucleotide Subject
  *
- * @val BlastFormatProgram BlastFormatProgram::TBLASTX
+ * @val BlastProgram BlastProgram::TBLASTX
  * @brief translated Nucleotide Query VS translated Nucleotide Subject
  *
  */
-enum class BlastFormatProgram : uint8_t
+enum class BlastProgram : uint8_t
 {
     BLASTN,         //              NUCL VS             NUCL
     BLASTP,         //              PROT VS             PROT
     BLASTX,         // TRANSLATED   NUCL VS             PROT
     TBLASTN,        //              PROT VS TRANSLATED  NUCL
     TBLASTX,        // TRANSLATED   NUCL VS TRANSLATED  NUCL
-    INVALID_Program=255
+    UNKNOWN=254,
+    INVALID=255
 };
+
+template <BlastProgram p>
+using BlastProgramTag = std::integral_constant<BlastProgram, p>;
+
+typedef BlastProgramTag<BlastProgram::BLASTN>  BlastProgramTagBlastN;
+typedef BlastProgramTag<BlastProgram::BLASTP>  BlastProgramTagBlastP;
+typedef BlastProgramTag<BlastProgram::BLASTX>  BlastProgramTagBlastX;
+typedef BlastProgramTag<BlastProgram::TBLASTN> BlastProgramTagTBlastN;
+typedef BlastProgramTag<BlastProgram::TBLASTX> BlastProgramTagTBlastX;
+typedef BlastProgramTag<BlastProgram::UNKNOWN> BlastProgramTagUnknown;
+typedef BlastProgramTag<BlastProgram::INVALID> BlastProgramTagInvalid;
+
 
 /*!
  * @enum BlastFormatGeneration
@@ -206,15 +219,16 @@ enum class BlastFormatGeneration : uint8_t
 {
     BLAST_LEGACY,
     BLAST_PLUS,
-    INVALID_Generation=255
+    UNKOWN = 254,
+    INVALID =255
 };
 
-/*!
+/*
  * @class BlastFormat
  * @headerfile seqan/blast.h
  * @brief Blast Format specifier
  *
- * @signature template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
+ * @signature template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
  *            struct BlastFormat;
  *
  * @section Data structures
@@ -332,17 +346,17 @@ enum class BlastFormatGeneration : uint8_t
  * @link BlastFormat#writeMatch @endlink (only available for tabular formats).
  *
  * @tparam f    template parameter of type @link BlastFormatFile @endlink
- * @tparam p    template parameter of type @link BlastFormatProgram @endlink
+ * @tparam p    template parameter of type @link BlastProgram @endlink
  * @tparam g    template parameter of type @link BlastFormatGeneration @endlink
  */
 
-template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
-struct BlastFormat_
-{
-};
-
-template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
-using BlastFormat = Tag<BlastFormat_<f, p, g>>;
+// template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
+// struct BlastFormat_
+// {
+// };
+//
+// template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
+// using BlastFormat = Tag<BlastFormat_<f, p, g>>;
 
 // ============================================================================
 // Metafunctions
@@ -350,91 +364,117 @@ using BlastFormat = Tag<BlastFormat_<f, p, g>>;
 
 //TODO document or _
 
-template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
-constexpr BlastFormatFile
-getFileType(BlastFormat<f, p, g> const & /**/)
-{
-    return f;
-}
-
-template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
-constexpr BlastFormatProgram
-getProgramType(BlastFormat<f, p, g> const & /**/)
-{
-    return p;
-}
-
-template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
-constexpr BlastFormatGeneration
-getGenerationType(BlastFormat<f, p, g> const & /**/)
-{
-    return g;
-}
+// template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
+// constexpr BlastFormatFile
+// getFileType(BlastFormat<f, p, g> const & /**/)
+// {
+//     return f;
+// }
+//
+// template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
+// constexpr BlastProgram
+// getProgramType(BlastFormat<f, p, g> const & /**/)
+// {
+//     return p;
+// }
+//
+// template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
+// constexpr BlastFormatGeneration
+// getGenerationType(BlastFormat<f, p, g> const & /**/)
+// {
+//     return g;
+// }
 
 // ----------------------------------------------------------------------------
 // qHasRevComp()
 // ----------------------------------------------------------------------------
 
 constexpr bool
-qHasRevComp(BlastFormatProgram const p)
+qHasRevComp(BlastProgram const p)
 {
-    return ((p==BlastFormatProgram::BLASTP) || (p==BlastFormatProgram::TBLASTN))
+    return ((p==BlastProgram::BLASTP) || (p==BlastProgram::TBLASTN))
             ? false
             : true;
 }
 
-template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
+template <BlastProgram p>
 constexpr bool
-qHasRevComp(BlastFormat<f,p,g> const & /**/)
+qHasRevComp(BlastProgramTag<p> const &)
 {
-    return ((p==BlastFormatProgram::BLASTP) || (p==BlastFormatProgram::TBLASTN))
+    return ((p==BlastProgram::BLASTP) || (p==BlastProgram::TBLASTN))
             ? false
             : true;
 }
 
-template <typename TFormat>
-using QHasRevComp = typename std::conditional<qHasRevComp(TFormat()),
-                                              True,
-                                              False>::type;
+template <BlastProgram p>
+constexpr bool
+qHasRevComp(BlastProgram const, BlastProgramTag<p> const &)
+{
+    return ((p==BlastProgram::BLASTP) || (p==BlastProgram::TBLASTN))
+            ? false
+            : true;
+}
+
+// not known at compile-time
+inline bool
+qHasRevComp(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
+{
+    return ((_p==BlastProgram::BLASTP) || (_p==BlastProgram::TBLASTN))
+            ? false
+            : true;
+}
+
+// template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
+// constexpr bool
+// qHasRevComp(BlastFormat<f,p,g> const & /**/)
+// {
+//     return ((p==BlastProgram::BLASTP) || (p==BlastProgram::TBLASTN))
+//             ? false
+//             : true;
+// }
+//
+// template <typename TFormat>
+// using QHasRevComp = typename std::conditional<qHasRevComp(TFormat()),
+//                                               True,
+//                                               False>::type;
 
 // ----------------------------------------------------------------------------
 // qIsTranslated()
 // ----------------------------------------------------------------------------
 
 constexpr bool
-qIsTranslated(BlastFormatProgram const p)
+qIsTranslated(BlastProgram const p)
 {
-    return ((p==BlastFormatProgram::BLASTX) || (p==BlastFormatProgram::TBLASTX))
+    return ((p==BlastProgram::BLASTX) || (p==BlastProgram::TBLASTX))
             ? true
             : false;
 }
 
-template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
-constexpr bool
-qIsTranslated(BlastFormat<f,p,g> const & /**/)
-{
-    return ((p==BlastFormatProgram::BLASTX) || (p==BlastFormatProgram::TBLASTX))
-            ? true
-            : false;
-}
-
-template <typename TFormat>
-using QIsTranslated = typename std::conditional<qIsTranslated(TFormat()),
-                                             True,
-                                             False>::type;
+// template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
+// constexpr bool
+// qIsTranslated(BlastFormat<f,p,g> const & /**/)
+// {
+//     return ((p==BlastProgram::BLASTX) || (p==BlastProgram::TBLASTX))
+//             ? true
+//             : false;
+// }
+//
+// template <typename TFormat>
+// using QIsTranslated = typename std::conditional<qIsTranslated(TFormat()),
+//                                              True,
+//                                              False>::type;
 
 // ----------------------------------------------------------------------------
 // qNumFrames()
 // ----------------------------------------------------------------------------
 
-template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
+template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
 constexpr uint8_t
-qNumFrames(BlastFormat<f,p,g> const & /**/)
+qNumFrames(BlastProgram p)
 {
-    using TFormat = BlastFormat<f,p,g>;
-    return (qIsTranslated(TFormat())
+    return (qIsTranslated(p)
             ? 6
-            : (qHasRevComp(TFormat())
+            : (qHasRevComp(p)
                 ? 2
                 : 1));
 }
@@ -445,86 +485,85 @@ qNumFrames(BlastFormat<f,p,g> const & /**/)
 
 
 constexpr bool
-sHasRevComp(BlastFormatProgram const p)
+sHasRevComp(BlastProgram const p)
 {
-    return ((p==BlastFormatProgram::TBLASTX) ||
-            (p==BlastFormatProgram::TBLASTN))
+    return ((p==BlastProgram::TBLASTX) ||
+            (p==BlastProgram::TBLASTN))
             ? true
             : false;
 }
 
-template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
-constexpr bool
-sHasRevComp(BlastFormat<f,p,g> const & /**/)
-{
-    return ((p==BlastFormatProgram::TBLASTX) ||
-            (p==BlastFormatProgram::TBLASTN))
-            ? true
-            : false;
-}
-
-template <typename TFormat>
-using SHasRevComp = typename std::conditional<sHasRevComp(TFormat()),
-                                              True,
-                                              False>::type;
+// template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
+// constexpr bool
+// sHasRevComp(BlastFormat<f,p,g> const & /**/)
+// {
+//     return ((p==BlastProgram::TBLASTX) ||
+//             (p==BlastProgram::TBLASTN))
+//             ? true
+//             : false;
+// }
+//
+// template <typename TFormat>
+// using SHasRevComp = typename std::conditional<sHasRevComp(TFormat()),
+//                                               True,
+//                                               False>::type;
 
 // ----------------------------------------------------------------------------
 // sIsTranslated()
 // ----------------------------------------------------------------------------
 
 constexpr bool
-sIsTranslated(BlastFormatProgram const p)
+sIsTranslated(BlastProgram const p)
 {
-    return ((p==BlastFormatProgram::TBLASTX) ||
-            (p==BlastFormatProgram::TBLASTN))
+    return ((p==BlastProgram::TBLASTX) ||
+            (p==BlastProgram::TBLASTN))
             ? true
             : false;
 }
 
-template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
-constexpr bool
-sIsTranslated(BlastFormat<f,p,g> const & /**/)
-{
-    return ((p==BlastFormatProgram::TBLASTX) ||
-            (p==BlastFormatProgram::TBLASTN))
-            ? true
-            : false;
-}
-
-template <typename TFormat>
-using SIsTranslated = typename std::conditional<sHasRevComp(TFormat()),
-                                             True,
-                                             False>::type;
+// template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
+// constexpr bool
+// sIsTranslated(BlastFormat<f,p,g> const & /**/)
+// {
+//     return ((p==BlastProgram::TBLASTX) ||
+//             (p==BlastProgram::TBLASTN))
+//             ? true
+//             : false;
+// }
+//
+// template <typename TFormat>
+// using SIsTranslated = typename std::conditional<sHasRevComp(TFormat()),
+//                                              True,
+//                                              False>::type;
 
 // ----------------------------------------------------------------------------
 // sNumFrames()
 // ----------------------------------------------------------------------------
 
-template <BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
+// template <BlastFormatFile f, BlastProgram p, BlastFormatGeneration g>
 constexpr uint8_t
-sNumFrames(BlastFormat<f,p,g> const & /**/)
+sNumFrames(BlastProgram p)
 {
-    using TFormat = BlastFormat<f,p,g>;
-    return (sIsTranslated(TFormat())
+    return (sIsTranslated(p)
             ? 6
-            : (sHasRevComp(TFormat())
+            : (sHasRevComp(p)
                 ? 2
                 : 1));
 }
 
 // ----------------------------------------------------------------------------
-// getBlastProgramType()
+// getBlastProgramTag()
 // ----------------------------------------------------------------------------
 
-/*!
- * @mfn getBlastProgramType
+/*
+ * @mfn getBlastProgramTag
  * @headerfile seqan/blast.h
- * @brief for given query and subject alphabets, return the @link BlastFormatProgram @endlink
- * @signature  getBlastProgramType(TQueryAlph const &, TSubjAlph const &)
+ * @brief for given query and subject alphabets, return the @link BlastProgram @endlink
+ * @signature  getBlastProgramTag(TQueryAlph const &, TSubjAlph const &)
  *
  * @tparam          TQueryAlph  Alphabet of of the query sequences
  * @tparam          TSubjAlph   Alphabet of of the subejct sequences
- * @return          Value of @link BlastFormatProgram @endlink . For nucl VS nucl BlastFormatProgram::BLASTN is returned, although TBlastX would also be legal.
+ * @return          Value of @link BlastProgram @endlink . For nucl VS nucl BlastProgram::BLASTN is returned, although TBlastX would also be legal.
  *
  * This is a convenience function for determining the Blast-Program type
  * corresponding to input type combinations.
@@ -533,79 +572,79 @@ sNumFrames(BlastFormat<f,p,g> const & /**/)
  */
 
 // template< typename TQueryAlph, typename TSubjAlph>
-// constexpr BlastFormatProgram
-// getBlastProgramType(TQueryAlph const &, TSubjAlph const &)
+// constexpr BlastProgram
+// getBlastProgramTag(TQueryAlph const &, TSubjAlph const &)
 // {
-//     return BlastFormatProgram::INVALID_Program;
+//     return BlastProgram::INVALID_Program;
 // }
 //
 // template<typename TQueryAlph, typename TSubjAlph,
 //          typename TSpec, typename TSpec2>
-// constexpr BlastFormatProgram
-// getBlastProgramType(String<TQueryAlph, TSpec> const &,
+// constexpr BlastProgram
+// getBlastProgramTag(String<TQueryAlph, TSpec> const &,
 //                     String<TSubjAlph, TSpec2> const &)
 // {
 //     // needs constexpr constructors of Alphabet types
-//     return getBlastProgramType(TQueryAlph(), TSubjAlph());
+//     return getBlastProgramTag(TQueryAlph(), TSubjAlph());
 // }
 //
 // // --- DNA vs DNA ---
 // // NOTE that Dna VS Dna could also be TBlastX, but BlastN is more common
-// constexpr BlastFormatProgram
-// getBlastProgramType(Dna const &, Dna const &)
+// constexpr BlastProgram
+// getBlastProgramTag(Dna const &, Dna const &)
 // {
-//     return BlastFormatProgram::BLASTN;
+//     return BlastProgram::BLASTN;
 // }
 //
-// constexpr BlastFormatProgram
-// getBlastProgramType(Dna const &, Dna5 const &)
+// constexpr BlastProgram
+// getBlastProgramTag(Dna const &, Dna5 const &)
 // {
-//     return BlastFormatProgram::BLASTN;
+//     return BlastProgram::BLASTN;
 // }
 //
-// constexpr BlastFormatProgram
-// getBlastProgramType(Dna5 const &, Dna const &)
+// constexpr BlastProgram
+// getBlastProgramTag(Dna5 const &, Dna const &)
 // {
-//     return BlastFormatProgram::BLASTN;
+//     return BlastProgram::BLASTN;
 // }
 //
-// constexpr BlastFormatProgram
-// getBlastProgramType(Dna5 const &, Dna5 const &)
+// constexpr BlastProgram
+// getBlastProgramTag(Dna5 const &, Dna5 const &)
 // {
-//     return BlastFormatProgram::BLASTN;
+//     return BlastProgram::BLASTN;
 // }
 //
 // // --- Protein vs Protein ---
-// constexpr BlastFormatProgram
-// getBlastProgramType(AminoAcid const &, AminoAcid const &)
+// constexpr BlastProgram
+// getBlastProgramTag(AminoAcid const &, AminoAcid const &)
 // {
-//     return BlastFormatProgram::BLASTP;
+//     return BlastProgram::BLASTP;
 // }
 //
 // // --- Dna vs Protein ---
-// constexpr BlastFormatProgram
-// getBlastProgramType(Dna const &, AminoAcid const &)
+// constexpr BlastProgram
+// getBlastProgramTag(Dna const &, AminoAcid const &)
 // {
-//     return BlastFormatProgram::BLASTX;
+//     return BlastProgram::BLASTX;
 // }
 //
-// constexpr BlastFormatProgram
-// getBlastProgramType(Dna5 const &, AminoAcid const &)
+// constexpr BlastProgram
+// getBlastProgramTag(Dna5 const &, AminoAcid const &)
 // {
-//     return BlastFormatProgram::BLASTX;
+//     return BlastProgram::BLASTX;
 // }
 //
 // // --- Protein vs Dna ---
-// constexpr BlastFormatProgram
-// getBlastProgramType(AminoAcid const &, Dna const &)
+// constexpr BlastProgram
+// getBlastProgramTag(AminoAcid const &, Dna const &)
 // {
-//     return BlastFormatProgram::TBLASTX;
+//     return BlastProgram::TBLASTX;
 // }
 //
-// constexpr BlastFormatProgram
-// getBlastProgramType(AminoAcid const &, Dna5 const &)
+// constexpr BlastProgram
+// getBlastProgramTag(AminoAcid const &, Dna5 const &)
 // {
-//     return BlastFormatProgram::TBLASTX;
+//     return BlastProgram::TBLASTX;
 // }
 
 // ============================================================================
@@ -661,55 +700,97 @@ blastScoringScheme2seqanScoringScheme(Score<TValue, TSpec> & scheme)
 // _programTagToString()
 // ----------------------------------------------------------------------------
 
-template <BlastFormatFile f,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
+template <BlastProgram p>
 constexpr const char *
-_programTagToString(BlastFormat<f, p, g> const & /*tag*/)
+_programTagToString<p>()
 {
     return "UNKOWN BLAST PROGRAM";
 }
 
-template <BlastFormatFile f, BlastFormatGeneration g>
+template <>
 constexpr const char *
-_programTagToString(BlastFormat<f, BlastFormatProgram::BLASTN, g> const &)
+_programTagToString<BlastProgram::BLASTN>()
 {
-    return "BlastN";
+    return "BLASTN";
 }
 
-template <BlastFormatFile f, BlastFormatGeneration g>
+template <>
 constexpr const char *
-_programTagToString(BlastFormat<f, BlastFormatProgram::BLASTP, g> const &)
+_programTagToString<BlastProgram::BLASTP>()
 {
     return "BLASTP";
 }
 
-template <BlastFormatFile f, BlastFormatGeneration g>
+template <>
 constexpr const char *
-_programTagToString(BlastFormat<f, BlastFormatProgram::BLASTX, g> const &)
+_programTagToString<BlastProgram::BLASTX>()
 {
     return "BLASTX";
 }
 
-template <BlastFormatFile f, BlastFormatGeneration g>
+template <>
 constexpr const char *
-_programTagToString(BlastFormat<f, BlastFormatProgram::TBLASTN, g> const &)
+_programTagToString<BlastProgram::TBLASTN>()
 {
     return "TBLASTN";
 }
 
-template <BlastFormatFile f, BlastFormatGeneration g>
+template <>
 constexpr const char *
-_programTagToString(BlastFormat<f, BlastFormatProgram::TBLASTX, g> const &)
+_programTagToString<BlastProgram::TBLASTX>()
 {
     return "TBLASTX";
+}
+
+template <>
+constexpr const char *
+_programTagToString<BlastProgram::INVALID>()
+{
+    return "INVALID BLAST PROGRAM";
+}
+
+// run-time
+inline std::string const
+_programTagToString(BlastProgram const _p)
+{
+    switch(_p)
+    {
+        case BlastProgram::BLASTN:
+            return std::string(_programTagToString<BlastProgram::BLASTN>());
+        case BlastProgram::BLASTP:
+            return std::string(_programTagToString<BlastProgram::BLASTP>());
+        case BlastProgram::BLASTX:
+            return std::string(_programTagToString<BlastProgram::BLASTX>());
+        case BlastProgram::TBLASTN:
+            return std::string(_programTagToString<BlastProgram::TBLASTN>());
+        case BlastProgram::TBLASTX:
+            return std::string(_programTagToString<BlastProgram::TBLASTX>());
+        case BlastProgram::INVALID:
+            return std::string(_programTagToString<BlastProgram::INVALID>());
+    }
+    return std::string(_programTagToString<BlastProgram::UNKNOWN>());
+}
+
+// if known at compile-time, deduce at compile-time
+template <BlastProgram p>
+constexpr const char *
+_programTagToString(BlastProgram const, BlastProgramTag<BlastProgram::p> const &)
+{
+    return _programTagToString<p>();
+}
+
+// if SPEC == unkown, deduce from run-time parameter
+inline std::string const
+_programTagToString(BlastProgram const _p, BlastProgramTag<BlastProgram::UNKNOWN> const &)
+{
+    return _programTagToString(_p);
 }
 
 // ----------------------------------------------------------------------------
 // Function writeTop()
 // ----------------------------------------------------------------------------
 
-/*!
+/*
  * @fn BlastFormat#writeTop
  * @headerfile seqan/blast.h
  * @brief write the top-most section of a BLAST output file (NO-OP for tabular formats)
@@ -724,23 +805,23 @@ _programTagToString(BlastFormat<f, BlastFormatProgram::TBLASTX, g> const &)
  * @see BlastMatch
  */
 
-template <typename TStream,
-          typename TDbSpecs,
-          BlastFormatFile f,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline void
-writeTop(TStream                    & /**/,
-         TDbSpecs             const & /**/,
-         BlastFormat<f, p, g> const & /*tag*/)
-{
-}
+// template <typename TStream,
+//           typename TDbSpecs,
+//           BlastFormatFile f,
+//           BlastProgram p,
+//           BlastFormatGeneration g>
+// inline void
+// writeTop(TStream                    & /**/,
+//          TDbSpecs             const & /**/,
+//          BlastFormat<f, p, g> const & /*tag*/)
+// {
+// }
 
 // ----------------------------------------------------------------------------
 // Function writeRecord()
 // ----------------------------------------------------------------------------
 
-/*!
+/*
  * @fn BlastRecord#writeRecord
  * @headerfile seqan/blast.h
  * @brief write a @link BlastRecord @endlink including it's
@@ -764,7 +845,7 @@ writeTop(TStream                    & /**/,
 // Function writeBottom()
 // ----------------------------------------------------------------------------
 
-/*!
+/*
  * @fn BlastFormat#writeBottom
  * @headerfile seqan/blast.h
  * @brief write the top-most section of a BLAST output file (NO-OP for tabular formats)
@@ -780,19 +861,19 @@ writeTop(TStream                    & /**/,
  * @see BlastMatch
  */
 
-template <typename TStream,
-          typename TDbSpecs,
-          typename TBlastScoringAdapater,
-          BlastFormatFile f,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline void
-writeBottom(TStream                           & /**/,
-            TDbSpecs                    const & /**/,
-            TBlastScoringAdapater       const & /**/,
-            BlastFormat<f, p,g>         const & /*tag*/)
-{
-}
+// template <typename TStream,
+//           typename TDbSpecs,
+//           typename TBlastScoringAdapater,
+//           BlastFormatFile f,
+//           BlastProgram p,
+//           BlastFormatGeneration g>
+// inline void
+// writeBottom(TStream                           & /**/,
+//             TDbSpecs                    const & /**/,
+//             TBlastScoringAdapater       const & /**/,
+//             BlastFormat<f, p,g>         const & /*tag*/)
+// {
+// }
 
 // ----------------------------------------------------------------------------
 // Function _untranslatePositions() -- retransform positions
@@ -853,35 +934,43 @@ _untranslatePositions(TPos & effectiveStart,
                           length, True(), False());
 }
 
+template <typename TPos, BlastProgram p>
+inline void
+_untranslateQPositions(TPos & effectiveStart,
+                      TPos & effectiveEnd,
+                      int8_t const frameShift,
+                      TPos const & length,
+                      BlastProgram const _p,
+                      BlastProgramTag<BlastProgram::p> const &)
+{
+     if (qIsTranslated(_p, BlastProgramTag<BlastProgram::p>()))
+         _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, True(), True());
+     else if (qHasRevComp(_p, BlastProgramTag<BlastProgram::p>()))
+         _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, True(), False());
+     else
+        _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, False(), False());
+}
+
+template <typename TPos, BlastProgram p>
+inline void
+_untranslateSPositions(TPos & effectiveStart,
+                      TPos & effectiveEnd,
+                      int8_t const frameShift,
+                      TPos const & length,
+                      BlastProgram const _p,
+                      BlastProgramTag<BlastProgram::p> const &)
+{
+     if (sIsTranslated(_p, BlastProgramTag<BlastProgram::p>()))
+         _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, True(), True());
+     else if (sHasRevComp(_p, BlastProgramTag<BlastProgram::p>()))
+         _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, True(), False());
+     else
+        _untranslatePositions(effectiveStart, effectiveEnd, frameShift, length, False(), False());
+}
+
 // ----------------------------------------------------------------------------
 // Function _nextPos() -- increment/decrement position
 // ----------------------------------------------------------------------------
-
-constexpr int8_t
-_step(signed char const /**/,
-      False const & /*hasReverseComplement*/,
-      False const & /*hasFrames*/)
-{
-    return 1;
-}
-
-constexpr int8_t
-_step(signed char const frameShift,
-      True const & /*hasReverseComplement*/,
-      False const & /*hasFrames*/)
-{
-    // iterate backwards for reverse frames
-    return (frameShift < 0) ? -1 : 1;
-}
-
-constexpr int8_t
-_step(signed char const frameShift,
-      True const & /*hasReverseComplement*/,
-      True const & /*hasFrames*/)
-{
-    // iterate three nucleotides per amino acid
-    return (frameShift < 0) ? -3 : 3;
-}
 
 } // namespace seqan
 
