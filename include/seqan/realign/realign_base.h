@@ -456,15 +456,15 @@ public:
             {
                 if (options.debug)
                 {
-                    swap(store.alignedReadStore, contigAlignedReads);
+                    TAlignedReadStore tmpStore = store.alignedReadStore;
+                    store.alignedReadStore = contigAlignedReads;
                     std::cerr << "ALIGNMENT is (current == " << store.readSeqStore[el.readId] << ")\n";
                     seqan::AlignedReadLayout layout;
                     layoutAlignment(layout, store);
                     std::stringstream ss;
                     printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
                                    0, 1000, 0, 100);
-                    swap(store.alignedReadStore, contigAlignedReads);
-
+                    store.alignedReadStore = tmpStore;
                     std::cerr << " => removeGap(contigAlignedReads, " << posA << ", " << elPos << ")\n"
                               << "       pos == " << pos << "\n";
                     // std::cerr << "    itP:";
@@ -1119,14 +1119,15 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             }
             std::cerr << "Consensus                    " << contigSeq << "\n";
 
-            swap(store.alignedReadStore, contigAlignedReads);
+            TAlignedReadStore tmpStore = store.alignedReadStore;
+            store.alignedReadStore = contigAlignedReads;
             std::cerr << "ALIGNMENT is\n";
             seqan::AlignedReadLayout layout;
             layoutAlignment(layout, store);
             std::stringstream ss;
             printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
                            0, 1000, 0, 100);
-            swap(store.alignedReadStore, contigAlignedReads);
+            store.alignedReadStore = tmpStore;
 
             std::cerr << "PROFILE\n";
             _printProfile(std::cerr, contigProfile);
@@ -1146,14 +1147,15 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             std::cerr << "PROFILE PART AFTER SUBTRACTION\n";
             _printProfile(std::cerr, profilePart);
 
-            swap(store.alignedReadStore, contigAlignedReads);
+            TAlignedReadStore tmpStore = store.alignedReadStore;
+            store.alignedReadStore = contigAlignedReads;
             std::cerr << "AFTER SUBTRACTION of " << store.readSeqStore[it->readId] << " id= " << it->readId << "\n";
             seqan::AlignedReadLayout layout;
             layoutAlignment(layout, store);
             std::stringstream ss;
             printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
                            0, 1000, 0, 100);
-            swap(store.alignedReadStore, contigAlignedReads);
+            store.alignedReadStore = tmpStore;
         }
 
         // Realign the read against the profile.
@@ -1293,14 +1295,15 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
 
         if (options.debug)
         {
-            swap(store.alignedReadStore, contigAlignedReads);
+            TAlignedReadStore tmpStore = store.alignedReadStore;
+            store.alignedReadStore = contigAlignedReads;
             std::cerr << "BEFORE INTEGRATION of " << store.readSeqStore[it->readId] << "\n";
             seqan::AlignedReadLayout layout;
             layoutAlignment(layout, store);
             std::stringstream ss;
             printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
                            0, 1000, 0, 100);
-            swap(store.alignedReadStore, contigAlignedReads);
+            store.alignedReadStore = tmpStore;
 
             std::cerr << "begin/end positions of alignments after update\n";
             for (TAlignedReadIter it2 = begin(contigAlignedReads, Standard()); it2 != itEnd; ++it2)
@@ -1337,14 +1340,15 @@ void AnsonMyersRealignmentRound_<TFragmentStore>::run(unsigned windowBegin, unsi
             std::cerr << "PROFILE AFTER INTEGRATION PROFILE\n";
             _printProfile(std::cerr, contigProfile);
 
-            swap(store.alignedReadStore, contigAlignedReads);
+            TAlignedReadStore tmpStore = store.alignedReadStore;
+            store.alignedReadStore = contigAlignedReads;
             std::cerr << "AFTER REALIGNMENT STEP of " << store.readSeqStore[it->readId] << "\n";
             seqan::AlignedReadLayout layout;
             layoutAlignment(layout, store);
             std::stringstream ss;
             printAlignment(std::cerr, layout, store, front(store.alignedReadStore).contigId,
                            0, 1000, 0, 100);
-            swap(store.alignedReadStore, contigAlignedReads);
+            store.alignedReadStore = tmpStore;
 
             std::cerr << "begin/end positions of alignments after update\n";
             for (TAlignedReadIter it2 = begin(contigAlignedReads, Standard()); it2 != itEnd; ++it2)
