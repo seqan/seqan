@@ -116,7 +116,9 @@ public:
     typedef typename Position<TGapAnchor_>::Type TViewPosition_;
     typedef typename Position<Gaps>::Type      TPosition_;
     typedef typename Value<Gaps>::Type         TValue_;
-    typedef typename Not<typename IsSameType<TSource, typename RemoveConst<TSource>::Type>::Type>::Type TSourceIsConst;
+
+    typedef typename RemoveReference<typename RemoveConst<TSource>::Type>::Type TSourceNoConstNoRef;
+    typedef TSourceNoConstNoRef const & TSourceConstRef;
 
     // -----------------------------------------------------------------------
     // Member Variables
@@ -169,7 +171,7 @@ public:
     }
 
     // everybody has const & constructors
-    Gaps(TSource const & source, TGapAnchors & anchors) :
+    Gaps(TSourceNoConstNoRef const & source, TGapAnchors & anchors) :
         data_source(source),
         data_gaps(anchors),
         data_cutBegin(0),
@@ -179,7 +181,7 @@ public:
     {
     }
 
-    Gaps(TSource const & source, TGapAnchors const & anchors) :
+    Gaps(TSourceNoConstNoRef const & source, TGapAnchors const & anchors) :
         data_source(source),
         data_gaps(anchors),
         data_cutBegin(0),
@@ -189,9 +191,9 @@ public:
     {
     }
 
-    // if source is non-const (ref), there are also non-const ref constructors
-    Gaps(TSource & source, TGapAnchors & anchors,
-         SEQAN_CTOR_DISABLE_IF(TSourceIsConst)) :
+    // if source is not const & (but possibly const) there are also regular & constructors
+    Gaps(TSourceNoConstNoRef & source, TGapAnchors & anchors,
+         SEQAN_CTOR_DISABLE_IF(IsSameType<TSource, TSourceConstRef>)) :
         data_source(source),
         data_gaps(anchors),
         data_cutBegin(0),
@@ -202,8 +204,8 @@ public:
         ignoreUnusedVariableWarning(dummy);
     }
 
-    Gaps(TSource & source, TGapAnchors const & anchors,
-        SEQAN_CTOR_DISABLE_IF(TSourceIsConst)) :
+    Gaps(TSourceNoConstNoRef & source, TGapAnchors const & anchors,
+        SEQAN_CTOR_DISABLE_IF(IsSameType<TSource, TSourceConstRef>)) :
         data_source(source),
         data_gaps(anchors),
         data_cutBegin(0),
