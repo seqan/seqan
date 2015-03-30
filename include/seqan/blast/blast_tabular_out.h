@@ -47,6 +47,62 @@ namespace seqan {
 // Tags, Classes, Enums
 // ============================================================================
 
+// ----------------------------------------------------------------------------
+// Type BlasabularOut
+// ----------------------------------------------------------------------------
+
+/*!
+ * @class BlastTabularOut
+ * @signature typedef FormattedFile<BlastTabular, Output> BlastTabularOut;
+ * @extends FormattedFileOut
+ * @headerfile <seqan/blast.h>
+ * @brief FormattedFileOut abstraction for a subset of BlastFormats
+ *
+ * @remarks
+ *
+ * This is a FormattedFile abstraction of the BlastIO module. It is the
+ * interface most basic (and easy to use), but it is slightly slower than other
+ * interfaces and supports less features. See @link BlastFormat @endlink
+ * for possibilities to write Blast compatible files with more fine-grained
+ * control.
+ *
+ * The subset of @link BlastFormat @endlinks supported are those that
+ * have @link BlastFormatFile @endlink == ::TABULAR or
+ * ::TABULAR_WITH_HEADER and @link BlastFormatGeneration @endlink ==
+ * ::BLAST_PLUS.
+ *
+ * It only contains the @link FormattedFileOut#writeRecord @endlink
+ * function (@link FormattedFileOut#writeRecordHeader @endlink is a NOOP).
+ * Before calling it, make sure that the database name inside the context
+ * is set (see below).
+ *
+ * @example
+ * @code{.cpp}
+ * BlastTabularOut out("/tmp/example.blast");
+ *
+ * context(out).dbSpecs.dbName = "Legendary Nucleotide Database";
+ *
+ * BlastRecord<> r;
+ * r.qId = "FIRSTREAD abcdefg";
+ *
+ * for (...)
+ * {
+ *     BlastMatch<> m;
+ *
+ *     // "fill" the match object
+ *
+ *     appendValue(r.matches, m);
+ * }
+ *
+ * writeRecord(out, r);
+ * @endcode
+ *
+ * @see BlastRecord
+ */
+
+typedef FormattedFile<BlastTabular, Output> BlastTabularOut;
+
+
 // ============================================================================
 // Metafunctions and global const-expressions
 // ============================================================================
@@ -56,7 +112,17 @@ namespace seqan {
 // ============================================================================
 
 // ----------------------------------------------------------------------------
-// _firstOcc
+// Function guessFormat()
+// ----------------------------------------------------------------------------
+
+template <typename TSpec>
+inline bool guessFormat(FormattedFile<BlastTabular, Output, TSpec> &)
+{
+    return true;
+}
+
+// ----------------------------------------------------------------------------
+// Function _firstOcc
 // ----------------------------------------------------------------------------
 
 template <typename TString>
@@ -75,15 +141,15 @@ _firstOcc(TString const & str, typename Value<TString>::Type const & val)
 // ----------------------------------------------------------------------------
 
 template <typename TFwdIterator,
-          BlastFormatFile f,
+          typename TScore,
+          typename TConString,
           BlastFormatProgram p,
-          BlastFormatGeneration g>
+          BlastTabularSpec h>
 inline void
 _writeFieldLabels(TFwdIterator & stream,
-                  BlastIOContext & context,
-                  BlastFormat<f, p, g> const &)
+                  BlastIOContext<TScore, TConString, p, h> & context,
+                  BlastTabular const &)
 {
-    typedef BlastFormat<f, p, g> TFormat;
     if (!isEmpty(context.fieldsAsStrings)) // give preference to string labels
     {
          write(stream, concat(context.fieldsAsStrings, ", "));
@@ -97,9 +163,9 @@ _writeFieldLabels(TFwdIterator & stream,
             ++it)
         {
             if (it != itB)
-                write(stream, ", ");//_seperatorString(TFormat()));
+                write(stream, ", ");//_seperatorString(BlastTabular()));
 
-            write(stream, BlastMatchField<g>::columnLabels[static_cast<uint8_t>(*it)]);
+            write(stream, BlastMatchField<>::columnLabels[static_cast<uint8_t>(*it)]);
         }
     }
 
@@ -107,26 +173,24 @@ _writeFieldLabels(TFwdIterator & stream,
 }
 
 // ----------------------------------------------------------------------------
-// Function writeHeader()
+// Function writeRecordHeader()
 // ----------------------------------------------------------------------------
 
 template <typename TFwdIterator,
+          typename TScore,
+          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
           typename TAlign,
           BlastFormatProgram p,
-          BlastFormatGeneration g>
+          BlastTabularSpec h>
 inline void
-_writeHeaderWithoutColumnLabels(TFwdIterator & stream,
-                                BlastIOContext & context,
+_writeRecordHeaderWithoutColumnLabels(TFwdIterator & stream,
+                                BlastIOContext<TScore, TConString, p, h> & context,
                                 BlastRecord<TQId, TSId, TPos, TAlign> const & r,
-                                BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                                            p,
-                                            g> const & /*tag*/)
+                                BlastTabular const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,p,g> TFormat;
-
     write(stream, "# ");
     if (isEmpty(context.versionString))
         context._setDefaultVersionString();
@@ -140,13 +204,13 @@ _writeHeaderWithoutColumnLabels(TFwdIterator & stream,
 }
 
 /*!
- * @fn BlastRecord#writeHeader
+ * @fn BlastRecord#writeRecordHeader
  * @headerfile seqan/blast.h
  * @brief write the header of a @link BlastRecord @endlink to file
- * @signature writeHeader(stream, context, blastRecord, tag)
+ * @signature writeRecordHeader(stream, context, blastRecord, tag)
  *
  * @param[in,out] stream      The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param[in,out] context     A @link BlastIOContext @endlink with parameters and buffers.
+ * @param[in,out] context     A @link BlastIOContext<TScore, TConString, p, h> @endlink with parameters and buffers.
  * @param[in]     blastRecord The @link BlastRecord @endlink whose header you want to print.
  * @param[in]     tag         The @link BlastFormat @endlink specifier.
  *
@@ -168,84 +232,54 @@ _writeHeaderWithoutColumnLabels(TFwdIterator & stream,
  */
 
 template <typename TFwdIterator,
-          typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign,
-          BlastFormatProgram p>
-inline void
-writeHeader(TFwdIterator & stream,
-            BlastIOContext & context,
-            BlastRecord<TQId, TSId, TPos, TAlign> const & r,
-            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        p,
-                        BlastFormatGeneration::BLAST_PLUS> const & /*tag*/)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        p,
-                        BlastFormatGeneration::BLAST_PLUS> TFormat;
-
-    _writeHeaderWithoutColumnLabels(stream, context, r, TFormat());
-
-    if (length(r.matches) > 0)
-    {
-        write(stream, "# Fields: ");
-        _writeFieldLabels(stream, context, TFormat());
-    }
-
-    write(stream, "# ");
-    write(stream, length(r.matches));
-    write(stream, " hits found\n");
-}
-
-template <typename TFwdIterator,
-          typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign,
-          BlastFormatProgram p>
-inline void
-writeHeader(TFwdIterator & stream,
-            BlastIOContext & context,
-            BlastRecord<TQId, TSId, TPos, TAlign> const & r,
-            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        p,
-                        BlastFormatGeneration::BLAST_LEGACY> const & /*tag*/)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        p,
-                        BlastFormatGeneration::BLAST_LEGACY> TFormat;
-
-    if ((length(context.fields) != 1) || (context.fields[0] != TEnum::STD))
-    {
-        if (SEQAN_ENABLE_DEBUG)
-            std::cerr << "custom fields set, but will be reset for "
-                         "BlastFormatGeneration::BLAST_LEGACY\n";
-        clear(context.fields);
-        appendValue(context.fields,
-                    BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum::STD);
-    }
-
-    _writeHeaderWithoutColumnLabels(stream, context, r, TFormat());
-
-    write(stream, "# Fields: ");
-    _writeFieldLabels(stream, context, TFormat());
-}
-
-template <typename TFwdIterator,
+          typename TScore,
+          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
           typename TAlign,
           BlastFormatProgram p,
-          BlastFormatGeneration g>
+          BlastTabularSpec h>
 inline void
-writeHeader(TFwdIterator &,
-            BlastIOContext &,
-            BlastRecord<TQId, TSId, TPos, TAlign> const &,
-            BlastFormat<BlastFormatFile::TABULAR, p, g> const & /*tag*/)
+writeRecordHeader(TFwdIterator & stream,
+                  BlastIOContext<TScore, TConString, p, h> & context,
+                  BlastRecord<TQId, TSId, TPos, TAlign> const & r,
+                  BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        p,
+                        BlastFormatGeneration::BLAST_PLUS> const & /*tag*/)
 {
-    // NOOP
+    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
+                        p,
+                        BlastFormatGeneration::BLAST_PLUS> BlastTabular();
+
+    if (getBlastTabularSpec(context) == BlastTabularSpec::NO_HEADER)
+        return;
+
+    _writeRecordHeaderWithoutColumnLabels(stream, context, r, BlastTabular());
+
+    if (length(r.matches) > 0)
+    {
+        write(stream, "# Fields: ");
+        if (SEQAN_LIKELY(!context.legacyFormat))
+        {
+            _writeFieldLabels(stream, context, BlastTabular());
+        }
+        else
+        {
+            write(stream, BlastMatchField<>::legacyColumnLabels);
+
+            if (SEQAN_ENABLE_DEBUG && ((length(context.fields) != 1) || (context.fields[0] != TEnum::STD)))
+                std::cerr << "Attention: custom fields set, but will be ignored, because legacyFormat is also set.\n";
+
+        }
+
+    }
+    if (SEQAN_LIKELY(!context.legacyFormat))
+    {
+        write(stream, "# ");
+        write(stream, length(r.matches));
+        write(stream, " hits found\n");
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -253,40 +287,40 @@ writeHeader(TFwdIterator &,
 // ----------------------------------------------------------------------------
 
 template <typename TFwdIterator,
+          typename TScore,
+          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
           typename TAlign,
-          BlastFormatFile f,
           BlastFormatProgram p,
-          BlastFormatGeneration g>
+          BlastTabularSpec h>
 inline void
 _writeField(TFwdIterator & s,
+            BlastIOContext<TScore, TConString, p, h> & context,
             BlastMatch<TQId, TSId, TPos, TAlign> const & match,
-            typename BlastMatchField<g>::Enum const fieldId,
-            BlastFormat<f, p, g> const &)
+            typename BlastMatchField<>::Enum const fieldId,
+            BlastTabular const &)
 {
-    typedef BlastFormat<f, p, g> TFormat;
-    typedef typename BlastMatchField<g>::Enum ENUM;
     switch (fieldId)
     {
-        case ENUM::STD:
+        case BlastMatchField<>::Enum::STD:
              _writeFields(s,
                           match,
-                          BlastMatchField<g>::defaults,
-                          TFormat(),
+                          BlastMatchField<>::defaults,
+                          BlastTabular(),
                           false /*appendNewline*/);
             break;
-        case ENUM::Q_SEQ_ID:
+        case BlastMatchField<>::Enum::Q_SEQ_ID:
             write(s, prefix(match.qId, _firstOcc(match.qId, ' ')));
             break;
 //         case ENUM::Q_GI: write(s,  * ); break;
 //         case ENUM::Q_ACC: write(s,  * ); break;
 //         case ENUM::Q_ACCVER: write(s,  * ); break;
-        case ENUM::Q_LEN:
+        case BlastMatchField<>::Enum::Q_LEN:
             write(s, match.qLength);
             break;
-        case ENUM::S_SEQ_ID:
+        case BlastMatchField<>::Enum::S_SEQ_ID:
             write(s, prefix(match.sId, _firstOcc(match.sId, ' ')));
             break;
 //         case ENUM::S_ALL_SEQ_ID: write(s,  * ); break;
@@ -295,54 +329,44 @@ _writeField(TFwdIterator & s,
 //         case ENUM::S_ACC: write(s,  * ); break;
 //         case ENUM::S_ACCVER: write(s,  * ); break;
 //         case ENUM::S_ALLACC: write(s,  * ); break;
-        case ENUM::S_LEN:
+        case BlastMatchField<>::Enum::S_LEN:
             write(s, match.sLength);
             break;
-        case ENUM::Q_START:
+        case BlastMatchField<>::Enum::Q_START:
         {
             TPos effectiveQStart    = match.qStart;
             TPos effectiveQEnd      = match.qEnd;
-            _untranslatePositions(effectiveQStart, effectiveQEnd,
-                                  match.qFrameShift, match.qLength,
-                                  QHasRevComp<TFormat>(),
-                                  QIsTranslated<TFormat>());
+            _untranslateQPositions(effectiveQStart, effectiveQEnd, match.qFrameShift, match.qLength,
+                                   context.blastProgram, BlastProgramTag<p>());
             write(s, effectiveQStart);
         } break;
-        case ENUM::Q_END:
+        case BlastMatchField<>::Enum::Q_END:
         {
             TPos effectiveQStart    = match.qStart;
             TPos effectiveQEnd      = match.qEnd;
-            _untranslatePositions(effectiveQStart, effectiveQEnd,
-                                  match.qFrameShift, match.qLength,
-                                  QHasRevComp<TFormat>(),
-                                  QIsTranslated<TFormat>());
+            _untranslateQPositions(effectiveQStart, effectiveQEnd, match.qFrameShift, match.qLength,
+                                   context.blastProgram, BlastProgramTag<p>());
             write(s, effectiveQEnd);
         } break;
-        case ENUM::S_START:
+        case BlastMatchField<>::Enum::S_START:
         {
             TPos effectiveSStart    = match.sStart;
             TPos effectiveSEnd      = match.sEnd;
-
-            _untranslatePositions(effectiveSStart, effectiveSEnd,
-                                  match.sFrameShift, match.sLength,
-                                  SHasRevComp<TFormat>(),
-                                  SIsTranslated<TFormat>());
+            _untranslateSPositions(effectiveSStart, effectiveSEnd, match.sFrameShift, match.sLength,
+                                   context.blastProgram, BlastProgramTag<p>());
             write(s, effectiveSStart);
         } break;
-        case ENUM::S_END:
+        case BlastMatchField<>::Enum::S_END:
         {
             TPos effectiveSStart    = match.sStart;
             TPos effectiveSEnd      = match.sEnd;
-
-            _untranslatePositions(effectiveSStart, effectiveSEnd,
-                                  match.sFrameShift, match.sLength,
-                                  SHasRevComp<TFormat>(),
-                                  SIsTranslated<TFormat>());
+            _untranslateSPositions(effectiveSStart, effectiveSEnd, match.sFrameShift, match.sLength,
+                                   context.blastProgram, BlastProgramTag<p>());
             write(s, effectiveSEnd);
         } break;
 //         case ENUM::Q_SEQ: write(s,  * ); break;
 //         case ENUM::S_SEQ: write(s,  * ); break;
-        case ENUM::E_VALUE:
+        case BlastMatchField<>::Enum::E_VALUE:
         {
             std::string formatString;
             // imported from NCBI code
@@ -364,7 +388,7 @@ _writeField(TFwdIterator & s,
             write(s, FormattedNumber<double>(formatString.c_str(),
                                              match.eValue));
         } break;
-        case ENUM::BIT_SCORE:
+        case BlastMatchField<>::Enum::BIT_SCORE:
         {
             std::string formatString;
             // imported from NCBI code
@@ -378,57 +402,57 @@ _writeField(TFwdIterator & s,
             write(s, FormattedNumber<double>(formatString.c_str(),
                                              match.bitScore));
         } break;
-        case ENUM::SCORE:
+        case BlastMatchField<>::Enum::SCORE:
             write(s, match.score);
             break;
-        case ENUM::LENGTH:
+        case BlastMatchField<>::Enum::LENGTH:
             write(s, match.aliLength);
             break;
-        case ENUM::P_IDENT:
+        case BlastMatchField<>::Enum::P_IDENT:
             write(s, FormattedNumber<double>("%.2f",
                                              double(match.identities) * 100
                                              / match.aliLength));
             break;
-        case ENUM::N_IDENT:
+        case BlastMatchField<>::Enum::N_IDENT:
             write(s, match.identities);
             break;
-        case ENUM::MISMATCH:
+        case BlastMatchField<>::Enum::MISMATCH:
             write(s, match.mismatches);
             break;
-        case ENUM::POSITIVE:
+        case BlastMatchField<>::Enum::POSITIVE:
             write(s, match.positives);
             break;
-        case ENUM::GAP_OPEN:
+        case BlastMatchField<>::Enum::GAP_OPEN:
             write(s, match.gapOpenings);
             break;
-        case ENUM::GAPS:
+        case BlastMatchField<>::Enum::GAPS:
             write(s, match.gaps);
             break;
-        case ENUM::P_POS:
+        case BlastMatchField<>::Enum::P_POS:
             write(s, FormattedNumber<double>("%.2f",
                                              double(match.positives) * 100
                                              / match.aliLength));
             break;
-        case ENUM::FRAMES:
+        case BlastMatchField<>::Enum::FRAMES:
             // for formats that don't have frames, blast says 0 instead of +1
-            if (qNumFrames(TFormat()) > 1)
+            if (qNumFrames(BlastTabular()) > 1)
                 write(s, FormattedNumber<int8_t>("%i", match.qFrameShift));
             else
                 write(s, FormattedNumber<int8_t>("%i", 0));
             write(s, '/');
-            if (sNumFrames(TFormat()) > 1)
+            if (sNumFrames(BlastTabular()) > 1)
                 write(s, FormattedNumber<int8_t>("%i", match.qFrameShift));
             else
                 write(s, FormattedNumber<int8_t>("%i", 0));
             break;
-        case ENUM::Q_FRAME:
-            if (qNumFrames(TFormat()) > 1)
+        case BlastMatchField<>::Enum::Q_FRAME:
+            if (qNumFrames(BlastTabular()) > 1)
                 write(s, FormattedNumber<int8_t>("%i", match.qFrameShift));
             else
                 write(s, FormattedNumber<int8_t>("%i", 0));
             break;
-        case ENUM::S_FRAME:
-            if (sNumFrames(TFormat()) > 1)
+        case BlastMatchField<>::Enum::S_FRAME:
+            if (sNumFrames(BlastTabular()) > 1)
                 write(s, FormattedNumber<int8_t>("%i", match.qFrameShift));
             else
                 write(s, FormattedNumber<int8_t>("%i", 0));
@@ -454,52 +478,50 @@ _writeField(TFwdIterator & s,
 // ----------------------------------------------------------------------------
 
 template <typename TFwdIterator,
+          typename TScore,
+          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
           typename TAlign,
-          BlastFormatFile f,
-          BlastFormatProgram p>
+          BlastFormatProgram p,
+          BlastTabularSpec h>
 inline void
 _writeFields(TFwdIterator & stream,
-             BlastIOContext & context,
+             BlastIOContext<TScore, TConString, p, h> & context,
              BlastMatch<TQId, TSId, TPos, TAlign> const & match,
-             BlastFormat<f, p, BlastFormatGeneration::BLAST_PLUS> const &,
+             BlastTabular const &,
              bool const appendNewline = true)
 {
-    typedef BlastFormat<f, p, BlastFormatGeneration::BLAST_PLUS> TFormat;
-
-    for (auto it = seqan::begin(context.fields),
-              itB = it,
-              itEnd = seqan::end(context.fields);
-         it != itEnd;
-         ++it)
+    if (SEQAN_LIKELY(!context.legacyFormat))
     {
-        if (it != itB)
-            write(stream, '\t');//_seperatorString(TFormat()));
+        for (auto it = seqan::begin(context.fields), itB = it, itEnd = seqan::end(context.fields); it != itEnd; ++it)
+        {
+            if (it != itB)
+                write(stream, '\t');
 
-        _writeField(stream, match, *it, TFormat());
+            _writeField(stream, match, *it, BlastTabular());
+        }
     }
+    else
+    {
+        for (auto it = seqan::begin(BlastMatchField<>::defaults), itB = it,
+             itEnd = seqan::end(BlastMatchField<>::defaults); it != itEnd; ++it)
+        {
+            if (it != itB)
+                write(stream, '\t');
+
+            _writeField(stream, match, *it, BlastTabular());
+        }
+
+        if (SEQAN_ENABLE_DEBUG &&
+            ((length(context.fields) != 1) || (context.fields[0] != BlastMatchField<>::Enum::STD)))
+            std::cerr << "Attention: custom fields set, but will be ignored, because legacyFormat is also set.\n";
+
+    }
+
     if (appendNewline)
         write(stream, '\n');
-}
-
-template <typename TFwdIterator,
-          typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign,
-          BlastFormatFile f,
-          BlastFormatProgram p>
-inline void
-_writeFields(TFwdIterator & stream,
-             BlastIOContext & context,
-             BlastMatch<TQId, TSId, TPos, TAlign> const & match,
-             BlastFormat<f, p, BlastFormatGeneration::BLAST_LEGACY> const &)
-{
-    // we override the Generation here
-    typedef BlastFormat<f, p, BlastFormatGeneration::BLAST_PLUS> TFormat;
-    _writeFields(stream, context, match, TFormat());
 }
 
 // ----------------------------------------------------------------------------
@@ -513,7 +535,7 @@ _writeFields(TFwdIterator & stream,
  * @signature writeMatch(stream, context, blastMatch, tag)
  *
  * @param[in,out] stream     The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
- * @param[in,out] context    A @link BlastIOContext @endlink with parameters and buffers.
+ * @param[in,out] context    A @link BlastIOContext<TScore, TConString, p, h> @endlink with parameters and buffers.
  * @param[in]     blastMatch The @link BlastMatch @endlink you wish to print.
  * @param[in]     tag        The @link BlastFormat @endlink specifier.
  *
@@ -545,55 +567,25 @@ _writeFields(TFwdIterator & stream,
  * @see BlastFormat
  * @see BlastRecord
  * @see BlastRecord#writeRecord
- * @see BlastRecord#writeHeader
+ * @see BlastRecord#writeRecordHeader
  */
 
 template <typename TQId,
           typename TSId,
           typename TFwdIterator,
+          typename TScore,
+          typename TConString,
           typename TPos,
           typename TAlign,
           BlastFormatProgram p,
-          BlastFormatGeneration g>
+          BlastTabularSpec h>
 inline void
 writeMatch(TFwdIterator & stream,
-           BlastIOContext & context,
+           BlastIOContext<TScore, TConString, p, h> & context,
            BlastMatch<TQId, TSId, TPos, TAlign> const & match,
-           BlastFormat<BlastFormatFile::TABULAR, p, g> const & /*tag*/)
+           BlastTabular const & /*tag*/)
 {
-    typedef BlastFormat<BlastFormatFile::TABULAR,
-                        p,
-                        BlastFormatGeneration::BLAST_PLUS> TFormat;
-
-    if ((g == BlastFormatGeneration::BLAST_LEGACY) &&
-        ((length(context.fields) != 1) || (context.fields[0] != TEnum::STD)))
-    {
-        if (SEQAN_ENABLE_DEBUG)
-            std::cerr << "custom fields set, but will be reset for "
-                         "BlastFormatGeneration::BLAST_LEGACY\n";
-        clear(context.fields);
-        appendValue(context.fields,
-                    BlastMatchField<BlastFormatGeneration::BLAST_PLUS>::Enum::STD);
-    }
-    _writeFields(stream, context, match, TFormat());
-}
-
-template <typename TQId,
-          typename TSId,
-          typename TFwdIterator,
-          typename TPos,
-          typename TAlign,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline void
-writeMatch(TFwdIterator & stream,
-           BlastIOContext & context,
-           BlastMatch<TQId, TSId, TPos, TAlign> const & match,
-           BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const & /*tag*/)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-
-    _writeFields(stream, context, match, TFormat());
+    _writeFields(stream, context, match, BlastTabular());
 }
 
 // ----------------------------------------------------------------------------
@@ -604,22 +596,23 @@ writeMatch(TFwdIterator & stream,
 //           BlastFormatGeneration g>
 // inline void
 // _writeFields(TFwdIterator & /**/,
-//              BlastFormat<f, p, g> const & /*tag*/)
+//              BlastTabular const & /*tag*/)
 // {
 // }
 //
-// template <typename TFwdIterator, typename TField, typename... TFields,
+// template <typename TFwdIterator,
+//           typename TScore,
+//           typename TConString, typename TField, typename... TFields,
 //           BlastFormatFile f, BlastFormatProgram p, BlastFormatGeneration g>
 // inline void
 // _writeFields(TFwdIterator & stream,
-//              BlastFormat<f, p, g> const & /*tag*/,
+//              BlastTabular const & /*tag*/,
 //              TField const & field1, TFields const & ... fields)
 // {
-//     typedef BlastFormat<f, p, g> TFormat;
-//
-//     write(stream, '\t');//_seperatorString(TFormat()));
+// //
+//     write(stream, '\t');//_seperatorString(BlastTabular()));
 //     write(stream, field1);
-//     _writeFields(stream, TFormat(), fields... );
+//     _writeFields(stream, BlastTabular(), fields... );
 // }
 
 /*
@@ -634,7 +627,7 @@ writeMatch(TFwdIterator & stream,
  * this signature allows an arbitrary amount of and
  * arbitrary typed columns to be printed. If you do this and you use the
  * TABULAR_WITH_HEADER format, you should also print custom column labels
- * with @link BlastFormat#writeHeader @endlink. Please note that this function
+ * with @link BlastFormat#writeRecordHeader @endlink. Please note that this function
  * does none of the adjustments mentioned in the other signature,
  * so they have to be done by yourself (if you use
  * the mentioned fields and you want compatability).
@@ -649,39 +642,41 @@ writeMatch(TFwdIterator & stream,
  * @see BlastFormat
  * @see BlastRecord
  * @see BlastRecord#writeRecord
- * @see BlastRecord#writeHeader
- * @see BlastFormat#writeHeader
+ * @see BlastRecord#writeRecordHeader
+ * @see BlastFormat#writeRecordHeader
  */
 
 // Function for arbitrary number and typed fields
-// template <typename TFwdIterator, typename TField, typename... TFields,
+// template <typename TFwdIterator,
+//           typename TScore,
+//           typename TConString, typename TField, typename... TFields,
 //           BlastFormatProgram p, BlastFormatGeneration g>
 // inline void
 // writeMatch(TFwdIterator & stream,
-//            BlastFormat<BlastFormatFile::TABULAR, p, g> const & /*tag*/,
+//            BlastTabular const & /*tag*/,
 //             TField const & field1,
 //             TFields const & ... fields)
 // {
-//     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-//     write(stream, field1);
+// //     write(stream, field1);
 //
-//     _writeFields(stream, TFormat(), fields...);
+//     _writeFields(stream, BlastTabular(), fields...);
 //     write(stream, '\n');
 // }
 //
 // // writeMatch TABULAR_WITH_HEADER equal to TABULAR
 // template <typename TFwdIterator,
+//           typename TScore,
+//           typename TConString,
 //           typename TField,
 //           typename... TFields,
 //           BlastFormatProgram p, BlastFormatGeneration g>
 // inline void
 // writeMatch(TFwdIterator & stream,
-//            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> const & /**/,
+//            BlastTabular const & /**/,
 //            TField const & field1,
 //            TFields const & ... fields)
 // {
-//     typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-//     writeMatch(stream, TFormat(), field1, fields... );
+// //     writeMatch(stream, BlastTabular(), field1, fields... );
 // }
 
 // ----------------------------------------------------------------------------
@@ -694,74 +689,75 @@ writeMatch(TFwdIterator & stream,
 // Function writeRecord()
 // ----------------------------------------------------------------------------
 
-// dox in blast_base.h
+/*!
+ * @fn BlastTabular#writeRecord
+ * @headerfile seqan/blast.h
+ * @brief write a @link BlastRecord @endlink including it's @link BlastMatch @endlinkes and possible headers to a file.
+ * @signature void writeRecord(stream, context, blastRecord, blastTabular);
+ *
+ * @param[in,out] stream       The file to write to (FILE, fstream, @link OutputStreamConcept @endlink ...)
+ * @param[in,out] context      A @link BlastIOContext @endlink with parameters and buffers.
+ * @param[in]     blastRecord  The @link BlastRecord @endlink you wish to print.
+ * @param[in]     blastTabular The @link BlastTabular @endlink tag.
+ *
+ * See @link BlastIOContext @endlink for ways to influence the output.
+ */
 
 template <typename TFwdIterator,
+          typename TScore,
+          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
           typename TAlign,
-          BlastFormatFile f,
           BlastFormatProgram p,
-          BlastFormatGeneration g>
+          BlastTabularSpec h>
 inline void
-_writeRecordTab(TFwdIterator & stream,
-                BlastIOContext & context,
-                BlastRecord<TQId, TSId, TPos, TAlign> const & r,
-                BlastFormat<f, p, g> const & /*tag*/)
+writeRecord(TFwdIterator & stream,
+            BlastIOContext<TScore, TConString, p, h> & context,
+            BlastRecord<TQId, TSId, TPos, TAlign> const & r,
+            BlastTabular const & /*tag*/)
 {
-    typedef BlastFormat<f, p, g> TFormat;
-
     //TODO if debug, do lots of sanity checks on record
 
     //NOOP for TABULAR
-    writeHeader(stream, context, r, TFormat());
+    writeRecordHeader(stream, context, r, BlastTabular());
     for (auto it = r.matches.begin(); it != r.matches.end(); ++it)
     {
         //SOME SANITY CHECKS
         SEQAN_ASSERT(startsWith(r.qId, it->qId));
 
-        writeMatch(stream, context, *it, TFormat());
+        writeMatch(stream, context, *it, BlastTabular());
     }
 }
 
-template <typename TFwdIterator,
+/*!
+ * @fn BlastTabularOut#writeRecord
+ * @headerfile seqan/blast.h
+ * @brief write a @link BlastRecord @endlink including it's @link BlastMatch @endlinkes and possible headers to a file.
+ * @signature void writeRecord(blastTabularOut, blastRecord);
+ *
+ * @param[in,out] blastTabularOut A @link BlastTabularOut @endlink formattedFile.
+ * @param[in]     blastRecord     The @link BlastRecord @endlink you wish to print.
+ *
+ * See @link BlastIOContext @endlink for ways to influence the output.
+ */
+
+template <typename TScore,
+          typename TConString,
           typename TQId,
           typename TSId,
           typename TPos,
           typename TAlign,
           BlastFormatProgram p,
-          BlastFormatGeneration g>
+          BlastTabularSpec h>
 inline void
-writeRecord(TFwdIterator & stream,
-            BlastIOContext & context,
-            BlastRecord<TQId, TSId, TPos, TAlign> const & r,
-            BlastFormat<BlastFormatFile::TABULAR,
-                        p,
-                        g> const & /*tag*/)
+writeRecord(BlastTabularOut<TScore, TConString, p, h> & formattedFile,
+            BlastRecord<TQId, TSId, TPos, TAlign> const & r)
 {
-    typedef BlastFormat<BlastFormatFile::TABULAR, p, g> TFormat;
-    _writeRecordTab(stream, context, r, TFormat());
+    writeRecord(formattedFile.iter, context(formattedFile), r, BlastTabular());
 }
 
-template <typename TFwdIterator,
-          typename TQId,
-          typename TSId,
-          typename TPos,
-          typename TAlign,
-          BlastFormatProgram p,
-          BlastFormatGeneration g>
-inline void
-writeRecord(TFwdIterator & stream,
-            BlastIOContext & context,
-            BlastRecord<TQId, TSId, TPos, TAlign> const & r,
-            BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER,
-                        p,
-                        g> const & /*tag*/)
-{
-    typedef BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p, g> TFormat;
-    _writeRecordTab(stream, context, r, TFormat());
-}
 
 // ----------------------------------------------------------------------------
 // Function writeBottom()
@@ -769,6 +765,8 @@ writeRecord(TFwdIterator & stream,
 
 
 // template <typename TFwdIterator,
+//           typename TScore,
+//           typename TConString,
 //           typename TDbSpecs,
 //           typename TBlastScoringAdapater,
 //           BlastFormatProgram p,
@@ -777,12 +775,14 @@ writeRecord(TFwdIterator & stream,
 // writeBottom(TFwdIterator & /**/,
 //             TDbSpecs const & /**/,
 //             TBlastScoringAdapater const & /**/,
-//             BlastFormat<BlastFormatFile::TABULAR, p,g> const & /*tag*/)
+//             BlastTabular const & /*tag*/)
 // {
 //     //TODO check if this is really NO-OP forr this format
 // // }
 // 
 // template <typename TFwdIterator,
+//           typename TScore,
+//           typename TConString,
 //           typename TDbSpecs,
 //           typename TBlastScoringAdapater,
 //           BlastFormatProgram p,
@@ -791,7 +791,7 @@ writeRecord(TFwdIterator & stream,
 // writeBottom(TFwdIterator & /**/,
 //             TDbSpecs const & /**/,
 //             TBlastScoringAdapater const & /**/,
-//             BlastFormat<BlastFormatFile::TABULAR_WITH_HEADER, p,g> const & /*tag*/)
+//             BlastTabular const & /*tag*/)
 // {
 //     //TODO check if this is really NO-OP forr this format
 // // }

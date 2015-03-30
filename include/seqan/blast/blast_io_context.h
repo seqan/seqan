@@ -84,7 +84,7 @@ struct BlastIOContext
     // the BlastTabularSpec as compile time parameter
     typedef BlastTabularSpecTag<h> TBlastTabularSpec; // compile-time parameter
     // if the upper is set to UNKNOWN, than this run-time variable is consulted instead:
-    BlastTabularSpec tabularSpec = BlastTabularSpec::UNKNOWN;
+    BlastTabularSpec tabularSpec = BlastTabularSpec::HEADER;
 
 //     /*!
 //      * @var TScore BlastIOContext::scoringScheme;
